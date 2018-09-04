@@ -111,7 +111,7 @@ function Immigration() {
             };
         if ($('#PetitionTemplateDocDetails').validate(false, validationSettings)) {
             var formData = getFormData("PetitionTemplateDocDetails");
-            var returnType = CheckDuplicateDocsByCategory();
+            var returnType = immigration.CheckDuplicateDocsByCategory();
             if(returnType == false){
             	return false;
             }

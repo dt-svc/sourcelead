@@ -27,6 +27,7 @@ public class PaymentAccountDTO {
     private String orgLocationName;
     private long orgId;
     private long associateUserId;
+    private long candidateId;
     @Required(desc = "bankName", dependsOn = "accountType", parentValue = {"SAVINGS", "ROUTING"})
     private String bankName;
     
@@ -38,6 +39,7 @@ public class PaymentAccountDTO {
     private String bsrNumber;
     private String micrCode;
     private boolean disabled;
+    private String paymentAccountId;
 
     /**
      * @return the id
@@ -293,6 +295,22 @@ public class PaymentAccountDTO {
 
 	public void setAssociateUserId(long associateUserId) {
 		this.associateUserId = associateUserId;
+	}
+
+	public long getCandidateId() {
+		return candidateId;
+	}
+
+	public void setCandidateId(long candidateId) {
+		this.candidateId = candidateId;
+	}
+
+	public String getPaymentAccountId() {
+		return paymentAccountId;
+	}
+
+	public void setPaymentAccountId(String paymentAccountId) {
+		this.paymentAccountId = paymentAccountId;
 	}
      
 }

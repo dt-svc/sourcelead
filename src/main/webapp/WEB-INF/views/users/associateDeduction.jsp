@@ -17,9 +17,9 @@ $(document).ready(function(){
 				var method = $("#mthd").val();
 				var markup = "";
 				if(tempIndex >= 0 && tempIndex != null){
-					markup = '<tr id="row'+tempIndex+'"><td><input type="checkbox" name="record"></td><td><input type="hidden" id="deductionType" name="deductionDTOList['+tempIndex+'].deductionType" value="'+deductionType+'"/><span id="dedTypeVal'+tempIndex+'"> '+deductionTypeValue+'</span></td><td><input type="hidden" id="method" name="deductionDTOList['+tempIndex+'].method" value="'+method+'" />'+ method +'</td><td><input type="hidden" id="amount" name="deductionDTOList['+tempIndex+'].amount" value="'+amount+'"/>' + amount + '</td><td><a onclick="deleteRow(\''+tempIndex+'\');"><i class="fa fa-remove text-danger"></i></a></td></tr>';
+					markup = '<tr id="row'+tempIndex+'"><td><input type="hidden" id="deductionType" name="deductionDTOList['+tempIndex+'].deductionType" value="'+deductionType+'"/><span id="dedTypeVal'+tempIndex+'"> '+deductionTypeValue+'</span></td><td><input type="hidden" id="method" name="deductionDTOList['+tempIndex+'].method" value="'+method+'" />'+ method +'</td><td><input type="hidden" id="amount" name="deductionDTOList['+tempIndex+'].amount" value="'+amount+'"/>' + amount + '</td><td><a onclick="deleteRow(\''+tempIndex+'\');"><i class="fa fa-remove text-danger"></i></a></td></tr>';
 				}else{
-					markup = '<tr id="row'+i+'"><td><input type="checkbox" name="record"></td><td><input type="hidden" id="deductionType" name="deductionDTOList['+i+'].deductionType" value="'+deductionType+'"/> <span id="dedTypeVal'+i+'">'+deductionTypeValue+'</span></td><td><input type="hidden" id="method" name="deductionDTOList['+i+'].method" value="'+method+'" />'+ method +'</td><td><input type="hidden" id="amount" name="deductionDTOList['+i+'].amount" value="'+amount+'"/>' + amount + '</td><td><a onclick="deleteRow(\''+i+'\');"><i class="fa fa-remove text-danger"></i></a></td></tr>';
+					markup = '<tr id="row'+i+'"><td><input type="hidden" id="deductionType" name="deductionDTOList['+i+'].deductionType" value="'+deductionType+'"/> <span id="dedTypeVal'+i+'">'+deductionTypeValue+'</span></td><td><input type="hidden" id="method" name="deductionDTOList['+i+'].method" value="'+method+'" />'+ method +'</td><td><input type="hidden" id="amount" name="deductionDTOList['+i+'].amount" value="'+amount+'"/>' + amount + '</td><td><a onclick="deleteRow(\''+i+'\');"><i class="fa fa-remove text-danger"></i></a></td></tr>';
 					i++;
 					tempIndex = null;
 				}
@@ -47,6 +47,8 @@ function deleteRow(rowId){
 	var deleted= value.indexOf(dedValue);
 	tempIndex = deleted;
 	value.splice(deleted,1);
+	
+	
 	/* var i = $("#index").val();
 	$("#deductionTrAdd").find('input[name="record"]').each(function(){
 		if($(this).is(":checked")){
@@ -86,7 +88,7 @@ getDeductionType();
                   <div class="col-md-5">
                     <label class="clearfix">Amount</label>
                     <div class="clearfix">
-                      <input type="text" class="form-control" id="amt" name="amt" data-validation="required validate_int" field-name="Amount" readonly>
+                      <input type="text" class="form-control" id="amt" name="amt" data-validation="required validate_float" field-name="Amount" readonly>
                     </div>
                   </div>
                   </div>
@@ -107,7 +109,7 @@ getDeductionType();
                 <table>
                 	<thead>
                 		<tr>
-                		    <th>Select</th>
+<!--                 		    <th>Select</th> -->
                 			<th>Type</th>
                 			<th>Method</th>
                 			<th>Amount</th>
@@ -186,6 +188,8 @@ $('body').on('blur', '#associate_deduction_form', function() {
 						document.getElementById("associateContribution").removeAttribute("class"); 
 						associateContribution.href="#tab-5"; 
 						$("#associateContribution").click();
+						$("#associate_deduction_save_button").removeAttr("disabled");
+						$("#associate_deduction_save_button").addClass('button').val('Save & Continue');
 	                } else if (result.indexOf('Sign In') !== -1) {
 						location.replace(sourceleadUrl);
 					} else {

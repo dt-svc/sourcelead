@@ -97,9 +97,11 @@ import com.bis.sourcelead.service.AssociateSalaryHistoryService;
 import com.bis.sourcelead.service.AssociateSalaryService;
 import com.bis.sourcelead.service.OrgLocationService;
 import com.bis.sourcelead.service.UserGroupService;
+import com.bis.sourcelead.service.UserService;
 import com.bis.sourcelead.util.CommonUtil;
 import com.bis.sourcelead.util.SessionMaintainanceData;
 import com.bis.sourcelead.util.SourceLeadSessionManager;
+import com.docusign.esign.api.UsersApi;
 
 @RestController
 @RequestMapping("/app")
@@ -187,6 +189,10 @@ public class USPayrollRestController {
 	
 	@Autowired
 	CandidateDao candidateDao;
+	
+	@Autowired
+	UserService userService;
+	
 	/**
 	 * find all deduction types from lookup_data table 
 	 * @param request
@@ -786,12 +792,12 @@ public class USPayrollRestController {
 		OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 		String [] str = groupUUID.split(",");
 		Response<UserGroupDTO> userGroup = userGroupService.findUserGroupById(str[0]);
-		if ("Weekly".equalsIgnoreCase(userGroup.getObject().getPayFrequency())) {
+		if (userGroup.getObject() != null && "Weekly".equalsIgnoreCase(userGroup.getObject().getPayFrequency())) {
 			Calendar now = Calendar.getInstance(); // Gets the current date and
 			int year = now.get(Calendar.YEAR);
 			int month = now.get(Calendar.MONTH);
 			listDates = getNumberOfWeeks(year, month, orgLocation);
-		}else if("Monthly".equalsIgnoreCase(userGroup.getObject().getPayFrequency())) {
+		}else if(userGroup.getObject() != null && "Monthly".equalsIgnoreCase(userGroup.getObject().getPayFrequency())) {
 			Calendar now = Calendar.getInstance(); // Gets the current date and
 			int month = now.get(Calendar.MONTH);
 			listDates = getStartDateAndEndDateOfMonths(month, orgLocation);
@@ -993,22 +999,26 @@ public class USPayrollRestController {
 	}
 	
 	@RequestMapping(value = "/addAssociateDeduction")
-	public ModelAndView addAssociateDeduction(HttpServletRequest request,@RequestParam(value = "userId",required = false) Long userId,@RequestParam(value = "saveType",required = false) String saveType) throws Exception
+	public ModelAndView addAssociateDeduction(HttpServletRequest request,@RequestParam(value = "userCode",required = false) String userCode,@RequestParam(value = "saveType",required = false) String saveType) throws Exception
 	{
 		ModelAndView model = new ModelAndView();
 		model.addObject("sourceleadUrl", sourceleadUrl);
-		model.addObject("userId", userId);
+		User user = userService.getUserByUserCode(userCode);
+		model.addObject("userCode", user.getUserCode());
+		model.addObject("userId", user.getId());
 		model.addObject("saveType", saveType);
 		model.setViewName("users/addAssociateSummaryDeduction");
 		return model;
 	}
 	
 	@RequestMapping(value = "/addAssociateContribution")
-	public ModelAndView addAssociateContribution(HttpServletRequest request,@RequestParam(value = "userId",required = false) Long userId,@RequestParam(value = "saveType",required = false) String saveType) throws Exception
+	public ModelAndView addAssociateContribution(HttpServletRequest request,@RequestParam(value = "userCode",required = false) String userCode,@RequestParam(value = "saveType",required = false) String saveType) throws Exception
 	{
 		ModelAndView model = new ModelAndView();
 		model.addObject("sourceleadUrl", sourceleadUrl);
-		model.addObject("userId", userId);
+		User user = userService.getUserByUserCode(userCode);
+		model.addObject("userCode", user.getUserCode());
+		model.addObject("userId", user.getId());
 		model.addObject("saveType", saveType);
 		model.setViewName("users/addAssociateSummaryContribution");
 		return model;
@@ -1055,10 +1065,10 @@ public class USPayrollRestController {
 	 */
 	@RequestMapping(value = { "/getEmployeePayroll","/rest/getEmployeePayroll" }, method = RequestMethod.GET)
 	@ResponseBody
-	public Response<USPayrollDTO> getEmployeePayroll(@RequestParam(value = "payrollUUID",required = false) String payrollUUID, HttpServletRequest request, HttpServletResponse response) throws Exception
+	public Response<USPayrollDTO> getEmployeePayroll(@RequestParam(value = "payrollUUID",required = false) String payrollUUID,@RequestParam(value = "status",required = false) String approverStatus, HttpServletRequest request, HttpServletResponse response) throws Exception
 	{
 		OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
-		Response<USPayrollDTO>  resObj = generateUSPayrollService.getEmployeePayrollByUUID(payrollUUID,orgLocation);
+		Response<USPayrollDTO>  resObj = generateUSPayrollService.getEmployeePayrollByUUID(payrollUUID,orgLocation,approverStatus);
 		return resObj;
 	}
 	
@@ -1261,6 +1271,7 @@ public class USPayrollRestController {
 		if (sessionData == null) {
 			sessionData = new SessionMaintainanceData();
 		}
+		model.addObject("approverStatus",approverStatus);
 		sessionData.setNav(Constants.PAYROLL);
 		request.getSession().setAttribute("sessionData", sessionData);
 		return model;

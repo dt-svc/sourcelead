@@ -49,6 +49,7 @@ import com.bis.sourcelead.entity.AssociateGrades;
 import com.bis.sourcelead.entity.Candidate;
 import com.bis.sourcelead.entity.Countries;
 import com.bis.sourcelead.entity.Employees;
+import com.bis.sourcelead.entity.Lca;
 import com.bis.sourcelead.entity.LookUpData;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.OrgRelations;
@@ -60,7 +61,6 @@ import com.bis.sourcelead.entity.Projects;
 import com.bis.sourcelead.entity.Requirement;
 import com.bis.sourcelead.entity.Roles;
 import com.bis.sourcelead.entity.Shift;
-import com.bis.sourcelead.entity.SourceleadFormFields;
 import com.bis.sourcelead.entity.SubmissionApproverHierarchy;
 import com.bis.sourcelead.entity.SubmissionTemplate;
 import com.bis.sourcelead.entity.TimeSheetDayEntries;
@@ -2352,6 +2352,7 @@ private void saveImportedTimeSheetRecords(Projects project,String projectTaskUUI
 			   
 			   if (StringUtils.isBlank(dataMigrationDTOJsonCopy.getString("newLcaNumber"))) {
 					errorSet.put("newLcaNumber", "LCA No is missing"); 
+					
 					}
 			   
 			   if (StringUtils.isBlank(dataMigrationDTOJsonCopy.getString("newLcaTitle"))) {
@@ -2362,9 +2363,6 @@ private void saveImportedTimeSheetRecords(Projects project,String projectTaskUUI
 					errorSet.put("noOfPos", "No.of Positions is missing"); 
 					}
 			   
-			   if (StringUtils.isBlank(dataMigrationDTOJsonCopy.getString("noOfPos"))) {
-					errorSet.put("noOfPos", "No.of Positions is missing"); 
-					}
 			   
 			   if (StringUtils.isBlank(dataMigrationDTOJsonCopy.getString("currClientLocation"))) {
 					errorSet.put("currClientLocation", "Current Client Location is missing"); 
@@ -2378,16 +2376,24 @@ private void saveImportedTimeSheetRecords(Projects project,String projectTaskUUI
 					errorSet.put("socTitle", "Soc Title is missing"); 
 					}
 			   
+			   if (StringUtils.isBlank(dataMigrationDTOJsonCopy.getString("socJobTitle"))) {
+					errorSet.put("socJobTitle", "Job Title is missing"); 
+					}
+			   
 			   if (StringUtils.isBlank(dataMigrationDTOJsonCopy.getString("wageLevel"))) {
 					errorSet.put("wageLevel", "Wage Level is missing"); 
 					}
 			   
-			   if (StringUtils.isBlank(dataMigrationDTOJsonCopy.getString("newLcaStartDate"))) {
+			   if (StringUtils.isBlank(dataMigrationDTOJsonCopy.getString("newLcaStartDate")) || dataMigrationDTOJsonCopy.getString("newLcaStartDate").equals("null")) {
 					errorSet.put("newLcaStartDate", "Start Date is missing"); 
+					}else if(!CommonUtil.isValidDate(dataMigrationDTOJsonCopy.getString("newLcaStartDate"))) {
+						errorSet.put("newLcaStartDate", "Start Date is invalid date");
 					}
 			   
-			   if (StringUtils.isBlank(dataMigrationDTOJsonCopy.getString("newLcaEndDate"))) {
+			   if (StringUtils.isBlank(dataMigrationDTOJsonCopy.getString("newLcaEndDate")) || dataMigrationDTOJsonCopy.getString("newLcaEndDate").equals("null")) {
 					errorSet.put("newLcaEndDate", "End Date is missing"); 
+					}else if(!CommonUtil.isValidDate(dataMigrationDTOJsonCopy.getString("newLcaEndDate"))) {
+						errorSet.put("newLcaEndDate", "End Date is invalid date");
 					}
 			   
 			   if (StringUtils.isBlank(dataMigrationDTOJsonCopy.getString("lcaStatus"))) {
@@ -2397,9 +2403,6 @@ private void saveImportedTimeSheetRecords(Projects project,String projectTaskUUI
 			   if (StringUtils.isBlank(dataMigrationDTOJsonCopy.getString("newStatus"))) {
 					errorSet.put("newStatus", "Status is missing"); 
 					}
-			   
-			   
-			   
 			
 			//errorSet.put("", "");
 		}

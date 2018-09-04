@@ -2,6 +2,8 @@ package com.bis.sourcelead.dto;
 
 import java.util.List;
 
+import com.bis.sourcelead.dto.helper.Paginator;
+
 public class ResponseList<T> {
 
 	private int recordsTotal;
@@ -12,6 +14,7 @@ public class ResponseList<T> {
 	private List<T> data;
 	private String response;
 	private String responseMessage;
+	private Paginator paginator;
 
 	public int getRecordsTotal() {
 		return recordsTotal;
@@ -19,6 +22,14 @@ public class ResponseList<T> {
 
 	public void setRecordsTotal(int recordsTotal) {
 		this.recordsTotal = recordsTotal;
+	}
+
+	public Paginator getPaginator() {
+		return paginator;
+	}
+
+	public void setPaginator(Paginator paginator) {
+		this.paginator = paginator;
 	}
 
 	public int getRecordsFiltered() {

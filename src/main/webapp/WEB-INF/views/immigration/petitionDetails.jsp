@@ -31,6 +31,7 @@
           	<input type="hidden" name="candidateId"  value="${immigrationDTO.candidateId}">
           	<input type="hidden" name="templateId" value="${immigrationDTO.templateId}">
           	<input type="hidden" name="lcaId" id="currLcaId" value="${immigrationDTO.lcaId}">
+          	<input type="hidden" name="prevLcaId" id="prevLcaId" value="${immigrationDTO.prevLcaId}">
           	
             <h4 class="col-md-12 mb clearfix">1. Petition detail</h4>
             <div class="clearfix"></div>         
@@ -1592,7 +1593,7 @@ var finalDateFormatOrg = getOrgDateFormat(locationDate);
 	 },
 	   select: function(event, ui ) {
 		    $("#prevLcaNumber").val(ui.item.label);
-		 	$("#currLcaId").val(ui.item.value);//currentLcaId for LcaHistory
+		 	$("#prevLcaId").val(ui.item.value);//currentLcaId for LcaHistory
 		 	$("#prevLcaNumber").attr("selecedVal", ui.item.label);
 			 $.ajax({
 			    	type: "GET",

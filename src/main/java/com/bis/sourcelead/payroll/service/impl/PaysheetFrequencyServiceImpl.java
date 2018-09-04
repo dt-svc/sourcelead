@@ -28,6 +28,7 @@ import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.dto.AssociatePayItemDTO;
 import com.bis.sourcelead.dto.Response;
 import com.bis.sourcelead.dto.ResponseList;
+import com.bis.sourcelead.entity.Candidate;
 import com.bis.sourcelead.entity.EmailAttachment;
 import com.bis.sourcelead.entity.EmailMessage;
 import com.bis.sourcelead.entity.EmailScenario;
@@ -322,7 +323,7 @@ public class PaysheetFrequencyServiceImpl implements PaysheetFrequencyService{
 					List<ContributionDTO> clist = payrollUtil.getContributionData(payroll);
 					contributionHisList.addAll(clist);
 					
-					List<AssociatePayItemDTO> pList = getPayItemData(payroll);
+					List<AssociatePayItemDTO> pList = payrollUtil.getPayItemData(payroll);
 					payItemList.addAll(pList);
 					// Employee Taxes
 					Set<EmployeePayrollTax> payrollTax = payroll.getUsPayrollTax();
@@ -425,24 +426,6 @@ public class PaysheetFrequencyServiceImpl implements PaysheetFrequencyService{
 		return response;
 	}
 
-	/**
-	 * Calculating PayItem
-	 * @param payroll
-	 * @return List<AssociatePayItemDTO>
-	 */
-	private List<AssociatePayItemDTO> getPayItemData(EmployeePayroll payroll)
-	{
-		List<AssociatePayItemDTO> list = new ArrayList<>();
-		if (payroll.getPayitemHistory() != null) {
-			for (PayitemHistory his : payroll.getPayitemHistory()) {
-				AssociatePayItemDTO payItemDTO = new AssociatePayItemDTO();
-				payItemDTO.setPayItemName(his.getAssociatePayItem().getPayItemName());
-				payItemDTO.setPayItemAmt(his.getAssociatePayItem().getPayItemAmount().doubleValue());
-				list.add(payItemDTO);
-			}
-		}
-		return list;
-	}
 
 
 	/**
@@ -552,6 +535,12 @@ public class PaysheetFrequencyServiceImpl implements PaysheetFrequencyService{
 		});
 		
 		return list;
+	}
+
+	@Override
+	public List<EmployeePayroll> employeePayrollYTD(Candidate candidate, OrgLocations orgLocation,String approverStatus)
+	{
+		return paysheetFrequencyDao.employeePayrollYTD(candidate,orgLocation,approverStatus);
 	}
 
 }

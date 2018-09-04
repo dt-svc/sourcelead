@@ -135,6 +135,7 @@ public class ExpensesEntriesServiceImpl implements ExpensesEntriesService{
 					entries.setUpdatedDate(CommonUtil.currentDate());
 					entries.setExpensesId(expenses);
 					entries.setUpdatedBy(expenses.getUpdatedBy());
+					entries.setBillable(false);
 					
 					
 				    //save  mutliple attachments.

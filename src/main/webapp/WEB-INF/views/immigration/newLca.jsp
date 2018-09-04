@@ -216,21 +216,21 @@
           </div>
           
           <div class="col-xs-12 col-sm-6 col-md-6 minHeight50 mb">
-            <label class="col-md-4 paddingRight">Offered Wage <span class="text-danger paddingLeft">*</span> </label>
+            <label class="col-md-4 paddingRight">Offered Wage</label>
             <div class="col-md-8 ">
             <div class="input-group er ratetype">
                 <div class="input-group-btn">
                   <select class="form-control selectpicker" id="offeredWageCurrency" name="offeredWageCurrency" data-style="btn-primary">
-										<option value="INR" ${lcaDTO.offeredWageCurrency == 'INR' ? 'selected' : ''}>INR</option>
-										<option value="AUD" ${lcaDTO.offeredWageCurrency == 'AUD' ? 'selected' : ''}>AUD</option>
-										<option value="USD" ${lcaDTO.offeredWageCurrency == 'USD' ? 'selected' : ''}>USD</option>
-										<option value="GBP" ${lcaDTO.offeredWageCurrency == 'GBP' ? 'selected' : ''}>GBP</option>
-										<option value="SGD" ${lcaDTO.offeredWageCurrency == 'SGD' ? 'selected' : ''}>SGD</option>
-										<option value="EUR" ${lcaDTO.offeredWageCurrency == 'EUR' ? 'selected' : ''}>EUR</option> 
+										<option value="INR" ${offeredWageCurrency == 'INR' ? 'selected' : ''}>INR</option>
+										<option value="AUD" ${offeredWageCurrency == 'AUD' ? 'selected' : ''}>AUD</option>
+										<option value="USD" ${offeredWageCurrency == 'USD' ? 'selected' : ''}>USD</option>
+										<option value="GBP" ${offeredWageCurrency == 'GBP' ? 'selected' : ''}>GBP</option>
+										<option value="SGD" ${offeredWageCurrency == 'SGD' ? 'selected' : ''}>SGD</option>
+										<option value="EUR" ${offeredWageCurrency == 'EUR' ? 'selected' : ''}>EUR</option> 
 									</select>
                 </div>
                 <input type="text" id="offeredWage" name="offeredWage" value="${lcaDTO.offeredWage}" class="form-control" value="" field-name="Offered Wage"
-								data-validation="required validate_Space validate_float validate_length length1-8"
+								data-validation="validate_Space validate_float validate_length length1-8" data-validation-optional="true"
 								 placeholder="Wage Or Rate">
                 <div class="input-group-btn ratetype">
                  <select class="selectpicker form-control" id="offeredWageRateType" name="offeredWageRateType" field-name="Rate Per" data-style="btn-primary">
@@ -269,11 +269,11 @@
 	              <div class="col-md-8">
 	                  <div class="positionRelative">
 									<input class="form-control positionRelative"
-										id="location" name="lcaPlaceOfEmploymentList[0].location" value="${lcaDTO.lcaPlaceOfEmploymentList[0].location}" onclick="initLocationAuto('location','country','state','city','zipCode','','','','addressLine1');"
+										id="location" name="lcaPlaceOfEmploymentList[0].location" value="${lcaDTO.lcaPlaceOfEmploymentList[0].location}" onclick="initLocationAuto('location','country','state','city','zipCode','','','','addressLineOne','addressLine2');"
 										placeholder="Enter Location" type="text" field-name="Location" data-validation="required"></input> <i
 										class="fa fa-refresh btn btn-primary refresh-icon"
 										title="Refresh"
-										onClick="refreshGoogleApiLocation('location','country','state','city','zipCode','addressLine1ss');"></i>
+										onClick="refreshGoogleApiLocation('location','country','state','city','zipCode','addressLineOne','addressLine2');"></i>
 						</div>
 	              </div>
 	            </div>
@@ -281,7 +281,7 @@
 				<div class="col-xs-12 col-sm-6 col-md-6 minHeight50 mb">
 					<label class="col-md-4">Address Line 1</label>
 					<div class="col-md-8">
-					<input type="text" name="lcaPlaceOfEmploymentList[0].addressLine1" id="addressLine1"  value="${lcaDTO.lcaPlaceOfEmploymentList[0].addressLine1}" class="form-control" placeholder="Address Line 1" field-name="Address Line1"
+					<input type="text" name="lcaPlaceOfEmploymentList[0].addressLine1" id="addressLineOne"  value="${lcaDTO.lcaPlaceOfEmploymentList[0].addressLine1}" class="form-control" placeholder="Address Line 1" field-name="Address Line1"
 								data-validation="validate_Space validate_length length1-250"
 								data-validation-optional="true">
 					</div>
@@ -350,11 +350,11 @@
 	              <div class="col-md-8">
 	                  <div class="positionRelative">
 									<input class="form-control positionRelative"
-										id="location" name="lcaPlaceOfEmploymentList[${rows.count-1}].location" value="${lcaDTO.lcaPlaceOfEmploymentList[rows.count-1].location}" onclick="initLocationAuto('location','country','state','city','zipCode','','','','addressLine1');"
+										id="location${rows.count-1}" name="lcaPlaceOfEmploymentList[${rows.count-1}].location" value="${lcaDTO.lcaPlaceOfEmploymentList[rows.count-1].location}" onclick="initLocationAuto('location','country','state','city','zipCode','','','','addressLineOne','addressLine2');"
 										placeholder="Enter Location" type="text" field-name="Location" data-validation="required"></input> <i
 										class="fa fa-refresh btn btn-primary refresh-icon"
 										title="Refresh"
-										onClick="refreshGoogleApiLocation('location','country','state','city','zipCode','addressLine1ss');"></i>
+										onClick="refreshGoogleApiLocation('location${rows.count-1}','country${rows.count-1}','state${rows.count-1}','city${rows.count-1}','zipCode${rows.count-1}','addressLineOne${rows.count-1}','addressLine2${rows.count-1}');"></i>
 						</div>
 	              </div>
 	            </div>
@@ -362,7 +362,7 @@
 				<div class="col-xs-12 col-sm-6 col-md-6 minHeight50 mb">
 					<label class="col-md-4">Address Line 1</label>
 					<div class="col-md-8">
-					<input type="text" name="lcaPlaceOfEmploymentList[${rows.count-1}].addressLine1" id="addressLine1"  value="${lcaDTO.lcaPlaceOfEmploymentList[rows.count-1].addressLine1}" class="form-control" placeholder="Address Line 1" field-name="Address Line1"
+					<input type="text" name="lcaPlaceOfEmploymentList[${rows.count-1}].addressLine1" id="addressLineOne${rows.count-1}"  value="${lcaDTO.lcaPlaceOfEmploymentList[rows.count-1].addressLine1}" class="form-control" placeholder="Address Line 1" field-name="Address Line1"
 								data-validation="validate_Space validate_length length1-250"
 								data-validation-optional="true">
 					</div>
@@ -371,7 +371,7 @@
 				<div class="col-xs-12 col-sm-6 col-md-6 minHeight50 mb">
 					<label class="col-md-4">Address Line 2</label>
 					<div class="col-md-8">
-					<input type="text" name="lcaPlaceOfEmploymentList[${rows.count-1}].addressLine2" id="addressLine2" value="${lcaDTO.lcaPlaceOfEmploymentList[rows.count-1].addressLine2}" class="form-control" placeholder="Address Line 2" field-name="Address Line2"
+					<input type="text" name="lcaPlaceOfEmploymentList[${rows.count-1}].addressLine2" id="addressLine2${rows.count-1}" value="${lcaDTO.lcaPlaceOfEmploymentList[rows.count-1].addressLine2}" class="form-control" placeholder="Address Line 2" field-name="Address Line2"
 								data-validation="validate_Space validate_length length1-250"
 								data-validation-optional="true">
 					</div>
@@ -380,7 +380,7 @@
 				<div class="col-xs-12 col-sm-6 col-md-6 minHeight50 mb">
 					<label class="col-md-4">City</label>
 					<div class="col-md-8">
-					<input type="text" name="lcaPlaceOfEmploymentList[${rows.count-1}].city" id="city" value="${lcaDTO.lcaPlaceOfEmploymentList[rows.count-1].city}" class="form-control" placeholder="City" field-name="City"
+					<input type="text" name="lcaPlaceOfEmploymentList[${rows.count-1}].city" id="city${rows.count-1}" value="${lcaDTO.lcaPlaceOfEmploymentList[rows.count-1].city}" class="form-control" placeholder="City" field-name="City"
 								data-validation="required validate_length length2-100">
 					</div>
 				</div>
@@ -388,7 +388,7 @@
 				<div class="col-xs-12 col-sm-6 col-md-6 minHeight50 mb">
 					<label class="col-md-4">State</label>
 					<div class="col-md-8">
-					<input type="text" name="lcaPlaceOfEmploymentList[${rows.count-1}].state" id="state" value="${lcaDTO.lcaPlaceOfEmploymentList[rows.count-1].state}" class="form-control" placeholder="State" field-name="State"
+					<input type="text" name="lcaPlaceOfEmploymentList[${rows.count-1}].state" id="state${rows.count-1}" value="${lcaDTO.lcaPlaceOfEmploymentList[rows.count-1].state}" class="form-control" placeholder="State" field-name="State"
 								data-validation="required validate_length length2-100">
 					</div>
 				</div>
@@ -396,7 +396,7 @@
 				<div class="col-xs-12 col-sm-6 col-md-6 minHeight50 mb">
 					<label class="col-md-4">Country</label>
 					<div class="col-md-8">
-					<input type="text" name="lcaPlaceOfEmploymentList[${rows.count-1}].country" id="country" value="${lcaDTO.lcaPlaceOfEmploymentList[rows.count-1].country == null ? loginCountryName  : lcaDTO.lcaPlaceOfEmploymentList[rows.count-1].country}"  class="form-control" placeholder="Country" field-name="Country"
+					<input type="text" name="lcaPlaceOfEmploymentList[${rows.count-1}].country" id="country${rows.count-1}" value="${lcaDTO.lcaPlaceOfEmploymentList[rows.count-1].country == null ? loginCountryName  : lcaDTO.lcaPlaceOfEmploymentList[rows.count-1].country}"  class="form-control" placeholder="Country" field-name="Country"
 								data-validation="required validate_length length2-100">
 					</div>
 				</div>
@@ -405,7 +405,7 @@
 				<div class="col-xs-12 col-sm-6 col-md-6 minHeight50 mb">
 					<label class="col-md-4">Zip Code</label>
 					<div class="col-md-8">
-					<input type="text" name="lcaPlaceOfEmploymentList[${rows.count-1}].zipCode" id="zipCode" value="${lcaDTO.lcaPlaceOfEmploymentList[rows.count-1].zipCode}" class="form-control" placeholder="Zip Code"
+					<input type="text" name="lcaPlaceOfEmploymentList[${rows.count-1}].zipCode" id="zipCode${rows.count-1}" value="${lcaDTO.lcaPlaceOfEmploymentList[rows.count-1].zipCode}" class="form-control" placeholder="Zip Code"
 					field-name="Zip Code" data-validation="validate_int validate_length length2-8" data-validation-optional="true">
 					</div>
 				</div>
@@ -451,16 +451,16 @@
             <div class="input-group er ratetype">
                 <div class="input-group-btn">
                    <select class="form-control selectpicker" id="privilingWageCurrency" name="privilingWageCurrency" data-style="btn-primary">
-						<option value="INR" ${lcaDTO.privilingWageCurrency == 'INR' ? 'selected' : ''}>INR</option>
-						<option value="AUD" ${lcaDTO.privilingWageCurrency == 'AUD' ? 'selected' : ''}>AUD</option>
-						<option value="USD" ${lcaDTO.privilingWageCurrency == 'USD' ? 'selected' : ''}>USD</option>
-						<option value="GBP" ${lcaDTO.privilingWageCurrency == 'GBP' ? 'selected' : ''}>GBP</option>
-						<option value="SGD" ${lcaDTO.privilingWageCurrency == 'SGD' ? 'selected' : ''}>SGD</option>
-						<option value="EUR" ${lcaDTO.privilingWageCurrency == 'EUR' ? 'selected' : ''}>EUR</option> 
+						<option value="INR" ${privilingWageCurrency == 'INR' ? 'selected' : ''}>INR</option>
+						<option value="AUD" ${privilingWageCurrency == 'AUD' ? 'selected' : ''}>AUD</option>
+						<option value="USD" ${privilingWageCurrency == 'USD' ? 'selected' : ''}>USD</option>
+						<option value="GBP" ${privilingWageCurrency == 'GBP' ? 'selected' : ''}>GBP</option>
+						<option value="SGD" ${privilingWageCurrency == 'SGD' ? 'selected' : ''}>SGD</option>
+						<option value="EUR" ${privilingWageCurrency == 'EUR' ? 'selected' : ''}>EUR</option> 
 					</select>
                 </div>
                 <input type="text" name="prevailingWage" id="prevailingWage" value="${lcaDTO.prevailingWage}" class="form-control" value="" field-name="Prevailing Wage"
-								data-validation="required validate_Space validate_float validate_length length1-8"
+								data-validation="required validate_Space validate_float validate_length length1-8" 
 							    placeholder="Wage Or Rate">
                 <div class="input-group-btn ratetype">
                  <select class="selectpicker form-control" id="privilingWageRateType" name="privilingWageRateType" field-name="Rate Per" data-style="btn-primary">
@@ -499,7 +499,7 @@
         	<div class="col-md-4 mb">
         		<label class="col-md-12">Title</label>
         		<div class="col-md-12">
-        			<input type="text" name="lcaDocumentList[0].documentTitle" id="documentTitle" value="${lcaDTO.lcaDocumentList[0].documentTitle}" class="form-control" placeholder="Document Title">
+        			<input type="text" name="lcaDocumentList[0].documentTitle" id="documentTitle" value="${lcaDTO.lcaDocumentList[0].documentTitle}" class="form-control" placeholder="Document Title" field-name="Document Title" data-validation="required validate_Space validate_length length2-250">
         		</div>
         	</div>
         	
@@ -512,7 +512,7 @@
 						<input type="file" style="display: none;" onchange="uploadBtnFile(0);"  id="uploadBtn0" class="upload">
 						</span>
 					</label>
-					<input type="text" class="form-control" name="lcaDocumentList[0].fileInfo[0].docFile" value="${lcaDTO.lcaDocumentList[0].fileName}" readonly id="uploadFile0" placeholder="Files are not selected...">
+					<input type="text" class="form-control" name="lcaDocumentList[0].fileInfo[0].docFile" value="${lcaDTO.lcaDocumentList[0].fileName}" readonly id="uploadFile0" placeholder="Files are not selected..." field-name="Upload Document" data-validation="required validatedoc">
 					</div>
         		</div>
         	</div>
@@ -545,7 +545,7 @@
         	<div class="col-md-4 mb">
         		<label class="col-md-12">Title</label>
         		<div class="col-md-12">
-        			<input type="text" name="lcaDocumentList[${rows.count-1}].documentTitle" id="documentTitle" value="${lcaDTO.lcaDocumentList[rows.count-1].documentTitle}" class="form-control" placeholder="Document Title">
+        			<input type="text" name="lcaDocumentList[${rows.count-1}].documentTitle" id="documentTitle" value="${lcaDTO.lcaDocumentList[rows.count-1].documentTitle}" class="form-control" placeholder="Document Title" field-name="Document Title" data-validation="required validate_Space validate_length length2-250">
         		</div>
         	</div>
         	
@@ -558,7 +558,7 @@
 						<input type="file" style="display: none;" onchange="uploadBtnFile(${rows.count-1});"  id="uploadBtn${rows.count-1}" class="upload">
 						</span>
 					</label>
-					<input type="text" class="form-control" name="lcaDocumentList[${rows.count-1}].fileInfo[0].docFile" value="${lcaDTO.lcaDocumentList[rows.count-1].fileName}" readonly id="uploadFile${rows.count-1}" placeholder="Files are not selected...">
+					<input type="text" class="form-control" name="lcaDocumentList[${rows.count-1}].fileInfo[0].docFile" value="${lcaDTO.lcaDocumentList[rows.count-1].fileName}" readonly id="uploadFile${rows.count-1}" placeholder="Files are not selected..." field-name="Upload Document" data-validation="required validatedoc">
 					</div>
         		</div>
         	</div>
@@ -811,10 +811,10 @@ $('#endDate').datepicker({
 	   preparePlsofEmpmtdiv =preparePlsofEmpmtdiv+ "           <div class='positionRelative'>";
 	   preparePlsofEmpmtdiv =preparePlsofEmpmtdiv+ ' 						<input class="form-control positionRelative"';
 	   preparePlsofEmpmtdiv =preparePlsofEmpmtdiv+ ' 						id="location'+rowId+'" name="lcaPlaceOfEmploymentList['+rowId+'].location"';
-	   preparePlsofEmpmtdiv =preparePlsofEmpmtdiv+ ' 							placeholder="Enter Location" value="'+(typeof plsofEmpmtVal[1]==="undefined"?"":plsofEmpmtVal[1])+'" field-name="Location" data-validation="required" type="text" onclick="initLocationAuto(\'location'+rowId+'\',\'country'+rowId+'\',\'state'+rowId+'\',\'city'+rowId+'\',\'zipCode'+rowId+'\',\'\',\'\',\'\',\'addressLine1'+rowId+'\',\'addressLine2'+rowId+'\');"></input> <i';
+	   preparePlsofEmpmtdiv =preparePlsofEmpmtdiv+ ' 							placeholder="Enter Location" value="'+(typeof plsofEmpmtVal[1]==="undefined"?"":plsofEmpmtVal[1])+'" field-name="Location" data-validation="required" type="text" onclick="initLocationAuto(\'location'+rowId+'\',\'country'+rowId+'\',\'state'+rowId+'\',\'city'+rowId+'\',\'zipCode'+rowId+'\',\'\',\'\',\'\',\'addressLineOne'+rowId+'\',\'addressLine2'+rowId+'\');"></input> <i';
 	   preparePlsofEmpmtdiv =preparePlsofEmpmtdiv+ ' 							class="fa fa-refresh btn btn-primary refresh-icon"';
 	   preparePlsofEmpmtdiv =preparePlsofEmpmtdiv+ ' 							title="Refresh"';
-	   preparePlsofEmpmtdiv =preparePlsofEmpmtdiv+ ' 							onClick="refreshGoogleApiLocation(\'location'+rowId+'\',\'country'+rowId+'\',\'state'+rowId+'\',\'city'+rowId+'\',\'zipCode'+rowId+'\',\'\',\'\',\'\',\'addressLine1'+rowId+'\');"></i>';
+	   preparePlsofEmpmtdiv =preparePlsofEmpmtdiv+ ' 							onClick="refreshGoogleApiLocation(\'location'+rowId+'\',\'country'+rowId+'\',\'state'+rowId+'\',\'city'+rowId+'\',\'zipCode'+rowId+'\',\'addressLineOne'+rowId+'\');"></i>';
 	   preparePlsofEmpmtdiv =preparePlsofEmpmtdiv+ " 			</div>";
 	   preparePlsofEmpmtdiv =preparePlsofEmpmtdiv+ "       </div>";
 	   preparePlsofEmpmtdiv =preparePlsofEmpmtdiv+ "     </div>";
@@ -822,7 +822,7 @@ $('#endDate').datepicker({
 	   preparePlsofEmpmtdiv =preparePlsofEmpmtdiv+ "    <div class='col-xs-12 col-sm-6 col-md-6 minHeight50 mb'>";
 	   preparePlsofEmpmtdiv =preparePlsofEmpmtdiv+ "      <label class='col-md-4'>Address Line1</label>";
 	   preparePlsofEmpmtdiv =preparePlsofEmpmtdiv+ "      <div class='col-md-8'>";
-	   preparePlsofEmpmtdiv =preparePlsofEmpmtdiv+ "           <input type='text' class='form-control' id='addressLine1"+rowId+"'";
+	   preparePlsofEmpmtdiv =preparePlsofEmpmtdiv+ "           <input type='text' class='form-control' id='addressLineOne"+rowId+"'";
 	   preparePlsofEmpmtdiv =preparePlsofEmpmtdiv+ " 						name='lcaPlaceOfEmploymentList["+rowId+"].addressLine1' value='"+(typeof plsofEmpmtVal[2]==="undefined"?"":plsofEmpmtVal[2])+"' field-name='Street Address' placeholder='Enter Address Line1'";
 	   preparePlsofEmpmtdiv =preparePlsofEmpmtdiv+ " 						data-validation='validate_Space validate_length length2-250'";
 	   preparePlsofEmpmtdiv =preparePlsofEmpmtdiv+ " 						data-validation-optional='true'>";
@@ -925,12 +925,10 @@ $('#endDate').datepicker({
        prepareAttachmentdiv =prepareAttachmentdiv+ " <label class='col-md-12'>Title</label>";
        prepareAttachmentdiv =prepareAttachmentdiv+ " <div class='col-md-12'>";
        prepareAttachmentdiv =prepareAttachmentdiv+ "  <input type='text' class='form-control' id='documentTitle"+rowId+"'";
-       prepareAttachmentdiv =prepareAttachmentdiv+ " 						name='lcaDocumentList["+rowId+"].documentTitle' value='' field-name='documentTitle' placeholder='Document Title'";
-       prepareAttachmentdiv =prepareAttachmentdiv+ " 						data-validation='validate_Space validate_length length2-250'";
-       prepareAttachmentdiv =prepareAttachmentdiv+ " 						data-validation-optional='true'>";
+       prepareAttachmentdiv =prepareAttachmentdiv+ " 						name='lcaDocumentList["+rowId+"].documentTitle' value='' field-name='Document Title' placeholder='Document Title'";
+       prepareAttachmentdiv =prepareAttachmentdiv+ " 						data-validation='required validate_Space validate_length length2-250'>";
        prepareAttachmentdiv =prepareAttachmentdiv+ " </div>";
        prepareAttachmentdiv =prepareAttachmentdiv+ " </div>";
-	   
 	   
        prepareAttachmentdiv =prepareAttachmentdiv+ " <div class='col-md-4 mb'>";
        prepareAttachmentdiv =prepareAttachmentdiv+ " <label class='col-md-12'>Attachment</label>";
@@ -941,7 +939,7 @@ $('#endDate').datepicker({
        prepareAttachmentdiv =prepareAttachmentdiv+ "<input type='file' style='display: none;' multiple onchange='uploadBtnFile("+rowId+");' id='uploadBtn" + rowId + "'  class='upload'>";
        prepareAttachmentdiv =prepareAttachmentdiv+ "</span>";
 	   prepareAttachmentdiv =prepareAttachmentdiv+ "</label>";
-	   prepareAttachmentdiv =prepareAttachmentdiv+ "<input type='text' class='form-control' name='lcaDocumentList["+rowId+"].fileInfo[0].docFile' value='' readonly id='uploadFile"+rowId+"' placeholder='Files are not selected...'>";
+	   prepareAttachmentdiv =prepareAttachmentdiv+ "<input type='text' class='form-control' name='lcaDocumentList["+rowId+"].fileInfo[0].docFile' value='' readonly id='uploadFile"+rowId+"' placeholder='Files are not selected...' field-name='Upload Document' data-validation='required validatedoc'>";
 	   prepareAttachmentdiv =prepareAttachmentdiv+ "</div>";
 	   prepareAttachmentdiv =prepareAttachmentdiv+ " </div>";
 	   prepareAttachmentdiv =prepareAttachmentdiv+ " </div>";

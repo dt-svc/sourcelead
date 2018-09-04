@@ -167,7 +167,12 @@ public class DeductionDTO {
 
 	public String getPreDeductionAmt()
 	{
-		return preDeductionAmt;
+		String s = "0";
+		if(preDeductionAmt != null) {
+			return preDeductionAmt;		
+		}else {
+			return s;
+		}
 	}
 
 	public void setPreDeductionType(String preDeductionType)
