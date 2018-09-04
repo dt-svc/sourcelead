@@ -663,12 +663,12 @@
             </div>
             
             <div class="form-group">
-              <label class="col-md-4">LCA Current Location<span class="text-danger paddingLeft">*</span></label>
+              <label class="col-md-4">LCA Current Location</label>
               <div class="col-md-8">
                   <div class="positionRelative">
 								<input class="form-control positionRelative"
 									id="lcaCurrLocation" name="lcaCurrLocation" value="${immigrationDTO.lcaCurrLocation}" 
-									placeholder="Enter LCA Current Location" type="text" field-name="LCA Current Location" data-validation="required" ></input> <i
+									placeholder="Enter LCA Current Location" type="text" field-name="LCA Current Location" ></input> <i
 									class="fa fa-refresh btn btn-primary refresh-icon"
 									title="Refresh"
 									></i>
