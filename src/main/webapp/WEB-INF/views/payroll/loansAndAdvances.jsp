@@ -50,6 +50,7 @@
 <div class="clearfix"></div>
    
 <div class="styleTables clearfix mt" id="outStadingTable">
+<div id="outStadingTableDiv"></div>
             <table>
               <thead>
                 <tr>
