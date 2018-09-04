@@ -218,12 +218,11 @@ public class ImmigrationCommonDaoImpl implements ImmigrationCommonDao {
 
 	@Override
 	@Transactional(rollbackFor = { Exception.class })
-	public CandidateLcaI94Summary getCandidateLCADetails(Long candidateId, String yes) {
+	public CandidateLcaI94Summary getCandidateLCADetails(Long candidateId) {
 
 		Session session = this.sessionFactory.getCurrentSession();
-		String query = "from CandidateLcaI94Summary clis left join fetch clis.requirementId where clis.candidateId.id = :candidateId and clis.isCurrent = :yes";
-		CandidateLcaI94Summary lcaI94Summary = (CandidateLcaI94Summary) session.createQuery(query)
-				.setLong("candidateId", candidateId).setString("yes", yes).uniqueResult();
+		String query = "from CandidateLcaI94Summary clis left join fetch clis.requirementId where clis.candidateId.id = :candidateId";
+		CandidateLcaI94Summary lcaI94Summary = (CandidateLcaI94Summary) session.createQuery(query).setLong("candidateId", candidateId).uniqueResult();
 		return lcaI94Summary;
 	}
 
@@ -1667,7 +1666,7 @@ public class ImmigrationCommonDaoImpl implements ImmigrationCommonDao {
             String subQuery3 = ""; 
             
             StringBuilder query1 = new StringBuilder("");
-            if (searchValue.contains("-") || searchValue.contains("/")) {
+            if (!searchValue.toLowerCase().contains("I-".toLowerCase()) && (searchValue.contains("-") || searchValue.contains("/"))) {
     			DateTimeFormatter orgFormat = new DateTimeFormatterBuilder().appendPattern(orgLocations.getDateFormat())
     					.toFormatter();
     			LocalDate parsedDate = LocalDate.parse(searchValue, orgFormat);
@@ -1717,8 +1716,8 @@ public class ImmigrationCommonDaoImpl implements ImmigrationCommonDao {
 					subQuery2 = subQuery2 + "lcaView.lcaStatus = 'Initiated' or ";
 				}
 				
-				if (Arrays.asList(statusFilter).contains("In Process")) {
-					subQuery2 = subQuery2 + "lcaView.lcaStatus = 'In Process' or ";
+				if (Arrays.asList(statusFilter).contains("In-progress")) {
+					subQuery2 = subQuery2 + "lcaView.lcaStatus = 'In-progress' or ";
 				}
 				
 				if (Arrays.asList(statusFilter).contains("Certified")) {
@@ -1859,12 +1858,12 @@ public class ImmigrationCommonDaoImpl implements ImmigrationCommonDao {
 		String query = null;
 		if(StringUtils.isNotEmpty(socType) && socType.equalsIgnoreCase("socTitle")){
 			
-			query = "SELECT SOC_TITLE as label, CONVERT(ID, CHAR) as value from oes_soc_occs where SOC_TITLE like :name"; 
+			query = "SELECT SOC_TITLE as label, CONVERT(ID, CHAR) as value from OES_SOC_OCCS where SOC_TITLE like :name"; 
 			return session.createSQLQuery(query).setString("name", name+"%").setMaxResults(10).setResultTransformer(Transformers.ALIAS_TO_ENTITY_MAP).list();
 			
 		   
 		}else {
-			 query = "SELECT SOC_CODE as label, CONVERT(ID, CHAR) as value from oes_soc_occs where SOC_CODE like :name"; 
+			 query = "SELECT SOC_CODE as label, CONVERT(ID, CHAR) as value from OES_SOC_OCCS where SOC_CODE like :name"; 
 			    return session.createSQLQuery(query).setString("name", name+"%").setMaxResults(10).setResultTransformer(Transformers.ALIAS_TO_ENTITY_MAP).list();
 		}
 		
@@ -1941,10 +1940,10 @@ public class ImmigrationCommonDaoImpl implements ImmigrationCommonDao {
 		
 		String query = null;
 		if(StringUtils.isNotEmpty(socType) && socType.equalsIgnoreCase("socTitle")){
-			query = "SELECT SOC_TITLE from oes_soc_occs where id = :id"; 
+			query = "SELECT SOC_TITLE from OES_SOC_OCCS where id = :id"; 
 			return (String) session.createSQLQuery(query).setLong("id", id).uniqueResult();
 		}else {
-			query = "SELECT SOC_CODE from oes_soc_occs where id = :id"; 
+			query = "SELECT SOC_CODE from OES_SOC_OCCS where id = :id"; 
 			return (String) session.createSQLQuery(query).setLong("id", id).uniqueResult();
 		}
 	}
@@ -2180,6 +2179,17 @@ public class ImmigrationCommonDaoImpl implements ImmigrationCommonDao {
 		}
 		
 		return empList;
+	}
+
+	@Override
+	@Transactional(rollbackFor = { Exception.class })
+	public void deleteLcaPlaceOfEmpmntDetails(Long remaininglpoeIds[]) {
+		    logger.debug("Delete LcaPlaceOfEployment ids-->");
+	        Session session = this.sessionFactory.getCurrentSession();
+	        Query query = session.createQuery("delete from LcaPlaceOfEployment lpoe where lpoe.id in (:plsempmntId)").setParameterList("plsempmntId", remaininglpoeIds);
+	        int count = query.executeUpdate();
+	        logger.debug("Number of records deleted-->" + count);
+		
 	}
 	
 }
