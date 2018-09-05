@@ -62,7 +62,13 @@ public class InvoiceDaoImpl implements InvoiceDao {
 				// for new Record increment generatedId based on orglocationId
 				if (creditDebitNote.getIsNewRecord() !=null && creditDebitNote.getIsNewRecord().equalsIgnoreCase("Y") ) {
 					Integer maxValue = 1;
-					String generatedId = checkCreditDebitIdNumberInDatebase(creditDebitNote.getOrgLocations().getId());
+					String type = null;
+					if(creditDebitNote.getNoteType().equals(Constants.CREDIT_NOTE)){
+					type = Constants.CREDIT_ENTITY_SHORTCODE;	
+					}else{
+					type=Constants.DEBIT_ENTITY_SHORTCODE;	
+					}
+					String generatedId = checkCreditDebitIdNumberInDatebase(creditDebitNote.getOrgLocations().getId(),type);
 					if (generatedId != null) {
 						maxValue = Integer.parseInt(generatedId.substring(generatedId.lastIndexOf("-") + 1));
 							maxValue = maxValue + 1;
@@ -976,9 +982,10 @@ public class InvoiceDaoImpl implements InvoiceDao {
 	
 	@Override
 	@Transactional
-	public String checkCreditDebitIdNumberInDatebase(Long orgLocationId) {
+	public String checkCreditDebitIdNumberInDatebase(Long orgLocationId,String type) {
 		Session session = this.sessionFactory.getCurrentSession();
-			String query = "SELECT GENERATED_ID FROM "+schema+".CREDIT_DEBIT_NOTE WHERE ORG_LOCATIONS_ID = '"+ orgLocationId + "' AND  ID = (SELECT MAX(ID) FROM "+schema+".CREDIT_DEBIT_NOTE WHERE ORG_LOCATIONS_ID = '"+ orgLocationId + "' )"  ;
+
+			String query = "SELECT GENERATED_ID FROM "+schema+".CREDIT_DEBIT_NOTE WHERE ORG_LOCATIONS_ID = '"+ orgLocationId + "' AND  ID = (SELECT MAX(ID) FROM "+schema+".CREDIT_DEBIT_NOTE WHERE ORG_LOCATIONS_ID = '"+ orgLocationId + "' AND GENERATED_ID LIKE '%-"+type+"-%')" ;
 			String generatedId = (String) session.createSQLQuery(query).uniqueResult();
 		return generatedId;	
 	}

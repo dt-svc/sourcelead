@@ -300,10 +300,10 @@ function creditNotePagination(url){
               "render": function ( data, type, report, meta ) {
             	  var result = "";
             	  result = result +'         <td>   ';
-            	 if(report.referenceNumber != null && report.referenceNumber != '' && report.referenceNumber != 'undefined'){
+            	 if(report.generatedId != null && report.generatedId != '' && report.generatedId != 'undefined'){
             		 
 				    //result = result +'<div class="tbldata-dotdot-vsm" title="'+report.referenceNumber+'">'+report.referenceNumber+'</div>';
-					result = result +'           <div class="tbldata-dotdot_80 invoiceId_Anchor1"><a href="<c:url value="/app/viewCreditDebitNote?creditDebitUUID='+report.creditDebitUUID+'&noteType=Credit"/>" title="'+report.referenceNumber+'">'+report.referenceNumber+'</a></div>';				
+					result = result +'           <div class="tbldata-dotdot_80 invoiceId_Anchor1"><a href="<c:url value="/app/viewCreditDebitNote?creditDebitUUID='+report.creditDebitUUID+'&noteType=Credit"/>" title="'+report.generatedId+'">'+report.generatedId+'</a></div>';				
 
   				     
             	 }else{

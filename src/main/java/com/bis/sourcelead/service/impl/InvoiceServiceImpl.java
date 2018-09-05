@@ -3544,12 +3544,14 @@ public class InvoiceServiceImpl implements InvoiceService {
 		childCreditDebitNote.setShippingAddress(parentCreditDebitNote.getShippingAddress());
 		List<Invoice> childInvoiceList = null;
 		StringBuilder sbChild = new StringBuilder();
+		// get child record using parentIds
 		 childInvoiceList = invoiceDao.getInvoiceListUsingMultipleIdsForChild(parentCreditDebitNote.getInvoice());
 		 if(childInvoiceList.size()>0){
 		childInvoiceList.forEach(childInvoice1->{
 			sbChild.append(childInvoice1.getId()).append(",").toString();	
 		});
 		 }else{
+			// get parent record using childIds
 			 childInvoiceList = invoiceDao.getInvoiceListUsingMultipleIds(parentCreditDebitNote.getInvoice()); 
 			 childInvoiceList.forEach(childInvoice1->{
 					sbChild.append(childInvoice1.getParentInvoiceId().getId()).append(",").toString();	
