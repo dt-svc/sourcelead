@@ -223,5 +223,7 @@ public interface RequirementSubmissionDao {
 	ResponseList<RequirementSubmissionHistory> getRequirementSubmissionsListWithDTOByOrgLocationsIdAndSubmissionStatus(RequirementSubmissionHistoryDTO requirementSubmissionHistoryDTO, Long orgLocationsId, String submissionStatus, String dateRange, String userType, User user, Date startUTCDate, Date endUTCDate);
 	
 	boolean getRequirementSubmissionByCandidateIdAndJobId(Long candidateId,Long requirementId) throws Exception;
+	
+	List<RequirementSubmission> getAllSubmissionsNotInTemplateFileds() throws Exception;
 
 }
