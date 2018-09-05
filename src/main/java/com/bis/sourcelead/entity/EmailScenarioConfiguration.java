@@ -43,6 +43,9 @@ public class EmailScenarioConfiguration implements Serializable{
 	@Column(name="PORT_NUMBER")
 	private Long portNumber;
 	
+	@Column(name="USAGE_TYPE")
+	private String usageType;
+	
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "ORG_lOCATION_ID")
     private OrgLocations orgLocationId;
@@ -167,6 +170,14 @@ public class EmailScenarioConfiguration implements Serializable{
 
 	public void setStatus(String status) {
 		this.status = status;
+	}
+
+	public String getUsageType() {
+		return usageType;
+	}
+
+	public void setUsageType(String usageType) {
+		this.usageType = usageType;
 	}
 	
 }
