@@ -128,6 +128,7 @@ function prepareOfferList(url){
 		result = result + '<th>Job</th>';
 		result = result + '<th>Client</th>';
 		result = result + '<th>Join Date</th>';
+		result = result + '<th>Source</th>';
 		result = result + '<th>Status</th>';
 		result = result + '<th>Job Rating</th>';
 		result = result + '<th>Incentivized</th>';
@@ -159,6 +160,7 @@ function offerpagination(url){
             { "data": "job"},
             { "data": "client"},
             { "data": "joinDate"},
+            { "data": "source"},
             { "data": "status"},
             { "data": "jobRating"},
             { "data": "incentivized"}
@@ -222,6 +224,18 @@ function offerpagination(url){
     	              return result;
                 }
           } ,{
+              "targets": colIndex++,
+              "data": "source",
+              "render": function ( data, type, opt, meta ) {
+            	  var result = "";
+	    	  		   if(opt.createdUser != null && opt.createdUser !='' && opt.createdUser != 'undefined'){
+	    	  			result = result + ' <td><div><span>'+opt.createdUser+'</span></div></td>';
+	    	  		   }else{
+	    	  			result = result + ' <td><div><span>---</span></div></td>';
+	    	  		   }
+	    	  		return result;
+              }
+            },{
                       "targets": colIndex++,
                       "data": "status",
                       "render": function ( data, type, opt, meta ) {
@@ -432,7 +446,6 @@ $(".overIcon, .newActPop").click(function(e){
 	                                <c:if test="${tab != 'previous'}">
 	                                <li class="radioIput positionRelative" ><input type="radio"  value="1_month" name="customDates" onclick="showCustomFields(this);"><label for="applicant">1 month</label></li>
 	                                </c:if>
-	                                <li class="radioIput positionRelative" ><input type="radio"  value="1_month" name="customDates" onclick="showCustomFields(this);"><label for="applicant">1 month</label></li>
 	                                <li class="radioIput positionRelative" ><input type="radio" value="3_months" name="customDates" onclick="showCustomFields(this);"><label for="applicant">3 months</label></li>
    	                                <li class="radioIput positionRelative" ><input type="radio" value="Last_Year" name="customDates" onclick="showCustomFields(this);"><label for="applicant">Last Year</label></li>
    	                                <li class="radioIput positionRelative" ><input type="radio" value="Custom" name="customDates" onclick="showCustomFields(this);"><label for="applicant">Custom</label></li>
