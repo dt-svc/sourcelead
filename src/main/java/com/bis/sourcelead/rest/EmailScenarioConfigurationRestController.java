@@ -151,17 +151,15 @@ public class EmailScenarioConfigurationRestController {
 			 emailConfig.setCreatedDate(new Date());
 		 
 		
-		 EmailScenarioConfiguration emailconfigur=emailScenarioconService.save(emailConfig);
-		 if(emailconfigur != null){
-			 String fromMail=emailScenarioconService.verifyConfgParserMail(orgLocation.getId(),emailconfigur);
+		
+		 if(emailConfig != null){
+			 String fromMail=emailScenarioconService.verifyConfgParserMail(orgLocation.getId(),emailConfig);
 			 if(Constants.EMAIL_SUCCESS.equalsIgnoreCase(fromMail)){
-				 emailconfigur.setStatus("Y");
+				 emailConfig.setStatus("Y");
 				 emailConfig.setUsageType(emailConfigurationDTO.getUsageType());
-				 emailScenarioConfigurationDao.save(emailconfigur);
+				 emailScenarioconService.save(emailConfig); // Saving record when successfully validated.
 				 returnValue= "success";
 			 }else{
-				 emailconfigur.setStatus("N");
-				 emailScenarioConfigurationDao.save(emailconfigur);
 				 returnValue= "failure";
 			 }
 		 }
