@@ -1,5 +1,7 @@
 package com.bis.sourcelead.payroll.service.impl;
 
+import java.io.File;
+import java.io.FileOutputStream;
 import java.io.UnsupportedEncodingException;
 import java.math.BigDecimal;
 import java.text.SimpleDateFormat;
@@ -26,6 +28,7 @@ import org.springframework.stereotype.Service;
 import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.dto.Response;
 import com.bis.sourcelead.dto.ResponseList;
+import com.bis.sourcelead.entity.Candidate;
 import com.bis.sourcelead.entity.EmailAttachment;
 import com.bis.sourcelead.entity.EmailMessage;
 import com.bis.sourcelead.entity.EmailScenario;
@@ -33,6 +36,7 @@ import com.bis.sourcelead.entity.LookUpData;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.enums.Result;
+import com.bis.sourcelead.payroll.dao.AssociateTaxDao;
 import com.bis.sourcelead.payroll.dao.USPayrollDao;
 import com.bis.sourcelead.payroll.dao.USPaysheetDao;
 import com.bis.sourcelead.payroll.dto.ConfirmPayTotalSumDTO;
@@ -42,6 +46,8 @@ import com.bis.sourcelead.payroll.dto.PayrollApproverDTO;
 import com.bis.sourcelead.payroll.dto.PayrollConstant;
 import com.bis.sourcelead.payroll.dto.PayrollDeductionDTO;
 import com.bis.sourcelead.payroll.dto.USPayrollDTO;
+import com.bis.sourcelead.payroll.dto.YTDPayrollDTO;
+import com.bis.sourcelead.payroll.entity.AssociateTax;
 import com.bis.sourcelead.payroll.entity.EmployeePayroll;
 import com.bis.sourcelead.payroll.entity.EmployeePayrollTax;
 import com.bis.sourcelead.payroll.entity.EmployerPayrollTax;
@@ -50,6 +56,7 @@ import com.bis.sourcelead.payroll.entity.USPayPeriod;
 import com.bis.sourcelead.payroll.service.AssociateContributionService;
 import com.bis.sourcelead.payroll.service.AssociateDeductionService;
 import com.bis.sourcelead.payroll.service.ConfigurePayrollApproverService;
+import com.bis.sourcelead.payroll.service.GenerateUSPayrollService;
 import com.bis.sourcelead.payroll.service.PayrollDeductionService;
 import com.bis.sourcelead.payroll.service.USPayPeriodService;
 import com.bis.sourcelead.payroll.service.USPayrollService;
@@ -58,11 +65,21 @@ import com.bis.sourcelead.payroll.util.PayrollUtil;
 import com.bis.sourcelead.service.EmailScenarioService;
 import com.bis.sourcelead.service.UserService;
 import com.bis.sourcelead.util.EmailScenerioUtil;
+import com.itextpdf.text.BaseColor;
+import com.itextpdf.text.Document;
+import com.itextpdf.text.Element;
+import com.itextpdf.text.Font;
+import com.itextpdf.text.Paragraph;
+import com.itextpdf.text.pdf.PdfPCell;
+import com.itextpdf.text.pdf.PdfPTable;
+import com.itextpdf.text.pdf.PdfWriter;
 
 @Service
 public class USPayrollServiceImpl  implements USPayrollService{
 	
 	private static final Logger logger = LoggerFactory.getLogger(USPayrollServiceImpl.class);
+	
+	public static final String DEST = "/home/vikram/properties/cell_heights.pdf4";
 	
 	@Autowired
 	USPayrollDao uSPayrollDao;
@@ -102,6 +119,12 @@ public class USPayrollServiceImpl  implements USPayrollService{
 	
 	@Autowired
 	private PayrollUtil payrollUtil;
+	
+	@Autowired
+	AssociateTaxDao associateTaxDao;
+	
+	@Autowired
+	GenerateUSPayrollService generateUSPayrollService;
 	
 	
 	@Override
@@ -376,7 +399,10 @@ public class USPayrollServiceImpl  implements USPayrollService{
 				res.setResponseMessage(Result.SUCCESS.getValue());
 				res.setObject(confirmPaySumDto);
 				
+				generatePdfForEmployee(savedPF,orgLocation);
+				
 				sendMailApprovedMailToRequestedUser(orgLocation,savedPF,loginUser);
+				
                  
 			}
 		} catch (Exception e) {
@@ -387,6 +413,28 @@ public class USPayrollServiceImpl  implements USPayrollService{
 		return res;
 	}
 	
+
+	private void generatePdfForEmployee(PaysheetFrequency savedPF, OrgLocations orgLocation) {
+		
+		for (EmployeePayroll payroll : savedPF.getEmployeepayroll()) {
+			
+			try {
+				AssociateTax associateTax= associateTaxDao.taxDetailsByOrglocationIdAndCandidateId(payroll.getCandidate().getId(),orgLocation.getId());
+				generatePdf(payroll,orgLocation,associateTax);
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+			
+		}
+		
+		
+	}
+
+
+	private void getMyPayrollDownload(EmployeePayroll payroll, OrgLocations orgLocation) {
+		// TODO Auto-generated method stub
+		
+	}
 
 	private void sendMailApprovedMailToRequestedUser(OrgLocations orgLocation,PaysheetFrequency savedPF,User loginUser) throws Exception {
 		
@@ -494,4 +542,334 @@ public class USPayrollServiceImpl  implements USPayrollService{
 		uSPayPeriod.setUpdatedBy(loginUser.getId());
 		return uSPayPeriodService.savePayPeriodNumber(uSPayPeriod);
 	}
-}
+	
+	public File generatePdf(EmployeePayroll payroll, OrgLocations orgLocation, AssociateTax associateTax) throws Exception {
+		
+	 List<DeductionDTO> deductionTaxes=payrollUtil.getDeductionData(payroll);
+	 List<ContributionDTO> contributionTaxes=payrollUtil.getContributionData(payroll);
+	 String approverStatus ="APPROVED";
+	// YTDPayrollDTO YTDTaxes= generateUSPayrollService.getEmployeeYTDPayroll(payroll,  orgLocation,approverStatus);
+		 Document document = new Document();
+		    File file = new File(DEST);
+	        file.getParentFile().mkdirs();
+	        int viki =1;
+		    if(viki==1) {	
+		        PdfWriter writer = PdfWriter.getInstance(document, new FileOutputStream(file));
+		        document.open();
+		        Font f3 = new Font(Font.FontFamily.TIMES_ROMAN, 9.0f,Font.NORMAL, BaseColor.BLACK);
+		        Font f4 = new Font(Font.FontFamily.TIMES_ROMAN, 6.0f,Font.BOLD, BaseColor.BLACK);
+		        Paragraph   bell=null;
+		        PdfPTable table = new PdfPTable(2); // 3 columns.
+		        table.setWidthPercentage(100); //Width 100%
+		        table.setSpacingBefore(10f); //Space before table
+		        //Set Column widths
+		        float[] columnWidths = {1f, 1f};
+		        table.setWidths(columnWidths);
+		        bell =new Paragraph( " Acme Corporation\n\n" +
+		                "1000 main Street\n\n" +
+		                "Capital City, ST 99999 .",f3);
+		        PdfPCell cell1 = new PdfPCell(bell);
+		        cell1.setBorderColor(BaseColor.BLACK);
+		        cell1.setPaddingLeft(10);
+		        cell1.setFixedHeight(50f);
+		        cell1.setHorizontalAlignment(Element.ALIGN_LEFT);
+		        cell1.setVerticalAlignment(Element.ALIGN_LEFT);
+		        bell = new Paragraph("PayGroup:"+" "+payroll.getPaysheetFrequency().getUserGroup().getGroupName()+" "+"                            Businessunit:Sales\n\n" +
+		                "PayBeginDate:"+" "+payroll.getPaysheetFrequency().getFrequencyStartDate() +"          Advice #:1006795\n\n"+
+		                "PayEndDate:"+" "+payroll.getPaysheetFrequency().getFrequencyEndDate() +"              AdviceDate#:01/31/2020",f3);
+		        PdfPCell cell2 = new PdfPCell(bell);
+		        cell2.setBorderColor(BaseColor.BLACK);
+		        cell2.setPaddingLeft(10);
+		        cell2.setCalculatedHeight(10f);
+		        cell2.setHorizontalAlignment(Element.ALIGN_LEFT);
+		        cell2.setVerticalAlignment(Element.ALIGN_LEFT);
+		        table.addCell(cell1);
+		        table.addCell(cell2);
+		        document.add(table);
+		        
+		        PdfPTable table1 = new PdfPTable(3);
+		        table1.setWidthPercentage(100); //Width 100%
+		        table1.setSpacingBefore(10f); //Space before table
+		        table1.setSpacingAfter(10f);
+		        
+		        float[] columnWidths1 = {1f,1f,1f};
+		        table1.setWidths(columnWidths1);
+		        bell =new Paragraph( "Trace Smith\n\n" +
+		                "123 Oak Street\n\n" +
+		                "Home Town, Sx 12345\n\n"+"SSN: ",f3);
+		        PdfPCell cell3 = new PdfPCell(new Paragraph(bell));
+		        cell3.setBorderColor(BaseColor.BLACK);
+		        cell3.setFixedHeight(50f);
+		        cell3.setPaddingLeft(10);
+		        cell3.setHorizontalAlignment(Element.ALIGN_LEFT);
+		        cell3.setVerticalAlignment(Element.ALIGN_LEFT);
+		        bell =new Paragraph( "Employee ID:"+payroll.getEmployee().getEmployeeId()+"\n\n" +
+		                "Department:"+payroll.getEmployee().getDepartmentId().getDepartmentName()+" \n\n" ,f3);
+		        PdfPCell cell4 = new PdfPCell(new Paragraph(bell));
+		        cell4.setBorderColor(BaseColor.BLACK);
+		        cell4.setPaddingLeft(10);
+		        cell4.setHorizontalAlignment(Element.ALIGN_LEFT);
+		        cell4.setVerticalAlignment(Element.ALIGN_LEFT);
+		       // 
+		        PdfPTable table5 = new PdfPTable(3);
+		        table5.setWidthPercentage(100); //Width 100%
+		        bell =new Paragraph( "TAX DATA: "+"      "+"FEDERAL "+"     "+"STATE",f4);
+		        PdfPCell cell15 = new PdfPCell(new Paragraph(bell));
+		        cell15.setBorderColor(BaseColor.BLACK);
+		        cell15.setColspan(3);
+		        cell4.setPaddingLeft(10);
+	            cell15.setHorizontalAlignment(Element.ALIGN_LEFT);
+	            cell15.setVerticalAlignment(Element.ALIGN_LEFT);
+	                    
+	            float[] columnWidths5 = {1f,1f,1f};
+		        table5.setWidths(columnWidths5);
+		        bell =new Paragraph( "MaritalStatus:\n"+"Allowance:\n"+"AdditionalWithHolding:\n",f3);
+		        PdfPCell cell16 = new PdfPCell(new Paragraph(bell));
+		        cell16.setBorderColor(BaseColor.BLACK);
+		        cell16.setFixedHeight(60f);
+		        cell16.setPaddingLeft(10);
+		        cell16.setHorizontalAlignment(Element.ALIGN_LEFT);
+		        cell16.setVerticalAlignment(Element.ALIGN_LEFT);
+		        bell =new Paragraph(associateTax.getFederalTaxFilliingStatus()+ "\n\n"+associateTax.getFederalTaxAllowances()+"\n\n"+associateTax.getFederalTaxAdditionnalWithHolding()+"\n"+" ",f3);
+		        PdfPCell cell17 = new PdfPCell(new Paragraph(bell));
+		       cell17.setBorderColor(BaseColor.BLACK);
+		       cell17.setFixedHeight(60f);
+		       cell17.setPaddingLeft(10);
+		       cell17.setHorizontalAlignment(Element.ALIGN_LEFT);
+		       cell17.setVerticalAlignment(Element.ALIGN_LEFT);
+		       bell =new Paragraph(associateTax.getStateTaxFilliingStatus()+ "\n\n"+associateTax.getStateTaxAllowances()+"\n\n"+associateTax.getStateTaxAdditionnalWithHolding()+"\n"+" ",f3);
+		       PdfPCell cell18 = new PdfPCell(new Paragraph(bell));
+		       cell18.setBorderColor(BaseColor.BLACK);
+		       cell18.setPaddingLeft(10);
+		       cell18.setFixedHeight(60f);
+		       cell18.setHorizontalAlignment(Element.ALIGN_LEFT);
+		       cell18.setVerticalAlignment(Element.ALIGN_LEFT);
+		        table5.addCell(cell15);
+		        table5.addCell(cell16);
+		        table5.addCell(cell17);
+		        table5.addCell(cell18);
+		        //
+		        table1.addCell(cell3);
+		        table1.addCell(cell4);
+		        table1.addCell(table5);
+		        document.add(table1);
+		        
+		        PdfPTable table2 = new PdfPTable(2);
+		        table2.setWidthPercentage(100); //Width 100%  
+		        bell =new Paragraph( "HOURS AND EARNINGS",f4);
+		        PdfPCell cell19 = new PdfPCell(new Paragraph(bell));
+		        cell19.setBorderColor(BaseColor.BLACK);
+		        cell19.setColspan(1);
+	            cell19.setHorizontalAlignment(Element.ALIGN_CENTER);
+	            cell19.setVerticalAlignment(Element.ALIGN_CENTER);
+	            bell =new Paragraph( "TAXES",f4);
+	            PdfPCell cell20 = new PdfPCell(new Paragraph(bell));
+		        cell20.setBorderColor(BaseColor.BLACK);
+		        cell20.setColspan(1);
+	            cell20.setHorizontalAlignment(Element.ALIGN_CENTER);
+	            cell20.setVerticalAlignment(Element.ALIGN_CENTER);
+	            bell =new Paragraph( "DESCRIPTION "+"                              CURRENT EARNINGS "+"                          YTD EARNINGS",f4);
+		        PdfPCell cell21 = new PdfPCell(new Paragraph(bell));
+	            cell21.setBorderColor(BaseColor.BLACK);
+		        cell21.setColspan(1);
+		        cell21.setFixedHeight(20f);
+	            cell21.setHorizontalAlignment(Element.ALIGN_CENTER);
+	            cell21.setVerticalAlignment(Element.ALIGN_CENTER);
+	            bell =new Paragraph( "DESCRIPTION "+"     CURRENT "+"      YTD",f4);
+	            PdfPCell cell22 = new PdfPCell(new Paragraph(bell));
+		        cell22.setBorderColor(BaseColor.BLACK);
+		        cell22.setColspan(1);
+		        cell22.setFixedHeight(20f);
+		        cell22.setHorizontalAlignment(Element.ALIGN_CENTER);
+	            cell22.setVerticalAlignment(Element.ALIGN_CENTER);
+	            bell =new Paragraph( "Total "+"                                                2062.53 "+"                                       4125.06 ",f3);
+	            PdfPCell cell23 = new PdfPCell(new Paragraph(bell));
+	            cell23.setBorderColor(BaseColor.BLACK);
+		        cell23.setColspan(1);
+		        cell23.setFixedHeight(20f);
+		        cell23.setHorizontalAlignment(Element.ALIGN_CENTER);
+	            cell23.setVerticalAlignment(Element.ALIGN_CENTER);
+	            bell =new Paragraph( "Total "+"       617.37 "+"         1234.71",f3);
+	            PdfPCell cell24 = new PdfPCell(new Paragraph(bell));
+		        cell24.setBorderColor(BaseColor.BLACK);
+		        cell24.setColspan(1);
+		        cell24.setFixedHeight(20f);
+		        cell24.setHorizontalAlignment(Element.ALIGN_CENTER);
+	            cell24.setVerticalAlignment(Element.ALIGN_CENTER);
+		        float[] columnWidths2 = {2f, 1f};
+		        table2.setWidths(columnWidths2);
+		        bell =new Paragraph( "Regular "+"                                                "+payroll.getNetPay() +"                                       xxxxx ",f3);
+		        PdfPCell cell6 = new PdfPCell(new Paragraph(bell));
+		        cell6.setBorderColor(BaseColor.BLACK);
+		        cell6.setFixedHeight(120f);
+		        cell6.setHorizontalAlignment(Element.ALIGN_CENTER);
+		        cell6.setVerticalAlignment(Element.ALIGN_CENTER);
+		        bell =new Paragraph( ("Fed withholding "+"        "+payroll.getUsPayrollTax().iterator().next().getFederalWithholding()+"         xxxxx\n\n")+("Medicare "+"                  "+payroll.getUsPayrollTax().iterator().next().getMedicareWithholding()+"         xxxxxx\n\n")+("Fica "+"                       "+payroll.getUsPayrollTax().iterator().next().getFicaWithholding()+"         xxxxx\n\n")+("Statewithholding "+"                       "+payroll.getUsPayrollTax().iterator().next().getStateWithholding()+"         xxxxxx\n\n")+("LocalTax"+"              "+payroll.getUsPayrollTax().iterator().next().getLocalTax()+"           xxxxx\n\n")+("CountryWithHolding"+"             "+payroll.getUsPayrollTax().iterator().next().getCountyWithholding()+"          xxxxx\n"),f3);
+		        PdfPCell cell8 = new PdfPCell(new Paragraph(bell));
+		       cell8.setBorderColor(BaseColor.BLACK);
+		       cell8.setHorizontalAlignment(Element.ALIGN_LEFT);
+		       cell8.setVerticalAlignment(Element.ALIGN_LEFT);
+		        table2.addCell(cell19);
+		        table2.addCell(cell20);
+		        table2.addCell(cell21);
+		        table2.addCell(cell22);
+		        table2.addCell(cell6);
+		        table2.addCell(cell8);
+		        table2.addCell(cell23);
+		        table2.addCell(cell24);
+		        
+		        document.add(table2);
+		        
+		        PdfPTable table3 = new PdfPTable(3);
+		        table3.setWidthPercentage(100); //Width 100%
+		        bell =new Paragraph( "BEFORE-TAXDEDUCTIONS",f4);
+		        PdfPCell cell25 = new PdfPCell(new Paragraph(bell));
+		        cell25.setBorderColor(BaseColor.BLACK);
+		        cell25.setColspan(1);
+		        cell25.setFixedHeight(20f);
+	            cell25.setHorizontalAlignment(Element.ALIGN_CENTER);
+	            bell =new Paragraph( "AFTER-TAXDEDUCTIONS",f4);
+	            PdfPCell cell26 = new PdfPCell(new Paragraph(bell));
+		        cell26.setBorderColor(BaseColor.BLACK);
+		        cell26.setColspan(1);
+		        cell26.setFixedHeight(20f);
+	            cell26.setHorizontalAlignment(Element.ALIGN_CENTER);
+	            bell =new Paragraph( "EMPLOYEER-PAID BENIFITS",f4);
+		        PdfPCell cell27 = new PdfPCell(new Paragraph(bell));
+	            cell27.setBorderColor(BaseColor.BLACK);
+		        cell27.setColspan(1);
+		        cell27.setFixedHeight(20f);
+	            cell27.setHorizontalAlignment(Element.ALIGN_CENTER);
+	            bell =new Paragraph( "DESCRIPTION "+"     CURRENT "+"      YTD",f4);
+	            PdfPCell cell28 = new PdfPCell(new Paragraph(bell));
+		        cell28.setBorderColor(BaseColor.BLACK);
+		        cell28.setColspan(1);
+		        cell28.setFixedHeight(20f);
+	            cell28.setHorizontalAlignment(Element.ALIGN_CENTER);
+	            bell =new Paragraph( "DESCRIPTION "+"     CURRENT "+"      YTD",f4);
+	            PdfPCell cell29 = new PdfPCell(new Paragraph(bell));
+		        cell29.setBorderColor(BaseColor.BLACK);
+		        cell29.setColspan(1);
+		        cell29.setFixedHeight(20f);
+	            cell29.setHorizontalAlignment(Element.ALIGN_CENTER);
+	            bell =new Paragraph( "DESCRIPTION "+"     CURRENT "+"      YTD",f4);
+	            PdfPCell cell30 = new PdfPCell(new Paragraph(bell));
+		        cell30.setBorderColor(BaseColor.BLACK);
+		        cell30.setColspan(1);
+		        cell30.setFixedHeight(20f);
+	            cell30.setHorizontalAlignment(Element.ALIGN_CENTER);
+	            bell =new Paragraph( "Total "+"     94.25 "+"      188.50",f3);
+	            PdfPCell cell31 = new PdfPCell(new Paragraph(bell));
+	            cell31.setBorderColor(BaseColor.BLACK);
+		        cell31.setColspan(1);
+		        cell31.setFixedHeight(20f);
+	            cell31.setHorizontalAlignment(Element.ALIGN_BOTTOM);
+	            bell =new Paragraph( "Total "+"     30.70 "+"      61.40",f3);
+	            PdfPCell cell32 = new PdfPCell(new Paragraph(bell));
+		        cell32.setBorderColor(BaseColor.BLACK);
+		        cell32.setColspan(1);
+		        cell32.setFixedHeight(20f);
+	            cell32.setHorizontalAlignment(Element.ALIGN_BOTTOM);
+	            bell =new Paragraph( "Taxable "+"     30.70 "+"      61.40",f3);
+	            PdfPCell cell33 = new PdfPCell(new Paragraph(bell));
+		        cell33.setBorderColor(BaseColor.BLACK);
+		        cell33.setColspan(1);
+		        cell33.setFixedHeight(20f);
+	            cell33.setHorizontalAlignment(Element.ALIGN_BOTTOM);
+		        float[] columnWidths3 = {1f, 1f,1f};
+		        table3.setWidths(columnWidths3);
+		        PdfPCell cell9 =null;
+		        for(DeductionDTO ded:deductionTaxes) 
+		        bell =new Paragraph( (ded.getPreDeductionType()+"             "+ded.getPreDeductionAmount()+"         xxxxxx\n"),f3);
+		        cell9 = new PdfPCell(new Paragraph(bell));
+		        cell9.setBorderColor(BaseColor.BLACK);
+		        cell9.setPaddingLeft(10);
+		        cell9.setFixedHeight(100f);
+		        cell9.setHorizontalAlignment(Element.ALIGN_LEFT);
+		        cell9.setVerticalAlignment(Element.ALIGN_LEFT);
+		        
+		        PdfPCell cell10=null;
+		        for(DeductionDTO ded:deductionTaxes) 
+		        bell =new Paragraph( (ded.getDeductionType()+"          "+ded.getPostDeductionAmt()+"               xxxxxx\n"),f3);
+		        cell10= new PdfPCell(new Paragraph(bell));
+		        cell10.setBorderColor(BaseColor.BLACK);
+		        cell10.setPaddingLeft(10);
+		        cell10.setHorizontalAlignment(Element.ALIGN_LEFT);
+		        cell10.setVerticalAlignment(Element.ALIGN_LEFT);
+		        
+		        
+		        for(ContributionDTO ct:contributionTaxes)
+		        bell =new Paragraph( (ct.getContributionType()+"       "+ct.getContributionAmount()+"         xxxxxx\n")+(ct.getPreContributionType()+"                  "+ct.getPreContributionAmt()+"         xxxxxxx\n"),f3);
+		        PdfPCell cell11 = new PdfPCell(new Paragraph(bell));
+		       cell11.setBorderColor(BaseColor.BLACK);
+		       cell11.setPaddingLeft(10);
+		       cell11.setHorizontalAlignment(Element.ALIGN_LEFT);
+		       cell11.setVerticalAlignment(Element.ALIGN_LEFT);
+		       table3.addCell(cell25);
+		       table3.addCell(cell26);
+		       table3.addCell(cell27);
+		       table3.addCell(cell28);
+		       table3.addCell(cell29);
+		       table3.addCell(cell30);
+		        table3.addCell(cell9);
+		        table3.addCell(cell10);
+		        table3.addCell(cell11);
+		        table3.addCell(cell31);
+		        table3.addCell(cell32);
+			    table3.addCell(cell33);
+		        
+		        document.add(table3);
+		        
+		        PdfPTable table4 = new PdfPTable(1);
+		        table4.setWidthPercentage(100); //Width 100%
+		        bell =new Paragraph( "TOTALGROSS "+"      "+"FED-TAXABLEGROSS "+"     "+"FICAGROSS"+"       "+"TOTALTAXES "+"      "+"TOTALDEDUCTIONS "+"     "+"NETPAY",f4);
+		        PdfPCell cell34 = new PdfPCell(new Paragraph(bell));
+	            cell34.setBorderColor(BaseColor.BLACK);
+		        cell34.setColspan(1);
+		        cell34.setFixedHeight(20f);
+	            cell34.setHorizontalAlignment(Element.ALIGN_CENTER);
+	            cell34.setVerticalAlignment(Element.ALIGN_MIDDLE);
+		        float[] columnWidths4 = {1f};
+		        table4.setWidths(columnWidths4);
+		        bell =new Paragraph( ("Current:"+"       2062.53 "+"                             1995.67"+"                  1995.67 "+"                         617.37 "+"                            124.95"+"                           1320.21 "+"\n\nYTD: "+"         4125.06"+"                           3991.34 "+"                3991.34"+"                             1234.71 "+"                            249.90"+"                             2640.45 "),f3);
+		        PdfPCell cell12 = new PdfPCell(new Paragraph(bell));
+		        cell12.setBorderColor(BaseColor.BLACK);
+		        cell12.setFixedHeight(50f);
+		        cell12.setHorizontalAlignment(Element.ALIGN_LEFT);
+		        cell12.setVerticalAlignment(Element.ALIGN_LEFT);
+	            table4.addCell(cell34);
+		        table4.addCell(cell12);
+	     
+		        document.add(table4);
+		        
+		        
+		        PdfPTable table6 = new PdfPTable(1);
+		        table6.setWidthPercentage(30); //Width 100%
+		        PdfPCell cell35 = new PdfPCell(new Paragraph("Cell 3"));
+	            cell35.setBorderColor(BaseColor.BLACK);
+		        cell35.setColspan(1);
+		        cell35.setFixedHeight(20f);
+		        cell35.setPaddingTop(10);
+	            cell35.setHorizontalAlignment(Element.ALIGN_TOP);
+		        float[] columnWidths6 = {1f};
+		        table6.setWidths(columnWidths6);
+		        
+		        PdfPCell cell36 = new PdfPCell(new Paragraph(""));
+		       cell36.setBorderColor(BaseColor.BLACK);
+		       cell36.setFixedHeight(50f);
+		       cell36.setHorizontalAlignment(Element.ALIGN_CENTER);
+		       cell36.setVerticalAlignment(Element.ALIGN_MIDDLE);
+	           table6.addCell(cell35);
+		       table6.addCell(cell36);     
+		        document.add(table6);
+		        
+		        document.close();
+		        writer.close();
+	}
+			return file;
+		    }
+
+	
+	}
+
+	

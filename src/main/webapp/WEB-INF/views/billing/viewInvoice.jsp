@@ -1414,6 +1414,7 @@ function paymentHistroy(){
 					if(report.fileURL != null && report.fileURL != '' && report.fileURL != 'undefined'){
 // 					result = result +" <span class='pull-right'> <i class=''><a class='glyphicon glyphicon-save' href=\""+sourceleadUrl+"/downloadInvoicePaymentDocument?paymentHistoryId="+report.id+"\"></a></i>";
 					result = result+' <a download class="glyphicon glyphicon-download-alt" href="'+report.fileURL+'" title="Download"></a>';
+					result = result+' <a class="fa fa-eye" href="javascript:void(0)" onClick="viewFile(\''+report.fileURL+'\',\''+report.fileName+'\',\''+report.fileContentType+'\');"title="preview"></a>';		           						          
 					}else{
 						result = result +" --";	
 					}
