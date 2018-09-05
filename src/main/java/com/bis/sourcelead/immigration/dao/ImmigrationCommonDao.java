@@ -13,7 +13,7 @@ import com.bis.sourcelead.dto.ResponseList;
 import com.bis.sourcelead.entity.Candidate;
 import com.bis.sourcelead.entity.CandidateFamilyDetails;
 import com.bis.sourcelead.entity.CandidateIdendities;
-import com.bis.sourcelead.entity.CandidateLcaI94Summary;
+import com.bis.sourcelead.entity.CandidateLcaJobDetails;
 import com.bis.sourcelead.entity.CandidatePassportVisa;
 import com.bis.sourcelead.entity.CandidateResidence;
 import com.bis.sourcelead.entity.CandidateResumes;
@@ -44,15 +44,20 @@ public interface ImmigrationCommonDao {
 	List<ImmigrationTemplate> getImmigrationTemplateList(OrgLocations orgLocations);
 	
 	Immigration savePetitionDetails(Immigration immigration, Candidate candidate, CandidateIdendities candidateIdendities,
+			CandidateResumes candidateResume, CandidateLcaJobDetails candidateLcaJobDetails, List<CandidateResidence> residenceEntityLst) throws Exception;
+	
+	/*Immigration savePetitionDetails(Immigration immigration, Candidate candidate, CandidateIdendities candidateIdendities,
 			CandidateResumes candidateResume, List<CandidateLcaI94Summary> lcaSummaryLst, List<CandidateResidence> residenceEntityLst) throws Exception;
-
+*/
 	Immigration getImmigrationDetails(String immigrationId);
 
 	String getPetitionTypeById(Long petitionType, String petitionTypeConstant);
 	
 	ImmigrationCandidateDocuments getImmigrationCandidateDocsById(Long id, Long candidateId,Long immigrationId) throws Exception;
 
-	CandidateLcaI94Summary getCandidateLCADetails(Long id);
+	//CandidateLcaI94Summary getCandidateLCADetails(Long id);
+	
+	CandidateLcaJobDetails getCandidateLcaJobDetails(Long id);
 	
 	LcaHistory getLcaHistoryDetails(Long id, String yes);
 
@@ -221,5 +226,8 @@ public interface ImmigrationCommonDao {
 	List<LcaDetailsDTO> getEmployeeByLcaId(Long lcaId, OrgLocations orgLocations)throws Exception;
 	
 	void deleteLcaPlaceOfEmpmntDetails(Long remaininglpoeIds[]);
+	
+	
+	CandidateLcaJobDetails saveCandidateLcaJobDetails(CandidateLcaJobDetails candidateLcaJobDetails);
 	
 }

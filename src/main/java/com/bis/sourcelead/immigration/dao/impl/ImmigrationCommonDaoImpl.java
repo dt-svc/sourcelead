@@ -40,7 +40,7 @@ import com.bis.sourcelead.dto.ResponseList;
 import com.bis.sourcelead.entity.Candidate;
 import com.bis.sourcelead.entity.CandidateFamilyDetails;
 import com.bis.sourcelead.entity.CandidateIdendities;
-import com.bis.sourcelead.entity.CandidateLcaI94Summary;
+import com.bis.sourcelead.entity.CandidateLcaJobDetails;
 import com.bis.sourcelead.entity.CandidatePassportVisa;
 import com.bis.sourcelead.entity.CandidateResidence;
 import com.bis.sourcelead.entity.CandidateResumes;
@@ -121,8 +121,10 @@ public class ImmigrationCommonDaoImpl implements ImmigrationCommonDao {
 		}
 		return templateLst;
 	}
+	
+//	Old code
 
-	@Override
+/*	@Override
 	@Transactional(rollbackFor = { Exception.class })
 	public Immigration savePetitionDetails(Immigration immigration, Candidate candidate,
 			CandidateIdendities candidateIdendities, CandidateResumes candidateResume,
@@ -156,6 +158,52 @@ public class ImmigrationCommonDaoImpl implements ImmigrationCommonDao {
 																		// only
 																		// for
 																		// immigration
+				for (CandidateResidence residence : residenceList) {
+					session.saveOrUpdate(residence);
+					logger.debug("The residence id is: +++++++++++++++ :" + residence.getId());
+				}
+			}
+		} catch (Exception exception) {
+			logger.error("Exception caught while saving immigration information " + exception.getMessage());
+			exception.printStackTrace();
+		}
+		return immigration;
+	}*/
+	
+	@Override
+	@Transactional(rollbackFor = { Exception.class })
+	public Immigration savePetitionDetails(Immigration immigration, Candidate candidate,
+			CandidateIdendities candidateIdendities, CandidateResumes candidateResume,
+			CandidateLcaJobDetails candidateLcaJobDetails, List<CandidateResidence> residenceList) throws Exception {
+		logger.debug("savePetitionDetails starts");
+		Session session = this.sessionFactory.getCurrentSession();
+		try {
+			if (candidate != null) {
+				session.saveOrUpdate(candidate);
+			}
+			if (immigration != null) {
+				session.saveOrUpdate(immigration);
+			}
+			if (candidateIdendities != null) {
+				session.saveOrUpdate(candidateIdendities);
+			}
+			if (candidateResume != null && candidateResume.getFileURL() != null) {
+				session.saveOrUpdate(candidateResume);
+			}
+			
+		//	old code
+			
+			/*if (lcaSummaryLst.size() != 0) {
+				for (CandidateLcaI94Summary candidateLcaI94Summary : lcaSummaryLst) {
+					session.saveOrUpdate(candidateLcaI94Summary);
+				}
+			}*/
+			
+			/*if (candidateLcaJobDetails != null) {
+					session.saveOrUpdate(candidateLcaJobDetails);
+			}*/
+			
+			if (residenceList != null && residenceList.size() != 0) { // saving multipl residence for candidates only for immigration
 				for (CandidateResidence residence : residenceList) {
 					session.saveOrUpdate(residence);
 					logger.debug("The residence id is: +++++++++++++++ :" + residence.getId());
@@ -216,7 +264,8 @@ public class ImmigrationCommonDaoImpl implements ImmigrationCommonDao {
 		return canform;
 	}
 
-	@Override
+	//Old Code
+	/*@Override
 	@Transactional(rollbackFor = { Exception.class })
 	public CandidateLcaI94Summary getCandidateLCADetails(Long candidateId) {
 
@@ -224,6 +273,17 @@ public class ImmigrationCommonDaoImpl implements ImmigrationCommonDao {
 		String query = "from CandidateLcaI94Summary clis left join fetch clis.requirementId where clis.candidateId.id = :candidateId";
 		CandidateLcaI94Summary lcaI94Summary = (CandidateLcaI94Summary) session.createQuery(query).setLong("candidateId", candidateId).uniqueResult();
 		return lcaI94Summary;
+	}*/
+	
+	@Override
+	@Transactional(rollbackFor = { Exception.class })
+	public CandidateLcaJobDetails getCandidateLcaJobDetails(Long immigrationId) {
+
+		Session session = this.sessionFactory.getCurrentSession();
+		String query = "from CandidateLcaJobDetails cljs left join fetch cljs.requirementId where cljs.immigration.id = :immigrationId";
+		CandidateLcaJobDetails candLcaJobDetails = null;
+		candLcaJobDetails = (CandidateLcaJobDetails) session.createQuery(query).setLong("immigrationId", immigrationId).uniqueResult();
+		return candLcaJobDetails;
 	}
 
 	@Override
@@ -2190,6 +2250,31 @@ public class ImmigrationCommonDaoImpl implements ImmigrationCommonDao {
 	        int count = query.executeUpdate();
 	        logger.debug("Number of records deleted-->" + count);
 		
+	}
+
+	
+
+	/*@Override
+	@Transactional(rollbackFor = { Exception.class })
+	public CandidateLcaJobDetails getCandidateLcaJobDetails(Long id) {
+		// TODO Auto-generated method stub
+		return null;
+	}*/
+
+	@Override
+	@Transactional(rollbackFor = { Exception.class })
+	public CandidateLcaJobDetails saveCandidateLcaJobDetails(CandidateLcaJobDetails candidateLcaJobDetails) {
+		
+		Session session = this.sessionFactory.getCurrentSession();
+		try {
+			if(candidateLcaJobDetails != null) {
+				session.saveOrUpdate(candidateLcaJobDetails);
+			}
+		} catch (Exception exception) {
+			logger.error("Exception caught while  saveCandidateLcaJobDetails information " + exception.getMessage());
+			exception.printStackTrace();
+		}
+		return candidateLcaJobDetails;
 	}
 	
 }
