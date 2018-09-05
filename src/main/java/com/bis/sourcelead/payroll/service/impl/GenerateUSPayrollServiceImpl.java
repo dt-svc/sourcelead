@@ -1065,6 +1065,7 @@ public class GenerateUSPayrollServiceImpl implements GenerateUSPayrollService{
 			List<ContributionDTO> clist = payrollUtil.getContributionData(payroll);
 			
 			double contributionTotal =0;
+			double payItemTotal = 0;
 			if(clist != null && clist.size() >0) {
 				payrollDTO.setContribution(clist);
 				contributionTotal = clist.stream().mapToDouble(con->con.getContributionAmt()).sum();
@@ -1074,9 +1075,9 @@ public class GenerateUSPayrollServiceImpl implements GenerateUSPayrollService{
 			List<AssociatePayItemDTO> payItem = payrollUtil.getPayItemData(payroll);
 			if(payItem != null && payItem.size() >0) {
 				payrollDTO.setPayItem(payItem);
-				double payItemTotal = payItem.stream().mapToDouble(pitem->pitem.getPayItemAmt()).sum();
-				piTotal = BigDecimal.valueOf(payItemTotal);
+				payItemTotal = payItem.stream().mapToDouble(pitem->pitem.getPayItemAmt()).sum();
 			}
+			piTotal = BigDecimal.valueOf(payItemTotal);
 			payrollDTO.setPayItemTotal(piTotal);
 			
 			// Calculating YTD
@@ -1256,7 +1257,7 @@ public class GenerateUSPayrollServiceImpl implements GenerateUSPayrollService{
 					updatedDedHis = getUpdatedContribution(updatedDedHis,preContribution,PayrollConstant.PRE_TAX);
 				}
 				if(postContribution != null && postContribution.size() >0) {
-					updatedDedHis = getUpdatedContribution(updatedDedHis,preContribution,PayrollConstant.POST_TAX);
+					updatedDedHis = getUpdatedContribution(updatedDedHis,postContribution,PayrollConstant.POST_TAX);
 				}
 			}
 //			List<ContributionDTO> postContribution = null;
