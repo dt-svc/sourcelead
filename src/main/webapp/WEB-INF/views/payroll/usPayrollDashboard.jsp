@@ -38,10 +38,10 @@ function approvePayrollDiv(){
 	   <li class="current"><a href="javascript:void(0)" class="active" onclick="getOverviewdata();">Overview</a></li>
 	   <li><a href="javascript:void(0)" onclick="getDraftData();">Draft</a></li>
 	   <li><a href="javascript:void(0)" onclick="getPayPeriodData();">History</a></li>
-	   <li><a href="javascript:void(0)">Employees</a></li>
-	   <li><a href="javascript:void(0)">Contractors</a></li>
-	   <li><a href="javascript:void(0)">Tax Forms</a></li>
-	   <li><a href="javascript:void(0)">Settings</a></li>
+<!-- 	   <li><a href="javascript:void(0)">Employees</a></li> -->
+<!-- 	   <li><a href="javascript:void(0)">Contractors</a></li> -->
+<!-- 	   <li><a href="javascript:void(0)">Tax Forms</a></li> -->
+<!-- 	   <li><a href="javascript:void(0)">Settings</a></li> -->
 	 </ul>
    </div> 
    
@@ -482,6 +482,8 @@ function runUSPayroll(){
 				        	result += '<input type="hidden" value='+data.payrollFrequencyUUID+' id="payrollFrequencyUUID" name="payrollFrequencyUUID" />';
 				        	if(json != null && json.length > 0){
 				        		$("#submitButtonDiv").show();
+				        		$("#Submit").show();
+					    		$("#Confirm").show();
 				        		for (var i=0; i<json.length; i++){
 				        			var opt = json[i];
 				        			count++;

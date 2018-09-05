@@ -1,5 +1,6 @@
 package com.bis.sourcelead.dao.impl;
 
+import java.io.StringReader;
 import java.math.BigInteger;
 import java.text.MessageFormat;
 import java.text.SimpleDateFormat;
@@ -13,6 +14,10 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.TimeZone;
+
+import javax.xml.parsers.DocumentBuilder;
+import javax.xml.parsers.DocumentBuilderFactory;
 
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.time.DateUtils;
@@ -26,6 +31,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
+import org.w3c.dom.NodeList;
+import org.xml.sax.InputSource;
 
 import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.dao.JobBoardConfigurationDAO;
@@ -44,11 +53,11 @@ import com.bis.sourcelead.entity.JobFair;
 import com.bis.sourcelead.entity.JobFairRequirements;
 import com.bis.sourcelead.entity.OrgJobBoardAccount;
 import com.bis.sourcelead.entity.OrgLocations;
-import com.bis.sourcelead.entity.ProjectTasks;
 import com.bis.sourcelead.entity.Projects;
 import com.bis.sourcelead.entity.RecruiterReportAssociateCountView;
 import com.bis.sourcelead.entity.Requirement;
 import com.bis.sourcelead.entity.RequirementAssignTo;
+import com.bis.sourcelead.entity.RequirementIncentive;
 import com.bis.sourcelead.entity.RequirementJobBoardInfo;
 import com.bis.sourcelead.entity.RequirementLocations;
 import com.bis.sourcelead.entity.SubmissionRequirementListView;
@@ -66,19 +75,6 @@ import com.squareup.okhttp.OkHttpClient;
 import com.squareup.okhttp.Request;
 import com.squareup.okhttp.RequestBody;
 import com.squareup.okhttp.Response;
-import com.squareup.okhttp.ResponseBody;
-
-import static org.mockito.Matchers.startsWith;
-
-import java.io.StringReader;
-import java.util.TimeZone;
-import javax.xml.parsers.DocumentBuilder;
-import javax.xml.parsers.DocumentBuilderFactory;
-import org.dom4j.DocumentFactory;
-import org.w3c.dom.Document;
-import org.w3c.dom.Element;
-import org.w3c.dom.NodeList;
-import org.xml.sax.InputSource;
 
 /**
  * 
@@ -3440,6 +3436,39 @@ public class RequirementDaoImpl implements RequirementDao {
 				
 			}
 		return flag;
+	}
+	
+	@Override
+	@Transactional(rollbackFor = { Exception.class })	
+	public List<RequirementIncentive> getRequirementIncentiveListByRequirementId(long requirementId) throws Exception {
+		try {
+			Session session = this.sessionFactory.getCurrentSession();
+			String query = "from RequirementIncentive incentive where incentive.requirementId.id =:requirementId";
+			Query queryObj = session.createQuery(query);
+			queryObj.setLong("requirementId", requirementId);
+			List<RequirementIncentive> requirementIncentiveList = queryObj.list();
+			return requirementIncentiveList;
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return null;
+	}
+	
+	
+	@Override
+	@Transactional(rollbackFor = { Exception.class })	
+	public void deleteRequirementIncentiveByRequirementIdOrIds(long requirementId, String ids) throws Exception {
+		try {
+			Session session = this.sessionFactory.getCurrentSession();
+			if(requirementId > 0) {
+				session.createQuery("DELETE FROM RequirementIncentive ri WHERE ri.requirementId.id = "+requirementId).executeUpdate();
+			}
+			if(StringUtils.isNotEmpty(ids)) {
+				session.createQuery("DELETE FROM RequirementIncentive ri WHERE ri.id IN("+ids+")").executeUpdate();
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
 	}
 
 }

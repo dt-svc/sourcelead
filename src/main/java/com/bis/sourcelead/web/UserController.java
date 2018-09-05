@@ -211,6 +211,7 @@ public class UserController {
 			ModelAndView model = new ModelAndView();
 			commonUtil.highLightMenu(Constants.Users, request);
 			OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,"orgLocations");
+			Org org = (Org) SourceLeadSessionManager.getSessionAttribute(request,"org");
 			String isTimeSheetEnrolled = (String) SourceLeadSessionManager.getSessionAttribute(request,"timesheet");
 			Countries countries = countriesService.getCountriesByCountryName(orgLocations.getCountry());
 			if(null != countries){
@@ -223,7 +224,7 @@ public class UserController {
 		   
 			List<LookUpData> documentsList = lookUpDataService.getLookUpDataByCategory(Constants.DOCUMENT_TYPE);
 		    model.addObject("documentsList", documentsList);
-		    if(userId != null && StringUtils.isNoneEmpty(userId)) {
+		    if(userId != null && StringUtils.isNotEmpty(userId)) {
 		    	User user = userService.getUserById(Long.parseLong(userId));
 		    	userCode = user.getUserCode();
 		    }
@@ -252,7 +253,10 @@ public class UserController {
 			     model.addObject("actionId",action.getId());
 			     List<SourceleadSectionDTO> sections = commonUtil.getSourceleadFormSectionsByActionId(request, action.getId());
 			     model.addObject("sourceleadSectionList",sections); 
-				
+			     
+			    boolean isMulitplieOrgAccounts = userRoleService.isUserWithMultipleOrgsAccounts(org.getId(), user.getId());
+			    model.addObject("isMulitplieOrgAccounts", isMulitplieOrgAccounts);
+			    
 				request.setAttribute("candidateId", candidate.getId());
 				request.setAttribute("userId", user.getId());
 				model.setViewName("users/userSummary");

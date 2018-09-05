@@ -955,10 +955,13 @@ public class TimesheetReportServiceImpl implements TimesheetReportService {
 	
 	private Sheet prepareTimesheetReportDataExcel(ProjectMembers projectMember, LinkedHashMap<Date, Date> displayWeeksList,User loginUser, Sheet createExcelsheet, Row writeRow, Date startDate, Date endDate, OrgLocations orgLocations) throws Exception {
 		createExcelsheet.getDefaultRowHeight();
+		
+		ProjectMembers  consultantProjectMembers = projectMembersService.getConsultantUserProjectMemberByProjectMemberId(projectMember.getId());
+		
 		StringBuilder sbid = new StringBuilder();
-		if(projectMember.getEmployee()!= null) {
-		if(projectMember.getEmployee() != null && projectMember.getEmployee().getEmployeeId() != null && StringUtils.isNotBlank(projectMember.getEmployee().getEmployeeId())){
-			 writeRow.createCell(0).setCellValue(sbid.append(projectMember.getEmployee().getEmployeeId()).toString());
+		if(projectMember.getProjectMemberCandidteId()!= null) {
+		if(consultantProjectMembers.getEmployee() != null && consultantProjectMembers.getEmployee().getEmployeeId() != null && StringUtils.isNotBlank(consultantProjectMembers.getEmployee().getEmployeeId())){
+			 writeRow.createCell(0).setCellValue(sbid.append(consultantProjectMembers.getEmployee().getEmployeeId()).toString());
 			 createExcelsheet.autoSizeColumn(0);
 		}
 		if(null != projectMember.getProjectMemberCandidteId()){
@@ -977,7 +980,7 @@ public class TimesheetReportServiceImpl implements TimesheetReportService {
 			 writeRow.createCell(4).setCellValue(projectMember.getProjectMemberCandidteId().getDesignationType());
 			 createExcelsheet.autoSizeColumn(4);
 		}
-		if( projectMember.getEmployee().getRate() != null){
+		if( projectMember.getProjectMemberCandidteId().getRate() != null){
 			StringBuilder rateString = new StringBuilder();
 			 writeRow.createCell(5).setCellValue(rateString.append(projectMember.getEmployee().getRate()).append("/").append(projectMember.getEmployee().getRatePer()).toString());
 			 createExcelsheet.autoSizeColumn(5);
