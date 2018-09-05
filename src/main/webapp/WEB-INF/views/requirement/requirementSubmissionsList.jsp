@@ -13,36 +13,28 @@
     <!-- Project -->
     <div class="timesheet_out">
       <div class="clients_wrap">
+      <div class="positionRelative reportHead clearfix">
+      <span class="pull-left refreIcon" id="advanceSearchDiv">
+      		<a href="javascript:void(0)" class="refeIcon" id="resetVendor" title="Refresh" onclick="resetApplicantFilter();"></a>
+      </span>
+      <ul class="pull-right list-unstyled list-inline">
+      	  <li>
+      	  <jsp:include page="JobCountFilter.jsp"></jsp:include>
+      	  </li>
+				<li id="vendorFiletPopup"><a href="javascript:void(0)" class="filtIcon" title="Filters" onclick="openFilterPop();"></a></li>
+				
+				<li><a href="javascript:void(0)" class="overIcon" title="Actions" onclick="newActions();"></a>
+					<div class="newActPop" style="display: none;">
+						<span>
+<!-- 		           	   		<a href="javascript:void(0)" onclick="projectExport('Pdf');" title="PDF">Export PDF</a> -->
+							<a href="javascript:void(0)" onclick="projectExport('Excel');" title="Excel">Export Excel</a>            
+						</span>
+					</div>
+				</li>
+		  <li class=""><input type="text" class="repSearchBar" placeholder="Search" id="dataTableSearch"><span class="repSearchIcon" onclick="filter();"></span></li>
+        </ul>
+      </div>
         <div class="timesheet_head">
-      
-      <jsp:include page="JobCountFilter.jsp"></jsp:include>
-      
-      <div class="pull-left ml mt10 dropdown-select">
-	        <div class="dropdown-select positionRelative">
-	        <select class="form-control" id="customDates" onchange="showCustomFields();">
-	          <option value="Last_7_days" selected>Last 7 days</option>
-	          <option value="Last_15_days">Last 15 days</option>
-	          <option value="1_month">1 month</option>
-	          <option value="3_months">3 months</option>
-	          <option value="Last_Year">Last year</option>
-	          <option value="Custom">Custom</option>
-	        </select>
-	        <!-- Top Leave Takers Custom Date -->
-		    <div class="clearfix pull-lefet col-md-12 paddingRight customLeaves" id="custom-selects" style="display: none; width: 346px;" >
-				<div class="pull-left">
-				<div class="pull-left mr5" style="width: 140px" id="custFromDateDiv">
-				<input value="" name="Date" id="custFromDate" placeholder="From" class="form-control calendar input-sm margin-top0" type="text">
-				</div>
-				<div class="pull-left mr5" style="width: 140px" id="custToDateDiv">
-				<input value="" name="Date" id="custToDate" placeholder="To" class="form-control calendar input-sm margin-top0" type="text">
-				</div>
-				<button type="button" class="btn btn-primary btn-sm" onclick="validateCustDatesList();"><i class="fa fa-search"></i></button>
-				</div>
-		    </div>
-	      	</div>
-      	</div>
-      
-       
        </div>
         <div class="clients_wrap_table datatable_filter">
         
@@ -59,6 +51,7 @@
  <script>
  $(document).ready(function() { 
 	 requirementSubmissionList();
+	 getClientList();
  });
  
  </script>
@@ -67,16 +60,58 @@
  </script>
 <script type="text/javascript">
        function requirementSubmissionList(){
-		var sourceleadUrl ='${sourceleadUrl}';
-	 	var tab = '${tab}';
-	 	var fromDate = $("#custFromDate").val();
- 	    var toDate = $("#custToDate").val();
- 	   	var customDates = $("#customDates").val();
-		var searchValue = $("#dataTableSearch").val();
-		var orgLocationId = '${SourceLeadWeb_orgLocationId}';
-		searchValue = searchValue ? searchValue : "";
-		var url = sourceleadUrl+"/applicantList?searchValue="+searchValue+"&orgLocationId="+orgLocationId+"&tabType="+tab+"&submissionStatus=SUBMIT_TO_CLIENT&frequency="+customDates+"&fromDate="+fromDate+"&toDate="+toDate;
-		prepareSubmissionList(url);
+    	   var sourceleadUrl ='${sourceleadUrl}';
+   		   var tab = '${tab}';
+    	   var frequency = $('input[name=customDates]:checked').val(); 
+    	    var fromDate = $("#custFromDate").val();
+    	    var toDate = $("#custToDate").val();
+    		var searchValue = $("#dataTableSearch").val();
+    		var orgLocationId = '${SourceLeadWeb_orgLocationId}';
+    		searchValue = searchValue ? searchValue : "";
+    		var employmentType = [];
+    		 $('input:checkbox[name=employmentType]:checked').each(function() 
+			 {
+    			employmentType.push($(this).val());
+			 });
+    		 var clientNameById = [];
+    		 $('input:checkbox[name=clientNameById]:checked').each(function() 
+			 {
+    			 clientNameById.push($(this).val());
+			 });
+    		 var incentivizedType = [];
+    		 $('input:checkbox[name=incentivizedType]:checked').each(function() 
+			 {
+    			 incentivizedType.push($(this).val());
+			 });
+    	    if(frequency == "Custom"){
+    	        if(fromDate == ''){
+    	        	$("#invoiceFilterId").show();
+    	        	$(".advancedsearch-mask").fadeIn();
+    	            $('#custFromDateDiv').find('p.jquery_form_error_message').remove();
+    	            $("input#custFromDate").after( "<p class='jquery_form_error_message'>FromDate is required.</span>");
+    	        }
+    	        if(toDate == ''){
+    	        	$("#invoiceFilterId").show();
+    	        	$(".advancedsearch-mask").fadeIn();
+    	            $('#custToDateDiv').find('p.jquery_form_error_message').remove();
+    	            $("input#custToDate").after( "<p class='jquery_form_error_message'>ToDate is required.</span>");
+    	        }
+    	        if((fromDate != '' && fromDate != 'undefined' && fromDate != null) && (toDate != '' && toDate != 'undefined' && toDate != null)){
+    	        	$("#invoiceFilterId").hide();
+    	        	$(".advancedsearch-mask").fadeOut();
+    	        	$('#custFromDateDiv').find('p.jquery_form_error_message').remove();
+    	            $('#custToDateDiv').find('p.jquery_form_error_message').remove();
+    	            $("#custom-selects").hide();
+    	            var url = sourceleadUrl+"/applicantList?searchValue="+searchValue+"&orgLocationId="+orgLocationId+"&tabType="+tab+"&submissionStatus=SUBMIT_TO_CLIENT&frequency="+frequency+"&fromDate="+fromDate+"&toDate="+toDate+"&employmentType="+employmentType+"&clientId="+clientNameById+"&incentivizedType="+incentivizedType;
+        			prepareSubmissionList(url);
+    	        }
+    	    }else{
+    	        $('#custFromDateDiv').find('p.jquery_form_error_message').remove();
+    	        $('#custToDateDiv').find('p.jquery_form_error_message').remove();
+    	        var url = sourceleadUrl+"/applicantList?searchValue="+searchValue+"&orgLocationId="+orgLocationId+"&tabType="+tab+"&submissionStatus=SUBMIT_TO_CLIENT&frequency="+frequency+"&fromDate="+fromDate+"&toDate="+toDate+"&employmentType="+employmentType+"&clientId="+clientNameById+"&incentivizedType="+incentivizedType;
+    			prepareSubmissionList(url);
+ 
+    	    } 
 }
 </script> 
 
@@ -84,11 +119,6 @@
 <script>
 function prepareSubmissionList(url){
         var result = "";
- 	    result = result +' <div class="modal-header">';
- 	    result = result +' <div class="remove_search mt10">';
- 	    result = result +' <input type="text" placeholder="Search" id="dataTableSearch"/>';
- 	    result = result +'</div>';
- 	    result = result +'</div>';
         result = result +'<table id="submissionpagination" class="display" cellspacing="0" width="100%" >'; 
         result = result +'<thead>'; 
         result = result + '<tr>';
@@ -97,13 +127,12 @@ function prepareSubmissionList(url){
 		result = result + '<th>Client</th>';
 		result = result + '<th>Applied On</th>';
 		result = result + '<th>Submitted On</th>';
-		result = result + '<th>Resume</th>';
-		result = result + '<th>Exp</th>';
 		result = result + '<th>Sub rate</th>';
 		result = result + '<th>Source</th>';
-		result = result + '<th>Score</th>';
 		result = result + '<th>Submitted by</th>';
 		result = result + '<th>Status</th>';
+		result = result + '<th>Job Rating</th>';
+		result = result + '<th>Incentivized</th>';
 		result = result + '</tr>';
         result = result +'</thead>';
         result = result +'<tbody>'; 
@@ -134,13 +163,12 @@ function submissionpagination(url){
             { "data": "client"},
             { "data": "Applied On" },
             { "data": "Submitted On" },
-            { "data": "resume" },
-            { "data": "Exp" },
             { "data": "Sub rate" },
             { "data": "source"},
-            { "data": "score"},
             { "data": "Submitted by"},
-            { "data": "status"}  
+            { "data": "status"},
+            { "data": "jobRating"},
+            { "data": "incentivized"}
             
         ],
        "columnDefs": [ {
@@ -149,19 +177,39 @@ function submissionpagination(url){
     	  	"render": function(data, type, opt, meta) {
     	  		  var result = "";
     	  		 if(opt.candidateName !=null && opt.candidateName !='' && opt.candidateName !='undefined'){
-						result = result + ' <td><div><span>'+opt.candidateName+'</span></div></td>';
+	    	  			result = result + ' <td>';
+						result = result + ' <div title='+opt.candidateName+' class="clearfix mt5 proj_show"><span><a href="'+sourceleadUrl+'/requirementSummary?type=applicants&requirementUUID='+opt.requirementUUID+'&candidateUUID='+opt.candidateUUID+'&submissionId='+opt.submissionId+'" >'+opt.candidateName+'<i class="fa fa-binoculars"></i></a></span></div>';
+						result = result + ' <div title='+opt.email+' class="clearfix mt5 mb5">'+opt.email+'</div>';
+						result = result + ' </td>';
 					}else{
 						result = result + ' <td><div>--</div></td>';
 					}
 	             return result;
     	  	}
       },{
+          "targets": colIndex++,
+          "data": "client",
+          "render": function ( data, type, opt, meta ) {
+          	var result = "";
+          	
+  				if(opt.orgLocationName != null && opt.orgLocationName != '' && opt.orgLocationName !='undefined'){
+  					result = result + '<td><div><span>'+opt.orgLocationName+' </span></div></td>';
+          	 }else{
+          		 result = result + '<td><div><span>---</span></div></td>';
+          	 }
+  				return result;
+          }
+        },{
     	  "targets": colIndex++,
           "data": "job",
           "render": function ( data, type, opt, meta ) {
         	  var result = "";
         	  if(opt.requirementUUID !=null && opt.requirementUUID !='' && opt.requirementUUID !='undefined'){
-        		  result = result + '<td><div class="proj_show"><span><a href="'+sourceleadUrl+'/requirementSummary?type=applicants&requirementUUID='+opt.requirementUUID+'&candidateUUID='+opt.candidateUUID+'&submissionId='+opt.submissionId+'" >'+opt.jobTitle+'<i class="fa fa-binoculars"></i></a></span></div></td>';
+        		  if(opt.jobGeneratedId != null && opt.jobGeneratedId != ''  && opt.jobGeneratedId !="undefined"){
+            		  result = result + '<td><div class="proj_show"><span title='+opt.jobTitle+'>'+opt.jobGeneratedId+' - '+opt.jobTitle+'</span></div></td>';
+        		  }else{
+            		  result = result + '<td><div class="proj_show"><span title='+opt.jobTitle+'>'+opt.jobTitle+'</span></div></td>';
+        		  }
 				}else{
 					result = result + ' <td><div>--</div></td>';
 				}
@@ -169,20 +217,6 @@ function submissionpagination(url){
           		
           }
       },{
-        "targets": colIndex++,
-        "data": "client",
-        "render": function ( data, type, opt, meta ) {
-        	var result = "";
-        	
-				if(opt.orgLocationName != null && opt.orgLocationName != '' && opt.orgLocationName !='undefined'){
-					result = result + '<td><div><span>'+opt.orgLocationName+' </span></div></td>';
-        	 }else{
-        		 result = result + '<td><div><span>---</span></div></td>';
-        	 }
-				return result;
-        }
-      },
-       {
           "targets": colIndex++,
           "data": "Applied On",
           "render": function ( data, type, opt, meta ) {
@@ -206,36 +240,7 @@ function submissionpagination(url){
             	 }
           	  return result;
             }
-          },
-        {
-    	  	"targets": colIndex++,
-    	  	"data": "resume",
-    	  	"render": function(data, type, opt, meta) {
-    	  		var result = "";
-    	  		if(opt.resumeUUID !=null && opt.resumeUUID !='' && opt.resumeUUID !='undefined'){
-		              result = result + ' <td><div><span>';   
-		              result = result + ' <a target="_blank" href="'+opt.fileUrl+'"><i class="fa fa-download"></i></a>';
-		              result = result + ' <a onclick="viewFile(\''+opt.fileUrl+'\',\''+opt.fileName+'\',\''+opt.contentType+'\');" class="fa fa-eye ml10 paddingRight"></a>';
-//			              result = result + ' <a href="<c:url value="/downloadResumeCandidate/'+opt.resumeUUID+'"/>"></a>';
-		              result = result + '</span></div></td>';  
-				}else{
-					result = result + ' <td><div>--</div></td>';
-				}
-	              return result;
-    	  	}
-    	  },{
-    	  	"targets": colIndex++,
-    	  	"data": "Exp",
-    	  	"render": function(data, type, opt, meta) {
-    	  		var result = "";
-    	  		if(opt.experienceYears != null && opt.experienceYears !='' && opt.experienceYears != 'undefined'){
-    	  			result = result + ' <td><div><span>'+opt.experienceYears+'</span></div></td>';
-    	  		}else{
-    	  			result = result + ' <td><div><span>---</span></div></td>';
-    	  		}
-    	  		return result;
-    	  	}
-    	  },{
+          },{
     	  	"targets": colIndex++,
     	  	"data": "Sub Rate",
     	  	"render": function(data, type, opt, meta) {
@@ -259,19 +264,7 @@ function submissionpagination(url){
 	    	  		   }
 	    	  		return result;
               }
-            }, {
-                "targets": colIndex++,
-                "data": "score",
-                "render": function ( data, type, opt, meta ) {
-                	var result = "";
-	    	  		   if(opt.candidateScore != null && opt.candidateScore !='' && opt.candidateScore != 'undefined'){
-	    	  			result = result + ' <td><div><span>'+opt.candidateScore+'</span></div></td>';
-	    	  		   }else{
-	    	  			result = result + ' <td><div><span>---</span></div></td>';
-	    	  		   }
-	    	  		return result;
-                }
-              },{
+            },{
                   "targets": colIndex++,
                   "data": "Submitted by",
                   "render": function ( data, type, opt, meta ) {
@@ -295,7 +288,31 @@ function submissionpagination(url){
   	    	  		   }
   	    	  		return result;
                   }
-                } ],  
+                },{
+                    "targets": colIndex++,
+                    "data": "jobRating",
+                    "render": function ( data, type, opt, meta ) {
+                  	  var result = "";
+    	    	  		   if(opt.jobRating != null && opt.jobRating !='' && opt.jobRating != 'undefined'){
+    	    	  			result = result + ' <td><div><span>'+opt.jobRating+'</span></div></td>';
+    	    	  		   }else{
+    	    	  			result = result + ' <td><div><span>---</span></div></td>';
+    	    	  		   }
+    	    	  		return result;
+                    }
+                  },{
+                      "targets": colIndex++,
+                      "data": "incentivized",
+                      "render": function ( data, type, opt, meta ) {
+                    	  var result = "";
+      	    	  		   if(opt.incentivize != null && opt.incentivize !='' && opt.incentivize != 'undefined'){
+      	    	  			result = result + ' <td><div><span>'+opt.incentivize+'</span></div></td>';
+      	    	  		   }else{
+      	    	  			result = result + ' <td><div><span>---</span></div></td>';
+      	    	  		   }
+      	    	  		return result;
+                      }
+                    } ],  
     	"scrollCollapse": false,
     	"lengthMenu": [[10, 15, 20], [10, 15, 20]],
 //	    	"aaSorting": [[3,'desc']],
@@ -330,8 +347,8 @@ $("#dataTableSearch").keyup(function(e) {
 </script>
 
 <script>
-function showCustomFields(){
-    var frequency = $("#customDates").val();
+function showCustomFields(e){
+	var frequency = e.value;
     if(frequency == "Custom"){
         $("#custom-selects").show();
          $('#custFromDate').attr('data-validation',"required");
@@ -342,7 +359,6 @@ function showCustomFields(){
         $('#custToDate').attr('data-validation',"required");
         $('#custFromDate').val("");
         $('#custToDate').val("");
-        requirementSubmissionList();
     }
     
     var locationDate ='${SourceLeadWeb_orgLocations.dateFormat}'; 
@@ -389,34 +405,216 @@ function removeStartValid(){
 function removeEndValid(){
     $('#custToDateDiv').find('p.jquery_form_error_message').remove();
 }
-
-
-function validateCustDatesList(){
-// 	var userType = $("#userTypeId").val();
-    var frequency = $("#customDates").val();
-    var fromDate = $("#custFromDate").val();
-    var toDate = $("#custToDate").val();
-    if(frequency == "Custom"){
-        if(fromDate == ''){
-            $('#custFromDateDiv').find('p.jquery_form_error_message').remove();
-            $("input#custFromDate").after( "<p class='jquery_form_error_message'>FromDate is required.</span>");
-        }
-        if(toDate == ''){
-            $('#custToDateDiv').find('p.jquery_form_error_message').remove();
-            $("input#custToDate").after( "<p class='jquery_form_error_message'>ToDate is required.</span>");
-        }
-        if((fromDate != '' && fromDate != 'undefined' && fromDate != null) && (toDate != '' && toDate != 'undefined' && toDate != null)){
-            $('#custFromDateDiv').find('p.jquery_form_error_message').remove();
-            $('#custToDateDiv').find('p.jquery_form_error_message').remove();
-            requirementSubmissionList();
-            $("#custom-selects").hide();
-        }
-    }else{
-        $('#custFromDateDiv').find('p.jquery_form_error_message').remove();
-        $('#custToDateDiv').find('p.jquery_form_error_message').remove();
-        requirementSubmissionList();
-    } 
-}
 </script>
  
+ 
+   <!-- ========================== Filter popup Written By Laxman ===============================  -->
+<script>
+function closeApplicantFilterPop(){
+	$("#invoiceFilterId").hide();
+	$(".advancedsearch-mask").fadeOut();
+}
+function openFilterPop(){
+	 $("#invoiceFilterId").toggle();
+	 $(".advancedsearch-mask").fadeIn();
+}
+function resetApplicantFilter(){
+	$("#myClientInput").val('');
+	$("ul#empFilter > li input:checkbox").prop("checked",false);
+	$("ul#durationFilter > li input:checkbox").prop("checked",false);
+	$("ul#myClinetListUL > li input:checkbox").prop("checked",false);
+	$("ul#incentivizedFilter > li input:checkbox").prop("checked",false);
+
+	requirementSubmissionList();
+}
+function newActions(){
+	$(".newActPop").slideToggle(200);
+	$(".action-pop").slideUp(200);
+}
+$("html").click(function(){
+	$(".newActPop").slideUp(200);
+});
+$(".overIcon, .newActPop").click(function(e){
+ 	e.stopPropagation();
+});	
+
+
+
+</script>
+   
+   <div class="advancedsearch-mask"></div>
+          <div class="cand-advsrch-popup advancedsearch-popup filterDynamic-Search-small" id="invoiceFilterId">
+				<h5 class="headerAdsrch">Filter Search
+					<a href="javascript:void(0)" class="close-div" onClick="closeApplicantFilterPop()"><i
+						class="fa fa-close"></i></a>
+				</h5>
+				<div class="addInner">
+					<div class="row">
+					  <div class="col-md-4">
+						<div class="row">
+							<div class="col-md-12 mb">
+									<label><strong>Incentivized</strong></label>
+									 <div class="clearfix">
+										<ul class="list-unstyled" id="incentivizedFilter">
+										     <li class="checkBox positionRelative" ><input  type="checkbox" name="incentivizedType"  value ="Y" ><label for="Yes">Yes</label></li>
+											 <li class="checkBox positionRelative" ><input  type="checkbox" name="incentivizedType" value ="N" ><label for="No">No</label></li>
+					                    </ul>
+									 </div>
+							   </div>
+						    <div class="col-md-12 mb">
+								<label><strong>Duration</strong></label>
+								 <div class="clearfix">
+									<ul class="list-unstyled" id="durationFilter">
+									<c:if test="${tab == 'today'}">
+									<li class="radioIput positionRelative" ><input type="radio"  value="today" checked  name="customDates" checked onclick="showCustomFields(this);" ><label for="applicant">Today</label></li>
+									</c:if>
+									<c:if test="${tab != 'today'}">
+									<li class="radioIput positionRelative" ><input type="radio"  value="today"  name="customDates" checked onclick="showCustomFields(this);" ><label for="applicant">Today</label></li>
+									</c:if>
+									<li class="radioIput positionRelative" ><input type="radio"  value="Last_7_days"   name="customDates" onclick="showCustomFields(this);" ><label for="applicant">Last 7 days</label></li>
+	                                <li class="radioIput positionRelative" ><input type="radio"  value="Last_15_days" name="customDates" onclick="showCustomFields(this);"><label for="applicant">Last 15 days</label></li>
+	                                <c:if test="${tab == 'previous'}">
+	                                <li class="radioIput positionRelative" ><input type="radio"  value="1_month" name="customDates" checked onclick="showCustomFields(this);"><label for="applicant">1 month</label></li>
+	                                </c:if>
+	                                <c:if test="${tab != 'previous'}">
+	                                <li class="radioIput positionRelative" ><input type="radio"  value="1_month" name="customDates" onclick="showCustomFields(this);"><label for="applicant">1 month</label></li>
+	                                </c:if>
+	                                <li class="radioIput positionRelative" ><input type="radio" value="3_months" name="customDates" onclick="showCustomFields(this);"><label for="applicant">3 months</label></li>
+   	                                <li class="radioIput positionRelative" ><input type="radio" value="Last_Year" name="customDates" onclick="showCustomFields(this);"><label for="applicant">Last Year</label></li>
+   	                                <li class="radioIput positionRelative" ><input type="radio" value="Custom" name="customDates" onclick="showCustomFields(this);"><label for="applicant">Custom</label></li>
+	                                
+			                        </ul>
+							      </div>
+						     </div> 
+						  </div>
+						  <div class="clearfix pull-left" id="custom-selects" style="display: none; width: 346px;" >
+							<div class="pull-left">
+							<div class="pull-left mr5" style="width: 140px" id="custFromDateDiv">
+							<input value="" name="Date" id="custFromDate" placeholder="From" class="form-control calendar input-sm margin-top0" type="text">
+							</div>
+							<div class="pull-left mr5" style="width: 140px" id="custToDateDiv">
+							<input value="" name="Date" id="custToDate" placeholder="To" class="form-control calendar input-sm margin-top0" type="text">
+							</div>
+							</div>
+					    </div>
+						</div>
+						
+						 
+						<div class="col-md-4">
+						<div class="row">
+						    <div class="col-md-12 mb">
+								<label><strong>Employment Type</strong></label>
+								 <div class="clearfix">
+									<ul class="list-unstyled" id="empFilter">
+									<li class="checkBox positionRelative" ><input type="checkbox" value="C2C" name="employmentType"><label for="applicant">C2C</label></li>
+                                    <li class="checkBox positionRelative" ><input type="checkbox" value="W-2" name="employmentType"><label for="applicant">W-2</label></li>
+                                    <li class="checkBox positionRelative" ><input type="checkbox" value="C2H" name="employmentType"><label for="applicant">C2H</label></li>
+	                                <li class="checkBox positionRelative" ><input type="checkbox"  value="Contract" name="employmentType"><label for="applicant">Contract</label></li>
+	                                <li class="checkBox positionRelative" ><input type="checkbox" value="Part Time" name="employmentType"><label for="applicant">Part Time</label></li>
+	                                <li class="checkBox positionRelative" ><input type="checkbox" value="Full Time" name="employmentType"><label for="applicant">Full Time</label></li>
+			                        </ul>
+							      </div>
+						     </div> 
+						  </div>
+						</div>
+	                 
+						<div class="col-md-4 positionRelative mb">
+							<div class="clearfix dynamic_search filterDynamicsearch">
+								<input type="text" id="myClientInput" onkeyup="myClientFunction()" placeholder="Clients" title="Type in a client">
+								<span class="cursorPointer" title="Search"><i class="fa fa-search"></i></span>
+							</div>
+							 <div class="clearfix filterSearch-ul">
+								<ul class="list-unstyled positionRelative filterSearch mt5" id="myClinetListUL">
+								</ul>
+							 </div> 
+						</div>
+					  </div>
+					  
+					  
+					  
+					</div>
+					<div class="clearfix advancedsearch-footer">
+						<div class="pull-right mr">
+							<input type="button" value="Apply" id="search_requiremet" onclick="closeApplicantFilterPop();requirementSubmissionList();" class="btn btn-sm btn-success" />
+							<input type="button" value="Reset" id="clear_search" onclick="resetApplicantFilter();" class="btn btn-sm btn-primary" />
+						</div>
+					</div>
+				</div>
+
+<script>
+function getClientList(){
+	var sourceleadUrl = '${sourceleadUrl}';
+	$.ajax({
+		type : "POST",
+		url : sourceleadUrl+ "/getClientList?${_csrf.parameterName}=${_csrf.token}",
+		success : function(data) {
+			var result = "";
+			  for (var i=0; i<data.length; i++)
+				{
+				var report = data[i];
+				result = result + '<li class="checkBox positionRelative">';
+				result = result + '<input  type="checkbox" name="clientNameById" value ='+report.orgRelId+'><label>'+report.clientName+'</label>';
+				result = result + '</li>';
+				}
+			  $("#myClinetListUL").empty();
+			  $("#myClinetListUL").append(result);
+
+		}
+	});
+}
+function myClientFunction() {
+    var input, filter, ul, li, a, i;
+    input = document.getElementById("myClientInput");
+    filter = input.value.toUpperCase();
+    ul = document.getElementById("myClinetListUL");
+    li = ul.getElementsByTagName("li");
+    for (i = 0; i < li.length; i++) {
+        a = li[i].getElementsByTagName("label")[0];
+        if (a.innerHTML.toUpperCase().indexOf(filter) > -1) {
+            li[i].style.display = "";
+        } else {
+            li[i].style.display = "none";
+
+        }
+    }
+}
+</script>
+
+
+<!-- =============== Pdf and  Excel Export scripts writen by Laxman =================== -->
+<script>
+function projectExport(type){
+	if(type == "Pdf"){
+		exportType = "pdf";
+	}else{
+		exportType = "xls";
+	}
+	 var sourceleadUrl ='${sourceleadUrl}';
+	   var tab = '${tab}';
+	   var frequency = $('input[name=customDates]:checked').val(); 
+	    var fromDate = $("#custFromDate").val();
+	    var toDate = $("#custToDate").val();
+		var searchValue = $("#dataTableSearch").val();
+		var orgLocationId = '${SourceLeadWeb_orgLocationId}';
+		searchValue = searchValue ? searchValue : "";
+		var employmentType = [];
+		 $('input:checkbox[name=employmentType]:checked').each(function() 
+		 {
+			employmentType.push($(this).val());
+		 });
+		 var clientNameById = [];
+		 $('input:checkbox[name=clientNameById]:checked').each(function() 
+		 {
+			 clientNameById.push($(this).val());
+		 });
+		 var incentivizedType = [];
+		 $('input:checkbox[name=incentivizedType]:checked').each(function() 
+		 {
+			 incentivizedType.push($(this).val());
+		 });
+		 window.location.href = sourceleadUrl+"/applicantListExport?searchValue="+searchValue+"&orgLocationId="+orgLocationId+"&tabType="+tab+"&submissionStatus=SUBMIT_TO_CLIENT&frequency="+frequency+"&fromDate="+fromDate+"&toDate="+toDate+"&employmentType="+employmentType+"&clientId="+clientNameById+"&incentivizedType="+incentivizedType;
+	     
+}
+</script>
+
 <jsp:include page="../masterFooter.jsp" />

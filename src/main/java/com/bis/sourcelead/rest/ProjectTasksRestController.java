@@ -1469,11 +1469,11 @@ public class ProjectTasksRestController {
 		if (expensesList != null && !expensesList.isEmpty()) {
 			for (Expenses ex : expensesList) {
 				if (ex.getExpenseStatus().toString().equalsIgnoreCase("APPROVED")) {
-					timesheetreport.setApprovedAmount(ex.getTotalAmount());
+					timesheetreport.setApprovedAmount(ex.getTotalAmount().floatValue());
 				} else if (ex.getExpenseStatus().toString().equalsIgnoreCase("SUBMITTED")) {
-					timesheetreport.setSubmittedAmount(ex.getTotalAmount());
+					timesheetreport.setSubmittedAmount(ex.getTotalAmount().floatValue());
 				} else if (ex.getExpenseStatus().toString().equalsIgnoreCase("REJECTED")) {
-					timesheetreport.setRejectedAmount(ex.getTotalAmount());
+					timesheetreport.setRejectedAmount(ex.getTotalAmount().floatValue());
 				}
 			}
 		} else {

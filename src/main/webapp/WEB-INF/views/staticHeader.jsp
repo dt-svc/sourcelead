@@ -10,6 +10,11 @@
 <meta http-equiv="content-type" content="text/html; charset=utf-8" />
 <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
 <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no, user-scalable=no">
+<meta property='og:title' content="sourcelead.com"/> 
+<meta property='og:url' content="https://www.sourcelead.com/"/> 
+<meta property='og:description' content='Bridging talent through technology'/> 
+<meta property="og:type" content="article" /> 
+<meta property="og:image" content="https://www.sourcelead.com/resources/images/fav.png"/> 
 <meta name="description" content="${description}">
 <meta name="keywords" content="${keywords}">
 <meta name="robots" content="index, follow">

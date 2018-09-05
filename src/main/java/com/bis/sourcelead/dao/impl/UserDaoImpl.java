@@ -1872,7 +1872,7 @@ public class UserDaoImpl implements UserDao {
 
 	@Override
 	@Transactional
-	public ResponseList<UserDTO> getRecruitersReports(Long userId, Long orgLocationId, Long orgId, String isGlobalUser,UserDTO userDTO,String loginUserRole,Date[] searchDates,List<Long> teamsList)
+	public ResponseList<UserDTO> getRecruitersReports(Long userId, Long orgLocationId, Long orgId, String isGlobalUser,UserDTO userDTO,String loginUserRole,Date[] searchDates,List<Long> teamsList,String type)
 			throws Exception {
 		
 		
@@ -1890,6 +1890,7 @@ public class UserDaoImpl implements UserDao {
 		int totalCount = 0;
 		String subQueryTeam = "";
 		String sortingQry = "";
+		String myPerformanceReportQuery="";
 		
 		if(loginUserRole.equalsIgnoreCase("ROLE_ADMIN")) {
 			
@@ -1968,7 +1969,9 @@ public class UserDaoImpl implements UserDao {
 				}
 				
 			}else {
-				
+				if(StringUtils.isNotBlank(type) && type.equalsIgnoreCase("myPerformanceReports")) {
+					myPerformanceReportQuery = " AND  UR.USER_ID = :ID";
+				}
 				try {
 				
 					query ="SELECT "
@@ -1984,11 +1987,15 @@ public class UserDaoImpl implements UserDao {
 							+searchQuery
 							+subQueryTeam
 							+ " AND  UR.ORG_LOCATIONS_ID = :orgLocationId"
+							+myPerformanceReportQuery
 						    + " GROUP BY UR.USER_ID"
 						    +sortingQry;
 				
 					queryObj = session.createSQLQuery(query);
 					queryObj.setParameter("orgLocationId", orgLocationId);
+					if(StringUtils.isNotBlank(type) && type.equalsIgnoreCase("myPerformanceReports")) {
+						queryObj.setParameter("ID", userId);
+					}
 					if(teamsList.size()>0 && !teamsList.isEmpty()){
 					queryObj.setParameterList("teamsList", teamsList);
 					}
@@ -2017,10 +2024,14 @@ public class UserDaoImpl implements UserDao {
 							+searchQuery
 							+subQueryTeam
 						    + " AND  UR.ORG_LOCATIONS_ID = :orgLocationId"
+						    +myPerformanceReportQuery
 						    +sortingQry;
 				
 				Query countqueryString = session.createSQLQuery(countQuery);
 				countqueryString.setParameter("orgLocationId", orgLocationId);
+				if(StringUtils.isNotBlank(type) && type.equalsIgnoreCase("myPerformanceReports")) {
+					countqueryString.setParameter("ID", userId);
+				}
 				if(teamsList.size()>0 && !teamsList.isEmpty()){
 				countqueryString.setParameterList("teamsList", teamsList);
 				}
@@ -2057,9 +2068,13 @@ public class UserDaoImpl implements UserDao {
 			if(StringUtils.isNotBlank(userDTO.getSortColumn())) {
 					sortingQry = " order by user."+ userDTO.getSortColumn() +" "+userDTO.getSortOrder();
 			}
-			
-			query = "from User user where (user.id IN (select userRole.user.id from UserRole userRole where (userRole.reportingManager.id = :userId OR userRole.resourceManager.id = :userId) and userRole.userState = 'ACTIVE' "+globalAccessQuery+" ) "
-					+ " OR user.id IN (select tm.memberUserId.id from TeamMembers tm where tm.teamId.ownerUserId = :userId and tm.status = '1'  and tm.teamId.orgLocationsId = :orgLocationId  "+subQuery+"))";
+			if(StringUtils.isNotBlank(type) && type.equalsIgnoreCase("myPerformanceReports")) {
+				query = "from User user where (user.id IN (select userRole.user.id from UserRole userRole where userRole.user.id = :userId and userRole.userState = 'ACTIVE' "+globalAccessQuery+" )) ";
+			}
+			else{
+				query = "from User user where (user.id IN (select userRole.user.id from UserRole userRole where (userRole.reportingManager.id = :userId OR userRole.resourceManager.id = :userId) and userRole.userState = 'ACTIVE' "+globalAccessQuery+" ) "
+						+ " OR user.id IN (select tm.memberUserId.id from TeamMembers tm where tm.teamId.ownerUserId = :userId and tm.status = '1'  and tm.teamId.orgLocationsId = :orgLocationId  "+subQuery+"))";
+			}
 			
 			if(query1.toString() != null && !query1.toString().isEmpty()){
 				 queryObj = session.createQuery(query + "and "+"("+query1.toString()+")"+" "+sortingQry+" ");
@@ -2067,15 +2082,26 @@ public class UserDaoImpl implements UserDao {
 				 queryObj = session.createQuery(query +query1.toString()+" "+sortingQry);
 			}
 			
+			if(StringUtils.isNotBlank(type) && type.equalsIgnoreCase("myPerformanceReports")) {
+				queryObj.setLong("orgLocationId", orgLocationId).setLong("userId", userId).list();
+			}
+			else{
 				queryObj.setLong("orgLocationId", orgLocationId).setLong("userId", userId).setParameterList("teamsList", teamsList).setLong("varZero", 0).list();
-	
+			}
 			
 			if(query1.toString() != null && !query1.toString().isEmpty()){
 				countlist = session.createQuery("select count(*) " + query + "and "+"("+query1.toString()+") "+sortingQry+" ").setLong("orgLocationId", orgLocationId).setLong("userId", userId).list();
 				filterCount = countlist.iterator().next().intValue();
 			}else {
-				countlist = session.createQuery("select count(*) " + query +sortingQry).setLong("orgLocationId", orgLocationId).setLong("userId", userId).setLong("varZero", 0).setParameterList("teamsList", teamsList).list();
-				filterCount = countlist.iterator().next().intValue();
+				if(StringUtils.isNotBlank(type) && type.equalsIgnoreCase("myPerformanceReports")) {
+					countlist = session.createQuery("select count(*) " + query +sortingQry).setLong("orgLocationId", orgLocationId).setLong("userId", userId).list();
+					filterCount = countlist.iterator().next().intValue();	
+				}
+				else{
+					countlist = session.createQuery("select count(*) " + query +sortingQry).setLong("orgLocationId", orgLocationId).setLong("userId", userId).setLong("varZero", 0).setParameterList("teamsList", teamsList).list();
+					filterCount = countlist.iterator().next().intValue();	
+				}
+				
 			}
 			queryObj.setFirstResult(userDTO.getStart());
 			queryObj.setMaxResults(userDTO.getLength());
