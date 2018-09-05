@@ -42,6 +42,19 @@ public class EmployeePayroll {
 	@JoinColumn(name = "PAY_SHEET_FREQUENCY_ID", nullable = false)
 	private PaysheetFrequency paysheetFrequency;
 	
+	
+	@Column(name = "PAY_TYPE")
+	private String payType; 
+	 
+	@Column(name = "PAY_PER_SALARY")
+    private BigDecimal payPerSalary;
+	
+	@Column(name = "ADVANCE_AMOUNT")
+    private BigDecimal advanceAmount;
+	
+	@Column(name = "LOAN_AMOUNT")
+    private BigDecimal loanAmount;
+	
 	@Column(name = "EMP_PAY_RATE")
 	private BigDecimal empPayRate;
 	
@@ -461,6 +474,46 @@ public class EmployeePayroll {
 	public void setPayitemHistory(Set<PayitemHistory> payitemHistory)
 	{
 		this.payitemHistory = payitemHistory;
+	}
+
+	public String getPayType()
+	{
+		return payType;
+	}
+
+	public BigDecimal getPayPerSalary()
+	{
+		return payPerSalary;
+	}
+
+	public BigDecimal getAdvanceAmount()
+	{
+		return advanceAmount;
+	}
+
+	public BigDecimal getLoanAmount()
+	{
+		return loanAmount;
+	}
+
+	public void setPayType(String payType)
+	{
+		this.payType = payType;
+	}
+
+	public void setPayPerSalary(BigDecimal payPerSalary)
+	{
+		this.payPerSalary = payPerSalary;
+	}
+
+	public void setAdvanceAmount(BigDecimal advanceAmount)
+	{
+		this.advanceAmount = advanceAmount;
+	}
+
+	public void setLoanAmount(BigDecimal loanAmount)
+	{
+		this.loanAmount = loanAmount;
 	}
 	
 	

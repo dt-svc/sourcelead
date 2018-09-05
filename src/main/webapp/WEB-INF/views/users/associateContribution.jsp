@@ -16,9 +16,9 @@
                     var contributionMethod = $("#contricontributionMethod").val();
                     var markuptr = "";
                     if(conTempIndex >= 0 && conTempIndex != null){
-                    	markuptr = '<tr id="row'+conTempIndex+'"><td><input type="checkbox" name="contributio-record"></td><td><input type="hidden" id="contributionType" name="contributionDTOList['+i+'].contributionType" value="'+contributionType+'"/><span id="conTypeVal'+conTempIndex+'">'+ contributionTypeValue + '</span></td><td><input type="hidden" id="contributionMethod" name="contributionDTOList['+i+'].contributionMethod" value="'+contributionMethod+'" />'+ contributionMethod+'</td><td><input type="hidden" id="contributionAmount" name="contributionDTOList['+i+'].contributionAmount" value="'+contributionAmount+'"/>' + contributionAmount + '</td><td><a onclick="deleteRowCont(\''+conTempIndex+'\');"><i class="fa fa-remove text-danger"></i></a></td></tr>';
+                    	markuptr = '<tr id="row'+conTempIndex+'"><td><input type="hidden" id="contributionType" name="contributionDTOList['+i+'].contributionType" value="'+contributionType+'"/><span id="conTypeVal'+conTempIndex+'">'+ contributionTypeValue + '</span></td><td><input type="hidden" id="contributionMethod" name="contributionDTOList['+i+'].contributionMethod" value="'+contributionMethod+'" />'+ contributionMethod+'</td><td><input type="hidden" id="contributionAmount" name="contributionDTOList['+i+'].contributionAmount" value="'+contributionAmount+'"/>' + contributionAmount + '</td><td><a onclick="deleteRowCont(\''+conTempIndex+'\');"><i class="fa fa-remove text-danger"></i></a></td></tr>';
                     }else{
-                    	markuptr = '<tr id="row'+i+'"><td><input type="checkbox" name="contributio-record"></td><td><input type="hidden" id="contributionType" name="contributionDTOList['+i+'].contributionType" value="'+contributionType+'"/><span id="conTypeVal'+i+'">'+ contributionTypeValue + '</span></td><td><input type="hidden" id="contributionMethod" name="contributionDTOList['+i+'].contributionMethod" value="'+contributionMethod+'" />'+ contributionMethod+'</td><td><input type="hidden" id="contributionAmount" name="contributionDTOList['+i+'].contributionAmount" value="'+contributionAmount+'"/>' + contributionAmount + '</td><td><a onclick="deleteRowCont(\''+i+'\');"><i class="fa fa-remove text-danger"></i></a></td></tr>';
+                    	markuptr = '<tr id="row'+i+'"><td><input type="hidden" id="contributionType" name="contributionDTOList['+i+'].contributionType" value="'+contributionType+'"/><span id="conTypeVal'+i+'">'+ contributionTypeValue + '</span></td><td><input type="hidden" id="contributionMethod" name="contributionDTOList['+i+'].contributionMethod" value="'+contributionMethod+'" />'+ contributionMethod+'</td><td><input type="hidden" id="contributionAmount" name="contributionDTOList['+i+'].contributionAmount" value="'+contributionAmount+'"/>' + contributionAmount + '</td><td><a onclick="deleteRowCont(\''+i+'\');"><i class="fa fa-remove text-danger"></i></a></td></tr>';
                     	i++;
                     	conTempIndex = null;
                     }
@@ -84,14 +84,14 @@ $(document).ready(function(){
                   </div>
                   
                   <div class="col-md-5">
-                    <label class="clearfix">contributionAmount</label>
+                    <label class="clearfix">Amount</label>
                     <div class="clearfix">
                       <input type="text" class="form-control" id="contriAmt" name="contriAmt" data-validation="required validate_float" field-name="Amount" readonly>
                     </div>
                   </div>
                   </div>
                   <div class="col-md-5" >
-                    <label class="clearfix">contributionMethod</label>
+                    <label class="clearfix">Method</label>
                     <div class="clearfix">
                       <input type="text" class="form-control" id="contricontributionMethod" name="contricontributionMethod" value="Fixed" readonly>
                     </div>
@@ -107,7 +107,7 @@ $(document).ready(function(){
                 <table id="test">
                 	<thead>
                 		<tr>
-                		    <th>Select</th>
+<!--                 		    <th>Select</th> -->
                 			<th>Type</th>
                 			<th>Method</th>
                 			<th>Amount</th>

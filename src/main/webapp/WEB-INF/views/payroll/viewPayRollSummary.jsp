@@ -161,13 +161,13 @@
                             <td><span id="netpay">0</span></td>
                         </tr>
                         <tr>
-                          <td>YTD</td>
-                          <td>xxxx</td>
-                          <td>xxxx</td> 
-                          <td>xxxx</td>
-                          <td>xxxx</td>
-                          <td>xxxx</td>
-                          <td>xxxx</td>
+                           <td>YTD</td>
+                          <td><span id="ytdGross">0</span></td>
+                          <td><span id="ytdFederal">0</span></td> 
+                          <td><span id="ytdFICA">0</span></td>
+                          <td><span id="ytdTaxes">0</span></td>
+                          <td><span id="ytdDeduction">0</span></td>
+                          <td><span id="ytdNetpay">0</span></td>
                         </tr>
                       </tbody>
                     </table></td>
@@ -215,6 +215,15 @@
 		            $("#payRate").val(json.payRate);
 		            $("#payrollId").val(json.payrollId);
 		            $("#payrollUUID").val(json.payrollUUID);
+		            
+		            // YTD      
+		             var ytd = json.ytdDTO;
+	                 $("#ytdGross").text(ytd.ytdGross);
+	                 $("#ytdFederal").text(ytd.ytdFederal);
+	                 $("#ytdFICA").text(ytd.ytdFICA);
+	                 $("#ytdTaxes").text(ytd.ytdTaxes);
+	                 $("#ytdDeduction").text(ytd.ytdDeduction);
+	                 $("#ytdNetpay").text(ytd.ytdNet);
 		             
 		                var postDed = "";
 	        			postDed = postDed + '<table width="100%" class="table table-bordered" >';
@@ -233,7 +242,7 @@
 					            	var ded = json.postDed[i];
 				        			postDed = postDed + '<tr>';
 				        			postDed = postDed + ' <td>'+ded.deductionType+'</td>';
-				        			postDed = postDed + ' <td><input type="text" id="'+i+'amount" name="postDeduction['+i+'].amount" value='+ded.amount+' class="formControl" readOnly></td>';
+				        			postDed = postDed + ' <td><input type="text" id="'+i+'amount" name="postDeduction['+i+'].amount" value='+ded.postDeductionAmt+' class="formControl" readOnly></td>';
 				        			postDed = postDed + ' </tr>';
 					            }	
 			            }
@@ -265,7 +274,7 @@
 				            	var preded = json.preDed[i];
 				            	preDed = preDed + '<tr>';
 				            	preDed = preDed + ' <td>'+preded.deductionType+'</td>';
-				            	preDed = preDed + ' <td><input type="text" id="amount" name="preDeduction['+i+'].amount" value='+preded.amount+' class="formControl" readOnly></td>';
+				            	preDed = preDed + ' <td><input type="text" id="amount" name="preDeduction['+i+'].amount" value='+preded.preDeductionAmount+' class="formControl" readOnly></td>';
 				            	preDed = preDed + ' </tr>';
 				            }
 	                        }
@@ -299,7 +308,7 @@
 					            	output = output + '<tr>';
 					            	output = output + '<input type="hidden" name="contribution['+i+'].taxtType" value='+ot.taxtType+' id="taxtType"/>';
 					            	output = output + '<td>'+ot.contributionType+'</td>';
-					            	output = output + ' <td><input type="text" name="contribution['+i+'].contributionAmount" value='+ot.amount+' class="formControl" readOnly></td>';
+					            	output = output + ' <td><input type="text" name="contribution['+i+'].contributionAmount" value='+ot.contributionAmt+' class="formControl" readOnly></td>';
 					            	output = output + '</tr>';
 			                  }
 		                  }
@@ -307,7 +316,7 @@
 	                        output = output + ' <tfoot>';
 	                        output = output + '   <tr>';
 	                        output = output + '  <th>Total</th>';
-	                        output = output + '  <td><span>$ '+json.contributionTotal+'</span></td>';
+	                        output = output + '  <td><span>$ '+json.contributionTotal.toFixed(2)+'</span></td>';
 	                        output = output + '  </tr>';
 	                        output = output + '  </tfoot>';
 	                        output = output + '  </table>';
@@ -334,7 +343,7 @@
 						            	payItem = payItem +' <tr>';
 						            	payItem = payItem +' <td>'+pi.payItemName+'</td>';
 						            	payItem = payItem +'<input type="hidden" value='+pi.id+' id="id" name="payItem['+i+'].id"/>';
-						            	payItem = payItem +' <td><input type="text" class="formControl" id="payItemAmount" name="payItem['+i+'].payItemAmount" readOnly value='+pi.payItemAmount+'></td>';
+						            	payItem = payItem +' <td><input type="text" class="formControl" id="payItemAmount" name="payItem['+i+'].payItemAmount" readOnly value='+pi.payItemAmt+'></td>';
 						            	payItem = payItem +' </tr>';
 				                  }
 			                  }

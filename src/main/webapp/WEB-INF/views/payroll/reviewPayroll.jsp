@@ -44,7 +44,7 @@ function approvePayrollTab(){
    <form:form id="submit_for_approver" name="submit_for_approver" method="post">
     <div class="positionRelative timesheet_head minHeight clearfix"></div>
     	<div id="reviewDiv"></div>
-    
+    	<div id="sentSummaryLoading"></div>
     
             <nav class="clearfix">
           <ul class="pull-right mr list-unstyled list-inline">
@@ -69,16 +69,17 @@ function approvePayrollTab(){
   function getReviewPayroll(status){
 	  var uuid = '${paySheetFrequencyUUID}';
 	  var payPeriodNum = '${payPeriodNum}';
+	  $("#sentSummaryLoading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
 		 $.ajax({
 		    	type: "GET",
-		        url: sourceleadUrl+"/getPaySheetFrequencySummary?paySheetFrequencyuuid="+uuid+"&payPeriodNum="+payPeriodNum,                 
+		        url: sourceleadUrl+"/getPaySheetFrequencySummary?paySheetFrequencyuuid="+uuid+"&payPeriodNum="+payPeriodNum+"&approverStatus="+status,                 
 		        success: function(data) {
 					var json = data.payrollDTO;
 		        	var result = "";
 		        	result = result +'<table id="reviewTableId">';
 			    	result = result +'<thead>';
 			    	result = result +'	<tr>';
-			    	/* result = result +'	<th></th>'; */
+// 			    	result = result +'	<th>Exclude</th>';
 			    	result = result +'	<th>Emp Id</th>';
 			    	result = result +'	<th>Emp Name</th>';
 			    	result = result +'	<th>Rate</th>';
@@ -101,10 +102,12 @@ function approvePayrollTab(){
 			    	result = result +'<tr>																													';	
 		            
 			   	 	/* result += '<td>';
+			   	 	if(json.length > 1){
 		        	result += '<div class="checkbox-new pull-left ml5">';
 		        	result += '<input id="'+i+'emp1" value="YES" class="checkbox-custom" name="uspayroll['+i+'].isExcept" type="checkbox">';
 		        	result += '<label for="'+i+'emp1" class="checkbox-custom-label"></label>';
 		        	result += '</div>';
+			   	 	}
 		        	result += '</td>';  */
 		        	result += '<input type="hidden" value='+report.empPayrollId+' id="'+i+'empPayrollId" name="uspayroll['+i+'].empPayrollId" />';
 			    	if(report.empId != null && report.empId != '' && report.empId != 'undefined'){
@@ -185,7 +188,7 @@ function approvePayrollTab(){
 			    	result = result +'</tbody>';
 				    $("#reviewDiv").empty();
 				    $("#reviewDiv").append(result);
-// 				    reviewPagination();
+				    $("#sentSummaryLoading").removeAttr('style');
 		        }
 		    });
 	  
@@ -196,11 +199,13 @@ function approvePayrollTab(){
   
  <script>
 function confirmPayroll(){
+	
+	var payPeriodNum = $("#payPeriodNum").val();
 	$("#reviewPayrollDiv").hide();
 	$("#approveDiv").show();
 	 var confirmType = "SENT";
 	 var formData = $($('#submit_for_approver')[0]).serialize();
-	 calculateTotalPay(formData,confirmType);
+	 calculateTotalPay(formData,confirmType,payPeriodNum);
 }
 </script>
 

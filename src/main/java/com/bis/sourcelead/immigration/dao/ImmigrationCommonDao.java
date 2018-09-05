@@ -6,6 +6,7 @@ import java.util.Map;
 
 import com.bis.sourcelead.dto.ImmigrationListViewDTO;
 import com.bis.sourcelead.dto.LcaDTO;
+import com.bis.sourcelead.dto.LcaDetailsDTO;
 import com.bis.sourcelead.dto.LcaListViewDTO;
 import com.bis.sourcelead.dto.MyImmigrationViewDTO;
 import com.bis.sourcelead.dto.ResponseList;
@@ -51,7 +52,7 @@ public interface ImmigrationCommonDao {
 	
 	ImmigrationCandidateDocuments getImmigrationCandidateDocsById(Long id, Long candidateId,Long immigrationId) throws Exception;
 
-	CandidateLcaI94Summary getCandidateLCADetails(Long id, String yes);
+	CandidateLcaI94Summary getCandidateLCADetails(Long id);
 	
 	LcaHistory getLcaHistoryDetails(Long id, String yes);
 
@@ -216,5 +217,9 @@ public interface ImmigrationCommonDao {
 	LcaHistory saveLcaHistory(LcaHistory lcaHistory);
 	
 	public Lca getLcaByLcaId(Long lcaId) throws Exception;
+	
+	List<LcaDetailsDTO> getEmployeeByLcaId(Long lcaId, OrgLocations orgLocations)throws Exception;
+	
+	void deleteLcaPlaceOfEmpmntDetails(Long remaininglpoeIds[]);
 	
 }
