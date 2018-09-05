@@ -240,6 +240,18 @@
 	 <a href="javascript:void(0)" class="pull-left" id="changeBillableStatus">Ok</a>
 	 <a class="close_color" class="pull-left" id="cancelBillingStatus">Cancel</a>
 </div>
+
+<script>
+$("#export-pop").click(function(){
+	$(".export_pop").toggle();
+});
+$("html").click(function() {
+    $(".export_pop").slideUp();
+});
+$(".export_pop, #export-pop").click(function(e) {
+    e.stopPropagation();
+});	
+</script>
   
 <script type="text/javascript">
 
