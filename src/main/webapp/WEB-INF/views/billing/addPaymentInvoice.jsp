@@ -80,7 +80,7 @@
 					</div>
 				</div>
 				
- 	 		<div class="col-md-6 minHeight50 mb">
+ 	 		<div class="col-md-6 minHeight50 mb errorInptgroup">
 		<label class="col-md-3">Attachment</label>
 			<div class="col-md-9 zindex positionRelative">
 					<div class="input-group col-md-12" id="uploadFileGroup"	style="margin: 0 auto">
@@ -95,7 +95,7 @@
     	 		
     	 		<!--  Table html -->
     	 		
-    	 		<div class="candidate_wrap_table datatable_filter">
+    	 		<div class="candidate_wrap_table datatable_filter positionRelative mt40">
 	                  <div id="invoiceList"></div>
     	 		</div>
     	 		<!--  Table html -->
@@ -282,7 +282,7 @@ function addInvoice(){
           		} else if (result.response === "AWKWARD") {
           		    location.href = "/errorPage";
           		} else if (result.response === "SUCCESS") {
-          			location.reload();
+          			location.replace(sourceleadUrl+"/invoiceList");
           		} else if (result.indexOf('Sign In') !== -1) {
           			location.replace(sourceleadUrl);
           		} else {
@@ -435,6 +435,7 @@ function showCheckBoxDivPopup(){
 		    "scrollY":"350px",
 	        "scrollCollapse": true,
 	        "paging":         false,
+	        "fixedHeader" : true,
 	    	"lengthMenu": [[10000, 15, 20, -1], [10000, 15, 20, "All"]],
 	    	"bLengthChange": false,
 	    	"bDestroy": true,
@@ -447,7 +448,11 @@ function showCheckBoxDivPopup(){
 	    	"oLanguage": {
 	     		"sSearch": "",
 	     		 "sZeroRecords": "", "sEmptyTable": ""
-	     	}
+	     	},
+	     	// Datatable: Hidding duplicate Header in IE-11(edge)
+	 "initComplete" : function () {
+		         $('.dataTables_scrollBody thead tr').addClass('hidden');
+		     }
 	    });
 	
 }
