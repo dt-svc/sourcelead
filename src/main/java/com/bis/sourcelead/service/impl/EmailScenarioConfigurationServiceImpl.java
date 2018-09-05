@@ -190,8 +190,8 @@ private static final Logger logger = LoggerFactory.getLogger(EmailScenarioConfig
 	}
 
 	@Override
-	public List<EmailScenarioConfiguration> getConfParserMailList(Long orgLocId) throws Exception {
-		return  emailScenarioConfigurationDao.getConfParserMailList(orgLocId);
+	public List<EmailScenarioConfiguration> getConfParserMailList(Long orgLocId, String parsingType) throws Exception {
+		return  emailScenarioConfigurationDao.getConfParserMailList(orgLocId, parsingType);
 	}
 
 }

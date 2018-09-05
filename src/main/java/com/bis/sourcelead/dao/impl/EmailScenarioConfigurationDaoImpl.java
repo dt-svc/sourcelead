@@ -238,11 +238,13 @@ public class EmailScenarioConfigurationDaoImpl implements EmailScenarioConfigura
 
 	@Override
 	@Transactional(rollbackFor = { Exception.class })
-	public List<EmailScenarioConfiguration> getConfParserMailList(Long orgLocId) {
+	public List<EmailScenarioConfiguration> getConfParserMailList(Long orgLocId, String parsingType) {
 		logger.debug("In EmailScenarioConfigurationDaoImpl class getEmailscenarioConByOrgLocId method");
 		Session session = this.sessionFactory.getCurrentSession();
-		String query = "from EmailScenarioConfiguration es where es.orgLocationId.id = :orgLocId and es.usageType ='job_parsing'";
-		List<EmailScenarioConfiguration> emailParserList =  session.createQuery(query.toString()).setLong("orgLocId", orgLocId).list();
+		String query = "from EmailScenarioConfiguration es where es.orgLocationId.id = :orgLocId and es.usageType =:parsingType";
+		List<EmailScenarioConfiguration> emailParserList =  session.createQuery(query.toString())
+				                                                             .setLong("orgLocId", orgLocId)
+				                                                             .setString("parsingType", parsingType).list();
 		return emailParserList;
 	}
 	
