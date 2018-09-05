@@ -1515,23 +1515,19 @@ public class RequirementRestController {
 			  		         }
 			  		         
 			  		         
-			  		         if(obj.has("name") && obj.getString("name").equalsIgnoreCase("Location") && StringUtils.isNotBlank(obj.getString("value")) && obj.getString("value") != null) {
+			  		         if(obj.has("name") && obj.getString("name").equalsIgnoreCase("location") && StringUtils.isNotBlank(obj.getString("value")) && obj.getString("value") != null) {
 			  		        	rsf.setLocation(obj.getString("value"));
 			  		         }
 			  		         
-			  		         if(obj.has("name") && obj.getString("name").equalsIgnoreCase("Country") && StringUtils.isNotBlank(obj.getString("value")) && obj.getString("value") != null) {
+			  		         if(obj.has("name") && obj.getString("name").equalsIgnoreCase("country") && StringUtils.isNotBlank(obj.getString("value")) && obj.getString("value") != null) {
 			  		        	rsf.setCountry(obj.getString("value"));
 			  		         }
 			  		         
-			  		         if(obj.has("name") && obj.getString("name").equalsIgnoreCase("State") && StringUtils.isNotBlank(obj.getString("value")) && obj.getString("value") != null) {
+			  		         if(obj.has("name") && obj.getString("name").equalsIgnoreCase("state") && StringUtils.isNotBlank(obj.getString("value")) && obj.getString("value") != null) {
 			  		        	rsf.setState(obj.getString("value"));
 			  		         }
 			  		       
-			  		         if(obj.has("name") && obj.getString("name").equalsIgnoreCase("City") && StringUtils.isNotBlank(obj.getString("value")) && obj.getString("value") != null) {
-			  		        	rsf.setCity(obj.getString("value"));
-			  		         }
-			  		         
-			  		         if(obj.has("name") && obj.getString("label").equalsIgnoreCase("City") && StringUtils.isNotBlank(obj.getString("value")) && obj.getString("value") != null) {
+			  		         if(obj.has("name") && obj.getString("name").equalsIgnoreCase("city") && StringUtils.isNotBlank(obj.getString("value")) && obj.getString("value") != null) {
 			  		        	rsf.setCity(obj.getString("value"));
 			  		         }
 			  		         
@@ -1576,9 +1572,13 @@ public class RequirementRestController {
 			  		         } 
 			  		        
 			  		         if(obj.has("name") && obj.getString("name").equalsIgnoreCase("WorkExperience") && StringUtils.isNotBlank(obj.getString("value")) && obj.getString("value") != null) {
-			  		        	rsf.setNoticePeriod(obj.getString("value"));
 			  		        	String[] experience = obj.getString("value").split(" ");
-			  		        	rsf.setWorkExperience(experience[0]+"."+experience[2]);
+			  		        	if(experience.length > 1) {
+			  		        		rsf.setWorkExperience(experience[0]+"."+experience[2]);
+			  		        	}else {
+			  		        		rsf.setWorkExperience(obj.getString("value"));
+			  		        	}
+			  		        	
 			  		         } 
 			  		        
 			  		         if(obj.has("name") && obj.getString("name").equalsIgnoreCase("zipcode") && StringUtils.isNotBlank(obj.getString("value")) && obj.getString("value") != null) {
@@ -1596,7 +1596,7 @@ public class RequirementRestController {
 			  		       rsf.setCreatedDate(rs.getCreatedDate());
 			  		       rsf.setUpdatedDate(rs.getUpdatedDate());
 			  		       
-			  		     requirementSubmissionTemplateFieldsService.storeRequirementSubmissionTemplateFields(rsf);
+			  		       requirementSubmissionTemplateFieldsService.storeRequirementSubmissionTemplateFields(rsf);
 			  		 }
 		  		 
 		       }
