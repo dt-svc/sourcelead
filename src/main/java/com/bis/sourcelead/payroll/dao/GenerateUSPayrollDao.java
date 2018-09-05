@@ -1,5 +1,6 @@
 package com.bis.sourcelead.payroll.dao;
 
+import java.math.BigDecimal;
 import java.util.Date;
 import java.util.List;
 
@@ -20,7 +21,7 @@ public interface GenerateUSPayrollDao {
 
 	LCAWageDTO getLcaWageByCandidateIdLcationId(Candidate candidate, OrgLocations orgLocation);
 
-	List<ProjectRateDTO> payRateByCandidateLocation(Candidate candidate, OrgLocations orgLocation, Date freqStartDate, Date freqEndDate);
+	BigDecimal payRateByCandidateLocation(Candidate candidate, OrgLocations orgLocation, Date freqStartDate, Date freqEndDate, String payFrequency);
 
 
 }

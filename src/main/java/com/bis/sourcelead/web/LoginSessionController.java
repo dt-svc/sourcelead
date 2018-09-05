@@ -203,7 +203,10 @@ public class LoginSessionController {
 		User user = userService.findByUserName(authentication.getName());
 		UserRole userRole = null;
 		OrgLocations orgLocations = null;
-	
+		if(orgLocationId != null){
+			orgLocations = orgLocationService.getOrgLocations(orgLocationId);
+			userRole = userRoleService.getUserDetailsByUserIdAndLocationId(orgLocations.getUser().getId(), orgLocationId);
+		}else{
 			if(userRoleId == null){
 				userRoleId =  (Long) request.getSession().getAttribute("userRoleId");
 				if(userRoleId == null)
@@ -221,7 +224,7 @@ public class LoginSessionController {
 				user = userRole.getUser();
 				orgLocations = userRole.getOrgLocations();
 			}
-		
+		}
 		
 		Collection<Tabs> tabsList = null;
 		Integer associatesTabsCount = 0; 
@@ -361,42 +364,38 @@ public class LoginSessionController {
 			SecurityContextHolder.getContext().setAuthentication(new UsernamePasswordAuthenticationToken(userName,null, buildUserAuthority(actionsList)));
 			setLoginSession(request, authentication,user,userRole);
 			
-
-			List<Long> accountUserList = new ArrayList<>();
-			List<Long> userIdsList = null;
-			Long productionLoginUserId =  (Long) SourceLeadSessionManager.getSessionAttribute(request, "productionLoginUserId");
-			if(productionLoginUserId != null){
-				userIdsList = userService.getUserIdsListByLinkedUserId(productionLoginUserId);
-			}else {
-				userIdsList = userService.getUserIdsListByLinkedUserId(userRole.getUser().getId());
-			}
-			
-			
-			if(userIdsList != null && !userIdsList.isEmpty()) {
-				for(Long userId : userIdsList) {
-					List<Long> linkedUserIdsList = userService.getUserIdsListByLinkedUserId(userId);
-					accountUserList.addAll(linkedUserIdsList);
+			if("ROLE_PRODUCTION_SUPPORT".equalsIgnoreCase(userRole.getRoles().getRoleName())){
+				List<OrgLocations> orgLocationsList = orgLocationService.getAllRegisteredOrgLocations();
+				if(orgLocationsList.size() > 1){
+					SourceLeadSessionManager.setSessionAttribute(request, "userSpocRolesList", orgLocationsList);
+					SourceLeadSessionManager.setSessionAttribute(request, "userSpocRolesListCount", orgLocationsList.size());
+					SourceLeadSessionManager.setSessionAttribute(request, "prodSupportLoginUserRole", userRole.getRoles().getRoleName());
+					SourceLeadSessionManager.setSessionAttribute(request, "prodSupportLoginUserDisplayName", userRole.getRoles().getDisplayName());
+					SourceLeadSessionManager.setSessionAttribute(request, "prodSupportLoginOrgName", userRole.getRoles().getOrgLocations().getOrgLocationName());
+					SourceLeadSessionManager.setSessionAttribute(request, "prodSupportOrgLocationId", userRole.getRoles().getOrgLocations().getId());
+				}
+			}else{
+				List<Long> accountUserList = new ArrayList<>();
+				List<Long> userIdsList = userService.getUserIdsListByLinkedUserId(userRole.getUser().getId());
+				if(userIdsList != null && !userIdsList.isEmpty()) {
+					for(Long userId : userIdsList) {
+						List<Long> linkedUserIdsList = userService.getUserIdsListByLinkedUserId(userId);
+						accountUserList.addAll(linkedUserIdsList);
+					}
+				}
+				userIdsList.addAll(accountUserList);
+				userIdsList.add(userRole.getUser().getId());
+				if(userRole.getUser().getLinkUserId() != null) {
+					userIdsList.add(userRole.getUser().getLinkUserId().getId());
+				}
+				
+				List<UserRole> userSpocRolesList = userRoleService.getUserAccountsListByUserId(userIdsList);
+				if(userSpocRolesList.size() > 1){
+					SourceLeadSessionManager.setSessionAttribute(request, "userSpocRolesList", userSpocRolesList);
+					SourceLeadSessionManager.setSessionAttribute(request, "userSpocRolesListCount", userSpocRolesList.size());
+					SourceLeadSessionManager.setSessionAttribute(request, "prodSupportLoginUserRole", null);
 				}
 			}
-			userIdsList.addAll(accountUserList);
-			if(productionLoginUserId != null){
-				userIdsList.add(productionLoginUserId);
-				userIdsList.add(userRole.getUser().getId());
-			}else {
-				userIdsList.add(userRole.getUser().getId());
-			}
-			
-			if(userRole.getUser().getLinkUserId() != null) {
-				userIdsList.add(userRole.getUser().getLinkUserId().getId());
-			}
-			
-			List<UserRole> userSpocRolesList = userRoleService.getUserAccountsListByUserId(userIdsList);
-			if(userSpocRolesList.size() > 1){
-				SourceLeadSessionManager.setSessionAttribute(request, "userSpocRolesList", userSpocRolesList);
-				SourceLeadSessionManager.setSessionAttribute(request, "userSpocRolesListCount", userSpocRolesList.size());
-				SourceLeadSessionManager.setSessionAttribute(request, "prodSupportLoginUserRole", null);
-			}
-			
 			
 			SourceLeadSessionManager.setSessionAttribute(request, "displayName", userRole.getRoles().getDisplayName());
 			SourceLeadSessionManager.setSessionAttribute(request, "userRoleId", userRole.getId());

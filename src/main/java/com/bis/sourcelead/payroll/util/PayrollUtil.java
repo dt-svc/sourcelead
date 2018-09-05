@@ -450,37 +450,32 @@ public class PayrollUtil {
 	 * @param payFrequency 
 	 * @return BigDecimal
 	 */
-	public BigDecimal getHourlyRate(BigDecimal amount, String lcaWageType, String payFrequency)
+	public BigDecimal getActualRateByPayFrequency(BigDecimal amount, String lcaWageType, String payFrequency)
 	{
 		BigDecimal houryRate = BigDecimal.ZERO;
 		BigDecimal payAmount = BigDecimal.ZERO;
+		BigDecimal hours = BigDecimal.ZERO;
 			if(PayrollConstant.PAY_YEARLY.equalsIgnoreCase(lcaWageType.trim())){
 				houryRate =  amount.divide(new BigDecimal(2088),3, RoundingMode.CEILING);
-			}
-			if(PayrollConstant.PAY_MONTHLY.equalsIgnoreCase(lcaWageType.trim())){
+			}else if(PayrollConstant.PAY_MONTHLY.equalsIgnoreCase(lcaWageType.trim())){
 				houryRate = amount.divide(new BigDecimal(176),3, RoundingMode.CEILING);
-			}
-			if(PayrollConstant.PAY_BI_WEEKLY.equalsIgnoreCase(lcaWageType.trim())){
+			}else if(PayrollConstant.PAY_BI_WEEKLY.equalsIgnoreCase(lcaWageType.trim())){
 				houryRate = amount.divide(new BigDecimal(80),3, RoundingMode.CEILING);
-			}
-			if(PayrollConstant.PAY_WEEKLY.equalsIgnoreCase(lcaWageType.trim())){
+			}else if(PayrollConstant.PAY_WEEKLY.equalsIgnoreCase(lcaWageType.trim())){
 				houryRate = amount.divide(new BigDecimal(40),3, RoundingMode.CEILING);
-			}
-			if(PayrollConstant.PAY_BI_MONTHLY.equalsIgnoreCase(lcaWageType.trim())){
+			}else if(PayrollConstant.PAY_BI_MONTHLY.equalsIgnoreCase(lcaWageType.trim())){
 				houryRate = amount.divide(new BigDecimal(88),3, RoundingMode.CEILING);
+			}else if(PayrollConstant.HOURLY.equalsIgnoreCase(lcaWageType.trim())){
+				houryRate = amount;
 			}
 			
-			BigDecimal hours = BigDecimal.ZERO;
 			if(PayrollConstant.PAY_ANNUAL.equalsIgnoreCase(payFrequency)){
 				hours = new BigDecimal(2088);
-			}
-			if(PayrollConstant.PAY_MONTHLY.equalsIgnoreCase(payFrequency)){
+			}else if(PayrollConstant.PAY_MONTHLY.equalsIgnoreCase(payFrequency)){
 				hours = new BigDecimal(176);
-			}
-			if(PayrollConstant.PAY_BI_WEEKLY.equalsIgnoreCase(payFrequency)){
+			}else if(PayrollConstant.PAY_BI_WEEKLY.equalsIgnoreCase(payFrequency)){
 				hours = new BigDecimal(80);
-			}
-			if(PayrollConstant.PAY_WEEKLY.equalsIgnoreCase(payFrequency)){
+			}else if(PayrollConstant.PAY_WEEKLY.equalsIgnoreCase(payFrequency)){
 				hours = new BigDecimal(40);
 			}
 			payAmount = houryRate.multiply(hours);

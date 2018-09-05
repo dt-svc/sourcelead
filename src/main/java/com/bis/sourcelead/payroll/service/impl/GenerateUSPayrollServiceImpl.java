@@ -1,8 +1,6 @@
 package com.bis.sourcelead.payroll.service.impl;
 
 import java.math.BigDecimal;
-import java.math.RoundingMode;
-import java.math.MathContext;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashSet;
@@ -48,6 +46,7 @@ import com.bis.sourcelead.payroll.dto.PayAdjustmentDTO;
 import com.bis.sourcelead.payroll.dto.PayItemDTO;
 import com.bis.sourcelead.payroll.dto.PayrollConstant;
 import com.bis.sourcelead.payroll.dto.PaysheetFrequencyDTO;
+import com.bis.sourcelead.payroll.dto.ProjectRateDTO;
 import com.bis.sourcelead.payroll.dto.TotalHoursDTO;
 import com.bis.sourcelead.payroll.dto.USPayrollDTO;
 import com.bis.sourcelead.payroll.dto.YTDPayrollDTO;
@@ -246,8 +245,8 @@ public class GenerateUSPayrollServiceImpl implements GenerateUSPayrollService{
 							BigDecimal amount = BigDecimal.ZERO;
 							if(PayrollConstant.HOURLY_RATE.equalsIgnoreCase(assoSal.getPayType())) {
 								 List<TotalHoursDTO> totalHoursDto = userGroupDao.getTotalHoursByCandidateId(assoSal.getCandidate().getId(),freqStartDate,freqEndDate);
-								//generateUSPayrollDao.payRateByCandidateLocation(assoSal.getCandidate(),orgLocation,freqStartDate,freqEndDate);								 
-								 payRate = assoSal.getHourlyRate();
+								 payRate = generateUSPayrollDao.payRateByCandidateLocation(assoSal.getCandidate(),orgLocation,freqStartDate,freqEndDate,assoSal.getGroupId().getPayFrequency());								 
+//								payRate = assoSal.getHourlyRate();
 								if(totalHoursDto !=null ) {
 									for(TotalHoursDTO totalHoursDTO : totalHoursDto) {
 										totalHours  = commonUtil.getTotalRegularOverTimeHours(Double.parseDouble(totalHoursDTO.getTotalHours()),totalHours);
@@ -259,7 +258,7 @@ public class GenerateUSPayrollServiceImpl implements GenerateUSPayrollService{
 							}else if(PayrollConstant.LCA_WAGE.equalsIgnoreCase(assoSal.getPayType())) {
 								LCAWageDTO lcaWageDTO  = generateUSPayrollDao.getLcaWageByCandidateIdLcationId(assoSal.getCandidate(),orgLocation);
 								if(lcaWageDTO != null) {
-									amount  = payrollUtil.getHourlyRate(amount,lcaWageDTO.getLcaWageType(),assoSal.getGroupId().getPayFrequency());
+									amount  = payrollUtil.getActualRateByPayFrequency(amount,lcaWageDTO.getLcaWageType(),assoSal.getGroupId().getPayFrequency());
 								}
 							}
 							employeePayroll.setPayType(assoSal.getPayType());
