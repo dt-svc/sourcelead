@@ -59,7 +59,22 @@ public class InvoiceDaoImpl implements InvoiceDao {
 		Session session = this.sessionFactory.getCurrentSession();
 		try {
 			if (creditDebitNote != null) {
-				session.saveOrUpdate(creditDebitNote);
+				// for new Record increment generatedId based on orglocationId
+				if (creditDebitNote.getIsNewRecord() !=null && creditDebitNote.getIsNewRecord().equalsIgnoreCase("Y") ) {
+					Integer maxValue = 1;
+					String generatedId = checkCreditDebitIdNumberInDatebase(creditDebitNote.getOrgLocations().getId());
+					if (generatedId != null) {
+						maxValue = Integer.parseInt(generatedId.substring(generatedId.lastIndexOf("-") + 1));
+							maxValue = maxValue + 1;
+							creditDebitNote.setGeneratedId(creditDebitNote.getGeneratedId().concat(maxValue.toString()));
+					} else {
+						creditDebitNote.setGeneratedId(creditDebitNote.getGeneratedId().concat(maxValue.toString()));
+					}
+					session.saveOrUpdate(creditDebitNote);
+				}else{
+					session.saveOrUpdate(creditDebitNote);	
+				}
+				
 			}
 		} catch (Exception exception) {
 			logger.error(ExceptionUtils.getFullStackTrace(exception));
@@ -961,24 +976,11 @@ public class InvoiceDaoImpl implements InvoiceDao {
 	
 	@Override
 	@Transactional
-	public Long checkCreditDebitIdNumberInDatebase(Long orgLocationId,Integer generatedIdcount) {
+	public String checkCreditDebitIdNumberInDatebase(Long orgLocationId) {
 		Session session = this.sessionFactory.getCurrentSession();
-		String query = "SELECT MAX(CAST(SUBSTR(TRIM(GENERATED_ID),'"+generatedIdcount+"') AS UNSIGNED)) FROM "+schema+".CREDIT_DEBIT_NOTE WHERE ORG_LOCATIONS_ID = '"+ orgLocationId + "'";
-		List<BigInteger> maxCountList = session.createSQLQuery(query).list();
-		Long count = 0L;
-		if (maxCountList != null && !maxCountList.isEmpty() && !maxCountList.contains(null)) {
-			count = (Long) maxCountList.iterator().next().longValue();
-		}
-		if(count == 0){
-			 query = "SELECT MAX(CAST(SUBSTR(TRIM(GENERATED_ID),'7') AS UNSIGNED)) FROM "+schema+".CREDIT_DEBIT_NOTE WHERE ORG_LOCATIONS_ID = '"+ orgLocationId + "'";
-			 maxCountList = session.createSQLQuery(query).list();
-			 if (maxCountList != null && !maxCountList.isEmpty() && !maxCountList.contains(null)) {
-					count = (Long) maxCountList.iterator().next().longValue();
-				}
-		}
-		
-		
-		return count;	
+			String query = "SELECT GENERATED_ID FROM "+schema+".CREDIT_DEBIT_NOTE WHERE ORG_LOCATIONS_ID = '"+ orgLocationId + "' AND  ID = (SELECT MAX(ID) FROM "+schema+".CREDIT_DEBIT_NOTE WHERE ORG_LOCATIONS_ID = '"+ orgLocationId + "' )"  ;
+			String generatedId = (String) session.createSQLQuery(query).uniqueResult();
+		return generatedId;	
 	}
 
 	

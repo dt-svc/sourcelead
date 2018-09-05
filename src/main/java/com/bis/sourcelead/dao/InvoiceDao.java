@@ -87,6 +87,6 @@ public interface InvoiceDao{
 
 	public Long checkInvoiceOrBillIdNumberInDatebase(Long orgLocationId,Integer generatedIdcount,String invoiceType);
 	
-	public Long checkCreditDebitIdNumberInDatebase(Long orgLocationId,Integer generatedIdcount);
+	public String checkCreditDebitIdNumberInDatebase(Long orgLocationId);
 
 }

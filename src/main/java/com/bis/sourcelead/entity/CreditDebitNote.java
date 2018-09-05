@@ -165,6 +165,10 @@ public class CreditDebitNote implements Serializable {
 	@Transient
 	@JsonProperty
 	private String ownerNames;
+	
+	@Transient
+	@JsonProperty
+	private String isNewRecord;
 
 	public Long getId() {
 		return id;
@@ -476,6 +480,14 @@ public class CreditDebitNote implements Serializable {
 
 	public void setOwnerNames(String ownerNames) {
 		this.ownerNames = ownerNames;
+	}
+
+	public String getIsNewRecord() {
+		return isNewRecord;
+	}
+
+	public void setIsNewRecord(String isNewRecord) {
+		this.isNewRecord = isNewRecord;
 	}
 
 

@@ -3401,6 +3401,7 @@ public class InvoiceServiceImpl implements InvoiceService {
 			creditDebitNote.setCreatedBy(user);
 			creditDebitNote.setCreatedDate(commonUtil.orgLocationCommonDate(new Date(), orgLocation));
 			creditDebitNote.setStatus(Constants.RECORD_ACTIVE.toString());
+			creditDebitNote.setIsNewRecord(Constants.YES);
 		}
 		
 		OrgLocations vendorOrgLocation = null;
@@ -3541,12 +3542,21 @@ public class InvoiceServiceImpl implements InvoiceService {
 		childCreditDebitNote.setReason(parentCreditDebitNote.getReason());
 		childCreditDebitNote.setBillingAddress(parentCreditDebitNote.getBillingAddress());
 		childCreditDebitNote.setShippingAddress(parentCreditDebitNote.getShippingAddress());
-		List<Invoice> childInvoiceList = invoiceDao.getInvoiceListUsingMultipleIdsForChild(parentCreditDebitNote.getInvoice());
+		List<Invoice> childInvoiceList = null;
 		StringBuilder sbChild = new StringBuilder();
+		 childInvoiceList = invoiceDao.getInvoiceListUsingMultipleIdsForChild(parentCreditDebitNote.getInvoice());
+		 if(childInvoiceList.size()>0){
 		childInvoiceList.forEach(childInvoice1->{
 			sbChild.append(childInvoice1.getId()).append(",").toString();	
 		});
-		childCreditDebitNote.setInvoice(sbChild.deleteCharAt(sbChild.length() - 1).toString());
+		 }else{
+			 childInvoiceList = invoiceDao.getInvoiceListUsingMultipleIds(parentCreditDebitNote.getInvoice()); 
+			 childInvoiceList.forEach(childInvoice1->{
+					sbChild.append(childInvoice1.getParentInvoiceId().getId()).append(",").toString();	
+				});
+		 }
+		 String invoiceIds = sbChild.deleteCharAt(sbChild.length() - 1).toString();
+		childCreditDebitNote.setInvoice(invoiceIds);
 		childCreditDebitNote.setGeneratedId(parentCreditDebitNote.getGeneratedId());
 		childCreditDebitNote.setCreditDebitUUID(SourceLeadRandomCodeHelper.generateRandomUUID());
 		childCreditDebitNote.setUpdatedBy(user);
@@ -3876,45 +3886,18 @@ public class InvoiceServiceImpl implements InvoiceService {
 		}
 	
 	public String getCreditDebitGeneratedId(OrgLocations loginOrgLoc,OrgLocations vendorOrgLocation,String noteType) {
-		String companyShortCode = null;
-    	Long number = 1L;
-		String expId = null;
 		String type = "";
-		Integer generatedIdcount =0;
 		if(noteType.equalsIgnoreCase(Constants.CREDIT_NOTE)){
 			type = Constants.CREDIT_ENTITY_SHORTCODE;
 		}else{
 			type = Constants.DEBIT_ENTITY_SHORTCODE;
 		}
-		StringBuilder sbuilder = new StringBuilder();
-		sbuilder.append(loginOrgLoc.getGeneratedUserId()).append(type);
-		String generatedUsreId = sbuilder.toString();
-		for(int i=0;i< generatedUsreId.length();i++){
-			char ch = generatedUsreId.charAt(i);
-			if(Character.isAlphabetic(ch)){
-				generatedIdcount++;
-			}
-		}
-		generatedIdcount = generatedIdcount+1;
-		Long checkNumber = invoiceDao.checkCreditDebitIdNumberInDatebase(loginOrgLoc.getId(),generatedIdcount);
-		
-		
-		if(checkNumber == null){
-			expId = number.toString();
-		}else{
-		Long reqId = checkNumber+1;
-		expId = reqId.toString();
-		}
-		final DecimalFormat decimalFormat = new DecimalFormat("0");
-		String convetredRequirementsId = decimalFormat.format(Long.parseLong(expId));
-		
 		Calendar cal = Calendar.getInstance();
 		int year = cal.getWeekYear();
-        StringBuffer sb = new StringBuffer();
-        if(loginOrgLoc.getGeneratedUserId() != null && !"".equalsIgnoreCase(loginOrgLoc.getGeneratedUserId())){
-        	 companyShortCode = loginOrgLoc.getGeneratedUserId();
-        }
-		return sb.append(companyShortCode).append("-").append(type).append("-").append(vendorOrgLocation.getGeneratedUserId()).append("-").append(year).append("-").append(convetredRequirementsId).toString();
+		StringBuilder sbuilder = new StringBuilder();
+		sbuilder.append(loginOrgLoc.getGeneratedUserId()).append("-").append(type).append("-").append(vendorOrgLocation.getGeneratedUserId()).append("-").append(year).append("-");
+		String generatedUsreId = sbuilder.toString();
+		return generatedUsreId;
 	}
 
 	@Override
