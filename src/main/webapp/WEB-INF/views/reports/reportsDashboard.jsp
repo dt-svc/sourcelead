@@ -24,7 +24,7 @@
           <div class="leaveConfigure newRepGrid clerfix">
           <sec:authorize access="!hasRole('ROLE_ENROLL_ORG')">
              
-      <sec:authorize access="hasAnyRole('ROLE_RECRUITERS_REPORT','ROLE_VENDORS_REPORT','ROLE_CLIENT_REPORT','ROLE_APPLICANT_DECLINE','ROLE_APPLICANT_BACKOUT','ROLE_JOBS_PIPELINE','ROLE_APPLICANT_SOURCE','ROLE_TIME_TO_FILL','ROLE_APPLICANT_RECEIVED','ROLE_JOBS_STAGES')">
+	      <sec:authorize access="hasAnyRole('ROLE_RECRUITERS_REPORT','ROLE_VENDORS_REPORT','ROLE_CLIENT_REPORT','ROLE_APPLICANT_DECLINE','ROLE_APPLICANT_BACKOUT','ROLE_JOBS_PIPELINE','ROLE_APPLICANT_SOURCE','ROLE_TIME_TO_FILL','ROLE_APPLICANT_RECEIVED','ROLE_JOBS_STAGES','ROLE_MY_PERFORMANCE_REPORT')">
             
              <div class="col-md-4 reportNewCta">
                  
@@ -34,7 +34,9 @@
 				 <sec:authorize access="hasRole('ROLE_RECRUITERS_REPORT')">
 				 <li><a href='${appPath}/recruitersReports'>Recruiter(s) Report</a></li>
 				 </sec:authorize>
-				
+				 <sec:authorize access="hasRole('ROLE_MY_PERFORMANCE_REPORT')">
+				 <li><a href='${appPath}/myPerformanceReports'>My Performance Report</a></li>
+				 </sec:authorize>
 				 <sec:authorize access="hasRole('ROLE_VENDORS_REPORT')">
 				 <li><a href="${appPath}/vendorsReports">Vendor(s) Report</a></li>
 				 </sec:authorize>
@@ -324,6 +326,10 @@
                 <ul class="repSearchList">
  				<sec:authorize access="hasRole('ROLE_RECRUITERS_REPORT')">
 				 <li><a href='${appPath}/recruitersReports'>Recruiter(s) Report</a></li>
+				 </sec:authorize>
+				 
+				  <sec:authorize access="hasRole('ROLE_MY_PERFORMANCE_REPORT')">
+				 <li><a href='${appPath}/myPerformanceReports'>My Performance Report</a></li>
 				 </sec:authorize>
 				
 				 <sec:authorize access="hasRole('ROLE_VENDORS_REPORT')">

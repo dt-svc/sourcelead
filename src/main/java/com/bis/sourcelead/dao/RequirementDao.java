@@ -17,6 +17,7 @@ import com.bis.sourcelead.entity.Projects;
 import com.bis.sourcelead.entity.RecruiterReportAssociateCountView;
 import com.bis.sourcelead.entity.Requirement;
 import com.bis.sourcelead.entity.RequirementAssignTo;
+import com.bis.sourcelead.entity.RequirementIncentive;
 import com.bis.sourcelead.entity.SubmissionRequirementListView;
 import com.bis.sourcelead.entity.TeamMembers;
 import com.bis.sourcelead.entity.User;
@@ -233,5 +234,9 @@ public interface RequirementDao {
 	public List<JobFair> getJobFairWithNullGeneratedIdList();
 	
 	Boolean forceDeleteForSelectedJobs(String[] uuids);
+	
+	public List<RequirementIncentive> getRequirementIncentiveListByRequirementId(long requirementId) throws Exception;
+	
+	void deleteRequirementIncentiveByRequirementIdOrIds(long requirementId, String ids) throws Exception;
 
 }

@@ -394,7 +394,9 @@ public class LoginSessionController {
 			if(userSpocRolesList.size() > 1){
 				SourceLeadSessionManager.setSessionAttribute(request, "userSpocRolesList", userSpocRolesList);
 				SourceLeadSessionManager.setSessionAttribute(request, "userSpocRolesListCount", userSpocRolesList.size());
-				SourceLeadSessionManager.setSessionAttribute(request, "prodSupportLoginUserRole", null);
+			}else {
+				SourceLeadSessionManager.setSessionAttribute(request, "userSpocRolesList", null);
+				SourceLeadSessionManager.setSessionAttribute(request, "userSpocRolesListCount", 0);
 			}
 			
 			
@@ -515,10 +517,43 @@ public class LoginSessionController {
 			SourceLeadSessionManager.setSessionAttribute(request, "loginUserFirstName", user.getFirstName());
 			SourceLeadSessionManager.setSessionAttribute(request, "loginUserLastName", user.getLastName());
 			SourceLeadSessionManager.setSessionAttribute(request, "loginUserEmail", user.getEmail());
-			List<UserRole> userSpocRolesList = userRoleService.getUserSpocsListByUserId(user.getId());
+			
+			
+			List<Long> accountUserList = new ArrayList<>();
+			List<Long> userIdsList = null;
+			Long productionLoginUserId =  (Long) SourceLeadSessionManager.getSessionAttribute(request, "productionLoginUserId");
+			if(productionLoginUserId != null){
+				userIdsList = userService.getUserIdsListByLinkedUserId(productionLoginUserId);
+			}else {
+				userIdsList = userService.getUserIdsListByLinkedUserId(userRole.getUser().getId());
+			}
+			
+			
+			if(userIdsList != null && !userIdsList.isEmpty()) {
+				for(Long userId : userIdsList) {
+					List<Long> linkedUserIdsList = userService.getUserIdsListByLinkedUserId(userId);
+					accountUserList.addAll(linkedUserIdsList);
+				}
+			}
+			userIdsList.addAll(accountUserList);
+			if(productionLoginUserId != null){
+				userIdsList.add(productionLoginUserId);
+				userIdsList.add(userRole.getUser().getId());
+			}else {
+				userIdsList.add(userRole.getUser().getId());
+			}
+			
+			if(userRole.getUser().getLinkUserId() != null) {
+				userIdsList.add(userRole.getUser().getLinkUserId().getId());
+			}
+			
+			List<UserRole> userSpocRolesList = userRoleService.getUserAccountsListByUserId(userIdsList);
 			if(userSpocRolesList.size() > 1){
 				SourceLeadSessionManager.setSessionAttribute(request, "userSpocRolesList", userSpocRolesList);
 				SourceLeadSessionManager.setSessionAttribute(request, "userSpocRolesListCount", userSpocRolesList.size());
+			}else {
+				SourceLeadSessionManager.setSessionAttribute(request, "userSpocRolesList", null);
+				SourceLeadSessionManager.setSessionAttribute(request, "userSpocRolesListCount", 0);
 			}
 			
 			try {

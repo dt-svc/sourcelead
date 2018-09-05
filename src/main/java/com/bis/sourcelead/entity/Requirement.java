@@ -167,7 +167,20 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 	@Column(name = "CLIENT_RATE_TYPE")
 	private String clientRateType;
 	
-
+	@Column(name = "JOB_RATE")
+	private String jobRate;
+	
+	@Column(name = "INCENTIVIZED")
+	private String incentivized;
+	
+	@Column(name = "PAY_OUT_PERIOD")
+	private String payOutPeriod;
+	
+	@NotFound(action = NotFoundAction.IGNORE)
+	@OneToMany(mappedBy = "requirementId", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+	@Fetch(FetchMode.SELECT)
+	private Set<RequirementIncentive> requirementIncentive = new HashSet<RequirementIncentive>(0);
+	
 	@Column(name = "TRAVEL_ALLOWANCE")
 	private String travelAllowance;
 	
@@ -934,6 +947,38 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 
 	public void setClientRateType(String clientRateType) {
 		this.clientRateType = clientRateType;
+	}
+
+	public String getJobRate() {
+		return jobRate;
+	}
+
+	public void setJobRate(String jobRate) {
+		this.jobRate = jobRate;
+	}
+
+	public String getIncentivized() {
+		return incentivized;
+	}
+
+	public void setIncentivized(String incentivized) {
+		this.incentivized = incentivized;
+	}
+
+	public String getPayOutPeriod() {
+		return payOutPeriod;
+	}
+
+	public void setPayOutPeriod(String payOutPeriod) {
+		this.payOutPeriod = payOutPeriod;
+	}
+
+	public Set<RequirementIncentive> getRequirementIncentive() {
+		return requirementIncentive;
+	}
+
+	public void setRequirementIncentive(Set<RequirementIncentive> requirementIncentive) {
+		this.requirementIncentive = requirementIncentive;
 	}
 
 	public SubmissionTemplate getSubmissionTemplateId() {
