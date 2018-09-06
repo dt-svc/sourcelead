@@ -428,6 +428,7 @@ public class RegistrationServiceImpl implements RegistrationService{
 		
 		saveOrgLocationDefaultProject(registration, orgLocations, user);
 		commonUtil.storeVendorOnboardDefaultTemplate(user, orgLocations);
+		commonUtil.storeDefaultPayheadsWithOrgLocation(user, orgLocations);
 		
 		userService.saveOrUpdateUserElkDocument(userRole,employee,"sladmin");
 		userService.sendEmail(user, loginUser, password,orgLocations.getId());
@@ -819,6 +820,7 @@ public class RegistrationServiceImpl implements RegistrationService{
 				
 				List<SourceleadRoles> rolesList = sourceleadRolesService.getSourceleadRoles();
 				List<SourceleadActions> sourceLeadActionsList =  sourceleadActionsService.getAllSourceleadActionsByTabsList(tabsIds);
+				Countries countires = countriesService.getCountriesByCountryName(orgLocations.getCountry()); 
 				
 				if(null != rolesList){
 					for(SourceleadRoles roles : rolesList){
@@ -834,18 +836,20 @@ public class RegistrationServiceImpl implements RegistrationService{
 						
 						List<Long> roleActonsList = new ArrayList<Long>();
 						if(null != roles.getActionId()){
-							/*for (String s : roles.getActionId().split(",")){
-								 roleActonsList.add(Long.parseLong(s));
-							 }*/
 							for (String s : Arrays.stream(roles.getActionId().split(",")).filter(value -> value != null && value.length() > 0).toArray(size -> new String[size])){
 				    			 roleActonsList.add(Long.parseLong(s));
 				        	 }
 						}
 						
-						
 						for(SourceleadActions actions : sourceLeadActionsList){
 							if(roleActonsList.contains(actions.getId())){
-								 strbul.append(actions.getId()).append(",");
+								if(actions.getLocationCode() == null) {
+									strbul.append(actions.getId()).append(",");
+								}else if(actions.getLocationCode() != null) {
+									if(actions.getLocationCode().equalsIgnoreCase(countires.getCode2())) {
+										strbul.append(actions.getId()).append(",");
+									}
+								}
 							}
 						}
 						
@@ -896,8 +900,8 @@ public class RegistrationServiceImpl implements RegistrationService{
 		 
 		 StringBuilder templateStringBuilder=new StringBuilder();
 		 SubmissionTemplate submissionTemplate = new SubmissionTemplate();
-		 submissionTemplate.setTemplateName(templateStringBuilder.append(orgLocations.getOrgLocationName()).append("Interview Feedback Template").toString());
-		 submissionTemplate.setDescription(templateStringBuilder.append(orgLocations.getOrgLocationName()).append("Interview Feedback Template").toString());
+		 submissionTemplate.setTemplateName(templateStringBuilder.append(orgLocations.getOrgLocationName()).append(" ").append("Interview Feedback Template").toString());
+		 submissionTemplate.setDescription(templateStringBuilder.append(orgLocations.getOrgLocationName()).append(" ").append("Interview Feedback Template").toString());
 		 submissionTemplate.setOrgLocationId(orgLocations);
 		 submissionTemplate.setJsonString(sourceLeadDefaultTemplate.getJsonString());
 		 submissionTemplate.setStatus(Constants.CANDIDATE_ACTIVE);

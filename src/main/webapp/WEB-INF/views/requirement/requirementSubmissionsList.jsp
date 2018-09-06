@@ -78,7 +78,11 @@
 			 {
     			 clientNameById.push($(this).val());
 			 });
-    		 
+    		 var incentivizedType = [];
+    		 $('input:checkbox[name=incentivizedType]:checked').each(function() 
+			 {
+    			 incentivizedType.push($(this).val());
+			 });
     	    if(frequency == "Custom"){
     	        if(fromDate == ''){
     	        	$("#invoiceFilterId").show();
@@ -98,13 +102,13 @@
     	        	$('#custFromDateDiv').find('p.jquery_form_error_message').remove();
     	            $('#custToDateDiv').find('p.jquery_form_error_message').remove();
     	            $("#custom-selects").hide();
-    	            var url = sourceleadUrl+"/applicantList?searchValue="+searchValue+"&orgLocationId="+orgLocationId+"&tabType="+tab+"&submissionStatus=SUBMIT_TO_CLIENT&frequency="+frequency+"&fromDate="+fromDate+"&toDate="+toDate+"&employmentType="+employmentType+"&clientId="+clientNameById;
+    	            var url = sourceleadUrl+"/applicantList?searchValue="+searchValue+"&orgLocationId="+orgLocationId+"&tabType="+tab+"&submissionStatus=SUBMIT_TO_CLIENT&frequency="+frequency+"&fromDate="+fromDate+"&toDate="+toDate+"&employmentType="+employmentType+"&clientId="+clientNameById+"&incentivizedType="+incentivizedType;
         			prepareSubmissionList(url);
     	        }
     	    }else{
     	        $('#custFromDateDiv').find('p.jquery_form_error_message').remove();
     	        $('#custToDateDiv').find('p.jquery_form_error_message').remove();
-    	        var url = sourceleadUrl+"/applicantList?searchValue="+searchValue+"&orgLocationId="+orgLocationId+"&tabType="+tab+"&submissionStatus=SUBMIT_TO_CLIENT&frequency="+frequency+"&fromDate="+fromDate+"&toDate="+toDate+"&employmentType="+employmentType+"&clientId="+clientNameById;
+    	        var url = sourceleadUrl+"/applicantList?searchValue="+searchValue+"&orgLocationId="+orgLocationId+"&tabType="+tab+"&submissionStatus=SUBMIT_TO_CLIENT&frequency="+frequency+"&fromDate="+fromDate+"&toDate="+toDate+"&employmentType="+employmentType+"&clientId="+clientNameById+"&incentivizedType="+incentivizedType;
     			prepareSubmissionList(url);
  
     	    } 
@@ -419,6 +423,8 @@ function resetApplicantFilter(){
 	$("ul#empFilter > li input:checkbox").prop("checked",false);
 	$("ul#durationFilter > li input:checkbox").prop("checked",false);
 	$("ul#myClinetListUL > li input:checkbox").prop("checked",false);
+	$("ul#incentivizedFilter > li input:checkbox").prop("checked",false);
+
 	requirementSubmissionList();
 }
 function newActions(){
@@ -446,6 +452,15 @@ $(".overIcon, .newActPop").click(function(e){
 					<div class="row">
 					  <div class="col-md-4">
 						<div class="row">
+							<div class="col-md-12 mb">
+									<label><strong>Incentivized</strong></label>
+									 <div class="clearfix">
+										<ul class="list-unstyled" id="incentivizedFilter">
+										     <li class="checkBox positionRelative" ><input  type="checkbox" name="incentivizedType"  value ="Y" ><label for="Yes">Yes</label></li>
+											 <li class="checkBox positionRelative" ><input  type="checkbox" name="incentivizedType" value ="N" ><label for="No">No</label></li>
+					                    </ul>
+									 </div>
+							   </div>
 						    <div class="col-md-12 mb">
 								<label><strong>Duration</strong></label>
 								 <div class="clearfix">
@@ -464,7 +479,6 @@ $(".overIcon, .newActPop").click(function(e){
 	                                <c:if test="${tab != 'previous'}">
 	                                <li class="radioIput positionRelative" ><input type="radio"  value="1_month" name="customDates" onclick="showCustomFields(this);"><label for="applicant">1 month</label></li>
 	                                </c:if>
-	                                <li class="radioIput positionRelative" ><input type="radio"  value="1_month" name="customDates" onclick="showCustomFields(this);"><label for="applicant">1 month</label></li>
 	                                <li class="radioIput positionRelative" ><input type="radio" value="3_months" name="customDates" onclick="showCustomFields(this);"><label for="applicant">3 months</label></li>
    	                                <li class="radioIput positionRelative" ><input type="radio" value="Last_Year" name="customDates" onclick="showCustomFields(this);"><label for="applicant">Last Year</label></li>
    	                                <li class="radioIput positionRelative" ><input type="radio" value="Custom" name="customDates" onclick="showCustomFields(this);"><label for="applicant">Custom</label></li>
@@ -593,7 +607,12 @@ function projectExport(type){
 		 {
 			 clientNameById.push($(this).val());
 		 });
-		 window.location.href = sourceleadUrl+"/applicantListExport?searchValue="+searchValue+"&orgLocationId="+orgLocationId+"&tabType="+tab+"&submissionStatus=SUBMIT_TO_CLIENT&frequency="+frequency+"&fromDate="+fromDate+"&toDate="+toDate+"&employmentType="+employmentType+"&clientId="+clientNameById;
+		 var incentivizedType = [];
+		 $('input:checkbox[name=incentivizedType]:checked').each(function() 
+		 {
+			 incentivizedType.push($(this).val());
+		 });
+		 window.location.href = sourceleadUrl+"/applicantListExport?searchValue="+searchValue+"&orgLocationId="+orgLocationId+"&tabType="+tab+"&submissionStatus=SUBMIT_TO_CLIENT&frequency="+frequency+"&fromDate="+fromDate+"&toDate="+toDate+"&employmentType="+employmentType+"&clientId="+clientNameById+"&incentivizedType="+incentivizedType;
 	     
 }
 </script>

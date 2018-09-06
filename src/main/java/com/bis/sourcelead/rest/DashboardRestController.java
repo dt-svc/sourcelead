@@ -13,6 +13,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Locale;
+import java.util.stream.Collectors;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -317,7 +318,7 @@ public class DashboardRestController {
 	@RequestMapping(value = "/dashboard/{orgLocationId}/{userId}" , method = RequestMethod.GET)
 	 public @ResponseBody void userSummary(@PathVariable Long orgLocationId,@PathVariable Long userId,HttpServletRequest request,HttpServletResponse response) throws Exception {
 			
-		     //to update user state in user role based on location----> Prasad Salina
+		   
 		     User user = userService.getUserById(userId);
 
 		     UserRole userRole = userRoleService.getUserRoleByUserIdAndLocationId(user.getId(), orgLocationId);
@@ -338,10 +339,35 @@ public class DashboardRestController {
 			
 	}
 	
+	@RequestMapping(value = "/productionSupportDashboard/{orgLocationId}/{userId}/{productionLoginUserId}" , method = RequestMethod.GET)
+	 public @ResponseBody void productionSupportDashboard(@PathVariable Long orgLocationId,@PathVariable Long userId,@PathVariable Long productionLoginUserId,HttpServletRequest request,HttpServletResponse response) throws Exception {
+			
+		     
+		     User user = userService.getUserById(userId);
+
+		     UserRole userRole = userRoleService.getUserRoleByUserIdAndLocationId(user.getId(), orgLocationId);
+		     if(userRole != null && userRole.getUserState() != null && userRole.getUserState().equals(Status.NOT_LOGGEDIN)){
+  			    userRole.setUserState(Status.ACTIVE);
+  			   UserRole userRoleElk = userRoleService.addUserRole(userRole);
+  			   
+  			   
+  			   
+  			   //user update/save in user Elk
+  			  userService.saveOrUpdateUserElkDocument(userRoleElk,null,user.getUserCode());
+  		      }
+				
+		     SourceLeadSessionManager.setSessionAttribute(request, "userRoleId", userRole.getId());
+		     SourceLeadSessionManager.setSessionAttribute(request, "productionLoginUserId", productionLoginUserId);
+		     
+		     StringBuilder redirectUrl = new StringBuilder();
+		     response.sendRedirect(redirectUrl.append("/app/dashboard").toString());
+			
+	}
+	
 	@RequestMapping(value = "/professionalDashboard/{orgLocationId}/{switchUserType}" , method = RequestMethod.GET)
 	 public @ResponseBody void professionalUserSummary(@PathVariable Long orgLocationId,@PathVariable String switchUserType,HttpServletRequest request,HttpServletResponse response) throws Exception {
 			
-		     //to update user state in user role based on location----> Prasad Salina
+		 
 		     User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
 		     OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 		     UserRole userRole = null;
@@ -372,7 +398,7 @@ public class DashboardRestController {
 	@RequestMapping(value = "/recruiterDashboard/{orgLocationId}/{switchUserType}" , method = RequestMethod.GET)
 	 public @ResponseBody void recRuturUserSummary(@PathVariable Long orgLocationId,@PathVariable String switchUserType,HttpServletRequest request,HttpServletResponse response) throws Exception {
 			
-		     //to update user state in user role based on location----> Prasad Salina
+		    
 		     User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
 		     OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 		     UserRole userRole = null;
@@ -462,6 +488,17 @@ public class DashboardRestController {
 	}
 	
 	
+	@RequestMapping(value = "/dashboardPipelineJobsCount" , method = RequestMethod.GET)
+	 public @ResponseBody RequirementSubmissionsCountDTO dashboardPipelineJobsCount(@RequestParam(value = "requirementId", required = true) Long requirementId,@RequestParam(value = "submissionType", required = false) String submissionType, HttpServletRequest request) throws Exception {
+			
+		     User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+		     OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+		     RequirementSubmissionsCountDTO rsCount = requirementSubmissionService.getAllPipeLineCountsByRequirementIdAndSubmissionStage(requirementId, user, orgLocation, "ALL");
+		     return rsCount;
+	}
+	
+	
+	
 	 /**
 	   * @author sarath kumar
 	   * @since  aug 30 2016
@@ -506,20 +543,17 @@ public class DashboardRestController {
 					dayString = new SimpleDateFormat("EEEE", Locale.ENGLISH).format(c.getTime());
 					selectedDayString = new SimpleDateFormat("EEEE (dd/MM/yyyy)", Locale.ENGLISH).format(c.getTime());
 				}
+			
 				if(Constants.ROLE_ADMIN.equalsIgnoreCase(userRole) || Constants.SOURCELEAD_ADMIN.equalsIgnoreCase(userRole)){
 					userType = Constants.ADMIN;
-					//requirementList = requirementService.getAssignedRequirementListByOrgLocationIDAndUserId(loginOrgLocation.getId(), userType, user.getId(), userCode);
 					requirementList = requirementService.getAssignedRequirementListByOrgLocationIDAndUserIdSubStatusApprovedOpenNew(loginOrgLocation.getId(), userType, user.getId(), userCode, isWalkIn, dayString);
 				}else{
-					//requirementList = requirementService.getAssignedRequirementListByOrgLocationIDAndUserId(loginOrgLocation.getId(), userType, user.getId(), userCode);
 					requirementList = requirementService.getAssignedRequirementListByOrgLocationIDAndUserIdSubStatusApprovedOpenNew(loginOrgLocation.getId(), userType, user.getId(), userCode, isWalkIn, dayString);
 				}
-				
-				//List<Requirement>   requirementList = requirementService.getAssignedRequirementListByOrgLocationIDAndUserId(loginOrgLocation.getId(), userType, user.getId(), userCode);
+				// your code here...
+				 
 				for(Requirement requirement : requirementList){
-					/*if(requirement.getClientId() != null){
-						requirement.setClientName(requirement.getClientId().getResponderLocationId().getOrgLocationName());
-					}*/
+					 
 					//changed ny prasad salina
 					if(requirement.getClientId() != null){
 						if(requirement.getClientId().getResponderType().equalsIgnoreCase("Client")){
@@ -534,23 +568,8 @@ public class DashboardRestController {
 					
 					Integer requirementAssignToListCount = requirementAssignToService.getRequirementAssignToListCountByRequirementId(requirement.getId());
 		    		requirement.setAssignedMembersCount(requirementAssignToListCount.toString());
+
 		    		
-		    		
-		    		RequirementSubmissionsCountDTO rsCount = requirementSubmissionService.getAllPipeLineCountsByRequirementIdAndSubmissionStage(requirement.getId(), user, loginOrgLocation, "ALL");
-					
-					/*int applicantsCount = requirementSubmissionService.getAllSubmissionCountByRequirementIdAndSubmissionStage(loginOrgLocation.getId(), requirement.getId(), "APPLICANTS");
-					int shortlistedCount = requirementSubmissionService.getAllSubmissionCountByRequirementIdAndSubmissionStage(loginOrgLocation.getId(), requirement.getId(), "SHORTLISTED");
-					int submittedCount = requirementSubmissionService.getAllSubmissionCountByRequirementIdAndSubmissionStage(loginOrgLocation.getId(), requirement.getId(), "SUBMITTED");
-					int interviewedCount = requirementSubmissionService.getAllSubmissionCountByRequirementIdAndSubmissionStage(loginOrgLocation.getId(), requirement.getId(), "INTERVIEWED");
-					int offeredCount = requirementSubmissionService.getAllSubmissionCountByRequirementIdAndSubmissionStage(loginOrgLocation.getId(), requirement.getId(), "OFFERED");
-					int joinedCount = requirementSubmissionService.getAllSubmissionCountByRequirementIdAndSubmissionStage(loginOrgLocation.getId(), requirement.getId(), "JOINED");
-					*/
-					requirement.setNoOfApplicants(String.valueOf(rsCount.getApplicantsCount()));
-					requirement.setNoOfShortlistedApplicants(String.valueOf(rsCount.getShortlistCount()));
-					requirement.setNoOfSubmittedApplicants(String.valueOf(rsCount.getSubmitToClientCount()));
-					requirement.setNoOfInterviewedApplicants(String.valueOf(rsCount.getInterviewCount()));
-					requirement.setNoOfOfferedApplicants(String.valueOf(rsCount.getOffersCount()));
-					requirement.setNoOfJoinedApplicants(String.valueOf(rsCount.getJoinedCount()));
 					
 					if(null != requirement.getReleasedBy() && !"".equalsIgnoreCase(requirement.getReleasedBy())){
 						List<Long> userId = new ArrayList<Long>();
@@ -569,8 +588,10 @@ public class DashboardRestController {
 		         			requirement.setIsRequirementReleasedByuser("Y");
 		         		}
 					}
+					
 				}
 				response.setData(requirementList);
+				
 			    response.setResponse(Result.SUCCESS.name());
 			    if(isWalkIn)
 			    	response.setResponseMessage(Result.SUCCESS.getValue() + ":" + selectedDay +":"+selectedDayString);
@@ -602,7 +623,9 @@ public class DashboardRestController {
 		 OrgLocations loginOrgLocations = orgLocationService.getOrgLocations(orgLocationId);
 			DashboardCounts dc= new DashboardCounts();
 			Timezone timezone = null;
+
 			UserRole userRole = userRoleService.getUserByUserId(userId);
+
 		if(userRole != null) {
 			try {
 				if(loginOrgLocations.getTimezone() != null){
@@ -623,6 +646,7 @@ public class DashboardRestController {
 					 endUTCDate = endDateString;
 					  
 				}else{
+
 					DateTime zoned = new DateTime(DateTimeZone.forID(timezone.getTimeZoneId()));
 					String startDate = outputFormatter.print(zoned);
 					Date startDateUTC = TZ_DF_TS.parse(startDate);
@@ -636,6 +660,7 @@ public class DashboardRestController {
 					dates[1] = startDateUTC;
 					startUTCDate = dates[0]; 
 					endUTCDate = dates[1];
+
 					 
 				}
 				
@@ -1554,61 +1579,39 @@ public class DashboardRestController {
 	@RequestMapping(value = "/applicantList")
 	public @ResponseBody ResponseList<RequirementSubmissionHistoryDTO> applicantList(RequirementSubmissionHistoryDTO requirementSubmissionHistoryDTO, HttpServletRequest request)throws Exception
    {
-//		String stage ="SUBMISSION" ;
 		ResponseList<RequirementSubmissionHistoryDTO> responseList = new ResponseList<>();
-		
 		OrgLocations loginOrgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
-		Timezone timezone = null;
 		String userRole = (String) SourceLeadSessionManager.getSessionAttribute(request, "loginUserRole");
 		User  user = (User)SourceLeadSessionManager.getSessionAttribute(request, "user");
-		if(loginOrgLocations.getTimezone() != null){
-			timezone = timeZoneService.getTimezone(loginOrgLocations.getTimezone().getId());
-		}
-		
 		
 		Date[] freqDates = new Date[2];
 		String userType = null;
 		Date startUTCDate = null;
 		Date endUTCDate = null;
 		DateFormat TZ_DF_TS = new SimpleDateFormat ("yyyy-MM-dd HH:mm:ss");
-		if("today".equals(requirementSubmissionHistoryDTO.getTabType())){
-			 DateTime zoned = new DateTime(DateTimeZone.forID(timezone.getTimeZoneId()));
-			 DateTimeFormatter outputFormatter = DateTimeFormat.forPattern("yyyy-MM-dd'T'00:00:00");
-			 DateTimeFormatter outputFormatter1 = DateTimeFormat.forPattern("yyyy-MM-dd'T'23:59:59");
-			 String startDate = outputFormatter.print(zoned);
-			 String startDateString = CommonUtil.convertTimeUTC(timezone.getTimeZoneId(), startDate);
-			 startUTCDate = TZ_DF_TS.parse(startDateString);
-			 String endDate = outputFormatter1.print(zoned);
-			 String endDateString = CommonUtil.convertTimeUTC(timezone.getTimeZoneId(), endDate);
-			 endUTCDate = TZ_DF_TS.parse(endDateString);
-		}else{
-			 DateFormat TZ_DF_CSD = new SimpleDateFormat ("yyyy-MM-dd 00:00:00");
-			 DateFormat TZ_DF_CED = new SimpleDateFormat ("yyyy-MM-dd 23:59:59");
-			 
-			if("Custom".equalsIgnoreCase(requirementSubmissionHistoryDTO.getFrequency())){
-				Date startTime =  commonUtil.orgLocationDateFormat(loginOrgLocations.getDateFormat(),requirementSubmissionHistoryDTO.getFromDate());
+		 DateFormat TZ_DF_CSD = new SimpleDateFormat ("yyyy-MM-dd 00:00:00");
+		 DateFormat TZ_DF_CED = new SimpleDateFormat ("yyyy-MM-dd 23:59:59");
+		 if("Custom".equalsIgnoreCase(requirementSubmissionHistoryDTO.getFrequency())){
+			 Date startTime =  commonUtil.orgLocationDateFormat(loginOrgLocations.getDateFormat(),requirementSubmissionHistoryDTO.getFromDate());
 				Date endTime =  commonUtil.orgLocationDateFormat(loginOrgLocations.getDateFormat(),requirementSubmissionHistoryDTO.getToDate());
 				String customStartTimeStr = TZ_DF_CSD.format(startTime);  
 				String customEndTimeStr = TZ_DF_CED.format(endTime);  
 				startUTCDate = TZ_DF_TS.parse(customStartTimeStr);
 				endUTCDate = TZ_DF_TS.parse(customEndTimeStr);
-			}else{
-				freqDates = reportsUtil.getJobFilterDate(requirementSubmissionHistoryDTO.getFrequency(),loginOrgLocations);
-				String customStartTimeStr = TZ_DF_CSD.format(freqDates[0]);  
-				String customEndTimeStr = TZ_DF_CED.format(freqDates[1]);  
-				startUTCDate = TZ_DF_TS.parse(customStartTimeStr);
-				endUTCDate = TZ_DF_TS.parse(customEndTimeStr);
-			}
-		}
+		 }else {
+			 freqDates = reportsUtil.getJobFilterDate(requirementSubmissionHistoryDTO.getFrequency(),loginOrgLocations);
+			 String customStartTimeStr = TZ_DF_CSD.format(freqDates[0]);  
+			 String customEndTimeStr = TZ_DF_CED.format(freqDates[1]);  
+			 startUTCDate = TZ_DF_TS.parse(customStartTimeStr);
+			 endUTCDate = TZ_DF_TS.parse(customEndTimeStr);
+		 }
+		 
 		
 		if(Constants.ROLE_ADMIN.equalsIgnoreCase(userRole) || Constants.SOURCELEAD_ADMIN.equalsIgnoreCase(userRole)){
 			userType = Constants.ADMIN;
 		} 
 		
-		
 	   ResponseList<RequirementSubmissionHistory> toDayReqApplicantscount =requirementSubmissionDao.getRequirementSubmissionsListWithDTOByOrgLocationsIdAndSubmissionStatus(requirementSubmissionHistoryDTO, loginOrgLocations.getId(),requirementSubmissionHistoryDTO.getSubmissionStatus(),requirementSubmissionHistoryDTO.getTabType(),userType,user,startUTCDate,endUTCDate);
-
-//		List<RequirementSubmissionHistory> toDayReqApplicantscount = dashboardController.getReqSubmissionListByStage(request,stage,tab);
 		
 	   List<RequirementSubmissionHistoryDTO> rshDTOList = new ArrayList<>();
 	   if(toDayReqApplicantscount.getData() != null)
@@ -1809,35 +1812,23 @@ public class DashboardRestController {
 		Date startUTCDate = null;
 		Date endUTCDate = null;
 		DateFormat TZ_DF_TS = new SimpleDateFormat ("yyyy-MM-dd HH:mm:ss");
-		if("today".equals(requirementSubmissionHistoryDTO.getTabType())){
-			 DateTime zoned = new DateTime(DateTimeZone.forID(timezone.getTimeZoneId()));
-			 DateTimeFormatter outputFormatter = DateTimeFormat.forPattern("yyyy-MM-dd'T'00:00:00");
-			 DateTimeFormatter outputFormatter1 = DateTimeFormat.forPattern("yyyy-MM-dd'T'23:59:59");
-			 String startDate = outputFormatter.print(zoned);
-			 String startDateString = CommonUtil.convertTimeUTC(timezone.getTimeZoneId(), startDate);
-			 startUTCDate = TZ_DF_TS.parse(startDateString);
-			 String endDate = outputFormatter1.print(zoned);
-			 String endDateString = CommonUtil.convertTimeUTC(timezone.getTimeZoneId(), endDate);
-			 endUTCDate = TZ_DF_TS.parse(endDateString);
+		DateFormat TZ_DF_CSD = new SimpleDateFormat ("yyyy-MM-dd 00:00:00");
+		DateFormat TZ_DF_CED = new SimpleDateFormat ("yyyy-MM-dd 23:59:59");
+		if("Custom".equalsIgnoreCase(requirementSubmissionHistoryDTO.getFrequency())){
+			Date startTime =  commonUtil.orgLocationDateFormat(loginOrgLocations.getDateFormat(),requirementSubmissionHistoryDTO.getFromDate());
+			Date endTime =  commonUtil.orgLocationDateFormat(loginOrgLocations.getDateFormat(),requirementSubmissionHistoryDTO.getToDate());
+			String customStartTimeStr = TZ_DF_CSD.format(startTime);  
+			String customEndTimeStr = TZ_DF_CED.format(endTime);  
+			startUTCDate = TZ_DF_TS.parse(customStartTimeStr);
+			endUTCDate = TZ_DF_TS.parse(customEndTimeStr);
 		}else{
-			 DateFormat TZ_DF_CSD = new SimpleDateFormat ("yyyy-MM-dd 00:00:00");
-			 DateFormat TZ_DF_CED = new SimpleDateFormat ("yyyy-MM-dd 23:59:59");
-			 
-			if("Custom".equalsIgnoreCase(requirementSubmissionHistoryDTO.getFrequency())){
-				Date startTime =  commonUtil.orgLocationDateFormat(loginOrgLocations.getDateFormat(),requirementSubmissionHistoryDTO.getFromDate());
-				Date endTime =  commonUtil.orgLocationDateFormat(loginOrgLocations.getDateFormat(),requirementSubmissionHistoryDTO.getToDate());
-				String customStartTimeStr = TZ_DF_CSD.format(startTime);  
-				String customEndTimeStr = TZ_DF_CED.format(endTime);  
-				startUTCDate = TZ_DF_TS.parse(customStartTimeStr);
-				endUTCDate = TZ_DF_TS.parse(customEndTimeStr);
-			}else{
-				freqDates = reportsUtil.getJobFilterDate(requirementSubmissionHistoryDTO.getFrequency(),loginOrgLocations);
-				String customStartTimeStr = TZ_DF_CSD.format(freqDates[0]);  
-				String customEndTimeStr = TZ_DF_CED.format(freqDates[1]);  
-				startUTCDate = TZ_DF_TS.parse(customStartTimeStr);
-				endUTCDate = TZ_DF_TS.parse(customEndTimeStr);
-			}
+			freqDates = reportsUtil.getJobFilterDate(requirementSubmissionHistoryDTO.getFrequency(),loginOrgLocations);
+			String customStartTimeStr = TZ_DF_CSD.format(freqDates[0]);  
+			String customEndTimeStr = TZ_DF_CED.format(freqDates[1]);  
+			startUTCDate = TZ_DF_TS.parse(customStartTimeStr);
+			endUTCDate = TZ_DF_TS.parse(customEndTimeStr);
 		}
+		  
 		
 		if(Constants.ROLE_ADMIN.equalsIgnoreCase(userRole) || Constants.SOURCELEAD_ADMIN.equalsIgnoreCase(userRole)){
 			userType = Constants.ADMIN;

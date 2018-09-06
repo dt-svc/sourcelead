@@ -48,6 +48,9 @@ public class UserRole implements Serializable {
 	@JoinColumn(name = "USER_ID", nullable = false)
 	private User user;
 
+	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name = "EMPLOYEE_ID", nullable = false)
+	private Employees employee;
 	
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "REPORTING_MANAGER_ID")
@@ -139,7 +142,7 @@ public class UserRole implements Serializable {
     
     
     @ManyToOne(fetch = FetchType.LAZY)
-	@JoinColumn(name = "GRADE_ID", nullable = false)
+	@JoinColumn(name = "GRADE_ID")
 	private AssociateGrades gradeId;
 
 	@Transient
@@ -1143,6 +1146,7 @@ public class UserRole implements Serializable {
 
 	public void setUserRoleShiftId(BigInteger userRoleShiftId) {
 		this.userRoleShiftId = userRoleShiftId;
+
 	}
 
 	public String getIsExistedOrgGlobalUser() {
@@ -1152,4 +1156,14 @@ public class UserRole implements Serializable {
 	public void setIsExistedOrgGlobalUser(String isExistedOrgGlobalUser) {
 		this.isExistedOrgGlobalUser = isExistedOrgGlobalUser;
 	}
+
+	public Employees getEmployee() {
+		return employee;
+	}
+
+	public void setEmployee(Employees employee) {
+		this.employee = employee;
+	}
+	
+
 }

@@ -1,0 +1,11 @@
+package com.bis.sourcelead.service;
+
+import com.bis.sourcelead.entity.AssociateLoanAndAdvanceHistory;
+
+public interface AssociateLoanAndAdvancesHistoryService {
+
+	AssociateLoanAndAdvanceHistory getLoanAndAdvanceHistoryByCandidateIdAndLocationIdAndAdvanceId(Long loanAndAdvanceId);
+
+	AssociateLoanAndAdvanceHistory saveAssociateLoanAndAdvancesHistory(AssociateLoanAndAdvanceHistory assLoanHistory);
+
+}

@@ -5,7 +5,17 @@
 <%@taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
 <script> 
 $(document).ready(function(){
-	requirementSubmissionsCount("today");
+	var jsondata = sessionStorage.getItem('jobsCount');
+     if(jsondata!= null){
+		 jsondata =jsondata.split(","); 
+		 $("#submissionsCount").text(jsondata[0]);
+		 $("#applicantsCount").text(jsondata[1]);
+		 $("#interviewsCount").text(jsondata[2]);
+		 $("#offersCount").text(jsondata[3]);
+		 sessionStorage.clear(); 
+	 }else{
+		 	requirementSubmissionsCount("today");
+	 }
 });
 </script>
 <div class="col-md-6 mb">

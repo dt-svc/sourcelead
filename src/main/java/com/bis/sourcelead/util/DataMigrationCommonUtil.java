@@ -29,6 +29,7 @@ import org.apache.commons.lang.WordUtils;
 import org.apache.commons.lang.math.NumberUtils;
 import org.apache.poi.ss.usermodel.DataFormatter;
 import org.apache.poi.ss.usermodel.FormulaEvaluator;
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.slf4j.Logger;
@@ -48,6 +49,7 @@ import com.bis.sourcelead.entity.AssociateGrades;
 import com.bis.sourcelead.entity.Candidate;
 import com.bis.sourcelead.entity.Countries;
 import com.bis.sourcelead.entity.Employees;
+import com.bis.sourcelead.entity.Lca;
 import com.bis.sourcelead.entity.LookUpData;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.OrgRelations;
@@ -582,7 +584,84 @@ public class DataMigrationCommonUtil {
 		}
 	}
 	
-	
+			@SuppressWarnings("unchecked")
+			public void dataValidationForRequirementSubmisssionTemplate(HashMap< String, String> errorSet, JSONObject dataMigrationDTOJsonCopy, User user, OrgLocations orgLocation,String jsonString) throws Exception
+			{
+				
+				JSONArray jsonarray = new JSONArray(jsonString);
+				 for(int i=0; i<jsonarray.length(); i++){
+				        JSONObject obj = jsonarray.getJSONObject(i);
+				        if(obj.getString("req").equalsIgnoreCase("1")) {
+				        	String label = obj.getString("label").replaceAll("\\s+","");
+			        		if(!dataMigrationDTOJsonCopy.has(label)) {
+				        		errorSet.put(label, obj.getString("label")+" field is missing");
+							}
+				        }
+				 }
+				 
+				 
+				 
+			        if(!dataMigrationDTOJsonCopy.get("EmailId").toString().equalsIgnoreCase("") && !dataMigrationDTOJsonCopy.get("EmailId").toString().equalsIgnoreCase("null") && !dataMigrationDTOJsonCopy.get("EmailId").toString().equalsIgnoreCase("undefined")) {
+			        	Pattern pattern = Pattern.compile("^[_A-Za-z0-9-\\+]+(\\.[_A-Za-z0-9-]+)*@"
+								+ "[A-Za-z0-9-]+(\\.[A-Za-z0-9]+)*(\\.[A-Za-z]{2,})$");
+			        	Matcher matcher = pattern.matcher(dataMigrationDTOJsonCopy.get("EmailId").toString().trim());
+						if(matcher.matches() == false) {
+							errorSet.put("EmailId", "Invalid Email");
+						}
+					}
+			        
+			        
+			    	String mobileRegex = "([\\.\\-\\s+\\/()]*[0-9]*\\.?[\\.\\-\\s+\\/()]*){8,15}";
+					if (dataMigrationDTOJsonCopy.has("PhoneNumber") && !dataMigrationDTOJsonCopy.get("PhoneNumber").toString().equalsIgnoreCase("") && !dataMigrationDTOJsonCopy.get("PhoneNumber").toString().equalsIgnoreCase("null") && !dataMigrationDTOJsonCopy.get("PhoneNumber").toString().equalsIgnoreCase("undefined")) {
+						boolean flag = false;
+						String mobNum = dataMigrationDTOJsonCopy.get("PhoneNumber").toString();
+						if (mobNum.length() > 9 && mobNum.length() <= 20) {
+							flag = mobNum.matches(mobileRegex);
+						}
+						if(flag == false) {
+							errorSet.put("PhoneNumber", "Invalid Mobile Phone");
+						}
+						
+					}
+					
+					if (dataMigrationDTOJsonCopy.has("AlternateNumber") && !dataMigrationDTOJsonCopy.get("AlternateNumber").toString().equalsIgnoreCase("") && !dataMigrationDTOJsonCopy.get("AlternateNumber").toString().equalsIgnoreCase("null") && !dataMigrationDTOJsonCopy.get("AlternateNumber").toString().equalsIgnoreCase("undefined")) {
+						boolean flag = false;
+						String alternatemobNum = dataMigrationDTOJsonCopy.get("AlternateNumber").toString();
+						if (alternatemobNum.length() > 9 && alternatemobNum.length() <= 20) {
+							flag = alternatemobNum.matches(mobileRegex);
+						}
+						if(flag == false) {
+							errorSet.put("AlternateNumber", "Invalid Alternate Mobile Phone");
+						}
+						
+					}
+					
+					String rateRegEx = "^[0-9\b]+$";
+					if (dataMigrationDTOJsonCopy.has("CurrentCTC") && !dataMigrationDTOJsonCopy.get("CurrentCTC").toString().equalsIgnoreCase("") && !dataMigrationDTOJsonCopy.get("CurrentCTC").toString().equalsIgnoreCase("null") && !dataMigrationDTOJsonCopy.get("CurrentCTC").toString().equalsIgnoreCase("undefined")) {
+						boolean flag = false;
+						String expectedRate = dataMigrationDTOJsonCopy.get("CurrentCTC").toString();
+						if (expectedRate.length() > 0 && expectedRate.length() <= 8) {
+							flag = expectedRate.matches(rateRegEx);
+						}
+						if(flag == false) {
+							errorSet.put("CurrentCTC", "CurrentCTC Allow Only Integers and length 0-8");
+						}
+						
+					}
+					
+					if (dataMigrationDTOJsonCopy.has("ExpectedCTC") && !dataMigrationDTOJsonCopy.get("ExpectedCTC").toString().equalsIgnoreCase("") && !dataMigrationDTOJsonCopy.get("ExpectedCTC").toString().equalsIgnoreCase("null") && !dataMigrationDTOJsonCopy.get("ExpectedCTC").toString().equalsIgnoreCase("undefined")) {
+						boolean flag = false;
+						String currentRate = dataMigrationDTOJsonCopy.get("ExpectedCTC").toString();
+						if (currentRate.length() > 0 && currentRate.length() <= 8) {
+							flag = currentRate.matches(rateRegEx);
+						}
+						if(flag == false) {
+							errorSet.put("ExpectedCTC", "ExpectedCTC Allow Only Integers and length 0-8");
+						}
+						
+					}
+				
+			}
 	
 			@SuppressWarnings("unchecked")
 			public void dataValidationForCandidates(HashMap< String, String> errorSet, JSONObject dataMigrationDTOJsonCopy, User user, OrgLocations orgLocation) throws Exception
@@ -2266,6 +2345,67 @@ private void saveImportedTimeSheetRecords(Projects project,String projectTaskUUI
 
 				}
 		
+		public void dataValidationForLCA(HashMap<String, String> errorSet, JSONObject dataMigrationDTOJsonCopy,
+				User user, OrgLocations orgLocation) throws Exception {
+			
+			   System.out.println(" inside LCA Data validation block method Need to add code for validation ===================================>");
+			   
+			   if (StringUtils.isBlank(dataMigrationDTOJsonCopy.getString("newLcaNumber"))) {
+					errorSet.put("newLcaNumber", "LCA No is missing"); 
+					
+					}
+			   
+			   if (StringUtils.isBlank(dataMigrationDTOJsonCopy.getString("newLcaTitle"))) {
+					errorSet.put("newLcaTitle", "LCA Title is missing"); 
+					}
+			   
+			   if (StringUtils.isBlank(dataMigrationDTOJsonCopy.getString("noOfPos"))) {
+					errorSet.put("noOfPos", "No.of Positions is missing"); 
+					}
+			   
+			   
+			   if (StringUtils.isBlank(dataMigrationDTOJsonCopy.getString("currClientLocation"))) {
+					errorSet.put("currClientLocation", "Current Client Location is missing"); 
+					}
+			   
+			   if (StringUtils.isBlank(dataMigrationDTOJsonCopy.getString("socCode"))) {
+					errorSet.put("socCode", "Soc Code is missing"); 
+					}
+			   
+			   if (StringUtils.isBlank(dataMigrationDTOJsonCopy.getString("socTitle"))) {
+					errorSet.put("socTitle", "Soc Title is missing"); 
+					}
+			   
+			   if (StringUtils.isBlank(dataMigrationDTOJsonCopy.getString("socJobTitle"))) {
+					errorSet.put("socJobTitle", "Job Title is missing"); 
+					}
+			   
+			   if (StringUtils.isBlank(dataMigrationDTOJsonCopy.getString("wageLevel"))) {
+					errorSet.put("wageLevel", "Wage Level is missing"); 
+					}
+			   
+			   if (StringUtils.isBlank(dataMigrationDTOJsonCopy.getString("newLcaStartDate")) || dataMigrationDTOJsonCopy.getString("newLcaStartDate").equals("null")) {
+					errorSet.put("newLcaStartDate", "Start Date is missing"); 
+					}else if(!CommonUtil.isValidDate(dataMigrationDTOJsonCopy.getString("newLcaStartDate"))) {
+						errorSet.put("newLcaStartDate", "Start Date is invalid date");
+					}
+			   
+			   if (StringUtils.isBlank(dataMigrationDTOJsonCopy.getString("newLcaEndDate")) || dataMigrationDTOJsonCopy.getString("newLcaEndDate").equals("null")) {
+					errorSet.put("newLcaEndDate", "End Date is missing"); 
+					}else if(!CommonUtil.isValidDate(dataMigrationDTOJsonCopy.getString("newLcaEndDate"))) {
+						errorSet.put("newLcaEndDate", "End Date is invalid date");
+					}
+			   
+			   if (StringUtils.isBlank(dataMigrationDTOJsonCopy.getString("lcaStatus"))) {
+					errorSet.put("lcaStatus", "LCA Status is missing"); 
+					}
+			   
+			   if (StringUtils.isBlank(dataMigrationDTOJsonCopy.getString("newStatus"))) {
+					errorSet.put("newStatus", "Status is missing"); 
+					}
+			
+			//errorSet.put("", "");
+		}
 		
 		
 		public void dataValidationForAsscoaites(HashMap<String, String> errorSet, JSONObject dataMigrationDTOJsonCopy, User user, OrgLocations orgLocation, String isGlobalAccess) throws Exception {

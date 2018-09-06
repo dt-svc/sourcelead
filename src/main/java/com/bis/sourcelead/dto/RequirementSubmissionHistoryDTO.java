@@ -54,6 +54,7 @@ public class RequirementSubmissionHistoryDTO extends SearchDTO implements Serial
 	private String rejectedType;
 	private String rejectedReason;
 	private String joinDate;
+	private String incentivizedType;
 	
 	public String getCandidateName()
 	{
@@ -415,5 +416,11 @@ public class RequirementSubmissionHistoryDTO extends SearchDTO implements Serial
 	}
 	public void setJoinDate(String joinDate) {
 		this.joinDate = joinDate;
+	}
+	public String getIncentivizedType() {
+		return incentivizedType;
+	}
+	public void setIncentivizedType(String incentivizedType) {
+		this.incentivizedType = incentivizedType;
 	}
 }

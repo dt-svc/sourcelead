@@ -35,7 +35,7 @@
         <div class="popupContent">
            <div class="form-group" id="levelDiv">
            	<label class="noPad" for="Role Name">Level Name <b class="valStar">*</b></label>
-            <input type="text" class="form-control" data-validation="required validate_Space validate_length length2-20" field-name="Level"  onblur="validateLevelName();"  placeholder="Enter Level" name="level" id="level" autocomplete="off" autofocus>
+            <input type="text" class="form-control" data-validation="required validate_Space validate_length length2-20" field-name="Level"  onkeyup="validateLevelName();"  placeholder="Enter Level" name="level" id="level" autocomplete="off" autofocus onkeydown="return (event.keyCode!=13);">
             <input type="hidden" name="hierarchyId" id="hierarchyId">
            </div>
         </div>

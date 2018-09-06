@@ -30,7 +30,7 @@ $( document ).ready(function() {
  <div id="popUp"></div>
     </section>
       <div class="positionRelative reportHead clearfix" style="display:none" id="hearderId">
-      <span class="pull-left refreIcon"><a href="javascript:void(0)" class="refeIcon" title="Refresh" onclick="resetFilter();" oncontextmenu="return false"></a></span>
+      <span class="pull-left refreIcon"><a href="javascript:void(0)" class="refeIcon" title="Refresh" onclick="searchReportCollapse();" oncontextmenu="return false"></a></span>
          
       <ul class="pull-right list-unstyled list-inline">
         <input type="hidden" name="usersOffset" id="usersOffset" value="0"/>
@@ -51,7 +51,7 @@ $( document ).ready(function() {
     <div class="contentareaInner-styles clearfix">
     <h4 class="panel-title">
           <a href="javascript:void(0)" id="showReport" style="display:none;"><i class="fa fa-angle-double-left paddingRight"></i>Search Report</a>
-          <a href="javascript:void(0)" onclick="searchReportCollapse();" id="searchReport" style="display:none;"><i class="fa fa-angle-double-left paddingRight"></i>Search Report</a>
+<!--           <a href="javascript:void(0)" onclick="searchReportCollapse();" id="searchReport" style="display:none;"><i class="fa fa-angle-double-left paddingRight"></i>Search Report</a> -->
     </h4>
     <div id="reportCollapse" class="rundiv mt">
       <div class="clearfix form-horizontal minHeight_225 minHeightcol5">
@@ -767,7 +767,6 @@ function resetFilter(){
 	$('#associateList').trigger("chosen:updated");
 	$('#leaveTypeList').trigger("chosen:updated");
 	$("#leaveTypeList").val('');
-
 }
 function reportCollapse() {
 	$("#reportCollapse").slideToggle(300);

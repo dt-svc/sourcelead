@@ -147,6 +147,9 @@ private static final long serialVersionUID = 1L;
 	private String employementType;
 	
 	@Transient
+	private String expenseAutoId;
+	
+	@Transient
 	private String userName;
 	
 	@Transient
@@ -520,6 +523,14 @@ private static final long serialVersionUID = 1L;
 
 	public void setExpensesLocationId(Long expensesLocationId) {
 		this.expensesLocationId = expensesLocationId;
+	}
+
+	public String getExpenseAutoId() {
+		return expenseAutoId;
+	}
+
+	public void setExpenseAutoId(String expenseAutoId) {
+		this.expenseAutoId = expenseAutoId;
 	}
 
 	

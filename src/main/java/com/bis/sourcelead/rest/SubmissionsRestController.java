@@ -580,6 +580,7 @@ public class SubmissionsRestController {
 				response.setResponse(Result.SUCCESS.name());
 				response.setResponseMessage(Result.SUCCESS.getValue());
 			}catch(Exception e) {
+				e.printStackTrace();
 				response.setResponse(Result.AWKWARD.name());
 				response.setResponseMessage(Result.AWKWARD.getValue());
 			}
@@ -806,8 +807,8 @@ public class SubmissionsRestController {
 		
 		RequirementSubmissionTemplateFields requirementSubmissionTemplateFields = requirementSubmissionTemplateFieldsService.getSubmissionsTemplateFieldsByRequirementSubmissionsId(submissionId);
 		RequirementSubmission requirementSubmission = requirementSubmissionService.getRequirementSubmissionById(submissionId);
-		/*requirementSubmissionTemplateFields.setSubmissionJsonString(requirementSubmission.getSubmissionTemplateJsonString());
-		requirementSubmissionTemplateFields.setSubmissionJsonStringValue(requirementSubmission.getSubmissionTemplateJsonStringValue());*/
+		requirementSubmissionTemplateFields.setSubmissionJsonString(requirementSubmission.getSubmissionTemplateJsonString());
+		requirementSubmissionTemplateFields.setSubmissionJsonStringValue(requirementSubmission.getSubmissionTemplateJsonStringValue());
 		return requirementSubmissionTemplateFields;
 	}
 	

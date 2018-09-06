@@ -71,9 +71,9 @@ margin-right: 15px;
         
           <li><i class="fa fa-filter"></i>&nbsp;
                <select id="userState" onchange="getDynamicOrgList();">
-				<option value="" selected>--Select Status--</option>
+				<option value="">--Select Status--</option>
 				<option value="ALL" >All</option>
-				<option value="ACTIVE" >Active</option>
+				<option value="ACTIVE" selected>Active</option>
 				<option value="INACTIVE" >In Active</option>
 				<option value="NOT_LOGGEDIN">Not Logged IN</option>
 			   </select>

@@ -68,7 +68,6 @@ public class Constants {
 	public static final String INVOICE_RECEIVABLE = "Receivable";
 	public static final String INVOICE_PAYABLES = "Payables";
 
-
 	public static final String country = "Country";
 	public static final String TASK_BILLABLE = "Billable";
 	public static final String TASK_NON_BILLABLE = "Non-Billable";
@@ -173,6 +172,11 @@ public class Constants {
 	
 	public static final String MAIL_REOPEN_APPROVED_MAIL_TO_EMPLOYEE = "MailReopenApprovedMailToEmployee";
 	public static final String MAIL_REOPEN_APPROVED_MAIL_TO_EMPLOYEE_NOTIFICATION = "MailReopenApprovedMailToEmployeeNotification";
+	
+	
+	public static final String LCA_MANAGER_EXPIRED_EMAIL = "LCAManagerExpiredEmail";
+	
+	public static final String LCA_MANAGER_EXPIRED_EMAIL_IN_DAYS = "LCAManagerExpiredInDaysEmail";
 	
 	public static final String TIMESHEET_APPROVED_EMAIL_TOVENDOR = "TimesheetApprovedEmailToVendor";
 	public static final String TIMESHEET_REJECTED_EMAIL_TOVENDOR = "TimesheetRejectEmailToVendor";
@@ -584,7 +588,9 @@ public class Constants {
 			"Role", "Leave Type", "Type", "Duration", "From Date",
 			"To Date", "Applied On", "Reason", "Status", "Approver", "Approved On" };
 	public static final String[] LEAVE_REPORT_HEADERS = { "Employee Id", "Emp Name", "Departement", "Leave Type",
+
 			"Reason", "Type", "From Date", "To Date", "Applied On", "No Of Days",
+
 			"Status", "Approver", "Approved On" };
 	public static final String[] CANDIDATE_EXCEL_HEADERS = { "Firstname", "Last name", "Email id",
 			"Phone Number", "Location", "Designation", "Education", "Experience", "Skills",
@@ -653,6 +659,9 @@ public class Constants {
 			"DOB", "Marital Status", "Petition Type", "Template", "Date Of Arrival", "Open On", "Status", "Visa No", "Visa Start Date", "Visa End Date", "Attorney/Company", "Contact Name", "Contact Email", "Receipt No", "Location", "LCA Start Date", 
 			"LCA End Date", "LCA Number", "LCA Rate", "LCA Location", "LCA Title","Job Name","Job Id", "Previous LCA Start Date", "Previous LCA End Date", "Previous LCA Number", "Previous LCA Rate", "Previous LCA Title", "Previous LCA Location" };
 
+	
+	
+	
 	public static final String[] DATA_MIGRATION_ASSOCIATE_EXCEL_HEADERS = { "Employee ID" , "First Name*","Last Name", "Email id*", "Phone Number", "Extension Number",
 			"Rate","Rate Per", "Gender*","Martial Status","Date of Join","Date of Birth","Role*","Day Hours(HH:MM)","Manager*(Email)", "Employment Type*","Vendor(Email)","Vendor Contact(Email)","Grade","Designation*","Shift*","Send Mail to User(Y/N)","Is Global Manage(Y/N)"};
 
@@ -663,7 +672,7 @@ public class Constants {
 
 	public static final String[] REQIREMENT_INTERVIEW_HEADERS = { "Applicant Name","Email", "Job", "Client",  "Applied On", "No Of Interviews",  "Source", "Status","Job Rating" ,"Incentivized"};
 
-	public static final String[] REQIREMENT_OFFERMADE_HEADERS = { "Applicant Name","Email", "Job", "Client",  "Join Date", "Position Type", "Offered On", "Status","Job Rating" ,"Incentivized"};
+	public static final String[] REQIREMENT_OFFERMADE_HEADERS = { "Applicant Name","Email", "Job", "Client",  "Join Date", "Position Type", "Offered On","Source", "Status","Job Rating" ,"Incentivized"};
 
 	public static final String[] REQIREMENT_REJECTED_HEADERS = { "Applicant Name","Email", "Job", "Client",  "Rejected Type", "Rejected Reason", "Source", "Status","Job Rating" ,"Incentivized"};
 
@@ -819,6 +828,8 @@ public class Constants {
 	public static final String INVOICE_RECEIVED = "Received";
 	public static final String INVOICE_STATUS_UNPAID = "Unpaid";
 	public static final String INVOICE_STATUS_PAID = "Paid";
+	public static final String INVOICE_TIMELINE_STATUS_PAID = "Payment";
+	public static final String INVOICE_TIMELINE_STATUS_CREATED = "Created";
 	public static final String INVOICE_STATUS_PARTIAL_PAID = "Partial Paid";
 	public static final String INVOICE_SENT = "SENT";
 	public static final Long CANDIATE_RESUME_IN_ACTIVE = 0L;
@@ -1188,7 +1199,13 @@ public class Constants {
     public static final String BOOLEAN_TRUE = "true";
     public static final String LOCAL_TAX_YES = "YES";
     public static final String LOCAL_TAX_NO = "NO";
+
     
+
+
+    public static final String[] EMPLOYMENT_TYPES = { "C2C", "C2C-1099", "W-2", "C2H", "C2H-1099", "Part Time", "Full Time", "Other" };
+
+
 
 	public static final String EMAIL_SUCCESS = "success";
 	public static final String UPDATE = "UPD";
@@ -1202,16 +1219,22 @@ public class Constants {
 	
 	public static final String HALFYEARLY = "HalfYearly";
 	public static final String QUARTERLY = "Quarterly";
-	
 
-	public static final String[] EMPLOYMENT_TYPES = { "C2C", "C2C-1099", "W-2", "C2H", "C2H-1099", "Part Time", "Full Time", "Other" };
-	
-	public static final String[] IT_DECLARATION_SUBMISSION_FORM = { "Item Name", "Particulars" ,"Eligibility(Rs.)","Amount"};
-	
-//	Annually   
 
 
 	public static final String PAYROLL_DELETE = "Delete";
 	public static final String REACTIVE = "Reactive";
+	public static final String REQUEST_FOR_APPROVING_PAYROLL = "RequestForApprovingPayroll";
+	public static final String APPROVE_MAIL_TO_REQUEST_USER = "ApproveMailToRequestUser";
+
+	
+	public static final String[] IT_DECLARATION_SUBMISSION_FORM = { "Item Name", "Particulars" ,"Eligibility(Rs.)","Amount"};
+	public static final String DEDUCTED = "Deducted";
+	
+	public static final String FULL_TIME = "Full Time";
+	public static final String USER_EMAIL_UPDATION = "UserEmailUpdation";
+	
+	
+
 
 }

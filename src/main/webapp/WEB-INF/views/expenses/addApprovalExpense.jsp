@@ -152,7 +152,7 @@ $(document).ready(function(){
 </div>
 <div class="expensHead">
 <div class="form-group col-md-6 mt5 mb5 noPad">
-<span class="col-md-6 noPad">Expenses Amount Total:</span>
+<span class="col-md-6 noPad">Amount :</span>
 <div class="col-md-6">
 <input type="text" id="expenseAmountDivId" name="expenseAmountDivId" value="${entry.amountRoundOff}" class="ReadTextFli valid" readonly="readonly">
 </div>
@@ -173,7 +173,7 @@ $(document).ready(function(){
 				<th>Approved Amount</th>
 				<th>Currency</th>
 				<th>Payment Mode</th>
-				<th>Billable</th>
+				<th>Billable Type</th>
 				<th>Paid By</th>
 				<th>Action</th>
 			</tr>
@@ -211,8 +211,8 @@ $(document).ready(function(){
 			               <div id="paymentModeDiv${(2*(entryCount.count))-1}">${entry.paymentMode}</div>
 			          </td>
 			           <td>
-			               <input type='hidden' id="billableTypeDivInput${(2*(entryCount.count))-1}" value="${entry.billable}"/>
-			               <div id="billableTypeDiv${(2*(entryCount.count))-1}">${entry.billable}</div>
+			               <input type='hidden' id="billableTypeDivInput${(2*(entryCount.count))-1}" value="${entry.billable == false ? 'Non-Billable' : 'Billable'}"/>
+			               <div id="billableTypeDiv${(2*(entryCount.count))-1}">${entry.billable == false ? 'Non-Billable' : 'Billable'}</div>
 			          </td>
 			           <td>
 			               <input type='hidden' id="paidByDivInput${(2*(entryCount.count))-1}" value="${entry.paidBy}"/>
@@ -225,7 +225,7 @@ $(document).ready(function(){
 			          </td>
 			        </tr>
 			        <tr id="divEntityTsRow${2*(entryCount.count)}" style="display:none;">
-			          <td colspan="8">
+			          <td colspan="10">
 				         <div class="expDetails">
 				         <input type="hidden" id="expenseEntryId${(2*(entryCount.count))-1}" name="expenseEntry[${entryCount.index}].id" value='${entry.id}'/>
 				          <div class="col-xs-12 col-sm-12 col-md-12 expAddRo myForm noPad clearfix">            
@@ -282,14 +282,7 @@ $(document).ready(function(){
 		                  <div id="amountDiv${(2*(entryCount.count))-1}" class='col-md-4 minHeight valid_ation'>
 			                   <label>Approved Amount<span class='text-danger'>&nbsp;*</span></label>
 								  <div class='input-group positionRelative'>
-										<div class='input-group-btn tblminwidth-75 select-field dropdown_inr' style='min-width: 65px !important;'>
-											 <select class='btn btn-info' id='expenseRateType${(2*(entryCount.count))-1}' name='expenseEntry[${entryCount.index}].categoryApprovedAmountType' field-name='Rate Type' field-name='Rate Type' data-validation='required'>
-												   <c:forEach var="currencyType" items="${expEntry.currencyCodeList}">
-									                  <option  ${entry.categoryAmountType == currencyType ? 'selected' : ''} value="${currencyType}">${currencyType}</option>
-									              </c:forEach>
-										  </select>
-									</div>
-								         <input type='text' class='form-control allownumericwithdecimal'  placeholder='Approved Amount'  name='expenseEntry[${entryCount.index}].categoryApprovedAmount' id='expenseAmount${(2*(entryCount.count))-1}' value='${entry.categoryAmount}' field-name='Approved Amount' data-validation='required validate_float validate_length length1-10' onkeyup="getAmountValue(${(2*(entryCount.count))-1});">
+								         <input type='text' class='form-control allownumericwithdecimal'  placeholder='Approved Amount'  name='expenseEntry[${entryCount.index}].categoryApprovedAmount' id='expenseAmount${(2*(entryCount.count))-1}' value='${entry.amount}' field-name='Approved Amount' data-validation='required validate_float validate_length length1-10' onkeyup="getAmountValue(${(2*(entryCount.count))-1});">
 									</div>
 		                 </div>
 		                 
@@ -301,8 +294,15 @@ $(document).ready(function(){
 							                   <option  ${entry.paidBy == expEntrypaidBy ? 'selected' : ''} value="${expEntrypaidBy}">${expEntrypaidBy}</option>
 							             </c:forEach>
 								</select>
-							</div>
-		                 
+						</div>
+						<div class="col-md-4 minHeight">
+								<label>Billable Type</label>
+								<select class="chosen-select form-control" id="billableType${(2*(entryCount.count))-1}" name="expenseEntry[${entryCount.index}].billable" class="form-control" field-name="Billable" >
+								          <option value="">Select BillableType</option>
+					                      <option  ${true == entry.billable ? 'selected' : ''} value="1">Billable</option>
+					                      <option  ${false == entry.billable ? 'selected' : ''} value="0">Non-Billable</option>
+								</select>
+						</div>
 						<div class="col-md-12 minHeight mb">
 							<label>Description<span class='text-danger'>&nbsp;*</span></label>
 							<textarea rows="3"  id="entryDes${(2*(entryCount.count))-1}" name="expenseEntry[${entryCount.index}].entryDescription" class="form-control" placeholder="Description" field-name="Description" data-validation="required " onblur="removeWhiteSpacesMyExp(${(2*(entryCount.count))-1});">${entry.entryDescription}</textarea>

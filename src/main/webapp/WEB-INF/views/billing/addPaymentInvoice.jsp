@@ -38,8 +38,8 @@
     	 	<div class="row">
     	 		<div class="col-md-6 minHeight50 mb">
     	 			<label class="col-md-3">Payment Date<span class="text-danger paddingLeft">*</span></label>
-    	 			<div class="col-md-9">
-    	 				<input class="form-control calendar" placeholder="Payment Date" type="text" id="paymentDate" name="paymentDate" data-validation="required" field-name="Payment Date" readonly>
+    	 			<div class="col-md-9" id= "paymentDateDiv">
+    	 				<input class="form-control calendar" placeholder="Payment Date" type="text" value = "" id="paymentDate" name="paymentDate" data-validation="required" field-name="Payment Date" readonly>
     	 			</div>
     	 		</div>
     	 		<div class="col-md-6 minHeight50 mb">
@@ -80,14 +80,13 @@
 					</div>
 				</div>
 				
- 	 		<div class="col-md-6 minHeight50 mb">
+ 	 		<div class="col-md-6 minHeight50 mb errorInptgroup">
 		<label class="col-md-3">Attachment</label>
 			<div class="col-md-9 zindex positionRelative">
 					<div class="input-group col-md-12" id="uploadFileGroup"	style="margin: 0 auto">
 						<label class="input-group-btn"> <span class="btn btn-primary" onchange="getFleInformation();"><i class="fa fa-folder-open-o"></i>&nbsp;Browse File <input type="file" style="display: none;" id="uploadBtn"	class="upload"> </span>
 						</label> 
 					<input type="text" class="form-control" readonly id="uploadFile" name="docFile" placeholder="Upload File" field-name="Upload File" data-validation="validatedoc" data-validation-optional="true">
-						<div class="clearUpload"></div>
 					</div>
 			</div>
 			</div>
@@ -96,7 +95,7 @@
     	 		
     	 		<!--  Table html -->
     	 		
-    	 		<div class="candidate_wrap_table datatable_filter">
+    	 		<div class="candidate_wrap_table datatable_filter positionRelative mt40">
 	                  <div id="invoiceList"></div>
     	 		</div>
     	 		<!--  Table html -->
@@ -118,6 +117,14 @@ $(document).ready(function() {
 </script>
 
 <script type="text/javascript">
+
+function validDateClass(){
+	 var paymentDateVal = document.getElementById("paymentDate").value;
+	 if(paymentDateVal){
+		 $('#paymentDateDiv').find('p.jquery_form_error_message').remove(); 
+	 }
+}
+
     function getFleInformation() {
     	fileUpload("uploadBtn", "incoiceDocuments", "paymentForm");	
 	}
@@ -137,7 +144,11 @@ $('#paymentDate').datepicker({
     dateFormat: finalDateFormat,
     changeMonth: true,
 	  changeYear: true, 
-	  minDate:0
+	  minDate:0,
+	  onSelect : function(selected) {
+			 validDateClass();
+		}
+	 
     //minDate: 0  this line for to restrict selection of previous dates
 });
 </script>
@@ -254,7 +265,8 @@ function addInvoice(){
  	 if ($('#paymentForm').validate(false, validationSettings) && Duevalidate) {
 		 var grandDueTotal = $("#grandTotalAmount").text();
 		 var grandTotalReceived = $("#totalAmount").val();
-		 if(grandDueTotal == grandTotalReceived){
+		 var finalAmountReceived =parseFloat(grandTotalReceived);
+		 if(grandDueTotal == finalAmountReceived.toFixed(2)){
 		 var invoiceIds= []
 		 var amount = "";
 		 $('input:checkbox[name=invoices]:checked').each(function() {
@@ -270,7 +282,7 @@ function addInvoice(){
           		} else if (result.response === "AWKWARD") {
           		    location.href = "/errorPage";
           		} else if (result.response === "SUCCESS") {
-          			location.reload();
+          			location.replace(sourceleadUrl+"/invoiceList");
           		} else if (result.indexOf('Sign In') !== -1) {
           			location.replace(sourceleadUrl);
           		} else {
@@ -407,8 +419,9 @@ function showCheckBoxDivPopup(){
 			  $("#totalAmountRow"+id).val(amount);
 			 grandTotalAmount =  parseFloat(totalAmount)+parseFloat(amount);
 		  }else{
+			  var inputAmount = $("#totalAmountRow"+id).val();
 			  $("#totalAmountRow"+id).val('');
-			  grandTotalAmount =  parseFloat(totalAmount)-parseFloat(amount);
+			  grandTotalAmount =  parseFloat(totalAmount)-parseFloat(inputAmount);
 		  }
 		  $("#grandTotalAmount").text(grandTotalAmount.toFixed(2));
 		// For innerTable scrool we have to main this script, Please don't remove.. ask @Ajit
@@ -422,6 +435,7 @@ function showCheckBoxDivPopup(){
 		    "scrollY":"350px",
 	        "scrollCollapse": true,
 	        "paging":         false,
+	        "fixedHeader" : true,
 	    	"lengthMenu": [[10000, 15, 20, -1], [10000, 15, 20, "All"]],
 	    	"bLengthChange": false,
 	    	"bDestroy": true,
@@ -434,7 +448,11 @@ function showCheckBoxDivPopup(){
 	    	"oLanguage": {
 	     		"sSearch": "",
 	     		 "sZeroRecords": "", "sEmptyTable": ""
-	     	}
+	     	},
+	     	// Datatable: Hidding duplicate Header in IE-11(edge)
+	 "initComplete" : function () {
+		         $('.dataTables_scrollBody thead tr').addClass('hidden');
+		     }
 	    });
 	
 }

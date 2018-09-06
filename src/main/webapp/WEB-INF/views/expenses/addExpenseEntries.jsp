@@ -371,6 +371,7 @@ function addAttachment(entityRowId,from){
     <input type='hidden' id="expenseAmountDivInputREPLACEROWID"/>
     <div id="expenseAmountDivREPLACEROWID">--</div>
 </div>
+
 <div id="divAddRowTr1Td5" style="display: none; float: left;">
     <input type='hidden' id="expenseRateTypeDivInputREPLACEROWID"/>
     <div id="expenseRateTypeDivREPLACEROWID">--</div>
@@ -379,6 +380,12 @@ function addAttachment(entityRowId,from){
     <input type='hidden' id="paymentModeDivInputREPLACEROWID" />
     <div id="paymentModeDivREPLACEROWID">--</div>
 </div>
+
+ <div id="divAddRowTr1Td10" style="display: none; float: left;">
+    <input type='hidden' id="expenseBillableTypeDivInputREPLACEROWID"/>
+    <div id="expenseBillableTypeDivREPLACEROWID">--</div>
+</div> 
+
 
 <div id="divAddRowTr1Td7" style="display: none; float: left;">
     <input type='hidden' id="paidByDivInputREPLACEROWID" />
@@ -391,6 +398,12 @@ function addAttachment(entityRowId,from){
 			<i class="glyphicon glyphicon-trash Cred" onclick="removeExpenseRow(REPLACEROWID,REPLACEDOWNROWID);"></i>
 		</div>
 </div>
+
+<div id="divAddRowTr1Td9" style="display: none; float: left;">
+    <input type='hidden' id="expenseApprovedAmountDivInputREPLACEROWID"/>
+    <div id="expenseApprovedAmountDivREPLACEROWID">--</div>
+</div>
+
 <div id="divAddRowTr2" style="display: none; float: left;">
          <div class="expDetails">
 			          <div class="col-xs-12 col-sm-12 col-md-12 expAddRo myForm noPad clearfix">            
@@ -507,46 +520,73 @@ function addExpenseRow(from){
 			var row = tbl.insertRow(maxRowNum);
 			row.setAttribute("id", "divEntityTsRow" + maxRowNum);
 			
-			var cell0 = row.insertCell(0);
+			var cellCount = 0;
+			
+			var cell0 = row.insertCell(parseInt(cellCount));
 			var divRowTd1Str = document.getElementById("divAddRowTr1Td1").innerHTML;
 			divRowTd1Str = divRowTd1Str.replace(/REPLACEROWID/g, (maxRowNum));
 			cell0.innerHTML = divRowTd1Str;
 			
+			cellCount = parseInt(cellCount)+1;
 			
-			var cell1 = row.insertCell(1);
+			var cell1 = row.insertCell(parseInt(cellCount));
 			var divRowTd2Str = document.getElementById("divAddRowTr1Td2").innerHTML;
 			divRowTd2Str = divRowTd2Str.replace(/REPLACEROWID/g, (maxRowNum));
 			cell1.innerHTML = divRowTd2Str;
+			cellCount = parseInt(cellCount)+1;
 			
 			
-			var cell2 = row.insertCell(2);
+			var cell2 = row.insertCell(parseInt(cellCount));
 			var divRowTd3Str = document.getElementById("divAddRowTr1Td3").innerHTML;
 			divRowTd3Str = divRowTd3Str.replace(/REPLACEROWID/g, (maxRowNum));
 			cell2.innerHTML = divRowTd3Str;
+			cellCount = parseInt(cellCount)+1;
 			
 			
-			var cell3 = row.insertCell(3);
+			var cell3 = row.insertCell(parseInt(cellCount));
 			var divRowTd4Str = document.getElementById("divAddRowTr1Td4").innerHTML;
 			divRowTd4Str = divRowTd4Str.replace(/REPLACEROWID/g, (maxRowNum));
 			cell3.innerHTML = divRowTd4Str;
+			cellCount = parseInt(cellCount)+1;
 			
-			var cell4 = row.insertCell(4);
+
+			if(from != null && from != 'undefined' && from != '' && from == 'approver'){
+				var cell9 = row.insertCell(parseInt(cellCount));
+				var divRowTd9Str = document.getElementById("divAddRowTr1Td9").innerHTML;
+				divRowTd9Str = divRowTd9Str.replace(/REPLACEROWID/g, (maxRowNum));
+				cell9.innerHTML = divRowTd9Str;
+				cellCount = parseInt(cellCount)+1;
+			}
+			
+			var cell4 = row.insertCell(parseInt(cellCount));
 			var divAttachmentTdStr = document.getElementById("divAddRowTr1Td5").innerHTML;
 			divAttachmentTdStr = divAttachmentTdStr.replace(/REPLACEROWID/g, (maxRowNum));
 			cell4.innerHTML = divAttachmentTdStr;
+			cellCount = parseInt(cellCount)+1;
 			
-			
-			var cell5 = row.insertCell(5);
+			var cell5 = row.insertCell(parseInt(cellCount));
 			var divRowTd5Str = document.getElementById("divAddRowTr1Td6").innerHTML;
 			divRowTd5Str = divRowTd5Str.replace(/REPLACEROWID/g, (maxRowNum));
 			cell5.innerHTML = divRowTd5Str;
+			cellCount = parseInt(cellCount)+1;
+
+			if(from != null && from != 'undefined' && from != '' && from == 'approver'){
+				var cell10 = row.insertCell(parseInt(cellCount));
+				var divRowTd10Str = document.getElementById("divAddRowTr1Td10").innerHTML;
+				divRowTd10Str = divRowTd10Str.replace(/REPLACEROWID/g, (maxRowNum));
+				cell10.innerHTML = divRowTd10Str;
+				cellCount = parseInt(cellCount)+1;
+			}
 			
-			var cell6 = row.insertCell(6);
+			var cell6 = row.insertCell(parseInt(cellCount));
 			var divRowTd6Str = document.getElementById("divAddRowTr1Td7").innerHTML;
 			divRowTd6Str = divRowTd6Str.replace(/REPLACEROWID/g, (maxRowNum));
 			cell6.innerHTML = divRowTd6Str;
+			cellCount = parseInt(cellCount)+1;
 			
-			var cell7 = row.insertCell(7);
+			
+			
+			var cell7 = row.insertCell(parseInt(cellCount));
 			var divRowTd7Str = document.getElementById("divAddRowTr1Td8").innerHTML;
 			divRowTd7Str = divRowTd7Str.replace(/REPLACEROWID/g, (maxRowNum));
 			divRowTd7Str = divRowTd7Str.replace(/REPLACEDOWNROWID/g, (parseInt(maxRowNum + 1)));
@@ -702,15 +742,22 @@ function addExpenseRow(from){
 			var descriptions = $("#entryDes"+entityId).val();
 			var paidBy = $("#paidBy"+entityId).val();
 			
+			var billableType = $("#billableType"+entityId).val();
+			
+			
 			$("#categoryTypeDiv"+entityId).html(categoryTypeName);
 			$("#categoryDateDiv"+entityId).html(categoryDate);
 			$("#receiptIssuedByDiv"+entityId).html(receiptIssuedBy);
 			$("#paymentModeDiv"+entityId).html(paymentMode);
 			$("#expenseRateTypeDiv"+entityId).html(expenseRateType);
 			$("#expenseAmountDiv"+entityId).html(expenseRoundOffAmount);
+			$("#expenseApprovedAmountDiv"+entityId).html(expenseRoundOffAmount);
+			
 			$("#entryDesDiv"+entityId).html(descriptions);
 			$("#entryDesDiv"+entityId).prop("title", descriptions);
 			$("#paidByDiv"+entityId).html(paidBy);
+			
+			
 			
 			$("#categoryTypeDivInput"+entityId).val(categoryType);
 			$("#categoryDateDivInput"+entityId).val(categoryDate);
@@ -718,6 +765,7 @@ function addExpenseRow(from){
 			$("#paymentModeDivInput"+entityId).val(paymentMode);
 			$("#expenseRateTypeDivInput"+entityId).val(expenseRateType);
 			$("#expenseAmountDivInput"+entityId).val(expenseAmount);
+			$("#expenseApprovedAmountDivInput"+entityId).val(expenseAmount);
 			$("#entryDesDivInput"+entityId).val(descriptions);
 			$("#paidByDivInput"+entityId).val(paidBy);
 			
@@ -750,6 +798,15 @@ function addExpenseRow(from){
 			$("#addExpenseItemButton").attr('href','javascript:addExpenseRow("'+from+'");');
 			$("#addExpenseItemButton").removeClass("btn-default");
 	        $("#addExpenseItemButton").addClass("btn-primary");
+	        if(billableType != null && billableType != '' && billableType != 'undefined'){
+				if(billableType == 1){
+					billableType = 'Billable';
+				}else{
+					billableType = 'Non-Billable';
+				}
+				$("#billableTypeDiv"+entityId).html(billableType);
+				$("#billableTypeDivInput"+entityId).val(billableType);
+			}
 			return true;
 		}else{
 			return false;

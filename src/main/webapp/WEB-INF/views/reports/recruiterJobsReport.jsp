@@ -15,6 +15,7 @@
 #billing_chartdiv {
   	width:100%; height:300px;
 }
+/* Ensure that the demo table scrolls */
 </style>
 <script type="text/javascript">
 	window.onload = function () {
@@ -47,6 +48,7 @@ function getDayWiseReports(){
     		<li>
         <div class="dropdown-select positionRelative repSelWrap clearfix">
         	<select class="form-control repSelFiled" id="reportTypeIdJobs" onChange="flushCustomJobs(); custDatesJobs();">
+			  <option ${timePeriod == 'today' ? 'selected' : ''} value="today">Today</option>
 			  <option ${timePeriod == 'Last_7_days' ? 'selected' : ''} value="Last_7_days">Last 7 days</option>
 			  <option ${timePeriod == 'Last_15_days' ? 'selected' : ''} value="Last_15_days">Last 15 days</option>
 			  <option ${timePeriod == '1_month' ? 'selected' : ''} value="1_month">Last 1 month</option>
@@ -79,7 +81,7 @@ function getDayWiseReports(){
     </div>
     
     	<div class="clearfix"></div>
-    	 	<div class="candidate_wrap_table recruiterReports_table minHeight positionRelative datatable_filter dashboard-widget clearfix">
+    	 	<div class="candidate_wrap_table recruiterReports_table fixedColumntable minHeight positionRelative datatable_filter dashboard-widget clearfix">
               <div id="usersList" class="filter_position positionRelative"></div> 
           </div> 
     </div>
@@ -237,7 +239,7 @@ function custDatesJobs(){
 	    var sourceleadUrl ='${sourceleadUrl}';
 	    var result = "";
 	 	
-	 	result = result + '<table id="usersListTable" class="display" cellspacing="0" width="100%" >';
+	 	result = result + '<table id="usersListTable" class="display stripe row-border order-column" cellspacing="0" width="100%" >';
 		result = result + '<thead>';
 		result = result + '<tr>';
 		result = result +"<th><div class='small'>Generated ID</div></th>";
@@ -273,6 +275,7 @@ function jobsDataTableList(){
 	 var startDate = '';
 	 var endDate = '';
 	 if(timePeriod == 'custom'){
+		 custDatesJobs();
 		  startDate = $("#ReportStartDateJobs").val();
 		  endDate = $("#ReportEndDateJobs").val();
 		  if(startDate == null || startDate == '' || endDate == null || endDate == ''){
@@ -339,9 +342,7 @@ function jobsListPagination(url,sourceleadUrl){
     	  	"render": function(data, type, opt, meta) {
     	  		  var result = "";
     	  	   	 result = result +"<td>";
-            	 result = result +"<div class='width300px'>";
-            	 result = result +"<div class='tbldata-dotdot-me'><span title='"+opt.generatedId+"'>"+opt.generatedId+"</span></div>";
-            	 result = result +"<div>";
+            	 result = result +"<div class='tblminwidth-100' title='"+opt.generatedId+"'>"+opt.generatedId+"</div>";
             	 result = result +"</td>";
 	             return result;
     	  	}
@@ -351,9 +352,7 @@ function jobsListPagination(url,sourceleadUrl){
     	  	"render": function(data, type, opt, meta) {
     	  		  var result = "";
     	  	   	 result = result +"<td>";
-            	 result = result +"<div class='width300px'>";
-            	 result = result +"<div class='tbldata-dotdot-me'><span title='"+opt.jobTitle+"'>"+opt.jobTitle+"</span></div>";
-            	 result = result +"<div>";
+            	 result = result +"<div class='tbldata-dotdot-me' title='"+opt.jobTitle+"'>"+opt.jobTitle+"</div>";
             	 result = result +"</td>";
 	             return result;
     	  	}
@@ -363,12 +362,12 @@ function jobsListPagination(url,sourceleadUrl){
 	    	  	"render": function(data, type, opt, meta) {
 	    	  		  var result = "";
 	    	  	   	 result = result +"<td>";
-                	 result = result +"<div class='width300px'>";
+                	 result = result +"<div >";
                 	 
                 	 if(opt.client !=null && opt.client !='' && opt.client !='undefined'){
-            	    	 result = result +"<div class='tbldata-dotdot-me'> <span title='"+opt.client+"'>"+opt.client+"</span></div>";
+            	    	 result = result +"<div class='tbldata-dotdot' title='"+opt.client+"'>"+opt.client+"</div>";
             	    }else{
-            	    	 result = result +"<div class='tbldata-dotdot-me'> <span>---</span></div>"; 
+            	    	 result = result +"<div class='tbldata-dotdot'> <span>---</span></div>"; 
             	    }
                 	 result = result +"<div>";
                 	 result = result +"</td>";
@@ -499,13 +498,19 @@ function jobsListPagination(url,sourceleadUrl){
 	    	"bLengthChange": true,
 	    	"bDestroy": true,
 	    	"ordering": true,
+	         "scrollX":        true,
+	         "scrollCollapse": true,
+	    	  "fixedColumns":  {
+	            "leftColumns": 2,
+	            "rightColumns":0
+	        },
 	    	"oLanguage": {
 	     		"sSearch": "",
 	     		 "sZeroRecords": "", "sEmptyTable": "", 
 	     		 "sProcessing": "<img src='/resources/images/loading.gif' style='width: 75px; height: 75px;'/>"
 	     }
     } );
-    $("#usersListTable").wrap("<div style='overflow-x: auto; overflow-y: hidden;'></div>"); 
+    //$("#usersListTable").wrap("<div style='overflow-x: auto; overflow-y: hidden;'></div>"); 
     $("input[type=search]").hide();
     $("#jobsDataTableSearch").keyup(function(e) {
     	   if(e.which === 13) {

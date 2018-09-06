@@ -4,10 +4,8 @@
 <%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <!-- <link href="/resources/css/jquery-ui.css" rel="stylesheet"> -->
 
-
-
 <%@taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
-
+     <script src="/resources/js/sourcelead.common.js"></script> 
 
 <style>
 .dashboard-widget {
@@ -75,7 +73,6 @@ overflow-x: auto;
 	 if(settingsConfigured == "N"){
 		configureDiv();
 	 }
-	 
 	});
 </script> 
 
@@ -84,69 +81,10 @@ overflow-x: auto;
    <div id ="configurePopUpDiv"></div>
 </form:form>
 
-
-
-  
-<!--  configurediv -->
- <%-- <div class="configure_wrap">
-     <div id="loading"></div> 
-    	<div class="configure_wrap-inner">
-        	<h2 class="text-danger">Configure</h2>
-            <form:form class="login-form clearfix"  id="forgetPassword_form"  name="forgetPassword_form" method="post" >
-	            <div id="forgotPasswordDiv">
-	              <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12"> 
-        <div class="form-group">
-          <label>Time Zone<span class="text-danger paddingLeft">*</span></label>
-          <div class="clearfix">
-               <select class="chosen-select form-control" data-placeholder="Time Zone" field-name="Time zone" data-validation="required" id="timeZone" name="timeZone">
-                     </select>
-                     <span class="hidden">Time Zone</span>
-           </div>
-        </div>
-        <div class="form-group">
-          <label>Date Format<span class="text-danger paddingLeft">*</span></label>
-          <div class="clearfix dropdown-select">
-           <select class="form-control">
-            <option selected>---Select Date Formate ---</option>
-            <option>DD/MM/YYYY</option>
-            <option>DD/MM/YYYY</option>
-                                    <option>DD/MM/YYYY</option>
-                                                <option>DD/MM/YYYY</option>
-           </select>
-          </div>
-        </div>
-        <div class="form-group">
-          <label>Organization Short Code<span class="text-danger paddingLeft">*</span></label>
-          <div class="clearfix">
-            <input type="text" class="form-control" id="" name="" value="">
-          </div>
-        </div>
-         <div class="clearfix">
-          <label class="text-primary">Note</label>
-          <div class="clearfix">
-            <p>Text Note</p>
-          </div>
-        </div>
-      </div> 
-	            </div>
-	            <div class="clearfix">
-	            <div class="col-md-6">
-	            <input type="button" value="Proceed" class="btn btn-primary btn-block">
-	            </div>
-	            <div class="col-md-6">
-	            <input type="button" value="Cancel" onclick="logoutForConfigure();" class="btn btn-default btn-block">
-	            </div>
-	            </div> 
-            </form:form>         
-        </div>        
-    </div>  --%>
-<!--  configurediv -->
-
-
 <script>
-		function logoutForConfigure() {
-			document.getElementById("logoutForm").submit();
-		}
+function logoutForConfigure() {
+	document.getElementById("logoutForm").submit();
+}
 </script>
 
 
@@ -159,16 +97,6 @@ overflow-x: auto;
  <input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}"/>
 </form>
 
-
-
-
-
-
-
-
-
-
-  
 <section class="content-wraper">
 	    <section class="content-header clearfix">
 	      
@@ -262,26 +190,7 @@ overflow-x: auto;
 		     </div>
 		     
 		     <div class="clearfix"></div>
-	    
-	    
-	   
-	    
-	    <!-- <div class="row clearfix"> -->
-	    <!-- <div class="col-md-6 mb">
-
-        <div class="clients_wrap_table dashboard-widget overflow_inherint"  id="assignTaskListDiv" style="display: none;">
-
-           <h4 class="clearfix">Tasks
-        <b class="dashboard-datepkr"><input class="input-sm" id="dasboardTaskDatpicker" readonly="readonly" type="text"><i class="fa fa-calendar"></i></b>  
-          </h4>	
-          <div class="clearfix require_wrap_table dashboard-data Tasks overflow_inherint">
-            <div id="assignTaskList"></div>
-            
-          </div>
-        </div>
-        Pagenation Ends 
-      </div> 
-      </div>-->
+	     
        <sec:authorize access="!hasAnyRole('ROLE_FILL_MY_TIMESHEETS','ROLE_EXPORT_MY_TIMESHEETS','ROLE_MODIFY_MY_TIMESHEETS','ROLE_FILL_MEMBER_TIMESHEETS','ROLE_VIEW_MEMBER_TIMESHEETS','ROLE_EXPORT_MEMBER_TIMESHEETS','ROLE_VIEW_REQUIREMENT','ROLE_VIEW_INTERVIEW')">
 	   				  <div class='row'>
 						<div class='col-lg-12'> 

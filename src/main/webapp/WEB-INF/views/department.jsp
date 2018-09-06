@@ -83,7 +83,7 @@ $(document).ready(function() {
                       <div class="clearfix mb">
                         <div class="" id="departmentNameDiv">
                         	<label class="noPad">Department Name <b class="valStar">*</b></label>
-                          <input type="text" class="form-control input-sm" value="" placeholder="Name *" name="departmentName" id="departmentName" data-validation="required validate_length length2-100" field-name="Name" onkeyup="validDepartmentname();">
+                          <input type="text" class="form-control input-sm" value="" placeholder="Name *" name="departmentName" id="departmentName" data-validation="required validate_length length2-100" field-name="Name" onkeyup="validDepartmentname();" onkeydown="return (event.keyCode!=13);">
                         </div>
                       </div>
                       <div class="clearfix mb">
@@ -309,7 +309,7 @@ function editDepartment(departmentId){
 				result = result + '		<div class="mb"> ';
 				result = result + '		  <label for="Project Id">Department Name <b class="valStar">*</b></label> ';
 				result = result + '		  <div class="" id="eidtdepartmentNameDIV"> ';
-				result = result + '			<input type="text" class="form-control" id="eidtdepartmentName" name="departmentName"  value="'+json.departmentName+'" data-validation="required validate_length length2-100" field-name="Department Name" onkeyup="validateDepartmentname('+departmentId+');"> ';
+				result = result + '			<input type="text" class="form-control" id="eidtdepartmentName" name="departmentName"  value="'+json.departmentName+'" data-validation="required validate_length length2-100" field-name="Department Name" onkeyup="validateDepartmentname('+departmentId+');" onkeydown="return (event.keyCode!=13);"> ';
 				result = result + '		   </div>';
 				result = result + '		</div>  ';
 				result = result + '		<div class="mb"> ';

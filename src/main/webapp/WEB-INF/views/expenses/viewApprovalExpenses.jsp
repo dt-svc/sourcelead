@@ -127,6 +127,7 @@
 		                
 		                <sec:authorize access="!hasAnyRole(\'ROLE_VIEW_CLIENT\',\'ROLE_VIEW_EDIT_CLIENT\')">
 						 <c:forEach var="project" items="${expEntry.projectsList}">
+						 
 						      <c:if test="${project.id == expenses.projectId}">
 						      ${project.client}
 						      </c:if>
@@ -182,7 +183,12 @@
 			           <td><div id="expenseRateType${entryCount.count}">${entry.categoryAmountType}</div></td>
 			           <td><div id="paymentModeDiv${entryCount.count}">${entry.paymentMode}</div></td>
 			           <td><div id="paidByDiv${entryCount.count}">${entry.paidBy}</div></td>
-			            <td><div class=""><input type="checkbox" ${entry.billable ? 'checked' : ''} name="expenses" data-id="${entry.id}" onclick="showPopUp(this,${entry.id});"></div></td>
+			            <c:if test="${submissionStatus == 'SUBMITTED' || submissionStatus == 'REJECTED' || submissionStatus == 'REOPENED'}">
+					        <td><div class=""><input type="checkbox" ${entry.billable ? 'checked' : ''} name="expenses" data-id="${entry.id}" onclick="showPopUp(this,${entry.id});"></div></td>
+					    </c:if>
+					    
+			           
+			           
 			        </tr>
 			        <tr id="divEntityTsRow${2*(entryCount.count)}" style="display:none;">
 				        <td colspan="10">
@@ -240,11 +246,24 @@
 	 <a href="javascript:void(0)" class="pull-left" id="changeBillableStatus">Ok</a>
 	 <a class="close_color" class="pull-left" id="cancelBillingStatus">Cancel</a>
 </div>
+
+<script>
+$("#export-pop").click(function(){
+	$(".export_pop").toggle();
+});
+$("html").click(function() {
+    $(".export_pop").slideUp();
+});
+$(".export_pop, #export-pop").click(function(e) {
+    e.stopPropagation();
+});	
+</script>
   
 <script type="text/javascript">
 
 	$("#changeBillableStatus").click(function () {
 		var id = $("#changeBillableStatus").data("id");
+		var billableStatus = $("#changeBillableStatus").data("billableStatus");
 		changeStatusToBillable(id);
 	});
 	$("#cancelBillingStatus").click(function() {
@@ -270,6 +289,7 @@
 		}
 		$("#reject2message").html("Are you sure <br/> you want to make this expense item as " + (checked ? "billable ? " : "non-billable ? "));
 		$("#changeBillableStatus").data("id", ExpenseEntriesId);
+		$("#changeBillableStatus").data("billableStatus", checked ? "billable": "non-billable");
 		$(".mask_time").fadeIn(200);
 		$(".time_appr_rejct_pop").slideToggle(200);
 	}

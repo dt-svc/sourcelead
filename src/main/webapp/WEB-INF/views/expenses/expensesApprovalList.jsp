@@ -196,8 +196,9 @@ if(dateSearch != null && dateSearch != '' && dateSearch != 'undefined' && dateSe
 	}else if((endDateFilter == null || endDateFilter == '' || endDateFilter =='undefined') && (startDateFilter == null || startDateFilter == ''|| startDateFilter !='undefined')){
 		$('#reportStartDate').parent().find('p.jquery_form_error_message').remove(); 
 		$('#reportEndDate').parent().find('p.jquery_form_error_message').remove(); 
-		 $("#reportEndDate").after("<p class='jquery_form_error_message'><span>End Date Is Required</span>");
-		$("#reportStartDate").after("<p class='jquery_form_error_message'><span>Start Date Is Required</span>"); 
+	   $("#reportEndDate").after("<p class='jquery_form_error_message'><span>End Date Is Required</span>");
+		$("#reportStartDate").after("<p class='jquery_form_error_message'><span>Start Date Is Required</span>");  
+		
 	}		
 }
 
@@ -670,6 +671,8 @@ $(".overIcon, .newActPop").click(function(e){
 
 $("#appro-pop").click(function(){
 	$(".newActPop").hide();
+	$(".approved_pop").toggle();
+	
 });
 
 </script>

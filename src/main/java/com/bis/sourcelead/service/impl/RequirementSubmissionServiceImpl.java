@@ -52,11 +52,9 @@ import com.bis.sourcelead.dao.UserDao;
 import com.bis.sourcelead.dto.ApplicantAuthorizationDTO;
 import com.bis.sourcelead.dto.CandidateResumesDTO;
 import com.bis.sourcelead.dto.FileInfo;
-import com.bis.sourcelead.dto.ProjectsDTO;
 import com.bis.sourcelead.dto.RequirementDTO;
 import com.bis.sourcelead.dto.RequirementSubmissionsCountDTO;
 import com.bis.sourcelead.dto.RequirementSubmissionsDTO;
-import com.bis.sourcelead.dto.Response;
 import com.bis.sourcelead.dto.ResponseList;
 import com.bis.sourcelead.elk.index.CandidateIndex;
 import com.bis.sourcelead.elk.index.helper.CandidateIndexHelper;
@@ -66,6 +64,7 @@ import com.bis.sourcelead.entity.Candidate;
 import com.bis.sourcelead.entity.CandidateEducation;
 import com.bis.sourcelead.entity.CandidateEmployers;
 import com.bis.sourcelead.entity.CandidateResumes;
+import com.bis.sourcelead.entity.Countries;
 import com.bis.sourcelead.entity.EmailAttachment;
 import com.bis.sourcelead.entity.EmailMessage;
 import com.bis.sourcelead.entity.EmailRecipient;
@@ -84,6 +83,7 @@ import com.bis.sourcelead.entity.RequirementRefer;
 import com.bis.sourcelead.entity.RequirementSubmission;
 import com.bis.sourcelead.entity.RequirementSubmissionHistory;
 import com.bis.sourcelead.entity.RequirementSubmissionTemplateFields;
+import com.bis.sourcelead.entity.RequirementSubmissionsView;
 import com.bis.sourcelead.entity.SubmissionXls;
 import com.bis.sourcelead.entity.Timezone;
 import com.bis.sourcelead.entity.User;
@@ -91,6 +91,7 @@ import com.bis.sourcelead.enums.ApplicantSubmissionStatus;
 import com.bis.sourcelead.enums.SubmissionRateStatus;
 import com.bis.sourcelead.enums.Submission_Status;
 import com.bis.sourcelead.service.CandidateService;
+import com.bis.sourcelead.service.CountriesService;
 import com.bis.sourcelead.service.EmailScenarioService;
 import com.bis.sourcelead.service.MasterCandidateService;
 import com.bis.sourcelead.service.OrgLocationService;
@@ -235,7 +236,11 @@ public class RequirementSubmissionServiceImpl implements RequirementSubmissionSe
 	RequirementLocationsService requirementLocationsService;
 	
 	@Autowired
+	CountriesService countiresService;
+	
+    @Autowired
 	RequirementOffersService requirementOffersService;
+
 	
 	@Override
 	public RequirementSubmission getRequirementSubmissionById(Long submissionId) throws Exception {
@@ -270,6 +275,7 @@ public class RequirementSubmissionServiceImpl implements RequirementSubmissionSe
 	}
 
 
+	@SuppressWarnings("unused")
 	@Override
 	public RequirementSubmission saveRequirementSubmission(JSONObject jsonObj,User user,OrgLocations orgLocations,String jsonStringvalues,String loginUserRole) throws Exception {
 		
@@ -280,6 +286,12 @@ public class RequirementSubmissionServiceImpl implements RequirementSubmissionSe
 		 Date date = new Date();
 		 OrgLocations guestOrglocation=null;
 		 String submissionstatus=null;
+		 Countries countries = null;
+		 if(StringUtils.isNotBlank(orgLocations.getCountry())) {
+			 countries = countiresService.getCountriesByCountryName(orgLocations.getCountry());
+		 }
+		 
+		 
 		// SimpleDateFormat simpleDateFormat = orgLocations.getLocFullFormDateFormatter();
 		 if(jsonObj.has("guestApplicant")){
 			 submissionstatus="guestApplicant";
@@ -299,14 +311,14 @@ public class RequirementSubmissionServiceImpl implements RequirementSubmissionSe
 		 }else if(candidate == null && jsonObj.has("EmailId") && !isNullOrEmpty(jsonObj.getString("EmailId"))){
 				if(!isNullOrEmpty(loginUserRole) && loginUserRole.equalsIgnoreCase("ROLE_CROWDSOURCING_RECRUITER")){
 					 candidate = candidateDao.getCandidateByEmailAndRecruiterUserId(jsonObj.getString("EmailId"), user.getId());
+				}else {
+					if(orgLocations != null){
+						 candidate = candidateDao.findByCandidateEmail(jsonObj.getString("EmailId"),orgLocations.getId());
+						}
+						else{
+							 candidate = candidateDao.findByCandidateEmail(jsonObj.getString("EmailId"),requirement.getOrgLocationId().getId());
+						}
 				}
-				if(orgLocations != null){
-					 candidate = candidateDao.findByCandidateEmail(jsonObj.getString("EmailId"),orgLocations.getId());
-					}
-					else{
-						 candidate = candidateDao.findByCandidateEmail(jsonObj.getString("EmailId"),requirement.getOrgLocationId().getId());
-					}
-				
 		 }
 		 
 		 if(candidate == null){
@@ -316,7 +328,7 @@ public class RequirementSubmissionServiceImpl implements RequirementSubmissionSe
 						guestOrglocation=orgLocationService.getOrgLocations(requirement.getOrgLocationId().getId());
 					}
 					if(orgLocations != null){
-			       candidate.setOrgLocationId(orgLocations);
+			        candidate.setOrgLocationId(orgLocations);
 					}else{
 					candidate.setOrgLocationId(guestOrglocation);
 					}
@@ -363,6 +375,10 @@ public class RequirementSubmissionServiceImpl implements RequirementSubmissionSe
 					
 					if(jsonObj.has("currentCTCRateType") && !isNullOrEmpty(jsonObj.getString("currentCTCRateType"))){
 						candidate.setCurrentRateCurrency(jsonObj.getString("currentCTCRateType"));
+					}else {
+						if(countries != null) {
+							candidate.setCurrentRateCurrency(countries.getCurrency());
+						}
 					}
 					
 					if(jsonObj.has("CurrentCTC") && !isNullOrEmpty(jsonObj.getString("CurrentCTC"))){
@@ -371,11 +387,17 @@ public class RequirementSubmissionServiceImpl implements RequirementSubmissionSe
 					
 					if(jsonObj.has("currentCTCRatePer") && !isNullOrEmpty(jsonObj.getString("currentCTCRatePer"))){
 						 candidate.setCurrentRateType(jsonObj.getString("currentCTCRatePer"));
+					}else {
+						candidate.setCurrentRateType("Monthly");
 					}
 					
 					if(jsonObj.has("expectedCTCRateType") && !isNullOrEmpty(jsonObj.getString("expectedCTCRateType"))){
 						 candidate.setExpectedRateCurrencey(jsonObj.getString("expectedCTCRateType"));
 						 
+					}else {
+						if(countries != null) {
+							candidate.setExpectedRateCurrencey(countries.getCurrency());
+						}
 					}
 					 
 					if(jsonObj.has("ExpectedCTC") && !isNullOrEmpty(jsonObj.getString("ExpectedCTC"))){
@@ -385,6 +407,8 @@ public class RequirementSubmissionServiceImpl implements RequirementSubmissionSe
 					
 					if(jsonObj.has("expectedCTCRatePer") && !isNullOrEmpty(jsonObj.getString("expectedCTCRatePer"))){
 						 candidate.setRateType(jsonObj.getString("expectedCTCRatePer"));
+					}else {
+						candidate.setRateType("Monthly");
 					}
 					
 					if(jsonObj.has("NoticePeriod") && !isNullOrEmpty(jsonObj.getString("NoticePeriod"))){
@@ -833,6 +857,11 @@ public class RequirementSubmissionServiceImpl implements RequirementSubmissionSe
 		 
 		 if(jsonObj.has("currentCTCRateType") && !isNullOrEmpty(jsonObj.getString("currentCTCRateType"))){
 			 templateFields.setCurrentRateType(jsonObj.getString("currentCTCRateType"));
+		 }else {
+			 if(countries != null) {
+					templateFields.setCurrentRateType(countries.getCurrency());
+				}
+			 
 		 }
 		 
 		 if(jsonObj.has("ExpectedCTC") && !isNullOrEmpty(jsonObj.getString("ExpectedCTC"))){
@@ -841,15 +870,23 @@ public class RequirementSubmissionServiceImpl implements RequirementSubmissionSe
 		 
 		 if(jsonObj.has("expectedCTCRateType") && !isNullOrEmpty(jsonObj.getString("expectedCTCRateType"))){
 			 templateFields.setExpectedRateType(jsonObj.getString("expectedCTCRateType"));
+		 }else {
+			 if(countries != null) {
+					templateFields.setExpectedRateType(countries.getCurrency());
+				}
 		 }
 		 
 			
 		 if(jsonObj.has("currentCTCRatePer") && !isNullOrEmpty(jsonObj.getString("currentCTCRatePer"))){
 			templateFields.setCurrentRatePer(jsonObj.getString("currentCTCRatePer"));
+		 }else {
+			 templateFields.setCurrentRatePer("Monthly");
 		 }
 			
 		 if(jsonObj.has("expectedCTCRatePer") && !isNullOrEmpty(jsonObj.getString("expectedCTCRatePer"))){
 			 templateFields.setExpectedRatePer(jsonObj.getString("expectedCTCRatePer"));
+		 }else {
+			 templateFields.setExpectedRatePer("Monthly");
 		 }
 		 
 		 if(jsonObj.has("NoticePeriod") && !isNullOrEmpty(jsonObj.getString("NoticePeriod"))){
@@ -4835,7 +4872,7 @@ private void createXlsSheet(Sheet createExcelsheet,Row writeRow,int column,Strin
 	}
 	
 	@Override
-	public List<RequirementSubmission> getOfferAcceptedCandidatesListByOrgLocationId(Long orgLocationId) {
+	public List<RequirementSubmissionsView> getOfferAcceptedCandidatesListByOrgLocationId(Long orgLocationId) {
 		return requirementSubmissionDao.getOfferAcceptedCandidatesListByOrgLocationId(orgLocationId);
 	}
 
@@ -5316,23 +5353,25 @@ private void createXlsSheet(Sheet createExcelsheet,Row writeRow,int column,Strin
 						 writeRow.createCell(6).setCellValue(commonUtil.dateStrFromOrgDateFormatter(orgLocations.getDateFormat(),rsh.getCreatedDate()));
 					}
 				}
+				//Sourece Name
+				writeRow.createCell(7).setCellValue(rsh.getSubmissionId().getCreatedUser());
 				
 				//Aplicant Status
-				 writeRow.createCell(7).setCellValue(rsh.getSubmissionId().getSubmissionStatus().toString());
+				 writeRow.createCell(8).setCellValue(rsh.getSubmissionId().getSubmissionStatus().toString());
 				
 				//Job Rating
 				 if(rsh.getSubmissionId().getRequirement().getJobRate() != null) {
-					 writeRow.createCell(8).setCellValue(rsh.getSubmissionId().getRequirement().getJobRate());
+					 writeRow.createCell(9).setCellValue(rsh.getSubmissionId().getRequirement().getJobRate());
 				 }else {
-					 writeRow.createCell(8).setCellValue("--");
+					 writeRow.createCell(9).setCellValue("--");
 
 				 }
 
 				//Incentivize
 				 if(rsh.getSubmissionId().getRequirement().getIncentivized() != null) {
-					 writeRow.createCell(9).setCellValue(rsh.getSubmissionId().getRequirement().getIncentivized());
+					 writeRow.createCell(10).setCellValue(rsh.getSubmissionId().getRequirement().getIncentivized());
 				 }else {
-					 writeRow.createCell(9).setCellValue("--");
+					 writeRow.createCell(10).setCellValue("--");
 				 }
 		 }else if(submissionStatus.equalsIgnoreCase("REJECTED")) {
 			 //Rejected Type
@@ -5433,4 +5472,10 @@ private void createXlsSheet(Sheet createExcelsheet,Row writeRow,int column,Strin
 		
 		return createExcelsheet;
 	}
+
+	@Override
+	public List<RequirementSubmission> getAllSubmissionsNotInTemplateFileds() throws Exception {
+		return requirementSubmissionDao.getAllSubmissionsNotInTemplateFileds();
+	}
+
 }

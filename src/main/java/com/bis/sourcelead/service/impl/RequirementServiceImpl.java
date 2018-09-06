@@ -4389,6 +4389,7 @@ public class RequirementServiceImpl implements RequirementService {
 		}
 	}
 	
+        
 	@Override
 	public Boolean forceDeleteForSelectedJobs(String[] uuids) throws Exception
 	{
@@ -4405,5 +4406,6 @@ public class RequirementServiceImpl implements RequirementService {
 	public void deleteRequirementIncentiveByRequirementIdOrIds(long requirementId, String ids) throws Exception {
 		 requirementDao.deleteRequirementIncentiveByRequirementIdOrIds(requirementId, ids);
 	}
+
 	
 }

@@ -37,6 +37,7 @@ max-height: inherit !important;
 			</div>
 			<div class="pull-right brud-crum"><a href="<c:url value='${appPath}/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a> &raquo; <a href="${appPath}/usersList">Associates</a> &raquo; Associate Summary <span id = "fname"></a> </div>				
 		</section>
+
 		<!-- Timesheet -->
 
 
@@ -54,7 +55,6 @@ $(document).ready(function(){
 	 // written common method in slead-common.js for date formats start 
 	 var finalDateFormat = getJSDateFormat(locationDate);
 	 getUserSummaryDetails(userId);
-	 getAssociateTagsList(userId);
 	 $('body').on('focus', '#DateofJoin', function() {
 		 $('#DateofJoin').datepicker({
 			 dateFormat: finalDateFormat,
@@ -78,148 +78,13 @@ $(document).ready(function(){
 });
 </script>
 		
-  <div class="cearfix">
-	  <div class="newTagsWrap">
-		    <ul class="clearfix tagsWrap tagsWrapBor">
-			<select multiple class="chosen-select form-control" name="tagName" id="associateTagName" data-placeholder="Add Tags" data-validation="validate_Space" data-validation-optional="true">
-			</select>
-			</ul>
-			<div class="clearfix"></div>
-	  </div>
- </div>
-   <div class="success_pop tagStyles" id="addAssociateTagAlert">
-		<i class="fa fa-check-circle"></i>
-   		<span></span>
-   </div>
-   <div class="remove_pop tagStyles" id="deleteAssociateTagAlert">
-		<i class="fa fa-times"></i>
-   		<span></span>
-   </div>
-   
-	<div id="projectSideDiv"></div>
-	<div id="candidateSideDiv"></div> 
+		<div id="projectSideDiv"></div>
+		<div id="baningDetailsDiv"></div> 
+		<div id="candidateSideDiv" class="project_tabs clearfix"></div> 
 
-
-
-<!--  ============================= Associate tags related scripts written by Laxman Start ================================ -->
-<script>
-var select, chosen;
-select = $("#associateTagName");
-select.chosen({ no_results_text: 'Press Enter-Key Or Comma(,) To Add Keyword:' });
-chosen = select.data('chosen');
-chosen.search_field.on('keyup', function(e)
-{
-	var anyKeyword = this.value.replace(",","");
-    if ((e.which == 13 || e.which == 188) && (anyKeyword != null  && anyKeyword != '' && anyKeyword != 'undefined'))
-    {
-    	
-    	var par = this.parent;
-        var option = $("<option>").val(anyKeyword).text(anyKeyword);
-        select.append(option);
-        select.find(option).prop('selected', true);
-        $("#associateTagName option").each(function(){
-              $(this).siblings("[value='"+ this.value+"']").remove();
-        });
-		$("#associateTagName").trigger("chosen:updated");
-		saveCandidateTags("add");
-    }
-});
-
-$('.chosen-select').chosen().on('change', function(evt, params) {
-	if (params.selected && params.selected != undefined) {
-		saveCandidateTags("add");
-	}
-	if (params.deselected && params.deselected != undefined) {
-		saveCandidateTags("delete");
-	}
-	
-});
-$("#associateTagName_chosen").find('ul.chosen-choices > li input').attr("placeholder", "Add Tag")
-</script>
-<script>
-function getAssociateTagsList(associateId){
-	$.ajax({  
-        type : "POST",
-        url: sourceleadUrl+"/getAssociateTags?"+tokenParamName+"="+tokenValue+"&associateId="+associateId,        
-        success :function(json) {
-        	var result = "";
-			$.each( json.tagsList, function( i, tags ) {
-			  var existed = 0;
-                if(json.associateTags != null && json.associateTags != 'undefined' && json.associateTags != '') {
-	                var res = [];
-	                res = json.associateTags.split(",");
-	                res.forEach(function(item) {
-	                	if(tags == item){
-	                		existed = 1;
-	                		result = result + ' <option selected value="'+tags+'">'+tags+'</option>';
-	                	}
-	                });
-                }
-                if(existed == 0){
-                	result = result + ' <option value="'+tags+'">'+tags+'</option>';
-                }
-			});
-            $("#associateTagName").empty();
-            $("#associateTagName").append(result);
-            $("#associateTagName").chosen().trigger("chosen:updated")
-
-        },
-	});
-}
-</script>
-<script>
-function saveCandidateTags(type){
-	var associateId = '${userId}';
-	 var tagName = $("#associateTagName").val();
-	 var jsonData = encodeURIComponent(tagName);
-	 var loginUserId = '${SourceLeadWeb_userId}';
-	 var orgLocationId = '${SourceLeadWeb_orgLocationId}';
-	 if(tagName != null && tagName != '' && tagName !='undefined') {
-		 Urlcheck = sourceleadUrl+"/saveOrUpdateTagsByAssociateId?"+tokenParamName+"="+tokenValue+"&loginUserId="+loginUserId+"&associateId="+associateId+"&tagName="+jsonData
-	 } else {
-		 Urlcheck = sourceleadUrl+"/saveOrUpdateTagsByAssociateId?"+tokenParamName+"="+tokenValue+"&loginUserId="+loginUserId+"&associateId="+associateId+"&tagName="+""
-	 }
-	
-	 $.ajax({  
-         type : "POST",
-         url: Urlcheck,        
-         success :function(result) {
-        	$("#editRoleLoading").removeAttr('style');
-			if(result && (result.response === "INVALID_DATA" || result.response === "INVALID_USER")) {
-        		showError(result.responseMessage);
-        	} else if (result.response === "AWKWARD") {
-        	    location.href = "/errorPage";
-        	} else if (result.response === "SUCCESS") {
-        		if(type == "add"){
-        			showSuccessStatusPopup("Tags added successfully");
-        		}else if(type == "delete"){
-        			showDeleteStatusPopup("Tags deleted successfully");
-        		}
-        		
-        		getAssociateTagsList(associateId);
-        	} else if (result.indexOf('Sign In') !== -1) {
-        		location.replace(sourceleadUrl);
-        	} else {
-        	    showError("Operation failed, please try again");
-        	}
-       },
-    }); 
-}
-function showSuccessStatusPopup(status) {
-	$("#addAssociateTagAlert").css("display","block");
-	$("#addAssociateTagAlert span").html(status);
-    $('#addAssociateTagAlert').delay(2000).fadeOut('slow');
-}
-function showDeleteStatusPopup(status) {
-	$("#deleteAssociateTagAlert").css("display","block");
-	$("#deleteAssociateTagAlert span").html(status);
-    $('#deleteAssociateTagAlert').delay(2000).fadeOut('slow');
-}
-</script>
-<!--  ============================= Associate tags related scripts written by Laxman Ends ================================ -->
-
-
-
+		
+		
+		 
 
 <script>
  function getUserSummaryDetails(userId){
@@ -229,7 +94,10 @@ function showDeleteStatusPopup(status) {
 	 var candidateId = '${candidateId}';
 	 var timesheet = '${SourceLeadWeb_timesheet}';
 	 var loginUserRole = '${SourceLeadWeb_loginUserRole}'; 
-	 
+	 var loginCurrencyCode = '${SourceLeadWeb_currencyCode}';
+	 var country = '${SourceLeadWeb_orgLocations.country}'
+	 var loginCountry = '${SourceLeadWeb_country}';
+
 	 
 		 result = result + ' <div class="user_summ_wrap">';
 		 result = result + '<div class="project_side_wrap_inn_tabs">';
@@ -252,9 +120,29 @@ function showDeleteStatusPopup(status) {
 			 result = result + '<li><a href="#tab-17" onClick="profileDetails('+candidateId+');" >Profile</a></li>';
 		 '</sec:authorize>';
 
+		 if(loginCountry == 'United States'){
+			 result = result + '<li><a href="#tab-21" onClick="associateBankData('+userId+')" >Banking</a></li>';
+			 result = result + '<li><a href="#tab-22" onClick="associateTaxSummary('+userId+')" >TAX</a></li>';
+			 result = result + '<li><a href="#tab-23" onClick="associateDeductionSummary('+userId+')" >Deduction</a></li>';
+			 result = result + '<li><a href="#tab-24" onClick="associateContributionSummary('+userId+')"  >Contribution</a></li>';
+			 result = result + '<li><a href="#tab-25" onClick="associateSalSummary('+userId+')" >Salary</a></li>';
+		 }
+
+		
+		 if(country == 'India'){
+			 result = result + '<li><a onClick="associateBankingDetails('+candidateId+');">Banking</a></li>';
+			 result = result + '<li><a onClick="associateInformationDetails('+candidateId+');">PF & ESI</a></li>';
+// 			 result = result + '<li><a onClick="associateLoanAndAdvanceDetails('+candidateId+');">Loan / Advances</a></li>';
+			 result = result + '<li><a href="#tab-30" onClick="assocSalarySummary('+candidateId+');">Salary</a></li>';
+		 }
+		 //below tab is used for both locations
+		 result = result + '<li><a onClick="associateLoanAndAdvanceDetails('+candidateId+');">Loan / Advances</a></li>';
+
+		 
 		 '<sec:authorize access="hasRole(\'ROLE_VIEW_ASSOCIATE_ADDITIONAL_DETAILS\')">'; 
 		    result = result + '<li><a href="#tab-29" onClick="assocBalanceLeaveSummary('+userId+');">Balance Leaves</a></li>';
 		 '</sec:authorize>';
+
 
 		 result = result + '<div class="clearfix"></div>';
 		 result = result + '   </ul>';
@@ -273,6 +161,21 @@ function showDeleteStatusPopup(status) {
 		 result = result + '<div id="tab-17" class="project_tabs_inn project_tabs_inn_table">';
 		 result = result + '<div id="candidateSideDiv">';
 		 result = result + '</div>';
+		 result = result + '</div>';
+		 
+		 result = result + '<div id="tab-21" class="table-wrap project_tabs_inn datatable_filter dataTablesFilter-relative clearfix">';
+		 result = result + '</div>';
+		 
+		 result = result + '<div id="tab-22" class="clearfix table-wrap project_tabs_inn datatable_filter dataTablesFilter-relative taxes-details">';
+		 result = result + '</div>';
+		 
+		 result = result + '<div id="tab-23" class="require_wrap_table table-wrap project_tabs_inn datatable_filter dataTablesFilter-relative taxes-details">';
+		 result = result + '</div>';
+		 
+		 result = result + '<div id="tab-24" class="require_wrap_table table-wrap project_tabs_inn datatable_filter dataTablesFilter-relative taxes-details">';
+		 result = result + '</div>';
+		 
+		 result = result + '<div id="tab-25" class="clearfix axes-details">';
 		 result = result + '</div>';
 		 
 		 result = result + '<div id="tab-29" class="require_wrap_table table-wrap project_tabs_inn datatable_filter dataTablesFilter-relative">';
@@ -831,7 +734,8 @@ function showDeleteStatusPopup(status) {
 				$("#tab-19").empty();
 				$("#tab-17").empty();
 				$("#tab-18").empty(); 
-				 $("#tab-29").empty();  
+				 $("#tab-29").empty();
+				 $("#tab-25").empty();
 			    $("#tab-18").append(result);  
 			    
 			    var config = {
@@ -1462,6 +1366,42 @@ function getChangeRole(userId,userRoleId){
 	
  }
  </script>
+ 
+ <script>
+ function validateUserUpdatedEmail(userId){
+	  var isMulitplieOrgAccounts = '${isMulitplieOrgAccounts}';
+	  if(isMulitplieOrgAccounts == 'false'){
+		  var emailId = document.getElementById("EmailId").value;
+		  if(emailId){
+			  $('input#EmailId').removeAttr( "record-exist record-exist-errormsg");
+			  $('#EmailIdDiv').find('p.jquery_form_error_message').remove();
+		    	$("#update_user").attr("disabled", "disabled");
+	            $( "#update_user" ).addClass('button').val('Processing..');
+				$.ajax({
+			    	type: "POST",
+			        url: sourceleadUrl+"/validateExistingEmailIdForUser?"+tokenParamName+"="+tokenValue+"&emailId="+emailId+"&userId="+userId, 
+			        success: function(data) {
+			        	if(data == true){
+							  $("input#EmailId").after("<p class='jquery_form_error_message'>"+emailId+" is Already Existed</span>");
+							  document.getElementById("EmailId").setAttribute('record-exist','yes');
+							  document.getElementById("EmailId").setAttribute('record-exist-errorMsg',emailId+' is Already Existed'); 
+							  $("#update_user" ).addClass('us-btn').val('Update');
+			        	}
+			        	else{
+			        		 $('input#EmailId').removeAttr( "record-exist record-exist-errormsg");
+			        		 $('#EmailIdDiv').find('p.jquery_form_error_message').remove(); 
+			        		 $("#update_user" ).addClass('us-btn').val('Update');
+	                         $("#update_user").removeAttr("disabled");
+			        	} 
+			        },
+			    });
+		  }
+		 
+		  
+	  }
+	
+ }
+ </script>
 
 
 <script type="text/javascript">
@@ -1757,6 +1697,12 @@ $("#editRoleDetailsList").empty();
 			    var globalChecked = '';
 			    var designation = '';
 			    var disabled = '';
+			    var readonly = '';
+			    var isMulitplieOrgAccounts = '${isMulitplieOrgAccounts}';
+			    
+			    if(isMulitplieOrgAccounts == 'true'){
+			    	readonly = 'readonly';
+			    }
 			    
 			    if(json.designation != null && json.designation != '' && json.designation != 'undefined'){
      			 	designation = json.designation;
@@ -1833,7 +1779,7 @@ $("#editRoleDetailsList").empty();
 					result = result + ' <div class="user_summary_edit_cta">';
 					result = result + ' <label>Role:</label>';
 					result = result + '<div class="clearfix"><span></span>';
-					result = result + '<input type="text" value="'+json.roles.displayName+'" name="roleType" readonly="readonly" id="role" data-validation="validate_Space validate_length length2-100" data-validation-optional="true" >';
+					result = result + '<input type="text" value="'+json.roles.displayName+'" name="roleType"  id="role" data-validation="validate_Space validate_length length2-100" data-validation-optional="true" >';
 					result = result + '<input type = "hidden" id = "role" name = "roleType" value = "'+json.roles.id+'">';
 					result = result + ' </div>'; 
 
@@ -1865,7 +1811,7 @@ $("#editRoleDetailsList").empty();
 
 					result = result + ' <div class="user_summary_edit_cta" id="EmailIdDiv">';
 					result = result + ' <label>Email Id<span class="text-danger">&nbsp;*</span></label>';
-					result = result + ' <input type="text" value="'+json.user.email+'" readonly="readonly" id="EmailId" name="email" field-name="EmailId" data-validation="required validate_Space validate_length length2-100"/>';
+					result = result + ' <input type="text" value="'+json.user.email+'" '+readonly+' id="EmailId" name="email" field-name="EmailId" onblur="validateUserUpdatedEmail('+userId+');" data-validation="required validate_Space validate_email validate_length length2-100"/>';
 					result = result + ' </div>';
 					
 					result = result+'		<div class="col-md-4">';
@@ -3848,6 +3794,7 @@ function profileDetails(candidateId){
 			             result = result+'   </div>';
 			             $("#tab-18").empty();  
 			             $("#tab-19").empty();
+			             $("#tab-25").empty();
 			             $("#candidateSideDiv").empty();  
 			 		     $("#candidateSideDiv").append(result);  
 				 		/*  $(".clients_side_wrap").addClass("clients_side_wrap_active");
@@ -3881,7 +3828,85 @@ function profileDetails(candidateId){
 </script>
 
 
+<script>
+function assocSalarySummary(candidateId){
+	var locationCode = '${SourceLeadWeb_locationCode}';
+	$.ajax({
+		  type: "GET",
+		    url: sourceleadUrl+"/getAssociateSalaryDataByOrgLocation?candidateId="+candidateId+"&locationCode="+locationCode,
+		     success :function(response) {
+		    	 	$("#tab-18").empty();  
+		    	    $("#tab-19").empty();
+		    	    $("#tab-17").empty();
+		    	    $("#candidateSideDiv").empty();  
+		    	    $("#candidateSideDiv").append(response);
+				},
+			    complete: function (response) {
+			  		if($("#status").val() == "NODATA"){
+			  			$('#saveAssociateBtnDiv').css('display','block');
+			  			$('#editAssociateBtn').css('display','none');
+			  			$('#cancelAssociateSalaryIndBtn').css('display','none');
+			  		}else{
+			  			$('#editAssociateBtn').css('display','block');
+			  			$('#saveAssociateBtnDiv').css('display','none');
+			  			$('#associateSalary_form input').attr('disabled','true');
+				  		$('#associateSalary_form select').prop('disabled', true);
+			  		}
+			       }
+			});
+	}
+</script>
 
+
+<script>
+function associateBankingDetails(candidateId){
+	var locationCode = '${SourceLeadWeb_locationCode}';
+	$.ajax({
+		  type: "GET",
+		    url: sourceleadUrl+"/getAssociateBankingDetailsByOrgLocation?candidateId="+candidateId,
+		     success :function(response) {
+		    	 	$("#tab-18").empty();  
+		    	    $("#tab-19").empty();
+		    	    $("#tab-17").empty();
+		    	    $("#candidateSideDiv").empty();  
+		    	    $("#candidateSideDiv").append(response);
+				},
+			});
+	}
+	
+	
+function associateInformationDetails(candidateId){
+	var locationCode = '${SourceLeadWeb_locationCode}';
+	$.ajax({
+		  type: "GET",
+		    url: sourceleadUrl+"/getAssociateInformationDetailsByOrgLocation?candidateId="+candidateId,
+		     success :function(response) {
+		    	 	$("#tab-18").empty();  
+		    	    $("#tab-19").empty();
+		    	    $("#tab-17").empty();
+		    	    $("#candidateSideDiv").empty();  
+		    	    $("#candidateSideDiv").append(response);
+				},
+			});
+	
+}	
+
+function associateLoanAndAdvanceDetails(candidateId){
+	$.ajax({
+		  type: "GET",
+		    url: sourceleadUrl+"/getAssociateLoanAndAdvanceDetailsByCandidateId?candidateId="+candidateId,
+		     success :function(response) {
+		    	 	$("#tab-18").empty();  
+		    	    $("#tab-19").empty();
+		    	    $("#tab-17").empty();
+		    	    $("#tab-25").empty();
+		    	    $("#candidateSideDiv").empty();  
+		    	    $("#candidateSideDiv").append(response);
+		    	    loanAdv.getLoanAndAdvApprovers();
+				},
+			});
+}
+</script>
 
 
 <%-- 
@@ -4316,3 +4341,8 @@ function getShiftList(shiftId){
 <%--  <sec:authorize access="hasAnyRole(\'ROLE_ASSOCIATE_COMMENTS\',\'ROLE_CROWDSOURCING_CANDIDATES\')"> --%>
 <jsp:include page="candidatesCommentsList.jsp"></jsp:include>
  <%-- </sec:authorize>  --%>
+ <jsp:include page="associateBankDataSummary.jsp" />
+<jsp:include page="associateTaxSummary.jsp" />
+<jsp:include page="associateDeductionSummary.jsp" />
+<jsp:include page="associationContributionSummary.jsp" />
+<jsp:include page="associateSalSummary.jsp" />
