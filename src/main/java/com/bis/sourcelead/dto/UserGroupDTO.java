@@ -189,5 +189,5 @@ public class UserGroupDTO extends SearchDTO{
 	{
 		this.userList = userList;
 	}
-	
+
 }
