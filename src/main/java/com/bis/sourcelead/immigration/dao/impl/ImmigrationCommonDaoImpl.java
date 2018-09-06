@@ -1101,9 +1101,14 @@ public class ImmigrationCommonDaoImpl implements ImmigrationCommonDao {
 	public String deleteImmigrationDetailsById(Long immigrationId) {
 		try {
 			Session session = this.sessionFactory.getCurrentSession();
+		   CandidateLcaJobDetails candLcaJobDetails = getCandidateLcaJobDetails(immigrationId);
+			   if(candLcaJobDetails != null) {
+			   session.delete(candLcaJobDetails);
+			   session.flush(); 
+			   }
 			Immigration immigration = session.get(Immigration.class, immigrationId);
 			session.delete(immigration);
-			session.flush();
+			session.flush(); 
 		} catch (HibernateException e) {
 			logger.error("SQL Exception occured while doing delete -->" + e.getMessage());
 			e.printStackTrace();
