@@ -136,7 +136,6 @@ public class Candidate implements Serializable {
 	private String address;
 	
 	@Column(name = "LOCATION", columnDefinition = "LONGTEXT default NULL")
-
 	private String location;
 
 	@Column(name = "ZIPCODE")
