@@ -27,7 +27,7 @@ import com.bis.sourcelead.dto.ResponseList;
 import com.bis.sourcelead.entity.Candidate;
 import com.bis.sourcelead.entity.CandidateEmployers;
 import com.bis.sourcelead.entity.CandidateIdendities;
-import com.bis.sourcelead.entity.CandidateLcaI94Summary;
+import com.bis.sourcelead.entity.CandidateLcaJobDetails;
 import com.bis.sourcelead.entity.CandidateResumes;
 import com.bis.sourcelead.entity.Immigration;
 import com.bis.sourcelead.entity.ImmigrationTemplate;
@@ -535,7 +535,8 @@ public class ImmigrationTemplateDaoImpl implements ImmigrationTemplateDao {
         return candidateEmployers;
     }
 
-    @Override
+    // old code 
+    /*@Override
     @Transactional(rollbackFor = {Exception.class})
     public void savePetitionDetails(Immigration immigration, Candidate candidate,
             CandidateIdendities candidateIdendities, CandidateResumes candidateResume,
@@ -560,6 +561,45 @@ public class ImmigrationTemplateDaoImpl implements ImmigrationTemplateDao {
                     session.saveOrUpdate(candidateLcaI94Summary);
                 }
             }
+        } catch (Exception exception) {
+            StringBuilder message = new StringBuilder(MessageFormat.format(duplicateValue, "Immigration"));
+            throw new SourceLeadConstraintViolationException(message.toString() + exception.getCause().toString());
+        }
+    }*/
+    
+    // new code
+    @Override
+    @Transactional(rollbackFor = {Exception.class})
+    public void savePetitionDetails(Immigration immigration, Candidate candidate,
+            CandidateIdendities candidateIdendities, CandidateResumes candidateResume,
+            CandidateLcaJobDetails candidateLcaJobDetails) throws Exception {
+        logger.debug("saveConnection");
+        Session session = this.sessionFactory.getCurrentSession();
+        try {
+            if (candidate != null) {
+                session.saveOrUpdate(candidate);
+            }
+            if (immigration != null) {
+                session.saveOrUpdate(immigration);
+            }
+            if (candidateIdendities != null) {
+                session.saveOrUpdate(candidateIdendities);
+            }
+            if (candidateResume != null && candidateResume.getFileURL() != null) {
+                session.saveOrUpdate(candidateResume);
+            }
+          //  old code
+            /*if (lcaSummaryLst.size() != 0) {
+                for (CandidateLcaI94Summary candidateLcaI94Summary : lcaSummaryLst) {
+                    session.saveOrUpdate(candidateLcaI94Summary);
+                }
+            }*/
+            
+            // new code
+            if (candidateLcaJobDetails != null) {
+                    session.saveOrUpdate(candidateLcaJobDetails);
+            }
+            
         } catch (Exception exception) {
             StringBuilder message = new StringBuilder(MessageFormat.format(duplicateValue, "Immigration"));
             throw new SourceLeadConstraintViolationException(message.toString() + exception.getCause().toString());

@@ -11,9 +11,11 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -2172,17 +2174,30 @@ public class UserDaoImpl implements UserDao {
 				//List<RecruiterReportAssociateCountView> RecruiterReportAssociateList = requirementService.getAssociateCountsCreatedUserList(orgLocationId, userIdsList, fromDate, toDate,isGlobalUser, orgId);
 				List<RecruiterRrportDTO> recruiterReportAssociateList1 = requirementService.getAssociateCountsCreatedUserListByLocation(orgLocationId, userIdsList, fromDate, toDate,isGlobalUser, orgId);
 				//Map<Long,List<Long>> requirementMap = new HashMap<Long,List<Long>>();
-				UserDTO userDTO1 = null;
+				Set<BigInteger> jobIds = new HashSet<>();
+				Set<BigInteger> primaryUserjobIds = new HashSet<>();
 				for(RecruiterRrportDTO reportDTO: recruiterReportAssociateList1){
+					UserDTO userDTO = associatesListMap.get(reportDTO.getManagerUserId());
+					if(userDTO != null){
+						jobIds.add(reportDTO.getRequirementId());
+						BigDecimal bd = new BigDecimal(jobIds.size());
+						userDTO.setUserRequirementsCount(bd);
+					}
 					
-					userDTO1 = associatesListMap.get(reportDTO.getManagerUserId());
-					if(userDTO1 != null){
-						userDTO1.setUserRequirementsCount(userDTO1.getUserRequirementsCount()==null? BigDecimal.ONE :userDTO1.getUserRequirementsCount().add(BigDecimal.ONE) );
+					userDTO = associatesListMap.get(reportDTO.getPrimaryUserId());
+					if(userDTO != null){
+						primaryUserjobIds.add(reportDTO.getRequirementId());
+						BigDecimal bd = new BigDecimal(primaryUserjobIds.size());
+						userDTO.setUserRequirementsCount(bd);
 					}
-					userDTO1 = associatesListMap.get(reportDTO.getAssignedUserId());
-					if(userDTO1 != null){
-						userDTO1.setUserRequirementsCount(userDTO1.getUserRequirementsCount()==null? BigDecimal.ONE :userDTO1.getUserRequirementsCount().add(BigDecimal.ONE) );
+					
+					if(reportDTO.getAssignedUserId() != null && reportDTO.getAssignedUserStatus().equalsIgnoreCase("1")) {
+						userDTO = associatesListMap.get(reportDTO.getAssignedUserId());
+						if(userDTO != null){
+							userDTO.setUserRequirementsCount(userDTO.getUserRequirementsCount()==null? BigDecimal.ONE :userDTO.getUserRequirementsCount().add(BigDecimal.ONE) );
+						}
 					}
+					
 				}
 				
 				
