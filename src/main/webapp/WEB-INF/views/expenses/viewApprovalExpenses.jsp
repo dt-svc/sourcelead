@@ -127,6 +127,7 @@
 		                
 		                <sec:authorize access="!hasAnyRole(\'ROLE_VIEW_CLIENT\',\'ROLE_VIEW_EDIT_CLIENT\')">
 						 <c:forEach var="project" items="${expEntry.projectsList}">
+						 
 						      <c:if test="${project.id == expenses.projectId}">
 						      ${project.client}
 						      </c:if>
@@ -182,7 +183,12 @@
 			           <td><div id="expenseRateType${entryCount.count}">${entry.categoryAmountType}</div></td>
 			           <td><div id="paymentModeDiv${entryCount.count}">${entry.paymentMode}</div></td>
 			           <td><div id="paidByDiv${entryCount.count}">${entry.paidBy}</div></td>
-			            <td><div class=""><input type="checkbox" ${entry.billable ? 'checked' : ''} name="expenses" data-id="${entry.id}" onclick="showPopUp(this,${entry.id});"></div></td>
+			            <c:if test="${submissionStatus == 'SUBMITTED' || submissionStatus == 'REJECTED' || submissionStatus == 'REOPENED'}">
+					        <td><div class=""><input type="checkbox" ${entry.billable ? 'checked' : ''} name="expenses" data-id="${entry.id}" onclick="showPopUp(this,${entry.id});"></div></td>
+					    </c:if>
+					    
+			           
+			           
 			        </tr>
 			        <tr id="divEntityTsRow${2*(entryCount.count)}" style="display:none;">
 				        <td colspan="10">

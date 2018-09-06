@@ -900,8 +900,8 @@ public class RegistrationServiceImpl implements RegistrationService{
 		 
 		 StringBuilder templateStringBuilder=new StringBuilder();
 		 SubmissionTemplate submissionTemplate = new SubmissionTemplate();
-		 submissionTemplate.setTemplateName(templateStringBuilder.append(orgLocations.getOrgLocationName()).append("Interview Feedback Template").toString());
-		 submissionTemplate.setDescription(templateStringBuilder.append(orgLocations.getOrgLocationName()).append("Interview Feedback Template").toString());
+		 submissionTemplate.setTemplateName(templateStringBuilder.append(orgLocations.getOrgLocationName()).append(" ").append("Interview Feedback Template").toString());
+		 submissionTemplate.setDescription(templateStringBuilder.append(orgLocations.getOrgLocationName()).append(" ").append("Interview Feedback Template").toString());
 		 submissionTemplate.setOrgLocationId(orgLocations);
 		 submissionTemplate.setJsonString(sourceLeadDefaultTemplate.getJsonString());
 		 submissionTemplate.setStatus(Constants.CANDIDATE_ACTIVE);

@@ -74,10 +74,8 @@
 	          <li class=""><a href="#tab-3" data-toggle="tab" id="associateTax" >TAX</a></li>
 	          <li class=""><a href="#tab-4" data-toggle="tab" id="associateDeduction">Deduction</a></li>
 	          <li class=""><a href="#tab-5" data-toggle="tab" id="associateContribution">Contribution</a></li>
-<!-- 	          <li class=""><a href="#tab-7" data-toggle="tab" id="associateLeaveType" >Leave Type</a></li> -->
+              <li class=""><a href="#tab-7" data-toggle="tab" id="associateLeaveType" >Leave Type</a></li> 
 	      </c:if>
-	      <!-- below tab should be visible for all locations -->
-	        <li class=""><a href="#tab-7" data-toggle="tab" id="associateLeaveType" >Leave Type</a></li>
           <div class="clearfix"></div>
         </ul>
 		</div>
@@ -506,6 +504,7 @@
 	       <jsp:include page="associateTax.jsp" />
 	       <jsp:include page="associateDeduction.jsp" />
 	       <jsp:include page="associateContribution.jsp" />
+	       <jsp:include page="associateLeaveType.jsp" />
         </c:if>
         
           <c:if test="${SourceLeadWeb_orgLocations.country == 'India'}">
@@ -514,7 +513,7 @@
               <jsp:include page="associateIndiaLoanAndAdvancesDetails.jsp" />
               <jsp:include page="associateIndiaSalaryDetails.jsp" />
          </c:if> 
-        <jsp:include page="associateLeaveType.jsp" />
+        
       </section>
       <!-- Content Area Ends--> 
 
