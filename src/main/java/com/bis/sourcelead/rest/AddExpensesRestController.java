@@ -419,7 +419,7 @@ public class AddExpensesRestController {
 				 }
 				 
 				 StringBuilder amopuntRate = new StringBuilder();
-				 amopuntRate.append(Float.toString(expenses.getTotalAmount())).append(" ").append(currencyCode);
+				 amopuntRate.append((expenses.getTotalAmount())).append(" ").append(currencyCode);
 				 
 				 globalVarsMap.put("amount",amopuntRate.toString());
 				 
@@ -500,12 +500,12 @@ public class AddExpensesRestController {
 	
 		@RequestMapping(value = "/changeStatusToBillable",method=RequestMethod.POST)
 		@ResponseBody
-		public Response<String> changeStatusToBillable(HttpServletRequest request, @RequestParam(defaultValue = "0") long ExpenseEntriesId) {
+		public Response<String> changeStatusToBillable(HttpServletRequest request, @RequestParam(defaultValue = "0") long ExpenseEntriesId, @RequestParam(defaultValue = "non-billable") String billableStatus) {
 			Response<String> response = new Response<>();
 			try {
 				User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
 				if (user != null) {
-					response = addExpensesService.changeStatusToBillable(ExpenseEntriesId);
+					response = addExpensesService.changeStatusToBillable(ExpenseEntriesId,billableStatus);
 				} else {
 					response.setResponse(Result.SESSION_TIMEDOUT.name());
 					response.setResponseMessage(Result.SESSION_TIMEDOUT.getValue());

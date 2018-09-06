@@ -73,6 +73,7 @@ import com.bis.sourcelead.entity.ProjectClients;
 import com.bis.sourcelead.entity.Requirement;
 import com.bis.sourcelead.entity.RequirementApproverHierarchy;
 import com.bis.sourcelead.entity.RequirementAssignTo;
+import com.bis.sourcelead.entity.RequirementIncentive;
 import com.bis.sourcelead.entity.RequirementLocations;
 import com.bis.sourcelead.entity.RequirementOfferHistory;
 import com.bis.sourcelead.entity.RequirementOffers;
@@ -252,6 +253,9 @@ public class RequirementController {
 			requirement = this.requirementService.getRequirementByRequirementUUID(requirementUUID);
 			model.addObject("requirementUUID", requirementUUID);
 			model.addObject("requirementStatus", requirement.getRequirementSubmissionStatus());
+			List<RequirementIncentive> requirementIncentiveList = requirementService.getRequirementIncentiveListByRequirementId(requirement.getId());
+			model.addObject("requirementIncentiveList", requirementIncentiveList);
+			model.addObject("requirementIncentiveListSize", requirementIncentiveList.size());
 			
 			if (requirement != null) {
 				requirement.setJobFairList(requirementService.getJobFairsListByRequirementId(requirement.getId()));
@@ -953,6 +957,10 @@ public class RequirementController {
 		    model.addObject("sourceleadSectionList",sections);
 		   
 		    requirement.setJobFairList(requirementService.getJobFairsListByRequirementId(requirement.getId()));
+		    
+		    List<RequirementIncentive> requirementIncentiveList = requirementService.getRequirementIncentiveListByRequirementId(requirement.getId());
+			model.addObject("requirementIncentiveList", requirementIncentiveList);
+			model.addObject("requirementIncentiveListSize", requirementIncentiveList.size());
 		}else{
 			model.setViewName("registration/persmissionDenied");
 		}

@@ -188,4 +188,6 @@ public interface ImmigrationCommonService {
     List<LcaDTO> getLcaHistoryDetailsInfo(Long immigrationId);
     
     List<LcaDetailsDTO> getEmployeeByLcaId(Long lcaId ,OrgLocations orgLocations)throws Exception;
+    
+ //   void deleteLcaPlaceOfEmpmntDetails(Long remaininglpoeIds[]);
 }

@@ -1911,7 +1911,7 @@ public class CandidateListRestController {
 	}
 	
 
-	@RequestMapping(value = "/saveOrUpdateOnlyVisaBycandidateId")
+	@RequestMapping(value = {"/saveOrUpdateOnlyVisaBycandidateId","/rest/saveOrUpdateOnlyVisaBycandidateId"})
 	public Response<String> saveOrUpdateOnlyVisaBycandidateId(@RequestParam(value = "loginUserId", required = false) Long loginUserId,
 			@RequestParam(value = "orgLocationId", required = false) Long orgLocationId, @RequestParam(defaultValue = "0") long candidateId,
 			@RequestParam(value = "visaName", required = false) String visaName, HttpServletRequest request) throws Exception {
