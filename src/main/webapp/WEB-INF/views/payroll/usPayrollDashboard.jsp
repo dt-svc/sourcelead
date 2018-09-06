@@ -38,7 +38,7 @@ function approvePayrollDiv(){
 	   <li class="current"><a href="javascript:void(0)" class="active" onclick="getOverviewdata();">Overview</a></li>
 	   <li><a onclick="getDraftData();">Draft</a></li>
 	   <li><a onclick="getPayPeriodData();">History</a></li>
-	   <li><a onclick="getUserGroupList('Employees');">Employees</a></li>
+<!-- 	   <li><a onclick="getUserGroupList();">Employees</a></li> -->
 <!-- 	   <li><a href="javascript:void(0)">Contractors</a></li> -->
 <!-- 	   <li><a href="javascript:void(0)">Tax Forms</a></li> -->
 <!-- 	   <li><a href="javascript:void(0)">Settings</a></li> -->
