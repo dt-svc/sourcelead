@@ -308,13 +308,13 @@ function remove(){
     
 <!-- Diplays client contacts details when clien selected -->
 <script>
-function getClientContacts(){
+function getClientContacts(clientContactId){
 	var orgRelationId = $("#clientOrgRelationId").val();
 	$.ajax({
 		type : "GET",
 		url: sourceleadUrl+"/getClientContactsByOrgRelationId?"+tokenParamName+"="+tokenValue+"&orgRelationId="+orgRelationId,
 		success :function(json) {
-		// 	var json = JSON.parse(data);
+	/* 	// 	var json = JSON.parse(data);
 			var output = "";
 			//output = output + "<option value=''>Select Client Contact</option>";
 			for (var i=0; i<json.data.length; i++){
@@ -324,6 +324,27 @@ function getClientContacts(){
 			}
 			$("#clientContact").empty();
 			$("#clientContact").append(output);
+			$('#clientContact').trigger("chosen:updated"); */
+//		 	var json = JSON.parse(data);
+			var output = "";
+			//output = output + "<option value=''>Select Client Contact</option>";
+					for (var i=0; i<json.data.length; i++)
+					{
+						var opt = json.data[i];
+						if(clientContactId != null && clientContactId != "" && clientContactId !="undefined"){
+							var array = clientContactId.split(",");
+							if(array.includes(opt.spocUserId.toString())){
+								output = output + "<option value='"+opt.spocUserId+"' selected >"+opt.ownerName+"("+opt.spocName+")</option>";
+							}else{
+								output = output + "<option value='"+opt.spocUserId+"' >"+opt.ownerName+"("+opt.spocName+")</option>";
+							}
+						}else{
+							output = output + "<option value='" +opt.spocUserId+ "'>"+opt.ownerName+"("+opt.spocName+")</option>";
+						}
+						$("#clientCurrency").val(opt.clientCurrency);
+					}
+					$("#clientContact").append(output);
+					$('#clientContact').trigger("chosen:updated");
 			$('#clientContact').trigger("chosen:updated");
 		},
 	});
@@ -1304,9 +1325,8 @@ function saveInvoice(saveType){
 	var currencyCode = '${SourceLeadWeb_currencyCode}';
 	var maxTsRowNum = parseInt($("input[name = 'invoiceExpMaxRowNumber']").val());
 	
-	
          if ($('#project_invoice_form').validate(false, validationSettings)){  
- 	 	    var formData = getFormData("project_invoice_form");
+ 	 	    var formData = getFormData1("project_invoice_form");
  	 	  if(maxTsRowNum==0){
 	        	var result = "";
 	     		result = result +"	<div class='project_inn_mask'></div>";
@@ -1320,15 +1340,22 @@ function saveInvoice(saveType){
 	     		$(".project_inn_mask").fadeIn(200);
 		        }else{
 		        	  $("#invoiceLoading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
-		        	  $.post(sourceleadUrl+"/saveExpensesInvoice?"+tokenParamName+"="+tokenValue+"&userId="+userId+"&orgLocationId="+orgLocationId+"&saveType="+saveType+"&currencyCode="+currencyCode+"&invoiceType=Receivable&type=expenses", formData, function(data) {
-			  				if(data == "success"){
-			  					$("#invoiceLoading").removeAttr("style");
-	    		     			location.replace(sourceleadUrl+"/invoiceList");
-	    		     			$("#selector1").removeAttr("style");
-					    		$("#selector1").css({ display: "block" });
-					    	    $("#msgDiv").html("Successfully you have created a Invoice..");
-	    		     			msgFadein();
-			  				}
+		        	  $.ajax({
+		        		  url: sourceleadUrl+"/saveExpensesInvoice?"+tokenParamName+"="+tokenValue+"&userId="+userId+"&orgLocationId="+orgLocationId+"&saveType="+saveType+"&currencyCode="+currencyCode+"&invoiceType=Receivable&type=expenses",
+		        		  type: "POST",
+		        		  data: formData,
+		        		  processData: false,
+		        		  contentType: false,
+		        		  success: function (result) {
+				  					$("#invoiceLoading").removeAttr("style");
+		    		     			location.replace(sourceleadUrl+"/invoiceList");
+		    		     			$("#selector1").removeAttr("style");
+						    		$("#selector1").css({ display: "block" });
+						    	    $("#msgDiv").html("Successfully you have created a Invoice..");
+		    		     			msgFadein();
+		        		  }
+// 		        	  $.post(sourceleadUrl+"/saveExpensesInvoice?"+tokenParamName+"="+tokenValue+"&userId="+userId+"&orgLocationId="+orgLocationId+"&saveType="+saveType+"&currencyCode="+currencyCode+"&invoiceType=Receivable&type=expenses", formData, function(data) {
+			  			
 			  			   }); 
 		    	         return true; 
 		        }
@@ -1463,6 +1490,7 @@ function toDate(selector) {
 		        	$("#discountValue").val(json['discountAmount']);
 		        	$("#discountTotal").val(json['discountValue']);
 		        	$("#comment").val(json['invoiceComment']);
+		           	getClientContacts(json['contactUsers']);
 		        	$("#afterDiscountTotal").val(json['afterDiscountValue']);http://localhost:8080/app/getReceivableInvoiceByUUID?invoiceUUID=sTljRS5n&projectId=15
 		        	editTax(json['invoiceTaxList'])
 		        	
