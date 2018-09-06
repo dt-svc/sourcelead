@@ -12,6 +12,7 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -296,7 +297,7 @@ public class ExpensesApprovalRestController {
     }
 
    
-	private void sendEmailToVendorAtExpensesApprovalStatus(Float amount,ProjectMembers projectMembers, User user,OrgLocations orgLoc,String startDateStr,String endDateStr,
+	private void sendEmailToVendorAtExpensesApprovalStatus(java.math.BigDecimal bigDecimal,ProjectMembers projectMembers, User user,OrgLocations orgLoc,String startDateStr,String endDateStr,
 			String rejectedReason,String currencyCode, String status) throws Exception {
 		
 		 // Expenses expense = expensesService.getExpenseById(expenseId);
@@ -338,7 +339,7 @@ public class ExpensesApprovalRestController {
 			 globalVarsMap.put("loginURL",loginURLSB.append("<a href='").append(sourceleadLoginUrl).append("'style='text-decoration:none;'><div style=' width:220px; border-radius:30px; background-color:#214b90; color:#FFF; font-size:18px; font-weight:500; margin:10px auto 5px auto; padding:10px 0px; text-align:center; letter-spacing:2px;'>Login</div></a>").toString());
 			 globalVarsMap.put("loginlink",loginURLSB.toString());
 			 StringBuilder amountCurrencyType = new StringBuilder();
-			 BigDecimal amountCurrencyType1 = new BigDecimal(Double.toString(amount));
+			 BigDecimal amountCurrencyType1 = new BigDecimal((bigDecimal));
 			 amountCurrencyType1 = amountCurrencyType1.setScale(2,BigDecimal.ROUND_HALF_UP );
 			 
 			 
@@ -397,14 +398,23 @@ public class ExpensesApprovalRestController {
 		 globalVarsMap.put("startDate",startDate);
 		 globalVarsMap.put("endDate", endDate);
 		 
-		 StringBuilder amountCurrencyType = new StringBuilder();
-		 BigDecimal amountCurrencyType1 = new BigDecimal(Double.toString(expenses.getTotalAmount()));
-		 amountCurrencyType1 = amountCurrencyType1.setScale(2,BigDecimal.ROUND_HALF_UP );
+		/* StringBuilder amountCurrencyType = new StringBuilder();
+		 BigDecimal amountCurrencyType1 = new BigDecimal((expenses.getTotalAmount()));*/
+		// BigDecimal amountCurrencyType2 = new BigDecimal((expenses.getExpensesEntries()));
+		// amountCurrencyType1 = amountCurrencyType1.setScale(2,BigDecimal.ROUND_HALF_UP );
 		 
-		 
-		 amountCurrencyType.append(amountCurrencyType1).append(" ").append(currencyCode);
+		 Set<ExpensesEntries> expensesEntriesList = expenses.getExpensesEntries();
+		 for(ExpensesEntries expList: expensesEntriesList) {
+			 
+			 globalVarsMap.put("amount", expList.getSubmittedamount().toString());
+			 globalVarsMap.put("approvedAmount",expenses.getTotalAmount().toString());
+			 
+			
+		 }
+		/* amountCurrencyType.append(amountCurrencyType1).append(" ").append(currencyCode);
 		 globalVarsMap.put("amount",amountCurrencyType1.toString());
-
+		 globalVarsMap.put("approvedAmount",expenses.getTotalAmount().toString());
+*/
 		 
 		Date todayDate = new Date();
 		 globalVarsMap.put("submitForApprovalDate",commonUtil.dateStrFromOrgDateFormatter(loginOrgLocation.getDateFormat(),todayDate));

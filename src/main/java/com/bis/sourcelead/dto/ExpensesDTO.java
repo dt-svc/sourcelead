@@ -25,7 +25,7 @@ private static final long serialVersionUID = 1L;
 	
 	private String clientName;
 	
-	private float totalAmount;
+	private BigDecimal totalAmount;
 	
 	private String noOfExpenses;
 	
@@ -125,13 +125,7 @@ private static final long serialVersionUID = 1L;
 		this.clientName = clientName;
 	}
 
-	public float getTotalAmount() {
-		return totalAmount;
-	}
-
-	public void setTotalAmount(float totalAmount) {
-		this.totalAmount = totalAmount;
-	}
+	
 
 	public String getNoOfExpenses() {
 		return noOfExpenses;
@@ -139,6 +133,14 @@ private static final long serialVersionUID = 1L;
 
 	public void setNoOfExpenses(String noOfExpenses) {
 		this.noOfExpenses = noOfExpenses;
+	}
+
+	public BigDecimal getTotalAmount() {
+		return totalAmount;
+	}
+
+	public void setTotalAmount(BigDecimal totalAmount) {
+		this.totalAmount = totalAmount;
 	}
 
 	public String getExpenseStatus() {
@@ -196,6 +198,8 @@ private static final long serialVersionUID = 1L;
 	public void setSahApproved(boolean sahApproved) {
 		this.sahApproved = sahApproved;
 	}
+
+
 
 	public BigDecimal getExpenseAmountDivId() {
 		return expenseAmountDivId;

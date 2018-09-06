@@ -383,7 +383,8 @@ String loginUserRole = (String) SourceLeadSessionManager.getSessionAttribute(req
 
  		hrLeaveReportDTO.setLoginUserId(loginUser.getId());
 
-		 Sheet createExcelsheet = createExcelworkbook.createSheet(excelSB.append("dailyWiseLeaveReport ").append(commonUtil.dateStrFromOrgDateFormatter(orgLocations.getDateFormat(),new Date())).toString());
+		 Sheet createExcelsheet = createExcelworkbook.createSheet(excelSB.append("LeaveReport ").append(commonUtil.dateStrFromOrgDateFormatter(orgLocations.getDateFormat(),new Date())).toString());
+
 			ResponseList<LeaveReportView> leaveReportsList = leaveService.getLeaveReportsOrglocationIdAndFromDateToDate(hrLeaveReportDTO,orgLocations.getOrg().getId(),orgLocations.getId(),loginUserRole);
 
 

@@ -282,5 +282,16 @@ public class TeamDaoImpl  implements TeamDao{
 		
 		return isDeleted;
 	}*/
+	
+	@Override
+	@Transactional
+	public List<Team> getTeamListByTeamOwnerAndStatus(Long userId, Long orgLocationId) throws Exception {
+
+		Session session = this.sessionFactory.getCurrentSession();
+		String query = "from Team team "
+					+ "where team.ownerUserId.id = :userId and team.orgLocationsId.id = :orgLocationId and  team.status <> 0 ORDER BY team.id DESC";
+		return session.createQuery(query).setLong("userId", userId).setLong("orgLocationId", orgLocationId).list();
+		
+	}
 
 }

@@ -420,7 +420,38 @@
 			            		<div class="clearfix"></div> 
 			              </div> 
 			              <div class="clearfix"></div>
-			              
+			              <c:if test="${isAdmin == 'true' || requirement.isLoginUserAsApprover  == 'true' || isManager  == 'true' || requirement.isLoginUserAsInitiator == 'true'}">
+				              <div class="require_wrap_details_cta"> <b>Job Rating:</b><span>${!empty requirement.jobRate ? requirement.jobRate : ' -- '}</span>
+				            		<div class="clearfix"></div> 
+				              </div> 
+				              <div class="require_wrap_details_cta"> <b>Pay out Period (Days):</b><span>${!empty requirement.payOutPeriod ? requirement.payOutPeriod : ' -- '}</span>
+				            		<div class="clearfix"></div> 
+				              </div> 
+				              <div class="require_wrap_details_cta"> <b>Incentivized:</b><span>${!empty requirement.incentivized ? requirement.incentivized : ' -- '}</span>
+				            		<div class="clearfix"></div>
+				            		<c:if test="${!empty requirement.incentivized && requirement.incentivized == 'Y'}">
+					            		<table class="table table-bordered">
+					            			<thead>
+					            			<tr>
+					            				<th>No.of Joiners</th><th>Type</th><th>Amount</th>
+					            			</tr>
+					            			</thead>
+					            			<tbody>
+					            			<c:if test="${!empty requirementIncentiveList}">
+									            <c:forEach var="inc" items="${requirementIncentiveList}" varStatus="rowCount">
+									              	<tr>
+							            				<td><div class="tblminwidth-75">${inc.joiners}</div></td>
+							            				<td><div class="tblminwidth-75 text-capitalize">${inc.joinersAmountType}</div></td>
+							            				<td><div class="tblminwidth-175">${inc.joinersAmount}${inc.joinersAmountType == 'percentage' ? '%' : ''}</div></td>
+							            			</tr>
+									            </c:forEach>
+									         </c:if>
+					            			</tbody>
+					            		</table>
+				            		</c:if>
+				              </div>
+				              <div class="clearfix"></div>
+			              </c:if>
 			              <c:if test="${!empty sourceleadSectionList}">
 						            <c:forEach var="section" items="${sourceleadSectionList}" varStatus="sectionOrder">
 						               <c:if test="${sectionOrder.index == 1}">
@@ -433,7 +464,7 @@
 			         <div class="clearfix"></div> 
 			          
 			         <h2>Internal Details:</h2> 
-			         <div class="require_one"> 
+			         <div class="require_one clearfix"> 
 			         	 <c:if test="${requirement.isClientJob  == 'N'}">
 			         		 <div class="require_wrap_details_cta"> <b>Application form:</b><span>${!empty requirement.clientSubmissionTemplate ? requirement.clientSubmissionTemplate : ' -- '}</span></div>
 			         	 </c:if>

@@ -48,6 +48,7 @@ function getDayWiseReports(){
     		<li>
         <div class="dropdown-select positionRelative repSelWrap clearfix">
         	<select class="form-control repSelFiled" id="reportTypeIdJobs" onChange="flushCustomJobs(); custDatesJobs();">
+			  <option ${timePeriod == 'today' ? 'selected' : ''} value="today">Today</option>
 			  <option ${timePeriod == 'Last_7_days' ? 'selected' : ''} value="Last_7_days">Last 7 days</option>
 			  <option ${timePeriod == 'Last_15_days' ? 'selected' : ''} value="Last_15_days">Last 15 days</option>
 			  <option ${timePeriod == '1_month' ? 'selected' : ''} value="1_month">Last 1 month</option>
@@ -274,6 +275,7 @@ function jobsDataTableList(){
 	 var startDate = '';
 	 var endDate = '';
 	 if(timePeriod == 'custom'){
+		 custDatesJobs();
 		  startDate = $("#ReportStartDateJobs").val();
 		  endDate = $("#ReportEndDateJobs").val();
 		  if(startDate == null || startDate == '' || endDate == null || endDate == ''){

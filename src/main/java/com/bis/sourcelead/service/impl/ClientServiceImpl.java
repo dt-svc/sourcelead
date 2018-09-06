@@ -596,9 +596,9 @@ public class ClientServiceImpl implements ClientService {
 			StringBuilder templateStringBuilder = new StringBuilder();
 			submissionTemplate = new SubmissionTemplate();
 			submissionTemplate.setTemplateName(
-					templateStringBuilder.append(org.getOrgName()).append("Interview Feedback Template").toString());
+					templateStringBuilder.append(org.getOrgName()).append(" ").append("Interview Feedback Template").toString());
 			submissionTemplate.setDescription(
-					templateStringBuilder.append(org.getOrgName()).append("Interview Feedback Template").toString());
+					templateStringBuilder.append(org.getOrgName()).append(" ").append("Interview Feedback Template").toString());
 			submissionTemplate.setOrgLocationId(clientOrgLocations);
 			submissionTemplate.setJsonString(sourceLeadDefaultTemplate.getJsonString());
 			submissionTemplate.setStatus(Constants.CANDIDATE_ACTIVE);
@@ -645,9 +645,9 @@ public class ClientServiceImpl implements ClientService {
 			StringBuilder templateStringBuilder = new StringBuilder();
 			submissionTemplate = new SubmissionTemplate();
 			submissionTemplate.setTemplateName(
-					templateStringBuilder.append(org.getOrgName()).append("Interview Feedback Template").toString());
+					templateStringBuilder.append(org.getOrgName()).append(" ").append("Interview Feedback Template").toString());
 			submissionTemplate.setDescription(
-					templateStringBuilder.append(org.getOrgName()).append("Interview Feedback Template").toString());
+					templateStringBuilder.append(org.getOrgName()).append(" ").append("Interview Feedback Template").toString());
 			submissionTemplate.setIsDefault("Y");
 			submissionTemplate.setJsonString(sourceLeadDefaultTemplate.getJsonString());
 			submissionTemplate.setStatus(Constants.CANDIDATE_ACTIVE);
