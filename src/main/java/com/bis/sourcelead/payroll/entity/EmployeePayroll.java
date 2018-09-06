@@ -17,7 +17,6 @@ import javax.persistence.Table;
 
 import com.bis.sourcelead.entity.Candidate;
 import com.bis.sourcelead.entity.Employees;
-import com.bis.sourcelead.entity.User;
 
 @Entity
 @Table(name = "US_EMP_PAYROLL")
@@ -110,6 +109,13 @@ public class EmployeePayroll {
 	@Column (name = "PAYITEM_SUM")
 	private BigDecimal payitemSum;
 	
+	@Column (name = "PAY_SLIP_FILE_NAME")
+	private String paySlipFileName;
+	
+	@Column (name = "PAY_SLIP_FILE_URL")
+	private String paySlipFileURL;
+	
+	
 	@Column(name = "STATUS")
 	private Integer status;
 	
@@ -127,8 +133,6 @@ public class EmployeePayroll {
 	
 	@Column(name = "TAXES")
 	private BigDecimal taxes;
-	
-	
 
 	@OneToMany(cascade = CascadeType.ALL, mappedBy = "employeePayroll")
 	private Set<EmployeePayrollTax> usPayrollTax;
@@ -515,6 +519,28 @@ public class EmployeePayroll {
 	{
 		this.loanAmount = loanAmount;
 	}
+
+	public String getPaySlipFileName()
+	{
+		return paySlipFileName;
+	}
+
+	public String getPaySlipFileURL()
+	{
+		return paySlipFileURL;
+	}
+
+	public void setPaySlipFileName(String paySlipFileName)
+	{
+		this.paySlipFileName = paySlipFileName;
+	}
+
+	public void setPaySlipFileURL(String paySlipFileURL)
+	{
+		this.paySlipFileURL = paySlipFileURL;
+	}
+	
+	
 	
 	
 }

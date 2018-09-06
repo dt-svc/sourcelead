@@ -95,7 +95,7 @@ public class AssociateTaxDaoImpl implements AssociateTaxDao {
 	public AssociateTax taxDetailsByOrglocationIdAndCandidateId (Long candidateId, Long orgLocation)
 	{
 		Session session = this.sessionFactory.getCurrentSession();
-		AssociateTax aT= new AssociateTax();
+		AssociateTax aT = null;
 		try {
 		String qery="select * from ASSOCIATE_TAX at where at.CANDIDATE_ID=:candidateId and at.ORG_LOCATION_ID=:orgLocation";
 		List<AssociateTax> associate=session.createSQLQuery(qery).addEntity(AssociateTax.class).setLong("candidateId", candidateId).setLong("orgLocation", orgLocation).list();

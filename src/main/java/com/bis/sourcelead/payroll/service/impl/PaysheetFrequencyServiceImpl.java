@@ -318,6 +318,9 @@ public class PaysheetFrequencyServiceImpl implements PaysheetFrequencyService{
 					myPayrollDTO.setNetPay(payroll.getNetPay());
 					myPayrollDTO.setTaxes(payroll.getTaxes());
 					myPayrollDTO.setPayrollUUID(payroll.getUsEmpPayrollUUID());
+					if(StringUtils.isNotBlank(payroll.getPaySlipFileURL())) {
+						myPayrollDTO.setPaySlipFileURL(payroll.getPaySlipFileURL());
+					}
 					List<DeductionDTO> dlist = payrollUtil.getDeductionData(payroll);
 					dedHisList.addAll(dlist);
 					List<ContributionDTO> clist = payrollUtil.getContributionData(payroll);

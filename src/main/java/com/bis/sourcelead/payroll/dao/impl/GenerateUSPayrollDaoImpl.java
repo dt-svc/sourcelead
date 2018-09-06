@@ -161,11 +161,11 @@ public class GenerateUSPayrollDaoImpl implements GenerateUSPayrollDao{
 			if(projectRateList != null) {
 				for(ProjectRateDTO pRate : projectRateList) {
 					if(pRate.getPayRate() != null) {
-						BigDecimal payAmount = payrollUtil.getActualRateByPayFrequency(new BigDecimal(pRate.getPayRate()), pRate.getPayRateType(), payFrequency);
+						BigDecimal payAmount = payrollUtil.getHourlyRate(new BigDecimal(pRate.getPayRate()), pRate.getPayRateType());
 						payRate = payRate.add(payAmount);
 					}else {
 						payRate.add(new BigDecimal(pRate.getActualPayRate()));
-						BigDecimal payAmount = payrollUtil.getActualRateByPayFrequency(new BigDecimal(pRate.getActualPayRate()), pRate.getActualPayRateType(), payFrequency);
+						BigDecimal payAmount = payrollUtil.getHourlyRate(new BigDecimal(pRate.getActualPayRate()), pRate.getActualPayRateType());
 						payRate = payRate.add(payAmount);
 					}
 				}

@@ -258,7 +258,7 @@ public class GenerateUSPayrollServiceImpl implements GenerateUSPayrollService{
 							}else if(PayrollConstant.LCA_WAGE.equalsIgnoreCase(assoSal.getPayType())) {
 								LCAWageDTO lcaWageDTO  = generateUSPayrollDao.getLcaWageByCandidateIdLcationId(assoSal.getCandidate(),orgLocation);
 								if(lcaWageDTO != null) {
-									amount  = payrollUtil.getActualRateByPayFrequency(amount,lcaWageDTO.getLcaWageType(),assoSal.getGroupId().getPayFrequency());
+									amount  = payrollUtil.getActualRateByPayFrequency(new BigDecimal(lcaWageDTO.getLcaWage()),lcaWageDTO.getLcaWageType(),assoSal.getGroupId().getPayFrequency());
 								}
 							}
 							employeePayroll.setPayType(assoSal.getPayType());
@@ -1080,7 +1080,7 @@ public class GenerateUSPayrollServiceImpl implements GenerateUSPayrollService{
 			payrollDTO.setPayItemTotal(piTotal);
 			
 			// Calculating YTD
-			YTDPayrollDTO ytdDTO = getEmployeeYTDPayroll(payroll,orgLocation,approverStatus);
+			YTDPayrollDTO ytdDTO = payrollUtil.getEmployeeYTDPayroll(payroll,orgLocation,approverStatus);
 			payrollDTO.setYtdDTO(ytdDTO);
 			res.setObject(payrollDTO);
 			
@@ -1089,53 +1089,7 @@ public class GenerateUSPayrollServiceImpl implements GenerateUSPayrollService{
 		return res;
 	}
 
-	/**
-	 * Calculating YTD of an Employee
-	 * @param payroll
-	 * @param orgLocation
-	 * @param approverStatus
-	 * @return YTDPayrollDTO
-	 */
-	private YTDPayrollDTO getEmployeeYTDPayroll(EmployeePayroll payroll, OrgLocations orgLocation, String approverStatus)
-	{
-		YTDPayrollDTO ytd = new YTDPayrollDTO();
-		BigDecimal ytdFederal = BigDecimal.ZERO;
-		BigDecimal ytdFICA = BigDecimal.ZERO;
-		double ytdGross = 0;
-		double ytdDeduction = 0;
-		double ytdNet = 0;
-		double ytdTaxes = 0;
-		List<DeductionDTO> dedHisList = new ArrayList<>();
-		try {
-			List<EmployeePayroll> ytdList = paysheetFrequencyService.employeePayrollYTD(payroll.getCandidate(),orgLocation,approverStatus);
-			if(ytdList != null && ytdList.size() >0) {
-				 ytdGross = ytdList.stream().mapToDouble(pay->pay.getGrossPay().doubleValue()).sum();
-				 ytdNet = ytdList.stream().mapToDouble(pay->pay.getNetPay().doubleValue()).sum();
-				 ytdTaxes = ytdList.stream().mapToDouble(pay->pay.getTaxes().doubleValue()).sum();
-				for(EmployeePayroll ytdPayroll : ytdList) {
-					EmployeePayrollTax payrollTax = ytdPayroll.getUsPayrollTax().iterator().next();
-					ytdFederal = ytdFederal.add(payrollTax.getFederalWithholding());
-					ytdFICA = ytdFICA.add(payrollTax.getFicaWithholding());
-					List<DeductionDTO> ydlist = payrollUtil.getDeductionData(payroll);
-					dedHisList.addAll(ydlist);
-					
-				}
-				if(dedHisList.size() >0) {
-					ytdDeduction = dedHisList.stream().mapToDouble(ded->ded.getDedAmount()).sum();
-				}
-			}
-			ytd.setYtdFederal(ytdFederal);
-			ytd.setYtdFICA(ytdFICA);
-			ytd.setYtdGross(new BigDecimal(ytdGross));
-			ytd.setYtdNet(new BigDecimal(ytdNet));
-			ytd.setYtdTaxes(new BigDecimal(ytdTaxes));
-			ytd.setYtdDeduction(new BigDecimal(ytdDeduction));	
-		}catch (Exception e) {
-			e.printStackTrace();
-		}
-		return ytd;
-	}
-
+	
 	@Override
 	public Response<PayAdjustmentDTO> updateEmployeePayroll(PayAdjustmentDTO payAdjustmentDTO, OrgLocations orgLocation, User loginUser)
 	{
