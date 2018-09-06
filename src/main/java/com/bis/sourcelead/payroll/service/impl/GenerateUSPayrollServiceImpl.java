@@ -243,6 +243,8 @@ public class GenerateUSPayrollServiceImpl implements GenerateUSPayrollService{
 							double totalHours = 0;
 							BigDecimal payRate = BigDecimal.ZERO;
 							BigDecimal amount = BigDecimal.ZERO;
+							BigDecimal regularHoursAmount = BigDecimal.ZERO;
+							
 							if(PayrollConstant.HOURLY_RATE.equalsIgnoreCase(assoSal.getPayType())) {
 								 List<TotalHoursDTO> totalHoursDto = userGroupDao.getTotalHoursByCandidateId(assoSal.getCandidate().getId(),freqStartDate,freqEndDate);
 								 payRate = generateUSPayrollDao.payRateByCandidateLocation(assoSal.getCandidate(),orgLocation,freqStartDate,freqEndDate,assoSal.getGroupId().getPayFrequency());								 
@@ -253,6 +255,7 @@ public class GenerateUSPayrollServiceImpl implements GenerateUSPayrollService{
 									}
 								}
 								amount = getTotalAmount(totalHours,payRate);
+								regularHoursAmount = amount;
 							}else if(PayrollConstant.SALARY.equalsIgnoreCase(assoSal.getPayType())) {
 								amount = assoSal.getGrossSalary();
 							}else if(PayrollConstant.LCA_WAGE.equalsIgnoreCase(assoSal.getPayType())) {
@@ -271,7 +274,7 @@ public class GenerateUSPayrollServiceImpl implements GenerateUSPayrollService{
 							employeePayroll.setFrequency(invoiceFrequency);
 							employeePayroll.setPayCheckDate(paySheetFreq.getPayCheckDate());
 							
-							employeePayroll.setRegularHoursAmount(amount);
+							employeePayroll.setRegularHoursAmount(regularHoursAmount);
 							DeductionDTO dedDTO = getDeductionAmount(assoSal.getCandidate(),orgLocation,amount,loginUser,paySheetFreq,employeePayroll);
 							BigDecimal[] dedTaxes = dedDTO.getDedTaxes();
 							BigDecimal[] contributionTaxes = dedDTO.getContributionTaxes();
