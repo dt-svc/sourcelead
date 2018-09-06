@@ -150,7 +150,7 @@ public class AppliedLeaveDateDaoImpl implements AppliedLeaveDateDao {
 	{
 		List<AppliedLeaveDateView> appliedLeaveList = null;
 		Session session = this.sessionFactory.getCurrentSession();
-		String query = "from AppliedLeaveDateView alView where alView.leaveTypeId =:leaveTypeId and alView.orglocationId = :orgLocationid and (alView.applyLeaveDate >= :startDate and alView.applyLeaveDate <= :endDate)";
+		String query = "from AppliedLeaveDateView alView where alView.leaveTypeId =:leaveTypeId and alView.orglocationId = :orgLocationid and (alView.applyLeaveDate >= :startDate and alView.applyLeaveDate <= :endDate) and (alView.leaveStatus = 'APPROVED' or alView.leaveStatus = 'PENDING')";
 		appliedLeaveList = session.createQuery(query).setLong("leaveTypeId", leaveTypeId).setLong("orgLocationid", orgLocationid).setParameter("startDate", startDate).setParameter("endDate", endDate).list();
 		return appliedLeaveList;
 	}
