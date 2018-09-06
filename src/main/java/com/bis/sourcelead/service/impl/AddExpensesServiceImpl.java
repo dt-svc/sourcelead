@@ -391,14 +391,23 @@ public void sendExpensesEmailToManager(User loginUser, Expenses expenses, OrgLoc
 		 globalVarsMap.put("expenseTypes",expenses.getNoOfExpenses());
 		 }
 		 
-		 StringBuilder str = new StringBuilder();
+		 
+		 Set<ExpensesEntries> expensesEntries = expenses.getExpensesEntries();
+		 for(ExpensesEntries exp : expensesEntries) {
+			 
+			 globalVarsMap.put("totalAmount",exp.getSubmittedamount().toString());
+			 
+		 }
+			 
+		 
+		/* StringBuilder str = new StringBuilder();
 		 BigDecimal cg = new BigDecimal(0);
 				 cg.add(expenses.getTotalAmount());
 		 
-			/*BigDecimal cg = new BigDecimal(Double.toString(expenses.getTotalAmount()));
-			cg = cg.setScale(2,BigDecimal.ROUND_HALF_UP );	*/	
+			BigDecimal cg = new BigDecimal(Double.toString(expenses.getTotalAmount()));
+			cg = cg.setScale(2,BigDecimal.ROUND_HALF_UP );		
 			
-		 globalVarsMap.put("totalAmount",str.append(cg).append(" ").append(currencyCode).toString());
+		 globalVarsMap.put("totalAmount",str.append(cg).append(" ").append(currencyCode).toString());*/
 
 			StringBuilder stringBuildforLink = new StringBuilder();
 			globalVarsMap.put("loginLink",stringBuildforLink.append("<a href='").append(sourceleadLoginUrl).append("' style='text-decoration:none; '><div style=' width:220px; border-radius:30px; background-color:#214b90; color:#FFF; font-size:18px; font-weight:500; margin:10px auto 5px auto; padding:10px 0px; text-align:center; letter-spacing:2px;'>Login</div></a>").toString());
