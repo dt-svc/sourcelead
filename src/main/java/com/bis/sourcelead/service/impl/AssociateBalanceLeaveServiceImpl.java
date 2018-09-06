@@ -342,7 +342,7 @@ public class AssociateBalanceLeaveServiceImpl implements AssociateBalanceLeaveSe
 	}
 
 	@Override
-	public int addLeaveTypeToAssociate(List<User> userList, OrgLocations orgLocation,LeaveType leaveType,User loginUser)
+	public int addLeaveTypeToAssociate(List<User> userList, OrgLocations orgLocation,LeaveType leaveType,User loginUser,float noOfLeaves)
 	{
 		int isAdded = 0;
 		if(userList != null && userList.size() >0) {
@@ -367,33 +367,37 @@ public class AssociateBalanceLeaveServiceImpl implements AssociateBalanceLeaveSe
 					}else {
 						totalLeaveDTO.setLeavetypeEmpType(null);
 					}
-					if(!Constants.ANNUALLY.equalsIgnoreCase(leaveType.getPeriod())  && !Constants.NO.equalsIgnoreCase(leaveType.getAccuralPolicy())) {
-						if("All Employees".equalsIgnoreCase(leaveType.getLeaveEffective())) {
-							totalLeaveDTO.setNoOfLeaves(String.valueOf(leaveType.getNoOfDaysPerPeriod()));
-						}else {
-							Employees emp = employeesService.getEmployeeByUserIdAndOrgLocationsId(user.getId(), orgLocation.getId());
-							 try {
-								float days = leaveManagementUtil.getNumberofDaysPerPeriodForLeaveType(leaveType, emp, user);
-								totalLeaveDTO.setNoOfLeaves(String.valueOf(days));
-							} catch (ParseException e) {
-								e.printStackTrace();
-							}
-						}
+					
+					if(noOfLeaves != 0) {
+						totalLeaveDTO.setNoOfLeaves(String.valueOf(noOfLeaves));
 					}else {
-						if("All Employees".equalsIgnoreCase(leaveType.getLeaveEffective())) {
-							totalLeaveDTO.setNoOfLeaves(String.valueOf(leaveType.getNoOfDays()));
+						if(!Constants.ANNUALLY.equalsIgnoreCase(leaveType.getPeriod())  && !Constants.NO.equalsIgnoreCase(leaveType.getAccuralPolicy())) {
+							if("All Employees".equalsIgnoreCase(leaveType.getLeaveEffective())) {
+								totalLeaveDTO.setNoOfLeaves(String.valueOf(leaveType.getNoOfDaysPerPeriod()));
+							}else {
+								Employees emp = employeesService.getEmployeeByUserIdAndOrgLocationsId(user.getId(), orgLocation.getId());
+								 try {
+									float days = leaveManagementUtil.getNumberofDaysPerPeriodForLeaveType(leaveType, emp, user);
+									totalLeaveDTO.setNoOfLeaves(String.valueOf(days));
+								} catch (ParseException e) {
+									e.printStackTrace();
+								}
+							}
 						}else {
-							Employees emp = employeesService.getEmployeeByUserIdAndOrgLocationsId(user.getId(), orgLocation.getId());
-							 try {
-								float days = leaveManagementUtil.getNumberofDaysPerPeriodForLeaveType(leaveType, emp, user);
-								totalLeaveDTO.setNoOfLeaves(String.valueOf(days));
-							} catch (ParseException e) {
-								e.printStackTrace();
+							if("All Employees".equalsIgnoreCase(leaveType.getLeaveEffective())) {
+								totalLeaveDTO.setNoOfLeaves(String.valueOf(leaveType.getNoOfDays()));
+							}else {
+								Employees emp = employeesService.getEmployeeByUserIdAndOrgLocationsId(user.getId(), orgLocation.getId());
+								 try {
+									float days = leaveManagementUtil.getNumberofDaysPerPeriodForLeaveType(leaveType, emp, user);
+									totalLeaveDTO.setNoOfLeaves(String.valueOf(days));
+								} catch (ParseException e) {
+									e.printStackTrace();
+								}
 							}
 						}
-						
-							
 					}
+					
 
 //					if(user.getGender() != null) {
 //						if("All".equalsIgnoreCase(leaveType.getEffectiveGender()) || user.getGender().equalsIgnoreCase(leaveType.getEffectiveGender())){
