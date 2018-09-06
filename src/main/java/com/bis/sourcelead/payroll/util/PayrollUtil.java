@@ -530,7 +530,7 @@ public class PayrollUtil {
 	 * @param approverStatus
 	 * @return YTDPayrollDTO
 	 */
-	public YTDPayrollDTO getEmployeeYTDPayroll(EmployeePayroll payroll, OrgLocations orgLocation, String approverStatus)
+	public YTDPayrollDTO getEmployeeYTDPayroll(Candidate candidate, OrgLocations orgLocation, String approverStatus)
 	{
 		YTDPayrollDTO ytd = new YTDPayrollDTO();
 		BigDecimal ytdFederal = BigDecimal.ZERO;
@@ -545,7 +545,7 @@ public class PayrollUtil {
 		List<DeductionDTO> dedHisList = new ArrayList<>();
 		List<ContributionDTO> contrHisList = new ArrayList<>();
 		try {
-			List<EmployeePayroll> ytdList = paysheetFrequencyService.employeePayrollYTD(payroll.getCandidate(),orgLocation,approverStatus);
+			List<EmployeePayroll> ytdList = paysheetFrequencyService.employeePayrollYTD(candidate,orgLocation,approverStatus);
 			if(ytdList != null && ytdList.size() >0) {
 				 ytdGross = ytdList.stream().mapToDouble(pay->pay.getGrossPay().doubleValue()).sum();
 				 ytdNet = ytdList.stream().mapToDouble(pay->pay.getNetPay().doubleValue()).sum();

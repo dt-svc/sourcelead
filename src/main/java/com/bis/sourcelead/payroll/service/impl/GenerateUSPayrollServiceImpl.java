@@ -296,7 +296,8 @@ public class GenerateUSPayrollServiceImpl implements GenerateUSPayrollService{
 							employeePayroll.setPostTaxContribution(postContriSum);
 							employeePayroll.setGrossPay(amount);
 							BigDecimal grossAmount = (amount.subtract(preTax)).add(preContriSum);
-							PayrollCalculatorDTO payrollCalculator = symmetryPayrollCalculator.runUSPayroll(assoSal.getCandidate(),totalHours,grossAmount,invoiceFrequency,associateTaxView,paySheetFreq.getPayCheckDate());
+							YTDPayrollDTO ytdTaxes= payrollUtil.getEmployeeYTDPayroll(assoSal.getCandidate(),orgLocation,"APPROVED");
+							PayrollCalculatorDTO payrollCalculator = symmetryPayrollCalculator.runUSPayroll(assoSal.getCandidate(),totalHours,grossAmount,invoiceFrequency,associateTaxView,paySheetFreq.getPayCheckDate(),ytdTaxes);
 							if(payrollCalculator != null) {
 								STEPayrollCalculator STE = payrollCalculator.getsTEPayrollCalculator();
 								String  locationCode = payrollCalculator.getWebServiceLocationCodeV2().getLocationCode();
@@ -1083,7 +1084,7 @@ public class GenerateUSPayrollServiceImpl implements GenerateUSPayrollService{
 			payrollDTO.setPayItemTotal(piTotal);
 			
 			// Calculating YTD
-			YTDPayrollDTO ytdDTO = payrollUtil.getEmployeeYTDPayroll(payroll,orgLocation,approverStatus);
+			YTDPayrollDTO ytdDTO = payrollUtil.getEmployeeYTDPayroll(payroll.getCandidate(),orgLocation,approverStatus);
 			payrollDTO.setYtdDTO(ytdDTO);
 			res.setObject(payrollDTO);
 			
@@ -1176,7 +1177,8 @@ public class GenerateUSPayrollServiceImpl implements GenerateUSPayrollService{
 			payroll.setPreTaxDeduction(BigDecimal.valueOf(preTaxDed));
 			
 			AssociateTaxDedContriView associateTaxDTO = associateTaxService.findUserTaxDeatails(payroll.getCandidate().getId(), orgLocation);
-			PayrollCalculatorDTO payrollCalculator = symmetryPayrollCalculator.runUSPayroll(payroll.getCandidate(), totalHours, grossAmount, payroll.getFrequency(), associateTaxDTO,payroll.getPayCheckDate());
+			YTDPayrollDTO ytdTaxes= payrollUtil.getEmployeeYTDPayroll(payroll.getCandidate(),orgLocation,"APPROVED");
+			PayrollCalculatorDTO payrollCalculator = symmetryPayrollCalculator.runUSPayroll(payroll.getCandidate(), totalHours, grossAmount, payroll.getFrequency(), associateTaxDTO,payroll.getPayCheckDate(),ytdTaxes);
 			STEPayrollCalculator STE = payrollCalculator.getsTEPayrollCalculator();
 			String  locationCode = payrollCalculator.getWebServiceLocationCodeV2().getLocationCode();
 			BigDecimal taxes = STE.getFICACalc().add(STE.getMedicareCalc()).add(STE.getFederalCalc()).add(STE.getEICCalc()).asBigDecimal().add(STE.getStateCalc(locationCode).asBigDecimal()).add(STE.getCountyCalc(locationCode).asBigDecimal()).add(STE.getCityCalc(locationCode).asBigDecimal());
