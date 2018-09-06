@@ -72,6 +72,7 @@ import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.entity.UserRole;
 import com.bis.sourcelead.entity.UsersImport;
 import com.bis.sourcelead.enums.Status;
+import com.bis.sourcelead.service.AssociateBalanceLeaveService;
 import com.bis.sourcelead.service.AssociateGradesService;
 import com.bis.sourcelead.service.CandidateService;
 import com.bis.sourcelead.service.EmployeesService;
@@ -139,6 +140,9 @@ public class UploadFileServiceImpl implements UploadFileService {
 	
 	@Autowired
 	ShiftService shiftService;
+	
+	@Autowired
+	AssociateBalanceLeaveService associateBalanceLeaveService;
 	
 	protected boolean isNullOrEmpty(String str) {
 		return (str == null || "".equals(str.trim()));
@@ -1999,7 +2003,7 @@ private String getCellValueAsString(Cell cell, String fileName) {
 			if(null == masterCandidate){
 				masterCandidate = storeMasterCandidate(userExisted);
 			}
-			
+			associateBalanceLeaveService.addAssociateLeaveType(userExisted,orgLocations.getId(),employee,userRole);
 			storeCandidate(userExisted, orgLocations, masterCandidate,orgRelation,orgspoc,userImport);
 		}else{
 			User user  = new User();
@@ -2013,7 +2017,7 @@ private String getCellValueAsString(Cell cell, String fileName) {
 			user.setCreatedDate(new Date());
 			user.setCreatedBy(loginUser.getUserCode());
 			user.setUserCode(SourceLeadRandomCodeHelper.generateRandomUserCode());
-			user.setUserName(userImport.getEmailId());
+			user.setUserName(userImport.getEmail());
 			password = SourceLeadRandomCodeHelper.generateRandomPassword();
 			user.setPassword(sourceleadPasswordEncoder.encode(password));
 			user.setVerificationUUID(RandomStringUtils.randomAlphanumeric(16));
@@ -2037,6 +2041,9 @@ private String getCellValueAsString(Cell cell, String fileName) {
 				userService.sendEmail(user, loginUser, password,orgLocations.getId());
 				registrationService.sendActivationEmail(user,orgLocations);
 			}
+			
+			associateBalanceLeaveService.addAssociateLeaveType(user,orgLocations.getId(),employee,userRole);
+			
 			userService.saveOrUpdateUserElkDocument(userRole,employee,user.getUserCode());
 			
 		    MasterCandidate masterCandidate = null;
