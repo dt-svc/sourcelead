@@ -1579,61 +1579,39 @@ public class DashboardRestController {
 	@RequestMapping(value = "/applicantList")
 	public @ResponseBody ResponseList<RequirementSubmissionHistoryDTO> applicantList(RequirementSubmissionHistoryDTO requirementSubmissionHistoryDTO, HttpServletRequest request)throws Exception
    {
-//		String stage ="SUBMISSION" ;
 		ResponseList<RequirementSubmissionHistoryDTO> responseList = new ResponseList<>();
-		
 		OrgLocations loginOrgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
-		Timezone timezone = null;
 		String userRole = (String) SourceLeadSessionManager.getSessionAttribute(request, "loginUserRole");
 		User  user = (User)SourceLeadSessionManager.getSessionAttribute(request, "user");
-		if(loginOrgLocations.getTimezone() != null){
-			timezone = timeZoneService.getTimezone(loginOrgLocations.getTimezone().getId());
-		}
-		
 		
 		Date[] freqDates = new Date[2];
 		String userType = null;
 		Date startUTCDate = null;
 		Date endUTCDate = null;
 		DateFormat TZ_DF_TS = new SimpleDateFormat ("yyyy-MM-dd HH:mm:ss");
-		if("today".equals(requirementSubmissionHistoryDTO.getTabType())){
-			 DateTime zoned = new DateTime(DateTimeZone.forID(timezone.getTimeZoneId()));
-			 DateTimeFormatter outputFormatter = DateTimeFormat.forPattern("yyyy-MM-dd'T'00:00:00");
-			 DateTimeFormatter outputFormatter1 = DateTimeFormat.forPattern("yyyy-MM-dd'T'23:59:59");
-			 String startDate = outputFormatter.print(zoned);
-			 String startDateString = CommonUtil.convertTimeUTC(timezone.getTimeZoneId(), startDate);
-			 startUTCDate = TZ_DF_TS.parse(startDateString);
-			 String endDate = outputFormatter1.print(zoned);
-			 String endDateString = CommonUtil.convertTimeUTC(timezone.getTimeZoneId(), endDate);
-			 endUTCDate = TZ_DF_TS.parse(endDateString);
-		}else{
-			 DateFormat TZ_DF_CSD = new SimpleDateFormat ("yyyy-MM-dd 00:00:00");
-			 DateFormat TZ_DF_CED = new SimpleDateFormat ("yyyy-MM-dd 23:59:59");
-			 
-			if("Custom".equalsIgnoreCase(requirementSubmissionHistoryDTO.getFrequency())){
-				Date startTime =  commonUtil.orgLocationDateFormat(loginOrgLocations.getDateFormat(),requirementSubmissionHistoryDTO.getFromDate());
+		 DateFormat TZ_DF_CSD = new SimpleDateFormat ("yyyy-MM-dd 00:00:00");
+		 DateFormat TZ_DF_CED = new SimpleDateFormat ("yyyy-MM-dd 23:59:59");
+		 if("Custom".equalsIgnoreCase(requirementSubmissionHistoryDTO.getFrequency())){
+			 Date startTime =  commonUtil.orgLocationDateFormat(loginOrgLocations.getDateFormat(),requirementSubmissionHistoryDTO.getFromDate());
 				Date endTime =  commonUtil.orgLocationDateFormat(loginOrgLocations.getDateFormat(),requirementSubmissionHistoryDTO.getToDate());
 				String customStartTimeStr = TZ_DF_CSD.format(startTime);  
 				String customEndTimeStr = TZ_DF_CED.format(endTime);  
 				startUTCDate = TZ_DF_TS.parse(customStartTimeStr);
 				endUTCDate = TZ_DF_TS.parse(customEndTimeStr);
-			}else{
-				freqDates = reportsUtil.getJobFilterDate(requirementSubmissionHistoryDTO.getFrequency(),loginOrgLocations);
-				String customStartTimeStr = TZ_DF_CSD.format(freqDates[0]);  
-				String customEndTimeStr = TZ_DF_CED.format(freqDates[1]);  
-				startUTCDate = TZ_DF_TS.parse(customStartTimeStr);
-				endUTCDate = TZ_DF_TS.parse(customEndTimeStr);
-			}
-		}
+		 }else {
+			 freqDates = reportsUtil.getJobFilterDate(requirementSubmissionHistoryDTO.getFrequency(),loginOrgLocations);
+			 String customStartTimeStr = TZ_DF_CSD.format(freqDates[0]);  
+			 String customEndTimeStr = TZ_DF_CED.format(freqDates[1]);  
+			 startUTCDate = TZ_DF_TS.parse(customStartTimeStr);
+			 endUTCDate = TZ_DF_TS.parse(customEndTimeStr);
+		 }
+		 
 		
 		if(Constants.ROLE_ADMIN.equalsIgnoreCase(userRole) || Constants.SOURCELEAD_ADMIN.equalsIgnoreCase(userRole)){
 			userType = Constants.ADMIN;
 		} 
 		
-		
 	   ResponseList<RequirementSubmissionHistory> toDayReqApplicantscount =requirementSubmissionDao.getRequirementSubmissionsListWithDTOByOrgLocationsIdAndSubmissionStatus(requirementSubmissionHistoryDTO, loginOrgLocations.getId(),requirementSubmissionHistoryDTO.getSubmissionStatus(),requirementSubmissionHistoryDTO.getTabType(),userType,user,startUTCDate,endUTCDate);
-
-//		List<RequirementSubmissionHistory> toDayReqApplicantscount = dashboardController.getReqSubmissionListByStage(request,stage,tab);
 		
 	   List<RequirementSubmissionHistoryDTO> rshDTOList = new ArrayList<>();
 	   if(toDayReqApplicantscount.getData() != null)
@@ -1834,35 +1812,23 @@ public class DashboardRestController {
 		Date startUTCDate = null;
 		Date endUTCDate = null;
 		DateFormat TZ_DF_TS = new SimpleDateFormat ("yyyy-MM-dd HH:mm:ss");
-		if("today".equals(requirementSubmissionHistoryDTO.getTabType())){
-			 DateTime zoned = new DateTime(DateTimeZone.forID(timezone.getTimeZoneId()));
-			 DateTimeFormatter outputFormatter = DateTimeFormat.forPattern("yyyy-MM-dd'T'00:00:00");
-			 DateTimeFormatter outputFormatter1 = DateTimeFormat.forPattern("yyyy-MM-dd'T'23:59:59");
-			 String startDate = outputFormatter.print(zoned);
-			 String startDateString = CommonUtil.convertTimeUTC(timezone.getTimeZoneId(), startDate);
-			 startUTCDate = TZ_DF_TS.parse(startDateString);
-			 String endDate = outputFormatter1.print(zoned);
-			 String endDateString = CommonUtil.convertTimeUTC(timezone.getTimeZoneId(), endDate);
-			 endUTCDate = TZ_DF_TS.parse(endDateString);
+		DateFormat TZ_DF_CSD = new SimpleDateFormat ("yyyy-MM-dd 00:00:00");
+		DateFormat TZ_DF_CED = new SimpleDateFormat ("yyyy-MM-dd 23:59:59");
+		if("Custom".equalsIgnoreCase(requirementSubmissionHistoryDTO.getFrequency())){
+			Date startTime =  commonUtil.orgLocationDateFormat(loginOrgLocations.getDateFormat(),requirementSubmissionHistoryDTO.getFromDate());
+			Date endTime =  commonUtil.orgLocationDateFormat(loginOrgLocations.getDateFormat(),requirementSubmissionHistoryDTO.getToDate());
+			String customStartTimeStr = TZ_DF_CSD.format(startTime);  
+			String customEndTimeStr = TZ_DF_CED.format(endTime);  
+			startUTCDate = TZ_DF_TS.parse(customStartTimeStr);
+			endUTCDate = TZ_DF_TS.parse(customEndTimeStr);
 		}else{
-			 DateFormat TZ_DF_CSD = new SimpleDateFormat ("yyyy-MM-dd 00:00:00");
-			 DateFormat TZ_DF_CED = new SimpleDateFormat ("yyyy-MM-dd 23:59:59");
-			 
-			if("Custom".equalsIgnoreCase(requirementSubmissionHistoryDTO.getFrequency())){
-				Date startTime =  commonUtil.orgLocationDateFormat(loginOrgLocations.getDateFormat(),requirementSubmissionHistoryDTO.getFromDate());
-				Date endTime =  commonUtil.orgLocationDateFormat(loginOrgLocations.getDateFormat(),requirementSubmissionHistoryDTO.getToDate());
-				String customStartTimeStr = TZ_DF_CSD.format(startTime);  
-				String customEndTimeStr = TZ_DF_CED.format(endTime);  
-				startUTCDate = TZ_DF_TS.parse(customStartTimeStr);
-				endUTCDate = TZ_DF_TS.parse(customEndTimeStr);
-			}else{
-				freqDates = reportsUtil.getJobFilterDate(requirementSubmissionHistoryDTO.getFrequency(),loginOrgLocations);
-				String customStartTimeStr = TZ_DF_CSD.format(freqDates[0]);  
-				String customEndTimeStr = TZ_DF_CED.format(freqDates[1]);  
-				startUTCDate = TZ_DF_TS.parse(customStartTimeStr);
-				endUTCDate = TZ_DF_TS.parse(customEndTimeStr);
-			}
+			freqDates = reportsUtil.getJobFilterDate(requirementSubmissionHistoryDTO.getFrequency(),loginOrgLocations);
+			String customStartTimeStr = TZ_DF_CSD.format(freqDates[0]);  
+			String customEndTimeStr = TZ_DF_CED.format(freqDates[1]);  
+			startUTCDate = TZ_DF_TS.parse(customStartTimeStr);
+			endUTCDate = TZ_DF_TS.parse(customEndTimeStr);
 		}
+		  
 		
 		if(Constants.ROLE_ADMIN.equalsIgnoreCase(userRole) || Constants.SOURCELEAD_ADMIN.equalsIgnoreCase(userRole)){
 			userType = Constants.ADMIN;
