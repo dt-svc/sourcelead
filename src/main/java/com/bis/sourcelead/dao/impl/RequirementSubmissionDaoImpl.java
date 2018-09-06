@@ -3314,5 +3314,15 @@ public class RequirementSubmissionDaoImpl implements RequirementSubmissionDao{
 				}
 				return countArr;
 				}
+				
+				@Override
+				@Transactional
+				public List<RequirementSubmission> getAllSubmissionsNotInTemplateFileds() throws Exception {
+					 Session session = this.sessionFactory.getCurrentSession();
+					 
+				     String query = "from RequirementSubmission rs where rs.id NOT IN (select rsf.requirementSubmission.id from RequirementSubmissionTemplateFields rsf)";
+				     List<RequirementSubmission> shortListCandidatesList = session.createQuery(query).list();
+				     return shortListCandidatesList;
+				}
 
 				}

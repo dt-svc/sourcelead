@@ -908,6 +908,7 @@ public class InvoiceRestController {
 			ip.setPaymentReferenceNumber(ip.getPaymentReferenceNumber());
 			ip.setFileURL(ip.getFileURL());
 			ip.setFileName(ip.getFileName());
+			ip.setFileContentType(ip.getFileContentType());
 			ip.setPaymentComment(ip.getPaymentComment());
 			ip.setPaymentAmount(ip.getPaymentAmount());
 			StringBuilder name = new StringBuilder();
