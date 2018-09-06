@@ -302,6 +302,12 @@ public class User implements Serializable{
 	@Transient
 	@JsonProperty
     private Set<String> tagsList;
+	
+	
+	@Transient
+    @JsonProperty
+    private String isPayRollApprover;
+	
 
 	public Status getPreviousUserState() {
 		return previousUserState;
@@ -947,5 +953,13 @@ public class User implements Serializable{
 
 	public void setCandidateId(Long candidateId) {
 		this.candidateId = candidateId;
+	}
+
+	public String getIsPayRollApprover() {
+		return isPayRollApprover;
+	}
+
+	public void setIsPayRollApprover(String isPayRollApprover) {
+		this.isPayRollApprover = isPayRollApprover;
 	}
 }
