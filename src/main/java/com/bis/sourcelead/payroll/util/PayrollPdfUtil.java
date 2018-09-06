@@ -51,7 +51,7 @@ public class PayrollPdfUtil {
 		  File file = new File(sb.toString());
 		try {
 			// YTD 
-	 	    YTDPayrollDTO ytdTaxes= payrollUtil.getEmployeeYTDPayroll(payroll,orgLocation,"APPROVED");
+	 	    YTDPayrollDTO ytdTaxes= payrollUtil.getEmployeeYTDPayroll(payroll.getCandidate(),orgLocation,"APPROVED");
 			   Document document = new Document();
 //		        file.getParentFile().mkdirs();
 			        PdfWriter writer = PdfWriter.getInstance(document, new FileOutputStream(file));
