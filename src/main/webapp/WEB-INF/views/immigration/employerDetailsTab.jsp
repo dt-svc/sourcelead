@@ -241,7 +241,7 @@
 	</div><!-- popup code end -->
 	<div class="immFoot clearfix">
 			<div class="pull-right text-right">
-				<input type="button" value="Back" onclick="goToSummaryTab('#visasTab');" class="btn btn-default btn-sm">
+				<input type="button" value="Back" onclick="goToSummaryTab('#lcaTab');" class="btn btn-default btn-sm">
              <!-- 	<input type="button" value="Skip" onclick="goToSummaryTab('#residencesTab');" class="btn btn-default btn-sm">  -->
               	<input type="button" value="Continue" onclick="goToSummaryNextTab('#educationsTab');" class="btn btn-primary btn-sm ml10">
             </div>

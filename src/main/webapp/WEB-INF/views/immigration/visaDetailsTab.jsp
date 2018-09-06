@@ -154,8 +154,8 @@
 	<div class="immFoot clearfix">
 			<div class="pull-right text-right">
 				<input type="button" value="Back" onclick="goToSummaryTab('#passportsTab');" class="btn btn-default btn-sm">
-             	<input type="button" value="Skip" onclick="goToSummaryNextTab('#employersTab');" class="btn btn-default btn-sm"> 
-              	<input type="button" value="Continue" onclick="goToSummaryNextTab('#employersTab');" class="btn btn-primary btn-sm ml10">
+             	<input type="button" value="Skip" onclick="goToSummaryNextTab('#lcaTab');" class="btn btn-default btn-sm"> 
+              	<input type="button" value="Continue" onclick="goToSummaryNextTab('#lcaTab');" class="btn btn-primary btn-sm ml10">
             </div>
 		</div>	
 	</form>
@@ -169,6 +169,8 @@
 				$(".popMask").fadeOut(200);
 				$("#popUpVisa").fadeOut(200);
 				$("#CandidateVisaform")[0].reset();
+				$("#visaType").selectpicker("refresh");
+				$("#visaCountry").selectpicker("refresh");
 				$("#candidateVisaId").val('');
 				$('#popUpVisa').find('p.jquery_form_error_message').remove();
 				$("#visa_save_id").removeAttr("disabled");

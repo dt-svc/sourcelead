@@ -447,6 +447,7 @@ function removeDocPopUp(){
 	$("#candidate_Immigration_document_form")[0].reset();
 	$("#description1").text('');
 	$("#immigrationCandidateDocId").val('');
+	$("#documentType").selectpicker("refresh");
 	$('#candidate_Immigration_document_form input[name="multiple"]').prop('checked', false);
 	$('#candidate_Immigration_document_form input[name="isRequired"]').prop('checked', false);
 	$("#docuView").find('p.jquery_form_error_message').remove();

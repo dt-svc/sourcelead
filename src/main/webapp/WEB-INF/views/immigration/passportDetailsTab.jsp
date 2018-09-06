@@ -159,6 +159,7 @@
 				$(".popMask").fadeOut(200);
 				$("#popPassView").fadeOut(200);
 				$("#CandidatePassportform")[0].reset();
+				$("#countryName").selectpicker("refresh");
 				$("#candidatePassportId").val('');
 				$('#popPassView').find('p.jquery_form_error_message').remove();
 				$("#passport_save_id").removeAttr("disabled");
