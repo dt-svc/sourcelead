@@ -2248,7 +2248,7 @@ public class ImmigrationCommonServiceImpl implements ImmigrationCommonService {
 		List<LcaPlaceOfEployment> lcaPlaceOfEploymentList = new ArrayList<LcaPlaceOfEployment>(); // add LcaPlaceOfEployment to LCA
 		Date currentDate = commonUtil.orgLocationCommonDate(new Date(), orgLocations);
 		
-		if (lcaDTO.getLcaPlacaOfempDeletedListIds().length>0) {
+		if (lcaDTO.getLcaPlacaOfempDeletedListIds() !=null && lcaDTO.getLcaPlacaOfempDeletedListIds().length>0) {
 			immigrationCommonDao.deleteLcaPlaceOfEmpmntDetails(lcaDTO.getLcaPlacaOfempDeletedListIds());
         }
 		
