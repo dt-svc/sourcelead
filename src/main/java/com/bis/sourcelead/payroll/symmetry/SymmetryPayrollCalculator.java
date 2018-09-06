@@ -121,7 +121,7 @@ public class SymmetryPayrollCalculator {
 				
 				//TODO Need to explore
 				if(PayrollConstant.WASHINGTON.equalsIgnoreCase(candidate.getResidenceState())) {
-					STE.setSDI(locationCode, new Money(0D), null, new Rate(0.1254), null);
+					STE.setSDI(locationCode, new Money(0D), null, new Rate(0.0), null);
 				}
 				
 				// Calculating Employer FUTA and SUTA 
@@ -158,7 +158,7 @@ public class SymmetryPayrollCalculator {
 				
 				STE.setCityParameters(locationCode, federalExempt, isResident, 0, zero);
 				//Employer Wyoming Workers Compensation Tax (WC)
-				STE.setWyomingWorkersComp(new Rate(0.014), true);
+				STE.setWyomingWorkersComp(new Rate(0.0), true);
 				
 				//Employer SUTA Surcharge Taxes
 				STE = calculateEmployerSUTASurchargeTaxes(STE,locationCode,totalHours,grossAamount,FEDERAL_LOCATION_CODE);
@@ -328,7 +328,7 @@ public class SymmetryPayrollCalculator {
 		Money zero = Money.zero();
 		try {
 			if("New Jersey".equalsIgnoreCase(empState)) {
-				STE.setSDIEmployerExt(locationCode, SDITaxType.NEW_JERSEY_SDI, new Rate(0.005), zero, zero, false);
+				STE.setSDIEmployerExt(locationCode, SDITaxType.NEW_JERSEY_SDI, new Rate(0.0), zero, zero, false);
 			}
 			if("Puerto Rico".equalsIgnoreCase(empState)) {
 				STE.setSDIEmployerExt(locationCode, SDITaxType.PUERTO_RICO_SDI, new Rate(0.00),zero, zero, false);
@@ -355,7 +355,7 @@ public class SymmetryPayrollCalculator {
 		try {
 			Money zero = Money.zero();
 			STE.setWages(locationCode, WageType.SUTA_GROSS_WAGES, new Hours(totalHours), new Money(amount), zero, zero, zero /* need to pass YTD Wage*/);
-			STE.setUnemploymentSurcharge(locationCode, SurchargeTaxType.IDAHO_ADMINISTRATIVE_RESERVE, new Rate(0.01), false);
+			STE.setUnemploymentSurcharge(locationCode, SurchargeTaxType.IDAHO_ADMINISTRATIVE_RESERVE, new Rate(0.0), false);
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
@@ -490,7 +490,7 @@ public class SymmetryPayrollCalculator {
 		try {
 			Money zero = Money.zero();
 			STE.setWages(locationCode, WageType.SUTA_GROSS_WAGES, new Hours(0.00), new Money(amount), zero, zero, zero);
-			STE.setUnemploymentExt(locationCode, new Rate(0.05), zero, false);
+			STE.setUnemploymentExt(locationCode, new Rate(0.0), zero, false);
 			STE.setStateMiscellaneousParameters(locationCode, "POLITICALSUBDIVISION", "TRUE");
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -513,7 +513,7 @@ public class SymmetryPayrollCalculator {
 		try {
 			Money zero = Money.zero();
 			STE.setWages(FEDERAL_LOCATION_CODE, WageType.RUIA_COMPENSATION, new Hours(totalHours), new Money(amount), zero, zero, zero);
-			STE.setRailroadUnemployment(new Rate(0.10), false);
+			STE.setRailroadUnemployment(new Rate(0.0), false);
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
@@ -538,8 +538,8 @@ public class SymmetryPayrollCalculator {
 			// STE.setWages(locationCode, WageType.PREV_STATE_WAGES, new
 			// Hours(totalHours), new Money(amount), zero, zero, new
 			// Money(amount));
-			STE.setUnemployment(FEDERAL_LOCATION_CODE, new Rate(0.054), false);
-			STE.setUnemployment(locationCode, new Rate(0.008), false);
+			STE.setUnemployment(FEDERAL_LOCATION_CODE, new Rate(0.0), false);
+			STE.setUnemployment(locationCode, new Rate(0.0), false);
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
