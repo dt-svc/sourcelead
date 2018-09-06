@@ -56,10 +56,12 @@
                         </tr>
                         <tr>
                           <td>Regular</td>
+                           <td><input type="text" id="regularHours" name="regularHours"  onblur = "editRegularHours();" class="formControl" readOnly></td>
                           <td><input type="text" id="regularHoursAmt" name="regularHoursAmt"  class="formControl" readOnly></td>
                         </tr>
                         <tr>
                           <td>Overtime</td>
+                          <td><input type="text" id="overTimeHours" name="overTimeHours"   onblur = "editOverTimeHours();" class="formControl" readOnly></td>
                           <td><input type="text" id="overTimeHoursAmt" name="overTimeHoursAmt"  class="formControl" readOnly></td>
                         </tr>
                       </tbody>
@@ -210,7 +212,7 @@
 		            $("#federalGross").text(json.federal);
 		            $("#ficaGross").text(json.fica);
 		            $("#totalTaxes").text(json.taxes);
-		            $("#dedTotal").text(9999);
+		            $("#dedTotal").text(json.totalDeduction);
 		            $("#netpay").text(json.netPay);
 		            $("#payRate").val(json.payRate);
 		            $("#payrollId").val(json.payrollId);
