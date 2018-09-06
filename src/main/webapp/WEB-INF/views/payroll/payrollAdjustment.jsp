@@ -270,10 +270,10 @@
 		            
 		            $("#assSalType").val(json.assSalType);
             		$("#assSalary").val(json.assSalary);
-		            if(json.assSalType == "Salary"){
+		            if(json.assSalType == "Salary" || json.assSalType == "LcaWage"){
 		            	$("#hoursAndEarningsTable").hide();
 		            	$("#assSalaryTable").show();
-		            	$("#assSalaryAmount").val(json.assSalary);
+		            	$("#assSalaryAmount").val(json.payPerSal);
 		            }else{
 		            	$("#hoursAndEarningsTable").show();
 		            	$("#assSalaryTable").hide();

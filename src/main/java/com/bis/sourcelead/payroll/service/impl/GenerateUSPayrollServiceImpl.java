@@ -994,7 +994,7 @@ public class GenerateUSPayrollServiceImpl implements GenerateUSPayrollService{
 			payrollDTO.setPreTaxDeduction(payroll.getPreTaxDeduction());
 			payrollDTO.setRegularHours(regHrs);
 			payrollDTO.setTaxes(payroll.getTaxes());
-			
+			payrollDTO.setPayPerSal(payroll.getPayPerSalary());
 			payrollDTO.setOvertimeHours(otHrs);
 			totalHours = CommonUtil.getTotalRegularOverTimeHours(regHrs, otHrs);
 			payrollDTO.setTotalHours(totalHours);
