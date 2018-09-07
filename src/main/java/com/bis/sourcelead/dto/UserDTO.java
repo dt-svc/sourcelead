@@ -87,7 +87,8 @@ public class UserDTO extends SearchDTO implements Serializable {
     private BigDecimal userApplicantsJoinedCount;
     
     private String isGlobalUser;
-
+    
+    private String isPayRollApprover;
 
     private BigInteger userId;
 
@@ -626,6 +627,14 @@ public class UserDTO extends SearchDTO implements Serializable {
 
 	public void setTags(String tags) {
 		this.tags = tags;
+	}
+
+	public String getIsPayRollApprover() {
+		return isPayRollApprover;
+	}
+
+	public void setIsPayRollApprover(String isPayRollApprover) {
+		this.isPayRollApprover = isPayRollApprover;
 	}
 
 }

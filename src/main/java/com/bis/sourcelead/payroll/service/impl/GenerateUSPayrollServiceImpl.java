@@ -375,14 +375,13 @@ public class GenerateUSPayrollServiceImpl implements GenerateUSPayrollService{
 			BigDecimal totalLoanAmount = BigDecimal.ZERO, totalAdvanceAmount = BigDecimal.ZERO; 
 			for(AssociateLoanAndAdvances assLoanAndAdv : loanAndAdvList) {
 				boolean thisPayCheck = false;
-				if(assLoanAndAdv.getDeductStartDate() == null && assLoanAndAdv.getDeductEndDate() == null) {
+				if(assLoanAndAdv.getDeductStartDate() == null) {
 					thisPayCheck = true;
 				}
 				if(paySheetFreq.getFrequencyStartDate().after(assLoanAndAdv.getEffectiveDate()) || paySheetFreq.getFrequencyStartDate().equals(assLoanAndAdv.getEffectiveDate())) {
 					thisPayCheck = true;
-				}else
-					thisPayCheck = false;
-				if(assLoanAndAdv.getDeductStartDate() != null && assLoanAndAdv.getDeductEndDate() != null) {
+				}
+				if(assLoanAndAdv.getDeductStartDate() != null) {
 					thisPayCheck = payrollUtil.isDateBetweenEffectiveDate(assLoanAndAdv.getDeductStartDate(), assLoanAndAdv.getDeductEndDate(), paySheetFreq.getFrequencyStartDate(), paySheetFreq.getFrequencyEndDate());
 				}
 				if(thisPayCheck) {
@@ -994,7 +993,7 @@ public class GenerateUSPayrollServiceImpl implements GenerateUSPayrollService{
 			payrollDTO.setPreTaxDeduction(payroll.getPreTaxDeduction());
 			payrollDTO.setRegularHours(regHrs);
 			payrollDTO.setTaxes(payroll.getTaxes());
-			
+			payrollDTO.setPayPerSal(payroll.getPayPerSalary());
 			payrollDTO.setOvertimeHours(otHrs);
 			totalHours = CommonUtil.getTotalRegularOverTimeHours(regHrs, otHrs);
 			payrollDTO.setTotalHours(totalHours);
@@ -1164,7 +1163,7 @@ public class GenerateUSPayrollServiceImpl implements GenerateUSPayrollService{
 			payroll.setGrossPay(amount);
 			payroll.setPreTaxContribution(BigDecimal.valueOf(preTaxContriSum));
 			payroll.setPostTaxContribution(BigDecimal.valueOf(postTaxContriSum));
-			if(!"Salary".equalsIgnoreCase(payAdjustmentDTO.getAssSalType())) {
+			if(!PayrollConstant.SALARY.equalsIgnoreCase(payAdjustmentDTO.getAssSalType()) && !PayrollConstant.LCA_WAGE.equalsIgnoreCase(payAdjustmentDTO.getAssSalType())) {
 				payroll.setRegularHours(payAdjustmentDTO.getRegularHours());
 				payroll.setRegularHoursAmount(new BigDecimal(payAdjustmentDTO.getRegularHoursAmt()));
 				payroll.setOverTimeHours(payAdjustmentDTO.getOverTimeHours());

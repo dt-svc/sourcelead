@@ -3,6 +3,7 @@ package com.bis.sourcelead.dao.impl;
 import java.text.MessageFormat;
 import java.util.List;
 
+import org.apache.commons.lang.exception.ExceptionUtils;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.exception.ConstraintViolationException;
@@ -77,6 +78,21 @@ public class AssociateLoanAndAdvancesHistoryDaoImpl implements AssociateLoanAndA
 			}
 		}
 		return assLoanHistory;
+	}
+
+	@Override
+	@Transactional
+	public List<AssociateLoanAndAdvanceHistory> getLoanAndAdvanceHistoryByCandidateIdAndLocationIdAndAdvanceLoanId(
+			Long loanAndAdvanceId) {
+		Session session = this.sessionFactory.getCurrentSession();
+		List<AssociateLoanAndAdvanceHistory> associateLoanAndAdvancesList = null;
+		try {
+			String query = "from AssociateLoanAndAdvanceHistory ala where ala.associateLoanAndAdvances.id = :loanAndAdvanceId order by ala.schedule desc";  
+			associateLoanAndAdvancesList =  session.createQuery(query).setLong("loanAndAdvanceId", loanAndAdvanceId).list();
+		} catch (Exception e) {
+			logger.error(ExceptionUtils.getFullStackTrace(e));
+		}
+		return associateLoanAndAdvancesList;
 	}
 
 
