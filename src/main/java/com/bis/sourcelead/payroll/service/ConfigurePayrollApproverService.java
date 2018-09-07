@@ -23,4 +23,6 @@ public interface ConfigurePayrollApproverService {
 	ResponseList<PayrollApproverDTO> getConfigurePayrollApprover(OrgLocations orgLocation);
 
 	List<PayrollApprover> getPayrollApproversByCPAID(Long configurePayrollApproverId);
+	
+	boolean isLoginUserIsPayRollApprover(Long userId,Long orgLocationsId);
 }

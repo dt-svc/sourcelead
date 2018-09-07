@@ -59,7 +59,7 @@ public class ImmigrationConstants {
            	"Current Vendor Location (Address 1, City, State, Country, PIN)", "SOC Code", "SOC Occupation Title","Job Title","Wage Level","Prevailing Wage Currency",
            "Prevailing Wage Rate", "Prevailing Wage rate per", "LCA Start Date", "LCA End Date", "LCA Status","Status"};
    
-   public static final String[] IMPORT_DOWNLOAD_LCA_EXCEL_HEADERS = {"LCA Number*","LCA Title*", "No. of positions*",
+   public static final String[] IMPORT_DOWNLOAD_LCA_EXCEL_HEADERS = {"LCA Number*(I-000-00000-000000)","LCA Title*", "No. of positions*",
             "Current Client Location* (Address 1, City, State, Country, PIN)", "Current Prim Vendor Location (Address 1, City, State, Country, PIN)",
            	"Current Vendor Location (Address 1, City, State, Country, PIN)", "SOC Code*", "SOC Occupation Title*" ,"Job Title*","Wage Level*","Prevailing Wage Currency*",
            "Prevailing Wage Rate*", "Prevailing Wage rate per*", "LCA Start Date*", "LCA End Date*", "LCA Status*","Status*"};

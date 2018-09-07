@@ -87,5 +87,25 @@ public class ConfigurePayrollApproverDaoImpl implements ConfigurePayrollApprover
 		}
 		return payrollApprover;
 	}
+
+	@Override
+	@Transactional
+	public boolean isLoginUserIsPayRollApprover(Long userId, Long orgLocationsId) {
+		Session session = this.sessionFactory.getCurrentSession();
+		boolean flag = false;
+		List<PayrollApprover> payrollApproverList = null;
+		try {
+			String query = "from PayrollApprover pa where pa.user = :userId and pa.status = '1' and "
+					+ " pa.configurePayrollApprover.id IN (select cpa.id from ConfigurePayrollApprover cpa where cpa.orgLocation.id = :orgLocationsId and cpa.status = '1' )";
+			payrollApproverList = session.createQuery(query).setLong("userId", userId).setLong("orgLocationsId", orgLocationsId).list();
+		}catch (Exception e) {
+			e.printStackTrace();
+		}
+		
+		if(payrollApproverList != null && !payrollApproverList.isEmpty()) {
+			flag = true;
+		}
+		return flag;
+	}
 	
 }

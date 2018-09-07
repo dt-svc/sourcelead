@@ -102,11 +102,20 @@
 					<div class="project_details_cta">
 						<strong>No of Expenses:</strong><span>${expenses.noOfExpenses}</span><div class="clearfix"></div>
 					</div>
+					
+					
+					<c:forEach var="entry" items="${expenses.expenseEntry}" varStatus="entryCount">
+					
 					<div class="project_details_cta">
-						<strong>Amount:</strong><span>${expenses.totalAmount}</span><div class="clearfix"></div>
+						<strong>Submitted Amount:</strong><span>${entry.submittedamount}</span><div class="clearfix"></div>
+					</div>
+					 </c:forEach> 
+					
+					<div class="project_details_cta">
+						<strong>Approved Amount:</strong><span>${expenses.totalAmount}</span><div class="clearfix"></div>
 					</div> 
 					<div class="project_details_cta">
-						<strong>Exp Created By:</strong><span>${expenses.createdBy}</span><div class="clearfix"></div>
+						<strong>Created By:</strong><span>${expenses.createdBy}</span><div class="clearfix"></div>
 					</div>
 					                   			
 					<div class="clearfix"></div>
@@ -119,7 +128,8 @@
 			    <th>Date</th>
 				<th>Exp Category</th>
 				<th>Description</th>
-				<th>Amount</th>
+				<th>Submitted Amount</th>
+				<th>Approved Amount</th>
 				<th>Currency</th>
 				<th>Payment Mode</th>
 				<th>Paid By</th>
@@ -131,7 +141,17 @@
 			           <td><div class="ExpShow" id="categoryDateDiv${entryCount.count}"><i class="fa fa-plus-square-o" aria-hidden="true" onclick="hideAndShowDetailsRow(${2*(entryCount.count)},'Edit');"></i>${entry.dateOccurred}</div></td>
 			           <td><div id="categoryTypeDiv${entryCount.count}">${entry.categoryName}</div></td>
 			           <td><div id="entryDesDiv${entryCount.count}" class="tbldata-dotdot_50" title="${entry.entryDescription}">${entry.entryDescription}</div></td>
-			           <td><div id="expenseAmountDiv${entryCount.count}">${entry.amountRoundOff}</div></td>
+			           <td><div id="expenseAmountDiv${entryCount.count}">${entry.submittedamount}</div></td>
+			           
+			              <c:choose>
+		               	<c:when test="${submissionStatus == 'APPROVED'}">
+		           			<td><div id="expenseAmountDiv${entryCount.count}">${entry.amount}</div></td>    	
+		               	</c:when>
+		               	<c:otherwise>
+		               		<td><div id="expenseAmountDiv${entryCount.count}">---</div></td>
+		               	</c:otherwise>
+		               </c:choose>
+			         
 			           <td><div id="expenseRateType${entryCount.count}">${entry.categoryAmountType}</div></td>
 			           <td><div id="paymentModeDiv${entryCount.count}">${entry.paymentMode}</div></td>
 			           <td><div id="paidByDiv${entryCount.count}">${entry.paidBy}</div></td>
@@ -144,7 +164,7 @@
 								<li><strong>Exp Category :</strong><span>${entry.categoryName}</span><div class="clearfix"></div></li>
 								<li><strong>Description :</strong><span title="${entry.entryDescription}">${entry.entryDescription}</span>
 								<li><strong>Receipt Issued by :</strong><span title="${entry.receiptIssuedBy}">${entry.receiptIssuedBy}</span><div class="clearfix"></div></li>
-								<li><strong>Amount :</strong><span>${entry.amountRoundOff}</span><div class="clearfix"></div></li>
+								<li><strong>Amount :</strong><span>${entry.submittedamount}</span><div class="clearfix"></div></li>
 								<li><strong>Currency :</strong><span>${entry.categoryAmountType}</span><div class="clearfix"></div></li>
 								<li><strong>Payment Mode :</strong><span>${entry.paymentMode}</span><div class="clearfix"></div></li>
 								<li><strong>Paid By :</strong><span>${entry.paidBy}</span><div class="clearfix"></div></li>
