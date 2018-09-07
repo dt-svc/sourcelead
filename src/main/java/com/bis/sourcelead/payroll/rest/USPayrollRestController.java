@@ -1661,7 +1661,7 @@ public class USPayrollRestController {
 		{
 			ModelAndView model = new ModelAndView();
 			model.addObject("groupUUID", groupUUID);
-			model.setViewName("payroll/employeesInGroups");
+			model.setViewName("payroll/employeeGroups");
 			return model;
 		}
 		

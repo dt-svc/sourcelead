@@ -15,4 +15,6 @@ public interface ConfigurePayrollApproverDao {
 	int deletePayrollApprover(String confAprroverId);
 
 	List<PayrollApprover> getPayrollApproversByCPAID(Long configurePayrollApproverId);
+	
+	boolean isLoginUserIsPayRollApprover(Long userId,Long orgLocationsId);
 }

@@ -104,12 +104,12 @@ function calculateTotalPay(formData,confirmType,payPerionNum){
                					<tbody>
                						<tr>
                							<td>Regular</td>
-               							<td><span id="totRegularHours">00.00</span></td>
+               							<td><i class="fa fa-clock-o paddingRight"></i><span id="totRegularHours">00.00</span></td>
                							<td>$ <span id="totRegularEarningsAmt">0.00</span></td>
                						</tr>
                						<tr>
                							<td>Over Time</td>
-               							<td><span id="totOverTimeHours">00.00</span></td>
+               							<td><i class="fa fa-clock-o paddingRight"></i><span id="totOverTimeHours">00.00</span></td>
                							<td>$ <span id="totOverTimeEarningAmt">$ 0.00</span></td>
                						</tr>
                					</tbody>
@@ -117,7 +117,7 @@ function calculateTotalPay(formData,confirmType,payPerionNum){
 									<tr>
 										<td><strong>Gross Pay</strong></td>
 										<td>&nbsp;</td>
-										<td>$ <span id="grosspay">$ 0.00</span></td>
+										<td><strong>$ <span id="grosspay">$ 0.00</span></strong></td>
 									</tr>
 								</tfoot>
                				</table>
@@ -166,24 +166,24 @@ function calculateTotalPay(formData,confirmType,payPerionNum){
                							<td>$ <span id="medicare">0.00</span></td>
                						</tr>
                						<tr>
-               							<td><strong>Advanced Earned Income Credit</strong></td>
+               							<td>Advanced Earned Income Credit</td>
                							<td>$ <span id="aeic">0.00</span></td>
                						</tr>
                						<tr> 
-               							<td><strong>Conty Withholding</strong></td>
+               							<td>Conty Withholding</td>
                							<td>$ <span id="county">0.00</span></td>
                						</tr>
                						<tr>
-               							<td><strong>Local Tax</strong></td>
+               							<td>Local Tax</td>
                							<td>$ <span id="localTax">0.00</span></td>
                						</tr>
                						<tr>
-               							<td><strong>Total Employee Tax</strong></td>
+               							<td>Total Employee Tax</td>
                							<td>$ <span id="totalTax">0.00</span></td>
                						</tr>
                						<tr>
                							<td><strong>Net Pay</strong></td>
-               							<td>$ <span id="netPay">0.00</span></td>
+               							<td><strong>$ <span id="netPay">0.00</span></strong></td>
                						</tr>
                					</tbody>
                				</table>
@@ -208,11 +208,11 @@ function calculateTotalPay(formData,confirmType,payPerionNum){
                						</tr>
                						<tr>
                							<td>Live Check</td>
-               							<td>$2,063.31</td>
+               							<td>$ 2,063.31</td>
                						</tr>
                						<tr>
                							<td><strong>Total Net</strong></td>
-               							<td>$2,063.31</td>
+               							<td><strong>$ 2,063.31</strong></td>
                						</tr>
                					</tbody>
                				</table>
@@ -285,8 +285,8 @@ function calculateTotalPay(formData,confirmType,payPerionNum){
               						<td>$ <span id="emplrOregonWC">0.00</span></td>
                						</tr>
                						<tr>
-               						<td>Employer Total Taxes</td>
-              						<td>$ <span id="emplrTotalTaxes">0.00</span></td>
+               						<td><strong>Employer Total Taxes</strong></td>
+              						<td><strong>$ <span id="emplrTotalTaxes">0.00</span></strong></td>
                						</tr>
                					</tbody>
                				</table>
