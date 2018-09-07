@@ -50,7 +50,6 @@ $(document).ready(function(){
     <div class="clearfix"></div>
     </div>
   </div>
-  <div id="popUp"></div>
       <div class="side_mask"><div class="proj_close"></div></div>
     <div class="clients_side_wrap">
       <div class="clients_side_wrap_inn">
