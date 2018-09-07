@@ -9,7 +9,7 @@
 
 <script>
 function getUserGroupListData(url){
-	    $("#userGroupDiv").empty();
+	    
  	    var result = "";
  	    /* result = result +" <div class='modal-header'>";
  	    result = result +"</div>"; */
@@ -26,6 +26,13 @@ function getUserGroupListData(url){
         result = result +"<tbody>"; 
         result = result +" </tbody>";
         result = result +"</table>";
+        
+        $("#payrollFrequencyDiv").hide();
+        $("#draftFrequencyDiv").hide();
+        $("#overViewDiv").hide();
+  	 	$("#reviewPayrollDiv").hide();
+        $("#userGroupDiv").show();
+        $("#userGroupDiv").empty();
         $("#userGroupDiv").append(result);
         userGroupPaginationFun(url); 
         $("#overViewDiv").hide();

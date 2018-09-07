@@ -1664,6 +1664,12 @@ public class USPayrollRestController {
 				dto.setCandidateName(name.toString());
 				dto.setEmail(associateSalary.getCandidate().getEmail());
 				dto.setMobilePhone(associateSalary.getCandidate().getMobilePhone());
+				if(associateSalary.getCandidate().getDesignationType() != null) {
+					dto.setDesignationType(associateSalary.getCandidate().getDesignationType());
+				}else {
+					dto.setDesignationType("--");
+				}
+				
 				listDto.add(dto);
 			}
 			resList.setData(listDto);
