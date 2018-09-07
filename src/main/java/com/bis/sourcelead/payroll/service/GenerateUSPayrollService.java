@@ -11,11 +11,11 @@ import com.bis.sourcelead.payroll.dto.USPayrollDTO;
 
 public interface GenerateUSPayrollService {
 
-	PaysheetFrequencyDTO generateUSPayroll(OrgLocations orgLocation, GenerateUSPayrollDTO generateUSPayrollDTO, User loginUser) throws Exception;
+	PaysheetFrequencyDTO generateUSPayroll(PaysheetFrequencyDTO existedData, OrgLocations orgLocation, GenerateUSPayrollDTO generateUSPayrollDTO, User loginUser) throws Exception;
 
 	PaysheetFrequencyDTO getPayrollData(GenerateUSPayrollDTO generateUSPayrollDTO, OrgLocations orgLocation, User loginUser);
 
-	Response<USPayrollDTO> getEmployeePayrollByUUID(String payrollUUID, OrgLocations orgLocation);
+	Response<USPayrollDTO> getEmployeePayrollByUUID(String payrollUUID, OrgLocations orgLocation, String approverStatus);
 
 	Response<PayAdjustmentDTO> updateEmployeePayroll(PayAdjustmentDTO payAdjustmentDTO, OrgLocations orgLocation, User loginUser);
 

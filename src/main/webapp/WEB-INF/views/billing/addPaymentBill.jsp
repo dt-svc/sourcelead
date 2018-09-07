@@ -38,7 +38,7 @@
     	 	</div>
     	 	
     	 	<div class="row">
-    	 		<div class="col-md-6 minHeight50 mb">
+    	 		<div class="col-md-6 minHeight50 mb" id= "paymentDateDiv">
     	 			<label class="col-md-3">Payment Date<span class="text-danger paddingLeft">*</span></label>
     	 			<div class="col-md-9">
     	 				<input class="form-control calendar" placeholder="Payment Date" type="text" id="paymentDate" name="paymentDate" data-validation="required" field-name="Payment Date" readonly>
@@ -61,6 +61,7 @@
 	    	 		 <div class="col-md-9">
 	    	 		 	<input class="form-control" placeholder="Reference No" type="text" id="referenceNumber" name="referenceNumber" data-validation="required validate_length length2-250"  field-name="Reference No"> 
 	    	 		</div>
+	    	 		<input type="hidden" id = "paymentAmount" name = "paymentAmount" value ="total">
     	 		</div>
     	 		
     	 		<div class="col-md-6 minHeight50 mb">
@@ -81,14 +82,13 @@
 					</div>
 				</div>
 				
- 	 		<div class="col-md-6 minHeight50 mb">
+ 	 		<div class="col-md-6 minHeight50 mb errorInptgroup">
 		<label class="col-md-3">Attachment</label>
 			<div class="col-md-9 zindex positionRelative">
 				<div class="input-group col-md-12" id="uploadFileGroup"	style="margin: 0 auto"> 
 				<label class="input-group-btn"> <span class="btn btn-primary" onchange="getFleInformation();"><i class="fa fa-folder-open-o"></i>&nbsp;Browse File <input type="file" style="display: none;" id="uploadBtn" class="upload"> </span>
 				</label> 
 				<input type="text" class="form-control" readonly id="uploadFile" name="docFile" placeholder="Upload Document" field-name="Upload Resume" data-validation="validatedoc" data-validation-optional="true">
-					<div class="clearUpload"></div>
 				</div>
 			</div>
 		</div>
@@ -97,7 +97,7 @@
     	 		
     	 		<!--  Table html -->
     	 		
-    	 		<div class="candidate_wrap_table datatable_filter">
+    	 		<div class="candidate_wrap_table datatable_filter positionRelative mt40">
 	                  <div id="invoiceList"></div>
     	 		</div>
     	 		<!--  Table html -->
@@ -118,6 +118,15 @@ $(document).ready(function() {
 </script>
 
 <script type="text/javascript">
+function validDateClass(){
+	 var paymentDateVal = document.getElementById("paymentDate").value;
+	 if(paymentDateVal){
+		 $('#paymentDateDiv').find('p.jquery_form_error_message').remove(); 
+	 }
+}
+
+
+
 function showAmountWarningPopup(){ // multiWarnMsg populated when validated form and docs required upload docs info.
 	$("#validateErrorMsgDivId").val('');
 	$(".project_inn_mask").remove();
@@ -190,7 +199,10 @@ $('#paymentDate').datepicker({
     dateFormat: finalDateFormat,
     changeMonth: true,
 	  changeYear: true, 
-	  minDate:0
+	  minDate:0,
+	  onSelect : function(selected) {
+			 validDateClass();
+		}
     //minDate: 0  this line for to restrict selection of previous dates
 });
 </script>
@@ -219,12 +231,6 @@ $('#paymentDate').datepicker({
          		result = result +'         <th>Payment</th>                ';
          		result = result +'           </tr>';
          		result = result +'           </thead>';
-         		result = result +'           <tfoot>';
-         		result = result +'           <tr>';
-     			result = result +'           <td colspan="8"><div class="pull-right">Total</div></td>';
-     			result = result +'           <td colspan="1"><span id="grandTotalAmount"></span></td>';
-         		result = result +'           </tr>';
-         		result = result +'           </tfoot>';
                 result = result +"<tbody>"; 
                 
 	        	if(json.data != null && json.data != 'undefined' && json.data != "" && json.data != '[]'){
@@ -250,6 +256,12 @@ $('#paymentDate').datepicker({
 	                    	 result = result +'</tr>';
 	                    }
 	                     result = result +" </tbody>";
+	                     result = result +'           <tfoot>';
+	             		result = result +'           <tr>';
+	         			result = result +'           <td colspan="8"><div class="pull-right">Total</div></td>';
+	         			result = result +'           <td colspan="1"><div id="grandTotalAmount"></div></td>';
+	             		result = result +'           </tr>';
+	             		result = result +'           </tfoot>';
 	                     result = result +"</table>"; 
 	                     result = result +'     </div>'; 
 	                 	 result = result +'     <div class="clearfix">';
@@ -295,7 +307,8 @@ $('#paymentDate').datepicker({
 	  if ($('#paymentForm').validate(false, validationSettings)) {
 			 var grandDueTotal = $("#grandTotalAmount").text();
 			 var grandTotalReceived = $("#totalAmount").val();
-			 if(grandDueTotal == grandTotalReceived){
+			 var finalAmountReceived =parseFloat(grandTotalReceived);
+			 if(grandDueTotal == finalAmountReceived.toFixed(2)){
 			 var invoiceIds= []
 			 var amount = "";
 			 $('input:checkbox[name=invoices]:checked').each(function() {
@@ -311,7 +324,7 @@ $('#paymentDate').datepicker({
 	          		} else if (result.response === "AWKWARD") {
 	          		    location.href = "/errorPage";
 	          		} else if (result.response === "SUCCESS") {
-	          			location.reload();
+	          			location.replace(sourceleadUrl+"/payablesList");
 	          		} else if (result.indexOf('Sign In') !== -1) {
 	          			location.replace(sourceleadUrl);
 	          		} else {
@@ -406,8 +419,9 @@ $('#paymentDate').datepicker({
 			  $("#totalAmountRow"+id).val(amount);
 			 grandTotalAmount =  parseFloat(totalAmount)+parseFloat(amount);
 		  }else{
+			  var inputAmount = $("#totalAmountRow"+id).val();
 			  $("#totalAmountRow"+id).val('');
-			  grandTotalAmount =  parseFloat(totalAmount)-parseFloat(amount);
+			  grandTotalAmount =  parseFloat(totalAmount)-parseFloat(inputAmount);
 		  }
 		  $("#grandTotalAmount").text(grandTotalAmount.toFixed(2));
 		// For innerTable scrool we have to main this script, Please don't remove.. ask @Ajit
@@ -434,7 +448,11 @@ function ListPagination(){
 	    	"oLanguage": {
 	     		"sSearch": "",
 	     		 "sZeroRecords": "", "sEmptyTable": ""
-	     	}
+	     	},
+	     	// Datatable: Hidding duplicate Header in IE-11(edge)
+	   	 "initComplete" : function () {
+	   		         $('.dataTables_scrollBody thead tr').addClass('hidden');
+	   		     }
 	    } );
 	
 }

@@ -18,13 +18,7 @@
 		</div>
 		<div class="success_pop" id="selector1" style="display: none;"><i class="fa fa-check-circle"></i><span id="msgDiv"></span></div>
 		<div class="pull-right brud-crum">
-			<a href="<c:url value='${appPath}/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a>
-			&raquo; Payroll
-		</div>
-		<div class="pull-left ml generateButtons">
-			<a href="<c:url value='${appPath}/uploadDocuments'/>" class="ml10 mt5" id="uloadDocs" title="Upload Files">Upload Files</a> 
-			<a href="<c:url value='${appPath}/generatePaysheet'/>" class="ml10 mt5" id=generateReportId title="Generate Report">Generate Paysheet</a>
-			<%-- <a href="<c:url value='${appPath}/runPayroll'/>" class="ml10 mt5" id=generateReportId title="Generate Report">Run Payroll</a> --%>
+			<a href="<c:url value='${appPath}/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home </a> &raquo; Payroll
 		</div>
 	</section>
 	
@@ -562,6 +556,7 @@
 		result = result + '<th>WC Cost</th>';
 		result = result + '<th>Admin Fee</th>';
 		result = result + '<th>Total ER Cost</th>';
+		result = result + '<th>Action</th>';
 		result = result + '</tr>';
 		result = result + '</thead>	';
 		result = result + "</table>";
@@ -613,7 +608,9 @@
 								"data" : "adminFee"
 							}, {
 								"data" : "totalErCost"
-							} ],
+							}, {
+								"data" : "action"
+							}],
 							"columnDefs" : [
 									{
 										"targets" : colIndex++,
@@ -808,6 +805,15 @@
 													+ '</div></td>';
 											return result;
 										}
+									},
+									{
+										"targets" : colIndex++,
+										"data" : "action",
+										"render" : function(data, type, opt, meta) {
+											var result = "";
+											result = result + '<td><div><i class="glyphicon glyphicon-trash" onclick="deletePayrollEntity(\''+opt.uuid+'\',\'EmployeePayrollCost\')"></i></div></td>';
+											return result;
+										}
 									} ],
 							"scrollCollapse" : false,
 							"lengthMenu" : [ [ 10, 15, 20 ], [ 10, 15, 20 ] ],
@@ -835,6 +841,25 @@
 	function employeeDataSearch(){
 		loadEmployeePayrollCost();
 	}
+	
+function deletePayrollEntity(uuid,entityType){
+	var sourceleadUrl = '${sourceleadUrl}';
+	$.get(sourceleadUrl+"/deletePayrollEntitiesByUUIDAndEntityType?"+tokenParamName+"="+tokenValue+"&uuid="+uuid+"&entityType="+entityType,  function(result) {
+		if(entityType == "EmployeePayrollCost"){
+			loadEmployeePayrollCost();
+		}else if(entityType == "WageTaxSummary"){
+			wagesAndTaxList();
+		}else if(entityType == "AccountDeductions"){
+			accountDeductionsList();
+		}else if(entityType == "HrDeductions"){
+			hrDeductionsList();
+		}else if(entityType == "Checks"){
+			bisChecksList();
+		}else if(entityType == "InvoiceData"){
+			getInvoiceDetails();
+		}
+	}); 
+}
 </script>
 
 

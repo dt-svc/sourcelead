@@ -2033,6 +2033,7 @@ public class UsersListRestController {
 			user.setMaritalStatus(addUserDTO.getMaritalStatus());
 			user.setMobilePhone(addUserDTO.getPhoneNumber());
 			user.setExtensionNumber(addUserDTO.getExtensionNumber());
+			
 			if (StringUtils.isNotBlank(addUserDTO.getReportingManager())) {
 				User reportingManager = new User();
 				reportingManager.setId(Long.parseLong(addUserDTO.getReportingManager()));
@@ -2083,8 +2084,19 @@ public class UsersListRestController {
 			user.setUpdatedDate(commonUtil.currentDate());
 			userRole.setUpdatedBy(loginUser.getUserCode());
 			userRole.setUpdatedDate(commonUtil.currentDate());
-			 updatedUser = userService.addUser(user);
+			String existingUserEmail = null;
 			
+			if(isUserActive == true && !user.getEmail().equalsIgnoreCase(addUserDTO.getEmail())) {
+				existingUserEmail = user.getEmail();
+				user.setEmail(addUserDTO.getEmail());
+				user.setUserName(addUserDTO.getEmail());
+			}
+			updatedUser = userService.addUser(user);
+			
+			if(StringUtils.isNotBlank(existingUserEmail)) {
+				userService.sendEmailToUserForEmailUpdation(updatedUser, loginUser, orgLocations, existingUserEmail, existingUserEmail);
+				userService.sendEmailToUserForEmailUpdation(updatedUser, loginUser, orgLocations, user.getEmail(), existingUserEmail);
+			}
 			
 			if(StringUtils.isNotBlank(addUserDTO.getIsGlobalAccess()) && addUserDTO.getIsGlobalAccess().equalsIgnoreCase(Constants.YES)) {
 				userRole.setIsGlobal(Constants.YES);

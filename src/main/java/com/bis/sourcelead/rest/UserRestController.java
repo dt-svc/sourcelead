@@ -326,6 +326,7 @@ private static final Logger logger = LoggerFactory.getLogger(UserRestController.
 		User savedUser = userService.storeUser(addUserDTO, candidateDTO, user, orgLocations, "CREATEUSER", "", new Org());
 		SourceLeadSessionManager.setSessionAttribute(request, "userCreateMsg", "Success !!New associate created");
 		addUserDTO.setUserId(String.valueOf(savedUser.getId()));
+		addUserDTO.setCandidateId(savedUser.getCandidateId());
 		resObj.setObject(addUserDTO);
 		return resObj;
 	}
@@ -496,6 +497,22 @@ private static final Logger logger = LoggerFactory.getLogger(UserRestController.
 			 	
 				return flag;
 		   }
+		 
+		 @RequestMapping(value = "/validateExistingEmailIdForUser" , method = RequestMethod.POST)
+		 public @ResponseBody  Boolean validateExistingEmailIdForUser(@RequestParam(value="emailId", required=true) String emailId,@RequestParam(value="userId", required=false) Long userId, HttpServletRequest request) throws Exception {
+			   
+			    Boolean flag = false;
+			    User user = userService.getUserById(userId);
+			 	if(!user.getEmail().equalsIgnoreCase(emailId)) {
+			 		User existingUser = userService.getUserByEmail(emailId);
+			 		if(existingUser != null) {
+			 			flag = true;
+			 		}
+			 	}
+				return flag;
+		   }
+		 
+		 
 	 
 		 
 		 @RequestMapping(value = "/validateExistingEmployeeEmailId" , method = RequestMethod.POST)
@@ -1527,8 +1544,9 @@ private static final Logger logger = LoggerFactory.getLogger(UserRestController.
 	 public String saveLocationAssociate(AddAssociateDTO addAssociateDTO, HttpServletRequest request)
 			throws Exception {
 		   OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+		   Org org = (Org) SourceLeadSessionManager.getSessionAttribute(request, "org");
            User loginUser = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
-	       candidateService.saveOrglocationAsssociate(addAssociateDTO, loginUser, orgLocations, new Org()); 
+	       candidateService.saveOrglocationAsssociate(addAssociateDTO, loginUser, orgLocations, org); 
          
            return "success";
 	 

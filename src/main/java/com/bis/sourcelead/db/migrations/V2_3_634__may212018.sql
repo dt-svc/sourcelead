@@ -89,3 +89,7 @@ CREATE TABLE `ASSOCIATE_GRADES` (
  ALTER TABLE `USER_ROLE` ADD CONSTRAINT `FK_GRADE_ID`  FOREIGN KEY  (`GRADE_ID`)  REFERENCES  `ASSOCIATE_GRADES` (`ID`);
 
  
+SET SQL_SAFE_UPDATES = 0;
+UPDATE `EMAIL_SCENARIO` SET `BODY`='{{NotificationToManager.ShortListApplicantCount}} applicants got shortlisted for the {{NotificationToManager.RequirementName}}' WHERE `UNIQUE_SCENARIO_NAME`='Notification To Manager';
+SET SQL_SAFE_UPDATES = 1;
+ 

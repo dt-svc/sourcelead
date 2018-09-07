@@ -69,17 +69,17 @@
 				<td><div class="tbldata-dotdot-100" title = "${eduItems.address}">${!empty eduItems.address ? eduItems.address : '---'}</div></td>
 				<c:choose>
 				    <c:when test="${myImmigrationPage == 'N'}">
-				        <td><div><i id="edit" onclick="editEducationDEtailsByRowId(${eduItems.id});"
+				        <td><div><i id="edit" onclick="immigration.editEducationDEtailsByRowId(${eduItems.id});"
 								class="glyphicon glyphicon-pencil cursorPointer"></i><i id="delete" 
-								 onclick="deleteImmigrationRecord('deleteEDucationDetailsById',${eduItems.id});" 
+								 onclick="deleteImmigrationRecord('immigration.deleteEDucationDetailsById',${eduItems.id});" 
 								 class="glyphicon glyphicon-trash ml10 cursorPointer"></i></div></td>
 				    </c:when>
 				    <c:otherwise>
 				        <c:choose>
 						    <c:when test="${curUscisMyImmi == 'Request to fill' || curUscisMyImmi == 'Request for modifications'}">
-						       <td><div><i id="edit" onclick="editEducationDEtailsByRowId(${eduItems.id});"
+						       <td><div><i id="edit" onclick="immigration.editEducationDEtailsByRowId(${eduItems.id});"
 										class="glyphicon glyphicon-pencil cursorPointer"></i><i id="delete" 
-										 onclick="deleteImmigrationRecord('deleteEDucationDetailsById',${eduItems.id});" 
+										 onclick="deleteImmigrationRecord('immigration.deleteEDucationDetailsById',${eduItems.id});" 
 										 class="glyphicon glyphicon-trash ml10 cursorPointer"></i></div></td>
 						    </c:when>
 						    <c:otherwise>

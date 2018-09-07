@@ -339,9 +339,9 @@ function getUsersSearchResult(searchValue){
 							</li>
 				</c:if>
 				
-				<c:if test="${SourceLeadWeb_currencyCode == 'USD'}">
+				<%-- <c:if test="${SourceLeadWeb_currencyCode == 'USD'}">
 				<li><a class="newAdBtn mr5" href="<c:url value='${appPath}/userGroupList'/>"><i class="fa fa-plus"></i>&nbsp;Create Batch</a></li>
-				</c:if>
+				</c:if> --%>
 				
 				<c:if test="${orgLocationsCount == 1}">
 				<li><a class="newAdBtn mr5" href="<c:url value='${appPath}/userCreation'/>">+  Associate</a></li>
@@ -686,7 +686,7 @@ function exportToPdf(){
 		    {
 		employmentType.push($(this).val());
      });
-	
+
 	var tags = [];
 	$('input:checkbox[name=tags]:checked').each(function() 
 		    {

@@ -5,6 +5,8 @@
  
  <script>
 function associateContributionSummary(userId){  
+		let searchParams = new URLSearchParams(window.location.search);
+		let param = searchParams.get('userCode')
 	  $.ajax({
            type : "GET",
            url: sourceleadUrl+"/findAllContributionSummaryByUserId?"+tokenParamName+"="+tokenValue+"&userId="+userId,    
@@ -14,9 +16,9 @@ function associateContributionSummary(userId){
              var result = "";	
             result = result + '<div class="clearfix">';
             result = result + '<div class="table-header clearfix">';
-            result = result + '<h4 class="pull-left margin-top0">Deductions</h4>';
+            result = result + '<h4 class="pull-left margin-top0">Contribution</h4>';
             result = result + '<ul class="list-unstyled list-inline pull-right">';
-            result = result + '<li><a href="<c:url value="${appPath}/addAssociateContribution?userId='+userId+'"/>" class="fa fa-plus paddingRight" title="Add">Add</a></li>';
+            result = result + '<li><a href="<c:url value="${appPath}/addAssociateContribution?userCode='+param+'&saveType=edit"/>" class="fa fa-plus paddingRight" title="Add">Add</a></li>';
             result = result + '<div class="clearfix"></div>';
             result = result + '</ul>';
             result = result + '</div>';
@@ -28,6 +30,8 @@ function associateContributionSummary(userId){
             result = result + '<th>Type</th>';
             result = result + '<th>Description</th>';
             result = result + '<th>Method</th>';
+            result = result + '<th>Tax Type</th>';
+            result = result + '<th>Schedule Type</th>';
             result = result + '<th>Amount</th>';
             result = result + '<th>Contribution<br>Amount</th>';
             result = result + '<th>Action</th>';
@@ -51,15 +55,34 @@ function associateContributionSummary(userId){
                    result = result + '<td><div  class="tblminwidth-100">'+opt.contributionMethod+'</div></td>';
                    
                    
+                   if(opt.taxType != null && opt.taxType != '' && opt.taxType != 'undefined'){
+                    	 result = result + '<td><div  class="tblminwidth-100">'+opt.taxType+'</div></td>';
+                     }else{
+                    	 result = result + '<td><div  class="tblminwidth-100">--</div></td>';
+                     }
+                   
+                   if(opt.contributionSchedule != null && opt.contributionSchedule != '' && opt.contributionSchedule != 'undefined'){
+                  	 result = result + '<td><div  class="tblminwidth-100">'+opt.contributionSchedule+'</div></td>';
+                   }else{
+                  	 result = result + '<td><div  class="tblminwidth-100">--</div></td>';
+                   }
+                   
                    if(opt.contributionAmount !=null && opt.contributionAmount !='' && opt.contributionAmount !='undefined'){
-						result = result + '<td><div class="deeds tblminwidth-125" id="preDedDiv'+opt.id+'"><i class="fa fa-dollar"style="color:#454545;"></i> '+opt.contributionAmount.toFixed(2)+'<small class="fa fa-pencil ml10 pull-right cursorPointer" onClick="showEdit('+opt.id+','+opt.contributionAmount+')"></small></div>';
-	        		    result = result + '<div class="tblminwidth-125"><p id="preDedError'+opt.id+'" class="re_Error"></p></div>';
-						result = result + '<div class="edit-input tblminwidth-125" id="editDedDiv'+opt.id+'" style="display:none;"><input type="text" id ="preDed'+opt.id+'" class="form-control input-sm tbldata-dotdot-100 pull-left"><small class="fa fa-floppy-o ml10 pull-right mt5 cursorPointer"  onClick="editDedAmount('+opt.id+','+userId+')"></small></div></td>';
+                	   if(opt.contributionMethod == "Fixed"){
+                		   result = result + '<td><div class="deeds tblminwidth-125" id="preDedDiv'+opt.id+'"><i class="fa fa-dollar"></i> '+opt.contributionAmount.toFixed(2)+'<small class="fa fa-pencil ml10 pull-right cursorPointer" onClick="showEdit('+opt.id+','+opt.contributionAmount+')"></small></div>';
+   	        		       result = result + '<div class="tblminwidth-125"><p id="preDedError'+opt.id+'" class="re_Error"></p></div>';
+   						   result = result + '<div class="edit-input tblminwidth-125" id="editDedDiv'+opt.id+'" style="display:none;"><input type="text" id ="preDed'+opt.id+'" class="form-control input-sm tbldata-dotdot-100 pull-left"><small class="fa fa-floppy-o ml10 pull-right mt5 cursorPointer"  onClick="editConAmount('+opt.id+','+userId+')"></small></div></td>';
+                	   }else{
+                		   result = result + '<td><div class="deeds tblminwidth-125" id="preDedDiv'+opt.id+'">'+opt.contributionAmount+' <i class="fa fa-percent"></i><small class="fa fa-pencil ml10 pull-right cursorPointer" onClick="showEdit('+opt.id+','+opt.contributionAmount+')"></small></div>';
+   	        		       result = result + '<div class="tblminwidth-125"><p id="preDedError'+opt.id+'" class="re_Error"></p></div>';
+   						   result = result + '<div class="edit-input tblminwidth-125" id="editDedDiv'+opt.id+'" style="display:none;"><input type="text" id ="preDed'+opt.id+'" class="form-control input-sm tbldata-dotdot-100 pull-left"><small class="fa fa-floppy-o ml10 pull-right mt5 cursorPointer"  onClick="editConAmount('+opt.id+','+userId+')"></small></div></td>';
+                	   }
+						
       		    }
       		    else{
       		    	    result = result + '<td><div class="deeds tblminwidth-125" id="preDedDiv'+opt.id+'"><small class="fa fa-dollar expenses_symbol text-muted"></small>0<small class="fa fa-pencil ml10 pull-right cursorPointer" onClick="showEdit('+opt.id+',0)"></small></div>';
 	        		    result = result + '<div class="tblminwidth-125"><p id="preDedError'+opt.id+'" class="re_Error"></p></div>';
-						result = result + '<div class="edit-input tblminwidth-125" id="editDedDiv'+opt.id+'" style="display:none;"><input type="text" id ="preDed'+opt.id+'" class="form-control input-sm tbldata-dotdot-100 pull-left"><small class="fa fa-floppy-o ml10 pull-right mt5 cursorPointer"  onClick="editDedAmount('+opt.id+','+userId+')"></small></div></td>';
+						result = result + '<div class="edit-input tblminwidth-125" id="editDedDiv'+opt.id+'" style="display:none;"><input type="text" id ="preDed'+opt.id+'" class="form-control input-sm tbldata-dotdot-100 pull-left"><small class="fa fa-floppy-o ml10 pull-right mt5 cursorPointer"  onClick="editConAmount('+opt.id+','+userId+')"></small></div></td>';
 					}
                    
                  /*   result = result + '<td><div  class="tblminwidth-100">$ '+opt.contributionAmount+'</div></td>'; */
@@ -120,7 +143,7 @@ function associateContributionListPagination(){
  
  
   <script>
- function editDedAmount(id,userId){
+ function editConAmount(id,userId){
 	 $("#preDedError"+id).empty();
 		var amount = document.getElementById("preDed"+id).value;
 		var flag ="valid";
@@ -160,7 +183,7 @@ function deleteContribution(contrubutionId,userId){
 		type : "POST",
 		url : sourceleadUrl+"/deleteAssociateContribution?"+tokenParamName+"="+tokenValue+"&assContriId="+contrubutionId,
 		success : function(data) {
-			if(data != null && data != null)
+			if(data != null)
 				associateContributionSummary(userId);
 		},
 	}); 

@@ -10,6 +10,8 @@ public class GenerateUSPayrollDTO extends SearchDTO{
 	  
 	private String payrollPayDate;
 	
+	private String payType;
+	
 	public String getGroupId()
 	{
 		return groupId;
@@ -34,6 +36,11 @@ public class GenerateUSPayrollDTO extends SearchDTO{
 	{
 		this.payrollPayDate = payrollPayDate;
 	}
-	
+	public String getPayType() {
+		return payType;
+	}
+	public void setPayType(String payType) {
+		this.payType = payType;
+	}
 	
 }

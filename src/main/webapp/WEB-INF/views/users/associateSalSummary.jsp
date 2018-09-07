@@ -13,57 +13,92 @@ function associateSalSummary(userId){
             	result = result + '<div class="clearfix mt minHeightcol5">';
             	result = result + '		<div class="col-md-3 col-md-offset-9">';
             	result = result + '	<ul class="list-inline list-unstyled pull-right mb0">';
-            	result = result + '		<li><a href="javascript:void(0)" class="btn btn-primary btn-block" onClick="updateSalaryDetails(\''+json.id+'\',\''+json.payType+'\',\''+json.payFrequency+'\',\''+json.standardHours+'\',\''+json.annualSal+'\',\''+json.perPaySal+'\',\''+json.hourlyRate+'\',\''+userId+'\',\''+json.payGroupUUID+'\');">Update</a></li>';
-            	result = result + '		<li><a href="javascript:void(0)" class="btn btn-warning btn-block" onClick="salaryHistory(\''+json.id+'\');">History</a></li>';
+            	if(json.id != null && json.id != '' && json.id != 'undefined'){
+            		result = result + '		<li><a href="javascript:void(0)" class="btn btn-primary btn-block" onClick="updateSalaryDetails(\''+json.id+'\',\''+json.payType+'\',\''+json.payFrequency+'\',\''+json.standardHours+'\',\''+json.annualSal+'\',\''+json.perPaySal+'\',\''+json.hourlyRate+'\',\''+userId+'\',\''+json.payGroupUUID+'\');">Update</a></li>';
+                	result = result + '		<li><a href="javascript:void(0)" class="btn btn-warning btn-block" onClick="salaryHistory(\''+json.id+'\');">History</a></li>';
+            	}else{
+            		result = result + '		<li><a href="javascript:void(0)" class="btn btn-primary btn-block" onClick="editSalaryDetails(\''+userId+'\');">Update</a></li>';
+            	}
             	result = result + '		</ul>';
             	result = result + '	</div>';
             	result = result + '	<div class="clearfix"></div>';
             	result = result + '   <div class="col-md-5">';
             	result = result + '  <label>Pay Type</label>';
             	result = result + '   <div>';
-            	result = result + '     <p class="form-control-static text-muted">'+json.payType+'</p>';
+            	if(json.payType != null && json.payType != '' && json.payType != 'undefined'){
+            		result = result + '     <p class="form-control-static text-muted">'+json.payType+'</p>';
+            	}else{
+            		result = result + '     <p class="form-control-static text-muted">--</p>';
+            	}
             	result = result + '   </div>';
             	result = result + ' </div>';
 
             	result = result + ' <div class="col-md-5">';
             	result = result + '   <label>Pay Frequency</label>';
             	result = result + '   <div>';
+            	if(json.payFrequency != null && json.payFrequency != '' && json.payFrequency != 'undefined'){
             	result = result + '     <p class="form-control-static text-muted">'+json.payFrequency+'</p>';
+            	}else{
+            		result = result + '     <p class="form-control-static text-muted">--</p>';
+            	}
             	result = result + '    </div>';
             	result = result + '  </div>';
             	
             	result = result + ' <div class="col-md-5">';
             	result = result + '   <label>Pay Group</label>';
             	result = result + '   <div>';
+            	if(json.payGroup != null && json.payGroup != '' && json.payGroup != 'undefined'){
             	result = result + '     <p class="form-control-static text-muted">'+json.payGroup+'</p>';
+            	}else{
+            		result = result + '     <p class="form-control-static text-muted">--</p>';
+            	}
             	result = result + '    </div>';
             	result = result + '  </div>';
                     
+            	if(json.payType != "LcaWage" && json.payType != "HourlyRate"){
             	result = result + ' <div class="col-md-5">';
             	result = result + '    <label>Standard Hours</label>';
             	result = result + '   <div>';
+            	if(json.standardHours != null && json.standardHours != '' && json.standardHours != 'undefined'){
             	result = result + '     <p class="form-control-static text-muted">$ '+json.standardHours+'</p>';
+            	}else{
+            		result = result + '     <p class="form-control-static text-muted">--</p>';
+            	}
                 result = result + '   </div>';
                 result = result + ' </div>';
                 result = result + ' <div class="col-md-5">';
                 result = result + '  <label>Annual Salary</label>';
                 result = result + '  <div>';
+                if(json.annualSal != null && json.annualSal != '' && json.annualSal != 'undefined'){
                 result = result + '    <p class="form-control-static text-muted">$ '+json.annualSal+'</p>';
+                }else{
+                	result = result + '    <p class="form-control-static text-muted">--</p>';
+                }
                 result = result + ' </div>';
                 result = result + '   </div>';
                 result = result + '   <div class="col-md-5">';
                 result = result + '    <label>Per Pay Salary</label>';
                 result = result + '    <div>';
+                if(json.perPaySal != null && json.perPaySal != '' && json.perPaySal != 'undefined'){
                 result = result + '     <p class="form-control-static text-muted">$ '+json.perPaySal+'</p>';
+                }else{
+                	result = result + '     <p class="form-control-static text-muted">--</p>';
+                }
                 result = result + '    </div>';
                 result = result + '  </div>';
                 result = result + ' <div class="col-md-5">';
                 result = result + '   <label>Hourly</label>';
                 result = result + '   <div>';
+                if(json.hourlyRate != null && json.hourlyRate != '' && json.hourlyRate != 'undefined'){
                 result = result + '    <p class="form-control-static text-muted">$ '+json.hourlyRate+'</p>';
+                }else{
+                	result = result + '    <p class="form-control-static text-muted">--</p>';
+                }
                 result = result + '   </div>';
                 result = result + ' </div>';
                 result = result + ' </div>';
+                
+            	 }
                 
                 // Adding Pay Items
                 result = result + '<div class="clearfix"></div>';
@@ -83,58 +118,58 @@ function associateSalSummary(userId){
                 result = result + '</tr>';
                 result = result + '</thead>';
                 result = result + '<tbody>';
-              for(var i=0;i<json.associatePayItemDto.length;i++){
-            	  
-            	  var opt = json.associatePayItemDto[i];
-            	  result = result + '<tr>';
-                  
-                  result = result + '<td>';
-                  result = result + '		<div class="tblminwidth-100 text-left">'+opt.payItemName+'</div>';
-                  result = result + '</td>';
-                  result = result + '<td>';
-                  result = result + '		<div class="tblminwidth-125">';
-                  result = result + '			<div>'+opt.payItemSchedule+'</div>';
-                  result = result + '		</div>';
-                  result = result + '</td>';
-                  result = result + '	<td>';
-                  result = result + '	<div class="tblminwidth-125">';
-                  result = result + '		<div>'+opt.overRide+'</div>';
-                  result = result + '		</div>';
-                  result = result + '	</td>';
-                  result = result + '<td>';
-                  result = result + '			<div class="width150px" id="effectiveDateDiv'+opt.id+'">';
-                  result = result + '			<div>'+opt.effectiveDate+'</div>';
-                  result = result + '			</div>';
-                  
-                  result = result + '<div class="edit-input width150px" id="editEffectiveDateDiv'+opt.id+'" style="display:none;"><input type="text" id ="preEffective'+opt.id+'" onclick = "editEffectiveDate(this)" value="'+opt.effectiveDate+'" class="form-control calendar"></div></td>';
-                  
-                  result = result + '	</td>';
-                  result = result + '	<td>';
-                  result = result + '			<div class="width150px" id="endDateDiv'+opt.id+'">';
-                  result = result + '			<div>'+opt.endDate+'</div>';
-                  result = result + '			</div>';
-                  
-                  result = result + '<div class="edit-input width150px" id="editEndDateDiv'+opt.id+'" style="display:none;"><input type="text" id ="preEnd'+opt.id+'" onclick = "editEndDate(this)" value="'+opt.endDate+'" class="form-control calendar"></div></td>';
-                  
-                  result = result + '	</td>';
-                  result = result + '	<td>';
-                  result = result + '		<div class="width150px" id="payItemAmountDiv'+opt.id+'">';
-                  result = result + '		<div>$ '+opt.payItemAmount+'</div>';
-                  result = result + '		</div>';
-                  
-                  result = result + '<div class="edit-input width150px" id="editpayItemAmountDiv'+opt.id+'" style="display:none;"><input type="text" id ="prePayAmount'+opt.id+'" value="'+opt.payItemAmount+'" class="form-control pull-left"></div></td>';
-                  result = result + '</td>';
-                  result = result + '	<td>';
-                  result = result + '		<div class="tblminwidth-50">';
-                  result = result + ' <a title="Edit"><i id="editDiv'+opt.id+'" class="glyphicon glyphicon-edit" onclick="editPayItem('+opt.id+')"></i><i id="saveDiv'+opt.id+'" class="fa fa-floppy-o" style="display:none;" onclick="updatePayItems('+opt.id+');"></i></a>';
-                  result = result + ' <a title="Delete"><i class="glyphicon glyphicon-trash text-danger ml" onclick="deletePayItem('+opt.id+','+userId+');"></i></a>';
-                  result = result + '		<div></div>';
-                  result = result + '		</div>';
-                  result = result + '</td>';
-                  result = result + '</tr>';
-              }
-               			
-               			
+                if(json.associatePayItemDto != null && json.associatePayItemDto != '' && json.associatePayItemDto != 'undefined'){
+                	for(var i=0;i<json.associatePayItemDto.length;i++){
+                  	  
+                  	  var opt = json.associatePayItemDto[i];
+                  	  result = result + '<tr>';
+                        
+                        result = result + '<td>';
+                        result = result + '		<div class="tblminwidth-100 text-left">'+opt.payItemName+'</div>';
+                        result = result + '</td>';
+                        result = result + '<td>';
+                        result = result + '		<div class="tblminwidth-125">';
+                        result = result + '			<div>'+opt.payItemSchedule+'</div>';
+                        result = result + '		</div>';
+                        result = result + '</td>';
+                        result = result + '	<td>';
+                        result = result + '	<div class="tblminwidth-125">';
+                        result = result + '		<div>'+opt.overRide+'</div>';
+                        result = result + '		</div>';
+                        result = result + '	</td>';
+                        result = result + '<td>';
+                        result = result + '			<div class="width150px" id="effectiveDateDiv'+opt.id+'">';
+                        result = result + '			<div>'+opt.effectiveDate+'</div>';
+                        result = result + '			</div>';
+                        
+                        result = result + '<div class="edit-input width150px" id="editEffectiveDateDiv'+opt.id+'" style="display:none;"><input type="text" id ="preEffective'+opt.id+'" onclick = "editEffectiveDate(this)" value="'+opt.effectiveDate+'" class="form-control calendar" readonly="readonly"></div></td>';
+                        
+                        result = result + '	</td>';
+                        result = result + '	<td>';payType
+                        result = result + '			<div class="width150px" id="endDateDiv'+opt.id+'">';
+                        result = result + '			<div>'+opt.endDate+'</div>';
+                        result = result + '			</div>';
+                        
+                        result = result + '<div class="edit-input width150px" id="editEndDateDiv'+opt.id+'" style="display:none;"><input type="text" id ="preEnd'+opt.id+'" onclick = "editEndDate(this)" value="'+opt.endDate+'" class="form-control calendar"></div></td>';
+                        
+                        result = result + '	</td>';
+                        result = result + '	<td>';
+                        result = result + '		<div class="width150px" id="payItemAmountDiv'+opt.id+'">';
+                        result = result + '		<div>$ '+opt.payItemAmount+'</div>';
+                        result = result + '		</div>';
+                        
+                        result = result + '<div class="edit-input width150px" id="editpayItemAmountDiv'+opt.id+'" style="display:none;"><input type="text" id ="prePayAmount'+opt.id+'" value="'+opt.payItemAmount+'" class="form-control pull-left"></div></td>';
+                        result = result + '</td>';
+                        result = result + '	<td>';
+                        result = result + '		<div class="tblminwidth-50">';
+                        result = result + ' <a title="Edit"><i id="editDiv'+opt.id+'" class="glyphicon glyphicon-edit" onclick="editPayItem('+opt.id+')"></i><i id="saveDiv'+opt.id+'" class="fa fa-floppy-o" style="display:none;" onclick="updatePayItems('+opt.id+');"></i></a>';
+                        result = result + ' <a title="Delete"><i class="glyphicon glyphicon-trash text-danger ml" onclick="deletePayItem('+opt.id+','+userId+');"></i></a>';
+                        result = result + '		<div></div>';
+                        result = result + '		</div>';
+                        result = result + '</td>';
+                        result = result + '</tr>';
+                    }
+                }
                 result = result + '	</tbody>';
                 result = result + '	</table>';
                 result = result + ' 	</div>';
@@ -188,10 +223,11 @@ function associateSalSummary(userId){
                  <input class="form-control" name="salaryType" id="salaryType" type="hidden">
                   <input class="form-control" name="id" id="id" type="hidden">
                    <input class="form-control" name="userId" id="userId" type="hidden">
-                  <select class="sel" id="payType" name="payType" data-validation="required" field-name="Pay Type">
+                  <select class="sel" id="payType" name="payType" data-validation="required" onchange="showHideSalaryDIV();" field-name="Pay Type">
                     <option value="">--Select--</option>
                     <option value="HourlyRate">Hourly Rate</option>
                     <option value="Salary">Salary</option>
+                    <option value="LcaWage">LCA Wage</option>
                     <option value="Commission Only">Commission Only</option>
                   </select>
                 </div>
@@ -216,32 +252,33 @@ function associateSalSummary(userId){
                       </select>
                     </div>
                   </div>
+             <div id="salaryDIV">
               <div class="col-md-5">
                 <label>Standard Hours</label>
                 <div>
-                  <input class="form-control" id="standardHours" name="standardHours"  type="text" onblur="calculateSal();">
+                  <input class="form-control" id="standardHours" name="standardHours"  type="text" data-validation="required" field-name="Standard Hours" onblur="calculateSal();">
                   <input class="form-control" name="previousStandardHours" id="previousStandardHours" type="hidden">
                 </div>
               </div>
               <div class="col-md-5">
                 <label>Annual Salary</label>
-                <div>
-                  <input class="form-control" name="annualSal" id="annualSal" type="text" onblur = "calaculateIncDecPer();">
+                <div id="AnnualSal">
+                  <input class="form-control" name="annualSal" id="annualSal" type="text" data-validation="required" field-name="Annual Salary" onblur = "calculateSal();">
                    <input class="form-control" name="previousAnnualSal" id="previousAnnualSal" type="hidden">
                    
                 </div>
               </div>
               <div class="col-md-5">
                 <label>Per Pay Salary</label>
-                <div>
-                  <input class="form-control" name="perPaySal" id="perPaySal" type="text" onblur = "calculatePayPerSal();">
+                <div id="PerPaySal">
+                  <input class="form-control" name="perPaySal" id="perPaySal" type="text" data-validation="required" field-name="Per Pay Salary" onblur = "calculatePayPerSal();">
                     <input class="form-control" name="previousPerPaySal" id="previousPerPaySal" type="hidden">
                 </div>
               </div>
               <div class="col-md-5">
                 <label>Hourly Rate</label>
-                <div>
-                  <input class="form-control" name="hourlyRate" id="hourlyRate" type="text" onblur = "calculateHourlyRateSal();">
+                <div id="HourlyRate">
+                  <input class="form-control" name="hourlyRate" id="hourlyRate" type="text" data-validation="required" field-name="Hourly Rate" onblur = "calculateHourlyRateSal();">
                    <input class="form-control" name="previousHourlyRate" id="previousHourlyRate" type="hidden">
                 </div>
               </div>
@@ -249,7 +286,7 @@ function associateSalSummary(userId){
               <div class="col-md-5">
                 <label>Effective Date</label>
                 <div>
-                  <input class="form-control calendar" name="effectiveDate" id="effectiveDate" type="text" >
+                  <input class="form-control calendar" name="effectiveDate" readonly="readonly" id="effectiveDate" type="text" >
                 </div>
               </div>
               <div class="col-md-5">
@@ -263,6 +300,7 @@ function associateSalSummary(userId){
                 <div>
                   <textarea class="form-control" rows="2" placeholder="Enter" name="changeReason" id="changeReason"></textarea>
                 </div>
+              </div>
               </div>
               <div class="clearfix"></div>
             </div>
@@ -278,6 +316,37 @@ function associateSalSummary(userId){
 </div>
 <!-- Add Team modal popup ends -->
 
+
+<script>
+function showHideSalaryDIV(){
+	var payType = $("#payType").val();
+	 if(payType == "HourlyRate" || payType == "LcaWage"){
+		$("#salaryDIV").hide();
+		$("#standardHours").val('');    
+		$("#annualSal").val('');
+		$("#perPaySal").val('');
+		$("#hourlyRate").val('');
+		$("#standardHours").removeAttr('data-validation');
+		$('#standardHours').attr('data-validation-optional',"true");
+		$("#annualSal").removeAttr('data-validation');
+		$('#annualSal').attr('data-validation-optional',"true");
+		$("#perPaySal").removeAttr('data-validation');
+		$('#perPaySal').attr('data-validation-optional',"true"); 
+		$("#hourlyRate").removeAttr('data-validation');
+		$('#hourlyRate').attr('data-validation-optional',"true");
+	}else{
+		$("#salaryDIV").show();
+		$("#standardHours").removeAttr('data-validation-optional');
+		$('#standardHours').attr('data-validation',"required validate_float");
+		$("#annualSal").removeAttr('data-validation-optional ');
+		$('#annualSal').attr('data-validation',"required validate_float");
+		$("#perPaySal").removeAttr('data-validation-optional');
+		$('#perPaySal').attr('data-validation',"required validate_float");
+		$("#hourlyRate").removeAttr('data-validation-optional');
+		$('#hourlyRate').attr('data-validation',"required validate_float");
+	}
+}
+</script>
 
 <!-- Ends update salary details -->
 
@@ -372,8 +441,17 @@ function salaryHistory(id) {
 					result = result + '<td>'+opt.annualSalary+'</td>';
 					result = result + '<td>'+opt.grossSalary+'</td>';
 					result = result + '<td>'+opt.hourlyRate+'</td>';
-					result = result + '<td>'+opt.effectiveDate+'</td>';
-					result = result + '<td>'+opt.increasePercentage+'%</td>';
+					if(opt.effectiveDate != null && opt.effectiveDate !='' && opt.effectiveDate !='undefined'){
+						result = result + '<td>'+opt.effectiveDate+'</td>';
+					}else{
+						result = result + '<td>0</td>';
+					}
+					if(opt.increasePercentage != null && opt.increasePercentage != '' && opt.increasePercentage != 'undefined'){
+						result = result + '<td>'+opt.increasePercentage+'%</td>';
+					}else{
+						result = result + '<td>0%</td>';
+					}
+					
 					result = result + '</tr>';
              			
              		
@@ -395,37 +473,64 @@ function closeSalaryHistory() {
 
 
 function closeupdateSalaryDetails() {
-	$(".updateSalaryDetails, .sideMask").fadeOut()
+	$(".updateSalaryDetails, .sideMask").fadeOut();
+	setTimeout(function(){ document.getElementById("update_associate_salary_form").reset();  }, 1000);
 }
 		
 </script>  
 
 <script>
 function updateSalaryDetails(id,payType,payFrequency,standardHours,annualSal,perPaySal,hourlyRate,userId,groupUUID) {
-	
 	 document.getElementById("update_associate_salary_form").reset(); 
-	$("#payType").val(payType);
-	$("#payFrequency").val(payFrequency);
-	$("#standardHours").val(standardHours);
-	$("#annualSal").val(annualSal);
-	$("#perPaySal").val(perPaySal);
-	$("#hourlyRate").val(hourlyRate);
-// 	$("#payGroupId").val(groupName);
-// 	$('#payGroupId').trigger("chosen:updated");
-	$(".updateSalaryDetails, .sideMask").fadeIn() 
 	
-	$("#id").val(id);
-	$("#previousPayType").val(payType);
-	$("#previousPayFrequency").val(payFrequency);
-	$("#previousStandardHours").val(standardHours);
-	$("#previousAnnualSal").val(annualSal);
-	$("#previousPerPaySal").val(perPaySal);
-	$("#previousHourlyRate").val(hourlyRate);
-	$("#userId").val(userId);
-	
-	getPayGroups(groupUUID);
-
-	 
+	 if(id != null && id != '' && id != 'undefined'){
+			 $("#payType").val(payType);
+			$("#payFrequency").val(payFrequency);
+			$("#standardHours").val(standardHours);
+			$("#annualSal").val(annualSal);
+			$("#perPaySal").val(perPaySal);
+			$("#hourlyRate").val(hourlyRate);
+//		 	$("#payGroupId").val(groupName);
+//		 	$('#payGroupId').trigger("chosen:updated");
+			
+			$("#id").val(id);
+			$("#previousPayType").val(payType);
+			$("#previousPayFrequency").val(payFrequency);
+			$("#previousStandardHours").val(standardHours);
+			$("#previousAnnualSal").val(annualSal);
+			$("#previousPerPaySal").val(perPaySal);
+			$("#previousHourlyRate").val(hourlyRate);
+			$("#userId").val(userId);
+			
+			getPayGroups(groupUUID);
+			
+			 if(payType == "HourlyRate" || payType == "LcaWage"){
+				    $("#salaryDIV").hide();
+					$("#standardHours").val('');    
+					$("#annualSal").val('');
+					$("#perPaySal").val('');
+					$("#hourlyRate").val('');
+					$("#standardHours").removeAttr('data-validation');
+					$('#standardHours').attr('data-validation-optional',"true");
+					$("#annualSal").removeAttr('data-validation');
+					$('#annualSal').attr('data-validation-optional',"true");
+					$("#perPaySal").removeAttr('data-validation');
+					$('#perPaySal').attr('data-validation-optional',"true"); 
+					$("#hourlyRate").removeAttr('data-validation');
+					$('#hourlyRate').attr('data-validation-optional',"true");
+			}else{
+				$("#salaryDIV").show();
+				$("#standardHours").removeAttr('data-validation-optional');
+				$('#standardHours').attr('data-validation',"required validate_float");
+				$("#annualSal").removeAttr('data-validation-optional ');
+				$('#annualSal').attr('data-validation',"required validate_float");
+				$("#perPaySal").removeAttr('data-validation-optional');
+				$('#perPaySal').attr('data-validation',"required validate_float");
+				$("#hourlyRate").removeAttr('data-validation-optional');
+				$('#hourlyRate').attr('data-validation',"required validate_float");
+			}
+	 }
+	 $(".updateSalaryDetails, .sideMask").fadeIn();
 	var locationDate ='${SourceLeadWeb_orgLocations.dateFormat}'; 
 	var finalDateFormat = getJSDateFormat(locationDate);
 	 $("#effectiveDate").datepicker({
@@ -435,6 +540,21 @@ function updateSalaryDetails(id,payType,payFrequency,standardHours,annualSal,per
 		  	minDate: 0
 		 });
 }
+
+function editSalaryDetails(userId){
+	$("#userId").val(userId);
+	
+	 $(".updateSalaryDetails, .sideMask").fadeIn();
+		var locationDate ='${SourceLeadWeb_orgLocations.dateFormat}'; 
+		var finalDateFormat = getJSDateFormat(locationDate);
+		 $("#effectiveDate").datepicker({
+			 dateFormat: finalDateFormat,
+			 changeMonth: true,
+			  	  changeYear: true,
+			  	minDate: 0
+			 });
+}
+
 </script>
 
 <script>
@@ -462,27 +582,33 @@ function getPayFreqHours(){
 function calculateSal(){
 	var payFrequency = $("#payFrequency").val();
 	var annualSal = $("#annualSal").val();
+	var hourlyRate = $("#hourlyRate").val();
 	var hours = $("#standardHours").val();
+
 	if(annualSal != null && annualSal != '' && annualSal != 'undefined' && hours != null && hours != '' && hours != 'undefined'){
-		
+		$('#AnnualSal').find('p.jquery_form_error_message').remove(); 
+		$('#PerPaySal').find('p.jquery_form_error_message').remove();
+		$('#HourlyRate').find('p.jquery_form_error_message').remove(); 
+		var rate = null;
 		if(payFrequency === 'Annual'){
-			var rate = parseFloat(annualSal) / 1;
+			rate = parseFloat(annualSal) / 1;
 			$("#perPaySal").val(rate.toFixed(2));
 		}
 		if(payFrequency === 'Monthly'){
-			var rate = parseFloat(annualSal) / 12;
+			rate = parseFloat(annualSal) / 12;
 			$("#perPaySal").val(rate.toFixed(2));
 		}
 		if(payFrequency === 'Bi-Weekly'){
-			var rate = parseFloat(annualSal) / 26;
+			rate = parseFloat(annualSal) / 26;
 			$("#perPaySal").val(rate.toFixed(2));
 		}
 		if(payFrequency === 'Weekly'){
-			var rate = parseFloat(annualSal) / 52;
+			rate = parseFloat(annualSal) / 52;
 			$("#perPaySal").val(rate.toFixed(2));
 		}
 		var hourRate = rate/hours;
 		$("#hourlyRate").val(hourRate.toFixed(2));
+		calaculateIncDecPer();
 	}
 }
 </script>
@@ -493,7 +619,12 @@ function calculatePayPerSal(){
 	var perPaySal = $("#perPaySal").val();
 	var hourlyRate = $("#hourlyRate").val();
 	var standardHours = $("#standardHours").val();
+	var annualSal = $("#annualSal").val();
+	
 	if(perPaySal !='' && perPaySal != 'undefined'){
+		$('#AnnualSal').find('p.jquery_form_error_message').remove(); 
+		$('#PerPaySal').find('p.jquery_form_error_message').remove(); 
+		 $('#HourlyRate').find('p.jquery_form_error_message').remove(); 
 		if(payFrequency === 'Annual'){
 			var annualRate = parseFloat(perPaySal) * 1;
 			$("#annualSal").val(annualRate.toFixed(2));
@@ -511,10 +642,11 @@ function calculatePayPerSal(){
 			$("#annualSal").val(annualRate.toFixed(2));
 		}
 		
-		if(hourlyRate != null && hourlyRate != '' && hourlyRate != 'undefined'){
+// 		if(hourlyRate != null && hourlyRate != '' && hourlyRate != 'undefined'){
 			var hourlyrate = parseFloat(perPaySal) / standardHours;
 			$("#hourlyRate").val(hourlyrate.toFixed(2));
-		}
+// 		}
+			calaculateIncDecPer();
 	}
 	
 	
@@ -523,16 +655,20 @@ function calculatePayPerSal(){
 
 <script>
 function calculateHourlyRateSal(){
-	
 	var payFrequency = $("#payFrequency").val();
 	var perPaySal = $("#perPaySal").val();
 	var hourlyRate = $("#hourlyRate").val();
 	var standardHours = $("#standardHours").val();
 	var annualSal = $("#annualSal").val();
-	if(annualSal != null && annualSal != '' && annualSal != 'undefined'){
+
+	if(hourlyRate != null && hourlyRate != '' && hourlyRate != 'undefined'){ 
+		$('#AnnualSal').find('p.jquery_form_error_message').remove(); 
+		$('#PerPaySal').find('p.jquery_form_error_message').remove(); 
+		 $('#HourlyRate').find('p.jquery_form_error_message').remove(); 
 		var perPaySal = parseFloat(hourlyRate) * standardHours;
 		$("#perPaySal").val(perPaySal.toFixed(2));
 		calculatePayPerSal();
+		calaculateIncDecPer();
 	}
 }
 </script>
@@ -542,43 +678,65 @@ function calculateHourlyRateSal(){
 function calculatePercentSal(){
 	
 	var increasePer  = $("#increasePer").val();
-	var annualSal = $("#previousAnnualSal").val();
-	var percentValue = increasePer/100;
+	if(increasePer != null && increasePer != '' && increasePer != 'undefined' && increasePer > 0){
+		var annualSal = $("#previousAnnualSal").val();
+		if(annualSal == null || annualSal == '' || annualSal == 'undefined')
+			annualSal = $("#annualSal").val();
+		var percentValue = increasePer/100;
 
-	var percentMulValue =  percentValue * parseFloat(annualSal);
-	var incrementAnnualSal = parseFloat(percentMulValue)  + parseFloat(annualSal) ;
-	$("#annualSal").val(incrementAnnualSal);
-	$("#salaryType").val('increment');
-	calculateSal();
+		var percentMulValue =  percentValue * parseFloat(annualSal);
+		var incrementAnnualSal = parseFloat(percentMulValue)  + parseFloat(annualSal) ;
+		$("#annualSal").val(incrementAnnualSal);
+		$("#salaryType").val('increment');
+		calculateSal();
+	} 
 }
 </script>
 
 <script>
 function calaculateIncDecPer(){
 	var curAnnualSal = $("#annualSal").val();
+	var perPaySal = $("#perPaySal").val();
+	var HourlyRate = $("#HourlyRate").val();
 	var previousAnnualSal = $("#previousAnnualSal").val();
-	if(curAnnualSal > previousAnnualSal){
-		$("#salaryType").val('increment');
-		var diffSal = parseFloat(curAnnualSal) - parseFloat(previousAnnualSal);
-		var percent = diffSal / parseFloat(previousAnnualSal);
-		var icrementPer = percent * 100;
-		$("#increasePer").val(icrementPer.toFixed(2));
-		calculateSal();
+	 if(annualSal != null && annualSal != '' && annualSal != 'undefined')
+		{
+		$('#AnnualSal').find('p.jquery_form_error_message').remove(); 
+		}
+		if(perPaySal != null && perPaySal != '' && perPaySal != 'undefined'){
+			$('#PerPaySal').find('p.jquery_form_error_message').remove(); 
+		}
+	if(hourlyRate != null && hourlyRate != '' && hourlyRate != 'undefined'){
+		 $('#HourlyRate').find('p.jquery_form_error_message').remove(); 
 	}
-	if(curAnnualSal < previousAnnualSal){
-		$("#salaryType").val('decrement');
-		var diffSal = parseFloat(previousAnnualSal) - parseFloat(curAnnualSal);
-		var percent = diffSal / parseFloat(previousAnnualSal);
-		var icrementPer = percent * 100;
-		$("#increasePer").val(icrementPer.toFixed(2));
-		calculateSal();
+	if(previousAnnualSal != null && previousAnnualSal != '' && previousAnnualSal != 'undefined' && curAnnualSal != null && curAnnualSal != '' && curAnnualSal != 'undefined'){
+		if(curAnnualSal > previousAnnualSal){
+			$("#salaryType").val('increment');
+			var diffSal = parseFloat(curAnnualSal) - parseFloat(previousAnnualSal);
+			var percent = diffSal / parseFloat(previousAnnualSal);
+			var icrementPer = percent * 100;
+			$("#increasePer").val(icrementPer.toFixed(2));
+// 			calculateSal();
+		}
+		if(curAnnualSal < previousAnnualSal){
+			$("#salaryType").val('decrement');
+			var diffSal = parseFloat(previousAnnualSal) - parseFloat(curAnnualSal);
+			var percent = diffSal / parseFloat(previousAnnualSal);
+			var icrementPer = percent * 100;
+			$("#increasePer").val(icrementPer.toFixed(2));
+// 			calculateSal();
+		}
+// 		calculateSal();
 	}
+	
+	
 }
 </script>
 
  <script type="text/javascript">
  function updateAssociateSal() {
 	var salaryType = $("#salaryType").val();
+	var userId = $("#userId").val();
 	   if ($('#update_associate_salary_form').validate(false, validationSettings)){ 
 			   var formData = $($('#update_associate_salary_form')[0]).serialize();
 				/* $("#update_associate_sal_button").attr("disabled", "disabled"); */
@@ -587,7 +745,7 @@ function calaculateIncDecPer(){
 	            $.ajax({
 					type : "POST",
 	        	    data: formData,
-					url : sourceleadUrl+"/addAssociateSal?"+tokenParamName+"="+tokenValue+"",
+					url : sourceleadUrl+"/addAssociateSal?"+tokenParamName+"="+tokenValue+"&userId="+userId,
 					success : function(result) {
 						 if (result && result.response === "INVALID_DATA") {
 			                    $("#update_associate_sal_button").removeAttr("disabled");
@@ -689,6 +847,7 @@ function editEffectiveDate(e){
 }
 
 function editEndDate(e){
+// 	$("#"+e.id).attr('readonly','readonly');
 	$("#"+e.id).datepicker({
 		  changeMonth: true,
 	      changeYear: true,

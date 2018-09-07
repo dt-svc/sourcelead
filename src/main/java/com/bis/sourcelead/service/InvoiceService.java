@@ -1,8 +1,10 @@
 package com.bis.sourcelead.service;
 
 import java.io.File;
+import java.text.ParseException;
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
 
 import org.json.JSONObject;
 import org.springframework.web.multipart.MultipartFile;
@@ -10,11 +12,13 @@ import org.springframework.web.multipart.MultipartFile;
 import com.bis.sourcelead.beans.BillingReportDTO;
 import com.bis.sourcelead.beans.CurrencyConversionResponse;
 import com.bis.sourcelead.dto.InvoiceDTO;
+import com.bis.sourcelead.dto.InvoiceTimelineDTO;
 import com.bis.sourcelead.dto.ResponseList;
 import com.bis.sourcelead.entity.Asset;
 import com.bis.sourcelead.entity.Contracts;
 import com.bis.sourcelead.entity.Invoice;
 import com.bis.sourcelead.entity.InvoiceAmount;
+import com.bis.sourcelead.entity.InvoiceTimelineHistory;
 import com.bis.sourcelead.entity.Org;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.OrgRelations;
@@ -51,7 +55,7 @@ public interface InvoiceService {
 
 	void updateSubmissionApproverHiearachy(Invoice invoice,String invoiceType)throws Exception;
 
-	void sendInvoiceMail(User user, OrgLocations orglocations, Invoice invoice,String invoiceType,List<TimesheetSubmissionsDocuments> docusList) throws Exception;
+	Map<String, String> sendInvoiceMail(User user, OrgLocations orglocations, Invoice invoice,String invoiceType,List<TimesheetSubmissionsDocuments> docusList) throws Exception;
 
 	CurrencyConversionResponse getExchangeCurrency(String loginOrgCurrencyCode, OrgLocations orgLocation, Long orgRelationId, String grandTotal)throws Exception;
 
@@ -79,7 +83,7 @@ public interface InvoiceService {
 
 	Invoice getInvoicetByParentId(Long invoiceId)throws Exception;
 
-	boolean deleteInvoice(String invoiceUUID, String reason, String invoiceType)throws Exception;
+	boolean deleteInvoice(String invoiceUUID, String reason, String invoiceType, User user)throws Exception;
 
 	Invoice saveExpenseInvoice(InvoiceDTO invoiceDTO, User user, OrgLocations orgLocation, String saveType,String invoiceType, Org org, String currencyCode, String invoiceCategory)throws Exception;
 
@@ -87,5 +91,12 @@ public interface InvoiceService {
 
 	List<Invoice> getAllBillsAndInvoicesBYProjectIdOrgLocationIdInvoiceStatusStartDateAndEndDate(Long projectId,Long orgLocationId,String invoiceStatus,Date startDate,Date endDate)throws Exception;
 
+
+
+	void saveInvoiceTimelineHistory(Invoice invoice, User user, Invoice invoiceObj, String savedInvoiceId, Long invoicePaymentId,  Map<String, String> returnMap);
+
+	List<InvoiceTimelineDTO> getInvoiceTimelineHistoryList(Long id, User user, String searchVal, String orderVal, Date[] datesRange, String[] checkedStatus, String[] namesStatus) throws ParseException, Exception;
+	
+	public String getInvoiceOrBillGeneratedId(OrgLocations loginOrgLoc,OrgLocations orgLoc,String invoiceType);
 
 }

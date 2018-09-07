@@ -78,7 +78,9 @@
 				  <li class="actLi"><span class="fill">1</span><b>Welcome</b><i class="line"></i></li>
 				  <li class="actLi"><span>2</span><b>Step two</b><i class="line"></i></li>
 				  <li><span>3</span><b>Step three</b><i class="line"></i></li>
-				  <li><span>4</span><b>Finish</b><i class="line"></i></li>
+				  <li><span>4</span><b>Step four</b><i class="line"></i></li>
+				  <li><span>5</span><b>Step five</b><i class="line"></i></li>
+				  <li><span>6</span><b>Finish</b><i class="line"></i></li>
 				  <div class="clearfix"></div>
 			  </ul>
 			  <div class="clearfix"></div>
@@ -200,6 +202,79 @@
 			  </div>
 			</div>
 		</div>
+		
+		<div class="col-xs-6 col-sm-6 col-md-6 col-lg-6">               
+			<div class="form-group">
+			  <label class="col-md-4 control-label">Date of Birth</label>
+			  <div class="col-md-8">
+			    <input type="text" class="form-control input-sm calendar" id="employeeDateOfBirth" name="dateOfBirth" value="${SourceLeadWeb_candidateOnBoarding.dateOfBirth}" readonly="readonly">
+			  </div>
+			</div>
+		</div>
+		
+		<div class="col-xs-6 col-sm-6 col-md-6 col-lg-6">               
+			<div class="form-group">
+			  <label class="col-md-4 control-label">Gender</label>
+			  <div class="col-md-8">
+			  <c:if test="${SourceLeadWeb_candidateOnBoarding.gender eq 'Male'}">
+				  <label class="paddingRight"><input type="radio" id="male" value="Male" checked name="gender" ><span class="mr5"></span>Male</label>
+				  <label class="paddingLeft paddingRight"><input type="radio" id="female"  value="Female" name="gender" ><span class="mr5"></span>Female</label>
+				  <label class="paddingRight"><input type="radio"  value="Transgender" id="transgender" name="gender"><span class="mr5"></span>Transgender</label>
+			  </c:if>
+			  <c:if test="${SourceLeadWeb_candidateOnBoarding.gender eq 'Female'}">
+				  <label class="paddingRight"><input type="radio" id="male" value="Male"  name="gender" ><span class="mr5"></span>Male</label>
+				  <label class="paddingLeft paddingRight"><input type="radio" id="female"  checked value="Female" name="gender" ><span class="mr5"></span>Female</label>
+				  <label class="paddingRight"><input type="radio"  value="Transgender" id="transgender" name="gender"><span class="mr5"></span>Transgender</label>
+			  </c:if>
+			  <c:if test="${SourceLeadWeb_candidateOnBoarding.gender eq 'Transgender'}">
+				  <label class="paddingRight"><input type="radio" id="male" value="Male" checked name="gender" ><span class="mr5"></span>Male</label>
+				  <label class="paddingLeft paddingRight"><input type="radio" id="female"  value="Female" name="gender" ><span class="mr5"></span>Female</label>
+				  <label class="paddingRight"><input type="radio"  value="Transgender" checked id="transgender" name="gender"><span class="mr5"></span>Transgender</label>
+			  </c:if>
+			  <c:if test="${empty SourceLeadWeb_candidateOnBoarding.gender}">
+				  <label class="paddingRight"><input type="radio" id="male" value="Male" checked name="gender" ><span class="mr5"></span>Male</label>
+				  <label class="paddingLeft paddingRight"><input type="radio" id="female"  value="Female" name="gender" ><span class="mr5"></span>Female</label>
+				  <label class="paddingRight"><input type="radio"  value="Transgender" id="transgender" name="gender"><span class="mr5"></span>Transgender</label>
+			  </c:if>
+			  </div>
+			</div>
+		</div>
+		<div class="clearfix"></div>
+		<c:if test="${SourceLeadWeb_orgLocations.country == 'United States'}">
+	   <div class="col-xs-6 col-sm-6 col-md-6 col-lg-6">               
+			<div class="form-group">
+			  <label class="col-md-4 control-label">Employment Eligibility </label>
+			  <div class="col-md-8">
+				  <select class="chosen-select" data-placeholder="Select Citizenship" name="employmentEligibility" id="employmentEligibility"   onchange="changeCitizenShip();" field-name="Role">
+				  <option value="">-- Select Citizenship --</option>
+				  <option ${SourceLeadWeb_candidateOnBoarding.employmentEligibility eq 'Citizenship of United States' ? 'selected' : '' } >Citizenship of United States</option>
+				  <option ${SourceLeadWeb_candidateOnBoarding.employmentEligibility eq 'Resident Card' ? 'selected' : '' }>Resident Card</option>
+				  <option ${SourceLeadWeb_candidateOnBoarding.employmentEligibility eq 'An alien authorized to work' ? 'selected' : '' }>An alien authorized to work</option>
+				  <option ${SourceLeadWeb_candidateOnBoarding.employmentEligibility eq 'Non-citizen' ? 'selected' : '' } >Non-citizen</option>
+				  </select>
+			  </div>
+			</div>
+		</div>
+	 
+		<div class="col-xs-6 col-sm-6 col-md-6 col-lg-6" id="residentCardId" style="display:none">               
+			<div class="form-group">
+			  <label class="col-md-4 control-label">USCIS /Alien registration Number</label>
+			  <div class="col-md-8">
+					<input type="text" class="form-control input-sm" id="uscisAlien" name="uscisAlien"  data-validation-optional="true"  value="${SourceLeadWeb_candidateOnBoarding.uscisAlien}" data-validation="validate_length length9-13 validate_int">
+			  </div>
+			</div>
+		</div>
+		
+		<div class="col-xs-6 col-sm-6 col-md-6 col-lg-6" id="nonCittizenId" style="display:none">               
+			<div class="form-group">
+			  <label class="col-md-4 control-label">Authorized work until</label>
+			  <div class="col-md-8">
+					<input type="text" class="form-control input-sm calendar" id="authorizedDate" name="authorizedWorkUntil" value="${SourceLeadWeb_candidateOnBoarding.authorizedWorkUntil}" readonly="readonly">
+			  </div>
+			</div>
+		</div>
+		</c:if>
+		
 	</div>
 	 
 </div>
@@ -372,115 +447,55 @@
 </script> 
 
 <script src="/resources/js/formvalidator.js"></script>
-
-
-
-
-<script type="text/javascript">
-function getOnBoardCandidateCountry(country){
-	$.ajax({
-    	type: "POST",
-    	dataType: "json",
-    	 url: '${sourceleadUrl}'+"/countryAutoComplete?${_csrf.parameterName}=${_csrf.token}",
-          success: function(data) {
-        	var json = JSON.parse(data);
-        	$('#country').empty();
-        	$('#country').append('<option value="">---Select---</option>');
-            for(var i=0;i<json.length;i++){
-            	if(json[i] == country){
-            		$('#country').append('<option value="'+json[i]+'" selected>'+json[i]+'</option>');
-            	}
-            	else{
-            		$('#country').append('<option value="'+json[i]+'">'+json[i]+'</option>');
-            	}
-            	
-            }
-            $('#country').trigger("chosen:updated");
-        },
-        error: function(e){
-        }
-    }); 
-} 
-</script>
-
+<script src="../resources/js/jquery-ui.js"></script>
 <script>
-  function getStates(){
-	  var countryName = $("#country").val();
-	  getOnBoardCandidateStates(countryName);
-  }
-  </script>
-  
-  <script>
-function getOnBoardCandidateStates(country,state){
-	
-		$.ajax({
-	    	type: "POST",
-	    	dataType: "json",
-	    	 url: '${sourceleadUrl}'+"/getStatesByCountry?${_csrf.parameterName}=${_csrf.token}&countryName="+country, 
-	        success: function(data) {
-	        	var json = JSON.parse(data);
-	        	$('#state').empty();
-	        	$('#state').append('<option value="">---Select---</option>');
-	            for(var i=0;i<json.length;i++){
-	            	if(state != null && state != 'undefined' && json[i] == state){
-	            		$('#state').append('<option value="'+state+'" selected>'+json[i]+'</option>');
-	            	}
-	            	else{
-	            		$('#state').append('<option value="'+json[i]+'">'+json[i]+'</option>');
-	            	}
-	            }
-	            $('#state').trigger("chosen:updated");
-	            
-	            $('#city').empty();
-	            $('#city').trigger("chosen:updated");
-	        },
-	        error: function(e){
-	        }
-	    });
-	
-}
+$(function (){
+	changeCitizenShip();
+	var locationDate ='${SourceLeadWeb_orgLocations.dateFormat}'; 
+	  var finalDateFormat = '';
+	  if(locationDate.match("yyyy-MM-dd")){
+		  finalDateFormat = 'yy-mm-dd';
+	  }if(locationDate.match("dd-MM-yyyy")){
+		  finalDateFormat = 'dd-mm-yy'; 
+	  }if(locationDate.match("MM-dd-yyyy")){
+		  finalDateFormat = 'mm-dd-yy'; 
+	  }if(locationDate.match("yyyy-dd-MM")){
+		  finalDateFormat = 'yy-dd-mm'; 
+	  }
+		  
+	$('#employeeDateOfBirth').datepicker({
+		      dateFormat: finalDateFormat,
+		      changeMonth: true,
+		  	  changeYear: true, 
+		  	  yearRange: "-100:+0",
+		  	  maxDate:0
+		  });
+	 $('#authorizedDate').datepicker({
+	      dateFormat: finalDateFormat,
+	      changeMonth: true,
+	  	  changeYear: true, 
+	  });
+});
 </script>
-
- <script>
-  function getCities(){
-	  var countryName = $("#country").val();
-	  var stateName = $("#state").val();
-	  getOnBoardCandidateCities(countryName,stateName);
-  }
-  </script>
-  
- <script>
-function getOnBoardCandidateCities(country,state,city){
+<script>
+	function changeCitizenShip(){
+		var eligibility = $("#employmentEligibility").val();
+		if(eligibility == 'Resident Card'){
+			document.getElementById("residentCardId").style.display="block";
+			document.getElementById("nonCittizenId").style.display="none";
+			$("#authorizedDate").val('');
+		}else if(eligibility == 'An alien authorized to work'){
+			document.getElementById("nonCittizenId").style.display="block";
+			document.getElementById("residentCardId").style.display="block";
+		}else{
+			document.getElementById("nonCittizenId").style.display="none";
+			document.getElementById("residentCardId").style.display="none";
+			$("#authorizedDate").val('');
+			$("#uscisAlien").val('');
 	
-	if(country != null && country != "" && country !="undefined" && state != null && state != "" && state !="undefined" ){
-		$.ajax({
-	    	type: "POST",
-	    	dataType: "json",
-	    	 url: '${sourceleadUrl}'+"/getCitiesByStateAndCountry?${_csrf.parameterName}=${_csrf.token}&countryName="+country+"&stateName="+state, 
-	        success: function(data) {
-	        	var json = JSON.parse(data);
-	        	$('#city').empty();
-	        	$('#city').append('<option value="">---Select---</option>');
-	            for(var i=0;i<json.length;i++){
-	            	var selected = '';
-	            	if(city != null && city != "" && city !="undefined" && json[i] == city){
-	            		selected = 'selected';
-	            	}
-	            	$('#city').append('<option value="'+json[i]+'" '+selected+'>'+json[i]+'</option>');
-	            }
-	            $('#city').trigger("chosen:updated");
-	        },
-	        error: function(e){
-	        }
-	    });
-	}else{
-		$('#city').empty();
-    	$('#city').append('<option value="">---Select---</option>');
-    	$('#city').trigger("chosen:updated");
+		}
 	}
-}
-</script> 
-
+</script>
 
 <script>
  function saveOnboardingCandidateDetails(){
@@ -490,7 +505,7 @@ function getOnBoardCandidateCities(country,state,city){
 				scrollToTopOnError : true,
 				dateFormat : 'yyyy/mm/dd' 
 	         }; 
-	 
+	 var country = '${SourceLeadWeb_orgLocations.country}';
 	 if ($('#onboardCandidate_form').validate(false, validationSettings)){ 
 	        var formData = getFormData("onboardCandidate_form");
 	        $("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
@@ -506,7 +521,7 @@ function getOnBoardCandidateCities(country,state,city){
 		        	else if (response.response === "AWKWARD") {
 		        	    location.href = "/errorPage";
 		        	} else if (response.response === "SUCCESS") {
-		        		location.replace(sourceleadUrl+"/onboardingCandidateStep3");  
+			        		location.replace(sourceleadUrl+"/onboardingCandidateBankingDetails");  
 		        	} else if (response.indexOf('Sign In') !== -1) {
 		        		location.replace(sourceleadUrl);
 		        	} else {

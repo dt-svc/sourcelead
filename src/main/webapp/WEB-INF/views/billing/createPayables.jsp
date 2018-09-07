@@ -81,7 +81,7 @@ function errRemoveVendorContact(){
 								</select>
 								  <span class="input-group-addon cursorPointer bg-blue" onclick="getVendors();createpayablesEmptyVendorContact();"><i class="fa fa-refresh "></i></span>
 							</div>
-							<sec:authorize access="hasAnyRole('ROLE_CREATE_VENDOR_CONTACT')"> 
+							<sec:authorize access="hasAnyRole('ROLE_CREATE_VENDOR')"> 
 			                         <a href="<c:url value="/app/addVendor" />" target="_blank"><i class="fa fa-plus btn btn-default pull-right minHeBtn"></i></a> 
 			              </sec:authorize>
 							<input type="hidden" name="savedInvoiceId" id="savedInvoiceId">
@@ -1338,13 +1338,13 @@ function pagination(){
 		   $.ajax({
 				type : "GET",
 				url: sourceleadUrl+"/getConversionExchangeRate?"+tokenParamName+"="+tokenValue+"&orgRelationId="+orgRelationId+"&grandTotal="+grandTotal,
-				success :function(json) {
-					if(json.data !='' && json.data != 'undefined' && json.data != null){
+				success :function(response) {
+					if(response.object !='' && response.object != 'undefined' && response.object != null){
 // 						var json = JSON.parse(data);
-						$("#exchangeRate").html(json.exchangeRate);
-						$("#exchangeCurrency").html(json.exchangeCurrency);
-						$("#vendorCurrencyCode").html(json.vendorCurrencyCode);
-						$("#convertedCurrencyCode").html(currencyCode +' to '+ json.vendorCurrencyCode);
+						$("#exchangeRate").html(response.object.exchangeRate);
+						$("#exchangeCurrency").html(response.object.exchangeCurrency);
+						$("#vendorCurrencyCode").html(response.object.vendorCurrencyCode);
+						$("#convertedCurrencyCode").html(currencyCode +' to '+ response.object.vendorCurrencyCode);
 					}
 				},
 				});   
@@ -1943,16 +1943,15 @@ function getPaymentTerms(){
 	 var invoiceId = document.getElementById("invoiceId").value; 
 	
 	 if(invoiceId != null && invoiceId != ""){
-		 $("#saveInvoiceId").attr("disabled", "disabled");
-		 $("#sendInvoiceId").attr("disabled", "disabled");
-		
          //$("#create_user" ).addClass('button').val('Processing..');
 		 $.ajax({
 		    	type: "POST",
 		        url: sourceleadUrl+"/validateInvoiceId?"+tokenParamName+"="+tokenValue+"&invoiceId="+invoiceId+"&invoiceType=payables", 
 		        success: function(data) {
 		        	 if(data == true){
-		        		  $('#invoiceIdDiv').find('p.jquery_form_error_message').remove();
+		        		 $("#saveInvoiceId").attr("disabled", "disabled");
+					   	 $("#sendInvoiceId").attr("disabled", "disabled");
+		        		 $('#invoiceIdDiv').find('p.jquery_form_error_message').remove();
 						  $("input#invoiceId").after("<p class='jquery_form_error_message'>"+invoiceId+" is Already Existed</span>");
 						  document.getElementById("invoiceId").setAttribute('record-exist','yes');
 						  document.getElementById("invoiceId").setAttribute('record-exist-errorMsg',invoiceId+' is Already Existed'); 

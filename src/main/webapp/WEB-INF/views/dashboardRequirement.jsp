@@ -5,16 +5,28 @@
 <%@taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
 <script> 
 $(document).ready(function(){
-	requirementSubmissionsCount("today");
+	var jsondata = sessionStorage.getItem('jobsCount');
+     if(jsondata!= null){
+		 jsondata =jsondata.split(","); 
+		 $("#submissionsCount").text(jsondata[0]);
+		 $("#applicantsCount").text(jsondata[1]);
+		 $("#interviewsCount").text(jsondata[2]);
+		 $("#offersCount").text(jsondata[3]);
+		 sessionStorage.clear(); 
+	 }else{
+		 	requirementSubmissionsCount("today");
+	 }
 });
 </script>
 <div class="col-md-6 mb">
         <div class="dashboardWidget-new">
-          <h4 class="clearfix"><a id="jobsLink" href="<c:url value="/app/jobs"/>"> Jobs</a></h4>
+          <h4 class="clearfix mb0"><a id="jobsLink" href="<c:url value="/app/jobs"/>"> Jobs</a>
+          <div class="pull-right" id="viewmoresDiv"><a href="${sourceleadUrl}/requirementApplicantsList?&tab=previous&orgLocationId=${SourceLeadWeb_orgLocationId}" class="btn btn-sm btn-primary pull-right" style="font-size: 11px;" title="View more"> View More</a></div>
+          </h4>
           <div class="clearfix dashboard-data">
             <ul class="nav nav-tabs">
-              <li class="active"><a data-toggle="tab" onclick="requirementSubmissionsCount('today');">Current</a></li>
-              <li><a data-toggle="tab" onclick="requirementSubmissionsCount('previous');">Previous</a></li>
+              <li class="active"><a data-toggle="tab" onclick="requirementSubmissionsCount('today');">Today</a></li>
+              <li><a data-toggle="tab" onclick="requirementSubmissionsCount('previous');">1 Month</a></li>
                    <input type="hidden" name="dateActiveTab" id="dateActiveTab" value="today"/>
             </ul>
             <div class="tab-content clearfix">
@@ -98,9 +110,11 @@ function requirementSubmissionsCount(daterange){
 	$("#dateActiveTab").val(daterange);
 	$("#applicantsCountLoading, #submissionsCountLoading, #interviewsCountLoading, #offersCountLoading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:5; background-image:url("/resources/images/Spinner.gif"); background-position:center; background-repeat:no-repeat; background-size:60px;');
     var sourceleadUrl ='${sourceleadUrl}';
+    var userId =  '${SourceLeadWeb_user.id}';
+    var orgLocationId = '${SourceLeadWeb_orgLocationId}';
 		 $.ajax({
 		    	type: "GET",
-		        url: sourceleadUrl+"/getRequirementSubmissionsCount?${_csrf.parameterName}=${_csrf.token}&daterange="+daterange, 
+		        url: sourceleadUrl+"/getRequirementSubmissionsCount?${_csrf.parameterName}=${_csrf.token}&daterange="+daterange+"&userId="+userId+"&orgLocationId="+orgLocationId, 
 		        success: function(data) {
 		        	if (data.response === "FAILED") {
 			    		showError(data.responseMessage);

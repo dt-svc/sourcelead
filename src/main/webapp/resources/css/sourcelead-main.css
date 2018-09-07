@@ -4,7 +4,7 @@
 	margin: 0; padding: 0;
 }
 body {
-	font-size: 14px; color: #333; min-height: 100%; background-color: #eaeaea !important;
+	font-size: 14px; color: #333; min-height: 100%; background-color: #f2f2f2 !important;
     font-style: normal !important; font-family:'Roboto', sans-serif  !important;
 }
 a:hover, a:active, a:focus {
@@ -641,7 +641,7 @@ line-height: 35px; border-bottom: 1px solid #325475; transition: all 0.5s ease-i
 /*sidebar menu styles ends */
 /* content Area Styels */
 .content-wraper {
-background: #f2f2f2; min-height: 620px; margin-left: 190px; padding: 0 20px 30px; padding-top: 53px;
+background: #f2f2f2; margin-left: 190px; padding: 0 20px 30px; padding-top: 53px;
 -moz-transition: all ease-in-out 0s; -ms-transition: all ease-in-out 0s; -webkit-transition: all ease-in-out 0s;
 transition: all ease-in-out 0s;
 }
@@ -1770,11 +1770,9 @@ overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
 }
 .theme-color {
 	background: #d9534f; padding:5px 5px 0px 5px; position: fixed; top: 125px;
-	-webkit-transition: all 0.8s ease-in-out 0s;
-	-ms-transition: all 0.8s ease-in-out 0s;
-	-moz-transition: all 0.8s ease-in-out 0s;
-	transition: all 0.8s ease-in-out 0s;
-	min-width:35px; min-height:50px; right:-38px; border-radius: 0 0 0px 5px; z-index: 9;
+	-webkit-transition: all 0.8s ease-in-out 0s; -ms-transition: all 0.8s ease-in-out 0s;
+	-moz-transition: all 0.8s ease-in-out 0s; transition: all 0.8s ease-in-out 0s;
+	min-width:35px; min-height:50px; right:-38px; border-radius: 0 0 0px 5px; z-index: 9; display:none;
 }
 .theme-color.theme-color-active {
 	right: 0;
@@ -4547,7 +4545,7 @@ margin-bottom: 0;
 color: #0084bf; cursor: pointer; background-color: transparent; border: 1px solid transparent; 
 box-shadow: inset 0 -3px 0px 0px #0084bf;
 }
-.applicant_accept .nav-tabs > li.active > a:after {
+applicant_accept .nav-tabs > li.active > a:after {
     position: absolute; border-top: 10px solid #5cb85c; border-left: 10px solid transparent;
 	border-right: 10px solid transparent; clear: both; content: ""; height: 0;
 	 left: 50%; bottom: -10px; width: 0;
@@ -6906,9 +6904,6 @@ bottom:1px;
 .modal-body-custom.modalAlign {
     margin-bottom: 0 !important; padding-bottom: 0 !important;
 }
-.minHeight{
-	min-height: 75px;
-}
 .timesheet_week_comm.edit-Expense-upload {
 	width: 100%;
 }
@@ -7358,6 +7353,9 @@ border-radius: 2px;
 .form-control {
 border: 1px solid #ccc !important;
 }
+.minHeight{
+ min-height: 75px;
+}
 .minHeight40{
 min-height: 40px;
 }
@@ -7365,7 +7363,10 @@ min-height: 40px;
 min-height:80px;
 }
 .minHeight50{
-    min-height: 50px;
+ min-height: 50px;
+}
+.maxHeight250 {
+ max-height:250px; overflow-y: auto;
 }
 .tableStyles {
 	position: relative; /*border: 1px solid #ddd;*/
@@ -9103,6 +9104,28 @@ padding: 0 15px !important;
 .candidate_wrap_table.recruiterReports_table.fixedColumntable .DTFC_ScrollWrapper {
 height: auto !important;
 }
+.activeIcon a {
+color: #0084bf !important;
+}
+.tabnew-styles li {
+border-right: 1px solid #ddd !important;
+}
+.tabnew-styles li:last-child {
+border-right:none;
+}
+.tableEqualHeight-pay {
+	width: 100%; display: table;
+}
+.tableEqualHeight-pay .col-md-3 {
+	float: none; display: table-cell; margin:15px; border: 1px dotted #909090;
+}
+.tableEqualHeight-pay .col-md-3:nth-child(even) {
+	background-color: #ededed;
+}
+.tableEqualHeight-pay .col-md-3:nth-child(1n+2) {
+	border-left: none;
+}
+
 @media (max-width: 320px) {
 .uasrch-selectpicker {
     width: 48% !important; float: left !important;

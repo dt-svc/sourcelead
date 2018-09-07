@@ -27,6 +27,7 @@
   	        $("#documentstemplateId").val(onBoardingId);
   	        
   	        loadOnboardingCandidate('${onBoardingUUID}');
+  	       shiftList();
   	        
 		}else{
 			var candidateId = '${candidateId}';
@@ -82,7 +83,7 @@
                 <div class="form-group" id="onboardCandidatesDiv">
                   <label class="col-md-3 control-label">Select Candidate <span class="text-danger">* </span><i class='fa fa-info-circle' title='Select the candidate who is being onboarded'></i></label>
                   <div class="col-md-6">
-                    <select class="chosen-select" id="onboardCandiate" name="onboardCandiate" data-validation="required" onchange="addCandidateDetailsForOnboarding();validOnboardCandiate();getCandidateDetails();getOfferDetails();" field-name="Candidate">
+                    <select class="chosen-select" id="onboardCandiate" name="onboardCandiate" data-validation="required" onchange="shiftList();addCandidateDetailsForOnboarding();validOnboardCandiate();getCandidateDetails();getOfferDetails();" field-name="Candidate">
                     </select>
                   </div>
                 </div>
@@ -1456,9 +1457,38 @@ function loadOnBoardingTemplates(onboardTemplateId){
    		    	if(json['location'] != null && json['location'] != "" && json['location'] !="undefined"){
    		    		$("#offBoardLocation").val(json['location']);
    		    	}
-   		    	/* getOnBoardCandidateCountry(json['country']);
-   		    	getOnBoardCandidateStates(json['country'],json['state']);
-   		    	getOnBoardCandidateCities(json['country'],json['state'],json['city']); */
+   		    	
+   		    	if(json['dateOfBirth'] != null && json['dateOfBirth'] != "" && json['dateOfBirth'] !="undefined"){
+   		    		$("#employeeDateOfBirth").val(json['dateOfBirth']);
+   		    	}
+   		    	if(json['gender'] != null && json['gender'] != "" && json['gender'] !="undefined"){
+   		    		if(json['gender'] == 'Male'){
+   		    			$("#male").prop("checked",true);
+   		    		}else if(json['gender'] == 'Female'){
+   		    			$("#female").prop("checked",true);
+   		    		}else if(json['gender'] == 'Transgender'){
+   		    			$("#transgender").prop("checked",true);
+   		    		}
+   		    	}
+   		    	if(json['shift'] != null && json['shift'] != "" && json['shift'] !="undefined"){
+   		    		shiftList(json['shift']);
+   		    	}
+   		    	
+   		    	if(json['employmentEligibility'] != null && json['employmentEligibility'] != "" && json['employmentEligibility'] !="undefined"){
+   		    	     $("#employmentEligibility").val(json['employmentEligibility']);
+			    	 $('#employmentEligibility').trigger("chosen:updated");
+			    	 changeCitizenShip()
+   		    	}
+   		    	if(json['authorizedWorkUntil'] != null && json['authorizedWorkUntil'] != "" && json['authorizedWorkUntil'] !="undefined"){
+   		    		$("#authorizedDate").val(json['authorizedWorkUntil']);
+   		    	}
+   		    	
+   		    	if(json['uscisAlien'] != null && json['uscisAlien'] != "" && json['uscisAlien'] !="undefined"){
+   		    		$("#uscisAlien").val(json['uscisAlien']);
+   		    	}
+   		    			
+   		    	
+   		    	 
    		    	loadCandidateRoles(json['onBoardRoleId']);
    		    	$("#startDate").val(json['joiningDateStr']);
    		    	 var dt = toDate("#startDate");
@@ -1494,8 +1524,7 @@ function loadOnBoardingTemplates(onboardTemplateId){
    		    		 }
    	    		     $("#employmentType").val(json['employmentType']);
    			    	 $('#employmentType').trigger("chosen:updated");
-   			    	 
-   			    	 if(json['employmentType'] = 'C2C'){
+   			    	 if(json['employmentType'] == 'C2C'){
    			    		  getEmploymentType();
    			    		  getVendorsByOrgLocationForAddApplicant(json['vendors']);
    			    		  getAddApplicantVendorContactList(json['vendors'],json['vendorContact']);
@@ -2352,6 +2381,7 @@ function cancel(){
 
 <script>
 function addCandidateDetailsForOnboarding(){
+	var loginCountry = "${SourceLeadWeb_orgLocations.country}";
 	 $("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
 	 var result = "";
 	 result = result +'<div class="form-group">';
@@ -2430,6 +2460,25 @@ function addCandidateDetailsForOnboarding(){
 	 result = result +'</div>';
 	 result = result +'</div>';
      
+	 result = result +'<div class="form-group">';
+	 result = result +'<label class="col-md-3 control-label">Date of Birth</label>';
+	 result = result +'<div class="col-md-6">';
+	 result = result +'<input type="text" class="form-control input-sm calendar" id="employeeDateOfBirth" name="dateOfBirth" readonly="readonly">';
+	 result = result +'</div>';
+	 result = result +'</div>';
+	 result = result +'<div class="clearfix"></div>';
+	 
+	 result = result +'<div class="form-group">';
+	 result = result +'<label class="col-md-3 control-label">Gender</label>';
+	 result = result +'<div class="col-md-6">';
+	 result = result +'<label class="paddingRight"><input type="radio" id="male" value="Male"  name="gender" ><span class="mr5"></span>Male</label>';
+	 result = result +'<label class="paddingLeft paddingRight"><input type="radio" id="female"  value="Female" name="gender" ><span class="mr5"></span>Female</label>';
+	 result = result +'<label class="paddingRight"><input type="radio"  value="Transgender" id="transgender" name="gender"><span class="mr5"></span>Transgender</label>';
+	 result = result +'</div>';
+	 result = result +'</div>';
+	 result = result +'<div class="clearfix"></div>';
+	 
+	 
 	 result = result +'<div class="form-group" id="emailDiv">';
 	 result = result +'<label class="col-md-3 control-label">Company Email</label>';
 	 result = result +'<div class="col-md-6">';
@@ -2437,6 +2486,41 @@ function addCandidateDetailsForOnboarding(){
 	 result = result +'</div>';
 	 result = result +'</div>';
 	 result = result +'<div class="clearfix"></div>';
+	 
+	 if(loginCountry == 'United States'){
+		 result = result +'<div class="form-group">';
+		 result = result +'<label class="col-md-3 control-label">Employment Eligibility</label>';
+		 result = result +'<div class="col-md-6">';
+		 result = result +'<select class="chosen-select" data-placeholder="Select Citizenship" name="employmentEligibility" id="employmentEligibility"   onchange="changeCitizenShip();" field-name="Role">';
+		 result = result +'<option value="">-- Select Citizenship --</option>';
+		 result = result +'<option >Citizenship of United States</option>';
+		 result = result +'<option >Resident Card</option>';
+		 result = result +'<option >An alien authorized to work</option>';
+		 result = result +'<option >Non-citizen</option>';
+		 result = result +'</select>';
+		 result = result +'</div>';
+		 result = result +'</div>';
+		 result = result +'<div class="clearfix"></div>';
+	 }
+	 
+	 result = result +'<div class="form-group" id="residentCardId" style="display:none">';
+	 result = result +'<label class="col-md-3 control-label">USCIS /Alien registration Number</label>';
+	 result = result +'<div class="col-md-6">';
+	 result = result +'<input type="text" class="form-control input-sm" id="uscisAlien" name="uscisAlien"  data-validation-optional="true"   data-validation="validate_length length9-13 validate_int">';
+	 result = result +'</div>';
+	 result = result +'</div>';
+	 result = result +'<div class="clearfix"></div>';
+	 
+	 result = result +'<div class="form-group" id="nonCittizenId" style="display:none">';
+	 result = result +'<label class="col-md-3 control-label">Authorized work until </label>';
+	 result = result +'<div class="col-md-6">';
+	 result = result +'<input type="text" class="form-control input-sm calendar" id="authorizedDate" name="authorizedWorkUntil" readonly="readonly">';
+	 result = result +'</div>';
+	 result = result +'</div>';
+	 result = result +'<div class="clearfix"></div>';
+	 
+	 
+	 
 	 result = result +'<p><strong>Position Details</strong></p>';
 
 	 result = result +'<div class="form-group">';
@@ -2522,6 +2606,15 @@ function addCandidateDetailsForOnboarding(){
 	 result = result +'</select>';
 	 result = result +'</div>';
 	 result = result +'</div>';
+	 
+	 result = result +'<div class="form-group" >';
+	 result = result +'<label class="col-md-3 control-label">Shift</label>';
+	 result = result +'<div class="col-md-6">';
+	 result = result +'<select class="chosen-select"  id="shiftList"  name="shift">';
+	 result = result +'</select>';
+	 result = result +'</div>';
+	 result = result +'</div>';
+	 
    
 	 result = result +'<div class="form-group" id="otherEmploymentTypeDiv" style="display: none">';
 	 result = result +'<label class="col-md-3 control-label">Other Type<span class="text-danger">*</span></label>';
@@ -2646,6 +2739,20 @@ function addCandidateDetailsForOnboarding(){
 		  finalDateFormat = 'yy-dd-mm'; 
 	  }
 	  
+	  $('#authorizedDate').datepicker({
+	      dateFormat: finalDateFormat,
+	      changeMonth: true,
+	  	  changeYear: true, 
+	  });
+	  
+	  $('#employeeDateOfBirth').datepicker({
+	      dateFormat: finalDateFormat,
+	      changeMonth: true,
+	  	  changeYear: true, 
+	  	  yearRange: "-100:+0",
+	  	  maxDate:0
+	  });
+	  
 	  $('#startDate').datepicker({
 	      dateFormat: finalDateFormat,
 	      changeMonth: true,
@@ -2759,4 +2866,48 @@ function clearEndDate(){
 function clearDueDate(){
 	$("#dueDate").val("");
 	};
+</script>
+<script>
+function changeCitizenShip(){
+	var eligibility = $("#employmentEligibility").val();
+	if(eligibility == 'Resident Card'){
+		document.getElementById("residentCardId").style.display="block";
+		document.getElementById("nonCittizenId").style.display="none";
+		$("#authorizedDate").val('');
+	}else if(eligibility == 'An alien authorized to work'){
+		document.getElementById("nonCittizenId").style.display="block";
+		document.getElementById("residentCardId").style.display="block";
+	}else{
+		document.getElementById("nonCittizenId").style.display="none";
+		document.getElementById("residentCardId").style.display="none";
+		$("#authorizedDate").val('');
+		$("#uscisAlien").val('');
+
+	}
+}
+</script>
+ <script>
+function shiftList(shiftId){
+		 $.ajax({
+	      type : "POST",
+	       url: sourceleadUrl+"/shiftList",       
+	       success: function(json) {
+	        	var output = "";
+	        	output = output + "<option value=''>Select Shift</option>"; 
+	        	for (var i=0; i<json.length; i++)
+				{
+	        		var opt = json[i];
+	        		if(shiftId == opt.id){
+		       			output = output + "<option value='"+opt.id+"' selected >"+opt.shiftName+"</option>";
+	        		}else{
+		       			output = output + "<option value='"+opt.id+"'>"+opt.shiftName+"</option>";
+	        		}
+				}
+	        	$("#shiftList").empty();
+		        $("#shiftList").append(output);
+		        $('#shiftList').trigger("chosen:updated");
+	        }
+		 });
+	
+}
 </script>

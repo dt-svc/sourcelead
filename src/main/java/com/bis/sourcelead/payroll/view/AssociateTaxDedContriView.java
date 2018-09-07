@@ -9,14 +9,14 @@ import javax.persistence.Id;
 import javax.persistence.Table;
 
 @Entity
-@Table(name = "ASSOCIATE_TAX_DED_CONTRI_VIEW", schema = "SOURCELEAD")
+@Table(name = "ASSOCIATE_TAX_DED_CONTRI_VIEW")
 public class AssociateTaxDedContriView {
 	
 	private static final long serialVersionUID = 1L;
 	
 	@Id
-	@Column(name = "USER_ID")
-	private Long userId;
+	@Column(name = "CANDIDATE_ID")
+	private Long candidateId;
 	
 	@Column (name = "FEDERAL_TAX_FILLIING_STATUS")
 	private String federalTaxFilliingStatus;
@@ -98,10 +98,6 @@ public class AssociateTaxDedContriView {
 	private String payFrequency;
 	
 	
-	public Long getUserId()
-	{
-		return userId;
-	}
 
 	public String getFederalTaxFilliingStatus()
 	{
@@ -199,12 +195,6 @@ public class AssociateTaxDedContriView {
 		return associateBankUUID;
 	}
 
-	
-
-	public void setUserId(Long userId)
-	{
-		this.userId = userId;
-	}
 
 	public void setFederalTaxFilliingStatus(String federalTaxFilliingStatus)
 	{
@@ -367,6 +357,16 @@ public class AssociateTaxDedContriView {
 	public void setPayFrequency(String payFrequency)
 	{
 		this.payFrequency = payFrequency;
+	}
+
+	public Long getCandidateId()
+	{
+		return candidateId;
+	}
+
+	public void setCandidateId(Long candidateId)
+	{
+		this.candidateId = candidateId;
 	}
 
 	

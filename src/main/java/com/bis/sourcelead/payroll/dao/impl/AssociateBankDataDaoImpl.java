@@ -41,12 +41,12 @@ public class AssociateBankDataDaoImpl implements AssociateBankDataDao{
 
 	@Override
 	@Transactional
-	public AssociateBankData findAssociateBankDataByUserId(Long userId, OrgLocations orgLocation)
+	public AssociateBankData findAssociateBankDataByCandidateId(Long candidateId, OrgLocations orgLocation)
 	{
 		Session session = this.sessionFactory.getCurrentSession();
 		AssociateBankData associateBankData = null;
 		try {
-			List<AssociateBankData>  associateBankDataList = session.createQuery("from AssociateBankData bankData where bankData.userId.id=:userId and bankData.orgLocationId.id= :orgLocationId" ).setLong( "userId", userId).setLong("orgLocationId", orgLocation.getId()).list();
+			List<AssociateBankData>  associateBankDataList = session.createQuery("from AssociateBankData bankData where bankData.candidate.id=:candidateId and bankData.orgLocationId.id= :orgLocationId" ).setLong( "candidateId", candidateId).setLong("orgLocationId", orgLocation.getId()).list();
 		    if(associateBankDataList !=null && associateBankDataList.size() >0) {
 		    	associateBankData = associateBankDataList.get(0);
 		    }

@@ -23,8 +23,8 @@ public class Paysheet {
 	@Column(name = "ID", nullable = false)
 	private Long id;
 
-	@Column(name = "USER_ID")
-	private Long user;
+	@Column(name = "CANDIDATE_ID")
+	private Long candidateId;
 	
 	@ManyToOne
 	@JoinColumn(name = "PAY_SHEET_FREQUENCY_ID", nullable = false)
@@ -325,14 +325,15 @@ public class Paysheet {
 		this.projectMember = projectMember;
 	}
 
-	public Long getUser()
+
+	public Long getCandidateId()
 	{
-		return user;
+		return candidateId;
 	}
 
-	public void setUser(Long user)
+	public void setCandidateId(Long candidateId)
 	{
-		this.user = user;
+		this.candidateId = candidateId;
 	}
 
 	public Long getCreatedBy()

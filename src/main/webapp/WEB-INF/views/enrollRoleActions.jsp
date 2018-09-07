@@ -37,7 +37,7 @@ window.onload = function () {
      <h3 id="role"></h3>
 	<select id="test-select" multiple="multiple">
 		 <c:forEach var="action" items="${actionsList}">
-		  <option value="${action.id}" data-section="${action.tabs.tabName == 'My Timesheets' || action.tabs.tabName == 'Timesheet Approval' ? 'Timesheets' : action.tabs.tabName == 'Associates List' ? 'Associates' : action.tabs.tabName == 'Receivable' || action.tabs.tabName == 'Payables' ? 'Billing' : action.tabs.tabName == 'My Expenses' || action.tabs.tabName == 'Expenses Approval' ? 'Expenses' : action.tabs.tabName == 'Blogs' || action.tabs.tabName == 'User Manuals' ? 'Resources' : action.tabs.tabName == 'Immigrations' || action.tabs.tabName == 'My Immigration' ? 'Immigration' : action.tabs.tabName}" ${action.isActionConfigured  == 'Y' ? 'selected' : ''} >${action.actionName}</option>
+		  <option value="${action.id}" data-section="${action.tabs.tabName == 'My Timesheets' || action.tabs.tabName == 'Timesheet Approval' ? 'Timesheets' : action.tabs.tabName == 'Associates List' ? 'Associates' : action.tabs.tabName == 'Receivable' || action.tabs.tabName == 'Payables' ? 'Billing' : action.tabs.tabName == 'My Expenses' || action.tabs.tabName == 'Expenses Approval' ? 'Expenses' : action.tabs.tabName == 'Blogs' || action.tabs.tabName == 'User Manuals' ? 'Resources' : action.tabs.tabName == 'Immigrations' || action.tabs.tabName == 'My Immigration' ? 'Immigration'  : action.tabs.tabName == 'Run Payroll' || action.tabs.tabName == 'My Payroll' ? 'Pay Roll' : action.tabs.tabName}" ${action.isActionConfigured  == 'Y' ? 'selected' : ''} >${action.actionName}</option>
 	     </c:forEach>
     </select>
      </div>

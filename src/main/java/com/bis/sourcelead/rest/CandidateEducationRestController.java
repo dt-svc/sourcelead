@@ -463,5 +463,14 @@ public class CandidateEducationRestController {
 		}
 		return reponseList;
 	}
+	
+	@RequestMapping(value = "/rest/candidateEducation", method = RequestMethod.GET)
+	@ResponseBody
+	public ResponseList<LookUpData> candidateEducation(HttpServletRequest request) throws Exception {
+	ResponseList<LookUpData> response = new ResponseList<>();
+	List<LookUpData> educationsList = lookUpDataService.getLookUpDataByCategory(Constants.EDUCATIONS);
+	response.setData(educationsList);
+	return response;
+	}
 
 }

@@ -1,7 +1,5 @@
 package com.bis.sourcelead.service.impl;
 
-import static org.mockito.Matchers.doubleThat;
-
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -18,7 +16,6 @@ import java.util.Comparator;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
-import java.util.LinkedHashSet;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
@@ -58,6 +55,7 @@ import com.bis.sourcelead.dto.JobFairDTO;
 import com.bis.sourcelead.dto.JobFairRequirementsDTO;
 import com.bis.sourcelead.dto.RecruiterRrportDTO;
 import com.bis.sourcelead.dto.RequirementDTO;
+import com.bis.sourcelead.dto.RequirementIncentiveDTO;
 import com.bis.sourcelead.dto.RequirementLocationsDTO;
 import com.bis.sourcelead.dto.RequirementSubmissionsCountDTO;
 import com.bis.sourcelead.dto.Response;
@@ -84,6 +82,7 @@ import com.bis.sourcelead.entity.RecruiterReportAssociateCountView;
 import com.bis.sourcelead.entity.Requirement;
 import com.bis.sourcelead.entity.RequirementApproverHierarchy;
 import com.bis.sourcelead.entity.RequirementAssignTo;
+import com.bis.sourcelead.entity.RequirementIncentive;
 import com.bis.sourcelead.entity.RequirementLocations;
 import com.bis.sourcelead.entity.RequirementSubmission;
 import com.bis.sourcelead.entity.SubmissionRequirementListView;
@@ -563,6 +562,62 @@ public class RequirementServiceImpl implements RequirementService {
 
 			requirement.setExperienceLevel(null);
 		}
+		
+		if (StringUtils.isNotBlank(requirementDTO.getJobRate())) {
+			requirement.setJobRate(requirementDTO.getJobRate());
+		}else {
+			requirement.setJobRate(null);
+		}
+		
+		if (StringUtils.isNotBlank(requirementDTO.getIncentivized())) {
+			requirement.setIncentivized(requirementDTO.getIncentivized());
+		}else {
+			requirement.setIncentivized("N");
+		}
+		
+		if (StringUtils.isNotBlank(requirementDTO.getPayOutPeriod())) {
+			requirement.setPayOutPeriod(requirementDTO.getPayOutPeriod());
+		}else {
+			requirement.setPayOutPeriod(null);
+		}
+		
+		HashSet<RequirementIncentive> requirementIncentiveList = new HashSet<RequirementIncentive>();
+		if (requirementDTO.getRequirementIncentive() != null && !requirementDTO.getRequirementIncentive().isEmpty() && StringUtils.equals(requirementDTO.getIncentivized(), "Y")) {
+			for (RequirementIncentiveDTO incentiveDTO : requirementDTO.getRequirementIncentive()) {
+				if (StringUtils.isNotBlank(incentiveDTO.getJoiners()) && StringUtils.isNotBlank(incentiveDTO.getJoinersAmount())) {
+					RequirementIncentive requirementIncentive = new RequirementIncentive();
+					requirementIncentive.setRequirementId(requirement);
+					if (incentiveDTO.getId() != null) {
+						requirementIncentive.setId(incentiveDTO.getId());
+					}
+					if (incentiveDTO.getJoiners() != null && !incentiveDTO.getJoiners().isEmpty()) {
+						requirementIncentive.setJoiners(incentiveDTO.getJoiners());
+					}
+
+					if (incentiveDTO.getJoinersAmount() != null && !incentiveDTO.getJoinersAmount().isEmpty()) {
+						requirementIncentive.setJoinersAmount(incentiveDTO.getJoinersAmount());
+					}
+					
+					if (incentiveDTO.getJoinersAmountType() != null && !incentiveDTO.getJoinersAmountType().isEmpty()) {
+						requirementIncentive.setJoinersAmountType(incentiveDTO.getJoinersAmountType());
+					}
+					requirementIncentive.setStatus(Constants.RECORD_ACTIVE);
+					requirementIncentive.setCreatedDate(commonUtil.currentDate());
+					requirementIncentive.setCreatedBy(user);
+					if (incentiveDTO.getId() != null) {
+						requirementIncentive.setUpdatedBy(user);
+						requirementIncentive.setUpdatedDate(commonUtil.currentDate());
+					}
+					requirementIncentiveList.add(requirementIncentive);
+				}
+			}
+			this.deleteRequirementIncentiveByRequirementIdOrIds(0l, requirementDTO.getArrDeletedIds());
+		}else if(requirement != null && requirement.getId() != null && !StringUtils.equals(requirementDTO.getIncentivized(), "Y")) {
+			this.deleteRequirementIncentiveByRequirementIdOrIds(requirement.getId(), "");
+		}
+		requirement.setRequirementIncentive(requirementIncentiveList);
+		
+		
 		if (StringUtils.isNotBlank(requirementDTO.getIsClient())
 				&& StringUtils.isNotBlank(requirementDTO.getClientSubmissionForm())) {
 			if (requirementDTO.getIsClient().equalsIgnoreCase("Y")
@@ -4334,11 +4389,23 @@ public class RequirementServiceImpl implements RequirementService {
 		}
 	}
 	
+        
 	@Override
 	public Boolean forceDeleteForSelectedJobs(String[] uuids) throws Exception
 	{
 		Boolean flag = requirementDao.forceDeleteForSelectedJobs(uuids);
 		return flag;
 	}
+
+	@Override
+	public List<RequirementIncentive> getRequirementIncentiveListByRequirementId(long requirementId) throws Exception {
+		return requirementDao.getRequirementIncentiveListByRequirementId(requirementId);
+	}  
+	
+	@Override
+	public void deleteRequirementIncentiveByRequirementIdOrIds(long requirementId, String ids) throws Exception {
+		 requirementDao.deleteRequirementIncentiveByRequirementIdOrIds(requirementId, ids);
+	}
+
 	
 }

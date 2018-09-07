@@ -25,7 +25,7 @@ $(document).ready(function(){
       <!-- <div class="pull-right brud-crum">Home &raquo; Payhead List &raquo; Add Deduction</div> -->
        <div class="pull-right brud-crum">
 			<a href="<c:url value='${appPath}/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a>&raquo;<a
-				href="<c:url value='${appPath}/payrollConfigure'/>"> Payroll Deduction List</a>
+				href="<c:url value='${appPath}/payrollConfiguration'/>"> Payroll Configuration</a>&raquo;Add Deduction
 		</div>
     </section>
     <div id="addDeductionLoading"></div>
@@ -44,9 +44,9 @@ $(document).ready(function(){
 				</div>
             </div>
             <div class="form-group col-md-5">
-              <label class="col-md-12">Method</label>
+              <label class="col-md-12">Method<span class="text-danger paddingLeft">&nbsp;*</span></label>
               <div class="col-md-12">
-                <select class="form-control sel" id="payrollDeductionMethod" name="payrollDeductionMethod" onChange="validateDeductionMethodType();">
+                <select class="form-control sel" id="payrollDeductionMethod" name="payrollDeductionMethod" data-validation="required" onChange="validateDeductionMethodType();" field-name="Method">
 					    <option value = "">Select Method</option>
 						 <option ${payrollDeduction.payrollDeductionMethod == 'Fixed' ? 'selected' : ''} value = "Fixed">Fixed</option>
 						  <option ${payrollDeduction.payrollDeductionMethod == 'Percent' ? 'selected' : ''} value = "Percent">Percent</option>
@@ -57,7 +57,7 @@ $(document).ready(function(){
              <div class="form-group col-md-5">
               <label class="col-md-12">Amount per pay<span class="text-danger paddingLeft">&nbsp;*</span></label>
               <div class="col-md-12" id="deductionAmountDiv">
-                <input type="text" class="form-control" value="${payrollDeduction.deductionAmount }" id="deductionAmount" name="deductionAmount" data-validation="required validate_int" onblur="validateDeductionMethodType();" field-name="Amount">
+                <input type="text" class="form-control" value="${payrollDeduction.deductionAmount }" id="deductionAmount" name="deductionAmount" data-validation="required validate_float" onblur="validateDeductionMethodType();" field-name="Amount">
               </div>
             </div>
              <div class="form-group col-md-5">
@@ -75,7 +75,7 @@ $(document).ready(function(){
             </div>
             
             <div class="form-group col-md-5">
-              <label class="col-md-12">Description</label>
+              <label class="col-md-12">Description<span class="text-danger paddingLeft">&nbsp;*</span></label>
               <div class="col-md-12">
                <textarea rows="2" class="form-control" id="description" name="description" data-validation="validate_length length1-250">${payrollDeduction.description }</textarea>
               </div>
@@ -146,8 +146,20 @@ function validateDeductionMethodType() {
 				return false; 
 		 	 }
 	  }if(selectedMethod =='Fixed'){
-		  if(!nameErrorDiv)
-			  $("#save_deductionType").removeAttr("disabled", "disabled");
+		  var floatNum = /^(\d{0,10}(\.\d{0,10})?|100)$/
+			  if(enteredValue.match(floatNum)){
+				  if(!nameErrorDiv){
+					  $("#save_deductionType").removeAttr("disabled", "disabled");
+				  }
+				  return true;
+			  }		  
+			 else{
+					$("#deductionAmountDiv").after("<p class='jquery_form_error_message'><span>Enter Valid Percentage</span>");
+					$("#save_deductionType").attr("disabled", "disabled");
+					return false; 
+			 	 }
+// 		  if(!nameErrorDiv)
+// 			  $("#save_deductionType").removeAttr("disabled", "disabled");
 		  }		  
 }
 </script>

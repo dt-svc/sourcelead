@@ -15,7 +15,10 @@ $(document).ready(function(){
 <div class="pull-left">
 <h2>Pay Item list</h2>
 </div>
-<div class="pull-right brud-crum">Home &raquo; Pay Item list</div>
+        <div class="pull-right brud-crum">
+                <a href="<c:url value='${appPath}/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a>&raquo;<a
+				href="<c:url value='${appPath}/payrollConfiguration'/>"> Payroll Configuration</a>&raquo; Pay Item list
+				</div>
 </section>
 
 <!-- Timesheet -->
@@ -64,9 +67,9 @@ $(document).ready(function(){
 				result = result + '<table id="payItemTable" class="display" cellspacing="0" width="100%" >';
 				result = result + '<thead>';
 				result = result + '<tr>';
-				result = result + '<th>PayItem Name</th>';
+				result = result + '<th>Name</th>';
 				result = result + '<th>Description</th>';
-				result = result + '<th>Allo Emp Type</th>';
+				result = result + '<th>Emp Type</th>';
 				result = result + '<th>Schedule</th>';
 				result = result + '<th>Action</th>';
 				result = result + '</tr>';
@@ -81,21 +84,29 @@ $(document).ready(function(){
 			        		 result = result + ' <td>';
 			        		 result = result + ' <div class="proj_show tbldata-dotdot-big">';
 			        		 if(opt.payItemName !=null && opt.payItemName !='' && opt.payItemName !='undefined'){
-			        			 result = result + '     <div class="pull-left tbldata-dotdot-me" title="Sick Leave">'+opt.payItemName+'</div>'; 
+			        			 result = result + '     <div class="pull-left tbldata-dotdot-me" title="'+opt.payItemName+'">'+opt.payItemName+'</div>'; 
 			        		 }else{
 			        			 result = result + '     <div class="pull-left tbldata-dotdot-me" title="Sick Leave">--</div>';
 			        		 }
 			        		 result = result + '  </div>';
 			        		 result = result + ' </td>';
 			        		 result = result + ' <td>';
-			        		 result = result + '   <div title="Calendaer month" class="tblminwidth-75">'+opt.paySchedule+'</div>';
+			        		 result = result + '   <div title="'+opt.description+'" class="tblminwidth-75">'+opt.description+'</div>';
 			        		 result = result + ' </td>';
 			        		 result = result + ' <td>';
-			        		 result = result + '   <div title="Leave Transfer" class="tbldata-dotdot-100">'+opt.empType+'</div>';
+			        		 result = result + '   <div title="'+opt.empType+'" class="tbldata-dotdot-100">'+opt.empType+'</div>';
 			        		 result = result + '</td>';
 			        		 result = result + ' <td>';
 			        		 if(opt.paySchedule !=null && opt.paySchedule != 'undefined' && opt.paySchedule != ''){
-			        			 result = result + '     <div title="2" class="tblminwidth-75">'+opt.paySchedule+'</div>';	 
+			        			 if(opt.paySchedule == 'EVERY_PAY'){
+			        				 result = result + '     <div title="Every Pay" class="tblminwidth-75">Every Pay</div>';
+			        			 }else if(opt.paySchedule == 'MONTHLY'){
+			        				 result = result + '     <div title="Monthly" class="tblminwidth-75">Monthly</div>';
+			        			 }else if(opt.paySchedule == 'QUARTERLY'){
+			        				 result = result + '     <div title="Quarterly" class="tblminwidth-75">Quarterly</div>';
+			        			 }else if(opt.paySchedule == 'ANNUALLY'){
+			        				 result = result + '     <div title="Annually" class="tblminwidth-75">Annually</div>';
+			        			 }
 			        		 }else{
 			        			 result = result + '     <div title="2" class="tblminwidth-75">--</div>';	
 			        		 }

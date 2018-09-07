@@ -1,10 +1,6 @@
 package com.bis.sourcelead.util;
 
-import java.io.BufferedReader;
-import java.io.FileReader;
-import java.io.IOException;
 import java.text.DateFormat;
-import java.text.Format;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -18,9 +14,8 @@ import java.util.LinkedHashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
-import java.util.Scanner;
-import java.util.Set;
 import java.util.TimeZone;
+import java.util.concurrent.TimeUnit;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
@@ -49,6 +44,7 @@ import org.springframework.scheduling.annotation.Async;
 import org.springframework.scheduling.annotation.Scheduled;
 
 import com.bis.sourcelead.constants.Constants;
+import com.bis.sourcelead.constants.ImmigrationConstants;
 import com.bis.sourcelead.dao.ContractsTemplateDao;
 import com.bis.sourcelead.dao.LeaveDao;
 import com.bis.sourcelead.dao.TimeZoneDao;
@@ -56,7 +52,6 @@ import com.bis.sourcelead.elk.index.CandidateIndex;
 import com.bis.sourcelead.elk.index.RequirementIndex;
 import com.bis.sourcelead.elk.index.helper.CandidateIndexHelper;
 import com.bis.sourcelead.elk.setup.SourceleadELKBaseIndexer;
-import com.bis.sourcelead.entity.AssociateBalanceLeave;
 import com.bis.sourcelead.entity.Campaign;
 import com.bis.sourcelead.entity.CampaignStats;
 import com.bis.sourcelead.entity.Candidate;
@@ -75,6 +70,7 @@ import com.bis.sourcelead.entity.Immigration;
 import com.bis.sourcelead.entity.ImmigrationTemplateTasks;
 import com.bis.sourcelead.entity.Invoice;
 import com.bis.sourcelead.entity.JobAlert;
+import com.bis.sourcelead.entity.Lca;
 import com.bis.sourcelead.entity.Leave;
 import com.bis.sourcelead.entity.LeaveApproveHierarchy;
 import com.bis.sourcelead.entity.LeaveType;
@@ -381,7 +377,267 @@ public class EMailJobScheduler {
 			logger.error("ERROR in " + e.getMessage());
 		}
     }
+    
+	  @Scheduled(cron = "0 0 9 1/1 * ?") // Scheduled for every day at @ 9.a.m on united states time.
+   // @Scheduled(cron = "0/30 * * * * *") // used for dev testing run for every 10 seconds..
+	@Async
+	public void runJobSchedulerDailyUpdateLCA() { // check if LCA is expired on not on daily basis, if expired updating
+													// LCA status in Database.
+		logger.info("******************  updating All LCA  Deatails Started..! **********");
+		System.out.println("******************  updating All LCA  Deatails Started..! **********");
+		try {
+			String fromUser = "donotreply@sourcelead.com";
+			Date currentDate = new Date();
+			Date daysFilter = null;
+			Calendar cal = Calendar.getInstance();
+			
+			int expiring_days_arr [] = {180, 90, 60, 30, 15, 7};
+			for(int i=0; i<expiring_days_arr.length; i++) {
+				cal.add(Calendar.DATE, expiring_days_arr[i]);
+				daysFilter = cal.getTime();
+			// lca expired in 180 days it will send email to lca manager
+			List<Lca> lcaListExpiring = immigrationCommonService.getAllLcaList(daysFilter);
+			
+			if(lcaListExpiring != null && lcaListExpiring.size()>0) {
+				List<Lca> lcaListByManager = new ArrayList<Lca>();
 
+				Map<User, List<Lca>> managerLcaMap = new HashMap<User, List<Lca>>();
+				
+				for (Lca  lcaObj : lcaListExpiring) { // here for loop preparing lca list by user base.
+
+					if (managerLcaMap.get(lcaObj.getCreatedBy()) == null) {
+						lcaListByManager = new ArrayList<Lca>();
+						lcaListByManager.add(lcaObj);
+						managerLcaMap.put(lcaObj.getCreatedBy(), lcaListByManager);
+					} else {
+						managerLcaMap.get(lcaObj.getCreatedBy()).add(lcaObj);
+					}
+				}
+				for (Map.Entry<User, List<Lca>> entry : managerLcaMap.entrySet()) {
+				//	System.out.println("Key = " + entry.getKey().getId() + ", Value = " + entry.getValue().size());
+					User toUser = (User)entry.getKey();
+					List<Lca> mapLcaList = entry.getValue();
+					OrgLocations ol = mapLcaList.get(0).getOrgLocationId(); // ge
+				    sendEmailReminderToLcaManagerExpiredInDays(toUser, fromUser, lcaListExpiring, ol, String.valueOf(expiring_days_arr[i]));
+				}
+			  }
+			}	
+			
+			List<Lca> lcaList = immigrationCommonService.getAllLcaList(currentDate);
+			if (lcaList != null && lcaList.size() > 0) {
+				List<Lca> lcaListByManager = new ArrayList<Lca>();
+
+				Map<User, List<Lca>> managerLcaMap = new HashMap<User, List<Lca>>();
+
+				for (Lca lcaObj : lcaList) { // here for loop preparing lca list by user base.
+
+					if (managerLcaMap.get(lcaObj.getCreatedBy()) == null) {
+						lcaListByManager = new ArrayList<Lca>();
+						lcaListByManager.add(lcaObj);
+						managerLcaMap.put(lcaObj.getCreatedBy(), lcaListByManager);
+					} else {
+						managerLcaMap.get(lcaObj.getCreatedBy()).add(lcaObj);
+					}
+				}
+				// below code is used for sending email to each user in map. Map contains user
+				// as key and value as list of lca objects.
+				for (Map.Entry<User, List<Lca>> entry : managerLcaMap.entrySet()) {
+				//	System.out.println("Key = " + entry.getKey().getId() + ", Value = " + entry.getValue().size());
+					User toUser = (User) entry.getKey();
+					List<Lca> mapLcaList = entry.getValue();
+					OrgLocations ol = mapLcaList.get(0).getOrgLocationId(); // getting org loaction id from the first
+																			// object.
+					sendEmailReminderToLcaManagerExpired(toUser, fromUser, mapLcaList, ol, ImmigrationConstants.LCA_STATUS_EXPIRED);
+				}
+			}
+			
+			
+		} catch (Exception e) {
+			logger.error("ERROR in " + e.getMessage());
+			// System.out.println("ERROR in " + e.getMessage());
+		}
+	}
+	
+	private void sendEmailReminderToLcaManagerExpired(User toUserObj, String fromEmail, List<Lca> lcaList, OrgLocations ol, String currLcaStatus) throws Exception {
+		 EmailMessage emailMessage = new EmailMessage();
+		
+		 emailMessage.setFirstName(toUserObj.getFirstName());
+		 emailMessage.setLastName(toUserObj.getLastName());
+		 emailMessage.setToEmail(toUserObj.getEmail());
+		 emailMessage.setFromEmail(fromEmail);
+		
+		 StringBuilder sb = new StringBuilder();
+			
+		 sb.append("<table width='900' align='center' style='border-collapse: collapse; margin: 0 auto;border: 1px solid #375d81; text-align: center;' cellpadding='2px' cellspacing='0' border='0'>");
+		        sb.append("<thead style='background-color:#375d81; color: #fff;'>");
+		        sb.append("<tr style='min-height: 30px; line-height: 30px; vertical-align: middle;'>");            
+		        sb.append("<th style='border: 1px solid #12385c; text-align: center;'>LCA No</th>");          
+		        sb.append("<th style=.border: 1px solid #12385c; text-align: center;'>LCA Title</th>");                
+		        sb.append("<th style='border: 1px solid #12385c; text-align: center;'>Location</th>");                  
+		        sb.append("<th style='border: 1px solid #12385c; text-align: center;'>Employees</th>");
+		        sb.append("<th style='border: 1px solid #12385c; text-align: center;'>Start date</th>");
+		        sb.append("<th style='border: 1px solid #12385c; text-align: center;'>End date</th>");
+		        sb.append("</tr>");    
+		        sb.append("</thead>");    
+		        sb.append("<tbody>");
+	        lcaList.forEach(lca->{
+	        	
+	        	String strStartDate = commonUtil.dateStrFromOrgDateFormatter(ol.getDateFormat(), lca.getStartDate());
+	  			String strEndDate = commonUtil.dateStrFromOrgDateFormatter(ol.getDateFormat(), lca.getEndDate());
+		        sb.append("<tr style='min-height: 30px; line-height: 30px; vertical-align: middle;'>");
+		        sb.append("<td style='border: 1px solid #375d81;' width='300'>"+lca.getLcaNo()+"</td>");                      
+		        sb.append("<td style='border: 1px solid #375d81;' width='225'>"+lca.getLcaTitle()+"</td>");                  
+		        sb.append("<td style='border: 1px solid #375d81;' width='225'>----</td>"); 
+		        sb.append("<td style='border: 1px solid #375d81;' width='225'>-----</td>"); 
+		        sb.append("<td style='border: 1px solid #375d81;' width='225'>"+strStartDate+"</td>"); 
+		        sb.append("<td style='border: 1px solid #375d81;' width='225'>"+strEndDate+"</td>"); 
+		        sb.append("</tr>");
+	        });
+	  		
+	  		sb.append("</tbody>");   
+		    sb.append("/<table>"); 
+
+		Map<String, String> globalVarsMap = new HashMap<String, String>();
+		 globalVarsMap.put("currLcaStatus", currLcaStatus);
+		 
+		 globalVarsMap.put("No_Of_Lcas",String.valueOf(lcaList.size()));
+		 
+		 if(toUserObj.getLastName() != null) {
+			 globalVarsMap.put("Lca_Manager",toUserObj.getFirstName() +" "+ toUserObj.getLastName());
+		 }else {
+			 globalVarsMap.put("Lca_Manager",toUserObj.getFirstName());
+		 }
+		 
+		 globalVarsMap.put("Lca_Table", sb.toString());
+		// globalVarsMap.put("Expiring_Days",commonUtil.dateStrFromOrgDateFormatter(ol.getDateFormat(), lcaObj.getEndDate()));
+		 
+		StringBuilder loginBuilder = new StringBuilder();
+		globalVarsMap.put("URL_Link", loginBuilder.append("<a href='").append(sourceleadLoginUrl).append(
+		"' style='text-decoration:none; '><div style=' width:220px; border-radius:30px; background-color:#214b90; color:#FFF; font-size:18px; font-weight:500; margin:10px auto 5px auto; padding:10px 0px; text-align:center; letter-spacing:2px;'>Login</div></a>")
+		.toString());
+
+		globalVarsMap.put("Org_Name",ol.getOrgLocationName());
+		 InternetAddress[] iAdressArray = InternetAddress.parse(emailMessage.getToEmail());
+		 EmailScenario emailScenario = null;
+		 //getting the current EmailScenario by EmailScenario unique name and entity type
+			 emailScenario = emailScenarioService.getEmailScenarioByUniqueName(Constants.LCA_MANAGER_EXPIRED_EMAIL,Constants.ENTITY_TYPE_EMAIL);
+		
+		 //covert subject,body and signature
+			 String subject = emailScenerioUtil.bulidTemplateSubject(emailScenario.getSubject(),globalVarsMap,emailScenario);
+			 String body = emailScenerioUtil.buildTemplateBody(emailScenario.getBody(),globalVarsMap,emailScenario);
+			 String signature = null;
+			 if(StringUtils.isNotBlank(emailScenario.getSignature())){
+				 signature = emailScenerioUtil.buildTemplateSignature(emailScenario.getSignature(),globalVarsMap,emailScenario); 
+			 }
+			 String url = sourceleadUrl;
+		 
+		 //construct HTML template using required data
+		 String emailTemplate = emailScenerioUtil.AssembleEmailMessage(emailScenario,emailMessage, subject, body, signature, url, ol.getOrg(), ol);
+		 emailMessage.setSubject(subject);
+		 emailMessage.setMessageBody(emailTemplate);
+		 
+		 //calling the sendEmail method of emailScenerioUtil
+		 emailScenerioUtil.sendEmail(emailMessage,ol.getId(),iAdressArray,new ArrayList<EmailAttachment>());
+		
+		}
+	
+	
+	private void sendEmailReminderToLcaManagerExpiredInDays(User toUserObj, String fromEmail, List<Lca> lcaList, OrgLocations ol, String currLcaDaysStatus) throws Exception {
+			
+		      EmailMessage emailMessage = new EmailMessage();
+			
+			  emailMessage.setFirstName(toUserObj.getFirstName());
+			  emailMessage.setLastName(toUserObj.getLastName());
+			  emailMessage.setToEmail(toUserObj.getEmail());
+			  emailMessage.setFromEmail(fromEmail);
+			  
+			 StringBuilder sb = new StringBuilder();
+			 Date expiredDate = null;	
+			 sb.append("<table width='900' align='center' style='border-collapse: collapse; margin: 0 auto;border: 1px solid #375d81; text-align: center;' cellpadding='2px' cellspacing='0' border='0'>");
+		        sb.append("<thead style='background-color:#375d81; color: #fff;'>");
+		        sb.append("<tr style='min-height: 30px; line-height: 30px; vertical-align: middle;'>");            
+		        sb.append("<th style='border: 1px solid #12385c; text-align: center;'>LCA No</th>");          
+		        sb.append("<th style=.border: 1px solid #12385c; text-align: center;'>LCA Title</th>");                
+		        sb.append("<th style='border: 1px solid #12385c; text-align: center;'>Location</th>");                  
+		        sb.append("<th style='border: 1px solid #12385c; text-align: center;'>Employees</th>");
+		        sb.append("<th style='border: 1px solid #12385c; text-align: center;'>Start date</th>");
+		        sb.append("<th style='border: 1px solid #12385c; text-align: center;'>End date</th>");
+		        sb.append("</tr>");    
+		        sb.append("</thead>");    
+		        sb.append("<tbody>");
+				
+		        for(Lca lca :lcaList)
+		        {
+	        	String strStartDate = commonUtil.dateStrFromOrgDateFormatter(ol.getDateFormat(), lca.getStartDate());
+	  			String strEndDate = commonUtil.dateStrFromOrgDateFormatter(ol.getDateFormat(), lca.getEndDate());
+	  			expiredDate =lca.getEndDate();
+		        sb.append("<tr style='min-height: 30px; line-height: 30px; vertical-align: middle;'>");
+		        sb.append("<td style='border: 1px solid #375d81;' width='300'>"+lca.getLcaNo()+"</td>");                      
+		        sb.append("<td style='border: 1px solid #375d81;' width='225'>"+lca.getLcaTitle()+"</td>");                  
+		        sb.append("<td style='border: 1px solid #375d81;' width='225'>----</td>"); 
+		        sb.append("<td style='border: 1px solid #375d81;' width='225'>-----</td>"); 
+		        sb.append("<td style='border: 1px solid #375d81;' width='225'>"+strStartDate+"</td>"); 
+		        sb.append("<td style='border: 1px solid #375d81;' width='225'>"+strEndDate+"</td>"); 
+		        sb.append("</tr>");	
+		       }
+	  		sb.append("</tbody>");   
+		    sb.append("/<table>"); 
+       
+			Map<String, String> globalVarsMap = new HashMap<String, String>();
+			 globalVarsMap.put("currLcaStatus", currLcaDaysStatus);
+			 
+			 globalVarsMap.put("No_Of_Lcas",String.valueOf(lcaList.size()));
+			 
+			 if(toUserObj.getLastName() != null) {
+				 globalVarsMap.put("Lca_Manager",toUserObj.getFirstName() +" "+ toUserObj.getLastName());
+			 }else {
+				 globalVarsMap.put("Lca_Manager",toUserObj.getFirstName());
+			 }
+			 
+			 Calendar cal = Calendar.getInstance();
+			 Date startDate = cal.getTime();
+			 
+			 SimpleDateFormat df=new SimpleDateFormat("yyyy-M-dd");
+			 String expDate=df.format(expiredDate);
+			 Date endDate=commonUtil.dateFromElk(expDate);		
+			 long diff = endDate.getTime()-startDate.getTime();
+			 
+			 Long expiredInDays = TimeUnit.DAYS.convert(diff, TimeUnit.MILLISECONDS);
+			 
+		//	 System.out.println("expiredInDays>>>>>>>>>>>>>>>>>>>>>"+expiredInDays);
+			 globalVarsMap.put("Lca_Table", sb.toString());
+			 globalVarsMap.put("Expiring_Days",String.valueOf(expiredInDays));
+			 
+			StringBuilder loginBuilder = new StringBuilder();
+			globalVarsMap.put("URL_Link", loginBuilder.append("<a href='").append(sourceleadLoginUrl).append(
+			"' style='text-decoration:none; '><div style=' width:220px; border-radius:30px; background-color:#214b90; color:#FFF; font-size:18px; font-weight:500; margin:10px auto 5px auto; padding:10px 0px; text-align:center; letter-spacing:2px;'>Login</div></a>")
+			.toString());
+	
+			globalVarsMap.put("Org_Name",ol.getOrgLocationName());
+			 InternetAddress[] iAdressArray = InternetAddress.parse(emailMessage.getToEmail());
+			 EmailScenario emailScenario = null;
+			 //getting the current EmailScenario by EmailScenario unique name and entity type
+				 emailScenario = emailScenarioService.getEmailScenarioByUniqueName(Constants.LCA_MANAGER_EXPIRED_EMAIL_IN_DAYS,Constants.ENTITY_TYPE_EMAIL);
+	
+				//convert subject,body and signature
+				 String subject = emailScenerioUtil.bulidTemplateSubject(emailScenario.getSubject(),globalVarsMap,emailScenario);
+				 String body = emailScenerioUtil.buildTemplateBody(emailScenario.getBody(),globalVarsMap,emailScenario);
+				 String signature = null;
+				 if(StringUtils.isNotBlank(emailScenario.getSignature())){
+					 signature = emailScenerioUtil.buildTemplateSignature(emailScenario.getSignature(),globalVarsMap,emailScenario); 
+				 }
+				 String url = sourceleadUrl;
+			 
+			 //construct HTML template using required data
+			 String emailTemplate = emailScenerioUtil.AssembleEmailMessage(emailScenario,emailMessage, subject, body, signature, url, ol.getOrg(), ol);
+			 emailMessage.setSubject(subject);
+			 emailMessage.setMessageBody(emailTemplate);
+			 
+			 //calling the sendEmail method of emailScenerioUtil
+			 emailScenerioUtil.sendEmail(emailMessage,ol.getId(),iAdressArray,new ArrayList<EmailAttachment>());
+
+		}
+	
 	/**
 	 * @author Rajashekar & Prasad salina
 	 * Fires on Every 15 (semi_monthly) days at 11:45 PM and send mails to employees those who are not submited their timesheets
@@ -2660,7 +2916,7 @@ public class EMailJobScheduler {
 	 * this cron will run at 04:00 AM (UTC)
 	 * @throws Exception
 	 */
-	@Scheduled(cron = "0 0 4 1/1 * ?")
+	//@Scheduled(cron = "0 0 4 1/1 * ?")
 	@Async
 	public void updateLeaveStatus() throws Exception
 	{

@@ -1,6 +1,6 @@
 package com.bis.sourcelead.dto;
 
-import com.ibm.icu.math.BigDecimal;
+import java.math.BigDecimal;
 
 public class ExpensesApproverHierarchyDTO {
 	
@@ -124,11 +124,12 @@ public String getClientName() {
 public void setClientName(String clientName) {
 	this.clientName = clientName;
 }
+
 public BigDecimal getTotalAmount() {
 	return totalAmount;
 }
-public void setTotalAmount(BigDecimal totalAmountRoundOff) {
-	this.totalAmount = totalAmountRoundOff;
+public void setTotalAmount(BigDecimal totalAmount) {
+	this.totalAmount = totalAmount;
 }
 public String getTdSpanLength() {
 	return tdSpanLength;

@@ -86,12 +86,17 @@ background-color: #ddd; color: #333; border: 1px solid #ddd !important;
               <li class="current"><a href="#detailsTab"><i class="fa fa-check-circle-o"></i>Details</a></li>
               <li><a href="#passportsTab"><i id ="passportfilled" class="fa fa-check-circle-o"></i>Passport</a></li>
               <li><a href="#visasTab"  id="visaInfoTab" class="${visaOnLoadCount==null?'disabledLink':''}"><i id ="visafilled" class="fa fa-check-circle-o"></i>Visa</a></li>
+            
+              <li><a href="#lcaTab"><i id ="lcafilled" class="fa fa-check-circle-o"></i>LCA</a></li>
+              
               <li><a href="#employersTab" id="employersInfoTab" class="${empOnLoadCount==null?'disabledLink':''}"><i id ="employersfilled" class="fa fa-check-circle-o"></i>Employers</a></li>
               <li><a href="#educationsTab" id="educationInfoTab" class="${eduOnLoadCount==null?'disabledLink':''}"><i id ="educationfilled" class="fa fa-check-circle-o"></i>Educations</a></li>
               <li><a href="#residencesTab" id="residenceInfoTab" class="${resiOnLoadCount==null?'disabledLink':''}"><i id ="residencefilled" class="fa fa-check-circle-o"></i>Residence</a></li>
               <li><a href="#familiesTab" class="${familyOnLoadCount==null?'disabledLink':''}"><i id ="familyfilled" class="fa fa-check-circle-o"></i>Family</a></li>
               <li><a href="#formsTab"><i id="allFormsfilled" class="fa fa-check-circle-o"></i>Forms</a></li>
+             
               <li><a href="#docsTab"><i id="allDocsfilled" class="fa fa-check-circle-o"></i>Documents</a></li>
+             
               <li><a href="#tasksTab"><i id="tasksInfoTab" class="${taskOnLoadCount==null?'fa fa-check-circle-o':''}"></i>Tasks</a></li>
               <li><a href="#notesTab">Notes</a></li>
               <li><a href="#activitiesTab" id= "#activitiesId">Timeline</a></li>
@@ -148,6 +153,11 @@ background-color: #ddd; color: #333; border: 1px solid #ddd !important;
 	   <div id="immigrationLoadingVisasTab"></div>
 		<jsp:include page="visaDetailsTab.jsp" />
 	  </div>
+	  
+	  <div id="lcaTab" class="immigraTabs_inn">
+	  <div id="immigrationLcaLoadingTab"></div>
+		<jsp:include page="lcaDetailsTab.jsp" />	
+	  </div>
 	  	  
 	  <div id="passportsTab" class="immigraTabs_inn">
 	   <div id="immigrationLoadingPassportsTab"></div>
@@ -163,6 +173,8 @@ background-color: #ddd; color: #333; border: 1px solid #ddd !important;
 	  <div id="immigrationLoadingTasksTab"></div>
 		<jsp:include page="taskDetailsTab.jsp" />
 	  </div>
+	  
+	  
 
 	</section>
     <div id="popUp"></div>
@@ -228,34 +240,37 @@ $(document).ready(function() {
         	immigration.displayFamilyDetails(candidateId);
         }else if(tab=='#educationsTab'){
         showLoading("immigrationLoadingEducationsTab");
-        getCandidateEducationList(candidateId);
+        immigration.getCandidateEducationList(candidateId);
         } else if(tab=='#employersTab'){
         showLoading("immigrationLoadingEmployersTab");
-        getCandidateEmployerList(candidateId);
+        immigration.getCandidateEmployerList(candidateId);
         }else if(tab=='#residencesTab'){
         	showLoading("immigrationLoadingResidencesTab");
-        	getCandidateResidenceList(candidateId);
+        immigration.getCandidateResidenceList(candidateId);
         }else if(tab=='#passportsTab'){
         showLoading("immigrationLoadingPassportsTab");
         immigration.displayPassportDetails(candidateId,'Passport');
         }else if(tab=='#visasTab'){
         showLoading("immigrationLoadingVisasTab");
         immigration.displayVisaDetails(candidateId,'Visa');
+        }else if(tab=='#lcaTab'){
+        	showLoading("immigrationLcaLoadingTab");
+        	immigration.getLcaDetailsInfo(immigrationId);
         }else if(tab=='#docsTab'){
         	showLoading("immigrationLoadingDocsTab");
-        	displayImmigrationCandidateDocs(candidateId,templateId,immigrationId,"","${myImmigrationPage}");
+        	immigration.displayImmigrationCandidateDocs(candidateId,templateId,immigrationId,"","${myImmigrationPage}");
         }else if(tab =='#notesTab'){
         	showLoading("immigrationLoadingNotesTab");
-        	getNotesListByImmigration(candidateId);
+        	immigration.getNotesListByImmigration(candidateId);
         } else if(tab=='#formsTab'){
         	showLoading("immigrationLoadingFormsTab");
         	immigration.displayImmigrationCandidateForms(candidateId,templateId,immigrationId,"","${myImmigrationPage}");
         }else if(tab=='#activitiesTab'){
         	showLoading("immigrationLoadingActivitiesTab");
-        	getImmigrationActivies();
+        	immigration.getImmigrationActivies();
         }else if(tab=='#tasksTab'){
         	showLoading("immigrationLoadingTasksTab");
-        	getImmigrationTasks(immigrationId,"${myImmigrationPage}","");
+        	immigration.getImmigrationTasks(immigrationId,"${myImmigrationPage}","");
         }
         
        

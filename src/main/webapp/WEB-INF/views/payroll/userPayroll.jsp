@@ -15,14 +15,21 @@ window.onload = function () {
       <div class="pull-left">
         <h2>User Payroll</h2>
       </div>
-      <div class="pull-right brud-crum">Home &raquo; User Payroll</div>
+      <div class="pull-right brud-crum"><a href="<c:url value='${appPath}/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a> &raquo;User Payroll</div>
     </section>
 
 <div class="project_side_wrap_inn_tabs clearfix">
-	<ul class="project-tabs-menu clearfix">
+	<ul class="project-tabs-menu pull-left">
 		<li class="current"><a href="#tab-1" onclick="getUserPayrollList();">My Payroll</a></li>
 		<li><a href="#tab-2" onclick="getInvoiceData();">Invoice Data</a></li>
+		<li><a href="#tab-3" onclick="getWagesTaxSummaryByEmpId();">Balance report</a></li>
+		<input type="hidden" id="empId" value="${employeeId}"/>
 	</ul>
+	<%-- <div class="pull-left tabBt">
+		<a href="${appPath}/payrollReport?&fromType=Employee">Balance report</a>
+	</div>	 --%>
+	<div class="clearfix"></div>
+	
 	<div class="project_tabs">
 		<div id="tab-1" class="project_tabs_inn" style="display: block;">
 <div class="clearfix"></div>
@@ -48,6 +55,33 @@ window.onload = function () {
 			<div class="project_wrap_table datatable_filter">
 				<div id="invoiceDataDiv"></div>
 			</div>
+		</div>
+		
+		<div id="tab-3" class="project_tabs_inn">
+				<div class="backWhite">        
+					<div class="clearfix bttabHeighlite">
+				      <ul class="nav nav-tabs" id="menuli">
+					        <li class="active" id="wtsli" onclick="getWagesTaxSummaryByEmpId(); highlight(this);"><a href="#innertab-1" >Wages & Tax Summary</a></li>
+					        <li onclick="getIncomeData(); highlight(this);"><a href="#innertab-2" >Income</a></li>
+					        <li onclick="getChecks(); highlight(this);"><a href="#innertab-3" >Manual checks</a></li>
+					        <li onclick="getAccontDeductions(); highlight(this);"><a href="#innertab-4" >Account Deductions</a></li>
+					        <li onclick="getHRDeductions(); highlight(this);"><a href="#innertab-5" >HR Deductions</a></li>
+					        <li onclick="finalBalance(); highlight(this);"><a href="#innertab-6" >Balance</a></li>
+				        	<div class="clearfix"></div>
+				      </ul>
+					</div>
+				      
+				      <div id="loading"></div>
+				        
+				      <div class="project_tabs clearfix pdtop">
+					        <div id="innertab-1" class="require_wrap_table datatable_filter filter_position" style="display: block"></div>
+					        <div id="innertab-2" class="require_wrap_table datatable_filter filter_position"></div>
+					        <div id="innertab-3" class="require_wrap_table datatable_filter filter_position"></div>
+					      	<div id="innertab-4" class="require_wrap_table datatable_filter filter_position"></div>
+					        <div id="innertab-5" class="require_wrap_table datatable_filter filter_position"></div>
+					        <div id="innertab-6" class="clearfix"></div>          
+				      </div>
+				</div>
 		</div>
 	</div>
 	</div>
@@ -295,5 +329,5 @@ $(document).ready(function() {
     });
 });
 </script>
-
+<jsp:include page="employeePayrollReport.jsp" />
 <jsp:include page="../masterFooter.jsp" />

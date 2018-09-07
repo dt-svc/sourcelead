@@ -23,4 +23,5 @@ public interface UserGroupService {
 
 	Response<UserGroupDTO> deleteUserGroupByUUID(String groupUUID, User loginUser);
 
+	List<UserGroup> getAllUserGroupsByLocationIdAndPayFrequency(OrgLocations orgLocation, String payFrequency);
 }

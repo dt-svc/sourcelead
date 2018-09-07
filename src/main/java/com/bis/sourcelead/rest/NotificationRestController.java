@@ -139,7 +139,7 @@ public class NotificationRestController {
 		User loginUser = userService.getUserById(userId);
 		OrgLocations orgLocations = orgLocationService.getOrgLocations(orgLocationId);
 		Timezone timezone = timeZoneService.getTimezone(orgLocations.getTimezone().getId());
-		List<Notifications> notificationList = notificationsService.getAllNotificationsListByUserId(loginUser.getId(),orgCode,locationCode);
+		List<Notifications> notificationList = notificationsService.getTopTenNotificationsListByUserId(loginUser.getId(),orgCode,locationCode);
 		List<NotificationDTO> notificationDTOList = new ArrayList<>();
 		for (Notifications notifications : notificationList) {
 			StringBuilder sb = new StringBuilder();

@@ -7,6 +7,7 @@ import java.util.List;
 import org.hibernate.Query;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
+import org.hibernate.transform.Transformers;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,6 +17,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.dao.NotificationsDao;
+import com.bis.sourcelead.dto.ConnectionsDTO;
 import com.bis.sourcelead.dto.NotificationDTO;
 import com.bis.sourcelead.dto.ResponseList;
 import com.bis.sourcelead.entity.Notifications;
@@ -24,6 +26,8 @@ import com.bis.sourcelead.exception.SourceLeadConstraintViolationException;
 import com.bis.sourcelead.service.OrgSpocService;
 import com.bis.sourcelead.service.TimeZoneService;
 import com.bis.sourcelead.util.CommonUtil;
+import org.hibernate.transform.Transformers;
+
 
 @Repository
 @Transactional(rollbackFor = { Exception.class })
@@ -262,7 +266,22 @@ public class NotificationsDaoImpl implements NotificationsDao{
 		return response;
 	}
 
-	
+	@Override
+	@SuppressWarnings("unchecked")
+	@Transactional(rollbackFor = { Exception.class })
+	public List<Notifications> getTopTenNotificationsListByUserId(Long userId, String orgCode, String locationCode) {
+		Session session =  this.sessionFactory.getCurrentSession();
+		String notificationStatus = Constants.NOTIFICATION_NOT_DELETED;
+		String query = "from Notifications nf where nf.notificationTo = :userId  and nf.orgCode = :orgCode and nf.locationCode = :locationCode and nf.notificationStatus =:notificationStatus ORDER BY nf.createdDate DESC";
+		@SuppressWarnings("unchecked")
+		List<Notifications> notificationList = (List<Notifications>)session.createQuery(query).setLong("userId", userId)
+																	.setString("notificationStatus", notificationStatus)
+				   													.setString("orgCode", orgCode)
+				   													.setString("locationCode", locationCode).setMaxResults(10).list();
+			return notificationList;
+	}
+
+	 
 	 
 	
 }

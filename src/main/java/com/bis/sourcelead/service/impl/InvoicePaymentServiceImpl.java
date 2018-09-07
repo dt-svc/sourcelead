@@ -67,13 +67,17 @@ public class InvoicePaymentServiceImpl implements InvoicePaymentService {
 
 	@Autowired
 	ConversionUtil conversionUtil;
+	
+	@Autowired
+	InvoiceService invoiceService;
 
 	@Override
 	public InvoicePayment saveInvoicePayment(InvoicePaymentDTO invoicePaymentDTO, User user, OrgLocations orgLocation,
 			MultipartFile multiFile, Long invoiceId) throws Exception {
 
+		
 		Invoice invoice = invoiceDao.getInvoicetById(invoiceId);
-
+		Invoice parentInvoice = null;
 		InvoicePayment invoicePayment = new InvoicePayment();
 		/*String pattern = "dd-MM-yyyy";
 		SimpleDateFormat format = new SimpleDateFormat(pattern);*/
@@ -120,9 +124,9 @@ public class InvoicePaymentServiceImpl implements InvoicePaymentService {
 			if (Constants.INVOICE_SENT.equalsIgnoreCase(invoice.getInvoiceStatus())) {
 				invoice.setInvoiceStatus(Constants.INVOICE_ACCEPETED);
 			}
+			invoice.setUpdatedBy(user.getUserCode());
+			invoice.setUpdatedDate(commonUtil.currentDate());
 			Invoice childInvoice = invoiceDao.saveInvoce(invoice);
-
-			Invoice parentInvoice = null;
 			if (null != childInvoice) {
 				if (null != childInvoice.getId()) {
 					parentInvoice = invoiceDao.getInvoicetBySelfJoinInvoiceId(childInvoice.getId());
@@ -140,6 +144,8 @@ public class InvoicePaymentServiceImpl implements InvoicePaymentService {
 							invoicePayment.setPaymentAmount(invoicePaymentDTO.getTotalAmount());
 							parentInvoice.setPaymentStatus(Constants.INVOICE_STATUS_PAID);
 							parentInvoice.setDueAmount("00.00");
+							parentInvoice.setUpdatedBy(user.getUserCode());
+							parentInvoice.setUpdatedDate(commonUtil.currentDate());
 						}
 					}
 					if (invoicePaymentDTO.getPaymentAmount().equalsIgnoreCase("custom")) {
@@ -176,6 +182,7 @@ public class InvoicePaymentServiceImpl implements InvoicePaymentService {
 								}else {
 									parentInvoice.setPaymentStatus(Constants.INVOICE_STATUS_PARTIAL_PAID);
 								}
+								
 							}
 
 							if (receivedAmount != null) {
@@ -189,7 +196,10 @@ public class InvoicePaymentServiceImpl implements InvoicePaymentService {
 					if (Constants.INVOICE_RECEIVED.equalsIgnoreCase(parentInvoice.getInvoiceStatus())) {
 						parentInvoice.setInvoiceStatus(Constants.INVOICE_ACCEPETED);
 					}
+					parentInvoice.setUpdatedBy(user.getUserCode());
+					parentInvoice.setUpdatedDate(commonUtil.currentDate());
 					invoiceDao.saveInvoce(parentInvoice);
+					
 				}
 
 			}
@@ -225,7 +235,12 @@ public class InvoicePaymentServiceImpl implements InvoicePaymentService {
 		invoicePayment.setStatus(Constants.RECORD_ACTIVE.toString());
 		invoicePayment.setCreatedBy(user.getUserCode());
 		invoicePayment.setCreatedDate(commonUtil.currentDate());
-		return invoicePaymentDao.saveInvoicePayment(invoicePayment);
+		invoicePayment.setUpdatedBy(user.getUserCode());
+		invoicePayment.setUpdatedDate(commonUtil.currentDate());
+		InvoicePayment invoicePaymentObject =invoicePaymentDao.saveInvoicePayment(invoicePayment); 
+		invoiceService.saveInvoiceTimelineHistory(parentInvoice, user, null, null, invoicePaymentObject.getId(), null);
+		invoiceService.saveInvoiceTimelineHistory(invoice, user, null, null, invoicePaymentObject.getId(), null);
+		return invoicePaymentObject;
 	}
 	
 	
@@ -266,6 +281,7 @@ public class InvoicePaymentServiceImpl implements InvoicePaymentService {
 						BigDecimal receivedDecimal = (new BigDecimal(received));
 						remainAmount = dueDecimal.subtract(receivedDecimal);
 						invoice.setPaymentStatus(Constants.INVOICE_STATUS_PARTIAL_PAID);
+						invoicePayment.setPaymentAmount(invoiceIdsMap.get(invoice.getId()));
 						invoice.setDueAmount(remainAmount.toString());
 					}
 				}
@@ -273,6 +289,8 @@ public class InvoicePaymentServiceImpl implements InvoicePaymentService {
 			if (Constants.INVOICE_SENT.equalsIgnoreCase(invoice.getInvoiceStatus())) {
 				invoice.setInvoiceStatus(Constants.INVOICE_ACCEPETED);
 			}
+			invoice.setUpdatedBy(user.getUserCode());
+			invoice.setUpdatedDate(commonUtil.currentDate());
 			Invoice childInvoice = invoiceDao.saveInvoce(invoice);
 
 			Invoice parentInvoice = null;
@@ -282,28 +300,58 @@ public class InvoicePaymentServiceImpl implements InvoicePaymentService {
 					if (parentInvoice == null) {
 						parentInvoice = invoiceDao.getInvoicetByParentInvoiceId(invoice.getParentInvoiceId().getId());
 					}
-					
+					String childCurrencyCode = invoice.getCurrencyCode();
+					String parentCurrencyCode = parentInvoice.getCurrencyCode();
 					// float totalAmount = 0;
 					// float customAmount = 0;
+					if(childCurrencyCode.equalsIgnoreCase(parentCurrencyCode)){
 						if (StringUtils.isNotBlank(invoicePaymentDTO.getTotalAmount())) {
 							if(invoice.getDueAmount().equals(invoiceIdsMap.get(invoice.getId()))){
+								// total amount paid
 							invoicePayment.setPaymentAmount(invoiceIdsMap.get(invoice.getId()));
 							parentInvoice.setPaymentStatus(Constants.INVOICE_STATUS_PAID);
 							parentInvoice.setDueAmount("00.00");
 							}else{
-								String due = invoice.getDueAmount();
+								// partial amount paid
+								String due = parentInvoice.getDueAmount();
 								BigDecimal dueDecimal = (new BigDecimal(due));
 								String received = invoiceIdsMap.get(invoice.getId());
 								BigDecimal receivedDecimal = (new BigDecimal(received));
 								remainAmount = dueDecimal.subtract(receivedDecimal);
 								parentInvoice.setPaymentStatus(Constants.INVOICE_STATUS_PARTIAL_PAID);
-								invoice.setDueAmount(remainAmount.toString());
+								invoicePayment.setPaymentAmount(invoiceIdsMap.get(invoice.getId()));
+								parentInvoice.setDueAmount(remainAmount.toString());
 							}
 						}
-					
+					}else{
+						// currency conversion code start
+						float conAmount = conversionUtil.convert(childCurrencyCode, parentCurrencyCode,1);
+						float convertedAmount1 = (float) (Math.round(conAmount * 100.0) / 100.0);
+						// currency conversion code ends
+						if(invoice.getDueAmount().equals(invoiceIdsMap.get(invoice.getId()))){
+							// total amount paid
+							float amountPaid = convertedAmount1 *Float.valueOf((invoiceIdsMap.get(invoice.getId())));
+							invoicePayment.setPaymentAmount(String.valueOf(amountPaid));
+							parentInvoice.setPaymentStatus(Constants.INVOICE_STATUS_PAID);
+							parentInvoice.setDueAmount("00.00");
+						}else{
+							// partial amount paid
+							String due = parentInvoice.getDueAmount();
+							BigDecimal dueDecimal = (new BigDecimal(due));
+							String received = invoiceIdsMap.get(invoice.getId());
+							float amountreceived = convertedAmount1 *Float.valueOf(received);
+							BigDecimal receivedDecimal = (new BigDecimal(amountreceived));
+							remainAmount = dueDecimal.subtract(receivedDecimal);
+							parentInvoice.setPaymentStatus(Constants.INVOICE_STATUS_PARTIAL_PAID);
+							invoicePayment.setPaymentAmount(String.valueOf(amountreceived));
+							parentInvoice.setDueAmount(remainAmount.toString());
+						}
+					}
 					if (Constants.INVOICE_RECEIVED.equalsIgnoreCase(parentInvoice.getInvoiceStatus())) {
 						parentInvoice.setInvoiceStatus(Constants.INVOICE_ACCEPETED);
 					}
+					parentInvoice.setUpdatedBy(user.getUserCode());
+					parentInvoice.setUpdatedDate(commonUtil.currentDate());
 					invoiceDao.saveInvoce(parentInvoice);
 				}
 
@@ -333,6 +381,8 @@ public class InvoicePaymentServiceImpl implements InvoicePaymentService {
 		invoicePayment.setStatus(Constants.RECORD_ACTIVE.toString());
 		invoicePayment.setCreatedBy(user.getUserCode());
 		invoicePayment.setCreatedDate(commonUtil.currentDate());
+		invoicePayment.setUpdatedBy(user.getUserCode());
+		invoicePayment.setUpdatedDate(commonUtil.currentDate());
 		invoicePaymentDao.saveInvoicePayment(invoicePayment);
 		 }
 		 // this for moving file to folder after setting values (same information set to selected invoices)

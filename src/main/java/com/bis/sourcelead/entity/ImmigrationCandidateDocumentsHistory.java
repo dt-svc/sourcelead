@@ -18,7 +18,7 @@ import org.hibernate.annotations.Type;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 @Entity
-@Table(name = "IMMIGRATION_CANDIDATE_DOCS_HISTORY", schema = "SOURCELEAD")
+@Table(name = "IMMIGRATION_CANDIDATE_DOCS_HISTORY")
 public class ImmigrationCandidateDocumentsHistory implements Serializable {
 
 	private static final long serialVersionUID = 1L;

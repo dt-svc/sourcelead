@@ -13,10 +13,6 @@ import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import javax.persistence.Transient;
 
-import org.hibernate.annotations.Cache;
-import org.hibernate.annotations.CacheConcurrencyStrategy;
-import org.hibernate.annotations.NotFound;
-import org.hibernate.annotations.NotFoundAction;
 import org.hibernate.annotations.Type;
 
 @Entity
@@ -51,6 +47,8 @@ public class SourceleadActions implements Serializable{
 	@Column(name = "STATUS", nullable = false)
    	private Integer status;
 	
+	@Column(name = "LOCATION_CODE")
+   	private String locationCode;
 	
 
 	public Long getId() {
@@ -99,6 +97,14 @@ public class SourceleadActions implements Serializable{
 
 	public void setStatus(Integer status) {
 		this.status = status;
+	}
+
+	public String getLocationCode() {
+		return locationCode;
+	}
+
+	public void setLoctionCode(String loctionCode) {
+		this.locationCode = loctionCode;
 	}
 
 	

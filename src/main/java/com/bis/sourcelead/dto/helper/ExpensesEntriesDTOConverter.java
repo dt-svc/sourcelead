@@ -25,12 +25,16 @@ public class ExpensesEntriesDTOConverter {
 			}
 			expensesEntriesDTO.setReceiptIssuedBy(expensesEntries.getReceiptIssuedBy());
 			expensesEntriesDTO.setCategoryAmountType(expensesEntries.getCurrencyType());
-			expensesEntriesDTO.setCategoryAmount(String.valueOf(expensesEntries.getAmount()));
-			BigDecimal totalAmo = new BigDecimal(expensesEntries.getAmount());
-			BigDecimal amountRoundOff = totalAmo.setScale(2, BigDecimal.ROUND_HALF_EVEN);
-			expensesEntriesDTO.setAmountRoundOff(amountRoundOff);	
+     		expensesEntriesDTO.setAmountRoundOff((expensesEntries.getAmount()));
+		/*	BigDecimal totalAmo = new BigDecimal(expensesEntries.getAmount());
+			BigDecimal amountRoundOff = totalAmo.setScale(2, BigDecimal.ROUND_HALF_EVEN);*/
+			//expensesEntriesDTO.setAmountRoundOff(amountRoundOff);	
 			expensesEntriesDTO.setEntryDescription(expensesEntries.getDescription());
 			expensesEntriesDTO.setPaidBy(expensesEntries.getPaidBy());
+			expensesEntriesDTO.setBillable(expensesEntries.getBillable());
+			expensesEntriesDTO.setAmountchangereason(expensesEntries.getAmountchangereason());
+			expensesEntriesDTO.setSubmittedamount(expensesEntries.getSubmittedamount());
+			expensesEntriesDTO.setAmount(expensesEntries.getAmount());
 			if(expensesEntries.getExpensesCategoryId() != null){
 				expensesEntriesDTO.setCategoryTypeId(expensesEntries.getExpensesCategoryId().getId());
 				expensesEntriesDTO.setCategoryName(expensesEntries.getExpensesCategoryId().getExpensesName());

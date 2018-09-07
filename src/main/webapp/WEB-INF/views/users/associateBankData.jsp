@@ -9,7 +9,7 @@
                   <label>Account Type<span class="text-danger">&nbsp;*</span></label>
                   <div>
                     <select class="form-control chosen-select" id="accountType" name ="accountType" data-validation="required" onchange="showHideAccountTypes();" field-name="Account Type">
-                      <option value="">Bank Transfer</option>
+                      <option value="Bank Transfer">Bank Transfer</option>
                       <option value="Direct Deposit">Direct Deposit</option>
                       <option value="Cheque">Cheque</option>
                       <option value="Cash">Cash</option>
@@ -83,6 +83,8 @@
 							document.getElementById("associateTax").removeAttribute("class"); 
 							associateTax.href="#tab-3"; 
 							$("#associateTax").click();
+							$("#save_associate_bank_data_button").removeAttr("disabled");
+							$("#save_associate_bank_data_button").addClass('button').val('Save & Continue');
 		                } else if (result.indexOf('Sign In') !== -1) {
 							location.replace(sourceleadUrl);
 						} else {

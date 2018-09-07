@@ -65,7 +65,9 @@ import com.bis.sourcelead.dao.ProjectTasksDao;
 import com.bis.sourcelead.dao.ShiftDao;
 import com.bis.sourcelead.dto.ApplicantRejectBackOutDTO;
 import com.bis.sourcelead.dto.CandidateDTO;
+import com.bis.sourcelead.dto.PayrollPayheadDTO;
 import com.bis.sourcelead.dto.RequirementDTO;
+import com.bis.sourcelead.dto.ResponseList;
 import com.bis.sourcelead.dto.SourceleadSectionDTO;
 import com.bis.sourcelead.dto.UserDTO;
 import com.bis.sourcelead.elk.index.ClientVendorIndex;
@@ -117,6 +119,7 @@ import com.bis.sourcelead.service.EmployeeVerificationTemplateService;
 import com.bis.sourcelead.service.ExpenseProjectApproverHierarchyService;
 import com.bis.sourcelead.service.MasterCandidateService;
 import com.bis.sourcelead.service.OrgSpocService;
+import com.bis.sourcelead.service.PayrollPayheadService;
 import com.bis.sourcelead.service.ProjectApproverHierarchyService;
 import com.bis.sourcelead.service.ProjectClientService;
 import com.bis.sourcelead.service.ProjectMembersHistoryService;
@@ -173,6 +176,9 @@ public class CommonUtil {
 	
 	@Autowired
 	private ProjectsService projectsService;
+	
+	@Autowired
+	private PayrollPayheadService payrollPayheadService;
 	
 	@Autowired
 	private UserService userService;
@@ -498,7 +504,7 @@ public class CommonUtil {
 	 * @author: Naresh Bolisetty
 	 * 
 	 */
-	public Boolean isSuperAdminForProjectMemberToReopenTimeOrExpenseses(Long projectMemberId,User loginUser,OrgLocations loginLocation) throws Exception{
+	public Boolean isSuperAdminForProjectMemberToReopenTimesheets(Long projectMemberId,User loginUser,OrgLocations loginLocation) throws Exception{
 		ProjectMembers clientProjectMember = projectMembersService.getClientProjectMemberByProjectMemberId(projectMemberId);
 	    ProjectApproverHierarchy pah =  null;
 	    Boolean isSuperUser = false;
@@ -506,6 +512,36 @@ public class CommonUtil {
 	    {
 	    	UserRole userRole = userRoleService.getUserRoleByUserIdAndLocationId(loginUser.getId(), loginLocation.getId());
 	    	pah =  projectApproverHierarchyService.getApproverUsersByProjectIdAndProjectClientId(clientProjectMember.getProjects().getId(), clientProjectMember.getProjectClientsId().getId());
+		    if(     
+		    		//If the Login User As Location Admin Of Client
+		    		(null != clientProjectMember.getProjectClientsId() && null != clientProjectMember.getProjectClientsId().getOrgLocationsId() && null != clientProjectMember.getProjectClientsId().getOrgLocationsId().getUser()
+		    		  && clientProjectMember.getProjectClientsId().getOrgLocationsId().getId().longValue() == loginLocation.getId().longValue() && userRole != null && StringUtils.isNotEmpty(userRole.getUserType()) && userRole.getUserType().equalsIgnoreCase("Admin"))
+		    		||
+		    		//If the Login User As Top-Level(Level2) Approver Of Client
+		    		(null != pah && null != pah.getApproverUserId() && null != pah.getApproverUserId().getId()
+		    		  && pah.getApproverUserId().getId().longValue() == loginUser.getId().longValue())
+		    		
+		      ){
+		    	isSuperUser = true;
+		     }
+	    }
+	    return isSuperUser;
+	}
+	
+	
+	/**
+	 * This method is used to Get the Approver User of Time or Expense Reopen Requests
+	 * @author: Naresh Bolisetty
+	 * 
+	 */
+	public Boolean isSuperAdminForProjectMemberToReopenExpenseses(Long projectMemberId,User loginUser,OrgLocations loginLocation) throws Exception{
+		ProjectMembers clientProjectMember = projectMembersService.getClientProjectMemberByProjectMemberId(projectMemberId);
+	    ExpenseProjectApproverHierarchy pah =  null;
+	    Boolean isSuperUser = false;
+	    if(null != clientProjectMember && null != clientProjectMember.getProjects() && null != clientProjectMember.getProjectClientsId())
+	    {
+	    	UserRole userRole = userRoleService.getUserRoleByUserIdAndLocationId(loginUser.getId(), loginLocation.getId());
+	    	pah =  expenseProjectApproverHierarchyService.getApproverUsersByProjectIdAndProjectClientId(clientProjectMember.getProjects().getId(), clientProjectMember.getProjectClientsId().getId());
 		    if(     
 		    		//If the Login User As Location Admin Of Client
 		    		(null != clientProjectMember.getProjectClientsId() && null != clientProjectMember.getProjectClientsId().getOrgLocationsId() && null != clientProjectMember.getProjectClientsId().getOrgLocationsId().getUser()
@@ -2445,8 +2481,8 @@ public OrgLicenseSubscriptionHistory  getOrgLicenseSubscriptionHistory(OrgLicens
 
   
   
-  public void sendTemplateEmail(EmailMessage emailMessage,Map<String, String> globalVarsMap,Org org,OrgLocations orgLocations,String uniqueScenerioName,List<EmailAttachment> attachmentList){
-	  
+  public Map<String, String> sendTemplateEmail(EmailMessage emailMessage,Map<String, String> globalVarsMap,Org org,OrgLocations orgLocations,String uniqueScenerioName,List<EmailAttachment> attachmentList){
+	  Map<String, String> returnMap = new HashMap<>();
 	  try{
 		//setting the Recipient information
 			 InternetAddress[] iAdressArray = InternetAddress.parse(emailMessage.getToEmail());
@@ -2473,6 +2509,9 @@ public OrgLicenseSubscriptionHistory  getOrgLicenseSubscriptionHistory(OrgLicens
 			 //covert subject,body and signature
 			 String subject = emailScenerioUtil.bulidTemplateSubject(emailScenario.getSubject(),globalVarsMap,emailScenario);
 			 String body = emailScenerioUtil.buildTemplateBody(emailScenario.getBody(),globalVarsMap,emailScenario);
+			 
+			 returnMap.put("emailBody", body);
+			 returnMap.put("emailSubject", subject);
 			 String signature = null;
 			 if(StringUtils.isNotBlank(emailScenario.getSignature())){
 				 signature = emailScenerioUtil.buildTemplateSignature(emailScenario.getSignature(),globalVarsMap,emailScenario); 
@@ -2486,9 +2525,11 @@ public OrgLicenseSubscriptionHistory  getOrgLicenseSubscriptionHistory(OrgLicens
 			 
 			 //calling the sendEmail method of emailScenerioUtil
 			 emailScenerioUtil.sendEmail(emailMessage,orgLocations.getId(),iAdressArray,attachmentList);
+			
 	  }catch (Exception e) {
 		  e.printStackTrace();
 	}
+	  return returnMap;
 	  
   }
 
@@ -2504,7 +2545,6 @@ public String getOrglocationDateFormatHHMMSS(String dateFormat, Date date)
 	return sdf.format(date);
 }
 
-  
   
   public String getConfiguredFromEmail(Long orgLocationId,EmailScenario  emailScenario) throws Exception{
 	  
@@ -2583,13 +2623,11 @@ public String getOrglocationDateFormatHHMMSS(String dateFormat, Date date)
   
   public String saveJoinStatusInSubmission(ApplicantRejectBackOutDTO applicantRejectBackOutDTO, Long submissionId, OrgLocations orgLocations, User user) throws Exception {
 		RequirementSubmission requirementSubmission = requirementSubmissionService.getRequirementSubmissionById(submissionId);
-
 		if(!requirementSubmission.getSubmissionStatus().equals(ApplicantSubmissionStatus.JOINED)) {
 			// to update submission history
 			RequirementSubmissionHistory requirementSubmissionHistory = new RequirementSubmissionHistory();
 			requirementSubmissionHistory.setFromStage(requirementSubmission.getSubmissionStatus().toString());
 			requirementSubmissionHistory.setToStage(ApplicantSubmissionStatus.JOINED.toString());
-
 			// to update Submission status
 			requirementSubmission.setPreviousSubmissionStatus(requirementSubmission.getSubmissionStatus());
 			requirementSubmission.setSubmissionStatus(ApplicantSubmissionStatus.JOINED);
@@ -2614,6 +2652,16 @@ public String getOrglocationDateFormatHHMMSS(String dateFormat, Date date)
 		return "success";
 	}
 
+  	public void storeDefaultPayheadsWithOrgLocation(User user, OrgLocations orgLocations) throws Exception{
+	  OrgLocations sourceLeadOrgLocations = new OrgLocations();
+	  sourceLeadOrgLocations.setId(1l);
+		ResponseList<PayrollPayheadDTO> responsePayheadList = payrollPayheadService.getPayrollPayheadList(sourceLeadOrgLocations);
+		for(PayrollPayheadDTO payrollPayheadDTO : responsePayheadList.getData()) {
+			payrollPayheadDTO.setUuid(null);
+			payrollPayheadService.savePayrollPayhead(payrollPayheadDTO, user, orgLocations);
+		}
+	}
+
   
 	public static String toFixed2(double d) {
 		String str;
@@ -2623,4 +2671,27 @@ public String getOrglocationDateFormatHHMMSS(String dateFormat, Date date)
 		str = ("" + d).lastIndexOf(".") == ("" + d).length() - 2 ? d + "0" : d + "";
 		return str;
 	}
+
+	/**
+	 * @author:Vikram Reddy 
+	 * @param createExcelsheet
+		 * @param style
+		 * @param headers
+		 * @param rowCount 
+		 * @return sheet
+	 */
+
+	public Sheet setExcelHeader(Sheet createExcelsheet, CellStyle style, List<String> headers, int rowCount) {
+		Row excelHeader = createExcelsheet.createRow(rowCount);
+		int i=0;
+		for (String head:headers) {
+			Cell cell = excelHeader.createCell(i);
+			cell.setCellValue(head);
+			cell.setCellStyle(style);
+			i++;
+		}
+		return createExcelsheet;
+	}
+
 }
+

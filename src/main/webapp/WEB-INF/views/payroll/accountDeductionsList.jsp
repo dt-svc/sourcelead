@@ -48,6 +48,7 @@ function prepareAccountDeductionsList(url){
 		result = result + '<th>Request Sub.Date</th>';
 		result = result + '<th>Request Approved Date</th>';
 		result = result + '<th>Repaid Status</th>';
+		result = result + '<th>Action</th>';
 		result = result + '</tr>';
 		result = result + '</thead>	';
         result = result +"</table>";
@@ -79,7 +80,8 @@ function accountDeductionsPagination(url){
             { "data": "batchNumber" },
             { "data": "requestSubDate" },
             { "data": "requestApprovedDate"},
-            { "data": "repaidStatus"}
+            { "data": "repaidStatus"},
+            { "data": "action"}
             
         ],
         "columnDefs": [ {
@@ -197,7 +199,16 @@ function accountDeductionsPagination(url){
 						}
                     	return result;
                     }
-                  } ], 
+                  },
+  				{
+  					"targets" : colIndex++,
+  					"data" : "action",
+  					"render" : function(data, type, opt, meta) {
+  						var result = "";
+  						result = result + '<td><div><i class="glyphicon glyphicon-trash" onclick="deletePayrollEntity(\''+opt.uuid+'\',\'AccountDeductions\')"></i></div></td>';
+  						return result;
+  					}
+  				} ], 
 	    	"scrollCollapse": false,
 	    	"lengthMenu": [[10, 15, 20], [10, 15, 20]],
 	    	"aaSorting": [[0,'desc']],

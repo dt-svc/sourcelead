@@ -424,9 +424,6 @@ public class OrgSettingsController {
 			if (null != roles.getActionId()) {
 				ArrayList<SourceleadActions> sourceleadActionsList = new ArrayList<SourceleadActions>();
 				List<Long> roleActonList = new ArrayList<Long>();
-				/*for (String s : roles.getActionId().split(",")) {
-					roleActonList.add(Long.parseLong(s));
-				}*/
 				for (String s : Arrays.stream(roles.getActionId().split(",")).filter(value -> value != null && value.length() > 0).toArray(size -> new String[size])){
 	    			 roleActonList.add(Long.parseLong(s));
 	        	 }

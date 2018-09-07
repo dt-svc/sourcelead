@@ -971,18 +971,19 @@ public class RecommendationsServiceImpl implements RecommendationsService{
 	 */
 	
 	private float getVisaTypePercentage(Set<String> set, float visaTypePercentage, int matchedSkillCount, String visaType, String recommendedVisScore) {
-		float visaPer = 0;
-		float visaScore = Float.parseFloat(recommendedVisScore);
-       if(visaType !=null){
-    	   if(set != null && set.size() >0){
-   			for(String visa : set){
-   					if(visaType.equalsIgnoreCase(visa)){
-   						return visaPer = visaScore;
-   					}
-   			}
-   		}
-   
-       }
+	float visaPer = 0;
+	  if(StringUtils.isNoneBlank(recommendedVisScore)) {
+		  float visaScore = Float.parseFloat(recommendedVisScore);
+	       if(visaType !=null){
+	    	   if(set != null && set.size() >0){
+	   			for(String visa : set){
+	   					if(visaType.equalsIgnoreCase(visa)){
+	   						return visaPer = visaScore;
+	   					}
+	   			}
+	   		}  
+	  }
+   }
 	return visaPer;
 		
 	}
@@ -999,16 +1000,19 @@ public class RecommendationsServiceImpl implements RecommendationsService{
 	
 	private float getEducationPercentage(Set<String> set, float educationPercentage, int matchedSkillCount, String education, String recommendedEduScore) {
 		float eduPer = 0; 
-		float eduScore = Float.parseFloat(recommendedEduScore);
-		if(education !=null){
-				if(set != null && set.size() >0){
-					for(String edu : set){
-							if(education.equalsIgnoreCase(edu)){
-								return eduPer = eduScore;
+
+		if(StringUtils.isNoneBlank(recommendedEduScore)) {
+			float eduScore = Float.parseFloat(recommendedEduScore);
+			if(education !=null){
+					if(set != null && set.size() >0){
+						for(String edu : set){
+								if(education.equalsIgnoreCase(edu)){
+									return eduPer = eduScore;
+								}
 							}
 						}
-					}
-		 }
+			 }
+		}
 		return eduPer;
 }
 	

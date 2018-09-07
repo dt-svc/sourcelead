@@ -1031,7 +1031,6 @@ function cancelAddInterviewDiv(){
         e.preventDefault();
         var frm = $('#addInterview_form').serializeFormJSON();
         var con = JSON.stringify(frm);
-        con = con.replace(/[{}]/g, "");
         var jsonData = encodeURIComponent(con);
         var sourceleadUrl ='${sourceleadUrl}';
         var requirementId = '${requirementId}';

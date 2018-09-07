@@ -1,5 +1,6 @@
 package com.bis.sourcelead.service.impl;
 
+import java.math.BigDecimal;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.Date;
@@ -19,6 +20,7 @@ import org.springframework.stereotype.Service;
 import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.dao.AddExpensesDao;
 import com.bis.sourcelead.dto.ExpensesDTO;
+import com.bis.sourcelead.dto.Response;
 import com.bis.sourcelead.entity.EmailAttachment;
 import com.bis.sourcelead.entity.EmailMessage;
 import com.bis.sourcelead.entity.EmailScenario;
@@ -28,7 +30,10 @@ import com.bis.sourcelead.entity.ExpensesApproverHierarchy;
 import com.bis.sourcelead.entity.ExpensesEntries;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.ProjectMembers;
+import com.bis.sourcelead.entity.Projects;
 import com.bis.sourcelead.entity.User;
+import com.bis.sourcelead.entity.UserRole;
+import com.bis.sourcelead.enums.Result;
 import com.bis.sourcelead.enums.Submission_ApprovalStatus;
 import com.bis.sourcelead.enums.Submission_Status;
 import com.bis.sourcelead.service.AddExpensesService;
@@ -38,9 +43,9 @@ import com.bis.sourcelead.service.ExpensesApprovalService;
 import com.bis.sourcelead.service.ExpensesEntriesService;
 import com.bis.sourcelead.service.ExpensesService;
 import com.bis.sourcelead.service.ProjectMembersService;
+import com.bis.sourcelead.service.UserRoleService;
 import com.bis.sourcelead.util.CommonUtil;
 import com.bis.sourcelead.util.EmailScenerioUtil;
-import com.ibm.icu.math.BigDecimal;
 
 @Service
 public class AddExpensesServiceImpl implements AddExpensesService{
@@ -53,6 +58,9 @@ public class AddExpensesServiceImpl implements AddExpensesService{
 	
 	@Autowired
 	ExpensesApprovalService expensesApprovalService;
+	
+	@Autowired
+	UserRoleService userRoleService;
 	
 	@Autowired
 	ExpensesService expensesService;
@@ -77,6 +85,7 @@ public class AddExpensesServiceImpl implements AddExpensesService{
 	
 	@Autowired
 	private CommonUtil commonUtil;
+	
 	
 	@Override
 	public String getExpenseId(OrgLocations orgLoc) {
@@ -144,7 +153,7 @@ public void storeAddExpensesData(ExpensesDTO expensesDTO, User loginUser, OrgLoc
 	Expenses expenses = null;
 	ProjectMembers projMembers = null;
 	String status = "draft";
-	if(StringUtils.isNotEmpty(expensesDTO.getExpenseStatus())){
+	if(StringUtils.isNotEmpty(expensesDTO.getExpenseStatus())) {
 		status = expensesDTO.getExpenseStatus();
 	}
 	//SimpleDateFormat dateFormat=orgLoc.getLocFullFormDateFormatter();
@@ -154,9 +163,7 @@ public void storeAddExpensesData(ExpensesDTO expensesDTO, User loginUser, OrgLoc
 	}else {
 		expenses = new Expenses();
 	}
-	if (StringUtils.isNotBlank(expensesDTO.getExpenseAutoId())){
-		expenses.setExpenseId(expensesDTO.getExpenseAutoId());	
-	 }
+	
 	if (StringUtils.isNotBlank(expensesDTO.getExpensePurpose())){
 		expenses.setPurpose(expensesDTO.getExpensePurpose());	
 	 }
@@ -205,16 +212,15 @@ public void storeAddExpensesData(ExpensesDTO expensesDTO, User loginUser, OrgLoc
 	expenses.setExpensesEntries(expensesEntriesList);
 	
 	expenses.setNoOfExpenses(String.valueOf(expensesEntriesList.size()));
-	float totalAmount = 0;
+//	float totalAmount = 0;
+	BigDecimal bd = new BigDecimal(0);
 	for(ExpensesEntries expensesEntry : expensesEntriesList){
-		totalAmount = Float.sum(totalAmount, expensesEntry.getAmount());
+//		totalAmount = Float.sum(totalAmount, expensesEntry.getAmount());
+		bd = bd.add(expensesEntry.getAmount());
 	}
-	BigDecimal bd = new BigDecimal(Double.toString(totalAmount));
-	bd = bd.setScale(2,BigDecimal.ROUND_UP);
-	expenses.setTotalAmount(bd.floatValue());
-	
+	expenses.setTotalAmount(bd);
+	HashMap<Integer,User> managers = new HashMap<>() ;
 	if(projMembers != null){
-		ArrayList<User> managers = new ArrayList<User>() ;
 		HashSet<ExpensesApproverHierarchy> eaHierarchyList = new HashSet<ExpensesApproverHierarchy>();
 		if (expensesDTO.getId() != null){
 		   List<ExpensesApproverHierarchy>eaSubHierarchyList  = expensesApprovalService.getExpensesApproverHierarchyListByExpenseId(expensesDTO.getId());
@@ -230,7 +236,7 @@ public void storeAddExpensesData(ExpensesDTO expensesDTO, User loginUser, OrgLoc
 					}
 					eaHierarchy.setUpdatedDate(expenses.getUpdatedDate());
 					eaHierarchy.setUpdatedBy(expenses.getUpdatedBy());
-					managers.add(eaHierarchy.getHierarchyId().getApproverUserId());
+				    managers.put(eaHierarchy.getHierarchyId().getLevel(),eaHierarchy.getHierarchyId().getApproverUserId());
 					eaHierarchyList.add(eaHierarchy);
 			   }
 		   }
@@ -258,7 +264,7 @@ public void storeAddExpensesData(ExpensesDTO expensesDTO, User loginUser, OrgLoc
 							eaHierarchy.setUpdatedDate(expenses.getUpdatedDate());
 							eaHierarchy.setUpdatedBy(expenses.getUpdatedBy());
 							eaHierarchy.setStatus(Constants.RECORD_ACTIVE+"");
-							managers.add(hierarchy.getApproverUserId());
+							managers.put(hierarchy.getLevel(),hierarchy.getApproverUserId());
 							eaHierarchyList.add(eaHierarchy);
 						}
 				}
@@ -266,9 +272,6 @@ public void storeAddExpensesData(ExpensesDTO expensesDTO, User loginUser, OrgLoc
 		
 		if(eaHierarchyList != null && !eaHierarchyList.isEmpty()){
 			expenses.setApproverHierarchyList(eaHierarchyList);
-		}
-		if(managers != null && !managers.isEmpty()){
-			expenses.setProjectManagerUserList(managers);
 		}
 	 }
 	
@@ -284,11 +287,52 @@ public void storeAddExpensesData(ExpensesDTO expensesDTO, User loginUser, OrgLoc
 	
 	expenses.setExpensesLocationId(orgLoc.getId());
 	
-	 expenses = addExpensesDao.storeAddExpensesData(expenses);
+	if(expenses != null && expenses.getProjects() != null && StringUtils.isNotEmpty( expenses.getProjects().getIsReportingManagerAsApprover())
+			   &&  expenses.getProjects().getIsReportingManagerAsApprover().equalsIgnoreCase("Y")) {
+		   if(projMembers != null && projMembers.getProjectMemberCandidteId() != null &&  projMembers.getProjectMemberCandidteId().getConsultantUser() != null
+				   &&  projMembers.getProjectMemberCandidteId().getConsultantUser()!= null && projMembers.getProjectMemberCandidteId().getOrgLocationId() != null) {
+			   UserRole userRole = userRoleService.getUserDetailsByUserIdAndLocationId(projMembers.getProjectMemberCandidteId().getConsultantUser().getId(), projMembers.getProjectMemberCandidteId().getOrgLocationId().getId());
+			   if(userRole != null && userRole.getReportingManager() != null) {
+				   managers.put(1,userRole.getReportingManager());
+			   }
+		   }
+	   }
+	
+	if (StringUtils.isEmpty(expenses.getExpenseId())){
+	    OrgLocations orgLocations = null;
+	    Projects projects =projMembers.getProjects();
+		if(projects != null && projects.getOrgLocationsId() != null && projects.getOrgLocationsId().getOrg() != null && StringUtils.isNotEmpty(projects.getOrgLocationsId().getOrg().getOrgType()) && !projects.getOrgLocationsId().getOrg().getOrgType().equalsIgnoreCase(Constants.GUEST)) {
+			orgLocations = projects.getOrgLocationsId();
+		}else {
+			orgLocations = orgLoc;
+		}
+		 synchronized (this) {
+			   String expenseId = getExpenseId(orgLocations);
+			   expenses.setExpenseId(expenseId);
+			   expenses = addExpensesDao.storeAddExpensesData(expenses);
+			   storeExpenseApprovers(status, expenses, managers, loginUser, orgLoc,currencyCode);
+		 }
+		   
+    }else {
+    	 expenses = addExpensesDao.storeAddExpensesData(expenses);
+    	 storeExpenseApprovers(status, expenses, managers, loginUser, orgLoc,currencyCode);
+    }
+	
+}
+
+private void storeExpenseApprovers(String status,Expenses expenses,HashMap<Integer,User> managers,User loginUser,OrgLocations orgLoc,String currencyCode) throws Exception{
 	 if(status.equalsIgnoreCase(Submission_Status.APPROVED.getValue())){
+		 if(managers != null && !managers.isEmpty()){
+				expenses.setProjectManagerUserList(new ArrayList(managers.values()));
+	     }
 		 expensesApprovalService.updateApprovalStatusByApproverForExpense(expenses.getId(), loginUser.getId(),"APPROVED", "",orgLoc);
 	 }
+	 
 	 if(status.equalsIgnoreCase(Submission_Status.SUBMITTED.getValue())){
+		 managers.remove(2);
+		 if(managers != null && !managers.isEmpty()){
+				expenses.setProjectManagerUserList(new ArrayList(managers.values()));
+		 }
 		 sendExpensesEmailToManager(loginUser,expenses,orgLoc,currencyCode);
 	 }
 }
@@ -347,11 +391,23 @@ public void sendExpensesEmailToManager(User loginUser, Expenses expenses, OrgLoc
 		 globalVarsMap.put("expenseTypes",expenses.getNoOfExpenses());
 		 }
 		 
-		 StringBuilder str = new StringBuilder();
+		 
+		 Set<ExpensesEntries> expensesEntries = expenses.getExpensesEntries();
+		 for(ExpensesEntries exp : expensesEntries) {
+			 
+			 globalVarsMap.put("totalAmount",exp.getSubmittedamount().toString());
+			 
+		 }
+			 
+		 
+		/* StringBuilder str = new StringBuilder();
+		 BigDecimal cg = new BigDecimal(0);
+				 cg.add(expenses.getTotalAmount());
+		 
 			BigDecimal cg = new BigDecimal(Double.toString(expenses.getTotalAmount()));
 			cg = cg.setScale(2,BigDecimal.ROUND_HALF_UP );		
 			
-		 globalVarsMap.put("totalAmount",str.append(cg).append(" ").append(currencyCode).toString());
+		 globalVarsMap.put("totalAmount",str.append(cg).append(" ").append(currencyCode).toString());*/
 
 			StringBuilder stringBuildforLink = new StringBuilder();
 			globalVarsMap.put("loginLink",stringBuildforLink.append("<a href='").append(sourceleadLoginUrl).append("' style='text-decoration:none; '><div style=' width:220px; border-radius:30px; background-color:#214b90; color:#FFF; font-size:18px; font-weight:500; margin:10px auto 5px auto; padding:10px 0px; text-align:center; letter-spacing:2px;'>Login</div></a>").toString());
@@ -377,5 +433,27 @@ public void sendExpensesEmailToManager(User loginUser, Expenses expenses, OrgLoc
 public void deleteDocumentByDocumentId(String documentId) {
 	addExpensesDao.deleteDocumentByDocumentId(Long.parseLong(documentId));
 	
+}
+
+
+@Override
+public Response<String> changeStatusToBillable(long expenseEntriesId,String billableStatus) {
+	Response<String> response = new Response<>();
+	try {
+		long result = addExpensesDao.changeStatusToBillable(expenseEntriesId,billableStatus);
+		if (result > 0) {
+			response.setResponse(Result.SUCCESS.name());
+			response.setResponseMessage(Result.SUCCESS.getValue());
+		} else if (result == -2) {
+			response.setResponse(Result.INVALID_DATA.name());
+			response.setResponseMessage(Result.INVALID_DATA.getValue());
+		} else {
+			response.setResponse(Result.FAILED.name());
+			response.setResponseMessage(Result.FAILED.getValue());
+		}
+	} catch (Exception e) {
+		e.printStackTrace();
+	}
+	return response;
 }
 }

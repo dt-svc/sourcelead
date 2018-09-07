@@ -38,8 +38,8 @@ public class AssociateSalary {
 	private OrgLocations orgLocations;
 	
 	@ManyToOne
-	@JoinColumn(name = "USER_ID")
-	private User userId;
+	@JoinColumn(name = "CANDIDATE_ID")
+	private Candidate candidate;
 	
 	@ManyToOne
 	@JoinColumn(name = "GROUP_ID")
@@ -128,14 +128,15 @@ public class AssociateSalary {
 		this.orgLocations = orgLocations;
 	}
 
-	public User getUserId()
+
+	public Candidate getCandidate()
 	{
-		return userId;
+		return candidate;
 	}
 
-	public void setUserId(User userId)
+	public void setCandidate(Candidate candidate)
 	{
-		this.userId = userId;
+		this.candidate = candidate;
 	}
 
 	public String getPayType()

@@ -279,7 +279,7 @@ public class InvoiceController {
 	return model;
 	}
 	
-	
+	@PreAuthorize("hasAnyRole('ROLE_CREATE_CLIENT','ROLE_VIEW_CLIENT','ROLE_VIEW_EDIT_CLIENT','ROLE_CLIENT_BULK_IMPORTS','ROLE_CREATE_CLIENT_CONTACT','ROLE_VIEW_CLIENT_CONTACT','ROLE_VIEW_EDIT_CLIENT_CONTACT')")
 	@RequestMapping(value = "/getClientList", method = RequestMethod.GET)
 	public @ResponseBody ResponseList<OrgRelations> getClientList(HttpServletRequest request,HttpServletResponse response) throws Exception {
 		

@@ -16,12 +16,12 @@ public interface PayrollContributionService {
 	
 	PayrollContribution findPayrollContributionByUUID(String contributionUUID);
 	
-	boolean deleteContributionById(long contributionId);
+	boolean deleteContributionById(long contributionId, String changeStatus);
 
 	boolean isValidContributionType(long deductionTypeId, OrgLocations orgLocation);
 
 	List<PayrollContributionDTO> getAllContributionTypeByLocationId(OrgLocations orgLocation);
 
 	PayrollContributionDTO getContributionAmount(long contributionId);
-	
+
 }

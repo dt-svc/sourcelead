@@ -56,7 +56,7 @@ public class UserGroupServiceImpl implements UserGroupService{
 				userGroup.setGroupId(userGroupDTO.getGroupId());
 				userGroup.setGroupName(userGroupDTO.getGroupName());
 				userGroup.setDepartmentId(userGroupDTO.getDepartment());
-				userGroup.setUserId(userGroupDTO.getAssociateIds());
+//				userGroup.setUserId(userGroupDTO.getAssociateIds());
 				userGroup.setDescription(userGroupDTO.getDescription());
 				userGroup.setPayFrequency(userGroupDTO.getPayFrequency());
 				userGroup.setOrgLocationId(orgLocations);
@@ -95,11 +95,11 @@ public class UserGroupServiceImpl implements UserGroupService{
 				ugDTO.setDescription(ug.getDescription());
 				ugDTO.setGroupUUID(ug.getGroupUUID());
 				ugDTO.setPayFrequency(ug.getPayFrequency());
-				if(ug.getUserId() !=null && !"".equalsIgnoreCase(ug.getUserId())) {
+				/*if(ug.getUserId() !=null && !"".equalsIgnoreCase(ug.getUserId())) {
 					String numOfAss = ug.getUserId().replaceAll("\\s+","");
 					numOfAssociates = numOfAss.split(",").length;
 				}
-				ugDTO.setNumOfAssociates(String.valueOf(numOfAssociates));
+				ugDTO.setNumOfAssociates(String.valueOf(numOfAssociates));*/
 				list.add(ugDTO);
 			});
 			res.setData(list);
@@ -139,6 +139,13 @@ public class UserGroupServiceImpl implements UserGroupService{
 	{
 		return userGroupDao.getAllUserGroupsByLocationId(orgLocation);
 	}
+	
+	@Override
+	public List<UserGroup> getAllUserGroupsByLocationIdAndPayFrequency(OrgLocations orgLocation, String payFrequency)
+	{
+		return userGroupDao.getAllUserGroupsByLocationIdAndPayFrequency(orgLocation, payFrequency);
+	}
+	
 
 	@Override
 	public Response<UserGroupDTO> findUserGroupById(String groupUUID)
@@ -154,7 +161,7 @@ public class UserGroupServiceImpl implements UserGroupService{
 				ugDto.setGroupUUID(ug.getGroupUUID());
 				ugDto.setPayFrequency(ug.getPayFrequency());
 				ugDto.setDepartment(ug.getDepartmentId());
-				ugDto.setUserId(ug.getUserId());
+//				ugDto.setUserId(ug.getUserId());
 				ugDto.setDescription(ug.getDescription());
 				res.setObject(ugDto);
 				res.setResponse(Result.SUCCESS.name());

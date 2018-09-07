@@ -56,6 +56,7 @@ function prepareBisChecksList(url){
 	result = result + '<th>Payroll Chks</th>';
 	result = result + '<th>Amount</th>';
 	result = result + '<th>Check No</th>';
+	result = result + '<th>Action</th>';
 	result = result + '</tr>';
 	result = result + '</thead>	';
     result = result +"</table>";
@@ -95,7 +96,8 @@ function checksPagination(url){
             { "data": "immigration"},
             { "data": "payrollChecks"},
             { "data": "amount"},
-            { "data": "checkNo"}
+            { "data": "checkNo"},
+            { "data": "action"}
         ],
         "columnDefs": [ {
 	    	  	"targets": colIndex++,
@@ -290,7 +292,16 @@ function checksPagination(url){
 								}
                             	  return result;
                               }
-                } ],
+                } ,
+				{
+					"targets" : colIndex++,
+					"data" : "action",
+					"render" : function(data, type, opt, meta) {
+						var result = "";
+						result = result + '<td><div><i class="glyphicon glyphicon-trash" onclick="deletePayrollEntity(\''+opt.uuid+'\',\'Checks\')"></i></div></td>';
+						return result;
+					}
+				}],
 	    	"scrollCollapse": false,
 	    	"lengthMenu": [[10, 15, 20], [10, 15, 20]],
 	    	"aaSorting": [[1,'desc']],

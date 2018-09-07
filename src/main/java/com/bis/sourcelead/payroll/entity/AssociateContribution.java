@@ -13,6 +13,7 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
+import com.bis.sourcelead.entity.Candidate;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.User;
 
@@ -36,8 +37,8 @@ public class AssociateContribution implements Serializable{
 	private PayrollContribution contributionTypeId;
 	
 	@ManyToOne
-	@JoinColumn(name = "USER_ID", nullable = false)
-	private User userId;
+	@JoinColumn(name = "CANDIDATE_ID", nullable = false)
+	private Candidate candidate;
 	
 	@ManyToOne
 	@JoinColumn(name = "ORG_LOCATION_ID", nullable = false)
@@ -49,6 +50,17 @@ public class AssociateContribution implements Serializable{
 	
 	@Column(name = "CONTRIBUTION_AMOUNT")
 	private BigDecimal contributionAmount;
+	
+	
+	@Column(name = "CONTRIBUTION_STATUS")
+	private String contributionStatus;
+	
+	@Column(name = "CONTRIBUTION_START_DATE")
+	private Date contributionStartDate;
+	
+	@Column(name = "CONTRIBUTION_END_DATE")
+	private Date contributionEndDate;
+	
 	
 	@Column(name = "STATUS")
 	private Integer status;
@@ -89,14 +101,19 @@ public class AssociateContribution implements Serializable{
 		this.contributionTypeId = contributionTypeId;
 	}
 
-	public User getUserId()
+	public static long getSerialversionuid()
 	{
-		return userId;
+		return serialVersionUID;
 	}
 
-	public void setUserId(User userId)
+	public Candidate getCandidate()
 	{
-		this.userId = userId;
+		return candidate;
+	}
+
+	public void setCandidate(Candidate candidate)
+	{
+		this.candidate = candidate;
 	}
 
 	public OrgLocations getOrgLocationId()
@@ -188,6 +205,36 @@ public class AssociateContribution implements Serializable{
 	public void setUpdatedBy(String updatedBy)
 	{
 		this.updatedBy = updatedBy;
+	}
+
+	public String getContributionStatus()
+	{
+		return contributionStatus;
+	}
+
+	public Date getContributionStartDate()
+	{
+		return contributionStartDate;
+	}
+
+	public Date getContributionEndDate()
+	{
+		return contributionEndDate;
+	}
+
+	public void setContributionStatus(String contributionStatus)
+	{
+		this.contributionStatus = contributionStatus;
+	}
+
+	public void setContributionStartDate(Date contributionStartDate)
+	{
+		this.contributionStartDate = contributionStartDate;
+	}
+
+	public void setContributionEndDate(Date contributionEndDate)
+	{
+		this.contributionEndDate = contributionEndDate;
 	}
 	
 	

@@ -8,6 +8,7 @@ import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.Map;
 import java.util.Set;
 
 import org.apache.commons.lang.StringUtils;
@@ -19,8 +20,8 @@ import org.springframework.stereotype.Component;
 
 import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.dao.OrgLocationsDao;
-import com.bis.sourcelead.dto.DayWiseLeaveReportDTO;
 import com.bis.sourcelead.dto.ProjectsDTO;
+import com.bis.sourcelead.dto.Response;
 import com.bis.sourcelead.dto.ResponseList;
 import com.bis.sourcelead.entity.Candidate;
 import com.bis.sourcelead.entity.CandidateEducation;
@@ -38,6 +39,7 @@ import com.bis.sourcelead.entity.Projects;
 import com.bis.sourcelead.entity.Requirement;
 import com.bis.sourcelead.entity.TimeSheetSubmissionCount;
 import com.bis.sourcelead.entity.UserRole;
+import com.bis.sourcelead.reportsDTO.LeaveBalanceReportDTO;
 import com.bis.sourcelead.service.EmployeesService;
 import com.bis.sourcelead.service.OrgLocationService;
 import com.bis.sourcelead.service.ProjectBudgetService;
@@ -60,6 +62,8 @@ import com.itextpdf.text.html.WebColors;
 import com.itextpdf.text.pdf.PdfPCell;
 import com.itextpdf.text.pdf.PdfPTable;
 import com.itextpdf.text.pdf.PdfWriter;
+import com.bis.sourcelead.dto.Response;
+
 
 /**
  * 
@@ -153,7 +157,7 @@ public class PdfUtil {
 	        PdfPTable table = new PdfPTable(headers.length);
 	        Font font = new Font(FontFamily.HELVETICA, 14, Font.BOLD, BaseColor.WHITE);
 	        PdfPCell cell1 = new PdfPCell(new Phrase(userStyle.toString(),font));
-	        cell1.setColspan(11);
+	        cell1.setColspan(10);
 	        headerCellStyle(cell1);
 	        table.setWidthPercentage(100);
             table.setWidths(new int[]{3, 5, 3,5, 5, 5,5,5,5,3});
@@ -1342,17 +1346,34 @@ public class PdfUtil {
 		
 		return projectTaskArray;
 	}
-	public File createDayWiseLeaveReportPdfTable(ResponseList<LeaveReportView> leaveReportsList,OrgLocations orgLocations) throws Exception{
+
+	public File creategetLeaveBalancePdfTable(Response<LeaveBalanceReportDTO> LeaveBalanceReport,OrgLocations orgLocation,String topleave) throws Exception{
 	
-		
-		
-		String[] headers = Constants.DAILY_WISE_LEAVE_REPORT_HEADERS;
+	 java.util.List<String> headers = new ArrayList<String>();
+		headers.add("Employee Name");
+		headers.add("Employee Type");
+		headers.add("Department");
+		headers.add("Role");
+		for(String str:LeaveBalanceReport.getObject().getLeaveTypeNames())
+		{
+		headers.add(str);
+		}
+		headers.add("TotalBalanceLeaves");
 	    Document document = new Document(PageSize.LETTER.rotate());
 	    StringBuilder sbUser =  new StringBuilder();
-	    sbUser.append("Day_Wise_Leave_Report_").append(commonUtil.dateStrFromOrgDateFormatter(orgLocations.getDateFormat(),new Date()));
+	    if(topleave ==null) {
+	    sbUser.append("Balance_Leave_Report").append(commonUtil.dateStrFromOrgDateFormatter(orgLocation.getDateFormat(),new Date()));
+	    }else {
+	    	sbUser.append("Top_Leave_Taken_Report").append(commonUtil.dateStrFromOrgDateFormatter(orgLocation.getDateFormat(),new Date()));
+	    }
 
 	    StringBuilder fileSB = new StringBuilder();
-	    File file = File.createTempFile(fileSB.append("Day_Wise_Leave_Report_").append(commonUtil.dateStrFromOrgDateFormatter(orgLocations.getDateFormat(),new Date())).toString(),".pdf");
+	    File file =null;
+	    if(topleave ==null) {
+	     file = File.createTempFile(fileSB.append("Balance_Leave_Report").append(commonUtil.dateStrFromOrgDateFormatter(orgLocation.getDateFormat(),new Date())).toString(),".pdf");
+	    }else {
+	    	 file = File.createTempFile(fileSB.append("Top_Leave_Taken_Report").append(commonUtil.dateStrFromOrgDateFormatter(orgLocation.getDateFormat(),new Date())).toString(),".pdf");
+	    }
 	    System.out.println("***************************************"+file.getAbsolutePath());
 	    file.setReadable(true);
 	    
@@ -1365,7 +1386,96 @@ public class PdfUtil {
 	        BaseColor myColor = WebColors.getRGBColor("#000000");
 	        boldFont.setColor(myColor);
 	        StringBuilder userStyle = new StringBuilder();
-	        userStyle.append(orgLocations.getOrgLocationName()).append(" ").append("Day_Wise_Leave_Report");
+	        userStyle.append(orgLocation.getOrgLocationName()).append(" ").append("Balance_Leave_Report");
+          
+
+	        StringBuilder orgNameSB = new StringBuilder();
+            Paragraph para = new Paragraph(orgNameSB.append("Organization : ").append(orgLocation.getOrgLocationName()).toString());
+            para.setAlignment(Element.ALIGN_CENTER);
+            document.add(para);
+	      
+	        // Create an instance of PdfPTable. After that we transform the header and
+	        PdfPTable table = new PdfPTable(headers.size());
+	        Font font = new Font(FontFamily.HELVETICA, 14, Font.BOLD, BaseColor.WHITE);
+	        PdfPCell cell1 = new PdfPCell(new Phrase(userStyle.toString(),font));
+	        cell1.setColspan(headers.size());
+	        headerCellStyle(cell1);
+	        table.setWidthPercentage(100);
+//	        for (int i = 0; i<headers.size(); i++) {
+//	        	table.setWidths(new int [] {5});
+//	        }
+	        //table.setWidths(new int[]{5, 5, 5,5});
+	        //for(String str:LeaveBalanceReport.getObject().getLeaveTypeNames())
+			 //{
+				// int i=4;
+				 //table.setWidths(new int[] {5}); 
+				 //i++;
+			 //}
+            table.addCell(cell1);
+	        for (String head:headers) {
+	            PdfPCell cell = new PdfPCell();
+	            cell.setGrayFill(0.9f);
+	            cell.setPhrase(new Phrase(head.toUpperCase(), new Font(FontFamily.HELVETICA, 10, Font.BOLD)));
+	            BaseColor myBorderColor = WebColors.getRGBColor("#808080");
+	            cell.setBackgroundColor(myBorderColor);
+	            table.addCell(cell);
+	        }
+	        table.completeRow();
+	        java.util.List<String[]> lrvList = new ArrayList<>();
+	        java.util.List<LeaveBalanceReportDTO> list =  LeaveBalanceReport.getObject().getUsers();
+	        for(LeaveBalanceReportDTO leaveBalanceReportDTO : list){
+	        	lrvList.add(prepareLeaveBalanceReportStringArray(leaveBalanceReportDTO,LeaveBalanceReport,headers));
+	        }
+	        for (String[] userArray: lrvList) {
+                for (int i = 0; i < userArray.length; i++) {
+                    String datum = userArray[i];
+                    PdfPCell cell = new PdfPCell();
+                    cell.setPhrase(new Phrase(datum, new Font(FontFamily.HELVETICA, 10, Font.NORMAL)));
+                    table.addCell(cell);
+                }
+                table.completeRow();
+            }
+	        document.addTitle("BalanceLeaves Table");
+	        table.setSpacingBefore(15f);
+	        document.add(table);
+	        logger.info("Pdf table created !!");
+	    } catch (DocumentException e) {
+	    	logger.error("Exception cause is : "+ExceptionUtils.getFullStackTrace(e));
+	    } catch (FileNotFoundException e) {
+	    	logger.error("Exception cause is : "+ExceptionUtils.getFullStackTrace(e));
+	    } finally {
+	        document.close();
+	    }
+		return file;
+		
+	}
+
+
+	
+public File createLeaveReportPdfTable(ResponseList<LeaveReportView> leaveReportsList,OrgLocations orgLocations) throws Exception{
+	
+		
+		
+		String[] headers = Constants.LEAVE_REPORT_HEADERS;
+	    Document document = new Document(PageSize.LETTER.rotate());
+	    StringBuilder sbUser =  new StringBuilder();
+	    sbUser.append("Leave_Report_").append(commonUtil.dateStrFromOrgDateFormatter(orgLocations.getDateFormat(),new Date()));
+
+	    StringBuilder fileSB = new StringBuilder();
+	    File file = File.createTempFile(fileSB.append("Leave_Report_").append(commonUtil.dateStrFromOrgDateFormatter(orgLocations.getDateFormat(),new Date())).toString(),".pdf");
+	    System.out.println("***************************************"+file.getAbsolutePath());
+	    file.setReadable(true);
+	    
+	    try {
+	        // Get an instance of PdfWriter and create a Table.pdf file as an output.
+	        PdfWriter.getInstance(document, new FileOutputStream(file));
+	        document.open();
+
+	        Font boldFont = new Font(Font.FontFamily.TIMES_ROMAN, 18, Font.BOLD);
+	        BaseColor myColor = WebColors.getRGBColor("#000000");
+	        boldFont.setColor(myColor);
+	        StringBuilder userStyle = new StringBuilder();
+	        userStyle.append(orgLocations.getOrgLocationName()).append(" ").append("Leave_Report");
           
 
 	        StringBuilder orgNameSB = new StringBuilder();
@@ -1375,12 +1485,12 @@ public class PdfUtil {
 	      
 	        // Create an instance of PdfPTable. After that we transform the header and
 	        PdfPTable table = new PdfPTable(headers.length);
-	        Font font = new Font(FontFamily.HELVETICA, 14, Font.BOLD, BaseColor.WHITE);
+	        Font font = new Font(FontFamily.HELVETICA, 12, Font.BOLD, BaseColor.WHITE);
 	        PdfPCell cell1 = new PdfPCell(new Phrase(userStyle.toString(),font));
-	        cell1.setColspan(14);
+	        cell1.setColspan(13);
 	        headerCellStyle(cell1);
 	        table.setWidthPercentage(100);
-            table.setWidths(new int[]{5, 5, 5,5, 5, 4, 4, 5, 5, 6, 3, 4, 3,5});
+            table.setWidths(new int[]{5, 5, 5,5, 5, 4, 4, 5, 5, 6, 3, 4,4});
             table.addCell(cell1);
 	        for (int i = 0; i < headers.length; i++) {
 	            String header = headers[i];
@@ -1395,7 +1505,7 @@ public class PdfUtil {
 	        java.util.List<String[]> lrvList = new ArrayList<>();
 	        java.util.List<LeaveReportView> list = leaveReportsList.getData();
 	        for(LeaveReportView lrv : list){
-	        	lrvList.add(prepareDailyWiseLeaveReportStringArray(lrv,headers));
+	        	lrvList.add(prepareLeaveReportStringArray(lrv,headers));
 	        }
 	        for (String[] userArray: lrvList) {
                 for (int i = 0; i < userArray.length; i++) {
@@ -1406,7 +1516,7 @@ public class PdfUtil {
                 }
                 table.completeRow();
             }
-	        document.addTitle("DayWiseLeaveReport Table");
+	        document.addTitle("LeaveReport Table");
 	        table.setSpacingBefore(15f);
 	        document.add(table);
 	        logger.info("Pdf table created !!");
@@ -1420,83 +1530,282 @@ public class PdfUtil {
 		return file;
 		
 	}
-	private String[] prepareDailyWiseLeaveReportStringArray(LeaveReportView lrv, String[] headers) throws Exception {
-		String userArray[] = new String[headers.length];
-			 if(lrv.getName() !=null){
-				 userArray[0] = lrv.getName();
-			 }else{
-				 userArray[0] = "--";
-			 }
-			   if(lrv.getEmploymentType() !=null){
-				   userArray[1] = lrv.getEmploymentType();
-			   }else{
-				   userArray[1] = "--";
-			   }
-			   if(lrv.getUserDeptName() != null){
-				   userArray[2] = lrv.getUserDeptName();
-			   }else{
-				   userArray[2] = "--";
-			   }
-			   if(lrv.getUserRoleName() !=null){
-				   userArray[3] = lrv.getUserRoleName();
-			   }else{
-				   userArray[3] = "--";
-			   }
-			 if(lrv.getLeaveTypeName() !=null){
-				 userArray[4] = lrv.getLeaveTypeName();
-			 }else{
-				 userArray[4] = "--";
-			 }
-			   if(lrv.getLeaveTypeBillable() != null){
-				   userArray[5] = lrv.getLeaveTypeBillable();
-			   }else{
-				   userArray[5] = "--";
-			   }
-			 if(lrv.getDuration() != null){
-				 userArray[6] = lrv.getDuration();
-			 }else{
-				 userArray[6] = "--";
-			 }
-		   if(lrv.getFromDateStr() != null){
-			   userArray[7] = lrv.getFromDateStr();
+
+private String[] prepareLeaveReportStringArray(LeaveReportView lrv, String[] headers) throws Exception {
+	String userArray[] = new String[headers.length];
+		 if(lrv.getEid() != null && !lrv.getEid().isEmpty()){
+			 userArray[0] = lrv.getEid().toString();
+		 }else{
+			 userArray[0] = "--";
+		 }
+		   if(lrv.getName() !=null){
+			   userArray[1] = lrv.getName();
 		   }else{
-			   userArray[7] = "--";
+			   userArray[1] = "--";
 		   }
-		   if(lrv.getToDateStr() !=null){
-				   userArray[8] = lrv.getToDateStr();
+		   if(lrv.getUserDeptName() != null){
+			   userArray[2] = lrv.getUserDeptName();
 		   }else{
-			   userArray[8] = "--";
+			   userArray[2] = "--";
 		   }
-		   if(lrv.getAppliedOnDateStr() !=null){
-			   userArray[9] = lrv.getAppliedOnDateStr();
+		   if(lrv.getLeaveTypeName() !=null){
+			   userArray[3] = lrv.getLeaveTypeName();
+		   }else{
+			   userArray[3] = "--";
+		   }
+		 if(lrv.getReason() !=null){
+			 userArray[4] = lrv.getReason();
+		 }else{
+			 userArray[4] = "--";
+		 }
+		   if(lrv.getLeaveTypeBillable() != null){
+			   userArray[5] = lrv.getLeaveTypeBillable();
+		   }else{
+			   userArray[5] = "--";
+		   }
+		 if(lrv.getFromDateStr() != null){
+			 userArray[6] = lrv.getFromDateStr();
+		 }else{
+			 userArray[6] = "--";
+		 }
+	   if(lrv.getToDateStr() != null){
+		   userArray[7] = lrv.getToDateStr();
 	   }else{
-		   userArray[9] = "--";
+		   userArray[7] = "--";
 	   }
-		   if(lrv.getReason() !=null){
-			   userArray[10] = lrv.getReason();
+	   if(lrv.getAppliedOnDateStr() !=null){
+			   userArray[8] = lrv.getAppliedOnDateStr();
 	   }else{
-		   userArray[10] = "--";
+		   userArray[8] = "--";
 	   }
-		   if(lrv.getStatus() !=null){
-			   userArray[11] = lrv.getStatus();
-	   }else{
-		   userArray[11] = "--";
+	   if(lrv.getNoOfDays() !=null){
+	   userArray[9] = lrv.getNoOfDays();
 	   }
-		   if(lrv.getApprover() !=null){
-			   userArray[12] = lrv.getApprover();
-	   }else{
-		   userArray[12] = "--";
+	   else{
+		   userArray[9] = "0.0";
 	   }
-		   if(lrv.getApprovedOnDateStr() !=null){
-			   userArray[13] = lrv.getApprovedOnDateStr();
-	   }else{
-		   userArray[13] = "--";
-	   }
-		   
-		   
-		return userArray;
-		
+	   if(lrv.getStatus() !=null){
+		   userArray[10] = lrv.getStatus();
+   }else{
+	   userArray[10] = "--";
+   }
+	   if(lrv.getApprover() !=null){
+		   userArray[11] = lrv.getApprover();
+   }else{
+	   userArray[11] = "--";
+   }
+	   if(lrv.getApprovedOnDateStr() !=null){
+		   userArray[12] = lrv.getApprovedOnDateStr();
+   }else{
+	   userArray[12] = "--";
+   }
+	return userArray;
 	
-	}
+
+}
+
+private String[] prepareLeaveBalanceReportStringArray(LeaveBalanceReportDTO leaveBalanceReportDTO,Response<LeaveBalanceReportDTO> LeaveBalanceReport, java.util.List<String> headers) throws Exception {
+	String userArray[] = new String[headers.size()];
+		 if(leaveBalanceReportDTO.getEmpName() !=null){
+			 userArray[0] = leaveBalanceReportDTO.getEmpName();
+		 }else{
+			 userArray[0] = "--";
+		 }
+		   if(leaveBalanceReportDTO.getEmpType() !=null){
+			   userArray[1] = leaveBalanceReportDTO.getEmpType();
+		   }else{
+			   userArray[1] = "--";
+		   }
+		   if(LeaveBalanceReport.getObject().getDepart().entrySet() != null) {
+		   for(Map.Entry<Long, String> k: LeaveBalanceReport.getObject().getDepart().entrySet()){
+				Long ltv =   k.getKey();
+				String lti = k.getValue();
+				if(ltv == leaveBalanceReportDTO.getUserId().longValue()){ 
+					userArray[2]=lti;
+		   }}}else{
+			   userArray[2] = "--";
+		   }
+		   if(leaveBalanceReportDTO.getRole() !=null){
+			   userArray[3] = leaveBalanceReportDTO.getRole();
+		   }else{
+			   userArray[3] = "--";
+		   }
+		   float lo =0;
+		   int i=4;
+		   float l=0;
+		   for (String str :LeaveBalanceReport.getObject().getLeaveTypeNames()) {
+				for(Map.Entry<String, Float> k: LeaveBalanceReport.getObject().getMap().entrySet()){
+					String[] ltName =   k.getKey().split("-");
+					if((Long.parseLong(ltName[1]) == leaveBalanceReportDTO.getUserId().longValue()) && (ltName[0].equalsIgnoreCase(str))){
+						 l = k.getValue();
+						 userArray[i]=Float.toString(l);
+					       lo = lo+l;
+						 }else if(ltName[0] == null &&str == null)
+							 userArray[i]="--";		
+				          }
+			i++;} 
+		   userArray[i]=Float.toString(lo);
+	   
+	   
+	return userArray;
 	
+
+}
+public File createDayWiseLeaveReportPdfTable(ResponseList<LeaveReportView> leaveReportsList,OrgLocations orgLocations) throws Exception{
+
+	
+	
+	
+	String[] headers = Constants.DAILY_WISE_LEAVE_REPORT_HEADERS;
+    Document document = new Document(PageSize.LETTER.rotate());
+    StringBuilder sbUser =  new StringBuilder();
+    sbUser.append("Leave_Report_").append(commonUtil.dateStrFromOrgDateFormatter(orgLocations.getDateFormat(),new Date()));
+
+    StringBuilder fileSB = new StringBuilder();
+    File file = File.createTempFile(fileSB.append("Daily_Wise_Leave_Report_").append(commonUtil.dateStrFromOrgDateFormatter(orgLocations.getDateFormat(),new Date())).toString(),".pdf");
+    System.out.println("***************************************"+file.getAbsolutePath());
+    file.setReadable(true);
+    
+    try {
+        // Get an instance of PdfWriter and create a Table.pdf file as an output.
+        PdfWriter.getInstance(document, new FileOutputStream(file));
+        document.open();
+
+        Font boldFont = new Font(Font.FontFamily.TIMES_ROMAN, 18, Font.BOLD);
+        BaseColor myColor = WebColors.getRGBColor("#000000");
+        boldFont.setColor(myColor);
+        StringBuilder userStyle = new StringBuilder();
+        userStyle.append(orgLocations.getOrgLocationName()).append(" ").append("Day_Wise_Leave_Report");
+      
+
+        StringBuilder orgNameSB = new StringBuilder();
+        Paragraph para = new Paragraph(orgNameSB.append("Organization : ").append(orgLocations.getOrgLocationName()).toString());
+        para.setAlignment(Element.ALIGN_CENTER);
+        document.add(para);
+      
+        // Create an instance of PdfPTable. After that we transform the header and
+        PdfPTable table = new PdfPTable(headers.length);
+        Font font = new Font(FontFamily.HELVETICA, 14, Font.BOLD, BaseColor.WHITE);
+        PdfPCell cell1 = new PdfPCell(new Phrase(userStyle.toString(),font));
+        cell1.setColspan(14);
+        headerCellStyle(cell1);
+        table.setWidthPercentage(100);
+        table.setWidths(new int[]{5, 5, 5,5, 5, 4, 4, 5, 5, 6, 3, 4, 3,5});
+        table.addCell(cell1);
+        for (int i = 0; i < headers.length; i++) {
+            String header = headers[i];
+            PdfPCell cell = new PdfPCell();
+            cell.setGrayFill(0.9f);
+            cell.setPhrase(new Phrase(header.toUpperCase(), new Font(FontFamily.HELVETICA, 10, Font.BOLD)));
+            BaseColor myBorderColor = WebColors.getRGBColor("#808080");
+            cell.setBackgroundColor(myBorderColor);
+            table.addCell(cell);
+        }
+        table.completeRow();
+        java.util.List<String[]> lrvList = new ArrayList<>();
+        java.util.List<LeaveReportView> list = leaveReportsList.getData();
+        for(LeaveReportView lrv : list){
+        	lrvList.add(prepareDailyWiseLeaveReportStringArray(lrv,headers));
+        }
+        for (String[] userArray: lrvList) {
+            for (int i = 0; i < userArray.length; i++) {
+                String datum = userArray[i];
+                PdfPCell cell = new PdfPCell();
+                cell.setPhrase(new Phrase(datum, new Font(FontFamily.HELVETICA, 10, Font.NORMAL)));
+                table.addCell(cell);
+            }
+            table.completeRow();
+        }
+        document.addTitle("DayWiseLeaveReport Table");
+        table.setSpacingBefore(15f);
+        document.add(table);
+        logger.info("Pdf table created !!");
+    } catch (DocumentException e) {
+    	logger.error("Exception cause is : "+ExceptionUtils.getFullStackTrace(e));
+    } catch (FileNotFoundException e) {
+    	logger.error("Exception cause is : "+ExceptionUtils.getFullStackTrace(e));
+    } finally {
+        document.close();
+    }
+	return file;
+	
+}
+private String[] prepareDailyWiseLeaveReportStringArray(LeaveReportView lrv, String[] headers) throws Exception {
+	String userArray[] = new String[headers.length];
+		 if(lrv.getName() !=null){
+			 userArray[0] = lrv.getName();
+		 }else{
+			 userArray[0] = "--";
+		 }
+		   if(lrv.getEmploymentType() !=null){
+			   userArray[1] = lrv.getEmploymentType();
+		   }else{
+			   userArray[1] = "--";
+		   }
+		   if(lrv.getUserDeptName() != null){
+			   userArray[2] = lrv.getUserDeptName();
+		   }else{
+			   userArray[2] = "--";
+		   }
+		   if(lrv.getUserRoleName() !=null){
+			   userArray[3] = lrv.getUserRoleName();
+		   }else{
+			   userArray[3] = "--";
+		   }
+		 if(lrv.getLeaveTypeName() !=null){
+			 userArray[4] = lrv.getLeaveTypeName();
+		 }else{
+			 userArray[4] = "--";
+		 }
+		   if(lrv.getLeaveTypeBillable() != null){
+			   userArray[5] = lrv.getLeaveTypeBillable();
+		   }else{
+			   userArray[5] = "--";
+		   }
+		 if(lrv.getDuration() != null){
+			 userArray[6] = lrv.getDuration();
+		 }else{
+			 userArray[6] = "--";
+		 }
+	   if(lrv.getFromDateStr() != null){
+		   userArray[7] = lrv.getFromDateStr();
+	   }else{
+		   userArray[7] = "--";
+	   }
+	   if(lrv.getToDateStr() !=null){
+			   userArray[8] = lrv.getToDateStr();
+	   }else{
+		   userArray[8] = "--";
+	   }
+	   if(lrv.getAppliedOnDateStr() !=null){
+		   userArray[9] = lrv.getAppliedOnDateStr();
+   }else{
+	   userArray[9] = "--";
+   }
+	   if(lrv.getReason() !=null){
+		   userArray[10] = lrv.getReason();
+   }else{
+	   userArray[10] = "--";
+   }
+	   if(lrv.getStatus() !=null){
+		   userArray[11] = lrv.getStatus();
+   }else{
+	   userArray[11] = "--";
+   }
+	   if(lrv.getApprover() !=null){
+		   userArray[12] = lrv.getApprover();
+   }else{
+	   userArray[12] = "--";
+   }
+	   if(lrv.getApprovedOnDateStr() !=null){
+		   userArray[13] = lrv.getApprovedOnDateStr();
+   }else{
+	   userArray[13] = "--";
+   }
+	   
+	   
+	return userArray;
+	
+
+}
 	}

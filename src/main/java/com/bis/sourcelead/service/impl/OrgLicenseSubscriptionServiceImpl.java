@@ -317,6 +317,7 @@ public class OrgLicenseSubscriptionServiceImpl implements OrgLicenseSubscription
 			
 			saveOrgLocationDefaultProject(orgLocations, user);
 			commonUtil.storeVendorOnboardDefaultTemplate(user, orgLocations);
+			commonUtil.storeDefaultPayheadsWithOrgLocation(user, orgLocations);
 			
 			userService.saveOrUpdateUserElkDocument(userRole,employee,"sladmin");
 			sendActivationEmail(user);
@@ -451,8 +452,8 @@ public class OrgLicenseSubscriptionServiceImpl implements OrgLicenseSubscription
 		 
 		 StringBuilder templateStringBuilder=new StringBuilder();
 		 SubmissionTemplate submissionTemplate = new SubmissionTemplate();
-		 submissionTemplate.setTemplateName(templateStringBuilder.append(orgLocations.getOrgLocationName()).append("Interview Feedback Template").toString());
-		 submissionTemplate.setDescription(templateStringBuilder.append(orgLocations.getOrgLocationName()).append("Interview Feedback Template").toString());
+		 submissionTemplate.setTemplateName(templateStringBuilder.append(orgLocations.getOrgLocationName()).append(" ").append("Interview Feedback Template").toString());
+		 submissionTemplate.setDescription(templateStringBuilder.append(orgLocations.getOrgLocationName()).append(" ").append("Interview Feedback Template").toString());
 		 submissionTemplate.setOrgLocationId(orgLocations);
 		 submissionTemplate.setJsonString(sourceLeadDefaultTemplate.getJsonString());
 		 submissionTemplate.setStatus(Constants.CANDIDATE_ACTIVE);
@@ -551,6 +552,7 @@ private Candidate getCandidateDetails(User user, OrgLocations orgLocations,Maste
 		
 		List<SourceleadRoles> rolesList = sourceleadRolesDao.getSourceleadRoles();
 		List<SourceleadActions> sourceLeadActionsList =  sourceleadActionsDao.getAllSourceleadActionsByTabsList(tabsIds);
+		Countries countires = countriesDao.getCountriesByCountryName(orgLocations.getCountry());
 		
 		if(null != rolesList){
 			for(SourceleadRoles roles : rolesList){
@@ -566,18 +568,22 @@ private Candidate getCandidateDetails(User user, OrgLocations orgLocations,Maste
 				
 				List<Long> roleActonsList = new ArrayList<Long>();
 				if(null != roles.getActionId()){
-					/*for (String s : roles.getActionId().split(",")){
-						 roleActonsList.add(Long.parseLong(s));
-					 }*/
 					for (String s : Arrays.stream(roles.getActionId().split(",")).filter(value -> value != null && value.length() > 0).toArray(size -> new String[size])){
 		    			 roleActonsList.add(Long.parseLong(s));
 		        	 }
 				}
 				
-				
 				for(SourceleadActions actions : sourceLeadActionsList){
 					if(roleActonsList.contains(actions.getId())){
-						 strbul.append(actions.getId()).append(",");
+						
+						if(actions.getLocationCode() == null) {
+							strbul.append(actions.getId()).append(",");
+						}
+						else if(actions.getLocationCode() != null) {
+							if(actions.getLocationCode().equalsIgnoreCase(countires.getCode2())) {
+								strbul.append(actions.getId()).append(",");
+							}
+						}
 					}
 				}
 				
@@ -802,7 +808,15 @@ public void updateOrgBasedRoles(OrgLicenseSubscriptionDTO orgLicenseSubscription
 			}
 		}
 		
-		List<Long> sourceLeadActionsIdsList =  sourceleadActionsDao.getAllSourceleadActionsIdsByTabsList(tabsIds);
+		List<Long> sourceLeadActionsIdsList =  new ArrayList<>();;
+		List<SourceleadActions> sourceLeadActionsList =  sourceleadActionsDao.getAllSourceleadActionsByTabsList(tabsIds);
+		Countries countires = countriesDao.getCountriesByCountryName(orgLicenseSubscriptionDTO.getCountry());
+		for(SourceleadActions actions : sourceLeadActionsList) {
+			if(actions.getLocationCode() == null || (actions.getLocationCode() != null && actions.getLocationCode().equalsIgnoreCase(countires.getCode2()))) {
+				sourceLeadActionsIdsList.add(actions.getId());
+			}
+		}
+		
 		
 		List<Long> orgLocationsIdsList = orgLocationsDao.getOrgLocationsIdsListByOrgIdAndCountry(orgId, orgLicenseSubscriptionDTO.getCountry());
 		if(orgLocationsIdsList != null && !orgLocationsIdsList.isEmpty()) {
@@ -812,9 +826,6 @@ public void updateOrgBasedRoles(OrgLicenseSubscriptionDTO orgLicenseSubscription
 					
 					List<Long> roleActonsList = new ArrayList<Long>();
 					if(null != roles.getActionId()){
-						/*for (String s : roles.getActionId().split(",")){
-							 roleActonsList.add(Long.parseLong(s));
-						 }*/
 						for (String s : Arrays.stream(roles.getActionId().split(",")).filter(value -> value != null && value.length() > 0).toArray(size -> new String[size])){
 			    			 roleActonsList.add(Long.parseLong(s));
 			        	 }

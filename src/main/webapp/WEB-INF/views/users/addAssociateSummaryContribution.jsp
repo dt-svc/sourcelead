@@ -4,20 +4,31 @@
 <%@taglib uri="http://www.springframework.org/tags/form" prefix="form"%>
  
  <script type="text/javascript">
+ var value =[];
+ var conTempIndex = null;
     $(document).ready(function(){
-    	$(".add-contribution-row").click(function(){
+    		$(".add-contribution-row").click(function(){
     		var i = $("#index").val(); 
         	var contributionType = $("#contriType").val();
         	var contributionTypeValue = $('#contriType :selected').text();
         	var contributionAmount = $("#contriAmt").val();
+        	if(!value.includes(contributionTypeValue)){
+        		value.push(contributionTypeValue);
         	if(contributionType != null && contributionType != '' && contributionType != 'undefined' && contributionAmount != null && contributionAmount != '' && contributionAmount != 'undefined'){
                   var contributionMethod = $("#contricontributionMethod").val();
-                  var markuptr = "<tr><td><input type='checkbox' name='contributio-record'></td><td><input type='hidden' id='contributionType' name='contributionDTOList["+i+"].contributionType' value='"+contributionType+"'/>" + contributionTypeValue + "</td><td><input type='hidden' id='contributionMethod' name='contributionDTOList["+i+"].contributionMethod' value='"+contributionMethod+"' />" + contributionMethod + "</td><td><input type='hidden' id='contributionAmount' name='contributionDTOList["+i+"].contributionAmount' value='"+contributionAmount+"'/>" + contributionAmount + "</td><td><a onclick='deleteRowCont();'><i class='fa fa-remove text-danger'></i></a></td></tr>";
+                  var markuptr = "";
+                  if(conTempIndex >= 0 && conTempIndex != null){
+                	  markuptr = '<tr id="row'+conTempIndex+'"><td><input type="hidden" id="contributionType" name="contributionDTOList["+i+"].contributionType" value="'+contributionType+'"/><span id="conTypeVal'+conTempIndex+'">'+ contributionTypeValue + '</span></td><td><input type="hidden" id="contributionMethod" name="contributionDTOList['+i+'].contributionMethod" value="'+contributionMethod+'" />' + contributionMethod + '</td><td><input type="hidden" id="contributionAmount" name="contributionDTOList['+i+'].contributionAmount" value="'+contributionAmount+'"/>' + contributionAmount + '</td><td><a onclick="deleteRowCont(\''+conTempIndex+'\');"><i class="fa fa-remove text-danger"></i></a></td></tr>';
+                  }else{
+                	  markuptr = '<tr id="row'+i+'"><td><input type="hidden" id="contributionType" name="contributionDTOList['+i+'].contributionType" value="'+contributionType+'"/><span id="conTypeVal'+i+'">'+ contributionTypeValue + '</span></td><td><input type="hidden" id="contributionMethod" name="contributionDTOList['+i+'].contributionMethod" value="'+contributionMethod+'" />'+ contributionMethod+'</td><td><input type="hidden" id="contributionAmount" name="contributionDTOList['+i+'].contributionAmount" value="'+contributionAmount+'"/>' + contributionAmount + '</td><td><a onclick="deleteRowCont(\''+i+'\');"><i class="fa fa-remove text-danger"></i></a></td></tr>';
+                	  i++;
+                	  conTempIndex = null;
+                  }
+                  
                   $("#contribuionTrAdd").append(markuptr);
-                  i++;
                   $("#index").val(i);	
-        	}
-        	
+        	} 
+        	} 
         });
         
         // Find and remove selected table rows
@@ -29,19 +40,24 @@
             });
         }); */
     });    
-</script>
 
-<script>
-
-function deleteRowCont(){
-	var i = $("#index").val(); 
+function deleteRowCont(rowId){
+	var conSeleValue = $("#conTypeVal"+rowId).html();
+	$("#row"+rowId).remove();
+	var deleted= value.indexOf(conSeleValue);
+	conTempIndex = deleted;
+	value.splice(deleted,1);
+	
+	/* var i = $("#index").val(); 
 	$("#contribuionTrAdd").find('input[name="contributio-record"]').each(function(){
     	if($(this).is(":checked")){
             $(this).parents("tr").remove();
             i--;
             $("#index").val(i);	
+            var deleted = value.indexOf(contributionTypeValue);
+            value.splice(deleted,1);
         }
-    });
+    }); */
 }
 
 </script>
@@ -73,19 +89,19 @@ $(document).ready(function(){
                <div class="minHeightcol5">
                <div class="col-md-5">
                <label class="clearfix">Type</label>
-                      <select class="sel" id="contriType" name="contriType" data-validation="required" field-name="Contribution Type" onchange="getContributionAmount();">
+                      <select class="sel" id="contriType" name="contriType" data-validation="required" field-name="Contribution Type" onchange="getContributionAmount();" onblur="validateDuplicateContribution();">
                       </select>
                   </div>
                   
                   <div class="col-md-5">
-                    <label class="clearfix">contributionAmount</label>
+                    <label class="clearfix">Amount</label>
                     <div class="clearfix">
-                      <input type="text" class="form-control" id="contriAmt" name="contriAmt" data-validation="required validate_int" field-name="Amount">
+                      <input type="text" class="form-control" id="contriAmt" name="contriAmt" data-validation="required validate_float" field-name="Amount" readonly>
                     </div>
                   </div>
                   </div>
                   <div class="col-md-5" >
-                    <label class="clearfix">contributionMethod</label>
+                    <label class="clearfix">Method</label>
                     <div class="clearfix">
                       <input type="text" class="form-control" id="contricontributionMethod" name="contricontributionMethod" value="Fixed" readonly>
                     </div>
@@ -101,7 +117,7 @@ $(document).ready(function(){
                 <table id="test">
                 	<thead>
                 		<tr>
-                		    <th>Select</th>
+<!--                 		    <th>Select</th> -->
                 			<th>Type</th>
                 			<th>Method</th>
                 			<th>Amount</th>
@@ -127,7 +143,7 @@ $(document).ready(function(){
                   <div class="col-md-12">
                    <div class="pull-right">
                     <input value="Save" class="btn btn-success btnSuccess" type="button" id="contribution_save_button" onclick="saveAssociateContribution();">
-                    <input value="Cancel" class="btn btn-default ml10" onclick="javascript:window.location.href = '/app/usersList'" type="button">
+                    <input value="Cancel" class="btn btn-default ml10" onclick="javascript:window.location.href = '/app/userSummaryDetails?userCode=${userCode}'" type="button">
                     </div>
                   </div>
                 </div>
@@ -144,6 +160,7 @@ $(document).ready(function(){
  <script type="text/javascript">
 function validateContributionForm(){
 	  if ($('#associate_contribution_form').validate(false, validationSettings)){  
+		  validateDuplicateContribution();
 		 /*  saveAssociateContribution(); */
 	       return true; 
 	   }else{
@@ -158,7 +175,9 @@ $('body').on('blur', '#associate_contribution_form', function() {
   <div id="contributionPopup"></div>
  <script>
  function saveAssociateContribution(){
+	 var userCode = '${userCode}';
 	 var userId = '${userId}';  
+	 var saveType = '${saveType}';
 	 var contributionType = $("#contributionType").val();
 	 if(contributionType != null && contributionType != '' && contributionType != 'undefined'){
 		 var formData = getFormData("associate_contribution_form"); 
@@ -169,7 +188,7 @@ $('body').on('blur', '#associate_contribution_form', function() {
       $.ajax({
 				type : "POST",
   	    data: formData,
-				url : sourceleadUrl+"/saveAssociateContribution?"+tokenParamName+"="+tokenValue+"&userId="+userId,
+				url : sourceleadUrl+"/saveAssociateContribution?"+tokenParamName+"="+tokenValue+"&userId="+userId+"&saveType="+saveType,
 				success : function(result) {
 					 if (result && result.response === "INVALID_DATA") {
 		                    $("#contribution_save_button").removeAttr("disabled");
@@ -178,7 +197,7 @@ $('body').on('blur', '#associate_contribution_form', function() {
 		                } else if (result.response === "AWKWARD") {
 		                    location.href = "/errorPage";
 		                } else if (result.response === "SUCCESS") {
-		                	location.replace(sourceleadUrl+"/usersList");
+		                	location.replace(sourceleadUrl+"/userSummaryDetails?userCode="+userCode);
 		                	/* $("#associateId").val(result.object.userId);
 							var associateContribution = document.getElementById("associateContribution");
 							document.getElementById("associateContribution").removeAttribute("class"); 
@@ -258,6 +277,27 @@ function contributionPopup(){
 				$("#contricontributionMethod").val(data.payrollContributionMethod);
 				$("#contriAmt").val(data.contributionAmount); 
 		},
+		});
+ }
+ </script>
+ 
+ <script>
+ function validateDuplicateContribution(){
+	 var contriType = $("#contriType").val();
+	 var userId = '${userId}'; 
+	 $.ajax({
+			type : "GET",
+			url: sourceleadUrl+"/validateContribution?"+tokenParamName+"="+tokenValue+"&contriType="+contriType+"&userId="+userId,
+			success :function(data) {
+				if(data == true){
+					$("#contriType").after("<p class='jquery_form_error_message'>This type is Already Existed</span>");
+					document.getElementById("contribution_save_button").disabled = true;
+				}else{
+					$('#contriType').find('p.jquery_form_error_message').remove();
+					document.getElementById("contribution_save_button").disabled = false;
+				}
+				
+		 },
 		});
  }
  </script>

@@ -203,6 +203,10 @@ import com.bis.sourcelead.entity.UserRole;
 
 		private List<CustomFormFieldDTO> customFormData;
 		
+		private String associateId;
+		
+		private Long candidateId;
+		
 		
 		public String getFirstName() {
 			return firstName;
@@ -937,5 +941,21 @@ import com.bis.sourcelead.entity.UserRole;
 
 		public void setShiftId(String shiftId) {
 			this.shiftId = shiftId;
+		}
+
+		public String getAssociateId() {
+			return associateId;
+		}
+
+		public void setAssociateId(String associateId) {
+			this.associateId = associateId;
+		}
+
+		public Long getCandidateId() {
+			return candidateId;
+		}
+
+		public void setCandidateId(Long candidateId) {
+			this.candidateId = candidateId;
 		}
 }

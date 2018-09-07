@@ -1,5 +1,3 @@
- 
-
 CALL AlterTableAddColumn ('JOB_FAIR','CREATED_DATE','DATE NULL');
 CALL AlterTableAddColumn ('JOB_FAIR','UPDATED_DATE','DATE NULL');
 

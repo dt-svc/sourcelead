@@ -17,12 +17,20 @@
     <section class="content-wraper">
    
     <section class="content-header clearfix">
-      <div class="pull-left"><h2>Immigration list</h2></div>
+      <div class="pull-left"><h2>Immigrations list</h2></div>
       <div class="pull-right brud-crum"><a href="<c:url value='${appPath}/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a> &raquo; Immigrations List</div>
 	<div class="clearfix"></div>
     </section>    
     
-    <div class="immigrationWrap noPad">
+    <div class="project_side_wrap_inn_tabs clearfix">
+	    <ul class="project-tabs-menu">
+		    <li class="current"><a href="/app/immigration/viewImmigrationList">Immigration List</a></li>
+		    <li class=""><a href="${appPath}/immigration/viewLCAList">LCA List</a></li>
+		    
+	    </ul>
+    </div>
+    
+    <div class="immigrationWrap noPad mt5">
 		<div class="immigraCountHead">
 			<ul class="clearfix">
 				<li class="clearfix" title="${!empty dashboardResult.draftsCount ? dashboardResult.draftsCount : 0}" >
@@ -214,6 +222,7 @@
       </span>
       
       <ul class="pull-right list-unstyled list-inline">
+      <%--  <a href="${appPath}/immigration/viewLCAList" class="btn btn-success btnSuccess anchorWhite btn-sm"><i class="paddingRight"></i> LCA List</a> --%>
       		<sec:authorize access="hasAnyRole('ROLE_ADD_PETITION','ROLE_EDIT_VIEW_PETITION','ROLE_DELETE_PETITION')">
             <li><a href="${appPath}/immigration/loadNewPetition" class="action newAdBtn mr5">+ New </a></li>
 			</sec:authorize>
@@ -226,6 +235,9 @@
 	                 		<a href="/app/uploadImmigrationForm">Import</a>
 							<a href="javascript:void(0)" onclick="exportToExcel();" title="Excel">Export Excel</a>
 						</span>
+						<!-- <span>
+	                 		<a href="/app/uploadLcaForm">Import LCA</a>
+						</span> -->
 					</div>
 				</li>
 		    	</sec:authorize>

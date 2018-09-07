@@ -13,6 +13,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.dto.ResponseList;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.User;
@@ -78,7 +79,7 @@ public class PayrollDeductionServiceImpl  implements PayrollDeductionService{
 		map.put("Simple IRA", "pretax");
 		map.put("HSA-Single Limit", "pretax");
 		map.put("HSA-Family Limit", "pretax");
-		map.put("FSA-medical", "pretax");
+		map.put("FSA-Medical", "pretax");
 		map.put("FSA-Dependent Care", "pretax");
 		return map.get(deductionType);
 	}
@@ -99,6 +100,8 @@ public class PayrollDeductionServiceImpl  implements PayrollDeductionService{
 				payrollDTO.setPayrollScheduled(pDed.getPayrollScheduled());
 				payrollDTO.setDeductionUUID(pDed.getDeductionUUID());
 				payrollDTO.setDescription(pDed.getDescription());
+				payrollDTO.setStatus(pDed.getStatus());
+				payrollDTO.setTaxType(pDed.getTaxType());
 				dtoList.add(payrollDTO);
 			});
 			payrollResponse.setData(dtoList);
@@ -143,21 +146,27 @@ public class PayrollDeductionServiceImpl  implements PayrollDeductionService{
 	}
 	
 	@Override
-	public boolean deleteDeductionById(Long deductionId)
+	public boolean deleteDeductionById(Long deductionId,String changeStatus)
 	{
 		boolean isDeleted = false;
-		try {
-			PayrollDeductionDTO payrollDeductionDTO = new PayrollDeductionDTO();
-			PayrollDeduction payrollDeduction = payrollDeductionDao.findPayrollDeductionByID(deductionId);
-			payrollDeduction.setStatus(0);
-			payrollDeductionDTO.setStatus(0);
-			PayrollDeductionDTO updatedPayrollDeductionDTO = payrollDeductionDao.savePayrollDeduction(payrollDeduction, payrollDeductionDTO);
-			if (updatedPayrollDeductionDTO != null) {
-				isDeleted = true;
-			}
-		} catch (Exception e) {
-			logger.error(ExceptionUtils.getFullStackTrace(e));
+		
+		PayrollDeductionDTO payrollDeductionDTO = new PayrollDeductionDTO();
+		PayrollDeduction payrollDeduction = payrollDeductionDao.findPayrollDeductionByID(deductionId);
+		
+        if(changeStatus.equalsIgnoreCase(Constants.PAYROLL_DELETE)) {
+    			payrollDeduction.setStatus(0);
+    			payrollDeductionDTO.setStatus(0);
+		}else if(changeStatus.equalsIgnoreCase(Constants.REACTIVE)){
+				payrollDeduction.setStatus(1);
+				payrollDeductionDTO.setStatus(1);
 		}
+        
+        PayrollDeductionDTO updatedPayrollDeductionDTO = payrollDeductionDao.savePayrollDeduction(payrollDeduction, payrollDeductionDTO);
+        if (updatedPayrollDeductionDTO != null) {
+			isDeleted = true;
+		}
+		
+	
 		return isDeleted;
 	}
 
@@ -179,5 +188,4 @@ public class PayrollDeductionServiceImpl  implements PayrollDeductionService{
 		return payrollDeduction;
 	}
 
-	
 }

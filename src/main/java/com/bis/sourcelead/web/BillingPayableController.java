@@ -11,6 +11,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -186,7 +187,7 @@ public class BillingPayableController {
 	}
 	
 	
-	
+	@PreAuthorize("hasAnyRole('ROLE_CREATE_VENDOR','ROLE_VIEW_VENDOR','ROLE_VIEW_EDIT_VENDOR','ROLE_VENDOR_BULK_IMPORTS','ROLE_CREATE_VENDOR_CONTACT','ROLE_VIEW_VENDOR_CONTACT','ROLE_VIEW_EDIT_VENDOR_CONTACT')")
 	@RequestMapping(value = "/getPayableVendorsList", method = RequestMethod.GET)
 	public @ResponseBody String getPayableVendorsList(HttpServletRequest request,HttpServletResponse response) throws Exception {
 		

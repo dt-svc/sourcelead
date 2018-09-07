@@ -427,37 +427,21 @@ public class LeaveManagementRestController {
 					double fromHalf = leaveManagementUtil.calculateActualHoursForHalfDay(leave.getFromDateFromHalfTime(),leave.getFromDateToHalfTime(),orgLocations.getAverageWorkingHours(),l);
 					double toHalf = leaveManagementUtil.calculateActualHoursForHalfDay(leave.getToDateFromHalfTime(),leave.getToDateToHalfTime(),orgLocations.getAverageWorkingHours(),l);
 					double appliedLeaveCount = 0;
-//					if(leave.getFromDate().equals(leave.getToDate())){
-//						appliedLeaveCount = (fromHalf + toHalf);
-//					}else{
+					if("Half Day".equalsIgnoreCase(l.getDuration())){
+						appliedLeaveCount = leave.getNumberOfDays();
+					}else{
 						appliedLeaveCount = leave.getNumberOfDays() - (fromHalf + toHalf);
-//					}
+					}
+						
 					
 
 					if (Constants.PENDING.equalsIgnoreCase(leave.getStatus())) {
-						// totalLeaves = totalLeaves -
-						// (Integer.valueOf(leave.getNumberOfDays()));
 						pendingLeaveCounts = (float) (pendingLeaveCounts + appliedLeaveCount);
 					}
 					if (Constants.APPROVED.equalsIgnoreCase(leave.getStatus())) {
-//						totalbalanceLeaveCounts = totalbalanceLeaveCounts + Integer.valueOf(leave.getNumberOfDays());
-
 						takenLeaveCounts = (float) (takenLeaveCounts + appliedLeaveCount);
 					}
 				}
-//				if ("Monthly".equalsIgnoreCase(l.getPeriod()) && Constants.NO.equalsIgnoreCase(l.getLeavesCarryforward())) {
-//					calculatedTotalNonCarryforwardLeaves = leaveManagementUtil.getTotalBalanceLeavesForNonCarryforwardLeaveType(l, totalbalanceLeaveCounts, emp);
-//					totalbalanceLeaveCounts = calculatedTotalNonCarryforwardLeaves;
-//					balanceLeaveCounts += totalbalanceLeaveCounts;
-//				} else {
-//					balanceLeaveCounts += totalbalanceLeaveCounts;
-//				}
-
-				// balanceLeaveCounts += totalbalanceLeaveCounts;
-//				l.setTotalBalanceLeaveCounts(balanceLeaveCounts);
-//				l.setPendingLeaveCounts(pendingLeaveCounts);
-//				l.setTakenLeaves(takenLeaveCounts);
-//				l.setLeaveTypeBalanceLeaveCount(totalbalanceLeaveCounts);
 				
 				//do not remove below commented code, need to do some changes further 
 				
@@ -472,25 +456,21 @@ public class LeaveManagementRestController {
 					Date[] monthDates = conversionUtil.getMonthStartDateEndDate();
 					appliedLeaves = appliedLeaveDateService.getAppliedLeaveDatesByLeaveTypeIdAndOrgLocationIdAndUserId(orgLocations.getId(), l.getId(), monthDates[0], monthDates[1], userId,orgLocations.getOrg().getId());
 					appliedLeavesCount = (float) leaveManagementUtil.getExcludeHolidayLeaveCount(appliedLeaves, orgLocations, ablv,monthDates[0],monthDates[1],l);
-//					appliedLeaves = associateBalanceLeaveService.getExcludeHolidayLeaveCount(appliedLeaves,orgLocations,ablv,monthDates[0],monthDates[1]);
 				}
 				else if (Constants.QUARTERLY.equalsIgnoreCase(l.getPeriod()) && Constants.YES.equalsIgnoreCase(l.getVisibleInBalanceLeaves())) {
 					LocalDate[] currentMonthQuarter = conversionUtil.getThisMonthQuarterDates(todayDate);
 					appliedLeaves = appliedLeaveDateService.getAppliedLeaveDatesByLeaveTypeIdAndOrgLocationIdAndUserId(orgLocations.getId(), l.getId(), currentMonthQuarter[0].toDate(), currentMonthQuarter[1].toDate(), userId,orgLocations.getOrg().getId());
 					appliedLeavesCount = (float) leaveManagementUtil.getExcludeHolidayLeaveCount(appliedLeaves, orgLocations, ablv,currentMonthQuarter[0].toDate(),currentMonthQuarter[1].toDate(),l);
-//					appliedLeaves = associateBalanceLeaveService.getExcludeHolidayLeaveCount(appliedLeaves,orgLocations,ablv,currentMonthQuarter[0].toDate(),currentMonthQuarter[1].toDate());
 				}
 				else if (Constants.HALFYEARLY.equalsIgnoreCase(l.getPeriod()) && Constants.YES.equalsIgnoreCase(l.getVisibleInBalanceLeaves())) {
 					LocalDate[] currentHalfYear = conversionUtil.getThisMonthHalfyearyDates(todayDate);
 					appliedLeaves = appliedLeaveDateService.getAppliedLeaveDatesByLeaveTypeIdAndOrgLocationIdAndUserId(orgLocations.getId(), l.getId(), currentHalfYear[0].toDate(), currentHalfYear[1].toDate(), userId,orgLocations.getOrg().getId());
 					appliedLeavesCount = (float) leaveManagementUtil.getExcludeHolidayLeaveCount(appliedLeaves, orgLocations, ablv,currentHalfYear[0].toDate(),currentHalfYear[1].toDate(),l);
-//					appliedLeaves = associateBalanceLeaveService.getExcludeHolidayLeaveCount(appliedLeaves,orgLocations,ablv,currentHalfYear[0].toDate(),currentHalfYear[1].toDate());
 				}
 				else if (Constants.ANNUALLY.equalsIgnoreCase(l.getPeriod()) && Constants.YES.equalsIgnoreCase(l.getVisibleInBalanceLeaves())) {
 					LocalDate[] thisYearDates = conversionUtil.getThisYearStartDateEndDate();
 					appliedLeaves = appliedLeaveDateService.getAppliedLeaveDatesByLeaveTypeIdAndOrgLocationIdAndUserId(orgLocations.getId(), l.getId(), thisYearDates[0].toDate(), thisYearDates[1].toDate(), userId,orgLocations.getOrg().getId());
 					appliedLeavesCount = (float) leaveManagementUtil.getExcludeHolidayLeaveCount(appliedLeaves, orgLocations, ablv,thisYearDates[0].toDate(),thisYearDates[1].toDate(),l);
-//					appliedLeaves = associateBalanceLeaveService.getExcludeHolidayLeaveCount(appliedLeaves,orgLocations,ablv,thisYearDates[0].toDate(),thisYearDates[1].toDate());
 				}
 				appliedLeaveCount = totalLeaves - appliedLeavesCount;
 				balanceLeaveCounts += appliedLeaveCount;
@@ -1090,7 +1070,7 @@ public class LeaveManagementRestController {
 						    }
 						}
 						if(!insertUserList.isEmpty() && insertUserList.size() >0) {
-							int result = associateBalanceLeaveService.addLeaveTypeToAssociate(insertUserList,orgLocation,leaveType,user);
+							int result = associateBalanceLeaveService.addLeaveTypeToAssociate(insertUserList,orgLocation,leaveType,user,0);
 						}
 						if(!updatedUserList.isEmpty() && updatedUserList.size() >0) {
 							float previousNoOfDays = 0;
@@ -1857,7 +1837,7 @@ public class LeaveManagementRestController {
 	public @ResponseBody ResponseList<LeaveDTO> getEmployeeRequestedLeaves(LeaveDTO leaveDTO, HttpServletRequest request) throws Exception
 	{
 		OrgLocations orgLocations = orgLocationService.getOrgLocations(Long.valueOf(leaveDTO.getOrgLocationId()));
-		ResponseList<LeaveDTO> responseList = null;
+		ResponseList<LeaveDTO> responseList = new ResponseList<>();
 		try {
 			OrgLocations loginOrgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 			String loginUserRole = (String) SourceLeadSessionManager.getSessionAttribute(request, "loginUserRole");
@@ -2008,7 +1988,8 @@ public class LeaveManagementRestController {
 					.append(commonUtil.dateStrFromOrgDateFormatter(orgLocations.getDateFormat(), leave.getToDate()));
 
 			leaveDto.setDuration(durationSb.toString());
-			leaveDto.setLeaveType(leave.getLeaveType().getLeaveType());
+			leaveDto.setLeaveType(leave.getLeaveType().getName());
+			leaveDto.setType(leave.getLeaveType().getLeaveType());
 			leaveDto.setLeaveTypeId(leave.getLeaveType().getId());
 			leaveDto.setStatus(leave.getStatus());
 			leaveDto.setLeaveName(leave.getLeaveType().getName());
@@ -2751,16 +2732,14 @@ public class LeaveManagementRestController {
 			}
 			
 			List<User> approversList = leaveService.getApproversListBasedonHierarchyExceptLoginUser(userId,selectedUserRole.getRoles().getId(), orgLocations.getId());
+			
 			for (User user : approversList) {
 				if(selectedUserRole.getReportingManager() != null) {
 					if(selectedUserRole.getReportingManager().getId().longValue() != user.getId().longValue())
 						appUser.add(user);
 				}
 			}
-			
-			
 			return appUser;
-		
 	}
 
 	@RequestMapping(value = { "/validateCarryForwardLeaves", "/rest/validateCarryForwardLeaves" }, method = RequestMethod.GET)
@@ -2837,6 +2816,13 @@ public class LeaveManagementRestController {
 		}
 	}
 
+	 @RequestMapping(value = "/shiftList", method = RequestMethod.POST)
+		public @ResponseBody List<Shift> refreshRoleList(HttpServletRequest request, Long roleHierarchyId) throws Exception {
+	    	OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+	    	List<Shift> shiftList = shiftService.getShiftList(orgLocations.getId());
+           return shiftList;	   
+		} 
+		
 	@RequestMapping(value = "/downloadLeaveTemplate")
 	public void downloadLeaveTemplate(HttpServletRequest request, HttpServletResponse response) throws Exception
 	{
@@ -3097,4 +3083,5 @@ public class LeaveManagementRestController {
 		response.setObject(noOfDays);
 		return response;
 	}
+
 }

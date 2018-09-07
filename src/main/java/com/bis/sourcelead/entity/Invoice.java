@@ -364,6 +364,10 @@ public class Invoice {
 	private PaymentAccountDTO paymentAccountDTO;
 	
 	@Transient
+	@JsonProperty
+	private String timelineHistoryReminder;
+	
+	@Transient
     @JsonProperty
     private String invoiceTags;
 	
@@ -374,6 +378,7 @@ public class Invoice {
 	@Transient
 	@JsonProperty
     private Set<String> tagsList;
+
 	
 	public Long getId()
 	{
@@ -1156,6 +1161,14 @@ public class Invoice {
 		this.paymentAccountDTO = paymentAccountDTO;
 	}
 
+	public String getTimelineHistoryReminder() {
+		return timelineHistoryReminder;
+	}
+
+	public void setTimelineHistoryReminder(String timelineHistoryReminder) {
+		this.timelineHistoryReminder = timelineHistoryReminder;
+	}
+	
 	public String getInvoiceTags() {
 		return invoiceTags;
 	}

@@ -7,6 +7,7 @@ public class DataMigrationCommonDTO extends CommonDTO {
 	private String headerPosition;
 	private String projectUUID;
 	private String projectClientUUID;
+	private Long requirementId;
 	
 	public String getFilePath()
 	{
@@ -62,5 +63,13 @@ public class DataMigrationCommonDTO extends CommonDTO {
 
 	public void setProjectClientUUID(String projectClientUUID) {
 		this.projectClientUUID = projectClientUUID;
+	}
+
+	public Long getRequirementId() {
+		return requirementId;
+	}
+
+	public void setRequirementId(Long requirementId) {
+		this.requirementId = requirementId;
 	}
 }

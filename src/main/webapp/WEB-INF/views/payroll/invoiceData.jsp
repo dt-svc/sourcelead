@@ -52,6 +52,7 @@ function prepareInvoiceDetailsList(url){
 		result = result + '<th>Amount</th>';
 		result = result + '<th>A/R Paid</th>';
 		result = result + '<th>Old/New</th>';
+		result = result + '<th>Action</th>';
 		result = result + '</tr>';
 		result = result + '</thead>	';
         result = result +"</table>";
@@ -87,7 +88,8 @@ function invoiceDetailsPagination(url){
             { "data": "qty"},
             { "data": "amount"},
             { "data": "arPaid"},
-            { "data": "oldNew"}
+            { "data": "oldNew"},
+            { "data": "action"},
             
         ],
         "columnDefs": [ {
@@ -269,7 +271,16 @@ function invoiceDetailsPagination(url){
 								}
                             	return result;
 		                  }
-		                } ],
+		                },
+						{
+							"targets" : colIndex++,
+							"data" : "action",
+							"render" : function(data, type, opt, meta) {
+								var result = "";
+								result = result + '<td><div><i class="glyphicon glyphicon-trash" onclick="deletePayrollEntity(\''+opt.uuid+'\',\'InvoiceData\')"></i></div></td>';
+								return result;
+							}
+						} ],
 	    	"scrollCollapse": false,
 	    	"lengthMenu": [[10, 15, 20], [10, 15, 20]],
 	    	"aaSorting": [[4,'desc']],

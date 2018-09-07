@@ -70,30 +70,32 @@ public class UserGroupDaoImpl implements UserGroupDao{
 				qry = " order by ugroup." + userGroupDTO.getSortColumn() + " "
 						+ userGroupDTO.getSortOrder();
 			}
-			String query = "from UserGroup ugroup where ugroup.orgLocationId.id =:orgLocationId and ugroup.status = 1";
-			String countQuery = "from UserGroup ugroup where ugroup.orgLocationId.id =:orgLocationId and ugroup.status = 1";
+			String query = "from UserGroup ugroup where ugroup.orgLocationId.id =:orgLocationId and ugroup.status = :status ";
+			String countQuery = "from UserGroup ugroup where ugroup.orgLocationId.id =:orgLocationId and ugroup.status = :status ";
 			StringBuilder searchQuery = new StringBuilder();
 			if (StringUtils.isNoneBlank(userGroupDTO.getSearchValue())) {
-				searchQuery.append(" and ugroup.groupId like '%"+ userGroupDTO.getSearchValue()+ "%' ")
+				searchQuery.append(" and ( ugroup.groupId like '%"+ userGroupDTO.getSearchValue()+ "%' ")
 				           .append(" OR ugroup.payFrequency like '%"+ userGroupDTO.getSearchValue()+ "%' ")
-				           .append("OR ugroup.groupName like '%"+ userGroupDTO.getSearchValue() + "%' ");
+				           .append(" OR ugroup.groupName like '%"+ userGroupDTO.getSearchValue() + "%' )");
 			}
-			Query queryObj = session.createQuery(query + searchQuery + qry);
+			Query queryObj = session.createQuery(query + searchQuery);
 			if (userGroupDTO != null && userGroupDTO.getLength() > 0) {
 				queryObj.setFirstResult(userGroupDTO.getStart());
 				queryObj.setMaxResults(userGroupDTO.getLength());
+				queryObj.setInteger("status", 1);
 				queryObj.setLong("orgLocationId", orgLocation.getId()).list();
+				
 			}
 			List<UserGroup> userGroupList = queryObj.list();
 			int count = 0;
 			int filteredCount = 0;
-			List<Long> countlist = session.createQuery("select count(*) " + countQuery + searchQuery).setLong("orgLocationId", orgLocation.getId()).list();
+			List<Long> countlist = session.createQuery("select count(*) " + countQuery + searchQuery).setLong("orgLocationId", orgLocation.getId()).setInteger("status", 1).list();
 			if (countlist != null && !countlist.isEmpty()) {
 				count = countlist.iterator().next().intValue();
 			}
 			response.setRecordsTotal(count);
 			if (userGroupDTO != null) {
-				List<Long> filteredCountlist = session.createQuery("select count(*) " + countQuery + searchQuery).setLong("orgLocationId", orgLocation.getId()).list();
+				List<Long> filteredCountlist = session.createQuery("select count(*) " + countQuery + searchQuery).setLong("orgLocationId", orgLocation.getId()).setInteger("status", 1).list();
 				if (filteredCountlist != null && !filteredCountlist.isEmpty()) {
 					filteredCount = filteredCountlist.iterator().next().intValue();
 				}
@@ -134,9 +136,25 @@ public class UserGroupDaoImpl implements UserGroupDao{
 	@Transactional
 	public List<UserGroup> getAllUserGroupsByLocationId(OrgLocations orgLocation)
 	{
+		List<UserGroup> userGroupList = null;
+		try {
+			Session session = this.sessionFactory.getCurrentSession();
+			String query = "from UserGroup userGroup where userGroup.orgLocationId.id = :orgLocationId and userGroup.status = 1";
+			userGroupList = session.createQuery(query.toString()).setLong("orgLocationId", orgLocation.getId()).list();
+		} catch (Exception e) {
+			logger.error(ExceptionUtils.getFullStackTrace(e));
+		}
+		
+		return userGroupList;
+	}
+	
+	@Override
+	@Transactional
+	public List<UserGroup> getAllUserGroupsByLocationIdAndPayFrequency(OrgLocations orgLocation, String payFrequency)
+	{
 		Session session = this.sessionFactory.getCurrentSession();
-		String query = "from UserGroup userGroup where userGroup.orgLocationId.id = :orgLocationId ";
-		List<UserGroup> userGroupList = session.createQuery(query.toString()).setLong("orgLocationId", orgLocation.getId()).list();
+		String query = "from UserGroup userGroup where userGroup.orgLocationId.id = :orgLocationId and userGroup.payFrequency = :payFrequency and userGroup.status = 1";
+		List<UserGroup> userGroupList = session.createQuery(query.toString()).setLong("orgLocationId", orgLocation.getId()).setString("payFrequency", payFrequency).list();
 		return userGroupList;
 	}
 
@@ -170,47 +188,50 @@ public class UserGroupDaoImpl implements UserGroupDao{
 
 	@Override
 	@Transactional
-	public TotalHoursDTO getTotalHoursByUserId(Long userId,Date sDate,Date eDate)
+	public List<TotalHoursDTO> getTotalHoursByCandidateId(Long candidateId,Date sDate,Date eDate)
 	{
-		TotalHoursDTO totalHoursDTO = null;
+		List<TotalHoursDTO> totalHoursDTO = null;
 		try {
 			java.sql.Date startDate = new java.sql.Date(sDate.getTime());
 			java.sql.Date endDate = new java.sql.Date(eDate.getTime());
 			Session session = this.sessionFactory.getCurrentSession();
 			StringBuilder qry = new StringBuilder(); 
-			qry.append("select distinct user.ID as userId,")
-			.append("can.ID as candidateID,")
-			.append("projmem.ID as projectMemId,")
-			.append("projmem.PAY_RATE as payRate,")
+			qry.append("select distinct can.ID as candidateID,")
+			.append(" projmem.ID as projectMemId,")
+			.append(" projmem.PAY_RATE as payRate,")
 			.append(" projmem.PAY_RATE_CURRENCY as payRateCurrency,")
 			.append(" projmem.CURRENT_BILL_RATE as currentBillRate,")
 			.append(" projmem.BILL_RATE_CURRENCY as billRateCurrency,")
 			.append(" projmem.PAY_RATE_TYPE as payRateType,")
-			.append(" timesheet.START_DATE as startDate,")
-			.append(" timesheet.END_DATE as endDate,")
-			.append(" timesheet.BILLABLE_HOURS as billableHours,")
-			.append(" timesheet.TOTAL_HOURS as totalHours,")
-			.append(" timesheet.ESTIMATED_HOURS as estimatedHours,")
-			.append(" timesheet.NON_BILLABLE_HOURS as nonBillableHours")
+			.append(" sah.FREQUENCY_START_DATE as startDate,")
+			.append(" sah.FREQUENCY_END_DATE as endDate,")
+			.append(" ts.ID as submissinId,")
+			.append(" ts.BILLABLE_HOURS as billableHours,")
+			.append(" ts.TOTAL_HOURS as totalHours,")
+			.append(" ts.ESTIMATED_HOURS as estimatedHours,")
+			.append(" ts.NON_BILLABLE_HOURS as nonBillableHours")
 			.append(" from ")
 			.append(" USER user,")
 			.append(" CANDIDATE can,")
 			.append(" PROJECT_MEMBERS projmem,")
-			.append(" TIMESHEET_SUBMISSIONS timesheet")
-			.append(" where user.ID = can.CONSULTANT_USER_ID")
-			.append(" AND   can.ID  = projmem.CANDIDATE_ID")
-			.append(" AND   projmem.MASTER_CANDIDATE_ID = timesheet.MASTER_CANDIDATE_ID")
-			.append (" AND   projmem.PROJECT_ID = timesheet.PROJECT_ID")
-			.append(" AND user.ID = :userId and timesheet.START_DATE = :startDate and timesheet.END_DATE = :endDate ");
-				 System.out.println(qry.toString());
+			.append("SUBMISSION_APPROVER_HIERARCHY sah,")
+			.append(" TIMESHEET_SUBMISSIONS ts")
+			.append(" where can.ID  = projmem.CANDIDATE_ID")
+			.append(" AND   projmem.MASTER_CANDIDATE_ID = ts.MASTER_CANDIDATE_ID")
+			.append (" AND   projmem.PROJECT_ID = ts.PROJECT_ID")
+			.append (" AND   sah.SUBMISSION_ID = ts.ID")
+			.append(" AND can.ID = :candidateId and sah.FREQUENCY_START_DATE = :startDate and sah.FREQUENCY_END_DATE = :endDate ");
+//				 System.out.println(qry.toString());
 			        
 					Query queryString = session.createSQLQuery(qry.toString());
-					queryString.setParameter("userId", userId).setDate("startDate", startDate).setDate("endDate",endDate);
+					queryString.setParameter("candidateId", candidateId).setDate("startDate", startDate).setDate("endDate",endDate);
 					queryString.setResultTransformer(Transformers.aliasToBean(TotalHoursDTO.class));
-					totalHoursDTO  = (TotalHoursDTO) queryString.uniqueResult();
+					totalHoursDTO  =  queryString.list();
 		}catch (Exception e) {
 			e.printStackTrace();
 		}
 		return totalHoursDTO;
 	}
+	
+	
 }

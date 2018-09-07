@@ -802,7 +802,7 @@ public class ProjectMembersServiceImpl implements ProjectMembersService{
 						List<Expenses> expensesClaimendAmount = expensesReportService.getExpensesByProjectMemberIdAndExpenseStartAndEndDate(projectMember.getId(), null, null);
 						if (expensesClaimendAmount != null && !expensesClaimendAmount.isEmpty()) {
 							for (Expenses exp : expensesClaimendAmount) {
-								finalExpenseAmount = finalExpenseAmount + exp.getTotalAmount();
+								finalExpenseAmount = finalExpenseAmount + exp.getTotalAmount().floatValue();
 								projectMember.setUserExpensesClaimedAmount(finalExpenseAmount);
 							}
 						}
@@ -1832,13 +1832,13 @@ private ProjectMembers saveSharedProjectMembers(ProjectMembersDTO projectMembers
 	
 		emailScenerioUtil.sendNotification(actionLink, loginUser, projectMembers.getProjectMemberCandidteId().getConsultantUser(), loginOrgLocation, notificationScenario,new HashMap<String,String>());
 	}
-	
 
 	@Override
 	public ResponseList<ProjectMembers> getProjectMembersListByTimesheetFrequencyOrgLocationsIdForPayroll(Long locationsId, Date startDate, Date endDate, int start, int length)
 	{
 		return projectMembersDao.getProjectMembersListByTimesheetFrequencyOrgLocationsIdForPayroll(locationsId, startDate, endDate, start, length);
 	}
+
 	@Override
 	public List<ProjectMembers> getAllProjectMembersBasedOnProjectIdStartDateEndDateAndEmploymentType(DayWiseTimesheetReoprtsDTO dayWiseTimesheetReoprtsDto) throws Exception {
 		return projectMembersDao.getAllProjectMembersBasedOnProjectIdStartDateEndDateAndEmploymentType(dayWiseTimesheetReoprtsDto);

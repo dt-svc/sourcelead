@@ -4,6 +4,7 @@ import java.io.BufferedInputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.InputStream;
+import java.math.BigDecimal;
 import java.net.URLConnection;
 import java.text.DateFormat;
 import java.util.Date;
@@ -136,30 +137,30 @@ public class ExpensesReportsRestController {
 			 List<Expenses> expenses  = expensesReportService.getExpensesByProjectMemberIdAndExpenseStartAndEndDate(projectMember.getId(),convertedStartDate,convertedEndDate);
 			 List<Expenses> expensesClaimendAmount  = expensesReportService.getExpensesByProjectMemberIdAndExpenseStartAndEndDateForClaimedExpenses(projectMember.getId(),projectMember.getProjects().getStartDate(),new Date());
 			 if(expenses != null && !expenses.isEmpty()){
-				 Float janApprovedTotal = 0f;
-				 Float janUnApprovedTotal = 0f;
-				 Float febApprovedTotal = 0f;
-				 Float febUnApprovedTotal = 0f;
-				 Float marApprovedTotal = 0f;
-				 Float marUnApprovedTotal = 0f;
-				 Float aprApprovedTotal = 0f;
-				 Float aprUnApprovedTotal = 0f;
-				 Float mayApprovedTotal = 0f;
-				 Float mayUnApprovedTotal = 0f;
-				 Float junApprovedTotal = 0f;
-				 Float jununApprovedTotal = 0f;
-				 Float julApprovedTotal = 0f;
-				 Float julUnApprovedTotal = 0f;
-				 Float augApprovedTotal = 0f;
-				 Float augUnApprovedTotal = 0f;
-				 Float sepApprovedTotal = 0f;
-				 Float sepUnApprovedTotal = 0f;
-				 Float octApprovedTotal = 0f;
-				 Float octUnApprovedTotal = 0f;
-				 Float novApprovedTotal = 0f;
-				 Float novUnApprovedTotal = 0f;
-				 Float decApprovedTotal = 0f;
-				 Float decUnApprovedTotal = 0f;
+				 BigDecimal janApprovedTotal = new BigDecimal(0);
+				 BigDecimal janUnApprovedTotal = new BigDecimal(0);
+				 BigDecimal febApprovedTotal = new BigDecimal(0);
+				 BigDecimal febUnApprovedTotal = new BigDecimal(0);
+				 BigDecimal marApprovedTotal = new BigDecimal(0);
+				 BigDecimal marUnApprovedTotal = new BigDecimal(0);
+				 BigDecimal aprApprovedTotal = new BigDecimal(0);
+				 BigDecimal aprUnApprovedTotal = new BigDecimal(0);
+				 BigDecimal mayApprovedTotal = new BigDecimal(0);
+				 BigDecimal mayUnApprovedTotal = new BigDecimal(0);
+				 BigDecimal junApprovedTotal = new BigDecimal(0);
+				 BigDecimal jununApprovedTotal = new BigDecimal(0);
+				 BigDecimal julApprovedTotal = new BigDecimal(0);
+				 BigDecimal julUnApprovedTotal = new BigDecimal(0); 
+				 BigDecimal augApprovedTotal = new BigDecimal(0);
+				 BigDecimal augUnApprovedTotal = new BigDecimal(0);
+				 BigDecimal sepApprovedTotal = new BigDecimal(0);
+				 BigDecimal sepUnApprovedTotal = new BigDecimal(0);
+				 BigDecimal octApprovedTotal = new BigDecimal(0);
+				 BigDecimal octUnApprovedTotal = new BigDecimal(0);
+				 BigDecimal novApprovedTotal = new BigDecimal(0);
+				 BigDecimal novUnApprovedTotal = new BigDecimal(0);
+				 BigDecimal decApprovedTotal = new BigDecimal(0);
+				 BigDecimal decUnApprovedTotal = new BigDecimal(0);
 				 
 			 for(Expenses exp:expenses){
 				 if(null != projectMember.getProjectMemberCandidteId()){
@@ -219,21 +220,21 @@ public class ExpensesReportsRestController {
 					 
 					 if(exp.getExpenseStatus() != null && exp.getExpenseStatus().equals(Submission_Status.APPROVED)){
 						 if(projectMember.getJanExpenseApprovedTotal() != null){
-							 janApprovedTotal = projectMember.getJanExpenseApprovedTotal();
+							 janApprovedTotal = new BigDecimal(projectMember.getJanExpenseApprovedTotal());
 						 }
-						  janApprovedTotal = janApprovedTotal+exp.getTotalAmount();
-						  projectMember.setJanExpenseApprovedTotal(janApprovedTotal);
-						  expenseApprovedAmount = expenseApprovedAmount+janApprovedTotal;
+						  janApprovedTotal = janApprovedTotal.add(exp.getTotalAmount());
+						  projectMember.setJanExpenseApprovedTotal(janApprovedTotal.floatValue());
+						  expenseApprovedAmount += janApprovedTotal.floatValue();
 					 }
 					 else{
 						 if(projectMember.getJanExpenseUnApprovedTotal() != null){
-							 janUnApprovedTotal = projectMember.getJanExpenseUnApprovedTotal();
+							 janUnApprovedTotal =  new BigDecimal(projectMember.getJanExpenseUnApprovedTotal());
 						 }
-						 janUnApprovedTotal = janUnApprovedTotal+exp.getTotalAmount();
-						 projectMember.setJanExpenseUnApprovedTotal(janUnApprovedTotal);
-						 expenseUnApprovedAmount = expenseUnApprovedAmount+janUnApprovedTotal;
+						 janUnApprovedTotal = janUnApprovedTotal.add(exp.getTotalAmount());
+						 projectMember.setJanExpenseUnApprovedTotal(janUnApprovedTotal.floatValue());
+						 expenseUnApprovedAmount += janUnApprovedTotal.floatValue();
 					 }
-					 projectMember.setJanExpenseTotal(janApprovedTotal+janUnApprovedTotal);
+					 projectMember.setJanExpenseTotal(janApprovedTotal.floatValue()+janUnApprovedTotal.floatValue());
 					
 				 }
 				 
@@ -241,21 +242,21 @@ public class ExpensesReportsRestController {
 					 
 					 if(exp.getExpenseStatus() != null && exp.getExpenseStatus().equals(Submission_Status.APPROVED)){
 						 if(projectMember.getFebExpenseApprovedTotal() != null){
-							 febApprovedTotal = projectMember.getFebExpenseApprovedTotal();
+							 febApprovedTotal =  new BigDecimal(projectMember.getFebExpenseApprovedTotal());
 						 }
-						  febApprovedTotal = febApprovedTotal+exp.getTotalAmount();
-						  projectMember.setFebExpenseApprovedTotal(febApprovedTotal);
-						  expenseApprovedAmount = expenseApprovedAmount+febApprovedTotal;
+						  febApprovedTotal = febApprovedTotal.add(exp.getTotalAmount());
+						  projectMember.setFebExpenseApprovedTotal(febApprovedTotal.floatValue());
+						  expenseApprovedAmount += febApprovedTotal.floatValue();
 					 }
 					 else{
 						 if(projectMember.getFebExpenseUnApprovedTotal() != null){
-							 febUnApprovedTotal = projectMember.getFebExpenseUnApprovedTotal();
+							 febUnApprovedTotal =  new BigDecimal(projectMember.getFebExpenseUnApprovedTotal());
 						 }
-						 febUnApprovedTotal = febUnApprovedTotal+exp.getTotalAmount();
-						 projectMember.setFebExpenseUnApprovedTotal(febUnApprovedTotal);
-						  expenseUnApprovedAmount = expenseUnApprovedAmount+febUnApprovedTotal;
+						 febUnApprovedTotal = febUnApprovedTotal.add(exp.getTotalAmount());
+						 projectMember.setFebExpenseUnApprovedTotal(febUnApprovedTotal.floatValue());
+						  expenseUnApprovedAmount += febUnApprovedTotal.floatValue();
 					 }
-					 projectMember.setFebExpenseTotal(febApprovedTotal+febUnApprovedTotal);
+					 projectMember.setFebExpenseTotal(febApprovedTotal.floatValue()+febUnApprovedTotal.floatValue());
 					
 				 }
 				 
@@ -263,42 +264,42 @@ public class ExpensesReportsRestController {
 					 
 					 if(exp.getExpenseStatus() != null && exp.getExpenseStatus().equals(Submission_Status.APPROVED)){
 						 if(projectMember.getMarExpenseApprovedTotal() != null){
-							 marApprovedTotal = projectMember.getMarExpenseApprovedTotal();
+							 marApprovedTotal =  new BigDecimal(projectMember.getMarExpenseApprovedTotal());
 						 }
-						  marApprovedTotal = marApprovedTotal+exp.getTotalAmount();
-						  projectMember.setMarExpenseApprovedTotal(marApprovedTotal);
-						  expenseApprovedAmount = expenseApprovedAmount+marApprovedTotal;
+						  marApprovedTotal = marApprovedTotal.add(exp.getTotalAmount());
+						  projectMember.setMarExpenseApprovedTotal(marApprovedTotal.floatValue());
+						  expenseApprovedAmount += marApprovedTotal.floatValue();
 					 }
 					 else{
 						 if(projectMember.getMarExpenseUnApprovedTotal() != null){
-							 marUnApprovedTotal = projectMember.getMarExpenseUnApprovedTotal();
+							 marUnApprovedTotal =  new BigDecimal( projectMember.getMarExpenseUnApprovedTotal());
 						 }
-						 marUnApprovedTotal = marUnApprovedTotal+exp.getTotalAmount();
-						 projectMember.setMarExpenseUnApprovedTotal(marUnApprovedTotal);
-						  expenseUnApprovedAmount = expenseUnApprovedAmount+marUnApprovedTotal;
+						 marUnApprovedTotal = marUnApprovedTotal.add(exp.getTotalAmount());
+						 projectMember.setMarExpenseUnApprovedTotal(marUnApprovedTotal.floatValue());
+						  expenseUnApprovedAmount += marUnApprovedTotal.floatValue();
 					 }
-					 projectMember.setMarExpenseTotal(marApprovedTotal+marUnApprovedTotal);
+					 projectMember.setMarExpenseTotal(marApprovedTotal.floatValue()+marUnApprovedTotal.floatValue());
 					
 				 }
 				 else if(CalendarUtil.isDateBetweenTwoDates(aprStartDate, aprEndDate, d)){
 					 
 					 if(exp.getExpenseStatus() != null && exp.getExpenseStatus().equals(Submission_Status.APPROVED)){
 						 if(projectMember.getAprExpenseApprovedTotal() != null){
-							 aprApprovedTotal = projectMember.getAprExpenseApprovedTotal();
+							 aprApprovedTotal = new BigDecimal( projectMember.getAprExpenseApprovedTotal());
 						 }
-						  aprApprovedTotal = aprApprovedTotal+exp.getTotalAmount();
-						  projectMember.setAprExpenseApprovedTotal(aprApprovedTotal);
-						  expenseApprovedAmount = expenseApprovedAmount+aprApprovedTotal;
+						  aprApprovedTotal = aprApprovedTotal.add(exp.getTotalAmount());
+						  projectMember.setAprExpenseApprovedTotal(aprApprovedTotal.floatValue());
+						  expenseApprovedAmount += aprApprovedTotal.floatValue();
 					 }
 					 else{
 						 if(projectMember.getAprExpenseUnApprovedTotal() != null){
-							 aprUnApprovedTotal = projectMember.getAprExpenseUnApprovedTotal();
+							 aprUnApprovedTotal =  new BigDecimal(projectMember.getAprExpenseUnApprovedTotal());
 						 }
-						 aprUnApprovedTotal = aprUnApprovedTotal+exp.getTotalAmount();
-						 projectMember.setAprExpenseUnApprovedTotal(aprUnApprovedTotal);
-						  expenseUnApprovedAmount = expenseUnApprovedAmount+aprUnApprovedTotal;
+						 aprUnApprovedTotal = aprUnApprovedTotal.add(exp.getTotalAmount());
+						 projectMember.setAprExpenseUnApprovedTotal(aprUnApprovedTotal.floatValue());
+						  expenseUnApprovedAmount += aprUnApprovedTotal.floatValue();
 					 }
-					 projectMember.setAprExpenseTotal(aprApprovedTotal+aprUnApprovedTotal);
+					 projectMember.setAprExpenseTotal(aprApprovedTotal.floatValue()+aprUnApprovedTotal.floatValue());
 					
 				 }
 				 
@@ -307,21 +308,21 @@ public class ExpensesReportsRestController {
 					 
 					 if(exp.getExpenseStatus() != null && exp.getExpenseStatus().equals(Submission_Status.APPROVED)){
 						 if(projectMember.getMayExpenseApprovedTotal() != null){
-							 mayApprovedTotal = projectMember.getMayExpenseApprovedTotal();
+							 mayApprovedTotal =  new BigDecimal(projectMember.getMayExpenseApprovedTotal());
 						 }
-						  mayApprovedTotal = mayApprovedTotal+exp.getTotalAmount();
-						  projectMember.setMayExpenseApprovedTotal(mayApprovedTotal);
-						  expenseApprovedAmount = expenseApprovedAmount+mayApprovedTotal;
+						  mayApprovedTotal = mayApprovedTotal.add(exp.getTotalAmount());
+						  projectMember.setMayExpenseApprovedTotal(mayApprovedTotal.floatValue());
+						  expenseApprovedAmount += mayApprovedTotal.floatValue();
 					 }
 					 else{
 						 if(projectMember.getMayExpenseUnApprovedTotal() != null){
-							 mayUnApprovedTotal = projectMember.getMayExpenseUnApprovedTotal();
+							 mayUnApprovedTotal = new BigDecimal(projectMember.getMayExpenseUnApprovedTotal());
 						 }
-						 mayUnApprovedTotal = mayUnApprovedTotal+exp.getTotalAmount();
-						 projectMember.setMayExpenseUnApprovedTotal(mayUnApprovedTotal);
-						  expenseUnApprovedAmount = expenseUnApprovedAmount+mayUnApprovedTotal;
+						 mayUnApprovedTotal = mayUnApprovedTotal.add(exp.getTotalAmount());
+						 projectMember.setMayExpenseUnApprovedTotal(mayUnApprovedTotal.floatValue());
+						  expenseUnApprovedAmount += mayUnApprovedTotal.floatValue();
 					 }
-					 projectMember.setMayExpenseTotal(mayApprovedTotal+mayUnApprovedTotal);
+					 projectMember.setMayExpenseTotal(mayApprovedTotal.floatValue()+mayUnApprovedTotal.floatValue());
 					
 				 }
 				 
@@ -329,21 +330,21 @@ public class ExpensesReportsRestController {
 					 
 					 if(exp.getExpenseStatus() != null && exp.getExpenseStatus().equals(Submission_Status.APPROVED)){
 						 if(projectMember.getJunExpenseApprovedTotal() != null){
-							 junApprovedTotal = projectMember.getJunExpenseApprovedTotal();
+							 junApprovedTotal =  new BigDecimal(projectMember.getJunExpenseApprovedTotal());
 						 }
-						  junApprovedTotal = junApprovedTotal+exp.getTotalAmount();
-						  projectMember.setJunExpenseApprovedTotal(junApprovedTotal);
-						  expenseApprovedAmount = expenseApprovedAmount+junApprovedTotal;
+						  junApprovedTotal = junApprovedTotal.add(exp.getTotalAmount());
+						  projectMember.setJunExpenseApprovedTotal(junApprovedTotal.floatValue());
+						  expenseApprovedAmount += junApprovedTotal.floatValue();
 					 }
 					 else{
 						 if(projectMember.getJunExpenseUnApprovedTotal() != null){
-							 jununApprovedTotal = projectMember.getJunExpenseUnApprovedTotal();
+							 jununApprovedTotal =  new BigDecimal(projectMember.getJunExpenseUnApprovedTotal());
 						 }
-						 jununApprovedTotal = jununApprovedTotal + exp.getTotalAmount();
-						 projectMember.setJunExpenseUnApprovedTotal(jununApprovedTotal);
-						  expenseUnApprovedAmount = expenseUnApprovedAmount+jununApprovedTotal;
+						 jununApprovedTotal = jununApprovedTotal.add(exp.getTotalAmount());
+						 projectMember.setJunExpenseUnApprovedTotal(jununApprovedTotal.floatValue());
+						  expenseUnApprovedAmount += jununApprovedTotal.floatValue();
 					 }
-					 projectMember.setJunExpenseTotal(junApprovedTotal+jununApprovedTotal);
+					 projectMember.setJunExpenseTotal(junApprovedTotal.floatValue()+jununApprovedTotal.floatValue());
 					
 				 }
 				 
@@ -351,22 +352,22 @@ public class ExpensesReportsRestController {
 					 
 					 if(exp.getExpenseStatus() != null && exp.getExpenseStatus().equals(Submission_Status.APPROVED)){
 						 if(projectMember.getJulExpenseApprovedTotal() != null){
-							 julApprovedTotal = projectMember.getJulExpenseApprovedTotal();
+							 julApprovedTotal =  new BigDecimal(projectMember.getJulExpenseApprovedTotal());
 						 }
-						  julApprovedTotal = julApprovedTotal+exp.getTotalAmount();
-						  projectMember.setJulExpenseApprovedTotal(julApprovedTotal);
-						  expenseApprovedAmount = expenseApprovedAmount+julApprovedTotal;
+						  julApprovedTotal = julApprovedTotal.add(exp.getTotalAmount());
+						  projectMember.setJulExpenseApprovedTotal(julApprovedTotal.floatValue());
+						  expenseApprovedAmount += julApprovedTotal.floatValue();
 					 }
 					 else{
 						 
 						 if(projectMember.getJulExpenseUnApprovedTotal() != null){
-							 julUnApprovedTotal = projectMember.getJulExpenseUnApprovedTotal();
+							 julUnApprovedTotal =  new BigDecimal(projectMember.getJulExpenseUnApprovedTotal());
 						 }
-						 julUnApprovedTotal = julUnApprovedTotal+exp.getTotalAmount();
-						 projectMember.setJulExpenseUnApprovedTotal(julUnApprovedTotal);
-						  expenseUnApprovedAmount = expenseUnApprovedAmount+julUnApprovedTotal;
+						 julUnApprovedTotal = julUnApprovedTotal.add(exp.getTotalAmount());
+						 projectMember.setJulExpenseUnApprovedTotal(julUnApprovedTotal.floatValue());
+						  expenseUnApprovedAmount += julUnApprovedTotal.floatValue();
 					 }
-					 projectMember.setJulExpenseTotal(julApprovedTotal+julUnApprovedTotal);
+					 projectMember.setJulExpenseTotal(julApprovedTotal.floatValue()+julUnApprovedTotal.floatValue());
 					
 				 }
 				 
@@ -374,21 +375,21 @@ public class ExpensesReportsRestController {
 					 
 					 if(exp.getExpenseStatus() != null && exp.getExpenseStatus().equals(Submission_Status.APPROVED)){
 						 if(projectMember.getAugExpenseApprovedTotal() != null){
-							 augApprovedTotal = projectMember.getAugExpenseApprovedTotal();
+							 augApprovedTotal =  new BigDecimal(projectMember.getAugExpenseApprovedTotal());
 						 }
-						  augApprovedTotal = augApprovedTotal+exp.getTotalAmount();
-						  projectMember.setAugExpenseApprovedTotal(augApprovedTotal);
-						  expenseApprovedAmount = expenseApprovedAmount+augApprovedTotal;
+						  augApprovedTotal = augApprovedTotal.add(exp.getTotalAmount());
+						  projectMember.setAugExpenseApprovedTotal(augApprovedTotal.floatValue());
+						  expenseApprovedAmount += augApprovedTotal.floatValue();
 					 }
 					 else{
 						 if(projectMember.getAugExpenseUnApprovedTotal() != null){
-							 augUnApprovedTotal = projectMember.getAugExpenseUnApprovedTotal();
+							 augUnApprovedTotal =  new BigDecimal(projectMember.getAugExpenseUnApprovedTotal());
 						 }
-						 augUnApprovedTotal = augUnApprovedTotal+exp.getTotalAmount();
-						 projectMember.setAugExpenseUnApprovedTotal(augUnApprovedTotal);
-						  expenseUnApprovedAmount = expenseUnApprovedAmount+augUnApprovedTotal;
+						 augUnApprovedTotal = augUnApprovedTotal.add(exp.getTotalAmount());
+						 projectMember.setAugExpenseUnApprovedTotal(augUnApprovedTotal.floatValue());
+						  expenseUnApprovedAmount += augUnApprovedTotal.floatValue();
 					 }
-					 projectMember.setAugExpenseTotal(augApprovedTotal+augUnApprovedTotal);
+					 projectMember.setAugExpenseTotal(augApprovedTotal.floatValue()+augUnApprovedTotal.floatValue());
 					
 				 }
 				 
@@ -396,21 +397,21 @@ public class ExpensesReportsRestController {
 					 
 					 if(exp.getExpenseStatus() != null && exp.getExpenseStatus().equals(Submission_Status.APPROVED)){
 						 if(projectMember.getSepExpenseApprovedTotal() != null){
-							 sepApprovedTotal = projectMember.getSepExpenseApprovedTotal();
+							 sepApprovedTotal =  new BigDecimal(projectMember.getSepExpenseApprovedTotal());
 						 }
-						  sepApprovedTotal = sepApprovedTotal+exp.getTotalAmount();
-						  projectMember.setSepExpenseApprovedTotal(sepApprovedTotal);
-						  expenseApprovedAmount = expenseApprovedAmount+sepApprovedTotal;
+						  sepApprovedTotal = sepApprovedTotal.add(exp.getTotalAmount());
+						  projectMember.setSepExpenseApprovedTotal(sepApprovedTotal.floatValue());
+						  expenseApprovedAmount += sepApprovedTotal.floatValue();
 					 }
 					 else{
 						 if(projectMember.getSepExpenseUnApprovedTotal() != null){
-							 sepUnApprovedTotal = projectMember.getSepExpenseUnApprovedTotal();
+							 sepUnApprovedTotal =  new BigDecimal(projectMember.getSepExpenseUnApprovedTotal());
 						 }
-						 sepUnApprovedTotal = sepUnApprovedTotal+exp.getTotalAmount();
-						 projectMember.setSepExpenseUnApprovedTotal(sepUnApprovedTotal);
-						  expenseUnApprovedAmount = expenseUnApprovedAmount+sepUnApprovedTotal;
+						 sepUnApprovedTotal = sepUnApprovedTotal.add(exp.getTotalAmount());
+						 projectMember.setSepExpenseUnApprovedTotal(sepUnApprovedTotal.floatValue());
+						  expenseUnApprovedAmount += sepUnApprovedTotal.floatValue();
 					 }
-					 projectMember.setSepExpenseTotal(sepApprovedTotal+sepUnApprovedTotal);
+					 projectMember.setSepExpenseTotal(sepApprovedTotal.floatValue()+sepUnApprovedTotal.floatValue());
 					
 				 }
 				 
@@ -419,21 +420,21 @@ public class ExpensesReportsRestController {
 					 
 					 if(exp.getExpenseStatus() != null && exp.getExpenseStatus().equals(Submission_Status.APPROVED)){
 						 if(projectMember.getOctExpenseApprovedTotal() != null){
-							 octApprovedTotal = projectMember.getOctExpenseApprovedTotal();
+							 octApprovedTotal =  new BigDecimal(projectMember.getOctExpenseApprovedTotal());
 						 }
-						  octApprovedTotal = octApprovedTotal+exp.getTotalAmount();
-						  projectMember.setOctExpenseApprovedTotal(octApprovedTotal);
-						  expenseApprovedAmount = expenseApprovedAmount+octApprovedTotal;
+						  octApprovedTotal = octApprovedTotal.add(exp.getTotalAmount());
+						  projectMember.setOctExpenseApprovedTotal(octApprovedTotal.floatValue());
+						  expenseApprovedAmount += octApprovedTotal.floatValue();
 					 }
 					 else{
 						 if(projectMember.getOctExpenseUnApprovedTotal() != null){
-							 octUnApprovedTotal = projectMember.getOctExpenseUnApprovedTotal();
+							 octUnApprovedTotal =  new BigDecimal(projectMember.getOctExpenseUnApprovedTotal());
 						 }
-						 octUnApprovedTotal = octUnApprovedTotal+exp.getTotalAmount();
-						 projectMember.setOctExpenseUnApprovedTotal(octUnApprovedTotal);
-						  expenseUnApprovedAmount = expenseUnApprovedAmount+octUnApprovedTotal;
+						 octUnApprovedTotal = octUnApprovedTotal.add(exp.getTotalAmount());
+						 projectMember.setOctExpenseUnApprovedTotal(octUnApprovedTotal.floatValue());
+						  expenseUnApprovedAmount += octUnApprovedTotal.floatValue();
 					 }
-					 projectMember.setOctExpenseTotal(octApprovedTotal+octUnApprovedTotal);
+					 projectMember.setOctExpenseTotal(octApprovedTotal.floatValue()+octUnApprovedTotal.floatValue());
 					 
 				 }
 				 
@@ -441,21 +442,21 @@ public class ExpensesReportsRestController {
 					 
 					 if(exp.getExpenseStatus() != null && exp.getExpenseStatus().equals(Submission_Status.APPROVED)){
 						 if(projectMember.getNovExpenseApprovedTotal() != null){
-							 novApprovedTotal = projectMember.getNovExpenseApprovedTotal();
+							 novApprovedTotal =  new BigDecimal(projectMember.getNovExpenseApprovedTotal());
 						 }
-						  novApprovedTotal = novApprovedTotal+exp.getTotalAmount();
-						  projectMember.setNovExpenseApprovedTotal(novApprovedTotal);
-						  expenseApprovedAmount = expenseApprovedAmount+novApprovedTotal;
+						  novApprovedTotal = novApprovedTotal.add(exp.getTotalAmount());
+						  projectMember.setNovExpenseApprovedTotal(novApprovedTotal.floatValue());
+						  expenseApprovedAmount += novApprovedTotal.floatValue();
 					 }
 					 else{
 						 if(projectMember.getNovExpenseUnApprovedTotal() != null){
-							 novUnApprovedTotal = projectMember.getNovExpenseUnApprovedTotal();
+							 novUnApprovedTotal =  new BigDecimal(projectMember.getNovExpenseUnApprovedTotal());
 						 }
-						 novUnApprovedTotal = novUnApprovedTotal+exp.getTotalAmount();
-						 projectMember.setNovExpenseUnApprovedTotal(novUnApprovedTotal);
-						  expenseUnApprovedAmount = expenseUnApprovedAmount+novUnApprovedTotal;
+						 novUnApprovedTotal = novUnApprovedTotal.add(exp.getTotalAmount());
+						 projectMember.setNovExpenseUnApprovedTotal(novUnApprovedTotal.floatValue());
+						  expenseUnApprovedAmount += novUnApprovedTotal.floatValue();
 					 }
-					 projectMember.setNovExpenseTotal(novApprovedTotal+novUnApprovedTotal);
+					 projectMember.setNovExpenseTotal(novApprovedTotal.floatValue()+novUnApprovedTotal.floatValue());
 					 
 				 }
 				 
@@ -463,21 +464,21 @@ public class ExpensesReportsRestController {
 					 
 					 if(exp.getExpenseStatus() != null && exp.getExpenseStatus().equals(Submission_Status.APPROVED)){
 						 if(projectMember.getDecExpenseApprovedTotal() != null){
-							 decApprovedTotal = projectMember.getDecExpenseApprovedTotal();
+							 decApprovedTotal =  new BigDecimal(projectMember.getDecExpenseApprovedTotal());
 						 }
-						  decApprovedTotal = decApprovedTotal+exp.getTotalAmount();
-						  projectMember.setDecExpenseApprovedTotal(decApprovedTotal);
-						  expenseApprovedAmount = expenseApprovedAmount+decApprovedTotal;
+						  decApprovedTotal = decApprovedTotal.add(exp.getTotalAmount());
+						  projectMember.setDecExpenseApprovedTotal(decApprovedTotal.floatValue());
+						  expenseApprovedAmount += decApprovedTotal.floatValue();
 					 }
 					 else{
 						 if(projectMember.getDecExpenseUnApprovedTotal() != null){
-							 decUnApprovedTotal = projectMember.getDecExpenseUnApprovedTotal();
+							 decUnApprovedTotal =  new BigDecimal(projectMember.getDecExpenseUnApprovedTotal());
 						 }
-						 decUnApprovedTotal = decUnApprovedTotal+exp.getTotalAmount();
-						 projectMember.setDecExpenseUnApprovedTotal(decUnApprovedTotal);
-						  expenseUnApprovedAmount = expenseUnApprovedAmount+decUnApprovedTotal;
+						 decUnApprovedTotal = decUnApprovedTotal.add(exp.getTotalAmount());
+						 projectMember.setDecExpenseUnApprovedTotal(decUnApprovedTotal.floatValue());
+						  expenseUnApprovedAmount += decUnApprovedTotal.floatValue();
 					 }
-					 projectMember.setDecExpenseTotal(decApprovedTotal+decUnApprovedTotal);
+					 projectMember.setDecExpenseTotal(decApprovedTotal.floatValue()+decUnApprovedTotal.floatValue());
 					 
 				  } 
 			     }
@@ -499,31 +500,31 @@ public class ExpensesReportsRestController {
 			      
 			      for(Expenses exp:expensesClaimendAmount){
 						 if(exp.getExpenseStatus() != null && exp.getExpenseStatus().equals(Submission_Status.APPROVED)){
-							 Float approvedClaimedTotal = 0f;
+							 BigDecimal approvedClaimedTotal = new BigDecimal(0);
 							 if(projectMember.getClaimedExpenseApprovedTotal() != null){
-								 approvedClaimedTotal = projectMember.getClaimedExpenseApprovedTotal();
+								 approvedClaimedTotal = new BigDecimal(projectMember.getClaimedExpenseApprovedTotal());
 							 }
-							 approvedClaimedTotal = approvedClaimedTotal+exp.getTotalAmount();
-							  projectMember.setClaimedExpenseApprovedTotal(approvedClaimedTotal);
-							  claimedExpenseApprovedAmount = claimedExpenseApprovedAmount+approvedClaimedTotal;
+							 approvedClaimedTotal = approvedClaimedTotal.add(exp.getTotalAmount());
+							  projectMember.setClaimedExpenseApprovedTotal(approvedClaimedTotal.floatValue());
+							  claimedExpenseApprovedAmount += approvedClaimedTotal.floatValue();
 						 }
 						 else{
-							 Float unApprovedClaimedTotal = 0f;
+							 BigDecimal unApprovedClaimedTotal = new BigDecimal(0);
 							 if(projectMember.getClaimedExpenseUnApprovedTotal() != null){
-								 unApprovedClaimedTotal = projectMember.getClaimedExpenseUnApprovedTotal();
+								 unApprovedClaimedTotal = new BigDecimal(projectMember.getClaimedExpenseUnApprovedTotal());
 							 }
-							 unApprovedClaimedTotal = unApprovedClaimedTotal+exp.getTotalAmount();
-							 projectMember.setClaimedExpenseUnApprovedTotal(unApprovedClaimedTotal);
-							 claimedExpenseUnApprovedAmount = claimedExpenseUnApprovedAmount+unApprovedClaimedTotal;
+							 unApprovedClaimedTotal = unApprovedClaimedTotal.add(exp.getTotalAmount());
+							 projectMember.setClaimedExpenseUnApprovedTotal(unApprovedClaimedTotal.floatValue());
+							 claimedExpenseUnApprovedAmount += unApprovedClaimedTotal.floatValue();
 						 }
 						 
-						 Float expenseClaimedTotal = 0f;
+						 BigDecimal expenseClaimedTotal = new BigDecimal(0);
 						 if(projectMember.getClaimedExpenseTotal() != null){
-							 expenseClaimedTotal = projectMember.getClaimedExpenseTotal();
+							 expenseClaimedTotal = new BigDecimal(projectMember.getClaimedExpenseTotal());
 						 }
 						 if(exp.getExpenseStatus().equals(Submission_Status.APPROVED)) {
-							 expenseClaimedTotal = expenseClaimedTotal+exp.getTotalAmount();
-							 projectMember.setClaimedExpenseTotal(expenseClaimedTotal);
+							 expenseClaimedTotal = expenseClaimedTotal.add(exp.getTotalAmount());
+							 projectMember.setClaimedExpenseTotal(expenseClaimedTotal.floatValue());
 						 }
 				   }
 			      finalProjectMemberList.add(projectMember);

@@ -76,9 +76,19 @@ function getNotificationsByuserId(){
 		
 		$("#ndiv").empty();
       $("#ndiv").append(result);
+      $(".alert-area").toggleClass("notiActive");
 		
 	});
 }
+	
+$('html').click(function(){
+	$(".alert-area").removeClass("notiActive");
+});
+
+$('.alert-area, .notiClick').click(function(event){
+	  event.stopPropagation();
+});
+
 </script>
 <script>
 function linkReadAndUnread(uuId){

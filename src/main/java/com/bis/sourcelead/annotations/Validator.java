@@ -42,6 +42,15 @@ public class Validator {
 							object.getClass().getMethod("setParams", new Class[] { String[].class }).invoke(object,
 									new Object[] { new String[] { field.getAnnotation(Required.class).desc() } });
 							return false;
+						} else if (field.getAnnotation(Required.class).isPositiveNumber()) {
+							String value = field.get(object).toString();
+							if(value !=null && !value.isEmpty() && Integer.parseInt(value)>0) {
+								return true;
+							}
+							object.getClass().getMethod("setErrorKey", String.class).invoke(object, "error.required");
+							object.getClass().getMethod("setParams", new Class[] { String[].class }).invoke(object,
+									new Object[] { new String[] { field.getAnnotation(Required.class).desc() } });
+							return false;
 						} else if (field.getAnnotation(Required.class).alphaNumericOnly()) {
 							String value = field.get(object).toString();
 							String pattern = "^[a-zA-Z0-9]*$";
@@ -218,7 +227,7 @@ public class Validator {
 			String[] d = r.parentValue();
 			for (String d1 : d) {
 				if ((r.parentValueAny() && !value.toString().isEmpty())
-						|| value.toString().equals(d1)) {
+						|| (!d1.isEmpty() && value.toString().equals(d1))) {
 					flag = true;
 					break;
 				}

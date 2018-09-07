@@ -17,7 +17,10 @@ $(document).ready(function(){
       <div class="pull-left">
         <h2>Pay Item</h2>
       </div>
-      <div class="pull-right brud-crum">Home &raquo; Payhead List &raquo; Pay Item</div>
+      <div class="pull-right brud-crum">
+                <a href="<c:url value='${appPath}/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a>&raquo;<a
+				href="<c:url value='${appPath}/payrollConfiguration'/>"> Payroll Configuration</a>&raquo; Pay Item
+      </div>
     </section>
     
     <div class="contentareaInner-styles clearfix">
@@ -39,12 +42,13 @@ $(document).ready(function(){
               <div class="clearfix">
                 <select class="form-control sel" name="paySchedule" id="paySchedule" data-validation="required" field-name="Schedule">
 					    <option value="">--Select Schedule-</option>
-						<option ${payItem.paySchedule == 'Every Pay' ? 'selected' : ''} value="Every Pay">Every Pay</option>
-						<option ${payItem.paySchedule == 'Every Quarter' ? 'selected' : ''} value="Every Quarter">Every Quarter</option>
-						<option ${payItem.paySchedule == 'Annually' ? 'selected' : ''} value="Annually">Annually</option>
+						<option ${payItem.paySchedule == 'EVERY_PAY' ? 'selected' : ''} value="EVERY_PAY">Every Pay</option>
+						<option ${payItem.paySchedule == 'MONTHLY' ? 'selected' : ''} value="MONTHLY">Monthly</option>
+						<option ${payItem.paySchedule == 'QUARTERLY' ? 'selected' : ''} value="QUARTERLY">Quarterly</option>
+						<option ${payItem.paySchedule == 'ANNUALLY' ? 'selected' : ''} value="ANNUALLY">Annually</option>
 					</select>
               </div>
-           </div>
+           </div>	
            
             <div class="col-md-5">
               <label class="clearfix">Allow Employment Type <span class="text-danger paddingLeft">*</span></label>

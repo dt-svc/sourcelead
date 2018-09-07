@@ -13,9 +13,11 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.bis.sourcelead.dao.CountriesDao;
 import com.bis.sourcelead.dao.OrgLicenseSubscriptionDao;
 import com.bis.sourcelead.dao.SourceleadActionsDao;
 import com.bis.sourcelead.dao.TabsDao;
+import com.bis.sourcelead.entity.Countries;
 import com.bis.sourcelead.entity.Org;
 import com.bis.sourcelead.entity.OrgLicenseSubscription;
 import com.bis.sourcelead.entity.OrgLocations;
@@ -36,6 +38,9 @@ public class SourceleadActionsDaoImpl implements SourceleadActionsDao {
 	
 	@Autowired
 	TabsDao tabsDao;
+	
+	@Autowired
+	CountriesDao countriesDao;
 	
 	@Value("${SourceLead.100}")
 	private String notFound;
@@ -234,6 +239,8 @@ public class SourceleadActionsDaoImpl implements SourceleadActionsDao {
 		
 		Session session = this.sessionFactory.getCurrentSession();
 		List<SourceleadActions> actionsList = null;
+		List<SourceleadActions> sourceleadActionsList = new ArrayList<>();
+		Countries countries = countriesDao.getCountriesByCountryName(orgLocations.getCountry());
 			
 			if(org.getOrgCode().equalsIgnoreCase("slead")) {
 				 List<Long> modulesList = new ArrayList<Long>();
@@ -262,11 +269,19 @@ public class SourceleadActionsDaoImpl implements SourceleadActionsDao {
 						}
 				     
 				     String query = "from SourceleadActions sa where sa.actionRole != 'ROLE_ENROLL_ORG' and sa.tabs.id IN (:tabsIds) and sa.id NOT IN (152,153) and sa.status = '1' ";
+				    
 				     actionsList = session.createQuery(query.toString()).setParameterList("tabsIds", tabsIds).list();
+				     for(SourceleadActions actions : actionsList) {
+				    	if(actions.getLocationCode() == null || (actions.getLocationCode() != null && actions.getLocationCode().equalsIgnoreCase(countries.getCode2()))) {
+				    		sourceleadActionsList.add(actions);
+				    	}
+				     }
+				     
+				     
 			}
 	   
    
-	    return actionsList;
+	    return sourceleadActionsList;
 	}
 
 	@Override

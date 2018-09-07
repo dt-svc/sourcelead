@@ -56,7 +56,43 @@ public class Candidate implements Serializable {
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "CONSULTANT_USER_ID")
 	private User consultantUser;
-
+	
+	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name = "SHIFT_ID")
+	private Shift shift;
+	
+	@ManyToOne
+	@JoinColumn(name = "WORK_LOCATION")
+	private OrgLocations workLocation;
+	
+	@Column(name = "RESIDENCE_ADDRESS")
+	private String residenceAddress;
+	
+	@Column(name = "RESIDENCE_STREET_ADDRESS")
+	private String residenceStreetAddress;
+	
+	@Column(name = "RESIDENCE_COUNTRY")
+	private String residenceCountry;
+	
+	@Column(name = "RESIDENCE_STATE")
+	private String residenceState;
+	
+	@Column(name = "RESIDENCE_CITY")
+	private String residenceCity;
+	
+	@Column(name = "RESIDENCE_ZIP_CODE")
+	private String residenceZipCode;
+	
+	@Column(name = "RESIDENCE_STATE_CODE")
+	private String residenceStateCode;
+	
+	@Column(name = "RESIDENCE_LATITUDE")
+	private String residenceLatitude;
+	
+	@Column(name = "RESIDENCE_LONGITUDE")
+	private String residenceLongitude;
+	
+	
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "ORG_ID", nullable = false)
 	private Org orgId;
@@ -100,7 +136,6 @@ public class Candidate implements Serializable {
 	private String address;
 	
 	@Column(name = "LOCATION", columnDefinition = "LONGTEXT default NULL")
-
 	private String location;
 
 	@Column(name = "ZIPCODE")
@@ -1661,7 +1696,13 @@ public class Candidate implements Serializable {
 	public void setResidenceEndDate(Date residenceEndDate) {
 		this.residenceEndDate = residenceEndDate;
 	}
+	public Shift getShift() {
+		return shift;
+	}
 
+	public void setShift(Shift shift) {
+		this.shift = shift;
+	}
 	public String getCandidateTags() {
 		return candidateTags;
 	}
@@ -1686,4 +1727,105 @@ public class Candidate implements Serializable {
 		this.candidateTagsList = candidateTagsList;
 	}
 
+	public OrgLocations getWorkLocation()
+	{
+		return workLocation;
+	}
+
+	public String getResidenceAddress()
+	{
+		return residenceAddress;
+	}
+
+	public String getResidenceStreetAddress()
+	{
+		return residenceStreetAddress;
+	}
+
+	public String getResidenceCountry()
+	{
+		return residenceCountry;
+	}
+
+	public String getResidenceState()
+	{
+		return residenceState;
+	}
+
+	public String getResidenceCity()
+	{
+		return residenceCity;
+	}
+
+	public String getResidenceZipCode()
+	{
+		return residenceZipCode;
+	}
+
+	public String getResidenceStateCode()
+	{
+		return residenceStateCode;
+	}
+
+	public String getResidenceLatitude()
+	{
+		return residenceLatitude;
+	}
+
+	public String getResidenceLongitude()
+	{
+		return residenceLongitude;
+	}
+
+	public void setWorkLocation(OrgLocations workLocation)
+	{
+		this.workLocation = workLocation;
+	}
+
+	public void setResidenceAddress(String residenceAddress)
+	{
+		this.residenceAddress = residenceAddress;
+	}
+
+	public void setResidenceStreetAddress(String residenceStreetAddress)
+	{
+		this.residenceStreetAddress = residenceStreetAddress;
+	}
+
+	public void setResidenceCountry(String residenceCountry)
+	{
+		this.residenceCountry = residenceCountry;
+	}
+
+	public void setResidenceState(String residenceState)
+	{
+		this.residenceState = residenceState;
+	}
+
+	public void setResidenceCity(String residenceCity)
+	{
+		this.residenceCity = residenceCity;
+	}
+
+	public void setResidenceZipCode(String residenceZipCode)
+	{
+		this.residenceZipCode = residenceZipCode;
+	}
+
+	public void setResidenceStateCode(String residenceStateCode)
+	{
+		this.residenceStateCode = residenceStateCode;
+	}
+
+	public void setResidenceLatitude(String residenceLatitude)
+	{
+		this.residenceLatitude = residenceLatitude;
+	}
+
+	public void setResidenceLongitude(String residenceLongitude)
+	{
+		this.residenceLongitude = residenceLongitude;
+	}
+
+	
 }

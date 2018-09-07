@@ -230,6 +230,7 @@ public class FileUploadUtil {
 			saveFileFolder.mkdirs();
 		try {
 			Files.move(file.toPath(), new File(saveFileFolder, file.getName()).toPath());
+			System.out.println("File moved to : " + url);
 			return url;
 		} catch (IllegalStateException | IOException e) {
 			e.printStackTrace();

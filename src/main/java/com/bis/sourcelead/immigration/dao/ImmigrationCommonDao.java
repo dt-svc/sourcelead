@@ -1,15 +1,19 @@
 package com.bis.sourcelead.immigration.dao;
 
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
 import com.bis.sourcelead.dto.ImmigrationListViewDTO;
+import com.bis.sourcelead.dto.LcaDTO;
+import com.bis.sourcelead.dto.LcaDetailsDTO;
+import com.bis.sourcelead.dto.LcaListViewDTO;
 import com.bis.sourcelead.dto.MyImmigrationViewDTO;
 import com.bis.sourcelead.dto.ResponseList;
 import com.bis.sourcelead.entity.Candidate;
 import com.bis.sourcelead.entity.CandidateFamilyDetails;
 import com.bis.sourcelead.entity.CandidateIdendities;
-import com.bis.sourcelead.entity.CandidateLcaI94Summary;
+import com.bis.sourcelead.entity.CandidateLcaJobDetails;
 import com.bis.sourcelead.entity.CandidatePassportVisa;
 import com.bis.sourcelead.entity.CandidateResidence;
 import com.bis.sourcelead.entity.CandidateResumes;
@@ -22,6 +26,12 @@ import com.bis.sourcelead.entity.ImmigrationDashboardView;
 import com.bis.sourcelead.entity.ImmigrationListExportView;
 import com.bis.sourcelead.entity.ImmigrationTasks;
 import com.bis.sourcelead.entity.ImmigrationTemplate;
+import com.bis.sourcelead.entity.Lca;
+import com.bis.sourcelead.entity.LcaDocumentHistory;
+import com.bis.sourcelead.entity.LcaHistory;
+import com.bis.sourcelead.entity.LcaListExportView;
+import com.bis.sourcelead.entity.LcaPlaceOfEployment;
+import com.bis.sourcelead.entity.LcaVisaClarifications;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.Tasks;
 import com.bis.sourcelead.entity.User;
@@ -34,15 +44,22 @@ public interface ImmigrationCommonDao {
 	List<ImmigrationTemplate> getImmigrationTemplateList(OrgLocations orgLocations);
 	
 	Immigration savePetitionDetails(Immigration immigration, Candidate candidate, CandidateIdendities candidateIdendities,
+			CandidateResumes candidateResume, CandidateLcaJobDetails candidateLcaJobDetails, List<CandidateResidence> residenceEntityLst) throws Exception;
+	
+	/*Immigration savePetitionDetails(Immigration immigration, Candidate candidate, CandidateIdendities candidateIdendities,
 			CandidateResumes candidateResume, List<CandidateLcaI94Summary> lcaSummaryLst, List<CandidateResidence> residenceEntityLst) throws Exception;
-
+*/
 	Immigration getImmigrationDetails(String immigrationId);
 
 	String getPetitionTypeById(Long petitionType, String petitionTypeConstant);
 	
 	ImmigrationCandidateDocuments getImmigrationCandidateDocsById(Long id, Long candidateId,Long immigrationId) throws Exception;
 
-	CandidateLcaI94Summary getCandidateLCADetails(Long id, String yes);
+	//CandidateLcaI94Summary getCandidateLCADetails(Long id);
+	
+	CandidateLcaJobDetails getCandidateLcaJobDetails(Long id);
+	
+	LcaHistory getLcaHistoryDetails(Long id, String yes);
 
 	String saveCandidateFamilyMemberDetails(CandidateFamilyDetails familyDetails) throws Exception;
 
@@ -60,6 +77,8 @@ public interface ImmigrationCommonDao {
 
 	List<CandidatePassportVisa> getCandidatePassportVisaDetails(Long candidateId,String idType,String searchValue);
 	
+	List<LcaDTO> getLcaHistoryDetailsInfo(Long immigrationId);
+	
 	CandidateFamilyDetails getCandidateFamilyDetailsById(Long id);
 
 	void removeCandidatePassportVisaDetails(Long candidateId, Long id, User user, OrgLocations orgLocations, String idType);
@@ -71,6 +90,8 @@ public interface ImmigrationCommonDao {
 	 CandidatePassportVisa getCandidatePassportVisaDetailsById(Long id);
 	 
 	 Immigration  getImmigrationById(Long id);
+	 
+	 Lca  getLcaById(Long id);
 	 
 	 ImmigrationCandidateForms getImmigrationCandidateFormById(Long id);
 		 
@@ -149,5 +170,64 @@ public interface ImmigrationCommonDao {
 	Long getTemplateDetailsByNameAndOrgLoacationId(String name, OrgLocations orgLocations);
 
 	List<Immigration> getImmigrationsByOrgId(Long id);
+	
+	Lca saveLcaDetails(Lca lca,List<LcaPlaceOfEployment> lcaPlaceOfEploymentList,List<LcaDocumentHistory> lcaDocumentList) throws Exception;
+	
+	LcaVisaClarifications saveLcaVisaClarifications(LcaVisaClarifications lcaVisaClarifications) throws Exception;
+	
+	LcaPlaceOfEployment saveLcaPlaceOfEployment(LcaPlaceOfEployment lcaPlaceOfEployment) throws Exception;
+	
+	LcaDocumentHistory saveLcaDocumentHistory(LcaDocumentHistory lcaDocumentHistory) throws Exception;
+	
+	List<LcaDocumentHistory> getLcaDocumentHistoryListById(Long lcaId);
+	
+	List<LcaPlaceOfEployment> getLcaPlaceOfEploymentListById(Long lcaId);
+	
+	LcaPlaceOfEployment getLcaPlaceOfEploymentDetailsById(Long id);
+	
+	LcaDocumentHistory getLcaDocumentHistoryDetailsById(Long id,Long lcaId);
+	
+	ResponseList<LcaListViewDTO> getLcaList(LcaListViewDTO lcaListViewDTO, String status,String lcaStatus,String searchValue, OrgLocations orgLocations, Map<String, Long[]> filterVal, String filterByDays)throws Exception;
+	
+	Long getLcaIdByUUID(String lcaUUID);
+	
+	String deleteLcaDetailsById(Long lcaId);
+	
+	LcaVisaClarifications getLcaVisaClarificationsByIDAndLcaId(Long lcaId);
+	
+	List<LcaPlaceOfEployment> getLcaPlaceOfEploymentListByIdAndLcaID(Long lcaId);
+	
+	String reActiveLcaById(Long lcaId);
+	
+	List<Map<String, String>> getSocCodeWithSOCOccupationTitleList(String name, String socType);
+
+	String getOesSocCodeById(Long id, String socType);
+
+	List<LcaListExportView> getLcaListExportDetails(OrgLocations orgLocations);
+	
+	 public Lca getLcaDetailsByLcaNoAndId(String lcaNo,Long orgLocationId) throws Exception;
+	 
+	 public Boolean validateLcaNumber(String lcaNo, Long orgLocationId) throws Exception;
+	 
+	 public Lca getLcaDetailsByLcaTitleAndId(String lcaTitle, Long lcaId) throws Exception;
+	    
+	 public Boolean validateLcaTitle(String lcaTitle, Long orgLocationId) throws Exception;
+
+	List<Lca> getAllLcaList(Date currentDate);
+
+	String updateLcaStatusWithExpired(Long lcaId);
+	
+	List<Map<String, String>> getLcaNumbersList(String lcaNum,String orgLocationId,String lcaStatus,String candidateId);
+	
+	LcaHistory saveLcaHistory(LcaHistory lcaHistory);
+	
+	public Lca getLcaByLcaId(Long lcaId) throws Exception;
+	
+	List<LcaDetailsDTO> getEmployeeByLcaId(Long lcaId, OrgLocations orgLocations)throws Exception;
+	
+	void deleteLcaPlaceOfEmpmntDetails(Long remaininglpoeIds[]);
+	
+	
+	CandidateLcaJobDetails saveCandidateLcaJobDetails(CandidateLcaJobDetails candidateLcaJobDetails);
 	
 }

@@ -339,7 +339,71 @@ padding-left: 25px;
 							 result = result +'       </div>                                                                                                      ';
 							 result = result +'     </div>                                                                                                        ';
 					 }
+					 
+					 if(json.gender != null && json.gender != '' && json.gender != 'undefined'){
+						  result = result +'       <div class="form-group">                                                                                    ';
+							 result = result +'       <label class="col-md-3 control-label">Gender</label>                                            ';
+							 result = result +'       <div class="col-md-6">                                                                                      ';
+							 result = result +'           <p>                                                                                                     ';
+							 result = result +'           '+json.gender+'                              ';
+							 result = result +'           </p>                                                                                                    ';
+							 result = result +'       </div>                                                                                                      ';
+							 result = result +'     </div>                                                                                                        ';
+					 }
+					 
+					 if(json.dateOfBirth != null && json.dateOfBirth != '' && json.dateOfBirth != 'undefined'){
+						  result = result +'       <div class="form-group">                                                                                    ';
+							 result = result +'       <label class="col-md-3 control-label">Date of Birth</label>                                            ';
+							 result = result +'       <div class="col-md-6">                                                                                      ';
+							 result = result +'           <p>                                                                                                     ';
+							 result = result +'           '+json.dateOfBirth+'                              ';
+							 result = result +'           </p>                                                                                                    ';
+							 result = result +'       </div>                                                                                                      ';
+							 result = result +'     </div>                                                                                                        ';
+					 }
+					 
+					 if(json.employmentEligibility != null && json.employmentEligibility != '' && json.employmentEligibility != 'undefined'){
+						  result = result +'       <div class="form-group">                                                                                    ';
+							 result = result +'       <label class="col-md-3 control-label">Employment Eligibility</label>                                            ';
+							 result = result +'       <div class="col-md-6">                                                                                      ';
+							 result = result +'           <p>                                                                                                     ';
+							 result = result +'           '+json.employmentEligibility+'                              ';
+							 result = result +'           </p>                                                                                                    ';
+							 result = result +'       </div>                                                                                                      ';
+							 result = result +'     </div>                                                                                                        ';
+					 }
+					 if(json.uscisAlien != null && json.uscisAlien != '' && json.uscisAlien != 'undefined'){
+						  result = result +'       <div class="form-group">                                                                                    ';
+							 result = result +'       <label class="col-md-3 control-label">USCIS /Alien registration Number</label>                                            ';
+							 result = result +'       <div class="col-md-6">                                                                                      ';
+							 result = result +'           <p>                                                                                                     ';
+							 result = result +'           '+json.uscisAlien+'                              ';
+							 result = result +'           </p>                                                                                                    ';
+							 result = result +'       </div>                                                                                                      ';
+							 result = result +'     </div>                                                                                                        ';
+					 }
+					 if(json.authorizedWorkUntil != null && json.authorizedWorkUntil != '' && json.authorizedWorkUntil != 'undefined'){
+						  result = result +'       <div class="form-group">                                                                                    ';
+							 result = result +'       <label class="col-md-3 control-label">Authorized work until</label>                                            ';
+							 result = result +'       <div class="col-md-6">                                                                                      ';
+							 result = result +'           <p>                                                                                                     ';
+							 result = result +'           '+json.authorizedWorkUntil+'                              ';
+							 result = result +'           </p>                                                                                                    ';
+							 result = result +'       </div>                                                                                                      ';
+							 result = result +'     </div>                                                                                                        ';
+					 }
 				   
+					 if(json.shift != null && json.shift != '' && json.shift != 'undefined'){
+						  result = result +'       <div class="form-group">                                                                                    ';
+							 result = result +'       <label class="col-md-3 control-label">Shift</label>                                            ';
+							 result = result +'       <div class="col-md-6">                                                                                      ';
+							 result = result +'           <p>                                                                                                     ';
+							 result = result +'           '+json.shiftName+'                              ';
+							 result = result +'           </p>                                                                                                    ';
+							 result = result +'       </div>                                                                                                      ';
+							 result = result +'     </div>                                                                                                        ';
+					 }
+					 
 					
 					/*  if(json.onboardTemplateId != null && json.onboardTemplateId != '' && json.onboardTemplateId != 'undefined'){
 						 result = result +'        <div class="form-group">                                                                                   ';

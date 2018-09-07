@@ -41,32 +41,15 @@ $(document).ready(function(){
 <link rel="icon" type="image/png" href="/resources/images/fav.png" />
 <title>Welcome to Source Lead</title>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:400,100,300,500">
-<link rel="stylesheet" href="/resources/reports/export.css?staticTime=${staticTime}" type="text/css" media="all" />
-<link href="/resources/css/bootstrap-colorpicker.min.css?staticTime=${staticTime}" rel="stylesheet">
-<link rel="stylesheet" href="/resources/css/bootstrap-select.min.css?staticTime=${staticTime}">
-<link href="/resources/css/bootstrap.min.css?staticTime=${staticTime}" rel="stylesheet" type="text/css">
-<!-- <link href="/resources/css/jquery.dataTables.min.css" rel="stylesheet" type="text/css"> -->
-<link href="/resources/css/buttons.dataTables.min.css?staticTime=${staticTime}" rel="stylesheet">
-<link href="/resources/css/dataTablePagination.css?staticTime=${staticTime}" rel="stylesheet" type="text/css">
-<link href="/resources/css/jquery-ui.css?staticTime=${staticTime}" rel="stylesheet">
-<link rel="stylesheet" href="/resources/css/font-awesome.min.css?staticTime=${staticTime}">
+<link rel="stylesheet" href="/resources/reports/dashboard_3118.css?staticTime=${staticTime}" type="text/css" media="all" />
 <link rel="stylesheet" href="/resources/css/chosen.min.css?staticTime=${staticTime}">
-<link rel="stylesheet" href="/resources/css/jquery.timepicker.css?staticTime=${staticTime}">
-<link href="/resources/css/editor.css?staticTime=${staticTime}" rel="stylesheet">
 <link href="/resources/css/sourcelead-main.css?staticTime=${staticTime}" rel="stylesheet">
 <link rel="stylesheet" href="/resources/css/timesheet.css?staticTime=${staticTime}" type="text/css" >
-<link rel="stylesheet" href="/resources/css/bootstrap-datetimepicker.min.css?staticTime=${staticTime}" type="text/css" >
-<link rel="stylesheet" href="/resources/css/dataTables.searchHighlight.css?staticTime=${staticTime}" type="text/css" >
+ 
 <c:set scope="request" var="viewPage" value='${pageContext.request.servletPath.toString().replaceFirst("/WEB-INF/views/","").replaceFirst(".jsp","")}'></c:set>
  <script src="https://maps.google.com/maps/api/js?libraries=places&v=3&key=${SourceLeadWeb_googleMapsLocationApiKey}" type="text/javascript"></script>
-<!-- HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries -->
-<!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
-<!--[if lt IE 9]>
-      <script src="https://oss.maxcdn.com/html5shiv/3.7.2/h	tml5shiv.min.js"></script>
-      <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
-    <![endif]-->
+ 
 <jsp:include page="masterJs.jsp" />
-<link href="/resources/css/login.css?staticTime=${staticTime}" rel="stylesheet">
 
 <!-- This requirement.css for only requirement.jsp  -->
 <c:if test='${viewPage == "requirement/requirement"}'>
@@ -75,7 +58,16 @@ $(document).ready(function(){
 
 </head>
 
-<script src="/resources/js/bootstrap.min.js?staticTime=${staticTime}"></script>
+
+<script src="/resources/js/jquery-ui.js?staticTime=${staticTime}"></script>
+<script src="/resources/js/formvalidator.js?staticTime=${staticTime}"></script>
+<script src="/resources/js/bootstrap-select.min.js?staticTime=${staticTime}"></script>
+<script src="/resources/js/chosen.jquery.min.js?staticTime=${staticTime}"></script>
+<script src="/resources/js/jquery.dataTables.min.js?staticTime=${staticTime}"></script>
+
+<script src="/resources/js/sourcelead-app.js?staticTime=${staticTime}"></script>
+<script src="/resources/js/jquery.timepicker.js?staticTime=${staticTime}"></script>
+ 
 <!--  Amcharts -->
 <c:if test='${viewPage == "reports/reportsDashboard"}'>
 	<script src="/resources/amcharts/amcharts.js?staticTime=${staticTime}"></script>
@@ -130,55 +122,7 @@ $(document).ready(function(){
 	<script src="/resources/js/pie.js?staticTime=${staticTime}"></script>
  </c:if>
  
- <%-- <c:if test='${viewPage == "leavemanagement/addLeaveType"}'>
-	<link href="/resources/css/summernote.css?staticTime=${staticTime}" rel="stylesheet">
-	<link href="/resources/css/bootstrap-colorpicker.min.css?staticTime=${staticTime}" rel="stylesheet">
-	<script src="/resources/js/bootstrap-colorpicker.min.js?staticTime=${staticTime}"></script> 
-	<script src="/resources/js/summernote.js?staticTime=${staticTime}"></script>
- </c:if> --%>
  
-<!--  Amcharts -->
-<script src="/resources/js/bootstrap-colorpicker.min.js?staticTime=${staticTime}"></script>
-<script src="/resources/js/jquery-ui.js?staticTime=${staticTime}"></script>
-<script src="/resources/js/jquery-fun.js?staticTime=${staticTime}"></script>
-<script src="/resources/js/jquery.dataTables.min.js?staticTime=${staticTime}"></script>
-<script src="/resources/js/jquery.timepicker.js?staticTime=${staticTime}"></script>
-<script src="/resources/js/formvalidator.js?staticTime=${staticTime}"></script>
-<script src="/resources/js/bootstrap-select.min.js?staticTime=${staticTime}"></script>
-<script src="/resources/js/themeswitcher.js?staticTime=${staticTime}"></script>
-<script src="/resources/js/moment.min.js?staticTime=${staticTime}"></script>
-<script src="/resources/js/datetime-moment.js?staticTime=${staticTime}"></script>
-<script src="/resources/js/bootstrap-datetimepicker.min.js?staticTime=${staticTime}"></script>
-
-<script src="/resources/js/dataTables.searchHighlight.min.js?staticTime=${staticTime}"></script>
-<script src="/resources/js/jquery.highlight.js?staticTime=${staticTime}"></script>
-
-<!--  Data tables script files -->
-<!-- <script src="/resources/js/jquery-1.12.4.js" type="text/javascript" charset="utf-8"></script> -->
-<script src="/resources/js/jquery.dataTables.min.js?staticTime=${staticTime}" type="text/javascript" charset="utf-8"></script>
-<script src="/resources/js/dataTables.buttons.min.js?staticTime=${staticTime}" type="text/javascript" charset="utf-8"></script>
-
-<script src="/resources/js/jszip.min.js?staticTime=${staticTime}" type="text/javascript" charset="utf-8"></script>
-<!--  chosen jquery -->
-<script src="/resources/js/chosen.jquery.min.js?staticTime=${staticTime}"></script>
-<!--  chosen jquery -->
-<script src="/resources/js/pdfmake.min.js?staticTime=${staticTime}" type="text/javascript" charset="utf-8"></script>
-<script src="/resources/js/vfs_fonts.js?staticTime=${staticTime}" type="text/javascript" charset="utf-8"></script>
-<script src="/resources/js/buttons.html5.min.js?staticTime=${staticTime}" type="text/javascript" charset="utf-8"></script>
-<%-- <script src="/resources/js/buttons.print.min.js?staticTime=${staticTime}" type="text/javascript" charset="utf-8"></script> --%>
-<%-- <script src="/resources/js/buttons.flash.min.js?staticTime=${staticTime}" type="text/javascript" charset="utf-8"></script> --%>
-<!--  Data tables script files ends -->
-
-
-
-<!-- these files for autocomplete with tagit -->
-<link href="/resources/css/jquery-tagit.css?staticTime=${staticTime}" rel="stylesheet">
-<script src="/resources/js/csc.js?staticTime=${staticTime}" type="text/javascript" charset="utf-8"></script>
-<script src="/resources/js/tag-it.js?staticTime=${staticTime}" type="text/javascript" charset="utf-8"></script>
-<script src="/resources/js/tag-it.min.js?staticTime=${staticTime}" type="text/javascript" charset="utf-8"></script>
-<!-- end files for autocomplete with tagit -->
-
-
 <style>
 .dashboard-widget.dashboard-widget-icons{
 min-height: 225px !important;
@@ -244,7 +188,7 @@ z-index: 1000000000 !important;
 
 <script type="text/javascript">
 $(document).ready(function(){
-  getNotificationsByuserId();
+//   getNotificationsByuserId();
 });
 </script>
 <!-- notification related include jsp -->
@@ -452,17 +396,6 @@ function preventTabkey(e){
 			</c:forEach>
 	             
 		</select>
-			
-			
-			<%-- <select id="searchType" name="searchType" class="selectpicker uasrch pull-left show-menu-arrow" >
-			<option data-icon="fa fa-th-large" ${searchType == "All" ?"selected='selected'":""} value="All">All</option> --%>
-			<%-- <option data-icon="fa fa-users"  ${searchType == "Users" ?"selected='selected'":""} value="Users">Users</option> --%>
-			<%-- <option data-icon="fa fa-briefcase" ${searchType == "Requirement" ?"selected='selected'":""} value="Requirement">Requirement</option> --%>
-			<%-- <option data-icon="fa fa-user-circle" ${searchType == "Candidate" ?"selected='selected'":""} value="Candidate">Candidate</option> --%>
-			<%-- <option data-icon="fa fa-user-plus" ${searchType == "Client" ?"selected='selected'":""} value="Client">Clients</option> --%>
-			<%-- <option data-icon="fa fa-suitcase" ${searchType == "Vendor" ?"selected='selected'":""} value="Vendor">Vendors</option> --%>
-			<%-- <option data-icon="fa fa-bar-chart" ${searchType == "Projects" ?"selected='selected'":""} value="Projects">Projects</option> --%>
-			<!-- </select> -->
 			</div>
 			
 			
@@ -514,22 +447,8 @@ function preventTabkey(e){
         <!-- login User details -->
         <ul class="list-inline list-unstyled pull-left custom-navbar-inner">
           <li class="srch-btn-xs"> <a title="Search"><i class="fa fa-search"></i></a></li>
-           <%-- <c:if test="${SourceLeadWeb_loginUserRole == 'ROLE_ADMIN' || SourceLeadWeb_loginUserRole == 'SOURCELEAD_ADMIN'}">
-	          <li> <a href="javascript:void(0)" title="Quick Links" id="qlinks"> <i class="fa fa-link"></i> </a>
-	              <div class="qlinks-area ">
-	              <ul class="list-unstyled">
-	                <li><a href="${sourceleadUrl}/userCreation"><i class="fa fa-users"></i>&nbsp;Create User</a></li>
-	                <li><a href="${sourceleadUrl}/client"><i class="fa fa-user-plus"></i>&nbsp;Create Client</a></li>
-	                <li><a href="${sourceleadUrl}/project"><i class="fa fa-bar-chart"></i>&nbsp;Create Project</a></li>
-	                <li><a href="${sourceleadUrl}/uploadForm"><i class="fa fa-download"></i>&nbsp;Import Users</a></li>
-	              </ul>
-	            </div>
-	          </li>
-            </c:if> --%>
             
-            <!--  <li class="reportsH">
-					<a title="Invite" data-toggle="modal" id="invitePop"><i class="fa fa-send"></i></a>
-	        </li> -->
+             
             <li class="reportsH">
 					<a title="Connections"  href="<c:url value='${sourceleadUrl}/loadConnectedList?status=connected'/>" id="connections"><i class="fa fa-sitemap"></i><span class="label label-warning">${SourceLeadWeb_connectionReceivedCount > 0 ? SourceLeadWeb_connectionReceivedCount : ''}</span></a>
 	        </li>
@@ -544,11 +463,6 @@ function preventTabkey(e){
 	            </li>
              </c:if>
             
-            <%-- <sec:authorize access="hasRole('ROLE_ENROLL_ORG')">
-	            <li class="reportsH">
-					<a title="Usage Reports" href="${appPath}/userUsageReport"><i class="fa fa-pie-chart"></i></a>
-	            </li>
-            </sec:authorize> --%>
             
             <sec:authorize access="hasAnyRole('ROLE_MAIL_BOX','ROLE_HOTLIST_CAMPAIGN')">
             	<li><a href="<c:url value='${sourceleadUrl}/mailBox/mails'/>" title="Mailbox" id="mailbox"><i class="fa fa-envelope"></i>  <span class="label label-success" id="unreadMailsCount">${SourceLeadWeb_unReadMailsCount > 0 ?SourceLeadWeb_unReadMailsCount : ''}</span> </a></li>
@@ -559,8 +473,6 @@ function preventTabkey(e){
 	              <ul class="list-unstyled">
 	              <c:forEach var="links" items="${SourceLeadWeb_userSpocRolesList}">
 		              <li>
-			              
-			              <c:if test="${SourceLeadWeb_prodSupportLoginUserRole == null && SourceLeadWeb_loginUserRole != 'ROLE_PRODUCTION_SUPPORT'}">
 			              
 				              <c:if test="${links.roles.displayName != 'Professional' && links.roles.displayName != 'Independent Recruiter'}">
 					              
@@ -615,23 +527,7 @@ function preventTabkey(e){
 					                </a>
 				              </c:if>
 				              
-			              </c:if>
-			              
-			              <c:if test="${SourceLeadWeb_prodSupportLoginUserRole == 'ROLE_PRODUCTION_SUPPORT'}">
-		              			<a href="<c:url value='${sourceleadUrl}/productionSupportdashboard/${links.id}/${SourceLeadWeb_prodSupportOrgLocationId}'/>" class="sopcSwith">
-					                <div class="clearfix">
-					                   <div class="pull-left image-parent positionRelative">
-					                   <div class="imageParent org-imagelink ${links.id == SourceLeadWeb_orgLocationId  ? 'active-comp' : ''}">
-					                     <img onerror='predefineOrgImage(this);' data-id="orgLogoImage" src="${links.org.fileUrl}">
-					                     </div>
-					                   </div>
-					                   <div class="pull-left">
-					                     <p class="tbldata-dotdot"><i class="fa fa-building"></i>&nbsp;${links.orgLocationName}</p>
-					                     <p class="tbldata-dotdot"><i class="fa fa-map-marker"></i>&nbsp;${!empty links.city ? links.city : ""} ${links.country}</p>
-					                   </div>
-					                </div>
-				                </a>
-			              </c:if>
+
 			              
 		              </li>
 	              </c:forEach>
@@ -641,16 +537,11 @@ function preventTabkey(e){
 	          </c:if>
          
           <%-- <c:if test="${SourceLeadWeb_loginUserRole != 'ROLE_CROWDSOURCING_PROFESSIONAL' && SourceLeadWeb_loginUserRole != 'ROLE_CROWDSOURCING_RECRUITER'}"> --%>
-          <li id="alert"> 
-          <a href="#" title="Alerts" id="alert" > <i class="fa fa-bell bell" ></i> <span class="label label-warning">${SourceLeadWeb_notificationCount > 0 ? SourceLeadWeb_notificationCount : ''}</span></a>
+          <li class="notiClick"> 
+          <a href="#" title="Alerts" onclick="getNotificationsByuserId()"> <i class="fa fa-bell bell" ></i> <span class="label label-warning">${SourceLeadWeb_notificationCount > 0 ? SourceLeadWeb_notificationCount : ''}</span></a>
            <div id="ndiv"></div>
           </li>
-<%--           </c:if> --%>
-
-
-          <%-- <li class="reportsH">
-					<a title="Account Settings" href="<c:url value='${sourceleadUrl}/userProfile'/>"><i class="fa fa-user-circle"></i></a>
-	      </li>  --%>
+ 
           
           <sec:authorize access="!hasRole('ROLE_CROWDSOURCING_REQUIREMENTS')"> 
            <sec:authorize access="hasAnyRole('ROLE_ENROLL_ORG','ROLE_ENROLL_NEW_ROLE','ROLE_VIEW_EDIT_ORG_SETTINGS','ROLE_CREATE_APPLICANT_TEMPLATE','ROLE_VIEW_APPLICANT_TEMPLATE','ROLE_VIEW_EDIT_APPLICANT_TEMPLATE','ROLE_ADD_CONTRACT_TEMPLATE','ROLE_VIEW_EDIT_CONTRACT_TEMPLATE','ROLE_CREATE_ON_BOARD_TEMPLATE','ROLE_VIEW_EDIT_ON_BOARD_TEMPLATE','ROLE_CREATE_OFF_BOARD_TEMPLATE','ROLE_VIEW_EDIT_OFF_BOARD_TEMPLATE','ROLE_ADD_EXPENSE_TYPE','ROLE_VIEW_EDIT_EXPENSE_TYPE','ROLE_DELETE_EXPENSE_TYPE')"> 
@@ -678,9 +569,6 @@ function preventTabkey(e){
 
                        </sec:authorize>
 	                     
-
-<%-- 	                     <li><a href="<c:url value="/app/license" />"><i class="fa fa-newspaper-o" aria-hidden="true"></i>License</a></li> --%>
-						 
 
 	                     <li><a href="<c:url value="/app/orgChart" />"><i class="fa fa-sitemap" aria-hidden="true"></i>Org Chart</a></li>
 	                     <sec:authorize access="hasAnyRole('ROLE_ENROLL_NEW_ROLE')"> 
@@ -719,11 +607,15 @@ function preventTabkey(e){
 								</div>
 							 </li> 	
 						   </sec:authorize>
-					
-					   <c:if test="${SourceLeadWeb_isAdmin == true}">
-					  	<li><a href="<c:url value="/app/payrollConfiguration" />"><i class="fa fa-usd" aria-hidden="true"></i>Payroll Configuration</a></li>
-                        </c:if>
-
+						   
+					   <sec:authorize access="hasRole('ROLE_PAYROLL_CONFIGURATION')">
+						   	<c:if test="${SourceLeadWeb_orgLocations.country == 'United States'}">
+						  		<li><a href="<c:url value="/app/payrollConfiguration" />"><i class="fa fa-usd" aria-hidden="true"></i>Payroll Configuration</a></li>
+						  	</c:if>
+						  	<c:if test="${SourceLeadWeb_orgLocations.country == 'India'}">
+						  		<li><a href="<c:url value='${sourceleadUrl}/indPayrollConfiguration'/>" ><i class="fa fa-key" aria-hidden="true"></i>Payroll Configuration</a></li>
+						  	</c:if>
+                      </sec:authorize>
                          
                        <li><a href="<c:url value='${sourceleadUrl}/tagList'/>"title="Tags" data-toggle="modal" id="tagsPop"><i class="fa fa-tags"></i>Tags</a></li>
 					  
@@ -736,7 +628,6 @@ function preventTabkey(e){
                         <c:if test="${SourceLeadWeb_isSuperAdmin == 'Y'}">
 					       <li><a title="Invite Company" data-toggle="modal" id="invitePop"><i class="fa fa-send"></i>Invite Company</a></li>
 	                   </c:if>
-	                    
 	              </ul>
 	            </div>
 	          </li>
@@ -1728,51 +1619,8 @@ $("#searchType").selectpicker('refresh');
         </form:form>
   </div>
   
-  <%-- <div class="modal modalInvite" class="invite" id="scheduleMPopDiv" role="dialog">
-    <div class="modal-dialog">
-    
-      <!-- Modal content-->
-      <div class="modal-content">
-        <div class="modal-header">
-          <button type="button" class="close" data-dismiss="modal">&times;</button>
-          <h4 class="modal-title">Schedule Maintenance</h4>
-        </div>
-        <form:form id="inviteCompany_form" name="inviteCompany_form" method="post">
-         
-        <div class="modal-body invite_class">
-            <div class="form-group clearfix">
-                <label class="col-md-4 paddingRight" title="Company Name"><i class="fa fa-building paddingRight text-info"></i>Date <span class="text-danger paddingLeft">*</span></label>
-                <div class="col-md-8 paddingLeft">                  
-					<div class="input-group errorInptgroup">
-						<input type="text" value="" name="scheduleDate" class="form-control calendar" id="scheduleDate" readonly="readonly">
-	                    <span class="input-group-addon" onClick="clearDate();"><i class="colorRed fa fa-times cursorPointer"></i></span>
-					</div>                    
-                </div>
-            </div>
-            <div class="form-group clearfix">
-                <label class="col-md-4 paddingRight"><i class="fa fa-map-marker paddingRight text-info"></i>Message</label>
-                <div class="col-md-8 paddingLeft">
-                    <input type="text" class="form-control input-sm" placeholder="Message" name="message" id="scheduleMessage">
-                </div>
-            </div>
-        </div>
-        <div class="clearfix form-footer">
-            <div class="pull-right mr">
-          <button type="button" class="btn btn-primary btn-sm" data-dismiss="modal" onclick="saveInviteCompany();"> <i class="fa fa-send paddingRight"></i>Send </button>
-          <button type="button" class="btnClose btn btn-default btn-sm ml10"><i class="fa fa-close paddingRight" onclick="flushInviteCompany();"></i>Cancel
-            </button>
-                </div>
-        </div>
-        </form:form>
-        
-      </div>
-      
-    </div>
-  </div> --%>
+  <div class="mask"></div>
   
-  
- <div class="mask"></div>
- <div class="maskTwo"></div>
   
   <script>
   
@@ -1819,7 +1667,6 @@ $(document).ready(function(){
 		  var val = $("#folderPath").val().trim();
 		  $.post(sourceleadUrl+"/process-uploaded-files", {path: val}, function(data) {
 			  if(data && data.indexOf("Session timedout") !== -1) {
-				  alert(data);
 				  setTimedout('location.href=${sourceleadLoginUrl}', 3000);
 			  } else if(data) {
 				  $("#bulkImportStatus").html(data)
@@ -1886,10 +1733,8 @@ $('body').on('blur', '#inviteCompany_form', function() {
 </script>
 
 <%-- <c:if test='${viewPage == "campaignSender"}'> --%>
-<script src="/resources/js/campaignSender.js"></script>
 <div id='campaignSender' class='popupWrap popupWrapFixed'></div> 
 
-<script src="/resources/js/campaignRecipient.js"></script>
 <div id='campaignRecipient' class='popupWrap popupWrapFixed'></div> 
 <%-- </c:if> --%>
 
@@ -1952,11 +1797,9 @@ function initialize(locationId,countryId,stateId,cityId,zipCodeId,type,addressId
   if(type == "invite"){
 	  getTimezonesList();
   }
-
   if(type != "editAssociate"){
     zipcodeMask(address.country,zipCodeId);	
   }
-
 });
 }
 function geolocate(latitudeId,longtitudeId) {
@@ -1989,6 +1832,7 @@ function refreshGoogleApiLocation(locationId,countryId,stateId,cityId,zipCodeId,
 </script>
 <script>
 function zipcodeMask(country,zipCodeId){
+	
 	if(country == "India" || country == "Singapore"){
 		 $("#"+zipCodeId).mask("999999");
 	}else if(country == "United States" || country == "France"){
@@ -2009,7 +1853,7 @@ function zipcodeMask(country,zipCodeId){
 
 
 <script type="text/javascript" src='/resources/js/slead-common.js?staticTime=${staticTime}'></script>
-<script src="/resources/js/zipcodeMaskedinput-1.3.min.js?staticTime=${staticTime}"></script>
+<%-- <script src="/resources/js/zipcodeMaskedinput-1.3.min.js?staticTime=${staticTime}"></script> --%>
 
 
 <script type="text/javascript">
@@ -2031,7 +1875,7 @@ function verifyEmail2() {
 document.onkeydown = function(evt) {
     evt = evt || window.event;
     if (evt.keyCode == 27) {
-        $(".mask, .maskTwo, .advancedsearch-mask, .location-alert, .impConPop").hide();
+        $(".mask, .advancedsearch-mask, .location-alert").hide();
         $(".popupWrap, .popupWrapMid, div.cand-advsrch-popup, .remove_user_pop").fadeOut(100);
     }
 };

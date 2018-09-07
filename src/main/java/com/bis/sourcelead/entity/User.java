@@ -3,7 +3,6 @@ package com.bis.sourcelead.entity;
 import java.io.Serializable;
 import java.util.Date;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Set;
 
 import javax.persistence.CascadeType;
@@ -22,15 +21,10 @@ import javax.persistence.Table;
 import javax.persistence.Transient;
 
 import org.apache.commons.lang3.StringUtils;
-import org.hibernate.annotations.Cache;
-import org.hibernate.annotations.CacheConcurrencyStrategy;
 import org.hibernate.annotations.Fetch;
 import org.hibernate.annotations.FetchMode;
-import org.hibernate.annotations.NotFound;
-import org.hibernate.annotations.NotFoundAction;
 import org.hibernate.annotations.Type;
 
-import com.bis.sourcelead.dto.CustomFormFieldDTO;
 import com.bis.sourcelead.enums.Status;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
@@ -107,37 +101,6 @@ public class User implements Serializable{
 	@Column(name = "LOCATION")
 	@Type(type="text")
 	private String location;
-	
-	@ManyToOne(fetch = FetchType.LAZY)
-	@JoinColumn(name = "WORK_LOCATION")
-	private OrgLocations workLocation;
-	
-	@Column(name = "RESIDENCE_ADDRESS")
-	private String residenceAddress;
-	
-	@Column(name = "RESIDENCE_STREET_ADDRESS")
-	private String residenceStreetAddress;
-	
-	@Column(name = "RESIDENCE_COUNTRY")
-	private String residenceCountry;
-	
-	@Column(name = "RESIDENCE_STATE")
-	private String residenceState;
-	
-	@Column(name = "RESIDENCE_CITY")
-	private String residenceCity;
-	
-	@Column(name = "RESIDENCE_ZIP_CODE")
-	private String residenceZipCode;
-	
-	@Column(name = "RESIDENCE_STATE_CODE")
-	private String residenceStateCode;
-	
-	@Column(name = "RESIDENCE_LATITUDE")
-	private String residenceLatitude;
-	
-	@Column(name = "RESIDENCE_LONGITUDE")
-	private String residenceLongitude;
 	
 	@Column(name = "LINKEDIN")
 	@Type(type="text")
@@ -330,12 +293,21 @@ public class User implements Serializable{
 	private Long userId;
 	
 	@Transient
+	private Long candidateId;
+	
+	@Transient
     @JsonProperty
     private String associateTags;
 	
 	@Transient
 	@JsonProperty
     private Set<String> tagsList;
+	
+	
+	@Transient
+    @JsonProperty
+    private String isPayRollApprover;
+	
 
 	public Status getPreviousUserState() {
 		return previousUserState;
@@ -903,106 +875,6 @@ public class User implements Serializable{
 		this.vendorContactName = vendorContactName;
 	}
 
-	public String getResidenceAddress()
-	{
-		return residenceAddress;
-	}
-
-	public void setResidenceAddress(String residenceAddress)
-	{
-		this.residenceAddress = residenceAddress;
-	}
-
-	public String getResidenceStreetAddress()
-	{
-		return residenceStreetAddress;
-	}
-
-	public void setResidenceStreetAddress(String residenceStreetAddress)
-	{
-		this.residenceStreetAddress = residenceStreetAddress;
-	}
-
-	public String getResidenceState()
-	{
-		return residenceState;
-	}
-
-	public void setResidenceState(String residenceState)
-	{
-		this.residenceState = residenceState;
-	}
-
-	public String getResidenceCity()
-	{
-		return residenceCity;
-	}
-
-	public void setResidenceCity(String residenceCity)
-	{
-		this.residenceCity = residenceCity;
-	}
-
-	public String getResidenceZipCode()
-	{
-		return residenceZipCode;
-	}
-
-	public void setResidenceZipCode(String residenceZipCode)
-	{
-		this.residenceZipCode = residenceZipCode;
-	}
-
-	public String getResidenceStateCode()
-	{
-		return residenceStateCode;
-	}
-
-	public void setResidenceStateCode(String residenceStateCode)
-	{
-		this.residenceStateCode = residenceStateCode;
-	}
-
-	public String getResidenceCountry()
-	{
-		return residenceCountry;
-	}
-
-	public void setResidenceCountry(String residenceCountry)
-	{
-		this.residenceCountry = residenceCountry;
-	}
-
-	public String getResidenceLatitude()
-	{
-		return residenceLatitude;
-	}
-
-	public void setResidenceLatitude(String residenceLatitude)
-	{
-		this.residenceLatitude = residenceLatitude;
-	}
-
-	public String getResidenceLongitude()
-	{
-		return residenceLongitude;
-	}
-
-	public void setResidenceLongitude(String residenceLongitude)
-	{
-		this.residenceLongitude = residenceLongitude;
-	}
-
-	public OrgLocations getWorkLocation()
-	{
-		return workLocation;
-	}
-
-	public void setWorkLocation(OrgLocations workLocation)
-	{
-		this.workLocation = workLocation;
-	}
-
 	public String getMiddelName() {
 		return middelName;
 	}
@@ -1073,5 +945,21 @@ public class User implements Serializable{
 
 	public void setTagsList(Set<String> tagsList) {
 		this.tagsList = tagsList;
+	}
+
+	public Long getCandidateId() {
+		return candidateId;
+	}
+
+	public void setCandidateId(Long candidateId) {
+		this.candidateId = candidateId;
+	}
+
+	public String getIsPayRollApprover() {
+		return isPayRollApprover;
+	}
+
+	public void setIsPayRollApprover(String isPayRollApprover) {
+		this.isPayRollApprover = isPayRollApprover;
 	}
 }

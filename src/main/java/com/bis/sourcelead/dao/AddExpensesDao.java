@@ -10,4 +10,6 @@ public interface AddExpensesDao {
 
 	public void deleteDocumentByDocumentId(Long documentId);
 
+	public long changeStatusToBillable(long expenseEntriesId,String  billableStatus);
+
 }

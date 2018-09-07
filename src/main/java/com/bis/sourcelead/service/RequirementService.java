@@ -17,6 +17,7 @@ import com.bis.sourcelead.entity.OrgSpoc;
 import com.bis.sourcelead.entity.RecruiterReportAssociateCountView;
 import com.bis.sourcelead.entity.Requirement;
 import com.bis.sourcelead.entity.RequirementAssignTo;
+import com.bis.sourcelead.entity.RequirementIncentive;
 import com.bis.sourcelead.entity.SubmissionRequirementListView;
 import com.bis.sourcelead.entity.TeamMembers;
 import com.bis.sourcelead.entity.TimeSheetSubmissionCount;
@@ -242,5 +243,9 @@ public interface RequirementService {
 	public ResponseList<RequirementDTO> getJobListOfRecruiter(RequirementDTO requirementDTO, Long recruiterUserId,Date[] searchDates,List<Long> teamsList) throws Exception;
 	
 	Boolean forceDeleteForSelectedJobs(String[] uuids) throws Exception;
+	
+	public List<RequirementIncentive> getRequirementIncentiveListByRequirementId(long requirementId) throws Exception;
+	
+	public void deleteRequirementIncentiveByRequirementIdOrIds(long requirementId, String ids) throws Exception;
 
 }

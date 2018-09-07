@@ -1,5 +1,6 @@
 package com.bis.sourcelead.dao;
 
+import java.text.ParseException;
 import java.util.Date;
 import java.util.List;
 
@@ -8,6 +9,7 @@ import com.bis.sourcelead.dto.ResponseList;
 import com.bis.sourcelead.entity.Contracts;
 import com.bis.sourcelead.entity.Invoice;
 import com.bis.sourcelead.entity.InvoicePayment;
+import com.bis.sourcelead.entity.InvoiceTimelineHistory;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.OrgRelations;
 
@@ -54,5 +56,11 @@ public interface InvoiceDao{
 	Invoice getParentInvoiceByInvoiceId(Long invoiceId)throws Exception;
 
 	List<Invoice> getAllBillsAndInvoicesBYProjectIdOrgLocationIdInvoiceStatusStartDateAndEndDate(Long projectId, Long orgLocationId, String invoiceStatus, Date startDate, Date endDate);
+
+	void saveInvoiceTimelineHistory(InvoiceTimelineHistory timelineHistory);
+
+	List<InvoiceTimelineHistory> getInvoiceTimelineHistoryList(Long id, String searchVal, String orderVal, Date[] datesRange, String[] checkedStatus) throws ParseException;
+
+	public Long checkInvoiceOrBillIdNumberInDatebase(Long orgLocationId,Integer generatedIdcount,String invoiceType);
 
 }

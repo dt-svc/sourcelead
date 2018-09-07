@@ -22,6 +22,18 @@ public class ContributionDTO {
 	
 	private String taxType;
 	
+	private int status;
+
+	private String contributionSchedule;
+	
+	private String preContributionType;
+	
+	private BigDecimal preContributionAmt;
+
+	private double postContributionAmt;
+	
+	private double contributionAmt;
+	
 	public String getId()
 	{
 		return id;
@@ -110,6 +122,64 @@ public class ContributionDTO {
 	public void setAmount(double amount)
 	{
 		this.amount = amount;
+	}
+
+	public int getStatus() {
+		return status;
+	}
+
+	public void setStatus(int status) {
+		this.status = status;
+	}
+	
+	public String getContributionSchedule()
+	{
+		return contributionSchedule;
+	}
+
+	public void setContributionSchedule(String contributionSchedule)
+	{
+		this.contributionSchedule = contributionSchedule;
+	}
+
+	public String getPreContributionType()
+	{
+		return preContributionType;
+	}
+
+	public BigDecimal getPreContributionAmt()
+	{
+		return preContributionAmt;
+	}
+
+	public void setPreContributionType(String preContributionType)
+	{
+		this.preContributionType = preContributionType;
+	}
+
+	public void setPreContributionAmt(BigDecimal preContributionAmt)
+	{
+		this.preContributionAmt = preContributionAmt;
+	}
+
+	public double getPostContributionAmt()
+	{
+		return postContributionAmt;
+	}
+
+	public void setPostContributionAmt(double postContributionAmt)
+	{
+		this.postContributionAmt = postContributionAmt;
+	}
+
+	public double getContributionAmt()
+	{
+		return contributionAmt;
+	}
+
+	public void setContributionAmt(double contributionAmt)
+	{
+		this.contributionAmt = contributionAmt;
 	}
 	
 	

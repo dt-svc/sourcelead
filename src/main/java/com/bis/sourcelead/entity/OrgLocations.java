@@ -297,6 +297,10 @@ public class OrgLocations implements Serializable{
     @Transient
     @JsonProperty
     private Long vendorOnboardId;
+    
+    @Transient
+    @JsonProperty
+    private String registeredLocation;
    
    
 	public Timezone getTimezone() {
@@ -1020,6 +1024,29 @@ public class OrgLocations implements Serializable{
 
 	public void setIsTimesheetAvgHoursRequired(String isTimesheetAvgHoursRequired) {
 		this.isTimesheetAvgHoursRequired = isTimesheetAvgHoursRequired;
+	}
+
+	public String getRegisteredLocation() {
+		
+		if(StringUtils.isNotEmpty(registeredLocation))
+			return registeredLocation;
+		else{
+			if(StringUtils.isNotEmpty(country) && StringUtils.isEmpty(state) && StringUtils.isEmpty(city)){
+				registeredLocation = country;
+			}else if(StringUtils.isNotEmpty(country) && StringUtils.isNotEmpty(state) && StringUtils.isEmpty(city)){
+				registeredLocation = country +" "+state;
+			}else if(StringUtils.isNotEmpty(country) && StringUtils.isEmpty(state) && StringUtils.isNotEmpty(city)){
+				registeredLocation = country +" "+city;
+			}else if(StringUtils.isNotEmpty(country) && StringUtils.isNotEmpty(state) && StringUtils.isNotEmpty(city)){
+				registeredLocation = country+" "+state+" "+city;
+			}
+			return registeredLocation;
+		}
+		
+	}
+
+	public void setRegisteredLocation(String registeredLocation) {
+		this.registeredLocation = registeredLocation;
 	}
 
 }

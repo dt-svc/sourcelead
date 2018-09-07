@@ -80,18 +80,11 @@
 
 							<!-- Associate Requests, New Resource Requests -->
 							<sec:authorize
-								access="hasRole('ROLE_RESOURCE_REQUEST_APPROVER')">
-								<li class="positionRelative" style="width: 98%; height: 30px;"><input class="checkbox-custom" id="cb${index}" type="checkbox" checked="checked" data-order="${index + 1}" data-size="4:1"><label for="cb${index}">Associate Requests</label><span class="movIcon"></span></li>
-								<c:set var="index" value="${index +1}"></c:set>
-								<li class="positionRelative" style="width: 98%; height: 30px;"><input class="checkbox-custom" id="cb${index}" type="checkbox" checked="checked" data-order="${index + 1}" data-size="4:1"><label for="cb${index}">New Resource Requests</label><span class="movIcon"></span></li>
-								<c:set var="index" value="${index +1}"></c:set>
+								access="hasAnyRole('ROLE_RESOURCE_REQUEST_APPROVER','ROLE_BUDGET_APPROVER')">
+								<li class="positionRelative" style="width: 98%; height: 30px;"><input class="checkbox-custom" id="cb${index}" type="checkbox" checked="checked" data-order="${index + 1}" data-size="4:1"><label for="cb${index}">Project Requests</label><span class="movIcon"></span></li>
 							</sec:authorize>
 								
-							<!-- Budget Requests -->
-							<sec:authorize access="hasRole('ROLE_BUDGET_APPROVER')">
-								<li class="positionRelative" style="width: 98%; height: 30px;"><input class="checkbox-custom" id="cb${index}" type="checkbox" checked="checked" data-order="${index + 1}" data-size="4:1"><label for="cb${index}">Budget Requests</label><span class="movIcon"></span></li>
-								<c:set var="index" value="${index +1}"></c:set>
-							</sec:authorize>
+							 
 
 							<!-- Job Approvals -->
 							<c:forEach var="userTabs" items="${SourceLeadWeb_tabsList}">

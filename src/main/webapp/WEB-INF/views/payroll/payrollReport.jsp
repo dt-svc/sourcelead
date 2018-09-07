@@ -24,17 +24,20 @@ window.onload = function () {
 <div class="reportHead">
     	<ul class="clearfix pull-right">
     		<li>
-    			<form:form id="payroll_report_form" name="payroll_report_form"  enctype='multipart/form-data' >
-        		<div class="dropdown-select positionRelative repSelWrap repSelWrapChoosen clearfix">
-	                <select class="chosen-select" id="empId" name="empName"  redirect();">
-	                  <option value=" " selected >-Select Employee-</option>
-		            <c:forEach var="wage" items="${wageTaxSummaryList}">
-						<option value="${wage.employeeId}">${wage.employeeName}</option>
-					</c:forEach>
-	                </select>			
-				<div id="runButtonDiv" class="repSelBtn"><button type="button" class="btn btn-primary btn-sm" id="customize_btn" onclick="getWagesTaxSummaryByEmpId();">Run</button></div> 
-        		</div>  
-       			</form:form>  		
+    			<div id="payrollReportForm">
+    				<form:form id="payroll_report_form" name="payroll_report_form"  enctype='multipart/form-data' >
+	        			<div class="dropdown-select positionRelative repSelWrap repSelWrapChoosen clearfix">
+			                <select class="chosen-select" id="empId" name="empName"  redirect();">
+			                  	<option value=" " selected >-Select Employee-</option>
+					            <c:forEach var="wage" items="${wageTaxSummaryList}">
+									<option value="${wage.employeeId}">${wage.employeeName}</option>
+								</c:forEach>
+			                </select>			
+							<div id="runButtonDiv" class="repSelBtn"><button type="button" class="btn btn-primary btn-sm" id="customize_btn" onclick="getWagesTaxSummaryByEmpId();">Run</button></div> 
+	        			</div>  
+       				</form:form>  
+    			</div>
+    					
     		</li>
     	</ul>
     	<div class="clearfix"></div>

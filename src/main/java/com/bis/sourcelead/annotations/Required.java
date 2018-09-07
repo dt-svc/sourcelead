@@ -22,4 +22,5 @@ public @interface Required {
     public boolean timesheetHours() default false;
     public boolean parentValueAny() default false;
     public String[] either() default "";
+    public boolean isPositiveNumber() default false;
 }

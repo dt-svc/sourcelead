@@ -173,12 +173,12 @@ function associateTaxSummary(userId){
         	  result = result + '  <div class="col-md-5">';
         	  result = result + '  <label>Filling Status<span class="text-danger">&nbsp;*</span></label>';
         	  result = result + '   <div>';
-        	  result = result + '  <select class="sel" id="federaltaxFillingStatus" name="federaltaxFillingStatus" data-validation="required" field-name="Filling Status">';
+           	  result = result + '  <select class="sel" id="federaltaxFillingStatus" name="federaltaxFillingStatus" data-validation="required" field-name="Filling Status">';
         	  result = result + '     <option value="">--Select--</option>';
-        	  result = result + '    <option '+ (json.federaltaxFillingStatus == "SINGLE" ? "selected" : '') +' value="SINGLE">Single</option>';
-        	  result = result + '    <option '+ (json.federaltaxFillingStatus == "MARRIED" ? "selected" : '') +' value="MARRIED">Married</option>';
-        	  result = result + '     <option '+ (json.federaltaxFillingStatus == "MARRIED_USE_SINGLE_RATE" ? "selected" : '') +' value="MARRIED_USE_SINGLE_RATE">Married Use Single Rate</option>';
-        	  result = result + '     <option '+ (json.federaltaxFillingStatus == "NONRESIDENT_ALIEN" ? "selected" : '') +' value="NONRESIDENT_ALIEN">Non Resident Alien</option>';
+        	  result = result + '    <option '+ (json.federaltaxFillingStatus == "Single" ? "selected" : '') +' value="Single">Single</option>';
+        	  result = result + '    <option '+ (json.federaltaxFillingStatus == "Married" ? "selected" : '') +' value="Married">Married</option>';
+        	  result = result + '     <option '+ (json.federaltaxFillingStatus == "Married_Use_Single_Rate" ? "selected" : '') +' value="Married_Use_Single_Rate">Married Use Single Rate</option>';
+        	  result = result + '     <option '+ (json.federaltaxFillingStatus == "NonResident_Alien" ? "selected" : '') +' value="NonResident_Alien">Non Resident Alien</option>';
         	  result = result + '    </select>';
         	  result = result + '  </div>';
         	  result = result + '  </div>';
@@ -305,6 +305,8 @@ function associateTaxSummary(userId){
             	  result = result + ' <option selected value="NO_TAX">No Tax</option>';
               }else if(json.localTax != null && json.localTax != '' && json.localTax != 'undefined'){
             	  result = result + '     <option selected value='+json.localTaxState+'>'+json.localTax+'</option>';
+              }else{
+            	  result = result + '     <option selected value='+json.location+'>'+json.location+'</option>';
               }
               result = result + ' </select>';
               result = result + '  </div>';
@@ -434,7 +436,7 @@ function associateTaxSummary(userId){
               result = result + ' <div class="col-md-12">';
               result = result + '   <div class="pull-right">';
               result = result + ' <input value="Save" class="btn btn-success btnSuccess" id="associate_tax_button" type="button" onclick="saveAssociateTax('+userId+');">';
-              result = result + ' <input value="Cancel" class="btn btn-default ml10" onclick="javascript:window.location.href = "/app/usersList"" type="button">';
+              result = result + ' <input value="Cancel" class="btn btn-default ml10" onclick="cancelButton();" type="button">';
               result = result + '  </div>';
               result = result + '  </div>';
               result = result + '  </div>';
@@ -504,5 +506,13 @@ function associateTaxSummary(userId){
 		$("#associate_tax_form").validateOnBlur(false, validationSettings);  
    });  
 </script>
+
+<script>
+function cancelButton(){ 
+	location.replace(sourceleadUrl+ "/usersList");
+}
+</script>
+
+
  
  

@@ -10,7 +10,7 @@ window.onload = function() {
 
 	var leaveUUID = '${leaveUUID}';
 	if(leaveUUID != null && leaveUUID != '' && leaveUUID != 'undefined'){
-// 		getLeaveDetails();
+		getLeaveDetails();
 		getUsersBasedOnHierarchy('edit');
 		var checkFromEdit = '${leave.fromHalfDay}';
 		var checkToEdit = '${leave.toHalfDay}';
@@ -22,7 +22,7 @@ window.onload = function() {
 			$("#toDateFromTimeDiv").show();
 			$("#toDateTimeDiv").show();
 		}
-		validateDate();
+// 		validateDate();
 	}
 	
 	getPieChartBasedOnUser();
@@ -204,7 +204,7 @@ window.onload = function() {
               </div>
             </div>
             
-            <c:if test="${SourceLeadWeb_isSuperUser != true}">
+<%--             <c:if test="${SourceLeadWeb_isSuperUser != true}"> --%>
             	<div class="form-group" id="approvalDiv">
 	              <label class="col-md-3">Approval By<span class="text-danger paddingLeft">*</span></label>
 	              <div class="col-md-9 dropdown-select" id="approverUserDiv">
@@ -212,10 +212,10 @@ window.onload = function() {
 	                  </select>
 	              </div>
             	</div>
-            </c:if>
+<%--             </c:if> --%>
 
 		<div class="clearfix"></div>
-		 <sec:authorize access="hasAnyRole('LEAVE_NOTIFY_TO_OTHTERS')"> 
+		 <sec:authorize access="hasAnyRole('ROLE_LEAVE_NOTIFY_TO_OTHTERS')"> 
 			<c:if test="${!empty leave.notifyToOthers}">
 	         <div class="form-group" id="notifyToOthersDiv">
 					<div class="ml">
@@ -890,13 +890,13 @@ $(".close").click(function(){
 
 <script>
 function getLeaveDetails(finalDateFormatEndDate){
-	var editLeaveTypeUUID = '${leave.leaveType.leaveTypeUUID}';
+// 	var editLeaveTypeUUID = '${leave.leaveType.leaveTypeUUID}';
 	var leaveTypeUUID = '';
-	if(editLeaveTypeUUID != null && editLeaveTypeUUID != '' && editLeaveTypeUUID != 'undefined'){
-		 leaveTypeUUID = editLeaveTypeUUID;
-	}else{
+// 	if(editLeaveTypeUUID != null && editLeaveTypeUUID != '' && editLeaveTypeUUID != 'undefined'){
+// 		 leaveTypeUUID = editLeaveTypeUUID;
+// 	}else{
 		 leaveTypeUUID = $("#leaveType").val();
-	}
+// 	}
 	var fromDate = $("#fromDate").val();
 	var toDate = $("#toDate").val();
 	var skipPolicy = false;
@@ -931,8 +931,11 @@ function getLeaveDetails(finalDateFormatEndDate){
           			if(splitDuration[0] == "Full Day" && splitDuration[1] == "Half Day"){
     		    		$("#fromHalfDayDiv").show();
     		    		$("#toHalfDayDiv").show();
+//     		    		$("#checkbox-2").removeAttr("checked");
+//     		    		$("#checkbox-3").removeAttr("checked");
     		    		$("#toDate").attr('data-validation');
     		    		document.getElementById("halfDayHidingDiv").style.display = 'block';
+    		    		$("#toDate").attr('data-validation',"required");
     		    	}else if(duration == "Half Day"){
     		    		$("#fromHalfDayDiv").show();
     		    		$("#toHalfDayDiv").show();

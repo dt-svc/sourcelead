@@ -66,6 +66,7 @@ import com.bis.sourcelead.entity.CandidateEducation;
 import com.bis.sourcelead.entity.CandidateEmployers;
 import com.bis.sourcelead.entity.CandidateImportLog;
 import com.bis.sourcelead.entity.CandidateResumes;
+import com.bis.sourcelead.entity.Countries;
 import com.bis.sourcelead.entity.EmailAttachment;
 import com.bis.sourcelead.entity.EmailMessage;
 import com.bis.sourcelead.entity.EmailScenario;
@@ -90,6 +91,7 @@ import com.bis.sourcelead.service.CandidateEmployersService;
 import com.bis.sourcelead.service.CandidateResumesService;
 import com.bis.sourcelead.service.CandidateService;
 import com.bis.sourcelead.service.ClientService;
+import com.bis.sourcelead.service.CountriesService;
 import com.bis.sourcelead.service.EmailScenarioService;
 import com.bis.sourcelead.service.MasterCandidateService;
 import com.bis.sourcelead.service.OrgLocationService;
@@ -98,6 +100,7 @@ import com.bis.sourcelead.service.OrgSpocService;
 import com.bis.sourcelead.service.OrglocationFormFieldsService;
 import com.bis.sourcelead.service.ProjectsService;
 import com.bis.sourcelead.service.RequirementSubmissionService;
+import com.bis.sourcelead.service.StatesService;
 import com.bis.sourcelead.service.UserRoleService;
 import com.bis.sourcelead.service.UserService;
 import com.bis.sourcelead.util.CandidateActivityCommonUtil;
@@ -219,6 +222,12 @@ public class CandidateServiceImpl implements CandidateService {
     
     @Value("${static.path}")
 	private String staticPath;
+    
+    @Autowired
+    CountriesService countriesService;
+    
+    @Autowired
+    StatesService statesService;
 
     
        
@@ -1788,6 +1797,25 @@ private Sheet createXlsSheet(Sheet createExcelsheet, Row writeRow,Candidate cand
 		if(StringUtils.isNotBlank(candidateUser.getMaritalStatus())) {
 			candidate.setMaritalStatus(candidateUser.getMaritalStatus());
 		}
+		
+		  
+	    if(StringUtils.isNotBlank(addUserDTO.getResidenceAddress())){
+	    	candidate.setResidenceAddress(addUserDTO.getResidenceAddress());
+	    	candidate.setResidenceCountry(addUserDTO.getResidenceCountry());
+	    	candidate.setResidenceState(addUserDTO.getResidenceState());
+	    	candidate.setResidenceCity(addUserDTO.getResidenceCity());
+	    	candidate.setResidenceLatitude(addUserDTO.getResidenceLatitude());
+	    	candidate.setResidenceLongitude(addUserDTO.getResidenceLongitude());
+	    	candidate.setResidenceZipCode(addUserDTO.getResidenceZipCode());
+	    	candidate.setResidenceStreetAddress(addUserDTO.getResidenceAddress());
+	    	
+	    	Countries country = countriesService.getCountriesByCountryName(addUserDTO.getResidenceCountry());
+	    	String stateCode = statesService.getStateCodeByCountryCodeAndState(country.getCode2(),addUserDTO.getResidenceState());
+	    	if(stateCode != null) {
+	    		candidate.setResidenceStateCode(stateCode);
+	    	}
+	    	
+	    }
 		candidateDao.storeCandidate(candidate);
 		saveOrUpdateCandidateElkDocument(candidate);
 		return candidate;
@@ -2088,6 +2116,7 @@ private Sheet createXlsSheet(Sheet createExcelsheet, Row writeRow,Candidate cand
 	    					userRole.setUserType(roles.getDisplayName());
 	    					User managerUser = userService.getUserById(associateDTO.getAssociateManager());
 	    					userRole.setReportingManager(managerUser);
+	    					userRole.setResourceManager(managerUser);
 	    					userRole.setIsPrimary(0);
 	    					userRole.setOrgId(org);
 	    					userRole.setOrgLocations(orgLocations);

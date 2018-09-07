@@ -79,7 +79,9 @@ $(document).ready(function(){
 </script>
 		
 		<div id="projectSideDiv"></div>
-		<div id="candidateSideDiv"></div> 
+		<div id="baningDetailsDiv"></div> 
+		<div id="candidateSideDiv" class="project_tabs clearfix"></div> 
+
 		
 		
 		 
@@ -93,6 +95,9 @@ $(document).ready(function(){
 	 var timesheet = '${SourceLeadWeb_timesheet}';
 	 var loginUserRole = '${SourceLeadWeb_loginUserRole}'; 
 	 var loginCurrencyCode = '${SourceLeadWeb_currencyCode}';
+	 var country = '${SourceLeadWeb_orgLocations.country}'
+	 var loginCountry = '${SourceLeadWeb_country}';
+
 	 
 		 result = result + ' <div class="user_summ_wrap">';
 		 result = result + '<div class="project_side_wrap_inn_tabs">';
@@ -115,19 +120,31 @@ $(document).ready(function(){
 			 result = result + '<li><a href="#tab-17" onClick="profileDetails('+candidateId+');" >Profile</a></li>';
 		 '</sec:authorize>';
 
-		 if(loginCurrencyCode != 'USD'){
+		 if(loginCountry == 'United States'){
+			 '<sec:authorize access="hasRole(\'ROLE_VIEW_ASSOCIATE_ADDITIONAL_DETAILS\')">'; 
+				 result = result + '<li><a href="#tab-21" onClick="associateBankData('+userId+')" >Banking</a></li>';
+				 result = result + '<li><a href="#tab-22" onClick="associateTaxSummary('+userId+')" >TAX</a></li>';
+				 result = result + '<li><a href="#tab-23" onClick="associateDeductionSummary('+userId+')" >Deduction</a></li>';
+				 result = result + '<li><a href="#tab-24" onClick="associateContributionSummary('+userId+')"  >Contribution</a></li>';
+				 result = result + '<li><a href="#tab-25" onClick="associateSalSummary('+userId+')" >Salary</a></li>';
+			 '</sec:authorize>';
+		 }
+
+		
+		 if(country == 'India'){
+			 '<sec:authorize access="hasRole(\'ROLE_VIEW_ASSOCIATE_ADDITIONAL_DETAILS\')">'; 
+				 result = result + '<li><a onClick="associateBankingDetails('+candidateId+');">Banking</a></li>';
+				 result = result + '<li><a onClick="associateInformationDetails('+candidateId+');">PF & ESI</a></li>';
+				 result = result + '<li><a href="#tab-30" onClick="assocSalarySummary('+candidateId+');">Salary</a></li>';
+			 '</sec:authorize>';
+		 }
+		
 		 '<sec:authorize access="hasRole(\'ROLE_VIEW_ASSOCIATE_ADDITIONAL_DETAILS\')">'; 
+		 //below tab is used for both locations
+		    result = result + '<li><a onClick="associateLoanAndAdvanceDetails('+candidateId+');">Loan / Advances</a></li>';
 		    result = result + '<li><a href="#tab-29" onClick="assocBalanceLeaveSummary('+userId+');">Balance Leaves</a></li>';
 		 '</sec:authorize>';
-		 }
-		 
-		 if(loginCurrencyCode == 'USD'){
-			 result = result + '<li><a href="#tab-21" onClick="associateBankData('+userId+')" >Banking</a></li>';
-			 result = result + '<li><a href="#tab-22" onClick="associateTaxSummary('+userId+')" >TAX</a></li>';
-			 result = result + '<li><a href="#tab-23" onClick="associateDeductionSummary('+userId+')" >Deduction</a></li>';
-			 result = result + '<li><a href="#tab-24" onClick="associateContributionSummary('+userId+')"  >Contribution</a></li>';
-			 result = result + '<li><a href="#tab-25" onClick="associateSalSummary('+userId+')" >Salary</a></li>';
-		 }
+
 
 		 result = result + '<div class="clearfix"></div>';
 		 result = result + '   </ul>';
@@ -1351,6 +1368,42 @@ function getChangeRole(userId,userRoleId){
 	
  }
  </script>
+ 
+ <script>
+ function validateUserUpdatedEmail(userId){
+	  var isMulitplieOrgAccounts = '${isMulitplieOrgAccounts}';
+	  if(isMulitplieOrgAccounts == 'false'){
+		  var emailId = document.getElementById("EmailId").value;
+		  if(emailId){
+			  $('input#EmailId').removeAttr( "record-exist record-exist-errormsg");
+			  $('#EmailIdDiv').find('p.jquery_form_error_message').remove();
+		    	$("#update_user").attr("disabled", "disabled");
+	            $( "#update_user" ).addClass('button').val('Processing..');
+				$.ajax({
+			    	type: "POST",
+			        url: sourceleadUrl+"/validateExistingEmailIdForUser?"+tokenParamName+"="+tokenValue+"&emailId="+emailId+"&userId="+userId, 
+			        success: function(data) {
+			        	if(data == true){
+							  $("input#EmailId").after("<p class='jquery_form_error_message'>"+emailId+" is Already Existed</span>");
+							  document.getElementById("EmailId").setAttribute('record-exist','yes');
+							  document.getElementById("EmailId").setAttribute('record-exist-errorMsg',emailId+' is Already Existed'); 
+							  $("#update_user" ).addClass('us-btn').val('Update');
+			        	}
+			        	else{
+			        		 $('input#EmailId').removeAttr( "record-exist record-exist-errormsg");
+			        		 $('#EmailIdDiv').find('p.jquery_form_error_message').remove(); 
+			        		 $("#update_user" ).addClass('us-btn').val('Update');
+	                         $("#update_user").removeAttr("disabled");
+			        	} 
+			        },
+			    });
+		  }
+		 
+		  
+	  }
+	
+ }
+ </script>
 
 
 <script type="text/javascript">
@@ -1646,6 +1699,12 @@ $("#editRoleDetailsList").empty();
 			    var globalChecked = '';
 			    var designation = '';
 			    var disabled = '';
+			    var readonly = '';
+			    var isMulitplieOrgAccounts = '${isMulitplieOrgAccounts}';
+			    
+			    if(isMulitplieOrgAccounts == 'true'){
+			    	readonly = 'readonly';
+			    }
 			    
 			    if(json.designation != null && json.designation != '' && json.designation != 'undefined'){
      			 	designation = json.designation;
@@ -1722,7 +1781,7 @@ $("#editRoleDetailsList").empty();
 					result = result + ' <div class="user_summary_edit_cta">';
 					result = result + ' <label>Role:</label>';
 					result = result + '<div class="clearfix"><span></span>';
-					result = result + '<input type="text" value="'+json.roles.displayName+'" name="roleType" readonly="readonly" id="role" data-validation="validate_Space validate_length length2-100" data-validation-optional="true" >';
+					result = result + '<input type="text" value="'+json.roles.displayName+'" name="roleType"  id="role" data-validation="validate_Space validate_length length2-100" data-validation-optional="true" >';
 					result = result + '<input type = "hidden" id = "role" name = "roleType" value = "'+json.roles.id+'">';
 					result = result + ' </div>'; 
 
@@ -1754,7 +1813,7 @@ $("#editRoleDetailsList").empty();
 
 					result = result + ' <div class="user_summary_edit_cta" id="EmailIdDiv">';
 					result = result + ' <label>Email Id<span class="text-danger">&nbsp;*</span></label>';
-					result = result + ' <input type="text" value="'+json.user.email+'" readonly="readonly" id="EmailId" name="email" field-name="EmailId" data-validation="required validate_Space validate_length length2-100"/>';
+					result = result + ' <input type="text" value="'+json.user.email+'" '+readonly+' id="EmailId" name="email" field-name="EmailId" onblur="validateUserUpdatedEmail('+userId+');" data-validation="required validate_Space validate_email validate_length length2-100"/>';
 					result = result + ' </div>';
 					
 					result = result+'		<div class="col-md-4">';
@@ -3771,7 +3830,85 @@ function profileDetails(candidateId){
 </script>
 
 
+<script>
+function assocSalarySummary(candidateId){
+	var locationCode = '${SourceLeadWeb_locationCode}';
+	$.ajax({
+		  type: "GET",
+		    url: sourceleadUrl+"/getAssociateSalaryDataByOrgLocation?candidateId="+candidateId+"&locationCode="+locationCode,
+		     success :function(response) {
+		    	 	$("#tab-18").empty();  
+		    	    $("#tab-19").empty();
+		    	    $("#tab-17").empty();
+		    	    $("#candidateSideDiv").empty();  
+		    	    $("#candidateSideDiv").append(response);
+				},
+			    complete: function (response) {
+			  		if($("#status").val() == "NODATA"){
+			  			$('#saveAssociateBtnDiv').css('display','block');
+			  			$('#editAssociateBtn').css('display','none');
+			  			$('#cancelAssociateSalaryIndBtn').css('display','none');
+			  		}else{
+			  			$('#editAssociateBtn').css('display','block');
+			  			$('#saveAssociateBtnDiv').css('display','none');
+			  			$('#associateSalary_form input').attr('disabled','true');
+				  		$('#associateSalary_form select').prop('disabled', true);
+			  		}
+			       }
+			});
+	}
+</script>
 
+
+<script>
+function associateBankingDetails(candidateId){
+	var locationCode = '${SourceLeadWeb_locationCode}';
+	$.ajax({
+		  type: "GET",
+		    url: sourceleadUrl+"/getAssociateBankingDetailsByOrgLocation?candidateId="+candidateId,
+		     success :function(response) {
+		    	 	$("#tab-18").empty();  
+		    	    $("#tab-19").empty();
+		    	    $("#tab-17").empty();
+		    	    $("#candidateSideDiv").empty();  
+		    	    $("#candidateSideDiv").append(response);
+				},
+			});
+	}
+	
+	
+function associateInformationDetails(candidateId){
+	var locationCode = '${SourceLeadWeb_locationCode}';
+	$.ajax({
+		  type: "GET",
+		    url: sourceleadUrl+"/getAssociateInformationDetailsByOrgLocation?candidateId="+candidateId,
+		     success :function(response) {
+		    	 	$("#tab-18").empty();  
+		    	    $("#tab-19").empty();
+		    	    $("#tab-17").empty();
+		    	    $("#candidateSideDiv").empty();  
+		    	    $("#candidateSideDiv").append(response);
+				},
+			});
+	
+}	
+
+function associateLoanAndAdvanceDetails(candidateId){
+	$.ajax({
+		  type: "GET",
+		    url: sourceleadUrl+"/getAssociateLoanAndAdvanceDetailsByCandidateId?candidateId="+candidateId,
+		     success :function(response) {
+		    	 	$("#tab-18").empty();  
+		    	    $("#tab-19").empty();
+		    	    $("#tab-17").empty();
+		    	    $("#tab-25").empty();
+		    	    $("#candidateSideDiv").empty();  
+		    	    $("#candidateSideDiv").append(response);
+		    	    loanAdv.getLoanAndAdvApprovers();
+				},
+			});
+}
+</script>
 
 
 <%-- 

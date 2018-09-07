@@ -327,6 +327,16 @@ function getRequestedAproveSummary(leaveUUID,orgLocationId,totalBalLeaves){
 			 result = result +'</div>';
 			 result = result +'</div>';
 			 result = result +'<div class="col-md-12 mb">';
+			 result = result +'<label class="col-md-2 control-label"><b>Type:</b></label>';
+			 result = result +'<div class="col-md-8">';
+			 if(data.type != null && data.type !='' && data.type !='undefined'){
+				 result = result +'<span>'+data.type+'</span>';
+			 }else{
+	            	result = result +' <span>--</span>';
+	            }
+			 result = result +'</div>';
+			 result = result +'</div>';
+			 result = result +'<div class="col-md-12 mb">';
 			 result = result +'<label class="col-md-2 control-label"><b>Duration:</b></label>';
 			 result = result +'<div class="col-md-8">';
 			 if(data.duration !=null && data.duration !='' && data.duration !='undefined'){

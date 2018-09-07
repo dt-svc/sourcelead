@@ -24,7 +24,7 @@
           <div class="leaveConfigure newRepGrid clerfix">
           <sec:authorize access="!hasRole('ROLE_ENROLL_ORG')">
              
-      <sec:authorize access="hasAnyRole('ROLE_RECRUITERS_REPORT','ROLE_VENDORS_REPORT','ROLE_CLIENT_REPORT','ROLE_APPLICANT_DECLINE','ROLE_APPLICANT_BACKOUT','ROLE_JOBS_PIPELINE','ROLE_APPLICANT_SOURCE','ROLE_TIME_TO_FILL','ROLE_APPLICANT_RECEIVED','ROLE_JOBS_STAGES')">
+	      <sec:authorize access="hasAnyRole('ROLE_RECRUITERS_REPORT','ROLE_VENDORS_REPORT','ROLE_CLIENT_REPORT','ROLE_APPLICANT_DECLINE','ROLE_APPLICANT_BACKOUT','ROLE_JOBS_PIPELINE','ROLE_APPLICANT_SOURCE','ROLE_TIME_TO_FILL','ROLE_APPLICANT_RECEIVED','ROLE_JOBS_STAGES','ROLE_MY_PERFORMANCE_REPORT')">
             
              <div class="col-md-4 reportNewCta">
                  
@@ -34,7 +34,9 @@
 				 <sec:authorize access="hasRole('ROLE_RECRUITERS_REPORT')">
 				 <li><a href='${appPath}/recruitersReports'>Recruiter(s) Report</a></li>
 				 </sec:authorize>
-				
+				 <sec:authorize access="hasRole('ROLE_MY_PERFORMANCE_REPORT')">
+				 <li><a href='${appPath}/myPerformanceReports'>My Performance Report</a></li>
+				 </sec:authorize>
 				 <sec:authorize access="hasRole('ROLE_VENDORS_REPORT')">
 				 <li><a href="${appPath}/vendorsReports">Vendor(s) Report</a></li>
 				 </sec:authorize>
@@ -193,12 +195,14 @@
 				<sec:authorize access="hasRole('ROLE_EMPLOYEMENT_VERIFICATION_REPORT')">
 				<li><a href="${appPath}/employementVerificationReport">Employement Verification Report</a></li>
 				</sec:authorize>
-				<sec:authorize access="hasRole('ROLE_EMPLOYEMENT_VERIFICATION_REPORT')">
-				<li><a href="daywiseLeaveReport">Daywise Leave Report</a></li>
-				</sec:authorize>
-				<sec:authorize access="hasRole('ROLE_EMPLOYEMENT_VERIFICATION_REPORT')">
-				<li><a href="leaveBalancesReport">Leave Balances Report</a></li>
-				</sec:authorize>
+
+				<li><a href="${appPath}/daywiseLeaveReport">Daywise Leave Report</a></li>
+				<li><a href="${appPath}/leaveReport">Leave Report</a></li>
+				<li><a href="${appPath}/leaveBalancesReport">Leave Balance Report</a></li>
+
+
+				<li><a href="${appPath}/topLeaveTakenReports">Top Leave Taken Report</a></li>
+	
 				<!-- <li><a href="#">Employment Verficication</a></li>
 				<li><a href="#">Wage and Tax</a></li>
 				<li><a href="#">Associate Onboard</a></li>
@@ -274,7 +278,44 @@
                   <div class="clearfix text-center"><h4>Users Usage Report</h4></div> </a>
                       </div>
                      
-              </sec:authorize>     
+              </sec:authorize>
+              
+              
+              
+             <%--  <sec:authorize access="hasAnyRole('ROLE_USAGE_REPORT')">    --%>
+         <div class="col-md-4 reportNewCta">
+                  <!-- DropDown payReport -->
+			<div class="dropdown pull-right report-dropdown">
+				<span class="dropdown-toggle btn btn-sm btn-default repDropBtn" type="button" id="menu4" data-toggle="dropdown"><span class="caret cursorPointer"></span></span>
+				<ul class="dropdown-menu" role="menu" aria-labelledby="menu3">
+			     <sec:authorize access="hasRole('ROLE_USAGE_REPORT')">
+				<li><a href="payrollRegister.html">Payroll Register Reports</a></li>
+				<li><a href="payrollComparisionReport.html">Comparsion</a></li>
+				<li><a href="payrollSummary.html">Payroll Summary</a></li>
+				<li><a href="payrollRegister.html">Check Register Report</a></li>
+				<li><a href="employeePayroll.html">Employee Report</a></li>
+				<li><a href="companysnapshot.html">Employee Hours Paid</a></li>
+				<li><a href="companysnapshot.html">Taxable Wages Report</a></li>
+				<li><a href="deduction.html">Deduction Reports</a></li>
+				<li><a href="contribution.html">Contribution Reports</a></li>
+				<li><a href="companysnapshot.html">Tax Liability Report</a></li>
+				<li><a href="companysnapshot.html">Payroll Timesheet Report</a></li>
+				<li><a href="directdeposit.html">Direct Deposit</a></li>
+				</sec:authorize>
+				</ul>
+			</div>
+                 <!-- Dropdown -->
+                  <a href="${appPath}/usPayrollReport" class="block">
+                  <div class="clearfix text-center mb10"><i class="payReport"></i></div>
+                  <div class="clearfix text-center"><h4>Us Payroll Reports</h4></div> </a>
+                  </div>
+                     
+          <%--     </sec:authorize>  --%>
+              
+              
+              
+              
+                  
       </div>
       
       <!--   List View   -->
@@ -285,6 +326,10 @@
                 <ul class="repSearchList">
  				<sec:authorize access="hasRole('ROLE_RECRUITERS_REPORT')">
 				 <li><a href='${appPath}/recruitersReports'>Recruiter(s) Report</a></li>
+				 </sec:authorize>
+				 
+				  <sec:authorize access="hasRole('ROLE_MY_PERFORMANCE_REPORT')">
+				 <li><a href='${appPath}/myPerformanceReports'>My Performance Report</a></li>
 				 </sec:authorize>
 				
 				 <sec:authorize access="hasRole('ROLE_VENDORS_REPORT')">
@@ -399,6 +444,13 @@
 				<sec:authorize access="hasRole('ROLE_EMPLOYEMENT_VERIFICATION_REPORT')">
 				<li><a href="${appPath}/employementVerificationReport">Employement Verification Report</a></li>
 				</sec:authorize>
+
+				<li><a href="${appPath}/daywiseLeaveReport">Daywise Leave Report</a></li>
+				<li><a href="${appPath}/leaveReport">Leave Report</a></li>
+				<li><a href="${appPath}/leaveBalancesReport">Leave Balance Report</a></li>
+            	<li><a href="${appPath}/topLeaveTakenReports">Top Leave Taken Report</a></li>
+
+
                 </ul>
                 <div class="noDate noDateSm" style="display: none;"></div>
             </div> 
@@ -421,6 +473,8 @@
                 <div class="noDate noDateSm" style="display: none;"></div>
             </div> 
             
+			
+			
 			<div class="newRepListCta">
                 <h2><a href="javascript:void(0)">Users Usage Reports</a></h2>
                 <ul class="repSearchList">
@@ -429,7 +483,14 @@
 				</sec:authorize>
                 </ul>
                 <div class="noDate noDateSm" style="display: none;"></div>
-            </div> 
+            </div>
+            
+            
+            
+            
+            
+            
+            
                                    
         </div>
         

@@ -5,7 +5,6 @@ import java.util.Date;
 import java.util.LinkedHashSet;
 import java.util.List;
 
-import com.bis.sourcelead.dto.DashboardItemsDTO;
 import com.bis.sourcelead.dto.ResponseList;
 import com.bis.sourcelead.dto.UserDTO;
 import com.bis.sourcelead.entity.DashboardItems;
@@ -14,12 +13,15 @@ import com.bis.sourcelead.entity.Org;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.entity.UserRole;
+import com.bis.sourcelead.reportsDTO.LeaveBalanceReportDTO;
 
 public interface UserDao {
 
 	User findByUserName(String username);
 	
 	public User addUser(User user) throws Exception;
+	
+	public void deleteUser(User user) throws Exception;
 	
 	User getUserById(Long Id) throws Exception;
 	
@@ -166,6 +168,8 @@ public interface UserDao {
 	
 	public List<Long> getUserIdsListByLinkedUserId(Long userId) throws Exception;
 
+	User getUserbyConsultantUserId(Long consultantUserId);
+
 	List<User> getUsersListForSignatoryByOrglocationId(Long locationId);
 
 	List<User> getGlobalUsersByOrgId(Long roleId,Long orgId,Long tabId) throws Exception;
@@ -182,7 +186,7 @@ public interface UserDao {
 	
 	List<User> getReportingManagersByUserIdAndUserRolesAndOrgLocationIdAndUserTabId(Long userId, Long roleId, Long orgLocationsId) throws Exception;
 	
-	public ResponseList<UserDTO> getRecruitersReports(Long userId,Long orgLocationId,Long orgId,String isGlobalUser,UserDTO userDTO,String loginUserRole,Date[] searchDates,List<Long> teamsList) throws Exception;
+	public ResponseList<UserDTO> getRecruitersReports(Long userId,Long orgLocationId,Long orgId,String isGlobalUser,UserDTO userDTO,String loginUserRole,Date[] searchDates,List<Long> teamsList,String type) throws Exception;
 
 
 	public DashboardItems getDashboardItemsByUserId(long loginUserId, long orgLocationId);
@@ -190,8 +194,8 @@ public interface UserDao {
 	public DashboardItems getDashboardItemsByDashboardId(long dashboardItemId);
 
 	public long saveDashboardItems(DashboardItems dashboardItems);
+	
+	public List<LeaveBalanceReportDTO> getUserNameAndTypeByOrgLocationId(Long orgLocationId,List<Long> userRole,List<Long> orgDepartmentsList,String topleave,Date MonthStart,Date MonthEnd) throws Exception;
 
-
-	User getUserbyConsultantUserId(Long consultantUserId);
 
 }

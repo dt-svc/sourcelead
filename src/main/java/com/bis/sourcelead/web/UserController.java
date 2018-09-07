@@ -135,8 +135,8 @@ public class UserController {
 		    
 		    List<Roles> rolesList = rolesService.getUserRolesListByModuleAndLoginUserRoleHierarchy(org,orgLocations.getId(),roleHierarchyId);
 		    model.addObject("rolesList", rolesList);
-		    
-		    List<OrgLocations> locationList = orgLocationService.getAllOrgLocationsByOrgId(org.getId());
+
+			List<OrgLocations> locationList = orgLocationService.getAllOrgLocationsByOrgId(org.getId());
 		    model.addObject("locationList", locationList);
 		    
 		    List<AssociateGrades> gradesList = associateGradesService.getAssociateGradesListByOrgLocationId(orgLocations.getId());
@@ -211,6 +211,7 @@ public class UserController {
 			ModelAndView model = new ModelAndView();
 			commonUtil.highLightMenu(Constants.Users, request);
 			OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,"orgLocations");
+			Org org = (Org) SourceLeadSessionManager.getSessionAttribute(request,"org");
 			String isTimeSheetEnrolled = (String) SourceLeadSessionManager.getSessionAttribute(request,"timesheet");
 			Countries countries = countriesService.getCountriesByCountryName(orgLocations.getCountry());
 			if(null != countries){
@@ -223,7 +224,7 @@ public class UserController {
 		   
 			List<LookUpData> documentsList = lookUpDataService.getLookUpDataByCategory(Constants.DOCUMENT_TYPE);
 		    model.addObject("documentsList", documentsList);
-		    if(userId != null && StringUtils.isNoneEmpty(userId)) {
+		    if(userId != null && StringUtils.isNotEmpty(userId)) {
 		    	User user = userService.getUserById(Long.parseLong(userId));
 		    	userCode = user.getUserCode();
 		    }
@@ -252,7 +253,10 @@ public class UserController {
 			     model.addObject("actionId",action.getId());
 			     List<SourceleadSectionDTO> sections = commonUtil.getSourceleadFormSectionsByActionId(request, action.getId());
 			     model.addObject("sourceleadSectionList",sections); 
-				
+			     
+			    boolean isMulitplieOrgAccounts = userRoleService.isUserWithMultipleOrgsAccounts(org.getId(), user.getId());
+			    model.addObject("isMulitplieOrgAccounts", isMulitplieOrgAccounts);
+			    
 				request.setAttribute("candidateId", candidate.getId());
 				request.setAttribute("userId", user.getId());
 				model.setViewName("users/userSummary");
@@ -260,7 +264,7 @@ public class UserController {
 				model.setViewName("registration/persmissionDenied");
 			}
 			model.addObject("sourceleadUrl", sourceleadUrl);
-			
+			model.addObject("userCode",userCode);
 		
 		return model;
 
@@ -275,48 +279,4 @@ public class UserController {
 			return str == null || "".equals(str.trim());
 		}
 	 
-	 
-	 /**
-		 * User Group List JSp
-		 * @param deductionUUID
-		 * @param request
-		 * @param response
-		 * @return ModelAndView
-		 * @throws Exception
-		 */
-		@RequestMapping(value = "/userGroupList")
-		public ModelAndView userBatchList(HttpServletRequest request,HttpServletResponse response) throws Exception {
-			   OrgLocations loginOrgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
-			   ModelAndView model = new ModelAndView();
-			   List<Department> departmentList = departmentService.getDepartmentByOrgLocationId(loginOrgLocation.getId());
-			   model.addObject("departmentList", departmentList);
-			   model.addObject("sourceleadUrl", sourceleadUrl);
-			   model.setViewName("users/usergroupList");
-		       return model;
-		}
-		
-		@RequestMapping(value = "/addUserGroup")
-		public ModelAndView addUserGroup(UserGroupDTO userGroupDto , HttpServletRequest request,HttpServletResponse response) throws Exception {
-			   OrgLocations loginOrgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
-			   ModelAndView model = new ModelAndView();
-			   List<Department> departmentList = departmentService.getDepartmentByOrgLocationId(loginOrgLocation.getId());
-			   model.addObject("departmentList", departmentList);
-			   if(StringUtils.isNotBlank(userGroupDto.getGroupUUID())){
-				   UserGroup userGroup = userGroupDao.findUserGroupById(userGroupDto.getGroupUUID());
-				   model.addObject("userGroup", userGroup);
-				   if(userGroup.getUserId() != null) {
-					   String[] userIds = userGroup.getUserId().split(",");
-					   List<Long> userIdList = new ArrayList<>();
-					   for(int i=0;i<userIds.length;i++){
-							userIdList.add(Long.parseLong(userIds[i]));
-					   }
-					   List<UserRole> userList = userRoleService.getUserListByUserIdList(userIdList,loginOrgLocation.getId());
-					   model.addObject("selectedUserList", userList);
-				   }
-			   }
-			   model.addObject("sourceleadUrl", sourceleadUrl);
-			   model.setViewName("users/addUserGroup");
-		       return model;
-		}
-		
 }

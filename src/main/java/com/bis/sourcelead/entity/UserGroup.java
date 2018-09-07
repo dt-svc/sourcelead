@@ -41,8 +41,8 @@ public class UserGroup {
 	@Column(name = "DEPARTMENT_ID")
 	private String departmentId;
 	
-	@Column(name = "USER_ID")
-	private String userId;
+	@Column(name = "CANDIDATE_ID")
+	private String candidate;
 	
 	@Column(name = "DESCRIPTION", columnDefinition = "TEXT default NULL")
 	private String description;
@@ -122,14 +122,15 @@ public class UserGroup {
 		this.departmentId = departmentId;
 	}
 
-	public String getUserId()
+
+	public String getCandidate()
 	{
-		return userId;
+		return candidate;
 	}
 
-	public void setUserId(String userId)
+	public void setCandidate(String candidate)
 	{
-		this.userId = userId;
+		this.candidate = candidate;
 	}
 
 	public String getDescription()

@@ -1,9 +1,11 @@
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <%@taglib uri="http://www.springframework.org/tags/form" prefix="form"%>
 
+
 <script type="text/javascript">
-function calculateTotalPay(formData,confirmType){
-		      $.post(sourceleadUrl+"/confirmPayroll?"+tokenParamName+"="+tokenValue+"&confirmType="+confirmType, formData, function(json) {
+function calculateTotalPay(formData,confirmType,payPerionNum){
+			approvePayrollDiv();
+		      $.post(sourceleadUrl+"/confirmPayroll?"+tokenParamName+"="+tokenValue+"&confirmType="+confirmType+"&payPerionNum="+payPerionNum, formData, function(json) {
 		    	  $("#totRegularHours").text(json.regularHours.toFixed(2));
 		    	  $("#totRegularEarningsAmt").text(json.regularHoursAmount.toFixed(2));
 		    	  $("#totOverTimeHours").text(json.overTimeHours.toFixed(2));
@@ -36,18 +38,14 @@ function calculateTotalPay(formData,confirmType){
 				  $("#payrollIds").val(json.payrollIds);
 				  $("#pid").val(json.pid);
 				  $("#confirmType").val(json.confirmType); 
-				  alert(json.ppn);
 				  $("#ppn").val(json.ppn); 
 		    	  
-		    	  var dedJson = json.deduction;
 		    	  var dedResult = "";
-		    	   if(dedJson != null && dedJson.length >0){ 
-		    		  for (var i=0; i<dedJson.length; i++){
-			    		  var ded = dedJson[i];
-			    		  alert(ded.deductionType);
+		    	   if(json.deduction != null){ 
+		    		   for(var e in json.deduction){
 			    		  dedResult = dedResult + '<tr>';
-			    		  dedResult = dedResult + '<td>'+ded.deductionType+'</td>';
-			    		  dedResult = dedResult + '<td>$ '+ded.amount.toFixed(2)+'</td>';
+			    		  dedResult = dedResult + '<td>'+e+'</td>';
+			    		  dedResult = dedResult + '<td>$ '+json.deduction[e].toFixed(2)+'</td>';
 			    		  dedResult = dedResult + '</tr>';
 			    	  }
 		    	  } else{
@@ -59,15 +57,12 @@ function calculateTotalPay(formData,confirmType){
 		    	$("#deductionDIV").empty();
 		    	$("#deductionDIV").append(dedResult);
 		    	
-		    	 var contJson = json.contribution;
 		    	  var contResult = "";
-		    	   if(contJson != null && contJson.length >0){ 
-		    		  for (var i=0; i<contJson.length; i++){
-			    		  var cont = contJson[i];
-			    		  alert(ded.deductionType);
+		    	   if(json.contribution != null){ 
+		    		   for(var e in json.contribution){
 			    		  contResult = contResult + '<tr>';
-			    		  contResult = contResult + '<td>'+cont.contributionType+'</td>';
-			    		  contResult = contResult + '<td>$ '+cont.contributionAmount.toFixed(2)+'</td>';
+			    		  contResult = contResult + '<td>'+e+'</td>';
+			    		  contResult = contResult + '<td>$ '+json.contribution[e].toFixed(2)+'</td>';
 			    		  contResult = contResult + '</tr>';
 			    	  }
 		    	  } else{
@@ -86,6 +81,7 @@ function calculateTotalPay(formData,confirmType){
     
     <div class="clearfix"></div>
     <div class="timesheet_out" id="approveDiv">
+    <div id="approvePayrollDivLoding"></div>
       <div class="clearfix mt">
       <form:form id="approve_payroll_form" name="approve_payroll_form" method="post">
                <div class="clearfix approveTabelesStyles">
@@ -158,7 +154,6 @@ function calculateTotalPay(formData,confirmType){
                							<td>$ <span id="federal">0.00</span><td>
                						</tr>
                						<tr>
-               						 
                							<td>Federal Insurance Contributions Act (FICA)</td>
                							<td><div class="tblminwidth-90">$ <span id="fica">0.00</span></div></td>
                						</tr>
@@ -183,7 +178,7 @@ function calculateTotalPay(formData,confirmType){
                							<td>$ <span id="localTax">0.00</span></td>
                						</tr>
                						<tr>
-               							<td><strong>Total Employee Tax	100$</strong></td>
+               							<td><strong>Total Employee Tax</strong></td>
                							<td>$ <span id="totalTax">0.00</span></td>
                						</tr>
                						<tr>
@@ -302,7 +297,7 @@ function calculateTotalPay(formData,confirmType){
         <nav class="clearfix">
           <ul class="pull-right mr10 list-unstyled list-inline">
             <li><a href="javascript:void(0)" class="btn btn-primary btnSuccess" onClick="approvePayroll();">Approve</a></li>
-            <li><a href="javascript:void(0)" class="btn btn-default" onClick="rejectModal();">Cancel</a></li>
+            <li><a href="javascript:void(0)" class="btn btn-default" onclick="window.location='/app/payrollList'">Cancel</a></li>
           </ul>
           <div class="clearfix"></div>
         </nav>
@@ -317,8 +312,10 @@ function calculateTotalPay(formData,confirmType){
 <script type="text/javascript">
 function approvePayroll(){
       var formData = $($('#approve_payroll_form')[0]).serialize();
+      $("#approvePayrollDivLoding").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
       $.post(sourceleadUrl+"/approvePayroll?"+tokenParamName+"="+tokenValue, formData, function(result) {
-  		if (result.response === "INVALID_DATA") {
+    	  $("#approvePayrollDivLoding").removeAttr('style');
+    	  if (result.response === "INVALID_DATA") {
  		    showError(result.responseMessage);
  		} else if (result.response === "AWKWARD") {
  		    location.href = "/errorPage";
@@ -331,6 +328,12 @@ function approvePayroll(){
  		}
       });   
     
+}
+
+
+function approvePayrollDiv(){
+	$("#reviewPayrollDiv").hide();
+	$("#approveDiv").show();
 }
 </script> 
 

@@ -15,8 +15,8 @@ import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
+import com.bis.sourcelead.entity.Candidate;
 import com.bis.sourcelead.entity.Employees;
-import com.bis.sourcelead.entity.User;
 
 @Entity
 @Table(name = "US_EMP_PAYROLL")
@@ -34,12 +34,25 @@ public class EmployeePayroll {
 	private Employees employee;
 
 	@ManyToOne
-	@JoinColumn(name = "USER_ID", nullable = false)
-	private User user;
+	@JoinColumn(name = "CANDIDATE_ID", nullable = false)
+	private Candidate candidate;
 	
 	@ManyToOne
 	@JoinColumn(name = "PAY_SHEET_FREQUENCY_ID", nullable = false)
 	private PaysheetFrequency paysheetFrequency;
+	
+	
+	@Column(name = "PAY_TYPE")
+	private String payType; 
+	 
+	@Column(name = "PAY_PER_SALARY")
+    private BigDecimal payPerSalary;
+	
+	@Column(name = "ADVANCE_AMOUNT")
+    private BigDecimal advanceAmount;
+	
+	@Column(name = "LOAN_AMOUNT")
+    private BigDecimal loanAmount;
 	
 	@Column(name = "EMP_PAY_RATE")
 	private BigDecimal empPayRate;
@@ -48,7 +61,7 @@ public class EmployeePayroll {
 	private String regularHours;
 	
 	@Column(name = "REGULAR_HOURS_AMOUNT")
-	private BigDecimal rehularHoursAmount;
+	private BigDecimal regularHoursAmount;
 	
 	@Column(name = "OVER_TIME_AMOUNT")
 	private BigDecimal overTimeAmount;
@@ -93,6 +106,16 @@ public class EmployeePayroll {
 	@Column (name = "POST_TAX_CONTRIBUTION")
 	private BigDecimal postTaxContribution;
 	
+	@Column (name = "PAYITEM_SUM")
+	private BigDecimal payitemSum;
+	
+	@Column (name = "PAY_SLIP_FILE_NAME")
+	private String paySlipFileName;
+	
+	@Column (name = "PAY_SLIP_FILE_URL")
+	private String paySlipFileURL;
+	
+	
 	@Column(name = "STATUS")
 	private Integer status;
 	
@@ -110,8 +133,6 @@ public class EmployeePayroll {
 	
 	@Column(name = "TAXES")
 	private BigDecimal taxes;
-	
-	
 
 	@OneToMany(cascade = CascadeType.ALL, mappedBy = "employeePayroll")
 	private Set<EmployeePayrollTax> usPayrollTax;
@@ -121,6 +142,9 @@ public class EmployeePayroll {
 	
 	@OneToMany(cascade = CascadeType.ALL, mappedBy = "payroll")
 	private Set<DeductionHistory> deductionHistory;
+	
+	@OneToMany(cascade = CascadeType.ALL, mappedBy = "payrollId")
+	private Set<PayitemHistory> payitemHistory;
 	
 	public String getSubmitForAproverStatus()
 	{
@@ -159,10 +183,6 @@ public class EmployeePayroll {
 		return regularHours;
 	}
 
-	public BigDecimal getRehularHoursAmount()
-	{
-		return rehularHoursAmount;
-	}
 
 	public BigDecimal getOverTimeAmount()
 	{
@@ -241,9 +261,15 @@ public class EmployeePayroll {
 		this.regularHours = regularHours;
 	}
 
-	public void setRehularHoursAmount(BigDecimal rehularHoursAmount)
+
+	public BigDecimal getRegularHoursAmount()
 	{
-		this.rehularHoursAmount = rehularHoursAmount;
+		return regularHoursAmount;
+	}
+
+	public void setRegularHoursAmount(BigDecimal regularHoursAmount)
+	{
+		this.regularHoursAmount = regularHoursAmount;
 	}
 
 	public void setOverTimeAmount(BigDecimal overTimeAmount)
@@ -337,9 +363,15 @@ public class EmployeePayroll {
 		return employee;
 	}
 
-	public User getUser()
+
+	public Candidate getCandidate()
 	{
-		return user;
+		return candidate;
+	}
+
+	public void setCandidate(Candidate candidate)
+	{
+		this.candidate = candidate;
 	}
 
 	public void setEmployee(Employees employee)
@@ -347,11 +379,7 @@ public class EmployeePayroll {
 		this.employee = employee;
 	}
 
-	public void setUser(User user)
-	{
-		this.user = user;
-	}
-
+	
 	public String getOverTimeHours()
 	{
 		return overTimeHours;
@@ -431,6 +459,88 @@ public class EmployeePayroll {
 	{
 		this.deductionHistory = deductionHistory;
 	}
+
+	public BigDecimal getPayitemSum()
+	{
+		return payitemSum;
+	}
+
+	public void setPayitemSum(BigDecimal payitemSum)
+	{
+		this.payitemSum = payitemSum;
+	}
+
+	public Set<PayitemHistory> getPayitemHistory()
+	{
+		return payitemHistory;
+	}
+
+	public void setPayitemHistory(Set<PayitemHistory> payitemHistory)
+	{
+		this.payitemHistory = payitemHistory;
+	}
+
+	public String getPayType()
+	{
+		return payType;
+	}
+
+	public BigDecimal getPayPerSalary()
+	{
+		return payPerSalary;
+	}
+
+	public BigDecimal getAdvanceAmount()
+	{
+		return advanceAmount;
+	}
+
+	public BigDecimal getLoanAmount()
+	{
+		return loanAmount;
+	}
+
+	public void setPayType(String payType)
+	{
+		this.payType = payType;
+	}
+
+	public void setPayPerSalary(BigDecimal payPerSalary)
+	{
+		this.payPerSalary = payPerSalary;
+	}
+
+	public void setAdvanceAmount(BigDecimal advanceAmount)
+	{
+		this.advanceAmount = advanceAmount;
+	}
+
+	public void setLoanAmount(BigDecimal loanAmount)
+	{
+		this.loanAmount = loanAmount;
+	}
+
+	public String getPaySlipFileName()
+	{
+		return paySlipFileName;
+	}
+
+	public String getPaySlipFileURL()
+	{
+		return paySlipFileURL;
+	}
+
+	public void setPaySlipFileName(String paySlipFileName)
+	{
+		this.paySlipFileName = paySlipFileName;
+	}
+
+	public void setPaySlipFileURL(String paySlipFileURL)
+	{
+		this.paySlipFileURL = paySlipFileURL;
+	}
+	
+	
 	
 	
 }

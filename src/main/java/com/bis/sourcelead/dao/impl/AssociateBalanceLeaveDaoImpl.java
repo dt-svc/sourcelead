@@ -228,7 +228,7 @@ public class AssociateBalanceLeaveDaoImpl implements AssociateBalanceLeaveDao{
 						Employees emp = employeesService.getEmployeeByUserIdAndOrgLocationsId(user.getId(), orgLocationId);
 						float days = 0;
 								try{
-//								days =	leaveManagementUtil.test(leaveType, emp, user);
+								days =	leaveManagementUtil.getNumberofDaysPerPeriodForLeaveType(leaveType, emp, user);
 								}catch (Exception e) {
 									e.printStackTrace();
 								}
@@ -249,16 +249,16 @@ public class AssociateBalanceLeaveDaoImpl implements AssociateBalanceLeaveDao{
 									 additionLeaves = assoBalLeaves + days;
 								}if("SUB".equalsIgnoreCase(leaveType.getActionExpType())) {
 									additionLeaves = assoBalLeaves - days;
-								}if("IMPORT".equalsIgnoreCase(leaveType.getActionExpType())) {
-									additionLeaves = days;
+								}if("IMPORT".equalsIgnoreCase(actionType)) {
+									additionLeaves = diffLeaves;
 								}
 								
 								if("ADD".equalsIgnoreCase(leaveType.getActionFresherType())) {
 									 additionLeaves = assoBalLeaves + days;
 								}if("SUB".equalsIgnoreCase(leaveType.getActionFresherType())) {
 									additionLeaves = assoBalLeaves - days;
-								}if("IMPORT".equalsIgnoreCase(leaveType.getActionFresherType())) {
-									additionLeaves = days;
+								}if("IMPORT".equalsIgnoreCase(actionType)) {
+									additionLeaves = diffLeaves;
 								}
 							}
 							stmt.setString(2, String.valueOf(additionLeaves));	

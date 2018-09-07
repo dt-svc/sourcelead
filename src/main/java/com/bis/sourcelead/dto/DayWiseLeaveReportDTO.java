@@ -15,8 +15,8 @@ public class DayWiseLeaveReportDTO extends SearchDTO implements Serializable{
 	private String fromDate;
 	
 	private String exportType;
-	
-	
+	private Long loginUserId;
+	private Long reportingManagerId;
 	private Long id;
 	private Long userId;
 	private Long orgId;
@@ -47,6 +47,7 @@ public class DayWiseLeaveReportDTO extends SearchDTO implements Serializable{
 	
 	private String toDateStr;
 
+	private String ReportingManager;
 	
 	public String getSearchValue()
 	{
@@ -263,6 +264,31 @@ public class DayWiseLeaveReportDTO extends SearchDTO implements Serializable{
 	public void setToDateStr(String toDateStr)
 	{
 		this.toDateStr = toDateStr;
+	}
+
+	public Long getReportingManagerId()
+	{
+		return reportingManagerId;
+	}
+	public void setReportingManagerId(Long reportingManagerId)
+	{
+		this.reportingManagerId = reportingManagerId;
+	}
+	public Long getLoginUserId()
+	{
+		return loginUserId;
+	}
+	public void setLoginUserId(Long loginUserId)
+	{
+		this.loginUserId = loginUserId;
+	}
+	public String getReportingManager()
+	{
+		return ReportingManager;
+	}
+	public void setReportingManager(String reportingManager)
+	{
+		ReportingManager = reportingManager;
 	}
 	
 	

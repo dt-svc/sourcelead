@@ -150,7 +150,7 @@ public class AppliedLeaveDateDaoImpl implements AppliedLeaveDateDao {
 	{
 		List<AppliedLeaveDateView> appliedLeaveList = null;
 		Session session = this.sessionFactory.getCurrentSession();
-		String query = "from AppliedLeaveDateView alView where alView.leaveTypeId =:leaveTypeId and alView.orglocationId = :orgLocationid and (alView.applyLeaveDate >= :startDate and alView.applyLeaveDate <= :endDate)";
+		String query = "from AppliedLeaveDateView alView where alView.leaveTypeId =:leaveTypeId and alView.orglocationId = :orgLocationid and (alView.applyLeaveDate >= :startDate and alView.applyLeaveDate <= :endDate) and (alView.leaveStatus = 'APPROVED' or alView.leaveStatus = 'PENDING')";
 		appliedLeaveList = session.createQuery(query).setLong("leaveTypeId", leaveTypeId).setLong("orgLocationid", orgLocationid).setParameter("startDate", startDate).setParameter("endDate", endDate).list();
 		return appliedLeaveList;
 	}
@@ -201,6 +201,25 @@ public class AppliedLeaveDateDaoImpl implements AppliedLeaveDateDao {
 			e.printStackTrace();
 		}
 		return existed;
+	}
+	
+	
+	@Override
+	@Transactional
+	public AppliedLeaveDate getAppliedLeaveDateByleaveIdAndAppliedLeaveDate(Date date,Long leaveId) {
+		java.sql.Date applyLeaveDate = new java.sql.Date(date.getTime());
+		AppliedLeaveDate ald = null;
+		try {
+			Session session = this.sessionFactory.getCurrentSession();
+			String query = "from AppliedLeaveDate ald where ald.applyLeaveDate = :applyLeaveDate and ald.leave.id = :leaveId and ald.status = '1'";
+			List<AppliedLeaveDate> leaveList = session.createQuery(query).setParameter("applyLeaveDate", applyLeaveDate).setLong("leaveId", leaveId).list();
+			if(leaveList != null && leaveList.size() > 0) {
+				ald = leaveList.iterator().next();
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return ald;
 	}
 
 	@Override

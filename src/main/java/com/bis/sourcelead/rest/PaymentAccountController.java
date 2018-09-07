@@ -1,24 +1,11 @@
 package com.bis.sourcelead.rest;
 
-import com.bis.sourcelead.annotations.Validator;
-import com.bis.sourcelead.dto.PaymentAccountDTO;
-import com.bis.sourcelead.dto.ResponseList;
-import com.bis.sourcelead.entity.Org;
-import com.bis.sourcelead.entity.OrgLocations;
-import com.bis.sourcelead.enums.PaymentAccountType;
-import com.bis.sourcelead.enums.Result;
-import com.bis.sourcelead.service.OrgLocationService;
-import com.bis.sourcelead.service.OrgService;
-import com.bis.sourcelead.util.SourceLeadSessionManager;
-import com.squareup.okhttp.MediaType;
-import com.squareup.okhttp.OkHttpClient;
-import com.squareup.okhttp.Request;
-import com.squareup.okhttp.RequestBody;
-import com.squareup.okhttp.Response;
 import java.io.IOException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+
 import javax.servlet.http.HttpServletRequest;
+
 import org.apache.commons.lang.StringUtils;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -28,7 +15,27 @@ import org.springframework.context.annotation.PropertySource;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
+
+import com.bis.sourcelead.annotations.Validator;
+import com.bis.sourcelead.dto.IndAssociatePaymentAccountDTO;
+import com.bis.sourcelead.dto.PaymentAccountDTO;
+import com.bis.sourcelead.dto.ResponseList;
+import com.bis.sourcelead.entity.Org;
+import com.bis.sourcelead.entity.OrgLocations;
+import com.bis.sourcelead.entity.PaymentAccount;
+import com.bis.sourcelead.enums.PaymentAccountType;
+import com.bis.sourcelead.enums.Result;
+import com.bis.sourcelead.service.OrgLocationService;
+import com.bis.sourcelead.service.OrgService;
+import com.bis.sourcelead.service.PaymentAccountService;
+import com.bis.sourcelead.util.SourceLeadSessionManager;
+import com.squareup.okhttp.MediaType;
+import com.squareup.okhttp.OkHttpClient;
+import com.squareup.okhttp.Request;
+import com.squareup.okhttp.RequestBody;
+import com.squareup.okhttp.Response;
 
 /**
  *
@@ -43,6 +50,10 @@ public class PaymentAccountController {
 
     @Autowired
     private OrgLocationService orgLocationService;
+    
+    @Autowired
+    PaymentAccountService paymentAccountService;
+
     
     public static final MediaType JSON = MediaType.parse("application/json; charset=utf-8");
     public static final MediaType PLAIN = MediaType.parse("application/x-www-form-urlencoded");
@@ -66,7 +77,7 @@ public class PaymentAccountController {
     
     @Value("${wepay.accesstoken}")
     private String wepayAccessToken;
-
+    
 
     @RequestMapping(value = "/app/org-location-list", method = RequestMethod.POST)
     @ResponseBody
@@ -151,7 +162,9 @@ public class PaymentAccountController {
         }
         return response;
     }
-
+    
+    
+    
     @RequestMapping(value = "/app/resend-wepay-mail", method = RequestMethod.POST)
     @ResponseBody
     public com.bis.sourcelead.dto.Response resendWePayMail(HttpServletRequest request, long id) {
@@ -215,11 +228,11 @@ public class PaymentAccountController {
     public com.bis.sourcelead.dto.Response changeDefaultAccount(HttpServletRequest request, 
             long id, boolean defaultAccount) {
         com.bis.sourcelead.dto.Response response = new com.bis.sourcelead.dto.Response();
-        Org org = (Org) SourceLeadSessionManager.getSessionAttribute(request, "org");
+        OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
         response.setResponse(Result.INVALID_DATA.name());
         response.setResponseMessage(Result.INVALID_DATA.getValue());
-        if (org != null) {
-            int flag = orgService.changeDefaultPaymentAccount(id, org.getId(), defaultAccount);
+        if (orgLocations != null) {
+            int flag = orgService.changeDefaultPaymentAccount(id, orgLocations.getId(), defaultAccount);
             if (flag > 0) {
                 response.setResponse(Result.SUCCESS.name());
                 response.setResponseMessage(Result.SUCCESS.getValue());
@@ -318,11 +331,11 @@ public class PaymentAccountController {
     @ResponseBody
     public com.bis.sourcelead.dto.Response changeActiveAccount(HttpServletRequest request,  long id) {
         com.bis.sourcelead.dto.Response response = new com.bis.sourcelead.dto.Response();
-        Org org = (Org) SourceLeadSessionManager.getSessionAttribute(request, "org");
+        OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
         response.setResponse(Result.INVALID_DATA.name());
         response.setResponseMessage(Result.INVALID_DATA.getValue());
-        if (org != null) {
-            int flag = orgService.changePaymentAccountStatus(id, org.getId());
+        if (orgLocations != null) {
+            int flag = orgService.changePaymentAccountStatus(id, orgLocations.getId());
             if (flag > 0) {
                 response.setResponse(Result.SUCCESS.name());
                 response.setResponseMessage(Result.SUCCESS.getValue());

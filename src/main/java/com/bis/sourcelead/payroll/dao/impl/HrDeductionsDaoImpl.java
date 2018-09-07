@@ -72,8 +72,8 @@ public class HrDeductionsDaoImpl implements HrDeductionsDao{
 			qry = " order by hrd."+ hrDeductionsDTO.getSortColumn() +" "+hrDeductionsDTO.getSortOrder();
 		}
 		
-		String query = "from HrDeductions hrd  left join fetch hrd.orgLocationId where hrd.orgLocationId.id =:orgLocationId";
-		String countQuery = "from HrDeductions hrd  where hrd.orgLocationId.id =:orgLocationId";
+		String query = "from HrDeductions hrd  left join fetch hrd.orgLocationId where hrd.orgLocationId.id =:orgLocationId and (hrd.status IS NULL or hrd.status <> '0')";
+		String countQuery = "from HrDeductions hrd  where hrd.orgLocationId.id =:orgLocationId and (hrd.status IS NULL or hrd.status <> '0')";
 		
 		if(hrDeductionsDTO.getSearchValue().contains("/") || hrDeductionsDTO.getSearchValue().contains("-")){
 			String convertedDate=hrDeductionsDTO.getSearchValue();
@@ -86,7 +86,7 @@ public class HrDeductionsDaoImpl implements HrDeductionsDao{
             String newDate = parsedDate.format(f2);
             Date searchDate = new SimpleDateFormat("yyyy-MM-dd").parse(newDate);
             java.sql.Date sqlDate = new java.sql.Date(searchDate.getTime());
-            String queryDate = "from HrDeductions hrd where hrd.orgLocationId.id =:orgLocationId and ( hrd.fromDate =:sqlDate or hrd.toDate =:sqlDate)";
+            String queryDate = "from HrDeductions hrd where hrd.orgLocationId.id =:orgLocationId and (hrd.status IS NULL or hrd.status <> '0') and ( hrd.fromDate =:sqlDate or hrd.toDate =:sqlDate)";
             Query queryObjDate = session.createQuery(queryDate.toString()).setDate("sqlDate", sqlDate).setLong("orgLocationId", orgLocation.getId());
             List<HrDeductions> temp = queryObjDate.list();
             for(HrDeductions hrDeductions : temp)
@@ -186,12 +186,23 @@ public class HrDeductionsDaoImpl implements HrDeductionsDao{
 	public List<HrDeductions> getHrDeductionsByEmployeeId(OrgLocations orgLocations, Long empId) throws Exception {
 		Session session = this.sessionFactory.getCurrentSession();
 		List<HrDeductions> hrdeductionlist = null;
-		String query = "from HrDeductions hrd  left join fetch hrd.orgLocationId where hrd.orgLocationId.id =:orgLocationId and hrd.employeeId = :empId";
-		hrdeductionlist = session.createQuery(query).setLong("orgLocationId", orgLocations.getId()).setLong("empId", empId).list();
-		if(hrdeductionlist != null && hrdeductionlist.size() >0)
-		{
-			return hrdeductionlist;
+		String query = "";
+		if(empId != null){
+			query = "from HrDeductions hrd  left join fetch hrd.orgLocationId where hrd.orgLocationId.id =:orgLocationId and hrd.employeeId = :empId";
+			hrdeductionlist = session.createQuery(query).setLong("orgLocationId", orgLocations.getId()).setLong("empId", empId).list();
+			if(hrdeductionlist != null && hrdeductionlist.size() >0)
+			{
+				return hrdeductionlist;
+			}
+		}else{
+			query = "from HrDeductions hrd  left join fetch hrd.orgLocationId where hrd.orgLocationId.id =:orgLocationId";
+			hrdeductionlist = session.createQuery(query).setLong("orgLocationId", orgLocations.getId()).list();
+			if(hrdeductionlist != null && hrdeductionlist.size() >0)
+			{
+				return hrdeductionlist;
+			}
 		}
+		
 		return hrdeductionlist;
 	}
 

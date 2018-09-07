@@ -1,5 +1,6 @@
 package com.bis.sourcelead.payroll.dto;
 
+import java.math.BigDecimal;
 import java.util.List;
 
 import com.bis.sourcelead.dto.AssociatePayItemDTO;
@@ -20,6 +21,15 @@ public class PayAdjustmentDTO {
 	
 	private String overTimeHoursAmt;
 	
+    private String preRregularHours;
+	
+	private String preRegularHoursAmt;
+	
+	private String preOverTimeHours;
+	
+	private String preOverTimeHoursAmt;
+
+	
 	private List<AssociatePayItemDTO> payItem;
 	
 	private List<DeductionDTO> preDeduction;
@@ -27,6 +37,10 @@ public class PayAdjustmentDTO {
 	private List<DeductionDTO> postDeduction;
 	
 	private List<ContributionDTO> contribution;
+	
+	private String assSalType;
+    
+    private BigDecimal assSalary;
 	
 
 	public String getDepositType()
@@ -138,7 +152,64 @@ public class PayAdjustmentDTO {
 	{
 		this.contribution = contribution;
 	}
-	
-	
-	
+
+	public String getPreRregularHours()
+	{
+		return preRregularHours;
+	}
+
+	public String getPreRegularHoursAmt()
+	{
+		return preRegularHoursAmt;
+	}
+
+	public String getPreOverTimeHours()
+	{
+		return preOverTimeHours;
+	}
+
+	public String getPreOverTimeHoursAmt()
+	{
+		return preOverTimeHoursAmt;
+	}
+
+	public void setPreRregularHours(String preRregularHours)
+	{
+		this.preRregularHours = preRregularHours;
+	}
+
+	public void setPreRegularHoursAmt(String preRegularHoursAmt)
+	{
+		this.preRegularHoursAmt = preRegularHoursAmt;
+	}
+
+	public void setPreOverTimeHours(String preOverTimeHours)
+	{
+		this.preOverTimeHours = preOverTimeHours;
+	}
+
+	public void setPreOverTimeHoursAmt(String preOverTimeHoursAmt)
+	{
+		this.preOverTimeHoursAmt = preOverTimeHoursAmt;
+	}
+
+	public String getAssSalType()
+	{
+		return assSalType;
+	}
+
+	public void setAssSalType(String assSalType)
+	{
+		this.assSalType = assSalType;
+	}
+
+	public BigDecimal getAssSalary()
+	{
+		return assSalary;
+	}
+
+	public void setAssSalary(BigDecimal assSalary)
+	{
+		this.assSalary = assSalary;
+	}
 }
