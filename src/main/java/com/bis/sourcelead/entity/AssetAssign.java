@@ -37,6 +37,11 @@ public class AssetAssign {
     @JoinColumn(name="SHIFT_ID")        
     private Shift shift;
 	
+	@Column(name = "ASSIGNED_ON")
+	private String assignedOn;
+	
+	@Column(name = "RETURNED_ON")
+	private String returnedOn;
 	
 	@Column(name = "FILE_URL")
 	@Type(type="text")
@@ -114,5 +119,20 @@ public class AssetAssign {
 	public void setStatus(int status) {
 		this.status = status;
 	}
-	 
+
+	public String getAssignedOn() {
+		return assignedOn;
+	}
+
+	public String getReturnedOn() {
+		return returnedOn;
+	}
+
+	public void setAssignedOn(String assignedOn) {
+		this.assignedOn = assignedOn;
+	}
+
+	public void setReturnedOn(String returnedOn) {
+		this.returnedOn = returnedOn;
+	}
 }

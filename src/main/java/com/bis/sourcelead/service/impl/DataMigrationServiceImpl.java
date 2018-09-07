@@ -640,7 +640,18 @@ public class DataMigrationServiceImpl implements DataMigrationService {
 			assetDTO.setMake(assetMigDTO.getMake());
 			assetDTO.setDescription(assetMigDTO.getDescription());
 			assetDTO.setHarddisk(assetMigDTO.getHarddisk());
-
+			assetDTO.setName(assetMigDTO.getName());
+			assetDTO.setVendorDetails(assetMigDTO.getVendorDetails());
+			assetDTO.setOperatingSystem(assetMigDTO.getOperatingSystem());
+			assetDTO.setOsKey(assetMigDTO.getOsKey());
+			assetDTO.setAntiVirus(assetMigDTO.getAntiVirus());
+			assetDTO.setPurchaseDate(assetMigDTO.getPurchaseDate());
+			assetDTO.setDepreciationAmount(assetMigDTO.getDepreciationAmount());
+			assetDTO.setCost(assetMigDTO.getCost());
+			assetDTO.setDepreciationDate(assetMigDTO.getDepreciationDate());
+			assetDTO.setIssueDate(assetMigDTO.getIssueDate());
+			assetDTO.setMacAddress(assetMigDTO.getMacAddress());
+			
 			Asset asset = assetService.saveAssetDetails(assetDTO, user, orgLocation);
 			break;
 
