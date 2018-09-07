@@ -325,6 +325,38 @@ public class PayrollUtil {
 		return dates;
 	}
 	
+	
+	public Date[] getLoanAndAdvancesScheduleDates(Date currentDate, String schedule)
+	{
+		Date[] dates = new Date[2];
+		dates[0] = currentDate;
+		try {
+			Calendar cal = Calendar.getInstance();
+			 cal.setTime(currentDate);
+			switch (schedule) {
+				case PayrollConstant.LOAN_EVERY_PAY:
+					break;
+				case PayrollConstant.LOAN_EVERY_QUARTER:
+					    cal.add(Calendar.MONTH, +3);  
+				        dates[1]  = cal.getTime();
+					break;
+				case PayrollConstant.LOAN_HALF_YEARLY:
+				    cal.add(Calendar.MONTH, +6);  
+			        dates[1]  = cal.getTime();
+				break;
+				case PayrollConstant.LOAN_ANNUALLY:
+					 cal.add(Calendar.MONTH, +12);  
+				        dates[1]  = cal.getTime();
+					break;
+				default:
+					break;
+			}
+		}catch (Exception e) {
+		 e.printStackTrace();
+		}
+		return dates;
+	}
+	
 
 	/**
 	 * Calculation Deduction of employee payroll
