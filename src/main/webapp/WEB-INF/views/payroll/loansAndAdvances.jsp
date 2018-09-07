@@ -1,144 +1,56 @@
-<!-- Content Area -->
-<!-- <section class="content-wraper contentWraper">
-<section class="content-header clearfix">
-  <div class="pull-left">
-    <h2>My Payrolls</h2>
-  </div>
-  <div class="pull-right brud-crum">Home &raquo;My Payrolls</div>
-</section>
- 
-   <div class="tabsMenu">
-   	<ul class="list-unstyled">
-	   <li><a href="myPays-us.html" class="active">Pays</a></li>
-	   <li><a href="myForm-us.html">Forms</a></li>
-	   <li class="current"><a href="myPayrolls-us.html" class="active">Loans &amp; Advances</a></li>
-	 </ul>
-   </div> --> 
- 
  <div class="clearfix"></div>
   <div class="timesheet_out" id="loansAdvancesDiv">
 
 <div class="tablelist-wrap">
 
+
 <div class="col-md-12">
 <ul class="list-unstyled mt row">
 <li class="col-md-3" title="Outstanding" onClick="outstandingFun(this)">
-	<div class="cardModel-widget text-center cursorPointer currentActive" id="outstandingWidget">
+	<div class="cardModel-widget text-center cursorPointer currentActive" id="outstanding" onclick="EmployeeLoansAndAdvances('outstanding');">
 		<h5 class="margin-top0">Outstanding</h5>
-		<p class="text-muted mb0"><i class="fa fa-rupee paddingRight"></i><span>1000</span></p>
+		<p class="text-muted mb0"><i class="fa fa-rupee paddingRight" id="outstandingAmount"></i></p>
 	</div>
 </li>
 <li class="col-md-3"  title="Completed" onClick="completedFun(this)">
-	<div class="cardModel-widget text-center cursorPointer" id="completedWidget">
+	<div class="cardModel-widget text-center cursorPointer" id="completed" onclick="EmployeeLoansAndAdvances('completed');">
 				<h5 class="margin-top0">Completed</h5>
-		<p class="text-muted mb0"><i class="fa fa-rupee paddingRight"></i><span>1000</span></p>
+		<p class="text-muted mb0"><i class="fa fa-rupee paddingRight" id="completedAmount"></i></p>
 
 	</div>
 </li>
 <li class="col-md-3" title="Request" onClick="requestFun(this)">
-	<div class="cardModel-widget text-center cursorPointer" id="requestWidget">
+	<div class="cardModel-widget text-center cursorPointer" id="request" onclick="EmployeeLoansAndAdvances('requested');">
 				<h5 class="margin-top0">Request</h5>
-		<p class="text-muted mb0"><i class="fa fa-rupee paddingRight"></i><span>1000</span></p>
+		<p class="text-muted mb0"><i class="fa fa-rupee paddingRight" id="requestAmount"></i></p>
 
 	</div>
-</li>
-<li class="col-md-3">
-	<a href="javascript:void(0)" class="pull-right" onClick="requestPop();">Request</a>
 </li>
 </ul>
 </div>
 <div class="clearfix"></div>
    
 <div class="styleTables clearfix mt" id="outStadingTable">
-<div id="outStadingTableDiv"></div>
-            <table>
-              <thead>
-                <tr>
-                  <th>Name</th>
-                  <th>Type</th>
-                  <th>Total Amount</th>
-                  <th>Paid Amount</th>
-                  <th>Due Amount</th>
-                  <th>No. of Schedule</th>
-                  <th>Next Schedule</th>
-                  <th>Action</th>
-                </tr>
-              </thead>
-              <tbody>
-                <tr>
-                  <td><div class="tbldata-dotdot-vsm">Car</div></td>
-                  <td><div class="tblminwidth-50">Loan</div></td>
-                  <td><div class="tblminwidth-50 clearfix">5,000,000</div></td>
-                  <td><div class="tblminwidth-50 clearfix">3,000,000</div></td>
-                  <td><div class="tblminwidth-50 clearfix">2,000,000</div></td>
-                  <td><div class="tblminwidth-50 clearfix">10</div></td>
-                  <td><div class="tblminwidth-50 clearfix">11/08/2018</div></td>
-                  <td>
-					  <div class="tblminwidth-30 text-center">
-					  	<a href="javascript:void(0)" class="anchorBlack"><i class="fa fa-eye"></i></a>
-					  </div>
-                  </td>
-                </tr>
-              </tbody>
-            </table>
+
+<div class="candidate_wrap_table datatable_filter">
+	<div id="outStadingTableDiv"></div>
 </div>
+
+</div>
+
 <div class="styleTables clearfix mt" id="completedTable" style="display: none">
-            <table>
-              <thead>
-                <tr>
-                  <th>Name</th>
-                  <th>Type</th>
-                  <th>Total Amount</th>
-                  <th>No. of Schedule</th>
-                  <th>Last Paid On</th>
-                  <th>Action</th>
-                </tr>
-              </thead>
-              <tbody>
-                <tr>
-                  <td><div class="tbldata-dotdot-vsm">Personal</div></td>
-                  <td><div class="tblminwidth-50">Loan</div></td>
-                  <td><div class="tblminwidth-50 clearfix">5,000,000</div></td>
-                  <td><div class="tblminwidth-50 clearfix">5</div></td>
-                  <td><div class="tblminwidth-50 clearfix">11/08/2018</div></td>
-                  <td>
-					  <div class="tblminwidth-30 text-center">
-					  	<a href="javascript:void(0)" class="anchorBlack"><i class="fa fa-eye"></i></a>
-					  </div>
-                  </td>
-                </tr>
-              </tbody>
-            </table>
+
+<div class="candidate_wrap_table datatable_filter">
 </div>
+           
+</div>
+
 <div class="styleTables clearfix mt" id="requestTable" style="display: none">
-            <table>
-              <thead>
-                <tr>
-                  <th>Name</th>
-                  <th>Type</th>
-                  <th>Total Amount</th>
-                  <th>Requested To</th>
-                  <th>Requested On</th>
-                  <th>Status</th>
-                </tr>
-              </thead>
-              <tbody>
-                <tr>
-                  <td><div class="tbldata-dotdot-vsm">Gold</div></td>
-                  <td><div class="tblminwidth-50">Loan</div></td>
-                  <td><div class="tblminwidth-50 clearfix">5,000,000</div></td>
-                  <td><div class="tblminwidth-50 clearfix">Users</div></td>
-                  <td><div class="tblminwidth-50 clearfix">11/08/2018</div></td>
-                  <td>
-					  <div class="tblminwidth-30 text-center text-danger">
-					  	Pending
-					  </div>
-                  </td>
-                </tr>
-              </tbody>
-            </table>
+
+<div class="candidate_wrap_table datatable_filter">
 </div>
-    
+
+</div>
     
 </div>
 </div>
@@ -162,35 +74,191 @@
 
 });
 </script> 
+
 <script>	
 function outstandingFun(event){
-	$("#outstandingWidget").addClass("currentActive");
-	$("#completedWidget, #requestWidget").removeClass("currentActive");
-	document.getElementById("outStadingTable").style.display="block";
-	document.getElementById("completedTable").style.display="none";
-	document.getElementById("requestTable").style.display="none";
+	$("#outstanding").addClass("currentActive");
+	$("#completed, #request").removeClass("currentActive");
 }
 function completedFun(event){
-	$("#completedWidget").addClass("currentActive");
-	$("#outstandingWidget, #requestWidget").removeClass("currentActive");
-
-	document.getElementById("outStadingTable").style.display="none";
-	document.getElementById("completedTable").style.display="block";
-	document.getElementById("requestTable").style.display="none";
+	$("#completed").addClass("currentActive");
+	$("#outstanding, #request").removeClass("currentActive");
 }
 function requestFun(event){
-	$("#requestWidget").addClass("currentActive");
-	$("#outstandingWidget, #completedWidget").removeClass("currentActive");
+	$("#request").addClass("currentActive");
+	$("#outstanding, #completed").removeClass("currentActive");
+}
 
-	document.getElementById("outStadingTable").style.display="none";
-	document.getElementById("completedTable").style.display="none";
-	document.getElementById("requestTable").style.display="block";
-}
-//Request Pop script
-function requestPop() {
-	$(".requestPop, .sideMask").fadeIn();
-}
-function clsoerequestPop() {
-	$(".requestPop, .sideMask").fadeOut();
+</script>
+
+
+<script>
+function EmployeeLoansAndAdvances(type){
+	$.ajax({
+	    	type: "GET",
+	        url: sourceleadUrl+"/getEmpOutstandingLoansAdvances?"+tokenParamName+"="+tokenValue+"&type="+type, 
+	        success: function(data) {
+         	var result = "";
+	        result = result +'<table id="outstandingLoansTableDiv" class="display" cellspacing="0" width="100%" >';
+	        result = result +'<thead>';
+	        result = result +'<tr>';
+	        if(type == "outstanding"){
+	        	result = result +'<th>Name</th>';
+		        result = result +'<th>Type</th>';
+		        result = result +'<th>Total Amount</th>';
+		        result = result +'<th>Paid Amount</th>';
+		        result = result +'<th>Due Amount</th>';
+		        result = result +'<th>No. of Schedule</th>';
+		        result = result +'<th>Action</th>';
+	        }else if(type == "completed"){
+	        	result = result +'<th>Name</th>';
+		        result = result +'<th>Type</th>';
+		        result = result +'<th>Total Amount</th>';
+		        result = result +'<th>Last Paid On</th>';
+		        result = result +'<th>No. of Schedule</th>';
+		        result = result +'<th>Action</th>';
+	        }else if(type == "requested"){
+	        	result = result +'<th>Name</th>';
+		        result = result +'<th>Type</th>';
+		        result = result +'<th>Total Amount</th>';
+		        result = result +'<th>Requested To</th>';
+		        result = result +'<th>Requested On</th>';
+		        result = result +'<th>Status</th>';
+	        }
+	        
+	        result = result +'</tr>';
+	        result = result +'</thead>';
+	        result = result +'<tbody>';
+	       
+ 	        if(data != null && data.length >0){
+	        	for(var i = 0; i < data.length; i++){
+	        	var json = data[i];
+	        	result = result +'<tr>';
+	 	        result = result +'<td>';
+	 	        result = result +'<div class="tblminwidth-100 text-center">';
+	 	        result = result +'<div class="clearfix">'+json.name+'</div>';
+	 	        result = result +'</div>';
+	 	        result = result +'</td>';
+	 	        result = result +'<td>';
+	 	        result = result +'<div class="tblminwidth-100 text-center">';
+	 	        result = result +'<div class="clearfix">'+json.loanAndAdvType+'</div>';
+	 	        result = result +'</div>';
+	 	        result = result +'</td>';
+	 	        result = result +'<td>';
+	 	        result = result +'	<div class="tblminwidth-125">';
+	 	        result = result +'<div class="clearfix">$ '+json.loanAmount+'</div>';
+	 	        result = result +'</div>';
+	 	        result = result +'</td>';
+	 	        
+	 	        
+	 	        if(type == "outstanding"){
+	 	        	 result = result +'<td>';
+	 	 	        result = result +'<div class="tblminwidth-125">';
+	 	 	        if(json.paidAmount != null){
+	 	 	        	result = result +'<div>$ '+json.paidAmount+'</div>';	
+	 	 	        }else{
+	 	 	        	result = result +'<div>--</div>';
+	 	 	        }
+	 	 	        result = result +'</div>';
+	 	 	        result = result +'</td>';
+	 	 	        result = result +'<td>';
+	 	 	        result = result +'<div class="tblminwidth-50">';
+	 	 	        result = result +'<div>$ '+json.pendingAmount+'</div>';
+	 	 	        result = result +'</div>';
+	 	 	        result = result +'</td>';
+	 	        } else if(type == "completed"){
+	 	           result = result +'<td>';
+	 	 	        result = result +'<div class="tblminwidth-50">';
+	 	 	        if(json.lastPaidOn != null){
+	 	 	        	result = result +'<div>$ '+json.lastPaidOn+'</div>';
+	 	 	        }else{
+	 	 	        	result = result +'<div>--</div>';
+	 	 	        }
+	 	 	        result = result +'</div>';
+	 	 	        result = result +'</td>';
+	 	        } else if(type == "requested"){
+	 	        	result = result +'<td>';
+		 	        result = result +'<div class="tblminwidth-100 text-center">';
+		 	        result = result +'<div class="clearfix">'+json.approverUser+'</div>';
+		 	        result = result +'</div>';
+		 	        result = result +'</td>';
+		 	        result = result +'<td>';
+		 	        result = result +'<div class="tblminwidth-100 text-center">';
+		 	        result = result +'<div class="clearfix">'+json.createdDate+'</div>';
+		 	        result = result +'</div>';
+		 	        result = result +'</td>';
+		 	        result = result +'<td>';
+		 	        result = result +'	<div class="tblminwidth-125">';
+		 	        if(json.status == 1){
+		 	        	result = result +'<div class="clearfix">Active</div>';
+		 	        }else{
+		 	        	result = result +'<div class="clearfix">InActive</div>';
+		 	        }
+		 	        result = result +'</div>';
+		 	        result = result +'</td>';
+	 	        }
+	 	        
+	 	       if(type == "outstanding" ||  type == "completed"){
+	 	    	  result = result +'<td>';
+		 	        result = result +'<div class="tblminwidth-50">';
+		 	        result = result +'<div>'+json.noOfSchedules+'</div>';
+		 	        result = result +'</div>';
+		 	        result = result +'</td>';
+		 	        result = result +'<td>';
+		 	        result = result +'<div class="tblminwidth-30">';
+		 	        result = result +'<a href="javascript:void(0)" class="anchorBlack"><i class="fa fa-eye"></i></a>';
+		 	        result = result +'</div>';
+		 	        result = result +'</td>';
+	 	         }
+	 	       
+	 	            result = result +'</tr>';
+	 	           
+	        	}
+	        }  
+	        result = result +'</tbody>';
+	        result = result +'</table>';	
+	        $("#outStadingTableDiv").empty();
+	        $("#outStadingTableDiv").append(result);
+	        outstandingLoansPagination(); 
+	        
+			
+	        }, 
+	    });
+	
+	    
 }
 </script>
+
+<script>
+function outstandingLoansPagination(){ 
+    $('#outstandingLoansTableDiv').DataTable( { 
+    	"scrollCollapse": false,
+    	"lengthMenu": [[10, 15, 20, -1], [10, 15, 20, "All"]],
+    	"bLengthChange": true,
+    	"bDestroy": true,
+    	"ordering": true,
+    	"oLanguage": {
+            "sSearch": "",
+            "sZeroRecords": "", "sEmptyTable": ""
+       }
+    });
+    $("#outstandingLoansTableDiv").wrap("<div class='overflow_Auto width100percnt'></div>");
+    $('.dataTables_filter input').attr("placeholder", "Search");
+}
+</script>
+
+<script>
+function getLoansCountList(){
+	$.ajax({
+    	type: "GET",
+        url: sourceleadUrl+"/getLoansAndAdvancesCounts?"+tokenParamName+"="+tokenValue, 
+        success: function(data) {
+        	$("#outstandingAmount").html(data.Outstanding);
+        	$("#completedAmount").html(data.Completed);
+        	$("#requestAmount").html(data.Requested);
+        }
+	});
+}
+</script>
+
+

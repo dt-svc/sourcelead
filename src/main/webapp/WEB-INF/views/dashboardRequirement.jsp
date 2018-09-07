@@ -20,7 +20,7 @@ $(document).ready(function(){
 </script>
 <div class="col-md-6 mb">
         <div class="dashboardWidget-new">
-          <h4 class="clearfix"><a id="jobsLink" href="<c:url value="/app/jobs"/>"> Jobs</a>
+          <h4 class="clearfix mb0"><a id="jobsLink" href="<c:url value="/app/jobs"/>"> Jobs</a>
           <div class="pull-right" id="viewmoresDiv"><a href="${sourceleadUrl}/requirementApplicantsList?&tab=previous&orgLocationId=${SourceLeadWeb_orgLocationId}" class="btn btn-sm btn-primary pull-right" style="font-size: 11px;" title="View more"> View More</a></div>
           </h4>
           <div class="clearfix dashboard-data">

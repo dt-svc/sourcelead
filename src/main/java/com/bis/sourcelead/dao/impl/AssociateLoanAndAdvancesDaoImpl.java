@@ -1,8 +1,11 @@
 package com.bis.sourcelead.dao.impl;
 
 import java.text.MessageFormat;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
+import org.apache.commons.lang.exception.ExceptionUtils;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.exception.ConstraintViolationException;
@@ -14,11 +17,14 @@ import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.bis.sourcelead.dao.AssociateLoanAndAdvancesDao;
+import com.bis.sourcelead.dto.ResponseList;
 import com.bis.sourcelead.entity.AssociateLoanAndAdvances;
+import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.PayrollLoanAndAdvances;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.exception.SourceLeadConstraintViolationException;
 import com.bis.sourcelead.util.CommonUtil;
+import com.ibm.icu.math.BigDecimal;
 
 @Repository
 public class AssociateLoanAndAdvancesDaoImpl implements AssociateLoanAndAdvancesDao{
@@ -95,13 +101,67 @@ public class AssociateLoanAndAdvancesDaoImpl implements AssociateLoanAndAdvances
 	@Override
 	@Transactional
 	public List<AssociateLoanAndAdvances> getAssociateLoanAndAdvancesListByCandidateId(Long candidateId,
-			Long orgLocationId) throws Exception {
-
-		 Session session = this.sessionFactory.getCurrentSession();
-		 String query = "from AssociateLoanAndAdvances lad left join fetch lad.payrollLoanAndAdvanceId left join fetch lad.approverUser left join fetch lad.candidateId where "
-		 		+ " lad.candidateId.id = :candidateId and lad.orgLocationId.id = :orgLocationId and lad.status = '1'  ";  
-	     List<AssociateLoanAndAdvances> loanAndAdvList = session.createQuery(query.toString()).setLong("candidateId", candidateId).setLong("orgLocationId", orgLocationId).list();
+			Long orgLocationId,String type) throws Exception {
+		  Session session = this.sessionFactory.getCurrentSession();
+		  List<AssociateLoanAndAdvances> loanAndAdvList = null;
+		  try {
+			  String subQuery = "";
+		         if(type.equalsIgnoreCase("outstanding")) {
+		        	 subQuery = " and lad.loanAndAdvanceStatus = 'Outstanding'";
+		         }else if(type.equalsIgnoreCase("Completed")) {
+		        	 subQuery = " and lad.loanAndAdvanceStatus = 'Completed'";
+		         }else if(type.equalsIgnoreCase("Requested")) {
+		        	 subQuery = " and lad.loanAndAdvanceStatus = 'Requested'";
+		         }
+				 String query = "from AssociateLoanAndAdvances lad left join fetch lad.payrollLoanAndAdvanceId left join fetch lad.approverUser left join fetch lad.candidateId where "
+				 		+ " lad.candidateId.id = :candidateId and lad.orgLocationId.id = :orgLocationId and lad.status = '1'  ";  
+			     loanAndAdvList = session.createQuery(query.toString()+subQuery).setLong("candidateId", candidateId).setLong("orgLocationId", orgLocationId).list();
+		} catch (Exception e) {
+			logger.error(ExceptionUtils.getFullStackTrace(e));
+		}
 	     return loanAndAdvList;
+	}
+	
+	@Override
+	@Transactional
+	public List<AssociateLoanAndAdvances> getAssociateLoanAndAdvancesListByCandidateIdByOrgLocationId(
+			Long candidateId, Long orgLocation) {
+		Session session = this.sessionFactory.getCurrentSession();
+		List<AssociateLoanAndAdvances> loanAndAdvanceList = null;
+		try {
+			String query = "from AssociateLoanAndAdvances lads left join fetch lads.payrollLoanAndAdvanceId left join fetch lads.approverUser left join fetch lads.candidateId where "
+			 		+ " lads.candidateId.id = :candidateId and lads.orgLocationId.id = :orgLocationId and lads.status = '1'  ";  
+		     loanAndAdvanceList = session.createQuery(query.toString()).setLong("candidateId", candidateId).setLong("orgLocationId", orgLocation).list();
+		} catch (Exception e) {
+			logger.error(ExceptionUtils.getFullStackTrace(e));
+		}
+		 
+	     return loanAndAdvanceList;
+	}
+
+	@Override
+	@Transactional
+	public Map<String, Double> getEmpLoansAndAdvancesCountListByOrgLocationId(Long candidateId) {
+		
+		Map<String, Double> countMap = new HashMap<>();
+		Session session = this.sessionFactory.getCurrentSession();
+		String query = "";
+			query = "from AssociateLoanAndAdvances loansAndAd where loansAndAd.candidateId =:candidateId and loansAndAd.loanAndAdvanceStatus = 'Outstanding'";
+			List<AssociateLoanAndAdvances> outstandingList = session.createQuery(query.toString()).setLong("candidateId", candidateId).list();
+			Double outscount = outstandingList.stream().mapToDouble(l->l.getAmount()).sum();
+			countMap.put("Outstanding", outscount);
+			
+			query = "from AssociateLoanAndAdvances loansAndAd where loansAndAd.candidateId =:candidateId and loansAndAd.loanAndAdvanceStatus = 'Completed'";
+			List<AssociateLoanAndAdvances> completedList = session.createQuery(query.toString()).setLong("candidateId", candidateId).list();
+			Double Complcount = completedList.stream().mapToDouble(l->l.getAmount()).sum();
+			countMap.put("Completed", Complcount);
+			
+			query = "from AssociateLoanAndAdvances loansAndAd where loansAndAd.candidateId =:candidateId and loansAndAd.loanAndAdvanceStatus = 'Requested'";
+			List<AssociateLoanAndAdvances> requestedList = session.createQuery(query.toString()).setLong("candidateId", candidateId).list();
+			Double reqcount = requestedList.stream().mapToDouble(l->l.getAmount()).sum();
+			countMap.put("Requested", reqcount);
+	     
+		return countMap;
 	}
 
 }
