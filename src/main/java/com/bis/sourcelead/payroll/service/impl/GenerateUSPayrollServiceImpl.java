@@ -1163,7 +1163,7 @@ public class GenerateUSPayrollServiceImpl implements GenerateUSPayrollService{
 			payroll.setGrossPay(amount);
 			payroll.setPreTaxContribution(BigDecimal.valueOf(preTaxContriSum));
 			payroll.setPostTaxContribution(BigDecimal.valueOf(postTaxContriSum));
-			if(!"Salary".equalsIgnoreCase(payAdjustmentDTO.getAssSalType())) {
+			if(!PayrollConstant.SALARY.equalsIgnoreCase(payAdjustmentDTO.getAssSalType()) && !PayrollConstant.LCA_WAGE.equalsIgnoreCase(payAdjustmentDTO.getAssSalType())) {
 				payroll.setRegularHours(payAdjustmentDTO.getRegularHours());
 				payroll.setRegularHoursAmount(new BigDecimal(payAdjustmentDTO.getRegularHoursAmt()));
 				payroll.setOverTimeHours(payAdjustmentDTO.getOverTimeHours());
