@@ -68,14 +68,13 @@ public class ConfigurePayrollApproverServiceImpl implements ConfigurePayrollAppr
 					user.setIsPayRollApprover(Constants.YES);
 					approveruserList.add(user);
 				}
-				
+				usersList.addAll(approveruserList);
 				approverDTO.setPayrollType(configurePayrollApprover.getPayrollType());
 				approverDTO.setAutomaticPayroll(configurePayrollApprover.getAutomaticPayroll());
 				approverDTO.setConfAprrover(String.valueOf(configurePayrollApprover.getId()));
 			}
 			
 			tabAccessuserList = userService.getTabAccessOwnersByOrgLocationIdAndTabId(orgLocation.getId(),Long.valueOf(Constants.TAB_RUN_PAYROLL));
-			usersList.addAll(approveruserList);
 			usersList.addAll(tabAccessuserList);
 			
 				for(User user : usersList) {
@@ -222,5 +221,10 @@ public class ConfigurePayrollApproverServiceImpl implements ConfigurePayrollAppr
 	@Override
 	public List<PayrollApprover> getPayrollApproversByCPAID(Long configurePayrollApproverId) {
 		return configurePayrollApproverDao.getPayrollApproversByCPAID(configurePayrollApproverId);
+	}
+
+	@Override
+	public boolean isLoginUserIsPayRollApprover(Long userId, Long orgLocationsId) {
+		return configurePayrollApproverDao.isLoginUserIsPayRollApprover(userId, orgLocationsId);
 	}
 }

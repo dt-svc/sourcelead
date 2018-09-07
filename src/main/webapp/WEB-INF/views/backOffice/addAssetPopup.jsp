@@ -48,12 +48,28 @@
 		            <div class="clearfix">
 		              <div class="form-horizontal clearfix">
 		                
+		                <div class="col-md-5" >
+		                  <label class="clearfix">Name</label>
+		                  <div class="clearfix">
+		                    <input type="text" class="form-control input-sm" id="name" name="name" value="${assetAssignData.name}" placeholder="Name" field-name="Name"  data-validation="validate_length length1-200" data-validation-optional="true">
+		                  </div>
+		                  </div>
+		                  
 		                
 		                  <div class="col-md-5" id="snoDiv">
-		                  <label class="clearfix">Serial / Port Number<span class="text-danger paddingLeft">*</span></label>
+		                  <div id="lsn" style="display: block;">
+		                  <label class="clearfix" >Laptop Serial Number<span class="text-danger paddingLeft">*</span></label>
 		                  <div class="clearfix">
-		                    <input type="text" class="form-control input-sm" id="sno" name="sno" value="${assetAssignData.slno}" placeholder="Serial / Port Number" field-name="Serial / Port Number" onblur="validateAssetSno('${assetAssignData.id}');" data-validation="required validate_Space validate_NumberAndAlphabet validate_length length1-200">
+		                    <input type="text" class="form-control input-sm" id="sno" name="sno" value="${assetAssignData.slno}" placeholder="Laptop Serial Number" field-name="Laptop Serial Number" onblur="validateAssetSno('${assetAssignData.id}','lsn');" >
 		                  </div>
+		                  </div>
+		                  <div id="csn" style="display: none;">
+		                  	<label class="clearfix" >CPU Serial Number<span class="text-danger paddingLeft">*</span></label>
+			                  <div class="clearfix">
+			                    <input type="text" class="form-control input-sm" id="cpuSerialNumber" name="cpuSerialNumber" value="${assetAssignData.slno}" placeholder="CPU Serial Number" field-name="CPU Serial Number" onblur="validateAssetSno('${assetAssignData.id}','csn');" >
+			                  </div>
+		                  </div>
+		                  
 		                  </div>
 		                  
 		                  <div class="col-md-5" id="makeDiv">
@@ -96,21 +112,10 @@
 		                  </div>
 		                  </div>
 		                  
-		                  
-						<div class="col-md-5">
-							<label class="clearfix">Issue Date</label>
-								<div class="clearfix">
-									<div class="input-group">
-									<input type="text"  name="issueDate" placeholder = "Issue Date" class="form-control calendar input-sm" value="${issueDateStr}" id="issueDate" readonly="readonly">
-									<span class="input-group-addon" onClick="clearIssueDate();"><i class="colorRed fa fa-times cursorPointer"></i></span>
-									</div>
-								</div>
-						</div>
-		                  
 		                  <div class="col-md-5" id="monitorDiv" style="display: none;">
-		                  <label class="clearfix">Monitor</label>
+		                  <label class="clearfix">Monitor Serial Number</label>
 								<div class="clearfix">
-		                    <input type="text" class="form-control input-sm" id="monitor" name="monitor" placeholder="Monitor"  data-validation-optional="true" value="${assetAssignData.monitor}" data-validation="validate_Space validate_NumberAndAlphabet validate_length length2-100">
+		                    <input type="text" class="form-control input-sm" id="monitor" name="monitor" placeholder="Monitor Serial Number"  data-validation-optional="true" value="${assetAssignData.monitor}" data-validation="validate_Space validate_NumberAndAlphabet validate_length length2-100">
 		                  </div>
 		                </div>
 		                
@@ -121,6 +126,78 @@
 			              	</div>
 				          </div>
 		                
+		                
+		                <div class="col-md-5">
+			              	<label class="clearfix">Operating System</label>
+							<div class="clearfix">
+			                	<input type="text" class="form-control input-sm" id="operatingSystem" name="operatingSystem" placeholder="Operating System" field-name="Operating System"  value="${assetAssignData.operatingSystem}" data-validation="validate_length length1-100" data-validation-optional="true">
+			              	</div>
+				          </div>
+				          
+				          <div class="col-md-5">
+			              	<label class="clearfix">OS Key</label>
+							<div class="clearfix">
+			                	<input type="text" class="form-control input-sm" id="osKey" name="osKey" placeholder="OS Key" field-name="OS Key"  value="${assetAssignData.osKey}" data-validation="validate_length length5-50" data-validation-optional="true">
+			              	</div>
+				          </div>
+				          
+				          <div class="col-md-5">
+			              	<label class="clearfix">Anti-Virus</label>
+							<div class="clearfix">
+			                	<input type="text" class="form-control input-sm" id="antiVirus" name="antiVirus" placeholder="Anti-Virus" field-name="Anti-Virus"  value="${assetAssignData.antiVirus}" data-validation="validate_length length1-100" data-validation-optional="true">
+			              	</div>
+				          </div>
+				          
+				          <div class="col-md-5">
+							<label class="clearfix">Manufactured Date</label>
+								<div class="clearfix">
+									<div class="input-group">
+									<input type="text"  name="issueDate" placeholder = "Manufactured Date" class="form-control calendar input-sm" value="${issueDateStr}" id="issueDate" readonly="readonly">
+									<span class="input-group-addon" onClick="clearIssueDate();"><i class="colorRed fa fa-times cursorPointer"></i></span>
+									</div>
+								</div>
+						  </div>
+						<div class="col-md-5">
+							<label class="clearfix">Purchase Date</label>
+								<div class="clearfix">
+									<div class="input-group">
+									<input type="text"  name="purchaseDate" placeholder = "Purchase Date" class="form-control calendar input-sm" value="${purchaseDate}" id="purchaseDate" readonly="readonly">
+									<span class="input-group-addon" onClick="clearPurchaseDate();"><i class="colorRed fa fa-times cursorPointer"></i></span>
+									</div>
+								</div>
+						  </div>
+						
+						<div class="col-md-5">
+			              	<label class="clearfix">Cost</label>
+							<div class="clearfix">
+			                	<input type="text" class="form-control input-sm" id="cost" name="cost" placeholder="Cost" field-name="Cost"  value="${assetAssignData.cost}" data-validation="validate_float validate_length length1-50" data-validation-optional="true">
+			              	</div>
+				          </div>
+				          
+				          <div class="col-md-5">
+							<label class="clearfix">Depreciation Assessment Date</label>
+								<div class="clearfix">
+									<div class="input-group">
+									<input type="text"  name="depreciationDate" placeholder = "Depreciation Date" class="form-control calendar input-sm" value="${depreciationDate}" id="depreciationDate" readonly="readonly">
+									<span class="input-group-addon" onClick="clearDepreciationDate();"><i class="colorRed fa fa-times cursorPointer"></i></span>
+									</div>
+								</div>
+						  </div>
+				          
+				          <div class="col-md-5">
+			              	<label class="clearfix">Depreciation Amount</label>
+							<div class="clearfix">
+			                	<input type="text" class="form-control input-sm" id="depreciationAmount" name="depreciationAmount" placeholder="Depreciation Amount" field-name="Depreciation Amount"  value="${assetAssignData.depreciationAmount}" data-validation="validate_float  validate_length length1-50" data-validation-optional="true">
+			              	</div>
+				          </div>
+				          
+				          <div class="col-md-5">
+			              	<label class="clearfix">Vendor Details</label>
+							<div class="clearfix">
+			                	<input type="text" class="form-control input-sm" id="vendorDetails" name="vendorDetails" placeholder="Vendor Details" field-name="Vendor Details"  value="${assetAssignData.vendorDetails}" data-validation=" validate_length length1-100" data-validation-optional="true">
+			              	</div>
+				          </div>
+				          
 		                <div class="clearfix">
 		                  
 		                  <div class="col-md-5" id="attachmentDiv">
@@ -209,7 +286,7 @@
 							    <c:if test="${(existedAssetDocuments.shift.id eq shift.id) && (!empty existedAssetDocuments.fileName)}">
 							    	<c:set var = "NUM" value = "${1}"/>
 							    	 <div id="downloadFile${shiftOrder.index}">
-                                      <div class="timesheet_week_comm invoiceDocs sizeInputfield">
+                                      <div class="timesheet_week_comm invoiceDocs sizeInputfield width100percnt">
 						               <span>
 								         <strong id="ticketDocument16">
 						    		     <i class=""><a class="glyphicon glyphicon-save" href="${existedAssetDocuments.fileURL}" title="download"></a></i>
@@ -296,8 +373,14 @@ function getCustomDependentField(sectionId){
 </script>
 
 <script type="text/javascript">
- function validateAssetSno(assetId) {
-	 var assetSno = $("#sno").val(); 
+ function validateAssetSno(assetId,type) {
+	 var assetSno = "";
+	 if(type == "lsn"){
+		 assetSno = $("#sno").val(); 
+	 }else{
+		 assetSno = $("#cpuSerialNumber").val(); 
+	 }
+	  
 	 if(assetSno != null && assetSno != ""){
 		 $("#add_asset").attr("disabled", "disabled");
 		 $.ajax({
@@ -306,12 +389,24 @@ function getCustomDependentField(sectionId){
 		        success: function(data) {
 		        	if(data == true){
 		        		  $('#snoDiv').find('p.jquery_form_error_message').remove();
-						  $("input#sno").after ("<p class='jquery_form_error_message'>"+assetSno+" is Already Existed</span>");
-						  document.getElementById("sno").setAttribute('record-exist','yes');
-						  document.getElementById("sno").setAttribute('record-exist-errorMsg',assetSno+' is Already Existed'); 
+		        		  if(type == "lsn"){
+		        			  $("input#sno").after ("<p class='jquery_form_error_message'>"+assetSno+" is Already Existed</span>");
+							  document.getElementById("sno").setAttribute('record-exist','yes');
+							  document.getElementById("sno").setAttribute('record-exist-errorMsg',assetSno+' is Already Existed'); 
+		        		  }else{
+		        			  $("input#cpuSerialNumber").after ("<p class='jquery_form_error_message'>"+assetSno+" is Already Existed</span>");
+							  document.getElementById("cpuSerialNumber").setAttribute('record-exist','yes');
+							  document.getElementById("cpuSerialNumber").setAttribute('record-exist-errorMsg',assetSno+' is Already Existed'); 
+		        		  }
+						 
 		        	}
 		        	else{
-		        		 $('input#sno').removeAttr( "record-exist record-exist-errormsg");
+		        		 if(type == "lsn"){
+		        			 $('input#sno').removeAttr( "record-exist record-exist-errormsg"); 
+		        		 }else{
+		        			 $('input#cpuSerialNumber').removeAttr( "record-exist record-exist-errormsg");
+		        		 }
+		        		
 		        		 $('#snoDiv').find('p.jquery_form_error_message').remove(); 
 		        		 $("#add_asset" ).addClass('us-btn').val('Add');
                          $("#add_asset").removeAttr("disabled");
