@@ -1,27 +1,40 @@
 package com.bis.sourcelead.service.impl;
 
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.Date;
 import java.util.List;
+import java.util.Map;
 
 import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang.exception.ExceptionUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.dao.AssociateLoanAndAdvancesDao;
+import com.bis.sourcelead.dao.AssociateLoanAndAdvancesHistoryDao;
 import com.bis.sourcelead.dao.CandidateDao;
 import com.bis.sourcelead.dto.AssociateLoanAndAdvancesDTO;
+import com.bis.sourcelead.entity.AssociateLoanAndAdvanceHistory;
 import com.bis.sourcelead.entity.AssociateLoanAndAdvances;
 import com.bis.sourcelead.entity.Candidate;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.PayrollLoanAndAdvances;
 import com.bis.sourcelead.entity.User;
+import com.bis.sourcelead.payroll.rest.USPayrollRestController;
 import com.bis.sourcelead.service.AssociateLoanAndAdvancesService;
 import com.bis.sourcelead.util.CommonUtil;
 import com.bis.sourcelead.util.SourceLeadRandomCodeHelper;
 
 @Service
 public class AssociateLoanAndAdvancesServiceImpl implements AssociateLoanAndAdvancesService{
+	
+	private static final Logger logger = LoggerFactory.getLogger(USPayrollRestController.class);
 	
 	@Autowired
 	AssociateLoanAndAdvancesDao associateLoanAndAdvancesDao;
@@ -31,6 +44,9 @@ public class AssociateLoanAndAdvancesServiceImpl implements AssociateLoanAndAdva
 
 	@Autowired
 	CandidateDao candidateDao;
+	
+	@Autowired
+	AssociateLoanAndAdvancesHistoryDao associateLoanAndAdvancesHistoryDao;
 	
 	@Override
 	public AssociateLoanAndAdvances saveAssociateLoanAndAdvances(AssociateLoanAndAdvances associateLoanAndAdvances)
@@ -49,72 +65,79 @@ public class AssociateLoanAndAdvancesServiceImpl implements AssociateLoanAndAdva
 			throws Exception {
 		
 		AssociateLoanAndAdvances loanAndAdv = null;
-		if(associateLoanAndAdvancesDTO.getLoanAndAdvId() != null && !associateLoanAndAdvancesDTO.getLoanAndAdvId().isEmpty()) {
-			loanAndAdv = getAssociateLoanAndAdvancesById(Long.valueOf(associateLoanAndAdvancesDTO.getLoanAndAdvId()));
-		}else {
-			loanAndAdv = new AssociateLoanAndAdvances();
-			loanAndAdv.setUuid(SourceLeadRandomCodeHelper.generateRandomUUID());
-			Candidate candidate = candidateDao.getCandidateByConsultantUserId(Long.valueOf(associateLoanAndAdvancesDTO.getAssociateUserId()), orgLocations.getId());
-			loanAndAdv.setCandidateId(candidate);
-		}
-		
-		loanAndAdv.setLoanAdvanceType(associateLoanAndAdvancesDTO.getLoanAndAdvType());
-		PayrollLoanAndAdvances padv = new PayrollLoanAndAdvances();
-		padv.setId(Long.valueOf(associateLoanAndAdvancesDTO.getLoanAndAdvName()));
-		loanAndAdv.setPayrollLoanAndAdvanceId(padv);
-		loanAndAdv.setLoanAndAdvanceStatus(associateLoanAndAdvancesDTO.getLoanAndAdvStatus());
-		loanAndAdv.setAmount(Double.valueOf(associateLoanAndAdvancesDTO.getLoanAmount()));
-		loanAndAdv.setScheduler(associateLoanAndAdvancesDTO.getScheduler());
-		loanAndAdv.setEffectiveDate(commonUtil.orgLocationDateFormat(orgLocations.getDateFormat(), associateLoanAndAdvancesDTO.getEffectiveDate()));
-		
-		
-		if(associateLoanAndAdvancesDTO.getEndDate() != null && !associateLoanAndAdvancesDTO.getEndDate().isEmpty()) {
-			loanAndAdv.setEndDate(commonUtil.orgLocationDateFormat(orgLocations.getDateFormat(), associateLoanAndAdvancesDTO.getEndDate()));
-		}else {
-			loanAndAdv.setEndDate(null);
-		}
-		
-		loanAndAdv.setNoOfSchedules(Integer.valueOf(associateLoanAndAdvancesDTO.getNoOfSchedules()));
-		loanAndAdv.setDeductAmount(Double.valueOf(associateLoanAndAdvancesDTO.getDeductAmount()));
-		
-		
-		if(associateLoanAndAdvancesDTO.getLoanAndAdvStatus().equalsIgnoreCase("Outstanding") || associateLoanAndAdvancesDTO.getLoanAndAdvStatus().equalsIgnoreCase("Completed")) {
-			if(associateLoanAndAdvancesDTO.getIssuedDate() != null && !associateLoanAndAdvancesDTO.getIssuedDate().isEmpty()) {
-				loanAndAdv.setIssuedDate(commonUtil.orgLocationDateFormat(orgLocations.getDateFormat(), associateLoanAndAdvancesDTO.getIssuedDate()));
+		try {
+			if(associateLoanAndAdvancesDTO.getLoanAndAdvId() != null && !associateLoanAndAdvancesDTO.getLoanAndAdvId().isEmpty()) {
+				loanAndAdv = getAssociateLoanAndAdvancesById(Long.valueOf(associateLoanAndAdvancesDTO.getLoanAndAdvId()));
+			}else {
+				loanAndAdv = new AssociateLoanAndAdvances();
+				loanAndAdv.setCreatedDate(new Date());
+				loanAndAdv.setUuid(SourceLeadRandomCodeHelper.generateRandomUUID());
+				Candidate candidate = candidateDao.getCandidateByConsultantUserId(Long.valueOf(associateLoanAndAdvancesDTO.getAssociateUserId()), orgLocations.getId());
+				loanAndAdv.setCandidateId(candidate);
 			}
-		}else {
-			loanAndAdv.setIssuedDate(null);
-		}
-		
-		if(associateLoanAndAdvancesDTO.getLoanAndAdvStatus().equalsIgnoreCase("Outstanding")) {
-			if(associateLoanAndAdvancesDTO.getPaidAmount() != null && !associateLoanAndAdvancesDTO.getPaidAmount().isEmpty()) {
-				loanAndAdv.setPaidAmount(Double.valueOf(associateLoanAndAdvancesDTO.getPaidAmount()));
-			}	
-		}else {
-			loanAndAdv.setPaidAmount(null);
-		}
-		
-		if(associateLoanAndAdvancesDTO.getLoanAndAdvStatus().equalsIgnoreCase("Outstanding")) {
-			if(associateLoanAndAdvancesDTO.getPendingAmount() != null && !associateLoanAndAdvancesDTO.getPendingAmount().isEmpty()) {
-				loanAndAdv.setPendingAmount(Double.valueOf(associateLoanAndAdvancesDTO.getPendingAmount()));
+			
+			loanAndAdv.setLoanAdvanceType(associateLoanAndAdvancesDTO.getLoanAndAdvType());
+			PayrollLoanAndAdvances padv = new PayrollLoanAndAdvances();
+			padv.setId(Long.valueOf(associateLoanAndAdvancesDTO.getLoanAndAdvName()));
+			loanAndAdv.setPayrollLoanAndAdvanceId(padv);
+			loanAndAdv.setLoanAndAdvanceStatus(associateLoanAndAdvancesDTO.getLoanAndAdvStatus());
+			loanAndAdv.setAmount(Double.valueOf(associateLoanAndAdvancesDTO.getLoanAmount()));
+			loanAndAdv.setScheduler(associateLoanAndAdvancesDTO.getScheduler());
+			loanAndAdv.setEffectiveDate(commonUtil.orgLocationDateFormat(orgLocations.getDateFormat(), associateLoanAndAdvancesDTO.getEffectiveDate()));
+			
+			
+			if(associateLoanAndAdvancesDTO.getEndDate() != null && !associateLoanAndAdvancesDTO.getEndDate().isEmpty()) {
+				loanAndAdv.setEndDate(commonUtil.orgLocationDateFormat(orgLocations.getDateFormat(), associateLoanAndAdvancesDTO.getEndDate()));
+			}else {
+				loanAndAdv.setEndDate(null);
 			}
-		}else{
-			loanAndAdv.setPendingAmount(null);
+			
+			loanAndAdv.setNoOfSchedules(Integer.valueOf(associateLoanAndAdvancesDTO.getNoOfSchedules()));
+			loanAndAdv.setDeductAmount(Double.valueOf(associateLoanAndAdvancesDTO.getDeductAmount()));
+			
+			
+			if(associateLoanAndAdvancesDTO.getLoanAndAdvStatus().equalsIgnoreCase("Outstanding") || associateLoanAndAdvancesDTO.getLoanAndAdvStatus().equalsIgnoreCase("Completed")) {
+				if(associateLoanAndAdvancesDTO.getIssuedDate() != null && !associateLoanAndAdvancesDTO.getIssuedDate().isEmpty()) {
+					loanAndAdv.setIssuedDate(commonUtil.orgLocationDateFormat(orgLocations.getDateFormat(), associateLoanAndAdvancesDTO.getIssuedDate()));
+				}
+			}else {
+				loanAndAdv.setIssuedDate(null);
+			}
+			
+			if(associateLoanAndAdvancesDTO.getLoanAndAdvStatus().equalsIgnoreCase("Outstanding")) {
+				if(associateLoanAndAdvancesDTO.getPaidAmount() != null && !associateLoanAndAdvancesDTO.getPaidAmount().isEmpty()) {
+					loanAndAdv.setPaidAmount(Double.valueOf(associateLoanAndAdvancesDTO.getPaidAmount()));
+				}	
+			}else {
+				loanAndAdv.setPaidAmount(null);
+			}
+			
+			if(associateLoanAndAdvancesDTO.getLoanAndAdvStatus().equalsIgnoreCase("Outstanding")) {
+				if(associateLoanAndAdvancesDTO.getPendingAmount() != null && !associateLoanAndAdvancesDTO.getPendingAmount().isEmpty()) {
+					loanAndAdv.setPendingAmount(Double.valueOf(associateLoanAndAdvancesDTO.getPendingAmount()));
+				}
+			}else{
+				loanAndAdv.setPendingAmount(null);
+			}
+			
+			User approverUser = new User();
+			approverUser.setId(Long.valueOf(associateLoanAndAdvancesDTO.getLoanAndAdvApprover()));
+			loanAndAdv.setApproverUser(approverUser);
+			loanAndAdv.setOrgLocationId(orgLocations);
+			if(associateLoanAndAdvancesDTO.getDescription() != null && !associateLoanAndAdvancesDTO.getDescription().isEmpty()) {
+				loanAndAdv.setDescription(associateLoanAndAdvancesDTO.getDescription());
+			}else {
+				loanAndAdv.setDescription(null);
+			}
+			
+			
+			loanAndAdv.setStatus(Constants.RECORD_ACTIVE);
+			loanAndAdv.setUpdatedDate(new Date());
+			saveAssociateLoanAndAdvances(loanAndAdv);
+		} catch (Exception e) {
+			logger.error(ExceptionUtils.getFullStackTrace(e));
 		}
 		
-		User approverUser = new User();
-		approverUser.setId(Long.valueOf(associateLoanAndAdvancesDTO.getLoanAndAdvApprover()));
-		loanAndAdv.setApproverUser(approverUser);
-		loanAndAdv.setOrgLocationId(orgLocations);
-		if(associateLoanAndAdvancesDTO.getDescription() != null && !associateLoanAndAdvancesDTO.getDescription().isEmpty()) {
-			loanAndAdv.setDescription(associateLoanAndAdvancesDTO.getDescription());
-		}else {
-			loanAndAdv.setDescription(null);
-		}
-		
-		
-		loanAndAdv.setStatus(Constants.RECORD_ACTIVE);
-		saveAssociateLoanAndAdvances(loanAndAdv);
 		
 		return loanAndAdv;
 	}
@@ -128,27 +151,36 @@ public class AssociateLoanAndAdvancesServiceImpl implements AssociateLoanAndAdva
 	@Override
 	public List<AssociateLoanAndAdvances> getAssociateLoanAndAdvancesListByCandidateId(Long candidateId,
 			Long orgLocationId) throws Exception {
-		return associateLoanAndAdvancesDao.getAssociateLoanAndAdvancesListByCandidateId(candidateId, orgLocationId);
+		return associateLoanAndAdvancesDao.getAssociateLoanAndAdvancesListByCandidateId(candidateId, orgLocationId,"");
 	}
 
 	@Override
 	public AssociateLoanAndAdvancesDTO getAssociateLoanAndAssociateDetails(Long candidateId, OrgLocations orgLocations)
 			throws Exception {
 		
-		AssociateLoanAndAdvancesDTO loanAndAdvDTO = new AssociateLoanAndAdvancesDTO();
-		AssociateLoanAndAdvances loanAndAdv = getAssociateLoanAndAdvancesDetailsByCandidateId(candidateId, orgLocations.getId());
-		if(loanAndAdv != null) {
-			loanAndAdvDTO = getAssociateLoanAndAdvancesDTODetails(loanAndAdv, orgLocations);
+		  AssociateLoanAndAdvancesDTO loanAndAdvDTO = new AssociateLoanAndAdvancesDTO();
+		try {
+			AssociateLoanAndAdvances loanAndAdv = getAssociateLoanAndAdvancesDetailsByCandidateId(candidateId, orgLocations.getId());
+			if(loanAndAdv != null) {
+				loanAndAdvDTO = getAssociateLoanAndAdvancesDTODetails(loanAndAdv, orgLocations);
+			}
+		} catch (Exception e) {
+			logger.error(ExceptionUtils.getFullStackTrace(e));
 		}
+		
 		return loanAndAdvDTO;
 	}
 
 	@Override
 	public AssociateLoanAndAdvancesDTO getAssociateLoanAndAdvancesDetailsById(Long id,OrgLocations orgLocations) throws Exception {
-		AssociateLoanAndAdvances loanAndAdv = getAssociateLoanAndAdvancesById(id);
 		AssociateLoanAndAdvancesDTO loanAndAdvDTO = new AssociateLoanAndAdvancesDTO();
-		if(loanAndAdv != null) {
-			loanAndAdvDTO = getAssociateLoanAndAdvancesDTODetails(loanAndAdv, orgLocations);
+		try {
+			AssociateLoanAndAdvances loanAndAdv = getAssociateLoanAndAdvancesById(id);
+			if(loanAndAdv != null) {
+				loanAndAdvDTO = getAssociateLoanAndAdvancesDTODetails(loanAndAdv, orgLocations);
+			}
+		} catch (Exception e) {
+			logger.error(ExceptionUtils.getFullStackTrace(e));
 		}
 		return loanAndAdvDTO;
 	}
@@ -156,48 +188,95 @@ public class AssociateLoanAndAdvancesServiceImpl implements AssociateLoanAndAdva
 	
 	public AssociateLoanAndAdvancesDTO getAssociateLoanAndAdvancesDTODetails(AssociateLoanAndAdvances loanAndAdv,OrgLocations orgLocations) {
 		AssociateLoanAndAdvancesDTO loanAndAdvDTO = new AssociateLoanAndAdvancesDTO();
-		SimpleDateFormat dateFormat = null;
-		if(StringUtils.isNotBlank(orgLocations.getDateFormat())) {
-			dateFormat = new SimpleDateFormat(orgLocations.getDateFormat());
-		}else {
-			dateFormat = (SimpleDateFormat) Constants.DF_YMD;
+		try {
+			SimpleDateFormat dateFormat = null;
+			if(StringUtils.isNotBlank(orgLocations.getDateFormat())) {
+				dateFormat = new SimpleDateFormat(orgLocations.getDateFormat());
+			}else {
+				dateFormat = (SimpleDateFormat) Constants.DF_YMD;
+			}
+			loanAndAdvDTO.setName(loanAndAdv.getPayrollLoanAndAdvanceId().getName());
+			loanAndAdvDTO.setLoanAndAdvType(loanAndAdv.getLoanAdvanceType());
+			loanAndAdvDTO.setLoanAndAdvName(String.valueOf(loanAndAdv.getPayrollLoanAndAdvanceId().getId()));
+			loanAndAdvDTO.setLoanAndAdvStatus(loanAndAdv.getLoanAndAdvanceStatus());
+			loanAndAdvDTO.setLoanAmount(String.valueOf(loanAndAdv.getAmount()));
+			loanAndAdvDTO.setScheduler(loanAndAdv.getScheduler());
+			loanAndAdvDTO.setId(loanAndAdv.getId());
+			if(loanAndAdv.getEffectiveDate() != null) {
+				loanAndAdvDTO.setEffectiveDate(dateFormat.format(loanAndAdv.getEffectiveDate()));
+			}
+			
+			if(loanAndAdv.getIssuedDate() != null) {
+				loanAndAdvDTO.setIssuedDate(dateFormat.format(loanAndAdv.getIssuedDate()));
+			}
+			
+			if(loanAndAdv.getEndDate() != null) {
+				loanAndAdvDTO.setEndDate(dateFormat.format(loanAndAdv.getEndDate()));
+			}
+			
+			loanAndAdvDTO.setNoOfSchedules(String.valueOf(loanAndAdv.getNoOfSchedules()));
+			loanAndAdvDTO.setDeductAmount(String.valueOf(loanAndAdv.getDeductAmount()));
+			if(loanAndAdv.getPaidAmount() != null) {
+				loanAndAdvDTO.setPaidAmount(String.valueOf(loanAndAdv.getPaidAmount()));
+			}
+			
+			if(loanAndAdv.getPendingAmount() != null) {
+				loanAndAdvDTO.setPendingAmount(String.valueOf(loanAndAdv.getPendingAmount()));
+			}
+			
+			loanAndAdvDTO.setLoanAndAdvApprover(String.valueOf(loanAndAdv.getApproverUser().getId()));
+			loanAndAdvDTO.setCreatedDate(commonUtil.dateStrFromOrgDateFormatter(orgLocations.getDateFormat(), loanAndAdv.getCreatedDate()));
+			
+			StringBuilder sb = new StringBuilder();
+			if(loanAndAdv.getApproverUser().getLastName() != null) {
+				sb.append(loanAndAdv.getApproverUser().getFirstName()).append(" ").append(loanAndAdv.getApproverUser().getLastName());
+				loanAndAdvDTO.setApproverUser(sb.toString());
+			}else {
+				loanAndAdvDTO.setApproverUser(loanAndAdv.getApproverUser().getFirstName());
+			}
+			loanAndAdvDTO.setStatus(loanAndAdv.getStatus());
+			
+			if(loanAndAdv.getDescription() != null) {
+				loanAndAdvDTO.setDescription(loanAndAdv.getDescription());
+			}
+			
+			List<AssociateLoanAndAdvanceHistory> assLoanAndAdvanceHis = associateLoanAndAdvancesHistoryDao.getLoanAndAdvanceHistoryByCandidateIdAndLocationIdAndAdvanceLoanId(loanAndAdv.getId());
+			Double deductedAmount = assLoanAndAdvanceHis.stream().mapToDouble(amt -> amt.getDeductAmount()).sum();
+			
+			AssociateLoanAndAdvanceHistory lastContact = Collections.max(assLoanAndAdvanceHis, Comparator.comparing(c -> c.getCreatedDate()));
+			loanAndAdvDTO.setLastPaidOnMaxDate(commonUtil.dateStrFromOrgDateFormatter(orgLocations.getDateFormat(),lastContact.getCreatedDate()));
+			
+			Double totalAmount = loanAndAdv.getAmount() - deductedAmount;
+			loanAndAdvDTO.setDeductAmount(String.valueOf(totalAmount));
+			
+		} catch (Exception e) {
+			logger.error(ExceptionUtils.getFullStackTrace(e));
 		}
 		
-		loanAndAdvDTO.setLoanAndAdvType(loanAndAdv.getLoanAdvanceType());
-		loanAndAdvDTO.setLoanAndAdvName(String.valueOf(loanAndAdv.getPayrollLoanAndAdvanceId().getId()));
-		loanAndAdvDTO.setLoanAndAdvStatus(loanAndAdv.getLoanAndAdvanceStatus());
-		loanAndAdvDTO.setLoanAmount(String.valueOf(loanAndAdv.getAmount()));
-		loanAndAdvDTO.setScheduler(loanAndAdv.getScheduler());
-		loanAndAdvDTO.setId(loanAndAdv.getId());
-		if(loanAndAdv.getEffectiveDate() != null) {
-			loanAndAdvDTO.setEffectiveDate(dateFormat.format(loanAndAdv.getEffectiveDate()));
-		}
-		
-		if(loanAndAdv.getIssuedDate() != null) {
-			loanAndAdvDTO.setIssuedDate(dateFormat.format(loanAndAdv.getIssuedDate()));
-		}
-		
-		if(loanAndAdv.getEndDate() != null) {
-			loanAndAdvDTO.setEndDate(dateFormat.format(loanAndAdv.getEndDate()));
-		}
-		
-		loanAndAdvDTO.setNoOfSchedules(String.valueOf(loanAndAdv.getNoOfSchedules()));
-		loanAndAdvDTO.setDeductAmount(String.valueOf(loanAndAdv.getDeductAmount()));
-		
-		if(loanAndAdv.getPaidAmount() != null) {
-			loanAndAdvDTO.setPaidAmount(String.valueOf(loanAndAdv.getPaidAmount()));
-		}
-		
-		if(loanAndAdv.getPendingAmount() != null) {
-			loanAndAdvDTO.setPendingAmount(String.valueOf(loanAndAdv.getPendingAmount()));
-		}
-		
-		loanAndAdvDTO.setLoanAndAdvApprover(String.valueOf(loanAndAdv.getApproverUser().getId()));
-		
-		if(loanAndAdv.getDescription() != null) {
-			loanAndAdvDTO.setDescription(loanAndAdv.getDescription());
-		}
 		return loanAndAdvDTO;
+	}
+	
+
+	@Override
+	public List<AssociateLoanAndAdvancesDTO> getAssociateLoanAndAdvancesListByCandidateIdByOrgLocationId(
+			Long candidateId, OrgLocations orgLocation,String type) throws Exception {
+		
+		List<AssociateLoanAndAdvancesDTO> assLoansAndAdvancesList = new ArrayList<>();
+		try {
+			List<AssociateLoanAndAdvances> assLoansAndAdvances = associateLoanAndAdvancesDao.getAssociateLoanAndAdvancesListByCandidateId(candidateId, orgLocation.getId(),type);
+			for (AssociateLoanAndAdvances associateLoanAndAdvances : assLoansAndAdvances) {
+				AssociateLoanAndAdvancesDTO dto =  getAssociateLoanAndAdvancesDTODetails(associateLoanAndAdvances,orgLocation);
+				assLoansAndAdvancesList.add(dto);
+			}
+		} catch (Exception e) {
+			logger.error(ExceptionUtils.getFullStackTrace(e));
+		}
+		return assLoansAndAdvancesList;
+	}
+
+	@Override
+	public Map<String, Double> getEmpLoansAndAdvancesCountListByOrgLocationId(Long candidateId) {
+		return associateLoanAndAdvancesDao.getEmpLoansAndAdvancesCountListByOrgLocationId(candidateId);
 	}
 
 }

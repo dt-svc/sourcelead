@@ -1074,11 +1074,16 @@ public class CandidateDaoImpl implements CandidateDao {
 	{
 		Session session = this.sessionFactory.getCurrentSession();
 		Candidate candidate = null;
-		String query = "from Candidate candidate  where candidate.orgLocationId.id =:orgLocationId and candidate.consultantUser.id= :consultantUserId";
-        List<Candidate>  candidateList = session.createQuery(query).setLong("orgLocationId", orgLocationId).setLong("consultantUserId", consultantUserId).list();
-		if(null != candidateList && candidateList.size() >0){
-			candidate = candidateList.get(0);
+		try {
+			String query = "from Candidate candidate  where candidate.orgLocationId.id =:orgLocationId and candidate.consultantUser.id= :consultantUserId";
+	        List<Candidate>  candidateList = session.createQuery(query).setLong("orgLocationId", orgLocationId).setLong("consultantUserId", consultantUserId).list();
+			if(null != candidateList && candidateList.size() >0){
+				candidate = candidateList.get(0);
+			}
+		} catch (Exception e) {
+			logger.error(ExceptionUtils.getFullStackTrace(e));
 		}
+		
         return candidate;
 	}
 

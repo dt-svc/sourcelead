@@ -393,10 +393,9 @@ public class DataMigrationServiceImpl implements DataMigrationService {
 							orgLocation);
 					break;
 				case "lcaUpload":
-					dataMigrationCommonUtil.dataValidationForLCA(errorSet, dataMigrationDTOJsonCopy, user,
-							orgLocation);
-					//System.out.println(" inside validateImportedFormData lcaUpload case ==========>");
-					break;
+					  dataMigrationCommonUtil.dataValidationForLCA(errorSet, dataMigrationDTOJsonCopy, user, orgLocation);
+					
+					  break;
 					
 				case "submmissionTemplateUpload":
 					dataMigrationCommonUtil.dataValidationForRequirementSubmisssionTemplate(errorSet, dataMigrationDTOJsonCopy, user,
@@ -424,7 +423,7 @@ public class DataMigrationServiceImpl implements DataMigrationService {
 					style.setWrapText(true);
 					nextRow.createCell(colCount + 5).setCellValue(errorSB.toString());
 					nextRow.getCell(colCount + 5).setCellStyle(style);
-
+                     
 					FileOutputStream outputStream = new FileOutputStream(
 							new File(ac + dataMigrationDTO.getExportFilePath()));
 					workbook.write(outputStream);
