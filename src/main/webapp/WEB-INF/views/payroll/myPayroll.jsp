@@ -30,6 +30,8 @@ function loansAdvances(){
 	$("#loansAdvancesDiv").show();
 	$("#myPayrollFormDiv").hide();
 	$("#myPayrollDiv").hide();
+	EmployeeLoansAndAdvances('outstanding');
+	getLoansCountList();
 }
 </script>
 
@@ -581,7 +583,8 @@ function getMyPayrollList(){
 	 	        result = result +'</td>';
 	 	        result = result +'<td>';
 	 	        result = result +'<div class="tblminwidth-30">';
-	 	        result = result +'<a href="javascript:void(0)" class="anchorBlack"><i class="fa fa-eye" onclick="payAdjustment(\''+json.payrollUUID+'\',\'APPROVED\');"></i></a>';
+	 	        result = result +'<a href="#" class="anchorBlack" title="View"><i class="fa fa-eye" onclick="payAdjustment(\''+json.payrollUUID+'\',\'APPROVED\');"></i></a>';
+	 	        result = result +'<a download href="'+json.paySlipFileURL+'" class="anchorBlack ml5" title="Download"><i class="fa fa-download" onclick="payDownload();"></i></a>';
 	 	        result = result +'</div>';
 	 	        result = result +'</td>';
 	 	        result = result +'</tr>';
@@ -621,6 +624,21 @@ function mayPayrollPagination(){
     });
     $("#myPayrollTableDiv").wrap("<div class='overflow_Auto width100percnt'></div>");
     $('.dataTables_filter input').attr("placeholder", "Search");
+}
+</script>
+<script >
+function payDownload(){
+	$.ajax({
+		type: "GET",
+        url: sourceleadUrl+"/getMyPayrollDownload?"+tokenParamName+"="+tokenValue                 , 
+        success: function(response) {
+        	if (response.response === "AWKWARD") {
+				location.href = "/errorPage";
+			} else if (response.response === "SUCCESS") {
+				alert("success");
+			}
+        }
+	});
 }
 </script>
 <jsp:include page="./viewPayRollSummary.jsp" /> 

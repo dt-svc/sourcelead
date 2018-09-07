@@ -1070,7 +1070,7 @@ public class LeaveManagementRestController {
 						    }
 						}
 						if(!insertUserList.isEmpty() && insertUserList.size() >0) {
-							int result = associateBalanceLeaveService.addLeaveTypeToAssociate(insertUserList,orgLocation,leaveType,user);
+							int result = associateBalanceLeaveService.addLeaveTypeToAssociate(insertUserList,orgLocation,leaveType,user,0);
 						}
 						if(!updatedUserList.isEmpty() && updatedUserList.size() >0) {
 							float previousNoOfDays = 0;

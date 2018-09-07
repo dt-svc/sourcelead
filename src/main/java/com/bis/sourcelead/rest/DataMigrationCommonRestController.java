@@ -122,6 +122,7 @@ public class DataMigrationCommonRestController {
 			model.addObject("columnHeaders", ImmigrationConstants.IMPORT_LCA_EXCEL_HEADERS);
 			model.addObject("headersNamesMap", ImmigrationConstants.LCA_HEADERS_NAMES_MAP);
 			model.addObject("headersFieldNamesMap", ImmigrationConstants.LCA_HEADERS_FIELD_NAMES_MAP); // user for Mandatory column labels in UI.
+			
 		}
 		}catch (Exception e) {
 			e.printStackTrace();

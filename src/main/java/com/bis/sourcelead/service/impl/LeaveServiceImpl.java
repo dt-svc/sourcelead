@@ -873,18 +873,20 @@ public class LeaveServiceImpl implements LeaveService{
 //					if("Mothly".equalsIgnoreCase(userLeave.getLeaveType().getPeriod()) && Constants.YES.equalsIgnoreCase(userLeave.getLeaveType().getLeavesCarryforward())){
 						MonthlyLeaves monthlyLeaves = getMonthlyLeavesByLeaveId(userLeave.getId());
 //						float monthlyTotalLeaves = difInMonths * monthlyAllowedLeaves;
-						janLeaves += monthlyLeaves.getJanuaryLeaves();
-						febLeaves += monthlyLeaves.getFebruaryLeaves();
-						marLeaves += monthlyLeaves.getMarchLeaves();
-						aprLeaves += monthlyLeaves.getAprilLeaves();
-						mayLeaves += monthlyLeaves.getMayLeaves();
-						junLeaves += monthlyLeaves.getJuneLeaves();
-						julLeaves += monthlyLeaves.getJulyLeaves();
-						augLeaves += monthlyLeaves.getAugustLeaves();
-						sepLeaves += monthlyLeaves.getSeptLeaves();
-						octLeaves += monthlyLeaves.getOctoberLeaves();
-						novLeaves += monthlyLeaves.getNovLeaves();
-						decLeaves += monthlyLeaves.getDecLeaves();
+						if(monthlyLeaves != null) {
+							janLeaves += monthlyLeaves.getJanuaryLeaves();
+							febLeaves += monthlyLeaves.getFebruaryLeaves();
+							marLeaves += monthlyLeaves.getMarchLeaves();
+							aprLeaves += monthlyLeaves.getAprilLeaves();
+							mayLeaves += monthlyLeaves.getMayLeaves();
+							junLeaves += monthlyLeaves.getJuneLeaves();
+							julLeaves += monthlyLeaves.getJulyLeaves();
+							augLeaves += monthlyLeaves.getAugustLeaves();
+							sepLeaves += monthlyLeaves.getSeptLeaves();
+							octLeaves += monthlyLeaves.getOctoberLeaves();
+							novLeaves += monthlyLeaves.getNovLeaves();
+							decLeaves += monthlyLeaves.getDecLeaves();
+						}
 //					}
 				}
 				
@@ -2323,7 +2325,7 @@ public class LeaveServiceImpl implements LeaveService{
 						if(associa != null) {
 							int result = associateBalanceLeaveService.addOrSubAssociateBalanceLeaveType(userList, orgLocation.getId(), leaveType, 1,Float.parseFloat(ltdto.getNumberOfLeaves()),"IMPORT",Constants.UPDATE);
 						}else {
-							int result = associateBalanceLeaveService.addLeaveTypeToAssociate(userList,orgLocation,leaveType,user);
+							int result = associateBalanceLeaveService.addLeaveTypeToAssociate(userList,orgLocation,leaveType,user,Float.parseFloat(ltdto.getNumberOfLeaves()));
 						}
 						i++;
 					}

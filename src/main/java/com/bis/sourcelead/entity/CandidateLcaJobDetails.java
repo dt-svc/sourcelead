@@ -12,13 +12,17 @@ import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
 @Entity
-@Table(name = "CANDIDATE_LCA_I94_SUMMARY")
-public class CandidateLcaI94Summary {
+@Table(name = "CANDIDATE_LCA_JOB_DETAILS")
+public class CandidateLcaJobDetails {
 	
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	@Column(name = "ID", nullable = false)
 	private Long id;
+	
+    @ManyToOne
+	@JoinColumn(name = "IMMIGRATION_ID", nullable = false)
+	private Immigration immigration;
 	
 	@ManyToOne
 	@JoinColumn(name="CANDIDATE_ID",nullable=false)        
@@ -28,11 +32,11 @@ public class CandidateLcaI94Summary {
 	@JoinColumn(name="JOB_ID",nullable=false)        
 	private Requirement requirementId;
 	
-	@Column(name = "ID_NUMBER")
+	/*@Column(name = "ID_NUMBER")
 	private String idNumber;
 	
 	@Column(name = "ID_TYPE")
-	private String idType;
+	private String idType;*/
 	
 	@Column(name = "EMPLOYMENT_TYPE")
 	private String employmentType;
@@ -114,22 +118,7 @@ public class CandidateLcaI94Summary {
 		this.requirementId = requirementId;
 	}
 
-	public String getIdNumber() {
-		return idNumber;
-	}
-
-	public void setIdNumber(String idNumber) {
-		this.idNumber = idNumber;
-	}
-
-	public String getIdType() {
-		return idType;
-	}
-
-	public void setIdType(String idType) {
-		this.idType = idType;
-	}
-
+	
 	public String getEmploymentType() {
 		return employmentType;
 	}
@@ -273,5 +262,15 @@ public class CandidateLcaI94Summary {
 	public void setJobEndDate(Date jobEndDate) {
 		this.jobEndDate = jobEndDate;
 	}
+
+	public Immigration getImmigration() {
+		return immigration;
+	}
+
+	public void setImmigration(Immigration immigration) {
+		this.immigration = immigration;
+	}
+	
+	
 	
 }

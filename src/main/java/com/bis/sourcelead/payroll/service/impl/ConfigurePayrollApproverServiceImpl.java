@@ -3,9 +3,11 @@ package com.bis.sourcelead.payroll.service.impl;
 
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.stream.Collectors;
 
 import org.apache.commons.lang.exception.ExceptionUtils;
@@ -24,6 +26,7 @@ import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.entity.UserRole;
 import com.bis.sourcelead.enums.Result;
 import com.bis.sourcelead.payroll.dao.ConfigurePayrollApproverDao;
+import com.bis.sourcelead.payroll.dao.impl.ApproverDTO;
 import com.bis.sourcelead.payroll.dto.PayrollApproverDTO;
 import com.bis.sourcelead.payroll.dto.PayrollConstant;
 import com.bis.sourcelead.payroll.entity.ConfigurePayrollApprover;
@@ -47,28 +50,64 @@ public class ConfigurePayrollApproverServiceImpl implements ConfigurePayrollAppr
 	ConfigurePayrollApproverDao configurePayrollApproverDao;
 	
 	@Override
-	public List<UserDTO> getPayrollApprover(OrgLocations orgLocation, User loginUser)
+	public ApproverDTO getPayrollApprover(OrgLocations orgLocation, User loginUser)
 	{
+		
 		List<UserDTO> list = new ArrayList<>();
+		ApproverDTO approverDTO = new ApproverDTO();
+		HashMap<Long,User> userMap = new HashMap<>();
+		List<User> approveruserList = new CopyOnWriteArrayList<User>();
+		List<User> tabAccessuserList = new CopyOnWriteArrayList<User>();
+		List<User> usersList = new CopyOnWriteArrayList<User>();
 		try {
-			List<User> userList = userService.getTabAccessOwnersByOrgLocationIdAndTabId(orgLocation.getId(),Long.valueOf(Constants.TAB_RUN_PAYROLL));
-			userList.forEach(user -> {
-				UserDTO userDto = new UserDTO();
-				userDto.setFullName(user.getFullName());
-				userDto.setId(user.getId());
-				UserRole userRole = null;
-				try {
-					userRole = userRoleService.getUserDetailsByUserIdAndLocationId(user.getId(), orgLocation.getId());
-				} catch (Exception e) {
-					e.printStackTrace();
+			ConfigurePayrollApprover  configurePayrollApprover = getConfigurePayrollApproverByLoc(orgLocation);
+			if(configurePayrollApprover != null) {
+				List<Long> approverList = configurePayrollApprover.getPayrollApprover().stream().map(ap->ap.getUser().getId()).collect(Collectors.toList());
+				for(Long id : approverList) {
+					User user = userService.getUserByIdAndOrgLocationsId(id, orgLocation.getId());
+					user.setIsPayRollApprover(Constants.YES);
+					approveruserList.add(user);
 				}
-				userDto.setRole(userRole.getRoles().getDisplayName());
-				list.add(userDto);
-			});
+				
+				approverDTO.setPayrollType(configurePayrollApprover.getPayrollType());
+				approverDTO.setAutomaticPayroll(configurePayrollApprover.getAutomaticPayroll());
+				approverDTO.setConfAprrover(String.valueOf(configurePayrollApprover.getId()));
+			}
+			
+			tabAccessuserList = userService.getTabAccessOwnersByOrgLocationIdAndTabId(orgLocation.getId(),Long.valueOf(Constants.TAB_RUN_PAYROLL));
+			usersList.addAll(approveruserList);
+			usersList.addAll(tabAccessuserList);
+			
+				for(User user : usersList) {
+				User tempUser = userMap.get(user.getId());
+				if(tempUser == null) {
+					userMap.put(user.getId(),user);
+					UserDTO userDto = new UserDTO();
+					userDto.setFullName(user.getFullName());
+					userDto.setId(user.getId());
+					if(StringUtils.isNoneBlank(user.getIsPayRollApprover()) && user.getIsPayRollApprover().equalsIgnoreCase(Constants.YES)) {
+						userDto.setIsPayRollApprover(Constants.YES);
+					}else {
+						userDto.setIsPayRollApprover(Constants.NO);
+					}
+					UserRole userRole = null;
+					try {
+						userRole = userRoleService.getUserDetailsByUserIdAndLocationId(user.getId(), orgLocation.getId());
+					} catch (Exception e) {
+						e.printStackTrace();
+					}
+					userDto.setRole(userRole.getRoles().getDisplayName());
+					list.add(userDto);
+				}else {
+					usersList.remove(user);
+					continue;
+				}
+			}
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
-		return list;
+		approverDTO.setUser(list);
+		return approverDTO;
 	}
 	
 	@Override
