@@ -565,6 +565,21 @@ public class BackOfficeRestController {
 		assetDTO.setFileUrl(asset.getFileUrl());
 		assetDTO.setFileContentType(asset.getFileContentType());
 		
+		assetDTO.setOperatingSystem(asset.getOperatingSystem());
+		assetDTO.setOsKey(asset.getOsKey());
+		assetDTO.setAntiVirus(asset.getAntiVirus());
+		if(asset.getPurchaseDate() != null) {
+			assetDTO.setPurchaseDate(commonUtil.dateStrFromOrgDateFormatter(orgLocations.getDateFormat(),asset.getPurchaseDate()));
+		}
+		if(asset.getDepreciationDate() != null) {
+			assetDTO.setDepreciationDate(commonUtil.dateStrFromOrgDateFormatter(orgLocations.getDateFormat(),asset.getDepreciationDate()));
+		}
+		assetDTO.setName(asset.getName());
+		assetDTO.setCost(asset.getCost());
+		assetDTO.setDepreciationAmount(asset.getDepreciationAmount());
+		
+		
+		
 		List<AssetAssign> assetAssignList = assetService.getAssignAssetListByAssetId(assetId);
 		assetDTO.setAssetAssignList(assetAssignList);
 		
@@ -655,7 +670,6 @@ public class BackOfficeRestController {
 	    User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
 		try {
 			if (user != null && orgLocations != null) {
-
 				if (Validator.validate(assetDTO)) {
 					assetDTO.setStaticPath(staticPath);
 					assetDTO.setDateFormat(orgLocations.getDateFormat());
