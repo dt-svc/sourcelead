@@ -1,3 +1,7 @@
+
+
+<div id="popUp"></div>
+
 <script>
   function getUserGroupList(){
 		var searchValue = $("#dataTableSearch").val();
@@ -105,7 +109,7 @@ function userGroupPaginationFun(url){
                 "sortable": false,
                 "render": function ( data, type, opt, meta ) {
                 		var result = "";
-                		result = result + '<td><div class="tbldata-dotdot_50"><i class="fa fa-pencil mr cursorPointer" onclick="addbatches(\''+opt.groupUUID+'\');"></i><i class="glyphicon glyphicon-trash" onclick="deleteUserGroup(\''+opt.groupUUID+'\');"></i>';
+                		result = result + '<td><div class="tbldata-dotdot_50"><i class="fa fa-pencil mr cursorPointer" onclick="addbatches(\''+opt.groupUUID+'\');"></i><i class="glyphicon glyphicon-trash cursorPointer" onclick="deleteUserGroup(\''+opt.groupUUID+'\');"></i>';
                 		result = result + '</div>';
                 		result = result + '</td>';
     	              return result;
