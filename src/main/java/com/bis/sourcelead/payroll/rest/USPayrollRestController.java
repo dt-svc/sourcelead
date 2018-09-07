@@ -7,6 +7,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Calendar;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 import javax.servlet.http.HttpServletRequest;
@@ -28,6 +29,7 @@ import org.springframework.web.servlet.ModelAndView;
 import com.bis.sourcelead.annotations.Validator;
 import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.dao.CandidateDao;
+import com.bis.sourcelead.dto.AssociateLoanAndAdvancesDTO;
 import com.bis.sourcelead.dto.AssociatePayItemDTO;
 import com.bis.sourcelead.dto.AssociateSalaryDTO;
 import com.bis.sourcelead.dto.AssociateSalaryHistoryDTO;
@@ -36,6 +38,7 @@ import com.bis.sourcelead.dto.ResponseList;
 import com.bis.sourcelead.dto.UsMyPayrollFormsDTO;
 import com.bis.sourcelead.dto.UserDTO;
 import com.bis.sourcelead.dto.UserGroupDTO;
+import com.bis.sourcelead.entity.AssociateLoanAndAdvances;
 import com.bis.sourcelead.entity.AssociatePayItem;
 import com.bis.sourcelead.entity.AssociateSalaryHistory;
 import com.bis.sourcelead.entity.Candidate;
@@ -93,6 +96,7 @@ import com.bis.sourcelead.payroll.service.USPayPeriodService;
 import com.bis.sourcelead.payroll.service.USPayrollService;
 import com.bis.sourcelead.payroll.service.USPaysheetService;
 import com.bis.sourcelead.payroll.service.UsMyPayrollFormService;
+import com.bis.sourcelead.service.AssociateLoanAndAdvancesService;
 import com.bis.sourcelead.service.AssociateSalaryHistoryService;
 import com.bis.sourcelead.service.AssociateSalaryService;
 import com.bis.sourcelead.service.OrgLocationService;
@@ -192,6 +196,9 @@ public class USPayrollRestController {
 	
 	@Autowired
 	UserService userService;
+	
+	@Autowired
+	AssociateLoanAndAdvancesService associateLoanAndAdvancesService;
 	
 	/**
 	 * find all deduction types from lookup_data table 
@@ -1594,5 +1601,25 @@ public class USPayrollRestController {
 		OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 		return paysheetFrequencyService.getPaysheetFrequencyDraftDataByOrgLocationId(orgLocation);
 	}
+	
+	@RequestMapping(value = "/getEmpOutstandingLoansAdvances", method = RequestMethod.GET)
+	@ResponseBody
+	public List<AssociateLoanAndAdvancesDTO> getEmpOutstandingLoansAdvances(@RequestParam(value = "type",required = false)String type,HttpServletRequest request, HttpServletResponse response) throws Exception
+	{
+		OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+		Long candidateId = (Long) SourceLeadSessionManager.getSessionAttribute(request, "candidateId");
+		return associateLoanAndAdvancesService.getAssociateLoanAndAdvancesListByCandidateIdByOrgLocationId(candidateId,orgLocation,type);
+	}
+	
+	@RequestMapping(value = "/getLoansAndAdvancesCounts", method = RequestMethod.GET)
+	public @ResponseBody Map<String, Double> getLoansAndAdvancesCounts(HttpServletRequest request, HttpServletResponse response) throws Exception
+	{
+		Long candidateId = (Long) SourceLeadSessionManager.getSessionAttribute(request, "candidateId");
+		Map<String, Double> loansAndAdvancescount = associateLoanAndAdvancesService.getEmpLoansAndAdvancesCountListByOrgLocationId(candidateId);
+		
+		return loansAndAdvancescount;
+		
+	}
+	
 
 }

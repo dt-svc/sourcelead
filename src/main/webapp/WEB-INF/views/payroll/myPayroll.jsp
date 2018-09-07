@@ -30,6 +30,8 @@ function loansAdvances(){
 	$("#loansAdvancesDiv").show();
 	$("#myPayrollFormDiv").hide();
 	$("#myPayrollDiv").hide();
+	EmployeeLoansAndAdvances('outstanding');
+	getLoansCountList();
 }
 </script>
 
