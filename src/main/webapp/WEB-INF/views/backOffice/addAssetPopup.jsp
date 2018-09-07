@@ -254,7 +254,7 @@
 		                </div>
 		                 <c:forEach var="shift" items="${siftList}" varStatus="shiftOrder">
 			                <div class="clearfix mb10">
-			                  <div class="col-md-5" id="uploadFile-dskADiv">
+			                  <div class="col-md-3" id="uploadFile-dskADiv">
 			                   <label class="clearfix">${shift.shiftName}</label>
 			                    <input type="hidden" name="assignAsset[${shiftOrder.index}].shift" value="${shift.id}"/>
 			                    <input type="hidden" id="assetAssignId${shiftOrder.index}" name="assignAsset[${shiftOrder.index}].id"/>
@@ -280,7 +280,7 @@
 								  </c:forEach>
 			                    </select>
 			                  </div>
-			                  <div class="col-md-5" id="uploadFile-dskBDiv">
+			                  <div class="col-md-3" id="uploadFile-dskBDiv">
 			                  <label class="clearfix">Attachment</label>
 			                  <c:forEach var="existedAssetDocuments" items="${assignAssetList}">
 							    <c:if test="${(existedAssetDocuments.shift.id eq shift.id) && (!empty existedAssetDocuments.fileName)}">
@@ -300,13 +300,29 @@
 							</c:forEach>
 							<c:if test="${NUM == 0}">
 	                      		<div class="input-group attachfile-error">
-			                      <label class="input-group-btn"> <b class="btn btn-primary" onchange="setFilePath('${shiftOrder.index}');uploadShiftFile('${shiftOrder.index}');"><i class="fa fa-folder-open-o"></i>&nbsp;Browse File
+			                      <label class="input-group-btn"> <b class="btn btn-primary" onchange="setFilePath('${shiftOrder.index}');uploadShiftFile('${shiftOrder.index}');"><i class="fa fa-folder-open-o"></i>
 			                        <input type="file" id="uploadBtn-dskA${shiftOrder.index}"   style="display: none;" class="upload">
 			                        </b> </label>
 			                      <input type="text"  class="form-control" id="shiftFile${shiftOrder.index}" data-validation = "validatedoc" data-validation-optional="true"   readonly  placeholder="Files are not selected...">
 			                    </div>
 							</c:if>
 			                </div>
+			                
+			                <div class="col-md-2 paddingRight">
+			                <label>Assigned On</label>
+			                <div class="clearfix">
+			                	<input type="text" class="form-control calendar" id="assignedOn${shiftOrder.index}" name="assignedOn"  readonly  placeholder="Assigned On">
+			                </div>
+			                </div>
+			                
+			                <div class="col-md-2 paddingLeft">
+			                <label>Returned On</label>
+			                <div class="clearfix">
+			                	<input type="text" class="form-control calendar" id="returnedOn${shiftOrder.index}" name="returnedOn"  readonly  placeholder="Returned On">
+			                </div>
+			                </div>
+			                
+			                
 			              </div>
 		                </c:forEach>
 		              </c:if>
