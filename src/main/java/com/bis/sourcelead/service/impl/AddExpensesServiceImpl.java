@@ -157,7 +157,7 @@ public void storeAddExpensesData(ExpensesDTO expensesDTO, User loginUser, OrgLoc
 		status = expensesDTO.getExpenseStatus();
 	}
 	//SimpleDateFormat dateFormat=orgLoc.getLocFullFormDateFormatter();
-	
+
 	if(expensesDTO.getId() != null){
 		expenses = expensesService.getExpenseById(expensesDTO.getId());
 	}else {
@@ -245,7 +245,6 @@ public void storeAddExpensesData(ExpensesDTO expensesDTO, User loginUser, OrgLoc
 			/*List<ProjectApproverHierarchy> hierarchyList = projectApproverHierarchyService.getApproverUsersByProjectId(projMembers.getProjects().getId());*/
 			List<ExpenseProjectApproverHierarchy> hierarchyList = expenseProjectApproverHierarchyService.getActiveOrgApproverUsersByProjectMemberMasterCandidateIdAndProjectId(projMembers.getMasterCandidateId().getId(),projMembers.getProjects().getId());
 			 if(hierarchyList != null && !hierarchyList.isEmpty()){
-		        	
 						for(ExpenseProjectApproverHierarchy hierarchy : hierarchyList){
 							ExpensesApproverHierarchy eaHierarchy = new ExpensesApproverHierarchy();
 							eaHierarchy.setHierarchyId(hierarchy);
@@ -329,7 +328,7 @@ private void storeExpenseApprovers(String status,Expenses expenses,HashMap<Integ
 	 }
 	 
 	 if(status.equalsIgnoreCase(Submission_Status.SUBMITTED.getValue())){
-		 managers.remove(2);
+		// managers.remove(2);
 		 if(managers != null && !managers.isEmpty()){
 				expenses.setProjectManagerUserList(new ArrayList(managers.values()));
 		 }
