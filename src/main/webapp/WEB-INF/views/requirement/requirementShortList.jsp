@@ -421,7 +421,7 @@ $(".overIcon, .newActPop").click(function(e){
 								 <div class="clearfix">
 									<ul class="list-unstyled" id="searchTypeFilter">
 									     <li class="radioIput positionRelative" ><input  type="radio" name="searchType"  value ="MY" ><label for="Yes">My Jobs</label></li>
-										 <li class="radioIput positionRelative" ><input  type="radio" name="searchType" value ="ALL" ><label for="No">All Jobs</label></li>
+										 <li class="radioIput positionRelative" ><input  type="radio" name="searchType" value ="ALL" checked ><label for="No">All Jobs</label></li>
 				                    </ul>
 								 </div>
 						   </div>
