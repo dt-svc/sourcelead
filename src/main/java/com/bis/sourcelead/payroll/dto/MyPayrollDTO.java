@@ -24,6 +24,19 @@ public class MyPayrollDTO {
 	
 	private String payrollUUID;
 
+	private String paySlipFileURL;
+	
+	
+
+	public String getPaySlipFileURL()
+	{
+		return paySlipFileURL;
+	}
+
+	public void setPaySlipFileURL(String paySlipFileURL)
+	{
+		this.paySlipFileURL = paySlipFileURL;
+	}
 
 	public String getPayDate()
 	{
