@@ -375,14 +375,13 @@ public class GenerateUSPayrollServiceImpl implements GenerateUSPayrollService{
 			BigDecimal totalLoanAmount = BigDecimal.ZERO, totalAdvanceAmount = BigDecimal.ZERO; 
 			for(AssociateLoanAndAdvances assLoanAndAdv : loanAndAdvList) {
 				boolean thisPayCheck = false;
-				if(assLoanAndAdv.getDeductStartDate() == null && assLoanAndAdv.getDeductEndDate() == null) {
+				if(assLoanAndAdv.getDeductStartDate() == null) {
 					thisPayCheck = true;
 				}
 				if(paySheetFreq.getFrequencyStartDate().after(assLoanAndAdv.getEffectiveDate()) || paySheetFreq.getFrequencyStartDate().equals(assLoanAndAdv.getEffectiveDate())) {
 					thisPayCheck = true;
-				}else
-					thisPayCheck = false;
-				if(assLoanAndAdv.getDeductStartDate() != null && assLoanAndAdv.getDeductEndDate() != null) {
+				}
+				if(assLoanAndAdv.getDeductStartDate() != null) {
 					thisPayCheck = payrollUtil.isDateBetweenEffectiveDate(assLoanAndAdv.getDeductStartDate(), assLoanAndAdv.getDeductEndDate(), paySheetFreq.getFrequencyStartDate(), paySheetFreq.getFrequencyEndDate());
 				}
 				if(thisPayCheck) {

@@ -1,6 +1,7 @@
 package com.bis.sourcelead.service;
 
 import java.util.List;
+import java.util.Map;
 
 import com.bis.sourcelead.dto.AssociateLoanAndAdvancesDTO;
 import com.bis.sourcelead.entity.AssociateLoanAndAdvances;
@@ -22,4 +23,8 @@ public interface AssociateLoanAndAdvancesService {
 	AssociateLoanAndAdvancesDTO getAssociateLoanAndAssociateDetails(Long candidateId,OrgLocations orgLocations) throws Exception;
 	
 	AssociateLoanAndAdvancesDTO getAssociateLoanAndAdvancesDetailsById(Long id,OrgLocations orgLocations) throws Exception ;
+	
+	List<AssociateLoanAndAdvancesDTO> getAssociateLoanAndAdvancesListByCandidateIdByOrgLocationId(Long candidateId,OrgLocations orgLocation, String type)throws Exception;
+
+	Map<String, Double> getEmpLoansAndAdvancesCountListByOrgLocationId(Long candidateId);
 }
