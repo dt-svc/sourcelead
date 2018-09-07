@@ -38,7 +38,7 @@ function approvePayrollDiv(){
 	   <li class="current"><a href="javascript:void(0)" class="active" onclick="getOverviewdata();">Overview</a></li>
 	   <li><a onclick="getDraftData();">Draft</a></li>
 	   <li><a onclick="getPayPeriodData();">History</a></li>
-<!-- 	   <li><a onclick="getUserGroupList();">Employees</a></li> -->
+	   <li><a onclick="getUserGroupList();">Employees</a></li>
 <!-- 	   <li><a href="javascript:void(0)">Contractors</a></li> -->
 <!-- 	   <li><a href="javascript:void(0)">Tax Forms</a></li> -->
 <!-- 	   <li><a href="javascript:void(0)">Settings</a></li> -->
@@ -216,6 +216,7 @@ $(document).ready(function() {
   <script>
   function getOverviewdata(){
 	  
+	  $("#userGroupDiv").hide();
 	  $("#draftFrequencyDiv").hide();
 	  $("#payrollFrequencyDiv").hide();
 	  $("#historySearchDiv").hide();
@@ -259,6 +260,7 @@ $(document).ready(function() {
 		$("#overViewDiv").hide();
 		$("#draftFrequencyDiv").hide();
 		$("#approveDiv").hide();
+		$("#userGroupDiv").hide();
 		$("#historySearchDiv").show();
 		$("#historyDataTableSearch").show();
 		$("#payrollFrequencyDiv").show();
@@ -507,7 +509,7 @@ function runUSPayroll(){
 						        	}
 						        	result += '<td><div class="tbldata-dotdot-vsm">'+opt.empName+'</div></td>';
 						        	result += '<td><div class="tblminwidth-50">'+opt.regularHours+'</div><div class="tblminwidth-50 clearfix text-danger">$ '+opt.regularHrsTotalAmt.toFixed(2)+'</div></td>';	
-						        	result += '<td><div class="tbldata-dotdot-vsm">'+opt.payRate+'</div></td>';
+						        	result += '<td><div class="tbldata-dotdot-vsm">$ '+opt.payRate+'</div></td>';
 						        	if(opt.payType != null && opt.payType != ''){
 						        		result += '<td><div class="tbldata-dotdot-vsm">'+opt.payType+'</div></td>';
 						        	}else{
@@ -722,6 +724,7 @@ function getDraftData(){
 			        	$("#payrollFrequencyDiv").hide();
 			        	$("#approveDiv").hide();
 			        	$("#historyDataTableSearch").hide();
+			        	$("#userGroupDiv").hide();
 			        	$("#draftFrequencyDiv").show();
 			        	$("#initiateLoading").removeAttr('style');
 			        	draftPagination();

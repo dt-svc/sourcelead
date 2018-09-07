@@ -220,6 +220,8 @@ private static final Logger logger = LoggerFactory.getLogger(AssociateBankDataDa
 									+ candidateDto.getSearchValue() + "%' ")
 							.append("OR ass.candidate.email like '%" + candidateDto.getSearchValue()
 									+ "%' ")
+							.append("OR ass.candidate.designationType like '%" + candidateDto.getSearchValue()
+									+ "%' ")
 							.append("OR ass.candidate.mobilePhone like '%" + candidateDto.getSearchValue() + "%' )");
 
 			}
