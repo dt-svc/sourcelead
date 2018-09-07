@@ -31,6 +31,8 @@ function getUserGroupListData(url){
         $("#draftFrequencyDiv").hide();
         $("#overViewDiv").hide();
   	 	$("#reviewPayrollDiv").hide();
+  	 	$("#historySearchDiv").hide();
+  	    $("#searchDivForEmployee").show();
         $("#userGroupDiv").show();
         $("#userGroupDiv").empty();
         $("#userGroupDiv").append(result);
@@ -130,3 +132,53 @@ function userGroupPaginationFun(url){
     	});
 }
 </script>
+
+
+
+<script>
+function addbatches(groupUUID){
+	if(groupUUID == null || groupUUID == '' || groupUUID == 'undefined'){
+		groupUUID = "";
+	}
+	$.get(sourceleadUrl+"/addUserGroup?"+tokenParamName+"="+tokenValue+"&groupUUID="+groupUUID,  function(result) {
+		$("#addUserGroupFormDiv").empty();
+		$("#addUserGroupFormDiv").append(result);
+// 		getUsersByDepartment();
+		$(".addPayrollGroupWrap, .mask").fadeIn();
+	});
+}
+
+function deleteUserGroup(groupUUID){
+	$("#popUp").empty();
+	var result = "";
+	result = result +"	<div class='project_inn_mask'></div>";
+	result = result +"	   <div id='remove_user_pop' class='remove_user_pop remove_user_pop_a'>";
+	result = result +"		<p>Do you want to delete this User Group</p>";
+	result = result + ' <div id="userGroupDeleteDiv"/>';
+	result = result +"		<b><input id='confirm-id' type='button' value='Ok' onclick='confirmDeleteUserGroup(\""+groupUUID+"\");'><input class='u_can_color' type='button'  value='Cancel' onClick='cancelDelete();'></b>";
+	result = result +"	</div>";
+	$("#popUp").append(result);
+	$("#remove_user_pop").slideDown(200);
+	$(".project_inn_mask").fadeIn(200);
+}
+	
+function confirmDeleteUserGroup(groupUUID){	
+	$.get(sourceleadUrl+"/deleteUserGroupByUUID?"+tokenParamName+"="+tokenValue+"&groupUUID="+groupUUID,  function(result) {
+		 if (result.response === "AWKWARD") {
+             location.href = "/errorPage";
+         } else if (result.response === "SUCCESS") {
+        	 $("#remove_user_pop, .project_inn_mask").fadeOut();
+        	 $("#popUp").empty();
+        	 getUserGroupList();
+         }
+	});
+}
+
+function cancelDelete(){
+	$("#remove_user_pop, .project_inn_mask").fadeOut();
+	$("#popUp").empty();
+}
+</script>
+
+ <jsp:include page="addUserGroup.jsp" />
+

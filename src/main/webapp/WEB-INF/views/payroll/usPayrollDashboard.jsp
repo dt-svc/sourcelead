@@ -37,7 +37,10 @@ function approvePayrollDiv(){
    	    
 	   <li class="current"><a href="javascript:void(0)" class="active" onclick="getOverviewdata();">Overview</a></li>
 	   <li><a onclick="getDraftData();">Draft</a></li>
-	   <li><a onclick="getPayPeriodData();">History</a></li>
+	   <c:if test="${SourceLeadWeb_isPayRollApprover == 'Y'}">
+	        <li><a onclick="getPayPeriodData();">History</a></li>
+	   </c:if>
+	   
 	   <li><a onclick="getUserGroupList();">Employees</a></li>
 <!-- 	   <li><a href="javascript:void(0)">Contractors</a></li> -->
 <!-- 	   <li><a href="javascript:void(0)">Tax Forms</a></li> -->
@@ -136,12 +139,16 @@ function approvePayrollDiv(){
 	</div>
 	<div class="clearfix"></div>
 		
-	<div id="historyDiv">
 	 <div class='reportHead' id="historySearchDiv">
 		<ul class='pull-right'>
 		<li><input type='text' placeholder='Search' class='repSearchBar' id='historyDataTableSearch'/><span class='repSearchIcon' onClick=''></span></li>
 		</ul>
    </div>
+   
+    <div class='reportHead' id="searchDivForEmployee" style = "display : none">
+		<ul class='pull-right'>
+		<li><input type='text' placeholder='Search' class='repSearchBar' id='dataTableSearch'/><span class='repSearchIcon' onClick=''></span></li>
+		</ul>
    </div>
    
 	<div class="candidate_wrap_table datatable_filter backgroundWhite">
@@ -221,6 +228,7 @@ $(document).ready(function() {
 	  $("#payrollFrequencyDiv").hide();
 	  $("#historySearchDiv").hide();
 	  $("#overViewDiv").show();
+	  $("#searchDivForEmployee").hide();
 	  $("#reviewPayrollDiv").show();
   }
   </script>
@@ -261,6 +269,7 @@ $(document).ready(function() {
 		$("#draftFrequencyDiv").hide();
 		$("#approveDiv").hide();
 		$("#userGroupDiv").hide();
+		$("#searchDivForEmployee").hide();
 		$("#historySearchDiv").show();
 		$("#historyDataTableSearch").show();
 		$("#payrollFrequencyDiv").show();
@@ -368,9 +377,9 @@ $(document).ready(function() {
 										"render" : function(data, type, opt,meta) {
 											var result = "";
 											if(opt.total != null && opt.total != '' && opt.total !='undefined'){
-						                		  result = result +'<div class="tbldata-dotdot-vsm">'+opt.total.toFixed(2)+'</div>';
+						                		  result = result +'<div class="tbldata-dotdot-vsm">$ '+opt.total.toFixed(2)+'</div>';
 						              		}else{
-						              		  result = result +'<div class="tbldata-dotdot-vsm">--</div>';
+						              		  result = result +'<div class="tbldata-dotdot-vsm">$ 0.0</div>';
 						              		}
 											return result;
 										}
@@ -725,6 +734,7 @@ function getDraftData(){
 			        	$("#approveDiv").hide();
 			        	$("#historyDataTableSearch").hide();
 			        	$("#userGroupDiv").hide();
+			        	$("#searchDivForEmployee").hide();
 			        	$("#draftFrequencyDiv").show();
 			        	$("#initiateLoading").removeAttr('style');
 			        	draftPagination();
