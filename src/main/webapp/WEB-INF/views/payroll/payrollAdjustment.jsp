@@ -70,20 +70,20 @@
                         </tr>
                         <tr>
                           <td>Regular</td>
-                          <td><input type="text" id="regularHours" name="regularHours"  onblur = "editRegularHours();" class="formControl" readOnly></td>
-                          <td><input type="text" id="regularHoursAmt" name="regularHoursAmt"  class="formControl" readOnly></td>
+                          <td><i class="fa fa-clock-o paddingRight"></i><input type="text" id="regularHours" name="regularHours"  onblur = "editRegularHours();" class="formControl" readOnly></td>
+                          <td><i class="fa fa-dollar mr5"></i><input type="text" id="regularHoursAmt" name="regularHoursAmt"  class="formControl" readOnly></td>
                         </tr>
                         <tr>
                           <td>Overtime</td>
-                          <td><input type="text" id="overTimeHours" name="overTimeHours"   onblur = "editOverTimeHours();" class="formControl" readOnly></td>
-                          <td><input type="text" id="overTimeHoursAmt" name="overTimeHoursAmt"  class="formControl" readOnly></td>
+                          <td><i class="fa fa-clock-o paddingRight"></i><input type="text" id="overTimeHours" name="overTimeHours"   onblur = "editOverTimeHours();" class="formControl" readOnly></td>
+                          <td><i class="fa fa-dollar mr5"></i><input type="text" id="overTimeHoursAmt" name="overTimeHoursAmt"  class="formControl" readOnly></td>
                         </tr>
                       </tbody>
                       <tfoot>
                         <tr>
                           <th>Total</th>
-                          <td><span id="totalHours" >0</span></td>
-                          <td><span id="totalEarnings">0</span></td>
+                          <td><i class="fa fa-clock-o paddingRight"></i><span id="totalHours" >00:00</span></td>
+                          <td><i class="fa fa-dollar mr5"></i><span id="totalEarnings">0.0</span></td>
                         </tr>
                       </tfoot>
                     </table>
@@ -95,7 +95,7 @@
                       </thead>
                       <tbody>
                         <tr>
-                          <th>Pay Salary</th><td><input type="text" id="assSalaryAmount" name="assSalaryAmount" readOnly></td>
+                          <th>Pay Salary</th><td><i class="fa fa-dollar mr5"></i><input type="text" id="assSalaryAmount" name="assSalaryAmount" readOnly></td>
                         </tr>
                       </tbody>
                     </table>
@@ -129,35 +129,35 @@
                         </tr>
                         <tr>
                           <td>Federal Withholding</td>
-                          <td><span id="federalWT">0</span></td>
+                          <td><i class="fa fa-dollar mr5"></i><span id="federalWT">0.0</span></td>
                         </tr>
                         <tr>
                           <td>Medicare</td>
-                           <td><span id="medicareWT">0</span></td>
+                           <td><i class="fa fa-dollar mr5"></i><span id="medicareWT">0.0</span></td>
                         </tr>
                         <tr>
                           <td>FICA</td>
-                           <td><span id="ficaWT">0</span></td>
+                           <td><i class="fa fa-dollar mr5"></i><span id="ficaWT">0.0</span></td>
                         </tr>
                       
                         <tr>
                           <td>State Withholding</td>
-                          <td><span id="stateWithHoldingWT">0</span></td>
+                          <td><i class="fa fa-dollar mr5"></i><span id="stateWithHoldingWT">0.0</span></td>
                         </tr>
                           <tr>
                           <td>Advanced Earned Income Credit</td>
-                           <td><span id="aeicWT">0</span></td>
+                           <td><i class="fa fa-dollar mr5"></i><span id="aeicWT">0.0</span></td>
                         </tr>
                            <tr>
                           <td>LocalTax</td>
-                           <td><span id="localTaxWT">0</span></td>
+                           <td><i class="fa fa-dollar mr5"></i><span id="localTaxWT">0.0</span></td>
                         </tr>
                         
                       </tbody>
                       <tfoot>
                         <tr>
                           <th>Total</th>
-                          <td><span id="taxes">0</span></td>
+                          <td><i class="fa fa-dollar mr5"></i><span id="taxes">0.0</span></td>
                         </tr>
                       </tfoot>
                     </table>
@@ -180,21 +180,21 @@
                       <tbody>
                         <tr>
                           <td>Current</td>
-                            <td><span id="gross">0</span></td>
-                            <td><span id="federalGross">0</span></td>
-                            <td><span id="ficaGross">0</span></td>
-                            <td><span id="totalTaxes">0</span></td>
-                            <td><span id="dedTotal">0</span></td>
-                            <td><span id="netpay">0</span></td>
+                            <td><i class="fa fa-dollar mr5"></i><span id="gross">0</span></td>
+                            <td><i class="fa fa-dollar mr5"></i><span id="federalGross">0</span></td>
+                            <td><i class="fa fa-dollar mr5"></i><span id="ficaGross">0</span></td>
+                            <td><i class="fa fa-dollar mr5"></i><span id="totalTaxes">0</span></td>
+                            <td><i class="fa fa-dollar mr5"></i><span id="dedTotal">0</span></td>
+                            <td><i class="fa fa-dollar mr5"></i><span id="netpay">0</span></td>
                         </tr>
                         <tr>
                           <td>YTD</td>
-                          <td><span id="ytdGross">0</span></td>
-                          <td><span id="ytdFederal">0</span></td> 
-                          <td><span id="ytdFICA">0</span></td>
-                          <td><span id="ytdTaxes">0</span></td>
-                          <td><span id="ytdDeduction">0</span></td>
-                          <td><span id="ytdNetpay">0</span></td>
+                          <td><i class="fa fa-dollar mr5"></i><span id="ytdGross">0</span></td>
+                          <td><i class="fa fa-dollar mr5"></i><span id="ytdFederal">0</span></td> 
+                          <td><i class="fa fa-dollar mr5"></i><span id="ytdFICA">0</span></td>
+                          <td><i class="fa fa-dollar mr5"></i><span id="ytdTaxes">0</span></td>
+                          <td><i class="fa fa-dollar mr5"></i><span id="ytdDeduction">0</span></td>
+                          <td><i class="fa fa-dollar mr5"></i><span id="ytdNetpay">0</span></td>
                         </tr>
                       </tbody>
                     </table></td>
@@ -243,7 +243,7 @@
           </div>
         </div>
       </div>
-        <div class="col-md-1 text-center">
+        <div class="col-md-1 text-center mt">
             <div class="pull-right">
               <button type="button" class="btn btn-success btnSuccess editUspayslip btn-sm" onClick="editUspayslip(event)" id="editUspaysliptext">Edit</button>
             </div>
@@ -270,10 +270,10 @@
 		            
 		            $("#assSalType").val(json.assSalType);
             		$("#assSalary").val(json.assSalary);
-		            if(json.assSalType == "Salary"){
+		            if(json.assSalType == "Salary" || json.assSalType == "LcaWage"){
 		            	$("#hoursAndEarningsTable").hide();
 		            	$("#assSalaryTable").show();
-		            	$("#assSalaryAmount").val(json.assSalary);
+		            	$("#assSalaryAmount").val(json.payPerSal);
 		            }else{
 		            	$("#hoursAndEarningsTable").show();
 		            	$("#assSalaryTable").hide();
@@ -340,7 +340,7 @@
 				        			postDed = postDed + ' <input type="hidden"  name="postDeduction['+i+'].id" value='+ded.id+'>';
 				        			postDed = postDed + ' <input type="hidden"  name="postDeduction['+i+'].preDeductionType" value='+ded.deductionType+'>';
 				        			postDed = postDed + ' <input type="hidden"  name="postDeduction['+i+'].preDeductionAmt" value='+ded.postDeductionAmt+' > ';
-				        			postDed = postDed + '<input type="text" id="'+i+'amount" name="postDeduction['+i+'].amount" value='+ded.postDeductionAmt+' class="formControl" readOnly></td>';
+				        			postDed = postDed + '<i class="fa fa-dollar paddingRight"></i><input type="text" id="'+i+'amount" name="postDeduction['+i+'].amount" value='+ded.postDeductionAmt+' class="formControl" readOnly style="width:94.5%"></td>';
 				        			postDed = postDed + ' </tr>';
 					            }	
 			            	  $("#postDeductionLength").val(json.postDed.length);
@@ -349,7 +349,7 @@
 	                      postDed = postDed + '<tfoot>';
 	                      postDed = postDed + '<tr>';
 	                      postDed = postDed + '<th>Total</th>';
-	                      postDed = postDed + '<td><span id="postDeductionTotal">'+json.postDedTotal+'</span></td>';
+	                      postDed = postDed + '<td><span id="postDeductionTotal">$ '+json.postDedTotal+'</span></td>';
 	                      postDed = postDed + '</tr>';
 	                      postDed = postDed + '</tfoot>';
 	                      postDed = postDed + '</table>';
@@ -377,7 +377,7 @@
 				            	preDed = preDed + ' <input type="hidden"  name="preDeduction['+i+'].id" value='+preded.id+'>';
 				            	preDed = preDed + ' <input type="hidden"  name="preDeduction['+i+'].preDeductionType" value='+preded.deductionType+'>';
 				            	preDed = preDed + ' <input type="hidden"  name="preDeduction['+i+'].preDeductionAmt" value='+preded.preDeductionAmount+' >'; 
-				            	preDed = preDed + ' <input type="text" id="preDeductionAmount'+i+'" name="preDeduction['+i+'].amount" value='+preded.preDeductionAmount+' class="formControl" readOnly></td>';
+				            	preDed = preDed + ' <i class="fa fa-dollar paddingRight"></i><input type="text" id="preDeductionAmount'+i+'" name="preDeduction['+i+'].amount" value='+preded.preDeductionAmount+' class="formControl" readOnly></td>';
 				            	preDed = preDed + ' </tr>';
 				            }
 				            $("#preDeductionLength").val(json.preDed.length);
@@ -417,7 +417,7 @@
 					            	output = output + ' <input type="hidden"  name="contribution['+i+'].taxType" value='+ot.taxType+'>';
 					            	output = output + ' <input type="hidden"  name="contribution['+i+'].preContributionType" value='+ot.contributionType+'>';
 					            	output = output + ' <input type="hidden"  name="contribution['+i+'].preContributionAmt" value='+ot.contributionAmt+' >'; 
-					            	output = output + '<input type="text" id="totalContributions'+i+'" name="contribution['+i+'].contributionAmount" value='+ot.contributionAmt+' class="formControl" readOnly></td>';
+					            	output = output + '<i class="fa fa-dollar paddingRight"></i><input type="text" id="totalContributions'+i+'" name="contribution['+i+'].contributionAmount" value='+ot.contributionAmt+' class="formControl" readOnly></td>';
 					            	output = output + '</tr>';
 			                  }
 		                	  $("#totalContributionsLngth").val(json.contribution.length);
@@ -462,7 +462,7 @@
 						            	payItem = payItem +'<input type="hidden" value='+pi.id+' id="id" name="payItem['+i+'].payItemId"/>';
 						            	payItem = payItem +'<input type="hidden" value='+pi.payItemName+' id="prePayItemName" name="payItem['+i+'].prePayItemName"/>';
 						            	payItem = payItem +'<input type="hidden" value='+pi.payItemAmt+' id="prePayItemAmt" name="payItem['+i+'].prePayItemAmt"/>';
-						            	payItem = payItem +' <td><input type="text" class="formControl" id="payItemAmount'+i+'" name="payItem['+i+'].payItemAmount" readOnly value='+pi.payItemAmt+'></td>';
+						            	payItem = payItem +' <td><i class="fa fa-dollar paddingRight"></i><input type="text" class="formControl" id="payItemAmount'+i+'" name="payItem['+i+'].payItemAmount" readOnly value='+pi.payItemAmt+'></td>';
 						            	payItem = payItem +' <td>';
 						            	payItem = payItem +' <div class="checkbox-new ml mr pull-left">';
 						            	payItem = payItem +' <input id="cashTips['+i+']" class="checkbox-custom" name="payItem['+i+'].payItemCheck" type="checkbox">';
@@ -485,7 +485,7 @@
 	                          payItem = payItem +' </table>';
 	                          $("#payItemDiv").empty();
 	                          $("#payItemDiv").append(payItem)
-	                          
+	                          $(".tablePayslip").find(".fa-dollar, .fa-clock-o").next(".formControl").css({"width":"94.5%"});
                        
 		        },
 		    }); 
@@ -541,6 +541,9 @@ function calculateTotalPayItemAmount(){
 }
 </script>
 <script>
+$(function(){
+	$(".tablePayslip").find(".fa-dollar, .fa-clock-o").next(".formControl").css({"width":"94.5%"});
+});
 function editUspayslip(event){
 	var maxPreCount = $("#preDeductionLength").val();
 	var maxPostCount = $("#postDeductionLength").val();
@@ -579,6 +582,7 @@ function editUspayslip(event){
 	}
 	
 	$("#tablePayslip").find(".formControl").toggleClass("activeEdit");
+	
 	var x = document.getElementsByClassName("formControl"), i;
 	for (i=0; i<x.length; i++) {
 		if(x[i].readOnly) {

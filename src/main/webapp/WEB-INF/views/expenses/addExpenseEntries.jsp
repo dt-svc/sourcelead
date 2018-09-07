@@ -371,10 +371,7 @@ function addAttachment(entityRowId,from){
     <input type='hidden' id="expenseAmountDivInputREPLACEROWID"/>
     <div id="expenseAmountDivREPLACEROWID">--</div>
 </div>
-<div id="divAddRowTr1Td9" style="display: none; float: left;">
-    <input type='hidden' id="expenseApprovedAmountDivInputREPLACEROWID"/>
-    <div id="expenseApprovedAmountDivREPLACEROWID">--</div>
-</div>
+
 <div id="divAddRowTr1Td5" style="display: none; float: left;">
     <input type='hidden' id="expenseRateTypeDivInputREPLACEROWID"/>
     <div id="expenseRateTypeDivREPLACEROWID">--</div>
@@ -384,20 +381,29 @@ function addAttachment(entityRowId,from){
     <div id="paymentModeDivREPLACEROWID">--</div>
 </div>
 
+ <div id="divAddRowTr1Td10" style="display: none; float: left;">
+    <input type='hidden' id="expenseBillableTypeDivInputREPLACEROWID"/>
+    <div id="expenseBillableTypeDivREPLACEROWID">--</div>
+</div> 
+
+
 <div id="divAddRowTr1Td7" style="display: none; float: left;">
     <input type='hidden' id="paidByDivInputREPLACEROWID" />
     <div id="paidByDivREPLACEROWID">--</div>
 </div>
-<div id="divAddRowTr1Td10" style="display: none; float: left;">
-    <input type='hidden' id="expenseBillableTypeDivInputREPLACEROWID"/>
-    <div id="expenseBillableTypeDivREPLACEROWID">--</div>
-</div>
+
 <div id="divAddRowTr1Td8" style="display: none; float: left;">
        <div id="hideAndShowDetailsDivREPLACEROWID" class="tbldata-dotdot_50">
 			<span id="hideAndShowDetailsButtonREPLACEROWID" style="display:none;"> <i class="fa fa-pencil-square-o AddRow" onclick="hideAndShowDetailsRow(REPLACEDOWNROWID,'Edit');"></i></span>
 			<i class="glyphicon glyphicon-trash Cred" onclick="removeExpenseRow(REPLACEROWID,REPLACEDOWNROWID);"></i>
 		</div>
 </div>
+
+<div id="divAddRowTr1Td9" style="display: none; float: left;">
+    <input type='hidden' id="expenseApprovedAmountDivInputREPLACEROWID"/>
+    <div id="expenseApprovedAmountDivREPLACEROWID">--</div>
+</div>
+
 <div id="divAddRowTr2" style="display: none; float: left;">
          <div class="expDetails">
 			          <div class="col-xs-12 col-sm-12 col-md-12 expAddRo myForm noPad clearfix">            
@@ -563,6 +569,14 @@ function addExpenseRow(from){
 			divRowTd5Str = divRowTd5Str.replace(/REPLACEROWID/g, (maxRowNum));
 			cell5.innerHTML = divRowTd5Str;
 			cellCount = parseInt(cellCount)+1;
+
+			if(from != null && from != 'undefined' && from != '' && from == 'approver'){
+				var cell10 = row.insertCell(parseInt(cellCount));
+				var divRowTd10Str = document.getElementById("divAddRowTr1Td10").innerHTML;
+				divRowTd10Str = divRowTd10Str.replace(/REPLACEROWID/g, (maxRowNum));
+				cell10.innerHTML = divRowTd10Str;
+				cellCount = parseInt(cellCount)+1;
+			}
 			
 			var cell6 = row.insertCell(parseInt(cellCount));
 			var divRowTd6Str = document.getElementById("divAddRowTr1Td7").innerHTML;
@@ -571,13 +585,6 @@ function addExpenseRow(from){
 			cellCount = parseInt(cellCount)+1;
 			
 			
-			if(from != null && from != 'undefined' && from != '' && from == 'approver'){
-				var cell10 = row.insertCell(parseInt(cellCount));
-				var divRowTd10Str = document.getElementById("divAddRowTr1Td10").innerHTML;
-				divRowTd10Str = divRowTd10Str.replace(/REPLACEROWID/g, (maxRowNum));
-				cell10.innerHTML = divRowTd10Str;
-				cellCount = parseInt(cellCount)+1;
-			}
 			
 			var cell7 = row.insertCell(parseInt(cellCount));
 			var divRowTd7Str = document.getElementById("divAddRowTr1Td8").innerHTML;

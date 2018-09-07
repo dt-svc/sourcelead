@@ -1,6 +1,7 @@
 package com.bis.sourcelead.dao;
 
 import java.util.List;
+import java.util.Map;
 
 import com.bis.sourcelead.entity.AssociateLoanAndAdvances;
 
@@ -12,5 +13,9 @@ public interface AssociateLoanAndAdvancesDao {
 
 	AssociateLoanAndAdvances getAssociateLoanAndAdvancesDetailsByCandidateId(Long candidateId,Long orgLocationId) throws Exception;
 	
-	List<AssociateLoanAndAdvances> getAssociateLoanAndAdvancesListByCandidateId(Long candidateId,Long orgLocationId) throws Exception;
+	List<AssociateLoanAndAdvances> getAssociateLoanAndAdvancesListByCandidateId(Long candidateId,Long orgLocationId, String type) throws Exception;
+	
+	List<AssociateLoanAndAdvances> getAssociateLoanAndAdvancesListByCandidateIdByOrgLocationId(Long candidateId,Long orgLocation);
+
+	Map<String, Double> getEmpLoansAndAdvancesCountListByOrgLocationId(Long candidateId);
 }

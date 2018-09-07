@@ -225,7 +225,7 @@ $(document).ready(function(){
 			          </td>
 			        </tr>
 			        <tr id="divEntityTsRow${2*(entryCount.count)}" style="display:none;">
-			          <td colspan="8">
+			          <td colspan="10">
 				         <div class="expDetails">
 				         <input type="hidden" id="expenseEntryId${(2*(entryCount.count))-1}" name="expenseEntry[${entryCount.index}].id" value='${entry.id}'/>
 				          <div class="col-xs-12 col-sm-12 col-md-12 expAddRo myForm noPad clearfix">            
@@ -275,7 +275,7 @@ $(document).ready(function(){
 									              </c:forEach>
 										     </select>
 									</div>
-								         <input type='text' class='form-control allownumericwithdecimal'  placeholder='Submitted Amount'  name='expenseEntry[${entryCount.index}].categoryAmount' id='submittedexpenseAmount${(2*(entryCount.count))-1}' value='${entry.submittedamount}' field-name='Submitted Amount' data-validation='required validate_float validate_length length1-10' onkeyup="getAmountValue(${(2*(entryCount.count))-1});">
+								         <input type='text' Readonly class='form-control allownumericwithdecimal'  placeholder='Submitted Amount'  name='expenseEntry[${entryCount.index}].categoryAmount' id='submittedexpenseAmount${(2*(entryCount.count))-1}' value='${entry.submittedamount}' field-name='Submitted Amount' data-validation='required validate_float validate_length length1-10' onkeyup="getAmountValue(${(2*(entryCount.count))-1});">
 									</div>
 		                 </div>
 							

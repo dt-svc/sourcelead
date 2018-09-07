@@ -153,6 +153,11 @@ background-color: #ddd; color: #333; border: 1px solid #ddd !important;
 	   <div id="immigrationLoadingVisasTab"></div>
 		<jsp:include page="visaDetailsTab.jsp" />
 	  </div>
+	  
+	  <div id="lcaTab" class="immigraTabs_inn">
+	  <div id="immigrationLcaLoadingTab"></div>
+		<jsp:include page="lcaDetailsTab.jsp" />	
+	  </div>
 	  	  
 	  <div id="passportsTab" class="immigraTabs_inn">
 	   <div id="immigrationLoadingPassportsTab"></div>
@@ -169,11 +174,7 @@ background-color: #ddd; color: #333; border: 1px solid #ddd !important;
 		<jsp:include page="taskDetailsTab.jsp" />
 	  </div>
 	  
-	  <div id="lcaTab" class="immigraTabs_inn">
-	  <div id="lcaLoadingTab"></div>
-		<jsp:include page="lcaDetailsTab.jsp" />	
-		
-	  </div>
+	  
 
 	</section>
     <div id="popUp"></div>
@@ -253,8 +254,7 @@ $(document).ready(function() {
         showLoading("immigrationLoadingVisasTab");
         immigration.displayVisaDetails(candidateId,'Visa');
         }else if(tab=='#lcaTab'){
-        	//LCA
-        	showLoading("lcaLoadingTab");
+        	showLoading("immigrationLcaLoadingTab");
         	immigration.getLcaDetailsInfo(immigrationId);
         }else if(tab=='#docsTab'){
         	showLoading("immigrationLoadingDocsTab");

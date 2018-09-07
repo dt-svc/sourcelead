@@ -1,6 +1,7 @@
 package com.bis.sourcelead.payroll.dto;
 
 import java.math.BigDecimal;
+import java.util.Map;
 
 public class YTDPayrollDTO {
 	
@@ -16,6 +17,26 @@ public class YTDPayrollDTO {
 	
 	private BigDecimal ytdFICA;
 	
+	private BigDecimal ytdMedicare;
+	
+	private BigDecimal ytdCounty;
+	
+	private BigDecimal ytdlocaltax;
+	
+	private Map<String, Double> ytdDedTypeMap;
+	
+	private Map<String, Double> ytdContributionTypeMap;
+	
+	public Map<String, Double> getYtdContributionTypeMap()
+	{
+		return ytdContributionTypeMap;
+	}
+
+	public void setYtdContributionTypeMap(Map<String, Double> ytdContributionTypeMap)
+	{
+		this.ytdContributionTypeMap = ytdContributionTypeMap;
+	}
+
 	public BigDecimal getYtdGross()
 	{
 		return ytdGross;
@@ -74,6 +95,46 @@ public class YTDPayrollDTO {
 	public void setYtdFICA(BigDecimal ytdFICA)
 	{
 		this.ytdFICA = ytdFICA;
+	}
+
+	public BigDecimal getYtdMedicare()
+	{
+		return ytdMedicare;
+	}
+
+	public BigDecimal getYtdCounty()
+	{
+		return ytdCounty;
+	}
+
+	public BigDecimal getYtdlocaltax()
+	{
+		return ytdlocaltax;
+	}
+
+	public void setYtdMedicare(BigDecimal ytdMedicare)
+	{
+		this.ytdMedicare = ytdMedicare;
+	}
+
+	public void setYtdCounty(BigDecimal ytdCounty)
+	{
+		this.ytdCounty = ytdCounty;
+	}
+
+	public void setYtdlocaltax(BigDecimal ytdlocaltax)
+	{
+		this.ytdlocaltax = ytdlocaltax;
+	}
+
+	public Map<String, Double> getYtdDedTypeMap()
+	{
+		return ytdDedTypeMap;
+	}
+
+	public void setYtdDedTypeMap(Map<String, Double> ytdDedTypeMap)
+	{
+		this.ytdDedTypeMap = ytdDedTypeMap;
 	}
 	
 	

@@ -12,6 +12,7 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -397,14 +398,23 @@ public class ExpensesApprovalRestController {
 		 globalVarsMap.put("startDate",startDate);
 		 globalVarsMap.put("endDate", endDate);
 		 
-		 StringBuilder amountCurrencyType = new StringBuilder();
-		 BigDecimal amountCurrencyType1 = new BigDecimal((expenses.getTotalAmount()));
-		 amountCurrencyType1 = amountCurrencyType1.setScale(2,BigDecimal.ROUND_HALF_UP );
+		/* StringBuilder amountCurrencyType = new StringBuilder();
+		 BigDecimal amountCurrencyType1 = new BigDecimal((expenses.getTotalAmount()));*/
+		// BigDecimal amountCurrencyType2 = new BigDecimal((expenses.getExpensesEntries()));
+		// amountCurrencyType1 = amountCurrencyType1.setScale(2,BigDecimal.ROUND_HALF_UP );
 		 
-		 
-		 amountCurrencyType.append(amountCurrencyType1).append(" ").append(currencyCode);
+		 Set<ExpensesEntries> expensesEntriesList = expenses.getExpensesEntries();
+		 for(ExpensesEntries expList: expensesEntriesList) {
+			 
+			 globalVarsMap.put("amount", expList.getSubmittedamount().toString());
+			 globalVarsMap.put("approvedAmount",expenses.getTotalAmount().toString());
+			 
+			
+		 }
+		/* amountCurrencyType.append(amountCurrencyType1).append(" ").append(currencyCode);
 		 globalVarsMap.put("amount",amountCurrencyType1.toString());
-
+		 globalVarsMap.put("approvedAmount",expenses.getTotalAmount().toString());
+*/
 		 
 		Date todayDate = new Date();
 		 globalVarsMap.put("submitForApprovalDate",commonUtil.dateStrFromOrgDateFormatter(loginOrgLocation.getDateFormat(),todayDate));
