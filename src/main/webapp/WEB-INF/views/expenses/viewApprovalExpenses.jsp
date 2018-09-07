@@ -124,7 +124,6 @@
 						      </c:if>
 		                  </c:forEach>
 		                </sec:authorize>  
-		                
 		                <sec:authorize access="!hasAnyRole(\'ROLE_VIEW_CLIENT\',\'ROLE_VIEW_EDIT_CLIENT\')">
 						 <c:forEach var="project" items="${expEntry.projectsList}">
 						 
@@ -133,7 +132,6 @@
 						      </c:if>
 		                  </c:forEach>
 		                </sec:authorize>  
-		                
 		            </span><div class="clearfix"></div>
 					</div>
 					<div class="project_details_cta">
@@ -156,11 +154,9 @@
 					      <strong>Approved Amount:</strong><span>${expenses.totalAmount}</span><div class="clearfix"></div> 	
 					    </c:if>
 					    </div>
-					
 					<div class="project_details_cta">
 						<strong>Created By:</strong><span>${expenses.createdBy}</span><div class="clearfix"></div>
 					</div>
-						                    			
 					<div class="clearfix"></div>
 				</div>
            
