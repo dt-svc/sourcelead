@@ -102,11 +102,20 @@
 					<div class="project_details_cta">
 						<strong>No of Expenses:</strong><span>${expenses.noOfExpenses}</span><div class="clearfix"></div>
 					</div>
+					
+					
+					<c:forEach var="entry" items="${expenses.expenseEntry}" varStatus="entryCount">
+					
 					<div class="project_details_cta">
-						<strong>Amount:</strong><span>${expenses.totalAmount}</span><div class="clearfix"></div>
+						<strong>Submitted Amount:</strong><span>${entry.submittedamount}</span><div class="clearfix"></div>
+					</div>
+					 </c:forEach> 
+					
+					<div class="project_details_cta">
+						<strong>Approved Amount:</strong><span>${expenses.totalAmount}</span><div class="clearfix"></div>
 					</div> 
 					<div class="project_details_cta">
-						<strong>Exp Created By:</strong><span>${expenses.createdBy}</span><div class="clearfix"></div>
+						<strong>Created By:</strong><span>${expenses.createdBy}</span><div class="clearfix"></div>
 					</div>
 					                   			
 					<div class="clearfix"></div>
@@ -133,9 +142,16 @@
 			           <td><div id="categoryTypeDiv${entryCount.count}">${entry.categoryName}</div></td>
 			           <td><div id="entryDesDiv${entryCount.count}" class="tbldata-dotdot_50" title="${entry.entryDescription}">${entry.entryDescription}</div></td>
 			           <td><div id="expenseAmountDiv${entryCount.count}">${entry.submittedamount}</div></td>
-			           <c:if test="${submissionStatus == 'APPROVED'}">
-			            <td><div id="expenseAmountDiv${entryCount.count}">${entry.amount}</div></td>
-			             </c:if>
+			           
+			              <c:choose>
+		               	<c:when test="${submissionStatus == 'APPROVED'}">
+		           			<td><div id="expenseAmountDiv${entryCount.count}">${entry.amount}</div></td>    	
+		               	</c:when>
+		               	<c:otherwise>
+		               		<td><div id="expenseAmountDiv${entryCount.count}">---</div></td>
+		               	</c:otherwise>
+		               </c:choose>
+			         
 			           <td><div id="expenseRateType${entryCount.count}">${entry.categoryAmountType}</div></td>
 			           <td><div id="paymentModeDiv${entryCount.count}">${entry.paymentMode}</div></td>
 			           <td><div id="paidByDiv${entryCount.count}">${entry.paidBy}</div></td>
