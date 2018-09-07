@@ -27,7 +27,7 @@ public interface AssociateBalanceLeaveService {
 
 	float getTotalLeavesCountByUserIdAndLeaveTypeId(Long leaveTypeId, Long userId, Long orgLocationId, Long orgId);
 
-	int addLeaveTypeToAssociate(List<User> userList, OrgLocations orgLocation, LeaveType leaveType, User loginUser);
+	int addLeaveTypeToAssociate(List<User> userList, OrgLocations orgLocation, LeaveType leaveType, User loginUser, float noOfLeaves);
 
 	int updateAssociateBalanceLeaveType(List<User> userList, Long orgLocationId, LeaveType leaveType,int satus);
 

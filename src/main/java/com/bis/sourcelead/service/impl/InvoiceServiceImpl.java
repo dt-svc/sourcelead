@@ -424,8 +424,7 @@ public class InvoiceServiceImpl implements InvoiceService {
 
 		if (file.exists() && !file.isDirectory()) {
 			invoice.setFileName(file.getName());
-			invoice.setFileUrl(
-					FileUploadUtil.moveFile(staticPath, org.getId(), orgLocation.getId(), "InvoicePdf", file));
+			invoice.setFileUrl(FileUploadUtil.moveFile(staticPath, org.getId(), orgLocation.getId(), "InvoicePdf", file));
 		}
 		if (null != file) {
 			file.delete();

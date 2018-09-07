@@ -83,10 +83,6 @@
                   </div>
                       </div>
                      
-<%--                    <a href="<c:url value='${appPath}/checkBalance'/>" class="btn btn-info btn-sm mr10" >check monthly bal</a>   --%>
-<%--                     <a href="<c:url value='${appPath}/calculateQuarterlyBalance'/>" class="btn btn-info btn-sm mr10" >check quarterly Bal</a>   --%>
-<%--                     <a href="<c:url value='${appPath}/calculateHalfyearlyBalance'/>" class="btn btn-info btn-sm mr10" >check halfyearly Bal</a>   --%>
-<%--                    <a href="<c:url value='${appPath}/calculateYearlyBalance'/>" class="btn btn-info btn-sm mr10" >check yearly Bal</a>   --%>
       </div>
         </div>
       <!-- Content Area Ends--> 

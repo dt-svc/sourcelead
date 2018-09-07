@@ -279,48 +279,4 @@ public class UserController {
 			return str == null || "".equals(str.trim());
 		}
 	 
-	 
-	 /**
-		 * User Group List JSp
-		 * @param deductionUUID
-		 * @param request
-		 * @param response
-		 * @return ModelAndView
-		 * @throws Exception
-		 */
-		@RequestMapping(value = "/userGroupList")
-		public ModelAndView userBatchList(HttpServletRequest request,HttpServletResponse response) throws Exception {
-			   OrgLocations loginOrgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
-			   ModelAndView model = new ModelAndView();
-			   List<Department> departmentList = departmentService.getDepartmentByOrgLocationId(loginOrgLocation.getId());
-			   model.addObject("departmentList", departmentList);
-			   model.addObject("sourceleadUrl", sourceleadUrl);
-			   model.setViewName("users/usergroupList");
-		       return model;
-		}
-		
-		@RequestMapping(value = "/addUserGroup")
-		public ModelAndView addUserGroup(UserGroupDTO userGroupDto , HttpServletRequest request,HttpServletResponse response) throws Exception {
-			   OrgLocations loginOrgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
-			   ModelAndView model = new ModelAndView();
-			   List<Department> departmentList = departmentService.getDepartmentByOrgLocationId(loginOrgLocation.getId());
-			   model.addObject("departmentList", departmentList);
-			   if(StringUtils.isNotBlank(userGroupDto.getGroupUUID())){
-				   UserGroup userGroup = userGroupDao.findUserGroupById(userGroupDto.getGroupUUID());
-				   model.addObject("userGroup", userGroup);
-			/*	   if(userGroup.getUserId() != null) {
-					   String[] userIds = userGroup.getUserId().split(",");
-					   List<Long> userIdList = new ArrayList<>();
-					   for(int i=0;i<userIds.length;i++){
-							userIdList.add(Long.parseLong(userIds[i]));
-					   }
-					   List<UserRole> userList = userRoleService.getUserListByUserIdList(userIdList,loginOrgLocation.getId());
-					   model.addObject("selectedUserList", userList);
-				   }*/
-			   }
-			   model.addObject("sourceleadUrl", sourceleadUrl);
-			   model.setViewName("users/addUserGroup");
-		       return model;
-		}
-		
 }

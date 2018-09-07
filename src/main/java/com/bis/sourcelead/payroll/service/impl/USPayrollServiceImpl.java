@@ -1,11 +1,14 @@
 package com.bis.sourcelead.payroll.service.impl;
 
+import java.io.File;
+import java.io.FileOutputStream;
 import java.io.UnsupportedEncodingException;
 import java.math.BigDecimal;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -26,6 +29,7 @@ import org.springframework.stereotype.Service;
 import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.dto.Response;
 import com.bis.sourcelead.dto.ResponseList;
+import com.bis.sourcelead.entity.Candidate;
 import com.bis.sourcelead.entity.EmailAttachment;
 import com.bis.sourcelead.entity.EmailMessage;
 import com.bis.sourcelead.entity.EmailScenario;
@@ -33,6 +37,7 @@ import com.bis.sourcelead.entity.LookUpData;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.enums.Result;
+import com.bis.sourcelead.payroll.dao.AssociateTaxDao;
 import com.bis.sourcelead.payroll.dao.USPayrollDao;
 import com.bis.sourcelead.payroll.dao.USPaysheetDao;
 import com.bis.sourcelead.payroll.dto.ConfirmPayTotalSumDTO;
@@ -42,6 +47,8 @@ import com.bis.sourcelead.payroll.dto.PayrollApproverDTO;
 import com.bis.sourcelead.payroll.dto.PayrollConstant;
 import com.bis.sourcelead.payroll.dto.PayrollDeductionDTO;
 import com.bis.sourcelead.payroll.dto.USPayrollDTO;
+import com.bis.sourcelead.payroll.dto.YTDPayrollDTO;
+import com.bis.sourcelead.payroll.entity.AssociateTax;
 import com.bis.sourcelead.payroll.entity.EmployeePayroll;
 import com.bis.sourcelead.payroll.entity.EmployeePayrollTax;
 import com.bis.sourcelead.payroll.entity.EmployerPayrollTax;
@@ -50,19 +57,34 @@ import com.bis.sourcelead.payroll.entity.USPayPeriod;
 import com.bis.sourcelead.payroll.service.AssociateContributionService;
 import com.bis.sourcelead.payroll.service.AssociateDeductionService;
 import com.bis.sourcelead.payroll.service.ConfigurePayrollApproverService;
+import com.bis.sourcelead.payroll.service.GenerateUSPayrollService;
+import com.bis.sourcelead.payroll.service.PayrollAdjustmentService;
 import com.bis.sourcelead.payroll.service.PayrollDeductionService;
+import com.bis.sourcelead.payroll.service.PaysheetFrequencyService;
 import com.bis.sourcelead.payroll.service.USPayPeriodService;
 import com.bis.sourcelead.payroll.service.USPayrollService;
 import com.bis.sourcelead.payroll.service.USPaysheetService;
+import com.bis.sourcelead.payroll.util.PayrollPdfUtil;
 import com.bis.sourcelead.payroll.util.PayrollUtil;
 import com.bis.sourcelead.service.EmailScenarioService;
 import com.bis.sourcelead.service.UserService;
+import com.bis.sourcelead.util.CommonUtil;
 import com.bis.sourcelead.util.EmailScenerioUtil;
+import com.bis.sourcelead.util.FileUploadUtil;
+import com.itextpdf.text.BaseColor;
+import com.itextpdf.text.Document;
+import com.itextpdf.text.Element;
+import com.itextpdf.text.Font;
+import com.itextpdf.text.Paragraph;
+import com.itextpdf.text.pdf.PdfPCell;
+import com.itextpdf.text.pdf.PdfPTable;
+import com.itextpdf.text.pdf.PdfWriter;
 
 @Service
 public class USPayrollServiceImpl  implements USPayrollService{
 	
 	private static final Logger logger = LoggerFactory.getLogger(USPayrollServiceImpl.class);
+	
 	
 	@Autowired
 	USPayrollDao uSPayrollDao;
@@ -102,6 +124,24 @@ public class USPayrollServiceImpl  implements USPayrollService{
 	
 	@Autowired
 	private PayrollUtil payrollUtil;
+	
+	@Autowired
+	AssociateTaxDao associateTaxDao;
+	
+	@Autowired
+	GenerateUSPayrollService generateUSPayrollService;
+	
+	@Autowired
+	CommonUtil commonUtil;
+	
+	@Value("${static.path}")
+	private String staticPath;
+	
+	@Autowired
+	PayrollPdfUtil payrollPdfUtil;
+	
+	@Autowired
+	PayrollAdjustmentService payrollAdjustmentService;
 	
 	
 	@Override
@@ -359,6 +399,7 @@ public class USPayrollServiceImpl  implements USPayrollService{
 				int isUpadted = uSPayPeriodService.updatedPayperiod(confirmPaySumDto.getPpn());
 			}
 			Set<EmployeePayroll> payrollList = pf.getEmployeepayroll();
+			Set<EmployeePayroll> approvedPayrollList = new HashSet<>();
 			for (EmployeePayroll payroll : payrollList) {
 				for (Long payrollId : confirmPaySumDto.getPid()) {
 					if (payrollId.longValue() == payroll.getId().longValue()) {
@@ -366,6 +407,7 @@ public class USPayrollServiceImpl  implements USPayrollService{
 						if (PayrollConstant.DRAFT.equalsIgnoreCase(confirmPaySumDto.getConfirmType())) {
 							payroll.setPayPeriodNum(String.valueOf(uSPayPeriod.getPayPeriodNum()));
 						}
+						approvedPayrollList.add(payroll);
 					}
 				}
 			}
@@ -376,7 +418,10 @@ public class USPayrollServiceImpl  implements USPayrollService{
 				res.setResponseMessage(Result.SUCCESS.getValue());
 				res.setObject(confirmPaySumDto);
 				
+				generatePdfForEmployee(approvedPayrollList,orgLocation);
+				
 				sendMailApprovedMailToRequestedUser(orgLocation,savedPF,loginUser);
+				
                  
 			}
 		} catch (Exception e) {
@@ -386,6 +431,33 @@ public class USPayrollServiceImpl  implements USPayrollService{
 		}
 		return res;
 	}
+	
+	/**
+	 * Generate pay slip for an approved employees
+	 * @param approvedPayrollList
+	 * @param orgLocation
+	 */
+	private void generatePdfForEmployee(Set<EmployeePayroll> approvedPayrollList, OrgLocations orgLocation) {
+		for (EmployeePayroll payroll : approvedPayrollList) {
+			try {
+				AssociateTax associateTax= associateTaxDao.taxDetailsByOrglocationIdAndCandidateId(payroll.getCandidate().getId(),orgLocation.getId());
+				File file = payrollPdfUtil.generateEmployeePayrollPayslipPdf(payroll,orgLocation,associateTax);
+				payroll.setPaySlipFileName(file.getName());
+				payroll.setPaySlipFileURL(FileUploadUtil.moveFile(staticPath, orgLocation.getOrg().getId(), orgLocation.getId(), "US_PAYROLL", file));
+				EmployeePayroll updatedPayroll = payrollAdjustmentService.updateEmployeePayroll(payroll);
+				if(updatedPayroll != null) {
+					logger.info("Pay Slip generated for an employee "+payroll.getCandidate().getFirstName());
+				}
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+			
+		}
+		
+		
+	}
+
+
 	
 
 	private void sendMailApprovedMailToRequestedUser(OrgLocations orgLocation,PaysheetFrequency savedPF,User loginUser) throws Exception {
@@ -494,4 +566,10 @@ public class USPayrollServiceImpl  implements USPayrollService{
 		uSPayPeriod.setUpdatedBy(loginUser.getId());
 		return uSPayPeriodService.savePayPeriodNumber(uSPayPeriod);
 	}
-}
+	
+	
+
+	
+	}
+
+	
