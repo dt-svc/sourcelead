@@ -12,8 +12,8 @@ import java.util.stream.Collectors;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import org.apache.commons.lang.exception.ExceptionUtils;
 import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang.exception.ExceptionUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -27,9 +27,8 @@ import org.springframework.web.servlet.ModelAndView;
 
 import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.dao.CandidateDao;
-
+import com.bis.sourcelead.dao.UserGroupDao;
 import com.bis.sourcelead.dto.AssociateLoanAndAdvancesDTO;
-import com.bis.sourcelead.dao.UserGroupDao
 import com.bis.sourcelead.dto.AssociatePayItemDTO;
 import com.bis.sourcelead.dto.AssociateSalaryDTO;
 import com.bis.sourcelead.dto.AssociateSalaryHistoryDTO;
@@ -37,9 +36,7 @@ import com.bis.sourcelead.dto.CandidateDTO;
 import com.bis.sourcelead.dto.Response;
 import com.bis.sourcelead.dto.ResponseList;
 import com.bis.sourcelead.dto.UsMyPayrollFormsDTO;
-import com.bis.sourcelead.dto.UserDTO;
 import com.bis.sourcelead.dto.UserGroupDTO;
-import com.bis.sourcelead.entity.AssociateLoanAndAdvances;
 import com.bis.sourcelead.entity.AssociatePayItem;
 import com.bis.sourcelead.entity.AssociateSalary;
 import com.bis.sourcelead.entity.Candidate;
@@ -71,7 +68,6 @@ import com.bis.sourcelead.payroll.dto.USPayrollDTO;
 import com.bis.sourcelead.payroll.dto.USPaysheetDTO;
 import com.bis.sourcelead.payroll.entity.AssociateContribution;
 import com.bis.sourcelead.payroll.entity.AssociateDeduction;
-import com.bis.sourcelead.payroll.entity.ConfigurePayrollApprover;
 import com.bis.sourcelead.payroll.entity.PayItem;
 import com.bis.sourcelead.payroll.entity.PayrollContribution;
 import com.bis.sourcelead.payroll.entity.PayrollDeduction;
