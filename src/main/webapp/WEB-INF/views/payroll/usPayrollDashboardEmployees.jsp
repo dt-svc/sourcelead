@@ -140,17 +140,6 @@ function userGroupPaginationFun(url){
 
 
 <script>
-function addbatches(groupUUID){
-	if(groupUUID == null || groupUUID == '' || groupUUID == 'undefined'){
-		groupUUID = "";
-	}
-	$.get(sourceleadUrl+"/addUserGroup?"+tokenParamName+"="+tokenValue+"&groupUUID="+groupUUID,  function(result) {
-		$("#addUserGroupFormDiv").empty();
-		$("#addUserGroupFormDiv").append(result);
-// 		getUsersByDepartment();
-		$(".addPayrollGroupWrap, .mask").fadeIn();
-	});
-}
 
 function deleteUserGroup(groupUUID){
 	$("#popUp").empty();
@@ -184,5 +173,20 @@ function cancelDelete(){
 }
 </script>
 
+<div id="addUserGroupFormDiv123" class="addUserGroupPopup" style="display:none">
  <jsp:include page="addUserGroup.jsp" />
+</div>
 
+<script>
+function addbatches(groupUUID){
+	if(groupUUID == null || groupUUID == '' || groupUUID == 'undefined'){
+		groupUUID = "";
+	}
+	$.get(sourceleadUrl+"/addUserGroup?"+tokenParamName+"="+tokenValue+"&groupUUID="+groupUUID,  function(result) {
+		$("#addUserGroupFormDiv123").empty();
+		$("#addUserGroupFormDiv123").append(result);
+// 		getUsersByDepartment();
+	});
+	$(".addUserGroupPopup").show();
+}
+</script>
