@@ -145,8 +145,16 @@
 					<div class="project_details_cta">
 						<strong>No of Expenses:</strong><span>${expenses.noOfExpenses}</span><div class="clearfix"></div>
 					</div>
+					<c:forEach var="entry" items="${expenses.expenseEntry}" varStatus="entryCount">
+					
 					<div class="project_details_cta">
-						<strong>Amount:</strong><span>${expenses.expenseAmountDivId}</span><div class="clearfix"></div>
+						<strong>Submitted Amount:</strong><span>${entry.submittedamount}</span><div class="clearfix"></div>
+					</div>
+					
+					 </c:forEach> 
+					
+					<div class="project_details_cta">
+						<strong>Approved Amount:</strong><span>${expenses.totalAmount}</span><div class="clearfix"></div>
 					</div>
 					
 					<div class="project_details_cta">

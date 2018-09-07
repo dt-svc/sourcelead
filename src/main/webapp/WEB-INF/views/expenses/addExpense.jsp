@@ -159,6 +159,7 @@ $(document).ready(function(){
 				<th>Payment Mode</th>
 				<th>Paid By</th>
 				<th>Action</th>
+				
 			</tr>
 		</thead>	
 			<tbody>
@@ -179,7 +180,7 @@ $(document).ready(function(){
 			          </td>
 			           <td>
 			               <input type='hidden' id="expenseAmountDivInput${(2*(entryCount.count))-1}" value="${entry.categoryAmount}"/>
-			               <div id="expenseAmountDiv${(2*(entryCount.count))-1}">${entry.categoryAmount}</div>
+			               <div id="expenseAmountDiv${(2*(entryCount.count))-1}">${entry.submittedamount}</div>
 			          </td>
 			          <td>
 			              <input type='hidden' id="expenseRateTypeDivInput${(2*(entryCount.count))-1}" value="${entry.categoryAmountType}"/>
@@ -247,7 +248,7 @@ $(document).ready(function(){
 									              </c:forEach>
 										  </select>
 									</div>
-								         <input type='text' class='form-control allownumericwithdecimal'  placeholder='Amount'  name='expenseEntry[${entryCount.index}].categoryAmount' id='expenseAmount${(2*(entryCount.count))-1}' value='${entry.categoryAmount}' field-name='Amount' data-validation='required validate_float validate_length length1-10' onkeyup="getAmountValue(${(2*(entryCount.count))-1});">
+								         <input type='text' class='form-control allownumericwithdecimal'  placeholder='Amount'  name='expenseEntry[${entryCount.index}].categoryAmount' id='expenseAmount${(2*(entryCount.count))-1}' value='${entry.submittedamount}' field-name='Amount' data-validation='required validate_float validate_length length1-10' onkeyup="getAmountValue(${(2*(entryCount.count))-1});">
 									</div>
 		                 </div>
 		                 
