@@ -91,7 +91,7 @@ function checkBox(){
               <label class="col-md-3">Vendor Contact<span class="text-danger">*</span></label>
               <div class="col-md-9 chooRadius">
               <div class="input-group col-md-10 pull-left">
-                <select class="chosen-select form-control" id="vendorContact" name="vendorContact" data-validation="required" field-name="Vendor Contact">
+                <select class="chosen-select form-control" multiple="multiple"  id="vendorContact" name="vendorContact" data-validation="required" field-name="Vendor Contact">
                 </select>
                 <span class="input-group-addon cursorPointer bg-blue" onclick="getVendorContacts();"><i class="fa fa-refresh "></i></span>
               </div>
@@ -867,7 +867,7 @@ function saveInvoice(saveType){
 	var currencyCode = '${SourceLeadWeb_currencyCode}';
 	var maxTsRowNum = parseInt($("input[name = 'invoiceExpMaxRowNumber']").val());
          if ($('#project_payable_invoice_form').validate(false, validationSettings)){  
- 	 	    var formData = getFormData("project_payable_invoice_form");
+ 	 	    var formData = getFormData1("project_payable_invoice_form");
  	 	  if(maxTsRowNum==0){
 	        	var result = "";
 	     		result = result +"	<div class='project_inn_mask'></div>";
@@ -881,16 +881,23 @@ function saveInvoice(saveType){
 	     		$(".project_inn_mask").fadeIn(200);
 		        }else{
 		        	  $("#invoiceLoading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
-		        	  $.post(sourceleadUrl+"/saveExpensesInvoice?"+tokenParamName+"="+tokenValue+"&userId="+userId+"&orgLocationId="+orgLocationId+"&saveType="+saveType+"&currencyCode="+currencyCode+"&invoiceType=payable&type=expenses", formData, function(data) {
-			          			if(data == "success"){
-			          			$("#invoiceLoading").removeAttr("style");
-	    		     			location.replace(sourceleadUrl+"/payablesList");
-	    		     			$("#selector1").removeAttr("style");
-					    		$("#selector1").css({ display: "block" });
-					    	    $("#msgDiv").html("Successfully you have created a Bill..");
-	    		     			msgFadein();
-			          			}
-		        		  
+// 		          	  $.post(sourceleadUrl+"/saveExpensesInvoice?"+tokenParamName+"="+tokenValue+"&userId="+userId+"&orgLocationId="+orgLocationId+"&saveType="+saveType+"&currencyCode="+currencyCode+"&invoiceType=payable&type=expenses", formData, function(data) {
+		        	  $.ajax({
+		        		  url: sourceleadUrl+"/saveExpensesInvoice?"+tokenParamName+"="+tokenValue+"&userId="+userId+"&orgLocationId="+orgLocationId+"&saveType="+saveType+"&currencyCode="+currencyCode+"&invoiceType=payable&type=expenses",
+		        		  type: "POST",
+		        		  data: formData,
+		        		  processData: false,
+		        		  contentType: false,
+		        		  success: function (result) {
+				  					$("#invoiceLoading").removeAttr("style");
+		    		     			location.replace(sourceleadUrl+"/payablesList");
+		    		     			$("#selector1").removeAttr("style");
+						    		$("#selector1").css({ display: "block" });
+						    	    $("#msgDiv").html("Successfully you have created a Invoice..");
+		    		     			msgFadein();
+		        		  }
+// 		        	  $.post(sourceleadUrl+"/saveExpensesInvoice?"+tokenParamName+"="+tokenValue+"&userId="+userId+"&orgLocationId="+orgLocationId+"&saveType="+saveType+"&currencyCode="+currencyCode+"&invoiceType=Receivable&type=expenses", formData, function(data) {
+			  			
 			  			   }); 
 		    	         return true; 
 		        }

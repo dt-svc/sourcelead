@@ -257,9 +257,9 @@ public class InvoiceServiceImpl implements InvoiceService {
       		}
       		
       		if(StringUtils.isNotBlank(invoiceDTO.getVendorContact())){
-      			User contactUser = userService.getUserById(Long.parseLong(invoiceDTO.getVendorContact()));
+//      			User contactUser = userService.getUserById(Long.parseLong(invoiceDTO.getVendorContact()));
       			//invoice.setContactUser(contactUser);
-      			invoice.setContactUsers(contactUser.getId().toString());
+      			invoice.setContactUsers(invoiceDTO.getVendorContact());
       		}
       		invoice.setInvoiceType(Constants.Payables);
       		 //generatedId = getInvoiceOrBillGeneratedId(orgLocation, vendorOrgLocation, Constants.Receivable);
@@ -2704,8 +2704,10 @@ public class InvoiceServiceImpl implements InvoiceService {
 			}
 
 			if (StringUtils.isNotBlank(invoiceDTO.getVendorContact())) {
-				User contactUser = userService.getUserById(Long.parseLong(invoiceDTO.getVendorContact()));
-				invoice.setContactUser(contactUser);
+				/*User contactUser = userService.getUserById(Long.parseLong(invoiceDTO.getVendorContact()));
+				invoice.setContac(contactUser);*/
+				invoice.setContactUsers(invoiceDTO.getVendorContact());
+
 			}
 			invoice.setInvoiceType(Constants.Payables);
 		} else {

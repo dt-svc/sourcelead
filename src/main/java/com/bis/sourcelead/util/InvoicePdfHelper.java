@@ -262,10 +262,10 @@ public class InvoicePdfHelper {
 					tableq.setWidthPercentage(100);
 					StringBuilder toAddress = new StringBuilder();
 
-					toAddress.append(invoice.getContactUser().getFullName());
+					toAddress.append(contactUser.getFullName());
 					toAddress.append(System.getProperty("line.separator"));
 
-					toAddress.append(invoice.getContactUser().getEmail());
+					toAddress.append(contactUser.getEmail());
 					toAddress.append(System.getProperty("line.separator"));
 
 					toAddress.append(orgRel.getResponderLocationId().getOrgLocationName());

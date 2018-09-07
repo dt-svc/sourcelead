@@ -179,24 +179,31 @@ public class ExpensesInvoicePdfHelper {
 				PdfPTable tableq = new PdfPTable(2);
 				tableq.setWidthPercentage(100);
 				StringBuilder toAddress = new StringBuilder();
+				User contactUser=null;
+				if(invoice.getContactUsers() != null && !invoice.getContactUsers().isEmpty()) {
+					String[] contactUsers = invoice.getContactUsers().split(",");
+					for(int i=0; i < contactUsers.length; i++) {
+						contactUser = userDao.getUserById(Long.parseLong(contactUsers[i]));
+						toAddress.append(contactUser.getFullName());
+						toAddress.append(System.getProperty("line.separator"));
 
-				toAddress.append(invoice.getContactUser().getFullName());
-				toAddress.append(System.getProperty("line.separator"));
+						toAddress.append(contactUser.getEmail());
+						toAddress.append(System.getProperty("line.separator"));
+						if (contactUser.getMobilePhone() != null
+								&& !"".equals(contactUser.getMobilePhone())) {
+							toAddress.append(contactUser.getMobilePhone());
+						}
 
-				toAddress.append(invoice.getContactUser().getEmail());
-				toAddress.append(System.getProperty("line.separator"));
-
+					}
+				}
+				
 				toAddress.append(orgRel.getResponderLocationId().getOrgLocationName());
 				toAddress.append(System.getProperty("line.separator"));
 
 				toAddress.append(clientAddress.toString());
 				toAddress.append(System.getProperty("line.separator"));
 
-				if (invoice.getContactUser().getMobilePhone() != null
-						&& !"".equals(invoice.getContactUser().getMobilePhone())) {
-					toAddress.append(invoice.getContactUser().getMobilePhone());
-				}
-
+				
 				tableq.addCell(getCellValue(toAddress.toString(), PdfPCell.ALIGN_LEFT));
 				if (invoice.getAccountDetails() != null && !"".equals(invoice.getAccountDetails())) {
 					tableq.addCell(getCellValue(invoice.getAccountDetails(), PdfPCell.ALIGN_RIGHT));
