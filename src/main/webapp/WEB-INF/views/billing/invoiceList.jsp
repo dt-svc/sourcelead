@@ -636,8 +636,7 @@ function invoicePagination(url){
 							result = result +' <a class="successBtn primary pull-left" onClick="unLinkInvoice(\''+report.invoiceUUID+'\')">UnLink</a>  ';
 						}else if(report.invoiceStatus == "Void"){
 							result = result +'           <span class="colorRed pull-left">Void</span>   ';	
-						}
-						else{
+						}else{
 							result = result +'           <span class="clearfix" ><a onclick="acceptedInvoice(\''+report.invoiceUUID+'\');" title="Accept"><i class="fa fa-check text-success paddingRight"></i></a><a onclick="rejectInvoice(\''+report.invoiceUUID+'\');" title="Reject"><i class="paddingLeft fa fa-times text-danger"></i></a></span>';
 
 						}                                                                         
@@ -1389,14 +1388,25 @@ function exportToReceivablePdf(){
 	     {
 			tags.push($(this).val());
 		 });
+		
+		var durationType = null;
+		$('input:radio[name=invoiceCustomDays]:checked').each(function() {
+		durationType=$(this).val();
+		});
+		
+		var invoiceDeleteStatus = null;
+		
+		$('input:radio[name=invoiceStatusDelete]:checked').each(function() {
+			invoiceDeleteStatus = $(this).val();
+		});
+		
 		var emptyExport = $('#emptyInvoiceId').val();
-		var durationType = $('input[name=invoiceCustomDays]:checked').val();
 		
 		var exportStartDate = $("#billingStartDate").val();
 		var exportEndDate = $("#billingEndDate").val();
 		
 		if(emptyExport > 0){
-			window.location.href = sourceleadUrl+"/getBillingExportList?"+tokenParamName+"="+tokenValue+"&invoiceStatus="+invoiceStatus+"&paymentStatus="+paymentStatus+"&durationType="+durationType+"&exportStartDate="+exportStartDate+"&exportEndDate="+exportEndDate+"&tags="+tags+"&exportType=pdf&invoiceType=receivable";
+			window.location.href = sourceleadUrl+"/getBillingExportList?"+tokenParamName+"="+tokenValue+"&invoiceStatus="+invoiceStatus+"&paymentStatus="+paymentStatus+"&durationType="+durationType+"&exportStartDate="+exportStartDate+"&exportEndDate="+exportEndDate+"&tags="+tags+"&invoiceDeleteStatus="+invoiceDeleteStatus+"&exportType=pdf&invoiceType=receivable";
 		}else{
 			 var result = "";
 				result = result +"	<div class='project_inn_mask'></div>";
@@ -1418,6 +1428,7 @@ function exportToReceivableExcel(){
 	
 	 var invoiceStatus = [];
 	 var paymentStatus = [];
+	 var tags = [];
 	 
 		$('input:checkbox[name=invoiceStatus]:checked').each(function() 
 	    {
@@ -1428,18 +1439,30 @@ function exportToReceivableExcel(){
 		 {
 			paymentStatus.push($(this).val());
 		});
+		
 		$('input:checkbox[name=tags]:checked').each(function() 
         {
 		   tags.push($(this).val());
 	    });
+		
+		var durationType = null;
+		$('input:radio[name=invoiceCustomDays]:checked').each(function() {
+		durationType=$(this).val();
+		});
+		
+		var invoiceDeleteStatus = null;
+		
+		$('input:radio[name=invoiceStatusDelete]:checked').each(function() {
+			invoiceDeleteStatus = $(this).val();
+		});
+		
 		var emptyExport = $('#emptyInvoiceId').val();
-		var durationType = $('input[name=invoiceCustomDays]:checked').val();
 		
 		var exportStartDate = $("#billingStartDate").val();
 		var exportEndDate = $("#billingEndDate").val();
 		
 		if(emptyExport > 0){
-		window.location.href = sourceleadUrl+"/getBillingExportList?"+tokenParamName+"="+tokenValue+"&invoiceStatus="+invoiceStatus+"&paymentStatus="+paymentStatus+"&durationType="+durationType+"&exportStartDate="+exportStartDate+"&exportEndDate="+exportEndDate+"&tags="+tags+"&exportType=xls&invoiceType=receivable";
+		window.location.href = sourceleadUrl+"/getBillingExportList?"+tokenParamName+"="+tokenValue+"&invoiceStatus="+invoiceStatus+"&paymentStatus="+paymentStatus+"&durationType="+durationType+"&exportStartDate="+exportStartDate+"&exportEndDate="+exportEndDate+"&tags="+tags+"&invoiceDeleteStatus="+invoiceDeleteStatus+"&exportType=xls&invoiceType=receivable";
 		}else{	
 				var result = "";
 				result = result +"	<div class='project_inn_mask'></div>";

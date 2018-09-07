@@ -7621,7 +7621,6 @@ padding: 5px 10px;
 .chosen-disabled {
   opacity: 0.95 !important;
 }
-.chosen-disabled a { cursor: no-drop !important;}
 .text-danger {
 color: #a94442 !important;
 }
@@ -8517,7 +8516,6 @@ table.tableNetpay thead > tr >  th {
 .tablePayslip table tr th, .tablePayslip table tr td {
 	padding: 5px 10px;
 }
-
 .medaiAssociates {
 	padding: 5px 0; width: 250px; float: left;
 }
@@ -8607,17 +8605,11 @@ table.table-itdeclaration tr th, table.table-itdeclaration tr td  {
 	text-align: left; border-bottom: 1px solid #ddd;
 	padding:10px; vertical-align: middle;
 }
-table.table-itdeclaration tr td {
-	width: 100px;
-}
 table.table-itdeclaration tr td:nth-child(1) {
-	width: 200px;
+	width: 380px;
 }
-table.table-itdeclaration tr td:nth-child(3) {
-	width: 150px;
-}
-table.table-itdeclaration tr td:nth-child(5) {
-	width: 180px;
+table.table-itdeclaration tr td:nth-child(2) {
+	width: 300px;
 }
 .attchments .btn-primary {
  background-color: #42CDAD !important; border-color: #42CDAD !important; border-radius: 4px;
@@ -8676,7 +8668,7 @@ display: inline-block; width: 100%; clear:both;
 }
 /* forms edit element styles */
 .editElementDiv {
-	min-height: 25px; position: relative; transition: 0.3s ease-in-out; white-space: normal;
+	min-height: 25px; position: relative; transition: 0.3s ease-in-out;
 }
 .editElementDiv .edit-element {
 	float: left; width: 90%;
@@ -8802,17 +8794,6 @@ ul.jobsboard-list > li:hover {
 .tableScroll {
 	min-height: 100px; max-height: 400px; overflow-y: auto;
 }
-.blankForm {
-	border: 1px solid #ededed; min-height: 200px; margin: 15px; text-align: center; font-size: 20px;
-}
-.table-itdeclaration.table-challan tr td:nth-child(1) {
-	width: 450px;
-}
-.table-itdeclaration.table-challan tr td:nth-child(2) {
-	width: 500px;
-}
- 
-/* forms edit element styles */
 .trashIcon {
 	color:#ededed;
 }

@@ -4,6 +4,7 @@ import java.math.BigInteger;
 import java.text.MessageFormat;
 import java.util.List;
 
+import org.apache.commons.lang3.StringUtils;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -117,12 +118,17 @@ public class AddExpensesDaoImpl implements AddExpensesDao {
 
 	@Override
 	@Transactional(rollbackFor = { Exception.class })
-	public long changeStatusToBillable(long expenseEntriesId) {
+	public long changeStatusToBillable(long expenseEntriesId,String billableStatus) {
 		try {
 			Session session = this.sessionFactory.getCurrentSession();
 			ExpensesEntries expensesentries = session.get(ExpensesEntries.class, expenseEntriesId);
 			if (expensesentries != null) {
-				expensesentries.setBillable(true);
+				if(StringUtils.isNotEmpty(billableStatus) && billableStatus.equalsIgnoreCase("billable")) {
+					expensesentries.setBillable(true);
+				}else {
+					expensesentries.setBillable(false);
+				}
+				
 				return expensesentries.getId();
 			} else
 				return -2;

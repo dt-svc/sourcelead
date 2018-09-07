@@ -36,12 +36,12 @@ function approvePayrollDiv(){
    	<ul class="project-tabs-menu">
    	    
 	   <li class="current"><a href="javascript:void(0)" class="active" onclick="getOverviewdata();">Overview</a></li>
-	   <li><a href="javascript:void(0)" onclick="getDraftData();">Draft</a></li>
-	   <li><a href="javascript:void(0)" onclick="getPayPeriodData();">History</a></li>
-	   <li><a href="javascript:void(0)">Employees</a></li>
-	   <li><a href="javascript:void(0)">Contractors</a></li>
-	   <li><a href="javascript:void(0)">Tax Forms</a></li>
-	   <li><a href="javascript:void(0)">Settings</a></li>
+	   <li><a onclick="getDraftData();">Draft</a></li>
+	   <li><a onclick="getPayPeriodData();">History</a></li>
+<!-- 	   <li><a onclick="getUserGroupList();">Employees</a></li> -->
+<!-- 	   <li><a href="javascript:void(0)">Contractors</a></li> -->
+<!-- 	   <li><a href="javascript:void(0)">Tax Forms</a></li> -->
+<!-- 	   <li><a href="javascript:void(0)">Settings</a></li> -->
 	 </ul>
    </div> 
    
@@ -143,9 +143,11 @@ function approvePayrollDiv(){
 		</ul>
    </div>
    </div>
+   
 	<div class="candidate_wrap_table datatable_filter backgroundWhite">
                 <div id="payrollFrequencyDiv"></div>
                 <div id="draftFrequencyDiv" class="mt25"></div>
+                <div id="userGroupDiv"></div>
     </div>
     
 	
@@ -198,6 +200,7 @@ function approvePayrollDiv(){
 
 <jsp:include page="usPayrollApprove.jsp" />
 <jsp:include page="payrollAdjustment.jsp" />
+<jsp:include page="usPayrollDashboardEmployees.jsp" />
   </section>
   
 <script>
@@ -482,6 +485,8 @@ function runUSPayroll(){
 				        	result += '<input type="hidden" value='+data.payrollFrequencyUUID+' id="payrollFrequencyUUID" name="payrollFrequencyUUID" />';
 				        	if(json != null && json.length > 0){
 				        		$("#submitButtonDiv").show();
+				        		$("#Submit").show();
+					    		$("#Confirm").show();
 				        		for (var i=0; i<json.length; i++){
 				        			var opt = json[i];
 				        			count++;
@@ -739,6 +744,6 @@ function draftPagination(){
 }
 
 </script>
-  
+
   
 <jsp:include page="../masterFooter.jsp" />

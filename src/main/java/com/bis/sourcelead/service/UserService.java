@@ -233,7 +233,7 @@ public interface UserService  {
 	
 	List<User> getReportingManagersByUserIdAndUserRolesAndOrgLocationIdAndUserTabId(Long userId, Long roleId, Long orgLocationsId) throws Exception;
 	
-	public ResponseList<UserDTO> getRecruitersReports(Long userId,Long orgLocationId,Long orgId,String isGlobalUser,UserDTO userDTO,String loginUserRole,Date[] searchDates,List<Long> teamsList) throws Exception;
+	public ResponseList<UserDTO> getRecruitersReports(Long userId,Long orgLocationId,Long orgId,String isGlobalUser,UserDTO userDTO,String loginUserRole,Date[] searchDates,List<Long> teamsList,String type) throws Exception;
 
 	
 //	List<User> getUsersByEmailList(List<String> userEmail, OrgLocations orgLocation);
@@ -247,6 +247,8 @@ public interface UserService  {
 	Response<String> saveDashboardItems(DashboardItemsDTO dashboardItemsDTO, User user, OrgLocations orgLocations);
 	
  List<LeaveBalanceReportDTO> getUserNameAndTypeByOrgLocationId(Long OrgLocationId,List<Long> userRole,List<Long> orgDepartmentsList,String topleave,Date monthStartDate,Date monthEndDate) throws Exception;
+ 
+ public void sendEmailToUserForEmailUpdation(User user, User loginUser, OrgLocations orgLocations,String toEmail,String existingEmail) throws Exception;
 
 }	
 

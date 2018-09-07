@@ -32,7 +32,8 @@
 			</c:if>
 			
   	<input type="hidden" id="lcaId" name="lcaId" value="${lcaDTO.lcaId}">
-  	<input type="hidden" name="lcaPlaceOfEmploymentList[0].plsempmntId" value="${lcaDTO.lcaPlaceOfEmploymentList[0].plsempmntId}">
+	<%-- <input type="hidden" id="plsofEmpmtId" name="i -->d">--%>
+  	
   	<%-- <input type="hidden" name="lcaDocumentList[0].docId" value="${lcaDTO.lcaDocumentList[0].docId}"> --%>
     <div class="row clearfix mt" >
          <div class="col-xs-12 col-sm-6 col-md-6 minHeight50 mb" id="errLcaNoDiv">
@@ -332,11 +333,12 @@
 				
 		 <c:if test="${!empty lcaDTO.lcaPlaceOfEmploymentList}">
           <c:forEach var='lcaPlaceOfEmployment' items="${lcaDTO.lcaPlaceOfEmploymentList}" varStatus="rows">
-          	<input type="hidden" name="lcaPlaceOfEmploymentList[${rows.count-1}].plsempmntId" value="${lcaDTO.lcaPlaceOfEmploymentList[rows.count-1].plsempmntId}">
+          
           	<c:set var="rowIndexPlempt" value="${rows.count-1}" scope="page"/>
           	<div id ='dynamicPlsofEmpmtDiv${rows.count-1}'>
+          		<input type="hidden" name="lcaPlaceOfEmploymentList[${rows.count-1}].plsempmntId" id="plsempmntId${rows.count-1}" value="${lcaDTO.lcaPlaceOfEmploymentList[rows.count-1].plsempmntId}">
           	<c:if test = "${rows.count >1}">
-          	 <div class="clearfix col-md-12">
+          	 <div class="clearfix col-md-12 mb">
 				<div class='pull-right col-md-6'>
 				 <button type='button' class='btn btn-default pull-right' onclick='removeDynamicPlsofEmpmtDiv(${rows.count-1})'>
 				 <i class ='fa fa-remove text-danger paddingRight'></i>Remove</button>
@@ -622,7 +624,8 @@
 	       }
         } 
 	    if ($('#lcaDetailsForm').validate(false, validationSettings)) {
-		var formData = getFormData("lcaDetailsForm");
+			  var formData = getFormData("lcaDetailsForm");
+			  formData.lcaPlacaOfempDeletedListIds = removedLcaPlsOfEmpmntIds.join();
 		 $.ajax({
 	            type: "POST",
 	            data : formData,
@@ -782,6 +785,12 @@ $('#endDate').datepicker({
    function clearLcaDateValue(id){
 	   $("#"+id).val(""); 
    }
+   
+   $(document).ready(function(){
+	//	$("#plsempmntId").val();
+		//alert("AAA"+$("#plsempmntId").val());
+	});
+   
 </script>
 
 <!-- Place of Employment Add Row Script Starts Here -->
@@ -789,21 +798,21 @@ $('#endDate').datepicker({
    
     function prepareDynamicPlaceofEmploymentDiv(rowId,plsofEmpmtVal){
      var preparePlsofEmpmtdiv ='';
-    	
+    	/* var plsempmntId = $("#plsempmntId").val(); */
        preparePlsofEmpmtdiv =preparePlsofEmpmtdiv+ "<div id ='dynamicPlsofEmpmtDiv"+rowId+"'>";
 	   
 	   preparePlsofEmpmtdiv =preparePlsofEmpmtdiv+ "   <div class='clearfix'></div>";
-	//   preparePlsofEmpmtdiv =preparePlsofEmpmtdiv+ "<input type='hidden' name='lcaPlaceOfEmploymentList["+rowId+"].plsempmntId' value='"${lcaDTO.lcaPlaceOfEmploymentList[rowId].plsempmntId}"'>";
+	  /*  preparePlsofEmpmtdiv =preparePlsofEmpmtdiv+ "<input type='hidden' name='lcaPlaceOfEmploymentList["+rowId+"].plsempmntId' id='plsempmntId' value='"+plsempmntId+"'>"; */
 	   preparePlsofEmpmtdiv =preparePlsofEmpmtdiv+ "   <div class='col-xs-12 col-sm-12 col-md-12 mb'>";
 	   preparePlsofEmpmtdiv =preparePlsofEmpmtdiv+ "   <h5 class='col-xs-8 col-sm-8 col-md-8'>Place of Employment<span class='text-danger paddingLeft'>*</span></h5> ";
 	   preparePlsofEmpmtdiv =preparePlsofEmpmtdiv+ "    <div class='col-xs-4 col-sm-4 col-md-4'>";
 	   preparePlsofEmpmtdiv =preparePlsofEmpmtdiv+ "    <div class='pull-right'>";
-	   preparePlsofEmpmtdiv =preparePlsofEmpmtdiv+ "   <button type='button' class='btn btn-default pull-right' onclick='removeDynamicPlsofEmpmtDiv("+rowId+","+(typeof plsofEmpmtVal[0]==="undefined"?"":plsofEmpmtVal[0])+")'><i class='fa fa-remove text-danger paddingRight'></i>Remove</button>";
+	   preparePlsofEmpmtdiv =preparePlsofEmpmtdiv+ "   <button type='button' class='btn btn-default pull-right' onclick='removeDynamicPlsofEmpmtDiv("+rowId+")'><i class='fa fa-remove text-danger paddingRight'></i>Remove</button>";
 	   preparePlsofEmpmtdiv =preparePlsofEmpmtdiv+ "   <div class='clearfix'></div>";
 	   preparePlsofEmpmtdiv =preparePlsofEmpmtdiv+ "   </div>";
 	   preparePlsofEmpmtdiv =preparePlsofEmpmtdiv+ "   </div>";
 	   
-	   preparePlsofEmpmtdiv =preparePlsofEmpmtdiv+ "   </div><input type='hidden' name='lcaPlaceOfEmploymentList["+rowId+"].id' value='"+(typeof plsofEmpmtVal[0]==="undefined"?"":plsofEmpmtVal[0])+"'>";
+	   preparePlsofEmpmtdiv =preparePlsofEmpmtdiv+ "   </div>";
 	   preparePlsofEmpmtdiv =preparePlsofEmpmtdiv+ "   <div class='clearfix'></div>";
 	   preparePlsofEmpmtdiv =preparePlsofEmpmtdiv+ " <div class='col-xs-12 col-sm-6 col-md-6 minHeight50 mb'>";
 	   preparePlsofEmpmtdiv =preparePlsofEmpmtdiv+ "     <label class='col-md-4'>Location<span class='text-danger paddingLeft'>*</span></label>";
@@ -886,19 +895,23 @@ $('#endDate').datepicker({
 	   }
 		  
    }
-   //var deletedResicenceListIds = new Array();
-   var removedPlsofEmpmtIds = [];
-   function removeDynamicPlsofEmpmtDiv(id,plsofEmpmtId){
-	   removedPlsofEmpmtIds.push(plsofEmpmtId);
-	   
+
+   var removedLcaPlsOfEmpmntIds = new Array();
+   function removeDynamicPlsofEmpmtDiv(id){
+	   console.log($("#plsempmntId"+id).val());
+	   if($("#plsempmntId"+id).val() !==  undefined ){
+		   console.log("inisde "+id);
+	   removedLcaPlsOfEmpmntIds.push($("#plsempmntId"+id).val());
+	   console.log(removedLcaPlsOfEmpmntIds);
+	   }
+	 
 	   $("#dynamicPlsofEmpmtDiv"+id).remove();
-	   rowIdPlempt--;// decrement rowid when deleted in UI.
+	 //  rowIdPlempt--;// decrement rowid when deleted in UI.
 	   if(rowIdPlempt <= 2){
 		   $("#placeEmployMntId").show();
 	   }
    } 
  </script>
- 
  
 
  <!-- Place of Employment Add Row Script END Here -->  	

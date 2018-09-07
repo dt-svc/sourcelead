@@ -214,9 +214,11 @@ function resetUsersSearchFilter(){
 	document.getElementById("country"+'${registeredCountry}').checked = true;
 	getSearchLocationRegisteredCompanies(); 
 	$("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
+	$("#searchFilterLoading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
 	setTimeout(function () {
 		getUserList();
 		 $("#loading").removeAttr('style');
+		 $("#searchFilterLoading").removeAttr('style');
 			}, 2000);
 	
 	
@@ -463,6 +465,7 @@ function getUserList(){
  		result = result +'<th>Status</th>';
  		result = result +'<th>Location Admin</th>';
  		result = result +'<th>Org Admin</th>';
+ 		result = result +'<th>Action</th>';
 		result = result + '</tr>';
 		result = result + '</thead>	';
 	    result = result +"</table>";
@@ -499,13 +502,13 @@ function usersListDataTableList(){
 	 var searchValue = $("#usersListDataTableSearch").val();
 	 searchValue = searchValue ? searchValue : "";
 	 var url = sourceleadUrl+"/getOrgRegisteredUsers?searchValue="+searchValue+"&registeredOrgLocationId="+registeredOrgLocationId+"&subscribedOrgLocationRoles="+subscribedOrgLocationRoles+"&userloggedInStatus="+userloggedInStatus;
-	 usersListPagination(url,sourceleadUrl);
+	 usersListPagination(url,sourceleadUrl,registeredOrgLocationId);
 }
 </script>
 
 
 <script>
-function usersListPagination(url,sourceleadUrl){
+function usersListPagination(url,sourceleadUrl,registeredOrgLocationId){
 	
 
 	var colIndex = 0;
@@ -672,6 +675,20 @@ function usersListPagination(url,sourceleadUrl){
                 		 result = result +'<td>-----</td>';
                 	 }
 	               	 
+	            		return result;
+	              }
+		     },{
+		    	  "targets": colIndex++,
+	              "data": "action",
+	              "sortable": false,
+	              "render": function ( data, type, opt, meta ) {
+	            	 var result = "";
+	               	 if(opt.userState == 'ACTIVE'){
+	 			    	 result = result +"<td><i class='fa fa-sign-in' aria-hidden='true'></i><a href='<c:url value='/app/productionSupportDashboard/"+registeredOrgLocationId+"/"+opt.id+"/${SourceLeadWeb_userId}'/>' >&nbsp;&nbsp;Switch</a></td>";
+ 			          }else{
+ 			    	     result = result +'<td>-----</td>';
+	 			      }
+	            	    
 	            		return result;
 	              }
 		     }],

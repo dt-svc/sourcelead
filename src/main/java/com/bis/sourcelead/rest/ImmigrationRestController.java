@@ -2339,7 +2339,8 @@ public class ImmigrationRestController {
 	
 	
 	@RequestMapping(value = "/saveLcaDetailsPage", method = RequestMethod.POST)
-	public ResponseList<String> saveLcaDetailsPage(LcaDTO lcaDTO,HttpServletRequest request) {
+	public ResponseList<String> saveLcaDetailsPage(
+			LcaDTO lcaDTO,HttpServletRequest request, @RequestParam(value = "plsempmntId", required = false) String plsempmntId) {
 		
 		ResponseList<String> response = new ResponseList<String>();
 		User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
@@ -2429,8 +2430,6 @@ public class ImmigrationRestController {
 		lcaNumbersList = immigrationCommonService.getLcaNumbersList(lcaNum,orgLocations.getId().toString(),expiryStatus,candidateId);
 		return lcaNumbersList;
 	}
-	
-	
 	
 
 	@RequestMapping(value = { "/getOesSocCodeById" })

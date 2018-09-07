@@ -40,7 +40,7 @@ import com.bis.sourcelead.dto.ResponseList;
 import com.bis.sourcelead.entity.Candidate;
 import com.bis.sourcelead.entity.CandidateFamilyDetails;
 import com.bis.sourcelead.entity.CandidateIdendities;
-import com.bis.sourcelead.entity.CandidateLcaI94Summary;
+import com.bis.sourcelead.entity.CandidateLcaJobDetails;
 import com.bis.sourcelead.entity.CandidatePassportVisa;
 import com.bis.sourcelead.entity.CandidateResidence;
 import com.bis.sourcelead.entity.CandidateResumes;
@@ -121,8 +121,10 @@ public class ImmigrationCommonDaoImpl implements ImmigrationCommonDao {
 		}
 		return templateLst;
 	}
+	
+//	Old code
 
-	@Override
+/*	@Override
 	@Transactional(rollbackFor = { Exception.class })
 	public Immigration savePetitionDetails(Immigration immigration, Candidate candidate,
 			CandidateIdendities candidateIdendities, CandidateResumes candidateResume,
@@ -156,6 +158,52 @@ public class ImmigrationCommonDaoImpl implements ImmigrationCommonDao {
 																		// only
 																		// for
 																		// immigration
+				for (CandidateResidence residence : residenceList) {
+					session.saveOrUpdate(residence);
+					logger.debug("The residence id is: +++++++++++++++ :" + residence.getId());
+				}
+			}
+		} catch (Exception exception) {
+			logger.error("Exception caught while saving immigration information " + exception.getMessage());
+			exception.printStackTrace();
+		}
+		return immigration;
+	}*/
+	
+	@Override
+	@Transactional(rollbackFor = { Exception.class })
+	public Immigration savePetitionDetails(Immigration immigration, Candidate candidate,
+			CandidateIdendities candidateIdendities, CandidateResumes candidateResume,
+			CandidateLcaJobDetails candidateLcaJobDetails, List<CandidateResidence> residenceList) throws Exception {
+		logger.debug("savePetitionDetails starts");
+		Session session = this.sessionFactory.getCurrentSession();
+		try {
+			if (candidate != null) {
+				session.saveOrUpdate(candidate);
+			}
+			if (immigration != null) {
+				session.saveOrUpdate(immigration);
+			}
+			if (candidateIdendities != null) {
+				session.saveOrUpdate(candidateIdendities);
+			}
+			if (candidateResume != null && candidateResume.getFileURL() != null) {
+				session.saveOrUpdate(candidateResume);
+			}
+			
+		//	old code
+			
+			/*if (lcaSummaryLst.size() != 0) {
+				for (CandidateLcaI94Summary candidateLcaI94Summary : lcaSummaryLst) {
+					session.saveOrUpdate(candidateLcaI94Summary);
+				}
+			}*/
+			
+			/*if (candidateLcaJobDetails != null) {
+					session.saveOrUpdate(candidateLcaJobDetails);
+			}*/
+			
+			if (residenceList != null && residenceList.size() != 0) { // saving multipl residence for candidates only for immigration
 				for (CandidateResidence residence : residenceList) {
 					session.saveOrUpdate(residence);
 					logger.debug("The residence id is: +++++++++++++++ :" + residence.getId());
@@ -216,15 +264,26 @@ public class ImmigrationCommonDaoImpl implements ImmigrationCommonDao {
 		return canform;
 	}
 
-	@Override
+	//Old Code
+	/*@Override
 	@Transactional(rollbackFor = { Exception.class })
-	public CandidateLcaI94Summary getCandidateLCADetails(Long candidateId, String yes) {
+	public CandidateLcaI94Summary getCandidateLCADetails(Long candidateId) {
 
 		Session session = this.sessionFactory.getCurrentSession();
-		String query = "from CandidateLcaI94Summary clis left join fetch clis.requirementId where clis.candidateId.id = :candidateId and clis.isCurrent = :yes";
-		CandidateLcaI94Summary lcaI94Summary = (CandidateLcaI94Summary) session.createQuery(query)
-				.setLong("candidateId", candidateId).setString("yes", yes).uniqueResult();
+		String query = "from CandidateLcaI94Summary clis left join fetch clis.requirementId where clis.candidateId.id = :candidateId";
+		CandidateLcaI94Summary lcaI94Summary = (CandidateLcaI94Summary) session.createQuery(query).setLong("candidateId", candidateId).uniqueResult();
 		return lcaI94Summary;
+	}*/
+	
+	@Override
+	@Transactional(rollbackFor = { Exception.class })
+	public CandidateLcaJobDetails getCandidateLcaJobDetails(Long immigrationId) {
+
+		Session session = this.sessionFactory.getCurrentSession();
+		String query = "from CandidateLcaJobDetails cljs left join fetch cljs.requirementId where cljs.immigration.id = :immigrationId";
+		CandidateLcaJobDetails candLcaJobDetails = null;
+		candLcaJobDetails = (CandidateLcaJobDetails) session.createQuery(query).setLong("immigrationId", immigrationId).uniqueResult();
+		return candLcaJobDetails;
 	}
 
 	@Override
@@ -1042,9 +1101,14 @@ public class ImmigrationCommonDaoImpl implements ImmigrationCommonDao {
 	public String deleteImmigrationDetailsById(Long immigrationId) {
 		try {
 			Session session = this.sessionFactory.getCurrentSession();
+		   CandidateLcaJobDetails candLcaJobDetails = getCandidateLcaJobDetails(immigrationId);
+			   if(candLcaJobDetails != null) {
+			   session.delete(candLcaJobDetails);
+			   session.flush(); 
+			   }
 			Immigration immigration = session.get(Immigration.class, immigrationId);
 			session.delete(immigration);
-			session.flush();
+			session.flush(); 
 		} catch (HibernateException e) {
 			logger.error("SQL Exception occured while doing delete -->" + e.getMessage());
 			e.printStackTrace();
@@ -1667,7 +1731,7 @@ public class ImmigrationCommonDaoImpl implements ImmigrationCommonDao {
             String subQuery3 = ""; 
             
             StringBuilder query1 = new StringBuilder("");
-            if (searchValue.contains("-") || searchValue.contains("/")) {
+            if (!searchValue.toLowerCase().contains("I-".toLowerCase()) && (searchValue.contains("-") || searchValue.contains("/"))) {
     			DateTimeFormatter orgFormat = new DateTimeFormatterBuilder().appendPattern(orgLocations.getDateFormat())
     					.toFormatter();
     			LocalDate parsedDate = LocalDate.parse(searchValue, orgFormat);
@@ -1717,8 +1781,8 @@ public class ImmigrationCommonDaoImpl implements ImmigrationCommonDao {
 					subQuery2 = subQuery2 + "lcaView.lcaStatus = 'Initiated' or ";
 				}
 				
-				if (Arrays.asList(statusFilter).contains("In Process")) {
-					subQuery2 = subQuery2 + "lcaView.lcaStatus = 'In Process' or ";
+				if (Arrays.asList(statusFilter).contains("In-progress")) {
+					subQuery2 = subQuery2 + "lcaView.lcaStatus = 'In-progress' or ";
 				}
 				
 				if (Arrays.asList(statusFilter).contains("Certified")) {
@@ -1859,12 +1923,12 @@ public class ImmigrationCommonDaoImpl implements ImmigrationCommonDao {
 		String query = null;
 		if(StringUtils.isNotEmpty(socType) && socType.equalsIgnoreCase("socTitle")){
 			
-			query = "SELECT SOC_TITLE as label, CONVERT(ID, CHAR) as value from oes_soc_occs where SOC_TITLE like :name"; 
+			query = "SELECT SOC_TITLE as label, CONVERT(ID, CHAR) as value from OES_SOC_OCCS where SOC_TITLE like :name"; 
 			return session.createSQLQuery(query).setString("name", name+"%").setMaxResults(10).setResultTransformer(Transformers.ALIAS_TO_ENTITY_MAP).list();
 			
 		   
 		}else {
-			 query = "SELECT SOC_CODE as label, CONVERT(ID, CHAR) as value from oes_soc_occs where SOC_CODE like :name"; 
+			 query = "SELECT SOC_CODE as label, CONVERT(ID, CHAR) as value from OES_SOC_OCCS where SOC_CODE like :name"; 
 			    return session.createSQLQuery(query).setString("name", name+"%").setMaxResults(10).setResultTransformer(Transformers.ALIAS_TO_ENTITY_MAP).list();
 		}
 		
@@ -1941,10 +2005,10 @@ public class ImmigrationCommonDaoImpl implements ImmigrationCommonDao {
 		
 		String query = null;
 		if(StringUtils.isNotEmpty(socType) && socType.equalsIgnoreCase("socTitle")){
-			query = "SELECT SOC_TITLE from oes_soc_occs where id = :id"; 
+			query = "SELECT SOC_TITLE from OES_SOC_OCCS where id = :id"; 
 			return (String) session.createSQLQuery(query).setLong("id", id).uniqueResult();
 		}else {
-			query = "SELECT SOC_CODE from oes_soc_occs where id = :id"; 
+			query = "SELECT SOC_CODE from OES_SOC_OCCS where id = :id"; 
 			return (String) session.createSQLQuery(query).setLong("id", id).uniqueResult();
 		}
 	}
@@ -2180,6 +2244,42 @@ public class ImmigrationCommonDaoImpl implements ImmigrationCommonDao {
 		}
 		
 		return empList;
+	}
+
+	@Override
+	@Transactional(rollbackFor = { Exception.class })
+	public void deleteLcaPlaceOfEmpmntDetails(Long remaininglpoeIds[]) {
+		    logger.debug("Delete LcaPlaceOfEployment ids-->");
+	        Session session = this.sessionFactory.getCurrentSession();
+	        Query query = session.createQuery("delete from LcaPlaceOfEployment lpoe where lpoe.id in (:plsempmntId)").setParameterList("plsempmntId", remaininglpoeIds);
+	        int count = query.executeUpdate();
+	        logger.debug("Number of records deleted-->" + count);
+		
+	}
+
+	
+
+	/*@Override
+	@Transactional(rollbackFor = { Exception.class })
+	public CandidateLcaJobDetails getCandidateLcaJobDetails(Long id) {
+		// TODO Auto-generated method stub
+		return null;
+	}*/
+
+	@Override
+	@Transactional(rollbackFor = { Exception.class })
+	public CandidateLcaJobDetails saveCandidateLcaJobDetails(CandidateLcaJobDetails candidateLcaJobDetails) {
+		
+		Session session = this.sessionFactory.getCurrentSession();
+		try {
+			if(candidateLcaJobDetails != null) {
+				session.saveOrUpdate(candidateLcaJobDetails);
+			}
+		} catch (Exception exception) {
+			logger.error("Exception caught while  saveCandidateLcaJobDetails information " + exception.getMessage());
+			exception.printStackTrace();
+		}
+		return candidateLcaJobDetails;
 	}
 	
 }

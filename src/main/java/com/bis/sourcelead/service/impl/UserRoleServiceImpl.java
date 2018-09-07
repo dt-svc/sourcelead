@@ -869,5 +869,10 @@ public class UserRoleServiceImpl implements UserRoleService{
 		return userRoleDao.getUserListByUserIdList(userIdList,orgLocationId);
 	}
 
+	@Override
+	public Boolean isUserWithMultipleOrgsAccounts(Long orgId,Long userId) {
+		return userRoleDao.isUserWithMultipleOrgsAccounts(orgId,userId);
+	}
+
 
 }

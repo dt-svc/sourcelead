@@ -1,6 +1,7 @@
 package com.bis.sourcelead.entity;
 
 import java.io.Serializable;
+import java.math.BigDecimal;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
@@ -26,7 +27,6 @@ import org.apache.commons.lang3.StringUtils;
 import com.bis.sourcelead.enums.Submission_Status;
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.ibm.icu.math.BigDecimal;
 
 @Entity
 @Table(name = "EXPENSES")
@@ -59,7 +59,7 @@ private static final long serialVersionUID = 1L;
 	private String purpose;
 	
 	@Column(name = "TOTAL_AMOUNT")
-	private float totalAmount;
+	private BigDecimal totalAmount;
 	
 	@Column(name = "CLIENT_NAME")
 	private String clientName;
@@ -147,6 +147,9 @@ private static final long serialVersionUID = 1L;
 	private String employementType;
 	
 	@Transient
+	private String expenseAutoId;
+	
+	@Transient
 	private String userName;
 	
 	@Transient
@@ -229,11 +232,13 @@ private static final long serialVersionUID = 1L;
 		this.purpose = purpose;
 	}
 
-	public float getTotalAmount() {
+
+	
+	public BigDecimal getTotalAmount() {
 		return totalAmount;
 	}
 
-	public void setTotalAmount(float totalAmount) {
+	public void setTotalAmount(BigDecimal totalAmount) {
 		this.totalAmount = totalAmount;
 	}
 
@@ -518,6 +523,14 @@ private static final long serialVersionUID = 1L;
 
 	public void setExpensesLocationId(Long expensesLocationId) {
 		this.expensesLocationId = expensesLocationId;
+	}
+
+	public String getExpenseAutoId() {
+		return expenseAutoId;
+	}
+
+	public void setExpenseAutoId(String expenseAutoId) {
+		this.expenseAutoId = expenseAutoId;
 	}
 
 	

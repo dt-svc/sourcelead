@@ -666,6 +666,21 @@ public class Constants {
 			"Rate","Rate Per", "Gender*","Martial Status","Date of Join","Date of Birth","Role*","Day Hours(HH:MM)","Manager*(Email)", "Employment Type*","Vendor(Email)","Vendor Contact(Email)","Grade","Designation*","Shift*","Send Mail to User(Y/N)","Is Global Manage(Y/N)"};
 
 
+	public static final String[] REQIREMENT_APPLICANT_HEADERS = { "Applicant Name", "Email","Job", "Client", "Phone Number",  "Job Location",   "Source", "Status","Job Rating" ,"Incentivized"};
+
+	public static final String[] REQIREMENT_SUBMISSION_HEADERS = { "Applicant Name","Email", "Job", "Client", "Applied On", "Submitted On","Sub rate", "Submitted by", "Source", "Status","Job Rating" ,"Incentivized"};
+
+	public static final String[] REQIREMENT_INTERVIEW_HEADERS = { "Applicant Name","Email", "Job", "Client",  "Applied On", "No Of Interviews",  "Source", "Status","Job Rating" ,"Incentivized"};
+
+	public static final String[] REQIREMENT_OFFERMADE_HEADERS = { "Applicant Name","Email", "Job", "Client",  "Join Date", "Position Type", "Offered On","Source", "Status","Job Rating" ,"Incentivized"};
+
+	public static final String[] REQIREMENT_REJECTED_HEADERS = { "Applicant Name","Email", "Job", "Client",  "Rejected Type", "Rejected Reason", "Source", "Status","Job Rating" ,"Incentivized"};
+
+	public static final String[] REQIREMENT_JOINED_HEADERS = { "Applicant Name", "Email","Job", "Client", "Join Date", "Source", "Status","Job Rating" ,"Incentivized"};
+
+	public static final String[] REQIREMENT_BACKOUT_HEADERS = { "Applicant Name", "Email", "Job", "Client", "Backout Type", "Backout Reason",  "Source", "Status","Job Rating" ,"Incentivized"};
+
+	
 	public static final String SHORTLIST_CANDIDATE_COUNT = "shortlist_candidate :";
 	public static final String VENDOR = "Vendor";
 	public static final String CLIENT = "Client";
@@ -889,7 +904,7 @@ public class Constants {
 	
 
 	public static final String[] MY_EXPENSES_HEADERS ={"Expense Category","Date","Receipt Issued by","Payment Mode","Currency","Amount","Description"};
-	public static final String[] MY_EXPENSES_HEADERS_APPROVER ={"Expense Category","Date","Receipt Issued by","Payment Mode","Currency","Amount","Description","Status"};
+	public static final String[] MY_EXPENSES_HEADERS_APPROVER ={"Expense Category","Date","Receipt Issued by","Payment Mode","Currency","Amount","Description","Status","Billable"};
 
 	public static final String[] EXPENSES_APPROVAL_lIST_HEADERS = { "Employee Name", "Employee Emailid", "Phone Number",
 			"Emp Type", "Vendor", "Project" ,"Client", "Purpose", "Start Date", "End date", "Number of Items",
@@ -1215,6 +1230,10 @@ public class Constants {
 	
 	public static final String[] IT_DECLARATION_SUBMISSION_FORM = { "Item Name", "Particulars" ,"Eligibility(Rs.)","Amount"};
 	public static final String DEDUCTED = "Deducted";
+	
+	public static final String FULL_TIME = "Full Time";
+	public static final String USER_EMAIL_UPDATION = "UserEmailUpdation";
+	
 	
 
 

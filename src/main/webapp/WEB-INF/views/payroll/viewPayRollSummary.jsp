@@ -42,7 +42,7 @@
               <tbody>
                 <tr>
                   <td colspan="2">
-                     <table width="100%" class="table table-bordered">
+                     <table width="100%" class="table table-bordered" id="hoursAndEarningsTable">
                       <thead>
                         <tr>
                           <th colspan="4">Hours &amp; Earnings</th>
@@ -56,10 +56,12 @@
                         </tr>
                         <tr>
                           <td>Regular</td>
+                           <td><input type="text" id="regularHours" name="regularHours"  onblur = "editRegularHours();" class="formControl" readOnly></td>
                           <td><input type="text" id="regularHoursAmt" name="regularHoursAmt"  class="formControl" readOnly></td>
                         </tr>
                         <tr>
                           <td>Overtime</td>
+                          <td><input type="text" id="overTimeHours" name="overTimeHours"   onblur = "editOverTimeHours();" class="formControl" readOnly></td>
                           <td><input type="text" id="overTimeHoursAmt" name="overTimeHoursAmt"  class="formControl" readOnly></td>
                         </tr>
                       </tbody>
@@ -70,6 +72,18 @@
                           <td><span id="totalEarnings">0</span></td>
                         </tr>
                       </tfoot>
+                    </table>
+                       <table width="100%" class="table table-bordered" id="assSalaryTable">
+                      <thead>
+                        <tr>
+                          <th colspan="4">Salary</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        <tr>
+                          <th>Pay Salary</th><td><input type="text" id="assSalaryAmount" name="assSalaryAmount" readOnly></td>
+                        </tr>
+                      </tbody>
                     </table>
                     </td>
                 </tr>
@@ -161,13 +175,13 @@
                             <td><span id="netpay">0</span></td>
                         </tr>
                         <tr>
-                          <td>YTD</td>
-                          <td>xxxx</td>
-                          <td>xxxx</td> 
-                          <td>xxxx</td>
-                          <td>xxxx</td>
-                          <td>xxxx</td>
-                          <td>xxxx</td>
+                           <td>YTD</td>
+                          <td><span id="ytdGross">0</span></td>
+                          <td><span id="ytdFederal">0</span></td> 
+                          <td><span id="ytdFICA">0</span></td>
+                          <td><span id="ytdTaxes">0</span></td>
+                          <td><span id="ytdDeduction">0</span></td>
+                          <td><span id="ytdNetpay">0</span></td>
                         </tr>
                       </tbody>
                     </table></td>
@@ -192,12 +206,27 @@
 		        success: function(data) {
 		            var json = data.object;
 		            $("#empAddress").text(json.employeeAddress);
-		            $("#regularHours").val(json.regularHours.toFixed(2));
+		           /*  $("#regularHours").val(json.regularHours.toFixed(2));
 		            $("#regularHoursAmt").val(json.regularHrsTotalAmt.toFixed(2));
 		            $("#overTimeHours").val(json.overtimeHours.toFixed(2));
 		            $("#overTimeHoursAmt").val(json.otHoursTotalAmt.toFixed(2));
 		            $("#totalHours").text(json.totalHours.toFixed(2));
-		            $("#totalEarnings").text(json.totalEarnings.toFixed(2));
+		            $("#totalEarnings").text(json.totalEarnings.toFixed(2)); */
+		            
+		            if(json.assSalType == "Salary" || json.assSalType == "LcaWage"){
+		            	$("#hoursAndEarningsTable").hide();
+		            	$("#assSalaryTable").show();
+		            	$("#assSalaryAmount").val(json.grossPay);
+		            }else{
+		            	$("#hoursAndEarningsTable").show();
+		            	$("#assSalaryTable").hide();
+		            	$("#regularHours").val(json.regularHours.toFixed(2));
+			            $("#regularHoursAmt").val(json.regularHrsTotalAmt.toFixed(2));
+			            $("#overTimeHours").val(json.overtimeHours.toFixed(2));
+			            $("#overTimeHoursAmt").val(json.otHoursTotalAmt.toFixed(2));
+			            $("#totalHours").text(json.totalHours.toFixed(2));
+			            $("#totalEarnings").text(json.totalEarnings.toFixed(2));
+		            }
 		        	
 		            $("#federalWT").text(json.federal);
 		            $("#medicareWT").text(json.medicare);
@@ -210,11 +239,20 @@
 		            $("#federalGross").text(json.federal);
 		            $("#ficaGross").text(json.fica);
 		            $("#totalTaxes").text(json.taxes);
-		            $("#dedTotal").text(9999);
+		            $("#dedTotal").text(json.totalDeduction);
 		            $("#netpay").text(json.netPay);
 		            $("#payRate").val(json.payRate);
 		            $("#payrollId").val(json.payrollId);
 		            $("#payrollUUID").val(json.payrollUUID);
+		            
+		            // YTD      
+		             var ytd = json.ytdDTO;
+	                 $("#ytdGross").text(ytd.ytdGross);
+	                 $("#ytdFederal").text(ytd.ytdFederal);
+	                 $("#ytdFICA").text(ytd.ytdFICA);
+	                 $("#ytdTaxes").text(ytd.ytdTaxes);
+	                 $("#ytdDeduction").text(ytd.ytdDeduction);
+	                 $("#ytdNetpay").text(ytd.ytdNet);
 		             
 		                var postDed = "";
 	        			postDed = postDed + '<table width="100%" class="table table-bordered" >';
@@ -233,7 +271,7 @@
 					            	var ded = json.postDed[i];
 				        			postDed = postDed + '<tr>';
 				        			postDed = postDed + ' <td>'+ded.deductionType+'</td>';
-				        			postDed = postDed + ' <td><input type="text" id="'+i+'amount" name="postDeduction['+i+'].amount" value='+ded.amount+' class="formControl" readOnly></td>';
+				        			postDed = postDed + ' <td><input type="text" id="'+i+'amount" name="postDeduction['+i+'].amount" value='+ded.postDeductionAmt+' class="formControl" readOnly></td>';
 				        			postDed = postDed + ' </tr>';
 					            }	
 			            }
@@ -265,7 +303,7 @@
 				            	var preded = json.preDed[i];
 				            	preDed = preDed + '<tr>';
 				            	preDed = preDed + ' <td>'+preded.deductionType+'</td>';
-				            	preDed = preDed + ' <td><input type="text" id="amount" name="preDeduction['+i+'].amount" value='+preded.amount+' class="formControl" readOnly></td>';
+				            	preDed = preDed + ' <td><input type="text" id="amount" name="preDeduction['+i+'].amount" value='+preded.preDeductionAmount+' class="formControl" readOnly></td>';
 				            	preDed = preDed + ' </tr>';
 				            }
 	                        }
@@ -307,7 +345,7 @@
 	                        output = output + ' <tfoot>';
 	                        output = output + '   <tr>';
 	                        output = output + '  <th>Total</th>';
-	                        output = output + '  <td><span>$ '+json.contributionTotal+'</span></td>';
+	                        output = output + '  <td><span>$ '+json.contributionTotal.toFixed(2)+'</span></td>';
 	                        output = output + '  </tr>';
 	                        output = output + '  </tfoot>';
 	                        output = output + '  </table>';
@@ -334,7 +372,7 @@
 						            	payItem = payItem +' <tr>';
 						            	payItem = payItem +' <td>'+pi.payItemName+'</td>';
 						            	payItem = payItem +'<input type="hidden" value='+pi.id+' id="id" name="payItem['+i+'].id"/>';
-						            	payItem = payItem +' <td><input type="text" class="formControl" id="payItemAmount" name="payItem['+i+'].payItemAmount" readOnly value='+pi.payItemAmount+'></td>';
+						            	payItem = payItem +' <td><input type="text" class="formControl" id="payItemAmount" name="payItem['+i+'].payItemAmount" readOnly value='+pi.payItemAmt+'></td>';
 						            	payItem = payItem +' </tr>';
 				                  }
 			                  }

@@ -1,7 +1,6 @@
 package com.bis.sourcelead.payroll.rest;
 
 import java.math.BigDecimal;
-import java.sql.Date;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -14,7 +13,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.apache.commons.lang.exception.ExceptionUtils;
-import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -26,13 +25,15 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.ModelAndView;
 
-import com.bis.sourcelead.annotations.Validator;
 import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.dao.CandidateDao;
+
 import com.bis.sourcelead.dto.AssociateLoanAndAdvancesDTO;
+import com.bis.sourcelead.dao.UserGroupDao
 import com.bis.sourcelead.dto.AssociatePayItemDTO;
 import com.bis.sourcelead.dto.AssociateSalaryDTO;
 import com.bis.sourcelead.dto.AssociateSalaryHistoryDTO;
+import com.bis.sourcelead.dto.CandidateDTO;
 import com.bis.sourcelead.dto.Response;
 import com.bis.sourcelead.dto.ResponseList;
 import com.bis.sourcelead.dto.UsMyPayrollFormsDTO;
@@ -40,10 +41,10 @@ import com.bis.sourcelead.dto.UserDTO;
 import com.bis.sourcelead.dto.UserGroupDTO;
 import com.bis.sourcelead.entity.AssociateLoanAndAdvances;
 import com.bis.sourcelead.entity.AssociatePayItem;
-import com.bis.sourcelead.entity.AssociateSalaryHistory;
+import com.bis.sourcelead.entity.AssociateSalary;
 import com.bis.sourcelead.entity.Candidate;
+import com.bis.sourcelead.entity.Department;
 import com.bis.sourcelead.entity.OrgLocations;
-import com.bis.sourcelead.entity.RestrictDay;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.entity.UserGroup;
 import com.bis.sourcelead.enums.Result;
@@ -58,7 +59,6 @@ import com.bis.sourcelead.payroll.dto.ConfirmPayTotalSumDTO;
 import com.bis.sourcelead.payroll.dto.ContributionDTO;
 import com.bis.sourcelead.payroll.dto.DeductionDTO;
 import com.bis.sourcelead.payroll.dto.GenerateUSPayrollDTO;
-import com.bis.sourcelead.payroll.dto.MyPayrollDTO;
 import com.bis.sourcelead.payroll.dto.MyPayrollSummaryDTO;
 import com.bis.sourcelead.payroll.dto.PayAdjustmentDTO;
 import com.bis.sourcelead.payroll.dto.PayItemDTO;
@@ -71,15 +71,12 @@ import com.bis.sourcelead.payroll.dto.USPayrollDTO;
 import com.bis.sourcelead.payroll.dto.USPaysheetDTO;
 import com.bis.sourcelead.payroll.entity.AssociateContribution;
 import com.bis.sourcelead.payroll.entity.AssociateDeduction;
-import com.bis.sourcelead.payroll.entity.EmployeePayroll;
 import com.bis.sourcelead.payroll.entity.ConfigurePayrollApprover;
 import com.bis.sourcelead.payroll.entity.PayItem;
 import com.bis.sourcelead.payroll.entity.PayrollContribution;
 import com.bis.sourcelead.payroll.entity.PayrollDeduction;
-import com.bis.sourcelead.payroll.entity.UsPayrollSchedule;
-import com.bis.sourcelead.payroll.entity.PaysheetFrequency;
-import com.bis.sourcelead.payroll.entity.USPayPeriod;
 import com.bis.sourcelead.payroll.entity.UsMyPayrollForms;
+import com.bis.sourcelead.payroll.entity.UsPayrollSchedule;
 import com.bis.sourcelead.payroll.service.AssociateBankDataService;
 import com.bis.sourcelead.payroll.service.AssociateContributionService;
 import com.bis.sourcelead.payroll.service.AssociateDeductionService;
@@ -99,13 +96,13 @@ import com.bis.sourcelead.payroll.service.UsMyPayrollFormService;
 import com.bis.sourcelead.service.AssociateLoanAndAdvancesService;
 import com.bis.sourcelead.service.AssociateSalaryHistoryService;
 import com.bis.sourcelead.service.AssociateSalaryService;
+import com.bis.sourcelead.service.DepartmentService;
 import com.bis.sourcelead.service.OrgLocationService;
 import com.bis.sourcelead.service.UserGroupService;
 import com.bis.sourcelead.service.UserService;
 import com.bis.sourcelead.util.CommonUtil;
 import com.bis.sourcelead.util.SessionMaintainanceData;
 import com.bis.sourcelead.util.SourceLeadSessionManager;
-import com.docusign.esign.api.UsersApi;
 
 @RestController
 @RequestMapping("/app")
@@ -198,7 +195,14 @@ public class USPayrollRestController {
 	UserService userService;
 	
 	@Autowired
-	AssociateLoanAndAdvancesService associateLoanAndAdvancesService;
+	private AssociateLoanAndAdvancesService associateLoanAndAdvancesService;
+    
+	@Autowired
+	private DepartmentService departmentService;
+	
+	@Autowired
+	private UserGroupDao userGroupDao;
+
 	
 	/**
 	 * find all deduction types from lookup_data table 
@@ -393,7 +397,7 @@ public class USPayrollRestController {
 	public boolean isValidDeductionType(PayrollDeductionDTO payrollDeductionDTO, HttpServletRequest request, HttpServletResponse response) throws Exception
 	{
 		OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
-		if (StringUtils.isNoneBlank(payrollDeductionDTO.getPayrollDeductionType())) {
+		if (StringUtils.isNotBlank(payrollDeductionDTO.getPayrollDeductionType())) {
 			return payrollDeductionService.isValidDeductionType(payrollDeductionDTO.getPayrollDeductionType(),orgLocation);
 		}
 		return false;
@@ -1314,16 +1318,7 @@ public class USPayrollRestController {
 		ApproverDTO approverDTO = new ApproverDTO();
 		OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 		User loginUser = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
-		List<UserDTO>  userlist = configurePayrollApproverService.getPayrollApprover(orgLocation,loginUser);
-		ConfigurePayrollApprover  configurePayrollApprover = configurePayrollApproverService.getConfigurePayrollApproverByLoc(orgLocation);
-		approverDTO.setUser(userlist);
-		if(configurePayrollApprover != null) {
-			List<Long> approverList = configurePayrollApprover.getPayrollApprover().stream().map(ap->ap.getUser().getId()).collect(Collectors.toList());
-			approverDTO.setPayrollApprover(approverList);
-			approverDTO.setPayrollType(configurePayrollApprover.getPayrollType());
-			approverDTO.setAutomaticPayroll(configurePayrollApprover.getAutomaticPayroll());
-			approverDTO.setConfAprrover(String.valueOf(configurePayrollApprover.getId()));
-		}
+		approverDTO = configurePayrollApproverService.getPayrollApprover(orgLocation,loginUser);
 		return approverDTO;
 	}
 	
@@ -1620,6 +1615,88 @@ public class USPayrollRestController {
 		return loansAndAdvancescount;
 		
 	}
-	
+	 
+	 /**
+		 * User Group List JSp
+		 * @param deductionUUID
+		 * @param request
+		 * @param response
+		 * @return ModelAndView
+		 * @throws Exception
+		 */
+		@RequestMapping(value = "/userGroupList")
+		public ModelAndView userBatchList(HttpServletRequest request,HttpServletResponse response) throws Exception {
+			   OrgLocations loginOrgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+			   ModelAndView model = new ModelAndView();
+			   List<Department> departmentList = departmentService.getDepartmentByOrgLocationId(loginOrgLocation.getId());
+			   model.addObject("departmentList", departmentList);
+			   model.addObject("sourceleadUrl", sourceleadUrl);
+			   model.setViewName("payroll/usergroupList");
+		       return model;
+		}
+		
+		
+		@RequestMapping(value = "/addUserGroup")
+		public ModelAndView addUserGroup(UserGroupDTO userGroupDto , HttpServletRequest request,HttpServletResponse response) throws Exception {
+			   OrgLocations loginOrgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+			   ModelAndView model = new ModelAndView();
+			   List<Department> departmentList = departmentService.getDepartmentByOrgLocationId(loginOrgLocation.getId());
+			   model.addObject("departmentList", departmentList);
+			   if(StringUtils.isNotBlank(userGroupDto.getGroupUUID())){
+				   UserGroup userGroup = userGroupDao.findUserGroupById(userGroupDto.getGroupUUID());
+				   model.addObject("userGroup", userGroup);
+			/*	   if(userGroup.getUserId() != null) {
+					   String[] userIds = userGroup.getUserId().split(",");
+					   List<Long> userIdList = new ArrayList<>();
+					   for(int i=0;i<userIds.length;i++){
+							userIdList.add(Long.parseLong(userIds[i]));
+					   }
+					   List<UserRole> userList = userRoleService.getUserListByUserIdList(userIdList,loginOrgLocation.getId());
+					   model.addObject("selectedUserList", userList);
+				   }*/
+			   }
+			   model.addObject("sourceleadUrl", sourceleadUrl);
+			   model.setViewName("payroll/addUserGroup");
+		       return model;
+		}
+		
+		@RequestMapping(value = "/numberOfEmployeesInGroup")
+		public ModelAndView numberOfEmployeesInGroup(@RequestParam(value = "groupUUID",required = false) String groupUUID,HttpServletRequest request) throws Exception
+		{
+			ModelAndView model = new ModelAndView();
+			model.addObject("groupUUID", groupUUID);
+			model.setViewName("payroll/employeesInGroups");
+			return model;
+		}
+		
+		@RequestMapping(value = {"/getAllEmployeesInGroups","/rest/getAllEmployeesInGroups"}, method = RequestMethod.GET)
+		@ResponseBody
+		public ResponseList<CandidateDTO> getAllEmployeesInGroups(CandidateDTO dto,@RequestParam(value = "groupUUID",required = false) String groupUUID,HttpServletRequest request, HttpServletResponse response) throws Exception
+		{
+			OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+			UserGroup userGroup = userGroupDao.findUserGroupById(groupUUID);
+			
+			ResponseList<CandidateDTO> resList = new ResponseList<>();
+			List<CandidateDTO> listDto = new ArrayList<>();
+			ResponseList<AssociateSalary> assSalList = associateSalaryService.getAssociateSalaryListByLocationIdAndGroupId(orgLocation, userGroup.getId(),dto);
+			for (AssociateSalary associateSalary : assSalList.getData()) {
+				 dto = new CandidateDTO();
+				
+				StringBuilder name = new StringBuilder();
+				if(StringUtils.isNotBlank(associateSalary.getCandidate().getLastName())){
+					name.append(associateSalary.getCandidate().getFirstName()).append(" ").append(associateSalary.getCandidate().getLastName());
+				}else {
+					name.append(associateSalary.getCandidate().getFirstName());
+				}
+				dto.setCandidateName(name.toString());
+				dto.setEmail(associateSalary.getCandidate().getEmail());
+				dto.setMobilePhone(associateSalary.getCandidate().getMobilePhone());
+				listDto.add(dto);
+			}
+			resList.setData(listDto);
+			resList.setRecordsFiltered(assSalList.getRecordsFiltered());
+			resList.setRecordsTotal(assSalList.getRecordsTotal());
+			return resList;
+		}
 
 }

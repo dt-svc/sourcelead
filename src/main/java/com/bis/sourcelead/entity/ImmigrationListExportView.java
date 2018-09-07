@@ -134,8 +134,8 @@ public class ImmigrationListExportView implements Serializable {
 	@Column(name = "PREVIOUS_LCA_RATE")
 	private String previousLcaRate;
 	
-	@Column(name = "PREVIOUS_EMPLOYER_LOCATION")
-	private String previousEmployerLocation;
+	/*@Column(name = "PREVIOUS_EMPLOYER_LOCATION")
+	private String previousEmployerLocation;*/
 	
 	@Column(name = "LAST_NAME")
 	private String lastName;
@@ -472,13 +472,13 @@ public class ImmigrationListExportView implements Serializable {
 		this.previousLcaRate = previousLcaRate;
 	}
 
-	public String getPreviousEmployerLocation() {
+	/*public String getPreviousEmployerLocation() {
 		return previousEmployerLocation;
 	}
 
 	public void setPreviousEmployerLocation(String previousEmployerLocation) {
 		this.previousEmployerLocation = previousEmployerLocation;
-	}
+	}*/
 
 	public String getLastName() {
 		return lastName;

@@ -181,6 +181,18 @@
 </div>
 </div>
     </section>
+    
+    <script>
+$("#export-pop").click(function(){
+	$(".export_pop").toggle();
+});
+$("html").click(function() {
+    $(".export_pop").slideUp();
+});
+$(".export_pop, #export-pop").click(function(e) {
+    e.stopPropagation();
+});	
+</script>
 
 <script>
 function viewDocument(title,id){

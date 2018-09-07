@@ -127,6 +127,7 @@
 		                
 		                <sec:authorize access="!hasAnyRole(\'ROLE_VIEW_CLIENT\',\'ROLE_VIEW_EDIT_CLIENT\')">
 						 <c:forEach var="project" items="${expEntry.projectsList}">
+						 
 						      <c:if test="${project.id == expenses.projectId}">
 						      ${project.client}
 						      </c:if>
@@ -162,12 +163,14 @@
 			    <th>Date</th>
 				<th>Exp Category</th>
 				<th>Description</th>
-				<th>Amount</th>
+				<th>Submitted Amount</th>
+				<th>Approved Amount</th>
 				<th>Currency</th>
 				<th>Payment Mode</th>
 				<th>Paid By</th>
 				<th>Billable</th>
 			</tr>
+			
 		</thead>	
 			<tbody>
 			     <c:forEach var="entry" items="${expenses.expenseEntry}" varStatus="entryCount">
@@ -175,21 +178,28 @@
 			           <td><div class="ExpShow" id="categoryDateDiv${entryCount.count}"><i class="fa fa-plus-square-o" aria-hidden="true" onclick="hideAndShowDetailsRow(${2*(entryCount.count)},'Edit');"></i>${entry.dateOccurred}</div></td>
 			           <td><div id="categoryTypeDiv${entryCount.count}">${entry.categoryName}</div></td>
 			       <td><div id="entryDesDiv${entryCount.count}" class="tbldata-dotdot_50" title="${entry.entryDescription}">${entry.entryDescription}</div></td>
+			             <td><div id="expenseSubmittedAmountDiv${entryCount.count}">${entry.submittedamount}</div></td>
 			           <td><div id="expenseAmountDiv${entryCount.count}">${entry.amountRoundOff}</div></td>
 			           <td><div id="expenseRateType${entryCount.count}">${entry.categoryAmountType}</div></td>
 			           <td><div id="paymentModeDiv${entryCount.count}">${entry.paymentMode}</div></td>
 			           <td><div id="paidByDiv${entryCount.count}">${entry.paidBy}</div></td>
-			            <td><div class=""><input type="checkbox" ${entry.billable ? 'checked' : ''} name="expenses" onclick="showPopUp();"></div></td>
+			            <c:if test="${submissionStatus == 'SUBMITTED' || submissionStatus == 'REJECTED' || submissionStatus == 'REOPENED'}">
+					        <td><div class=""><input type="checkbox" ${entry.billable ? 'checked' : ''} name="expenses" data-id="${entry.id}" onclick="showPopUp(this,${entry.id});"></div></td>
+					    </c:if>
+					    
+			           
+			           
 			        </tr>
 			        <tr id="divEntityTsRow${2*(entryCount.count)}" style="display:none;">
-				        <td colspan="8">
+				        <td colspan="10">
 						<div class="expDetails">
 							<ul>
 							    <li><strong>Date :</strong><span>${entry.dateOccurred}</span><div class="clearfix"></div></li>
 								<li><strong>Exp Category :</strong><span>${entry.categoryName}</span><div class="clearfix"></div></li>
 								<li><strong>Description :</strong><span title="${entry.entryDescription}">${entry.entryDescription}</span>
 								<li><strong>Receipt Issued by :</strong><span title="${entry.receiptIssuedBy}">${entry.receiptIssuedBy}</span><div class="clearfix"></div></li>
-								<li><strong>Amount :</strong><span>${entry.amountRoundOff}</span><div class="clearfix"></div></li>
+								<li><strong>Submitted Amount :</strong><span>${entry.submittedamount}</span><div class="clearfix"></div></li>
+								<li><strong>Approved Amount :</strong><span>${entry.amountRoundOff}</span><div class="clearfix"></div></li>
 								<li><strong>Currency :</strong><span>${entry.categoryAmountType}</span><div class="clearfix"></div></li>
 								<li><strong>Payment Mode :</strong><span>${entry.paymentMode}</span><div class="clearfix"></div></li>
 								<li><strong>Paid By :</strong><span>${entry.paidBy}</span><div class="clearfix"></div></li>
@@ -231,13 +241,34 @@
     </section>
  <div class="mask_time"></div>
 <div class="time_appr_rejct_pop" id="" style="top: 25%; display: none;">
-	<textarea placeholder="Are you sure you want to make this expense item as billable" id="reject2message" "=""></textarea>
+	<p id="reject2message" class="modal-body text-center">Are you sure <br/> you want to make this expense item as billable ?</p>
 	 <div id="rejectReasonDiv"></div>
-	 <a href="#" onclick="" class="pull-left">Ok</a>
-	 <a class="close_color"  class="pull-left">Cancel</a>
+	 <a href="javascript:void(0)" class="pull-left" id="changeBillableStatus">Ok</a>
+	 <a class="close_color" class="pull-left" id="cancelBillingStatus">Cancel</a>
 </div>
+
+<script>
+$("#export-pop").click(function(){
+	$(".export_pop").toggle();
+});
+$("html").click(function() {
+    $(".export_pop").slideUp();
+});
+$(".export_pop, #export-pop").click(function(e) {
+    e.stopPropagation();
+});	
+</script>
   
-<script>	
+<script type="text/javascript">
+
+	$("#changeBillableStatus").click(function () {
+		var id = $("#changeBillableStatus").data("id");
+		var billableStatus = $("#changeBillableStatus").data("billableStatus");
+		changeStatusToBillable(id);
+	});
+	$("#cancelBillingStatus").click(function() {
+		$("#changeBillableStatus").data("id", 0);
+	});
 	// close popup
 	$(document).ready(function() {
 	    $(".fa-times").click(function(){
@@ -249,7 +280,16 @@
 			$(".time_appr_rejct_pop").slideUp(200);
 		});	
 	});
-	function showPopUp(){
+	function showPopUp(element, ExpenseEntriesId){
+		var checked = $(element).is(":checked");
+		if(checked) {
+			$(element).prop("checked", false);
+		} else {
+			$(element).prop("checked", true);
+		}
+		$("#reject2message").html("Are you sure <br/> you want to make this expense item as " + (checked ? "billable ? " : "non-billable ? "));
+		$("#changeBillableStatus").data("id", ExpenseEntriesId);
+		$("#changeBillableStatus").data("billableStatus", checked ? "billable": "non-billable");
 		$(".mask_time").fadeIn(200);
 		$(".time_appr_rejct_pop").slideToggle(200);
 	}
@@ -269,13 +309,20 @@ function exportMyExpenses(type,Expid,ApproverType){
 
 <script>
 function changeStatusToBillable(ExpenseEntriesId){
-	alert("i ma inside");
 	 $.ajax({
          type : "POST",
          url: sourceleadUrl+"/changeStatusToBillable?&ExpenseEntriesId="+ExpenseEntriesId,    
-         
           success :function(result) {
-        	  
+			var checkboxes = $("input[name='expenses']");
+			$(checkboxes).each(function(){
+				if($(this).data("id") === ExpenseEntriesId) {
+					if($(this).is(":checked")) {
+						$(this).prop("checked", false);
+					} else {
+						$(this).prop("checked", true);
+					}
+				}
+			});
           }
 	
 })

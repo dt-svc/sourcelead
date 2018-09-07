@@ -53,14 +53,20 @@ private static final Logger logger = LoggerFactory.getLogger(ReportsController.c
 	 OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 	 User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
 	 Long loginUserRoleId = (Long) SourceLeadSessionManager.getSessionAttribute(request, "loginUserRoleId");
-	 
+	 String loginUserRole = (String) SourceLeadSessionManager.getSessionAttribute(request, "loginUserRole");
 	 boolean requirementTabAccess = tabsService.getTabAccessByRoleIdAndTabId(loginUserRoleId, orgLocations.getId(), Long.valueOf(Constants.TAB_REQUIREMENT));
 	
 	 
 	 
 	 ModelAndView model = new ModelAndView();
-	 List<User> userList = userService.getAllUsersByOrgLocationCode(orgLocations.getId());
-	 List<Team> teamsList = teamService.getTeamListByOrgLocationID(orgLocations.getId());
+	 List<User> userList = userService.getAllUsersByOrgLocationCode(orgLocations.getId());	
+	 List<Team> teamsList = null;
+	 if(loginUserRole.equalsIgnoreCase("ROLE_LEAD_RECRUITER")) {
+		teamsList = teamService.getTeamListByTeamOwnerAndStatus(user.getId(),orgLocations.getId()); 
+	 }
+	 else{
+		 teamsList = teamService.getTeamListByOrgLocationID(orgLocations.getId()); 
+	 }
      model.addObject("teamsList", teamsList);
 	 model.addObject("userList", userList);
 	 model.addObject("requirementTabAccess", requirementTabAccess);
@@ -70,7 +76,35 @@ private static final Logger logger = LoggerFactory.getLogger(ReportsController.c
 		
     }
 	
+	@RequestMapping(value = "/myPerformanceReports")
+	public ModelAndView myPerformanceReports(HttpServletRequest request,HttpServletResponse response) throws Exception {
+	 
+	 OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+	 User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+	 Long loginUserRoleId = (Long) SourceLeadSessionManager.getSessionAttribute(request, "loginUserRoleId");
+	 String loginUserRole = (String) SourceLeadSessionManager.getSessionAttribute(request, "loginUserRole");
+
+	 boolean requirementTabAccess = tabsService.getTabAccessByRoleIdAndTabId(loginUserRoleId, orgLocations.getId(), Long.valueOf(Constants.TAB_REQUIREMENT));
 	
+	 
+	 
+	 ModelAndView model = new ModelAndView();
+	 List<User> userList = userService.getAllUsersByOrgLocationCode(orgLocations.getId());
+	 List<Team> teamsList =null;
+	 if(loginUserRole.equalsIgnoreCase("ROLE_LEAD_RECRUITER")) {
+			teamsList = teamService.getTeamListByTeamOwnerAndStatus(user.getId(),orgLocations.getId()); 
+		 }
+		 else{
+			 teamsList = teamService.getTeamListByOrgLocationID(orgLocations.getId()); 
+		 }
+     model.addObject("teamsList", teamsList);
+	 model.addObject("userList", userList);
+	 model.addObject("requirementTabAccess", requirementTabAccess);
+	 model.addObject("sourceleadUrl", sourceleadUrl);
+	 model.setViewName("reports/myPerformanceReports");
+	 return model;
+		
+    }
 	
 	@RequestMapping(value = "/recruiterJobsReport")
 	public ModelAndView recruiterJobsReport(@RequestParam(value="userCode", required=false)String recruiterUserCode, 

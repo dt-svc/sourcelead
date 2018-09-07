@@ -27,6 +27,6 @@ public interface AddExpensesService {
 
 	public void deleteDocumentByDocumentId(String documentId);
 
-	public Response<String> changeStatusToBillable(long expenseEntriesId);
+	public Response<String> changeStatusToBillable(long expenseEntriesId,String  billableStatus);
 
 }
