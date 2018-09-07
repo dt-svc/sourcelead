@@ -79,7 +79,7 @@ $(document).ready(function(){
                 <h5>Details</h5>
               </a>
             </li>
-              <li class="">
+              <!-- <li class="">
               <a href="#notesList" data-toggle="tab" title="Notes" aria-expanded="false" onclick="invoiceNotesList();">
                 <h5>Notes</h5>
               </a>
@@ -89,7 +89,7 @@ $(document).ready(function(){
               <a href="#invoiceTimeline" data-toggle="tab" title="Notes" aria-expanded="false" onclick="timelineHistoryFunction('', 'desc', null, null, null);">
                 <h5>Timeline</h5>
               </a>
-            </li>        
+            </li>      -->   
             
           </ul>
           <div class="tab-content"> 
@@ -304,7 +304,24 @@ function getViewCreditDebitNote(){
 					result = result +' </div>																		';
 					/* ======================== InvoiceItem List End============================ */
 	        	}
-	        	
+	        	var discountValue ='';
+	        	var discountTotal ='';
+	        	var discountType = '';
+	        	if(response.object.discountValue !=null && response.object.discountValue !='' && response.object.discountValue !='undefined'){
+	        		subTotal = 	response.object.discountValue;
+	        	}else{
+	        		discountValue ='--';
+	        	}
+	        	if(response.object.discountTotal !=null && response.object.discountTotal !='' && response.object.discountTotal !='undefined'){
+	        		discountTotal = 	response.object.discountTotal;
+	        	}else{
+	        		discountTotal ='--';
+	        	}
+	        	if(response.object.discountType !=null && response.object.discountType !='' && response.object.discountType !='undefined'){
+	        		discountType = 	response.object.discountType;
+	        	}else{
+	        		discountType =' ';
+	        	}
 	        	result = result +'<div class="row">                                                                                                   ';
                 result = result +'<div class="col-md-7 col-md-offset-5">                                                                              ';
                 result = result +'  <div class="form-horizontal billsubTotal">                                                                        ';
@@ -317,17 +334,17 @@ function getViewCreditDebitNote(){
                 result = result +'      <div class="col-md-7 select-field">                                                                           ';
                 result = result +'        <div class="row">                                                                                           ';
                 result = result +'          <div class="col-md-7 paddingRight">                                                                       ';
-                result = result +'            <label><strong>Discount</strong> '+response.object.discountType+'</label>                                                              ';
+                result = result +'            <label><strong>Discount</strong> '+discountType+'</label>                                                              ';
                 result = result +'          </div>                                                                                                    ';
                 result = result +'          <div class="col-md-5 paddingLeft">                                                                        ';
-                result = result +'            <label>'+response.object.discountValue+'</label>                                                         ';
+                result = result +'            <label>'+discountValue+'</label>                                                         ';
                 result = result +'          </div>                                                                                                    ';
                 result = result +'        </div>                                                                                                      ';
                 result = result +'      </div>                                                                                                        ';
                 
                 result = result +'      <div class="col-md-5 text-right">                                                                             ';
                 result = result +'      <label class="control-label col-md-7"><strong>Discount Total</strong></label>                                       ';
-                result = result +'      <div class="col-md-5 text-right">'+response.object.discountTotal+'</div>                                                 ';
+                result = result +'      <div class="col-md-5 text-right">'+discountTotal+'</div>                                                 ';
                 result = result +'      </div>                                                                                                        ';
                 result = result +'    </div>                                                                                                          ';
                 result = result +'    <div class="addtax_table">                                                                                      ';

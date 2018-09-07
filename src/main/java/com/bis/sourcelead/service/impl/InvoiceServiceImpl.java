@@ -3741,9 +3741,22 @@ public class InvoiceServiceImpl implements InvoiceService {
 	public Response<CreditDebitNote> getCreditDebitNoteByIdAndOrglocationId(Long id, Long orgLocationId)
 			throws Exception {
 		Response<CreditDebitNote> response = new Response<CreditDebitNote>();
-		CreditDebitNote creditDebitNote = invoiceDao.getCreditDebitNoteByIdAndOrglocationId(id, orgLocationId);
+		
+		Long newLocationId = null;
+		Long newId = null;
+		CreditDebitNote parentNote = invoiceDao.getCreditDebitNoteById(id);
+		if (parentNote.getParentCreditDebitNote() != null) {
+			newId = parentNote.getParentCreditDebitNote().getId();
+			newLocationId = parentNote.getParentCreditDebitNote().getOrgLocations().getId();
+		}
+		else {
+			newId = id;
+			newLocationId = orgLocationId;
+		}
+		
+		CreditDebitNote creditDebitNote = invoiceDao.getCreditDebitNoteByIdAndOrglocationId(newId, newLocationId);
 		// get CreditDebit Line Items 
-		List<CreditDebitLineItems> lineItemsList = invoiceDao.getCreditDebitLineItemsListByNoteIdAndLocationId(id, orgLocationId);
+		List<CreditDebitLineItems> lineItemsList = invoiceDao.getCreditDebitLineItemsListByNoteIdAndLocationId(newId, newLocationId);
 		lineItemsList.forEach(lineItem->{
 			lineItem.setLineItemDateStr(commonUtil.dateStrFromOrgDateFormatter(lineItem.getOrgLocation().getDateFormat(), lineItem.getLineItemDate()));	
 			if(lineItem.getAssociate() !=null){
