@@ -50,6 +50,7 @@ public class RequirementSubmissionHistoryDTO extends SearchDTO implements Serial
 	private String backoutType;
 	private String backoutReason;
 	private String incentivize;
+	private String searchType;
 	private String jobRating;
 	private String rejectedType;
 	private String rejectedReason;
@@ -392,6 +393,12 @@ public class RequirementSubmissionHistoryDTO extends SearchDTO implements Serial
 	}
 	public void setIncentivize(String incentivize) {
 		this.incentivize = incentivize;
+	}
+	public String getSearchType() {
+		return searchType;
+	}
+	public void setSearchType(String searchType) {
+		this.searchType = searchType;
 	}
 	public String getJobRating() {
 		return jobRating;
