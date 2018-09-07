@@ -351,5 +351,25 @@ public class DashboardController {
 		return model;
 	}
 	
+	@RequestMapping(value = "/requirementShortList")
+	public ModelAndView requirementShortList(@RequestParam(value="tab", required=true) String tab,
+			@RequestParam(value="orgLocationId", required=true) String orgLocationId,
+			HttpServletRequest request) throws Exception {
+		
+		ModelAndView model = new ModelAndView();
+		SessionMaintainanceData sessionData = (SessionMaintainanceData)request.getSession().getAttribute("sessionData");
+		if(sessionData == null)
+		{
+			sessionData = new SessionMaintainanceData();
+		}
+		sessionData.setNav(Constants.Dashboard);
+		model.addObject("tab",tab);
+		model.addObject("reqList","shortlist");
+		request.getSession().setAttribute("sessionData",sessionData);
+		model.addObject("sourceleadUrl", sourceleadUrl);
+		model.setViewName("requirement/requirementShortList");
+		return model;
+	}
+	
 	
 }

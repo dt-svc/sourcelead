@@ -109,8 +109,14 @@ public class AssetServiceImpl implements AssetService{
 			asset.setCreatedDate(new Date());
 		}
 		
+		//Laptop Serial Number
 		 if(StringUtils.isNotBlank(assetDTO.getSno())){
 			 asset.setSlno(assetDTO.getSno());
+		 }
+		 
+		 //CPU Serial Number
+		 if(StringUtils.isNotBlank(assetDTO.getCpuSerialNumber())){
+			 asset.setSlno(assetDTO.getCpuSerialNumber());
 		 }
 		 
 		 if(StringUtils.isNotBlank(assetDTO.getMake())){
@@ -160,11 +166,74 @@ public class AssetServiceImpl implements AssetService{
 		 
 		 if(StringUtils.isNotBlank(assetDTO.getIssueDate())){
 			 try {
-				 asset.setIssueDate(commonUtil.orgLocationDateFormat(assetDTO.getDateFormat(), assetDTO.getIssueDate()));
+				 asset.setIssueDate(commonUtil.orgLocationDateFormat(orgLocations.getDateFormat(), assetDTO.getIssueDate()));
 				  
 				} catch (Exception e) {
 				  e.printStackTrace();
 				}
+		 }
+		 
+		 //Purchase Date
+		 if(StringUtils.isNotBlank(assetDTO.getPurchaseDate())){
+			 asset.setPurchaseDate(commonUtil.orgLocationDateFormat(orgLocations.getDateFormat(), assetDTO.getPurchaseDate()));
+		 }else {
+			 asset.setPurchaseDate(null);
+		 }
+		 
+		 //Name
+		 if(StringUtils.isNotBlank(assetDTO.getName())){
+			 asset.setName(assetDTO.getName());
+		 }else {
+			 asset.setName(null);
+		 }
+		 
+		 //Depreciation Date
+		 if(StringUtils.isNotBlank(assetDTO.getDepreciationDate())){
+			 asset.setDepreciationDate(commonUtil.orgLocationDateFormat(orgLocations.getDateFormat(), assetDTO.getDepreciationDate()));
+		 }else {
+			 asset.setDepreciationDate(null);
+		 }
+		 
+		//Operating System
+		 if(StringUtils.isNotBlank(assetDTO.getOperatingSystem())){
+			 asset.setOperatingSystem(assetDTO.getOperatingSystem());
+		 }else {
+			 asset.setOperatingSystem(null);
+		 }
+		 
+		 //osKey
+		 if(StringUtils.isNotBlank(assetDTO.getOsKey())){
+			 asset.setOsKey(assetDTO.getOsKey());
+		 }else {
+			 asset.setOsKey(null);
+		 }
+		 
+		 //antiVirus
+		 if(StringUtils.isNotBlank(assetDTO.getAntiVirus())){
+			 asset.setAntiVirus(assetDTO.getAntiVirus());
+		 }else {
+			 asset.setAntiVirus(null);
+		 }
+		 
+		 //cost
+		 if(assetDTO.getCost()  != null){
+			 asset.setCost(assetDTO.getCost());
+		 }else {
+			 asset.setCost(null);
+		 }
+		 
+		 //depreciationAmount
+		 if(assetDTO.getDepreciationAmount()  != null){
+			 asset.setDepreciationAmount(assetDTO.getDepreciationAmount());
+		 }else {
+			 asset.setDepreciationAmount(null);
+		 }
+		 
+		 //Vendor Details
+		 if(assetDTO.getVendorDetails()  != null){
+			 asset.setVendorDetails(assetDTO.getVendorDetails());
+		 }else {
+			 asset.setVendorDetails(null);
 		 }
 		 
 		 if(StringUtils.isNotBlank(assetDTO.getCategory())){
