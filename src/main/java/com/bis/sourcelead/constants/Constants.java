@@ -824,6 +824,8 @@ public class Constants {
 	public static final String ONE_YEAR = "oneyear";
 	public static final String INVOICE_ACCEPETED = "Accepted";
 	public static final String INVOICE_REJECTED = "Rejected";
+	public static final String CREDIT_DEBIT_NOTE_REJECTED = "Rejected";
+	public static final String CREDIT_DEBIT_NOTE_ACCEPTED = "Accepted";
 	public static final String INVOICE_BILL_VOID = "Void";
 	public static final String INVOICE_RECEIVED = "Received";
 	public static final String INVOICE_STATUS_UNPAID = "Unpaid";
@@ -842,6 +844,8 @@ public class Constants {
 	public static final String TSNEW = "New";
 	public static final String SENT = "SENT";
 	public static final String PAYABLE = "payable";
+	public static final String CREDIT_NOTE = "Credit";
+	public static final String DEBIT_NOTE = "Debit";
 //	public static  String  COUNTRY_INDIA = "India";
 	public static final String COUNTRY_INDIA = "India";
 	public static final String COUNTRY_AUSTRALIA = "Australia";
@@ -1005,6 +1009,8 @@ public class Constants {
 	public static final String IMPORT_CANDIDATE = "import";
 	public static final String INVOICE_ENTITY_SHORTCODE = "INV";
 	public static final String BILL_ENTITY_SHORTCODE = "BIL";
+	public static final String CREDIT_ENTITY_SHORTCODE = "CR";
+	public static final String DEBIT_ENTITY_SHORTCODE = "DB";
 	public static final String CANDIDATE_ADDED_MANUALLY = "added manually";
 	public static final String CANDIDATE_ADDED_BY_IMPORTING = "imported";
 	public static final String CANDIDATE_EDITTED = "updated profile";
