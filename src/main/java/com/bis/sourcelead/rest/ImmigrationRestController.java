@@ -2383,6 +2383,7 @@ public class ImmigrationRestController {
 					OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 					Long lcaId = immigrationCommonService.getLcaIdByUUID(lcaUuid);
 					LcaDTO lcaDTO = immigrationCommonService.editLcaDetails(lcaId,orgLocations);
+					model.addObject("privilingWageCurrency",lcaDTO.getPrivilingWageCurrency());
 					model.addObject("lcaDTO", lcaDTO);
 				}
 			

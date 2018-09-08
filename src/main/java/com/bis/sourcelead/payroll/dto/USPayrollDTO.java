@@ -101,6 +101,8 @@ public class USPayrollDTO {
     
     private BigDecimal payPerSal;
 	
+    private String depositType;
+    
 	
 	public BigDecimal getPayPerSal()
 	{
@@ -479,6 +481,14 @@ public class USPayrollDTO {
 	}
 	public void setEmployeeDesignationType(String employeeDesignationType) {
 		this.employeeDesignationType = employeeDesignationType;
+	}
+	public String getDepositType()
+	{
+		return depositType;
+	}
+	public void setDepositType(String depositType)
+	{
+		this.depositType = depositType;
 	}
 	
 }

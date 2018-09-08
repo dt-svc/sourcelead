@@ -26,12 +26,12 @@
             </div>
           </div>
           
-          <div class="col-md-2 text-center">
+      <!--     <div class="col-md-2 text-center">
             <label class="clearfix"><strong>No. Leaves</strong></label>
             <div class="clearfix">
               <p class="mt5 mb0">30</p>
             </div>
-          </div>
+          </div> -->
         
         </div>
       </div>
@@ -200,19 +200,12 @@
 
 <script>
 	function payAdjustment(payrollUUID,status){
-		  $.ajax({
+		 $.ajax({
 		  	type: "GET",
 		        url: sourceleadUrl+"/getEmployeePayroll?payrollUUID="+payrollUUID+"&status="+status,                 
 		        success: function(data) {
 		            var json = data.object;
 		            $("#empAddress").text(json.employeeAddress);
-		           /*  $("#regularHours").val(json.regularHours.toFixed(2));
-		            $("#regularHoursAmt").val(json.regularHrsTotalAmt.toFixed(2));
-		            $("#overTimeHours").val(json.overtimeHours.toFixed(2));
-		            $("#overTimeHoursAmt").val(json.otHoursTotalAmt.toFixed(2));
-		            $("#totalHours").text(json.totalHours.toFixed(2));
-		            $("#totalEarnings").text(json.totalEarnings.toFixed(2)); */
-		            
 		            if(json.assSalType == "Salary" || json.assSalType == "LcaWage"){
 		            	$("#hoursAndEarningsTable").hide();
 		            	$("#assSalaryTable").show();
@@ -358,13 +351,14 @@
 	                        payItem = payItem +'<table width="100%" class="table table-bordered">';
 	                        payItem = payItem +'<thead>';
 	                        payItem = payItem +' <tr>';
-	                        payItem = payItem +'<th colspan="4">Pay Items</th>';
+	                        payItem = payItem +'<th colspan="3">Pay Items</th>';
 	                        payItem = payItem +'</tr>';
 	                        payItem = payItem +'  </thead>';
 	                        payItem = payItem +' <tbody>';
 	                        payItem = payItem +' <tr>';
 	                        payItem = payItem +'  <th>Item Name</th>';
 	                        payItem = payItem +'  <th>Amount</th>';
+	                        payItem = payItem +'  <th></th>';
 	                        payItem = payItem +'</tr>';
 	                        if(json.payItem != null && json.payItem.length > 0){
 			                	  for (var i=0; i< json.payItem.length; i++){
@@ -372,7 +366,14 @@
 						            	payItem = payItem +' <tr>';
 						            	payItem = payItem +' <td>'+pi.payItemName+'</td>';
 						            	payItem = payItem +'<input type="hidden" value='+pi.id+' id="id" name="payItem['+i+'].id"/>';
-						            	payItem = payItem +' <td><i class="fa fa-dollar paddingRight"></i><i class="fa fa-dollar paddingRight"></i><input type="text" class="formControl" id="payItemAmount" name="payItem['+i+'].payItemAmount" readOnly value='+pi.payItemAmt+'></td>';
+							            payItem = payItem +' <td><i class="fa fa-dollar paddingRight"></i><input type="text" class="formControl" id="payItemAmount" name="payItem['+i+'].payItemAmount" readOnly value='+pi.payItemAmt+'></td>';
+							           /*  if(pi.isBlocked == 'YES'){
+								            payItem = payItem +' <td><input type="text" class="formControl text-danger" readonly value="Blocked"></td>';
+							            }esle{ */
+								            payItem = payItem +' <td><input type="text" class="formControl text-danger" readonly value="Blocked"></td>';
+
+							            /* } */
+
 						            	payItem = payItem +' </tr>';
 				                  }
 			                  }
@@ -399,4 +400,5 @@
 		$(".usRunpayroll").fadeOut();
 		$(".sideMask").fadeOut();
 	};
+	
 </script>
