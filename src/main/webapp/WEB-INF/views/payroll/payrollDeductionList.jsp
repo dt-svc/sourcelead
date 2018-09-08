@@ -38,8 +38,8 @@ $(document).ready(function(){
         <li><a href="<c:url value='${appPath}/addDeduction'/>" class="addcon-pop"><i class="fa fa-plus paddingRight"></i>Add</a></li>
         <li>
 		 <div class="dynamic_search">
-			<input type="text" placeholder="Search" id='dataTableSearch' onclick="getAllDeductionType();"/>
-			<i class="fa fa-search"></i>
+			<input type="text" placeholder="Search" id='dataTableSearch'/>
+			<i class="fa fa-search" onclick="getAllDeductionType();"></i>
 		 </div>
 	   </li>
         <div class="clearfix"></div>
