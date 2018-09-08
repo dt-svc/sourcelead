@@ -2584,25 +2584,25 @@ public class RequirementSubmissionDaoImpl implements RequirementSubmissionDao{
 	    		String subQuery4 = "";
 	    		
 	    		if(requirementSubmissionHistoryDTO.getSearchType().equalsIgnoreCase("MY")) {
-	    			subQuery1 = "rsh.submissionId.createdBy =:userCode";
+	    			subQuery1 = " (rsh.submissionId.createdBy =:userCode)";
 	    			params.put("userCode",user.getUserCode());
 	    		}else {
 	    			//login user as created by
-		    		subQuery1 = "rsh.submissionId.requirement.id IN (select req.id from Requirement req where req.createdBy =:userId)";
+		    		subQuery1 = " (rsh.submissionId.requirement.id IN (select req.id from Requirement req where req.createdBy =:userId))";
 		    		params.put("userId",user.getId());
 		    		
 		    		
 		    		//login user as a approver for this requirement  or  assigned to.
-		    		subQuery2 = "rsh.submissionId.requirement.id IN (select rah.requirementId from RequirementApproverHierarchy rah where rah.approverUserId.id =:approverUserId )  or (rsh.submissionId.requirement.id IN ( select rah.requirementId from RequirementAssignTo rah where rah.teamId.id IN ( select rah.id from Team rah where rah.ownerUserId.id =:userId)) ) or (rsh.submissionId.requirement.id IN ( select rah.requirementId from RequirementAssignTo rah where rah.assignUserId.id =:userId) and rsh.submissionId.createdBy =:usercode)";
+		    		subQuery2 = " or (rsh.submissionId.requirement.id IN (select rah.requirementId from RequirementApproverHierarchy rah where rah.approverUserId.id =:approverUserId )  or (rsh.submissionId.requirement.id IN ( select rah.requirementId from RequirementAssignTo rah where rah.teamId.id IN ( select rah.id from Team rah where rah.ownerUserId.id =:userId)) ) or (rsh.submissionId.requirement.id IN ( select rah.requirementId from RequirementAssignTo rah where rah.assignUserId.id =:userId) and rsh.submissionId.createdBy =:usercode))";
 		    		params.put("approverUserId",user.getId());
 		    		params.put("userId",user.getId());
 		    		params.put("usercode",user.getUserCode());
 		    		
 		    		//login user as a  manager for this job.
-		    		subQuery3 = "rsh.submissionId.requirement.id IN ( select requirement.id from Requirement requirement where  requirement.managerUserId.id = :managerUserId )  ";
+		    		subQuery3 = " or (rsh.submissionId.requirement.id IN ( select requirement.id from Requirement requirement where  requirement.managerUserId.id = :managerUserId ) ) ";
 		    		params.put("managerUserId",user.getId());
 		    		
-		    		subQuery4 = " rsh.submissionId.requirement.releaseJobToAllUsers = 'Y' and  rsh.submissionId.createdBy =:usercode";
+		    		subQuery4 = " or (rsh.submissionId.requirement.releaseJobToAllUsers = 'Y' and  rsh.submissionId.createdBy =:usercode)";
 		    		params.put("usercode",user.getUserCode());
 	    		}
 	    		
@@ -2613,7 +2613,7 @@ public class RequirementSubmissionDaoImpl implements RequirementSubmissionDao{
 				
 	    		String subQuery = "";
 	    		if(subQuery1 != "" || subQuery2 != "" || subQuery3 != "" ){
-	    			subQuery = "where rsh.submissionId.orgLocations.id = :orgLocationsId "+submissionStages+" "+empQuery+" "+clientSubQuery+" "+incentivizedQuery+" and rsh.submissionId.status = 1 and rsh.updatedDate >= :startDate and rsh.updatedDate <= :endDate and ( ("+subQuery1+") or ("+subQuery2+") or ("+subQuery3+") or ("+subQuery4+") ) ";
+	    			subQuery = "where rsh.submissionId.orgLocations.id = :orgLocationsId "+submissionStages+" "+empQuery+" "+clientSubQuery+" "+incentivizedQuery+" and rsh.submissionId.status = 1 and rsh.updatedDate >= :startDate and rsh.updatedDate <= :endDate and ( ("+subQuery1+" "+subQuery2+" "+subQuery3+" "+subQuery4+") ) ";
 	    			params.put("orgLocationsId",orgLocationsId);
 	    			params.put("startDate",startUTCDate);
 	    			params.put("endDate",endUTCDate);

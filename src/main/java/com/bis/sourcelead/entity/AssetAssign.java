@@ -1,5 +1,7 @@
 package com.bis.sourcelead.entity;
 
+import java.util.Date;
+
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
@@ -38,10 +40,10 @@ public class AssetAssign {
     private Shift shift;
 	
 	@Column(name = "ASSIGNED_ON")
-	private String assignedOn;
+	private Date assignedOn;
 	
 	@Column(name = "RETURNED_ON")
-	private String returnedOn;
+	private Date returnedOn;
 	
 	@Column(name = "FILE_URL")
 	@Type(type="text")
@@ -120,19 +122,21 @@ public class AssetAssign {
 		this.status = status;
 	}
 
-	public String getAssignedOn() {
+	public Date getAssignedOn() {
 		return assignedOn;
 	}
 
-	public String getReturnedOn() {
-		return returnedOn;
-	}
-
-	public void setAssignedOn(String assignedOn) {
+	public void setAssignedOn(Date assignedOn) {
 		this.assignedOn = assignedOn;
 	}
 
-	public void setReturnedOn(String returnedOn) {
+	public Date getReturnedOn() {
+		return returnedOn;
+	}
+
+	public void setReturnedOn(Date returnedOn) {
 		this.returnedOn = returnedOn;
 	}
+
+	
 }
