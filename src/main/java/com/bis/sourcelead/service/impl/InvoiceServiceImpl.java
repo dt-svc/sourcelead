@@ -3389,7 +3389,7 @@ public class InvoiceServiceImpl implements InvoiceService {
 
 	@Override
 	public CreditDebitNote saveCreditDebitNote(User user, OrgLocations orgLocation, String saveType, String noteType,
-			CreditDebitNoteDTO creditDebitNoteDTO) throws Exception {
+			CreditDebitNoteDTO creditDebitNoteDTO,String loginCurrencyCode) throws Exception {
 		
 		CreditDebitNote creditDebitNote = null;
 		if(StringUtils.isNotBlank(creditDebitNoteDTO.getSavedNoteId())){
@@ -3450,9 +3450,22 @@ public class InvoiceServiceImpl implements InvoiceService {
         creditDebitNote.setSubTotal(new BigDecimal(creditDebitNoteDTO.getSubTotalAmount()));
         creditDebitNote.setTotal(new BigDecimal(creditDebitNoteDTO.getGrandTotal()));
         
+        String vendorCurrencyCode =  conversionUtil.getVendorOrgCurrencyCode(vendorOrgLocation.getCountry());
+		if(!loginCurrencyCode.equalsIgnoreCase(vendorCurrencyCode)){
+	        if(null != vendorCurrencyCode){
+	      	float convertedAmount = conversionUtil.convert(loginCurrencyCode, vendorCurrencyCode, Float.parseFloat(creditDebitNoteDTO.getGrandTotal()));
+	      	float convertedAmount1 = 	(float) (Math.round(convertedAmount * 100.0) / 100.0);
+	      	creditDebitNote.setExchangeCurrencyRate(new BigDecimal(convertedAmount1));
+	      	creditDebitNote.setVendorCurrencyCode(vendorCurrencyCode);
+	      	creditDebitNote.setExchangeCurrencyRate(new BigDecimal(creditDebitNoteDTO.getExchangeCurrencyRate()));
+	      	creditDebitNote.setAfterExchangeGrandTotal(new BigDecimal(creditDebitNoteDTO.getAfterExchangeGrandTotal()));
+	        }	
+	    }
+        
         if(StringUtils.isEmpty(creditDebitNoteDTO.getSavedNoteId())){
         creditDebitNote.setGeneratedId(getCreditDebitGeneratedId(orgLocation,vendorOrgLocation,noteType));
         }
+        creditDebitNote.setLoginCurrencyCode(loginCurrencyCode);
         
         if(StringUtils.isNotBlank(creditDebitNoteDTO.getDiscountValue())){
         	creditDebitNote.setDiscountType(creditDebitNoteDTO.getDiscountType());
@@ -3505,12 +3518,12 @@ public class InvoiceServiceImpl implements InvoiceService {
 		invoiceDao.saveCreditDebitNote(creditDebitNote);
 		// save child record
 		if(saveType.equalsIgnoreCase("Send")){
-			saveChildCreditDebitNote(creditDebitNote,user,vendorOrgLocation);
+			saveChildCreditDebitNote(creditDebitNote,user,vendorOrgLocation,loginCurrencyCode);
 		}
 		return creditDebitNote;
 	}
 
-	private CreditDebitNote saveChildCreditDebitNote(CreditDebitNote parentCreditDebitNote, User user, OrgLocations vendorOrgLocation) throws Exception {
+	private CreditDebitNote saveChildCreditDebitNote(CreditDebitNote parentCreditDebitNote, User user, OrgLocations vendorOrgLocation,String loginOrgCurrencyCode) throws Exception {
 		
 		CreditDebitNote childCreditDebitNote = invoiceDao.getParentCreditDebitNoteById(parentCreditDebitNote.getId());
 		
@@ -3563,7 +3576,19 @@ public class InvoiceServiceImpl implements InvoiceService {
 		childCreditDebitNote.setUpdatedBy(user);
 		childCreditDebitNote.setUpdatedDate(commonUtil.orgLocationCommonDate(new Date(), vendorOrgLocation));
 		childCreditDebitNote.setSubTotal(parentCreditDebitNote.getSubTotal());
-		childCreditDebitNote.setTotal(parentCreditDebitNote.getTotal());
+		String vendorCurrencyCode = conversionUtil.getVendorOrgCurrencyCode(vendorOrgLocation.getCountry());
+		if (!loginOrgCurrencyCode.equalsIgnoreCase(vendorCurrencyCode)) {
+			if (null != vendorCurrencyCode) {
+				float convertedAmount = conversionUtil.convert(loginOrgCurrencyCode, vendorCurrencyCode,parentCreditDebitNote.getTotal());
+				float convertedAmount1 = (float) (Math.round(convertedAmount * 100.0) / 100.0);
+				childCreditDebitNote.setExchangeCurrencyRate(new BigDecimal(convertedAmount1));
+				childCreditDebitNote.setLoginCurrencyCode(vendorCurrencyCode);
+				childCreditDebitNote.setTotal(parentCreditDebitNote.getAfterExchangeGrandTotal());
+			}
+		} else {
+			childCreditDebitNote.setLoginCurrencyCode(parentCreditDebitNote.getLoginCurrencyCode());
+			childCreditDebitNote.setTotal(parentCreditDebitNote.getTotal());
+		}
 		childCreditDebitNote.setDiscountType(parentCreditDebitNote.getDiscountType());
 		childCreditDebitNote.setDiscountValue(parentCreditDebitNote.getDiscountValue());
 		childCreditDebitNote.setDiscountTotal(parentCreditDebitNote.getDiscountTotal());
@@ -3889,9 +3914,11 @@ public class InvoiceServiceImpl implements InvoiceService {
       				vendorOrgLocation = orgRelation.getResponderLocationId();
       			}
         }
+        String currencyCode =  conversionUtil.getVendorOrgCurrencyCode(orgLocation.getCountry());
+
 		// save child record
 				if(creditDebitNote.getNoteStatus().equalsIgnoreCase("Send")){
-					saveChildCreditDebitNote(creditDebitNote,user,vendorOrgLocation);
+					saveChildCreditDebitNote(creditDebitNote,user,vendorOrgLocation,currencyCode);
 				}
 		
 		return creditDebitNote;

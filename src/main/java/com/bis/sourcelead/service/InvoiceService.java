@@ -41,7 +41,7 @@ public interface InvoiceService {
 
 	Invoice saveInvoice(User user, OrgLocations orgLocation, String saveType,String invoiceType, Org org, String currencyCode, InvoiceDTO invoiceDTO)throws Exception;
 	
-	CreditDebitNote saveCreditDebitNote(User user, OrgLocations orgLocation, String saveType,String noteType, CreditDebitNoteDTO creditDebitNoteDTO)throws Exception;
+	CreditDebitNote saveCreditDebitNote(User user, OrgLocations orgLocation, String saveType,String noteType, CreditDebitNoteDTO creditDebitNoteDTO,String currencyCode)throws Exception;
 	
 	CreditDebitNote saveAcceptedCreditDebitNote(User user, OrgLocations orgLocation,String noteType, CreditDebitNote creditDebitNote)throws Exception;
 

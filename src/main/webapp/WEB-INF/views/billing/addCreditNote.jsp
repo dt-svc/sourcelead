@@ -23,6 +23,7 @@
       <div class="clearfix mt formgroup-minheight">
       <form id="creditNote_form" name ="creditNote_form" method="Post">
       <input type = "hidden" name = "savedNoteId" value ="${creditDebitNote.savedNoteId}">
+      <input type="hidden" name="clientCurrency" id="clientCurrency">
 		<div class="col-xs-12 col-sm-6 col-md-6">
 					<div class="form-group row">
 					  <label class="col-md-3">Client<span class="text-danger">&nbsp;*</span></label>
@@ -317,11 +318,13 @@
                 </div>
 
               </div>
+              
               <!-- Discount UI Ends-->
                <div class="form-group mt">
                 <label class="col-md-7 text-right"><strong>Total</strong></label>
                     <div class="col-md-5 text-right"><span class="pull-left"></span><input type="text" value = "${creditDebitNote.grandTotal}" id="grandTotal" name="grandTotal" class="ReadTextFli" readonly></div>
               </div>
+              <div id="conversionId"  style="display: none"></div>
               </div>
               </div>
           </div>
@@ -518,11 +521,14 @@ function removeDynamicRowDiv(id){
 							}else{
 								output = output	+ "<option value='" +opt.spocUserId+ "'>"+ opt.ownerName + "(" + opt.spocName+ ")</option>";
 							}
+							$("#clientCurrency").val(opt.clientCurrency);
 						}
 						$("#spocUser").append(output);
 						$('#spocUser').trigger("chosen:updated");
+						currencyConversionDiv();
 					},
 				});
+		
 	}
 </script>
 
@@ -654,6 +660,8 @@ function datePickerFunction(id){
 		 }  
 		  $("#subTotalAmount").val(sum.toFixed(2));
 		  $("#grandTotal").val(sum.toFixed(2));
+		  $("#conversionFrom").val(sum.toFixed(2));
+		  conversionRate();
   }		  
   
   
@@ -667,9 +675,11 @@ function datePickerFunction(id){
 				total = subTotal-discountValue;
 				$("#discountTotal").val(discountValue);
 				$("#grandTotal").val(total.toFixed(2));
+				$("#conversionFrom").val(total.toFixed(2));
 			}else{
 				$("#discountTotal").val("00.00");
 				$("#grandTotal").val(subTotal.toFixed(2));
+				$("#conversionFrom").val(subTotal.toFixed(2));
 			}
 			
 		}
@@ -679,12 +689,15 @@ function datePickerFunction(id){
 				total = subTotal - perCentValue;
 				$("#discountTotal").val(perCentValue.toFixed(2));
 				$("#grandTotal").val(total.toFixed(2));
+				$("#conversionFrom").val(total.toFixed(2));
 			}else{
 				$("#discountTotal").val("00.00");
 				$("#grandTotal").val(subTotal.toFixed(2));
+				$("#conversionFrom").val(subTotal.toFixed(2));
 			}
 			
 		}
+		conversionRate();
 	}
   
   // allow only numbers
@@ -692,6 +705,56 @@ function datePickerFunction(id){
 	   object.value = object.value.replace(/[^0-9\.]/g,'');
 	} 
   </script>
+  
+  <!-- currency conversion script -->
+  <script>
+function currencyConversionDiv(){
+	var clientCurrency = $("#clientCurrency").val();
+	var currencyCode = '${SourceLeadWeb_currencyCode}';
+	if(clientCurrency !=null && clientCurrency !='' && clientCurrency !='undefined'){
+	if(clientCurrency != currencyCode){
+		var result = "";
+		result = result +' <div class="row">';
+		result = result +' <div class="clearfix mt col-md-offset-2 col-md-10" style="padding-right:0;">';
+		result = result +' <div class="clearfix"><label class="col-md-6 text-right"><strong>Conversion From</strong></label><div class="paddingLeft col-md-6"><span class="pull-left" id="currencyCode"></span><div class="pull-right"><input type="text" id="conversionFrom" placeholder="00:00" class="ReadTextFli" readonly="" type="text"/></div></div></div>';
+		result = result +'  <div class="clearfix"><label class="col-md-6 text-right"><strong>Conversion To</strong></label><div  class="paddingLeft col-md-6"><span id="vendorCurrencyCode"></span><div class="pull-right"><input id="exchangeCurrencyRate" name="exchangeCurrencyRate" class="ReadTextFli" value = "" readonly="" type="text"/></div></div></div>';
+		result = result +' <div class="clearfix"><label class="col-md-6 text-right"><strong>Exchange Rate</strong></label><div  class="paddingLeft col-md-6"><span id="convertedCurrencyCode"></span><div class="pull-right"><input id="afterExchangeGrandTotal" name="afterExchangeGrandTotal" class="ReadTextFli" readonly="" type="text"/></div></div></div>';
+		result = result +'  </div>';
+		result = result +'  </div>';
+		document.getElementById("conversionId").style.display="block";
+		$("#conversionId").empty();
+		$("#conversionId").append(result);
+	}else{
+		document.getElementById("conversionId").style.display="none";
+	}
+	}
+}
+
+function  conversionRate(){
+	   var orgRelationId = $("#orgRelationId").val();
+	   var currencyCode = '${SourceLeadWeb_currencyCode}';
+	   var grandTotal = $("#grandTotal").val();
+	   if(grandTotal != '' && grandTotal != 'undefined'){
+		   $.ajax({
+				type : "GET",
+				url: sourceleadUrl+"/getConversionExchangeRate?"+tokenParamName+"="+tokenValue+"&orgRelationId="+orgRelationId+"&grandTotal="+grandTotal,
+				success :function(response) {
+					if(response.object !='' && response.object != 'undefined' && response.object != null){
+//						var json = JSON.parse(data);
+						$("#afterExchangeGrandTotal").val(response.object.exchangeRate);
+						$("#exchangeCurrencyRate").val(response.object.exchangeCurrency);
+						$("#vendorCurrencyCode").html(response.object.vendorCurrencyCode);
+						$("#convertedCurrencyCode").html(currencyCode +' to '+ response.object.vendorCurrencyCode);
+					}
+				},
+				});  
+		   $("#currencyCode").html(currencyCode);
+	   }
+	  
+		
+}
+
+</script>
 
 <script type="text/javascript">
 			var config = {
