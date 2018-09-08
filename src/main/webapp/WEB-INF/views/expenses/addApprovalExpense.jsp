@@ -275,7 +275,7 @@ $(document).ready(function(){
 									              </c:forEach>
 										     </select>
 									</div>
-								         <input type='text' class='form-control allownumericwithdecimal'  placeholder='Submitted Amount'  name='expenseEntry[${entryCount.index}].categoryAmount' id='submittedexpenseAmount${(2*(entryCount.count))-1}' value='${entry.submittedamount}' field-name='Submitted Amount' data-validation='required validate_float validate_length length1-10' onkeyup="getAmountValue(${(2*(entryCount.count))-1});">
+								         <input type='text' Readonly class='form-control allownumericwithdecimal'  placeholder='Submitted Amount'  name='expenseEntry[${entryCount.index}].categoryAmount' id='submittedexpenseAmount${(2*(entryCount.count))-1}' value='${entry.submittedamount}' field-name='Submitted Amount' data-validation='required validate_float validate_length length1-10' onkeyup="getAmountValue(${(2*(entryCount.count))-1});">
 									</div>
 		                 </div>
 							

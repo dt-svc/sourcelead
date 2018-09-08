@@ -1,8 +1,10 @@
 package com.bis.sourcelead.payroll.dao.impl;
 
+import java.math.BigDecimal;
 import java.util.Date;
 import java.util.List;
 
+import org.apache.commons.lang3.StringUtils;
 import org.hibernate.Query;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
@@ -25,6 +27,7 @@ import com.bis.sourcelead.payroll.dto.LCAWageDTO;
 import com.bis.sourcelead.payroll.dto.ProjectRateDTO;
 import com.bis.sourcelead.payroll.entity.EmployeePayroll;
 import com.bis.sourcelead.payroll.entity.PaysheetFrequency;
+import com.bis.sourcelead.payroll.util.PayrollUtil;
 import com.bis.sourcelead.util.CommonUtil;
 
 @Repository
@@ -40,6 +43,9 @@ public class GenerateUSPayrollDaoImpl implements GenerateUSPayrollDao{
 	
 	@Autowired
 	UserGroupDao userGroupDao;
+	
+	@Autowired
+	PayrollUtil payrollUtil;
 	
 	@Override
 	@Transactional
@@ -113,11 +119,13 @@ public class GenerateUSPayrollDaoImpl implements GenerateUSPayrollDao{
 		return lcaWage;
 	}
 
+	@SuppressWarnings("unchecked")
 	@Override
 	@Transactional
-	public List<ProjectRateDTO> payRateByCandidateLocation(Candidate candidate, OrgLocations orgLocation, Date freqStartDate, Date freqEndDate)
+	public BigDecimal payRateByCandidateLocation(Candidate candidate, OrgLocations orgLocation, Date freqStartDate, Date freqEndDate,String payFrequency)
 	{
-		List<ProjectRateDTO> projectRateDTO = null;
+		List<ProjectRateDTO> projectRateList = null;
+		BigDecimal payRate = BigDecimal.ZERO;
 		try {
 			Session session = this.sessionFactory.getCurrentSession();
 			java.sql.Date sqlStartDate = new java.sql.Date(freqStartDate.getTime());
@@ -142,18 +150,30 @@ public class GenerateUSPayrollDaoImpl implements GenerateUSPayrollDao{
 			.append(" from  PROJECT_MEMBERS pm ") 
 			.append(" left join PROJECT_MEMBERS_RATE_HISTORY pmrs ON  pmrs.PROJECT_MEMBER_ID = pm.ID ")
 			.append(" left join CANDIDATE can ON can.ID = pm.CANDIDATE_ID ")
-			.append(" where can.ORG_LOCATION_ID = :locationId and pm.CANDIDATE_ID= :candidateId and ((:freqStartDate >= pmrs.PAY_RATE_START_DATE AND :freqEndDate <= pmrs.PAY_RATE_END_DATE) OR (pmrs.PAY_RATE_START_DATE IS NULL OR pmrs.PAY_RATE_END_DATE IS NULL))");
+			.append(" where can.ORG_LOCATION_ID = :locationId and pm.CANDIDATE_ID= :candidateId and ((:freqStartDate >= pmrs.PAY_RATE_START_DATE AND :freqEndDate <= pmrs.PAY_RATE_END_DATE) OR (pmrs.PAY_RATE_START_DATE IS NULL OR pmrs.PAY_RATE_END_DATE IS NULL)) group by pm.PROJECT_ID");
 			Query queryObj = session.createSQLQuery(sb.toString());
 			queryObj.setLong("candidateId", candidate.getId());
 			queryObj.setLong("locationId", orgLocation.getId());
 			queryObj.setDate("freqStartDate", sqlStartDate);
 			queryObj.setDate("freqEndDate", sqlEndDate);
 			queryObj.setResultTransformer(Transformers.aliasToBean(ProjectRateDTO.class));
-			projectRateDTO = queryObj.list();
+			projectRateList = queryObj.list();
+			if(projectRateList != null) {
+				for(ProjectRateDTO pRate : projectRateList) {
+					if(pRate.getPayRate() != null) {
+						BigDecimal payAmount = payrollUtil.getHourlyRate(new BigDecimal(pRate.getPayRate()), pRate.getPayRateType());
+						payRate = payRate.add(payAmount);
+					}else {
+						payRate.add(new BigDecimal(pRate.getActualPayRate()));
+						BigDecimal payAmount = payrollUtil.getHourlyRate(new BigDecimal(pRate.getActualPayRate()), pRate.getActualPayRateType());
+						payRate = payRate.add(payAmount);
+					}
+				}
+			}
 		}catch (Exception e) {
 			e.printStackTrace();
 		}
-		return projectRateDTO;
+		return payRate;
 		
 	}
 	

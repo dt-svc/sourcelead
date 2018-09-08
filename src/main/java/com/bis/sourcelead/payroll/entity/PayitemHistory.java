@@ -196,7 +196,12 @@ public class PayitemHistory {
 
 	public BigDecimal getAmount()
 	{
-		return amount;
+		if(amount != null) {
+			return amount;
+		}else{
+			return BigDecimal.ZERO;
+		}
+		
 	}
 
 	public void setAmount(BigDecimal amount)
