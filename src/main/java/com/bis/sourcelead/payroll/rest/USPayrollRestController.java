@@ -1661,7 +1661,7 @@ public class USPayrollRestController {
 		{
 			ModelAndView model = new ModelAndView();
 			model.addObject("groupUUID", groupUUID);
-			model.setViewName("payroll/employeesInGroups");
+			model.setViewName("payroll/employeeGroups");
 			return model;
 		}
 		
@@ -1687,6 +1687,12 @@ public class USPayrollRestController {
 				dto.setCandidateName(name.toString());
 				dto.setEmail(associateSalary.getCandidate().getEmail());
 				dto.setMobilePhone(associateSalary.getCandidate().getMobilePhone());
+				if(associateSalary.getCandidate().getDesignationType() != null) {
+					dto.setDesignationType(associateSalary.getCandidate().getDesignationType());
+				}else {
+					dto.setDesignationType("--");
+				}
+				
 				listDto.add(dto);
 			}
 			resList.setData(listDto);

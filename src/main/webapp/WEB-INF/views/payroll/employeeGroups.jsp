@@ -6,7 +6,7 @@
       <div class="pull-left">
         <h2>Employees List</h2>
       </div>
-      <div class="pull-right brud-crum"><a href="<c:url value='${appPath}/dashboard/${SourceLeadWeb_orgLocationId}'/>"> Home </a>&raquo;<a href="${appPath}/getUserGroupList"> Groups List </a> &raquo;  Employees List </div>
+      <div class="pull-right brud-crum"><a href="<c:url value='${appPath}/dashboard/${SourceLeadWeb_orgLocationId}'/>"> Home </a>&raquo;<a href=""> Groups List </a> &raquo;  Employees List </div>
     </section>
      <div class='reportHead' id="">
 		<ul class='pull-right'>
@@ -46,6 +46,7 @@ function getAllEmployeesInGroupsData(url){
         result = result + '<tr>';
 		result = result + '<th>Employee Name</th>';
 		result = result + '<th>Email</th>';
+		result = result + '<th>Employment Type</th>';
 		result = result + '<th>Mobile Phone</th>';
 		result = result + '</tr>';
         result = result +"</thead>";
@@ -73,6 +74,7 @@ function employeesInGroupsPagination(url){
         "columns": [
             { "data": "employeeName" },
             { "data": "email"},
+            { "data": "employmentType"},
             { "data": "mobilePhone"}
         ],
         "columnDefs": [{
@@ -94,6 +96,15 @@ function employeesInGroupsPagination(url){
 	              		
 	              }
 		          },{
+			    	  "targets": colIndex++,
+		              "data": "employmentType",
+		              "render": function ( data, type, opt, meta ) {
+		            	  var result = "";
+							result = result + '  <td><div class="tbldata-dotdot-verybig">'+opt.designationType+'</div></td>';
+			              return result;
+		              		
+		              }
+			          },{
               "targets": colIndex++,
               "data": "mobilePhone",
               "render": function ( data, type, opt, meta ) {

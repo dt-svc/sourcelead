@@ -587,7 +587,7 @@ public class ImmigrationCommonServiceImpl implements ImmigrationCommonService {
 		
 		CandidateLcaJobDetails canLcaJobDetails = null;
 		Date currentDate = commonUtil.orgLocationCommonDate(new Date(), orgLocations);
-		System.out.println("candidate===========>"+immigrationObj.getId());
+		System.out.println("immigration===========>"+immigrationObj.getId());
 		
 		if(immigrationObj.getId() != null) {
 		canLcaJobDetails = immigrationCommonDao.getCandidateLcaJobDetails(immigrationObj.getId());
@@ -858,18 +858,20 @@ public class ImmigrationCommonServiceImpl implements ImmigrationCommonService {
 			// New Code
 			CandidateLcaJobDetails canLcaJobDetails = immigrationCommonDao.getCandidateLcaJobDetails(immigration.getId());
 			
-			if (canLcaJobDetails.getEmploymentLevel() != null && !StringUtils.isEmpty(canLcaJobDetails.getEmploymentLevel())) {
+			if (canLcaJobDetails != null && !StringUtils.isEmpty(canLcaJobDetails.getEmploymentLevel())) {
 				dto.setEmploymentLevelName(immigrationCommonDao.getPetitionTypeById(Long.parseLong(canLcaJobDetails.getEmploymentLevel()), ImmigrationConstants.EMPLOYMENT_LEVEL));
 			}
 			
-			if(canLcaJobDetails.getEmployerName() != null) {
-			dto.setEmployer(canLcaJobDetails.getEmployerName());
+			if(canLcaJobDetails != null) {
+				if(canLcaJobDetails.getEmployerName() != null) {
+				dto.setEmployer(canLcaJobDetails.getEmployerName());
+				}
+				
+				dto.setEmployer(canLcaJobDetails.getEmployerName());
+				dto.setJobLocation(canLcaJobDetails.getEmployerLocation());
+				dto.setJobStartDate(commonUtil.dateStrFromOrgDateFormatter(orgLocations.getDateFormat(),canLcaJobDetails.getJobStartDate()));
+				dto.setJobEndDate(commonUtil.dateStrFromOrgDateFormatter(orgLocations.getDateFormat(),canLcaJobDetails.getJobEndDate()));
 			}
-			
-			dto.setEmployer(canLcaJobDetails.getEmployerName());
-			dto.setJobLocation(canLcaJobDetails.getEmployerLocation());
-			dto.setJobStartDate(commonUtil.dateStrFromOrgDateFormatter(orgLocations.getDateFormat(),canLcaJobDetails.getJobStartDate()));
-			dto.setJobEndDate(commonUtil.dateStrFromOrgDateFormatter(orgLocations.getDateFormat(),canLcaJobDetails.getJobEndDate()));
 			
 			/* jobdetails end */
 			Candidate candidate = candidateDao.getCandidateById(immigration.getCandidate().getId());
