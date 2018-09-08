@@ -200,19 +200,12 @@
 
 <script>
 	function payAdjustment(payrollUUID,status){
-		  $.ajax({
+		 $.ajax({
 		  	type: "GET",
 		        url: sourceleadUrl+"/getEmployeePayroll?payrollUUID="+payrollUUID+"&status="+status,                 
 		        success: function(data) {
 		            var json = data.object;
 		            $("#empAddress").text(json.employeeAddress);
-		           /*  $("#regularHours").val(json.regularHours.toFixed(2));
-		            $("#regularHoursAmt").val(json.regularHrsTotalAmt.toFixed(2));
-		            $("#overTimeHours").val(json.overtimeHours.toFixed(2));
-		            $("#overTimeHoursAmt").val(json.otHoursTotalAmt.toFixed(2));
-		            $("#totalHours").text(json.totalHours.toFixed(2));
-		            $("#totalEarnings").text(json.totalEarnings.toFixed(2)); */
-		            
 		            if(json.assSalType == "Salary" || json.assSalType == "LcaWage"){
 		            	$("#hoursAndEarningsTable").hide();
 		            	$("#assSalaryTable").show();
@@ -374,12 +367,12 @@
 						            	payItem = payItem +' <td>'+pi.payItemName+'</td>';
 						            	payItem = payItem +'<input type="hidden" value='+pi.id+' id="id" name="payItem['+i+'].id"/>';
 							            payItem = payItem +' <td><input type="text" class="formControl" id="payItemAmount" name="payItem['+i+'].payItemAmount" readOnly value='+pi.payItemAmt+'></td>';
-							            if(pi.isBlocked == 'YES'){
+							           /*  if(pi.isBlocked == 'YES'){
 								            payItem = payItem +' <td><input type="text" class="formControl text-danger" readonly value="Blocked"></td>';
-							            }esle{
-								            payItem = payItem +' <td><input type="text" class="formControl text-danger" readonly value=""></td>';
+							            }esle{ */
+								            payItem = payItem +' <td><input type="text" class="formControl text-danger" readonly value="Blocked"></td>';
 
-							            }
+							            /* } */
 
 						            	payItem = payItem +' </tr>';
 				                  }
@@ -406,4 +399,5 @@
 		$(".usRunpayroll").fadeOut();
 		$(".sideMask").fadeOut();
 	};
+	
 </script>

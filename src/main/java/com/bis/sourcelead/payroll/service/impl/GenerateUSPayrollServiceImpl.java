@@ -264,6 +264,9 @@ public class GenerateUSPayrollServiceImpl implements GenerateUSPayrollService{
 									amount  = payrollUtil.getActualRateByPayFrequency(new BigDecimal(lcaWageDTO.getLcaWage()),lcaWageDTO.getLcaWageType(),assoSal.getGroupId().getPayFrequency());
 								}
 							}
+							if(associateTaxView.getAccountType() != null) {
+								employeePayroll.setDepositType(associateTaxView.getAccountType());
+							}
 							employeePayroll.setPayType(assoSal.getPayType());
 							employeePayroll.setPayPerSalary(amount);
 							employeePayroll.setRegularHours(String.valueOf(totalHours));
@@ -984,6 +987,11 @@ public class GenerateUSPayrollServiceImpl implements GenerateUSPayrollService{
 				sb.append(payroll.getCandidate().getFirstName());
 			}
 			payrollDTO.setEmpName(sb.toString());
+			if(StringUtils.isNotBlank(payroll.getDepositType())) {
+				payrollDTO.setDepositType(payroll.getDepositType());
+			}else {
+				payrollDTO.setDepositType("");
+			}
 			payrollDTO.setEmpPayrollId(payroll.getId());
 			payrollDTO.setEmpPayrollUUID(payroll.getUsEmpPayrollUUID());
 			payrollDTO.setGrossPay(payroll.getGrossPay());
@@ -1024,28 +1032,6 @@ public class GenerateUSPayrollServiceImpl implements GenerateUSPayrollService{
 			}
 			payrollDTO.setTaxes(payroll.getTaxes());
 			
-//			List<DeductionHistoryDTO> dedContrbutionHistory = deductionHistoryService.getDeductionsByPayrollId(payroll.getId());
-//			List<ContributionHistoryDTO> contributionHistory = deductionHistoryService.getContributionsByPayrollId(payroll.getId());
-//			List<AssociatePayItemDTO> payItem = associateSalaryService.findAssociatePayItemByPayrollId(payroll.getId());
-		/*	if(dedContrbutionHistory != null) {
-				List<DeductionHistoryDTO>  preDedList = dedContrbutionHistory
-						.stream()
-						.filter(ded->"pretax".equalsIgnoreCase(ded.getTaxType()))
-						.collect(Collectors.toList());
-				List<DeductionHistoryDTO>  postDedList = dedContrbutionHistory
-						.stream()
-						.filter(ded->"posttax".equalsIgnoreCase(ded.getTaxType()))
-						.collect(Collectors.toList());
-				
-				double  preDedTotal = dedContrbutionHistory.stream().filter(ded->"pretax".equalsIgnoreCase(ded.getTaxType())).mapToDouble(ded->ded.getAmount().doubleValue()).sum();
-				double postDedTotal = dedContrbutionHistory.stream().filter(ded->"posttax".equalsIgnoreCase(ded.getTaxType())).mapToDouble(ded->ded.getAmount().doubleValue()).sum();
-				payrollDTO.setPostDed(postDedList);
-				payrollDTO.setPreDed(preDedList);
-				payrollDTO.setPreDedTotal(BigDecimal.valueOf(preDedTotal));
-				payrollDTO.setPostDedTotal(BigDecimal.valueOf(postDedTotal));
-				totalDeduction = totalDeduction.add(payrollDTO.getPreDedTotal()).add(payrollDTO.getPostDedTotal());
-				payrollDTO.setTotalDeduction(totalDeduction);
-			} */
 			// Deductions 
 			List<DeductionDTO> dlist = payrollUtil.getDeductionData(payroll);
 			List<DeductionDTO> preDedList = dlist.stream().filter(ded->"pretax".equalsIgnoreCase(ded.getDedTaxType())).collect(Collectors.toList());
@@ -1059,12 +1045,7 @@ public class GenerateUSPayrollServiceImpl implements GenerateUSPayrollService{
 			payrollDTO.setPreDed(preDedList);
 			payrollDTO.setTotalDeduction(new BigDecimal(totalDeduction));
 			
-//		    Map<String, Double> preDList = preDedList.stream().collect(Collectors.groupingBy(DeductionDTO::getDeductionType,Collectors.summingDouble(DeductionDTO::getPreDeductionAmount)));
-//		    response.setPreDed(preDList);
-//		    Map<String, Double> postDList = postDedList.stream().collect(Collectors.groupingBy(DeductionDTO::getDeductionType,Collectors.summingDouble(DeductionDTO::getPostDeductionAmt)));
-//		    response.setPostDed(postDList);
-			
-			
+			// Contributions
 			List<ContributionDTO> clist = payrollUtil.getContributionData(payroll);
 			
 			double contributionTotal =0;
