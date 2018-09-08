@@ -233,8 +233,6 @@ function assetDetails(assetId) {
 				    var hardDisk = "--";
 				    var monitor = "--";
 				    var description = "--";
-				    var shiftAEmpName = " ";
-				    var shiftBEmpName = " ";
 				    var issueDate = "--";
 					var macAddress  = "--"
 					
@@ -272,17 +270,7 @@ function assetDetails(assetId) {
 						description = json.description;
 					} 
 					
-					if (json.shiftAEmpName != null && json.shiftAEmpName != '' && json.shiftAEmpName != 'undefined') {
-						shiftAEmpName = json.shiftAEmpName;
-					}else{
-						shiftAEmpName = "--";
-					}
-					
-					if (json.shiftBEmpName != null && json.shiftBEmpName != '' && json.shiftBEmpName != 'undefined') {
-						shiftBEmpName = json.shiftBEmpName;
-					}else{
-						shiftBEmpName = "--";
-					}
+					 
 					if (json.issueDate != null && json.issueDate != '' && json.issueDate != 'undefined') {
 						issueDate = json.issueDate;
 					}
@@ -313,9 +301,7 @@ function assetDetails(assetId) {
 					result = result + '  <div class="clearfix"></div>';
 					result = result + ' </div>';
 					
-					result = result + ' <div class="require_wrap_details_cta"> <b><strong>Issue Date:</strong></b> <span>'+issueDate+'</span>';
-					result = result + '  <div class="clearfix"></div>';
-					result = result + ' </div>';
+				
 					
 					if (json.fileName != null && json.fileName != '' && json.fileName != 'undefined') {
 						result = result + ' <div class="require_wrap_details_cta"> <b><strong>Attched File:</strong></b> <span class = "wordWrap-breakword">'+json.fileName+'</span><a download class="glyphicon glyphicon-download-alt mr10" target="_blank" href=\"'+json.fileUrl+'\" download title="Download"></a>';
@@ -354,6 +340,67 @@ function assetDetails(assetId) {
 						result = result + ' <div class="require_wrap_details_cta"> <b><strong>MAC Address:</strong></b> <span class = "wordWrap-breakword">'+macAddress+'</span>';
 						result = result + ' <div class="clearfix"></div>';
 						result = result + ' </div>';
+						
+						
+						//Adding By Laxman Start
+						if (json.operatingSystem != null && json.operatingSystem != '' && json.operatingSystem != 'undefined') {
+							result = result + ' <div class="require_wrap_details_cta"> <b><strong>Operating System:</strong></b> <span class = "wordWrap-breakword">'+json.operatingSystem+'</span>';
+							result = result + ' <div class="clearfix"></div>';
+							result = result + ' </div>';
+						}
+						
+						
+						if (json.osKey != null && json.osKey != '' && json.osKey != 'undefined') {
+							result = result + ' <div class="require_wrap_details_cta"> <b><strong>OS Key:</strong></b> <span class = "wordWrap-breakword">'+json.osKey+'</span>';
+							result = result + ' <div class="clearfix"></div>';
+							result = result + ' </div>';
+						}
+						
+						if (json.antiVirus != null && json.antiVirus != '' && json.antiVirus != 'undefined') {
+							result = result + ' <div class="require_wrap_details_cta"> <b><strong>Anti-Virus:</strong></b> <span class = "wordWrap-breakword">'+json.antiVirus+'</span>';
+							result = result + ' <div class="clearfix"></div>';
+							result = result + ' </div>';
+						}
+						
+						'<sec:authorize access="hasAnyRole(\'ROLE_VIEW_ASSET_ADDITIONAL_DETAILS\')">';
+						if (json.issueDate != null && json.issueDate != '' && json.issueDate != 'undefined') {
+							result = result + ' <div class="require_wrap_details_cta"> <b><strong>Manufactured Date:</strong></b> <span>'+json.issueDate+'</span>';
+							result = result + '  <div class="clearfix"></div>';
+							result = result + ' </div>';
+						}
+						
+						if (json.purchaseDate != null && json.purchaseDate != '' && json.purchaseDate != 'undefined') {
+							result = result + ' <div class="require_wrap_details_cta"> <b><strong>Purchase Date:</strong></b> <span>'+json.purchaseDate+'</span>';
+							result = result + '  <div class="clearfix"></div>';
+							result = result + ' </div>';
+						}
+						
+						if (json.cost != null && json.cost != '' && json.cost != 'undefined') {
+							result = result + ' <div class="require_wrap_details_cta"> <b><strong>Cost:</strong></b> <span>'+json.cost+'</span>';
+							result = result + '  <div class="clearfix"></div>';
+							result = result + ' </div>';
+						}
+						
+						if (json.depreciationAmount != null && json.depreciationAmount != '' && json.depreciationAmount != 'undefined') {
+							result = result + ' <div class="require_wrap_details_cta"> <b><strong>Depreciation Assessment Date:</strong></b> <span>'+issueDate+'</span>';
+							result = result + '  <div class="clearfix"></div>';
+							result = result + ' </div>';
+						}
+						if (json.depreciationAmount != null && json.depreciationAmount != '' && json.depreciationAmount != 'undefined') {
+							result = result + ' <div class="require_wrap_details_cta"> <b><strong>Depreciation Amount:</strong></b> <span>'+json.depreciationAmount+'</span>';
+							result = result + '  <div class="clearfix"></div>';
+							result = result + ' </div>';
+						}
+						
+						
+						if (json.vendorDetails != null && json.vendorDetails != '' && json.vendorDetails != 'undefined') {
+							result = result + ' <div class="require_wrap_details_cta"> <b><strong>Vendor Details:</strong></b> <span>'+json.vendorDetails+'</span>';
+							result = result + '  <div class="clearfix"></div>';
+							result = result + ' </div>';
+						}
+						'</sec:authorize>';
+						
+						//End
 						
 						if (json.categoryName != null && json.categoryName != '' && json.categoryName != 'undefined' && json.categoryId == 2) {
 							result = result + ' <div class="require_wrap_details_cta"> <b><strong>Monitor:</strong></b> <span class = "wordWrap-breakword">'+monitor+'</span>';

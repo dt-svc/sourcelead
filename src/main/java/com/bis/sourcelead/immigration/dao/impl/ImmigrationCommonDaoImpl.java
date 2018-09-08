@@ -29,6 +29,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.constants.ImmigrationConstants;
 import com.bis.sourcelead.dao.CandidateDao;
 import com.bis.sourcelead.dto.ImmigrationListViewDTO;
@@ -396,8 +397,7 @@ public class ImmigrationCommonDaoImpl implements ImmigrationCommonDao {
 
 		try {
 			Session session = this.sessionFactory.getCurrentSession();
-			CandidateFamilyDetails familyEntity = (CandidateFamilyDetails) session.load(CandidateFamilyDetails.class,
-					id);
+		CandidateFamilyDetails familyEntity = (CandidateFamilyDetails) session.load(CandidateFamilyDetails.class,id);
 			session.delete(familyEntity);
 			session.flush();
 		} catch (HibernateException e) {
@@ -1101,6 +1101,18 @@ public class ImmigrationCommonDaoImpl implements ImmigrationCommonDao {
 	public String deleteImmigrationDetailsById(Long immigrationId) {
 		try {
 			Session session = this.sessionFactory.getCurrentSession();
+			String lcaNumberStatus = "Y";
+			LcaHistory lh = null;
+			if(lcaNumberStatus.equals("Y")) {
+				   lh=getLcaHistoryDetails(immigrationId, Constants.YES);
+				   session.delete(lh);
+				   session.flush(); 
+			}else {
+				   lh=getLcaHistoryDetails(immigrationId, Constants.NO);
+				   session.delete(lh);
+				   session.flush(); 
+			}
+			
 		   CandidateLcaJobDetails candLcaJobDetails = getCandidateLcaJobDetails(immigrationId);
 			   if(candLcaJobDetails != null) {
 			   session.delete(candLcaJobDetails);
@@ -1531,14 +1543,30 @@ public class ImmigrationCommonDaoImpl implements ImmigrationCommonDao {
 		return listExportViews;
 	}
 
-	@Override
+	//old method
+	/*@Override
 	@Transactional(rollbackFor = { Exception.class })
 	public Long getTemplateDetailsByNameAndOrgLoacationId(String templateName, OrgLocations orgLocations) {
 		Session session = this.sessionFactory.getCurrentSession();
 		String query = "select temp.id from ImmigrationTemplate temp where temp.name = :templateName and temp.orgLocations.id= :orgLocationId";
 		Long tempId = (Long) session.createQuery(query).setString("templateName", templateName).setLong("orgLocationId", orgLocations.getId()).uniqueResult();
 		return tempId;
+	}*/
+	
+	// new method
+	@Override
+	@Transactional(rollbackFor = { Exception.class })
+	public Long getTemplateDetailsByNameAndOrgLoacationId(String templateName, OrgLocations orgLocations) {
+		Session session = this.sessionFactory.getCurrentSession();
+		String query = "select temp.id from ImmigrationTemplate temp where temp.name = :templateName and temp.orgLocations.id= :orgLocationId";
+		List<Long> tempId = (List<Long>) session.createQuery(query).setString("templateName", templateName).setLong("orgLocationId", orgLocations.getId()).list();
+		if (tempId.size() > 0) {
+			return tempId.get(0);
+		} else {
+			return null;
+		}
 	}
+
 
 	@Override
 	@Transactional(rollbackFor = { Exception.class })
