@@ -275,7 +275,7 @@ public class InvoiceRestController {
 					String currencyCode = (String) SourceLeadSessionManager.getSessionAttribute(request, "currencyCode");
 					Org org = (Org) SourceLeadSessionManager.getSessionAttribute(request, "org");
 					//Invoice invoice = invoiceService.saveInvoice(user, orgLocation, saveType, invoiceType, org, currencyCode, invoiceDTO);
-					invoiceService.saveCreditDebitNote(user, orgLocation, saveType, noteType, creditDebitNoteDTO);
+					invoiceService.saveCreditDebitNote(user, orgLocation, saveType, noteType, creditDebitNoteDTO,currencyCode);
 						response.setResponse(Result.SUCCESS.name());
 						response.setResponseMessage(Result.SUCCESS.getValue());
 				}

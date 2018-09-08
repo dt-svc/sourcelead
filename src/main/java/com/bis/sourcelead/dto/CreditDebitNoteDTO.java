@@ -30,6 +30,10 @@ public class CreditDebitNoteDTO extends SearchDTO {
 	private String status;
 	private String tags;
 	private String dayWiseType;
+	private String afterExchangeGrandTotal;
+	private String exchangeCurrencyRate;
+	private String vendorCurrencyCode;
+	private String loginCurrencyCode;
 	
 	 
 	public List<FileInfo> getFileInfo() {
@@ -188,6 +192,30 @@ public class CreditDebitNoteDTO extends SearchDTO {
 	}
 	public void setDayWiseType(String dayWiseType) {
 		this.dayWiseType = dayWiseType;
+	}
+	public String getAfterExchangeGrandTotal() {
+		return afterExchangeGrandTotal;
+	}
+	public void setAfterExchangeGrandTotal(String afterExchangeGrandTotal) {
+		this.afterExchangeGrandTotal = afterExchangeGrandTotal;
+	}
+	public String getExchangeCurrencyRate() {
+		return exchangeCurrencyRate;
+	}
+	public void setExchangeCurrencyRate(String exchangeCurrencyRate) {
+		this.exchangeCurrencyRate = exchangeCurrencyRate;
+	}
+	public String getVendorCurrencyCode() {
+		return vendorCurrencyCode;
+	}
+	public void setVendorCurrencyCode(String vendorCurrencyCode) {
+		this.vendorCurrencyCode = vendorCurrencyCode;
+	}
+	public String getLoginCurrencyCode() {
+		return loginCurrencyCode;
+	}
+	public void setLoginCurrencyCode(String loginCurrencyCode) {
+		this.loginCurrencyCode = loginCurrencyCode;
 	}
 
 	

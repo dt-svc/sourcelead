@@ -131,6 +131,20 @@ public class CreditDebitNote implements Serializable {
 	@JoinColumn(name = "UPDATED_BY")
 	private User updatedBy;
 	
+	@Column(name = "LOGIN_CURRENCY_CODE")
+	private String loginCurrencyCode;
+	
+	@Column(name = "VENDOR_CURRENCY_CODE")
+	private String vendorCurrencyCode;
+	
+	@Column(name = "EXCHANGE_CURRENCY_RATE")
+	private BigDecimal exchangeCurrencyRate;
+	
+	@Column(name = "AFTER_EXCHANGE_GRANDTOTAL")
+	private BigDecimal afterExchangeGrandTotal;
+	
+	
+	
 	@OneToMany(cascade = CascadeType.ALL, mappedBy = "creditDebitNote")
 	private Set<CreditDebitLineItems> creditDebitLineItems;
 	
@@ -488,6 +502,38 @@ public class CreditDebitNote implements Serializable {
 
 	public void setIsNewRecord(String isNewRecord) {
 		this.isNewRecord = isNewRecord;
+	}
+
+	public String getLoginCurrencyCode() {
+		return loginCurrencyCode;
+	}
+
+	public void setLoginCurrencyCode(String loginCurrencyCode) {
+		this.loginCurrencyCode = loginCurrencyCode;
+	}
+
+	public String getVendorCurrencyCode() {
+		return vendorCurrencyCode;
+	}
+
+	public void setVendorCurrencyCode(String vendorCurrencyCode) {
+		this.vendorCurrencyCode = vendorCurrencyCode;
+	}
+
+	public BigDecimal getExchangeCurrencyRate() {
+		return exchangeCurrencyRate;
+	}
+
+	public void setExchangeCurrencyRate(BigDecimal exchangeCurrencyRate) {
+		this.exchangeCurrencyRate = exchangeCurrencyRate;
+	}
+
+	public BigDecimal getAfterExchangeGrandTotal() {
+		return afterExchangeGrandTotal;
+	}
+
+	public void setAfterExchangeGrandTotal(BigDecimal afterExchangeGrandTotal) {
+		this.afterExchangeGrandTotal = afterExchangeGrandTotal;
 	}
 
 
