@@ -97,18 +97,11 @@ $(document).ready(function(){
 				for (var i=0; i<json.length; i++)
 				{
 					var opt = json[i];
-					if(data.payrollApprover != null && data.payrollApprover != 'undefined'){
-						for (var j=0; j<data.payrollApprover.length; j++){
-							var usrId = data.payrollApprover[j];
-							if(usrId == opt.id){
+							if(opt.isPayRollApprover == 'Y'){
 								output = output + "<option selected value='" +opt.id+ "'>"+opt.fullName+"  ("+opt.role+")</option>";
 							}else{
 								output = output + "<option value='" +opt.id+ "'>"+opt.fullName+"  ("+opt.role+")</option>";
 							}
-						}
-					}else{
-						output = output + "<option value='" +opt.id+ "'>"+opt.fullName+"  ("+opt.role+")</option>";
-					}
 					
 				}
 				$("#approver").empty();

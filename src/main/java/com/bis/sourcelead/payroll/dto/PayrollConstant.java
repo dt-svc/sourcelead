@@ -54,8 +54,12 @@ public class PayrollConstant {
 	public static final String PAY_WEEKLY = "Weekly";
 	public static final String PAY_YEARLY = "Yearly";
 	public static final String PAY_BI_MONTHLY = "Bi-Monthly";
+	public static final String HOURLY = "Hourly";
 	  
-	
+	public static final String LOAN_EVERY_PAY = "Every Pay";
+	public static final String LOAN_EVERY_QUARTER = "Every Quarter";
+	public static final String LOAN_HALF_YEARLY = "Half Yearly";
+	public static final String LOAN_ANNUALLY = "ANNUALLY";
   
 
 
