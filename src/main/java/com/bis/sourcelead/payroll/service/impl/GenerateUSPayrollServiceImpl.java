@@ -686,6 +686,7 @@ public class GenerateUSPayrollServiceImpl implements GenerateUSPayrollService{
 		}
 		payItemHistory.setCreatedDate(new Date());
 		payItemHistory.setUpdatedDate(new Date());
+		payItemHistory.setPayItemDate(new Date());
 		payItemHistory.setCreatedBy(loginUser.getId());
 		payItemHistory.setUpdatedBy(loginUser.getId());
 		payItemHistory.setPayCheckDate(paySheet.getPayCheckDate());
@@ -1187,11 +1188,11 @@ public class GenerateUSPayrollServiceImpl implements GenerateUSPayrollService{
 			double payItemSum = 0;
 			// PayItems 
 			if(payAdjustmentDTO.getPayItem() != null) {
-			payItemSum = payAdjustmentDTO.getPayItem().stream().filter(payItem->payItem.getPayItemCheck()== null).mapToDouble(p->Double.parseDouble(p.getPayItemAmount())).sum();
+		       payItemSum = payAdjustmentDTO.getPayItem().stream().filter(payItem->payItem.getPayItemCheck()== null).mapToDouble(p->Double.parseDouble(p.getPayItemAmount())).sum();
 			   Set<PayitemHistory> payItemHis = getUpdatedPayItemData(payroll,payAdjustmentDTO.getPayItem());
 			   payroll.setPayitemHistory(payItemHis);
 			}
-			BigDecimal netPay = totPay.add(new BigDecimal(payItemSum));
+			BigDecimal netPay = (totPay.add(new BigDecimal(payItemSum))).subtract(payroll.getAdvanceAmount().add(payroll.getLoanAmount()));
 			payroll.setNetPay(netPay);
 			Set<EmployeePayrollTax> payrollTaxSet = getPayrollTaxes(payroll,orgLocation,payrollCalculator,loginUser);
 			payroll.setUsPayrollTax(payrollTaxSet);
@@ -1246,11 +1247,16 @@ public class GenerateUSPayrollServiceImpl implements GenerateUSPayrollService{
 	{
 		Set<PayitemHistory> his  = new HashSet<>();
 		Set<PayitemHistory> payItemHis = payroll.getPayitemHistory();
-		for(AssociatePayItemDTO dto : payItemDto) {
-			Long dtoPayItemId = dto.getPayItemId().longValue();
+		for(AssociatePayItemDTO assPayItemDTO : payItemDto) {
+			Long dtoPayItemId = assPayItemDTO.getPayItemId().longValue();
 			for(PayitemHistory paiHis : payItemHis) {
 				if(dtoPayItemId.longValue() == paiHis.getId().longValue()) {
-					paiHis.setAmount(new BigDecimal(dto.getPayItemAmount()));
+					paiHis.setAmount(new BigDecimal(assPayItemDTO.getPayItemAmount()));
+					if(assPayItemDTO.getPayItemCheck() != null) {
+						paiHis.setIsBlocked(PayrollConstant.YES);
+					}else {
+						paiHis.setIsBlocked(null);
+					}
 					his.add(paiHis);
 				}
 			}

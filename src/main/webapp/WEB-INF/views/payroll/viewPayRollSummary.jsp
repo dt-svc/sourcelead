@@ -26,12 +26,12 @@
             </div>
           </div>
           
-          <div class="col-md-2 text-center">
+      <!--     <div class="col-md-2 text-center">
             <label class="clearfix"><strong>No. Leaves</strong></label>
             <div class="clearfix">
               <p class="mt5 mb0">30</p>
             </div>
-          </div>
+          </div> -->
         
         </div>
       </div>
@@ -358,13 +358,14 @@
 	                        payItem = payItem +'<table width="100%" class="table table-bordered">';
 	                        payItem = payItem +'<thead>';
 	                        payItem = payItem +' <tr>';
-	                        payItem = payItem +'<th colspan="4">Pay Items</th>';
+	                        payItem = payItem +'<th colspan="3">Pay Items</th>';
 	                        payItem = payItem +'</tr>';
 	                        payItem = payItem +'  </thead>';
 	                        payItem = payItem +' <tbody>';
 	                        payItem = payItem +' <tr>';
 	                        payItem = payItem +'  <th>Item Name</th>';
 	                        payItem = payItem +'  <th>Amount</th>';
+	                        payItem = payItem +'  <th></th>';
 	                        payItem = payItem +'</tr>';
 	                        if(json.payItem != null && json.payItem.length > 0){
 			                	  for (var i=0; i< json.payItem.length; i++){
@@ -372,7 +373,14 @@
 						            	payItem = payItem +' <tr>';
 						            	payItem = payItem +' <td>'+pi.payItemName+'</td>';
 						            	payItem = payItem +'<input type="hidden" value='+pi.id+' id="id" name="payItem['+i+'].id"/>';
-						            	payItem = payItem +' <td><input type="text" class="formControl" id="payItemAmount" name="payItem['+i+'].payItemAmount" readOnly value='+pi.payItemAmt+'></td>';
+							            payItem = payItem +' <td><input type="text" class="formControl" id="payItemAmount" name="payItem['+i+'].payItemAmount" readOnly value='+pi.payItemAmt+'></td>';
+							            if(pi.isBlocked == 'YES'){
+								            payItem = payItem +' <td><input type="text" class="formControl text-danger" readonly value="Blocked"></td>';
+							            }esle{
+								            payItem = payItem +' <td><input type="text" class="formControl text-danger" readonly value=""></td>';
+
+							            }
+
 						            	payItem = payItem +' </tr>';
 				                  }
 			                  }

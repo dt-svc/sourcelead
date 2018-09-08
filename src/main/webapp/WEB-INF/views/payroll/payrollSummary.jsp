@@ -130,7 +130,7 @@ function getPaySheetFrequencySummary(status){
 	            }
 	            
 	            result = result +'  <td><div class="tblminwidth-50 clearfix">0.0</div></td>                                                            ';
-	            result = result +'  <td><div class="tblminwidth-50 clearfix">0.0</div></td>                                                         ';
+	            result = result +'  <td><div class="tblminwidth-50 clearfix">'+report.ytdDTO.ytdNet+'</div></td>                                                         ';
 	            result = result +'  <td>                                                                                                                ';
 				result = result +'	  <div class="tblminwidth-30 text-center">                                                                          ';
 				result = result +'	  	<a href="javascript:void(0)" class="anchorBlack"><i class="fa fa-eye" onclick="payAdjustment(\''+report.empPayrollUUID+'\',\''+status+'\');"></i></a>                                  ';

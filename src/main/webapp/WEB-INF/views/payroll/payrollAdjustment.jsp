@@ -449,8 +449,8 @@
 	                        payItem = payItem +'  <th>Amount</th>';
 	                        payItem = payItem +' <th>';
 	                        payItem = payItem +' <div class="checkbox-new ml mr pull-left">';
-	                        payItem = payItem +'		<input id="blockAll" class="checkbox-custom" name="PartofaCTC" type="checkbox">';
-	                        payItem = payItem +'		<label for="blockAll" class="checkbox-custom-label"><span class="ml10">Block</span></label>';
+	                       /*  payItem = payItem +'		<input id="blockAll" class="checkbox-custom" name="PartofaCTC" type="checkbox">'; */
+	                        payItem = payItem +'		<label class="checkbox-custom-label"><span class="ml10">Block</span></label>';
 	                        payItem = payItem +'	</div>';
 	                        payItem = payItem +'    </th>';
 	                        payItem = payItem +'</tr>';
@@ -465,8 +465,19 @@
 						            	payItem = payItem +' <td><input type="text" class="formControl" id="payItemAmount'+i+'" name="payItem['+i+'].payItemAmount" readOnly value='+pi.payItemAmt+'></td>';
 						            	payItem = payItem +' <td>';
 						            	payItem = payItem +' <div class="checkbox-new ml mr pull-left">';
-						            	payItem = payItem +' <input id="cashTips['+i+']" class="checkbox-custom" name="payItem['+i+'].payItemCheck" type="checkbox">';
-						            	payItem = payItem +' <label for="cashTips['+i+']" class="checkbox-custom-label"></label>';
+						            	if(pi.isBlocked == 'YES' && pi.isBlocked != null){
+						            		payItem = payItem +' <input id="cashTips['+i+']" checked class="checkbox-custom" name="payItem['+i+'].payItemCheck" type="checkbox">';
+							            	payItem = payItem +' <label for="cashTips['+i+']" class="checkbox-custom-label"></label>';
+						            	}else{
+						            		if(pi.payItemName != null && pi.payItemName != '' && pi.payItemName != 'undefined'){
+						            			payItem = payItem +' <input id="cashTips['+i+']" class="checkbox-custom" name="payItem['+i+'].payItemCheck" type="checkbox">';
+								            	payItem = payItem +' <label for="cashTips['+i+']" class="checkbox-custom-label"></label>';	
+						            		}else{
+						            			payItem = payItem +' <input type="text" value="--" readonly>';
+						            		}
+						            		
+						            	}
+						            	
 						            	payItem = payItem +' </div>';
 						            	payItem = payItem +' </tdgetPreDeductionAmount>';
 						            	payItem = payItem +' </tr>';

@@ -435,8 +435,10 @@ public class PayrollUtil {
 		return ytd;
 	}
 
-		/**
+	/**
+	 * 
 	 * Calculating PayItem
+	 * 
 	 * @param payroll
 	 * @return List<AssociatePayItemDTO>
 	 */
@@ -449,6 +451,9 @@ public class PayrollUtil {
 				payItemDTO.setId(his.getId().toString());
 				payItemDTO.setPayItemName(his.getAssociatePayItem().getPayItemName());
 				payItemDTO.setPayItemAmt(his.getAmount().doubleValue());
+				if(StringUtils.isNotBlank(his.getIsBlocked())) {
+					payItemDTO.setIsBlocked(his.getIsBlocked());	
+				}
 				list.add(payItemDTO);
 			}
 		}

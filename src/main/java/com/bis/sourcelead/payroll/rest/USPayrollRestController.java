@@ -29,7 +29,7 @@ import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.dao.CandidateDao;
 
 import com.bis.sourcelead.dto.AssociateLoanAndAdvancesDTO;
-import com.bis.sourcelead.dao.UserGroupDao
+import com.bis.sourcelead.dao.UserGroupDao;
 import com.bis.sourcelead.dto.AssociatePayItemDTO;
 import com.bis.sourcelead.dto.AssociateSalaryDTO;
 import com.bis.sourcelead.dto.AssociateSalaryHistoryDTO;
@@ -1299,7 +1299,8 @@ public class USPayrollRestController {
 	@RequestMapping(value = { "/getPaySheetFrequencySummary","/rest/getPaySheetFrequencySummary" })
 	public PaysheetFrequencyDTO getPaySheetFrequencySummary(PaysheetFrequencyDTO paysheetFrequencyDTO,HttpServletRequest request, HttpServletResponse response) throws Exception
 	{
-		return uSPaysheetService.getPaySheetFrequencySummary(paysheetFrequencyDTO);
+		OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+		return uSPaysheetService.getPaySheetFrequencySummary(paysheetFrequencyDTO,orgLocation);
 	}
 
 	
