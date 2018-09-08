@@ -273,7 +273,7 @@
 		            if(json.assSalType == "Salary" || json.assSalType == "LcaWage"){
 		            	$("#hoursAndEarningsTable").hide();
 		            	$("#assSalaryTable").show();
-		            	$("#assSalaryAmount").val(json.payPerSal);
+		            	$("#assSalaryAmount").val(json.grossPay);
 		            }else{
 		            	$("#hoursAndEarningsTable").show();
 		            	$("#assSalaryTable").hide();
