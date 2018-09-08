@@ -251,7 +251,10 @@ public class ImmigrationCommonServiceImpl implements ImmigrationCommonService {
 		try {
 			  if(isCurrent) {
 				  
-				    LcaHistory currLcaHistory = new LcaHistory();
+				    LcaHistory currLcaHistory = immigrationCommonDao.getLcaHistoryByStatus(immigrationObj.getId(),candidate.getId(),"Y");
+				    if(currLcaHistory == null) {
+				    	currLcaHistory =new LcaHistory();
+				    }
 					currLcaHistory.setImmigrationId(immigrationObj);
 					currLcaHistory.setCandidate(candidate);
 					currLcaHistory.setLcaId(lca);
@@ -266,8 +269,11 @@ public class ImmigrationCommonServiceImpl implements ImmigrationCommonService {
 					lcaHistory = immigrationCommonDao.saveLcaHistory(currLcaHistory);
 					
 			  }else if(!isCurrent) {
-				  
-				    LcaHistory prevLaHistory  = new LcaHistory();
+				 
+				  LcaHistory prevLaHistory = immigrationCommonDao.getLcaHistoryByStatus(immigrationObj.getId(),candidate.getId(),"N");
+				    if(prevLaHistory == null) {
+				    	prevLaHistory = new LcaHistory();
+				    }
 				    prevLaHistory.setImmigrationId(immigrationObj);
 				    prevLaHistory.setCandidate(candidate);
 				    prevLaHistory.setLcaId(lca);
@@ -2781,6 +2787,11 @@ private List<LcaDocumentHistory> saveLcaDocumentHistoryList(LcaDTO lcaDTO, Lca l
 	@Override
 	public List<LcaDetailsDTO> getEmployeeByLcaId(Long lcaId,OrgLocations orgLocations) throws Exception {
 		return immigrationCommonDao.getEmployeeByLcaId(lcaId,orgLocations);
+	}
+
+	@Override
+	public LcaHistory getLcaHistoryByStatus(Long immigrationId,Long candidateId ,String isCurrent) {
+		return immigrationCommonDao.getLcaHistoryByStatus(immigrationId,candidateId,isCurrent);
 	}
 
 	/*
