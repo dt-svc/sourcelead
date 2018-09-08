@@ -53,19 +53,21 @@ $(document).ready(function(){
 					        </sec:authorize>
 					        <sec:authorize access="hasRole('ROLE_ADD_ASSET_CATEGORY')"> 
 					        	<a href="<c:url value='${appPath}/assetCategory'/>" class="">Categories List</a>
-					        </sec:authorize>						  
+					        </sec:authorize>	
+					        
+					        <a href="<c:url value='${appPath}/uploadassetManagement'/>">Import</a>	  
 					</span>
 				</div>
 			</li>
 				<li id="vendorFiletPopup"><a href="javascript:void(0)" class="filtIcon" title="Filters" onclick="openAssetFilterPop();"></a></li>
 				
-				<li><a href="javascript:void(0)" class="overIcon" title="Actions" onclick="newActions();"></a>
+				<%-- <li><a href="javascript:void(0)" class="overIcon" title="Actions" onclick="newActions();"></a>
 					<div class="newActPop">
 						<span>
 		           	   		<a href="<c:url value='${appPath}/uploadassetManagement'/>">Import</a>
 						</span>
 					</div>
-				</li>
+				</li> --%>
 		    
 		  <li class=""><input type="text" class="repSearchBar" placeholder='Search' id='assetDataTableSearch'/><span class="repSearchIcon" onClick="getDynamicAssetList();"></span></li>
         </ul>
@@ -139,11 +141,26 @@ $(document).ready(function(){
       changeMonth: true,
   	  changeYear: true, 
   });
+  $('#purchaseDate').datepicker({
+      dateFormat: finalDateFormat,
+      changeMonth: true,
+  	  changeYear: true, 
+  });
+  $('#depreciationDate').datepicker({
+      dateFormat: finalDateFormat,
+      changeMonth: true,
+  	  changeYear: true, 
+  });
   }
   function clearDate(){
   	$("#issueDate").val("");
   	};
-  
+  function clearPurchaseDate(){
+	  $("#purchaseDate").val("");
+  };
+  function clearDepreciationDate(){
+	  $("#depreciationDate").val("");
+  };
 </script>
   
   <script type="text/javascript">
@@ -452,9 +469,16 @@ function projectAssetPaginations(url){
     	  	"data": "",
     	  	"render": function(data, type, report) {
     	  		var result = "";
-    	  	    result = result+'<td><a href="javascript:void(0)" class="tbldata-dotdot-sm">';
-   		       	result = result +"<a href='<c:url value='/app/assetManagementSummary?assetId="+report.id+"'/>'><div class='proj_show tbldata-dotdot_140'><span class='pull-left' title='"+report.slno+"'>"+report.slno+"</span><i class='fa fa-binoculars'></i></div></a>";
-			   	result = result+'</a></td>';
+    	  	    result = result+'<td>';
+    	  	  '<sec:authorize access="hasAnyRole(\'ROLE_VIEW_ASSET_BASIC_DETAILS\',\'ROLE_VIEW_ASSET_ADDITIONAL_DETAILS\')">'; 
+	   	  	     result = result +"<a class='tbldata-dotdot-sm'><a href='<c:url value='/app/assetManagementSummary?assetId="+report.id+"'/>'><div class='proj_show tbldata-dotdot_140'><span class='pull-left' title='"+report.slno+"'>"+report.slno+"</span><i class='fa fa-binoculars'></i></div></a></a>";
+	   	  	  '</sec:authorize>';
+	   	  	  
+		   	   '<sec:authorize access="!hasAnyRole(\'ROLE_VIEW_ASSET_BASIC_DETAILS\',\'ROLE_VIEW_ASSET_ADDITIONAL_DETAILS\')">'; 
+	 	  	     result = result +"<div class='tbldata-dotdot_140'><span class='pull-left' title='"+report.slno+"'>"+report.slno+"</span></div>";
+	 	  	  '</sec:authorize>';
+	   	  	  
+			   	result = result+'</td>';
 	             return result;
     	  	}
         },{
@@ -532,7 +556,7 @@ function projectAssetPaginations(url){
 			  	"render": function(data, type, report) {
 			  		var result = "";
 				   	result = result+'<td><div class="tblminwidth-50">';
-				    '<sec:authorize access="hasRole(\'ROLE_VIEW_EDIT_ASSET\')">' 
+				    '<sec:authorize access="hasRole(\'ROLE_EDIT_ASSET\')">' 
 				   			result = result+'<a class="glyphicon glyphicon-edit" title="Edit" onclick="addAndEditAssetAssign(\''+report.id+'\');"></a> ';
 				   	'</sec:authorize>';
 				   	
@@ -665,6 +689,12 @@ function removeAssetManagement(assetId){
   function assetCategory(category){
 	  var selectedCategory = category.value;
 	    if(selectedCategory == '2'){
+	    	  document.getElementById("lsn").style.display="none";
+	    	  document.getElementById("csn").style.display="";
+	    	  $('#cpuSerialNumber').attr("data-validation", "required validate_Space validate_NumberAndAlphabet validate_length length1-200");
+	    	  $('#sno').removeAttr('data-validation');
+	    	
+	    	  
 			  document.getElementById("monitorDiv").style.display="";
 			  document.getElementById("name").style.display="";
 			  document.getElementById("memoryDiv").style.display="";
@@ -672,6 +702,12 @@ function removeAssetManagement(assetId){
 			  document.getElementById("harddiskDiv").style.display="";
 			  
 		  }else if((selectedCategory != 'Desktop' && selectedCategory == '1') || category == '1'){
+			  document.getElementById("lsn").style.display="";
+	    	  document.getElementById("csn").style.display="none";
+	    	  $('#cpuSerialNumber').removeAttr('data-validation');
+	    	  $('#sno').attr("data-validation", "required validate_Space validate_NumberAndAlphabet validate_length length1-200");
+	    	
+	    	  
 			  document.getElementById("monitorDiv").style.display="none";
 			  document.getElementById("name").style.display="";
 			  document.getElementById("memoryDiv").style.display="";
@@ -685,7 +721,6 @@ function removeAssetManagement(assetId){
 			  document.getElementById("cpuDiv").style.display="none";
 			  document.getElementById("harddiskDiv").style.display="none";
 			  $("#monitor").val('');
-			  $("#name").val('');
 			  $("#memory").val('');
 			  $("#cpu").val('');
 			  $("#harddisk").val('');
@@ -698,7 +733,6 @@ function removeAssetManagement(assetId){
   <script>
   function loadCategory(){
 	  document.getElementById("monitorDiv").style.display="none";
-	  document.getElementById("name").style.display="";
 	  document.getElementById("memoryDiv").style.display="";
 	  document.getElementById("cpuDiv").style.display="";
 	  document.getElementById("harddiskDiv").style.display="";

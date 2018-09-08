@@ -1,3 +1,7 @@
+
+
+<div id="popUp"></div>
+
 <script>
   function getUserGroupList(){
 		var searchValue = $("#dataTableSearch").val();
@@ -105,7 +109,7 @@ function userGroupPaginationFun(url){
                 "sortable": false,
                 "render": function ( data, type, opt, meta ) {
                 		var result = "";
-                		result = result + '<td><div class="tbldata-dotdot_50"><i class="fa fa-pencil mr cursorPointer" onclick="addbatches(\''+opt.groupUUID+'\');"></i><i class="glyphicon glyphicon-trash" onclick="deleteUserGroup(\''+opt.groupUUID+'\');"></i>';
+                		result = result + '<td><div class="tbldata-dotdot_50"><i class="fa fa-pencil mr cursorPointer" onclick="addbatches(\''+opt.groupUUID+'\');"></i><i class="glyphicon glyphicon-trash cursorPointer" onclick="deleteUserGroup(\''+opt.groupUUID+'\');"></i>';
                 		result = result + '</div>';
                 		result = result + '</td>';
     	              return result;
@@ -136,17 +140,6 @@ function userGroupPaginationFun(url){
 
 
 <script>
-function addbatches(groupUUID){
-	if(groupUUID == null || groupUUID == '' || groupUUID == 'undefined'){
-		groupUUID = "";
-	}
-	$.get(sourceleadUrl+"/addUserGroup?"+tokenParamName+"="+tokenValue+"&groupUUID="+groupUUID,  function(result) {
-		$("#addUserGroupFormDiv").empty();
-		$("#addUserGroupFormDiv").append(result);
-// 		getUsersByDepartment();
-		$(".addPayrollGroupWrap, .mask").fadeIn();
-	});
-}
 
 function deleteUserGroup(groupUUID){
 	$("#popUp").empty();
@@ -180,5 +173,20 @@ function cancelDelete(){
 }
 </script>
 
+<div id="addUserGroupFormDiv123" class="addUserGroupPopup" style="display:none">
  <jsp:include page="addUserGroup.jsp" />
+</div>
 
+<script>
+function addbatches(groupUUID){
+	if(groupUUID == null || groupUUID == '' || groupUUID == 'undefined'){
+		groupUUID = "";
+	}
+	$.get(sourceleadUrl+"/addUserGroup?"+tokenParamName+"="+tokenValue+"&groupUUID="+groupUUID,  function(result) {
+		$("#addUserGroupFormDiv123").empty();
+		$("#addUserGroupFormDiv123").append(result);
+// 		getUsersByDepartment();
+	});
+	$(".addUserGroupPopup").show();
+}
+</script>

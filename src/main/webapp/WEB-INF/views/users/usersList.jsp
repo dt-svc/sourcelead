@@ -334,6 +334,9 @@ function getUsersSearchResult(searchValue){
 									<span> 
 									<a href="<c:url value='${appPath}/userCreation'/>">Add Associate</a>
 									<a href="<c:url value='${appPath}/addAssociateFromLocations'/>">Add From Loc</a>
+									<sec:authorize access="hasAnyRole('ROLE_USER_BULK_IMPORTS')"> 
+										<a href="<c:url value='${appPath}/uploadForm'/>">Import</a>
+									</sec:authorize>									
 									</span>
 								</div>
 							</li>
@@ -357,9 +360,7 @@ function getUsersSearchResult(searchValue){
 				<li><a href="javascript:void(0)" class="overIcon" title="Actions" onclick="newActions();"></a>
 					<div class="newActPop">
 						<span>
-						<sec:authorize access="hasAnyRole('ROLE_USER_BULK_IMPORTS')"> 
-							<a href="<c:url value='${appPath}/uploadForm'/>">Import</a>
-						</sec:authorize>	
+	
 						<sec:authorize access="hasAnyRole('ROLE_EXPORT_ASSOCIATE')"> 
 							<a href="javascript:void(0)" onclick="exportToPdf();" title="PDF">Export PDF</a>
 							<a href="javascript:void(0)" onclick="exportUserData();" title="Excel">Export Excel</a>

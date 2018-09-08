@@ -83,8 +83,8 @@ public class PayrollPdfUtil {
 			        cell1.setFixedHeight(50f);
 			        cell1.setHorizontalAlignment(Element.ALIGN_LEFT);
 			        cell1.setVerticalAlignment(Element.ALIGN_LEFT);
-			        bell = new Paragraph("PayGroup:"+" "+payroll.getPaysheetFrequency().getUserGroup().getGroupName()+"\n\n"+"PayBeginDate:"+" "+commonUtil.dateStrFromOrgDateFormatter(orgLocation.getDateFormat(), payroll.getPaysheetFrequency().getFrequencyStartDate()) +"\n\n"+
-			                "PayEndDate:"+" "+commonUtil.dateStrFromOrgDateFormatter(orgLocation.getDateFormat(),payroll.getPaysheetFrequency().getFrequencyEndDate()),f3);
+			        bell = new Paragraph("PayGroup:"+" "+payroll.getPaysheetFrequency().getUserGroup().getGroupName()+"\n\n"+"Pay Begin Date:"+" "+commonUtil.dateStrFromOrgDateFormatter(orgLocation.getDateFormat(), payroll.getPaysheetFrequency().getFrequencyStartDate()) +"\n\n"+
+			                "Pay End Date:"+" "+commonUtil.dateStrFromOrgDateFormatter(orgLocation.getDateFormat(),payroll.getPaysheetFrequency().getFrequencyEndDate())+"\n\n"+"Pay Check Date :"+commonUtil.dateStrFromOrgDateFormatter(orgLocation.getDateFormat(),payroll.getPayCheckDate()),f3);
 			        PdfPCell cell2 = new PdfPCell(bell);
 			        cell2.setBorderColor(BaseColor.BLACK);
 			        cell2.setPaddingLeft(10);
@@ -131,7 +131,11 @@ public class PayrollPdfUtil {
 			        if(payroll.getEmployee() != null && payroll.getEmployee().getEmployeeId() != null) {
 			        	empId = payroll.getEmployee().getEmployeeId();
 			        }
-			        bell =new Paragraph( "Employee ID:"+empId+"\n\n" +"Department:"+payroll.getEmployee().getDepartmentId().getDepartmentName()+" \n\n" ,f3);
+			        String depositType = "";
+			        if(payroll.getDepositType() != null){
+			        	depositType = payroll.getDepositType(); 
+			        }
+			        bell =new Paragraph( "Employee ID:"+empId+"\n\n" +"Department:"+payroll.getEmployee().getDepartmentId().getDepartmentName()+" \n\n"+"Deposit Type : "+depositType ,f3);
 			        PdfPCell cell4 = new PdfPCell(new Paragraph(bell));
 			        cell4.setBorderColor(BaseColor.BLACK);
 			        cell4.setPaddingLeft(10);

@@ -83,7 +83,7 @@ a { cursor:pointer;}
     }
 .export_pop ul li, .export_pipline ul li { cursor:pointer;}   
 .approved_pop ul li input[type="checkbox"], .export_pop ul li input[type="checkbox"]{
-    margin:0px; width:15px; height:15px; background-color:#FFF; display: inline-block; margin: 0px 5px 0px 0px;
+     width:15px; height:15px; background-color:#FFF; display: inline-block; margin: 0px 5px 0px 0px;
     }
 .approved_pop ul li label, .export_pop ul li label  {
     margin:0px; position:relative; top:3px; left:5px; font-weight:500; float:left;
@@ -1675,6 +1675,9 @@ background:url("../images/arrow-d-g.png") no-repeat right center; background-siz
 .clients_wrap_table .proj_show i {
     position: absolute; right: 0px;
     }
+.proj_show span {
+	color: #2b7ecc;
+}
 .cbox {
     width:35px;
     }
@@ -8235,7 +8238,7 @@ float: left; width: 33.3333%; background-color: #f9f9f9; padding: 5px 15px; marg
 .tagsWrap {}
 .tagsWrap .chosen-choices {
 	border:none !important; padding: 0px 0px !important; box-shadow: 0px 0px 0px rgba(0,0,0,0); background-image: none !important;
-	margin-bottom: 0px !important;
+	margin-bottom: 0px !important; min-height: 100px;
 }
 .tagsWrap .search-choice {
 	height: 28px; margin: 0px 6px 6px 0px !important; padding: 6px 25px 5px 7px !important;
@@ -9070,3 +9073,37 @@ background: url("../images/sort2.png"); background-repeat: no-repeat; background
 }
 
 
+.tagsNew {
+	background-color: #fff; padding: 12px 50px 12px 12px; border-radius: 2px; margin: 10px 0px 0px 0px;
+	box-shadow: 0px 1px 2px rgba(0,0,0,0.1); position: relative;
+}
+.tagsNew .fa-pencil {
+	position:absolute; right: 10px; top: 5px; font-size: 21px; font-weight: 400; padding: 5px; cursor: pointer;
+}
+.tagsNew h2 {
+	font-size: 15px; font-weight: 500; color: #666; float: left; padding: 0px 15px 0px 0px; margin: 0px 0px;
+	width: auto; line-height: 22px;
+}
+.tags {
+	float: left; width: 92%; 
+}
+.tagsNew span {
+	display: inline-block; padding: 0px 10px 0px 0px; line-height: 22px; color: #666;	
+}
+.newTagsPop {
+	position: fixed; max-width: 600px; width: 92%; z-index: 100000; top: 10%; left: 0px; right: 0px; display: none;
+	margin: 0px auto; border-radius: 5px; border:none; box-shadow: 0px 10px 10px rgba(0,0,0,0.1); padding: 15px 20px 0px;
+}
+.newTagsPop h2 {
+	padding: 2px 0px 10px 0px;
+}
+.newTagsPop .popupFoot {
+	padding: 14px 0px 0px 0px;
+}
+
+.addUserGroupPopup {
+display: block;
+}
+.addUserGroupPopup .mask, .addUserGroupPopup .addPayrollGroupWrap {
+display: block;
+}

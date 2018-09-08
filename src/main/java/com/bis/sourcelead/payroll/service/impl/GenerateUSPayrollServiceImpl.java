@@ -264,6 +264,9 @@ public class GenerateUSPayrollServiceImpl implements GenerateUSPayrollService{
 									amount  = payrollUtil.getActualRateByPayFrequency(new BigDecimal(lcaWageDTO.getLcaWage()),lcaWageDTO.getLcaWageType(),assoSal.getGroupId().getPayFrequency());
 								}
 							}
+							if(associateTaxView.getAccountType() != null) {
+								employeePayroll.setDepositType(associateTaxView.getAccountType());
+							}
 							employeePayroll.setPayType(assoSal.getPayType());
 							employeePayroll.setPayPerSalary(amount);
 							employeePayroll.setRegularHours(String.valueOf(totalHours));
@@ -689,6 +692,7 @@ public class GenerateUSPayrollServiceImpl implements GenerateUSPayrollService{
 		}
 		payItemHistory.setCreatedDate(new Date());
 		payItemHistory.setUpdatedDate(new Date());
+		payItemHistory.setPayItemDate(new Date());
 		payItemHistory.setCreatedBy(loginUser.getId());
 		payItemHistory.setUpdatedBy(loginUser.getId());
 		payItemHistory.setPayCheckDate(paySheet.getPayCheckDate());
@@ -986,6 +990,11 @@ public class GenerateUSPayrollServiceImpl implements GenerateUSPayrollService{
 				sb.append(payroll.getCandidate().getFirstName());
 			}
 			payrollDTO.setEmpName(sb.toString());
+			if(StringUtils.isNotBlank(payroll.getDepositType())) {
+				payrollDTO.setDepositType(payroll.getDepositType());
+			}else {
+				payrollDTO.setDepositType("");
+			}
 			payrollDTO.setEmpPayrollId(payroll.getId());
 			payrollDTO.setEmpPayrollUUID(payroll.getUsEmpPayrollUUID());
 			payrollDTO.setGrossPay(payroll.getGrossPay());
@@ -1026,28 +1035,6 @@ public class GenerateUSPayrollServiceImpl implements GenerateUSPayrollService{
 			}
 			payrollDTO.setTaxes(payroll.getTaxes());
 			
-//			List<DeductionHistoryDTO> dedContrbutionHistory = deductionHistoryService.getDeductionsByPayrollId(payroll.getId());
-//			List<ContributionHistoryDTO> contributionHistory = deductionHistoryService.getContributionsByPayrollId(payroll.getId());
-//			List<AssociatePayItemDTO> payItem = associateSalaryService.findAssociatePayItemByPayrollId(payroll.getId());
-		/*	if(dedContrbutionHistory != null) {
-				List<DeductionHistoryDTO>  preDedList = dedContrbutionHistory
-						.stream()
-						.filter(ded->"pretax".equalsIgnoreCase(ded.getTaxType()))
-						.collect(Collectors.toList());
-				List<DeductionHistoryDTO>  postDedList = dedContrbutionHistory
-						.stream()
-						.filter(ded->"posttax".equalsIgnoreCase(ded.getTaxType()))
-						.collect(Collectors.toList());
-				
-				double  preDedTotal = dedContrbutionHistory.stream().filter(ded->"pretax".equalsIgnoreCase(ded.getTaxType())).mapToDouble(ded->ded.getAmount().doubleValue()).sum();
-				double postDedTotal = dedContrbutionHistory.stream().filter(ded->"posttax".equalsIgnoreCase(ded.getTaxType())).mapToDouble(ded->ded.getAmount().doubleValue()).sum();
-				payrollDTO.setPostDed(postDedList);
-				payrollDTO.setPreDed(preDedList);
-				payrollDTO.setPreDedTotal(BigDecimal.valueOf(preDedTotal));
-				payrollDTO.setPostDedTotal(BigDecimal.valueOf(postDedTotal));
-				totalDeduction = totalDeduction.add(payrollDTO.getPreDedTotal()).add(payrollDTO.getPostDedTotal());
-				payrollDTO.setTotalDeduction(totalDeduction);
-			} */
 			// Deductions 
 			List<DeductionDTO> dlist = payrollUtil.getDeductionData(payroll);
 			List<DeductionDTO> preDedList = dlist.stream().filter(ded->"pretax".equalsIgnoreCase(ded.getDedTaxType())).collect(Collectors.toList());
@@ -1061,12 +1048,7 @@ public class GenerateUSPayrollServiceImpl implements GenerateUSPayrollService{
 			payrollDTO.setPreDed(preDedList);
 			payrollDTO.setTotalDeduction(new BigDecimal(totalDeduction));
 			
-//		    Map<String, Double> preDList = preDedList.stream().collect(Collectors.groupingBy(DeductionDTO::getDeductionType,Collectors.summingDouble(DeductionDTO::getPreDeductionAmount)));
-//		    response.setPreDed(preDList);
-//		    Map<String, Double> postDList = postDedList.stream().collect(Collectors.groupingBy(DeductionDTO::getDeductionType,Collectors.summingDouble(DeductionDTO::getPostDeductionAmt)));
-//		    response.setPostDed(postDList);
-			
-			
+			// Contributions
 			List<ContributionDTO> clist = payrollUtil.getContributionData(payroll);
 			
 			double contributionTotal =0;
@@ -1190,11 +1172,11 @@ public class GenerateUSPayrollServiceImpl implements GenerateUSPayrollService{
 			double payItemSum = 0;
 			// PayItems 
 			if(payAdjustmentDTO.getPayItem() != null) {
-			payItemSum = payAdjustmentDTO.getPayItem().stream().filter(payItem->payItem.getPayItemCheck()== null).mapToDouble(p->Double.parseDouble(p.getPayItemAmount())).sum();
+		       payItemSum = payAdjustmentDTO.getPayItem().stream().filter(payItem->payItem.getPayItemCheck()== null).mapToDouble(p->Double.parseDouble(p.getPayItemAmount())).sum();
 			   Set<PayitemHistory> payItemHis = getUpdatedPayItemData(payroll,payAdjustmentDTO.getPayItem());
 			   payroll.setPayitemHistory(payItemHis);
 			}
-			BigDecimal netPay = totPay.add(new BigDecimal(payItemSum));
+			BigDecimal netPay = (totPay.add(new BigDecimal(payItemSum))).subtract(payroll.getAdvanceAmount().add(payroll.getLoanAmount()));
 			payroll.setNetPay(netPay);
 			Set<EmployeePayrollTax> payrollTaxSet = getPayrollTaxes(payroll,orgLocation,payrollCalculator,loginUser);
 			payroll.setUsPayrollTax(payrollTaxSet);
@@ -1249,11 +1231,16 @@ public class GenerateUSPayrollServiceImpl implements GenerateUSPayrollService{
 	{
 		Set<PayitemHistory> his  = new HashSet<>();
 		Set<PayitemHistory> payItemHis = payroll.getPayitemHistory();
-		for(AssociatePayItemDTO dto : payItemDto) {
-			Long dtoPayItemId = dto.getPayItemId().longValue();
+		for(AssociatePayItemDTO assPayItemDTO : payItemDto) {
+			Long dtoPayItemId = assPayItemDTO.getPayItemId().longValue();
 			for(PayitemHistory paiHis : payItemHis) {
 				if(dtoPayItemId.longValue() == paiHis.getId().longValue()) {
-					paiHis.setAmount(new BigDecimal(dto.getPayItemAmount()));
+					paiHis.setAmount(new BigDecimal(assPayItemDTO.getPayItemAmount()));
+					if(assPayItemDTO.getPayItemCheck() != null) {
+						paiHis.setIsBlocked(PayrollConstant.YES);
+					}else {
+						paiHis.setIsBlocked(null);
+					}
 					his.add(paiHis);
 				}
 			}

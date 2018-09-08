@@ -1543,14 +1543,30 @@ public class ImmigrationCommonDaoImpl implements ImmigrationCommonDao {
 		return listExportViews;
 	}
 
-	@Override
+	//old method
+	/*@Override
 	@Transactional(rollbackFor = { Exception.class })
 	public Long getTemplateDetailsByNameAndOrgLoacationId(String templateName, OrgLocations orgLocations) {
 		Session session = this.sessionFactory.getCurrentSession();
 		String query = "select temp.id from ImmigrationTemplate temp where temp.name = :templateName and temp.orgLocations.id= :orgLocationId";
 		Long tempId = (Long) session.createQuery(query).setString("templateName", templateName).setLong("orgLocationId", orgLocations.getId()).uniqueResult();
 		return tempId;
+	}*/
+	
+	// new method
+	@Override
+	@Transactional(rollbackFor = { Exception.class })
+	public Long getTemplateDetailsByNameAndOrgLoacationId(String templateName, OrgLocations orgLocations) {
+		Session session = this.sessionFactory.getCurrentSession();
+		String query = "select temp.id from ImmigrationTemplate temp where temp.name = :templateName and temp.orgLocations.id= :orgLocationId";
+		List<Long> tempId = (List<Long>) session.createQuery(query).setString("templateName", templateName).setLong("orgLocationId", orgLocations.getId()).list();
+		if (tempId.size() > 0) {
+			return tempId.get(0);
+		} else {
+			return null;
+		}
 	}
+
 
 	@Override
 	@Transactional(rollbackFor = { Exception.class })
@@ -2293,5 +2309,24 @@ public class ImmigrationCommonDaoImpl implements ImmigrationCommonDao {
 		}
 		return candidateLcaJobDetails;
 	}
-	
+
+	@Override
+	@Transactional(rollbackFor = { Exception.class })
+	public LcaHistory getLcaHistoryByStatus(Long immigrationId,Long candidateId, String isCurrent) {
+
+		Session session = this.sessionFactory.getCurrentSession();
+		LcaHistory lcaHistory = null;
+		try {
+			if (immigrationId != null) {
+				logger.debug(" before query execute to get lcaHistory " + immigrationId);
+				String queryString = "from LcaHistory lh  where lh.isCurrent =:isCurrent and lh.immigrationId.id=:immigrationId and lh.candidate.id = :candidateId";
+				lcaHistory = (LcaHistory) session.createQuery(queryString).setLong("immigrationId", immigrationId).setLong("candidateId", candidateId)
+																		  .setString("isCurrent", isCurrent).uniqueResult();
+			}
+		} catch (Exception exception) {
+			logger.error("Exception caught while  lcaHistory information " + exception.getMessage());
+			exception.printStackTrace();
+		}
+		return lcaHistory;
+	}
 }
