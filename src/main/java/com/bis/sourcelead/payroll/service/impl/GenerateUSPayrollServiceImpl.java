@@ -375,14 +375,13 @@ public class GenerateUSPayrollServiceImpl implements GenerateUSPayrollService{
 			BigDecimal totalLoanAmount = BigDecimal.ZERO, totalAdvanceAmount = BigDecimal.ZERO; 
 			for(AssociateLoanAndAdvances assLoanAndAdv : loanAndAdvList) {
 				boolean thisPayCheck = false;
-				if(assLoanAndAdv.getDeductStartDate() == null && assLoanAndAdv.getDeductEndDate() == null) {
+				if(assLoanAndAdv.getDeductStartDate() == null) {
 					thisPayCheck = true;
 				}
 				if(paySheetFreq.getFrequencyStartDate().after(assLoanAndAdv.getEffectiveDate()) || paySheetFreq.getFrequencyStartDate().equals(assLoanAndAdv.getEffectiveDate())) {
 					thisPayCheck = true;
-				}else
-					thisPayCheck = false;
-				if(assLoanAndAdv.getDeductStartDate() != null && assLoanAndAdv.getDeductEndDate() != null) {
+				}
+				if(assLoanAndAdv.getDeductStartDate() != null) {
 					thisPayCheck = payrollUtil.isDateBetweenEffectiveDate(assLoanAndAdv.getDeductStartDate(), assLoanAndAdv.getDeductEndDate(), paySheetFreq.getFrequencyStartDate(), paySheetFreq.getFrequencyEndDate());
 				}
 				if(thisPayCheck) {
@@ -396,14 +395,17 @@ public class GenerateUSPayrollServiceImpl implements GenerateUSPayrollService{
 							scheduleCount += 1;
 						}
 						
-						Date[] dedFreqDates = payrollUtil.getDeductionDates(paySheetFreq.getFrequencyStartDate(), assLoanAndAdv.getScheduler());
+						Date[] dedFreqDates = payrollUtil.getLoanAndAdvancesScheduleDates(paySheetFreq.getFrequencyStartDate(), assLoanAndAdv.getScheduler());
 						if("Loan".equalsIgnoreCase(assLoanAndAdv.getLoanAdvanceType())){
 							totalLoanAmount = totalLoanAmount.add(new BigDecimal(assLoanAndAdv.getDeductAmount()));
 						}else if("Advance".equalsIgnoreCase(assLoanAndAdv.getLoanAdvanceType())){
 							totalAdvanceAmount = totalAdvanceAmount.add(new BigDecimal(assLoanAndAdv.getDeductAmount()));
 						}
 						assLoan.setDeductStartDate(dedFreqDates[0]);
-						assLoan.setDeductEndDate(dedFreqDates[1]);
+						if(dedFreqDates[1] != null)
+							assLoan.setDeductEndDate(dedFreqDates[1]);
+						else
+							assLoan.setDeductEndDate(paySheetFreq.getFrequencyEndDate());
 						assLoan.setDeductionStatus(Constants.DEDUCTED);
 						assLoan.setUpdatedDate(new Date());
 						associateLoanAndAdvancesService.saveAssociateLoanAndAdvances(assLoan);
@@ -1164,7 +1166,7 @@ public class GenerateUSPayrollServiceImpl implements GenerateUSPayrollService{
 			payroll.setGrossPay(amount);
 			payroll.setPreTaxContribution(BigDecimal.valueOf(preTaxContriSum));
 			payroll.setPostTaxContribution(BigDecimal.valueOf(postTaxContriSum));
-			if(!"Salary".equalsIgnoreCase(payAdjustmentDTO.getAssSalType())) {
+			if(!PayrollConstant.SALARY.equalsIgnoreCase(payAdjustmentDTO.getAssSalType()) && !PayrollConstant.LCA_WAGE.equalsIgnoreCase(payAdjustmentDTO.getAssSalType())) {
 				payroll.setRegularHours(payAdjustmentDTO.getRegularHours());
 				payroll.setRegularHoursAmount(new BigDecimal(payAdjustmentDTO.getRegularHoursAmt()));
 				payroll.setOverTimeHours(payAdjustmentDTO.getOverTimeHours());
