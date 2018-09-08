@@ -4,10 +4,10 @@
 				<span class="select-fild padding_left">
 				    <select id="reqList" onchange="loadRequirementList();">
                   		<option value="appList"  ${reqList == 'appList' ? 'selected="selected"':''} >Applicant List</option>
+                  		<option value="shortlist" ${reqList == 'shortlist' ? 'selected="selected"':''}>Shortlist</option>
                         <option value="subList" ${reqList == 'subList' ? 'selected="selected"':''}>Submission List</option> 
                         <option value="interList" ${reqList == 'interList' ? 'selected="selected"':''}>Interview List</option>
                         <option value="offerlist" ${reqList == 'offerlist' ? 'selected="selected"':''}>Offer List</option> 
-                        
                         <option value="rejectedlist" ${reqList == 'rejectedlist' ? 'selected="selected"':''} >Rejected List</option> 
                         <option value="joinedlist" ${reqList == 'joinedlist' ? 'selected="selected"':''} >Joined List</option> 
                         <option value="backoutlist" ${reqList == 'backoutlist' ? 'selected="selected"':''} >Backout List</option> 
@@ -32,6 +32,8 @@
 		var orgLocId = '${SourceLeadWeb_orgLocationId}';
 		if(reqList == 'appList'){
 			window.location.replace(sourceleadUrl + "/requirementApplicantsList?&tab="+tab+"&orgLocationId="+orgLocId);
+		}else if(reqList == 'shortlist'){
+			window.location.replace(sourceleadUrl + "/requirementShortList?&tab="+tab+"&orgLocationId="+orgLocId);
 		}
 		else if(reqList == 'subList'){
 			window.location.replace(sourceleadUrl + "/requirementSubmissionsList?&tab="+tab+"&orgLocationId="+orgLocId);

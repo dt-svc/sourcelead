@@ -37,7 +37,10 @@ function approvePayrollDiv(){
    	    
 	   <li class="current"><a href="javascript:void(0)" class="active" onclick="getOverviewdata();">Overview</a></li>
 	   <li><a onclick="getDraftData();">Draft</a></li>
-	   <li><a onclick="getPayPeriodData();">History</a></li>
+	   <c:if test="${SourceLeadWeb_isPayRollApprover == 'Y'}">
+	        <li><a onclick="getPayPeriodData();">History</a></li>
+	   </c:if>
+	   
 	   <li><a onclick="getUserGroupList();">Employees</a></li>
 <!-- 	   <li><a href="javascript:void(0)">Contractors</a></li> -->
 <!-- 	   <li><a href="javascript:void(0)">Tax Forms</a></li> -->
@@ -60,23 +63,21 @@ function approvePayrollDiv(){
 <div id="initiateDivv">
 <div class="col-md-12 mt">
 	<div class="row">
-		<div class="col-md-3">
-			<div>
-			<select class="chosen-select" id="groupId" name="groupId" onchange="getGroupFrequency();" data-validation="required" field-name="User Group">
+		<div class="col-md-3" id="groupIdDiv">
+			<select class="chosen-select" id="groupId" name="groupId" onchange="removeValidateGroup();getGroupFrequency();" data-validation="required" field-name="User Group">
 				<option value="">Select User Group</option>
                     <c:forEach var="ug" items="${userGroupList}">
 					<option value="${ug.groupUUID},${ug.id}">${ug.groupName}</option>
 				</c:forEach>
 			</select>
-			</div>
 		</div>
-		<div class="col-md-3 paddingLeft paddingRight">
-			<select id="payPeriod" name="payPeriod" data-validation="required" field-name="Pay Period" class="chosen-select" onchange="clearPayrollDiv();">
+		<div class="col-md-3 paddingLeft paddingRight" id="payPeriodDiv">
+			<select id="payPeriod" name="payPeriod" data-validation="required" field-name="Pay Period" class="chosen-select" onchange="errPayPeriod();clearPayrollDiv();">
 			</select>
 		</div>
 
-		<div class="col-md-2 paddingLeft paddingRight">
-			<select id="payType" name="payType" data-validation="required" field-name="Pay Type" class="chosen-select">
+		<div class="col-md-2 paddingLeft paddingRight" id="payTypeIdDiv">
+			<select id="payType" name="payType" data-validation="required" field-name="Pay Type" class="chosen-select" onchange="errPayType();">
 				 <option value="">Select Pay type</option>
 				 <option value="All">All</option>
 				 <option value="HourlyRate">Hourly Rate</option>
@@ -85,7 +86,7 @@ function approvePayrollDiv(){
 			</select>
 		</div>
 
-		<div class="col-md-2 paddingRight">
+		<div class="col-md-2 paddingRight" id="payrollPayDateDivId">
 			<input name="" class="form-control calendar" placeholder="Check Date" id="payrollPayDate" name="payrollPayDate" type="text" data-validation="required" field-name="Pay Date" readonly="readonly">
 		</div>
 		<div class="col-md-2">
@@ -136,12 +137,16 @@ function approvePayrollDiv(){
 	</div>
 	<div class="clearfix"></div>
 		
-	<div id="historyDiv">
 	 <div class='reportHead' id="historySearchDiv">
 		<ul class='pull-right'>
 		<li><input type='text' placeholder='Search' class='repSearchBar' id='historyDataTableSearch'/><span class='repSearchIcon' onClick=''></span></li>
 		</ul>
    </div>
+   
+    <div class='reportHead' id="searchDivForEmployee" style = "display : none">
+		<ul class='pull-right'>
+		<li><input type='text' placeholder='Search' class='repSearchBar' id='dataTableSearch'/><span class='repSearchIcon' onClick=''></span></li>
+		</ul>
    </div>
    
 	<div class="candidate_wrap_table datatable_filter backgroundWhite">
@@ -221,6 +226,7 @@ $(document).ready(function() {
 	  $("#payrollFrequencyDiv").hide();
 	  $("#historySearchDiv").hide();
 	  $("#overViewDiv").show();
+	  $("#searchDivForEmployee").hide();
 	  $("#reviewPayrollDiv").show();
   }
   </script>
@@ -261,6 +267,7 @@ $(document).ready(function() {
 		$("#draftFrequencyDiv").hide();
 		$("#approveDiv").hide();
 		$("#userGroupDiv").hide();
+		$("#searchDivForEmployee").hide();
 		$("#historySearchDiv").show();
 		$("#historyDataTableSearch").show();
 		$("#payrollFrequencyDiv").show();
@@ -368,9 +375,9 @@ $(document).ready(function() {
 										"render" : function(data, type, opt,meta) {
 											var result = "";
 											if(opt.total != null && opt.total != '' && opt.total !='undefined'){
-						                		  result = result +'<div class="tbldata-dotdot-vsm">'+opt.total.toFixed(2)+'</div>';
+						                		  result = result +'<div class="tbldata-dotdot-vsm">$ '+opt.total.toFixed(2)+'</div>';
 						              		}else{
-						              		  result = result +'<div class="tbldata-dotdot-vsm">--</div>';
+						              		  result = result +'<div class="tbldata-dotdot-vsm">$ 0.0</div>';
 						              		}
 											return result;
 										}
@@ -437,6 +444,15 @@ function getGroupFrequency(){
 	 $('#payrollPayDate').val("").datepicker("update");
 	 $("#submitButtonDiv").hide();
 }
+ 
+ function removeValidateGroup(){
+	$('#groupIdDiv').find('p.jquery_form_error_message').remove();
+ }
+ function errPayType(){
+		$('#payTypeIdDiv').find('p.jquery_form_error_message').remove(); 
+
+ }
+ 
 </script>
 
 
@@ -596,10 +612,17 @@ $('body').on('blur', '#generate_payroll_form', function() {
 		      dateFormat: finalDateFormat,
 		      changeMonth: true,
 		  	  changeYear: true, 
+		  	  onSelect : function(selected) {
+				addValidClass();
+			}
 		      //minDate: 0  this line for to restrict selection of previous dates
 		  });
 		  
 	});
+	
+	function addValidClass(){
+		 $('#payrollPayDateDivId').find('p.jquery_form_error_message').remove(); 
+	}
 </script>
 
 <script type="text/javascript">
@@ -647,6 +670,10 @@ function clearPayrollDiv(){
 	$("#payrollPayDate").val('');
 	$("#payrollDataDiv").empty();
 	$("#submitButtonDiv").hide();
+}
+function errPayPeriod(){
+	$('#payPeriodDiv').find('p.jquery_form_error_message').remove();  
+
 }
 </script>
 
@@ -725,6 +752,7 @@ function getDraftData(){
 			        	$("#approveDiv").hide();
 			        	$("#historyDataTableSearch").hide();
 			        	$("#userGroupDiv").hide();
+			        	$("#searchDivForEmployee").hide();
 			        	$("#draftFrequencyDiv").show();
 			        	$("#initiateLoading").removeAttr('style');
 			        	draftPagination();

@@ -1,5 +1,6 @@
 package com.bis.sourcelead.dto;
 
+import java.math.BigDecimal;
 import java.util.Date;
 import java.util.List;
 
@@ -196,6 +197,28 @@ public class DataMigrationDTO extends CommonDTO {
 	private List<AssetAssignDTO> assignAsset;
 	
 	private String assignAssetStr;
+	
+	private String issueDate;
+	
+	private String purchaseDate;
+	
+	private String depreciationDate;
+	
+	private String operatingSystem;
+	
+	private String osKey;
+	
+	private String antiVirus;
+	
+	private String cost;
+	
+	private String depreciationAmount;
+	
+	private String cpuSerialNumber;
+	
+	private String vendorDetails;
+	
+	private String macAddress;
 	
 	/*Asset Uploads End*/
 	
@@ -1334,6 +1357,94 @@ private String beneficiaryFirstName;
 
 	public void setAssignAssetStr(String assignAssetStr) {
 		this.assignAssetStr = assignAssetStr;
+	}
+	
+	public String getIssueDate() {
+		return issueDate;
+	}
+
+	public String getPurchaseDate() {
+		return purchaseDate;
+	}
+
+	public String getDepreciationDate() {
+		return depreciationDate;
+	}
+
+	public String getOperatingSystem() {
+		return operatingSystem;
+	}
+
+	public String getOsKey() {
+		return osKey;
+	}
+
+	public String getAntiVirus() {
+		return antiVirus;
+	}
+
+	public String getCost() {
+		return cost;
+	}
+
+	public String getDepreciationAmount() {
+		return depreciationAmount;
+	}
+
+	public String getCpuSerialNumber() {
+		return cpuSerialNumber;
+	}
+
+	public String getVendorDetails() {
+		return vendorDetails;
+	}
+
+	public String getMacAddress() {
+		return macAddress;
+	}
+
+	public void setMacAddress(String macAddress) {
+		this.macAddress = macAddress;
+	}
+
+	public void setIssueDate(String issueDate) {
+		this.issueDate = issueDate;
+	}
+
+	public void setPurchaseDate(String purchaseDate) {
+		this.purchaseDate = purchaseDate;
+	}
+
+	public void setDepreciationDate(String depreciationDate) {
+		this.depreciationDate = depreciationDate;
+	}
+
+	public void setOperatingSystem(String operatingSystem) {
+		this.operatingSystem = operatingSystem;
+	}
+
+	public void setOsKey(String osKey) {
+		this.osKey = osKey;
+	}
+
+	public void setAntiVirus(String antiVirus) {
+		this.antiVirus = antiVirus;
+	}
+
+	public void setCost(String cost) {
+		this.cost = cost;
+	}
+
+	public void setDepreciationAmount(String depreciationAmount) {
+		this.depreciationAmount = depreciationAmount;
+	}
+
+	public void setCpuSerialNumber(String cpuSerialNumber) {
+		this.cpuSerialNumber = cpuSerialNumber;
+	}
+
+	public void setVendorDetails(String vendorDetails) {
+		this.vendorDetails = vendorDetails;
 	}
 
 	public String getTaskName() {

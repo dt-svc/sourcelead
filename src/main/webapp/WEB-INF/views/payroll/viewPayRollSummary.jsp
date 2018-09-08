@@ -56,20 +56,20 @@
                         </tr>
                         <tr>
                           <td>Regular</td>
-                           <td><input type="text" id="regularHours" name="regularHours"  onblur = "editRegularHours();" class="formControl" readOnly></td>
-                          <td><input type="text" id="regularHoursAmt" name="regularHoursAmt"  class="formControl" readOnly></td>
+                           <td><i class="fa fa-clock-o paddingRight"></i><input type="text" id="regularHours" name="regularHours"  onblur = "editRegularHours();" class="formControl" readOnly></td>
+                          <td><i class="fa fa-dollar mr5"></i><input type="text" id="regularHoursAmt" name="regularHoursAmt"  class="formControl" readOnly></td>
                         </tr>
                         <tr>
                           <td>Overtime</td>
-                          <td><input type="text" id="overTimeHours" name="overTimeHours"   onblur = "editOverTimeHours();" class="formControl" readOnly></td>
-                          <td><input type="text" id="overTimeHoursAmt" name="overTimeHoursAmt"  class="formControl" readOnly></td>
+                          <td><i class="fa fa-clock-o paddingRight"></i><input type="text" id="overTimeHours" name="overTimeHours"   onblur = "editOverTimeHours();" class="formControl" readOnly></td>
+                          <td><i class="fa fa-dollar mr5"></i><input type="text" id="overTimeHoursAmt" name="overTimeHoursAmt"  class="formControl" readOnly></td>
                         </tr>
                       </tbody>
                       <tfoot>
                         <tr>
                           <th>Total</th>
-                          <td><span id="totalHours" >0</span></td>
-                          <td><span id="totalEarnings">0</span></td>
+                          <td><i class="fa fa-clock-o paddingRight"></i><span id="totalHours" >00:00</span></td>
+                          <td><i class="fa fa-dollar mr5"></i><span id="totalEarnings">0.0</span></td>
                         </tr>
                       </tfoot>
                     </table>
@@ -81,7 +81,7 @@
                       </thead>
                       <tbody>
                         <tr>
-                          <th>Pay Salary</th><td><input type="text" id="assSalaryAmount" name="assSalaryAmount" readOnly></td>
+                          <th>Pay Salary</th><td><i class="fa fa-dollar mr5"></i><input type="text" id="assSalaryAmount" name="assSalaryAmount" readOnly></td>
                         </tr>
                       </tbody>
                     </table>
@@ -115,28 +115,28 @@
                         </tr>
                         <tr>
                           <td>Federal with holding</td>
-                          <td><span id="federalWT">0</span></td>
+                          <td><i class="fa fa-dollar mr5"></i><span id="federalWT">0.0</span></td>
                          <!--  <td><input type="text" id="federal" name="federal" value="" class="formControl" readOnly></td> -->
                         </tr>
                         <tr>
                           <td>Medicare</td>
-                           <td><span id="medicareWT">0</span></td>
+                           <td><i class="fa fa-dollar mr5"></i><span id="medicareWT">0.0</span></td>
                          <!--  <td><input type="text" id="medicare" name="medicare" value="" class="formControl" readOnly></td> -->
                         </tr>
                         <tr>
                           <td>FICA</td>
-                           <td><span id="ficaWT">0</span></td>
+                           <td><i class="fa fa-dollar mr5"></i><span id="ficaWT">0.0</span></td>
                          <!-- <td><input type="text" id="fica" name="fica" value="" class="formControl" readOnly></td> -->
                         </tr>
                       
                         <tr>
                           <td>State Withholding</td>
-                          <td><span id="stateWithHoldingWT">0</span></td>
+                          <td><i class="fa fa-dollar mr5"></i><span id="stateWithHoldingWT">0.0</span></td>
                          <!--  <td><input type="text" id="stateWithHolding" name="stateWithHolding" value="" class="formControl" readOnly></td> -->
                         </tr>
                           <tr>
                           <td>Advanced Earned Income Credit</td>
-                           <td><span id="aeic">0</span></td>
+                           <td><i class="fa fa-dollar mr5"></i><span id="aeic">0.0</span></td>
                           <!-- <td><input type="text" id="aeic" name="aeic" value="124,783.00" class="formControl" readOnly></td> -->
                         </tr>
                         
@@ -144,7 +144,7 @@
                       <tfoot>
                         <tr>
                           <th>Total</th>
-                          <td><span id="taxes">0</span></td>
+                          <td><i class="fa fa-dollar mr5"></i><span id="taxes">0.0</span></td>
                         </tr>
                       </tfoot>
                     </table>
@@ -167,21 +167,21 @@
                       <tbody>
                         <tr>
                           <td>Current</td>
-                            <td><span id="gross">0</span></td>
-                            <td><span id="federalGross">0</span></td>
-                            <td><span id="ficaGross">0</span></td>
-                            <td><span id="totalTaxes">0</span></td>
-                            <td><span id="dedTotal">0</span></td>
-                            <td><span id="netpay">0</span></td>
+                            <td><i class="fa fa-dollar mr5"></i><span id="gross">0</span></td>
+                            <td><i class="fa fa-dollar mr5"></i><span id="federalGross">0</span></td>
+                            <td><i class="fa fa-dollar mr5"></i><span id="ficaGross">0</span></td>
+                            <td><i class="fa fa-dollar mr5"></i><span id="totalTaxes">0</span></td>
+                            <td><i class="fa fa-dollar mr5"></i><span id="dedTotal">0</span></td>
+                            <td><i class="fa fa-dollar mr5"></i><span id="netpay">0</span></td>
                         </tr>
                         <tr>
                            <td>YTD</td>
-                          <td><span id="ytdGross">0</span></td>
-                          <td><span id="ytdFederal">0</span></td> 
-                          <td><span id="ytdFICA">0</span></td>
-                          <td><span id="ytdTaxes">0</span></td>
-                          <td><span id="ytdDeduction">0</span></td>
-                          <td><span id="ytdNetpay">0</span></td>
+                          <td><i class="fa fa-dollar mr5"></i><span id="ytdGross">0</span></td>
+                          <td><i class="fa fa-dollar mr5"></i><span id="ytdFederal">0</span></td> 
+                          <td><i class="fa fa-dollar mr5"></i><span id="ytdFICA">0</span></td>
+                          <td><i class="fa fa-dollar mr5"></i><span id="ytdTaxes">0</span></td>
+                          <td><i class="fa fa-dollar mr5"></i><span id="ytdDeduction">0</span></td>
+                          <td><i class="fa fa-dollar mr5"></i><span id="ytdNetpay">0</span></td>
                         </tr>
                       </tbody>
                     </table></td>
@@ -264,7 +264,7 @@
 					            	var ded = json.postDed[i];
 				        			postDed = postDed + '<tr>';
 				        			postDed = postDed + ' <td>'+ded.deductionType+'</td>';
-				        			postDed = postDed + ' <td><input type="text" id="'+i+'amount" name="postDeduction['+i+'].amount" value='+ded.postDeductionAmt+' class="formControl" readOnly></td>';
+				        			postDed = postDed + ' <td><i class="fa fa-dollar paddingRight"></i><input type="text" id="'+i+'amount" name="postDeduction['+i+'].amount" value='+ded.postDeductionAmt+' class="formControl" readOnly></td>';
 				        			postDed = postDed + ' </tr>';
 					            }	
 			            }
@@ -272,7 +272,7 @@
 	                      postDed = postDed + '<tfoot>';
 	                      postDed = postDed + '<tr>';
 	                      postDed = postDed + '<th>Total</th>';
-	                      postDed = postDed + '<td><span>'+json.postDedTotal+'</span></td>';
+	                      postDed = postDed + '<td><span>$ '+json.postDedTotal+'</span></td>';
 	                      postDed = postDed + '</tr>';
 	                      postDed = postDed + '</tfoot>';
 	                      postDed = postDed + '</table>';
@@ -296,7 +296,7 @@
 				            	var preded = json.preDed[i];
 				            	preDed = preDed + '<tr>';
 				            	preDed = preDed + ' <td>'+preded.deductionType+'</td>';
-				            	preDed = preDed + ' <td><input type="text" id="amount" name="preDeduction['+i+'].amount" value='+preded.preDeductionAmount+' class="formControl" readOnly></td>';
+				            	preDed = preDed + ' <td><i class="fa fa-dollar paddingRight"></i><input type="text" id="amount" name="preDeduction['+i+'].amount" value='+preded.preDeductionAmount+' class="formControl" readOnly></td>';
 				            	preDed = preDed + ' </tr>';
 				            }
 	                        }
@@ -330,7 +330,7 @@
 					            	output = output + '<tr>';
 					            	output = output + '<input type="hidden" name="contribution['+i+'].taxtType" value='+ot.taxtType+' id="taxtType"/>';
 					            	output = output + '<td>'+ot.contributionType+'</td>';
-					            	output = output + ' <td><input type="text" name="contribution['+i+'].contributionAmount" value='+ot.contributionAmt+' class="formControl" readOnly></td>';
+					            	output = output + ' <td><i class="fa fa-dollar paddingRight"></i><input type="text" name="contribution['+i+'].contributionAmount" value='+ot.contributionAmt+' class="formControl" readOnly></td>';
 					            	output = output + '</tr>';
 			                  }
 		                  }
@@ -366,7 +366,7 @@
 						            	payItem = payItem +' <tr>';
 						            	payItem = payItem +' <td>'+pi.payItemName+'</td>';
 						            	payItem = payItem +'<input type="hidden" value='+pi.id+' id="id" name="payItem['+i+'].id"/>';
-							            payItem = payItem +' <td><input type="text" class="formControl" id="payItemAmount" name="payItem['+i+'].payItemAmount" readOnly value='+pi.payItemAmt+'></td>';
+							            payItem = payItem +' <td><i class="fa fa-dollar paddingRight"></i><input type="text" class="formControl" id="payItemAmount" name="payItem['+i+'].payItemAmount" readOnly value='+pi.payItemAmt+'></td>';
 							           /*  if(pi.isBlocked == 'YES'){
 								            payItem = payItem +' <td><input type="text" class="formControl text-danger" readonly value="Blocked"></td>';
 							            }esle{ */
@@ -388,7 +388,8 @@
 	                          payItem = payItem +' </tfoot>';
 	                          payItem = payItem +' </table>';
 	                          $("#payItemDiv").empty();
-	                          $("#payItemDiv").append(payItem)
+	                          $("#payItemDiv").append(payItem);
+	                          $(".tablePayslip").find(".fa-dollar, .fa-clock-o").next(".formControl").css({"width":"94.5%"});
                        
 		        },
 		    }); 
