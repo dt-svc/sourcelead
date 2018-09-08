@@ -121,25 +121,27 @@ $(document).ready(function(){
 		 '</sec:authorize>';
 
 		 if(loginCountry == 'United States'){
-			 result = result + '<li><a href="#tab-21" onClick="associateBankData('+userId+')" >Banking</a></li>';
-			 result = result + '<li><a href="#tab-22" onClick="associateTaxSummary('+userId+')" >TAX</a></li>';
-			 result = result + '<li><a href="#tab-23" onClick="associateDeductionSummary('+userId+')" >Deduction</a></li>';
-			 result = result + '<li><a href="#tab-24" onClick="associateContributionSummary('+userId+')"  >Contribution</a></li>';
-			 result = result + '<li><a href="#tab-25" onClick="associateSalSummary('+userId+')" >Salary</a></li>';
+			 '<sec:authorize access="hasRole(\'ROLE_VIEW_ASSOCIATE_ADDITIONAL_DETAILS\')">'; 
+				 result = result + '<li><a href="#tab-21" onClick="associateBankData('+userId+')" >Banking</a></li>';
+				 result = result + '<li><a href="#tab-22" onClick="associateTaxSummary('+userId+')" >TAX</a></li>';
+				 result = result + '<li><a href="#tab-23" onClick="associateDeductionSummary('+userId+')" >Deduction</a></li>';
+				 result = result + '<li><a href="#tab-24" onClick="associateContributionSummary('+userId+')"  >Contribution</a></li>';
+				 result = result + '<li><a href="#tab-25" onClick="associateSalSummary('+userId+')" >Salary</a></li>';
+			 '</sec:authorize>';
 		 }
 
 		
 		 if(country == 'India'){
-			 result = result + '<li><a onClick="associateBankingDetails('+candidateId+');">Banking</a></li>';
-			 result = result + '<li><a onClick="associateInformationDetails('+candidateId+');">PF & ESI</a></li>';
-// 			 result = result + '<li><a onClick="associateLoanAndAdvanceDetails('+candidateId+');">Loan / Advances</a></li>';
-			 result = result + '<li><a href="#tab-30" onClick="assocSalarySummary('+candidateId+');">Salary</a></li>';
+			 '<sec:authorize access="hasRole(\'ROLE_VIEW_ASSOCIATE_ADDITIONAL_DETAILS\')">'; 
+				 result = result + '<li><a onClick="associateBankingDetails('+candidateId+');">Banking</a></li>';
+				 result = result + '<li><a onClick="associateInformationDetails('+candidateId+');">PF & ESI</a></li>';
+				 result = result + '<li><a href="#tab-30" onClick="assocSalarySummary('+candidateId+');">Salary</a></li>';
+			 '</sec:authorize>';
 		 }
-		 //below tab is used for both locations
-		 result = result + '<li><a onClick="associateLoanAndAdvanceDetails('+candidateId+');">Loan / Advances</a></li>';
-
-		 
+		
 		 '<sec:authorize access="hasRole(\'ROLE_VIEW_ASSOCIATE_ADDITIONAL_DETAILS\')">'; 
+		 //below tab is used for both locations
+		    result = result + '<li><a onClick="associateLoanAndAdvanceDetails('+candidateId+');">Loan / Advances</a></li>';
 		    result = result + '<li><a href="#tab-29" onClick="assocBalanceLeaveSummary('+userId+');">Balance Leaves</a></li>';
 		 '</sec:authorize>';
 

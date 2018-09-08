@@ -86,6 +86,7 @@
 			 {
     			 incentivizedType.push($(this).val());
 			 });
+    		 var searchType = $('input[name=searchType]:checked').val();
     	    if(frequency == "Custom"){
     	        if(fromDate == ''){
     	        	$("#invoiceFilterId").show();
@@ -105,13 +106,13 @@
     	        	$('#custFromDateDiv').find('p.jquery_form_error_message').remove();
     	            $('#custToDateDiv').find('p.jquery_form_error_message').remove();
     	            $("#custom-selects").hide();
-        	        var url = sourceleadUrl+"/applicantList?searchValue="+searchValue+"&orgLocationId="+orgLocationId+"&tabType="+tab+"&submissionStatus=INTERVIEW&frequency="+frequency+"&fromDate="+fromDate+"&toDate="+toDate+"&employmentType="+employmentType+"&clientId="+clientNameById+"&incentivizedType="+incentivizedType;
+        	        var url = sourceleadUrl+"/applicantList?searchValue="+searchValue+"&orgLocationId="+orgLocationId+"&tabType="+tab+"&submissionStatus=INTERVIEW&frequency="+frequency+"&fromDate="+fromDate+"&toDate="+toDate+"&employmentType="+employmentType+"&clientId="+clientNameById+"&incentivizedType="+incentivizedType+"&searchType="+searchType;
         			prepareSubmissionList(url);
     	        }
     	    }else{
     	        $('#custFromDateDiv').find('p.jquery_form_error_message').remove();
     	        $('#custToDateDiv').find('p.jquery_form_error_message').remove();
-    	        var url = sourceleadUrl+"/applicantList?searchValue="+searchValue+"&orgLocationId="+orgLocationId+"&tabType="+tab+"&submissionStatus=INTERVIEW&frequency="+frequency+"&fromDate="+fromDate+"&toDate="+toDate+"&employmentType="+employmentType+"&clientId="+clientNameById+"&incentivizedType="+incentivizedType;
+    	        var url = sourceleadUrl+"/applicantList?searchValue="+searchValue+"&orgLocationId="+orgLocationId+"&tabType="+tab+"&submissionStatus=INTERVIEW&frequency="+frequency+"&fromDate="+fromDate+"&toDate="+toDate+"&employmentType="+employmentType+"&clientId="+clientNameById+"&incentivizedType="+incentivizedType+"&searchType="+searchType;
     		    prepareInterviewList(url);
     	    } 
 		 
@@ -395,6 +396,7 @@ function openFilterPop(){
 function resetApplicantFilter(){
 	$("#myClientInput").val('');
 	$("ul#empFilter > li input:checkbox").prop("checked",false);
+	$("ul#searchTypeFilter > li input:radio").prop("checked",false);
 	$("ul#durationFilter > li input:checkbox").prop("checked",false);
 	$("ul#myClinetListUL > li input:checkbox").prop("checked",false);
 	$("ul#incentivizedFilter > li input:checkbox").prop("checked",false);
@@ -427,11 +429,11 @@ $(".overIcon, .newActPop").click(function(e){
 					  <div class="col-md-4">
 						<div class="row">
 						   <div class="col-md-12 mb">
-								<label><strong>Incentivized</strong></label>
+								<label><strong>Search for</strong></label>
 								 <div class="clearfix">
-									<ul class="list-unstyled" id="incentivizedFilter">
-									     <li class="checkBox positionRelative" ><input  type="checkbox" name="incentivizedType"  value ="Y" ><label for="Yes">Yes</label></li>
-										 <li class="checkBox positionRelative" ><input  type="checkbox" name="incentivizedType" value ="N" ><label for="No">No</label></li>
+									<ul class="list-unstyled" id="searchTypeFilter">
+									     <li class="radioIput positionRelative" ><input  type="radio" name="searchType"  value ="MY" ><label for="Yes">My Jobs</label></li>
+										 <li class="radioIput positionRelative" ><input  type="radio" name="searchType" value ="ALL" checked ><label for="No">All Jobs</label></li>
 				                    </ul>
 								 </div>
 						   </div>
@@ -454,7 +456,6 @@ $(".overIcon, .newActPop").click(function(e){
 	                                <c:if test="${tab != 'previous'}">
 	                                <li class="radioIput positionRelative" ><input type="radio"  value="1_month" name="customDates" onclick="showCustomFields(this);"><label for="applicant">1 month</label></li>
 	                                </c:if>
-	                                <li class="radioIput positionRelative" ><input type="radio"  value="1_month" name="customDates" onclick="showCustomFields(this);"><label for="applicant">1 month</label></li>
 	                                <li class="radioIput positionRelative" ><input type="radio" value="3_months" name="customDates" onclick="showCustomFields(this);"><label for="applicant">3 months</label></li>
    	                                <li class="radioIput positionRelative" ><input type="radio" value="Last_Year" name="customDates" onclick="showCustomFields(this);"><label for="applicant">Last Year</label></li>
    	                                <li class="radioIput positionRelative" ><input type="radio" value="Custom" name="customDates" onclick="showCustomFields(this);"><label for="applicant">Custom</label></li>
@@ -491,7 +492,16 @@ $(".overIcon, .newActPop").click(function(e){
 	                                <li class="checkBox positionRelative" ><input type="checkbox" value="Full Time" name="employmentType"><label for="applicant">Full Time</label></li>
 			                        </ul>
 							      </div>
-						     </div> 
+						     </div>
+						     <div class="col-md-12 mb">
+									<label><strong>Incentivized</strong></label>
+									 <div class="clearfix">
+										<ul class="list-unstyled" id="incentivizedFilter">
+										     <li class="checkBox positionRelative" ><input  type="checkbox" name="incentivizedType"  value ="Y" ><label for="Yes">Yes</label></li>
+											 <li class="checkBox positionRelative" ><input  type="checkbox" name="incentivizedType" value ="N" ><label for="No">No</label></li>
+					                    </ul>
+									 </div>
+							 </div> 
 						  </div>
 						</div>
 	                 
@@ -589,7 +599,8 @@ function projectExport(type){
 		 {
 			 incentivizedType.push($(this).val());
 		 });
-		 window.location.href = sourceleadUrl+"/applicantListExport?searchValue="+searchValue+"&orgLocationId="+orgLocationId+"&tabType="+tab+"&submissionStatus=INTERVIEW&frequency="+frequency+"&fromDate="+fromDate+"&toDate="+toDate+"&employmentType="+employmentType+"&clientId="+clientNameById+"&incentivizedType="+incentivizedType;
+		 var searchType = $('input[name=searchType]:checked').val();
+		 window.location.href = sourceleadUrl+"/applicantListExport?searchValue="+searchValue+"&orgLocationId="+orgLocationId+"&tabType="+tab+"&submissionStatus=INTERVIEW&frequency="+frequency+"&fromDate="+fromDate+"&toDate="+toDate+"&employmentType="+employmentType+"&clientId="+clientNameById+"&incentivizedType="+incentivizedType+"&searchType="+searchType;
 	     
 }
 </script>

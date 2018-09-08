@@ -52,11 +52,9 @@ import com.bis.sourcelead.dao.UserDao;
 import com.bis.sourcelead.dto.ApplicantAuthorizationDTO;
 import com.bis.sourcelead.dto.CandidateResumesDTO;
 import com.bis.sourcelead.dto.FileInfo;
-import com.bis.sourcelead.dto.ProjectsDTO;
 import com.bis.sourcelead.dto.RequirementDTO;
 import com.bis.sourcelead.dto.RequirementSubmissionsCountDTO;
 import com.bis.sourcelead.dto.RequirementSubmissionsDTO;
-import com.bis.sourcelead.dto.Response;
 import com.bis.sourcelead.dto.ResponseList;
 import com.bis.sourcelead.elk.index.CandidateIndex;
 import com.bis.sourcelead.elk.index.helper.CandidateIndexHelper;
@@ -277,6 +275,7 @@ public class RequirementSubmissionServiceImpl implements RequirementSubmissionSe
 	}
 
 
+	@SuppressWarnings("unused")
 	@Override
 	public RequirementSubmission saveRequirementSubmission(JSONObject jsonObj,User user,OrgLocations orgLocations,String jsonStringvalues,String loginUserRole) throws Exception {
 		
@@ -312,14 +311,14 @@ public class RequirementSubmissionServiceImpl implements RequirementSubmissionSe
 		 }else if(candidate == null && jsonObj.has("EmailId") && !isNullOrEmpty(jsonObj.getString("EmailId"))){
 				if(!isNullOrEmpty(loginUserRole) && loginUserRole.equalsIgnoreCase("ROLE_CROWDSOURCING_RECRUITER")){
 					 candidate = candidateDao.getCandidateByEmailAndRecruiterUserId(jsonObj.getString("EmailId"), user.getId());
+				}else {
+					if(orgLocations != null){
+						 candidate = candidateDao.findByCandidateEmail(jsonObj.getString("EmailId"),orgLocations.getId());
+						}
+						else{
+							 candidate = candidateDao.findByCandidateEmail(jsonObj.getString("EmailId"),requirement.getOrgLocationId().getId());
+						}
 				}
-				if(orgLocations != null){
-					 candidate = candidateDao.findByCandidateEmail(jsonObj.getString("EmailId"),orgLocations.getId());
-					}
-					else{
-						 candidate = candidateDao.findByCandidateEmail(jsonObj.getString("EmailId"),requirement.getOrgLocationId().getId());
-					}
-				
 		 }
 		 
 		 if(candidate == null){
@@ -329,7 +328,7 @@ public class RequirementSubmissionServiceImpl implements RequirementSubmissionSe
 						guestOrglocation=orgLocationService.getOrgLocations(requirement.getOrgLocationId().getId());
 					}
 					if(orgLocations != null){
-			       candidate.setOrgLocationId(orgLocations);
+			        candidate.setOrgLocationId(orgLocations);
 					}else{
 					candidate.setOrgLocationId(guestOrglocation);
 					}
@@ -5354,23 +5353,25 @@ private void createXlsSheet(Sheet createExcelsheet,Row writeRow,int column,Strin
 						 writeRow.createCell(6).setCellValue(commonUtil.dateStrFromOrgDateFormatter(orgLocations.getDateFormat(),rsh.getCreatedDate()));
 					}
 				}
+				//Sourece Name
+				writeRow.createCell(7).setCellValue(rsh.getSubmissionId().getCreatedUser());
 				
 				//Aplicant Status
-				 writeRow.createCell(7).setCellValue(rsh.getSubmissionId().getSubmissionStatus().toString());
+				 writeRow.createCell(8).setCellValue(rsh.getSubmissionId().getSubmissionStatus().toString());
 				
 				//Job Rating
 				 if(rsh.getSubmissionId().getRequirement().getJobRate() != null) {
-					 writeRow.createCell(8).setCellValue(rsh.getSubmissionId().getRequirement().getJobRate());
+					 writeRow.createCell(9).setCellValue(rsh.getSubmissionId().getRequirement().getJobRate());
 				 }else {
-					 writeRow.createCell(8).setCellValue("--");
+					 writeRow.createCell(9).setCellValue("--");
 
 				 }
 
 				//Incentivize
 				 if(rsh.getSubmissionId().getRequirement().getIncentivized() != null) {
-					 writeRow.createCell(9).setCellValue(rsh.getSubmissionId().getRequirement().getIncentivized());
+					 writeRow.createCell(10).setCellValue(rsh.getSubmissionId().getRequirement().getIncentivized());
 				 }else {
-					 writeRow.createCell(9).setCellValue("--");
+					 writeRow.createCell(10).setCellValue("--");
 				 }
 		 }else if(submissionStatus.equalsIgnoreCase("REJECTED")) {
 			 //Rejected Type
@@ -5470,6 +5471,11 @@ private void createXlsSheet(Sheet createExcelsheet,Row writeRow,int column,Strin
 		 }
 		
 		return createExcelsheet;
+	}
+
+	@Override
+	public List<RequirementSubmission> getAllSubmissionsNotInTemplateFileds() throws Exception {
+		return requirementSubmissionDao.getAllSubmissionsNotInTemplateFileds();
 	}
 
 }
