@@ -1,5 +1,6 @@
 package com.bis.sourcelead.util;
 
+import java.io.File;
 import java.util.Properties;
 
 import javax.mail.Flags;
@@ -13,14 +14,19 @@ import javax.mail.Session;
 import javax.mail.Store;
 import javax.mail.internet.MimeBodyPart;
 
+import org.springframework.beans.factory.annotation.Value;
+
 import com.bis.sourcelead.entity.EmailScenarioConfiguration;
+import com.bis.sourcelead.entity.OrgLocations;
+import com.bis.sourcelead.entity.User;
 
 
 public class ReadEmail {
-//public static Reader rd = new Reader();
+	//public static Reader rd = new Reader();
 	// readMail(host, mailStoreType, username, password);
-	public static void readEMailAttachments(Long id, EmailScenarioConfiguration confMail) {
-		String saveDirectory = "C:/sourcleadmails/Resumes/";
+	public void readEMailAttachments(Long id, EmailScenarioConfiguration confMail, File tempfolder) {
+		String saveDirectory = tempfolder.getPath();
+		System.out.println(" saveDirectory  path ="+saveDirectory);
 		//String saveTo = "C:/sourcleadmails/parsedFiles/";
 		try {
 			Properties properties = new Properties();
@@ -40,7 +46,7 @@ public class ReadEmail {
 
 			System.out.println("connect before pop3s ==============>");
 			
-			emailSession.setDebug(true);
+		//	emailSession.setDebug(true); Enable true for debugg.
 			store.connect(host, user, password);
 			System.out.println("connection test successfull ==============>");
 			Folder emailFolder = store.getFolder("INBOX"); // Reading inbox folder. for gmail need to enable access through the link. https://www.google.com/settings/security/lesssecureapps 
@@ -55,7 +61,6 @@ public class ReadEmail {
 		      for (int i = 0, n = messages.length; i < n; i++) {
 		    
 		         Message message = messages[i];
-		         
 		  
 		         String contentType = message.getContentType();
 		        // store attachment file name, separated by comma
@@ -70,10 +75,8 @@ public class ReadEmail {
 							// this part is attachment
 							String fileName = part.getFileName();
 							System.out.println(" saving file name :>>>>>>>>> :"+fileName);
-							String fullfilepath = saveDirectory + fileName;
+							String fullfilepath = saveDirectory + System.getProperty("file.separator")+ fileName;
 							part.saveFile(fullfilepath);
-							//JSONObject attchmt = rd.parseResume(part.getInputStream(), fileName, saveTo, saveDirectory + fileName);
-							//attachments.put(attchmt);
 						}
 					}
 		         } 
