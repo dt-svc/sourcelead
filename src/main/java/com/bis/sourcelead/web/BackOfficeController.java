@@ -401,6 +401,14 @@ private static final Logger logger = LoggerFactory.getLogger(BackOfficeControlle
 			String issueDateStr = commonUtil.dateStrFromOrgDateFormatter(asset.getOrgLocations().getDateFormat(),asset.getIssueDate());
 			model.addObject("issueDateStr",issueDateStr);
 			
+			String purchaseDate = commonUtil.dateStrFromOrgDateFormatter(asset.getOrgLocations().getDateFormat(),asset.getPurchaseDate());
+			model.addObject("purchaseDate",purchaseDate);
+			
+			String depreciationDate = commonUtil.dateStrFromOrgDateFormatter(asset.getOrgLocations().getDateFormat(),asset.getDepreciationDate());
+			model.addObject("depreciationDate",depreciationDate);
+			
+			
+			
 			List<AssetAssign> assignAssetList = assetService.getAssignAssetListByAssetId(assetId);
 			model.addObject("assignAssetList",assignAssetList);
 			
