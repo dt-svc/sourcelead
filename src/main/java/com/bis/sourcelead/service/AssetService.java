@@ -62,4 +62,7 @@ public interface AssetService {
 	List<AssetAssign> getAssignAssetListByShiftId(Long shiftId)throws Exception;
 	
 	void deleteAssignAssetByAssignId(AssetAssign assetAssign) throws Exception;
+	
+	List<AssetAssign> getReturnedOnAssignAssetListByAssetId(Long assetId);
+
 }

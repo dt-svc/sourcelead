@@ -308,21 +308,40 @@
 							</c:if>
 			                </div>
 			                
-			                <div class="col-md-2 paddingRight">
-			                <label>Assigned On</label>
-			                <div class="clearfix">
-			                	<input type="text" class="form-control calendar" id="assignedOn${shiftOrder.index}" name="assignedOn"  readonly  placeholder="Assigned On">
-			                </div>
-			                </div>
-			                
-			                <div class="col-md-2 paddingLeft">
-			                <label>Returned On</label>
-			                <div class="clearfix">
-			                	<input type="text" class="form-control calendar" id="returnedOn${shiftOrder.index}" name="returnedOn"  readonly  placeholder="Returned On">
-			                </div>
-			                </div>
-			                
-			                
+	                        <c:set var = "NUM" value = "${0}"/>
+	                        <c:forEach var="existedAsset" items="${assignAssetList}">
+	                        	<c:if test="${(existedAsset.shift.id eq shift.id)}">
+							    	<c:set var = "NUM" value = "${1}"/>
+										<div class="col-md-2 paddingRight">
+							                <label>Assigned On</label>
+							                <div class="clearfix">
+							                	<input type="text" class="form-control calendar" id="assignedOn${shiftOrder.index}" name="assignAsset[${shiftOrder.index}].assignedOn"  value="${existedAsset.assignedOnStr}" readonly  placeholder="Assigned On">
+							                </div>
+							              </div>
+								                
+								         <div class="col-md-2 paddingLeft">
+							                <label>Returned On</label>
+							                <div class="clearfix">
+							                	<input type="text" class="form-control calendar" id="returnedOn${shiftOrder.index}" name="assignAsset[${shiftOrder.index}].returnedOn"  value="${existedAsset.returnedOnStr}" readonly  placeholder="Returned On">
+							                </div>
+							                </div>
+							       </c:if>
+	                        </c:forEach>
+	                        <c:if test="${NUM == 0}">
+	                        <div class="col-md-2 paddingRight">
+				                <label>Assigned On</label>
+				                <div class="clearfix">
+				                	<input type="text" class="form-control calendar" id="assignedOn${shiftOrder.index}" name="assignAsset[${shiftOrder.index}].assignedOn"  value="" readonly  placeholder="Assigned On">
+				                </div>
+				                </div>
+				                
+				                <div class="col-md-2 paddingLeft">
+				                <label>Returned On</label>
+				                <div class="clearfix">
+				                	<input type="text" class="form-control calendar" id="returnedOn${shiftOrder.index}" name="assignAsset[${shiftOrder.index}].returnedOn"  value="" readonly  placeholder="Returned On">
+				                </div>
+				                </div>
+	                        </c:if>
 			              </div>
 		                </c:forEach>
 		              </c:if>
@@ -432,6 +451,92 @@ function getCustomDependentField(sectionId){
 	 } 
  }
  </script>  
+ 
+ <script>
+ var locationDate ='${SourceLeadWeb_orgLocations.dateFormat}'; 
+ var finalDateFormat = getJSDateFormat(locationDate);
+ $('#issueDate').datepicker({
+     dateFormat: finalDateFormat,
+     changeMonth: true,
+ 	  changeYear: true, 
+ });
+ $('#purchaseDate').datepicker({
+     dateFormat: finalDateFormat,
+     changeMonth: true,
+ 	  changeYear: true, 
+ });
+ $('#depreciationDate').datepicker({
+     dateFormat: finalDateFormat,
+     changeMonth: true,
+ 	  changeYear: true, 
+ });
+ 
+ <c:forEach var="shift" items="${siftList}" varStatus="shiftOrder">
+    <c:set var = "NUM" value = "${0}"/>
+	 <c:forEach var="existedAsset" items="${assignAssetList}">
+	    <c:if test="${existedAsset.shift.id eq shift.id}">
+	    var returnedOn = '${existedAsset.returnedOnStr}';
+	    var assignedOn = '${existedAsset.assignedOnStr}';
+	    
+	    $('#assignedOn${shiftOrder.index}').datepicker({
+		      dateFormat: finalDateFormat,
+		      changeMonth: true,
+		  	  changeYear: true, 
+		  	  maxDate:returnedOn,
+		  	  onSelect : function(selected) {
+				var dt = $(this).datepicker('getDate', '+1d');
+				dt.setDate(dt.getDate() + 1);
+				$('#returnedOn${shiftOrder.index}').datepicker("option", "minDate", dt);
+			}
+		  });
+	    
+	    $('#returnedOn${shiftOrder.index}').datepicker({
+		      dateFormat: finalDateFormat,
+		      changeMonth: true,
+		  	  changeYear: true, 
+		  	  minDate:assignedOn,
+		  	  onSelect : function(selected) {
+				var dt = $(this).datepicker('getDate', '+1d');
+				dt.setDate(dt.getDate() + 1);
+				$('#assignedOn${shiftOrder.index}').datepicker("option", "maxDate", dt);
+			}
+		  });
+	    
+	    </c:if>
+	 	
+	</c:forEach>
+	  <c:if test="${NUM == 0}">
+	 $('#assignedOn${shiftOrder.index}').datepicker({
+	      dateFormat: finalDateFormat,
+	      changeMonth: true,
+	  	  changeYear: true, 
+	  	  onSelect : function(selected) {
+			var dt = $(this).datepicker('getDate', '+1d');
+			dt.setDate(dt.getDate() + 1);
+			$('#returnedOn${shiftOrder.index}').datepicker("option", "minDate", dt);
+		}
+	  });
+	  $('#returnedOn${shiftOrder.index}').datepicker({
+	      dateFormat: finalDateFormat,
+	      changeMonth: true,
+	  	  changeYear: true, 
+	  	  onSelect : function(selected) {
+			var dt = $(this).datepicker('getDate', '+1d');
+			dt.setDate(dt.getDate() + 1);
+			$('#assignedOn${shiftOrder.index}').datepicker("option", "minDate", dt);
+		}
+	  });
+	</c:if> 
+	 
+ </c:forEach>
+ 
+ 
+ 
+ 
+ 
+ </script>
+ 
+ 
  <script type="text/javascript">
 	var config = {
 	  '.chosen-select'           : {},

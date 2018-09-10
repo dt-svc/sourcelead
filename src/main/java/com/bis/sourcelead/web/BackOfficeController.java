@@ -410,6 +410,14 @@ private static final Logger logger = LoggerFactory.getLogger(BackOfficeControlle
 			
 			
 			List<AssetAssign> assignAssetList = assetService.getAssignAssetListByAssetId(assetId);
+			for(AssetAssign aa :assignAssetList) {
+				if(aa.getReturnedOn() != null) {
+					aa.setReturnedOnStr(commonUtil.dateStrFromOrgDateFormatter(orgLocations.getDateFormat(),aa.getReturnedOn()));
+				}
+				if(aa.getAssignedOn() != null) {
+					aa.setAssignedOnStr(commonUtil.dateStrFromOrgDateFormatter(orgLocations.getDateFormat(),aa.getAssignedOn()));
+				}
+			}
 			model.addObject("assignAssetList",assignAssetList);
 			
 			
@@ -440,10 +448,8 @@ private static final Logger logger = LoggerFactory.getLogger(BackOfficeControlle
 				 	}
 				 }
 			 }
-			
-			
-			
 		}
+
 		model.addObject("sourceleadUrl", sourceleadUrl);
 		
 		List<AssetCategory> assetCategoriesList = assetCategoryService.getAssetCategoryListByLocationId(orgLocations.getId());

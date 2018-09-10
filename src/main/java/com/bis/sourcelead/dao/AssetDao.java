@@ -37,6 +37,8 @@ public interface AssetDao {
 	
 	List<AssetAssign> getAssignAssetListByAssetId(Long assetId);
 	
+	List<AssetAssign> getReturnedOnAssignAssetListByAssetId(Long assetId);
+	
 	AssetAssign saveAssetAssign(AssetAssign assetAssign) throws Exception;
 
 	AssetAssign getAssignAssetByAssetId(Long assetId)throws Exception;

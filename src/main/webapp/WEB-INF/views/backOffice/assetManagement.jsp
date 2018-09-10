@@ -119,7 +119,7 @@ $(document).ready(function(){
 	        	$(".assetManagementPopup, .comMask").fadeIn();
 	        	$('#assetManagementPopup').empty();
 	        	$('#assetManagementPopup').append(result);
-	        	issueDateScript();
+// 	        	issueDateScript();
 	        	populateDropdownValues();
 	        	<c:forEach var="section" items="${sourceleadSectionList}" varStatus="sectionOrder">
 	  		 	 var sectionId = '${section.id}';
@@ -133,7 +133,7 @@ $(document).ready(function(){
   
    
   <script>
-  function issueDateScript(){
+  function issueDateScript1(){
   var locationDate ='${SourceLeadWeb_orgLocations.dateFormat}'; 
   var finalDateFormat = getJSDateFormat(locationDate);
   $('#issueDate').datepicker({
@@ -152,28 +152,31 @@ $(document).ready(function(){
   	  changeYear: true, 
   });
   
+  
   <c:forEach var="shift" items="${siftList}" varStatus="shiftOrder">
-	  $('#assignedOn${shiftOrder.index}').datepicker({
-	      dateFormat: finalDateFormat,
-	      changeMonth: true,
-	  	  changeYear: true, 
-	  	  onSelect : function(selected) {
-			var dt = $(this).datepicker('getDate', '+1d');
-			dt.setDate(dt.getDate() + 1);
-			$('#returnedOn${shiftOrder.index}').datepicker("option", "minDate", dt);
-		}
-	  });
+	     $('#assignedOn${shiftOrder.index}').datepicker({
+		      dateFormat: finalDateFormat,
+		      changeMonth: true,
+		  	  changeYear: true, 
+		  	  onSelect : function(selected) {
+				var dt = $(this).datepicker('getDate', '+1d');
+				dt.setDate(dt.getDate() + 1);
+				$('#returnedOn${shiftOrder.index}').datepicker("option", "minDate", dt);
+			}
+		  });
+		  
+		  $('#returnedOn${shiftOrder.index}').datepicker({
+		      dateFormat: finalDateFormat,
+		      changeMonth: true,
+		  	  changeYear: true, 
+		  	  onSelect : function(selected) {
+				var dt = $(this).datepicker('getDate', '+1d');
+				dt.setDate(dt.getDate() + 1);
+				$('#assignedOn${shiftOrder.index}').datepicker("option", "minDate", dt);
+			}
+		  });
+     
 	  
-	  $('#returnedOn${shiftOrder.index}').datepicker({
-	      dateFormat: finalDateFormat,
-	      changeMonth: true,
-	  	  changeYear: true, 
-	  	  onSelect : function(selected) {
-			var dt = $(this).datepicker('getDate', '+1d');
-			dt.setDate(dt.getDate() + 1);
-			$('#assignedOn${shiftOrder.index}').datepicker("option", "minDate", dt);
-		}
-	  });
   </c:forEach>
   }
   function clearDate(){

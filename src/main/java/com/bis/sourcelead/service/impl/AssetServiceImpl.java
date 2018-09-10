@@ -288,6 +288,22 @@ public class AssetServiceImpl implements AssetService{
 					 aa.setShift(shift);
 					 
 					 aa.setStatus(Constants.RECORD_ACTIVE);
+					 if(aad.getAssignedOn() != null) {
+						 aa.setAssignedOn(commonUtil.orgLocationDateFormat(orgLocations.getDateFormat(), aad.getAssignedOn()));
+					 }else {
+						 aa.setAssignedOn(null);
+					 }
+					 if(StringUtils.isNotBlank(aad.getReturnedOn())) {
+						 aa.setReturnedOn(commonUtil.orgLocationDateFormat(orgLocations.getDateFormat(), aad.getReturnedOn()));
+						 Date currentDate  = new Date();
+						 if(currentDate.before(aa.getReturnedOn())) {
+							 aa.setStatus(Constants.RECORD_INACTIVE);
+						 }
+					 }else {
+						 aa.setReturnedOn(null);
+					 }
+					 
+					 
 					 if(aad .getFileInfo() != null) {
 						List<FileInfo> assetAssignDocumentsList = aad .getFileInfo();
 						for(FileInfo fileInfo : assetAssignDocumentsList){
@@ -398,5 +414,11 @@ public class AssetServiceImpl implements AssetService{
 	@Override
 	public void deleteAssignAssetByAssignId(AssetAssign assetAssign) throws Exception {
 		assetDao.deleteAssignAssetByAssignId(assetAssign);
+	}
+
+
+	@Override
+	public List<AssetAssign> getReturnedOnAssignAssetListByAssetId(Long assetId) {
+		return assetDao.getReturnedOnAssignAssetListByAssetId(assetId);
 	}
 }

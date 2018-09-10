@@ -792,6 +792,23 @@ public class BackOfficeRestController {
 
 	}
 	
+	
+	 @RequestMapping(value = "/getReturnedOnAssetDetaisl", method = RequestMethod.POST)
+	 @ResponseBody  List<AssetAssign> getReturnedOnAssetDetaisl(@RequestParam(value = "assetId", required = false) Long assetId,HttpServletRequest request) throws Exception {
+		 OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+		 List<AssetAssign> assignAssetList =  assetService.getReturnedOnAssignAssetListByAssetId(assetId);
+		 for(AssetAssign aa :assignAssetList) {
+				if(aa.getReturnedOn() != null) {
+					aa.setReturnedOnStr(commonUtil.dateStrFromOrgDateFormatter(orgLocations.getDateFormat(),aa.getReturnedOn()));
+				}
+				if(aa.getAssignedOn() != null) {
+					aa.setAssignedOnStr(commonUtil.dateStrFromOrgDateFormatter(orgLocations.getDateFormat(),aa.getAssignedOn()));
+				}
+			}
+		 return assignAssetList;
+	 }
+	 
+	 
 	private String toJSON(Object obj){
         XStream xstream = new XStream(new JsonHierarchicalStreamDriver() {
             public HierarchicalStreamWriter createWriter(Writer writer) {

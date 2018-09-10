@@ -392,6 +392,15 @@ public class AssetDaoImpl implements AssetDao{
 		return (AssetAssign) session.get(AssetAssign.class, id);
 	}
 	 
+	@Override
+	@SuppressWarnings("unchecked")
+	@Transactional
+	public List<AssetAssign> getReturnedOnAssignAssetListByAssetId(Long assetId) {
+		Session session =  this.sessionFactory.getCurrentSession();
+		String query = "from AssetAssign assetAssign left join fetch assetAssign.shift left join fetch assetAssign.userRole where assetAssign.asset.id = :assetId and assetAssign.status = '0'";
+		List<AssetAssign> assignAssetList = session.createQuery(query).setLong("assetId", assetId).list();
+		return assignAssetList;
+	}
 	
 	 
 }

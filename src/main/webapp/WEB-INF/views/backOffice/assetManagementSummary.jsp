@@ -46,6 +46,7 @@ $(document).ready(function() {
 	<div class="project_side_wrap_inn_tabs">
 		<ul class="project-tabs-menu">
 			<li class="current"><a href="#tab-1" onclick="assetDetails('${asset.id}');">Details</a></li>
+			<li><a href="#tab-3" onclick="assetHistory('${asset.id}');">History</a></li>
 			<li><a href="#tab-2" onclick="assetNotes('${asset.id}');">Notes</a></li>
 		</ul>
 		<div class="clearfix"></div>
@@ -53,8 +54,8 @@ $(document).ready(function() {
 				<div id="tab-1" class="project_tabs_inn">
 					<div class="panel-body" >Asset Management Details</div>
 				</div>
-				<div id="tab-2" class="project_tabs_inn">
-				</div>
+				<div id="tab-2" class="project_tabs_inn"></div>
+				<div id="tab-3" class="project_tabs_inn_table dataFilterNew datatable_filter mt10"></div>
 			</div>
 	</div>
 	<!-- Asset Management Summary tabs starts here  -->
@@ -93,6 +94,85 @@ $(".addUser-org").click(function(){
    event.preventDefault();
 });
 </script>
+
+
+<!-- ===================== History related scripts written by Laxman Start ======================================== -->
+<script>
+function assetHistory(assetId){
+	 var sourceleadUrl = '${sourceleadUrl}';
+		$.ajax({
+			type : "POST",
+			url : sourceleadUrl+ "/getReturnedOnAssetDetaisl?${_csrf.parameterName}=${_csrf.token}&assetId="+assetId,
+			success : function(json) {
+				var result = "";
+   	        	result = result +'<table id="departmentPagination">';
+   		    	result = result +'<thead>';
+   		    	result = result +'	<tr>';
+   		    	result = result +'	<th>Shift Name</th>';
+   		    	result = result +'    <th>Employee Name</th>'; 
+   		    	result = result +'     <th>Assigned On</th>';
+   		    	result = result +'     <th>Returned On</th>';
+   		    	result = result +'     <th>Document</th>';
+   		    	result = result +'    </tr>';
+   		    	result = result +'</thead>	';
+   		    	result = result +'<tbody>';
+   		    	for (var i=0; i<json.length; i++)
+   				{
+   		    		var report = json[i];
+   		    		result = result +'<tr>';
+   		    		result = result +'<td><div class="tbldata-dotdot-sm" title="'+report.shift.shiftName+'">'+report.shift.shiftName+'</div></td>';
+   		    		result = result +'<td><div class="tbldata-dotdot-sm" title="'+report.userRole.user.fullName+'">'+report.userRole.user.fullName+'</div></td>';
+   		    		if(report.assignedOnStr != null && report.assignedOnStr !="" && report.assignedOnStr != "undefined"){
+   	   		    		result = result +'<td><div class="tbldata-dotdot_80" title="'+report.assignedOnStr+'">'+report.assignedOnStr+'</div></td>';
+   		    		}else{
+   	   		    		result = result +'<td><div class="tbldata-dotdot_80">--</div></td>';
+   		    		}
+   		    		if(report.returnedOnStr != null && report.returnedOnStr !="" && report.returnedOnStr != "undefined"){
+   	   		    		result = result +'<td><div class="tbldata-dotdot_80" title="'+report.returnedOnStr+'">'+report.returnedOnStr+'</div></td>';
+   		    		}else{
+   	   		    		result = result +'<td><div class="tbldata-dotdot_80">--</div></td>';
+   		    		}
+   		    		if(report.fileName != null && report.fileName != "" && report.fileName != "undefined"){
+						result = result + ' <td><ul class="list-unstyled list-inline text-center mt10" ><li><a class="fa fa-download cursorPointer" href="'+report.fileURL+'" title="download"></a><a class="fa fa-eye ml cursorPointer" onClick="viewFile(\''+report.fileURL+'\',\''+report.fileName+'\',\''+report.fileType+'\');" title="view"></a></li></ul></td>';
+					}else{
+						result = result + ' <td><div class="pull-left">--</div></td>';
+					}
+   		    		result = result +'</tr>';
+   				}
+	   		    $("#tab-1").empty(); 
+	   		    $("#tab-2").empty();
+	  		    $("#tab-3").empty();
+	   		    $("#tab-3").append(result);
+   	    	    returnedAssetPagination();
+			}
+		});
+}
+function returnedAssetPagination(){
+	$('#departmentPagination').DataTable( { 
+    	"scrollCollapse": false,
+    	"lengthMenu": [[10, 15, 20, -1], [10, 15, 20, "All"]],
+    	"bLengthChange": true,
+    	"bDestroy": true,
+    	"ordering": true,
+    	"oLanguage": {
+     		"sSearch": "",
+     		"sZeroRecords": "", "sEmptyTable": ""
+     	}
+    } );
+}
+
+
+</script> 
+
+
+
+
+
+
+
+
+<!-- ===================== History related scripts written by Laxman Ends ======================================== -->
+
 
 
 
