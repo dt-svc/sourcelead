@@ -62,7 +62,15 @@ public class AssociateLoanAndAdvancesDTO implements Serializable{
 	 
 	 private BigDecimal totalAdvanceAmount;
 	 
-
+	 private String name;
+	 
+	 private String createdDate;
+	 
+	 private String approverUser;
+	 
+	 private int status;
+	 
+     private String lastPaidOnMaxDate;
 	public String getLoanAndAdvType() {
 		return loanAndAdvType;
 	}
@@ -226,4 +234,46 @@ public class AssociateLoanAndAdvancesDTO implements Serializable{
 	{
 		this.totalAdvanceAmount = totalAdvanceAmount;
 	}
+
+	public String getName() {
+		return name;
+	}
+
+	public void setName(String name) {
+		this.name = name;
+	}
+
+	public String getCreatedDate() {
+		return createdDate;
+	}
+
+	public void setCreatedDate(String createdDate) {
+		this.createdDate = createdDate;
+	}
+
+	public String getApproverUser() {
+		return approverUser;
+	}
+
+	public void setApproverUser(String approverUser) {
+		this.approverUser = approverUser;
+	}
+
+	public int getStatus() {
+		return status;
+	}
+
+	public void setStatus(int status) {
+		this.status = status;
+	}
+
+	public String getLastPaidOnMaxDate() {
+		return lastPaidOnMaxDate;
+	}
+
+	public void setLastPaidOnMaxDate(String lastPaidOnMaxDate) {
+		this.lastPaidOnMaxDate = lastPaidOnMaxDate;
+	}
+
+	
 }

@@ -53,6 +53,7 @@ import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.entity.UserLoginLogoutSession;
 import com.bis.sourcelead.entity.UserRole;
 import com.bis.sourcelead.enums.Status;
+import com.bis.sourcelead.payroll.service.ConfigurePayrollApproverService;
 import com.bis.sourcelead.service.CandidateOffBoardingService;
 import com.bis.sourcelead.service.CandidateOnBoardingService;
 import com.bis.sourcelead.service.CandidateService;
@@ -178,6 +179,9 @@ public class LoginSessionController {
 	
 	@Autowired
 	UserLoginLogoutSessionService userLoginLogoutSessionService;
+	
+	@Autowired
+	ConfigurePayrollApproverService configurePayrollApproverService;
 	
 	
 	protected static boolean isNullOrEmpty(String str) {
@@ -337,6 +341,12 @@ public class LoginSessionController {
 				SourceLeadSessionManager.setSessionAttribute(request, "isSuperAdmin", Constants.NO);
 			}
 			
+			boolean isPayRollApprover = configurePayrollApproverService.isLoginUserIsPayRollApprover(userRole.getUser().getId(),orgLocations.getId());
+			if(isPayRollApprover == true){
+				SourceLeadSessionManager.setSessionAttribute(request, "isPayRollApprover", Constants.YES);
+			}else{
+				SourceLeadSessionManager.setSessionAttribute(request, "isPayRollApprover", Constants.NO);
+			}
 			
 			String[] modules = orgLocations.getModulesId().split(",");
 			for(int i = 0 ; i< modules.length ; i++){

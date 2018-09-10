@@ -2515,6 +2515,8 @@ public class RequirementSubmissionDaoImpl implements RequirementSubmissionDao{
 	        String submissionStages = "";
 	        if(submissionStatus.equalsIgnoreCase("SUBMISSION")){
 	        	submissionStages = " and rsh.toStage = 'SUBMISSION'";
+			}else if(submissionStatus.equalsIgnoreCase("SHORTLIST")){
+				submissionStages = " and rsh.toStage = 'SHORTLIST'";
 			}else if(submissionStatus.equalsIgnoreCase("SUBMIT_TO_CLIENT")){
 				submissionStages = " and rsh.toStage = 'SUBMIT_TO_CLIENT'";
 			}else if(submissionStatus.equalsIgnoreCase("INTERVIEW")){
@@ -2575,23 +2577,34 @@ public class RequirementSubmissionDaoImpl implements RequirementSubmissionDao{
 	    		
 	    		String from = " from RequirementSubmissionHistory rsh left join fetch rsh.submissionId.candidate can left join fetch rsh.submissionId.requirement req left join fetch rsh.submissionId rs";
 	    		String fromQuryCount = "select count(*) from RequirementSubmissionHistory rsh  ";
-	    		//login user as created by
-	    		String subQuery1 = "rsh.submissionId.requirement.id IN (select req.id from Requirement req where req.createdBy =:userId)";
-	    		params.put("userId",user.getId());
 	    		
+	    		String subQuery1 = "";
+	    		String subQuery2 = "";
+	    		String subQuery3 = "";
+	    		String subQuery4 = "";
 	    		
-	    		//login user as a approver for this requirement  or  assigned to.
-	    		String subQuery2 = "rsh.submissionId.requirement.id IN (select rah.requirementId from RequirementApproverHierarchy rah where rah.approverUserId.id =:approverUserId )  or (rsh.submissionId.requirement.id IN ( select rah.requirementId from RequirementAssignTo rah where rah.teamId.id IN ( select rah.id from Team rah where rah.ownerUserId.id =:userId)) ) or (rsh.submissionId.requirement.id IN ( select rah.requirementId from RequirementAssignTo rah where rah.assignUserId.id =:userId) and rsh.submissionId.createdBy =:usercode)";
-	    		params.put("approverUserId",user.getId());
-	    		params.put("userId",user.getId());
-	    		params.put("usercode",user.getUserCode());
-	    		
-	    		//login user as a  manager for this job.
-	    		String subQuery3 = "rsh.submissionId.requirement.id IN ( select requirement.id from Requirement requirement where  requirement.managerUserId.id = :managerUserId )  ";
-	    		params.put("managerUserId",user.getId());
-	    		
-	    		String subQuery4 = " rsh.submissionId.requirement.releaseJobToAllUsers = 'Y' and  rsh.submissionId.createdBy =:usercode";
-	    		params.put("usercode",user.getUserCode());
+	    		if(requirementSubmissionHistoryDTO.getSearchType().equalsIgnoreCase("MY")) {
+	    			subQuery1 = " (rsh.submissionId.createdBy =:userCode)";
+	    			params.put("userCode",user.getUserCode());
+	    		}else {
+	    			//login user as created by
+		    		subQuery1 = " (rsh.submissionId.requirement.id IN (select req.id from Requirement req where req.createdBy =:userId))";
+		    		params.put("userId",user.getId());
+		    		
+		    		
+		    		//login user as a approver for this requirement  or  assigned to.
+		    		subQuery2 = " or (rsh.submissionId.requirement.id IN (select rah.requirementId from RequirementApproverHierarchy rah where rah.approverUserId.id =:approverUserId )  or (rsh.submissionId.requirement.id IN ( select rah.requirementId from RequirementAssignTo rah where rah.teamId.id IN ( select rah.id from Team rah where rah.ownerUserId.id =:userId)) ) or (rsh.submissionId.requirement.id IN ( select rah.requirementId from RequirementAssignTo rah where rah.assignUserId.id =:userId) and rsh.submissionId.createdBy =:usercode))";
+		    		params.put("approverUserId",user.getId());
+		    		params.put("userId",user.getId());
+		    		params.put("usercode",user.getUserCode());
+		    		
+		    		//login user as a  manager for this job.
+		    		subQuery3 = " or (rsh.submissionId.requirement.id IN ( select requirement.id from Requirement requirement where  requirement.managerUserId.id = :managerUserId ) ) ";
+		    		params.put("managerUserId",user.getId());
+		    		
+		    		subQuery4 = " or (rsh.submissionId.requirement.releaseJobToAllUsers = 'Y' and  rsh.submissionId.createdBy =:usercode)";
+		    		params.put("usercode",user.getUserCode());
+	    		}
 	    		
 	    		if(clientIdsList != null) {
 	    			clientSubQuery = " and (rsh.submissionId.requirement.clientId.id IN (:clientIdsList))";
@@ -2600,7 +2613,7 @@ public class RequirementSubmissionDaoImpl implements RequirementSubmissionDao{
 				
 	    		String subQuery = "";
 	    		if(subQuery1 != "" || subQuery2 != "" || subQuery3 != "" ){
-	    			subQuery = "where rsh.submissionId.orgLocations.id = :orgLocationsId "+submissionStages+" "+empQuery+" "+clientSubQuery+" "+incentivizedQuery+" and rsh.submissionId.status = 1 and rsh.updatedDate >= :startDate and rsh.updatedDate <= :endDate and ( ("+subQuery1+") or ("+subQuery2+") or ("+subQuery3+") or ("+subQuery4+") ) ";
+	    			subQuery = "where rsh.submissionId.orgLocations.id = :orgLocationsId "+submissionStages+" "+empQuery+" "+clientSubQuery+" "+incentivizedQuery+" and rsh.submissionId.status = 1 and rsh.updatedDate >= :startDate and rsh.updatedDate <= :endDate and ( ("+subQuery1+" "+subQuery2+" "+subQuery3+" "+subQuery4+") ) ";
 	    			params.put("orgLocationsId",orgLocationsId);
 	    			params.put("startDate",startUTCDate);
 	    			params.put("endDate",endUTCDate);
@@ -2652,25 +2665,59 @@ public class RequirementSubmissionDaoImpl implements RequirementSubmissionDao{
 	    		response.setData(query.list());
 	    		return response;
 	        }else{
+	        	Map<String, Object> params = new HashMap<String,Object>();
 	    		List<Long> countlist = null;
 	    		List  requirementSubmissionHistoryList = null;
-	        	String query = "";
 	        	
 	        	if(clientIdsList != null) {
 	    			clientSubQuery = " and (rsh.submissionId.requirement.clientId.id IN (:clientIdsList))";
 	    		}
 	        	
-	     		query =" from RequirementSubmissionHistory rsh left join fetch rsh.submissionId.candidate can left join fetch rsh.submissionId.requirement req left join fetch rsh.submissionId rs where rsh.submissionId.orgLocations = :orgLocationsId "+submissionStages+" "+empQuery+" "+clientSubQuery+" "+incentivizedQuery+" and rsh.submissionId.status = 1  and rsh.submissionId.requirement IS NOT NULL and rsh.updatedDate >= :startDate and rsh.updatedDate <= :endDate "+query1+"";
-     			String countQuery ="select count(*) from RequirementSubmissionHistory rsh  where rsh.submissionId.orgLocations = :orgLocationsId "+submissionStages+" "+empQuery+" "+clientSubQuery+" "+incentivizedQuery+" and rsh.submissionId.status = 1  and rsh.submissionId.requirement IS NOT NULL and rsh.updatedDate >= :startDate and rsh.updatedDate <= :endDate";
-     			Query listCountQuery = session.createQuery(countQuery);
+	        	String subQuery1 = "";
+	    		if(requirementSubmissionHistoryDTO.getSearchType().equalsIgnoreCase("MY")) {
+	    			subQuery1 = " and (rsh.submissionId.createdBy =:userCode)";
+	    			params.put("userCode",user.getUserCode());
+	    		}
+	        	
+	     		String query =" from RequirementSubmissionHistory rsh left join fetch rsh.submissionId.candidate can left join fetch rsh.submissionId.requirement req left join fetch rsh.submissionId rs where rsh.submissionId.orgLocations = :orgLocationsId "+submissionStages+" "+empQuery+" "+clientSubQuery+" "+incentivizedQuery+" "+subQuery1+" and rsh.submissionId.status = 1  and rsh.submissionId.requirement IS NOT NULL and rsh.updatedDate >= :startDate and rsh.updatedDate <= :endDate "+query1+"";
+     			String countQuery ="select count(*) from RequirementSubmissionHistory rsh  where rsh.submissionId.orgLocations = :orgLocationsId "+submissionStages+" "+empQuery+" "+clientSubQuery+" "+incentivizedQuery+" "+subQuery1+" and rsh.submissionId.status = 1  and rsh.submissionId.requirement IS NOT NULL and rsh.updatedDate >= :startDate and rsh.updatedDate <= :endDate";
+     			params.put("orgLocationsId",orgLocationsId);
      			if(clientIdsList != null) {
-     				requirementSubmissionHistoryList =   session.createQuery(query.toString()).setLong("orgLocationsId", orgLocationsId).setParameterList("clientIdsList", clientIdsList).setParameter("startDate",startUTCDate).setParameter("endDate",endUTCDate).setFirstResult(requirementSubmissionHistoryDTO.getStart()).setMaxResults(requirementSubmissionHistoryDTO.getLength()).list();
+     				params.put("clientIdsList",clientIdsList);
+     			}
+     			params.put("startDate",startUTCDate);
+     			params.put("endDate",endUTCDate);
+     			
+     			Query listCountQuery = session.createQuery(countQuery);
+     			Query listQuery = session.createQuery(query);
+     			
+     			for (String str : listQuery.getNamedParameters())
+	            {
+	    			if(str.equalsIgnoreCase("orgLocationsId")){
+	    				listCountQuery.setLong(str, (long) params.get( str ));
+	    				listQuery.setLong(str, (long) params.get( str ));
+	    			}else if(str.equalsIgnoreCase("userCode")){
+	    				listCountQuery.setString(str, params.get( str ).toString());
+	    				listQuery.setString(str, params.get( str ).toString());
+	    			}else if(str.equalsIgnoreCase("clientIdsList")){
+	    				listCountQuery.setParameterList(str, clientIdsList);
+	    				listQuery.setParameterList(str, clientIdsList);
+	    			}else{
+	    				listCountQuery.setParameter( str, params.get( str ) );
+	    				listQuery.setParameter( str, params.get( str ) );
+	    			}
+	            }
+     			
+     			requirementSubmissionHistoryList =   listQuery.setFirstResult(requirementSubmissionHistoryDTO.getStart()).setMaxResults(requirementSubmissionHistoryDTO.getLength()).list();
+    		    countlist =listCountQuery.list();
+     			
+     			/*if(clientIdsList != null) {
+     				requirementSubmissionHistoryList =   listQuery.setLong("orgLocationsId", orgLocationsId).setParameterList("clientIdsList", clientIdsList).setParameter("startDate",startUTCDate).setParameter("endDate",endUTCDate).setFirstResult(requirementSubmissionHistoryDTO.getStart()).setMaxResults(requirementSubmissionHistoryDTO.getLength()).list();
         		    countlist =listCountQuery.setLong("orgLocationsId", orgLocationsId).setParameter("startDate",startUTCDate).setParameterList("clientIdsList", clientIdsList).setParameter("endDate",endUTCDate).list();
 	    		}else {
-	    			requirementSubmissionHistoryList =   session.createQuery(query.toString()).setLong("orgLocationsId", orgLocationsId).setParameter("startDate",startUTCDate).setParameter("endDate",endUTCDate).setFirstResult(requirementSubmissionHistoryDTO.getStart()).setMaxResults(requirementSubmissionHistoryDTO.getLength()).list();
+	    			requirementSubmissionHistoryList =   listQuery.setLong("orgLocationsId", orgLocationsId).setParameter("startDate",startUTCDate).setParameter("endDate",endUTCDate).setFirstResult(requirementSubmissionHistoryDTO.getStart()).setMaxResults(requirementSubmissionHistoryDTO.getLength()).list();
 	    		    countlist =listCountQuery.setLong("orgLocationsId", orgLocationsId).setParameter("startDate",startUTCDate).setParameter("endDate",endUTCDate).list();
-	    		}
-     			
+	    		}*/
 	        	
 	        	int totalCount = 0;
 	    		if (requirementSubmissionHistoryDTO != null) {

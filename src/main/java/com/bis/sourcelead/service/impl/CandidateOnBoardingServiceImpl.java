@@ -53,6 +53,7 @@ import com.bis.sourcelead.entity.Timezone;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.entity.UserRole;
 import com.bis.sourcelead.enums.Status;
+import com.bis.sourcelead.service.AssociateBalanceLeaveService;
 import com.bis.sourcelead.service.CandidateOnBoardingService;
 import com.bis.sourcelead.service.CandidateService;
 import com.bis.sourcelead.service.EmailScenarioService;
@@ -138,6 +139,9 @@ public class CandidateOnBoardingServiceImpl implements CandidateOnBoardingServic
 	
 	@Autowired
 	OrgSpocService orgSpocService;
+	
+	@Autowired
+	AssociateBalanceLeaveService associateBalanceLeaveService;
 	
 	protected static boolean isNullOrEmpty(String str) {
 		return (str == null || "".equals(str.trim()));
@@ -483,6 +487,7 @@ public class CandidateOnBoardingServiceImpl implements CandidateOnBoardingServic
 	    if(onboardingEmployee == null){
 	    	onboardingEmployee = saveOnboardingEmployee(candidateOnBoarding,onboardingUser,loginUser,orgLocations);
 	 	    employeesDao.addEmployee(onboardingEmployee);
+	 	   associateBalanceLeaveService.addAssociateLeaveType(onboardingUser,orgLocations.getId(),onboardingEmployee,onboardingUserRole);
 	    }
 	    
 	    if(null != candidateOnBoarding.getTeamId()){

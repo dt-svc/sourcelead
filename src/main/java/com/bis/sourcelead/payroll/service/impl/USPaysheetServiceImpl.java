@@ -36,6 +36,7 @@ import com.bis.sourcelead.payroll.dto.GenerateUSPayrollDTO;
 import com.bis.sourcelead.payroll.dto.PaysheetFrequencyDTO;
 import com.bis.sourcelead.payroll.dto.USPayrollDTO;
 import com.bis.sourcelead.payroll.dto.USPaysheetDTO;
+import com.bis.sourcelead.payroll.dto.YTDPayrollDTO;
 import com.bis.sourcelead.payroll.entity.AssociateDeduction;
 import com.bis.sourcelead.payroll.entity.EmployeePayroll;
 import com.bis.sourcelead.payroll.entity.Paysheet;
@@ -315,7 +316,7 @@ public class USPaysheetServiceImpl implements USPaysheetService{
 	}
 
 	@Override
-	public PaysheetFrequencyDTO getPaySheetFrequencySummary(PaysheetFrequencyDTO paysheetFrequencyDTO) {
+	public PaysheetFrequencyDTO getPaySheetFrequencySummary(PaysheetFrequencyDTO paysheetFrequencyDTO,OrgLocations orgLocation) {
 		PaysheetFrequency pf = getPayFrequencyByUUID(paysheetFrequencyDTO.getPaySheetFrequencyuuid());
 		PaysheetFrequencyDTO pfDTO = new PaysheetFrequencyDTO(); 
 		pfDTO.setPayrollFrequencyUUID(pf.getPaySheetFrequencyUUID());
@@ -327,7 +328,6 @@ public class USPaysheetServiceImpl implements USPaysheetService{
 				Set<EmployeePayroll> set = null;
 				if(paysheetFrequencyDTO.getApproverStatus() != null && paysheetFrequencyDTO.getApproverStatus().equalsIgnoreCase(Constants.DRAFT)) {
 					set = pf.getEmployeepayroll().stream().filter(emp->emp.getPaysheetFrequency().getId().longValue() == pfDTO.getPaySheetFrequencyId().longValue() && emp.getSubmitForAproverStatus().equalsIgnoreCase(Constants.DRAFT)).collect(Collectors.toSet());
-					logger.info("Number of payrolls in draft state ==========="+set.size());
 				}else if(paysheetFrequencyDTO.getApproverStatus() != null && paysheetFrequencyDTO.getApproverStatus().equalsIgnoreCase(Constants.SENT)) {
 					set = pf.getEmployeepayroll().stream().filter(p->p.getPayPeriodNum() != null && Integer.parseInt(p.getPayPeriodNum()) == paysheetFrequencyDTO.getPayPeriodNum() && p.getSubmitForAproverStatus().equalsIgnoreCase(Constants.SENT)).collect(Collectors.toSet());
 				}else {
@@ -361,6 +361,8 @@ public class USPaysheetServiceImpl implements USPaysheetService{
 					payrollDTO.setRegularHours(regHours);
 					payrollDTO.setTaxes(pay.getTaxes());
 					payrollDTO.setOtHoursTotalAmt(pay.getOverTimeAmount());
+					YTDPayrollDTO ytdTaxes = payrollUtil.getEmployeeYTDPayroll(pay.getCandidate(), orgLocation, "APPROVED");
+					payrollDTO.setYtdDTO(ytdTaxes);
 					double overTimeHours = 0;
 					if(StringUtils.isNoneBlank(pay.getOverTimeHours())) {
 						overTimeHours = Double.parseDouble(pay.getOverTimeHours());
@@ -368,6 +370,7 @@ public class USPaysheetServiceImpl implements USPaysheetService{
 					payrollDTO.setOvertimeHours(overTimeHours);
 					if(pay.getPayPeriodNum() != null)
 					pfDTO.setPayPeriodNum(Integer.parseInt(pay.getPayPeriodNum()));
+					
 					list.add(payrollDTO);
 				}
 				pfDTO.setPayrollDTO(list);
