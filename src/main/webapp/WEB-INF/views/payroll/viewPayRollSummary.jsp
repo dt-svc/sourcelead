@@ -361,20 +361,18 @@
 	                        payItem = payItem +'  <th></th>';
 	                        payItem = payItem +'</tr>';
 	                        if(json.payItem != null && json.payItem.length > 0){
-			                	  for (var i=0; i< json.payItem.length; i++){
-						            	var pi = json.payItem[i];
-						            	payItem = payItem +' <tr>';
+			                	  for (var j=0; j< json.payItem.length; j++){
+						            	var pi = json.payItem[j];
+						            	 payItem = payItem +' <tr>';
 						            	payItem = payItem +' <td>'+pi.payItemName+'</td>';
 						            	payItem = payItem +'<input type="hidden" value='+pi.id+' id="id" name="payItem['+i+'].id"/>';
 							            payItem = payItem +' <td><i class="fa fa-dollar paddingRight"></i><input type="text" class="formControl" id="payItemAmount" name="payItem['+i+'].payItemAmount" readOnly value='+pi.payItemAmt+'></td>';
-							           /*  if(pi.isBlocked == 'YES'){
+							           if(pi.isBlocked == 'YES'){
 								            payItem = payItem +' <td><input type="text" class="formControl text-danger" readonly value="Blocked"></td>';
-							            }esle{ */
+							            }else{
 								            payItem = payItem +' <td><input type="text" class="formControl text-danger" readonly value="Blocked"></td>';
-
-							            /* } */
-
-						            	payItem = payItem +' </tr>';
+							              }  
+						            	payItem = payItem +' </tr>'; 
 				                  }
 			                  }
 	                          

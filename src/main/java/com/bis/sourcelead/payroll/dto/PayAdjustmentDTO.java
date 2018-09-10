@@ -41,7 +41,19 @@ public class PayAdjustmentDTO {
 	private String assSalType;
     
     private BigDecimal assSalary;
+    
+    private BigDecimal assSalaryAmount;
 	
+
+	public BigDecimal getAssSalaryAmount()
+	{
+		return assSalaryAmount;
+	}
+
+	public void setAssSalaryAmount(BigDecimal assSalaryAmount)
+	{
+		this.assSalaryAmount = assSalaryAmount;
+	}
 
 	public String getDepositType()
 	{
