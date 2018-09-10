@@ -136,7 +136,7 @@ public class UserController {
 		    List<Roles> rolesList = rolesService.getUserRolesListByModuleAndLoginUserRoleHierarchy(org,orgLocations.getId(),roleHierarchyId);
 		    model.addObject("rolesList", rolesList);
 
-			List<OrgLocations> locationList = orgLocationService.getAllOrgLocationsByOrgId(org.getId());
+			List<OrgLocations> locationList = orgLocationService.getAllRegisteredWorkLocationsByOrgId(org.getId());
 		    model.addObject("locationList", locationList);
 		    
 		    List<AssociateGrades> gradesList = associateGradesService.getAssociateGradesListByOrgLocationId(orgLocations.getId());

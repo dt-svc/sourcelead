@@ -33,8 +33,8 @@ $(document).ready(function(){
         <li><a href="<c:url value='${appPath}/addContribution'/>" class="addcon-pop"><i class="fa fa-plus paddingRight"></i>Add</a></li>
         <li>
 		 <div class="dynamic_search">
-			<input type="text" placeholder="Search" id='dataTableSearch' onclick="getAllContributionType();"/>
-			<i class="fa fa-search"></i>
+			<input type="text" placeholder="Search" id='dataTableSearch'/>
+			<i class="fa fa-search"  onclick="getAllContributionType();"></i>
 		 </div>
 	   </li>
         <div class="clearfix"></div>
@@ -175,13 +175,12 @@ function contributionTypepagination(url){
               "data": "contributionAmount",
               "render": function ( data, type, opt, meta ) {
             	  var result = "";
-            	  if(opt.payrollContributionMethod == "Fixed"){
-            		  result = result + ' <td><div  class="tblminwidth-100">$ '+opt.contributionAmount.toFixed(2)+'</div></td>';
+            	  if(opt.payrollContributionMethod == 'Fixed'){
+            		  result = result + ' <td><div  class="tblminwidth-100">$ '+opt.contributionAmount.toFixed(2)+'</div></td>';  
             	  }else{
-            		  result = result + ' <td><div  class="tblminwidth-100">'+opt.contributionAmount+' %</div></td>';
+            		  result = result + ' <td><div  class="tblminwidth-100">'+opt.contributionAmount.toFixed(2)+' %</div></td>';
             	  }
-            	  return result;
-            	  
+            	  return result
               }
             }, {
                 "targets": colIndex++,

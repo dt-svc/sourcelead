@@ -2309,5 +2309,24 @@ public class ImmigrationCommonDaoImpl implements ImmigrationCommonDao {
 		}
 		return candidateLcaJobDetails;
 	}
-	
+
+	@Override
+	@Transactional(rollbackFor = { Exception.class })
+	public LcaHistory getLcaHistoryByStatus(Long immigrationId,Long candidateId, String isCurrent) {
+
+		Session session = this.sessionFactory.getCurrentSession();
+		LcaHistory lcaHistory = null;
+		try {
+			if (immigrationId != null) {
+				logger.debug(" before query execute to get lcaHistory " + immigrationId);
+				String queryString = "from LcaHistory lh  where lh.isCurrent =:isCurrent and lh.immigrationId.id=:immigrationId and lh.candidate.id = :candidateId";
+				lcaHistory = (LcaHistory) session.createQuery(queryString).setLong("immigrationId", immigrationId).setLong("candidateId", candidateId)
+																		  .setString("isCurrent", isCurrent).uniqueResult();
+			}
+		} catch (Exception exception) {
+			logger.error("Exception caught while  lcaHistory information " + exception.getMessage());
+			exception.printStackTrace();
+		}
+		return lcaHistory;
+	}
 }
