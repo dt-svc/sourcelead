@@ -845,13 +845,15 @@ public class InvoiceServiceImpl implements InvoiceService {
 		Map<String, String> returnMap = null;
 		EmailScenario emailScenario = null;
 		// EmailScenario notificationScenario = null;
+		EmailMessage emailMessage = null;
+		StringBuilder sb1 = new StringBuilder();
 		if(null != invoice.getContactUsers()){
 			String[] contactUsers = invoice.getContactUsers().split(",");
 			if(contactUsers.length != 0){
 				for(String contactUserId : contactUsers){
 					User contactUser = userService.getUserById(Long.parseLong(contactUserId.trim()));
 		String UUID = SourceLeadRandomCodeHelper.generateUUID();
-		EmailMessage emailMessage = new EmailMessage();
+		emailMessage=new EmailMessage();
 		emailMessage.setFirstName(user.getFirstName());
 		emailMessage.setLastName(user.getLastName());
 		emailMessage.setToEmail(contactUser.getEmail());
@@ -946,17 +948,17 @@ public class InvoiceServiceImpl implements InvoiceService {
 		EmailScenario notificationScenario = null;
 		if (invoiceType.equalsIgnoreCase("payable")) {
 			returnMap = commonUtil.sendTemplateEmail(emailMessage, globalVarsMap, orglocations.getOrg(), orglocations,
-					Constants.INVOICE_ACCEPT_MAIL_VENDOR_EMAIL, attachmentList);
+					Constants.INVOICE_CLIENT_PAYABLE_MAIL, attachmentList);
 			notificationScenario = emailScenarioService.getEmailScenarioByUniqueName(
 					Constants.INVOICE_CLIENT_PAYABLE_MAIL, Constants.ENTITY_TYPE_NOTIFICATION);
 		} else {
 			returnMap = commonUtil.sendTemplateEmail(emailMessage, globalVarsMap, orglocations.getOrg(), orglocations,
-					Constants.INVOICE_ACCEPT_MAIL_CLIENT_EMAIL, attachmentList);
+					Constants.INVOICE_CLIENT_RECEIVABLE_MAIL, attachmentList);
 			notificationScenario = emailScenarioService.getEmailScenarioByUniqueName(
 					Constants.INVOICE_CLIENT_RECEIVABLE_MAIL, Constants.ENTITY_TYPE_NOTIFICATION);
 		}
-		returnMap.put("toEmail", emailMessage.getToEmail());
-		returnMap.put("fromEmail", emailMessage.getFromEmail());
+		
+		sb1.append(emailMessage.getToEmail()).append(",").toString();
 		String notificationbody = emailScenerioUtil.buildTemplateBody(notificationScenario.getBody(), globalVarsMap,
 				notificationScenario);
 		notificationScenario.setBody(notificationbody);
@@ -977,6 +979,8 @@ public class InvoiceServiceImpl implements InvoiceService {
 		emailScenerioUtil.sendNotification(actionLink, user, contactUser, invoice.getResponderLocationId(),
 				notificationScenario, new HashMap<String, String>());
 				}
+				returnMap.put("toEmail", sb1.toString());
+				returnMap.put("fromEmail", emailMessage.getFromEmail());
 			}
 		}
 		/*
@@ -2621,13 +2625,13 @@ public class InvoiceServiceImpl implements InvoiceService {
 					}
 					emailScenerioUtil.sendNotification(actionLink, user, invoice.getContactUser(), invoice.getResponderLocationId(),
 							notificationScenario, new HashMap<String, String>());
-					invoice.setTimelineHistoryReminder("Reminder");
-					saveInvoiceTimelineHistory(invoice, user, null, null, null, returnMap);
-					Invoice childInvoice = invoiceDao.getInvoicetBySelfJoinInvoiceId(invoice.getId());
-					if (childInvoice != null) {
-						childInvoice.setTimelineHistoryReminder("Reminder");
-						saveInvoiceTimelineHistory(childInvoice, user, null, null, null, returnMap);
-					}
+				}
+				invoice.setTimelineHistoryReminder("Reminder");
+				saveInvoiceTimelineHistory(invoice, user, null, null, null, returnMap);
+				Invoice childInvoice = invoiceDao.getInvoicetBySelfJoinInvoiceId(invoice.getId());
+				if (childInvoice != null) {
+					childInvoice.setTimelineHistoryReminder("Reminder");
+					saveInvoiceTimelineHistory(childInvoice, user, null, null, null, returnMap);
 				}
 			}
 		}
@@ -3049,8 +3053,8 @@ public class InvoiceServiceImpl implements InvoiceService {
 		timelineHistory.setInvoice(invoice);
 		timelineHistory.setOrgLocation(invoice.getOrgLocation());
 		timelineHistory.setOrgRelation(invoice.getOrgRelationID());
-		timelineHistory.setContactUser(invoice.getContactUser());
-		timelineHistory.setOwnerUser(invoice.getOwnerUserId());
+		timelineHistory.setContactUsers(invoice.getContactUsers());
+		timelineHistory.setOwnerUsers(invoice.getOwnerUsers());
 		timelineHistory.setCreatedBy(user);
 		String invoiceStatus = null;
 		if(invoice.getInvoiceStatus().equalsIgnoreCase("DRAFT")){
@@ -3175,7 +3179,7 @@ public class InvoiceServiceImpl implements InvoiceService {
 							statusValue =timelineHistory.getCreatedBy().getFullName();	
 							}
 						else if (!timelineHistory.getCreatedBy().getId()
-								.equals(timelineHistory.getOwnerUser().getId())) {
+								.equals(ownerUser.getId())) {
 							statusVal = "Payment updated";
 							statusBy = " by ";
 							statusValue = timelineHistory.getCreatedBy().getFullName();
@@ -3222,11 +3226,19 @@ public class InvoiceServiceImpl implements InvoiceService {
 								timelineHistory.getInvoicePaymentReminderEmailSubject());
 						timelineDTO.setInvoicePaymentReminderStatus(timelineHistory.getInvoicePaymentReminderStatus());
 						List<User> usersList = userDao.getUsersListUsingMultipleStringIds(timelineHistory.getOwnerUsers());
+						StringBuilder sb=new StringBuilder();
+						String cc=null;
 						for(User ownerUser: usersList){
 							if (ownerUser.getId().equals(timelineHistory.getCreatedBy().getId())) {
 								statusVal = "Reminder";
 								statusBy = " to ";
-								statusValue = timelineHistory.getInvoice().getContactUser().getFullName();
+								List<User> contactUsersList = userDao.getUsersListUsingMultipleStringIds(timelineHistory.getInvoice().getContactUsers());
+								for(User contactUsers :contactUsersList){
+									cc = sb.append(contactUsers.getFullName()).append(",").toString();
+									statusValue = contactUsers.getFullName();
+								
+								}
+								statusValue = cc;
 								EmailAttachment emailAttachment = null;
 								String invoiceFileUrl = timelineHistory.getInvoice().getFileUrl();
 								if (StringUtils.isNotBlank(invoiceFileUrl)) {
@@ -3241,7 +3253,11 @@ public class InvoiceServiceImpl implements InvoiceService {
 									.equals(ownerUser.getId())) {
 								statusVal = "Reminder";
 								statusBy = " from ";
-								statusValue = timelineHistory.getInvoice().getContactUser().getFullName();
+								List<User> contactUsersList = userDao.getUsersListUsingMultipleStringIds(timelineHistory.getInvoice().getContactUsers());
+								for(User contactUsers :contactUsersList){
+									statusValue = contactUsers.getFullName();
+								
+								}
 								EmailAttachment emailAttachment = null;
 								String invoiceFileUrl = timelineHistory.getInvoice().getFileUrl();
 								if (StringUtils.isNotBlank(invoiceFileUrl)) {
