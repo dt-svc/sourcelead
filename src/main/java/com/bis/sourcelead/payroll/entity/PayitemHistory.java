@@ -53,6 +53,9 @@ public class PayitemHistory {
 	@Column (name="PAYITEM_HIS_UUID")
 	private String payItemHisUUID;
 	
+	@Column(name = "IS_BLOCKED")
+	private String isBlocked;
+	
 	@Column(name = "CREATED_DATE")
 	private Date createdDate;
 	
@@ -208,6 +211,19 @@ public class PayitemHistory {
 	{
 		this.amount = amount;
 	}
+
+	public String getIsBlocked()
+	{
+		return isBlocked;
+	}
+
+	public void setIsBlocked(String isBlocked)
+	{
+		this.isBlocked = isBlocked;
+	}
+	
+	
+	
 	
 	
 }

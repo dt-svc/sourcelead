@@ -483,11 +483,12 @@ function selectAllCheckBox(allCheck){
 	if(isChecked){
 		$("#"+j+"effectiveDate").removeAttr('data-validation-optional');
 		$("#"+j+"effectiveDate").attr('data-validation', "required");
-		$("#"+j+"payItemCheck").attr("checked",true);
+		$("#"+j+"payItemCheck").prop("checked","checked");
+		
 	}else{
 		$("#"+j+"effectiveDate").removeAttr('data-validation');
 		$("#"+j+"effectiveDate").attr('data-validation-optional', "true");
-		$("#"+j+"payItemCheck").attr("checked",false);
+		$("#"+j+"payItemCheck").removeProp("checked");
 	}
 }
 }

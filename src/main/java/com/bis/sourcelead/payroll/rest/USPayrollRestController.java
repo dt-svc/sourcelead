@@ -1295,7 +1295,8 @@ public class USPayrollRestController {
 	@RequestMapping(value = { "/getPaySheetFrequencySummary","/rest/getPaySheetFrequencySummary" })
 	public PaysheetFrequencyDTO getPaySheetFrequencySummary(PaysheetFrequencyDTO paysheetFrequencyDTO,HttpServletRequest request, HttpServletResponse response) throws Exception
 	{
-		return uSPaysheetService.getPaySheetFrequencySummary(paysheetFrequencyDTO);
+		OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+		return uSPaysheetService.getPaySheetFrequencySummary(paysheetFrequencyDTO,orgLocation);
 	}
 
 	

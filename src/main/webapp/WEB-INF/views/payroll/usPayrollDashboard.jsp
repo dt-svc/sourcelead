@@ -63,23 +63,21 @@ function approvePayrollDiv(){
 <div id="initiateDivv">
 <div class="col-md-12 mt">
 	<div class="row">
-		<div class="col-md-3">
-			<div>
-			<select class="chosen-select" id="groupId" name="groupId" onchange="getGroupFrequency();" data-validation="required" field-name="User Group">
+		<div class="col-md-3" id="groupIdDiv">
+			<select class="chosen-select" id="groupId" name="groupId" onchange="removeValidateGroup();getGroupFrequency();" data-validation="required" field-name="User Group">
 				<option value="">Select User Group</option>
                     <c:forEach var="ug" items="${userGroupList}">
 					<option value="${ug.groupUUID},${ug.id}">${ug.groupName}</option>
 				</c:forEach>
 			</select>
-			</div>
 		</div>
-		<div class="col-md-3 paddingLeft paddingRight">
-			<select id="payPeriod" name="payPeriod" data-validation="required" field-name="Pay Period" class="chosen-select" onchange="clearPayrollDiv();">
+		<div class="col-md-3 paddingLeft paddingRight" id="payPeriodDiv">
+			<select id="payPeriod" name="payPeriod" data-validation="required" field-name="Pay Period" class="chosen-select" onchange="errPayPeriod();clearPayrollDiv();">
 			</select>
 		</div>
 
-		<div class="col-md-2 paddingLeft paddingRight">
-			<select id="payType" name="payType" data-validation="required" field-name="Pay Type" class="chosen-select">
+		<div class="col-md-2 paddingLeft paddingRight" id="payTypeIdDiv">
+			<select id="payType" name="payType" data-validation="required" field-name="Pay Type" class="chosen-select" onchange="errPayType();">
 				 <option value="">Select Pay type</option>
 				 <option value="All">All</option>
 				 <option value="HourlyRate">Hourly Rate</option>
@@ -88,7 +86,7 @@ function approvePayrollDiv(){
 			</select>
 		</div>
 
-		<div class="col-md-2 paddingRight">
+		<div class="col-md-2 paddingRight" id="payrollPayDateDivId">
 			<input name="" class="form-control calendar" placeholder="Check Date" id="payrollPayDate" name="payrollPayDate" type="text" data-validation="required" field-name="Pay Date" readonly="readonly">
 		</div>
 		<div class="col-md-2">
@@ -446,6 +444,15 @@ function getGroupFrequency(){
 	 $('#payrollPayDate').val("").datepicker("update");
 	 $("#submitButtonDiv").hide();
 }
+ 
+ function removeValidateGroup(){
+	$('#groupIdDiv').find('p.jquery_form_error_message').remove();
+ }
+ function errPayType(){
+		$('#payTypeIdDiv').find('p.jquery_form_error_message').remove(); 
+
+ }
+ 
 </script>
 
 
@@ -605,10 +612,17 @@ $('body').on('blur', '#generate_payroll_form', function() {
 		      dateFormat: finalDateFormat,
 		      changeMonth: true,
 		  	  changeYear: true, 
+		  	  onSelect : function(selected) {
+				addValidClass();
+			}
 		      //minDate: 0  this line for to restrict selection of previous dates
 		  });
 		  
 	});
+	
+	function addValidClass(){
+		 $('#payrollPayDateDivId').find('p.jquery_form_error_message').remove(); 
+	}
 </script>
 
 <script type="text/javascript">
@@ -656,6 +670,10 @@ function clearPayrollDiv(){
 	$("#payrollPayDate").val('');
 	$("#payrollDataDiv").empty();
 	$("#submitButtonDiv").hide();
+}
+function errPayPeriod(){
+	$('#payPeriodDiv').find('p.jquery_form_error_message').remove();  
+
 }
 </script>
 

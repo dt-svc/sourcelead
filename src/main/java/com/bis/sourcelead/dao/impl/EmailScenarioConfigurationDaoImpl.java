@@ -85,7 +85,7 @@ public class EmailScenarioConfigurationDaoImpl implements EmailScenarioConfigura
 	public EmailScenarioConfiguration getEmailConfigOrgLocId(Long orgLocId) throws Exception {
 		logger.debug("In EmailScenarioConfigurationDaoImpl class getEmailscenarioConByOrgLocId method");
 		Session session = this.sessionFactory.getCurrentSession();
-		String query = "from EmailScenarioConfiguration es where  es.orgLocationId.id = :orgLocId";
+		String query = "from EmailScenarioConfiguration es where  es.orgLocationId.id = :orgLocId and es.usageType is null";
 		List<EmailScenarioConfiguration> emailScenariosList =  session.createQuery(query.toString())
 				                                         .setLong("orgLocId", orgLocId).list();
 		EmailScenarioConfiguration emailScenario = null;
@@ -225,7 +225,7 @@ public class EmailScenarioConfigurationDaoImpl implements EmailScenarioConfigura
 		logger.debug("In EmailScenarioConfigurationDaoImpl class getFromMailById method");
 		
 		Session session = this.sessionFactory.getCurrentSession();
-		String query = "from EmailScenarioConfiguration es where  es.orgLocationId.id = :orgLocId and es.status='Y' ";
+		String query = "from EmailScenarioConfiguration es where  es.orgLocationId.id = :orgLocId and es.status='Y' and es.usageType is null";
 		List<EmailScenarioConfiguration> emailScenariosList =  session.createQuery(query.toString()) .setLong("orgLocId", orgLocId).list();
 		EmailScenarioConfiguration emailScenario = null;
 		if(emailScenariosList != null && !emailScenariosList.isEmpty())
@@ -234,6 +234,18 @@ public class EmailScenarioConfigurationDaoImpl implements EmailScenarioConfigura
 		}
 		return emailScenario;
 	
+	}
+
+	@Override
+	@Transactional(rollbackFor = { Exception.class })
+	public List<EmailScenarioConfiguration> getConfParserMailList(Long orgLocId, String parsingType) {
+		logger.debug("In EmailScenarioConfigurationDaoImpl class getEmailscenarioConByOrgLocId method");
+		Session session = this.sessionFactory.getCurrentSession();
+		String query = "from EmailScenarioConfiguration es where es.orgLocationId.id = :orgLocId and es.usageType =:parsingType";
+		List<EmailScenarioConfiguration> emailParserList =  session.createQuery(query.toString())
+				                                                             .setLong("orgLocId", orgLocId)
+				                                                             .setString("parsingType", parsingType).list();
+		return emailParserList;
 	}
 	
 }
