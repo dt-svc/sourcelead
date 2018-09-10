@@ -43,6 +43,10 @@
 			</select>
           </div>
           
+           <div class="clearfix bg-info">
+           <label class="modal-body"><strong class="text-danger paddingRight">Note:</strong>To configure the Gmail account, enable the access here : <a href="https://www.google.com/settings/security/lesssecureapps" target="_blank">Click here</a></label>
+           </div>
+          
 			</div>
 			<div class="popupFoot text-right">
 				<input type="hidden" name="id" id="id" value="">
