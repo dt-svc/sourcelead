@@ -251,7 +251,7 @@ public class GenerateUSPayrollServiceImpl implements GenerateUSPayrollService{
 //								payRate = assoSal.getHourlyRate();
 								if(totalHoursDto !=null ) {
 									for(TotalHoursDTO totalHoursDTO : totalHoursDto) {
-										totalHours  = commonUtil.getTotalRegularOverTimeHours(Double.parseDouble(totalHoursDTO.getTotalHours()),totalHours);
+										totalHours  = commonUtil.getTotalRegularOverTimeHours(Double.parseDouble(totalHoursDTO.getBillableHours()),totalHours);
 									}
 								}
 								amount = getTotalAmount(totalHours,payRate);
