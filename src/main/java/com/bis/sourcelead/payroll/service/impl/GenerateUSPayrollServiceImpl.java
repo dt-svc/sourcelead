@@ -318,6 +318,8 @@ public class GenerateUSPayrollServiceImpl implements GenerateUSPayrollService{
 								if (employee != null) {
 									employeePayroll.setEmployee(employee);
 								}
+								employeePayroll.setAdvanceAmount(assLoanAndAdvDTO.getTotalAdvanceAmount());
+								employeePayroll.setLoanAmount(assLoanAndAdvDTO.getTotalLoanAmount());
 								Set<EmployeePayrollTax> payrollTaxSet = getPayrollTaxes(employeePayroll,orgLocation,payrollCalculator,loginUser);
 								employeePayroll.setUsPayrollTax(payrollTaxSet);
 								Set<EmployerPayrollTax> employerTaxes = getEmployerTaxes(employeePayroll,orgLocation,payrollCalculator,loginUser,assoSal.getCandidate().getResidenceState());
@@ -1058,6 +1060,7 @@ public class GenerateUSPayrollServiceImpl implements GenerateUSPayrollService{
 				contributionTotal = clist.stream().mapToDouble(con->con.getContributionAmt()).sum();
 			}
 			payrollDTO.setContributionTotal(BigDecimal.valueOf(contributionTotal));
+			// pay Items
 			BigDecimal piTotal = BigDecimal.ZERO;
 			List<AssociatePayItemDTO> payItem = payrollUtil.getPayItemData(payroll);
 			if(payItem != null && payItem.size() >0) {
@@ -1109,7 +1112,7 @@ public class GenerateUSPayrollServiceImpl implements GenerateUSPayrollService{
 				double totAmount =  regHrsAmt+ otHrsAmt;
 				amount = new BigDecimal(totAmount);
 			}else {
-				amount = payAdjustmentDTO.getAssSalary();
+				amount = payAdjustmentDTO.getAssSalaryAmount();
 			}
 			double preTaxDed = 0;
 			double postTaxDed = 0;
