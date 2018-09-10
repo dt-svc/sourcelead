@@ -247,5 +247,14 @@ public class EmailScenarioConfigurationDaoImpl implements EmailScenarioConfigura
 				                                                             .setString("parsingType", parsingType).list();
 		return emailParserList;
 	}
+
+	@Override
+	@Transactional(rollbackFor = { Exception.class })
+	public EmailScenarioConfiguration getParserEmailsDetailsByUUID(String UUID) {
+		Session session = this.sessionFactory.getCurrentSession();
+		String query = "from EmailScenarioConfiguration es where  es.email_UUID = :UUID";
+		EmailScenarioConfiguration emailConf= (EmailScenarioConfiguration) session.createQuery(query.toString()).setString("UUID", UUID).uniqueResult();
+		return emailConf;
+	}
 	
 }

@@ -30,4 +30,6 @@ public interface EmailScenarioConfigurationDao {
 	EmailScenarioConfiguration getVerifiedConfMail(Long orgLocId ) throws Exception;
 
 	List<EmailScenarioConfiguration> getConfParserMailList(Long orgLocId,String parsingType);
+
+	EmailScenarioConfiguration getParserEmailsDetailsByUUID(String UUID);
 }

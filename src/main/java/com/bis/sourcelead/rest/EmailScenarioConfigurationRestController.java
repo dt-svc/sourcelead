@@ -167,6 +167,20 @@ public class EmailScenarioConfigurationRestController {
 		 
 			
 		}
+	
+	 	@RequestMapping(value = "/editEmailParsing", method = RequestMethod.POST)
+		public @ResponseBody EmailScenarioConfiguration editEmailParsingDetails(HttpServletRequest request, 
+				                                        @RequestParam(value = "emailUUID", required = true) String emailUUID) 
+		{
+			EmailScenarioConfiguration emailConfig = null;
+			try {
+				emailConfig =  emailScenarioconService.getParserEmailsDetailsByUUID(emailUUID);
+			} catch (Exception e) {
+				logger.error("Exception caught in while loading email detiails--->" + e.getMessage());
+				e.printStackTrace();
+			}
+			return emailConfig;
+		}
 	 @RequestMapping(value = "/saveConfigurationFromMail" , method = RequestMethod.POST)
 		public @ResponseBody String saveConfigurationFromMail(EmailConfigurationFromMailDTO emailConfigurationFromMailDTO,HttpServletRequest request)
 				throws Exception {

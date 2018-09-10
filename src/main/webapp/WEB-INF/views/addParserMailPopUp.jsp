@@ -32,12 +32,13 @@
             <select id="encryptId" name="encryptType" field-name="Encryption Type" data-validation="required" class="sel">
 				<option value='' selected>Select</option>
 				<option value='TLS'>TLS</option>
+				<option value='SSL'>SSL</option>
 			</select>
           </div>
           
           <div class="clearfix mb">
              <label class="noPad">Type<b class="valStar">*</b></label>
-           <select id="" name="usageType" field-name="Type" data-validation="required" class="sel">
+           <select id="usageType" name="usageType" field-name="Type" data-validation="required" class="sel">
 				<option value=''  selected>Select</option>
 				<option value='job_parsing' >Job Parsing</option>
 			</select>
@@ -134,8 +135,8 @@ function getParserEmailList(){
 				result  = result + '	 <span class="slider round"></span>                                                                  ';
 				result  = result + '	</label>                                                                                             ';
      			result  = result + '	</li>                                                                                                ';
-     			/* result  = result + '	<li><a class="fa fa-pencil pull-left ml" title="Edit" onclick="editEmailPopUp(\''+mailrow.email_UUID+'\');"></a> </li>';
-     			result  = result + '	<li><a class="glyphicon glyphicon-trash text-danger" title="Delete" onclick="deleteFromMail('+mailrow.id+');"></a></li>'; */
+     		    result  = result + '	<li><a class="fa fa-pencil pull-left ml" title="Edit" onclick="editEmailParsing(\''+mailrow.email_UUID+'\');"></a> </li>';
+     			result  = result + '	<li><a class="glyphicon glyphicon-trash text-danger" title="Delete" onclick="deleteFromMail('+mailrow.id+');"></a></li>'; 
      			result  = result + '	</ul>                                                                                                ';
      			result  = result + '	</div>                                                                                               ';
      			result  = result + '	</td>                                                                                                ';
@@ -148,5 +149,24 @@ function getParserEmailList(){
 		    },
      });
 	
+}
+</script>
+<script type="text/javascript">
+function editEmailParsing(emailUUID){
+	$.ajax({	
+		type : "POST",
+		url : sourceleadUrl+ "/editEmailParsing?"+tokenParamName+"="+tokenValue+"&emailUUID="+emailUUID,
+		success : function(data) {
+			addEmailparsingPopUp();
+			$('#email_parser_form input[name="emailId"]').val(data.emailId);
+			$('#email_parser_form input[name="emailPassword"]').val(data.emailPassword);
+			$('#email_parser_form input[name="serverName"]').val(data.serverName);
+			$('#email_parser_form input[name="portNumber"]').val(data.portNumber);
+			$('#email_parser_form  #encryptId').removeAttr("selected");
+			$('#email_parser_form  #encryptId option[value='+data.encryptionType+']').attr("selected", "selected");
+			$('#email_parser_form  #usageType').removeAttr("selected");
+			$('#email_parser_form  #usageType option[value='+data.usageType+']').attr("selected", "selected");
+		}
+	 }); 
 }
 </script>
