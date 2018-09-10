@@ -25,8 +25,17 @@ public class AssociatePayItemDTO {
 	private String prePayItemBlock;
 	private String prePayItemAmt;
 	private double payItemAmt;
+	private String isBlocked;
 	
 	
+	public String getIsBlocked()
+	{
+		return isBlocked;
+	}
+	public void setIsBlocked(String isBlocked)
+	{
+		this.isBlocked = isBlocked;
+	}
 	public String getId()
 	{
 		return id;

@@ -1,6 +1,7 @@
 package com.bis.sourcelead.entity;
 
 import java.io.Serializable;
+import java.math.BigDecimal;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
@@ -112,6 +113,31 @@ public class Asset implements Serializable{
 	@Type(type="text")
 	private String description;
 	
+	
+	@Column(name = "PURCHASE_DATE")
+	private Date purchaseDate;
+	
+	@Column(name = "DEPRECIATION_DATE")
+	private Date depreciationDate;
+	
+	@Column(name = "OPERATING_SYSTEM")
+	private String operatingSystem;
+	
+	@Column(name = "OS_KEY")
+	private String osKey;
+	
+	@Column(name = "ANTI_VIRUS")
+	private String antiVirus;
+	
+	@Column(name = "COST")
+	private BigDecimal cost;
+	
+	@Column(name = "DEPRECIATION_AMOUNT")
+	private BigDecimal depreciationAmount;
+	
+	@Column(name = "VENDOR_DETAILS")
+	private String vendorDetails;
+	
 	@Column(name = "STATUS")
 	private Integer status;
 	
@@ -126,14 +152,6 @@ public class Asset implements Serializable{
 	
 	@Column(name = "UPDATED_BY")
 	private String updatedBy;
-	
-	@Transient
-	@JsonProperty
-	private String shiftAEmpName;
-	
-	@Transient 
-	@JsonProperty
-	private String shiftBEmpName;
 	
 	@Transient 
 	@JsonProperty
@@ -301,11 +319,6 @@ public class Asset implements Serializable{
 		this.updatedBy = updatedBy;
 	}
 
-	 
-	public void setShiftBEmpName(String shiftBEmpName) {
-		this.shiftBEmpName = shiftBEmpName;
-	}
-
 	public String getFileContentType() {
 		return fileContentType;
 	}
@@ -410,4 +423,69 @@ public class Asset implements Serializable{
 	public void setTagsList(Set<String> tagsList) {
 		this.tagsList = tagsList;
 	}
+
+	public Date getPurchaseDate() {
+		return purchaseDate;
+	}
+
+	public Date getDepreciationDate() {
+		return depreciationDate;
+	}
+
+	public String getOperatingSystem() {
+		return operatingSystem;
+	}
+
+	public String getOsKey() {
+		return osKey;
+	}
+
+	public String getAntiVirus() {
+		return antiVirus;
+	}
+
+	public BigDecimal getCost() {
+		return cost;
+	}
+
+	public BigDecimal getDepreciationAmount() {
+		return depreciationAmount;
+	}
+
+	public void setPurchaseDate(Date purchaseDate) {
+		this.purchaseDate = purchaseDate;
+	}
+
+	public void setDepreciationDate(Date depreciationDate) {
+		this.depreciationDate = depreciationDate;
+	}
+
+	public void setOperatingSystem(String operatingSystem) {
+		this.operatingSystem = operatingSystem;
+	}
+
+	public void setOsKey(String osKey) {
+		this.osKey = osKey;
+	}
+
+	public void setAntiVirus(String antiVirus) {
+		this.antiVirus = antiVirus;
+	}
+
+	public void setCost(BigDecimal cost) {
+		this.cost = cost;
+	}
+
+	public void setDepreciationAmount(BigDecimal depreciationAmount) {
+		this.depreciationAmount = depreciationAmount;
+	}
+
+	public String getVendorDetails() {
+		return vendorDetails;
+	}
+
+	public void setVendorDetails(String vendorDetails) {
+		this.vendorDetails = vendorDetails;
+	}
+	
 }

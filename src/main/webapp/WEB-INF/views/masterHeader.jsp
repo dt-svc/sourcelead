@@ -608,14 +608,14 @@ function preventTabkey(e){
 							 </li> 	
 						   </sec:authorize>
 						   
-					   <c:if test="${SourceLeadWeb_isAdmin == true}">
-						   	<c:if test="${SourceLeadWeb_currencyCode == 'USD'}">
+					   <sec:authorize access="hasRole('ROLE_PAYROLL_CONFIGURATION')">
+						   	<c:if test="${SourceLeadWeb_orgLocations.country == 'United States'}">
 						  		<li><a href="<c:url value="/app/payrollConfiguration" />"><i class="fa fa-usd" aria-hidden="true"></i>Payroll Configuration</a></li>
 						  	</c:if>
-						  	<c:if test="${SourceLeadWeb_currencyCode == 'INR'}">
+						  	<c:if test="${SourceLeadWeb_orgLocations.country == 'India'}">
 						  		<li><a href="<c:url value='${sourceleadUrl}/indPayrollConfiguration'/>" ><i class="fa fa-key" aria-hidden="true"></i>Payroll Configuration</a></li>
 						  	</c:if>
-                       </c:if>
+                      </sec:authorize>
                          
                        <li><a href="<c:url value='${sourceleadUrl}/tagList'/>"title="Tags" data-toggle="modal" id="tagsPop"><i class="fa fa-tags"></i>Tags</a></li>
 					  
