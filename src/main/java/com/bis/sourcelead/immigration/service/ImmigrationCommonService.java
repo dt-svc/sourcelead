@@ -30,6 +30,7 @@ import com.bis.sourcelead.entity.ImmigrationCandidateForms;
 import com.bis.sourcelead.entity.ImmigrationDashboardView;
 import com.bis.sourcelead.entity.ImmigrationTemplate;
 import com.bis.sourcelead.entity.Lca;
+import com.bis.sourcelead.entity.LcaHistory;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.User;
 
@@ -188,6 +189,7 @@ public interface ImmigrationCommonService {
     List<LcaDTO> getLcaHistoryDetailsInfo(Long immigrationId);
     
     List<LcaDetailsDTO> getEmployeeByLcaId(Long lcaId ,OrgLocations orgLocations)throws Exception;
-    
+   
+    LcaHistory  getLcaHistoryByStatus(Long immigrationId,Long candidateId, String isCurrent);  
  //   void deleteLcaPlaceOfEmpmntDetails(Long remaininglpoeIds[]);
 }

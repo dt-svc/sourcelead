@@ -123,7 +123,50 @@ public class EmailScenarioConfigurationRestController {
 		 
 			
 		}
-	 
+	 @RequestMapping(value = "/saveEmailParser" , method = RequestMethod.POST)
+		public @ResponseBody String saveEmailParser(EmailConfigurationDTO emailConfigurationDTO,HttpServletRequest request)
+				throws Exception {
+		 User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+		 OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+		 String returnValue="";
+		 EmailScenarioConfiguration emailConfig = new EmailScenarioConfiguration();;
+			 if(emailConfigurationDTO.getEmailId() != null){
+				 emailConfig.setEmailId(emailConfigurationDTO.getEmailId()); 
+			 }
+			 if(emailConfigurationDTO.getEmailPassword() != null){
+				 emailConfig.setEmailPassword(emailConfigurationDTO.getEmailPassword()); 
+			 }
+			 if(emailConfigurationDTO.getServerName() != null){
+				 emailConfig.setServerName(emailConfigurationDTO.getServerName()); 
+			 }
+			 if(emailConfigurationDTO.getPortNumber() != null){
+				 emailConfig.setPortNumber( Long.parseLong(emailConfigurationDTO.getPortNumber())); 
+			 }
+			 if(emailConfigurationDTO.getEncryptType() != null){
+				 emailConfig.setEncryptionType(emailConfigurationDTO.getEncryptType()); 
+			 }
+			 emailConfig.setOrgLocationId(orgLocation);
+			 emailConfig.setEmail_UUID(SourceLeadRandomCodeHelper.generateRandomOrgCode());
+			 emailConfig.setCreatedBy(user.getFirstName());
+			 emailConfig.setCreatedDate(new Date());
+		 
+		
+		
+		 if(emailConfig != null){
+			 String fromMail=emailScenarioconService.verifyConfgParserMail(orgLocation.getId(),emailConfig);
+			 if(Constants.EMAIL_SUCCESS.equalsIgnoreCase(fromMail)){
+				 emailConfig.setStatus("Y");
+				 emailConfig.setUsageType(emailConfigurationDTO.getUsageType());
+				 emailScenarioconService.save(emailConfig); // Saving record when successfully validated.
+				 returnValue= "success";
+			 }else{
+				 returnValue= "failure";
+			 }
+		 }
+		 return returnValue;
+		 
+			
+		}
 	 @RequestMapping(value = "/saveConfigurationFromMail" , method = RequestMethod.POST)
 		public @ResponseBody String saveConfigurationFromMail(EmailConfigurationFromMailDTO emailConfigurationFromMailDTO,HttpServletRequest request)
 				throws Exception {
@@ -210,7 +253,42 @@ public class EmailScenarioConfigurationRestController {
 		  return response;
 			
 		}
-	 
+	 @SuppressWarnings("unused")
+		@RequestMapping(value = "/getConfigParserMailList" , method = RequestMethod.POST)
+			public @ResponseBody ResponseList<EmailScenarioConfiguration> getConfigParserMailList(HttpServletRequest request,@RequestParam(value = "emailId", required = false) String emailId)
+					throws Exception {
+			 ResponseList<EmailScenarioConfiguration> response = new ResponseList<>();
+			 try{
+				 User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+				 OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+		    		if (user != null) {
+		    			List<EmailScenarioConfiguration> parserMailList=emailScenarioconService.getConfParserMailList(orgLocation.getId(),Constants.JOB_PARSING);
+		    			if(parserMailList != null){
+		    				response.setData(parserMailList);
+		    				response.setResponse(Result.SUCCESS.name());
+							response.setResponseMessage(Result.SUCCESS.getValue());
+						} else {
+							response.setResponse(Result.FAILED.name());
+							response.setResponseMessage(Result.FAILED.getValue());
+						}
+		    		}else if (user == null) {
+						response.setResponse(Result.SESSION_TIMEDOUT.name());
+						response.setResponseMessage(Result.SESSION_TIMEDOUT.getValue());
+					} else {
+						response.setResponse(Result.INVALID_DATA.name());
+						response.setResponseMessage(Result.INVALID_DATA.getValue());
+					}
+				 
+			 }catch (Exception e) {
+					response.setResponse(Result.AWKWARD.name());
+					response.setResponseMessage(Result.AWKWARD.getValue());
+					logger.error(ExceptionUtils.getFullStackTrace(e));
+				}
+			 
+			
+			  return response;
+				
+			}
 	 
 	 @SuppressWarnings("unused")
 	@RequestMapping(value = "/deleteEmailFromMail" , method = RequestMethod.POST)

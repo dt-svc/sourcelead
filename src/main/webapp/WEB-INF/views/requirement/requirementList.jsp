@@ -449,7 +449,18 @@ function statusvalidating(id){
 					</sec:authorize>  
 					
 					<sec:authorize access="hasAnyRole('ROLE_CREATE_REQUIREMENT')">
-						<li><a href="<c:url value='${appPath}/requirement'/>" class="newAdBtn">+ Job</a></li>
+		                    <li>
+								<a class="action newAdBtn mr5" onclick="getActions();" href="javascript:void(0)">+ Add <i class="fa fa-caret-down"></i></a>
+								<div class="action-pop">
+									<span> 
+									<a href="<c:url value='${appPath}/requirement'/>" >Job</a>
+									<sec:authorize access="hasAnyRole('ROLE_CREATE_REQUIREMENT')">
+										<a href="<c:url value='${appPath}/uploadJobs'/>">Import</a>
+									</sec:authorize>									
+									</span>
+								</div>
+							</li>						
+						
 					</sec:authorize>	
 									
 				<li><a href="javascript:void(0)" class="filtIcon" title="Filters" onclick="filterPop();"></a></li>
@@ -457,15 +468,11 @@ function statusvalidating(id){
 				
 				<li><a href="javascript:void(0)" class="overIcon" title="Actions" onclick="newActions();"></a>
 					<div class="newActPop">
-						<span>
-							<sec:authorize access="hasAnyRole('ROLE_CREATE_REQUIREMENT')">
-								<a href="<c:url value='${appPath}/uploadJobs'/>">Import</a>
-							</sec:authorize>		           	   		
+						<span>	           	   		
 							<sec:authorize access="hasAnyRole('ROLE_EXPORT_REQUIREMENTS')">
 							 	<a href="javascript:void(0)" onclick="exportToPdf(1);" title="PDF">Export PDF</a>
 								<a href="javascript:void(0)" onclick="exportToExcel(1);" title="Excel">Export Excel</a>					
 							</sec:authorize>
-		           
 						</span>
 					</div>
 				</li>

@@ -289,13 +289,16 @@ position: absolute !important;
             <li>
 				<a class="action newAdBtn mr5" onclick="getActions();" href="javascript:void(0)">+ Add <i class="fa fa-caret-down"></i></a>
 				<div class="action-pop">
-					<span> 
+					<span> 					
 						   <sec:authorize access="hasAnyRole('ROLE_CREATE_VENDOR')"> 
                        			<a href="<c:url value='${appPath}/addVendor'/>">Add Vendor</a>	
                            </sec:authorize>
 						   <sec:authorize access="hasAnyRole('ROLE_CREATE_VENDOR_CONTACT')">
 					         <a href="<c:url value='${appPath}/addVendorContact'/>">Add Contact</a>
-						  </sec:authorize>					
+						  </sec:authorize>	
+		               		 <sec:authorize access="hasAnyRole('ROLE_VENDOR_BULK_IMPORTS','ROLE_VENDOR_CONTACT_BULK_IMPORTS')">
+		                 		<a href="<c:url value='${appPath}/uploadVendorForm'/>">Import</a>
+		           	   		</sec:authorize> 						  				
 					</span>
 				</div>
 			</li>
@@ -305,10 +308,6 @@ position: absolute !important;
 				<li><a href="javascript:void(0)" class="overIcon" title="Actions" onclick="newActions();"></a>
 					<div class="newActPop">
 						<span>
-		               		 <sec:authorize access="hasAnyRole('ROLE_VENDOR_BULK_IMPORTS','ROLE_VENDOR_CONTACT_BULK_IMPORTS')">
-		                 		<a href="<c:url value='${appPath}/uploadVendorForm'/>">Import</a>
-		           	   		</sec:authorize> 
-		           	   		
 	                	<sec:authorize access="hasRole('ROLE_EXPORT_VENDORS')"> 
 							 <div id="vendorImports">
 							 	<a href="javascript:void(0)" onclick="exportVendorToPdf();" title="PDF">Export PDF</a>
