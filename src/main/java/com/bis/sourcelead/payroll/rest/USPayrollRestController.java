@@ -60,6 +60,7 @@ import com.bis.sourcelead.payroll.dto.MyPayrollSummaryDTO;
 import com.bis.sourcelead.payroll.dto.PayAdjustmentDTO;
 import com.bis.sourcelead.payroll.dto.PayItemDTO;
 import com.bis.sourcelead.payroll.dto.PayrollApproverDTO;
+import com.bis.sourcelead.payroll.dto.PayrollConstant;
 import com.bis.sourcelead.payroll.dto.PayrollContributionDTO;
 import com.bis.sourcelead.payroll.dto.PayrollDeductionDTO;
 import com.bis.sourcelead.payroll.dto.PayrollScheduleDTO;
@@ -89,6 +90,7 @@ import com.bis.sourcelead.payroll.service.USPayPeriodService;
 import com.bis.sourcelead.payroll.service.USPayrollService;
 import com.bis.sourcelead.payroll.service.USPaysheetService;
 import com.bis.sourcelead.payroll.service.UsMyPayrollFormService;
+import com.bis.sourcelead.payroll.util.PayrollUtil;
 import com.bis.sourcelead.service.AssociateLoanAndAdvancesService;
 import com.bis.sourcelead.service.AssociateSalaryHistoryService;
 import com.bis.sourcelead.service.AssociateSalaryService;
@@ -198,6 +200,9 @@ public class USPayrollRestController {
 	
 	@Autowired
 	private UserGroupDao userGroupDao;
+	
+	@Autowired
+	private PayrollUtil payrollUtil;
 
 	
 	/**
@@ -799,77 +804,27 @@ public class USPayrollRestController {
 		OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 		String [] str = groupUUID.split(",");
 		Response<UserGroupDTO> userGroup = userGroupService.findUserGroupById(str[0]);
-		if (userGroup.getObject() != null && "Weekly".equalsIgnoreCase(userGroup.getObject().getPayFrequency())) {
+		if (userGroup.getObject() != null && PayrollConstant.PAY_WEEKLY.equalsIgnoreCase(userGroup.getObject().getPayFrequency())) {
 			Calendar now = Calendar.getInstance(); // Gets the current date and
 			int year = now.get(Calendar.YEAR);
 			int month = now.get(Calendar.MONTH);
-			listDates = getNumberOfWeeks(year, month, orgLocation);
-		}else if(userGroup.getObject() != null && "Monthly".equalsIgnoreCase(userGroup.getObject().getPayFrequency())) {
+			listDates = payrollUtil.getNumberOfWeeks(year, month, orgLocation);
+		}else if(userGroup.getObject() != null && PayrollConstant.PAY_MONTHLY.equalsIgnoreCase(userGroup.getObject().getPayFrequency())) {
 			Calendar now = Calendar.getInstance(); // Gets the current date and
 			int month = now.get(Calendar.MONTH);
-			listDates = getStartDateAndEndDateOfMonths(month, orgLocation);
+			listDates = payrollUtil.getNumberOfMonths(month, orgLocation);
 			
 			
+		}else if(userGroup.getObject() != null && PayrollConstant.PAY_BI_WEEKLY.equalsIgnoreCase(userGroup.getObject().getPayFrequency())) {
+			Calendar now = Calendar.getInstance();
+			int month = now.get(Calendar.MONTH);
+			listDates = payrollUtil.getNumberOfBiWeeks(orgLocation);
+		}else if(userGroup.getObject() != null && PayrollConstant.ANNUALLY.equalsIgnoreCase(userGroup.getObject().getPayFrequency())) {
+			Calendar now = Calendar.getInstance(); 
+			listDates = payrollUtil.getAnnuallyDates(orgLocation);
 		}
 		return listDates;
 	}
-	/**
-	 * Get start date and end date of months
-	 * @param month
-	 * @param orgLocation
-	 * @return
-	 */
-	private List<String> getStartDateAndEndDateOfMonths(int month, OrgLocations orgLocation)
-	{
-		List<String> dateList = new ArrayList<>();
-		for (int i = 0; i <month; i++) {
-			java.util.Date[] datesss = commonUtil.getMonthStartDateEndDateByMonth(i);
-			StringBuilder sb = new StringBuilder();
-			dateList.add(sb.append(commonUtil.dateStrFromOrgDateFormatter(orgLocation.getDateFormat(),datesss[0])).append(",").append(commonUtil.dateStrFromOrgDateFormatter(orgLocation.getDateFormat(),datesss[1])).toString());
-		}
-		return dateList;
-	}
-		
-		
-		/**
-		 * Get all week start date and end date of year
-		 * @param year
-		 * @param month1
-		 * @param orgLocation 
-		 * @return List<List<String>> 
-		 */
-	private List<String> getNumberOfWeeks(int year, int month, OrgLocations orgLocation)
-	{
-		List<String> payFrequency = new ArrayList<>();
-		SimpleDateFormat format = new SimpleDateFormat("dd-MM-yyyy");
-		List<List<String>> weekdates = new ArrayList<List<String>>();
-		List<String> dates;
-		Calendar c = Calendar.getInstance();
-		c.set(Calendar.YEAR, year);
-		for (int i = 0; i <=month; i++) {
-			c.set(Calendar.MONTH, i);
-			c.set(Calendar.DAY_OF_MONTH, 1);
-			while (c.get(Calendar.MONTH) == i) {
-				dates = new ArrayList<String>();
-				while (c.get(Calendar.DAY_OF_WEEK) != Calendar.MONDAY) {
-					c.add(Calendar.DAY_OF_MONTH, -1);
-				}
-				dates.add(commonUtil.dateStrFromOrgDateFormatter(orgLocation.getDateFormat(), c.getTime()));
-				c.add(Calendar.DAY_OF_MONTH, 6);
-				dates.add(commonUtil.dateStrFromOrgDateFormatter(orgLocation.getDateFormat(), c.getTime()));
-				weekdates.add(dates);
-				c.add(Calendar.DAY_OF_MONTH, 7);
-			}
-		}
-		for (List<String> innerList : weekdates) {
-			StringBuilder sb = new StringBuilder();
-			sb.append(innerList.get(0)).append(",").append(innerList.get(1));
-			payFrequency.add(sb.toString());
-		}
-		return payFrequency;
-	}
-	
-//	
 	
 	/**"
 	 * Add Pay Item for Organization
@@ -1268,9 +1223,9 @@ public class USPayrollRestController {
 		model.addObject("payPeriodNum", payPeriodNum);
 		model.addObject("paySheetFrequencyUUID", paySheetFrequencyUUID);
 		if(approverStatus.equalsIgnoreCase(Constants.SENT)) {
-			model.setViewName("payroll/reviewPayroll");
+			model.setViewName("payroll/payrollSentSummary");
 		}else if(approverStatus.equalsIgnoreCase(Constants.APPROVED)){
-			model.setViewName("payroll/payrollSummary");
+			model.setViewName("payroll/payrollApprovedSummary");
 		}else if(approverStatus.equalsIgnoreCase(Constants.DRAFT)) {
 			model.setViewName("payroll/payrollDraftSummary");
 		}
@@ -1651,6 +1606,7 @@ public class USPayrollRestController {
 					   model.addObject("selectedUserList", userList);
 				   }*/
 			   }
+			   model.addObject("fromType", userGroupDto.getFromType());
 			   model.addObject("sourceleadUrl", sourceleadUrl);
 			   model.setViewName("payroll/addUserGroup");
 		       return model;

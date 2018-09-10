@@ -174,7 +174,14 @@ function contributionTypepagination(url){
               "targets": colIndex++,
               "data": "contributionAmount",
               "render": function ( data, type, opt, meta ) {
-            	  return ' <td><div  class="tblminwidth-100">$ '+opt.contributionAmount.toFixed(2)+'</div></td>';
+            	  var result = "";
+            	  if(opt.payrollContributionMethod == "Fixed"){
+            		  result = result + ' <td><div  class="tblminwidth-100">$ '+opt.contributionAmount.toFixed(2)+'</div></td>';
+            	  }else{
+            		  result = result + ' <td><div  class="tblminwidth-100">'+opt.contributionAmount+' %</div></td>';
+            	  }
+            	  return result;
+            	  
               }
             }, {
                 "targets": colIndex++,

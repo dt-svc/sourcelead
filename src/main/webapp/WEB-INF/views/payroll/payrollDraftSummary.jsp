@@ -5,6 +5,7 @@
 
 <script>
 $(document).ready(function(){
+	$("#draftApproveDiv").addClass('disabled').removeAttr("onclick"); 
 	$("#approveDiv").hide();
 	getPayrollDraftSummary(); 
 });
@@ -35,7 +36,7 @@ function approvePayrollTab(){
     <div class="tabsMenu clearfix">
    		<ul class="list-unstyled">
 		   <li class="current"><a onclick="reviewPayroll();">Review Payroll</a></li>
-		   <li><a  onclick="approvePayrollTab();">Approve Payroll</a></li>
+		   <li><a id="draftApproveDiv" onclick="approvePayrollTab();">Approve Payroll</a></li>
 	   </ul>
    </div>
    
@@ -75,7 +76,9 @@ function approvePayrollTab(){
 	<div id="submitButtonDiv">
 	<ul class="pull-right mr list-unstyled list-inline">
 		<li><a href="#" class="btn btn-primary btnSuccess" id="Submit" onClick="sendPayrollForApprover();">Submit for Approve</a></li>
+		<c:if test="${SourceLeadWeb_isPayRollApprover == 'Y'}">
 		<li><a href="#" class="btn btn-default ml mr" id="Confirm" onclick="confirmPayroll('FROMDRAFT');">Confirm</a></li>
+		</c:if>
 		<li><a href="#" class="btn btn-default" onclick="window.location='/app/payrollList'">Cancel</a></li>
 	</ul>
 	</div>
