@@ -413,7 +413,7 @@ public class CandidateEducationRestController {
 		return response;
 	}
 
-	@RequestMapping(value = {"/validateEduname","/rest/validateEduname"})
+	@RequestMapping(value = "/validateEduname")
 	public Response<Boolean> validateEduname(@RequestParam(value = "name", required = false) String name,
 			@RequestParam(value = "candidateId", required = false) Long candidateId, HttpServletRequest request)
 			throws Exception {
