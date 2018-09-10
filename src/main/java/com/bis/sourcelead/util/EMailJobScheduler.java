@@ -388,7 +388,8 @@ public class EMailJobScheduler {
 			logger.error("ERROR in " + e.getMessage());
 		}
     }
-	  //@Scheduled(cron = "0 0 9 1/1 * ?") // Scheduled for every day at @ 9.a.m on united states time.
+	
+	//@Scheduled(cron = "0 0 0/1 ? 1/1 * *") // Scheduled for every one hour 
 	  
 	//@Scheduled(cron = "0/30 * * * * *") // used for dev testing run for every 30 seconds..
 	@Async
