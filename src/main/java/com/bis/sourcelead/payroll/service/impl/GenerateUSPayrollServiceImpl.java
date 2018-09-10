@@ -1112,7 +1112,7 @@ public class GenerateUSPayrollServiceImpl implements GenerateUSPayrollService{
 				double totAmount =  regHrsAmt+ otHrsAmt;
 				amount = new BigDecimal(totAmount);
 			}else {
-				amount = payAdjustmentDTO.getAssSalary();
+				amount = payAdjustmentDTO.getAssSalaryAmount();
 			}
 			double preTaxDed = 0;
 			double postTaxDed = 0;
