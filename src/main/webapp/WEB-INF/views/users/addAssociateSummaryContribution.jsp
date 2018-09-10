@@ -121,6 +121,7 @@ $(document).ready(function(){
                 			<th>Type</th>
                 			<th>Method</th>
                 			<th>Amount</th>
+                			<th>Action</th>
                 		</tr>
                 	</thead>
                 	<tbody id="contribuionTrAdd">

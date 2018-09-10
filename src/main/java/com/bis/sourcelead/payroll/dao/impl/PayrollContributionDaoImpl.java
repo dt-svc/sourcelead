@@ -91,10 +91,18 @@ private static final Logger logger = LoggerFactory.getLogger(PayrollContribution
 			String countQuery = "from PayrollContribution payrollContribution where payrollContribution.deductionTypeId.orgLocationId.id =:orgLocationId";
 			StringBuilder searchQuery = new StringBuilder();
 			if (StringUtils.isNoneBlank(payrollContributionDTO.getSearchValue())) {
-				searchQuery.append(" and payrollContribution.payrollContributionMethod like '%"
-						+ payrollContributionDTO.getSearchValue()
-						+ "%' ").append("OR payrollContribution.contributionAmount like '%"
-								+ payrollContributionDTO.getSearchValue() + "%' ");
+				searchQuery.append(" and ( payrollContribution.payrollContributionMethod like '%"
+						            + payrollContributionDTO.getSearchValue()+ "%' ")
+					       .append("OR payrollContribution.contributionAmount like '%"
+									+ payrollContributionDTO.getSearchValue() + "%' ")
+					       .append("OR payrollContribution.description like '%"
+	                                + payrollContributionDTO.getSearchValue() + "%' ")
+					       .append("OR payrollContribution.deductionTypeId.payrollDeductionType like '%"
+	                               + payrollContributionDTO.getSearchValue() + "%' ")
+					       .append("OR payrollContribution.deductionTypeId.taxType like '%"
+	                               + payrollContributionDTO.getSearchValue() + "%' ")
+					       .append("OR payrollContribution.deductionTypeId.payrollScheduled like '%"
+	                               + payrollContributionDTO.getSearchValue() + "%' ) "); 
 			}
 			Query queryObj = session.createQuery(query + searchQuery + qry);
 			if (payrollContributionDTO != null && payrollContributionDTO.getLength() > 0) {

@@ -292,7 +292,11 @@ z-index: 1;
 					 </sec:authorize>
 					 <sec:authorize access="hasAnyRole('ROLE_CREATE_CLIENT_CONTACT')"> 
                         <a href="<c:url value='${appPath}/addClientContact'/>">Add Contact</a>
-                     </sec:authorize>					
+                     </sec:authorize>		
+                     
+						<sec:authorize access="hasAnyRole('ROLE_CLIENT_BULK_IMPORTS','ROLE_CLIENT_CONTACT_BULK_IMPORTS')"> 
+							<a href="<c:url value='${appPath}/uploadClientForm'/>">Import</a>
+						 </sec:authorize>                     			
 					</span>
 				</div>
 			</li>
@@ -304,10 +308,6 @@ z-index: 1;
 				<li><a href="javascript:void(0)" class="overIcon" title="Actions" onclick="newActions();"></a>
 					<div class="newActPop">
 						<span>
-						<sec:authorize access="hasAnyRole('ROLE_CLIENT_BULK_IMPORTS','ROLE_CLIENT_CONTACT_BULK_IMPORTS')"> 
-							<a href="<c:url value='${appPath}/uploadClientForm'/>">Import</a>
-						 </sec:authorize>
-						
 						 <sec:authorize access="hasRole('ROLE_EXPORT_CLIENTS')"> 
 						 <div id="clientImports">
 						 	<a href="javascript:void(0)" onclick="exportClientToPdf();" title="PDF">Export PDF</a>
