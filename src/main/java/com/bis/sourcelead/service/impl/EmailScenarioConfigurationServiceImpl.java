@@ -168,7 +168,7 @@ private static final Logger logger = LoggerFactory.getLogger(EmailScenarioConfig
 
 				System.out.println("connect before pop3s ==============>");
 				
-				// emailSession.setDebug(true);    Enable flag for debug.
+				// emailSession.setDebug(true);    //Enable flag for debug.
 				store.connect(host, user, password);
 				
 				Folder emailFolder = store.getFolder("INBOX"); // Reading inbox folder.
@@ -192,6 +192,18 @@ private static final Logger logger = LoggerFactory.getLogger(EmailScenarioConfig
 	@Override
 	public List<EmailScenarioConfiguration> getConfParserMailList(Long orgLocId, String parsingType) throws Exception {
 		return  emailScenarioConfigurationDao.getConfParserMailList(orgLocId, parsingType);
+	}
+
+	@Override
+	public EmailScenarioConfiguration getParserEmailsDetailsByUUID(String UUID) throws Exception {
+		 return emailScenarioConfigurationDao.getParserEmailsDetailsByUUID(UUID);
+		
+	}
+
+	@Override
+	public String deleteParserEMail(Long emailId) throws Exception {
+		// TODO Auto-generated method stub
+		return emailScenarioConfigurationDao.deleteParserEMail(emailId);
 	}
 
 }

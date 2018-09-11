@@ -104,6 +104,7 @@
 </div>
 
 <div id="deleteFromMailDiv" class="datatable_filter"> </div>
+<div id="deleteParserEmailDiv" class="datatable_filter"> </div>
 
 <div class="success_pop" id="selector2" style="display: none;">
  			<i class="fa fa-check-circle"></i><span id="msgConfigDiv"></span>
