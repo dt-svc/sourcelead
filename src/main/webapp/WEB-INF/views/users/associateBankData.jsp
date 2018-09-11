@@ -1,6 +1,13 @@
  <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
 <%@taglib uri="http://www.springframework.org/tags/form" prefix="form"%>
   
+  
+<script>	
+	$(document).ready(function() {
+		showHideAccountTypes();
+	});
+</script>
+  
   <div id="loading"></div> 
   <div id="tab-2" class="tabsMenu_tabs_inn clearfix">
             <div class="clearfix row minHeightcol5">
@@ -9,7 +16,7 @@
                   <label>Account Type<span class="text-danger">&nbsp;*</span></label>
                   <div>
                     <select class="form-control chosen-select" id="accountType" name ="accountType" data-validation="required" onchange="showHideAccountTypes();" field-name="Account Type">
-                      <option value="Bank Transfer">Bank Transfer</option>
+<!--                       <option value="Bank Transfer">Bank Transfer</option> -->
                       <option value="Direct Deposit">Direct Deposit</option>
                       <option value="Cheque">Cheque</option>
                       <option value="Cash">Cash</option>
@@ -127,7 +134,7 @@ function shiftToSalaryTab(){
 <script>
 function showHideAccountTypes(){
 	var accountType = $("#accountType").val();
-	if(accountType == "Direct Deposit"){
+	if(accountType == "Direct Deposit" || accountType == "Cash"){
 		$("#accountTypeChildDivs").hide();
 		$("#bankName").val('');
 		$("#accountNumber").val('');

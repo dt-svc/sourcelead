@@ -344,17 +344,20 @@
 				        			postDed = postDed + ' </tr>';
 					            }	
 			            	  $("#postDeductionLength").val(json.postDed.length);
+			            	  
+			            	  
+			            	  postDed = postDed + '</tbody>';
+		                      postDed = postDed + '<tfoot>';
+		                      postDed = postDed + '<tr>';
+		                      postDed = postDed + '<th>Total</th>';
+		                      postDed = postDed + '<td><span id="postDeductionTotal">$ '+json.postDedTotal+'</span></td>';
+		                      postDed = postDed + '</tr>';
+		                      postDed = postDed + '</tfoot>';
+		                      postDed = postDed + '</table>';
+		                      $("#postdedDiv").empty(); 
+		                      $("#postdedDiv").append(postDed);
+			            	  
 			            }
-	                      postDed = postDed + '</tbody>';
-	                      postDed = postDed + '<tfoot>';
-	                      postDed = postDed + '<tr>';
-	                      postDed = postDed + '<th>Total</th>';
-	                      postDed = postDed + '<td><span id="postDeductionTotal">$ '+json.postDedTotal+'</span></td>';
-	                      postDed = postDed + '</tr>';
-	                      postDed = postDed + '</tfoot>';
-	                      postDed = postDed + '</table>';
-	                      $("#postdedDiv").empty(); 
-	                      $("#postdedDiv").append(postDed);
 	                     
 	                        var preDed = "";
 	                        preDed = preDed + '<table width="100%" class="table table-bordered" >';
@@ -381,7 +384,7 @@
 				            	preDed = preDed + ' </tr>';
 				            }
 				            $("#preDeductionLength").val(json.preDed.length);
-	                        }
+				            
 				            preDed = preDed + '</tbody>';
 				            preDed = preDed + '<tfoot>';
 				            preDed = preDed + '<tr>';
@@ -392,6 +395,7 @@
 				            preDed = preDed + '</table>';
 		                      $("#prededDiv").empty();
 		                      $("#prededDiv").append(preDed);
+	                        }
 		                      
 		                      
 		                  var output = "";
@@ -421,17 +425,18 @@
 					            	output = output + '</tr>';
 			                  }
 		                	  $("#totalContributionsLngth").val(json.contribution.length);
+		                	  
+		                	  	output = output + ' </tbody>';
+		                        output = output + ' <tfoot>';
+		                        output = output + '   <tr>';
+		                        output = output + '  <th>Total</th>';
+		                        output = output + '  <td><span id="totalGrandContributions">$ '+json.contributionTotal+'</span></td>';
+		                        output = output + '  </tr>';
+		                        output = output + '  </tfoot>';
+		                        output = output + '  </table>';
+		                        $("#employerPaidBenefitDiv").empty();
+		                        $("#employerPaidBenefitDiv").append(output);
 		                  }
-	                        output = output + ' </tbody>';
-	                        output = output + ' <tfoot>';
-	                        output = output + '   <tr>';
-	                        output = output + '  <th>Total</th>';
-	                        output = output + '  <td><span id="totalGrandContributions">$ '+json.contributionTotal+'</span></td>';
-	                        output = output + '  </tr>';
-	                        output = output + '  </tfoot>';
-	                        output = output + '  </table>';
-	                        $("#employerPaidBenefitDiv").empty();
-	                        $("#employerPaidBenefitDiv").append(output);
 	                        
 	                        
 	                        // PayItems
@@ -483,21 +488,22 @@
 						            	payItem = payItem +' </tr>';
 				                  }
 			                	  $("#total1payItemsLength").val(json.payItem.length);
+			                	  
+			                	  
+			                	  payItem = payItem +'</tbody>';
+		                          payItem = payItem +'<tfoot>';
+		                          payItem = payItem +' <tr>';
+		                          payItem = payItem +'  <th>Total</th>';
+		                          payItem = payItem +'<td><span id="payItemTotalAmount">$ '+json.payItemTotal+'</span></td>';
+		                          payItem = payItem +' <td></td>';
+		                          payItem = payItem +' </tr>';
+		                          payItem = payItem +' </tfoot>';
+		                          payItem = payItem +' </table>';
+		                          $("#payItemDiv").empty();
+		                          $("#payItemDiv").append(payItem)
+		                          $(".tablePayslip").find(".fa-dollar, .fa-clock-o").next(".formControl").css({"width":"94.5%"});
 			                  }
 	                          
-	                          payItem = payItem +'</tbody>';
-	                          payItem = payItem +'<tfoot>';
-	                          payItem = payItem +' <tr>';
-	                          payItem = payItem +'  <th>Total</th>';
-	                          payItem = payItem +'<td><span id="payItemTotalAmount">$ '+json.payItemTotal+'</span></td>';
-	                          payItem = payItem +' <td></td>';
-	                          payItem = payItem +' </tr>';
-	                          payItem = payItem +' </tfoot>';
-	                          payItem = payItem +' </table>';
-	                          $("#payItemDiv").empty();
-	                          $("#payItemDiv").append(payItem)
-	                          $(".tablePayslip").find(".fa-dollar, .fa-clock-o").next(".formControl").css({"width":"94.5%"});
-                       
 		        },
 		    }); 
 		$(".usRunpayroll").fadeIn();
