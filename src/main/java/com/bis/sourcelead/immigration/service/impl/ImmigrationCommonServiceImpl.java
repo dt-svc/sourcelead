@@ -208,15 +208,27 @@ public class ImmigrationCommonServiceImpl implements ImmigrationCommonService {
 			candLcaJobDetails = saveCandidateLcaJobDetails(immigrationObj,immigrationDTO, candidate, user, requirement, orgLocations);
 			
 			//Save LCAHISTORY with lcaId,candidateId,immigrationId
+			
 			if(StringUtils.isNotBlank(immigrationDTO.getLcaId())) {
 				Lca lca = new Lca();
 				lca.setId(Long.parseLong(immigrationDTO.getLcaId()));
-				saveLcaHistoryDetails(immigrationObj,candidate,lca,user,orgLocations,true);
+				if(StringUtils.isNotBlank(immigrationDTO.getLcaNumber())) {
+					saveLcaHistoryDetails(immigrationObj,candidate,lca,user,orgLocations,true);
+				}else {
+					immigrationCommonDao.deletetLcaHistoryDetails(lca.getId());
+				}
+				
 			}
 			if(StringUtils.isNotBlank(immigrationDTO.getPrevLcaId())) {
 				Lca prevLca = new Lca();
 				prevLca.setId(Long.parseLong(immigrationDTO.getPrevLcaId()));
-				saveLcaHistoryDetails(immigrationObj,candidate,prevLca,user,orgLocations, false);
+				if(StringUtils.isNotBlank(immigrationDTO.getPrevLcaNumber())) {
+					saveLcaHistoryDetails(immigrationObj,candidate,prevLca,user,orgLocations, false);
+					
+				}else {
+					immigrationCommonDao.deletetLcaHistoryDetails(prevLca.getId());
+				}
+				
 			}
 			
 			StringBuilder actionDesc = new StringBuilder();
@@ -252,18 +264,19 @@ public class ImmigrationCommonServiceImpl implements ImmigrationCommonService {
 			  if(isCurrent) {
 				  
 				    LcaHistory currLcaHistory = immigrationCommonDao.getLcaHistoryByStatus(immigrationObj.getId(),candidate.getId(),"Y");
+				    Date currentDate = commonUtil.orgLocationCommonDate(new Date(), orgLocations);
 				    if(currLcaHistory == null) {
 				    	currLcaHistory =new LcaHistory();
+				    	currLcaHistory.setCreatedDate(currentDate);
+				    	currLcaHistory.setCreatedBy(user);
 				    }
 					currLcaHistory.setImmigrationId(immigrationObj);
 					currLcaHistory.setCandidate(candidate);
 					currLcaHistory.setLcaId(lca);
 					currLcaHistory.setIsCurrent(Constants.YES);
 					currLcaHistory.setStatus(Constants.RECORD_ACTIVE);
-					Date currentDate = commonUtil.orgLocationCommonDate(new Date(), orgLocations);
-					currLcaHistory.setCreatedDate(currentDate);
+					
 					currLcaHistory.setUpdatedDate(currentDate);
-					currLcaHistory.setCreatedBy(user);
 					currLcaHistory.setUpdatedBy(user);
 					
 					lcaHistory = immigrationCommonDao.saveLcaHistory(currLcaHistory);
@@ -271,18 +284,19 @@ public class ImmigrationCommonServiceImpl implements ImmigrationCommonService {
 			  }else if(!isCurrent) {
 				 
 				  LcaHistory prevLaHistory = immigrationCommonDao.getLcaHistoryByStatus(immigrationObj.getId(),candidate.getId(),"N");
+				  Date preCurrentDate = commonUtil.orgLocationCommonDate(new Date(), orgLocations);
 				    if(prevLaHistory == null) {
 				    	prevLaHistory = new LcaHistory();
+				    	prevLaHistory.setCreatedDate(preCurrentDate);
+				    	prevLaHistory.setCreatedBy(user);
 				    }
 				    prevLaHistory.setImmigrationId(immigrationObj);
 				    prevLaHistory.setCandidate(candidate);
 				    prevLaHistory.setLcaId(lca);
 					prevLaHistory.setIsCurrent(Constants.NO);
 					prevLaHistory.setStatus(Constants.RECORD_ACTIVE);
-					Date preCurrentDate = commonUtil.orgLocationCommonDate(new Date(), orgLocations);
-					prevLaHistory.setCreatedDate(preCurrentDate);
+					
 					prevLaHistory.setUpdatedDate(preCurrentDate);
-					prevLaHistory.setCreatedBy(user);
 					prevLaHistory.setUpdatedBy(user);
 					
 					lcaHistory= immigrationCommonDao.saveLcaHistory(prevLaHistory);

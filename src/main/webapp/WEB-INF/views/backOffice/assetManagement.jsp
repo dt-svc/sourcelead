@@ -111,15 +111,15 @@ $(document).ready(function(){
  		<jsp:include page="addAssetPopup.jsp"></jsp:include> 
  	</div>
   <script>
-  function addAndEditAssetAssign(assetId){
+  function addAndEditAssetAssign(assetUUID){
 	  $.ajax({
 	    	type: "POST",
-	    	url: sourceleadUrl+"/addAndEditAssetAssign?&assetId="+assetId, 
+	    	url: sourceleadUrl+"/addAndEditAssetAssign?&assetUUID="+assetUUID, 
 	        success: function(result) {
 	        	$(".assetManagementPopup, .comMask").fadeIn();
 	        	$('#assetManagementPopup').empty();
 	        	$('#assetManagementPopup').append(result);
-	        	issueDateScript();
+// 	        	issueDateScript();
 	        	populateDropdownValues();
 	        	<c:forEach var="section" items="${sourceleadSectionList}" varStatus="sectionOrder">
 	  		 	 var sectionId = '${section.id}';
@@ -133,7 +133,7 @@ $(document).ready(function(){
   
    
   <script>
-  function issueDateScript(){
+  function issueDateScript1(){
   var locationDate ='${SourceLeadWeb_orgLocations.dateFormat}'; 
   var finalDateFormat = getJSDateFormat(locationDate);
   $('#issueDate').datepicker({
@@ -151,6 +151,33 @@ $(document).ready(function(){
       changeMonth: true,
   	  changeYear: true, 
   });
+  
+  
+  <c:forEach var="shift" items="${siftList}" varStatus="shiftOrder">
+	     $('#assignedOn${shiftOrder.index}').datepicker({
+		      dateFormat: finalDateFormat,
+		      changeMonth: true,
+		  	  changeYear: true, 
+		  	  onSelect : function(selected) {
+				var dt = $(this).datepicker('getDate', '+1d');
+				dt.setDate(dt.getDate() + 1);
+				$('#returnedOn${shiftOrder.index}').datepicker("option", "minDate", dt);
+			}
+		  });
+		  
+		  $('#returnedOn${shiftOrder.index}').datepicker({
+		      dateFormat: finalDateFormat,
+		      changeMonth: true,
+		  	  changeYear: true, 
+		  	  onSelect : function(selected) {
+				var dt = $(this).datepicker('getDate', '+1d');
+				dt.setDate(dt.getDate() + 1);
+				$('#assignedOn${shiftOrder.index}').datepicker("option", "minDate", dt);
+			}
+		  });
+     
+	  
+  </c:forEach>
   }
   function clearDate(){
   	$("#issueDate").val("");
@@ -471,7 +498,7 @@ function projectAssetPaginations(url){
     	  		var result = "";
     	  	    result = result+'<td>';
     	  	  '<sec:authorize access="hasAnyRole(\'ROLE_VIEW_ASSET_BASIC_DETAILS\',\'ROLE_VIEW_ASSET_ADDITIONAL_DETAILS\')">'; 
-	   	  	     result = result +"<a class='tbldata-dotdot-sm'><a href='<c:url value='/app/assetManagementSummary?assetId="+report.id+"'/>'><div class='proj_show tbldata-dotdot_140'><span class='pull-left' title='"+report.slno+"'>"+report.slno+"</span><i class='fa fa-binoculars'></i></div></a></a>";
+	   	  	     result = result +"<a class='tbldata-dotdot-sm'><a href='<c:url value='/app/assetManagementSummary?assetUUID="+report.assetUUID+"'/>'><div class='proj_show tbldata-dotdot_140'><span class='pull-left' title='"+report.slno+"'>"+report.slno+"</span><i class='fa fa-binoculars'></i></div></a></a>";
 	   	  	  '</sec:authorize>';
 	   	  	  
 		   	   '<sec:authorize access="!hasAnyRole(\'ROLE_VIEW_ASSET_BASIC_DETAILS\',\'ROLE_VIEW_ASSET_ADDITIONAL_DETAILS\')">'; 
@@ -557,11 +584,11 @@ function projectAssetPaginations(url){
 			  		var result = "";
 				   	result = result+'<td><div class="tblminwidth-50">';
 				    '<sec:authorize access="hasRole(\'ROLE_EDIT_ASSET\')">' 
-				   			result = result+'<a class="glyphicon glyphicon-edit" title="Edit" onclick="addAndEditAssetAssign(\''+report.id+'\');"></a> ';
+				   			result = result+'<a class="glyphicon glyphicon-edit" title="Edit" onclick="addAndEditAssetAssign(\''+report.assetUUID+'\');"></a> ';
 				   	'</sec:authorize>';
 				   	
 				   	'<sec:authorize access="hasRole(\'ROLE_DELETE_ASSET\')">' 
-				   	   result = result+'<i class="glyphicon glyphicon-trash text-danger ml" onClick="deleteAsset(\''+report.id+'\')";></i>';
+				   	   result = result+'<i class="glyphicon glyphicon-trash text-danger ml" onClick="deleteAsset(\''+report.assetUUID+'\')";></i>';
 				   	'</sec:authorize>';
 				   	
 				   	
@@ -621,13 +648,13 @@ function updateWorkingStatus(assetId){
 </script>
 
 <script type="text/javascript">
-function deleteAsset(assetId){
+function deleteAsset(assetUUID){
 	var result = "";
 	result = result +"	<div class='project_inn_mask'></div>";
 	result = result +"	   <div id='remove_user_pop' class='remove_user_pop remove_user_pop_a'>";
 	result = result +"		<p>Are you sure delete Asset?</p>";
 	result = result +"		<div>&nbsp;&nbsp;&nbsp;</div>";
-	result = result +"		<b href='javascript:void(0)'><input type='button' value='Ok' onclick='removeAssetManagement("+assetId+");'><input class='u_can_color' type='button'  value='Cancel' onClick='cancel();'></b>";
+	result = result +"		<b href='javascript:void(0)'><input type='button' value='Ok' onclick='removeAssetManagement(\""+assetUUID+"\");'><input class='u_can_color' type='button'  value='Cancel' onClick='cancel();'></b>";
 	result = result +"	</div>";
 	$("#popUp").append(result);
 	$("#remove_user_pop").slideDown(200);
@@ -645,17 +672,17 @@ function cancel(){
 <div id="popUp"></div>
 
 <script>
-function removeAssetManagement(assetId){
+function removeAssetManagement(assetUUID){
 	 $("#popUp").empty();
 	 $(".project_inn_mask").fadeOut(200);
 	
-	 $("#asset"+assetId).empty();
-	 $("#asset"+assetId).html("<td colspan='7'  id='loading"+assetId+"'></td>");
-	 $("#loading"+assetId).attr('style',' height:40px; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/linear-loader.gif"); background-position:center; background-repeat:no-repeat;');
+	 $("#asset"+assetUUID).empty();
+	 $("#asset"+assetUUID).html("<td colspan='7'  id='loading"+assetUUID+"'></td>");
+	 $("#loading"+assetUUID).attr('style',' height:40px; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/linear-loader.gif"); background-position:center; background-repeat:no-repeat;');
 	
 	 $.ajax({
 	   	type: "POST",
-	    url: sourceleadUrl+"/removeAssetManagement?"+tokenParamName+"="+tokenValue+"&assetId="+assetId,	    	   
+	    url: sourceleadUrl+"/removeAssetManagement?"+tokenParamName+"="+tokenValue+"&assetUUID="+assetUUID,	    	   
 	    success: function(result) {
   			if (result && result.response === "INVALID_DATA") {
 			    showError(result.responseMessage);
@@ -680,7 +707,7 @@ function removeAssetManagement(assetId){
 		    $(".clients_side_wrap").addClass("clients_side_wrap_active");
 		    $(".side_mask").fadeIn(200);
 			$("body").css('overflow-y', 'hidden');
-			assetDetails(assetId);
+// 			assetDetails(assetId);
  }
 </script> 
   
@@ -689,12 +716,6 @@ function removeAssetManagement(assetId){
   function assetCategory(category){
 	  var selectedCategory = category.value;
 	    if(selectedCategory == '2'){
-	    	  document.getElementById("lsn").style.display="none";
-	    	  document.getElementById("csn").style.display="";
-	    	  $('#cpuSerialNumber').attr("data-validation", "required validate_Space validate_NumberAndAlphabet validate_length length1-200");
-	    	  $('#sno').removeAttr('data-validation');
-	    	
-	    	  
 			  document.getElementById("monitorDiv").style.display="";
 			  document.getElementById("name").style.display="";
 			  document.getElementById("memoryDiv").style.display="";
@@ -702,12 +723,6 @@ function removeAssetManagement(assetId){
 			  document.getElementById("harddiskDiv").style.display="";
 			  
 		  }else if((selectedCategory != 'Desktop' && selectedCategory == '1') || category == '1'){
-			  document.getElementById("lsn").style.display="";
-	    	  document.getElementById("csn").style.display="none";
-	    	  $('#cpuSerialNumber').removeAttr('data-validation');
-	    	  $('#sno').attr("data-validation", "required validate_Space validate_NumberAndAlphabet validate_length length1-200");
-	    	
-	    	  
 			  document.getElementById("monitorDiv").style.display="none";
 			  document.getElementById("name").style.display="";
 			  document.getElementById("memoryDiv").style.display="";

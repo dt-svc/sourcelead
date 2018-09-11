@@ -36,8 +36,8 @@ private static final long serialVersionUID = 1L;
 	@JoinColumn(name = "CANDIDATE_ID")
 	private Candidate candidate;
     
-    @ManyToOne(fetch = FetchType.EAGER)
-	@JoinColumn(name = "IMMIGRATION_ID", nullable = false)
+    @ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name = "IMMIGRATION_ID")
 	private Immigration immigrationId;
     
     @Column(name = "IS_CURR")

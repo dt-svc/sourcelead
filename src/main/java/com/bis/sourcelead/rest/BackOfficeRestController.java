@@ -494,19 +494,19 @@ public class BackOfficeRestController {
 	
 	 
 	 @RequestMapping(value = "/removeAssetManagement", method = RequestMethod.POST)
-	 @ResponseBody  Response<String> removeAssetManagement(@RequestParam(value = "assetId", required = false) Long assetId,HttpServletRequest request) throws Exception {
+	 @ResponseBody  Response<String> removeAssetManagement(@RequestParam(value = "assetUUID", required = false) String assetUUID,HttpServletRequest request) throws Exception {
 		 
 		 Response<String> response = new Response<>();
 			User loginUser = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
 			try {
 				if (loginUser != null) {
-					Asset asset = assetService.getAssetById(assetId);
+					Asset asset = assetService.getAssetByUUID(assetUUID);
 					
 					if(asset != null){
 						asset.setStatus(Constants.RECORD_INACTIVE);
 						assetService.saveAsset(asset);
 						
-						List<AssetAssign> assetList =  assetService.getAssignAssetListByAssetId(asset.getId());
+						List<AssetAssign> assetList =  assetService.getAllAssignAssetListByAssetId(asset.getId());
 						for(AssetAssign aa :assetList) {
 						  assetService.deleteAssignAssetByAssignId(aa);
 						}
@@ -538,12 +538,12 @@ public class BackOfficeRestController {
 	 */
 	@RequestMapping(value = "/getAssetById")
 	@ResponseBody
-	public AssetDTO getAssetById(HttpServletRequest request,@RequestParam(value="assetId", required=false) Long assetId) throws Exception {
+	public AssetDTO getAssetById(HttpServletRequest request,@RequestParam(value="assetUUID", required=false) String assetUUID) throws Exception {
 		
 		OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 		
 		//String resultJson = null;
-		Asset asset = assetService.getAssetById(assetId);
+		Asset asset = assetService.getAssetByUUID(assetUUID);
 		List<Employees> employeesList = employeesService.getEmployeesByLocationId(orgLocations.getId());
 		AssetDTO assetDTO = new AssetDTO();
 		
@@ -580,7 +580,7 @@ public class BackOfficeRestController {
 		
 		
 		
-		List<AssetAssign> assetAssignList = assetService.getAssignAssetListByAssetId(assetId);
+		List<AssetAssign> assetAssignList = assetService.getAssignAssetListByAssetId(asset.getId());
 		assetDTO.setAssetAssignList(assetAssignList);
 		
 		assetDTO.setName(asset.getName());
@@ -792,6 +792,24 @@ public class BackOfficeRestController {
 
 	}
 	
+	
+	 @RequestMapping(value = "/getReturnedOnAssetDetaisl", method = RequestMethod.POST)
+	 @ResponseBody  List<AssetAssign> getReturnedOnAssetDetaisl(@RequestParam(value = "assetUUID", required = false) String assetUUID,HttpServletRequest request) throws Exception {
+		 OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+		 Asset asset = assetService.getAssetByUUID(assetUUID);
+		 List<AssetAssign> assignAssetList =  assetService.getReturnedOnAssignAssetListByAssetId(asset.getId());
+		 for(AssetAssign aa :assignAssetList) {
+				if(aa.getReturnedOn() != null) {
+					aa.setReturnedOnStr(commonUtil.dateStrFromOrgDateFormatter(orgLocations.getDateFormat(),aa.getReturnedOn()));
+				}
+				if(aa.getAssignedOn() != null) {
+					aa.setAssignedOnStr(commonUtil.dateStrFromOrgDateFormatter(orgLocations.getDateFormat(),aa.getAssignedOn()));
+				}
+			}
+		 return assignAssetList;
+	 }
+	 
+	 
 	private String toJSON(Object obj){
         XStream xstream = new XStream(new JsonHierarchicalStreamDriver() {
             public HierarchicalStreamWriter createWriter(Writer writer) {
