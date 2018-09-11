@@ -194,4 +194,16 @@ private static final Logger logger = LoggerFactory.getLogger(EmailScenarioConfig
 		return  emailScenarioConfigurationDao.getConfParserMailList(orgLocId, parsingType);
 	}
 
+	@Override
+	public EmailScenarioConfiguration getParserEmailsDetailsByUUID(String UUID) throws Exception {
+		 return emailScenarioConfigurationDao.getParserEmailsDetailsByUUID(UUID);
+		
+	}
+
+	@Override
+	public String deleteParserEMail(Long emailId) throws Exception {
+		// TODO Auto-generated method stub
+		return emailScenarioConfigurationDao.deleteParserEMail(emailId);
+	}
+
 }
