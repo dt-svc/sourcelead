@@ -92,15 +92,15 @@ function errRemoveVendorContact(){
 							<label class="col-md-3">Vendor Contact<span
 								class="text-danger">*</span></label>
 							<div class="col-md-9 chooRadius" id="errVendorContact">
-								<div class="input-group col-md-10 pull-left">
+								<div class="col-md-9 padding_left padding_right">
 								<select class="chosen-select form-control" id="vendorContact"
 									multiple="multiple" name="vendorContact" data-validation="required"
 									field-name="Vendor Contact"
 									onchange="errRemoveVendorContact();">
 								</select>
-								 <span class="input-group-addon cursorPointer bg-blue" onclick="getVendorContacts();"><i class="fa fa-refresh "></i></span>
 							</div>
-							<span class="col-md-2 noPad clearfix" onclick="selectedVendor();">
+							<span class="col-md-3 noPad clearfix" onclick="selectedVendor();">
+							<span class="btn btn-primary btn-sm" onclick="getVendorContacts();"><i class="fa fa-refresh "></i></span>
 			                  <sec:authorize access="hasAnyRole('ROLE_CREATE_VENDOR_CONTACT')"> 
 			                    <a href="javascript:void(0)"><i class="fa fa-plus btn btn-default pull-right minHeBtn"></i></a>
 			                  </sec:authorize>

@@ -689,17 +689,17 @@ function getViewInvoice(){
 					result = result +'            </div>';
 					}
 					result = result +'<div class="col-md-6">                                                 ';
-					result = result +'<label class="col-md-4 control-label">Contact Name :</label>         ';
+					result = result +'<label class="col-md-4 control-label">Contact :</label>         ';
 					result = result +'<div class="col-md-8">                                               ';
 					result = result +'<label>'+report.clientContactName+'</label>';
 					result = result +'              </div>                                                               ';
 					result = result +'            </div>                                                                 ';
-					result = result +'            <div class="col-md-6">                                                 ';
+					/* result = result +'            <div class="col-md-6">                                                 ';
 					result = result +'              <label class="col-md-4 control-label">Contact Email :</label>           ';
 					result = result +'              <div class="col-md-8">                                               ';
 					result = result +'                <label>'+clientContactEmail+'</label>                         ';
 					result = result +'              </div>                                                               ';
-					result = result +'            </div>                                                                 ';
+					result = result +'            </div>                                                                 '; */
 					if(invoiceType == "Payables"){
 						result = result +'            <div class="col-md-6">                                                 ';
 						result = result +'              <label class="col-md-4 control-label">Bill Id :</label>             ';

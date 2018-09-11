@@ -96,13 +96,13 @@ function errRemoveClientContact(){
 				            </div>
 				             <div class="form-group">
 				              <label class="col-md-3">Client Contact<span class="text-danger">*</span></label>
-				              <div class="col-md-9 select-field chooRadius" id="errClientContact">
-				              	<div class="input-group col-md-10 pull-left">	
+				              <div class="col-md-9 chooRadius" id="errClientContact">
+				              	<div class="col-md-9 padding_right padding_left">	
 				                  <select class="chosen-select form-control" multiple="multiple" id="clientContact" name="clientContact" data-validation="required" field-name="Client Contact" onchange="errRemoveClientContact();">
 				                  </select>
-				                    <span class="input-group-addon cursorPointer bg-blue" onclick="getClientContacts();"><i class="fa fa-refresh "></i></span>
 				              </div>
-				               <span class="col-md-2 noPad clearfix" onclick="selectedClient();">
+				               <span class="col-md-3 noPad clearfix" onclick="selectedClient();">
+				               <span class="btn btn-primary" onclick="getClientContacts();"><i class="fa fa-refresh "></i></span>
 			                             <sec:authorize access="hasAnyRole('ROLE_CREATE_CLIENT_CONTACT')"> 
 			                              <a href="javascript:void(0)"><i class="fa fa-plus btn btn-default pull-right minHeBtn"></i></a>
 			                             </sec:authorize>

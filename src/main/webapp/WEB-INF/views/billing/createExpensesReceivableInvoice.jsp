@@ -88,12 +88,12 @@ function checkBox(){
             <div class="form-group">
               <label class="col-md-3">Client Contact<span class="text-danger">*</span></label>
               <div class="col-md-9 chooRadius">
-                 <div class="input-group col-md-10 pull-left">					   
+                 <div class="col-md-9 padding_left padding_right">					   
                 <select class="chosen-select form-control" id="clientContact" multiple="multiple" name="clientContact" data-validation="required" field-name="Client Contact">
                 </select>
-                <span class="input-group-addon cursorPointer bg-blue" onclick="getClientContacts();"><i class="fa fa-refresh "></i></span>
                 </div>
-                 <span class="col-md-2 noPad clearfix" onclick="selectedClient();">
+                 <span class="col-md-3 noPad clearfix" onclick="selectedClient();">
+                 <span class="btn btn-primary btn-sm" onclick="getClientContacts();"><i class="fa fa-refresh "></i></span>
 			       <sec:authorize access="hasAnyRole('ROLE_CREATE_CLIENT_CONTACT')"> 
 			         <a href="javascript:void(0)"><i class="fa fa-plus btn btn-default pull-right minHeBtn"></i></a>
 			       </sec:authorize>

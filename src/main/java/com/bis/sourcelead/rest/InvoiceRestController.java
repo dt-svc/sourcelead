@@ -806,16 +806,16 @@ public class InvoiceRestController {
 						for(String contactUserId : contactUsers){
 							User contactUser = userService.getUserById(Long.parseLong(contactUserId.trim()));
 							if(contactUser.getLastName() != null){
-								contactUserName = contactUserName.append(contactUser.getFirstName()).append(" ").append(contactUser.getLastName()).append(", ");
+								contactUserName = contactUserName.append(contactUser.getFirstName()).append(" ").append(contactUser.getLastName()).append("- ").append(contactUser.getEmail()).append(", ").append("\n ");
 							}else{
-								contactUserName = contactUserName.append(contactUser.getFirstName()).append(", ");
+								contactUserName = contactUserName.append(contactUser.getFirstName()).append("- ").append(contactUser.getEmail()).append(", ").append("\n ");
 							}
 							if(contactUser.getEmail() != null){
 								contactUserEmail = contactUserEmail.append(contactUser.getEmail()).append(", ");
 							}
 						}
 						invoice.setClientContactEmail(contactUserEmail.toString().substring(0, contactUserEmail.toString().length() - 2));
-						invoice.setClientContactName(contactUserName.toString().substring(0, contactUserName.toString().length() - 2));
+						invoice.setClientContactName(contactUserName.toString().substring(0, contactUserName.toString().length() - 2).replaceAll("\n ", "<br/>"));
 					}
 				}
 				/*if (invoice.getContactUser() != null) {.
