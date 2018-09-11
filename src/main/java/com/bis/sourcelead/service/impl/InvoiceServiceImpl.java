@@ -3523,7 +3523,7 @@ public class InvoiceServiceImpl implements InvoiceService {
 		return creditDebitNote;
 	}
 
-	private CreditDebitNote saveChildCreditDebitNote(CreditDebitNote parentCreditDebitNote, User user, OrgLocations vendorOrgLocation,String loginOrgCurrencyCode) throws Exception {
+	private CreditDebitNote saveChildCreditDebitNote(CreditDebitNote parentCreditDebitNote, User user, OrgLocations vendorOrgLocation,String vendorOrgCurrencyCode) throws Exception {
 		
 		CreditDebitNote childCreditDebitNote = invoiceDao.getParentCreditDebitNoteById(parentCreditDebitNote.getId());
 		
@@ -3576,19 +3576,19 @@ public class InvoiceServiceImpl implements InvoiceService {
 		childCreditDebitNote.setUpdatedBy(user);
 		childCreditDebitNote.setUpdatedDate(commonUtil.orgLocationCommonDate(new Date(), vendorOrgLocation));
 		childCreditDebitNote.setSubTotal(parentCreditDebitNote.getSubTotal());
-		String vendorCurrencyCode = conversionUtil.getVendorOrgCurrencyCode(vendorOrgLocation.getCountry());
-		if (!loginOrgCurrencyCode.equalsIgnoreCase(vendorCurrencyCode)) {
-			if (null != vendorCurrencyCode) {
-				float convertedAmount = conversionUtil.convert(loginOrgCurrencyCode, vendorCurrencyCode,parentCreditDebitNote.getTotal());
+		String loginCurrencyCode = conversionUtil.getVendorOrgCurrencyCode(vendorOrgLocation.getCountry());
+		if (!vendorOrgCurrencyCode.equalsIgnoreCase(loginCurrencyCode)) {
+			if (null != loginCurrencyCode) {
+				float convertedAmount = conversionUtil.convert(vendorOrgCurrencyCode, loginCurrencyCode,parentCreditDebitNote.getTotal());
 				float convertedAmount1 = (float) (Math.round(convertedAmount * 100.0) / 100.0);
 				childCreditDebitNote.setExchangeCurrencyRate(new BigDecimal(convertedAmount1));
-				childCreditDebitNote.setLoginCurrencyCode(vendorCurrencyCode);
+				childCreditDebitNote.setVendorCurrencyCode(parentCreditDebitNote.getLoginCurrencyCode());
 				childCreditDebitNote.setTotal(parentCreditDebitNote.getAfterExchangeGrandTotal());
 			}
 		} else {
-			childCreditDebitNote.setLoginCurrencyCode(parentCreditDebitNote.getLoginCurrencyCode());
 			childCreditDebitNote.setTotal(parentCreditDebitNote.getTotal());
 		}
+		childCreditDebitNote.setLoginCurrencyCode(loginCurrencyCode);
 		childCreditDebitNote.setDiscountType(parentCreditDebitNote.getDiscountType());
 		childCreditDebitNote.setDiscountValue(parentCreditDebitNote.getDiscountValue());
 		childCreditDebitNote.setDiscountTotal(parentCreditDebitNote.getDiscountTotal());
@@ -3778,7 +3778,7 @@ public class InvoiceServiceImpl implements InvoiceService {
 			newLocationId = orgLocationId;
 		}
 		
-		CreditDebitNote creditDebitNote = invoiceDao.getCreditDebitNoteByIdAndOrglocationId(newId, newLocationId);
+		CreditDebitNote creditDebitNote = invoiceDao.getCreditDebitNoteByIdAndOrglocationId(id, orgLocationId);
 		// get CreditDebit Line Items 
 		List<CreditDebitLineItems> lineItemsList = invoiceDao.getCreditDebitLineItemsListByNoteIdAndLocationId(newId, newLocationId);
 		lineItemsList.forEach(lineItem->{

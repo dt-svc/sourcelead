@@ -741,7 +741,7 @@ function  conversionRate(){
 				success :function(response) {
 					if(response.object !='' && response.object != 'undefined' && response.object != null){
 //						var json = JSON.parse(data);
-						$("#afterExchangeGrandTotal").val(response.object.exchangeRate);
+						$("#afterExchangeGrandTotal").val((response.object.exchangeRate).toFixed(2));
 						$("#exchangeCurrencyRate").val(response.object.exchangeCurrency);
 						$("#vendorCurrencyCode").html(response.object.vendorCurrencyCode);
 						$("#convertedCurrencyCode").html(currencyCode +' to '+ response.object.vendorCurrencyCode);

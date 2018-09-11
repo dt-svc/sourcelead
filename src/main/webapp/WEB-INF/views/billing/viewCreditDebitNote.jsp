@@ -11,6 +11,7 @@
 </style>
 <script type="text/javascript">
 $(document).ready(function(){
+	var noteType = '${noteType}';
 	getViewCreditDebitNote();
 	
 });
