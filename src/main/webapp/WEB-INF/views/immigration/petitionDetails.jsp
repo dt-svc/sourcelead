@@ -303,7 +303,7 @@
 									<input type="hidden" id="candidateId" name="candidateId" value="${immigrationDTO.candidateId}"/>
 								</div>
 							<span class="col-md-2 noPad clearfix">
-							<a href=">" target="_blank"><i class="fa fa-plus btn btn-default pull-right minHeBtn"></i></a> 
+							<a href="<c:url value="/app/userCreation" />" target="_blank"><i class="fa fa-plus btn btn-default pull-right minHeBtn"></i></a> 
 							</span>	
 							</div>
 							</div>
@@ -333,7 +333,7 @@
 									<input type="hidden" id="candidateId" name="candidateId" value="${immigrationDTO.candidateId}"/>
 								</div>
 							<span class="col-md-2 noPad clearfix">
-							<a href="<c:url value="" />" target="_blank"><i class="fa fa-plus btn btn-default pull-right minHeBtn"></i></a> 
+							<a href="<c:url value="/app/userCreation" />" target="_blank"><i class="fa fa-plus btn btn-default pull-right minHeBtn"></i></a> 
 							</span>
 							</div>
 							</div>
