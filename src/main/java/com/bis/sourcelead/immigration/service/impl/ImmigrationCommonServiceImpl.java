@@ -2050,7 +2050,7 @@ public class ImmigrationCommonServiceImpl implements ImmigrationCommonService {
 			 writeRow.createCell(31).setCellValue(exportView.getJobId()); 
 		}
 		// dont remove
-		/*if(exportView.getPreviousLcaStartDate() !=null){
+		if(exportView.getPreviousLcaStartDate() !=null){
 			 writeRow.createCell(32).setCellValue(commonUtil.dateStrFromOrgDateFormatter(orgLocations.getDateFormat(),
 					 exportView.getPreviousLcaStartDate())); 
 		}
@@ -2064,7 +2064,7 @@ public class ImmigrationCommonServiceImpl implements ImmigrationCommonService {
 		if(exportView.getPreviousLcaRate() !=null){
 			 writeRow.createCell(35).setCellValue(exportView.getPreviousLcaRate()); 
 		}
-		if(exportView.getPreviousEmployerLocation() !=null){
+		/*if(exportView.getPreviousEmployerLocation() !=null){
 			 writeRow.createCell(37).setCellValue(exportView.getPreviousEmployerLocation()); 
 		}*/
 		return createExcelsheet;
