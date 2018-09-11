@@ -3820,8 +3820,13 @@ public class InvoiceServiceImpl implements InvoiceService {
 		
 		if(creditDebitNote.getOrgRelations().getResponderLocationId().getId().equals(orgLocationId)){
 			creditDebitNote.setClientOrVendorName(creditDebitNote.getOrgRelations().getLocationId().getOrgLocationName());
-			creditDebitNote.setContactsMultipleNames(creditDebitNote.getOwnerUser().getFullName());
-			creditDebitNote.setContactsMultipleEmails(creditDebitNote.getOwnerUser().getEmail());
+			List<User> contactsUserList = userDao.getUsersListUsingMultipleStringIds(creditDebitNote.getContactUser(),creditDebitNote.getOrgRelations().getLocationId().getId());
+			contactsUserList.forEach(contactUser->{
+				contactName.append(contactUser.getFullName()).append(" , ").toString();	
+				contactEmails.append(contactUser.getEmail()).append(" , ").toString();
+			});
+			creditDebitNote.setContactsMultipleNames(contactName.deleteCharAt(contactName.length() - 2).toString());
+			creditDebitNote.setContactsMultipleEmails(contactEmails.deleteCharAt(contactEmails.length() - 2).toString());
 		}
 		
 		response.setObject(creditDebitNote);
