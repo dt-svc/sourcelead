@@ -1,5 +1,6 @@
 package com.bis.sourcelead.util;
 
+import java.io.File;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -48,6 +49,7 @@ import com.bis.sourcelead.constants.ImmigrationConstants;
 import com.bis.sourcelead.dao.ContractsTemplateDao;
 import com.bis.sourcelead.dao.LeaveDao;
 import com.bis.sourcelead.dao.TimeZoneDao;
+import com.bis.sourcelead.dto.FileInfo;
 import com.bis.sourcelead.elk.index.CandidateIndex;
 import com.bis.sourcelead.elk.index.RequirementIndex;
 import com.bis.sourcelead.elk.index.helper.CandidateIndexHelper;
@@ -64,6 +66,7 @@ import com.bis.sourcelead.entity.EmailAttachment;
 import com.bis.sourcelead.entity.EmailConfigurationFromMail;
 import com.bis.sourcelead.entity.EmailMessage;
 import com.bis.sourcelead.entity.EmailScenario;
+import com.bis.sourcelead.entity.EmailScenarioConfiguration;
 import com.bis.sourcelead.entity.Holiday;
 import com.bis.sourcelead.entity.HolidayShift;
 import com.bis.sourcelead.entity.Immigration;
@@ -95,6 +98,7 @@ import com.bis.sourcelead.service.AssociateBalanceLeaveService;
 import com.bis.sourcelead.service.CampaignService;
 import com.bis.sourcelead.service.CandidateHotListService;
 import com.bis.sourcelead.service.CandidateOffBoardingService;
+import com.bis.sourcelead.service.CandidateResumesService;
 import com.bis.sourcelead.service.CandidateService;
 import com.bis.sourcelead.service.ContractsTemplateService;
 import com.bis.sourcelead.service.EmailScenarioConfigurationService;
@@ -124,6 +128,7 @@ import com.bis.sourcelead.service.TimeZoneService;
 import com.bis.sourcelead.service.TimesheetSubmissionsService;
 import com.bis.sourcelead.service.UserRoleService;
 import com.bis.sourcelead.service.UserService;
+import com.bis.sourcelead.web.FileController;
 import com.docusign.esign.api.AuthenticationApi;
 import com.docusign.esign.api.EnvelopesApi;
 import com.docusign.esign.client.ApiClient;
@@ -200,6 +205,12 @@ public class EMailJobScheduler {
 	
 	@Autowired
 	TimesheetSubmissionsService timesheetSubmissionsService;
+	
+	@Autowired
+	CandidateResumesService candidateResumesService;
+	
+	@Autowired
+	SourceleadResumeParser sourceleadResumeParser;
 	
 	@Autowired
 	RequirementInterviewService requirementInterviewService;
@@ -377,9 +388,58 @@ public class EMailJobScheduler {
 			logger.error("ERROR in " + e.getMessage());
 		}
     }
-    
+	//@Scheduled(cron = "0 0 0/1 ? 1/1 * *") // Scheduled for every one hour 
+	 @Scheduled(cron = "0 0/30 * 1/1 * ?") // Scheduled for every 30 Minutes.
+	//@Scheduled(cron = "0/30 * * * * *") // used for dev testing run for every 30 seconds..
+	@Async
+	public void runJobSchedulerEmailJobParsingAtOrgLevel() { // reads the email configured at org level and parse the
+																// Jobs(attachments)in inbox folder.
+		// Saves the resumes at org level specific folder and updates the org level
+		// candidates table with parsed information.
+		logger.info("******************  Parsing resumes is Started each org level ! **********");
+		System.out.println("****************** Parsing resumes is Started..!..! **********");
+		try {
+			List<Org> orgList = orgService.getOrgs();
+			User user = null;
+			for (Org org : orgList) {
+				List<OrgLocations> orgLocations = orgLocationService.getAllOrgLocationsByOrgId(org.getId());
+
+				for (OrgLocations orgLoc : orgLocations) {
+					user = orgLoc.getUser();
+
+					OrgLocations loginOrgLocation = orgLocationService.getOrgLocations(orgLoc.getId());
+
+					Long orgLocationId = loginOrgLocation.getId();
+					List<EmailScenarioConfiguration> emailsList = emailScenarioconService.getConfParserMailList(orgLocationId, Constants.JOB_PARSING);
+						File tempfolder = null;
+					for(EmailScenarioConfiguration email :  emailsList) {
+						System.out.println(" Email id is :" + email.getEmailId());
+						tempfolder = new File(staticPath+ System.getProperty("file.separator") +"temp" );
+						if (!tempfolder.exists()) tempfolder.mkdirs(); // if not exist create the folder with path.
+						 new ReadEmail().readEMailAttachments(orgLocationId, email, tempfolder);  //downloads the attachments from the configured email by user level to temp folder.
+					
+					
+						 List<File> fileList = Arrays.asList(tempfolder.listFiles());
+					
+	                    if(fileList.size() > 0) { // if no email attachment found skip the parsing.
+						List<FileInfo> fileInfoList = commonUtil.getListOfFileInfo(fileList, "resumes",	loginOrgLocation.getOrg().getId(), orgLocationId);
+						FileUploadUtil.processConfiguredEmailShedulerForResumesParsing(fileInfoList, staticPath, sourceleadResumeParser, candidateService,
+								                    						candidateResumesService, loginOrgLocation.getCountry(), loginOrgLocation,user);
+	                    }
+					}
+				}
+
+			}
+			logger.debug("******************  parsing resume Jobs on org locations Completed **********************");
+			System.out.println("=========== parsing resume Jobs on org locations Completed =======================");
+
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
+	
 	  @Scheduled(cron = "0 0 9 1/1 * ?") // Scheduled for every day at @ 9.a.m on united states time.
-   // @Scheduled(cron = "0/30 * * * * *") // used for dev testing run for every 10 seconds..
+   // @Scheduled(cron = "0/30 * * * * *") // used for dev testing run for every 30 seconds..
 	@Async
 	public void runJobSchedulerDailyUpdateLCA() { // check if LCA is expired on not on daily basis, if expired updating
 													// LCA status in Database.

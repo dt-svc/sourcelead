@@ -20,7 +20,7 @@
                     <div class="col-md-7 clearfix noPad mt">
                         <div class="col-md-12 noPad mb" id="templateNameDiv">
                             <label class="col-md-3">Template Name<span class="text-danger paddingLeft">*</span></label>
-                            <div class="col-md-9"><input type="text" id="templateName" value="${not empty templateDTO.templateName ? templateDTO.templateName : ''}" name="templateName" class="form-control" field-name="Template Name" data-validation="required validate_length length2-100 validate_AlphaNumber" onkeyup="validateTemplateName();" onblur="validateTemplateName();"></div>
+                            <div class="col-md-9"><input type="text" id="templateName" value="${not empty templateDTO.templateName ? templateDTO.templateName : ''}" name="templateName" class="form-control" field-name="Template Name" data-validation="required validate_length length2-100 validate_AlphaNumber" onkeyup="immigration.validateTemplateName();" onblur="immigration.validateTemplateName();"></div>
                         </div> 
                         <div class="col-md-12 noPad mb">
                             <label class="col-md-3">Description<span class="text-danger paddingLeft">*</span></label>

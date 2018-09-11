@@ -5,6 +5,7 @@
 
 <script>
 $(document).ready(function(){
+	$("#approveDivID").addClass('disabled').removeAttr("onclick"); 
 	$("#approveDiv").hide();
 	var status = "${approverStatus}";
 	getReviewPayroll(status); 
@@ -36,7 +37,7 @@ function approvePayrollTab(){
     <div class="tabsMenu clearfix">
    		<ul class="list-unstyled">
 		   <li class="current"><a onclick="reviewPayroll();">Review Payroll</a></li>
-		   <li><a  onclick="approvePayrollTab();">Approve Payroll</a></li>
+		   <li><a id="approveDivID"  onclick="approvePayrollTab();">Approve Payroll</a></li>
 	   </ul>
    </div>
    
