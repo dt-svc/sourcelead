@@ -654,7 +654,9 @@ function getViewInvoice(){
 	        		
 					result = result +'<div class="invoiceview_area clearfix">';
 					result = result +'<div class="form-horizontal row">';
-					result = result +'<div class="col-md-6"> ';
+					result = result +'<div class="col-md-4"> ';
+					result = result +'<div class="col-md-12"> ';
+					result = result +'<div class="row"> ';
 					if(invoiceType == "Receivable"){
 						result = result +' <label class="col-md-4 control-label">Client :</label>';
 					}
@@ -678,49 +680,56 @@ function getViewInvoice(){
 					'</sec:authorize>';
 					
 					result = result +'</div>                                                               ';
+					result = result +'</div>';
 					result = result +'</div>                                                                 ';
 					
 					if(report.invoiceStatus == "Rejected"){
-					result = result +'            <div class="col-md-6">                                                 ';
-					result = result +'              <label class="col-md-4 control-label">Invoice Status :</label>        ';
+					result = result +'            <div class="col-md-12">';
+					result = result +'            <div class="row">';
+					result = result +'              <label class="col-md-4 control-label paddig">Invoice Status :</label>        ';
 					result = result +'              <div class="col-md-8 addressInvoice">                                ';
 					result = result +'                <p>'+report.invoiceStatus+'</p>';
 					result = result +'              </div>';
+					result = result +'              </div>';
 					result = result +'            </div>';
 					}
-					result = result +'<div class="col-md-6">                                                 ';
+					result = result +'<div class="col-md-12">                                                 ';
+					result = result +'            <div class="row">';
 					result = result +'<label class="col-md-4 control-label">Contact :</label>         ';
 					result = result +'<div class="col-md-8">                                               ';
 					result = result +'<label>'+report.clientContactName+'</label>';
 					result = result +'              </div>                                                               ';
-					result = result +'            </div>                                                                 ';
+					result = result +'            </div>';
+					result = result +'            </div>';
+					result = result +'            </div>';
 					/* result = result +'            <div class="col-md-6">                                                 ';
 					result = result +'              <label class="col-md-4 control-label">Contact Email :</label>           ';
 					result = result +'              <div class="col-md-8">                                               ';
 					result = result +'                <label>'+clientContactEmail+'</label>                         ';
 					result = result +'              </div>                                                               ';
 					result = result +'            </div>                                                                 '; */
+					result = result +'            <div class="col-md-4">';
 					if(invoiceType == "Payables"){
-						result = result +'            <div class="col-md-6">                                                 ';
+						result = result +'            <div class="row">';
 						result = result +'              <label class="col-md-4 control-label">Bill Id :</label>             ';
 						result = result +'              <div class="col-md-8">                                               ';
 						result = result +'                <label>'+report.invoiceId+'</label>                                          ';
 						result = result +'              </div>                                                               ';
 						result = result +'            </div>                                                                 ';
-						result = result +'            <div class="col-md-6">                                                 ';
+						result = result +'            <div class="row">                                                 ';
 						result = result +'              <label class="col-md-4 control-label">Bill Date :</label>           ';
 						result = result +'              <div class="col-md-8">                                               ';
 						result = result +'                <label>'+invoiceDateStr+'</label>                                          ';
 						result = result +'              </div>                                                               ';
 						result = result +'            </div>                                                                 ';
 					}else{
-						result = result +'            <div class="col-md-6">                                                 ';
+						result = result +'            <div class="row">                                                 ';
 						result = result +'              <label class="col-md-4 control-label">Invoice Id :</label>             ';
 						result = result +'              <div class="col-md-8">                                               ';
 						result = result +'                <label>'+report.invoiceId+'</label>                                          ';
 						result = result +'              </div>                                                               ';
 						result = result +'            </div>                                                                 ';
-						result = result +'            <div class="col-md-6">                                                 ';
+						result = result +'            <div class="row">                                                 ';
 						result = result +'              <label class="col-md-4 control-label">Invoice Date :</label>           ';
 						result = result +'              <div class="col-md-8">                                               ';
 						result = result +'                <label>'+invoiceDateStr+'</label>                                          ';
@@ -728,38 +737,43 @@ function getViewInvoice(){
 						result = result +'            </div>                                                                 ';
 					}
 					
-					result = result +'            <div class="col-md-6">                                                 ';
+					result = result +'            <div class="row">                                                 ';
 					result = result +'              <label class="col-md-4 control-label">Payment Term :</label>           ';
 					result = result +'              <div class="col-md-8">                                               ';
 					result = result +'                <label>'+paymentFrequency+'</label>                                             ';
 					result = result +'              </div>                                                               ';
-					result = result +'            </div>                                                                 ';
-					result = result +'            <div class="col-md-6">                                                 ';
-					result = result +'              <label class="col-md-4 control-label">Due Date :</label>               ';
-					result = result +'              <div class="col-md-8">                                               ';
+					result = result +'            </div>';
+					
+					result = result +'            </div>';
+					
+					result = result +'            <div class="col-md-4">';
+					
+					result = result +'            <div class="row">';
+					result = result +'              <label class="col-md-5 control-label">Due Date :</label>               ';
+					result = result +'              <div class="col-md-7">                                               ';
 					result = result +'                <label>'+dueDateStr+'</label>                                          ';
 					result = result +'              </div>                                                               ';
 					result = result +'            </div>                                                                 ';
                                         if(report.invoiceCategory != "expenses" || invoiceType == "Payables"){
-                                            result = result +'            <div class="col-md-6">                                                 ';
-                                            result = result +'              <label class="col-md-4 control-label">Due Amount :</label>               ';
-                                            result = result +'              <div class="col-md-8">';
+                                            result = result +'            <div class="row">                                                 ';
+                                            result = result +'              <label class="col-md-5 control-label">Due Amount :</label>               ';
+                                            result = result +'              <div class="col-md-7">';
                                             result = result +'                <label>'+( typeof dueAmount === 'number' ? dueAmount.toFixed(2) : dueAmount)+'</label>';
                                             result = result +'                <label>'+(report.invoiceStatus == "Accepted" && report.paymentAccountDTO != null && typeof dueAmount === 'number' && report.paymentAccountDTO.accountType == "WEPAY" && invoiceType === "Payables" ? "<span class='receiveBtn pull-left' onclick='initPaymentOnline(\""+invoiceUUID+"\", "+dueAmount+");'>Pay</span>" : "")+'</label>';
                                             result = result +'              </div>                                                               ';
                                             result = result +'            </div>';
                                         }
 					if(invoiceType == "Payables"){
-						result = result +'            <div class="col-md-6">                                                 ';
-						result = result +'              <label class="col-md-4 control-label">Billing Address :</label>        ';
-						result = result +'              <div class="col-md-8 addressInvoice">                                ';
+						result = result +'            <div class="row">                                                 ';
+						result = result +'              <label class="col-md-5 control-label">Billing Address :</label>        ';
+						result = result +'              <div class="col-md-7 addressInvoice">                                ';
 						result = result +'                <p>'+billingAddress+'</p>';
 						result = result +'              </div>';
 						result = result +'            </div>';
 					}else{
-						result = result +'            <div class="col-md-6">';
-						result = result +'              <label class="col-md-4 control-label">Invoice Address :</label>        ';
-						result = result +'              <div class="col-md-8 addressInvoice">                                ';
+						result = result +'            <div class="row">';
+						result = result +'              <label class="col-md-5 control-label">Invoice Address :</label>        ';
+						result = result +'              <div class="col-md-7 addressInvoice">                                ';
 						result = result +'                <p>'+billingAddress+'</p>';
 						result = result +'              </div>';
 						result = result +'            </div>';
@@ -769,7 +783,7 @@ function getViewInvoice(){
 					
 					
 					
-					
+					result = result +'          </div>';
 					result = result +'          </div>';
 					result = result +'      </div>';
 					
