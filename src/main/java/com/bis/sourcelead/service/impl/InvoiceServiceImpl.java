@@ -3445,7 +3445,7 @@ public class InvoiceServiceImpl implements InvoiceService {
       		}
       		creditDebitNote.setNoteType(Constants.DEBIT_NOTE);
         }
-        creditDebitNote.setOwnerUser(user);
+        creditDebitNote.setOwnerUser(user.getId().toString());
         creditDebitNote.setNoteStatus(saveType);
         creditDebitNote.setSubTotal(new BigDecimal(creditDebitNoteDTO.getSubTotalAmount()));
         creditDebitNote.setTotal(new BigDecimal(creditDebitNoteDTO.getGrandTotal()));
@@ -3540,15 +3540,11 @@ public class InvoiceServiceImpl implements InvoiceService {
 		childCreditDebitNote.setOrgRelations(parentCreditDebitNote.getOrgRelations());
 		childCreditDebitNote.setOrgLocations(parentCreditDebitNote.getResponderLocation());
 		childCreditDebitNote.setResponderLocation(parentCreditDebitNote.getOrgLocations());
-		String contactUser = parentCreditDebitNote.getContactUser();
-		String conuserStr[] = contactUser.split(",");
-		String conUserId = conuserStr[0];
-		User owner = userService.getUserById(Long.parseLong(conUserId));
-		childCreditDebitNote.setOwnerUser(owner);
+		childCreditDebitNote.setOwnerUser(parentCreditDebitNote.getContactUser());
 		childCreditDebitNote.setNoteStatus(Constants.INVOICE_RECEIVED);
 		childCreditDebitNote.setCreditNoteDate(parentCreditDebitNote.getCreditNoteDate());
 		childCreditDebitNote.setStatus(parentCreditDebitNote.getStatus());
-		childCreditDebitNote.setContactUser(parentCreditDebitNote.getOwnerUser().getId().toString());
+		childCreditDebitNote.setContactUser(parentCreditDebitNote.getOwnerUser());
 		childCreditDebitNote.setParentCreditDebitNote(parentCreditDebitNote);
 		childCreditDebitNote.setReferenceNumber(parentCreditDebitNote.getReferenceNumber());
 		childCreditDebitNote.setReason(parentCreditDebitNote.getReason());
@@ -3608,6 +3604,9 @@ public class InvoiceServiceImpl implements InvoiceService {
 		
 		for(CreditDebitNoteLineItemsDTO creditDebitLineItemsDTO :creditDebitNoteDTO.getCreditDebitNoteLineItems())
 		{
+			if (creditDebitLineItemsDTO.getPrice() == null) {
+                continue;
+            }
 			CreditDebitLineItems creditDebitLineItems = new CreditDebitLineItems();
 			
 			if(StringUtils.isNotBlank(creditDebitLineItemsDTO.getLineItemId())){
@@ -3714,7 +3713,7 @@ public class InvoiceServiceImpl implements InvoiceService {
 				creditDebitNoteListDTO.setApproverUserSplitId(appUserList);
 				System.out.println(appUserList.size());
 			}
-			creditDebitNoteListDTO.setOwnerUser(creditDebitNote.getOwnerUser().getId().toString());
+			creditDebitNoteListDTO.setOwnerUser(creditDebitNote.getOwnerUser());
 			creditDebitList.add(creditDebitNoteListDTO);	
 		});
 		
