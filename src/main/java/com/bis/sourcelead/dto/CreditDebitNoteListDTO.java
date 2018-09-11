@@ -30,6 +30,11 @@ public class CreditDebitNoteListDTO extends SearchDTO {
 	private String generatedId;
 	private String creditDebitNoteStatus;
 	private String creditDebitUUID;
+	private String exchangeCurrencyRate;
+	private String afterExchangeGrandTotal;
+	private String conversionFrom;
+	private String loginCurrencyCode;
+	private String vendorCurrencyCode;
 	
 	 
 	public List<FileInfo> getFileInfo() {
@@ -188,6 +193,36 @@ public class CreditDebitNoteListDTO extends SearchDTO {
 	}
 	public void setApproverUserSplitId(List<String> approverUserSplitId) {
 		this.approverUserSplitId = approverUserSplitId;
+	}
+	public String getExchangeCurrencyRate() {
+		return exchangeCurrencyRate;
+	}
+	public void setExchangeCurrencyRate(String exchangeCurrencyRate) {
+		this.exchangeCurrencyRate = exchangeCurrencyRate;
+	}
+	public String getAfterExchangeGrandTotal() {
+		return afterExchangeGrandTotal;
+	}
+	public void setAfterExchangeGrandTotal(String afterExchangeGrandTotal) {
+		this.afterExchangeGrandTotal = afterExchangeGrandTotal;
+	}
+	public String getConversionFrom() {
+		return conversionFrom;
+	}
+	public void setConversionFrom(String conversionFrom) {
+		this.conversionFrom = conversionFrom;
+	}
+	public String getLoginCurrencyCode() {
+		return loginCurrencyCode;
+	}
+	public void setLoginCurrencyCode(String loginCurrencyCode) {
+		this.loginCurrencyCode = loginCurrencyCode;
+	}
+	public String getVendorCurrencyCode() {
+		return vendorCurrencyCode;
+	}
+	public void setVendorCurrencyCode(String vendorCurrencyCode) {
+		this.vendorCurrencyCode = vendorCurrencyCode;
 	}
 	
 	

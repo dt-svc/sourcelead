@@ -1983,6 +1983,17 @@ return responseList;
 		return responseList;
 	}
 	
+	@RequestMapping(value = "/getApproversListForCreditDebitNote", method = RequestMethod.GET)
+	@ResponseBody
+	public ResponseList<User> getApproversListForCreditDebitNote(HttpServletRequest request, HttpServletResponse response) throws Exception
+	{
+		ResponseList<User> responseList = new ResponseList<>();
+		OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+		List<User> approversList = userService.getOwnersByOrgLocationId(orgLocation.getId());
+		responseList.setData(approversList);
+		return responseList;
+	}
+	
 	@RequestMapping(value = "/getClientBasedInvoiceList", method = RequestMethod.POST)
 	@ResponseBody
 	public ResponseList<Invoice> getClientBasedInvoiceList(@RequestParam(value = "invoiceType", required = false) String invoiceType, @RequestParam(value = "invoiceUUID", required = false) String invoiceUUID, HttpServletRequest request, HttpServletResponse response) throws Exception
