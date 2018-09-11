@@ -2182,9 +2182,9 @@ public class ImmigrationCommonDaoImpl implements ImmigrationCommonDao {
 					" DATE_FORMAT(l.START_DATE, '%Y-%m-%d') as startDate, " + 
 					" DATE_FORMAT(l.END_DATE, '%Y-%m-%d') as endDate " + 
 					" FROM " + 
-					" lca l, " + 
-					" lca_history lh, " + 
-					" lca_place_of_employment lpe " + 
+					" LCA l, " + 
+					" LCA_HISTORY lh, " + 
+					" LCA_PLACE_OF_EMPLOYMENT lpe " + 
 					" WHERE " + 
 					"    l.id = lh.LCA_ID AND l.id = lpe.LCA_ID " + 
 					" AND lh.IMMIGRATION_ID = :immigrationId";
