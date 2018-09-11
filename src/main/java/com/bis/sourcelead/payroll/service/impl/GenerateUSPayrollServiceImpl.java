@@ -946,9 +946,9 @@ public class GenerateUSPayrollServiceImpl implements GenerateUSPayrollService{
 						overTimeHours = Double.parseDouble(pay.getOverTimeHours());
 					}
 					payrollDTO.setOvertimeHours(overTimeHours);
-//					if(pay.getPayType() != null) {
+					if(pay.getPayType() != null) {
 						payrollDTO.setPayType(pay.getPayType());
-//					}
+					}
 					payrollDTO.setApproverStatus(pay.getSubmitForAproverStatus());
 //					if(PayrollConstant.DRAFT.equalsIgnoreCase(pay.getSubmitForAproverStatus())) {
 						list.add(payrollDTO);	
