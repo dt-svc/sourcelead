@@ -17,7 +17,8 @@
       <div class="pull-left">
         <h2>Add Debit Note</h2>
       </div>
-      <div class="pull-right brud-crum">Home &raquo; Vendor &raquo; Debit Note</div>
+      <div class="pull-right brud-crum"><a href="<c:url value='${appPath}/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a> &raquo; <a href="<c:url value='${appPath}/debitNoteList'/>">Debit Note List</a> &raquo; Debit Note</div>
+      
     </section>
     <div class="content-area content-new clearfix">
     <div id="creditDebitLoading"></div>
