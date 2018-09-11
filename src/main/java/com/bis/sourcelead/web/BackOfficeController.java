@@ -399,20 +399,23 @@ private static final Logger logger = LoggerFactory.getLogger(BackOfficeControlle
 	     model.addObject("actionId",action.getId());
 	     List<SourceleadSectionDTO> sections = commonUtil.getSourceleadFormSectionsByActionId(request, action.getId());
 	     model.addObject("sourceleadSectionList",sections); 
-		if(assetUUID != null) {
+		if(assetUUID != "" && assetUUID != null) {
 			Asset asset = assetService.getAssetByUUID(assetUUID);
 			model.addObject("assetAssignData",asset);
+			if(asset.getIssueDate() != null) {
+				String issueDateStr = commonUtil.dateStrFromOrgDateFormatter(asset.getOrgLocations().getDateFormat(),asset.getIssueDate());
+				model.addObject("issueDateStr",issueDateStr);
+			}
 			
-			String issueDateStr = commonUtil.dateStrFromOrgDateFormatter(asset.getOrgLocations().getDateFormat(),asset.getIssueDate());
-			model.addObject("issueDateStr",issueDateStr);
+			if(asset.getPurchaseDate() != null) {
+				String purchaseDate = commonUtil.dateStrFromOrgDateFormatter(asset.getOrgLocations().getDateFormat(),asset.getPurchaseDate());
+				model.addObject("purchaseDate",purchaseDate);
+			}
 			
-			String purchaseDate = commonUtil.dateStrFromOrgDateFormatter(asset.getOrgLocations().getDateFormat(),asset.getPurchaseDate());
-			model.addObject("purchaseDate",purchaseDate);
-			
-			String depreciationDate = commonUtil.dateStrFromOrgDateFormatter(asset.getOrgLocations().getDateFormat(),asset.getDepreciationDate());
-			model.addObject("depreciationDate",depreciationDate);
-			
-			
+			if(asset.getDepreciationDate() != null) {
+				String depreciationDate = commonUtil.dateStrFromOrgDateFormatter(asset.getOrgLocations().getDateFormat(),asset.getDepreciationDate());
+				model.addObject("depreciationDate",depreciationDate);
+			}
 			
 			List<AssetAssign> assignAssetList = assetService.getAssignAssetListByAssetId(asset.getId());
 			for(AssetAssign aa :assignAssetList) {
