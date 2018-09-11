@@ -492,12 +492,22 @@ public class EmployeePayroll {
 
 	public BigDecimal getAdvanceAmount()
 	{
-		return advanceAmount;
+		if(advanceAmount != null) {
+			return advanceAmount;
+		}else {
+			return BigDecimal.ZERO;
+		}
+		
 	}
 
 	public BigDecimal getLoanAmount()
 	{
-		return loanAmount;
+		if(loanAmount != null) {
+			return loanAmount;
+		}else {
+			return BigDecimal.ZERO;
+		}
+		
 	}
 
 	public void setPayType(String payType)

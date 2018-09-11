@@ -453,7 +453,7 @@ function statusvalidating(id){
 								<a class="action newAdBtn mr5" onclick="getActions();" href="javascript:void(0)">+ Add <i class="fa fa-caret-down"></i></a>
 								<div class="action-pop">
 									<span> 
-									<a href="<c:url value='${appPath}/requirement'/>" >+ Job</a>
+									<a href="<c:url value='${appPath}/requirement'/>" >Job</a>
 									<sec:authorize access="hasAnyRole('ROLE_CREATE_REQUIREMENT')">
 										<a href="<c:url value='${appPath}/uploadJobs'/>">Import</a>
 									</sec:authorize>									

@@ -63,6 +63,7 @@ private static final long serialVersionUID = 1L;
 	private String address2;
 	
 	@Column(name = "LOCATION")
+	@Type(type="text")
 	private String location;
 	
 	@Column(name = "COUNTRY")
