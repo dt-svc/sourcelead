@@ -129,7 +129,13 @@ public class EmailScenarioConfigurationRestController {
 		 User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
 		 OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 		 String returnValue="";
-		 EmailScenarioConfiguration emailConfig = new EmailScenarioConfiguration();;
+		 EmailScenarioConfiguration emailConfig = null;
+				 if(StringUtils.isNotBlank(emailConfigurationDTO.getEmailUUID())){
+					 emailConfig = emailScenarioconService.getParserEmailsDetailsByUUID(emailConfigurationDTO.getEmailUUID());// loads existed record to upate.
+				 }else {
+					 emailConfig = new EmailScenarioConfiguration();
+				 }
+				
 			 if(emailConfigurationDTO.getEmailId() != null){
 				 emailConfig.setEmailId(emailConfigurationDTO.getEmailId()); 
 			 }
