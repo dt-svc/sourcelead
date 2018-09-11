@@ -2501,7 +2501,7 @@ private void saveImportedTimeSheetRecords(Projects project,String projectTaskUUI
 			   // Prevailing wage Currence validation
 			   
 			   if (StringUtils.isBlank(dataMigrationDTOJsonCopy.getString("prevailWageCurr")) || dataMigrationDTOJsonCopy.getString("prevailWageCurr").equals("null")) {
-					errorSet.put("prevailWageCurr", "prevail Wage Currency is missing"); 
+					errorSet.put("prevailWageCurr", "prevailing Wage Currency is missing"); 
 					}else if(!dataMigrationDTOJsonCopy.getString("prevailWageCurr").equals("null") &&  !StringUtils.isEmpty(dataMigrationDTOJsonCopy.getString("prevailWageCurr"))) {
 					String currency = dataMigrationDTOJsonCopy.getString("prevailWageCurr").trim().toLowerCase();
 					if(currency.equalsIgnoreCase("INR")) {
@@ -2525,7 +2525,7 @@ private void saveImportedTimeSheetRecords(Projects project,String projectTaskUUI
 				String rateRegEx = "^[0-9\b]+$";
 				
 				if (StringUtils.isBlank(dataMigrationDTOJsonCopy.getString("prevailWageRate")) || dataMigrationDTOJsonCopy.getString("prevailWageRate").equals("null")) {
-					errorSet.put("prevailWageRate", "prevail Wage Rate is missing"); 
+					errorSet.put("prevailWageRate", "prevailing Wage Rate is missing"); 
 					
 				  }else if (!dataMigrationDTOJsonCopy.get("prevailWageRate").toString().equalsIgnoreCase("") && !dataMigrationDTOJsonCopy.get("prevailWageRate").toString().equalsIgnoreCase("null") && !dataMigrationDTOJsonCopy.get("prevailWageRate").toString().equalsIgnoreCase("undefined")) {
 					
