@@ -57,6 +57,7 @@ import com.bis.sourcelead.service.BoUploadedFilesService;
 import com.bis.sourcelead.service.ChaseUploadFileService;
 import com.bis.sourcelead.service.ComericaFileUploadService;
 import com.bis.sourcelead.service.EmployeesService;
+import com.bis.sourcelead.service.OrgLocationService;
 import com.bis.sourcelead.service.ShiftService;
 import com.bis.sourcelead.service.SourceleadActionsService;
 import com.bis.sourcelead.service.SourceleadFormSectionsService;
@@ -64,6 +65,7 @@ import com.bis.sourcelead.service.SourceleadTagsService;
 import com.bis.sourcelead.service.UserRoleService;
 import com.bis.sourcelead.util.CommonUtil;
 import com.bis.sourcelead.util.SessionMaintainanceData;
+import com.bis.sourcelead.util.SourceLeadRandomCodeHelper;
 import com.bis.sourcelead.util.SourceLeadSessionManager;
 import com.bis.sourcelead.validation.FileValidator;
 import com.thoughtworks.xstream.XStream;
@@ -127,6 +129,9 @@ private static final Logger logger = LoggerFactory.getLogger(BackOfficeControlle
 	
 	@Autowired
 	private SourceleadTagsService sourceleadTagsService;
+	
+	@Autowired
+	private OrgLocationService orgLocationService;
 	
 	@RequestMapping(value = "/finance")
 	public ModelAndView finance(HttpServletRequest request) throws Exception {
@@ -281,7 +286,7 @@ private static final Logger logger = LoggerFactory.getLogger(BackOfficeControlle
 	
 	
 	@RequestMapping(value = "/assetManagementSummary")
-	public ModelAndView assetManagementSummary(@RequestParam(value="assetId", required=false) Long assetId,HttpServletRequest request) throws Exception {
+	public ModelAndView assetManagementSummary(@RequestParam(value="assetUUID", required=false) String assetUUID,HttpServletRequest request) throws Exception {
 	
 		OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 
@@ -308,7 +313,7 @@ private static final Logger logger = LoggerFactory.getLogger(BackOfficeControlle
 	     model.addObject("sourceleadSectionList",sections);
 		
 		request.getSession().setAttribute("sessionData",sessionData);
-		Asset asset = assetService.getAssetById(assetId);
+		Asset asset = assetService.getAssetByUUID(assetUUID);
 		model.addObject("asset",asset);
 		
 		return model;
@@ -387,29 +392,40 @@ private static final Logger logger = LoggerFactory.getLogger(BackOfficeControlle
 	}
 	
 	@RequestMapping(value = "/addAndEditAssetAssign", method = RequestMethod.POST)
-	public ModelAndView addAndEditAssetAssign(@RequestParam(value="assetId", required=false) Long assetId,HttpServletRequest request) throws Exception {
+	public ModelAndView addAndEditAssetAssign(@RequestParam(value="assetUUID", required=false) String assetUUID,HttpServletRequest request) throws Exception {
 		OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 		ModelAndView model = new ModelAndView();
 		SourceleadActions action = sourceleadActionsService.getSourceleadActionsByActionRole(Constants.ROLE_ADD_ASSET);
 	     model.addObject("actionId",action.getId());
 	     List<SourceleadSectionDTO> sections = commonUtil.getSourceleadFormSectionsByActionId(request, action.getId());
 	     model.addObject("sourceleadSectionList",sections); 
-		if(assetId != null) {
-			Asset asset = assetService.getAssetById(assetId);
+		if(assetUUID != "" && assetUUID != null) {
+			Asset asset = assetService.getAssetByUUID(assetUUID);
 			model.addObject("assetAssignData",asset);
+			if(asset.getIssueDate() != null) {
+				String issueDateStr = commonUtil.dateStrFromOrgDateFormatter(asset.getOrgLocations().getDateFormat(),asset.getIssueDate());
+				model.addObject("issueDateStr",issueDateStr);
+			}
 			
-			String issueDateStr = commonUtil.dateStrFromOrgDateFormatter(asset.getOrgLocations().getDateFormat(),asset.getIssueDate());
-			model.addObject("issueDateStr",issueDateStr);
+			if(asset.getPurchaseDate() != null) {
+				String purchaseDate = commonUtil.dateStrFromOrgDateFormatter(asset.getOrgLocations().getDateFormat(),asset.getPurchaseDate());
+				model.addObject("purchaseDate",purchaseDate);
+			}
 			
-			String purchaseDate = commonUtil.dateStrFromOrgDateFormatter(asset.getOrgLocations().getDateFormat(),asset.getPurchaseDate());
-			model.addObject("purchaseDate",purchaseDate);
+			if(asset.getDepreciationDate() != null) {
+				String depreciationDate = commonUtil.dateStrFromOrgDateFormatter(asset.getOrgLocations().getDateFormat(),asset.getDepreciationDate());
+				model.addObject("depreciationDate",depreciationDate);
+			}
 			
-			String depreciationDate = commonUtil.dateStrFromOrgDateFormatter(asset.getOrgLocations().getDateFormat(),asset.getDepreciationDate());
-			model.addObject("depreciationDate",depreciationDate);
-			
-			
-			
-			List<AssetAssign> assignAssetList = assetService.getAssignAssetListByAssetId(assetId);
+			List<AssetAssign> assignAssetList = assetService.getAssignAssetListByAssetId(asset.getId());
+			for(AssetAssign aa :assignAssetList) {
+				if(aa.getReturnedOn() != null) {
+					aa.setReturnedOnStr(commonUtil.dateStrFromOrgDateFormatter(orgLocations.getDateFormat(),aa.getReturnedOn()));
+				}
+				if(aa.getAssignedOn() != null) {
+					aa.setAssignedOnStr(commonUtil.dateStrFromOrgDateFormatter(orgLocations.getDateFormat(),aa.getAssignedOn()));
+				}
+			}
 			model.addObject("assignAssetList",assignAssetList);
 			
 			
@@ -424,8 +440,8 @@ private static final Logger logger = LoggerFactory.getLogger(BackOfficeControlle
 						 formFieldId.add(custom);
 					 }
 				 }
-				 if(formFieldId != null && !formFieldId.isEmpty() && assetId != null) {
-				 Map<Long, String[]> assetData = assetCustomFieldService.getAssetCustomFieldDataByAssetId(orgLocations.getOrg().getId(),formFieldId,assetId);
+				 if(formFieldId != null && !formFieldId.isEmpty() && assetUUID != null) {
+				 Map<Long, String[]> assetData = assetCustomFieldService.getAssetCustomFieldDataByAssetId(orgLocations.getOrg().getId(),formFieldId,asset.getId());
 				 Map<Long,String> dataMap = new HashMap<>();
 				 if(assetData!= null && !assetData.isEmpty()) {
 					 for(Entry<Long, String[]> assetCustomData:assetData.entrySet()) {
@@ -440,10 +456,8 @@ private static final Logger logger = LoggerFactory.getLogger(BackOfficeControlle
 				 	}
 				 }
 			 }
-			
-			
-			
 		}
+
 		model.addObject("sourceleadUrl", sourceleadUrl);
 		
 		List<AssetCategory> assetCategoriesList = assetCategoryService.getAssetCategoryListByLocationId(orgLocations.getId());
@@ -458,6 +472,23 @@ private static final Logger logger = LoggerFactory.getLogger(BackOfficeControlle
 		model.setViewName("backOffice/addAssetPopup");
 		return model;
 	}
+	
+	@RequestMapping(value = "/ws/dumpAssetUUID", method = RequestMethod.GET)
+    public void dumpSubmissionTemplateFileds(HttpServletRequest request, HttpServletResponse response) throws Exception
+    {
+		List<OrgLocations> locationsList = orgLocationService.getAllOrgLocations();
+        for (OrgLocations orgLocation : locationsList) {
+        	List<Asset> assetList = assetService.getAssetListByLocationId(orgLocation.getId());
+        	if(assetList != null && !assetList.isEmpty()) {
+        		for(Asset asset : assetList) {
+        			if(asset.getAssetUUID() == null) {
+        				asset.setAssetUUID(SourceLeadRandomCodeHelper.generateRandomUUID());
+        				assetService.saveAsset(asset);
+        			}
+        		}        		
+        	}
+        }
+    }
 	
 	private String toJSON(Object obj){
         XStream xstream = new XStream(new JsonHierarchicalStreamDriver() {
