@@ -38,6 +38,8 @@ public class UserGroupDTO extends SearchDTO{
 	
 	private String groupUUID;
 	
+	private String fromType;
+	
 	private List<User> userList;
 	
 	public Long getId()
@@ -188,6 +190,14 @@ public class UserGroupDTO extends SearchDTO{
 	public void setUserList(List<User> userList)
 	{
 		this.userList = userList;
+	}
+
+	public String getFromType() {
+		return fromType;
+	}
+
+	public void setFromType(String fromType) {
+		this.fromType = fromType;
 	}
 
 }

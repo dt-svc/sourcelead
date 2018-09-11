@@ -117,14 +117,9 @@ function validateGroupName(){
 
  <script type="text/javascript">
  function createUserGroup() {
-// 	 var  arr = [] ;   
-// 	 $("#userId option").each(function()
-// 			 {
-// 			     arr.push($(this).val());
-// 			 });
 	 if ($('#add_user_group_form').validate(false, validationSettings)){ 
-// 		 if(arr != null && arr != '' && arr != 'undefined'){
 
+		 		var fromType = '${fromType}';
 			    var formData = getFormData("add_user_group_form");
 				$("#save_user_group_button").attr("disabled", "disabled");
 				$("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
@@ -143,10 +138,12 @@ function validateGroupName(){
 			                } else if (result.response === "SUCCESS") {
 			                	$("#loading").removeAttr('style');
 			                	 closeBatch();
-// 			                	 document.getElementById("add_user_group_form").reset(); 
-// 			                	 $("#userId").empty();
-			                	 location.replace(sourceleadUrl+"/userGroupList");
-// 			                	 hub();
+			                	 if(fromType != null && fromType != 'undefined' && fromType != '' && fromType == 'DASHBOARD'){
+			                		 location.replace(sourceleadUrl+"/payrollList");
+			                	 }else{
+			                		 location.replace(sourceleadUrl+"/userGroupList");
+			                	 }
+			                	 
 			                } else if (result.indexOf('Sign In') !== -1) {
 								location.replace(sourceleadUrl);
 							} else {
@@ -157,11 +154,6 @@ function validateGroupName(){
 						
 					},
 				});
-// 		 }else{
-// 			 $('#userErrorMsgDic').find('p.jquery_form_error_message').remove();
-// 			  $("#userId").after("<p class='jquery_form_error_message'>Associate Required</span>");
-			 
-// 		 }
 	        return true;
 	  }else{
 		return false;
