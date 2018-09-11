@@ -283,7 +283,7 @@
               
               
              <%--  <sec:authorize access="hasAnyRole('ROLE_USAGE_REPORT')">    --%>
-        <%--  <div class="col-md-4 reportNewCta">
+       <div class="col-md-4 reportNewCta">
                   <!-- DropDown payReport -->
 			<div class="dropdown pull-right report-dropdown">
 				<span class="dropdown-toggle btn btn-sm btn-default repDropBtn" type="button" id="menu4" data-toggle="dropdown"><span class="caret cursorPointer"></span></span>
