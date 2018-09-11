@@ -2170,7 +2170,7 @@ private void saveImportedTimeSheetRecords(Projects project,String projectTaskUUI
 			
 			    boolean orgFound = false;
 			
-				if (StringUtils.isBlank(dataMigrationDTOJsonCopy.getString("beneficiaryEmail"))) {
+				if (StringUtils.isBlank(dataMigrationDTOJsonCopy.getString("beneficiaryEmail")) || dataMigrationDTOJsonCopy.getString("beneficiaryEmail").equals("null")) {
 				errorSet.put("beneficiaryEmail", "Beneficiary Email is missing"); // need to validate email address.
 				} else {
 				String email = dataMigrationDTOJsonCopy.getString("beneficiaryEmail").trim();
@@ -2203,8 +2203,8 @@ private void saveImportedTimeSheetRecords(Projects project,String projectTaskUUI
 				errorSet.put("maritalStatus", "Marital status is invalid input");/// dropdown value.
 				}
 				}*/
-				if (StringUtils.isBlank(dataMigrationDTOJsonCopy.getString("petitionType"))) {
-				errorSet.put("petitionType", "Petition Type is missing"); /// dropdown value.
+				if (StringUtils.isBlank(dataMigrationDTOJsonCopy.getString("petitionType")) || dataMigrationDTOJsonCopy.getString("petitionType").equals("null")) {
+				  errorSet.put("petitionType", "Petition Type is missing"); /// dropdown value.
 
 				} else {
 
@@ -2218,7 +2218,7 @@ private void saveImportedTimeSheetRecords(Projects project,String projectTaskUUI
 				}
 
 				}
-				if (StringUtils.isBlank(dataMigrationDTOJsonCopy.getString("template"))) {
+				if (StringUtils.isBlank(dataMigrationDTOJsonCopy.getString("template")) || dataMigrationDTOJsonCopy.getString("template").equals("null")) {
 				errorSet.put("template", "Template is missing"); /// dropdown value.
 				} else {
 				Long tempId = immigrationCommonService.getTemplateDetailsByNameAndOrgLoacationId(
@@ -2501,7 +2501,7 @@ private void saveImportedTimeSheetRecords(Projects project,String projectTaskUUI
 			   // Prevailing wage Currence validation
 			   
 			   if (StringUtils.isBlank(dataMigrationDTOJsonCopy.getString("prevailWageCurr")) || dataMigrationDTOJsonCopy.getString("prevailWageCurr").equals("null")) {
-					errorSet.put("prevailWageCurr", "prevail Wage Currency is missing"); 
+					errorSet.put("prevailWageCurr", "prevailing Wage Currency is missing"); 
 					}else if(!dataMigrationDTOJsonCopy.getString("prevailWageCurr").equals("null") &&  !StringUtils.isEmpty(dataMigrationDTOJsonCopy.getString("prevailWageCurr"))) {
 					String currency = dataMigrationDTOJsonCopy.getString("prevailWageCurr").trim().toLowerCase();
 					if(currency.equalsIgnoreCase("INR")) {
@@ -2525,7 +2525,7 @@ private void saveImportedTimeSheetRecords(Projects project,String projectTaskUUI
 				String rateRegEx = "^[0-9\b]+$";
 				
 				if (StringUtils.isBlank(dataMigrationDTOJsonCopy.getString("prevailWageRate")) || dataMigrationDTOJsonCopy.getString("prevailWageRate").equals("null")) {
-					errorSet.put("prevailWageRate", "prevail Wage Rate is missing"); 
+					errorSet.put("prevailWageRate", "prevailing Wage Rate is missing"); 
 					
 				  }else if (!dataMigrationDTOJsonCopy.get("prevailWageRate").toString().equalsIgnoreCase("") && !dataMigrationDTOJsonCopy.get("prevailWageRate").toString().equalsIgnoreCase("null") && !dataMigrationDTOJsonCopy.get("prevailWageRate").toString().equalsIgnoreCase("undefined")) {
 					

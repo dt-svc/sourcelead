@@ -232,4 +232,6 @@ public interface ImmigrationCommonDao {
 
 	LcaHistory getLcaHistoryByStatus(Long immigrationId,Long candidateId,  String isCurrent);
 	
+	String deletetLcaHistoryDetails(Long id);
+	
 }

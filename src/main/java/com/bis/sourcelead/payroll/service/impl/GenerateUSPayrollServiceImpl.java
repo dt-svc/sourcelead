@@ -213,12 +213,12 @@ public class GenerateUSPayrollServiceImpl implements GenerateUSPayrollService{
 					if(Constants.ALL_RECORDS.equalsIgnoreCase(generateUSPayrollDTO.getPayType())) {
 						draftPayroll = paysheetFrequencyDTO.getPayrollDTO()
 								.stream()
-								.filter(p->p.getEmployeeDesignationType() != null && PayrollConstant.DRAFT.equalsIgnoreCase(p.getApproverStatus()) && Constants.FULL_TIME.equalsIgnoreCase(p.getEmployeeDesignationType()))
+								.filter(p->p.getEmployeeDesignationType() != null && PayrollConstant.DRAFT.equalsIgnoreCase(p.getApproverStatus()) && !PayrollConstant.C2C.equalsIgnoreCase(p.getEmployeeDesignationType()))
 								.collect(Collectors.toList());
 					}else {
 						draftPayroll = paysheetFrequencyDTO.getPayrollDTO()
 								.stream()
-								.filter(p->p.getEmployeeDesignationType() != null && PayrollConstant.DRAFT.equalsIgnoreCase(p.getApproverStatus()) && p.getPayType().equalsIgnoreCase(generateUSPayrollDTO.getPayType()) && Constants.FULL_TIME.equalsIgnoreCase(p.getEmployeeDesignationType()))
+								.filter(p->p.getEmployeeDesignationType() != null && PayrollConstant.DRAFT.equalsIgnoreCase(p.getApproverStatus()) && p.getPayType().equalsIgnoreCase(generateUSPayrollDTO.getPayType()) && !PayrollConstant.C2C.equalsIgnoreCase(p.getEmployeeDesignationType()))
 								.collect(Collectors.toList());
 					}
 					paysheetFrequencyDTO.setPayrollDTO(draftPayroll);
@@ -233,7 +233,7 @@ public class GenerateUSPayrollServiceImpl implements GenerateUSPayrollService{
 		Set<EmployeePayroll> set = new HashSet<>();
 		try {
 			for (AssociateSalary assoSal : assoSalList) {
-				if(assoSal.getCandidate().getDesignationType() != null && Constants.FULL_TIME.equalsIgnoreCase(assoSal.getCandidate().getDesignationType())){
+				if(assoSal.getCandidate().getDesignationType() != null && !PayrollConstant.C2C.equalsIgnoreCase(assoSal.getCandidate().getDesignationType())){
 					
 					boolean isExisted = isPayrollRunForSameFrequency(existedData,assoSal);
 					if(!isExisted) {
