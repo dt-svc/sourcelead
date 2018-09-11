@@ -256,5 +256,24 @@ public class EmailScenarioConfigurationDaoImpl implements EmailScenarioConfigura
 		EmailScenarioConfiguration emailConf= (EmailScenarioConfiguration) session.createQuery(query.toString()).setString("UUID", UUID).uniqueResult();
 		return emailConf;
 	}
+
+	@Override
+	@Transactional(rollbackFor = { Exception.class })
+	public String deleteParserEMail(Long emailId) {
+			Session session = this.sessionFactory.getCurrentSession();
+		
+		try {
+			if (emailId != null) {
+				EmailScenarioConfiguration emailConfig= new EmailScenarioConfiguration();
+				emailConfig.setId(emailId);
+			    System.out.println(" inside delete operation ========"+emailId);
+				session.delete(emailConfig);
+			}
+			logger.debug("emailConfigurationFromMail deleted Successfully");
+		}catch (Exception exception) {
+		   logger.error("Exception while deleting record ....."+exception.getMessage());
+		}
+		return "success";
+	}
 	
 }

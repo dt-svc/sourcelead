@@ -200,4 +200,10 @@ private static final Logger logger = LoggerFactory.getLogger(EmailScenarioConfig
 		
 	}
 
+	@Override
+	public String deleteParserEMail(Long emailId) throws Exception {
+		// TODO Auto-generated method stub
+		return emailScenarioConfigurationDao.deleteParserEMail(emailId);
+	}
+
 }

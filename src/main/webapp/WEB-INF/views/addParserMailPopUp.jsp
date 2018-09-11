@@ -10,26 +10,26 @@
 			<div class="popupContent">		
 			<div class="clearfix mb">
                 <label class="noPad">Email <b class="valStar">*</b></label>
-                <input class="form-control" value="" name="emailId" id="emailId"  field-name="Email Id" data-validation="required validate_Space validate_length length2-100 validate_email" placeholder="Enter email" type="text">
+                <input class="form-control" value="" name="emailId" id="parserEmailId"  field-name="Email Id" data-validation="required validate_Space validate_length length2-100 validate_email" placeholder="Enter email" type="text">
             </div>
           <div class="clearfix mb">
              <label class="noPad">Password <b class="valStar">*</b></label>
-         <input class="form-control" value="" name="EmailPassword" id="passwordId"   field-name="Password" data-validation="required validate_Space" placeholder="Enter password" type="password">
+         <input class="form-control" value="" name="EmailPassword" id="parserPasswordId"   field-name="Password" data-validation="required validate_Space" placeholder="Enter password" type="password">
           </div>
           
           <div class="clearfix mb">
              <label class="noPad">POP3 Mail Server name <b class="valStar">*</b></label>
-            <input class="form-control" value="" id="serverName" name="serverName" data-validation="required validate_Space"  field-name="Receive Server" placeholder="e.g.secure.emailsrvr.com" type="text">
+            <input class="form-control" value="" id="parserServerName" name="serverName" data-validation="required validate_Space"  field-name="Receive Server" placeholder="e.g.secure.emailsrvr.com" type="text">
           </div>
           
           <div class="clearfix mb">
              <label class="noPad">Port <b class="valStar">*</b></label>
-           <input class="form-control" value="" id="PortId" name="portNumber" data-validation="required validate_Space" field-name="Receive Port" placeholder="123" type="text">
+           <input class="form-control" value="" id="parserPortId" name="portNumber" data-validation="required validate_Space" field-name="Receive Port" placeholder="123" type="text">
           </div>
           
           <div class="clearfix mb">
              <label class="noPad">Encryption Type<b class="valStar">*</b></label>
-            <select id="encryptId" name="encryptType" field-name="Encryption Type" data-validation="required" class="sel">
+            <select id="parserEncryptId" name="encryptType" field-name="Encryption Type" data-validation="required" class="sel">
 				<option value='' selected>Select</option>
 				<option value='TLS'>TLS</option>
 				<option value='SSL'>SSL</option>
@@ -51,7 +51,7 @@
 			</div>
 			<div class="popupFoot text-right">
 				<input type="hidden" name="id" id="id" value="">
-					<button type="button" id="save_title" class="slBtn md colorBtn" onclick="saveEmailParsers();">Save</button>
+					<button type="button" id="save_title_parser" class="slBtn md colorBtn" onclick="saveEmailParsers();">Save</button>
 					<button type="button" class="slBtn md popClose" onclick="closeEmailNotifications();">Cancel</button>
 			</div>
 		</div>
@@ -136,7 +136,7 @@ function getParserEmailList(){
 				result  = result + '	</label>                                                                                             ';
      			result  = result + '	</li>                                                                                                ';
      		    result  = result + '	<li><a class="fa fa-pencil pull-left ml" title="Edit" onclick="editEmailParsing(\''+mailrow.email_UUID+'\');"></a> </li>';
-     			result  = result + '	<li><a class="glyphicon glyphicon-trash text-danger" title="Delete" onclick="deleteFromMail('+mailrow.id+');"></a></li>'; 
+     			result  = result + '	<li><a class="glyphicon glyphicon-trash text-danger" title="Delete" onclick="deleteEmail('+mailrow.id+');"></a></li>'; 
      			result  = result + '	</ul>                                                                                                ';
      			result  = result + '	</div>                                                                                               ';
      			result  = result + '	</td>                                                                                                ';
@@ -158,15 +158,57 @@ function editEmailParsing(emailUUID){
 		url : sourceleadUrl+ "/editEmailParsing?"+tokenParamName+"="+tokenValue+"&emailUUID="+emailUUID,
 		success : function(data) {
 			addEmailparsingPopUp();
-			$('#email_parser_form input[name="emailId"]').val(data.emailId);
-			$('#email_parser_form input[name="emailPassword"]').val(data.emailPassword);
-			$('#email_parser_form input[name="serverName"]').val(data.serverName);
-			$('#email_parser_form input[name="portNumber"]').val(data.portNumber);
-			$('#email_parser_form  #encryptId').removeAttr("selected");
-			$('#email_parser_form  #encryptId option[value='+data.encryptionType+']').attr("selected", "selected");
-			$('#email_parser_form  #usageType').removeAttr("selected");
-			$('#email_parser_form  #usageType option[value='+data.usageType+']').attr("selected", "selected");
+			$('#parserEmailId').val(data.emailId);
+			$('#parserEmailPassword').val(data.emailPassword);
+			$('#parserServerName').val(data.serverName);
+			$('#parserPortId').val(data.portNumber);
+			$('#parserEncryptId').removeAttr("selected");
+			$('#parserEncryptId option[value='+data.encryptionType+']').attr("selected", "selected");
+			$('#usageType').removeAttr("selected");
+			$('#usageType option[value='+data.usageType+']').attr("selected", "selected");
 		}
 	 }); 
+}
+</script>
+<script>
+function deleteEmail(emailId){ 
+	var result = "";
+	result = result +"	   <div id='remove_user_pop' class='remove_user_pop remove_user_pop_a'>";
+	result = result +"		<p style='text-align: center;'>.Do you want to delete?</p>";
+	result = result + ' <div id="reasonForEmailDiv"/>';
+	result = result +'		<b href="javascript:void(0)"><input id="confirm-id" type="button" value="Delete" onclick="deleteParserEmail('+emailId+')"><input class="u_can_color" type="button"  value="Cancel" onclick="cancelDeleteEMail()"></b>';
+	result = result +"	</div>";
+	$("#deleteParserEmailDiv").append(result);
+	 $(".mask").show();
+	$("#remove_user_pop").slideDown(200);
+}
+function cancelDeleteEMail(){
+	$("#deleteParserEmailDiv").empty();
+	 $(".mask").hide();
+}
+function deleteParserEmail(emailId){
+	var sourceleadUrl = '${sourceleadUrl}';
+	$.ajax({
+		type : "POST",
+		url : sourceleadUrl+ "/deleteParserEmail?${_csrf.parameterName}=${_csrf.token}&emailId="+emailId,
+		
+		success : function(response) {
+			
+			if (response && (response.response === "INVALID_DATA" || response.response === "INVALID_USER")) {
+    		    showError(response.responseMessage);
+    	  	} else if (response.response === "AWKWARD") {
+    		    location.href = "/errorPage";
+    		} else if (response.response === "SUCCESS") {
+    			 $("#deleteParserEmailDiv").empty();
+ 			     $(".mask").hide();
+ 				getParserEmailList();
+    		}else if (response.indexOf('Sign In') !== -1) {
+    			location.replace(sourceleadUrl);
+    		} else {
+    		    showError("Operation failed, please try again");
+    		}
+			
+		}
+	});
 }
 </script>

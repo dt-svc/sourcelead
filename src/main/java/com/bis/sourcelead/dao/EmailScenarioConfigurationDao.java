@@ -32,4 +32,6 @@ public interface EmailScenarioConfigurationDao {
 	List<EmailScenarioConfiguration> getConfParserMailList(Long orgLocId,String parsingType);
 
 	EmailScenarioConfiguration getParserEmailsDetailsByUUID(String UUID);
+
+	String deleteParserEMail(Long emailId);
 }
