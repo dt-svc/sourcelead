@@ -168,7 +168,7 @@ this.getDetuctAmountDetails = function(){
 				}
 			}
 			var detuctAmount = eval(totalAmount / noOfSchedules);
-			$("#deductAmount").val(detuctAmount.toFixed(3));
+			$("#deductAmount").val(detuctAmount.toFixed(2));
 			
 		    $.ajax({
 				type : "GET",
