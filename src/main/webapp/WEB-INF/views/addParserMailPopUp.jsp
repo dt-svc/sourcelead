@@ -50,7 +50,7 @@
           
 			</div>
 			<div class="popupFoot text-right">
-				<input type="hidden" name="id" id="id" value="">
+				<input type="hidden" name="emailUUID" id="parserEmailUUID" value="">
 					<button type="button" id="save_title_parser" class="slBtn md colorBtn" onclick="saveEmailParsers();">Save</button>
 					<button type="button" class="slBtn md popClose" onclick="closeEmailNotifications();">Cancel</button>
 			</div>
@@ -166,6 +166,7 @@ function editEmailParsing(emailUUID){
 			$('#parserEncryptId option[value='+data.encryptionType+']').attr("selected", "selected");
 			$('#usageType').removeAttr("selected");
 			$('#usageType option[value='+data.usageType+']').attr("selected", "selected");
+			$('#parserEmailUUID').val(data.email_UUID); // using for upate the record. email
 		}
 	 }); 
 }

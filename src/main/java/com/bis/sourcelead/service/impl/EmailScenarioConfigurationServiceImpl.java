@@ -168,7 +168,7 @@ private static final Logger logger = LoggerFactory.getLogger(EmailScenarioConfig
 
 				System.out.println("connect before pop3s ==============>");
 				
-				// emailSession.setDebug(true);    Enable flag for debug.
+				// emailSession.setDebug(true);    //Enable flag for debug.
 				store.connect(host, user, password);
 				
 				Folder emailFolder = store.getFolder("INBOX"); // Reading inbox folder.
