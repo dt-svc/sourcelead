@@ -35,6 +35,7 @@ import com.bis.sourcelead.service.AssetService;
 import com.bis.sourcelead.service.OrglocationFormFieldsService;
 import com.bis.sourcelead.util.CommonUtil;
 import com.bis.sourcelead.util.FileUploadUtil;
+import com.bis.sourcelead.util.SourceLeadRandomCodeHelper;
 
 @Service
 public class AssetServiceImpl implements AssetService{
@@ -75,6 +76,12 @@ public class AssetServiceImpl implements AssetService{
 		 Asset asset = assetDao.getAssetById(Id);
 		 return asset;
 	}
+	
+	@Override
+	public Asset getAssetByUUID(String assetUUID) throws Exception {
+		 Asset asset = assetDao.getAssetByUUID(assetUUID);
+		 return asset;
+	}
 
 	/**
 	 * 
@@ -107,6 +114,7 @@ public class AssetServiceImpl implements AssetService{
 			asset = new Asset();
 			asset.setCreatedBy(user.getUserCode());
 			asset.setCreatedDate(new Date());
+			asset.setAssetUUID(SourceLeadRandomCodeHelper.generateRandomUUID());
 		}
 		
 		//Laptop Serial Number
@@ -420,5 +428,11 @@ public class AssetServiceImpl implements AssetService{
 	@Override
 	public List<AssetAssign> getReturnedOnAssignAssetListByAssetId(Long assetId) {
 		return assetDao.getReturnedOnAssignAssetListByAssetId(assetId);
+	}
+
+
+	@Override
+	public List<AssetAssign> getAllAssignAssetListByAssetId(Long assetId) {
+		return assetDao.getAllAssignAssetListByAssetId(assetId);
 	}
 }

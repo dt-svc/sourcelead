@@ -21,6 +21,8 @@ public interface AssetDao {
 	 */
 	Asset getAssetById(Long Id) throws Exception;
 	
+	Asset getAssetByUUID(String assetUUID) throws Exception;
+	
 	List<Asset> getAssetFilterListByLocationId(Long orgLocationId, String categoryIds, String workingStatus) throws Exception;
 	
 	List<Asset> getAssetListByLocationId(Long orgLocationId) throws Exception;
@@ -48,4 +50,7 @@ public interface AssetDao {
 	List<AssetAssign> getAssignAssetListByShiftId(Long shiftId)throws Exception;
 
 	void deleteAssignAssetByAssignId(AssetAssign assetAssign) throws Exception;
+	
+	List<AssetAssign> getAllAssignAssetListByAssetId(Long assetId);
+
 }

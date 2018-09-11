@@ -26,6 +26,8 @@ public interface AssetService {
 	 */
 	Asset getAssetById(Long Id) throws Exception;
 	
+	Asset getAssetByUUID(String  assetUUID) throws Exception;
+	
 	public Asset getAssetByAssetSnoAndId(String assetSno, Long assetId, Long orgLocationsId) throws Exception;
 	
 	public Asset validateAssetSno(String assetSno, Long orgLocationsId) throws Exception;
@@ -64,5 +66,7 @@ public interface AssetService {
 	void deleteAssignAssetByAssignId(AssetAssign assetAssign) throws Exception;
 	
 	List<AssetAssign> getReturnedOnAssignAssetListByAssetId(Long assetId);
+	
+	List<AssetAssign> getAllAssignAssetListByAssetId(Long assetId);
 
 }

@@ -57,19 +57,10 @@
 		                  
 		                
 		                  <div class="col-md-5" id="snoDiv">
-		                  <div id="lsn" style="display: block;">
-		                  <label class="clearfix" >Laptop Serial Number<span class="text-danger paddingLeft">*</span></label>
-		                  <div class="clearfix">
-		                    <input type="text" class="form-control input-sm" id="sno" name="sno" value="${assetAssignData.slno}" placeholder="Laptop Serial Number" field-name="Laptop Serial Number" onblur="validateAssetSno('${assetAssignData.id}','lsn');" >
-		                  </div>
-		                  </div>
-		                  <div id="csn" style="display: none;">
-		                  	<label class="clearfix" >CPU Serial Number<span class="text-danger paddingLeft">*</span></label>
+		                  <label class="clearfix" >Serial Number<span class="text-danger paddingLeft">*</span></label>
 			                  <div class="clearfix">
-			                    <input type="text" class="form-control input-sm" id="cpuSerialNumber" name="cpuSerialNumber" value="${assetAssignData.slno}" placeholder="CPU Serial Number" field-name="CPU Serial Number" onblur="validateAssetSno('${assetAssignData.id}','csn');" >
+			                    <input type="text" class="form-control input-sm" id="sno" name="sno" value="${assetAssignData.slno}" placeholder="Serial Number" field-name="Serial Number" onblur="validateAssetSno('${assetAssignData.id}');" data-validation="required validate_Space validate_NumberAndAlphabet validate_length length1-200" >
 			                  </div>
-		                  </div>
-		                  
 		                  </div>
 		                  
 		                  <div class="col-md-5" id="makeDiv">
@@ -408,13 +399,8 @@ function getCustomDependentField(sectionId){
 </script>
 
 <script type="text/javascript">
- function validateAssetSno(assetId,type) {
-	 var assetSno = "";
-	 if(type == "lsn"){
-		 assetSno = $("#sno").val(); 
-	 }else{
-		 assetSno = $("#cpuSerialNumber").val(); 
-	 }
+ function validateAssetSno(assetId) {
+	 var assetSno = $("#sno").val(); 
 	  
 	 if(assetSno != null && assetSno != ""){
 		 $("#add_asset").attr("disabled", "disabled");
@@ -423,25 +409,13 @@ function getCustomDependentField(sectionId){
 		        url: sourceleadUrl+"/validateAssetSno?"+tokenParamName+"="+tokenValue+"&assetSno="+assetSno+"&assetId="+assetId, 
 		        success: function(data) {
 		        	if(data == true){
-		        		  $('#snoDiv').find('p.jquery_form_error_message').remove();
-		        		  if(type == "lsn"){
+		        		     $('#snoDiv').find('p.jquery_form_error_message').remove();
 		        			  $("input#sno").after ("<p class='jquery_form_error_message'>"+assetSno+" is Already Existed</span>");
 							  document.getElementById("sno").setAttribute('record-exist','yes');
 							  document.getElementById("sno").setAttribute('record-exist-errorMsg',assetSno+' is Already Existed'); 
-		        		  }else{
-		        			  $("input#cpuSerialNumber").after ("<p class='jquery_form_error_message'>"+assetSno+" is Already Existed</span>");
-							  document.getElementById("cpuSerialNumber").setAttribute('record-exist','yes');
-							  document.getElementById("cpuSerialNumber").setAttribute('record-exist-errorMsg',assetSno+' is Already Existed'); 
-		        		  }
-						 
-		        	}
-		        	else{
-		        		 if(type == "lsn"){
-		        			 $('input#sno').removeAttr( "record-exist record-exist-errormsg"); 
-		        		 }else{
-		        			 $('input#cpuSerialNumber').removeAttr( "record-exist record-exist-errormsg");
-		        		 }
-		        		
+		        		  
+		        	}else{
+	        			 $('input#sno').removeAttr( "record-exist record-exist-errormsg"); 
 		        		 $('#snoDiv').find('p.jquery_form_error_message').remove(); 
 		        		 $("#add_asset" ).addClass('us-btn').val('Add');
                          $("#add_asset").removeAttr("disabled");

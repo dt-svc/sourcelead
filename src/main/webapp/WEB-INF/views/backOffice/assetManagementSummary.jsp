@@ -9,7 +9,7 @@
 <jsp:include page="assetManagementDetails.jsp" />
 <script>
 $(document).ready(function() {
-	assetDetails('${asset.id}');
+	assetDetails('${asset.assetUUID}');
 	getAssetTagsList('${asset.id}')
 });	
 </script>
@@ -45,9 +45,9 @@ $(document).ready(function() {
 	<div class="clearfix"></div>
 	<div class="project_side_wrap_inn_tabs">
 		<ul class="project-tabs-menu">
-			<li class="current"><a href="#tab-1" onclick="assetDetails('${asset.id}');">Details</a></li>
-			<li><a href="#tab-3" onclick="assetHistory('${asset.id}');">History</a></li>
-			<li><a href="#tab-2" onclick="assetNotes('${asset.id}');">Notes</a></li>
+			<li class="current"><a href="#tab-1" onclick="assetDetails('${asset.assetUUID}');">Details</a></li>
+			<li><a href="#tab-3" onclick="assetHistory('${asset.assetUUID}');">History</a></li>
+			<li><a href="#tab-2" onclick="assetNotes('${asset.id}','${asset.assetUUID}');">Notes</a></li>
 		</ul>
 		<div class="clearfix"></div>
 			<div class="project_tabs">
@@ -98,11 +98,11 @@ $(".addUser-org").click(function(){
 
 <!-- ===================== History related scripts written by Laxman Start ======================================== -->
 <script>
-function assetHistory(assetId){
+function assetHistory(assetUUID){
 	 var sourceleadUrl = '${sourceleadUrl}';
 		$.ajax({
 			type : "POST",
-			url : sourceleadUrl+ "/getReturnedOnAssetDetaisl?${_csrf.parameterName}=${_csrf.token}&assetId="+assetId,
+			url : sourceleadUrl+ "/getReturnedOnAssetDetaisl?${_csrf.parameterName}=${_csrf.token}&assetUUID="+assetUUID,
 			success : function(json) {
 				var result = "";
    	        	result = result +'<table id="departmentPagination">';
