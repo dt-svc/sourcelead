@@ -182,7 +182,7 @@ public class EmailScenarioConfigurationRestController {
 			try {
 				emailConfig =  emailScenarioconService.getParserEmailsDetailsByUUID(emailUUID);
 			} catch (Exception e) {
-				logger.error("Exception caught in while loading email detiails--->" + e.getMessage());
+				logger.error("Exception caught in while loading email parsing details--->" + e.getMessage());
 				e.printStackTrace();
 			}
 			return emailConfig;
@@ -278,6 +278,7 @@ public class EmailScenarioConfigurationRestController {
 			public @ResponseBody ResponseList<EmailScenarioConfiguration> getConfigParserMailList(HttpServletRequest request,@RequestParam(value = "emailId", required = false) String emailId)
 					throws Exception {
 			 ResponseList<EmailScenarioConfiguration> response = new ResponseList<>();
+			 logger.debug("***********************inside getConfigParserMailList****************");
 			 try{
 				 User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
 				 OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
@@ -349,7 +350,7 @@ public class EmailScenarioConfigurationRestController {
 			public @ResponseBody Response<String> deleteParserEmail(@RequestParam(value = "emailId", required = false) Long emailId,HttpServletRequest request)
 					throws Exception {
 			 Response<String> response=new Response<String>();
-			 
+			 logger.debug("***********************inside deleteParserEmail****************");
 			 try{
 				 User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
 				 OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");

@@ -41,6 +41,8 @@ import com.bis.sourcelead.beans.CurrencyConversionResponse;
 import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.dao.InvoiceDao;
 import com.bis.sourcelead.dto.BillingDTO;
+import com.bis.sourcelead.dto.CreditDebitNoteDTO;
+import com.bis.sourcelead.dto.CreditDebitNoteListDTO;
 import com.bis.sourcelead.dto.ExpensesEntriesDTO;
 import com.bis.sourcelead.dto.InvoiceDTO;
 import com.bis.sourcelead.dto.InvoicePaymentDTO;
@@ -50,6 +52,7 @@ import com.bis.sourcelead.dto.Response;
 import com.bis.sourcelead.dto.ResponseList;
 import com.bis.sourcelead.entity.Candidate;
 import com.bis.sourcelead.entity.Contracts;
+import com.bis.sourcelead.entity.CreditDebitNote;
 import com.bis.sourcelead.entity.EmailAttachment;
 import com.bis.sourcelead.entity.EmailMessage;
 import com.bis.sourcelead.entity.EmailScenario;
@@ -61,7 +64,6 @@ import com.bis.sourcelead.entity.InvoiceDocument;
 import com.bis.sourcelead.entity.InvoiceLineItems;
 import com.bis.sourcelead.entity.InvoicePayment;
 import com.bis.sourcelead.entity.InvoiceTax;
-import com.bis.sourcelead.entity.InvoiceTimelineHistory;
 import com.bis.sourcelead.entity.Org;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.OrgRelations;
@@ -173,16 +175,13 @@ public class InvoiceRestController {
 			for (OrgSpoc orgSpoc : orgSpocList) {
 				StringBuilder sb = new StringBuilder();
 				StringBuilder clientSb = new StringBuilder();
-				if (null != orgSpoc.getVendorUser().getFirstName()
-						&& null != orgSpoc.getVendorUser().getLastName()
-						&& !"".equalsIgnoreCase(orgSpoc.getVendorUser().getLastName())) {
+				if (null != orgSpoc.getVendorUser().getFirstName() && null != orgSpoc.getVendorUser().getLastName() && !"".equalsIgnoreCase(orgSpoc.getVendorUser().getLastName())) {
 					sb.append(orgSpoc.getVendorUser().getFirstName()).append(" ").append(orgSpoc.getVendorUser().getLastName());
 				}
 				else {
 					sb.append(orgSpoc.getVendorUser().getFirstName());
 				}
-				if (null != orgSpoc.getClientUser().getFirstName()
-						&& null != orgSpoc.getClientUser().getLastName()) {
+				if (null != orgSpoc.getClientUser().getFirstName() && null != orgSpoc.getClientUser().getLastName()) {
 					clientSb.append(orgSpoc.getClientUser().getFirstName()).append(" ").append(orgSpoc.getClientUser().getLastName());
 				}
 				else {
@@ -262,6 +261,41 @@ public class InvoiceRestController {
 		return response;
 	}
 	
+	@RequestMapping(value = "/saveCreditDebitNote", method = RequestMethod.POST)
+	public @ResponseBody Response<String> saveCreditDebitNote(CreditDebitNoteDTO creditDebitNoteDTO, 
+			@RequestParam(value = "saveType", required = false) String saveType, 
+			@RequestParam(value = "noteType", required = false) String noteType, HttpServletRequest request) throws Exception
+	{
+		Response<String> response = new Response<>();
+			try {
+				User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+				if (user != null) {
+				if (Validator.validate(creditDebitNoteDTO)) {
+					OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+					String currencyCode = (String) SourceLeadSessionManager.getSessionAttribute(request, "currencyCode");
+					Org org = (Org) SourceLeadSessionManager.getSessionAttribute(request, "org");
+					//Invoice invoice = invoiceService.saveInvoice(user, orgLocation, saveType, invoiceType, org, currencyCode, invoiceDTO);
+					invoiceService.saveCreditDebitNote(user, orgLocation, saveType, noteType, creditDebitNoteDTO,currencyCode);
+						response.setResponse(Result.SUCCESS.name());
+						response.setResponseMessage(Result.SUCCESS.getValue());
+				}
+				else {
+					response.setObject("DataMissing");
+					response.setResponse(Result.INVALID_DATA.name());
+					response.setResponseMessage(Result.INVALID_DATA.getValue());
+				}
+			 }else if (user == null) {
+					response.setResponse(Result.SESSION_TIMEDOUT.name());
+					response.setResponseMessage(Result.SESSION_TIMEDOUT.getValue());
+				}
+			} catch (Exception e) {
+				response.setResponse(Result.AWKWARD.name());
+				response.setResponseMessage(Result.AWKWARD.getValue());
+				logger.error(ExceptionUtils.getFullStackTrace(e));
+			}
+		
+		return response;
+	}
 	
 	@RequestMapping(value = "/validateInvoiceId",  method = RequestMethod.POST)
     public @ResponseBody Boolean validateInvoiceId(@RequestParam(value="invoiceId", required=false) String invoiceId, @RequestParam(value="invoiceType", required=false) String invoiceType,
@@ -314,6 +348,65 @@ public class InvoiceRestController {
 		responseList.setData(projectsList);
 		return responseList;
 	}
+	
+	
+@RequestMapping(value = { "/getCreDitNotesList","/rest/getCreDitNotesList" }, method = RequestMethod.POST)
+public ResponseList<CreditDebitNoteListDTO> getCreDitNotesList(CreditDebitNoteDTO creditDebitNoteDTO, HttpServletRequest request) throws Exception
+{
+
+OrgLocations orgLocations = orgLocationService.getOrgLocations(Long.parseLong(creditDebitNoteDTO.getOrglocationId()));
+String[] tableColumns = { "","date", "id", "referenceNumber", "clientName","invoiceId", "total", "balance", "status"};
+
+int sortColumnIndex = 1; // by default sorting using invoice date
+String sortColumnOrder = "asc"; // by default descending order
+if (creditDebitNoteDTO.getOrder() != null && !creditDebitNoteDTO.getOrder().isEmpty()) {
+	sortColumnIndex = Integer.parseInt(creditDebitNoteDTO.getOrder().get(0).get("column"));
+	sortColumnOrder = creditDebitNoteDTO.getOrder().get(0).get("dir");
+}
+creditDebitNoteDTO.setSortColumn(tableColumns[sortColumnIndex]);
+creditDebitNoteDTO.setSortOrder(sortColumnOrder);
+
+Timezone timezone = timeZoneService.getTimezone(orgLocations.getTimezone().getId());
+DateTime zoned = new DateTime();
+DateTimeFormatter outputFormatter = DateTimeFormat.forPattern("yyyy-MM-dd HH:mm:ss");
+DateTimeFormatter outputFormatter1 = DateTimeFormat.forPattern("yyyy-MM-dd HH:mm:ss");
+DateFormat TZ_DF_TS = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+Date endDateUTC = null;
+Date startDateUTC = null;
+if (!Constants.CUSTOM_REPORTS.equalsIgnoreCase(creditDebitNoteDTO.getDayWiseType())	&& !"".equals(creditDebitNoteDTO.getDayWiseType())) {
+	String endDate = outputFormatter1.print(zoned);
+	endDateUTC = TZ_DF_TS.parse(endDate);
+}
+if (null != creditDebitNoteDTO.getDayWiseType() && !"".equals(creditDebitNoteDTO.getDayWiseType())) {
+	if (!Constants.CUSTOM_REPORTS.equalsIgnoreCase(creditDebitNoteDTO.getDayWiseType())) {
+		String startDate = outputFormatter.print(zoned);
+		// String startDateString =
+		// CommonUtil.convertTimeZones(timezone.getTimeZoneId(),
+		// Constants.UTC_TIMEZONE, startDate);
+		startDateUTC = TZ_DF_TS.parse(startDate);
+		if (Constants.ONE_MONTH.equals(creditDebitNoteDTO.getDayWiseType())) {
+			startDateUTC = getPreviousDate(zoned, outputFormatter, TZ_DF_TS, timezone, 30);
+		}
+		else if (Constants.TWO_MONTHS.equals(creditDebitNoteDTO.getDayWiseType())) {
+			startDateUTC = getPreviousDate(zoned, outputFormatter, TZ_DF_TS, timezone, 60);
+		}
+		else if (Constants.THREE_MONTHS.equals(creditDebitNoteDTO.getDayWiseType())) {
+			startDateUTC = getPreviousDate(zoned, outputFormatter, TZ_DF_TS, timezone, 90);
+		}
+		else if (Constants.SIX_MONTHS.equals(creditDebitNoteDTO.getDayWiseType())) {
+			startDateUTC = getPreviousDate(zoned, outputFormatter, TZ_DF_TS, timezone, 180);
+		}
+		else if (Constants.ONE_YEAR.equals(creditDebitNoteDTO.getDayWiseType())) {
+			startDateUTC = getPreviousDate(zoned, outputFormatter, TZ_DF_TS, timezone, 365);
+		}
+	}
+	
+}
+
+ResponseList<CreditDebitNoteListDTO> responseList = invoiceService. creditDebtListByOrgLocationId(orgLocations, startDateUTC,endDateUTC,creditDebitNoteDTO);
+
+return responseList;
+}
 	
 	@RequestMapping(value = "/getSowcontractListByAssociateId", method = RequestMethod.GET)
 	public @ResponseBody ResponseList<Contracts> getSowcontractListByAssociateId(@RequestParam(value = "candidateId", required = false) Long candidateId, @RequestParam(value = "orgRelationId", required = false) Long orgRelationId, @RequestParam(value = "contractType", required = false) String contractType, HttpServletRequest request) throws Exception
@@ -770,6 +863,16 @@ public class InvoiceRestController {
 		responseList.setData(billingDtoList);
 		return responseList;
 		
+	}
+	
+	@RequestMapping(value = "/getCreditDebitNoteDetails", method = RequestMethod.GET)
+	public @ResponseBody Response<CreditDebitNote> getCreditDebitNoteDetails(@RequestParam(value = "creditDebitUUID", required = false) String creditDebitUUID, HttpServletRequest request) throws Exception
+	{
+		OrgLocations loginOrgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+		CreditDebitNote creditDebitNote = invoiceService.getCreditDebitNoteByUUID(creditDebitUUID);
+		Response<CreditDebitNote> response = invoiceService.getCreditDebitNoteByIdAndOrglocationId(creditDebitNote.getId(), loginOrgLocation.getId());
+		
+	return response;	
 	}
 	
 	@RequestMapping(value = "/getViewInvoice", method = RequestMethod.GET)
@@ -1398,6 +1501,73 @@ public class InvoiceRestController {
 		
 	}
 	
+	
+	@RequestMapping(value = "/acceptCreditDebitNote", method = RequestMethod.POST)
+	public @ResponseBody Response<String> acceptCreditDebitNote(@RequestParam(value = "creditDebitUUID", required = false) String creditDebitUUID, 
+			@RequestParam(value = "noteType", required = false) String noteType, 
+			 HttpServletRequest request) throws Exception
+	{
+		Response<String> response = new Response<>();
+		try {
+			User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+			if (user != null) {
+				OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+				if (creditDebitUUID != null) {
+					CreditDebitNote creditDebitNote = invoiceService.getCreditDebitNoteByUUID(creditDebitUUID);
+					
+					 invoiceService.saveAcceptedCreditDebitNote(user, orgLocation, noteType, creditDebitNote);
+						response.setResponse(Result.SUCCESS.name());
+						response.setResponseMessage(Result.SUCCESS.getValue());
+				}
+			}
+			else {
+				response.setResponse(Result.SESSION_TIMEDOUT.name());
+				response.setResponseMessage(Result.SESSION_TIMEDOUT.getValue());
+			}
+		} catch (Exception e) {
+			response.setResponse(Result.AWKWARD.name());
+			response.setResponseMessage(Result.AWKWARD.getValue());
+			logger.error(ExceptionUtils.getFullStackTrace(e));
+		}
+		return response;
+	}
+	
+	
+	@RequestMapping(value = "/rejectCreditDebitNote", method = RequestMethod.POST)
+	public @ResponseBody Response<String> rejectCreditDebitNote(@RequestParam(value = "creditDebitUUID", required = false) String creditDebitUUID, 
+			@RequestParam(value = "reason", required = false) String reason, HttpServletRequest request) throws Exception
+	{
+		Response<String> response = new Response<>();
+		try {
+			User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+			if (user != null) {
+				OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+				if (creditDebitUUID != null) {
+					CreditDebitNote creditDebitNote = invoiceService.getCreditDebitNoteByUUID(creditDebitUUID);
+					if (creditDebitNote != null) {
+						creditDebitNote.setNoteStatus(Constants.CREDIT_DEBIT_NOTE_REJECTED);
+						creditDebitNote.setRejectReason(reason);
+						creditDebitNote.setUpdatedBy(user);
+						creditDebitNote.setUpdatedDate(commonUtil.orgLocationCommonDate(new Date(),orgLocation));
+						invoiceDao.saveCreditDebitNote(creditDebitNote);
+						
+						response.setResponse(Result.SUCCESS.name());
+						response.setResponseMessage(Result.SUCCESS.getValue());
+					}
+				}
+			}
+			else {
+				response.setResponse(Result.SESSION_TIMEDOUT.name());
+				response.setResponseMessage(Result.SESSION_TIMEDOUT.getValue());
+			}
+		} catch (Exception e) {
+			response.setResponse(Result.AWKWARD.name());
+			response.setResponseMessage(Result.AWKWARD.getValue());
+			logger.error(ExceptionUtils.getFullStackTrace(e));
+		}
+		return response;
+	}
+	
 	@RequestMapping(value = "/rejectInvoice", method = RequestMethod.POST)
 	public @ResponseBody Response<String> rejectInvoice(@RequestParam(value = "invoiceUUID", required = false) String invoiceUUID, @RequestParam(value = "reason", required = false) String reason, HttpServletRequest request) throws Exception
 	{
@@ -1864,6 +2034,33 @@ public class InvoiceRestController {
 		return TZ_DF_TS.parse(yesterDayDate);
 	}
 	
+	@RequestMapping(value = "/getInvoiceListForCreditDebitNote", method = RequestMethod.GET)
+	@ResponseBody
+	public ResponseList<Invoice> getInvoiceListForCreditDebitNote(@RequestParam(value = "orgRelationId", required = false) String orgRelationId, 
+			@RequestParam(value = "invoiceType", required = false) String invoiceType, 
+			HttpServletRequest request, HttpServletResponse response) throws Exception
+	{
+		ResponseList<Invoice> responseList = new ResponseList<>();
+		OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+		List<Invoice> invoiceList = null;
+		if(StringUtils.isNotBlank(orgRelationId)){
+		invoiceList = invoiceService.getClientBasedInvoiceLists(Long.parseLong(orgRelationId), orgLocation.getId(), invoiceType);
+		}
+			responseList.setData(invoiceList);
+		return responseList;
+	}
+	
+	@RequestMapping(value = "/getApproversListForCreditDebitNote", method = RequestMethod.GET)
+	@ResponseBody
+	public ResponseList<User> getApproversListForCreditDebitNote(HttpServletRequest request, HttpServletResponse response) throws Exception
+	{
+		ResponseList<User> responseList = new ResponseList<>();
+		OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+		List<User> approversList = userService.getOwnersByOrgLocationId(orgLocation.getId());
+		responseList.setData(approversList);
+		return responseList;
+	}
+	
 	@RequestMapping(value = "/getClientBasedInvoiceList", method = RequestMethod.POST)
 	@ResponseBody
 	public ResponseList<Invoice> getClientBasedInvoiceList(@RequestParam(value = "invoiceType", required = false) String invoiceType, @RequestParam(value = "invoiceUUID", required = false) String invoiceUUID, HttpServletRequest request, HttpServletResponse response) throws Exception
@@ -2274,5 +2471,17 @@ public class InvoiceRestController {
 		}
 		timelineHistories = invoiceService.getInvoiceTimelineHistoryList(invoice.getId(), user, searchVal, orderVal, datesRange, checkedStatus,namesStatus);
 		return timelineHistories;
+	}
+	
+	@RequestMapping(value = "/deleteCreditDebitNote", method = RequestMethod.POST)
+	@ResponseBody
+	public boolean deleteCreditDebitNote(@RequestParam(value = "creditDebitUUID", required = false) String creditDebitUUID, 
+			@RequestParam(value = "noteType", required = false) String noteType, HttpServletRequest request) throws Exception
+	{
+		User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+		OrgLocations orglocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+		boolean isDeleted = invoiceService.deleteCreditDebitNote(creditDebitUUID, noteType, user,orglocations);
+		
+		return isDeleted;
 	}
 }

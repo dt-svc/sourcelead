@@ -347,6 +347,7 @@ function getClientContacts(clientContactId){
 					$('#clientContact').trigger("chosen:updated");
 			$('#clientContact').trigger("chosen:updated");
 		},
+
 	});
 	addConversionDiv();
 	getProjectsList(); 
