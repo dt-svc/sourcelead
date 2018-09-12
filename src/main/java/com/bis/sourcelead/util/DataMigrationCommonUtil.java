@@ -2170,7 +2170,7 @@ private void saveImportedTimeSheetRecords(Projects project,String projectTaskUUI
 			
 			    boolean orgFound = false;
 			
-				if (StringUtils.isBlank(dataMigrationDTOJsonCopy.getString("beneficiaryEmail"))) {
+				if (StringUtils.isBlank(dataMigrationDTOJsonCopy.getString("beneficiaryEmail")) || dataMigrationDTOJsonCopy.getString("beneficiaryEmail").equals("null")) {
 				errorSet.put("beneficiaryEmail", "Beneficiary Email is missing"); // need to validate email address.
 				} else {
 				String email = dataMigrationDTOJsonCopy.getString("beneficiaryEmail").trim();
@@ -2203,8 +2203,8 @@ private void saveImportedTimeSheetRecords(Projects project,String projectTaskUUI
 				errorSet.put("maritalStatus", "Marital status is invalid input");/// dropdown value.
 				}
 				}*/
-				if (StringUtils.isBlank(dataMigrationDTOJsonCopy.getString("petitionType"))) {
-				errorSet.put("petitionType", "Petition Type is missing"); /// dropdown value.
+				if (StringUtils.isBlank(dataMigrationDTOJsonCopy.getString("petitionType")) || dataMigrationDTOJsonCopy.getString("petitionType").equals("null")) {
+				  errorSet.put("petitionType", "Petition Type is missing"); /// dropdown value.
 
 				} else {
 
@@ -2218,7 +2218,7 @@ private void saveImportedTimeSheetRecords(Projects project,String projectTaskUUI
 				}
 
 				}
-				if (StringUtils.isBlank(dataMigrationDTOJsonCopy.getString("template"))) {
+				if (StringUtils.isBlank(dataMigrationDTOJsonCopy.getString("template")) || dataMigrationDTOJsonCopy.getString("template").equals("null")) {
 				errorSet.put("template", "Template is missing"); /// dropdown value.
 				} else {
 				Long tempId = immigrationCommonService.getTemplateDetailsByNameAndOrgLoacationId(

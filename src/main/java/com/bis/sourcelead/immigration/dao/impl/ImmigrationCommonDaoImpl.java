@@ -1536,6 +1536,7 @@ public class ImmigrationCommonDaoImpl implements ImmigrationCommonDao {
 		Session session = this.sessionFactory.getCurrentSession();
 		String listQuery = "from ImmigrationListExportView immView  where immView.status = 1  and (immView.orgLocationId=:orgLocationId or immView.attorneyOrgLocationId =:orgLocationId) ";
 		List<ImmigrationListExportView> listExportViews = session.createQuery(listQuery).setParameter("orgLocationId", orgLocations.getId()).list();
+		System.out.println(listExportViews.size());
 		return listExportViews;
 	}
 
@@ -2181,9 +2182,9 @@ public class ImmigrationCommonDaoImpl implements ImmigrationCommonDao {
 					" DATE_FORMAT(l.START_DATE, '%Y-%m-%d') as startDate, " + 
 					" DATE_FORMAT(l.END_DATE, '%Y-%m-%d') as endDate " + 
 					" FROM " + 
-					" lca l, " + 
-					" lca_history lh, " + 
-					" lca_place_of_employment lpe " + 
+					" LCA l, " + 
+					" LCA_HISTORY lh, " + 
+					" LCA_PLACE_OF_EMPLOYMENT lpe " + 
 					" WHERE " + 
 					"    l.id = lh.LCA_ID AND l.id = lpe.LCA_ID " + 
 					" AND lh.IMMIGRATION_ID = :immigrationId";
@@ -2324,5 +2325,23 @@ public class ImmigrationCommonDaoImpl implements ImmigrationCommonDao {
 			exception.printStackTrace();
 		}
 		return lcaHistory;
+	}
+
+	@Override
+	@Transactional(rollbackFor = { Exception.class })
+	public String deletetLcaHistoryDetails(Long id) {
+		logger.debug("Delete deletetLcaHistoryDetails  ---> " + id);
+
+		try {
+			Session session = this.sessionFactory.getCurrentSession();
+			LcaHistory lh = (LcaHistory) session.load(LcaHistory.class,id);
+			session.delete(lh);
+			session.flush();
+		} catch (HibernateException e) {
+			logger.error("SQL Exception occured while doing delete -->" + e.getMessage());
+			e.printStackTrace();
+		}
+		logger.debug("Deleted record id -->" + id);
+		return "success";
 	}
 }

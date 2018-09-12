@@ -63,7 +63,7 @@ public class OrglocationSignatory implements Serializable{
 	private String phone;
 	
 	@Column(name = "SSN")
-	private Integer ssn;
+	private String ssn;
 	
 	@Column(name = "DESIGNATION")
 	private String designation;
@@ -163,11 +163,13 @@ public class OrglocationSignatory implements Serializable{
 		this.phone = phone;
 	}
 
-	public Integer getSsn() {
+	public String getSsn()
+	{
 		return ssn;
 	}
 
-	public void setSsn(Integer ssn) {
+	public void setSsn(String ssn)
+	{
 		this.ssn = ssn;
 	}
 
