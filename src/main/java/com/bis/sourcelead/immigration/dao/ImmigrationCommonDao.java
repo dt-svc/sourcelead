@@ -225,9 +225,13 @@ public interface ImmigrationCommonDao {
 	
 	List<LcaDetailsDTO> getEmployeeByLcaId(Long lcaId, OrgLocations orgLocations)throws Exception;
 	
-	void deleteLcaPlaceOfEmpmntDetails(Long remaininglpoeIds[]);
+	void deleteLcaPlaceOfEmpmntDetails(Long remaininglpoeIds[]); 
 	
 	
 	CandidateLcaJobDetails saveCandidateLcaJobDetails(CandidateLcaJobDetails candidateLcaJobDetails);
+
+	LcaHistory getLcaHistoryByStatus(Long immigrationId,Long candidateId,  String isCurrent);
+	
+	String deletetLcaHistoryDetails(Long id);
 	
 }

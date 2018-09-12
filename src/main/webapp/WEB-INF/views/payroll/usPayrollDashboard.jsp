@@ -41,7 +41,7 @@ function approvePayrollDiv(){
 	        <li><a onclick="getPayPeriodData();">History</a></li>
 	   </c:if>
 	   
-	   <li><a onclick="getUserGroupList();">Employees</a></li>
+	   <li><a onclick="getUserGroupList('DASHBOARD');">Employees</a></li>
 <!-- 	   <li><a href="javascript:void(0)">Contractors</a></li> -->
 <!-- 	   <li><a href="javascript:void(0)">Tax Forms</a></li> -->
 <!-- 	   <li><a href="javascript:void(0)">Settings</a></li> -->
@@ -63,23 +63,21 @@ function approvePayrollDiv(){
 <div id="initiateDivv">
 <div class="col-md-12 mt">
 	<div class="row">
-		<div class="col-md-3">
-			<div>
-			<select class="chosen-select" id="groupId" name="groupId" onchange="getGroupFrequency();" data-validation="required" field-name="User Group">
+		<div class="col-md-3" id="groupIdDiv">
+			<select class="chosen-select" id="groupId" name="groupId" onchange="removeValidateGroup();getGroupFrequency();" data-validation="required" field-name="User Group">
 				<option value="">Select User Group</option>
                     <c:forEach var="ug" items="${userGroupList}">
 					<option value="${ug.groupUUID},${ug.id}">${ug.groupName}</option>
 				</c:forEach>
 			</select>
-			</div>
 		</div>
-		<div class="col-md-3 paddingLeft paddingRight">
-			<select id="payPeriod" name="payPeriod" data-validation="required" field-name="Pay Period" class="chosen-select" onchange="clearPayrollDiv();">
+		<div class="col-md-3 paddingLeft paddingRight" id="payPeriodDiv">
+			<select id="payPeriod" name="payPeriod" data-validation="required" field-name="Pay Period" class="chosen-select" onchange="errPayPeriod();clearPayrollDiv();">
 			</select>
 		</div>
 
-		<div class="col-md-2 paddingLeft paddingRight">
-			<select id="payType" name="payType" data-validation="required" field-name="Pay Type" class="chosen-select">
+		<div class="col-md-2 paddingLeft paddingRight" id="payTypeIdDiv">
+			<select id="payType" name="payType" data-validation="required" field-name="Pay Type" class="chosen-select" onchange="errPayType();">
 				 <option value="">Select Pay type</option>
 				 <option value="All">All</option>
 				 <option value="HourlyRate">Hourly Rate</option>
@@ -88,7 +86,7 @@ function approvePayrollDiv(){
 			</select>
 		</div>
 
-		<div class="col-md-2 paddingRight">
+		<div class="col-md-2 paddingRight" id="payrollPayDateDivId">
 			<input name="" class="form-control calendar" placeholder="Check Date" id="payrollPayDate" name="payrollPayDate" type="text" data-validation="required" field-name="Pay Date" readonly="readonly">
 		</div>
 		<div class="col-md-2">
@@ -121,7 +119,9 @@ function approvePayrollDiv(){
 	<div id="submitButtonDiv">
 	<ul class="pull-right mr list-unstyled list-inline">
 		<li><a href="#" class="btn btn-primary btnSuccess" id="Submit" onClick="sendPayrollForApprover();">Submit for Approve</a></li>
+		 <c:if test="${SourceLeadWeb_isPayRollApprover == 'Y'}">
 		<li><a href="#" class="btn btn-default ml mr" id="Confirm" onclick="confirmPayroll();">Confirm</a></li>
+		</c:if>
 		<li><a href="#" class="btn btn-default" onclick="window.location='/app/payrollList'">Cancel</a></li>
 	</ul>
 	</div>
@@ -446,6 +446,15 @@ function getGroupFrequency(){
 	 $('#payrollPayDate').val("").datepicker("update");
 	 $("#submitButtonDiv").hide();
 }
+ 
+ function removeValidateGroup(){
+	$('#groupIdDiv').find('p.jquery_form_error_message').remove();
+ }
+ function errPayType(){
+		$('#payTypeIdDiv').find('p.jquery_form_error_message').remove(); 
+
+ }
+ 
 </script>
 
 
@@ -605,10 +614,17 @@ $('body').on('blur', '#generate_payroll_form', function() {
 		      dateFormat: finalDateFormat,
 		      changeMonth: true,
 		  	  changeYear: true, 
+		  	  onSelect : function(selected) {
+				addValidClass();
+			}
 		      //minDate: 0  this line for to restrict selection of previous dates
 		  });
 		  
 	});
+	
+	function addValidClass(){
+		 $('#payrollPayDateDivId').find('p.jquery_form_error_message').remove(); 
+	}
 </script>
 
 <script type="text/javascript">
@@ -656,6 +672,10 @@ function clearPayrollDiv(){
 	$("#payrollPayDate").val('');
 	$("#payrollDataDiv").empty();
 	$("#submitButtonDiv").hide();
+}
+function errPayPeriod(){
+	$('#payPeriodDiv').find('p.jquery_form_error_message').remove();  
+
 }
 </script>
 

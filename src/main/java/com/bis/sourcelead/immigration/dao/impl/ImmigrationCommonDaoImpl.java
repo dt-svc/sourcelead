@@ -1102,13 +1102,9 @@ public class ImmigrationCommonDaoImpl implements ImmigrationCommonDao {
 		try {
 			Session session = this.sessionFactory.getCurrentSession();
 			String lcaNumberStatus = "Y";
-			LcaHistory lh = null;
-			if(lcaNumberStatus.equals("Y")) {
-				   lh=getLcaHistoryDetails(immigrationId, Constants.YES);
-				   session.delete(lh);
-				   session.flush(); 
-			}else {
-				   lh=getLcaHistoryDetails(immigrationId, Constants.NO);
+			LcaHistory lh = getLcaHistoryDetails(immigrationId, Constants.YES);
+			if(lh != null && lcaNumberStatus.equals("Y")) {
+				 
 				   session.delete(lh);
 				   session.flush(); 
 			}
@@ -1540,6 +1536,7 @@ public class ImmigrationCommonDaoImpl implements ImmigrationCommonDao {
 		Session session = this.sessionFactory.getCurrentSession();
 		String listQuery = "from ImmigrationListExportView immView  where immView.status = 1  and (immView.orgLocationId=:orgLocationId or immView.attorneyOrgLocationId =:orgLocationId) ";
 		List<ImmigrationListExportView> listExportViews = session.createQuery(listQuery).setParameter("orgLocationId", orgLocations.getId()).list();
+		System.out.println(listExportViews.size());
 		return listExportViews;
 	}
 
@@ -2177,17 +2174,17 @@ public class ImmigrationCommonDaoImpl implements ImmigrationCommonDao {
 		
 			String queryString = "SELECT " + 
 					" l.LCA_NO as lcaNo, " + 
-					"l.LCA_TITLE as lcaTitle, " + 
-					"lpe.LOCATION as location, " + 
-					"l.PREVAILING_WAGE as prevailingWage, " + 
-					"l.LCA_STATUS as lcaStatus, " + 
-					"CAST(l.STATUS AS CHAR(1))as status, " + 
-					"DATE_FORMAT(l.START_DATE, '%Y-%m-%d') as startDate, " + 
-					"DATE_FORMAT(l.END_DATE, '%Y-%m-%d') as endDate " + 
-					"FROM " + 
-					" lca l, " + 
-					" lca_history lh, " + 
-					" lca_place_of_employment lpe " + 
+					" l.LCA_TITLE as lcaTitle, " + 
+					" lpe.LOCATION as location, " + 
+					" l.PREVAILING_WAGE as prevailingWage, " + 
+					" l.LCA_STATUS as lcaStatus, " + 
+					" CAST(l.STATUS AS CHAR(1))as status, " + 
+					" DATE_FORMAT(l.START_DATE, '%Y-%m-%d') as startDate, " + 
+					" DATE_FORMAT(l.END_DATE, '%Y-%m-%d') as endDate " + 
+					" FROM " + 
+					" LCA l, " + 
+					" LCA_HISTORY lh, " + 
+					" LCA_PLACE_OF_EMPLOYMENT lpe " + 
 					" WHERE " + 
 					"    l.id = lh.LCA_ID AND l.id = lpe.LCA_ID " + 
 					" AND lh.IMMIGRATION_ID = :immigrationId";
@@ -2309,5 +2306,42 @@ public class ImmigrationCommonDaoImpl implements ImmigrationCommonDao {
 		}
 		return candidateLcaJobDetails;
 	}
-	
+
+	@Override
+	@Transactional(rollbackFor = { Exception.class })
+	public LcaHistory getLcaHistoryByStatus(Long immigrationId,Long candidateId, String isCurrent) {
+
+		Session session = this.sessionFactory.getCurrentSession();
+		LcaHistory lcaHistory = null;
+		try {
+			if (immigrationId != null) {
+				logger.debug(" before query execute to get lcaHistory " + immigrationId);
+				String queryString = "from LcaHistory lh  where lh.isCurrent =:isCurrent and lh.immigrationId.id=:immigrationId and lh.candidate.id = :candidateId";
+				lcaHistory = (LcaHistory) session.createQuery(queryString).setLong("immigrationId", immigrationId).setLong("candidateId", candidateId)
+																		  .setString("isCurrent", isCurrent).uniqueResult();
+			}
+		} catch (Exception exception) {
+			logger.error("Exception caught while  lcaHistory information " + exception.getMessage());
+			exception.printStackTrace();
+		}
+		return lcaHistory;
+	}
+
+	@Override
+	@Transactional(rollbackFor = { Exception.class })
+	public String deletetLcaHistoryDetails(Long id) {
+		logger.debug("Delete deletetLcaHistoryDetails  ---> " + id);
+
+		try {
+			Session session = this.sessionFactory.getCurrentSession();
+			LcaHistory lh = (LcaHistory) session.load(LcaHistory.class,id);
+			session.delete(lh);
+			session.flush();
+		} catch (HibernateException e) {
+			logger.error("SQL Exception occured while doing delete -->" + e.getMessage());
+			e.printStackTrace();
+		}
+		logger.debug("Deleted record id -->" + id);
+		return "success";
+	}
 }

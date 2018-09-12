@@ -4,10 +4,12 @@ import java.util.List;
 import java.util.Properties;
 
 import javax.mail.Authenticator;
+import javax.mail.Folder;
 import javax.mail.Message;
 import javax.mail.MessagingException;
 import javax.mail.PasswordAuthentication;
 import javax.mail.Session;
+import javax.mail.Store;
 import javax.mail.Transport;
 import javax.mail.internet.InternetAddress;
 import javax.mail.internet.MimeMessage;
@@ -145,6 +147,63 @@ private static final Logger logger = LoggerFactory.getLogger(EmailScenarioConfig
 		return emailScenarioConfigurationDao.getVerifiedConfMail(orgLocId);
 	}
 
-	
+	@Override
+	public String verifyConfgParserMail(Long id, EmailScenarioConfiguration confMail) throws Exception {
+		if (confMail != null) {
+			try {
+				Properties properties = new Properties();
+				final String user = confMail.getEmailId();
+				final String password = confMail.getEmailPassword();
+				final String host = confMail.getServerName();
+				final String portNumber = confMail.getPortNumber().toString();
+
+				properties.put("mail.pop3.host", host);
+				properties.put("mail.pop3.port", portNumber);
+				properties.put("mail.pop3.starttls.enable", "true");
+				System.out.println(" before properties");
+				
+				Session emailSession = Session.getDefaultInstance(properties);
+
+				Store store = emailSession.getStore("pop3s");
+
+				System.out.println("connect before pop3s ==============>");
+				
+				// emailSession.setDebug(true);    //Enable flag for debug.
+				store.connect(host, user, password);
+				
+				Folder emailFolder = store.getFolder("INBOX"); // Reading inbox folder.
+				 emailFolder.open(Folder.READ_WRITE);  // open the folder.
+				//close the store and folder objects
+			    emailFolder.close(true);
+			    store.close();
+			      
+				System.out.println(" POP3 connected successfully ==============>");
+				
+				return "success";
+				
+			} catch (MessagingException e) {
+				// throw new RuntimeException(e);
+				return "failure";
+			}
+		}
+		return "failure";
+	}
+
+	@Override
+	public List<EmailScenarioConfiguration> getConfParserMailList(Long orgLocId, String parsingType) throws Exception {
+		return  emailScenarioConfigurationDao.getConfParserMailList(orgLocId, parsingType);
+	}
+
+	@Override
+	public EmailScenarioConfiguration getParserEmailsDetailsByUUID(String UUID) throws Exception {
+		 return emailScenarioConfigurationDao.getParserEmailsDetailsByUUID(UUID);
+		
+	}
+
+	@Override
+	public String deleteParserEMail(Long emailId) throws Exception {
+		// TODO Auto-generated method stub
+		return emailScenarioConfigurationDao.deleteParserEMail(emailId);
+	}
 
 }
