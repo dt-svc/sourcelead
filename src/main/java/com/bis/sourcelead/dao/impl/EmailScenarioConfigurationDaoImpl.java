@@ -266,7 +266,8 @@ public class EmailScenarioConfigurationDaoImpl implements EmailScenarioConfigura
 			if (emailId != null) {
 				EmailScenarioConfiguration emailConfig= new EmailScenarioConfiguration();
 				emailConfig.setId(emailId);
-			    System.out.println(" inside delete operation ========"+emailId);
+			    //System.out.println(" inside delete operation ========"+emailId);
+			    logger.debug(" inside delete operation ========"+emailId);
 				session.delete(emailConfig);
 			}
 			logger.debug("emailConfigurationFromMail deleted Successfully");
