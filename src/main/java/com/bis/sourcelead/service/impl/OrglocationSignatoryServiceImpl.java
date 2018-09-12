@@ -80,7 +80,7 @@ public class OrglocationSignatoryServiceImpl implements OrglocationSignatoryServ
 					signatory.setFirstName(orglocationSignatoryDTO.getFirstName());
 					signatory.setLastName(orglocationSignatoryDTO.getLastName());
 					signatory.setEmail(orglocationSignatoryDTO.getEmail());
-					signatory.setSsn(Integer.parseInt(orglocationSignatoryDTO.getSsn()));
+					signatory.setSsn(orglocationSignatoryDTO.getSsn());
 					signatory.setPhone(orglocationSignatoryDTO.getPhoneNumber());
 					UserRole userRole = userRoleService.getUserDetailsByEmailAndLocationId(orglocationSignatoryDTO.getEmail(), orgLocations.getId());
 					signatory.setUserRoleId(userRole);
@@ -190,7 +190,7 @@ public class OrglocationSignatoryServiceImpl implements OrglocationSignatoryServ
 			signatory.setFirstName(singnatoryDTO.getFirstName());
 			signatory.setLastName(singnatoryDTO.getLastName());
 			signatory.setEmail(singnatoryDTO.getEmail());
-			signatory.setSsn(Integer.parseInt(singnatoryDTO.getSsn()));
+			signatory.setSsn(singnatoryDTO.getSsn());
 			
 			UserRole userRole = userRoleService.getUserDetailsByEmailAndLocationId(singnatoryDTO.getEmail(), orgLocations.getId());
 			signatory.setUserRoleId(userRole);
