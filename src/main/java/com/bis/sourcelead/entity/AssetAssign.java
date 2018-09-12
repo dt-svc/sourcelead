@@ -11,8 +11,11 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
+import javax.persistence.Transient;
 
 import org.hibernate.annotations.Type;
+
+import com.fasterxml.jackson.annotation.JsonProperty;
 
 /**
  * @author Laxman
@@ -58,6 +61,15 @@ public class AssetAssign {
 	@Column(name = "STATUS")
 	private int status;
 
+	
+	@Transient
+    @JsonProperty
+    private String assignedOnStr;
+
+	@Transient
+    @JsonProperty
+    private String returnedOnStr;
+	
 	public Long getId() {
 		return id;
 	}
@@ -138,5 +150,19 @@ public class AssetAssign {
 		this.returnedOn = returnedOn;
 	}
 
-	
+	public String getAssignedOnStr() {
+		return assignedOnStr;
+	}
+
+	public String getReturnedOnStr() {
+		return returnedOnStr;
+	}
+
+	public void setAssignedOnStr(String assignedOnStr) {
+		this.assignedOnStr = assignedOnStr;
+	}
+
+	public void setReturnedOnStr(String returnedOnStr) {
+		this.returnedOnStr = returnedOnStr;
+	}
 }
