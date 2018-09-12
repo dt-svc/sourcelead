@@ -28,6 +28,8 @@ import javax.servlet.http.HttpSession;
 
 import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.lang.StringUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.dto.CandidateDTO;
@@ -51,7 +53,7 @@ import java.io.FileReader;
 import net.coobird.thumbnailator.Thumbnails;
 
 public class FileUploadUtil {
-
+	private static final Logger logger = LoggerFactory.getLogger(FileUploadUtil.class);
     public static String getFileContent(String staticPath, String contentFileUrl) {
         StringBuilder fileContent = new StringBuilder();
         try {
@@ -796,8 +798,9 @@ public class FileUploadUtil {
 		List<ResumeParserJsonUtil> failedList = new ArrayList<>();
 		List<ResumeParserJsonUtil> existedList = new ArrayList<>();
 		//System.out.println("inside processConfiguredEmailShedulerForResumesParsing -->"+fileInfoList.size());
+		logger.debug("********inside  parsing resumes**********fileInfoList size is **==>"+fileInfoList.size());
 		for (FileInfo fileInfo : fileInfoList) {
-				System.out.println("File name is -->"+fileInfo.getFileName());
+				//System.out.println("File name is -->"+fileInfo.getFileName());
 			File file = new File(staticPath.substring(0, staticPath.lastIndexOf("/")), fileInfo.getFileURL().replace(
 					"resumes",
 					StringUtils.isNotBlank(fileInfo.getTempFolderName()) ? fileInfo.getTempFolderName() : "temp"));
@@ -864,9 +867,12 @@ public class FileUploadUtil {
 				failedList.add(resume);
 			}
 		}
-		System.out.println("Succesfully parsed resumes count ==> "+successList.size());
-		System.out.println("Existed resumes count ==> "+existedList.size());
-		System.out.println("Failed resumes count ==> "+failedList.size());
+		//System.out.println("Succesfully parsed resumes count ==> "+successList.size());
+		logger.debug("Succesfully parsed resumes count ==>"+successList.size());
+		//System.out.println("Existed resumes count ==> "+existedList.size());
+		logger.debug("Existed resumes count ==> "+existedList.size());
+		//System.out.println("Failed resumes count ==> "+failedList.size());
+		logger.debug("Existed resumes count ==> "+existedList.size());
 	}
 	
 
