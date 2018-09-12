@@ -40,7 +40,7 @@ function associateTaxSummary(userId){
        		result = result + '   </div>';
        		result = result + '    </div>';
                          
-       		result = result + '     <div class="user_details_cta user_detailsCta  userDetails-cta">';
+       	/* 	result = result + '     <div class="user_details_cta user_detailsCta  userDetails-cta">';
        		result = result + '      <h4>State Tax</h4>';
        		result = result + '    <div class="project_details_cta"> <strong>Filling Status:</strong>';
        		if(json.stateTaxFillingStatus != null && json.stateTaxFillingStatus != '' && json.stateTaxFillingStatus != 'undefined')
@@ -64,7 +64,7 @@ function associateTaxSummary(userId){
        		result = result + '    <div class="clearfix"></div>';
        		result = result + '   </div>';
        		result = result + ' </div>';
-       		result = result + '   <div class="user_details_cta user_detailsCta userDetails-cta">';
+       		result = result + '   <div class="user_details_cta user_detailsCta userDetails-cta">'; */
                         
        		result = result + '    <h4>Residence Location</h4>';
                          
@@ -195,7 +195,7 @@ function associateTaxSummary(userId){
         	  result = result + '    </div>';
         	  result = result + '  </div>';
         	  result = result + '   <div class="col-md-5">';
-        	  result = result + '    <label>Additional with holding<span class="text-danger">&nbsp;*</span></label>';
+        	  result = result + '    <label>Additional withholding<span class="text-danger">&nbsp;*</span></label>';
               result = result + '    <div>';
               var federaltaxAdditionalWithHolding = "";
               if(json.federaltaxAdditionalWithHolding != null && json.federaltaxAdditionalWithHolding != '' && json.federaltaxAdditionalWithHolding != 'undefined'){
@@ -206,7 +206,7 @@ function associateTaxSummary(userId){
               result = result + '     <input type="text" class="form-control" name="federaltaxAdditionalWithHolding" value=\''+federaltaxAdditionalWithHolding+'\' id="federaltaxAdditionalWithHolding" data-validation="required validate_Space validate_length length1-100" field-name="Additional with holding">';
               result = result + '    </div>';
               result = result + '  </div>';
-              result = result + '  <div class="clearfix"></div>';
+             /*  result = result + '  <div class="clearfix"></div>';
               result = result + '  <h4 class="col-md-12">State Tax</h4>';
               result = result + ' <div class="col-md-5">';
               result = result + '     <label>Filling Status<span class="text-danger">&nbsp;*</span></label>';
@@ -234,7 +234,7 @@ function associateTaxSummary(userId){
               result = result + '     </div>';
               result = result + '   </div>';
               result = result + '   <div class="col-md-5">';
-              result = result + '     <label>Additional with holding<span class="text-danger">&nbsp;*</span></label>';
+              result = result + '     <label>Additional withholding<span class="text-danger">&nbsp;*</span></label>';
               result = result + '<div>';
               var stateTaxAdditionalWithHolding = "";
               if(json.stateTaxAdditionalWithHolding != null && json.stateTaxAdditionalWithHolding != '' && json.stateTaxAdditionalWithHolding != 'undefined'){
@@ -244,7 +244,7 @@ function associateTaxSummary(userId){
               }
               result = result + '     <input type="text" class="form-control" name="stateTaxAdditionalWithHolding" value=\''+stateTaxAdditionalWithHolding+'\' id="stateTaxAdditionalWithHolding" data-validation="required validate_Space validate_length length1-100" field-name="Additional with holding">';
               result = result + '  </div>';
-              result = result + '  </div>';
+              result = result + '  </div>'; */
                    
                result = result + '  <div class="clearfix"></div>';
               result = result + '  <h4 class="col-md-12">Residence Location</h4>';
@@ -274,7 +274,7 @@ function associateTaxSummary(userId){
               result = result + ' </div>';
               result = result + ' </div>';
        		  result = result + '  <div class="col-md-5">';
-              result = result + '    <label>Additional with holding<span class="text-danger">&nbsp;*</span></label>';
+              result = result + '    <label>Additional withholding<span class="text-danger">&nbsp;*</span></label>';
               result = result + '     <div>';
               var residenceLocationAdditionalWithHolding = "";
               if(json.residenceLocationAdditionalWithHolding != null && json.residenceLocationAdditionalWithHolding != '' && json.residenceLocationAdditionalWithHolding != 'undefined'){
@@ -325,14 +325,14 @@ function associateTaxSummary(userId){
                   
                   result = result + '   <label class="radioIput">';
                   result = result + '    <input type="radio" name="federalExempt" id="federalExempt" value="false">';
-                  result = result + '   Notexempt</label>';
+                  result = result + '   Nonexempt</label>';
               }else{
             	  result = result + '    <input type="radio"  name="federalExempt" id="federalExempt"  value="true">';
                   result = result + '   Exempt</label>';
                   
                   result = result + '   <label class="radioIput">';
                   result = result + '    <input type="radio" checked name="federalExempt" id="federalExempt" value="false">';
-                  result = result + '   Notexempt</label>';
+                  result = result + '   Nonexempt</label>';
               }
              
               
@@ -348,7 +348,7 @@ function associateTaxSummary(userId){
                   
                   result = result + '  <label class="radioIput">';
                   result = result + '    <input type="radio" name="medicareExempt" id="medicareExempt" value="false">';
-                  result = result + '      Notexempt</label>';
+                  result = result + '      Nonexempt</label>';
               }else{
             	  result = result + '  <label class="radioIput mr">';
                   result = result + '    <input type="radio" name="medicareExempt" id="medicareExempt" value="true">';
@@ -356,13 +356,13 @@ function associateTaxSummary(userId){
                   
                   result = result + '  <label class="radioIput">';
                   result = result + '    <input type="radio" checked name="medicareExempt" id="medicareExempt" value="false">';
-                  result = result + '      Notexempt</label>';
+                  result = result + '      Nonexempt</label>';
               }
               
               result = result + '</div>';
               result = result + '</div>';
               result = result + ' <div class="col-md-5">';
-              result = result + '   <label>Socail Security</label>';
+              result = result + '   <label>Social Security</label>';
               result = result + '   <div>';
              if(json.socailSecurityExempt == 'YES'){
             	 result = result + '  <label class="radioIput mr">';
@@ -370,14 +370,14 @@ function associateTaxSummary(userId){
                  result = result + '    Exempt</label>';
                  result = result + ' <label class="radioIput">';
                  result = result + '   <input type="radio" name="socailSecurityExempt" id="socailSecurityExempt" value="false">';
-                 result = result + '   Notexempt</label>'; 
+                 result = result + '   Nonexempt</label>'; 
              }else{
             	 result = result + '  <label class="radioIput mr">';
                  result = result + '    <input type="radio" name="socailSecurityExempt" id="socailSecurityExempt" value="true">';
                  result = result + '    Exempt</label>';
                  result = result + ' <label class="radioIput">';
                  result = result + '   <input type="radio" checked name="socailSecurityExempt" id="socailSecurityExempt" value="false">';
-                 result = result + '   Notexempt</label>'; 
+                 result = result + '   Nonexempt</label>'; 
              }
               
               
@@ -392,14 +392,14 @@ function associateTaxSummary(userId){
                   result = result + '     Exempt</label>';
                   result = result + '   <label class="radioIput">';
                   result = result + '      <input type="radio" name="futaExempt" id="futaExempt" value="false">';
-                  result = result + '      Notexempt</label>'; 
+                  result = result + '      Nonexempt</label>'; 
               }else{
             	  result = result + '    <label class="radioIput mr">';
                   result = result + '      <input type="radio" name="futaExempt" id="futaExempt" value="true">';
                   result = result + '     Exempt</label>';
                   result = result + '   <label class="radioIput">';
                   result = result + '      <input type="radio" checked name="futaExempt" id="futaExempt" value="false">';
-                  result = result + '      Notexempt</label>';
+                  result = result + '      Nonexempt</label>';
               }
              
               
@@ -415,7 +415,7 @@ function associateTaxSummary(userId){
                   
                   result = result + ' <label class="radioIput">';
                   result = result + '   <input type="radio" name="sutaExempt" id="sutaExempt" value="false">';
-                  result = result + '    Notexempt</label>';
+                  result = result + '    Nonexempt</label>';
               }else{
             	  result = result + '   <label class="radioIput mr">';
                   result = result + '      <input type="radio" name="sutaExempt" id="sutaExempt" value="true">';
@@ -423,7 +423,7 @@ function associateTaxSummary(userId){
                   
                   result = result + ' <label class="radioIput">';
                   result = result + '   <input type="radio" checked name="sutaExempt" id="sutaExempt" value="false">';
-                  result = result + '    Notexempt</label>';
+                  result = result + '    Nonexempt</label>';
               }
              
               
