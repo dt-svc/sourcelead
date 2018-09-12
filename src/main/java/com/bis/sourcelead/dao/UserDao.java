@@ -200,5 +200,5 @@ public interface UserDao {
 	
 	public List<LeaveBalanceReportDTO> getUserNameAndTypeByOrgLocationId(Long orgLocationId,List<Long> userRole,List<Long> orgDepartmentsList,String topleave,Date MonthStart,Date MonthEnd) throws Exception;
 
-
+	public List<User> getUsersListUsingMultipleStringIds(String ids) throws Exception;
 }

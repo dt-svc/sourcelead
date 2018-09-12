@@ -544,15 +544,31 @@ return responseList;
 			if (orgRelations != null) {
 				billingDto.setOrgRelationUUID(orgRelations.getUUID());
 			}
-			StringBuilder contactName = new StringBuilder();
-			if (null != invoice.getContactUser()) {
+			//StringBuilder contactName = new StringBuilder();
+			if(null != invoice.getContactUsers()){
+				String[] contactUsers = invoice.getContactUsers().split(",");
+				if(contactUsers.length != 0){
+					StringBuilder contactUserName = new StringBuilder();
+					for(String contactUserId : contactUsers){
+						User contactUser = userService.getUserById(Long.parseLong(contactUserId.trim()));
+						if(contactUser.getLastName() != null){
+							contactUserName = contactUserName.append(contactUser.getFirstName()).append(" ").append(contactUser.getLastName()).append(", ");
+						}else{
+							contactUserName = contactUserName.append(contactUser.getFirstName()).append(", ");
+						}
+					}
+					
+					 billingDto.setClientContactName(contactUserName.toString().substring(0, contactUserName.toString().length() - 2));
+				}
+			}
+			/*if (null != invoice.getContactUser()) {
 				if (invoice.getContactUser().getLastName() != null) {
 					billingDto.setClientContactName(contactName.append(invoice.getContactUser().getFirstName()).append(" ").append(invoice.getContactUser().getLastName()).toString());
 				}
 				else {
 					billingDto.setClientContactName(contactName.append(invoice.getContactUser().getFirstName()).toString());
 				}
-			}
+			}*/
 			if (null != invoice.getDueDate()) {
 				billingDto.setDueDateStr(dateFormat.format(invoice.getDueDate()));
 			}
@@ -881,11 +897,31 @@ return responseList;
 		List<Invoice> viewinvoiceList = invoiceService.getViewInvoiceListByInvoiceIdAndOrglocationId(Id, orgLocations.getId());
 		for (Invoice invoice : viewinvoiceList) {
 			OrgLocations LoginOrgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
-			User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
-			if (invoice.getOrgRelationID().getLocationId().getId().longValue() == LoginOrgLocations.getId().longValue()) {
+			//User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+			if (invoice.getOrgRelationID().getLocationId().getId().equals(LoginOrgLocations.getId())) {
 				invoice.setClientName(invoice.getOrgRelationID().getResponderLocationId().getOrgLocationName());
-				StringBuilder contactName = new StringBuilder();
-				if (invoice.getContactUser() != null) {
+				//StringBuilder contactName = new StringBuilder();
+				if(null != invoice.getContactUsers()){
+					String[] contactUsers = invoice.getContactUsers().split(",");
+					if(contactUsers.length != 0){
+						StringBuilder contactUserName = new StringBuilder();
+						StringBuilder contactUserEmail = new StringBuilder();
+						for(String contactUserId : contactUsers){
+							User contactUser = userService.getUserById(Long.parseLong(contactUserId.trim()));
+							if(contactUser.getLastName() != null){
+								contactUserName = contactUserName.append(contactUser.getFirstName()).append(" ").append(contactUser.getLastName()).append("- ").append(contactUser.getEmail()).append(", ").append("\n ");
+							}else{
+								contactUserName = contactUserName.append(contactUser.getFirstName()).append("- ").append(contactUser.getEmail()).append(", ").append("\n ");
+							}
+							if(contactUser.getEmail() != null){
+								contactUserEmail = contactUserEmail.append(contactUser.getEmail()).append(", ");
+							}
+						}
+						invoice.setClientContactEmail(contactUserEmail.toString().substring(0, contactUserEmail.toString().length() - 2));
+						invoice.setClientContactName(contactUserName.toString().substring(0, contactUserName.toString().length() - 2).replaceAll("\n ", "<br/>"));
+					}
+				}
+				/*if (invoice.getContactUser() != null) {.
 					if (invoice.getContactUser().getLastName() != null) {
 						invoice.setClientContactName(contactName.append(invoice.getContactUser().getFirstName()).append(" ").append(invoice.getContactUser().getLastName()).toString());
 					}
@@ -895,22 +931,42 @@ return responseList;
 				}
 				if (null != invoice.getContactUser()) {
 					invoice.setClientContactEmail(invoice.getContactUser().getEmail());
-				}
+				}*/
 				if (invoice.getOrgRelationID() != null) {
 					invoice.setOrgRelationUUID(invoice.getOrgRelationID().getUUID());
 				}
 			}
 		    	StringBuilder contactName = new StringBuilder();
-				if(invoice.getOrgRelationID().getResponderLocationId().getId().longValue() == LoginOrgLocations.getId().longValue()){
+				if(invoice.getOrgRelationID().getResponderLocationId().getId().equals(LoginOrgLocations.getId())){
 					invoice.setClientName(invoice.getOrgRelationID().getLocationId().getOrgLocationName());
-					if(invoice.getContactUser().getLastName() != null){
+					if(null != invoice.getOwnerUsers()){
+						String[] ownerUsers = invoice.getOwnerUsers().split(",");
+						if(ownerUsers.length != 0){
+							StringBuilder ownerUserName = new StringBuilder();
+							StringBuilder ownerUserEmail = new StringBuilder();
+							for(String ownerUserId : ownerUsers){
+								User ownerUser = userService.getUserById(Long.parseLong(ownerUserId.trim()));
+								if(ownerUser.getLastName() != null){
+									ownerUserName = ownerUserName.append(ownerUser.getFirstName()).append(" ").append(ownerUser.getLastName()).append(", ");
+								}else{
+									ownerUserName = ownerUserName.append(ownerUser.getFirstName()).append(", ");
+								}
+								if(ownerUser.getEmail() != null){
+									ownerUserEmail = ownerUserEmail.append(ownerUser.getEmail()).append(", ");
+								}
+							}
+							invoice.setClientContactEmail(ownerUserEmail.toString().substring(0, ownerUserEmail.toString().length() - 2));
+							invoice.setClientContactName(ownerUserName.toString().substring(0, ownerUserName.toString().length() - 2));
+						}
+					}
+					/*if(invoice.getContactUser().getLastName() != null){
 						invoice.setClientContactName(contactName.append(invoice.getOwnerUserId().getFirstName()).append(" ").append(invoice.getOwnerUserId().getLastName()).toString());	
 					}else{
 						invoice.setClientContactName(contactName.append(invoice.getOwnerUserId().getFirstName()).toString());
 					}
 					if(null != invoice.getContactUser()){
 						invoice.setClientContactEmail(invoice.getOwnerUserId().getEmail());	
-					}
+					}*/
 					if(invoice.getOrgRelationID() != null){
 						invoice.setOrgRelationUUID(invoice.getOrgRelationID().getUUID());
 						}
@@ -1373,69 +1429,75 @@ return responseList;
 	
 	private void invoiceAcceptMailtoVendor(User loginUser, Invoice invoice, OrgLocations loginOrgLocation, String invoiceType) throws Exception
 	{
-		
-		EmailMessage emailMessage = new EmailMessage();
-		emailMessage.setFirstName(loginUser.getFirstName());
-		emailMessage.setLastName(loginUser.getLastName());
-		emailMessage.setToEmail(invoice.getContactUser().getEmail());
-		emailMessage.setFromEmail(loginUser.getEmail());
-		emailMessage.setCreatedBy(loginUser.getUserCode());
-		emailMessage.setEmailType(Constants.CUSTOM_USER_EMAIL);
-		StringBuilder msgBuild = new StringBuilder();
-		emailMessage.setFromName(msgBuild.append(loginUser.getFirstName()).append(" ").append(loginUser.getLastName()).toString());
-		// emailMessage.setEmailType(Constants.CUSTOM_USER_EMAIL);
-		// setting the class filed values
-		Map<String, String> globalVarsMap = new HashMap<String, String>();
-		SimpleDateFormat dateFormat = loginOrgLocation.getLocFullFormDateFormatter();
-		String createdDate = (dateFormat.format(invoice.getCreatedDate()));
-		String dueDate = (dateFormat.format(invoice.getDueDate()));
-		StringBuilder stringBuildername = new StringBuilder();
-		
-		if(invoice.getInvoiceType().equalsIgnoreCase(Constants.RECEIVABLE)){
-			globalVarsMap.put("vendorName", stringBuildername.append(invoice.getContactUser().getFirstName()).append(" ").append(invoice.getContactUser().getLastName()).toString());
-
-		}else{
-			globalVarsMap.put("clientName", stringBuildername.append(invoice.getContactUser().getFirstName()).append(" ").append(invoice.getContactUser().getLastName()).toString());
-
+		if(null != invoice.getContactUsers()){
+			String[] contactUsers = invoice.getContactUsers().split(",");
+			if(contactUsers.length != 0){
+				for(String contactUserId : contactUsers){
+					User contactUser = userService.getUserById(Long.parseLong(contactUserId.trim()));
+					EmailMessage emailMessage = new EmailMessage();
+					emailMessage.setFirstName(loginUser.getFirstName());
+					emailMessage.setLastName(loginUser.getLastName());
+					emailMessage.setToEmail(contactUser.getEmail());
+					emailMessage.setFromEmail(loginUser.getEmail());
+					emailMessage.setCreatedBy(loginUser.getUserCode());
+					emailMessage.setEmailType(Constants.CUSTOM_USER_EMAIL);
+					StringBuilder msgBuild = new StringBuilder();
+					emailMessage.setFromName(msgBuild.append(loginUser.getFirstName()).append(" ").append(loginUser.getLastName()).toString());
+					// emailMessage.setEmailType(Constants.CUSTOM_USER_EMAIL);
+					// setting the class filed values
+					Map<String, String> globalVarsMap = new HashMap<String, String>();
+					SimpleDateFormat dateFormat = loginOrgLocation.getLocFullFormDateFormatter();
+					String createdDate = (dateFormat.format(invoice.getCreatedDate()));
+					String dueDate = (dateFormat.format(invoice.getDueDate()));
+					StringBuilder stringBuildername = new StringBuilder();
+					
+					if(invoice.getInvoiceType().equalsIgnoreCase(Constants.RECEIVABLE)){
+						globalVarsMap.put("vendorName", stringBuildername.append(contactUser.getFirstName()).append(" ").append(contactUser.getLastName()).toString());
+			
+					}else{
+						globalVarsMap.put("clientName", stringBuildername.append(contactUser.getFirstName()).append(" ").append(contactUser.getLastName()).toString());
+			
+					}
+					globalVarsMap.put("invoiceID", invoice.getInvoiceId());
+					globalVarsMap.put("totalAmouprojectMembersListnt", invoice.getTotal());
+					globalVarsMap.put("date", createdDate);
+					globalVarsMap.put("dueDate", dueDate);
+					globalVarsMap.put("orgName", loginOrgLocation.getOrgLocationName());
+					StringBuilder stringBuilderLoginname = new StringBuilder();
+					globalVarsMap.put("LoginUser", stringBuilderLoginname.append(loginUser.getFirstName()).append(" ").append(loginUser.getLastName()).toString());
+					StringBuilder stringBuildforLink = new StringBuilder();
+					globalVarsMap.put("loginLink", stringBuildforLink.append("<a href='").append(sourceleadLoginUrl).append("' style='text-decoration:none; '><div style=' width:220px; border-radius:30px; background-color:#214b90; color:#FFF; font-size:18px; font-weight:500; margin:10px auto 5px auto; padding:10px 0px; text-align:center; letter-spacing:2px;'>Login</div></a>").toString());
+					InternetAddress[] iAdressArray = InternetAddress.parse(emailMessage.getToEmail());
+					
+					//send mail logic
+					List<EmailAttachment> attachmentList = new ArrayList<>();
+					
+					//send notification logic
+					EmailScenario notificationScenario = null;
+					if (invoiceType.equalsIgnoreCase("Payables")) {
+						commonUtil.sendTemplateEmail(emailMessage, globalVarsMap, loginOrgLocation.getOrg(), loginOrgLocation, Constants.INVOICE_ACCEPT_MAIL_VENDOR_EMAIL,attachmentList);
+						notificationScenario = emailScenarioService.getEmailScenarioByUniqueName(Constants.INVOICE_ACCEPT_MAIL_VENDOR_EMAIL, Constants.ENTITY_TYPE_NOTIFICATION);
+					}
+					else {
+						commonUtil.sendTemplateEmail(emailMessage, globalVarsMap, loginOrgLocation.getOrg(), loginOrgLocation, Constants.INVOICE_ACCEPT_MAIL_CLIENT_EMAIL,attachmentList);
+						notificationScenario = emailScenarioService.getEmailScenarioByUniqueName(Constants.INVOICE_ACCEPT_MAIL_CLIENT_EMAIL, Constants.ENTITY_TYPE_NOTIFICATION);
+					}
+					String notificationbody = emailScenerioUtil.buildTemplateBody(notificationScenario.getBody(), globalVarsMap, notificationScenario);
+					notificationScenario.setBody(notificationbody);
+					String actionLink = "";
+					StringBuilder notificationLink = new StringBuilder();
+					if (Constants.RECEIVABLE.equalsIgnoreCase(invoiceType)) {
+						actionLink = notificationLink.append(sourceleadUrl).append("/").append("viewInvoice?invoiceUUID="
+								+ invoice.getInvoiceUUID() + "&invoiceType=Payables").toString();
+					}
+					else {
+						actionLink = notificationLink.append(sourceleadUrl).append("/").append("viewInvoice?invoiceUUID="
+								+ invoice.getInvoiceUUID() + "&invoiceType=Receivable").toString();
+					}
+					emailScenerioUtil.sendNotification(actionLink, loginUser, contactUser, invoice.getResponderLocationId(), notificationScenario, new HashMap<String, String>());
+				}
+			}
 		}
-		globalVarsMap.put("invoiceID", invoice.getInvoiceId());
-		globalVarsMap.put("totalAmouprojectMembersListnt", invoice.getTotal());
-		globalVarsMap.put("date", createdDate);
-		globalVarsMap.put("dueDate", dueDate);
-		globalVarsMap.put("orgName", loginOrgLocation.getOrgLocationName());
-		StringBuilder stringBuilderLoginname = new StringBuilder();
-		globalVarsMap.put("LoginUser", stringBuilderLoginname.append(loginUser.getFirstName()).append(" ").append(loginUser.getLastName()).toString());
-		StringBuilder stringBuildforLink = new StringBuilder();
-		globalVarsMap.put("loginLink", stringBuildforLink.append("<a href='").append(sourceleadLoginUrl).append("' style='text-decoration:none; '><div style=' width:220px; border-radius:30px; background-color:#214b90; color:#FFF; font-size:18px; font-weight:500; margin:10px auto 5px auto; padding:10px 0px; text-align:center; letter-spacing:2px;'>Login</div></a>").toString());
-		InternetAddress[] iAdressArray = InternetAddress.parse(emailMessage.getToEmail());
-		
-		//send mail logic
-		List<EmailAttachment> attachmentList = new ArrayList<>();
-		
-		//send notification logic
-		EmailScenario notificationScenario = null;
-		if (invoiceType.equalsIgnoreCase("Payables")) {
-			commonUtil.sendTemplateEmail(emailMessage, globalVarsMap, loginOrgLocation.getOrg(), loginOrgLocation, Constants.INVOICE_ACCEPT_MAIL_VENDOR_EMAIL,attachmentList);
-			notificationScenario = emailScenarioService.getEmailScenarioByUniqueName(Constants.INVOICE_ACCEPT_MAIL_VENDOR_EMAIL, Constants.ENTITY_TYPE_NOTIFICATION);
-		}
-		else {
-			commonUtil.sendTemplateEmail(emailMessage, globalVarsMap, loginOrgLocation.getOrg(), loginOrgLocation, Constants.INVOICE_ACCEPT_MAIL_CLIENT_EMAIL,attachmentList);
-			notificationScenario = emailScenarioService.getEmailScenarioByUniqueName(Constants.INVOICE_ACCEPT_MAIL_CLIENT_EMAIL, Constants.ENTITY_TYPE_NOTIFICATION);
-		}
-		String notificationbody = emailScenerioUtil.buildTemplateBody(notificationScenario.getBody(), globalVarsMap, notificationScenario);
-		notificationScenario.setBody(notificationbody);
-		String actionLink = "";
-		StringBuilder notificationLink = new StringBuilder();
-		if (Constants.RECEIVABLE.equalsIgnoreCase(invoiceType)) {
-			actionLink = notificationLink.append(sourceleadUrl).append("/").append("viewInvoice?invoiceUUID="
-					+ invoice.getInvoiceUUID() + "&invoiceType=Payables").toString();
-		}
-		else {
-			actionLink = notificationLink.append(sourceleadUrl).append("/").append("viewInvoice?invoiceUUID="
-					+ invoice.getInvoiceUUID() + "&invoiceType=Receivable").toString();
-		}
-		emailScenerioUtil.sendNotification(actionLink, loginUser, invoice.getContactUser(), invoice.getResponderLocationId(), notificationScenario, new HashMap<String, String>());
-		
 		
 	}
 	
@@ -1613,64 +1675,69 @@ return responseList;
 	
 	private void invoiceRejectMailtoVendor(User loginUser, Invoice invoice, OrgLocations loginOrgLocation, String invoiceType) throws Exception
 	{
-		
-		EmailMessage emailMessage = new EmailMessage();
-		emailMessage.setFirstName(loginUser.getFirstName());
-		emailMessage.setLastName(loginUser.getLastName());
-		emailMessage.setToEmail(invoice.getContactUser().getEmail());
-		emailMessage.setFromEmail(loginUser.getEmail());
-		emailMessage.setCreatedBy(loginUser.getUserCode());
-		emailMessage.setEmailType(Constants.CUSTOM_USER_EMAIL);
-		StringBuilder msgBuild = new StringBuilder();
-		emailMessage.setFromName(msgBuild.append(loginUser.getFirstName()).append(" ").append(loginUser.getLastName()).toString());
-		// emailMessage.setEmailType(Constants.CUSTOM_USER_EMAIL);
-		// setting the class filed values
-		Map<String, String> globalVarsMap = new HashMap<String, String>();
-		StringBuilder stringBuildername = new StringBuilder();
-		if(invoice.getInvoiceType().equalsIgnoreCase(Constants.PAYABLES)){
-			globalVarsMap.put("vendorName", stringBuildername.append(invoice.getContactUser().getFirstName()).append(" ").append(invoice.getContactUser().getLastName()).toString());
-
+		if(null != invoice.getContactUsers()){
+			String[] contactUsers = invoice.getContactUsers().split(",");
+			if(contactUsers.length != 0){
+				for(String contactUserId : contactUsers){
+					User contactUser = userService.getUserById(Long.parseLong(contactUserId.trim()));
+					EmailMessage emailMessage = new EmailMessage();
+					emailMessage.setFirstName(loginUser.getFirstName());
+					emailMessage.setLastName(loginUser.getLastName());
+					emailMessage.setToEmail(contactUser.getEmail());
+					emailMessage.setFromEmail(loginUser.getEmail());
+					emailMessage.setCreatedBy(loginUser.getUserCode());
+					emailMessage.setEmailType(Constants.CUSTOM_USER_EMAIL);
+					StringBuilder msgBuild = new StringBuilder();
+					emailMessage.setFromName(msgBuild.append(loginUser.getFirstName()).append(" ").append(loginUser.getLastName()).toString());
+					// emailMessage.setEmailType(Constants.CUSTOM_USER_EMAIL);
+					// setting the class filed values
+					Map<String, String> globalVarsMap = new HashMap<String, String>();
+					StringBuilder stringBuildername = new StringBuilder();
+					if(invoice.getInvoiceType().equalsIgnoreCase(Constants.PAYABLES)){
+						globalVarsMap.put("vendorName", stringBuildername.append(contactUser.getFirstName()).append(" ").append(contactUser.getLastName()).toString());
+					}
+					else{
+					globalVarsMap.put("clientName", stringBuildername.append(contactUser.getFirstName()).append(" ").append(contactUser.getLastName()).toString());
+					}
+					globalVarsMap.put("invoiceID", invoice.getInvoiceId());
+					globalVarsMap.put("totalAmount", invoice.getTotal());
+					globalVarsMap.put("reason", invoice.getRejectReason());
+					globalVarsMap.put("orgName", loginOrgLocation.getOrgLocationName());
+					StringBuilder stringBuilderLoginname = new StringBuilder();
+					globalVarsMap.put("LoginUser", stringBuilderLoginname.append(loginUser.getFirstName()).append(" ").append(loginUser.getLastName()).toString());
+					StringBuilder stringBuildforLink = new StringBuilder();
+					globalVarsMap.put("loginLink", stringBuildforLink.append("<a href='").append(sourceleadLoginUrl).append("' style='text-decoration:none; '><div style=' width:220px; border-radius:30px; background-color:#214b90; color:#FFF; font-size:18px; font-weight:500; margin:10px auto 5px auto; padding:10px 0px; text-align:center; letter-spacing:2px;'>Login</div></a>").toString());
+					InternetAddress[] iAdressArray = InternetAddress.parse(emailMessage.getToEmail());
+					
+						    //send mail logic
+					        List<EmailAttachment> attachmentList = new ArrayList<>();
+					
+					        //send notification logic
+							EmailScenario notificationScenario = null;
+							if (invoiceType.equalsIgnoreCase("Payables")) {
+							    commonUtil.sendTemplateEmail(emailMessage, globalVarsMap, loginOrgLocation.getOrg(), loginOrgLocation, Constants.INVOICE_REJECT_MAIL_VENDOR_EMAIL,attachmentList);
+								notificationScenario = emailScenarioService.getEmailScenarioByUniqueName(Constants.INVOICE_REJECT_MAIL_VENDOR_EMAIL, Constants.ENTITY_TYPE_NOTIFICATION);
+							}
+							else {
+							    commonUtil.sendTemplateEmail(emailMessage, globalVarsMap, loginOrgLocation.getOrg(), loginOrgLocation, Constants.INVOICE_REJECT_MAIL_CLIENT_EMAIL,attachmentList);
+								notificationScenario = emailScenarioService.getEmailScenarioByUniqueName(Constants.INVOICE_REJECT_MAIL_CLIENT_EMAIL, Constants.ENTITY_TYPE_NOTIFICATION);
+							}
+							String notificationbody = emailScenerioUtil.buildTemplateBody(notificationScenario.getBody(), globalVarsMap, notificationScenario);
+							notificationScenario.setBody(notificationbody);
+							String actionLink = "";
+							StringBuilder notificationLink = new StringBuilder();
+							if (Constants.RECEIVABLE.equalsIgnoreCase(invoiceType)) {
+								actionLink = notificationLink.append(sourceleadUrl).append("/").append("viewInvoice?invoiceUUID="
+										+ invoice.getInvoiceUUID() + "&invoiceType=Payables").toString();
+							}
+							else {
+								actionLink = notificationLink.append(sourceleadUrl).append("/").append("viewInvoice?invoiceUUID="
+										+ invoice.getInvoiceUUID() + "&invoiceType=Receivable").toString();
+							}
+							emailScenerioUtil.sendNotification(actionLink, loginUser, contactUser, invoice.getResponderLocationId(), notificationScenario, new HashMap<String, String>());
+				}
+			}
 		}
-		else{
-		globalVarsMap.put("clientName", stringBuildername.append(invoice.getContactUser().getFirstName()).append(" ").append(invoice.getContactUser().getLastName()).toString());
-		}
-		globalVarsMap.put("invoiceID", invoice.getInvoiceId());
-		globalVarsMap.put("totalAmount", invoice.getTotal());
-		globalVarsMap.put("reason", invoice.getRejectReason());
-		globalVarsMap.put("orgName", loginOrgLocation.getOrgLocationName());
-		StringBuilder stringBuilderLoginname = new StringBuilder();
-		globalVarsMap.put("LoginUser", stringBuilderLoginname.append(loginUser.getFirstName()).append(" ").append(loginUser.getLastName()).toString());
-		StringBuilder stringBuildforLink = new StringBuilder();
-		globalVarsMap.put("loginLink", stringBuildforLink.append("<a href='").append(sourceleadLoginUrl).append("' style='text-decoration:none; '><div style=' width:220px; border-radius:30px; background-color:#214b90; color:#FFF; font-size:18px; font-weight:500; margin:10px auto 5px auto; padding:10px 0px; text-align:center; letter-spacing:2px;'>Login</div></a>").toString());
-		InternetAddress[] iAdressArray = InternetAddress.parse(emailMessage.getToEmail());
-		
-			    //send mail logic
-		        List<EmailAttachment> attachmentList = new ArrayList<>();
-		
-		        //send notification logic
-				EmailScenario notificationScenario = null;
-				if (invoiceType.equalsIgnoreCase("Payables")) {
-				    commonUtil.sendTemplateEmail(emailMessage, globalVarsMap, loginOrgLocation.getOrg(), loginOrgLocation, Constants.INVOICE_REJECT_MAIL_VENDOR_EMAIL,attachmentList);
-					notificationScenario = emailScenarioService.getEmailScenarioByUniqueName(Constants.INVOICE_REJECT_MAIL_VENDOR_EMAIL, Constants.ENTITY_TYPE_NOTIFICATION);
-				}
-				else {
-				    commonUtil.sendTemplateEmail(emailMessage, globalVarsMap, loginOrgLocation.getOrg(), loginOrgLocation, Constants.INVOICE_REJECT_MAIL_CLIENT_EMAIL,attachmentList);
-					notificationScenario = emailScenarioService.getEmailScenarioByUniqueName(Constants.INVOICE_REJECT_MAIL_CLIENT_EMAIL, Constants.ENTITY_TYPE_NOTIFICATION);
-				}
-				String notificationbody = emailScenerioUtil.buildTemplateBody(notificationScenario.getBody(), globalVarsMap, notificationScenario);
-				notificationScenario.setBody(notificationbody);
-				String actionLink = "";
-				StringBuilder notificationLink = new StringBuilder();
-				if (Constants.RECEIVABLE.equalsIgnoreCase(invoiceType)) {
-					actionLink = notificationLink.append(sourceleadUrl).append("/").append("viewInvoice?invoiceUUID="
-							+ invoice.getInvoiceUUID() + "&invoiceType=Payables").toString();
-				}
-				else {
-					actionLink = notificationLink.append(sourceleadUrl).append("/").append("viewInvoice?invoiceUUID="
-							+ invoice.getInvoiceUUID() + "&invoiceType=Receivable").toString();
-				}
-				emailScenerioUtil.sendNotification(actionLink, loginUser, invoice.getContactUser(), invoice.getResponderLocationId(), notificationScenario, new HashMap<String, String>());
-		
 	}
 	
 	/**
@@ -2014,7 +2081,23 @@ return responseList;
 				if (invce.getDueDate() != null) {
 					invce.setDueDateStr(commonUtil.dateStrFromOrgDateFormatter(orgLocation.getDateFormat(), invce.getDueDate()));
 				}
-				if (null != invce.getContactUser()) {
+				if(null != invce.getContactUsers()){
+					String[] contactUsers = invoice.getContactUsers().split(",");
+					if(contactUsers.length != 0){
+						StringBuilder contactUserName = new StringBuilder();
+						for(String contactUserId : contactUsers){
+							User contactUser = userService.getUserById(Long.parseLong(contactUserId.trim()));
+							if(contactUser.getLastName() != null){
+								contactUserName = contactUserName.append(contactUser.getFirstName()).append(" ").append(contactUser.getLastName()).append(", ");
+							}else{
+								contactUserName = contactUserName.append(contactUser.getFirstName()).append(", ");
+							}
+						}
+						
+						invce.setClientContactName(contactUserName.toString().substring(0, contactUserName.toString().length() - 2));
+					}
+				}
+				/*if (null != invce.getContactUser()) {
 					StringBuilder username = new StringBuilder();
 					if (null != invce.getContactUser().getLastName()) {
 						username.append(invce.getContactUser().getFirstName()).append(" ").append(invce.getContactUser().getLastName()).toString();
@@ -2023,7 +2106,7 @@ return responseList;
 						username.append(invce.getContactUser().getFirstName());
 					}
 					invce.setClientContactName(username.toString());
-				}
+				}*/
 				clientList.add(invce);
 			}
 		}

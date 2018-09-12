@@ -37,6 +37,7 @@ import com.bis.sourcelead.service.OrgLocationService;
 import com.bis.sourcelead.service.OrgRelationsService;
 import com.bis.sourcelead.service.OrgService;
 import com.bis.sourcelead.service.TimeZoneService;
+import com.bis.sourcelead.service.UserService;
 import com.bis.sourcelead.web.LoginSessionController;
 import com.itextpdf.text.BaseColor;
 import com.itextpdf.text.Chunk;
@@ -94,6 +95,9 @@ public class InvoicePdfHelper {
 	
 	@Autowired
 	OrgService orgService;
+	
+	@Autowired
+	UserService userService;
 
 	OrgLocationService orgLocationService;
 	public File createPdfTableForInvoice(Invoice invoice, OrgLocations orgLocation, User user, Org org,
@@ -102,6 +106,7 @@ public class InvoicePdfHelper {
 		String countryCurrency = countries.getCurrency();
 		/*SimpleDateFormat simpleDateFormat = orgLocation.getLocFullFormDateFormatter();*/
 		File invoiceFile = new File(orgLocation.getOrgLocationName() + "_" + invoice.getInvoiceId() + new Date().getTime()+ ".pdf");
+		User contactUser = userService.getUserById(Long.parseLong(invoice.getContactUsers().split(",")[0]));
 		if (Constants.PAYABLE.equalsIgnoreCase(invoiceType)) {
 			Document document = new Document();
 			invoiceFile.setReadable(true);
@@ -181,17 +186,17 @@ public class InvoicePdfHelper {
 				p.add("Bank Details");
 				p.setSpacingAfter(8);
 				document.add(p);
-
+				
 				if(invoice.getPaymentAccount() != null) {
 					PaymentAccountDTO paymentAccount  = orgService.getPaymentAccount(invoice.getPaymentAccount().getId(), null);
 					if(paymentAccount.getAccountType().equalsIgnoreCase("WEPAY")) {
-						p = new Paragraph(invoice.getContactUser().getFullName(), font10);
+						p = new Paragraph(contactUser.getFullName(), font10);
 						p.add(new Chunk(glue));
 						p.add("Account Type : " + paymentAccount.getAccountType());
 						p.setFont(font10);
 						document.add(p);
 						
-						p = new Paragraph(invoice.getContactUser().getEmail(), font10);
+						p = new Paragraph(contactUser.getEmail(), font10);
 						p.add(new Chunk(glue));
 						p.add("Email : " + paymentAccount.getEmail());
 						p.setFont(font10);
@@ -209,18 +214,18 @@ public class InvoicePdfHelper {
 						p.setFont(font10);
 						document.add(p);
 						
-						p = new Paragraph(invoice.getContactUser().getMobilePhone(), font10);
+						p = new Paragraph(contactUser.getMobilePhone(), font10);
 						document.add(p);
 						
 					}else {
 
-						p = new Paragraph(invoice.getContactUser().getFullName(), font10);
+						p = new Paragraph(contactUser.getFullName(), font10);
 						p.add(new Chunk(glue));
 						p.add("Account Type : " + paymentAccount.getAccountType());
 						p.setFont(font10);
 						document.add(p);
 						
-						p = new Paragraph(invoice.getContactUser().getEmail(), font10);
+						p = new Paragraph(contactUser.getEmail(), font10);
 						p.add(new Chunk(glue));
 						p.add("Bank Name : " + paymentAccount.getBankName());
 						p.setFont(font10);
@@ -238,7 +243,7 @@ public class InvoicePdfHelper {
 						p.setFont(font10);
 						document.add(p);
 						
-						p = new Paragraph(invoice.getContactUser().getMobilePhone(), font10);
+						p = new Paragraph(contactUser.getMobilePhone(), font10);
 						p.add(new Chunk(glue));
 						p.add("First Name : " + paymentAccount.getFirstName());
 						p.setFont(font10);
@@ -257,10 +262,10 @@ public class InvoicePdfHelper {
 					tableq.setWidthPercentage(100);
 					StringBuilder toAddress = new StringBuilder();
 
-					toAddress.append(invoice.getContactUser().getFullName());
+					toAddress.append(contactUser.getFullName());
 					toAddress.append(System.getProperty("line.separator"));
 
-					toAddress.append(invoice.getContactUser().getEmail());
+					toAddress.append(contactUser.getEmail());
 					toAddress.append(System.getProperty("line.separator"));
 
 					toAddress.append(orgRel.getResponderLocationId().getOrgLocationName());
@@ -269,9 +274,9 @@ public class InvoicePdfHelper {
 					toAddress.append(clientAddress.toString());
 					toAddress.append(System.getProperty("line.separator"));
 
-					if (invoice.getContactUser().getMobilePhone() != null
-							&& !"".equals(invoice.getContactUser().getMobilePhone())) {
-						toAddress.append(invoice.getContactUser().getMobilePhone());
+					if (contactUser.getMobilePhone() != null
+							&& !"".equals(contactUser.getMobilePhone())) {
+						toAddress.append(contactUser.getMobilePhone());
 					}
 
 					tableq.addCell(getCellValue(toAddress.toString(), PdfPCell.ALIGN_LEFT));
@@ -591,13 +596,13 @@ public class InvoicePdfHelper {
 				if(invoice.getPaymentAccount() != null) {
 					PaymentAccountDTO paymentAccount  = orgService.getPaymentAccount(invoice.getPaymentAccount().getId(), null);
 					if(paymentAccount.getAccountType().equalsIgnoreCase("WEPAY")) {
-						p = new Paragraph(invoice.getContactUser().getFullName(), font10);
+						p = new Paragraph(contactUser.getFullName(), font10);
 						p.add(new Chunk(glue));
 						p.add("Account Type : " + paymentAccount.getAccountType());
 						p.setFont(font10);
 						document.add(p);
 						
-						p = new Paragraph(invoice.getContactUser().getEmail(), font10);
+						p = new Paragraph(contactUser.getEmail(), font10);
 						p.add(new Chunk(glue));
 						p.add("Email : " + paymentAccount.getEmail());
 						p.setFont(font10);
@@ -615,18 +620,18 @@ public class InvoicePdfHelper {
 						p.setFont(font10);
 						document.add(p);
 						
-						p = new Paragraph(invoice.getContactUser().getMobilePhone(), font10);
+						p = new Paragraph(contactUser.getMobilePhone(), font10);
 						document.add(p);
 						
 					}else {
 
-						p = new Paragraph(invoice.getContactUser().getFullName(), font10);
+						p = new Paragraph(contactUser.getFullName(), font10);
 						p.add(new Chunk(glue));
 						p.add("Account Type : " + paymentAccount.getAccountType());
 						p.setFont(font10);
 						document.add(p);
 						
-						p = new Paragraph(invoice.getContactUser().getEmail(), font10);
+						p = new Paragraph(contactUser.getEmail(), font10);
 						p.add(new Chunk(glue));
 						p.add("Bank Name : " + paymentAccount.getBankName());
 						p.setFont(font10);
@@ -644,7 +649,7 @@ public class InvoicePdfHelper {
 						p.setFont(font10);
 						document.add(p);
 						
-						p = new Paragraph(invoice.getContactUser().getMobilePhone(), font10);
+						p = new Paragraph(contactUser.getMobilePhone(), font10);
 						p.add(new Chunk(glue));
 						p.add("First Name : " + paymentAccount.getFirstName());
 						p.setFont(font10);
@@ -663,10 +668,10 @@ public class InvoicePdfHelper {
 					tableq.setWidthPercentage(100);
 					StringBuilder toAddress = new StringBuilder();
 
-					toAddress.append(invoice.getContactUser().getFullName());
+					toAddress.append(contactUser.getFullName());
 					toAddress.append(System.getProperty("line.separator"));
 
-					toAddress.append(invoice.getContactUser().getEmail());
+					toAddress.append(contactUser.getEmail());
 					toAddress.append(System.getProperty("line.separator"));
 
 					toAddress.append(orgRel.getResponderLocationId().getOrgLocationName());
@@ -675,9 +680,9 @@ public class InvoicePdfHelper {
 					toAddress.append(clientAddress.toString());
 					toAddress.append(System.getProperty("line.separator"));
 
-					if (invoice.getContactUser().getMobilePhone() != null
-							&& !"".equals(invoice.getContactUser().getMobilePhone())) {
-						toAddress.append(invoice.getContactUser().getMobilePhone());
+					if (contactUser.getMobilePhone() != null
+							&& !"".equals(contactUser.getMobilePhone())) {
+						toAddress.append(contactUser.getMobilePhone());
 					}
 
 					tableq.addCell(getCellValue(toAddress.toString(), PdfPCell.ALIGN_LEFT));
