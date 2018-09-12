@@ -256,8 +256,6 @@ function creditNotePagination(url){
     	  				result = result +'<div class="tbldata-dotdot-vsm">';
     	  				if((report.approverUserSplitId[i] == '${SourceLeadWeb_user.id}') && report.creditDebitNoteStatus != "Send"){
 						result = result +'           <span class="clearfix" ><a onclick="acceptCreditDebitNote(\''+report.creditDebitUUID+'\');" title="Accept"><i class="fa fa-check text-success paddingRight"></i></a><a onclick="rejectCreditDebitNote(\''+report.creditDebitUUID+'\');" title="Reject"><i class="paddingLeft fa fa-times text-danger"></i></a></span>';
-			    	}else if((report.approverUserSplitId[i] == '${SourceLeadWeb_user.id}') && report.creditDebitNoteStatus == "Send"){
-	    				result = result +' <span class="clearfix"><a onClick="deleteCreditDebitNote(\''+report.creditDebitUUID+'\');"><i class="fa fa-trash paddingRight paddingLeft" title="Remove"></i></a></span>';
 			    	}else{
 			    		if((report.creditDebitNoteStatus == "Submit") ||  (report.creditDebitNoteStatus == "Draft"))
 	    				 {
@@ -265,6 +263,10 @@ function creditNotePagination(url){
 	    				result = result +' <span class="clearfix"><a onClick="deleteCreditDebitNote(\''+report.creditDebitUUID+'\');"><i class="fa fa-trash paddingRight paddingLeft" title="Remove"></i></a></span>';
 						// to avoid multiple edit buttons for multiple approvers 
 						break;
+	    				 }else{
+	 	    				result = result +' <span class="clearfix"><a onClick="deleteCreditDebitNote(\''+report.creditDebitUUID+'\');"><i class="fa fa-trash paddingRight paddingLeft" title="Remove"></i></a></span>';
+	 	    			// to avoid multiple edit buttons for multiple approvers 
+							break;
 	    				 }
 			    	}
 			    	result = result +' </div>';	
@@ -480,9 +482,9 @@ function acceptCreditDebitNote(creditDebitUUID){
 	result = result +"	<div class='project_inn_mask'></div>"; 
 	result = result +"	   <div id='remove_user_pop' class='remove_user_pop remove_user_pop_a'>";
 
-	result = result +"		<p>Are you sure you want to Accept ?</p>";
+	result = result +"<div class='modal-body'><p>Are you sure you want to Accept ?</p></div>";
 	result = result + ' <div id="reasonForInvoiceDiv"/>';
-	result = result +'		<b href="javascript:void(0)"><input id="confirm-id" type="button" value="Delete" onclick="acceptCreditDebitNoteSave(\''+creditDebitUUID+'\');"><input class="u_can_color" type="button"  value="Cancel" onClick="cancelTermination();"></b>';
+	result = result +'		<b href="javascript:void(0)"><input class="bg-green" id="confirm-id" type="button" value="Accept" onclick="acceptCreditDebitNoteSave(\''+creditDebitUUID+'\');"><input class="u_can_color" type="button"  value="Cancel" onClick="cancelTermination();"></b>';
 	result = result +"	</div>";
 	$("#popUp").append(result);
 	$("#remove_user_pop").slideDown(200);
@@ -749,7 +751,7 @@ function deleteCreditDebitNote(creditDebitUUID){
 	result = result +"	<div class='project_inn_mask'></div>"; 
 	result = result +"	   <div id='remove_user_pop' class='remove_user_pop remove_user_pop_a'>";
 
-	result = result +"		<p>Are you sure you want to delete ?</p>";
+	result = result +"<div class='modal-body'><p>Are you sure you want to delete ?</p></div>";
 	result = result + ' <div id="reasonForInvoiceDiv"/>';
 	result = result +'		<b href="javascript:void(0)"><input id="confirm-id" type="button" value="Delete" onclick="deleteCreditDebitMethod(\''+creditDebitUUID+'\');"><input class="u_can_color" type="button"  value="Cancel" onClick="cancelTermination();"></b>';
 	result = result +"	</div>";
