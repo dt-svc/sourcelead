@@ -2699,7 +2699,8 @@ public String getOrglocationDateFormatHHMMSS(String dateFormat, Date date)
 	public List<FileInfo> getListOfFileInfo(List<File> filesList, String type,
 			@RequestParam(defaultValue = "0") long orgId, @RequestParam(defaultValue = "0") long orgLocationId)
 			throws IOException {
-		System.out.println(" orgId :   "+orgId +", orgLocationId : "+orgLocationId);
+		//System.out.println(" orgId :   "+orgId +", orgLocationId : "+orgLocationId);
+		 logger.debug("***** orgId :   "+orgId +", orgLocationId : "+orgLocationId);
 		List<FileInfo> fileInfoList = new ArrayList<>();
 		try {
 			filesList.forEach(fileObj -> {

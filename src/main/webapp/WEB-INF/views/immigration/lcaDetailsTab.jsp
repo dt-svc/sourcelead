@@ -32,11 +32,11 @@
 			</c:forEach>
 		</tbody>
 		</table>
-		<div class="immFoot clearfix">
+	</div>
+	
+	<div class="immFoot clearfix">
 			<div class="pull-right text-right">
 				<input type="button" value="Back" onclick="goToSummaryTab('#visasTab');" class="btn btn-default btn-sm">
-             <!-- 	<input type="button" value="Skip" onclick="goToSummaryTab('#residencesTab');" class="btn btn-default btn-sm">  -->
               	<input type="button" value="Continue" onclick="goToSummaryNextTab('#employersTab');" class="btn btn-primary btn-sm ml10">
             </div>
 		</div>
-</div>
