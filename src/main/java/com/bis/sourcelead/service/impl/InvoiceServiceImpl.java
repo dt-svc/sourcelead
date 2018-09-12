@@ -224,9 +224,6 @@ public class InvoiceServiceImpl implements InvoiceService {
 	@Autowired
 	private ExpensesInvoicePdfHelper expensesInvoicePdfHelper;
 	
-	@Autowired
-	UserDao userDao;
-
 	@Override
 	public ResponseList<Invoice> invoiceListByOrgLocationId(OrgLocations orgLocations, Date startDateUTC,
 			Date endDateUTC, InvoiceDTO invoiceDTO) throws Exception {
@@ -3942,7 +3939,7 @@ public class InvoiceServiceImpl implements InvoiceService {
 		// get users list 
 		StringBuilder appSb = new StringBuilder();
 		if(StringUtils.isNotBlank(creditDebitNote.getApprovers())){
-		List<User> approversList = userDao.getUsersListUsingMultipleStringIds(creditDebitNote.getApprovers(),creditDebitNote.getOrgLocations().getId());
+		List<User> approversList = userDao.getUsersListUsingMultipleStringIdsWithLocationId(creditDebitNote.getApprovers(),creditDebitNote.getOrgLocations().getId());
 		approversList.forEach(approver->{
 			appSb.append(approver.getFullName()).append(" , ").toString();	
 		});
@@ -3953,7 +3950,7 @@ public class InvoiceServiceImpl implements InvoiceService {
 		StringBuilder contactEmails = new StringBuilder();
 		if (creditDebitNote.getOrgRelations().getLocationId().getId().equals(orgLocationId)) {
 			creditDebitNote.setClientOrVendorName(creditDebitNote.getOrgRelations().getResponderLocationId().getOrgLocationName());
-			List<User> contactsUserList = userDao.getUsersListUsingMultipleStringIds(creditDebitNote.getContactUser(),creditDebitNote.getOrgRelations().getResponderLocationId().getId());
+			List<User> contactsUserList = userDao.getUsersListUsingMultipleStringIdsWithLocationId(creditDebitNote.getContactUser(),creditDebitNote.getOrgRelations().getResponderLocationId().getId());
 			contactsUserList.forEach(contactUser->{
 				contactName.append(contactUser.getFullName()).append(" , ").toString();	
 				contactEmails.append(contactUser.getEmail()).append(" , ").toString();
@@ -3964,7 +3961,7 @@ public class InvoiceServiceImpl implements InvoiceService {
 		
 		if(creditDebitNote.getOrgRelations().getResponderLocationId().getId().equals(orgLocationId)){
 			creditDebitNote.setClientOrVendorName(creditDebitNote.getOrgRelations().getLocationId().getOrgLocationName());
-			List<User> contactsUserList = userDao.getUsersListUsingMultipleStringIds(creditDebitNote.getContactUser(),creditDebitNote.getOrgRelations().getLocationId().getId());
+			List<User> contactsUserList = userDao.getUsersListUsingMultipleStringIdsWithLocationId(creditDebitNote.getContactUser(),creditDebitNote.getOrgRelations().getLocationId().getId());
 			contactsUserList.forEach(contactUser->{
 				contactName.append(contactUser.getFullName()).append(" , ").toString();	
 				contactEmails.append(contactUser.getEmail()).append(" , ").toString();

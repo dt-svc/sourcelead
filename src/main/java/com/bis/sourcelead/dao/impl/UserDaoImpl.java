@@ -2363,7 +2363,7 @@ public class UserDaoImpl implements UserDao {
 	@Override
 	@Transactional(rollbackFor = { Exception.class })
 	@SuppressWarnings("unchecked")
-	public List<User> getUsersListUsingMultipleStringIds(String ids, Long orgLocationId) throws Exception {
+	public List<User> getUsersListUsingMultipleStringIdsWithLocationId(String ids, Long orgLocationId) throws Exception {
 		Session session = this.sessionFactory.getCurrentSession();
 		String[] idsValues = ids.split(",");
 		// convert string array to long array
@@ -2372,10 +2372,10 @@ public class UserDaoImpl implements UserDao {
 		  data[i] = Long.valueOf(idsValues[i]);
 		}
 		String query = "from User user where user.id IN (select userRole.user.id from UserRole userRole where userRole.orgLocations.id =:orgLocationId) and user.id IN ( :ids )";
-		//String query = "from User invoice  where invoice.id IN ( :ids ) and invoice.orgLocation.id =:orgLocationId";
 		List<User> list = session.createQuery(query).setParameterList("ids", data).setParameter("orgLocationId", orgLocationId).list();
 		return list;
 
+	}
 	
 	@Override
 	@Transactional(rollbackFor = { Exception.class })
@@ -2389,7 +2389,6 @@ public class UserDaoImpl implements UserDao {
 	data[i] = Long.valueOf(idsValues[i]);
 	}
 	String query = "from User user where user.id IN ( :ids )";
-	//String query = "from User invoice where invoice.id IN ( :ids ) and invoice.orgLocation.id =:orgLocationId";
 	List<User> list = session.createQuery(query).setParameterList("ids", data).list();
 	return list;
 
