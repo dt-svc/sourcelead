@@ -275,7 +275,7 @@ $(".export_pop, #export-pop").click(function(e) {
 	$("#changeBillableStatus").click(function () {
 		var id = $("#changeBillableStatus").data("id");
 		var billableStatus = $("#changeBillableStatus").data("billableStatus");
-		changeStatusToBillable(id);
+		changeStatusToBillable(id,billableStatus);
 	});
 	$("#cancelBillingStatus").click(function() {
 		$("#changeBillableStatus").data("id", 0);
@@ -319,10 +319,10 @@ function exportMyExpenses(type,Expid,ApproverType){
 </script>
 
 <script>
-function changeStatusToBillable(ExpenseEntriesId){
+function changeStatusToBillable(ExpenseEntriesId,billableStatus){
 	 $.ajax({
          type : "POST",
-         url: sourceleadUrl+"/changeStatusToBillable?&ExpenseEntriesId="+ExpenseEntriesId,    
+         url: sourceleadUrl+"/changeStatusToBillable?&ExpenseEntriesId="+ExpenseEntriesId+"&billableStatus="+billableStatus,     
           success :function(result) {
 			var checkboxes = $("input[name='expenses']");
 			$(checkboxes).each(function(){
