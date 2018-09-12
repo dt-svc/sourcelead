@@ -74,7 +74,7 @@ function errRemoveClientContact(){
 		<div id="invoiceLoading"></div>
 		<form:form id="invoice_form" name="invoice_form" method="post">
 		<input type="hidden" name="clientOrgRelation" value="createInvoice"/>
-		<input type="hidden" name="clientContact" value="createInvoice"/>
+		<!-- <input type="hidden" name="clientContact" value="createInvoice"/> -->
 			<div class="clearfix form-horizontal inner-content">
 				<div class="row">
 					<div class="col-xs-12 col-sm-12 col-md-12 col-lg-12 myForm">
@@ -96,13 +96,13 @@ function errRemoveClientContact(){
 				            </div>
 				             <div class="form-group">
 				              <label class="col-md-3">Client Contact<span class="text-danger">*</span></label>
-				              <div class="col-md-9 select-field chooRadius" id="errClientContact">
-				              	<div class="input-group col-md-10 pull-left">	
-				                  <select class="chosen-select form-control" id="clientContact" name="clientContact" data-validation="required" field-name="Client Contact" onchange="errRemoveClientContact();">
+				              <div class="col-md-9 chooRadius" id="errClientContact">
+				              	<div class="col-md-9 padding_right padding_left">	
+				                  <select class="chosen-select form-control" multiple="multiple" id="clientContact" name="clientContact" data-validation="required" field-name="Client Contact" onchange="errRemoveClientContact();">
 				                  </select>
-				                    <span class="input-group-addon cursorPointer bg-blue" onclick="getClientContacts();"><i class="fa fa-refresh "></i></span>
 				              </div>
-				               <span class="col-md-2 noPad clearfix" onclick="selectedClient();">
+				               <span class="col-md-3 noPad clearfix" onclick="selectedClient();">
+				               <span class="btn btn-primary" onclick="getClientContacts();"><i class="fa fa-refresh "></i></span>
 			                             <sec:authorize access="hasAnyRole('ROLE_CREATE_CLIENT_CONTACT')"> 
 			                              <a href="javascript:void(0)"><i class="fa fa-plus btn btn-default pull-right minHeBtn"></i></a>
 			                             </sec:authorize>
@@ -519,7 +519,10 @@ if(selectedTextInvoice =='percentage'){
 		           	 $("#clientOrgRelationId").append(result); 
 		           	 $('#clientOrgRelationId').trigger("chosen:updated"); 
 		           	 $('#clientCurrency').val(json['clientCurrency']);
-		           	getClientContacts(json['vendorContactId']);
+		           	/* getClientContacts(json['vendorContactId']); */
+		           	//alert(json['contactUsers']);
+		           	//var clientContact = json['contactUsers'];
+		           	getClientContacts(json['contactUsers']);
 		           	$("#invoiceId").val(json['invoiceId']);
 		           	
 		           	if(json['paymentFrequency'] != null && json['paymentFrequency'] != '' && json['paymentFrequency'] != 'undefined'){
@@ -1963,33 +1966,35 @@ function getClients(){
 
 <script>
 function getClientContacts(clientContactId){
+	//alert(clientContactId);
 	var orgRelationId = $("#clientOrgRelationId").val();
 	$("#clientContact").empty();
 	$.ajax({
-	type : "GET",
-	url: sourceleadUrl+"/getClientContactsByOrgRelationId?"+tokenParamName+"="+tokenValue+"&orgRelationId="+orgRelationId,
-	success :function(json) {
-// 	var json = JSON.parse(data);
-	var output = "";
-	output = output + "<option value=''>Select Client Contact</option>";
-	for (var i=0; i<json.data.length; i++)
-	{
-	var opt = json.data[i];
-	var selected = "";
-	if(clientContactId != null && clientContactId != "" && clientContactId !="undefined" && clientContactId == opt.spocUserId){
-		selected = 'selected';
-	}
-	output = output + "<option value='" +opt.spocUserId+ "' "+selected+">"+opt.ownerName+"("+opt.spocName+")</option>";
-	$("#clientCurrency").val(opt.clientCurrency);
-	}
-	
-	
-	$("#clientContact").append(output);
-	$('#clientContact').trigger("chosen:updated");
-	if(clientContactId == null || clientContactId == '' || clientContactId == 'undefined'){
-		buildLineItemAndTaxAddRows();
-	}
-	},
+		type : "GET",
+		url: sourceleadUrl+"/getClientContactsByOrgRelationId?"+tokenParamName+"="+tokenValue+"&orgRelationId="+orgRelationId,
+		success :function(json) {
+			var output = "";
+			for (var i=0; i<json.data.length; i++)
+			{
+				var opt = json.data[i];
+				if(clientContactId != null && clientContactId != "" && clientContactId !="undefined"){
+					var array = clientContactId.split(",");
+					if(array.includes(opt.spocUserId.toString())){
+						output = output + "<option value='"+opt.spocUserId+"' selected >"+opt.ownerName+"("+opt.spocName+")</option>";
+					}else{
+						output = output + "<option value='"+opt.spocUserId+"' >"+opt.ownerName+"("+opt.spocName+")</option>";
+					}
+				}else{
+					output = output + "<option value='" +opt.spocUserId+ "'>"+opt.ownerName+"("+opt.spocName+")</option>";
+				}
+				$("#clientCurrency").val(opt.clientCurrency);
+			}
+			$("#clientContact").append(output);
+			$('#clientContact').trigger("chosen:updated");
+			if(clientContactId == null || clientContactId == '' || clientContactId == 'undefined'){
+				buildLineItemAndTaxAddRows();
+			}
+		},
 	});
 	}
 </script>
@@ -2068,7 +2073,7 @@ function saveInvoice(saveType){
 			  }
 		  }
 		  if ($('#invoice_form').validate(false, validationSettings)){  
- 	 	    var formData = getFormData("invoice_form");
+ 	 	    var formData = getFormData1("invoice_form");
          
  	 	    if(selectedAssociates == null || selectedAssociates == '' || selectedAssociates == 'undefined'){
 	        	var result = "";
@@ -2083,7 +2088,14 @@ function saveInvoice(saveType){
 	     		$(".project_inn_mask").fadeIn(200);
 		        }else{
 		        	  $("#invoiceLoading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
-		        	  $.post(sourceleadUrl+"/saveInvoice?"+tokenParamName+"="+tokenValue+"&saveType="+saveType+"&invoiceType=Receivable", formData, function(result) {
+		        	  $.ajax({
+		        		  url: sourceleadUrl+"/saveInvoice?"+tokenParamName+"="+tokenValue+"&saveType="+saveType+"&invoiceType=Receivable",
+		        		  type: "POST",
+		        		  data: formData,
+		        		  processData: false,
+		        		  contentType: false,
+		        		  success: function (result) {
+		        	  //$.post(sourceleadUrl+"/saveInvoice?"+tokenParamName+"="+tokenValue+"&saveType="+saveType+"&invoiceType=Receivable", formData, function(result) {
 		        		  if (result && result.response === "INVALID_DATA") {
 		          		    showError(result.responseMessage);
 		          		} else if (result.response === "AWKWARD") {
@@ -2105,7 +2117,7 @@ function saveInvoice(saveType){
 		          		    showError("Operation failed, please try again");
 		          		}
 		        		  $("#invoiceLoading").hide();
-		        		  
+		        	  }
 		  			   }); 
 		        	  
 		    	         return true; 

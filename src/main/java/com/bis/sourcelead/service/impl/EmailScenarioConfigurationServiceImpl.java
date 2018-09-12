@@ -149,6 +149,7 @@ private static final Logger logger = LoggerFactory.getLogger(EmailScenarioConfig
 
 	@Override
 	public String verifyConfgParserMail(Long id, EmailScenarioConfiguration confMail) throws Exception {
+		logger.info(" *******************inside verifyConfgParserMail******************");
 		if (confMail != null) {
 			try {
 				Properties properties = new Properties();
@@ -160,14 +161,14 @@ private static final Logger logger = LoggerFactory.getLogger(EmailScenarioConfig
 				properties.put("mail.pop3.host", host);
 				properties.put("mail.pop3.port", portNumber);
 				properties.put("mail.pop3.starttls.enable", "true");
-				System.out.println(" before properties");
+			 //	System.out.println(" before properties");
 				
 				Session emailSession = Session.getDefaultInstance(properties);
 
 				Store store = emailSession.getStore("pop3s");
 
 				System.out.println("connect before pop3s ==============>");
-				
+				logger.debug("***********************trying to connect mail with details****************");
 				// emailSession.setDebug(true);    //Enable flag for debug.
 				store.connect(host, user, password);
 				
@@ -177,12 +178,13 @@ private static final Logger logger = LoggerFactory.getLogger(EmailScenarioConfig
 			    emailFolder.close(true);
 			    store.close();
 			      
-				System.out.println(" POP3 connected successfully ==============>");
-				
+				//System.out.println(" POP3 connected successfully ==============>");
+				logger.debug("***********************Mail ID Verified Successfully****************");
 				return "success";
 				
 			} catch (MessagingException e) {
 				// throw new RuntimeException(e);
+				e.printStackTrace();
 				return "failure";
 			}
 		}

@@ -1873,10 +1873,9 @@ public class ImmigrationCommonDaoImpl implements ImmigrationCommonDao {
 				hqlQuery = session.createQuery(query).setLong("orgLocationId", orgLocations.getId()).setDate("daysFilter", daysFilter);
 			}
 			
-	        lcaViewList = hqlQuery.list();
+	        lcaViewList = hqlQuery.setFirstResult(lcaListViewDTO.getStart()).setMaxResults(lcaListViewDTO.getLength()).list();
 	        
-	        countlist = hqlQuery1.setFirstResult(lcaListViewDTO.getStart())
-					.setMaxResults(lcaListViewDTO.getLength()).list();
+	        countlist = hqlQuery1.list();
 			int totalCount = 0;
 			if (lcaListViewDTO != null) {
 				if (countlist != null && !countlist.isEmpty()) {
