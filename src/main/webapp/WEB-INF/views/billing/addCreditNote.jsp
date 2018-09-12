@@ -16,7 +16,8 @@
       <div class="pull-left">
         <h2>Add Credit Note</h2>
       </div>
-      <div class="pull-right brud-crum">Home &raquo; Vendor &raquo; Create Note</div>
+       <div class="pull-right brud-crum"><a href="<c:url value='${appPath}/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a> &raquo; <a href="<c:url value='${appPath}/creditNoteList'/>">Credit Note List</a> &raquo; Credit Note</div>
+
     </section>
     <div class="content-area content-new clearfix">
     <div id="creditDebitLoading"></div>
@@ -99,8 +100,6 @@
 		<label class="col-md-3 paddingRight">Approvers <span class="text-danger">&nbsp;*</span></label>
 		<div class="col-md-9">
 		<select multiple="multiple" class="chosen-select form-control" value="" id="approvers" name="approvers" field-name="Approvers" data-validation="true" placeholder="Approvers">
-		<c:forEach var="approvers" items="${approversList}">
-		<option value="${approvers.id}">${approvers.firstName}</option>	</c:forEach>
 		</select>
 		</div>
 		</div>
@@ -350,6 +349,7 @@ $(document).ready(function(){
 	getSpocsList();
 	getInvoiceList();
 	approverCheck();
+	getApproversList();
 	});
 
 function saveCreditNote(saveType){
@@ -509,6 +509,7 @@ function removeDynamicRowDiv(id){
 					url : sourceleadUrl + "/getClientContactsByOrgRelationId?"+ tokenParamName + "=" + tokenValue + "&orgRelationId=" + orgRelationId,
 					success : function(json) {
 						var output = "";
+						if(json.data !=null){
 						for (var i = 0; i < json.data.length; i++) {
 							var opt = json.data[i];
 							if(spocIds != ""){
@@ -522,6 +523,7 @@ function removeDynamicRowDiv(id){
 								output = output	+ "<option value='" +opt.spocUserId+ "'>"+ opt.ownerName + "(" + opt.spocName+ ")</option>";
 							}
 							$("#clientCurrency").val(opt.clientCurrency);
+						}
 						}
 						$("#spocUser").append(output);
 						$('#spocUser').trigger("chosen:updated");
@@ -561,6 +563,7 @@ function removeDynamicRowDiv(id){
 			url : sourceleadUrl + "/getInvoiceListForCreditDebitNote?"+ tokenParamName + "=" + tokenValue + "&orgRelationId="+ orgRelationId + "&invoiceType=Receivable",
 			success : function(json) {
 				var output = "";
+				if(json.data !=null){
 				for (var i = 0; i < json.data.length; i++) {
 					var opt = json.data[i];
 					if(invoiceIds != ""){
@@ -574,11 +577,40 @@ function removeDynamicRowDiv(id){
 						output = output	+ "<option value='" +opt.id+ "'>"+ opt.invoiceId + "</option>";
 					}
 				}
+				}
 				$("#invoceId").append(output);
 				$('#invoceId').trigger("chosen:updated");
 			},
 		});
 	}
+	
+	function getApproversList() {
+		var invoiceIds = "${creditDebitNote.approvers}";
+		$("#approvers").empty();
+		$.ajax({
+			type : "GET",
+			url : sourceleadUrl + "/getApproversListForCreditDebitNote?",
+			success : function(json) {
+				var output = "";
+				for (var i = 0; i < json.data.length; i++) {
+					var opt = json.data[i];
+					if(invoiceIds != ""){
+						var arrayinvoiceIds = invoiceIds.split(",");
+						if(arrayinvoiceIds.includes(opt.id.toString())){
+							output = output	+ "<option value='" +opt.id+ "' selected >"+ opt.fullName + "</option>";
+						}else{
+							output = output	+ "<option value='" +opt.id+ "'>"+ opt.fullName + "</option>";
+						}
+					}else{
+						output = output	+ "<option value='" +opt.id+ "'>"+ opt.fullName + "</option>";
+					}
+				}
+				$("#approvers").append(output);
+				$('#approvers').trigger("chosen:updated");
+			},
+		});
+	}
+	
 </script>
 
 <script type="text/javascript">
@@ -716,9 +748,9 @@ function currencyConversionDiv(){
 		var result = "";
 		result = result +' <div class="row">';
 		result = result +' <div class="clearfix mt col-md-offset-2 col-md-10" style="padding-right:0;">';
-		result = result +' <div class="clearfix"><label class="col-md-6 text-right"><strong>Conversion From</strong></label><div class="paddingLeft col-md-6"><span class="pull-left" id="currencyCode"></span><div class="pull-right"><input type="text" id="conversionFrom" placeholder="00:00" class="ReadTextFli" readonly="" type="text"/></div></div></div>';
-		result = result +'  <div class="clearfix"><label class="col-md-6 text-right"><strong>Conversion To</strong></label><div  class="paddingLeft col-md-6"><span id="vendorCurrencyCode"></span><div class="pull-right"><input id="exchangeCurrencyRate" name="exchangeCurrencyRate" class="ReadTextFli" value = "" readonly="" type="text"/></div></div></div>';
-		result = result +' <div class="clearfix"><label class="col-md-6 text-right"><strong>Exchange Rate</strong></label><div  class="paddingLeft col-md-6"><span id="convertedCurrencyCode"></span><div class="pull-right"><input id="afterExchangeGrandTotal" name="afterExchangeGrandTotal" class="ReadTextFli" readonly="" type="text"/></div></div></div>';
+		result = result +' <div class="clearfix"><label class="col-md-6 text-right"><strong>Conversion From</strong></label><div class="paddingLeft col-md-6"><span class="pull-left" id="currencyCode"></span><div class="pull-right"><input type="text" id="conversionFrom" placeholder="00:00" value = "${creditDebitNote.grandTotal}" class="ReadTextFli" readonly="" type="text"/></div></div></div>';
+		result = result +'  <div class="clearfix"><label class="col-md-6 text-right"><strong>Conversion To</strong></label><div  class="paddingLeft col-md-6"><span id="vendorCurrencyCode"></span><div class="pull-right"><input id="exchangeCurrencyRate" name="exchangeCurrencyRate" class="ReadTextFli" value = "${creditDebitNote.exchangeCurrencyRate}" readonly="" type="text"/></div></div></div>';
+		result = result +' <div class="clearfix"><label class="col-md-6 text-right"><strong>Exchange Rate</strong></label><div  class="paddingLeft col-md-6"><span id="convertedCurrencyCode"></span><div class="pull-right"><input id="afterExchangeGrandTotal" name="afterExchangeGrandTotal" value = "${creditDebitNote.afterExchangeGrandTotal}" class="ReadTextFli" readonly="" type="text"/></div></div></div>';
 		result = result +'  </div>';
 		result = result +'  </div>';
 		document.getElementById("conversionId").style.display="block";
@@ -741,7 +773,7 @@ function  conversionRate(){
 				success :function(response) {
 					if(response.object !='' && response.object != 'undefined' && response.object != null){
 //						var json = JSON.parse(data);
-						$("#afterExchangeGrandTotal").val(response.object.exchangeRate);
+						$("#afterExchangeGrandTotal").val((response.object.exchangeRate).toFixed(2));
 						$("#exchangeCurrencyRate").val(response.object.exchangeCurrency);
 						$("#vendorCurrencyCode").html(response.object.vendorCurrencyCode);
 						$("#convertedCurrencyCode").html(currencyCode +' to '+ response.object.vendorCurrencyCode);

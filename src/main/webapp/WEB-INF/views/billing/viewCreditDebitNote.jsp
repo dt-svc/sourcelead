@@ -11,14 +11,23 @@
 </style>
 <script type="text/javascript">
 $(document).ready(function(){
+	var noteType = '${noteType}';
 	getViewCreditDebitNote();
+	if(noteType == "Credit"){
+		$("#creditNoteBrudCrum").show();
+		$("#debitNoteBrudCrum").hide();
+	}else{
+		$("#creditNoteBrudCrum").hide();
+		$("#debitNoteBrudCrum").show();
+	}
 	
 });
 </script>
 
 <section class="content-wraper">
     <section class="content-header clearfix">
-     <div class="pull-right brud-crum"><a href="<c:url value='${appPath}/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a>&raquo; <a href="<c:url value='${appPath}/invoiceList'/>">Receivable List</a> » Invoice View</div>
+     <div class="pull-right brud-crum" style="display: none" id ="creditNoteBrudCrum"><a href="<c:url value='${appPath}/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a> &raquo; <a href="<c:url value='${appPath}/creditNoteList'/>">Credit Note List</a> &raquo; Credit Note View</div>
+     <div class="pull-right brud-crum" style="display: none" id ="debitNoteBrudCrum"><a href="<c:url value='${appPath}/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a> &raquo; <a href="<c:url value='${appPath}/debitNoteList'/>">Debit Note List</a> &raquo; Debit Note View</div>
       
       <div class="" id="creditDivIdHidden" style="display:none">
           <h2>Invoice Id: <span><input class="ReadTextFliA" id="invoiceIdDiv" readonly="readonly"></span></h2>
@@ -28,7 +37,7 @@ $(document).ready(function(){
 					<select multiple class="chosen-select form-control" name="invoiceTagName" id="invoiceTagName" data-placeholder="Add Tags" data-validation="validate_Space" data-validation-optional="true">
 					</select>
 					</ul>
-					<div class="clearfix"></div>
+					<div class="clearfix"></div>&raquo;
 			  </div>
 		   <div class="success_pop tagStyles" id="addInvoiceTagAlert">
 				<i class="fa fa-check-circle"></i>

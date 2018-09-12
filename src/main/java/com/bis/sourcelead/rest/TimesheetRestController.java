@@ -1924,6 +1924,7 @@ public class TimesheetRestController {
 		LinkedHashMap<String, String> taskTypeMap = new LinkedHashMap<>();
 		LinkedHashMap<String, String> taskNameMap = new LinkedHashMap<>();
 		LinkedHashMap<String, String> ticketNumberMap = new LinkedHashMap<>();
+		LinkedHashMap<String, Integer> weekCountMap = new LinkedHashMap<>();
 		if (entriesList != null && entriesList != null && !entriesList.isEmpty()) {
 			for (TimesheetEntriesDTO teDTO : entriesList) {
 				String taskIdWithRef = "";
@@ -1938,7 +1939,12 @@ public class TimesheetRestController {
 					if(StringUtils.isNotEmpty(teDTO.getTimesheetTaskDTO().getTicketNumber())) {
 						ticketNumber = teDTO.getTimesheetTaskDTO().getTicketNumber();
 					}
-					taskIdWithRef = taskId+"##"+ticketNumber;
+					int count = 0;
+					if(weekCountMap.get(teDTO.getDate()) != null){
+						count = weekCountMap.get(teDTO.getDate())+1;
+					}
+					weekCountMap.put(teDTO.getDate(),count);
+					taskIdWithRef = taskId+"##"+ticketNumber+"##"+count;
 				}
 				LinkedList<TimesheetEntriesDTO> tsDTOList = entriesMap.get(taskIdWithRef);
 				if (tsDTOList == null) {
@@ -2701,6 +2707,7 @@ public class TimesheetRestController {
 				"orgLocations");
 		LinkedHashMap<String, LinkedList<TimesheetEntriesDTO>> entriesMap = new LinkedHashMap<>();
 		LinkedHashMap<String, String> valuesMap = new LinkedHashMap<>();
+		LinkedHashMap<String, Integer> weekCountMap = new LinkedHashMap<>();
 		if (tsDTO != null && tsDTO.getTimesheetEntries() != null && !tsDTO.getTimesheetEntries().isEmpty()) {
 			for (TimesheetEntriesDTO teDTO : tsDTO.getTimesheetEntries()) {
 				String taskIdWithRef = "";
@@ -2710,7 +2717,12 @@ public class TimesheetRestController {
 					if(StringUtils.isNotEmpty(teDTO.getTimesheetTaskDTO().getTicketNumber())) {
 						ticketNumber = teDTO.getTimesheetTaskDTO().getTicketNumber();
 					}
-					taskIdWithRef = taskId+"##"+ticketNumber;
+					int count = 0;
+					if(weekCountMap.get(teDTO.getDate()) != null){
+						count = weekCountMap.get(teDTO.getDate())+1;
+					}
+					weekCountMap.put(teDTO.getDate(),count);
+					taskIdWithRef = taskId+"##"+ticketNumber+"##"+count;
 				}
 				LinkedList<TimesheetEntriesDTO> tsDTOList = entriesMap.get(taskIdWithRef);
 				if (tsDTOList == null) {

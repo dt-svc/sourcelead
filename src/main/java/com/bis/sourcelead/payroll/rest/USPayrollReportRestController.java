@@ -175,7 +175,7 @@ public class USPayrollReportRestController {
 	}
 	
 	/**
-	 * Pay Groups by orglocation Id
+	 * Pay Groups by org location Id
 	 * @param request
 	 * @param response
 	 * @return List<UserGroup> 
@@ -193,7 +193,8 @@ public class USPayrollReportRestController {
 	@ResponseBody
 	public List<PayPeriodDTO> getPayPeriodByGroupId(@RequestParam(value = "groupId",required = false) Long groupId,HttpServletRequest request, HttpServletResponse response) throws Exception
 	{
-		System.out.println("===================================");
+		
+//		List<PayPeriodDTO> userGroupService = 
 		return null;
 	}
 }

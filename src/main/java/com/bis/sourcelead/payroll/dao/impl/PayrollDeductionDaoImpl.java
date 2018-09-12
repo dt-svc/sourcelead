@@ -70,10 +70,12 @@ public class PayrollDeductionDaoImpl implements PayrollDeductionDao{
 		String countQuery = "from PayrollDeduction payrollDed where payrollDed.orgLocationId.id =:orgLocationId";
 		StringBuilder searchQuery = new StringBuilder();
 		if(StringUtils.isNoneBlank(payrollDeductionDTO.getSearchValue())) {
-			searchQuery.append(" and payrollDed.payrollDeductionType like '%" + payrollDeductionDTO.getSearchValue() + "%' ")
+			searchQuery.append(" and ( payrollDed.payrollDeductionType like '%" + payrollDeductionDTO.getSearchValue() + "%' ")
 			.append("OR payrollDed.payrollDeductionMethod like '%" + payrollDeductionDTO.getSearchValue() + "%' ")
 			.append("OR payrollDed.payrollScheduled like '%" + payrollDeductionDTO.getSearchValue() + "%' ")
-			.append("OR payrollDed.deductionAmount like '%" + payrollDeductionDTO.getSearchValue() + "%' ");
+			.append("OR payrollDed.deductionAmount like '%" + payrollDeductionDTO.getSearchValue() + "%' ")
+			.append("OR payrollDed.taxType like '%" + payrollDeductionDTO.getSearchValue() + "%' ")
+			.append("OR payrollDed.description like '%" + payrollDeductionDTO.getSearchValue() + "%' ) ");
 		}
 		
 		

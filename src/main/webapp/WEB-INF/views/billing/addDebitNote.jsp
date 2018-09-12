@@ -17,13 +17,15 @@
       <div class="pull-left">
         <h2>Add Debit Note</h2>
       </div>
-      <div class="pull-right brud-crum">Home &raquo; Vendor &raquo; Debit Note</div>
+      <div class="pull-right brud-crum"><a href="<c:url value='${appPath}/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a> &raquo; <a href="<c:url value='${appPath}/debitNoteList'/>">Debit Note List</a> &raquo; Debit Note</div>
+      
     </section>
     <div class="content-area content-new clearfix">
     <div id="creditDebitLoading"></div>
       <div class="clearfix mt formgroup-minheight">
       <form id="creditNote_form" name ="creditNote_form" method="Post">
        <input type = "hidden" name = "savedNoteId" value ="${creditDebitNote.savedNoteId}">
+       <input type="hidden" name="clientCurrency" id="clientCurrency">
 		<div class="col-xs-12 col-sm-6 col-md-6">
 					<div class="form-group row">
 					  <label class="col-md-3">Vendor<span class="text-danger">&nbsp;*</span></label>
@@ -98,8 +100,6 @@
 		<label class="col-md-3 paddingRight">Approvers <span class="text-danger">&nbsp;*</span></label>
 		<div class="col-md-9">
 		<select multiple="multiple" class="chosen-select form-control" value="" id="approvers" name="approvers" field-name="Approvers" data-validation="true" placeholder="Approvers">
-		<c:forEach var="approvers" items="${approversList}">
-		<option value="${approvers.id}">${approvers.firstName}</option>	</c:forEach>
 		</select>
 		</div>
 		</div>
@@ -109,7 +109,7 @@
 		<div class="form-group">
               <label class="col-md-3">&nbsp;</label>
               <div class="col-md-9 checkBox">
-              <input type="checkbox"  name="approverCheckBox" value="N" class="paddingRight" id="approverCheckBox" onclick="approverCheck()"> Approver </div>
+              <input type="checkbox"  name="approverCheckBox" value="${creditDebitNote.approverCheckBox}" ${creditDebitNote.approverCheckBox == 'Y' ? 'checked' : ''} class="paddingRight" id="approverCheckBox" onclick="approverCheck()"> Approver </div>
             </div>
           </div>  
 		<div class="clearfix mb"></div>
@@ -323,6 +323,7 @@
                 <label class="col-md-7 text-right"><strong>Total</strong></label>
                     <div class="col-md-5 text-right"><span class="pull-left"></span><input type="text" value = "${creditDebitNote.grandTotal}" id="grandTotal" name="grandTotal" class="ReadTextFli" readonly></div>
               </div>
+              <div id="conversionId"  style="display: none"></div>
               </div>
               </div>
           </div>
@@ -347,6 +348,8 @@
 $(document).ready(function(){
 	getSpocsList();
 	getInvoiceList();
+	approverCheck();
+	getApproversList();
 	});
 
 function saveDebitNote(saveType){
@@ -518,13 +521,93 @@ function getSpocsList() {
 						}else{
 							output = output	+ "<option value='" +opt.spocUserId+ "'>"+ opt.ownerName + "(" + opt.spocName+ ")</option>";
 						}
+						$("#clientCurrency").val(opt.vendorCurrency);
 					}
 					}
 					$("#spocUser").append(output);
 					$('#spocUser').trigger("chosen:updated");
+					currencyConversionDiv();
 				},
 			});
+	
 }
+
+function getApproversList() {
+	var invoiceIds = "${creditDebitNote.approvers}";
+	$("#approvers").empty();
+	$.ajax({
+		type : "GET",
+		url : sourceleadUrl + "/getApproversListForCreditDebitNote?",
+		success : function(json) {
+			var output = "";
+			for (var i = 0; i < json.data.length; i++) {
+				var opt = json.data[i];
+				if(invoiceIds != ""){
+					var arrayinvoiceIds = invoiceIds.split(",");
+					if(arrayinvoiceIds.includes(opt.id.toString())){
+						output = output	+ "<option value='" +opt.id+ "' selected >"+ opt.fullName + "</option>";
+					}else{
+						output = output	+ "<option value='" +opt.id+ "'>"+ opt.fullName + "</option>";
+					}
+				}else{
+					output = output	+ "<option value='" +opt.id+ "'>"+ opt.fullName + "</option>";
+				}
+			}
+			$("#approvers").append(output);
+			$('#approvers').trigger("chosen:updated");
+		},
+	});
+}
+</script>
+
+ <!-- currency conversion script -->
+  <script>
+function currencyConversionDiv(){
+	var clientCurrency = $("#clientCurrency").val();
+	var currencyCode = '${SourceLeadWeb_currencyCode}';
+	if(clientCurrency !=null && clientCurrency !='' && clientCurrency !='undefined'){
+	if(clientCurrency != currencyCode){
+		var result = "";
+		result = result +' <div class="row">';
+		result = result +' <div class="clearfix mt col-md-offset-2 col-md-10" style="padding-right:0;">';
+		result = result +' <div class="clearfix"><label class="col-md-6 text-right"><strong>Conversion From</strong></label><div class="paddingLeft col-md-6"><span class="pull-left" id="currencyCode"></span><div class="pull-right"><input type="text" id="conversionFrom" placeholder="00:00" value = "${creditDebitNote.grandTotal}" class="ReadTextFli" readonly="" type="text"/></div></div></div>';
+		result = result +'  <div class="clearfix"><label class="col-md-6 text-right"><strong>Conversion To</strong></label><div  class="paddingLeft col-md-6"><span id="vendorCurrencyCode"></span><div class="pull-right"><input id="exchangeCurrencyRate" name="exchangeCurrencyRate" class="ReadTextFli" value = "${creditDebitNote.exchangeCurrencyRate}" readonly="" type="text"/></div></div></div>';
+		result = result +' <div class="clearfix"><label class="col-md-6 text-right"><strong>Exchange Rate</strong></label><div  class="paddingLeft col-md-6"><span id="convertedCurrencyCode"></span><div class="pull-right"><input id="afterExchangeGrandTotal" name="afterExchangeGrandTotal" value = "${creditDebitNote.afterExchangeGrandTotal}" class="ReadTextFli" readonly="" type="text"/></div></div></div>';
+		result = result +'  </div>';
+		result = result +'  </div>';
+		document.getElementById("conversionId").style.display="block";
+		$("#conversionId").empty();
+		$("#conversionId").append(result);
+	}else{
+		document.getElementById("conversionId").style.display="none";
+	}
+	}
+}
+
+function  conversionRate(){
+	   var orgRelationId = $("#orgRelationId").val();
+	   var currencyCode = '${SourceLeadWeb_currencyCode}';
+	   var grandTotal = $("#grandTotal").val();
+	   if(grandTotal != '' && grandTotal != 'undefined'){
+		   $.ajax({
+				type : "GET",
+				url: sourceleadUrl+"/getConversionExchangeRate?"+tokenParamName+"="+tokenValue+"&orgRelationId="+orgRelationId+"&grandTotal="+grandTotal,
+				success :function(response) {
+					if(response.object !='' && response.object != 'undefined' && response.object != null){
+//						var json = JSON.parse(data);
+						$("#afterExchangeGrandTotal").val((response.object.exchangeRate).toFixed(2));
+						$("#exchangeCurrencyRate").val(response.object.exchangeCurrency);
+						$("#vendorCurrencyCode").html(response.object.vendorCurrencyCode);
+						$("#convertedCurrencyCode").html(currencyCode +' to '+ response.object.vendorCurrencyCode);
+					}
+				},
+				});  
+		   $("#currencyCode").html(currencyCode);
+	   }
+	  
+		
+}
+
 </script>
 
 <script>
@@ -658,6 +741,8 @@ function datePickerFunction(id){
 		 }  
 		  $("#subTotalAmount").val(sum.toFixed(2));
 		  $("#grandTotal").val(sum.toFixed(2));
+		  $("#conversionFrom").val(sum.toFixed(2));
+		  conversionRate();
   }		  
   
   
@@ -671,9 +756,11 @@ function datePickerFunction(id){
 				total = subTotal-discountValue;
 				$("#discountTotal").val(discountValue);
 				$("#grandTotal").val(total.toFixed(2));
+				$("#conversionFrom").val(total.toFixed(2));
 			}else{
 				$("#discountTotal").val("00.00");
 				$("#grandTotal").val(subTotal.toFixed(2));
+				$("#conversionFrom").val(subTotal.toFixed(2));
 			}
 			
 		}
@@ -683,12 +770,15 @@ function datePickerFunction(id){
 				total = subTotal - perCentValue;
 				$("#discountTotal").val(perCentValue.toFixed(2));
 				$("#grandTotal").val(total.toFixed(2));
+				$("#conversionFrom").val(total.toFixed(2));
 			}else{
 				$("#discountTotal").val("00.00");
 				$("#grandTotal").val(subTotal.toFixed(2));
+				$("#conversionFrom").val(subTotal.toFixed(2));
 			}
 			
 		}
+		conversionRate();
 	}
   
   // allow only numbers

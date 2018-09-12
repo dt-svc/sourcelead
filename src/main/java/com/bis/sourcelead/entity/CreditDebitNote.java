@@ -59,9 +59,8 @@ public class CreditDebitNote implements Serializable {
 	@JoinColumn(name = "PARENT_NOTE_ID")
 	private CreditDebitNote parentCreditDebitNote;
 	
-	@ManyToOne
-    @JoinColumn(name="OWNER_USER_ID", nullable=false )     
-	private User ownerUser;
+    @Column(name="OWNER_USER_ID")     
+	private String ownerUser;
 	
 	@Column(name = "BILLING_ADDRESS")
 	private String billingAddress;
@@ -240,11 +239,12 @@ public class CreditDebitNote implements Serializable {
 		this.parentCreditDebitNote = parentCreditDebitNote;
 	}
 
-	public User getOwnerUser() {
+
+	public String getOwnerUser() {
 		return ownerUser;
 	}
 
-	public void setOwnerUser(User ownerUser) {
+	public void setOwnerUser(String ownerUser) {
 		this.ownerUser = ownerUser;
 	}
 

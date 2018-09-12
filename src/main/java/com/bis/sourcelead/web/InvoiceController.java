@@ -329,6 +329,11 @@ public class InvoiceController {
 		{
 			sessionData = new SessionMaintainanceData();
 		}
+		if(noteType.equalsIgnoreCase("Credit")){
+			sessionData.setNav(Constants.CREDIT_NOTE);
+		}else{
+			sessionData.setNav(Constants.DEBIT_NOTE);
+		}
 		model.setViewName("billing/viewCreditDebitNote");
 		model.addObject("sourceleadUrl", sourceleadUrl);
 		model.addObject("creditDebitUUID", creditDebitUUID);

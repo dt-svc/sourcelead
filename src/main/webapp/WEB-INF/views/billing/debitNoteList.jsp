@@ -25,7 +25,7 @@ $(document).ready(function(){
 	     </c:if>
 	     
       <div class="pull-left">
-        <h2>Credit Notes</h2>
+        <h2>Debit Notes</h2>
       </div>
       
       <div class="pull-right brud-crum"><a href="<c:url value='${appPath}/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a> &raquo; Debit Note List</div>

@@ -60,6 +60,7 @@ public class PayrollConstant {
 	public static final String LOAN_EVERY_QUARTER = "Every Quarter";
 	public static final String LOAN_HALF_YEARLY = "Half Yearly";
 	public static final String LOAN_ANNUALLY = "ANNUALLY";
+	public static final String C2C = "C2C";
   
 
 
