@@ -10,15 +10,24 @@
         <button type="button" class="close hidden" data-dismiss="modal"  onclick="closeusRunpayrol();">&times;</button>
         <h4 class="modal-title hidden">Pay Stub</h4>
         <div class="row">
-          <div class="col-md-3">
-            <label class="clearfix"><strong>Address</strong></label>
-            <div class="clearfix">
+        
+        <div class="col-md-6">
+        
+        <div class="row">
+            <label class="col-md-4"><strong>Name:</strong></label>
+            <div class="col-md-8">
+              <p class="mb0" id="empName"></p>
+            </div>
+          </div>
+          <div class="row mt5">
+            <label class="col-md-4"><strong>Address:</strong></label>
+            <div class="col-md-8">
               <p class="mb0" id="empAddress"></p>
             </div>
           </div>
-          <div class="col-md-3">
-            <label class="clearfix"><strong>Deposit Type</strong></label>
-            <div class="clearfix">
+          <div class="row mt5">
+            <label class="col-md-4"><strong>Deposit Type:</strong></label>
+            <div class="col-md-8">
               <select class="sel" title="Select Type" id="depositType" name="depositType">
                 <option selected value="Direct Deposit">Direct Deposit</option>
                 <option value = "By Check">By Check</option>
@@ -38,6 +47,7 @@
                  <input type="hidden" id="assSalary" name="assSalary" value="">
               
             </div>
+          </div>
           </div>
           
       <!--     <div class="col-md-2 text-center">
@@ -266,6 +276,7 @@
 		        url: sourceleadUrl+"/getEmployeePayroll?payrollUUID="+payrollUUID+"&status="+status,                 
 		        success: function(data) {
 		            var json = data.object;
+		            $("#empName").text(json.empName)
 		            $("#empAddress").text(json.employeeAddress);
 		            
 		            $("#assSalType").val(json.assSalType);
