@@ -57,19 +57,10 @@
 		                  
 		                
 		                  <div class="col-md-5" id="snoDiv">
-		                  <div id="lsn" style="display: block;">
-		                  <label class="clearfix" >Laptop Serial Number<span class="text-danger paddingLeft">*</span></label>
-		                  <div class="clearfix">
-		                    <input type="text" class="form-control input-sm" id="sno" name="sno" value="${assetAssignData.slno}" placeholder="Laptop Serial Number" field-name="Laptop Serial Number" onblur="validateAssetSno('${assetAssignData.id}','lsn');" >
-		                  </div>
-		                  </div>
-		                  <div id="csn" style="display: none;">
-		                  	<label class="clearfix" >CPU Serial Number<span class="text-danger paddingLeft">*</span></label>
+		                  <label class="clearfix" >Serial Number<span class="text-danger paddingLeft">*</span></label>
 			                  <div class="clearfix">
-			                    <input type="text" class="form-control input-sm" id="cpuSerialNumber" name="cpuSerialNumber" value="${assetAssignData.slno}" placeholder="CPU Serial Number" field-name="CPU Serial Number" onblur="validateAssetSno('${assetAssignData.id}','csn');" >
+			                    <input type="text" class="form-control input-sm" id="sno" name="sno" value="${assetAssignData.slno}" placeholder="Serial Number" field-name="Serial Number" onblur="validateAssetSno('${assetAssignData.id}');" data-validation="required validate_Space validate_NumberAndAlphabet validate_length length1-200" >
 			                  </div>
-		                  </div>
-		                  
 		                  </div>
 		                  
 		                  <div class="col-md-5" id="makeDiv">
@@ -254,7 +245,7 @@
 		                </div>
 		                 <c:forEach var="shift" items="${siftList}" varStatus="shiftOrder">
 			                <div class="clearfix mb10">
-			                  <div class="col-md-5" id="uploadFile-dskADiv">
+			                  <div class="col-md-3" id="uploadFile-dskADiv">
 			                   <label class="clearfix">${shift.shiftName}</label>
 			                    <input type="hidden" name="assignAsset[${shiftOrder.index}].shift" value="${shift.id}"/>
 			                    <input type="hidden" id="assetAssignId${shiftOrder.index}" name="assignAsset[${shiftOrder.index}].id"/>
@@ -280,7 +271,7 @@
 								  </c:forEach>
 			                    </select>
 			                  </div>
-			                  <div class="col-md-5" id="uploadFile-dskBDiv">
+			                  <div class="col-md-3" id="uploadFile-dskBDiv">
 			                  <label class="clearfix">Attachment</label>
 			                  <c:forEach var="existedAssetDocuments" items="${assignAssetList}">
 							    <c:if test="${(existedAssetDocuments.shift.id eq shift.id) && (!empty existedAssetDocuments.fileName)}">
@@ -300,13 +291,48 @@
 							</c:forEach>
 							<c:if test="${NUM == 0}">
 	                      		<div class="input-group attachfile-error">
-			                      <label class="input-group-btn"> <b class="btn btn-primary" onchange="setFilePath('${shiftOrder.index}');uploadShiftFile('${shiftOrder.index}');"><i class="fa fa-folder-open-o"></i>&nbsp;Browse File
+			                      <label class="input-group-btn"> <b class="btn btn-primary" onchange="setFilePath('${shiftOrder.index}');uploadShiftFile('${shiftOrder.index}');"><i class="fa fa-folder-open-o"></i>
 			                        <input type="file" id="uploadBtn-dskA${shiftOrder.index}"   style="display: none;" class="upload">
 			                        </b> </label>
 			                      <input type="text"  class="form-control" id="shiftFile${shiftOrder.index}" data-validation = "validatedoc" data-validation-optional="true"   readonly  placeholder="Files are not selected...">
 			                    </div>
 							</c:if>
 			                </div>
+			                
+	                        <c:set var = "NUM" value = "${0}"/>
+	                        <c:forEach var="existedAsset" items="${assignAssetList}">
+	                        	<c:if test="${(existedAsset.shift.id eq shift.id)}">
+							    	<c:set var = "NUM" value = "${1}"/>
+										<div class="col-md-2 paddingRight">
+							                <label>Assigned On</label>
+							                <div class="clearfix">
+							                	<input type="text" class="form-control calendar" id="assignedOn${shiftOrder.index}" name="assignAsset[${shiftOrder.index}].assignedOn"  value="${existedAsset.assignedOnStr}" readonly  placeholder="Assigned On">
+							                </div>
+							              </div>
+								                
+								         <div class="col-md-2 paddingLeft">
+							                <label>Returned On</label>
+							                <div class="clearfix">
+							                	<input type="text" class="form-control calendar" id="returnedOn${shiftOrder.index}" name="assignAsset[${shiftOrder.index}].returnedOn"  value="${existedAsset.returnedOnStr}" readonly  placeholder="Returned On">
+							                </div>
+							                </div>
+							       </c:if>
+	                        </c:forEach>
+	                        <c:if test="${NUM == 0}">
+	                        <div class="col-md-2 paddingRight">
+				                <label>Assigned On</label>
+				                <div class="clearfix">
+				                	<input type="text" class="form-control calendar" id="assignedOn${shiftOrder.index}" name="assignAsset[${shiftOrder.index}].assignedOn"  value="" readonly  placeholder="Assigned On">
+				                </div>
+				                </div>
+				                
+				                <div class="col-md-2 paddingLeft">
+				                <label>Returned On</label>
+				                <div class="clearfix">
+				                	<input type="text" class="form-control calendar" id="returnedOn${shiftOrder.index}" name="assignAsset[${shiftOrder.index}].returnedOn"  value="" readonly  placeholder="Returned On">
+				                </div>
+				                </div>
+	                        </c:if>
 			              </div>
 		                </c:forEach>
 		              </c:if>
@@ -373,13 +399,8 @@ function getCustomDependentField(sectionId){
 </script>
 
 <script type="text/javascript">
- function validateAssetSno(assetId,type) {
-	 var assetSno = "";
-	 if(type == "lsn"){
-		 assetSno = $("#sno").val(); 
-	 }else{
-		 assetSno = $("#cpuSerialNumber").val(); 
-	 }
+ function validateAssetSno(assetId) {
+	 var assetSno = $("#sno").val(); 
 	  
 	 if(assetSno != null && assetSno != ""){
 		 $("#add_asset").attr("disabled", "disabled");
@@ -388,25 +409,13 @@ function getCustomDependentField(sectionId){
 		        url: sourceleadUrl+"/validateAssetSno?"+tokenParamName+"="+tokenValue+"&assetSno="+assetSno+"&assetId="+assetId, 
 		        success: function(data) {
 		        	if(data == true){
-		        		  $('#snoDiv').find('p.jquery_form_error_message').remove();
-		        		  if(type == "lsn"){
+		        		     $('#snoDiv').find('p.jquery_form_error_message').remove();
 		        			  $("input#sno").after ("<p class='jquery_form_error_message'>"+assetSno+" is Already Existed</span>");
 							  document.getElementById("sno").setAttribute('record-exist','yes');
 							  document.getElementById("sno").setAttribute('record-exist-errorMsg',assetSno+' is Already Existed'); 
-		        		  }else{
-		        			  $("input#cpuSerialNumber").after ("<p class='jquery_form_error_message'>"+assetSno+" is Already Existed</span>");
-							  document.getElementById("cpuSerialNumber").setAttribute('record-exist','yes');
-							  document.getElementById("cpuSerialNumber").setAttribute('record-exist-errorMsg',assetSno+' is Already Existed'); 
-		        		  }
-						 
-		        	}
-		        	else{
-		        		 if(type == "lsn"){
-		        			 $('input#sno').removeAttr( "record-exist record-exist-errormsg"); 
-		        		 }else{
-		        			 $('input#cpuSerialNumber').removeAttr( "record-exist record-exist-errormsg");
-		        		 }
-		        		
+		        		  
+		        	}else{
+	        			 $('input#sno').removeAttr( "record-exist record-exist-errormsg"); 
 		        		 $('#snoDiv').find('p.jquery_form_error_message').remove(); 
 		        		 $("#add_asset" ).addClass('us-btn').val('Add');
                          $("#add_asset").removeAttr("disabled");
@@ -416,6 +425,92 @@ function getCustomDependentField(sectionId){
 	 } 
  }
  </script>  
+ 
+ <script>
+ var locationDate ='${SourceLeadWeb_orgLocations.dateFormat}'; 
+ var finalDateFormat = getJSDateFormat(locationDate);
+ $('#issueDate').datepicker({
+     dateFormat: finalDateFormat,
+     changeMonth: true,
+ 	  changeYear: true, 
+ });
+ $('#purchaseDate').datepicker({
+     dateFormat: finalDateFormat,
+     changeMonth: true,
+ 	  changeYear: true, 
+ });
+ $('#depreciationDate').datepicker({
+     dateFormat: finalDateFormat,
+     changeMonth: true,
+ 	  changeYear: true, 
+ });
+ 
+ <c:forEach var="shift" items="${siftList}" varStatus="shiftOrder">
+    <c:set var = "NUM" value = "${0}"/>
+	 <c:forEach var="existedAsset" items="${assignAssetList}">
+	    <c:if test="${existedAsset.shift.id eq shift.id}">
+	    var returnedOn = '${existedAsset.returnedOnStr}';
+	    var assignedOn = '${existedAsset.assignedOnStr}';
+	    
+	    $('#assignedOn${shiftOrder.index}').datepicker({
+		      dateFormat: finalDateFormat,
+		      changeMonth: true,
+		  	  changeYear: true, 
+		  	  maxDate:returnedOn,
+		  	  onSelect : function(selected) {
+				var dt = $(this).datepicker('getDate', '+1d');
+				dt.setDate(dt.getDate() + 1);
+				$('#returnedOn${shiftOrder.index}').datepicker("option", "minDate", dt);
+			}
+		  });
+	    
+	    $('#returnedOn${shiftOrder.index}').datepicker({
+		      dateFormat: finalDateFormat,
+		      changeMonth: true,
+		  	  changeYear: true, 
+		  	  minDate:assignedOn,
+		  	  onSelect : function(selected) {
+				var dt = $(this).datepicker('getDate', '+1d');
+				dt.setDate(dt.getDate() + 1);
+				$('#assignedOn${shiftOrder.index}').datepicker("option", "maxDate", dt);
+			}
+		  });
+	    
+	    </c:if>
+	 	
+	</c:forEach>
+	  <c:if test="${NUM == 0}">
+	 $('#assignedOn${shiftOrder.index}').datepicker({
+	      dateFormat: finalDateFormat,
+	      changeMonth: true,
+	  	  changeYear: true, 
+	  	  onSelect : function(selected) {
+			var dt = $(this).datepicker('getDate', '+1d');
+			dt.setDate(dt.getDate() + 1);
+			$('#returnedOn${shiftOrder.index}').datepicker("option", "minDate", dt);
+		}
+	  });
+	  $('#returnedOn${shiftOrder.index}').datepicker({
+	      dateFormat: finalDateFormat,
+	      changeMonth: true,
+	  	  changeYear: true, 
+	  	  onSelect : function(selected) {
+			var dt = $(this).datepicker('getDate', '+1d');
+			dt.setDate(dt.getDate() + 1);
+			$('#assignedOn${shiftOrder.index}').datepicker("option", "minDate", dt);
+		}
+	  });
+	</c:if> 
+	 
+ </c:forEach>
+ 
+ 
+ 
+ 
+ 
+ </script>
+ 
+ 
  <script type="text/javascript">
 	var config = {
 	  '.chosen-select'           : {},

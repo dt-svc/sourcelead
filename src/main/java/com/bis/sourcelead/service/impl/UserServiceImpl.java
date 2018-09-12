@@ -262,7 +262,7 @@ public class UserServiceImpl implements UserService {
 		  }
 		  
 			  if(StringUtils.isNotBlank(addUserDTO.getSsn())) {
-				  user.setSsn(Integer.parseInt(addUserDTO.getSsn()));
+				  user.setSsn(addUserDTO.getSsn());
 			  }
 		  
 		     if(StringUtils.isNotBlank(addUserDTO.getExtensionNumber())){
@@ -619,7 +619,7 @@ public class UserServiceImpl implements UserService {
 		}
 		
 	    if(StringUtils.isNotBlank(addUserDTO.getSsn())) {
-			  user.setSsn(Integer.parseInt(addUserDTO.getSsn()));
+			  user.setSsn(addUserDTO.getSsn());
 	    }
 	    
 	    if(StringUtils.isNotBlank(addUserDTO.getMiddleName())) {

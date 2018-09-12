@@ -3,16 +3,16 @@
 <div id="popUp"></div>
 
 <script>
-  function getUserGroupList(){
+  function getUserGroupList(fromType){
 		var searchValue = $("#dataTableSearch").val();
 		searchValue = searchValue ? searchValue : "";
 		var url = sourceleadUrl+"/getUserGroupList?searchValue="+searchValue;
-		getUserGroupListData(url); 
+		getUserGroupListData(url,fromType); 
   }
 </script>
 
 <script>
-function getUserGroupListData(url){
+function getUserGroupListData(url,fromType){
 	    
  	    var result = "";
  	    /* result = result +" <div class='modal-header'>";
@@ -40,14 +40,14 @@ function getUserGroupListData(url){
         $("#userGroupDiv").show();
         $("#userGroupDiv").empty();
         $("#userGroupDiv").append(result);
-        userGroupPaginationFun(url); 
+        userGroupPaginationFun(url,fromType); 
         $("#overViewDiv").hide();
 }
 
 </script>
 
 <script>
-function userGroupPaginationFun(url){
+function userGroupPaginationFun(url,fromType){
 	var colIndex = 0;
     $('#userGroupPagination').DataTable( { 
     	"processing": true,
@@ -109,7 +109,8 @@ function userGroupPaginationFun(url){
                 "sortable": false,
                 "render": function ( data, type, opt, meta ) {
                 		var result = "";
-                		result = result + '<td><div class="tbldata-dotdot_50"><i class="fa fa-pencil mr cursorPointer" onclick="addbatches(\''+opt.groupUUID+'\');"></i><i class="glyphicon glyphicon-trash cursorPointer" onclick="deleteUserGroup(\''+opt.groupUUID+'\');"></i>';
+                		result = result + '<td><div class="tbldata-dotdot_50"><i class="fa fa-pencil mr cursorPointer" onclick="addbatches(\''+opt.groupUUID+'\',\''+fromType+'\');"></i>';
+//commented by rakshith                 		<i class="glyphicon glyphicon-trash cursorPointer" onclick="deleteUserGroup(\''+opt.groupUUID+'\');"></i>
                 		result = result + '</div>';
                 		result = result + '</td>';
     	              return result;
@@ -178,11 +179,11 @@ function cancelDelete(){
 </div>
 
 <script>
-function addbatches(groupUUID){
+function addbatches(groupUUID,fromType){
 	if(groupUUID == null || groupUUID == '' || groupUUID == 'undefined'){
 		groupUUID = "";
 	}
-	$.get(sourceleadUrl+"/addUserGroup?"+tokenParamName+"="+tokenValue+"&groupUUID="+groupUUID,  function(result) {
+	$.get(sourceleadUrl+"/addUserGroup?"+tokenParamName+"="+tokenValue+"&groupUUID="+groupUUID+"&fromType="+fromType,  function(result) {
 		$("#addUserGroupFormDiv123").empty();
 		$("#addUserGroupFormDiv123").append(result);
 // 		getUsersByDepartment();

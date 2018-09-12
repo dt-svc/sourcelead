@@ -8,7 +8,7 @@
 
 
 <script>
-function assetNotes(assetId){
+function assetNotes(assetId,assetUUID){
 		var result = "";
 		result = result  +'<div class="clearfix timesheetHead">';
 		result = result  +'    <div class="project_tabs_inn_head addUser-org"> '; 
@@ -16,7 +16,7 @@ function assetNotes(assetId){
 	    result  = result + '<i class="fa fa-check-circle"></i><span id="clientNotesMsgDiv"></span>';
 	    result  = result + '</div>';
 		result = result + '<ul class="padding_right">';
-		result = result  +'    	<a href="javascript:void(0)" onClick="addAssetNotesNew('+assetId+');" class="addUser-org" ><i class="glyphicon glyphicon-plus"></i>Add Note</a>                                                            ';
+		result = result  +'    	<a href="javascript:void(0)" onClick="addAssetNotesNew('+assetId+',\''+assetUUID+'\');" class="addUser-org" ><i class="glyphicon glyphicon-plus"></i>Add Note</a>                                                            ';
 		result = result  +'     <div id="popUpDiv" class="edit-details col-md-4"> ';
 		result = result  +'     </div>  ';
 		result = result  +'  <div class="clearfix"></div> ';
@@ -30,12 +30,13 @@ function assetNotes(assetId){
 	    //$("#tab-1").empty();
 	    $("#tab-1").empty(); 
 	    $("#tab-2").empty();
+	    $("#tab-3").empty();
 	    $("#tab-2").append(result);  
-	    assetNotesList(assetId);    
+	    assetNotesList(assetUUID);    
 }
 </script>
 <script>
-function addAssetNotesNew(assetId) {	
+function addAssetNotesNew(assetId,assetUUID) {	
 	var result = "";
 	result = result  +'          <form role="form"  id="notes_Asset" name="notes_Asset" method="post" > ';
 	result = result  +'          <input type="hidden" id="assetId" name="assetId" value="'+assetId+'"> ';
@@ -52,7 +53,7 @@ function addAssetNotesNew(assetId) {
 	result = result  +'                  </div>';     
 	result = result  +'                  <div class="clearfix mt5" id="docAddButton"> ';
 	result = result  +'                  <div class="pull-right mt5"> ';
-    result = result +'                     <input type="button" value="Add" name="btnAddPr" id="save_note" class="btn btn-sm btn-primary mr" onClick ="storeReqNotes('+assetId+');" />'; 
+    result = result +'                     <input type="button" value="Add" name="btnAddPr" id="save_note" class="btn btn-sm btn-primary mr" onClick ="storeReqNotes('+assetId+',\''+assetUUID+'\');" />'; 
 	result = result  +'                  </div> ';
 	result = result  +'                  </div> ';
 	result = result  +'                </div>';
@@ -92,9 +93,9 @@ function closeDocPopup(){
 }
 </script>
 <script>
-function assetNotesList(assetId){
+function assetNotesList(assetUUID){
 	var urlForm = "";
-	    urlForm = "/getAssetNotes?"+tokenParamName+"="+tokenValue+"&assetId="+assetId;
+	    urlForm = "/getAssetNotes?"+tokenParamName+"="+tokenValue+"&assetUUID="+assetUUID;
 		
 	var sourceleadUrl ='${sourceleadUrl}';
 	  $.ajax({
@@ -161,7 +162,7 @@ function assetNotesList(assetId){
 
 
 <script type="text/javascript">
-	function storeReqNotes(assetId){
+	function storeReqNotes(assetId,assetUUID){
 		if ($('#notes_Asset').validate(false, validationSettings)){
 				var frm = $('#notes_Asset').serializeFormJSON();
 				var con = JSON.stringify(frm);
@@ -197,7 +198,7 @@ function assetNotesList(assetId){
 							    location.href = "/errorPage";
 							} else if (result.response === "SUCCESS") {
 								closeDocPopup();
-								assetNotesList(assetId);
+								assetNotesList(assetUUID);
 							} else if (result.indexOf('Sign In') !== -1) {
 								location.replace(sourceleadUrl);
 							} else {
@@ -219,66 +220,14 @@ function assetNotesList(assetId){
 	});
 </script>
 <script>
-function assetDetails(assetId) {
+function assetDetails(assetUUID) {
 	$.ajax({
 			type : "POST",
-			url : sourceleadUrl	+ "/getAssetById?"+tokenParamName+"="+tokenValue+"&assetId="+ assetId,
+			url : sourceleadUrl	+ "/getAssetById?"+tokenParamName+"="+tokenValue+"&assetUUID="+assetUUID,
 			success : function(json) {
-					var make = "--";
-				    var model = "--";
 				    var name = "--";
-				    var memory = "--";
-				    var cpu = "--";
-				    var workingStatus = "--";
-				    var hardDisk = "--";
-				    var monitor = "--";
-				    var description = "--";
-				    var issueDate = "--";
-					var macAddress  = "--"
-					
-					if (json.make != null && json.make != '' && json.make != 'undefined') {
-						make = json.make;
-					} 
-					
-					if (json.model != null && json.model != '' && json.model != 'undefined') {
-						model = json.model;
-					} 
-					
-					if (json.name != null && json.name != '' && json.name != 'undefined') {
-						name = json.name;
-					}  
-					
-					if (json.memory != null && json.memory != '' && json.memory != 'undefined') {
-						memory = json.memory;
-					} 
-					
-					if (json.cpu != null && json.cpu != '' && json.cpu != 'undefined') {
-						cpu = json.cpu;
-					} 
-					
-					if (json.workingStatus != null && json.workingStatus != '' && json.workingStatus != 'undefined') {
-						workingStatus = json.workingStatus;
-					}
-					if (json.harddisk != null && json.harddisk != '' && json.harddisk != 'undefined') {
-						hardDisk = json.harddisk;
-					}
-					
-					if (json.monitor != null && json.monitor != '' && json.monitor != 'undefined') {
-						monitor = json.monitor;
-					}
-					if (json.description != null && json.description != '' && json.description != 'undefined') {
-						description = json.description;
-					} 
-					
-					 
-					if (json.issueDate != null && json.issueDate != '' && json.issueDate != 'undefined') {
-						issueDate = json.issueDate;
-					}
-					if (json.macAddress != null && json.macAddress != '' && json.macAddress != 'undefined') {
-						macAddress = json.macAddress;
-					}
-					
-					var result = "";
+
+				    var result = "";
 					result = result + '<div class="require_wrap_details">';
 					result = result + '<h1>'+json.categoryName+' Asset details:</h1>';
 					result = result + '<div class="require_one">';
@@ -287,120 +236,69 @@ function assetDetails(assetId) {
 					result = result + '<div class="clearfix"></div>';
 					result = result + ' </div>';
 					
-					result = result + '<div class="require_wrap_details_cta"> <b><strong>Serial Number:</strong></b> <span class = "wordWrap-breakword">'+json.sno+'</span>';
-					result = result + '<div class="clearfix"></div>';
-					result = result + ' </div>';
-					
+					if(json.sno != null && json.sno != "" && json.sno != "undefined"){
+						result = result + '<div class="require_wrap_details_cta"> <b><strong>Serial Number:</strong></b> <span class = "wordWrap-breakword">'+json.sno+'</span>';
+						result = result + '<div class="clearfix"></div>';
+						result = result + ' </div>';	
+					}
 
-					result = result + '<div class="require_wrap_details_cta"> <b><strong>Make:</strong></b> <span class = "wordWrap-breakword">'+make+'</span>';
-
-					result = result + '  <div class="clearfix"></div>';
-					result = result + '</div>';
+					if (json.make != null && json.make != '' && json.make != 'undefined') {
+						result = result + '<div class="require_wrap_details_cta"> <b><strong>Make:</strong></b> <span class = "wordWrap-breakword">'+json.make+'</span>';
+						result = result + '  <div class="clearfix"></div>';
+						result = result + '</div>';
+					}
 					
-					result = result + ' <div class="require_wrap_details_cta"> <b><strong>Model:</strong></b> <span class = "wordWrap-breakword">'+model+'</span>';
-					result = result + '  <div class="clearfix"></div>';
-					result = result + ' </div>';
+					if (json.model != null && json.model != '' && json.model != 'undefined') {
+						result = result + ' <div class="require_wrap_details_cta"> <b><strong>Model:</strong></b> <span class = "wordWrap-breakword">'+json.model+'</span>';
+						result = result + '  <div class="clearfix"></div>';
+						result = result + ' </div>';
+					} 
 					
-				
 					
 					if (json.fileName != null && json.fileName != '' && json.fileName != 'undefined') {
 						result = result + ' <div class="require_wrap_details_cta"> <b><strong>Attched File:</strong></b> <span class = "wordWrap-breakword">'+json.fileName+'</span><a download class="glyphicon glyphicon-download-alt mr10" target="_blank" href=\"'+json.fileUrl+'\" download title="Download"></a>';
 		           		result = result+' <a class="fa fa-eye" href="javascript:void(0)" onClick="viewFile(\''+json.fileUrl+'\',\''+json.fileName+'\',\''+json.fileContentType+'\');"title="preview"></a>';		           						          
 						result = result + ' <div class="clearfix"></div>';
 						result = result + '</div>';
-					}else{
-						result = result + ' <div class="require_wrap_details_cta"> <b><strong>Attched File:</strong></b> <span>--</span>';
-						result = result + ' <div class="clearfix"></div>';
-						result = result + '</div>';
-					}
+					} 
+					
 					if(json.monitor != null && json.monitor != '' && json.monitor != 'undefined'){
 					result = result + ' <div class="require_wrap_details_cta"> <b><strong>Monitor:</strong></b> <span class = "wordWrap-breakword">'+json.monitor+'</span>';
 					result = result + ' <div class="clearfix"></div>';
 					result = result + '</div>';
 					}
 					
-					result = result + '<div class="require_wrap_details_cta"> <b><strong>Working Status:</strong></b> <span class = "wordWrap-breakword">'+workingStatus+'</span>';
-					result = result + ' <div class="clearfix"></div>';
-					result = result + ' </div>';
+					if(json.workingStatus != null && json.workingStatus != '' && json.workingStatus != 'undefined'){
+						result = result + '<div class="require_wrap_details_cta"> <b><strong>Working Status:</strong></b> <span class = "wordWrap-breakword">'+json.workingStatus+'</span>';
+						result = result + ' <div class="clearfix"></div>';
+						result = result + ' </div>';
+					}
+					
 					
 					//this block not visible to others category assets
 					if (json.categoryName != null && json.categoryName != '' && json.categoryName != 'undefined' && (json.categoryId == 1 || json.categoryId ==2)) {
-						result = result + '<div class="require_wrap_details_cta"> <b><strong>Memory:</strong></b> <span class = "wordWrap-breakword">'+memory+'</span>';
-						result = result + ' <div class="clearfix"></div>';
-						result = result + '</div>';
-						
-						result = result + '<div class="require_wrap_details_cta"> <b><strong>CPU:</strong></b> <span class = "wordWrap-breakword">'+cpu+'</span>';
-						result = result + ' <div class="clearfix"></div>';
-						result = result + ' </div>';
-						
-						result = result + ' <div class="require_wrap_details_cta"> <b><strong>Hard Disk:</strong></b> <span class = "wordWrap-breakword">'+hardDisk+'</span>';
-						result = result + ' <div class="clearfix"></div>';
-						result = result + ' </div>';
-						
-						result = result + ' <div class="require_wrap_details_cta"> <b><strong>MAC Address:</strong></b> <span class = "wordWrap-breakword">'+macAddress+'</span>';
-						result = result + ' <div class="clearfix"></div>';
-						result = result + ' </div>';
+						if(json.memory != null && json.memory != '' && json.memory != 'undefined'){
+							result = result + '<div class="require_wrap_details_cta"> <b><strong>Memory:</strong></b> <span class = "wordWrap-breakword">'+json.memory+'</span>';
+							result = result + ' <div class="clearfix"></div>';
+							result = result + '</div>';
+						}
 						
 						
-						//Adding By Laxman Start
-						if (json.operatingSystem != null && json.operatingSystem != '' && json.operatingSystem != 'undefined') {
-							result = result + ' <div class="require_wrap_details_cta"> <b><strong>Operating System:</strong></b> <span class = "wordWrap-breakword">'+json.operatingSystem+'</span>';
+						if(json.cpu != null && json.cpu != '' && json.cpu != 'undefined'){
+							result = result + '<div class="require_wrap_details_cta"> <b><strong>CPU:</strong></b> <span class = "wordWrap-breakword">'+json.cpu+'</span>';
 							result = result + ' <div class="clearfix"></div>';
 							result = result + ' </div>';
 						}
-						
-						
-						if (json.osKey != null && json.osKey != '' && json.osKey != 'undefined') {
-							result = result + ' <div class="require_wrap_details_cta"> <b><strong>OS Key:</strong></b> <span class = "wordWrap-breakword">'+json.osKey+'</span>';
+						if(json.hardDisk != null && json.hardDisk != '' && json.hardDisk != 'undefined'){
+							result = result + ' <div class="require_wrap_details_cta"> <b><strong>Hard Disk:</strong></b> <span class = "wordWrap-breakword">'+json.hardDisk+'</span>';
 							result = result + ' <div class="clearfix"></div>';
 							result = result + ' </div>';
 						}
-						
-						if (json.antiVirus != null && json.antiVirus != '' && json.antiVirus != 'undefined') {
-							result = result + ' <div class="require_wrap_details_cta"> <b><strong>Anti-Virus:</strong></b> <span class = "wordWrap-breakword">'+json.antiVirus+'</span>';
+						if(json.macAddress != null && json.macAddress != '' && json.macAddress != 'undefined'){
+							result = result + ' <div class="require_wrap_details_cta"> <b><strong>MAC Address:</strong></b> <span class = "wordWrap-breakword">'+json.macAddress+'</span>';
 							result = result + ' <div class="clearfix"></div>';
 							result = result + ' </div>';
 						}
-						
-						'<sec:authorize access="hasAnyRole(\'ROLE_VIEW_ASSET_ADDITIONAL_DETAILS\')">';
-						if (json.issueDate != null && json.issueDate != '' && json.issueDate != 'undefined') {
-							result = result + ' <div class="require_wrap_details_cta"> <b><strong>Manufactured Date:</strong></b> <span>'+json.issueDate+'</span>';
-							result = result + '  <div class="clearfix"></div>';
-							result = result + ' </div>';
-						}
-						
-						if (json.purchaseDate != null && json.purchaseDate != '' && json.purchaseDate != 'undefined') {
-							result = result + ' <div class="require_wrap_details_cta"> <b><strong>Purchase Date:</strong></b> <span>'+json.purchaseDate+'</span>';
-							result = result + '  <div class="clearfix"></div>';
-							result = result + ' </div>';
-						}
-						
-						if (json.cost != null && json.cost != '' && json.cost != 'undefined') {
-							result = result + ' <div class="require_wrap_details_cta"> <b><strong>Cost:</strong></b> <span>'+json.cost+'</span>';
-							result = result + '  <div class="clearfix"></div>';
-							result = result + ' </div>';
-						}
-						
-						if (json.depreciationAmount != null && json.depreciationAmount != '' && json.depreciationAmount != 'undefined') {
-							result = result + ' <div class="require_wrap_details_cta"> <b><strong>Depreciation Assessment Date:</strong></b> <span>'+issueDate+'</span>';
-							result = result + '  <div class="clearfix"></div>';
-							result = result + ' </div>';
-						}
-						if (json.depreciationAmount != null && json.depreciationAmount != '' && json.depreciationAmount != 'undefined') {
-							result = result + ' <div class="require_wrap_details_cta"> <b><strong>Depreciation Amount:</strong></b> <span>'+json.depreciationAmount+'</span>';
-							result = result + '  <div class="clearfix"></div>';
-							result = result + ' </div>';
-						}
-						
-						
-						if (json.vendorDetails != null && json.vendorDetails != '' && json.vendorDetails != 'undefined') {
-							result = result + ' <div class="require_wrap_details_cta"> <b><strong>Vendor Details:</strong></b> <span>'+json.vendorDetails+'</span>';
-							result = result + '  <div class="clearfix"></div>';
-							result = result + ' </div>';
-						}
-						'</sec:authorize>';
-						
-						//End
 						
 						if (json.categoryName != null && json.categoryName != '' && json.categoryName != 'undefined' && json.categoryId == 2) {
 							result = result + ' <div class="require_wrap_details_cta"> <b><strong>Monitor:</strong></b> <span class = "wordWrap-breakword">'+monitor+'</span>';
@@ -409,9 +307,72 @@ function assetDetails(assetId) {
 						}
 						
 					}
-
-						result = result + ' <div class="require_wrap_details_cta width100percnt description80"> <b><strong>Description:</strong></b> <span class = "wordWrap-breakword">'+description+'</span>';
+					
+					//Adding By Laxman Start
+					if (json.operatingSystem != null && json.operatingSystem != '' && json.operatingSystem != 'undefined') {
+						result = result + ' <div class="require_wrap_details_cta"> <b><strong>Operating System:</strong></b> <span class = "wordWrap-breakword">'+json.operatingSystem+'</span>';
 						result = result + ' <div class="clearfix"></div>';
+						result = result + ' </div>';
+					}
+					
+					
+					if (json.osKey != null && json.osKey != '' && json.osKey != 'undefined') {
+						result = result + ' <div class="require_wrap_details_cta"> <b><strong>OS Key:</strong></b> <span class = "wordWrap-breakword">'+json.osKey+'</span>';
+						result = result + ' <div class="clearfix"></div>';
+						result = result + ' </div>';
+					}
+					
+					if (json.antiVirus != null && json.antiVirus != '' && json.antiVirus != 'undefined') {
+						result = result + ' <div class="require_wrap_details_cta"> <b><strong>Anti-Virus:</strong></b> <span class = "wordWrap-breakword">'+json.antiVirus+'</span>';
+						result = result + ' <div class="clearfix"></div>';
+						result = result + ' </div>';
+					}
+					
+					'<sec:authorize access="hasAnyRole(\'ROLE_VIEW_ASSET_ADDITIONAL_DETAILS\')">';
+					if (json.issueDate != null && json.issueDate != '' && json.issueDate != 'undefined') {
+						result = result + ' <div class="require_wrap_details_cta"> <b><strong>Manufactured Date:</strong></b> <span>'+json.issueDate+'</span>';
+						result = result + '  <div class="clearfix"></div>';
+						result = result + ' </div>';
+					}
+					
+					if (json.purchaseDate != null && json.purchaseDate != '' && json.purchaseDate != 'undefined') {
+						result = result + ' <div class="require_wrap_details_cta"> <b><strong>Purchase Date:</strong></b> <span>'+json.purchaseDate+'</span>';
+						result = result + '  <div class="clearfix"></div>';
+						result = result + ' </div>';
+					}
+					
+					if (json.cost != null && json.cost != '' && json.cost != 'undefined') {
+						result = result + ' <div class="require_wrap_details_cta"> <b><strong>Cost:</strong></b> <span>'+json.cost+'</span>';
+						result = result + '  <div class="clearfix"></div>';
+						result = result + ' </div>';
+					}
+					
+					if (json.depreciationDate != null && json.depreciationDate != '' && json.depreciationDate != 'undefined') {
+						result = result + ' <div class="require_wrap_details_cta"> <b><strong>Depreciation Assessment Date:</strong></b> <span>'+json.depreciationDate+'</span>';
+						result = result + '  <div class="clearfix"></div>';
+						result = result + ' </div>';
+					}
+					if (json.depreciationAmount != null && json.depreciationAmount != '' && json.depreciationAmount != 'undefined') {
+						result = result + ' <div class="require_wrap_details_cta"> <b><strong>Depreciation Amount:</strong></b> <span>'+json.depreciationAmount+'</span>';
+						result = result + '  <div class="clearfix"></div>';
+						result = result + ' </div>';
+					}
+					
+					
+					if (json.vendorDetails != null && json.vendorDetails != '' && json.vendorDetails != 'undefined') {
+						result = result + ' <div class="require_wrap_details_cta"> <b><strong>Vendor Details:</strong></b> <span>'+json.vendorDetails+'</span>';
+						result = result + '  <div class="clearfix"></div>';
+						result = result + ' </div>';
+					}
+					'</sec:authorize>';
+					
+					//End
+						if (json.description != null && json.description != '' && json.description != 'undefined') {
+							result = result + ' <div class="require_wrap_details_cta width100percnt description80"> <b><strong>Description:</strong></b> <span class = "wordWrap-breakword">'+json.description+'</span>';
+							result = result + ' <div class="clearfix"></div>';
+						}
+						
+						
 						if(json.assetAssignList.length > 0){
 						result = result + ' <div class="row mt">';
 						result = result + ' <div class="col-md-9 styleTables">';
@@ -455,6 +416,7 @@ function assetDetails(assetId) {
 					result = result + '  </div>';
 					$("#tab-1").empty();
 					$("#tab-2").empty();
+					$("#tab-3").empty();
 					$("#tab-1").append(result);
 					$("#tab-1").show();
 			}

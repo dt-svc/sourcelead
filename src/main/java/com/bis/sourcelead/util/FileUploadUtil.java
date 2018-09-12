@@ -788,6 +788,87 @@ public class FileUploadUtil {
 		}
 	}
 	
+	public static void processConfiguredEmailShedulerForResumesParsing(List<FileInfo> fileInfoList, String staticPath, 
+			SourceleadResumeParser sourceleadResumeParser,
+			CandidateService candidateService, CandidateResumesService candidateResumeService,
+			String country, OrgLocations loginOrgLocation, User user) {
+		List<ResumeParserJsonUtil> successList = new ArrayList<>();
+		List<ResumeParserJsonUtil> failedList = new ArrayList<>();
+		List<ResumeParserJsonUtil> existedList = new ArrayList<>();
+		//System.out.println("inside processConfiguredEmailShedulerForResumesParsing -->"+fileInfoList.size());
+		for (FileInfo fileInfo : fileInfoList) {
+				System.out.println("File name is -->"+fileInfo.getFileName());
+			File file = new File(staticPath.substring(0, staticPath.lastIndexOf("/")), fileInfo.getFileURL().replace(
+					"resumes",
+					StringUtils.isNotBlank(fileInfo.getTempFolderName()) ? fileInfo.getTempFolderName() : "temp"));
+			ResumeParserJsonUtil resume = null;
+			try {
+				resume = sourceleadResumeParser.getCandidateDetailsFromResume1(file, country);
+				resume.setFileInfo(fileInfo);
+				if (resume.getEmail() == null || resume.getEmail().isEmpty() || resume.getEmail().equals("null")) {
+					throw new Exception("Email ID missing");
+				}
+				Candidate c = candidateService.findByCandidateEmail(resume.getEmail(), loginOrgLocation.getId());
+				boolean flag = false;
+				if (c != null && c.getId() > 0) {
+					CandidateResumes cr = candidateResumeService.getCandidateResumeByCandidateId(c.getId());
+					if (cr == null || cr.getFileURL() == null || cr.getFileURL().isEmpty())
+						flag = true;
+				}
+				if (c != null && c.getId() > 0 && !flag) {
+					fileInfo.setFileURL(fileInfo.getFileURL().replace("resumes", "resumes-existed-"));
+					FileUploadUtil.moveFile(staticPath, fileInfo, "resumes-existed-");
+					existedList.add(resume);
+					continue;
+				} else if (flag) {
+					CandidateResumeDTO candidateResumeDTO = new CandidateResumeDTO();
+					List<FileInfo> fileInfoList1 = new ArrayList<>();
+					fileInfoList1.add(fileInfo);
+					candidateResumeDTO.setStaticPath(staticPath);
+					candidateResumeDTO.setFileInfo(fileInfoList1);
+					candidateResumeService.storeCandidateResume(candidateResumeDTO, user, c, null, loginOrgLocation);
+					successList.add(resume);
+				} else {
+					CandidateDTO candidateDto = new CandidateDTO();
+					candidateDto.setEmail(resume.getEmail());
+					candidateDto.setCandidateSkills(resume.getSkills());
+					Iterator<String> it = resume.getPhoneNumbers().iterator();
+					while (it.hasNext()) {
+						if (candidateDto.getMobilePhone() == null)
+							candidateDto.setMobilePhone(it.next());
+						else
+							candidateDto.setAlternateMobilePhone(it.next());
+					}
+					candidateDto.setFileName(fileInfo.getFileName());
+					candidateDto.setFileContentType(fileInfo.getContentType());
+					candidateDto.setFileUrl(fileInfo.getFileURL());
+					List<FileInfo> fileInfoList1 = new ArrayList<>();
+					fileInfoList1.add(fileInfo);
+					candidateDto.setFileInfo(fileInfoList1);
+					candidateDto.setStaticPath(staticPath);
+					String name1 = resume.getName();
+					candidateDto.setFirstName(name1.contains(".") ? name1.substring(0, name1.lastIndexOf(".")) : name1);
+					candidateDto.setLastName(name1.contains(".") ? name1.substring(name1.lastIndexOf(".") + 1) : "");
+					candidateDto.setCandidateCreationType(Constants.IMPORT_CANDIDATE);
+					candidateService.storeCandidate(candidateDto, loginOrgLocation, user);
+					successList.add(resume);
+				}
+			} catch (Exception ex) {
+				ex.printStackTrace();
+				fileInfo.setFileURL(fileInfo.getFileURL().replace("resumes", "resumes-failed-"));
+				try {
+					moveFile(staticPath, fileInfo, "resumes-failed-");
+				} catch (IOException e) {
+					e.printStackTrace();
+				}
+				failedList.add(resume);
+			}
+		}
+		System.out.println("Succesfully parsed resumes count ==> "+successList.size());
+		System.out.println("Existed resumes count ==> "+existedList.size());
+		System.out.println("Failed resumes count ==> "+failedList.size());
+	}
+	
 
 	public static void addToResponse(int type, HttpSession session, String uploadid, ResumeParserJsonUtil resume,
 			FileInfo fileInfo, int count, int i, String sourceleadUrl, CandidateService candidateService) {

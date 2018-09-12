@@ -655,5 +655,6 @@ function cancelPopUp(){
 	$(".submission_side_wrap").removeClass("submission_side_wrap_active");
 	$(".side_mask").fadeOut(200);
 	$("body").css('overflow-y', 'auto');
+	$(".comMask").fadeOut(200);
 }
 </script>

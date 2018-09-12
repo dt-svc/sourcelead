@@ -9,6 +9,7 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -38,6 +39,7 @@ import com.bis.sourcelead.payroll.service.AssociateContributionService;
 import com.bis.sourcelead.payroll.service.AssociateDeductionService;
 import com.bis.sourcelead.payroll.service.PaysheetFrequencyService;
 import com.bis.sourcelead.util.CommonUtil;
+import com.ibm.icu.text.DateFormat;
 
 @Component
 public class PayrollUtil {
@@ -467,8 +469,10 @@ public class PayrollUtil {
 		return ytd;
 	}
 
-		/**
+	/**
+	 * 
 	 * Calculating PayItem
+	 * 
 	 * @param payroll
 	 * @return List<AssociatePayItemDTO>
 	 */
@@ -481,6 +485,14 @@ public class PayrollUtil {
 				payItemDTO.setId(his.getId().toString());
 				payItemDTO.setPayItemName(his.getAssociatePayItem().getPayItemName());
 				payItemDTO.setPayItemAmt(his.getAmount().doubleValue());
+				if(his.getIsBlocked() != null) {
+					payItemDTO.setIsBlocked(his.getIsBlocked());	
+				}else {
+					payItemDTO.setIsBlocked("");
+				}
+				if(StringUtils.isNotBlank(his.getIsBlocked())) {
+					payItemDTO.setIsBlocked(his.getIsBlocked());	
+				}
 				list.add(payItemDTO);
 			}
 		}
@@ -619,5 +631,144 @@ public class PayrollUtil {
 		}
 		return ytd;
 	}
+	
+	
+	/**
+	 * Get start date and end date of months
+	 * @param month
+	 * @param orgLocation
+	 * @return
+	 */
+	public List<String> getNumberOfMonths(int month, OrgLocations orgLocation)
+	{
+		List<String> dateList = new ArrayList<>();
+		for (int i = 0; i <month; i++) {
+			java.util.Date[] datesss = commonUtil.getMonthStartDateEndDateByMonth(i);
+			StringBuilder sb = new StringBuilder();
+			dateList.add(sb.append(commonUtil.dateStrFromOrgDateFormatter(orgLocation.getDateFormat(),datesss[0])).append(",").append(commonUtil.dateStrFromOrgDateFormatter(orgLocation.getDateFormat(),datesss[1])).toString());
+		}
+		return dateList;
+	}
+		
+		
+		/**
+		 * Get all week start date and end date of year
+		 * @param year
+		 * @param month1
+		 * @param orgLocation 
+		 * @return List<List<String>> 
+		 */
+	public List<String> getNumberOfWeeks(int year, int month, OrgLocations orgLocation)
+	{
+		List<String> payFrequency = new ArrayList<>();
+		SimpleDateFormat format = new SimpleDateFormat("dd-MM-yyyy");
+		List<List<String>> weekdates = new ArrayList<List<String>>();
+		List<String> dates;
+		Calendar c = Calendar.getInstance();
+		c.set(Calendar.YEAR, year);
+		for (int i = 0; i <=month; i++) {
+			c.set(Calendar.MONTH, i);
+			c.set(Calendar.DAY_OF_MONTH, 1);
+			while (c.get(Calendar.MONTH) == i) {
+				dates = new ArrayList<String>();
+				while (c.get(Calendar.DAY_OF_WEEK) != Calendar.MONDAY) {
+					c.add(Calendar.DAY_OF_MONTH, -1);
+				}
+				dates.add(commonUtil.dateStrFromOrgDateFormatter(orgLocation.getDateFormat(), c.getTime()));
+				c.add(Calendar.DAY_OF_MONTH, 6);
+				dates.add(commonUtil.dateStrFromOrgDateFormatter(orgLocation.getDateFormat(), c.getTime()));
+				weekdates.add(dates);
+				c.add(Calendar.DAY_OF_MONTH, 7);
+			}
+		}
+		for (List<String> innerList : weekdates) {
+			StringBuilder sb = new StringBuilder();
+			sb.append(innerList.get(0)).append(",").append(innerList.get(1));
+			payFrequency.add(sb.toString());
+		}
+		return payFrequency;
+	}
+
+	/**
+	 * @ get biweekly dates of current year
+	 * @param orgLocation
+	 */
+		public List<String> getNumberOfBiWeeks(OrgLocations orgLocation) {
+			
+
+			Calendar cal = Calendar.getInstance();
+			cal.get(Calendar.YEAR);
+			cal.set(Calendar.DAY_OF_YEAR, 1);    
+			Date start = cal.getTime();
+			
+			List<List<String>> dates = new ArrayList<List<String>>();
+			List<String> dateFreq = null;
+			for(int i=1; i<=12;i++) {
+				StringBuilder sb = new StringBuilder();
+				StringBuilder sb1 = new StringBuilder();
+				dateFreq = new ArrayList<>();
+				String startDate = commonUtil.dateStrFromOrgDateFormatter(orgLocation.getDateFormat(), start);
+				
+				cal.add(Calendar.DATE, 14);
+				String endDate = commonUtil.dateStrFromOrgDateFormatter(orgLocation.getDateFormat(), cal.getTime());
+				
+				sb.append(startDate).append(",").append(endDate);
+				
+				cal.add(Calendar.DAY_OF_YEAR, 1);
+				String secondStartDate = commonUtil.dateStrFromOrgDateFormatter(orgLocation.getDateFormat(), cal.getTime());
+				
+				cal.add(Calendar.DATE, 14);
+				String secondEndDate = commonUtil.dateStrFromOrgDateFormatter(orgLocation.getDateFormat(), cal.getTime());
+				
+				sb1.append(secondStartDate).append(",").append(secondEndDate);
+				
+				cal.add(Calendar.DAY_OF_YEAR, 1);
+				start = cal.getTime();
+				
+				dateFreq.add(sb.toString());
+				dateFreq.add(sb1.toString());
+				dates.add(dateFreq);
+			}
+			List<String> finalDates = new ArrayList<>();
+			for (List<String> date : dates) {
+				finalDates.add(date.get(0));
+				finalDates.add(date.get(1));
+			}
+			List<String> frequencyDates = new ArrayList<>();
+			for (String frequency : finalDates) {
+				frequencyDates.add(frequency);
+			}
+			return frequencyDates;
+		}
+
+		/**
+		 * get annual start date and end date
+		 * @param orgLocation
+		 * @return
+		 */
+		public List<String> getAnnuallyDates(OrgLocations orgLocation) {
+			
+			List<String> frequency = new ArrayList<>();
+			StringBuilder sb = new StringBuilder();
+			Calendar cal = Calendar.getInstance();
+			cal.get(Calendar.YEAR);
+			cal.set(Calendar.DAY_OF_YEAR, 1);    
+			Date start = cal.getTime();
+			
+			cal.set(Calendar.MONTH, 11); 
+			cal.set(Calendar.DAY_OF_MONTH, 31);
+			Date end = cal.getTime();
+			
+			sb.append(commonUtil.dateStrFromOrgDateFormatter(orgLocation.getDateFormat(), start))
+			.append(",")
+			.append(commonUtil.dateStrFromOrgDateFormatter(orgLocation.getDateFormat(), end));
+			frequency.add(sb.toString());
+			
+			return frequency;
+			
+		}
+	
+
+	
 
 }

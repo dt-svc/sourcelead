@@ -302,6 +302,7 @@
 </script>
 <!--   Popup Code  --> 
 <script>
+
 // Error pop addSen
     $(document).ready(function () {
         $("table").colResizable(); // for resizing columns in tables.
@@ -322,7 +323,7 @@
         });
 //        $("#taskName").unbind("blur");
         $("#taskName").on("keyup", function () {
-            checkTaskNames($(this).val().trim(),immiTaskId);
+            immigration.checkTaskNames($(this).val().trim(),immiTaskId);
         });
     });
 </script>

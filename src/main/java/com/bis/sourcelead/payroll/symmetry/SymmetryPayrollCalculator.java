@@ -84,7 +84,6 @@ public class SymmetryPayrollCalculator {
 				if(associateTaxView != null &&  StringUtils.isNotBlank(associateTaxView.getFederalTaxAllowances())){
 					numberOfAllowances = Integer.parseInt(associateTaxView.getFederalTaxAllowances());
 				}
-//				logger.info("----------------------------------++++++++++++++++++++++++++"+associateTaxView.getFederalExempt());
 				boolean federalExempt = false;
 				boolean medicareExempt = false;
 				boolean isResident = PayrollUtil.getEmployeeResident(candidate);

@@ -75,18 +75,36 @@
 			<div id="configuredMailDivTwo"></div> 
 			<div class="clearfix">
                   <div class="reportHead clearfix">
+                  <h5 class='pull-left ml mt'>Default Email Configuraiton</h5>
                      <ul class="pull-right list-unstyled list-inline">
                      	<li><a href="javascript:void(0)" class="action newAdBtn mr5" onClick="addEmailPopUp();">+ Email</a></li>
                      </ul>
                   </div> 			
                  <div id="emailList"></div>  
             </div>
+            
+            <!--  Email parsing -->
+            
+            <div class="clearfix mt">
+                  <div class="reportHead clearfix">
+                  <h5 class='pull-left ml mt'>Parsing Email Configuraiton</h5>
+                     <ul class="pull-right list-unstyled list-inline">
+                     	<li><a href="javascript:void(0)" class="action newAdBtn mr5" onClick="addEmailparsingPopUp();">+ Add</a></li>
+                     </ul>
+                  </div> 			
+                 <div id="emailparsingList"></div>  
+            </div>
+            
+            
+            <!--  Email parsing -->
+            
 			   
             </div> 
                     
 </div>
 
 <div id="deleteFromMailDiv" class="datatable_filter"> </div>
+<div id="deleteParserEmailDiv" class="datatable_filter"> </div>
 
 <div class="success_pop" id="selector2" style="display: none;">
  			<i class="fa fa-check-circle"></i><span id="msgConfigDiv"></span>
@@ -408,12 +426,29 @@ function changeDefaultemailConfig(ele, id) {
  <div id="emailfromMail" class="popupWrap popupWrapFixed">
    <jsp:include page="addMailPopUp.jsp"></jsp:include>
 </div>
+
+<div id="emailparsingPopUp" class="popupWrap popupWrapFixed">
+	 <jsp:include page="addParserMailPopUp.jsp"></jsp:include>
+</div>
+
+
  <script>
  function addEmailPopUp(){
 	 $(".mask").show();
 	 $("#emailfromMail").show();
 	 addEmailPop();
  }
+ 
+ function addEmailparsingPopUp(){
+	 $(".mask").show();
+	 $("#emailparsingPopUp").show();
+ }
+ 
+ function closeEmailNotifications() {
+	 $(".mask").hide();
+	 $("#emailparsingPopUp").hide();
+ }
+ 
  </script>
  <script type="text/javascript">
 function addEmailPop(){
