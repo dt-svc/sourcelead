@@ -61,9 +61,11 @@ import com.bis.sourcelead.dao.InvoiceDao;
 import com.bis.sourcelead.dao.InvoiceLineItemDao;
 import com.bis.sourcelead.dao.InvoiceTaxDao;
 import com.bis.sourcelead.dao.UserDao;
+
 import com.bis.sourcelead.dto.CreditDebitNoteDTO;
 import com.bis.sourcelead.dto.CreditDebitNoteLineItemsDTO;
 import com.bis.sourcelead.dto.CreditDebitNoteListDTO;
+
 import com.bis.sourcelead.dto.FileInfo;
 import com.bis.sourcelead.dto.InvoiceDTO;
 import com.bis.sourcelead.dto.InvoiceExpensesDTO;
@@ -221,7 +223,7 @@ public class InvoiceServiceImpl implements InvoiceService {
 
 	@Autowired
 	private ExpensesInvoicePdfHelper expensesInvoicePdfHelper;
-
+	
 	@Override
 	public ResponseList<Invoice> invoiceListByOrgLocationId(OrgLocations orgLocations, Date startDateUTC,
 			Date endDateUTC, InvoiceDTO invoiceDTO) throws Exception {
@@ -270,8 +272,9 @@ public class InvoiceServiceImpl implements InvoiceService {
       		}
       		
       		if(StringUtils.isNotBlank(invoiceDTO.getVendorContact())){
-      			User contactUser = userService.getUserById(Long.parseLong(invoiceDTO.getVendorContact()));
-      			invoice.setContactUser(contactUser);
+//      			User contactUser = userService.getUserById(Long.parseLong(invoiceDTO.getVendorContact()));
+      			//invoice.setContactUser(contactUser);
+      			invoice.setContactUsers(invoiceDTO.getVendorContact());
       		}
       		invoice.setInvoiceType(Constants.Payables);
       		 //generatedId = getInvoiceOrBillGeneratedId(orgLocation, vendorOrgLocation, Constants.Receivable);
@@ -289,8 +292,9 @@ public class InvoiceServiceImpl implements InvoiceService {
      		}
      		
      		if(StringUtils.isNotBlank(invoiceDTO.getClientContact())){
-     			User userContactName = userService.getUserById(Long.parseLong(invoiceDTO.getClientContact()));
-     			invoice.setContactUser(userContactName);
+     			//User userContactName = userService.getUserById(Long.parseLong(invoiceDTO.getClientContact()));
+     			//invoice.setContactUser(userContactName);
+     			invoice.setContactUsers(invoiceDTO.getClientContact());
      		}
      		invoice.setInvoiceType(Constants.Receivable);
      		 //generatedId = getInvoiceOrBillGeneratedId(orgLocation, vendorOrgLocation, Constants.Receivable);
@@ -308,8 +312,8 @@ public class InvoiceServiceImpl implements InvoiceService {
 	      	invoice.setExchangeRate(String.valueOf(exchangeAmoiunt));
 	        }	
 	    }
-		
-        invoice.setOwnerUserId(user);
+		invoice.setOwnerUsers(user.getId().toString());
+        //invoice.setOwnerUserId(user);
 		invoice.setOrgLocation(orgLocation);
 		if (StringUtils.isNotBlank(invoiceDTO.getInvoiceId())) {
 			invoice.setInvoiceId(invoiceDTO.getInvoiceId());
@@ -532,9 +536,11 @@ public class InvoiceServiceImpl implements InvoiceService {
 		parentInvoice.setInvoiceId(invoice.getInvoiceId());
 		parentInvoice.setParentInvoiceId(invoice);
 		parentInvoice.setOrgRelationID(invoice.getOrgRelationID());
-		parentInvoice.setContactUser(invoice.getOwnerUserId());
+		parentInvoice.setContactUsers(invoice.getOwnerUsers());
+		//parentInvoice.setContactUser(invoice.getOwnerUserId());
 		parentInvoice.setOrgLocation(invoice.getResponderLocationId());
-		parentInvoice.setOwnerUserId(invoice.getContactUser());
+		parentInvoice.setOwnerUsers(invoice.getContactUsers());
+		//parentInvoice.setOwnerUserId(invoice.getContactUser());
 		parentInvoice.setResponderLocationId(invoice.getOrgLocation());
 		parentInvoice.setInvoiceDate(invoice.getInvoiceDate());
 		parentInvoice.setBillingAddress(invoice.getBillingAddress());
@@ -550,6 +556,8 @@ public class InvoiceServiceImpl implements InvoiceService {
 		parentInvoice.setInvoiceUUID(SourceLeadRandomCodeHelper.generateRandomUUID());
 		parentInvoice.setPaymentStatus(invoice.getPaymentStatus());
 		parentInvoice.setDueDate(invoice.getDueDate());
+		parentInvoice.setFileName(invoice.getFileName());
+		parentInvoice.setFileUrl(invoice.getFileUrl());
 		if (invoice.getProjectID() != null) {
 			parentInvoice.setProjectID(invoice.getProjectID());
 		}
@@ -848,11 +856,18 @@ public class InvoiceServiceImpl implements InvoiceService {
 		Map<String, String> returnMap = null;
 		EmailScenario emailScenario = null;
 		// EmailScenario notificationScenario = null;
+		EmailMessage emailMessage = null;
+		StringBuilder sb1 = new StringBuilder();
+		if(null != invoice.getContactUsers()){
+			String[] contactUsers = invoice.getContactUsers().split(",");
+			if(contactUsers.length != 0){
+				for(String contactUserId : contactUsers){
+					User contactUser = userService.getUserById(Long.parseLong(contactUserId.trim()));
 		String UUID = SourceLeadRandomCodeHelper.generateUUID();
-		EmailMessage emailMessage = new EmailMessage();
+		emailMessage=new EmailMessage();
 		emailMessage.setFirstName(user.getFirstName());
 		emailMessage.setLastName(user.getLastName());
-		emailMessage.setToEmail(invoice.getContactUser().getEmail());
+		emailMessage.setToEmail(contactUser.getEmail());
 		emailMessage.setFromEmail(user.getEmail());
 		emailMessage.setCreatedBy(user.getUserCode());
 		StringBuilder msgBuild = new StringBuilder();
@@ -870,19 +885,19 @@ public class InvoiceServiceImpl implements InvoiceService {
 		globalVarsMap.put("LoginUser", user.getFirstName());
 		if (invoice.getInvoiceType().equalsIgnoreCase(Constants.RECEIVABLE)) {
 			StringBuilder vendorName = new StringBuilder();
-			if (invoice.getContactUser().getLastName() != null) {
-				globalVarsMap.put("vendorName", vendorName.append(invoice.getContactUser().getFirstName()).append(" ")
-						.append(invoice.getContactUser().getLastName()).toString());
+			if (contactUser.getLastName() != null) {
+				globalVarsMap.put("vendorName", vendorName.append(contactUser.getFirstName()).append(" ")
+						.append(contactUser.getLastName()).toString());
 			} else {
-				globalVarsMap.put("vendorName", invoice.getContactUser().getFirstName());
+				globalVarsMap.put("vendorName", contactUser.getFirstName());
 			}
 		} else {
 			StringBuilder clientName = new StringBuilder();
-			if (invoice.getContactUser().getLastName() != null) {
-				globalVarsMap.put("clientName", clientName.append(invoice.getContactUser().getFirstName()).append(" ")
-						.append(invoice.getContactUser().getLastName()).toString());
+			if (contactUser.getLastName() != null) {
+				globalVarsMap.put("clientName", clientName.append(contactUser.getFirstName()).append(" ")
+						.append(contactUser.getLastName()).toString());
 			} else {
-				globalVarsMap.put("clientName", invoice.getContactUser().getFirstName());
+				globalVarsMap.put("clientName", contactUser.getFirstName());
 			}
 		}
 		globalVarsMap.put("totalAmouprojectMembersListnt", invoice.getTotal());
@@ -944,17 +959,17 @@ public class InvoiceServiceImpl implements InvoiceService {
 		EmailScenario notificationScenario = null;
 		if (invoiceType.equalsIgnoreCase("payable")) {
 			returnMap = commonUtil.sendTemplateEmail(emailMessage, globalVarsMap, orglocations.getOrg(), orglocations,
-					Constants.INVOICE_ACCEPT_MAIL_VENDOR_EMAIL, attachmentList);
+					Constants.INVOICE_CLIENT_PAYABLE_MAIL, attachmentList);
 			notificationScenario = emailScenarioService.getEmailScenarioByUniqueName(
 					Constants.INVOICE_CLIENT_PAYABLE_MAIL, Constants.ENTITY_TYPE_NOTIFICATION);
 		} else {
 			returnMap = commonUtil.sendTemplateEmail(emailMessage, globalVarsMap, orglocations.getOrg(), orglocations,
-					Constants.INVOICE_ACCEPT_MAIL_CLIENT_EMAIL, attachmentList);
+					Constants.INVOICE_CLIENT_RECEIVABLE_MAIL, attachmentList);
 			notificationScenario = emailScenarioService.getEmailScenarioByUniqueName(
 					Constants.INVOICE_CLIENT_RECEIVABLE_MAIL, Constants.ENTITY_TYPE_NOTIFICATION);
 		}
-		returnMap.put("toEmail", emailMessage.getToEmail());
-		returnMap.put("fromEmail", emailMessage.getFromEmail());
+		
+		sb1.append(emailMessage.getToEmail()).append(",").toString();
 		String notificationbody = emailScenerioUtil.buildTemplateBody(notificationScenario.getBody(), globalVarsMap,
 				notificationScenario);
 		notificationScenario.setBody(notificationbody);
@@ -972,9 +987,13 @@ public class InvoiceServiceImpl implements InvoiceService {
 					.toString();
 
 		}
-		emailScenerioUtil.sendNotification(actionLink, user, invoice.getContactUser(), invoice.getResponderLocationId(),
+		emailScenerioUtil.sendNotification(actionLink, user, contactUser, invoice.getResponderLocationId(),
 				notificationScenario, new HashMap<String, String>());
-
+				}
+				returnMap.put("toEmail", sb1.toString());
+				returnMap.put("fromEmail", emailMessage.getFromEmail());
+			}
+		}
 		/*
 		 * if(invoiceType.equalsIgnoreCase("payable")){ emailScenario =
 		 * emailScenarioService.getEmailScenarioByUniqueName(Constants.
@@ -2509,117 +2528,124 @@ public class InvoiceServiceImpl implements InvoiceService {
 		EmailScenario emailScenario = null;
 		Map<String, String> returnMap = null;
 		// EmailScenario notificationScenario = null;
-		String UUID = SourceLeadRandomCodeHelper.generateUUID();
-		EmailMessage emailMessage = new EmailMessage();
-		emailMessage.setFirstName(user.getFirstName());
-		emailMessage.setLastName(user.getLastName());
-		emailMessage.setToEmail(invoice.getContactUser().getEmail());
-		emailMessage.setFromEmail(user.getEmail());
-		emailMessage.setCreatedBy(user.getUserCode());
-		StringBuilder msgBuild = new StringBuilder();
-		emailMessage
-				.setFromName(msgBuild.append(user.getFirstName()).append(" ").append(user.getLastName()).toString());
-		emailMessage.setEmailType(Constants.CUSTOM_USER_EMAIL);
-
-		// SimpleDateFormat simpleDateFormat =
-		// orgLocation.getLocFullFormDateFormatter();
-		String date = (commonUtil.dateStrFromOrgDateFormatter(orgLocation.getDateFormat(), invoice.getDueDate()));
-
-		// setting the class filed values
-		Map<String, String> globalVarsMap = new HashMap<String, String>();
-		globalVarsMap.put("invoiceID", invoice.getInvoiceId());
-		globalVarsMap.put("LoginUser", user.getFirstName());
-		if (invoice.getInvoiceType().equalsIgnoreCase(Constants.RECEIVABLE)) {
-			globalVarsMap.put("vendorName", invoice.getContactUser().getFirstName());
-		} else {
-			globalVarsMap.put("clientName", invoice.getContactUser().getFirstName());
-		}
-		globalVarsMap.put("grandTotal", invoice.getTotal());
-		globalVarsMap.put("dueDate", date);
-		globalVarsMap.put("orgName", orgLocation.getOrgLocationName());
-		// globalVarsMap.put("address",invoice.getBillingAddress());
-
-		InternetAddress[] iAdressArray = InternetAddress.parse(emailMessage.getToEmail());
-
-		// send mail logic
-		List<EmailAttachment> attachmentList1 = new ArrayList<>();
-
-		// send notification logic
-		ArrayList<EmailAttachment> attachmentList = new ArrayList<EmailAttachment>();
-		ArrayList<EmailAttachment> documentList = new ArrayList<EmailAttachment>();
-		EmailAttachment emailAttachment = new EmailAttachment();
-		emailAttachment.setUUID(UUID);
-		EmailAttachment attachmentZip = zipFiles(docusList);
-		if (null != invoice.getInvoiceDocumentSet() && invoice.getInvoiceDocumentSet().size() > 0
-				&& !invoice.getInvoiceDocumentSet().isEmpty()) {
-			Set<InvoiceDocument> documenetSet = invoice.getInvoiceDocumentSet();
-			for (InvoiceDocument doc : documenetSet) {
-				EmailAttachment docAttachment = new EmailAttachment();
-				String fileUrl = doc.getFileUrl();
-				if (StringUtils.isNotBlank(fileUrl)) {
-					docAttachment.setDocFile(CommonUtil.readBytesFromFile(fileUrl));
-					docAttachment.setName(doc.getFileName());
-					documentList.add(docAttachment);
+		if(null != invoice.getContactUsers()){
+			String[] contactUsers = invoice.getContactUsers().split(",");
+			if(contactUsers.length != 0){
+				for(String contactUserId : contactUsers){
+					User contactUser = userService.getUserById(Long.parseLong(contactUserId.trim()));
+					String UUID = SourceLeadRandomCodeHelper.generateUUID();
+					EmailMessage emailMessage = new EmailMessage();
+					emailMessage.setFirstName(user.getFirstName());
+					emailMessage.setLastName(user.getLastName());
+					emailMessage.setToEmail(contactUser.getEmail());
+					emailMessage.setFromEmail(user.getEmail());
+					emailMessage.setCreatedBy(user.getUserCode());
+					StringBuilder msgBuild = new StringBuilder();
+					emailMessage
+							.setFromName(msgBuild.append(user.getFirstName()).append(" ").append(user.getLastName()).toString());
+					emailMessage.setEmailType(Constants.CUSTOM_USER_EMAIL);
+			
+					// SimpleDateFormat simpleDateFormat =
+					// orgLocation.getLocFullFormDateFormatter();
+					String date = (commonUtil.dateStrFromOrgDateFormatter(orgLocation.getDateFormat(), invoice.getDueDate()));
+			
+					// setting the class filed values
+					Map<String, String> globalVarsMap = new HashMap<String, String>();
+					globalVarsMap.put("invoiceID", invoice.getInvoiceId());
+					globalVarsMap.put("LoginUser", user.getFirstName());
+					if (invoice.getInvoiceType().equalsIgnoreCase(Constants.RECEIVABLE)) {
+						globalVarsMap.put("vendorName", contactUser.getFirstName());
+					} else {
+						globalVarsMap.put("clientName", contactUser.getFirstName());
+					}
+					globalVarsMap.put("grandTotal", invoice.getTotal());
+					globalVarsMap.put("dueDate", date);
+					globalVarsMap.put("orgName", orgLocation.getOrgLocationName());
+					// globalVarsMap.put("address",invoice.getBillingAddress());
+			
+					InternetAddress[] iAdressArray = InternetAddress.parse(emailMessage.getToEmail());
+			
+					// send mail logic
+					List<EmailAttachment> attachmentList1 = new ArrayList<>();
+			
+					// send notification logic
+					ArrayList<EmailAttachment> attachmentList = new ArrayList<EmailAttachment>();
+					ArrayList<EmailAttachment> documentList = new ArrayList<EmailAttachment>();
+					EmailAttachment emailAttachment = new EmailAttachment();
+					emailAttachment.setUUID(UUID);
+					EmailAttachment attachmentZip = zipFiles(docusList);
+					if (null != invoice.getInvoiceDocumentSet() && invoice.getInvoiceDocumentSet().size() > 0
+							&& !invoice.getInvoiceDocumentSet().isEmpty()) {
+						Set<InvoiceDocument> documenetSet = invoice.getInvoiceDocumentSet();
+						for (InvoiceDocument doc : documenetSet) {
+							EmailAttachment docAttachment = new EmailAttachment();
+							String fileUrl = doc.getFileUrl();
+							if (StringUtils.isNotBlank(fileUrl)) {
+								docAttachment.setDocFile(CommonUtil.readBytesFromFile(fileUrl));
+								docAttachment.setName(doc.getFileName());
+								documentList.add(docAttachment);
+							}
+			
+						}
+			
+					}
+					String invoiceFileUrl = invoice.getFileUrl();
+					if (StringUtils.isNotBlank(invoiceFileUrl)) {
+						emailAttachment.setDocFile(CommonUtil.readBytesFromFile(invoiceFileUrl));
+						emailAttachment.setName(invoice.getFileName());
+						attachmentList.add(emailAttachment);
+					}
+					if (attachmentZip != null) {
+						attachmentList.add(attachmentZip);
+					}
+					if (documentList != null && !documentList.isEmpty() && documentList.size() > 0) {
+						attachmentList.addAll(documentList);
+					}
+			
+					EmailScenario notificationScenario = null;
+					if (invoiceType.equalsIgnoreCase("payables")) {
+						returnMap = commonUtil.sendTemplateEmail(emailMessage, globalVarsMap, orgLocation.getOrg(), orgLocation,
+								Constants.INVOICE_CLIENT_PAYABLE_REMINDER_MAIL, attachmentList1);
+						notificationScenario = emailScenarioService.getEmailScenarioByUniqueName(
+								Constants.INVOICE_CLIENT_PAYABLE_REMINDER_MAIL, Constants.ENTITY_TYPE_NOTIFICATION);
+					} else {
+						returnMap = commonUtil.sendTemplateEmail(emailMessage, globalVarsMap, orgLocation.getOrg(), orgLocation,
+								Constants.INVOICE_CLIENT_RECEIVABLE_REMINDER_MAIL, attachmentList1);
+						notificationScenario = emailScenarioService.getEmailScenarioByUniqueName(
+								Constants.INVOICE_CLIENT_RECEIVABLE_REMINDER_MAIL, Constants.ENTITY_TYPE_NOTIFICATION);
+					}
+					returnMap.put("toEmail", emailMessage.getToEmail());
+					returnMap.put("fromEmail", emailMessage.getFromEmail());
+					String notificationbody = emailScenerioUtil.buildTemplateBody(notificationScenario.getBody(), globalVarsMap,
+							notificationScenario);
+					notificationScenario.setBody(notificationbody);
+					System.out.println("************** :" + notificationbody);
+					String actionLink = "";
+					StringBuilder notificationLink = new StringBuilder();
+					// Invoice invoice2=getInvoicetByParentId(invoice.getId());
+					Invoice notificationInvoice = getInvoicetByParentId(invoice.getId());
+					if (Constants.RECEIVABLE.equalsIgnoreCase(invoiceType)) {
+						actionLink = notificationLink.append(sourceleadUrl).append("/")
+								.append("viewInvoice?invoiceUUID=" + notificationInvoice.getInvoiceUUID() + "&invoiceType=Payables")
+								.toString();
+					} else {
+						actionLink = notificationLink.append(sourceleadUrl).append("/").append(
+								"viewInvoice?invoiceUUID=" + notificationInvoice.getInvoiceUUID() + "&invoiceType=Receivable")
+								.toString();
+			
+					}
+					emailScenerioUtil.sendNotification(actionLink, user, invoice.getContactUser(), invoice.getResponderLocationId(),
+							notificationScenario, new HashMap<String, String>());
 				}
-
+				invoice.setTimelineHistoryReminder("Reminder");
+				saveInvoiceTimelineHistory(invoice, user, null, null, null, returnMap);
+				Invoice childInvoice = invoiceDao.getInvoicetBySelfJoinInvoiceId(invoice.getId());
+				if (childInvoice != null) {
+					childInvoice.setTimelineHistoryReminder("Reminder");
+					saveInvoiceTimelineHistory(childInvoice, user, null, null, null, returnMap);
+				}
 			}
-
 		}
-		String invoiceFileUrl = invoice.getFileUrl();
-		if (StringUtils.isNotBlank(invoiceFileUrl)) {
-			emailAttachment.setDocFile(CommonUtil.readBytesFromFile(invoiceFileUrl));
-			emailAttachment.setName(invoice.getFileName());
-			attachmentList.add(emailAttachment);
-		}
-		if (attachmentZip != null) {
-			attachmentList.add(attachmentZip);
-		}
-		if (documentList != null && !documentList.isEmpty() && documentList.size() > 0) {
-			attachmentList.addAll(documentList);
-		}
-
-		EmailScenario notificationScenario = null;
-		if (invoiceType.equalsIgnoreCase("payables")) {
-			returnMap = commonUtil.sendTemplateEmail(emailMessage, globalVarsMap, orgLocation.getOrg(), orgLocation,
-					Constants.INVOICE_CLIENT_PAYABLE_REMINDER_MAIL, attachmentList1);
-			notificationScenario = emailScenarioService.getEmailScenarioByUniqueName(
-					Constants.INVOICE_CLIENT_PAYABLE_REMINDER_MAIL, Constants.ENTITY_TYPE_NOTIFICATION);
-		} else {
-			returnMap = commonUtil.sendTemplateEmail(emailMessage, globalVarsMap, orgLocation.getOrg(), orgLocation,
-					Constants.INVOICE_CLIENT_RECEIVABLE_REMINDER_MAIL, attachmentList1);
-			notificationScenario = emailScenarioService.getEmailScenarioByUniqueName(
-					Constants.INVOICE_CLIENT_RECEIVABLE_REMINDER_MAIL, Constants.ENTITY_TYPE_NOTIFICATION);
-		}
-		returnMap.put("toEmail", emailMessage.getToEmail());
-		returnMap.put("fromEmail", emailMessage.getFromEmail());
-		String notificationbody = emailScenerioUtil.buildTemplateBody(notificationScenario.getBody(), globalVarsMap,
-				notificationScenario);
-		notificationScenario.setBody(notificationbody);
-		System.out.println("************** :" + notificationbody);
-		String actionLink = "";
-		StringBuilder notificationLink = new StringBuilder();
-		// Invoice invoice2=getInvoicetByParentId(invoice.getId());
-		Invoice notificationInvoice = getInvoicetByParentId(invoice.getId());
-		if (Constants.RECEIVABLE.equalsIgnoreCase(invoiceType)) {
-			actionLink = notificationLink.append(sourceleadUrl).append("/")
-					.append("viewInvoice?invoiceUUID=" + notificationInvoice.getInvoiceUUID() + "&invoiceType=Payables")
-					.toString();
-		} else {
-			actionLink = notificationLink.append(sourceleadUrl).append("/").append(
-					"viewInvoice?invoiceUUID=" + notificationInvoice.getInvoiceUUID() + "&invoiceType=Receivable")
-					.toString();
-
-		}
-		emailScenerioUtil.sendNotification(actionLink, user, invoice.getContactUser(), invoice.getResponderLocationId(),
-				notificationScenario, new HashMap<String, String>());
-		invoice.setTimelineHistoryReminder("Reminder");
-		saveInvoiceTimelineHistory(invoice, user, null, null, null, returnMap);
-		Invoice childInvoice = invoiceDao.getInvoicetBySelfJoinInvoiceId(invoice.getId());
-		if (childInvoice != null) {
-			childInvoice.setTimelineHistoryReminder("Reminder");
-			saveInvoiceTimelineHistory(childInvoice, user, null, null, null, returnMap);
-		}
-
 	}
 
 	@Override
@@ -2696,8 +2722,10 @@ public class InvoiceServiceImpl implements InvoiceService {
 			}
 
 			if (StringUtils.isNotBlank(invoiceDTO.getVendorContact())) {
-				User contactUser = userService.getUserById(Long.parseLong(invoiceDTO.getVendorContact()));
-				invoice.setContactUser(contactUser);
+				/*User contactUser = userService.getUserById(Long.parseLong(invoiceDTO.getVendorContact()));
+				invoice.setContac(contactUser);*/
+				invoice.setContactUsers(invoiceDTO.getVendorContact());
+
 			}
 			invoice.setInvoiceType(Constants.Payables);
 		} else {
@@ -2716,8 +2744,10 @@ public class InvoiceServiceImpl implements InvoiceService {
 			}
 
 			if (StringUtils.isNotBlank(invoiceDTO.getClientContact())) {
-				User userContactName = userService.getUserById(Long.parseLong(invoiceDTO.getClientContact()));
-				invoice.setContactUser(userContactName);
+				/*User userContactName = userService.getUserById(Long.parseLong(invoiceDTO.getClientContact()));
+				invoice.setContactUser(userContactName);*/
+     			invoice.setContactUsers(invoiceDTO.getClientContact());
+
 			}
 			invoice.setInvoiceType(Constants.Receivable);
 		}
@@ -2736,7 +2766,7 @@ public class InvoiceServiceImpl implements InvoiceService {
 			}
 		}
 
-		invoice.setOwnerUserId(user);
+		invoice.setOwnerUsers(user.getId().toString());
 		invoice.setOrgLocation(orgLocation);
 		if (StringUtils.isNotBlank(invoiceDTO.getInvoiceId())) {
 			invoice.setInvoiceId(invoiceDTO.getInvoiceId());
@@ -3034,8 +3064,8 @@ public class InvoiceServiceImpl implements InvoiceService {
 		timelineHistory.setInvoice(invoice);
 		timelineHistory.setOrgLocation(invoice.getOrgLocation());
 		timelineHistory.setOrgRelation(invoice.getOrgRelationID());
-		timelineHistory.setContactUser(invoice.getContactUser());
-		timelineHistory.setOwnerUser(invoice.getOwnerUserId());
+		timelineHistory.setContactUsers(invoice.getContactUsers());
+		timelineHistory.setOwnerUsers(invoice.getOwnerUsers());
 		timelineHistory.setCreatedBy(user);
 		String invoiceStatus = null;
 		if(invoice.getInvoiceStatus().equalsIgnoreCase("DRAFT")){
@@ -3150,17 +3180,24 @@ public class InvoiceServiceImpl implements InvoiceService {
 							emailAttachment.setContent(invoicePayment.getFileContentType());
 							timelineDTO.setEmailAttachment(emailAttachment);
 						}
-						if (timelineHistory.getCreatedBy().getId().equals(timelineHistory.getOwnerUser().getId())) {
+						List<User> usersList = userDao.getUsersListUsingMultipleStringIds(timelineHistory.getOwnerUsers());
+						 
+						for(User ownerUser: usersList){
+						if(ownerUser.getId().equals(timelineHistory.getCreatedBy().getId())){
+
 							statusVal = "Payment updated";
 							statusBy = " by ";
-							statusValue =timelineHistory.getCreatedBy().getFullName();
-						} else if (!timelineHistory.getCreatedBy().getId()
-								.equals(timelineHistory.getOwnerUser().getId())) {
+							statusValue =timelineHistory.getCreatedBy().getFullName();	
+							}
+						else if (!timelineHistory.getCreatedBy().getId()
+								.equals(ownerUser.getId())) {
 							statusVal = "Payment updated";
 							statusBy = " by ";
 							statusValue = timelineHistory.getCreatedBy().getFullName();
 						}
-					}else if (timelineHistory.getInvoicePaymentReminderStatus().equalsIgnoreCase(Constants.INVOICE_STATUS_PARTIAL_PAID)) {
+					}
+					}
+					else if (timelineHistory.getInvoicePaymentReminderStatus().equalsIgnoreCase(Constants.INVOICE_STATUS_PARTIAL_PAID)) {
 						InvoicePayment invoicePayment = invoicePaymentService
 								.invoicePaymentById(timelineHistory.getInvoicePaymentReminderId());
 						timelineDTO.setPaymentAmount(invoicePayment.getPaymentAmount());
@@ -3177,16 +3214,20 @@ public class InvoiceServiceImpl implements InvoiceService {
 							emailAttachment.setContent(invoicePayment.getFileContentType());
 							timelineDTO.setEmailAttachment(emailAttachment);
 						}
-						if (timelineHistory.getCreatedBy().getId().equals(timelineHistory.getOwnerUser().getId())) {
-							statusVal = "Partial Paid updated";
-							statusBy = " by ";
-							statusValue =timelineHistory.getCreatedBy().getFullName();
-						} else if (!timelineHistory.getCreatedBy().getId()
-								.equals(timelineHistory.getOwnerUser().getId())) {
-							statusVal = "Partial Paid updated";
-							statusBy = " by ";
-							statusValue = timelineHistory.getCreatedBy().getFullName();
-						}
+						List<User> usersList = userDao.getUsersListUsingMultipleStringIds(timelineHistory.getOwnerUsers());
+						 
+						for(User ownerUser: usersList){
+							if (ownerUser.getId().equals(timelineHistory.getCreatedBy().getId())) {
+								statusVal = "Partial Paid updated";
+								statusBy = " by ";
+								statusValue =timelineHistory.getCreatedBy().getFullName();
+							} else if (!timelineHistory.getCreatedBy().getId()
+									.equals(timelineHistory.getOwnerUser().getId())) {
+								statusVal = "Partial Paid updated";
+								statusBy = " by ";
+								statusValue = timelineHistory.getCreatedBy().getFullName();
+							}
+					}
 					}else if (timelineHistory.getInvoicePaymentReminderStatus().equalsIgnoreCase("Reminder")) {
 
 						timelineDTO.setInvoiceReminderEmailBody(timelineHistory.getInvoicePaymentReminderEmailBody());
@@ -3195,44 +3236,75 @@ public class InvoiceServiceImpl implements InvoiceService {
 						timelineDTO.setInvoiceReminderEmailSubject(
 								timelineHistory.getInvoicePaymentReminderEmailSubject());
 						timelineDTO.setInvoicePaymentReminderStatus(timelineHistory.getInvoicePaymentReminderStatus());
-						if (timelineHistory.getCreatedBy().getId().equals(timelineHistory.getOwnerUser().getId())) {
-							statusVal = "Reminder";
-							statusBy = " to ";
-							statusValue = timelineHistory.getInvoice().getContactUser().getFullName();
-							EmailAttachment emailAttachment = null;
-							String invoiceFileUrl = timelineHistory.getInvoice().getFileUrl();
-							if (StringUtils.isNotBlank(invoiceFileUrl)) {
-								emailAttachment = new EmailAttachment();
-								emailAttachment.setFileUrl(invoiceFileUrl);
-								emailAttachment.setName(timelineHistory.getInvoice().getFileName());
-								emailAttachment.setContent("application/pdf");
+						List<User> usersList = userDao.getUsersListUsingMultipleStringIds(timelineHistory.getOwnerUsers());
+						StringBuilder sb=new StringBuilder();
+						String cc=null;
+						for(User ownerUser: usersList){
+							if (ownerUser.getId().equals(timelineHistory.getCreatedBy().getId())) {
+								statusVal = "Reminder";
+								statusBy = " to ";
+								List<User> contactUsersList = userDao.getUsersListUsingMultipleStringIds(timelineHistory.getInvoice().getContactUsers());
+								for(User contactUsers :contactUsersList){
+									cc = sb.append(contactUsers.getFullName()).append(",").toString();
+									statusValue = contactUsers.getFullName();
+								
+								}
+								statusValue = cc;
+								EmailAttachment emailAttachment = null;
+								String invoiceFileUrl = timelineHistory.getInvoice().getFileUrl();
+								if (StringUtils.isNotBlank(invoiceFileUrl)) {
+									emailAttachment = new EmailAttachment();
+									emailAttachment.setFileUrl(invoiceFileUrl);
+									emailAttachment.setName(timelineHistory.getInvoice().getFileName());
+									emailAttachment.setContent("application/pdf");
+								}
+								timelineDTO.setEmailAttachment(emailAttachment);	
 							}
-							timelineDTO.setEmailAttachment(emailAttachment);
-						}
-						if (!timelineHistory.getCreatedBy().getId().equals(timelineHistory.getOwnerUser().getId())) {
-							statusVal = "Reminder";
-							statusBy = " from ";
-							statusValue = timelineHistory.getInvoice().getContactUser().getFullName();
-							EmailAttachment emailAttachment = null;
-							String invoiceFileUrl = timelineHistory.getInvoice().getFileUrl();
-							if (StringUtils.isNotBlank(invoiceFileUrl)) {
-								emailAttachment = new EmailAttachment();
-								emailAttachment.setFileUrl(invoiceFileUrl);
-								emailAttachment.setName(timelineHistory.getInvoice().getFileName());
-								emailAttachment.setContent("application/pdf");
+							if (!timelineHistory.getCreatedBy().getId()
+									.equals(ownerUser.getId())) {
+								statusVal = "Reminder";
+								statusBy = " from ";
+								List<User> contactUsersList = userDao.getUsersListUsingMultipleStringIds(timelineHistory.getInvoice().getContactUsers());
+								for(User contactUsers :contactUsersList){
+									statusValue = contactUsers.getFullName();
+								
+								}
+								EmailAttachment emailAttachment = null;
+								String invoiceFileUrl = timelineHistory.getInvoice().getFileUrl();
+								if (StringUtils.isNotBlank(invoiceFileUrl)) {
+									emailAttachment = new EmailAttachment();
+									emailAttachment.setFileUrl(invoiceFileUrl);
+									emailAttachment.setName(timelineHistory.getInvoice().getFileName());
+									emailAttachment.setContent("application/pdf");
+								}
+								timelineDTO.setEmailAttachment(emailAttachment);
 							}
-							timelineDTO.setEmailAttachment(emailAttachment);
+
 						}
 					}
 				} else {
 					if (status.equalsIgnoreCase(Constants.INVOICE_TIMELINE_STATUS_CREATED)) {
 						statusVal = "Created";
 						statusBy = " by ";
-						statusValue = timelineHistory.getInvoice().getOwnerUserId().getFullName();
+						List<User> usersList = userDao.getUsersListUsingMultipleStringIds(timelineHistory.getInvoice().getOwnerUsers());
+						 
+						for(User ownerUser: usersList){
+						if(ownerUser.getUserCode().equals(timelineHistory.getInvoice().getUpdatedBy())){
+							statusValue = ownerUser.getFullName();	
+						}
+						}
+//						statusValue = timelineHistory.getInvoice().getOwnerUserId().getFullName();
 					} else if (status.equalsIgnoreCase("Sent")) {
 						statusVal = "Sent";
 						statusBy = " by ";
-						statusValue = timelineHistory.getInvoice().getOwnerUserId().getFullName();
+						List<User> usersList = userDao.getUsersListUsingMultipleStringIds(timelineHistory.getInvoice().getOwnerUsers());
+						 
+						for(User ownerUser: usersList){
+//						if(ownerUser.getUserCode().equals(timelineHistory.getInvoice().getUpdatedBy())){
+							statusValue = ownerUser.getFullName();	
+//						}
+						}
+//						statusValue = timelineHistory.getInvoice().getOwnerUserId().getFullName();
 						timelineDTO.setInvoiceReminderEmailBody(timelineHistory.getInvoicePaymentReminderEmailBody());
 						timelineDTO.setInvoiceReminderEmailTo(timelineHistory.getInvoicePaymentReminderEmailTo());
 						timelineDTO.setInvoiceReminderEmailFrom(timelineHistory.getInvoicePaymentReminderEmailFrom());
@@ -3241,60 +3313,130 @@ public class InvoiceServiceImpl implements InvoiceService {
 					} else if (status.equalsIgnoreCase("Received")) {
 						statusVal = "Received";
 						statusBy = " from ";
-						statusValue = timelineHistory.getInvoice().getContactUser().getFullName();
+						
+						List<User> usersList = userDao.getUsersListUsingMultipleStringIds(timelineHistory.getInvoice().getContactUsers());
+					 
+					for(User contactUser: usersList){
+//					if(contactUser.getUserCode().equals(timelineHistory.getInvoice().getUpdatedBy())){
+						statusValue = contactUser.getFullName();	
+//					}
+					}
+//						statusValue = timelineHistory.getInvoice().getContactUser().getFullName();
 						timelineDTO.setInvoiceReminderEmailBody(timelineHistory.getInvoicePaymentReminderEmailBody());
 						timelineDTO.setInvoiceReminderEmailTo(timelineHistory.getInvoicePaymentReminderEmailTo());
 						timelineDTO.setInvoiceReminderEmailFrom(timelineHistory.getInvoicePaymentReminderEmailFrom());
 						timelineDTO.setInvoiceReminderEmailSubject(
 								timelineHistory.getInvoicePaymentReminderEmailSubject());
 					} else if (status.equalsIgnoreCase("Accepted")) {
-						if (timelineHistory.getCreatedBy().getId().equals(timelineHistory.getOwnerUser().getId())) {
-							statusVal = "Accepted";
-							statusBy = " by ";
-							statusValue = timelineHistory.getInvoice().getOwnerUserId().getFullName();
-						} else if (!timelineHistory.getCreatedBy().getId()
-								.equals(timelineHistory.getOwnerUser().getId())) {
-							statusVal = "Accepted";
-							statusBy = " by ";
-							statusValue = timelineHistory.getInvoice().getContactUser().getFullName();
+						List<User> ownerUsersList = userDao.getUsersListUsingMultipleStringIds(timelineHistory.getInvoice().getOwnerUsers());
+						List<User> contactUsersList = userDao.getUsersListUsingMultipleStringIds(timelineHistory.getInvoice().getContactUsers());
+						for(User ownerUser: ownerUsersList){
+							if (timelineHistory.getCreatedBy().getId().equals(ownerUser.getId())) {
+								statusVal = "Accepted";
+								statusBy = " by ";
+								if(ownerUser.getUserCode().equals(timelineHistory.getInvoice().getUpdatedBy())){
+									statusValue = ownerUser.getFullName();	
+								}
+//								statusValue = timelineHistory.getInvoice().getOwnerUserId().getFullName();
+							} 
+							else if (!timelineHistory.getCreatedBy().getId()
+									.equals(ownerUser.getId())) {
+								statusVal = "Accepted";
+								statusBy = " by ";
+							for(User contactUser: contactUsersList){
+							if(contactUser.getUserCode().equals(timelineHistory.getInvoice().getUpdatedBy())){
+								statusValue = contactUser.getFullName();	
+							}
+							}
+//								statusValue = timelineHistory.getInvoice().getContactUser().getFullName();
+							}
 						}
+						
 					} else if (status.equalsIgnoreCase("Rejected")) {
-						if (timelineHistory.getCreatedBy().getId().equals(timelineHistory.getOwnerUser().getId())) {
-							statusVal = "Rejected";
-							statusBy = " by ";
-							statusValue = timelineHistory.getInvoice().getOwnerUserId().getFullName();
-							timelineDTO.setReason(timelineHistory.getRejectReason());
-						} else if (!timelineHistory.getCreatedBy().getId()
-								.equals(timelineHistory.getOwnerUser().getId())) {
-							statusVal = "Rejected";
-							statusBy = " by ";
-							statusValue = timelineHistory.getInvoice().getContactUser().getFullName();
-							timelineDTO.setReason(timelineHistory.getRejectReason());
+						List<User> ownerUsersList = userDao.getUsersListUsingMultipleStringIds(timelineHistory.getInvoice().getOwnerUsers());
+						List<User> contactUsersList = userDao.getUsersListUsingMultipleStringIds(timelineHistory.getInvoice().getContactUsers());
+						for(User ownerUser: ownerUsersList){
+							if (timelineHistory.getCreatedBy().getId().equals(ownerUser.getId())) {
+								statusVal = "Rejected";
+								statusBy = " by ";
+								if(ownerUser.getUserCode().equals(timelineHistory.getInvoice().getUpdatedBy())){
+									statusValue = ownerUser.getFullName();	
+								}
 
+								
+//								statusValue = timelineHistory.getInvoice().getOwnerUserId().getFullName();
+								timelineDTO.setReason(timelineHistory.getRejectReason());
+							}
+
+							else if (!timelineHistory.getCreatedBy().getId()
+									.equals(ownerUser.getId())) {
+								statusVal = "Rejected";
+								statusBy = " by ";
+							 
+							for(User contactUser: contactUsersList){
+							if(contactUser.getUserCode().equals(timelineHistory.getInvoice().getUpdatedBy())){
+								statusValue = contactUser.getFullName();	
+							}
+							}
+//								statusValue = timelineHistory.getInvoice().getContactUser().getFullName();
+								timelineDTO.setReason(timelineHistory.getRejectReason());
+
+							}
 						}
+
 					} else if (status.equalsIgnoreCase("Updated")) {
 						statusVal = "Updated";
 						statusBy = " by ";
-						statusValue = timelineHistory.getInvoice().getOwnerUserId().getFullName();
+						List<User> usersList = userDao.getUsersListUsingMultipleStringIds(timelineHistory.getInvoice().getOwnerUsers());
+						 
+						for(User ownerUser: usersList){
+						if(ownerUser.getUserCode().equals(timelineHistory.getInvoice().getUpdatedBy())){
+							statusValue = ownerUser.getFullName();	
+						}
+						}
+//						statusValue = timelineHistory.getInvoice().getOwnerUserId().getFullName();
 					} else if (status.equalsIgnoreCase("Deleted")) {
 						statusVal = "Deleted";
 						statusBy = " by ";
 						timelineDTO.setReason(timelineHistory.getRejectReason());
-						statusValue = timelineHistory.getInvoice().getOwnerUserId().getFullName();
-					} else if (status.equalsIgnoreCase("Void")) {
-						if (timelineHistory.getCreatedBy().getId().equals(timelineHistory.getOwnerUser().getId())) {
-							statusVal = "Void";
-							statusBy = " by ";
-							statusValue = timelineHistory.getInvoice().getOwnerUserId().getFullName();
-						} else if (!timelineHistory.getCreatedBy().getId()
-								.equals(timelineHistory.getOwnerUser().getId())) {
-							statusVal = "Void";
-							statusBy = " by ";
-							statusValue = timelineHistory.getInvoice().getContactUser().getFullName();
+						List<User> usersList = userDao.getUsersListUsingMultipleStringIds(timelineHistory.getInvoice().getOwnerUsers());
+						 
+						for(User ownerUser: usersList){
+						if(ownerUser.getUserCode().equals(timelineHistory.getInvoice().getUpdatedBy())){
+							statusValue = ownerUser.getFullName();	
 						}
+						}
+//						statusValue = timelineHistory.getInvoice().getOwnerUserId().getFullName();
+					} else if (status.equalsIgnoreCase("Void")) {
+						List<User> ownerUsersList = userDao.getUsersListUsingMultipleStringIds(timelineHistory.getInvoice().getOwnerUsers());
+						for(User ownerUser: ownerUsersList){
+							if (timelineHistory.getCreatedBy().getId().equals(ownerUser.getId())) {
+								statusVal = "Void";
+								statusBy = " by ";
+								List<User> usersList = userDao.getUsersListUsingMultipleStringIds(timelineHistory.getInvoice().getOwnerUsers());
+								if(ownerUser.getUserCode().equals(timelineHistory.getInvoice().getUpdatedBy())){
+									statusValue = ownerUser.getFullName();	
+								}
+//								statusValue = timelineHistory.getInvoice().getOwnerUserId().getFullName();
+							}	
+							 else if (!timelineHistory.getCreatedBy().getId()
+										.equals(ownerUser.getId())) {
+									statusVal = "Void";
+									statusBy = " by ";
+									List<User> usersList = userDao.getUsersListUsingMultipleStringIds(timelineHistory.getInvoice().getContactUsers());
+									 
+									for(User contactUser: usersList){
+									if(contactUser.getUserCode().equals(timelineHistory.getInvoice().getUpdatedBy())){
+										statusValue = contactUser.getFullName();	
+									}
+									}
+//									statusValue = timelineHistory.getInvoice().getContactUser().getFullName();
+								}
+						}
+						
 					}
 				}
-			}
+			}	
 			timelineDTO.setStatus(statusVal);
 			timelineDTO.setStatusValue(statusValue);
 			timelineDTO.setStatusBy(statusBy);
@@ -3797,7 +3939,7 @@ public class InvoiceServiceImpl implements InvoiceService {
 		// get users list 
 		StringBuilder appSb = new StringBuilder();
 		if(StringUtils.isNotBlank(creditDebitNote.getApprovers())){
-		List<User> approversList = userDao.getUsersListUsingMultipleStringIds(creditDebitNote.getApprovers(),creditDebitNote.getOrgLocations().getId());
+		List<User> approversList = userDao.getUsersListUsingMultipleStringIdsWithLocationId(creditDebitNote.getApprovers(),creditDebitNote.getOrgLocations().getId());
 		approversList.forEach(approver->{
 			appSb.append(approver.getFullName()).append(" , ").toString();	
 		});
@@ -3808,7 +3950,7 @@ public class InvoiceServiceImpl implements InvoiceService {
 		StringBuilder contactEmails = new StringBuilder();
 		if (creditDebitNote.getOrgRelations().getLocationId().getId().equals(orgLocationId)) {
 			creditDebitNote.setClientOrVendorName(creditDebitNote.getOrgRelations().getResponderLocationId().getOrgLocationName());
-			List<User> contactsUserList = userDao.getUsersListUsingMultipleStringIds(creditDebitNote.getContactUser(),creditDebitNote.getOrgRelations().getResponderLocationId().getId());
+			List<User> contactsUserList = userDao.getUsersListUsingMultipleStringIdsWithLocationId(creditDebitNote.getContactUser(),creditDebitNote.getOrgRelations().getResponderLocationId().getId());
 			contactsUserList.forEach(contactUser->{
 				contactName.append(contactUser.getFullName()).append(" , ").toString();	
 				contactEmails.append(contactUser.getEmail()).append(" , ").toString();
@@ -3819,7 +3961,7 @@ public class InvoiceServiceImpl implements InvoiceService {
 		
 		if(creditDebitNote.getOrgRelations().getResponderLocationId().getId().equals(orgLocationId)){
 			creditDebitNote.setClientOrVendorName(creditDebitNote.getOrgRelations().getLocationId().getOrgLocationName());
-			List<User> contactsUserList = userDao.getUsersListUsingMultipleStringIds(creditDebitNote.getContactUser(),creditDebitNote.getOrgRelations().getLocationId().getId());
+			List<User> contactsUserList = userDao.getUsersListUsingMultipleStringIdsWithLocationId(creditDebitNote.getContactUser(),creditDebitNote.getOrgRelations().getLocationId().getId());
 			contactsUserList.forEach(contactUser->{
 				contactName.append(contactUser.getFullName()).append(" , ").toString();	
 				contactEmails.append(contactUser.getEmail()).append(" , ").toString();

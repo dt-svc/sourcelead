@@ -250,5 +250,7 @@ public interface UserService  {
  
  public void sendEmailToUserForEmailUpdation(User user, User loginUser, OrgLocations orgLocations,String toEmail,String existingEmail) throws Exception;
 
+public List<User> getUsersListUsingMultipleStringIds(String id) throws Exception;
+
 }	
 
