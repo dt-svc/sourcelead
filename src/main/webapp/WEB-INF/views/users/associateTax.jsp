@@ -113,7 +113,7 @@
                         <option value='${location }'>${location }</option>
                       </select>
                     </div>
-                    <p class="text-success form-control-static clearfix" id="localTaxMessageDiv"> </p>
+<!--                     <p class="text-success form-control-static clearfix" id="localTaxMessageDiv"> </p> -->
                   </div>
                   
                   <div class="clearfix"></div>
