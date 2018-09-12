@@ -65,7 +65,7 @@ function approvePayrollDiv(){
 	<div class="row">
 		<div class="col-md-3" id="groupIdDiv">
 			<select class="chosen-select" id="groupId" name="groupId" onchange="removeValidateGroup();getGroupFrequency();" data-validation="required" field-name="User Group">
-				<option value="">Select User Group</option>
+				<option value="">User Group</option>
                     <c:forEach var="ug" items="${userGroupList}">
 					<option value="${ug.groupUUID},${ug.id}">${ug.groupName}</option>
 				</c:forEach>
@@ -78,7 +78,7 @@ function approvePayrollDiv(){
 
 		<div class="col-md-2 paddingLeft paddingRight" id="payTypeIdDiv">
 			<select id="payType" name="payType" data-validation="required" field-name="Pay Type" class="chosen-select" onchange="errPayType();">
-				 <option value="">Select Pay type</option>
+				 <option value="">Pay type</option>
 				 <option value="All">All</option>
 				 <option value="HourlyRate">Hourly Rate</option>
                  <option value = "Salary">Salary</option>
@@ -87,7 +87,7 @@ function approvePayrollDiv(){
 		</div>
 
 		<div class="col-md-2 paddingRight" id="payrollPayDateDivId">
-			<input name="" class="form-control calendar" placeholder="Check Date" id="payrollPayDate" name="payrollPayDate" type="text" data-validation="required" field-name="Pay Date" readonly="readonly">
+			<input name="" class="form-control calendar" placeholder="Check Date" id="payrollPayDate" name="payrollPayDate" type="text" data-validation="required" field-name="Check Date" readonly="readonly">
 		</div>
 		<div class="col-md-2">
 			<a  class="btn btn-success btnSuccess btn-sm anchorWhite" id="generateUSPayroll" onclick="runUSPayroll();">Initiate Payroll</a>
@@ -431,7 +431,7 @@ function getGroupFrequency(){
 	        url: sourceleadUrl+"/getGroupPayPeriod?"+tokenParamName+"="+tokenValue+"&groupUUID="+groupUUID                  , 
 	        success: function(json) {
 	        var output = "";
-	        output = output + "<option value=''>select ferquency</option>";
+	        output = output + "<option value=''>Ferquency</option>";
 			for (var i=0; i<json.length; i++)
 			{
 				var date = json[i].replace(",", " to ");

@@ -156,10 +156,10 @@
 	                  </div>
                   </div>
                   </div>
-                  <div class="form-group" id="EmailIdDiv">
+                  <div class="form-group" id="ssnNumberDiv">
                   <label class="col-md-3">SSN<span class="text-danger">&nbsp;*</span></label>
                   <div class="col-md-9">
-                    <input type="text" class="form-control" id="ssn" name="SSN" field-name="SSN" data-validation="required validate_Space validate_int validate_length length9-9">
+                    <input type="text" class="form-control" id="ssnNumber" name="ssn" field-name="SSN" onblur="validateSSNNumber();">
                   </div>
                   </div>
                   
@@ -549,7 +549,44 @@ if(type == 'C2C' || type == 'C2C-1099'){
 	 $('#vendors').removeAttr("data-validation","required"); 
 	 $('#vendorcontact').removeAttr("data-validation","required"); 
 }
- }
+}
+ 
+function validateSSNNumber(){
+	var ssnNumber = $("#ssnNumber").val();
+	var length  = $("#ssnNumber").val().length;
+	if(ssnNumber.search("-") > 0){
+		ssnNumber = ssnNumber.replace(/-/g, "");
+		length = ssnNumber.length;
+		calculateSSNLength(length,ssnNumber);
+	}else{
+		calculateSSNLength(length,ssnNumber);
+	}
+}
+function calculateSSNLength(length,ssnNumber){
+	if(length == 0){
+		$("#ssnNumberDiv").find('span.ssn_errmsg').remove();
+		$("#ssnNumber").after("<span class='ssn_errmsg' style='color:red'>SSN number is required</span>");
+	}else if(length != 9){
+		$("#ssnNumberDiv").find('span.ssn_errmsg').remove();
+		$("#ssnNumber").after("<span class='ssn_errmsg' style='color:red'>SSN number should be 9 digits</span>");
+	}else{
+		$("#ssnNumberDiv").find('span.ssn_errmsg').remove();
+		var value = "";
+		var ssn = ssnNumber.substring(0,3);
+		value += ssn+"-";
+		ssn = ssnNumber.substring(3,5);
+		value += ssn+"-";
+		ssn = ssnNumber.substring(5,9);
+		value += ssn;
+		$("#ssnNumber").val(value);
+		if(value.match(/^(?!000|666)[0-8][0-9]{2}-(?!00)[0-9]{2}-(?!0000)[0-9]{4}$/) === null){
+			$("#ssnNumberDiv").find('span.ssn_errmsg').remove();
+			$("#ssnNumber").after("<span class='ssn_errmsg' style='color:red'>Invalid SSN number</span>");
+		}else{
+			$("#ssnNumberDiv").find('span.ssn_errmsg').remove();
+		}
+	}
+}
  </script>
 
 <script>
