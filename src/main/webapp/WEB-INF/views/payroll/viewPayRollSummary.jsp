@@ -267,17 +267,18 @@
 				        			postDed = postDed + ' <td><i class="fa fa-dollar paddingRight"></i><input type="text" id="'+i+'amount" name="postDeduction['+i+'].amount" value='+ded.postDeductionAmt+' class="formControl" readOnly></td>';
 				        			postDed = postDed + ' </tr>';
 					            }	
+			            	  
+			            	  postDed = postDed + '</tbody>';
+		                      postDed = postDed + '<tfoot>';
+		                      postDed = postDed + '<tr>';
+		                      postDed = postDed + '<th>Total</th>';
+		                      postDed = postDed + '<td><span>$ '+json.postDedTotal+'</span></td>';
+		                      postDed = postDed + '</tr>';
+		                      postDed = postDed + '</tfoot>';
+		                      postDed = postDed + '</table>';
+		                      $("#postdedDiv").empty(); 
+		                      $("#postdedDiv").append(postDed);
 			            }
-	                      postDed = postDed + '</tbody>';
-	                      postDed = postDed + '<tfoot>';
-	                      postDed = postDed + '<tr>';
-	                      postDed = postDed + '<th>Total</th>';
-	                      postDed = postDed + '<td><span>$ '+json.postDedTotal+'</span></td>';
-	                      postDed = postDed + '</tr>';
-	                      postDed = postDed + '</tfoot>';
-	                      postDed = postDed + '</table>';
-	                     $("#postdedDiv").empty(); 
-	                      $("#postdedDiv").append(postDed);
 	                     
 	                        var preDed = "";
 	                        preDed = preDed + '<table width="100%" class="table table-bordered" >';
@@ -299,7 +300,7 @@
 				            	preDed = preDed + ' <td><i class="fa fa-dollar paddingRight"></i><input type="text" id="amount" name="preDeduction['+i+'].amount" value='+preded.preDeductionAmount+' class="formControl" readOnly></td>';
 				            	preDed = preDed + ' </tr>';
 				            }
-	                        }
+				            
 				            preDed = preDed + '</tbody>';
 				            preDed = preDed + '<tfoot>';
 				            preDed = preDed + '<tr>';
@@ -310,6 +311,7 @@
 				            preDed = preDed + '</table>';
 		                      $("#prededDiv").empty();
 		                      $("#prededDiv").append(preDed);
+	                        }
 		                      
 		                      
 		                  var output = "";
@@ -333,17 +335,18 @@
 					            	output = output + ' <td><i class="fa fa-dollar paddingRight"></i><input type="text" name="contribution['+i+'].contributionAmount" value='+ot.contributionAmt+' class="formControl" readOnly></td>';
 					            	output = output + '</tr>';
 			                  }
+		                	  
+		                	  output = output + ' </tbody>';
+		                        output = output + ' <tfoot>';
+		                        output = output + '   <tr>';
+		                        output = output + '  <th>Total</th>';
+		                        output = output + '  <td><span>$ '+json.contributionTotal.toFixed(2)+'</span></td>';
+		                        output = output + '  </tr>';
+		                        output = output + '  </tfoot>';
+		                        output = output + '  </table>';
+		                        $("#employerPaidBenefitDiv").empty();
+		                        $("#employerPaidBenefitDiv").append(output);
 		                  }
-	                        output = output + ' </tbody>';
-	                        output = output + ' <tfoot>';
-	                        output = output + '   <tr>';
-	                        output = output + '  <th>Total</th>';
-	                        output = output + '  <td><span>$ '+json.contributionTotal.toFixed(2)+'</span></td>';
-	                        output = output + '  </tr>';
-	                        output = output + '  </tfoot>';
-	                        output = output + '  </table>';
-	                        $("#employerPaidBenefitDiv").empty();
-	                        $("#employerPaidBenefitDiv").append(output);
 	                        
 	                        
 	                        var payItem = "";
@@ -374,20 +377,20 @@
 							              }  
 						            	payItem = payItem +' </tr>'; 
 				                  }
+			                	  
+			                	  payItem = payItem +'</tbody>';
+		                          payItem = payItem +'<tfoot>';
+		                          payItem = payItem +' <tr>';
+		                          payItem = payItem +'  <th>Total</th>';
+		                          payItem = payItem +'<td><span>$ '+json.payItemTotal+'</span></td>';
+		                          payItem = payItem +' <td></td>';
+		                          payItem = payItem +' </tr>';
+		                          payItem = payItem +' </tfoot>';
+		                          payItem = payItem +' </table>';
+		                          $("#payItemDiv").empty();
+		                          $("#payItemDiv").append(payItem);
+		                          $(".tablePayslip").find(".fa-dollar, .fa-clock-o").next(".formControl").css({"width":"94.5%"});
 			                  }
-	                          
-	                          payItem = payItem +'</tbody>';
-	                          payItem = payItem +'<tfoot>';
-	                          payItem = payItem +' <tr>';
-	                          payItem = payItem +'  <th>Total</th>';
-	                          payItem = payItem +'<td><span>$ '+json.payItemTotal+'</span></td>';
-	                          payItem = payItem +' <td></td>';
-	                          payItem = payItem +' </tr>';
-	                          payItem = payItem +' </tfoot>';
-	                          payItem = payItem +' </table>';
-	                          $("#payItemDiv").empty();
-	                          $("#payItemDiv").append(payItem);
-	                          $(".tablePayslip").find(".fa-dollar, .fa-clock-o").next(".formControl").css({"width":"94.5%"});
                        
 		        },
 		    }); 
