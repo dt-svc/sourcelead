@@ -63,16 +63,16 @@ $(document).ready(function(){
 			
 				<li id="vendorFiletPopup"><a href="javascript:void(0)" class="filtIcon" title="Filters" onclick="openCreditNoteFilterPop();"></a></li>
 				
-				<li><a href="javascript:void(0)" class="overIcon" title="Actions" onclick="newActions();"></a>
+				<!-- <li><a href="javascript:void(0)" class="overIcon" title="Actions" onclick="newActions();"></a>
 					<div class="newActPop">
 						<span>
 						 	<a href="javascript:void(0)" onclick="exportToReceivablePdf();" title="PDF">Export PDF</a>
 							<a href="javascript:void(0)" onclick="exportToReceivableExcel();" title="Excel">Export Excel</a>
 						</span>
 					</div>
-				</li>
+				</li> -->
 		    
-		  <li class=""><input type="text" class="repSearchBar" placeholder='Search' id='creditDebitDataTableSearch'/><span class="repSearchIcon" onClick="getDebitList();"></span></li>
+		  <li class=""><input type="text" class="repSearchBar" placeholder='Id/Reference Number/Company Name/Total' title= "Id/Reference Number/Company Name/Total" id='creditDebitDataTableSearch'/><span class="repSearchIcon" onClick="getDebitList();"></span></li>
         </ul>
       </div>     
                 
@@ -810,6 +810,7 @@ function resetInvoiceFilter(){
 	$("ul#myInvoiceUL > li input:checkbox").prop("checked",false);
 	document.getElementById("invoiceDateRadio").checked = true;
 	$(".custom_search").empty().hide();
+	$("#creditDebitDataTableSearch").val('');
 	getDebitList();
 	
 }
