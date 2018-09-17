@@ -92,15 +92,15 @@ function errRemoveVendorContact(){
 							<label class="col-md-3">Vendor Contact<span
 								class="text-danger">*</span></label>
 							<div class="col-md-9 chooRadius" id="errVendorContact">
-								<div class="input-group col-md-10 pull-left">
+								<div class="col-md-9 padding_left padding_right">
 								<select class="chosen-select form-control" id="vendorContact"
-									name="vendorContact" data-validation="required"
+									multiple="multiple" name="vendorContact" data-validation="required"
 									field-name="Vendor Contact"
 									onchange="errRemoveVendorContact();">
 								</select>
-								 <span class="input-group-addon cursorPointer bg-blue" onclick="getVendorContacts();"><i class="fa fa-refresh "></i></span>
 							</div>
-							<span class="col-md-2 noPad clearfix" onclick="selectedVendor();">
+							<span class="col-md-3 noPad clearfix" onclick="selectedVendor();">
+							<span class="btn btn-primary btn-sm" onclick="getVendorContacts();"><i class="fa fa-refresh "></i></span>
 			                  <sec:authorize access="hasAnyRole('ROLE_CREATE_VENDOR_CONTACT')"> 
 			                    <a href="javascript:void(0)"><i class="fa fa-plus btn btn-default pull-right minHeBtn"></i></a>
 			                  </sec:authorize>
@@ -447,9 +447,10 @@ function remove(){
 		           	 $("#vendorOrgRelationId").append(result); 
 		           	 $('#vendorOrgRelationId').trigger("chosen:updated");
 		           	$('#vendorCurrency').val(json['vendorCurrency']);
-		           	getVendorContacts(json['vendorContactId']);
+// 		           	getVendorContacts(json['vendorContactId']);
 		           	$("#invoiceId").val(json['invoiceId']);
-		           	
+		           	getVendorContacts(json['contactUsers']);
+
 		           	if(json['paymentFrequency'] != null && json['paymentFrequency'] != '' && json['paymentFrequency'] != 'undefined'){
 		           		$("#paymentFrequency").val(json['paymentFrequency']);
 		           	    $('#paymentFrequency').trigger("chosen:updated");
@@ -1876,24 +1877,30 @@ function getPaymentAccountList(dbOrgRelationId,paymentAccoutId){
 <script>
 function getVendorContacts(vendorContactId){
 	var orgRelationId = $("#vendorOrgRelationId").val();
+	$("#vendorContact").empty();
 	$.ajax({
 		type : "GET",
 		url: sourceleadUrl+"/getPayableVendorContactsByOrgRelationId?"+tokenParamName+"="+tokenValue+"&orgRelationId="+orgRelationId,
-		success :function(data) {
-		var json = JSON.parse(data);
+
+		success :function(json) {
 		var output = "";
 		output = output + "<option value=''>Select Vendor Contact</option>";
-		for (var i=0; i<json.length; i++)
-		{
-		var opt = json[i];
-		
-		var selected = '';
-		if(vendorContactId != null && vendorContactId != "" && vendorContactId !="undefined" && vendorContactId == opt.spocUserId){
-			selected = 'selected';
-		}
-		output = output + "<option value='" +opt.spocUserId+ "' "+selected+">"+opt.ownerName+"("+opt.spocName+")</option>";
-		$("#vendorCurrency").val(opt.vendorCurrency);
-		}
+		for (var i=0; i<json.data.length; i++)
+			{
+				var opt = json.data[i];
+				if(vendorContactId != null && vendorContactId != "" && vendorContactId !="undefined"){
+					var array = vendorContactId.split(",");
+					if(array.includes(opt.spocUserId.toString())){
+						output = output + "<option value='"+opt.spocUserId+"' selected >"+opt.ownerName+"("+opt.spocName+")</option>";
+					}else{
+						output = output + "<option value='"+opt.spocUserId+"' >"+opt.ownerName+"("+opt.spocName+")</option>";
+					}
+				}else{
+					output = output + "<option value='" +opt.spocUserId+ "'>"+opt.ownerName+"("+opt.spocName+")</option>";
+				}
+				$("#vendorCurrency").val(opt.vendorCurrency);
+			}
+
 		$("#vendorContact").empty();
 		$("#vendorContact").append(output);
 		$('#vendorContact').trigger("chosen:updated");
@@ -1991,7 +1998,7 @@ function saveInvoice(saveType){
          
          
          if ($('#invoice_form').validate(false, validationSettings)){  
- 	 	  var formData = getFormData("invoice_form");
+ 	 	  var formData = getFormData1("invoice_form");
          
  	 	    if(selectedAssociates == null || selectedAssociates == '' || selectedAssociates == 'undefined'){
 	        	var result = "";
@@ -2008,8 +2015,15 @@ function saveInvoice(saveType){
 		        	
 		    	        
 		        	  $("#invoiceLoading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
-		        	  $.post(sourceleadUrl+"/saveInvoice?"+tokenParamName+"="+tokenValue+"&saveType="+saveType+"&invoiceType=payable", formData, function(result) {
-		        		  if (result && result.response === "INVALID_DATA") {
+		        	  $.ajax({
+			        	  url: sourceleadUrl+"/saveInvoice?"+tokenParamName+"="+tokenValue+"&saveType="+saveType+"&invoiceType=payable",
+		        		  type: "POST",
+		        		  data: formData,
+		        		  processData: false,
+		        		  contentType: false,
+		        		  success: function (result) {
+		        	  //$.post(sourceleadUrl+"/saveInvoice?"+tokenParamName+"="+tokenValue+"&saveType="+saveType+"&invoiceType=Receivable", formData, function(result) {
+		        	 		  if (result && result.response === "INVALID_DATA") {
 			          		    showError(result.responseMessage);
 			          		} else if (result.response === "AWKWARD") {
 			          		    location.href = "/errorPage";
@@ -2029,10 +2043,13 @@ function saveInvoice(saveType){
 			          		} else {
 			          		    showError("Operation failed, please try again");
 			          		}
-		        		     $("#invoiceLoading").hide();
-			  			   }); 
+		        		  $("#invoiceLoading").hide();
+		        	  }
+		  			   }); 
+		        	  
 		    	         return true; 
 	        }
+		        	  
          }else{
 	    		return false;
 	    	  } 

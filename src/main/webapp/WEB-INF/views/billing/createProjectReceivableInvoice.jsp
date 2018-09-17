@@ -31,14 +31,14 @@ border:none; background: none; font-size:14px; font-weight:600; box-shadow: none
        <div id="invoiceLoading"></div>
        <form:form id="project_invoice_form"  name="project_invoice_form" method="post"  enctype='multipart/form-data'> 
        <input type="hidden" name="project"/>
-       <input type="hidden" name="frequency"/>
+<!--        <input type="hidden" name="frequency"/> -->
         <div class="row">
           <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12 myForm">
             <div class="form-group">
               <label class="col-md-3">Client<span class="text-danger">&nbsp;*</span></label>
               <div class="col-md-9 chooRadius">
                <div class="input-group col-md-10 pull-left">
-                <select class="chosen-select form-control" id="clientOrgRelationId" name="clientOrgRelationId" onchange="getClientContacts();getPaymentTerms();flushValues();" data-validation="required" field-name="Client">
+                <select class="chosen-select form-control" id="clientOrgRelationId" name="clientOrgRelationId" onchange="getClientContacts();getProjectsList();getPaymentTerms();flushValues();" data-validation="required" field-name="Client">
                </select>
                <span class="input-group-addon cursorPointer bg-blue" onclick="getClients();createProjectRecInviceEmptyClientContact();"><i class="fa fa-refresh "></i></span>
               </div>
@@ -52,12 +52,12 @@ border:none; background: none; font-size:14px; font-weight:600; box-shadow: none
             <div class="form-group">
               <label class="col-md-3">Client Contact<span class="text-danger">*</span></label>
               <div class="col-md-9 chooRadius">		
-              <div class="input-group col-md-10 pull-left">
-                <select class="chosen-select form-control" id="clientContact" name="clientContact" data-validation="required" field-name="Client Contact">
+              <div class="col-md-9 padding_left padding_right">
+                <select class="chosen-select form-control" multiple="multiple" id="clientContact" name="clientContact" data-validation="required" field-name="Client Contact">
                 </select>
-                 <span class="input-group-addon cursorPointer bg-blue" onclick="getClientContacts();"><i class="fa fa-refresh "></i></span>
               </div>
-               <span class="col-md-2 noPad clearfix" onclick="selectedClient();">
+               <span class="col-md-3 noPad clearfix" onclick="selectedClient();">
+                  <span class="btn btn-primary btn-sm" onclick="getClientContacts();"><i class="fa fa-refresh "></i></span>
 			       <sec:authorize access="hasAnyRole('ROLE_CREATE_CLIENT_CONTACT')"> 
 			         <a href="javascript:void(0)"><i class="fa fa-plus btn btn-default pull-right minHeBtn"></i></a>
 			       </sec:authorize>
@@ -114,7 +114,7 @@ border:none; background: none; font-size:14px; font-weight:600; box-shadow: none
                 <select class="chosen-select form-control" id="projectId" name="projectId"  onchange="getProjectFrequency();" data-validation="required" field-name="Project Name">
               </select>
               </c:if>
-              <input type="hidden" id="clientProjectIdHidden" value="" name="projectId">
+<!--               <input type="hidden" id="clientProjectIdHidden" value="" name="projectId"> -->
               </div>
             </div>
            <div class="form-group">
@@ -128,7 +128,7 @@ border:none; background: none; font-size:14px; font-weight:600; box-shadow: none
                 <select class="chosen-select form-control" id="frequency" name="frequency" data-validation="required" field-name="Frequency" onchange="getProjectAssignedMem();">
               </select>
               </c:if>  
-              <input type="hidden" id="clientProjectFrequencyHidden" value="" name="frequency">
+<!--               <input type="hidden" id="clientProjectFrequencyHidden" value="" name="frequency"> -->
               </div>
             </div>
 <!-- 	   
@@ -286,7 +286,7 @@ border:none; background: none; font-size:14px; font-weight:600; box-shadow: none
     
 <!-- Diplays client contacts details when clien selected -->
 <script>
-function getClientContacts(){
+function getClientContacts(clientContactId){
 	var orgRelationId = $("#clientOrgRelationId").val();
 	var sourceleadUrl ='${sourceleadUrl}';
 	$.ajax({
@@ -295,17 +295,24 @@ function getClientContacts(){
 	success :function(json) {
 // 	var json = JSON.parse(data);
 	var output = "";
-	output = output + "<option value=''>Select Client Contact</option>";
-	for (var i=0; i<json.data.length; i++)
-	{
-	var opt = json.data[i];
-	// need to use in edit
-	//output = output + "<option value='" +opt.vendorUser.id+ "' selected>"+opt.spocName+"</option>";
-	output = output + "<option value='" +opt.spocUserId+ "'>"+opt.ownerName+"("+opt.spocName+")</option>";
-	$("#clientCurrency").val(opt.clientCurrency);
-	}
-	$("#clientContact").empty();
-	$("#clientContact").append(output);
+	//output = output + "<option value=''>Select Client Contact</option>";
+			for (var i=0; i<json.data.length; i++)
+			{
+				var opt = json.data[i];
+				if(clientContactId != null && clientContactId != "" && clientContactId !="undefined"){
+					var array = clientContactId.split(",");
+					if(array.includes(opt.spocUserId.toString())){
+						output = output + "<option value='"+opt.spocUserId+"' selected >"+opt.ownerName+"("+opt.spocName+")</option>";
+					}else{
+						output = output + "<option value='"+opt.spocUserId+"' >"+opt.ownerName+"("+opt.spocName+")</option>";
+					}
+				}else{
+					output = output + "<option value='" +opt.spocUserId+ "'>"+opt.ownerName+"("+opt.spocName+")</option>";
+				}
+				$("#clientCurrency").val(opt.clientCurrency);
+			}
+			$("#clientContact").append(output);
+			$('#clientContact').trigger("chosen:updated");
 	$('#clientContact').trigger("chosen:updated");
 	},
 	});
@@ -313,7 +320,7 @@ function getClientContacts(){
 	document.getElementById("bottomGrid").style.display="none";
 	document.getElementById("lineItemAddRows").style.display="none";
 	document.getElementById("tableBody").style.display="none";
-	getProjectsList();
+// 	getProjectsList();
 	}
 </script>
 
@@ -357,7 +364,6 @@ function getProjectFrequency(invoiceFrequency){
 	projectId = '${projectId}';
 	}
 	var sourceleadUrl ='${sourceleadUrl}';
-	
 	if(projectId != null && projectId != "" && projectId != 'undefined'){
 	$.ajax({
 	type : "GET",
@@ -1360,40 +1366,47 @@ function calculateTaxDiscount(){
 function saveInvoiceTest(saveType){
          
          if ($('#project_invoice_form').validate(false, validationSettings)){  
-        	 
+        /* 	 
         	var  pmIdValueClient = $("#projectId option").eq($("#projectId").prop("selectedIndex")).val();
       		$("#clientProjectIdHidden").val(pmIdValueClient);
       			
       		var  frequencyvalue = $("#frequency option").eq($("#frequency").prop("selectedIndex")).val();
-      		$("#clientProjectFrequencyHidden").val(frequencyvalue);
+      		$("#clientProjectFrequencyHidden").val(frequencyvalue); */
       		
  	 	    var sourceleadUrl ='${sourceleadUrl}';
- 	 	    var formData = getFormData("project_invoice_form");
+ 	 	    var formData = getFormData1("project_invoice_form");
 		        	  $("#invoiceLoading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
-		        	  $.post(sourceleadUrl+"/saveInvoice?"+tokenParamName+"="+tokenValue+"&saveType="+saveType+"&invoiceType=Receivable", formData, function(result) {
+// 		        	  $.post(sourceleadUrl+"/saveInvoice?"+tokenParamName+"="+tokenValue+"&saveType="+saveType+"&invoiceType=Receivable", formData, function(result) {
+		        		   $.ajax({
+		        		  url: sourceleadUrl+"/saveInvoice?"+tokenParamName+"="+tokenValue+"&saveType="+saveType+"&invoiceType=Receivable",
+		        		  type: "POST",
+		        		  data: formData,
+		        		  processData: false,
+		        		  contentType: false,
+		        		  success: function (result) {
 		        		  if (result && result.response === "INVALID_DATA") {
-			          		    showError(result.responseMessage);
-			          		} else if (result.response === "AWKWARD") {
-			          		    location.href = "/errorPage";
-			          		} else if (result.response === "SUCCESS") {
-			          			$("#invoiceLoading").removeAttr("style");
+		          		    showError(result.responseMessage);
+		          		} else if (result.response === "AWKWARD") {
+		          		    location.href = "/errorPage";
+		          		} else if (result.response === "SUCCESS") {
+			  					$("#invoiceLoading").removeAttr("style");
 	    		     			location.replace(sourceleadUrl+"/invoiceList");
 	    		     			$("#selector1").removeAttr("style");
 					    		$("#selector1").css({ display: "block" });
-					    		if(saveType == 'SENT'){
-					    			$("#msgDiv").html("Successfully you have sent a Invoice..");
-					    		}else if(saveType == 'DRAFT'){
-					    			$("#msgDiv").html("Invoice saved Successfully..");
-					    		}
-	    		     			msgFadein();
-			          		} else if (result.indexOf('Sign In') !== -1) {
-			          			location.replace(sourceleadUrl);
-			          		} else {
-			          		    showError("Operation failed, please try again");
-			          		}
-		        		     $("#invoiceLoading").hide();
-		        		  
-			  			   }); 
+				    		if(saveType == 'SENT'){
+				    			$("#msgDiv").html("Successfully you have sent a Invoice..");
+				    		}else if(saveType == 'DRAFT'){
+				    			$("#msgDiv").html("Invoice saved Successfully..");
+				    		}
+    		     			msgFadein();
+		          		} else if (result.indexOf('Sign In') !== -1) {
+		          			location.replace(sourceleadUrl);
+		          		} else {
+		          		    showError("Operation failed, please try again");
+		          		}
+		        		  $("#invoiceLoading").hide();
+		        	  }
+		  			   }); 
 		        	  /*  $.ajax({
 		    		    	 type: "POST",
 		    		    	 data: formData,
@@ -1553,6 +1566,7 @@ function toDate(selector) {
 		           	getClientContactsExisted(json['vendorContactId']);
 		           	getProjectsList(json['projectName']);
 		           	getProjectFrequency(json['invoiceFrequency'],json['id']);
+		           	getClientContacts(json['contactUsers']);
 		           	getProjectAssignedMem1(json['invoiceLineItemsList']);
 		           	$("#invoiceId").val(json['invoiceId']);
 		           	
