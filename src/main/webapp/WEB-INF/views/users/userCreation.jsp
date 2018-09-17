@@ -156,12 +156,14 @@
 	                  </div>
                   </div>
                   </div>
+                  <c:if test="${SourceLeadWeb_orgLocations.country == 'United States'}">
                   <div class="form-group" id="ssnNumberDiv">
                   <label class="col-md-3">SSN<span class="text-danger">&nbsp;*</span></label>
                   <div class="col-md-9">
                     <input type="text" class="form-control" id="ssnNumber" name="ssn" field-name="SSN" onblur="validateSSNNumber();">
                   </div>
                   </div>
+                  </c:if>
                   
                 <div class="form-group" id="FirstNameDiv">
                   <label class="col-md-3">First Name<span class="text-danger">&nbsp;*</span></label>
