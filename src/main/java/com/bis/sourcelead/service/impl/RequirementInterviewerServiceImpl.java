@@ -91,13 +91,17 @@ public class RequirementInterviewerServiceImpl implements RequirementInterviewer
 		
 		 Requirement requirement = requirementservice.getRequirementByRequirementId(requirementSubmission.getRequirement().getId());
 		 RequirementInterview requirementInterview = requirementInterviewService.getinterviewBySubmissionId(requirementSubmission.getId());
-		
 		 if(requirementInterview!= null) {
+			 User InterviewScheduler=userService.getUserByUserCode(requirementInterview.getCreatedBy());
 		 requirementInterview.getCandidateName();
 		 EmailMessage emailMessage = new EmailMessage();
-		 emailMessage.setFirstName(requirement.getCreatedBy().getFirstName());
+		/* emailMessage.setFirstName(requirement.getCreatedBy().getFirstName());
 		 emailMessage.setLastName(requirement.getCreatedBy().getLastName());
-		 emailMessage.setToEmail(requirement.getCreatedBy().getEmail());
+		 emailMessage.setToEmail(requirement.getCreatedBy().getEmail());*/
+		 emailMessage.setFirstName(InterviewScheduler.getFirstName());
+		 emailMessage.setLastName(InterviewScheduler.getLastName());
+		 emailMessage.setToEmail(InterviewScheduler.getEmail());
+		 
 			if(interviewerUser != null) {
 				 emailMessage.setFromEmail(interviewerUser.getEmail());
 				 emailMessage.setCreatedBy(interviewerUser.getUserCode());
