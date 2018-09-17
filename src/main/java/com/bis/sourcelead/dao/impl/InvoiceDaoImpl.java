@@ -35,6 +35,7 @@ import com.bis.sourcelead.dto.Response;
 import com.bis.sourcelead.dto.ResponseList;
 import com.bis.sourcelead.entity.Asset;
 import com.bis.sourcelead.entity.CandidateFamilyDetails;
+import com.bis.sourcelead.entity.CandidatePassportVisa;
 import com.bis.sourcelead.entity.Contracts;
 import com.bis.sourcelead.entity.CreditDebitLineItems;
 import com.bis.sourcelead.entity.CreditDebitNote;
@@ -1022,5 +1023,27 @@ public class InvoiceDaoImpl implements InvoiceDao {
 		return generatedId;	
 	}
 
+	@Override
+	@Transactional(rollbackFor = { Exception.class })
+	public CreditDebitLineItems getCreditDebitLineItemById(Long id) {
+		Session session = this.sessionFactory.getCurrentSession();
+		CreditDebitLineItems noteLineItem = (CreditDebitLineItems) session.get(CreditDebitLineItems.class, id);
+		//CreditDebitLineItems noteLineItem = (CreditDebitLineItems) session.load(CreditDebitLineItems.class, id);
+		return noteLineItem;
+	}
+
+	@Override
+	@Transactional
+	public void deleteCreditDebitLineItem(CreditDebitLineItems creditDebitLineItems) {
+		try {
+			Session session = this.sessionFactory.getCurrentSession();
+			session.delete(creditDebitLineItems);
+			session.flush();
+		} catch (HibernateException e) {
+			logger.error("SQL Exception occured while doing delete -->" + e.getMessage());
+			e.printStackTrace();
+		}
+
+	}
 	
 }

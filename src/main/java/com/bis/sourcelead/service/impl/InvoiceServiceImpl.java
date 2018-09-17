@@ -4144,6 +4144,16 @@ public class InvoiceServiceImpl implements InvoiceService {
 		
 		return creditDebitNoteListDTO;
 	}
+
+	@Override
+	public CreditDebitLineItems getCreditDebitLineItemById(Long id) {
+		return invoiceDao.getCreditDebitLineItemById(id);
+	}
+
+	@Override
+	public void deleteCreditDebitLineItem(CreditDebitLineItems creditDebitLineItems) {
+		invoiceDao.deleteCreditDebitLineItem(creditDebitLineItems);
+	}
 	
 
 }
