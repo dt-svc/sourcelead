@@ -387,7 +387,39 @@ public class InvoiceDaoImpl implements InvoiceDao {
 					+ subQuery + " " + subQuery1 + " " + subQuery2+" and creditDebitNote.createdDate >= :startDateUTC and creditDebitNote.createdDate <= :endDateUTC";
 		}
 		
-		Query queryObj = session.createQuery(query + qry);
+		
+		StringBuilder query1 = new StringBuilder("");
+		if (StringUtils.isNotBlank(creditDebitNoteDTO.getSearchValue())) {
+			if (creditDebitNoteDTO.getSearchValue().contains("/") || creditDebitNoteDTO.getSearchValue().contains("-")) {
+				String convertedDate = creditDebitNoteDTO.getSearchValue();
+				if (creditDebitNoteDTO.getSearchValue().contains("/")) {
+					convertedDate = creditDebitNoteDTO.getSearchValue().replaceAll("/", "-");
+				}
+				DateTimeFormatter orgFormat = new DateTimeFormatterBuilder().appendPattern(orgLocations.getDateFormat()).toFormatter();
+				LocalDate parsedDate = LocalDate.parse(convertedDate, orgFormat);
+				DateTimeFormatter f2 = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+				String newDate = parsedDate.format(f2);
+				Date searchDate = new SimpleDateFormat("yyyy-MM-dd").parse(newDate);
+				java.sql.Date sqlDate = new java.sql.Date(searchDate.getTime());
+				String queryDate = "from CreditDebitNote creditDebitNote where creditDebitNote.orgLocations.id =:orgLocationId and ( creditDebitNote.creditNoteDate =:sqlDate)";
+				Query queryObjDate = session.createQuery(queryDate.toString()).setDate("sqlDate", sqlDate).setLong("orgLocationId", orgLocations.getId());
+				response.setData(queryObjDate.list());
+			}else{
+			
+				if (creditDebitNoteDTO.getSearchValue() != null && !"".equalsIgnoreCase(creditDebitNoteDTO.getSearchValue())) {
+					query1.append(" and (creditDebitNote.referenceNumber like '%" + creditDebitNoteDTO.getSearchValue() + "%' ")
+							.append("OR creditDebitNote.responderLocation.orgLocationName like '%" + creditDebitNoteDTO.getSearchValue() + "%' ")
+							.append("OR creditDebitNote.orgLocations.orgLocationName like '%" + creditDebitNoteDTO.getSearchValue() + "%' ")
+							.append("OR creditDebitNote.generatedId like '%" + creditDebitNoteDTO.getSearchValue() + "%' ")
+							.append("OR creditDebitNote.total like '%" + creditDebitNoteDTO.getSearchValue() + "%' ")
+							.append("OR creditDebitNote.creditNoteDate like '%" + creditDebitNoteDTO.getSearchValue() + "%' ")
+							.append("OR creditDebitNote.noteStatus like '%" + creditDebitNoteDTO.getSearchValue() + "%' )");
+
+				}
+			}
+		}
+		
+		Query queryObj = session.createQuery(query+query1+ qry);
 		if (creditDebitNoteDTO != null && creditDebitNoteDTO.getLength() > 0) {
 			queryObj.setFirstResult(creditDebitNoteDTO.getStart());
 			queryObj.setMaxResults(creditDebitNoteDTO.getLength());
