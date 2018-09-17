@@ -15,6 +15,7 @@ import com.bis.sourcelead.dto.InvoiceTimelineDTO;
 import com.bis.sourcelead.dto.Response;
 import com.bis.sourcelead.dto.ResponseList;
 import com.bis.sourcelead.entity.Contracts;
+import com.bis.sourcelead.entity.CreditDebitLineItems;
 import com.bis.sourcelead.entity.CreditDebitNote;
 import com.bis.sourcelead.entity.Invoice;
 import com.bis.sourcelead.entity.InvoiceAmount;
@@ -111,5 +112,9 @@ public interface InvoiceService {
 	List<InvoiceTimelineDTO> getInvoiceTimelineHistoryList(Long id, User user, String searchVal, String orderVal, Date[] datesRange, String[] checkedStatus, String[] namesStatus) throws ParseException, Exception;
 	
 	public String getInvoiceOrBillGeneratedId(OrgLocations loginOrgLoc,OrgLocations orgLoc,String invoiceType);
+	
+	CreditDebitLineItems getCreditDebitLineItemById(Long id);
+	
+	void deleteCreditDebitLineItem(CreditDebitLineItems creditDebitLineItems);
 
 }
