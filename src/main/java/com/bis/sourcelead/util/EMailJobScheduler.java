@@ -397,7 +397,7 @@ public class EMailJobScheduler {
 		// Saves the resumes at org level specific folder and updates the org level
 		// candidates table with parsed information.
 		logger.info("******************  Parsing resumes is Started each org level ! **********");
-		System.out.println("****************** Parsing resumes is Started..!..! **********");
+		//System.out.println("****************** Parsing resumes is Started..!..! **********");
 		try {
 			List<Org> orgList = orgService.getOrgs();
 			User user = null;
@@ -413,7 +413,8 @@ public class EMailJobScheduler {
 					List<EmailScenarioConfiguration> emailsList = emailScenarioconService.getConfParserMailList(orgLocationId, Constants.JOB_PARSING);
 						File tempfolder = null;
 					for(EmailScenarioConfiguration email :  emailsList) {
-						System.out.println(" Email id is :" + email.getEmailId());
+						//System.out.println(" Email id is :" + email.getEmailId());
+						logger.debug("*********** Email id is :" + email.getEmailId());
 						tempfolder = new File(staticPath+ System.getProperty("file.separator") +"temp" );
 						if (!tempfolder.exists()) tempfolder.mkdirs(); // if not exist create the folder with path.
 						 new ReadEmail().readEMailAttachments(orgLocationId, email, tempfolder);  //downloads the attachments from the configured email by user level to temp folder.
@@ -431,9 +432,10 @@ public class EMailJobScheduler {
 
 			}
 			logger.debug("******************  parsing resume Jobs on org locations Completed **********************");
-			System.out.println("=========== parsing resume Jobs on org locations Completed =======================");
+			//System.out.println("=========== parsing resume Jobs on org locations Completed =======================");
 
 		} catch (Exception e) {
+			logger.error("*****************Exception caught while Job parsing shceduler *************"+e.getMessage());
 			e.printStackTrace();
 		}
 	}
@@ -444,7 +446,7 @@ public class EMailJobScheduler {
 	public void runJobSchedulerDailyUpdateLCA() { // check if LCA is expired on not on daily basis, if expired updating
 													// LCA status in Database.
 		logger.info("******************  updating All LCA  Deatails Started..! **********");
-		System.out.println("******************  updating All LCA  Deatails Started..! **********");
+		//System.out.println("******************  updating All LCA  Deatails Started..! **********");
 		try {
 			String fromUser = "donotreply@sourcelead.com";
 			Date currentDate = new Date();
