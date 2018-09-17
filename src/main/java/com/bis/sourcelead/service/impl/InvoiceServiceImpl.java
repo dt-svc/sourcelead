@@ -4114,10 +4114,10 @@ public class InvoiceServiceImpl implements InvoiceService {
 		if(StringUtils.isNotBlank(note.getVendorCurrencyCode())){
 			creditDebitNoteListDTO.setAfterExchangeGrandTotal(note.getAfterExchangeGrandTotal().toString());	
 			creditDebitNoteListDTO.setExchangeCurrencyRate(note.getExchangeCurrencyRate().toString());
-			creditDebitNoteListDTO.setVendorCurrencyCode(note.getLoginCurrencyCode());
+			creditDebitNoteListDTO.setVendorCurrencyCode(note.getVendorCurrencyCode());
 			//creditDebitNoteListDTO.setConversionFrom(note.);
 		}
-		
+		creditDebitNoteListDTO.setLoginCurrencyCode(note.getLoginCurrencyCode());
 		//Credit Debit Note Line Items
 		List<CreditDebitLineItems> lineItemsList = invoiceDao.getCreditDebitLineItemsListByNoteIdAndLocationId(noteId, orgLocation.getId());
 		List<CreditDebitNoteLineItemsDTO> lineItemsDTOList = new ArrayList<CreditDebitNoteLineItemsDTO>();

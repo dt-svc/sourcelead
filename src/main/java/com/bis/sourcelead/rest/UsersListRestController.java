@@ -772,6 +772,7 @@ public class UsersListRestController {
 			userRole.setDailyHours(employee.getDailyHours());
 			userRole.setUserEmploymentType(employee.getUserEmploymentType());
 			userRole.setDesignationOtherType(employee.getDesignationOtherType());
+			userRole.setSsn(userRole.getSsn());
 			if(userRole.getShift() != null) {
 				userRole.setShiftId(userRole.getShift().getId());
 				userRole.setShiftName(userRole.getShift().getShiftName());
@@ -852,6 +853,13 @@ public class UsersListRestController {
 				userRole.setDateofBirthStr("");
 			}
 
+		 
+		  Candidate candidate = candidateService.getCandidateByConsultantUserId(userId, orgLocations.getId());
+		  if(candidate != null) {
+			  userRole.setWorkLocation(candidate.getWorkLocation());
+			  userRole.setResidenceAddress(candidate.getResidenceAddress());
+		  }
+		  
 		 
 		 SourceleadActions action = sourceleadActionsService.getSourceleadActionsByActionRole(Constants.ROLE_CREATE_ASSOCIATE);
 

@@ -28,53 +28,7 @@ $(document).ready(function(){
     <section class="content-header clearfix">
      <div class="pull-right brud-crum" style="display: none" id ="creditNoteBrudCrum"><a href="<c:url value='${appPath}/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a> &raquo; <a href="<c:url value='${appPath}/creditNoteList'/>">Credit Note List</a> &raquo; Credit Note View</div>
      <div class="pull-right brud-crum" style="display: none" id ="debitNoteBrudCrum"><a href="<c:url value='${appPath}/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a> &raquo; <a href="<c:url value='${appPath}/debitNoteList'/>">Debit Note List</a> &raquo; Debit Note View</div>
-      
-      <div class="" id="creditDivIdHidden" style="display:none">
-          <h2>Invoice Id: <span><input class="ReadTextFliA" id="invoiceIdDiv" readonly="readonly"></span></h2>
-<!--      =================== Tags related html code written by Laxman Start ============================ -->
-			  <div class="newTagsWrap">
-				    <ul class="clearfix tagsWrap tagsWrapBor">
-					<select multiple class="chosen-select form-control" name="invoiceTagName" id="invoiceTagName" data-placeholder="Add Tags" data-validation="validate_Space" data-validation-optional="true">
-					</select>
-					</ul>
-					<div class="clearfix"></div>&raquo;
-			  </div>
-		   <div class="success_pop tagStyles" id="addInvoiceTagAlert">
-				<i class="fa fa-check-circle"></i>
-		   		<span></span>
-		   </div>
-		   <div class="remove_pop tagStyles" id="deleteInvoiceTagAlert">
-				<i class="fa fa-times"></i>
-		   		<span></span>
-		   </div>
-<!--      =================== Tags related html code written by Laxman Ends ============================ -->
-		  
-      </div>
-      
-      <div class="" id="debitDivIdHidden" style="display:none">
-          <h2>Bill Id: <span><input class="ReadTextFliA" id="billIdDiv" readonly="readonly"></span></h2>
- <!--      =================== Tags related html code written by Laxman Start ============================ -->
-          <div class="cearfix">
-			  <div class="newTagsWrap">
-				    <ul class="clearfix tagsWrap tagsWrapBor">
-					<select multiple class="chosen-select form-control" name="billstagName" id="billingTagName" data-placeholder="Add Tags" data-validation="validate_Space" data-validation-optional="true">
-					</select>
-					</ul>
-					<div class="clearfix"></div>
-			  </div>
-		 </div>
-		   <div class="success_pop tagStyles" id="addBillingTagAlert">
-				<i class="fa fa-check-circle"></i>
-		   		<span></span>
-		   </div>
-		   <div class="remove_pop tagStyles" id="deleteBillingTagAlert">
-				<i class="fa fa-times"></i>
-		   		<span></span>
-		   </div>
-<!--      =================== Tags related html code written by Laxman Ends ============================ -->
-      </div>
-      
-     
+     <h2 id="creditDebitNoteDivId" class="pull-left"></h2>
     </section>
     
     
@@ -143,6 +97,7 @@ function getViewCreditDebitNote(){
  	        	//var json = JSON.parse(data);
 	        	var result = "";
 	        	if(response.object !=null){
+	        		$("#creditDebitNoteDivId").text(response.object.generatedId);
 	        		result = result +' <div class="tab-pane active" id="details">								';
 	        		result = result +' <div class="invoiceview_area clearfix">										';
 	        		result = result +' <div class="form-horizontal row">											';
