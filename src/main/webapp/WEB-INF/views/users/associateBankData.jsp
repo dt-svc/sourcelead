@@ -26,21 +26,21 @@
                
                <div id="accountTypeChildDivs">
 	               <div class="col-md-5">
-	                  <label>Bank Name<span class="text-danger">&nbsp;*</span></label>
+	                  <label>Bank Name<span id="bankNameSpanId" class="text-danger">&nbsp;*</span></label>
 	                  <div>
 	                    <input type="text" class="form-control" id="bankName" name="bankName" value="" data-validation="required validate_Space validate_length length2-100" field-name="Bank Name">
 	                  </div>
 	                </div>
 	
 	               <div class="col-md-5">
-	                  <label>Account Number<span class="text-danger">&nbsp;*</span></label>
+	                  <label>Account Number<span id="accountNumberSpanId" class="text-danger">&nbsp;*</span></label>
 	                  <div>
 	                    <input type="text" class="form-control" id="accountNumber" name="accountNumber" value="" data-validation="required validate_Space validate_int validate_length length2-100" field-name="Account Number">
 	                  </div>
 	                </div>
 	                
 	                <div class="col-md-5">
-	                  <label>Routing Number<span class="text-danger">&nbsp;*</span></label>
+	                  <label>Routing Number<span id="routingNumberSpanId" class="text-danger">&nbsp;*</span></label>
 	                  <div>
 	                    <input type="text" class="form-control" id="routingNumber" name="routingNumber" data-validation="required validate_Space validate_int validate_length length9-9" field-name="Routing Number">
 	                  </div>
@@ -134,25 +134,33 @@ function shiftToSalaryTab(){
 <script>
 function showHideAccountTypes(){
 	var accountType = $("#accountType").val();
-	if(accountType == "Direct Deposit" || accountType == "Cash"){
-		$("#accountTypeChildDivs").hide();
+	if(accountType == "Direct Deposit"){
 		$("#bankName").val('');
 		$("#accountNumber").val('');
 		$("#routingNumber").val('');
-		$("#bankName").removeAttr('data-validation');
-		$('#bankName').attr('data-validation-optional',"true");
-		$("#accountNumber").removeAttr('data-validation');
-		$('#accountNumber').attr('data-validation-optional',"true");
-		$("#routingNumber").removeAttr('data-validation');
-		$('#routingNumber').attr('data-validation-optional',"true");
-	}else{
-		$("#accountTypeChildDivs").show();
+		
 		$("#bankName").removeAttr('data-validation-optional');
 		$('#bankName').attr('data-validation',"required");
 		$("#accountNumber").removeAttr('data-validation-optional');
 		$('#accountNumber').attr('data-validation',"required");
 		$("#routingNumber").removeAttr('data-validation-optional');
 		$('#routingNumber').attr('data-validation',"required validate_int validate_length length9-9");
+		
+		$('#bankNameSpanId').attr('style',"display:inline-block");
+		$('#accountNumberSpanId').attr('style',"display:inline-block");
+		$('#routingNumberSpanId').attr('style',"display:inline-block");
+		
+	}else{
+		$("#bankName").removeAttr('data-validation');
+		$('#bankName').attr('data-validation-optional',"true");
+		$("#accountNumber").removeAttr('data-validation');
+		$('#accountNumber').attr('data-validation-optional',"true");
+		$("#routingNumber").removeAttr('data-validation');
+		$('#routingNumber').attr('data-validation-optional',"true");
+		
+		$('#bankNameSpanId').attr('style',"display:none");
+		$('#accountNumberSpanId').attr('style',"display:none");
+		$('#routingNumberSpanId').attr('style',"display:none");
 	}
 }
 </script> 
