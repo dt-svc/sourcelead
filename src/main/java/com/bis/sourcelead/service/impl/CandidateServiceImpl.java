@@ -1808,6 +1808,7 @@ private Sheet createXlsSheet(Sheet createExcelsheet, Row writeRow,Candidate cand
 	    	candidate.setResidenceLongitude(addUserDTO.getResidenceLongitude());
 	    	candidate.setResidenceZipCode(addUserDTO.getResidenceZipCode());
 	    	candidate.setResidenceStreetAddress(addUserDTO.getResidenceAddress());
+	    	candidate.setWorkLocation(addUserDTO.getWorkLocation());
 	    	
 	    	Countries country = countriesService.getCountriesByCountryName(addUserDTO.getResidenceCountry());
 	    	String stateCode = statesService.getStateCodeByCountryCodeAndState(country.getCode2(),addUserDTO.getResidenceState());
