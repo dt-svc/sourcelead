@@ -333,7 +333,7 @@
           <input value="Draft" id="draftButtonId" onClick="saveDebitNote('Draft');" class="btn btn-warning" type="button">
             <input value="Send" id="sendButtonId" onClick="saveDebitNote('Send');" class="btn btn-success mr ml" type="button">
             <input value="Submit" id = "submitButtonId" onClick="saveDebitNote('Submit');" class="btn btn-primary" type="button">
-            <input value="Cancel" class="btn btn-default ml" type="button">
+            <input value="Cancel" class="btn btn-default ml" onClick="javascript:window.location.href = '<c:url value='${appPath}/debitNoteList'/>'" type="button">
           </div>
         </div>
       </div>
@@ -570,9 +570,9 @@ function currencyConversionDiv(){
 		var result = "";
 		result = result +' <div class="row">';
 		result = result +' <div class="clearfix mt col-md-offset-2 col-md-10" style="padding-right:0;">';
-		result = result +' <div class="clearfix"><label class="col-md-6 text-right"><strong>Conversion From</strong></label><div class="paddingLeft col-md-6"><span class="pull-left" id="currencyCode"></span><div class="pull-right"><input type="text" id="conversionFrom" placeholder="00:00" value = "${creditDebitNote.grandTotal}" class="ReadTextFli" readonly="" type="text"/></div></div></div>';
-		result = result +'  <div class="clearfix"><label class="col-md-6 text-right"><strong>Conversion To</strong></label><div  class="paddingLeft col-md-6"><span id="vendorCurrencyCode"></span><div class="pull-right"><input id="exchangeCurrencyRate" name="exchangeCurrencyRate" class="ReadTextFli" value = "${creditDebitNote.exchangeCurrencyRate}" readonly="" type="text"/></div></div></div>';
-		result = result +' <div class="clearfix"><label class="col-md-6 text-right"><strong>Exchange Rate</strong></label><div  class="paddingLeft col-md-6"><span id="convertedCurrencyCode"></span><div class="pull-right"><input id="afterExchangeGrandTotal" name="afterExchangeGrandTotal" value = "${creditDebitNote.afterExchangeGrandTotal}" class="ReadTextFli" readonly="" type="text"/></div></div></div>';
+		result = result +' <div class="clearfix"><label class="col-md-6 text-right"><strong>Conversion From</strong></label><div class="paddingLeft col-md-6"><span class="pull-left" id="currencyCode">${creditDebitNote.loginCurrencyCode}</span><div class="pull-right"><input type="text" id="conversionFrom" placeholder="00:00" value = "${creditDebitNote.grandTotal}" class="ReadTextFli" readonly="" type="text"/></div></div></div>';
+		result = result +'  <div class="clearfix"><label class="col-md-6 text-right"><strong>Conversion To</strong></label><div  class="paddingLeft col-md-6"><span id="vendorCurrencyCode">${creditDebitNote.vendorCurrencyCode}</span><div class="pull-right"><input id="exchangeCurrencyRate" name="exchangeCurrencyRate" class="ReadTextFli" value = "${creditDebitNote.exchangeCurrencyRate}" readonly="" type="text"/></div></div></div>';
+		result = result +' <div class="clearfix"><label class="col-md-6 text-right"><strong>Exchange Rate</strong></label><div  class="paddingLeft col-md-6"><span id="convertedCurrencyCode">${creditDebitNote.loginCurrencyCode} to ${creditDebitNote.vendorCurrencyCode}</span><div class="pull-right"><input id="afterExchangeGrandTotal" name="afterExchangeGrandTotal" value = "${creditDebitNote.afterExchangeGrandTotal}" class="ReadTextFli" readonly="" type="text"/></div></div></div>';
 		result = result +'  </div>';
 		result = result +'  </div>';
 		document.getElementById("conversionId").style.display="block";
@@ -742,6 +742,7 @@ function datePickerFunction(id){
 		  $("#subTotalAmount").val(sum.toFixed(2));
 		  $("#grandTotal").val(sum.toFixed(2));
 		  $("#conversionFrom").val(sum.toFixed(2));
+		  calculateDisCount();
 		  conversionRate();
   }		  
   
