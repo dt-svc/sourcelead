@@ -65,10 +65,10 @@ public class Candidate implements Serializable {
 	@JoinColumn(name = "WORK_LOCATION")
 	private OrgLocations workLocation;
 	
-	@Column(name = "RESIDENCE_ADDRESS")
+	@Column(name = "RESIDENCE_ADDRESS", columnDefinition = "LONGTEXT default NULL")
 	private String residenceAddress;
 	
-	@Column(name = "RESIDENCE_STREET_ADDRESS")
+	@Column(name = "RESIDENCE_STREET_ADDRESS", columnDefinition = "LONGTEXT default NULL")
 	private String residenceStreetAddress;
 	
 	@Column(name = "RESIDENCE_COUNTRY")
