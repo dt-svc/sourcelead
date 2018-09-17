@@ -77,6 +77,12 @@ public class InvoiceTimelineHistory {
 	@Column(name = "REASON", columnDefinition = "TEXT default NULL")
 	private String rejectReason;
 	
+	@Column(name = "OWNER_USERS")
+	private String ownerUsers;
+	
+	@Column(name = "CONTACT_USERS")
+	private String contactUsers;
+	
 	public Long getId() {
 		return id;
 	}
@@ -212,5 +218,28 @@ public class InvoiceTimelineHistory {
 	public void setRejectReason(String rejectReason) {
 		this.rejectReason = rejectReason;
 	}
+
+	public String getOwnerUsers()
+	{
+		return ownerUsers;
+	}
+
+	public void setOwnerUsers(String ownerUsers)
+	{
+		this.ownerUsers = ownerUsers;
+	}
+
+	public String getContactUsers()
+	{
+		return contactUsers;
+	}
+
+	public void setContactUsers(String contactUsers)
+	{
+		this.contactUsers = contactUsers;
+	}
+	
+	
+	
 	
 }

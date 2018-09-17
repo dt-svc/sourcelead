@@ -154,14 +154,16 @@ background-color: #ddd; color: #333; border: 1px solid #ddd !important;
 		<jsp:include page="visaDetailsTab.jsp" />
 	  </div>
 	  
-	  <div id="lcaTab" class="immigraTabs_inn">
-	  <div id="immigrationLcaLoadingTab"></div>
-		<jsp:include page="lcaDetailsTab.jsp" />	
-	  </div>
+	 
 	  	  
 	  <div id="passportsTab" class="immigraTabs_inn">
 	   <div id="immigrationLoadingPassportsTab"></div>
 		<jsp:include page="passportDetailsTab.jsp" />
+	  </div>
+	  
+	   <div id="lcaTab" class="immigraTabs_inn">
+	  <div id="immigrationLcaLoadingTab"></div>
+		<jsp:include page="lcaDetailsTab.jsp" />	
 	  </div>	  
 	  
 	   <div id="formsTab" class="immigraTabs_inn">

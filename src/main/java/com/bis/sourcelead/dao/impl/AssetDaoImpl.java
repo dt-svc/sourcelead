@@ -25,6 +25,7 @@ import com.bis.sourcelead.dto.AssetDTO;
 import com.bis.sourcelead.dto.ResponseList;
 import com.bis.sourcelead.entity.Asset;
 import com.bis.sourcelead.entity.AssetAssign;
+import com.bis.sourcelead.entity.Department;
 import com.bis.sourcelead.entity.InvoiceTax;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.ProjectTasks;
@@ -97,6 +98,20 @@ public class AssetDaoImpl implements AssetDao{
 		return (Asset) session.get(Asset.class, id);
 	}
 	
+	@Override
+	@Transactional(rollbackFor = { Exception.class })	
+	public Asset getAssetByUUID(String  assetUUID) throws Exception {
+		Session session = this.sessionFactory.getCurrentSession();
+		String query = "from Asset asset  where asset.assetUUID =:assetUUID ";
+		List<Asset> assetList =session.createQuery(query) .setString("assetUUID", assetUUID).list();
+		Asset asset = null;
+		if(assetList != null && !assetList.isEmpty())
+		{
+			asset = (Asset) assetList.iterator().next();
+		}
+		return asset;
+	}
+	
 	/**
 	 * 
 	 * @param orgLocationId
@@ -151,7 +166,7 @@ public class AssetDaoImpl implements AssetDao{
 	public List<Asset> getAssetListByLocationId(Long orgLocationId) throws Exception {
 		
 		Session session =  this.sessionFactory.getCurrentSession();
-		String query = "from Asset asset left join fetch asset.shiftAEmployee.user left join fetch asset.shiftBEmployee.user  where asset.orgLocations.id = :orgLocationId and asset.status = '1' "; 
+		String query = "from Asset asset   where asset.orgLocations.id = :orgLocationId"; 
 		List<Asset> assetList = session.createQuery(query.toString()).setLong("orgLocationId", orgLocationId).list();
 		return assetList;
 	}
@@ -392,6 +407,24 @@ public class AssetDaoImpl implements AssetDao{
 		return (AssetAssign) session.get(AssetAssign.class, id);
 	}
 	 
+	@Override
+	@SuppressWarnings("unchecked")
+	@Transactional
+	public List<AssetAssign> getReturnedOnAssignAssetListByAssetId(Long assetId) {
+		Session session =  this.sessionFactory.getCurrentSession();
+		String query = "from AssetAssign assetAssign left join fetch assetAssign.shift left join fetch assetAssign.userRole where assetAssign.asset.id = :assetId and assetAssign.status = '0'";
+		List<AssetAssign> assignAssetList = session.createQuery(query).setLong("assetId", assetId).list();
+		return assignAssetList;
+	}
+
+	@Override
+	@SuppressWarnings("unchecked")
+	@Transactional
+	public List<AssetAssign> getAllAssignAssetListByAssetId(Long assetId) {
+		Session session =  this.sessionFactory.getCurrentSession();
+		String query = "from AssetAssign assetAssign left join fetch assetAssign.shift left join fetch assetAssign.userRole where assetAssign.asset.id = :assetId";
+		List<AssetAssign> assignAssetList = session.createQuery(query).setLong("assetId", assetId).list();
+		return assignAssetList;
+	}
 	
-	 
 }

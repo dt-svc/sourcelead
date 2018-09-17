@@ -262,7 +262,7 @@ public class UserServiceImpl implements UserService {
 		  }
 		  
 			  if(StringUtils.isNotBlank(addUserDTO.getSsn())) {
-				  user.setSsn(Integer.parseInt(addUserDTO.getSsn()));
+				  user.setSsn(addUserDTO.getSsn());
 			  }
 		  
 		     if(StringUtils.isNotBlank(addUserDTO.getExtensionNumber())){
@@ -619,7 +619,7 @@ public class UserServiceImpl implements UserService {
 		}
 		
 	    if(StringUtils.isNotBlank(addUserDTO.getSsn())) {
-			  user.setSsn(Integer.parseInt(addUserDTO.getSsn()));
+			  user.setSsn(addUserDTO.getSsn());
 	    }
 	    
 	    if(StringUtils.isNotBlank(addUserDTO.getMiddleName())) {
@@ -1796,6 +1796,13 @@ public class UserServiceImpl implements UserService {
 		
 		commonUtil.sendTemplateEmail(emailMessage, globalVarsMap,orgLocations.getOrg(),orgLocations,Constants.USER_EMAIL_UPDATION,attachmentList);
 		
+	}
+
+	@Override
+	public List<User> getUsersListUsingMultipleStringIds(String ids) throws Exception
+	{
+		return userDao.getUsersListUsingMultipleStringIds(ids);
+
 	}
 
 

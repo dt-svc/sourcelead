@@ -41,7 +41,7 @@ function approvePayrollDiv(){
 	        <li><a onclick="getPayPeriodData();">History</a></li>
 	   </c:if>
 	   
-	   <li><a onclick="getUserGroupList();">Employees</a></li>
+	   <li><a onclick="getUserGroupList('DASHBOARD');">Employees</a></li>
 <!-- 	   <li><a href="javascript:void(0)">Contractors</a></li> -->
 <!-- 	   <li><a href="javascript:void(0)">Tax Forms</a></li> -->
 <!-- 	   <li><a href="javascript:void(0)">Settings</a></li> -->
@@ -65,7 +65,7 @@ function approvePayrollDiv(){
 	<div class="row">
 		<div class="col-md-3" id="groupIdDiv">
 			<select class="chosen-select" id="groupId" name="groupId" onchange="removeValidateGroup();getGroupFrequency();" data-validation="required" field-name="User Group">
-				<option value="">Select User Group</option>
+				<option value="">User Group</option>
                     <c:forEach var="ug" items="${userGroupList}">
 					<option value="${ug.groupUUID},${ug.id}">${ug.groupName}</option>
 				</c:forEach>
@@ -78,7 +78,7 @@ function approvePayrollDiv(){
 
 		<div class="col-md-2 paddingLeft paddingRight" id="payTypeIdDiv">
 			<select id="payType" name="payType" data-validation="required" field-name="Pay Type" class="chosen-select" onchange="errPayType();">
-				 <option value="">Select Pay type</option>
+				 <option value="">Pay type</option>
 				 <option value="All">All</option>
 				 <option value="HourlyRate">Hourly Rate</option>
                  <option value = "Salary">Salary</option>
@@ -87,7 +87,7 @@ function approvePayrollDiv(){
 		</div>
 
 		<div class="col-md-2 paddingRight" id="payrollPayDateDivId">
-			<input name="" class="form-control calendar" placeholder="Check Date" id="payrollPayDate" name="payrollPayDate" type="text" data-validation="required" field-name="Pay Date" readonly="readonly">
+			<input name="" class="form-control calendar" placeholder="Check Date" id="payrollPayDate" name="payrollPayDate" type="text" data-validation="required" field-name="Check Date" readonly="readonly">
 		</div>
 		<div class="col-md-2">
 			<a  class="btn btn-success btnSuccess btn-sm anchorWhite" id="generateUSPayroll" onclick="runUSPayroll();">Initiate Payroll</a>
@@ -119,7 +119,9 @@ function approvePayrollDiv(){
 	<div id="submitButtonDiv">
 	<ul class="pull-right mr list-unstyled list-inline">
 		<li><a href="#" class="btn btn-primary btnSuccess" id="Submit" onClick="sendPayrollForApprover();">Submit for Approve</a></li>
+		 <c:if test="${SourceLeadWeb_isPayRollApprover == 'Y'}">
 		<li><a href="#" class="btn btn-default ml mr" id="Confirm" onclick="confirmPayroll();">Confirm</a></li>
+		</c:if>
 		<li><a href="#" class="btn btn-default" onclick="window.location='/app/payrollList'">Cancel</a></li>
 	</ul>
 	</div>
@@ -429,7 +431,7 @@ function getGroupFrequency(){
 	        url: sourceleadUrl+"/getGroupPayPeriod?"+tokenParamName+"="+tokenValue+"&groupUUID="+groupUUID                  , 
 	        success: function(json) {
 	        var output = "";
-	        output = output + "<option value=''>select ferquency</option>";
+	        output = output + "<option value=''>Ferquency</option>";
 			for (var i=0; i<json.length; i++)
 			{
 				var date = json[i].replace(",", " to ");
@@ -524,7 +526,8 @@ function runUSPayroll(){
 						        		result += '<td><div class="tblminwidth-50">--</div></td>';
 						        	}
 						        	result += '<td><div class="tbldata-dotdot-vsm">'+opt.empName+'</div></td>';
-						        	result += '<td><div class="tblminwidth-50">'+opt.regularHours+'</div><div class="tblminwidth-50 clearfix text-danger">$ '+opt.regularHrsTotalAmt.toFixed(2)+'</div></td>';	
+// 						        	result += '<td><div class="tblminwidth-50">'+opt.regularHours+'</div><div class="tblminwidth-50 clearfix text-danger">$ '+opt.regularHrsTotalAmt.toFixed(2)+'</div></td>';	
+						        	result += '<td><div class="tblminwidth-50 clearfix">$ '+opt.grossPay.toFixed(2)+'</div>';
 						        	result += '<td><div class="tbldata-dotdot-vsm">$ '+opt.payRate+'</div></td>';
 						        	if(opt.payType != null && opt.payType != ''){
 						        		result += '<td><div class="tbldata-dotdot-vsm">'+opt.payType+'</div></td>';
