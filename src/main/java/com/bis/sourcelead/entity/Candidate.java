@@ -61,9 +61,8 @@ public class Candidate implements Serializable {
 	@JoinColumn(name = "SHIFT_ID")
 	private Shift shift;
 	
-	@ManyToOne
-	@JoinColumn(name = "WORK_LOCATION")
-	private OrgLocations workLocation;
+	@Column(name = "WORK_LOCATION")
+	private String workLocation;
 	
 	@Column(name = "RESIDENCE_ADDRESS", columnDefinition = "LONGTEXT default NULL")
 	private String residenceAddress;
@@ -1727,7 +1726,7 @@ public class Candidate implements Serializable {
 		this.candidateTagsList = candidateTagsList;
 	}
 
-	public OrgLocations getWorkLocation()
+	public String getWorkLocation()
 	{
 		return workLocation;
 	}
@@ -1777,7 +1776,7 @@ public class Candidate implements Serializable {
 		return residenceLongitude;
 	}
 
-	public void setWorkLocation(OrgLocations workLocation)
+	public void setWorkLocation(String workLocation)
 	{
 		this.workLocation = workLocation;
 	}
