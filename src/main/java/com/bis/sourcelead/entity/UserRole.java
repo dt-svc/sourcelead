@@ -392,6 +392,18 @@ public class UserRole implements Serializable {
 	@JsonProperty
 	private String isExistedOrgGlobalUser;
 	
+	@Transient
+	@JsonProperty
+	private String ssn;
+	
+	@Transient
+	@JsonProperty
+	private String workLocation;
+	
+	@Transient
+	@JsonProperty
+	private String residenceAddress;
+	
 	
 	public BigInteger getUserRoleId() {
 		if(id != null) {
@@ -1164,6 +1176,31 @@ public class UserRole implements Serializable {
 	public void setEmployee(Employees employee) {
 		this.employee = employee;
 	}
+
+	public String getSsn() {
+		return ssn;
+	}
+
+	public void setSsn(String ssn) {
+		this.ssn = ssn;
+	}
+
+	public String getWorkLocation() {
+		return workLocation;
+	}
+
+	public void setWorkLocation(String workLocation) {
+		this.workLocation = workLocation;
+	}
+
+	public String getResidenceAddress() {
+		return residenceAddress;
+	}
+
+	public void setResidenceAddress(String residenceAddress) {
+		this.residenceAddress = residenceAddress;
+	}
+	
 	
 
 }
