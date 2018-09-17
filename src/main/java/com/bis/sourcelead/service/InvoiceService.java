@@ -6,22 +6,20 @@ import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
-import org.json.JSONObject;
-import org.springframework.web.multipart.MultipartFile;
-
 import com.bis.sourcelead.beans.BillingReportDTO;
 import com.bis.sourcelead.beans.CurrencyConversionResponse;
+import com.bis.sourcelead.dto.CreditDebitNoteDTO;
+import com.bis.sourcelead.dto.CreditDebitNoteListDTO;
 import com.bis.sourcelead.dto.InvoiceDTO;
 import com.bis.sourcelead.dto.InvoiceTimelineDTO;
+import com.bis.sourcelead.dto.Response;
 import com.bis.sourcelead.dto.ResponseList;
-import com.bis.sourcelead.entity.Asset;
 import com.bis.sourcelead.entity.Contracts;
+import com.bis.sourcelead.entity.CreditDebitNote;
 import com.bis.sourcelead.entity.Invoice;
 import com.bis.sourcelead.entity.InvoiceAmount;
-import com.bis.sourcelead.entity.InvoiceTimelineHistory;
 import com.bis.sourcelead.entity.Org;
 import com.bis.sourcelead.entity.OrgLocations;
-import com.bis.sourcelead.entity.OrgRelations;
 import com.bis.sourcelead.entity.TimesheetSubmissionsDocuments;
 import com.bis.sourcelead.entity.User;
 
@@ -30,6 +28,9 @@ public interface InvoiceService {
 
 	ResponseList<Invoice> invoiceListByOrgLocationId(OrgLocations orgLocations,Date startDateUTC, Date endDateUTC,InvoiceDTO invoiceDTO) throws Exception;
 
+	ResponseList<CreditDebitNoteListDTO> creditDebtListByOrgLocationId(OrgLocations orgLocations,Date startDateUTC, Date endDateUTC,CreditDebitNoteDTO creditDebitNoteDTO) throws Exception;
+
+	
 	ResponseList<Invoice> invoiceListByOrgLocationIdAndRelationId(InvoiceDTO invoiceDTO,OrgLocations orgLocations,Long orgRelationId) throws Exception;
 
 	Invoice getInvoicetById(Long invoiceId) throws Exception;
@@ -40,6 +41,12 @@ public interface InvoiceService {
 
 	Invoice saveInvoice(User user, OrgLocations orgLocation, String saveType,String invoiceType, Org org, String currencyCode, InvoiceDTO invoiceDTO)throws Exception;
 	
+	CreditDebitNote saveCreditDebitNote(User user, OrgLocations orgLocation, String saveType,String noteType, CreditDebitNoteDTO creditDebitNoteDTO,String currencyCode)throws Exception;
+	
+	CreditDebitNote saveAcceptedCreditDebitNote(User user, OrgLocations orgLocation,String noteType, CreditDebitNote creditDebitNote)throws Exception;
+
+	CreditDebitNoteListDTO editCreditDebitNote(Long noteId,OrgLocations orgLocation,String noteType)throws Exception;
+	
 	Invoice getInvoicetByInvoiceUUID(String invoiceUUID) throws Exception;
 	
 	Invoice updateInvoice(Invoice invoice) throws Exception;
@@ -47,6 +54,10 @@ public interface InvoiceService {
 	Invoice getInvoicetByParentInvoiceId(Long parentInvoiceId) throws Exception;
 
 	List<Invoice> getViewInvoiceListByInvoiceIdAndOrglocationId(Long invoiceId,Long orgLocationId)throws Exception;
+	
+	CreditDebitNote getCreditDebitNoteByUUID(String noteUUID)throws Exception;
+	
+	Response<CreditDebitNote> getCreditDebitNoteByIdAndOrglocationId(Long id,Long orgLocationId) throws Exception;
 
 	/*void getPdfFileForInvoice(Invoice invoice, OrgLocations orgLocation, User user, Org org) throws Exception;*/
 
@@ -84,6 +95,8 @@ public interface InvoiceService {
 	Invoice getInvoicetByParentId(Long invoiceId)throws Exception;
 
 	boolean deleteInvoice(String invoiceUUID, String reason, String invoiceType, User user)throws Exception;
+	
+	boolean deleteCreditDebitNote(String noteUUID,String noteType,User user,OrgLocations orgLocations)throws Exception;
 
 	Invoice saveExpenseInvoice(InvoiceDTO invoiceDTO, User user, OrgLocations orgLocation, String saveType,String invoiceType, Org org, String currencyCode, String invoiceCategory)throws Exception;
 

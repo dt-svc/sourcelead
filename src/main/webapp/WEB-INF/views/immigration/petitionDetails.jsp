@@ -303,7 +303,7 @@
 									<input type="hidden" id="candidateId" name="candidateId" value="${immigrationDTO.candidateId}"/>
 								</div>
 							<span class="col-md-2 noPad clearfix">
-							<a href=">" target="_blank"><i class="fa fa-plus btn btn-default pull-right minHeBtn"></i></a> 
+							<a href="<c:url value="/app/userCreation" />" target="_blank"><i class="fa fa-plus btn btn-default pull-right minHeBtn"></i></a> 
 							</span>	
 							</div>
 							</div>
@@ -333,7 +333,7 @@
 									<input type="hidden" id="candidateId" name="candidateId" value="${immigrationDTO.candidateId}"/>
 								</div>
 							<span class="col-md-2 noPad clearfix">
-							<a href="<c:url value="" />" target="_blank"><i class="fa fa-plus btn btn-default pull-right minHeBtn"></i></a> 
+							<a href="<c:url value="/app/userCreation" />" target="_blank"><i class="fa fa-plus btn btn-default pull-right minHeBtn"></i></a> 
 							</span>
 							</div>
 							</div>
@@ -503,10 +503,10 @@
               <div class="col-md-4 dropdown-select">
                 <select id="experienceYears" name="experienceYears">
                 	<option value="">--Select Year--</option>
-                	<c:forEach begin="0" end="25" varStatus="loop">
+                	<c:forEach begin="0" end="40" varStatus="loop">
 				    	<option ${immigrationDTO.experienceYears == loop.index ? 'selected' : ''} value="${loop.index}" >${loop.index}</option>
 					</c:forEach>
-                	<option ${immigrationDTO.experienceYears == '25+' ? 'selected' : ''} value="25+" >25+</option>
+                	<%-- <option ${immigrationDTO.experienceYears == '40' ? 'selected' : ''} value="" >40</option> --%>
                 </select>
               </div>
              <div class="col-md-4 dropdown-select">
@@ -647,7 +647,7 @@
               <label class="col-md-4">LCA Start date</label>
               <div class="col-md-8">
                <div class="input-group">
-                <input type="text" class="form-control calendar" id="lcaStartDate" value="${immigrationDTO.lcaStartDate}" name="lcaStartDate" placeholder="LCA Start dates">
+                <input type="text" class="form-control calendar" id="lcaStartDate" value="${immigrationDTO.lcaStartDate}" name="lcaStartDate" placeholder="LCA Start date">
                 <span class="input-group-addon"><i class="fa fa-times text-danger cursorPointer" onclick="clearDateValue('lcaStartDate');"></i></span>
             </div>
               </div>
@@ -1022,7 +1022,7 @@ function getCandidatesResumeDetailsById(candidateId){
 }
 
 $("#experienceValue").change(function () {
-    if(this.value == '25+'){
+    if(this.value == '40'){
     	$("#expMonthValue").val("");
     	$("#expMonthValue").prop("disabled", true);
     }else{
@@ -1480,7 +1480,7 @@ function  removeValidationAttorneyContact() {
 		}
 		$(function() {
 		    $("#experienceYears").change(function() {
-		    	if($("#experienceYears").val() == '25+'){
+		    	if($("#experienceYears").val() == '40'){
 		    		$("#experienceMonths").prop("disabled", true);
 		    	}else{
 		    		$("#experienceMonths").prop("disabled", false);

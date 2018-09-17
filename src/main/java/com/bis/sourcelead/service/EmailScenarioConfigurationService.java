@@ -35,4 +35,8 @@ public interface EmailScenarioConfigurationService {
 	EmailConfigurationFromMail getConfFromMailByStatus(Long orgLocId)throws Exception;
 	
 	List<EmailScenarioConfiguration> getConfParserMailList(Long orgLocId, String parsingType)throws Exception;
+	
+	EmailScenarioConfiguration getParserEmailsDetailsByUUID(String UUID)throws Exception;
+	
+	String deleteParserEMail(Long emailId) throws Exception;
 }

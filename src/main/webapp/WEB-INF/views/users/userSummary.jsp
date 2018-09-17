@@ -2007,7 +2007,7 @@ $("#editRoleDetailsList").empty();
 						result = result + '</span>';
 					
 					// moving date bottom to top
-					result = result + ' <div class="user_summary_edit_cta">';
+					/* result = result + ' <div class="user_summary_edit_cta">';
 					result = result + ' <label>Rate</label>';
 		            result = result+'  <select class="rate_sele selectpicker" id="currentCurrency" name="currentCurrency" data-style="btn-primary" data-width="70px"> ';
 					if(json.currentCurrency != "undefined" && json.currentCurrency != null && json.currentCurrency != ''){
@@ -2040,7 +2040,7 @@ $("#editRoleDetailsList").empty();
 					result = result + ' <option '+selected7+'>Yearly</option>';
 					result = result + ' </select>';
 					result = result + ' </div>';	
-					
+					 */
 					
 					result = result + ' <div class="user_summary_edit_cta">';
 					result = result + ' <label>Date of join</label>';
