@@ -569,6 +569,7 @@ public class RequirementInterviewServiceImpl implements RequirementInterviewServ
 	         tempHTML.append("<th> Interview Type </th>");
 	         tempHTML.append("<th> Interview Time & Date </th>");
 	         tempHTML.append("<th> Details </th>");
+	         tempHTML.append("<th> Resume </th>");
 	         if(null != templateId && !"".equalsIgnoreCase(templateId)){
 	         tempHTML.append("<th> Feedback </th>");
 	         }
@@ -591,6 +592,11 @@ public class RequirementInterviewServiceImpl implements RequirementInterviewServ
 		        	 }
 			         if(dateOfInterviewValue != null && !"".equalsIgnoreCase(dateOfInterviewValue)){
 		        		 tempHTML.append("<td style='text-align: center;'>").append(dateOfInterviewValue).append("</td>");
+		        	 }else{
+		        		 tempHTML.append("<td style='text-align: center;'>").append("--").append("</td>");
+		        	 }
+			         if(requirementInterview.getLocation() != null && !"".equalsIgnoreCase(requirementInterview.getLocation())){
+		        		 tempHTML.append("<td style='text-align: center;'>").append(requirementInterview.getLocation()).append("</td>");
 		        	 }else{
 		        		 tempHTML.append("<td style='text-align: center;'>").append("--").append("</td>");
 		        	 }
@@ -759,6 +765,7 @@ public class RequirementInterviewServiceImpl implements RequirementInterviewServ
 	         tempHTML.append("<th> Interview Type </th>");
 	         tempHTML.append("<th> Interview Time & Date </th>");
 	         tempHTML.append("<th> Details </th>");
+	         tempHTML.append("<th> Resume </th>");
 	         if(null != templateId && !"".equalsIgnoreCase(templateId)){
 	         tempHTML.append("<th> Feedback </th>");
 	         }
@@ -781,6 +788,11 @@ public class RequirementInterviewServiceImpl implements RequirementInterviewServ
 		        	 }
 			         if(dateOfInterviewValue != null && !"".equalsIgnoreCase(dateOfInterviewValue)){
 		        		 tempHTML.append("<td style='text-align: center;'>").append(dateOfInterviewValue).append("</td>");
+		        	 }else{
+		        		 tempHTML.append("<td style='text-align: center;'>").append("--").append("</td>");
+		        	 }
+			         if(requirementInterview.getLocation() != null && !"".equalsIgnoreCase(requirementInterview.getLocation())){
+		        		 tempHTML.append("<td style='text-align: center;'>").append(requirementInterview.getLocation()).append("</td>");
 		        	 }else{
 		        		 tempHTML.append("<td style='text-align: center;'>").append("--").append("</td>");
 		        	 }
