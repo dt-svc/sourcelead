@@ -1621,18 +1621,17 @@ public class ImmigrationRestController {
 			@RequestParam(value = "immigrationId", required = true) Long immigrationId, HttpServletRequest request) throws Exception {
 		
 		ModelAndView model = new ModelAndView();
-		OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,"orgLocations");
 		logger.debug(" inisde getLcaDetails controller test -->");
 		if(immigrationId != null) {
 			 List<LcaDTO> lcaList = immigrationCommonService.getLcaHistoryDetailsInfo(immigrationId);
-			   /* for(LcaDTO lh: lcaList) {
-			    	lh.setStartDate(commonUtil.dateStrFromOrgDateFormatter(orgLocations.getDateFormat(),lh.getStartDate().toString()));
-			    	lh.setEndDate(commonUtil.dateStrFromOrgDateFormatter(orgLocations.getDateFormat(),lh.getEndDate()));
-			    	if(lh.getLcaId() != null && lh.getLcaId().getLocationsList() != null) {
-			    	lh.setLcaLocations(lh.getLcaId().getLocationsList());
+			 /*   for(LcaDTO lh: lcaList) {
+			    	
+			    	if(lh.getLcaId() != null ) {
+			    	lh.setLcaId(lh.getLcaId());
 			    	}
-			    }*/
-				
+			    	model.addObject("currlcaId",lh.getId());
+			    }
+				*/
 			    model.addObject("lcaList", lcaList);
 		}
 		model.setViewName("/immigration/lcaDetailsTab");
@@ -2384,6 +2383,7 @@ public class ImmigrationRestController {
 					Long lcaId = immigrationCommonService.getLcaIdByUUID(lcaUuid);
 					LcaDTO lcaDTO = immigrationCommonService.editLcaDetails(lcaId,orgLocations);
 					model.addObject("privilingWageCurrency",lcaDTO.getPrivilingWageCurrency());
+					model.addObject("offeredWageCurrency",lcaDTO.getOfferedWageCurrency());
 					model.addObject("lcaDTO", lcaDTO);
 				}
 			
@@ -2426,10 +2426,9 @@ public class ImmigrationRestController {
 			@RequestParam(value = "expiryStatus", required = false) String expiryStatus,
 			@RequestParam(value = "candidateId", required = false) String candidateId) throws Exception {
 		
-		OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
-		List<Map<String, String>> lcaNumbersList = null;
-		lcaNumbersList = immigrationCommonService.getLcaNumbersList(lcaNum,orgLocations.getId().toString(),expiryStatus,candidateId);
-		return lcaNumbersList;
+		 OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+		 List<Map<String, String>> lcaNumbersList = immigrationCommonService.getLcaNumbersList(lcaNum,orgLocations.getId().toString(),expiryStatus,candidateId);
+		 return lcaNumbersList;
 	}
 	
 
