@@ -317,9 +317,20 @@
 							                </div>
 							                </div>
 							                
-							                <div class="col-md-1 padding_left mt25">
-											    <i class="refeIcon" onclick="refrshAssignData('${shiftOrder.index}');deleteAssignDocument('${shiftOrder.index}');"></i>
-											</div>
+							                 <c:forEach var="existedAssetDocuments" items="${assignAssetList}">
+							                     <c:if test="${(existedAssetDocuments.shift.id eq shift.id) && (!empty existedAssetDocuments.fileName)}">
+													   <div class="col-md-1 padding_left mt25">
+													    <i class="refeIcon" onclick="refrshAssignData('${shiftOrder.index}');deleteAssignDocument('${shiftOrder.index}',${existedAssetDocuments.id});"></i>
+													    </div>
+												 </c:if>
+		     				                     <c:if test="${(existedAssetDocuments.shift.id eq shift.id) && (empty existedAssetDocuments.fileName)}">
+		     				                     <div class="col-md-1 padding_left mt25">
+												 	<i class="refeIcon" onclick="refrshAssignData('${shiftOrder.index}');"></i>
+												 </div>
+						                        </c:if>
+							                </c:forEach>
+							                
+							                
 							       </c:if>
 	                        </c:forEach>
 	                        <c:if test="${NUM == 0}">
@@ -350,7 +361,7 @@
 		            </div>
 		            <div class="clearfix mr">
 		                  <div class="pull-right">
-		                   <input type="button" value="Add" id="add_asset" onclick="storeAsset();" class="btn btn-primary mr">
+		                   <input type="button" value="Add" id="add_asset" onclick="storeAsset('${assetAssignData.assetUUID}');" class="btn btn-primary mr">
 		                   <input type="button" value="Cancel" id="" onclick="closeassetManagementPopup();" class="btn btn-default">
 		                  </div>
 		              </div>
