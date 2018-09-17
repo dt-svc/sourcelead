@@ -19,6 +19,10 @@ public class AssetAssignDTO extends SearchDTO implements Serializable {
 
 		private String staticPath;
 		
+		private String assignedOn;
+		
+		private String returnedOn;
+		
 		public String getShift() {
 			return shift;
 		}
@@ -65,6 +69,22 @@ public class AssetAssignDTO extends SearchDTO implements Serializable {
 
 		public void setXlCol(String xlCol) {
 			this.xlCol = xlCol;
+		}
+
+		public String getAssignedOn() {
+			return assignedOn;
+		}
+
+		public String getReturnedOn() {
+			return returnedOn;
+		}
+
+		public void setAssignedOn(String assignedOn) {
+			this.assignedOn = assignedOn;
+		}
+
+		public void setReturnedOn(String returnedOn) {
+			this.returnedOn = returnedOn;
 		}
 
 }

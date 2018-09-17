@@ -152,7 +152,7 @@ function EmployeeLoansAndAdvances(type){
 	 	        
 	 	        
 	 	        if(type == "outstanding"){
-	 	        	 result = result +'<td>';
+	 	        	result = result +'<td>';
 	 	 	        result = result +'<div class="tblminwidth-125">';
 	 	 	        if(json.paidAmount != null){
 	 	 	        	result = result +'<div>$ '+json.paidAmount+'</div>';	
@@ -163,14 +163,14 @@ function EmployeeLoansAndAdvances(type){
 	 	 	        result = result +'</td>';
 	 	 	        result = result +'<td>';
 	 	 	        result = result +'<div class="tblminwidth-50">';
-	 	 	        result = result +'<div>$ '+json.pendingAmount+'</div>';
+	 	 	        result = result +'<div>$ '+json.deductAmount+'</div>';
 	 	 	        result = result +'</div>';
 	 	 	        result = result +'</td>';
 	 	        } else if(type == "completed"){
 	 	           result = result +'<td>';
 	 	 	        result = result +'<div class="tblminwidth-50">';
-	 	 	        if(json.lastPaidOn != null){
-	 	 	        	result = result +'<div>$ '+json.lastPaidOn+'</div>';
+	 	 	        if(json.lastPaidOnMaxDate != null){
+	 	 	        	result = result +'<div>'+json.lastPaidOnMaxDate+'</div>';
 	 	 	        }else{
 	 	 	        	result = result +'<div>--</div>';
 	 	 	        }
@@ -199,7 +199,7 @@ function EmployeeLoansAndAdvances(type){
 	 	        }
 	 	        
 	 	       if(type == "outstanding" ||  type == "completed"){
-	 	    	  result = result +'<td>';
+	 	    	    result = result +'<td>';
 		 	        result = result +'<div class="tblminwidth-50">';
 		 	        result = result +'<div>'+json.noOfSchedules+'</div>';
 		 	        result = result +'</div>';

@@ -129,7 +129,13 @@ public class EmailScenarioConfigurationRestController {
 		 User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
 		 OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 		 String returnValue="";
-		 EmailScenarioConfiguration emailConfig = new EmailScenarioConfiguration();;
+		 EmailScenarioConfiguration emailConfig = null;
+				 if(StringUtils.isNotBlank(emailConfigurationDTO.getEmailUUID())){
+					 emailConfig = emailScenarioconService.getParserEmailsDetailsByUUID(emailConfigurationDTO.getEmailUUID());// loads existed record to upate.
+				 }else {
+					 emailConfig = new EmailScenarioConfiguration();
+				 }
+				
 			 if(emailConfigurationDTO.getEmailId() != null){
 				 emailConfig.setEmailId(emailConfigurationDTO.getEmailId()); 
 			 }
@@ -166,6 +172,20 @@ public class EmailScenarioConfigurationRestController {
 		 return returnValue;
 		 
 			
+		}
+	
+	 	@RequestMapping(value = "/editEmailParsing", method = RequestMethod.POST)
+		public @ResponseBody EmailScenarioConfiguration editEmailParsingDetails(HttpServletRequest request, 
+				                                        @RequestParam(value = "emailUUID", required = true) String emailUUID) 
+		{
+			EmailScenarioConfiguration emailConfig = null;
+			try {
+				emailConfig =  emailScenarioconService.getParserEmailsDetailsByUUID(emailUUID);
+			} catch (Exception e) {
+				logger.error("Exception caught in while loading email parsing details--->" + e.getMessage());
+				e.printStackTrace();
+			}
+			return emailConfig;
 		}
 	 @RequestMapping(value = "/saveConfigurationFromMail" , method = RequestMethod.POST)
 		public @ResponseBody String saveConfigurationFromMail(EmailConfigurationFromMailDTO emailConfigurationFromMailDTO,HttpServletRequest request)
@@ -258,6 +278,7 @@ public class EmailScenarioConfigurationRestController {
 			public @ResponseBody ResponseList<EmailScenarioConfiguration> getConfigParserMailList(HttpServletRequest request,@RequestParam(value = "emailId", required = false) String emailId)
 					throws Exception {
 			 ResponseList<EmailScenarioConfiguration> response = new ResponseList<>();
+			 logger.debug("***********************inside getConfigParserMailList****************");
 			 try{
 				 User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
 				 OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
@@ -324,6 +345,39 @@ public class EmailScenarioConfigurationRestController {
 			
 		}
 	 
+	 @SuppressWarnings("unused")
+		@RequestMapping(value = "/deleteParserEmail" , method = RequestMethod.POST)
+			public @ResponseBody Response<String> deleteParserEmail(@RequestParam(value = "emailId", required = false) Long emailId,HttpServletRequest request)
+					throws Exception {
+			 Response<String> response=new Response<String>();
+			 logger.debug("***********************inside deleteParserEmail****************");
+			 try{
+				 User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+				 OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+				 if(user!= null){
+					 String status=emailScenarioconService.deleteParserEMail(emailId);
+					 if(status!= null){
+		    				response.setResponse(Result.SUCCESS.name());
+							response.setResponseMessage(Result.SUCCESS.getValue());
+						} else {
+							response.setResponse(Result.FAILED.name());
+							response.setResponseMessage(Result.FAILED.getValue());
+						}
+				 }else if (user == null) {
+						response.setResponse(Result.SESSION_TIMEDOUT.name());
+						response.setResponseMessage(Result.SESSION_TIMEDOUT.getValue());
+					} else {
+						response.setResponse(Result.INVALID_DATA.name());
+						response.setResponseMessage(Result.INVALID_DATA.getValue());
+					}
+			 }catch (Exception e) {
+					response.setResponse(Result.AWKWARD.name());
+					response.setResponseMessage(Result.AWKWARD.getValue());
+					logger.error(ExceptionUtils.getFullStackTrace(e));
+				}
+			  return response;
+				
+			}
 	 @SuppressWarnings("unused")
 		@RequestMapping(value = "/getEmailConfigById" , method = RequestMethod.POST)
 			public @ResponseBody Response<EmailConfigurationFromMailDTO> getEmailConfigById(@RequestParam(value = "emailUUID", required = false) String emailUUID,HttpServletRequest request)

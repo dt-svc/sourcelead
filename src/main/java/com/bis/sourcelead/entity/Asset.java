@@ -113,6 +113,8 @@ public class Asset implements Serializable{
 	@Type(type="text")
 	private String description;
 	
+	@Column(name = "ASSET_UUID")
+	private String assetUUID;
 	
 	@Column(name = "PURCHASE_DATE")
 	private Date purchaseDate;
@@ -487,5 +489,12 @@ public class Asset implements Serializable{
 	public void setVendorDetails(String vendorDetails) {
 		this.vendorDetails = vendorDetails;
 	}
-	
+
+	public String getAssetUUID() {
+		return assetUUID;
+	}
+
+	public void setAssetUUID(String assetUUID) {
+		this.assetUUID = assetUUID;
+	}
 }

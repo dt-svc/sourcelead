@@ -19,6 +19,7 @@ import com.bis.sourcelead.annotations.Validator;
 import com.bis.sourcelead.dto.Response;
 import com.bis.sourcelead.dto.ResponseList;
 import com.bis.sourcelead.dto.SourceleadNotesDTO;
+import com.bis.sourcelead.entity.Asset;
 import com.bis.sourcelead.entity.Contracts;
 import com.bis.sourcelead.entity.Invoice;
 import com.bis.sourcelead.entity.OrgLocations;
@@ -26,6 +27,7 @@ import com.bis.sourcelead.entity.SourceleadBlogs;
 import com.bis.sourcelead.entity.SourceleadNotes;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.enums.Result;
+import com.bis.sourcelead.service.AssetService;
 import com.bis.sourcelead.service.CandidateService;
 import com.bis.sourcelead.service.ContractsTemplateService;
 import com.bis.sourcelead.service.InvoiceService;
@@ -82,6 +84,8 @@ public class SourceleadNotesRestController {
 	@Autowired
 	private ContractsTemplateService contractsTemplateService;
 	
+	@Autowired
+	private AssetService assetService;
 	
 	
 	@RequestMapping(value = "/storeNotes", method = RequestMethod.POST)
@@ -174,11 +178,12 @@ public class SourceleadNotesRestController {
 	}
 	
 	@RequestMapping(value = "/getAssetNotes", method = RequestMethod.POST)
-	public @ResponseBody String getAssetNotes(@RequestParam(value = "assetId", required = false) Long assetId,HttpServletRequest request) throws Exception
+	public @ResponseBody String getAssetNotes(@RequestParam(value = "assetUUID", required = false) String assetUUID,HttpServletRequest request) throws Exception
 	{
 		String notesList;
 		OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
-		List<SourceleadNotes> list = sourceleadNotesService.getNotesListByAssetId(assetId,orgLocation.getId());
+		Asset asset = assetService.getAssetByUUID(assetUUID);
+		List<SourceleadNotes> list = sourceleadNotesService.getNotesListByAssetId(asset.getId(),orgLocation.getId());
 		notesList = commonUtil.toJSON(list);
 		return notesList;
 	}
