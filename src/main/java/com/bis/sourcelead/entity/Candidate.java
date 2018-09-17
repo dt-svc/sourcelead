@@ -61,7 +61,7 @@ public class Candidate implements Serializable {
 	@JoinColumn(name = "SHIFT_ID")
 	private Shift shift;
 	
-	@Column(name = "WORK_LOCATION")
+	@Column(name = "WORK_LOCATION", columnDefinition = "LONGTEXT default NULL")
 	private String workLocation;
 	
 	@Column(name = "RESIDENCE_ADDRESS", columnDefinition = "LONGTEXT default NULL")
