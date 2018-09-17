@@ -1825,7 +1825,4 @@ public class Candidate implements Serializable {
 	public void setWorkLocation(OrgLocations workLocation) {
 		this.workLocation = workLocation;
 	}
-
-	
-	
 }
