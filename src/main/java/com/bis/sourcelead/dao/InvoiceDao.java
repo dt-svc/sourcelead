@@ -88,5 +88,9 @@ public interface InvoiceDao{
 	public Long checkInvoiceOrBillIdNumberInDatebase(Long orgLocationId,Integer generatedIdcount,String invoiceType);
 	
 	public String checkCreditDebitIdNumberInDatebase(Long orgLocationId,String type);
+	
+	CreditDebitLineItems getCreditDebitLineItemById(Long id);
+	
+	void deleteCreditDebitLineItem(CreditDebitLineItems creditDebitLineItems);
 
 }

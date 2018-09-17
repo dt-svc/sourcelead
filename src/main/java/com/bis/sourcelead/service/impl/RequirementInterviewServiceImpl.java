@@ -600,6 +600,11 @@ public class RequirementInterviewServiceImpl implements RequirementInterviewServ
 		        	 }else{
 		        		 tempHTML.append("<td style='text-align: center;'>").append("--").append("</td>");
 		        	 }
+			         if(requirementInterview.getLocation() != null && !"".equalsIgnoreCase(requirementInterview.getLocation())){
+		        		 tempHTML.append("<td style='text-align: center;'>").append(requirementInterview.getLocation()).append("</td>");
+		        	 }else{
+		        		 tempHTML.append("<td style='text-align: center;'>").append("--").append("</td>");
+		        	 }
 			      
 			       /*  if(null != templateId && !"".equalsIgnoreCase(templateId)){
 						if (null != requirementSubmissionTemplateFields.getRequirementSubmission() && !"".equalsIgnoreCase(requirementSubmissionTemplateFields.getRequirementSubmission().toString())) {
@@ -816,6 +821,7 @@ public class RequirementInterviewServiceImpl implements RequirementInterviewServ
 		        	 }else{
 		        		 tempHTML.append("<td style='text-align: center;'>").append("--").append("</td>");
 		        	 }
+
 			         if(requirementSubmissionTemplateFields.getRequirementSubmission().getCandidateResumes() != null){
                          String url = StringUtils.removeEnd(sourceleadUrl, sourceleadUrl.substring(sourceleadUrl.lastIndexOf("/")));
 
@@ -842,6 +848,7 @@ public class RequirementInterviewServiceImpl implements RequirementInterviewServ
 		        		 tempHTML.append("<td style='text-align: center;'>").append("--").append("</td>");
  
 			         }
+
 			         int i=0;
 			         if(null != templateId && !"".equalsIgnoreCase(templateId)){
 					for (RequirementInterview interviersArray : intervieresArrayList) {

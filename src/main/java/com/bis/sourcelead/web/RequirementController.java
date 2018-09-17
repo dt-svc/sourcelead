@@ -832,6 +832,12 @@ public class RequirementController {
 			Integer requirementAssignToListCount = requirementAssignToService.getRequirementAssignToListCountByRequirementId(requirement.getId());
 			model.addObject("requirementAssignToListCount",requirementAssignToListCount);
 			
+			Boolean isPrimaryRecruiter = false;
+			if(requirement.getPrimaryRecruiterUserId() != null && requirement.getPrimaryRecruiterUserId().getId() == loginUser.getId()) {
+				isPrimaryRecruiter = true;
+				model.addObject("isPrimaryRecruiter",isPrimaryRecruiter);
+			}
+			
 			if(null != requirement && requirement.getOrgLocationId().getId().equals(orgLocations.getId())){
 				Long requirementId = requirement.getId();
 				
