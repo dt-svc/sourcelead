@@ -408,7 +408,28 @@ $(document).ready(function(){
 					result = result + '<div class="clearfix"></div>';
 				}
 				
-				if(json.user.mobilePhone != null && json.user.mobilePhone != "" && json.user.mobilePhone != 'undefined'){
+				if(json.user.ssn != null && json.user.ssn != "" && json.user.ssn != 'undefined'){
+					result = result + '			<div class="project_details_cta">';
+					result = result + '				 <strong>SSN:</strong><span class="fix" title="'+json.user.ssn+'">'+json.user.ssn+'</span><div class="clearfix"></div>';
+					result = result + ' 		</div>';
+					result = result + '<div class="clearfix"></div>';
+				}
+				
+				if(json.workLocation != null && json.workLocation != "" && json.workLocation != 'undefined'){
+					result = result + '			<div class="project_details_cta">';
+					result = result + '				 <strong>Work Location:</strong><span class="fix" title="'+json.workLocation+'">'+json.workLocation+'</span><div class="clearfix"></div>';
+					result = result + ' 		</div>';
+					result = result + '<div class="clearfix"></div>';
+				}
+				
+				if(json.residenceAddress != null && json.residenceAddress != "" && json.residenceAddress != 'undefined'){
+					result = result + '			<div class="project_details_cta">';
+					result = result + '				 <strong>Residence Location:</strong><span class="fix" title="'+json.residenceAddress+'">'+json.residenceAddress+'</span><div class="clearfix"></div>';
+					result = result + ' 		</div>';
+					result = result + '<div class="clearfix"></div>';
+				}
+				
+				if(json.user.mobilePhone != null && json.user.mobilePhonresidenceAddresse != "" && json.user.mobilePhone != 'undefined'){
 					result = result + '			<div class="project_details_cta">';
 					result = result + '				 <strong>Phone Number:</strong><span class="fix">'+json.user.mobilePhone+'</span><div class="clearfix"></div>';
 					result = result + ' 		</div>';
@@ -1761,7 +1782,7 @@ $("#editRoleDetailsList").empty();
 					emailId = json.user.email;
 				}
 				result = result + ' <form id="editUser_form"  name="editUser_form" method="post">';
-					result = result + ' <div class="editfield-container">';
+					result = result + ' <div class="editfield-container customErrorTag">';
 					
 					result = result + ' <div class="user_summary_edit_cta">';
 					result = result + ' <label>First name<span class="text-danger">&nbsp;*</span></label>';
@@ -1816,9 +1837,25 @@ $("#editRoleDetailsList").empty();
 					result = result + ' <input type="text" value="'+json.user.email+'" '+readonly+' id="EmailId" name="email" field-name="EmailId" onblur="validateUserUpdatedEmail('+userId+');" data-validation="required validate_Space validate_email validate_length length2-100"/>';
 					result = result + ' </div>';
 					
-					result = result+'		<div class="col-md-4">';
-					result = result+'		<label>Gender&nbsp;*</label>  ';
-					result = result+'		<div class="clearfix">    ';
+					result = result + ' <div class="user_summary_edit_cta">';
+					result = result + ' <label>SSN<span class="text-danger">&nbsp;*</span></label>';
+					result = result + ' <input type="text" value="'+json.user.ssn+'" field-name="SSN" data-validation="required validate_Space"/>';
+					result = result + ' </div>';
+					
+					result = result + ' <div class="user_summary_edit_cta">';
+					result = result + ' <label>Work Location<span class="text-danger">&nbsp;*</span></label>';
+					result = result + ' <input type="text" value="'+json.workLocation+'" field-name="Work Location" data-validation="required validate_Space"/>';
+					result = result + ' </div>';
+					
+					result = result + ' <div class="user_summary_edit_cta">';
+					result = result + ' <label>Residence Location<span class="text-danger">&nbsp;*</span></label>';
+					result = result + ' <input type="text" value="'+json.residenceAddress+'" field-name="Residence Location" data-validation="required validate_Space"/>';
+					result = result + ' </div>';
+					
+					
+					result = result+'		<div class="col-md-4 mt5">';
+					result = result+'		<label class="ml10">Gender <span class="text-danger paddingLeft">*</span></label>  ';
+					result = result+'		<div class="clearfix ml10">    ';
 					if(json.user.gender == "Male"){
 					result = result+'		<label class="paddingLeft"><input type="radio"  checked value="Male" name="gender"><span class="mr5"></span>Male</label>                   ';
 					result = result+'		<label class="paddingLeft paddingRight"><input type="radio"  value="Female" name="gender"><span class="mr5"></span>Female</label>   ';
@@ -1844,9 +1881,9 @@ $("#editRoleDetailsList").empty();
 					result = result+'		</div>    ';
 					result = result+'		</div>    ';
 					
-					result = result+'		<div class="col-md-4">';
-					result = result+'		<label>Marital Status</label>  ';
-					result = result+'		<div class="clearfix">    ';
+					result = result+'		<div class="col-md-4 mt5">';
+					result = result+'		<label class="ml10">Marital Status</label>  ';
+					result = result+'		<div class="clearfix ml10">    ';
 					if(json.user.maritalStatus == "Single"){
 						result = result+'		<label class="paddingRight"><input type="radio"  value="Single" checked name="maritalStatus"><span class="mr5"></span>Single</label>                  ';
 						result = result+'		<label class="paddingLeft paddingRight"><input type="radio"  value="Married" name="maritalStatus"><span class="mr5"></span>Married</label>   ';
