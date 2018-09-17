@@ -1731,15 +1731,17 @@ function errInvoiceDate(){
 <script>
 function getVendorContacts(vendorContactId,projectName){
 	var orgRelationId = $("#vendorOrgRelationId").val();
+	$("#vendorContact").empty();
 	$.ajax({
 		type : "GET",
 		url: sourceleadUrl+"/getPayableVendorContactsByOrgRelationId?"+tokenParamName+"="+tokenValue+"&orgRelationId="+orgRelationId,
-		success :function(data) {
-			var json = JSON.parse(data);
+
+		success :function(json) {
+			
 		var output = "";
-			for (var i=0; i<json.length; i++)
+			for (var i=0; i<json.data.length; i++)
 			{
-				var opt = json[i];
+				var opt = json.data[i];
 				if(vendorContactId != null && vendorContactId != "" && vendorContactId !="undefined"){
 					var array = vendorContactId.split(",");
 					if(array.includes(opt.spocUserId.toString())){
@@ -1752,6 +1754,7 @@ function getVendorContacts(vendorContactId,projectName){
 				}
 				$("#vendorCurrency").val(opt.vendorCurrency);
 			}
+
 		$("#vendorContact").empty();
 		$("#vendorContact").append(output);
 		$('#vendorContact').trigger("chosen:updated");

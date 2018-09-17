@@ -775,6 +775,9 @@ function reportCollapse() {
 function searchReportCollapse() {
 	document.getElementById("showReport").style.display="none";
 	document.getElementById("hearderId").style.display="none";
+	var fromDate = $("#fromDate").val();
+    var toDate = $("#toDate").val();
+	leaveReport(fromDate,toDate);
 	$("#fromDate").val('');
 	$("#toDate").val('');
 	$("#departmentList").val('');

@@ -52,6 +52,7 @@
  $(document).ready(function() { 
 	 requirementSubmissionList();
 	 getClientList();
+	 getTeamsList();
  });
  
  </script>
@@ -78,6 +79,11 @@
 			 {
     			 clientNameById.push($(this).val());
 			 });
+    		 var teamNameById = [];
+    		 $('input:checkbox[name=teamNameById]:checked').each(function() 
+			 {
+    			 teamNameById.push($(this).val());
+			 });
     		 var incentivizedType = [];
     		 $('input:checkbox[name=incentivizedType]:checked').each(function() 
 			 {
@@ -103,13 +109,13 @@
     	        	$('#custFromDateDiv').find('p.jquery_form_error_message').remove();
     	            $('#custToDateDiv').find('p.jquery_form_error_message').remove();
     	            $("#custom-selects").hide();
-    	            var url = sourceleadUrl+"/applicantList?searchValue="+searchValue+"&orgLocationId="+orgLocationId+"&tabType="+tab+"&submissionStatus=SUBMIT_TO_CLIENT&frequency="+frequency+"&fromDate="+fromDate+"&toDate="+toDate+"&employmentType="+employmentType+"&clientId="+clientNameById+"&incentivizedType="+incentivizedType+"&searchType="+searchType;
+    	            var url = sourceleadUrl+"/applicantList?searchValue="+searchValue+"&orgLocationId="+orgLocationId+"&tabType="+tab+"&submissionStatus=SUBMIT_TO_CLIENT&frequency="+frequency+"&fromDate="+fromDate+"&toDate="+toDate+"&employmentType="+employmentType+"&clientId="+clientNameById+"&teamId="+teamNameById+"&incentivizedType="+incentivizedType+"&searchType="+searchType;
         			prepareSubmissionList(url);
     	        }
     	    }else{
     	        $('#custFromDateDiv').find('p.jquery_form_error_message').remove();
     	        $('#custToDateDiv').find('p.jquery_form_error_message').remove();
-    	        var url = sourceleadUrl+"/applicantList?searchValue="+searchValue+"&orgLocationId="+orgLocationId+"&tabType="+tab+"&submissionStatus=SUBMIT_TO_CLIENT&frequency="+frequency+"&fromDate="+fromDate+"&toDate="+toDate+"&employmentType="+employmentType+"&clientId="+clientNameById+"&incentivizedType="+incentivizedType+"&searchType="+searchType;
+    	        var url = sourceleadUrl+"/applicantList?searchValue="+searchValue+"&orgLocationId="+orgLocationId+"&tabType="+tab+"&submissionStatus=SUBMIT_TO_CLIENT&frequency="+frequency+"&fromDate="+fromDate+"&toDate="+toDate+"&employmentType="+employmentType+"&clientId="+clientNameById+"&teamId="+teamNameById+"&incentivizedType="+incentivizedType+"&searchType="+searchType;
     			prepareSubmissionList(url);
  
     	    } 
@@ -425,8 +431,8 @@ function resetApplicantFilter(){
 	$("ul#searchTypeFilter > li input:radio").prop("checked",false);
 	$("ul#durationFilter > li input:checkbox").prop("checked",false);
 	$("ul#myClinetListUL > li input:checkbox").prop("checked",false);
+	$("ul#myTeamsListUL > li input:checkbox").prop("checked",false);
 	$("ul#incentivizedFilter > li input:checkbox").prop("checked",false);
-
 	requirementSubmissionList();
 }
 function newActions(){
@@ -532,6 +538,17 @@ $(".overIcon, .newActPop").click(function(e){
 	                 
 						<div class="col-md-4 positionRelative mb">
 							<div class="clearfix dynamic_search filterDynamicsearch">
+																<input type="text" id="myTeamsInput" onkeyup="myTeamsFunction()" placeholder="Teams" title="Search teams">
+								<span class="cursorPointer" title="Search"><i class="fa fa-search"></i></span>
+							</div>
+							 <div class="clearfix filterSearch-ul">
+									<ul class="list-unstyled positionRelative filterSearch mt5" id="myTeamsListUL">
+			                        </ul>
+							 </div> 
+						</div>
+						
+						<div class="col-md-4 positionRelative mb">
+							<div class="clearfix dynamic_search filterDynamicsearch">
 								<input type="text" id="myClientInput" onkeyup="myClientFunction()" placeholder="Clients" title="Type in a client">
 								<span class="cursorPointer" title="Search"><i class="fa fa-search"></i></span>
 							</div>
@@ -590,6 +607,44 @@ function myClientFunction() {
         }
     }
 }
+
+
+function getTeamsList(){
+	var sourceleadUrl = '${sourceleadUrl}';
+	$.ajax({
+		type : "POST",
+		url : sourceleadUrl+ "/getTeamsListForLoginUser?${_csrf.parameterName}=${_csrf.token}",
+		success : function(data) {
+			var result = "";
+			  for (var i=0; i<data.length; i++)
+				{
+					var report = data[i];
+					result = result + '<li class="checkBox positionRelative">';
+					result = result + '<input  type="checkbox" name="teamNameById" value ='+report.id+'><label>'+report.name+'</label>';
+					result = result + '</li>';
+				}
+			  $("#myTeamsListUL").empty();
+			  $("#myTeamsListUL").append(result);
+		}
+	});
+}
+
+function myTeamsFunction() {
+    var input, filter, ul, li, a, i;
+    input = document.getElementById("myTeamsInput");
+    filter = input.value.toUpperCase();
+    ul = document.getElementById("myTeamsListUL");
+    li = ul.getElementsByTagName("li");
+    for (i = 0; i < li.length; i++) {
+        a = li[i].getElementsByTagName("label")[0];
+        if (a.innerHTML.toUpperCase().indexOf(filter) > -1) {
+            li[i].style.display = "";
+        } else {
+            li[i].style.display = "none";
+
+        }
+    }
+}
 </script>
 
 
@@ -619,13 +674,18 @@ function projectExport(type){
 		 {
 			 clientNameById.push($(this).val());
 		 });
+		 var teamNameById = [];
+		 $('input:checkbox[name=teamNameById]:checked').each(function() 
+		 {
+			 teamNameById.push($(this).val());
+		 });
 		 var incentivizedType = [];
 		 $('input:checkbox[name=incentivizedType]:checked').each(function() 
 		 {
 			 incentivizedType.push($(this).val());
 		 });
 		 var searchType = $('input[name=searchType]:checked').val();
-		 window.location.href = sourceleadUrl+"/applicantListExport?searchValue="+searchValue+"&orgLocationId="+orgLocationId+"&tabType="+tab+"&submissionStatus=SUBMIT_TO_CLIENT&frequency="+frequency+"&fromDate="+fromDate+"&toDate="+toDate+"&employmentType="+employmentType+"&clientId="+clientNameById+"&incentivizedType="+incentivizedType+"&searchType="+searchType;
+		 window.location.href = sourceleadUrl+"/applicantListExport?searchValue="+searchValue+"&orgLocationId="+orgLocationId+"&tabType="+tab+"&submissionStatus=SUBMIT_TO_CLIENT&frequency="+frequency+"&fromDate="+fromDate+"&toDate="+toDate+"&employmentType="+employmentType+"&clientId="+clientNameById+"&teamId="+teamNameById+"&incentivizedType="+incentivizedType+"&searchType="+searchType;
 	     
 }
 </script>

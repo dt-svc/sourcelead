@@ -42,6 +42,7 @@ import com.bis.sourcelead.dto.ResponseList;
 import com.bis.sourcelead.dto.UserDTO;
 import com.bis.sourcelead.entity.DashboardItems;
 import com.bis.sourcelead.entity.Employees;
+import com.bis.sourcelead.entity.Invoice;
 import com.bis.sourcelead.entity.Org;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.RecruiterReportAssociateCountView;
@@ -2358,6 +2359,23 @@ public class UserDaoImpl implements UserDao {
 		return userName;
 	}
 	
+
+	@Override
+	@Transactional(rollbackFor = { Exception.class })
+	@SuppressWarnings("unchecked")
+	public List<User> getUsersListUsingMultipleStringIdsWithLocationId(String ids, Long orgLocationId) throws Exception {
+		Session session = this.sessionFactory.getCurrentSession();
+		String[] idsValues = ids.split(",");
+		// convert string array to long array
+		Long[] data = new Long[idsValues.length];
+		for (int i = 0; i < idsValues.length; i++) {
+		  data[i] = Long.valueOf(idsValues[i]);
+		}
+		String query = "from User user where user.id IN (select userRole.user.id from UserRole userRole where userRole.orgLocations.id =:orgLocationId) and user.id IN ( :ids )";
+		List<User> list = session.createQuery(query).setParameterList("ids", data).setParameter("orgLocationId", orgLocationId).list();
+		return list;
+
+	}
 	
 	@Override
 	@Transactional(rollbackFor = { Exception.class })
@@ -2371,9 +2389,9 @@ public class UserDaoImpl implements UserDao {
 	data[i] = Long.valueOf(idsValues[i]);
 	}
 	String query = "from User user where user.id IN ( :ids )";
-	//String query = "from User invoice where invoice.id IN ( :ids ) and invoice.orgLocation.id =:orgLocationId";
 	List<User> list = session.createQuery(query).setParameterList("ids", data).list();
 	return list;
+
 	}
 
 
