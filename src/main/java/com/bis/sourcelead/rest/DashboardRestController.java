@@ -13,7 +13,6 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Locale;
-import java.util.stream.Collectors;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -33,7 +32,6 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.util.FileCopyUtils;
 import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -41,12 +39,10 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.bis.sourcelead.constants.Constants;
-
 import com.bis.sourcelead.dao.RequirementSubmissionDao;
 import com.bis.sourcelead.dto.DashboardCountsDTO;
 import com.bis.sourcelead.dto.DashboardItemsDTO;
 import com.bis.sourcelead.dto.EventsDTO;
-
 import com.bis.sourcelead.dto.ExpensesAndTimesheetDashBordCountDTO;
 import com.bis.sourcelead.dto.OrgRelationDTO;
 import com.bis.sourcelead.dto.RequirementDTO;
@@ -54,7 +50,6 @@ import com.bis.sourcelead.dto.RequirementSubmissionHistoryDTO;
 import com.bis.sourcelead.dto.RequirementSubmissionsCountDTO;
 import com.bis.sourcelead.dto.Response;
 import com.bis.sourcelead.dto.ResponseList;
-import com.bis.sourcelead.dto.RestrictDayDTO;
 import com.bis.sourcelead.dto.TimesheetExpenseEntryDetailsUtilDTO;
 import com.bis.sourcelead.elk.index.RequirementIndex;
 import com.bis.sourcelead.elk.setup.RequirementElkUtil;
@@ -72,6 +67,7 @@ import com.bis.sourcelead.entity.RequirementOffers;
 import com.bis.sourcelead.entity.RequirementSubmission;
 import com.bis.sourcelead.entity.RequirementSubmissionHistory;
 import com.bis.sourcelead.entity.Tasks;
+import com.bis.sourcelead.entity.Team;
 import com.bis.sourcelead.entity.TimeSheetSubmissionCount;
 import com.bis.sourcelead.entity.Timezone;
 import com.bis.sourcelead.entity.User;
@@ -94,6 +90,7 @@ import com.bis.sourcelead.service.RequirementOffersService;
 import com.bis.sourcelead.service.RequirementService;
 import com.bis.sourcelead.service.RequirementSubmissionService;
 import com.bis.sourcelead.service.TaskService;
+import com.bis.sourcelead.service.TeamService;
 import com.bis.sourcelead.service.TimeZoneService;
 import com.bis.sourcelead.service.TimesheetSubmissionsService;
 import com.bis.sourcelead.service.UserRoleService;
@@ -191,6 +188,9 @@ public class DashboardRestController {
 	 
 	 @Autowired
 	 RequirementLocationsService requirementLocationsService;
+	 
+	 @Autowired
+	 TeamService teamService;
 	 
 	 protected static boolean isNullOrEmpty(String str) {
 			return (str == null || "".equals(str.trim()));
@@ -1580,162 +1580,169 @@ public class DashboardRestController {
 	public @ResponseBody ResponseList<RequirementSubmissionHistoryDTO> applicantList(RequirementSubmissionHistoryDTO requirementSubmissionHistoryDTO, HttpServletRequest request)throws Exception
    {
 		ResponseList<RequirementSubmissionHistoryDTO> responseList = new ResponseList<>();
-		OrgLocations loginOrgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
-		String userRole = (String) SourceLeadSessionManager.getSessionAttribute(request, "loginUserRole");
-		User  user = (User)SourceLeadSessionManager.getSessionAttribute(request, "user");
-		
-		Date[] freqDates = new Date[2];
-		String userType = null;
-		Date startUTCDate = null;
-		Date endUTCDate = null;
-		DateFormat TZ_DF_TS = new SimpleDateFormat ("yyyy-MM-dd HH:mm:ss");
-		 DateFormat TZ_DF_CSD = new SimpleDateFormat ("yyyy-MM-dd 00:00:00");
-		 DateFormat TZ_DF_CED = new SimpleDateFormat ("yyyy-MM-dd 23:59:59");
-		 if("Custom".equalsIgnoreCase(requirementSubmissionHistoryDTO.getFrequency())){
-			 Date startTime =  commonUtil.orgLocationDateFormat(loginOrgLocations.getDateFormat(),requirementSubmissionHistoryDTO.getFromDate());
-				Date endTime =  commonUtil.orgLocationDateFormat(loginOrgLocations.getDateFormat(),requirementSubmissionHistoryDTO.getToDate());
-				String customStartTimeStr = TZ_DF_CSD.format(startTime);  
-				String customEndTimeStr = TZ_DF_CED.format(endTime);  
-				startUTCDate = TZ_DF_TS.parse(customStartTimeStr);
-				endUTCDate = TZ_DF_TS.parse(customEndTimeStr);
-		 }else {
-			 freqDates = reportsUtil.getJobFilterDate(requirementSubmissionHistoryDTO.getFrequency(),loginOrgLocations);
-			 String customStartTimeStr = TZ_DF_CSD.format(freqDates[0]);  
-			 String customEndTimeStr = TZ_DF_CED.format(freqDates[1]);  
-			 startUTCDate = TZ_DF_TS.parse(customStartTimeStr);
-			 endUTCDate = TZ_DF_TS.parse(customEndTimeStr);
-		 }
-		 
-		
-		if(Constants.ROLE_ADMIN.equalsIgnoreCase(userRole) || Constants.SOURCELEAD_ADMIN.equalsIgnoreCase(userRole)){
-			userType = Constants.ADMIN;
-		} 
-		
-	   ResponseList<RequirementSubmissionHistory> toDayReqApplicantscount =requirementSubmissionDao.getRequirementSubmissionsListWithDTOByOrgLocationsIdAndSubmissionStatus(requirementSubmissionHistoryDTO, loginOrgLocations.getId(),requirementSubmissionHistoryDTO.getSubmissionStatus(),requirementSubmissionHistoryDTO.getTabType(),userType,user,startUTCDate,endUTCDate);
-		
-	   List<RequirementSubmissionHistoryDTO> rshDTOList = new ArrayList<>();
-	   if(toDayReqApplicantscount.getData() != null)
-		for(RequirementSubmissionHistory rsh: toDayReqApplicantscount.getData()){
-			RequirementSubmissionHistoryDTO rshDTO = new RequirementSubmissionHistoryDTO();
-			StringBuilder sb = new StringBuilder();
-			if(StringUtils.isNotBlank(rsh.getSubmissionId().getCandidate().getLastName())){
-				rshDTO.setCandidateName(sb.append(rsh.getSubmissionId().getCandidate().getFirstName()).append(" ").append(rsh.getSubmissionId().getCandidate().getLastName()).toString());
-			}else{
-				rshDTO.setCandidateName(rsh.getSubmissionId().getCandidate().getFirstName());
-			}
-			
-			rshDTO.setRequirementUUID(rsh.getSubmissionId().getRequirement().getRequirementUUID());
-			rshDTO.setJobTitle(rsh.getSubmissionId().getRequirement().getJobTitle());
-			if(rsh.getSubmissionId().getRequirement().getGeneratedId() != null) {
-				rshDTO.setJobGeneratedId(rsh.getSubmissionId().getRequirement().getGeneratedId());
-			}
-			
-			
-			if(rsh.getSubmissionId().getRequirement().getParentRequirement() != null){
-				rshDTO.setOrgLocationName(rsh.getSubmissionId().getRequirement().getParentRequirement().getOrgLocationId().getOrgLocationName());
-			}
-			
-			if(rsh.getSubmissionId().getRequirement().getClientId() != null) {
-				if (rsh.getSubmissionId().getRequirement().getClientId().getResponderType().equalsIgnoreCase("Client")) {
-					if (rsh.getSubmissionId().getRequirement().getClientId().getResponderLocationId() != null) {
-						rshDTO.setOrgLocationName(rsh.getSubmissionId().getRequirement().getClientId().getResponderLocationId().getOrgLocationName());
-					}
-				}
-				if (rsh.getSubmissionId().getRequirement().getClientId().getResponderType().equalsIgnoreCase("Vendor")) {
-					if (rsh.getSubmissionId().getRequirement().getClientId().getLocationId() != null) {
-					rshDTO.setOrgLocationName(rsh.getSubmissionId().getRequirement().getClientId().getLocationId().getOrgLocationName());
-					}
-				}
-			}
-			
-			List<String> requirementLocationsList = new ArrayList<>();
-			List<RequirementLocations> locationsList = requirementLocationsService.getRequirementLocationsListByRequirementId(rsh.getSubmissionId().getRequirement().getId());
-			if(locationsList != null && !locationsList.isEmpty()) {
-				for(RequirementLocations location : locationsList) {
-					requirementLocationsList.add(location.getLocation());
-				}
-			}
-			rshDTO.setLocationsList(requirementLocationsList);
-			
-			
-			rshDTO.setEmail(rsh.getSubmissionId().getCandidate().getEmail());
-
-			if(rsh.getSubmissionId().getBackOutCategoryType() != null) {
-				rshDTO.setBackoutType(rsh.getSubmissionId().getBackOutCategoryType());
-				rshDTO.setBackoutReason(rsh.getSubmissionId().getBackOutReason());
-			}
-			if(rsh.getSubmissionId().getRejectedCategoryType() != null) {
-				rshDTO.setRejectedType(rsh.getSubmissionId().getRejectedCategoryType());
-				rshDTO.setRejectedReason(rsh.getSubmissionId().getRejectedReason());
-			}
-			if(rsh.getSubmissionId().getRequirement().getJobRate() != null) {
-				rshDTO.setJobRating(rsh.getSubmissionId().getRequirement().getJobRate());
-			}
-			if(rsh.getSubmissionId().getRequirement().getIncentivized() != null) {
-				rshDTO.setIncentivize(rsh.getSubmissionId().getRequirement().getIncentivized());
-			}
-			if(rsh.getSubmissionId().getCandidate().getMobilePhone() != null){
-				rshDTO.setMobilePhone(rsh.getSubmissionId().getCandidate().getMobilePhone());
-			}
-			
-			if(rsh.getSubmissionId().getJoinedDate()  != null){
-				rshDTO.setJoinDate(commonUtil.dateStrFromOrgDateFormatter(loginOrgLocations.getDateFormat(),rsh.getSubmissionId().getJoinedDate()));
-			}
-			
-			if(rsh.getSubmissionId().getCandidateResumes() != null){
-				rshDTO.setResumeUUID(rsh.getSubmissionId().getCandidateResumes().getResumeUUID());
-				rshDTO.setFileUrl(rsh.getSubmissionId().getCandidateResumes().getFileURL());
-				rshDTO.setFileName(rsh.getSubmissionId().getCandidateResumes().getFileName());
-				rshDTO.setContentType(rsh.getSubmissionId().getCandidateResumes().getFileContentType());
-			}
-			rshDTO.setPrimarySkill(rsh.getSubmissionId().getCandidate().getPrimarySkill());
-			rshDTO.setCreatedUser(rsh.getSubmissionId().getCreatedUser());
-			rshDTO.setCandidateScore(rsh.getSubmissionId().getCandidateScore());
-			rshDTO.setSubmissionStatus(rsh.getSubmissionId().getSubmissionStatus().toString());
-			rshDTO.setCandidateUUID(rsh.getSubmissionId().getCandidate().getCandidateUUID());
-			rshDTO.setSubmissionId(rsh.getSubmissionId().getId());
-			rshDTO.setExperienceYears(rsh.getSubmissionId().getCandidate().getExperienceYears());
-			rshDTO.setExperienceMonths(rsh.getSubmissionId().getCandidate().getExperienceMonths());
-			rshDTO.setFinalizedRate(rsh.getSubmissionId().getFinalizedRate());
-			rshDTO.setSubmittedBy(rsh.getSubmissionId().getSubmittedBy());
-			rshDTO.setToStage(rsh.getToStage());
-			rshDTO.setAppliedOn(commonUtil.dateStrFromOrgDateFormatter(loginOrgLocations.getDateFormat(),rsh.getCreatedDate()));
-			
-			//rshDTO.setAppliedOn(commonUtil.dateStrFromOrgDateFormatter(loginOrgLocations.getDateFormat(),rsh.getSubmissionId().getCreatedDate()));
-			rshDTO.setSubmittedOn(commonUtil.dateStrFromOrgDateFormatter(loginOrgLocations.getDateFormat(),rsh.getCreatedDate()));
-			rshDTO.setSubmittedBy(rsh.getCreatedUser());
-//					}
+		try {
+				OrgLocations loginOrgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+				String userRole = (String) SourceLeadSessionManager.getSessionAttribute(request, "loginUserRole");
+				User  user = (User)SourceLeadSessionManager.getSessionAttribute(request, "user");
 				
-			
-			
-			int interviewedCount = requirementSubmissionService.getAllSubmissionCountByRequirementIdAndSubmissionStage(loginOrgLocations.getId(), rsh.getSubmissionId().getRequirement().getId(), "INTERVIEWED");
-			rshDTO.setNumOfInterview(interviewedCount);
-			
-				List<RequirementOffers> offersList = requirementOffersService.getRequirementOfferSubmissionByIdAndOrgLocationId(rsh.getSubmissionId().getId(), loginOrgLocations.getId());
-				for (RequirementOffers requirementOffers : offersList) {
-					rshDTO.setOfferId(requirementOffers.getId());
-					rshDTO.setOfferRate(requirementOffers.getAmount());
-					rshDTO.setPaymentType(requirementOffers.getPaymentType());
-					rshDTO.setPaymentMode(requirementOffers.getPaymentMode());
-					rshDTO.setOfferJoinDate(commonUtil.dateStrFromOrgDateFormatter(loginOrgLocations.getDateFormat(),requirementOffers.getDateOfJoining()));
-					if(null != requirementOffers.getPositionType()){
-						rshDTO.setPositionType(requirementOffers.getPositionType());
+				Date[] freqDates = new Date[2];
+				String userType = null;
+				Date startUTCDate = null;
+				Date endUTCDate = null;
+				DateFormat TZ_DF_TS = new SimpleDateFormat ("yyyy-MM-dd HH:mm:ss");
+				 DateFormat TZ_DF_CSD = new SimpleDateFormat ("yyyy-MM-dd 00:00:00");
+				 DateFormat TZ_DF_CED = new SimpleDateFormat ("yyyy-MM-dd 23:59:59");
+				 if("Custom".equalsIgnoreCase(requirementSubmissionHistoryDTO.getFrequency())){
+					 Date startTime =  commonUtil.orgLocationDateFormat(loginOrgLocations.getDateFormat(),requirementSubmissionHistoryDTO.getFromDate());
+						Date endTime =  commonUtil.orgLocationDateFormat(loginOrgLocations.getDateFormat(),requirementSubmissionHistoryDTO.getToDate());
+						String customStartTimeStr = TZ_DF_CSD.format(startTime);  
+						String customEndTimeStr = TZ_DF_CED.format(endTime);  
+						startUTCDate = TZ_DF_TS.parse(customStartTimeStr);
+						endUTCDate = TZ_DF_TS.parse(customEndTimeStr);
+				 }else {
+					 freqDates = reportsUtil.getJobFilterDate(requirementSubmissionHistoryDTO.getFrequency(),loginOrgLocations);
+					 String customStartTimeStr = TZ_DF_CSD.format(freqDates[0]);  
+					 String customEndTimeStr = TZ_DF_CED.format(freqDates[1]);  
+					 startUTCDate = TZ_DF_TS.parse(customStartTimeStr);
+					 endUTCDate = TZ_DF_TS.parse(customEndTimeStr);
+				 }
+				 
+				
+				if(Constants.ROLE_ADMIN.equalsIgnoreCase(userRole) || Constants.SOURCELEAD_ADMIN.equalsIgnoreCase(userRole)){
+					userType = Constants.ADMIN;
+				} 
+				
+			   ResponseList<RequirementSubmissionHistory> toDayReqApplicantscount =requirementSubmissionDao.getRequirementSubmissionsListWithDTOByOrgLocationsIdAndSubmissionStatus(requirementSubmissionHistoryDTO, loginOrgLocations.getId(),requirementSubmissionHistoryDTO.getSubmissionStatus(),requirementSubmissionHistoryDTO.getTabType(),userType,user,startUTCDate,endUTCDate);
+				
+			   List<RequirementSubmissionHistoryDTO> rshDTOList = new ArrayList<>();
+			   if(toDayReqApplicantscount.getData() != null)
+				for(RequirementSubmissionHistory rsh: toDayReqApplicantscount.getData()){
+					RequirementSubmissionHistoryDTO rshDTO = new RequirementSubmissionHistoryDTO();
+					StringBuilder sb = new StringBuilder();
+					if(StringUtils.isNotBlank(rsh.getSubmissionId().getCandidate().getLastName())){
+						rshDTO.setCandidateName(sb.append(rsh.getSubmissionId().getCandidate().getFirstName()).append(" ").append(rsh.getSubmissionId().getCandidate().getLastName()).toString());
+					}else{
+						rshDTO.setCandidateName(rsh.getSubmissionId().getCandidate().getFirstName());
 					}
-					if(null != requirementOffers.getFileName()){
-						rshDTO.setAttachment(requirementOffers.getFileName());
-					}
-					if("OFFERMADE".equalsIgnoreCase(rsh.getToStage())){
-						rshDTO.setAppliedOn(commonUtil.dateStrFromOrgDateFormatter(loginOrgLocations.getDateFormat(),rsh.getCreatedDate()));
-					}
-				}
 					
-			
-			
-			rshDTOList.add(rshDTO);
+					rshDTO.setRequirementUUID(rsh.getSubmissionId().getRequirement().getRequirementUUID());
+					rshDTO.setJobTitle(rsh.getSubmissionId().getRequirement().getJobTitle());
+					if(rsh.getSubmissionId().getRequirement().getGeneratedId() != null) {
+						rshDTO.setJobGeneratedId(rsh.getSubmissionId().getRequirement().getGeneratedId());
+					}
+					
+					
+					if(rsh.getSubmissionId().getRequirement().getParentRequirement() != null){
+						rshDTO.setOrgLocationName(rsh.getSubmissionId().getRequirement().getParentRequirement().getOrgLocationId().getOrgLocationName());
+					}
+					
+					if(rsh.getSubmissionId().getRequirement().getClientId() != null) {
+						if (rsh.getSubmissionId().getRequirement().getClientId().getResponderType().equalsIgnoreCase("Client")) {
+							if (rsh.getSubmissionId().getRequirement().getClientId().getResponderLocationId() != null) {
+								rshDTO.setOrgLocationName(rsh.getSubmissionId().getRequirement().getClientId().getResponderLocationId().getOrgLocationName());
+							}
+						}
+						if (rsh.getSubmissionId().getRequirement().getClientId().getResponderType().equalsIgnoreCase("Vendor")) {
+							if (rsh.getSubmissionId().getRequirement().getClientId().getLocationId() != null) {
+							rshDTO.setOrgLocationName(rsh.getSubmissionId().getRequirement().getClientId().getLocationId().getOrgLocationName());
+							}
+						}
+					}
+					
+					List<String> requirementLocationsList = new ArrayList<>();
+					List<RequirementLocations> locationsList = requirementLocationsService.getRequirementLocationsListByRequirementId(rsh.getSubmissionId().getRequirement().getId());
+					if(locationsList != null && !locationsList.isEmpty()) {
+						for(RequirementLocations location : locationsList) {
+							requirementLocationsList.add(location.getLocation());
+						}
+					}
+					rshDTO.setLocationsList(requirementLocationsList);
+					
+					
+					rshDTO.setEmail(rsh.getSubmissionId().getCandidate().getEmail());
+		
+					if(rsh.getSubmissionId().getBackOutCategoryType() != null) {
+						rshDTO.setBackoutType(rsh.getSubmissionId().getBackOutCategoryType());
+						rshDTO.setBackoutReason(rsh.getSubmissionId().getBackOutReason());
+					}
+					if(rsh.getSubmissionId().getRejectedCategoryType() != null) {
+						rshDTO.setRejectedType(rsh.getSubmissionId().getRejectedCategoryType());
+						rshDTO.setRejectedReason(rsh.getSubmissionId().getRejectedReason());
+					}
+					if(rsh.getSubmissionId().getRequirement().getJobRate() != null) {
+						rshDTO.setJobRating(rsh.getSubmissionId().getRequirement().getJobRate());
+					}
+					if(rsh.getSubmissionId().getRequirement().getIncentivized() != null) {
+						rshDTO.setIncentivize(rsh.getSubmissionId().getRequirement().getIncentivized());
+					}
+					if(rsh.getSubmissionId().getCandidate().getMobilePhone() != null){
+						rshDTO.setMobilePhone(rsh.getSubmissionId().getCandidate().getMobilePhone());
+					}
+					
+					if(rsh.getSubmissionId().getJoinedDate()  != null){
+						rshDTO.setJoinDate(commonUtil.dateStrFromOrgDateFormatter(loginOrgLocations.getDateFormat(),rsh.getSubmissionId().getJoinedDate()));
+					}
+					
+					if(rsh.getSubmissionId().getCandidateResumes() != null){
+						rshDTO.setResumeUUID(rsh.getSubmissionId().getCandidateResumes().getResumeUUID());
+						rshDTO.setFileUrl(rsh.getSubmissionId().getCandidateResumes().getFileURL());
+						rshDTO.setFileName(rsh.getSubmissionId().getCandidateResumes().getFileName());
+						rshDTO.setContentType(rsh.getSubmissionId().getCandidateResumes().getFileContentType());
+					}
+					rshDTO.setPrimarySkill(rsh.getSubmissionId().getCandidate().getPrimarySkill());
+					rshDTO.setCreatedUser(rsh.getSubmissionId().getCreatedUser());
+					rshDTO.setCandidateScore(rsh.getSubmissionId().getCandidateScore());
+					rshDTO.setSubmissionStatus(rsh.getSubmissionId().getSubmissionStatus().toString());
+					rshDTO.setCandidateUUID(rsh.getSubmissionId().getCandidate().getCandidateUUID());
+					rshDTO.setSubmissionId(rsh.getSubmissionId().getId());
+					rshDTO.setExperienceYears(rsh.getSubmissionId().getCandidate().getExperienceYears());
+					rshDTO.setExperienceMonths(rsh.getSubmissionId().getCandidate().getExperienceMonths());
+					rshDTO.setFinalizedRate(rsh.getSubmissionId().getFinalizedRate());
+					rshDTO.setSubmittedBy(rsh.getSubmissionId().getSubmittedBy());
+					rshDTO.setToStage(rsh.getToStage());
+					rshDTO.setAppliedOn(commonUtil.dateStrFromOrgDateFormatter(loginOrgLocations.getDateFormat(),rsh.getCreatedDate()));
+					
+					//rshDTO.setAppliedOn(commonUtil.dateStrFromOrgDateFormatter(loginOrgLocations.getDateFormat(),rsh.getSubmissionId().getCreatedDate()));
+					rshDTO.setSubmittedOn(commonUtil.dateStrFromOrgDateFormatter(loginOrgLocations.getDateFormat(),rsh.getCreatedDate()));
+					rshDTO.setSubmittedBy(rsh.getCreatedUser());
+		//					}
+						
+					
+					
+					int interviewedCount = requirementSubmissionService.getAllSubmissionCountByRequirementIdAndSubmissionStage(loginOrgLocations.getId(), rsh.getSubmissionId().getRequirement().getId(), "INTERVIEWED");
+					rshDTO.setNumOfInterview(interviewedCount);
+					
+						List<RequirementOffers> offersList = requirementOffersService.getRequirementOfferSubmissionByIdAndOrgLocationId(rsh.getSubmissionId().getId(), loginOrgLocations.getId());
+						for (RequirementOffers requirementOffers : offersList) {
+							rshDTO.setOfferId(requirementOffers.getId());
+							rshDTO.setOfferRate(requirementOffers.getAmount());
+							rshDTO.setPaymentType(requirementOffers.getPaymentType());
+							rshDTO.setPaymentMode(requirementOffers.getPaymentMode());
+							rshDTO.setOfferJoinDate(commonUtil.dateStrFromOrgDateFormatter(loginOrgLocations.getDateFormat(),requirementOffers.getDateOfJoining()));
+							if(null != requirementOffers.getPositionType()){
+								rshDTO.setPositionType(requirementOffers.getPositionType());
+							}
+							if(null != requirementOffers.getFileName()){
+								rshDTO.setAttachment(requirementOffers.getFileName());
+							}
+							if("OFFERMADE".equalsIgnoreCase(rsh.getToStage())){
+								rshDTO.setAppliedOn(commonUtil.dateStrFromOrgDateFormatter(loginOrgLocations.getDateFormat(),rsh.getCreatedDate()));
+							}
+						}
+							
+					
+					
+					rshDTOList.add(rshDTO);
+				}
+				responseList.setRecordsFiltered(toDayReqApplicantscount.getRecordsFiltered());
+				responseList.setRecordsTotal(toDayReqApplicantscount.getRecordsTotal());
+				responseList.setData(rshDTOList);
+		
+		} catch (Exception e) {
+			e.printStackTrace();
+			responseList.setResponse(Result.AWKWARD.name());
+			responseList.setResponseMessage(Result.AWKWARD.getValue());
 		}
-		responseList.setRecordsFiltered(toDayReqApplicantscount.getRecordsFiltered());
-		responseList.setRecordsTotal(toDayReqApplicantscount.getRecordsTotal());
-		responseList.setData(rshDTOList);
 		return responseList;
 		
     }
@@ -1788,6 +1795,15 @@ public class DashboardRestController {
 		OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 		List<OrgRelationDTO> orgClientList = orgRelationsService.getAllClientsListOrgLocationId(orgLocations.getId());
 		return orgClientList; 
+	}
+	
+	@RequestMapping(value = "/getTeamsListForLoginUser", method = RequestMethod.POST)
+	public List<Team> getTeamsListForLoginUser(HttpServletRequest request, DashboardItemsDTO dashboardItemsDTO) throws Exception {
+		OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+		User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+		
+		List<Team> teamsList = teamService.getUserAssignedTeamListByOrgLocationId(user.getId(), orgLocations.getId());
+		return teamsList; 
 	}
 	
 	/**

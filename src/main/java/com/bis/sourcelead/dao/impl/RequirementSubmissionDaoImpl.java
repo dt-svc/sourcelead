@@ -2549,6 +2549,18 @@ public class RequirementSubmissionDaoImpl implements RequirementSubmissionDao{
 			}else {
 				clientIdsList = null;
 			}
+			
+			//Team reated filter 
+	        List<Long> teamIdsList = new ArrayList<>();
+	        String teamSubQuery = "";
+			if(requirementSubmissionHistoryDTO.getTeamId() != null && !requirementSubmissionHistoryDTO.getTeamId().isEmpty()){
+				String[] team = requirementSubmissionHistoryDTO.getTeamId().split(",");
+				for(int i=0; i<team.length; i++){
+					teamIdsList.add(Long.valueOf(team[i]));
+				}
+			}else {
+				teamIdsList = null;
+			}
 	        
 
 			//Incentivized filter
@@ -2610,10 +2622,15 @@ public class RequirementSubmissionDaoImpl implements RequirementSubmissionDao{
 	    			clientSubQuery = " and (rsh.submissionId.requirement.clientId.id IN (:clientIdsList))";
 					params.put("clientIdsList",clientIdsList);
 	    		}
+	    		
+	    		if(teamIdsList != null) {
+	    			teamSubQuery = " and (rsh.submissionId.requirement.id IN (select ateam.requirementId.id from RequirementAssignTo ateam where ateam.requirementId.id = rsh.submissionId.requirement.id and ateam.teamId.id IN (:teamIdsList)))";
+					params.put("teamIdsList",teamIdsList);
+	    		}
 				
 	    		String subQuery = "";
 	    		if(subQuery1 != "" || subQuery2 != "" || subQuery3 != "" ){
-	    			subQuery = "where rsh.submissionId.orgLocations.id = :orgLocationsId "+submissionStages+" "+empQuery+" "+clientSubQuery+" "+incentivizedQuery+" and rsh.submissionId.status = 1 and rsh.updatedDate >= :startDate and rsh.updatedDate <= :endDate and ( ("+subQuery1+" "+subQuery2+" "+subQuery3+" "+subQuery4+") ) ";
+	    			subQuery = "where rsh.submissionId.orgLocations.id = :orgLocationsId "+submissionStages+" "+empQuery+" "+clientSubQuery+" "+teamSubQuery+" "+incentivizedQuery+" and rsh.submissionId.status = 1 and rsh.updatedDate >= :startDate and rsh.updatedDate <= :endDate and ( ("+subQuery1+" "+subQuery2+" "+subQuery3+" "+subQuery4+") ) ";
 	    			params.put("orgLocationsId",orgLocationsId);
 	    			params.put("startDate",startUTCDate);
 	    			params.put("endDate",endUTCDate);
@@ -2627,6 +2644,8 @@ public class RequirementSubmissionDaoImpl implements RequirementSubmissionDao{
 	    				query.setLong(str, (long) params.get( str ));
 	    			}else if(str.equalsIgnoreCase("clientIdsList")){
 	    				query.setParameterList(str, clientIdsList);
+	    			}else if(str.equalsIgnoreCase("teamIdsList")){
+	    				query.setParameterList(str, teamIdsList);
 	    			}else{
 	    				query.setParameter( str, params.get( str ) );
 	    			}
@@ -2641,6 +2660,8 @@ public class RequirementSubmissionDaoImpl implements RequirementSubmissionDao{
 	    				countQuery.setLong(str, (long) params.get( str ));
 	    			}else if(str.equalsIgnoreCase("clientIdsList")){
 	    				countQuery.setParameterList(str, clientIdsList);
+	    			}else if(str.equalsIgnoreCase("teamIdsList")){
+	    				countQuery.setParameterList(str, teamIdsList);
 	    			}else{
 	    				countQuery.setParameter( str, params.get( str ) );
 	    			}
@@ -2672,6 +2693,9 @@ public class RequirementSubmissionDaoImpl implements RequirementSubmissionDao{
 	        	if(clientIdsList != null) {
 	    			clientSubQuery = " and (rsh.submissionId.requirement.clientId.id IN (:clientIdsList))";
 	    		}
+	        	if(teamIdsList != null) {
+	        		teamSubQuery = " and (rsh.submissionId.requirement.id IN (select ateam.requirementId.id from RequirementAssignTo ateam where ateam.requirementId.id = rsh.submissionId.requirement.id and ateam.teamId.id IN (:teamIdsList)))";
+	    		}
 	        	
 	        	String subQuery1 = "";
 	    		if(requirementSubmissionHistoryDTO.getSearchType().equalsIgnoreCase("MY")) {
@@ -2679,11 +2703,14 @@ public class RequirementSubmissionDaoImpl implements RequirementSubmissionDao{
 	    			params.put("userCode",user.getUserCode());
 	    		}
 	        	
-	     		String query =" from RequirementSubmissionHistory rsh left join fetch rsh.submissionId.candidate can left join fetch rsh.submissionId.requirement req left join fetch rsh.submissionId rs where rsh.submissionId.orgLocations = :orgLocationsId "+submissionStages+" "+empQuery+" "+clientSubQuery+" "+incentivizedQuery+" "+subQuery1+" and rsh.submissionId.status = 1  and rsh.submissionId.requirement IS NOT NULL and rsh.updatedDate >= :startDate and rsh.updatedDate <= :endDate "+query1+"";
-     			String countQuery ="select count(*) from RequirementSubmissionHistory rsh  where rsh.submissionId.orgLocations = :orgLocationsId "+submissionStages+" "+empQuery+" "+clientSubQuery+" "+incentivizedQuery+" "+subQuery1+" and rsh.submissionId.status = 1  and rsh.submissionId.requirement IS NOT NULL and rsh.updatedDate >= :startDate and rsh.updatedDate <= :endDate";
+	     		String query =" from RequirementSubmissionHistory rsh left join fetch rsh.submissionId.candidate can left join fetch rsh.submissionId.requirement req left join fetch rsh.submissionId rs where rsh.submissionId.orgLocations = :orgLocationsId "+submissionStages+" "+empQuery+" "+clientSubQuery+" "+teamSubQuery+" "+incentivizedQuery+" "+subQuery1+" and rsh.submissionId.status = 1  and rsh.submissionId.requirement IS NOT NULL and rsh.updatedDate >= :startDate and rsh.updatedDate <= :endDate "+query1+"";
+     			String countQuery ="select count(*) from RequirementSubmissionHistory rsh  where rsh.submissionId.orgLocations = :orgLocationsId "+submissionStages+" "+empQuery+" "+clientSubQuery+" "+teamSubQuery+" "+incentivizedQuery+" "+subQuery1+" and rsh.submissionId.status = 1  and rsh.submissionId.requirement IS NOT NULL and rsh.updatedDate >= :startDate and rsh.updatedDate <= :endDate";
      			params.put("orgLocationsId",orgLocationsId);
      			if(clientIdsList != null) {
      				params.put("clientIdsList",clientIdsList);
+     			}
+     			if(teamIdsList != null) {
+     				params.put("teamIdsList",teamIdsList);
      			}
      			params.put("startDate",startUTCDate);
      			params.put("endDate",endUTCDate);
@@ -2702,6 +2729,9 @@ public class RequirementSubmissionDaoImpl implements RequirementSubmissionDao{
 	    			}else if(str.equalsIgnoreCase("clientIdsList")){
 	    				listCountQuery.setParameterList(str, clientIdsList);
 	    				listQuery.setParameterList(str, clientIdsList);
+	    			}else if(str.equalsIgnoreCase("teamIdsList")){
+	    				listCountQuery.setParameterList(str, teamIdsList);
+	    				listQuery.setParameterList(str, teamIdsList);
 	    			}else{
 	    				listCountQuery.setParameter( str, params.get( str ) );
 	    				listQuery.setParameter( str, params.get( str ) );

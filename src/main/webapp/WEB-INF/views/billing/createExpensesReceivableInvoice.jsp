@@ -310,22 +310,11 @@ function remove(){
 <script>
 function getClientContacts(clientContactId){
 	var orgRelationId = $("#clientOrgRelationId").val();
+	$("#clientContact").empty();
 	$.ajax({
 		type : "GET",
 		url: sourceleadUrl+"/getClientContactsByOrgRelationId?"+tokenParamName+"="+tokenValue+"&orgRelationId="+orgRelationId,
 		success :function(json) {
-	/* 	// 	var json = JSON.parse(data);
-			var output = "";
-			//output = output + "<option value=''>Select Client Contact</option>";
-			for (var i=0; i<json.data.length; i++){
-				var opt = json.data[i];
-				output = output + "<option value='" +opt.spocUserId+ "'>"+opt.ownerName+"</option>";
-				$("#clientCurrency").val(opt.clientCurrency);
-			}
-			$("#clientContact").empty();
-			$("#clientContact").append(output);
-			$('#clientContact').trigger("chosen:updated"); */
-//		 	var json = JSON.parse(data);
 			var output = "";
 			//output = output + "<option value=''>Select Client Contact</option>";
 					for (var i=0; i<json.data.length; i++)
