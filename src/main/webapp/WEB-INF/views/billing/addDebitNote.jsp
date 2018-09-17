@@ -502,6 +502,19 @@ function removeDynamicRowDiv(id,lineItemId){
 </script>
 
 <script>
+
+function deleteLinteItemEditMode(id) {
+	$.ajax({
+		type : "POST",
+		url : sourceleadUrl + "/deleteLineItemEditModeId?"+ tokenParamName + "=" + tokenValue + "&id=" + id,
+		success: function(data) {
+		    	/* $("#popUp").empty();
+			 	$(".project_inn_mask").fadeOut(200);
+			 	location.replace(sourceleadUrl+"/creditNoteList");	 */
+		    },
+	});
+}
+
 function getSpocsList() {
 	var spocIds = "${creditDebitNote.contactUser}";
 	var orgRelationId = $("#orgRelationId").val();

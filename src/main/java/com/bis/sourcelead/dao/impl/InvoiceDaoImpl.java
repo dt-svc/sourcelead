@@ -1027,8 +1027,8 @@ public class InvoiceDaoImpl implements InvoiceDao {
 	@Transactional(rollbackFor = { Exception.class })
 	public CreditDebitLineItems getCreditDebitLineItemById(Long id) {
 		Session session = this.sessionFactory.getCurrentSession();
-		CreditDebitLineItems noteLineItem = (CreditDebitLineItems) session.get(CreditDebitLineItems.class, id);
-		//CreditDebitLineItems noteLineItem = (CreditDebitLineItems) session.load(CreditDebitLineItems.class, id);
+		String query = "from CreditDebitLineItems lineItems where lineItems.id =:id";
+		CreditDebitLineItems noteLineItem = (CreditDebitLineItems) session.createQuery(query).setParameter("id", id).uniqueResult();
 		return noteLineItem;
 	}
 
