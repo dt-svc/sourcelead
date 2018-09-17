@@ -8,6 +8,7 @@ import com.bis.sourcelead.dto.UserGroupDTO;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.entity.UserGroup;
+import com.bis.sourcelead.payroll.dto.PayPeriodDTO;
 
 public interface UserGroupService {
 
@@ -24,4 +25,6 @@ public interface UserGroupService {
 	Response<UserGroupDTO> deleteUserGroupByUUID(String groupUUID, User loginUser);
 
 	List<UserGroup> getAllUserGroupsByLocationIdAndPayFrequency(OrgLocations orgLocation, String payFrequency);
+
+	List<PayPeriodDTO> getPayPeriodsByGroupId(Long groupId);
 }

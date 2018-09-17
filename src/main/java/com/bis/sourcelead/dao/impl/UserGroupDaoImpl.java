@@ -23,6 +23,7 @@ import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.RecruiterReportCandidateCountView;
 import com.bis.sourcelead.entity.UserGroup;
 import com.bis.sourcelead.entity.UserIdView;
+import com.bis.sourcelead.payroll.dto.PayPeriodDTO;
 import com.bis.sourcelead.payroll.dto.TotalHoursDTO;
 
 @Repository
@@ -231,6 +232,29 @@ public class UserGroupDaoImpl implements UserGroupDao{
 			e.printStackTrace();
 		}
 		return totalHoursDTO;
+	}
+
+	@Override
+	@Transactional
+	public List<PayPeriodDTO> getPayPeriodsByGroupId(Long groupId)
+	{
+		List<PayPeriodDTO> payPeriodDTOList = null;
+		try {
+			Session session = this.sessionFactory.getCurrentSession();
+			StringBuilder qry = new StringBuilder(); 
+			qry.append("SELECT distinct payFreq.GROUP_ID as groupId, payFreq.FREQUENCY_START_DATE as freqStartDate, ")
+			.append("payFreq.FREQUENCY_END_DATE as freqEndDate, payPeriod.PAY_PERIOD_NUM as payPeriodNumber, ")
+			.append("payPeriod.APPROVER_STATUS as approverStatus FROM US_PAY_PERIOD payPeriod, ")
+			.append("PAY_SHEET_FREQUENCY payFreq where payPeriod.PAY_SHEET_FREQUENCY_ID = payFreq.ID")
+			.append(" AND payPeriod.APPROVER_STATUS = 'APPROVED' and payFreq.GROUP_ID = :groupId");
+			Query queryString = session.createSQLQuery(qry.toString());
+			queryString.setParameter("groupId", groupId);
+			queryString.setResultTransformer(Transformers.aliasToBean(PayPeriodDTO.class));
+			payPeriodDTOList  =  queryString.list();
+		}catch (Exception e) {
+			e.printStackTrace();
+		}
+		return payPeriodDTOList;
 	}
 	
 	
