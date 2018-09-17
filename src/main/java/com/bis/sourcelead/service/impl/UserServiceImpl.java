@@ -1798,6 +1798,13 @@ public class UserServiceImpl implements UserService {
 		
 	}
 
+	@Override
+	public List<User> getUsersListUsingMultipleStringIds(String ids) throws Exception
+	{
+		return userDao.getUsersListUsingMultipleStringIds(ids);
+
+	}
+
 
 }
 
