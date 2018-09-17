@@ -273,7 +273,9 @@
                     <input type="text" class="form-control" placeholder="Total Amount" value = "${items.rowTotalAmount}" id="rowTotalAmount${rows.count-1}" name="creditDebitNoteLineItems[${rows.count-1}].rowTotalAmount" readonly="readonly">
                   </div>
                 </td>
+                <c:if test="${rows.count > 1}"> 
                 <td><a class="text-danger"  title="Remove row"><i class="fa fa-remove" onclick="removeDynamicRowDiv(${rows.count-1},${items.lineItemId});"></i></a></td>
+              </c:if>
               </tr>
               <!--increment the rowIndex  for dynamic rows after save or page navigation  -->
               <c:set var="rowIndex" value="${rowIndex + 1}" scope="page"/>
