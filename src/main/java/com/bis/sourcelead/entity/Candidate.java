@@ -61,13 +61,13 @@ public class Candidate implements Serializable {
 	@JoinColumn(name = "SHIFT_ID")
 	private Shift shift;
 	
-	@Column(name = "WORK_LOCATION")
+	@Column(name = "WORK_LOCATION", columnDefinition = "LONGTEXT default NULL")
 	private String workLocation;
 	
-	@Column(name = "RESIDENCE_ADDRESS")
+	@Column(name = "RESIDENCE_ADDRESS", columnDefinition = "LONGTEXT default NULL")
 	private String residenceAddress;
 	
-	@Column(name = "RESIDENCE_STREET_ADDRESS")
+	@Column(name = "RESIDENCE_STREET_ADDRESS", columnDefinition = "LONGTEXT default NULL")
 	private String residenceStreetAddress;
 	
 	@Column(name = "RESIDENCE_COUNTRY")
