@@ -83,7 +83,7 @@ function editAssociateBankDataFun(userId){
                result += ' <div class="clearfix">';
                result += '   <select class="form-control sel" id="accountType" name ="accountType" data-validation="required" onchange="showHideAccountTypes();" field-name="Account Type">';
               /*  <option ${payrollDeduction.payrollDeductionMethod == 'Fixed' ? 'selected' : ''} value = "Fixed">Fixed</option> */
-               result += '     <option '+ (json.accountType == "Bank Transfer" ? "selected" : '') +' value="Bank Transfer">Bank Transfer</option>';
+//                result += '     <option '+ (json.accountType == "Bank Transfer" ? "selected" : '') +' value="Bank Transfer">Bank Transfer</option>';
                result += '     <option '+ (json.accountType == "Direct Deposit" ? "selected" : '') +' value="Direct Deposit">Direct Deposit</option>';
                result += '     <option '+ (json.accountType == "Cheque" ? "selected" : '') +' value="Cheque">Cheque</option>';
                result += '     <option '+ (json.accountType == "Cash" ? "selected" : '') +' value="Cash">Cash</option>';
@@ -159,7 +159,7 @@ function editAssociateBankDataFun(userId){
  <script>
 function showHideAccountTypes(){
 	var accountType = $("#accountType").val();
-	if(accountType == "Direct Deposit"){
+	if(accountType == "Direct Deposit" || accountType == "Cash"){
 		$("#accountTypeChildDivs").hide();
 		$("#bankName").val('');
 		$("#accountNumber").val('');

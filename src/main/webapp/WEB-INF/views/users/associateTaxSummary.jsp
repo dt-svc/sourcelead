@@ -63,9 +63,9 @@ function associateTaxSummary(userId){
         		result = result + '  <span>---</span>';
        		result = result + '    <div class="clearfix"></div>';
        		result = result + '   </div>';
-       		result = result + ' </div>';
-       		result = result + '   <div class="user_details_cta user_detailsCta userDetails-cta">'; */
-                        
+       		result = result + ' </div>';*/
+       		
+       		result = result + '   <div class="user_details_cta user_detailsCta userDetails-cta">'; 
        		result = result + '    <h4>Residence Location</h4>';
                          
        		result = result + '   <div class="project_details_cta"> <strong>Filling Status:</strong>';
