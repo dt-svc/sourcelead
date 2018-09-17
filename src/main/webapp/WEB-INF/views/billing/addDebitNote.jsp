@@ -206,7 +206,7 @@
               <c:if test="${!empty creditDebitNote.creditDebitNoteLineItems}">
               <c:forEach var="items" items="${creditDebitNote.creditDebitNoteLineItems}" varStatus="rows">
               
-              <tr>
+              <tr id ="dynamicAddrowDiv${rows.count-1}">
                <input type="hidden" name="creditDebitNoteLineItems[${rows.count-1}].lineItemId" value="${items.lineItemId}" id="lineItemId${rows.count-1}"/>
           
                <input type="hidden" name="creditDebitMaxRowNumber"  id="creditDebitMaxRowNumber${rows.count-1}" value="${rows.count-1}"/>
@@ -274,7 +274,9 @@
                     <input type="text" class="form-control" placeholder="Total Amount" value = "${items.rowTotalAmount}" id="rowTotalAmount${rows.count-1}" name="creditDebitNoteLineItems[${rows.count-1}].rowTotalAmount" readonly="readonly">
                   </div>
                 </td>
-                <td><a class="text-danger"  title="Remove row"><i class="fa fa-remove" onclick="removeDynamicRowDiv(${rows.count-1});"></i></a></td>
+                <c:if test="${rows.count > 1}"> 
+                <td><a class="text-danger"  title="Remove row"><i class="fa fa-remove" onclick="removeDynamicRowDiv(${rows.count-1},${items.lineItemId});"></i></a></td>
+              </c:if>
               </tr>
               <!--increment the rowIndex  for dynamic rows after save or page navigation  -->
               <c:set var="rowIndex" value="${rowIndex + 1}" scope="page"/>
@@ -480,7 +482,7 @@ function prepareDynamicRoweDiv(rowId){
 	return rowDiv; 
 }
 //var removedResidenceIds = [];
-function removeDynamicRowDiv(id){
+function removeDynamicRowDiv(id,lineItemId){
 		
 	var rowAmount = $("#rowTotalAmount"+id).val();
 	   var subAmount = $("#subTotalAmount").val();
@@ -492,13 +494,29 @@ function removeDynamicRowDiv(id){
 	
 	$("#dynamicAddrowDiv"+id).remove();
    
-   
+	totalCalculateAmount(rowId);
+	if(lineItemId !=null && lineItemId !='' && lineItemId !='undefined'){
+	deleteLinteItemEditMode(lineItemId);
+	}
    rowId--;// decrement rowid when deleted in UI.
 }
 
 </script>
 
 <script>
+
+function deleteLinteItemEditMode(id) {
+	$.ajax({
+		type : "POST",
+		url : sourceleadUrl + "/deleteLineItemEditModeId?"+ tokenParamName + "=" + tokenValue + "&id=" + id,
+		success: function(data) {
+		    	/* $("#popUp").empty();
+			 	$(".project_inn_mask").fadeOut(200);
+			 	location.replace(sourceleadUrl+"/creditNoteList");	 */
+		    },
+	});
+}
+
 function getSpocsList() {
 	var spocIds = "${creditDebitNote.contactUser}";
 	var orgRelationId = $("#orgRelationId").val();
