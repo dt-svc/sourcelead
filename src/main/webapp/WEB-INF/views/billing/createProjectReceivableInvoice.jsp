@@ -289,6 +289,7 @@ border:none; background: none; font-size:14px; font-weight:600; box-shadow: none
 function getClientContacts(clientContactId){
 	var orgRelationId = $("#clientOrgRelationId").val();
 	var sourceleadUrl ='${sourceleadUrl}';
+	$("#clientContact").empty();
 	$.ajax({
 	type : "GET",
 	url: sourceleadUrl+"/getClientContactsByOrgRelationId?"+tokenParamName+"="+tokenValue+"&orgRelationId="+orgRelationId,

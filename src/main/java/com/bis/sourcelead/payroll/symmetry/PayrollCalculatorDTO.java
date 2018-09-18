@@ -36,6 +36,16 @@ public class PayrollCalculatorDTO {
 	private WebServiceLocationCodeV2 webServiceLocationCodeV2;
 	
 	private String FEDERAL_LOCATION_CODE;
+
+	private Money SUI;
+	
+	private Money SDI;
+	
+	private Money FLI; 
+	
+	private Money HCSF;
+	
+	private Money WC;
 	
 
 	public STEPayrollCalculator getsTEPayrollCalculator()
@@ -186,6 +196,77 @@ public class PayrollCalculatorDTO {
 	public void setFEDERAL_LOCATION_CODE(String fEDERAL_LOCATION_CODE)
 	{
 		FEDERAL_LOCATION_CODE = fEDERAL_LOCATION_CODE;
+	}
+
+	public Money getSUI()
+	{
+		if(SUI != null) {
+			return SUI;		
+		}else {
+			return Money.zero();
+		}
+		
+	}
+
+	public Money getSDI()
+	{
+		if(SDI != null) {
+			return SDI;		
+		}else {
+			return Money.zero();
+		}
+	}
+
+	public Money getFLI()
+	{
+		if(FLI != null) {
+			return FLI;		
+		}else {
+			return Money.zero();
+		}
+	}
+
+	public Money getHCSF()
+	{
+		if(HCSF != null) {
+			return HCSF;		
+		}else {
+			return Money.zero();
+		}
+	}
+
+	public Money getWC()
+	{
+		if(WC != null) {
+			return WC;		
+		}else {
+			return Money.zero();
+		}
+	}
+
+	public void setSUI(Money sUI)
+	{
+		SUI = sUI;
+	}
+
+	public void setSDI(Money sDI)
+	{
+		SDI = sDI;
+	}
+
+	public void setFLI(Money fLI)
+	{
+		FLI = fLI;
+	}
+
+	public void setHCSF(Money hCSF)
+	{
+		HCSF = hCSF;
+	}
+
+	public void setWC(Money wC)
+	{
+		WC = wC;
 	}
 
 	

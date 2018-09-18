@@ -206,7 +206,7 @@
               <c:if test="${!empty creditDebitNote.creditDebitNoteLineItems}">
               <c:forEach var="items" items="${creditDebitNote.creditDebitNoteLineItems}" varStatus="rows">
               
-              <tr>
+              <tr id ="dynamicAddrowDiv${rows.count-1}">
                <input type="hidden" name="creditDebitNoteLineItems[${rows.count-1}].lineItemId" value="${items.lineItemId}" id="lineItemId${rows.count-1}"/>
           
                <input type="hidden" name="creditDebitMaxRowNumber"  id="creditDebitMaxRowNumber${rows.count-1}" value="${rows.count-1}"/>
@@ -274,7 +274,9 @@
                     <input type="text" class="form-control" placeholder="Total Amount" value = "${items.rowTotalAmount}" id="rowTotalAmount${rows.count-1}" name="creditDebitNoteLineItems[${rows.count-1}].rowTotalAmount" readonly="readonly">
                   </div>
                 </td>
-                <td><a class="text-danger"  title="Remove row"><i class="fa fa-remove" onclick="removeDynamicRowDiv(${rows.count-1});"></i></a></td>
+                <c:if test="${rows.count > 1}"> 
+                <td><a class="text-danger"  title="Remove row"><i class="fa fa-remove" onclick="removeDynamicRowDiv(${rows.count-1},${items.lineItemId});"></i></a></td>
+              </c:if>
               </tr>
               <!--increment the rowIndex  for dynamic rows after save or page navigation  -->
               <c:set var="rowIndex" value="${rowIndex + 1}" scope="page"/>
@@ -333,7 +335,7 @@
           <input value="Draft" id="draftButtonId" onClick="saveDebitNote('Draft');" class="btn btn-warning" type="button">
             <input value="Send" id="sendButtonId" onClick="saveDebitNote('Send');" class="btn btn-success mr ml" type="button">
             <input value="Submit" id = "submitButtonId" onClick="saveDebitNote('Submit');" class="btn btn-primary" type="button">
-            <input value="Cancel" class="btn btn-default ml" type="button">
+            <input value="Cancel" class="btn btn-default ml" onClick="javascript:window.location.href = '<c:url value='${appPath}/debitNoteList'/>'" type="button">
           </div>
         </div>
       </div>
@@ -480,7 +482,7 @@ function prepareDynamicRoweDiv(rowId){
 	return rowDiv; 
 }
 //var removedResidenceIds = [];
-function removeDynamicRowDiv(id){
+function removeDynamicRowDiv(id,lineItemId){
 		
 	var rowAmount = $("#rowTotalAmount"+id).val();
 	   var subAmount = $("#subTotalAmount").val();
@@ -492,13 +494,29 @@ function removeDynamicRowDiv(id){
 	
 	$("#dynamicAddrowDiv"+id).remove();
    
-   
+	totalCalculateAmount(rowId);
+	if(lineItemId !=null && lineItemId !='' && lineItemId !='undefined'){
+	deleteLinteItemEditMode(lineItemId);
+	}
    rowId--;// decrement rowid when deleted in UI.
 }
 
 </script>
 
 <script>
+
+function deleteLinteItemEditMode(id) {
+	$.ajax({
+		type : "POST",
+		url : sourceleadUrl + "/deleteLineItemEditModeId?"+ tokenParamName + "=" + tokenValue + "&id=" + id,
+		success: function(data) {
+		    	/* $("#popUp").empty();
+			 	$(".project_inn_mask").fadeOut(200);
+			 	location.replace(sourceleadUrl+"/creditNoteList");	 */
+		    },
+	});
+}
+
 function getSpocsList() {
 	var spocIds = "${creditDebitNote.contactUser}";
 	var orgRelationId = $("#orgRelationId").val();
@@ -570,9 +588,9 @@ function currencyConversionDiv(){
 		var result = "";
 		result = result +' <div class="row">';
 		result = result +' <div class="clearfix mt col-md-offset-2 col-md-10" style="padding-right:0;">';
-		result = result +' <div class="clearfix"><label class="col-md-6 text-right"><strong>Conversion From</strong></label><div class="paddingLeft col-md-6"><span class="pull-left" id="currencyCode"></span><div class="pull-right"><input type="text" id="conversionFrom" placeholder="00:00" value = "${creditDebitNote.grandTotal}" class="ReadTextFli" readonly="" type="text"/></div></div></div>';
-		result = result +'  <div class="clearfix"><label class="col-md-6 text-right"><strong>Conversion To</strong></label><div  class="paddingLeft col-md-6"><span id="vendorCurrencyCode"></span><div class="pull-right"><input id="exchangeCurrencyRate" name="exchangeCurrencyRate" class="ReadTextFli" value = "${creditDebitNote.exchangeCurrencyRate}" readonly="" type="text"/></div></div></div>';
-		result = result +' <div class="clearfix"><label class="col-md-6 text-right"><strong>Exchange Rate</strong></label><div  class="paddingLeft col-md-6"><span id="convertedCurrencyCode"></span><div class="pull-right"><input id="afterExchangeGrandTotal" name="afterExchangeGrandTotal" value = "${creditDebitNote.afterExchangeGrandTotal}" class="ReadTextFli" readonly="" type="text"/></div></div></div>';
+		result = result +' <div class="clearfix"><label class="col-md-6 text-right"><strong>Conversion From</strong></label><div class="paddingLeft col-md-6"><span class="pull-left" id="currencyCode">${creditDebitNote.loginCurrencyCode}</span><div class="pull-right"><input type="text" id="conversionFrom" placeholder="00:00" value = "${creditDebitNote.grandTotal}" class="ReadTextFli" readonly="" type="text"/></div></div></div>';
+		result = result +'  <div class="clearfix"><label class="col-md-6 text-right"><strong>Conversion To</strong></label><div  class="paddingLeft col-md-6"><span id="vendorCurrencyCode">${creditDebitNote.vendorCurrencyCode}</span><div class="pull-right"><input id="exchangeCurrencyRate" name="exchangeCurrencyRate" class="ReadTextFli" value = "${creditDebitNote.exchangeCurrencyRate}" readonly="" type="text"/></div></div></div>';
+		result = result +' <div class="clearfix"><label class="col-md-6 text-right"><strong>Exchange Rate</strong></label><div  class="paddingLeft col-md-6"><span id="convertedCurrencyCode">${creditDebitNote.loginCurrencyCode} to ${creditDebitNote.vendorCurrencyCode}</span><div class="pull-right"><input id="afterExchangeGrandTotal" name="afterExchangeGrandTotal" value = "${creditDebitNote.afterExchangeGrandTotal}" class="ReadTextFli" readonly="" type="text"/></div></div></div>';
 		result = result +'  </div>';
 		result = result +'  </div>';
 		document.getElementById("conversionId").style.display="block";
@@ -742,6 +760,7 @@ function datePickerFunction(id){
 		  $("#subTotalAmount").val(sum.toFixed(2));
 		  $("#grandTotal").val(sum.toFixed(2));
 		  $("#conversionFrom").val(sum.toFixed(2));
+		  calculateDisCount();
 		  conversionRate();
   }		  
   

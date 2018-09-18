@@ -83,6 +83,7 @@ function getNotificationsByuserId(){
 	
 $('html').click(function(){
 	$(".alert-area").removeClass("notiActive");
+	$(".header-widget").hide();
 });
 
 $('.alert-area, .notiClick').click(function(event){

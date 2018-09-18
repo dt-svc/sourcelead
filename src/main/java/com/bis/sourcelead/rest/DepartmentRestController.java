@@ -21,6 +21,7 @@ import com.bis.sourcelead.annotations.Validator;
 import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.dto.DepartmentDTO;
 import com.bis.sourcelead.dto.Response;
+import com.bis.sourcelead.dto.ResponseList;
 import com.bis.sourcelead.entity.Department;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.ProjectTasks;
@@ -80,17 +81,30 @@ public class DepartmentRestController {
 	}
    
     @RequestMapping(value = "/getDepartmentList", method = RequestMethod.GET)
-	public @ResponseBody  String getDepartmentList(HttpServletRequest request,@RequestParam(value="departmentStatus", required=false) String departmentStatus, HttpServletResponse response) throws Exception
+	public @ResponseBody  ResponseList<Department> getDepartmentList(HttpServletRequest request,@RequestParam(value="departmentStatus", required=false) String departmentStatus, HttpServletResponse response) throws Exception
 	{
-    	String resultJson;
     	OrgLocations loginOrgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
-    	List<Department> deparmentList = departmentService.getDepartmentByOrgLocationIdAndStatus(loginOrgLocation.getId(),departmentStatus);
-    	for(Department dept :deparmentList ){
-    		dept.setDepartmentName(dept.getDepartmentName());
-    		dept.setDescription(dept.getDescription());
-    	}
-	  resultJson = commonUtil.toJSON(deparmentList);
-	  return resultJson;
+    	ResponseList<Department> respons =new ResponseList<>();
+    	try{
+    		if(loginOrgLocation !=null){
+				List<Department> deparmentList = departmentService.getDepartmentByOrgLocationIdAndStatus(loginOrgLocation.getId(),departmentStatus);
+		    	for(Department dept :deparmentList ){
+		    		dept.setDepartmentName(dept.getDepartmentName());
+		    		dept.setDescription(dept.getDescription());
+		    	}
+		    	respons.setData(deparmentList);
+				respons.setResponse(Result.SUCCESS.name());
+				respons.setResponseMessage(Result.SUCCESS.getValue());
+    		}else{
+    			respons.setResponse(Result.SESSION_TIMEDOUT.name());
+				respons.setResponseMessage(Result.SESSION_TIMEDOUT.getValue());
+    		}
+    	}catch (Exception e) {
+    		respons.setResponse(Result.AWKWARD.name());
+			respons.setResponseMessage(Result.AWKWARD.getValue());
+			logger.error(ExceptionUtils.getFullStackTrace(e));
+		}
+	  return respons;
 	}
     
 

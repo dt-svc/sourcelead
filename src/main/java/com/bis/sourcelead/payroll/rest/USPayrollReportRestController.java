@@ -5,6 +5,7 @@ import java.util.List;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.apache.commons.lang.exception.ExceptionUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,9 +16,14 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.ModelAndView;
 
+import com.bis.sourcelead.annotations.Validator;
+import com.bis.sourcelead.dto.Response;
 import com.bis.sourcelead.dto.ResponseList;
 import com.bis.sourcelead.entity.OrgLocations;
+import com.bis.sourcelead.entity.RestrictDay;
+import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.entity.UserGroup;
+import com.bis.sourcelead.enums.Result;
 import com.bis.sourcelead.payroll.dto.PayPeriodDTO;
 import com.bis.sourcelead.payroll.dto.PayrollDeductionDTO;
 import com.bis.sourcelead.service.UserGroupService;
@@ -108,7 +114,7 @@ public class USPayrollReportRestController {
 	public ModelAndView payrollComparisonJsp(HttpServletRequest request, HttpServletResponse response) throws Exception
 	{
 		ModelAndView model = new ModelAndView();
-		model.setViewName("payroll/payrollRegisterReport");
+		model.setViewName("payroll/payrollComparison");
 		return model;
 	}
 	
@@ -191,10 +197,25 @@ public class USPayrollReportRestController {
 	
 	@RequestMapping(value = { "/getPayPeriodByGroupId","/rest/getPayPeriodByGroupId" }, method = RequestMethod.GET)
 	@ResponseBody
-	public List<PayPeriodDTO> getPayPeriodByGroupId(@RequestParam(value = "groupId",required = false) Long groupId,HttpServletRequest request, HttpServletResponse response) throws Exception
+	public ResponseList<PayPeriodDTO> getPayPeriodByGroupId(@RequestParam(value = "groupId",required = false) Long groupId,HttpServletRequest request, HttpServletResponse response) throws Exception
 	{
-		
-//		List<PayPeriodDTO> userGroupService = 
-		return null;
+		ResponseList<PayPeriodDTO> responseList = new ResponseList<>();
+		try {
+			User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+			if (user != null) { 
+				List<PayPeriodDTO> PayPeriodDTOList = userGroupService.getPayPeriodsByGroupId(groupId);
+				responseList.setData(PayPeriodDTOList);
+				responseList.setResponse(Result.SUCCESS.name());
+				responseList.setResponseMessage(Result.SUCCESS.getValue());
+			}else{
+				responseList.setResponse(Result.SESSION_TIMEDOUT.name());
+				responseList.setResponseMessage(Result.SESSION_TIMEDOUT.getValue());
+			}
+		} catch (Exception e) {
+			responseList.setResponse(Result.AWKWARD.name());
+			responseList.setResponseMessage(Result.AWKWARD.getValue());
+			logger.error(ExceptionUtils.getFullStackTrace(e));
+		}
+		return responseList;
 	}
 }

@@ -6,7 +6,6 @@
  <%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %>
 <%@taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
 
-
 <script>
 function assetNotes(assetId,assetUUID){
 		var result = "";
@@ -126,7 +125,7 @@ function assetNotesList(assetUUID){
    	    output = output+'         <p class="comment-by">';
    	    output = output+'            By <span class="text-danger" title = "'+report.userName+'">'+report.userName+'</span>';
    	    if(report.assetName !=null && report.assetName != 'undefined'){
-   		 output = output+'          Serial / Port Number: <span class="text-danger" title = "'+report.assetName+'"> '+report.assetName+'</span>';
+   		 output = output+'          Serial  Number: <span class="text-danger" title = "'+report.assetName+'"> '+report.assetName+'</span>';
    	    }
    	    
    	    else if(report.contactName !=null && report.contactName != 'undefined'){
@@ -229,12 +228,22 @@ function assetDetails(assetUUID) {
 
 				    var result = "";
 					result = result + '<div class="require_wrap_details">';
-					result = result + '<h1>'+json.categoryName+' Asset details:</h1>';
-					result = result + '<div class="require_one">';
+					result = result + '<div class="clearfix"><h4 class="pull-left mr margin-top0">'+json.categoryName+' Asset details:</h5>';
+					'<sec:authorize access="hasRole(\'ROLE_EDIT_ASSET\')">' 
+						result = result + '<a class="pull-left glyphicon glyphicon-edit" title="Edit" onclick="summaryEditAssetAssign(\''+assetUUID+'\');"></a>';
+					'</sec:authorize>';
+					result = result + '</div>';
+					result = result + '<div class="require_one clearfix">';
 					
 					result = result + '<div class="require_wrap_details_cta"> <b><strong>Category Name:</strong></b> <span class = "wordWrap-breakword">'+json.categoryName+'</span>';
 					result = result + '<div class="clearfix"></div>';
 					result = result + ' </div>';
+					
+					if(json.name != null && json.name != "" && json.name != "undefined"){
+						result = result + '<div class="require_wrap_details_cta"> <b><strong>Name:</strong></b> <span class = "wordWrap-breakword">'+json.name+'</span>';
+						result = result + '<div class="clearfix"></div>';
+						result = result + ' </div>';	
+					}
 					
 					if(json.sno != null && json.sno != "" && json.sno != "undefined"){
 						result = result + '<div class="require_wrap_details_cta"> <b><strong>Serial Number:</strong></b> <span class = "wordWrap-breakword">'+json.sno+'</span>';
@@ -300,8 +309,8 @@ function assetDetails(assetUUID) {
 							result = result + ' </div>';
 						}
 						
-						if (json.categoryName != null && json.categoryName != '' && json.categoryName != 'undefined' && json.categoryId == 2) {
-							result = result + ' <div class="require_wrap_details_cta"> <b><strong>Monitor:</strong></b> <span class = "wordWrap-breakword">'+monitor+'</span>';
+						if (json.monitor != null && json.monitor != '' && json.monitor != 'undefined') {
+							result = result + ' <div class="require_wrap_details_cta"> <b><strong>Monitor:</strong></b> <span class = "wordWrap-breakword">'+json.monitor+'</span>';
 							result = result + ' <div class="clearfix"></div>';
 							result = result + ' </div>';
 						}
@@ -423,6 +432,97 @@ function assetDetails(assetUUID) {
 		});
 }
 </script>	
+
+<div class="comMask"></div>
+  		<div class="modal assetManagementPopup" id="assetManagementPopup" style="display: none;">
+ 		<jsp:include page="addAssetPopup.jsp"></jsp:include> 
+ 	</div>
+  <script>
+  function summaryEditAssetAssign(assetUUID){
+	  $.ajax({
+	    	type: "POST",
+	    	url: sourceleadUrl+"/addAndEditAssetAssign?&assetUUID="+assetUUID, 
+	        success: function(result) {
+	        	$(".assetManagementPopup, .comMask").fadeIn();
+	        	$('#assetManagementPopup').empty();
+	        	$('#assetManagementPopup').append(result);
+// 	        	issueDateScript();
+	        	populateDropdownValues();
+	        	<c:forEach var="section" items="${sourceleadSectionList}" varStatus="sectionOrder">
+	  		 	 var sectionId = '${section.id}';
+	  		  	 getCustomDependentField(sectionId);
+	  		 	</c:forEach>
+		        
+	        },
+	    }); 
+  }
+  </script>
+  <script>
+function closeassetManagementPopup() {
+	$(".assetManagementPopup, .comMask").fadeOut();
+	document.getElementById("addAsset_form").reset();
+	$(".selectpicker").selectpicker('refresh');
+}
+function setFilePath(shiftIndex){
+	$('#shiftFile'+shiftIndex).val($('#uploadBtn-dskA'+shiftIndex).val().replace(/C:\\fakepath\\/i, ''));
+}
+function uploadShiftFile(shiftIndex){
+	fileUpload("uploadBtn-dskA"+shiftIndex, "assetDocuments", "addAsset_form","assignAsset["+shiftIndex+"].fileInfo","","");
+}
+</script>
+<script type="text/javascript">
+  function storeAsset(assetUUID) {
+			var validationSettings = {
+			        errorMessagePosition : 'element',
+			       borderColorOnError : '',
+					scrollToTopOnError : true,
+					dateFormat : 'yyyy/mm/dd' 
+			   };  
+			   if ($('#addAsset_form').validate(false, validationSettings)){
+        	        var form = $('#addAsset_form')[0];
+	           		var formData = new FormData(form);
+	           		
+	          		 $("#add_asset").attr("disabled", "disabled");
+	          		 $("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
+	          		
+	          	      $.ajax({
+	     		    	type: "POST",
+	     		    	data: formData,
+		    	        processData: false,
+		    	        contentType:false,
+		        	    dataType : 'json',
+	     		    	 url: sourceleadUrl+"/addCategoryAssets?"+tokenParamName+"="+tokenValue+"", 
+	     		        success: function(result) {
+	     		        	
+	     		       	if (result && result.response === "INVALID_DATA") {
+						    showError(result.responseMessage);
+						    $("#loading").hide();
+						} else if (result.response === "AWKWARD") {
+						    location.href = "/errorPage";
+						} else if (result.response === "SUCCESS") {
+							assetDetails(assetUUID);
+							closeassetManagementPopup();
+						} else if (result.indexOf('Sign In') !== -1) {
+							location.replace(sourceleadUrl);
+						} else {
+						    showError("Operation failed, please try again");
+						}
+	     			        
+	     		        },
+	     		    }); 
+                
+            	    return true;
+            }
+            else{
+            	return false;	
+               }
+         }
+         
+         $('body').on('blur', '#addAsset_form', function() {
+     		$("#addAsset_form").showHelpOnFocus();
+     		$("#addAsset_form").validateOnBlur(false, validationSettings);
+     	});
+</script> 
 
 <script type="text/javascript">
 (function ($) {
