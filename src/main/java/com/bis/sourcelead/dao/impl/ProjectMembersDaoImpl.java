@@ -1669,11 +1669,12 @@ public class ProjectMembersDaoImpl implements ProjectMembersDao{
 		logger.debug("In ProjectsDaoImpl class getProjectByOrgLocationsId method");
 		List<ProjectMembers> pmList = null;
 		OrgLocations orgLocation = orgLocationService.getOrgLocations(dayWiseTimesheetReoprtsDto.getLocationsId());
-		
-		 Date startDate = commonUtil.orgLocationDateFormat(orgLocation.getDateFormat(), dayWiseTimesheetReoprtsDto.getStartDate());
-		 Date endDate = commonUtil.orgLocationDateFormat(orgLocation.getDateFormat(), dayWiseTimesheetReoprtsDto.getEndDate());
-		
-		
+		Date startDate = null;
+		Date endDate = null;
+		if(dayWiseTimesheetReoprtsDto.getStartDate() != null && dayWiseTimesheetReoprtsDto.getEndDate() != null){
+			  startDate = commonUtil.orgLocationDateFormat(orgLocation.getDateFormat(), dayWiseTimesheetReoprtsDto.getStartDate());
+			  endDate = commonUtil.orgLocationDateFormat(orgLocation.getDateFormat(), dayWiseTimesheetReoprtsDto.getEndDate());
+		}
 		java.sql.Date sqlStartDate = null;
 		if(startDate != null){
 			sqlStartDate = new java.sql.Date(startDate.getTime());
