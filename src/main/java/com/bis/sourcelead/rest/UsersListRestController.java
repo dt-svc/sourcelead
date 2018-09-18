@@ -103,6 +103,7 @@ import com.bis.sourcelead.service.DepartmentService;
 import com.bis.sourcelead.service.EmailScenarioService;
 import com.bis.sourcelead.service.EmployeesService;
 import com.bis.sourcelead.service.OrgDocumentsService;
+import com.bis.sourcelead.service.OrgLocationService;
 import com.bis.sourcelead.service.OrgRelationsService;
 import com.bis.sourcelead.service.OrgSpocService;
 import com.bis.sourcelead.service.OrglocationFormFieldsService;
@@ -257,6 +258,11 @@ public class UsersListRestController {
 	
 	@Autowired
 	private SourceleadTagsService sourceleadTagsService;
+	
+	@Autowired
+	OrgLocationService orgLocationService;
+	
+	
 	/**
 	 * To get All the Users by filtering
 	 * 
@@ -854,10 +860,23 @@ public class UsersListRestController {
 			}
 
 		 
+		 List<OrgLocations> locationList = orgLocationService.getAllRegisteredWorkLocationsByOrgId(org.getId());
+		 userRole.setLocationList(locationList);
+		 
 		  Candidate candidate = candidateService.getCandidateByConsultantUserId(userId, orgLocations.getId());
 		  if(candidate != null) {
-			  userRole.setWorkLocation(candidate.getWorkLocation());
-			  userRole.setResidenceAddress(candidate.getResidenceAddress());
+			  if(candidate.getWorkLocation() != null) {
+				  userRole.setWorkLocationId(candidate.getWorkLocation().getId());
+				  userRole.setWorkLocation(candidate.getWorkLocation().getLocation());
+				  userRole.setResidenceAddress(candidate.getResidenceAddress());
+				  userRole.setResidenceCountry(candidate.getResidenceCountry());
+				  userRole.setResidenceState(candidate.getResidenceState());
+				  userRole.setResidenceCity(candidate.getResidenceCity());
+				  userRole.setResidenceZipCode(candidate.getResidenceZipCode());
+				  userRole.setResidenceLatitude(candidate.getResidenceLatitude());
+				  userRole.setResidenceLongitude(candidate.getResidenceLongitude());
+			  }
+			  
 		  }
 		  
 		 
