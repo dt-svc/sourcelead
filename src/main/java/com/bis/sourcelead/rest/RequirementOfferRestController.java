@@ -544,13 +544,15 @@ public class RequirementOfferRestController {
 					Org loginOrg = (Org) SourceLeadSessionManager.getSessionAttribute(request, "org");
 					if (null != submissionId) {
 						RequirementSubmission requirementSubmission = requirementSubmissionService.getRequirementSubmissionById(submissionId);
+						RequirementSubmissionHistory requirementSubmissionHistory = new RequirementSubmissionHistory();
+						requirementSubmissionHistory.setFromStage(requirementSubmission.getSubmissionStatus().toString());
 						if (StringUtils.equalsIgnoreCase(status, "accept")) {
 							requirementSubmission.setSubmissionStatus(ApplicantSubmissionStatus.SUBMISSION);
 							requirementSubmission.setSubmissionRateStatus(SubmissionRateStatus.ACCEPTED);
 							requirementSubmission.setSubmissionRequestUser(user.getFirstName() + ""	+ user.getLastName());
-							requirementSubmissionService.storeRequirementSubmission(requirementSubmission);
+							requirementSubmission = requirementSubmissionService.storeRequirementSubmission(requirementSubmission);
+							requirementSubmissionHistoryService.updateRequirementHistory(requirementSubmission, user, requirementSubmissionHistory);
 							requirementSubmissionService.sendEmailtoApplicant(loginOrg, user, requirementSubmission, orgLocation);
-							
 							requirementSubmissionService.sendEmailtoAssignedMemberApplicantAuthorization(loginOrg, user, requirementSubmission, orgLocation);
 						}
 						else if (StringUtils.equalsIgnoreCase(status, "rejected")) {
@@ -566,7 +568,8 @@ public class RequirementOfferRestController {
 							if (StringUtils.isNotBlank(applicantAuthorizationDTO.getRejectedCategoryOther())) {
 								requirementSubmission.setRejectedCategoryOther(applicantAuthorizationDTO.getRejectedCategoryOther());
 							}
-							requirementSubmissionService.storeRequirementSubmission(requirementSubmission);
+							requirementSubmission = requirementSubmissionService.storeRequirementSubmission(requirementSubmission);
+							requirementSubmissionHistoryService.updateRequirementHistory(requirementSubmission, user, requirementSubmissionHistory);
 						}
 					}
 					response.setObject("success");
