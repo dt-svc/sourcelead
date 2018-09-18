@@ -140,9 +140,10 @@ $(document).ready(function(){
 	function getPayCheckDateReports() {
 		var sourceleadUrl = '${sourceleadUrl}';
 		var payCheckDate = $('#payCheckDate').val();
+		var groupId = $('#payPedriod').val();
 		var searchValue = $("#dataTableSearch").val();
 		searchValue = searchValue ? searchValue : "";
-		var url = sourceleadUrl+"/getPayCheckDateReports?searchValue="+searchValue+"&payCheckDate="+payCheckDate;
+		var url = sourceleadUrl+"/getPayCheckDateReports?searchValue="+searchValue+"&groupId="+groupId+"&payCheckDate="+payCheckDate;
 		payCheckDatePayrollList(url);
 	}
 </script>
@@ -151,12 +152,7 @@ $(document).ready(function(){
 	function payCheckDatePayrollList(url) {
 		("#payCheckDateTableDIV").empty();
 		var result = "";
- 		result = result +" <div class='reportHead'>";
-		result = result + " <ul class='pull-right'>";
-		result = result + " <li><input type='text' placeholder='Search' class='repSearchBar' id='employeeDataTableSearch'/><span class='repSearchIcon' onClick='employeeDataSearch();'></span></li>";
-		result = result + "</ul>";
-		result = result + "</div>"; 
-		result = result + '<table id="employeePayrollTable" class="display" cellspacing="0" width="100%" >';
+		result = result + '<table id="payCheckDateReportTabble" class="display" cellspacing="0" width="100%" >';
 		result = result + '<thead>';
 		result = result + '<tr>';
 		result = result + '<th>Emp Name</th>';
@@ -183,7 +179,7 @@ $(document).ready(function(){
 <script>
 	function payCheckDatePayrollData(url) {
 		var colIndex = 0;
-		$('#employeePayrollTable')
+		$('#payCheckDateReportTabble')
 				.DataTable(
 						{
 							"processing" : true,
@@ -197,7 +193,7 @@ $(document).ready(function(){
 							"columns" : [ {
 								"data" : "empName"
 							}, {
-								"data" : "rate"
+								"data" : "payRate"
 							}, {
 								"data" : "regularHours"
 							}, {
@@ -222,7 +218,7 @@ $(document).ready(function(){
 							"columnDefs" : [
 									{
 										"targets" : colIndex++,
-										"data" : "fromDate",
+										"data" : "empName",
 										"render" : function(data, type, opt,
 												meta) {
 											var result = "";
@@ -235,7 +231,7 @@ $(document).ready(function(){
 									},
 									{
 										"targets" : colIndex++,
-										"data" : "toDate",
+										"data" : "payRate",
 										"render" : function(data, type, opt,
 												meta) {
 											var result = "";
@@ -249,7 +245,7 @@ $(document).ready(function(){
 									},
 									{
 										"targets" : colIndex++,
-										"data" : "employeeId",
+										"data" : "regularHours",
 										"render" : function(data, type, opt,
 												meta) {
 											var result = "";
@@ -262,7 +258,7 @@ $(document).ready(function(){
 									},
 									{
 										"targets" : colIndex++,
-										"data" : "employeeName",
+										"data" : "overtimeHours",
 										"render" : function(data, type, opt,
 												meta) {
 											var result = "";
@@ -275,7 +271,7 @@ $(document).ready(function(){
 									},
 									{
 										"targets" : colIndex++,
-										"data" : "ssn",
+										"data" : "grossPay",
 										"render" : function(data, type, opt,
 												meta) {
 											var result = "";
@@ -295,7 +291,7 @@ $(document).ready(function(){
 									},
 									{
 										"targets" : colIndex++,
-										"data" : "totalHrs",
+										"data" : "preTaxDeduction",
 										"render" : function(data, type, opt,
 												meta) {
 											var result = "";
@@ -315,7 +311,7 @@ $(document).ready(function(){
 									},
 									{
 										"targets" : colIndex++,
-										"data" : "grossWages",
+										"data" : "postTaxDeduction",
 										"render" : function(data, type, opt,
 												meta) {
 											var result = "";
@@ -328,7 +324,7 @@ $(document).ready(function(){
 									},
 									{
 										"targets" : colIndex++,
-										"data" : "fica",
+										"data" : "taxes",
 										"render" : function(data, type, opt,
 												meta) {
 											var result = "";
@@ -340,7 +336,7 @@ $(document).ready(function(){
 									},
 									{
 										"targets" : colIndex++,
-										"data" : "futa",
+										"data" : "netpay",
 										"render" : function(data, type, opt,
 												meta) {
 											var result = "";
@@ -352,7 +348,7 @@ $(document).ready(function(){
 									},
 									{
 										"targets" : colIndex++,
-										"data" : "sui",
+										"data" : "lastPay",
 										"render" : function(data, type, opt,
 												meta) {
 											var result = "";
@@ -364,7 +360,7 @@ $(document).ready(function(){
 									},
 									{
 										"targets" : colIndex++,
-										"data" : "erLocals",
+										"data" : "YTD",
 										"render" : function(data, type, opt,
 												meta) {
 											var result = "";
@@ -397,18 +393,18 @@ $(document).ready(function(){
 								"sProcessing" : "<img src='/resources/images/loading.gif' style='width: 75px; height: 75px;'/>"
 							}
 						});
-		$("#employeePayrollTable").wrap(
+		$("#payCheckDateReportTabble").wrap(
 				"<div style='overflow-x: auto; overflow-y: hidden;'></div>");
 		$("input[type=search]").hide();
-		$("#employeeDataTableSearch").keyup(function(e) {
+		$("#dataTableSearch").keyup(function(e) {
 			if (e.which === 13) {
-				loadEmployeePayrollCost();
+				getPayCheckDateReports();
 			}
 		});
 		
 	}
-	function employeeDataSearch(){
-		loadEmployeePayrollCost();
+	function payCheckDateSearch(){
+		getPayCheckDateReports();
 	}
 	
 
