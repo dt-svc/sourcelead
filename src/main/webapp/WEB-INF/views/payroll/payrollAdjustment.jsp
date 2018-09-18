@@ -132,8 +132,8 @@
                           <th colspan="2">Taxes</th>
                         </tr>
                       </thead>
-                      <tbody>
-                        <tr>
+                      <tbody id="taxesBodyDIV">
+                        <!-- <tr>
                           <th>Description</th>
                           <th>Amount</th>
                         </tr>
@@ -161,7 +161,7 @@
                            <tr>
                           <td>LocalTax</td>
                            <td><i class="fa fa-dollar mr5"></i><span id="localTaxWT">0.0</span></td>
-                        </tr>
+                        </tr> -->
                         
                       </tbody>
                       <tfoot>
@@ -301,14 +301,30 @@
 		            $("#preOverTimeHours").val(json.overtimeHours.toFixed(2));
 		            $("#preOverTimeHoursAmt").val(json.otHoursTotalAmt.toFixed(2));
 		            
-		            // Taxes 
+		            // Taxes Tax
 		            
-		            $("#federalWT").text(json.federal);
+			        var taxes = "";
+			        taxes = taxes + '<tr>';
+			        taxes = taxes + '<th>Description</th>';
+			        taxes = taxes + '<th>Amount</th>';
+			        taxes = taxes + '</tr>';
+			        for(var e in json.tax){
+			        	//json.tax[e]
+			        	if(json.tax[e] > 0){
+			        		taxes = taxes + '<tr>';
+				        	taxes = taxes + '<td>'+e+'</td>';
+				        	taxes = taxes + '<td><i class="fa fa-dollar mr5"></i>'+json.tax[e]+'</td>';
+				        	taxes = taxes + ' </tr>';
+			        	}
+			        }
+		            $("#taxesBodyDIV").empty();
+		            $("#taxesBodyDIV").append(taxes);
+		           /*  $("#federalWT").text(json.federal);
 		            $("#medicareWT").text(json.medicare);
 		            $("#ficaWT").text(json.fica);
 		            $("#stateWithHoldingWT").text(json.stateWithHolding);
 		            $("#aeicWT").text(json.aeic);
-		            $("#localTaxWT").text(json.localTax);
+		            $("#localTaxWT").text(json.localTax); */
 		            $("#taxes").text(json.taxes);
 		            
 		            $("#gross").text(json.grossPay);

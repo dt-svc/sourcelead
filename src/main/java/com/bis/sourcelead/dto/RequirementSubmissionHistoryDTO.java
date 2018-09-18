@@ -44,6 +44,7 @@ public class RequirementSubmissionHistoryDTO extends SearchDTO implements Serial
 	private String toDate;
 	private String employmentType;
 	private String clientId;
+	private String teamId;
 	private String exportType;
 	private List<String> locationsList;
 	private String jobGeneratedId;
@@ -350,6 +351,12 @@ public class RequirementSubmissionHistoryDTO extends SearchDTO implements Serial
 	}
 	public void setClientId(String clientId) {
 		this.clientId = clientId;
+	}
+	public String getTeamId() {
+		return teamId;
+	}
+	public void setTeamId(String teamId) {
+		this.teamId = teamId;
 	}
 	public String getEmploymentType() {
 		return employmentType;

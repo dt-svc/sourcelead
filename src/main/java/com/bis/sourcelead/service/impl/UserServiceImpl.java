@@ -416,7 +416,7 @@ public class UserServiceImpl implements UserService {
 		
 		//for updating cosultantUserId in candidate
 		if(StringUtils.isNotBlank(candidateDTO.getAssociateId())){
-			candidate = candidateService.getCandidateByCandidateId(Long.parseLong(candidateDTO.getAssociateId()));
+			candidate = candidateService.getCandidateByConsultantUserId(Long.parseLong(candidateDTO.getAssociateId()), orgLocations.getId());
 			if(null != candidate){
 				candidate.setConsultantUser(user1);
 				candidate.setUpdatedBy(loginuser.getUserCode());
@@ -453,12 +453,14 @@ public class UserServiceImpl implements UserService {
 					   candidate.setResidenceLongitude(addUserDTO.getResidenceLongitude());
 					   candidate.setResidenceZipCode(addUserDTO.getResidenceZipCode());
 					   candidate.setResidenceStreetAddress(addUserDTO.getResidenceAddress());
+					   OrgLocations workLocation = orgLocationService.getOrgLocations(Long.parseLong(addUserDTO.getWorkLocation()));
+					   candidate.setWorkLocation(workLocation);
 				    	
 				    	Countries country = countriesService.getCountriesByCountryName(addUserDTO.getResidenceCountry());
 				    	String stateCode = statesService.getStateCodeByCountryCodeAndState(country.getCode2(),addUserDTO.getResidenceState());
 				    	candidate.setResidenceStateCode(stateCode);
 				    }
-				
+                       
 				MasterCandidate masterCandidate = masterCandidateService.getMasterCandidateByInteligenceCandidateDTO(candidateDTO);
 				if(null == masterCandidate){
 					masterCandidate = masterCandidateService.storeMasterCandidateByCandidateDTO(candidateDTO, loginuser);
@@ -1802,9 +1804,18 @@ public class UserServiceImpl implements UserService {
 	public List<User> getUsersListUsingMultipleStringIds(String ids) throws Exception
 	{
 		return userDao.getUsersListUsingMultipleStringIds(ids);
-
 	}
-
-
+	
+	@Override
+	public List<String> getUserHierarchyUserCodeList(Long userId) throws Exception
+	{
+		return userDao.getUserHierarchyUserCodeList(userId);
+	}
+	
+	@Override
+	public List<Long> getUserHierarchyIdList(Long userId) throws Exception
+	{
+		return userDao.getUserHierarchyIdList(userId);
+	}
 }
 

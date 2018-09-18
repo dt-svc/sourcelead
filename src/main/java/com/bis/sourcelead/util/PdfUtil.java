@@ -1797,7 +1797,7 @@ private String[] prepareDailyWiseLeaveReportStringArray(LeaveReportView lrv, Str
    }else{
 	   userArray[12] = "--";
    }
-	   if(lrv.getApprovedOnDateStr() !=null){
+	   if(lrv.getApprovedOnDateStr() !=null && lrv.getStatus().equalsIgnoreCase("APPROVED")){
 		   userArray[13] = lrv.getApprovedOnDateStr();
    }else{
 	   userArray[13] = "--";

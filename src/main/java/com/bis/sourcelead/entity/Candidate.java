@@ -61,14 +61,15 @@ public class Candidate implements Serializable {
 	@JoinColumn(name = "SHIFT_ID")
 	private Shift shift;
 	
-	@ManyToOne
+ 
+	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "WORK_LOCATION")
 	private OrgLocations workLocation;
-	
-	@Column(name = "RESIDENCE_ADDRESS")
+ 	
+	@Column(name = "RESIDENCE_ADDRESS", columnDefinition = "LONGTEXT default NULL")
 	private String residenceAddress;
 	
-	@Column(name = "RESIDENCE_STREET_ADDRESS")
+	@Column(name = "RESIDENCE_STREET_ADDRESS", columnDefinition = "LONGTEXT default NULL")
 	private String residenceStreetAddress;
 	
 	@Column(name = "RESIDENCE_COUNTRY")
@@ -1727,11 +1728,6 @@ public class Candidate implements Serializable {
 		this.candidateTagsList = candidateTagsList;
 	}
 
-	public OrgLocations getWorkLocation()
-	{
-		return workLocation;
-	}
-
 	public String getResidenceAddress()
 	{
 		return residenceAddress;
@@ -1775,11 +1771,6 @@ public class Candidate implements Serializable {
 	public String getResidenceLongitude()
 	{
 		return residenceLongitude;
-	}
-
-	public void setWorkLocation(OrgLocations workLocation)
-	{
-		this.workLocation = workLocation;
 	}
 
 	public void setResidenceAddress(String residenceAddress)
@@ -1827,5 +1818,11 @@ public class Candidate implements Serializable {
 		this.residenceLongitude = residenceLongitude;
 	}
 
-	
+	public OrgLocations getWorkLocation() {
+		return workLocation;
+	}
+
+	public void setWorkLocation(OrgLocations workLocation) {
+		this.workLocation = workLocation;
+	}
 }

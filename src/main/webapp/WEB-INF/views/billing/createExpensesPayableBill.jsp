@@ -1352,12 +1352,12 @@ function errInvoiceDate(){
 <script>
 function getVendorContacts(vendorContactId){
 	var orgRelationId = $("#vendorOrgRelationId").val();
+	$("#vendorContact").empty();
 	$.ajax({
 		type : "GET",
 		url: sourceleadUrl+"/getPayableVendorContactsByOrgRelationId?"+tokenParamName+"="+tokenValue+"&orgRelationId="+orgRelationId,
 		success :function(json) {
 		var output = "";
-		output = output + "<option value=''>Select Vendor Contact</option>";
 		for (var i=0; i<json.data.length; i++)
 		{
 		var opt = json.data[i];
