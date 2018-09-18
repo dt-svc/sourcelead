@@ -166,13 +166,8 @@ $(document).ready(function(){
 
 <script>
 function getBalanceLeaveReportList(){
-	alert("test");
 	var fromDate = $("#fromDate").val();
 	var searchValue = $("#leaveReportDataTableSearch").val();
-	searchValue = searchValue ? searchValue : "";
-	alerrt("fromDate "+fromDate)
-	alert("searchValue11 "+searchValue)
-// 	var searchValue = $("#employeeDataTableSearch").val();
 	searchValue = searchValue ? searchValue : "";
 	//var url = sourceleadUrl+"/getDaywiseLeaveReportList?"+tokenParamName+"="+tokenValue+"&fromDate="+fromDate;
 	var url = sourceleadUrl+"/getLeaveBalanceReportList?"+tokenParamName+"="+tokenValue+"&searchValue="+searchValue;

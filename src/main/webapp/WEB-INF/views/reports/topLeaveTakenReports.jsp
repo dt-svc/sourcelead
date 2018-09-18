@@ -391,7 +391,6 @@ function listTypePagination(count) {
 
 /* 
 	function listTypePagination(count) {
-		alert("jjjj")
 		count += 3;
 		$('#topLeaveTakenReportsListView').DataTable({
 			"searching": false, 
