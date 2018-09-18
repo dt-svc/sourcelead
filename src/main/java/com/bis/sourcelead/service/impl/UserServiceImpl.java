@@ -1804,9 +1804,18 @@ public class UserServiceImpl implements UserService {
 	public List<User> getUsersListUsingMultipleStringIds(String ids) throws Exception
 	{
 		return userDao.getUsersListUsingMultipleStringIds(ids);
-
 	}
-
-
+	
+	@Override
+	public List<String> getUserHierarchyUserCodeList(Long userId) throws Exception
+	{
+		return userDao.getUserHierarchyUserCodeList(userId);
+	}
+	
+	@Override
+	public List<Long> getUserHierarchyIdList(Long userId) throws Exception
+	{
+		return userDao.getUserHierarchyIdList(userId);
+	}
 }
 

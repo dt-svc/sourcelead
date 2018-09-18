@@ -2393,6 +2393,21 @@ public class UserDaoImpl implements UserDao {
 	return list;
 
 	}
+	
+	@Override
+    @Transactional
+    public List<Long> getUserHierarchyIdList(Long userId) {
+         Session session = this.sessionFactory.getCurrentSession();
+         List<Long> userIds = session.createSQLQuery("CALL User_Hierarchy_Id_List(:userId)").setParameter("userId", userId).list();
+        return userIds;
+    }
 
+    @Override
+    @Transactional
+    public List<String> getUserHierarchyUserCodeList(Long userId) {
+         Session session = this.sessionFactory.getCurrentSession();
+         List<String> userCodes = session.createSQLQuery("CALL User_Hierarchy_UserCode_List(:userId)").setParameter("userId", userId).list();
+        return userCodes;
+    }
 
 }
