@@ -94,6 +94,7 @@ import com.bis.sourcelead.payroll.util.PayrollUtil;
 import com.bis.sourcelead.service.AssociateLoanAndAdvancesService;
 import com.bis.sourcelead.service.AssociateSalaryHistoryService;
 import com.bis.sourcelead.service.AssociateSalaryService;
+import com.bis.sourcelead.service.CandidateService;
 import com.bis.sourcelead.service.DepartmentService;
 import com.bis.sourcelead.service.OrgLocationService;
 import com.bis.sourcelead.service.UserGroupService;
@@ -203,6 +204,9 @@ public class USPayrollRestController {
 	
 	@Autowired
 	private PayrollUtil payrollUtil;
+	
+	@Autowired
+	CandidateService candidateService;
 
 	
 	/**
@@ -1656,6 +1660,18 @@ public class USPayrollRestController {
 			resList.setRecordsFiltered(assSalList.getRecordsFiltered());
 			resList.setRecordsTotal(assSalList.getRecordsTotal());
 			return resList;
+		}
+		
+		@RequestMapping(value = "/getResidenceLocation",method = RequestMethod.GET)
+		@ResponseBody
+		public String getResidenceLocation(@RequestParam(value = "userId",required = false)Long userId,HttpServletRequest request, HttpServletResponse response) throws Exception{
+			
+			OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+			Candidate candidate = candidateService.getCandidateByConsultantUserId(userId, orgLocation.getId());
+			StringBuilder sb = new StringBuilder();
+			sb.append(candidate.getResidenceCity()).append(",").append(candidate.getResidenceStateCode());
+			
+			return sb.toString();
 		}
 
 }
