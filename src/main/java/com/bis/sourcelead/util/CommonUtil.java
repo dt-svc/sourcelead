@@ -2706,7 +2706,7 @@ public String getOrglocationDateFormatHHMMSS(String dateFormat, Date date)
 			filesList.forEach(fileObj -> {
 				FileInfo fileInfo = new FileInfo();
 				String fileName = fileObj.getName();
-				File file = new File(staticPath, "temp" + System.getProperty("file.separator") + fileName);
+				File file = new File(staticPath, "tempResumes" + System.getProperty("file.separator") + fileName);
 				FileUploadUtil fileUploadUtil = new FileUploadUtil();
 				String extenstion = fileName.substring(fileName.lastIndexOf("."));
 				if (extenstion.equalsIgnoreCase(".rar"))
