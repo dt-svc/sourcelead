@@ -8,6 +8,7 @@ import com.bis.sourcelead.dto.UserGroupDTO;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.UserGroup;
 import com.bis.sourcelead.entity.UserIdView;
+import com.bis.sourcelead.payroll.dto.PayPeriodDTO;
 import com.bis.sourcelead.payroll.dto.TotalHoursDTO;
 
 public interface UserGroupDao {
@@ -29,4 +30,6 @@ public interface UserGroupDao {
 	List<TotalHoursDTO> getTotalHoursByCandidateId(Long candidateId, Date actualStartDate, Date actualEndDate);
 
 	List<UserGroup> getAllUserGroupsByLocationIdAndPayFrequency(OrgLocations orgLocation, String payFrequency);
+
+	List<PayPeriodDTO> getPayPeriodsByGroupId(Long groupId);
 }

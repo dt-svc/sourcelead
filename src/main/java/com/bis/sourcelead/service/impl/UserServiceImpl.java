@@ -454,7 +454,7 @@ public class UserServiceImpl implements UserService {
 					   candidate.setResidenceZipCode(addUserDTO.getResidenceZipCode());
 					   candidate.setResidenceStreetAddress(addUserDTO.getResidenceAddress());
 					   OrgLocations workLocation = orgLocationService.getOrgLocations(Long.parseLong(addUserDTO.getWorkLocation()));
-					   candidate.setWorkLocation(workLocation.getLocation());
+					   candidate.setWorkLocation(workLocation);
 				    	
 				    	Countries country = countriesService.getCountriesByCountryName(addUserDTO.getResidenceCountry());
 				    	String stateCode = statesService.getStateCodeByCountryCodeAndState(country.getCode2(),addUserDTO.getResidenceState());
@@ -1804,9 +1804,18 @@ public class UserServiceImpl implements UserService {
 	public List<User> getUsersListUsingMultipleStringIds(String ids) throws Exception
 	{
 		return userDao.getUsersListUsingMultipleStringIds(ids);
-
 	}
-
-
+	
+	@Override
+	public List<String> getUserHierarchyUserCodeList(Long userId) throws Exception
+	{
+		return userDao.getUserHierarchyUserCodeList(userId);
+	}
+	
+	@Override
+	public List<Long> getUserHierarchyIdList(Long userId) throws Exception
+	{
+		return userDao.getUserHierarchyIdList(userId);
+	}
 }
 

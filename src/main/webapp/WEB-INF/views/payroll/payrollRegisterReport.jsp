@@ -3,10 +3,12 @@
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <%@taglib uri="http://www.springframework.org/tags/form" prefix="form"%>
 
+<script src="/resources/js/payrollReports.js"></script>
 
 <script>
 $(document).ready(function(){
-   getPayGroupList();
+   getPayGroupList("payGroup");
+   getDepartments("payrollDepartment");
 });
 </script>
 <!-- Content Area -->
@@ -26,7 +28,7 @@ $(document).ready(function(){
             <div class="form-group">
               <label class="col-md-12 paddingRight">Pay Group</label>
 				<div class="col-md-12">
-					<select class="form-control sel" id="payGroup" name="payGroup" onchange="getPayPeriodByGroupId();">
+					<select class="form-control sel" id="payGroup" name="payGroup" onchange="getPayPeriodByGroupId('payGroup','payPeriod');">
 					</select>
 				</div>
             </div>
@@ -56,11 +58,11 @@ $(document).ready(function(){
              <div class="form-group">
               <label class="col-md-12">Department</label>
               <div class="col-md-12">
-                <select class="form-control chosen-select">
-					    <option>Select Department</option>
+                <select class="form-control chosen-select" id="payrollDepartment" name="payrollDepartment">
+					    <!-- <option>Select Department</option>
 						<option>Department-1</option>
 						<option>Department-2</option>
-						<option>Department-3</option>
+						<option>Department-3</option> -->
 					</select>
               </div>
             </div>
@@ -151,54 +153,6 @@ $(document).ready(function(){
     </div>
     
   </section>
-  
-  
-  
-  
-<script>
-function getPayGroupList(){
-	 $.ajax({
-	    	type: "GET",
-	        url: sourceleadUrl+"/getPayGroupList?"+tokenParamName+"="+tokenValue                 , 
-	        success: function(json) {
-	        var output = "";
-	        output = output + "<option value=''>Select Group</option>";
-			for (var i=0; i<json.length; i++)
-			{
-				var opt = json[i];
-				output = output + "<option value='" +opt.id+ "'>"+opt.groupName+"</option>";
-			}
-			$("#payGroup").empty();
-			$("#payGroup").append(output);
-			$('#payGroup').trigger("chosen:updated"); 
-	        },
-	    });
-}
-</script>
-
-
-<script type="text/javascript">
-function getPayPeriodByGroupId(){
-	var groupId = $("#payGroup").val();
-	$.ajax({
-	    	type: "GET",
-	        url: sourceleadUrl+"/getPayPeriodByGroupId?"+tokenParamName+"="+tokenValue+"&groupId="+groupId               , 
-	        success: function(json) {
-	        var output = "";
-	        output = output + "<option value=''>Select Pay Period</option>";
-			for (var i=0; i<json.length; i++)
-			{
-				var opt = json[i];
-				output = output + "<option value='" +opt.id+ "'>"+opt.groupName+"</option>";
-			}
-			$("#payPeriod").empty();
-			$("#payPeriod").append(output);
-			$('#payPeriod').trigger("chosen:updated"); 
-	        },
-	    });	
-}
-</script>
-  
   
   <script type="text/javascript">
             $(function () {

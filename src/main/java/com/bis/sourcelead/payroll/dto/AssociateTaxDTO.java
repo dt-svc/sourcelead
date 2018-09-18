@@ -15,13 +15,13 @@ public class AssociateTaxDTO {
 	@Required(desc = "Federal Tax Additional With Holding")
 	private String federaltaxAdditionalWithHolding;
 	
-	@Required(desc = "State Tax Filling Status")
+//	@Required(desc = "State Tax Filling Status")
 	private String stateTaxFillingStatus;
 	
-	@Required(desc = "State Tax Allowances")
+//	@Required(desc = "State Tax Allowances")
 	private String stateTaxAllowances;
 	
-	@Required(desc = "State Tax Additional With Holding")
+//	@Required(desc = "State Tax Additional With Holding")
 	private String stateTaxAdditionalWithHolding;
 	
 	private String localTax;
