@@ -21,11 +21,11 @@
 </style>
 
 <script type="text/javascript">
+var uploadflag= true;
 		window.onload = function () {
 			var sessionId = '${SourceLeadWeb_sessionId}';
-			var flag= true;
 			var refreshId = setInterval(function(){
-				if(flag == true){
+				if(uploadflag == true){
 					getUploadInprogressProgressBar(sessionId);
 				  }else{
 					  clearInterval(refreshId);
@@ -33,9 +33,7 @@
 				  }
 				},1000);
 		 };
-	</script>
 	
-	<script>
 function getUploadInprogressProgressBar(sessionId){
 	
 	var entityType = 'Candidates';
@@ -57,13 +55,9 @@ function getUploadInprogressProgressBar(sessionId){
        			$("#totalUploadedCount").html(totalCount);
        			$("#currentUploadedCount").html(uploadingCount);
        			
-       			if(json.uploadProcessingStatus == 'Completed'){
-       				flag = false;
-            		clearInterval(refreshId);
-    				$(".browseProgress").hide();
-       			}
+       			
         	}else{
-        		flag = false;
+        		uploadflag = false;
         		clearInterval(refreshId);
 				$(".browseProgress").hide();
         	}
