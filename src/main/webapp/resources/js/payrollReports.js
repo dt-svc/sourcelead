@@ -29,7 +29,7 @@ function getPayPeriodByGroupId(payGroupid,payPeriodId1,payPeriodId2){
 			for (var i=0; i<json.data.length; i++)
 			{
 				var opt = json.data[i];
-				output = output + "<option value='" +opt.payPeriodNumber+ "'>"+opt.freqStartDate+" - "+opt.freqEndDate+"</option>";
+				output = output + "<option value='" +opt.payPeriodNumber+ "'>"+opt.freqStartDate+" "+opt.freqEndDate+"</option>";
 			}
 			$("#"+payPeriodId1).empty();
 			$("#"+payPeriodId1).append(output);
@@ -43,7 +43,6 @@ function getDepartments(id){
     	type: "GET",
         url: sourceleadUrl+"/getDepartmentList?&departmentStatus=1", 
         success: function(json) {
-        	alert(json.data)
         var output = "";
         output = output + "<option value=''>Select Department</option>";
 		for (var i=0; i<json.data.length; i++)
@@ -52,7 +51,6 @@ function getDepartments(id){
 			output = output + "<option value='" +opt.id+ "'>"+opt.departmentName+"</option>";
 		}
 		$("#"+id).empty();
-		alert(output)
 		$("#"+id).append(output);
 		$('#'+id).trigger("chosen:updated"); 
         },

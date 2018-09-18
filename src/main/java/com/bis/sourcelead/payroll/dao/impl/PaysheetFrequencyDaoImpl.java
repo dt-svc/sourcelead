@@ -3,8 +3,10 @@ package com.bis.sourcelead.payroll.dao.impl;
 import java.util.Date;
 import java.util.List;
 
+import org.hibernate.Query;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
+import org.hibernate.transform.Transformers;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,6 +17,8 @@ import com.bis.sourcelead.entity.Candidate;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.payroll.dao.PaysheetFrequencyDao;
 import com.bis.sourcelead.payroll.dto.MyPayrollSummaryDTO;
+import com.bis.sourcelead.payroll.dto.PayPeriodDTO;
+import com.bis.sourcelead.payroll.dto.USPayrollDTO;
 import com.bis.sourcelead.payroll.entity.EmployeePayroll;
 import com.bis.sourcelead.payroll.entity.PaysheetFrequency;
 import com.bis.sourcelead.payroll.util.PayrollUtil;
@@ -80,6 +84,29 @@ private static final Logger logger = LoggerFactory.getLogger(AssociateTaxDaoImpl
 													   .setDate("startDate", ytdDates[0])
 													   .setDate("endDate", ytdDates[1])
 													   .list();
+		}catch (Exception e) {
+			e.printStackTrace();
+		}
+		return payrollList;
+	}
+
+	@SuppressWarnings("unchecked")
+	@Override
+	@Transactional
+	public List<USPayrollDTO> getPayrollRegisterReports(PayPeriodDTO payPeriodDTO)
+	{
+		List<USPayrollDTO> payrollList = null;
+		try {
+			java.sql.Date startDate = new java.sql.Date(payPeriodDTO.getFreqStartDate().getTime());
+			java.sql.Date endDate = new java.sql.Date(payPeriodDTO.getFreqEndDate().getTime());
+			Session session = this.sessionFactory.getCurrentSession();
+			Query queryString = session.createQuery("from PaysheetFrequency pay where pay.frequencyStartDate =:startDate and pay.frequencyEndDate >= :endDate and pay.userGroup.id =:groupId and pay.userGroup.departmentId =:departmentId");
+		    queryString.setParameter("startDate", startDate);
+		    queryString.setParameter("endDate", endDate);
+		    queryString.setParameter("groupId", payPeriodDTO.getGroupId());
+		    queryString.setString("departmentId", payPeriodDTO.getDepartment());
+		    queryString.setResultTransformer(Transformers.aliasToBean(USPayrollDTO.class));
+			payrollList  =  queryString.list();
 		}catch (Exception e) {
 			e.printStackTrace();
 		}

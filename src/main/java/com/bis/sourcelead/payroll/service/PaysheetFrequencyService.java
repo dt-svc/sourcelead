@@ -7,8 +7,10 @@ import com.bis.sourcelead.entity.Candidate;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.payroll.dto.MyPayrollSummaryDTO;
+import com.bis.sourcelead.payroll.dto.PayPeriodDTO;
 import com.bis.sourcelead.payroll.dto.PayrollApproverDTO;
 import com.bis.sourcelead.payroll.dto.PaysheetFrequencyDTO;
+import com.bis.sourcelead.payroll.dto.USPayrollDTO;
 import com.bis.sourcelead.payroll.entity.EmployeePayroll;
 
 public interface PaysheetFrequencyService {
@@ -20,5 +22,7 @@ public interface PaysheetFrequencyService {
 	List<PaysheetFrequencyDTO> getPaysheetFrequencyDraftDataByOrgLocationId(OrgLocations orgLocation);
 
 	List<EmployeePayroll> employeePayrollYTD(Candidate candidate, OrgLocations orgLocation, String approverStatus);
+
+	List<USPayrollDTO> getPayrollRegisterReports(PayPeriodDTO payPeriodDTO);
 	
 }

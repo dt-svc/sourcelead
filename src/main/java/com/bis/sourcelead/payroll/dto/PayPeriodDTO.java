@@ -15,6 +15,12 @@ public class PayPeriodDTO {
 	
 	private String approverStatus;
 	
+	private String department;
+	
+	private Long payGroup;
+	
+	private String payRollType;
+	
 	public BigInteger getGroupId()
 	{
 		return groupId;
@@ -54,6 +60,30 @@ public class PayPeriodDTO {
 	public void setApproverStatus(String approverStatus)
 	{
 		this.approverStatus = approverStatus;
+	}
+	public String getDepartment()
+	{
+		return department;
+	}
+	public void setDepartment(String department)
+	{
+		this.department = department;
+	}
+	public Long getPayGroup()
+	{
+		return payGroup;
+	}
+	public void setPayGroup(Long payGroup)
+	{
+		this.payGroup = payGroup;
+	}
+	public String getPayRollType()
+	{
+		return payRollType;
+	}
+	public void setPayRollType(String payRollType)
+	{
+		this.payRollType = payRollType;
 	}
 	
 }

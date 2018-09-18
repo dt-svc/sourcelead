@@ -44,6 +44,7 @@ import com.bis.sourcelead.payroll.dto.EmployeeHoursDTO;
 import com.bis.sourcelead.payroll.dto.MyPayrollDTO;
 import com.bis.sourcelead.payroll.dto.MyPayrollSummaryDTO;
 import com.bis.sourcelead.payroll.dto.PayItemDTO;
+import com.bis.sourcelead.payroll.dto.PayPeriodDTO;
 import com.bis.sourcelead.payroll.dto.PayrollApproverDTO;
 import com.bis.sourcelead.payroll.dto.PayrollConstant;
 import com.bis.sourcelead.payroll.dto.PayrollDeductionDTO;
@@ -544,6 +545,14 @@ public class PaysheetFrequencyServiceImpl implements PaysheetFrequencyService{
 	public List<EmployeePayroll> employeePayrollYTD(Candidate candidate, OrgLocations orgLocation,String approverStatus)
 	{
 		return paysheetFrequencyDao.employeePayrollYTD(candidate,orgLocation,approverStatus);
+	}
+
+	@Override
+	public List<USPayrollDTO> getPayrollRegisterReports(PayPeriodDTO payPeriodDTO)
+	{
+		
+		List<USPayrollDTO> list = paysheetFrequencyDao.getPayrollRegisterReports(payPeriodDTO);
+		return null;
 	}
 
 }

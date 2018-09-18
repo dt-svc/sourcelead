@@ -21,7 +21,8 @@ $(document).ready(function(){
     </section>
     
     <div class="contentareaInner-styles clearfix">
-    
+    <div id="payrollReportLoading"></div>
+    <form:form id="payrollregister_form" name="apply_leave_form" method="post">
     <div class="clearfix minHeight">
         <div class="clearfix row">
           <div class="col-md-5">
@@ -35,7 +36,7 @@ $(document).ready(function(){
             <div class="form-group">
               <label class="col-md-12">Payroll Type</label>
               <div class="col-md-12">
-                <select class="form-control sel">
+                <select class="form-control sel" id="payRollType" name="payRollType">
 					    <option>Select Type</option>
 						<option>Regular</option>
 						<option>Additional</option>
@@ -47,18 +48,20 @@ $(document).ready(function(){
              <div class="form-group">
               <label class="col-md-12">Pay Period</label>
               <div class="col-md-12">
-                <select class="form-control sel" id="payPeriod" name="payPeriod">
+                <select class="form-control sel" id="payPeriod" name="payPeriod" onchange="getFreqdates();">
 					    <!-- <option>Select Period</option>
 						<option>01-02-2018 28-02-2018</option>
 						<option>01-03-2018 28-03-2018</option>
 						<option>01-02-2018 28-02-2018</option> -->
 					</select>
+					<input type="hidden" name="freqStartDate" id="freqStartDate" value=""/>
+					<input type="hidden" name="freqEndDate" id="freqEndDate" value=""/>
               </div>
             </div>
              <div class="form-group">
               <label class="col-md-12">Department</label>
               <div class="col-md-12">
-                <select class="form-control chosen-select" id="payrollDepartment" name="payrollDepartment">
+                <select class="form-control chosen-select" id="payrollDepartment" name="department">
 					    <!-- <option>Select Department</option>
 						<option>Department-1</option>
 						<option>Department-2</option>
@@ -77,7 +80,7 @@ $(document).ready(function(){
         </div>
       </div>      
 	</div>
-    
+    </form:form>
      <div class="clearfix"></div>
     		
     		
@@ -222,8 +225,32 @@ $("html").click(function(){
 $(".overIcon, .newActPop").click(function(e){
  	e.stopPropagation();
 });
+
+function getFreqdates(){
+	var payPeriod = $("#payPeriod").val();
+	var dates[] = payPeriod.split(" ");
+	$("#freqStartDate").val(dates[0]);
+	$("#freqEndDate").val(dates[1]);
+}
+
+
 function runPayrollregister() {
 	$("#payrollRegister").toggle();
+	var formData = getFormData('payrollregister_form');
+	$("#payrollReportLoading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
+	$.post(sourceleadUrl+"/runPayrollregister", formData, function(result) {
+		if (result && result.response === "INVALID_DATA") {
+		    showError(result.responseMessage);
+		} else if (result.response === "AWKWARD") {
+		    location.href = "/errorPage";
+		} else if (result.response === "SUCCESS") {
+			location.replace(sourceleadUrl+ "/leaveManagementReports");
+		} else if (result.indexOf('Sign In') !== -1) {
+			location.replace(sourceleadUrl);
+		} else {
+		    showError("Operation failed, please try again");
+		}
+	}); 
 }
 </script>
  
