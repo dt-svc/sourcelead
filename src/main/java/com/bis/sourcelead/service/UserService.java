@@ -252,5 +252,9 @@ public interface UserService  {
 
 public List<User> getUsersListUsingMultipleStringIds(String id) throws Exception;
 
+public List<Long> getUserHierarchyIdList(Long userId) throws Exception;
+
+public List<String> getUserHierarchyUserCodeList(Long userId) throws Exception;
+
 }	
 
