@@ -1675,9 +1675,6 @@ background:url("../images/arrow-d-g.png") no-repeat right center; background-siz
 .clients_wrap_table .proj_show i {
     position: absolute; right: 0px;
     }
-.proj_show span {
-	color: #2b7ecc;
-}
 .cbox {
     width:35px;
     }
@@ -9100,10 +9097,22 @@ background: url("../images/sort2.png"); background-repeat: no-repeat; background
 .newTagsPop .popupFoot {
 	padding: 14px 0px 0px 0px;
 }
-
 .addUserGroupPopup {
-display: block;
+	display: block;
 }
 .addUserGroupPopup .mask, .addUserGroupPopup .addPayrollGroupWrap {
-display: block;
+	display: block;
+} 
+.ui-widget.ui-widget-content {
+	border: 1px solid #ededed; box-shadow: none; background-color: #fff;
+	font-style: normal !important; font-family:'Roboto', sans-serif !important; border-radius: 0; z-index: 100000000;
+}
+.browseProgress {
+	position: absolute; width: 100%; height: 100%; background:rgba(0,0,0,0.3); z-index: 100; border-radius: 3px; display:none;
+}
+.browseProgressInn {
+	width: 50%; position: relative; margin: 0px auto; background-color: #fff; padding: 8px 12px 14px 12px; border-radius: 2px; top: 17%;
+}
+.browseProgressInn .progress {
+	margin: 0px 0px; position: relative;
 }
