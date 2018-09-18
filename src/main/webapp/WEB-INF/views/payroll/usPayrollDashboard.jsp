@@ -527,7 +527,7 @@ function runUSPayroll(){
 						        	}
 						        	result += '<td><div class="tbldata-dotdot-vsm">'+opt.empName+'</div></td>';
 // 						        	result += '<td><div class="tblminwidth-50">'+opt.regularHours+'</div><div class="tblminwidth-50 clearfix text-danger">$ '+opt.regularHrsTotalAmt.toFixed(2)+'</div></td>';	
-						        	result += '<td><div class="tblminwidth-50 clearfix">$ '+opt.grossPay.toFixed(2)+'</div>';
+						        	result += '<td><div class="tblminwidth-125 clearfix">$ '+opt.grossPay.toFixed(2)+'</div>';
 						        	result += '<td><div class="tbldata-dotdot-vsm">$ '+opt.payRate+'</div></td>';
 						        	if(opt.payType != null && opt.payType != ''){
 						        		result += '<td><div class="tbldata-dotdot-vsm">'+opt.payType+'</div></td>';
@@ -542,20 +542,20 @@ function runUSPayroll(){
 						        		result += '<td><div class="tblminwidth-50">0.00</div><div class="tblminwidth-50 clearfix text-danger">$ 0.00</div></td>';
 						        	}
 						        	
-						        	result += '<td><div class="tblminwidth-50 clearfix">$ '+opt.grossPay.toFixed(2)+'</div>';
+						        	result += '<td><div class="tblminwidth-125 clearfix">$ '+opt.grossPay.toFixed(2)+'</div>';
 						        	if(opt.preTaxDeduction != null && opt.preTaxDeduction != '' && opt.preTaxDeduction != 'undefined'){
-						        		result += '</td><td><div class="tblminwidth-50 clearfix">$ '+opt.preTaxDeduction.toFixed(2)+'</div></td>';
+						        		result += '</td><td><div class="tblminwidth-125 clearfix">$ '+opt.preTaxDeduction.toFixed(2)+'</div></td>';
 						        	}else{
-						        		result += '</td><td><div class="tblminwidth-50 clearfix">$ 0.000</td>';
+						        		result += '</td><td><div class="tblminwidth-125 clearfix">$ 0.00</td>';
 						        	}
 						        	if(opt.postTaxDeduction != null && opt.postTaxDeduction != '' && opt.postTaxDeduction != 'undefined'){
-						        		result += '<td><div class="tblminwidth-50 clearfix">$ '+opt.postTaxDeduction.toFixed(2)+'</div></td>';	
+						        		result += '<td><div class="tblminwidth-125 clearfix">$ '+opt.postTaxDeduction.toFixed(2)+'</div></td>';	
 						        	}else{
-						        		result += '<td><div class="tblminwidth-50 clearfix">$ 0.00</div></td>';
+						        		result += '<td><div class="tblminwidth-125 clearfix">$ 0.00</div></td>';
 						        	}
 						        	
-						        	result += '<td><div class="tblminwidth-50 clearfix">$ '+opt.taxes.toFixed(2)+'</div></td>';
-						        	result += '<td><div class="tblminwidth-50 clearfix"><a onClick="payAdjustment(\''+opt.empPayrollUUID+'\',\'DRAFT\');">$ '+opt.netPay.toFixed(2)+'</a></div></td>';
+						        	result += '<td><div class="tblminwidth-125 clearfix">$ '+opt.taxes.toFixed(2)+'</div></td>';
+						        	result += '<td><div class="tblminwidth-125 clearfix"><a onClick="payAdjustment(\''+opt.empPayrollUUID+'\',\'DRAFT\');">$ '+opt.netPay.toFixed(2)+'</a></div></td>';
 						        	result += '</tr>';  
 					        	}
 					        	

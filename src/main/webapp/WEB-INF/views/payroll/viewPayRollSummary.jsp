@@ -389,7 +389,7 @@
 							           if(pi.isBlocked == 'YES'){
 								            payItem = payItem +' <td><input type="text" class="formControl text-danger" readonly value="Blocked"></td>';
 							            }else{
-								            payItem = payItem +' <td><input type="text" class="formControl text-danger" readonly value="Blocked"></td>';
+								            payItem = payItem +' <td><input type="text" class="formControl text-danger" readonly value=""></td>';
 							              }  
 						            	payItem = payItem +' </tr>'; 
 				                  }
