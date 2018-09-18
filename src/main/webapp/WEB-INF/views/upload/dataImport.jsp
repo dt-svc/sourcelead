@@ -98,22 +98,37 @@
 	function saveDataFields() {
 		if ($('#dataMigration_form').validate(false, validationSettings)) {
 			var formData = getFormData1("dataMigration_form");
+			var sessionId = '${SourceLeadWeb_sessionId}';
 			var inviteEmail = '';
 			if($("#inviteEmail").val() != null && $("#inviteEmail").val() != 'undefined' && $("#inviteEmail").val() != ''){
 				inviteEmail = $("#inviteEmail").val();
 			}
-			$("#loading").attr('style','position:absolute; width:100%; height:420%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
+			
+	        $('#dataFileImportDiv').removeAttr("style");
+	    	$('#dataFieldsDiv').removeAttr("style");
+	    	$('#dataFieldsDiv').empty();
+	    	var flag= true;
+			$(".browseProgress").show();
+			$("#progressBar").html('0%');
+			$(".progress div").css("width", "0%");
+			var uploadid = new Date().getTime();
+			var refreshId = setInterval(function(){
+				if(flag == true){
+					getUploadProgressBar(uploadid);
+				  }else{
+					  clearInterval(refreshId);
+					  $(".browseProgress").hide();
+				  }
+				},1000);
+			
 			$.ajax({
 				type : "POST",
 				data : formData,
 				processData : false,
 				contentType : false,
 				url : sourceleadUrl + "/getDataByMatchedFields?"
-						+ tokenParamName + "=" + tokenValue+"&inviteEmail="+inviteEmail,
+						+ tokenParamName + "=" + tokenValue+"&inviteEmail="+inviteEmail+"&uploadid="+uploadid+"&sessionId="+sessionId,
 				success : function(data) {
-					$("#dataFileImportDiv").attr("style","display:none");
-			    	$('#dataFieldsDiv').removeAttr("style");
-			    	$('#dataFieldsDiv').empty();
 			    	$('#dataFieldsDiv').append(data);
 			    	var importStatus = $('#importStatus').val();
 			    	if(importStatus == "success"){
@@ -133,6 +148,7 @@
           				$('#errorDownloadDiv').prepend("<span class='colorRed'>Some data is failed to import <a download class='colorRed glyphicon glyphicon-download-alt' target='_blank' href='"+importStatus+"' title='Download error file'></a></span>");
           			}
 			    	$('#newUploadFile').text('');
+			    	flag = false;
 			    	
 			    	var uploadType = $('#uploadType').val();
 			    	if(uploadType == 'jobUpload'){
@@ -157,7 +173,6 @@
 	});
 </script>
 
-
 <script type="text/javascript">
 	function saveSubmissionTemplateDataFields() {
 		if ($('#dataMigration_form').validate(false, validationSettings)) {
@@ -167,25 +182,38 @@
 			    con = con.replace(/[{}]/g, "");
 			    var jsonData = encodeURIComponent(con);
 			    var formData = getFormData1("dataMigration_form");
-			    
 			    var requirementId = '${requirementId}'
+			    var sessionId = '${SourceLeadWeb_sessionId}';
+			    var inviteEmail = '';
 			    
-			var inviteEmail = '';
+			    $('#dataFileImportDiv').removeAttr("style");
+		    	$('#dataFieldsDiv').removeAttr("style");
+		    	$('#dataFieldsDiv').empty();
+		    	var flag= true;
+				$(".browseProgress").show();
+				$("#progressBar").html('0%');
+				$(".progress div").css("width", "0%");
+				var uploadid = new Date().getTime();
+				var refreshId = setInterval(function(){
+					if(flag == true){
+						getUploadProgressBar(uploadid);
+					  }else{
+						  clearInterval(refreshId);
+						  $(".browseProgress").hide();
+					  }
+					},1000);
+				
 			if($("#inviteEmail").val() != null && $("#inviteEmail").val() != 'undefined' && $("#inviteEmail").val() != ''){
 				inviteEmail = $("#inviteEmail").val();
 			}
-			$("#loading").attr('style','position:absolute; width:150%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
 			$.ajax({
 				type : "POST",
 				data : formData,
 				processData : false,
 				contentType : false,
 				url : sourceleadUrl + "/getDataByMatchedFields?"
-						+ tokenParamName + "=" + tokenValue+"&jsonData="+jsonData+"&requirementId="+requirementId,
+						+ tokenParamName + "=" + tokenValue+"&jsonData="+jsonData+"&requirementId="+requirementId+"&uploadid="+uploadid+"&sessionId="+sessionId,
 				success : function(data) {
-					$("#dataFileImportDiv").attr("style","display:none");
-			    	$('#dataFieldsDiv').removeAttr("style");
-			    	$('#dataFieldsDiv').empty();
 			    	$('#dataFieldsDiv').append(data);
 			    	var importStatus = $('#importStatus').val();
 			    	if(importStatus == "success"){
@@ -211,6 +239,7 @@
           				$('#errorDownloadDiv').prepend("<span class='colorRed'>Some data is failed to import <a download class='colorRed glyphicon glyphicon-download-alt' target='_blank' href='"+importStatus+"' title='Download error file'></a></span>");
           			}
 			    	$('#newUploadFile').text('');
+			    	flag = false;
 			    	
 			    	var uploadType = $('#uploadType').val();
 			    	if(uploadType == 'jobUpload'){
@@ -234,6 +263,37 @@
 		$("#dataMigration_form").showHelpOnFocus();
 		$("#dataMigration_form").validateOnBlur(false, validationSettings);
 	});
+</script>
+
+
+<script>
+function getUploadProgressBar(uploadid){
+	
+	$.ajax({
+    	type: "POST",
+        url: sourceleadUrl+"/getXlsHistroyByUploadId?"+tokenParamName+"="+tokenValue+"&uploadid="+uploadid, 
+        success: function(json) {
+        	if(json != null && json != ''){
+        		
+        		
+        		var totalCount = json.totalCount == undefined? 0: json.totalCount;
+        		var succesCount = json.successCount == undefined? 0: json.successCount;
+        		var failureCount = json.failureCount == undefined? 0: json.failureCount;  
+        		var uploadingCount = parseInt(succesCount) + parseInt(failureCount);
+        		
+       			percentComplete = parseInt(uploadingCount)/parseInt(totalCount);
+       			$(".progress div").css("width", parseInt(percentComplete*100) + "%");
+       			$("#progressBar").html(parseInt(percentComplete*100)+'%');
+       			
+       			$("#totalUploadedCount").html(totalCount);
+       			$("#currentUploadedCount").html(uploadingCount);
+        	}
+		 },
+        error: function(e){
+        }
+    });
+	
+}
 </script>
 
 

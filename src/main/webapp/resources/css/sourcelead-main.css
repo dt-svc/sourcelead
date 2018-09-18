@@ -9553,3 +9553,15 @@ transition: all ease-in-out 0.5s; display: none;
 .level-second.level-second-active {
 display: block;
 }
+
+.browseProgress {
+        position: absolute; width: 100%; height: 100%; background:rgba(0,0,0,0.3); z-index: 100;
+        border-radius: 3px; display:none;
+ }
+ .browseProgressInn {
+     width: 50%; position: relative; margin: 0px auto; background-color: #fff; padding: 8px 12px 14px 12px;
+     border-radius: 2px; top: 17%;
+ }
+ .browseProgressInn .progress {
+     margin: 0px 0px; position: relative;
+ }

@@ -15,6 +15,7 @@
 	border: none;
 	background: transparent
 }
+  
 </style>
 
 	<section class="content-header clearfix">
@@ -105,6 +106,17 @@
 						</span>
 					</div>
 				</div>
+				
+		  <div class="browseProgress">
+            <div class="browseProgressInn">
+            <div class="labText" id='progressText'>Please wait while uploading the file(s). This may take more time depending on file size.</div>
+            <div class="labText" id="loadingStatus"><span id="currentUploadedCount"></span> of <span id="totalUploadedCount"></span> </div>
+                <div class="progress progress-striped active">
+                    <div class="progress-bar progress-bar-success" id='progressBar'>0%</div>
+                </div>
+            </div>                
+          </div>
+          
 			</div>
 		</div>
 		</form:form>

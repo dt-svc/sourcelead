@@ -6,6 +6,7 @@ import java.io.FileOutputStream;
 import java.text.NumberFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.LinkedList;
@@ -68,6 +69,7 @@ import com.bis.sourcelead.entity.RequirementSubmission;
 import com.bis.sourcelead.entity.RequirementSubmissionHistory;
 import com.bis.sourcelead.entity.SourceleadFormFields;
 import com.bis.sourcelead.entity.SubmissionTemplate;
+import com.bis.sourcelead.entity.UploadXlsHistory;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.entity.UsersImport;
 import com.bis.sourcelead.immigration.service.ImmigrationCommonService;
@@ -84,6 +86,7 @@ import com.bis.sourcelead.service.RequirementSubmissionService;
 import com.bis.sourcelead.service.ShiftService;
 import com.bis.sourcelead.service.SubmissionTemplateService;
 import com.bis.sourcelead.service.UploadFileService;
+import com.bis.sourcelead.service.UploadXlsHistoryService;
 import com.bis.sourcelead.service.UserRoleService;
 import com.bis.sourcelead.service.UserService;
 import com.bis.sourcelead.util.CommonUtil;
@@ -158,6 +161,9 @@ public class DataMigrationServiceImpl implements DataMigrationService {
 	@Autowired
 	CountriesService countriesService;
 	
+	@Autowired
+	UploadXlsHistoryService uploadXlsHistoryService;
+	
 	
 	@Override
 	public Map<String, String> getfileData(String filePath, String headerPosition) throws Exception {
@@ -227,6 +233,11 @@ public class DataMigrationServiceImpl implements DataMigrationService {
 			objFormulaEvaluator = new XSSFFormulaEvaluator((XSSFWorkbook) workbook);
 		}
 		Sheet firstSheet = workbook.getSheetAt(0);
+		Integer rowCount = firstSheet.getLastRowNum();
+		String[] fileName = dataMigrationDTO.getExportFilePath().split("/");
+		UploadXlsHistory history = null;
+		history = saveUploadXlsHistory(rowCount, fileName[5], null, dataMigrationDTO, user, orgLocation);
+		uploadXlsHistoryService.storeUploadXlsHistory(history);
 		Iterator<Row> rowIterator = firstSheet.iterator();
 		int colCount = 0;
 		Boolean isEmptyExcel = true;
@@ -408,6 +419,15 @@ public class DataMigrationServiceImpl implements DataMigrationService {
 				if (errorSet.isEmpty()) {
 					mapToEntities(dataMigrationDTOJsonCopy, user, orgLocation, dataMigrationDTO.getUploadType(),jsonString);
 					importStatus = "success";
+					FileOutputStream outputStream = new FileOutputStream(
+							new File(ac + dataMigrationDTO.getExportFilePath()));
+					workbook.write(outputStream);
+					history = saveUploadXlsHistory(rowCount, fileName[5], dataMigrationDTO.getExportFilePath(), dataMigrationDTO, user, orgLocation);
+					if(history != null) {
+						history.setSuccessCount(history.getSuccessCount()+1);
+					}
+					history.setFileUrl(dataMigrationDTO.getExportFilePath());
+					uploadXlsHistoryService.storeUploadXlsHistory(history);
 				} else {
 					int errorCount = 0;
 					StringBuilder errorSB = new StringBuilder();
@@ -427,14 +447,23 @@ public class DataMigrationServiceImpl implements DataMigrationService {
 					FileOutputStream outputStream = new FileOutputStream(
 							new File(ac + dataMigrationDTO.getExportFilePath()));
 					workbook.write(outputStream);
-					// outputStream.close();
-					// importStatus = dataMigrationDTO.getExportFilePath();
 					finalImportStatus = dataMigrationDTO.getExportFilePath();
+					
+					history = saveUploadXlsHistory(rowCount, fileName[5], dataMigrationDTO.getExportFilePath(), dataMigrationDTO, user, orgLocation);
+					if(history != null) {
+						history.setFailureCount(history.getFailureCount()+1);
+					}
+					history.setUploadStatus("Failed");
+					history.setFileUrl(dataMigrationDTO.getExportFilePath());
+					uploadXlsHistoryService.storeUploadXlsHistory(history);
 				}
 				
 			}
 			
 		}
+		
+		history.setUploadProcessingStatus("Completed");
+		uploadXlsHistoryService.storeUploadXlsHistory(history);
 		
 		workbook.close();
 		inputStream.close();
@@ -447,6 +476,68 @@ public class DataMigrationServiceImpl implements DataMigrationService {
 		}
 
 	}
+	
+	
+    public UploadXlsHistory saveUploadXlsHistory(Integer rowCount,String fileName,String fileUrl,DataMigrationDTO dataMigrationDTO,User user,OrgLocations orgLocations) {
+    
+    	UploadXlsHistory history = null;
+		try {
+			history = uploadXlsHistoryService.getUploadXlsHistoryDetailsByUploadId(dataMigrationDTO.getUploadid());
+			if(history == null) {
+	    		history = new UploadXlsHistory();
+	    		history.setUserId(user);
+	    		history.setOrgLocationId(orgLocations);
+	    		history.setTotalCount(rowCount);
+	    		history.setUUID(SourceLeadRandomCodeHelper.generateRandomUUID());
+	    		history.setCreatedDate(new Date());
+	    		history.setStatus(1);
+	    		history.setFileName(fileName);
+	    		history.setUploadId(dataMigrationDTO.getUploadid());
+	    		history.setSessionId(dataMigrationDTO.getSessionId());
+	    		history.setUploadProcessingStatus("Inprogress");
+	    		
+	    		switch (dataMigrationDTO.getUploadType()) {
+				case "jobUpload":
+					history.setUploadEntityType("Jobs");
+					break;
+					
+				case "candidatesUpload":
+					history.setUploadEntityType("Candidates");
+					break;
+					
+				case "timesheetUpload":
+					history.setUploadEntityType("Timesheets");
+					break;
+				case "assetUpload":
+					history.setUploadEntityType("Asset Management");
+					break;
+
+				case "projectTasks":
+					history.setUploadEntityType("Project Tasks");
+					break;
+
+				case "associateUpload":
+					history.setUploadEntityType("Associates");
+					break;
+
+				case "immigrationUpload":
+					history.setUploadEntityType("Immigration");
+					break;
+				case "lcaUpload":
+					history.setUploadEntityType("LCA");
+					  break;
+					
+				case "submmissionTemplateUpload":
+					history.setUploadEntityType("Submissions");
+					break;
+
+				}
+	    	}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return history;
+    }
 
 	@SuppressWarnings("unused")
 	private void mapToEntities(JSONObject dataMigrationDTOJsonCopy, User user, OrgLocations orgLocation,
@@ -542,15 +633,10 @@ public class DataMigrationServiceImpl implements DataMigrationService {
 			
 			RequirementSubmission requirementSubmission = null;
 			Countries countries = null;
-			Candidate candidate = candidateService.findByCandidateEmail(dataMigrationDTOJsonCopy.getString("EmailId"),orgLocation.getId());
-			if(candidate != null) {
-				requirementSubmission = requirementSubmissionService.getRequirementSubmissionByRequirementIdAndCandidateId(Long.valueOf(dataMigrationDTOJsonCopy.getString("requirementId")), candidate.getId());
-			}
 			if(StringUtils.isNotBlank(orgLocation.getCountry())) {
 				 countries = countriesService.getCountriesByCountryName(orgLocation.getCountry());
 			 }
 		
-			if(requirementSubmission == null) {
 				JSONObject labelItems = new JSONObject();
 				JSONArray array = new JSONArray();
 				Iterator<?> keys = dataMigrationDTOJsonCopy.keys();
@@ -607,7 +693,6 @@ public class DataMigrationServiceImpl implements DataMigrationService {
 					RequirementDTO requirementDTO = commonUtil.getRequirementDTO(req);
 					requirementElkUtil.saveElkRequirement(req,requirementDTO);	
 				}
-			}
 			
 			break;
 

@@ -17,7 +17,64 @@
 	border: none;
 	background: transparent
 }
+
 </style>
+
+<script type="text/javascript">
+		window.onload = function () {
+			var sessionId = '${SourceLeadWeb_sessionId}';
+			var flag= true;
+			var refreshId = setInterval(function(){
+				if(flag == true){
+					getUploadInprogressProgressBar(sessionId);
+				  }else{
+					  clearInterval(refreshId);
+					  $(".browseProgress").hide();
+				  }
+				},1000);
+		 };
+	</script>
+	
+	<script>
+function getUploadInprogressProgressBar(sessionId){
+	
+	var entityType = 'Candidates';
+	$.ajax({
+    	type: "POST",
+        url: sourceleadUrl+"/getXlsProcessingHistroyBySessionId?"+tokenParamName+"="+tokenValue+"&sessionId="+sessionId+"&entityType="+entityType, 
+        success: function(json) {
+        	if(json != null && json != ''){
+        		
+        		var totalCount = json.totalCount == undefined? 0: json.totalCount;
+        		var succesCount = json.successCount == undefined? 0: json.successCount;
+        		var failureCount = json.failureCount == undefined? 0: json.failureCount;  
+        		var uploadingCount = parseInt(succesCount) + parseInt(failureCount);
+        		$(".browseProgress").show();
+       			percentComplete = parseInt(uploadingCount)/parseInt(totalCount);
+       			$(".progress div").css("width", parseInt(percentComplete*100) + "%");
+       			$("#progressBar").html(parseInt(percentComplete*100)+'%');
+       			
+       			$("#totalUploadedCount").html(totalCount);
+       			$("#currentUploadedCount").html(uploadingCount);
+       			
+       			if(json.uploadProcessingStatus == 'Completed'){
+       				flag = false;
+            		clearInterval(refreshId);
+    				$(".browseProgress").hide();
+       			}
+        	}else{
+        		flag = false;
+        		clearInterval(refreshId);
+				$(".browseProgress").hide();
+        	}
+		 },
+        error: function(e){
+        }
+    });
+	
+}
+</script>
+
 
 
 <section class="content-wraper">
@@ -114,6 +171,16 @@
 					</div>
 				</div>
 				
+		  <div class="browseProgress">
+            <div class="browseProgressInn">
+            <div class="labText" id='progressText'>Please wait while uploading the file(s). This may take more time depending on file size.</div>
+            <div class="labText" id="loadingStatus">uploading <span id="currentUploadedCount"></span> of <span id="totalUploadedCount"></span> </div>
+                <div class="progress progress-striped active">
+                    <div class="progress-bar progress-bar-success" id='progressBar'>0%</div>
+                </div>
+            </div>                
+          </div>
+				
 		  <div class="clearfix"></div>
 	        <div class="form-group">
 	             <div class="col-md-9">
@@ -122,8 +189,9 @@
 	               </div>
 	                </div>
 	         </div>
-	         
+          
 			</div>
+            
 		</div>
 		</form:form>
 	</div>
