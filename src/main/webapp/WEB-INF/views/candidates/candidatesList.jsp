@@ -839,6 +839,7 @@ function deleteProfileImage(candidateId){
      }); 
 }
 
+
 </script>
 
 <%-- 

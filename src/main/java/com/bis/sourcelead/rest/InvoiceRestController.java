@@ -52,6 +52,7 @@ import com.bis.sourcelead.dto.Response;
 import com.bis.sourcelead.dto.ResponseList;
 import com.bis.sourcelead.entity.Candidate;
 import com.bis.sourcelead.entity.Contracts;
+import com.bis.sourcelead.entity.CreditDebitLineItems;
 import com.bis.sourcelead.entity.CreditDebitNote;
 import com.bis.sourcelead.entity.EmailAttachment;
 import com.bis.sourcelead.entity.EmailMessage;
@@ -2483,5 +2484,15 @@ return responseList;
 		boolean isDeleted = invoiceService.deleteCreditDebitNote(creditDebitUUID, noteType, user,orglocations);
 		
 		return isDeleted;
+	}
+	
+	@RequestMapping(value = "/deleteLineItemEditModeId", method = RequestMethod.POST)
+	@ResponseBody
+	public String deleteLineItemEditModeId(@RequestParam(value = "id", required = false) String id, HttpServletRequest request) throws Exception
+	{
+		OrgLocations orglocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+		CreditDebitLineItems lineItem = invoiceService.getCreditDebitLineItemById(Long.parseLong(id));
+		invoiceService.deleteCreditDebitLineItem(lineItem);
+		return "Success";
 	}
 }

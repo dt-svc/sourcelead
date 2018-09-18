@@ -7,6 +7,8 @@
 
 <script type="text/javascript" src="jquery-1.2.6.min.js"></script>
 <jsp:include page="assetManagementDetails.jsp" />
+<%@taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
+
 <script>
 $(document).ready(function() {
 	assetDetails('${asset.assetUUID}');
@@ -46,7 +48,9 @@ $(document).ready(function() {
 	<div class="project_side_wrap_inn_tabs">
 		<ul class="project-tabs-menu">
 			<li class="current"><a href="#tab-1" onclick="assetDetails('${asset.assetUUID}');">Details</a></li>
-			<li><a href="#tab-3" onclick="assetHistory('${asset.assetUUID}');">History</a></li>
+			<sec:authorize access="hasAnyRole(\'ROLE_VIEW_ASSET_ADDITIONAL_DETAILS\')">
+			  <li><a href="#tab-3" onclick="assetHistory('${asset.assetUUID}');">History</a></li>
+			</sec:authorize>
 			<li><a href="#tab-2" onclick="assetNotes('${asset.id}','${asset.assetUUID}');">Notes</a></li>
 		</ul>
 		<div class="clearfix"></div>

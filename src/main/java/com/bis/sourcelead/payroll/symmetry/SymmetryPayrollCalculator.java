@@ -50,9 +50,17 @@ public class SymmetryPayrollCalculator {
 	
 	STEObjectPool eObjectPool;
 	
+	
 	public PayrollCalculatorDTO runUSPayroll(Candidate candidate, double totalHours, BigDecimal grossAamount, int invoiceFrequency, AssociateTaxDedContriView associateTaxView,Date checkDate, YTDPayrollDTO ytdTaxes)
 	{
 		PayrollCalculatorDTO payrollCalculatorDTO = new PayrollCalculatorDTO();
+		
+		 Money SUI = Money.zero();
+		 Money SDI = Money.zero();
+		 Money FLI = Money.zero();
+		 Money HCSF = Money.zero();
+		 Money WC = Money.zero();
+		 
 //		String STEhome = "/home/rajashekar/Desktop/Tools/ste/ste-root";
 //		String jniHome = "/home/rajashekar/Desktop/Tools/ste/ste-interface-files/java/";
 		String arch = System.getProperty("os.name", "");
@@ -134,7 +142,6 @@ public class SymmetryPayrollCalculator {
 				// Hawaii
 				if(PayrollConstant.HAWAII.equalsIgnoreCase(candidate.getResidenceState().trim())) {
 					STE.setSDI(locationCode, zero, zero, zero, zero, zero, false);
-					Money sdiWithholding = STE.getSDICalc(locationCode);
 				}
 				
 				if(PayrollConstant.CALIFORNIA.equalsIgnoreCase(candidate.getResidenceState().trim())
@@ -148,9 +155,10 @@ public class SymmetryPayrollCalculator {
 				// Family Leave Insurance (FLI)
 				// New Jersey
 				if(PayrollConstant.NEW_JERSEY.equalsIgnoreCase(candidate.getResidenceState().trim())) {
+					//HCSF
 					STE.setHealthCareSubsidyFund(locationCode, null, null, null, true);
 					STE.setWages(locationCode, WageType.SUTA_GROSS_WAGES, new Hours(totalHours), new Money(grossAamount),zero, zero, zero);
-					STE.setFLI(locationCode, zero, null, null, false);				
+					STE.setFLI(locationCode, zero, null, null, false);			
 				}
 				//New York Family Leave Insurance tax
 				if(PayrollConstant.NEW_YORK.equalsIgnoreCase(candidate.getResidenceState().trim())) {
@@ -299,32 +307,33 @@ public class SymmetryPayrollCalculator {
 							STE.setSUI(locationCode, zero, null, null, false);
 							
 							// State Unemployment Insurance (SUI)
-							Money suiWithholding = STE.getSUICalc(locationCode);
-							logger.info("Unemployment Rate: (SUI)" + suiWithholding);
+							SUI = STE.getSUICalc(locationCode);
+							logger.info("Unemployment Rate: (SUI)" + SUI);
+							
 							
 						}
 				// SDI
-				Money sdiWithholding = STE.getSDICalc(locationCode);
-				logger.info("SDI Calculation : " +sdiWithholding);
+				SDI = STE.getSDICalc(locationCode);
+				logger.info("SDI Calculation : " +SDI);
 				
 				// FLI
 				// New Jersy
 				if(PayrollConstant.NEW_JERSEY.equalsIgnoreCase(candidate.getResidenceState().trim())) {
-					Money njFliWithholding = STE.getFLICalc(locationCode);
-					Money healthCareSubsidyFund = STE.getHealthCareSubsidyFundCalc(locationCode);
-					logger.info("NJ FLI Calculation: " + njFliWithholding);	
-					logger.info("NJ Health Care Subsidy Fund: " + healthCareSubsidyFund);	
+					FLI = STE.getFLICalc(locationCode);
+					HCSF = STE.getHealthCareSubsidyFundCalc(locationCode);
+					logger.info("NJ FLI Calculation: " + FLI);	
+					logger.info("NJ Health Care Subsidy Fund: " + HCSF);	
 				}
 				//New York Family Leave Insurance tax
 				if(PayrollConstant.NEW_YORK.equalsIgnoreCase(candidate.getResidenceState().trim())) {
-					Money nyFliWithholding = STE.getFLICalc("36-061-975772");
-					logger.info("NY FLI Calculation: " + nyFliWithholding);
+					FLI = STE.getFLICalc(locationCode);
+					logger.info("NY FLI Calculation: " + FLI);
 				}
 				
 				//Workers Compensation (WC)
 				if(PayrollConstant.NEW_MEXICO.equalsIgnoreCase(candidate.getResidenceState().trim()) || PayrollConstant.OREGON.equalsIgnoreCase(candidate.getResidenceState().trim())) {
-					Money nmCompWithholding = STE.getWorkersCompCalc(locationCode);
-					System.out.println("New Mexico Worker’s Comp Calculation: " +nmCompWithholding);
+					WC = STE.getWorkersCompCalc(locationCode);
+					logger.info("New Mexico Worker’s Comp Calculation: " +WC);
 				}
 				
 				

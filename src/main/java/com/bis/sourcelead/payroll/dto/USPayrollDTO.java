@@ -2,6 +2,7 @@ package com.bis.sourcelead.payroll.dto;
 
 import java.math.BigDecimal;
 import java.util.List;
+import java.util.Map;
 
 import com.bis.sourcelead.dto.AssociatePayItemDTO;
 
@@ -103,7 +104,17 @@ public class USPayrollDTO {
 	
     private String depositType;
     
+    private Map<String, BigDecimal> tax;
+    
 	
+	public Map<String, BigDecimal> getTax()
+	{
+		return tax;
+	}
+	public void setTax(Map<String, BigDecimal> tax)
+	{
+		this.tax = tax;
+	}
 	public BigDecimal getPayPerSal()
 	{
 		return payPerSal;
