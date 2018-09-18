@@ -96,7 +96,7 @@ $(document).ready(function(){
                   <div class="col-md-5">
                     <label class="clearfix">Amount</label>
                     <div class="clearfix">
-                      <input type="text" class="form-control" id="contriAmt" name="contriAmt" data-validation="required validate_float" field-name="Amount" readonly>
+                      <input type="text" class="form-control" id="contriAmt" name="contriAmt" data-validation="required validate_float" field-name="Amount">
                     </div>
                   </div>
                   </div>
@@ -108,7 +108,7 @@ $(document).ready(function(){
                   </div>
                   <div class="clearfix"></div>
                   <div class="col-md-10">
-                  	<button type="button" class="btn btn-success btnSuccess pull-right add-contribution-row" onclick="validateContributionForm();"><i class="fa fa-plus paddingRight"></i>Add</button>
+                  	<button type="button" id="contributionAddButtonId" class="btn btn-success btnSuccess pull-right add-contribution-row" onclick="validateContributionForm();"><i class="fa fa-plus paddingRight"></i>Add</button>
                   </div>
                 <div class="clearfix"></div>
                 
@@ -293,9 +293,11 @@ function contributionPopup(){
 				if(data == true){
 					$("#contriType").after("<p class='jquery_form_error_message'>This type is Already Existed</span>");
 					document.getElementById("contribution_save_button").disabled = true;
+					document.getElementById("contributionAddButtonId").disabled = true;
 				}else{
 					$('#contriType').find('p.jquery_form_error_message').remove();
 					document.getElementById("contribution_save_button").disabled = false;
+					document.getElementById("contributionAddButtonId").disabled = false;
 				}
 				
 		 },

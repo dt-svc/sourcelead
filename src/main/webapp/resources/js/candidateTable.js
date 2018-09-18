@@ -132,7 +132,8 @@ function candidateListCheck(searchValue,universalCanddateSearchList,candidateKey
           result = result +"    <th>Primary Skill</th>"; 
           result = result +"    <th>Employment Type</th>"; 
           result = result +"    <th>Email</th>"; 
-          result = result +"    <th>Mobile Number</th>"; 
+          result = result +"    <th>Mobile Number</th>";
+          result = result +"    <th>Profile Percentage</th>"
           result = result +"    <th>Location</th>"; 
           result = result +"    <th>Last Update</th>"; 
           result = result +"    <th>Created By</th>"; 
@@ -187,6 +188,7 @@ function cpagination(url){
             { "data": "designationType"},
             { "data": "email" },
             { "data": "mobilePhone" },
+            { "data": "profilePercentage" },
             { "data": "country"},
             { "data": "updatedDate" },
             { "data": "createdBy" }
@@ -329,7 +331,20 @@ function cpagination(url){
 		            	}
 	    	  		return "<div class='tbldata-dotdot-vsm'>"+mobilePhone+"</div>";
 	    	  	}
-	    	  }, {
+	    	  },{
+		    	  	"targets": colIndex++,
+		    	  	"data": "profilePercentage",
+		    	  	"sortable": false,
+		    	  	"render": function(data, type, full, meta) {
+		    	  		var profilePercentage = "";
+		    	  		if(full.profilePercentage != null && full.profilePercentage != 'undefined' && full.profilePercentage != ""){
+		    	  			profilePercentage = full.profilePercentage + "%";
+			            	}else{
+			            		profilePercentage = "--";
+			            	}
+		    	  		return "<div class='tbldata-dotdot-vsm'>"+profilePercentage+"</div>";
+		    	  	}
+		    	  }, {
                   "targets": colIndex++,
                   "data": "country",
                   "render": function ( data, type, opt, meta ) {

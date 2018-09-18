@@ -3,8 +3,10 @@ package com.bis.sourcelead.payroll.service.impl;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -46,7 +48,6 @@ import com.bis.sourcelead.payroll.dto.PayAdjustmentDTO;
 import com.bis.sourcelead.payroll.dto.PayItemDTO;
 import com.bis.sourcelead.payroll.dto.PayrollConstant;
 import com.bis.sourcelead.payroll.dto.PaysheetFrequencyDTO;
-import com.bis.sourcelead.payroll.dto.ProjectRateDTO;
 import com.bis.sourcelead.payroll.dto.TotalHoursDTO;
 import com.bis.sourcelead.payroll.dto.USPayrollDTO;
 import com.bis.sourcelead.payroll.dto.YTDPayrollDTO;
@@ -208,7 +209,7 @@ public class GenerateUSPayrollServiceImpl implements GenerateUSPayrollService{
 				uSPaysheetService.addPaysheetFrequency(paySheetFreq);
 			}
 				paysheetFrequencyDTO = getPayrollData(generateUSPayrollDTO,orgLocation,loginUser);
-				if(paysheetFrequencyDTO.getPayrollDTO() != null) {
+				if(paysheetFrequencyDTO != null && paysheetFrequencyDTO.getPayrollDTO() != null) {
 					List<USPayrollDTO> draftPayroll = null;
 					if(Constants.ALL_RECORDS.equalsIgnoreCase(generateUSPayrollDTO.getPayType())) {
 						draftPayroll = paysheetFrequencyDTO.getPayrollDTO()
@@ -304,7 +305,11 @@ public class GenerateUSPayrollServiceImpl implements GenerateUSPayrollService{
 							if(payrollCalculator != null) {
 								STEPayrollCalculator STE = payrollCalculator.getsTEPayrollCalculator();
 								String  locationCode = payrollCalculator.getWebServiceLocationCodeV2().getLocationCode();
-								BigDecimal taxes = STE.getFICACalc().add(STE.getMedicareCalc()).add(STE.getFederalCalc()).add(STE.getEICCalc()).asBigDecimal().add(STE.getStateCalc(locationCode).asBigDecimal()).add(STE.getCountyCalc(locationCode).asBigDecimal()).add(STE.getCityCalc(locationCode).asBigDecimal());
+								BigDecimal taxes = STE.getFICACalc().add(STE.getMedicareCalc()).add(STE.getFederalCalc()).add(STE.getEICCalc()).asBigDecimal()
+										                            .add(STE.getStateCalc(locationCode).asBigDecimal()).add(STE.getCountyCalc(locationCode).asBigDecimal())
+										                            .add(STE.getCityCalc(locationCode).asBigDecimal()).add(payrollCalculator.getSUI().asBigDecimal())
+										                            .add(payrollCalculator.getSDI().asBigDecimal()).add(payrollCalculator.getFLI().asBigDecimal())
+										                            .add(payrollCalculator.getHCSF().asBigDecimal()).add(payrollCalculator.getWC().asBigDecimal());
 								employeePayroll.setTaxes(taxes);
 								logger.info("*** Taxes :"+taxes);
 								BigDecimal totalPay = grossAmount.subtract(taxes);
@@ -849,6 +854,11 @@ public class GenerateUSPayrollServiceImpl implements GenerateUSPayrollService{
 		taxes.setUsEmpPayrollTaxUUID(SourceLeadRandomCodeHelper.generateRandomUUID());
 		taxes.setEarnedIncCredit(STE.getEICCalc().asBigDecimal());
 		taxes.setLocalTax(STE.getCityCalc(locationCode).asBigDecimal());
+		taxes.setSDI(payrollCalculator.getSDI().asBigDecimal());
+		taxes.setSUI(payrollCalculator.getSUI().asBigDecimal());
+		taxes.setFLI(payrollCalculator.getFLI().asBigDecimal());
+		taxes.setHCSF(payrollCalculator.getHCSF().asBigDecimal());
+		taxes.setWC(payrollCalculator.getWC().asBigDecimal());
 		taxes.setStatus(1);
 		taxes.setCreatedBy(loginUser.getId());
 		taxes.setUpdatedBy(loginUser.getId());
@@ -1027,14 +1037,31 @@ public class GenerateUSPayrollServiceImpl implements GenerateUSPayrollService{
 				payrollDTO.setAssSalary(assSal.getGrossSalary());
 				payrollDTO.setAssSalType(assSal.getPayType());
 			}
+			Map<String, BigDecimal> map = new HashMap<>();
 			for(EmployeePayrollTax tax : payroll.getUsPayrollTax()) {
-				payrollDTO.setFederal(tax.getFederalWithholding());
-				payrollDTO.setFica(tax.getFicaWithholding());
-				payrollDTO.setAeic(tax.getEarnedIncCredit());
-				payrollDTO.setMedicare(tax.getMedicareWithholding());
-				payrollDTO.setStateWithHolding(tax.getStateWithholding());
-				payrollDTO.setLocalTax(tax.getLocalTax());
+				map.put("Federal Withholding", tax.getFederalWithholding());
+				map.put("FICA",tax.getFicaWithholding());
+				map.put("Medicare",tax.getMedicareWithholding());
+				map.put("Advanced Earned Income Credit",tax.getEarnedIncCredit());
+				map.put("State Withholding",tax.getStateWithholding());
+				map.put("LocalTax",tax.getLocalTax());
+				map.put("SUI",tax.getSDI());
+				map.put("SUI", tax.getSUI());
+				map.put("FLI", tax.getFLI());
+				map.put("HCSF", tax.getHCSF());
+				map.put("WC", tax.getWC());
+//				payrollDTO.setFederal(tax.getFederalWithholding());
+//				payrollDTO.setFica(tax.getFicaWithholding());
+//				payrollDTO.setAeic(tax.getEarnedIncCredit());
+//				payrollDTO.setMedicare(tax.getMedicareWithholding());
+//				payrollDTO.setStateWithHolding(tax.getStateWithholding());
+//				payrollDTO.setLocalTax(tax.getLocalTax());
 			}
+			for (Map.Entry<String, BigDecimal> entry : map.entrySet())
+			{
+			    logger.info(entry.getKey() + "/" + entry.getValue());
+			}
+			payrollDTO.setTax(map);
 			payrollDTO.setTaxes(payroll.getTaxes());
 			
 			// Deductions 

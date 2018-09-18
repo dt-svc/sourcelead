@@ -10,6 +10,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
 import com.bis.sourcelead.entity.Candidate;
+import com.bis.sourcelead.entity.Payroll;
 import com.bis.sourcelead.payroll.dto.PayrollConstant;
 import com.bis.sourcelead.payroll.dto.YTDPayrollDTO;
 import com.bis.sourcelead.payroll.util.PayrollUtil;
@@ -49,9 +50,17 @@ public class SymmetryPayrollCalculator {
 	
 	STEObjectPool eObjectPool;
 	
+	
 	public PayrollCalculatorDTO runUSPayroll(Candidate candidate, double totalHours, BigDecimal grossAamount, int invoiceFrequency, AssociateTaxDedContriView associateTaxView,Date checkDate, YTDPayrollDTO ytdTaxes)
 	{
 		PayrollCalculatorDTO payrollCalculatorDTO = new PayrollCalculatorDTO();
+		
+		 Money SUI = Money.zero();
+		 Money SDI = Money.zero();
+		 Money FLI = Money.zero();
+		 Money HCSF = Money.zero();
+		 Money WC = Money.zero();
+		 
 //		String STEhome = "/home/rajashekar/Desktop/Tools/ste/ste-root";
 //		String jniHome = "/home/rajashekar/Desktop/Tools/ste/ste-interface-files/java/";
 		String arch = System.getProperty("os.name", "");
@@ -119,6 +128,48 @@ public class SymmetryPayrollCalculator {
 					STE.setStateMiscellaneousParameters(locationCode, "TOTALALLOWANCES", residanceTaxAllowances);
 				}
 				
+				// State Unemployment Insurance (SUI) 
+				
+				if(PayrollConstant.NEW_YORK.equalsIgnoreCase(candidate.getResidenceState().trim())
+				  || PayrollConstant.PENNSYLVANIA.equalsIgnoreCase(candidate.getResidenceState().trim())
+				   || PayrollConstant.ALASKA.equalsIgnoreCase(candidate.getResidenceState().trim())) {
+					STE.setWages(locationCode, WageType.SUTA_GROSS_WAGES, new Hours(totalHours), new Money(grossAamount),zero, zero, zero);
+					STE.setSUI(locationCode, zero, null, null, false);
+					
+				}
+				
+				// State Disability Insurance (SDI)
+				// Hawaii
+				if(PayrollConstant.HAWAII.equalsIgnoreCase(candidate.getResidenceState().trim())) {
+					STE.setSDI(locationCode, zero, zero, zero, zero, zero, false);
+				}
+				
+				if(PayrollConstant.CALIFORNIA.equalsIgnoreCase(candidate.getResidenceState().trim())
+				   || PayrollConstant.NEW_JERSEY.equalsIgnoreCase(candidate.getResidenceState().trim())
+				   || PayrollConstant.PUERTO_RICO.equalsIgnoreCase(candidate.getResidenceState().trim())
+				   || PayrollConstant.RHODE_ISLAND.equalsIgnoreCase(candidate.getResidenceState().trim())) {
+					
+					STE.setSDI(locationCode, zero, zero, zero, zero, false);
+				}
+				
+				// Family Leave Insurance (FLI)
+				// New Jersey
+				if(PayrollConstant.NEW_JERSEY.equalsIgnoreCase(candidate.getResidenceState().trim())) {
+					//HCSF
+					STE.setHealthCareSubsidyFund(locationCode, null, null, null, true);
+					STE.setWages(locationCode, WageType.SUTA_GROSS_WAGES, new Hours(totalHours), new Money(grossAamount),zero, zero, zero);
+					STE.setFLI(locationCode, zero, null, null, false);			
+				}
+				//New York Family Leave Insurance tax
+				if(PayrollConstant.NEW_YORK.equalsIgnoreCase(candidate.getResidenceState().trim())) {
+					STE.setFLI(locationCode, new Money(0.00), null, null, false);
+				}
+				
+				//Workers Compensation (WC)
+				if(PayrollConstant.NEW_MEXICO.equalsIgnoreCase(candidate.getResidenceState().trim()) || PayrollConstant.OREGON.equalsIgnoreCase(candidate.getResidenceState().trim())) {
+					STE.setWorkersComp(locationCode, zero,null, null, null,false);
+				}
+				
 				//TODO Need to explore
 				if(PayrollConstant.WASHINGTON.equalsIgnoreCase(candidate.getResidenceState())) {
 					STE.setSDI(locationCode, new Money(0D), null, new Rate(0.0), null);
@@ -150,7 +201,7 @@ public class SymmetryPayrollCalculator {
 				STE = calculateEMACSupplemental(STE,locationCode,totalHours,grossAamount,FEDERAL_LOCATION_CODE,ytdTaxes);
 				
 				//New York Metropolitan Commuter Transportation Mobility Tax (MCTMT)
-				if("New York".equalsIgnoreCase(candidate.getResidenceState().trim())) {
+				if(PayrollConstant.NEW_YORK.equalsIgnoreCase(candidate.getResidenceState().trim())) {
 					STE = calculateMCTMT(STE,locationCode,totalHours,grossAamount,FEDERAL_LOCATION_CODE);
 					STE.setStateMiscellaneousParameters(locationCode, "FILINGSTATUS", "M");
 					STE.setStateMiscellaneousParameters(locationCode, "TOTALALLOWANCESNYC",residanceTaxAllowances);
@@ -208,34 +259,34 @@ public class SymmetryPayrollCalculator {
 //				logger.info("************************************************");
 
 				// Employer Taxes
-				logger.info("Employer FUTA/SUTA TAXES--------------------------");
+				logger.info("Employer FUTA/SUTA TAXES :");
 				UnemploymentCalculation federalUC = STE.getUnemployment(FEDERAL_LOCATION_CODE);
 				UnemploymentCalculation stateUC = STE.getUnemployment(locationCode);
 				logger.info("Employer FUTA: " + federalUC.getCalculatedUITax());
 				logger.info("Employer SUTA: " + stateUC.getCalculatedUITax());
 				logger.info("");
 				
-				logger.info("Employer RUIA TAXES--------------------------");
+				logger.info("Employer RUIA TAXES :");
 				RUIACalculation ruia = STE.getRailroadUnemployment();
 				logger.info("Employer RUIA Withholding: " + ruia.getCalculatedUITax());
 				logger.info("");
 				
-				logger.info("Employer Oregon Transit TAXES--------------------------");
+				logger.info("Employer Oregon Transit TAXES :");
 				Money transitCalc = STE.getTransitTaxCalc(locationCode, TransitTaxType.WILSONVILLE_TRANSIT);
 				logger.info("Employer Oregon Transit Tax: " + transitCalc);
 				logger.info("");
 				
-				logger.info("UHI TAXES--------------------------");
+				logger.info("UHI TAXES :");
 				UnemploymentCalculation uc = STE.getMassachusettsUHI();
 				logger.info("Massachusetts UHI: " +uc.getCalculatedUITax());
 				logger.info("");
 				
-				logger.info("Massachusetts EMAC TAXES--------------------------");
+				logger.info("Massachusetts EMAC TAXES :");
 				UnemploymentCalculation emac = STE.getMassachusettsEMAC();
 				logger.info("Massachusetts EMAC: " +emac.getCalculatedUITax());
 				logger.info("");
 				
-				logger.info("Massachusetts EMAC TAXES--------------------------");
+				logger.info("Massachusetts EMAC TAXES :");
 				UnemploymentCalculation emacs = STE.getEMACS(locationCode);
 				logger.info("Massachusetts EMAC Supplemental: " +emacs.getCalculatedUITax());
 				logger.info("");
@@ -245,26 +296,63 @@ public class SymmetryPayrollCalculator {
 					Money mctmtWithholding = STE.getPercentTotalPayrollTax(locationCode, PercentOfPayrollTax.NEW_YORK_MCTMT);
 					payrollCalculatorDTO.setEmployerMetropolitanMCTMT(mctmtWithholding);
 					logger.info("New York Metro Commuter Transportation: " + mctmtWithholding);
-					logger.info("");	
+					logger.info("");
+					
+				
+				}
+				if(PayrollConstant.NEW_YORK.equalsIgnoreCase(candidate.getResidenceState().trim())
+						  || PayrollConstant.PENNSYLVANIA.equalsIgnoreCase(candidate.getResidenceState().trim())
+						   || PayrollConstant.ALASKA.equalsIgnoreCase(candidate.getResidenceState().trim())) {
+							STE.setWages(locationCode, WageType.SUTA_GROSS_WAGES, new Hours(totalHours), new Money(grossAamount),zero, zero, zero);
+							STE.setSUI(locationCode, zero, null, null, false);
+							
+							// State Unemployment Insurance (SUI)
+							SUI = STE.getSUICalc(locationCode);
+							logger.info("Unemployment Rate: (SUI)" + SUI);
+							
+							
+						}
+				// SDI
+				SDI = STE.getSDICalc(locationCode);
+				logger.info("SDI Calculation : " +SDI);
+				
+				// FLI
+				// New Jersy
+				if(PayrollConstant.NEW_JERSEY.equalsIgnoreCase(candidate.getResidenceState().trim())) {
+					FLI = STE.getFLICalc(locationCode);
+					HCSF = STE.getHealthCareSubsidyFundCalc(locationCode);
+					logger.info("NJ FLI Calculation: " + FLI);	
+					logger.info("NJ Health Care Subsidy Fund: " + HCSF);	
+				}
+				//New York Family Leave Insurance tax
+				if(PayrollConstant.NEW_YORK.equalsIgnoreCase(candidate.getResidenceState().trim())) {
+					FLI = STE.getFLICalc(locationCode);
+					logger.info("NY FLI Calculation: " + FLI);
+				}
+				
+				//Workers Compensation (WC)
+				if(PayrollConstant.NEW_MEXICO.equalsIgnoreCase(candidate.getResidenceState().trim()) || PayrollConstant.OREGON.equalsIgnoreCase(candidate.getResidenceState().trim())) {
+					WC = STE.getWorkersCompCalc(locationCode);
+					logger.info("New Mexico Worker’s Comp Calculation: " +WC);
 				}
 				
 				
-				logger.info("Employer Wyoming Workers Compensation Tax (WC)--------------------------");
+				logger.info("Employer Wyoming Workers Compensation Tax (WC) :");
 				Money wcCalc = STE.getWyomingWorkersCompCalc();
 				logger.info("Wyoming Workers Comp: " +wcCalc);
 				logger.info("###############################");
 				
-				logger.info("Employer Oregon Workers Compensation Tax WC--------------------------");
+				logger.info("Employer Oregon Workers Compensation Tax WC:");
 				//Employer Oregon Workers Compensation Tax WC
 				Money oregonWC = STE.getOregonWorkersCompCalc();
 				logger.info("Employer Oregon Workers Compensation Tax: " + oregonWC);
 				logger.info("###############################");
 				
-				logger.info("Employer SUTA Surcharge Taxes--------------------------");
+				logger.info("Employer SUTA Surcharge Taxes :");
 				UnemploymentCalculation surChargeTaxes = STE.getUnemploymentSurcharge(locationCode, SurchargeTaxType.IDAHO_ADMINISTRATIVE_RESERVE);
 				logger.info("EMPLOYER SUTA Surcharge: " + surChargeTaxes.getCalculatedUITax());
 				
-				logger.info("Employer SDI Taxes--------------------------");
+				logger.info("Employer SDI Taxes :");
 				if("New Jersey".equalsIgnoreCase(candidate.getResidenceState().trim())) {
 					Money empNJSDICalc = STE.getSDIEmployerCalc(locationCode, SDITaxType.NEW_JERSEY_SDI);
 					logger.info("New Jersey Employer SDI: " + empNJSDICalc);
@@ -276,7 +364,7 @@ public class SymmetryPayrollCalculator {
 					payrollCalculatorDTO.setEmployerSDI(ricoSDICalc);
 				}
 				
-				logger.info("Employer FICA calc--------------------------");
+				logger.info("Employer FICA calc :");
 				// Calculating Employer FICA
 				Money empficaCalc = STE.getEmployerFICACalc();
 				logger.info("Employer FICA calc: " +empficaCalc);
@@ -567,7 +655,7 @@ public class SymmetryPayrollCalculator {
 			zipCode = candidate.getResidenceZipCode();
 		}
 		try {
-			logger.info("candidate Residence State ====="+candidate.getResidenceState());
+			logger.info("candidate Residence State :"+candidate.getResidenceState());
 			STE.setWebService(WebServiceType.STE_LOC_CODE, "http://lcs2.symmetry.com/", null, "sourcelead", "s290sdq", null);
 			webServiceLocationCodeV2 = STE.webServiceLocationCodeV2(address, "", candidate.getResidenceCity().trim(), candidate.getResidenceStateCode().trim(),zipCode,null,null);
 			logger.info("Country code     : " + webServiceLocationCodeV2.getCountyCode());

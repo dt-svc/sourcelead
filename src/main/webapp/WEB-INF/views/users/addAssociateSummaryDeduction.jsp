@@ -98,7 +98,7 @@ getDeductionType();
                   <div class="col-md-5">
                     <label class="clearfix">Amount</label>
                     <div class="clearfix">
-                      <input type="text" class="form-control" id="amt" name="amt" data-validation="required validate_float" field-name="Amount" readonly>
+                      <input type="text" class="form-control" id="amt" name="amt" data-validation="required validate_float" field-name="Amount">
                     </div>
                   </div>
                   </div>
@@ -110,7 +110,7 @@ getDeductionType();
                   </div>
                   <div class="clearfix"></div>
                   <div class="col-md-10">
-                  	<button type="button" class="btn btn-success btnSuccess pull-right add-row" onclick="validateForm();"><i class="fa fa-plus paddingRight"></i>Add</button>
+                  	<button type="button" id="deductionAddButtonId" class="btn btn-success btnSuccess pull-right add-row" onclick="validateForm();"><i class="fa fa-plus paddingRight"></i>Add</button>
                   </div>
                 <div class="clearfix"></div>
                 
@@ -289,9 +289,11 @@ function deductionPopup(){
 					if(data == true){
 						$("#dedType").after("<p class='jquery_form_error_message'>This type is Already Existed</span>");
 						document.getElementById("associate_deduction_save_button").disabled = true;
+						document.getElementById("contributionAddButtonId").disabled = true;
 					}else{
 						$('#dedType').find('p.jquery_form_error_message').remove();
 						document.getElementById("associate_deduction_save_button").disabled = false;
+						document.getElementById("contributionAddButtonId").disabled = false;
 					}
 					
 			 },

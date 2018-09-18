@@ -464,7 +464,7 @@ function prepareDynamicAssetList(url){
 	result = result + '<table id="assetPagination" class="display" cellspacing="0" width="100%">';
 	result = result + '<thead>';
 	result = result + '<tr">';
-	result = result +'	<th>Serial / Port Number</th>';
+	result = result +'	<th>Serial Number</th>';
    	result = result +'  <th>Category</th>';
    	result = result +'  <th>Model</th>';
 	result = result +'  <th>issue Date</th>';

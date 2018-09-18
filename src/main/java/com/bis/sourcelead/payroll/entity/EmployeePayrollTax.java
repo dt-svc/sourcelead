@@ -12,6 +12,8 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
+import com.symmetry.ste.Money;
+
 @Entity
 @Table(name = "US_EMP_PAYROLL_TAX")
 public class EmployeePayrollTax {
@@ -45,6 +47,21 @@ public class EmployeePayrollTax {
 	@Column(name = "COUNTY_WITHHOLDING")
 	private BigDecimal countyWithholding;
 	
+	@Column(name = "SUI")
+	private BigDecimal SUI;
+	
+	@Column(name = "SDI")
+	private BigDecimal SDI;
+	
+	@Column(name = "FLI")
+	private BigDecimal FLI;
+	
+	@Column(name = "HCSF")
+	private BigDecimal HCSF;
+	
+	@Column(name = "WC")
+	private BigDecimal WC;
+	
 	@Column(name = "LOCAL_TAX")
 	private BigDecimal localTax;
 	
@@ -73,6 +90,10 @@ public class EmployeePayrollTax {
 	
 	@Column(name = "UPDATED_BY")
 	private Long updatedBy;
+	
+	
+	
+	
 
 	public static long getSerialversionuid()
 	{
@@ -247,6 +268,56 @@ public class EmployeePayrollTax {
 	public void setSteVersion(String steVersion)
 	{
 		this.steVersion = steVersion;
+	}
+
+	public BigDecimal getSUI()
+	{
+		return SUI;
+	}
+
+	public BigDecimal getSDI()
+	{
+		return SDI;
+	}
+
+	public BigDecimal getFLI()
+	{
+		return FLI;
+	}
+
+	public BigDecimal getHCSF()
+	{
+		return HCSF;
+	}
+
+	public BigDecimal getWC()
+	{
+		return WC;
+	}
+
+	public void setSUI(BigDecimal sUI)
+	{
+		SUI = sUI;
+	}
+
+	public void setSDI(BigDecimal sDI)
+	{
+		SDI = sDI;
+	}
+
+	public void setFLI(BigDecimal fLI)
+	{
+		FLI = fLI;
+	}
+
+	public void setHCSF(BigDecimal hCSF)
+	{
+		HCSF = hCSF;
+	}
+
+	public void setWC(BigDecimal wC)
+	{
+		WC = wC;
 	}
 	
 	
