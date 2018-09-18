@@ -1,10 +1,10 @@
 function getPayGroupList(id){
-	 $.ajax({
+	$.ajax({
 	    	type: "GET",
 	        url: sourceleadUrl+"/getPayGroupList?"+tokenParamName+"="+tokenValue                 , 
 	        success: function(json) {
 	        var output = "";
-	        output = output + "<option value=''>Select Group</option>";
+	        output = output + "<option value=''>select</option>";
 			for (var i=0; i<json.length; i++)
 			{
 				var opt = json[i];
@@ -25,7 +25,7 @@ function getPayPeriodByGroupId(payGroupid,payPeriodId1,payPeriodId2){
 	        url: sourceleadUrl+"/getPayPeriodByGroupId?"+tokenParamName+"="+tokenValue+"&groupId="+groupId               , 
 	        success: function(json) {
 	        var output = "";
-	        output = output + "<option value=''>Select Pay Period</option>";
+	        output = output + "<option value=''>Pay Period</option>";
 			for (var i=0; i<json.data.length; i++)
 			{
 				var opt = json.data[i];
@@ -58,3 +58,5 @@ function getDepartments(id){
         },
     });	
 }
+
+
