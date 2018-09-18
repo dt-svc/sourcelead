@@ -724,6 +724,10 @@ public class CandidateListRestController {
 
 					}
 					candidateIndex.setCreatedBy(candidateIndex.getCreatedBy());
+					Candidate can = candidateService.getCandidateByCandidateId(candidateIndex.getCandidateId());
+					
+					int percentage = candidateService.getCandidatePercentage(can, loginOrgLocation);
+					candidateIndex.setProfilePercentage(percentage);
 					candidatesList.add(candidateIndex);
 				}
 				response.setRecordsFiltered(Long.valueOf(searchResponse.getHits().getTotalHits()).intValue());
