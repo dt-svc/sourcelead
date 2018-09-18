@@ -48,6 +48,7 @@ import com.bis.sourcelead.dto.CandidateEmployerDTO;
 import com.bis.sourcelead.dto.CandidateFamilyDetailsDTO;
 import com.bis.sourcelead.dto.CandidateResumeDTO;
 import com.bis.sourcelead.dto.ImmigrationDTO;
+import com.bis.sourcelead.dto.ImmigrationLcaDTO;
 import com.bis.sourcelead.dto.ImmigrationListViewDTO;
 import com.bis.sourcelead.dto.ImmigrationPassportVisaDTO;
 import com.bis.sourcelead.dto.ImmigrationTemplateDTO;
@@ -58,6 +59,7 @@ import com.bis.sourcelead.dto.ImmigrationTemplateTaskDTO;
 import com.bis.sourcelead.dto.LcaDTO;
 import com.bis.sourcelead.dto.LcaDetailsDTO;
 import com.bis.sourcelead.dto.LcaListViewDTO;
+import com.bis.sourcelead.dto.LcaPlaceOfEmploymentDTO;
 import com.bis.sourcelead.dto.MyImmigrationViewDTO;
 import com.bis.sourcelead.dto.ResidenceDTO;
 import com.bis.sourcelead.dto.Response;
@@ -1333,6 +1335,65 @@ public class ImmigrationRestController {
 		}
 		return response;
 	}
+	
+	@RequestMapping(value = { "/saveLCADetails" }, method = RequestMethod.POST)
+	public Response<String> saveLCADetails(ImmigrationLcaDTO immLcaDTO,
+			HttpServletRequest request, @RequestParam(value = "candidateId", required = false) String candidateId,
+			@RequestParam(value = "immigrationId", required = false) String immigrationId) {
+		Response<String> response = new Response<>();
+		User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+		OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,
+				"orgLocations");
+		Candidate candidate = null;
+		Immigration immigration = null;
+		try {
+			if (user != null && Validator.validate(immLcaDTO)) {
+				candidate = candidateService.getCandidateByCandidateId(Long.parseLong(candidateId));
+				immigration = immigrationCommonService.getImmigrationById(Long.parseLong(immigrationId));
+				LcaDTO  lcaDTO = new LcaDTO();
+				
+				lcaDTO.setLcaNo(immLcaDTO.getLcaNo());
+				
+				lcaDTO.setStartDate(immLcaDTO.getStartDate());
+				lcaDTO.setEndDate(immLcaDTO.getEndDate());
+				
+				
+				lcaDTO.setPrevailingWage(immLcaDTO.getPrevailingWage());
+				lcaDTO.setPrivilingWageRateType(immLcaDTO.getPrivilingWageRateType());
+				lcaDTO.setPrivilingWageCurrency(immLcaDTO.getPrivilingWageCurrency());
+				
+				LcaPlaceOfEmploymentDTO lcaPlaceOfEmploymentDTO = new LcaPlaceOfEmploymentDTO();
+				lcaPlaceOfEmploymentDTO.setLocation(immLcaDTO.getLocation());
+				List<LcaPlaceOfEmploymentDTO> emplList = new ArrayList<LcaPlaceOfEmploymentDTO>();
+				emplList.add(lcaPlaceOfEmploymentDTO);
+				lcaDTO.setLcaPlaceOfEmploymentList(emplList);
+				
+				lcaDTO.setStatus("Active");
+				
+				immigrationCommonService.saveLcaDetails(lcaDTO, user, orgLocations);
+				response.setResponse(Result.SUCCESS.name());
+				response.setResponseMessage(Result.SUCCESS.getValue());
+				StringBuilder actionDesc = new StringBuilder();
+				if (StringUtils.isNotBlank(lcaDTO.getLcaId())) {
+					actionDesc.append("LCA Details Updated").toString();
+				} else {
+					actionDesc.append("New LCA Details Added").toString();
+				}
+				immigrationActivityCommonUtil.saveImmigrationCandidateActivities(user, orgLocations, candidate,immigration, actionDesc.toString());
+			} else if (user == null) {
+				response.setResponse(Result.SESSION_TIMEDOUT.name());
+				response.setResponseMessage(Result.SESSION_TIMEDOUT.getValue());
+			} else {
+				response.setResponse(Result.INVALID_DATA.name());
+				response.setResponseMessage(Result.INVALID_DATA.getValue());
+			}
+		} catch (Exception e) {
+			response.setResponse(Result.AWKWARD.name());
+			response.setResponseMessage(Result.AWKWARD.getValue());
+			e.printStackTrace();
+		}
+		return response;
+	}
 
 	@RequestMapping(value = { "/saveImmigrationResidenceDetails" })
 	public Response<String> saveCandidateResidence(ResidenceDTO residenceDTO, HttpServletRequest request,
@@ -1618,12 +1679,12 @@ public class ImmigrationRestController {
 	
 	@RequestMapping(value = { "/getLcaDetails" })
 	public ModelAndView getLcaDetails(
-			@RequestParam(value = "immigrationId", required = true) Long immigrationId, HttpServletRequest request) throws Exception {
+			@RequestParam(value = "immigrationId", required = true) String immigrationId, HttpServletRequest request) throws Exception {
 		
 		ModelAndView model = new ModelAndView();
 		logger.debug(" inisde getLcaDetails controller test -->");
 		if(immigrationId != null) {
-			 List<LcaDTO> lcaList = immigrationCommonService.getLcaHistoryDetailsInfo(immigrationId);
+			 List<LcaDTO> lcaList = immigrationCommonService.getLcaHistoryDetailsInfo(Long.parseLong(immigrationId));
 			 /*   for(LcaDTO lh: lcaList) {
 			    	
 			    	if(lh.getLcaId() != null ) {
