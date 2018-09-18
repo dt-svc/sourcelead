@@ -1615,9 +1615,9 @@ public class ImmigrationCommonServiceImpl implements ImmigrationCommonService {
 			// Modified Code 
 			CandidateLcaJobDetails canLcaJobDetails = immigrationCommonDao.getCandidateLcaJobDetails(immigration.getId());
 			
-			if(canLcaJobDetails.getIsCurrent() != null && !canLcaJobDetails.getIsCurrent().isEmpty()) {
+			if(canLcaJobDetails != null) {
 			immigrationDTO.setIsCurrResidence(canLcaJobDetails.getIsCurrent());
-			}
+			
 			immigrationDTO.setEmploymentLevel(canLcaJobDetails.getEmploymentLevel());
 			immigrationDTO.setEmployer(canLcaJobDetails.getEmployerName());
 			immigrationDTO.setJobLocation(canLcaJobDetails.getEmployerLocation());
@@ -1626,7 +1626,7 @@ public class ImmigrationCommonServiceImpl implements ImmigrationCommonService {
 			immigrationDTO.setRateType(canLcaJobDetails.getRateType());
 			immigrationDTO.setJobStartDate(commonUtil.dateStrFromOrgDateFormatter(orgLocations.getDateFormat(),canLcaJobDetails.getJobStartDate()));
 			immigrationDTO.setJobEndDate(commonUtil.dateStrFromOrgDateFormatter(orgLocations.getDateFormat(),canLcaJobDetails.getJobEndDate()));
-			
+			}
 			
 			
 			/*
