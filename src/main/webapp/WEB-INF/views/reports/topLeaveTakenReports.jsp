@@ -74,8 +74,9 @@ $(document).ready(function(){
 						</span>
 					</div>
 				</li>
+		          		  <li class=""><input type="text" class="repSearchBar" placeholder='Search' id='leaveReportDataTableSearch'/><span class="repSearchIcon" onClick="gettopleavetakenReportList();"></span></li>
 		    
-		  <li class=""><input type="text" class="repSearchBar" placeholder='Search' id='topLeavesTableSearch'/><span class="repSearchIcon" onClick="gettopleavetakenReportList();"></span></li>
+<!-- 		  <li class=""><input type="text" class="repSearchBar" placeholder='Search' id='topLeavesTableSearch'/><span class="repSearchIcon" onClick="gettopleavetakenReportList();"></span></li> -->
         </ul>
       </div>
       
@@ -237,6 +238,7 @@ function gettopleavetakenReportList(){
 </script>
 <script>
 function gettopleavetakenReportList(){
+	var searchValue = $("#leaveReportDataTableSearch").val();
 	var topleave = "yes";
 var loginUserRole = '${SourceLeadWeb_loginUserRole}';
 	
@@ -262,7 +264,7 @@ var loginUserRole = '${SourceLeadWeb_loginUserRole}';
      });
 	var MonthStartDate =$("#filterStartDate").val();
 	var MonthEndDate = $("#filterEndDate").val();
-	var url = sourceleadUrl+"/gettopleavetakenReportList?"+tokenParamName+"="+tokenValue+"&userRole="+userRole+"&orgDepartments="+orgDepartments+"&userleaveType="+userleaveType+"&leaveType="+leaveType+"&topleave="+topleave+"&MonthStartDate="+MonthStartDate+"&MonthEndDate="+MonthEndDate;
+	var url = sourceleadUrl+"/gettopleavetakenReportList?"+tokenParamName+"="+tokenValue+"&userRole="+userRole+"&orgDepartments="+orgDepartments+"&userleaveType="+userleaveType+"&leaveType="+leaveType+"&topleave="+topleave+"&MonthStartDate="+MonthStartDate+"&MonthEndDate="+MonthEndDate+"&searchValue="+searchValue;
 $("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:999;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
 		$.get(url,function(response) {
 							if (response.response === "AWKWARD") {
@@ -294,8 +296,7 @@ $("#loading").attr('style','position:absolute; width:100%; height:100%; backgrou
 								result = result + '</tr>';
 								result = result + '</thead>';
 								result = result + '<tbody>';
-								
-								for(j=0; j < opt.users.length; j++){
+								for(var j=0; j < opt.users.length; j++){
 									var report = opt.users[j];
 									result += "<tr>";
 									
@@ -313,7 +314,7 @@ $("#loading").attr('style','position:absolute; width:100%; height:100%; backgrou
 										result += "<td> -- </td>";
 									}
 									var lo=0;
-									for (i = 0; i < opt.leaveTypeNames.length; i++) {
+									for (var i = 0; i < opt.leaveTypeNames.length; i++) {
 										for(var k in opt.map){
 											var ltName = k.split("-");
 											if(ltName[1] == report.userId && ltName[0] == opt.leaveTypeNames[i]){
@@ -331,17 +332,22 @@ $("#loading").attr('style','position:absolute; width:100%; height:100%; backgrou
 									result += "<td> "+lo+" </td>";
 
 									result += "</tr>"
-								}
+								} 
+								 
+								result = result + '  </tbody>';
 								
-								
-								
-								result = result + '  </tbody>                                                                                                        ';
 								result = result + '</table> ';
 							
+								
 							$("#topLeaveTakenReportsList").empty();
 							$("#topLeaveTakenReportsList").append(result);
 							$("#loading").removeAttr('style');
-							listTypePagination(opt.leaveTypeNames.length);
+							if(opt.users != null && opt.users != "" && opt.users != "undefined"){
+								listTypePagination(opt.leaveTypeNames.length);
+							}else{
+								listTypePagination(0);
+							}
+							
 							$(".proj_show").click(
 									function() {
 										$(".new_side_wrap").addClass(
@@ -361,9 +367,35 @@ $("#loading").attr('style','position:absolute; width:100%; height:100%; backgrou
 					
 </script>
 <script>
+
+function listTypePagination(count) {
+	count += 3;
+	$('#topLeaveTakenReportsListView').DataTable({
+		"searching": false,
+		"scrollCollapse": false,
+    	"lengthMenu": [[10, 15, 20, -1], [10, 15, 20, "All"]],
+    	"aaSorting": [[count,'desc']],
+    	"bLengthChange": true,
+    	"bDestroy": true,
+    	"ordering": true,
+    	"oLanguage": {
+     		"sSearch": "",
+     		"sZeroRecords": "", "sEmptyTable": ""
+     	}
+	});
+	$("#topLeaveTakenReportsListView").wrap("<div class='overflow_Auto' style='width:100%;'></div>");
+
+}
+
+
+
+/* 
 	function listTypePagination(count) {
+		alert("jjjj")
 		count += 3;
 		$('#topLeaveTakenReportsListView').DataTable({
+			"searching": false, 
+		    "paging": true,
 			"scrollCollapse" : false,
 			"lengthMenu" : [ [ 10, 15, 20, -1 ], [ 10, 15, 20, "All" ] ],
 			"aaSorting": [[count,'desc']],
@@ -373,13 +405,18 @@ $("#loading").attr('style','position:absolute; width:100%; height:100%; backgrou
 			"mark" : true,
 			"oLanguage" : {
 				"sSearch" : "",
-				"sZeroRecords" : "",
-				"sEmptyTable" : ""
+				"sZeroRecords": "", "sEmptyTable": "", 
+	     		 "sProcessing": "<img src='/resources/images/loading.gif' style='width: 75px; height: 75px;'/>"
 			}
 		});
 		$("#topLeaveTakenReportsListView").wrap("<div class='overflow_Auto' style='width:100%;'></div>");
 
-	}
+	} */
+	$("#leaveReportDataTableSearch").keydown(function(e) {
+		   if(e.which === 13) {
+			   gettopleavetakenReportList();
+		   }
+		});
 </script>
  
 <script>
@@ -415,7 +452,7 @@ function exportToPdf(){
 	var exportType = "pdf";
 	var topleave ="yes";
 	var loginUserRole = '${SourceLeadWeb_loginUserRole}';
-    
+	var searchValue = $("#leaveReportDataTableSearch").val();
 	var userRole = [];
 	$('input:checkbox[name=userRole]:checked').each(function() 
     {
@@ -438,12 +475,13 @@ function exportToPdf(){
      });
 	var MonthStartDate =$("#filterStartDate").val();
 	var MonthEndDate = $("#filterEndDate").val();
-	window.location.href = sourceleadUrl + "/getExportTopReports?"+tokenParamName+"="+tokenValue+"&userRole="+userRole+"&orgDepartments="+orgDepartments+"&userleaveType="+userleaveType+"&leaveType="+leaveType+"&exportType="+exportType+"&topleave="+topleave+"&MonthStartDate="+MonthStartDate+"&MonthEndDate="+MonthEndDate;
+	window.location.href = sourceleadUrl + "/getExportTopReports?"+tokenParamName+"="+tokenValue+"&userRole="+userRole+"&orgDepartments="+orgDepartments+"&userleaveType="+userleaveType+"&leaveType="+leaveType+"&exportType="+exportType+"&topleave="+topleave+"&MonthStartDate="+MonthStartDate+"&MonthEndDate="+MonthEndDate+"&searchValue="+searchValue;
 	
 }
 </script>
 <script>
 function exportToExcel(){
+	var searchValue = $("#leaveReportDataTableSearch").val();
 	var exportType = "excel";
 	var topleave ="yes";
 	var loginUserRole = '${SourceLeadWeb_loginUserRole}';
@@ -471,7 +509,7 @@ function exportToExcel(){
 	var MonthStartDate =$("#filterStartDate").val();
 	var MonthEndDate = $("#filterEndDate").val();
 	
-	window.location.href = sourceleadUrl + "/getExportTopReports?"+tokenParamName+"="+tokenValue+"&userRole="+userRole+"&orgDepartments="+orgDepartments+"&userleaveType="+userleaveType+"&leaveType="+leaveType+"&exportType="+exportType+"&topleave="+topleave+"&MonthStartDate="+MonthStartDate+"&MonthEndDate="+MonthEndDate;
+	window.location.href = sourceleadUrl + "/getExportTopReports?"+tokenParamName+"="+tokenValue+"&userRole="+userRole+"&orgDepartments="+orgDepartments+"&userleaveType="+userleaveType+"&leaveType="+leaveType+"&exportType="+exportType+"&topleave="+topleave+"&MonthStartDate="+MonthStartDate+"&MonthEndDate="+MonthEndDate+"&searchValue="+searchValue;
 	
 }
 </script>
