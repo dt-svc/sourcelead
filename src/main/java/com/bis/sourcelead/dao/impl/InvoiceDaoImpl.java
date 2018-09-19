@@ -254,12 +254,8 @@ public class InvoiceDaoImpl implements InvoiceDao {
 			} else {
 				if (invoiceDTO.getSearchValue() != null && !"".equalsIgnoreCase(invoiceDTO.getSearchValue())) {
 					query1.append(" and (invoice.invoiceId like '%" + invoiceDTO.getSearchValue() + "%' ")
-							.append("OR invoice.responderLocationId.orgLocationName like '%"
-									+ invoiceDTO.getSearchValue() + "%' ")
-							.append("OR invoice.orgLocation.orgLocationName like '%" + invoiceDTO.getSearchValue()
-									+ "%' ")
-							.append("OR invoice.contactUser.firstName like '%" + invoiceDTO.getSearchValue() + "%' ")
-							.append("OR invoice.contactUser.lastName like '%" + invoiceDTO.getSearchValue() + "%' ")
+							.append("OR invoice.responderLocationId.orgLocationName like '%" + invoiceDTO.getSearchValue() + "%' ")
+							.append("OR invoice.orgLocation.orgLocationName like '%" + invoiceDTO.getSearchValue() + "%' ")
 							.append("OR invoice.projectID.projectName like '%" + invoiceDTO.getSearchValue() + "%' ")
 							.append("OR invoice.invoiceDate like '%" + invoiceDTO.getSearchValue() + "%' ")
 							.append("OR invoice.total like '%" + invoiceDTO.getSearchValue() + "%' ")
@@ -270,7 +266,7 @@ public class InvoiceDaoImpl implements InvoiceDao {
 				}
 			}
 		}
-		Query queryObj = session.createQuery(query + query1.toString() + qry);
+		Query queryObj = session.createQuery(query + query1 + qry);
 		if (invoiceDTO != null && invoiceDTO.getLength() > 0) {
 			queryObj.setFirstResult(invoiceDTO.getStart());
 			queryObj.setMaxResults(invoiceDTO.getLength());
@@ -293,7 +289,7 @@ public class InvoiceDaoImpl implements InvoiceDao {
 		}
 		response.setRecordsTotal(count);
 		if (invoiceDTO != null) {
-			List<Long> filteredCountlist = session.createQuery("select count(*) " + countQuery + query1.toString())
+			List<Long> filteredCountlist = session.createQuery("select count(*) " + countQuery + query1)
 					.setLong("orgLocationId", orgLocations.getId()).setParameter("startDateUTC", startDateUTC)
 					.setParameter("endDateUTC", endDateUTC).setString("varString", "")
 					.setParameterList("tagsList", tagsList).list();
