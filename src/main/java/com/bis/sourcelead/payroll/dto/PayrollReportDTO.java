@@ -52,7 +52,14 @@ public class PayrollReportDTO extends SearchDTO{
 	
 	private String payCheckDate;
 	
-
+	private BigDecimal grossPay;
+	
+	private BigDecimal deductions;
+	
+	private BigDecimal ytdTaxes;
+	
+	private BigDecimal ytdDeductions;
+	
 	public String getEmpName()
 	{
 		return empName;
@@ -273,6 +280,45 @@ public class PayrollReportDTO extends SearchDTO{
 	{
 		this.payCheckDate = payCheckDate;
 	}
-	
+
+	public BigDecimal getGrossPay()
+	{
+		return grossPay;
+	}
+
+	public void setGrossPay(BigDecimal grossPay)
+	{
+		this.grossPay = grossPay;
+	}
+
+	public BigDecimal getDeductions()
+	{
+		return deductions;
+	}
+
+	public void setDeductions(BigDecimal deductions)
+	{
+		this.deductions = deductions;
+	}
+
+	public BigDecimal getYtdTaxes()
+	{
+		return ytdTaxes;
+	}
+
+	public void setYtdTaxes(BigDecimal ytdTaxes)
+	{
+		this.ytdTaxes = ytdTaxes;
+	}
+
+	public BigDecimal getYtdDeductions()
+	{
+		return ytdDeductions;
+	}
+
+	public void setYtdDeductions(BigDecimal ytdDeductions)
+	{
+		this.ytdDeductions = ytdDeductions;
+	}
 	
 }
