@@ -46,7 +46,7 @@ $(document).ready(function(){
                      <!-- <span class="info-box-icon bg-red"> <i class="fa fa-check-square" aria-hidden="true"></i></span> -->
                       <div class="info-box-content text-center" style='cursor:pointer' title="Submissions" id="subDiv">
                         <p class="info-box-number"><span id="submissionsCount" onclick="loadRequirementSubmissions();">${submissionsCount}</span></p>
-                        <p class="info-box-text mb0 text-muted mt2">Submissions</p>
+                        <p class="info-box-text mb0 text-muted mt2">Client Submissions</p>
                       </div>
                       <div id ="submissionsCountLoading"></div>
                     </div>

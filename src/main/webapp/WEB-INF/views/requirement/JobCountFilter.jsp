@@ -5,7 +5,7 @@
 				    <select id="reqList" onchange="loadRequirementList();">
                   		<option value="appList"  ${reqList == 'appList' ? 'selected="selected"':''} >Applicant List</option>
                   		<option value="shortlist" ${reqList == 'shortlist' ? 'selected="selected"':''}>Shortlist</option>
-                        <option value="subList" ${reqList == 'subList' ? 'selected="selected"':''}>Submission List</option> 
+                        <option value="subList" ${reqList == 'subList' ? 'selected="selected"':''}>Client Submission List</option> 
                         <option value="interList" ${reqList == 'interList' ? 'selected="selected"':''}>Interview List</option>
                         <option value="offerlist" ${reqList == 'offerlist' ? 'selected="selected"':''}>Offer List</option> 
                         <option value="rejectedlist" ${reqList == 'rejectedlist' ? 'selected="selected"':''} >Rejected List</option> 
