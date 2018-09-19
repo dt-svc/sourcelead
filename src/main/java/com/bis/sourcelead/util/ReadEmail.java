@@ -3,6 +3,7 @@ package com.bis.sourcelead.util;
 import java.io.File;
 import java.util.Properties;
 
+import javax.mail.Authenticator;
 import javax.mail.Flags;
 import javax.mail.Folder;
 import javax.mail.Message;
@@ -10,6 +11,7 @@ import javax.mail.MessagingException;
 import javax.mail.Multipart;
 import javax.mail.NoSuchProviderException;
 import javax.mail.Part;
+import javax.mail.PasswordAuthentication;
 import javax.mail.Session;
 import javax.mail.Store;
 import javax.mail.internet.MimeBodyPart;
@@ -44,9 +46,15 @@ public class ReadEmail {
 			properties.put("mail.pop3.starttls.enable", "true");
 			//System.out.println(" before properties");
 			logger.debug("***** before connectiong mail id *****");
-			Session emailSession = Session.getDefaultInstance(properties);
+			//Session emailSession = Session.getDefaultInstance(properties);
+			Session session = Session.getInstance(properties, new Authenticator() {
+				@Override
+				protected PasswordAuthentication getPasswordAuthentication() {
+					return new PasswordAuthentication(user, password);
+				}
+			});
 
-			Store store = emailSession.getStore("pop3s");
+			Store store = session.getStore("pop3s");
 
 			//System.out.println("connect before pop3s ==============>");
 			logger.debug("***** After connected mail id *****");

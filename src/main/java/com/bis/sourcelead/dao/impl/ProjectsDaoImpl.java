@@ -13,7 +13,6 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import org.apache.commons.lang3.StringUtils;
-import org.hibernate.Criteria;
 import org.hibernate.Query;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
@@ -29,9 +28,9 @@ import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.dao.OrgLocationsDao;
 import com.bis.sourcelead.dao.ProjectClientDao;
 import com.bis.sourcelead.dao.ProjectsDao;
+import com.bis.sourcelead.dao.UserDao;
 import com.bis.sourcelead.dao.UserRoleDao;
 import com.bis.sourcelead.dto.DayWiseTimesheetReoprtsDTO;
-import com.bis.sourcelead.dto.OrgRelationDTO;
 import com.bis.sourcelead.dto.ProjectsDTO;
 import com.bis.sourcelead.dto.ResponseList;
 import com.bis.sourcelead.entity.OrgLocations;
@@ -91,6 +90,9 @@ public class ProjectsDaoImpl implements ProjectsDao{
     
     @Autowired
     ProjectsService projectsService;
+    
+    @Autowired 
+    UserDao userDao;
     
     @Value("${SourceLead.100}")
 	private String notFound;
@@ -1430,6 +1432,7 @@ public HashSet<User> getAllUserTimeSheetSubmissionStatusCurrentWeek() {
 		String projectTypesubQuery = "";
 		String userRoleQuery = "";
 		
+		List<Long> userHierarchyIds =  userDao.getUserHierarchyIdList(userId);
 		if(StringUtils.isNotBlank(isGlobalManager) && isGlobalManager.equalsIgnoreCase(Constants.YES)) {
 			subQuery = " ORG.ID = :orgId ";
 		}else {
@@ -1447,6 +1450,8 @@ public HashSet<User> getAllUserTimeSheetSubmissionStatusCurrentWeek() {
 					 +" OR "
 					 +" (CAND.CONSULTANT_USER_ID IS NOT NULL"
 					 +" AND CAND.CONSULTANT_USER_ID IN (SELECT UR.USER_ID FROM USER_ROLE UR WHERE (UR.REPORTING_MANAGER_ID = :userId OR UR.RESOURCE_MANAGER_ID = :userId)))"
+					 +" OR"
+					 +" (CAND.CONSULTANT_USER_ID IS NOT NULL AND CAND.CONSULTANT_USER_ID IN (:userHierarchyIds))"
 					 +" OR"
 					 + "(:userId IN (SELECT UR.USER_ID FROM USER_ROLE UR LEFT JOIN  ROLES R  ON R.ID = UR.ROLE_ID   WHERE R.ROLE_NAME = 'ROLE_ADMIN' AND UR.USER_STATE = 'ACTIVE' AND UR.ORG_LOCATIONS_ID = :orgLocationsId)) "
 					 +" ) ";
@@ -1474,7 +1479,7 @@ public HashSet<User> getAllUserTimeSheetSubmissionStatusCurrentWeek() {
             }
             
             queryObj.setLong("orgLocationsId", orgLocationsId);
-            
+            queryObj.setParameterList("userHierarchyIds", userHierarchyIds);
             queryObj.setLong("userId", userId);
             
 			queryObj.setResultTransformer(Transformers.aliasToBean(ProjectsDTO.class));
