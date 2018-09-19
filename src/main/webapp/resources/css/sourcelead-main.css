@@ -1208,11 +1208,14 @@ background-color: #ddd !important; color: #909090 !important;
 	font-style: normal !important; font-family:'Roboto', sans-serif  !important;
 	border-radius: 0;
 }
+.db-widget-sm .col-sm-3 {
+padding-left: 5px; padding-right: 5px;
+}
 .db-widget-sm .info-box-text {
-	text-align: center; font-size:15px; font-weight: normal;
+	text-align: center; font-size:13px !important; font-weight: normal; margin-top: 5px !important;
 }
 .db-widget-sm .info-box-text a {
-	font-size: 16px; transition: all 0.3s ease-in-out;
+	font-size: 13px !important; transition: all 0.3s ease-in-out;
 }
 .db-widget-sm .info-box-text a:hover {
 	color: #909090;
@@ -9146,6 +9149,7 @@ margin: 5px 0; font-size: 16px; color: #606060;
     bottom:-5px !important;
 }
 /*Comparision report table styels */
+
 @media (max-width: 320px) {
 .uasrch-selectpicker {
     width: 48% !important; float: left !important;
