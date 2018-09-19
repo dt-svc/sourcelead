@@ -26,7 +26,7 @@ $(document).ready(function(){
             <div class="row">
               <div class="col-md-3">
                 <div class="dropdown-select">
-                  <select class="chosen-select" id="payPeriod" name="payPedriod">
+                  <select class="chosen-select" id="payPeriod" name="payPeriod">
                    <!--  <option selected>Pay Period</option>
                     <option>Group-1</option>
                     <option>Group-2</option>
@@ -138,9 +138,9 @@ $(document).ready(function(){
 
 <script>
 	function getPayCheckDateReports() {
-		var sourceleadUrl = '${sourceleadUrl}';
 		var payCheckDate = $('#payCheckDate').val();
-		var groupId = $('#payPedriod').val();
+		var groupId = $('#payPeriod').val();
+		alert(groupId);
 		var searchValue = $("#dataTableSearch").val();
 		searchValue = searchValue ? searchValue : "";
 		var url = sourceleadUrl+"/getPayCheckDateReports?searchValue="+searchValue+"&groupId="+groupId+"&payCheckDate="+payCheckDate;
@@ -150,7 +150,7 @@ $(document).ready(function(){
 
 <script>
 	function payCheckDatePayrollList(url) {
-		("#payCheckDateTableDIV").empty();
+		$("#payCheckDateTableDIV").empty();
 		var result = "";
 		result = result + '<table id="payCheckDateReportTabble" class="display" cellspacing="0" width="100%" >';
 		result = result + '<thead>';
@@ -171,13 +171,14 @@ $(document).ready(function(){
 		result = result + '</thead>	';
 		result = result + "</table>";
 		$("#payCheckDateTableDIV").append(result);
-		payCheckDatePayrollData(url);
+		alert("END");
+		test(url);
 
 	}
 </script>
 
 <script>
-	function payCheckDatePayrollData(url) {
+	function test(url) {
 		var colIndex = 0;
 		$('#payCheckDateReportTabble')
 				.DataTable(
