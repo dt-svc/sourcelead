@@ -76,7 +76,7 @@ private static final Logger logger = LoggerFactory.getLogger(AssociateTaxDaoImpl
 			Session session = this.sessionFactory.getCurrentSession();
 			payrollList = session.createQuery("from EmployeePayroll payroll where payroll.candidate.id=:candidateId and payroll.payCheckDate >= :startDate and payroll.payCheckDate <= :endDate  and payroll.submitForAproverStatus = :status")
 													   .setLong("candidateId", candidate.getId())
-													   .setString("status", approverStatus)
+													   .setString("status", "APPROVED")
 													   .setDate("startDate", ytdDates[0])
 													   .setDate("endDate", ytdDates[1])
 													   .list();

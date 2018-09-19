@@ -26,6 +26,7 @@ import com.bis.sourcelead.entity.UserGroup;
 import com.bis.sourcelead.enums.Result;
 import com.bis.sourcelead.payroll.dto.PayPeriodDTO;
 import com.bis.sourcelead.payroll.dto.PayrollDeductionDTO;
+import com.bis.sourcelead.payroll.dto.PayrollReportDTO;
 import com.bis.sourcelead.service.UserGroupService;
 import com.bis.sourcelead.util.SourceLeadSessionManager;
 
@@ -217,5 +218,22 @@ public class USPayrollReportRestController {
 			logger.error(ExceptionUtils.getFullStackTrace(e));
 		}
 		return responseList;
+	}
+	
+	
+	/**
+	 * Get Payroll Summary by pay period and paycheck Date
+	 * @param groupId
+	 * @param request
+	 * @param response
+	 * @return
+	 * @throws Exception
+	 */
+	@RequestMapping(value = { "/getPayCheckDateReports","/rest/getPayCheckDateReports" }, method = RequestMethod.POST)
+	@ResponseBody
+	public ResponseList<PayrollReportDTO> getPayCheckDateReports(@RequestParam(value = "groupId",required = false) Long groupId,@RequestParam(value = "payCheckDate",required = false) String payCheckDate,HttpServletRequest request, HttpServletResponse response) throws Exception
+	{
+		System.out.println("*********************************");
+		return null;
 	}
 }
