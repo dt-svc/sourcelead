@@ -17,6 +17,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.apache.commons.lang.exception.ExceptionUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -228,7 +229,7 @@ public class EmployeePayrollRestController {
 		wagesTaxSummaryDTO.setSortOrder(sortColumnOrder);
 		
 		ResponseList<WageTaxSummary> list = wageTaxSummaryService.getWagesAndTaxListByOrgLocationId(orgLocation,wagesTaxSummaryDTO);
-		List<WageTaxSummary> data = getSortWageTaxList(list.getData());
+		List<WageTaxSummary> data = getSortWageTaxList(list.getData(),orgLocation);
 		list.setData(data);
 		return list;
 //		return wageTaxSummaryService.getWagesAndTaxListByOrgLocationId(orgLocation,wagesTaxSummaryDTO);
@@ -238,21 +239,22 @@ public class EmployeePayrollRestController {
 	/**
 	 * Hiding ssn number into unreadable format
 	 * @param wagesAndTaxList
+	 * @param orgLocation 
 	 * @return List<WageTaxSummary>
 	 */
-	private List<WageTaxSummary> getSortWageTaxList(List<WageTaxSummary> wagesAndTaxList) {
+	private List<WageTaxSummary> getSortWageTaxList(List<WageTaxSummary> wagesAndTaxList, OrgLocations orgLocation) {
 		if(wagesAndTaxList != null){
 			for(WageTaxSummary wts : wagesAndTaxList){
 				StringBuilder sb = new StringBuilder();
 				if(null !=  wts.getFromDate()){
-					wts.setFromDateStr(conversionUtil.getDateAsString(wts.getFromDate()));
+					wts.setFromDateStr(commonUtil.dateStrFromOrgDateFormatter(orgLocation.getDateFormat(), wts.getFromDate()));
 				}
 				if(null != wts.getToDate()){
-					wts.setToDateStr(conversionUtil.getDateAsString(wts.getToDate()));
+					wts.setToDateStr(commonUtil.dateStrFromOrgDateFormatter(orgLocation.getDateFormat(),wts.getToDate()));
 				}
 				
 				if(wts.getCheckDate() !=null   ){
-					wts.setCheckDateStr(conversionUtil.getDateAsString(wts.getCheckDate()));
+					wts.setCheckDateStr(commonUtil.dateStrFromOrgDateFormatter(orgLocation.getDateFormat(),wts.getCheckDate()));
 				}
 				if(wts.getCheckNo() != null){
 					wts.setCheckNo(wts.getCheckNo());
@@ -626,20 +628,26 @@ public class EmployeePayrollRestController {
 	 * @return
 	 * @throws Exception
 	 */
-	@RequestMapping(value = { "/getWagesTaxSummaryByEmpId", "/rest/getWagesTaxSummaryByEmpId"}, method = RequestMethod.GET)
-	public List<WageTaxSummary> getWagesTaxSummaryByEmpId(@RequestParam(value = "empId", required = false) Long empId,
-			@RequestParam(value = "orgLocationId", required = false) Long orgLocationId) throws Exception {
-		OrgLocations orgLocations = orgLocationService.getOrgLocations(orgLocationId);
-		List<WageTaxSummary>  wagesAndTaxList = null;
-		if(empId !=null){
-			 wagesAndTaxList = wageTaxSummaryService.getWagesAndTaxListByEmployeeId(orgLocations,empId);
-		}else{
-			return wagesAndTaxList;
+	@RequestMapping(value = { "/getWagesTaxSummaryByEmpId", "/rest/getWagesTaxSummaryByEmpId"}, method = RequestMethod.POST)
+	public ResponseList<WageTaxSummary> getWagesTaxSummaryByEmpId(WagesTaxSummaryDTO wagesTaxSummaryDTO,HttpServletRequest request,HttpServletResponse response) throws Exception {
+		OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+		ResponseList<WageTaxSummary>  wagesAndTaxList = null;
+		if(StringUtils.isNotBlank(wagesTaxSummaryDTO.getEmpId())){
+//			 wagesAndTaxList = wageTaxSummaryService.getWagesAndTaxListByEmployeeId(orgLocation,Long.parseLong(wagesTaxSummaryDTO.getEmpId()));
+			String[] tableColumns = {"fromDate", "toDate", "employeeId", "employeeName", "ssnNumber", "checkDate","checkNo","gross","fwt","ssec","med","swt","sdiSui","local","deds","net","batchNumber"};
+		     int sortColumnIndex = 1; //by default sorting using updated date
+			String sortColumnOrder = "asc"; //by default descending order
+			if(wagesTaxSummaryDTO.getOrder() != null && !wagesTaxSummaryDTO.getOrder().isEmpty()) {
+				sortColumnIndex = Integer.parseInt(wagesTaxSummaryDTO.getOrder().get(0).get("column"));
+				sortColumnOrder = wagesTaxSummaryDTO.getOrder().get(0).get("dir");
+			}
+			wagesTaxSummaryDTO.setSortColumn(tableColumns[sortColumnIndex]);
+			wagesTaxSummaryDTO.setSortOrder(sortColumnOrder);
+			  wagesAndTaxList = wageTaxSummaryService.getWagesAndTaxByEmpId(orgLocation,wagesTaxSummaryDTO);
+			  List<WageTaxSummary> data = getSortWageTaxList(wagesAndTaxList.getData(),orgLocation);
+			  wagesAndTaxList.setData(data);
 		}
-		if(wagesAndTaxList !=null && wagesAndTaxList.size() >0){
-			return wagesAndTaxList;
-		}
-		return null;
+		return wagesAndTaxList;
 	}
 	
 	/**

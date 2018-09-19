@@ -2,7 +2,13 @@
 <jsp:include page="../masterSideNav.jsp" />
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <%@taglib uri="http://www.springframework.org/tags/form" prefix="form"%>
+<script src="/resources/js/payrollReports.js"></script>
 
+<script>
+$(document).ready(function(){
+	getPayGroupList("payPeriod");
+});
+</script>
 
   <!-- Content Area -->
   <section class="content-wraper contentWraper">
@@ -20,26 +26,32 @@
             <div class="row">
               <div class="col-md-3">
                 <div class="dropdown-select">
-                  <select>
-                    <option selected>Pay Period</option>
+                  <select class="chosen-select" id="payPeriod" name="payPeriod">
+                   <!--  <option selected>Pay Period</option>
                     <option>Group-1</option>
                     <option>Group-2</option>
-                    <option>Group-3</option>
+                    <option>Group-3</option> -->
                   </select>
                 </div>
               </div>
-              <div class="col-md-3 paddingRight">
-                <input name="" class="form-control calendar" placeholder="Pay Day" type="text" id="payDay">
+              <div class="col-md-3 paddingRight" id="payrollPayDateDivId">
+                <input name="" class="form-control calendar" placeholder="Pay Check Date" type="text" id="payCheckDate" name="payCheckDate">
               </div>
             </div>
           </div>
-          <div class="clearfix"></div>
+       <!--    <div class="clearfix"></div>
           <div class="remove_search">
             <input placeholder="Search" type="text">
-          </div>
+          </div> -->
         </div>
           <div class="styleTables clearfix mt">
-            <table>
+        <div class='reportHead'>
+		<ul class='pull-right'>
+		<li><input type='text' placeholder='Search' class='repSearchBar' id='dataTableSearch'/><span class='repSearchIcon' onClick='payCheckDateSearch();'></span></li>
+		</ul>
+		</div>
+          <div id="payCheckDateTableDIV" class="datatable_filter"></div>
+            <!-- <table>
               <thead>
                 <tr>
                   <th>Emp Name</th>
@@ -76,10 +88,10 @@
                   </td>
                 </tr>
               </tbody>
-            </table>
+            </table> -->
           </div>
         <div class="clearfix"></div>
-        <nav>
+       <!--  <nav>
           <ul id="paging" class="pagination pull-right mr">
             <li><a href="#">Previous</a></li>
             <li><a href="#">2</a></li>
@@ -90,10 +102,313 @@
             <li data-page="last"><a href="#">Next</a></li>
           </ul>
           <div class="clearfix"></div>
-        </nav>
+        </nav> -->
       </div>
     </div>
   </section>
   <!-- Content Area Ends--> 
+  
+  <script>
+	$(function() {
+		
+		 var locationDate ='${SourceLeadWeb_orgLocations.dateFormat}'; 
+		  // written common method in slead-common.js for date formats start
+		  var finalDateFormat = getJSDateFormat(locationDate);
+		  //end
+		  
+		  $('#payCheckDate').datepicker({
+		      dateFormat: finalDateFormat,
+		      changeMonth: true,
+		  	  changeYear: true, 
+		  	  onSelect : function(selected) {
+				addValidClass();
+				getPayCheckDateReports();
+			}
+		  
+		      //minDate: 0  this line for to restrict selection of previous dates
+		  });
+		  
+	});
+	
+	function addValidClass(){
+		 $('#payrollPayDateDivId').find('p.jquery_form_error_message').remove(); 
+	}
+</script>
+
+
+<script>
+	function getPayCheckDateReports() {
+		var payCheckDate = $('#payCheckDate').val();
+		var groupId = $('#payPeriod').val();
+		alert(groupId);
+		var searchValue = $("#dataTableSearch").val();
+		searchValue = searchValue ? searchValue : "";
+		var url = sourceleadUrl+"/getPayCheckDateReports?searchValue="+searchValue+"&groupId="+groupId+"&payCheckDate="+payCheckDate;
+		payCheckDatePayrollList(url);
+	}
+</script>
+
+<script>
+	function payCheckDatePayrollList(url) {
+		$("#payCheckDateTableDIV").empty();
+		var result = "";
+		result = result + '<table id="payCheckDateReportTabble" class="display" cellspacing="0" width="100%" >';
+		result = result + '<thead>';
+		result = result + '<tr>';
+		result = result + '<th>Emp Name</th>';
+		result = result + '<th>Rate</th>';
+		result = result + '<th>Reugular Hours</th>';
+		result = result + '<th>Overtime Hours</th>';
+		result = result + '<th>Gross pay</th>';
+		result = result + '<th>Pre-Tax Deduction</th>';
+		result = result + '<th>Post-Tax Deduction</th>';
+		result = result + '<th>Taxes</th>';
+		result = result + '<th>Net Pay</th>';
+		result = result + '<th>Last Pay</th>';
+		result = result + '<th>YTD</th>';
+		result = result + '<th>Action</th>';
+		result = result + '</tr>';
+		result = result + '</thead>	';
+		result = result + "</table>";
+		$("#payCheckDateTableDIV").append(result);
+		alert("END");
+		test(url);
+
+	}
+</script>
+
+<script>
+	function test(url) {
+		var colIndex = 0;
+		$('#payCheckDateReportTabble')
+				.DataTable(
+						{
+							"processing" : true,
+							"serverSide" : true,
+							"searching" : false,
+							"ajax" : $.fn.dataTable.pipeline({
+								url : url,
+								method : 'POST',
+								pages : 10
+							}),
+							"columns" : [ {
+								"data" : "empName"
+							}, {
+								"data" : "payRate"
+							}, {
+								"data" : "regularHours"
+							}, {
+								"data" : "overtimeHours"
+							}, {
+								"data" : "grossPay"
+							}, {
+								"data" : "preTaxDeduction"
+							}, {
+								"data" : "postTaxDeduction"
+							}, {
+								"data" : "taxes"
+							}, {
+								"data" : "netpay"
+							}, {
+								"data" : "lastPay"
+							}, {
+								"data" : "YTD"
+							}, {
+								"data" : "action"
+							}],
+							"columnDefs" : [
+									{
+										"targets" : colIndex++,
+										"data" : "empName",
+										"render" : function(data, type, opt,
+												meta) {
+											var result = "";
+											result = result
+													+ '<td><div class="tblminwidth-75">'
+													+ opt.fromDateStr
+													+ '</div></td>';
+											return result;
+										}
+									},
+									{
+										"targets" : colIndex++,
+										"data" : "payRate",
+										"render" : function(data, type, opt,
+												meta) {
+											var result = "";
+											result = result
+													+ ' <td><div class="tblminwidth-75">'
+													+ opt.toDateStr
+													+ '</div></td>';
+											return result;
+
+										}
+									},
+									{
+										"targets" : colIndex++,
+										"data" : "regularHours",
+										"render" : function(data, type, opt,
+												meta) {
+											var result = "";
+											result = result
+													+ '<td class="tblminwidth-75"><div>'
+													+ opt.employeeId
+													+ '</div></td>';
+											return result;
+										}
+									},
+									{
+										"targets" : colIndex++,
+										"data" : "overtimeHours",
+										"render" : function(data, type, opt,
+												meta) {
+											var result = "";
+											result = result
+													+ '<td><div class="tbldata-dotdot-vsm" title="'+opt.employeeName+'">'
+													+ opt.employeeName
+													+ '</div></td>';
+											return result;
+										}
+									},
+									{
+										"targets" : colIndex++,
+										"data" : "grossPay",
+										"render" : function(data, type, opt,
+												meta) {
+											var result = "";
+											if (opt.ssn != null
+													&& opt.ssn != ''
+													&& opt.ssn != 'undefined') {
+												result = result
+														+ ' <td><div class="tbldata-dotdot-sm">'
+														+ opt.ssn
+														+ '</div></td>';
+											} else {
+												result = result
+														+ ' <td><div>--</div></td>';
+											}
+											return result;
+										}
+									},
+									{
+										"targets" : colIndex++,
+										"data" : "preTaxDeduction",
+										"render" : function(data, type, opt,
+												meta) {
+											var result = "";
+											if (opt.totalHrs != null
+													&& opt.totalHrs != ''
+													&& opt.totalHrs != 'undefined') {
+												result = result
+														+ '<td><div class="tblminwidth-50">'
+														+ opt.totalHrs
+														+ '</div></td>';
+											} else {
+												result = result
+														+ ' <td><div>--</div></td>';
+											}
+											return result;
+										}
+									},
+									{
+										"targets" : colIndex++,
+										"data" : "postTaxDeduction",
+										"render" : function(data, type, opt,
+												meta) {
+											var result = "";
+											result = result
+													+ ' <td><div class="tblminwidth-125 text-right"><i class="fa fa-dollar"style="color:#454545;"></i> '
+													+ opt.grossWages.toFixed(2)
+													+ '</div></td>';
+											return result;
+										}
+									},
+									{
+										"targets" : colIndex++,
+										"data" : "taxes",
+										"render" : function(data, type, opt,
+												meta) {
+											var result = "";
+											result = result
+													+ '<td><div class="tblminwidth-75"><i class="fa fa-dollar"style="color:#454545;"></i> '
+													+ opt.fica + '</div></td>';
+											return result;
+										}
+									},
+									{
+										"targets" : colIndex++,
+										"data" : "netpay",
+										"render" : function(data, type, opt,
+												meta) {
+											var result = "";
+											result = result
+													+ '<td><div class="tblminwidth-75"><i class="fa fa-dollar"style="color:#454545;"></i> '
+													+ opt.futa + '</div></td>';
+											return result;
+										}
+									},
+									{
+										"targets" : colIndex++,
+										"data" : "lastPay",
+										"render" : function(data, type, opt,
+												meta) {
+											var result = "";
+											result = result
+													+ ' <td><div class="tblminwidth-75"><i class="fa fa-dollar"style="color:#454545;"></i> '
+													+ opt.sui + '</div></td>';
+											return result;
+										}
+									},
+									{
+										"targets" : colIndex++,
+										"data" : "YTD",
+										"render" : function(data, type, opt,
+												meta) {
+											var result = "";
+											result = result
+													+ '<td><div class="tblminwidth-75">'
+													+ opt.erLocals
+													+ '</div></td>';
+											return result;
+										}
+									},
+									{
+										"targets" : colIndex++,
+										"data" : "action",
+										"render" : function(data, type, opt, meta) {
+											var result = "";
+											result = result + '<td><div><i class="glyphicon glyphicon-trash" onclick="deletePayrollEntity(\''+opt.uuid+'\',\'EmployeePayrollCost\')"></i></div></td>';
+											return result;
+										}
+									} ],
+							"scrollCollapse" : false,
+							"lengthMenu" : [ [ 10, 15, 20 ], [ 10, 15, 20 ] ],
+							"aaSorting" : [ [ 3, 'desc' ] ],
+							"bLengthChange" : true,
+							"bDestroy" : true,
+							"ordering" : true,
+							"oLanguage" : {
+								"sSearch" : "",
+								"sZeroRecords" : "",
+								"sEmptyTable" : "",
+								"sProcessing" : "<img src='/resources/images/loading.gif' style='width: 75px; height: 75px;'/>"
+							}
+						});
+		$("#payCheckDateReportTabble").wrap(
+				"<div style='overflow-x: auto; overflow-y: hidden;'></div>");
+		$("input[type=search]").hide();
+		$("#dataTableSearch").keyup(function(e) {
+			if (e.which === 13) {
+				getPayCheckDateReports();
+			}
+		});
+		
+	}
+	function payCheckDateSearch(){
+		getPayCheckDateReports();
+	}
+	
+
+</script>
  
 <jsp:include page="../masterFooter.jsp" />

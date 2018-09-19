@@ -12,7 +12,7 @@
 <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
 <script type="text/javascript" src="/resources/js/immigration.js"></script>
 <c:set var = "lcaDTO" scope = "page" value = '<%= session.getAttribute("lcaDTO")%>'/>
-<c:set var="rowIndex" value="0" scope="page" /><!-- used for dynamic row index  rowindex starts from 0-->
+<c:set var="docRowIndex" value="0" scope="page" /><!-- used for dynamic row index  rowindex starts from 0-->
 <c:set var="rowIndexPlempt" value="0" scope="page" />
 <!-- Content Area -->
 <section class="content-wraper">
@@ -352,7 +352,7 @@
 	              <div class="col-md-8">
 	                  <div class="positionRelative">
 									<input class="form-control positionRelative"
-										id="location${rows.count-1}" name="lcaPlaceOfEmploymentList[${rows.count-1}].location" value="${lcaDTO.lcaPlaceOfEmploymentList[rows.count-1].location}" onclick="initLocationAuto('location','country','state','city','zipCode','','','','addressLineOne','addressLine2');"
+										id="location${rows.count-1}" name="lcaPlaceOfEmploymentList[${rows.count-1}].location" value="${lcaDTO.lcaPlaceOfEmploymentList[rows.count-1].location}" onclick="initLocationAuto('location${rows.count-1}','country${rows.count-1}','state${rows.count-1}','city${rows.count-1}','zipCode${rows.count-1}','','','','addressLineOne${rows.count-1}','addressLine2${rows.count-1}');"
 										placeholder="Enter Location" type="text" field-name="Location" data-validation="required"></input> <i
 										class="fa fa-refresh btn btn-primary refresh-icon"
 										title="Refresh"
@@ -501,7 +501,7 @@
         	<div class="col-md-4 mb">
         		<label class="col-md-12">Title</label>
         		<div class="col-md-12">
-        			<input type="text" name="lcaDocumentList[0].documentTitle" id="documentTitle" value="${lcaDTO.lcaDocumentList[0].documentTitle}" class="form-control" placeholder="Document Title" field-name="Document Title" data-validation="required validate_Space validate_length length2-250">
+        			<input type="text" name="lcaDocumentList[0].documentTitle" id="documentTitle" value="${lcaDTO.lcaDocumentList[0].documentTitle}" class="form-control" placeholder="Document Title" field-name="Document Title" data-validation-optional="true" data-validation="validate_Space validate_length length2-250">
         		</div>
         	</div>
         	
@@ -514,7 +514,7 @@
 						<input type="file" style="display: none;" onchange="uploadBtnFile(0);"  id="uploadBtn0" class="upload">
 						</span>
 					</label>
-					<input type="text" class="form-control" name="lcaDocumentList[0].fileInfo[0].docFile" value="${lcaDTO.lcaDocumentList[0].fileName}" readonly id="uploadFile0" placeholder="Files are not selected..." field-name="Upload Document" data-validation="required validatedoc">
+					<input type="text" class="form-control" name="lcaDocumentList[0].fileInfo[0].docFile" value="${lcaDTO.lcaDocumentList[0].fileName}" readonly id="uploadFile0" placeholder="Files are not selected..." field-name="Upload Document" data-validation-optional="true" data-validation="validatedoc">
 					</div>
         		</div>
         	</div>
@@ -531,11 +531,14 @@
         	 </c:if> 
         	 
           <c:if test="${!empty lcaDTO.lcaDocumentList}">
+          
           <c:forEach var='lcaAttachment' items="${lcaDTO.lcaDocumentList}" varStatus="rows">
-         	<input type="hidden" name="lcaDocumentList[${rows.count-1}].docId" value="${lcaDTO.lcaDocumentList[rows.count-1].docId}">
-          <c:set var="rowIndex" value="${rows.count-1}" scope="page"/>
+         	
+          <c:set var="docRowIndex" value="${rows.count-1}" scope="page"/>
+          
            <div id ='dynamicAttachmentDiv${rows.count-1}'>
-            <c:if test = "${rows.count >1}">
+           <input type="hidden" name="lcaDocumentList[${rows.count-1}].docId" id="docId${rows.count-1}" value="${lcaDTO.lcaDocumentList[rows.count-1].docId}">
+           <c:if test = "${rows.count >1}">
         	  	  <div class="clearfix col-md-12">
 				<div class='pull-right col-md-6'>
 				 <button type='button' class='btn btn-default pull-right' onclick='removeDynamicAttachmentDiv(${rows.count-1})'>
@@ -547,7 +550,7 @@
         	<div class="col-md-4 mb">
         		<label class="col-md-12">Title</label>
         		<div class="col-md-12">
-        			<input type="text" name="lcaDocumentList[${rows.count-1}].documentTitle" id="documentTitle" value="${lcaDTO.lcaDocumentList[rows.count-1].documentTitle}" class="form-control" placeholder="Document Title" field-name="Document Title" data-validation="required validate_Space validate_length length2-250">
+        			<input type="text" name="lcaDocumentList[${rows.count-1}].documentTitle" id="documentTitle${rows.count-1}" value="${lcaDTO.lcaDocumentList[rows.count-1].documentTitle}" class="form-control" placeholder="Document Title" field-name="Document Title" data-validation="validate_Space validate_length length2-250">
         		</div>
         	</div>
         	
@@ -560,7 +563,7 @@
 						<input type="file" style="display: none;" onchange="uploadBtnFile(${rows.count-1});"  id="uploadBtn${rows.count-1}" class="upload">
 						</span>
 					</label>
-					<input type="text" class="form-control" name="lcaDocumentList[${rows.count-1}].fileInfo[0].docFile" value="${lcaDTO.lcaDocumentList[rows.count-1].fileName}" readonly id="uploadFile${rows.count-1}" placeholder="Files are not selected..." field-name="Upload Document" data-validation="required validatedoc">
+					<input type="text" class="form-control" name="lcaDocumentList[${rows.count-1}].fileInfo[0].docFile" value="${lcaDTO.lcaDocumentList[rows.count-1].fileName}" readonly id="uploadFile${rows.count-1}" placeholder="Files are not selected..." field-name="Upload Document" data-validation="validatedoc">
 					</div>
         		</div>
         	</div>
@@ -568,7 +571,7 @@
         	<div class="col-md-4 mb">
         		<label class="col-md-12">Comment</label>
         		<div class="col-md-12">
-					<textarea class="form-control" name="lcaDocumentList[${rows.count-1}].description"  id="description" placeholder="Comment" rows="2">${lcaDTO.lcaDocumentList[rows.count-1].description}</textarea>
+					<textarea class="form-control" name="lcaDocumentList[${rows.count-1}].description"  id="description${rows.count-1}" placeholder="Comment" rows="2">${lcaDTO.lcaDocumentList[rows.count-1].description}</textarea>
         		</div>
         	</div>
         	
@@ -626,6 +629,7 @@
 	    if ($('#lcaDetailsForm').validate(false, validationSettings)) {
 			  var formData = getFormData("lcaDetailsForm");
 			  formData.lcaPlacaOfempDeletedListIds = removedLcaPlsOfEmpmntIds.join();
+			  formData.lcaDocumentListIds = removedLcaDocIds.join();
 		 $.ajax({
 	            type: "POST",
 	            data : formData,
@@ -757,27 +761,6 @@ $('#endDate').datepicker({
       }
 });
 
-//lca staert date and end date  
-/* $('#startDate').datepicker({
-    dateFormat: finalDateFormatLcaSave,
-    changeMonth: true,
-	  changeYear: true, 
-	  maxDate:0,
-	  onSelect : function(selected) {
-			 validDateClass();
-		}
-});
-
-$('#endDate').datepicker({
-    dateFormat: finalDateFormatLcaSave,
-    changeMonth: true,
-	  changeYear: true, 
-	   minDate:1,
-	   onSelect : function(selected) {
-			 validDateClass();
-		}
-}); */
-///
 
 </script>
 
@@ -785,11 +768,6 @@ $('#endDate').datepicker({
    function clearLcaDateValue(id){
 	   $("#"+id).val(""); 
    }
-   
-   $(document).ready(function(){
-	//	$("#plsempmntId").val();
-		//alert("AAA"+$("#plsempmntId").val());
-	});
    
 </script>
 
@@ -893,16 +871,12 @@ $('#endDate').datepicker({
 	   if(rowIdPlempt > 2){
 		   $("#placeEmployMntId").hide();
 	   }
-		  
    }
 
    var removedLcaPlsOfEmpmntIds = new Array();
    function removeDynamicPlsofEmpmtDiv(id){
-	   console.log($("#plsempmntId"+id).val());
 	   if($("#plsempmntId"+id).val() !==  undefined ){
-		   console.log("inisde "+id);
 	   removedLcaPlsOfEmpmntIds.push($("#plsempmntId"+id).val());
-	   console.log(removedLcaPlsOfEmpmntIds);
 	   }
 	 
 	   $("#dynamicPlsofEmpmtDiv"+id).remove();
@@ -919,7 +893,6 @@ $('#endDate').datepicker({
  <!-- Attachment Add Row Script Start Here -->
  
  <script type="text/javascript">
-   
     function prepareDynamicAttachmentDiv(rowId,attachmentVal){
        var prepareAttachmentdiv ='';
        prepareAttachmentdiv =prepareAttachmentdiv+ "<div id ='dynamicAttachmentDiv"+rowId+"'>";
@@ -929,7 +902,6 @@ $('#endDate').datepicker({
        prepareAttachmentdiv =prepareAttachmentdiv+ "    <div class='col-xs-4 col-sm-4 col-md-4'>";
        prepareAttachmentdiv =prepareAttachmentdiv+ "    <div class='pull-right'>";
        prepareAttachmentdiv =prepareAttachmentdiv+ "   <button type='button' class='btn btn-default pull-right' onclick='removeDynamicAttachmentDiv("+rowId+")'><i class='fa fa-remove text-danger paddingRight'></i>Remove</button>";
-       prepareAttachmentdiv =prepareAttachmentdiv+ "   <input type='hidden' name='lcaDocumentList["+rowId+"].id' value=''>";
        prepareAttachmentdiv =prepareAttachmentdiv+ "   <div class='clearfix'></div>";
        prepareAttachmentdiv =prepareAttachmentdiv+ "   </div>";
        prepareAttachmentdiv =prepareAttachmentdiv+ "   </div>";
@@ -938,7 +910,7 @@ $('#endDate').datepicker({
        prepareAttachmentdiv =prepareAttachmentdiv+ " <label class='col-md-12'>Title</label>";
        prepareAttachmentdiv =prepareAttachmentdiv+ " <div class='col-md-12'>";
        prepareAttachmentdiv =prepareAttachmentdiv+ "  <input type='text' class='form-control' id='documentTitle"+rowId+"'";
-       prepareAttachmentdiv =prepareAttachmentdiv+ " 						name='lcaDocumentList["+rowId+"].documentTitle' value='' field-name='Document Title' placeholder='Document Title'";
+       prepareAttachmentdiv =prepareAttachmentdiv+ " 						name='lcaDocumentList["+rowId+"].documentTitle' value='"+(typeof attachmentVal[1]==="undefined"?"":attachmentVal[1])+"' field-name='Document Title' placeholder='Document Title'";
        prepareAttachmentdiv =prepareAttachmentdiv+ " 						data-validation='required validate_Space validate_length length2-250'>";
        prepareAttachmentdiv =prepareAttachmentdiv+ " </div>";
        prepareAttachmentdiv =prepareAttachmentdiv+ " </div>";
@@ -952,7 +924,7 @@ $('#endDate').datepicker({
        prepareAttachmentdiv =prepareAttachmentdiv+ "<input type='file' style='display: none;' multiple onchange='uploadBtnFile("+rowId+");' id='uploadBtn" + rowId + "'  class='upload'>";
        prepareAttachmentdiv =prepareAttachmentdiv+ "</span>";
 	   prepareAttachmentdiv =prepareAttachmentdiv+ "</label>";
-	   prepareAttachmentdiv =prepareAttachmentdiv+ "<input type='text' class='form-control' name='lcaDocumentList["+rowId+"].fileInfo[0].docFile' value='' readonly id='uploadFile"+rowId+"' placeholder='Files are not selected...' field-name='Upload Document' data-validation='required validatedoc'>";
+	   prepareAttachmentdiv =prepareAttachmentdiv+ "<input type='text' class='form-control' name='lcaDocumentList["+rowId+"].fileInfo[0].docFile' value='"+(typeof attachmentVal[2]==="undefined"?"":attachmentVal[2])+"' readonly id='uploadFile"+rowId+"' placeholder='Files are not selected...' field-name='Upload Document' data-validation='required validatedoc'>";
 	   prepareAttachmentdiv =prepareAttachmentdiv+ "</div>";
 	   prepareAttachmentdiv =prepareAttachmentdiv+ " </div>";
 	   prepareAttachmentdiv =prepareAttachmentdiv+ " </div>";
@@ -961,7 +933,7 @@ $('#endDate').datepicker({
 	   prepareAttachmentdiv =prepareAttachmentdiv+ " <div class='col-md-4 mb pr0'>";
 	   prepareAttachmentdiv =prepareAttachmentdiv+ " <label class='col-md-12'>Comment</label>";
 	   prepareAttachmentdiv =prepareAttachmentdiv+ " <div class='col-md-12'>";
-	   prepareAttachmentdiv =prepareAttachmentdiv+ " <textarea class='form-control' name='lcaDocumentList["+rowId+"].description' id='description"+rowId+"' value='' placeholder='Comment' rows='2'>";
+	   prepareAttachmentdiv =prepareAttachmentdiv+ " <textarea class='form-control' name='lcaDocumentList["+rowId+"].description' id='description"+rowId+"' value='"+(typeof attachmentVal[3]==="undefined"?"":attachmentVal[3])+"' placeholder='Comment' rows='2'>";
 	   prepareAttachmentdiv =prepareAttachmentdiv+ "</textarea>";
 	   prepareAttachmentdiv =prepareAttachmentdiv+ " </div>";
 	   prepareAttachmentdiv =prepareAttachmentdiv+ " </div>";
@@ -973,19 +945,24 @@ $('#endDate').datepicker({
     }
     
     
-    var rowId ="${rowIndex+1}" // set the value for dyamic row when clicked on add button in UI.
+    var docRowId ="${docRowIndex+1}"; // set the value for dyamic row when clicked on add button in UI.
+    console.log("docRowId value is test --->"+docRowId);
     function appendDynamicAttachmentDiv(){
- 	   console.log("rowId value is --->"+rowId);
- 	   $("#appendDynamicAttachmentDiv").append(prepareDynamicAttachmentDiv(rowId++,"")); 
+ 	   console.log("rowId value is --->"+docRowId);
+ 	   $("#appendDynamicAttachmentDiv").append(prepareDynamicAttachmentDiv(docRowId++,"")); 
     }
-    //var deletedResicenceListIds = new Array();
-  //  var removedAttachmentIds = [];
-    function removeDynamicAttachmentDiv(id,attachmentId){
-    	//removedAttachmentIds.push(attachmentId);
+  
+   var removedLcaDocIds = new Array();
+    function removeDynamicAttachmentDiv(id){
+    	
+    	if($("#docId"+id).val() !==  undefined ){
+  		   removedLcaDocIds.push($("#docId"+id).val());
+  	   }
  	   
  	   $("#dynamicAttachmentDiv"+id).remove();
- 	  $("input[name='lcaDocumentList["+id+"].docId']").remove();// remove the deleted row for saving.
- 	   rowId--;// decrement rowid when deleted in UI.
+ 	
+ 	//  $("input[name='lcaDocumentList["+id+"].docId']").remove();// remove the deleted row for saving.
+ 	// docRowId--;// decrement rowid when deleted in UI.
     } 
    
 </script>
