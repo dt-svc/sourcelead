@@ -438,7 +438,7 @@ $("#docZipfile").click(function() {
 <script type="text/javascript">
 
 function removeDocPopUp12(){
-	 displayImmigrationCandidateDocs(candidateId,templateId,immigrationId,"");
+	 immigration.displayImmigrationCandidateDocs(candidateId,templateId,immigrationId,"");
 }
 
 function removeDocPopUp(){
@@ -525,7 +525,7 @@ function removeDynamicUploaRow(id){
 $("#immigraDocTabSerach").keyup(function (e) {
     if (e.which === 13) {
     	var searchVal = $("#immigraDocTabSerach").val();
-    	displayImmigrationCandidateDocs(candidateId,templateId,immigrationId,searchVal);
+    	immigration.displayImmigrationCandidateDocs(candidateId,templateId,immigrationId,searchVal);
     }
 });
 function downlaodZipfileByDocId(docId){

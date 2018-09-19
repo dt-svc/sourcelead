@@ -366,8 +366,8 @@
 	
 	$("#educationSearchVal").keyup(function (e) {
 	    if (e.which === 13) {
-	    	getCandidateEducationList(candidateId);
-	    }
+	    	immigration.getCandidateEducationList(candidateId);
+	    } 
 	});
 	
 	
