@@ -283,4 +283,9 @@ public class RequirementInterviewerServiceImpl implements RequirementInterviewer
 		return requirementInterviewerDao.getRequirementInterviewerByInterviewIdAndExternalInterviewerEmail(requirementInterviewId, email);
 	}
 
+	@Override
+	public List<RequirementInterviewer> getInterviwersListByInterviewIdAndUserID(Long requirementInterviewId,Long userId) throws Exception {
+		return requirementInterviewerDao.getInterviwersListByInterviewIdAndUserID(requirementInterviewId, userId);
+	}
+
 }

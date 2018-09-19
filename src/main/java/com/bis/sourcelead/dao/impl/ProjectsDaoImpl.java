@@ -1424,7 +1424,7 @@ public HashSet<User> getAllUserTimeSheetSubmissionStatusCurrentWeek() {
 	@Transactional
 	public List<ProjectsDTO> getProjectListForDaywiseReports(Long orgLocationsId, Long orgId, String isGlobalManager,Long userId,String type,String userRole)
 			throws Exception {
-		
+	
 		List<ProjectsDTO> projectsDTOList = null;
 		Session session = this.sessionFactory.getCurrentSession();
 		String query = null;
@@ -1433,6 +1433,9 @@ public HashSet<User> getAllUserTimeSheetSubmissionStatusCurrentWeek() {
 		String userRoleQuery = "";
 		
 		List<Long> userHierarchyIds =  userDao.getUserHierarchyIdList(userId);
+		if(userHierarchyIds == null || userHierarchyIds.isEmpty()) {
+			userHierarchyIds.add(0l);
+		}
 		if(StringUtils.isNotBlank(isGlobalManager) && isGlobalManager.equalsIgnoreCase(Constants.YES)) {
 			subQuery = " ORG.ID = :orgId ";
 		}else {
