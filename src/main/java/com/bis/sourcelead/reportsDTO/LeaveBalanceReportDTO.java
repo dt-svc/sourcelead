@@ -25,6 +25,10 @@ public class LeaveBalanceReportDTO extends SearchDTO implements Serializable  {
 	private String deparmentNames;
 	private BigInteger departmentId;
 	private float leaveTaken;
+	private String searchValue;
+
+	
+	
 	
 	
 
@@ -122,6 +126,14 @@ public class LeaveBalanceReportDTO extends SearchDTO implements Serializable  {
 	}
 	public void setUsers(List<LeaveBalanceReportDTO> users) {
 		this.users = users;
+	}
+	public String getSearchValue()
+	{
+		return searchValue;
+	}
+	public void setSearchValue(String searchValue)
+	{
+		this.searchValue = searchValue;
 	}
 	
 	
