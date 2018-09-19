@@ -431,6 +431,7 @@
 														+ "<font color='red'>Category</font>: "
 														+ opt.rejectedCategoryType
 														+ '<br>'
+														+ "<font>Reason</font> : "
 														+ opt.rejectedReason
 														+ '</p></div></i></div></td>';
 											}
