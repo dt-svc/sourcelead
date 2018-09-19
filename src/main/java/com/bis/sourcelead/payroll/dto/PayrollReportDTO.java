@@ -2,8 +2,6 @@ package com.bis.sourcelead.payroll.dto;
 
 import java.math.BigDecimal;
 
-import org.springframework.web.bind.annotation.RequestParam;
-
 import com.bis.sourcelead.dto.SearchDTO;
 
 public class PayrollReportDTO extends SearchDTO{
