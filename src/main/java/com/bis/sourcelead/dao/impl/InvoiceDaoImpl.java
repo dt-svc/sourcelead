@@ -250,14 +250,14 @@ public class InvoiceDaoImpl implements InvoiceDao {
 				String newDate = parsedDate.format(f2);
 				Date searchDate = new SimpleDateFormat("yyyy-MM-dd").parse(newDate);
 				java.sql.Date sqlDate = new java.sql.Date(searchDate.getTime());
-				query1.append(" and (invoice.dueDate like '%" + sqlDate + "%'  )");
+				query1.append(" and (invoice.dueDate like '%" + sqlDate + "%'  ")
+					  .append("OR invoice.invoiceDate like '%" + sqlDate + "%' )");
 			} else {
 				if (invoiceDTO.getSearchValue() != null && !"".equalsIgnoreCase(invoiceDTO.getSearchValue())) {
 					query1.append(" and (invoice.invoiceId like '%" + invoiceDTO.getSearchValue() + "%' ")
 							.append("OR invoice.responderLocationId.orgLocationName like '%" + invoiceDTO.getSearchValue() + "%' ")
 							.append("OR invoice.orgLocation.orgLocationName like '%" + invoiceDTO.getSearchValue() + "%' ")
 							.append("OR invoice.projectID.projectName like '%" + invoiceDTO.getSearchValue() + "%' ")
-							.append("OR invoice.invoiceDate like '%" + invoiceDTO.getSearchValue() + "%' ")
 							.append("OR invoice.total like '%" + invoiceDTO.getSearchValue() + "%' ")
 							.append("OR invoice.dueAmount like '%" + invoiceDTO.getSearchValue() + "%' ")
 							.append("OR invoice.invoiceStatus like '%" + invoiceDTO.getSearchValue() + "%' ")
