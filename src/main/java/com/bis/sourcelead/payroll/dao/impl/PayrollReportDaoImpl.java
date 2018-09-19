@@ -50,7 +50,7 @@ public class PayrollReportDaoImpl implements PayrollReportDao{
 			
 			String qry = "";
 			if(StringUtils.isNotBlank(payrollReportDTO.getSortColumn())) {
-				qry = " order by wts."+ payrollReportDTO.getSortColumn() +" "+payrollReportDTO.getSortOrder();
+				qry = " order by payroll."+ payrollReportDTO.getSortColumn() +" "+payrollReportDTO.getSortOrder();
 			}
 			
 			String query = "from EmployeePayroll payroll where payroll.paysheetFrequency.userGroup.id = :groupId and payroll.paysheetFrequency.orgLocation.id = :orgLocationId and payroll.payCheckDate = :payCheckDatde and payroll.submitForAproverStatus = 'APPROVED'";
@@ -67,27 +67,27 @@ public class PayrollReportDaoImpl implements PayrollReportDao{
 	            String newDate = parsedDate.format(f2);
 	            Date searchDate = new SimpleDateFormat("yyyy-MM-dd").parse(newDate);
 	            java.sql.Date sqlDate = new java.sql.Date(searchDate.getTime());
-	            String queryDate = "from WageTaxSummary wts where wts.orgLocationId.id =:orgLocationId and (wts.status IS NULL or wts.status <> '0') and ( wts.fromDate =:sqlDate or wts.toDate =:sqlDate or wts.checkDate =:sqlDate)";
-	            Query queryObjDate = session.createQuery(queryDate.toString()).setDate("sqlDate", sqlDate).setLong("orgLocationId", orgLocation.getId());
+	            String queryDate = "from EmployeePayroll payroll where payroll.paysheetFrequency.userGroup.id = :groupId and payroll.paysheetFrequency.orgLocation.id = :orgLocationId and payroll.payCheckDate = :payCheckDatde and payroll.submitForAproverStatus = 'APPROVED'";
+	            Query queryObjDate = session.createQuery(queryDate.toString()).setLong("orgLocationId", orgLocation.getId()).setLong("groupId", Long.parseLong(payrollReportDTO.getGroupId())).setDate("payCheckDatde", sqlDate);
 	            response.setData(queryObjDate.list());
 
 			}else{
-			StringBuilder query1 = new StringBuilder("");
+			StringBuilder searchQuery = new StringBuilder("");
 				if(payrollReportDTO.getSearchValue() !=null && !"".equalsIgnoreCase(payrollReportDTO.getSearchValue())) {
-				 query1.append(" and wts.employeeId like '%" + payrollReportDTO.getSearchValue() + "%' ")
-						.append("OR wts.employeeName like '%" + payrollReportDTO.getSearchValue() + "%' ")
-						.append("OR wts.checkDate like '%" + payrollReportDTO.getSearchValue() + "%' ")
-						.append("OR wts.ssnNumber like '%" + payrollReportDTO.getSearchValue() + "%' ")
-						.append("OR wts.checkNo like '%" + payrollReportDTO.getSearchValue() + "%' ")
-						.append("OR wts.gross like '%" + payrollReportDTO.getSearchValue() + "%' ")
-						.append("OR wts.fwt like '%" + payrollReportDTO.getSearchValue() + "%' ")
-						.append("OR wts.ssec like '%" + payrollReportDTO.getSearchValue() + "%' ")
-						.append("OR wts.batchNumber like '%" + payrollReportDTO.getSearchValue() + "%' ")
-						.append("OR wts.fromDate like '%" + payrollReportDTO.getSearchValue() + "%' ")
-						.append("OR wts.toDate like '%" + payrollReportDTO.getSearchValue() + "%' ");
+					searchQuery.append(" and payroll.candidate.firstName like '%" + payrollReportDTO.getSearchValue() + "%' ")
+						.append("OR  payroll.candidate.lastName like '%" + payrollReportDTO.getSearchValue() + "%' ");
+//						.append("OR wts.checkDate like '%" + payrollReportDTO.getSearchValue() + "%' ");
+//						.append("OR wts.ssnNumber like '%" + payrollReportDTO.getSearchValue() + "%' ")
+//						.append("OR wts.checkNo like '%" + payrollReportDTO.getSearchValue() + "%' ")
+//						.append("OR wts.gross like '%" + payrollReportDTO.getSearchValue() + "%' ")
+//						.append("OR wts.fwt like '%" + payrollReportDTO.getSearchValue() + "%' ")
+//						.append("OR wts.ssec like '%" + payrollReportDTO.getSearchValue() + "%' ")
+//						.append("OR wts.batchNumber like '%" + payrollReportDTO.getSearchValue() + "%' ")
+//						.append("OR wts.fromDate like '%" + payrollReportDTO.getSearchValue() + "%' ")
+//						.append("OR wts.toDate like '%" + payrollReportDTO.getSearchValue() + "%' ");
 							/*+ "OR wts.checkDate like '%" + payrollReportDTO.getSearchValue() + "%'";*/
 				}
-			Query queryObj = session.createQuery(query + query1.toString());
+			Query queryObj = session.createQuery(query + searchQuery.toString() + qry);
 			if (payrollReportDTO != null && payrollReportDTO.getLength() > 0) {
 				queryObj.setFirstResult(payrollReportDTO.getStart());
 				queryObj.setMaxResults(payrollReportDTO.getLength());
@@ -102,7 +102,7 @@ public class PayrollReportDaoImpl implements PayrollReportDao{
 			}
 			response.setRecordsTotal(count);
 			if (payrollReportDTO != null) {
-				List<Long> filteredCountlist  = session.createQuery("select count(*) " + countQuery + query1.toString()).setLong("orgLocationId", orgLocation.getId()).setLong("groupId", Long.parseLong(payrollReportDTO.getGroupId())).setDate("payCheckDatde", payCheckDate).list();
+				List<Long> filteredCountlist  = session.createQuery("select count(*) " + countQuery + searchQuery.toString()).setLong("orgLocationId", orgLocation.getId()).setLong("groupId", Long.parseLong(payrollReportDTO.getGroupId())).setDate("payCheckDatde", payCheckDate).list();
 				if(filteredCountlist != null && !filteredCountlist.isEmpty()) {
 					filteredCount = filteredCountlist.iterator().next().intValue();
 				}
