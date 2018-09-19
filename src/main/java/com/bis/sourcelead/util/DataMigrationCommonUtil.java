@@ -59,6 +59,7 @@ import com.bis.sourcelead.entity.ProjectMembers;
 import com.bis.sourcelead.entity.ProjectTasks;
 import com.bis.sourcelead.entity.Projects;
 import com.bis.sourcelead.entity.Requirement;
+import com.bis.sourcelead.entity.RequirementSubmission;
 import com.bis.sourcelead.entity.Roles;
 import com.bis.sourcelead.entity.Shift;
 import com.bis.sourcelead.entity.SubmissionApproverHierarchy;
@@ -74,6 +75,7 @@ import com.bis.sourcelead.immigration.service.ImmigrationCommonService;
 import com.bis.sourcelead.service.AssetCategoryService;
 import com.bis.sourcelead.service.AssetService;
 import com.bis.sourcelead.service.AssociateGradesService;
+import com.bis.sourcelead.service.CandidateService;
 import com.bis.sourcelead.service.CountriesService;
 import com.bis.sourcelead.service.DepartmentService;
 import com.bis.sourcelead.service.EmployeesService;
@@ -86,6 +88,7 @@ import com.bis.sourcelead.service.ProjectMembersService;
 import com.bis.sourcelead.service.ProjectTasksService;
 import com.bis.sourcelead.service.ProjectsService;
 import com.bis.sourcelead.service.RequirementService;
+import com.bis.sourcelead.service.RequirementSubmissionService;
 import com.bis.sourcelead.service.RolesService;
 import com.bis.sourcelead.service.ShiftService;
 import com.bis.sourcelead.service.SubmissionApproverHierarchyService;
@@ -195,6 +198,12 @@ public class DataMigrationCommonUtil {
 	
 	@Autowired
 	private AssociateGradesService associateGradesService;
+	
+	@Autowired
+	CandidateService candidateService;
+	
+	@Autowired
+	RequirementSubmissionService requirementSubmissionService;
 	
 	@SuppressWarnings("unchecked")
 	public void dataValidationForJobs(HashMap< String, String> errorSet, JSONObject dataMigrationDTOJsonCopy, User user, OrgLocations orgLocation) throws Exception
@@ -659,6 +668,14 @@ public class DataMigrationCommonUtil {
 							errorSet.put("ExpectedCTC", "ExpectedCTC Allow Only Integers and length 0-8");
 						}
 						
+					}
+					
+					Candidate candidate = candidateService.findByCandidateEmail(dataMigrationDTOJsonCopy.getString("EmailId"),orgLocation.getId());
+					if(candidate != null) {
+						RequirementSubmission requirementSubmission = requirementSubmissionService.getRequirementSubmissionByRequirementIdAndCandidateId(Long.valueOf(dataMigrationDTOJsonCopy.getString("requirementId")), candidate.getId());
+						if(requirementSubmission != null) {
+							errorSet.put("EmailId", "Candidate already Submitted.!");
+						}
 					}
 				
 			}
