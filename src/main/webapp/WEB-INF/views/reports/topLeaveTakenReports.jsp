@@ -222,7 +222,7 @@ function gettopleavetakenReportList(){
 			$("#fromDateDiv").append("Start Date is Required") ; 
 		}
 		if(toDate == null || toDate == '' || toDate == 'undefined'){
-			$("#toDateDiv").append("To Date is Required") ; 
+			$("#toDateDiv").append("End Date is Required") ; 
 		}
 		if(fromDate != null && fromDate != '' && fromDate != 'undefined' && toDate != null && toDate != '' && toDate != 'undefined'){
 			gettopleavetakenReportList(fromDate,toDate);
@@ -371,6 +371,38 @@ $("#loading").attr('style','position:absolute; width:100%; height:100%; backgrou
 function listTypePagination(count) {
 	count += 3;
 	$('#topLeaveTakenReportsListView').DataTable({
+		"searching": false, 
+	    "paging": true,
+		"scrollCollapse" : false,
+		"lengthMenu" : [ [ 10, 15, 20, -1 ], [ 10, 15, 20, "All" ] ],
+		"bLengthChange" : true,
+		"bDestroy" : true,
+		"ordering" : true,
+		"mark" : true,
+		"oLanguage" : {
+			"sSearch" : "",
+			"sZeroRecords" : "",
+			"sEmptyTable" : "",
+				"sProcessing": "<img src='/resources/images/loading.gif' style='width: 75px; height: 75px;'/>"
+		}
+	});
+	$("#topLeaveTakenReportsListView").wrap("<div class='overflow_Auto' style='width:100%;'></div>");
+
+}
+$("#leaveReportDataTableSearch").keydown(function(e) {
+	   if(e.which === 13) {
+		   gettopleavetakenReportList();
+	   }
+	});
+
+
+
+
+/* function listTypePagination(count) {
+	
+	alert("count "+count);
+	count += 3;
+	$('#topLeaveTakenReportsListView').DataTable({
 		"searching": false,
 		"scrollCollapse": false,
     	"lengthMenu": [[10, 15, 20, -1], [10, 15, 20, "All"]],
@@ -385,7 +417,7 @@ function listTypePagination(count) {
 	});
 	$("#topLeaveTakenReportsListView").wrap("<div class='overflow_Auto' style='width:100%;'></div>");
 
-}
+} */
 
 
 
@@ -411,11 +443,11 @@ function listTypePagination(count) {
 		$("#topLeaveTakenReportsListView").wrap("<div class='overflow_Auto' style='width:100%;'></div>");
 
 	} */
-	$("#leaveReportDataTableSearch").keydown(function(e) {
+/* 	$("#leaveReportDataTableSearch").keydown(function(e) {
 		   if(e.which === 13) {
 			   gettopleavetakenReportList();
 		   }
-		});
+		}); */
 </script>
  
 <script>

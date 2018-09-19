@@ -1024,14 +1024,15 @@ public class LeaveDaoImpl implements LeaveDao{
 
 	@Override
 	@Transactional
-	public String getDepartmentTypeNamesByOrgLocationIdAndUserId(Long userId)  {
+	public String getDepartmentTypeNamesByOrgLocationIdAndUserId(Long userId,Long orgLocationId)  {
 		String depart =new String();
 		try {
 			LeaveBalanceReportDTO depar = null;
 		Session session = this.sessionFactory.getCurrentSession();
-		String query="select d.DEPARTMENT_NAME As department  from DEPARTMENT d,EMPLOYEE e where e.DEPARTMENT_ID=d.ID and e.USER_ID =:userId ";
+		String query="select d.DEPARTMENT_NAME As department  from DEPARTMENT d,EMPLOYEE e where e.DEPARTMENT_ID=d.ID and e.USER_ID =:userId and e.ORG_LOCATIONS_ID=:orgLocationId";
 		Query department=session.createSQLQuery(query);
 		department.setLong("userId", userId);
+		department.setLong("orgLocationId", orgLocationId);
 	    department.setResultTransformer(Transformers.aliasToBean(LeaveBalanceReportDTO.class));
 		List<LeaveBalanceReportDTO> dep=department.list();
 		if(dep !=null && dep.size() > 0) {

@@ -8,6 +8,8 @@ import com.bis.sourcelead.dto.SearchDTO;
 
 public class PayrollReportDTO extends SearchDTO{
 	
+	private String empId;
+	
 	private String empName;
 	
 	private BigDecimal empPayRate;
@@ -32,6 +34,22 @@ public class PayrollReportDTO extends SearchDTO{
 	
 	private String action;
 	
+	private String freqStartDate;
+	
+	private String freqEndDate;
+	
+	private String payPeriod;
+	
+	private String approverStatus;
+	
+	private String department;
+	
+	private Long payGroup;
+	
+	private String payRollType;
+	
+	private String departmentName;
+
 	private String groupId;
 	
 	private String payCheckDate;
@@ -121,6 +139,97 @@ public class PayrollReportDTO extends SearchDTO{
 	public void setAction(String action)
 	{
 		this.action = action;
+	}
+
+	public String getFreqStartDate()
+	{
+		return freqStartDate;
+	}
+
+	public void setFreqStartDate(String freqStartDate)
+	{
+		this.freqStartDate = freqStartDate;
+	}
+
+	public String getFreqEndDate()
+	{
+		return freqEndDate;
+	}
+
+	public void setFreqEndDate(String freqEndDate)
+	{
+		this.freqEndDate = freqEndDate;
+	}
+
+
+	public String getPayPeriod()
+	{
+		return payPeriod;
+	}
+
+	public void setPayPeriod(String payPeriod)
+	{
+		this.payPeriod = payPeriod;
+	}
+
+	public String getApproverStatus()
+	{
+		return approverStatus;
+	}
+
+	public void setApproverStatus(String approverStatus)
+	{
+		this.approverStatus = approverStatus;
+	}
+
+	public String getDepartment()
+	{
+		return department;
+	}
+
+	public void setDepartment(String department)
+	{
+		this.department = department;
+	}
+
+	public Long getPayGroup()
+	{
+		return payGroup;
+	}
+
+	public void setPayGroup(Long payGroup)
+	{
+		this.payGroup = payGroup;
+	}
+
+	public String getPayRollType()
+	{
+		return payRollType;
+	}
+
+	public void setPayRollType(String payRollType)
+	{
+		this.payRollType = payRollType;
+	}
+
+	public String getEmpId()
+	{
+		return empId;
+	}
+
+	public void setEmpId(String empId)
+	{
+		this.empId = empId;
+	}
+
+	public String getDepartmentName()
+	{
+		return departmentName;
+	}
+
+	public void setDepartmentName(String departmentName)
+	{
+		this.departmentName = departmentName;
 	}
 
 	public String getGroupId()
