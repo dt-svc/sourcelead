@@ -32,4 +32,6 @@ public interface RequirementInterviewerService {
 	RequirementInterviewer getRequirementInterviewerByUUID(String uuid) throws Exception;
 	
 	RequirementInterviewer getRequirementInterviewerByInterviewIdAndExternalInterviewerEmail(Long requirementInterviewId,String email) throws Exception;
+	
+	List<RequirementInterviewer> getInterviwersListByInterviewIdAndUserID(Long requirementInterviewId,Long userId)throws Exception;
 }
