@@ -189,16 +189,15 @@
 		    	$('#dataFieldsDiv').removeAttr("style");
 		    	$('#dataFieldsDiv').empty();
 		    	var flag= true;
-				$(".browseProgress").show();
-				$("#progressBar").html('0%');
-				$(".progress div").css("width", "0%");
+				
 				var uploadid = new Date().getTime();
 				var refreshId = setInterval(function(){
 					if(flag == true){
-						getUploadProgressBar(uploadid);
+						getUploadProgressBar();
 					  }else{
 						  clearInterval(refreshId);
 						  $(".browseProgress").hide();
+						  getUploadProgressBar();
 					  }
 					},1000);
 				
@@ -239,7 +238,7 @@
           			}
 			    	$('#newUploadFile').text('');
 			    	flag = false;
-			    	
+			    	$("#upload_button").removeAttr("disabled");
 			    	
 			    	var uploadType = $('#uploadType').val();
 			    	if(uploadType == 'jobUpload'){
@@ -271,6 +270,8 @@ function getUploadProgressBar(){
 	var uploadType = '${uploadType}'
 	if(uploadType == 'candidatesUpload'){
 		uploadType = 'Candidates';
+	}else if(uploadType == 'submmissionTemplateUpload'){
+		uploadType = 'Submissions';
 	}
 	$.ajax({
     	type: "POST",
