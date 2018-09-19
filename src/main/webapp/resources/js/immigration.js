@@ -1739,4 +1739,44 @@ function Immigration() {
 			$("#remove_immigration_pop").fadeOut(200);
 			$(".project_inn_mask").fadeOut(200);
 		}
+		
+		//Create LCA From Immigration Summary (Click LCA TAB and Create  LCA)
+		this.saveLcaFromImmigration = function() {
+			     var validationSettings = {
+			            errorMessagePosition: 'element',
+			            borderColorOnError: '',
+			            scrollToTopOnError: true,
+			            dateFormat: 'yyyy/mm/dd'
+			        };
+			       
+				    if ($('#lcaSave_Form').validate(false, validationSettings)) {
+						  var formData = getFormData("lcaSave_Form");
+							var candidateId = $('#candidateID').val();
+				            var immigrationId = $('#immigrationId').val();
+					 $.ajax({
+				            type: "POST",
+				            data : formData,
+				            url: sourceleadUrl + immiModulePath + "/saveLCADetails?&candidateId="+candidateId+"&immigrationId="+immigrationId,
+				            success: function (result) {
+				            	
+				            	if (result && result.response === "INVALID_DATA") {
+				                   	 showError(result.responseMessage);
+				                   }else if (result.response === "AWKWARD") {
+				                       location.href = "/errorPage";
+				                   }else if(result.response === 'SUCCESS') {
+				                	    $(".popMask").fadeOut(200);
+					    				$("#popLcaView").hide(100);
+					                   	immigration.getLcaDetailsInfo(immigrationId);
+				                   }else{
+				                   	 showError("Operation failed, please try again");
+				                   }
+				            },
+				        });
+				 }
+			    }
+			    $('body').on('blur', '#lcaSave_Form', function () {
+			        $("#lcaSave_Form").showHelpOnFocus();
+			        $("#lcaSave_Form").validateOnBlur(false, validationSettings);
+			    });
+		
 }
