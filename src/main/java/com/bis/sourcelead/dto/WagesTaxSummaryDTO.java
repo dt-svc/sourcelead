@@ -38,6 +38,17 @@ public class WagesTaxSummaryDTO extends SearchDTO implements Serializable{
 	private String checkDateStr;
 	private String sortColumn;
 	private String sortOrder;
+	private String empId;
+	
+	
+	public String getEmpId()
+	{
+		return empId;
+	}
+	public void setEmpId(String empId)
+	{
+		this.empId = empId;
+	}
 	public String getId()
 	{
 		return id;

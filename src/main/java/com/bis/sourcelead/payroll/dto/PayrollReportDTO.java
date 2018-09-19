@@ -2,7 +2,11 @@ package com.bis.sourcelead.payroll.dto;
 
 import java.math.BigDecimal;
 
-public class PayrollReportDTO {
+import org.springframework.web.bind.annotation.RequestParam;
+
+import com.bis.sourcelead.dto.SearchDTO;
+
+public class PayrollReportDTO extends SearchDTO{
 	
 	private String empId;
 	
@@ -43,6 +47,11 @@ public class PayrollReportDTO {
 	private String payRollType;
 	
 	private String departmentName;
+
+	private String groupId;
+	
+	private String payCheckDate;
+	
 
 	public String getEmpName()
 	{
@@ -244,5 +253,26 @@ public class PayrollReportDTO {
 	{
 		this.departmentName = departmentName;
 	}
+
+	public String getGroupId()
+	{
+		return groupId;
+	}
+
+	public String getPayCheckDate()
+	{
+		return payCheckDate;
+	}
+
+	public void setGroupId(String groupId)
+	{
+		this.groupId = groupId;
+	}
+
+	public void setPayCheckDate(String payCheckDate)
+	{
+		this.payCheckDate = payCheckDate;
+	}
+	
 	
 }
