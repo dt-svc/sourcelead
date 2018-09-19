@@ -158,6 +158,8 @@ public class UploadXlsHistoryDaoImpl implements UploadXlsHistoryDao{
 				+" HISTORY.FILE_NAME AS fileName, "
 				+" HISTORY.FILE_URL AS fileUrl, "
 				+" HISTORY.UUID AS uuid, "
+				+" DATE_FORMAT(HISTORY.CREATED_DATE, '%Y-%m-%d') AS date, "
+				+" DATE_FORMAT(HISTORY.CREATED_DATE, '%h:%i:%s %p') AS time, "
 				+" HISTORY.UPLOAD_PROCESSING_STATUS AS uploadProcessingStatus "
 				+" FROM UPLOAD_XLS_HISTORY HISTORY "
 				+" WHERE "

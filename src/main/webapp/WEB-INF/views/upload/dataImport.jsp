@@ -288,6 +288,8 @@ function getUploadProgressBar(){
 	           result = result + '           <th>Uploaded</th>';
 	           result = result + '           <th>Success</th>';
 	           result = result + '           <th>Failed</th>';
+	           result = result + '           <th>Date / Time</th>';
+	           result = result + '           <th>Status</th>';
 	           result = result + '         </tr>';
 	           result = result + '       </thead>';
 	           result = result + '       <tbody>';
@@ -305,9 +307,10 @@ function getUploadProgressBar(){
 	        		    result = result + '<tr>';
 	        		    result = result + '<tr>';
 	        		    result = result + '<td><div class="tbldata-dotdot-big text-center"><span title="'+report.fileName+'">'+report.fileName+'</span></div></td>';
-	        		    result = result + '<td><div class="tbldata-dotdot-sm">'+report.totalCount+'</div></td>';
-	        		    result = result + '<td><div class="tbldata-dotdot-sm">'+report.successCount+'</div></td>';
-	        		    result = result + '<td><div class="tbldata-dotdot-sm">'+report.failureCount+'</div></td>';
+	        		    result = result + '<td><div class="tbldata-dotdot_100">'+report.totalCount+'</div></td>';
+	        		    result = result + '<td><div class="tbldata-dotdot-100">'+report.successCount+'</div></td>';
+	        		    result = result + '<td><div class="tbldata-dotdot-100">'+report.failureCount+'</div></td>';
+	        		    result = result + '<td><div class="tbldata-dotdot-me">'+report.date+'&nbsp;&nbsp;'+report.time+'</div></td>';
 	        		     
 	        		    if(report.uploadProcessingStatus == 'Completed'){
 	        		    	result = result + '<td><div><span>'+report.uploadProcessingStatus+'</span></div></td>';

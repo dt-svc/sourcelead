@@ -19,6 +19,10 @@ public class UploadXlsHistoryDTO extends SearchDTO{
 	private BigInteger uploadHistoryId;
 	
 	private String fileName;
+	
+	private String date;
+	
+	private String time;
 
 	public int getTotalCount() {
 		return totalCount;
@@ -82,6 +86,22 @@ public class UploadXlsHistoryDTO extends SearchDTO{
 
 	public void setFileName(String fileName) {
 		this.fileName = fileName;
+	}
+
+	public String getDate() {
+		return date;
+	}
+
+	public void setDate(String date) {
+		this.date = date;
+	}
+
+	public String getTime() {
+		return time;
+	}
+
+	public void setTime(String time) {
+		this.time = time;
 	}
 
 	
