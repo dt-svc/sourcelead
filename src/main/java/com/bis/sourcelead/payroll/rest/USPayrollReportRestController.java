@@ -231,9 +231,20 @@ public class USPayrollReportRestController {
 	 */
 	@RequestMapping(value = { "/getPayCheckDateReports","/rest/getPayCheckDateReports" }, method = RequestMethod.POST)
 	@ResponseBody
-	public ResponseList<PayrollReportDTO> getPayCheckDateReports(@RequestParam(value = "groupId",required = false) Long groupId,@RequestParam(value = "payCheckDate",required = false) String payCheckDate,HttpServletRequest request, HttpServletResponse response) throws Exception
+	public ResponseList<PayrollReportDTO> getPayCheckDateReports(PayrollReportDTO payrollReportDTO,HttpServletRequest request, HttpServletResponse response) throws Exception
 	{
-		System.out.println("*********************************");
+		OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+		String[] tableColumns = {"payrollDeductionType", "description", "payrollDeductionMethod", "deductionAmount"};
+	    int sortColumnIndex = 1;		 //by default sorting using updated date
+		String sortColumnOrder = "asc";  //by default descending order
+		if(payrollReportDTO.getOrder() != null && !payrollReportDTO.getOrder().isEmpty()) {
+			sortColumnIndex = Integer.parseInt(payrollReportDTO.getOrder().get(0).get("column"));
+			sortColumnOrder = payrollReportDTO.getOrder().get(0).get("dir");
+		}
+		payrollReportDTO.setSortColumn(tableColumns[sortColumnIndex]);
+		payrollReportDTO.setSortOrder(sortColumnOrder);
+		
+		System.out.println("*********************************"+payrollReportDTO.getGroupId());
 		return null;
 	}
 }
