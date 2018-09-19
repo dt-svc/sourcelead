@@ -59,6 +59,10 @@ public class CreditDebitNote implements Serializable {
 	@JoinColumn(name = "PARENT_NOTE_ID")
 	private CreditDebitNote parentCreditDebitNote;
 	
+	@ManyToOne
+    @JoinColumn(name="PAYMENT_ACCOUNT_ID", nullable=false )     
+	private PaymentAccount paymentAccount;
+	
     @Column(name="OWNER_USER_ID")     
 	private String ownerUser;
 	
@@ -534,6 +538,14 @@ public class CreditDebitNote implements Serializable {
 
 	public void setAfterExchangeGrandTotal(BigDecimal afterExchangeGrandTotal) {
 		this.afterExchangeGrandTotal = afterExchangeGrandTotal;
+	}
+
+	public PaymentAccount getPaymentAccount() {
+		return paymentAccount;
+	}
+
+	public void setPaymentAccount(PaymentAccount paymentAccount) {
+		this.paymentAccount = paymentAccount;
 	}
 
 
