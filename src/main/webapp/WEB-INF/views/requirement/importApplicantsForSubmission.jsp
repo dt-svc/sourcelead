@@ -15,7 +15,24 @@
 	border: none;
 	background: transparent
 }
+  
 </style>
+
+<script type="text/javascript">
+var uploadflag= true;
+		function getSubmissionsUploadedHistory() {
+			var refreshId = setInterval(function(){
+				if(uploadflag == true){
+					xlsupload.getUploadInprogressProgressBar("Submissions");
+				  }else{
+					     clearInterval(refreshId);
+						 $(".browseProgress").hide();
+						 $("#upload_button").removeAttr("disabled");
+						 xlsupload.getUploadInprogressProgressBar("Submissions");
+				  }
+			},1000);
+		 }
+</script>
 
 	<section class="content-header clearfix">
       <div class="pull-left">
@@ -105,14 +122,18 @@
 						</span>
 					</div>
 				</div>
+				
 			</div>
 		</div>
 		</form:form>
 	</div>
 	<div id="dataFieldsDiv" style="display: none"></div>
 	
+	<div class="project_tabs_inn_table project_tabs_inn_table_a datatable_filter dataSeaTop">
+	    	<table id="uploadXlsHistoryDiv" class="display" cellspacing="0" width="100%"></table>
+		</div>
 	
-	
+<script type="text/javascript" src="/resources/js/xlsupload.js"></script>	
 <script type="text/javascript">
 function cancelFileImport(){
 	location.replace(sourceleadUrl+"/uploadCandidateForm");
