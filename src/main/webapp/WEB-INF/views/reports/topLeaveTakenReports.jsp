@@ -222,7 +222,7 @@ function gettopleavetakenReportList(){
 			$("#fromDateDiv").append("Start Date is Required") ; 
 		}
 		if(toDate == null || toDate == '' || toDate == 'undefined'){
-			$("#toDateDiv").append("To Date is Required") ; 
+			$("#toDateDiv").append("End Date is Required") ; 
 		}
 		if(fromDate != null && fromDate != '' && fromDate != 'undefined' && toDate != null && toDate != '' && toDate != 'undefined'){
 			gettopleavetakenReportList(fromDate,toDate);
