@@ -415,7 +415,7 @@ public class EMailJobScheduler {
 					for(EmailScenarioConfiguration email :  emailsList) {
 						//System.out.println(" Email id is :" + email.getEmailId());
 						logger.debug("*********** Email id is :" + email.getEmailId());
-						tempfolder = new File(staticPath+ System.getProperty("file.separator") +"temp" );
+						tempfolder = new File(staticPath+ System.getProperty("file.separator") +"tempResumes" );
 						if (!tempfolder.exists()) tempfolder.mkdirs(); // if not exist create the folder with path.
 						 new ReadEmail().readEMailAttachments(orgLocationId, email, tempfolder);  //downloads the attachments from the configured email by user level to temp folder.
 					
