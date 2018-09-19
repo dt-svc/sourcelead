@@ -150,7 +150,7 @@ public class CandidateReferencesServiceImpl implements CandidateReferencesServic
 
 	@Override
 	public ResponseList<CandidateReferencesDTO> getCandidateReferencesListByCandidateIdAndOrgLocationID(Long candidateId,
-			Long orgLocationId) throws Exception {
+			Long orgLocationId, String loginUserCode) throws Exception {
 		List<CandidateReferences> referList =  candidateReferencesDao.getCandidateReferencesListByCandidateIdAndOrgLocationID(candidateId, orgLocationId);
 		ResponseList<CandidateReferencesDTO> responseReferList = new ResponseList<>();
 		List<CandidateReferencesDTO> referDTOLIst = new ArrayList<>();
@@ -166,6 +166,7 @@ public class CandidateReferencesServiceImpl implements CandidateReferencesServic
 			refer.setDesignation(candiRefer.getDesignation());
 			refer.setCandidateId(candidateId);
 			refer.setOrgLocationId(orgLocationId);
+			refer.setUserCode(loginUserCode);
 			referDTOLIst.add(refer);
 		}
 		responseReferList.setData(referDTOLIst);

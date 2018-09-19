@@ -108,10 +108,10 @@
                     <div class="col-md-5">
                     <label>Local tax</label>
                     <div>
-                      <select class="sel" id="localTax" name="localTax" data-validation="required" field-name="State Tax" onchange="isLocalTaxYes();"> 
-                        <option value="">--Select--</option>
-                        <option selected value="NO_TAX">No Tax</option>
-                        <option value='${location }'>${location }</option>
+                      <select class="chosen-select" id="localTax" name="localTax" data-validation="required" field-name="State Tax" onchange="isLocalTaxYes();"> 
+<!--                         <option value="">--Select--</option> -->
+<!--                         <option selected value="NO_TAX">No Tax</option> -->
+<%--                         <option value='${location }'>${location }</option> --%>
                       </select>
                     </div>
 <!--                     <p class="text-success form-control-static clearfix" id="localTaxMessageDiv"> </p> -->
@@ -296,5 +296,27 @@ function skipAssociateTaxJsp(){
 	document.getElementById("associateDeduction").removeAttribute("class"); 
 	associateDeduction.href="#tab-4"; 
 	$("#associateDeduction").click();
+}
+</script>
+
+<script>
+function getResidenceLocation(){
+	var userId = $("#associateId").val();  
+	$.ajax({
+		type : "GET",
+		url : sourceleadUrl+"/getResidenceLocation?"+tokenParamName+"="+tokenValue+"&userId="+userId,
+		success : function(result) {
+			var output = "";
+			var selected = "selected";
+			if(result != null && result != '' && result != 'undefined'){
+				output += "<option selected value='"+result+"'>"+result+"</option>";
+				selected = "";
+			}
+			output += "<option "+selected+" value='NO_TAX'>No Tax</option>";
+			$("#localTax").empty();
+			$("#localTax").append(output);
+			$('#localTax').trigger("chosen:updated");
+       }
+	});
 }
 </script>

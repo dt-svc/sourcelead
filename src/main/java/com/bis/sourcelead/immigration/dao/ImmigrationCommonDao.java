@@ -227,6 +227,8 @@ public interface ImmigrationCommonDao {
 	
 	void deleteLcaPlaceOfEmpmntDetails(Long remaininglpoeIds[]); 
 	
+	void deleteLcaDocumentsDetails(Long remaininglcaDocIds[]); 
+	
 	
 	CandidateLcaJobDetails saveCandidateLcaJobDetails(CandidateLcaJobDetails candidateLcaJobDetails);
 
