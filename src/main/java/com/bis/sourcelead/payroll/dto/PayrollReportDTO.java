@@ -52,8 +52,6 @@ public class PayrollReportDTO extends SearchDTO{
 	
 	private String payCheckDate;
 	
-	private BigDecimal grossPay;
-	
 	private BigDecimal deductions;
 	
 	private BigDecimal ytdTaxes;
@@ -312,30 +310,15 @@ public class PayrollReportDTO extends SearchDTO{
 		this.overTimeHours = overTimeHours;
 	}
 
-
 	public void setEmpPayRate(BigDecimal empPayRate)
 	{
 		this.empPayRate = empPayRate;
 	}
 
-
-	public BigDecimal getGrossPay()
-	{
-		return grossPay;
-	}
-
-
-	public void setGrossPay(BigDecimal grossPay)
-	{
-		this.grossPay = grossPay;
-	}
-
-
 	public BigDecimal getYtdNet()
 	{
 		return ytdNet;
 	}
-
 
 	public void setYtdNet(BigDecimal ytdNet)
 	{
