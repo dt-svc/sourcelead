@@ -201,7 +201,7 @@ public class ProjectClientDaoImpl implements ProjectClientDao{
 				 + " OR "
 				 + " (:userId IN (select userRole.user.id from UserRole userRole where userRole.roles.roleName = 'ROLE_ADMIN' and userRole.userState = 'ACTIVE' and userRole.orgLocations.id = hierarchy.projectClientsId.orgLocationsId.id) )"
 				 +" OR  (pc.projectId.isReportingManagerAsApprover = 'Y')"
-				 + " ))");
+				 + " )) group by pc.projectId ");
 		projectClientsList = candidateListQuery.setLong("userId", userId).setLong("locationsId", locationsId).list();
 		return projectClientsList;
 	}

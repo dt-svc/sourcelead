@@ -489,8 +489,10 @@ private String beneficiaryFirstName;
     private String con;
     
     private Long requirementId;
-
     
+    private String uploadid;
+
+    private String sessionId;
     
 	public String getEmployeeId() {
 		return employeeId;
@@ -2464,6 +2466,22 @@ private String beneficiaryFirstName;
 
 	public void setSocJobTitle(String socJobTitle) {
 		this.socJobTitle = socJobTitle;
+	}
+
+	public String getUploadid() {
+		return uploadid;
+	}
+
+	public void setUploadid(String uploadid) {
+		this.uploadid = uploadid;
+	}
+
+	public String getSessionId() {
+		return sessionId;
+	}
+
+	public void setSessionId(String sessionId) {
+		this.sessionId = sessionId;
 	}
    
 }

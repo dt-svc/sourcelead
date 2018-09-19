@@ -597,7 +597,7 @@ public class RequirementInterviewRestController {
 					List<Long> interviewersList = new ArrayList<>();
 					
 					List<RequirementInterviewer> selectedInterviewerList = new ArrayList<>();
-					if(!interviewerIds.equalsIgnoreCase("null")){
+					if(!interviewerIds.equalsIgnoreCase("null") && !interviewerIds.equalsIgnoreCase("undefined") ){
 						
 						for (String interviewId : interviewerIds.split(","))
 							interviewersList.add(Long.valueOf(interviewId));
@@ -644,7 +644,7 @@ public class RequirementInterviewRestController {
 					reqInterviwer.setInterviewerList(selectedInterviewerList);
 					//applicantslist
 					List<RequirementInterview> requirementInterview = new ArrayList<>();
-					if(!applicantSubId.equalsIgnoreCase("null")){
+					if(!applicantSubId.equalsIgnoreCase("null") && !applicantSubId.equalsIgnoreCase("undefined")){
 						List<String> submissionsList = new ArrayList<String>(Arrays.asList(applicantSubId.split(",")));
 						List<Long> submissionsIds = new ArrayList<>();
 						for (String subId : submissionsList){

@@ -2,8 +2,6 @@ package com.bis.sourcelead.payroll.dto;
 
 import java.math.BigDecimal;
 
-import org.springframework.web.bind.annotation.RequestParam;
-
 import com.bis.sourcelead.dto.SearchDTO;
 
 public class PayrollReportDTO extends SearchDTO{
@@ -12,11 +10,11 @@ public class PayrollReportDTO extends SearchDTO{
 	
 	private String empName;
 	
-	private BigDecimal payRate;
+	private BigDecimal empPayRate;
 	
 	private String regularHours;
 	
-	private String overtimeHours;
+	private String overTimeHours;
 	
 	private BigDecimal preTaxDeduction;
 	
@@ -26,9 +24,11 @@ public class PayrollReportDTO extends SearchDTO{
 	
 	private BigDecimal netPay;
 	
+	private BigDecimal grossPay;
+	
 	private BigDecimal lastPay;
 	
-	private BigDecimal YTD;
+	private BigDecimal ytdNet;
 	
 	private String action;
 	
@@ -52,26 +52,24 @@ public class PayrollReportDTO extends SearchDTO{
 	
 	private String payCheckDate;
 	
-
+	private BigDecimal deductions;
+	
+	private BigDecimal ytdTaxes;
+	
+	private BigDecimal ytdDeductions;
+	
 	public String getEmpName()
 	{
 		return empName;
 	}
 
-	public BigDecimal getPayRate()
-	{
-		return payRate;
-	}
-
+	
 	public String getRegularHours()
 	{
 		return regularHours;
 	}
 
-	public String getOvertimeHours()
-	{
-		return overtimeHours;
-	}
+	
 
 	public BigDecimal getPreTaxDeduction()
 	{
@@ -98,10 +96,6 @@ public class PayrollReportDTO extends SearchDTO{
 		return lastPay;
 	}
 
-	public BigDecimal getYTD()
-	{
-		return YTD;
-	}
 
 	public String getAction()
 	{
@@ -113,20 +107,12 @@ public class PayrollReportDTO extends SearchDTO{
 		this.empName = empName;
 	}
 
-	public void setPayRate(BigDecimal payRate)
-	{
-		this.payRate = payRate;
-	}
 
 	public void setRegularHours(String regularHours)
 	{
 		this.regularHours = regularHours;
 	}
 
-	public void setOvertimeHours(String overtimeHours)
-	{
-		this.overtimeHours = overtimeHours;
-	}
 
 	public void setPreTaxDeduction(BigDecimal preTaxDeduction)
 	{
@@ -151,11 +137,6 @@ public class PayrollReportDTO extends SearchDTO{
 	public void setLastPay(BigDecimal lastPay)
 	{
 		this.lastPay = lastPay;
-	}
-
-	public void setYTD(BigDecimal yTD)
-	{
-		YTD = yTD;
 	}
 
 	public void setAction(String action)
@@ -273,6 +254,75 @@ public class PayrollReportDTO extends SearchDTO{
 	{
 		this.payCheckDate = payCheckDate;
 	}
-	
+
+	public BigDecimal getGrossPay()
+	{
+		return grossPay;
+	}
+
+	public void setGrossPay(BigDecimal grossPay)
+	{
+		this.grossPay = grossPay;
+	}
+
+	public BigDecimal getDeductions()
+	{
+		return deductions;
+	}
+
+	public void setDeductions(BigDecimal deductions)
+	{
+		this.deductions = deductions;
+	}
+
+	public BigDecimal getYtdTaxes()
+	{
+		return ytdTaxes;
+	}
+
+	public void setYtdTaxes(BigDecimal ytdTaxes)
+	{
+		this.ytdTaxes = ytdTaxes;
+	}
+
+	public BigDecimal getYtdDeductions()
+	{
+		return ytdDeductions;
+	}
+
+	public void setYtdDeductions(BigDecimal ytdDeductions)
+	{
+		this.ytdDeductions = ytdDeductions;
+	}
+
+	public BigDecimal getEmpPayRate()
+	{
+		return empPayRate;
+	}
+
+	public String getOverTimeHours()
+	{
+		return overTimeHours;
+	}
+
+	public void setOverTimeHours(String overTimeHours)
+	{
+		this.overTimeHours = overTimeHours;
+	}
+
+	public void setEmpPayRate(BigDecimal empPayRate)
+	{
+		this.empPayRate = empPayRate;
+	}
+
+	public BigDecimal getYtdNet()
+	{
+		return ytdNet;
+	}
+
+	public void setYtdNet(BigDecimal ytdNet)
+	{
+		this.ytdNet = ytdNet;
+	}
 	
 }

@@ -171,10 +171,10 @@ public class CandidateReferencesRestController {
 	public ResponseList<CandidateReferencesDTO> getCandidateReferencesListByCandidateId(
 			@RequestParam(value = "candidateId", required = false) String candidateId, @RequestParam("locationCode") String locationCode, HttpServletRequest request)
 			throws Exception {
-		String loginUserCode = (String)SourceLeadSessionManager.getSessionAttribute(request, "userCode");
+		User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
 		OrgLocations orgLocation = orgLocationService.getOrgLocationsByLocationCode(locationCode);
 		ResponseList<CandidateReferencesDTO> candidateReferencesList = candidateReferencesService
-				.getCandidateReferencesListByCandidateIdAndOrgLocationID(Long.parseLong(candidateId), orgLocation.getId(),loginUserCode);
+				.getCandidateReferencesListByCandidateIdAndOrgLocationID(Long.parseLong(candidateId), orgLocation.getId(),user.getUserCode());
 		return candidateReferencesList;
 	}
 
