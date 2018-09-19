@@ -170,10 +170,9 @@ $('body').on('blur', '#upload_job_form', function() {
 
 <script type="text/javascript">
 function cancelFileImport(){
-	/* $("#jobFieldsDiv").attr("style","display:none");
-	$('#jobFileImportDiv').removeAttr("style");
-	$('#jobFieldsDiv').empty(); */
-	location.replace(sourceleadUrl+"/uploadProjectTasks");
+	var projectUUID = '${projectUUID}';
+	var projectClientUUID = '${projectClientUUID}';
+	location.replace(sourceleadUrl+"/projectSummary?projectUUID="+projectUUID+"&projectClientUUID="+projectClientUUID+"&tabType=tasks");
 }
 </script>
 
