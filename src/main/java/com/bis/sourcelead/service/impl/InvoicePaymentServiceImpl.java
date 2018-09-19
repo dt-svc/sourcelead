@@ -306,7 +306,7 @@ public class InvoicePaymentServiceImpl implements InvoicePaymentService {
 					// float customAmount = 0;
 					if(childCurrencyCode.equalsIgnoreCase(parentCurrencyCode)){
 						if (StringUtils.isNotBlank(invoicePaymentDTO.getTotalAmount())) {
-							if(invoice.getDueAmount().equals(invoiceIdsMap.get(invoice.getId()))){
+							if(parentInvoice.getDueAmount().equals(invoiceIdsMap.get(invoice.getId()))){
 								// total amount paid
 							invoicePayment.setPaymentAmount(invoiceIdsMap.get(invoice.getId()));
 							parentInvoice.setPaymentStatus(Constants.INVOICE_STATUS_PAID);
@@ -328,9 +328,9 @@ public class InvoicePaymentServiceImpl implements InvoicePaymentService {
 						float conAmount = conversionUtil.convert(childCurrencyCode, parentCurrencyCode,1);
 						float convertedAmount1 = (float) (Math.round(conAmount * 100.0) / 100.0);
 						// currency conversion code ends
-						if(invoice.getDueAmount().equals(invoiceIdsMap.get(invoice.getId()))){
+						float amountPaid = convertedAmount1 *Float.valueOf((invoiceIdsMap.get(invoice.getId())));
+						if(parentInvoice.getDueAmount().equals(String.valueOf(amountPaid))){
 							// total amount paid
-							float amountPaid = convertedAmount1 *Float.valueOf((invoiceIdsMap.get(invoice.getId())));
 							invoicePayment.setPaymentAmount(String.valueOf(amountPaid));
 							parentInvoice.setPaymentStatus(Constants.INVOICE_STATUS_PAID);
 							parentInvoice.setDueAmount("00.00");
