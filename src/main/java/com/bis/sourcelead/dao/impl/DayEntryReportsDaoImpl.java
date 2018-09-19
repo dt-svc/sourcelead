@@ -1,9 +1,6 @@
 package com.bis.sourcelead.dao.impl;
 
 import java.math.BigInteger;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 
@@ -17,6 +14,7 @@ import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.bis.sourcelead.dao.DayEntryReportsDao;
+import com.bis.sourcelead.dao.UserDao;
 import com.bis.sourcelead.dto.DayWiseTimesheetReoprtsListDTO;
 import com.bis.sourcelead.dto.ResponseList;
 import com.bis.sourcelead.entity.OrgLocations;
@@ -28,15 +26,26 @@ public class DayEntryReportsDaoImpl implements DayEntryReportsDao {
 
 	@Autowired
 	private SessionFactory sessionFactory;
+	
+	@Autowired
+	private UserDao userDao;
 
 	@SuppressWarnings("unchecked")
 	@Override
 	@Transactional
-	public ResponseList<DayWiseTimesheetReoprtsListDTO> getDayWiseReportListBasedOnProjectListIdStartDateEndDate(List<Long> projectId,Date startDate, Date endDate,String searchValue,int start,int length,OrgLocations orgloc , User loginUser,String isGlobalAccess,List<Long> projectMemberIds) {
+	public ResponseList<DayWiseTimesheetReoprtsListDTO> getDayWiseReportListBasedOnProjectListIdStartDateEndDate(List<Long> projectId,Date startDate, Date endDate,String searchValue,int start,int length,OrgLocations orgloc , User loginUser,String isGlobalAccess,List<Long> projectMemberIds) throws Exception {
 		List<BigInteger> countlist = null;
+		
 		Integer filterCount = 0;
 		ResponseList<DayWiseTimesheetReoprtsListDTO> response = new ResponseList<DayWiseTimesheetReoprtsListDTO>();
 		Session session = sessionFactory.getCurrentSession();
+		
+		
+		List<Long> userHierarchyIds =  userDao.getUserHierarchyIdList(loginUser.getId());
+		String userHierarchyIdString = "0";
+		if(userHierarchyIds != null && !userHierarchyIds.isEmpty()) {
+			userHierarchyIdString = StringUtils.join(userHierarchyIds, ',');
+		}
 		if((projectId!= null && !projectId.isEmpty()) || (projectMemberIds != null && !projectMemberIds.isEmpty())) {
 		java.sql.Date startDateSql = new java.sql.Date(startDate.getTime());
 		java.sql.Date endDateSql = new java.sql.Date(endDate.getTime());
@@ -137,6 +146,9 @@ public class DayEntryReportsDaoImpl implements DayEntryReportsDao {
 				+ "                                                    AND  PAH.LEVEL IN(select MAX(SUBPAH.LEVEL) FROM PROJECT_APPROVER_HIERARCHY SUBPAH WHERE SUBPAH.PROJECT_CLIENTS_ID = PC.ID AND PAH.STATUS != '0') )                    "
 				+ "                              OR "
 				+ "                     SUBSAH.HIERARCHY_ID IN(SELECT PAH.ID FROM PROJECT_APPROVER_HIERARCHY PAH where '"+loginUser.getId()+"' IN(SELECT UR.REPORTING_MANAGER_ID FROM USER_ROLE UR WHERE UR.USER_ID = CAN.CONSULTANT_USER_ID AND UR.ORG_LOCATIONS_ID = PC.ORG_LOCATIONS_ID) "
+				+ "                        AND  PAH.PROJECT_ID = PROJ.ID  AND  PAH.LEVEL IN(select MIN(SUBPAH.LEVEL) FROM PROJECT_APPROVER_HIERARCHY SUBPAH WHERE SUBPAH.PROJECT_CLIENTS_ID = PC.ID AND PAH.STATUS != '0'))             "
+				+ "                              OR "
+				+ "                     SUBSAH.HIERARCHY_ID IN(SELECT PAH.ID FROM PROJECT_APPROVER_HIERARCHY PAH where APPROVER_USER_ID IN("+userHierarchyIdString+") "
 				+ "                        AND  PAH.PROJECT_ID = PROJ.ID  AND  PAH.LEVEL IN(select MIN(SUBPAH.LEVEL) FROM PROJECT_APPROVER_HIERARCHY SUBPAH WHERE SUBPAH.PROJECT_CLIENTS_ID = PC.ID AND PAH.STATUS != '0'))             "
 				+ "                    )"
 			    + "              ) AND SAH.ID IS NOT NULL "

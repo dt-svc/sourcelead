@@ -833,6 +833,7 @@ public class FileUploadUtil {
 					successList.add(resume);
 				} else {
 					CandidateDTO candidateDto = new CandidateDTO();
+					logger.debug("Stroing the candidate with the Email id ==>"+resume.getEmail());
 					candidateDto.setEmail(resume.getEmail());
 					candidateDto.setCandidateSkills(resume.getSkills());
 					Iterator<String> it = resume.getPhoneNumbers().iterator();
@@ -872,7 +873,7 @@ public class FileUploadUtil {
 		//System.out.println("Existed resumes count ==> "+existedList.size());
 		logger.debug("Existed resumes count ==> "+existedList.size());
 		//System.out.println("Failed resumes count ==> "+failedList.size());
-		logger.debug("Existed resumes count ==> "+existedList.size());
+		logger.debug("Failed resumes count ==> "+failedList.size());
 	}
 	
 

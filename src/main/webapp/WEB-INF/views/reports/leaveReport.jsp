@@ -785,6 +785,8 @@ function searchReportCollapse() {
 	$("#designationType").val('');
 	$("#associateList").val('');
 	$("#leaveTypeList").val('');
+	$("#status").val('');
+	$('#status').trigger("chosen:updated");
 	$('#departmentList').trigger("chosen:updated");
 	$('#reportRoles').trigger("chosen:updated");
 	$('#designationType').trigger("chosen:updated");

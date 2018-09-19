@@ -1766,8 +1766,8 @@ public class UserServiceImpl implements UserService {
 	}
 
 	@Override
-	public List<LeaveBalanceReportDTO> getUserNameAndTypeByOrgLocationId(Long OrgLocationId,List<Long> userRole,List<Long> orgDepartmentsList,String topleave,Date MonthStart,Date MonthEnd) throws Exception {
-		 return userDao.getUserNameAndTypeByOrgLocationId(OrgLocationId,userRole,orgDepartmentsList,topleave,MonthStart,MonthEnd);
+	public List<LeaveBalanceReportDTO> getUserNameAndTypeByOrgLocationId(String searchValue,Long OrgLocationId,List<Long> userRole,List<Long> orgDepartmentsList,String topleave,Date MonthStart,Date MonthEnd) throws Exception {
+		 return userDao.getUserNameAndTypeByOrgLocationId(searchValue,OrgLocationId,userRole,orgDepartmentsList,topleave,MonthStart,MonthEnd);
 	 }
 
 	@Override
