@@ -510,6 +510,8 @@ public class InvoiceServiceImpl implements InvoiceService {
 		Invoice parentInvoice = invoiceDao.getParentInvoiceByInvoiceId(invoice.getId());
 		if (parentInvoice == null) {
 			parentInvoice = new Invoice();
+			parentInvoice.setCreatedDate(commonUtil.orgLocationCommonDate(new Date(), vendorOrgLocation));
+			parentInvoice.setCreatedBy(user.getUserCode());
 		}
 		if (invoice.getInvoiceType().equalsIgnoreCase(Constants.Payables)) {
 			parentInvoice.setInvoiceType(Constants.Receivable);
@@ -562,8 +564,8 @@ public class InvoiceServiceImpl implements InvoiceService {
 			parentInvoice.setProjectID(invoice.getProjectID());
 		}
 		parentInvoice.setStatus(Constants.RECORD_ACTIVE.toString());
-		parentInvoice.setCreatedDate(invoice.getCreatedDate());
-		parentInvoice.setCreatedBy(invoice.getCreatedBy());
+		parentInvoice.setUpdatedDate(commonUtil.orgLocationCommonDate(new Date(), vendorOrgLocation));
+		parentInvoice.setUpdatedBy(user.getUserCode());
 		invoiceDao.saveInvoce(parentInvoice);
 		return parentInvoice;
 	}
@@ -2701,7 +2703,7 @@ public class InvoiceServiceImpl implements InvoiceService {
 		} else {
 			invoice = new Invoice();
 			invoice.setInvoiceUUID(SourceLeadRandomCodeHelper.generateRandomUUID());
-			invoice.setCreatedDate(commonUtil.currentDate());
+			invoice.setCreatedDate(commonUtil.orgLocationCommonDate(new Date(), orgLocation));
 			invoice.setCreatedBy(user.getUserCode());
 		}
 
@@ -2861,7 +2863,7 @@ public class InvoiceServiceImpl implements InvoiceService {
 		invoice.setStatus(Constants.RECORD_ACTIVE.toString());
 		invoice.setInvoiceStatus(saveType);
 		invoice.setUpdatedBy(user.getUserCode());
-		invoice.setUpdatedDate(commonUtil.currentDate());
+		invoice.setUpdatedDate(commonUtil.orgLocationCommonDate(new Date(), orgLocation));
 		
 
 		List<String> submissionApproverHierarchyIds = new ArrayList<>();
