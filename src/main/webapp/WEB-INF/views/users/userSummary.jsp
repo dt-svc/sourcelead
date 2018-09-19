@@ -1837,10 +1837,12 @@ $("#editRoleDetailsList").empty();
 					result = result + ' <input type="text" value="'+json.user.email+'" '+readonly+' id="EmailId" name="email" field-name="EmailId" onblur="validateUserUpdatedEmail('+userId+');" data-validation="required validate_Space validate_email validate_length length2-100"/>';
 					result = result + ' </div>';
 					
+					if("${SourceLeadWeb_orgLocations.country}" == 'United States'){
 					result = result + ' <div class="user_summary_edit_cta">';
 					result = result + ' <label>SSN<span class="text-danger">&nbsp;*</span></label>';
 					result = result + ' <input type="text" value="'+json.user.ssn+'" field-name="SSN" data-validation="required validate_Space"/>';
 					result = result + ' </div>';
+					}
 					
 					result = result + ' <div class="user_summary_edit_cta">';
 					result = result + ' <label>Work Location<span class="text-danger">&nbsp;*</span></label>';

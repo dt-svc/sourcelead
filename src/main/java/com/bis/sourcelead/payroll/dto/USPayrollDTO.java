@@ -104,6 +104,8 @@ public class USPayrollDTO {
 	
     private String depositType;
     
+    private String departmentName;
+    
     private Map<String, BigDecimal> tax;
     
 	
@@ -501,5 +503,12 @@ public class USPayrollDTO {
 	{
 		this.depositType = depositType;
 	}
-	
+	public String getDepartmentName()
+	{
+		return departmentName;
+	}
+	public void setDepartmentName(String departmentName)
+	{
+		this.departmentName = departmentName;
+	}
 }

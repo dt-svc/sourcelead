@@ -140,7 +140,6 @@ $(document).ready(function(){
 	function getPayCheckDateReports() {
 		var payCheckDate = $('#payCheckDate').val();
 		var groupId = $('#payPeriod').val();
-		alert(groupId);
 		var searchValue = $("#dataTableSearch").val();
 		searchValue = searchValue ? searchValue : "";
 		var url = sourceleadUrl+"/getPayCheckDateReports?searchValue="+searchValue+"&groupId="+groupId+"&payCheckDate="+payCheckDate;
@@ -172,7 +171,6 @@ $(document).ready(function(){
 		result = result + "</table>";
 		$("#payCheckDateTableDIV").append(result);
 		alert("END");
-		test(url);
 
 	}
 </script>
@@ -194,11 +192,11 @@ $(document).ready(function(){
 							"columns" : [ {
 								"data" : "empName"
 							}, {
-								"data" : "payRate"
+								"data" : "empPayRate"
 							}, {
 								"data" : "regularHours"
 							}, {
-								"data" : "overtimeHours"
+								"data" : "overTimeHours"
 							}, {
 								"data" : "grossPay"
 							}, {
@@ -220,26 +218,20 @@ $(document).ready(function(){
 									{
 										"targets" : colIndex++,
 										"data" : "empName",
-										"render" : function(data, type, opt,
-												meta) {
+										"render" : function(data, type, opt,meta) {
 											var result = "";
 											result = result
-													+ '<td><div class="tblminwidth-75">'
-													+ opt.fromDateStr
-													+ '</div></td>';
+													+ '<td><div class="tblminwidth-75">'+ opt.empName+ '</div></td>';
 											return result;
 										}
 									},
 									{
 										"targets" : colIndex++,
-										"data" : "payRate",
-										"render" : function(data, type, opt,
-												meta) {
+										"data" : "empPayRate",
+										"render" : function(data, type, opt,meta) {
 											var result = "";
 											result = result
-													+ ' <td><div class="tblminwidth-75">'
-													+ opt.toDateStr
-													+ '</div></td>';
+													+ ' <td><div class="tblminwidth-75">'+ opt.empPayRate+ '</div></td>';
 											return result;
 
 										}
@@ -247,128 +239,84 @@ $(document).ready(function(){
 									{
 										"targets" : colIndex++,
 										"data" : "regularHours",
-										"render" : function(data, type, opt,
-												meta) {
+										"render" : function(data, type, opt,meta) {
 											var result = "";
 											result = result
-													+ '<td class="tblminwidth-75"><div>'
-													+ opt.employeeId
-													+ '</div></td>';
+													+ '<td class="tblminwidth-75"><div>'+ opt.regularHours+ '</div></td>';
 											return result;
 										}
 									},
 									{
 										"targets" : colIndex++,
 										"data" : "overtimeHours",
-										"render" : function(data, type, opt,
-												meta) {
+										"render" : function(data, type, opt,meta) {
 											var result = "";
 											result = result
-													+ '<td><div class="tbldata-dotdot-vsm" title="'+opt.employeeName+'">'
-													+ opt.employeeName
-													+ '</div></td>';
+													+ '<td><div class="tbldata-dotdot-vsm" title="'+opt.overTimeHours+'">'+ opt.overTimeHours+ '</div></td>';
 											return result;
 										}
 									},
 									{
 										"targets" : colIndex++,
 										"data" : "grossPay",
-										"render" : function(data, type, opt,
-												meta) {
+										"render" : function(data, type, opt,meta) {
 											var result = "";
-											if (opt.ssn != null
-													&& opt.ssn != ''
-													&& opt.ssn != 'undefined') {
-												result = result
-														+ ' <td><div class="tbldata-dotdot-sm">'
-														+ opt.ssn
-														+ '</div></td>';
-											} else {
-												result = result
-														+ ' <td><div>--</div></td>';
-											}
+												result = result + ' <td><div class="tbldata-dotdot-sm">'+ opt.grossPay+ '</div></td>';
 											return result;
 										}
 									},
 									{
 										"targets" : colIndex++,
 										"data" : "preTaxDeduction",
-										"render" : function(data, type, opt,
-												meta) {
+										"render" : function(data, type, opt,meta) {
 											var result = "";
-											if (opt.totalHrs != null
-													&& opt.totalHrs != ''
-													&& opt.totalHrs != 'undefined') {
-												result = result
-														+ '<td><div class="tblminwidth-50">'
-														+ opt.totalHrs
-														+ '</div></td>';
-											} else {
-												result = result
-														+ ' <td><div>--</div></td>';
-											}
+											result = result+ '<td><div class="tblminwidth-50">'+ opt.preTaxDeduction+ '</div></td>';
 											return result;
 										}
 									},
 									{
 										"targets" : colIndex++,
 										"data" : "postTaxDeduction",
-										"render" : function(data, type, opt,
-												meta) {
+										"render" : function(data, type, opt,meta) {
 											var result = "";
-											result = result
-													+ ' <td><div class="tblminwidth-125 text-right"><i class="fa fa-dollar"style="color:#454545;"></i> '
-													+ opt.grossWages.toFixed(2)
-													+ '</div></td>';
+											result = result+ ' <td><div class="tblminwidth-125 text-right"><i class="fa fa-dollar"style="color:#454545;"></i> '+ opt.postTaxDeduction+ '</div></td>';
 											return result;
 										}
 									},
 									{
 										"targets" : colIndex++,
 										"data" : "taxes",
-										"render" : function(data, type, opt,
-												meta) {
+										"render" : function(data, type, opt,meta) {
 											var result = "";
-											result = result
-													+ '<td><div class="tblminwidth-75"><i class="fa fa-dollar"style="color:#454545;"></i> '
-													+ opt.fica + '</div></td>';
+											result = result+ '<td><div class="tblminwidth-75"><i class="fa fa-dollar"style="color:#454545;"></i> '+ opt.taxes + '</div></td>';
 											return result;
 										}
 									},
 									{
 										"targets" : colIndex++,
 										"data" : "netpay",
-										"render" : function(data, type, opt,
-												meta) {
+										"render" : function(data, type, opt,meta) {
 											var result = "";
-											result = result
-													+ '<td><div class="tblminwidth-75"><i class="fa fa-dollar"style="color:#454545;"></i> '
-													+ opt.futa + '</div></td>';
+											result = result+ '<td><div class="tblminwidth-75"><i class="fa fa-dollar"style="color:#454545;"></i> '+ opt.netPay + '</div></td>';
 											return result;
 										}
 									},
 									{
 										"targets" : colIndex++,
 										"data" : "lastPay",
-										"render" : function(data, type, opt,
-												meta) {
+										"render" : function(data, type, opt,meta) {
 											var result = "";
-											result = result
-													+ ' <td><div class="tblminwidth-75"><i class="fa fa-dollar"style="color:#454545;"></i> '
-													+ opt.sui + '</div></td>';
+											result = result+ ' <td><div class="tblminwidth-75"><i class="fa fa-dollar"style="color:#454545;"></i>xxxx</div></td>';
 											return result;
 										}
 									},
 									{
 										"targets" : colIndex++,
 										"data" : "YTD",
-										"render" : function(data, type, opt,
-												meta) {
+										"render" : function(data, type, opt,meta) {
+											alert(opt.YTD);
 											var result = "";
-											result = result
-													+ '<td><div class="tblminwidth-75">'
-													+ opt.erLocals
-													+ '</div></td>';
+											result = result+ '<td><div class="tblminwidth-75"><i class="fa fa-dollar"style="color:#454545;"></i>'+opt.ytdNet +'</div></td>';
 											return result;
 										}
 									},
@@ -377,7 +325,11 @@ $(document).ready(function(){
 										"data" : "action",
 										"render" : function(data, type, opt, meta) {
 											var result = "";
-											result = result + '<td><div><i class="glyphicon glyphicon-trash" onclick="deletePayrollEntity(\''+opt.uuid+'\',\'EmployeePayrollCost\')"></i></div></td>';
+											result = result + '<td>';
+											result = result + '<div class="tblminwidth-30 text-center">';
+											result = result + '<a href="javascript:void(0)" class="anchorBlack"><i class="fa fa-eye"></i></a>';
+											result = result + '</div>';
+											result = result + '</td>';
 											return result;
 										}
 									} ],

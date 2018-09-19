@@ -132,7 +132,7 @@ public interface LeaveService {
 
 	Map<String,List<LeaveBalanceReportDTO>> getLeaveNamesByOrgLocationId(Long orgLocationId,List<Long> userleaveTypeList,List<String> leaveTypesList,String topleave);
 	
-	String getDepartmentTypeNamesByOrgLocationIdAndUserId(Long userId ) throws Exception ;
+	String getDepartmentTypeNamesByOrgLocationIdAndUserId(Long userId ,Long orgLocationId) throws Exception ;
 	
     Sheet getLeaveBalanceExcelFile(Sheet createExcelsheet,Workbook createExcelworkbook,Response<LeaveBalanceReportDTO> LeaveBalanceReport,OrgLocations orgLocation,String topleave)throws Exception;
     File getLeaveBalancePdfFile(Response<LeaveBalanceReportDTO> LeaveBalanceReport,OrgLocations orgLocation,String topleave) throws Exception;
