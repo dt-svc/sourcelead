@@ -251,6 +251,7 @@ public class InvoicePaymentServiceImpl implements InvoicePaymentService {
 		 InvoicePayment invoicePayment = null;
 		 for(Invoice invoice : list){
 			invoicePayment = new InvoicePayment();
+			Invoice parentInvoice = null;
 		/*String pattern = "dd-MM-yyyy";
 		SimpleDateFormat format = new SimpleDateFormat(pattern);*/
 			 System.out.println(" inovice id : "+invoice.getId());
@@ -293,7 +294,7 @@ public class InvoicePaymentServiceImpl implements InvoicePaymentService {
 			invoice.setUpdatedDate(commonUtil.currentDate());
 			Invoice childInvoice = invoiceDao.saveInvoce(invoice);
 
-			Invoice parentInvoice = null;
+			
 			if (null != childInvoice) {
 				if (null != childInvoice.getId()) {
 					parentInvoice = invoiceDao.getInvoicetBySelfJoinInvoiceId(childInvoice.getId());
@@ -383,7 +384,9 @@ public class InvoicePaymentServiceImpl implements InvoicePaymentService {
 		invoicePayment.setCreatedDate(commonUtil.currentDate());
 		invoicePayment.setUpdatedBy(user.getUserCode());
 		invoicePayment.setUpdatedDate(commonUtil.currentDate());
-		invoicePaymentDao.saveInvoicePayment(invoicePayment);
+		InvoicePayment invoicePaymentObject = invoicePaymentDao.saveInvoicePayment(invoicePayment);
+		invoiceService.saveInvoiceTimelineHistory(parentInvoice, user, null, null, invoicePaymentObject.getId(), null);
+		invoiceService.saveInvoiceTimelineHistory(invoice, user, null, null, invoicePaymentObject.getId(), null);
 		 }
 		 // this for moving file to folder after setting values (same information set to selected invoices)
 		 if(invoicePaymentDTO.getFileInfo() != null && invoicePaymentDTO.getFileInfo().size() > 0){
@@ -391,6 +394,7 @@ public class InvoicePaymentServiceImpl implements InvoicePaymentService {
 				 FileUploadUtil.moveFile(invoicePaymentDTO.getStaticPath(), file, "incoiceDocuments");	 
 			 }
 		 }
+		
 		return invoicePayment;
 	}
 

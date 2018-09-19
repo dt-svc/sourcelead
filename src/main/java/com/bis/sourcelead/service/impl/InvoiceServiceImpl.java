@@ -3222,7 +3222,7 @@ public class InvoiceServiceImpl implements InvoiceService {
 								statusBy = " by ";
 								statusValue =timelineHistory.getCreatedBy().getFullName();
 							} else if (!timelineHistory.getCreatedBy().getId()
-									.equals(timelineHistory.getOwnerUser().getId())) {
+									.equals(ownerUser.getId())) {
 								statusVal = "Partial Paid updated";
 								statusBy = " by ";
 								statusValue = timelineHistory.getCreatedBy().getFullName();
