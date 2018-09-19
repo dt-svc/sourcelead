@@ -1,6 +1,6 @@
 package com.bis.sourcelead.dto;
 
-import javax.ws.rs.DefaultValue;
+import java.math.BigInteger;
 
 public class UploadXlsHistoryDTO extends SearchDTO{
 
@@ -11,6 +11,14 @@ public class UploadXlsHistoryDTO extends SearchDTO{
 	private int failureCount;
 	
 	private String uploadProcessingStatus;
+	
+	private String fileUrl;
+	
+	private String uuid;
+	
+	private BigInteger uploadHistoryId;
+	
+	private String fileName;
 
 	public int getTotalCount() {
 		return totalCount;
@@ -42,6 +50,38 @@ public class UploadXlsHistoryDTO extends SearchDTO{
 
 	public void setUploadProcessingStatus(String uploadProcessingStatus) {
 		this.uploadProcessingStatus = uploadProcessingStatus;
+	}
+
+	public String getUuid() {
+		return uuid;
+	}
+
+	public void setUuid(String uuid) {
+		this.uuid = uuid;
+	}
+
+	public BigInteger getUploadHistoryId() {
+		return uploadHistoryId;
+	}
+
+	public void setUploadHistoryId(BigInteger uploadHistoryId) {
+		this.uploadHistoryId = uploadHistoryId;
+	}
+
+	public String getFileUrl() {
+		return fileUrl;
+	}
+
+	public void setFileUrl(String fileUrl) {
+		this.fileUrl = fileUrl;
+	}
+
+	public String getFileName() {
+		return fileName;
+	}
+
+	public void setFileName(String fileName) {
+		this.fileName = fileName;
 	}
 
 	

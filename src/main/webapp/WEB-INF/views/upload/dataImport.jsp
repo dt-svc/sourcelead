@@ -108,16 +108,14 @@
 	    	$('#dataFieldsDiv').removeAttr("style");
 	    	$('#dataFieldsDiv').empty();
 	    	var flag= true;
-			$(".browseProgress").show();
-			$("#progressBar").html('0%');
-			$(".progress div").css("width", "0%");
 			var uploadid = new Date().getTime();
 			var refreshId = setInterval(function(){
 				if(flag == true){
-					getUploadProgressBar(uploadid);
+					getUploadProgressBar();
 				  }else{
 					  clearInterval(refreshId);
 					  $(".browseProgress").hide();
+					  getUploadProgressBar();
 				  }
 				},1000);
 			
@@ -149,6 +147,7 @@
           			}
 			    	$('#newUploadFile').text('');
 			    	flag = false;
+			    	$("#upload_button").removeAttr("disabled");
 			    	
 			    	var uploadType = $('#uploadType').val();
 			    	if(uploadType == 'jobUpload'){
@@ -241,6 +240,7 @@
 			    	$('#newUploadFile').text('');
 			    	flag = false;
 			    	
+			    	
 			    	var uploadType = $('#uploadType').val();
 			    	if(uploadType == 'jobUpload'){
 			    		$('#upload_job_form')[0].reset();
@@ -267,31 +267,101 @@
 
 
 <script>
-function getUploadProgressBar(uploadid){
-	
+function getUploadProgressBar(){
+	var uploadType = '${uploadType}'
+	if(uploadType == 'candidatesUpload'){
+		uploadType = 'Candidates';
+	}
 	$.ajax({
     	type: "POST",
-        url: sourceleadUrl+"/getXlsHistroyByUploadId?"+tokenParamName+"="+tokenValue+"&uploadid="+uploadid, 
+        url: sourceleadUrl+"/getXlsProcessingHistroyListByEntityType?"+tokenParamName+"="+tokenValue+"&entityType="+uploadType, 
         success: function(json) {
-        	if(json != null && json != ''){
-        		
-        		
-        		var totalCount = json.totalCount == undefined? 0: json.totalCount;
-        		var succesCount = json.successCount == undefined? 0: json.successCount;
-        		var failureCount = json.failureCount == undefined? 0: json.failureCount;  
-        		var uploadingCount = parseInt(succesCount) + parseInt(failureCount);
-        		
-       			percentComplete = parseInt(uploadingCount)/parseInt(totalCount);
-       			$(".progress div").css("width", parseInt(percentComplete*100) + "%");
-       			$("#progressBar").html(parseInt(percentComplete*100)+'%');
-       			
-       			$("#totalUploadedCount").html(totalCount);
-       			$("#currentUploadedCount").html(uploadingCount);
-        	}
+        	
+        	   var result = "";
+        	   result = result + '     <div class="clearfix"></div>';
+	           result = result + '   </div>';
+	           result = result +"<table class='display' cellspacing='0' width='100%' >"; 
+	           result = result + '     <table class="display" cellspacing="0" width="100%">';
+	           result = result + '       <thead>';
+	           result = result + '         <tr>';
+	           result = result + '           <th>File Name</th>';
+	           result = result + '           <th>Total Count</th>';
+	           result = result + '           <th>Success Count</th>';
+	           result = result + '           <th>Failure Count</th>';
+	           result = result + '           <th>Status</th>';
+	           result = result + '         </tr>';
+	           result = result + '       </thead>';
+	           result = result + '       <tbody>';
+	           if(json != null && json != '' && json.length > 0){
+	        	   
+	        	   var progressRow = '';
+	        	   for(var i=0; i<json.length; i++){
+	        		   var report = json[i];
+	        		   
+	        		   if(report.uploadProcessingStatus == 'Inprogress'){
+	        			   progressRow = json[i];
+	        			   $("#upload_button").attr("disabled", "disabled");
+	        		   }
+	        		    
+	        		    result = result + '<tr>';
+	        		    result = result + '<tr>';
+	        		    result = result + '<td><div class="tbldata-dotdot-big text-center"><span title="'+report.fileName+'">'+report.fileName+'</span></div></td>';
+	        		    result = result + '<td><div class="tbldata-dotdot-sm">'+report.totalCount+'</div></td>';
+	        		    result = result + '<td><div class="tbldata-dotdot-sm">'+report.successCount+'</div></td>';
+	        		    result = result + '<td><div class="tbldata-dotdot-sm">'+report.failureCount+'</div></td>';
+	        		     
+	        		    if(report.uploadProcessingStatus == 'Completed'){
+	        		    	result = result + '<td><div><span>'+report.uploadProcessingStatus+'</span></div></td>';
+	        		    }else{
+	        		    
+	        		    	  result = result + '<td>';
+	         		    	  result = result + '<div class="browseProgress">';
+	         		    	  result = result + '<div class="progress progress-striped active">';
+	         		    	  result = result + '<div class="progress-bar progress-bar-success" id="progressBar">0%</div>';
+	         		    	  result = result + '</div>';
+	         		    	  result = result + '<div class="progressCount">Uploading <span id="currentUploadedCount"></span> of <span id="totalUploadedCount"></span></div>';
+	         		    	  result = result + '</div>';
+	                          result = result + '</td>';
+                        
+	        		    } 
+	        		 
+		    		}
+			           result = result + '       </tbody>';
+			           result = result + '       </table>';
+			           result = result + '</div>';
+			           result = result + '</div>';
+		    			
+		    			$("#uploadXlsHistoryDiv").empty();
+		    			$("#uploadXlsHistoryDiv").append(result);
+		    			
+		    			if(progressRow != ''){
+		    				  $(".browseProgress").show();
+	                  		  $("#progressBar").html('0%');
+	                  		  $(".progress div").css("width", "0%");
+	                          getXlsProgressBar(progressRow);
+		    			}
+	           }
+        	
+        	
 		 },
         error: function(e){
         }
     });
+	
+	function getXlsProgressBar(json){
+		
+		var totalCount = json.totalCount == undefined? 0: json.totalCount;
+		var succesCount = json.successCount == undefined? 0: json.successCount;
+		var failureCount = json.failureCount == undefined? 0: json.failureCount;  
+		var uploadingCount = parseInt(succesCount) + parseInt(failureCount);
+		
+		percentComplete = parseInt(uploadingCount)/parseInt(totalCount);
+		$(".progress div").css("width", parseInt(percentComplete*100) + "%");
+		$("#progressBar").html(parseInt(percentComplete*100)+'%');
+		$("#totalUploadedCount").html(totalCount);
+		$("#currentUploadedCount").html(uploadingCount);
+			
+	}
 	
 }
 </script>

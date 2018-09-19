@@ -1,5 +1,7 @@
 package com.bis.sourcelead.service.impl;
 
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -33,6 +35,12 @@ public class UploadXlsHistoryServiceImpl implements UploadXlsHistoryService{
 	public UploadXlsHistoryDTO getUploadXlsHistoryDTOBySessionId(String sessionId, Long userId, Long orgLocationId,
 			String entityType) throws Exception {
 		return uploadXlsHistoryDao.getUploadXlsHistoryDTOBySessionId(sessionId, userId, orgLocationId, entityType);
+	}
+
+	@Override
+	public List<UploadXlsHistoryDTO> getUploadXlsHistoryListByUserId(Long userId, Long orgLocationId,
+			String entityType) throws Exception {
+		return uploadXlsHistoryDao.getUploadXlsHistoryListByUserId(userId, orgLocationId, entityType);
 	}
 
 }

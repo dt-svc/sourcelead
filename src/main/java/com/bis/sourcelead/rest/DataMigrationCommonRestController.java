@@ -177,5 +177,18 @@ public class DataMigrationCommonRestController {
 		return uploadXlsHistoryDto;
 	}
 	
+	@RequestMapping(value = "/getXlsProcessingHistroyListByEntityType", method = RequestMethod.POST)
+	public @ResponseBody List<UploadXlsHistoryDTO> getXlsProcessingHistroyListByEntityType(@RequestParam(value = "entityType", required = true) String entityType, 
+			HttpServletRequest request) throws Exception {
+		 OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,"orgLocations");
+		 User user = (User) SourceLeadSessionManager.getSessionAttribute(request,"user");
+		 List<UploadXlsHistoryDTO> uploadXlsHistoryDTOList  = null;
+		try {
+			uploadXlsHistoryDTOList = uploadXlsHistoryService.getUploadXlsHistoryListByUserId(user.getId(), orgLocations.getId(), entityType);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return uploadXlsHistoryDTOList;
+	}
 	
 }

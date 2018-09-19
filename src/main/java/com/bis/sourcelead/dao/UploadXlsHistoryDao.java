@@ -1,5 +1,7 @@
 package com.bis.sourcelead.dao;
 
+import java.util.List;
+
 import com.bis.sourcelead.dto.UploadXlsHistoryDTO;
 import com.bis.sourcelead.entity.UploadXlsHistory;
 
@@ -12,4 +14,6 @@ public interface UploadXlsHistoryDao {
     UploadXlsHistory getUploadXlsHistoryDetailsByUploadId(String uploadId) throws Exception;
     
     UploadXlsHistoryDTO getUploadXlsHistoryDTOBySessionId(String sessionId,Long userId,Long orgLocationId,String entityType) throws Exception;
+    
+    List<UploadXlsHistoryDTO> getUploadXlsHistoryListByUserId(Long userId,Long orgLocationId,String entityType) throws Exception;
 }

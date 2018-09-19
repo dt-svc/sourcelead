@@ -15,6 +15,7 @@ import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.bis.sourcelead.dao.UploadXlsHistoryDao;
+import com.bis.sourcelead.dto.CandidateDTO;
 import com.bis.sourcelead.dto.UploadXlsHistoryDTO;
 import com.bis.sourcelead.entity.UploadXlsHistory;
 import com.bis.sourcelead.exception.SourceLeadConstraintViolationException;
@@ -138,6 +139,40 @@ public class UploadXlsHistoryDaoImpl implements UploadXlsHistoryDao{
 			
 			return uploadXlsHistoryDTO;
 	
+	}
+
+
+	@Override
+	@Transactional
+	public List<UploadXlsHistoryDTO> getUploadXlsHistoryListByUserId(Long userId, Long orgLocationId, String entityType)
+			throws Exception {
+		List<UploadXlsHistoryDTO> uploadXlsHistoryDTOList = null;
+		Session session = this.sessionFactory.getCurrentSession();
+		String query = null;
+		
+		query =  "SELECT "
+				+" HISTORY.ID AS uploadHistoryId, "
+				+" HISTORY.TOTAL_COUNT AS totalCount, "
+				+" HISTORY.SUCCESS_COUNT AS successCount, "
+				+" HISTORY.FAILURE_COUNT AS failureCount, "
+				+" HISTORY.FILE_NAME AS fileName, "
+				+" HISTORY.FILE_URL AS fileUrl, "
+				+" HISTORY.UUID AS uuid, "
+				+" HISTORY.UPLOAD_PROCESSING_STATUS AS uploadProcessingStatus "
+				+" FROM UPLOAD_XLS_HISTORY HISTORY "
+				+" WHERE "
+				+" HISTORY.USER_ID = :userId AND "
+				+" HISTORY.ORG_LOCATION_ID = :orgLocationId AND "
+				+" HISTORY.UPLOAD_ENTITY_TYPE = :entityType ORDER BY HISTORY.ID DESC";
+		
+		Query queryObj = session.createSQLQuery(query);
+		queryObj.setLong("userId", userId);
+		queryObj.setLong("orgLocationId", orgLocationId);
+		queryObj.setString("entityType", entityType);
+		queryObj.setMaxResults(5);
+		queryObj.setResultTransformer(Transformers.aliasToBean(UploadXlsHistoryDTO.class));
+		uploadXlsHistoryDTOList = queryObj.list();
+		return uploadXlsHistoryDTOList;
 	}
 
 }
