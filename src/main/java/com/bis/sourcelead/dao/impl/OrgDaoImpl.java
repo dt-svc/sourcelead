@@ -751,7 +751,9 @@ public class OrgDaoImpl implements OrgDao {
         pay.setAccountType(p.getAccountType());
         pay.setDefaultAccount(p.isDefaultAccount());
         pay.setOrgLocationId(p.getOrgLocation().getId());
-        pay.setCandidateId(p.getCandidateId().getId());
+        if(p.getCandidateId() != null) {
+            pay.setCandidateId(p.getCandidateId().getId());
+        }
         pay.setFirstName(p.getFirstName());
         pay.setBankName(p.getBankName());
         pay.setLastName(p.getLastName());

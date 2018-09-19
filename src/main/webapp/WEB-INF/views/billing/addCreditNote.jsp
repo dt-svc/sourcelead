@@ -51,7 +51,7 @@
 		<div class="form-group row">
 		<label class="col-md-3 paddingRight">Ref. ID</label>
 		<div class="col-md-9">
-		<input type="text" class="form-control" value="${creditDebitNote.referenceNumber}" id="referenceNumber" name="referenceNumber" field-name="Ref. ID" data-validation-optional="true" placeholder="Ref. ID">
+		<input type="text" class="form-control" value="${creditDebitNote.referenceNumber}" id="referenceNumber" name="referenceNumber" field-name="Ref. ID" data-validation-optional="true" data-validation="validate_length length2-100" placeholder="Ref. ID">
 		</div> 
 		</div>
 		</div>
@@ -97,13 +97,26 @@
 		</div>
 		<div class="col-xs-12 col-sm-6 col-md-6">
 		<div class="form-group row" id="approversDivId" style="display: none;">
-		<label class="col-md-3 paddingRight">Approvers <span class="text-danger">&nbsp;*</span></label>
+		<label class="col-md-3 paddingRight">Approvers</label>
 		<div class="col-md-9">
 		<select multiple="multiple" class="chosen-select form-control" value="" id="approvers" name="approvers" field-name="Approvers" data-validation="true" placeholder="Approvers">
 		</select>
 		</div>
 		</div>
 		</div>
+		<div class="col-xs-12 col-sm-6 col-md-6"> 
+		<div class="form-group row">
+        <label class="col-md-3 paddingRight">Payment Account</label>
+        <div class="col-md-9">
+          <select class="form-control" id="account"  field-name="paymentAccountId Name" name="account">
+             <option value="">--Select Account--</option>
+              <c:forEach items="${paymentAccountList}" var="paymentAccount">
+                  <option value="${paymentAccount.id}" ${paymentAccount.defaultAccount ? 'selected="selected"' : ""}>${paymentAccount.accountType == "WEPAY" ? paymentAccount.email.concat(" (WePay)") : paymentAccount.accountNumber.concat(" (").concat(paymentAccount.bankName).concat(")")}</option>
+              </c:forEach>
+          </select>
+        </div>
+      </div>
+      </div>
 		<div class="col-xs-12 col-sm-6 col-md-6">
 		<div class="form-group">
               <label class="col-md-3">&nbsp;</label>
@@ -120,7 +133,6 @@
               	<th>Date</th>
                 <th>Description</th>
                 <th>Associates</th>
-                <th>Account</th>
                 <th>Quantity</th>
                 <th>Price</th>
                 <th>Tax Type</th>
@@ -142,7 +154,7 @@
                 </td>
                 <td>
                 	<div class="width150px">
-                		<textarea placeholder="Description" rows="1" class="form-control" id="inlineDescription0" name="creditDebitNoteLineItems[0].inlineDescription" field-name="Description"></textarea>
+                		<textarea placeholder="Description" rows="1" class="form-control" id="inlineDescription0" name="creditDebitNoteLineItems[0].inlineDescription" field-name="Description" data-validation="required validate_length length2-250"></textarea>
                 	</div>
                 </td>
                 <td>
@@ -155,22 +167,13 @@
                   </div>
                 </td>
                 <td>
-                  <div class="tbldata-dotdot-vsm">
-                    <select class="form-control sel" id="account0" name="creditDebitNoteLineItems[0].account">
-                      <option selected value = "">Select Account</option>
-                      <c:forEach var="paymentAccount" items="${paymentAccountList}">
-					<option value="${paymentAccount.id}" ${paymentAccount.defaultAccount ? 'selected="selected"' : ""}>${paymentAccount.accountType == "WEPAY" ? paymentAccount.email.concat(" (WePay)") : paymentAccount.accountNumber.concat(" (").concat(paymentAccount.bankName).concat(")")}</option>	</c:forEach>
-                    </select>
-                  </div>
-                </td>
-                <td>
                     <div class="width90px">
-                    <input type="text" class="form-control" placeholder="Quantity" id="quantity0" name="creditDebitNoteLineItems[0].quantity" field-name="Quantity" onkeyup="totalCalculateAmount(0);validateNumber(this);" data-validation="required">
+                    <input type="text" class="form-control" placeholder="Quantity" id="quantity0" name="creditDebitNoteLineItems[0].quantity" field-name="Quantity" onkeyup="totalCalculateAmount(0);validateNumber(this);" data-validation="required validate_length length1-10">
                   </div>
                 </td>
                 <td>
                   <div class="width100px">
-                    <input type="text" class="form-control" placeholder="Price" id="price0" name="creditDebitNoteLineItems[0].price" field-name="Price" onkeyup="totalCalculateAmount(0);validateNumber(this);" data-validation="required">
+                    <input type="text" class="form-control" placeholder="Price" id="price0" name="creditDebitNoteLineItems[0].price" field-name="Price" onkeyup="totalCalculateAmount(0);validateNumber(this);" data-validation="required validate_length length1-10">
                   </div>
                 </td>
                 <td>
@@ -217,7 +220,7 @@
                 </td>
                 <td>
                 	<div class="width150px">
-                		<textarea placeholder="Description" rows="1" class="form-control" id="inlineDescription${rows.count-1}" name="creditDebitNoteLineItems[${rows.count-1}].inlineDescription" field-name="Description">${items.inlineDescription}</textarea>
+                		<textarea placeholder="Description" rows="1" class="form-control" id="inlineDescription${rows.count-1}" name="creditDebitNoteLineItems[${rows.count-1}].inlineDescription" field-name="Description" data-validation="required validate_length length2-250">${items.inlineDescription}</textarea>
                 	</div>
                 </td>
                 <td>
@@ -231,22 +234,13 @@
                   </div>
                 </td>
                 <td>
-                  <div class="tbldata-dotdot-vsm">
-                    <select class="form-control sel" id="account${rows.count-1}" name="creditDebitNoteLineItems[${rows.count-1}].account">
-                      <option selected value = "">Select Account</option>
-                      <c:forEach var="paymentAccount" items="${paymentAccountList}">
-					<option value="${paymentAccount.id}" ${paymentAccount.defaultAccount ? 'selected="selected"' : ""}>${paymentAccount.accountType == "WEPAY" ? paymentAccount.email.concat(" (WePay)") : paymentAccount.accountNumber.concat(" (").concat(paymentAccount.bankName).concat(")")}</option>	</c:forEach>
-                    </select>
-                  </div>
-                </td>
-                <td>
                     <div class="width90px">
-                    <input type="text" class="form-control" placeholder="Quantity" id="quantity${rows.count-1}" value = "${items.quantity}" name="creditDebitNoteLineItems[${rows.count-1}].quantity" field-name="Quantity" onkeyup="totalCalculateAmount(${rows.count-1});validateNumber(this);" data-validation="required">
+                    <input type="text" class="form-control" placeholder="Quantity" id="quantity${rows.count-1}" value = "${items.quantity}" name="creditDebitNoteLineItems[${rows.count-1}].quantity" field-name="Quantity" onkeyup="totalCalculateAmount(${rows.count-1});validateNumber(this);" data-validation="required validate_length length1-10">
                   </div>
                 </td>
                 <td>
                   <div class="width100px">
-                    <input type="text" class="form-control" placeholder="Price" id="price${rows.count-1}" value = "${items.price}" name="creditDebitNoteLineItems[${rows.count-1}].price" field-name="Price" onkeyup="totalCalculateAmount(${rows.count-1});validateNumber(this);" data-validation="required">
+                    <input type="text" class="form-control" placeholder="Price" id="price${rows.count-1}" value = "${items.price}" name="creditDebitNoteLineItems[${rows.count-1}].price" field-name="Price" onkeyup="totalCalculateAmount(${rows.count-1});validateNumber(this);" data-validation="required validate_length length1-10">
                   </div>
                 </td>
                 <td>
@@ -423,7 +417,7 @@ function prepareDynamicRoweDiv(rowId){
    rowDiv =rowDiv+ '</td>';
    rowDiv =rowDiv+ '<td>';
    rowDiv =rowDiv+ '	<div class="width150px">';
-   rowDiv =rowDiv+ '		<textarea placeholder="Description" rows="1" class="form-control" id="inlineDescription'+rowId+'" name="creditDebitNoteLineItems['+rowId+'].inlineDescription" field-name="Description"></textarea>';
+   rowDiv =rowDiv+ '		<textarea placeholder="Description" rows="1" class="form-control" id="inlineDescription'+rowId+'" data-validation="required validate_length length2-250" name="creditDebitNoteLineItems['+rowId+'].inlineDescription" field-name="Description"></textarea>';
    rowDiv =rowDiv+ '	</div>';
    rowDiv =rowDiv+ '</td>';
    rowDiv =rowDiv+ '<td>';
@@ -435,23 +429,14 @@ function prepareDynamicRoweDiv(rowId){
    rowDiv =rowDiv+ '	</select>';
    rowDiv =rowDiv+ '  </div>';
    rowDiv =rowDiv+ '</td>';
-   rowDiv =rowDiv+ '<td>';
-   rowDiv =rowDiv+ '  <div class="tbldata-dotdot-vsm">';
-   rowDiv =rowDiv+ '    <select class="form-control sel" id="account'+rowId+'" name="creditDebitNoteLineItems['+rowId+'].account">';
-   rowDiv =rowDiv+ '      <option selected value = "">Select Account</option>';
-   rowDiv =rowDiv+ '      <c:forEach var="paymentAccount" items="${paymentAccountList}">';
-   rowDiv =rowDiv+ '	<option value="${paymentAccount.id}" ${paymentAccount.defaultAccount ? 'selected="selected"' : ""}>${paymentAccount.accountType == "WEPAY" ? paymentAccount.email.concat(" (WePay)") : paymentAccount.accountNumber.concat(" (").concat(paymentAccount.bankName).concat(")")}</option>	</c:forEach>';
-   rowDiv =rowDiv+ '    </select>';
-   rowDiv =rowDiv+ '  </div>';
-   rowDiv =rowDiv+ '</td>';
    rowDiv =rowDiv+ '  <td>';
    rowDiv =rowDiv+ '      <div class="width90px">';
-   rowDiv =rowDiv+ '      <input type="text" class="form-control" placeholder="Quantity" id="quantity'+rowId+'" name="creditDebitNoteLineItems['+rowId+'].quantity" field-name="Quantity" onkeyup="totalCalculateAmount('+rowId+');validateNumber(this);" data-validation="required">';
+   rowDiv =rowDiv+ '      <input type="text" class="form-control" placeholder="Quantity" id="quantity'+rowId+'" name="creditDebitNoteLineItems['+rowId+'].quantity" field-name="Quantity" onkeyup="totalCalculateAmount('+rowId+');validateNumber(this);" data-validation="required validate_length length1-10">';
    rowDiv =rowDiv+ '    </div>';
    rowDiv =rowDiv+ '  </td>';
    rowDiv =rowDiv+ '  <td>';
    rowDiv =rowDiv+ '    <div class="width100px">';
-   rowDiv =rowDiv+ '      <input type="text" class="form-control" placeholder="Price" id="price'+rowId+'" name="creditDebitNoteLineItems['+rowId+'].price" field-name="Price" onkeyup="totalCalculateAmount('+rowId+');validateNumber(this);" data-validation="required">';
+   rowDiv =rowDiv+ '      <input type="text" class="form-control" placeholder="Price" id="price'+rowId+'" name="creditDebitNoteLineItems['+rowId+'].price" field-name="Price" onkeyup="totalCalculateAmount('+rowId+');validateNumber(this);" data-validation="required validate_length length1-10">';
    rowDiv =rowDiv+ '    </div>';
    rowDiv =rowDiv+ '  </td>';
    rowDiv =rowDiv+ '  <td>';

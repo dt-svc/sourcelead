@@ -7,15 +7,29 @@
         <button type="button" class="close hidden" data-dismiss="modal"  onclick="closeusRunpayrol();">&times;</button>
         <h4 class="modal-title hidden">Pay Stub</h4>
         <div class="row">
-          <div class="col-md-3">
-            <label class="clearfix"><strong>Address</strong></label>
-            <div class="clearfix">
+          <div class="clearfix mb5">
+            <label class="col-md-2"><strong>Employee Id:</strong></label>
+            <div class="col-md-5">
+              <p class="mb0" id="empId"></p>
+            </div>
+          </div>
+        <div class="clearfix mb5">
+            <label class="col-md-2"><strong>Name:</strong></label>
+            <div class="col-md-5">
+              <p class="mb0" id="empName"></p>
+            </div>
+        </div>
+        
+          <div class="clearfix mb5">
+            <label class="col-md-2"><strong>Address:</strong></label>
+            <div class="col-md-5">
               <p class="mb0" id="empAddress"></p>
             </div>
           </div>
-          <div class="col-md-3">
-            <label class="clearfix"><strong>Deposit Type</strong></label>
-            <div class="clearfix">
+          
+          <div class="clearfix mb5">
+            <label class="col-md-2"><strong>Deposit Type:</strong></label>
+            <div class="col-md-5">
               <select class="sel" title="Select Type" id="depositType" name="depositType">
                 <option value="Direct Deposit">Direct Deposit</option>
                 <option value = "By Check">By Check</option>
@@ -205,6 +219,12 @@
 		        url: sourceleadUrl+"/getEmployeePayroll?payrollUUID="+payrollUUID+"&status="+status,                 
 		        success: function(data) {
 		            var json = data.object;
+		            if(json.empId != null){
+		            	$("#empId").text(json.empId);
+		            }else{
+		            	$("#empId").text("--");
+		            }
+		            $("#empName").text(json.empName);
 		            $("#empAddress").text(json.employeeAddress);
 		            if(json.assSalType == "Salary" || json.assSalType == "LcaWage"){
 		            	$("#hoursAndEarningsTable").hide();
@@ -389,7 +409,7 @@
 							           if(pi.isBlocked == 'YES'){
 								            payItem = payItem +' <td><input type="text" class="formControl text-danger" readonly value="Blocked"></td>';
 							            }else{
-								            payItem = payItem +' <td><input type="text" class="formControl text-danger" readonly value="Blocked"></td>';
+								            payItem = payItem +' <td><input type="text" class="formControl text-danger" readonly value=""></td>';
 							              }  
 						            	payItem = payItem +' </tr>'; 
 				                  }
