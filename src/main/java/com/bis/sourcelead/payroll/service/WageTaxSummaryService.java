@@ -44,6 +44,8 @@ public interface WageTaxSummaryService {
 	ResponseList<WageTaxSummary> getUniqueWagesAndTaxListByOrgLocationIdAndPagination(OrgLocations orgLocation, PayrollBalance payrollBalance) throws Exception;
 
 	String getWagesAndTaxEmployeeId(Long candidateId) throws Exception;
+
+	ResponseList<WageTaxSummary> getWagesAndTaxByEmpId(OrgLocations orgLocation, WagesTaxSummaryDTO wagesTaxSummaryDTO);
 	
 	
 
