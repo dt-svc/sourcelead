@@ -3238,18 +3238,19 @@ public class InvoiceServiceImpl implements InvoiceService {
 						timelineDTO.setInvoicePaymentReminderStatus(timelineHistory.getInvoicePaymentReminderStatus());
 						List<User> usersList = userDao.getUsersListUsingMultipleStringIds(timelineHistory.getOwnerUsers());
 						StringBuilder sb=new StringBuilder();
-						String cc=null;
+						String conUser1=null;
 						for(User ownerUser: usersList){
 							if (ownerUser.getId().equals(timelineHistory.getCreatedBy().getId())) {
 								statusVal = "Reminder";
 								statusBy = " to ";
 								List<User> contactUsersList = userDao.getUsersListUsingMultipleStringIds(timelineHistory.getInvoice().getContactUsers());
 								for(User contactUsers :contactUsersList){
-									cc = sb.append(contactUsers.getFullName()).append(",").toString();
+									conUser1 = sb.append(contactUsers.getFullName()).append(",").toString();
 									statusValue = contactUsers.getFullName();
 								
 								}
-								statusValue = cc;
+								
+								statusValue = conUser1.replace(conUser1.substring(conUser1.length()-1), "");
 								EmailAttachment emailAttachment = null;
 								String invoiceFileUrl = timelineHistory.getInvoice().getFileUrl();
 								if (StringUtils.isNotBlank(invoiceFileUrl)) {
@@ -3409,11 +3410,11 @@ public class InvoiceServiceImpl implements InvoiceService {
 //						statusValue = timelineHistory.getInvoice().getOwnerUserId().getFullName();
 					} else if (status.equalsIgnoreCase("Void")) {
 						List<User> ownerUsersList = userDao.getUsersListUsingMultipleStringIds(timelineHistory.getInvoice().getOwnerUsers());
+						List<User> contactUsersList = userDao.getUsersListUsingMultipleStringIds(timelineHistory.getInvoice().getContactUsers());
 						for(User ownerUser: ownerUsersList){
 							if (timelineHistory.getCreatedBy().getId().equals(ownerUser.getId())) {
 								statusVal = "Void";
 								statusBy = " by ";
-								List<User> usersList = userDao.getUsersListUsingMultipleStringIds(timelineHistory.getInvoice().getOwnerUsers());
 								if(ownerUser.getUserCode().equals(timelineHistory.getInvoice().getUpdatedBy())){
 									statusValue = ownerUser.getFullName();	
 								}
@@ -3423,9 +3424,8 @@ public class InvoiceServiceImpl implements InvoiceService {
 										.equals(ownerUser.getId())) {
 									statusVal = "Void";
 									statusBy = " by ";
-									List<User> usersList = userDao.getUsersListUsingMultipleStringIds(timelineHistory.getInvoice().getContactUsers());
 									 
-									for(User contactUser: usersList){
+									for(User contactUser: contactUsersList){
 									if(contactUser.getUserCode().equals(timelineHistory.getInvoice().getUpdatedBy())){
 										statusValue = contactUser.getFullName();	
 									}
