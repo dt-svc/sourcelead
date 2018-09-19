@@ -1975,8 +1975,23 @@ public class CandidateDaoImpl implements CandidateDao {
 			
 		if(StringUtils.isNotBlank(skills)) {
 			String requirementSkills [] = skills.split(",");
-			String requirementSkillsStr = "'" + StringUtils.join(requirementSkills,"','") + "'";
-			subQuery = " AND CAND.SKILLS_NAME IN ("+requirementSkillsStr+")";
+			//String requirementSkillsStr = "'" + StringUtils.join(requirementSkills,"','") + "'";
+			//subQuery = " AND CAND.SKILLS_NAME IN ("+requirementSkillsStr+")";
+			
+			int i = 0;
+			int j = requirementSkills.length;
+			for(String rSkill : requirementSkills) {
+				i++;
+				if(i == 1) {
+					subQuery = subQuery + " AND (";
+				}else {
+					subQuery = subQuery + " OR ";
+				}
+				subQuery = subQuery + " CAND.SKILLS_NAME LIKE '%"+rSkill+"%' ";
+				if(i == j) {
+					subQuery = subQuery + " )";
+				}
+			}
 		}
 		
 		String	query ="SELECT "

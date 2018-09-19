@@ -1711,7 +1711,7 @@ public class UserServiceImpl implements UserService {
 				DashboardItemsDTO dashboardItemsDTO = new DashboardItemsDTO();
 				
 				JSONArray jsonArray = new JSONArray(dashboardItems.getItems());
-				if (jsonArray != null) {
+				if (jsonArray != null && jsonArray.length() > 0) {
 					List<JSONObject> itemsObjectList = new LinkedList<>();
 					for (int i = 0; i < jsonArray.length(); i++) {
 						JSONObject jsonObject = jsonArray.getJSONObject(i);
