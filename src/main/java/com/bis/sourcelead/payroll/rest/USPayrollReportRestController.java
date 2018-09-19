@@ -27,6 +27,8 @@ import com.bis.sourcelead.enums.Result;
 import com.bis.sourcelead.payroll.dto.PayPeriodDTO;
 import com.bis.sourcelead.payroll.dto.PayrollDeductionDTO;
 import com.bis.sourcelead.payroll.dto.PayrollReportDTO;
+import com.bis.sourcelead.payroll.dto.USPayrollDTO;
+import com.bis.sourcelead.payroll.service.PaysheetFrequencyService;
 import com.bis.sourcelead.service.UserGroupService;
 import com.bis.sourcelead.util.SourceLeadSessionManager;
 
@@ -39,6 +41,8 @@ public class USPayrollReportRestController {
 	@Autowired
 	UserGroupService userGroupService;
 	
+	@Autowired
+	PaysheetFrequencyService paysheetFrequencyService;
 	/**
 	 * Returning Us Payroll Jsp
 	 * 
@@ -220,6 +224,31 @@ public class USPayrollReportRestController {
 		return responseList;
 	}
 	
+
+	@RequestMapping(value = { "/runPayrollregister","/rest/runPayrollregister" }, method = RequestMethod.POST)
+	@ResponseBody
+	public ResponseList<USPayrollDTO> runPayrollregister(PayrollReportDTO payrollReportDTO,HttpServletRequest request, HttpServletResponse response) throws Exception
+	{
+		ResponseList<USPayrollDTO> responseList = new ResponseList<>();
+		try {
+			User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+			if (user != null) { 
+				List<USPayrollDTO> payrollRegisterReports = paysheetFrequencyService.getPayrollRegisterReports(payrollReportDTO);
+				responseList.setData(payrollRegisterReports);
+				responseList.setResponse(Result.SUCCESS.name());
+				responseList.setResponseMessage(Result.SUCCESS.getValue());
+			}else{
+				responseList.setResponse(Result.SESSION_TIMEDOUT.name());
+				responseList.setResponseMessage(Result.SESSION_TIMEDOUT.getValue());
+			}
+		} catch (Exception e) {
+			responseList.setResponse(Result.AWKWARD.name());
+			responseList.setResponseMessage(Result.AWKWARD.getValue());
+			logger.error(ExceptionUtils.getFullStackTrace(e));
+		}
+		return responseList;
+	}
+
 	
 	/**
 	 * Get Payroll Summary by pay period and paycheck Date
