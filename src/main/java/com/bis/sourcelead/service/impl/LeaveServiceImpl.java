@@ -2720,8 +2720,8 @@ public class LeaveServiceImpl implements LeaveService{
 		return leaveDao.getLeaveNamesByOrgLocationId(orgLocationId,userleaveTypeList,leaveTypesList,topleave);
 	}
 
-	public String getDepartmentTypeNamesByOrgLocationIdAndUserId(Long userId ) throws Exception {
-		return leaveDao.getDepartmentTypeNamesByOrgLocationIdAndUserId(userId);
+	public String getDepartmentTypeNamesByOrgLocationIdAndUserId(Long userId ,Long orgLocationId) throws Exception {
+		return leaveDao.getDepartmentTypeNamesByOrgLocationIdAndUserId(userId,orgLocationId);
 	}
 
 

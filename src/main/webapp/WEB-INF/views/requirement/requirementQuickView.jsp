@@ -661,6 +661,7 @@ function importApplicantsToJob(requirementId){
 		    	    $(".import_submission_side_wrap").addClass("import_submission_side_wrap_active");
 		    	    $(".side_mask").fadeIn(200);
 		    	    $("body").css('overflow-y', 'hidden');
+		    	    getSubmissionsUploadedHistory();
 				},
 			});
 }
