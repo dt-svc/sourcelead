@@ -34,6 +34,7 @@ public class CreditDebitNoteDTO extends SearchDTO {
 	private String exchangeCurrencyRate;
 	private String vendorCurrencyCode;
 	private String loginCurrencyCode;
+	private String account;
 	
 	 
 	public List<FileInfo> getFileInfo() {
@@ -216,6 +217,12 @@ public class CreditDebitNoteDTO extends SearchDTO {
 	}
 	public void setLoginCurrencyCode(String loginCurrencyCode) {
 		this.loginCurrencyCode = loginCurrencyCode;
+	}
+	public String getAccount() {
+		return account;
+	}
+	public void setAccount(String account) {
+		this.account = account;
 	}
 
 	

@@ -68,6 +68,14 @@ $(document).ready(function(){
 		</div>
 	</section>
 	
+	<div class="project_side_wrap_inn_tabs clearfix">
+	    <ul class="project-tabs-menu">
+		    <li class="current"><a href="${appPath}/payablesList">Bill List</a></li>
+		    <li class=""><a href="${appPath}/debitNoteList">Debit Note List</a></li>
+		    
+	    </ul>
+    </div>
+	
 	<div class="content-area content-new clearfix">
 		<div class="billing_dashboard noPad">
 			<div class="tabbable positionRelative">
@@ -181,7 +189,10 @@ $(document).ready(function(){
 				<div class="action-pop">
 					<span> 
 						<sec:authorize access="hasAnyRole('ROLE_ADD_BILL')">
-							<a href="javascript:void(0)" title="Create Bill" onclick="createBill();">Create Bill </a>
+							<!-- <a href="javascript:void(0)" title="Create Bill" onclick="createBill();">Create Bill </a> -->
+					<a href="<c:url value='${appPath}/createPayables'/>" title="Create Vendor Based Bill">Vendor Based Bill</a>
+					<a href="<c:url value='${appPath}/createInvoiceProjectPayableBased'/>" title="Create Project Based Bill">Project Based Bill</a>
+		            <a href="<c:url value='${appPath}/createExpensesPayableBill'/>" title="Create Other Bill">Other Bill</a>
                            </sec:authorize>
 						<a href="javascript:void(0)" title="Generate Automatic Bill" onclick="generateAutomaticInvoice();">Generate Automatic Bill</a>
 						 <a href="<c:url value='${appPath}/addPaymentBill'/>">Add Payment</a>
@@ -219,51 +230,7 @@ $(document).ready(function(){
 </section>
 
 <!-- Add invoice Popup -->
-<div class="addcandidate-popup">
-	<div class="row">
-		<div class="col-md-12">
-			<a href="javascript:void(0)" class="close-popdiv"
-				onClick="closeCandidate()">&times;</a>
-			<div class="col-md-4 mt25">
-				<div class="small-widget bgGreen">
-					<a href="<c:url value='${appPath}/createPayables'/>"
-						title="Create Vendor Based Bill">
 
-						<div class="clearfix mb10">
-							<img src="/resources/images/invoice_icon.png" class="text-center"
-								alt="create_receivables">
-						</div> <strong class="clearfix">Vendor Based</strong>
-					</a>
-				</div>
-			</div>
-
-			<div class="col-md-4 mt25">
-				<div class="small-widget bg-yellow">
-					<a href="<c:url value='${appPath}/createInvoiceProjectPayableBased'/>"
-						title="Create Project Based Bill">
-						<div class="clearfix mb10">
-							<!--<i class="fa fa-usd fa-3x"></i>-->
-							<img src="/resources/images/invoice_icon.png" class="text-center"
-								alt="Invoice">
-						</div> <strong class="clearfix">Project Based </strong>
-					</a>
-				</div>
-			</div>
-
-			 <div class="col-md-4 mt25">
-		          <div class="small-widget bg-purple"> <a href="other_receivables.html" title="Create other invoice">
-		            <a href="<c:url value='${appPath}/createExpensesPayableBill'/>" title="Create Other Bill">
-		            <div class="clearfix mb10">
-		              <i class="fa fa-usd fa-3x"></i>             
-		             <img src="/resources/images/invoice_icon.png" class="text-center" alt="Invoice">
-		              </div>
-		            <strong class="clearfix">Other</strong> </a> </div>
-		        </div>
-		 
-
-		</div>
-	</div>
-</div>
 <div class="pop_mask"></div>
 <div id="recvPymntpopOnline" class="modal" style="display: none;">
     

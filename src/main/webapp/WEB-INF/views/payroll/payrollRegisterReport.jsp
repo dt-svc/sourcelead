@@ -3,10 +3,12 @@
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <%@taglib uri="http://www.springframework.org/tags/form" prefix="form"%>
 
+<script src="/resources/js/payrollReports.js"></script>
 
 <script>
 $(document).ready(function(){
-   getPayGroupList();
+   getPayGroupList("payGroup");
+   getDepartments("payrollDepartment");
 });
 </script>
 <!-- Content Area -->
@@ -19,21 +21,22 @@ $(document).ready(function(){
     </section>
     
     <div class="contentareaInner-styles clearfix">
-    
+    <div id="payrollReportLoading"></div>
+    <form:form id="payrollregister_form" name="apply_leave_form" method="post">
     <div class="clearfix minHeight">
         <div class="clearfix row">
           <div class="col-md-5">
             <div class="form-group">
               <label class="col-md-12 paddingRight">Pay Group</label>
 				<div class="col-md-12">
-					<select class="form-control sel" id="payGroup" name="payGroup" onchange="getPayPeriodByGroupId();">
+					<select class="form-control sel" id="payGroup" name="payGroup" onchange="getPayPeriodByGroupId('payGroup','payPeriod');">
 					</select>
 				</div>
             </div>
             <div class="form-group">
               <label class="col-md-12">Payroll Type</label>
               <div class="col-md-12">
-                <select class="form-control sel">
+                <select class="form-control sel" id="payRollType" name="payRollType">
 					    <option>Select Type</option>
 						<option>Regular</option>
 						<option>Additional</option>
@@ -45,22 +48,24 @@ $(document).ready(function(){
              <div class="form-group">
               <label class="col-md-12">Pay Period</label>
               <div class="col-md-12">
-                <select class="form-control sel" id="payPeriod" name="payPeriod">
+                <select class="form-control sel" id="payPeriod" name="payPeriod" onchange="getFreqdates('freqStartDate','freqEndDate');">
 					    <!-- <option>Select Period</option>
 						<option>01-02-2018 28-02-2018</option>
 						<option>01-03-2018 28-03-2018</option>
 						<option>01-02-2018 28-02-2018</option> -->
 					</select>
+					<input type="hidden" name="freqStartDate" id="freqStartDate" value=""/>
+					<input type="hidden" name="freqEndDate" id="freqEndDate" value=""/>
               </div>
             </div>
              <div class="form-group">
               <label class="col-md-12">Department</label>
               <div class="col-md-12">
-                <select class="form-control chosen-select">
-					    <option>Select Department</option>
+                <select class="form-control chosen-select" id="payrollDepartment" name="department">
+					    <!-- <option>Select Department</option>
 						<option>Department-1</option>
 						<option>Department-2</option>
-						<option>Department-3</option>
+						<option>Department-3</option> -->
 					</select>
               </div>
             </div>
@@ -69,13 +74,13 @@ $(document).ready(function(){
 	<div class="clearfix footerstyelsNew">
         <div class="col-lg-12">
           <div class="pull-right">
-            <input value="Run" class="btn btn-success btnSuccess" type="button" onClick="runPayrollregister();">
+            <input value="Run" class="btn btn-success btnSuccess" type="button" onclick="runPayrollregisterReport();">
             <input value="Reset" class="btn btn-defualt ml10" type="button">
           </div>
         </div>
       </div>      
 	</div>
-    
+    </form:form>
      <div class="clearfix"></div>
     		
     		
@@ -111,7 +116,6 @@ $(document).ready(function(){
                 <th>Deductions</th>
                 <th>YTD Deductions</th>
                 <th>Net</th>
-                <th>YTD Deductions</th>
               </tr>
             </thead>
             <tbody>
@@ -123,7 +127,6 @@ $(document).ready(function(){
                 <td><div class="tblminwidth-50">45,0000.00</div></td>
                 <td><div class="tbldata-dotdot">230000</div></td>
                 <td><div class="tbldata-dotdot-100">230000</div></td>
-                <td><div class="tblminwidth-50">230000</div></td>
                 <td><div class="tblminwidth-50">230000</div></td>
                 <td><div class="tblminwidth-50">230000</div></td>
                 <td><div class="tblminwidth-50">230000</div></td>
@@ -151,54 +154,6 @@ $(document).ready(function(){
     </div>
     
   </section>
-  
-  
-  
-  
-<script>
-function getPayGroupList(){
-	 $.ajax({
-	    	type: "GET",
-	        url: sourceleadUrl+"/getPayGroupList?"+tokenParamName+"="+tokenValue                 , 
-	        success: function(json) {
-	        var output = "";
-	        output = output + "<option value=''>Select Group</option>";
-			for (var i=0; i<json.length; i++)
-			{
-				var opt = json[i];
-				output = output + "<option value='" +opt.id+ "'>"+opt.groupName+"</option>";
-			}
-			$("#payGroup").empty();
-			$("#payGroup").append(output);
-			$('#payGroup').trigger("chosen:updated"); 
-	        },
-	    });
-}
-</script>
-
-
-<script type="text/javascript">
-function getPayPeriodByGroupId(){
-	var groupId = $("#payGroup").val();
-	$.ajax({
-	    	type: "GET",
-	        url: sourceleadUrl+"/getPayPeriodByGroupId?"+tokenParamName+"="+tokenValue+"&groupId="+groupId               , 
-	        success: function(json) {
-	        var output = "";
-	        output = output + "<option value=''>Select Pay Period</option>";
-			for (var i=0; i<json.length; i++)
-			{
-				var opt = json[i];
-				output = output + "<option value='" +opt.id+ "'>"+opt.groupName+"</option>";
-			}
-			$("#payPeriod").empty();
-			$("#payPeriod").append(output);
-			$('#payPeriod').trigger("chosen:updated"); 
-	        },
-	    });	
-}
-</script>
-  
   
   <script type="text/javascript">
             $(function () {
@@ -247,6 +202,44 @@ function getPayPeriodByGroupId(){
 
 	});
 </script>
+
+<script type="text/javascript">
+function runPayrollregisterReport(){
+	if ($('#payrollregister_form').validate(false, validationSettings)) {
+		$("#payrollRegister").toggle();
+		var formData = getFormData('payrollregister_form');
+		$("#payrollReportLoading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
+		var payGroup = $('#payGroup').val();
+		var department = $('#payrollDepartment').val();
+		var payRollType = $('#payRollType').val();
+		var freqStartDate = $('#freqStartDate').val();
+		var freqEndDate = $('#freqEndDate').val();
+		$.ajax({
+			type : "POST",
+			data: formData,
+		    processData: false, 
+	 		contentType: false,
+			url : sourceleadUrl+ "/runPayrollregister?${_csrf.parameterName}=${_csrf.token}&payGroup="+payGroup+"&department="+department+"&payRollType="+payRollType+"&freqStartDate="+freqStartDate+"&freqEndDate="+freqEndDate,
+			success : function(result) {
+				alert("lkjkj")
+				/* if (result && result.response === "INVALID_DATA") {
+				    showError(result.responseMessage);
+				} else if (result.response === "AWKWARD") {
+				    location.href = "/errorPage";
+				} else if (result.response === "SUCCESS") {
+					location.replace(sourceleadUrl+ "/leaveManagementReports");
+				} else if (result.indexOf('Sign In') !== -1) {
+					location.replace(sourceleadUrl);
+				} else {
+				    showError("Operation failed, please try again");
+				} */
+			}
+		
+		});
+	}
+}
+</script>
+
 <script>	
 function getActions(){
 	$(".action-pop").slideToggle(200);
@@ -268,9 +261,6 @@ $("html").click(function(){
 $(".overIcon, .newActPop").click(function(e){
  	e.stopPropagation();
 });
-function runPayrollregister() {
-	$("#payrollRegister").toggle();
-}
 </script>
  
 

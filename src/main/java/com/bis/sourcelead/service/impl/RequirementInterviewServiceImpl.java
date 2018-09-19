@@ -569,6 +569,7 @@ public class RequirementInterviewServiceImpl implements RequirementInterviewServ
 	         tempHTML.append("<th> Interview Type </th>");
 	         tempHTML.append("<th> Interview Time & Date </th>");
 	         tempHTML.append("<th> Details </th>");
+	         tempHTML.append("<th> Resume </th>");
 	         if(null != templateId && !"".equalsIgnoreCase(templateId)){
 	         tempHTML.append("<th> Feedback </th>");
 	         }
@@ -606,8 +607,17 @@ public class RequirementInterviewServiceImpl implements RequirementInterviewServ
 					}
 					
 	     		     }*/
-			         
-			         
+
+			         if(requirementSubmissionTemplateFields.getRequirementSubmission().getCandidateResumes() != null){
+                         String url = StringUtils.removeEnd(sourceleadUrl, sourceleadUrl.substring(sourceleadUrl.lastIndexOf("/")));
+
+                          tempHTML.append("<td>").append("<a title='Download Resume' href='").append(url).append(requirementSubmissionTemplateFields.getRequirementSubmission().getCandidateResumes().getFileURL()).append("'style='text-decoration:none; '><div style='width:20px; height:20px; color:#333; font-size:30px; margin:auto; position:relative; top:-11px;'><strong>&#x21E9;</strong></div></a>").append("</td>");
+
+                   }
+			         else {
+		        		 tempHTML.append("<td style='text-align: center;'>").append("--").append("</td>");
+ 
+			         }
 			         int i=0;
 			         if(null != templateId && !"".equalsIgnoreCase(templateId)){
 					for (RequirementInterview interviersArray : interviewersArrayList) {
@@ -759,6 +769,7 @@ public class RequirementInterviewServiceImpl implements RequirementInterviewServ
 	         tempHTML.append("<th> Interview Type </th>");
 	         tempHTML.append("<th> Interview Time & Date </th>");
 	         tempHTML.append("<th> Details </th>");
+	         tempHTML.append("<th> Resume </th>");
 	         if(null != templateId && !"".equalsIgnoreCase(templateId)){
 	         tempHTML.append("<th> Feedback </th>");
 	         }
@@ -789,6 +800,18 @@ public class RequirementInterviewServiceImpl implements RequirementInterviewServ
 		        	 }else{
 		        		 tempHTML.append("<td style='text-align: center;'>").append("--").append("</td>");
 		        	 }
+
+			         if(requirementSubmissionTemplateFields.getRequirementSubmission().getCandidateResumes() != null){
+                         String url = StringUtils.removeEnd(sourceleadUrl, sourceleadUrl.substring(sourceleadUrl.lastIndexOf("/")));
+
+                          tempHTML.append("<td>").append("<a title='Download Resume' href='").append(url).append(requirementSubmissionTemplateFields.getRequirementSubmission().getCandidateResumes().getFileURL()).append("'style='text-decoration:none; '><div style='width:20px; height:20px; color:#333; font-size:30px; margin:auto; position:relative; top:-11px;'><strong>&#x21E9;</strong></div></a>").append("</td>");
+
+                   }
+			         else {
+		        		 tempHTML.append("<td style='text-align: center;'>").append("--").append("</td>");
+ 
+			         }
+
 			         int i=0;
 			         if(null != templateId && !"".equalsIgnoreCase(templateId)){
 					for (RequirementInterview interviersArray : intervieresArrayList) {

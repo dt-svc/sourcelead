@@ -7,15 +7,29 @@
         <button type="button" class="close hidden" data-dismiss="modal"  onclick="closeusRunpayrol();">&times;</button>
         <h4 class="modal-title hidden">Pay Stub</h4>
         <div class="row">
-          <div class="col-md-3">
-            <label class="clearfix"><strong>Address</strong></label>
-            <div class="clearfix">
+          <div class="clearfix mb5">
+            <label class="col-md-2"><strong>Employee Id:</strong></label>
+            <div class="col-md-5">
+              <p class="mb0" id="empId"></p>
+            </div>
+          </div>
+        <div class="clearfix mb5">
+            <label class="col-md-2"><strong>Name:</strong></label>
+            <div class="col-md-5">
+              <p class="mb0" id="empName"></p>
+            </div>
+        </div>
+        
+          <div class="clearfix mb5">
+            <label class="col-md-2"><strong>Address:</strong></label>
+            <div class="col-md-5">
               <p class="mb0" id="empAddress"></p>
             </div>
           </div>
-          <div class="col-md-3">
-            <label class="clearfix"><strong>Deposit Type</strong></label>
-            <div class="clearfix">
+          
+          <div class="clearfix mb5">
+            <label class="col-md-2"><strong>Deposit Type:</strong></label>
+            <div class="col-md-5">
               <select class="sel" title="Select Type" id="depositType" name="depositType">
                 <option value="Direct Deposit">Direct Deposit</option>
                 <option value = "By Check">By Check</option>
@@ -108,37 +122,37 @@
                           <th colspan="2">Taxes</th>
                         </tr>
                       </thead>
-                      <tbody>
-                        <tr>
+                      <tbody id="taxesBodyDIV">
+                       <!--  <tr>
                           <th>Description</th>
                           <th>Amount</th>
                         </tr>
                         <tr>
                           <td>Federal with holding</td>
                           <td><i class="fa fa-dollar mr5"></i><span id="federalWT">0.0</span></td>
-                         <!--  <td><input type="text" id="federal" name="federal" value="" class="formControl" readOnly></td> -->
+                          <td><input type="text" id="federal" name="federal" value="" class="formControl" readOnly></td>
                         </tr>
                         <tr>
                           <td>Medicare</td>
                            <td><i class="fa fa-dollar mr5"></i><span id="medicareWT">0.0</span></td>
-                         <!--  <td><input type="text" id="medicare" name="medicare" value="" class="formControl" readOnly></td> -->
+                          <td><input type="text" id="medicare" name="medicare" value="" class="formControl" readOnly></td>
                         </tr>
                         <tr>
                           <td>FICA</td>
                            <td><i class="fa fa-dollar mr5"></i><span id="ficaWT">0.0</span></td>
-                         <!-- <td><input type="text" id="fica" name="fica" value="" class="formControl" readOnly></td> -->
+                         <td><input type="text" id="fica" name="fica" value="" class="formControl" readOnly></td>
                         </tr>
                       
                         <tr>
                           <td>State Withholding</td>
                           <td><i class="fa fa-dollar mr5"></i><span id="stateWithHoldingWT">0.0</span></td>
-                         <!--  <td><input type="text" id="stateWithHolding" name="stateWithHolding" value="" class="formControl" readOnly></td> -->
+                          <td><input type="text" id="stateWithHolding" name="stateWithHolding" value="" class="formControl" readOnly></td>
                         </tr>
                           <tr>
                           <td>Advanced Earned Income Credit</td>
                            <td><i class="fa fa-dollar mr5"></i><span id="aeic">0.0</span></td>
-                          <!-- <td><input type="text" id="aeic" name="aeic" value="124,783.00" class="formControl" readOnly></td> -->
-                        </tr>
+                          <td><input type="text" id="aeic" name="aeic" value="124,783.00" class="formControl" readOnly></td>
+                        </tr> -->
                         
                       </tbody>
                       <tfoot>
@@ -205,6 +219,12 @@
 		        url: sourceleadUrl+"/getEmployeePayroll?payrollUUID="+payrollUUID+"&status="+status,                 
 		        success: function(data) {
 		            var json = data.object;
+		            if(json.empId != null){
+		            	$("#empId").text(json.empId);
+		            }else{
+		            	$("#empId").text("--");
+		            }
+		            $("#empName").text(json.empName);
 		            $("#empAddress").text(json.employeeAddress);
 		            if(json.assSalType == "Salary" || json.assSalType == "LcaWage"){
 		            	$("#hoursAndEarningsTable").hide();
@@ -221,11 +241,27 @@
 			            $("#totalEarnings").text(json.totalEarnings.toFixed(2));
 		            }
 		        	
-		            $("#federalWT").text(json.federal);
+		            var taxes = "";
+			        taxes = taxes + '<tr>';
+			        taxes = taxes + '<th>Description</th>';
+			        taxes = taxes + '<th>Amount</th>';
+			        taxes = taxes + '</tr>';
+			        for(var e in json.tax){
+			        	//json.tax[e]
+			        	if(json.tax[e] > 0){
+			        		taxes = taxes + '<tr>';
+				        	taxes = taxes + '<td>'+e+'</td>';
+				        	taxes = taxes + '<td><i class="fa fa-dollar mr5"></i>'+json.tax[e]+'</td>';
+				        	taxes = taxes + ' </tr>';
+			        	}
+			        }
+		            $("#taxesBodyDIV").empty();
+		            $("#taxesBodyDIV").append(taxes);
+		            /* $("#federalWT").text(json.federal);
 		            $("#medicareWT").text(json.medicare);
 		            $("#ficaWT").text(json.fica);
 		            $("#stateWithHoldingWT").text(json.stateWithHolding);
-		            $("#aeic").text(json.aeic);
+		            $("#aeic").text(json.aeic); */
 		            $("#taxes").text(json.taxes);
 		            
 		            $("#gross").text(json.grossPay);
@@ -373,7 +409,7 @@
 							           if(pi.isBlocked == 'YES'){
 								            payItem = payItem +' <td><input type="text" class="formControl text-danger" readonly value="Blocked"></td>';
 							            }else{
-								            payItem = payItem +' <td><input type="text" class="formControl text-danger" readonly value="Blocked"></td>';
+								            payItem = payItem +' <td><input type="text" class="formControl text-danger" readonly value=""></td>';
 							              }  
 						            	payItem = payItem +' </tr>'; 
 				                  }

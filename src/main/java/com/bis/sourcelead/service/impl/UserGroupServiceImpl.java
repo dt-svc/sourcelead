@@ -21,6 +21,7 @@ import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.entity.UserGroup;
 import com.bis.sourcelead.enums.Result;
 import com.bis.sourcelead.payroll.dto.AssociateDeductionDTO;
+import com.bis.sourcelead.payroll.dto.PayPeriodDTO;
 import com.bis.sourcelead.service.UserGroupService;
 import com.bis.sourcelead.service.UserService;
 import com.bis.sourcelead.util.SourceLeadRandomCodeHelper;
@@ -201,6 +202,12 @@ public class UserGroupServiceImpl implements UserGroupService{
 		}
 		
 		return res;
+	}
+
+	@Override
+	public List<PayPeriodDTO> getPayPeriodsByGroupId(Long groupId)
+	{
+		return userGroupDao.getPayPeriodsByGroupId(groupId);
 	}
 	
 	

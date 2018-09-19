@@ -114,8 +114,8 @@ $(document).ready(function() {
 		$.ajax({
 			type : "GET",
 			url : sourceleadUrl+ "/getDepartmentList?${_csrf.parameterName}=${_csrf.token}&departmentStatus="+status,
-			success : function(data) {
-				var json = JSON.parse(data);
+			success : function(json) {
+// 				var json = JSON.parse(data);
    	        	var result = "";
    	        	result = result +'<table id="departmentPagination">';
    		    	result = result +'<thead>';
@@ -126,9 +126,9 @@ $(document).ready(function() {
    		    	result = result +'    </tr>';
    		    	result = result +'</thead>	';
    		    	result = result +'<tbody>';
-   		    	for (var i=0; i<json.length; i++)
+   		    	for (var i=0; i<json.data.length; i++)
    				{
-   		    		var report = json[i];
+   		    		var report = json.data[i];
    		    		if(report.description != null && report.description !='' && report.description != 'undefined'){
    		    			description = report.description
    		    		}else{

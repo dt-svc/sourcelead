@@ -1433,7 +1433,7 @@ function getChangeRole(userId,userRoleId){
 	 $('#EmailIdDiv').find('p.jquery_form_error_message').remove();
      var EmployeeId = document.getElementById("EmployeeId").value;
      var EmailId = document.getElementById("EmailId").value;
-     var RatePer = document.getElementById("RatePer").value; 
+    /*  var RatePer = document.getElementById("RatePer").value; 
 		if(RatePer != null && RatePer != ""){
 			$('#Rate').removeAttr('data-validation-optional');
 			$('#Rate').attr("data-validation","required validate_Space validate_float validate_length length1-8"); 
@@ -1450,10 +1450,10 @@ function getChangeRole(userId,userRoleId){
 		}else{
 			$('#RatePer').removeAttr('data-validation');
 			$('#RatePer').attr("data-validation-optional","true"); 
-		}
+		} */
      
       if ($('#editUser_form').validate(false, validationSettings)){
-    	  if(EmployeeId!=null&&EmployeeId!="" && empId != EmployeeId){
+    	  if(EmployeeId != null && EmployeeId != "" && empId != EmployeeId){
           $.ajax({
                 type: "POST",
                 url: sourceleadUrl+"/validateExistingEmployeeId?"+tokenParamName+"="+tokenValue+"&id="+id+"&userId="+userId+"&EmployeeId="+EmployeeId,
@@ -1837,19 +1837,40 @@ $("#editRoleDetailsList").empty();
 					result = result + ' <input type="text" value="'+json.user.email+'" '+readonly+' id="EmailId" name="email" field-name="EmailId" onblur="validateUserUpdatedEmail('+userId+');" data-validation="required validate_Space validate_email validate_length length2-100"/>';
 					result = result + ' </div>';
 					
+					if("${SourceLeadWeb_orgLocations.country}" == 'United States'){
 					result = result + ' <div class="user_summary_edit_cta">';
 					result = result + ' <label>SSN<span class="text-danger">&nbsp;*</span></label>';
 					result = result + ' <input type="text" value="'+json.user.ssn+'" field-name="SSN" data-validation="required validate_Space"/>';
 					result = result + ' </div>';
+					}
 					
 					result = result + ' <div class="user_summary_edit_cta">';
 					result = result + ' <label>Work Location<span class="text-danger">&nbsp;*</span></label>';
-					result = result + ' <input type="text" value="'+json.workLocation+'" field-name="Work Location" data-validation="required validate_Space"/>';
+					result = result + ' <select name="workLocation" field-name="Work Location" data-validation="required validate_Space">';
+					if(json.locationList != null){
+						result = result + ' <option> -- Select Location -- </option>';
+						for(var i = 0; i < json.locationList.length ; i++){
+							var report = json.locationList[i];
+							if(json.workLocationId == report.id){
+								result = result + ' <option value= '+report.id+' selected> '+report.orgLocationAddress+' </option>';
+							}else{
+								result = result + ' <option value= '+report.id+'> '+report.orgLocationAddress+' </option>';
+							}
+						}
+					}
+					
+					result = result + ' </select>';
 					result = result + ' </div>';
 					
 					result = result + ' <div class="user_summary_edit_cta">';
 					result = result + ' <label>Residence Location<span class="text-danger">&nbsp;*</span></label>';
-					result = result + ' <input type="text" value="'+json.residenceAddress+'" field-name="Residence Location" data-validation="required validate_Space"/>';
+					result = result + ' <input type="text" value="'+json.residenceAddress+'" id="residenceLocation" name="residenceLocation" field-name="Residence Location" data-validation="required validate_Space"/>';
+					result = result + ' <input type="hidden" id="residenceCountry" name="residenceCountry" value="'+json.residenceCountry+'" />';
+	                result = result + ' <input type="hidden" id="residenceState" name="residenceState" value="'+json.residenceState+'"/>';
+	                result = result + ' <input type="hidden" id="residenceCity" name="residenceCity" value="'+json.residenceCity+'"/>';
+					result = result + ' <input type="hidden" id="residenceZipCode" name="residenceZipCode" value="'+json.residenceZipCode+'"/>';
+	                result = result + ' <input type="hidden" id="residenceLatitude" name="residenceLatitude" value="'+json.residenceLatitude+'" />';
+	                result = result + ' <input type="hidden" id="residenceLongitude" name="residenceLongitude" value="'+json.residenceLongitude+'" />';
 					result = result + ' </div>';
 					
 					
@@ -2147,6 +2168,8 @@ $("#editRoleDetailsList").empty();
 			    $("#editUserDiv").empty(); 
 			    $("#editUserDiv").append(result);
 			    
+			    initLocationAuto('residenceLocation','residenceCountry','residenceState','residenceCity','residenceZipCode','residenceLatitude','residenceLongitude','editAssociate','','address');
+
 			    $("#vendorcontact").chosen();
 			    $("#vendorcontact, #user_department").trigger("chosen:updated");
 			    $("#currentCurrency").selectpicker('refresh');
@@ -2173,7 +2196,8 @@ $("#editRoleDetailsList").empty();
 			    getVendorsByOrgLocationId();
 			    getDepartmentsList();
 			    maskme(); 
-			    
+				
+
 			    getShiftList(json.shiftId);
 	        },
 		});

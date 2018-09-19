@@ -53,6 +53,14 @@ $(document).ready(function(){
       <div class="pull-right brud-crum"><a href="<c:url value='${appPath}/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a> &raquo; Invoices List</div>
     </section>
     
+    <div class="project_side_wrap_inn_tabs clearfix">
+	    <ul class="project-tabs-menu">
+		    <li class="current"><a href="${appPath}/invoiceList">Invoice List</a></li>
+		    <li class=""><a href="${appPath}/creditNoteList">Credit Note List</a></li>
+		    
+	    </ul>
+    </div>
+    
     <div class="content-area content-new clearfix">
       <div class="billing_dashboard noPad">
         <!-- <div class="tabbable positionRelative">
@@ -139,6 +147,7 @@ $(document).ready(function(){
               </select>
             </div>
           </ul>
+          
           <div class="tab-content"> 
             <div id="invoiceLoading"></div>
             <!-- Employee Details -->
@@ -159,7 +168,10 @@ $(document).ready(function(){
 				<div class="action-pop">
 					<span> 
 					 	<sec:authorize access="hasAnyRole('ROLE_ADD_INVOICE')">                  
-	                      <a href="javascript:void(0)" title="Create invoice"  onclick="createBill();">Create Invoice</a>
+	                      <!-- <a href="javascript:void(0)" title="Create invoice"  onclick="createBill();">Create Invoice</a> -->
+	                      <a  href="<c:url value='${appPath}/createInvoice'/>" title="Create Client Based Invoice">Client Based Invoice</a>
+						  <a href="<c:url value='${appPath}/createInvoiceProjectBased'/>" title="Create Project Based Invoice">Project Based Invoice</a>
+						  <a  href="<c:url value='${appPath}/createReceivableExpensesBill'/>" title="Create Other Invoice">Other Invoice</a>	                      
 	                  	</sec:authorize>
 	                   	<a href="javascript:void(0)" class="" title="Generate Automatic Invoice" onclick="generateAutomaticInvoice();">Generate Automatic Invoice</a>
 	                   	 <a href="<c:url value='${appPath}/addPaymentInvoice'/>">Add Payment</a>
@@ -184,66 +196,19 @@ $(document).ready(function(){
                   <div class="candidate_wrap_table datatable_filter">
 	                  <div id="invoiceList"></div>
                   </div>
+                  
+                  
                 </div>
               </div>
             </div>
           </div>
+          
           <!-- STYLED IN FORMS.CSS --> 
         </div>
       </div>
-    </div>
   </section>
   
-  <!-- Add invoice Popup -->
-		   <div class="addcandidate-popup">
-		    <div class="row">
-		      <div class="col-md-12"> <a href="javascript:void(0)" class="close-popdiv" onClick="closeCandidate()">&times;</a>
-		      <div class="col-md-4 mt25">
-		        <div class="small-widget bgGreen">
-		            <a  href="<c:url value='${appPath}/createInvoice'/>" title="Create Client Based Invoice">
-		          <div class="clearfix mb10"> 
-		              <img src="/resources/images/invoice_icon.png" class="text-center" alt="create_receivables">
-		          </div>
-		          <strong class="clearfix">Client Based</strong></a>
-		          </div>
-		      </div>
-		
-		        <div class="col-md-4 mt25">
-		          <div class="small-widget bg-yellow"> 
-		          <a href="<c:url value='${appPath}/createInvoiceProjectBased'/>" title="Create Project Based Invoice">
-		            <div class="clearfix mb10">
-		                <!--<i class="fa fa-usd fa-3x"></i>-->
-		                <img src="/resources/images/invoice_icon.png" class="text-center" alt="Invoice">
-		            </div>
-		            <strong class="clearfix">Project Based </strong> </a> </div>
-		        </div>
-		          
-		         <div class="col-md-4 mt25">
-		          <div class="small-widget bg-purple"> <a href="other_receivables.html" title="Create other invoice">
-		            <a  href="<c:url value='${appPath}/createReceivableExpensesBill'/>" title="Create Other Invoice">
-		            <div class="clearfix mb10">
-		              <i class="fa fa-usd fa-3x"></i>             
-		             <img src="/resources/images/invoice_icon.png" class="text-center" alt="Invoice">
-		              </div>
-		            <strong class="clearfix">Other</strong> </a> </div>
-		        </div>
-		
-		      
-		          </div>
-		    </div>
-		  </div>
-		  <div class="pop_mask"></div>
-		  <script>
-		    //addcandidate-popup script
-		    function createBill(){
-		        $('.addcandidate-popup').fadeIn(200);
-		        $('.pop_mask').fadeIn(200);
-		    };
-		       function closeCandidate(){
-		        $('.addcandidate-popup').fadeOut(200);
-		        $('.pop_mask').fadeOut(200);
-		       }
-		    </script> 
+		  
   
 <script>
 

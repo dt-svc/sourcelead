@@ -1731,6 +1731,7 @@ function errInvoiceDate(){
 <script>
 function getVendorContacts(vendorContactId,projectName){
 	var orgRelationId = $("#vendorOrgRelationId").val();
+	$("#vendorContact").empty();
 	$.ajax({
 		type : "GET",
 		url: sourceleadUrl+"/getPayableVendorContactsByOrgRelationId?"+tokenParamName+"="+tokenValue+"&orgRelationId="+orgRelationId,
