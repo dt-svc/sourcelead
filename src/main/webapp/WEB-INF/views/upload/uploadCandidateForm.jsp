@@ -150,6 +150,7 @@ var uploadflag= true;
 	
 	<div class="project_tabs_inn_table project_tabs_inn_table_a datatable_filter dataSeaTop">
 	    	<table id="uploadXlsHistoryDiv" class="display" cellspacing="0" width="100%"></table>
+	    	<input type="hidden"  id="uploadedPercentage" value="0">
 		</div>	  
 </section>
 
