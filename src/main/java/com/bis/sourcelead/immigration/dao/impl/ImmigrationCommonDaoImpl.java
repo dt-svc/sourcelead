@@ -2343,4 +2343,25 @@ public class ImmigrationCommonDaoImpl implements ImmigrationCommonDao {
 	        int count = query.executeUpdate();
 	        logger.debug("Number of records deleted-->" + count);
 	}
+
+	@Override
+	@Transactional(rollbackFor = { Exception.class })
+	public int updateLcaHistoryStatusByLcaNumber(Long lhId, Long immigrationId, Long candidateId) {
+		
+		Session session = this.sessionFactory.getCurrentSession();
+		int result=0;
+		try {
+			if (immigrationId != null) {
+				logger.debug(" update lcaHistory " + immigrationId);
+				String queryString = "UPDATE LcaHistory lh  SET lh.isCurrent ='N' where lh.immigrationId.id=:immigrationId and lh.candidate.id = :candidateId and lh.id<:lhId";
+				 result=session.createQuery(queryString).setLong("immigrationId", immigrationId).setLong("candidateId", candidateId).setLong("lhId", lhId).executeUpdate();
+			   
+			}
+		} catch (Exception exception) {
+			logger.error("Exception caught while  lcaHistory information " + exception.getMessage());
+			exception.printStackTrace();
+		}
+		return result;
+	}
+	
 }
