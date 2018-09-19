@@ -492,6 +492,7 @@ public class DataMigrationServiceImpl implements DataMigrationService {
 	    		history.setCreatedDate(new Date());
 	    		history.setStatus(1);
 	    		history.setFileName(fileName);
+	    		history.setFileContentType("application/vnd.ms-excel");
 	    		history.setUploadId(dataMigrationDTO.getUploadid());
 	    		history.setSessionId(dataMigrationDTO.getSessionId());
 	    		history.setUploadProcessingStatus("Inprogress");
@@ -509,11 +510,11 @@ public class DataMigrationServiceImpl implements DataMigrationService {
 					history.setUploadEntityType("Timesheets");
 					break;
 				case "assetUpload":
-					history.setUploadEntityType("Asset Management");
+					history.setUploadEntityType("Assets");
 					break;
 
 				case "projectTasks":
-					history.setUploadEntityType("Project Tasks");
+					history.setUploadEntityType("ProjectTasks");
 					break;
 
 				case "associateUpload":

@@ -87,6 +87,7 @@
 				<input type="hidden"  readonly id="headerPosition" name="headerPosition" value="${headerPosition}">
 				<input type="hidden"  readonly id="timesheetMode" name="timesheetMode" value="${timesheetMode}">
 				<input type="hidden"  readonly id="importStatus" name="importStatus" value="${importStatus}">
+				<input type="hidden"  id="uploadedPercentage" value="0">
 			</div>
 			<!-- Select Dropdowns -->
 		</div>
@@ -268,11 +269,28 @@
 <script>
 function getUploadProgressBar(){
 	var uploadType = '${uploadType}'
+	
 	if(uploadType == 'candidatesUpload'){
 		uploadType = 'Candidates';
 	}else if(uploadType == 'submmissionTemplateUpload'){
 		uploadType = 'Submissions';
+	}else if(uploadType == 'jobUpload'){
+		uploadType = 'Jobs';
+	}else if(uploadType == 'timesheetUpload'){
+		uploadType = 'Timesheets';
+	}else if(uploadType == 'assetUpload'){
+		uploadType = 'Assets';
+	}else if(uploadType == 'projectTasks'){
+		uploadType = 'ProjectTasks';
+	}else if(uploadType == 'associateUpload'){
+		uploadType = 'Associates';
+	}else if(uploadType == 'immigrationUpload'){
+		uploadType = 'Immigration';
+	}else if(uploadType == 'lcaUpload'){
+		uploadType = 'LCA';
 	}
+	 var uploadedPercentage = document.getElementById("uploadedPercentage").value;
+	
 	$.ajax({
     	type: "POST",
         url: sourceleadUrl+"/getXlsProcessingHistroyListByEntityType?"+tokenParamName+"="+tokenValue+"&entityType="+uploadType, 
@@ -312,15 +330,15 @@ function getUploadProgressBar(){
 	        		    result = result + '<td><div class="tbldata-dotdot-100">'+report.successCount+'</div></td>';
 	        		    result = result + '<td><div class="tbldata-dotdot-100">'+report.failureCount+'</div></td>';
 	        		    result = result + '<td><div class="tbldata-dotdot-me">'+report.date+'&nbsp;&nbsp;'+report.time+'</div></td>';
-	        		     
 	        		    if(report.uploadProcessingStatus == 'Completed'){
-	        		    	result = result + '<td><div><span>'+report.uploadProcessingStatus+'</span></div></td>';
+	        		    	result = result+'<td><div class="tblicons_4"> <a download class="glyphicon glyphicon-download-alt" target="_blank" href=\"'+report.fileUrl+'\" download title="Download"></a>';
+			           		result = result+'&nbsp;&nbsp;&nbsp;&nbsp;<a class="fa fa-eye" href="javascript:void(0)" onClick="viewFile(\''+report.fileUrl+'\',\''+report.fileName+'\',\''+report.fileContentType+'\');"title="preview"></a>';
 	        		    }else{
 	        		    
 	        		    	  result = result + '<td>';
 	         		    	  result = result + '<div class="browseProgress">';
 	         		    	  result = result + '<div class="progress progress-striped active">';
-	         		    	  result = result + '<div class="progress-bar progress-bar-success" id="progressBar">0%</div>';
+	         		    	  result = result + '<div class="progress-bar progress-bar-success" id="progressBar">'+uploadedPercentage+'</div>';
 	         		    	  result = result + '</div>';
 	         		    	  result = result + '<div class="progressCount">Uploading <span id="currentUploadedCount"></span> of <span id="totalUploadedCount"></span></div>';
 	         		    	  result = result + '</div>';
@@ -339,8 +357,8 @@ function getUploadProgressBar(){
 		    			
 		    			if(progressRow != ''){
 		    				  $(".browseProgress").show();
-	                  		  $("#progressBar").html('0%');
-	                  		  $(".progress div").css("width", "0%");
+	                  		  $("#progressBar").html(uploadedPercentage+"%");
+	                  		  $(".progress div").css("width", uploadedPercentage+"%");
 	                          getXlsProgressBar(progressRow);
 		    			}
 	           }
@@ -363,6 +381,8 @@ function getUploadProgressBar(){
 		$("#progressBar").html(parseInt(percentComplete*100)+'%');
 		$("#totalUploadedCount").html(totalCount);
 		$("#currentUploadedCount").html(uploadingCount);
+		$("#uploadedPercentage").val(parseInt(percentComplete*100));
+		
 			
 	}
 	

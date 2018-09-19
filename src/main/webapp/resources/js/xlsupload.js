@@ -44,10 +44,11 @@ function Xlsupload(){
 		        		    result = result + '<td><div class="tbldata-dotdot-100">'+report.failureCount+'</div></td>';
 		        		    result = result + '<td><div class="tbldata-dotdot-me">'+report.date+'&nbsp;&nbsp;'+report.time+'</div></td>';
 		        		    if(report.uploadProcessingStatus == 'Completed'){
-		        		    	result = result + '<td><div><span>'+report.uploadProcessingStatus+'</span></div></td>';
+		        		    	result = result+'<td><div class="tblicons_4"> <a download class="glyphicon glyphicon-download-alt" target="_blank" href=\"'+report.fileUrl+'\" download title="Download"></a>';
+				           		result = result+'&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a class="fa fa-eye" href="javascript:void(0)" onClick="viewFile(\''+report.fileUrl+'\',\''+report.fileName+'\',\''+report.fileContentType+'\');"title="preview"></a>';
 		        		    }else{
 		        		    
-		        		    	  result = result + '<td class="tbldata-dotdot-me">';
+		        		    	  result = result + '<td>';
 		         		    	  result = result + '<div class="browseProgress">';
 		         		    	  result = result + '<div class="progress progress-striped active">';
 		         		    	  result = result + '<div class="progress-bar progress-bar-success" id="progressBar">0%</div>';

@@ -157,6 +157,7 @@ public class UploadXlsHistoryDaoImpl implements UploadXlsHistoryDao{
 				+" HISTORY.FAILURE_COUNT AS failureCount, "
 				+" HISTORY.FILE_NAME AS fileName, "
 				+" HISTORY.FILE_URL AS fileUrl, "
+				+" HISTORY.FILE_CONTENT_TYPE AS fileContentType, "
 				+" HISTORY.UUID AS uuid, "
 				+" DATE_FORMAT(HISTORY.CREATED_DATE, '%Y-%m-%d') AS date, "
 				+" DATE_FORMAT(HISTORY.CREATED_DATE, '%h:%i:%s %p') AS time, "

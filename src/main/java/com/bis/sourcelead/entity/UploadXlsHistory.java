@@ -53,6 +53,9 @@ public class UploadXlsHistory implements Serializable{
 	@Column(name = "FILE_URL", columnDefinition = "LONGTEXT default NULL")
 	private String fileUrl;
 	
+	@Column(name = "FILE_CONTENT_TYPE", columnDefinition = "LONGTEXT default NULL")
+	private String fileContentType;
+	
 	@Column(name = "UPLOAD_STATUS")
 	private String uploadStatus;
 	
@@ -200,6 +203,14 @@ public class UploadXlsHistory implements Serializable{
 
 	public void setUploadProcessingStatus(String uploadProcessingStatus) {
 		this.uploadProcessingStatus = uploadProcessingStatus;
+	}
+
+	public String getFileContentType() {
+		return fileContentType;
+	}
+
+	public void setFileContentType(String fileContentType) {
+		this.fileContentType = fileContentType;
 	}
     
     
