@@ -673,4 +673,10 @@ public class WageTaxSummaryServiceImpl implements WageTaxSummaryService{
 		}
 		return empId;
 	}
+
+	@Override
+	public ResponseList<WageTaxSummary> getWagesAndTaxByEmpId(OrgLocations orgLocation, WagesTaxSummaryDTO wagesTaxSummaryDTO)
+	{
+		return wageTaxSummaryDao.getWagesAndTaxByEmpId(orgLocation, wagesTaxSummaryDTO);
+	}
 }

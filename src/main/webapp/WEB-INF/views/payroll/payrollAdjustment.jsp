@@ -12,6 +12,12 @@
         <div class="row">
         
         <div class="col-md-6">
+        <div class="row">
+            <label class="col-md-4"><strong>Employee Id:</strong></label>
+            <div class="col-md-8">
+              <p class="mb0" id="empId"></p>
+            </div>
+          </div>
         
         <div class="row">
             <label class="col-md-4"><strong>Name:</strong></label>
@@ -276,7 +282,12 @@
 		        url: sourceleadUrl+"/getEmployeePayroll?payrollUUID="+payrollUUID+"&status="+status,                 
 		        success: function(data) {
 		            var json = data.object;
-		            $("#empName").text(json.empName)
+		            if(json.empId != null){
+		            	$("#empId").text(json.empId);
+		            }else{
+		            	$("#empId").text("--");
+		            }
+		            $("#empName").text(json.empName);
 		            $("#empAddress").text(json.employeeAddress);
 		            
 		            $("#assSalType").val(json.assSalType);
