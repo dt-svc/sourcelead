@@ -26,6 +26,7 @@ import com.bis.sourcelead.entity.UserGroup;
 import com.bis.sourcelead.enums.Result;
 import com.bis.sourcelead.payroll.dto.PayPeriodDTO;
 import com.bis.sourcelead.payroll.dto.PayrollDeductionDTO;
+import com.bis.sourcelead.payroll.dto.PayrollReportDTO;
 import com.bis.sourcelead.payroll.dto.USPayrollDTO;
 import com.bis.sourcelead.payroll.service.PaysheetFrequencyService;
 import com.bis.sourcelead.service.UserGroupService;
@@ -223,15 +224,15 @@ public class USPayrollReportRestController {
 		return responseList;
 	}
 	
-	@RequestMapping(value = { "/runPayrollregister","/rest/runPayrollregister" }, method = RequestMethod.GET)
+	@RequestMapping(value = { "/runPayrollregister","/rest/runPayrollregister" }, method = RequestMethod.POST)
 	@ResponseBody
-	public ResponseList<USPayrollDTO> runPayrollregister(PayPeriodDTO payPeriodDTO,HttpServletRequest request, HttpServletResponse response) throws Exception
+	public ResponseList<USPayrollDTO> runPayrollregister(PayrollReportDTO payrollReportDTO,HttpServletRequest request, HttpServletResponse response) throws Exception
 	{
 		ResponseList<USPayrollDTO> responseList = new ResponseList<>();
 		try {
 			User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
 			if (user != null) { 
-				List<USPayrollDTO> payrollRegisterReports = paysheetFrequencyService.getPayrollRegisterReports(payPeriodDTO);
+				List<USPayrollDTO> payrollRegisterReports = paysheetFrequencyService.getPayrollRegisterReports(payrollReportDTO);
 				responseList.setData(payrollRegisterReports);
 				responseList.setResponse(Result.SUCCESS.name());
 				responseList.setResponseMessage(Result.SUCCESS.getValue());

@@ -4,6 +4,8 @@ import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
+import javax.servlet.http.HttpServletRequest;
+
 import org.apache.commons.lang.exception.ExceptionUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -34,6 +36,7 @@ import com.bis.sourcelead.service.OrgLocationService;
 import com.bis.sourcelead.service.UserService;
 import com.bis.sourcelead.util.CandidateActivityCommonUtil;
 import com.bis.sourcelead.util.CommonUtil;
+import com.bis.sourcelead.util.SourceLeadSessionManager;
 
 /**
  * Handles requests for the CandidateReferences Service
@@ -127,7 +130,7 @@ public class CandidateReferencesRestController {
 		return response;
 	}
 
-	@RequestMapping(value = "/validateReferEmail", method = RequestMethod.POST)
+	@RequestMapping(value = {"/validateReferEmail","/rest/validateReferEmail"}, method = RequestMethod.POST)
 	public @ResponseBody Response<Boolean> validateReferEmail(@RequestParam("candidateId") Long candidateId,
 			@RequestParam("referId") Long referId, @RequestParam("email") String email) throws Exception {
 		Response<Boolean> response = new Response<>();
@@ -166,11 +169,12 @@ public class CandidateReferencesRestController {
 	@RequestMapping(value = { "/getCandidateReferencesListByCandidateId",
 			"rest/getCandidateReferencesListByCandidateId" }, method = RequestMethod.POST)
 	public ResponseList<CandidateReferencesDTO> getCandidateReferencesListByCandidateId(
-			@RequestParam(value = "candidateId", required = false) String candidateId, @RequestParam("locationCode") String locationCode)
+			@RequestParam(value = "candidateId", required = false) String candidateId, @RequestParam("locationCode") String locationCode, HttpServletRequest request)
 			throws Exception {
+		String loginUserCode = (String)SourceLeadSessionManager.getSessionAttribute(request, "userCode");
 		OrgLocations orgLocation = orgLocationService.getOrgLocationsByLocationCode(locationCode);
 		ResponseList<CandidateReferencesDTO> candidateReferencesList = candidateReferencesService
-				.getCandidateReferencesListByCandidateIdAndOrgLocationID(Long.parseLong(candidateId), orgLocation.getId());
+				.getCandidateReferencesListByCandidateIdAndOrgLocationID(Long.parseLong(candidateId), orgLocation.getId(),loginUserCode);
 		return candidateReferencesList;
 	}
 

@@ -48,6 +48,7 @@ import com.bis.sourcelead.payroll.dto.PayPeriodDTO;
 import com.bis.sourcelead.payroll.dto.PayrollApproverDTO;
 import com.bis.sourcelead.payroll.dto.PayrollConstant;
 import com.bis.sourcelead.payroll.dto.PayrollDeductionDTO;
+import com.bis.sourcelead.payroll.dto.PayrollReportDTO;
 import com.bis.sourcelead.payroll.dto.PaysheetFrequencyDTO;
 import com.bis.sourcelead.payroll.dto.USPayrollDTO;
 import com.bis.sourcelead.payroll.entity.ConfigurePayrollApprover;
@@ -548,10 +549,24 @@ public class PaysheetFrequencyServiceImpl implements PaysheetFrequencyService{
 	}
 
 	@Override
-	public List<USPayrollDTO> getPayrollRegisterReports(PayPeriodDTO payPeriodDTO)
+	public List<USPayrollDTO> getPayrollRegisterReports(PayrollReportDTO payPeriodDTO)
 	{
-		
-		List<USPayrollDTO> list = paysheetFrequencyDao.getPayrollRegisterReports(payPeriodDTO);
+		List<PayrollReportDTO> dtoList = new ArrayList<>();
+		List<PaysheetFrequency> list = paysheetFrequencyDao.getPayrollRegisterReports(payPeriodDTO);
+		for(PaysheetFrequency freq : list) {
+			for(EmployeePayroll emp : freq.getEmployeepayroll()) {
+				PayrollReportDTO dto = new PayrollReportDTO();
+				dto.setEmpId(emp.getEmployee().getEmployeeId());
+				StringBuilder sb = new StringBuilder();
+				sb.append(emp.getCandidate().getFirstName());
+				if(StringUtils.isNotBlank(emp.getCandidate().getLastName())) {
+					sb.append(emp.getCandidate().getLastName());
+				}
+				dto.setEmpName(sb.toString());
+				dto.setDepartmentName(emp.getEmployee().getDepartmentId().getDepartmentName());
+//				dto.setregul
+			}
+		}
 		return null;
 	}
 
