@@ -19,6 +19,22 @@
 }
 </style>
 
+<script type="text/javascript">
+var uploadflag= true;
+		window.onload = function () {
+			var refreshId = setInterval(function(){
+				if(uploadflag == true){
+					xlsupload.getUploadInprogressProgressBar("Jobs");
+				  }else{
+					     clearInterval(refreshId);
+						 $(".browseProgress").hide();
+						 $("#upload_button").removeAttr("disabled");
+						 xlsupload.getUploadInprogressProgressBar("Jobs");
+				  }
+			},1000);
+		 };
+</script>
+
 
 <section class="content-wraper">
 	<section class="content-header clearfix">
@@ -121,14 +137,17 @@
 		</form:form>
 	</div>
 	<div id="dataFieldsDiv" style="display: none"></div>
-	
+	<div class="project_tabs_inn_table project_tabs_inn_table_a datatable_filter dataSeaTop">
+	    	<table id="uploadXlsHistoryDiv" class="display" cellspacing="0" width="100%"></table>
+	    	<input type="hidden"  id="uploadedPercentage" value="0">
+		</div>	 
 </section>
 
 <div class="success_pop" id="selector11" style="display: none;">
     <i class="fa fa-check-circle"></i><span id="msgDiv"></span>
 </div>
 
-
+<script type="text/javascript" src="/resources/js/xlsupload.js"></script>
 <script type="text/javascript">
 document.getElementById("uploadBtn").onchange = function () {
 	$('#newUploadFile').text($(this).val().replace(/C:\\fakepath\\/i, ''));
