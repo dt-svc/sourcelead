@@ -68,6 +68,14 @@ $(document).ready(function(){
 		</div>
 	</section>
 	
+	<div class="project_side_wrap_inn_tabs clearfix">
+	    <ul class="project-tabs-menu">
+		    <li class="current"><a href="${appPath}/payablesList">Bill List</a></li>
+		    <li class=""><a href="${appPath}/debitNoteList">Debit Note List</a></li>
+		    
+	    </ul>
+    </div>
+	
 	<div class="content-area content-new clearfix">
 		<div class="billing_dashboard noPad">
 			<div class="tabbable positionRelative">

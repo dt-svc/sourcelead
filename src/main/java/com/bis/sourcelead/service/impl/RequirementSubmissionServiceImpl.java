@@ -5140,7 +5140,7 @@ private void createXlsSheet(Sheet createExcelsheet,Row writeRow,int column,Strin
 	}
 
 	@Override
-	public Integer[] getRequirementSubmissionsListsByOrgLocationsIdAndSubmissionStatus(Long orgLocationsId,String dateRange, String userType, User user, Date startUTCDate, Date endUTCDate) {
+	public Integer[] getRequirementSubmissionsListsByOrgLocationsIdAndSubmissionStatus(Long orgLocationsId,String dateRange, String userType, User user, Date startUTCDate, Date endUTCDate) throws Exception {
 		return requirementSubmissionDao.getRequirementSubmissionsListsByOrgLocationsIdAndSubmissionStatus(orgLocationsId, dateRange, userType, user, startUTCDate, endUTCDate);
 	}
 

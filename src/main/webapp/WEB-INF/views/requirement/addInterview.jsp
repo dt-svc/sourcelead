@@ -1296,7 +1296,13 @@ function showCal(id){
 		      dateFormat : finalDateFormatProjectSave,
 		      minDate: 0  ,
 			  onSelect : function(selected) {
-				checkAvailability();
+				  var maxRowNum = parseInt($("input[name = 'changeMaxTsRowNum']").val());
+				  if(maxRowNum >= 2){
+					  checkAvailability();
+				  }else if(maxRowNum < 2){
+					  alertInterviewMessage("<b>Select an applicant before submission</b>");
+				  }
+				
 		 	  },
 		 	  beforeShowDay: function(date) {
 		 		  if(dates && dates[date.getTime()])
