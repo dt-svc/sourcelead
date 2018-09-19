@@ -16,19 +16,19 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.ModelAndView;
 
-import com.bis.sourcelead.annotations.Validator;
-import com.bis.sourcelead.dto.Response;
 import com.bis.sourcelead.dto.ResponseList;
 import com.bis.sourcelead.entity.OrgLocations;
-import com.bis.sourcelead.entity.RestrictDay;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.entity.UserGroup;
 import com.bis.sourcelead.enums.Result;
 import com.bis.sourcelead.payroll.dto.PayPeriodDTO;
-import com.bis.sourcelead.payroll.dto.PayrollDeductionDTO;
 import com.bis.sourcelead.payroll.dto.PayrollReportDTO;
+
+import com.bis.sourcelead.payroll.service.PayrollReportService;
+
 import com.bis.sourcelead.payroll.dto.USPayrollDTO;
 import com.bis.sourcelead.payroll.service.PaysheetFrequencyService;
+
 import com.bis.sourcelead.service.UserGroupService;
 import com.bis.sourcelead.util.SourceLeadSessionManager;
 
@@ -42,7 +42,11 @@ public class USPayrollReportRestController {
 	UserGroupService userGroupService;
 	
 	@Autowired
+
+	PayrollReportService payrollReportService;
+
 	PaysheetFrequencyService paysheetFrequencyService;
+
 	/**
 	 * Returning Us Payroll Jsp
 	 * 
@@ -263,7 +267,7 @@ public class USPayrollReportRestController {
 	public ResponseList<PayrollReportDTO> getPayCheckDateReports(PayrollReportDTO payrollReportDTO,HttpServletRequest request, HttpServletResponse response) throws Exception
 	{
 		OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
-		String[] tableColumns = {"payrollDeductionType", "description", "payrollDeductionMethod", "deductionAmount"};
+		String[] tableColumns = {"empName", "empPayRate", "regularHours", "overTimeHours", "preTaxDeduction", "postTaxDeduction", "taxes", "netPay", "lastPay", "YTD",""};
 	    int sortColumnIndex = 1;		 //by default sorting using updated date
 		String sortColumnOrder = "asc";  //by default descending order
 		if(payrollReportDTO.getOrder() != null && !payrollReportDTO.getOrder().isEmpty()) {
@@ -272,8 +276,7 @@ public class USPayrollReportRestController {
 		}
 		payrollReportDTO.setSortColumn(tableColumns[sortColumnIndex]);
 		payrollReportDTO.setSortOrder(sortColumnOrder);
-		
-		System.out.println("*********************************"+payrollReportDTO.getGroupId());
-		return null;
+		ResponseList<PayrollReportDTO> res = payrollReportService.getPayrollSummaryByPayPeriodAndPayCheckDate(orgLocation,payrollReportDTO);
+		return res;
 	}
 }
