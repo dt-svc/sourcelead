@@ -255,7 +255,7 @@ function getSelectedDateFromCalendar(selectedDate) {
 						 
 						  if(report.interviewerUUID != null  &&  report.interviewerUUID !='' && report.interviewerUUID !='undefined' && report.interviewTemplateUUId != null && report.interviewTemplateUUId != '' && report.interviewTemplateUUId != 'undefined'){
 	                    	  result = result+'	 <a  href="'+sourceleadUrl+'/'+'dashboardInterviewFeedBackTemplate?templateId='+report.interviewTemplateUUId+'&requirementInterviewid='+report.interviewerUUID+'" >';
-							  if(report.feedbackDate != null && report.feedbackDate != '' && report.feedbackDate != 'undefined'){
+	                    	  if(report.feedbackDate != null && report.feedbackDate != '' && report.feedbackDate != 'undefined'){
 	                        	   result = result+'<i class="fa fa-handshake-o success_color"></i>';
 							  }else{
 								  result = result+'<i class="fa fa-handshake-o"></i>';

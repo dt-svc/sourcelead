@@ -2,8 +2,6 @@ package com.bis.sourcelead.payroll.dto;
 
 import java.math.BigDecimal;
 
-import org.springframework.web.bind.annotation.RequestParam;
-
 import com.bis.sourcelead.dto.SearchDTO;
 
 public class PayrollReportDTO extends SearchDTO{
@@ -54,7 +52,12 @@ public class PayrollReportDTO extends SearchDTO{
 	
 	private String payCheckDate;
 	
-
+	private BigDecimal deductions;
+	
+	private BigDecimal ytdTaxes;
+	
+	private BigDecimal ytdDeductions;
+	
 	public String getEmpName()
 	{
 		return empName;
@@ -252,6 +255,45 @@ public class PayrollReportDTO extends SearchDTO{
 		this.payCheckDate = payCheckDate;
 	}
 
+	public BigDecimal getGrossPay()
+	{
+		return grossPay;
+	}
+
+	public void setGrossPay(BigDecimal grossPay)
+	{
+		this.grossPay = grossPay;
+	}
+
+	public BigDecimal getDeductions()
+	{
+		return deductions;
+	}
+
+	public void setDeductions(BigDecimal deductions)
+	{
+		this.deductions = deductions;
+	}
+
+	public BigDecimal getYtdTaxes()
+	{
+		return ytdTaxes;
+	}
+
+	public void setYtdTaxes(BigDecimal ytdTaxes)
+	{
+		this.ytdTaxes = ytdTaxes;
+	}
+
+	public BigDecimal getYtdDeductions()
+	{
+		return ytdDeductions;
+	}
+
+	public void setYtdDeductions(BigDecimal ytdDeductions)
+	{
+		this.ytdDeductions = ytdDeductions;
+	}
 
 	public BigDecimal getEmpPayRate()
 	{
@@ -268,36 +310,19 @@ public class PayrollReportDTO extends SearchDTO{
 		this.overTimeHours = overTimeHours;
 	}
 
-
 	public void setEmpPayRate(BigDecimal empPayRate)
 	{
 		this.empPayRate = empPayRate;
 	}
-
-
-	public BigDecimal getGrossPay()
-	{
-		return grossPay;
-	}
-
-
-	public void setGrossPay(BigDecimal grossPay)
-	{
-		this.grossPay = grossPay;
-	}
-
 
 	public BigDecimal getYtdNet()
 	{
 		return ytdNet;
 	}
 
-
 	public void setYtdNet(BigDecimal ytdNet)
 	{
 		this.ytdNet = ytdNet;
 	}
-	
-	
 	
 }

@@ -191,5 +191,9 @@ public interface ImmigrationCommonService {
     List<LcaDetailsDTO> getEmployeeByLcaId(Long lcaId ,OrgLocations orgLocations)throws Exception;
    
     LcaHistory  getLcaHistoryByStatus(Long immigrationId,Long candidateId, String isCurrent);  
+    
+    LcaHistory saveLcaHistory(LcaHistory lcaHistory);
+    
+    int updateLcaHistoryStatusByLcaNumber(Long lhId,Long immigrationId,Long candidateId);
  //   void deleteLcaPlaceOfEmpmntDetails(Long remaininglpoeIds[]);
 }

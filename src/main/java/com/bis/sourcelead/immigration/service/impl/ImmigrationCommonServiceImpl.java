@@ -2832,6 +2832,16 @@ private List<LcaDocumentHistory> saveLcaDocumentHistoryList(LcaDTO lcaDTO, Lca l
 		return immigrationCommonDao.getLcaHistoryByStatus(immigrationId,candidateId,isCurrent);
 	}
 
+	@Override
+	public LcaHistory saveLcaHistory(LcaHistory lcaHistory) {
+		return immigrationCommonDao.saveLcaHistory(lcaHistory);
+	}
+
+	@Override
+	public int updateLcaHistoryStatusByLcaNumber(Long lhId, Long immigrationId, Long candidateId) {
+		return immigrationCommonDao.updateLcaHistoryStatusByLcaNumber(lhId, immigrationId, candidateId);
+	}
+
 	/*
 	 * LCA Code Ends Here
 	 */
