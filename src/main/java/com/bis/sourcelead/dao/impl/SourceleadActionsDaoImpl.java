@@ -249,8 +249,8 @@ public class SourceleadActionsDaoImpl implements SourceleadActionsDao {
 					 }
 				
 				 String query = "from SourceleadActions sa where sa.actionRole != 'ROLE_ENROLL_ORG' and sa.tabs.id NOT IN (13) "
-				    		+ "and sa.id IN(select moduleActions.sourceleadActions.id from ModuleActions moduleActions where moduleActions.modules.id IN(:modulesId)) and sa.id NOT IN (152,153) and sa.status = '1' ";
-				    actionsList = session.createQuery(query.toString()).setParameterList("modulesId", modulesList).list();
+				    		+ "and  sa.id NOT IN (152,153) and sa.status = '1' ";
+				 sourceleadActionsList = session.createQuery(query.toString()).list();
 			}else {
 				
 				     OrgLicenseSubscription orgLicenseSubscription = orgLicenseSubscriptionDao.getOrgLicenseSubscriptionByOrgIdAndCountry(org.getId(), orgLocations.getCountry());
