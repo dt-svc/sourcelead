@@ -1079,6 +1079,24 @@ function rejectApplicant(submissionId,requirementId,submissionType){
 		    	}
   	    	},
 		  });
+    	
+    }else if(selectBox == "shortlist"){
+    	$.ajax({
+    	      type : "POST",
+    	      url: sourceleadUrl+"/saveShortlistStatusForApplicant?"+tokenParamName+"="+tokenValue+"&submissionId="+submissionId, 
+    	    	success :function(data) {
+    	    		if (data.response === "AWKWARD") {
+  		    		location.href = "/errorPage";
+  		    	} else if (data.response === "SUCCESS") {
+  		    		$("tr").removeClass("row-success");
+  		    		 requirementPipeline(requirementId,submissionType);
+  		    	}else if (data.indexOf('Sign In') !== -1) {
+  		    		location.replace(sourceleadUrl);
+  		    	} else {
+  		    		showError("Operation failed, please try again");
+  		    	}
+    	    	},
+  		  });
     }
 }
 </script>
