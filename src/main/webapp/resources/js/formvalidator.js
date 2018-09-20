@@ -688,6 +688,18 @@ jQueryFormUtils.validateFloat = function(val) {
 	return val.match(/^-?\d*(\.\d+)?$/)!==null;
 };
 
+
+/**
+ * Validate LCA Number start letter or number and allow -(hyphen)
+ *
+ * @param {String} val
+ * @return {Boolean}
+ */
+jQueryFormUtils.validateLcaNum = function(val) {
+	return val.match(/(^[a-zA-Z]?-)\d+(-\d+)*$|^\d+(-\d+)*$/)!==null;
+};
+
+//  \d+[a-zA-Z]|[a-zA-Z]+\d
 /**
  * Validate that given value is a number
  *
@@ -1176,6 +1188,11 @@ jQueryFormUtils.validateName = function(val) {
         else if (validationRules.indexOf('validate_int') > -1 && !jQueryFormUtils.validateInteger(value)) {
             return validationErrorMsg || language.badInt;
         }
+        
+        // LCA Number
+        else if (validationRules.indexOf('validate_LcaNum') > -1 && !jQueryFormUtils.validateLcaNum(value)) {
+            return validationErrorMsg || language.badLCA;
+        }
 
         // Time
         else if (validationRules.indexOf('validate_time') > -1 && !jQueryFormUtils.validateTime(value)) {
@@ -1421,6 +1438,7 @@ jQueryFormUtils.LANG =  {
     badFloat : 'Incorrect float value',
     badCustomVal : 'This is Custom Validation',
     badInt : 'Incorrect integer value',
+    badLCA : 'Incorrect LCA Number',
     badSecurityNumber : 'Your social security number was incorrect',
     badUKVatAnswer : 'Incorrect UK VAT Number',
     badNumberOfSelectedOptionsStart : 'You have to choose at least ',

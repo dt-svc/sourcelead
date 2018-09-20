@@ -564,7 +564,8 @@ public class PaysheetFrequencyServiceImpl implements PaysheetFrequencyService{
 				}
 				dto.setEmpName(sb.toString());
 				dto.setDepartmentName(emp.getEmployee().getDepartmentId().getDepartmentName());
-//				dto.setregul
+				dto.setRegularHours(emp.getRegularHours());
+//				dto.setg
 			}
 		}
 		return null;

@@ -215,6 +215,14 @@ public class RequirementInterviewerDaoImpl implements RequirementInterviewerDao{
 		return interviewer;
 		
 	}
-	
+
+	@Override
+	@Transactional
+	public List<RequirementInterviewer> getInterviwersListByInterviewIdAndUserID(Long requirementInterviewId,Long interviewerUserId) throws Exception {
+		Session session = this.sessionFactory.getCurrentSession();
+		String query = "from RequirementInterviewer interviewer left join fetch interviewer.interviewerUser where interviewer.requirementInterview.id = :requirementInterviewId and interviewer.interviewerUser.id = :interviewerUserId and interviewer.status = 1";
+		List<RequirementInterviewer> requirementInterviewersList =  session.createQuery(query).setLong("requirementInterviewId", requirementInterviewId).setLong("interviewerUserId", interviewerUserId).list();
+		return requirementInterviewersList;
+	}
 	
 }

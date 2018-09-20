@@ -26,13 +26,14 @@ $(document).ready(function(){
             <div class="row">
               <div class="col-md-3">
                 <div class="dropdown-select">
-                  <select class="chosen-select" id="payPeriod" name="payPeriod">
+                  <select class="chosen-select" id="payPeriod" name="payPeriod" onchange="clearDropDown();">
                    <!--  <option selected>Pay Period</option>
                     <option>Group-1</option>
                     <option>Group-2</option>
                     <option>Group-3</option> -->
                   </select>
                 </div>
+                <div><span id="payPeriodErrorDiv"></span></div>
               </div>
               <div class="col-md-3 paddingRight" id="payrollPayDateDivId">
                 <input name="" class="form-control calendar" placeholder="Pay Check Date" type="text" id="payCheckDate" name="payCheckDate">
@@ -109,6 +110,12 @@ $(document).ready(function(){
   <!-- Content Area Ends--> 
   
   <script>
+  function clearDropDown(){
+	  $("#payPeriodErrorDiv").text('');  
+  }
+  
+  </script>
+  <script>
 	$(function() {
 		
 		 var locationDate ='${SourceLeadWeb_orgLocations.dateFormat}'; 
@@ -140,10 +147,15 @@ $(document).ready(function(){
 	function getPayCheckDateReports() {
 		var payCheckDate = $('#payCheckDate').val();
 		var groupId = $('#payPeriod').val();
-		var searchValue = $("#dataTableSearch").val();
-		searchValue = searchValue ? searchValue : "";
-		var url = sourceleadUrl+"/getPayCheckDateReports?searchValue="+searchValue+"&groupId="+groupId+"&payCheckDate="+payCheckDate;
-		payCheckDatePayrollList(url);
+		if(groupId != '' && groupId != 'undefined'){
+			var searchValue = $("#dataTableSearch").val();
+			searchValue = searchValue ? searchValue : "";
+			var url = sourceleadUrl+"/getPayCheckDateReports?searchValue="+searchValue+"&groupId="+groupId+"&payCheckDate="+payCheckDate;
+			payCheckDatePayrollList(url);	
+		}else{
+			$("#payPeriodErrorDiv").text('select pay period');
+		}
+		
 	}
 </script>
 
@@ -170,13 +182,13 @@ $(document).ready(function(){
 		result = result + '</thead>	';
 		result = result + "</table>";
 		$("#payCheckDateTableDIV").append(result);
-		alert("END");
+		payCheckDateData(url);
 
 	}
 </script>
 
 <script>
-	function test(url) {
+	function payCheckDateData(url) {
 		var colIndex = 0;
 		$('#payCheckDateReportTabble')
 				.DataTable(
@@ -218,6 +230,7 @@ $(document).ready(function(){
 									{
 										"targets" : colIndex++,
 										"data" : "empName",
+										"sortable": false,
 										"render" : function(data, type, opt,meta) {
 											var result = "";
 											result = result
@@ -304,6 +317,7 @@ $(document).ready(function(){
 									{
 										"targets" : colIndex++,
 										"data" : "lastPay",
+										"sortable": false,
 										"render" : function(data, type, opt,meta) {
 											var result = "";
 											result = result+ ' <td><div class="tblminwidth-75"><i class="fa fa-dollar"style="color:#454545;"></i>xxxx</div></td>';
@@ -313,8 +327,8 @@ $(document).ready(function(){
 									{
 										"targets" : colIndex++,
 										"data" : "YTD",
+										"sortable": false,
 										"render" : function(data, type, opt,meta) {
-											alert(opt.YTD);
 											var result = "";
 											result = result+ '<td><div class="tblminwidth-75"><i class="fa fa-dollar"style="color:#454545;"></i>'+opt.ytdNet +'</div></td>';
 											return result;
@@ -323,6 +337,7 @@ $(document).ready(function(){
 									{
 										"targets" : colIndex++,
 										"data" : "action",
+										"sortable": false,
 										"render" : function(data, type, opt, meta) {
 											var result = "";
 											result = result + '<td>';

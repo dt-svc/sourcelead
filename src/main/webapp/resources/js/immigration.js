@@ -749,6 +749,7 @@ function Immigration() {
 	        url: sourceleadUrl + immiModulePath + "/getCandidateImmigrationFormsList?candidateId="+candidateId+"&templateId="+templateId+"&immigrationId="+immigrationId+"&searchVal="+searchVal+"&myImmigration="+myImmigrationStatus,
 	        type: "GET",
 	        success: function (result) {
+	        	console.info(result);
 	            $("#formsTab").html(result);
 	            $("#immigraFormTabSerach").val(searchVal);
 	        }
