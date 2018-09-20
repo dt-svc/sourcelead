@@ -393,6 +393,7 @@
                         <ul class="collapses" style="display: none">
                         	<%-- <li class="${sessionData.nav == 'Receivable' ? 'treview-active' : ''}"><a href="<c:url value='${appPath}/itDeclaration'/>" title="IT Declaration">IT Declaration</a></li> --%>
                         	<li class="${sessionData.nav == 'Forms' ? 'treview-active' : ''}"><a href="<c:url value='${appPath}/forms/list'/>" title="Forms">Forms</a></li>
+                        	<li class="${sessionData.nav == 'RunPayroll' ? 'treview-active' : ''}"><a href="<c:url value='${appPath}/myPayroll/payrollList'/>" title="Run Payroll">Run Payroll</a></li>
                         	<li class="${sessionData.nav == 'MyPayroll' ? 'treview-active' : ''}"><a href="<c:url value='${appPath}/myPayroll/pays'/>" title="My Payroll">My Payroll</a></li>
 						</ul>
 					</li>

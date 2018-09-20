@@ -17,6 +17,7 @@ import com.bis.sourcelead.dto.AssociatePayItemDTO;
 import com.bis.sourcelead.entity.AssociatePayItem;
 import com.bis.sourcelead.entity.AssociateSalary;
 import com.bis.sourcelead.entity.AssociateSalaryHistory;
+import com.bis.sourcelead.entity.AssociateSalaryInd;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.payroll.dao.impl.AssociateBankDataDaoImpl;
 import com.bis.sourcelead.payroll.dto.DeductionHistoryDTO;
@@ -141,6 +142,23 @@ private static final Logger logger = LoggerFactory.getLogger(AssociateBankDataDa
 			return assList;
 		else
 			return null;
+	}
+
+
+	@SuppressWarnings("unchecked")
+	@Override
+	@Transactional
+	public List<AssociateSalaryInd> getIndAssociateSalaryListByGroupId(OrgLocations orgLocation, long groupId) {
+		try {
+			Session session = this.sessionFactory.getCurrentSession();
+			String qry = "from AssociateSalaryInd ass where ass.orgLocations.id = :orgLocationId and ass.groupId = :groupId and ass.status = '1'";
+			List<AssociateSalaryInd> assList = session.createQuery(qry).setLong("orgLocationId", orgLocation.getId()).setLong("groupId", groupId).list();
+			if (assList != null)
+				return assList;
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return null;
 	}
 
 

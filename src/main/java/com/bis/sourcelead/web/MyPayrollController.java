@@ -22,8 +22,10 @@ import com.bis.sourcelead.dto.SourceleadTaxSubmissionMasterDTO;
 import com.bis.sourcelead.dto.helper.Paginator;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.User;
+import com.bis.sourcelead.entity.UserGroup;
 import com.bis.sourcelead.enums.Result;
 import com.bis.sourcelead.service.TaxService;
+import com.bis.sourcelead.service.UserGroupService;
 import com.bis.sourcelead.util.CommonUtil;
 import com.bis.sourcelead.util.SourceLeadSessionManager;
 
@@ -37,6 +39,9 @@ public class MyPayrollController {
 
 	@Autowired
 	private TaxService taxService;
+	
+	@Autowired
+	UserGroupService userGroupService;
 	
 	@Autowired
 	private CommonUtil commonUtil;
@@ -107,6 +112,51 @@ public class MyPayrollController {
 			logger.error(ExceptionUtils.getFullStackTrace(e));
 		}
 		return response;
+	}
+	
+	@RequestMapping(value = "/payrollList")
+	public ModelAndView payrollList(HttpServletRequest request) {
+		ModelAndView modelAndView = new ModelAndView();
+		try {
+			commonUtil.highLightMenu(Constants.RUNPAYROLL, request);
+//			modelAndView.addObject("activeTaxTab", "pays");
+			modelAndView.setViewName("payroll_india/org/payrollList");
+		} catch (Exception e) {
+			e.printStackTrace();
+			logger.error(e.getMessage());
+		}
+		return modelAndView;
+	}
+	
+	@RequestMapping(value = "/payrollListSummary")
+	public ModelAndView payrollListSummary(HttpServletRequest request) {
+		ModelAndView modelAndView = new ModelAndView();
+		try {
+			commonUtil.highLightMenu(Constants.RUNPAYROLL, request);
+//			modelAndView.addObject("activeTaxTab", "pays");
+			modelAndView.setViewName("payroll_india/org/payrollListSummary");
+		} catch (Exception e) {
+			e.printStackTrace();
+			logger.error(e.getMessage());
+		}
+		return modelAndView;
+	}
+	
+	@RequestMapping(value = "/runPayroll")
+	public ModelAndView runPayroll(HttpServletRequest request) {
+		ModelAndView modelAndView = new ModelAndView();
+		try {
+			commonUtil.highLightMenu(Constants.RUNPAYROLL, request);
+//			modelAndView.addObject("activeTaxTab", "pays");
+			OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+			List<UserGroup> userGroupList = userGroupService.getAllUserGroupsByLocationId(orgLocations);
+			modelAndView.addObject("userGroupList",userGroupList);
+			modelAndView.setViewName("payroll_india/org/runPayroll");
+		} catch (Exception e) {
+			e.printStackTrace();
+			logger.error(e.getMessage());
+		}
+		return modelAndView;
 	}
 
 }

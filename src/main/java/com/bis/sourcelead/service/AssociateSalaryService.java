@@ -7,6 +7,7 @@ import com.bis.sourcelead.dto.AssociateSalaryDTO;
 import com.bis.sourcelead.dto.Response;
 import com.bis.sourcelead.entity.AssociatePayItem;
 import com.bis.sourcelead.entity.AssociateSalary;
+import com.bis.sourcelead.entity.AssociateSalaryInd;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.User;
 
@@ -23,5 +24,7 @@ public interface AssociateSalaryService {
 	List<AssociateSalary> getAssociateSalaryListByGroupId(OrgLocations orgLocation, long groupId);
 
 	List<AssociatePayItemDTO> findAssociatePayItemByPayrollId(Long payrollId);
+
+	List<AssociateSalaryInd> getIndAssociateSalaryListByGroupId(OrgLocations orgLocation, long parseLong);
 	
 }

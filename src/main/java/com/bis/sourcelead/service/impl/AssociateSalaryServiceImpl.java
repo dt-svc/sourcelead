@@ -25,6 +25,7 @@ import com.bis.sourcelead.dto.UserGroupDTO;
 import com.bis.sourcelead.entity.AssociatePayItem;
 import com.bis.sourcelead.entity.AssociateSalary;
 import com.bis.sourcelead.entity.AssociateSalaryHistory;
+import com.bis.sourcelead.entity.AssociateSalaryInd;
 import com.bis.sourcelead.entity.Candidate;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.User;
@@ -319,4 +320,12 @@ public class AssociateSalaryServiceImpl implements AssociateSalaryService{
 	{
 		return associateSalaryDao.findAssociatePayItemByPayrollId(payrollId);
 	}
+
+	@Override
+	public List<AssociateSalaryInd> getIndAssociateSalaryListByGroupId(OrgLocations orgLocation, long groupId) {
+		List<AssociateSalaryInd> list = associateSalaryDao.getIndAssociateSalaryListByGroupId(orgLocation, groupId);
+		return list;
+	}
+	
+	
 }
