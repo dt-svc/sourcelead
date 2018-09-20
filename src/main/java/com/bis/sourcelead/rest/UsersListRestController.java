@@ -119,6 +119,7 @@ import com.bis.sourcelead.service.ShiftService;
 import com.bis.sourcelead.service.SourceleadActionsService;
 import com.bis.sourcelead.service.SourceleadFormSectionsService;
 import com.bis.sourcelead.service.SourceleadTagsService;
+import com.bis.sourcelead.service.StatesService;
 import com.bis.sourcelead.service.TabsService;
 import com.bis.sourcelead.service.TeamMembersService;
 import com.bis.sourcelead.service.TeamService;
@@ -261,6 +262,9 @@ public class UsersListRestController {
 	
 	@Autowired
 	OrgLocationService orgLocationService;
+	
+	@Autowired
+	StatesService statesService;
 	
 	
 	/**
@@ -2257,6 +2261,23 @@ public class UsersListRestController {
 			candidate.setGender(addUserDTO.getGender());
 			candidate.setMobilePhone(addUserDTO.getPhoneNumber());
 			candidate.setMaritalStatus(addUserDTO.getMaritalStatus());
+			
+			if(StringUtils.isNotBlank(addUserDTO.getResidenceAddress())){
+			   candidate.setResidenceAddress(addUserDTO.getResidenceAddress());
+			   candidate.setResidenceCountry(addUserDTO.getResidenceCountry());
+			   candidate.setResidenceState(addUserDTO.getResidenceState());
+			   candidate.setResidenceCity(addUserDTO.getResidenceCity());
+			   candidate.setResidenceLatitude(addUserDTO.getResidenceLatitude());
+			   candidate.setResidenceLongitude(addUserDTO.getResidenceLongitude());
+			   candidate.setResidenceZipCode(addUserDTO.getResidenceZipCode());
+			   candidate.setResidenceStreetAddress(addUserDTO.getResidenceAddress());
+			   OrgLocations workLocation = orgLocationService.getOrgLocations(Long.parseLong(addUserDTO.getWorkLocation()));
+			   candidate.setWorkLocation(workLocation);
+		    	
+		    	Countries country = countriesService.getCountriesByCountryName(addUserDTO.getResidenceCountry());
+		    	String stateCode = statesService.getStateCodeByCountryCodeAndState(country.getCode2(),addUserDTO.getResidenceState());
+		    	candidate.setResidenceStateCode(stateCode);
+		    }
 			
 			candidateService.saveOrUpdateCandidate(candidate);
 			candidateService.saveOrUpdateCandidateElkDocument(candidate);
