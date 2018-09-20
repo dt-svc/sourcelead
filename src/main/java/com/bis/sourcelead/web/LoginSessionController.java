@@ -307,6 +307,9 @@ public class LoginSessionController {
 				for(int i=0; i < weekOffDays.length; i++) {
 					weekOffDaysList.add(weekOffDays[i]);
 				}
+			}else {
+				weekOffDaysList.add("Sat");
+				weekOffDaysList.add("Sun");
 			}
 			SourceLeadSessionManager.setSessionAttribute(request, "weekOffDaysList", weekOffDaysList);
 			
