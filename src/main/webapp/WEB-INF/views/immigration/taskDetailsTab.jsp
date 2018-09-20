@@ -36,7 +36,7 @@
 $("#tasksSearchVal").keyup(function (e) {
     if (e.which === 13) {
     	var searchVal = $("#tasksSearchVal").val();
-    	getImmigrationTasks(immigrationId,"${myImmigrationPage}",searchVal);
+    	immigration.getImmigrationTasks(immigrationId,"${myImmigrationPage}",searchVal);
     }
 });
 </script>
