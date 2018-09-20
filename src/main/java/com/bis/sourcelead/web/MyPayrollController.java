@@ -119,7 +119,6 @@ public class MyPayrollController {
 		ModelAndView modelAndView = new ModelAndView();
 		try {
 			commonUtil.highLightMenu(Constants.RUNPAYROLL, request);
-//			modelAndView.addObject("activeTaxTab", "pays");
 			modelAndView.setViewName("payroll_india/org/payrollList");
 		} catch (Exception e) {
 			e.printStackTrace();
