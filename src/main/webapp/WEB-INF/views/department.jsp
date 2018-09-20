@@ -78,7 +78,7 @@ $(document).ready(function() {
 			<form:form id="department_form" name="department_form" method="post">
 				<div class="popupWrap" id="departmentCloseDiv">
 				<div class="popupHead">Add Department <i class="closePop pull-right popClose" onclick="flushRole();"></i></div>
-				
+				<div  id="departmentDivLoading"></div>
                     <div class="popupContent">
                       <div class="clearfix mb">
                         <div class="" id="departmentNameDiv">
@@ -114,8 +114,8 @@ $(document).ready(function() {
 		$.ajax({
 			type : "GET",
 			url : sourceleadUrl+ "/getDepartmentList?${_csrf.parameterName}=${_csrf.token}&departmentStatus="+status,
-			success : function(data) {
-				var json = JSON.parse(data);
+			success : function(json) {
+// 				var json = JSON.parse(data);
    	        	var result = "";
    	        	result = result +'<table id="departmentPagination">';
    		    	result = result +'<thead>';
@@ -126,9 +126,9 @@ $(document).ready(function() {
    		    	result = result +'    </tr>';
    		    	result = result +'</thead>	';
    		    	result = result +'<tbody>';
-   		    	for (var i=0; i<json.length; i++)
+   		    	for (var i=0; i<json.data.length; i++)
    				{
-   		    		var report = json[i];
+   		    		var report = json.data[i];
    		    		if(report.description != null && report.description !='' && report.description != 'undefined'){
    		    			description = report.description
    		    		}else{
@@ -205,7 +205,9 @@ function saveDepartment(){
 	if ($('#department_form').validate(false, validationSettings)) {
 		var sourceleadUrl = '${sourceleadUrl}';
 		var formData = getFormData1("department_form");
-		$.ajax({
+		$("#departmentDivLoading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
+		
+	 	$.ajax({
 			type: "POST",
 			data: formData,
 		    processData: false, 
@@ -232,7 +234,7 @@ function saveDepartment(){
 				
 				
 			},
-		});
+		}); 
 		return true;
 	}else {
 		return false;

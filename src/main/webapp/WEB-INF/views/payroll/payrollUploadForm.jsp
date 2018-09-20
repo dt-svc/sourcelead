@@ -32,8 +32,12 @@ window.onload = function () {
                   
                   <!-- <ul class="popdiv_two"> -->
                   <li class="mr10">
+                  	<button type="button" class="btn btn-primary" onClick="downloadTemplate();">Download Template</button>
+                  </li>
+                  
+                  <li class="mr10">
                   <a href="javascript:void(0)" class="bulk_addconpop paddingRight hidden" onclick="flush();"> <i class="glyphicon glyphicon-plus paddingRight"></i>Bulk</a>
-                  <a href="<c:url value='${appPath}/userMapping'/>" class="btn btn-primary btn-sm ml10 mt5 ColWhite" title="User Mapping" onClick="userMaping();">User Mapping </a>
+                  <a href="<c:url value='${appPath}/userMapping'/>" class="btn btn-primary ml10 ColWhite" title="User Mapping" onClick="userMaping();">User Mapping </a>
                   <!-- Popup Div -->
                   	<form:form id="upload_bulk_payroll_form" name="upload_bulk_payroll_form" method="post">
                   <div class="collapse-bulk-adduser col-md-4 mt" id="addbulkDiv" style='width:400px; right: 110px; top:25px; padding:10px 0'> <i class="fa fa-close close-div"></i>
@@ -63,7 +67,7 @@ window.onload = function () {
      <div id="loading"></div>
 		 <form:form id="upload_payroll_form" name="upload_payroll_form" method="post">
                   <div class="col-md-12" id="adddocDiv">
-                    <div class="form-horizontal clearfix myForm">
+                    <div class="form-horizontal clearfix myForm mt">
                      
                         <div class="form-group" id="fromDateDiv">
                         	<label class="col-md-3">From Date<span class="text-danger paddingLeft">*</span></label>
@@ -299,6 +303,8 @@ function loadEmployeePayrollCost(){
 		 
 }
 </script>
+
+
 
 <script>
 function employeePayrollCostPagination(){ 
@@ -589,6 +595,74 @@ function clearToDate(){
 
 	}); */
 </script> -->
+<div class="sideMask"></div>
+ <div class="modal downloadTemplate">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" onClick="clsoerequestPop();">×</button>
+        <h4 class="modal-title">Download Template</h4>
+      </div>
+      <div class="modal-body">
+        
+        <div class="form-group clearfix">
+              <label class="col-md-3">Template Name</label>
+            <div class="clearfix dropdown-select col-md-9" id="selectTemplateDiv">
+              <select class="sel" id="templateDownload" onchange="changeButtonVal();">
+              	<option value="">--Select Template Type--</option>
+              	<option value="EMPLOYEE_PAYROLL">Employer Payroll</option>
+                <option value="WAGE_TAX">Wage & Tax Summary</option>
+                <option value="ACCOUNT_DEDUCTIONS">Account Deductions</option>
+                <option value="HR_DEDUCTIONS">HR Deductions</option>
+                <option value="BIS_CHECKS">Payments</option>
+                <option value="INVOICE">Invoice Data</option>
+              </select>
+            </div>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <a type="button" class="btn btn-primary" id="downloadTemplateBtn">Download</a>
+        <button type="button" class="btn btn-default" onClick="clsoerequestPop();">Close</button>
+      </div>
+    </div>
+  </div>
+</div>
+<script>
+function downloadTemplate() {
+	$(".downloadTemplate, .sideMask").fadeIn();
+}
+function clsoerequestPop() {
+	$(".downloadTemplate, .sideMask").fadeOut();
+}
+	$("#uploadBtn").change(function () {
+		//var m = $(this).val();
+	$('#uploadFile').val($(this).val().replace(/C:\\fakepath\\/i, ''))
+})
+
+function changeButtonVal(){
+	var templateType = $("#templateDownload").val();
+	var fn = "";
+	$('#selectTemplateDiv').find('p.jquery_form_error_message').remove();
+	if ("EMPLOYEE_PAYROLL" === templateType) {
+		fn = '<c:url value="${appPath}/downloadPayrollTemplates?templateType=EMPLOYEE_PAYROLL"/>';
+	}else if ("WAGE_TAX" === templateType) {
+		fn = '<c:url value="${appPath}/downloadPayrollTemplates?templateType=WAGE_TAX"/>';
+	}else if ("ACCOUNT_DEDUCTIONS" === templateType) {
+		fn = '<c:url value="${appPath}/downloadPayrollTemplates?templateType=ACCOUNT_DEDUCTIONS"/>';
+	}else if ("HR_DEDUCTIONS" === templateType) {
+		fn = '<c:url value="${appPath}/downloadPayrollTemplates?templateType=HR_DEDUCTIONS"/>';
+	}else if ("BIS_CHECKS" === templateType) {
+		fn = '<c:url value="${appPath}/downloadPayrollTemplates?templateType=BIS_CHECKS"/>';
+	}else if ("INVOICE" === templateType) {
+		fn = '<c:url value="${appPath}/downloadPayrollTemplates?templateType=INVOICE"/>';
+	}else if("" == templateType || templateType == null || templateType == 'undefined'){
+		$('#selectTemplateDiv').find('p.jquery_form_error_message').remove();
+	    $("#templateDownload").after("<p class='jquery_form_error_message'>Select Template type</span>");
+	}
+	if(fn != "")
+	$("#downloadTemplateBtn").attr("href",fn);
+}
+</script>
 
 <jsp:include page="wagesAndTaxlist.jsp" />
 <jsp:include page="accountDeductionsList.jsp" />

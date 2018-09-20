@@ -110,7 +110,7 @@ public class LeaveTypeServiceImpl implements LeaveTypeService {
 //			Department dep = departmentService.getDepartmentById(Long.parseLong(leaveTypeDTO.getDepartment()));
 			leaveType.setDepartmentIds(leaveTypeDTO.getDepartment());
 		}else {
-			leaveType.setDepartmentId(null);
+			leaveType.setDepartmentIds(null);
 		}
 		if (leaveTypeDTO.getRoles() != null && !leaveTypeDTO.getRoles().isEmpty() && leaveTypeDTO.getRoles().size() > 0) {
 			Set<LeaveRole> leaveRolesSet = getLeaveRoles(leaveTypeDTO.getRoles(), leaveType, user);

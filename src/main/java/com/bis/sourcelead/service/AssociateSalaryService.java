@@ -4,7 +4,9 @@ import java.util.List;
 
 import com.bis.sourcelead.dto.AssociatePayItemDTO;
 import com.bis.sourcelead.dto.AssociateSalaryDTO;
+import com.bis.sourcelead.dto.CandidateDTO;
 import com.bis.sourcelead.dto.Response;
+import com.bis.sourcelead.dto.ResponseList;
 import com.bis.sourcelead.entity.AssociatePayItem;
 import com.bis.sourcelead.entity.AssociateSalary;
 import com.bis.sourcelead.entity.AssociateSalaryInd;
@@ -21,10 +23,13 @@ public interface AssociateSalaryService {
 
 	AssociatePayItem saveUpdatedPayItem(AssociatePayItem associatePayItem);
 
-	List<AssociateSalary> getAssociateSalaryListByGroupId(OrgLocations orgLocation, long groupId);
+	List<AssociateSalary> getAssociateSalaryListByGroupId(OrgLocations orgLocation, long groupId, String payType);
 
 	List<AssociatePayItemDTO> findAssociatePayItemByPayrollId(Long payrollId);
 
-	List<AssociateSalaryInd> getIndAssociateSalaryListByGroupId(OrgLocations orgLocation, long parseLong);
+	AssociateSalary getAssociateSalaryByCandidateIdAndOrgLocationId(Long candidateId, Long locationId);
+
+	ResponseList<AssociateSalary> getAssociateSalaryListByLocationIdAndGroupId(OrgLocations orgLocation, Long groupId, CandidateDTO canDto);
 	
+	List<AssociateSalaryInd> getIndAssociateSalaryListByGroupId(OrgLocations orgLocation, long parseLong);
 }

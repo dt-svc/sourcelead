@@ -132,6 +132,7 @@ function approveSubmissionByProjectMemberId(projectMemberId,startDate,endDate,td
     var rejectedReason = '';
     var sourceleadUrl ='${SourceLeadWeb_sourceleadUrl}';
     $('#hedderAcceptRejectButton').hide();
+    $('#selectAllTimeSheetCheckBoxForSubmitForApproval').removeProp('checked');
      $.ajax({
     type: "POST",
     url: sourceleadUrl+"/saveSubmissionApprovalStatusByProjectMemberId?&projectMemberId="+projectMemberId+"&startDate="+startDate+"&endDate="+endDate+"&approvalStatus=APPROVED&rejectedReason="+rejectedReason,        
@@ -187,7 +188,8 @@ function saveRejectSubmissionByProjectMemberId(projectMemberId,startDate,endDate
 		 $("#row"+projectMemberId).empty();
 		 $("#row"+projectMemberId).html("<td colspan='"+tdSpanSize+"'  id='loading"+projectMemberId+"'></td>");
 		 $('#hedderAcceptRejectButton').hide();
-	     $("#loading"+projectMemberId).attr('style',' height:40px; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/linear-loader.gif"); background-position:center; background-repeat:no-repeat;'); 
+		 $('#selectAllTimeSheetCheckBoxForSubmitForApproval').removeProp('checked');
+		 $("#loading"+projectMemberId).attr('style',' height:40px; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/linear-loader.gif"); background-position:center; background-repeat:no-repeat;'); 
 	    $.ajax({
 	    type: "POST",
 	    url: sourceleadUrl+"/saveSubmissionApprovalStatusByProjectMemberId?${_csrf.parameterName}=${_csrf.token}&projectMemberId="+projectMemberId+"&startDate="+startDate+"&endDate="+endDate+"&rejectedReason="+(encodeMsg.replace(/\n/g,'<br/>').replace(/\r/g,'<br/>'))+"&approvalStatus=REJECTED",       

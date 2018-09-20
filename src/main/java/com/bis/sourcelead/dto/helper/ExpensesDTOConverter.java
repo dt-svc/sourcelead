@@ -23,9 +23,9 @@ public class ExpensesDTOConverter {
 		if(expenses.getOrgRelationUUID() != null){
 		expensesDTO.setOrgRelationUUID(expenses.getOrgRelationUUID());
 		}
-		BigDecimal totalAmo = new BigDecimal(expenses.getTotalAmount());
-		BigDecimal totalAmountRoundOff = totalAmo.setScale(2, BigDecimal.ROUND_HALF_EVEN);
-		expensesDTO.setExpenseAmountDivId(totalAmountRoundOff);
+		/*BigDecimal totalAmo = new BigDecimal(expenses.getTotalAmount());
+		BigDecimal totalAmountRoundOff = totalAmo.setScale(2, BigDecimal.ROUND_HALF_EVEN);*/
+		expensesDTO.setExpenseAmountDivId( expenses.getTotalAmount());
 		expensesDTO.setClientName(expenses.getClientName());
 		if(expenses.getProjectMembers() != null && expenses.getProjectMembers().getProjects() != null){
 			expensesDTO.setProjectMemberId(expenses.getProjectMembers().getId());

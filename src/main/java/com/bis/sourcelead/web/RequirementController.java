@@ -1,16 +1,23 @@
 package com.bis.sourcelead.web;
 
 
+import java.io.BufferedInputStream;
 import java.io.ByteArrayInputStream;
+import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
-import java.util.ArrayList;
+import java.net.URISyntaxException;
+import java.net.URL;
+import java.net.URLConnection;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.Collection;
-import java.util.HashMap;
+import java.util.Date;
 import java.util.List;
-import java.util.Map;
-import java.util.Map.Entry;
 import java.util.Set;
 
 import javax.servlet.ServletOutputStream;
@@ -19,7 +26,21 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.exception.ExceptionUtils;
+import org.apache.poi.hssf.usermodel.DVConstraint;
+import org.apache.poi.hssf.usermodel.HSSFCell;
+import org.apache.poi.hssf.usermodel.HSSFDataValidation;
+import org.apache.poi.hssf.usermodel.HSSFRow;
+import org.apache.poi.hssf.usermodel.HSSFSheet;
+import org.apache.poi.hssf.usermodel.HSSFWorkbook;
+import org.apache.poi.ss.usermodel.DataValidation;
+import org.apache.poi.ss.usermodel.Name;
+import org.apache.poi.ss.usermodel.Row;
+import org.apache.poi.ss.usermodel.Sheet;
+import org.apache.poi.ss.usermodel.Workbook;
+import org.apache.poi.ss.util.CellRangeAddressList;
+import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.json.JSONArray;
+import org.json.JSONException;
 import org.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -27,6 +48,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
+import org.springframework.util.FileCopyUtils;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -35,16 +57,12 @@ import org.springframework.web.servlet.ModelAndView;
 
 import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.dto.ContractsDTO;
-import com.bis.sourcelead.dto.CustomFormFieldDTO;
 import com.bis.sourcelead.dto.JobFairDTO;
 import com.bis.sourcelead.dto.JobFairRequirementsDTO;
 import com.bis.sourcelead.dto.OrgRelationDTO;
-import com.bis.sourcelead.dto.OrglocationFormFieldsDTO;
 import com.bis.sourcelead.dto.SourceleadSectionDTO;
 import com.bis.sourcelead.entity.Candidate;
-import com.bis.sourcelead.entity.ClientCustomFieldData;
 import com.bis.sourcelead.entity.Countries;
-import com.bis.sourcelead.entity.JobCustomFieldData;
 import com.bis.sourcelead.entity.JobFair;
 import com.bis.sourcelead.entity.LookUpData;
 import com.bis.sourcelead.entity.Org;
@@ -55,6 +73,7 @@ import com.bis.sourcelead.entity.ProjectClients;
 import com.bis.sourcelead.entity.Requirement;
 import com.bis.sourcelead.entity.RequirementApproverHierarchy;
 import com.bis.sourcelead.entity.RequirementAssignTo;
+import com.bis.sourcelead.entity.RequirementIncentive;
 import com.bis.sourcelead.entity.RequirementLocations;
 import com.bis.sourcelead.entity.RequirementOfferHistory;
 import com.bis.sourcelead.entity.RequirementOffers;
@@ -234,6 +253,9 @@ public class RequirementController {
 			requirement = this.requirementService.getRequirementByRequirementUUID(requirementUUID);
 			model.addObject("requirementUUID", requirementUUID);
 			model.addObject("requirementStatus", requirement.getRequirementSubmissionStatus());
+			List<RequirementIncentive> requirementIncentiveList = requirementService.getRequirementIncentiveListByRequirementId(requirement.getId());
+			model.addObject("requirementIncentiveList", requirementIncentiveList);
+			model.addObject("requirementIncentiveListSize", requirementIncentiveList.size());
 			
 			if (requirement != null) {
 				requirement.setJobFairList(requirementService.getJobFairsListByRequirementId(requirement.getId()));
@@ -810,6 +832,12 @@ public class RequirementController {
 			Integer requirementAssignToListCount = requirementAssignToService.getRequirementAssignToListCountByRequirementId(requirement.getId());
 			model.addObject("requirementAssignToListCount",requirementAssignToListCount);
 			
+			Boolean isPrimaryRecruiter = false;
+			if(requirement.getPrimaryRecruiterUserId() != null && requirement.getPrimaryRecruiterUserId().getId() == loginUser.getId()) {
+				isPrimaryRecruiter = true;
+				model.addObject("isPrimaryRecruiter",isPrimaryRecruiter);
+			}
+			
 			if(null != requirement && requirement.getOrgLocationId().getId().equals(orgLocations.getId())){
 				Long requirementId = requirement.getId();
 				
@@ -935,6 +963,10 @@ public class RequirementController {
 		    model.addObject("sourceleadSectionList",sections);
 		   
 		    requirement.setJobFairList(requirementService.getJobFairsListByRequirementId(requirement.getId()));
+		    
+		    List<RequirementIncentive> requirementIncentiveList = requirementService.getRequirementIncentiveListByRequirementId(requirement.getId());
+			model.addObject("requirementIncentiveList", requirementIncentiveList);
+			model.addObject("requirementIncentiveListSize", requirementIncentiveList.size());
 		}else{
 			model.setViewName("registration/persmissionDenied");
 		}
@@ -1484,6 +1516,100 @@ public void viewOffersListAttachment(@RequestParam(value="offerId", required=fal
 
 } 
 
+
+
+@RequestMapping(value = "/getRequirementSubmissionTemplateForBulkImprtApplicants")
+public ModelAndView getRequirementSubmissionTemplateForBulkImprtApplicants(@RequestParam(value="requirementId", required=false) Long requirementId,
+		HttpServletRequest request) throws Exception{
+	ModelAndView model = new ModelAndView();
+	 model.addObject("sourceleadUrl", sourceleadUrl);
+	 model.addObject("requirementId", requirementId);
+	 model.setViewName("requirement/importApplicantsForSubmission");
+	 model.addObject("sourceleadUrl", sourceleadUrl);
+	return model;
+}
+
+
+@RequestMapping(value = "/downloadRequirenetSubmissionTemplateByRequirementId/{requirementId}", method = RequestMethod.GET)
+public void downloadRequirenetSubmissionTemplateByRequirementId(HttpServletRequest request,HttpServletResponse response,@PathVariable(value="requirementId") Long requirementId) throws IOException, URISyntaxException{
+	
+	try {
+		Requirement requirement = requirementService.getRequirementDetailsById(requirementId);
+		String jsonString = null;
+		if(StringUtils.isNotBlank(requirement.getClientSubmissionTemplateJsonString())) {
+			jsonString = requirement.getClientSubmissionTemplateJsonString();
+		}else {
+			jsonString = requirement.getSubmissionTemplateJsonString();
+		}
+		 JSONArray jsonarray = new JSONArray(jsonString);
+		 HSSFWorkbook createExcelworkbook = new HSSFWorkbook();
+		 DateFormat dateFormat = new SimpleDateFormat("MM-dd-yyyy");
+		 HSSFSheet createExcelsheet = createExcelworkbook.createSheet(requirement.getJobTitle() + "_" + dateFormat.format(new Date()));
+		 HSSFRow writeRow = null;
+			createExcelsheet = (HSSFSheet) createXlsSheet(createExcelworkbook,createExcelsheet, writeRow,jsonarray);
+			File file = File.createTempFile(requirement.getJobTitle() + "_Submissions_" + dateFormat.format(new Date()), ".xls");
+			file.setReadable(true);
+			FileOutputStream fos = new FileOutputStream(file);
+			try {
+				createExcelworkbook.write(fos);
+				fos.close();
+				createExcelworkbook.close();
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+			String mimeType = URLConnection.guessContentTypeFromName(file.getName());
+			if (mimeType == null) {
+				mimeType = "application/octet-stream";
+			}
+			response.setContentType(mimeType);
+			StringBuilder fileName = new StringBuilder();
+			response.setHeader("Content-Disposition", fileName.append("attachment; filename=\"").append(file.getName()).append("\"").toString());
+			response.setContentLength((int) file.length());
+			InputStream inputStream = new BufferedInputStream(new FileInputStream(file));
+			FileCopyUtils.copy(inputStream, response.getOutputStream());
+			inputStream.close();
+			response.getOutputStream().close();
+			response.getOutputStream().flush();
+			
+		
+	} catch (Exception e) {
+		e.printStackTrace();
+	}
+	
+}
+
+private Sheet createXlsSheet(HSSFWorkbook createExcelworkbook,HSSFSheet createExcelsheet, HSSFRow writeRow, JSONArray jsonarray) throws JSONException {
+	 writeRow = createExcelsheet.createRow(0);
+	 HSSFSheet hidden = null;
+	 for(int i=0; i<jsonarray.length(); i++){
+	        JSONObject obj = jsonarray.getJSONObject(i);
+	        writeRow.createCell(i).setCellValue(obj.getString("label"));
+	     if(obj.has("choices")) {
+	    	 hidden = createExcelworkbook.createSheet("hidden"+i);
+	        	 String choices = obj.getString("choices");
+	        	 JSONArray choiceJsonArray = new JSONArray(choices);
+	        	 String[] choicesArray =  new String [choiceJsonArray.length()];
+	        	 for(int j=0; j<choiceJsonArray.length(); j++){
+	        		  JSONObject chioceObj = choiceJsonArray.getJSONObject(j);
+	        		  String label = chioceObj.getString("label");
+	        		  choicesArray[j] = label;
+		     		  HSSFRow row = hidden.createRow(j);
+		 			  HSSFCell cell = row.createCell(0);
+		 			  cell.setCellValue(choicesArray[j]);
+	        	  }
+	        	
+	        	 Name namedCell = createExcelworkbook.createName();
+	        	 namedCell.setNameName("hidden"+i);
+	        	 namedCell.setRefersToFormula("hidden"+i+"!$A$1:$A$" + choicesArray.length);
+	 			 DVConstraint constraint = DVConstraint.createFormulaListConstraint("hidden"+i);
+	 			 CellRangeAddressList choicesList = new CellRangeAddressList(1, 500, i, i);
+	 			 HSSFDataValidation validation = new HSSFDataValidation(choicesList, constraint);
+	 			 createExcelsheet.addValidationData(validation);
+	        }
+	    }
+	
+	return createExcelsheet;
+}
 
 	
 }

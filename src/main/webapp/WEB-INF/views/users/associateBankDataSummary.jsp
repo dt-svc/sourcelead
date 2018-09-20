@@ -83,7 +83,7 @@ function editAssociateBankDataFun(userId){
                result += ' <div class="clearfix">';
                result += '   <select class="form-control sel" id="accountType" name ="accountType" data-validation="required" onchange="showHideAccountTypes();" field-name="Account Type">';
               /*  <option ${payrollDeduction.payrollDeductionMethod == 'Fixed' ? 'selected' : ''} value = "Fixed">Fixed</option> */
-               result += '     <option value="">Bank Transfer</option>';
+//                result += '     <option '+ (json.accountType == "Bank Transfer" ? "selected" : '') +' value="Bank Transfer">Bank Transfer</option>';
                result += '     <option '+ (json.accountType == "Direct Deposit" ? "selected" : '') +' value="Direct Deposit">Direct Deposit</option>';
                result += '     <option '+ (json.accountType == "Cheque" ? "selected" : '') +' value="Cheque">Cheque</option>';
                result += '     <option '+ (json.accountType == "Cash" ? "selected" : '') +' value="Cash">Cash</option>';
@@ -94,7 +94,7 @@ function editAssociateBankDataFun(userId){
                result += '<div id="accountTypeChildDivs">';
                
                result += '<div class="col-md-5">';
-               result += ' <label>Bank Name<span class="text-danger">&nbsp;*</span></label>';
+               result += ' <label>Bank Name<span id="editBankNameSpanId" class="text-danger">&nbsp;*</span></label>';
                result += ' <div>';
                var bankName = "";
                if(json.bankName != null && json.bankName != '' && json.bankName != 'undefined'){
@@ -106,7 +106,7 @@ function editAssociateBankDataFun(userId){
                result += ' </div>';
                result += '</div>';
                result += '<div class="col-md-5">';
-               result += ' <label>Account Number<span class="text-danger">&nbsp;*</span></label>';
+               result += ' <label>Account Number<span id="editAccountNumberSpanId" class="text-danger">&nbsp;*</span></label>';
                result += ' <div>';
                var accountNumber = "";
                if(json.accountNumber != null && json.accountNumber != '' && json.accountNumber != 'undefined'){
@@ -118,7 +118,7 @@ function editAssociateBankDataFun(userId){
                result += ' </div>';
                result += '</div>';
                result += '<div class="col-md-5">';
-               result += ' <label>Routing Number<span class="text-danger">&nbsp;*</span></label>';
+               result += ' <label>Routing Number<span id="editRoutingNumberSpanId" class="text-danger">&nbsp;*</span></label>';
                result += ' <div>';
                var routingNumber = "";
                if(json.routingNumber != null && json.routingNumber != '' && json.routingNumber != 'undefined'){
@@ -137,7 +137,9 @@ function editAssociateBankDataFun(userId){
                   result += ' <div class="col-md-10">';
                 result += '  <div class="pull-right">';
                result += '   <input value="Save" class="btn btn-success btnSuccess" id="save_associate_bank_data_button" onclick="saveAssociateBankData('+userId+');" type="button">';
-                 result += '   <input value="Cancel" onclick="javascript:window.location.href = "/app/usersList"" class="btn btn-default ml10" type="button">';
+
+                 result += '   <input value="Cancel" onclick="cancelButton();" class="btn btn-default ml10" type="button">';
+
                  result += '   </div>';
                result += ' </div>';
                result += '</div>';
@@ -158,24 +160,33 @@ function editAssociateBankDataFun(userId){
 function showHideAccountTypes(){
 	var accountType = $("#accountType").val();
 	if(accountType == "Direct Deposit"){
-		$("#accountTypeChildDivs").hide();
 		$("#bankName").val('');
 		$("#accountNumber").val('');
 		$("#routingNumber").val('');
-		$("#bankName").removeAttr('data-validation');
-		$('#bankName').attr('data-validation-optional',"true");
-		$("#accountNumber").removeAttr('data-validation');
-		$('#accountNumber').attr('data-validation-optional',"true");
-		$("#routingNumber").removeAttr('data-validation');
-		$('#routingNumber').attr('data-validation-optional',"true");
-	}else{
-		$("#accountTypeChildDivs").show();
+		
 		$("#bankName").removeAttr('data-validation-optional');
 		$('#bankName').attr('data-validation',"required validate_Space validate_length length2-100");
 		$("#accountNumber").removeAttr('data-validation-optional');
 		$('#accountNumber').attr('data-validation',"required validate_Space validate_int validate_length length2-100");
 		$("#routingNumber").removeAttr('data-validation-optional');
 		$('#routingNumber').attr('data-validation',"required validate_space validate_int validate_length length9-9");
+		
+		$('#editBankNameSpanId').attr('style',"display:inline-block");
+		$('#editAccountNumberSpanId').attr('style',"display:inline-block");
+		$('#editRoutingNumberSpanId').attr('style',"display:inline-block");
+	}else{
+
+		$("#bankName").removeAttr('data-validation');
+		$('#bankName').attr('data-validation-optional',"true");
+		$("#accountNumber").removeAttr('data-validation');
+		$('#accountNumber').attr('data-validation-optional',"true");
+		$("#routingNumber").removeAttr('data-validation');
+		$('#routingNumber').attr('data-validation-optional',"true");
+		
+		$('#editBankNameSpanId').attr('style',"display:none");
+		$('#editAccountNumberSpanId').attr('style',"display:none");
+		$('#editRoutingNumberSpanId').attr('style',"display:none");
+		
 	}
 }
 </script> 
@@ -228,3 +239,9 @@ function showHideAccountTypes(){
    });
   
 </script> 
+
+<script>
+function cancelButton(){
+	location.replace(sourceleadUrl+ "/usersList");
+}
+</script>

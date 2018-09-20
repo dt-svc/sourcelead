@@ -19,26 +19,27 @@
                     <div>
                       <select class="sel" id="federaltaxFillingStatus" name="federaltaxFillingStatus" data-validation="required" field-name="Filling Status">
                         <option value="">--Select--</option>
-                        <option value="SINGLE">Single</option>
-                        <option value="MARRIED">Married</option>
-                        <option value="MARRIED_USE_SINGLE_RATE">Married Use Single Rate</option>
-                        <option value="NONRESIDENT_ALIEN">Non Resident Alien</option>
+                        <option value="Single">Single</option>
+                        <option value="Married">Married</option>
+                        <option value="Married_Single_Income">Married Single Income</option>
+                        <option value="Married_Dual_Income">Married Dual Income</option>
+                        <option value="Head_of_Household">Head of Household</option>
                       </select>
                     </div>
                   </div>
                   <div class="col-md-5">
                     <label>Allowances<span class="text-danger">&nbsp;*</span></label>
                     <div>
-                      <input type="text" class="form-control" name="federaltaxAllowances" id="federaltaxAllowances" data-validation="required validate_Space validate_length length1-100 validate_int" field-name="Allowances">
+                      <input type="text" class="form-control" name="federaltaxAllowances" id="federaltaxAllowances" value="0" data-validation="required validate_Space validate_length length1-100 validate_int" field-name="Allowances">
                     </div>
                   </div>
                   <div class="col-md-5">
-                    <label>Additional with holding<span class="text-danger">&nbsp;*</span></label>
+                    <label>Additional withholding<span class="text-danger">&nbsp;*</span></label>
                     <div>
-                      <input type="text" class="form-control" name="federaltaxAdditionalWithHolding" id="federaltaxAdditionalWithHolding" data-validation="required validate_Space validate_length length1-100 validate_int" field-name="Additional with holding">
+                      <input type="text" class="form-control" name="federaltaxAdditionalWithHolding" id="federaltaxAdditionalWithHolding" value="0" data-validation="required validate_Space validate_length length1-100 validate_int" field-name="Additional with holding">
                     </div>
                   </div>
-                  <div class="clearfix"></div>
+               <!--    <div class="clearfix"></div>
                   <h4 class="col-md-12">State Tax</h4>
                   <div class="col-md-5">
                     <label>Filling Status<span class="text-danger">&nbsp;*</span></label>
@@ -56,15 +57,15 @@
                   <div class="col-md-5">
                     <label>Allowances<span class="text-danger">&nbsp;*</span></label>
                     <div> 
-                      <input type="text" class="form-control" name="stateTaxAllowances" id="stateTaxAllowances" data-validation="required validate_Space validate_length length1-100 validate_int" field-name="Allowances">
+                      <input type="text" class="form-control" name="stateTaxAllowances" id="stateTaxAllowances" value="0" data-validation="required validate_Space validate_length length1-100 validate_int" field-name="Allowances">
                     </div>
                   </div>
                   <div class="col-md-5">
-                    <label>Additional with holding<span class="text-danger">&nbsp;*</span></label>
+                    <label>Additional withholding<span class="text-danger">&nbsp;*</span></label>
                     <div>
-                      <input type="text" class="form-control" name="stateTaxAdditionalWithHolding" id="stateTaxAdditionalWithHolding" data-validation="required validate_Space validate_length length1-100 validate_int" field-name="Additional with holding">
+                      <input type="text" class="form-control" name="stateTaxAdditionalWithHolding" id="stateTaxAdditionalWithHolding" value="0" data-validation="required validate_Space validate_length length1-100 validate_int" field-name="Additional with holding">
                     </div>
-                  </div>
+                  </div> -->
                   
                   <div class="clearfix"></div>
                   <h4 class="col-md-12">Residence Location</h4>
@@ -84,13 +85,13 @@
                   <div class="col-md-5">
                     <label>Allowances<span class="text-danger">&nbsp;*</span></label>
                     <div> 
-                      <input type="text" class="form-control" name="residenceLocationAllowances" id="residenceLocationAllowances" data-validation="required validate_Space validate_length length1-100 validate_int" field-name="Allowances">
+                      <input type="text" class="form-control" name="residenceLocationAllowances" id="residenceLocationAllowances" value="0" data-validation="required validate_Space validate_length length1-100 validate_int" field-name="Allowances">
                     </div>
                   </div>
                   <div class="col-md-5">
-                    <label>Additional with holding<span class="text-danger">&nbsp;*</span></label>
+                    <label>Additional withholding<span class="text-danger">&nbsp;*</span></label>
                     <div>
-                      <input type="text" class="form-control" name="residenceLocationAdditionalWithHolding" id="residenceLocationAdditionalWithHolding" data-validation="required validate_Space validate_length length1-100 validate_int" field-name="Additional with holding">
+                      <input type="text" class="form-control" name="residenceLocationAdditionalWithHolding" id="residenceLocationAdditionalWithHolding" value="0" data-validation="required validate_Space validate_length length1-100 validate_int" field-name="Additional with holding">
                     </div>
                   </div>
                    <div class="col-md-5">
@@ -107,13 +108,13 @@
                     <div class="col-md-5">
                     <label>Local tax</label>
                     <div>
-                      <select class="sel" id="localTax" name="localTax" data-validation="required" field-name="State Tax" onchange="isLocalTaxYes();"> 
-                        <option value="">--Select--</option>
-                        <option selected value="NO_TAX">No Tax</option>
-                        <option value='${location }'>${location }</option>
+                      <select class="chosen-select" id="localTax" name="localTax" data-validation="required" field-name="State Tax" onchange="isLocalTaxYes();"> 
+<!--                         <option value="">--Select--</option> -->
+<!--                         <option selected value="NO_TAX">No Tax</option> -->
+<%--                         <option value='${location }'>${location }</option> --%>
                       </select>
                     </div>
-                    <p class="text-success form-control-static clearfix" id="localTaxMessageDiv"> </p>
+<!--                     <p class="text-success form-control-static clearfix" id="localTaxMessageDiv"> </p> -->
                   </div>
                   
                   <div class="clearfix"></div>
@@ -126,7 +127,7 @@
                         Exempt</label>
                       <label class="radioIput">
                         <input type="radio" name="federalExempt" id="federalExempt" value="false">
-                        Notexempt</label>
+                        Nonexempt</label>
                     </div>
                   </div>
                   <div class="col-md-5">
@@ -137,18 +138,18 @@
                         Exempt</label>
                       <label class="radioIput">
                         <input type="radio" name="medicareExempt" id="medicareExempt" value="false">
-                        Notexempt</label>
+                        Nonexempt</label>
                     </div>
                   </div>
                   <div class="col-md-5">
-                    <label>Socail Security</label>
+                    <label>Social Security</label>
                     <div>
                       <label class="radioIput mr">
                         <input type="radio" name="socailSecurityExempt" id="socailSecurityExempt" value="true">
                         Exempt</label>
                       <label class="radioIput">
                         <input type="radio" name="socailSecurityExempt" id="socailSecurityExempt" value="false">
-                        Notexempt</label>
+                        Nonexempt</label>
                     </div>
                   </div>
                   <div class="col-md-5">
@@ -159,7 +160,7 @@
                         Exempt</label>
                       <label class="radioIput">
                         <input type="radio" name="futaExempt" id="futaExempt" value="false">
-                        Notexempt</label>
+                        Nonexempt</label>
                     </div>
                   </div>
                   <div class="col-md-5">
@@ -170,7 +171,7 @@
                         Exempt</label>
                       <label class="radioIput">
                         <input type="radio" name="sutaExempt" id="sutaExempt" value="false">
-                        Notexempt</label>
+                        Nonexempt</label>
                     </div>
                   </div>
                   
@@ -220,6 +221,8 @@
 								document.getElementById("associateDeduction").removeAttribute("class"); 
 								associateDeduction.href="#tab-4"; 
 								$("#associateDeduction").click();
+								$("#associate_tax_button").removeAttr("disabled");
+								$("#associate_tax_button").addClass('button').val('Save & Continue');
 			                } else if (result.indexOf('Sign In') !== -1) {
 								location.replace(sourceleadUrl);
 							} else {
@@ -293,5 +296,27 @@ function skipAssociateTaxJsp(){
 	document.getElementById("associateDeduction").removeAttribute("class"); 
 	associateDeduction.href="#tab-4"; 
 	$("#associateDeduction").click();
+}
+</script>
+
+<script>
+function getResidenceLocation(){
+	var userId = $("#associateId").val();  
+	$.ajax({
+		type : "GET",
+		url : sourceleadUrl+"/getResidenceLocation?"+tokenParamName+"="+tokenValue+"&userId="+userId,
+		success : function(result) {
+			var output = "";
+			var selected = "selected";
+			if(result != null && result != '' && result != 'undefined'){
+				output += "<option selected value='"+result+"'>"+result+"</option>";
+				selected = "";
+			}
+			output += "<option "+selected+" value='NO_TAX'>No Tax</option>";
+			$("#localTax").empty();
+			$("#localTax").append(output);
+			$('#localTax').trigger("chosen:updated");
+       }
+	});
 }
 </script>

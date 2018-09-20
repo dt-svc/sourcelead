@@ -94,8 +94,8 @@
 							<div class="tblminwidth-90">
 								<a id= "upload" title="Upload" class="fa fa-upload uploadForm"></a>
 								<c:if test="${canDocList.isTemplateConfigured eq 'N'}">
-								<i id="edit" class="glyphicon glyphicon-pencil ml10 cursorPointer" onclick="editDocumentDetailsByRowId(${canDocList.id});"></i>
-								<i id="delete" class="glyphicon glyphicon-trash ml10 cursorPointer" onclick="deleteImmigrationRecord('deleteDocumentDetailsByRowId',${canDocList.id});" ></i>
+								<i id="edit" class="glyphicon glyphicon-pencil ml10 cursorPointer" onclick="immigration.editDocumentDetailsByRowId(${canDocList.id});"></i>
+								<i id="delete" class="glyphicon glyphicon-trash ml10 cursorPointer" onclick="deleteImmigrationRecord('immigration.deleteDocumentDetailsByRowId',${canDocList.id});" ></i>
 							 </c:if>
 								</div>
 							</td>
@@ -110,8 +110,8 @@
 									<div class="tblminwidth-90">
 										<a id= "upload" title="Upload" class="fa fa-upload uploadForm"></a>
 										<c:if test="${canDocList.isTemplateConfigured eq 'N'}">
-										<i id="edit" class="glyphicon glyphicon-pencil ml10 cursorPointer" onclick="editDocumentDetailsByRowId(${canDocList.id});"></i>
-										<i id="delete" class="glyphicon glyphicon-trash ml10 cursorPointer" onclick="deleteImmigrationRecord('deleteDocumentDetailsByRowId',${canDocList.id});" ></i>
+										<i id="edit" class="glyphicon glyphicon-pencil ml10 cursorPointer" onclick="immigration.editDocumentDetailsByRowId(${canDocList.id});"></i>
+										<i id="delete" class="glyphicon glyphicon-trash ml10 cursorPointer" onclick="deleteImmigrationRecord('immigration.deleteDocumentDetailsByRowId',${canDocList.id});" ></i>
 									 </c:if>
 										</div>
 									</td>
@@ -438,7 +438,7 @@ $("#docZipfile").click(function() {
 <script type="text/javascript">
 
 function removeDocPopUp12(){
-	 displayImmigrationCandidateDocs(candidateId,templateId,immigrationId,"");
+	 immigration.displayImmigrationCandidateDocs(candidateId,templateId,immigrationId,"");
 }
 
 function removeDocPopUp(){
@@ -447,6 +447,7 @@ function removeDocPopUp(){
 	$("#candidate_Immigration_document_form")[0].reset();
 	$("#description1").text('');
 	$("#immigrationCandidateDocId").val('');
+	$("#documentType").selectpicker("refresh");
 	$('#candidate_Immigration_document_form input[name="multiple"]').prop('checked', false);
 	$('#candidate_Immigration_document_form input[name="isRequired"]').prop('checked', false);
 	$("#docuView").find('p.jquery_form_error_message').remove();
@@ -524,7 +525,7 @@ function removeDynamicUploaRow(id){
 $("#immigraDocTabSerach").keyup(function (e) {
     if (e.which === 13) {
     	var searchVal = $("#immigraDocTabSerach").val();
-    	displayImmigrationCandidateDocs(candidateId,templateId,immigrationId,searchVal);
+    	immigration.displayImmigrationCandidateDocs(candidateId,templateId,immigrationId,searchVal);
     }
 });
 function downlaodZipfileByDocId(docId){

@@ -1074,11 +1074,16 @@ public class CandidateDaoImpl implements CandidateDao {
 	{
 		Session session = this.sessionFactory.getCurrentSession();
 		Candidate candidate = null;
-		String query = "from Candidate candidate  where candidate.orgLocationId.id =:orgLocationId and candidate.consultantUser.id= :consultantUserId";
-        List<Candidate>  candidateList = session.createQuery(query).setLong("orgLocationId", orgLocationId).setLong("consultantUserId", consultantUserId).list();
-		if(null != candidateList && candidateList.size() >0){
-			candidate = candidateList.get(0);
+		try {
+			String query = "from Candidate candidate  where candidate.orgLocationId.id =:orgLocationId and candidate.consultantUser.id= :consultantUserId";
+	        List<Candidate>  candidateList = session.createQuery(query).setLong("orgLocationId", orgLocationId).setLong("consultantUserId", consultantUserId).list();
+			if(null != candidateList && candidateList.size() >0){
+				candidate = candidateList.get(0);
+			}
+		} catch (Exception e) {
+			logger.error(ExceptionUtils.getFullStackTrace(e));
 		}
+		
         return candidate;
 	}
 
@@ -1970,8 +1975,23 @@ public class CandidateDaoImpl implements CandidateDao {
 			
 		if(StringUtils.isNotBlank(skills)) {
 			String requirementSkills [] = skills.split(",");
-			String requirementSkillsStr = "'" + StringUtils.join(requirementSkills,"','") + "'";
-			subQuery = " AND CAND.SKILLS_NAME IN ("+requirementSkillsStr+")";
+			//String requirementSkillsStr = "'" + StringUtils.join(requirementSkills,"','") + "'";
+			//subQuery = " AND CAND.SKILLS_NAME IN ("+requirementSkillsStr+")";
+			
+			int i = 0;
+			int j = requirementSkills.length;
+			for(String rSkill : requirementSkills) {
+				i++;
+				if(i == 1) {
+					subQuery = subQuery + " AND (";
+				}else {
+					subQuery = subQuery + " OR ";
+				}
+				subQuery = subQuery + " CAND.SKILLS_NAME LIKE '%"+rSkill+"%' ";
+				if(i == j) {
+					subQuery = subQuery + " )";
+				}
+			}
 		}
 		
 		String	query ="SELECT "

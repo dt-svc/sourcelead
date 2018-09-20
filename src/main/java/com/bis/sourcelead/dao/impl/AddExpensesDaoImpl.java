@@ -4,6 +4,7 @@ import java.math.BigInteger;
 import java.text.MessageFormat;
 import java.util.List;
 
+import org.apache.commons.lang3.StringUtils;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -113,6 +114,28 @@ public class AddExpensesDaoImpl implements AddExpensesDao {
 		ExpensesEntryDocuments expensesEntryDocuments = this.sessionFactory.getCurrentSession().get(ExpensesEntryDocuments.class, documentId);
 		expensesEntryDocuments.setStatus(0);
 		session.saveOrUpdate(expensesEntryDocuments);
+	}
+
+	@Override
+	@Transactional(rollbackFor = { Exception.class })
+	public long changeStatusToBillable(long expenseEntriesId,String billableStatus) {
+		try {
+			Session session = this.sessionFactory.getCurrentSession();
+			ExpensesEntries expensesentries = session.get(ExpensesEntries.class, expenseEntriesId);
+			if (expensesentries != null) {
+				if(StringUtils.isNotEmpty(billableStatus) && billableStatus.equalsIgnoreCase("billable")) {
+					expensesentries.setBillable(true);
+				}else {
+					expensesentries.setBillable(false);
+				}
+				
+				return expensesentries.getId();
+			} else
+				return -2;
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return -1;
 	}
 
 	

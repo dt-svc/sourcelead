@@ -48,12 +48,19 @@
 		            <div class="clearfix">
 		              <div class="form-horizontal clearfix">
 		                
+		                <div class="col-md-5" >
+		                  <label class="clearfix">Name</label>
+		                  <div class="clearfix">
+		                    <input type="text" class="form-control input-sm" id="name" name="name" value="${assetAssignData.name}" placeholder="Name" field-name="Name"  data-validation="validate_length length1-200" data-validation-optional="true">
+		                  </div>
+		                  </div>
+		                  
 		                
 		                  <div class="col-md-5" id="snoDiv">
-		                  <label class="clearfix">Serial / Port Number<span class="text-danger paddingLeft">*</span></label>
-		                  <div class="clearfix">
-		                    <input type="text" class="form-control input-sm" id="sno" name="sno" value="${assetAssignData.slno}" placeholder="Serial / Port Number" field-name="Serial / Port Number" onblur="validateAssetSno('${assetAssignData.id}');" data-validation="required validate_Space validate_NumberAndAlphabet validate_length length1-200">
-		                  </div>
+		                  <label class="clearfix" >Serial Number<span class="text-danger paddingLeft">*</span></label>
+			                  <div class="clearfix">
+			                    <input type="text" class="form-control input-sm" id="sno" name="sno" value="${assetAssignData.slno}" placeholder="Serial Number" field-name="Serial Number" onblur="validateAssetSno('${assetAssignData.id}');" data-validation="required validate_Space validate_NumberAndAlphabet validate_length length1-200" >
+			                  </div>
 		                  </div>
 		                  
 		                  <div class="col-md-5" id="makeDiv">
@@ -96,21 +103,10 @@
 		                  </div>
 		                  </div>
 		                  
-		                  
-						<div class="col-md-5">
-							<label class="clearfix">Issue Date</label>
-								<div class="clearfix">
-									<div class="input-group">
-									<input type="text"  name="issueDate" placeholder = "Issue Date" class="form-control calendar input-sm" value="${issueDateStr}" id="issueDate" readonly="readonly">
-									<span class="input-group-addon" onClick="clearIssueDate();"><i class="colorRed fa fa-times cursorPointer"></i></span>
-									</div>
-								</div>
-						</div>
-		                  
 		                  <div class="col-md-5" id="monitorDiv" style="display: none;">
-		                  <label class="clearfix">Monitor</label>
+		                  <label class="clearfix">Monitor Serial Number</label>
 								<div class="clearfix">
-		                    <input type="text" class="form-control input-sm" id="monitor" name="monitor" placeholder="Monitor"  data-validation-optional="true" value="${assetAssignData.monitor}" data-validation="validate_Space validate_NumberAndAlphabet validate_length length2-100">
+		                    <input type="text" class="form-control input-sm" id="monitor" name="monitor" placeholder="Monitor Serial Number"  data-validation-optional="true" value="${assetAssignData.monitor}" data-validation="validate_Space validate_NumberAndAlphabet validate_length length2-100">
 		                  </div>
 		                </div>
 		                
@@ -121,6 +117,78 @@
 			              	</div>
 				          </div>
 		                
+		                
+		                <div class="col-md-5">
+			              	<label class="clearfix">Operating System</label>
+							<div class="clearfix">
+			                	<input type="text" class="form-control input-sm" id="operatingSystem" name="operatingSystem" placeholder="Operating System" field-name="Operating System"  value="${assetAssignData.operatingSystem}" data-validation="validate_length length1-100" data-validation-optional="true">
+			              	</div>
+				          </div>
+				          
+				          <div class="col-md-5">
+			              	<label class="clearfix">OS Key</label>
+							<div class="clearfix">
+			                	<input type="text" class="form-control input-sm" id="osKey" name="osKey" placeholder="OS Key" field-name="OS Key"  value="${assetAssignData.osKey}" data-validation="validate_length length5-50" data-validation-optional="true">
+			              	</div>
+				          </div>
+				          
+				          <div class="col-md-5">
+			              	<label class="clearfix">Anti-Virus</label>
+							<div class="clearfix">
+			                	<input type="text" class="form-control input-sm" id="antiVirus" name="antiVirus" placeholder="Anti-Virus" field-name="Anti-Virus"  value="${assetAssignData.antiVirus}" data-validation="validate_length length1-100" data-validation-optional="true">
+			              	</div>
+				          </div>
+				          
+				          <div class="col-md-5">
+							<label class="clearfix">Manufactured Date</label>
+								<div class="clearfix">
+									<div class="input-group">
+									<input type="text"  name="issueDate" placeholder = "Manufactured Date" class="form-control calendar input-sm" value="${issueDateStr}" id="issueDate" readonly="readonly">
+									<span class="input-group-addon" onClick="clearIssueDate();"><i class="colorRed fa fa-times cursorPointer"></i></span>
+									</div>
+								</div>
+						  </div>
+						<div class="col-md-5">
+							<label class="clearfix">Purchase Date</label>
+								<div class="clearfix">
+									<div class="input-group">
+									<input type="text"  name="purchaseDate" placeholder = "Purchase Date" class="form-control calendar input-sm" value="${purchaseDate}" id="purchaseDate" readonly="readonly">
+									<span class="input-group-addon" onClick="clearPurchaseDate();"><i class="colorRed fa fa-times cursorPointer"></i></span>
+									</div>
+								</div>
+						  </div>
+						
+						<div class="col-md-5">
+			              	<label class="clearfix">Cost</label>
+							<div class="clearfix">
+			                	<input type="text" class="form-control input-sm" id="cost" name="cost" placeholder="Cost" field-name="Cost"  value="${assetAssignData.cost}" data-validation="validate_float validate_length length1-50" data-validation-optional="true">
+			              	</div>
+				          </div>
+				          
+				          <div class="col-md-5">
+							<label class="clearfix">Depreciation Assessment Date</label>
+								<div class="clearfix">
+									<div class="input-group">
+									<input type="text"  name="depreciationDate" placeholder = "Depreciation Date" class="form-control calendar input-sm" value="${depreciationDate}" id="depreciationDate" readonly="readonly">
+									<span class="input-group-addon" onClick="clearDepreciationDate();"><i class="colorRed fa fa-times cursorPointer"></i></span>
+									</div>
+								</div>
+						  </div>
+				          
+				          <div class="col-md-5">
+			              	<label class="clearfix">Depreciation Amount</label>
+							<div class="clearfix">
+			                	<input type="text" class="form-control input-sm" id="depreciationAmount" name="depreciationAmount" placeholder="Depreciation Amount" field-name="Depreciation Amount"  value="${assetAssignData.depreciationAmount}" data-validation="validate_float  validate_length length1-50" data-validation-optional="true">
+			              	</div>
+				          </div>
+				          
+				          <div class="col-md-5">
+			              	<label class="clearfix">Vendor Details</label>
+							<div class="clearfix">
+			                	<input type="text" class="form-control input-sm" id="vendorDetails" name="vendorDetails" placeholder="Vendor Details" field-name="Vendor Details"  value="${assetAssignData.vendorDetails}" data-validation=" validate_length length1-100" data-validation-optional="true">
+			              	</div>
+				          </div>
+				          
 		                <div class="clearfix">
 		                  
 		                  <div class="col-md-5" id="attachmentDiv">
@@ -177,11 +245,11 @@
 		                </div>
 		                 <c:forEach var="shift" items="${siftList}" varStatus="shiftOrder">
 			                <div class="clearfix mb10">
-			                  <div class="col-md-5" id="uploadFile-dskADiv">
-			                   <label class="clearfix">${shift.shiftName}</label>
+			                  <div class="col-md-3" id="uploadFile-dskADiv${shiftOrder.index}">
+			                   <label class="clearfix">${shift.shiftName} <span class="text-danger paddingLeft" id="shiftStart${shiftOrder.index}"  style="display: none">*</span></label>
 			                    <input type="hidden" name="assignAsset[${shiftOrder.index}].shift" value="${shift.id}"/>
 			                    <input type="hidden" id="assetAssignId${shiftOrder.index}" name="assignAsset[${shiftOrder.index}].id"/>
-			                    <select class="width100percnt selectpicker" id="shiftAEmp${shiftOrder.index}" name="assignAsset[${shiftOrder.index}].shiftEmp" data-live-search="true">
+			                    <select class="width100percnt selectpicker" id="shiftAEmp${shiftOrder.index}" name="assignAsset[${shiftOrder.index}].shiftEmp" field-name="Employee Name" onchange="removeValidation(${shiftOrder.index})"  data-live-search="true">
 			                      <option  value="">-Select Employee-</option>
 			                      <c:forEach var="userRole" items="${userRoleList}">
 			                        <c:set var = "NUM" value = "${0}"/>
@@ -203,13 +271,13 @@
 								  </c:forEach>
 			                    </select>
 			                  </div>
-			                  <div class="col-md-5" id="uploadFile-dskBDiv">
+			                  <div class="col-md-3" id="uploadFile-dskBDiv">
 			                  <label class="clearfix">Attachment</label>
 			                  <c:forEach var="existedAssetDocuments" items="${assignAssetList}">
 							    <c:if test="${(existedAssetDocuments.shift.id eq shift.id) && (!empty existedAssetDocuments.fileName)}">
 							    	<c:set var = "NUM" value = "${1}"/>
 							    	 <div id="downloadFile${shiftOrder.index}">
-                                      <div class="timesheet_week_comm invoiceDocs sizeInputfield">
+                                      <div class="timesheet_week_comm invoiceDocs sizeInputfield width100percnt">
 						               <span>
 								         <strong id="ticketDocument16">
 						    		     <i class=""><a class="glyphicon glyphicon-save" href="${existedAssetDocuments.fileURL}" title="download"></a></i>
@@ -223,13 +291,68 @@
 							</c:forEach>
 							<c:if test="${NUM == 0}">
 	                      		<div class="input-group attachfile-error">
-			                      <label class="input-group-btn"> <b class="btn btn-primary" onchange="setFilePath('${shiftOrder.index}');uploadShiftFile('${shiftOrder.index}');"><i class="fa fa-folder-open-o"></i>&nbsp;Browse File
+			                      <label class="input-group-btn"> <b class="btn btn-primary" onchange="setFilePath('${shiftOrder.index}');uploadShiftFile('${shiftOrder.index}');"><i class="fa fa-folder-open-o"></i>
 			                        <input type="file" id="uploadBtn-dskA${shiftOrder.index}"   style="display: none;" class="upload">
 			                        </b> </label>
-			                      <input type="text"  class="form-control" id="shiftFile${shiftOrder.index}" data-validation = "validatedoc" data-validation-optional="true"   readonly  placeholder="Files are not selected...">
+			                      <input type="text"  class="form-control" id="shiftFile${shiftOrder.index}" data-validation = "validatedoc" data-validation-optional="true"   readonly  placeholder="Upload File...">
 			                    </div>
 							</c:if>
 			                </div>
+			                
+	                        <c:set var = "NUM" value = "${0}"/>
+	                        <c:forEach var="existedAsset" items="${assignAssetList}">
+	                        	<c:if test="${(existedAsset.shift.id eq shift.id)}">
+							    	<c:set var = "NUM" value = "${1}"/>
+										<div class="col-md-2 paddingRight">
+							                <label>Assigned On</label>
+							                <div class="clearfix">
+							                	<input type="text" class="form-control calendar" id="assignedOn${shiftOrder.index}" name="assignAsset[${shiftOrder.index}].assignedOn"  value="${existedAsset.assignedOnStr}" readonly  placeholder="Assigned On">
+							                </div>
+							              </div>
+								                
+								         <div class="col-md-2 paddingLeft">
+							                <label>Returned On</label>
+							                <div class="clearfix">
+							                	<input type="text" class="form-control calendar" id="returnedOn${shiftOrder.index}" name="assignAsset[${shiftOrder.index}].returnedOn"  value="${existedAsset.returnedOnStr}" readonly  placeholder="Returned On">
+							                </div>
+							                </div>
+							                
+							                 <c:forEach var="existedAssetDocuments" items="${assignAssetList}">
+							                     <c:if test="${(existedAssetDocuments.shift.id eq shift.id) && (!empty existedAssetDocuments.fileName)}">
+													   <div class="col-md-1 padding_left mt25">
+													    <i class="refeIcon" onclick="refrshAssignData('${shiftOrder.index}');deleteAssignDocument('${shiftOrder.index}',${existedAssetDocuments.id});"></i>
+													    </div>
+												 </c:if>
+		     				                     <c:if test="${(existedAssetDocuments.shift.id eq shift.id) && (empty existedAssetDocuments.fileName)}">
+		     				                     <div class="col-md-1 padding_left mt25">
+												 	<i class="refeIcon" onclick="refrshAssignData('${shiftOrder.index}');"></i>
+												 </div>
+						                        </c:if>
+							                </c:forEach>
+							                
+							                
+							       </c:if>
+	                        </c:forEach>
+	                        <c:if test="${NUM == 0}">
+	                        <div class="col-md-2 paddingRight" id="errAssignDate${shiftOrder.index}">
+				                <label>Assigned On<span class="text-danger paddingLeft" id="assignOnDate${shiftOrder.index}"  style="display: none">*</span></label>
+				                <div class="clearfix">
+				                	<input type="text" class="form-control calendar" id="assignedOn${shiftOrder.index}" name="assignAsset[${shiftOrder.index}].assignedOn"  field-name="AssignOn"  readonly  placeholder="Assigned On">
+				                </div>
+				                </div>
+				                
+				                <div class="col-md-2 paddingLeft">
+				                <label>Returned On</label>
+				                <div class="clearfix">
+				                	<input type="text" class="form-control calendar" id="returnedOn${shiftOrder.index}" name="assignAsset[${shiftOrder.index}].returnedOn"   readonly  placeholder="Returned On">
+				                </div>
+				                </div>
+				                
+				                <div class="col-md-1 padding_left mt25">
+								    <i class="refeIcon" onclick="refrshAssignData('${shiftOrder.index}');"></i>
+								</div>
+								
+	                        </c:if>
 			              </div>
 		                </c:forEach>
 		              </c:if>
@@ -238,7 +361,7 @@
 		            </div>
 		            <div class="clearfix mr">
 		                  <div class="pull-right">
-		                   <input type="button" value="Add" id="add_asset" onclick="storeAsset();" class="btn btn-primary mr">
+		                   <input type="button" value="Add" id="add_asset" onclick="storeAsset('${assetAssignData.assetUUID}');" class="btn btn-primary mr">
 		                   <input type="button" value="Cancel" id="" onclick="closeassetManagementPopup();" class="btn btn-default">
 		                  </div>
 		              </div>
@@ -248,10 +371,10 @@
 	   </div>
 	    <div id="divAssignAtt" style="display:none;" > 
 		   <div class="input-group attachfile-error">
-	          <label class="input-group-btn"> <b class="btn btn-primary" onchange="setFilePath('REPLACEROWID');uploadShiftFile('REPLACEROWID');"><i class="fa fa-folder-open-o"></i>&nbsp;Browse File
+	          <label class="input-group-btn"> <b class="btn btn-primary" onchange="setFilePath('REPLACEROWID');uploadShiftFile('REPLACEROWID');"><i class="fa fa-folder-open-o"></i>
 	            <input type="file" id="uploadBtn-dskAREPLACEROWID"   style="display: none;" class="upload">
 	            </b> </label>
-	          <input type="text"  class="form-control" id="shiftFileREPLACEROWID" data-validation = "validatedoc" data-validation-optional="true"   readonly  placeholder="Files are not selected...">
+	          <input type="text"  class="form-control" id="shiftFileREPLACEROWID" data-validation = "validatedoc" data-validation-optional="true"   readonly  placeholder="Upload File...">
 	        </div>
         </div>
   <!--  Asset Management Popup Ends -->
@@ -298,6 +421,7 @@ function getCustomDependentField(sectionId){
 <script type="text/javascript">
  function validateAssetSno(assetId) {
 	 var assetSno = $("#sno").val(); 
+	  
 	 if(assetSno != null && assetSno != ""){
 		 $("#add_asset").attr("disabled", "disabled");
 		 $.ajax({
@@ -305,13 +429,13 @@ function getCustomDependentField(sectionId){
 		        url: sourceleadUrl+"/validateAssetSno?"+tokenParamName+"="+tokenValue+"&assetSno="+assetSno+"&assetId="+assetId, 
 		        success: function(data) {
 		        	if(data == true){
-		        		  $('#snoDiv').find('p.jquery_form_error_message').remove();
-						  $("input#sno").after ("<p class='jquery_form_error_message'>"+assetSno+" is Already Existed</span>");
-						  document.getElementById("sno").setAttribute('record-exist','yes');
-						  document.getElementById("sno").setAttribute('record-exist-errorMsg',assetSno+' is Already Existed'); 
-		        	}
-		        	else{
-		        		 $('input#sno').removeAttr( "record-exist record-exist-errormsg");
+		        		     $('#snoDiv').find('p.jquery_form_error_message').remove();
+		        			  $("input#sno").after ("<p class='jquery_form_error_message'>"+assetSno+" is Already Existed</span>");
+							  document.getElementById("sno").setAttribute('record-exist','yes');
+							  document.getElementById("sno").setAttribute('record-exist-errorMsg',assetSno+' is Already Existed'); 
+		        		  
+		        	}else{
+	        			 $('input#sno').removeAttr( "record-exist record-exist-errormsg"); 
 		        		 $('#snoDiv').find('p.jquery_form_error_message').remove(); 
 		        		 $("#add_asset" ).addClass('us-btn').val('Add');
                          $("#add_asset").removeAttr("disabled");
@@ -321,6 +445,131 @@ function getCustomDependentField(sectionId){
 	 } 
  }
  </script>  
+ 
+ <script>
+ var locationDate ='${SourceLeadWeb_orgLocations.dateFormat}'; 
+ var finalDateFormat = getJSDateFormat(locationDate);
+ $('#issueDate').datepicker({
+     dateFormat: finalDateFormat,
+     changeMonth: true,
+ 	  changeYear: true, 
+ });
+ $('#purchaseDate').datepicker({
+     dateFormat: finalDateFormat,
+     changeMonth: true,
+ 	  changeYear: true, 
+ });
+ $('#depreciationDate').datepicker({
+     dateFormat: finalDateFormat,
+     changeMonth: true,
+ 	  changeYear: true, 
+ });
+ 
+ <c:forEach var="shift" items="${siftList}" varStatus="shiftOrder">
+    <c:set var = "NUM" value = "${0}"/>
+	 <c:forEach var="existedAsset" items="${assignAssetList}">
+	    <c:if test="${existedAsset.shift.id eq shift.id}">
+	    var returnedOn = '${existedAsset.returnedOnStr}';
+	    var assignedOn = '${existedAsset.assignedOnStr}';
+	    
+	    $('#assignedOn${shiftOrder.index}').datepicker({
+		      dateFormat: finalDateFormat,
+		      changeMonth: true,
+		  	  changeYear: true, 
+		  	  maxDate:returnedOn,
+		  	  onSelect : function(selected) {
+				var dt = $(this).datepicker('getDate', '+1d');
+				dt.setDate(dt.getDate() + 1);
+				$('#returnedOn${shiftOrder.index}').datepicker("option", "minDate", dt);
+			}
+		  });
+	    
+	    $('#returnedOn${shiftOrder.index}').datepicker({
+		      dateFormat: finalDateFormat,
+		      changeMonth: true,
+		  	  changeYear: true, 
+		  	  minDate:assignedOn,
+		  	  onSelect : function(selected) {
+				var dt = $(this).datepicker('getDate', '-1d');
+				dt.setDate(dt.getDate() - 1);
+				$('#assignedOn${shiftOrder.index}').datepicker("option", "maxDate", dt);
+			}
+		  });
+	    
+	    </c:if>
+	 	
+	</c:forEach>
+	  <c:if test="${NUM == 0}">
+	 $('#assignedOn${shiftOrder.index}').datepicker({
+	      dateFormat: finalDateFormat,
+	      changeMonth: true,
+	  	  changeYear: true, 
+	  	  onSelect : function(selected) {
+			var dt = $(this).datepicker('getDate', '+1d');
+			dt.setDate(dt.getDate() + 1);
+			$('#returnedOn${shiftOrder.index}').datepicker("option", "minDate", dt);
+			assignOnDateValidation('${shiftOrder.index}')
+		     
+		}
+	  });
+	  $('#returnedOn${shiftOrder.index}').datepicker({
+	      dateFormat: finalDateFormat,
+	      changeMonth: true,
+	  	  changeYear: true, 
+	  	  onSelect : function(selected) {
+			var dt = $(this).datepicker('getDate', '-1d');
+			dt.setDate(dt.getDate() - 1);
+			$('#assignedOn${shiftOrder.index}').datepicker("option", "maxDate", dt);
+			returnOnDateValidation('${shiftOrder.index}');
+			
+		}
+	  });
+	</c:if> 
+	 
+ </c:forEach>
+ 
+ </script>
+
+<script>
+function returnOnDateValidation(id){
+	 var shiftName = $("#shiftAEmp"+id).val();
+	 var assignedOn = $("#assignedOn"+id).val();
+	 if(shiftName != "" && shiftName != null && shiftName != "undefined" && assignedOn != null && assignedOn != "" && assignedOn != "undefined"){
+		 $("#shiftAEmp"+id).removeAttr("data-validation");
+	 }else{
+		 document.getElementById("shiftStart"+id+"").style.display="inline-block";
+		 document.getElementById("assignOnDate"+id+"").style.display="inline-block";
+		 $("#shiftAEmp"+id).attr("data-validation","required");
+		 $("#assignedOn"+id).attr("data-validation","required");
+	 }
+	 
+}
+function removeValidation(id){
+	var shiftName = $("#shiftAEmp"+id).val();
+	if(shiftName != null && shiftName != "" && shiftName != "undefined"){
+		$('#uploadFile-dskADiv'+id).find('p.jquery_form_error_message').remove();
+		$("#shiftAEmp"+id).removeAttr("data-validation");
+	}else{
+		document.getElementById("shiftStart"+id+"").style.display="inline-block";
+		$("#shiftAEmp"+id).attr("data-validation","required");
+	}
+}
+function assignOnDateValidation(id){
+	 var assignedOn = $("#assignedOn"+id).val();
+	 if(assignedOn != null && assignedOn != "" && assignedOn != "undefined"){
+		 $('#errAssignDate'+id).find('p.jquery_form_error_message').remove();
+	 } 
+	
+}
+function refrshAssignData(id){
+	$("#returnedOn"+id).val("");
+	$("#assignedOn"+id).val("");
+	$("#shiftFile"+id).val("");
+	$("#shiftAEmp"+id).val("").selectpicker('refresh');
+}
+
+</script> 
+ 
  <script type="text/javascript">
 	var config = {
 	  '.chosen-select'           : {},

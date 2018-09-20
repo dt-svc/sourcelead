@@ -17,3 +17,4 @@
  csc.js	
  tag-it.js	
  tag-it.min.js
+ jquery.mask.min.js

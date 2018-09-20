@@ -23,6 +23,7 @@ import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.RecruiterReportCandidateCountView;
 import com.bis.sourcelead.entity.UserGroup;
 import com.bis.sourcelead.entity.UserIdView;
+import com.bis.sourcelead.payroll.dto.PayPeriodDTO;
 import com.bis.sourcelead.payroll.dto.TotalHoursDTO;
 
 @Repository
@@ -70,30 +71,32 @@ public class UserGroupDaoImpl implements UserGroupDao{
 				qry = " order by ugroup." + userGroupDTO.getSortColumn() + " "
 						+ userGroupDTO.getSortOrder();
 			}
-			String query = "from UserGroup ugroup where ugroup.orgLocationId.id =:orgLocationId and ugroup.status = 1";
-			String countQuery = "from UserGroup ugroup where ugroup.orgLocationId.id =:orgLocationId and ugroup.status = 1";
+			String query = "from UserGroup ugroup where ugroup.orgLocationId.id =:orgLocationId and ugroup.status = :status ";
+			String countQuery = "from UserGroup ugroup where ugroup.orgLocationId.id =:orgLocationId and ugroup.status = :status ";
 			StringBuilder searchQuery = new StringBuilder();
 			if (StringUtils.isNoneBlank(userGroupDTO.getSearchValue())) {
-				searchQuery.append(" and ugroup.groupId like '%"+ userGroupDTO.getSearchValue()+ "%' ")
+				searchQuery.append(" and ( ugroup.groupId like '%"+ userGroupDTO.getSearchValue()+ "%' ")
 				           .append(" OR ugroup.payFrequency like '%"+ userGroupDTO.getSearchValue()+ "%' ")
-				           .append("OR ugroup.groupName like '%"+ userGroupDTO.getSearchValue() + "%' ");
+				           .append(" OR ugroup.groupName like '%"+ userGroupDTO.getSearchValue() + "%' )");
 			}
-			Query queryObj = session.createQuery(query + searchQuery + qry);
+			Query queryObj = session.createQuery(query + searchQuery);
 			if (userGroupDTO != null && userGroupDTO.getLength() > 0) {
 				queryObj.setFirstResult(userGroupDTO.getStart());
 				queryObj.setMaxResults(userGroupDTO.getLength());
+				queryObj.setInteger("status", 1);
 				queryObj.setLong("orgLocationId", orgLocation.getId()).list();
+				
 			}
 			List<UserGroup> userGroupList = queryObj.list();
 			int count = 0;
 			int filteredCount = 0;
-			List<Long> countlist = session.createQuery("select count(*) " + countQuery + searchQuery).setLong("orgLocationId", orgLocation.getId()).list();
+			List<Long> countlist = session.createQuery("select count(*) " + countQuery + searchQuery).setLong("orgLocationId", orgLocation.getId()).setInteger("status", 1).list();
 			if (countlist != null && !countlist.isEmpty()) {
 				count = countlist.iterator().next().intValue();
 			}
 			response.setRecordsTotal(count);
 			if (userGroupDTO != null) {
-				List<Long> filteredCountlist = session.createQuery("select count(*) " + countQuery + searchQuery).setLong("orgLocationId", orgLocation.getId()).list();
+				List<Long> filteredCountlist = session.createQuery("select count(*) " + countQuery + searchQuery).setLong("orgLocationId", orgLocation.getId()).setInteger("status", 1).list();
 				if (filteredCountlist != null && !filteredCountlist.isEmpty()) {
 					filteredCount = filteredCountlist.iterator().next().intValue();
 				}
@@ -134,9 +137,15 @@ public class UserGroupDaoImpl implements UserGroupDao{
 	@Transactional
 	public List<UserGroup> getAllUserGroupsByLocationId(OrgLocations orgLocation)
 	{
-		Session session = this.sessionFactory.getCurrentSession();
-		String query = "from UserGroup userGroup where userGroup.orgLocationId.id = :orgLocationId and userGroup.status = 1";
-		List<UserGroup> userGroupList = session.createQuery(query.toString()).setLong("orgLocationId", orgLocation.getId()).list();
+		List<UserGroup> userGroupList = null;
+		try {
+			Session session = this.sessionFactory.getCurrentSession();
+			String query = "from UserGroup userGroup where userGroup.orgLocationId.id = :orgLocationId and userGroup.status = 1";
+			userGroupList = session.createQuery(query.toString()).setLong("orgLocationId", orgLocation.getId()).list();
+		} catch (Exception e) {
+			logger.error(ExceptionUtils.getFullStackTrace(e));
+		}
+		
 		return userGroupList;
 	}
 	
@@ -189,8 +198,8 @@ public class UserGroupDaoImpl implements UserGroupDao{
 			Session session = this.sessionFactory.getCurrentSession();
 			StringBuilder qry = new StringBuilder(); 
 			qry.append("select distinct can.ID as candidateID,")
-			.append("projmem.ID as projectMemId,")
-			.append("projmem.PAY_RATE as payRate,")
+			.append(" projmem.ID as projectMemId,")
+			.append(" projmem.PAY_RATE as payRate,")
 			.append(" projmem.PAY_RATE_CURRENCY as payRateCurrency,")
 			.append(" projmem.CURRENT_BILL_RATE as currentBillRate,")
 			.append(" projmem.BILL_RATE_CURRENCY as billRateCurrency,")
@@ -211,6 +220,7 @@ public class UserGroupDaoImpl implements UserGroupDao{
 			.append(" where can.ID  = projmem.CANDIDATE_ID")
 			.append(" AND   projmem.MASTER_CANDIDATE_ID = ts.MASTER_CANDIDATE_ID")
 			.append (" AND   projmem.PROJECT_ID = ts.PROJECT_ID")
+			.append (" AND   sah.SUBMISSION_ID = ts.ID")
 			.append(" AND can.ID = :candidateId and sah.FREQUENCY_START_DATE = :startDate and sah.FREQUENCY_END_DATE = :endDate ");
 //				 System.out.println(qry.toString());
 			        
@@ -222,6 +232,29 @@ public class UserGroupDaoImpl implements UserGroupDao{
 			e.printStackTrace();
 		}
 		return totalHoursDTO;
+	}
+
+	@Override
+	@Transactional
+	public List<PayPeriodDTO> getPayPeriodsByGroupId(Long groupId)
+	{
+		List<PayPeriodDTO> payPeriodDTOList = null;
+		try {
+			Session session = this.sessionFactory.getCurrentSession();
+			StringBuilder qry = new StringBuilder(); 
+			qry.append("SELECT distinct payFreq.GROUP_ID as groupId, payFreq.FREQUENCY_START_DATE as freqStartDate, ")
+			.append("payFreq.FREQUENCY_END_DATE as freqEndDate, payPeriod.PAY_PERIOD_NUM as payPeriodNumber, ")
+			.append("payPeriod.APPROVER_STATUS as approverStatus FROM US_PAY_PERIOD payPeriod, ")
+			.append("PAY_SHEET_FREQUENCY payFreq where payPeriod.PAY_SHEET_FREQUENCY_ID = payFreq.ID")
+			.append(" AND payPeriod.APPROVER_STATUS = 'APPROVED' and payFreq.GROUP_ID = :groupId");
+			Query queryString = session.createSQLQuery(qry.toString());
+			queryString.setParameter("groupId", groupId);
+			queryString.setResultTransformer(Transformers.aliasToBean(PayPeriodDTO.class));
+			payPeriodDTOList  =  queryString.list();
+		}catch (Exception e) {
+			e.printStackTrace();
+		}
+		return payPeriodDTOList;
 	}
 	
 	

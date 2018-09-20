@@ -215,10 +215,10 @@ public class HolidayDaoImpl  implements HolidayDAO{
 	{
 		Date from = commonUtil.orgLocationCommonDate(fromDate, orgLocations);
 		Date to =  commonUtil.orgLocationCommonDate(toDate, orgLocations);
-		java.sql.Date startDate = new java.sql.Date(from.getTime());
-		java.sql.Date endDate = new java.sql.Date(to.getTime());
+		java.sql.Date startDate = new java.sql.Date(fromDate.getTime());
+		java.sql.Date endDate = new java.sql.Date(toDate.getTime());
 		Session session = this.sessionFactory.getCurrentSession();
-		String query = "from HolidayAndRestrictday day where day.holiday.orgLocations.id = :orgLocationId and day.restrictDay.id IS NULL and (day.day >= :fromDate and day.day <= :toDate) and day.status = '1'";
+		String query = "from HolidayAndRestrictday day where day.holiday.orgLocations.id = :orgLocationId and day.restrictDay.id IS NULL and ((day.day > :fromDate and day.day <:toDate) or (day.day = :fromDate and day.day = :toDate)) and day.status = '1'";
 		List<HolidayAndRestrictday> list = session.createQuery(query).setParameter("fromDate", startDate).setParameter("toDate", endDate).setLong("orgLocationId", orgLocations.getId()).list();
 		return list;
 	}

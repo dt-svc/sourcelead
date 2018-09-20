@@ -196,6 +196,12 @@ public class Invoice {
 	@Column(name = "EXPENSES_INVOICES")
 	private String expensesInvoices;
 	
+	@Column(name = "OWNER_USERS")
+	private String ownerUsers;
+	
+	@Column(name = "CONTACT_USERS")
+	private String contactUsers;
+	
 	
 	@ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name="EXPENSES_ID", nullable=true) 
@@ -1192,4 +1198,21 @@ public class Invoice {
 	public void setTagsList(Set<String> tagsList) {
 		this.tagsList = tagsList;
 	}
+
+	public String getOwnerUsers() {
+		return ownerUsers;
+	}
+
+	public void setOwnerUsers(String ownerUsers) {
+		this.ownerUsers = ownerUsers;
+	}
+
+	public String getContactUsers() {
+		return contactUsers;
+	}
+
+	public void setContactUsers(String contactUsers) {
+		this.contactUsers = contactUsers;
+	}
+	
 }

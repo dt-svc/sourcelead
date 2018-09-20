@@ -55,13 +55,13 @@
 				    <c:when test="${myImmigrationPage == 'N'}">
 				        <c:choose>
 						<c:when test = "${residitems.isCurrAddress =='Y'}">
-						<td><div><i id="edit" onclick="editResidenceDEtailsByRowId(${residitems.id},'${residitems.isCurrAddress}');"
+						<td><div><i id="edit" onclick="immigration.editResidenceDEtailsByRowId(${residitems.id},'${residitems.isCurrAddress}');"
 						class="glyphicon glyphicon-pencil cursorPointer"></i></div></td>
 						</c:when>
 						<c:otherwise>
-						<td><div><i id="edit" onclick="editResidenceDEtailsByRowId(${residitems.id});"
+						<td><div><i id="edit" onclick="immigration.editResidenceDEtailsByRowId(${residitems.id});"
 						class="glyphicon glyphicon-pencil cursorPointer"></i><i id="delete" 
-						 onclick="deleteImmigrationRecord('deleteResidenceDetailsById',${residitems.id});" 
+						 onclick="deleteImmigrationRecord('immigration.deleteResidenceDetailsById',${residitems.id});" 
 						 class="glyphicon glyphicon-trash ml10 cursorPointer"></i></div></td>
 						</c:otherwise>
 						</c:choose>
@@ -75,9 +75,9 @@
 									class="glyphicon glyphicon-pencil cursorPointer"></i></div></td>
 									</c:when>
 									<c:otherwise>
-									<td><div><i id="edit" onclick="editResidenceDEtailsByRowId(${residitems.id});"
+									<td><div><i id="edit" onclick="immigration.editResidenceDEtailsByRowId(${residitems.id});"
 									class="glyphicon glyphicon-pencil cursorPointer"></i><i id="delete" 
-									 onclick="deleteImmigrationRecord('deleteResidenceDetailsById',${residitems.id});" 
+									 onclick="deleteImmigrationRecord('immigration.deleteResidenceDetailsById',${residitems.id});" 
 									 class="glyphicon glyphicon-trash ml10 cursorPointer"></i></div></td>
 									</c:otherwise>
 								</c:choose>
@@ -196,7 +196,7 @@
 		<div class="clearfix"></div>
 		</div>	
 		<div class="immiPopFoot mt clearfix">
-            <input value="Save" class="" type="button" id="residence_SaveButon" onclick="saveResidenceDetails('save');">
+            <input value="Save" class="" type="button" id="residence_SaveButon" onclick="immigration.saveResidenceDetails('save');">
             <input value="Cancel" class="popCan" type="button" onclick="refreshResidency();">
           </div>		
         

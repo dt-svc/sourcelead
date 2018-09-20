@@ -474,8 +474,6 @@ function preventTabkey(e){
 	              <c:forEach var="links" items="${SourceLeadWeb_userSpocRolesList}">
 		              <li>
 			              
-			              <c:if test="${SourceLeadWeb_prodSupportLoginUserRole == null && SourceLeadWeb_loginUserRole != 'ROLE_PRODUCTION_SUPPORT'}">
-			              
 				              <c:if test="${links.roles.displayName != 'Professional' && links.roles.displayName != 'Independent Recruiter'}">
 					              
 					              <c:if test="${links.orgLocations.id == SourceLeadWeb_orgLocationId && SourceLeadWeb_switchUserType == null}">
@@ -529,23 +527,7 @@ function preventTabkey(e){
 					                </a>
 				              </c:if>
 				              
-			              </c:if>
-			              
-			              <c:if test="${SourceLeadWeb_prodSupportLoginUserRole == 'ROLE_PRODUCTION_SUPPORT'}">
-		              			<a href="<c:url value='${sourceleadUrl}/productionSupportdashboard/${links.id}/${SourceLeadWeb_prodSupportOrgLocationId}'/>" class="sopcSwith">
-					                <div class="clearfix">
-					                   <div class="pull-left image-parent positionRelative">
-					                   <div class="imageParent org-imagelink ${links.id == SourceLeadWeb_orgLocationId  ? 'active-comp' : ''}">
-					                     <img onerror='predefineOrgImage(this);' data-id="orgLogoImage" src="${links.org.fileUrl}">
-					                     </div>
-					                   </div>
-					                   <div class="pull-left">
-					                     <p class="tbldata-dotdot"><i class="fa fa-building"></i>&nbsp;${links.orgLocationName}</p>
-					                     <p class="tbldata-dotdot"><i class="fa fa-map-marker"></i>&nbsp;${!empty links.city ? links.city : ""} ${links.country}</p>
-					                   </div>
-					                </div>
-				                </a>
-			              </c:if>
+
 			              
 		              </li>
 	              </c:forEach>
@@ -626,9 +608,14 @@ function preventTabkey(e){
 							 </li> 	
 						   </sec:authorize>
 						   
-					   <c:if test="${SourceLeadWeb_isAdmin == true}">
-					  	<li><a href="<c:url value="/app/payrollConfiguration" />"><i class="fa fa-usd" aria-hidden="true"></i>Payroll Configuration</a></li>
-                       </c:if>
+					   <sec:authorize access="hasRole('ROLE_PAYROLL_CONFIGURATION')">
+						   	<c:if test="${SourceLeadWeb_orgLocations.country == 'United States'}">
+						  		<li><a href="<c:url value="/app/payrollConfiguration" />"><i class="fa fa-usd" aria-hidden="true"></i>Payroll Configuration</a></li>
+						  	</c:if>
+						  	<c:if test="${SourceLeadWeb_orgLocations.country == 'India'}">
+						  		<li><a href="<c:url value='${sourceleadUrl}/indPayrollConfiguration'/>" ><i class="fa fa-key" aria-hidden="true"></i>Payroll Configuration</a></li>
+						  	</c:if>
+                      </sec:authorize>
                          
                        <li><a href="<c:url value='${sourceleadUrl}/tagList'/>"title="Tags" data-toggle="modal" id="tagsPop"><i class="fa fa-tags"></i>Tags</a></li>
 					  
@@ -641,7 +628,6 @@ function preventTabkey(e){
                         <c:if test="${SourceLeadWeb_isSuperAdmin == 'Y'}">
 					       <li><a title="Invite Company" data-toggle="modal" id="invitePop"><i class="fa fa-send"></i>Invite Company</a></li>
 	                   </c:if>
-                       <li><a href="<c:url value='${sourceleadUrl}/indPayrollConfiguration'/>" ><i class="fa fa-key" aria-hidden="true"></i>Payroll Configuration</a></li>
 	              </ul>
 	            </div>
 	          </li>
@@ -1681,7 +1667,6 @@ $(document).ready(function(){
 		  var val = $("#folderPath").val().trim();
 		  $.post(sourceleadUrl+"/process-uploaded-files", {path: val}, function(data) {
 			  if(data && data.indexOf("Session timedout") !== -1) {
-				  alert(data);
 				  setTimedout('location.href=${sourceleadLoginUrl}', 3000);
 			  } else if(data) {
 				  $("#bulkImportStatus").html(data)
@@ -1847,6 +1832,7 @@ function refreshGoogleApiLocation(locationId,countryId,stateId,cityId,zipCodeId,
 </script>
 <script>
 function zipcodeMask(country,zipCodeId){
+	
 	if(country == "India" || country == "Singapore"){
 		 $("#"+zipCodeId).mask("999999");
 	}else if(country == "United States" || country == "France"){

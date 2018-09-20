@@ -28,7 +28,15 @@ public interface EmailScenarioConfigurationService {
 	
 	public String verifyConfgFromMail(Long id,EmailScenarioConfiguration emailScenarioConfiguration) throws Exception;
 	
+	public String verifyConfgParserMail(Long id,EmailScenarioConfiguration emailScenarioConfiguration) throws Exception;
+	
 	public int changeDefaultEmailFromMail(long id, long orgId, boolean defaultAccount);
 	
 	EmailConfigurationFromMail getConfFromMailByStatus(Long orgLocId)throws Exception;
+	
+	List<EmailScenarioConfiguration> getConfParserMailList(Long orgLocId, String parsingType)throws Exception;
+	
+	EmailScenarioConfiguration getParserEmailsDetailsByUUID(String UUID)throws Exception;
+	
+	String deleteParserEMail(Long emailId) throws Exception;
 }

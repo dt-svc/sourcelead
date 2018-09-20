@@ -159,7 +159,7 @@ function wagesTaxpagination(url){
 	    	  	"render": function(data, type, opt, meta) {
 	    	  		var result = "";
 	    	  		if(opt.checkDateStr !=null && opt.checkDateStr !='' && opt.checkDateStr !='undefined'){
-						result = result + '<td><div class="tblminwidth-50">'+opt.checkDateStr+'</div></td>';
+						result = result + '<td><div class="tblminwidth-75">'+opt.checkDateStr+'</div></td>';
 					}else{
 						result = result + ' <td><div>--</div></td>';
 					}

@@ -20,11 +20,13 @@ $(document).ready(function(){
 </script>
 <div class="col-md-6 mb">
         <div class="dashboardWidget-new">
-          <h4 class="clearfix"><a id="jobsLink" href="<c:url value="/app/jobs"/>"> Jobs</a></h4>
+          <h4 class="clearfix mb0"><a id="jobsLink" href="<c:url value="/app/jobs"/>"> Jobs</a>
+          <div class="pull-right" id="viewmoresDiv"><a href="${sourceleadUrl}/requirementApplicantsList?&tab=previous&orgLocationId=${SourceLeadWeb_orgLocationId}" class="btn btn-sm btn-primary pull-right" style="font-size: 11px;" title="View more"> View More</a></div>
+          </h4>
           <div class="clearfix dashboard-data">
             <ul class="nav nav-tabs">
-              <li class="active"><a data-toggle="tab" onclick="requirementSubmissionsCount('today');">Current</a></li>
-              <li><a data-toggle="tab" onclick="requirementSubmissionsCount('previous');">Previous</a></li>
+              <li class="active"><a data-toggle="tab" onclick="requirementSubmissionsCount('today');">Today</a></li>
+              <li><a data-toggle="tab" onclick="requirementSubmissionsCount('previous');">1 Month</a></li>
                    <input type="hidden" name="dateActiveTab" id="dateActiveTab" value="today"/>
             </ul>
             <div class="tab-content clearfix">
@@ -44,7 +46,7 @@ $(document).ready(function(){
                      <!-- <span class="info-box-icon bg-red"> <i class="fa fa-check-square" aria-hidden="true"></i></span> -->
                       <div class="info-box-content text-center" style='cursor:pointer' title="Submissions" id="subDiv">
                         <p class="info-box-number"><span id="submissionsCount" onclick="loadRequirementSubmissions();">${submissionsCount}</span></p>
-                        <p class="info-box-text mb0 text-muted mt2">Submissions</p>
+                        <p class="info-box-text mb0 text-muted mt2">Client Submissions</p>
                       </div>
                       <div id ="submissionsCountLoading"></div>
                     </div>

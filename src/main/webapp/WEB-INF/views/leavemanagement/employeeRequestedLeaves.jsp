@@ -22,7 +22,7 @@ $(document).ready(function(){
        </div>
     <section class="content-header clearfix">
       <div class="pull-left">
-        <h2>Requested Leaves</h2>
+        <h2>Requested Leaves sadasd</h2>
       </div>
 		<div class="pull-right brud-crum"><a href="<c:url value='${appPath}/dashboard/${SourceLeadWeb_orgLocationId}'/>"> Home</a> &raquo; Requested Leaves</div>
     </section>
@@ -397,6 +397,16 @@ function getRequestedAproveSummary(leaveUUID,orgLocationId,totalBalLeaves){
 			 result = result +'<div class="col-md-8">';
 			 if(data.leaveType != null && data.leaveType !='' && data.leaveType !='undefined'){
 				 result = result +'<span>'+data.leaveType+'</span>';
+			 }else{
+	            	result = result +' <span>--</span>';
+	            }
+			 result = result +'</div>';
+			 result = result +'</div>';
+			 result = result +'<div class="col-md-12 mb">';
+			 result = result +'<label class="col-md-2 control-label"><b>Type:</b></label>';
+			 result = result +'<div class="col-md-8">';
+			 if(data.type != null && data.type !='' && data.type !='undefined'){
+				 result = result +'<span>'+data.type+'</span>';
 			 }else{
 	            	result = result +' <span>--</span>';
 	            }

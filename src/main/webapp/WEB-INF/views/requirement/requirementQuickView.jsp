@@ -142,8 +142,8 @@
 			            		  <a href="<c:url value="${appPath}/requirement?requirementUUID=${requirementUUID}"/>"><button  class="btn btn-primary btn-sm" type="button">Edit</button></a> 
 			            	</sec:authorize>
 			            </c:if>
-			            <c:if test="${(isAdmin == 'true' && requirement.requirementSubmissionStatus  != 'DRAFT' && requirement.requirementSubmissionStatus != 'ONHOLD' && requirement.requirementSubmissionStatus != 'CLOSED'  && requirement.requirementSubmissionStatus != 'CANCEL' &&  requirement.requirementSubmissionStatus != 'APPROVED' &&  requirement.requirementSubmissionStatus != 'REJECTED'  &&  requirement.requirementSubmissionStatus != 'OPEN' && requirement.requirementSubmissionStatus  !='NEW' && requirement.requirementSubmissionStatus  != 'UNFILLEDCLOSED' && requirement.requirementSubmissionStatus  != 'FILLEDCLOSED' )  || (isManager != 'true' && !empty requirement.requirementApproverHierarchyStatus && requirement.requirementSubmissionStatus  !='DRAFT' && requirement.requirementSubmissionStatus != 'ONHOLD'  && requirement.requirementSubmissionStatus != 'CANCEL' &&  requirement.requirementApproverHierarchyStatus !='APPROVED' &&  requirement.requirementApproverHierarchyStatus != 'REJECTED'  &&  requirement.requirementApproverHierarchyStatus != 'OPEN')}">
-			            	  <button  class="btn btn-success mr ml btn-sm" type="button" id = "approverbut" onClick ="updateReuqirementStatus('APPROVED');hideButtonOnClick();"  >Approve</button> 
+			            <c:if test="${(isAdmin == 'true' && requirement.requirementSubmissionStatus  != 'DRAFT' && requirement.requirementSubmissionStatus != 'ONHOLD' && requirement.requirementSubmissionStatus != 'CLOSED'  && requirement.requirementSubmissionStatus != 'CANCEL' &&  requirement.requirementSubmissionStatus != 'APPROVED' &&  requirement.requirementSubmissionStatus != 'REJECTED'  &&  requirement.requirementSubmissionStatus != 'OPEN' && requirement.requirementSubmissionStatus  !='NEW' && requirement.requirementSubmissionStatus  != 'UNFILLEDCLOSED' && requirement.requirementSubmissionStatus  != 'FILLEDCLOSED' )  || (isPrimaryRecruiter != 'true' && isManager != 'true' && !empty requirement.requirementApproverHierarchyStatus && requirement.requirementSubmissionStatus  !='DRAFT' && requirement.requirementSubmissionStatus != 'ONHOLD'  && requirement.requirementSubmissionStatus != 'CANCEL' &&  requirement.requirementApproverHierarchyStatus !='APPROVED' &&  requirement.requirementApproverHierarchyStatus != 'REJECTED'  &&  requirement.requirementApproverHierarchyStatus != 'OPEN')}">
+			            	  <button  class="btn btn-success mr ml btn-sm" type="button" id = "approverbut" onClick ="updateReuqirementStatus('APPROVED');hideButtonOnClick();"  >Approve${isPrimaryRecruiter}</button> 
          		              <button  class="btn btn-danger btn-sm" id = "rejectedbut" type="button" onClick ="rejectRequirementAlertMessage('REJECTED');hideButtonOnClick();">Reject</button>
 			            </c:if>
 					</div></div>
@@ -420,7 +420,38 @@
 			            		<div class="clearfix"></div> 
 			              </div> 
 			              <div class="clearfix"></div>
-			              
+			              <c:if test="${isAdmin == 'true' || requirement.isLoginUserAsApprover  == 'true' || isManager  == 'true' || requirement.isLoginUserAsInitiator == 'true'}">
+				              <div class="require_wrap_details_cta"> <b>Job Rating:</b><span>${!empty requirement.jobRate ? requirement.jobRate : ' -- '}</span>
+				            		<div class="clearfix"></div> 
+				              </div> 
+				              <div class="require_wrap_details_cta"> <b>Pay out Period (Days):</b><span>${!empty requirement.payOutPeriod ? requirement.payOutPeriod : ' -- '}</span>
+				            		<div class="clearfix"></div> 
+				              </div> 
+				              <div class="require_wrap_details_cta"> <b>Incentivized:</b><span>${!empty requirement.incentivized ? requirement.incentivized : ' -- '}</span>
+				            		<div class="clearfix"></div>
+				            		<c:if test="${!empty requirement.incentivized && requirement.incentivized == 'Y'}">
+					            		<table class="table table-bordered">
+					            			<thead>
+					            			<tr>
+					            				<th>No.of Joiners</th><th>Type</th><th>Amount</th>
+					            			</tr>
+					            			</thead>
+					            			<tbody>
+					            			<c:if test="${!empty requirementIncentiveList}">
+									            <c:forEach var="inc" items="${requirementIncentiveList}" varStatus="rowCount">
+									              	<tr>
+							            				<td><div class="tblminwidth-75">${inc.joiners}</div></td>
+							            				<td><div class="tblminwidth-75 text-capitalize">${inc.joinersAmountType}</div></td>
+							            				<td><div class="tblminwidth-175">${inc.joinersAmount}${inc.joinersAmountType == 'percentage' ? '%' : ''}</div></td>
+							            			</tr>
+									            </c:forEach>
+									         </c:if>
+					            			</tbody>
+					            		</table>
+				            		</c:if>
+				              </div>
+				              <div class="clearfix"></div>
+			              </c:if>
 			              <c:if test="${!empty sourceleadSectionList}">
 						            <c:forEach var="section" items="${sourceleadSectionList}" varStatus="sectionOrder">
 						               <c:if test="${sectionOrder.index == 1}">
@@ -433,7 +464,7 @@
 			         <div class="clearfix"></div> 
 			          
 			         <h2>Internal Details:</h2> 
-			         <div class="require_one"> 
+			         <div class="require_one clearfix"> 
 			         	 <c:if test="${requirement.isClientJob  == 'N'}">
 			         		 <div class="require_wrap_details_cta"> <b>Application form:</b><span>${!empty requirement.clientSubmissionTemplate ? requirement.clientSubmissionTemplate : ' -- '}</span></div>
 			         	 </c:if>
@@ -574,7 +605,8 @@
 					<span class="width175">
 							<sec:authorize access="hasAnyRole('ROLE_ADD_APPLICANT')">
 							      <a href="javascript:void(0)" title="" onclick="getAddApplicant('${requirement.id}');" class="add-applicant"><i class="fa fa-plus"></i>&nbsp;Add Applicant</a>
-							       <a href="javascript:void(0)" title="" onclick="submitCandidatesToJob();" class="add-applicant"><i class="fa fa-plus"></i>&nbsp;Add Bulk Applicants</a>
+							      <a href="javascript:void(0)" title="" onclick="submitCandidatesToJob();" class="add-applicant"><i class="fa fa-plus"></i>&nbsp;Add Bulk Applicants</a>
+							      <a href="javascript:void(0)" title="" onclick="importApplicantsToJob('${requirement.id}');" class="add-applicant"><i class="fa fa-plus"></i>&nbsp;Import Bulk Applicants</a>
 							</sec:authorize>
 							<sec:authorize access="hasAnyRole('ROLE_SHORTLIST')">
 							      <a href="javascript:void(0)" title="" onclick="candidateShortList('${requirement.id}');" class="shortlistClick"><i class="fa fa-plus"></i>&nbsp;Shortlist</a>
@@ -603,6 +635,37 @@
 	
 	<input type="hidden" name="assignedTeamId" id="assignedTeamId" value=""/>
 </div>
+
+
+<div class="import_submission_side_wrap">
+	<div class="new_side_wrap_inn">
+		<div class="new_side_wrap_cta">
+		 <div class="dataFilterNew pdtop datatable_filter">
+		    <div id="importApplicantsSideDivDivLoading"></div>
+			<div id="importApplicantsSideDiv"></div>
+			</div>
+		</div>
+	</div>
+</div>
+
+<script>
+function importApplicantsToJob(requirementId){
+	$.ajax({
+		  type: "GET",
+		    url: sourceleadUrl+"/getRequirementSubmissionTemplateForBulkImprtApplicants?requirementId="+requirementId,
+		     success :function(response) {
+		    	    $("#importApplicantsSideDiv").empty();  
+		    	    $("#importApplicantsSideDiv").append(response);
+		    	    
+		    	    $('.action-pop').slideUp();
+		    	    $(".import_submission_side_wrap").addClass("import_submission_side_wrap_active");
+		    	    $(".side_mask").fadeIn(200);
+		    	    $("body").css('overflow-y', 'hidden');
+		    	    getSubmissionsUploadedHistory();
+				},
+			});
+}
+</script>
 
 
 <script>

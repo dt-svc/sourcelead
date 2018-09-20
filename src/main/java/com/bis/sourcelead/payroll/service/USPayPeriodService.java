@@ -19,7 +19,7 @@ public interface USPayPeriodService {
 
 	int updatedPayperiod(String payPeriodNum);
 	
-	USPayPeriod getPaySheetFrequencyIdAndOrglocationId(OrgLocations orgLocation, Long payfrequencyId);
+	USPayPeriod getPayPeriodByOrglocationId(OrgLocations orgLocation, Long payfrequencyId);
 
 	List<EmployeePayroll> getEmployeePayrollListByPayperiodNum(Integer payPeriodNum);
 }

@@ -200,7 +200,7 @@ function approvedEmployeesPagination(url){
 	    	  		 if(opt.approvedBy != null && opt.approvedBy != 'undefined' && opt.approvedBy != ''){
 	    	  			result = result + '     <div title="'+opt.approvedBy+'" class="tblminwidth-75">'+opt.approvedBy+'</div>';
 	    	  		 }else{
-	    	  			result = result + '     <div class="tblminwidth-75">System Approved</div>';
+	    	  			result = result + '     <div class="tblminwidth-75">Auto Approved</div>';
 	    	  		 }
   	                return result; 
 	    	  	}
@@ -394,6 +394,16 @@ function getRequestedAproveSummary(leaveUUID,orgLocationId,totalBalLeaves){
 			 result = result +'<div class="col-md-8">';
 			 if(data.leaveType != null && data.leaveType !='' && data.leaveType !='undefined'){
 				 result = result +'<span>'+data.leaveType+'</span>';
+			 }else{
+	            	result = result +' <span>--</span>';
+	            }
+			 result = result +'</div>';
+			 result = result +'</div>';
+			 result = result +'<div class="col-md-12 mb">';
+			 result = result +'<label class="col-md-2 control-label"><b>Type:</b></label>';
+			 result = result +'<div class="col-md-8">';
+			 if(data.type != null && data.type !='' && data.type !='undefined'){
+				 result = result +'<span>'+data.type+'</span>';
 			 }else{
 	            	result = result +' <span>--</span>';
 	            }

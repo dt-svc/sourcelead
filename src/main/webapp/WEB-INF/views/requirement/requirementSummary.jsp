@@ -343,6 +343,10 @@ $(document).ready(function() {
 		$(".submission_side_wrap").removeClass("submission_side_wrap_active");
 		$(".side_mask").fadeOut(200);
 		$("body").css('overflow-y', 'auto');
+		
+		$(".import_submission_side_wrap").removeClass("import_submission_side_wrap_active");
+		$(".side_mask").fadeOut(200);
+		$("body").css('overflow-y', 'auto');
 	});	
 });
 
@@ -686,7 +690,7 @@ function rejectRequirementAlertMessage(status){
 	result = result +"	    <div id='remove_user_pop' class='remove_user_pop remove_user_pop_a'>";
 	result = result +"		<textarea id='rejectReason' class='form-control' field-name='Reject Reason' data-validation-optional='true' data-validation='validate_Space validate_Description validate_length length2-5000' name='rejectReason' value='' placeholder='Reject Reason' rows='2'></textarea>";
 	result = result +"	<div id='reasonDiv'/>";
-	result = result +"		<b href='javascript:void(0)'><input id='confirm-id' type='button' value='Reject' onClick ='updateReuqirementStatusReject(status);'><input class='u_can_color' type='button'  value='Cancel' onClick='cancelAlert12();'></b>";
+	result = result +"		<b href='javascript:void(0)'><input id='confirm-id' type='button' value='Reject' onClick ='updateReuqirementStatusReject(\""+status+"\");'><input class='u_can_color' type='button'  value='Cancel' onClick='cancelAlert12();'></b>";
 	result = result +"	</div>";
 	result = result +"	</div>";
 	$("#rejectRequirementAlert").append(result);
@@ -1075,6 +1079,24 @@ function rejectApplicant(submissionId,requirementId,submissionType){
 		    	}
   	    	},
 		  });
+    	
+    }else if(selectBox == "shortlist"){
+    	$.ajax({
+    	      type : "POST",
+    	      url: sourceleadUrl+"/saveShortlistStatusForApplicant?"+tokenParamName+"="+tokenValue+"&submissionId="+submissionId, 
+    	    	success :function(data) {
+    	    		if (data.response === "AWKWARD") {
+  		    		location.href = "/errorPage";
+  		    	} else if (data.response === "SUCCESS") {
+  		    		$("tr").removeClass("row-success");
+  		    		 requirementPipeline(requirementId,submissionType);
+  		    	}else if (data.indexOf('Sign In') !== -1) {
+  		    		location.replace(sourceleadUrl);
+  		    	} else {
+  		    		showError("Operation failed, please try again");
+  		    	}
+    	    	},
+  		  });
     }
 }
 </script>

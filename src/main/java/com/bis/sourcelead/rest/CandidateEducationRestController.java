@@ -413,7 +413,7 @@ public class CandidateEducationRestController {
 		return response;
 	}
 
-	@RequestMapping(value = "/validateEduname")
+	@RequestMapping(value = {"/validateEduname","/rest/validateEduname"})
 	public Response<Boolean> validateEduname(@RequestParam(value = "name", required = false) String name,
 			@RequestParam(value = "candidateId", required = false) Long candidateId, HttpServletRequest request)
 			throws Exception {
@@ -462,6 +462,15 @@ public class CandidateEducationRestController {
 			logger.error(ExceptionUtils.getFullStackTrace(e));
 		}
 		return reponseList;
+	}
+	
+	@RequestMapping(value = "/rest/candidateEducation", method = RequestMethod.GET)
+	@ResponseBody
+	public ResponseList<LookUpData> candidateEducation(HttpServletRequest request) throws Exception {
+	ResponseList<LookUpData> response = new ResponseList<>();
+	List<LookUpData> educationsList = lookUpDataService.getLookUpDataByCategory(Constants.EDUCATIONS);
+	response.setData(educationsList);
+	return response;
 	}
 
 }

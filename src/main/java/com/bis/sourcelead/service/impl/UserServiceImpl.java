@@ -244,7 +244,7 @@ public class UserServiceImpl implements UserService {
 	   String password = null;
 	   UserRole userRole = null;
 	   boolean isUserActive = false;
-	   boolean associateBalance = false;
+	   boolean associateBalance = true;
 	   user = userDao.findByUserName(addUserDTO.getEmail());
 	   if(null != user){
 		  isUserActive = userRoleService.isUserActive(user.getId());
@@ -262,7 +262,7 @@ public class UserServiceImpl implements UserService {
 		  }
 		  
 			  if(StringUtils.isNotBlank(addUserDTO.getSsn())) {
-				  user.setSsn(Integer.parseInt(addUserDTO.getSsn()));
+				  user.setSsn(addUserDTO.getSsn());
 			  }
 		  
 		     if(StringUtils.isNotBlank(addUserDTO.getExtensionNumber())){
@@ -304,7 +304,7 @@ public class UserServiceImpl implements UserService {
  		  user.setVerificationUUID(RandomStringUtils.randomAlphanumeric(16));
  		  user.setUrlSentTime(new Date());
  		  user.setIsVerified(Constants.NO);
- 		 associateBalance  = true;
+// 		 associateBalance  = true;
 		}else if(isUserActive == false){
 			password = SourceLeadRandomCodeHelper.generateRandomPassword();
 			user.setPassword(sourceleadPasswordEncoder.encode(password));
@@ -416,7 +416,7 @@ public class UserServiceImpl implements UserService {
 		
 		//for updating cosultantUserId in candidate
 		if(StringUtils.isNotBlank(candidateDTO.getAssociateId())){
-			candidate = candidateService.getCandidateByCandidateId(Long.parseLong(candidateDTO.getAssociateId()));
+			candidate = candidateService.getCandidateByConsultantUserId(Long.parseLong(candidateDTO.getAssociateId()), orgLocations.getId());
 			if(null != candidate){
 				candidate.setConsultantUser(user1);
 				candidate.setUpdatedBy(loginuser.getUserCode());
@@ -453,12 +453,14 @@ public class UserServiceImpl implements UserService {
 					   candidate.setResidenceLongitude(addUserDTO.getResidenceLongitude());
 					   candidate.setResidenceZipCode(addUserDTO.getResidenceZipCode());
 					   candidate.setResidenceStreetAddress(addUserDTO.getResidenceAddress());
+					   OrgLocations workLocation = orgLocationService.getOrgLocations(Long.parseLong(addUserDTO.getWorkLocation()));
+					   candidate.setWorkLocation(workLocation);
 				    	
 				    	Countries country = countriesService.getCountriesByCountryName(addUserDTO.getResidenceCountry());
 				    	String stateCode = statesService.getStateCodeByCountryCodeAndState(country.getCode2(),addUserDTO.getResidenceState());
 				    	candidate.setResidenceStateCode(stateCode);
 				    }
-				
+                       
 				MasterCandidate masterCandidate = masterCandidateService.getMasterCandidateByInteligenceCandidateDTO(candidateDTO);
 				if(null == masterCandidate){
 					masterCandidate = masterCandidateService.storeMasterCandidateByCandidateDTO(candidateDTO, loginuser);
@@ -619,7 +621,7 @@ public class UserServiceImpl implements UserService {
 		}
 		
 	    if(StringUtils.isNotBlank(addUserDTO.getSsn())) {
-			  user.setSsn(Integer.parseInt(addUserDTO.getSsn()));
+			  user.setSsn(addUserDTO.getSsn());
 	    }
 	    
 	    if(StringUtils.isNotBlank(addUserDTO.getMiddleName())) {
@@ -1695,9 +1697,9 @@ public class UserServiceImpl implements UserService {
 	}
 
 	@Override
-	public ResponseList<UserDTO> getRecruitersReports(Long userId, Long orgLocationId, Long orgId, String isGlobalUser,UserDTO userDTO,String loginUserRole,Date[] searchDates,List<Long> teamsList)
+	public ResponseList<UserDTO> getRecruitersReports(Long userId, Long orgLocationId, Long orgId, String isGlobalUser,UserDTO userDTO,String loginUserRole,Date[] searchDates,List<Long> teamsList,String type)
 			throws Exception {
-		return userDao.getRecruitersReports(userId, orgLocationId, orgId, isGlobalUser,userDTO,loginUserRole,searchDates,teamsList);
+		return userDao.getRecruitersReports(userId, orgLocationId, orgId, isGlobalUser,userDTO,loginUserRole,searchDates,teamsList,type);
 	}
 
 
@@ -1709,7 +1711,7 @@ public class UserServiceImpl implements UserService {
 				DashboardItemsDTO dashboardItemsDTO = new DashboardItemsDTO();
 				
 				JSONArray jsonArray = new JSONArray(dashboardItems.getItems());
-				if (jsonArray != null) {
+				if (jsonArray != null && jsonArray.length() > 0) {
 					List<JSONObject> itemsObjectList = new LinkedList<>();
 					for (int i = 0; i < jsonArray.length(); i++) {
 						JSONObject jsonObject = jsonArray.getJSONObject(i);
@@ -1764,10 +1766,56 @@ public class UserServiceImpl implements UserService {
 	}
 
 	@Override
-	public List<LeaveBalanceReportDTO> getUserNameAndTypeByOrgLocationId(Long OrgLocationId,List<Long> userRole,List<Long> orgDepartmentsList,String topleave,Date MonthStart,Date MonthEnd) throws Exception {
-		 return userDao.getUserNameAndTypeByOrgLocationId(OrgLocationId,userRole,orgDepartmentsList,topleave,MonthStart,MonthEnd);
+	public List<LeaveBalanceReportDTO> getUserNameAndTypeByOrgLocationId(String searchValue,Long OrgLocationId,List<Long> userRole,List<Long> orgDepartmentsList,String topleave,Date MonthStart,Date MonthEnd) throws Exception {
+		 return userDao.getUserNameAndTypeByOrgLocationId(searchValue,OrgLocationId,userRole,orgDepartmentsList,topleave,MonthStart,MonthEnd);
 	 }
 
+	@Override
+	public void sendEmailToUserForEmailUpdation(User user, User loginUser, OrgLocations orgLocations, String toEmail,
+			String existingEmail) throws Exception {
+		
+		 EmailMessage emailMessage = new EmailMessage();
+		 emailMessage.setFirstName(user.getFirstName());
+		 emailMessage.setLastName(user.getLastName());
+		 emailMessage.setToEmail(toEmail);
+		 emailMessage.setFromEmail(loginUser.getEmail());
+		 emailMessage.setFromName(loginUser.getFullName());
+		 emailMessage.setEmailType(Constants.CUSTOM_USER_EMAIL);
 
+		 emailMessage.setCreatedBy(loginUser.getUserCode());
+		 emailMessage.setOrgLocationId(orgLocations.getId());
+		 
+		//setting the class filed values
+		 Map<String, String> globalVarsMap = new HashMap<String, String>();
+		 globalVarsMap.put("Login_User_Name",loginUser.getFullName());
+		 globalVarsMap.put("Associate_Name", user.getFullName());
+		 globalVarsMap.put("Existing_Email", existingEmail);
+		 globalVarsMap.put("New_Email", user.getEmail());
+		 StringBuilder loginBuilder = new StringBuilder();
+		 globalVarsMap.put("URL_Link",loginBuilder.append("<a href='").append(sourceleadLoginUrl).append("' style='text-decoration:none; '><div style=' width:100px; border-radius:30px; background-color:#a21e23; color:#FFF; font-size:15px; font-weight:500; margin:10px auto 5px auto; padding:5px 0px 10px; text-align:center;'>Login</div></a>").toString());
+		
+		List<EmailAttachment> attachmentList=new ArrayList<EmailAttachment>();
+		
+		commonUtil.sendTemplateEmail(emailMessage, globalVarsMap,orgLocations.getOrg(),orgLocations,Constants.USER_EMAIL_UPDATION,attachmentList);
+		
+	}
+
+	@Override
+	public List<User> getUsersListUsingMultipleStringIds(String ids) throws Exception
+	{
+		return userDao.getUsersListUsingMultipleStringIds(ids);
+	}
+	
+	@Override
+	public List<String> getUserHierarchyUserCodeList(Long userId) throws Exception
+	{
+		return userDao.getUserHierarchyUserCodeList(userId);
+	}
+	
+	@Override
+	public List<Long> getUserHierarchyIdList(Long userId) throws Exception
+	{
+		return userDao.getUserHierarchyIdList(userId);
+	}
 }
 

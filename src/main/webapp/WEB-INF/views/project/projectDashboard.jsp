@@ -83,7 +83,14 @@ overflow-x: auto;
       <ul class="pull-right list-unstyled list-inline">
       
       	  <li><sec:authorize access="hasAnyRole('ROLE_CREATE_PROJECT')">
-	               <a class="newAdBtn" onClick="getClientProjectPop();" title="Add Project">+ Project</a>
+			<a class="action newAdBtn mr5" onclick="getActions();" href="javascript:void(0)">+ Add <i class="fa fa-caret-down"></i></a>
+			<div class="action-pop">
+				<span> 
+					<a href="<c:url value='${appPath}/project'/>" > Internal Project</a>
+                    <a href="<c:url value='${appPath}/clientProject'/>" >Client Project </a>	
+                    <a href="<c:url value='${appPath}/project?projectType=sharedProject'/>" > Client Project(Managed) </a>			
+				</span>
+			</div>
 			</sec:authorize>
 			</li>
 			
@@ -235,52 +242,9 @@ overflow-x: auto;
 		  </div> 
 		   </div>		
 	   </section>
+	   
 	   <div id="popUp"></div>
 	   
-	   
- 	   <div class="addcandidate-popup">
-				  <div class="row">
-                <div class="col-md-offset-1 col-md-10">
-				  <a href="javascript:void(0)" class="close-popdiv" onClick="closeClientProject()"><i class="fa fa-close"></i></a>
-                       
-                       <div class="col-md-4 mt">
-                        <div class="small-widget bgGreen">
-                            <a href="<c:url value='${appPath}/project'/>" >
-                                <div class="clearfix mb10">
-                                <i class="fa fa-bar-chart fa-4x"></i>
-                                </div>
-                                <strong class="clearfix">Internal Project</strong>
-                                </a>
-                        </div>
-					  </div>
-                       
-					  <div class="col-md-4 mt">
-                          <div class="small-widget bg-purple">
-                              <a href="<c:url value='${appPath}/clientProject'/>" >
-                                  <div class="clearfix mb10">
-                                      <i class="fa fa-bar-chart fa-4x"></i>
-                                  </div>
-                                  <strong class="clearfix">Client Project</strong>
-                                </a>
-                                
-                          </div>
-					  </div>
-					  
-					  <div class="col-md-4 mt">
-                        <div class="small-widget bg-yellow">
-                            <a href="<c:url value='${appPath}/project?projectType=sharedProject'/>" >
-                                <div class="clearfix mb10">
-                                <i class="fa fa-bar-chart fa-4x"></i>
-                                </div>
-                                <strong class="clearfix">Client Project(Managed)</strong>
-                                </a>
-                        </div>
-					  </div>
-					  
-                 </div>
-                          
-				  </div>
-			  </div>
       <div class="pop_mask"></div>
      
 	   

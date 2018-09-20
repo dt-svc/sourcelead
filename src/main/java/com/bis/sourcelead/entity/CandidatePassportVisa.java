@@ -20,7 +20,7 @@ import org.hibernate.annotations.Type;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 @Entity
-@Table(name = "CANDIDATE_PASSPORT_VISA", schema = "SOURCELEAD")
+@Table(name = "CANDIDATE_PASSPORT_VISA")
 public class CandidatePassportVisa implements Serializable {
 
 	private static final long serialVersionUID = 1L;

@@ -17,18 +17,18 @@ public class HrLeaveReportDTO extends SearchDTO {
 	
 	private Long loginUserId;
 	
-	private List<String> employmentType;
+	private String employmentType;
 	
 	
-	private List<String> departmentIds;
+	private String departmentIds;
 	
 	private String exportType;
 	
-	private List<String> reportRolesId;
+	private String reportRolesId;
 	
-	private List<String> associateListId;
+	private String associateListId;
 	
-	private List<String> leaveTypeIds;
+	private String leaveTypeIds;
 	
 	private String templateType;
 	
@@ -67,6 +67,10 @@ public class HrLeaveReportDTO extends SearchDTO {
 	private float noOfDays;
 	
 	private Long userId;
+	
+	private String eid;
+	
+	private String status;
 
 	public String getStartDate()
 	{
@@ -108,22 +112,22 @@ public class HrLeaveReportDTO extends SearchDTO {
 		this.loginUserId = loginUserId;
 	}
 
-	public List<String> getEmploymentType()
+	public String getEmploymentType()
 	{
 		return employmentType;
 	}
 
-	public void setEmploymentType(List<String> employmentType)
+	public void setEmploymentType(String employmentType)
 	{
 		this.employmentType = employmentType;
 	}
 
-	public List<String> getDepartmentIds()
+	public String getDepartmentIds()
 	{
 		return departmentIds;
 	}
 
-	public void setDepartmentIds(List<String> departmentIds)
+	public void setDepartmentIds(String departmentIds)
 	{
 		this.departmentIds = departmentIds;
 	}
@@ -138,32 +142,32 @@ public class HrLeaveReportDTO extends SearchDTO {
 		this.exportType = exportType;
 	}
 
-	public List<String> getReportRolesId()
+	public String getReportRolesId()
 	{
 		return reportRolesId;
 	}
 
-	public void setReportRolesId(List<String> reportRolesId)
+	public void setReportRolesId(String reportRolesId)
 	{
 		this.reportRolesId = reportRolesId;
 	}
 
-	public List<String> getAssociateListId()
+	public String getAssociateListId()
 	{
 		return associateListId;
 	}
 
-	public void setAssociateListId(List<String> associateListId)
+	public void setAssociateListId(String associateListId)
 	{
 		this.associateListId = associateListId;
 	}
 
-	public List<String> getLeaveTypeIds()
+	public String getLeaveTypeIds()
 	{
 		return leaveTypeIds;
 	}
 
-	public void setLeaveTypeIds(List<String> leaveTypeIds)
+	public void setLeaveTypeIds(String leaveTypeIds)
 	{
 		this.leaveTypeIds = leaveTypeIds;
 	}
@@ -358,6 +362,25 @@ public class HrLeaveReportDTO extends SearchDTO {
 		this.userId = userId;
 	}
 
-	
-	
+	public String getEid()
+	{
+		return eid;
+	}
+
+	public void setEid(String eid)
+	{
+		this.eid = eid;
+	}
+
+	public String getStatus()
+	{
+		return status;
+	}
+
+	public void setStatus(String status)
+	{
+		this.status = status;
+	}
+
+
 }

@@ -190,22 +190,6 @@ public class RequirementInterviewRestController {
 			OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 			Org loginOrg = (Org) SourceLeadSessionManager.getSessionAttribute(request, "org");
 			
-			
-	  /*      String maxAdminTimeTypeRowNum = jsonObj.getString("maxTsRowNum");
-			int maxCount = Integer.parseInt(maxAdminTimeTypeRowNum);
-			for (long c = 1; c < maxCount; c++) {
-				if(jsonObj.has(c+"applicant") && !jsonObj.getString(c+"applicant").isEmpty()){
-					if(jsonObj.has("externalInterviewersList["+c+"]")  && !jsonObj.getString("externalInterviewersList["+c+"]").isEmpty()) {
-						System.out.println(jsonObj.getString("externalInterviewersList["+c+"]"));
-						JSONArray jsonArray =  new JSONArray(jsonObj.getString("externalInterviewersList["+c+"]"));
-						for(int i=0; i<jsonArray.length(); i++) {
-							JSONObject jsonObject = jsonArray.getJSONObject(i);
-							System.out.println(jsonObject.getString("interviewerName")+">>>>"+jsonObject.getString("interviewerEmail"));
-						}
-					}
-				}
-			}*/
-			
 			requirementInterviewService.saveRequirementInterview(jsonObj,user,orgLocations,loginOrg);
  	    
  	    
@@ -613,7 +597,7 @@ public class RequirementInterviewRestController {
 					List<Long> interviewersList = new ArrayList<>();
 					
 					List<RequirementInterviewer> selectedInterviewerList = new ArrayList<>();
-					if(!interviewerIds.equalsIgnoreCase("null")){
+					if(!interviewerIds.equalsIgnoreCase("null") && !interviewerIds.equalsIgnoreCase("undefined") ){
 						
 						for (String interviewId : interviewerIds.split(","))
 							interviewersList.add(Long.valueOf(interviewId));
@@ -660,7 +644,7 @@ public class RequirementInterviewRestController {
 					reqInterviwer.setInterviewerList(selectedInterviewerList);
 					//applicantslist
 					List<RequirementInterview> requirementInterview = new ArrayList<>();
-					if(!applicantSubId.equalsIgnoreCase("null")){
+					if(!applicantSubId.equalsIgnoreCase("null") && !applicantSubId.equalsIgnoreCase("undefined")){
 						List<String> submissionsList = new ArrayList<String>(Arrays.asList(applicantSubId.split(",")));
 						List<Long> submissionsIds = new ArrayList<>();
 						for (String subId : submissionsList){

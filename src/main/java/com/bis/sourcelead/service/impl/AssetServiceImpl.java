@@ -35,6 +35,7 @@ import com.bis.sourcelead.service.AssetService;
 import com.bis.sourcelead.service.OrglocationFormFieldsService;
 import com.bis.sourcelead.util.CommonUtil;
 import com.bis.sourcelead.util.FileUploadUtil;
+import com.bis.sourcelead.util.SourceLeadRandomCodeHelper;
 
 @Service
 public class AssetServiceImpl implements AssetService{
@@ -75,6 +76,12 @@ public class AssetServiceImpl implements AssetService{
 		 Asset asset = assetDao.getAssetById(Id);
 		 return asset;
 	}
+	
+	@Override
+	public Asset getAssetByUUID(String assetUUID) throws Exception {
+		 Asset asset = assetDao.getAssetByUUID(assetUUID);
+		 return asset;
+	}
 
 	/**
 	 * 
@@ -107,10 +114,17 @@ public class AssetServiceImpl implements AssetService{
 			asset = new Asset();
 			asset.setCreatedBy(user.getUserCode());
 			asset.setCreatedDate(new Date());
+			asset.setAssetUUID(SourceLeadRandomCodeHelper.generateRandomUUID());
 		}
 		
+		//Laptop Serial Number
 		 if(StringUtils.isNotBlank(assetDTO.getSno())){
 			 asset.setSlno(assetDTO.getSno());
+		 }
+		 
+		 //CPU Serial Number
+		 if(StringUtils.isNotBlank(assetDTO.getCpuSerialNumber())){
+			 asset.setSlno(assetDTO.getCpuSerialNumber());
 		 }
 		 
 		 if(StringUtils.isNotBlank(assetDTO.getMake())){
@@ -160,11 +174,74 @@ public class AssetServiceImpl implements AssetService{
 		 
 		 if(StringUtils.isNotBlank(assetDTO.getIssueDate())){
 			 try {
-				 asset.setIssueDate(commonUtil.orgLocationDateFormat(assetDTO.getDateFormat(), assetDTO.getIssueDate()));
+				 asset.setIssueDate(commonUtil.orgLocationDateFormat(orgLocations.getDateFormat(), assetDTO.getIssueDate()));
 				  
 				} catch (Exception e) {
 				  e.printStackTrace();
 				}
+		 }
+		 
+		 //Purchase Date
+		 if(StringUtils.isNotBlank(assetDTO.getPurchaseDate())){
+			 asset.setPurchaseDate(commonUtil.orgLocationDateFormat(orgLocations.getDateFormat(), assetDTO.getPurchaseDate()));
+		 }else {
+			 asset.setPurchaseDate(null);
+		 }
+		 
+		 //Name
+		 if(StringUtils.isNotBlank(assetDTO.getName())){
+			 asset.setName(assetDTO.getName());
+		 }else {
+			 asset.setName(null);
+		 }
+		 
+		 //Depreciation Date
+		 if(StringUtils.isNotBlank(assetDTO.getDepreciationDate())){
+			 asset.setDepreciationDate(commonUtil.orgLocationDateFormat(orgLocations.getDateFormat(), assetDTO.getDepreciationDate()));
+		 }else {
+			 asset.setDepreciationDate(null);
+		 }
+		 
+		//Operating System
+		 if(StringUtils.isNotBlank(assetDTO.getOperatingSystem())){
+			 asset.setOperatingSystem(assetDTO.getOperatingSystem());
+		 }else {
+			 asset.setOperatingSystem(null);
+		 }
+		 
+		 //osKey
+		 if(StringUtils.isNotBlank(assetDTO.getOsKey())){
+			 asset.setOsKey(assetDTO.getOsKey());
+		 }else {
+			 asset.setOsKey(null);
+		 }
+		 
+		 //antiVirus
+		 if(StringUtils.isNotBlank(assetDTO.getAntiVirus())){
+			 asset.setAntiVirus(assetDTO.getAntiVirus());
+		 }else {
+			 asset.setAntiVirus(null);
+		 }
+		 
+		 //cost
+		 if(assetDTO.getCost()  != null){
+			 asset.setCost(assetDTO.getCost());
+		 }else {
+			 asset.setCost(null);
+		 }
+		 
+		 //depreciationAmount
+		 if(assetDTO.getDepreciationAmount()  != null){
+			 asset.setDepreciationAmount(assetDTO.getDepreciationAmount());
+		 }else {
+			 asset.setDepreciationAmount(null);
+		 }
+		 
+		 //Vendor Details
+		 if(assetDTO.getVendorDetails()  != null){
+			 asset.setVendorDetails(assetDTO.getVendorDetails());
+		 }else {
+			 asset.setVendorDetails(null);
 		 }
 		 
 		 if(StringUtils.isNotBlank(assetDTO.getCategory())){
@@ -219,6 +296,22 @@ public class AssetServiceImpl implements AssetService{
 					 aa.setShift(shift);
 					 
 					 aa.setStatus(Constants.RECORD_ACTIVE);
+					 if(aad.getAssignedOn() != null) {
+						 aa.setAssignedOn(commonUtil.orgLocationDateFormat(orgLocations.getDateFormat(), aad.getAssignedOn()));
+					 }else {
+						 aa.setAssignedOn(null);
+					 }
+					 if(StringUtils.isNotBlank(aad.getReturnedOn())) {
+						 aa.setReturnedOn(commonUtil.orgLocationDateFormat(orgLocations.getDateFormat(), aad.getReturnedOn()));
+						 Date currentDate  = new Date();
+						 if(currentDate.before(aa.getReturnedOn())) {
+							 aa.setStatus(Constants.RECORD_INACTIVE);
+						 }
+					 }else {
+						 aa.setReturnedOn(null);
+					 }
+					 
+					 
 					 if(aad .getFileInfo() != null) {
 						List<FileInfo> assetAssignDocumentsList = aad .getFileInfo();
 						for(FileInfo fileInfo : assetAssignDocumentsList){
@@ -329,5 +422,17 @@ public class AssetServiceImpl implements AssetService{
 	@Override
 	public void deleteAssignAssetByAssignId(AssetAssign assetAssign) throws Exception {
 		assetDao.deleteAssignAssetByAssignId(assetAssign);
+	}
+
+
+	@Override
+	public List<AssetAssign> getReturnedOnAssignAssetListByAssetId(Long assetId) {
+		return assetDao.getReturnedOnAssignAssetListByAssetId(assetId);
+	}
+
+
+	@Override
+	public List<AssetAssign> getAllAssignAssetListByAssetId(Long assetId) {
+		return assetDao.getAllAssignAssetListByAssetId(assetId);
 	}
 }

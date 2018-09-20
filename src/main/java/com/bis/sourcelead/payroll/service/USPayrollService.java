@@ -16,4 +16,5 @@ public interface USPayrollService {
 
 	Response<ConfirmPayTotalSumDTO> approvePayroll(ConfirmPayTotalSumDTO confirmPayTotalSumDto, OrgLocations orgLocation, User loginUser);
 	
+	
 }

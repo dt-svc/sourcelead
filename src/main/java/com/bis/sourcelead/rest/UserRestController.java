@@ -497,6 +497,22 @@ private static final Logger logger = LoggerFactory.getLogger(UserRestController.
 			 	
 				return flag;
 		   }
+		 
+		 @RequestMapping(value = "/validateExistingEmailIdForUser" , method = RequestMethod.POST)
+		 public @ResponseBody  Boolean validateExistingEmailIdForUser(@RequestParam(value="emailId", required=true) String emailId,@RequestParam(value="userId", required=false) Long userId, HttpServletRequest request) throws Exception {
+			   
+			    Boolean flag = false;
+			    User user = userService.getUserById(userId);
+			 	if(!user.getEmail().equalsIgnoreCase(emailId)) {
+			 		User existingUser = userService.getUserByEmail(emailId);
+			 		if(existingUser != null) {
+			 			flag = true;
+			 		}
+			 	}
+				return flag;
+		   }
+		 
+		 
 	 
 		 
 		 @RequestMapping(value = "/validateExistingEmployeeEmailId" , method = RequestMethod.POST)

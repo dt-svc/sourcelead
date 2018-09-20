@@ -78,7 +78,7 @@ public class User implements Serializable{
 	
 	
 	@Column(name = "SSN")
-	private Integer ssn;
+	private String ssn;
 	
 	@Column(name = "FILE_NAME")
 	private String fileName;
@@ -302,6 +302,12 @@ public class User implements Serializable{
 	@Transient
 	@JsonProperty
     private Set<String> tagsList;
+	
+	
+	@Transient
+    @JsonProperty
+    private String isPayRollApprover;
+	
 
 	public Status getPreviousUserState() {
 		return previousUserState;
@@ -804,12 +810,13 @@ public class User implements Serializable{
 		this.isMailSent = isMailSent;
 	}
 
-
-	public Integer getSsn() {
+	public String getSsn()
+	{
 		return ssn;
 	}
 
-	public void setSsn(Integer ssn) {
+	public void setSsn(String ssn)
+	{
 		this.ssn = ssn;
 	}
 
@@ -947,5 +954,13 @@ public class User implements Serializable{
 
 	public void setCandidateId(Long candidateId) {
 		this.candidateId = candidateId;
+	}
+
+	public String getIsPayRollApprover() {
+		return isPayRollApprover;
+	}
+
+	public void setIsPayRollApprover(String isPayRollApprover) {
+		this.isPayRollApprover = isPayRollApprover;
 	}
 }

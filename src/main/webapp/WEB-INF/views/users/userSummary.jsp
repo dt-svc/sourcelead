@@ -121,24 +121,27 @@ $(document).ready(function(){
 		 '</sec:authorize>';
 
 		 if(loginCountry == 'United States'){
-			 result = result + '<li><a href="#tab-21" onClick="associateBankData('+userId+')" >Banking</a></li>';
-			 result = result + '<li><a href="#tab-22" onClick="associateTaxSummary('+userId+')" >TAX</a></li>';
-			 result = result + '<li><a href="#tab-23" onClick="associateDeductionSummary('+userId+')" >Deduction</a></li>';
-			 result = result + '<li><a href="#tab-24" onClick="associateContributionSummary('+userId+')"  >Contribution</a></li>';
-			 result = result + '<li><a href="#tab-25" onClick="associateSalSummary('+userId+')" >Salary</a></li>';
+			 '<sec:authorize access="hasRole(\'ROLE_VIEW_ASSOCIATE_ADDITIONAL_DETAILS\')">'; 
+				 result = result + '<li><a href="#tab-21" onClick="associateBankData('+userId+')" >Banking</a></li>';
+				 result = result + '<li><a href="#tab-22" onClick="associateTaxSummary('+userId+')" >TAX</a></li>';
+				 result = result + '<li><a href="#tab-23" onClick="associateDeductionSummary('+userId+')" >Deduction</a></li>';
+				 result = result + '<li><a href="#tab-24" onClick="associateContributionSummary('+userId+')"  >Contribution</a></li>';
+				 result = result + '<li><a href="#tab-25" onClick="associateSalSummary('+userId+')" >Salary</a></li>';
+			 '</sec:authorize>';
 		 }
 
 		
 		 if(country == 'India'){
-			 result = result + '<li><a onClick="associateBankingDetails('+candidateId+');">Banking</a></li>';
-			 result = result + '<li><a onClick="associateInformationDetails('+candidateId+');">PF & ESI</a></li>';
-			 result = result + '<li><a onClick="associateLoanAndAdvanceDetails('+candidateId+');">Loan / Advances</a></li>';
-			 result = result + '<li><a href="#tab-30" onClick="assocSalarySummary('+candidateId+');">Salary</a></li>';
+			 '<sec:authorize access="hasRole(\'ROLE_VIEW_ASSOCIATE_ADDITIONAL_DETAILS\')">'; 
+				 result = result + '<li><a onClick="associateBankingDetails('+candidateId+');">Banking</a></li>';
+				 result = result + '<li><a onClick="associateInformationDetails('+candidateId+');">PF & ESI</a></li>';
+				 result = result + '<li><a href="#tab-30" onClick="assocSalarySummary('+candidateId+');">Salary</a></li>';
+			 '</sec:authorize>';
 		 }
 		
-
-		 
 		 '<sec:authorize access="hasRole(\'ROLE_VIEW_ASSOCIATE_ADDITIONAL_DETAILS\')">'; 
+		 //below tab is used for both locations
+		    result = result + '<li><a onClick="associateLoanAndAdvanceDetails('+candidateId+');">Loan / Advances</a></li>';
 		    result = result + '<li><a href="#tab-29" onClick="assocBalanceLeaveSummary('+userId+');">Balance Leaves</a></li>';
 		 '</sec:authorize>';
 
@@ -405,7 +408,28 @@ $(document).ready(function(){
 					result = result + '<div class="clearfix"></div>';
 				}
 				
-				if(json.user.mobilePhone != null && json.user.mobilePhone != "" && json.user.mobilePhone != 'undefined'){
+				if(json.user.ssn != null && json.user.ssn != "" && json.user.ssn != 'undefined'){
+					result = result + '			<div class="project_details_cta">';
+					result = result + '				 <strong>SSN:</strong><span class="fix" title="'+json.user.ssn+'">'+json.user.ssn+'</span><div class="clearfix"></div>';
+					result = result + ' 		</div>';
+					result = result + '<div class="clearfix"></div>';
+				}
+				
+				if(json.workLocation != null && json.workLocation != "" && json.workLocation != 'undefined'){
+					result = result + '			<div class="project_details_cta">';
+					result = result + '				 <strong>Work Location:</strong><span class="fix" title="'+json.workLocation+'">'+json.workLocation+'</span><div class="clearfix"></div>';
+					result = result + ' 		</div>';
+					result = result + '<div class="clearfix"></div>';
+				}
+				
+				if(json.residenceAddress != null && json.residenceAddress != "" && json.residenceAddress != 'undefined'){
+					result = result + '			<div class="project_details_cta">';
+					result = result + '				 <strong>Residence Location:</strong><span class="fix" title="'+json.residenceAddress+'">'+json.residenceAddress+'</span><div class="clearfix"></div>';
+					result = result + ' 		</div>';
+					result = result + '<div class="clearfix"></div>';
+				}
+				
+				if(json.user.mobilePhone != null && json.user.mobilePhonresidenceAddresse != "" && json.user.mobilePhone != 'undefined'){
 					result = result + '			<div class="project_details_cta">';
 					result = result + '				 <strong>Phone Number:</strong><span class="fix">'+json.user.mobilePhone+'</span><div class="clearfix"></div>';
 					result = result + ' 		</div>';
@@ -1365,6 +1389,42 @@ function getChangeRole(userId,userRoleId){
 	
  }
  </script>
+ 
+ <script>
+ function validateUserUpdatedEmail(userId){
+	  var isMulitplieOrgAccounts = '${isMulitplieOrgAccounts}';
+	  if(isMulitplieOrgAccounts == 'false'){
+		  var emailId = document.getElementById("EmailId").value;
+		  if(emailId){
+			  $('input#EmailId').removeAttr( "record-exist record-exist-errormsg");
+			  $('#EmailIdDiv').find('p.jquery_form_error_message').remove();
+		    	$("#update_user").attr("disabled", "disabled");
+	            $( "#update_user" ).addClass('button').val('Processing..');
+				$.ajax({
+			    	type: "POST",
+			        url: sourceleadUrl+"/validateExistingEmailIdForUser?"+tokenParamName+"="+tokenValue+"&emailId="+emailId+"&userId="+userId, 
+			        success: function(data) {
+			        	if(data == true){
+							  $("input#EmailId").after("<p class='jquery_form_error_message'>"+emailId+" is Already Existed</span>");
+							  document.getElementById("EmailId").setAttribute('record-exist','yes');
+							  document.getElementById("EmailId").setAttribute('record-exist-errorMsg',emailId+' is Already Existed'); 
+							  $("#update_user" ).addClass('us-btn').val('Update');
+			        	}
+			        	else{
+			        		 $('input#EmailId').removeAttr( "record-exist record-exist-errormsg");
+			        		 $('#EmailIdDiv').find('p.jquery_form_error_message').remove(); 
+			        		 $("#update_user" ).addClass('us-btn').val('Update');
+	                         $("#update_user").removeAttr("disabled");
+			        	} 
+			        },
+			    });
+		  }
+		 
+		  
+	  }
+	
+ }
+ </script>
 
 
 <script type="text/javascript">
@@ -1373,7 +1433,7 @@ function getChangeRole(userId,userRoleId){
 	 $('#EmailIdDiv').find('p.jquery_form_error_message').remove();
      var EmployeeId = document.getElementById("EmployeeId").value;
      var EmailId = document.getElementById("EmailId").value;
-     var RatePer = document.getElementById("RatePer").value; 
+    /*  var RatePer = document.getElementById("RatePer").value; 
 		if(RatePer != null && RatePer != ""){
 			$('#Rate').removeAttr('data-validation-optional');
 			$('#Rate').attr("data-validation","required validate_Space validate_float validate_length length1-8"); 
@@ -1390,10 +1450,10 @@ function getChangeRole(userId,userRoleId){
 		}else{
 			$('#RatePer').removeAttr('data-validation');
 			$('#RatePer').attr("data-validation-optional","true"); 
-		}
+		} */
      
       if ($('#editUser_form').validate(false, validationSettings)){
-    	  if(EmployeeId!=null&&EmployeeId!="" && empId != EmployeeId){
+    	  if(EmployeeId != null && EmployeeId != "" && empId != EmployeeId){
           $.ajax({
                 type: "POST",
                 url: sourceleadUrl+"/validateExistingEmployeeId?"+tokenParamName+"="+tokenValue+"&id="+id+"&userId="+userId+"&EmployeeId="+EmployeeId,
@@ -1660,6 +1720,12 @@ $("#editRoleDetailsList").empty();
 			    var globalChecked = '';
 			    var designation = '';
 			    var disabled = '';
+			    var readonly = '';
+			    var isMulitplieOrgAccounts = '${isMulitplieOrgAccounts}';
+			    
+			    if(isMulitplieOrgAccounts == 'true'){
+			    	readonly = 'readonly';
+			    }
 			    
 			    if(json.designation != null && json.designation != '' && json.designation != 'undefined'){
      			 	designation = json.designation;
@@ -1716,7 +1782,7 @@ $("#editRoleDetailsList").empty();
 					emailId = json.user.email;
 				}
 				result = result + ' <form id="editUser_form"  name="editUser_form" method="post">';
-					result = result + ' <div class="editfield-container">';
+					result = result + ' <div class="editfield-container customErrorTag">';
 					
 					result = result + ' <div class="user_summary_edit_cta">';
 					result = result + ' <label>First name<span class="text-danger">&nbsp;*</span></label>';
@@ -1736,7 +1802,7 @@ $("#editRoleDetailsList").empty();
 					result = result + ' <div class="user_summary_edit_cta">';
 					result = result + ' <label>Role:</label>';
 					result = result + '<div class="clearfix"><span></span>';
-					result = result + '<input type="text" value="'+json.roles.displayName+'" name="roleType" readonly="readonly" id="role" data-validation="validate_Space validate_length length2-100" data-validation-optional="true" >';
+					result = result + '<input type="text" value="'+json.roles.displayName+'" name="roleType"  id="role" data-validation="validate_Space validate_length length2-100" data-validation-optional="true" >';
 					result = result + '<input type = "hidden" id = "role" name = "roleType" value = "'+json.roles.id+'">';
 					result = result + ' </div>'; 
 
@@ -1768,12 +1834,54 @@ $("#editRoleDetailsList").empty();
 
 					result = result + ' <div class="user_summary_edit_cta" id="EmailIdDiv">';
 					result = result + ' <label>Email Id<span class="text-danger">&nbsp;*</span></label>';
-					result = result + ' <input type="text" value="'+json.user.email+'" readonly="readonly" id="EmailId" name="email" field-name="EmailId" data-validation="required validate_Space validate_length length2-100"/>';
+					result = result + ' <input type="text" value="'+json.user.email+'" '+readonly+' id="EmailId" name="email" field-name="EmailId" onblur="validateUserUpdatedEmail('+userId+');" data-validation="required validate_Space validate_email validate_length length2-100"/>';
 					result = result + ' </div>';
 					
-					result = result+'		<div class="col-md-4">';
-					result = result+'		<label>Gender&nbsp;*</label>  ';
-					result = result+'		<div class="clearfix">    ';
+					if("${SourceLeadWeb_orgLocations.country}" == 'United States'){
+					result = result + ' <div class="user_summary_edit_cta">';
+					result = result + ' <label>SSN<span class="text-danger">&nbsp;*</span></label>';
+					result = result + ' <input type="text" value="'+json.user.ssn+'" field-name="SSN" data-validation="required validate_Space"/>';
+					result = result + ' </div>';
+					}
+					
+					result = result + ' <div class="user_summary_edit_cta">';
+					result = result + ' <label>Work Location<span class="text-danger">&nbsp;*</span></label>';
+					result = result + ' <select name="workLocation" field-name="Work Location" data-validation="required validate_Space">';
+					if(json.locationList != null){
+						result = result + ' <option> -- Select Location -- </option>';
+						for(var i = 0; i < json.locationList.length ; i++){
+							var report = json.locationList[i];
+							if(json.workLocationId == report.id){
+								result = result + ' <option value= '+report.id+' selected> '+report.orgLocationAddress+' </option>';
+							}else{
+								result = result + ' <option value= '+report.id+'> '+report.orgLocationAddress+' </option>';
+							}
+						}
+					}
+					
+					result = result + ' </select>';
+					result = result + ' </div>';
+					
+					result = result + ' <div class="user_summary_edit_cta">';
+					result = result + ' <label>Residence Location<span class="text-danger">&nbsp;*</span></label>';
+					if(json.residenceAddress != null && json.residenceAddress != '' && json.residenceAddress != 'undefined'){
+						result = result + ' <input type="text" value="'+json.residenceAddress+'" id="residenceLocation" name="residenceAddress" field-name="Residence Location" data-validation="required validate_Space"/>';
+					}else{
+						result = result + ' <input type="text" value="" id="residenceLocation" name="residenceAddress" field-name="Residence Location" data-validation="required validate_Space"/>';
+					}
+					
+					result = result + ' <input type="hidden" id="residenceCountry" name="residenceCountry" value="'+json.residenceCountry+'" />';
+	                result = result + ' <input type="hidden" id="residenceState" name="residenceState" value="'+json.residenceState+'"/>';
+	                result = result + ' <input type="hidden" id="residenceCity" name="residenceCity" value="'+json.residenceCity+'"/>';
+					result = result + ' <input type="hidden" id="residenceZipCode" name="residenceZipCode" value="'+json.residenceZipCode+'"/>';
+	                result = result + ' <input type="hidden" id="residenceLatitude" name="residenceLatitude" value="'+json.residenceLatitude+'" />';
+	                result = result + ' <input type="hidden" id="residenceLongitude" name="residenceLongitude" value="'+json.residenceLongitude+'" />';
+					result = result + ' </div>';
+					
+					
+					result = result+'		<div class="col-md-4 mt5">';
+					result = result+'		<label class="ml10">Gender <span class="text-danger paddingLeft">*</span></label>  ';
+					result = result+'		<div class="clearfix ml10">    ';
 					if(json.user.gender == "Male"){
 					result = result+'		<label class="paddingLeft"><input type="radio"  checked value="Male" name="gender"><span class="mr5"></span>Male</label>                   ';
 					result = result+'		<label class="paddingLeft paddingRight"><input type="radio"  value="Female" name="gender"><span class="mr5"></span>Female</label>   ';
@@ -1799,9 +1907,9 @@ $("#editRoleDetailsList").empty();
 					result = result+'		</div>    ';
 					result = result+'		</div>    ';
 					
-					result = result+'		<div class="col-md-4">';
-					result = result+'		<label>Marital Status</label>  ';
-					result = result+'		<div class="clearfix">    ';
+					result = result+'		<div class="col-md-4 mt5">';
+					result = result+'		<label class="ml10">Marital Status</label>  ';
+					result = result+'		<div class="clearfix ml10">    ';
 					if(json.user.maritalStatus == "Single"){
 						result = result+'		<label class="paddingRight"><input type="radio"  value="Single" checked name="maritalStatus"><span class="mr5"></span>Single</label>                  ';
 						result = result+'		<label class="paddingLeft paddingRight"><input type="radio"  value="Married" name="maritalStatus"><span class="mr5"></span>Married</label>   ';
@@ -1962,7 +2070,7 @@ $("#editRoleDetailsList").empty();
 						result = result + '</span>';
 					
 					// moving date bottom to top
-					result = result + ' <div class="user_summary_edit_cta">';
+					/* result = result + ' <div class="user_summary_edit_cta">';
 					result = result + ' <label>Rate</label>';
 		            result = result+'  <select class="rate_sele selectpicker" id="currentCurrency" name="currentCurrency" data-style="btn-primary" data-width="70px"> ';
 					if(json.currentCurrency != "undefined" && json.currentCurrency != null && json.currentCurrency != ''){
@@ -1995,7 +2103,7 @@ $("#editRoleDetailsList").empty();
 					result = result + ' <option '+selected7+'>Yearly</option>';
 					result = result + ' </select>';
 					result = result + ' </div>';	
-					
+					 */
 					
 					result = result + ' <div class="user_summary_edit_cta">';
 					result = result + ' <label>Date of join</label>';
@@ -2065,6 +2173,8 @@ $("#editRoleDetailsList").empty();
 			    $("#editUserDiv").empty(); 
 			    $("#editUserDiv").append(result);
 			    
+			    initLocationAuto('residenceLocation','residenceCountry','residenceState','residenceCity','residenceZipCode','residenceLatitude','residenceLongitude','editAssociate','','address');
+
 			    $("#vendorcontact").chosen();
 			    $("#vendorcontact, #user_department").trigger("chosen:updated");
 			    $("#currentCurrency").selectpicker('refresh');
@@ -2091,7 +2201,8 @@ $("#editRoleDetailsList").empty();
 			    getVendorsByOrgLocationId();
 			    getDepartmentsList();
 			    maskme(); 
-			    
+				
+
 			    getShiftList(json.shiftId);
 	        },
 		});
@@ -3856,6 +3967,7 @@ function associateLoanAndAdvanceDetails(candidateId){
 		    	 	$("#tab-18").empty();  
 		    	    $("#tab-19").empty();
 		    	    $("#tab-17").empty();
+		    	    $("#tab-25").empty();
 		    	    $("#candidateSideDiv").empty();  
 		    	    $("#candidateSideDiv").append(response);
 		    	    loanAdv.getLoanAndAdvApprovers();

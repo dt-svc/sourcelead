@@ -2,6 +2,8 @@ package com.bis.sourcelead.dto;
 
 import java.util.List;
 
+import org.apache.commons.lang.StringUtils;
+
 import com.bis.sourcelead.annotations.Required;
 
 public class AssociateSalaryDTO {
@@ -86,7 +88,12 @@ public class AssociateSalaryDTO {
 	}
 	public void setStandardHours(String standardHours)
 	{
-		this.standardHours = standardHours;
+		if(StringUtils.isNotBlank(standardHours)) {
+			this.standardHours = standardHours;
+		}else {
+			this.standardHours = "0";
+		}
+		
 	}
 	public String getAnnualSal()
 	{
@@ -94,7 +101,12 @@ public class AssociateSalaryDTO {
 	}
 	public void setAnnualSal(String annualSal)
 	{
-		this.annualSal = annualSal;
+		if(StringUtils.isNotBlank(annualSal)) {
+			this.annualSal = annualSal;
+		}else {
+			this.annualSal = "0";
+		}
+		
 	}
 	public String getPerPaySal()
 	{
@@ -102,7 +114,11 @@ public class AssociateSalaryDTO {
 	}
 	public void setPerPaySal(String perPaySal)
 	{
-		this.perPaySal = perPaySal;
+		if(StringUtils.isNotBlank(perPaySal)) {
+			this.perPaySal = perPaySal;
+		}else {
+			this.perPaySal = "0";
+		}
 	}
 	public String getHourlyRate()
 	{
@@ -110,7 +126,12 @@ public class AssociateSalaryDTO {
 	}
 	public void setHourlyRate(String hourlyRate)
 	{
-		this.hourlyRate = hourlyRate;
+		if(StringUtils.isNotBlank(hourlyRate)) {
+			this.hourlyRate = hourlyRate;
+		}else {
+			this.hourlyRate = "0";
+		}
+		
 	}
 	public String getAllowOverTimePay()
 	{

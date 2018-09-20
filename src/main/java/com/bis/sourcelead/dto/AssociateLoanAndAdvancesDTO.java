@@ -1,6 +1,7 @@
 package com.bis.sourcelead.dto;
 
 import java.io.Serializable;
+import java.math.BigDecimal;
 
 import com.bis.sourcelead.annotations.Required;
 
@@ -57,7 +58,19 @@ public class AssociateLoanAndAdvancesDTO implements Serializable{
 	 
 	 private String loanAndAdvId;
 	 
-
+	 private BigDecimal totalLoanAmount;
+	 
+	 private BigDecimal totalAdvanceAmount;
+	 
+	 private String name;
+	 
+	 private String createdDate;
+	 
+	 private String approverUser;
+	 
+	 private int status;
+	 
+     private String lastPaidOnMaxDate;
 	public String getLoanAndAdvType() {
 		return loanAndAdvType;
 	}
@@ -201,6 +214,66 @@ public class AssociateLoanAndAdvancesDTO implements Serializable{
 	public void setLoanAndAdvId(String loanAndAdvId) {
 		this.loanAndAdvId = loanAndAdvId;
 	}
-	 
-	 
+
+	public BigDecimal getTotalLoanAmount()
+	{
+		return totalLoanAmount;
+	}
+
+	public void setTotalLoanAmount(BigDecimal totalLoanAmount)
+	{
+		this.totalLoanAmount = totalLoanAmount;
+	}
+
+	public BigDecimal getTotalAdvanceAmount()
+	{
+		return totalAdvanceAmount;
+	}
+
+	public void setTotalAdvanceAmount(BigDecimal totalAdvanceAmount)
+	{
+		this.totalAdvanceAmount = totalAdvanceAmount;
+	}
+
+	public String getName() {
+		return name;
+	}
+
+	public void setName(String name) {
+		this.name = name;
+	}
+
+	public String getCreatedDate() {
+		return createdDate;
+	}
+
+	public void setCreatedDate(String createdDate) {
+		this.createdDate = createdDate;
+	}
+
+	public String getApproverUser() {
+		return approverUser;
+	}
+
+	public void setApproverUser(String approverUser) {
+		this.approverUser = approverUser;
+	}
+
+	public int getStatus() {
+		return status;
+	}
+
+	public void setStatus(int status) {
+		this.status = status;
+	}
+
+	public String getLastPaidOnMaxDate() {
+		return lastPaidOnMaxDate;
+	}
+
+	public void setLastPaidOnMaxDate(String lastPaidOnMaxDate) {
+		this.lastPaidOnMaxDate = lastPaidOnMaxDate;
+	}
+
+	
 }

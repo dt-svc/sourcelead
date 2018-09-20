@@ -151,38 +151,6 @@
 						  </li>
 	                 </c:if>
 	                 
-	                                 
-	                 
-                     <%-- <c:if test="${SourceLeadWeb_associatesTabsCount == 2 && userTabs.tabName == 'Associates List'}">
-	                   <li class="${sessionData.nav == 'Associates' || sessionData.nav == 'OnAndOffboard' ? 'side-nav-active' : ''}">
-														  
-							  <a href="#" class="associatesLi" title="Associates">
-								<span><i class="fa fa-black-tie"></i></span>
-							  <i class="subMenu">Associates</i><i class="fa fa-fw fa-caret-down"></i>
-							  </a>
-							  
-						   
-						   <c:if test="${sessionData.nav == 'Associates' || sessionData.nav == 'OnAndOffboard'}">
-                              <ul class="collapses" style="display: none">
-                                  <li class="${sessionData.nav == 'Associates' ? 'treview-active' : ''}"><a href="<c:url value='${appPath}/associatesList'/>" title="Associates List">Associates List</a></li>
-                                  <li class="${sessionData.nav == 'OnAndOffboard' ? 'treview-active' : ''}"><a href="<c:url value='${appPath}/candidateOnBoardingList'/>" title="On / Off Boarding">On / Off Boarding</a></li>
-                              </ul>
-                           </c:if>
-                              
-                           <c:if test="${sessionData.nav != 'Associates' || sessionData.nav != 'OnAndOffboard'}">
-                           <ul class="collapses" style="display: none">
-                               <li class="${sessionData.nav == 'Associates' ? 'treview-active' : ''}"><a href="<c:url value='${appPath}/associatesList'/>" title="Associates List">Associates List</a></li>
-                               <li class="${sessionData.nav == 'OnAndOffboard' ? 'treview-active' : ''}"><a href="<c:url value='${appPath}/candidateOnBoardingList'/>" title="On / Off Boarding">On / Off Boarding</a></li>
-                           </ul>
-                           </c:if>
-                           
-                              
-						  </li>
-	                 </c:if>
-	                 
-	                 <c:if test="${SourceLeadWeb_associatesTabsCount < 2 && userTabs.tabName == 'Associates List'}">
-	                   <li class="${sessionData.nav == 'Associates' ? 'side-nav-active' : ''}"><a href="<c:url value='${appPath}/associatesList'/>" title="Associates List"><span><i class="fa fa-black-tie"></i></span><i class="subMenu">Associates List</i></a></li>
-	                 </c:if> --%>
 	                 
 	                 <c:if test="${userTabs.tabName == 'On & Off Boarding'}">
 	                  <li class="${sessionData.nav == 'OnAndOffboard' ? 'side-nav-active' : ''}"><a href="<c:url value='${appPath}/candidateOnBoardingList'/>" title="On / Off Boarding"><span><i class="fa fa-black-tie"></i></span><i class="subMenu">On / Off Board</i></a></li>
@@ -193,10 +161,6 @@
 	                 <c:if test="${userTabs.tabName == 'Contracts'}">
 	                   <li class="${sessionData.nav == 'Contract' ? 'side-nav-active' : ''}"><a href="<c:url value='${appPath}/contractListbyStatus'/>" title="Contracts"><span><i class="fa fa-object-ungroup"></i></span><i class="subMenu">Contracts</i></a></li>
 	                </c:if> 
-	                
-	                
-	                
-	                
 	                
 	                <c:if test="${SourceLeadWeb_billingTabsCount == 2 && userTabs.tabName == 'Receivable'}">
 	                   <li class="${sessionData.nav == 'Receivable' || sessionData.nav == 'Payables' ? 'side-nav-active' : ''}">
@@ -278,9 +242,6 @@
 	                   <li class="${sessionData.nav == 'Support' ? 'side-nav-active' : ''}"><a href="<c:url value='${appPath}/sourceleadTicketList'/>" title="Support"><span><i class="fa fa-ticket"></i></span><i class="subMenu">Support</i></a></li>
 	                </c:if> 
 	                
-	                
-	                
-	                
 	                <c:if test="${SourceLeadWeb_resourcesTabCount == 2 && userTabs.tabName == 'Blog'}">
 	                   <li class="${sessionData.nav == 'Blogs' || sessionData.nav == 'UserManuals' ? 'side-nav-active' : ''}">
 														  
@@ -323,7 +284,7 @@
 	                <c:if test="${userTabs.tabName == 'Campaigns'}">
                          <li class="${sessionData.nav == 'Campaigns' || sessionData.nav == 'CampaignSender' || sessionData.nav == 'CampaignRecipient' ? 'side-nav-active' : ''}"><a href="<c:url value='${appPath}/campaigns/hotcampaigns'/>" title="Campaigns"><span><i class="fa fa-bullhorn"></i></span><i class="subMenu">Campaigns</i></a></li>			  
 			         </c:if>
-            	   
+
 					<c:if test="${SourceLeadWeb_paryrollTabCount == 2 && userTabs.tabName == 'Run Payroll'}">
 						<li class="${sessionData.nav == 'Run Payroll' || sessionData.nav == 'My Payroll' ? 'side-nav-active' : ''}">
 						
@@ -336,14 +297,16 @@
 						<c:if test="${sessionData.nav == 'Payroll' || sessionData.nav == 'My Payroll'}">
 							<ul class="collapses" style="display: none">
 							<li class="${sessionData.nav == 'Payroll' ? 'treview-active' : ''}"><a href="<c:url value='${appPath}/payrollList'/>" title="Run Payroll">Run Payroll</a></li>
-							<li><a href="<c:url value='${appPath}/userPay'/>" title="My Payroll">My Payroll</a></li>
+							<li><a href="<c:url value='${appPath}/userPay'/>" title="Legacy Payroll">Legacy Payroll</a></li>
+							<li><a href="<c:url value='${appPath}/myPayroll'/>" title="My Payroll">My Payroll</a></li>
 							</ul>
 						</c:if>
 						
 						<c:if test="${sessionData.nav != 'Payroll' || sessionData.nav != 'My Payroll'}">
 							<ul class="collapses" style="display: none">
 							<li class="${sessionData.nav == 'Payroll' ? 'treview-active' : ''}"><a href="<c:url value='${appPath}/payrollList'/>" title="Run Payroll">Run Payroll</a></li>
-							<li><a href="<c:url value='${appPath}/userPay'/>" title="My Payroll">My Payroll</a></li>
+							<li><a href="<c:url value='${appPath}/userPay'/>" title="Legacy Payroll">Legacy Payroll</a></li>
+							<li><a href="<c:url value='${appPath}/myPayroll'/>" title="My Payroll">My Payroll</a></li>
 							</ul>
 						</c:if>
 						
@@ -355,9 +318,18 @@
 					</c:if>
 					
 					<c:if test="${SourceLeadWeb_paryrollTabCount < 2 && userTabs.tabName == 'My Payroll'}">
-							<li class="${sessionData.nav == 'My Payroll' ? 'side-nav-active' : ''}"><a href="<c:url value='${appPath}/userPay'/>" title="My Payroll"><span><i class="fa fa-usd"></i></span><i class="subMenu">My Payroll</i></a></li>
+							<li class="${sessionData.nav == 'My Payroll' ? 'side-nav-active' : ''}"><a href="<c:url value='${appPath}/userPay'/>" title="Leagacy Payroll"><span><i class="fa fa-usd"></i></span><i class="subMenu">Legacy Payroll</i></a></li>
+							<li class="${sessionData.nav == 'My Payroll' ? 'side-nav-active' : ''}"><a href="<c:url value='${appPath}/myPayroll'/>" title="My Payroll"><span><i class="fa fa-usd"></i></span><i class="subMenu">My Payroll</i></a></li>
 					</c:if>
-		       	   
+
+		       	   <c:if test="${userTabs.tabName == 'Payroll' && SourceLeadWeb_loginUserRole != 'ROLE_USER'}">
+		             <li class="${sessionData.nav == 'Payroll' ? 'side-nav-active' : ''}"><a href="<c:url value='${appPath}/payrollList'/>" title="Payroll"><span><i class="fa fa-usd"></i></span><i class="subMenu">Payroll</i></a></li>
+		          	</c:if>	
+		          	
+		          	<c:if test="${userTabs.tabName == 'Payroll' && SourceLeadWeb_loginUserRole != 'ROLE_ADMIN'}">
+		              <li class="${sessionData.nav == 'Pay' ? 'side-nav-active' : ''}"><a href="<c:url value='${appPath}/userPay'/>" title="Pay"><span><i class="fa fa-usd"></i></span><i class="subMenu">Pay</i></a></li>
+		          	</c:if>	
+
 					<c:if test="${userTabs.tabName == 'Immigrations'}">
 					 <sec:authorize access="hasAnyRole('ROLE_ADD_PETITION','ROLE_EDIT_VIEW_PETITION','ROLE_DELETE_PETITION','ROLE_VIEW_MY_PETITION')"> 
 					
@@ -400,35 +372,10 @@
 	         
              <li class="${sessionData.nav == 'Taxes' ? 'side-nav-active' : ''}"><a href="<c:url value='${appPath}/stateTax/list'/>" title="Taxes"><span><i class="fa fa-dashboard"></i></span><i class="subMenu">Taxes</i></a></li>
           	
-<%--            	<sec:authorize access="hasRole('ROLE_HOTLIST_CAMPAIGN')">
-			
-			<li class="${sessionData.nav == 'Campaigns' || sessionData.nav == 'CampaignSender' || sessionData.nav == 'CampaignRecipient' ? 'side-nav-active' : ''}">
-														  
-							  <a href="#" class="campaignsli" title="Expenses">
-								<span><i class="fa fa-bullhorn"></i></span>
-							  <i class="subMenu">Campaigns</i> <i class="fa fa-fw fa-caret-down"></i>
-							  </a>
-							  
-						   
-						   <c:if test="${sessionData.nav == 'Campaigns' || sessionData.nav == 'CampaignSender' || sessionData.nav == 'CampaignRecipient'}">
-                              <ul class="collapses" style="display: none">
-                                  <li class="${sessionData.nav == 'Campaigns' ? 'treview-active' : ''}"><a href="<c:url value='${appPath}/campaigns/hotcampaigns'/>" title="Campaigns">Create Campaign</a></li>
-                                  <li class="${sessionData.nav == 'CampaignSender' ? 'treview-active' : ''}"><a href="<c:url value='${appPath}/campaignSendersList'/>" title="Senders">Senders</a></li>
-                                  <li class="${sessionData.nav == 'CampaignRecipient' ? 'treview-active' : ''}"><a href="<c:url value='${appPath}/recipientsList'/>" title="Recipients">Recipients</a></li>
-                              </ul>
-                           </c:if>
-                              
-                           <c:if test="${sessionData.nav != 'Campaigns' || sessionData.nav != 'CampaignSender' || sessionData.nav != 'CampaignRecipient'}">
-                           <ul class="collapses" style="display: none">
-                               <li class="${sessionData.nav == 'Campaigns' ? 'treview-active' : ''}"><a href="<c:url value='${appPath}/campaigns/hotcampaigns'/>" title="Campaigns">Create Campaign</a></li>
-                               <li class="${sessionData.nav == 'CampaignSender' ? 'treview-active' : ''}"><a href="<c:url value='${appPath}/campaignSendersList'/>" title="Senders">Senders</a></li>
-                                <li class="${sessionData.nav == 'CampaignRecipient' ? 'treview-active' : ''}"><a href="<c:url value='${appPath}/recipientsList'/>" title="Recipients">Recipients</a></li>
-                           </ul>
-                           </c:if>
-                              
-			  </li>
-		 
-			</sec:authorize> --%>
+          	  <c:if test="${SourceLeadWeb_loginUserRole == 'ROLE_SOURCELEAD_ADMIN'}">
+          			 <li class="${sessionData.nav == 'Taxes' ? 'side-nav-active' : ''}"><a href="<c:url value='${appPath}/stateTax/list'/>" title="Taxes"><span><i class="fa fa-dashboard"></i></span><i class="subMenu">Taxes</i></a></li>
+       	 	  </c:if>	
+	            	
 			
           	
         </ul>

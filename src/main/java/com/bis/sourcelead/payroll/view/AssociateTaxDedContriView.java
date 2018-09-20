@@ -9,7 +9,7 @@ import javax.persistence.Id;
 import javax.persistence.Table;
 
 @Entity
-@Table(name = "ASSOCIATE_TAX_DED_CONTRI_VIEW", schema = "SOURCELEAD")
+@Table(name = "ASSOCIATE_TAX_DED_CONTRI_VIEW")
 public class AssociateTaxDedContriView {
 	
 	private static final long serialVersionUID = 1L;

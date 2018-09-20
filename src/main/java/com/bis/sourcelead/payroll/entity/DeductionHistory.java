@@ -1,5 +1,6 @@
 package com.bis.sourcelead.payroll.entity;
 
+import java.math.BigDecimal;
 import java.util.Date;
 
 import javax.persistence.Column;
@@ -28,11 +29,13 @@ public class DeductionHistory {
 	@Column(name = "CANDIDATE_ID")
 	private Long candidateId;
 	
-	@Column(name = "DEDUCTION_ID")
-	private Long deductionId;
+	@ManyToOne
+	@JoinColumn(name = "DEDUCTION_ID")
+	private AssociateDeduction deductionId;
 	
-	@Column(name = "CONTRIBUTION_ID")
-	private Long contributionId;
+	@ManyToOne
+	@JoinColumn(name = "CONTRIBUTION_ID")
+	private AssociateContribution contributionId;
 	
 	@ManyToOne
 	@JoinColumn(name = "PAYROLL_ID")
@@ -50,6 +53,22 @@ public class DeductionHistory {
 	@Column(name = "US_EMP_DEDUCTION_HIS_UUID")
 	private String deductionHisUUID;
 	
+	@Column(name = "PRE_DEDUCTION_AMOUNT")
+	private BigDecimal preDeductionAmount;
+	
+	@Column(name = "PRE_CONTRIBUTION_AMOUNT")
+	private BigDecimal preContributionAmount;
+	
+	@Column(name = "POST_DEDUCTION_AMOUNT")
+	private BigDecimal postDeductionAmount;
+	
+	@Column(name = "POST_CONTRIBUTION_AMOUNT")
+	private BigDecimal postContributionAmount;
+	
+	
+	@Column(name = "CONTRIBUTION_AMOUNT")
+	private BigDecimal contributionAmount;
+	 
 	@Column(name = "DEDUCTION_DATE")
 	private Date deductionDate;
 	
@@ -76,10 +95,6 @@ public class DeductionHistory {
 	}
 
 
-	public Long getDeductionId()
-	{
-		return deductionId;
-	}
 
 	public Date getFrequencyStartDate()
 	{
@@ -118,11 +133,6 @@ public class DeductionHistory {
 		this.id = id;
 	}
 
-
-	public void setDeductionId(Long deductionId)
-	{
-		this.deductionId = deductionId;
-	}
 
 	public void setFrequencyStartDate(Date frequencyStartDate)
 	{
@@ -194,16 +204,6 @@ public class DeductionHistory {
 		this.payroll = payroll;
 	}
 
-	public Long getContributionId()
-	{
-		return contributionId;
-	}
-
-	public void setContributionId(Long contributionId)
-	{
-		this.contributionId = contributionId;
-	}
-
 	public Long getCandidateId()
 	{
 		return candidateId;
@@ -214,6 +214,99 @@ public class DeductionHistory {
 		this.candidateId = candidateId;
 	}
 
+	public AssociateDeduction getDeductionId()
+	{
+		return deductionId;
+	}
+
+	public AssociateContribution getContributionId()
+	{
+		return contributionId;
+	}
+
+	public void setDeductionId(AssociateDeduction deductionId)
+	{
+		this.deductionId = deductionId;
+	}
+
+	public void setContributionId(AssociateContribution contributionId)
+	{
+		this.contributionId = contributionId;
+	}
+
+	public BigDecimal getPreDeductionAmount()
+	{
+		return preDeductionAmount;
+	}
+
+	public BigDecimal getPreContributionAmount()
+	{
+		return preContributionAmount;
+	}
+
+	public BigDecimal getPostDeductionAmount()
+	{
+		return postDeductionAmount;
+	}
+
+	public BigDecimal getPostContributionAmount()
+	{
+		return postContributionAmount;
+	}
+
+	public void setPreDeductionAmount(BigDecimal preDeductionAmount)
+	{
+		if(preDeductionAmount !=null) {
+			this.preDeductionAmount = preDeductionAmount;
+		}else{
+			this.preDeductionAmount = BigDecimal.ZERO;
+		}
+		
+	}
+
+	public void setPreContributionAmount(BigDecimal preContributionAmount)
+	{
+		if(preContributionAmount !=null) {
+			this.preContributionAmount = preContributionAmount;
+		}else{
+			this.preContributionAmount = BigDecimal.ZERO;
+		}
+	}
+
+	public void setPostDeductionAmount(BigDecimal postDeductionAmount)
+	{
+		if(postDeductionAmount != null) {
+			this.postDeductionAmount = postDeductionAmount;	
+		}else {
+			this.postDeductionAmount = BigDecimal.ZERO;	
+		}
+		
+	}
+
+	public void setPostContributionAmount(BigDecimal postContributionAmount)
+	{
+		if(postContributionAmount != null) {
+			this.postContributionAmount = postContributionAmount;	
+		}else {
+			this.postContributionAmount = BigDecimal.ZERO;
+		}
+		
+	}
+
+	public BigDecimal getContributionAmount()
+	{
+		return contributionAmount;
+	}
+
+	public void setContributionAmount(BigDecimal contributionAmount)
+	{
+		if(contributionAmount != null) {
+			this.contributionAmount = contributionAmount;
+		}else {
+			this.contributionAmount = BigDecimal.ZERO;
+		}
+		
+	}
 	
 	
 }

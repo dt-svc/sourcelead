@@ -16,11 +16,12 @@ $(document).ready(function(){
                   <div class="col-md-5">
                     <label>Pay Type</label>
                     <div>
-                      <select class="sel" id="payType" name="payType" id="payType" data-validation="required" field-name="Pay Type">
+                      <select class="sel" id="payType" name="payType" data-validation="required" onchange="showHideSalaryDIV();" field-name="Pay Type">
                         <option value="">--Select--</option>
                         <option value="HourlyRate">Hourly Rate</option>
                         <option value = "Salary">Salary</option>
-                        <option value= "Commission Only">Commission Only</option>
+                        <option value = "LcaWage">LCA Wage</option>
+                        <!-- <option value= "Commission Only">Commission Only</option> -->
                       </select>
                     </div>
                   </div>
@@ -43,6 +44,8 @@ $(document).ready(function(){
                       </select>
                     </div>
                   </div>
+                  
+                  <div id="salaryDIV">
                   <div class="col-md-5">
                     <label>Standard Hours</label>
                     <div>
@@ -51,22 +54,24 @@ $(document).ready(function(){
                   </div>
                    <div class="col-md-5">
                     <label>Annual Salary</label>
-                    <div>
+                    <div id="AnnualSal">
                       <input type="text" class="form-control" id="annualSal" name="annualSal" data-validation="required validate_float" field-name="Annual Salary" onblur="calculateSal();">
                     </div>
                   </div>
                    <div class="col-md-5">
                     <label>Pay Per Salary</label>
-                    <div>
+                    <div id="PerPaySal">
                       <input type="text" class="form-control" id="perPaySal" name="perPaySal" data-validation="required validate_float" field-name="Pay Per Salary" onblur = "calculatePayPerSal();">
                     </div>
                   </div>  
                    <div class="col-md-5">
                     <label>Hourly Rate</label>
-                    <div>
+                    <div id="HourlyRate">
                       <input type="text" class="form-control" id="hourlyRate" name="hourlyRate" data-validation="required validate_float" field-name="Hourly Rate" onblur = "calculateHourlyRateSal();">
                     </div>
                   </div>
+                  </div>
+                  
                    <div class="col-md-5">
                     <label>&nbsp;</label>
                     <div>
@@ -95,14 +100,46 @@ $(document).ready(function(){
                     </div>
                   </div>
                 </div>
-                  
-                  
                 </div>
               </div>
             </div>
             </form:form>
           </div>
           
+
+<script>
+function showHideSalaryDIV(){
+	var payType = $("#payType").val();
+	 if(payType == "HourlyRate" || payType == "LcaWage"){
+		$("#salaryDIV").hide();
+		$("#standardHours").val('');    
+		$("#annualSal").val('');
+		$("#perPaySal").val('');
+		$("#hourlyRate").val('');
+		$("#standardHours").removeAttr('data-validation');
+		$('#standardHours').attr('data-validation-optional',"true");
+		$("#annualSal").removeAttr('data-validation');
+		$('#annualSal').attr('data-validation-optional',"true");
+		$("#perPaySal").removeAttr('data-validation');
+		$('#perPaySal').attr('data-validation-optional',"true"); 
+		$("#hourlyRate").removeAttr('data-validation');
+		$('#hourlyRate').attr('data-validation-optional',"true");
+	}else{
+		$("#salaryDIV").show();
+		$("#standardHours").removeAttr('data-validation-optional');
+		$('#standardHours').attr('data-validation',"required validate_float");
+		$("#annualSal").removeAttr('data-validation-optional ');
+		$('#annualSal').attr('data-validation',"required validate_float");
+		$("#perPaySal").removeAttr('data-validation-optional');
+		$('#perPaySal').attr('data-validation',"required validate_float");
+		$("#hourlyRate").removeAttr('data-validation-optional');
+		$('#hourlyRate').attr('data-validation',"required validate_float");
+	}
+}
+</script>
+
+
+
 <script>
 function getPayFreqHours(){
 	var payFrequency = $("#payFrequency").val();
@@ -130,28 +167,36 @@ function calculateSal(){
 	var payFrequency = $("#payFrequency").val();
 	var annualSal = $("#annualSal").val();
 	var hours = $("#standardHours").val();
+	var hourlyRate = $("#hourlyRate").val();
+	 if(annualSal != null && annualSal != '' && annualSal != 'undefined')
+		{
+		$('#AnnualSal').find('p.jquery_form_error_message').remove(); 
+		}
+	
 	if(annualSal != null && annualSal != '' && annualSal != 'undefined' && hours != null && hours != '' && hours != 'undefined'){
-		
+		$('#PerPaySal').find('p.jquery_form_error_message').remove(); 
+		$('#HourlyRate').find('p.jquery_form_error_message').remove();
+		var rate = "";
 		if(payFrequency === 'Annual'){
-			var rate = parseFloat(annualSal) / 1;
+			rate = parseFloat(annualSal) / 1;
 			$("#perPaySal").val(rate.toFixed(2));
 			/* var hourRate = rate/hours;
 			$("#hourlyRate").val(hourRate.toFixed(2)); */
 		}
 		if(payFrequency === 'Monthly'){
-			var rate = parseFloat(annualSal) / 12;
+			rate = parseFloat(annualSal) / 12;
 			$("#perPaySal").val(rate.toFixed(2));
 			/* var hourRate = rate/hours;
 			$("#hourlyRate").val(hourRate.toFixed(2)); */
 		}
 		if(payFrequency === 'Bi-Weekly'){
-			var rate = parseFloat(annualSal) / 26;
+			rate = parseFloat(annualSal) / 26;
 			$("#perPaySal").val(rate.toFixed(2));
 			/* var hourRate = rate/hours;
 			$("#hourlyRate").val(hourRate.toFixed(2)); */
 		}
 		if(payFrequency === 'Weekly'){
-			var rate = parseFloat(annualSal) / 52;
+			rate = parseFloat(annualSal) / 52;
 			$("#perPaySal").val(rate.toFixed(2));
 			/* var hourRate = rate/hours;
 			$("#hourlyRate").val(hourRate.toFixed(2)); */
@@ -166,9 +211,15 @@ function calculateSal(){
 function calculatePayPerSal(){
 	var payFrequency = $("#payFrequency").val();
 	var perPaySal = $("#perPaySal").val();
-	var hourlyRate = $("#hourlyRate").val();
+ 	var hourlyRate = $("#hourlyRate").val();
 	var standardHours = $("#standardHours").val();
+	var annualSal = $("#annualSal").val();
+
 	if(perPaySal !='' && perPaySal != 'undefined'){
+		$('#AnnualSal').find('p.jquery_form_error_message').remove(); 
+		$('#PerPaySal').find('p.jquery_form_error_message').remove();
+		$('#HourlyRate').find('p.jquery_form_error_message').remove();
+		
 		if(payFrequency === 'Annual'){
 			var annualRate = parseFloat(perPaySal) * 1;
 			$("#annualSal").val(annualRate.toFixed(2));
@@ -186,10 +237,10 @@ function calculatePayPerSal(){
 			$("#annualSal").val(annualRate.toFixed(2));
 		}
 		
-		if(hourlyRate != null && hourlyRate != '' && hourlyRate != 'undefined'){
+// 		if(hourlyRate != null && hourlyRate != '' && hourlyRate != 'undefined'){
 			var hourlyrate = parseFloat(perPaySal) / standardHours;
 			$("#hourlyRate").val(hourlyrate.toFixed(2));
-		}
+// 		}
 	}
 	
 	
@@ -204,7 +255,11 @@ function calculateHourlyRateSal(){
 	var hourlyRate = $("#hourlyRate").val();
 	var standardHours = $("#standardHours").val();
 	var annualSal = $("#annualSal").val();
-	if(annualSal != null && annualSal != '' && annualSal != 'undefined'){
+	
+	if(hourlyRate != null && hourlyRate != '' && hourlyRate != 'undefined'){
+		$('#AnnualSal').find('p.jquery_form_error_message').remove(); 
+		$('#PerPaySal').find('p.jquery_form_error_message').remove(); 
+		 $('#HourlyRate').find('p.jquery_form_error_message').remove(); 
 		var perPaySal = parseFloat(hourlyRate) * standardHours;
 		$("#perPaySal").val(perPaySal.toFixed(2));
 		calculatePayPerSal();
@@ -222,13 +277,14 @@ function calculateHourlyRateSal(){
 			  if (response.response === "AWKWARD") {
 			    location.href = "/errorPage";
 			} else if (response.response === "SUCCESS") {
-				var result = "";				        	
+				var result = "";
+				var allCheck =response.data.length;
 				result = result +'<table class="table">';
 				result = result +'<thead>';
 				result = result +'<tr>';
 				result = result +'<th>';
 				result = result +'	<div class="checkbox-new">';
-				result = result +'	<input id="all" class="checkbox-custom" name="paidComponent" type="checkbox">';
+				result = result +'	<input id="all" class="checkbox-custom" name="paidComponent" type="checkbox" onclick="selectAllCheckBox('+allCheck+');">';
 				result = result +'	<label for="all" class="checkbox-custom-label">';
 				result = result +'</label>';
 				result = result +'</div>';
@@ -255,10 +311,9 @@ function calculateHourlyRateSal(){
 			        		result = result +' 	<label for="'+i+'payItemCheck" class="checkbox-custom-label"></label>';
 			        		result = result +' </div>';
 			        		result = result +' </td>';
-	                 			
 			        		result = result +' <td>';
 			        		/* result = result +' <div class="tblminwidth-100 text-left" id="'+i+'payItemName" name="associatePayItemDto['+i+'].payItemName" >'+opt.payItemName+'</div>'; */
-			        		result = result +' <input type="text" class="form-control tabField" id="'+i+'payItemName" name="associatePayItemDto['+i+'].payItemName" value='+opt.payItemName+'>';
+			        		result = result +' <input type="text" class="form-control tabField" id="'+i+'payItemName" name="associatePayItemDto['+i+'].payItemName" value=\''+opt.payItemName+'\'>';
 			        		result = result +' </td>';
 			        		result = result +' <td>';
 			        		if(opt.paySchedule != '' && opt.paySchedule != 'undefined' && opt.paySchedule != null){
@@ -279,12 +334,12 @@ function calculateHourlyRateSal(){
 							result = result +'</td>';
 							result = result +'<td>';
 							result = result +'	<div class="tblminwidth-50">';
-							result = result +'		<input class="form-control calendar" placeholder="Effective Date" field-name="Effective Date" id="'+i+'effectiveDate" name="associatePayItemDto['+i+'].effectiveDate" type="text">';
+							result = result +'		<input class="form-control calendar" placeholder="Effective Date" field-name="Effective Date" id="'+i+'effectiveDate" name="associatePayItemDto['+i+'].effectiveDate" type="text" readonly="readonly">';
 							result = result +'	</div>';
 							result = result +'</td>';
 							result = result +'<td>';
 							result = result +'	<div class="tblminwidth-50">';
-							result = result +'		<input class="form-control calendar" placeholder="End Date" id="'+i+'endDate" name="associatePayItemDto['+i+'].endDate" type="text">';
+							result = result +'		<input class="form-control calendar" placeholder="End Date" id="'+i+'endDate" name="associatePayItemDto['+i+'].endDate" type="text" readonly="readonly">';
 							result = result +'	</div>';
 							result = result +'</td>';
 							result = result +'<td>';
@@ -420,6 +475,24 @@ function selectCheckBox(i){
 	$("#"+i+"payItemCheck").val(isChecked);
 }
 </script>  
+
+<script>
+function selectAllCheckBox(allCheck){
+	var isChecked = $("#all").is(':checked');
+	for(var j=0;j<allCheck;j++){
+	if(isChecked){
+		$("#"+j+"effectiveDate").removeAttr('data-validation-optional');
+		$("#"+j+"effectiveDate").attr('data-validation', "required");
+		$("#"+j+"payItemCheck").prop("checked","checked");
+		
+	}else{
+		$("#"+j+"effectiveDate").removeAttr('data-validation');
+		$("#"+j+"effectiveDate").attr('data-validation-optional', "true");
+		$("#"+j+"payItemCheck").removeProp("checked");
+	}
+}
+}
+</script> 
 
 <script>
 function skipSalaryJsp(){

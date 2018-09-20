@@ -1459,7 +1459,7 @@ public File createLeaveReportPdfTable(ResponseList<LeaveReportView> leaveReports
 		String[] headers = Constants.LEAVE_REPORT_HEADERS;
 	    Document document = new Document(PageSize.LETTER.rotate());
 	    StringBuilder sbUser =  new StringBuilder();
-	    sbUser.append("Day_Wise_Leave_Report_").append(commonUtil.dateStrFromOrgDateFormatter(orgLocations.getDateFormat(),new Date()));
+	    sbUser.append("Leave_Report_").append(commonUtil.dateStrFromOrgDateFormatter(orgLocations.getDateFormat(),new Date()));
 
 	    StringBuilder fileSB = new StringBuilder();
 	    File file = File.createTempFile(fileSB.append("Leave_Report_").append(commonUtil.dateStrFromOrgDateFormatter(orgLocations.getDateFormat(),new Date())).toString(),".pdf");
@@ -1516,7 +1516,7 @@ public File createLeaveReportPdfTable(ResponseList<LeaveReportView> leaveReports
                 }
                 table.completeRow();
             }
-	        document.addTitle("DayWiseLeaveReport Table");
+	        document.addTitle("LeaveReport Table");
 	        table.setSpacingBefore(15f);
 	        document.add(table);
 	        logger.info("Pdf table created !!");
@@ -1533,8 +1533,8 @@ public File createLeaveReportPdfTable(ResponseList<LeaveReportView> leaveReports
 
 private String[] prepareLeaveReportStringArray(LeaveReportView lrv, String[] headers) throws Exception {
 	String userArray[] = new String[headers.length];
-		 if(lrv.getEmployeeId() !=null){
-			 userArray[0] = lrv.getEmployeeId().toString();
+		 if(lrv.getEid() != null && !lrv.getEid().isEmpty()){
+			 userArray[0] = lrv.getEid().toString();
 		 }else{
 			 userArray[0] = "--";
 		 }
@@ -1797,7 +1797,7 @@ private String[] prepareDailyWiseLeaveReportStringArray(LeaveReportView lrv, Str
    }else{
 	   userArray[12] = "--";
    }
-	   if(lrv.getApprovedOnDateStr() !=null){
+	   if(lrv.getApprovedOnDateStr() !=null && lrv.getStatus().equalsIgnoreCase("APPROVED")){
 		   userArray[13] = lrv.getApprovedOnDateStr();
    }else{
 	   userArray[13] = "--";
