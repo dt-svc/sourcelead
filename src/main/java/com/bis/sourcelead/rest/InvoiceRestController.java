@@ -2486,6 +2486,18 @@ return responseList;
 		return isDeleted;
 	}
 	
+	@RequestMapping(value = "/reactiveCreditDebitNote", method = RequestMethod.POST)
+	@ResponseBody
+	public boolean reactiveCreditDebitNote(@RequestParam(value = "creditDebitUUID", required = false) String creditDebitUUID, 
+			@RequestParam(value = "noteType", required = false) String noteType, HttpServletRequest request) throws Exception
+	{
+		User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+		OrgLocations orglocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+		boolean reactive = invoiceService.reactiveCreditDebitNote(creditDebitUUID, noteType, user,orglocations);
+		
+		return reactive;
+	}
+	
 	@RequestMapping(value = "/deleteLineItemEditModeId", method = RequestMethod.POST)
 	@ResponseBody
 	public String deleteLineItemEditModeId(@RequestParam(value = "id", required = false) String id, HttpServletRequest request) throws Exception
