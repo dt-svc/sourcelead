@@ -290,7 +290,10 @@ public class LeaveServiceImpl implements LeaveService{
 			leave.setFileName(fileinfo.getFileName());
 			leave.setFileContentType(fileinfo.getContentType());
 			leave.setFileUrl(fileinfo.getFileURL());
-			FileUploadUtil.moveFile(leaveDTO.getStaticPath(), fileinfo, "leaveDocuments");
+			try {
+				FileUploadUtil.moveFile(leaveDTO.getStaticPath(), fileinfo, "leaveDocuments");
+			} catch (Exception e) {
+			}
 		}
 		
 		UserRole urole = userRoleService.getUserRoleByUserIdAndLocationId(leave.getUser().getId(), orgLocations.getId());
@@ -298,6 +301,7 @@ public class LeaveServiceImpl implements LeaveService{
 			if("Grade".equalsIgnoreCase(leaveType.getAutoApproveType())){
 				if(urole.getGradeId() != null){
 					if(leaveType.getAutoApproveTypeListNames().contains(urole.getGradeId().getGradeName())){
+						leave.setApproverHierarchyList(getApproverList(leaveDTO,leave,user));
 						leave.setStatus(Constants.LEAVE_APPROVED);
 					}else{
 						leave.setApproverHierarchyList(getApproverList(leaveDTO,leave,user));
@@ -309,12 +313,14 @@ public class LeaveServiceImpl implements LeaveService{
 				}
 			}else if("Role".equalsIgnoreCase(leaveType.getAutoApproveType())){
 				if(leaveType.getAutoApproveTypeListNames().contains(urole.getRoles().getRoleName())){
+					leave.setApproverHierarchyList(getApproverList(leaveDTO,leave,user));
 					leave.setStatus(Constants.LEAVE_APPROVED);
 				}else{
 					leave.setApproverHierarchyList(getApproverList(leaveDTO,leave,user));
 					leave.setStatus(Constants.LEAVE_PENDING);
 				}
 			}else {
+				leave.setApproverHierarchyList(getApproverList(leaveDTO,leave,user));
 				leave.setStatus(Constants.LEAVE_APPROVED);
 			}
 		}else if(leaveDTO.getIsSuperUser()){
