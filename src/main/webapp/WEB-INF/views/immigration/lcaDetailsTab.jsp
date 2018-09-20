@@ -2,7 +2,7 @@
 <%@ taglib uri="http://java.sun.com/jsp/jstl/functions" prefix="fn"%>
 
  <div class="immigraTabsHead">
-	<!-- <a href="javascript:void(0)" id="addLca"><i class="glyphicon glyphicon-plus"></i> Add LCA</a> -->
+	<a href="javascript:void(0)" id="addLca"><i class="glyphicon glyphicon-plus"></i> Add LCA</a>
 </div>
 		
 	  	<div class="immigraTable overflow_Auto">
@@ -143,8 +143,8 @@
             <input value="Save" id= "lcaSave_Button" class="" type="button" onclick ="immigration.saveLcaFromImmigration();">
             <input value="Cancel" class="popCan" type="button" onclick="closeLcapopup();">
           </div>		
+	</div>
 	</div><!-- popup code end -->
-	
 	</form>
 	<script type="text/javascript">
 	
@@ -332,4 +332,3 @@ var finalDateFormatOrg = getOrgDateFormat(locationDate);
 	}
  
 </script> 
-
