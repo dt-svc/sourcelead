@@ -4,7 +4,10 @@ import java.util.Date;
 import java.util.List;
 
 import com.bis.sourcelead.dto.EmployerPayrollCostDTO;
+import com.bis.sourcelead.dto.RequirementSubmissionHistoryDTO;
+import com.bis.sourcelead.dto.RequirementSubmissionsCountDTO;
 import com.bis.sourcelead.dto.RequirementSubmissionsDTO;
+import com.bis.sourcelead.dto.Response;
 import com.bis.sourcelead.dto.ResponseList;
 import com.bis.sourcelead.entity.Candidate;
 import com.bis.sourcelead.entity.OrgLocations;
@@ -12,6 +15,7 @@ import com.bis.sourcelead.entity.Requirement;
 import com.bis.sourcelead.entity.RequirementRateSubmissionNegotiation;
 import com.bis.sourcelead.entity.RequirementSubmission;
 import com.bis.sourcelead.entity.RequirementSubmissionHistory;
+import com.bis.sourcelead.entity.RequirementSubmissionsView;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.payroll.entity.EmployerPayrollCost;
 
@@ -51,6 +55,9 @@ public interface RequirementSubmissionDao {
 	
 	List<RequirementSubmission>   getRequirementHistoryListByCandidateIdAndOrgLocationIdAndRequirementId(Long candidateId, Long orgLocationId,Long requirementId) throws Exception;
 
+	public Integer [] getRequirementSubmissionsListsByOrgLocationsIdAndSubmissionStatus(Long orgLocationsId,String dateRange,String userType,User user, Date startUTCDate, Date endUTCDate) throws Exception;
+
+	
 	/**
 	 * @author Prasad Salina
 	 * @param email
@@ -80,7 +87,7 @@ public interface RequirementSubmissionDao {
 	 * @param subQuery
 	 * @return
 	 */
-	Integer getAllPipeLineCountsByRequirementIdAndSubmissionStage(Long requirementId, User user, OrgLocations loginOrgLocation, String subQuery) throws Exception;
+	RequirementSubmissionsCountDTO getAllPipeLineCountsByRequirementIdAndSubmissionStage(Long requirementId, User user, OrgLocations loginOrgLocation, String subQuery) throws Exception;
 	
 	/**
 	 * @author Prasad Salina
@@ -179,7 +186,7 @@ public interface RequirementSubmissionDao {
 
 	List<Long> getSubmissionIdByCandidateId(List<Long> candidateIds, Long orgLocationId);
 	
-	List<RequirementSubmission> getOfferAcceptedCandidatesListByOrgLocationId(Long orgLocationId);
+	List<RequirementSubmissionsView> getOfferAcceptedCandidatesListByOrgLocationId(Long orgLocationId);
 	
 	List<RequirementSubmission> getAllSubmissionsfromVendorsBasedOnLocationIdAndUserId(User user,OrgLocations orgLocations, String status, Requirement requirement) throws Exception;
 	
@@ -207,8 +214,16 @@ public interface RequirementSubmissionDao {
 	
 	RequirementSubmission getClientSubmissionsBySourceSubmissionIdAndVendorLocationId(Long sourceSubmissionId, Long vendorLocationId) throws Exception;
 	
-	ResponseList<RequirementSubmission> loadSubmissionsListByRequirementId(RequirementSubmissionsDTO requirementSubmissionsDTO) throws Exception;
+	ResponseList<RequirementSubmission> loadSubmissionsListByRequirementId(RequirementSubmissionsDTO requirementSubmissionsDTO, OrgLocations orgLocation) throws Exception;
 	
 	List<RequirementSubmission> getSubmmisionsForIsClientJob(List<Long> submissionIds) throws Exception;
+	
+	RequirementSubmission getRequirementVendorOrCrowdsourcingSubmissionByRequirementIdAndCandidateId(Long requirementId,Long candidateId) throws Exception;
+
+	ResponseList<RequirementSubmissionHistory> getRequirementSubmissionsListWithDTOByOrgLocationsIdAndSubmissionStatus(RequirementSubmissionHistoryDTO requirementSubmissionHistoryDTO, Long orgLocationsId, String submissionStatus, String dateRange, String userType, User user, Date startUTCDate, Date endUTCDate) throws Exception;
+	
+	boolean getRequirementSubmissionByCandidateIdAndJobId(Long candidateId,Long requirementId) throws Exception;
+	
+	List<RequirementSubmission> getAllSubmissionsNotInTemplateFileds() throws Exception;
 
 }

@@ -57,6 +57,7 @@ import com.bis.sourcelead.service.CandidateService;
 import com.bis.sourcelead.service.UserService;
 import com.bis.sourcelead.util.CommonUtil;
 import com.bis.sourcelead.util.ConversionUtil;
+import com.bis.sourcelead.util.SourceLeadRandomCodeHelper;
 
 import org.apache.commons.lang3.StringUtils;
 
@@ -472,7 +473,7 @@ public class WageTaxSummaryServiceImpl implements WageTaxSummaryService{
 									net = Float.parseFloat(getCellValueAsString(row.getCell(12), fileName));
 									wageTaxSummary.setNet(net);
 								}
-								
+								wageTaxSummary.setUuid(SourceLeadRandomCodeHelper.generateRandomUUID());
 								wageTaxSummary.setEmployeeName(employeeName);
 								wageTaxSummary.setEmployeeId(employeeId);
 								wageTaxSummary.setSsnNumber(ssn);
@@ -671,5 +672,11 @@ public class WageTaxSummaryServiceImpl implements WageTaxSummaryService{
 			}
 		}
 		return empId;
+	}
+
+	@Override
+	public ResponseList<WageTaxSummary> getWagesAndTaxByEmpId(OrgLocations orgLocation, WagesTaxSummaryDTO wagesTaxSummaryDTO)
+	{
+		return wageTaxSummaryDao.getWagesAndTaxByEmpId(orgLocation, wagesTaxSummaryDTO);
 	}
 }

@@ -52,6 +52,7 @@ import com.bis.sourcelead.service.ProjectMembersService;
 import com.bis.sourcelead.service.SubmissionApproverHierarchyService;
 import com.bis.sourcelead.util.CommonUtil;
 import com.bis.sourcelead.util.ConversionUtil;
+import com.bis.sourcelead.util.SourceLeadRandomCodeHelper;
 
 @Service
 public class EmployerPayrollCostServiceImpl implements EmployerPayrollCostService {
@@ -208,6 +209,7 @@ public class EmployerPayrollCostServiceImpl implements EmployerPayrollCostServic
 							employerPayrollCost.setUpdatedBy(user.getUserCode());
 							employerPayrollCost.setUpdatedDate(new Date());
 							employerPayrollCost.setOrgLocationId(orgLocation);
+							employerPayrollCost.setUuid(SourceLeadRandomCodeHelper.generateRandomUUID());
 							EmployerPayrollCost empPayrollCost = saveEmpPayrollCost(employerPayrollCost);
 							if(empPayrollCost != null){
 								count++;
@@ -235,7 +237,7 @@ public class EmployerPayrollCostServiceImpl implements EmployerPayrollCostServic
 	 * @return EmployerPayrollCost
 	 * @throws Exception 
 	 */
-	private EmployerPayrollCost saveEmpPayrollCost(EmployerPayrollCost employerPayrollCost) throws Exception {
+	public EmployerPayrollCost saveEmpPayrollCost(EmployerPayrollCost employerPayrollCost) throws Exception {
 		return employerPayrollCostDao.saveEmployerPayrollCost(employerPayrollCost);
 	}
 
@@ -278,7 +280,7 @@ public class EmployerPayrollCostServiceImpl implements EmployerPayrollCostServic
 	}
 
 	@Override
-	public List<UserPayroll> runPayrollCycle(OrgLocations orgLocation, User user, JSONObject jsonObj) throws Exception {
+	public List<UserPayroll> runPayrollCycle(OrgLocations orgLocation, User user,String isGlobalAccess, JSONObject jsonObj) throws Exception {
 		
 		List<UserPayroll> userPayrollList = new ArrayList<>();
 		Date startDate = null, endDate = null;
@@ -311,7 +313,7 @@ public class EmployerPayrollCostServiceImpl implements EmployerPayrollCostServic
 						StringBuilder sb = new StringBuilder();
 						double amount = 0;
 						double finalAmount = 0;
-						Map<String, Float> hoursMap = submissionApproverHierarchyService.getTotalHoursByProjectMemberIdStartDateAndEndDateForInvoice(pm.getId(),startDate,endDate);
+						Map<String, Float> hoursMap = submissionApproverHierarchyService.getTotalHoursByProjectMemberIdStartDateAndEndDateForInvoice(pm.getId(),orgLocation.getId(),startDate,endDate,isGlobalAccess);
 						if(hoursMap.get(Constants.BILLABLE_HOURS) >0){
 							UserPayroll userPayroll = new UserPayroll();
 //							FinalPayrollReport finalPayrollReport = new FinalPayrollReport();
@@ -417,7 +419,7 @@ public class EmployerPayrollCostServiceImpl implements EmployerPayrollCostServic
 
 
 	@Override
-	public ResponseList<PayrollBalance> getAllPayrollBalanceSheetByOrgLocationId(OrgLocations orgLocation,PayrollBalance payrollBalance) throws Exception {
+	public ResponseList<PayrollBalance> getAllPayrollBalanceSheetByOrgLocationId(OrgLocations orgLocation,PayrollBalance payrollBalance,String loginUserRole) throws Exception {
 		
 //		  List<WageTaxSummary> wageTaxSummaryList =  wageTaxSummaryService.getUniqueWagesAndTaxListByOrgLocationId(orgLocation);
 		  ResponseList<WageTaxSummary> wageTaxSummaryList =  wageTaxSummaryService.getUniqueWagesAndTaxListByOrgLocationIdAndPagination(orgLocation,payrollBalance);
@@ -425,7 +427,7 @@ public class EmployerPayrollCostServiceImpl implements EmployerPayrollCostServic
 		 List<PayrollBalance> balanceList = new ArrayList<>();
 		  if(wageTaxSummaryList !=null) {
 			 for(WageTaxSummary WageTaxSummary : wageTaxSummaryList.getData()) {
-				 PayrollBalance balance = accountDeductionsService.getBalance(Long.parseLong(WageTaxSummary.getEmployeeId()), orgLocation);
+				 PayrollBalance balance = accountDeductionsService.getBalance(Long.parseLong(WageTaxSummary.getEmployeeId()), orgLocation,loginUserRole);
 				 balance.setEmpName(WageTaxSummary.getEmployeeName());
 				 balanceList.add(balance);
 			 }
@@ -437,5 +439,13 @@ public class EmployerPayrollCostServiceImpl implements EmployerPayrollCostServic
 		  
 		return responseList; 
 	}
+
+
+	@Override
+	public List<EmployerPayrollCost> getEmployerPayrollCostByLocationId(Long locationId)
+	{
+		return employerPayrollCostDao.getEmployerPayrollCostByLocationId(locationId);
+	}
+
 }
 

@@ -123,7 +123,7 @@ function addResume(candidateId) {
 	result = result+'	                <div class="form-horizontal clearfix" id="newResumeDiv">';
 	result = result+'	                  <div class="clearfix mb10">';
 	result = result+'	                    <div class="col-md-12">';
-	result = result+'	                      <input type="text" class="form-control input-sm" id="title" name="title" data-validation="validate_Space validate_Description validate_length length2-100" data-validation-optional="true" field-name="Title" value="" placeholder="Title">';
+	result = result+'	                      <input type="text" class="form-control input-sm" id="title" name="title" data-validation="validate_length length2-100" data-validation-optional="true" field-name="Title" value="" placeholder="Title">';
 	result = result+'	                    </div>';
 	result = result+'	                  </div>';
 	result = result+'	                  <div class="clearfix mb10">';
@@ -142,8 +142,6 @@ function addResume(candidateId) {
 	result = result+'	                    </div>  ';  
 	result = result+'	                  </div>   ';  
 	
-	
-	
 	result = result+'	                  <div class="clearfix mb10" id="resumeNameDiv" style="display: none;">';
 	result = result+'	                    <div class="col-md-12 mt">';
 	result = result+'	                      <label id="resumeName" name="resumeName" class="text-primary tbldata-dotdot-vsm pull-left"></label>&nbsp;&nbsp;<span id="delete_resume" onclick="removeResumeNameDiv();"><i class="fa fa-trash removeIcon"></i></span>';
@@ -153,12 +151,6 @@ function addResume(candidateId) {
 	result = result+'	                  <div class="clearfix mr mt" id="resumeUpdateButton" style="display: none;">';
 	result = result+'	                    <button type="button" id="update_resume" class="btn btn-sm btn-primary pull-right">Update</button>';
 	result = result+'	                  </div>';
-	
-	
-	
-	
-	
-	
 	
 	result = result+'	                  <div class="clearfix mr mt" id="resumeAddButton">';
 	result = result+'	                    <button type="button" id="add_resume" class="btn btn-sm btn-primary pull-right" onclick="storeCandidateResume('+candidateId+',null);">Add</button>';
@@ -214,21 +206,31 @@ function uploadProfileResume(){
 		        var formData = getFormData("candidateResume_form");
 				$("#add_resume").attr("disabled", "disabled");
          		$("#add_resume" ).addClass('button').val('Processing..');
-		        $.post(sourceleadUrl+"/saveCandidateResume?${_csrf.parameterName}=${_csrf.token}&candidateId="+candidateId+"&resumeId="+resumeId, formData, function(data) {
-		        	closeResumePopup();
-		        	$("#selector2").removeAttr("style");
-         			$("#selector2").css({ display: "block" });
-         			if(resumeId != null){
-         			$("#resumeMsgDiv").html("Resume details updated");
-         			}else{
-         			$("#resumeMsgDiv").html("Success!! New Resume added");
-         			}
-		        	candidateResumesList(candidateId);
-			 		resumesMsgFadein();
+		        $.post(sourceleadUrl+"/saveCandidateResume?${_csrf.parameterName}=${_csrf.token}&candidateId="+candidateId+"&resumeId="+resumeId, formData,
+		        		function(response) {
+		        	if (response && response.response === "INVALID_DATA") {
+		        	    showError(response.responseMessage);
+		        	} else if (response.response === "AWKWARD") {
+		        	    location.href = "/errorPage";
+		        	} else if (response.response === "SUCCESS") {
+		        		closeResumePopup();
+			        	$("#selector2").removeAttr("style");
+	         			$("#selector2").css({ display: "block" });
+	         			if(resumeId != null){
+	         				$("#resumeMsgDiv").html("Resume details updated");
+	         			} else {
+	         				$("#resumeMsgDiv").html("Success!! New Resume added");
+	         			}
+			        	candidateResumesList(candidateId);
+				 		resumesMsgFadein();
+		        	} else if (response.indexOf('Sign In') !== -1) {
+		        		location.replace(sourceleadUrl);
+		        	} else {
+		        	    showError("Operation failed, please try again");
+		        	}
 		        });
-				
 					return true;
-			 }else{ 
+			 } else { 
 					return false;
 			 } 
 		}
@@ -334,11 +336,15 @@ function uploadProfileResume(){
 					}
 					$("#resumesList").empty();
 					$("#resumesList").append(result);
+					if(resumesCount<1){
+						location.reload();
+					}
 				}else{
-				result = result + "   <div class='dataTables_empty'>";
+				/* result = result + "   <div class='dataTables_empty'>";
 				result = result + "  </div> ";
 				$("#resumesList").empty();
-				$("#resumesList").append(result);
+				$("#resumesList").append(result); */
+				location.reload();
 			}
 	
 				},
@@ -393,6 +399,8 @@ function deleteResumePopUp(){
 </script>
 
 
+
+
 <script>
 function deleteSelectedResume(candidateId, resumeId){
 	var loginUserId = '${SourceLeadWeb_userId}';
@@ -400,29 +408,38 @@ function deleteSelectedResume(candidateId, resumeId){
 	$.ajax({
 	   	type: "POST",
 	    url: sourceleadUrl+"/terminateResume?${_csrf.parameterName}=${_csrf.token}&loginUserId="+loginUserId+"&orgLocationId="+orgLocationId+"&candidateId="+candidateId+"&resumeId="+resumeId, 	   
-		    success: function(data) {
-		    	candidateResumesList(candidateId);
-		    	if(data != null && data != 'undefined' && data != ""){
+		    success: function(response) {
+		    	if (response && response.response === "INVALID_DATA") {
+		    	    showError(response.responseMessage);
+		    	} else if (response.response === "AWKWARD") {
+		    	    location.href = "/errorPage";
+		    	} else if (response.response === "SUCCESS") {
+		    		//candidateResumesList(candidateId);
+		    		var data = response.object;
 		    		$('#perVal').attr('aria-valuenow', data).css('width',data+'%');
-        			 if(data<50){
-	          			  /* $("#perVal").removeClass("progress-bar-success"); */
-	          			   $("#perVal").removeClass('progress-bar-success');
-	          			  $("#perVal").addClass("progress-bar-danger");
-	          			 }
-	          			 if(data>=50){
-	          				 $("#perVal").removeClass('progress-bar-danger');
-	          				 $("#perVal").addClass("progress-bar-success");
-	          			 }
+        			if(data<50){
+	          			/* $("#perVal").removeClass("progress-bar-success"); */
+	          			$("#perVal").removeClass('progress-bar-success');
+	          			$("#perVal").addClass("progress-bar-danger");
+	          		}
+	          		if(data>=50){
+	          			$("#perVal").removeClass('progress-bar-danger');
+	          			$("#perVal").addClass("progress-bar-success");
+	          		}
 
-   			 	$("#disVal").empty();
-   				$("#disVal").append(data+'%');
-    			 $("#selector2").removeAttr("style");
-     			 $("#selector2").css({ display: "block" });
-     			 $("#resumeMsgDiv").html("Resume deleted");
-    			 $("#popUpDivResume").removeClass("edit-details-active");
-    			 deleteResumePopUp();
-    			 resumesMsgFadein();
-    			 
+	   			 	$("#disVal").empty();
+	   				$("#disVal").append(data+'%');
+	    			$("#selector2").removeAttr("style");
+	     			$("#selector2").css({ display: "block" });
+	     			$("#resumeMsgDiv").html("Resume deleted");
+	    			$("#popUpDivResume").removeClass("edit-details-active");
+	    			deleteResumePopUp();
+	    			candidateResumesList(candidateId);
+					resumesMsgFadein();
+		    	} else if (response.indexOf('Sign In') !== -1) {
+		    		location.replace(sourceleadUrl);
+		    	} else {
+		    	    showError("Operation failed, please try again");
 		    	}
 		    },
      });
@@ -442,24 +459,30 @@ function getResume(candidateId, resumeId){
 		$.ajax({
 		   	type: "POST",
 		    url: sourceleadUrl+"/getResume?${_csrf.parameterName}=${_csrf.token}&candidateId="+candidateId+"&resumeId="+resumeId, 	   
-   		    success: function(data) {
-   		    	var json = JSON.parse(data);
-        			 $("#uploadResumeDiv").hide();
-        			 $("#resumeAddButton").hide();
-        			 $("#uploadFile").removeAttr("data-validation");
-        			 $("#resumeNameDiv").show();
-        			 $("#resumeName").append(json.fileName);
-        			 $("#resumeUpdateButton").show();
-        			 
-        			 if(json.title != null && json.title != "undefined" && json.title != ""){
-        				 document.getElementById("title").value = json.title;
-        			 }
-        			 if(json.description != null && json.description != "undefined" && json.description != ""){
-        				 $("textarea#description").val(json.description);
-        			 }
-        			 
-        			 
-        			 $("#update_resume").attr("onclick", "storeCandidateResume("+json.candidateId.id+","+json.id+");");
+   		    success: function(response) {
+   		    	if (response.response === "AWKWARD") {
+   		    	    location.href = "/errorPage";
+   		    	} else if (response.response === "SUCCESS") {
+   		    		 var json = response.object;
+	       			 $("#uploadResumeDiv").hide();
+	       			 $("#resumeAddButton").hide();
+	       			 $("#uploadFile").removeAttr("data-validation");
+	       			 $("#resumeNameDiv").show();
+	       			 $("#resumeName").append(json.fileName);
+	       			 $("#resumeUpdateButton").show();
+	       			 
+	       			 if(json.title != null && json.title != "undefined" && json.title != ""){
+	       				 document.getElementById("title").value = json.title;
+	       			 }
+	       			 if(json.description != null && json.description != "undefined" && json.description != ""){
+	       				 $("textarea#description").val(json.description);
+	       			 }
+	       			 $("#update_resume").attr("onclick", "storeCandidateResume("+json.candidateId.id+","+json.id+");");
+   		    	} else if (response.indexOf('Sign In') !== -1) {
+   		    		location.replace(sourceleadUrl);
+   		    	} else {
+   		    	    showError("Operation failed, please try again");
+   		    	}
    		    }
 	     });
 }
@@ -471,9 +494,14 @@ this script is for remove Resume in edit mode to upload new resume
 1.usage     : onclick
 --%>
 function removeResumeNameDiv(){
+	var resTitle = $("#title").val();
+	var resDocName =  $("#resumeName").text();
 	$("#resumeNameDiv").hide();
 	$("#uploadResumeDiv").show();
 	$("#uploadFile").attr("data-validation", "required validate_Space validatedoc");
+	if(resTitle == resDocName){
+		$("#title").val("");
+	}
 }
 </script>
 

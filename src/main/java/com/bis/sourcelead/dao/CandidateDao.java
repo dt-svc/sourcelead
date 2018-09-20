@@ -1,13 +1,19 @@
 package com.bis.sourcelead.dao;
 
+import java.math.BigInteger;
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
 
 import com.bis.sourcelead.dto.CandidateDTO;
+import com.bis.sourcelead.dto.ImmigrationCandidateDTO;
 import com.bis.sourcelead.dto.ResponseList;
 import com.bis.sourcelead.entity.Candidate;
+import com.bis.sourcelead.entity.CandidateIdendities;
 import com.bis.sourcelead.entity.CandidateImportLog;
 import com.bis.sourcelead.entity.OrgLocations;
+import com.bis.sourcelead.entity.RecruiterReportCandidateCountView;
+import com.bis.sourcelead.entity.SubmissionCandidateListView;
 import com.bis.sourcelead.entity.User;
 
 public interface CandidateDao {
@@ -17,9 +23,11 @@ public interface CandidateDao {
 	
 	Candidate getCandidateByParentCandidateId(Long parentCandidateId) throws Exception;
 	
+	Candidate getCandidateByParentCandidateIdAndOrgLocationId(Long parentCandidateId,Long orgLocationId) throws Exception;
+	
 	public Long getCandidatesCountByOrgLocationID(Long orgLocationId, String candidateStatus);
 	
-	public List<Candidate> getCandidatesListByOrgLocationID(Long orgLocationId, Long orgId, Integer candidateState, String updatedDateRange, String candidateType, String isAssociate) throws Exception;
+	public List<Candidate> getCandidatesListByOrgLocationID(Long orgLocationId, Long orgId, Integer candidateState, String updatedDateRange, String candidateType, String isAssociate,String candidateFilterSkills,String availability,String candidateTypeFilter,String createdByFilter,User user) throws Exception;
 	
 	public Candidate getCandidateByCandidateIdAndOrgLocationId(Long candidateId, Long orgLocationId) throws Exception;
 	
@@ -77,7 +85,7 @@ public interface CandidateDao {
 	
 	public Candidate getCandidateById(Long candidateId) throws Exception;
 	
-	Long getCountOfAllCandidatesByCreatedUserAndOrglocationId(Long orgLocationId, User user, Date startDateUTC, Date endDateUTC) throws Exception;
+	BigInteger getCountOfAllCandidatesByCreatedUserAndOrglocationId(Long orgLocationId, User user, String startDateUTC, String endDateUTC,String isGlobalUser,Long orgId) throws Exception;
 	
 	Candidate getCandidateByUUID(String candidateUUID) throws Exception;
 	
@@ -103,7 +111,7 @@ public interface CandidateDao {
 	
 	public List<Candidate> getCandidatesListByOrgLocationIdAndOrgRelationId(Long orgLocationId, Long orgRelationId) throws Exception;
 	
-	public ResponseList<CandidateDTO>  getRequestedCandidatesList(CandidateDTO candidateDTO,Long orgLocationsId, List<Long> roleIds, String resourceType, List<Long> associatesIds, Long projectId) throws Exception;
+	public ResponseList<CandidateDTO>  getRequestedCandidatesList(CandidateDTO candidateDTO,Long orgLocationsId, List<Long> roleIds,List<Long> teamIds, String resourceType, List<Long> associatesIds, Long projectId) throws Exception;
 	
 	public Candidate checkCandidateIdNumberInDatebase(Long orgLocationId);
 	
@@ -116,4 +124,28 @@ public interface CandidateDao {
 	public List<CandidateImportLog> getCandidateImportLog(String uploadId, boolean all);
 	
 	public Candidate getCandidateByShortURL(String shortURL);
+	
+	List<Candidate> getAllAssociatesByOrglocationIdAndEmploymentType(Long orgLocationId, String employeementType) throws Exception;
+	
+	public ResponseList<CandidateDTO> getLocationCandidatesList(CandidateDTO candidateDTO,Long orgLocationsId,List<Long> roleIds,List<Long> associatesIds,Long loginOrgLocationId)throws Exception ;
+	
+	Candidate getCandidateByEmailAndOrgLocationId(String email, Long orgLocationId) throws Exception;
+	
+	public Candidate getCandidateByEmail(String email) throws Exception;
+
+	public CandidateIdendities getCandidateIdentitiesNumberByCandidateId(Long id, String status);
+
+	Candidate getAllActiveCandidatesByLocationEmail(String email, Long orgLocationId);
+	
+	List<RecruiterReportCandidateCountView> getCandidateCountsCreatedUserList(Long orgLocationId, List<String> userCodesList ,String startDateUTC, String endDateUTC,String isGlobalUser,Long orgId) throws Exception ;
+	
+	public ResponseList<SubmissionCandidateListView> getSubmissionCandidateListView(CandidateDTO candidateDTO,OrgLocations orgLcoations) throws Exception;
+	
+	public CandidateDTO getCandidateDTOByCandidateId(Long candidateId) throws Exception;
+	
+	public List<CandidateDTO> getCandidateListForAddApplicant(OrgLocations orgLcoations,Long requirementId,String skills,String candidateDetails) throws Exception;
+
+	List<Map<String, BigInteger>> getAllActiveCandidatesByLocationName(Long orgLocationId, String name);
+	
+	public List<CandidateDTO> getAllActiveCandidatesListByOrglocationId(Long orgLocationId, String employeementType) throws Exception;
 }

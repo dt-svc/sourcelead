@@ -5,105 +5,108 @@
 
 
 <div id="orglocationSignatory" class="tab-pane fade form-horizontal">
-  <div class="accountsettings-tab">
-	<div class="tab-content panel-body">
+  <div class="accountsettings-tab noMar">
+	<div class="tab-content panel-body noPad noBor">
+	
+		 <div class="positionRelative reportHead clearfix">
+		<ul class="pull-right list-unstyled list-inline">
+			<li><a class="action newAdBtn mr5" href="javascript:void(0)" onclick="addOrgLocationSignatoryDiv()">+ Signatory</a></li>
+		</ul>
+		</div>
 		
+		<!--  Table starts -->
+		<div class="require_wrap_table datatable_filter">
+		<div id="orgLocationSignatoriesListDiv"></div>
+        </div>
+		<div class="clearfix"></div>
+		<!--  Table starts ends -->
+	
+		
+		<div id="signatoryFormDiv" class="popupWrap popupWrapFixed">
 		<form:form class="login-form clearfix"  id="signatory_form"  name="signatory_form" method="post" > 
-			  	 <div class="comLogContent">
+			  <div class="popupHead">Legal Signer Details <i class="closePop pull-right popClose" onclick="signatoryFormDiv();"></i></div>
 			  	 <div id="loading"></div> 
-			  	 <div class="side_mask"></div>
 			  	 <div id="popUp"></div> 
+			  	 
+			  	 <div class="popupContent"> 
 				     <div class="compSignatoryHelpMes">
 						Person who can sign legal binding documents on behalf of your organisation.
 					</div>
 				    
 				      <c:if test="${!empty signatory}">
-				      <div class="clearfix"> 
-					      <h4>Legal Signer Details</h4>
-					      <div class="col-md-6">
+				      
+					      <div class="clearfix mb">
 						      <div class="form-group clearfix">
 						         <c:if test="${!empty signatory.userId.lastName}">
-						         <label class="col-md-3 noPad">User Name : </label> ${signatory.userId.firstName} ${signatory.userId.lastName}
+						         <label class="noPad">User Name : </label> ${signatory.userId.firstName} ${signatory.userId.lastName}
 						         </c:if>
 						         
 						         <c:if test="${empty signatory.userId.lastName}">
-						         <label class="col-md-3 noPad">User Name : </label> ${signatory.userId.firstName} 
+						         <label class="noPad">User Name : </label> ${signatory.userId.firstName} 
 						         </c:if>
 						      </div>
 					      </div>
 					      
-					      <div class="col-md-6">
+					      <div class="clearfix mb">
 						      <div class="form-group clearfix">
-						         <label class="col-md-3 noPad">Email : </label> ${signatory.userId.email}
+						         <label class="noPad">Email : </label> ${signatory.userId.email}
 						      </div>
 					      </div>
 					      
-					      <div class="col-md-6">
+					      <div class="clearfix mb">
 						      <div class="form-group clearfix">
-						         <label class="col-md-3 noPad">Role : </label> ${role}
+						         <label class="noPad">Role : </label> ${role}
 						      </div>
 					      </div>
 					      
 					      <c:if test="${!empty signatory.userId.mobilePhone}">
-					      <div class="col-md-6">
+					      <div class="clearfix mb">
 						      <div class="form-group clearfix">
-						         <label class="col-md-3 noPad">Phone Number : </label> ${signatory.userId.mobilePhone}
+						         <label class="noPad">Phone Number : </label> ${signatory.userId.mobilePhone}
 						      </div>
 					      </div>
 					      </c:if>
 					      
 					      <c:if test="${!empty signatory.userId.ssn}">
-					      <div class="col-md-6">
+					      <div class="clearfix mb">
 						      <div class="form-group clearfix">
-						         <label class="col-md-3 noPad">SSN : </label> ${signatory.userId.ssn}
+						         <label class="noPad">SSN : </label> ${signatory.userId.ssn}
 						      </div>
 					      </div>
 					      </c:if>
 					      
 					      <c:if test="${!empty signatory.designationOtherType}">
-					      <div class="col-md-6">
+					      <div class="clearfix mb">
 						      <div class="form-group clearfix">
-						         <label class="col-md-3 noPad">Designation : </label> ${signatory.designationOtherType}
+						         <label class="noPad">Designation : </label> ${signatory.designationOtherType}
 						      </div>
 					      </div>
 					      </c:if>
 					      
 					      <c:if test="${!empty signatory.designation && empty signatory.designationOtherType}">
-					      <div class="col-md-6">
+					      <div class="clearfix mb">
 						      <div class="form-group clearfix">
-						         <label class="col-md-3 noPad">Designation : </label> ${signatory.designation}
+						         <label class="noPad">Designation : </label> ${signatory.designation}
 						      </div>
 					      </div>
 					      </c:if>
 					      
-				      </div>
-				       <div class="clearfix mt10"></div> 
-				     </c:if> 
 				      
-				      <div class="clearfix"> 
-					     		<div class="form-group clearfix">
-									<div class="col-md-8 padding_right">
-				                <input id="legalSigner" name="legalSigner"  class="checkbox-custom"  value="Y" onclick="validateLegalSigner();"  type="checkbox">
-		              			<label for="legalSigner" class="checkbox-custom-label">&nbsp;Make me as legal signer</label>
-								</div>
-					     </div> 
-				     </div>
-				     
+				      
+				     </c:if> 
+
 					     <div id="legalUserFormDiv"></div>
-						     
-						<div class="clearfix">
-							<div class="pull-right">
-							<input type="submit" value="Save" id="save_signatory_button" class="btn btn-primary mr">
-							</div>
+					     </div>
+						<div class="popupFoot text-right">
+							<input type="button" value="Save" id="save_signatory_button" onclick="saveSignatory();" class="slBtn md colorBtn">
+							<button type="button" class="slBtn md popClose" onClick="signatoryFormDiv();">Cancel</button>
 						</div>
+				</form:form>
 				     </div>
-				     
-				  
-	  </form:form>
-		
+	 
+		</div>
 	</div>
   </div>
-</div>
 
 
 <script type="text/javascript">
@@ -189,17 +192,17 @@
   <script>
   function validateLegalSigner(){
 	  
-	  
+	  getAllSignatory();
 	  if('${signatoryUser}' == '${SourceLeadWeb_user.id}'){
 		  $("#legalSigner").attr("checked", "checked");
 
 	  } 
 	  
-	  if (document.getElementById('legalSigner').checked) {
-		  $("#legalUserFormDiv").empty();
-	  }else{
-		  loadLeagelSignerForm();
-	  }
+// 	  if (document.getElementById('legalSigner').checked) {
+// 		  $("#legalUserFormDiv").empty();
+// 	  }else{
+		  
+// 	  }
   }
   </script>
  
@@ -212,116 +215,126 @@
 <script>
 function loadLeagelSignerForm(){
 	$("#legalUserFormDiv").empty();
-	
 	var result = "";
-	result = result +"<div class='clearfix row'>";
-	result = result +"<h4 class='col-md-8 padding_left'>Create New Signer</h4>";
-	result = result +"<div class='col-md-6'>";
-	result = result +"<div class='form-group clearfix' id='firstNameDiv'>";
-	result = result +"<label class='col-md-4'>First Name<span class='text-danger'>&nbsp;*</span></label>";
-	result = result +"<div class='col-md-8 padding_right'>";
-	result = result +"<input class='form-control' type='text' name='firstName' id='firstName' field-name='First Name'  pattern='[A-Za-z\s]*' maxlength='100' data-validation='required validate_Space validate_AlphaNumber validate_length length1-100'>";
+	result = result +"<div class='popHeadTwo'>Create New Signer</div>";
+	
+	result = result +"<div class='clearfix mb'>";
+	result = result +"<div class='clearfix' id='associateDiv'>";
+	result = result +"<label class='noPad'>Associate<span class='text-danger'>&nbsp;*</span></label>";
+	
+	result = result +"<div class='clearfix' id='editSignerDiv' style='display:block'>";
+	result = result +"<select class='chosen-select form-control' type='text' name='associateId' id='signatoryAssociate' field-name='Associate' onchange='validateAssociate();' data-validation='required'>";
+	result = result +"</select>";
+	result = result +"<input type='hidden' name='uuid' id='signatoryUUID' value=''>";
+	result = result +"<input type='hidden' name='signatoryFromType' id='signatoryFromType' value='orgSettings'>";
 	result = result +"</div>";
+	
+	result = result +"<div class='clearfix' id='showSignerDiv' style='display:none'>";
+	result = result +"<input class='form-control' type='text' id='showAssociateName' readonly>";
+	result = result +"<input type='hidden'  id='showAssociateId' value=''>";
+	result = result +"</div>";
+	
 	result = result +"</div>";
 	result = result +"</div>";
 	
-	result = result +"<div class='col-md-6'>";
-	result = result +"<div class='form-group clearfix'>";
-	result = result +"<label class='col-md-4'>Last Name</label>";
-	result = result +"<div class='col-md-8 padding_right'>";
-	result = result +"<input class='form-control' type='text' name='lastName' id='lastName' field-name='Last Name' data-validation-optional='true' pattern='[A-Za-z\s]*' maxlength='100' data-validation='validate_Space validate_AlphaNumber validate_length length1-100'>";
-	result = result +"</div>";
-	result = result +"</div>";
-	result = result +"</div>";
-	
-	result = result +"<div class='col-md-6' id='EmailIdDiv'>";
-	result = result +"<div class='form-group clearfix'>";
-	result = result +"<label class='col-md-4'>Email<span class='text-danger'>&nbsp;*</span></label>";
-	result = result +"<div class='col-md-8 padding_right'>";
-	result = result +"<input class='form-control' type='text' name='email' id='EmailId'  field-name='Email' data-validation='required validate_Space validate_length length2-100 validate_email'  onblur='getUserByUserEmail(); validateUserEmail();' onKeyUp='validateUserEmail();'>";
-	result = result +"</div>";
-	result = result +"</div>";
-	result = result +"</div>";
-	
-	
-	result = result +"<div class='col-md-6'>";
-	result = result +"<div class='form-group clearfix'>";
-	result = result +"<label class='col-md-4'>Phone Number</label>";
-	result = result +"<div class='col-md-8 padding_right'>";
-	result = result +"<input class='form-control' type='text' name='phoneNumber' id='phone'  field-name='Phone Number' data-validation='validate_Space validate_phone validate_length length9-20' data-validation-optional='true'>";
-	result = result +"</div>";
-	result = result +"</div>";
-	result = result +"</div>";
-	
-	
-	result = result +"<div class='col-md-6'>";
-	result = result +"<div class='form-group clearfix'>";
-	result = result +"<label class='col-md-4'>SSN<span class='text-danger'>&nbsp;*</span></label>";
-	result = result +"<div class='col-md-8 padding_right'>";
-	result = result +"<input class='form-control' type='text' name='ssn' id='ssn' field-name='SSN'  maxlength='9' data-validation='required validate_Space validate_int validate_length length9-9'>";
-	result = result +"</div>";
-	result = result +"</div>";
-	result = result +"</div>";
-	
-	
-	result = result +"<div class='col-md-6'>";
-	result = result +"<div class='form-group clearfix'>";
-	result = result +"<label class='col-md-4'>Role<span class='text-danger'>&nbsp;*</span></label>";
-	result = result +"<div class='col-md-8 padding_right'>";
-	result = result +"<select class='chosen-select form-control' id='role' name='roleType' field-name='Role' data-validation='required'>";
-	result = result +"<option value=''>--Select Role--</option>";
-		<c:forEach var="option" items="${rolesList}">
-		 result = result +'<option value="${option.id}">${option.displayName}</option>';
-		</c:forEach>
+	result = result +"<div class='clearfix mb'>";
+	result = result +"<div class='clearfix' id='authorizedTypeDiv'>";
+	result = result +"<label class='noPad'>Authorized Type<span class='text-danger'>&nbsp;*</span></label>";
+	result = result +"<div class='clearfix'>";
+	result = result +"<select multiple class='chosen-select form-control' type='text' name='authorizedType' placeholder='sdsd' id='authorizedType' field-name='Authorised Type' data-validation='required'>";
+	result = result +'<option value="OfferLetters">Offer Letters</option>';
+	result = result +'<option value="Contracts">Contracts</option>';
+	result = result +"<option value='Cheques'>Cheque's</option>";
 	result = result +"</select>";
 	result = result +"</div>";
 	result = result +"</div>";
 	result = result +"</div>";
 	
-	result = result +"<div class='col-md-6'>";
-	result = result +"<div class='form-group clearfix'>";
-	result = result +"<label class='col-md-4'>Designation</label>";
-	result = result +"<div class='col-md-8 padding_right'>";
-	result = result +"<input class='form-control' type='text' name='designationType' id='designationType' field-name='Designation'pattern='[A-Za-z\s]*' data-validation-optional='true'  data-validation='validate_Space validate_AlphaNumber validate_length length1-100'>";
+	result = result +"<div class='clearfix mb'>";
+	result = result +"<div class='clearfix' id='firstNameDiv'>";
+	result = result +"<label class='noPad'>Authorised Amount</label>";
+	result = result +"<div class='clearfix'>";
+	result = result +"<input class='form-control' type='text' name='authorizedAmount' id='signatoryAuthorisedAmount' field-name='Authorised Amount'  maxlength='10' data-validation-optional='true' data-validation=' validate_int validate_length length1-10'>";
 	result = result +"</div>";
 	result = result +"</div>";
 	result = result +"</div>";
 	
-	
-	/* result = result +"<div class='col-md-6'>";
-	result = result +"<div class='form-group clearfix'>";
-	result = result +"<label class='col-md-4'>Designation</label>";
-	result = result +"<div class='col-md-8 padding_right'>";
-	result = result +"<select class='chosen-select form-control' id='designation' name='designationType' field-name='Designation' data-validation-optional='true' onchange='getDesignationType()'>";
-	result = result +"<option value=''>--Select Designation--</option>";
-	result = result +'<option value="CEO">CEO</option>';
-	result = result +'<option value="CFO">CFO</option>';
-	result = result +'<option value="COO">COO</option>';
-	result = result +'<option value="President">President</option>';
-	result = result +'<option value="Other">Other</option>';
-	result = result +"</select>";
-	result = result +"</div>";
-	result = result +"</div>";
-	result = result +"</div>"; */
-	
-	
-	
-	result = result +"<div class='col-md-6' id='designationOtherDiv'  style='display:none'>";
-	result = result +"<div class='form-group clearfix'>";
-	result = result +"<label class='col-md-4'>Designation Other Type<span class='text-danger'>&nbsp;*</span></label>";
-	result = result +"<div class='col-md-8 padding_right'>";
-	result = result +"<input class='form-control' type='text' name='designationOtherType' id='designationOtherType' field-name='Designation Other Type' data-validation-optional='true'>";
-	result = result +"</div>";
-	result = result +"</div>";
-	result = result +"</div>";
-	
-	
-	result = result +"</div>";
 	
 	$("#legalUserFormDiv").append(result);
-	
+	getAssociatesForSignatory();
+	var config = {
+			  '.chosen-select'           : {},
+			  '.chosen-select-deselect'  : {allow_single_deselect:true},
+			  '.chosen-select-no-single' : {disable_search_threshold:10},
+			  '.chosen-select-no-results': {no_results_text:'Oops, nothing found!'},
+			  '.chosen-select-width'     : {width:"95%"}
+			}
+  	   for (var selector in config) {
+			  $(selector).chosen(config[selector]);
+			}
+			$('.chosen-select').each(function() {
+			var $this = $(this);
+			$this.next().css({'width': '100%'});
+			})
 	
 }
+
+function getAssociatesForSignatory(){
+	$.get( sourceleadUrl+ "/getAssociatesForSignatory?${_csrf.parameterName}=${_csrf.token}", function(data) {
+        var output = "";
+		output = output + "<option  value=''>-- Select Associate --</option>";
+     	   for(var i=0; i<data.length;i++){
+     		  var opt = data[i];
+     		  if(opt.lastName != null && opt.lastName != '' && opt.lastName != 'undefined'){
+     			 output = output + "<option value='" +opt.userId+ "'>"+opt.firstName+" "+opt.lastName+"</option>"; 
+     		  }else{
+     			 output = output + "<option value='" +opt.userId+ "'>"+opt.firstName+"</option>";
+     		  }
+ 				
+     	   }
+     	   $("#signatoryAssociate").empty();
+     	  $("#signatoryAssociate").append(output);
+     	  $("#signatoryAssociate").trigger("chosen:updated");
+     	
+     }); 
+}
+
+function validateAssociate()
+{
+	
+	 var userId = document.getElementById("signatoryAssociate").value; 
+	 var id = document.getElementById("signatoryUUID").value; 
+	
+	 
+	 var sourceleadUrl ='${sourceleadUrl}';
+		
+		 if(userId != null &&  userId != "" &&  userId != 'undefined'){
+			 $("#save_signatory_button").attr("disabled", "disabled");
+			 
+			 $.ajax({
+			    	type: "POST",
+			        url: sourceleadUrl+"/validateAssociate?"+tokenParamName+"="+tokenValue+"&userId="+userId+"&id="+id,
+			        success: function(data) {
+			        
+			        	if(data == true){
+			        		  $('#associateDiv').find('p.jquery_form_error_message').remove();
+							  $("#signatoryAssociate_chosen").after("<p class='jquery_form_error_message'>User with this name is already Existed</span>");
+							 // document.getElementById("signatoryAssociate").setAttribute('record-exist','yes');
+							 // document.getElementById("signatoryAssociate").setAttribute('record-exist-errorMsg','User with this name is Already Existed'); 
+			        	}
+			        	else{
+			        		 $('#signatoryAssociate_chosen').removeAttr( "record-exist record-exist-errormsg");
+			        		 $('#associateDiv').find('p.jquery_form_error_message').remove(); 
+			        		 $("#save_signatory_button" ).addClass('us-btn').val('Save');
+	                         $("#save_signatory_button").removeAttr("disabled");
+			        	}
+			        },
+			    });
+		 }
+	
+	
+ }
+
 </script>
 
 
@@ -344,44 +357,48 @@ function getDesignationType(){
 
 
 <script type="text/javascript">
-$('body').on('submit', '#signatory_form', function(e){
-	
+function saveSignatory(){
+	var associate = $("#showAssociateId").val();
+	if(associate !=null && associate!="" && associate!='undefined')
+		{
+		var associateId=associate;
+		}else{
+			var associateId=$("#signatoryAssociate").val();
+		}
 	var validationSettings = {
 	        errorMessagePosition : 'element',
 	        borderColorOnError : '',
 			scrollToTopOnError : true,
 			dateFormat : 'yyyy/mm/dd' 
-         }; 
-	
-	if ($('#signatory_form').validate(false, validationSettings)){
-      e.preventDefault();
+         }
       var sourceleadUrl ='${sourceleadUrl}';
-      var formData = getFormData("signatory_form");
-      
-      if (document.getElementById('legalSigner').checked) {
-    	  saveOrgLocationSignatory();
-      }else{
-        var isMailSent = "Y";
-   	 	 $("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
-	       $.ajax({
-		    	type: "POST",
-		    	data : formData,
-		    	  url: sourceleadUrl+"/createUser?${_csrf.parameterName}=${_csrf.token}&isMailSent="+isMailSent,		
-		        success: function(result) {
-		        	
-		        	saveOrgLocationSignatory(formData);
-		        },
-		    });   
-		    
-        saveOrgLocationSignatory(formData);
-      }
+  	  var formData = $($('#signatory_form')[0]).serialize();
+  	$.post(sourceleadUrl+"/saveOrgLocationSignatory?"+tokenParamName+"="+tokenValue+"&associateId="+associateId,formData, function(result) {
+  		if (result && (result.response === "INVALID_DATA" || result.response === "INVALID_USER")) {
+  		    showError(result.responseMessage);
+  		    $("#loading").removeAttr('style');
+  		}
+    	else if(result.response === "AWKWARD"){
+    		 location.href = "/errorPage";
+    	}
+    	else if(result.response === "SUCCESS"){
+    		$("#loading").removeAttr('style');
+    		getAllSignatory();
+			signatoryFormDiv();
+		}
+    	else if (result.indexOf('Sign In') !== -1) {
+				location.replace(sourceleadUrl);
+			} else {
+			    showError("Operation failed, please try again");
+			    $("#loading").removeAttr('style');
+			}
+  		
+	}); 
+    	  //saveOrgLocationSignatory(formData);
+    
 		    
       return true; 
-    }
-    else{
-    	return false;	
-       }
-  });
+}
 
 	$('body').on('blur', '#signatory_form', function() {
 		$("#signatory_form").showHelpOnFocus();
@@ -412,3 +429,165 @@ $('body').on('submit', '#signatory_form', function(e){
 		    });
   }
   </script>
+  
+  <script>
+  function getAllSignatory(){
+	  var orgLocationId = '${SourceLeadWeb_orgLocationId}';
+	  var sourceleadUrl = '${sourceleadUrl}';
+	  $.get( sourceleadUrl+ "/getAllSignatoriesByLocationId?${_csrf.parameterName}=${_csrf.token}", function(data) {
+		  var result = "";
+	    	 result += '<table id="orgLocationSignatoriesList" class="display" cellspacing="0" width="100%" >';
+	         result += '<thead>';
+	         result += '  <tr>';
+	         result += '    <th>Name</th>';
+	         result += '    <th>Email</th>';
+	         result += '    <th>Role</th>';
+	         result += '    <th>SSN</th>';
+	         result += '    <th>Upto</th>';
+	         result += '    <th>Action</th>';
+	         result += '  </tr>';
+	         result += '</thead>';
+	         result += '<tbody>';
+	         
+	    	 for(i=0;i < data.length;i++){
+	    		 var report = data[i];
+	    		 result += '<tr>';
+		         result += '    <td>';
+		         if(report.lastName != null && report.lastName != '' && report.lastName != 'undefined'){
+		        	 result += '      <div class="proj_show tbldata-dotdot-big">';
+		        	 result += '          <div class="pull-left tbldata-dotdot-me" title="'+report.firstName+' '+report.lastName+'" >'+report.firstName+' '+report.lastName+'</div>';
+			         result += '      </div>';
+		         } else{
+		        	 result += '      <div class="proj_show tbldata-dotdot-big">';
+		        	 result += '          <div class="pull-left tbldata-dotdot-me" title="'+report.firstName+'" >'+report.firstName+'</div>';
+			         result += '      </div>';
+		         }
+		         result += '    </td>';
+		         result += '    <td>';
+		         if(report.email != null && report.email != '' && report.email != 'undefined'){
+		        	 result += '        <div title="'+report.email+'" class="tblminwidth-75">'+report.email+'</div>';
+		         }
+		         result += '    </td>';
+		         result += '    <td>';
+		         if(report.roleType != null && report.roleType != '' && report.roleType != 'undefined'){
+		        	 result += '      <div title="'+report.roleType+'" class="tbldata-dotdot-100">'+report.roleType+'</div>'; 
+		         }
+		         result += '    </td>';
+		         result += '    <td>';
+		         if(report.ssn != null && report.ssn != '' && report.ssn != 'undefined'){
+		        	 result += '        <div title="'+report.ssn+'" class="tblminwidth-75">'+report.ssn+'</div>'; 
+		         }else{
+		        	 result += '        <div class="tblminwidth-75">---</div>'; 
+		         }
+		         result += '    </td>';
+		         result += '    <td>';
+		         if(report.authorizedAmount != null && report.authorizedAmount != '' && report.authorizedAmount != 'undefined'){
+	        		 result += '        <div title="'+report.authorizedAmount+'" class="tblminwidth-75">'+report.authorizedAmount+'</div>'; 
+		         }else{
+		        	 result += '        <div class="tblminwidth-75"> --- </div>';
+		         }
+		         result += '    </td>';
+		         result += '    <td>';
+		         result += '        <div class="tblminwidth-100">';
+		         result += '            <span title="Edit" class="paddingRight"><a onclick="editSignatory(\''+report.uuid+'\');"><i class="fa fa-pencil text-primary cursorPointer"></i></a></span> ';
+		         if(report.status == 1){
+		        	 result += '<label class="switch"><input type="checkbox" checked onclick="deactivateSignatory(\''+report.uuid+'\',\'inactive\');"> <div class="slider round"></div> </label>';
+		         }else{
+		        	 result += '<label class="switch"><input type="checkbox" onclick="deactivateSignatory(\''+report.uuid+'\',\'active\');"> <div class="slider round"></div> </label>';
+		         }
+		         
+		         result += '        </div>';
+		         result += '    </td>';
+		         result += '  </tr>';
+	    	 }
+	    	
+	         result += '  </tbody>';
+    		 result += '</table> ';
+    		 $("#orgLocationSignatoriesListDiv").empty();
+    		 $("#orgLocationSignatoriesListDiv").append(result);
+    		 $("#loading").removeAttr('style');
+    		 signatoryPagination();
+	     }); 
+  }
+  
+  function signatoryPagination(){
+		$('#orgLocationSignatoriesList').DataTable({ 
+			"scrollCollapse": false,
+	    	"lengthMenu": [[10, 15, 20, -1], [10, 15, 20, "All"]],
+	    	"bLengthChange": true,
+	    	"bDestroy": true,
+	    	"ordering": true,
+	    	"oLanguage": {
+	     		"sSearch": "",
+	     		 "sZeroRecords": "", "sEmptyTable": ""
+	     	}
+	    });
+		$("#orgLocationSignatoriesList").wrap("<div class='overflow_Auto' style='width:100%;'></div>");  
+
+	}
+  </script>
+  
+  <script>
+  //addSignatoryDiv
+  function addOrgLocationSignatoryDiv(){
+	  $("#signatoryFormDiv").fadeIn(100);
+	  $(".mask").show();
+	  loadLeagelSignerForm();
+  }
+  function signatoryFormDiv(){
+	  $("#signatoryFormDiv").fadeOut(100);
+	  $(".mask").hide();  
+	  $('#signatory_form')[0].reset();
+	  $(".chosen-select").trigger("chosen:updated");
+	  $('signatory_form').validate().resetForm();
+  }
+  </script>
+  
+  <script>
+  function editSignatory(signatoryUUID){
+	  addOrgLocationSignatoryDiv();
+	  var sourceleadUrl = '${sourceleadUrl}';
+	  $.get( sourceleadUrl+ "/getSignatoriesByUUID?${_csrf.parameterName}=${_csrf.token}&uuid="+signatoryUUID, function(data) {
+		  if(data != null){
+			  $("#signatoryUUID").val(data.uuid);
+			  $("#signatoryAssociate").val(data.associateId);
+			  $("#signatoryAssociate").trigger("chosen:updated");
+			  $("#authorizedType").val(data.authorizedType);
+			  $("#authorizedType").trigger("chosen:updated");
+			  $("#signatoryAuthorisedAmount").val(data.authorizedAmount);
+			  document.getElementById("editSignerDiv").style.display="none";
+			  document.getElementById("showSignerDiv").style.display="block";
+			  $("#showAssociateName").val(data.firstName);
+			  $("#showAssociateId").val(data.associateId);
+			  
+		  }
+	  });
+  }
+  
+  function deactivateSignatory(signatoryUUID,status){
+	  
+	  $.post( sourceleadUrl+ "/deactivateSignatory?uuid="+signatoryUUID+"&status="+status, function(data) {
+		  if(data != "success"){
+			  getAllSignatory();
+		  }
+	  });
+  }
+  </script>
+  
+  <script type="text/javascript">
+			var config = {
+			  '.chosen-select'           : {},
+			  '.chosen-select-deselect'  : {allow_single_deselect:true},
+			  '.chosen-select-no-single' : {disable_search_threshold:10},
+			  '.chosen-select-no-results': {no_results_text:'Oops, nothing found!'},
+			  '.chosen-select-width'     : {width:"95%"}
+			}
+			for (var selector in config) {
+			  $(selector).chosen(config[selector]);
+			}
+			$('.chosen-select').each(function() {
+				var $this = $(this);
+				$this.next().css({'width': '100%'});
+				})
+
+</script>

@@ -8,7 +8,7 @@ public interface WhiteListIpAddressDao {
 
 	WhiteListIPAddress addWhiteListIps(WhiteListIPAddress whiteListIPAddress) throws Exception;
 
-	List<WhiteListIPAddress> getWhiteListIpsByLocationId(Long locationId);
+	List<WhiteListIPAddress> getWhiteListIpsByLocationId(Long locationId, Long whiteListIpId);
 
 	WhiteListIPAddress getWhiteListIpsById(Long whiteListIpId);
 

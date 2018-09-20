@@ -37,9 +37,24 @@ public class WebgeocitiesDaoImpl implements WebgeocitiesDao{
 		List<Webgeocities> citiesList = null;
 		if(stateCodes != null && !stateCodes.isEmpty()){
 			Query query= session.createQuery("from Webgeocities cities where cities.stateCode IN :stateCodes and cities.countryCode = :countryCode");
-			citiesList = query.setParameterList("stateCodes", stateCodes).setString("countryCode", countryCode).setCacheable(true).list();
+			citiesList = query.setParameterList("stateCodes", stateCodes).setString("countryCode", countryCode).list();
 		}
 		
+		return citiesList;
+	}
+
+
+
+	@SuppressWarnings("unchecked")
+	@Override
+	@Transactional(rollbackFor = { Exception.class })
+	public List<Webgeocities> getAllCitiesByCountryCode(String countryCode) throws Exception {
+		Session session = this.sessionFactory.getCurrentSession();
+		List<Webgeocities> citiesList = null;
+		if(countryCode != null && !countryCode.isEmpty()){
+			Query query= session.createQuery("from Webgeocities cities where cities.countryCode = :countryCode");
+			citiesList = query.setString("countryCode", countryCode).setCacheable(true).list();
+		}
 		return citiesList;
 	}
 

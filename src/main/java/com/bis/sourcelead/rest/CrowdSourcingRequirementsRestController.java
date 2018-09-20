@@ -1,10 +1,6 @@
 package com.bis.sourcelead.rest;
 
-import java.awt.image.BufferedImage;
-import java.io.ByteArrayInputStream;
 import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
 import java.io.Writer;
 import java.text.DateFormat;
 import java.text.ParseException;
@@ -20,21 +16,23 @@ import java.util.TimeZone;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import javax.imageio.ImageIO;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
 import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang.exception.ExceptionUtils;
 import org.codehaus.jackson.map.ObjectMapper;
 import org.elasticsearch.index.query.BoolQueryBuilder;
-import org.elasticsearch.index.query.MatchQueryBuilder;
+import org.elasticsearch.index.query.QueryBuilder;
 import org.elasticsearch.index.query.QueryBuilders;
 import org.elasticsearch.index.query.RangeQueryBuilder;
 import org.elasticsearch.search.SearchHit;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -50,18 +48,22 @@ import org.springframework.web.multipart.commons.CommonsMultipartFile;
 
 import com.bis.sourcelead.annotations.Validator;
 import com.bis.sourcelead.constants.Constants;
+import com.bis.sourcelead.dto.BlogCategoryDTO;
 import com.bis.sourcelead.dto.CandidateDTO;
 import com.bis.sourcelead.dto.ContactsGroupDTO;
 import com.bis.sourcelead.dto.CrowdSourcingUserBankAccountsDTO;
 import com.bis.sourcelead.dto.ReferContactsDTO;
 import com.bis.sourcelead.dto.RequirementDTO;
 import com.bis.sourcelead.dto.RequirementReferDTO;
+import com.bis.sourcelead.dto.Response;
 import com.bis.sourcelead.dto.ResponseList;
+import com.bis.sourcelead.dto.SourceleadBlogDTO;
 import com.bis.sourcelead.elk.index.CampaignIndex;
 import com.bis.sourcelead.elk.index.CandidateIndex;
 import com.bis.sourcelead.elk.index.RequirementIndex;
 import com.bis.sourcelead.elk.setup.RequirementElkUtil;
 import com.bis.sourcelead.elk.setup.SourceleadELKBaseIndexer;
+import com.bis.sourcelead.entity.BlogCategory;
 import com.bis.sourcelead.entity.Candidate;
 import com.bis.sourcelead.entity.ContactsGroup;
 import com.bis.sourcelead.entity.CrowdSourcingUserBankAccounts;
@@ -69,14 +71,15 @@ import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.ReferContacts;
 import com.bis.sourcelead.entity.Requirement;
 import com.bis.sourcelead.entity.RequirementInterviewHistory;
+import com.bis.sourcelead.entity.RequirementLocations;
 import com.bis.sourcelead.entity.RequirementOfferHistory;
 import com.bis.sourcelead.entity.RequirementRefer;
 import com.bis.sourcelead.entity.RequirementSubmission;
 import com.bis.sourcelead.entity.RequirementSubmissionHistory;
 import com.bis.sourcelead.entity.SavedJobs;
-import com.bis.sourcelead.entity.Team;
 import com.bis.sourcelead.entity.Timezone;
 import com.bis.sourcelead.entity.User;
+import com.bis.sourcelead.enums.Result;
 import com.bis.sourcelead.service.CandidateService;
 import com.bis.sourcelead.service.ContactsGroupService;
 import com.bis.sourcelead.service.CrowdSourcingUserBankAccountsService;
@@ -84,6 +87,7 @@ import com.bis.sourcelead.service.OrgLocationService;
 import com.bis.sourcelead.service.ReferContactsService;
 import com.bis.sourcelead.service.RequirementInterviewHistoryService;
 import com.bis.sourcelead.service.RequirementInterviewService;
+import com.bis.sourcelead.service.RequirementLocationsService;
 import com.bis.sourcelead.service.RequirementOfferHistoryService;
 import com.bis.sourcelead.service.RequirementReferService;
 import com.bis.sourcelead.service.RequirementService;
@@ -103,6 +107,8 @@ import com.thoughtworks.xstream.io.json.JsonWriter;
 @RestController
 @RequestMapping("/app")
 public class CrowdSourcingRequirementsRestController {
+	
+	private static final Logger logger = LoggerFactory.getLogger(CrowdSourcingRequirementsRestController.class);
 	
 	@Value("${sourceleadUrl}")
 	private String sourceleadUrl;
@@ -163,6 +169,9 @@ public class CrowdSourcingRequirementsRestController {
 	@Autowired
 	ContactsGroupService contactsGroupService;
 	
+	@Autowired
+	RequirementLocationsService requirementLocationsService;
+	
 	protected boolean isNullOrEmpty(String str) {
 		return (str == null || "".equals(str.trim()));
 	}
@@ -206,7 +215,26 @@ public class CrowdSourcingRequirementsRestController {
 	    if(isNullOrEmpty(requirementType) || (!isNullOrEmpty(requirementType) && !requirementType.equalsIgnoreCase("ReferredToMe") && !requirementType.equalsIgnoreCase("SavedJobs"))){
 	    
 	    BoolQueryBuilder boolQueryBuilder = new BoolQueryBuilder();
-	     if(requirementType.equalsIgnoreCase("OpenJobs")){
+	     
+	     if(requirementType.equalsIgnoreCase("allJobs")){
+	    	 BoolQueryBuilder allJobsBoolQueryBuilder = QueryBuilders.boolQuery();
+	    	  if(!loginUserRole.equalsIgnoreCase("ROLE_CROWDSOURCING_RECRUITER")){
+	    		  allJobsBoolQueryBuilder.should(QueryBuilders.matchQuery("isPublicJob", "Y"));
+	    	  }
+	    	 
+	    	 allJobsBoolQueryBuilder.should(QueryBuilders.matchQuery("isCrowdSourcingJob", "Y"));
+	    	 boolQueryBuilder.must(allJobsBoolQueryBuilder);
+	    	 
+	    	 boolQueryBuilder.mustNot(QueryBuilders.matchQuery("appliedProfessionals", user.getId()));
+	    	 List<RequirementRefer> referList = requirementReferService.getLoginUserReferToMeListByUserId(user.getId());
+	    	 if(null != referList && referList.size() > 0){
+	    		 for(RequirementRefer refer : referList){
+	    			 boolQueryBuilder.mustNot(QueryBuilders.matchQuery("requirementId", refer.getRequirementId().getId()));
+	    		 }
+	    	 }
+	     }
+	    
+	    if(requirementType.equalsIgnoreCase("OpenJobs")){
 	    	 boolQueryBuilder.must(QueryBuilders.matchQuery("isPublicJob", "Y"));
 	    	 boolQueryBuilder.mustNot(QueryBuilders.matchQuery("appliedProfessionals", user.getId()));
 	    	 List<RequirementRefer> referList = requirementReferService.getLoginUserReferToMeListByUserId(user.getId());
@@ -319,8 +347,12 @@ public class CrowdSourcingRequirementsRestController {
 		 					boolean flag = userId.contains(user.getId());
 		 					if(flag == true && loginUserRole.equalsIgnoreCase("ROLE_CROWDSOURCING_PROFESSIONAL")){
 		 						requirementIndex.setIsJobApplied(Constants.YES);
-		 						 RequirementSubmission submission = requirementSubmissionService.getRequirementSubmissionByRequirementIdAndCandidateId(requirementIndex.getRequirementId(), candidateId);
-		 		 	    		   if(null != submission){
+		 						RequirementSubmission submission = null;
+		 						 submission = requirementSubmissionService.getRequirementSubmissionByRequirementIdAndCandidateId(requirementIndex.getRequirementId(), candidateId);
+		 		 	    		 if(submission == null) {
+		 		 	    			submission = requirementSubmissionService.getRequirementVendorOrCrowdsourcingSubmissionByRequirementIdAndCandidateId(requirementIndex.getRequirementId(), candidateId);
+		 		 	    		 }
+		 						 if(null != submission){
 		 		 	    			  requirementIndex.setSubmissionId(submission.getId());
 		 		 	    		   }
 		 					}else{
@@ -334,8 +366,13 @@ public class CrowdSourcingRequirementsRestController {
 	 	    	   if (requirementType.equalsIgnoreCase("AppliedJobs")){
 	 	    		  if(!isNullOrEmpty(loginUserRole)){
 	 		    		 if(loginUserRole.equalsIgnoreCase("ROLE_CROWDSOURCING_PROFESSIONAL")){
-	 		    			 RequirementSubmission submission = requirementSubmissionService.getRequirementSubmissionByRequirementIdAndCandidateId(requirementIndex.getRequirementId(), candidateId);
-	 		 	    		   if(null != submission){
+	 		    			 RequirementSubmission submission = null;
+	 		    			 submission = requirementSubmissionService.getRequirementSubmissionByRequirementIdAndCandidateId(requirementIndex.getRequirementId(), candidateId);
+	 		    			 if(submission == null) {
+		 		 	    			submission = requirementSubmissionService.getRequirementVendorOrCrowdsourcingSubmissionByRequirementIdAndCandidateId(requirementIndex.getRequirementId(), candidateId);
+		 		 	    		 }
+	 		    			 
+	 		    			 if(null != submission){
 	 		 	    			  requirementIndex.setRequirementAppliedDate(commonUtil.dateStrFromOrgDateFormatter(orgLocations.getDateFormat(),submission.getCreatedDate()));
 	 		 	    			  requirementIndex.setSubmissionId(submission.getId());
 	 		 	    		   }
@@ -367,6 +404,15 @@ public class CrowdSourcingRequirementsRestController {
 	 	    	    }
 	 	    	    
 	 	    	    requirementIndex.setNoOfSearchHits(searchHits.length);
+	 	    	    List<String> requirementLocationsList = new ArrayList<>();
+	 	    	    List<RequirementLocations> locationsList = requirementLocationsService.getRequirementLocationsListByRequirementId(requirementIndex.getRequirementId());
+	 	    	    if(locationsList != null && !locationsList.isEmpty()) {
+	 	    	    	for(RequirementLocations locations : locationsList) {
+	 	    	    		requirementLocationsList.add(locations.getLocation());
+	 	    	    	}
+	 	    	    }
+	 	    	    requirementIndex.setLocationsList(requirementLocationsList);
+	 	    	    
 	 	    	    requirementList.add(requirementIndex);
 	 	    	}
 	 	    }
@@ -389,8 +435,12 @@ public class CrowdSourcingRequirementsRestController {
     					 requirementIndex.setPostedOrg(refer.getRequirementId().getPostedOrgName());
     					 requirementIndex.setJobType(refer.getRequirementId().getJobType());
     					 requirementIndex.setJobId(refer.getRequirementId().getJobId());
-    					 requirementIndex.setMinExperience(refer.getRequirementId().getMinExp());
-    					 requirementIndex.setMaxExperience(refer.getRequirementId().getMaxExp());
+    					 if(StringUtils.isNotEmpty(refer.getRequirementId().getMinExp())) {
+    						 requirementIndex.setMinExperience(Float.parseFloat(refer.getRequirementId().getMinExp()));
+    					 }
+    					 if(StringUtils.isNotEmpty(refer.getRequirementId().getMaxExp())) {
+    						 requirementIndex.setMaxExperience(Float.parseFloat(refer.getRequirementId().getMaxExp())); 
+    					 }
     					 requirementIndex.setCountry(refer.getRequirementId().getCountry());
     					 requirementIndex.setState(refer.getRequirementId().getState());
     					 requirementIndex.setCity(refer.getRequirementId().getCity());
@@ -419,8 +469,12 @@ public class CrowdSourcingRequirementsRestController {
     		 					boolean flag = userId.contains(user.getId());
     		 					if(flag == true){
     		 						requirementIndex.setIsJobApplied(Constants.YES);
-    		 						 RequirementSubmission submission = requirementSubmissionService.getRequirementSubmissionByRequirementIdAndCandidateId(requirementIndex.getRequirementId(), candidateId);
-	  		 		 	    		   if(null != submission){
+    		 						RequirementSubmission submission = null;
+    		 						 submission = requirementSubmissionService.getRequirementSubmissionByRequirementIdAndCandidateId(requirementIndex.getRequirementId(), candidateId);
+    		 						 if(submission == null) {
+    			 		 	    			submission = requirementSubmissionService.getRequirementVendorOrCrowdsourcingSubmissionByRequirementIdAndCandidateId(requirementIndex.getRequirementId(), candidateId);
+    			 		 	    		 } 
+    		 						 if(null != submission){
 	  		 		 	    			  requirementIndex.setSubmissionId(submission.getId());
 	  		 		 	    		   }
     		 					}else{
@@ -465,8 +519,17 @@ public class CrowdSourcingRequirementsRestController {
 			 	    	    }else{
 			 	    	    	requirementIndex.setIsJobSaved(Constants.NO);
 			 	    	    }
+			 	    	    
+			 	    	    List<String> requirementLocationsList = new ArrayList<>();
+			 	    	    List<RequirementLocations> locationsList = requirementLocationsService.getRequirementLocationsListByRequirementId(refer.getRequirementId().getId());
+			 	    	    if(locationsList != null && !locationsList.isEmpty()) {
+			 	    	    	for(RequirementLocations locations : locationsList) {
+			 	    	    		requirementLocationsList.add(locations.getLocation());
+			 	    	    	}
+			 	    	    }
+			 	    	    requirementIndex.setLocationsList(requirementLocationsList);
 						  
-    					  requirementList.add(requirementIndex);
+    					    requirementList.add(requirementIndex);
 	    			 } 
     			 }else{
     				 isELKSearchEnable = false;
@@ -490,8 +553,12 @@ public class CrowdSourcingRequirementsRestController {
     					 requirementIndex.setPostedOrg(savedJobs.getRequirementId().getPostedOrgName());
     					 requirementIndex.setJobType(savedJobs.getRequirementId().getJobType());
     					 requirementIndex.setJobId(savedJobs.getRequirementId().getJobId());
-    					 requirementIndex.setMinExperience(savedJobs.getRequirementId().getMinExp());
-    					 requirementIndex.setMaxExperience(savedJobs.getRequirementId().getMaxExp());
+    					 if(StringUtils.isNotEmpty(savedJobs.getRequirementId().getMinExp())) {
+    						 requirementIndex.setMinExperience(Float.parseFloat(savedJobs.getRequirementId().getMinExp()));
+    					 }
+    					 if(StringUtils.isNotEmpty(savedJobs.getRequirementId().getMaxExp())) {
+    						 requirementIndex.setMaxExperience(Float.parseFloat(savedJobs.getRequirementId().getMaxExp()));
+    					 }
     					 requirementIndex.setCountry(savedJobs.getRequirementId().getCountry());
     					 requirementIndex.setState(savedJobs.getRequirementId().getState());
     					 requirementIndex.setCity(savedJobs.getRequirementId().getCity());
@@ -520,8 +587,14 @@ public class CrowdSourcingRequirementsRestController {
     		 					boolean flag = userId.contains(user.getId());
     		 					if(flag == true){
     		 						requirementIndex.setIsJobApplied(Constants.YES);
-    		 						 RequirementSubmission submission = requirementSubmissionService.getRequirementSubmissionByRequirementIdAndCandidateId(requirementIndex.getRequirementId(), candidateId);
-	  		 		 	    		   if(null != submission){
+    		 						RequirementSubmission submission = null;
+    		 						 submission = requirementSubmissionService.getRequirementSubmissionByRequirementIdAndCandidateId(requirementIndex.getRequirementId(), candidateId);
+	  		 		 	    		   
+    		 						 if(submission == null) {
+ 			 		 	    			submission = requirementSubmissionService.getRequirementVendorOrCrowdsourcingSubmissionByRequirementIdAndCandidateId(requirementIndex.getRequirementId(), candidateId);
+ 			 		 	    		 } 
+    		 						 
+    		 						 if(null != submission){
 	  		 		 	    			  requirementIndex.setSubmissionId(submission.getId());
 	  		 		 	    		   }
     		 					}else{
@@ -562,7 +635,17 @@ public class CrowdSourcingRequirementsRestController {
 						  requirementIndex.setRequirementUUID(savedJobs.getRequirementId().getRequirementUUID());
 						  requirementIndex.setIsJobSaved(Constants.YES);
 						  requirementIndex.setSavedJobUUID(savedJobs.getSavedJobUUID());
-    					  requirementList.add(requirementIndex);
+						  
+						  List<String> requirementLocationsList = new ArrayList<>();
+			 	    	    List<RequirementLocations> locationsList = requirementLocationsService.getRequirementLocationsListByRequirementId(savedJobs.getRequirementId().getId());
+			 	    	    if(locationsList != null && !locationsList.isEmpty()) {
+			 	    	    	for(RequirementLocations locations : locationsList) {
+			 	    	    		requirementLocationsList.add(locations.getLocation());
+			 	    	    	}
+			 	    	    }
+			 	    	    requirementIndex.setLocationsList(requirementLocationsList);
+			 	    	    
+    					   requirementList.add(requirementIndex);
 	    			 }
 	    			 
 	    		 }else{
@@ -693,40 +776,62 @@ public class CrowdSourcingRequirementsRestController {
 
 	/*@PreAuthorize("hasRole('ROLE_CROWDSOURCING_REQUIREMENTS')")*/
 	@RequestMapping(value = "/saveBankAccountDetails", method = RequestMethod.POST)
-	public String saveBankAccountDetails(CrowdSourcingUserBankAccountsDTO csuBankAccountsDTO,HttpServletRequest request)
+	public Response<String> saveBankAccountDetails(CrowdSourcingUserBankAccountsDTO csuBankAccountsDTO,HttpServletRequest request)
 			throws Exception {
 
 
 		User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
 		CrowdSourcingUserBankAccounts bankAccount = null;
+		Response<String> response=new Response<>();
 		
-		bankAccount = crowdSourcingUserBankAccountsService.getUserBankAccountByUserId(user.getId());
 		
-		if(null == bankAccount){
-			bankAccount = new CrowdSourcingUserBankAccounts();
-			bankAccount.setAccountUUID(SourceLeadRandomCodeHelper.generateRandomUUID());
-			bankAccount.setCreatedDate(new Date());
+		try{
+			if(user != null){
+				if(Validator.validate(csuBankAccountsDTO)){
+					bankAccount = crowdSourcingUserBankAccountsService.getUserBankAccountByUserId(user.getId());	
+					if(null == bankAccount){
+						bankAccount = new CrowdSourcingUserBankAccounts();
+						bankAccount.setAccountUUID(SourceLeadRandomCodeHelper.generateRandomUUID());
+						bankAccount.setCreatedDate(new Date());
+					}
+					
+					bankAccount.setAccountUserId(user);
+					bankAccount.setAccountHolderName(csuBankAccountsDTO.getAccountHolderName());
+					bankAccount.setCountry(csuBankAccountsDTO.getCountry());
+					bankAccount.setCurrency(csuBankAccountsDTO.getCurrency());
+					
+					if(StringUtils.isNotBlank(csuBankAccountsDTO.getBankName())){
+					  bankAccount.setBankName(csuBankAccountsDTO.getBankName());
+					}
+					
+					bankAccount.setAccountNumber(csuBankAccountsDTO.getAccountNumber());
+					
+					bankAccount.setBankCode(csuBankAccountsDTO.getBankCode());
+					bankAccount.setCreatedBy(user.getUserCode());
+					bankAccount.setUpdatedBy(user.getUserCode());
+					bankAccount.setUpdatedDate(new Date());
+					
+					crowdSourcingUserBankAccountsService.addUserBankAccounts(bankAccount);
+					response.setResponse(Result.SUCCESS.name());
+					response.setResponseMessage(Result.SUCCESS.getValue());
+					
+				}else{
+					response.setObject("DataMissing");
+					response.setResponse(Result.INVALID_DATA.name());
+					response.setResponseMessage(Result.INVALID_DATA.getValue());
+						
+				}
+			}else{
+				response.setResponse(Result.SESSION_TIMEDOUT.name());
+				response.setResponseMessage(Result.SESSION_TIMEDOUT.getValue());
+			}
+		}catch (Exception e) {
+			response.setResponse(Result.AWKWARD.name());
+			response.setResponseMessage(Result.AWKWARD.getValue());
+			logger.error(ExceptionUtils.getFullStackTrace(e));
 		}
 		
-		bankAccount.setAccountUserId(user);
-		bankAccount.setAccountHolderName(csuBankAccountsDTO.getAccountHolderName());
-		bankAccount.setCountry(csuBankAccountsDTO.getCountry());
-		bankAccount.setCurrency(csuBankAccountsDTO.getCurrency());
-		
-		if(StringUtils.isNotBlank(csuBankAccountsDTO.getBankName())){
-		  bankAccount.setBankName(csuBankAccountsDTO.getBankName());
-		}
-		
-		bankAccount.setAccountNumber(csuBankAccountsDTO.getAccountNumber());
-		
-		bankAccount.setBankCode(csuBankAccountsDTO.getBankCode());
-		bankAccount.setCreatedBy(user.getUserCode());
-		bankAccount.setUpdatedBy(user.getUserCode());
-		bankAccount.setUpdatedDate(new Date());
-		
-		crowdSourcingUserBankAccountsService.addUserBankAccounts(bankAccount);
-		
-		return "success";
+		return response;
 
 	}
 	
@@ -788,8 +893,14 @@ public class CrowdSourcingRequirementsRestController {
 				 					boolean flag = userId.contains(user.getId());
 				 					if(flag == true){
 				 						requirementIndex.setIsJobApplied(Constants.YES);
-				 						 RequirementSubmission submission = requirementSubmissionService.getRequirementSubmissionByRequirementIdAndCandidateId(requirementIndex.getRequirementId(), candidateId);
-			 		 	    		     if(null != submission){
+				 						RequirementSubmission submission = null;
+				 						 submission = requirementSubmissionService.getRequirementSubmissionByRequirementIdAndCandidateId(requirementIndex.getRequirementId(), candidateId);
+			 		 	    		    
+				 						 if(submission == null) {
+		 			 		 	    			submission = requirementSubmissionService.getRequirementVendorOrCrowdsourcingSubmissionByRequirementIdAndCandidateId(requirementIndex.getRequirementId(), candidateId);
+		 			 		 	    		 } 
+				 						 
+				 						 if(null != submission){
 			 		 	    			  requirementIndex.setSubmissionId(submission.getId());
 			 		 	    		     }
 				 					}else{
@@ -801,7 +912,12 @@ public class CrowdSourcingRequirementsRestController {
 			 	    	   }
 			 	    	    
 			 	    	   if (requirementType.equalsIgnoreCase("AppliedJobs")){
-			 	    		   RequirementSubmission submission = requirementSubmissionService.getRequirementSubmissionByRequirementIdAndCandidateId(requirementIndex.getRequirementId(), candidateId);
+			 	    		  RequirementSubmission submission = null;
+			 	    		   submission = requirementSubmissionService.getRequirementSubmissionByRequirementIdAndCandidateId(requirementIndex.getRequirementId(), candidateId);
+			 	    		  
+			 	    		  if(submission == null) {
+		 		 	    			submission = requirementSubmissionService.getRequirementVendorOrCrowdsourcingSubmissionByRequirementIdAndCandidateId(requirementIndex.getRequirementId(), candidateId);
+		 		 	    		 } 
 			 	    		   if(null != submission){
 			 	    			  requirementIndex.setRequirementAppliedDate(commonUtil.elkDateFormatter(submission.getCreatedDate()));
 			 	    		   }
@@ -815,6 +931,18 @@ public class CrowdSourcingRequirementsRestController {
 			 	    	    }
 			 	    	   
 			 	    	    requirementIndex.setNoOfSearchHits(searchHits.length);
+			 	    	    
+			 	    	    
+			 	    	   List<String> requirementLocationsList = new ArrayList<>();
+			 	  		List<RequirementLocations> locationsList = requirementLocationsService.getRequirementLocationsListByRequirementId(requirementIndex.getRequirementId());
+			 	  		if(locationsList != null && !locationsList.isEmpty()) {
+			 	  			for(RequirementLocations location : locationsList) {
+			 	  				requirementLocationsList.add(location.getLocation());
+			 	  			}
+			 	  		}
+			 	          
+			 	  		requirementIndex.setLocationsList(requirementLocationsList);
+			 	  		
 			 	    	    requirementList.add(requirementIndex);
 			 	    	}
 			 	    }
@@ -843,10 +971,10 @@ public class CrowdSourcingRequirementsRestController {
 				 	 BoolQueryBuilder excludeBoolQueryBuilder = QueryBuilders.boolQuery();
 					 for(String keywd : excludeKeyWordArray){
 						 BoolQueryBuilder excludeBoolSubQueryBuilder = QueryBuilders.boolQuery();
-						ArrayList<MatchQueryBuilder> matchQueryBuilderList = getMatchQueryBuilderList(keywd);
-						if(matchQueryBuilderList != null && !matchQueryBuilderList.isEmpty()){
-							for(MatchQueryBuilder matchQueryBuilder :matchQueryBuilderList){
-								excludeBoolSubQueryBuilder.should(matchQueryBuilder);
+						ArrayList<QueryBuilder> QueryBuilderList = getQueryBuilderList(keywd);
+						if(QueryBuilderList != null && !QueryBuilderList.isEmpty()){
+							for(QueryBuilder QueryBuilder :QueryBuilderList){
+								excludeBoolSubQueryBuilder.should(QueryBuilder);
 							}
 							excludeBoolQueryBuilder.should(excludeBoolSubQueryBuilder);
 						}
@@ -862,10 +990,10 @@ public class CrowdSourcingRequirementsRestController {
 						 BoolQueryBuilder anyBoolQueryBuilder = QueryBuilders.boolQuery();
 						 for(String keywd : anyKeyWordArray){
 							 BoolQueryBuilder anyBoolSubQueryBuilder = QueryBuilders.boolQuery();
-							ArrayList<MatchQueryBuilder> matchQueryBuilderList =getMatchQueryBuilderList(keywd);
-							if(matchQueryBuilderList != null && !matchQueryBuilderList.isEmpty()){
-								for(MatchQueryBuilder matchQueryBuilder :matchQueryBuilderList){
-									anyBoolSubQueryBuilder.should(matchQueryBuilder);
+							ArrayList<QueryBuilder> QueryBuilderList =getQueryBuilderList(keywd);
+							if(QueryBuilderList != null && !QueryBuilderList.isEmpty()){
+								for(QueryBuilder QueryBuilder :QueryBuilderList){
+									anyBoolSubQueryBuilder.should(QueryBuilder);
 								}
 								anyBoolQueryBuilder.should(anyBoolSubQueryBuilder);
 							}
@@ -881,10 +1009,10 @@ public class CrowdSourcingRequirementsRestController {
 						 BoolQueryBuilder allBoolQueryBuilder = QueryBuilders.boolQuery();
 						 for(String keywd : allKeyWordArray){
 							 BoolQueryBuilder allBoolSubQueryBuilder = QueryBuilders.boolQuery();
-							ArrayList<MatchQueryBuilder> matchQueryBuilderList =getMatchQueryBuilderList(keywd);
-							if(matchQueryBuilderList != null && !matchQueryBuilderList.isEmpty()){
-								for(MatchQueryBuilder matchQueryBuilder :matchQueryBuilderList){
-									allBoolSubQueryBuilder.should(matchQueryBuilder);
+							ArrayList<QueryBuilder> QueryBuilderList =getQueryBuilderList(keywd);
+							if(QueryBuilderList != null && !QueryBuilderList.isEmpty()){
+								for(QueryBuilder QueryBuilder :QueryBuilderList){
+									allBoolSubQueryBuilder.should(QueryBuilder);
 								}
 								allBoolQueryBuilder.must(allBoolSubQueryBuilder);
 							}
@@ -900,16 +1028,24 @@ public class CrowdSourcingRequirementsRestController {
 			    }
 			 //Country
 				if(jsonObj.has("country") && !"".equalsIgnoreCase(jsonObj.getString("country"))){
-					boolQueryBuilder.must(QueryBuilders.matchQuery("country", jsonObj.getString("country")));
+					boolQueryBuilder.must(QueryBuilders.matchQuery("country", jsonObj.getString("country").split(",")[0]));
 			    }
 				 //State
 				if(jsonObj.has("state") && !"".equalsIgnoreCase(jsonObj.getString("state"))){
 					boolQueryBuilder.must(QueryBuilders.matchQuery("state", jsonObj.getString("state")));
 			    }
-				//City
+				
+				//mukltiple cities
 				if(jsonObj.has("city")  && !"".equalsIgnoreCase(jsonObj.getString("city"))){
-					boolQueryBuilder.must(QueryBuilders.matchQuery("city", jsonObj.getString("city")));
-			    }
+					ArrayList<String> cityArray = getSearchKeywordsFromChosenSelectField(jsonObj, "city");
+					if(cityArray != null && !cityArray.isEmpty()){
+						BoolQueryBuilder cityBoolQueryBuilder = QueryBuilders.boolQuery();
+						for(String keywd : cityArray){
+							cityBoolQueryBuilder.should(QueryBuilders.matchQuery("city", keywd));
+						}
+						boolQueryBuilder.must(cityBoolQueryBuilder);
+					} 	
+				}
 				
 				// currency
 			    if(jsonObj.has("currencyCode") && !"".equalsIgnoreCase(jsonObj.getString("currencyCode"))){
@@ -973,7 +1109,7 @@ public class CrowdSourcingRequirementsRestController {
 					} 	
 				}
 				
-				//Requirement Skills
+				//Requirement Organizations
 				if(jsonObj.has("organizations") && !"".equalsIgnoreCase(jsonObj.getString("organizations"))){
 					ArrayList<String> organizationArray = getSearchKeywordsFromChosenSelectField(jsonObj, "organizations");
 					if(organizationArray != null && !organizationArray.isEmpty()){
@@ -1019,37 +1155,37 @@ public class CrowdSourcingRequirementsRestController {
      }
 	 
 	 
-	 private ArrayList<MatchQueryBuilder> getMatchQueryBuilderList(String keywd){
+	 private ArrayList<QueryBuilder> getQueryBuilderList(String keywd){
 		   
-		   ArrayList<MatchQueryBuilder> matchQueryBuilderList = new ArrayList<MatchQueryBuilder>();
-		    matchQueryBuilderList.add(QueryBuilders.matchQuery("jobTitle", keywd));
-		    matchQueryBuilderList.add(QueryBuilders.matchQuery("skills", keywd));
-			matchQueryBuilderList.add(QueryBuilders.matchPhraseQuery("requirementStatus", keywd));
-			matchQueryBuilderList.add(QueryBuilders.matchQuery("country", keywd));
-			matchQueryBuilderList.add(QueryBuilders.matchQuery("city", keywd));
-			matchQueryBuilderList.add(QueryBuilders.matchQuery("state", keywd));
-			matchQueryBuilderList.add(QueryBuilders.matchQuery("education", keywd));
-			matchQueryBuilderList.add(QueryBuilders.matchQuery("client", keywd));
+		   ArrayList<QueryBuilder> QueryBuilderList = new ArrayList<QueryBuilder>();
+		    QueryBuilderList.add(QueryBuilders.matchQuery("jobTitle", keywd));
+		    QueryBuilderList.add(QueryBuilders.matchQuery("skills", keywd));
+			QueryBuilderList.add(QueryBuilders.matchPhraseQuery("requirementStatus", keywd));
+			QueryBuilderList.add(QueryBuilders.matchQuery("country", keywd));
+			QueryBuilderList.add(QueryBuilders.matchQuery("city", keywd));
+			QueryBuilderList.add(QueryBuilders.matchQuery("state", keywd));
+			QueryBuilderList.add(QueryBuilders.matchQuery("education", keywd));
+			QueryBuilderList.add(QueryBuilders.matchQuery("client", keywd));
 			
-			matchQueryBuilderList.add(QueryBuilders.matchQuery("jobType", keywd));
-			matchQueryBuilderList.add(QueryBuilders.matchQuery("jobId", keywd));
-			matchQueryBuilderList.add(QueryBuilders.matchQuery("clientContactName", keywd));
-			matchQueryBuilderList.add(QueryBuilders.matchQuery("clientContactEmail", keywd));
-			matchQueryBuilderList.add(QueryBuilders.matchQuery("manager", keywd));
-			matchQueryBuilderList.add(QueryBuilders.matchQuery("priority", keywd));
-			matchQueryBuilderList.add(QueryBuilders.matchQuery("numberOfPositions", keywd));
+			QueryBuilderList.add(QueryBuilders.matchQuery("jobType", keywd));
+			QueryBuilderList.add(QueryBuilders.matchQuery("jobId", keywd));
+			QueryBuilderList.add(QueryBuilders.matchQuery("clientContactName", keywd));
+			QueryBuilderList.add(QueryBuilders.matchQuery("clientContactEmail", keywd));
+			QueryBuilderList.add(QueryBuilders.matchQuery("manager", keywd));
+			QueryBuilderList.add(QueryBuilders.matchQuery("priority", keywd));
+			QueryBuilderList.add(QueryBuilders.matchQuery("numberOfPositions", keywd));
 			
 			
 			Matcher matcher = Pattern.compile("\\d+").matcher(keywd);
 			if(matcher.find()){
 				Float expYears = Float.valueOf(matcher.group());
-				matchQueryBuilderList.add(QueryBuilders.matchPhraseQuery("minExperience", expYears));
-				matchQueryBuilderList.add(QueryBuilders.matchPhraseQuery("maxExperience", expYears));
-				matchQueryBuilderList.add(QueryBuilders.matchPhraseQuery("rate", expYears));
+				QueryBuilderList.add(QueryBuilders.matchPhraseQuery("minExperience", expYears));
+				QueryBuilderList.add(QueryBuilders.matchPhraseQuery("maxExperience", expYears));
+				QueryBuilderList.add(QueryBuilders.matchPhraseQuery("rate", expYears));
 			}
 
 				
-			return matchQueryBuilderList; 
+			return QueryBuilderList; 
 	 }
 	 
 	 
@@ -1229,8 +1365,6 @@ public class CrowdSourcingRequirementsRestController {
 	  		}
 	 
 	 
-	 
-	 
 	 /*@PreAuthorize("hasRole('ROLE_CROWDSOURCING_REQUIREMENTS')")*/
 		@RequestMapping(value = "/submitReferToJob", method = RequestMethod.POST)
 		public String submitReferToJob(RequirementReferDTO requirementReferDTO,
@@ -1249,8 +1383,6 @@ public class CrowdSourcingRequirementsRestController {
 			return "success";
 
 		}
-	 
-	 
 
 	/* @PreAuthorize("hasRole('ROLE_CROWDSOURCING_REQUIREMENTS')")*/
 		@RequestMapping(value = "/submitUserContactsToRequirement", method = RequestMethod.POST)
@@ -1268,17 +1400,37 @@ public class CrowdSourcingRequirementsRestController {
 	 
 	 
 		@RequestMapping(value = "/addCrowdSourcingUserContact", method = RequestMethod.POST)
-		public String addCrowdSourcingUserContact(ReferContactsDTO referContactsDTO,
+		public Response<String> addCrowdSourcingUserContact(ReferContactsDTO referContactsDTO,
 				HttpServletRequest request,HttpServletResponse response)
 				throws Exception {
+                
+			    Response<String> contactRresponse = new Response<>();
+				User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+				try {
+					if (user != null) {
 
-			User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
-			OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,"orgLocations");
-			referContactsService.saveuserContacts(user, orgLocations, referContactsDTO);
+						if (Validator.validate(referContactsDTO)) {
+							referContactsService.saveuserContacts(user, referContactsDTO);
+							contactRresponse.setResponse(Result.SUCCESS.name());
+							contactRresponse.setResponseMessage(Result.SUCCESS.getValue());
+						}else {
+							contactRresponse.setResponse(Result.INVALID_DATA.name());
+							contactRresponse.setResponseMessage(Result.INVALID_DATA.getValue());
+						}
+
+						}else {
+							contactRresponse.setResponse(Result.SESSION_TIMEDOUT.name());
+							contactRresponse.setResponseMessage(Result.SESSION_TIMEDOUT.getValue());
+						}
+					
+				} catch (Exception e) {
+					contactRresponse.setResponse(Result.AWKWARD.name());
+					contactRresponse.setResponseMessage(Result.AWKWARD.getValue());
+					logger.error(ExceptionUtils.getFullStackTrace(e));
+				}
 						
-			return "success";
-
-		}
+			    return contactRresponse;
+		 }
 	 
 	 
 	 @RequestMapping(value = "/getRecruiterCandidatesList", method = RequestMethod.POST)
@@ -1348,55 +1500,76 @@ public class CrowdSourcingRequirementsRestController {
 	 
 	 
 	 
-	 @RequestMapping(value = "/storeProfessionalParseCandidate", method = RequestMethod.POST)
-		public @ResponseBody String storeCandidate(CandidateDTO candidateDTO,
+	    @RequestMapping(value = "/storeProfessionalParseCandidate", method = RequestMethod.POST)
+		public @ResponseBody Response<String> storeCandidate(CandidateDTO candidateDTO,
 				@RequestParam(value = "candidateId", required = false) Long candidateId,HttpServletRequest request) throws Exception {
 			
-		 if(Validator.validate(candidateDTO)) {
-			 candidateDTO.setStaticPath(staticPath);
-				//FileUploadUtil.fillUploadedFileInfo(candidateDTO, candidateDTO.getFileInfo());
-				User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
-				OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
-				Candidate candidate = candidateService.storeProfessionalParseCandidate(candidateDTO,orgLocation,user,candidateId);
-			} else
-				return "DataMissing";
-			
-			return "success";
-			
-			
-			
-			/*if(candidate.getCandidateType().equalsIgnoreCase("Candidate")){
-				StringBuilder candidateCreateMsg = new StringBuilder();
-			    SourceLeadSessionManager.setSessionAttribute(request, "candidateCreateMsg", candidateCreateMsg.append("Success !! ").append(candidate.getFirstName()).append(" Candidate Added").toString());
-			}
-			else{
-				StringBuilder consultantCreateMsg = new StringBuilder();
-				SourceLeadSessionManager.setSessionAttribute(request, "consultantCreateMsg", consultantCreateMsg.append("Success !! ").append(candidate.getFirstName()).append(" Consultant Added").toString());
-			}
-			return "success";*/
-		}
-	 
-	 
+
+		 Response<String> response = new Response<>(); 
+		 User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+		 if (user != null) {
+			 try {
+					if (Validator.validate(candidateDTO)) {
+						 candidateDTO.setStaticPath(staticPath);
+							//FileUploadUtil.fillUploadedFileInfo(candidateDTO, candidateDTO.getFileInfo());
+							OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+							Candidate candidate = candidateService.storeProfessionalParseCandidate(candidateDTO,orgLocation,user,candidateId);
+							response.setResponse(Result.SUCCESS.name());
+							response.setResponseMessage(Result.SUCCESS.getValue());
+					} else {
+						response.setObject("DataMissing");
+						response.setResponse(Result.INVALID_DATA.name());
+						response.setResponseMessage(Result.INVALID_DATA.getValue());
+					}
+				} catch (Exception e) {
+					response.setResponse(Result.AWKWARD.name());
+					response.setResponseMessage(Result.AWKWARD.getValue());
+					logger.error(ExceptionUtils.getFullStackTrace(e));
+				}
+				} else{
+					response.setResponse(Result.SESSION_TIMEDOUT.name());
+					response.setResponseMessage(Result.SESSION_TIMEDOUT.getValue());
+				}
+				return response; 
+		 }
+
 	 
 		@RequestMapping(value = "/getRefercontactList", method = RequestMethod.GET)
 		public  ResponseList<ReferContactsDTO> getRefercontactList(ReferContactsDTO referContactsDTO,HttpServletRequest request,HttpServletResponse response) throws Exception {
 			
+			
 			OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
       		User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
-      		
-      		String[] tableColumns = {"contactName", "groups", "email", "phone", "source"};
-		    int sortColumnIndex = 1; //by default sorting using updated date
-			String sortColumnOrder = "desc"; //by default referContactsDTO order
-			if(referContactsDTO.getOrder() != null && !referContactsDTO.getOrder().isEmpty()) {
-				sortColumnIndex = Integer.parseInt(referContactsDTO.getOrder().get(0).get("column"));
-				sortColumnOrder = referContactsDTO.getOrder().get(0).get("dir");
+			ResponseList<ReferContactsDTO> responseList = new ResponseList<>();
+			try {
+				
+				if (user != null && orgLocation != null) {
+					
+				String[] tableColumns = {"contactName", "groups", "email", "phone", "source","getRefercontactList"};
+			    int sortColumnIndex = 1; //by default sorting using updated date
+				String sortColumnOrder = "desc"; //by default referContactsDTO order
+				if(referContactsDTO.getOrder() != null && !referContactsDTO.getOrder().isEmpty()) {
+					sortColumnIndex = Integer.parseInt(referContactsDTO.getOrder().get(0).get("column"));
+					sortColumnOrder = referContactsDTO.getOrder().get(0).get("dir");
+				}
+				referContactsDTO.setSortColumn(tableColumns[sortColumnIndex]);
+				referContactsDTO.setSortOrder(sortColumnOrder);
+	      		
+				responseList = referContactsService.getReferContactsListByUserIdAndOrglocationId(referContactsDTO,user.getId(), orgLocation.getId());
+				responseList.setResponse(Result.SUCCESS.name());
+				responseList.setResponseMessage(Result.SUCCESS.getValue());
+				}else {
+					
+				responseList.setResponse(Result.SESSION_TIMEDOUT.name());
+				responseList.setResponseMessage(Result.SESSION_TIMEDOUT.getValue());
+				
+				}
+			} catch (Exception e) {
+				responseList.setResponse(Result.AWKWARD.name());
+				responseList.setResponseMessage(Result.AWKWARD.getValue());
+				logger.error(ExceptionUtils.getFullStackTrace(e));
 			}
-			referContactsDTO.setSortColumn(tableColumns[sortColumnIndex]);
-			referContactsDTO.setSortOrder(sortColumnOrder);
-      		
-			ResponseList<ReferContactsDTO> contactsDTOList = referContactsService.getReferContactsListByUserIdAndOrglocationId(referContactsDTO,user.getId(), orgLocation.getId());
-      		
-      		return contactsDTOList;
+			return responseList;
 
 		}
 		
@@ -1490,7 +1663,7 @@ public class CrowdSourcingRequirementsRestController {
 		public String getRecruiterJobSummaryDoNutChart(@RequestParam(value = "startDate", required = false) String startDate,
 				@RequestParam(value = "endDate", required = false) String endDate,HttpServletRequest request) throws Exception {
 			String resultJson = null;
-			
+			OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 			User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
 			Long candidateId = (Long) SourceLeadSessionManager.getSessionAttribute(request, "candidateId");
 			
@@ -1502,8 +1675,9 @@ public class CrowdSourcingRequirementsRestController {
 			if(!isNullOrEmpty(startDate) && !isNullOrEmpty(endDate)){
 				//Custom StartDate and EndDate
 				
-				jobSummaryStartDate =  sdf.parse(startDate);
-				jobSummaryEndDate =  sdf.parse(endDate);
+				jobSummaryStartDate =  commonUtil.orgLocationDateFormat(orgLocations.getDateFormat(), startDate);
+				jobSummaryEndDate =  commonUtil.orgLocationDateFormat(orgLocations.getDateFormat(), endDate);
+				
 			
 			}else{
 				
@@ -1531,7 +1705,7 @@ public class CrowdSourcingRequirementsRestController {
 				Integer referByMe = requirementReferService.getReferJobsByReferType(user.getId(), "referByMe", jobSummaryStartDate, jobSummaryEndDate);
 				refer.setReferByMeJobs(referByMe);
 				
-				Integer submittedByMe = requirementSubmissionService.getRecruiterSubmittedJobCountByStartDateAndEndDate(user.getId(), jobSummaryStartDate, jobSummaryEndDate);
+				Integer submittedByMe = requirementSubmissionService.getRecruiterSubmittedCandidateCountByStartDateAndEndDate(user.getId(), jobSummaryStartDate, jobSummaryEndDate);
 				refer.setSubmittedByMeJobs(submittedByMe);
 				
 				
@@ -1946,14 +2120,28 @@ public class CrowdSourcingRequirementsRestController {
 						rr.setRequirementUUID(rr.getRequirementId().getRequirementUUID());
 						rr.setRequirementOrgName(rr.getRequirementId().getOrgLocationId().getOrgLocationName());
 						rr.setRequirementJobType(rr.getRequirementId().getJobType());
+						
+						 List<String> requirementLocationsList = new ArrayList<>();
+						 List<RequirementLocations> locationsList = requirementLocationsService.getRequirementLocationsListByRequirementId(rr.getRequirementId().getId());
+						 if(locationsList != null && !locationsList.isEmpty()) {
+						 for(RequirementLocations location : locationsList) {
+						 requirementLocationsList.add(location.getLocation());
+						 }
+						 }
+						 rr.setLocationsList(requirementLocationsList);
+						 
 						rr.setRequirementCountry(rr.getRequirementId().getCountry());
 						rr.setRequirementState(rr.getRequirementId().getState());
 						rr.setRequirementCity(rr.getRequirementId().getCity());
 						rr.setRequirementRate(rr.getRequirementId().getRate());
 						rr.setRequirementRateType(rr.getRequirementId().getRateType());
 						rr.setRequirementSubmissionStatus(rr.getRequirementId().getRequirementSubmissionStatus().toString());
+						RequirementSubmission rs = null;
+						rs=requirementSubmissionService.getRequirementSubmissionByRequirementIdAndCandidateId(rr.getRequirementId().getId(),candidateId);
 						
-						RequirementSubmission rs=requirementSubmissionService.getRequirementSubmissionByRequirementIdAndCandidateId(rr.getRequirementId().getId(),candidateId);
+						if(rs == null) {
+							rs = requirementSubmissionService.getRequirementVendorOrCrowdsourcingSubmissionByRequirementIdAndCandidateId(rr.getRequirementId().getId(), candidateId);
+ 		 	    		 } 
 						if(null != rs){
 							rr.setSubmissionStatus(rs.getSubmissionStatus().toString());	
 						}
@@ -1976,6 +2164,16 @@ public class CrowdSourcingRequirementsRestController {
 						rs.setRequirementUUID(rs.getRequirement().getRequirementUUID());
 						rs.setOrgName(rs.getRequirement().getOrgLocationId().getOrgLocationName());
 						rs.setEmployeeType(rs.getRequirement().getJobType());
+						
+						List<String> requirementLocationsList = new ArrayList<>();
+						 List<RequirementLocations> locationsList = requirementLocationsService.getRequirementLocationsListByRequirementId(rs.getRequirement().getId());
+						 if(locationsList != null && !locationsList.isEmpty()) {
+						 for(RequirementLocations location : locationsList) {
+						 requirementLocationsList.add(location.getLocation());
+						 }
+						 }
+						 rs.setLocationsList(requirementLocationsList);
+						
 						rs.setCountry(rs.getRequirement().getCountry());
 						rs.setState(rs.getRequirement().getState());
 						rs.setCity(rs.getRequirement().getCity());
@@ -2305,6 +2503,9 @@ public class CrowdSourcingRequirementsRestController {
 			String resultJson = null;
 			
 			List<RequirementOfferHistory> offersList = requirementOfferHistoryService.getCrowdSourcingOfferDetailsBySubmissionId(submissionId,locationCode);
+			for(RequirementOfferHistory offers : offersList) {
+				offers.setSubmissionStatusStr(offers.getSubmissionId().getSubmissionStatus().toString());
+			}
 			resultJson = commonUtil.toJSON(offersList);
 			return resultJson ;
 			
@@ -2454,49 +2655,52 @@ public class CrowdSourcingRequirementsRestController {
 		 
 		 
 		@RequestMapping(value = "/addContactsGroup", method = RequestMethod.POST)
-		public @ResponseBody String addContactsGroup(ContactsGroupDTO contactsGroupDTO,
+		public @ResponseBody Response<String> addContactsGroup(ContactsGroupDTO contactsGroupDTO,
 					HttpServletRequest request,HttpServletResponse response)
 					throws Exception {
+			
+			Response<String> contactsGroupResponse = new Response<>();
+			User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+			try {
+				if (user != null) {
 
-				User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
-				contactsGroupService.addContactsGroup(contactsGroupDTO, user);
-							
-				return "success";
+					if (Validator.validate(contactsGroupDTO)) {
+						contactsGroupService.addContactsGroup(contactsGroupDTO, user);
+						contactsGroupResponse.setResponse(Result.SUCCESS.name());
+						contactsGroupResponse.setResponseMessage(Result.SUCCESS.getValue());
+					} else {
+						contactsGroupResponse.setResponse(Result.INVALID_DATA.name());
+						contactsGroupResponse.setResponseMessage(Result.INVALID_DATA.getValue());
+					}
+
+				} else {
+					contactsGroupResponse.setResponse(Result.SESSION_TIMEDOUT.name());
+					contactsGroupResponse.setResponseMessage(Result.SESSION_TIMEDOUT.getValue());
+				}
+				} catch (Exception e) {
+					contactsGroupResponse.setResponse(Result.AWKWARD.name());
+					contactsGroupResponse.setResponseMessage(Result.AWKWARD.getValue());
+					logger.error(ExceptionUtils.getFullStackTrace(e));
+				}
+			 
+			return contactsGroupResponse;
 
 			}
 		
 		   @RequestMapping(value = "/validateGroupName",  method = RequestMethod.GET)
-		   public @ResponseBody String validateGroupName(@RequestParam(value="groupName", required=false) String groupName,
+		   public @ResponseBody Boolean validateGroupName(@RequestParam(value="groupName", required=false) String groupName,
 				   @RequestParam(value="groupId", required=false) Long groupId,HttpServletRequest request) throws Exception {
-			  
 			    User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
-			    String result = "valid";
 			    ContactsGroup contactsGroup = null;
-			    
-				if(groupId != null){
-					contactsGroup  = contactsGroupService.getContactsGroupByGroupId(groupId);
-					if(contactsGroup.getGroupName().equalsIgnoreCase(groupName)){
-						result = "valid";
-					}else{
-						contactsGroup = contactsGroupService.findByContactsGroupAndUserId(groupName, user.getId());
-						if(null != contactsGroup){
-							result = "invalid";
-						}else{
-							result = "valid";
-						}
-					}
-				}
-				
-				else{
-					contactsGroup = contactsGroupService.findByContactsGroupAndUserId(groupName, user.getId());
-					if(null != contactsGroup){
-						result = "Invalid";
-					}else{
-						result = "valid";
-					}
-				}
-			   
-				return result;
+			    if(groupId != null){
+			    	contactsGroup =contactsGroupService.validateGrouppNameByGroupNameAndGroupId(groupName, groupId);
+			    }
+			    Boolean flag = false;
+		    	   if(null == contactsGroup){
+		    		   flag = contactsGroupService.validateGroupNameByGroupNameAndUserId(groupName, user.getId());
+		    		   
+		    	   }
+				return flag;
 		   }
 			
 		@RequestMapping(value = "/getContactsGroupList", method = RequestMethod.POST)
@@ -2523,10 +2727,33 @@ public class CrowdSourcingRequirementsRestController {
 		}
 		
 		@RequestMapping(value = "/deleteContactsGroupById", method = RequestMethod.POST, headers = "Accept=application/json")
-		public String deleteContactsGroupById(@RequestParam(value = "groupId", required = false) Long groupId, HttpServletRequest request) throws Exception
+		public Response<String> deleteContactsGroupById(@RequestParam(value = "groupId", required = false) Long groupId, HttpServletRequest request) throws Exception
 		{
-			contactsGroupService.deleteContactsGroupById(groupId);
-			return "success";
+			
+			Response<String> response = new Response<>();
+			User loginUser = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+			
+			try {
+				if (loginUser != null) {
+				if(groupId >0) {
+				contactsGroupService.deleteContactsGroupById(groupId);
+				response.setResponse(Result.SUCCESS.name());
+				response.setResponseMessage(Result.SUCCESS.getValue());
+				}else {
+					response.setResponse(Result.INVALID_DATA.name());
+					response.setResponseMessage(Result.INVALID_DATA.getValue());	
+				}
+				}else {
+				response.setResponse(Result.SESSION_TIMEDOUT.name());
+				response.setResponseMessage(Result.SESSION_TIMEDOUT.getValue());	
+				}
+			}catch (Exception e) {
+				response.setResponse(Result.AWKWARD.name());
+				response.setResponseMessage(Result.AWKWARD.getValue());
+				logger.error(ExceptionUtils.getFullStackTrace(e));
+			}
+			
+			return response;
 		}
 		
 		public String toJSON(Object obj){
@@ -2537,4 +2764,75 @@ public class CrowdSourcingRequirementsRestController {
 	        });
 	        return xstream.toXML(obj);
 	    }
+		
+		@RequestMapping(value = "/getContactById", method = RequestMethod.POST)
+		public  ReferContactsDTO getContactById(ReferContactsDTO referContactsDTO,HttpServletRequest request,HttpServletResponse response) throws Exception {
+			ReferContactsDTO referContacDTO=new ReferContactsDTO();
+			
+      		ReferContacts referContacts= referContactsService.getReferContactsById(referContactsDTO.getId());
+      		if(referContacts != null){
+      			if(referContacts.getId() != null){
+      				referContacDTO.setId(referContacts.getId());
+      			}
+      			if(referContacts.getFirstName() != null){
+      				referContacDTO.setFirstName(referContacts.getFirstName());
+      			}
+      			if(referContacts.getLastName() != null){
+      				referContacDTO.setLastName(referContacts.getLastName());
+      			}
+      			if(referContacts.getContactUserEmail() != null){
+      				referContacDTO.setEmail(referContacts.getContactUserEmail());
+      			}
+      			if(referContacts.getCompanyName() != null){
+      				referContacDTO.setCompanyName(referContacts.getCompanyName());
+      			}
+      			if(referContacts.getVendorType() != null){
+      				referContacDTO.setContactType("Vendor");
+      			}
+      			if(referContacts.getCandidateType() != null){
+      				referContacDTO.setContactType("Candidate");
+      			}
+      			if(referContacts.getClientType() != null){
+      				referContacDTO.setContactType("Client");
+      			}
+      			if(referContacts.getOtherType() != null){
+      				referContacDTO.setContactType("Other");
+      			}
+      			if(referContacts.getContactUserPhone() != null){
+      				referContacDTO.setPhone(referContacts.getContactUserPhone());
+      			}
+      		}
+      		
+      		return referContacDTO;
+		}
+		
+		@RequestMapping(value = "/deleteContact", method = RequestMethod.POST)
+		public  Response<String> deleteContact(ReferContactsDTO referContactsDTO,HttpServletRequest request,HttpServletResponse response) throws Exception {
+			
+			Response<String> contactactResponse = new Response<>();
+			User loginUser = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+			
+			try {
+				if (loginUser != null) {
+				if(referContactsDTO.getId() >0) {
+					referContactsService.deleteContactById(referContactsDTO.getId());
+					contactactResponse.setResponse(Result.SUCCESS.name());
+					contactactResponse.setResponseMessage(Result.SUCCESS.getValue());
+				}else {
+					contactactResponse.setResponse(Result.INVALID_DATA.name());
+					contactactResponse.setResponseMessage(Result.INVALID_DATA.getValue());	
+				}
+				}else {
+					contactactResponse.setResponse(Result.SESSION_TIMEDOUT.name());
+					contactactResponse.setResponseMessage(Result.SESSION_TIMEDOUT.getValue());	
+				}
+			}catch (Exception e) {
+				contactactResponse.setResponse(Result.AWKWARD.name());
+				contactactResponse.setResponseMessage(Result.AWKWARD.getValue());
+				logger.error(ExceptionUtils.getFullStackTrace(e));
+			}
+			
+			return contactactResponse;
+			
+		}
 }

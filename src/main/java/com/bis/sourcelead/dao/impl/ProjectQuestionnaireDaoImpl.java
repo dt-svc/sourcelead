@@ -58,7 +58,7 @@ public class ProjectQuestionnaireDaoImpl implements ProjectQuestionnaireDao{
 		
 		Session session = this.sessionFactory.getCurrentSession();
 		String query = "from ProjectQuestionnaire questionnarie left join fetch questionnarie.projectId  where questionnarie.projectId.id = :projectId ";
-		Collection<ProjectQuestionnaire> projectQuestionnaireList = session.createQuery(query.toString()).setLong("projectId", projectId).setCacheable(true).list();
+		Collection<ProjectQuestionnaire> projectQuestionnaireList = session.createQuery(query.toString()).setLong("projectId", projectId).list();
 
 		ProjectQuestionnaire projectQuestionnaire = null;
 		if (projectQuestionnaireList != null && projectQuestionnaireList.size() > 0) {

@@ -5,6 +5,7 @@ import java.util.Date;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -13,10 +14,6 @@ import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import javax.persistence.Transient;
 
-import org.hibernate.annotations.Cache;
-import org.hibernate.annotations.CacheConcurrencyStrategy;
-import org.hibernate.annotations.NotFound;
-import org.hibernate.annotations.NotFoundAction;
 import org.hibernate.annotations.Type;
 import org.springframework.format.annotation.DateTimeFormat;
 
@@ -24,7 +21,6 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 
 @Entity
 @Table(name="NOTIFICATIONS")
-@Cache(usage = CacheConcurrencyStrategy.TRANSACTIONAL,region="notifications")
 public class Notifications implements Serializable{
 	
 	/**
@@ -37,18 +33,18 @@ public class Notifications implements Serializable{
 	@Column(name="ID")
 	private Long id;
 	
-	@NotFound(action=NotFoundAction.IGNORE)
-	@ManyToOne
+	
+	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name="NOTIFICATION_SCENARIO_ID", nullable=false )	
 	private EmailScenario notificationScenarioId;
 	
-	@NotFound(action=NotFoundAction.IGNORE)
-	@ManyToOne
+	
+	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name="NOTIFICATION_TO", nullable=false )	
 	private User notificationTo;
 	
-	@NotFound(action=NotFoundAction.IGNORE)
-	@ManyToOne
+	
+	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name="NOTIFICATION_FORM", nullable=false )	
 	private User notificationFrom;
 	
@@ -85,7 +81,10 @@ public class Notifications implements Serializable{
 	private String userNotificationStatus;
 	
 	@Column(name="UUID")
-	private String UUID;
+	private String uuId;
+	
+	@Column(name = "PARAMETER_LIST", columnDefinition = "TEXT default NULL")
+	private String parameterList;
 	
 	@Column(name="SPOC_UUID")
 	private String spocUUID;
@@ -114,17 +113,32 @@ public class Notifications implements Serializable{
 	private String notificationFirstName;
 	
 	@Transient
+	@JsonProperty
 	private String notificationLastName;
 	
 	@Transient
+	@JsonProperty
 	private String notificationImage;
+	
+	@Transient
+	@JsonProperty
+	private String spocInvitationStatus;
+	
+	@Transient
+	@JsonProperty
+	private String orgRelationUUID;
+	
+	@Transient
+	@JsonProperty
+	private String responderType;
 	
 	
 	@Transient
-	
+	@JsonProperty
 	private String notificationUserType;
 	
 	@Transient
+	@JsonProperty
 	private String notificationFormId;
 	
 	
@@ -264,15 +278,15 @@ public class Notifications implements Serializable{
 	public void setUserNotificationStatus(String userNotificationStatus) {
 		this.userNotificationStatus = userNotificationStatus;
 	}
-
-	public String getUUID() {
-		return UUID;
-	}
-
-	public void setUUID(String uUID) {
-		UUID = uUID;
-	}
 	
+	public String getUuId() {
+		return uuId;
+	}
+
+	public void setUuId(String uuId) {
+		this.uuId = uuId;
+	}
+
 	public String getSpocUUID() {
 		return spocUUID;
 	}
@@ -328,7 +342,38 @@ public class Notifications implements Serializable{
 	public void setNotificationImage(String notificationImage) {
 		this.notificationImage = notificationImage;
 	}
-	
+
+	public String getSpocInvitationStatus() {
+		return spocInvitationStatus;
+	}
+
+	public void setSpocInvitationStatus(String spocInvitationStatus) {
+		this.spocInvitationStatus = spocInvitationStatus;
+	}
+
+	public String getOrgRelationUUID() {
+		return orgRelationUUID;
+	}
+
+	public void setOrgRelationUUID(String orgRelationUUID) {
+		this.orgRelationUUID = orgRelationUUID;
+	}
+
+	public String getResponderType() {
+		return responderType;
+	}
+
+	public void setResponderType(String responderType) {
+		this.responderType = responderType;
+	}
+
+	public String getParameterList() {
+		return parameterList;
+	}
+
+	public void setParameterList(String parameterList) {
+		this.parameterList = parameterList;
+	}
 	
 	
 }

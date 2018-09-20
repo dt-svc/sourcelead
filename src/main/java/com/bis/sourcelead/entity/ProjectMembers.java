@@ -39,7 +39,6 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 
 @Entity
 @Table(name = "PROJECT_MEMBERS")
-@Cache(usage = CacheConcurrencyStrategy.TRANSACTIONAL, region = "projectMembers")
 public class ProjectMembers implements Serializable {
 
 	private static final long serialVersionUID = 1L;
@@ -50,29 +49,29 @@ public class ProjectMembers implements Serializable {
 	private Long id;
 
 	
-	@ManyToOne(fetch = FetchType.EAGER)
+	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "PROJECT_ID", nullable = false)
 	private Projects projects;
 
-	@NotFound(action=NotFoundAction.IGNORE)
-	@ManyToOne
+	
+	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "EMPLOYEE_ID", nullable = false)
 	private Employees employee;
 
-	@NotFound(action=NotFoundAction.IGNORE)
-	@ManyToOne
+	
+	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "CANDIDATE_ID", nullable = false)
 	@JsonBackReference
 	private Candidate projectMemberCandidteId;
 	
-	@NotFound(action=NotFoundAction.IGNORE)
-	@ManyToOne(fetch = FetchType.EAGER)
+	
+	@ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name="MASTER_CANDIDATE_ID", nullable=false )        
     private MasterCandidate masterCandidateId;
 	
 	
-	@NotFound(action=NotFoundAction.IGNORE)
-	@ManyToOne
+	
+	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "PROJECT_CLIENTS_ID")
 	@JsonBackReference
     private ProjectClients projectClientsId;
@@ -156,7 +155,10 @@ public class ProjectMembers implements Serializable {
 	@JsonProperty
 	@Transient
 	private String rejectedHrs;
+	
+	
 	@Transient
+	@JsonProperty
 	private String openHrs;
 	
 	@JsonProperty
@@ -166,9 +168,11 @@ public class ProjectMembers implements Serializable {
 	@JsonProperty
 	@Transient
 	private String submittedHrs;
+	
 	@Transient
 	@JsonProperty
 	private String projectAssignedDateStr;
+	
 	@Transient
 	@JsonProperty
 	private String projectEndDateStr;
@@ -186,186 +190,249 @@ public class ProjectMembers implements Serializable {
 	private String userId;
 	
 	@Transient
+	@JsonProperty
 	@Enumerated(EnumType.STRING)
 	private Status userState;
+	
+	@JsonProperty
+	@Transient
+	private String rateHistroyList;
     
 	@Transient
+	@JsonProperty
 	private String employeeIdForExpenses;
 	
      //For Expenses 
     
     @Transient
+    @JsonProperty
     private Float janExpenseTotal;
     
     @Transient
+    @JsonProperty
     private Float janExpenseApprovedTotal;
     
     @Transient
+    @JsonProperty
     private Float janExpenseUnApprovedTotal;
     
     
     @Transient
+    @JsonProperty
     private Float febExpenseTotal;
     
     @Transient
+    @JsonProperty
     private Float febExpenseApprovedTotal;
     
     @Transient
+    @JsonProperty
     private Float febExpenseUnApprovedTotal;
     
     @Transient
+    @JsonProperty
     private Float marExpenseTotal;
     
     @Transient
+    @JsonProperty
     private Float marExpenseApprovedTotal;
     
     @Transient
+    @JsonProperty
     private Float marExpenseUnApprovedTotal;
     
     
     @Transient
+    @JsonProperty
     private Float aprExpenseTotal;
     
     @Transient
+    @JsonProperty
     private Float aprExpenseApprovedTotal;
     
     @Transient
+    @JsonProperty
     private Float aprExpenseUnApprovedTotal;
     
     @Transient
+    @JsonProperty
     private Float mayExpenseTotal;
     
     @Transient
+    @JsonProperty
     private Float mayExpenseApprovedTotal;
     
     @Transient
+    @JsonProperty
     private Float mayExpenseUnApprovedTotal;
     
     @Transient
+    @JsonProperty
     private Float junExpenseTotal;
     
     @Transient
+    @JsonProperty
     private Float junExpenseApprovedTotal;
     
     @Transient
+    @JsonProperty
     private Float junExpenseUnApprovedTotal;
     
     @Transient
+    @JsonProperty
     private Float julExpenseTotal;
     
     @Transient
+    @JsonProperty
     private Float julExpenseApprovedTotal;
     
     @Transient
+    @JsonProperty
     private Float julExpenseUnApprovedTotal;
     
     
     @Transient
+    @JsonProperty
     private Float augExpenseTotal;
     
     @Transient
+    @JsonProperty
     private Float augExpenseApprovedTotal;
     
     @Transient
+    @JsonProperty
     private Float augExpenseUnApprovedTotal;
     
     @Transient
+    @JsonProperty
     private Float sepExpenseTotal;
     
     @Transient
+    @JsonProperty
     private Float sepExpenseApprovedTotal;
     
     @Transient
+    @JsonProperty
     private Float sepExpenseUnApprovedTotal;
     
     @Transient
+    @JsonProperty
     private Float octExpenseTotal;
     
     @Transient
+    @JsonProperty
     private Float octExpenseApprovedTotal;
     
     @Transient
+    @JsonProperty
     private Float octExpenseUnApprovedTotal;
     
     @Transient
+    @JsonProperty
     private Float novExpenseTotal;
     
     @Transient
+    @JsonProperty
     private Float novExpenseApprovedTotal;
     
     @Transient
+    @JsonProperty
     private Float novExpenseUnApprovedTotal;
     
     @Transient
+    @JsonProperty
     private Float decExpenseTotal;
     
     @Transient
+    @JsonProperty
     private Float decExpenseApprovedTotal;
     
     @Transient
+    @JsonProperty
     private Float decExpenseUnApprovedTotal;
     
     @Transient
+    @JsonProperty
     private Float claimedExpenseTotal;
     
     @Transient
+    @JsonProperty
     private Float claimedExpenseApprovedTotal;
     
     @Transient
+    @JsonProperty
     private Float claimedExpenseUnApprovedTotal;
     
     @Transient
+    @JsonProperty
     private Float Q1ExpenseTotal;
     
     @Transient
+    @JsonProperty
     private Float Q1ExpenseApprovedTotal;
     
     @Transient
+    @JsonProperty
     private Float Q1ExpenseUnApprovedTotal;
     
     @Transient
+    @JsonProperty
     private Float Q2ExpenseTotal;
     
     @Transient
+    @JsonProperty
     private Float Q2ExpenseApprovedTotal;
     
     @Transient
+    @JsonProperty
     private Float Q2ExpenseUnApprovedTotal;
     
     @Transient
+    @JsonProperty
     private Float Q3ExpenseTotal;
     
     @Transient
+    @JsonProperty
     private Float Q3ExpenseApprovedTotal;
     
     @Transient
+    @JsonProperty
     private Float Q3ExpenseUnApprovedTotal;
     
     @Transient
+    @JsonProperty
     private Float Q4ExpenseTotal;
     
     @Transient
+    @JsonProperty
     private Float Q4ExpenseApprovedTotal;
     
     @Transient
+    @JsonProperty
     private Float Q4ExpenseUnApprovedTotal;
     
     @Transient
+    @JsonProperty
     private Float expenseTotal;
     
     @Transient
+    @JsonProperty
     private Float expenseApprovedTotal;
     
     @Transient
+    @JsonProperty
     private Float expenseUnApprovedTotal;
     
     @Transient
+    @JsonProperty
 	private String employementType;
 	
 	@Transient
+	@JsonProperty
 	private String userName;
 	
 	@Transient
+	@JsonProperty
 	private String userEmail;
 	
 	
@@ -381,6 +448,7 @@ public class ProjectMembers implements Serializable {
 	private String terminateReason;
 
 	@Transient
+	@JsonProperty
 	private String totalHours;
 
 	@Transient
@@ -396,12 +464,15 @@ public class ProjectMembers implements Serializable {
 	private String userRoleType;
 
 	@Transient
+	@JsonProperty
 	private Long submissionApproverHierarchyId;
 
 	@Transient
+	@JsonProperty
 	private Long submissionInvoiceId;
 
 	@Transient
+	@JsonProperty
 	private LinkedHashSet<String> monthsStringFormat;
 	
 	@Transient
@@ -449,6 +520,10 @@ public class ProjectMembers implements Serializable {
 	@JsonProperty
 	private int timeReportsTotalCountValue;
 	
+	@Transient
+	@JsonProperty
+	private String projectMemberStatus;
+	
 	public Long getSubmissionInvoiceId() {
 		return submissionInvoiceId;
 	}
@@ -458,11 +533,12 @@ public class ProjectMembers implements Serializable {
 	}
 
 	@Transient
+	@JsonProperty
 	private List<Contracts> contractsList;
 
 	@JsonIgnore
-	@NotFound(action=NotFoundAction.IGNORE)
-	@OneToMany(mappedBy = "projectMemberId", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+	
+	@OneToMany(mappedBy = "projectMemberId", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
 	@JsonBackReference
 	@Fetch(FetchMode.SELECT)
 	private Set<ProjectMembersHistory> memberHistoryList = new HashSet<ProjectMembersHistory>(0);
@@ -1527,6 +1603,22 @@ public class ProjectMembers implements Serializable {
 
 	public void setTimeReportsTotalCountValue(int timeReportsTotalCountValue) {
 		this.timeReportsTotalCountValue = timeReportsTotalCountValue;
+	}
+
+	public String getRateHistroyList() {
+		return rateHistroyList;
+	}
+
+	public void setRateHistroyList(String rateHistroyList) {
+		this.rateHistroyList = rateHistroyList;
+	}
+
+	public String getProjectMemberStatus() {
+		return projectMemberStatus;
+	}
+
+	public void setProjectMemberStatus(String projectMemberStatus) {
+		this.projectMemberStatus = projectMemberStatus;
 	}
 
 }

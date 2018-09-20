@@ -3,9 +3,13 @@ package com.bis.sourcelead.service.impl;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
+import java.text.NumberFormat;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
@@ -20,6 +24,7 @@ import org.apache.poi.hssf.util.HSSFColor;
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.CellStyle;
 import org.apache.poi.ss.usermodel.DataFormatter;
+import org.apache.poi.ss.usermodel.DateUtil;
 import org.apache.poi.ss.usermodel.Font;
 import org.apache.poi.ss.usermodel.FormulaEvaluator;
 import org.apache.poi.ss.usermodel.IndexedColors;
@@ -28,6 +33,7 @@ import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
 import org.apache.poi.xssf.usermodel.XSSFFormulaEvaluator;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
+import org.json.JSONArray;
 import org.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -35,43 +41,132 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
+import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.dao.DataMigrationDao;
+import com.bis.sourcelead.dto.AssetAssignDTO;
+import com.bis.sourcelead.dto.AssetDTO;
+import com.bis.sourcelead.dto.AssetsDataImportDTO;
+import com.bis.sourcelead.dto.CandidateDTO;
 import com.bis.sourcelead.dto.DataMigrationDTO;
+import com.bis.sourcelead.dto.FileInfo;
+import com.bis.sourcelead.dto.ImmigrationDTO;
+import com.bis.sourcelead.dto.ImmigrationPassportVisaDTO;
+import com.bis.sourcelead.dto.LcaDTO;
+import com.bis.sourcelead.dto.LcaPlaceOfEmploymentDTO;
+import com.bis.sourcelead.dto.ProjectTasksDTO;
 import com.bis.sourcelead.dto.RequirementDTO;
+import com.bis.sourcelead.dto.RequirementLocationsDTO;
+import com.bis.sourcelead.elk.setup.RequirementElkUtil;
+import com.bis.sourcelead.entity.Asset;
+import com.bis.sourcelead.entity.Candidate;
+import com.bis.sourcelead.entity.CandidatePassportVisa;
+import com.bis.sourcelead.entity.Countries;
+import com.bis.sourcelead.entity.Immigration;
 import com.bis.sourcelead.entity.OrgLocations;
+import com.bis.sourcelead.entity.Projects;
 import com.bis.sourcelead.entity.Requirement;
+import com.bis.sourcelead.entity.RequirementSubmission;
+import com.bis.sourcelead.entity.RequirementSubmissionHistory;
 import com.bis.sourcelead.entity.SourceleadFormFields;
 import com.bis.sourcelead.entity.SubmissionTemplate;
+import com.bis.sourcelead.entity.UploadXlsHistory;
 import com.bis.sourcelead.entity.User;
+import com.bis.sourcelead.entity.UsersImport;
+import com.bis.sourcelead.immigration.service.ImmigrationCommonService;
+import com.bis.sourcelead.service.AssetService;
+import com.bis.sourcelead.service.CandidateService;
+import com.bis.sourcelead.service.CountriesService;
 import com.bis.sourcelead.service.DataMigrationService;
+import com.bis.sourcelead.service.LookUpDataService;
+import com.bis.sourcelead.service.ProjectTasksService;
+import com.bis.sourcelead.service.ProjectsService;
 import com.bis.sourcelead.service.RequirementService;
+import com.bis.sourcelead.service.RequirementSubmissionHistoryService;
+import com.bis.sourcelead.service.RequirementSubmissionService;
+import com.bis.sourcelead.service.ShiftService;
 import com.bis.sourcelead.service.SubmissionTemplateService;
+import com.bis.sourcelead.service.UploadFileService;
+import com.bis.sourcelead.service.UploadXlsHistoryService;
+import com.bis.sourcelead.service.UserRoleService;
+import com.bis.sourcelead.service.UserService;
+import com.bis.sourcelead.util.CommonUtil;
 import com.bis.sourcelead.util.DataMigrationCommonUtil;
+import com.bis.sourcelead.util.SourceLeadRandomCodeHelper;
 import com.bis.sourcelead.util.SourceLeadSessionManager;
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
 
 @Service
 public class DataMigrationServiceImpl implements DataMigrationService {
 	private static final Logger logger = LoggerFactory.getLogger(DataMigrationServiceImpl.class);
 	@Autowired
 	DataMigrationDao dataMigrationDao;
-	
+
 	@Autowired
 	private RequirementService requirementService;
 
 	@Autowired
 	private SubmissionTemplateService submissionTemplateService;
-	
+
 	@Autowired
 	private DataMigrationCommonUtil dataMigrationCommonUtil;
-	
+
 	@Value("${static.path}")
 	private String staticPath;
+
+	@Autowired
+	private AssetService assetService;
+
+	@Autowired
+	private ProjectTasksService tasksService;
+
+	@Autowired
+	private ProjectsService projectService;
+
+	@Autowired
+	LookUpDataService lookUpDataService;
+
+	@Autowired
+	private UserService userService;
+
+	@Autowired
+	private ShiftService shiftService;
+
+	@Autowired
+	private UserRoleService userRoleService;
+
+	@Autowired
+	private ImmigrationCommonService immigrationCommonService;
+	
+	@Autowired
+	CandidateService candidateService;
+
+	@Autowired
+	private UploadFileService uploadFileService;
+	
+	@Autowired
+	private RequirementSubmissionService requirementSubmissionService;
+	
+	@Autowired
+	RequirementSubmissionHistoryService requirementSubmissionHistoryService;
+	
+	@Autowired
+	private CommonUtil commonUtil;
+	
+	@Autowired
+	RequirementElkUtil requirementElkUtil;
+	
+	@Autowired
+	CountriesService countriesService;
+	
+	@Autowired
+	UploadXlsHistoryService uploadXlsHistoryService;
+	
 	
 	@Override
-	public Map<String, String> getfileData(String filePath, String headerPosition) throws Exception
-	{
+	public Map<String, String> getfileData(String filePath, String headerPosition) throws Exception {
 		FileInputStream inputStream = new FileInputStream(new File(filePath.replace("/dataMigration/", "/temp/")));
 		Workbook workbook = null;
 		DataFormatter objDefaultFormat = new DataFormatter();
@@ -79,8 +174,7 @@ public class DataMigrationServiceImpl implements DataMigrationService {
 		if (filePath.endsWith(".xls")) {
 			workbook = new HSSFWorkbook(inputStream);
 			objFormulaEvaluator = new HSSFFormulaEvaluator((HSSFWorkbook) workbook);
-		}
-		else {
+		} else {
 			workbook = new XSSFWorkbook(inputStream);
 			objFormulaEvaluator = new XSSFFormulaEvaluator((XSSFWorkbook) workbook);
 		}
@@ -90,14 +184,17 @@ public class DataMigrationServiceImpl implements DataMigrationService {
 		List<String> fieldList = new ArrayList<String>();
 		while (rowIterator.hasNext()) {
 			Row nextRow = rowIterator.next();
-			if(nextRow.getRowNum()+1 == Integer.parseInt(headerPosition) ) {
+			if (nextRow.getRowNum() + 1 == Integer.parseInt(headerPosition)) {
 				Iterator<Cell> cellIterator = nextRow.cellIterator();
 				while (cellIterator.hasNext()) {
 					Cell cell = cellIterator.next();
-					String cellValueStr = objDefaultFormat.formatCellValue(cell,objFormulaEvaluator);
-					if (!fieldList.contains(CellReference.convertNumToColString(cell.getColumnIndex())) && StringUtils.isNotEmpty(cellValueStr))
-						dataWithCellId.put(CellReference.convertNumToColString(cell.getColumnIndex()) + cell.getRowIndex(), cellValueStr);
-						fieldList.add(CellReference.convertNumToColString(cell.getColumnIndex()));
+					String cellValueStr = objDefaultFormat.formatCellValue(cell, objFormulaEvaluator);
+					if (!fieldList.contains(CellReference.convertNumToColString(cell.getColumnIndex()))
+							&& StringUtils.isNotEmpty(cellValueStr))
+						dataWithCellId.put(
+								CellReference.convertNumToColString(cell.getColumnIndex()) + cell.getRowIndex(),
+								cellValueStr);
+					fieldList.add(CellReference.convertNumToColString(cell.getColumnIndex()));
 				}
 			}
 		}
@@ -107,149 +204,937 @@ public class DataMigrationServiceImpl implements DataMigrationService {
 	}
 
 	@Override
-	public List<SourceleadFormFields> getfieldsByActionIdAndImportStatus(Long actionId, int importStatus) throws Exception
-	{
+	public List<SourceleadFormFields> getfieldsByActionIdAndImportStatus(Long actionId, int importStatus)
+			throws Exception {
 
 		return dataMigrationDao.getfieldsByActionIdAndImportStatus(actionId, importStatus);
 	}
 
 	@Override
-	public String validateImportedFormData(DataMigrationDTO dataMigrationDTO, HttpServletRequest request) throws Exception
-	{
+	public String validateImportedFormData(DataMigrationDTO dataMigrationDTO, HttpServletRequest request)
+			throws Exception {
 		User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
 		OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+		String isGlobalAccess = (String) SourceLeadSessionManager.getSessionAttribute(request, "isGlobalAccess");
 		String importStatus = null;
+		String finalImportStatus = null;
+		String jsonString = null;
 		String ac = StringUtils.removeEnd(staticPath, "/slead-static");
-		FileInputStream inputStream = new FileInputStream(new File(ac
-				+ dataMigrationDTO.getExportFilePath().replace("/dataMigration/", "/temp/")));
+		FileInputStream inputStream = new FileInputStream(
+				new File(ac + dataMigrationDTO.getExportFilePath().replace("/dataMigration/", "/temp/")));
 		Workbook workbook = null;
 		DataFormatter objDefaultFormat = new DataFormatter();
 		FormulaEvaluator objFormulaEvaluator;
 		if (dataMigrationDTO.getExportFilePath().endsWith(".xls")) {
 			workbook = new HSSFWorkbook(inputStream);
 			objFormulaEvaluator = new HSSFFormulaEvaluator((HSSFWorkbook) workbook);
-		}
-		else {
+		} else {
 			workbook = new XSSFWorkbook(inputStream);
 			objFormulaEvaluator = new XSSFFormulaEvaluator((XSSFWorkbook) workbook);
 		}
 		Sheet firstSheet = workbook.getSheetAt(0);
+		Integer rowCount = firstSheet.getLastRowNum();
+		String[] fileName = dataMigrationDTO.getExportFilePath().split("/");
+		UploadXlsHistory history = null;
+		history = saveUploadXlsHistory(rowCount, fileName[5], null, dataMigrationDTO, user, orgLocation);
+		uploadXlsHistoryService.storeUploadXlsHistory(history);
 		Iterator<Row> rowIterator = firstSheet.iterator();
 		int colCount = 0;
+		Boolean isEmptyExcel = true;
 		while (rowIterator.hasNext()) {
 			Row nextRow = rowIterator.next();
-			if(nextRow.getRowNum()+1 == Integer.parseInt(dataMigrationDTO.getHeaderPosition()) ) {
-					Iterator<Cell> cellIterator = nextRow.cellIterator();
-					while (cellIterator.hasNext()) {
-						Cell cell = cellIterator.next();
-						colCount++;
+			if (nextRow.getRowNum() + 1 == Integer.parseInt(dataMigrationDTO.getHeaderPosition())) {
+				Iterator<Cell> cellIterator = nextRow.cellIterator();
+				while (cellIterator.hasNext()) {
+					Cell cell = cellIterator.next();
+					colCount++;
 					continue;
 				}
 			}
-			if(nextRow.getRowNum()+1 > Integer.parseInt(dataMigrationDTO.getHeaderPosition()) ) {
-				HashMap< String, String> errorSet = new HashMap< String, String>();
-				JSONObject dataMigrationDTOJson = new JSONObject(dataMigrationDTO);
+			if (nextRow.getRowNum() + 1 > Integer.parseInt(dataMigrationDTO.getHeaderPosition())) {
+				isEmptyExcel = false;
+				HashMap<String, String> errorSet = new HashMap<String, String>();
+				Gson gson = new Gson();
+				String gsonOutput = gson.toJson(dataMigrationDTO);
+				JSONObject dataMigrationDTOJson = null;
 				DataMigrationDTO dataMigrationDTOCopy = new DataMigrationDTO();
-				JSONObject dataMigrationDTOJsonCopy = new JSONObject(dataMigrationDTOCopy);
+				Iterator<?> keys = null;
+				JSONObject dataMigrationDTOJsonCopy = null;
 				
-				Iterator<?> keys = dataMigrationDTOJson.keys();
-	
-				while( keys.hasNext() ) {
-				    String k = (String)keys.next();
-				    	Iterator<Cell> cellIterator = nextRow.cellIterator();
+				if(dataMigrationDTO.getUploadType().equalsIgnoreCase("submmissionTemplateUpload") && dataMigrationDTO.getRequirementId() != null) {
+					    String json1 = "{" + dataMigrationDTO.getJsonData() + "}";
+				     	dataMigrationDTOJson = new JSONObject(json1);
+						dataMigrationDTOJsonCopy = new JSONObject(dataMigrationDTOJson);
+						dataMigrationDTOJsonCopy.put("requirementId", dataMigrationDTO.getRequirementId());
+						keys = dataMigrationDTOJson.keys();
+						
+						Requirement requirement = requirementService.getRequirementDetailsById(Long.valueOf(dataMigrationDTOJsonCopy.getString("requirementId")));
+						if(StringUtils.isNotBlank(requirement.getClientSubmissionTemplateJsonString())) {
+							jsonString = requirement.getClientSubmissionTemplateJsonString();
+						}else {
+							jsonString = requirement.getSubmissionTemplateJsonString();
+						}
+					
+				}else {
+					 dataMigrationDTOJson = new JSONObject(gsonOutput);
+					 dataMigrationDTOJsonCopy = new JSONObject(dataMigrationDTOCopy);
+					 keys = dataMigrationDTOJson.keys();
+				}
+				
+				/*
+				 * this code is for assign projectUUI(in project Task upload) from
+				 * dataMigrationDTO to dataMigrationDTOJsonCopy json object
+				 */
+				if (dataMigrationDTO.getUploadType().equalsIgnoreCase("projectTasks")) {
+					dataMigrationDTOJsonCopy.put("projectUUID", dataMigrationDTO.getProjectUUID());
+					dataMigrationDTOJsonCopy.put("projectClientUUID", dataMigrationDTO.getProjectClientUUID());
+				}
+
+				while (keys.hasNext()) {
+					String k = (String) keys.next();
+					if (StringUtils.isNotEmpty(k) && !k.equalsIgnoreCase("days")) {
+						Iterator<Cell> cellIterator = nextRow.cellIterator();
+						StringBuffer assertBuffer = new StringBuffer();
 						while (cellIterator.hasNext()) {
 							Cell cell = cellIterator.next();
-							if (dataMigrationDTOJson.get((String) k) != null) {
-								if ((dataMigrationDTOJson.get((String) k).toString().replaceAll("\\d", "")).equalsIgnoreCase(CellReference.convertNumToColString(cell.getColumnIndex()))) {
-									dataMigrationDTOJsonCopy.put((String) k, objDefaultFormat.formatCellValue(cell, objFormulaEvaluator).toString().trim());
-									//dataValidationForJobs(errorSet, dataMigrationDTOJsonCopy, (String) k, objFormulaEvaluator, objDefaultFormat, user, orgLocation);
+							if (dataMigrationDTOJson.has((String) k) && dataMigrationDTOJson.get((String) k) != null) {
+
+								if (k.equalsIgnoreCase("assignAsset")) {
+									Gson converter = new Gson();
+									java.lang.reflect.Type listType = new TypeToken<List<AssetAssignDTO>>() {
+									}.getType();
+									List<AssetAssignDTO> list = converter
+											.fromJson(dataMigrationDTOJson.get((String) k).toString(), listType);
+									int incr = 0;
+									for (AssetAssignDTO aa : list) {
+										incr++;
+										if ((aa.getXlCol().replaceAll("\\d", "")).equalsIgnoreCase(
+												CellReference.convertNumToColString(cell.getColumnIndex()))) {
+											assertBuffer.append(objDefaultFormat
+													.formatCellValue(cell, objFormulaEvaluator).toString().trim());
+											assertBuffer.append("#").append(aa.getShift());
+											if (list.size() > 1 && incr < list.size()) {
+												assertBuffer.append("&");
+											}
+										}
+
+									}
+									dataMigrationDTOJsonCopy.put("assignAssetStr", assertBuffer.toString());
+								}
+								if ((dataMigrationDTOJson.get((String) k).toString().replaceAll("\\d", ""))
+										.equalsIgnoreCase(CellReference.convertNumToColString(cell.getColumnIndex()))) {
+									try {
+										if (DateUtil.isCellDateFormatted(cell)) {
+											SimpleDateFormat dateFormat = new SimpleDateFormat("dd-MM-yyyy");
+											dataMigrationDTOJsonCopy.put((String) k,
+													dateFormat.format(cell.getDateCellValue()));
+										} else {
+											dataMigrationDTOJsonCopy.put((String) k, objDefaultFormat
+													.formatCellValue(cell, objFormulaEvaluator).toString().trim());
+										}
+									} catch (Exception e) {
+										dataMigrationDTOJsonCopy.put((String) k, objDefaultFormat
+												.formatCellValue(cell, objFormulaEvaluator).toString().trim());
+
+									}
+
 								}
 							}
 						}
+					} else {
+						JSONArray ja = dataMigrationDTOJson.getJSONArray("days");
+						LinkedList<String> days = new LinkedList<>();
+						if (ja != null && ja.length() > 0) {
+							for (int j = 0; j < ja.length(); j++) {
+								Iterator<Cell> cellIterator = nextRow.cellIterator();
+								String dayKey = ja.getString(j);
+								if (StringUtils.isNotEmpty(dayKey)) {
+									while (cellIterator.hasNext()) {
+										Cell cell = cellIterator.next();
+										if (dayKey.toString().replaceAll("\\d", "").equalsIgnoreCase(
+												CellReference.convertNumToColString(cell.getColumnIndex()))) {
+											days.add(objDefaultFormat.formatCellValue(cell, objFormulaEvaluator)
+													.toString().trim());
+										}
+									}
+								} else {
+									days.add(dayKey);
+								}
+
+							}
+						}
+						dataMigrationDTOJsonCopy.put((String) k, days);
+					}
 				}
 				
-				switch(dataMigrationDTO.getUploadType()){  
-			    case "jobUpload": dataMigrationCommonUtil.dataValidationForJobs(errorSet, dataMigrationDTOJsonCopy, objFormulaEvaluator, objDefaultFormat, user, orgLocation);break;  
-			    case "timesheetUpload": dataMigrationCommonUtil.dataValidationForTimesheets(errorSet, dataMigrationDTOJsonCopy, objFormulaEvaluator, objDefaultFormat, user, orgLocation);break;  
-			    }
-				
-				
-				if(errorSet.isEmpty()){
-					mapToEntities(dataMigrationDTOJsonCopy.toString(), user, orgLocation, dataMigrationDTO.getUploadType());
+				switch (dataMigrationDTO.getUploadType()) {
+				case "jobUpload":
+					dataMigrationCommonUtil.dataValidationForJobs(errorSet, dataMigrationDTOJsonCopy, user,
+							orgLocation);
+					break;
+					
+				case "candidatesUpload":
+					dataMigrationDTOJsonCopy.put("inviteEmail", dataMigrationDTO.getInviteEmail());
+					dataMigrationCommonUtil.dataValidationForCandidates(errorSet, dataMigrationDTOJsonCopy, user,
+							orgLocation);
+					break;
+					
+				case "timesheetUpload":
+					String timeFrequency = dataMigrationDTOJson.get("timeFrequencyType").toString();
+					dataMigrationCommonUtil.dataValidationForTimesheets(errorSet, dataMigrationDTOJsonCopy,
+							objFormulaEvaluator, objDefaultFormat, user, orgLocation, timeFrequency);
+					break;
+				case "assetUpload":
+					dataMigrationCommonUtil.dataValidationForAssets(errorSet, dataMigrationDTOJsonCopy, user,
+							orgLocation);
+					break;
+
+				case "projectTasks":
+					dataMigrationCommonUtil.dataValidationForProjectTasks(errorSet, dataMigrationDTOJsonCopy, user,
+							orgLocation,isGlobalAccess);
+					break;
+
+				case "associateUpload":
+					dataMigrationCommonUtil.dataValidationForAsscoaites(errorSet, dataMigrationDTOJsonCopy, user,
+							orgLocation,isGlobalAccess);
+					break;
+
+				case "immigrationUpload":
+					dataMigrationCommonUtil.dataValidationForImmigration(errorSet, dataMigrationDTOJsonCopy, user,
+							orgLocation);
+					break;
+				case "lcaUpload":
+					  dataMigrationCommonUtil.dataValidationForLCA(errorSet, dataMigrationDTOJsonCopy, user, orgLocation);
+					
+					  break;
+					
+				case "submmissionTemplateUpload":
+					dataMigrationCommonUtil.dataValidationForRequirementSubmisssionTemplate(errorSet, dataMigrationDTOJsonCopy, user,
+							orgLocation,jsonString);
+
+					break;
+
+				}
+
+				if (errorSet.isEmpty()) {
+					mapToEntities(dataMigrationDTOJsonCopy, user, orgLocation, dataMigrationDTO.getUploadType(),jsonString);
 					importStatus = "success";
-				}else{
+					FileOutputStream outputStream = new FileOutputStream(
+							new File(ac + dataMigrationDTO.getExportFilePath()));
+					workbook.write(outputStream);
+					history = saveUploadXlsHistory(rowCount, fileName[5], dataMigrationDTO.getExportFilePath(), dataMigrationDTO, user, orgLocation);
+					if(history != null) {
+						history.setSuccessCount(history.getSuccessCount()+1);
+					}
+					history.setFileUrl(dataMigrationDTO.getExportFilePath());
+					uploadXlsHistoryService.storeUploadXlsHistory(history);
+				} else {
 					int errorCount = 0;
 					StringBuilder errorSB = new StringBuilder();
 					for (Map.Entry<String, String> error : errorSet.entrySet()) {
 						errorCount++;
 						errorSB.append(errorCount).append(") ").append(error.getValue()).append("\n");
 					}
-						CellStyle style = workbook.createCellStyle();
-				        Font font = workbook.createFont();
-				        style.setFillForegroundColor(IndexedColors.LIGHT_YELLOW.getIndex());
-				        font.setColor(HSSFColor.RED.index);
-				        style.setFont(font);
-				        style.setWrapText(true);
-					 	nextRow.createCell(colCount+5).setCellValue(errorSB.toString());
-					 	nextRow.getCell(colCount+5).setCellStyle(style);
-	
-				        FileOutputStream outputStream = new FileOutputStream(new File(ac + dataMigrationDTO.getExportFilePath()));
-				        workbook.write(outputStream);
-				        //outputStream.close();
-				        importStatus = dataMigrationDTO.getExportFilePath();
+					CellStyle style = workbook.createCellStyle();
+					Font font = workbook.createFont();
+					style.setFillForegroundColor(IndexedColors.LIGHT_YELLOW.getIndex());
+					font.setColor(HSSFColor.RED.index);
+					style.setFont(font);
+					style.setWrapText(true);
+					nextRow.createCell(colCount + 5).setCellValue(errorSB.toString());
+					nextRow.getCell(colCount + 5).setCellStyle(style);
+                     
+					FileOutputStream outputStream = new FileOutputStream(
+							new File(ac + dataMigrationDTO.getExportFilePath()));
+					workbook.write(outputStream);
+					finalImportStatus = dataMigrationDTO.getExportFilePath();
+					
+					history = saveUploadXlsHistory(rowCount, fileName[5], dataMigrationDTO.getExportFilePath(), dataMigrationDTO, user, orgLocation);
+					if(history != null) {
+						history.setFailureCount(history.getFailureCount()+1);
+					}
+					history.setUploadStatus("Failed");
+					history.setFileUrl(dataMigrationDTO.getExportFilePath());
+					uploadXlsHistoryService.storeUploadXlsHistory(history);
 				}
+				
 			}
+			
 		}
+		
+		history.setUploadProcessingStatus("Completed");
+		uploadXlsHistoryService.storeUploadXlsHistory(history);
+		
 		workbook.close();
 		inputStream.close();
-		return importStatus;
+		if (isEmptyExcel) {
+			return "fail";
+		} else if (finalImportStatus != null) {
+			return finalImportStatus;
+		} else {
+			return importStatus;
+		}
+
 	}
 	
-	private void mapToEntities(String dataMigrationDTOJsonCopy, User user, OrgLocations orgLocation, String uploadType) throws Exception
-	{
-		switch(uploadType){
-		    case "jobUpload": 
-		    	RequirementDTO reqDTO = new RequirementDTO();
-				ObjectMapper mapper = new ObjectMapper();
-				mapper.configure(DeserializationFeature.ACCEPT_SINGLE_VALUE_AS_ARRAY, true);
-				mapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
-				reqDTO = mapper.readValue(dataMigrationDTOJsonCopy, RequirementDTO.class);
-				reqDTO.setDateFormat(orgLocation.getDateFormat());
-				if(reqDTO.getRequirementSubmissionStatus().equalsIgnoreCase("SUBMITTED")) {
-					reqDTO.setSaveType("submitForApproval");
+	
+    public UploadXlsHistory saveUploadXlsHistory(Integer rowCount,String fileName,String fileUrl,DataMigrationDTO dataMigrationDTO,User user,OrgLocations orgLocations) {
+    
+    	UploadXlsHistory history = null;
+		try {
+			history = uploadXlsHistoryService.getUploadXlsHistoryDetailsByUploadId(dataMigrationDTO.getUploadid());
+			if(history == null) {
+	    		history = new UploadXlsHistory();
+	    		history.setUserId(user);
+	    		history.setOrgLocationId(orgLocations);
+	    		history.setTotalCount(rowCount);
+	    		history.setUUID(SourceLeadRandomCodeHelper.generateRandomUUID());
+	    		history.setCreatedDate(new Date());
+	    		history.setStatus(1);
+	    		history.setFileName(fileName);
+	    		history.setFileContentType("application/vnd.ms-excel");
+	    		history.setUploadId(dataMigrationDTO.getUploadid());
+	    		history.setSessionId(dataMigrationDTO.getSessionId());
+	    		history.setUploadProcessingStatus("Inprogress");
+	    		
+	    		switch (dataMigrationDTO.getUploadType()) {
+				case "jobUpload":
+					history.setUploadEntityType("Jobs");
+					break;
+					
+				case "candidatesUpload":
+					history.setUploadEntityType("Candidates");
+					break;
+					
+				case "timesheetUpload":
+					history.setUploadEntityType("Timesheets");
+					break;
+				case "assetUpload":
+					history.setUploadEntityType("Assets");
+					break;
+
+				case "projectTasks":
+					history.setUploadEntityType("ProjectTasks");
+					break;
+
+				case "associateUpload":
+					history.setUploadEntityType("Associates");
+					break;
+
+				case "immigrationUpload":
+					history.setUploadEntityType("Immigration");
+					break;
+				case "lcaUpload":
+					history.setUploadEntityType("LCA");
+					  break;
+					
+				case "submmissionTemplateUpload":
+					history.setUploadEntityType("Submissions");
+					break;
+
 				}
-				if(reqDTO.getRequirementSubmissionStatus().equalsIgnoreCase("DRAFT")) {
-					reqDTO.setSaveType("draft");
-				}
-				if(reqDTO.getRequirementSubmissionStatus().equalsIgnoreCase("OPEN")) {
-					reqDTO.setSaveType("save");
-				}
-				
-				if(reqDTO.getParallelApprover() != null){
-					reqDTO.setApprover("Parallel");
-				}
-				if(reqDTO.getCoolingOff() == null || reqDTO.getCoolingOff() == "" || reqDTO.getCoolingOff() == "null"){
-					reqDTO.setCoolingOff(orgLocation.getCoolingOffPeriod());
-				}
-				
-				if(StringUtils.isNotEmpty(reqDTO.getClientSubmissionForm()) && StringUtils.isNotEmpty(reqDTO.getSelectContact()) && StringUtils.isNotEmpty(reqDTO.getSelectClient())){
-					reqDTO.setIsClient("Y");
-					reqDTO.setApplicationFrom(null);
-				}else if(StringUtils.isEmpty(reqDTO.getIsClient()) || !reqDTO.getIsClient().equalsIgnoreCase("Y")){
-					if(StringUtils.isEmpty(reqDTO.getApplicationFrom())) {
-						SubmissionTemplate   submissionTempletes = submissionTemplateService.getDefaultSubmissionTemplateByOrgLocationId(orgLocation.getId());
-						if(submissionTempletes != null) {
-							reqDTO.setApplicationFrom(submissionTempletes.getId().toString());
-						}
-						
+	    	}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return history;
+    }
+
+	@SuppressWarnings("unused")
+	private void mapToEntities(JSONObject dataMigrationDTOJsonCopy, User user, OrgLocations orgLocation,
+			String uploadType,String jsonString) throws Exception {
+		Gson gson = new Gson();
+		switch (uploadType) {
+		case "jobUpload":
+			RequirementDTO reqDTO = new RequirementDTO();
+			ObjectMapper mapper = new ObjectMapper();
+			mapper.configure(DeserializationFeature.ACCEPT_SINGLE_VALUE_AS_ARRAY, true);
+			mapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
+
+			reqDTO = gson.fromJson(dataMigrationDTOJsonCopy.toString(), RequirementDTO.class);
+
+			// reqDTO = mapper.readValue(dataMigrationDTOJsonCopy, RequirementDTO.class);
+			reqDTO.setDateFormat(orgLocation.getDateFormat());
+			if (reqDTO.getRequirementSubmissionStatus().equalsIgnoreCase("SUBMITTED")) {
+				reqDTO.setSaveType("submitForApproval");
+			}
+			if (reqDTO.getRequirementSubmissionStatus().equalsIgnoreCase("DRAFT")) {
+				reqDTO.setSaveType("draft");
+			}
+			if (reqDTO.getRequirementSubmissionStatus().equalsIgnoreCase("OPEN")) {
+				reqDTO.setSaveType("save");
+			}
+
+			if (reqDTO.getParallelApprover() != null) {
+				reqDTO.setApprover("Parallel");
+			}
+			if (reqDTO.getCoolingOff() == null || reqDTO.getCoolingOff() == "" || reqDTO.getCoolingOff() == "null") {
+				reqDTO.setCoolingOff(orgLocation.getCoolingOffPeriod());
+			}
+			reqDTO.setImportValue("Y");
+			if (StringUtils.isNotEmpty(reqDTO.getClientSubmissionForm())
+					&& StringUtils.isNotEmpty(reqDTO.getSelectContact())
+					&& StringUtils.isNotEmpty(reqDTO.getSelectClient())) {
+				reqDTO.setIsClient("Y");
+				reqDTO.setApplicationFrom(null);
+			} else if (StringUtils.isEmpty(reqDTO.getIsClient()) || !reqDTO.getIsClient().equalsIgnoreCase("Y")) {
+				if (StringUtils.isEmpty(reqDTO.getApplicationFrom())) {
+					SubmissionTemplate submissionTempletes = submissionTemplateService
+							.getDefaultSubmissionTemplateByOrgLocationId(orgLocation.getId());
+					if (submissionTempletes != null) {
+						reqDTO.setApplicationFrom(submissionTempletes.getId().toString());
 					}
 				}
-				Requirement requirement = requirementService.storeRequirement(reqDTO, orgLocation, user);
-		    break;
-		    
-		    case "timesheetUpload": 
-		    	System.out.println("Time Sheet block");	    
-		    break;
-	    }
+			}
+			if (reqDTO.getFileURL() != null && !reqDTO.getFileURL().isEmpty()) {
+				List<FileInfo> fileInfoList = new ArrayList<>();
+				FileInfo fileInfo = new FileInfo();
+				fileInfo.setFileName(reqDTO.getFileName());
+				fileInfo.setFileURL(reqDTO.getFileURL());
+				fileInfo.setContentType(reqDTO.getFileContentType());
+				fileInfoList.add(fileInfo);
+				reqDTO.setFileInfo(fileInfoList);
+			}
+
+			List<RequirementLocationsDTO> locationDTOList = new ArrayList<>();
+			RequirementLocationsDTO locationDTO = new RequirementLocationsDTO();
+			locationDTO.setLocationName(reqDTO.getLocation());
+			if (StringUtils.isNotBlank(reqDTO.getCountry())) {
+				locationDTO.setCountry(reqDTO.getCountry());
+			}
+			if (StringUtils.isNotBlank(reqDTO.getState())) {
+				locationDTO.setState(reqDTO.getState());
+			}
+			if (StringUtils.isNotBlank(reqDTO.getCity())) {
+				locationDTO.setCity(reqDTO.getCity());
+			}
+			if (StringUtils.isNotBlank(reqDTO.getZipCode())) {
+				locationDTO.setZipcode(reqDTO.getZipCode());
+			}
+			locationDTOList.add(locationDTO);
+			reqDTO.setLocationInfo(locationDTOList);
+			Requirement requirement = requirementService.storeRequirement(reqDTO, orgLocation, user);
+			break;
+			
+			
+		case "candidatesUpload":
+			
+			CandidateDTO candidateDTO = new CandidateDTO();
+			ObjectMapper candidtemapper = new ObjectMapper();
+			candidtemapper.configure(DeserializationFeature.ACCEPT_SINGLE_VALUE_AS_ARRAY, true);
+			candidtemapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
+			candidateDTO = gson.fromJson(dataMigrationDTOJsonCopy.toString(), CandidateDTO.class);
+			if(candidateDTO.getCountry() == null || candidateDTO.getCountry().isEmpty()) {
+				candidateDTO.setCountry(orgLocation.getCountry());
+			}
+			candidateService.saveCandidateBulkImports(candidateDTO, orgLocation, user);
+			break;
+			
+		case "submmissionTemplateUpload":
+			
+			RequirementSubmission requirementSubmission = null;
+			Countries countries = null;
+			if(StringUtils.isNotBlank(orgLocation.getCountry())) {
+				 countries = countriesService.getCountriesByCountryName(orgLocation.getCountry());
+			 }
+		
+				JSONObject labelItems = new JSONObject();
+				JSONArray array = new JSONArray();
+				Iterator<?> keys = dataMigrationDTOJsonCopy.keys();
+				while (keys.hasNext()) {
+					String k = (String) keys.next();
+					if(!k.equalsIgnoreCase("requirementId")) {
+						if(!dataMigrationDTOJsonCopy.get(k).toString().equalsIgnoreCase("") && !dataMigrationDTOJsonCopy.get(k).toString().equalsIgnoreCase("null") && !dataMigrationDTOJsonCopy.get(k).toString().equalsIgnoreCase("undefined")) {
+							 JSONArray jsonarray = new JSONArray(jsonString);
+							 for(int i=0; i<jsonarray.length(); i++){
+							        JSONObject obj = jsonarray.getJSONObject(i);
+							        if(obj.getString("label").replaceAll("\\s+","").equalsIgnoreCase(k)) {
+							        	JSONObject firstNameItem = new JSONObject();
+										String[] labelName = k.split("(?<=.)(?=\\p{Lu})");
+										firstNameItem.put("label", StringUtils.join(labelName," "));
+										firstNameItem.put("type", obj.getString("type"));
+										firstNameItem.put("id", "text-"+SourceLeadRandomCodeHelper.generateRandomBulkSubmissionId());
+										firstNameItem.put("name", k);
+										if(k.equalsIgnoreCase("CurrentCTC") || k.equalsIgnoreCase("ExpectedCTC")){
+											firstNameItem.put("value", countries.getCurrency()+" / "+dataMigrationDTOJsonCopy.getString(k)+" Monthly");
+										}else {
+											firstNameItem.put("value", dataMigrationDTOJsonCopy.getString(k));
+										}
+										
+										labelItems.put(k, dataMigrationDTOJsonCopy.getString(k));
+										array.put(firstNameItem);
+							        }
+							 }
+							
+						}
+					}
+				}
+				
+				String con = array.toString();
+				
+				requirementSubmission = requirementSubmissionService.saveRequirementSubmission(dataMigrationDTOJsonCopy,user, orgLocation, con, null);
+				
+				RequirementSubmissionHistory requirementSubmissionHistory = new RequirementSubmissionHistory();
+				requirementSubmissionHistory.setToStage(requirementSubmission.getSubmissionStatus().toString());
+				requirementSubmissionHistory.setFromStage("NEW");
+				requirementSubmissionHistoryService.updateRequirementHistory(requirementSubmission, user,requirementSubmissionHistory);
+				Requirement req = requirementSubmission.getRequirement();
+				if(null != req){
+					Integer totalApplicatsCountForRequirement = 0;
+				   //updating total number of applicants for requrement
+					totalApplicatsCountForRequirement = requirementSubmissionService.getNumberOfApplicantsForRequirement(req.getOrgLocationId().getId(), req.getId());
+					if(totalApplicatsCountForRequirement > 0){
+						req.setTotalApplicants(totalApplicatsCountForRequirement); 
+						requirementService.updateRequirement(req);
+					}else{
+						req.setTotalApplicants(0); 
+					}
+					
+					// pass dto as parameter
+					RequirementDTO requirementDTO = commonUtil.getRequirementDTO(req);
+					requirementElkUtil.saveElkRequirement(req,requirementDTO);	
+				}
+			
+			break;
+
+		case "assetUpload":
+			AssetDTO assetDTO = new AssetDTO();
+			AssetsDataImportDTO assetMigDTO = new AssetsDataImportDTO();
+			ObjectMapper mapper1 = new ObjectMapper();
+			mapper1.configure(DeserializationFeature.ACCEPT_SINGLE_VALUE_AS_ARRAY, true);
+			mapper1.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
+			assetMigDTO = gson.fromJson(dataMigrationDTOJsonCopy.toString(), AssetsDataImportDTO.class);
+
+			List<AssetAssignDTO> assignAssetList = new ArrayList<>();
+			if (StringUtils.isNotEmpty(dataMigrationDTOJsonCopy.getString("assignAssetStr"))) {
+				String[] assignUsere = dataMigrationDTOJsonCopy.getString("assignAssetStr").split("&");
+				for (String as : assignUsere) {
+					AssetAssignDTO aDTO = new AssetAssignDTO();
+					String[] email = as.split("#");
+					aDTO.setShiftEmp(email[0]);
+					aDTO.setShift(email[1]);
+					assignAssetList.add(aDTO);
+				}
+			}
+			assetDTO.setAssignAsset(assignAssetList);
+			assetDTO.setCategory(assetMigDTO.getCategory());
+			assetDTO.setWorkingStatus(assetMigDTO.getWorkingStatus());
+			assetDTO.setCpu(assetMigDTO.getCpu());
+			assetDTO.setSno(assetMigDTO.getSno());
+			assetDTO.setMemory(assetMigDTO.getMemory());
+			assetDTO.setModel(assetMigDTO.getModel());
+			assetDTO.setMake(assetMigDTO.getMake());
+			assetDTO.setDescription(assetMigDTO.getDescription());
+			assetDTO.setHarddisk(assetMigDTO.getHarddisk());
+			assetDTO.setName(assetMigDTO.getName());
+			assetDTO.setVendorDetails(assetMigDTO.getVendorDetails());
+			assetDTO.setOperatingSystem(assetMigDTO.getOperatingSystem());
+			assetDTO.setOsKey(assetMigDTO.getOsKey());
+			assetDTO.setAntiVirus(assetMigDTO.getAntiVirus());
+			assetDTO.setPurchaseDate(assetMigDTO.getPurchaseDate());
+			assetDTO.setDepreciationAmount(assetMigDTO.getDepreciationAmount());
+			assetDTO.setCost(assetMigDTO.getCost());
+			assetDTO.setDepreciationDate(assetMigDTO.getDepreciationDate());
+			assetDTO.setIssueDate(assetMigDTO.getIssueDate());
+			assetDTO.setMacAddress(assetMigDTO.getMacAddress());
+			
+			Asset asset = assetService.saveAssetDetails(assetDTO, user, orgLocation);
+			break;
+
+		case "timesheetUpload":
+			logger.debug("Time Sheet block");
+			break;
+
+		case "projectTasks":
+			logger.debug("projectTasks");
+
+			ProjectTasksDTO projectTasksDTO = new ProjectTasksDTO();
+			ObjectMapper tasksMapper = new ObjectMapper();
+			tasksMapper.configure(DeserializationFeature.ACCEPT_SINGLE_VALUE_AS_ARRAY, true);
+			tasksMapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
+			projectTasksDTO = gson.fromJson(dataMigrationDTOJsonCopy.toString(), ProjectTasksDTO.class);
+			// projectTasksDTO = tasksMapper.readValue(dataMigrationDTOJsonCopy,
+			// ProjectTasksDTO.class);
+			Projects project = projectService.getProjectByProjectUUID(projectTasksDTO.getProjectUUID());
+
+			tasksService.saveProjectTasksDTOByProjectId(project.getId(), projectTasksDTO, user.getId());
+			break;
+
+		case "associateUpload":
+			logger.debug("upload Associate");
+			UsersImport userImport = new UsersImport();
+			ObjectMapper userImporMmapper = new ObjectMapper();
+			userImporMmapper.configure(DeserializationFeature.ACCEPT_SINGLE_VALUE_AS_ARRAY, true);
+			userImporMmapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
+			userImport = gson.fromJson(dataMigrationDTOJsonCopy.toString(), UsersImport.class);
+			uploadFileService.saveBulkAssociate(userImport, orgLocation, user);
+
+			break;
+		case "lcaUpload":
+			logger.debug("lcaUpload");
+			ObjectMapper lcaMapper = new ObjectMapper();
+			lcaMapper.configure(DeserializationFeature.ACCEPT_SINGLE_VALUE_AS_ARRAY, true);
+			lcaMapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
+			//userImport = gson.fromJson(dataMigrationDTOJsonCopy.toString(), lcaDTO.class);
+			System.out.println(" Need to Add code for save funtionality for LCA Imports=============>");
+			//uploadFileService.saveBulkAssociate(userImport, orgLocation, user);
+			
+			LcaDTO lcaDTO = new LcaDTO();
+			
+			if (StringUtils.isNotBlank(dataMigrationDTOJsonCopy.getString("newLcaNumber")) && !"null".equals(dataMigrationDTOJsonCopy.getString("newLcaNumber"))) {
+				   lcaDTO.setLcaNo(dataMigrationDTOJsonCopy.getString("newLcaNumber"));
+			}
+			
+			if(StringUtils.isNotBlank(dataMigrationDTOJsonCopy.getString("newLcaTitle")) && !"null".equals(dataMigrationDTOJsonCopy.getString("newLcaTitle"))) {
+				 lcaDTO.setLcaTitle(dataMigrationDTOJsonCopy.getString("newLcaTitle"));
+			}
+			
+			if(StringUtils.isNotBlank(dataMigrationDTOJsonCopy.getString("noOfPos")) && !"null".equals(dataMigrationDTOJsonCopy.getString("noOfPos"))) {
+				 lcaDTO.setNoOfPositions(dataMigrationDTOJsonCopy.getString("noOfPos"));
+			}
+			
+			// LCAPLACE OF EMPLOYMENT TABLE SAVING
+			
+			LcaPlaceOfEmploymentDTO locDTO = null;
+			lcaDTO.setLcaPlaceOfEmploymentList(new ArrayList<LcaPlaceOfEmploymentDTO>()); // setting empty list
+			if(StringUtils.isNotBlank(dataMigrationDTOJsonCopy.getString("currClientLocation")) && !"null".equals(dataMigrationDTOJsonCopy.getString("currClientLocation"))) {
+
+			    locDTO= new LcaPlaceOfEmploymentDTO();
+				locDTO.setLocation(dataMigrationDTOJsonCopy.getString("currClientLocation"));
+				locDTO.setAddressLine1(dataMigrationDTOJsonCopy.getString("currClientLocation"));
+				lcaDTO.getLcaPlaceOfEmploymentList().add((LcaPlaceOfEmploymentDTO)locDTO);
+			}
+			
+			if(StringUtils.isNotBlank(dataMigrationDTOJsonCopy.getString("curPrimrVenodorLocation")) && !"null".equals(dataMigrationDTOJsonCopy.getString("curPrimrVenodorLocation"))) {
+			        locDTO= new LcaPlaceOfEmploymentDTO();
+					locDTO.setLocation(dataMigrationDTOJsonCopy.getString("curPrimrVenodorLocation"));
+					locDTO.setAddressLine1(dataMigrationDTOJsonCopy.getString("curPrimrVenodorLocation"));
+					lcaDTO.getLcaPlaceOfEmploymentList().add((LcaPlaceOfEmploymentDTO)locDTO);
+			}else {
+				lcaDTO.setLocation("");
+			}
+			
+			if(StringUtils.isNotBlank(dataMigrationDTOJsonCopy.getString("curVenodorLocation")) && !"null".equals(dataMigrationDTOJsonCopy.getString("curVenodorLocation"))) {
+				    locDTO= new LcaPlaceOfEmploymentDTO();
+					locDTO.setLocation(dataMigrationDTOJsonCopy.getString("curVenodorLocation"));
+					locDTO.setAddressLine1(dataMigrationDTOJsonCopy.getString("curVenodorLocation"));
+					lcaDTO.getLcaPlaceOfEmploymentList().add((LcaPlaceOfEmploymentDTO)locDTO);
+			}else {
+				lcaDTO.setLocation("");
+			}
+			
+			
+			if(StringUtils.isNotBlank(dataMigrationDTOJsonCopy.getString("socCode")) && !"null".equals(dataMigrationDTOJsonCopy.getString("socCode"))) {
+				 lcaDTO.setSocCode(dataMigrationDTOJsonCopy.getString("socCode"));
+			}
+			
+			if(StringUtils.isNotBlank(dataMigrationDTOJsonCopy.getString("socTitle")) && !"null".equals(dataMigrationDTOJsonCopy.getString("socTitle"))) {
+				 lcaDTO.setSocOccupationTitle(dataMigrationDTOJsonCopy.getString("socTitle"));
+			}
+			
+			if(StringUtils.isNotBlank(dataMigrationDTOJsonCopy.getString("socJobTitle")) && !"null".equals(dataMigrationDTOJsonCopy.getString("socJobTitle"))) {
+				lcaDTO.setJobTitle(dataMigrationDTOJsonCopy.getString("socJobTitle"));
+			}
+			if(StringUtils.isNotBlank(dataMigrationDTOJsonCopy.getString("wageLevel")) && !"null".equals(dataMigrationDTOJsonCopy.getString("wageLevel"))) {
+				 lcaDTO.setWagesLevel(dataMigrationDTOJsonCopy.getString("wageLevel"));
+			}
+			
+			if(StringUtils.isNotBlank(dataMigrationDTOJsonCopy.getString("prevailWageCurr")) && !"null".equals(dataMigrationDTOJsonCopy.getString("prevailWageCurr"))) {
+				 lcaDTO.setPrivilingWageCurrency(dataMigrationDTOJsonCopy.getString("prevailWageCurr"));
+			}
+			
+			if(StringUtils.isNotBlank(dataMigrationDTOJsonCopy.getString("prevailWageRate")) && !"null".equals(dataMigrationDTOJsonCopy.getString("prevailWageRate"))) {
+				 lcaDTO.setPrevailingWage(dataMigrationDTOJsonCopy.getString("prevailWageRate"));
+			}
+			
+			if(StringUtils.isNotBlank(dataMigrationDTOJsonCopy.getString("prevailWageRatePer")) && !"null".equals(dataMigrationDTOJsonCopy.getString("prevailWageRatePer"))) {
+				 lcaDTO.setPrivilingWageRateType(dataMigrationDTOJsonCopy.getString("prevailWageRatePer"));
+			}
+			
+			if(StringUtils.isNotBlank(dataMigrationDTOJsonCopy.getString("newLcaStartDate")) && !"null".equals(dataMigrationDTOJsonCopy.getString("newLcaStartDate"))) {
+				
+				 lcaDTO.setStartDate(dataMigrationDTOJsonCopy.getString("newLcaStartDate"));
+			}
+			
+			if(StringUtils.isNotBlank(dataMigrationDTOJsonCopy.getString("newLcaEndDate")) && !"null".equals(dataMigrationDTOJsonCopy.getString("newLcaEndDate"))) {
+				 lcaDTO.setEndDate(dataMigrationDTOJsonCopy.getString("newLcaEndDate"));
+			}
+			
+			if(StringUtils.isNotBlank(dataMigrationDTOJsonCopy.getString("lcaStatus")) && !"null".equals(dataMigrationDTOJsonCopy.getString("lcaStatus"))) {
+				 lcaDTO.setLcaStatus(dataMigrationDTOJsonCopy.getString("lcaStatus"));
+			}
+			
+			if(StringUtils.isNotBlank(dataMigrationDTOJsonCopy.getString("newStatus")) && !"null".equals(dataMigrationDTOJsonCopy.getString("newStatus"))) {
+				 lcaDTO.setStatus(dataMigrationDTOJsonCopy.getString("newStatus"));
+			}
+			
+			immigrationCommonService.saveLcaDetails(lcaDTO, user, orgLocation);
+			
+			break;
+		case "immigrationUpload":
+			logger.debug("inside Immigration uplod---->>>>>");
+			ObjectMapper immigratoinMapper = new ObjectMapper();
+			immigratoinMapper.configure(DeserializationFeature.ACCEPT_SINGLE_VALUE_AS_ARRAY, true);
+			immigratoinMapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
+			// below details need to pushed into immigration table.
+			logger.debug("dataMigrationDTOJsonCopy. get Template  ---->>>>>"
+					+ dataMigrationDTOJsonCopy.getString("template"));
+			ImmigrationDTO immDto = new ImmigrationDTO();
+			// immDto.setEmpId(dataMigrationDTOJsonCopy.getString("empId"));
+			immDto.setCandidateId(dataMigrationDTOJsonCopy.getString("candidateId")); // setting candidate id manually
+		
+			if (StringUtils.isNotBlank(dataMigrationDTOJsonCopy.getString("beneficiaryFirstName"))
+					&& !"null".equals(dataMigrationDTOJsonCopy.getString("beneficiaryFirstName"))) {																			// for saving.
+				immDto.setFirstName(dataMigrationDTOJsonCopy.getString("beneficiaryFirstName"));
+			}
+			if (StringUtils.isNotBlank(dataMigrationDTOJsonCopy.getString("beneficiaryLastName"))
+					&& !"null".equals(dataMigrationDTOJsonCopy.getString("beneficiaryLastName"))) {
+				immDto.setLastName(dataMigrationDTOJsonCopy.getString("beneficiaryLastName"));
+			}
+			if (StringUtils.isNotBlank(dataMigrationDTOJsonCopy.getString("beneficiaryEmail"))
+					&& !"null".equals(dataMigrationDTOJsonCopy.getString("beneficiaryEmail"))) {
+				immDto.setEmail(dataMigrationDTOJsonCopy.getString("beneficiaryEmail"));
+			}
+			if (StringUtils.isNotBlank(dataMigrationDTOJsonCopy.getString("experience"))
+					&& !"null".equals(dataMigrationDTOJsonCopy.getString("experience"))) {
+				if (dataMigrationDTOJsonCopy.getString("experience").matches("[-a-zA-Z]+")) {
+					// jsonObj.put("experienceYears", "0");
+					immDto.setExperienceYears("0");
+					immDto.setExperienceMonths("0");
+				} else {
+					String exp[] = getExperienceYearsAndMonths(dataMigrationDTOJsonCopy.getString("experience"));
+					if (exp.length > 1) {
+						immDto.setExperienceYears(exp[0]);
+						if (!exp[1].matches("[a-zA-Z]+")) {
+							if (!"years".equalsIgnoreCase(exp[1])) {
+								int months = ((Number) NumberFormat.getInstance().parse(exp[1])).intValue();
+								immDto.setExperienceMonths(String.valueOf(months));
+							}
+
+						}
+					} else {
+						if (exp[0].contains("years") || exp[0].contains("Years")) {
+							int years = ((Number) NumberFormat.getInstance().parse(exp[0])).intValue();
+							immDto.setExperienceYears(String.valueOf(years));
+							immDto.setExperienceMonths("0");
+						} else {
+							immDto.setExperienceYears("");
+							immDto.setExperienceMonths("");
+						}
+
+					}
+
+				}
+			}
+			if (StringUtils.isNotBlank(dataMigrationDTOJsonCopy.getString("ssn"))
+					&& !"null".equals(dataMigrationDTOJsonCopy.getString("ssn"))) {
+				immDto.setSsnNumber(dataMigrationDTOJsonCopy.getString("ssn"));
+			}
+			
+			if (StringUtils.isNotBlank(dataMigrationDTOJsonCopy.getString("i94Number"))
+					&& !"null".equals(dataMigrationDTOJsonCopy.getString("i94Number"))) {
+				immDto.setI_94_number(dataMigrationDTOJsonCopy.getString("i94Number"));
+			}
+			
+			if (StringUtils.isNotBlank(dataMigrationDTOJsonCopy.getString("i20Number"))
+					&& !"null".equals(dataMigrationDTOJsonCopy.getString("i20Number"))) {
+				immDto.setI_20_number(dataMigrationDTOJsonCopy.getString("i20Number"));
+			}
+			
+			if (StringUtils.isNotBlank(dataMigrationDTOJsonCopy.getString("eadNumber"))
+					&& !"null".equals(dataMigrationDTOJsonCopy.getString("eadNumber"))) {
+				immDto.setEadNumber(dataMigrationDTOJsonCopy.getString("eadNumber"));
+			}
+			
+			if (StringUtils.isNotBlank(dataMigrationDTOJsonCopy.getString("dateOfBirth"))
+					&& !"null".equals(dataMigrationDTOJsonCopy.getString("dateOfBirth"))) {
+				immDto.setBirthDate(dataMigrationDTOJsonCopy.getString("dateOfBirth"));
+			}
+			//
+			if (StringUtils.isNotBlank(dataMigrationDTOJsonCopy.getString("maritalStatus"))
+					&& !"null".equals(dataMigrationDTOJsonCopy.getString("maritalStatus"))) {
+				immDto.setMaritalStatus(dataMigrationDTOJsonCopy.getString("maritalStatus"));
+			}
+			
+			if (StringUtils.isNotBlank(dataMigrationDTOJsonCopy.getString("petitionType"))
+					&& !"null".equals(dataMigrationDTOJsonCopy.getString("petitionType"))) {
+				immDto.setPetitionType(dataMigrationDTOJsonCopy.getString("petitionType"));
+			}
+			
+			if (StringUtils.isNotBlank(dataMigrationDTOJsonCopy.getString("template"))
+					&& !"null".equals(dataMigrationDTOJsonCopy.getString("template"))) {
+				immDto.setTemplateId(dataMigrationDTOJsonCopy.getString("template"));
+			}
+			
+			if (StringUtils.isNotBlank(dataMigrationDTOJsonCopy.getString("dateOfArrival"))
+					&& !"null".equals(dataMigrationDTOJsonCopy.getString("dateOfArrival"))) {
+				immDto.setArrivalDate(dataMigrationDTOJsonCopy.getString("dateOfArrival"));
+			}
+			
+			
+			if (StringUtils.isNotBlank(dataMigrationDTOJsonCopy.getString("openOn"))
+					&& !"null".equals(dataMigrationDTOJsonCopy.getString("openOn"))) {
+				immDto.setOpenDate(dataMigrationDTOJsonCopy.getString("openOn"));
+			}
+			/*
+			 * immDto.setAttorneyContactName(dataMigrationDTOJsonCopy.getString(
+			 * "companyName")); immDto.setAttorneyEmail(dataMigrationDTOJsonCopy.getString(
+			 * "companyContactEmail"));
+			 * 
+			 * 
+			 */
+			
+			if (StringUtils.isNotBlank(dataMigrationDTOJsonCopy.getString("immigrationJobId"))
+					&& !"null".equals(dataMigrationDTOJsonCopy.getString("immigrationJobId"))) {
+				immDto.setJobId(dataMigrationDTOJsonCopy.getString("immigrationJobId"));// Sql as of now hard coded value.
+			}
+			if (StringUtils.isNotBlank(dataMigrationDTOJsonCopy.getString("company"))
+					&& !"null".equals(dataMigrationDTOJsonCopy.getString("company"))) {
+				immDto.setAttorneyId(dataMigrationDTOJsonCopy.getString("company")); // immigrationServices.
+			}
+			if (StringUtils.isNotBlank(dataMigrationDTOJsonCopy.getString("companyContactEmail"))
+					&& !"null".equals(dataMigrationDTOJsonCopy.getString("companyContactEmail"))) {
+				immDto.setAttorneyContact(dataMigrationDTOJsonCopy.getString("companyContactEmail"));
+			}
+			//
+			if (StringUtils.isNotBlank(dataMigrationDTOJsonCopy.getString("status"))
+					&& !"null".equals(dataMigrationDTOJsonCopy.getString("status"))) {
+				immDto.setCurrUscisStatus(dataMigrationDTOJsonCopy.getString("status")); // currUscisStatus status in
+			}
+			// immigration.
+			if (StringUtils.isNotBlank(dataMigrationDTOJsonCopy.getString("receiptNo"))
+					&& !"null".equals(dataMigrationDTOJsonCopy.getString("receiptNo"))) {
+				immDto.setReceiptNo(dataMigrationDTOJsonCopy.getString("receiptNo"));
+			}
+			
+			if (StringUtils.isNotBlank(dataMigrationDTOJsonCopy.getString("benficiarylocation"))
+					&& !"null".equals(dataMigrationDTOJsonCopy.getString("benficiarylocation"))) {
+				immDto.setLocation(dataMigrationDTOJsonCopy.getString("benficiarylocation"));
+			}
+			// depends on associate id populate visa Object.
+			ImmigrationPassportVisaDTO passVisaDto = new ImmigrationPassportVisaDTO(); // need to do later
+			if (StringUtils.isNotBlank(dataMigrationDTOJsonCopy.getString("visaNo"))
+					&& !"null".equals(dataMigrationDTOJsonCopy.getString("visaNo"))) {
+				passVisaDto.setIdType(Constants.ID_TYPE_VISA);
+				passVisaDto.setCandidateId(dataMigrationDTOJsonCopy.getString("candidateId"));
+				passVisaDto.setIdNumber(dataMigrationDTOJsonCopy.getString("visaNo"));
+				passVisaDto.setValidFrom(dataMigrationDTOJsonCopy.getString("visaStartDate"));
+				passVisaDto.setValidTo(dataMigrationDTOJsonCopy.getString("visaEndDate"));
+				passVisaDto.setCountry(dataMigrationDTOJsonCopy.getString("visaCountry"));
+				passVisaDto.setVisaType(dataMigrationDTOJsonCopy.getString("visaType"));
+
+			}
+			
+			
+			if (StringUtils.isNotBlank(dataMigrationDTOJsonCopy.getString("passportNo"))
+					&& !"null".equals(dataMigrationDTOJsonCopy.getString("passportNo"))) {
+				passVisaDto.setIdType(Constants.ID_TYPE_PASSPORT);
+				passVisaDto.setCandidateId(dataMigrationDTOJsonCopy.getString("candidateId"));
+				passVisaDto.setIdNumber(dataMigrationDTOJsonCopy.getString("passportNo"));
+				passVisaDto.setValidFrom(dataMigrationDTOJsonCopy.getString("passportStartDate"));
+				passVisaDto.setValidTo(dataMigrationDTOJsonCopy.getString("passportEndDate"));
+				passVisaDto.setCountry(dataMigrationDTOJsonCopy.getString("passportCountry"));
+			}
+			// immDto.setOpenDate(dataMigrationDTOJsonCopy.getString("lawFirmClient"));
+			// for lca details need to push lca table.
+			// CandidateLcaI94Summary lcaCurrSummary = new CandidateLcaI94Summary();
+			if (StringUtils.isNotBlank(dataMigrationDTOJsonCopy.getString("lcaStartDate"))
+					&& !"null".equals(dataMigrationDTOJsonCopy.getString("lcaStartDate"))) {
+				immDto.setLcaStartDate(dataMigrationDTOJsonCopy.getString("lcaStartDate"));
+			}
+			
+			if (StringUtils.isNotBlank(dataMigrationDTOJsonCopy.getString("lcaEndDate"))
+					&& !"null".equals(dataMigrationDTOJsonCopy.getString("lcaEndDate"))) {
+				immDto.setLcaEndDate(dataMigrationDTOJsonCopy.getString("lcaEndDate"));
+			}
+			// immDto.setLcaTitle(dataMigrationDTOJsonCopy.getString("lcaTitle"));
+			if (StringUtils.isNotBlank(dataMigrationDTOJsonCopy.getString("lcaNumber"))
+					&& !"null".equals(dataMigrationDTOJsonCopy.getString("lcaNumber"))) {
+				immDto.setLcaNumber(dataMigrationDTOJsonCopy.getString("lcaNumber"));
+			}
+			
+			if(StringUtils.isNotBlank(dataMigrationDTOJsonCopy.getString("lcaRate")) 
+					&& !"null".equals(dataMigrationDTOJsonCopy.getString("lcaRate"))){
+			immDto.setRate(dataMigrationDTOJsonCopy.getString("lcaRate"));
+			}
+			if (StringUtils.isNotBlank(dataMigrationDTOJsonCopy.getString("lcaLocation"))
+					&& !"null".equals(dataMigrationDTOJsonCopy.getString("lcaLocation"))) {
+				immDto.setJobLocation(dataMigrationDTOJsonCopy.getString("lcaLocation"));
+			}else {
+				immDto.setJobLocation("");
+			}
+			// /lcaCurrSummary.setIsCurrent(Constants.YES);
+			// candidate previous lca summary detials below
+			// CandidateLcaI94Summary lcaPrevSummary = new CandidateLcaI94Summary();
+			if (StringUtils.isNotBlank(dataMigrationDTOJsonCopy.getString("prevLcaStartDate"))
+					&& !"null".equals(dataMigrationDTOJsonCopy.getString("prevLcaStartDate"))) {
+				immDto.setPrevLcaStartDate(dataMigrationDTOJsonCopy.getString("prevLcaStartDate"));
+			}
+			
+			if (StringUtils.isNotBlank(dataMigrationDTOJsonCopy.getString("prevLcaEndDate"))
+					&& !"null".equals(dataMigrationDTOJsonCopy.getString("prevLcaEndDate"))) {
+				immDto.setPrevLcaEndDate(dataMigrationDTOJsonCopy.getString("prevLcaEndDate"));
+			}
+			
+			// lcaSummary.setPrevLcaTitle(dataMigrationDTOJsonCopy.getString("prevLcaTitle"));prevLcaTitle
+			if (StringUtils.isNotBlank(dataMigrationDTOJsonCopy.getString("prevLcaNumber"))
+					&& !"null".equals(dataMigrationDTOJsonCopy.getString("prevLcaNumber"))) {
+				immDto.setPrevLcaNumber(dataMigrationDTOJsonCopy.getString("prevLcaNumber"));
+			}
+			if (StringUtils.isNotBlank(dataMigrationDTOJsonCopy.getString("prevLcaLocation"))
+					&& !"null".equals(dataMigrationDTOJsonCopy.getString("prevLcaLocation"))) {
+				immDto.setJobLocation(dataMigrationDTOJsonCopy.getString("prevLcaLocation"));
+			}else {
+				immDto.setJobLocation("");
+			}
+			immDto.setEditMode("false");
+			
+			
+			// pending prevLcaTitle in excel mapping.
+			Immigration immigration = immigrationCommonService.savePetitionDetails(immDto, user, orgLocation, null);
+			CandidatePassportVisa candidatePassportVisa = null;
+			if (StringUtils.isNotBlank(dataMigrationDTOJsonCopy.getString("visaNo"))
+					&& !"null".equals(dataMigrationDTOJsonCopy.getString("visaNo"))
+					&& passVisaDto.getIdType().equalsIgnoreCase(Constants.ID_TYPE_VISA)) {
+				candidatePassportVisa = immigrationCommonService.savePassportDetails(passVisaDto, user, orgLocation,
+						immigration.getId());
+			}
+			if (StringUtils.isNotBlank(dataMigrationDTOJsonCopy.getString("passportNo"))
+					&& !"null".equals(dataMigrationDTOJsonCopy.getString("passportNo"))
+					&& passVisaDto.getIdType().equalsIgnoreCase(Constants.ID_TYPE_PASSPORT)) {
+				candidatePassportVisa = immigrationCommonService.savePassportDetails(passVisaDto, user, orgLocation,
+						immigration.getId());
+			}
+
+			break;
+		}
+	}
+	
+	private String[] getExperienceYearsAndMonths(String experience) {
+	    
+		return experience.split("[\\p{Punct}\\s]+");
+		
+	}
+
+	@Override
+	public List<SourceleadFormFields> getSubmissionTemplateFormFields(Long requirementId) throws Exception {
+		List<SourceleadFormFields> formFieldsList = new ArrayList<>();
+		Requirement requirement = requirementService.getRequirementDetailsById(requirementId);
+		String jsonString = null;
+		if(StringUtils.isNotBlank(requirement.getClientSubmissionTemplateJsonString())) {
+			jsonString = requirement.getClientSubmissionTemplateJsonString();
+		}else {
+			jsonString = requirement.getSubmissionTemplateJsonString();
+		}
+		 JSONArray jsonarray = new JSONArray(jsonString);
+		 for(int i=0; i<jsonarray.length(); i++){
+		        JSONObject obj = jsonarray.getJSONObject(i);
+		        SourceleadFormFields formFields = new SourceleadFormFields();
+		        formFields.setLabelName(obj.getString("label"));
+		        formFields.setIsFieldRequired(Integer.valueOf(obj.getString("req")));
+		        formFields.setFieldName(obj.getString("label").replaceAll("\\s+",""));
+		        formFieldsList.add(formFields);
+		 }
+		return formFieldsList;
 	}
 }

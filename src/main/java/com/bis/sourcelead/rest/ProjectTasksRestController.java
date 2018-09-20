@@ -13,9 +13,8 @@ import java.util.Map;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.apache.commons.lang.StringUtils;
 import org.joda.time.DateTime;
-import org.joda.time.DateTimeZone;
-import org.joda.time.format.DateTimeFormat;
 import org.joda.time.format.DateTimeFormatter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -34,18 +33,28 @@ import com.bis.sourcelead.beans.TaskPriorityReportDTO;
 import com.bis.sourcelead.beans.TasksPercentageReportDTO;
 import com.bis.sourcelead.beans.TasksReportDTO;
 import com.bis.sourcelead.beans.TasksStackedReportDTO;
+import com.bis.sourcelead.beans.TimesheetReportDTO;
 import com.bis.sourcelead.constants.Constants;
+import com.bis.sourcelead.dao.SubmissionApproverHierarchyDao;
+import com.bis.sourcelead.dto.CustomFormFieldDTO;
+import com.bis.sourcelead.dto.ProjectTaskDocumentDTO;
 import com.bis.sourcelead.dto.ProjectTasksDTO;
+import com.bis.sourcelead.dto.Response;
 import com.bis.sourcelead.dto.ResponseList;
 import com.bis.sourcelead.dto.TimeSheetDayEntriesDTO;
+import com.bis.sourcelead.dto.TimeSheetDayEntriesDTOList;
+import com.bis.sourcelead.entity.Expenses;
+import com.bis.sourcelead.entity.Invoice;
 import com.bis.sourcelead.entity.LookUpData;
 import com.bis.sourcelead.entity.OrgLocations;
+import com.bis.sourcelead.entity.OrglocationFormFields;
 import com.bis.sourcelead.entity.ProjectAssignTask;
 import com.bis.sourcelead.entity.ProjectBudget;
 import com.bis.sourcelead.entity.ProjectMembers;
 import com.bis.sourcelead.entity.ProjectMembersHistory;
 import com.bis.sourcelead.entity.ProjectTaskActivity;
 import com.bis.sourcelead.entity.ProjectTaskComments;
+import com.bis.sourcelead.entity.ProjectTaskCustomFieldData;
 import com.bis.sourcelead.entity.ProjectTaskDocuments;
 import com.bis.sourcelead.entity.ProjectTasks;
 import com.bis.sourcelead.entity.Projects;
@@ -53,21 +62,30 @@ import com.bis.sourcelead.entity.SubmissionApproverHierarchy;
 import com.bis.sourcelead.entity.TimeSheetDayEntries;
 import com.bis.sourcelead.entity.Timezone;
 import com.bis.sourcelead.entity.User;
+import com.bis.sourcelead.enums.Result;
+import com.bis.sourcelead.service.ExpensesService;
+import com.bis.sourcelead.service.InvoiceService;
 import com.bis.sourcelead.service.LookUpDataService;
+import com.bis.sourcelead.service.OrglocationFormFieldsService;
 import com.bis.sourcelead.service.ProjectAssignTasksService;
 import com.bis.sourcelead.service.ProjectBudgetService;
 import com.bis.sourcelead.service.ProjectMembersHistoryService;
 import com.bis.sourcelead.service.ProjectMembersService;
 import com.bis.sourcelead.service.ProjectTaskActivityService;
 import com.bis.sourcelead.service.ProjectTaskCommentsService;
+import com.bis.sourcelead.service.ProjectTaskCustomFieldDataService;
 import com.bis.sourcelead.service.ProjectTaskDocumentsService;
 import com.bis.sourcelead.service.ProjectTasksService;
 import com.bis.sourcelead.service.ProjectsService;
 import com.bis.sourcelead.service.SubmissionApproverHierarchyService;
 import com.bis.sourcelead.service.TimeSheetDayEntriesService;
 import com.bis.sourcelead.service.TimeZoneService;
+import com.bis.sourcelead.service.TimesheetSubmissionsService;
 import com.bis.sourcelead.service.UserService;
+import com.bis.sourcelead.util.CalendarUtil;
 import com.bis.sourcelead.util.CommonUtil;
+import com.bis.sourcelead.util.ConversionUtil;
+import com.bis.sourcelead.util.ReportsUtil;
 import com.bis.sourcelead.util.SourceLeadSessionManager;
 import com.ibm.icu.text.DateFormat;
 import com.ibm.icu.text.SimpleDateFormat;
@@ -111,22 +129,46 @@ public class ProjectTasksRestController {
 
 	@Autowired
 	ProjectsService projectsService;
-	
+
 	@Autowired
 	ProjectBudgetService projectBudgetService;
-	
+
 	@Autowired
 	private ProjectMembersService projectMembersService;
-	
+
 	@Autowired
 	private ProjectMembersHistoryService projectMembersHistoryService;
-	
+
 	@Autowired
 	private SubmissionApproverHierarchyService submissionApproverHierarchyService;
-	
+
 	@Autowired
-	private TimeSheetDayEntriesService timeSheetDayEntriesService; 
-	
+	private TimeSheetDayEntriesService timeSheetDayEntriesService;
+
+	@Autowired
+	private SubmissionApproverHierarchyDao submissionApproverHierarchyDao;
+
+	@Autowired
+	private ExpensesService expensesService;
+
+	@Autowired
+	private InvoiceService invoiceService;
+
+	@Autowired
+	ConversionUtil conversionUtil;
+
+	@Autowired
+	ReportsUtil reportsUtil;
+
+	@Autowired
+	private TimesheetSubmissionsService timesheetSubmissionsService;
+
+	@Autowired
+	private ProjectTaskCustomFieldDataService projectTaskCustomFieldDataService;
+
+	@Autowired
+	private OrglocationFormFieldsService orglocationFormFieldsService;
+
 	/**
 	 * @author David sammeta
 	 * @return
@@ -172,18 +214,58 @@ public class ProjectTasksRestController {
 	 */
 	@PreAuthorize("hasAnyRole('ROLE_CREATE_PROJECT_TASKS')")
 	@RequestMapping(value = "/saveProjectTasks", method = RequestMethod.POST)
-	public @ResponseBody String saveProjectTasks(ProjectTasksDTO projectTasksDTO,
+	public @ResponseBody Response<String> saveProjectTasks(ProjectTasksDTO projectTasksDTO,
 			@RequestParam(value = "projectId", required = false) Long projectId,
 			@RequestParam(value = "userId", required = false) Long userId) throws Exception {
-		if (Validator.validate(projectTasksDTO)) {
-			projectTasksDTO.setStaticPath(staticPath);
-			// FileUploadUtil.fillUploadedFileInfo(projectTasksDTO,
-			// projectTasksDTO.getFileInfo());
-			String saveProjectTasks = tasksService.saveProjectTasksDTOByProjectId(projectId, projectTasksDTO, userId);
-		} else
-			return "DataMissing";
+		Response<String> response = new Response<>();
 
-		return "success";
+		try {
+			if (Validator.validate(projectTasksDTO)) {
+				projectTasksDTO.setStaticPath(staticPath);
+				String saveProjectTasks = tasksService.saveProjectTasksDTOByProjectId(projectId, projectTasksDTO,
+						userId);
+				response.setResponse(Result.SUCCESS.name());
+				response.setResponseMessage(Result.SUCCESS.getValue());
+			} else {
+				response.setResponse(Result.INVALID_DATA.name());
+				response.setResponseMessage(Result.INVALID_DATA.getValue());
+			}
+		} catch (Exception e) {
+			response.setResponse(Result.AWKWARD.name());
+			response.setResponseMessage(Result.AWKWARD.getValue());
+		}
+		return response;
+	}
+
+	@RequestMapping(value = "/saveProjectTaskCustomFieldDetails", method = RequestMethod.POST)
+	public @ResponseBody void saveProjectTaskCustomFieldDetails(ProjectTasksDTO projectTasksDTO) throws Exception {
+		if (projectTasksDTO.getCustomFormData() != null) {
+			for (CustomFormFieldDTO customFields : projectTasksDTO.getCustomFormData()) {
+				if (customFields.getCustomFormFieldId() > 0
+						&& StringUtils.isNotEmpty(customFields.getCustomFormFieldData())) {
+					ProjectTaskCustomFieldData projectTaskCustomFields = null;
+					if (customFields.getEntityId() != null && customFields.getEntityId() > 0) {
+						projectTaskCustomFields = projectTaskCustomFieldDataService
+								.getProjectTaskCustomFieldDataById(customFields.getEntityId());
+					} else {
+						projectTaskCustomFields = new ProjectTaskCustomFieldData();
+					}
+					ProjectTasks saveTask = null;
+					if (projectTasksDTO.getId() != null) {
+						saveTask = projectTasksService.getTasksId(projectTasksDTO.getId().toString());
+					} else {
+						saveTask = new ProjectTasks();
+					}
+					projectTaskCustomFields.setProjectTask(saveTask);
+					OrglocationFormFields orgFormField = orglocationFormFieldsService
+							.getOrglocationFormFieldsById(customFields.getCustomFormFieldId());
+					projectTaskCustomFields.setOrglocationsFormFields(orgFormField);
+					projectTaskCustomFields.setCustomFormFieldData(customFields.getCustomFormFieldData());
+					projectTaskCustomFieldDataService.saveProjectTaskCustomFieldData(projectTaskCustomFields);
+				}
+
+			}
+		}
 	}
 
 	/**
@@ -198,14 +280,23 @@ public class ProjectTasksRestController {
 	 */
 
 	@RequestMapping(value = "/saveProjectTaskComment", method = RequestMethod.POST)
-	public @ResponseBody String saveProjectTaskComment(
-			@RequestParam(value = "comment", required = false) String comment,
-			@RequestParam(value = "projectTaskId", required = false) String projectTaskId,
-			@RequestParam(value = "userId", required = false) Long userId) throws Exception {
-		User user = userService.getUserById(userId);
-		ProjectTasks tasks = projectTasksService.getTasksId(projectTaskId);
-		projectTaskCommentsService.storeprojectComments(comment, tasks, user);
-		return "success";
+	public @ResponseBody Response<String> saveProjectTaskComment(ProjectTaskDocumentDTO projectTaskDocumentDTO)
+			throws Exception {
+		Response<String> response = new Response<>();
+		try {
+			if (Validator.validate(projectTaskDocumentDTO)) {
+				projectTaskCommentsService.storeprojectComments(projectTaskDocumentDTO);
+				response.setResponse(Result.SUCCESS.name());
+				response.setResponseMessage(Result.SUCCESS.getValue());
+			} else {
+				response.setResponse(Result.INVALID_DATA.name());
+				response.setResponseMessage(Result.INVALID_DATA.getValue());
+			}
+		} catch (Exception e) {
+			response.setResponse(Result.AWKWARD.name());
+			response.setResponseMessage(Result.AWKWARD.getValue());
+		}
+		return response;
 	}
 
 	/**
@@ -218,18 +309,26 @@ public class ProjectTasksRestController {
 	 * @throws Exception
 	 */
 	@RequestMapping(value = "/saveProjectTaskDocuments", method = RequestMethod.POST)
-	public @ResponseBody String saveProjectTaskDocuments(ProjectTasksDTO projectTasksDTO,
-			@RequestParam(value = "projectTaskId", required = false) String projectTaskId,
-			@RequestParam(value = "userId", required = false) Long userId,
-			@RequestParam(value = "documentId", required = false) Long documentId) throws Exception {
-		if (Validator.validate(projectTasksDTO)) {
-			projectTasksDTO.setStaticPath(staticPath);
-			// FileUploadUtil.fillUploadedFileInfo(projectTasksDTO,
-			// projectTasksDTO.getFileInfo());
-			projectTaskDocumentsService.storeProjectTaskDocuments(projectTasksDTO, projectTaskId, documentId, userId);
-		} else
-			return "DataMissing";
-		return "success";
+	public @ResponseBody Response<String> saveProjectTaskDocuments(ProjectTaskDocumentDTO projectTaskDocumentDTO)
+			throws Exception {
+
+		Response<String> response = new Response<>();
+		try {
+			if (Validator.validate(projectTaskDocumentDTO) || (projectTaskDocumentDTO.getValidDcoument() != null
+					&& !projectTaskDocumentDTO.getValidDcoument().isEmpty())) {
+				projectTaskDocumentDTO.setStaticPath(staticPath);
+				projectTaskDocumentsService.storeProjectTaskDocuments(projectTaskDocumentDTO);
+				response.setResponse(Result.SUCCESS.name());
+				response.setResponseMessage(Result.SUCCESS.getValue());
+			} else {
+				response.setResponse(Result.INVALID_DATA.name());
+				response.setResponseMessage(Result.INVALID_DATA.getValue());
+			}
+		} catch (Exception e) {
+			response.setResponse(Result.AWKWARD.name());
+			response.setResponseMessage(Result.AWKWARD.getValue());
+		}
+		return response;
 
 	}
 
@@ -293,11 +392,25 @@ public class ProjectTasksRestController {
 	 * @throws Exception
 	 */
 	@RequestMapping(value = "/getProjectTasksDocuments", method = RequestMethod.POST)
-	public @ResponseBody List<ProjectTaskDocuments> getProjectTasksDocuments(
+	public @ResponseBody ResponseList<ProjectTaskDocuments> getProjectTasksDocuments(
 			@RequestParam(value = "projectTaskId", required = false) Long projectTaskId) throws Exception {
-		List<ProjectTaskDocuments> taskDocumentList = projectTaskDocumentsService
-				.getProjectTaskDocumentsListByProjectIdId(projectTaskId);
-		return taskDocumentList;
+		ResponseList<ProjectTaskDocuments> response = new ResponseList<>();
+		try {
+			if (projectTaskId != null) {
+				List<ProjectTaskDocuments> taskDocumentList = projectTaskDocumentsService
+						.getProjectTaskDocumentsListByProjectIdId(projectTaskId);
+				response.setData(taskDocumentList);
+				response.setResponse(Result.SUCCESS.name());
+				response.setResponseMessage(Result.SUCCESS.getValue());
+			} else {
+				response.setResponse(Result.INVALID_DATA.name());
+				response.setResponseMessage(Result.INVALID_DATA.getValue());
+			}
+		} catch (Exception e) {
+			response.setResponse(Result.AWKWARD.name());
+			response.setResponseMessage(Result.AWKWARD.getValue());
+		}
+		return response;
 	}
 
 	/**
@@ -314,16 +427,17 @@ public class ProjectTasksRestController {
 		List<ProjectTasks> taskList = tasksService.getAllTasksByProjectIdAndParentTaskId(projectId, subTaskId);
 		return taskList;
 	}
-	
+
 	/**
 	 * @author Laxman
 	 * @param projectTaskId
 	 * @throws Exception
 	 */
 	@RequestMapping(value = "/deleteProjectSubTasks", method = RequestMethod.POST)
-	public @ResponseBody void deleteProjectSubTasks( @RequestParam(value = "projectTaskId", required = false) String projectTaskId) throws Exception {
-		    ProjectTasks tasks = tasksService.getTasksId(projectTaskId);
-		if(tasks != null) {
+	public @ResponseBody void deleteProjectSubTasks(
+			@RequestParam(value = "projectTaskId", required = false) String projectTaskId) throws Exception {
+		ProjectTasks tasks = tasksService.getTasksId(projectTaskId);
+		if (tasks != null) {
 			tasks.setStatus(String.valueOf(Constants.CANDIDATE_IN_ACTIVE));
 			tasks.setUpdatedDate(new Date());
 			tasksService.updateTasks(tasks);
@@ -344,11 +458,10 @@ public class ProjectTasksRestController {
 
 		for (ProjectTaskActivity activity : taskActivityList) {
 			Timezone timezone = timeZoneService
-					.getTimezone(activity.getProjecId().getOrgLocationsId().getTimezone().getId());
+					.getTimezone(activity.getProjectTaskId().getProjectId().getOrgLocationsId().getTimezone().getId());
 			activity.setCreatedStr(commonUtil.dateStrFromOrgDateFormatter(
 					activity.getProjectTaskId().getProjectId().getOrgLocationsId().getDateFormat(),
 					activity.getCreatedDate()));
-
 			if (activity.getCreatedDate() != null) {
 				DateFormat DF_DMY = new SimpleDateFormat("hh:mma");
 				String currentTimeStr = Constants.TZ_DF.format(activity.getCreatedDate());
@@ -358,8 +471,8 @@ public class ProjectTasksRestController {
 				Date convertedDate = TZ_DF_TS.parse(startTimeUTC);
 				String convertedDateStr = DF_DMY.format(convertedDate);
 				activity.setActivityTimezoneStr(convertedDateStr);
-
 			}
+
 			long diff = commonUtil.currentDate().getTime() - activity.getCreatedDate().getTime();
 			long diffSeconds = diff / 1000 % 60;
 			long diffMinutes = diff / (60 * 1000) % 60;
@@ -381,6 +494,7 @@ public class ProjectTasksRestController {
 				String commonDateFormat = standardFormat.format(activity.getCreatedDate());
 				activity.setActionTimeStr(commonDateFormat.toString());
 			}
+			 
 		}
 		return taskActivityList;
 	}
@@ -478,8 +592,7 @@ public class ProjectTasksRestController {
 		tasksService.updateTaskPercentage(percentage, taskId, userId);
 		return "success";
 	}
-	
-	
+
 	/**
 	 * @author Laxman
 	 * @param billingId
@@ -495,7 +608,87 @@ public class ProjectTasksRestController {
 		tasksService.updateBillingType(billingId, taskId, userId);
 		return "success";
 	}
-	
+
+	/**
+	 * @author Laxman
+	 * @param editDueDate
+	 * @param taskId
+	 * @param userId
+	 * @return success
+	 * @throws Exception
+	 */
+	@RequestMapping(value = "/updateDueDate", method = RequestMethod.POST)
+	public String updateDueDate(@RequestParam(value = "editDueDate", required = false) String editDueDate,
+			@RequestParam(value = "taskId", required = false) String taskId,
+			@RequestParam(value = "userId", required = false) Long userId) throws Exception {
+		tasksService.updateDueDate(editDueDate, taskId, userId);
+		return "success";
+	}
+
+	/**
+	 * @author Laxman
+	 * @param estimatedTime
+	 * @param taskId
+	 * @param userId
+	 * @return success
+	 * @throws Exception
+	 */
+	@RequestMapping(value = "/updateEstimatedTime", method = RequestMethod.POST)
+	public String updateEstimatedTime(@RequestParam(value = "estimatedTime", required = false) String estimatedTime,
+			@RequestParam(value = "taskId", required = false) String taskId,
+			@RequestParam(value = "userId", required = false) Long userId) throws Exception {
+		tasksService.updateEstimatedTime(estimatedTime, taskId, userId);
+		return "success";
+	}
+
+	/**
+	 * @author Laxman
+	 * @param ownerId
+	 * @param taskId
+	 * @param userId
+	 * @return success
+	 * @throws Exception
+	 */
+
+	@RequestMapping(value = "/updateTaskOwner", method = RequestMethod.POST)
+	public String updateTaskOwner(@RequestParam(value = "ownerId", required = false) Long ownerId,
+			@RequestParam(value = "taskId", required = false) String taskId,
+			@RequestParam(value = "userId", required = false) Long userId) throws Exception {
+		tasksService.updateOwner(ownerId, taskId, userId);
+		return "success";
+	}
+
+	/**
+	 * @author Laxman
+	 * @param epicId
+	 * @param taskId
+	 * @param userId
+	 * @return success
+	 * @throws Exception
+	 */
+	@RequestMapping(value = "/updateEpic", method = RequestMethod.POST)
+	public String updateEpic(@RequestParam(value = "epicId", required = false) Long epicId,
+			@RequestParam(value = "taskId", required = false) String taskId,
+			@RequestParam(value = "userId", required = false) Long userId) throws Exception {
+		tasksService.updateEpic(epicId, taskId, userId);
+		return "success";
+	}
+
+	/**
+	 * @author Laxman
+	 * @param userStoryId
+	 * @param taskId
+	 * @param userId
+	 * @return success
+	 * @throws Exception
+	 */
+	@RequestMapping(value = "/updateUserStroy", method = RequestMethod.POST)
+	public String updateUserStroy(@RequestParam(value = "userStoryId", required = false) Long userStoryId,
+			@RequestParam(value = "taskId", required = false) String taskId,
+			@RequestParam(value = "userId", required = false) Long userId) throws Exception {
+		tasksService.updateUserStory(userStoryId, taskId, userId);
+		return "success";
+	}
 
 	/**
 	 * @author Laxman
@@ -520,16 +713,17 @@ public class ProjectTasksRestController {
 	 * @throws Exception
 	 */
 	@RequestMapping(value = "/updateTaskDescription", method = RequestMethod.POST)
-	public String updateTaskDescription(@RequestParam(value = "description", required = false) String description,
+	public String updateTaskDescription(ProjectTasksDTO projectTasksDTO,
+			@RequestParam(value = "description", required = false) String description,
 			@RequestParam(value = "taskId", required = false) String taskId,
 			@RequestParam(value = "userId", required = false) Long userId) throws Exception {
-		User user = userService.getUserById(userId);
+		User user = userService.getUserById(Long.valueOf(projectTasksDTO.getLoginUserId()));
 		StringBuffer activity = new StringBuffer();
 		StringBuffer activitySummary = new StringBuffer();
-		ProjectTasks projectTasks = tasksService.getTasksId(taskId);
-		ProjectTasks oldProjectTasks = tasksService.getTasksId(taskId);
+		ProjectTasks projectTasks = tasksService.getTasksId(String.valueOf(projectTasksDTO.getId()));
+		ProjectTasks oldProjectTasks = tasksService.getTasksId(String.valueOf(projectTasksDTO.getId()));
 		activity.append("Description");
-		projectTasks.setDescription(description);
+		projectTasks.setDescription(projectTasksDTO.getTaskDescription());
 		projectTasks.setUpdatedDate(commonUtil.currentDate());
 		tasksService.updateTasks(projectTasks);
 		String resourceTable = getUpdateDescription(projectTasks, oldProjectTasks);
@@ -560,10 +754,11 @@ public class ProjectTasksRestController {
 	 * @throws Exception
 	 */
 	@RequestMapping(value = "/updateAssignTaskUsers", method = RequestMethod.POST)
-	public String updateAssignTaskUsers(@RequestParam(value = "assignValue", required = false) String assignValue,
+	public String updateAssignTaskUsers(ProjectTasksDTO projectTasksDTO,
+			@RequestParam(value = "assignValue", required = false) String assignValue,
 			@RequestParam(value = "taskId", required = false) String projectTaskId,
 			@RequestParam(value = "userId", required = false) Long userId) throws Exception {
-		projectAssignTasksService.inlineUpdateAssignTaskUsers(assignValue, projectTaskId, userId);
+		projectAssignTasksService.inlineUpdateAssignTaskUsers(projectTasksDTO, assignValue, projectTaskId, userId);
 		return "success";
 	}
 
@@ -652,59 +847,18 @@ public class ProjectTasksRestController {
 			@RequestParam(value = "endDate", required = false) String customEndDate) throws Exception {
 
 		Projects project = projectsService.getProjectById(projectId);
-		Timezone timezone = timeZoneService.getTimezone(project.getOrgLocationsId().getTimezone().getId());
-		DateTime zoned = new DateTime(DateTimeZone.forID(timezone.getTimeZoneId()));
-		DateTimeFormatter outputFormatter = DateTimeFormat.forPattern("yyyy-MM-dd'T'00:00:00");
-		DateTimeFormatter outputFormatter1 = DateTimeFormat.forPattern("yyyy-MM-dd'T'23:59:59");
-		DateFormat TZ_DF_TS = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-		Date endDateUTC = null;
-		String filterDate = null;
-		Date startDateUTC = null;
-		if (!Constants.CUSTOM_REPORTS.equalsIgnoreCase(reportType)) {
-			String endDate = outputFormatter1.print(zoned);
-			String endDateString = CommonUtil.convertTimeZones(timezone.getTimeZoneId(), Constants.UTC_TIMEZONE,
-					endDate);
-			endDateUTC = TZ_DF_TS.parse(endDateString);
-		}
-		if (null != reportType && !"".equals(reportType)) {
-			if (Constants.TO_DAY.equals(reportType)) {
-				String startDate = outputFormatter.print(zoned);
-				String startDateString = CommonUtil.convertTimeZones(timezone.getTimeZoneId(), Constants.UTC_TIMEZONE,
-						startDate);
-				filterDate = CommonUtil.convertTimeZones(timezone.getTimeZoneId(), Constants.UTC_TIMEZONE, startDate);
-				startDateUTC = TZ_DF_TS.parse(startDateString);
-			} else if (Constants.YESTER_DAY.equals(reportType)) {
-				startDateUTC = getPreviousDate(zoned, outputFormatter, TZ_DF_TS, timezone, 1);
-			} else if (Constants.ONE_WEEK.equals(reportType)) {
-				startDateUTC = getPreviousDate(zoned, outputFormatter, TZ_DF_TS, timezone, 7);
-			} else if (Constants.TWO_WEEKS.equals(reportType)) {
-				startDateUTC = getPreviousDate(zoned, outputFormatter, TZ_DF_TS, timezone, 14);
-			} else if (Constants.ONE_MONTH.equals(reportType)) {
-				startDateUTC = getPreviousDate(zoned, outputFormatter, TZ_DF_TS, timezone, 30);
-			} else if (Constants.TWO_MONTHS.equals(reportType)) {
-				startDateUTC = getPreviousDate(zoned, outputFormatter, TZ_DF_TS, timezone, 60);
-			} else {
-				if (!"".equalsIgnoreCase(customStartDate) && !"".equalsIgnoreCase(customEndDate)) {
-					DateFormat TZ_DF_CSD = new SimpleDateFormat("yyyy-MM-dd'T'00:00:00");
-					DateFormat TZ_DF_CED = new SimpleDateFormat("yyyy-MM-dd'T'23:59:59");
-					Date startTime = commonUtil.orgLocationDateFormat(project.getOrgLocationsId().getDateFormat(),
-							customStartDate);
-					Date endTime = commonUtil.orgLocationDateFormat(project.getOrgLocationsId().getDateFormat(),
-							customEndDate);
-					String customStartTimeStr = TZ_DF_CSD.format(startTime);
-					String customEndTimeStr = TZ_DF_CED.format(endTime);
-					String startDateString = CommonUtil.convertTimeZones(timezone.getTimeZoneId(),
-							Constants.UTC_TIMEZONE, customStartTimeStr);
-					String endDateString = CommonUtil.convertTimeZones(timezone.getTimeZoneId(), Constants.UTC_TIMEZONE,
-							customEndTimeStr);
-					startDateUTC = TZ_DF_TS.parse(startDateString);
-					endDateUTC = TZ_DF_TS.parse(endDateString);
-				}
-			}
+
+		Date[] searchDates = null;
+		if (!"".equalsIgnoreCase(customStartDate) && !"".equalsIgnoreCase(customEndDate)) {
+			searchDates = reportsUtil.customeDates(project.getOrgLocationsId(), customStartDate, customEndDate);
+		} else if (reportType.equalsIgnoreCase("upToDate")) {
+			searchDates = reportsUtil.projectUpToDates(project.getOrgLocationsId(), project.getStartDate(), new Date());
+		} else {
+			searchDates = reportsUtil.getProjectFilterDate(reportType, project.getOrgLocationsId());
 		}
 
-		Collection<ProjectTasks> taskList = tasksService.getAllTasksByProjectIdAndFilter(projectId, filterDate,
-				startDateUTC, endDateUTC);
+		Collection<ProjectTasks> taskList = tasksService.getAllTasksByProjectIdAndFilter(projectId, searchDates[0],
+				searchDates[1]);
 		int newCount = 0;
 		int inProgressCount = 0;
 		int doneCount = 0;
@@ -782,59 +936,17 @@ public class ProjectTasksRestController {
 			@RequestParam(value = "endDate", required = false) String customEndDate) throws Exception {
 
 		Projects project = projectsService.getProjectById(projectId);
-		Timezone timezone = timeZoneService.getTimezone(project.getOrgLocationsId().getTimezone().getId());
-		DateTime zoned = new DateTime(DateTimeZone.forID(timezone.getTimeZoneId()));
-		DateTimeFormatter outputFormatter = DateTimeFormat.forPattern("yyyy-MM-dd'T'00:00:00");
-		DateTimeFormatter outputFormatter1 = DateTimeFormat.forPattern("yyyy-MM-dd'T'23:59:59");
-		DateFormat TZ_DF_TS = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-		Date endDateUTC = null;
-		String filterDate = null;
-		Date startDateUTC = null;
-		if (!Constants.CUSTOM_REPORTS.equalsIgnoreCase(reportType)) {
-			String endDate = outputFormatter1.print(zoned);
-			String endDateString = CommonUtil.convertTimeZones(timezone.getTimeZoneId(), Constants.UTC_TIMEZONE,
-					endDate);
-			endDateUTC = TZ_DF_TS.parse(endDateString);
-		}
-		if (null != reportType && !"".equals(reportType)) {
-			if (Constants.TO_DAY.equals(reportType)) {
-				String startDate = outputFormatter.print(zoned);
-				String startDateString = CommonUtil.convertTimeZones(timezone.getTimeZoneId(), Constants.UTC_TIMEZONE,
-						startDate);
-				filterDate = CommonUtil.convertTimeZones(timezone.getTimeZoneId(), Constants.UTC_TIMEZONE, startDate);
-				startDateUTC = TZ_DF_TS.parse(startDateString);
-			} else if (Constants.YESTER_DAY.equals(reportType)) {
-				startDateUTC = getPreviousDate(zoned, outputFormatter, TZ_DF_TS, timezone, 1);
-			} else if (Constants.ONE_WEEK.equals(reportType)) {
-				startDateUTC = getPreviousDate(zoned, outputFormatter, TZ_DF_TS, timezone, 7);
-			} else if (Constants.TWO_WEEKS.equals(reportType)) {
-				startDateUTC = getPreviousDate(zoned, outputFormatter, TZ_DF_TS, timezone, 14);
-			} else if (Constants.ONE_MONTH.equals(reportType)) {
-				startDateUTC = getPreviousDate(zoned, outputFormatter, TZ_DF_TS, timezone, 30);
-			} else if (Constants.TWO_MONTHS.equals(reportType)) {
-				startDateUTC = getPreviousDate(zoned, outputFormatter, TZ_DF_TS, timezone, 60);
-			} else {
-				if (!"".equalsIgnoreCase(customStartDate) && !"".equalsIgnoreCase(customEndDate)) {
-					DateFormat TZ_DF_CSD = new SimpleDateFormat("yyyy-MM-dd'T'00:00:00");
-					DateFormat TZ_DF_CED = new SimpleDateFormat("yyyy-MM-dd'T'23:59:59");
-					Date startTime = commonUtil.orgLocationDateFormat(project.getOrgLocationsId().getDateFormat(),
-							customStartDate);
-					Date endTime = commonUtil.orgLocationDateFormat(project.getOrgLocationsId().getDateFormat(),
-							customEndDate);
-					String customStartTimeStr = TZ_DF_CSD.format(startTime);
-					String customEndTimeStr = TZ_DF_CED.format(endTime);
-					String startDateString = CommonUtil.convertTimeZones(timezone.getTimeZoneId(),
-							Constants.UTC_TIMEZONE, customStartTimeStr);
-					String endDateString = CommonUtil.convertTimeZones(timezone.getTimeZoneId(), Constants.UTC_TIMEZONE,
-							customEndTimeStr);
-					startDateUTC = TZ_DF_TS.parse(startDateString);
-					endDateUTC = TZ_DF_TS.parse(endDateString);
-				}
-			}
+		Date[] searchDates = null;
+		if (!"".equalsIgnoreCase(customStartDate) && !"".equalsIgnoreCase(customEndDate)) {
+			searchDates = reportsUtil.customeDates(project.getOrgLocationsId(), customStartDate, customEndDate);
+		} else if (reportType.equalsIgnoreCase("upToDate")) {
+			searchDates = reportsUtil.projectUpToDates(project.getOrgLocationsId(), project.getStartDate(), new Date());
+		} else {
+			searchDates = reportsUtil.getProjectFilterDate(reportType, project.getOrgLocationsId());
 		}
 
-		Collection<ProjectTasks> overDueTaskList = tasksService.getOverdueTaskListByProjectId(projectId, filterDate,
-				startDateUTC, endDateUTC);
+		Collection<ProjectTasks> overDueTaskList = tasksService.getOverdueTaskListByProjectId(projectId, searchDates[0],
+				searchDates[1]);
 		for (ProjectTasks tasks : overDueTaskList) {
 
 			java.util.Set<ProjectAssignTask> patList = tasks.getProjectAssignTask();
@@ -907,59 +1019,17 @@ public class ProjectTasksRestController {
 			@RequestParam(value = "endDate", required = false) String customEndDate) throws Exception {
 
 		Projects project = projectsService.getProjectById(projectId);
-	 
-		Timezone timezone = timeZoneService.getTimezone(project.getOrgLocationsId().getTimezone().getId());
-		DateTime zoned = new DateTime(DateTimeZone.forID(timezone.getTimeZoneId()));
-		DateTimeFormatter outputFormatter = DateTimeFormat.forPattern("yyyy-MM-dd'T'00:00:00");
-		DateTimeFormatter outputFormatter1 = DateTimeFormat.forPattern("yyyy-MM-dd'T'23:59:59");
-		DateFormat TZ_DF_TS = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-		Date endDateUTC = null;
-		String filterDate = null;
-		Date startDateUTC = null;
-		if (!Constants.CUSTOM_REPORTS.equalsIgnoreCase(reportType)) {
-			String endDate = outputFormatter1.print(zoned);
-			String endDateString = CommonUtil.convertTimeZones(timezone.getTimeZoneId(), Constants.UTC_TIMEZONE,
-					endDate);
-			endDateUTC = TZ_DF_TS.parse(endDateString);
+
+		Date[] searchDates = null;
+		if (!"".equalsIgnoreCase(customStartDate) && !"".equalsIgnoreCase(customEndDate)) {
+			searchDates = reportsUtil.customeDates(project.getOrgLocationsId(), customStartDate, customEndDate);
+		} else if (reportType.equalsIgnoreCase("upToDate")) {
+			searchDates = reportsUtil.projectUpToDates(project.getOrgLocationsId(), project.getStartDate(), new Date());
+		} else {
+			searchDates = reportsUtil.getProjectFilterDate(reportType, project.getOrgLocationsId());
 		}
-		if (null != reportType && !"".equals(reportType)) {
-			if (Constants.TO_DAY.equals(reportType)) {
-				String startDate = outputFormatter.print(zoned);
-				String startDateString = CommonUtil.convertTimeZones(timezone.getTimeZoneId(), Constants.UTC_TIMEZONE,
-						startDate);
-				filterDate = CommonUtil.convertTimeZones(timezone.getTimeZoneId(), Constants.UTC_TIMEZONE, startDate);
-				startDateUTC = TZ_DF_TS.parse(startDateString);
-			} else if (Constants.YESTER_DAY.equals(reportType)) {
-				startDateUTC = getPreviousDate(zoned, outputFormatter, TZ_DF_TS, timezone, 1);
-			} else if (Constants.ONE_WEEK.equals(reportType)) {
-				startDateUTC = getPreviousDate(zoned, outputFormatter, TZ_DF_TS, timezone, 7);
-			} else if (Constants.TWO_WEEKS.equals(reportType)) {
-				startDateUTC = getPreviousDate(zoned, outputFormatter, TZ_DF_TS, timezone, 14);
-			} else if (Constants.ONE_MONTH.equals(reportType)) {
-				startDateUTC = getPreviousDate(zoned, outputFormatter, TZ_DF_TS, timezone, 30);
-			} else if (Constants.TWO_MONTHS.equals(reportType)) {
-				startDateUTC = getPreviousDate(zoned, outputFormatter, TZ_DF_TS, timezone, 60);
-			} else {
-				if (!"".equalsIgnoreCase(customStartDate) && !"".equalsIgnoreCase(customEndDate)) {
-					DateFormat TZ_DF_CSD = new SimpleDateFormat("yyyy-MM-dd'T'00:00:00");
-					DateFormat TZ_DF_CED = new SimpleDateFormat("yyyy-MM-dd'T'23:59:59");
-					Date startTime = commonUtil.orgLocationDateFormat(project.getOrgLocationsId().getDateFormat(),
-							customStartDate);
-					Date endTime = commonUtil.orgLocationDateFormat(project.getOrgLocationsId().getDateFormat(),
-							customEndDate);
-					String customStartTimeStr = TZ_DF_CSD.format(startTime);
-					String customEndTimeStr = TZ_DF_CED.format(endTime);
-					String startDateString = CommonUtil.convertTimeZones(timezone.getTimeZoneId(),
-							Constants.UTC_TIMEZONE, customStartTimeStr);
-					String endDateString = CommonUtil.convertTimeZones(timezone.getTimeZoneId(), Constants.UTC_TIMEZONE,
-							customEndTimeStr);
-					startDateUTC = TZ_DF_TS.parse(startDateString);
-					endDateUTC = TZ_DF_TS.parse(endDateString);
-				}
-			}
-		}
-		Collection<ProjectTasks> taskList = tasksService.getAllTasksByProjectIdAndFilter(projectId, filterDate,
-				startDateUTC, endDateUTC);
+		Collection<ProjectTasks> taskList = tasksService.getAllTasksByProjectIdAndFilter(projectId, searchDates[0],
+				searchDates[1]);
 		int zeroCount = 0;
 		int tenCount = 0;
 		int twentyCount = 0;
@@ -1022,69 +1092,32 @@ public class ProjectTasksRestController {
 			@RequestParam(value = "endDate", required = false) String customEndDate) throws Exception {
 
 		Projects project = projectsService.getProjectById(projectId);
-		Timezone timezone = timeZoneService.getTimezone(project.getOrgLocationsId().getTimezone().getId());
-		DateTime zoned = new DateTime(DateTimeZone.forID(timezone.getTimeZoneId()));
-		DateTimeFormatter outputFormatter = DateTimeFormat.forPattern("yyyy-MM-dd'T'00:00:00");
-		DateTimeFormatter outputFormatter1 = DateTimeFormat.forPattern("yyyy-MM-dd'T'23:59:59");
-		DateFormat TZ_DF_TS = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-		Date endDateUTC = null;
-		String filterDate = null;
-		Date startDateUTC = null;
-		if (!Constants.CUSTOM_REPORTS.equalsIgnoreCase(reportType)) {
-			String endDate = outputFormatter1.print(zoned);
-			String endDateString = CommonUtil.convertTimeZones(timezone.getTimeZoneId(), Constants.UTC_TIMEZONE,
-					endDate);
-			endDateUTC = TZ_DF_TS.parse(endDateString);
-		}
-		if (null != reportType && !"".equals(reportType)) {
-			if (Constants.TO_DAY.equals(reportType)) {
-				String startDate = outputFormatter.print(zoned);
-				String startDateString = CommonUtil.convertTimeZones(timezone.getTimeZoneId(), Constants.UTC_TIMEZONE,
-						startDate);
-				filterDate = CommonUtil.convertTimeZones(timezone.getTimeZoneId(), Constants.UTC_TIMEZONE, startDate);
-				startDateUTC = TZ_DF_TS.parse(startDateString);
-			} else if (Constants.YESTER_DAY.equals(reportType)) {
-				startDateUTC = getPreviousDate(zoned, outputFormatter, TZ_DF_TS, timezone, 1);
-			} else if (Constants.ONE_WEEK.equals(reportType)) {
-				startDateUTC = getPreviousDate(zoned, outputFormatter, TZ_DF_TS, timezone, 7);
-			} else if (Constants.TWO_WEEKS.equals(reportType)) {
-				startDateUTC = getPreviousDate(zoned, outputFormatter, TZ_DF_TS, timezone, 14);
-			} else if (Constants.ONE_MONTH.equals(reportType)) {
-				startDateUTC = getPreviousDate(zoned, outputFormatter, TZ_DF_TS, timezone, 30);
-			} else if (Constants.TWO_MONTHS.equals(reportType)) {
-				startDateUTC = getPreviousDate(zoned, outputFormatter, TZ_DF_TS, timezone, 60);
-			} else {
-				if (!"".equalsIgnoreCase(customStartDate) && !"".equalsIgnoreCase(customEndDate)) {
-					DateFormat TZ_DF_CSD = new SimpleDateFormat("yyyy-MM-dd'T'00:00:00");
-					DateFormat TZ_DF_CED = new SimpleDateFormat("yyyy-MM-dd'T'23:59:59");
-					Date startTime = commonUtil.orgLocationDateFormat(project.getOrgLocationsId().getDateFormat(),
-							customStartDate);
-					Date endTime = commonUtil.orgLocationDateFormat(project.getOrgLocationsId().getDateFormat(),
-							customEndDate);
-					String customStartTimeStr = TZ_DF_CSD.format(startTime);
-					String customEndTimeStr = TZ_DF_CED.format(endTime);
-					String startDateString = CommonUtil.convertTimeZones(timezone.getTimeZoneId(),
-							Constants.UTC_TIMEZONE, customStartTimeStr);
-					String endDateString = CommonUtil.convertTimeZones(timezone.getTimeZoneId(), Constants.UTC_TIMEZONE,
-							customEndTimeStr);
-					startDateUTC = TZ_DF_TS.parse(startDateString);
-					endDateUTC = TZ_DF_TS.parse(endDateString);
-				}
-			}
+
+		Date[] searchDates = null;
+		if (!"".equalsIgnoreCase(customStartDate) && !"".equalsIgnoreCase(customEndDate)) {
+			searchDates = reportsUtil.customeDates(project.getOrgLocationsId(), customStartDate, customEndDate);
+		} else if (reportType.equalsIgnoreCase("upToDate")) {
+			searchDates = reportsUtil.projectUpToDates(project.getOrgLocationsId(), project.getStartDate(), new Date());
+		} else {
+			searchDates = reportsUtil.getProjectFilterDate(reportType, project.getOrgLocationsId());
 		}
 
-		Collection<ProjectTasks> taskList = tasksService.getAllTasksByProjectIdAndFilter(projectId, filterDate, startDateUTC, endDateUTC);
+		Collection<ProjectTasks> taskList = tasksService.getAllTasksByProjectIdAndFilter(projectId, searchDates[0],
+				searchDates[1]);
 
 		Map<String, TasksStackedReportDTO> TasksStackedReportDTOList = new HashMap<>();
 		for (ProjectTasks task : taskList) {
-			List<ProjectTaskActivity>  list1 =  projectTaskActivityService.getProjectTaskActivityByProjectTaskId(task.getId());
-//			List<ProjectTaskActivity> list1 = task.getProjectTaskActivity();
+			List<ProjectTaskActivity> list1 = projectTaskActivityService
+					.getProjectTaskActivityByProjectTaskId(task.getId());
 			if (list1 == null || list1.isEmpty()) {
-				applyStackedReportData(task.getTaskStatus(), task.getPriority(), TasksStackedReportDTOList, task.getCreatedDate());
+				applyStackedReportData(task.getTaskStatus(), task.getPriority(), TasksStackedReportDTOList,
+						task.getCreatedDate());
 			} else {
-				for(ProjectTaskActivity activity : list1) {
-					if(activity.getActivity().equals(Constants.TASK_ACTIVITY_STATUS) || activity.getActivity().equals(Constants.TASK_ACTIVITY_PRIORITY)) {
-						applyStackedReportData(task.getTaskStatus(), task.getPriority(), TasksStackedReportDTOList, activity.getCreatedDate());
+				for (ProjectTaskActivity activity : list1) {
+					if (activity.getActivity().equals(Constants.TASK_ACTIVITY_STATUS)
+							|| activity.getActivity().equals(Constants.TASK_ACTIVITY_PRIORITY)) {
+						applyStackedReportData(task.getTaskStatus(), task.getPriority(), TasksStackedReportDTOList,
+								activity.getCreatedDate());
 					}
 				}
 			}
@@ -1106,8 +1139,8 @@ public class ProjectTasksRestController {
 
 	}
 
-	private void applyStackedReportData(LookUpData status, LookUpData priority, Map<String, TasksStackedReportDTO> tasksStackedReportDTOList,
-			Date date) {
+	private void applyStackedReportData(LookUpData status, LookUpData priority,
+			Map<String, TasksStackedReportDTO> tasksStackedReportDTOList, Date date) {
 		TasksStackedReportDTO tasksStackedReportDTO = null;
 		String date1 = Constants.STDF.format(date);
 		if (tasksStackedReportDTOList.containsKey(date1)) {
@@ -1138,182 +1171,388 @@ public class ProjectTasksRestController {
 		}
 		tasksStackedReportDTOList.put(date1, tasksStackedReportDTO);
 	}
-	
-	
-	
+
 	@RequestMapping(value = "/geBudgetStatusReport", method = RequestMethod.POST)
-	public BudgetReportDTO geBudgetStatusReport(
-			@RequestParam(value = "projectId", required = false) Long projectId,
+	public BudgetReportDTO geBudgetStatusReport(@RequestParam(value = "projectId", required = false) Long projectId,
 			@RequestParam(value = "reportType", required = false) String reportType,
 			@RequestParam(value = "startDate", required = false) String customStartDate,
-			@RequestParam(value = "endDate", required = false) String customEndDate) throws Exception {
+			@RequestParam(value = "endDate", required = false) String customEndDate, HttpServletRequest request)
+			throws Exception {
 
+		OrgLocations loginOrgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,
+				"orgLocations");
 		Projects project = projectsService.getProjectById(projectId);
-		Timezone timezone = timeZoneService.getTimezone(project.getOrgLocationsId().getTimezone().getId());
-		DateTime zoned = new DateTime(DateTimeZone.forID(timezone.getTimeZoneId()));
-		DateTimeFormatter outputFormatter = DateTimeFormat.forPattern("yyyy-MM-dd'T'00:00:00");
-		DateTimeFormatter outputFormatter1 = DateTimeFormat.forPattern("yyyy-MM-dd'T'23:59:59");
-		DateFormat TZ_DF_TS = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-		Date endDateUTC = null;
-		String filterDate = null;
-		Date startDateUTC = null;
-		if (!Constants.CUSTOM_REPORTS.equalsIgnoreCase(reportType)) {
-			String endDate = outputFormatter1.print(zoned);
-			String endDateString = CommonUtil.convertTimeZones(timezone.getTimeZoneId(), Constants.UTC_TIMEZONE,
-					endDate);
-			endDateUTC = TZ_DF_TS.parse(endDateString);
+
+		Date[] searchDates = null;
+		if (!"".equalsIgnoreCase(customStartDate) && !"".equalsIgnoreCase(customEndDate)) {
+			searchDates = reportsUtil.customeDates(loginOrgLocation, customStartDate, customEndDate);
+		} else if (reportType.equalsIgnoreCase("upToDate")) {
+			searchDates = reportsUtil.projectUpToDates(loginOrgLocation, project.getStartDate(), new Date());
+		} else {
+			searchDates = reportsUtil.getProjectFilterDate(reportType, loginOrgLocation);
 		}
-		if (null != reportType && !"".equals(reportType)) {
-			if (Constants.TO_DAY.equals(reportType)) {
-				String startDate = outputFormatter.print(zoned);
-				String startDateString = CommonUtil.convertTimeZones(timezone.getTimeZoneId(), Constants.UTC_TIMEZONE,
-						startDate);
-				filterDate = CommonUtil.convertTimeZones(timezone.getTimeZoneId(), Constants.UTC_TIMEZONE, startDate);
-				startDateUTC = TZ_DF_TS.parse(startDateString);
-			} else if (Constants.YESTER_DAY.equals(reportType)) {
-				startDateUTC = getPreviousDate(zoned, outputFormatter, TZ_DF_TS, timezone, 1);
-			} else if (Constants.ONE_WEEK.equals(reportType)) {
-				startDateUTC = getPreviousDate(zoned, outputFormatter, TZ_DF_TS, timezone, 7);
-			} else if (Constants.TWO_WEEKS.equals(reportType)) {
-				startDateUTC = getPreviousDate(zoned, outputFormatter, TZ_DF_TS, timezone, 14);
-			} else if (Constants.ONE_MONTH.equals(reportType)) {
-				startDateUTC = getPreviousDate(zoned, outputFormatter, TZ_DF_TS, timezone, 30);
-			} else if (Constants.TWO_MONTHS.equals(reportType)) {
-				startDateUTC = getPreviousDate(zoned, outputFormatter, TZ_DF_TS, timezone, 60);
-			} else {
-				if (!"".equalsIgnoreCase(customStartDate) && !"".equalsIgnoreCase(customEndDate)) {
-					DateFormat TZ_DF_CSD = new SimpleDateFormat("yyyy-MM-dd'T'00:00:00");
-					DateFormat TZ_DF_CED = new SimpleDateFormat("yyyy-MM-dd'T'23:59:59");
-					Date startTime = commonUtil.orgLocationDateFormat(project.getOrgLocationsId().getDateFormat(),
-							customStartDate);
-					Date endTime = commonUtil.orgLocationDateFormat(project.getOrgLocationsId().getDateFormat(),
-							customEndDate);
-					String customStartTimeStr = TZ_DF_CSD.format(startTime);
-					String customEndTimeStr = TZ_DF_CED.format(endTime);
-					String startDateString = CommonUtil.convertTimeZones(timezone.getTimeZoneId(),
-							Constants.UTC_TIMEZONE, customStartTimeStr);
-					String endDateString = CommonUtil.convertTimeZones(timezone.getTimeZoneId(), Constants.UTC_TIMEZONE,
-							customEndTimeStr);
-					startDateUTC = TZ_DF_TS.parse(startDateString);
-					endDateUTC = TZ_DF_TS.parse(endDateString);
-				}
-			}
-		}
-		
 		BudgetReportDTO report = new BudgetReportDTO();
-		List<ProjectBudget> budgetList = projectBudgetService.getProjectBudgetByProjectTaskIdAndApprovedStatus(projectId, filterDate, startDateUTC, endDateUTC);
-		double budgetSum = budgetList.stream().filter(p->p.getEstimatedBudgetValue() !=null).mapToDouble(p->p.getEstimatedBudgetValue()).sum();
-		double estimatehoursSum = budgetList.stream().filter(p->p.getEstimatedHours() !=null).mapToDouble(p->p.getEstimatedHours()).sum();
-		if(budgetList.size() >1) {
+		// project budget
+		List<ProjectBudget> budgetList = projectBudgetService
+				.getProjectBudgetByProjectTaskIdAndApprovedStatus(projectId, loginOrgLocation.getId());
+		double budgetSum = budgetList.stream().filter(p -> p.getEstimatedBudgetValue() != null)
+				.mapToDouble(p -> p.getEstimatedBudgetValue()).sum();
+		double estimatehoursSum = budgetList.stream().filter(p -> p.getEstimatedHours() != null)
+				.mapToDouble(p -> p.getEstimatedHours()).sum();
+		if (budgetList.size() >= 1) {
 			String currency = budgetList.get(0).getEstimatedBudgetCurrency();
 			report.setCurrency(currency);
 		}
-		
-		report.setBudgetTotal(String.valueOf(budgetSum));
-		
-		report.setEstimatedHours(String.valueOf(estimatehoursSum));
-		return report;
-	}
-	
-	@RequestMapping(value="/getprojectTaskMembersByProjectId",method=RequestMethod.POST)
-	public ModelAndView getprojectTaskMembersByProjectIdAndLoginUserId(HttpServletRequest request,@RequestParam(value="projectId")String projectId,@RequestParam(value="taskUUID")String taskUUID) throws NumberFormatException, Exception {
-		User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
-		OrgLocations loginOrgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
-		ModelAndView model = new ModelAndView();
-		ProjectMembers projectmember = projectMembersService.getProjectMemberByUserIdAndProjectId(user.getId(), Long.parseLong(projectId));
-		ProjectMembersHistory projectMemberHistory = null;
-		if(projectmember != null && projectmember.getId() != null) {
-			 projectMemberHistory = projectMembersHistoryService.getProjectMembersOpenHistoryByProjectMemberId(projectmember.getId());
-			if(projectMemberHistory != null) {
-				String startDate = commonUtil.dateStrFromOrgDateFormatter(loginOrgLocation.getDateFormat(),projectMemberHistory.getProjectAssignedDate());
-				String endDate = commonUtil.dateStrFromOrgDateFormatter(loginOrgLocation.getDateFormat(),projectMemberHistory.getProjectTerminationDate());
-				model.addObject("startDate",startDate);
-				model.addObject("endDate",endDate);
-			}else {
-				projectMemberHistory = projectMembersHistoryService.getProjectMembersRecentClosedByProjectMemberId(projectmember.getId());
-					if(projectMemberHistory != null) {
-						String startDate = commonUtil.dateStrFromOrgDateFormatter(loginOrgLocation.getDateFormat(),projectMemberHistory.getProjectAssignedDate());
-						String endDate = commonUtil.dateStrFromOrgDateFormatter(loginOrgLocation.getDateFormat(),projectMemberHistory.getProjectTerminationDate());
-						model.addObject("startDate",startDate);
-						model.addObject("endDate",endDate);
-					}
+		report.setBudgetTotal((float) budgetSum);
+		report.setEstimatedHours((float) estimatehoursSum);
+
+		// billing amount
+		List<Invoice> invoiceList = invoiceService
+				.getAllBillsAndInvoicesBYProjectIdOrgLocationIdInvoiceStatusStartDateAndEndDate(projectId,
+						loginOrgLocation.getId(), "Accepted", searchDates[0], searchDates[1]);
+		double actualBudgetSum = invoiceList.stream().filter(p -> p.getTotal() != null)
+				.mapToDouble(p -> Double.parseDouble(p.getTotal())).sum();
+		report.setActualBudget((float) actualBudgetSum);
+		if (invoiceList.size() > 1) {
+			String invoiceCurrency = invoiceList.get(0).getCurrencyCode();
+			report.setInvoiceCurrency(invoiceCurrency);
+		}
+		if (report.getCurrency() != null && report.getInvoiceCurrency() != null) {
+			if (report.getCurrency().equalsIgnoreCase(report.getInvoiceCurrency())) {
+				report.setActualBudget((float) actualBudgetSum);
+			} else {
+				report.setActualBudget(conversionUtil.convert(report.getCurrency(), report.getInvoiceCurrency(),
+						(float) actualBudgetSum));
 			}
 		}
-		model.addObject("projectmember",projectmember);
-		model.addObject("projectId",projectId);
-		model.addObject("taskUUID",taskUUID);
+
+		Map<String, SubmissionApproverHierarchy> approverList = submissionApproverHierarchyDao
+				.getTotalHoursByProjectIdAndLocationIdApprovalStatusStartDateEndDate(loginOrgLocation.getId(),
+						projectId, searchDates[0], searchDates[1]);
+		if (approverList != null && !approverList.isEmpty()) {
+			for (Map.Entry<String, SubmissionApproverHierarchy> entry : approverList.entrySet()) {
+				if (entry.getKey() == "APPROVED") {
+					report.setActualHours(entry.getValue().getTotalHours());
+				} else if (!approverList.containsKey("APPROVED")) {
+					report.setActualHours(0f);
+				}
+			}
+		} else {
+			report.setActualHours(0f);
+		}
+		return report;
+	}
+
+	@RequestMapping(value = "/getprojectTaskMembersByProjectId", method = RequestMethod.POST)
+	public ModelAndView getprojectTaskMembersByProjectIdAndLoginUserId(HttpServletRequest request,
+			@RequestParam(value = "projectId") String projectId, @RequestParam(value = "taskUUID") String taskUUID)
+			throws NumberFormatException, Exception {
+		User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+		OrgLocations loginOrgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,
+				"orgLocations");
+		ModelAndView model = new ModelAndView();
+		ProjectMembers projectmember = projectMembersService.getProjectMemberByUserIdAndProjectId(user.getId(),
+				Long.parseLong(projectId));
+		ProjectMembersHistory projectMemberHistory = null;
+		if (projectmember != null && projectmember.getId() != null) {
+			projectMemberHistory = projectMembersHistoryService
+					.getProjectMembersOpenHistoryByProjectMemberId(projectmember.getId());
+			if (projectMemberHistory != null) {
+				String startDate = commonUtil.dateStrFromOrgDateFormatter(loginOrgLocation.getDateFormat(),
+						projectMemberHistory.getProjectAssignedDate());
+				String endDate = commonUtil.dateStrFromOrgDateFormatter(loginOrgLocation.getDateFormat(),
+						projectMemberHistory.getProjectTerminationDate());
+				model.addObject("startDate", startDate);
+				model.addObject("endDate", endDate);
+			} else {
+				projectMemberHistory = projectMembersHistoryService
+						.getProjectMembersRecentClosedByProjectMemberId(projectmember.getId());
+				if (projectMemberHistory != null) {
+					String startDate = commonUtil.dateStrFromOrgDateFormatter(loginOrgLocation.getDateFormat(),
+							projectMemberHistory.getProjectAssignedDate());
+					String endDate = commonUtil.dateStrFromOrgDateFormatter(loginOrgLocation.getDateFormat(),
+							projectMemberHistory.getProjectTerminationDate());
+					model.addObject("startDate", startDate);
+					model.addObject("endDate", endDate);
+				}
+			}
+		}
+		model.addObject("projectmember", projectmember);
+		model.addObject("projectId", projectId);
+		model.addObject("taskUUID", taskUUID);
 		model.setViewName("project/projectTaskEntries");
 		return model;
 	}
-	
-	@RequestMapping(value="/getSavedTaskDetails", method=RequestMethod.POST)
-	public ModelAndView getSavedTaskDetails(HttpServletRequest request,@RequestParam(value="taskUUID")String taskUUID,TimeSheetDayEntriesDTO timeSheetDayEntriesDto) throws Exception {
+
+	@RequestMapping(value = "/getSavedTaskDetails", method = RequestMethod.POST)
+	public ModelAndView getSavedTaskDetails(HttpServletRequest request,
+			@RequestParam(value = "taskUUID") String taskUUID, TimeSheetDayEntriesDTO timeSheetDayEntriesDto)
+			throws Exception {
 		User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
-		OrgLocations loginOrgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+		OrgLocations loginOrgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,
+				"orgLocations");
 		ModelAndView model = new ModelAndView();
+		Long projectMemberId = null;
 		List<TimeSheetDayEntriesDTOList> timeSheetDayEntriesDtoListData = new ArrayList<>();
-		
+
 		int start = timeSheetDayEntriesDto.getStart();
 		int length = 0;
-		if(timeSheetDayEntriesDto.getPageNo()<1) {
+		if (timeSheetDayEntriesDto.getPageNo() < 1) {
 			timeSheetDayEntriesDto.setPageNo(1);
 		}
-		if(timeSheetDayEntriesDto.getPageSize()<1) {
+		if (timeSheetDayEntriesDto.getPageSize() < 1) {
 			length = 5;
 			timeSheetDayEntriesDto.setPageSize(5);
-		}else {
+		} else {
 			length = timeSheetDayEntriesDto.getPageSize();
 		}
-		
-		ResponseList<TimeSheetDayEntries> timeEntryDayList = timeSheetDayEntriesService.getTimesheetDayEntriesByTaskUUIDAndUserId(taskUUID,user.getId(),loginOrgLocation.getId(),start,length,timeSheetDayEntriesDto.getSearchValue());
-		for( TimeSheetDayEntries timeDayEntries:timeEntryDayList.getData()) {
-			TimeSheetDayEntriesDTOList timeSheetDayEntriesDtoList =new TimeSheetDayEntriesDTOList();
-			if(timeDayEntries.getTimesheetSubmissions() != null && timeDayEntries.getTimesheetSubmissions().getProjectMembers() != null && timeDayEntries.getTimesheetSubmissions().getProjectMembers().getProjectMemberCandidteId()!= null) {
-				timeSheetDayEntriesDtoList.setEmployeeName(timeDayEntries.getTimesheetSubmissions().getProjectMembers().getProjectMemberCandidteId().getFullName());
-			 SubmissionApproverHierarchy subStatus = submissionApproverHierarchyService.getSubmissionApproverHierarchyForEmployeeBySubmissionId(timeDayEntries.getTimesheetSubmissions().getId(), timeDayEntries.getTimesheetSubmissions().getProjectMembers().getProjectMemberCandidteId().getMasterCandidateId().getId());
-			 timeSheetDayEntriesDtoList.setApprovalStatus(subStatus.getSubmissionApprovalStatus().getValue().toUpperCase());
+
+		ResponseList<TimeSheetDayEntries> timeEntryDayList = timeSheetDayEntriesService.getTimesheetDayEntriesByTaskUUIDAndUserId(taskUUID, user.getId(), loginOrgLocation.getId(), start,
+						length, timeSheetDayEntriesDto.getSearchValue());
+		for (TimeSheetDayEntries timeDayEntries : timeEntryDayList.getData()) {
+			TimeSheetDayEntriesDTOList timeSheetDayEntriesDtoList = new TimeSheetDayEntriesDTOList();
+			if (timeDayEntries.getTimesheetSubmissions() != null
+					&& timeDayEntries.getTimesheetSubmissions().getProjectMembers() != null && timeDayEntries
+							.getTimesheetSubmissions().getProjectMembers().getProjectMemberCandidteId() != null) {
+				timeSheetDayEntriesDtoList.setEmployeeName(timeDayEntries.getTimesheetSubmissions().getProjectMembers()
+						.getProjectMemberCandidteId().getFullName());
+				SubmissionApproverHierarchy subStatus = submissionApproverHierarchyService
+						.getSubmissionApproverHierarchyForEmployeeBySubmissionId(
+								timeDayEntries.getTimesheetSubmissions().getId(),
+								timeDayEntries.getTimesheetSubmissions().getProjectMembers()
+										.getProjectMemberCandidteId().getMasterCandidateId().getId());
+				timeSheetDayEntriesDtoList
+						.setApprovalStatus(subStatus.getSubmissionApprovalStatus().getValue().toUpperCase());
 			}
-			timeSheetDayEntriesDtoList.setTimesheetDate(commonUtil.dateStrFromOrgDateFormatter(loginOrgLocation.getDateFormat(), timeDayEntries.getTimesheetDate()));
+			timeSheetDayEntriesDtoList.setTimesheetDate(commonUtil
+					.dateStrFromOrgDateFormatter(loginOrgLocation.getDateFormat(), timeDayEntries.getTimesheetDate()));
 			timeSheetDayEntriesDtoList.setHours(timeDayEntries.getTotalHours());
 			timeSheetDayEntriesDtoList.setComments(timeDayEntries.getComments());
+			timeSheetDayEntriesDtoList.setProjectMemberId(timeDayEntries.getTimesheetSubmissions().getProjectMembers().getId());
+			timeSheetDayEntriesDtoList.setTimesheetEntryId(timeDayEntries.getId());
 			timeSheetDayEntriesDtoListData.add(timeSheetDayEntriesDtoList);
 		}
-		
+
 		timeSheetDayEntriesDto.setTotalRows(timeEntryDayList.getRecordsTotal());
 		int totalRows = timeEntryDayList.getRecordsTotal();
-		if(totalRows > 0) {
-			 int remainder = totalRows % length;
-			 int pageCount = totalRows / length;
-			 if(remainder > 0) {
-				 timeSheetDayEntriesDto.setPageCount(pageCount+1);
-			 }
-			 else {
-				 timeSheetDayEntriesDto.setPageCount(pageCount);
-			 }
+		if (totalRows > 0) {
+			int remainder = totalRows % length;
+			int pageCount = totalRows / length;
+			if (remainder > 0) {
+				timeSheetDayEntriesDto.setPageCount(pageCount + 1);
+			} else {
+				timeSheetDayEntriesDto.setPageCount(pageCount);
+			}
 		}
-		
-		model.addObject("timeEntryDayListData",timeSheetDayEntriesDtoListData);
-		model.addObject("totalRows",timeSheetDayEntriesDto.getTotalRows());
-		model.addObject("pageCount",timeSheetDayEntriesDto.getPageCount());
-		model.addObject("pageSize",timeSheetDayEntriesDto.getPageSize());
-		model.addObject("searchInputValue",timeSheetDayEntriesDto.getSearchValue());
+
+		model.addObject("timeEntryDayListData", timeSheetDayEntriesDtoListData);
+		model.addObject("totalRows", timeSheetDayEntriesDto.getTotalRows());
+		model.addObject("pageCount", timeSheetDayEntriesDto.getPageCount());
+		model.addObject("pageSize", timeSheetDayEntriesDto.getPageSize());
+		model.addObject("searchInputValue", timeSheetDayEntriesDto.getSearchValue());
 		model.setViewName("project/projectTaskTableData");
 		return model;
-		 
+
+	}
+
+	@RequestMapping(value = "/getTimesheetTotatalHoursByProjectId", method = RequestMethod.POST)
+	public TimesheetReportDTO getTimesheetTotatalHoursByProjectId(
+			@RequestParam(value = "projectId", required = false) Long projectId,
+			@RequestParam(value = "reportType", required = false) String reportType,
+			@RequestParam(value = "startDate", required = false) String customStartDate,
+			@RequestParam(value = "endDate", required = false) String customEndDate, HttpServletRequest request)
+			throws Exception {
+
+		Projects project = projectsService.getProjectById(projectId);
+		OrgLocations loginOrgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,
+				"orgLocations");
+
+		Date[] searchDates = null;
+		if (!"".equalsIgnoreCase(customStartDate) && !"".equalsIgnoreCase(customEndDate)) {
+			searchDates = reportsUtil.customeDates(loginOrgLocation, customStartDate, customEndDate);
+		} else if (reportType.equalsIgnoreCase("upToDate")) {
+			searchDates = reportsUtil.projectUpToDates(loginOrgLocation, project.getStartDate(), new Date());
+		} else {
+			searchDates = reportsUtil.getProjectFilterDate(reportType, loginOrgLocation);
+		}
+
+		TimesheetReportDTO timesheetreport = new TimesheetReportDTO();
+		Map<String, SubmissionApproverHierarchy> approverList = submissionApproverHierarchyDao
+				.getTotalHoursByProjectIdAndLocationIdApprovalStatusStartDateEndDate(loginOrgLocation.getId(),
+						projectId, searchDates[0], searchDates[1]);
+		if (approverList != null && !approverList.isEmpty()) {
+			for (Map.Entry<String, SubmissionApproverHierarchy> entry : approverList.entrySet()) {
+
+				if (entry.getKey() == "SUBMITTEDFORAPPROVAL") {
+					timesheetreport.setSubmittedHours(entry.getValue().getTotalHours());
+					timesheetreport.setSubmittedBillableHours(entry.getValue().getBillableHours());
+					timesheetreport.setSubmittedNonBillableHours(entry.getValue().getNonBillableHours());
+				} else if (!approverList.containsKey("SUBMITTEDFORAPPROVAL")) {
+					timesheetreport.setSubmittedHours(0f);
+					timesheetreport.setSubmittedBillableHours(0f);
+					timesheetreport.setSubmittedNonBillableHours(0f);
+				}
+				if (entry.getKey() == "APPROVED") {
+					timesheetreport.setApprovedHours(entry.getValue().getTotalHours());
+					timesheetreport.setApprovedBillableHours(entry.getValue().getBillableHours());
+					timesheetreport.setApprovedNonBillableHours(entry.getValue().getNonBillableHours());
+				} else if (!approverList.containsKey("APPROVED")) {
+					timesheetreport.setApprovedHours(0f);
+					timesheetreport.setApprovedBillableHours(0f);
+					timesheetreport.setApprovedNonBillableHours(0f);
+				}
+
+				if (entry.getKey() == "REJECTED") {
+					timesheetreport.setRejectedHours(entry.getValue().getTotalHours());
+					timesheetreport.setRejectedBillableHours(entry.getValue().getBillableHours());
+					timesheetreport.setRejectedNonBillableHours(entry.getValue().getNonBillableHours());
+				} else if (!approverList.containsKey("REJECTED")) {
+					timesheetreport.setRejectedHours(0f);
+					timesheetreport.setRejectedBillableHours(0f);
+					timesheetreport.setRejectedNonBillableHours(0f);
+				}
+
+				if (entry.getKey() == "NEW") {
+					timesheetreport.setSavedHours(entry.getValue().getTotalHours());
+					timesheetreport.setSavedBillableHours(entry.getValue().getBillableHours());
+					timesheetreport.setSavedNonBillableHours(entry.getValue().getNonBillableHours());
+				} else if (!approverList.containsKey("NEW")) {
+					timesheetreport.setSavedHours(0f);
+					timesheetreport.setSavedBillableHours(0f);
+					timesheetreport.setSavedNonBillableHours(0f);
+				}
+			}
+		} else {
+			timesheetreport.setSubmittedHours(0f);
+			timesheetreport.setSubmittedBillableHours(0f);
+			timesheetreport.setSubmittedNonBillableHours(0f);
+
+			timesheetreport.setApprovedHours(0f);
+			timesheetreport.setApprovedBillableHours(0f);
+			timesheetreport.setApprovedNonBillableHours(0f);
+
+			timesheetreport.setRejectedHours(0f);
+			timesheetreport.setRejectedBillableHours(0f);
+			timesheetreport.setRejectedNonBillableHours(0f);
+
+			timesheetreport.setSavedHours(0f);
+			timesheetreport.setSavedBillableHours(0f);
+			timesheetreport.setSavedNonBillableHours(0f);
+		}
+		return timesheetreport;
+	}
+
+	@RequestMapping(value = "/getExpensesByProjectId", method = RequestMethod.POST)
+	public TimesheetReportDTO getExpensesByProjectId(
+			@RequestParam(value = "projectId", required = false) Long projectId,
+			@RequestParam(value = "reportType", required = false) String reportType,
+			@RequestParam(value = "startDate", required = false) String customStartDate,
+			@RequestParam(value = "endDate", required = false) String customEndDate, HttpServletRequest request)
+			throws Exception {
+
+		OrgLocations loginOrgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,
+				"orgLocations");
+		Projects project = projectsService.getProjectById(projectId);
+
+		Date[] searchDates = null;
+		if (!"".equalsIgnoreCase(customStartDate) && !"".equalsIgnoreCase(customEndDate)) {
+			searchDates = reportsUtil.customeDates(loginOrgLocation, customStartDate, customEndDate);
+		} else if (reportType.equalsIgnoreCase("upToDate")) {
+			searchDates = reportsUtil.projectUpToDates(loginOrgLocation, project.getStartDate(), new Date());
+		} else {
+			searchDates = reportsUtil.getProjectFilterDate(reportType, loginOrgLocation);
+		}
+
+		TimesheetReportDTO timesheetreport = new TimesheetReportDTO();
+		List<Expenses> expensesList = expensesService.getAllExpensesByProjectIdOrgLocationIdStartDateAndEndDate(
+				projectId, loginOrgLocation.getId(), searchDates[0], searchDates[1]);
+		if (expensesList != null && !expensesList.isEmpty()) {
+			for (Expenses ex : expensesList) {
+				if (ex.getExpenseStatus().toString().equalsIgnoreCase("APPROVED")) {
+					timesheetreport.setApprovedAmount(ex.getTotalAmount().floatValue());
+				} else if (ex.getExpenseStatus().toString().equalsIgnoreCase("SUBMITTED")) {
+					timesheetreport.setSubmittedAmount(ex.getTotalAmount().floatValue());
+				} else if (ex.getExpenseStatus().toString().equalsIgnoreCase("REJECTED")) {
+					timesheetreport.setRejectedAmount(ex.getTotalAmount().floatValue());
+				}
+			}
+		} else {
+			timesheetreport.setApprovedAmount(0f);
+			timesheetreport.setSubmittedAmount(0f);
+			timesheetreport.setRejectedAmount(0f);
+
+		}
+
+		return timesheetreport;
+
+	}
+
+	@RequestMapping(value = "/calculateTotalTaskHoursForADay", method = RequestMethod.POST)
+	public String calculateTotalTaskHoursForADay(@RequestParam(value = "timeDate", required = false) String timeDate,
+			@RequestParam(value = "projectMember", required = false) Long projectMember,
+			@RequestParam(value = "timesheetHour", required = false) String timesheetHour,
+			@RequestParam(value = "editTaskTime", required = false) String editTaskTime,
+			HttpServletRequest request)
+			throws Exception {
+		String falg = "false";
+		OrgLocations loginOrgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,
+				"orgLocations");
+		ProjectMembers proMember = projectMembersService.getProjectMemberById(projectMember);
+		if (timeDate != null && StringUtils.isNotBlank(timeDate)) {
+			if (proMember != null && proMember.getProjects() != null && proMember.getMasterCandidateId().getId() != null) {
+				Float totalHours = timeSheetDayEntriesService.getTotalHoursByProjectIdMasteCandidateIdandTimesheetDate(
+				proMember.getProjects().getId(), proMember.getMasterCandidateId().getId(),commonUtil.orgLocationDateFormat(loginOrgLocation.getDateFormat(), timeDate));
+				if(editTaskTime != null && StringUtils.isNotEmpty(editTaskTime) && editTaskTime.equalsIgnoreCase("edit")) {
+					totalHours = CommonUtil.getCombinedHours(Float.parseFloat(timesheetHour.replaceAll(":", ".")),0f);
+				}else {
+					totalHours = CommonUtil.getCombinedHours(Float.parseFloat(timesheetHour.replaceAll(":", ".")),totalHours);
+				}
+				
+				
+				if (totalHours != null && totalHours >= 24) {
+					falg = "false";
+				} else {
+					falg = "true";
+				}
+			}
+		} else {
+			falg = "noDate";
+		}
+		return falg;
+	}
+
+	@RequestMapping(value = "/editProjectTaskTimesheetDayEntry", method = RequestMethod.POST)
+	public TimeSheetDayEntries editProjectTaskTimesheetDayEntry(
+			@RequestParam(value = "timeDate", required = false) String timeDate,
+			@RequestParam(value = "projectMember", required = false) Long projectMember,
+			@RequestParam(value = "taskUUID", required = false) String taskUUID, HttpServletRequest request)
+			throws Exception {
+		OrgLocations loginOrgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,
+				"orgLocations");
+		TimeSheetDayEntries totalHours = null;
+		ProjectMembers proMember = projectMembersService.getProjectMemberById(projectMember);
+		ProjectTasks projectTask = projectTasksService.getProjectTasksByUUID(taskUUID);
+		if (timeDate != null && StringUtils.isNotBlank(timeDate)) {
+			if (proMember != null && proMember.getProjects() != null
+					&& proMember.getMasterCandidateId().getId() != null) {
+				totalHours = timeSheetDayEntriesService.getTimesheetDayEntryByProjectIdMasteCandidateIdandTimesheetDate(
+						proMember.getProjects().getId(), proMember.getMasterCandidateId().getId(),
+						commonUtil.orgLocationDateFormat(loginOrgLocation.getDateFormat(), timeDate),
+						projectTask.getId());
+			}
+		}
+		return totalHours;
+	}
+
+	@RequestMapping(value = "/deleteProjectTaskTimesheetDayEntry", method = RequestMethod.POST)
+	public Integer deleteProjectTaskTimesheetDayEntry
+	          (@RequestParam(value = "timesheetEntryId", required = false) String timesheetEntryId, HttpServletRequest request) throws NumberFormatException, Exception{
+			  TimeSheetDayEntries timesheetDayEntries = timeSheetDayEntriesService.getTimesheetDayEntriesById(Long.parseLong(timesheetEntryId));
+			  timesheetDayEntries.setStatus(0);
+			  timesheetDayEntries = timeSheetDayEntriesService.saveTimesheetDayEntries(timesheetDayEntries);
+			  return timesheetDayEntries.getStatus();
+		
 	}
 	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
+
 }

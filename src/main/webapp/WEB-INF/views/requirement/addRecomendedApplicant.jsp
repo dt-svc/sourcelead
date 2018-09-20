@@ -143,9 +143,19 @@ $('body').on('submit', '#addRecomApplicant_form', function(e){
  	        dataType : 'json',
  	    	url : sourceleadUrl+"/saveAddApplicant?"+tokenParamName+"="+tokenValue+"&jsonData="+jsonData+"&con="+con,
 	        success: function(result) {
-	        	if((result == 'success')){
-	        		location.replace(sourceleadUrl+"/requirementSummary?requirementId="+requirementId); 
-		        } 
+	        	if(result.response === "SESSION_TIMEDOUT") {
+					location.replace(sourceleadUrl);
+				} else if (result.response === "AWKWARD") {
+					location.href = "/errorPage";
+				} else if (result.response === "SUCCESS") {
+		        	if((result.object === "success")){
+		        		location.replace(sourceleadUrl+"/requirementSummary?requirementId="+requirementId); 
+			        }
+				} else if (result.indexOf('Sign In') !== -1) {
+					location.replace(sourceleadUrl);
+				} else {
+					showError("Operation failed, please try again");
+				}
 	        },
 	    }); 
       return true; 
@@ -339,27 +349,35 @@ function init(){
 			        contentType:false,
 		   	        dataType : 'json',
 					url : sourceleadUrl+"/parseResume?"+tokenParamName+"="+tokenValue+"",
-					success : function(data) {
-						var json = JSON.parse(data);
-						var name = json.name;
-						var firstName = '';
-						var lastName = '';
-						if(name != null && name != 'undefined' && name != ''){
-							 firstName = name.split(".")[0]; 
-							 lastName = name.split(".")[1]; 
-							 if(firstName == null || firstName ==  'undefined' || firstName == '' ||
-									 lastName ==  null || lastName ==  'undefined'|| lastName ==  ''){
-								 firstName = name;
-							 }
+					success : function(response) {
+						if (response.response === "AWKWARD") {
+						    location.href = "/errorPage";
+						} else if (response.response === "SUCCESS") {
+							var json = response.object;
+							var name = json.name;
+							var firstName = '';
+							var lastName = '';
+							if(name != null && name != 'undefined' && name != ''){
+								 firstName = name.split(".")[0]; 
+								 lastName = name.split(".")[1]; 
+								 if(firstName == null || firstName ==  'undefined' || firstName == '' ||
+										 lastName ==  null || lastName ==  'undefined'|| lastName ==  ''){
+									 firstName = name;
+								 }
+							}
+							
+							
+							 $("input[name=FirstName]").val(firstName);
+				        	 $("input[name=LastName]").val(lastName);
+				        	 $("input[name=EmailId]").val(json.email);
+				        	 $("input[name=PhoneNumber]").val(json.phoneNumbers);
+							 validateCandidateEmail();
+							 $("#loading").removeAttr("style");
+						} else if (response.indexOf('Sign In') !== -1) {
+							location.replace(sourceleadUrl);
+						} else {
+						    showError("Operation failed, please try again");
 						}
-						
-						
-						 $("input[name=FirstName]").val(firstName);
-			        	 $("input[name=LastName]").val(lastName);
-			        	 $("input[name=EmailId]").val(json.email);
-			        	 $("input[name=PhoneNumber]").val(json.phoneNumbers);
-						 validateCandidateEmail();
-						 $("#loading").removeAttr("style");
 					},
 				});
  	 }
@@ -397,21 +415,27 @@ function validate_fileupload(fileName)
 		 $.ajax({
 		    	type: "POST",
 		        url: sourceleadUrl+"/validateCandidateEmail?"+tokenParamName+"="+tokenValue+"&email="+email, 
-		        success: function(data) {
-		         	if(data == 'true'){
-		         		  $("#save_button").attr("disabled", "disabled");
-			        	  $("#save_button" ).addClass('btn btn-sm btn-primary').val('SUBMIT');
-			        	  $('.jquery_form_error_message').remove();
-		        		  $("input[name=EmailId]").after("<p class='jquery_form_error_message'>"+email+" is Already Existed</span>");
-		        		  $("input[name=EmailId]").setAttribute('record-exist','yes');
-		        		  $("input[name=EmailId]").setAttribute('record-exist-errorMsg',email+' is Already Existed'); 
+		        success: function(response) {
+		        	if (response.response === "AWKWARD") {
+		        	    location.href = "/errorPage";
+		        	} else if (response.response === "SUCCESS") {
+		        		if(response.object == 'true') {
+			         		  $("#save_button").attr("disabled", "disabled");
+				        	  $("#save_button" ).addClass('btn btn-sm btn-primary').val('SUBMIT');
+				        	  $('.jquery_form_error_message').remove();
+			        		  $("input[name=EmailId]").after("<p class='jquery_form_error_message'>"+email+" is Already Existed</span>");
+			        		  $("input[name=EmailId]").setAttribute('record-exist','yes');
+			        		  $("input[name=EmailId]").setAttribute('record-exist-errorMsg',email+' is Already Existed'); 
+			        	} else{
+			        		$("#save_button").removeAttr("disabled");
+			        		$("input[name=EmailId]").removeAttr( "record-exist record-exist-errormsg");
+			        		$('.jquery_form_error_message').remove();
+			        	} 
+		        	} else if (response.indexOf('Sign In') !== -1) {
+		        		location.replace(sourceleadUrl);
+		        	} else {
+		        	    showError("Operation failed, please try again");
 		        	}
-		        	else{
-		        		$("#save_button").removeAttr("disabled");
-		        		$("input[name=EmailId]").removeAttr( "record-exist record-exist-errormsg");
-		        		$('.jquery_form_error_message').remove();
-		        		
-		        	} 
 		        },
 		    });
 	 }

@@ -1,10 +1,14 @@
 package com.bis.sourcelead.service.impl;
 
+import java.io.BufferedReader;
+import java.io.FileReader;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Scanner;
 
 import javax.mail.internet.InternetAddress;
 
@@ -50,6 +54,9 @@ public class ReferContactsServiceImpl implements ReferContactsService{
 	@Autowired
 	EmailScenerioUtil emailScenerioUtil;
 	
+	@Value("${static.path}")
+    private String staticPath;
+	
 	protected boolean isNullOrEmpty(String str) {
 		return (str == null || "".equals(str.trim()));
 	}
@@ -76,42 +83,104 @@ public class ReferContactsServiceImpl implements ReferContactsService{
 	}
 
 	@Override
-	public void saveuserContacts(User user, OrgLocations orgLocations, ReferContactsDTO referContactsDTO) throws Exception {
+	public void saveuserContacts(User user,  ReferContactsDTO referContactsDTO) throws Exception {
 		
-		ReferContacts referContacts = new ReferContacts();
+		ReferContacts referContacts=null;
 		
-		if(StringUtils.isNoneBlank(referContactsDTO.getFirstName())){
-			referContacts.setFirstName(referContactsDTO.getFirstName());
-		}
-		
-		if(StringUtils.isNoneBlank(referContactsDTO.getLastName())){
-			referContacts.setLastName(referContactsDTO.getLastName());
-		}
-		
-		if(StringUtils.isNoneBlank(referContactsDTO.getEmail())){
-			referContacts.setContactUserEmail(referContactsDTO.getEmail());
-			User contactUser = userDao.getUserByEmailAndUserType(referContactsDTO.getEmail(), Constants.PROFESSIONAL);
-			if(null != contactUser){
-				referContacts.setContactUser(contactUser);
+		if(referContactsDTO.getId() !=null){
+			referContacts=referContactsDao.getReferContactsById(referContactsDTO.getId());
+			if(referContacts !=null){
+				if(StringUtils.isNoneBlank(referContactsDTO.getFirstName())){
+					referContacts.setFirstName(referContactsDTO.getFirstName());
+				}
+				
+				if(StringUtils.isNoneBlank(referContactsDTO.getLastName())){
+					referContacts.setLastName(referContactsDTO.getLastName());
+				}else {
+					referContacts.setLastName(null);
+				}
+				
+				if(StringUtils.isNoneBlank(referContactsDTO.getPhone())){
+					referContacts.setContactUserPhone(referContactsDTO.getPhone());
+				}else {
+					referContacts.setContactUserPhone(null);
+				}
+				if(StringUtils.isNoneBlank(referContactsDTO.getContactType())){
+					if(referContactsDTO.getContactType().equalsIgnoreCase("vendor")){
+						referContacts.setVendorType(1);
+					}else if(referContactsDTO.getContactType().equalsIgnoreCase("client")){
+						referContacts.setClientType(1);
+					}else if(referContactsDTO.getContactType().equalsIgnoreCase("candidate")){
+						referContacts.setCandidateType(1);
+					}else{
+						referContacts.setOtherType(1);
+					}
+					
+				}
+				
+				if(StringUtils.isNotBlank(referContactsDTO.getEmail())) {
+					referContacts.setContactUserEmail(referContactsDTO.getEmail());
+				}
+				if(StringUtils.isNoneBlank(referContactsDTO.getCompanyName())){
+					referContacts.setCompanyName(referContactsDTO.getCompanyName());
+				}else {
+					referContacts.setCompanyName(null);
+				}
+				referContacts.setUpdatedDate(new Date());
+				referContacts.setUpdatedBy(user.getUserCode());
 			}
+		}else{
+			 referContacts = new ReferContacts();
+			
+			if(StringUtils.isNoneBlank(referContactsDTO.getFirstName())){
+				referContacts.setFirstName(referContactsDTO.getFirstName());
+			}
+			
+			if(StringUtils.isNoneBlank(referContactsDTO.getLastName())){
+				referContacts.setLastName(referContactsDTO.getLastName());
+			}
+			
+			if(StringUtils.isNoneBlank(referContactsDTO.getEmail())){
+				referContacts.setContactUserEmail(referContactsDTO.getEmail());
+				User contactUser = userDao.getUserByEmailAndUserType(referContactsDTO.getEmail(), Constants.PROFESSIONAL);
+				if(null != contactUser){
+					referContacts.setContactUser(contactUser);
+				}
+			}
+			
+			if(StringUtils.isNoneBlank(referContactsDTO.getPhone())){
+				referContacts.setContactUserPhone(referContactsDTO.getPhone());
+			}
+			if(StringUtils.isNoneBlank(referContactsDTO.getContactType())){
+				if(referContactsDTO.getContactType().equalsIgnoreCase("vendor")){
+					referContacts.setVendorType(1);
+				}else if(referContactsDTO.getContactType().equalsIgnoreCase("client")){
+					referContacts.setClientType(1);
+				}else if(referContactsDTO.getContactType().equalsIgnoreCase("candidate")){
+					referContacts.setCandidateType(1);
+				}else{
+					referContacts.setOtherType(1);
+				}
+				
+			}
+			if(StringUtils.isNoneBlank(referContactsDTO.getCompanyName())){
+				referContacts.setCompanyName(referContactsDTO.getCompanyName());
+			}
+			
+			referContacts.setReferFromUser(user);
+			String contactUUID = SourceLeadRandomCodeHelper.generateUUID();
+			referContacts.setContactUserUUID(contactUUID);
+			referContacts.setCreatedDate(new Date());
+			
+			referContacts.setCreatedBy(user.getUserCode());
+			
+			referContacts.setContactSource(Contact_Source.SELF);
+			
+			
+			sendEmailToReferedContact(user,referContactsDTO,contactUUID);
 		}
 		
-		if(StringUtils.isNoneBlank(referContactsDTO.getPhone())){
-			referContacts.setContactUserPhone(referContactsDTO.getPhone());
-		}
-		
-		referContacts.setReferFromUser(user);
-		String contactUUID = SourceLeadRandomCodeHelper.generateUUID();
-		referContacts.setContactUserUUID(contactUUID);
-		referContacts.setOrgLocationId(orgLocations);
-		referContacts.setCreatedDate(new Date());
-		referContacts.setUpdatedDate(new Date());
-		referContacts.setCreatedBy(user.getUserCode());
-		referContacts.setUpdatedBy(user.getUserCode());
-		referContacts.setContactSource(Contact_Source.SELF);
 		referContactsDao.addReferContacts(referContacts);
-		
-		sendEmailToReferedContact(user,referContactsDTO,contactUUID);
 	}
 	
 	
@@ -130,8 +199,8 @@ public class ReferContactsServiceImpl implements ReferContactsService{
 			 userName = loginUserName.append(user.getFirstName()).toString();
 		 }
 		 
-		 if(StringUtils.isNoneBlank(referContactsDTO.getFirstName())){
-			 professionalName = sb.append(referContactsDTO.getFirstName()).append(" ").append(referContactsDTO.getFirstName()).toString();
+		 if(StringUtils.isNoneBlank(referContactsDTO.getLastName())){
+			 professionalName = sb.append(referContactsDTO.getFirstName()).append(" ").append(referContactsDTO.getLastName()).toString();
 		 }else{
 			 professionalName = sb.append(referContactsDTO.getFirstName()).toString();
 		 }
@@ -154,10 +223,11 @@ public class ReferContactsServiceImpl implements ReferContactsService{
 		 //getting the current EmailScenario by EmailScenario unique name and entity type
 		 EmailScenario  emailScenario = emailScenarioService.getEmailScenarioByUniqueName(Constants.ADD_NEW_USER_CONTACT,Constants.ENTITY_TYPE_EMAIL);
 		
+		
 		 //covert subject,body and signature
-		 String subject = emailScenerioUtil.bulidSubject(emailScenario.getSubject(),globalVarsMap);
-		 String body = emailScenerioUtil.buildTempBody(emailScenario.getBody(),globalVarsMap);
-		 String signature = emailScenerioUtil.buildSignature(emailScenario.getSignature(),globalVarsMap);
+		 String subject = emailScenerioUtil.bulidTemplateSubject(emailScenario.getSubject(),globalVarsMap,emailScenario);
+		 String body = emailScenerioUtil.buildTemplateBody(emailScenario.getBody(),globalVarsMap,emailScenario);
+		 String signature = emailScenerioUtil.buildTemplateSignature(emailScenario.getSignature(),globalVarsMap,emailScenario);
 		 String url = sourceleadUrl;
 		 
 		 //construct HTML template using required data
@@ -167,6 +237,8 @@ public class ReferContactsServiceImpl implements ReferContactsService{
 		 
 		 //calling the sendEmail method of emailScenerioUtil
 		 emailScenerioUtil.sendEmail(emailMessage,1L,iAdressArray,new ArrayList<EmailAttachment>());
+		 
+		 
 		
 	}
 
@@ -195,6 +267,55 @@ public class ReferContactsServiceImpl implements ReferContactsService{
 	public ReferContacts findByEmail(String recipientMail) throws Exception
 	{
 		return referContactsDao.findByEmail(recipientMail);
+	}
+
+	@Override
+	public void saveuserContactsFromConnections(User fromUser, User toUser)
+			throws Exception {
+		
+		ReferContacts referContacts = new ReferContacts();
+		if(StringUtils.isNoneBlank(toUser.getFirstName())){
+			referContacts.setFirstName(toUser.getFirstName());
+		}
+		if(StringUtils.isNoneBlank(toUser.getLastName())){
+			referContacts.setLastName(toUser.getLastName());
+		}
+
+		referContacts.setContactUser(toUser);
+		if(StringUtils.isNoneBlank(toUser.getMobilePhone())){
+			referContacts.setContactUserPhone(toUser.getMobilePhone());
+		}
+		referContacts.setReferFromUser(fromUser);
+		String contactUUID = SourceLeadRandomCodeHelper.generateUUID();
+		referContacts.setContactUserEmail(toUser.getEmail());
+		referContacts.setContactUserUUID(contactUUID);
+		referContacts.setCreatedDate(new Date());
+		referContacts.setUpdatedDate(new Date());
+		referContacts.setCreatedBy(fromUser.getUserCode());
+		referContacts.setUpdatedBy(fromUser.getUserCode());
+		referContacts.setContactSource(Contact_Source.SELF);
+		referContactsDao.addReferContacts(referContacts);
+		
+		
+	}
+
+	@Override
+	public ReferContacts getReferContactsByFromUserIdAndToUserId(Long fromUserId, Long toUserId) throws Exception {
+		return referContactsDao.getReferContactsByFromUserIdAndToUserId(fromUserId, toUserId);
+	}
+
+	@Override
+	public boolean deleteContactById(Long id) throws Exception {
+		
+		ReferContacts  referContacts=referContactsDao.getReferContactsById(id);
+		if(referContacts != null){
+			ReferContacts referContact=referContactsDao.deleteContactById(referContacts);
+			if(referContact != null){
+				return true;
+			}else
+				return false;
+		}
+		return false;
 	}
 
 }

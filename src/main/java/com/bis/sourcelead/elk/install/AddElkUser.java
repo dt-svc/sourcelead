@@ -2,8 +2,6 @@ package com.bis.sourcelead.elk.install;
 
 import java.beans.PropertyVetoException;
 import java.io.IOException;
-import java.io.Writer;
-import java.net.InetAddress;
 import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -15,11 +13,6 @@ import java.util.ArrayList;
 
 import javax.sql.DataSource;
 
-import org.apache.commons.lang.exception.ExceptionUtils;
-import org.elasticsearch.client.transport.TransportClient;
-import org.elasticsearch.common.settings.Settings;
-import org.elasticsearch.common.transport.InetSocketTransportAddress;
-import org.elasticsearch.index.engine.DocumentMissingException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.context.ApplicationContext;
@@ -30,22 +23,20 @@ import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.db.DatabaseConnectionConfig;
 import com.bis.sourcelead.db.PropertyPathConfiguration;
 import com.bis.sourcelead.elk.index.UserIndex;
+import com.bis.sourcelead.elk.setup.SourceleadELKTC;
 import com.mchange.v2.c3p0.ComboPooledDataSource;
-import com.thoughtworks.xstream.XStream;
-import com.thoughtworks.xstream.io.HierarchicalStreamWriter;
-import com.thoughtworks.xstream.io.json.JsonHierarchicalStreamDriver;
-import com.thoughtworks.xstream.io.json.JsonWriter;
 
 public class AddElkUser {
 	private static final Logger logger = LoggerFactory.getLogger(AddElkUser.class);
 	private ComboPooledDataSource comboPooledDataSource;
-	private TransportClient client;
-
+	private SourceleadELKTC<UserIndex> client;
+	ApplicationContext ctx = new AnnotationConfigApplicationContext(PropertyPathConfiguration.class);
+	DatabaseConnectionConfig dbconfig = ctx.getBean(DatabaseConnectionConfig.class);
 	public void addElkUser() throws IOException, SQLException {
 		ArrayList<UserIndex> elkUserList = getElkUsers();
 		if (null != elkUserList && !elkUserList.isEmpty()) {
 			for (UserIndex userIndex : elkUserList) {
-				saveOrUpdateElkDocument(userIndex, Constants.ELK_USER_INDEX, Constants.ELK_USER_TYPE,
+				client.saveOrUpdateElkDocument(userIndex, Constants.ELK_USER_INDEX, Constants.ELK_USER_TYPE,
 						userIndex.getUserRoleTableId().toString());
 			}
 		}
@@ -58,7 +49,7 @@ public class AddElkUser {
 		Connection conn = null;
 		Statement stmt = null;
 		try {
-			String sql = "SELECT * FROM sourcelead.USER_ROLE userRole";
+			String sql = "SELECT * FROM "+dbconfig.getSchema()+".USER_ROLE userRole";
 			conn = dataSource.getConnection();
 		    stmt = conn.createStatement();
 			ResultSet rs = stmt.executeQuery(sql);
@@ -102,7 +93,7 @@ public class AddElkUser {
 				if (null != userId && userId != 0) {
 					Statement stmt1 = conn.createStatement();
 					try {
-						String sql1 = "SELECT * FROM sourcelead.USER user where user.ID = '" + userId + "'  and  '" + userId + "' IN (SELECT userRole.USER_ID FROM sourcelead.USER_ROLE userRole where userRole.ORG_LOCATIONS_ID = '" + orgLocationId + "') ";
+						String sql1 = "SELECT * FROM "+dbconfig.getSchema()+".USER user where user.ID = '" + userId + "'  and  '" + userId + "' IN (SELECT userRole.USER_ID FROM "+dbconfig.getSchema()+".USER_ROLE userRole where userRole.ORG_LOCATIONS_ID = '" + orgLocationId + "') ";
 
 						ResultSet rs1 = stmt1.executeQuery(sql1);
 						if (rs1 != null) {
@@ -113,6 +104,13 @@ public class AddElkUser {
 								userIndex.setMobilePhone(rs1.getString("MOBILE_PHONE"));
 								userIndex.setIsMailSent(rs1.getString("IS_MAIL_SENT"));
 								userIndex.setUserCode(rs1.getString("USER_CODE"));
+								userIndex.setGender(rs1.getString("GENDER"));
+								userIndex.setMiddleName(rs1.getString("MIDDLE_NAME"));
+								Timestamp dateofbirthstr = rs1.getTimestamp("DATE_OF_BIRTH");
+								if (null != dateofbirthstr) {
+									String updatedDateofBirth = StringDate.format(new java.util.Date(dateofbirthstr.getTime()));
+									userIndex.setDateofBirth(updatedDateofBirth);
+								}
 							}
 
 						}
@@ -124,7 +122,7 @@ public class AddElkUser {
 
 					Statement stmt2 = conn.createStatement();
 					try {
-						String sql2 = "SELECT * FROM sourcelead.EMPLOYEE employee where employee.USER_ID = '" + userId
+						String sql2 = "SELECT * FROM "+dbconfig.getSchema()+".EMPLOYEE employee where employee.USER_ID = '" + userId
 								+ "' and employee.ORG_LOCATIONS_ID = '" + orgLocationId + "' ";
 
 						ResultSet rs2 = stmt2.executeQuery(sql2);
@@ -155,7 +153,7 @@ public class AddElkUser {
 
 					Statement stmt3 = conn.createStatement();
 					try {
-						String sql3 = "SELECT * FROM sourcelead.ROLES roles where roles.ORG_LOCATION_ID='"
+						String sql3 = "SELECT * FROM "+dbconfig.getSchema()+".ROLES roles where roles.ORG_LOCATION_ID='"
 								+ orgLocationId + "' and roles.ID = '" + userRoleId + "'";
 
 						ResultSet rs3 = stmt3.executeQuery(sql3);
@@ -184,37 +182,9 @@ public class AddElkUser {
 		}
 		return userIndexsList;
 	}
-
-	public void saveOrUpdateElkDocument(UserIndex userIndex, String index, String type, String id) {
-		String entityInJson = null;
-		try {
-			entityInJson = toJSON(userIndex);
-			client.prepareUpdate(index, type, id).setDoc(entityInJson).get();
-			logger.info(type + " has been updated.");
-		} catch (DocumentMissingException e) {
-			client.prepareIndex(index, type, id).setSource(entityInJson).execute().actionGet();
-			logger.info(type + " has been indexed.");
-		} catch (Exception e) {
-			logger.error(type + " could not be serialized. " + e.getLocalizedMessage());
-		}
-
-	}
-
-	public String toJSON(Object obj) {
-		XStream xstream = new XStream(new JsonHierarchicalStreamDriver() {
-			public HierarchicalStreamWriter createWriter(Writer writer) {
-				return new JsonWriter(writer, JsonWriter.DROP_ROOT_MODE);
-			}
-		});
-		return xstream.toXML(obj);
-	}
-
+	
 	@Bean
 	public DataSource comboPooledDataSource() {
-		@SuppressWarnings("resource")
-		ApplicationContext ctx = new AnnotationConfigApplicationContext(PropertyPathConfiguration.class);
-		DatabaseConnectionConfig dbconfig = ctx.getBean(DatabaseConnectionConfig.class);
-
 		this.comboPooledDataSource = new ComboPooledDataSource();
 		try {
 			comboPooledDataSource.setDriverClass(dbconfig.getDriverClass());
@@ -225,15 +195,6 @@ public class AddElkUser {
 		comboPooledDataSource.setUser(dbconfig.getUser());
 		comboPooledDataSource.setPassword(dbconfig.getPassword());
 
-		try {
-			Settings settings = Settings.settingsBuilder().put("cluster.name", dbconfig.getCluster())
-					.put("node.name", dbconfig.getNode()).put("path.home", dbconfig.getPath()).build();
-			client = TransportClient.builder().settings(settings).build().addTransportAddress(
-					new InetSocketTransportAddress(InetAddress.getByName(dbconfig.getHost()), 9300));
-		} catch (Exception exception) {
-			logger.error(ExceptionUtils.getFullStackTrace(exception));
-		}
-
 		return comboPooledDataSource;
 	}
 
@@ -241,7 +202,9 @@ public class AddElkUser {
 
 		try {
 			AddElkUser addElkUser = new AddElkUser();
+			addElkUser.client = new SourceleadELKTC();
 			addElkUser.addElkUser();
+			addElkUser.client.shutdown();
 		} catch (Exception e) {
 			e.printStackTrace();
 		}

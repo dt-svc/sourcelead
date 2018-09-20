@@ -26,18 +26,15 @@
 </form:form>
 </div> 
 	
-	
 <div id="divTaskTd1" style="display: none; float: left;">
 	<div class="width215px">
 		<div id="REPLACEROWIDcandidateName" class="tbldata-dotdot pull-left">
 		</div>
 		
-		<input type="hidden" class="form-control input-sm"
-			id="REPLACEROWIDcandidateId" name="projectMembers[REPLACEROWID].candidateId" />
-		
+		<input type="hidden" class="form-control input-sm" id="REPLACEROWIDcandidateId" name="projectMembers[REPLACEROWID].candidateId" />
+		<input type="hidden"  name="projectMembers[REPLACEROWID].validateRow" value="true">
 		<input type="hidden" class="form-control input-sm"
 			id="REPLACEROWIDprojectMemberId" name="projectMembers[REPLACEROWID].projectMemberId">
-		</input>
 		
 	</div>
 </div>
@@ -56,7 +53,7 @@
                      </select>
                   </div>
                   <div class="pull-left inputRate positionRelative errorField-am">
-                      <input class="form-control input-sm" type="text" id="REPLACEROWIDpayRate" name="projectMembers[REPLACEROWID].payRate" field-name="Pay Rate" data-validation="required validate_Space validate_float validate_length length1-15">
+                      <input class="form-control input-sm" type="text" id="REPLACEROWIDpayRate" name="projectMembers[REPLACEROWID].payRate" field-name="Pay Rate"  data-validation="required validate_Space validate_float validate_length length1-15">
                   </div>
                   
                   <div class="pull-left drpdownMonthly dropdown-select">
@@ -87,7 +84,7 @@
                      </select>
                   </div>
                   <div class="pull-left inputRate">
-                      <input class="form-control input-sm" type="text" id="REPLACEROWIDbillRate" name="projectMembers[REPLACEROWID].billRate" data-validation-optional="true"  data-validation="validate_Space validate_float validate_length length1-15">
+                      <input class="form-control input-sm" type="text" id="REPLACEROWIDbillRate" name="projectMembers[REPLACEROWID].billRate" field-name="Bill Rate" value="0" data-validation="required validate_Space validate_float validate_length length1-15">
                   </div>
                   <div class="pull-left drpdownMonthly dropdown-select">
                   <select id="REPLACEROWIDbillRateRateType" name="projectMembers[REPLACEROWID].billRateRateType">
@@ -155,7 +152,16 @@ function getAssociates(){
 	      
 	result = result +'<ul class="pull-right">';
 	
-
+	result = result +'<li class="dropdown">';
+	result = result +'<span class="dropdown-toggle" id="menu4" data-toggle="dropdown">';
+	result = result +'<i class="fa fa-filter"></i><span>Team</span><i class="glyphicon glyphicon-play"></i></span>|';
+	          
+	result = result +'<div class="dropdown-menu bootstrap_dropdownMenu" role="menu" aria-labelledby="menu1">';
+	result = result +'<ul class="location-filter">';
+	result = result +'<div id="orgLocationTeams"></div>';  
+	result = result +'</ul>';
+	result = result +'</div>';
+	result = result +'</li>'; 
 	        
 	result = result +'<li class="dropdown">';
 	result = result +'<span class="dropdown-toggle" id="menu3" data-toggle="dropdown">';
@@ -198,6 +204,7 @@ function getAssociates(){
 	 $("#associatesList").empty();
      $("#associatesList").append(result);
      getOrgLocationRoles();
+     getOrgLocationTeams();
  	
 }
 </script>
@@ -225,6 +232,33 @@ function getOrgLocationRoles(){
 	        
 	 });
 }
+
+function getOrgLocationTeams(){
+	var orgLocations = '${SourceLeadWeb_orgLocations.id}';
+	 var sourceleadUrl ='${sourceleadUrl}';
+	 var orgLocationId = '${SourceLeadWeb_orgLocations.id}';
+	 $.ajax({
+	    	type: "GET",
+	        url: sourceleadUrl+"/getOrgLocationTeamList?${_csrf.parameterName}=${_csrf.token}&orgLocationId="+orgLocationId,  
+	        success: function(json) {
+	        	
+	        	var output = "";
+	         	if(json.length > 0){
+	        		for (var i=0; i<json.length; i++)
+					{
+			        		var opt = json[i];
+			        		output = output + '<li><input value="'+opt.id+'" name="teams"  type="checkbox" onclick="getAssociatesFilter()"><label>'+opt.name+'</label></li>';
+					}
+	        	}else{
+	        		output = output + '<li><label>&nbsp;&nbsp;&nbsp;<font color="red">No teams configured</font></label></li>';
+	        	}
+	        	$("#orgLocationTeams").empty();
+		        $("#orgLocationTeams").append(output);
+	        }
+	        
+	 });
+}
+
 </script>
 
 
@@ -259,7 +293,7 @@ function getAssociatesFilter(){
     	result = result +'</div>'; 
     	result = result +'</div>';
     	result = result +'   <div class="modal-footer">';
-     	result = result +'     <button data-dismiss="modal" class="btn btn-primary" type="button" onClick="addRequestedResources();">Add</button>';
+     	result = result +'     <button data-dismiss="modal" class="btn btn-primary" type="button" onClick="this.disabled=true;addRequestedResources();$(this).blur();">Add</button>';
      	result = result +'   </div>'; 
      	$("#associatesListFilter").empty();
 	    $("#associatesListFilter").append(result);
@@ -277,6 +311,12 @@ function candidatesDataTableList(){
 	$('input:checkbox[name=roles]:checked').each(function() 
 		    {
 		roles.push($(this).val());
+	    });
+	
+	var teams = [];
+	$('input:checkbox[name=teams]:checked').each(function() 
+		    {
+		teams.push($(this).val());
 	    });
 	
 	var orgLocationId = '${SourceLeadWeb_orgLocations.id}';
@@ -304,7 +344,7 @@ function candidatesDataTableList(){
 	  
 	  var searchValue = $("#candidateDataTableSearch").val();
 		 searchValue = searchValue ? searchValue : "";
-		 var url = sourceleadUrl+"/getRequestedAssociatesList?searchValue="+searchValue+"&orgLocationId="+orgLocationId+"&roles="+roles+"&resourceType="+resourceType+"&selectedAssociates="+selectedAssociates+"&projectUUID="+projectUUID;
+		 var url = sourceleadUrl+"/getRequestedAssociatesList?searchValue="+searchValue+"&orgLocationId="+orgLocationId+"&roles="+roles+"&teams="+teams+"&resourceType="+resourceType+"&selectedAssociates="+selectedAssociates+"&projectUUID="+projectUUID;
 		 candidatesPagination(sourceleadUrl,url);
 	  
 	
@@ -595,15 +635,17 @@ function toggleAssociates(source) {
 	function addRequestedResources() {
 		var projectStartDate = '${projectStartDate}';
 		var projectEndDate = '${projectEndDate}';
+		 var locationDate ='${SourceLeadWeb_orgLocations.dateFormat}'; 
+		
 		if(projectStartDate == ""){
 		  projectStartDate = $("#startDateStr").val();
 		}
+		
 		if(projectEndDate == ""){
 		  projectEndDate = $("#endDateStr").val();
 		}
 		
-		
-			   
+	  
 	      for(var e in checkedAssociatedUsers) {
 	    	   if(!e || !checkedAssociatedUsers[e] || checkedAssociatedUsers[e] === "")
 				   continue;
@@ -662,7 +704,7 @@ function toggleAssociates(source) {
 			var startDateText = "";
 			var cell3 = row.insertCell(3);
 			startDateText = startDateText+"<div  class='tbldata-dotdot-100' id='"+maxRowNum+"startDate' >";
-			startDateText = startDateText+'<input type="text" class="form-control input-sm calendar" data-validation="required" field-name="Start Date" value="'+projectStartDate+'" id="'+maxRowNum+'memberStartDate"  name="projectMembers['+maxRowNum+'].memberStartDate" readonly>';
+			startDateText = startDateText+'<input type="text" class="form-control input-sm calendar" onchange="getEstimatedHours('+maxRowNum+')"  data-validation="required" field-name="Start Date" value="'+projectStartDate+'" id="'+maxRowNum+'memberStartDate"  name="projectMembers['+maxRowNum+'].memberStartDate" readonly>';
 			startDateText = startDateText+'</div>';
 			cell3.innerHTML = startDateText;
 			
@@ -670,11 +712,11 @@ function toggleAssociates(source) {
 			var endDateText = "";
 			var cell4 = row.insertCell(4);
 			endDateText = endDateText+"<div  class='tbldata-dotdot-100'>";
-			endDateText = endDateText+'<input type="text" class="form-control input-sm calendar" id="'+maxRowNum+'memberEndDate" value="'+projectEndDate+'" name="projectMembers['+maxRowNum+'].memberEndDate" readonly>';
+			endDateText = endDateText+'<input type="text" class="form-control input-sm calendar" onchange="getEstimatedHours('+maxRowNum+')"  id="'+maxRowNum+'memberEndDate" value="'+projectEndDate+'" name="projectMembers['+maxRowNum+'].memberEndDate" readonly>';
 			endDateText = endDateText+'</div>';
 			cell4.innerHTML = endDateText;
 			
-			var locationDate ='${SourceLeadWeb_orgLocations.dateFormat}'; 
+			
 			  var finalDateFormatAssignEmpUpdate = '';
 			  if(locationDate.match("yyyy-MM-dd")){
 				  finalDateFormatAssignEmpUpdate = 'yy-mm-dd';
@@ -702,7 +744,7 @@ function toggleAssociates(source) {
 									dt.setDate(dt.getDate() + 1);
 									$("#"+maxRowNum+"memberEndDate").datepicker("option", "minDate", dt);
 					                removeStartDateValidation(maxRowNum);
-									getEstimatedHours(maxRowNum)
+									//getEstimatedHours(maxRowNum)
 								}
 							});
 
@@ -716,7 +758,7 @@ function toggleAssociates(source) {
 						        	 var dt = $(this).datepicker('getDate', '-1d');
 										dt.setDate(dt.getDate() - 1);
 										$("#"+maxRowNum+"memberStartDate").datepicker("option", "maxDate", dt);
-					                getEstimatedHours(maxRowNum)
+					                //getEstimatedHours(maxRowNum)
 								}
 							});
 							
@@ -731,7 +773,7 @@ function toggleAssociates(source) {
 									dt.setDate(dt.getDate() + 1);
 									$("#"+maxRowNum+"memberEndDate").datepicker("option", "minDate", dt);
 					                removeStartDateValidation(maxRowNum);
-									getEstimatedHours(maxRowNum)
+									//getEstimatedHours(maxRowNum)
 								}
 							});
 
@@ -745,7 +787,7 @@ function toggleAssociates(source) {
 										dt.setDate(dt.getDate() - 1);
 										$("#"+maxRowNum+"memberStartDate").datepicker("option", "maxDate", dt);
 									 
-					                getEstimatedHours(maxRowNum)
+					                //getEstimatedHours(maxRowNum)
 								}
 							});
 						}
@@ -854,7 +896,7 @@ function toggleAssociates(source) {
 		      				var startDateText = "";
 		    				var cell3 = row.insertCell(3);
 		    				startDateText = startDateText+"<div  class='tbldata-dotdot-100'>";
-		    				startDateText = startDateText+'<input type="text" class="form-control input-sm calendar" id="'+maxRowNum+'memberStartDate" value="'+opt.startDateStr+'"  name="projectMembers['+maxRowNum+'].memberStartDate" readonly>';
+		    				startDateText = startDateText+'<input type="text" class="form-control input-sm calendar" onchange="getEstimatedHours('+maxRowNum+')"  id="'+maxRowNum+'memberStartDate" value="'+opt.startDateStr+'"  name="projectMembers['+maxRowNum+'].memberStartDate" readonly>';
 		    				startDateText = startDateText+'</div>';
 		    				cell3.innerHTML = startDateText;
 		    				
@@ -862,7 +904,7 @@ function toggleAssociates(source) {
 		    				var endDateText = "";
 		    				var cell4 = row.insertCell(4);
 		    				endDateText = endDateText+"<div  class='tbldata-dotdot-100'>";
-		    				endDateText = endDateText+'<input type="text" class="form-control input-sm calendar" id="'+maxRowNum+'memberEndDate" value="'+opt.endDateStr+'"  name="projectMembers['+maxRowNum+'].memberEndDate" readonly>';
+		    				endDateText = endDateText+'<input type="text" class="form-control input-sm calendar" onchange="getEstimatedHours('+maxRowNum+')"  id="'+maxRowNum+'memberEndDate" value="'+opt.endDateStr+'"  name="projectMembers['+maxRowNum+'].memberEndDate" readonly>';
 		    				endDateText = endDateText+'</div>';
 		    				cell4.innerHTML = endDateText;
 		    				
@@ -894,7 +936,7 @@ function toggleAssociates(source) {
 		    										dt.setDate(dt.getDate() + 1);
 		    										$("#"+maxRowNum+"memberEndDate").datepicker("option", "minDate", dt);
 		    						                removeStartDateValidation(maxRowNum);
-		    										getEstimatedHours(maxRowNum)
+		    										//getEstimatedHours(maxRowNum)
 		    									}
 		    								});
 
@@ -909,7 +951,7 @@ function toggleAssociates(source) {
 		    										dt.setDate(dt.getDate() - 1);
 		    										$("#"+maxRowNum+"memberStartDate").datepicker("option", "maxDate", dt);
 		    										 
-		    						                getEstimatedHours(maxRowNum)
+		    						                //getEstimatedHours(maxRowNum)
 		    									}
 		    								});
 		    								
@@ -926,7 +968,7 @@ function toggleAssociates(source) {
 		    										$("#"+maxRowNum+"memberEndDate").datepicker("option", "minDate", dt);
 		    										 
 		    						                removeStartDateValidation(maxRowNum);
-		    										getEstimatedHours(maxRowNum)
+		    										//getEstimatedHours(maxRowNum)
 		    									}
 		    								});
 
@@ -939,7 +981,7 @@ function toggleAssociates(source) {
 		    							        	var dt = $(this).datepicker('getDate', '-1d');
 		    										dt.setDate(dt.getDate() - 1);
 		    										$("#"+maxRowNum+"memberStartDate").datepicker("option", "maxDate", dt);
-		    						                getEstimatedHours(maxRowNum)
+		    						                //getEstimatedHours(maxRowNum)
 		    									}
 		    								});
 		    							}
@@ -1161,12 +1203,22 @@ function assignMembers(){
 	  	    	    data : formData,
 					url : sourceleadUrl+"/assignProjectMembersToProject?${_csrf.parameterName}=${_csrf.token}&projectUUID="+projectUUID+"&userId="+userId+"&orgLocationId="+orgLocationId, 
 					success : function(result) {
-
-						$("#associateRequestLoading").removeAttr("style");
-						 var additionalDetails = document.getElementById("additionalDetails");
-						 document.getElementById("additionalDetails").removeAttribute("class")
-						 additionalDetails.href="#tab-c"; 
-						 additionalDetails.click();
+						if (result && result.response === "INVALID_DATA") {
+								$("#associateRequestLoading").removeAttr("style");
+			                    showError(result.responseMessage);
+			                } else if (result.response === "AWKWARD") {
+			                    location.href = "/errorPage";
+			                } else if (result.response === "SUCCESS") {
+							 $("#associateRequestLoading").removeAttr("style");
+							 var additionalDetails = document.getElementById("additionalDetails");
+							 document.getElementById("additionalDetails").removeAttribute("class")
+							 additionalDetails.href="#tab-c"; 
+							 $("#additionalDetails").click();
+			                }else if (result.indexOf('Sign In') !== -1) {
+  								location.replace(sourceleadUrl);
+  							} else {
+  			                    showError("Operation failed, please try again");
+  			                }
 					},
 				}); 
       		 return true;

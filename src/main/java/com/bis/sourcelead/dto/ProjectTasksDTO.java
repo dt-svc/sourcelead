@@ -3,16 +3,21 @@ package com.bis.sourcelead.dto;
 import java.io.Serializable;
 import java.util.List;
 
+import com.bis.sourcelead.annotations.Required;
+
 @SuppressWarnings("serial")
 public class ProjectTasksDTO extends SearchDTO implements Serializable{
 	private Long id;
 	
+	@Required(desc="taskName")
 	private String taskName;
 	
+	@Required(desc="taskBillableType")
 	private String taskBillableType;
 
 	private String epic;
 	
+	@Required(desc="taskstype")
 	private String taskstype;
 	
 	private String userStory;
@@ -29,6 +34,7 @@ public class ProjectTasksDTO extends SearchDTO implements Serializable{
 	
 	private String estimatedTime;
 	
+	@Required(desc="taskStatus")
 	private Long taskStatus;
 	
 	private String taskDescription;
@@ -39,7 +45,7 @@ public class ProjectTasksDTO extends SearchDTO implements Serializable{
 	
 	private Long taskOwner;
 	
-	private List<Long> assignTaskId;
+	private String assignTaskId;
 	
 	private String staticPath;
 	
@@ -58,6 +64,20 @@ public class ProjectTasksDTO extends SearchDTO implements Serializable{
 	private String assignedTo;
 	
 	private String assignedMembers;
+	
+	private String teams;
+	
+	private String projectClientUUID;
+
+	private List<CustomFormFieldDTO> customFormData;
+
+	private String exportType;
+	
+	private String projectUUID;
+	
+	private String loginUserId;
+	
+	private String tags;
 	
 	public Long getId() {
 		return id;
@@ -162,10 +182,10 @@ public class ProjectTasksDTO extends SearchDTO implements Serializable{
 	public void setTaskOwner(Long taskOwner) {
 		this.taskOwner = taskOwner;
 	}
-	public List<Long> getAssignTaskId() {
+	public String getAssignTaskId() {
 		return assignTaskId;
 	}
-	public void setAssignTaskId(List<Long> assignTaskId) {
+	public void setAssignTaskId(String assignTaskId) {
 		this.assignTaskId = assignTaskId;
 	}
 	public String getStaticPath() {
@@ -223,4 +243,52 @@ public class ProjectTasksDTO extends SearchDTO implements Serializable{
 	public void setAssignedMembers(String assignedMembers) {
 		this.assignedMembers = assignedMembers;
 	}
+	public String getTeams() {
+		return teams;
+	}
+	public void setTeams(String teams) {
+		this.teams = teams;
+	}
+	public String getProjectClientUUID()
+	{
+		return projectClientUUID;
+	}
+	public void setProjectClientUUID(String projectClientUUID)
+	{
+		this.projectClientUUID = projectClientUUID;
+	}
+
+	public List<CustomFormFieldDTO> getCustomFormData() {
+		return customFormData;
+	}
+	public void setCustomFormData(List<CustomFormFieldDTO> customFormData) {
+		this.customFormData = customFormData;
+	}
+	
+	public String getExportType() {
+		return exportType;
+	}
+	public void setExportType(String exportType) {
+		this.exportType = exportType;
+	}
+	
+	public String getProjectUUID() {
+		return projectUUID;
+	}
+	public void setProjectUUID(String projectUUID) {
+		this.projectUUID = projectUUID;
+	}
+	public String getLoginUserId() {
+		return loginUserId;
+	}
+	public void setLoginUserId(String loginUserId) {
+		this.loginUserId = loginUserId;
+	}
+	public String getTags() {
+		return tags;
+	}
+	public void setTags(String tags) {
+		this.tags = tags;
+	}
 }
+

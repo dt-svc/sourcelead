@@ -11,6 +11,7 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
+import javax.persistence.Lob;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import javax.persistence.Transient;
@@ -24,7 +25,6 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 
 @Entity
 @Table(name = "REQUIREMENT_SUBMISSION_HISTORY")
-@Cache(usage = CacheConcurrencyStrategy.TRANSACTIONAL, region = "requirementSubmissionHistory")
 public class RequirementSubmissionHistory implements Serializable{
 	private static final long serialVersionUID = 1L;
 	
@@ -33,13 +33,13 @@ public class RequirementSubmissionHistory implements Serializable{
     @Column(name = "ID", nullable = false)
 	private Long id;
 	
-	@NotFound(action=NotFoundAction.IGNORE)
-	@ManyToOne(fetch = FetchType.EAGER)
+	
+	@ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name="REQUIREMENT_SUBMISSION_ID", nullable=false )        
     private RequirementSubmission submissionId;
 	
-	@NotFound(action=NotFoundAction.IGNORE)
-	@ManyToOne
+	
+	@ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name="INTERVIEWER_ID", nullable=false )        
     private RequirementInterviewer interviewerId;
 
@@ -64,65 +64,93 @@ public class RequirementSubmissionHistory implements Serializable{
 	@Column(name = "CREATED_USER")
 	private String createdUser;
 	
+	@JsonProperty
     @Transient
     private String fileName;
+	
     @JsonProperty
     @Transient
     private String fileUrl;
     
+    @JsonProperty
     @Transient
     private String contentType;
 	 
     @Transient
+    @JsonProperty
     private String resumeid;
     
     @Transient
+    @JsonProperty
     private String createdDateStr;
     
     @Transient
+    @JsonProperty
     private String orgLocationId;
     
     @Transient
+    @JsonProperty
     private Long offerResumeid;
     
-      
     @Transient
+    @JsonProperty
+    @Lob
+    private  byte[] docFile;
+    
+    @Transient
+    @JsonProperty
+    private String fileContentType;
+    
+    @Transient
+    @JsonProperty
     private String loginUserName;
     
     @Transient
+    @JsonProperty
     private String userName;
     
     @Transient
+    @JsonProperty
     private String submissionStage;
     
     @Transient
+    @JsonProperty
     private String requirementReson;
     
     @Transient
+    @JsonProperty
     private String interviewStartTime;
     
     @Transient
+    @JsonProperty
     private String interviewEndTime;
     
     @Transient
+    @JsonProperty
     private String interviewDateStr;
     
     @Transient
+    @JsonProperty
     private String interviewType;
     
     @Transient
+    @JsonProperty
     private String interviewerName;
     
     @Transient
+    @JsonProperty
     private String intervieweSourceType;
     
     @Transient
+    @JsonProperty
     private String clientName;
     
     @Transient
+    @JsonProperty
     private Boolean isInCoolingOffPeriod;
     
     @Transient
+    @JsonProperty
     private String coolingOffPeriodEndDateStr;
     
     
@@ -132,6 +160,50 @@ public class RequirementSubmissionHistory implements Serializable{
     @Transient
 	List<RequirementOfferHistory> requirementOfferHistoryList;
     
+    @Transient
+    @JsonProperty
+    private String candidateName;
+    
+    @Transient
+	@JsonProperty
+	private String requirementUUID;
+    
+    @Transient
+	@JsonProperty
+	private String jobTitle;
+	
+	@Transient
+	@JsonProperty
+	private String orgLocationName;
+	
+	@Transient
+	@JsonProperty
+	private String email;
+	
+	@Transient
+	@JsonProperty
+	private String mobilePhone;
+	
+	@Transient
+	@JsonProperty
+	private String resumeUUID;
+	
+	@Transient
+	@JsonProperty
+	private String primarySkill;
+	
+	@Transient
+	@JsonProperty
+	private String candidateScore;
+	
+	@Transient
+	@JsonProperty
+	private String submissionStatus;
+	
+	@Transient
+	@JsonProperty
+	private String candidateUUID;
+	
 	public Long getId() {
 		return id;
 	}
@@ -392,7 +464,137 @@ public class RequirementSubmissionHistory implements Serializable{
 	{
 		this.contentType = contentType;
 	}
-	
+
+	public byte[] getDocFile()
+	{
+		return docFile;
+	}
+
+	public void setDocFile(byte[] docFile)
+	{
+		this.docFile = docFile;
+	}
+
+	public String getFileContentType()
+	{
+		return fileContentType;
+	}
+
+	public void setFileContentType(String fileContentType)
+	{
+		this.fileContentType = fileContentType;
+	}
+
+	public String getCandidateName()
+	{
+		return candidateName;
+	}
+
+	public void setCandidateName(String candidateName)
+	{
+		this.candidateName = candidateName;
+	}
+
+	public String getRequirementUUID()
+	{
+		return requirementUUID;
+	}
+
+	public void setRequirementUUID(String requirementUUID)
+	{
+		this.requirementUUID = requirementUUID;
+	}
+
+	public String getJobTitle()
+	{
+		return jobTitle;
+	}
+
+	public void setJobTitle(String jobTitle)
+	{
+		this.jobTitle = jobTitle;
+	}
+
+	public String getOrgLocationName()
+	{
+		return orgLocationName;
+	}
+
+	public void setOrgLocationName(String orgLocationName)
+	{
+		this.orgLocationName = orgLocationName;
+	}
+
+	public String getEmail()
+	{
+		return email;
+	}
+
+	public void setEmail(String email)
+	{
+		this.email = email;
+	}
+
+	public String getMobilePhone()
+	{
+		return mobilePhone;
+	}
+
+	public void setMobilePhone(String mobilePhone)
+	{
+		this.mobilePhone = mobilePhone;
+	}
+
+	public String getResumeUUID()
+	{
+		return resumeUUID;
+	}
+
+	public void setResumeUUID(String resumeUUID)
+	{
+		this.resumeUUID = resumeUUID;
+	}
+
+	public String getPrimarySkill()
+	{
+		return primarySkill;
+	}
+
+	public void setPrimarySkill(String primarySkill)
+	{
+		this.primarySkill = primarySkill;
+	}
+
+	public String getCandidateScore()
+	{
+		return candidateScore;
+	}
+
+	public void setCandidateScore(String candidateScore)
+	{
+		this.candidateScore = candidateScore;
+	}
+
+	public String getSubmissionStatus()
+	{
+		return submissionStatus;
+	}
+
+	public void setSubmissionStatus(String submissionStatus)
+	{
+		this.submissionStatus = submissionStatus;
+	}
+
+	public String getCandidateUUID()
+	{
+		return candidateUUID;
+	}
+
+	public void setCandidateUUID(String candidateUUID)
+	{
+		this.candidateUUID = candidateUUID;
+	}
+
 
 	
 }

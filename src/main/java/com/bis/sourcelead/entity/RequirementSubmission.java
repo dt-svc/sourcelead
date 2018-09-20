@@ -35,7 +35,6 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 
 @Entity
 @Table(name = "REQUIREMENT_SUBMISSION")
-@Cache(usage = CacheConcurrencyStrategy.TRANSACTIONAL,region="requirementSubmission")
 public class RequirementSubmission implements Serializable{
 	
 	private static final long serialVersionUID = 1L;
@@ -45,6 +44,7 @@ public class RequirementSubmission implements Serializable{
     @Column(name = "ID", nullable = false)
     private Long id;
  	
+	
 	@NotFound(action=NotFoundAction.IGNORE)
 	@ManyToOne
 	@JoinColumn(name = "REQUIREMENT_ID")
@@ -55,25 +55,30 @@ public class RequirementSubmission implements Serializable{
 	@JoinColumn(name = "CANDIDATE_ID")
    	private Candidate candidate;
 	
+	
 	@NotFound(action=NotFoundAction.IGNORE)
 	@ManyToOne
 	@JoinColumn(name = "VENDOR_CANDIDATE_ID")
    	private Candidate vendorCandidateId;
 	
+	
 	@NotFound(action=NotFoundAction.IGNORE)
-	@ManyToOne 
+	@ManyToOne
 	@JoinColumn(name = "SOURCE_SUBMISSION_ID") 
    	private RequirementSubmission sourceSubmission;
+	
 	
 	@NotFound(action=NotFoundAction.IGNORE)
 	@ManyToOne
 	@JoinColumn(name = "CANDIDATE_RESUEME_ID")
    	private CandidateResumes candidateResumes;
 	
+	
 	@NotFound(action=NotFoundAction.IGNORE)
 	@ManyToOne
 	@JoinColumn(name = "ORG_LOCATION_ID")
    	private OrgLocations orgLocations;
+	
 	
 	@NotFound(action=NotFoundAction.IGNORE)
 	@ManyToOne
@@ -179,10 +184,14 @@ public class RequirementSubmission implements Serializable{
 	@Type(type="text")
 	private String updatedUser;
     
+    
     @NotFound(action=NotFoundAction.IGNORE)
-    @ManyToOne(fetch = FetchType.LAZY)
+	@ManyToOne
     @JoinColumn(name="RECRUITER_USER_ID")        
     private User recruiterUserId;
+    
+    @Column(name = "JOINED_DATE")
+    private Date joinedDate;
 	
     @Transient
     @JsonProperty
@@ -215,6 +224,10 @@ public class RequirementSubmission implements Serializable{
     @Transient
     @JsonProperty
    	private String upDatedStr;
+    
+    @Transient
+    @JsonProperty
+   	private String joinedDateStr;
     
     @Transient
     @JsonProperty
@@ -538,35 +551,44 @@ public class RequirementSubmission implements Serializable{
     
     @Transient
     @JsonProperty
+	private String candidateCommentsCount;
+    
+    @Transient
+    @JsonProperty
 	private REQUIREMENT_SUBMISSION_STATUS requirementCurrentStatus;
     
-    @NotFound(action=NotFoundAction.IGNORE)
+    
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "requirementSubmission")
 	private Set<RequirementSubmissionTemplateFields> requirementSubmissionTemplateFieldsList;
     
-    @NotFound(action=NotFoundAction.IGNORE)
+    
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "submissionId")
    	private Set<RequirementSubmissionHistory> requirementSubmissionHistoryList;
     
     @JsonBackReference
-    @NotFound(action=NotFoundAction.IGNORE)
+    
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "submissionId")
    	private Set<RequirementInterviewHistory> requirementInterviewHistory;
     
     @JsonBackReference
-    @NotFound(action=NotFoundAction.IGNORE)
+    
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "submissionId")
    	private Set<RequirementOffers> requirementOffersList;
     
     @JsonBackReference
-    @NotFound(action=NotFoundAction.IGNORE)
+    
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "submissionId")
    	private Set<RequirementOfferHistory> requirementOfferHistoryList;
     
     @Transient
     @JsonProperty
 	private Long orgRelationId;
-
+    
+    @Transient
+	@JsonProperty
+	private List<String> locationsList;
+    
+    
 	public int getProfilePercentage()
 	{
 		return profilePercentage;
@@ -1141,6 +1163,14 @@ public class RequirementSubmission implements Serializable{
 		this.upDatedStr = upDatedStr;
 	}
 
+	public String getJoinedDateStr() {
+		return joinedDateStr;
+	}
+
+	public void setJoinedDateStr(String joinedDateStr) {
+		this.joinedDateStr = joinedDateStr;
+	}
+
 	public String getCreatedTimeStr() {
 		return createdTimeStr;
 	}
@@ -1340,6 +1370,14 @@ public class RequirementSubmission implements Serializable{
 
 	public void setRecruiterUserId(User recruiterUserId) {
 		this.recruiterUserId = recruiterUserId;
+	}
+
+	public Date getJoinedDate() {
+		return joinedDate;
+	}
+
+	public void setJoinedDate(Date joinedDate) {
+		this.joinedDate = joinedDate;
 	}
 
 	public String getLoginOrgLOcationName() {
@@ -1647,6 +1685,16 @@ public class RequirementSubmission implements Serializable{
 		this.submissionDisplayStatus = submissionDisplayStatus;
 	}
 
+	public String getCandidateCommentsCount()
+	{
+		return candidateCommentsCount;
+	}
+
+	public void setCandidateCommentsCount(String candidateCommentsCount)
+	{
+		this.candidateCommentsCount = candidateCommentsCount;
+	}
+
 	public Long getOrgRelationId()
 	{
 		return orgRelationId;
@@ -1675,5 +1723,12 @@ public class RequirementSubmission implements Serializable{
 	public void setReqReleaseAllJobUserStatus(String reqReleaseAllJobUserStatus)
 	{
 		this.reqReleaseAllJobUserStatus = reqReleaseAllJobUserStatus;
+	}
+
+	public List<String> getLocationsList() {
+		return locationsList;
+	}
+	public void setLocationsList(List<String> locationsList) {
+		this.locationsList = locationsList;
 	}
 }

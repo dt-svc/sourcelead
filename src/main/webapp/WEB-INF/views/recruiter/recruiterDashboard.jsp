@@ -408,7 +408,8 @@ function loadJobSummaryDoNutChart(appliedJobs,submittedByMeJobs,referByMeJobs){
               result = result +'</div>';
 
               result = result +'</div>';
-              result = result +'<div class="col-sm-6 col-md-3">';
+              
+            /*   result = result +'<div class="col-sm-6 col-md-3">';
               result = result +'<div class="content_widget jobs-graphview buttonView">';
               result = result +'<span class="label label-primary">Hired</span>';
               
@@ -416,7 +417,8 @@ function loadJobSummaryDoNutChart(appliedJobs,submittedByMeJobs,referByMeJobs){
               result = result +'<span class="count">0</span>';
               result = result +'</div>';
 
-              result = result +'</div>';
+              result = result +'</div>'; */
+              
               result = result +'<div class="col-sm-6 col-md-3">';
               result = result +'<div class="content_widget jobs-graphview buttonView">';
               result = result +'<span class="label label-danger">Rejected';
@@ -527,6 +529,8 @@ function loadJobSummaryDoNutChart(appliedJobs,submittedByMeJobs,referByMeJobs){
               result = result +'</div>';
 
               result = result +'</div>';
+              
+/*               
               result = result +'<div class="col-sm-6 col-md-3">';
               result = result +'<div class="content_widget jobs-graphview buttonView">';
               result = result +'<span class="label label-primary">Hired</span>';
@@ -535,7 +539,9 @@ function loadJobSummaryDoNutChart(appliedJobs,submittedByMeJobs,referByMeJobs){
               result = result +'<span class="count">0</span>';
               result = result +'</div>';
 
-              result = result +'</div>';
+              result = result +'</div>'; */
+              
+              
               result = result +'<div class="col-sm-6 col-md-3">';
               result = result +'<div class="content_widget jobs-graphview buttonView">';
               result = result +'<span class="label label-danger">Rejected';

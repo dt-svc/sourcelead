@@ -1,0 +1,21 @@
+package com.bis.sourcelead.service;
+
+import java.util.List;
+
+import com.bis.sourcelead.entity.RequirementLocations;
+
+public interface RequirementLocationsService {
+	
+	RequirementLocations saveRequirementLocations(RequirementLocations requirementLocations) throws Exception;
+	
+	List<RequirementLocations> getRequirementLocationsListByRequirementId(Long requirementId) throws Exception;
+	
+	List<String> getRequirementLocationsUUIDByRequirementId(Long requirementId) throws Exception;
+	
+	List<Object[]> getRequirementLocationsListByRequirementIdMap(List<Long> reqIdsList) throws Exception;
+	
+	RequirementLocations getRequirementLocationsByLocationUUID(String locationUUID) throws Exception;
+	
+	void deleteRequirementLocations(RequirementLocations requirementLocations) throws Exception;
+
+}

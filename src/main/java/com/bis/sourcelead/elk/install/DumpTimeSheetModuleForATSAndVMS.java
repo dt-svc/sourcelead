@@ -24,7 +24,8 @@ public class DumpTimeSheetModuleForATSAndVMS {
 
 
 	private ComboPooledDataSource comboPooledDataSource;
-	
+	ApplicationContext ctx = new AnnotationConfigApplicationContext(PropertyPathConfiguration.class);
+	DatabaseConnectionConfig dbconfig = ctx.getBean(DatabaseConnectionConfig.class);
 /**
  * @author Venkat I
  * this method is using for update time sheet modules for orglocations
@@ -40,7 +41,7 @@ public void dumpTimeSheetModules() throws IOException, SQLException {
 		conn = dataSource.getConnection();
 			
 		
-			 String sql1 = "SELECT * FROM sourcelead.ORG_LOCATIONS";
+			 String sql1 = "SELECT * FROM "+dbconfig.getSchema()+".ORG_LOCATIONS";
 			 stmt1 = conn.createStatement();
 			 ResultSet rs1 = stmt1.executeQuery(sql1);
 			
@@ -61,14 +62,14 @@ public void dumpTimeSheetModules() throws IOException, SQLException {
 				 boolean tsflag = moduleIds.contains(Constants.MODULE_TIMESHEET);
 				 if(tsflag == false) {
 					    modules = modules+","+Constants.MODULE_TIMESHEET;
-						String query2 = " update sourcelead.ORG_LOCATIONS set MODULES_ID = ? where ID = ? ";
+						String query2 = " update "+dbconfig.getSchema()+".ORG_LOCATIONS set MODULES_ID = ? where ID = ? ";
 			    		java.sql.PreparedStatement pstmt3 = conn.prepareStatement(query2); 
 			    		pstmt3.setString(1, modules);
 			    		pstmt3.setLong(2, orgLocationId);
 			    		pstmt3.executeUpdate(); 
 			    		
 			    		
-			    		 String sql2 = "SELECT * FROM sourcelead.ROLES where ORG_LOCATION_ID = '"+orgLocationId+"' ";
+			    		 String sql2 = "SELECT * FROM "+dbconfig.getSchema()+".ROLES where ORG_LOCATION_ID = '"+orgLocationId+"' ";
 						 Statement stmt2 = conn.createStatement();
 						 ResultSet rs2 = stmt2.executeQuery(sql2);
 						 
@@ -91,7 +92,7 @@ public void dumpTimeSheetModules() throws IOException, SQLException {
 							 }
 							 
 							 
-							    String query3 = " update sourcelead.ROLES set ACTION_ID = ? where ID = ? ";
+							    String query3 = " update "+dbconfig.getSchema()+".ROLES set ACTION_ID = ? where ID = ? ";
 					    		java.sql.PreparedStatement pstmt4 = conn.prepareStatement(query3); 
 					    		pstmt4.setString(1, roleActionIds);
 					    		pstmt4.setLong(2, roleId);
@@ -120,10 +121,6 @@ public void dumpTimeSheetModules() throws IOException, SQLException {
  * @return DataSource
  */ 
 private DataSource comboPooledDataSource() {
-		@SuppressWarnings("resource")
-		ApplicationContext ctx = new AnnotationConfigApplicationContext(PropertyPathConfiguration.class);
-		DatabaseConnectionConfig dbconfig = ctx.getBean(DatabaseConnectionConfig.class);
-
 		this.comboPooledDataSource = new ComboPooledDataSource();
 		try {
 			comboPooledDataSource.setDriverClass(dbconfig.getDriverClass());

@@ -6,7 +6,9 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
+import java.util.TimeZone;
 
+import org.apache.commons.lang3.StringUtils;
 import org.hibernate.Query;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
@@ -23,6 +25,7 @@ import com.bis.sourcelead.dao.ProjectMembersHistoryDao;
 import com.bis.sourcelead.entity.ProjectMembersHistory;
 import com.bis.sourcelead.entity.Projects;
 import com.bis.sourcelead.exception.SourceLeadConstraintViolationException;
+import com.bis.sourcelead.util.CalendarUtil;
 
 @Repository
 public class ProjectMembersHistoryDaoImpl implements ProjectMembersHistoryDao {
@@ -53,7 +56,7 @@ public class ProjectMembersHistoryDaoImpl implements ProjectMembersHistoryDao {
 		logger.debug("In ProjectMembersHistory getProjectMembersOpenHistoryByProjectMemberId method");
         Session session = this.sessionFactory.getCurrentSession();
         Query projectMembersHistoryListQuery= session.createQuery("from ProjectMembersHistory pmh left join fetch pmh.projectMemberId pm left join fetch pm.employee emp left join fetch emp.user where pmh.status = :status and pm.id = :projectMemberId");
-		List<ProjectMembersHistory> projectMembersHistoryList= projectMembersHistoryListQuery.setLong("projectMemberId", projectMemberId).setParameter("status", "OPEN").setCacheable(true).list();
+		List<ProjectMembersHistory> projectMembersHistoryList= projectMembersHistoryListQuery.setLong("projectMemberId", projectMemberId).setParameter("status", "OPEN").list();
 		ProjectMembersHistory pmh = null;
 		if(projectMembersHistoryList != null && !projectMembersHistoryList.isEmpty()){
 			pmh = projectMembersHistoryList.iterator().next();
@@ -69,7 +72,7 @@ public class ProjectMembersHistoryDaoImpl implements ProjectMembersHistoryDao {
 		logger.debug("In ProjectMembersHistory getProjectMembersOpenHistoryByProjectMemberId method");
         Session session = this.sessionFactory.getCurrentSession();
         Query projectMembersHistoryListQuery= session.createQuery("from ProjectMembersHistory pmh left join fetch pmh.projectMemberId pm left join fetch pm.employee emp left join fetch emp.user where pm.id = :projectMemberId");
-		List<ProjectMembersHistory> projectMembersHistoryList= projectMembersHistoryListQuery.setLong("projectMemberId", projectMemberId).setCacheable(true).list();
+		List<ProjectMembersHistory> projectMembersHistoryList= projectMembersHistoryListQuery.setLong("projectMemberId", projectMemberId).list();
 		ProjectMembersHistory pmh = null;
 		if(projectMembersHistoryList != null && !projectMembersHistoryList.isEmpty()){
 			pmh = projectMembersHistoryList.iterator().next();
@@ -116,7 +119,7 @@ public class ProjectMembersHistoryDaoImpl implements ProjectMembersHistoryDao {
 		}
 		
 		Query projectMembersHistoryListQuery= session.createQuery("from ProjectMembersHistory pmh left join fetch pmh.projectMemberId where pmh.projectMemberId.id = :projectMemberId and (( pmh.projectTerminationDate IS NOT NULL and :startDate between pmh.projectAssignedDate and pmh.projectTerminationDate) OR (pmh.projectTerminationDate IS NOT NULL and  (pmh.projectTerminationDate between :startDate and :endDate))  OR ( pmh.projectTerminationDate IS NOT NULL and  :endDate between pmh.projectAssignedDate and pmh.projectTerminationDate) OR (pmh.projectTerminationDate IS NULL and :endDate >= pmh.projectAssignedDate))");
-		List<ProjectMembersHistory> projectMembersHistoryList= projectMembersHistoryListQuery.setLong("projectMemberId", projectMemberId).setParameter("startDate", sqlStartDate).setParameter("endDate", sqlEndDate).setCacheable(true).list();
+		List<ProjectMembersHistory> projectMembersHistoryList= projectMembersHistoryListQuery.setLong("projectMemberId", projectMemberId).setParameter("startDate", sqlStartDate).setParameter("endDate", sqlEndDate).list();
 		HashSet<Date> dateList = new HashSet<Date>();
 		if(projectMembersHistoryList != null && !projectMembersHistoryList.isEmpty()){
 			for(ProjectMembersHistory pmh :projectMembersHistoryList){
@@ -180,7 +183,7 @@ public class ProjectMembersHistoryDaoImpl implements ProjectMembersHistoryDao {
 		
 		Session session = this.sessionFactory.getCurrentSession();
 		Query projectMembersHistoryListQuery= session.createQuery("from ProjectMembersHistory pmh left join fetch pmh.projectMemberId where pmh.projectMemberId.id = :projectMemberId");
-		List<ProjectMembersHistory> projectMembersHistoryList= projectMembersHistoryListQuery.setLong("projectMemberId", projectMemberId).setCacheable(true).list();
+		List<ProjectMembersHistory> projectMembersHistoryList= projectMembersHistoryListQuery.setLong("projectMemberId", projectMemberId).list();
 		HashMap<String,Date> dateList = new HashMap<>();
 		int count = 1;
 		int flag = projectMembersHistoryList.size();
@@ -221,7 +224,7 @@ public class ProjectMembersHistoryDaoImpl implements ProjectMembersHistoryDao {
 		logger.debug("In ProjectMembersHistory getProjectMembersOpenHistoryByProjectMemberId method");
         Session session = this.sessionFactory.getCurrentSession();
 		Query projectMembersHistoryListQuery= session.createQuery("from ProjectMembersHistory pmh left join fetch pmh.projectMemberId pm left join fetch pm.employee emp left join fetch emp.user where pmh.projectMemberId.id = :projectMemberId and pmh.id IN(select Max(subpmh.id) from ProjectMembersHistory subpmh where subpmh.projectMemberId.id = :projectMemberId and subpmh.status = :status)");
-		List<ProjectMembersHistory> projectMembersHistoryList= projectMembersHistoryListQuery.setLong("projectMemberId", projectMemberId).setParameter("status", "CLOSED").setCacheable(true).list();
+		List<ProjectMembersHistory> projectMembersHistoryList= projectMembersHistoryListQuery.setLong("projectMemberId", projectMemberId).setParameter("status", "CLOSED").list();
 		ProjectMembersHistory pmh = null;
 		if(projectMembersHistoryList != null && !projectMembersHistoryList.isEmpty()){
 			pmh = projectMembersHistoryList.iterator().next();
@@ -232,12 +235,12 @@ public class ProjectMembersHistoryDaoImpl implements ProjectMembersHistoryDao {
 
 	@Override
 	@Transactional(rollbackFor = { Exception.class })
-	public HashMap<String, Date> getProjectMembersStartDateAndEndDateByProjectMemberId(Long projectMemberId) throws Exception {
+	public HashMap<String, Date> getProjectMembersStartDateAndEndDateByProjectMemberId(Long projectMemberId,String reportFor) throws Exception {
 		logger.debug("In ProjectMembersHistory getProjectMembersStartDateAndEndDateByProjectMemberId method");
         Session session = this.sessionFactory.getCurrentSession();
         Query projectMembersHistoryListQuery= session.createQuery("from ProjectMembersHistory pmh left join fetch pmh.projectMemberId pm left join fetch pm.projects where pmh.projectMemberId.id = :projectMemberId");
 		@SuppressWarnings("unchecked")
-		List<ProjectMembersHistory> projectMembersHistoryList= projectMembersHistoryListQuery.setLong("projectMemberId", projectMemberId).setCacheable(true).list();
+		List<ProjectMembersHistory> projectMembersHistoryList= projectMembersHistoryListQuery.setLong("projectMemberId", projectMemberId).list();
 		HashMap<String,Date> dateList = new HashMap<String,Date>();
 		Date startDate = null; 
 		Date endDate  = null;
@@ -245,6 +248,15 @@ public class ProjectMembersHistoryDaoImpl implements ProjectMembersHistoryDao {
 		if(projectMembersHistoryList != null && !projectMembersHistoryList.isEmpty()){
 			int count = 1;
 			for(ProjectMembersHistory pmh :projectMembersHistoryList){
+				 Calendar cal = Calendar.getInstance(TimeZone.getDefault());
+				 cal.setLenient(false);
+				 cal.setTime(new Date());
+				 if(StringUtils.isNotEmpty(reportFor) && (reportFor.equalsIgnoreCase("approverScheduler") || reportFor.equalsIgnoreCase("employeeScheduler"))) {
+					 Date previousMonthStartDate = CalendarUtil.getMonthStartDateByGivenDate(cal.getTime(),Constants.PREVIOUS_MONTH).get("STARTDATE");
+					 if(pmh.getStatus().equalsIgnoreCase("CLOSED") && pmh.getProjectTerminationDate().before(previousMonthStartDate))
+						continue; 
+				 }
+				
 				if(count == 1){
 					projects = pmh.getProjectMemberId().getProjects();
 					startDate = pmh.getProjectAssignedDate();
@@ -269,14 +281,11 @@ public class ProjectMembersHistoryDaoImpl implements ProjectMembersHistoryDao {
 	@Override
 	@Transactional(rollbackFor = { Exception.class })
 	public ProjectMembersHistory getProjectMembeHistoryForHotlistCandidatesByUsedId(Long projectMemberId) throws Exception {
-
-
-		
 		// TODO Auto-generated method stub
 				logger.debug("In ProjectMembersHistory getProjectMembersOpenHistoryByProjectMemberId method");
 		        Session session = this.sessionFactory.getCurrentSession();
 				Query projectMembersHistoryListQuery= session.createQuery("from ProjectMembersHistory pmh left join fetch pmh.projectMemberId pm left join fetch pm.employee emp left join fetch emp.user where pmh.projectMemberId.id = :projectMemberId and pmh.id IN(select Max(subpmh.id) from ProjectMembersHistory subpmh where subpmh.projectMemberId.id = :projectMemberId )");
-				List<ProjectMembersHistory> projectMembersHistoryList= projectMembersHistoryListQuery.setLong("projectMemberId", projectMemberId).setCacheable(true).list();
+				List<ProjectMembersHistory> projectMembersHistoryList= projectMembersHistoryListQuery.setLong("projectMemberId", projectMemberId).list();
 				ProjectMembersHistory pmh = null;
 				if(projectMembersHistoryList != null && !projectMembersHistoryList.isEmpty()){
 					pmh = projectMembersHistoryList.iterator().next();
@@ -313,7 +322,7 @@ public class ProjectMembersHistoryDaoImpl implements ProjectMembersHistoryDao {
         Session session = this.sessionFactory.getCurrentSession();
         Query projectMembersHistoryListQuery= session.createQuery("from ProjectMembersHistory pmh left join fetch pmh.projectMemberId pm left join fetch pmh.projectMemberId.projectClientsId "
         		+ " where pmh.projectMemberId.projectClientsId.id = :projectClientsId and pmh.projectMemberId.id = :projectMemberId and pmh.status = 'OPEN' ");
-		List<ProjectMembersHistory> projectMembersHistoryList= projectMembersHistoryListQuery.setLong("projectClientsId", projectClientsId).setLong("projectMemberId", projectMemberId).setCacheable(true).list();
+		List<ProjectMembersHistory> projectMembersHistoryList= projectMembersHistoryListQuery.setLong("projectClientsId", projectClientsId).setLong("projectMemberId", projectMemberId).list();
 		ProjectMembersHistory pmh = null;
 		if(projectMembersHistoryList != null && !projectMembersHistoryList.isEmpty()){
 			pmh = projectMembersHistoryList.iterator().next();
@@ -332,7 +341,7 @@ public class ProjectMembersHistoryDaoImpl implements ProjectMembersHistoryDao {
 		List<ProjectMembersHistory> pmhList = null;
 		Query pmhListQuery= session.createQuery("from ProjectMembersHistory pmh left join fetch pmh.projectMemberId pm left join fetch pmh.projectMemberId.projectClientsId projectClients "
 				+ " left join fetch projectClients.orgLocationsId orgLoc left join fetch orgLoc.user where  pmh.projectMemberId.id = :projectMemberId ");
-		pmhList = pmhListQuery.setLong("projectMemberId", projectMemberId).setCacheable(true).list();
+		pmhList = pmhListQuery.setLong("projectMemberId", projectMemberId).list();
 		return pmhList;
 		
 	}
@@ -347,7 +356,23 @@ public class ProjectMembersHistoryDaoImpl implements ProjectMembersHistoryDao {
         Session session = this.sessionFactory.getCurrentSession();
         Query projectMembersHistoryListQuery= session.createQuery("from ProjectMembersHistory pmh left join fetch pmh.projectMemberId pm left join fetch pmh.projectMemberId.projectClientsId pc "
         		+ " left join fetch pc.orgLocationsId where pc.orgLocationsId.id = :orgLocationsId and pmh.projectMemberId.id = :projectMemberId");
-		List<ProjectMembersHistory> projectMembersHistoryList= projectMembersHistoryListQuery.setLong("orgLocationsId", orgLocationId).setLong("projectMemberId", projectMemberId).setCacheable(true).list();
+		List<ProjectMembersHistory> projectMembersHistoryList= projectMembersHistoryListQuery.setLong("orgLocationsId", orgLocationId).setLong("projectMemberId", projectMemberId).list();
+		ProjectMembersHistory pmh = null;
+		if(projectMembersHistoryList != null && !projectMembersHistoryList.isEmpty()){
+			pmh = projectMembersHistoryList.iterator().next();
+		}
+		
+		return pmh;
+	}
+	
+	@Override
+	@Transactional(rollbackFor = { Exception.class })
+	public ProjectMembersHistory getProjectMembersHistoryByProjectMemberIdAndOrgId(Long projectMemberId,Long orgId) throws Exception {
+		logger.debug("In ProjectMembersHistory getProjectMembersHistoryByProjectMemberIdAndOrgLoctionId method");
+        Session session = this.sessionFactory.getCurrentSession();
+        Query projectMembersHistoryListQuery= session.createQuery("from ProjectMembersHistory pmh left join fetch pmh.projectMemberId pm left join fetch pmh.projectMemberId.projectClientsId pc "
+        		+ " left join fetch pc.orgLocationsId where pc.orgLocationsId.org.id = :orgId and pmh.projectMemberId.id = :projectMemberId");
+		List<ProjectMembersHistory> projectMembersHistoryList= projectMembersHistoryListQuery.setLong("orgId", orgId).setLong("projectMemberId", projectMemberId).list();
 		ProjectMembersHistory pmh = null;
 		if(projectMembersHistoryList != null && !projectMembersHistoryList.isEmpty()){
 			pmh = projectMembersHistoryList.iterator().next();

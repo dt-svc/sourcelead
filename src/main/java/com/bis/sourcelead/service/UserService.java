@@ -2,6 +2,7 @@ package com.bis.sourcelead.service;
 
 
 import java.util.Collection;
+import java.util.Date;
 import java.util.LinkedHashSet;
 import java.util.List;
 
@@ -10,12 +11,17 @@ import org.json.JSONObject;
 import com.bis.sourcelead.dto.AddUserDTO;
 import com.bis.sourcelead.dto.AddUserProfileDTO;
 import com.bis.sourcelead.dto.CandidateDTO;
+import com.bis.sourcelead.dto.DashboardItemsDTO;
+import com.bis.sourcelead.dto.Response;
+import com.bis.sourcelead.dto.ResponseList;
+import com.bis.sourcelead.dto.UserDTO;
 import com.bis.sourcelead.elk.index.UserIndex;
 import com.bis.sourcelead.entity.Employees;
 import com.bis.sourcelead.entity.Org;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.entity.UserRole;
+import com.bis.sourcelead.reportsDTO.LeaveBalanceReportDTO;
 public interface UserService  {
 
 	User findByUserName(String username);
@@ -182,6 +188,8 @@ public interface UserService  {
 	
 	User getUserByEmailAndUserType(String email,String userType) throws Exception;
 	
+	User getUserByEmail(String email) throws Exception;
+	
 	User getUserByUserName(String userName) throws Exception;
 
 	List<User> getTabAccessOwnersByOrgLocationIdAndTabIdAndNotOwners(Long id, Long valueOf, List<Long> ownersList) throws Exception;
@@ -198,7 +206,55 @@ public interface UserService  {
 	User getUserByVerficationUUID(String token);
 	
 	User getUserByUserCodeAndOrgLocationsId(String userCode, Long orgLocationsId) throws Exception;
+	
+	public ResponseList<UserDTO> getUsersDTOListByOrglocationId(Long orgLocationId,UserDTO userDTO) throws Exception;
+
+	ResponseList<UserRole> getUsersResponseListByOrglocationId(UserDTO userDTO, OrgLocations orgLocation,Date[] searchDates) throws Exception;
+	
+	List<UserDTO> getLinkedUserListByUserId(Long id) throws Exception;
+
+	public List<Long> getUserIdsListByLinkedUserId(Long userId) throws Exception;
+
+	User getUserbyConsultantUserId(Long consultantUserId);
+
+	List<User> getGlobalUsersByOrgId(Long roleId,Long orgId,Long tabId) throws Exception;
+	
+	public List<User> getTabAccessGlobalOwnersByOrgIdAndTabId(Long orgLocationId,Long orgId,Long tabId) throws Exception;
+	
+	public List<User> getTabAccessGlobalOwnersByOrgLocationIdAndTabIdAndNoCurrentUser(Long currentApproverId, Long orgId,Long tabId)throws Exception;
+	
+	List<User> getResourceManagersByOrgLocationIdAndTabId(Long orgLocationsId,Long tabId) throws Exception;
+
+	List<User> getUsersListForSignatoryByOrglocationId(Long id);
+	
+	List<User> getReportingManagersByUserRolesAndOrgLocationId(Long roleId , Long orgLocationsId) throws Exception;
+	
+	List<User> getGlobalReportingManagersUsersByOrgId(Long roleId,Long orgId) throws Exception;
+	
+	List<User> getReportingManagersByUserIdAndUserRolesAndOrgLocationIdAndUserTabId(Long userId, Long roleId, Long orgLocationsId) throws Exception;
+	
+	public ResponseList<UserDTO> getRecruitersReports(Long userId,Long orgLocationId,Long orgId,String isGlobalUser,UserDTO userDTO,String loginUserRole,Date[] searchDates,List<Long> teamsList,String type) throws Exception;
+
+	
+//	List<User> getUsersByEmailList(List<String> userEmail, OrgLocations orgLocation);
+
+	/**
+	 * @author Mahaveer Manoj
+	 * @purpose - to get Dashboard Items by user
+	 **/
+	public DashboardItemsDTO getDashboardItemsByUserId(long loginUserId, long orgLocationId);
+
+	Response<String> saveDashboardItems(DashboardItemsDTO dashboardItemsDTO, User user, OrgLocations orgLocations);
+	
+ List<LeaveBalanceReportDTO> getUserNameAndTypeByOrgLocationId(String searchValue,Long OrgLocationId,List<Long> userRole,List<Long> orgDepartmentsList,String topleave,Date monthStartDate,Date monthEndDate) throws Exception;
+ 
+ public void sendEmailToUserForEmailUpdation(User user, User loginUser, OrgLocations orgLocations,String toEmail,String existingEmail) throws Exception;
+
+public List<User> getUsersListUsingMultipleStringIds(String id) throws Exception;
+
+public List<Long> getUserHierarchyIdList(Long userId) throws Exception;
+
+public List<String> getUserHierarchyUserCodeList(Long userId) throws Exception;
 
 }	
-		
-	
+

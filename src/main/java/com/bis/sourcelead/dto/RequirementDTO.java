@@ -1,12 +1,16 @@
 package com.bis.sourcelead.dto;
 
+import java.math.BigInteger;
 import java.util.List;
 import java.util.Map;
 
+import com.bis.sourcelead.annotations.CleanHtml;
 import com.bis.sourcelead.annotations.Required;
 
 public class RequirementDTO extends CommonDTO {
 
+	private long id;
+	
 	private String staticPath;
 
 	private List<FileInfo> fileInfo;
@@ -23,6 +27,8 @@ public class RequirementDTO extends CommonDTO {
 	private String jobType;
 
 	private String jobId;
+	
+	private String importValue;
 
 	private String otherJobType;
 
@@ -58,7 +64,6 @@ public class RequirementDTO extends CommonDTO {
 
 	private String isreceivingApplicants;
 
-	@Required(desc = "location")
 	private String location;
 
 	private String countryReq;
@@ -88,6 +93,7 @@ public class RequirementDTO extends CommonDTO {
 	
 	private List<String> visa;
 
+	@CleanHtml(escape=false)
 	private String description;
 
 	private List<String> noticePeriod;
@@ -98,6 +104,7 @@ public class RequirementDTO extends CommonDTO {
 
 	private String isClient;
 
+	@Required(desc = "client", dependsOn = "isClient", parentValue = "Y")
 	private String selectClient;
 
 	private String clientCurrencyCode;
@@ -108,9 +115,20 @@ public class RequirementDTO extends CommonDTO {
 
 	private String clientRateType;
 
+	@Required(desc = "clientForm", dependsOn = "isClient", parentValue = "Y")
 	private String clientSubmissionForm;
 
 	private String cd;
+	
+	private String jobRate;
+	
+	private String incentivized;
+	
+	private String payOutPeriod;
+	
+	private List<RequirementIncentiveDTO> requirementIncentive;
+	
+	private String arrDeletedIds;
 
 	private String approver;
 
@@ -140,6 +158,14 @@ public class RequirementDTO extends CommonDTO {
 	
 	private String noOfApplicants;
 	
+	private String noOfShortlistApplicants;
+	
+	private String noOfRejectedApplicants;
+	
+	private String noOfJoinedApplicants;
+	
+	private String noOfBackoutApplicants;
+	
 
 	private String projectClientID;
 	
@@ -162,7 +188,32 @@ public class RequirementDTO extends CommonDTO {
 	private List<CustomFormFieldDTO> customFormData;
 	
 	private String url;
+	
+	private String fileURL;
+	
+	private String fileContentType;
+	
+	private String fileName;
+	
+	private List<RequirementLocationsDTO> locationInfo;
+	
+	private List<RequirementLocationsDTO> savedLocationInfo;
 
+	private List<String> locationsList;
+	
+	private boolean walkIn;
+	
+	private String walkInDays;
+	
+	private boolean jobFair;
+	
+	private long jobFairId;
+	
+	private String[] jobFairDates;
+	
+	private Map<Long, String[]> jobFairMap;
+	
+	private String orgTeams;
 	
 	/*
 	 * private List<Map<String, String>> assinedToTeam;
@@ -170,8 +221,48 @@ public class RequirementDTO extends CommonDTO {
 	 * private List<AssinedTo> assinedTeamInfo;
 	 */
 
+	public Map<Long, String[]> getJobFairMap() {
+		return jobFairMap;
+	}
+
+	public boolean isJobFair() {
+		return jobFair;
+	}
+
+	public void setJobFair(boolean jobFair) {
+		this.jobFair = jobFair;
+	}
+
+	public void setJobFairMap(Map<Long, String[]> jobFairMap) {
+		this.jobFairMap = jobFairMap;
+	}
+
+	public String getOrgTeams() {
+		return orgTeams;
+	}
+
+	public void setOrgTeams(String orgTeams) {
+		this.orgTeams = orgTeams;
+	}
+
 	public String getNoOfOfferedApplicants() {
 		return noOfOfferedApplicants;
+	}
+
+	public boolean isWalkIn() {
+		return walkIn;
+	}
+
+	public void setWalkIn(boolean isDriveJob) {
+		this.walkIn = isDriveJob;
+	}
+
+	public String getWalkInDays() {
+		return walkInDays;
+	}
+
+	public void setWalkInDays(String driveDays) {
+		this.walkInDays = driveDays;
 	}
 
 	public void setNoOfOfferedApplicants(String noOfOfferedApplicants) {
@@ -246,6 +337,7 @@ public class RequirementDTO extends CommonDTO {
 
 	private String saveType;
 
+	@Required(desc = "clientContact", dependsOn = "isClient", parentValue = "Y")
 	private String selectContact;
 
 	private String assignedToMaxCount;
@@ -282,6 +374,8 @@ public class RequirementDTO extends CommonDTO {
 	private String[] teamAssignUserId;
 
 	private String requirementUUID;
+	
+	private String[] reqUUIDArr;
 
 	private String requirementAppliedDate;
 
@@ -310,6 +404,8 @@ public class RequirementDTO extends CommonDTO {
 	private String reqLevel2ApproverStatus;
 
 	private String managerUserId;
+	
+	private long primaryRecruiterUserId;
 
 	private String client;
 
@@ -322,6 +418,11 @@ public class RequirementDTO extends CommonDTO {
 	private String releasedBy;
 
 	private String currentRateCurrency;
+	
+	private BigInteger reqId;
+	
+	private BigInteger requirementCreatedUserId;
+	
 
 	public String getRequirementStatus() {
 		return requirementStatus;
@@ -675,6 +776,46 @@ public class RequirementDTO extends CommonDTO {
 		this.cd = cd;
 	}
 
+	public String getJobRate() {
+		return jobRate;
+	}
+
+	public void setJobRate(String jobRate) {
+		this.jobRate = jobRate;
+	}
+
+	public String getIncentivized() {
+		return incentivized;
+	}
+
+	public void setIncentivized(String incentivized) {
+		this.incentivized = incentivized;
+	}
+
+	public String getPayOutPeriod() {
+		return payOutPeriod;
+	}
+
+	public void setPayOutPeriod(String payOutPeriod) {
+		this.payOutPeriod = payOutPeriod;
+	}
+
+	public List<RequirementIncentiveDTO> getRequirementIncentive() {
+		return requirementIncentive;
+	}
+
+	public void setRequirementIncentive(List<RequirementIncentiveDTO> requirementIncentive) {
+		this.requirementIncentive = requirementIncentive;
+	}
+
+	public String getArrDeletedIds() {
+		return arrDeletedIds;
+	}
+
+	public void setArrDeletedIds(String arrDeletedIds) {
+		this.arrDeletedIds = arrDeletedIds;
+	}
+
 	public String getApprover() {
 		return approver;
 	}
@@ -905,6 +1046,14 @@ public class RequirementDTO extends CommonDTO {
 
 	public void setRequirementUUID(String requirementUUID) {
 		this.requirementUUID = requirementUUID;
+	}
+
+	public String[] getReqUUIDArr() {
+		return reqUUIDArr;
+	}
+
+	public void setReqUUIDArr(String[] reqUUIDArr) {
+		this.reqUUIDArr = reqUUIDArr;
 	}
 
 	public String getRequirementAppliedDate() {
@@ -1248,6 +1397,38 @@ public class RequirementDTO extends CommonDTO {
 		this.noOfApplicants = noOfApplicants;
 	}
 
+	public String getNoOfShortlistApplicants() {
+		return noOfShortlistApplicants;
+	}
+
+	public void setNoOfShortlistApplicants(String noOfShortlistApplicants) {
+		this.noOfShortlistApplicants = noOfShortlistApplicants;
+	}
+
+	public String getNoOfRejectedApplicants() {
+		return noOfRejectedApplicants;
+	}
+
+	public void setNoOfRejectedApplicants(String noOfRejectedApplicants) {
+		this.noOfRejectedApplicants = noOfRejectedApplicants;
+	}
+
+	public String getNoOfJoinedApplicants() {
+		return noOfJoinedApplicants;
+	}
+
+	public void setNoOfJoinedApplicants(String noOfJoinedApplicants) {
+		this.noOfJoinedApplicants = noOfJoinedApplicants;
+	}
+
+	public String getNoOfBackoutApplicants() {
+		return noOfBackoutApplicants;
+	}
+
+	public void setNoOfBackoutApplicants(String noOfBackoutApplicants) {
+		this.noOfBackoutApplicants = noOfBackoutApplicants;
+	}
+
 	public String getUrl()
 	{
 		return url;
@@ -1257,8 +1438,117 @@ public class RequirementDTO extends CommonDTO {
 	{
 		this.url = url;
 	}
-	
-	
 
+	public String getFileURL()
+	{
+		return fileURL;
+	}
+
+	public void setFileURL(String fileURL)
+	{
+		this.fileURL = fileURL;
+	}
+
+	public String getFileContentType()
+	{
+		return fileContentType;
+	}
+
+	public void setFileContentType(String fileContentType)
+	{
+		this.fileContentType = fileContentType;
+	}
+
+	public String getFileName()
+	{
+		return fileName;
+	}
+
+	public void setFileName(String fileName)
+	{
+		this.fileName = fileName;
+	}
+
+
+	public List<RequirementLocationsDTO> getLocationInfo() {
+		return locationInfo;
+	}
+
+	public void setLocationInfo(List<RequirementLocationsDTO> locationInfo) {
+		this.locationInfo = locationInfo;
+	}
+	public String getImportValue() {
+		return importValue;
+	}
+
+	public List<RequirementLocationsDTO> getSavedLocationInfo() {
+		return savedLocationInfo;
+	}
+
+	public void setSavedLocationInfo(List<RequirementLocationsDTO> savedLocationInfo) {
+		this.savedLocationInfo = savedLocationInfo;
+	}
+
+	public void setImportValue(String importValue) {
+		this.importValue = importValue;
+
+	}
+
+	public long getId() {
+		return id;
+	}
+
+	public void setId(long id) {
+		this.id = id;
+	}
+
+	public List<String> getLocationsList() {
+		return locationsList;
+	}
+
+	public void setLocationsList(List<String> locationsList) {
+		this.locationsList = locationsList;
+	}
+
+	public long getPrimaryRecruiterUserId() {
+		return primaryRecruiterUserId;
+	}
+
+	public void setPrimaryRecruiterUserId(long primaryRecruiterUserId) {
+		this.primaryRecruiterUserId = primaryRecruiterUserId;
+	}
+	
+	public BigInteger getReqId() {
+		return reqId;
+	}
+
+	public void setReqId(BigInteger reqId) {
+		this.reqId = reqId;
+	}
+
+	public BigInteger getRequirementCreatedUserId() {
+		return requirementCreatedUserId;
+	}
+
+	public void setRequirementCreatedUserId(BigInteger requirementCreatedUserId) {
+		this.requirementCreatedUserId = requirementCreatedUserId;
+	}
+
+	public long getJobFairId() {
+		return jobFairId;
+	}
+
+	public void setJobFairId(long jobFairId) {
+		this.jobFairId = jobFairId;
+	}
+
+	public String[] getJobFairDates() {
+		return jobFairDates;
+	}
+
+	public void setJobFairDates(String[] jobFairDates) {
+		this.jobFairDates = jobFairDates;
+	}
+	
 	
 }

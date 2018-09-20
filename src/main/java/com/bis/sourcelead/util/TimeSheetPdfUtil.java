@@ -27,6 +27,7 @@ import com.bis.sourcelead.entity.ProjectMembers;
 import com.bis.sourcelead.entity.SubmissionApproverHierarchy;
 import com.bis.sourcelead.entity.TimeSheetDayEntries;
 import com.bis.sourcelead.entity.TimesheetSubmissions;
+import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.enums.Submission_Status;
 import com.bis.sourcelead.service.EmailScenarioService;
 import com.bis.sourcelead.service.EmployeesService;
@@ -114,10 +115,11 @@ public class TimeSheetPdfUtil {
      * @param navigation
      * @param startDate
      * @param orgLocations
+     * @param loginUser 
      * @return 
      * @throws Exception 
      */
-	public File exportTimesheetPdf(ProjectMembers projectMember, String frequencyStartDate,String frequencyEndDate, OrgLocations orgLocations) throws Exception {
+	public File exportTimesheetPdf(ProjectMembers projectMember, String frequencyStartDate,String frequencyEndDate, OrgLocations orgLocations,String requestFrom, User loginUser,String globalUser) throws Exception {
 
 		//DateFormat format = LoginSessionController.DATEFORMAT;
 		Map<String,java.util.List<TimesheetHours>> map = new HashMap();
@@ -141,12 +143,17 @@ public class TimeSheetPdfUtil {
 	        table1.setWidths(width);
         java.util.List<String> timeSheetStatus = new ArrayList<>();
         
-        
-		
-		SubmissionApproverHierarchy sah =submissionApproverHierarchyService.getSubmissionApproverHierarchyForEmployeeByProjectMemberId(employeeStartDate, employeeEndDate, projectMember.getId());
-		Submission_Status submissionStatus = sah.getSubmissionStatus();
-		String submissionStatusStr = submissionStatus.getValue();
-		
+        SubmissionApproverHierarchy sah = null;
+        String submissionStatusStr = "";
+		if(requestFrom.equalsIgnoreCase("employee")) {
+			 sah =submissionApproverHierarchyService.getSubmissionApproverHierarchyForEmployeeByProjectMemberId(employeeStartDate, employeeEndDate, projectMember.getId());
+		}else if(requestFrom.equalsIgnoreCase("dashboard") || requestFrom.equalsIgnoreCase("approver")) {
+			 sah =submissionApproverHierarchyService.getSubmissionApproverHierarchyByMasterCandidateIdStartDateAndEndDateForApproverLogin(loginUser.getId(), projectMember.getProjects().getId(), projectMember.getMasterCandidateId().getId(), orgLocations.getId(),employeeStartDate, employeeEndDate,globalUser);
+		}
+		if(sah != null) {
+			Submission_Status submissionStatus = sah.getSubmissionStatus();
+			submissionStatusStr = submissionStatus.getValue().toUpperCase();
+		}
 		Map<String,String> tabFrequency = timesheetFrequencyGeneratorUtil.getTabFrequencyListFromProjectInvoiceFrequency(frequencyStartDate, frequencyEndDate,orgLocations.getDateFormat());
 		if(tabFrequency != null && !tabFrequency.isEmpty()){
 			Float billableHours = 0f;
@@ -215,13 +222,12 @@ public class TimeSheetPdfUtil {
 		    		String SundayDate =  CalendarUtil.getNextDate(SaturdayDate,orgLocations.getDateFormat());
 				 
 				 Collection<TimeSheetDayEntries>  timeSheetDayEntriesList =   getAllTimeSheetDayEntriesBySubmissionId(ts.getId());
-					if(timeSheetDayEntriesList != null && !timeSheetDayEntriesList.isEmpty()){
+					if(timeSheetDayEntriesList != null){
 						    HashMap<Long,TimesheetHours> taskMap = new HashMap<>();
 								//Integer maxCount = timeSheetDayEntriesList.size();
 								//maxCount = maxCount+1;
 								for(TimeSheetDayEntries timesheetDayEntries   : timeSheetDayEntriesList){
-									if(timesheetDayEntries.getProjectTask() ==null)
-										continue;
+								  if(timesheetDayEntries!= null && timesheetDayEntries.getProjectTask() != null) {
 									Long weekTotHours = 0L;
 								    Long monHours = 0L;
 									Long tueHours = 0L;
@@ -319,6 +325,7 @@ public class TimeSheetPdfUtil {
 					            	  
 						              
 						       }
+						}
 						  map.put(projectMember.getProjects().getProjectName(), hoursList);
 					 }
 					Long totalHours = monTotHours+tueTotHours+wedTotHours+thuTotHours+friTotHours+satTotHours+sunTotHours;
@@ -343,60 +350,76 @@ public class TimeSheetPdfUtil {
 				        	 PdfPTable table2 = getPdfTable(headers2,width2,k);
 				        	 PdfPTable table3 = getPdfTable(headers3,width3,k);
 //				        	 java.util.List<Employee> = entry.getValue();
-				        	for(TimesheetHours hours:entry1.getValue()){
-				        		String innerTable [] = new String[headers2.length];
-				        		if(hours.getTaskName() != null && !"".equalsIgnoreCase(hours.getTaskName())){
-				        			innerTable[0] = hours.getTaskName();
-				        		}else{
-				        			innerTable[0] = "--";
-				        		}
-				        		if(hours.getMonDayHours() !=null && !"".equalsIgnoreCase(hours.getMonDayHours())){
-				        			innerTable[1] = hours.getMonDayHours();
-				        		}else{
-				        			innerTable[1] = "--";
-				        		}
-				        		if(hours.getTueDayHours() !=null && !"".equalsIgnoreCase(hours.getTueDayHours())){
-				        			innerTable[2] = hours.getTueDayHours();
-				        		}else{
-				        			innerTable[2] = "--";
-				        		}
-				        		if(hours.getWedDayHours() !=null && !"".equalsIgnoreCase(hours.getWedDayHours())){
-				        			innerTable[3] = hours.getWedDayHours();
-				        		}else{
-				        			innerTable[3] = "--";
-				        		}
-				        		if(hours.getThuDayHours() !=null && !"".equalsIgnoreCase(hours.getThuDayHours())){
-				        			innerTable[4] = hours.getThuDayHours();
-				        		}else{
-				        			innerTable[4] = "--";
-				        		}
-				        		if(hours.getFriDayHours() !=null && !"".equalsIgnoreCase(hours.getFriDayHours())){
-				        			innerTable[5] = hours.getFriDayHours();
-				        		}else{
-				        			innerTable[5] = "--";
-				        		}
-				        		if(hours.getFriDayHours() !=null && !"".equalsIgnoreCase(hours.getFriDayHours())){
-				        			innerTable[5] = hours.getFriDayHours();
-				        		}else{
-				        			innerTable[5] = "--";
-				        		}
-				        		if(hours.getSatDayHours() !=null && !"".equalsIgnoreCase(hours.getSatDayHours())){
-				        			innerTable[6] = hours.getSatDayHours();
-				        		}else{
-				        			innerTable[6] = "--";
-				        		}
-				        		if(hours.getSunDayHours() !=null && !"".equalsIgnoreCase(hours.getSunDayHours())){
-				        			innerTable[7] = hours.getSunDayHours();
-				        		}else{
-				        			innerTable[7] = "--";
-				        		}
-				        		if(hours.getWeekTotal() !=null){
-				        			innerTable[8] = hours.getWeekTotal().toString();
-				        		}else{
-				        			innerTable[8] = "--";
-				        		}
-				        		innerTableArrayData.add(innerTable);
-				        	}
+				        	 if(entry1.getValue() != null && entry1.getValue().size() >0) {
+				        		 for(TimesheetHours hours:entry1.getValue()){
+						        		String innerTable [] = new String[headers2.length];
+						        		if(hours.getTaskName() != null && !"".equalsIgnoreCase(hours.getTaskName())){
+						        			innerTable[0] = hours.getTaskName();
+						        		}else{
+						        			innerTable[0] = "--";
+						        		}
+						        		if(hours.getMonDayHours() !=null && !"".equalsIgnoreCase(hours.getMonDayHours())){
+						        			innerTable[1] = hours.getMonDayHours();
+						        		}else{
+						        			innerTable[1] = "--";
+						        		}
+						        		if(hours.getTueDayHours() !=null && !"".equalsIgnoreCase(hours.getTueDayHours())){
+						        			innerTable[2] = hours.getTueDayHours();
+						        		}else{
+						        			innerTable[2] = "--";
+						        		}
+						        		if(hours.getWedDayHours() !=null && !"".equalsIgnoreCase(hours.getWedDayHours())){
+						        			innerTable[3] = hours.getWedDayHours();
+						        		}else{
+						        			innerTable[3] = "--";
+						        		}
+						        		if(hours.getThuDayHours() !=null && !"".equalsIgnoreCase(hours.getThuDayHours())){
+						        			innerTable[4] = hours.getThuDayHours();
+						        		}else{
+						        			innerTable[4] = "--";
+						        		}
+						        		if(hours.getFriDayHours() !=null && !"".equalsIgnoreCase(hours.getFriDayHours())){
+						        			innerTable[5] = hours.getFriDayHours();
+						        		}else{
+						        			innerTable[5] = "--";
+						        		}
+						        		if(hours.getFriDayHours() !=null && !"".equalsIgnoreCase(hours.getFriDayHours())){
+						        			innerTable[5] = hours.getFriDayHours();
+						        		}else{
+						        			innerTable[5] = "--";
+						        		}
+						        		if(hours.getSatDayHours() !=null && !"".equalsIgnoreCase(hours.getSatDayHours())){
+						        			innerTable[6] = hours.getSatDayHours();
+						        		}else{
+						        			innerTable[6] = "--";
+						        		}
+						        		if(hours.getSunDayHours() !=null && !"".equalsIgnoreCase(hours.getSunDayHours())){
+						        			innerTable[7] = hours.getSunDayHours();
+						        		}else{
+						        			innerTable[7] = "--";
+						        		}
+						        		if(hours.getWeekTotal() !=null){
+						        			innerTable[8] = hours.getWeekTotal().toString();
+						        		}else{
+						        			innerTable[8] = "--";
+						        		}
+						        		innerTableArrayData.add(innerTable);
+						        	}	 
+				        	 }else {
+				        			String innerTable [] = new String[headers2.length];
+					        			innerTable[0] = "--";
+					        			innerTable[1] = "--";
+					        			innerTable[2] = "--";
+					        			innerTable[3] = "--";
+					        			innerTable[4] = "--";
+					        			innerTable[5] = "--";
+					        			innerTable[5] = "--";
+					        			innerTable[6] = "--";
+					        			innerTable[7] = "--";
+					        			innerTable[8] = "--";
+					        		innerTableArrayData.add(innerTable);
+					        	}	
+				        	
 				        	for (String[] timeSheetArray: innerTableArrayData) {
 				              for (int i = 0; i < timeSheetArray.length; i++) {
 				                  String datum = timeSheetArray[i];
@@ -501,8 +524,8 @@ public class TimeSheetPdfUtil {
 		        BaseColor myBordColor = WebColors.getRGBColor("#000000");
 		        boldFont.setColor(myBordColor);
 		        StringBuilder sbPipeHearder = new StringBuilder();
-		        sbPipeHearder.append(orgLocations.getOrgLocationName()).append(" ").append("TimeSheet");
-	            Paragraph para = new Paragraph(sb.append(orgLocations.getOrgLocationName()).append(" TimeSheet").toString(),boldFont);
+		        sbPipeHearder.append(orgLocations.getOrgLocationName());/*.append(" ").append("TimeSheet")*/
+	            Paragraph para = new Paragraph(sb.append(orgLocations.getOrgLocationName()).toString(),boldFont);/*.append(" TimeSheet")*/
 	            para.setAlignment(Element.ALIGN_CENTER);
 	            para.add("\n\n");
 	            document.add(para);

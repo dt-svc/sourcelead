@@ -13,21 +13,6 @@ $(document).ready(function() {
 	refercontactList();
 });	
 </script>
-<style type="text/css">
-.emailWidth {
-	width:400px;
-}
-.model-err-msg {
-    clear: both;  margin: 0 auto;  padding: 0px;
-    color: #E65C8D; text-align: center; width: 54%;
-    margin-bottom: 10px; margin-top: -18px; font-size: 12px;
-}
-img.contact-images { width:24px; height: 24px; margin-right: 10px;
-}
-.importcsv-accordion .panel-title a {
-	display: block; width:100%;
-}
-</style>
 <script>
  function contactsImportSucess(service,status){
 	 closePop();
@@ -262,193 +247,170 @@ img.contact-images { width:24px; height: 24px; margin-right: 10px;
 </script>
 <section class="content-wraper">
 <section class="content-header clearfix">
-     <div class="success_pop" id="selector" style="display: none;">
- 			<i class="fa fa-check-circle"></i><span id="msgDiv"></span>
-     </div>
-    <div class="pull-left">
-      <h2>Contacts List</h2>
-      </div> 
+    <div class="success_pop" id="selector" style="display: none;"><i class="fa fa-check-circle"></i><span id="msgDiv"></span></div>
+    <div class="pull-left"><h2>Contacts List</h2></div> 
     <div class="pull-right brud-crum" id="contactsListUrl"><a href="<c:url value='${appPath}/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a> &raquo; Contacts List</div>
-  </section>
-  <div id="contactsListSheet" class="timesheet_out">
-      <div class="vendor_wrap">
-      <div class="timesheet_head">
-          <ul>
-            <li class="hidden"><i class="glyphicon glyphicon-export"></i><span>Export</span><i class="glyphicon glyphicon-play" id="export-pop"></i>
-            </li>
-            
-            <li>
-            	<span  id="moveFolder" class="moveFolder" onClick="movefolderPop();"><i class="fa fa-folder mr" title="Move"></i>|</span>
-            </li>
-            
-            <li class="hidden">
-				<div class="dropdown dropdown-label hidden " style="position: relative; top: -2px;">
-				<span class="dropdown-toggle cursorPointer paddingRight" type="button" id="menu1" data-toggle="dropdown">
-				<i class="fa fa-folder paddingRight"></i>Move
-				<span class="caret" style="position: relative; top: 0px;"></span></span> <span class="paddingLeft">|</span>
-				<ul class="dropdown-menu dropdown-menu-right checkBox paddingLeft paddingRight" role="menu" aria-labelledby="menu1">
-					<li>
-		                    <input value="None" id="c1" type="checkbox">
-		                    <!-- <div id="groupList"></div> -->
-		             </li>
-				
-				</ul>
-				</div>
-				
-				<%-- <div id="groupDiv" class="pull-left dropdown-select hidden">
-					<select class="form-control chosen-select" id="consGroup" onchange="refercontactListToGroup();">
-						<option value="">&nbsp;--Select Group--</option>
-						<c:forEach var="conGroup" items="${contactsGroupList}">
-			                 <option value="${conGroup.id}">${conGroup.groupName}</option>
-		                </c:forEach>
-					</select>
-				</div> --%>
-				
-			</li>
-          
-          <li>
-				<div class="pull-left cursorPointer">
-					<span title="Manage Group" class="paddingRight" onClick="getContactsGroupList();showLable();"><strong>Manage Group
-					 <i class="paddingLeft fa fa-caret-right"></i></strong></span> |
-			  	<!-- ManageLabels div -->
-			  	<div class="manageLables-div">
-       			<div class="clearfix">
-       			<button type="button" class="btn btn-sm btn-primary" onClick="addLabelPop();">
-       				<i class="fa fa-plus paddingRight"></i>Add
-       			</button>
-       			
-       			<div id="groupList"></div>
-       			
-			  </div>
-      		<a href="javascript:void(0)" class="pull-right closemld" title="Close Div">&times;</a>
-       </div>
-       <!-- ManageLabels div -->
-			  	</div>
-			</li>
-			<li>
-				<div class="dropdown bootstrap_dropdownMenu filterActive dropdown-label" style="position: relative; top: -2px;">
-				<span class="dropdown-toggle cursorPointer" type="button" id="menu1" data-toggle="dropdown">
-				<i class="fa fa-filter paddingRight text-info"></i>Filter Group
-				<i class="caret" style="position: relative; top: 0px;"></i></span>
-				<div class="dropdown-menu bootstrap_dropdownMenu dropdownPadding">
-				<ul class="checkBox" role="menu" aria-labelledby="menu1">
-                    	  <c:forEach var="report" items="${contactsGroupList}">
-                        	<li><input   name="groupsFilter" value ="${report.id}"  onclick="refercontactList();"  type="checkbox"><label for="">${report.groupName}</label></li>
-						  </c:forEach>
-				</ul>
-				</div>
-			</div>
-			</li>
-            
-            <li><a href="javascript:void(0)" id="imCon"><i class="fa fa-plus"></i>Import Contacts</a></li>
-            <li><a id="addPop" href="javascript:void(0)"><i class="fa fa-plus"></i>Add Contact</a>
-            
-            <form:form id="addcontact_form"  name="addcontact_form" method="post"> 
-				<div class="referWrap referWrap_custom">
-				<div id="loading"></div> 
-				  <div class="referWrapInn">
-					<div class="form-group col-md-6" id="firstNameDiv">
-					  <label class="col-md-12">First Name *</label>
-					  <div class="col-md-12">
-						<input type="text" class="form-control" name="firstName" id="firstName" field-name="First Name" data-validation="required validate_Space validate_Alphanumeric validate_length length1-100">
-						<span class="hidden"></span> </div>
-					</div> 
-					<div class="form-group col-md-6" id="lastNameDiv">
-					  <label class="col-md-12">Last Name</label>
-					  <div class="col-md-12">
-						<input type="text" class="form-control" name="lastName" id="lastName" field-name="Last Name" data-validation-optional="true" data-validation="validate_Space validate_Alphanumeric validate_length length1-100">
-						<span class="hidden"></span> </div>
-					</div> 
-					<div class="form-group col-md-6" id="emailDiv">
-					  <label class="col-md-12">Email Id *</label>
-					  <div class="col-md-12">
-						<input type="text" class="form-control" name="email" id="email" onblur="validateContactEmail()"  field-name="Email" data-validation="required validate_Space validate_length length2-100 validate_email">
-						<span class="hidden"></span> </div>
-					</div> 
-					<div class="form-group col-md-6" id="phoneDiv">
-					  <label class="col-md-12">Phone </label>
-					  <div class="col-md-12" >
-						<input type="text" class="form-control"  name="phone" id="phone" field-name="Phone" data-validation-optional="true" data-validation="validate_Space validate_phone validate_length length9-20">
-						<span class="hidden"></span> </div>
-					</div> 
-					<div class="col-md-12 mt10 clearfix">            
-					<div class="pull-right">
-					  <input type="submit" value="Add Contact" id="add_contact"  class="btn btn-primary">
-					  <input type="button" value="Cancel" onclick="flushContactDetails()" class="btn btn-default ml10 canBtn">
-					</div>    
-					</div> 
+</section>
+  
+<div class="project_wrap" id="contactsListSheet">
 
-				  <div class="clearfix"></div>
-				  </div>
-			  </div> 
-		</form:form>
-            </li>
-          </ul>
-          <div class="clearfix"></div>
-        </div>
+
+<div class="positionRelative reportHead clearfix">
+<span class="pull-left refreIcon"><a href="javascript:void(0)" class="refeIcon" title="Refresh" onclick="resetContactFilter();"></a></span>
+      <ul class="pull-right list-unstyled list-inline">
+      		<li><a href="javascript:void(0)" class="folderIcon mr5" title="Move Folder" onclick="movefolderPop();"></a></li>
+      		<li><a href="javascript:void(0)" class="manFolderIcon mr5" title="Manage Group" onClick="getContactsGroupList();showLable();"></a></li>
+			<li>
+				<a class="action newAdBtn" onclick="getActions();" href="javascript:void(0)">+ Add <i class="fa fa-caret-down"></i></a>
+				<div class="action-pop">
+					<span> 
+					<a href="javascript:void(0)" id="addPop">Add Contact</a>
+					<a href="javascript:void(0)" id="imCon">Import Contacts</a>
+					</span>
+				</div>
+			</li>
+			<li><a href="javascript:void(0)" class="filtIcon" title="Filters" onclick="filterPop();"></a></li>
+		  <li class=""><input type="text" class="repSearchBar" placeholder='Search' id='contactsDataTableSearch'/><span class="repSearchIcon" onClick=""></span></li>
+        </ul>
+      </div>
+        
       <div id="refercontactListDiv" class="datatable_filter"></div>
       </div>
-	</div>
-	
-	<div id="connnectionsSheet" class="conneWrap">
-	
-	
-	</div>
-  
+	<div id="connnectionsSheet" class="conneWrap"></div>
 </section>
 
 <div id="deleteGroupPopUp"></div>
 <div id="contactsPopUp"></div>
-<div class="sideMask"></div>
-<div class="movefolder-popdiv">
+
+<div class="popupWrap popupWrapFixed" id="movefolder-popdiv">
 <form id="addcontacttogroup_form"  name="addcontacttogroup_form">
-	<a class="close">&times;</a>
-	<ul class="list-unstyled">
-	<c:forEach var="conGroup" items="${contactsGroupList}">
-		<li><input type="radio" name="groupName" id="consGroup${conGroup.id}" value="${conGroup.id}"> ${conGroup.groupName}</li>
-   </c:forEach>
-   </ul>
-   <div class="clearfix mt5">
-   <button class="btn btn-primary pull-right"  type="button" data-dismiss="modal" id="addContactsToGroup" onclick="refercontactListToGroup();">Add to Group</button>
-   <button type="button" class="btn mr btn-default btn-sm pull-right" onClick="removeGroupsPopUp();">Cancel</button>
+	<div class="popupHead"><span>Move Folder</span><i class="closePop pull-right" onClick="removeGroupsPopUp();"></i></div>
+	<div class="popupContent popupContentFixed">
+		<ul>
+		<c:forEach var="conGroup" items="${contactsGroupList}">
+			<li title="${conGroup.groupName}"><input type="radio" name="groupName" id="consGroup${conGroup.id}" value="${conGroup.id}"><span> ${conGroup.groupName}</span></li>
+	   </c:forEach>
+	   </ul>
+   </div>
+   <div class="popupFoot text-right">
+  	 	<button class="slBtn md colorBtn"  type="button" id="addContactsToGroup" onclick="refercontactListToGroup();">Add to Group</button>
+   		<button type="button" class="slBtn md popClose" onClick="removeGroupsPopUp();">Cancel</button>
    </div>
    </form>
 </div>
+
+<div class="popupWrap popupWrapFixed" id="add_group_Div">
+	 <div class="popupHead"><span>Manage Group</span><i class="closePop pull-right closemld"></i></div>
+	<div class="popupContent">
+		<div id="groupList"></div>
+	</div>
+	<div class="popupFoot text-right">
+		<button type="button" class="slBtn md colorBtn" onClick="addLabelPop();">Add Group</button>
+		<button type="button" class="slBtn md closemld">Cancel</button>
+	</div>
+	
+</div> 
+
 <!-- Create Label div html -->
-  	<div class="comMask" onClick="maskFade();"></div>
-  	<div class="createLabel-popdiv">
-  	  <div id="addGroupDiv"> </div> 
-  		<div id="groupEditDiv"></div>
-  	</div>
+ <div class="popupWrapZin" id="createLabel-popdiv">
+  	 <div id="addGroupDiv"> </div> 
+	 <div id="groupEditDiv"></div>
+</div>
   	
   <!-- Create Label div html -->
 
+<form:form id="addcontact_form"  name="addcontact_form" method="post"> 
+	<div class="popupWrap popupWrapFixed" id="addConPop">
+	<div class="popupHead"><span>Add Contact</span><i class="closePop pull-right canBtn"></i></div>
+	<div id="loading"></div> 
+	  <div class="popupContent popupContentFixed">
+		<div class="clearfix mb" id="firstNameDiv">
+		  <label class="clearfix">First Name <b class="valStar">*</b></label>
+		  <div class="clearfix">
+			<input type="text" class="form-control margin-top0" name="firstName" id="firstName" field-name="First Name" data-validation="required validate_Space validate_Alphanumeric validate_length length1-100">
+			<span class="hidden"></span> 
+		  </div>
+		</div> 
+		
+		<div class="clearfix mb" id="lastNameDiv">
+		  <label class="clearfix">Last Name</label>
+		  <div class="clearfix">
+			<input type="text" class="form-control margin-top0" name="lastName" id="lastName" field-name="Last Name" data-validation-optional="true" data-validation="validate_Space validate_Alphanumeric validate_length length1-100">
+			<span class="hidden"></span> </div>
+		</div> 
+		
+		<div class="clearfix mb" id="emailDiv">
+		  <label class="clearfix">Email Id <b class="valStar">*</b></label>
+		  <div class="clearfix">
+			<input type="text" class="form-control margin-top0" name="email" id="email" onblur="validateContactEmail()"  field-name="Email" data-validation="required validate_Space validate_length length2-100 validate_email">
+			<span class="hidden"></span> 
+		 </div>
+<!-- 		 <div class="col-md-2 padding_left">
+		 <div class="input-group-addon input-groupaddon-custom" id="emailStatusIconDiv" >
+	                 <i class="fa fa-check text-muted" style="color:#f6f6f6"></i>
+	                 </div>
+	              </div> -->
+		</div> 
+		
+		<div class="clearfix mb" id="phoneDiv">
+		  <label class="clearfix">Phone </label>
+		  <div class="clearfix" >
+			<input type="text" class="form-control margin-top0"  name="phone" id="phone" field-name="Phone" data-validation-optional="true" data-validation="validate_Space validate_phone validate_length length9-20">
+			<span class="hidden"></span> </div>
+		</div> 
+		
+		<div class="clearfix mb">
+				<label class="clearfix" >Contact Type</label>
+				<div class="clearfix select-field">
+					<select class="form-control margin-top0" name="contactType" id="contactType"  field-name="contactType">
+						<option value="">Select ContactType</option>
+						<option value="Vendor">Vendor</option>
+						<option value="Candidate">Candidate</option>
+						<option value="Client">Client</option>
+						<option value="Other">Other</option>
+					</select> <span class="hidden">Select Status</span>
+				</div>
+			</div>
+			
+		<div class="clearfix mb" id="companyName">
+		  <label class="clearfix">Company Name</label>
+		  <div class="clearfix">
+			<input type="text" class="form-control margin-top0" name="companyName" id="companyName" field-name="companyName" >
+			<span class="hidden"></span> </div>
+		</div> 
+		
+		 </div>
+		 
+		<div class="popupFoot text-right">            
+		  <input type="button" value="Add Contact" id="add_contact" onclick="saveReferContacts();" class="slBtn md colorBtn">
+		  <input type="button" value="Cancel" onclick="flushContactDetails()" class="slBtn md canBtn">
+		</div> 
+	 
+	 </div> 
+	</form:form>
+
 <script>
-
-
-
 function addContactsGroup(){
 	var result = "";
 	result = result + '<form id="contactgroup_form"  name="contactgroup_form">'; 
-	result = result + '<div class="form-group" id="groupNameDiv">';
-	result = result + '	<label class="small text-muted">Group Name *</label>';
-    result = result + '		<input type="text" name="groupName" id="groupName" field-name="Group Name" class="form-control input-sm" data-validation="required validate_Space validate_Alphanumeric validate_length length1-100" onblur="validateGroupName();">';
+	result = result + '<div class="popupContent" id="groupNameDiv">';
+	result = result + '		<label class="noPad">Group Name <b class="valStar">*</b></label>';
+    result = result + '		<input type="text" name="groupName" id="groupName" field-name="Group Name" class="form-control" data-validation="required validate_Space validate_Alphanumeric validate_length length1-100" onblur="validateGroupName();">';
     result = result + '		<div class="underline"></div>';
 	result = result + '</div >';
-	result = result +'<div class="clearfix"></div >';
-	result = result + '<div class="form-group">';
-	result = result + '<div class="pull-right">';
-     result = result + '	<button type="button" class="btn mr btn-default btn-sm" onClick="maskFade();">Cancel</button>';
-	 result = result + '	<button type="button" value="Save" onclick= "contactgrp();" id="add_contactgroup" class="btn btn-sm btn-primary">Save</button>';
-	 result = result + '</div >';
+	result = result + '<div class="popupFoot text-right">';
+	result = result +'<input type="button" value="Save" id="add_contactgroup" onClick="contactgrp()" class="slBtn md colorBtn">';
+	result = result +'<input type="button" value="Cancel" onClick="maskFade()" class="slBtn md">';
 	 result = result + '</div >';
 	 result = result + '</form>';
 	 
 	 $("#addGroupDiv").empty();
      $("#groupEditDiv").empty();
 	 $("#addGroupDiv").append(result)
-	 $(".comMask").fadeIn();
-	 $(".createLabel-popdiv").fadeIn();
+	 
+	 $(".maskTwo").show();
+	 $("#createLabel-popdiv").show();
+	 $('#addcontacttogroup_form').reset();
 }
 
 </script>
@@ -460,9 +422,9 @@ function addContactsGroup(){
 
 function refercontactList(){
 	    var result = "";
-	 	result = result +" <div class='remove_search'>";
+/* 	 	result = result +" <div class='remove_search'>";
 	 	result = result +" <input type='text' placeholder='Search' id='contactsDataTableSearch'/>";
-	 	result = result +"</div>";
+	 	result = result +"</div>"; */
 	 	
 	    result = result +'<div class="clearfix">';
   		result = result +'<table id="example" class="display" cellspacing="0" width="100%"  >';
@@ -474,6 +436,8 @@ function refercontactList(){
 		result = result +'<th>Groups</th>';
 		result = result +'<th>Phone</th>';
 		result = result +'<th>Source</th>';
+		result = result +'<th>Company Name</th>';
+		result = result +'<th>Action</th>';
 		result = result + '</tr>';
 		result = result + '</thead>	';
 	    result = result +"</table>";
@@ -499,10 +463,15 @@ function contactsDataTableList(){
 			groupIdsList.push($(this).val());
 	    });
 		
+	 var contactTypes = [];
+		$('input:checkbox[name=contactTypename]:checked').each(function() 
+	    {
+			contactTypes.push($(this).val());
+	    });
 	 
 	 var searchValue = $("#contactsDataTableSearch").val();
 	 searchValue = searchValue ? searchValue : "";
-	 var url = sourceleadUrl+"/getRefercontactList?searchValue="+searchValue+"&groupIdsList="+groupIdsList;
+	 var url = sourceleadUrl+"/getRefercontactList?searchValue="+searchValue+"&groupIdsList="+groupIdsList+"&contactType="+contactTypes;
 	 contactsPagination(url);
 }
 </script>
@@ -512,6 +481,8 @@ var contactsList = {};
 function checkContactList(ele){
 	if($(ele).is(":checked")) {
 		contactsList[$(ele).data("id")] = $(ele).val();
+	}else {
+		delete contactsList[$(ele).val()];
 	}
 }
 </script>
@@ -552,8 +523,9 @@ function contactsPagination(url,sourceleadUrl){
         	{ "data": "contactName" },
         	{ "data": "email"},
         	{ "data": "groups" },
-            { "data": "source"}
-           
+            { "data": "source"},
+            { "data": "contactType"},
+        	{ "data": "contactAction"}
         ],
         "columnDefs": [{
     	  	"targets": colIndex++,
@@ -623,10 +595,41 @@ function contactsPagination(url,sourceleadUrl){
 	              "data": "source",
 	              "render": function ( data, type, opt, meta ) {
 	            	    var result = "";
-	            		result = result + '<td><div class="tblminwidth-75"><span title="'+opt.source+'">'+opt.source+'</span></div></td>';
+	            	    if(opt.source != null && opt.source != '' && opt.source != 'undefined'){
+	            	    	source = opt.source;
+	              	  }else{
+	              		source = '---';
+	              	  }
+	            		result = result + '<td><div class="tblminwidth-75"><span title="'+source+'">'+source+'</span></div></td>';
 	            		return result;
 	              }
-		     }],
+		     },{
+		    	  "targets": colIndex++,
+	              "data": "companyName",
+	              "render": function ( data, type, opt, meta ) {
+	            	    var result = "";
+	            	    var contactType = "";
+	              	  if(opt.companyName != null && opt.companyName != '' && opt.companyName != 'undefined'){
+	              		companyName = opt.companyName;
+	              	  }else{
+	              		companyName = '---';
+	              	  }
+	            		result = result + '<td><div class="tblminwidth-75"><span title="'+companyName+'">'+companyName+'</span></div></td>';
+	            		return result;
+	              }
+		     },{
+	              "targets": colIndex++,
+	              "data": "contactAction",
+	              "sortable": false,
+	              "render": function ( data, type, opt, meta ) {
+	               
+	              	var result = "";
+	              	result = result	+ '<td><div class="tbldata-dotdot_50" >';
+	              	result = result	+ '<a class="fa fa-pencil" title="Edit" onClick="editContactType('+opt.id+');" ></a> <a class="fa fa-trash text-danger" title="Delete" onclick="deleteContactType('+opt.id+');"></a>';
+	              	result = result	+ '</div></td>';
+	  	              return result;
+	              }
+	        }],
 		     
 	    	"scrollCollapse": false,
 	    	"lengthMenu": [[10, 15, 20], [10, 15, 20]],
@@ -648,23 +651,14 @@ function contactsPagination(url,sourceleadUrl){
     	   }
     	});
 }
-
-
-
 </script>
-
-
-
-
 <script>
 	function predefineProfileImage(imageId){
 		$(imageId).attr('src','/resources/images/userprofileImg.jpg');
 	}
 </script>
-
 <script>
 function refercontactpagenation(){
-	
 	  $('#refercontactpagenationid').DataTable( { 
 	    	"scrollCollapse": false,
 	    	"lengthMenu": [[10, 15, 20, -1], [10, 15, 20, "All"]],
@@ -678,8 +672,6 @@ function refercontactpagenation(){
 	    } );
 }
 </script>
-
-
 <script>
 function validateContactEmail(){
 	var contactEmail = document.getElementById("email").value;
@@ -695,62 +687,75 @@ function validateContactEmail(){
 						    	    $("input#email").after("<p class='jquery_form_error_message'>"+contactEmail+" is already added as Contact</span>");
 				    				$('input#email').attr('record-exist','yes');
 				    				$('input#email').attr('record-exist-errorMsg',contactEmail+' is already added as Contact'); 
-						     } 
-						     
-					       	else{
+						     }else{
 					       		 $("#add_contact").removeAttr("disabled");
 								 $('input#email').removeAttr( "record-exist record-exist-errormsg");
 				        		 $('#emailDiv').find('p.jquery_form_error_message').remove(); 
 								 $( "#add_contact" ).removeAttr("style");
+								 validateEmailForExistenceUniversally(email, "input#email");
 								 $( "#add_contact" ).click(function() {
 								 if ($(this).validate(false, validationSettings)){
 								 }
 								});
+								
 					       	}
 				       	}
-			    	   
 			      },
 			       
 			}); 
+	}else{
+		$("#emailStatusIconDiv").find("i").remove();
+  		$("#emailStatusIconDiv").append('<i class="fa fa-check text-muted" style="color:#f6f6f6"></i>');
 	}
 }
 </script>
 
 
 <script type="text/javascript">
-	var validationSettings = {
-	        errorMessagePosition : 'element',
-	       borderColorOnError : '',
+function saveReferContacts(){
+	        var validationSettings = {
+            errorMessagePosition : 'element',
+            borderColorOnError : '',
 			scrollToTopOnError : true,
 			dateFormat : 'yyyy/mm/dd' 
-	   };  
-         $('body').on('submit', '#addcontact_form', function(e){
-        	  if ($(this).validate(false, validationSettings)){
-	          		
-	          		$("#add_contact").attr("disabled", "disabled");
-	          		$("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
-	        	     var formData = getFormData1("addcontact_form");
-	        		$.ajax({
-	        					type : "POST",
-	        					 data: formData,
-	        	  		         processData: false,
-	        	  		         contentType:false, 
-	        					url : sourceleadUrl+"/addCrowdSourcingUserContact?"+tokenParamName+"="+tokenValue+"",
-	        					success : function(result) {
-	        						location.replace(sourceleadUrl+ "/referRequirementList");
-	        					},
-	        				});
-                
-            	    return true;
-            }
-            else{
-            	return false;	
-               }
-            });
-         $('#addcontact_form').showHelpOnFocus();
-         $('#addcontact_form').validateOnBlur(false, validationSettings); 
-            
-     
+            };
+			if ($('#addcontact_form').validate(false, validationSettings)){ 
+			var formData = getFormData1("addcontact_form");
+	  		$("#add_contact").attr("disabled", "disabled");
+	  		$("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
+			$.ajax({
+					type : "POST",
+					 data: formData,
+	  		         processData: false,
+	  		         contentType:false, 
+					url : sourceleadUrl+"/addCrowdSourcingUserContact?"+tokenParamName+"="+tokenValue+"",
+					success : function(result) {
+						
+						if (result && result.response === "INVALID_DATA") {
+						    showError(result.responseMessage);
+						    $("#loading").hide();
+						} else if (result.response === "AWKWARD") {
+						    location.href = "/errorPage";
+						} else if (result.response === "SUCCESS") {
+							location.replace(sourceleadUrl+ "/referRequirementList");
+						} else if (result.indexOf('Sign In') !== -1) {
+							location.replace(sourceleadUrl);
+						} else {
+						    showError("Operation failed, please try again");
+						}
+						
+					},
+				});
+    
+	    return true;
+		}else{
+			return false;
+		}
+}
+$('body').on('blur', '#addcontact_form', function() {
+$("#addcontact_form").showHelpOnFocus();
+$("#addcontact_form").validateOnBlur(false, validationSettings);  
+ });
 </script> 
 <script>
 function flushContactDetails(){
@@ -800,16 +805,15 @@ function flushContactDetails(){
 	
 <script>	
     $("#addPop").click(function(){
-		$(this).parent("li").find(".referWrap").toggleClass("referWrapActive");
-		$(".side_mask").fadeOut(200);
-		$(".impConPop").fadeOut(100);
+		$("#addConPop").fadeIn(100);
+		$(".mask").show();
 	});
     $(".canBtn").click(function(){
-		$(".referWrap").removeClass("referWrapActive");
+		$("#addConPop").fadeOut(100);
+		$(".mask").hide();
 	});		
 </script> 
 	
-   <div class="side_mask"></div>
    <div class="impConPop">
       <div id="registerPopClose" class="pavClose" onclick="closePop();"><i class="fa fa-times"></i></div>
       <div class="socialinviter" type="contactimporter"></div>
@@ -817,13 +821,13 @@ function flushContactDetails(){
 <script>	
 	$("#imCon").click(function(){
 		$(".referWrap").removeClass("referWrapActive");
-		$(".side_mask").fadeIn(200);
+		$(".mask").show();
 		$(".impConPop").fadeIn(100);
 	});
 </script> 
 <script>
     function closePop(){
-    	$(".side_mask").fadeOut(200);
+    	$(".mask").hide();
 		$(".impConPop").fadeOut(100);
     }
 </script>
@@ -858,23 +862,33 @@ $("#contactsFilter").click(function(){
 
 
 <script type="text/javascript">
-	var validationSettings = {
-	        errorMessagePosition : 'element',
-	       borderColorOnError : '',
-			scrollToTopOnError : true,
-			dateFormat : 'yyyy/mm/dd' 
-	   };  
-	function contactgrp(){
+			var validationSettings = {
+			        errorMessagePosition : 'element',
+			       borderColorOnError : '',
+					scrollToTopOnError : true,
+					dateFormat : 'yyyy/mm/dd' 
+			   };  
+			function contactgrp(){
         	  if ($('#contactgroup_form').validate(false, validationSettings)){
 	          		$("#add_contactgroup").attr("disabled", "disabled");
 	          		$("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
 	        	     var formData = getFormData("contactgroup_form");
 	        		$.ajax({
-	        					type : "POST",
-	        					data: formData,
-	        					url : sourceleadUrl+"/addContactsGroup?"+tokenParamName+"="+tokenValue+"",
-	        					success : function(result) {
-	        						location.replace(sourceleadUrl+"/referRequirementList");
+        					type : "POST",
+        					data: formData,
+        					url : sourceleadUrl+"/addContactsGroup?"+tokenParamName+"="+tokenValue+"",
+        					success : function(result) {
+	        				if (result && result.response === "INVALID_DATA") {
+							    showError(result.responseMessage);
+							} else if (result.response === "AWKWARD") {
+							    location.href = "/errorPage";
+							} else if (result.response === "SUCCESS") {
+								location.replace(sourceleadUrl+"/referRequirementList");
+							} else if (result.indexOf('Sign In') !== -1) {
+								location.replace(sourceleadUrl);
+							} else {
+							    showError("Operation failed, please try again");
+							}
 	        					},
 	        				});
                 
@@ -908,18 +922,19 @@ function getContactsGroupList(){
 	                    	 result = result +"<tr id='deleteGroup"+opt.id+"'>";
 				             
 				             if(opt.groupName != null && opt.groupName != '' && opt.groupName != 'undefined'){
-				             result = result +"<td><div class='tbldata-dotdot-sm'>"+opt.groupName+"</div></td>";
+				             result = result +"<td><div class='tbldata-dotdot-big' title='"+opt.groupName+"'>"+opt.groupName+"</div></td>";
 				             }else{
 				            	 result = result +"<td>-----</td>";
 				             }
-				             result = result +'<td><i class="glyphicon glyphicon-pencil paddingRight" title="Edit" onclick="editContactsGroup('+opt.id+',\''+opt.groupName+'\');"></i></td>';
-				             result = result +'<td><i class="glyphicon glyphicon-trash paddingLeft" title="Delete" onclick="deleteContactsGroup('+opt.id+',\''+opt.groupName+'\');"></i></td>'; 
+				             result = result +'<td><i class="fa fa-pencil paddingRight mr5" title="Edit" onclick="editContactsGroup('+opt.id+',\''+opt.groupName+'\');"></i>';
+				             result = result +'<i class="fa fa-trash paddingLeft" title="Delete" onclick="deleteContactsGroup('+opt.id+',\''+opt.groupName+'\');"></i></td>'; 
 				             result = result +"</tr>";
 	                     }
 	                     result = result +" </tbody>";
 	                     result = result +"</table>"; 
 	                     $("#groupList").empty();
 	                     $("#groupList").append(result); 
+	                    
           },
             
        }); 
@@ -930,30 +945,24 @@ function getContactsGroupList(){
 function editContactsGroup(groupId,groupName){
 	        	var outPut = '';
 	        	outPut = outPut+'<form role="form"  id="contactgroup_form" name="contactgroup_form" method="post">';
-	        	outPut = outPut+ '<div class="form-group" id="groupNameDiv">';
+	        	outPut = outPut+ '<div class="popupContent" id="groupNameDiv">';
 	        	outPut = outPut +'<input type="hidden" class="form-control input-sm" name="groupId"  value="'+groupId+'">';
-	        	outPut = outPut+ '<label class="small text-muted">Group Name *</label>';
+	        	outPut = outPut+ '<label class="noPad">Group Name <b class="valStar">*</b></label>';
 	        	outPut = outPut+ '<div class="clearfix positionRelative">';
-	        	outPut = outPut+ '<input type="text" name="groupName" id="groupName" value = "'+groupName+'" field-name="Group Name" class="form-control input-sm" data-validation="required validate_Space validate_Alphanumeric validate_length length1-100" onblur="validateGroupName();">';
-	      				
-	        	outPut = outPut+ '<div class="underline">';
+	        	outPut = outPut+ '<input type="text" name="groupName" id="groupName" value = "'+groupName+'" field-name="Group Name" class="form-control input-sm" data-validation="required validate_Space validate_Alphanumeric validate_length length1-100" onblur="validateGroupName('+groupId+');">';
 	        	outPut = outPut+ '</div>';
 	        	outPut = outPut+ '</div>';
-	        	outPut = outPut+ '</div>';
-	        	outPut = outPut+ '<div class="form-group">';
-	        	outPut = outPut+ '<div class="pull-right">';
-	        	outPut = outPut+ '<button type="button" class="btn mr btn-default btn-sm" onClick="maskFade();">Cancel</button>';
-	        	outPut = outPut+ '	<button type="submit" value="Save" id="edit_contactgroup" class="btn btn-sm btn-primary">Save</button>';
-	        	outPut = outPut+ '</div>';
-	        	outPut = outPut+ '</div>';
+	        	outPut = outPut+ '<div class="popupFoot text-right">';
+	        	outPut = outPut +'<input type="button" value="Save" id="add_contactgroup" onClick="contactgrp()" class="slBtn md colorBtn">';
+	        	outPut = outPut +'<input type="button" value="Cancel" onClick="maskFade()"  class="slBtn md">';
+				outPut = outPut+ '</div>';
 	        	outPut = outPut+ '</form>';
-	        	
 	            $("#addGroupDiv").empty();
 	            $("#groupEditDiv").empty();
-	        	$("#groupEditDiv").append(outPut); 
-	        	$(".comMask").fadeIn();
-	        	$(".createLabel-popdiv").fadeIn();
-	         
+	        	$("#groupEditDiv").append(outPut);
+	        	$(".maskTwo").show();
+	        	$("#createLabel-popdiv").show();
+	        	$('#addcontacttogroup_form').reset();
 }
 </script>
 
@@ -961,15 +970,15 @@ function editContactsGroup(groupId,groupName){
 <script>
 function deleteContactsGroup(groupId,groupNmae){
 	var result = "";
-	result = result +"	<div class='project_inn_mask'></div>";
 	result = result +"	   <div id='remove_user_pop' class='remove_user_pop remove_user_pop_a'>";
 	result = result +"		<p>Are you sure to delete <strong>"+groupNmae+"</strong> ?</p>";
 	result = result +"		<div>&nbsp;&nbsp;&nbsp;</div>";
 	result = result +"		<b href='javascript:void(0)'><input id='confirm-id' type='button' value='Ok' onclick='deleteSelectedContactsGroup("+groupId+");'><input class='u_can_color' type='button'  value='Cancel' onClick='cancel();'></b>";
 	result = result +"	</div>";
 	$("#deleteGroupPopUp").append(result);
-	$("#remove_user_pop").slideDown(200);
-	$(".project_inn_mask").fadeIn(200);
+	$("#remove_user_pop").fadeIn(100);
+	$(".maskTwo").show();
+	$('#addcontacttogroup_form').reset();
 	
 }
 </script>  
@@ -977,43 +986,48 @@ function deleteContactsGroup(groupId,groupNmae){
 <script type="text/javascript">
 function cancel(){
 	$("#deleteGroupPopUp").empty();
-	$(".project_inn_mask").fadeOut(200);
+	$(".maskTwo").hide();
 }
 </script>
 
 <script>
 function deleteSelectedContactsGroup(groupId){
 	 if (groupId) {
-		 
 	     $("#deleteGroupPopUp").empty();
-		 $(".project_inn_mask").fadeOut(200);
-			
+		 $(".maskTwo").hide();
 		 $("#deleteGroup"+groupId).html("<td colspan='5'  id='loading"+groupId+"'></td>");
-		 
 		 $.ajax({
 		   	type: "POST",
 		    url: sourceleadUrl+"/deleteContactsGroupById?"+tokenParamName+"="+tokenValue+"&groupId="+groupId, 
    		    success: function(data) {
    		    	
-   		    	if(data != null && data != 'undefined' && data != ""){
-   		    		    $("#loading"+groupId).removeAttr("style");
-             			document.getElementById("deleteGroup"+groupId).remove();
-             			location.replace(sourceleadUrl+"/referRequirementList");
-   		    	}
+   		    	if (result && result.response === "INVALID_DATA") {
+				    showError(result.responseMessage);
+				} else if (result.response === "AWKWARD") {
+				    location.href = "/errorPage";
+				} else if (result.response === "SUCCESS") {
+					 $("#loading"+groupId).removeAttr("style");
+          			document.getElementById("deleteGroup"+groupId).remove();
+          			location.replace(sourceleadUrl+"/referRequirementList");
+				} else if (result.indexOf('Sign In') !== -1) {
+					location.replace(sourceleadUrl);
+				} else {
+				    showError("Operation failed, please try again");
+				}
    		    }
 	     }); 
 	} 
 }
 </script>
 
-
 <script>
 	function showLable(){
-	$(".manageLables-div").fadeIn();
+		$(".mask").show();
+		$("#add_group_Div").fadeIn(100);
 	}
-	
 	$(".closemld").click(function(){
-	$(".manageLables-div").fadeOut();
+		$(".mask").hide();
+		$("#add_group_Div").hide();
 	});
 </script>
 	
@@ -1022,18 +1036,10 @@ function addLabelPop(){
 	addContactsGroup();
 };
 function maskFade(){
-	 $(".comMask").fadeOut();
-	$(".createLabel-popdiv").fadeOut();
-	}
-	$('ul.dropdown-menu').on('click', function(event){
-    event.stopPropagation();
-   });
-  $('.dropdown').on('click', function(){
-		$(".manageLables-div").fadeOut();
-	});
+	$(".maskTwo").hide();
+	$("#createLabel-popdiv").hide();
+}
 </script>
-
-
  <script>
 function refercontactListToGroup(){
 	var groupId = $("input:radio[name=groupName]:checked").val()
@@ -1075,21 +1081,20 @@ function refercontactListToGroup(){
 <script>
 function groupAndContacsAlertMsg(message){
 	var result = "";
-	result = result +"	<div class='project_inn_mask'></div>";
 	result = result +"	   <div id='remove_user_pop' class='remove_user_pop remove_user_pop_a'>";
 	result = result +"		<p>"+message+"</p>";
 	result = result +"		<div>&nbsp;&nbsp;&nbsp;</div>";
 	result = result +"		<b href='javascript:void(0)'><input id='confirm-id' type='button' value='Ok' onclick='cancelpopUp();'><input class='u_can_color' type='button'  value='Cancel' onClick='cancelpopUp();'></b>";
 	result = result +"	</div>";
 	$("#contactsPopUp").append(result);
-	$("#remove_user_pop").slideDown(200);
-	$(".project_inn_mask").fadeIn(200);
+	$("#remove_user_pop").fadeIn(100);
+	$(".maskTwo").show();
 }
 
 
 function cancelpopUp(){
 	$("#contactsPopUp").empty();
-	$(".project_inn_mask").fadeOut(200);
+	$(".maskTwo").hide();
 }
 </script>
 
@@ -1137,21 +1142,26 @@ function selectedContactList(){
 
 
 <script type="text/javascript">
- function validateGroupName(){
+ function validateGroupName(groupId){
+	 if(groupId != null && groupId != "" && groupId != "undefined"){
+		 groupId = groupId;
+	 }else{
+		 groupId = "";
+	 }
 	 var groupName = document.getElementById("groupName").value;
-	 var groupId = '${groupId}';
 	 $('#groupNameDiv').find('p.jquery_form_error_message').remove();
 	 if(groupName != null && groupName != "" && groupId != null){
-		
 		 $.ajax({
 		    	type: "GET",
 		        url: sourceleadUrl+"/validateGroupName?"+tokenParamName+"="+tokenValue+"&groupName="+groupName+"&groupId="+groupId, 
 		        success: function(data) {
-		        	if(data == 'Invalid'){
+		        	if(data == true){
 		        		  $('#groupNameDiv').find('p.jquery_form_error_message').remove();
 						  $("input#groupName").after("<p class='jquery_form_error_message'>"+groupName+" is Already Existed</span>");
 						  document.getElementById("groupName").setAttribute('record-exist','yes');
 						  document.getElementById("groupName").setAttribute('record-exist-errorMsg',groupName+' is Already Existed'); 
+						  $("#add_contactgroup").attr('disabled','disabled');
+						  
 		        	}
 		        	else{
 		        		 $('input#groupName').removeAttr( "record-exist record-exist-errormsg");
@@ -1165,26 +1175,78 @@ function selectedContactList(){
  }
  </script>
  
- 
- 
  <script>
- function removeGroupsPopUp(){
-	 $(".movefolder-popdiv").fadeOut();
-	 $(".sideMask").fadeOut();
- }
- 
+function filterPop(){
+	$("#contactFilterPopup").toggle();
+	$(".mask").show();
+};
+function closeFilter(){
+	$("#contactFilterPopup").toggle();
+	$(".mask").hide();
+
+}
+
+function resetContactFilter(){
+	$("ul#contactType > li input:checkbox").prop("checked",false);
+	$("ul#contactgroup > li input:checkbox").prop("checked",false);
+	
+	contactsDataTableList()
+}
+</script>
+
+<!-- For filter -->
+
+<div class="cand-advsrch-popup advancedsearch-popup filterDynamic-Search" id="contactFilterPopup">
+<h5 class="headerAdsrch">Filter <a href="javascript:void(0)" class="close-div" onClick="closeFilter()"><i class="fa fa-close"></i></a></h5>
+<div class="addInner">
+<div class="row">
+
+<div  class="col-md-2">
+			<label><strong>Type</strong></label>
+			<div class='clearfix'>
+								<ul id="contactType" class="list-unstyled">
+									<li class="checkBox positionRelative"><input id="c11" type="checkbox" name="contactTypename" value="Candidate" ><label for="c11">Candidate </label></li>
+									<li class="checkBox positionRelative"><input id="c12" type="checkbox" name="contactTypename" value="Vendor" ><label for="c12">Vendor </label></li>
+									<li class="checkBox positionRelative"><input id="c13" type="checkbox" name="contactTypename" value="Client" ><label for="c13">Client </label></li>
+									<li class="checkBox positionRelative"><input id="c14" type="checkbox" name="contactTypename" value="Other" ><label for="c14">Other </label></li>
+								</ul>
+				</div>
+							</div>
+						
+						<div  class="col-md-2">
+						<label><strong>Filter Group</strong></label>
+						<div class='clearfix'>	
+				<ul id="contactgroup" class="list-unstyled" >
+                    	  <c:forEach var="report" items="${contactsGroupList}">
+                        	<li><label class="tbldata-dotdot-big" title="${report.groupName}"><input   name="groupsFilter" value ="${report.id}"  onclick="refercontactList();"  type="checkbox"> ${report.groupName}</label></li>
+						  </c:forEach>
+				</ul>
+				</div>
+				</div>	
+				</div>			
+							
+							
+
+			<div class="clearfix advancedsearch-footer">
+						<div class="pull-right mr">
+							<input type="button" value="Apply" id="search_requiremet" 
+								onclick="closeFilter();contactsDataTableList();" class="btn btn-sm btn-success" />
+							<input type="button" value="Reset" id="clear_search"
+								onclick="resetContactFilter();" class="btn btn-sm btn-primary" />
+						</div>
+					</div>
+
+</div>
+</div> 
+ <script>
  function movefolderPop() {
-	 $(".movefolder-popdiv").fadeIn();
-	 $(".sideMask").fadeIn();
+	 $("#movefolder-popdiv").fadeIn(100);
+	 $(".mask").show();
  }
- $(".close").click(function(){
-	 $(".movefolder-popdiv").fadeOut();
-	 $(".sideMask").fadeOut();
- });
- $(".sideMask").click(function(){
-	 $(".movefolder-popdiv").fadeOut();
-	 $(".sideMask").fadeOut();
- });
+ function removeGroupsPopUp(){
+	 $("#movefolder-popdiv").fadeOut(100);
+	 $(".mask").hide();
+ }
  
  $("#connectionsId").click(function(){
 	 $("#contactsListSheet").hide();
@@ -1202,3 +1264,246 @@ function selectedContactList(){
  });
  
  </script>
+ <div id="popUpContactDiv" class="popupWrap popupWrapFixed"></div>
+ <script>
+ function editContactType(contactId){
+	 $.ajax({	type : "POST",
+			url : sourceleadUrl+ "/getContactById?"+tokenParamName+"="+tokenValue+"&id="+contactId,
+			success : function(json) {
+				var firstName = "";
+				var lastName = "";
+				var email = "";
+				var contactType  = "";
+				var companyName  = "";
+				var phone  = "";
+				
+				if(json.firstName !=null && json.firstName !='undefined' && json.firstName !=''){
+					firstName = json.firstName;
+				}
+				if(json.lastName !=null && json.lastName !='undefined' && json.lastName !=''){
+					lastName = json.lastName;
+				}
+				if(json.email !=null && json.email !='undefined' && json.email !=''){
+					email = json.email;
+				}
+				if(json.phone !=null && json.phone !='undefined' && json.phone !=''){
+					phone = json.phone;
+				}
+				if(json.contactType !=null && json.contactType !='undefined' && json.contactType !=''){
+					contactType = json.contactType;
+				}
+				if(json.companyName !=null && json.companyName !='undefined' && json.companyName !=''){
+					companyName = json.companyName;
+				}
+				
+				var result = "";
+				
+		result = result  +'<form id="editcontact_form"  name="editcontact_form" method="post"> ';
+		result = result  +'<div class="popupHead"><span>Edit Contact</span><i class="closePop pull-right" onClick="closeEditContactDiv();"></i></div>';
+		result = result  +'<div id="loading"></div>                                                                                                                                                                                               ';
+		result = result  +'  <div class="popupContent popupContentFixed">                                                                                                                                                                                           ';
+		result = result  +'	<div class="clearfix mb" id="firstNameDiv">                                                                                                                                                                   ';
+		result = result  +'	  <label class="clearfix">First Name <b class="valStar">*</b></label>                                                                                                                                                                       ';
+		result = result  +'	  <div class="clearfix">                                                                                                                                                                                             ';
+		result = result  +'		<input type="text" class="form-control" name="firstName" id="firstName" field-name="First Name" value="'+firstName+'" data-validation="required validate_Space validate_Alphanumeric validate_length length1-100">                      ';
+		result = result  +'		<span class="hidden"></span> </div>                                                                                                                                                                               ';
+		result = result  +'	</div>                                                                                                                                                                                                                ';
+		result = result  +'	<div class="clearfix mb" id="lastNameDiv">                                                                                                                                                                    ';
+		result = result  +'	  <label class="clearfix">Last Name</label>                                                                                                                                                                          ';
+		result = result  +'	  <div class="clearfix">                                                                                                                                                                                             ';
+		result = result  +'		<input type="text" class="form-control" name="lastName" id="lastName" field-name="Last Name" data-validation-optional="true" value="'+lastName+'" data-validation="validate_Space validate_Alphanumeric validate_length length1-100">  ';
+		result = result  +'		<span class="hidden"></span> </div>                                                                                                                                                                               ';
+		result = result  +'	</div>                                                                                                                                                                                                                ';
+		
+		result = result  +'	<div class="clearfix mb" id="emailDiv">                                                                                                                                                                       ';
+		result = result  +'	  <label class="clearfix">Email Id <b class="valStar">*</b></label>';
+		result = result  +'	  <div class="clearfix">                                                                                                                                                                                             ';
+		result = result  +'		<input type="text" class="form-control" name="email" id="email" onblur="validateContactEmail()"  field-name="Email" value="'+email+'" data-validation="required validate_Space validate_length length2-100 validate_email">';
+		result = result  +'		<span class="hidden"></span>';
+		
+/* 		result = result  +'<span class="input-group-addon" id="emailStatusIconDiv">';
+		result = result  +'    <i class="fa fa-check text-muted" style="color:#f6f6f6"></i>';
+		result = result  +'</span>'; */
+		result = result  +'	</div> ';
+		result = result  +'	</div> ';
+		
+		result = result  +'	<div class="clearfix mb" id="phoneDiv">                                                                                                                                                     ';
+		result = result  +'	  <label class="clearfix">Phone </label>                                                                                                                                                           ';
+		result = result  +'	  <div class="clearfix" >                                                                                                                                                                          ';
+		result = result  +'		<input type="text" class="form-control"  name="phone" id="phone" field-name="Phone" value="'+phone+'" data-validation-optional="true" data-validation="validate_Space validate_phone validate_length length9-20"> ';
+		result = result  +'		<span class="hidden"></span> </div>                                                                             ';
+		result = result  +'	</div>                                                                                                              ';
+		result = result  +'	                                                                                                                    ';
+		result = result  +'	<div class="clearfix mb">                                                                                   ';
+		result = result  +'			<label class="clearfix" >Contact Type</label>                                                              ';
+		result = result  +'			<div class="clearfix select-field">                                                                        ';
+		result = result  +'				<select class="form-control" name="contactType" id="contactType" value="'+contactType+'" field-name="contactType">             ';
+		
+		result = result  +'					<option value="">Select ContactType</option>                                                        ';
+							if (contactType == "Vendor"){
+								result = result  +'	<option selected>Vendor</option>   ';
+							}else{
+								result = result  +'	<option value="Vendor">Vendor</option>   ';
+							}
+							if (contactType == "Candidate"){
+								result = result  +'	<option selected>Candidate</option>   ';
+							}else{
+								result = result  +'	<option value="Candidate">Candidate</option>   ';
+							}
+							if (contactType == "Client"){
+								result = result  +'	<option selected>Client</option>   ';
+							}else{
+								result = result  +'	<option value="Client">Client</option>   ';
+							}
+							if (contactType == "Other"){
+								result = result  +'	<option selected>Other</option>   ';
+							}else{
+								result = result  +'	<option value="Other">Other</option>   ';
+							}
+								
+		result = result  +'				</select> <span class="hidden">Select Status</span>                                                     ';
+		result = result  +'			</div>                                                                                                      ';
+		result = result  +'		</div>                                                                                                          ';
+		result = result  +'		                                                                                                                ';
+		result = result  +'		<div class="clearfix mb" id="companyName">                                                              ';
+		result = result  +'	  <label class="clearfix">Company Name</label>                                                                     ';
+		result = result  +'	  <div class="clearfix">                                                                                           ';
+		result = result  +'		<input type="text" class="form-control" name="companyName" value="'+companyName+'" id="companyName" field-name="companyName" >          ';
+		result = result  +'		<span class="hidden"></span> </div>                                                                             ';
+		result = result  +'	</div>                                                                                                              ';
+		result = result  +'	 </div>                                                                                                                   ';
+		
+		result = result  +'	<div class="popupFoot text-right">                                                                               ';
+		result = result  +'	  <input type="button" value="Update Contact" id="edit_contact" onclick="saveReEditContacts('+json.id+');" class="slBtn md colorBtn"> ';
+		result = result  +'	  <input type="button" value="Cancel" onClick="closeEditContactDiv();" class="slBtn md canBtn">           ';
+		result = result  +'	</div>                                                                                                               ';
+        result = result  +'                                                                                                                      ';
+		result = result  +' </div>                                                                                                               ';
+		result = result  +'</form>';
+		$("#popUpContactDiv").empty();
+		$("#popUpContactDiv").append(result);
+		
+			}
+	 });
+	 $(".mask").show();
+	 $("#popUpContactDiv").fadeIn(100);
+ }
+ </script>
+ <script>
+ function closeEditContactDiv(){
+	 $(".mask").hide();
+	 $("#popUpContactDiv").fadeOut(100);
+ }
+ </script>
+ 
+ 
+ <script type="text/javascript">
+function saveReEditContacts(contactId){
+	       var validationSettings = {
+            errorMessagePosition : 'element',
+            borderColorOnError : '',
+			scrollToTopOnError : true,
+			dateFormat : 'yyyy/mm/dd' 
+            };
+			if ($('#editcontact_form').validate(false, validationSettings)){ 
+			var formData = getFormData1("editcontact_form");
+	  		$("#edit_contact").attr("disabled", "disabled");
+	  		$("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
+	     
+		    $.ajax({
+					 type : "POST",
+					 data: formData,
+	  		         processData: false,
+	  		         contentType:false, 
+					//url : sourceleadUrl+"/addCrowdSourcingUserContact?"+tokenParamName+"="+tokenValue+"",
+					url : sourceleadUrl+ "/addCrowdSourcingUserContact?"+tokenParamName+"="+tokenValue+"&id="+contactId,
+					success : function(result) {
+						
+						if (result && result.response === "INVALID_DATA") {
+						    showError(result.responseMessage);
+						    $("#loading").hide();
+						} else if (result.response === "AWKWARD") {
+						    location.href = "/errorPage";
+						} else if (result.response === "SUCCESS") {
+							location.replace(sourceleadUrl+ "/referRequirementList");
+						} else if (result.indexOf('Sign In') !== -1) {
+							location.replace(sourceleadUrl);
+						} else {
+						    showError("Operation failed, please try again");
+						}
+						
+					},
+				});
+    
+	    return true;
+		}else{
+			return false;
+		}
+}
+$('body').on('blur', '#addcontact_form', function() {
+$("#addcontact_form").showHelpOnFocus();
+$("#addcontact_form").validateOnBlur(false, validationSettings);  
+ });
+</script> 
+ 
+ <script type="text/javascript">
+function deleteContPopup(){
+	$("#remove_user_pop, .mask").fadeOut();
+}
+</script>
+
+<div id="deleteContPopUp"></div>
+ 
+ <script type="text/javascript">
+function deleteContactType(contactId){
+	var result = "";
+	result = result +"	   <div id='remove_user_pop' class='remove_user_pop remove_user_pop_a'>";
+	result = result +"		<p>Do you want to delete the contact</p>";
+	result = result +"		<div>&nbsp;&nbsp;&nbsp;</div>";
+	result = result +"		<b href='javascript:void(0)'><input id='confirm-id' type='button' value='Ok' onclick='deleteSelectedContact("+contactId+");'><input class='u_can_color' type='button'  value='Cancel' onClick='deleteContPopup();'></b>";
+	result = result +"	</div>";
+	$("#deleteContPopUp").empty();
+	$("#deleteContPopUp").append(result);
+	$("#remove_user_pop").fadeIn(100);
+	$(".mask").show();
+
+}
+</script>
+  
+<script>
+function deleteSelectedContact(contactId){
+	
+	$.ajax({	type : "POST",
+		url : sourceleadUrl+ "/deleteContact?"+tokenParamName+"="+tokenValue+"&id="+contactId,
+		success : function(result) {
+
+	    	 if (result && result.response === "INVALID_DATA") {
+				    showError(result.responseMessage);
+				} else if (result.response === "AWKWARD") {
+				    location.href = "/errorPage";
+				} else if (result.response === "SUCCESS") {
+					contactsDataTableList();
+					$("#remove_user_pop, .mask").fadeOut();
+				} else if (result.indexOf('Sign In') !== -1) {
+					location.replace(sourceleadUrl);
+				} else {
+				    showError("Operation failed, please try again");
+				}
+	    },
+	    });		
+}
+
+</script>
+
+<script>
+function getActions(){
+	$(".action-pop").slideToggle(200);
+	$(".newActPop").slideUp(200);
+}	
+$("html").click(function(){
+	$(".action-pop").slideUp(200);
+});
+$(".action, .action-pop").click(function(e){
+ 	e.stopPropagation();
+});	
+</script>

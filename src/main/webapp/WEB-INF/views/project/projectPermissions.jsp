@@ -80,7 +80,7 @@
 					<div class="panel-body">
 					<div class="row minHeight40 mb">
 						<label class="col-md-3">View</label>
-						<div class="col-md-9 dropdown-select">
+						<div class="col-md-9 dropdown-select-chosen">
 							<select class="form-control chosen-select choose" multiple  id="readOtherMemberIds" name="readOtherMemberIds" data-placeholder="Select Read Project Members" >
 					             <c:forEach var="employee" items="${projectMembersList}">
 						             <c:set var = "NUM" value = "${0}"/>
@@ -99,7 +99,7 @@
 					</div>
 					<div class="row minHeight40 mb">
 						<label class="col-md-3">Owner</label>
-						<div class="col-md-9 dropdown-select">
+						<div class="col-md-9 dropdown-select-chosen">
 					     <select class="form-control chosen-select choose" multiple  id="writeOtherMemberIds" name="writeOtherMemberIds" data-placeholder="Select Write Project Members" >
 					           <c:forEach var="employee" items="${projectMembersList}">
 					           			<c:set var = "NUM" value = "${0}"/>

@@ -25,7 +25,6 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 
 @Entity
 @Table(name = "VENDOR_ON_BOARD_TASKS")
-@Cache(usage = CacheConcurrencyStrategy.TRANSACTIONAL,region="vendorOnboardTasks")
 public class VendorOnboardTasks implements Serializable{
 	
 	private static final long serialVersionUID = 1L;
@@ -38,17 +37,17 @@ public class VendorOnboardTasks implements Serializable{
 	@Column(name = "TASK_NAME")
    	private String taskName;
 	
-	@NotFound(action=NotFoundAction.IGNORE)
+	
     @ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "VENDOR_ON_BOARDING_TEMPLATE_ID", nullable = false)
 	private VendorOnboardingTemplate vendorOnboardingTemplateId;
     
-    @NotFound(action=NotFoundAction.IGNORE)
+    
     @ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "VENDOR_ON_BOARDING_ID", nullable = false)
 	private VendorOnboarding vendorOnboardingId;
     
-    @Column(name = "ASSIGN_TO_USERS")
+    @Column(name = "ASSIGN_TO_USERS", columnDefinition = "TEXT default NULL")
    	private String assignToUsers;
 	
 	@Column(name = "ASSIGN_TO_VENDOR")

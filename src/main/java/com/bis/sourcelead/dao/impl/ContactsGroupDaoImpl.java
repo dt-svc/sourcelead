@@ -2,6 +2,7 @@ package com.bis.sourcelead.dao.impl;
 
 import java.text.MessageFormat;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 
 import org.apache.commons.lang.exception.ExceptionUtils;
@@ -18,6 +19,7 @@ import com.bis.sourcelead.dao.ContactsGroupDao;
 import com.bis.sourcelead.dao.ReferContactsDao;
 import com.bis.sourcelead.entity.Candidate;
 import com.bis.sourcelead.entity.ContactsGroup;
+import com.bis.sourcelead.entity.ProjectDocumentFolder;
 import com.bis.sourcelead.entity.ReferContacts;
 import com.bis.sourcelead.exception.SourceLeadConstraintViolationException;
 
@@ -67,7 +69,7 @@ public class ContactsGroupDaoImpl implements ContactsGroupDao {
 	{
 		Session session = this.sessionFactory.getCurrentSession();
 		String query = "from  ContactsGroup cg  left join fetch cg.createdUser user where user.id =:userId and cg.status ='1'";
-		List<ContactsGroup> contactsGroupList  =   session.createQuery(query.toString()).setLong("userId", userId).setCacheable(true) .list();
+		List<ContactsGroup> contactsGroupList  =   session.createQuery(query.toString()).setLong("userId", userId) .list();
 		return contactsGroupList;
 	}
 
@@ -77,7 +79,7 @@ public class ContactsGroupDaoImpl implements ContactsGroupDao {
 	{
 		Session session = this.sessionFactory.getCurrentSession();
 		String query = "from ContactsGroup cg  where cg.id =:groupId";
-		List cgList = session.createQuery(query).setLong("groupId", groupId).setCacheable(true).list();
+		List cgList = session.createQuery(query).setLong("groupId", groupId).list();
 		ContactsGroup contactsGroup = null;
 		if(cgList != null && !cgList.isEmpty())
 		{
@@ -153,7 +155,7 @@ public class ContactsGroupDaoImpl implements ContactsGroupDao {
 		logger.debug("findByContactsGroupAndUserId start");
 		try{
 			contactsGroup = session.createQuery("from ContactsGroup cg where cg.groupName = :groupName and cg.createdUser.id = :userId")
-					.setString( "groupName", groupName ).setLong("userId", userId ).setCacheable(true).list();
+					.setString( "groupName", groupName ).setLong("userId", userId ).list();
 			
 			logger.debug("findByCandidateEmail end");
 			if (contactsGroup.size() > 0) {
@@ -165,6 +167,33 @@ public class ContactsGroupDaoImpl implements ContactsGroupDao {
 			logger.error(ExceptionUtils.getFullStackTrace(e));
 		}
 		return null;
+	}
+
+	@Override
+	@Transactional(rollbackFor = { Exception.class })
+	public ContactsGroup validateGrouppNameByGroupNameAndGroupId(String groupName, Long groupid) throws Exception {
+		Session session = this.sessionFactory.getCurrentSession();
+		String query = "from ContactsGroup cg  where cg.id =:groupid and cg.groupName =:groupName ";
+		List<ContactsGroup> contactsGroupList =session.createQuery(query) .setString("groupName", groupName).setLong("groupid", groupid).list();
+		ContactsGroup contactsGroup = null;
+		if(contactsGroupList != null && !contactsGroupList.isEmpty())
+		{
+			contactsGroup = (ContactsGroup) contactsGroupList.iterator().next();
+		}
+		return contactsGroup;
+	}
+
+	@Override
+	@Transactional(rollbackFor = { Exception.class })
+	public Boolean validateGroupNameByGroupNameAndUserId(String groupName, Long userId) throws Exception {
+		Session session = this.sessionFactory.getCurrentSession();
+		 boolean flag = false;
+			 String query = "from ContactsGroup cg  where cg.groupName =:groupName and cg.createdUser.id =:userId ";
+				Collection<ContactsGroup> contactsGroupList = session.createQuery(query) .setString("groupName", groupName).setLong("userId", userId).list();
+				if (contactsGroupList != null && contactsGroupList.size() > 0) {
+					flag = true;
+				}
+		return flag;
 	}
 
 

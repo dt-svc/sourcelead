@@ -16,6 +16,8 @@ public class ExpensesCategoryListDTO implements Serializable {
 	private String description;
 	
 	private String status;
+	
+	private String isAttachemtRequired;
 
 	public Long getId() {
 		return id;
@@ -63,6 +65,14 @@ public class ExpensesCategoryListDTO implements Serializable {
 
 	public void setStatus(String status) {
 		this.status = status;
+	}
+
+	public String getIsAttachemtRequired() {
+		return isAttachemtRequired;
+	}
+
+	public void setIsAttachemtRequired(String isAttachemtRequired) {
+		this.isAttachemtRequired = isAttachemtRequired;
 	}
 
 

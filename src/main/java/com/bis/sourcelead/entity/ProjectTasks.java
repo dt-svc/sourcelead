@@ -41,7 +41,6 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 
 @Entity
 @Table(name = "PROJECT_TASKS")
-@Cache(usage = CacheConcurrencyStrategy.TRANSACTIONAL,region="projectTasks")
 public class ProjectTasks implements Serializable{
 	private static final long serialVersionUID = 1L;
 
@@ -59,26 +58,26 @@ public class ProjectTasks implements Serializable{
 	@Column(name = "GENERATED_ID")
 	private String generatedId;
 	  
-	@Column(name = "DESCRIPTION")
+	@Column(name = "DESCRIPTION" , columnDefinition = "LONGTEXT default NULL")
 	@Type(type="text")
 	private String description;
 	
 	@Column(name = "BILLABLE_TYPE")
 	private String billableType;
 	
-	@NotFound(action=NotFoundAction.IGNORE)
-	@ManyToOne(fetch = FetchType.EAGER)
+	
+	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name="TASK_TYPE", nullable=false )	
 	private LookUpData taskType;
 	
-	@ManyToOne(fetch = FetchType.EAGER)
+	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name="PROJECT_ID", nullable=false )	
 	private Projects projectId;
 	
 	@Column(name = "DUE_DATE")
     private Date dueDate; 
 	
-	@ManyToOne(fetch = FetchType.EAGER)
+	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name="PRIORITY", nullable=false )	
 	private LookUpData priority;
 	
@@ -88,11 +87,11 @@ public class ProjectTasks implements Serializable{
 	@Column(name = "ESTIMATE_TIME")
     private String estimateTime;
 	
-	@ManyToOne(fetch = FetchType.EAGER)
+	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name="SEVERITY", nullable=false )	
 	private LookUpData severity;
 	
-	@ManyToOne(fetch = FetchType.EAGER)
+	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name="TASK_STATUS", nullable=false )	
 	private LookUpData taskStatus;
 	
@@ -133,18 +132,22 @@ public class ProjectTasks implements Serializable{
 	@Column(name = "UPDATED_BY")
 	private String updatedBy;
 	
+	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name = "LEAVE_TYPE_ID")
+	private LeaveType leaveType;
+	
+	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name = "HOLIDAY_ID")
+	private Holiday holiday;
 	
     @OneToMany(mappedBy="projectTaskId",cascade = CascadeType.ALL)
     @Fetch(FetchMode.SELECT)
     @JsonBackReference
     private Set<ProjectAssignTask> projectAssignTask;
     
-    
-    @NotFound(action=NotFoundAction.IGNORE)
 	@OneToMany(mappedBy = "projectTaskId",cascade = CascadeType.ALL)
 	@Fetch(FetchMode.SELECT)
     private List<ProjectTaskActivity> projectTaskActivity;
-    
 
 	@OneToMany(mappedBy="projectTaskId",cascade = CascadeType.ALL)
     @Fetch(FetchMode.SELECT)
@@ -157,6 +160,14 @@ public class ProjectTasks implements Serializable{
 	@JsonProperty
 	@Transient
 	private String taskPriotiry;
+	
+	@JsonProperty
+	@Transient
+	private String taskSeverity;
+	
+	@JsonProperty
+	@Transient
+	private String taskOwnerName;
 	
 	@JsonProperty
 	@Transient
@@ -222,6 +233,14 @@ public class ProjectTasks implements Serializable{
 	@JsonProperty
 	@Transient
 	private String actionTimeStr;
+	
+	@Transient
+    @JsonProperty
+    private String taskTags;
+	
+	@Transient
+	@JsonProperty
+    private Set<String> tagsList;
 	
 	public Long getId() {
 		return Id;
@@ -485,9 +504,9 @@ public class ProjectTasks implements Serializable{
 		if(projectAssignTask != null && !projectAssignTask.isEmpty()) {
 			for(ProjectAssignTask assignedTask: projectAssignTask) {
 				if(assignedTask.getProjectMemberId() != null && 
-						assignedTask.getProjectMemberId().getEmployee() != null && 
-						assignedTask.getProjectMemberId().getEmployee().getUser() != null) {
-					usersList.add(assignedTask.getProjectMemberId().getEmployee().getUser().getFullName());
+						assignedTask.getProjectMemberId().getProjectMemberCandidteId() != null && 
+						assignedTask.getProjectMemberId().getProjectMemberCandidteId() != null) {
+					usersList.add(assignedTask.getProjectMemberId().getProjectMemberCandidteId().getFullName());
 				}
 			}
 		}
@@ -616,5 +635,60 @@ public class ProjectTasks implements Serializable{
 	public void setProjectTaskActivity(List<ProjectTaskActivity> projectTaskActivity) {
 		this.projectTaskActivity = projectTaskActivity;
 	}
-	 
+
+	public LeaveType getLeaveType() {
+		return leaveType;
+	}
+
+	public void setLeaveType(LeaveType leaveType) {
+		this.leaveType = leaveType;
+	}
+
+	public Holiday getHoliday() {
+		return holiday;
+	}
+
+	public void setHoliday(Holiday holiday) {
+		this.holiday = holiday;
+	}
+
+	public String getTaskSeverity() {
+		String taskSeverity = null;
+		if (severity != null) {
+			taskSeverity = severity.getName();
+		}
+		return taskSeverity;
+	}
+
+	public String getTaskOwnerName() {
+		String taskOwnerName = null;
+		if(ownerUserId != null) {
+			taskOwnerName = ownerUserId.getFullName();
+		}
+		return taskOwnerName;
+	}
+
+	public void setTaskSeverity(String taskSeverity) {
+		this.taskSeverity = taskSeverity;
+	}
+
+	public void setTaskOwnerName(String taskOwnerName) {
+		this.taskOwnerName = taskOwnerName;
+	}
+
+	public String getTaskTags() {
+		return taskTags;
+	}
+
+	public Set<String> getTagsList() {
+		return tagsList;
+	}
+
+	public void setTaskTags(String taskTags) {
+		this.taskTags = taskTags;
+	}
+
+	public void setTagsList(Set<String> tagsList) {
+		this.tagsList = tagsList;
+	}
 }

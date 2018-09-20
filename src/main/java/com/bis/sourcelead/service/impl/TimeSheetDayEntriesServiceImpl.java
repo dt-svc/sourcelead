@@ -60,4 +60,27 @@ public class TimeSheetDayEntriesServiceImpl implements TimeSheetDayEntriesServic
 		return timeSheetDayEntriesDao.getTimesheetDayEntriesByTaskUUIDAndUserId(taskUUID, userId, locationId, start, length, searchValue);
 	}
 
+	@Override
+	public Float getTotalHoursByProjectIdMasteCandidateIdandTimesheetDate(Long projectId, Long masterCandidateId,Date timesheetDate) {
+		return timeSheetDayEntriesDao.getTotalHoursByProjectIdMasteCandidateIdandTimesheetDate(projectId,masterCandidateId,timesheetDate);
+	}
+	
+	@Override
+	public TimeSheetDayEntries getTimesheetDayEntryByProjectIdMasteCandidateIdandTimesheetDate(Long projectId,Long masterCandidateId, Date timesheetDate,Long projectTaskId) {
+		return timeSheetDayEntriesDao.getTimesheetDayEntryByProjectIdMasteCandidateIdandTimesheetDate(projectId,masterCandidateId,timesheetDate,projectTaskId);
+	}
+
+	@Override
+	public List<TimeSheetDayEntries> getAllTimeSheetDayEntriesByProjectIdAndTimesheetDate(Long projectId,Date timesheetDate,Long projectMemberId) throws Exception {
+		return timeSheetDayEntriesDao.getAllTimeSheetDayEntriesByProjectIdAndTimesheetDate(projectId, timesheetDate,projectMemberId);
+	}
+
+	@Override
+	public List<TimeSheetDayEntries> getAllTimeSheetDayEntriesByProjectIdAndTimesheetDateTest(Long projectId,Date startDate, Date endDate, Long projectMembers) throws Exception {
+		return timeSheetDayEntriesDao.getAllTimeSheetDayEntriesByProjectIdAndTimesheetDateTest(projectId, startDate,endDate,projectMembers);
+	}
+	
+	
+
+
 }

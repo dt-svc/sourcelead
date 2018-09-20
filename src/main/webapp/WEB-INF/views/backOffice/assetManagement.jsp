@@ -3,206 +3,87 @@
 
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <%@taglib uri="http://www.springframework.org/tags/form" prefix="form"%>
+<%@taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
 <%@ page trimDirectiveWhitespaces="true" %>
+
+<style type="text/css">
+.columnfields-custom .col-md-9 {
+	width: 100%;
+}
+.popinnerdiv  {
+min-height: 100px; max-height: 450px; overflow-y:auto; 
+}
+</style>
 
 <script type="text/javascript" src="jquery-1.2.6.min.js"></script>
 
 <script>
 $(document).ready(function(){
-	getAssetList();
+	getDynamicAssetList();
 	loadCategory();
 });
 </script> 
 
+<script>
+	$(document).ready(function() {
+		document.getElementById("addAsset_form").reset();
+	});
+</script>
 <section class="content-wraper">
 <section class="content-header clearfix">
-  <div class="pull-left">
-    <h2>Asset Management</h2>
-  </div>
+  <div class="pull-left"><h2>Asset Management</h2></div>
   <div class="pull-right brud-crum"><a href="<c:url value='${appPath}/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a> &raquo; Asset Management</div>
 </section>
+
 <div class="timesheet_out">
-  <div class="vendor_wrap">
-    <div class="timesheet_head">
-      <ul>
-        <li id="category"><i class="fa fa-filter"></i><span>Category</span><i class="glyphicon glyphicon-play"></i>|
-          <div class="approved_pop">
-            <ul>
-                   <c:forEach var="report" items="${assetCategoriesList}">  
-		               <li><input  id="category${report.id}" name="categoryId" value ="${report.id}"  onclick="getAssetList();"  type="checkbox"><label>${report.categoryName}</label></li>
-				   </c:forEach>
-            </ul>
-          </div>
-        </li>
-        
-         <li id="workingStatus"><i class="fa fa-filter"></i><span>Working Status</span><i class="glyphicon glyphicon-play"></i>|
-          <div class="approved_pop">
-            <ul>
-                    <li><input id="c1" type="checkbox"  name="workingStatus"  value ="Working"  onclick="getAssetList();"  ><label>Working</label></li>
-				    <li><input id="c2" type="checkbox"  name="workingStatus"  value ="Out Of Service"   onclick="getAssetList();"><label>Out Of Service</label></li>
-            </ul>
-          </div>
-        </li>
-        
-         <!-- <li><i class="glyphicon glyphicon-export"></i><span>Export</span><i class="glyphicon glyphicon-play" id="export-pop"></i>|
-          <div class="export_pop">
-            <ul>
-              <li><i class="fa fa-file-pdf-o"></i>&nbsp;PDF</li>
-              <li><i class="fa fa-file-excel-o"></i>&nbsp;Excel</li>
-              <li><i class="fa fa-file-word-o"></i>&nbsp;Word</li>
-            </ul>
-          </div>
-        </li> -->
-       <!--  <li><i class="glyphicon glyphicon-save"></i><span>Import</span>|</li> -->
-            
-              
-        <li>
-          <a href="javascript:void(0)" class="addcon-pop"><i class="fa fa-plus"></i>Add Asset</a> 
-          <!-- Add Asset Popup -->
-          <div class="collapse-div-adduser pop-div col-md-12 assetaddpop">
-          <div id="loading"></div>
-          <form:form id="addAsset_form"  name="addAsset_form"> 
-           <i class="fa fa-close close-div"></i>
-			  <div class="clearfix">
-            <div class="clearfix assetaddpop-ul col-md-6" id="categoryDiv">
-				<select class="chosen-select" id="category" name="category" onChange="assetCategory(this);" data-validation="required" field-name="Asset Category">
-				<option selected value="">-Select Category-</option>
-					<c:forEach var="option" items="${assetCategoriesList}">
-							<option value="${option.categoryName},${option.id}">${option.categoryName}</option>
-					</c:forEach>
-				</select>	
-            </div>
-            <div class="clearfix assetaddpop-ul col-md-6" id="workingStatusDiv">
-				<select class="chosen-select" id="workingStatus" name="workingStatus" data-validation="required" field-name="Working Status">
-					<option selected value="">-Select Working Status-</option>
-					<option value="Working">Working</option>
-					<option value="Out Of Service">Out Of Service</option>
-				</select>	
-            </div>
-            </div>
-			  <div class="clearfix mb10"></div>
-         
-            <div class="clearfix">
-              <div class="form-horizontal clearfix">
-                <div class="clearfix mb10">
-                  <div class="col-md-6" id="snoDiv">
-                    <input type="text" class="form-control input-sm" id="sno" name="sno" placeholder="Serial Number *" field-name="Sl No" data-validation="required validate_Space validate_length length2-200">
-                  </div>
-                  <div class="col-md-6" id="makeDiv">
-                    <input type="text" class="form-control input-sm" id="make" name="make" placeholder="Make" data-validation-optional="true" data-validation="validate_Space validate_length length2-100">
-                  </div>
-                </div>
-                <div class="clearfix">
-                  <div class="col-md-4 mb10" id="modelDiv">
-                    <input type="text" class="form-control input-sm" id="model" name="model" placeholder="Model"  data-validation-optional="true" data-validation="validate_Space validate_length length2-100" >
-                  </div>
-                  <div class="col-md-4 mb10" id="nameDiv" style="display:none;">
-                    <input type="text" class="form-control input-sm" name="name" id="name" placeholder="Name" style="display: none;" data-validation-optional="true" data-validation="validate_Space validate_length length2-100">
-                  </div>
-                  <div class="col-md-4 mb10" id="memoryDiv">
-                    <input type="text" class="form-control input-sm" name="memory" id="memory" placeholder="Memory" style="display: none;" data-validation-optional="true" data-validation="validate_Space validate_length length2-50">
-                  </div>
-                  <div class="col-md-4 mb10" id="cpuDiv">
-                    <input type="text" class="form-control input-sm" name="cpu" id="cpu" placeholder="CPU" style="display: none;" data-validation-optional="true" data-validation="validate_Space validate_length length2-100">
-                  </div>
-                  <div class="col-md-4 mb10" id="harddiskDiv">
-                    <input type="text" class="form-control input-sm" name="harddisk" id="harddisk" placeholder="Hard Disk" style="display: none;" data-validation-optional="true" data-validation="validate_Space validate_length length2-100">
-                  </div>
-                  <div class="col-md-4 mb10" id="monitorDiv">
-                    <input type="text" class="form-control input-sm" id="monitor" name="monitor" placeholder="Monitor" style="display: none;" data-validation-optional="true" data-validation="validate_Space validate_length length2-100">
-                  </div>
-                </div>
-                <div class="clearfix mb10">
-                  <div class="col-md-6" id="attachmentDiv">
-                    <div class="input-group attachfile-error" >
-                      <label class="input-group-btn"> <b class="btn btn-primary" onchange="uploadFile();"><i class="fa fa-folder-open-o"></i>&nbsp;Browse File
-                        <input type="file" id="attachment"   style="display: none;" class="upload">
-                        </b> </label>
-                      <input type="text" class="form-control" name="abc" data-validation-optional="true"  readonly id="uploadFileAttachment" placeholder="Files are not selected...">
-                    </div>
-                  </div>
-                  <div class="col-md-6" id="descriptionDiv">
-                    <textarea class="form-control" rows="2" name="description" id="description" placeholder="Description" data-validation-optional="true" data-validation="validate_Space"></textarea>
-                  </div>
-                </div>
-                <!-- Shift A Fields -->
-                <div class="clearfix" id="shiftADetails" style="display: none;">
-                <div class="clearfix">
-                  <h4 class="col-md-12">Shift A</h4>
-                </div>
-                <div class="clearfix mb10">
-                  <div class="col-md-6" id="uploadFile-dskADiv">
-                    <select class="form-control chosen-select" id="shiftAEmp" name="shiftAEmp">
-                      <option selected value="">-Select Employee-</option>
-                      <c:forEach var="option" items="${employeesList}">
-					     <option value="${option.id}">${option.user.firstName} ${option.user.lastName}</option>
-					  </c:forEach>
-                    </select>
-                  </div>
-                  <div class="col-md-6" id="uploadFile-dskBDiv">
-                    <div class="input-group attachfile-error">
-                      <label class="input-group-btn"> <b class="btn btn-primary" onchange="uploadFileShiftA();"><i class="fa fa-folder-open-o"></i>&nbsp;Browse File
-                        <input type="file"id="uploadBtn-dskA"  style="display: none;" class="upload">
-                        </b> </label>
-                      <input type="text"  class="form-control" data-validation-optional="true"  name="shiftAAttachment" readonly id="uploadFileShiftA" placeholder="Files are not selected...">
-                    </div>
-                  </div>
-                </div>
-                </div>
-                <!-- Shift A Fields --> 
-                
-                <!-- Shift B Fields -->
-               <div class="clearfix" id="shiftBDetails" style="display: none;">
-                <div class="clearfix">
-                  <h4 class="col-md-12">Shift B</h4>
-                </div>
-                <div class="clearfix mb10">
-                  <div class="col-md-6">
-                    <select class="form-control chosen-select" id="shiftBEmp" name="shiftBEmp">
-                      <option selected value="">-Select Employee-</option>
-                      <c:forEach var="option" items="${employeesList}">
-					     <option value="${option.id}">${option.user.firstName} ${option.user.lastName}</option>
-					  </c:forEach>
-                    </select>
-                  </div>
-                  <div class="col-md-6">
-                    <div class="input-group attachfile-error">
-                      <label class="input-group-btn"> <b class="btn btn-primary" onchange="uploadFileShiftB();"><i class="fa fa-folder-open-o"></i>&nbsp;Browse File
-                         <input type="file" id="uploadBtn-dskB"  style="display: none;" class="upload">
-                        </b> </label>
-                      <input type="text"  class="form-control" data-validation-optional="true"  name="shiftBAttachment" readonly id="uploadFileShiftB" placeholder="Files are not selected...">
-                    </div>
-                  </div>
-                </div>
-                </div>
-                
-                <!-- Shift A Fields -->
-                <div class="clearfix mr">
-                  <div class="pull-right">
-                   <input type="button" value="Add" id="add_asset" onclick="storeAsset();" class="btn btn-sm btn-primary">
-                  </div>
-                </div>
-              </div>
-            </div>
-            </form:form>
-          </div>
-        </li>
-        <li>
-        <a href="<c:url value='${appPath}/assetCategory'/>" class=""><i class="fa fa-plus"></i>Categories</a>
-        </li>
-        <div class="clearfix"></div>
-      </ul>
+  
+ <div class="positionRelative reportHead clearfix">
+      <span class="pull-left refreIcon" id="advanceSearchDiv">
+      		<a href="javascript:void(0)" class="refeIcon" id="resetVendor" title="Refresh" onclick="resetAssetFilter();"></a>
+      </span>
+      
+      <ul class="pull-right list-unstyled list-inline">
+      
+            <li>
+				<a class="action newAdBtn mr5" onclick="getActions();" href="javascript:void(0)">+ Add <i class="fa fa-caret-down"></i></a>
+				<div class="action-pop">
+					<span> 
+					        <sec:authorize access="hasRole('ROLE_ADD_ASSET')"> 
+					        	<a href="javascript:void(0)"  onClick="addAssetManagementPopup();">Add Asset</a> 
+					        </sec:authorize>
+					        <sec:authorize access="hasRole('ROLE_ADD_ASSET_CATEGORY')"> 
+					        	<a href="<c:url value='${appPath}/assetCategory'/>" class="">Categories List</a>
+					        </sec:authorize>	
+					        
+					        <a href="<c:url value='${appPath}/uploadassetManagement'/>">Import</a>	  
+					</span>
+				</div>
+			</li>
+				<li id="vendorFiletPopup"><a href="javascript:void(0)" class="filtIcon" title="Filters" onclick="openAssetFilterPop();"></a></li>
+				
+				<%-- <li><a href="javascript:void(0)" class="overIcon" title="Actions" onclick="newActions();"></a>
+					<div class="newActPop">
+						<span>
+		           	   		<a href="<c:url value='${appPath}/uploadassetManagement'/>">Import</a>
+						</span>
+					</div>
+				</li> --%>
+		    
+		  <li class=""><input type="text" class="repSearchBar" placeholder='Search' id='assetDataTableSearch'/><span class="repSearchIcon" onClick="getDynamicAssetList();"></span></li>
+        </ul>
+      </div> 
+  
+      
       <div class="clearfix"></div>
       
     <!-- list Table -->
     <div class="require_wrap_table table-wrap datatable_filter overflow_inherint">
     <div id= "assetManagementLoderDiv"></div>
     <table id="assetManagementList" class="display" cellspacing="0" width="100%"> </table>
-      
+    <div id="dynamicAssetManagementList"></div>
     </div>
     
     <!-- list Table -->
-  </div></div>
   <div class="side_mask">
     <div class="proj_close"></div>
   </div>
@@ -225,17 +106,99 @@ $(document).ready(function(){
   </div>
   </section>
   
+   <div class="comMask"></div>
+  		<div class="modal assetManagementPopup" id="assetManagementPopup" style="display: none;">
+ 		<jsp:include page="addAssetPopup.jsp"></jsp:include> 
+ 	</div>
+  <script>
+  function addAndEditAssetAssign(assetUUID){
+	  $.ajax({
+	    	type: "POST",
+	    	url: sourceleadUrl+"/addAndEditAssetAssign?&assetUUID="+assetUUID, 
+	        success: function(result) {
+	        	$(".assetManagementPopup, .comMask").fadeIn();
+	        	$('#assetManagementPopup').empty();
+	        	$('#assetManagementPopup').append(result);
+// 	        	issueDateScript();
+	        	populateDropdownValues();
+	        	<c:forEach var="section" items="${sourceleadSectionList}" varStatus="sectionOrder">
+	  		 	 var sectionId = '${section.id}';
+	  		  	 getCustomDependentField(sectionId);
+	  		 	</c:forEach>
+		        
+	        },
+	    }); 
+  }
+  </script>
   
+   
+  <script>
+  function issueDateScript1(){
+  var locationDate ='${SourceLeadWeb_orgLocations.dateFormat}'; 
+  var finalDateFormat = getJSDateFormat(locationDate);
+  $('#issueDate').datepicker({
+      dateFormat: finalDateFormat,
+      changeMonth: true,
+  	  changeYear: true, 
+  });
+  $('#purchaseDate').datepicker({
+      dateFormat: finalDateFormat,
+      changeMonth: true,
+  	  changeYear: true, 
+  });
+  $('#depreciationDate').datepicker({
+      dateFormat: finalDateFormat,
+      changeMonth: true,
+  	  changeYear: true, 
+  });
+  
+  
+  <c:forEach var="shift" items="${siftList}" varStatus="shiftOrder">
+	     $('#assignedOn${shiftOrder.index}').datepicker({
+		      dateFormat: finalDateFormat,
+		      changeMonth: true,
+		  	  changeYear: true, 
+		  	  onSelect : function(selected) {
+				var dt = $(this).datepicker('getDate', '+1d');
+				dt.setDate(dt.getDate() + 1);
+				$('#returnedOn${shiftOrder.index}').datepicker("option", "minDate", dt);
+			}
+		  });
+		  
+		  $('#returnedOn${shiftOrder.index}').datepicker({
+		      dateFormat: finalDateFormat,
+		      changeMonth: true,
+		  	  changeYear: true, 
+		  	  onSelect : function(selected) {
+				var dt = $(this).datepicker('getDate', '+1d');
+				dt.setDate(dt.getDate() + 1);
+				$('#assignedOn${shiftOrder.index}').datepicker("option", "minDate", dt);
+			}
+		  });
+     
+	  
+  </c:forEach>
+  }
+  function clearDate(){
+  	$("#issueDate").val("");
+  	};
+  function clearPurchaseDate(){
+	  $("#purchaseDate").val("");
+  };
+  function clearDepreciationDate(){
+	  $("#depreciationDate").val("");
+  };
+</script>
   
   <script type="text/javascript">
   function storeAsset() {
-var validationSettings = {
-        errorMessagePosition : 'element',
-       borderColorOnError : '',
-		scrollToTopOnError : true,
-		dateFormat : 'yyyy/mm/dd' 
-   };  
-			if ($('#addAsset_form').validate(false, validationSettings)){
+			var validationSettings = {
+			        errorMessagePosition : 'element',
+			       borderColorOnError : '',
+					scrollToTopOnError : true,
+					dateFormat : 'yyyy/mm/dd' 
+			   };  
+			   if ($('#addAsset_form').validate(false, validationSettings)){
         	        var form = $('#addAsset_form')[0];
 	           		var formData = new FormData(form);
 	           		
@@ -250,9 +213,19 @@ var validationSettings = {
 		        	    dataType : 'json',
 	     		    	 url: sourceleadUrl+"/addCategoryAssets?"+tokenParamName+"="+tokenValue+"", 
 	     		        success: function(result) {
-	     		        	if(result == 'home'){
-	     	   	        	    location.replace(sourceleadUrl+ "/assetManagement");
-	     		        	}
+	     		        	
+	     		       	if (result && result.response === "INVALID_DATA") {
+						    showError(result.responseMessage);
+						    $("#loading").hide();
+						} else if (result.response === "AWKWARD") {
+						    location.href = "/errorPage";
+						} else if (result.response === "SUCCESS") {
+							location.replace(sourceleadUrl+ "/assetManagement");
+						} else if (result.indexOf('Sign In') !== -1) {
+							location.replace(sourceleadUrl);
+						} else {
+						    showError("Operation failed, please try again");
+						}
 	     			        
 	     		        },
 	     		    }); 
@@ -269,7 +242,6 @@ var validationSettings = {
      		$("#addAsset_form").validateOnBlur(false, validationSettings);
      	});
 </script> 
-
 
 <script type="text/javascript">
 (function ($) {
@@ -299,131 +271,360 @@ var validationSettings = {
 	  $("#addAsset_form").find("#category").trigger("chosen:updated");
 	  $("#addAsset_form").find("#workingStatus").val("");
 	  $("#addAsset_form").find("#workingStatus").trigger("chosen:updated");
-	  $("#addAsset_form").find("#shiftAEmp").val("");
-	  $("#addAsset_form").find("#shiftAEmp").trigger("chosen:updated");
-	  $("#addAsset_form").find("#shiftBEmp").val("");
-	  $("#addAsset_form").find("#shiftBEmp").trigger("chosen:updated");
 	  $("addAsset_form").validate().resetForm();
   }
   
   </script>
   
-  <script>
-	function getAssetList(){
-		var categoryIds = [];
-		$('input:checkbox[name=categoryId]:checked').each(function() 
-	    {
-			categoryIds.push($(this).val());
-	    });
-		
-		var workingStatus = [];
-		$('input:checkbox[name=workingStatus]:checked').each(function() 
-	    {
-			workingStatus.push($(this).val());
-	    });
-		$("#assetManagementLoderDiv").attr('style','position:absolute; width:100%; height:350px; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
-		  $.ajax({
-			   	type: "POST",
-			    url: sourceleadUrl+"/getAssetList?"+tokenParamName+"="+tokenValue+"&categoryIds="+categoryIds+"&workingStatus="+workingStatus, 	   
-	   		    success: function(data) {
-	   		    	
-	   		    	
-	   		    	var json = JSON.parse(data);
-	   	        	var result = "";
-	   	        	result = result +'<thead>';
-	   	        	result = result +'<tr>';
-	   	        	result = result +'	<th>S.No</th>';
-	   	        	result = result +'  <th>Category</th>';
-	   	        	result = result +'  <th>Model</th>';
-	   	        	result = result +'  <th>Shift-A</th>';
-	   	        	result = result +'  <th>Shift-B</th>';
-	   	        	result = result +' <th>Status</th>';
-	   	        	result = result +' <th>Action</th>';
-	   	        	result = result +'</tr>';
-	   	        	result = result +'	</thead>';
-	   	        	result = result +'<tbody>';
-	   	        	
-		   	     	for (var i=0; i<json.length; i++)
-	   				{  
-		   	     	    var shiftAEmpName = "--- ";
-					    var shiftBEmpName = "--- ";
-					    var model = "---";
-					    var selected1 = '';
-	   					var selected2 = '';
-					    
-					    var report = json[i];
-					    
-					    if (report.shiftAEmpName != null && report.shiftAEmpName != '' && report.shiftAEmpName != 'undefined') {
-							shiftAEmpName = report.shiftAEmpName;
-						}
-						
-						if (report.shiftBEmpName != null && report.shiftBEmpName != '' && report.shiftBEmpName != 'undefined') {
-							shiftBEmpName = report.shiftBEmpName;
-						}
-						
-						if (report.model != null && report.model != '' && report.model != 'undefined') {
-							model = report.model;
-						}
-						
-						if(report.workingStatus == 'Working'){
-							selected1 = 'selected';
-						} 
-					
-						if(report.workingStatus == 'Out Of Service'){
-							selected2 = 'selected';
-						} 
-
-						result = result+'<tr id="asset'+report.id+'">';
-			   	        result = result+'<td><a href="javascript:void(0)" class="tbldata-dotdot-sm">';
-					   	result = result+'<div class="proj_show" onclick="assetSideBar('+report.id+');" title="'+report.slno+'"> <span class="tbldata-dotdot-100">'+report.slno+'</span> <i class="fa fa-binoculars"></i> </div>';
-					   	result = result+'</a></td>';
-					   	result = result+'<td><div class="tbldata-dotdot-sm" title="'+report.categoryName+'">'+report.categoryName+'</div></td>';
-						result = result+'<td><div class="tbldata-dotdot-vsm" title="'+model+'">'+model+'</div></td>';
-					   	result = result+'<td><div class="tbldata-dotdot-vsm" title="'+shiftAEmpName+'" >'+shiftAEmpName+'</div></td>';
-					   	result = result+'<td><div class="tbldata-dotdot-vsm" title="'+shiftBEmpName+'">'+shiftBEmpName+'</div></td>';
-					   	
-					   	result = result + ' <td><div class="tbldata-dotdot-100">';
-						result = result + ' <select id="workingStatus'+report.id+'" name="workingStatus" onChange="updateWorkingStatus(\''+report.id+'\');">';
-						result = result + ' <option '+selected1+'>Working</option>';
-						result = result + ' <option '+selected2+'>Out Of Service</option>';
-						result = result + ' </select>';
-						result = result + ' </div></td>';
-					   	
-					   	result = result+'<td><div class="tblminwidth-50"><i class="fa fa-trash-o text-danger" onClick="deleteAsset(\''+report.id+'\')";></i></div></td>';
-			   	        result = result +'</tr>';
-	   				}
-		   	     	
-	   	        	result = result +'</tbody>';
-	   	    	    $("#assetManagementList").empty();  
-	   	    	    $("#assetManagementList").append(result);
-	   	    	    $("#assetManagementLoderDiv").empty();
-	   	    	    $("#assetManagementLoderDiv").removeAttr('style');
-	   	    	    assetPagination();
-	   	    	     
-	   	    	    
-	   		    	
-	   		    }
-		  });
-	}
-</script>
-
-
 <script>
-function assetPagination(){ 
-    $('#assetManagementList').DataTable( { 
-    	"scrollCollapse": false,
-    	"lengthMenu": [[10, 15, 20, -1], [10, 15, 20, "All"]],
-    	"bLengthChange": true,
-    	"bDestroy": true,
-    	"ordering": false,
-    	"oLanguage": {
-     		"sSearch": "",
-     		 "sZeroRecords": "", "sEmptyTable": ""
-     	}
-    })
+function closeAssetFilterPop(){
+	$("#assetFilterId").hide();
+	$(".advancedsearch-mask").fadeOut();
+}
+function openAssetFilterPop(){
+	 $("#assetFilterId").toggle();
+	 $(".advancedsearch-mask").fadeIn();
 }
 
 </script>
+     <div class="advancedsearch-mask"></div>
+          <div class="cand-advsrch-popup advancedsearch-popup" id="assetFilterId">
+				<h5 class="headerAdsrch">Filter Search
+					<a href="javascript:void(0)" class="close-div" onClick="closeAssetFilterPop()"><i
+						class="fa fa-close"></i></a>
+				</h5>
+				<div class="addInner">
+					<div class="row">
+						<div class="col-md-3">
+						<div class="row">
+						<div class="col-md-12 mb">
+							<label><strong>Working Status</strong></label>
+							 <div class="clearfix">
+								<ul class="list-unstyled" id="workStatusFilter">
+				                    <li class="checkBox positionRelative"><input id="c1" type="checkbox"  name="workingStatus"  value ="Working" ><label>Working</label></li>
+                                    <li class="checkBox positionRelative"><input id="c2" type="checkbox"  name="workingStatus"  value ="Out Of Service" ><label>Out Of Service</label></li>
+		                        </ul>
+							 </div>
+						</div> 
+						 </div>
+						</div>
+						
+						<div class="col-md-3 mb positionRelative">
+							<div class="clearfix dynamic_search filterDynamicsearch">
+								<input type="text" id="myCategoryInput" onkeyup="myCategoryFunction()" placeholder="Category" title="Type in a clients">
+								<span class="cursorPointer" title="Search"><i class="fa fa-search"></i></span>
+							</div>
+							 <div class="clearfix filterSearch-ul">
+								<ul class="list-unstyled positionRelative filterSearch mt5" id="myCategoryUL">
+								    <c:forEach var="report" items="${assetCategoriesList}">
+									     <li class="checkBox positionRelative"><input  id="category${report.id}" name="categoryId" value ="${report.id}"  type="checkbox"><label>${report.categoryName}</label></li>
+									</c:forEach>
+								</ul>
+							 </div> 
+					   </div> 
+					   
+					   <div class="col-md-3 mb positionRelative">
+							<div class="clearfix dynamic_search filterDynamicsearch">
+								<input type="text" id="myShiftInput" onkeyup="myShiftFunction()" placeholder="Availability" title="Type in a clients">
+								<span class="cursorPointer" title="Search"><i class="fa fa-search"></i></span>
+							</div>
+							 <div class="clearfix filterSearch-ul">
+								<ul class="list-unstyled positionRelative filterSearch mt5" id="myShiftUL">
+								    <c:forEach var="shift" items="${siftList}">
+									     <li class="checkBox positionRelative"><input  id="shift${shift.id}" name="shiftId" value ="${shift.id}"  type="checkbox"><label>${shift.shiftName}</label></li>
+									</c:forEach>
+								</ul>
+							 </div> 
+					   </div>
+					   
+					   <div class="col-md-3 mb positionRelative">
+							<div class="clearfix dynamic_search filterDynamicsearch">
+								<input type="text" id="myTagsInput" onkeyup="myTagsFunction()" placeholder="Tags" title="Type in a tags">
+								<span class="cursorPointer" title="Search"><i class="fa fa-search"></i></span>
+							</div>
+							 <div class="clearfix filterSearch-ul">
+								<ul class="list-unstyled positionRelative filterSearch mt5" id="myTagsUL">
+								    <c:forEach var="tag" items="${assetTagsList}">
+									     <li class="checkBox positionRelative"><input  name="tags" value ="${tag}"  type="checkbox"><label>${tag}</label></li>
+									</c:forEach>
+								</ul>
+							 </div> 
+					   </div> 
+					   
+						
+					</div>
+					</div>
+					<div class="clearfix advancedsearch-footer">
+						<div class="pull-right mr">
+							<input type="button" value="Apply" id="search_requiremet" onclick="closeAssetFilterPop();getDynamicAssetList();" class="btn btn-sm btn-success" />
+							<input type="button" value="Reset" id="clear_search" onclick="resetAssetFilter();" class="btn btn-sm btn-primary" />
+						</div>
+					</div>
+				</div>
+<!-- ========================================== Dynamic pageLoading in AssetManegment written By Laxman  Start============================== -->
+<script>
+function resetAssetFilter(){
+	$("ul#workStatusFilter > li input:checkbox").prop("checked",false);
+	$("ul#myCategoryUL > li input:checkbox").prop("checked",false);
+	$("ul#myShiftUL > li input:checkbox").prop("checked",false);
+	$("ul#myTagsUL > li input:checkbox").prop("checked",false);
+	$("#assetDataTableSearch").val('');
+	getDynamicAssetList();
+	
+}
+
+function myCategoryFunction() {
+    var input, filter, ul, li, a, i;
+    input = document.getElementById("myCategoryInput");
+    filter = input.value.toUpperCase();
+    ul = document.getElementById("myCategoryUL");
+    li = ul.getElementsByTagName("li");
+    for (i = 0; i < li.length; i++) {
+        a = li[i].getElementsByTagName("label")[0];
+        if (a.innerHTML.toUpperCase().indexOf(filter) > -1) {
+            li[i].style.display = "";
+        } else {
+            li[i].style.display = "none";
+
+        }
+    }
+}
+
+function myShiftFunction() {
+    var input, filter, ul, li, a, i;
+    input = document.getElementById("myShiftInput");
+    filter = input.value.toUpperCase();
+    ul = document.getElementById("myShiftUL");
+    li = ul.getElementsByTagName("li");
+    for (i = 0; i < li.length; i++) {
+        a = li[i].getElementsByTagName("label")[0];
+        if (a.innerHTML.toUpperCase().indexOf(filter) > -1) {
+            li[i].style.display = "";
+        } else {
+            li[i].style.display = "none";
+
+        }
+    }
+}
+
+
+function myTagsFunction() {
+    var input, filter, ul, li, a, i;
+    input = document.getElementById("myTagsInput");
+    filter = input.value.toUpperCase();
+    ul = document.getElementById("myTagsUL");
+    li = ul.getElementsByTagName("li");
+    for (i = 0; i < li.length; i++) {
+        a = li[i].getElementsByTagName("label")[0];
+        if (a.innerHTML.toUpperCase().indexOf(filter) > -1) {
+            li[i].style.display = "";
+        } else {
+            li[i].style.display = "none";
+
+        }
+    }
+}
+
+
+function getDynamicAssetList(){
+	
+	var categoryIds = [];
+	$('input:checkbox[name=categoryId]:checked').each(function() 
+    {
+		categoryIds.push($(this).val());
+    });
+	
+	var shiftIds = [];
+	$('input:checkbox[name=shiftId]:checked').each(function() 
+    {
+		shiftIds.push($(this).val());
+    });
+	
+	var workingStatus = [];
+	$('input:checkbox[name=workingStatus]:checked').each(function() 
+    {
+		workingStatus.push($(this).val());
+    });
+	
+	var tags = [];
+	$('input:checkbox[name=tags]:checked').each(function() 
+    {
+		tags.push($(this).val());
+    });
+	
+	var searchValue = $("#assetDataTableSearch").val();
+	 searchValue = searchValue ? searchValue : "";
+	var url = sourceleadUrl	+"/getAssetDynamicList?searchValue="+searchValue+"&categoryIds="+categoryIds+"&workingStatus="+workingStatus+"&shiftIds="+shiftIds+"&tags="+tags;
+	prepareDynamicAssetList(url);	
+}
+function prepareDynamicAssetList(url){
+	var result = "";
+    result = result	+ '<div class="">';
+	result = result	+ '<div id="tasksLoadingImg"></div>';
+	result = result + '<table id="assetPagination" class="display" cellspacing="0" width="100%">';
+	result = result + '<thead>';
+	result = result + '<tr">';
+	result = result +'	<th>Serial Number</th>';
+   	result = result +'  <th>Category</th>';
+   	result = result +'  <th>Model</th>';
+	result = result +'  <th>issue Date</th>';
+	result = result +'  <th>MAC Address</th>';
+   	result = result +' <th>Status</th>';
+   	result = result +' <th>Action</th>';
+	result = result + '</tr>';
+	result = result + '</thead>';
+	result = result + '</table>';
+	result = result	+ '</div>';
+	$("#dynamicAssetManagementList").empty();  
+	$("#dynamicAssetManagementList").append(result);  
+	projectAssetPaginations(url);
+}
+function projectAssetPaginations(url){
+	var colIndex = 0;
+    $('#assetPagination').DataTable( { 
+	  "processing": true,
+      "serverSide": true,
+      "searching": false,
+      "ajax": $.fn.dataTable.pipeline( {
+          url: url,
+          method: 'POST',
+          pages: 10
+        }),
+        
+        "columnDefs": [{
+    	  	"targets": colIndex++,
+    	  	"data": "",
+    	  	"render": function(data, type, report) {
+    	  		var result = "";
+    	  	    result = result+'<td>';
+    	  	  '<sec:authorize access="hasAnyRole(\'ROLE_VIEW_ASSET_BASIC_DETAILS\',\'ROLE_VIEW_ASSET_ADDITIONAL_DETAILS\')">'; 
+	   	  	     result = result +"<a class='tbldata-dotdot-sm'><a href='<c:url value='/app/assetManagementSummary?assetUUID="+report.assetUUID+"'/>'><div class='proj_show tbldata-dotdot_140'><span class='pull-left' title='"+report.slno+"'>"+report.slno+"</span><i class='fa fa-binoculars'></i></div></a></a>";
+	   	  	  '</sec:authorize>';
+	   	  	  
+		   	   '<sec:authorize access="!hasAnyRole(\'ROLE_VIEW_ASSET_BASIC_DETAILS\',\'ROLE_VIEW_ASSET_ADDITIONAL_DETAILS\')">'; 
+	 	  	     result = result +"<div class='tbldata-dotdot_140'><span class='pull-left' title='"+report.slno+"'>"+report.slno+"</span></div>";
+	 	  	  '</sec:authorize>';
+	   	  	  
+			   	result = result+'</td>';
+	             return result;
+    	  	}
+        },{
+	  	  	"targets": colIndex++,
+		  	"data": "",
+		  	"render": function(data, type, report) {
+		  		var result = "";
+			   	result = result+'<td><div class="tbldata-dotdot" title="'+report.categoryName+'">'+report.categoryName+'</div></td>';
+
+	             return result;
+	  	      }
+	  		},{
+		  	  	"targets": colIndex++,
+			  	"data": "",
+			  	"render": function(data, type, report) {
+			  		var result = "";
+			  		if (report.model != null && report.model != '' && report.model != 'undefined') {
+						result = result+'<td><div class="tbldata-dotdot-vsm" title="'+report.model+'">'+report.model+'</div></td>';
+					}else{
+						result = result+'<td><div class="tbldata-dotdot-vsm" >--</div></td>';
+					}
+		           return result;
+		  	  }
+	  		},{
+		  	  	"targets": colIndex++,
+			  	"data": "",
+			  	"render": function(data, type, report) {
+			  		var result = "";
+			  		if (report.issueDateStr != null && report.issueDateStr != '' && report.issueDateStr != 'undefined') {
+						result = result+'<td><div class="tbldata-dotdot-vsm" title="'+report.issueDateStr+'">'+report.issueDateStr+'</div></td>';
+					}else{
+						result = result+'<td><div class="tbldata-dotdot-vsm" >--</div></td>';
+					}
+		           return result;
+		  	  }
+	  		},{
+		  	  	"targets": colIndex++,
+			  	"data": "",
+			  	"render": function(data, type, report) {
+			  		var result = "";
+			  		if (report.macAddress != null && report.macAddress != '' && report.macAddress != 'undefined') {
+						result = result+'<td><div class="tbldata-dotdot-vsm" title="'+report.macAddress+'">'+report.macAddress+'</div></td>';
+					}else{
+						result = result+'<td><div class="tbldata-dotdot-vsm" >--</div></td>';
+					}
+		           return result;
+		  	  }
+	  		},{
+		  	  	"targets": colIndex++,
+			  	"data": "",
+			  	"render": function(data, type, report) {
+			  		var result = "";
+			  		 var selected1 = '';
+	   				 var selected2 = '';
+			  		 if(report.workingStatus == 'Working'){
+						selected1 = 'selected';
+					 } 
+				
+					 if(report.workingStatus == 'Out Of Service'){
+						selected2 = 'selected';
+					 } 
+					
+			  	 	result = result + ' <td><div class="tblminwidth-150">';
+					result = result + ' <select id="workingStatus'+report.id+'" name="workingStatus" onChange="updateWorkingStatus(\''+report.id+'\');">';
+					result = result + ' <option '+selected1+'>Working</option>';
+					result = result + ' <option '+selected2+'>Out Of Service</option>';
+					result = result + ' </select>';
+					result = result + ' </div></td>';
+		           return result;
+		  	  }
+	  		},{
+		  	  	"targets": colIndex++,
+			  	"data": "",
+			  	"sortable": false,
+			  	"render": function(data, type, report) {
+			  		var result = "";
+				   	result = result+'<td><div class="tblminwidth-50">';
+				    '<sec:authorize access="hasRole(\'ROLE_EDIT_ASSET\')">' 
+				   			result = result+'<a class="glyphicon glyphicon-edit" title="Edit" onclick="addAndEditAssetAssign(\''+report.assetUUID+'\');"></a> ';
+				   	'</sec:authorize>';
+				   	
+				   	'<sec:authorize access="hasRole(\'ROLE_DELETE_ASSET\')">' 
+				   	   result = result+'<i class="glyphicon glyphicon-trash text-danger ml" onClick="deleteAsset(\''+report.assetUUID+'\')";></i>';
+				   	'</sec:authorize>';
+				   	
+				   	
+				   	result = result+'</div></td>';
+		           return result;
+		  	  }
+	  		} ],
+	    	"scrollCollapse": false,
+	    	"lengthMenu": [[10, 15, 20], [10, 15, 20]],
+	    	"bLengthChange": true,
+	    	"bDestroy": true,
+	    	"ordering": true,
+	    	"oLanguage": {
+	     		"sSearch": "",
+	     		 "sZeroRecords": "", "sEmptyTable": "", 
+	     		 "sProcessing": "<img src='/resources/images/loading.gif' style='width: 75px; height: 75px;'/>"
+	     }
+    } );
+    $("assetPagination").wrap("<div style='overflow-x: auto; overflow-y: hidden;'></div>"); 
+    $("input[type=search]").hide();
+    $("#assetDataTableSearch").keyup(function(e) {
+    	   if(e.which === 13) {
+    		   getDynamicAssetList();
+    	   }
+    	});
+}
+ 
+</script>
+
+
+
+
+
+
+
+<!-- ===================================================Dynamic pageLoading End ================================== -->
 
 <script>
 function updateWorkingStatus(assetId){
@@ -447,13 +648,13 @@ function updateWorkingStatus(assetId){
 </script>
 
 <script type="text/javascript">
-function deleteAsset(assetId){
+function deleteAsset(assetUUID){
 	var result = "";
 	result = result +"	<div class='project_inn_mask'></div>";
 	result = result +"	   <div id='remove_user_pop' class='remove_user_pop remove_user_pop_a'>";
-	result = result +"		<p>Are you sure ?</p>";
+	result = result +"		<p>Are you sure delete Asset?</p>";
 	result = result +"		<div>&nbsp;&nbsp;&nbsp;</div>";
-	result = result +"		<b href='javascript:void(0)'><input type='button' value='Ok' onclick='removeAssetManagement("+assetId+");'><input class='u_can_color' type='button'  value='Cancel' onClick='cancel();'></b>";
+	result = result +"		<b href='javascript:void(0)'><input type='button' value='Ok' onclick='removeAssetManagement(\""+assetUUID+"\");'><input class='u_can_color' type='button'  value='Cancel' onClick='cancel();'></b>";
 	result = result +"	</div>";
 	$("#popUp").append(result);
 	$("#remove_user_pop").slideDown(200);
@@ -471,20 +672,31 @@ function cancel(){
 <div id="popUp"></div>
 
 <script>
-function removeAssetManagement(assetId){
+function removeAssetManagement(assetUUID){
 	 $("#popUp").empty();
 	 $(".project_inn_mask").fadeOut(200);
 	
-	 $("#asset"+assetId).empty();
-	 $("#asset"+assetId).html("<td colspan='7'  id='loading"+assetId+"'></td>");
-	 $("#loading"+assetId).attr('style',' height:40px; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/linear-loader.gif"); background-position:center; background-repeat:no-repeat;');
+	 $("#asset"+assetUUID).empty();
+	 $("#asset"+assetUUID).html("<td colspan='7'  id='loading"+assetUUID+"'></td>");
+	 $("#loading"+assetUUID).attr('style',' height:40px; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/linear-loader.gif"); background-position:center; background-repeat:no-repeat;');
 	
 	 $.ajax({
 	   	type: "POST",
-	    url: sourceleadUrl+"/removeAssetManagement?"+tokenParamName+"="+tokenValue+"&assetId="+assetId,	    	   
-	    success: function(data) {
-	    	 var table = $('#assetManagementList').DataTable();
-  		     table.row("#asset"+assetId).remove().draw( false );
+	    url: sourceleadUrl+"/removeAssetManagement?"+tokenParamName+"="+tokenValue+"&assetUUID="+assetUUID,	    	   
+	    success: function(result) {
+  			if (result && result.response === "INVALID_DATA") {
+			    showError(result.responseMessage);
+			} else if (result.response === "AWKWARD") {
+			    location.href = "/errorPage";
+			} else if (result.response === "SUCCESS") {
+				location.replace(sourceleadUrl + "/assetManagement");
+				/*  var table = $('#assetManagementList').DataTable();
+	  		     table.row("#asset"+assetId).remove().draw( false );  */
+			} else if (result.indexOf('Sign In') !== -1) {
+				location.replace(sourceleadUrl);
+			} else {
+			    showError("Operation failed, please try again");
+			}
 	    }
    });
 }
@@ -495,7 +707,7 @@ function removeAssetManagement(assetId){
 		    $(".clients_side_wrap").addClass("clients_side_wrap_active");
 		    $(".side_mask").fadeIn(200);
 			$("body").css('overflow-y', 'hidden');
-			assetDetails(assetId);
+// 			assetDetails(assetId);
  }
 </script> 
   
@@ -503,80 +715,45 @@ function removeAssetManagement(assetId){
    <script>
   function assetCategory(category){
 	  var selectedCategory = category.value;
-	  if(selectedCategory){
-		  var  assestCategory = selectedCategory.split(",");
-		
-		   if(assestCategory[0] == 'Desktop'){
-			  document.getElementById("monitor").style.display="";
+	    if(selectedCategory == '2'){
+			  document.getElementById("monitorDiv").style.display="";
 			  document.getElementById("name").style.display="";
-			  document.getElementById("memory").style.display="";
-			  document.getElementById("cpu").style.display="";
-			  document.getElementById("harddisk").style.display="";
-			  document.getElementById("shiftADetails").style.display="";
-			  document.getElementById("shiftBDetails").style.display="";
+			  document.getElementById("memoryDiv").style.display="";
+			  document.getElementById("cpuDiv").style.display="";
+			  document.getElementById("harddiskDiv").style.display="";
 			  
-		  }else if((assestCategory[0] != 'Desktop' && assestCategory[0] == 'Laptop') || category == 'Laptop'){
-			  document.getElementById("monitor").style.display="none";
+		  }else if((selectedCategory != 'Desktop' && selectedCategory == '1') || category == '1'){
+			  document.getElementById("monitorDiv").style.display="none";
 			  document.getElementById("name").style.display="";
-			  document.getElementById("memory").style.display="";
-			  document.getElementById("cpu").style.display="";
-			  document.getElementById("harddisk").style.display="";
-			  document.getElementById("shiftADetails").style.display="";
-			  document.getElementById("shiftBDetails").style.display="";
+			  document.getElementById("memoryDiv").style.display="";
+			  document.getElementById("cpuDiv").style.display="";
+			  document.getElementById("harddiskDiv").style.display="";
 			  
 			  $("#monitor").val('');
 		  }else{
-			  document.getElementById("monitor").style.display="none";
-			  document.getElementById("memory").style.display="none";
-			  document.getElementById("cpu").style.display="none";
-			  document.getElementById("harddisk").style.display="none";
-			  document.getElementById("shiftADetails").style.display="";
-			  document.getElementById("shiftBDetails").style.display="";
+			  document.getElementById("monitorDiv").style.display="none";
+			  document.getElementById("memoryDiv").style.display="none";
+			  document.getElementById("cpuDiv").style.display="none";
+			  document.getElementById("harddiskDiv").style.display="none";
 			  $("#monitor").val('');
-			  $("#name").val('');
 			  $("#memory").val('');
 			  $("#cpu").val('');
 			  $("#harddisk").val('');
 			 
 		  } 
-	  }
   }
   </script>
   
   
   <script>
   function loadCategory(){
-	  document.getElementById("monitor").style.display="none";
-	  document.getElementById("name").style.display="";
-	  document.getElementById("memory").style.display="";
-	  document.getElementById("cpu").style.display="";
-	  document.getElementById("harddisk").style.display="";
-	  document.getElementById("harddisk").style.display="";
-	  document.getElementById("shiftADetails").style.display="";
-	  document.getElementById("shiftBDetails").style.display="";
+	  document.getElementById("monitorDiv").style.display="none";
+	  document.getElementById("memoryDiv").style.display="";
+	  document.getElementById("cpuDiv").style.display="";
+	  document.getElementById("harddiskDiv").style.display="";
   }
   </script>
-  
-  
-  
-   <!-- <script> 
-	   $('#laptop, #desktop, #others').addClass('asstmake');
-		  $('#laptop').removeClass('asstmake');
-	 function myFunction(local){
-		 if(local.value == 'desktop'){
-			$('#desktop').removeClass('asstmake');
-			$('#laptop, #others').addClass('asstmake');
-			}
-	     if(local.value == 'others'){  
-			$('#others').removeClass('asstmake');
-			$('#laptop, #desktop').addClass('asstmake');
-		 }
-		 if(local.value === 'laptop'){
-			$('#laptop').removeClass('asstmake');
-			$('#desktop, #others').addClass('asstmake');
-		 }
-	 };    
-   </script> -->
+   
   <script>
 	  $('#laptop-edit, #desktop-edit, #others-edit').addClass('asstmake');
 		  $('#laptop-edit').removeClass('asstmake');
@@ -780,14 +957,6 @@ $(document).ready(function(){
                 });
             });
         </script>
-  <!-- <div class="theme-color"> <span class="icon-theme" title="click here"><i class="fa fa-gears"></i></span>
-    <ul class="list-unstyled">
-      <li><a href="#" class="" id="btn1"><span class="dark-blue"></span><span class="light-grey"></span></a></li>
-      <li><a href="#" class="" id="btn2"><span class="flat-green"></span><span class="dark-purle"></span></a></li>
-      <li><a href="#" class="" id="btn3"><span class="hdr-blue"></span><span class="sidenav-blue"></span></a></li>
-    </ul>
-  </div> -->
-</div>
 <script>
 $(".addcon-pop").click(function(){
 	 $(".collapse-div-adduser").toggleClass("show-div");
@@ -800,29 +969,12 @@ $(".addcon-pop").click(function(){
  $(".addcon-pop, .adddoc-pop, .collapse-div-adduser, .collapse-div").click(function(e){
 	 e.stopPropagation();
  });
-
- 
-//upload file script -Desktop-shiftA
- document.getElementById("uploadBtn-dskA").onchange = function () {
- $('#uploadFileShiftA').val($(this).val().replace(/C:\\fakepath\\/i, ''))
- };
-
-//upload file script -Desktop-shiftB
- document.getElementById("uploadBtn-dskB").onchange = function () {
- $('#uploadFileShiftB').val($(this).val().replace(/C:\\fakepath\\/i, ''))
- };
- 
- document.getElementById("attachment").onchange = function () {
-	 $('#uploadFileAttachment').val($(this).val().replace(/C:\\fakepath\\/i, ''))
-  };
-	
-	</script>
+</script>
 
 
 
 <script type="text/javascript">
   function checkAttachment() {
-    
     var uploadedFile = document.getElementById('attachment').value;
     if(uploadedFile){
     	var sizeinbytes = document.getElementById('attachment').files[0].size;
@@ -875,36 +1027,6 @@ $(".addcon-pop").click(function(){
   };
 </script>
 
-
-<script type="text/javascript">
-  function checkShiftBAttachment() {
-    
-    var uploadedFile = document.getElementById('uploadBtn-dskB').value;
-    if(uploadedFile){
-    var sizeinbytes = document.getElementById('uploadBtn-dskB').files[0].size;
-    
-     if(sizeinbytes > 500000){
-    	 $("input#uploadBtn-dskB").after("<p class='jquery_form_error_message'>");
-     	   document.getElementById("uploadBtn-dskB").setAttribute('record-exist', 'yes');
-     	   document.getElementById("uploadBtn-dskB").setAttribute('record-exist-errorMsg',"Invalid file size. Should less than 500 kb.");
- 	  	 $("#addAsset_form").click(function() {
- 	 		if ($(this).validate(false, validationSettings)) {
- 	 		}
- 	 	});
-    	
-    }else{
-    	$('#uploadBtn-dskB').find('p.jquery_form_error_message').remove();
-    	$('input#uploadBtn-dskB').removeAttr( "class record-exist record-exist-errormsg");
-    	$('input#uploadBtn-dskB').attr('class','hidden upload');
-    }
-    }
-   
-  };
-</script>
-
-
-
-
 <script type="text/javascript">
         
         var validationSettings = {
@@ -917,19 +1039,83 @@ $(".addcon-pop").click(function(){
 <script>
 function uploadFile(){
 	fileUpload("attachment", "assetDocuments", "addAsset_form","attachmentUpload");
+	$('#uploadFileAttachment').val($('#attachment').val().replace(/C:\\fakepath\\/i, ''))
 }
 </script>
 
 <script>
-function uploadFileShiftA(){
-	fileUpload("uploadBtn-dskA", "assetDocuments", "addAsset_form","uploadBtndskAUpload");
+function setFilePath(shiftIndex){
+	$('#shiftFile'+shiftIndex).val($('#uploadBtn-dskA'+shiftIndex).val().replace(/C:\\fakepath\\/i, ''));
+}
+function uploadShiftFile(shiftIndex){
+	fileUpload("uploadBtn-dskA"+shiftIndex, "assetDocuments", "addAsset_form","assignAsset["+shiftIndex+"].fileInfo","","");
 }
 </script>
 
 <script>
-function uploadFileShiftB(){
-	fileUpload("uploadBtn-dskB", "assetDocuments", "addAsset_form","uploadBtndskBUpload");
+function closeassetManagementPopup() {
+	$(".assetManagementPopup, .comMask").fadeOut();
+	document.getElementById("addAsset_form").reset();
+	$(".selectpicker").selectpicker('refresh');
+}
+function addAssetManagementPopup() {
+	$(".assetManagementPopup, .comMask").fadeIn();
+	addAndEditAssetAssign('');
 }
 </script>
-<jsp:include page="assetManagementDetails.jsp" />
+
+<!-- =============================================================================== -->
+
+
+<script>
+function deleteDocument(assetId,url){
+	document.getElementById("normalUploadFile").style.display="inline-table";
+	document.getElementById("dbUploadFile").style.display="none";
+	 $.ajax({
+   	  type: "POST",
+      url: sourceleadUrl+"/deleteAssetDocument?"+tokenParamName+"="+tokenValue+"&assetId="+assetId+"&url="+url, 	   
+ 	  success: function(data) {  },
+	   });	
+	}
+</script>	
+
+<script>
+function uploadFileAttachment(){
+	fileUpload("fileAttachment", "assetDocuments", "addAsset_form","attachmentUpload");
+	$('#dbUploadFileAttachment').val($('#fileAttachment').val().replace(/C:\\fakepath\\/i, ''))
+}
+
+</script>
+
+
+<script>
+function getActions(){
+	$(".action-pop").slideToggle(200);
+	$(".newActPop").slideUp(200);
+}	
+$("html").click(function(){
+	$(".action-pop").slideUp(200);
+});
+$(".action, .action-pop").click(function(e){
+ 	e.stopPropagation();
+});	
+
+
+function newActions(){
+	$(".newActPop").slideToggle(200);
+	$(".action-pop").slideUp(200);
+}
+$("html").click(function(){
+	$(".newActPop").slideUp(200);
+});
+$(".overIcon, .newActPop").click(function(e){
+ 	e.stopPropagation();
+});	
+
+
+</script>
+
+
+<%-- <jsp:include page="assetManagementDetails.jsp" />
+<jsp:include page="assetManagementSummary.jsp" /> --%>
 <jsp:include page="../masterFooter.jsp" />

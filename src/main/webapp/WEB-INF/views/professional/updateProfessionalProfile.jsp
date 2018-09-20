@@ -1,5 +1,3 @@
-<jsp:include page="../masterHeader.jsp" />
-<jsp:include page="../masterSideNav.jsp" />
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <%@taglib uri="http://www.springframework.org/tags/form" prefix="form"%>
 
@@ -9,13 +7,16 @@
     margin-bottom: 100px;
 }
 </style>
-<script> 
+ <!--  <script> 
 $(document).ready(function(){
+	 var loginUserRole = '${SourceLeadWeb_loginUserRole}';
+	
+	 if(loginUserRole == 'ROLE_CROWDSOURCING_PROFESSIONAL' || loginUserRole == 'ROLE_CROWDSOURCING_RECRUITER'){
 	addCandidate();
+	 }
 	//getProfessionalInfo();
 });
-</script>
-
+</script>   -->
 <div class="addcandidate-popup">
 			<div class="row">
                   <div class="col-md-offset-2 col-md-8">
@@ -61,7 +62,7 @@ $(document).ready(function(){
 	      $('.addcandidate-popup').fadeOut(200);
 	      $('.pop_mask').fadeOut(200);
 	      
-	      var loginUserRole = '${SourceLeadWeb_loginUserRole}';
+	      /*    var loginUserRole = '${SourceLeadWeb_loginUserRole}';
 	     
 	      if(loginUserRole == 'ROLE_CROWDSOURCING_PROFESSIONAL'){
 	      	location.replace(sourceleadUrl+"/professionalDashboard");
@@ -69,14 +70,14 @@ $(document).ready(function(){
 	      else if(loginUserRole == 'ROLE_CROWDSOURCING_RECRUITER'){
 	      	location.replace(sourceleadUrl+"/recruiterDashboard");
 	      }
-	      else{
+	      /*  else{
 	      	var orgLocationId = '${SourceLeadWeb_orgLocationId}';
 	      	location.replace(sourceleadUrl+"/dashboard/"+orgLocationId);
-	      }
+	      } */
     }
 </script>
 
-<section class="content-wraper">
+<!-- <section class="content-wraper">
         
      <section class="content-header clearfix">
       <div class="pull-left">
@@ -84,7 +85,6 @@ $(document).ready(function(){
       </div>
     </section>
  
-</section>
+</section> -->
 
 
-<jsp:include page="../masterFooter.jsp" />

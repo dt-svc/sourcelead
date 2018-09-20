@@ -25,6 +25,9 @@ float:none;
 .addUser-org {
     overflow-x: auto;
 }
+.mrTop {
+    margin: 3px 4px 0px 0px !important;
+}
 
 #uploadFileGroup p.jquery_form_error_message{
 	position: absolute;
@@ -94,8 +97,13 @@ function clientContracts(orgRelationId){
 	    result = result + '</li>';
 	    
 	    result = result + '<li>';
-	    result = result + '<input type="checkbox" value="WAITING_FOR_APPROVAL" name="contractStatus" id="contractStatus" onclick="clientContractsList('+orgRelationId+');" >';
+	    result = result + '<input type="checkbox" value="WAITING_FOR_APPROVER" name="contractStatus" id="contractStatus" onclick="clientContractsList('+orgRelationId+');" >';
 	    result = result + '<label class="paddingLeft" for="onboard1">Waiting For Approval <b class="badge" id="WFACount">0</b></label>';
+	    result = result + '</li>';
+	    
+	    result = result + '<li>';
+	    result = result + '<input type="checkbox" value="WAITING_TO_SEND" name="contractStatus" id="contractStatus" onclick="clientContractsList('+orgRelationId+');" >';
+	    result = result + '<label class="paddingLeft" for="onboard1">Waiting To Send <b class="badge" id="WTOSCount">0</b></label>';
 	    result = result + '</li>';
 	    
 	    result = result + '<li>';
@@ -286,19 +294,21 @@ function clientContractsList(orgRelationId){
 		                		         opt = opt + '<div class="tblminwidth-75">';
 		                		     		  if(output.templateSubmissionStatus == "WAITING_FOR_APPROVER"){
 		                		     			 if('${SourceLeadWeb_loginUserRole}' == "ROLE_ADMIN" || '${SourceLeadWeb_user.id}' == output.approverUserId){
-			                	     	        	 opt = opt +'<div class="pull-left CurDiv mr10" id="removeStatus'+output.id+'"><i class="fa fa-check" title="Approve" alt="Approve" onclick="approveContract('+output.id+',\'WAITING_FOR_APPROVER\','+orgRelationId+');"></i><i class="fa fa-times" title="Reject" alt="Rejected" onclick="approveContract('+output.id+',\'REJECTED\','+orgRelationId+');"></i></div>';
+			                	     	        	 opt = opt +'<a class="pull-left CurDiv" id="removeStatus'+output.id+'"><i class="fa fa-check" title="Approve" alt="Approve" onclick="approveContract('+output.id+',\'WAITING_FOR_APPROVER\','+orgRelationId+');"></i><i class="fa fa-times" title="Reject" alt="Rejected" onclick="approveContract('+output.id+',\'REJECTED\','+orgRelationId+');"></i></a>';
 			                	     	         }
 		                		     		  }
 		                		     		  
 		                		     		 '<sec:authorize access="hasAnyRole(\'ROLE_VIEW_CONTRACT\')">';
 		                		     		 if((output.typeOfContract == "New" || output.typeOfContract == "Custom") && (output.templateSubmissionStatus == "WAITING_TO_BE_SIGNED") && (null != output.parentContractId && '' != output.parentContractId && 'undefined' != output.parentContractId)){
-		                		     			 opt = opt + '<div class="tbldata-dotdot_80"><a href="#" title="Preview"><small class="fa fa-eye" onclick="previewNewContractPDF(\''+output.contractUUID+'\', \''+output.contractTitle+'\')"></small></a><a href="<c:url value="/app/docusign?contractUUID='+output.contractUUID+'" />" title="Signature"><i class="fa fa-pencil-square-o"></i></a></div>'; 
+		                		     			 opt = opt + '<a class="mrTop" href="#" title="Preview"><small class="fa fa-eye" onclick="previewNewContractPDF(\''+output.contractUUID+'\', \''+output.contractTitle+'\')"></small></a><a href="<c:url value="/app/docusign?contractUUID='+output.contractUUID+'" />" title="Signature"><i class="fa fa-pencil-square-o"></i></a>'; 
+		                			         }else if((output.typeOfContract == "New" || output.typeOfContract == "Custom") && (output.templateSubmissionStatus == "PENDING") && (null == output.parentContractId || '' == output.parentContractId || 'undefined' == output.parentContractId)){
+		                			        	 opt = opt + '<a class="mrTop" href="#" title="Preview"><small class="text-primary fa fa-eye" onclick="previewNewContractPDF(\''+output.contractUUID+'\', \''+output.contractTitle+'\')"></small></a>'; 
 		                			         }else if(output.typeOfContract == "Existing"){
-		                			        	 opt = opt + '<div class="tbldata-dotdot_80"><a href="#" title="Preview"><small class="fa fa-eye" onclick="previewContractPDF(\''+output.fileURL+'\', \''+output.fileName+'\', \''+output.fileType+'\')"></small></a></div>';
+		                			        	 opt = opt + '<a class="mrTop" href="#" title="Preview"><small class="fa fa-eye" onclick="viewFile(\''+output.fileURL+'\', \''+output.fileName+'\', \''+output.fileType+'\')"></small></a>';
 		                			         }else if(output.templateSubmissionStatus == "WAITING_TO_BE_VERIFY" || output.templateSubmissionStatus == "FINALIZED"){
-		                			        	 opt = opt + '<a href="#" title="Preview"><small class="fa fa-eye" onClick="viewFile(\''+output.templateFileURL+'\', \''+output.contractType+'\', \'application/pdf\')"></small></a>';
+		                			        	 opt = opt + '<a class="mrTop" href="#" title="Preview"><small class="fa fa-eye" onClick="viewFile(\''+output.templateFileURL+'\', \''+output.contractType+'\', \'application/pdf\')"></small></a>';
 		                			         }else{
-		                			        	 opt = opt + '<div class="tbldata-dotdot_80"><a href="#" title="Preview"><small class="fa fa-eye" onclick="previewNewContractPDF(\''+output.contractUUID+'\', \''+output.contractTitle+'\')"></small></a></div>';
+		                			        	 opt = opt + '<a class="mrTop" href="#" title="Preview"><small class="fa fa-eye" onclick="viewFile(\''+output.fileURL+'\', \''+output.fileName+'\', \''+output.fileType+'\')"></small></a>';
 		                			         }
 		                		     		'</sec:authorize>';
 		                		     		  
@@ -309,9 +319,9 @@ function clientContractsList(orgRelationId){
 		                	       			if(output.templateSubmissionStatus == "DRAFT" || output.templateSubmissionStatus == "WAITING_FOR_APPROVER" || output.templateSubmissionStatus == "REJECTED" ){
 		                	       				'<sec:authorize access="hasAnyRole(\'ROLE_EDIT_CONTRACT\')">';
 		                	     	     		if(output.typeOfContract == "New"){
-		                	     	     			opt = opt + '<div class="pull-left ml10"><a href="<c:url value="/app/addNewContract?contractUUID='+output.contractUUID+'" />" title="Edit"><i class="glyphicon glyphicon-pencil editAA text-danger"></i></a></div>';
+		                	     	     			opt = opt + '<a class="mrTop" href="<c:url value="/app/addNewContract?contractUUID='+output.contractUUID+'" />" title="Edit"><i class="glyphicon glyphicon-pencil editAA text-danger"></i></a>';
 		                	     	     		}else if(output.typeOfContract == "Custom"){
-		                	     	     			opt = opt + '<div class="pull-left"><a href="<c:url value="/app/addCustomContract?contractUUID='+output.contractUUID+'" />" title="Edit"><i class="glyphicon glyphicon-pencil editAA text-danger"></i></a></div>';
+		                	     	     			opt = opt + '<a href="<c:url value="/app/addCustomContract?contractUUID='+output.contractUUID+'" />" title="Edit"><i class="glyphicon glyphicon-pencil editAA text-danger"></i></a>';
 		                	     	     		}
 		                	       			'</sec:authorize>';
 		                	       			}
@@ -705,7 +715,8 @@ function PopUp(contractUUID){
 			result = result +	'	</div>';
 			}
 			
-			if(null != json.typeOfContract && (json.contractType.includes("SOW") || json.contractType =="Full time offer")){
+			if((json.requirementName != '' && json.requirementName != 'undefined' && json.requirementName != null) && (json.contractType.includes("SOW") || json.contractType =="Full time offer")){
+				
 				result = result +	'	<div class="col-md-6 col-sm-6 noPad clearfix mb">';
 				result = result +	'		<div class="col-md-4 col-sm-4">Job Title</div>';
 				result = result +	'		<div class="col-md-8 col-sm-8">: '+json.requirementName+'</div>';
@@ -969,4 +980,3 @@ function editClo(contractId){
 	
 }
 </script>
-

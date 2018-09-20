@@ -2,24 +2,16 @@ package com.bis.sourcelead.rest;
 
 import java.awt.image.BufferedImage;
 import java.awt.image.WritableRaster;
-import java.io.ByteArrayInputStream;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
 
-import javax.imageio.ImageIO;
 import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import javax.servlet.http.HttpSession;
 
+import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang.exception.ExceptionUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.PropertySource;
-import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -27,14 +19,20 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.bis.sourcelead.SourceleadPasswordEncoder;
+import com.bis.sourcelead.annotations.Validator;
 import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.dto.AddUserProfileDTO;
 import com.bis.sourcelead.dto.PasswordSettingsDTO;
+import com.bis.sourcelead.dto.Response;
+import com.bis.sourcelead.dto.UserMailUnsubscribeDTO;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.User;
+import com.bis.sourcelead.entity.UserMailUnsubscribe;
 import com.bis.sourcelead.entity.UserRole;
+import com.bis.sourcelead.enums.Result;
 import com.bis.sourcelead.service.OrgLocationService;
 import com.bis.sourcelead.service.OrgSpocService;
+import com.bis.sourcelead.service.UserMailUnsubscribeService;
 import com.bis.sourcelead.service.UserRoleService;
 import com.bis.sourcelead.service.UserService;
 import com.bis.sourcelead.util.CommonUtil;
@@ -71,6 +69,9 @@ public class UserProfileRestController {
 	@Autowired
 	OrgLocationService orgLocationService;
 	
+	@Autowired
+	UserMailUnsubscribeService userMailUnsubscribeService;
+	
 	@RequestMapping(value = "/saveUserProfileImage", method = RequestMethod.POST)
 	public String saveProfileImage(AddUserProfileDTO addUserProfileDTO,	HttpServletRequest request) throws Exception{
 		addUserProfileDTO.setStaticPath(staticPath);
@@ -101,80 +102,97 @@ public class UserProfileRestController {
 	 * @throws Exception
 	 */
 	@RequestMapping(value =  {"/saveUserProfile","/rest/saveUserProfile"}, method = RequestMethod.POST)
-	public AddUserProfileDTO saveUserProfile(AddUserProfileDTO addUserProfileDTO, HttpServletRequest request)
+	public Response<AddUserProfileDTO> saveUserProfile(AddUserProfileDTO addUserProfileDTO, HttpServletRequest request)
 			throws Exception {
-		addUserProfileDTO.setStaticPath(staticPath);
 		User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+		OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,"orgLocations");
+		Response<AddUserProfileDTO> response=new Response<>();
+		addUserProfileDTO.setStaticPath(staticPath);
 		if(user == null){
 			user = userService.getUserById(addUserProfileDTO.getUserId());
 		}
-		OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,"orgLocations");
 		if(orgLocations == null){
 			 orgLocations = orgLocationService.getOrgLocations(Long.parseLong(addUserProfileDTO.getOrgLocationId()));
 		}
 		UserRole userRoleElk = null;
 		AddUserProfileDTO profileDTO = null;
-		try {
-			user = userService.saveUserProfile(addUserProfileDTO, user);
-			UserRole userRole = userRoleService.getUserDetailsByUserIdAndLocationId(user.getId(), orgLocations.getId());
-			userRole.setDesignation(addUserProfileDTO.getDesignation());
-			userRoleElk = userRoleService.addUserRole(userRole);
-			/*
-			 * update common user (single user different orgs) details in ElasticSearch
-			 * Documents (User)
-			 */
-			commonUtil.commonUserUpdate(user);
-			/*
-			 * Save or update the user in Elk.
-			 */
-			userService.saveOrUpdateUserElkDocument(userRoleElk, null, user.getUserCode());
+		
+		try{
+			if(user !=null){
+				if(Validator.validate(addUserProfileDTO)){
+					user = userService.saveUserProfile(addUserProfileDTO, user);
+					UserRole userRole = userRoleService.getUserDetailsByUserIdAndLocationId(user.getId(), orgLocations.getId());
+					userRole.setDesignation(addUserProfileDTO.getDesignation());
+					userRoleElk = userRoleService.addUserRole(userRole);
+					/*
+					 * update common user (single user different orgs) details in ElasticSearch
+					 * Documents (User)
+					 */
+					commonUtil.commonUserUpdate(user);
+					/*
+					 * Save or update the user in Elk.
+					 */
+					userService.saveOrUpdateUserElkDocument(userRoleElk, null, user.getUserCode());
 
-			/*
-			 * updating user in the Spock
-			 * 
-			 */
+					/*
+					 * updating user in the Spock
+					 * 
+					 */
 
-			commonUtil.updateSpockDetails(user, orgLocations);
+					commonUtil.updateSpockDetails(user, orgLocations);
 
-			SourceLeadSessionManager.setSessionAttribute(request, "user", user);
-			StringBuilder userNameSB = new StringBuilder();
-			SourceLeadSessionManager.setSessionAttribute(request, "userName",
-					userNameSB.append(user.getFirstName()).append(" ").append(user.getLastName()).toString());
-			SourceLeadSessionManager.setSessionAttribute(request, "designation", userRole.getDesignation());
-
-		} catch (Exception e) {
-			logger.info("--exception--" + e);
-
+					SourceLeadSessionManager.setSessionAttribute(request, "user", user);
+					StringBuilder userNameSB = new StringBuilder();
+					SourceLeadSessionManager.setSessionAttribute(request, "userName",
+							userNameSB.append(user.getFirstName()).append(" ").append(user.getLastName()).toString());
+					SourceLeadSessionManager.setSessionAttribute(request, "designation", userRole.getDesignation());	
+					
+					profileDTO = new AddUserProfileDTO();
+					profileDTO.setId(String.valueOf(user.getId()));
+					profileDTO.setFirstName(user.getFirstName());
+					profileDTO.setLastName(user.getLastName());
+					profileDTO.setStaticPath(staticPath);
+					profileDTO.setMobilePhone(user.getMobilePhone());
+					profileDTO.setJobTitle(user.getJobTitle());
+					profileDTO.setLocation(user.getLocation());
+					profileDTO.setLinkedIn(user.getLinkedIn());
+					profileDTO.setFacebook(user.getFacebook());
+					profileDTO.setTwitter(user.getTwitter());
+					profileDTO.setGooglePlus(user.getGooglePlus());
+					profileDTO.setDesignation(addUserProfileDTO.getDesignation());
+					profileDTO.setUserId(addUserProfileDTO.getUserId());
+					profileDTO.setOrgLocationId(addUserProfileDTO.getOrgLocationId());
+					response.setObject(profileDTO);
+					response.setResponse(Result.SUCCESS.name());
+					response.setResponseMessage(Result.SUCCESS.getValue());
+				}
+				else{
+					response.setResponse(Result.INVALID_DATA.name());
+					response.setResponseMessage(Result.INVALID_DATA.getValue());
+				}
+			}else{
+				response.setResponse(Result.SESSION_TIMEDOUT.name());
+				response.setResponseMessage(Result.SESSION_TIMEDOUT.getValue());
+			}
+		}catch (Exception e) {
+			response.setResponse(Result.AWKWARD.name());
+			response.setResponseMessage(Result.AWKWARD.getValue());
+			logger.error(ExceptionUtils.getFullStackTrace(e));
 		}
-		if (user != null) {
-			profileDTO = new AddUserProfileDTO();
-			profileDTO.setId(String.valueOf(user.getId()));
-			profileDTO.setFirstName(user.getFirstName());
-			profileDTO.setLastName(user.getLastName());
-			profileDTO.setStaticPath(staticPath);
-			profileDTO.setMobilePhone(user.getMobilePhone());
-			profileDTO.setJobTitle(user.getJobTitle());
-			profileDTO.setLocation(user.getLocation());
-			profileDTO.setLinkedIn(user.getLinkedIn());
-			profileDTO.setFacebook(user.getFacebook());
-			profileDTO.setTwitter(user.getTwitter());
-			profileDTO.setGooglePlus(user.getGooglePlus());
-			profileDTO.setDesignation(addUserProfileDTO.getDesignation());
-			profileDTO.setUserId(addUserProfileDTO.getUserId());
-			profileDTO.setOrgLocationId(addUserProfileDTO.getOrgLocationId());
-		}
-		return profileDTO;
+		
+		
+		return response;
 
 	}
 	
 
 	@RequestMapping(value = { "/passwordSettings", "/rest/passwordSettings" }, method = RequestMethod.POST)
-	public String passwordSettings(PasswordSettingsDTO passwordSettingsDTO,
+	public Response<String> passwordSettings(PasswordSettingsDTO passwordSettingsDTO,
 			HttpServletRequest request) throws Exception {
 		
 		 User user = null;
 		 OrgLocations orgLocations = null;
-		 
+		 Response<String> response=new Response<>();
 		 user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
 		 orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,"orgLocations");
 		
@@ -185,21 +203,38 @@ public class UserProfileRestController {
 		if(orgLocations == null) {
 			orgLocations = orgLocationService.getOrgLocations(passwordSettingsDTO.getOrgLocationId());
 		}
+		
+		try{
+		if(user !=null){
+			if(Validator.validate(passwordSettingsDTO)){
 
-		if (sourceleadPasswordEncoder.matches(passwordSettingsDTO.getCurrentPassword(), user.getPassword())) {
-			user.setPassword(sourceleadPasswordEncoder.encode(passwordSettingsDTO.getPassword()));
-			try {
-				userService.addUser(user);
-			} catch (Exception e) {
-				e.printStackTrace();
+				if (sourceleadPasswordEncoder.matches(passwordSettingsDTO.getCurrentPassword(), user.getPassword())) {
+					user.setPassword(sourceleadPasswordEncoder.encode(passwordSettingsDTO.getPassword()));
+					userService.addUser(user);
+					SourceLeadSessionManager.setSessionAttribute(request, "resetPwdMsg",
+							"Your password has reset successfully");
+					userService.passwordResetMailToLoginUser(user,orgLocations);
+					
+				}
+				response.setResponse(Result.SUCCESS.name());
+				response.setResponseMessage(Result.SUCCESS.getValue());
+			}else{
+				response.setObject("DataMissing");
+				response.setResponse(Result.INVALID_DATA.name());
+				response.setResponseMessage(Result.INVALID_DATA.getValue());
 			}
-			SourceLeadSessionManager.setSessionAttribute(request, "resetPwdMsg",
-					"Your password has reset successfully");
-			userService.passwordResetMailToLoginUser(user,orgLocations);
-			return "success";
-		} else {
-			return "Invalid Password";
+		}else{
+			response.setResponse(Result.SESSION_TIMEDOUT.name());
+			response.setResponseMessage(Result.SESSION_TIMEDOUT.getValue());
+		}	
+		}catch (Exception e) {
+			response.setResponse(Result.AWKWARD.name());
+			response.setResponseMessage(Result.AWKWARD.getValue());
+			logger.error(ExceptionUtils.getFullStackTrace(e));
 		}
+		
+			return response;
+		
 
 	}
 
@@ -305,6 +340,39 @@ public class UserProfileRestController {
 			user.setLoginSecurity(Constants.NO);
 			userService.addUser(user);
 		}
+		return "Success";
+	}
+	
+	@RequestMapping(value = { "/updateUserEmailUnsubscription" }, method = RequestMethod.POST)
+	public String updateUserEmailUnsubscription(UserMailUnsubscribeDTO userMailUnsubscribeDTO, HttpServletRequest request) throws Exception
+	{
+		User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+		OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,"orgLocations");
+		
+		//UserMailUnsubscribe userMailUnsubscribe = userMailUnsubscribeService.getUserMailUnsubscription(userMailUnsubscribeDTO);
+		
+		UserMailUnsubscribe userMailUnsubscribe = userMailUnsubscribeService.getUserMailUnsubscriptionByUserId(user.getId());
+		if(userMailUnsubscribe != null) {
+			userMailUnsubscribe.setTabIds(userMailUnsubscribeDTO.getTabIds());
+			userMailUnsubscribe.setOrgLocationId(orgLocations);
+			userMailUnsubscribe.setUserId(user);
+			userMailUnsubscribe.setStatus(Constants.RECORD_ACTIVE);
+			userMailUnsubscribe.setUpdatedBy(user);
+			userMailUnsubscribe.setUpdatedDate(commonUtil.currentDate());
+			userMailUnsubscribeService.saveOrUpdateUserMailUnsubscription(userMailUnsubscribe);
+		}else{
+			userMailUnsubscribe = new UserMailUnsubscribe();
+			userMailUnsubscribe.setTabIds(userMailUnsubscribeDTO.getTabIds());
+			userMailUnsubscribe.setOrgLocationId(orgLocations);
+			userMailUnsubscribe.setUserId(user);
+			userMailUnsubscribe.setStatus(Constants.RECORD_ACTIVE);
+			userMailUnsubscribe.setUpdatedBy(user);
+			userMailUnsubscribe.setUpdatedDate(commonUtil.currentDate());
+			userMailUnsubscribe.setCreatedDate(commonUtil.currentDate());
+			userMailUnsubscribeService.saveOrUpdateUserMailUnsubscription(userMailUnsubscribe);
+		}
+		
+		
 		return "Success";
 	}
 

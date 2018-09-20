@@ -27,9 +27,10 @@
        <div class="addResource add-resource">
 		<span class="addResClo addResClose"></span>
           <div class="col-xs-12 col-sm-12 myForm noPad clearfix request-resources">
+            <input type="hidden" id="planningResources[REPLACEROWID].validateRow" name="planningResources[REPLACEROWID].validateRow" value="true">
               <div class="col-md-3 dropdown-select">
                <label>Role <span class="text-danger paddingLeft">*</span></label>
-                <select class="form-control" name='roleREPLACEROWID' id='roleREPLACEROWID'  field-name="Role" data-validation="required" onchange="changeRole(this,REPLACEROWID);" >
+                <select class="form-control" name='planningResources[REPLACEROWID].roleId' id='roleREPLACEROWID'  field-name="Role" data-validation="required" onchange="changeRole(this,REPLACEROWID);" >
                  <option value="">-Select Role-</option>
                    <c:forEach var="option" items="${rolesList}">
 					 <option value="${option.id}">${option.displayName}</option>
@@ -39,17 +40,17 @@
               </div>
              <div class="col-md-3" id="otherRoleDivREPLACEROWID" style="display:none">
                <label>Custom Role<span class="text-danger paddingLeft">*</span></label>
-                <input type="text" name='customRoleREPLACEROWID' id='customRoleREPLACEROWID' class="form-control" field-name="Custom Role">
+                <input type="text" name='planningResources[REPLACEROWID].customRole' id='customRoleREPLACEROWID' class="form-control" field-name="Custom Role">
               </div>
               <div class="col-md-3 dropdown-select">
                <label>No. of Resources <span class="text-danger paddingLeft">*</span></label>
-                <input type="text" class="form-control" name='noOfResourcesREPLACEROWID' id='noOfResourcesREPLACEROWID'  field-name="No. of Resources" data-validation="required validate_length length1-15 validate_int">
+                <input type="text" class="form-control" name='planningResources[REPLACEROWID].noOfResources' id='noOfResourcesREPLACEROWID'  field-name="No. of Resources" data-validation="required validate_length length1-15 validate_int">
               </div>
               <div class="col-md-3 dropdown-select">
                <label>Experience</label>
                   <div class="row experience-drop">
                       <div class="col-md-6">
-	                      <select class="form-control" name='minREPLACEROWID' id='minREPLACEROWID' onblur="minMaxExperience(REPLACEROWID);">
+	                      <select class="form-control" name='planningResources[REPLACEROWID].min' id='minREPLACEROWID' onblur="minMaxExperience(REPLACEROWID);">
 	             		  <option value="">Min Years</option>
 	             		  <c:forEach begin="0" end="25" varStatus="loop">
 							    <option>${loop.index}</option>
@@ -57,7 +58,7 @@
 	             		  </select>
                        </div>
                       <div class="col-md-6">
-                      <select class="form-control" name='maxREPLACEROWID' id='maxREPLACEROWID' onblur="minMaxExperience(REPLACEROWID);">
+                      <select class="form-control" name='planningResources[REPLACEROWID].max' id='maxREPLACEROWID' onblur="minMaxExperience(REPLACEROWID);">
              		  <option value="">Max Years</option>
              		  <c:forEach begin="0" end="25" varStatus="loop">
 						    <option>${loop.index}</option>
@@ -66,13 +67,13 @@
                       </div>
                  </div>
                  <div class="row" id="expIdREPLACEROWID">
-                  <input type="hidden" name="expValidationREPLACEROWID" id="expValidationREPLACEROWID">
+                  <input type="hidden" name="planningResources[REPLACEROWID].expValidation" id="expValidationREPLACEROWID">
               </div> 
               </div>
               
               <div class="col-md-3 dropdown-select">
                <label>Primary Skills <span class="text-danger paddingLeft">*</span></label>
-                <input type="text" class="form-control" name='primarySkillREPLACEROWID' id='primarySkillREPLACEROWID' field-name="Primary Skill" data-validation="required validate_Space validate_length length2-200">
+                <input type="text" class="form-control" name='planningResources[REPLACEROWID].primarySkill' id='primarySkillREPLACEROWID' field-name="Primary Skill" data-validation="required validate_Space validate_length length2-200">
               </div>
               <!--  Rate Per div  -->
               <div class="col-md-6">
@@ -81,7 +82,7 @@
              <div class="clearfix"></div>
              <div class="input-group payrate_p">
                 <div class="input-group-btn selp-custom-min selp-customMin">
-                  <select class="" name='currencyCodeREPLACEROWID' id='currencyCodeREPLACEROWID' >
+                  <select class="" name='planningResources[REPLACEROWID].currencyCode' id='currencyCodeREPLACEROWID' >
 	                 <option value="INR">INR</option>
 	                 <option value="AUD">AUD</option>
 	                 <option value="USD">USD</option>
@@ -92,14 +93,14 @@
                 </select>
                 </div>
                 <div class="pull-left input_minmax">
-                <input type="text" class="form-control" name='billRateREPLACEROWID' id='billRateREPLACEROWID' field-name="Bill Rate" placeholder="Bill Rate"  data-validation="validate_Space validate_length length1-8 validate_int" data-validation-optional="true"  value="" onblur="minMaxRate();">
-                <input type="text" class="form-control" name='payRateREPLACEROWID' id='payRateREPLACEROWID'   field-name="Pay Rate" placeholder="Pay Rate"  data-validation="validate_Space validate_length length1-8 validate_int" data-validation-optional="true"  value="" onblur="minMaxRate();">
+                <input type="text" class="form-control" name='planningResources[REPLACEROWID].billRate' id='billRateREPLACEROWID' field-name="Bill Rate" placeholder="Bill Rate"  data-validation="validate_Space validate_length length1-8 validate_int" data-validation-optional="true"  value="" onblur="minMaxRate();">
+                <input type="text" class="form-control" name='planningResources[REPLACEROWID].payRate' id='payRateREPLACEROWID'   field-name="Pay Rate" placeholder="Pay Rate"  data-validation="validate_Space validate_length length1-8 validate_int" data-validation-optional="true"  value="" onblur="minMaxRate();">
                 </div>
                  <div class="row" id="rateValidateId">
                   <input type="hidden" name="rateValidation" id="rateValidation">
               </div> 
                 <div class="input-group-btn selp-custom-min payrate_p">
-                  <select class="ratetype"  name='rateTypeREPLACEROWID' id='rateTypeREPLACEROWID' field-name="Rate Per">
+                  <select class="ratetype"  name='planningResources[REPLACEROWID].rateType' id='rateTypeREPLACEROWID' field-name="Rate Per">
 <!--                     <option value="">Rate Per</option> -->
                     <option value="Hourly">Hourly</option>
                     <option value="Weekly">Weekly</option>
@@ -116,26 +117,26 @@
 
               <div class="col-md-3">
                <label>Start Date</label>
-                <input type="text" class="form-control calendar" name='startDateREPLACEROWID' id='startDateREPLACEROWID' placeholder="Start Date" readonly>
+                <input type="text" class="form-control calendar" name='planningResources[REPLACEROWID].startDate' id='startDateREPLACEROWID' placeholder="Start Date" readonly>
               </div>
               <div class="col-md-3">
                <label>End Date</label>
-                <input type="text" class="form-control calendar" name='endDateREPLACEROWID' id='endDateREPLACEROWID' placeholder="End Date" readonly>
+                <input type="text" class="form-control calendar" name='planningResources[REPLACEROWID].endDate' id='endDateREPLACEROWID' placeholder="End Date" readonly>
               </div>  
               <div class="col-md-3">
                <label>Estimated Hours</label>
-                <input type="text" class="form-control timeicon" name='estimatedHoursREPLACEROWID' id='estimatedHoursREPLACEROWID' field-name="Estimated Hours" data-validation="validate_length length1-10 validate_int" data-validation-optional="true">
+                <input type="text" class="form-control timeicon" name='planningResources[REPLACEROWID].estimatedHours' id='estimatedHoursREPLACEROWID' field-name="Estimated Hours" data-validation="validate_length length1-10 validate_int" data-validation-optional="true">
               </div>  
               <div class="col-md-3 currencySymbol">
                   <label>Estimated Budget</label>
                   <div class="positionRelative">
-                <input type="text" class="form-control" name='estimatedBudgetREPLACEROWID' id='estimatedBudgetREPLACEROWID' field-name="Estimated Budget" data-validation="validate_length length1-10 validate_int" data-validation-optional="true">
+                <input type="text" class="form-control" name='planningResources[REPLACEROWID].estimatedBudget' id='estimatedBudgetREPLACEROWID' field-name="Estimated Budget" data-validation="validate_length length1-10 validate_int" data-validation-optional="true">
                  <span class="currencyValue" value="${currencyCode}" id="budgetCurrencyREPLACEROWID" name="budgetCurrencyREPLACEROWID">${currencyCode}</span>
                       </div>
               </div>
                <div class="col-md-3 dropdown-select">
-               <label>Consulting <span class="text-danger paddingLeft">*</span></label>
-                <select class="form-control" name='consultingREPLACEROWID' id='consultingREPLACEROWID' field-name="Consulting" data-validation="required">
+               <label>Consulting <span class="text-danger paddingLeft">* </span><i class='fa fa-info-circle' title='The type of requests such as on-shore or off-shore'></i></label>
+                <select class="form-control" name='planningResources[REPLACEROWID].consulting' id='consultingREPLACEROWID' field-name="Consulting" data-validation="required">
                   <option selected value="">--Select--</option>
                         <option value="OffSite">Off Site</option>
                         <option value="OnSite">On Site</option>
@@ -149,7 +150,7 @@
 			<div class="col-xs-12 col-sm-12 myForm noPad clearfix">
 				<div class="pull-right mr">
 					<input type='button' id='addResourceRequestButtonREPLACEROWID' class="btn btn-primary btn-sm mr10" onclick='addNewResourceRequestTbl(REPLACEROWID);' value='Add'/> 
-				    <input type='button' id='cancelResourceRequestButtonREPLACEROWID' class="btn btn-default btn-sm cancel-btn" onclick="removeRow(REPLACEROWID);" value='Cancel'/>
+<!-- 				    <input type='button' id='cancelResourceRequestButtonREPLACEROWID' class="btn btn-default btn-sm cancel-btn" onclick="removeRow(REPLACEROWID);" value='Cancel'/> -->
 				</div>
 			</div>
 			<div class="clearfix"></div>
@@ -181,13 +182,13 @@
 								<div class="col-md-9">
 					                  <div class="form-icon">
 					                   <input class="form-control pull-left" name="requestId" id="requestId" field-name="Request Id" data-validation="required validate_Space validate_length length1-15 validate_int" >
-					                   <i class="fa fa-refresh btn btn-default formic1" title="Request Id"></i>
+					                   <i class="fa fa-refresh btn btn-default formic1" title="Request Id" onclick='$("#requestId").val("");'></i>
 					                   <div class="clearfix"></div>
 					                   </div>
 					           </div>            
 					     </div>
 			            <div class="form-group">
-			            <label class="col-md-3">Approver <span class="text-danger paddingLeft">*</span></label>
+			            <label class="col-md-3">Approver <span class="text-danger paddingLeft">* </span><i class='fa fa-info-circle' title='The person who will approve the new resource request'></i></label>
 			            <div class="col-md-9" id="errApprover">
 			             <select class="chosen-select form-control" data-validation="required" id="approver" name="approver" field-name="Approver" onchange="removeValidation();">
 		                <option selected value=''>--Select Approver--</option>
@@ -222,11 +223,11 @@
 			            	<tr id="divResourceTsRow0">
 			                    <th>Role</th>
 			                    <th>No <br> Resources</th>
-			                    <th>Exp</th>
+			                    <th>Experience</th>
 			                    <th>Primary Skills</th>
 			                    <th>Bill/Pay Rate</th>
 			                    <th>Duration</th>
-			                    <th>Consulting Type</th>
+			                    <th>Emp Type</th>
 			                    <th>Est Hours</th>
 			                    <th>Est Budget</th>
 			                    <th>Action</th>
@@ -274,7 +275,7 @@
 		    <div id="noOfResourcesRowREPLACEROWID" name="noOfResourcesRowREPLACEROWID" class="width90px">RESOURCECOUNTVALUE</div>
 		</div>
 		<div id="divAddRowTr1Td3" style="display: none; float: left;">
-		<div class="width90px inr_values"><small id="minRowREPLACEROWID">MINVALUE</small> <small id="maxRowREPLACEROWID">MAXVALUE</small></div>
+		<div class="width180px inr_values"><small id="minRowREPLACEROWID">MINVALUE</small><small id="maxRowREPLACEROWID">MAXVALUE</small></div>
 		</div>
 		<div id="divAddRowTr1Td4" style="display: none; float: left;">
 		    <div id="primarySkillsRowREPLACEROWID" class="tbldata-dotdot-vsm">PRIMARYSKILLSVALUES</div>
@@ -360,12 +361,24 @@
 			$('#startDate'+maxRowNum).datepicker({
 				dateFormat : finalDateFormatResourceReqSave,
 				changeMonth: true,
-				changeYear: true
+				changeYear: true,
+				onSelect: function (selected) {
+		            //var dt = new Date(selected);
+		            var dt = $(this).datepicker('getDate', '+1d');
+		            dt.setDate(dt.getDate() + 1);
+		            $('#endDate'+maxRowNum).datepicker("option", "minDate", dt);
+		        }
 			});
 			$('#endDate'+maxRowNum).datepicker({
 				dateFormat : finalDateFormatResourceReqSave,
 				changeMonth: true,
-				changeYear: true
+				changeYear: true,
+				onSelect: function (selected) {
+		            //var dt = new Date(selected);
+					var dt = $(this).datepicker('getDate', '-1d');
+		            dt.setDate(dt.getDate() - 1);
+		            $('#startDate'+maxRowNum).datepicker("option", "maxDate", dt);
+		        }
 			});
 			$(".addResource").removeAttr('style');
 			$(".addResource").attr('style','display:block');
@@ -432,13 +445,24 @@
 			divRowTd3Str = divRowTd3Str.replace(/REPLACEROWID/g, (maxRowNum));
 			var minEx =  $('#min'+maxRowNum).val();
 			var maxEx =  $('#max'+maxRowNum).val();
-			if(minEx == null || minEx == '' || minEx == 'undefined'){
+			var year = "Year(s)";
+			var to  = "To";
+			if((minEx == null || minEx == '' || minEx == 'undefined') && (maxEx == null || maxEx == '' || maxEx == 'undefined')){
 				minEx = "--";
-			}if(maxEx == null || maxEx == '' || maxEx == 'undefined'){
 				maxEx = "--";
+				divRowTd3Str = divRowTd3Str.replace(/MINVALUE/g,minEx);
+				divRowTd3Str = divRowTd3Str.replace(/MAXVALUE/g,maxEx);
+			}else if((minEx != null || minEx != '' || minEx != 'undefined') && (maxEx == null || maxEx == '' || maxEx == 'undefined')){
+				divRowTd3Str = divRowTd3Str.replace(/MINVALUE/g,minEx +year);
+				divRowTd3Str = divRowTd3Str.replace(/MAXVALUE/g,maxEx);
+			}else if((minEx == null || minEx == '' || minEx == 'undefined') && (maxEx !== null || maxEx != '' || maxEx != 'undefined')){
+				divRowTd3Str = divRowTd3Str.replace(/MINVALUE/g,minEx);
+				divRowTd3Str = divRowTd3Str.replace(/MAXVALUE/g,maxEx+year);
+			}else if((minEx != null || minEx != '' || minEx != 'undefined') && (maxEx != null || maxEx != '' || maxEx != 'undefined')){
+				divRowTd3Str = divRowTd3Str.replace(/MINVALUE/g,minEx+to);
+				divRowTd3Str = divRowTd3Str.replace(/MAXVALUE/g,maxEx+year);
 			}
-			divRowTd3Str = divRowTd3Str.replace(/MINVALUE/g,minEx);
-			divRowTd3Str = divRowTd3Str.replace(/MAXVALUE/g,maxEx);
+			
 			cell2.innerHTML = divRowTd3Str;
 			
 			//Primary Skills
@@ -570,17 +594,20 @@
 		var maxEx =  $('#max'+rowId).val();
 		$('#minRow'+rowId).empty();
 		$('#maxRow1'+rowId).empty();
-		if(minEx != null && minEx != ''){
-			$('#minRow'+rowId).html(minEx);
-		}else{
-			$('#minRow'+rowId).html('--');				
-		}
-		if(maxEx != null && maxEx != ''){
-			$('#maxRow'+rowId).html(maxEx);
-		}else{
+		var year = " Year(s)";
+		var to  = " To";
+		if((minEx == null || minEx == '' || minEx == 'undefined') && (maxEx == null || maxEx == '' || maxEx == 'undefined')){
+			$('#minRow'+rowId).html('--');	
 			$('#maxRow'+rowId).html('--');
+		}else if((minEx != null || minEx != '' || minEx != 'undefined') && (maxEx == null || maxEx == '' || maxEx == 'undefined')){
+			$('#minRow'+rowId).html(minEx+year);
+			$('#maxRow'+rowId).html("");
+		}else if((minEx == null || minEx == '' || minEx == 'undefined') && (maxEx !== null || maxEx != '' || maxEx != 'undefined')){
+			$('#maxRow'+rowId).html(maxEx+year);
+		}else if((minEx != null || minEx != '' || minEx != 'undefined') && (maxEx != null || maxEx != '' || maxEx != 'undefined')){
+			$('#minRow'+rowId).html(minEx + to);
+			$('#maxRow'+rowId).html(maxEx+year);
 		}
-		
 		
 		//PrimarySkill
 		var primarySkill =  $('#primarySkill'+rowId).val();
@@ -730,7 +757,7 @@ function totalEstimatedBudget(rowId){
 
 //Remove Row 
 function removeRow(rowId){
-	
+	var cancelValue = $("#cancelResourceRequestButton"+rowId+"");
 	//subtract row Total Resources
 	var totalResources = parseInt($("input[name = 'totalResourcesValue']").val());
 	var noOfResources =  $('#noOfResources'+rowId).val();
@@ -839,11 +866,8 @@ function minMaxExperience(rowId){
 <script>
 function saveNewResourceRequest(saveType){
 	if ($('#add_newResource_form').validate(false, validationSettings)) {
-		var frm = $('#add_newResource_form').serializeFormJSON();
-			var jsonData = JSON.stringify(frm);
 			var form = $('#add_newResource_form')[0];
 		    var formData = new FormData(form);
-		  	formData.append("json",jsonData);
   			var sourceleadUrl ='${sourceleadUrl}';
   			var projectUUID = '${projectUUID}';
   			var projectClientUUID = '${projectClientUUID}';
@@ -855,13 +879,22 @@ function saveNewResourceRequest(saveType){
   		  		$.ajax({
   						type : "POST",
   		  	    	    data: formData,
-  		  	    	    contentType : 'application/json; charset=utf-8',
   		  		        processData: false,
   		  		        contentType:false, 
-  		  	    	    dataType : 'json',
   						url : sourceleadUrl+"/saveNewResourceRequest?${_csrf.parameterName}=${_csrf.token}&projectUUID="+projectUUID+"&saveType="+saveType, 
   						success : function(result) {
-  							location.replace(sourceleadUrl+"/projectSummary?projectUUID="+projectUUID+"&projectClientUUID="+projectClientUUID+"&tabType=resources");
+  							if (result && result.response === "INVALID_DATA") {
+  								$("#associateRequestLoading").removeAttr("style");
+  			                    showError(result.responseMessage);
+  			                } else if (result.response === "AWKWARD") {
+  			                    location.href = "/errorPage";
+  			                } else if (result.response === "SUCCESS") {
+  	  							location.replace(sourceleadUrl+"/projectSummary?projectUUID="+projectUUID+"&projectClientUUID="+projectClientUUID+"&tabType=resources");
+  			                } else if (result.indexOf('Sign In') !== -1) {
+  								location.replace(sourceleadUrl);
+  							} else {
+  			                    showError("Operation failed, please try again");
+  			                }
   						},
   					});
   		  	return true;
@@ -943,7 +976,7 @@ function loadRequestDetails(){
 }
 </script>
 <script>
-function loadResourceRequestsList(newResourceRequestList,estimatedHours,estimatedBudget,requestedResources){
+function loadResourceRequestsList(newResourceRequestList,estimatedHoursTotal,estimatedBudgetTotal,requestedResources){
 // 	 $("#maxRecCount").val(newResourceRequestList.length + 1);
 	removeValidation();
 	 for(var i=0; i<newResourceRequestList.length; i++){
@@ -1115,9 +1148,10 @@ function loadResourceRequestsList(newResourceRequestList,estimatedHours,estimate
 			totalEstimatedBudget(maxRowNum);			
 	 }
 	     $("input[name = 'maxRowCount']").val(newResourceRequestList.length);
+	     
 	    $("#totalResourcesId").val(requestedResources);
-		$("#totalEstHours").val(estimatedHours);
-		$("#totalEstBudget").val(estimatedBudget);
+		$("#totalEstHours").val(estimatedHoursTotal);
+		$("#totalEstBudget").val(estimatedBudgetTotal);
 }
 </script>
 <script>
@@ -1182,10 +1216,11 @@ var actionType = "ROLE_RESOURCE_REQUEST_APPROVER";
 			divRowTd2_0Str = divRowTd2_0Str +'<div class="addResource add-resource">';
 			divRowTd2_0Str = divRowTd2_0Str +'	<span class="addResClo addResClose"></span>';
 			divRowTd2_0Str = divRowTd2_0Str +'      <div class="col-xs-12 col-sm-12 myForm noPad clearfix request-resources">';
+			divRowTd2_0Str = divRowTd2_0Str +'        <input type="hidden"  name="planningResources['+maxRowNum+'].validateRow" value="true">';
 
 			divRowTd2_0Str = divRowTd2_0Str +'          <div class="col-md-3 dropdown-select">';
 			divRowTd2_0Str = divRowTd2_0Str +'           <label>Role <span class="text-danger paddingLeft">*</span></label>';
-			divRowTd2_0Str = divRowTd2_0Str +'            <select class="form-control" name="role'+maxRowNum+'" id="role'+maxRowNum+'"  field-name="Role" data-validation="required" onchange="changeRole(this,'+maxRowNum+');" >';
+			divRowTd2_0Str = divRowTd2_0Str +'            <select class="form-control" name="planningResources['+maxRowNum+'].roleId" id="role'+maxRowNum+'"  field-name="Role" data-validation="required" onchange="changeRole(this,'+maxRowNum+');" >';
 			divRowTd2_0Str = divRowTd2_0Str +'             <option value="">-Select Role-</option>';
 			if(report.roleName == 'Other'){
 				divRowTd2_0Str = divRowTd2_0Str +'         <c:forEach var="option" items="${rolesList}">';
@@ -1205,19 +1240,19 @@ var actionType = "ROLE_RESOURCE_REQUEST_APPROVER";
 			/* '+ (report.roleId.id == "${option.id}" ? "selected" : '' */
 			divRowTd2_0Str = divRowTd2_0Str +'         <div class="col-md-3" id="otherRoleDiv'+maxRowNum+'" style="display:'+(report.roleName == 'Other' ? 'block':'none')+'">';
 			divRowTd2_0Str = divRowTd2_0Str +'           <label>Custom Role<span class="text-danger paddingLeft">*</span></label>';
-			divRowTd2_0Str = divRowTd2_0Str +'            <input type="text" value ="'+report.otherRole+'" '+(report.roleName == 'Other' ? 'data-validation="required"':'')+' name="customRole'+maxRowNum+'" id="customRole'+maxRowNum+'" class="form-control" field-name="Custom Role">';
+			divRowTd2_0Str = divRowTd2_0Str +'            <input type="text" value ="'+report.otherRole+'" '+(report.roleName == 'Other' ? 'data-validation="required"':'')+' name="planningResources['+maxRowNum+'].customRole" id="customRole'+maxRowNum+'" class="form-control" field-name="Custom Role">';
 			divRowTd2_0Str = divRowTd2_0Str +'          </div>'; 
 			
 			divRowTd2_0Str = divRowTd2_0Str +' <div class="col-md-3 dropdown-select">';
 			divRowTd2_0Str = divRowTd2_0Str +'  <label>No. of Resources <span class="text-danger paddingLeft">*</span></label>';
-			divRowTd2_0Str = divRowTd2_0Str +'  <input type="text" class="form-control" value="'+report.noOfResource+'" name="noOfResources'+maxRowNum+'" id="noOfResources'+maxRowNum+'"  field-name="No. of Resources" data-validation="required validate_length length1-15 validate_int">';
+			divRowTd2_0Str = divRowTd2_0Str +'  <input type="text" class="form-control" value="'+report.noOfResource+'" name="planningResources['+maxRowNum+'].noOfResources" id="noOfResources'+maxRowNum+'"  field-name="No. of Resources" data-validation="required validate_length length1-15 validate_int">';
 			divRowTd2_0Str = divRowTd2_0Str +' </div>';
 		
 			divRowTd2_0Str = divRowTd2_0Str +'          <div class="col-md-3 dropdown-select">';
 			divRowTd2_0Str = divRowTd2_0Str +'           <label>Experience</label>';
 			divRowTd2_0Str = divRowTd2_0Str +'              <div class="row experience-drop">';
 			divRowTd2_0Str = divRowTd2_0Str +'                  <div class="col-md-6">';
-			divRowTd2_0Str = divRowTd2_0Str +'                      <select class="form-control" name="min'+maxRowNum+'" id="min'+maxRowNum+'" onblur="minMaxExperience('+maxRowNum+');">';
+			divRowTd2_0Str = divRowTd2_0Str +'                      <select class="form-control" name="planningResources['+maxRowNum+'].min" id="min'+maxRowNum+'" onblur="minMaxExperience('+maxRowNum+');">';
 			divRowTd2_0Str = divRowTd2_0Str +'             		  <option value="">Min Years</option>';
 											 <c:forEach var="i" begin="0" end="25" >
 			divRowTd2_0Str = divRowTd2_0Str +'<option value="${i}" '  + (report.minExperience == "${i}" ? "selected" : '') +  '>${i}</option>';
@@ -1226,7 +1261,7 @@ var actionType = "ROLE_RESOURCE_REQUEST_APPROVER";
 			divRowTd2_0Str = divRowTd2_0Str +'                   </div>';
 			
 			divRowTd2_0Str = divRowTd2_0Str +'                  <div class="col-md-6">'; 
-			divRowTd2_0Str = divRowTd2_0Str +'                  <select class="form-control" name="max'+maxRowNum+'" id="max'+maxRowNum+'" onblur="minMaxExperience('+maxRowNum+');">';
+			divRowTd2_0Str = divRowTd2_0Str +'                  <select class="form-control" name="planningResources['+maxRowNum+'].max" id="max'+maxRowNum+'" onblur="minMaxExperience('+maxRowNum+');">';
 			divRowTd2_0Str = divRowTd2_0Str +'         		  <option value="">Max Years</option>';
 			                                  <c:forEach var="i" begin="0" end="25" >
 				divRowTd2_0Str = divRowTd2_0Str +'<option value="${i}" '  + (report.maxExperience == "${i}" ? "selected" : '') +  '>${i}</option>';
@@ -1242,7 +1277,7 @@ var actionType = "ROLE_RESOURCE_REQUEST_APPROVER";
 			
 			divRowTd2_0Str = divRowTd2_0Str +'          <div class="col-md-3 dropdown-select">';
 			divRowTd2_0Str = divRowTd2_0Str +'           <label>Primary Skills <span class="text-danger paddingLeft">*</span></label>';
-			divRowTd2_0Str = divRowTd2_0Str +'            <input type="text" class="form-control" value="'+ report.skills+'" name="primarySkill'+maxRowNum+'" id="primarySkill'+maxRowNum+'" field-name="Primary Skill" data-validation="required validate_Space validate_length length2-200">';
+			divRowTd2_0Str = divRowTd2_0Str +'            <input type="text" class="form-control" value="'+ report.skills+'" name="planningResources['+maxRowNum+'].primarySkill" id="primarySkill'+maxRowNum+'" field-name="Primary Skill" data-validation="required validate_Space validate_length length2-200">';
 			divRowTd2_0Str = divRowTd2_0Str +'          </div>';
 			
 			divRowTd2_0Str = divRowTd2_0Str +'          <!--  Rate Per div  -->';
@@ -1252,7 +1287,7 @@ var actionType = "ROLE_RESOURCE_REQUEST_APPROVER";
 			divRowTd2_0Str = divRowTd2_0Str +'         <div class="clearfix"></div>';
 			divRowTd2_0Str = divRowTd2_0Str +'         <div class="input-group payrate_p">';
 			divRowTd2_0Str = divRowTd2_0Str +'            <div class="input-group-btn selp-custom-min selp-customMin">';
-			divRowTd2_0Str = divRowTd2_0Str +'              <select class="" name="currencyCode'+maxRowNum+'" id="currencyCode'+maxRowNum+'">';
+			divRowTd2_0Str = divRowTd2_0Str +'              <select class="" name="planningResources['+maxRowNum+'].currencyCode" id="currencyCode'+maxRowNum+'">';
 			divRowTd2_0Str = divRowTd2_0Str +'                 <option '+(report.rateCurrency == "INR" ? "selected" : '') +' >INR</option>';
 			divRowTd2_0Str = divRowTd2_0Str +'                 <option '+(report.rateCurrency == "AUD" ? "selected" : '') +' >AUD</option>';
 			divRowTd2_0Str = divRowTd2_0Str +'                 <option '+(report.rateCurrency == "USD" ? "selected" : '') +' >USD</option>';
@@ -1263,14 +1298,14 @@ var actionType = "ROLE_RESOURCE_REQUEST_APPROVER";
 			divRowTd2_0Str = divRowTd2_0Str +'            </div>    ';
 			
 			divRowTd2_0Str = divRowTd2_0Str +'            <div class="pull-left input_minmax">';
-			divRowTd2_0Str = divRowTd2_0Str +'            <input type="text" class="form-control"  value="'+billRate+'" name="billRate'+maxRowNum+'" id="billRate'+maxRowNum+'" field-name="Bill Rate" placeholder="Bill Rate"  data-validation="validate_Space validate_length length1-8 validate_int" data-validation-optional="true"  value="" onblur="minMaxRate();">';
-			divRowTd2_0Str = divRowTd2_0Str +'            <input type="text" class="form-control" value="'+payRate+'" name="payRate'+maxRowNum+'" id="payRate'+maxRowNum+'"   field-name="Pay Rate" placeholder="Pay Rate"  data-validation="validate_Space validate_length length1-8 validate_int" data-validation-optional="true"  value="" onblur="minMaxRate();">';
+			divRowTd2_0Str = divRowTd2_0Str +'            <input type="text" class="form-control"  value="'+billRate+'" name="planningResources['+maxRowNum+'].billRate" id="billRate'+maxRowNum+'" field-name="Bill Rate" placeholder="Bill Rate"  data-validation="validate_Space validate_length length1-8 validate_int" data-validation-optional="true"  value="" onblur="minMaxRate();">';
+			divRowTd2_0Str = divRowTd2_0Str +'            <input type="text" class="form-control" value="'+payRate+'" name="planningResources['+maxRowNum+'].payRate" id="payRate'+maxRowNum+'"   field-name="Pay Rate" placeholder="Pay Rate"  data-validation="validate_Space validate_length length1-8 validate_int" data-validation-optional="true"  value="" onblur="minMaxRate();">';
 			divRowTd2_0Str = divRowTd2_0Str +'            </div>';
 			divRowTd2_0Str = divRowTd2_0Str +'             <div class="row" id="rateValidateId">';
 			divRowTd2_0Str = divRowTd2_0Str +'              <input type="hidden" name="rateValidation" id="rateValidation">';
 			divRowTd2_0Str = divRowTd2_0Str +'          </div> ';
 			divRowTd2_0Str = divRowTd2_0Str +'            <div class="input-group-btn selp-custom-min payrate_p">';
-			divRowTd2_0Str = divRowTd2_0Str +'              <select class="ratetype"  name="rateType'+maxRowNum+'" id="rateType'+maxRowNum+'" field-name="Rate Per">';
+			divRowTd2_0Str = divRowTd2_0Str +'              <select class="ratetype"  name="planningResources['+maxRowNum+'].rateType" id="rateType'+maxRowNum+'" field-name="Rate Per">';
 			divRowTd2_0Str = divRowTd2_0Str +'                <option '+(report.rateType == "Hourly" ? "selected" : '') +' >Hourly</option>                  ';
 			divRowTd2_0Str = divRowTd2_0Str +'                <option '+(report.rateType == "Weekly" ? "selected" : '') +'  >Weekly</option>                  ';
 			divRowTd2_0Str = divRowTd2_0Str +'                <option '+(report.rateType == "Bi-weekly" ? "selected" : '') +' >Bi-weekly</option>            ';
@@ -1286,30 +1321,30 @@ var actionType = "ROLE_RESOURCE_REQUEST_APPROVER";
 			
 			divRowTd2_0Str = divRowTd2_0Str +'          <div class="col-md-3">                                        ';
 			divRowTd2_0Str = divRowTd2_0Str +'           <label>Start Date</label>                                    ';
-			divRowTd2_0Str = divRowTd2_0Str +'            <input type="text" class="form-control calendar" value="'+startDateStr+'" name="startDate'+maxRowNum+'" id="startDate'+maxRowNum+'" placeholder="Start Date" readonly>';
+			divRowTd2_0Str = divRowTd2_0Str +'            <input type="text" class="form-control calendar" value="'+startDateStr+'" name="planningResources['+maxRowNum+'].startDate" id="startDate'+maxRowNum+'" placeholder="Start Date" readonly>';
 			divRowTd2_0Str = divRowTd2_0Str +'          </div>';
 			
 			divRowTd2_0Str = divRowTd2_0Str +'          <div class="col-md-3">';
 			divRowTd2_0Str = divRowTd2_0Str +'           <label>End Date</label>';
-			divRowTd2_0Str = divRowTd2_0Str +'            <input type="text" class="form-control calendar" value="'+endDateStr+'" name="endDate'+maxRowNum+'" id="endDate'+maxRowNum+'" placeholder="End Date" readonly>';
+			divRowTd2_0Str = divRowTd2_0Str +'            <input type="text" class="form-control calendar" value="'+endDateStr+'" name="planningResources['+maxRowNum+'].endDate" id="endDate'+maxRowNum+'" placeholder="End Date" readonly>';
 			divRowTd2_0Str = divRowTd2_0Str +'          </div>  ';
 			
 			divRowTd2_0Str = divRowTd2_0Str +'          <div class="col-md-3">';
 			divRowTd2_0Str = divRowTd2_0Str +'           <label>Estimated Hours</label>';
-			divRowTd2_0Str = divRowTd2_0Str +'            <input type="text" class="form-control timeicon" value="'+report.estimatedHours+'" name="estimatedHours'+maxRowNum+'" id="estimatedHours'+maxRowNum+'" field-name="Estimated Hours" data-validation="validate_length length1-10 validate_int" data-validation-optional="true">';
+			divRowTd2_0Str = divRowTd2_0Str +'            <input type="text" class="form-control timeicon" value="'+report.estimatedHours+'" name="planningResources['+maxRowNum+'].estimatedHours" id="estimatedHours'+maxRowNum+'" field-name="Estimated Hours" data-validation="validate_length length1-10 validate_int" data-validation-optional="true">';
 			divRowTd2_0Str = divRowTd2_0Str +'          </div>  ';
 			
 			divRowTd2_0Str = divRowTd2_0Str +'          <div class="col-md-3 currencySymbol">';
 			divRowTd2_0Str = divRowTd2_0Str +'              <label>Estimated Budget</label>';
 			divRowTd2_0Str = divRowTd2_0Str +'              <div class="positionRelative">';
-			divRowTd2_0Str = divRowTd2_0Str +'            <input type="text" class="form-control" value="'+report.estimatedBudget+'" name="estimatedBudget'+maxRowNum+'" id="estimatedBudget'+maxRowNum+'" field-name="Estimated Budget" data-validation="validate_length length1-10 validate_int" data-validation-optional="true">';
-			divRowTd2_0Str = divRowTd2_0Str +'             <span class="currencyValue" value="'+report.estimatedBudgetCurrency+'" id="budgetCurrency'+maxRowNum+'" name="budgetCurrency">${currencyCode}</span>';
+			divRowTd2_0Str = divRowTd2_0Str +'            <input type="text" class="form-control" value="'+report.estimatedBudget+'" name="planningResources['+maxRowNum+'].estimatedBudget" id="estimatedBudget'+maxRowNum+'" field-name="Estimated Budget" data-validation="validate_length length1-10 validate_int" data-validation-optional="true">';
+			divRowTd2_0Str = divRowTd2_0Str +'             <span class="currencyValue" value="'+report.estimatedBudgetCurrency+'" id="budgetCurrency'+maxRowNum+'" name="planningResources['+maxRowNum+'].budgetCurrency">${currencyCode}</span>';
 			divRowTd2_0Str = divRowTd2_0Str +'                  </div>';
 			divRowTd2_0Str = divRowTd2_0Str +'          </div>';
 			
 			divRowTd2_0Str = divRowTd2_0Str +'           <div class="col-md-3 dropdown-select">'; 
 			divRowTd2_0Str = divRowTd2_0Str +'           <label>Consulting <span class="text-danger paddingLeft">*</span></label>';
-			divRowTd2_0Str = divRowTd2_0Str +'            <select class="form-control" name="consulting'+maxRowNum+'" id="consulting'+maxRowNum+'" field-name="Consulting" data-validation="required">';
+			divRowTd2_0Str = divRowTd2_0Str +'            <select class="form-control" name="planningResources['+maxRowNum+'].consulting" id="consulting'+maxRowNum+'" field-name="Consulting" data-validation="required">';
 			divRowTd2_0Str = divRowTd2_0Str +'              <option selected value="">--Select--</option>      ';
 			divRowTd2_0Str = divRowTd2_0Str +'                    <option '+(report.consultingType == "OffSite" ? "selected" : '') +' value="OffSite">Off Site</option>    ';
 			divRowTd2_0Str = divRowTd2_0Str +'                    <option '+(report.consultingType == "OnSite" ? "selected" : '') +' value="OnSite">On Site</option>      ';

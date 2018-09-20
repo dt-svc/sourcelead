@@ -2,7 +2,7 @@ package com.bis.sourcelead.dto;
 
 import java.util.List;
 
-import com.bis.sourcelead.rest.TimeSheetDayEntriesDTOList;
+import com.bis.sourcelead.dto.TimeSheetDayEntriesDTOList;
 
 public class TimeSheetDayEntriesDTO extends SearchDTO{
 	

@@ -220,7 +220,7 @@ width : 6% !important;
                                       Candidate </label>
                                     <label class="paddingLeft">
                                       <input type="radio" name="assignedToType"  onclick="validateAssignToType('assingToUser');">
-                                      User </label>
+                                      Associate </label>
                                   </div>
                                   
                                   <div id="assignToUserDiv" style="display: none;" class="mt10">
@@ -610,16 +610,24 @@ function getAssignToUsersList(){
 	$.ajax({
 	   	type: "POST",
 	    url: sourceleadUrl+"/getOnboardTasksAssignToUsersList?${_csrf.parameterName}=${_csrf.token}",	    	   
-	    success: function(json) {
-        	 var result = "";
-        	for (var i=0; i<json.length; i++)
-			{
-        		var report = json[i];
-        		result = result +'<option value='+report.userId+' >'+report.userName+'</option>';
-			}
-        	 $("#onboardAssignedTo").empty();
-           	 $("#onboardAssignedTo").append(result); 
-           	 $('#onboardAssignedTo').trigger("chosen:updated");
+	    success: function(response) {
+	    	if (response.response === "AWKWARD") {
+	    	    location.href = "/errorPage";
+	    	} else if (response.response === "SUCCESS") {
+	    		var result = "";
+	        	 var json = response.data;
+	        	for (var i=0; i<json.length; i++) {
+	        		var report = json[i];
+	        		result = result +'<option value='+report.userId+' >'+report.userName+'</option>';
+				}
+	        	 $("#onboardAssignedTo").empty();
+	           	 $("#onboardAssignedTo").append(result); 
+	           	 $('#onboardAssignedTo').trigger("chosen:updated");
+	    	} else if (response.indexOf('Sign In') !== -1) {
+	    		location.replace(sourceleadUrl);
+	    	} else {
+	    	    showError("Operation failed, please try again");
+	    	}
 	    }
    }); 
 }
@@ -651,8 +659,8 @@ function createTemplate(saveType){
 			scrollToTopOnError : true,
 			dateFormat : 'yyyy/mm/dd' 
          }; 
-	
-	  if ($('#onboardTemplate_form').validate(false, validationSettings)){ 
+		var tab="details";
+	  if ($('#onboardTemplate_form').validate(false, validationSettings)){
 	        var sourceleadUrl ='${sourceleadUrl}';
 	    	$("#save_button").attr("disabled", "disabled");
     		$("#save_continue_button").attr("disabled", "disabled");
@@ -661,28 +669,36 @@ function createTemplate(saveType){
 	        $.ajax({
 	        	type : "POST",
   	    	    data: formData,
-		    	url: sourceleadUrl+"/createNewOnBoardingTemplate?${_csrf.parameterName}=${_csrf.token}", 
-		        success: function(json) {
-		        	if(saveType == 'saveAndContinue'){
-		        		var $tabs = $('.tabbable li');
-		     	        $tabs.filter('.active').next('li').find('a[data-toggle="tab"]').tab('show');
-		     	        document.getElementById("templateDocs").disabled = false;
-		     	        getTemplatePolicyDocumentsDetails(json.id);
+		    	url: sourceleadUrl+"/createNewOnBoardingTemplate?${_csrf.parameterName}=${_csrf.token}&tab="+tab, 
+		        success: function(response) {
+					if (response && (response.response === "INVALID_DATA" || response.response === "INVALID_USER")) {
+	        		    showError(response.responseMessage);
+	        	  	}else if (response.response === "AWKWARD") {
+		        	    location.href = "/errorPage";
+		        	} else if (response.response === "SUCCESS") {
+		        		var json = response.object;
+		        		if(saveType == 'saveAndContinue'){
+			        		var $tabs = $('.tabbable li');
+			     	        $tabs.filter('.active').next('li').find('a[data-toggle="tab"]').tab('show');
+			     	        document.getElementById("templateDocs").disabled = false;
+			     	        getTemplatePolicyDocumentsDetails(json.id);
+			        	}
+		     	        $("#templateId").val(templateId);
+		     	        $("#onboardtemplateId").val(json.id);
+		     	        $("#documentstemplateId").val(json.id);
+		     	        $("#taskstemplateId").val(json.id);
+		     	        $("#save_button").removeAttr("disabled")
+		        	    $("#save_continue_button").removeAttr("disabled")
+		     	        $("#loading").removeAttr("style");
+		        	} else if (response.indexOf('Sign In') !== -1) {
+		        		location.replace(sourceleadUrl);
+		        	} else {
+		        	    showError("Operation failed, please try again");
 		        	}
-	     	        $("#templateId").val(templateId);
-	     	        $("#onboardtemplateId").val(json.id);
-	     	        $("#documentstemplateId").val(json.id);
-	     	       $("#taskstemplateId").val(json.id);
-	     	       
-	     	        $("#save_button").removeAttr("disabled")
-	        	    $("#save_continue_button").removeAttr("disabled")
-	        	    
-	     	        $("#loading").removeAttr("style");
 		        },
 		    }); 
 	        return true;
-		
-	  }else{
+	  } else {
 		return false;
 	  }
 }
@@ -713,34 +729,35 @@ function createTemplateDocs(saveType){
 		      type : "POST",
     	      data: formData,
 	    	  url: sourceleadUrl+"/saveOnboardingTemplateDocuments?${_csrf.parameterName}=${_csrf.token}",		
-		      success :function(result) {
-		    	  
-		    	  if(saveType == 'saveAndContinue'){
-		        		var $tabs = $('.tabbable li');
-		     	        $tabs.filter('.active').next('li').find('a[data-toggle="tab"]').tab('show');
-		     	        document.getElementById("templateTasks").disabled = false;
-		     	        $("#onboardTaskDiv").val('Y');
-		     	        getOnboardingTasksList();
-		        	}
-		    	  else{
-		        		getTemplatePolicyDocumentsDetails();
-		        		/* getTemplateSupportingDocumentsDetails();
-		        		getTemplateContractsDocumentsDetails();
-		        		getTemplateFormsDocumentsDetails(); */
-		        	}
-		    	  
-		    	  $("#save_doc_button").removeAttr("disabled");
-	      	      $("#save_continue_doc_button").removeAttr("disabled");
-		    	  $("#loading").removeAttr("style");
-		    	  
+		      success :function(response) {
+		    	  if (response && response.response === "INVALID_DATA") {
+		    		    showError(response.responseMessage);
+		    		} else if (response.response === "AWKWARD") {
+		    		    location.href = "/errorPage";
+		    		} else if (response.response === "SUCCESS") {
+		    			if(saveType == 'saveAndContinue'){
+			        		var $tabs = $('.tabbable li');
+			     	        $tabs.filter('.active').next('li').find('a[data-toggle="tab"]').tab('show');
+			     	        document.getElementById("templateTasks").disabled = false;
+			     	        $("#onboardTaskDiv").val('Y');
+			     	        getOnboardingTasksList();
+			        	} else{
+			        		getTemplatePolicyDocumentsDetails();
+			        	}
+			    	  $("#save_doc_button").removeAttr("disabled");
+		      	      $("#save_continue_doc_button").removeAttr("disabled");
+			    	  $("#loading").removeAttr("style");
+		    		} else if (response.indexOf('Sign In') !== -1) {
+		    			location.replace(sourceleadUrl);
+		    		} else {
+		    		    showError("Operation failed, please try again");
+		    		}
 		      }
-	    	  
 	  });
 		 return true
-	  }else{
+	  } else {
 		  return false
 	  }
-	  
 	  $('body').on('blur', '#templateDocuments_form', function() {
 			$("#templateDocuments_form").showHelpOnFocus();
 			$("#templateDocuments_form").validateOnBlur(false, validationSettings);  
@@ -774,18 +791,25 @@ function saveOnboardTask(){
   	    	    processData: false,
 		        contentType:false,
 		    	 url: sourceleadUrl+"/saveOnBoardTasks?${_csrf.parameterName}=${_csrf.token}", 
-		        success: function(result) {
-		        	
-		        	if(result == 'success'){
-		        		$("#onboardtasksLoading").removeAttr("style");
-			        	flushOnboardTask();
-			        	getAssignToUsersList();
-			        	getOnboardingTasksList();
-			        	
-			        	document.getElementById("selector").style.display = 'block';
-			        	$("#selector").fadeIn(150);
-			        	$('#selector').delay(1000).fadeOut('slow');
-		        	}
+		        success: function(response) {
+		        	if (response && (response.response === "INVALID_DATA" || response.response === "INVALID_USER")) {
+	        		    showError(response.responseMessage);
+	        	  	} else if (response.response === "AWKWARD") {
+	        		    location.href = "/errorPage";
+	        		} else if (response.response === "SUCCESS") {
+			        		$("#onboardtasksLoading").removeAttr("style");
+				        	flushOnboardTask();
+				        	getAssignToUsersList();
+				        	getOnboardingTasksList();
+				        	
+				        	document.getElementById("selector").style.display = 'block';
+				        	$("#selector").fadeIn(150);
+				        	$('#selector').delay(1000).fadeOut('slow');
+	        		}else if (response.indexOf('Sign In') !== -1) {
+	        			location.replace(sourceleadUrl);
+	        		} else {
+	        		    showError("Operation failed, please try again");
+	        		}
 		        	
 		        },
 		    });  
@@ -833,32 +857,34 @@ $('body').on('blur', '#addonboardTask_form', function() {
 			scrollToTopOnError : true,
 			dateFormat : 'yyyy/mm/dd' 
             };
-
-        
 </script> 
-
 
 <script>
 function getTemplateDetails(){
+	$("#onboardTasksList").empty();
 	var templateId = document.getElementById("templateId").value;
 	if(templateId){
 		var sourceleadUrl ='${sourceleadUrl}';
         $.ajax({
 	    	type: "POST",
 	    	 url: sourceleadUrl+"/getOnboardTemplateById?${_csrf.parameterName}=${_csrf.token}&templateId="+templateId, 
-	        success: function(json) {
-	        	
-	        	 $("input[name=templateName]").val(json.templateName);
-	        	 $("textarea[name=description]").val(json.description);
-	        	 
-	        	 $("#onboardTasksList").empty();
-		        
+	        success: function(response) {
+	        	if (response.response === "AWKWARD") {
+	        	    location.href = "/errorPage";
+	        	} else if (response.response === "SUCCESS") {
+	        		var json = response.object;
+	        		$("input[name=templateName]").val(json.templateName);
+		        	$("textarea[name=description]").val(json.description);
+	        	} else if (response.indexOf('Sign In') !== -1) {
+	        		location.replace(sourceleadUrl);
+	        	} else {
+	        	    showError("Operation failed, please try again");
+	        	}
 	        },
 	    }); 
 	}
 }
 </script>
-
 
 <script>
 function getTemplatePolicyDocumentsDetails(templateId){
@@ -875,35 +901,38 @@ function getTemplatePolicyDocumentsDetails(templateId){
 	     $.ajax({
 		    	type: "POST",
 		    	 url: sourceleadUrl+"/getOnboardTemplateDocumentByTemplateId?${_csrf.parameterName}=${_csrf.token}&templateId="+templateId+"&documentType="+documentType, 
-		        success: function(json) {
-		        	
-		        	 var result = "";
-		        	 
-                	 for (var i = 0; i < json.length; i++) { 
-                		 var opt = json[i]; 
-                		 result = result +"<strong id='policydocument"+opt.id+"'>";
-           				 result = result +"<i class=''><a class='glyphicon glyphicon-save' href=\""+opt.fileURL+"\"></a></i>";
-           				 result = result +"<input type='button' value='"+opt.fileName+"'>";
-           				 result = result +"</a>";
-           				 result = result +"<input class='dele' type='button' onClick='deleteTemplateDocument(\""+opt.documentUUID+"\","+opt.id+",\""+documentType+"\");' >";
-           				 result = result +"</strong>";
-                	 }
-                	
-                	 result = result +"<input type='hidden' name='policiesAttcahmentMaxRowNumber'  id='policiesAttcahmentMaxRowNumber' value='1' />";
-                	 result = result +"<table class='timesheetAttachment' id='policiesAttachmentTable' cellpadding='0' cellspacing='0'>";
-                	 result = result +"<tr id='divAttachmentTsRow0'>";
-                	 result = result +"<td><div id='0docFileuploadFileGroup'><input type='file'  id='0docFile' field-name='Attachment' data-validation='validatedoc' data-validation-optional='true' onchange='uploadPoliciesDocument(0)'  class='timesheetAttachmentValidation'><i class='fa fa-plus' onClick='addPoliciesAttachment()'></i></div></td>";
-                	 result = result +"</tr>";
-                	 result = result +"</table>";
-                	 $("#savedPociliesAttachments").empty();
-                	 
-                	 $("#savedPociliesAttachments").append(result);
-                	 $("#onboardTasksList").empty();
-                	 
-               	    getTemplateSupportingDocumentsDetails(templateId);
-	     	        getTemplateContractsDocumentsDetails(templateId);
-	     	        getTemplateFormsDocumentsDetails(templateId);
-			        
+		        success: function(response) {
+		        	if (response.response === "AWKWARD") {
+		        	    location.href = "/errorPage";
+		        	} else if (response.response === "SUCCESS") {
+		        		 var json = response.data;
+			        	 var result = "";
+	                	 for (var i = 0; i < json.length; i++) { 
+	                		 var opt = json[i]; 
+	                		 result = result +"<strong id='policydocument"+opt.id+"'>";
+	           				 result = result +"<i class=''><a class='glyphicon glyphicon-save' href=\""+opt.fileURL+"\"></a></i>";
+	           				 result = result +"<input type='button' value='"+opt.fileName+"'>";
+	           				 result = result +"</a>";
+	           				 result = result +"<input class='dele' type='button' onClick='deleteTemplateDocument(\""+opt.documentUUID+"\","+opt.id+",\""+documentType+"\");' >";
+	           				 result = result +"</strong>";
+	                	 }
+	                	 result = result +"<input type='hidden' name='policiesAttcahmentMaxRowNumber'  id='policiesAttcahmentMaxRowNumber' value='1' />";
+	                	 result = result +"<table class='timesheetAttachment' id='policiesAttachmentTable' cellpadding='0' cellspacing='0'>";
+	                	 result = result +"<tr id='divAttachmentTsRow0'>";
+	                	 result = result +"<td><div id='0docFileuploadFileGroup'><input type='file'  id='0docFile' field-name='Attachment' data-validation='validatedoc' data-validation-optional='true' onchange='uploadPoliciesDocument(0)'  class='timesheetAttachmentValidation'><i class='fa fa-plus' onClick='addPoliciesAttachment()'></i></div></td>";
+	                	 result = result +"</tr>";
+	                	 result = result +"</table>";
+	                	 $("#savedPociliesAttachments").empty();
+	                	 $("#savedPociliesAttachments").append(result);
+	                	 $("#onboardTasksList").empty();
+	               	     getTemplateSupportingDocumentsDetails(templateId);
+		     	         getTemplateContractsDocumentsDetails(templateId);
+		     	         getTemplateFormsDocumentsDetails(templateId);
+		        	} else if (response.indexOf('Sign In') !== -1) {
+		        		location.replace(sourceleadUrl);
+		        	} else {
+		        	    showError("Operation failed, please try again");
+		        	}
 		        },
 		    });
 	}
@@ -922,32 +951,35 @@ function getTemplateSupportingDocumentsDetails(templateId){
 	     $.ajax({
 		    	type: "POST",
 		    	 url: sourceleadUrl+"/getOnboardTemplateDocumentByTemplateId?${_csrf.parameterName}=${_csrf.token}&templateId="+templateId+"&documentType="+documentType, 
-		        success: function(json) {
-		        	
-		        	 var result = "";
-		        	 
-                	 for (var i = 0; i < json.length; i++) { 
-                		 var opt = json[i]; 
-                		 result = result +"<strong id='supportdocument"+opt.id+"'>";
-                		 result = result +"<i class=''><a class='glyphicon glyphicon-save' href=\""+opt.fileURL+"\"></a></i>";
-           				 result = result +"<input type='button' value='"+opt.fileName+"'>";
-           				 result = result +"</a>";
-           				 result = result +"<input class='dele' type='button' onClick='deleteTemplateDocument(\""+opt.documentUUID+"\","+opt.id+",\""+documentType+"\");' >";
-           				 result = result +"</strong>";
-                	 }
-                	 
-                	 result = result +"<input type='hidden' name='supportingAttcahmentMaxRowNumber'  id='supportingAttcahmentMaxRowNumber' value='1' />";
-                	 result = result +"<table class='timesheetAttachment' id='supportingAttachmentTable' cellpadding='0' cellspacing='0'>";
-                	 result = result +"<tr id='divAttachmentTsRow0'>";
-                	 result = result +"<td><div id='0SupportingdocFileuploadFileGroup'><input type='file'  id='0supportingdocFile' data-validation='validatedoc' data-validation-optional='true' field-name='Attachment' onchange='uploadSupportingDocument(0)'  class='timesheetAttachmentValidation'><i class='fa fa-plus' onClick='addSupportingAttachment()'></i></div></td>";
-                	 result = result +"</tr>";
-                	 result = result +"</table>";
-                	 $("#savedSupportedAttachments").empty();
-                	 $("#savedSupportedAttachments").append(result);
-                	 $("#onboardTasksList").empty();
-                	 
-                	 
-			        
+		        success: function(response) {
+		        	if (response.response === "AWKWARD") {
+		        	    location.href = "/errorPage";
+		        	} else if (response.response === "SUCCESS") {
+		        		 var json = response.data;
+			        	 var result = "";
+	                	 for (var i = 0; i < json.length; i++) { 
+	                		 var opt = json[i]; 
+	                		 result = result +"<strong id='supportdocument"+opt.id+"'>";
+	                		 result = result +"<i class=''><a class='glyphicon glyphicon-save' href=\""+opt.fileURL+"\"></a></i>";
+	           				 result = result +"<input type='button' value='"+opt.fileName+"'>";
+	           				 result = result +"</a>";
+	           				 result = result +"<input class='dele' type='button' onClick='deleteTemplateDocument(\""+opt.documentUUID+"\","+opt.id+",\""+documentType+"\");' >";
+	           				 result = result +"</strong>";
+	                	 }
+	                	 result = result +"<input type='hidden' name='supportingAttcahmentMaxRowNumber'  id='supportingAttcahmentMaxRowNumber' value='1' />";
+	                	 result = result +"<table class='timesheetAttachment' id='supportingAttachmentTable' cellpadding='0' cellspacing='0'>";
+	                	 result = result +"<tr id='divAttachmentTsRow0'>";
+	                	 result = result +"<td><div id='0SupportingdocFileuploadFileGroup'><input type='file'  id='0supportingdocFile' data-validation='validatedoc' data-validation-optional='true' field-name='Attachment' onchange='uploadSupportingDocument(0)'  class='timesheetAttachmentValidation'><i class='fa fa-plus' onClick='addSupportingAttachment()'></i></div></td>";
+	                	 result = result +"</tr>";
+	                	 result = result +"</table>";
+	                	 $("#savedSupportedAttachments").empty();
+	                	 $("#savedSupportedAttachments").append(result);
+	                	 $("#onboardTasksList").empty();
+		        	} else if (response.indexOf('Sign In') !== -1) {
+		        		location.replace(sourceleadUrl);
+		        	} else {
+		        	    showError("Operation failed, please try again");
+		        	}
 		        },
 		    });
 	}
@@ -966,30 +998,40 @@ function getTemplateContractsDocumentsDetails(templateId){
 	     $.ajax({
 		    	type: "POST",
 		    	 url: sourceleadUrl+"/getOnboardTemplateDocumentByTemplateId?${_csrf.parameterName}=${_csrf.token}&templateId="+templateId+"&documentType="+documentType, 
-		        success: function(json) {
-		        	
-		        	 var result = "";
-		        	 
-                	 for (var i = 0; i < json.length; i++) { 
-                		 var opt = json[i]; 
-                		 result = result +"<strong id='contractsdocument"+opt.id+"'>";
-                		 result = result +"<i class=''><a class='glyphicon glyphicon-save' href=\""+opt.fileURL+"\"></a></i>";
-           				 result = result +"<input type='button' value='"+opt.fileName+"'>";
-           				 result = result +"</a>";
-           				 result = result +"<input class='dele' type='button' onClick='deleteTemplateDocument(\""+opt.documentUUID+"\","+opt.id+",\""+documentType+"\");' >";
-           				 result = result +"</strong>";
-                	 }
-                	 
-                	 result = result +"<input type='hidden' name='contractsAttcahmentMaxRowNumber'  id='contractsAttcahmentMaxRowNumber' value='1' />";
-                	 result = result +"<table class='timesheetAttachment' id='contractsAttachmentTable' cellpadding='0' cellspacing='0'>";
-                	 result = result +"<tr id='divAttachmentTsRow0'>";
-                	 result = result +"<td><div id='0ContractsdocFileuploadFileGroup'><input type='file' id='0contractsdocFile' field-name='Attachment' data-validation='validatedoc' data-validation-optional='true' onchange='uploadContractDocument(0)'  class='timesheetAttachmentValidation'><i class='fa fa-plus' onClick='addContractsAttachment()'></i></div></td>";
-                	 result = result +"</tr>";
-                	 result = result +"</table>";
-                	 $("#savedContractsAttachments").empty();
-                	 $("#savedContractsAttachments").append(result);
-                	 $("#onboardTasksList").empty();
-			        
+		        success: function(response) {
+		        	if (response && (response.response === "INVALID_DATA" || response.response === "INVALID_USER")) {
+		        		
+	        		    showError(response.responseMessage);
+	        	  	}else if (response.response === "AWKWARD") {
+		        	    location.href = "/errorPage";
+		        	} else if (response.response === "SUCCESS") {
+		        		 var json = response.data;
+			        	 var result = "";
+			        	 
+	                	 for (var i = 0; i < json.length; i++) { 
+	                		 var opt = json[i]; 
+	                		 result = result +"<strong id='contractsdocument"+opt.id+"'>";
+	                		 result = result +"<i class=''><a class='glyphicon glyphicon-save' href=\""+opt.fileURL+"\"></a></i>";
+	           				 result = result +"<input type='button' value='"+opt.fileName+"'>";
+	           				 result = result +"</a>";
+	           				 result = result +"<input class='dele' type='button' onClick='deleteTemplateDocument(\""+opt.documentUUID+"\","+opt.id+",\""+documentType+"\");' >";
+	           				 result = result +"</strong>";
+	                	 }
+	                	 
+	                	 result = result +"<input type='hidden' name='contractsAttcahmentMaxRowNumber'  id='contractsAttcahmentMaxRowNumber' value='1' />";
+	                	 result = result +"<table class='timesheetAttachment' id='contractsAttachmentTable' cellpadding='0' cellspacing='0'>";
+	                	 result = result +"<tr id='divAttachmentTsRow0'>";
+	                	 result = result +"<td><div id='0ContractsdocFileuploadFileGroup'><input type='file' id='0contractsdocFile' field-name='Attachment' data-validation='validatedoc' data-validation-optional='true' onchange='uploadContractDocument(0)'  class='timesheetAttachmentValidation'><i class='fa fa-plus' onClick='addContractsAttachment()'></i></div></td>";
+	                	 result = result +"</tr>";
+	                	 result = result +"</table>";
+	                	 $("#savedContractsAttachments").empty();
+	                	 $("#savedContractsAttachments").append(result);
+	                	 $("#onboardTasksList").empty();
+		        	} else if (response.indexOf('Sign In') !== -1) {
+		        		location.replace(sourceleadUrl);
+		        	} else {
+		        	    showError("Operation failed, please try again");
+		        	}
 		        },
 		    });
 	}
@@ -1009,29 +1051,36 @@ function getTemplateFormsDocumentsDetails(templateId){
 	     $.ajax({
 		    	type: "POST",
 		    	 url: sourceleadUrl+"/getOnboardTemplateDocumentByTemplateId?${_csrf.parameterName}=${_csrf.token}&templateId="+templateId+"&documentType="+documentType, 
-		        success: function(json) {
-		        	
-		        	 var result = "";
-		        	 
-                	 for (var i = 0; i < json.length; i++) { 
-                		 var opt = json[i]; 
-                		 result = result +"<strong id='formsdocument"+opt.id+"'>";
-                		 result = result +"<i class=''><a class='glyphicon glyphicon-save' href=\""+opt.fileURL+"\"></a></i>";
-           				 result = result +"<input type='button' value='"+opt.fileName+"'>";
-           				 result = result +"</a>";
-           				 result = result +"<input class='dele' type='button' onClick='deleteTemplateDocument(\""+opt.documentUUID+"\","+opt.id+",\""+documentType+"\");' >";
-           				 result = result +"</strong>";
-                	 }
-                	 
-                	 result = result +"<input type='hidden' name='formsAttcahmentMaxRowNumber'  id='formsAttcahmentMaxRowNumber' value='1' />";
-                	 result = result +"<table class='timesheetAttachment' id='formsAttachmentTable' cellpadding='0' cellspacing='0'>";
-                	 result = result +"<tr id='divAttachmentTsRow0'>";
-                	 result = result +"<td><div id='0FormsdocFileuploadFileGroup'><input type='file' name='0formsdocFile' id='0formsdocFile' field-name='Attachment' data-validation='validatedoc' data-validation-optional='true' onchange='uploadFormsDocument(0)'  class='timesheetAttachmentValidation'><i class='fa fa-plus' onClick='addFormsAttachment();'></i></div></td>";
-                	 result = result +"</tr>";
-                	 result = result +"</table>";
-                	 $("#savedFormsAttachments").empty();
-                	 $("#savedFormsAttachments").append(result);
-			        
+		        success: function(response) {
+		        	if (response.response === "AWKWARD") {
+		        	    location.href = "/errorPage";
+		        	} else if (response.response === "SUCCESS") {
+		        		 var json = response.data;
+			        	 var result = "";
+			        	 
+	                	 for (var i = 0; i < json.length; i++) { 
+	                		 var opt = json[i]; 
+	                		 result = result +"<strong id='formsdocument"+opt.id+"'>";
+	                		 result = result +"<i class=''><a class='glyphicon glyphicon-save' href=\""+opt.fileURL+"\"></a></i>";
+	           				 result = result +"<input type='button' value='"+opt.fileName+"'>";
+	           				 result = result +"</a>";
+	           				 result = result +"<input class='dele' type='button' onClick='deleteTemplateDocument(\""+opt.documentUUID+"\","+opt.id+",\""+documentType+"\");' >";
+	           				 result = result +"</strong>";
+	                	 }
+	                	 
+	                	 result = result +"<input type='hidden' name='formsAttcahmentMaxRowNumber'  id='formsAttcahmentMaxRowNumber' value='1' />";
+	                	 result = result +"<table class='timesheetAttachment' id='formsAttachmentTable' cellpadding='0' cellspacing='0'>";
+	                	 result = result +"<tr id='divAttachmentTsRow0'>";
+	                	 result = result +"<td><div id='0FormsdocFileuploadFileGroup'><input type='file' name='0formsdocFile' id='0formsdocFile' field-name='Attachment' data-validation='validatedoc' data-validation-optional='true' onchange='uploadFormsDocument(0)'  class='timesheetAttachmentValidation'><i class='fa fa-plus' onClick='addFormsAttachment();'></i></div></td>";
+	                	 result = result +"</tr>";
+	                	 result = result +"</table>";
+	                	 $("#savedFormsAttachments").empty();
+	                	 $("#savedFormsAttachments").append(result);
+		        	} else if (response.indexOf('Sign In') !== -1) {
+		        		location.replace(sourceleadUrl);
+		        	} else {
+		        	    showError("Operation failed, please try again");
+		        	}
 		        },
 		    });
 	}
@@ -1047,8 +1096,12 @@ function deleteTemplateDocument(documentUUID,documentId,documentType){
 	   $.ajax({
 	    	type: "POST",
 	    	 url: sourceleadUrl+"/deleteTemplateDocumentByDocumentUUID?${_csrf.parameterName}=${_csrf.token}&documentUUID="+documentUUID, 
-	        success: function(data) {
-	        	if(data == 'success'){
+	        success: function(response) {
+	        	if (response && response.response === "INVALID_DATA") {
+	        	    showError(response.responseMessage);
+	        	} else if (response.response === "AWKWARD") {
+	        	    location.href = "/errorPage";
+	        	} else if (response.response === "SUCCESS") {
 	        		if(documentType == 'Policies'){
 	        			document.getElementById("policydocument"+documentId).remove();
 	        		}else if(documentType == 'Supported'){
@@ -1058,48 +1111,52 @@ function deleteTemplateDocument(documentUUID,documentId,documentType){
 	        		}else if(documentType == 'Forms'){
 	        			document.getElementById("formsdocument"+documentId).remove();
 	        		}
-	        		
+	        	} else if (response.indexOf('Sign In') !== -1) {
+	        		location.replace(sourceleadUrl);
+	        	} else {
+	        	    showError("Operation failed, please try again");
 	        	}
 	        },
 	    });
-	 
 }
 </script>
-
 
 <script>
 function validateTemplateName(){
 	var templateId = document.getElementById("templateId").value;
 	var templateName = document.getElementById("templateName").value;
-	
 	if(templateName){
-		
 		$.ajax({
 	    	type: "POST",
 	    	url : sourceleadUrl+"/validateOnboardingTemplateName?${_csrf.parameterName}=${_csrf.token}&templateName="+templateName+"&templateId="+templateId, 
-	        success: function(result) {
-	        	if (result == 'invalid') {
-	        		$("#save_button").attr("disabled", "disabled");
-	        		$("#save_continue_button").attr("disabled", "disabled");
-	        		$('#templateNameDiv').find('p.jquery_form_error_message').remove();
-	        		$("input#templateName").after( "<p class='jquery_form_error_message'>" + templateName + " is Already Existed</span>");
-					document.getElementById("templateName").setAttribute( 'record-exist', 'yes');
-					document.getElementById("templateName").setAttribute( 'record-exist-errorMsg', templateName +"  already existed");
-	        	}else{
-	        		$('input#templateName').removeAttr("class record-exist record-exist-errormsg");
-					$('input#templateName').attr('class','valid form-control');
-					$('#templateNameDiv').find('p.jquery_form_error_message').remove();
-					
-	        		$("#save_button").removeAttr("disabled")
-	        		$("#save_continue_button").removeAttr("disabled")
-	        		
+	        success: function(response) {
+	        	if (response.response === "AWKWARD") {
+	        	    location.href = "/errorPage";
+	        	} else if (response.response === "SUCCESS") {
+	        		if (response.object == 'invalid') {
+		        		$("#save_button").attr("disabled", "disabled");
+		        		$("#save_continue_button").attr("disabled", "disabled");
+		        		$('#templateNameDiv').find('p.jquery_form_error_message').remove();
+		        		$("input#templateName").after( "<p class='jquery_form_error_message'>" + templateName + " is Already Existed</span>");
+						document.getElementById("templateName").setAttribute( 'record-exist', 'yes');
+						document.getElementById("templateName").setAttribute( 'record-exist-errorMsg', templateName +"  already existed");
+		        	}else{
+		        		$('input#templateName').removeAttr("class record-exist record-exist-errormsg");
+						$('input#templateName').attr('class','valid form-control');
+						$('#templateNameDiv').find('p.jquery_form_error_message').remove();
+		        		$("#save_button").removeAttr("disabled");
+		        		$("#save_continue_button").removeAttr("disabled");
+		        	}
+	        	} else if (response.indexOf('Sign In') !== -1) {
+	        		location.replace(sourceleadUrl);
+	        	} else {
+	        	    showError("Operation failed, please try again");
 	        	}
 	        }
 		 });
 	}
 }
 </script>
-
 
 <script>
 function getOnboardingTasksList(){
@@ -1113,73 +1170,68 @@ function getOnboardingTasksList(){
 	$.ajax({
 	   	type: "POST",
 	    url: sourceleadUrl+"/getOnboardTasksListByTemplateId?${_csrf.parameterName}=${_csrf.token}&templateId="+templateId,	    	   
-	    success: function(json) {
-        	 var result = "";
-        	if(json.length > 0){ 
-	        	for (var i=0; i<json.length; i++)
-				{
-	        		var report = json[i];
-	        		
-	        		var prority = '';
-	        		var repeat = '';
-	        		
-	        		if(report.priority != null && report.priority != '' && report.priority != 'undefined'){
-	        			prority = report.priority;
-	        		}else{
-	        			prority = '----';
-	        		}
-	        		
-	        		if(report.taskRepeat != null && report.taskRepeat != '' && report.taskRepeat != 'undefined'){
-	        			repeat = report.taskRepeat;
-	        		}else{
-	        			repeat = '----';
-	        		}
-	        		
-	        		result = result +'<div class="clearfix taskwidget_inner" id="onboardTask'+report.id+'">';
-	        		result = result +'<div class="media-body">';
-	        		result = result +'<div class="clearfix taskheder">';
-	        		result = result +'<label> <span class="paddingRight">Subject:</span> <strong class="text-primary">'+report.taskName+'</strong><a href="#"><i class="fa fa-trash text-danger paddingLeft" onClick="deleteTask('+report.id+');"></i></a></label>';
-	        		result = result +'<label class="small pull-right text-muted"> <span>'+report.dueAfterString+'</span> </label>';
-	        		result = result +'</div>';
-	        		result = result +'<ul class="list-inline list-description mt10">';
-	        		
-	        		result = result +'<li><span>Assign To:</span>';
-	        		
-	        		if(report.usersList.length > 0){
-	        			for(var j=0; j<report.usersList.length; j++){
-		 					result = result +'<label>'+report.usersList[j]+'</label>';
+	    success: function(response) {
+	    	if (response.response === "AWKWARD") {
+	    	    location.href = "/errorPage";
+	    	} else if (response.response === "SUCCESS") {
+	    		var result = "";
+	        	var json = response.data;
+	        	if(json.length > 0){ 
+		        	for (var i=0; i<json.length; i++) {
+		        		var report = json[i];
+		        		var prority = '';
+		        		var repeat = '';
+		        		if(report.priority != null && report.priority != '' && report.priority != 'undefined'){
+		        			prority = report.priority;
+		        		} else {
+		        			prority = '----';
+		        		}
+		        		if(report.taskRepeat != null && report.taskRepeat != '' && report.taskRepeat != 'undefined'){
+		        			repeat = report.taskRepeat;
+		        		} else {
+		        			repeat = '----';
+		        		}
+		        		result = result +'<div class="clearfix taskwidget_inner" id="onboardTask'+report.id+'">';
+		        		result = result +'<div class="media-body">';
+		        		result = result +'<div class="clearfix taskheder">';
+		        		result = result +'<label> <span class="paddingRight">Subject:</span> <strong class="text-primary">'+report.taskName+'</strong><a href="#"><i class="fa fa-trash text-danger paddingLeft" onClick="deleteTask('+report.id+');"></i></a></label>';
+		        		result = result +'<label class="small pull-right text-muted"> <span>'+report.dueAfterString+'</span> </label>';
+		        		result = result +'</div>';
+		        		result = result +'<ul class="list-inline list-description mt10">';
+		        		result = result +'<li><span>Assign To:</span>';
+		        		if(report.usersList.length > 0){
+		        			for(var j=0; j<report.usersList.length; j++) {
+			 					result = result +'<label>'+report.usersList[j]+'</label>';
+			 				}
+		        		} else {
+		 					result = result +'Onboarding Candidate';
 		 				}
-	        		}else{
-	 					result = result +'Onboarding Candidate';
-	 				}
-	        		result = result +'</li>';
-	        		
-	        		result = result +'<li><span>Priority:</span>'+prority+'</li>';
-	        		result = result +'<li><span>Repeat:</span> '+repeat+'</li>';
-	        		result = result +'</ul>';
-	        		result = result +'</div>';
-	        		result = result +'</div>';
-				}
-        	}else{
-        		result = result +'<div><h4>No Tasks Found</h4></div>';
-        	}
-        	
-        	result = result +'<div class="form-footer clearfix mt">';
-    		result = result +'<div class="pull-right mr">';
-    		result = result +'<input type="button" value="Cancel" id="finish_task" onClick="redirect();" class="btn btn-sm btn-default">';
-    		result = result +'<input type="button" value="Finish" id="finish_task" onclick="saveAndFinishOnboardTemplate('+templateId+');" class="btn btn-sm btn-primary">';
-    		result = result +'</div>';
-    		result = result +'</div>';
-    		
-    		 $("#onboardTasksList").empty();
-           	 $("#onboardTasksList").append(result); 
-    		
-        	 
+		        		result = result +'</li>';
+		        		result = result +'<li><span>Priority:</span>'+prority+'</li>';
+		        		result = result +'<li><span>Repeat:</span> '+repeat+'</li>';
+		        		result = result +'</ul>';
+		        		result = result +'</div>';
+		        		result = result +'</div>';
+					}
+	        	}else{
+	        		result = result +'<div><h4>No Tasks Found</h4></div>';
+	        	}
+	        	result = result +'<div class="form-footer clearfix mt">';
+	    		result = result +'<div class="pull-right mr">';
+	    		result = result +'<input type="button" value="Cancel" id="finish_task" onClick="redirect();" class="btn btn-sm btn-default mr">';
+	    		result = result +'<input type="button" value="Finish" id="finish_task" onclick="saveAndFinishOnboardTemplate('+templateId+');" class="btn btn-sm btn-primary">';
+	    		result = result +'</div>';
+	    		result = result +'</div>';
+	    		 $("#onboardTasksList").empty();
+	           	 $("#onboardTasksList").append(result); 
+	    	} else if (response.indexOf('Sign In') !== -1) {
+	    		location.replace(sourceleadUrl);
+	    	} else {
+	    	    showError("Operation failed, please try again");
+	    	}
 	    }
    }); 
-	
   $("#loading").removeAttr("style");
-	
  }
 }
 
@@ -1193,17 +1245,24 @@ function redirect(){
 
 <script>
 function deleteTask(taskId){
-	
 	var sourceleadUrl ='${sourceleadUrl}';
 	   $.ajax({
 	    	type: "POST",
 	    	 url: sourceleadUrl+"/deleteOnboardTaskByTaskId?${_csrf.parameterName}=${_csrf.token}&taskId="+taskId, 
-	        success: function(data) {
-	        	if(data == 'success'){
+	        success: function(response) {
+	        	if (response && response.response === "INVALID_DATA") {
+	        	    showError(response.responseMessage);
+	        	} else if (response.response === "AWKWARD") {
+	        	    location.href = "/errorPage";
+	        	} else if (response.response === "SUCCESS") {
 	        		document.getElementById("onboardTask"+taskId).remove();
 	        		if($("#onboardTasksList div[id*=onboardTask]").length === 0) {
 	        			$("#onboardTasksList").prepend("<div><h4>No Tasks Found</h4></div>");
 	        		}
+	        	} else if (response.indexOf('Sign In') !== -1) {
+	        		location.replace(sourceleadUrl);
+	        	} else {
+	        	    showError("Operation failed, please try again");
 	        	}
 	        },
 	    });
@@ -1212,26 +1271,29 @@ function deleteTask(taskId){
 
 
 <script>
-function saveAndFinishOnboardTemplate(templateId){
-	
-	
+function saveAndFinishOnboardTemplate(templateId) {
 	$("#finish_task").attr("disabled", "disabled");
-	 $("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
+	$("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
 	$.ajax({
 	   	type: "POST",
 	    url: sourceleadUrl+"/saveAndFinishOnboardTemplate?${_csrf.parameterName}=${_csrf.token}&templateId="+templateId,	    	   
-	    success: function(data) {
-	    	 $("#finish_task").removeAttr("disabled");
-	    	 location.replace(sourceleadUrl+"/onboardingTemplatesList"); 
+	    success: function(response) {
+	    	if (response && (response.response === "INVALID_DATA" || response.response === "INVALID_USER")) {
+    		    showError(response.responseMessage);
+    	  	}else if (response.response === "AWKWARD") {
+	    	    location.href = "/errorPage";
+	    	} else if (response.response === "SUCCESS") {
+	    		 $("#finish_task").removeAttr("disabled");
+		    	 location.replace(sourceleadUrl+"/onboardingTemplatesList"); 
+	    	} else if (response.indexOf('Sign In') !== -1) {
+	    		location.replace(sourceleadUrl);
+	    	} else {
+	    	    showError("Operation failed, please try again");
+	    	}
 	    }
   }); 
-	
-
 }
 </script>
-
-  
-  
   <script>
   $(function() {
     $( "#startDate" ).datepicker({
@@ -1239,13 +1301,13 @@ function saveAndFinishOnboardTemplate(templateId){
       changeYear: true,
     });
   });
-    $(function() {
+  $(function() {
     $( "#endDate" ).datepicker({
 	  changeMonth: true,
       changeYear: true,
     });
   });
-    $(function() {
+  $(function() {
     $( "#dueDate" ).datepicker({
 	  changeMonth: true,
       changeYear: true,

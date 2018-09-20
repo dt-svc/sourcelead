@@ -55,11 +55,10 @@ display: none;
        <form:form id="joblistCampaign_form" name="joblistCampaign_form"  >
         <div class="col-md-12 clearfix">
           <label class="col-md-2 control-label text-muted small">From</label>
-           <div class="col-md-9">
+           <div class="col-md-9 clearfix mailFromRefreBtn">
             <%-- <input type="text" value="${createSender.fromMail}" class="form-control input-sm" readonly> --%>
-				<div class="input-group errorInptgroup">
-				 <select class="chosen-select form-control" id="senderIdentity" name="senderIdentity" data-validation="required" field-name="Sender"></select>  						 
-				
+            <select class="chosen-select form-control" id="senderIdentity" name="senderIdentity" data-validation="required" field-name="Sender"></select>  
+				<div class="input-group">
 				<span class="input-group-addon cursorPointer bg-blue" onclick="getSenders();"><i class="fa fa-refresh "></i></span>
 				<!-- <a class="input-group-addon" onclick="campaignSender('','','jobList');"><i class="fa fa-plus cursorPointer"></i></a> -->
 				</div>   
@@ -81,8 +80,11 @@ display: none;
           <label class="col-md-2 control-label text-primary small">To</label>
           <div class="col-md-9 positionRelative disable-choosen-dropdown">
             
-			<div class="input-group errorInptgroup col-md-12 noPad">
-  				<select class="form-control"  field-name="To List" multiple data-placeholder="Enter Emails And Press Enter-Key Or Comma(,) Or Space To Add New Email" id="emailsList"  data-validation-optional="true" name="Toemails"></select>
+			<div class="input-group  col-md-12 noPad" onclick="manuallyEnterJoblistToEmail();">
+  				<select class="form-control"  field-name="To List" multiple data-placeholder="Select Multiple Mails List" id="emailsList" data-validation="required" name="Toemails"></select>
+            	
+<!--             	<span class="refreshicon-new input-group-addon cursorPointer bg-blue" onclick="getRecipients();"><i class="fa fa-refresh "></i></span>	 -->
+            	
             	<span class="select-multiple poLeft" data-target="#multiplemail" onclick="getRecipientContactsList();" data-toggle="modal"><i class="fa fa-list-alt" title="Multiple Mail"></i></span>
                <!-- <span class="input-group-addon cursorPointer bg-blue" onclick="getContractTemplates();"><i class="fa fa-refresh "></i></span> -->    	 
 				<!-- <a class="input-group-addon" onclick="campaignRecipient('','','jobList');"><i class="fa fa-plus cursorPointer"></i></a> -->
@@ -147,7 +149,7 @@ display: none;
             <select class="chosen-select" name="campaignjobs" data-validation="required" field-name="Jobs" multiple data-placeholder="&nbsp;Enter Jobs" id="selectedJobs">
             </select>
             
-            <span class="select-multiple" data-target="#requirement" onclick="selectJobsRadio();" data-toggle="modal"><i class="fa fa-th-large" title="Select Candidates"></i></span> 
+            <span class="select-multiple" data-target="#requirement" onclick="selectJobsRadio();" data-toggle="modal"><i class="fa fa-th-large" title="Select jobs"></i></span> 
             <!-- Modal content Multiple mail -->
             <div role="dialog" id="requirement" class="modal fade custom-modal">
               <div class="modal-dialog modal-lg">
@@ -173,7 +175,7 @@ display: none;
 					    <li class="checkBox"><input name="jobStatus" type="checkbox"><label>By Client</label></li>
 					  </ul>
 					</span> -->
-                    
+                    <div id="popupId"></div>
                     </div>
                   <!-- <div id="mailBoxJobsList" class="mailFil datatable_filter"></div> -->
                     <div class="clearfix">
@@ -246,6 +248,9 @@ display: none;
   <script src="/resources/js/nicEdit.js"></script> 
   
    <script type="text/javascript">
+   function manuallyEnterJoblistToEmail(){
+		  $('#emailsList_chosen ul li input').attr('readonly', true);
+	  }
 	function sendJobListCampaign() {
 		
 		if ($('#joblistCampaign_form').validate(false, validationSettings)){ 
@@ -355,8 +360,8 @@ function jobListChange(type){
     	result = result +'</div>'; 
     	result = result +'</div>';
     	result = result +'<div class="clearfix pull-right mr mb">';
-     	result = result +'<button class="btn btn-primary"  type="button" data-dismiss="modal" id="assignbtnId" onclick="getCheckedJobs();">Add</button>';
-     	result = result +' <button data-dismiss="modal" class="btn btn-default" type="button">Close</button>';
+     	result = result +'<button class="btn btn-primary"  type="button" id="assignbtnId" onclick="getCheckedJobs();">Add</button>';
+     	result = result +' <button class="btn btn-default" type="button" onclick="removeMessage();">Close</button>';
      	result = result +' </div>'; 
 	    $("#mailBoxJobsList").empty();
 	    $("#mailBoxJobsList").append(result);
@@ -371,7 +376,7 @@ function jobsDataTableList(type){
 	 var searchValue = $("#jobsDataTableSearch").val();
 	 searchValue = searchValue ? searchValue : "";
 	 var url = sourceleadUrl+"/getJobsForCampaign?searchValue="+searchValue+"&jobCampaignType="+type;
-	 jobsPagination(url,type);
+   jobsPagination(url,type);
 }
 </script>
 
@@ -422,7 +427,7 @@ function jobsPagination(url,type){
 	    	  		  var result = "";
 	    	  		  var jobId = "";
 	    	  	 	 if(opt.jobId != null && opt.jobId != 'undefined' && opt.jobId != ""){
-		           		 jobId = opt.jobId+" "+opt.jobId ;
+		           		 jobId = opt.jobId ;
 		           	 }else{
 		           		 jobId = "----";
 		           	 }
@@ -459,13 +464,37 @@ function jobsPagination(url,type){
 	              "data": "location",
 	              "render": function ( data, type, opt, meta ) {
 	            	    var result = "";
-	            	    var location="";
-	            	    if(opt.location != null && opt.location !='' && opt.location != 'undefined'){
-	            	    	location = opt.location;
-	            	    }else{
+	            	    result = result +'<td>';
+	   		        	result = result +'<div class="positionRelative">';
+		   		         for(var k=0; k<1; k++){
+		   		        	result = result + '<p class="tbldata-dotdot-me pull-left">'+opt.locationsList[k]+'</p>';
+		   		         }
+	   		    	
+		   		        result = result +'<div class="show_Empdetails showjoblist">';
+	   		        	result = result +'<i class="fa fa-ellipsis-v"></i>';
+
+	   		        	result = result +'<div class="emailvalues emailvaluesNew">';
+	   		        	
+							for(var k=0; k<opt.locationsList.length; k++){
+								result = result +'<p><i class="fa fa-map-marker"></i>'+opt.locationsList[k]+'</p>';
+			   		        	
+	   		    	 	}
+	   		        	result = result +'</div>';
+	   		        	result = result +'</div>';
+	   
+
+   		        	result = result +'</div>';
+   		        	result = result +'</td>';
+            		
+	            	   /* var location="";
+	            	    if(opt.locationsList != null && opt.locationsList !='' && opt.locationsList != 'undefined'){
+	            	    	
+	            	      location = opt.locationsList;
+							
+	            	     }else{
 	            	    	location = "----";
 	            	    }
-	            		result = result + '<td><div class="tblminwidth-75"><span title="'+location+'">'+location+'</span></div></td>';
+	            		result = result + '<td><div class="tblminwidth-75"><span title="'+location+'">'+location+'</span></div></td>';*/
 	            		return result;
 	              }
 		     },{
@@ -532,7 +561,13 @@ function jobsPagination(url,type){
 </script>
 
 <!-- for job selection script stars -->
+<script type="text/javascript">
+$(function() { 
+	tagIt("otherEmails", 'Enter Emails And Press Enter-Key Or Comma(,) Or Space To Add New Email', 'tagItBykeyForEmails','emails');
+	tagIt("emailsList", 'Enter Emails And Press Enter-Key Or Comma(,) Or Space To Add New Email', 'tagItBykeyForEmails','emails');
 
+});
+</script> 
 
 <script>
 function toggleJobs(source) {
@@ -555,11 +590,19 @@ $('input[class="myJobsCheckbox"]').each(function(i) {
 <script>
 function getCheckedJobs(){
 	
+	$('#popupId').parent().find('p.jquery_form_error_message').remove();
 	var internalOutput = "";
 	 for(var e in allJobs) {
 		 var checkbox_value = allJobs[e].split(",");
 		 internalOutput = internalOutput+"<option value='" +checkbox_value[0]+ "' selected>"+checkbox_value[1]+"</option>";
 	  }
+	 
+	 if($("input[name='jobTitle[]']:checked").length == 0){
+	    	$("#popupId").after("<p class='jquery_form_error_message'><span>Select Atleast One Jobs</span>");
+	    }else{
+	    	$("#requirement").modal('hide');
+	    	$('#popupId').parent().find('p.jquery_form_error_message').remove();
+	    }
 	
 	    $("#selectedJobs").append(internalOutput);
 		$("#selectedJobs").trigger("chosen:updated");
@@ -591,7 +634,7 @@ function checkJob(ele) {
 			}
 			
 			  //Adding Customized Emails to the list
-	        var select, chosen;
+	        /* var select, chosen;
 		    select = $("#otherEmails");
 		    select.chosen({ no_results_text: 'Press Enter-Key Or Comma(,) Or Space Or Tab To Add New Email:' });
 		    chosen = select.data('chosen');
@@ -619,9 +662,9 @@ function checkJob(ele) {
 				        } 
 		    	 }
 		    	
-		    });
+		    }); */
 
-		    var selectone, chosenone;
+		    /* var selectone, chosenone;
 		    selectone = $("#emailsList");
 		    selectone.chosen({ no_results_text: 'Press Enter-Key Or Comma(,) Or Space Or Tab To Add New Email:' });
 		    chosenone = selectone.data('chosen');
@@ -648,7 +691,7 @@ function checkJob(ele) {
 				        }
 		    	 }
 		    
-		    });
+		    }); */
 
 			for (var selector in config) {
 			  $(selector).chosen(config[selector]);
@@ -1363,11 +1406,14 @@ function getRecipantsContacts(){
 	
 	
 	var internalOutput = "";
-	
-	var internalOutput = "";
 	 for(var e in recepiantscontactsList) {
 		 var checkbox_value = recepiantscontactsList[e].split(",");
+		 var elist=$("#emailsList").chosen().find("option:selected" ).text();
+		 var searchString=elist.search(checkbox_value[1]);
+		 if(searchString==-1)
+			{
 		 internalOutput = internalOutput+"<option value='" +checkbox_value[0]+ "' selected>"+checkbox_value[1]+"</option>";
+			}
 	  }
 	
 	
@@ -1470,6 +1516,30 @@ function getSenders(){
 </script>
 
 <script>
+function getRecipients(){
+
+		$.ajax({
+		type : "GET",
+		url: sourceleadUrl+"/getRecipients?"+tokenParamName+"="+tokenValue,
+		success :function(json) {
+		var output = "";
+		output = output + "<option value=''>Select Recipient</option>";
+		for (var i=0; i<json.length; i++)
+		{
+		var opt = json[i];
+		output = output + "<option value='" +opt.senderId+ "'>"+opt.cpnSenderFromMail+"("+opt.cpnSenderName+")</option>";
+		
+		}
+		
+		$("#emailsList").empty();
+		$("#emailsList").append(output);
+		$('#emailsList').trigger("chosen:updated");
+		},
+		});
+}
+</script>
+
+<script>
 function checkUniqueSubject(){
 	var locationId = '${SourceLeadWeb_orgLocationId}';
 	var name = $("#campaignSubject").val();
@@ -1489,109 +1559,12 @@ function checkUniqueSubject(){
 }
 </script>
 
-<form:form id="capn_add_Recipient_List" name="capn_add_Recipient_List" method="post">
-	
-		<div class="popupHead">
-		<c:if test="${empty campaignList.id}">
-			<h2>Add Recipient</h2><a onclick="recipientClose();" href="javascript:void(0)" class="fa fa-close popCan"></a>
-		</c:if>
-		
-		<c:if test="${!empty campaignList.id}">
-			<h2>Edit Recipient</h2><a onclick="recipientClose();" href="javascript:void(0)" class="fa fa-close popCan"></a>
-		</c:if>
-		</div>
-		
-		<div id="loading"></div>
-		<div class="popupMid popupMidPad clearfix">
+<script>
+	function removeMessage() {
+		$('#popupId').parent().find('p.jquery_form_error_message').remove();
+		$("#requirement").modal('hide');
+	}
+</script>
 
-          <div class="col-sm-12 noPad mt clearfix">
-				<label class="col-md-3 padding_left">Choose Campaign<span class="text-danger">&nbsp;*</span></label>
-              	<div class="col-md-9 padding_right clearfix">
-              		<div class="col-md-6 padding_left">
-              			<input type="radio" id="hotlistRadio" value="hotlistCampaign" onclick="clearRecipantsList();" checked name="campaignType"><label for="hotlistRadio">&nbsp;Hot List Campaign</label>
-              		</div>
-              		<div class="col-md-6">
-              			<input type="radio" id="jobRadio" value="jobCampaign" onclick="clearRecipantsList();"  name="campaignType"><label for="jobRadio">&nbsp;Job Campaign</label>
-              		</div>              		
-				</div>
-			</div>
-			
-          <div class="col-sm-12 noPad mt clearfix">
-				<label class="col-md-3 padding_left">List Name<span class="text-danger">&nbsp;*</span></label>
-              	<div class="col-md-9 padding_right" id="cpnListNameDiv">
-                	<input type="text" class="form-control" id="cpnListName" name="cpnListName" value="${campaignList.listName}"  onblur="validateCampaignListName();" data-validation="required validate_length length1-100" field-name="List Name">
-				    <input type="hidden" value="${campaignList.id}" name="contactListId" id="contactListId" >
-				</div>
-			</div>			
-			
-          <div class="col-sm-12 noPad mt clearfix">
-              <label class="col-md-3 padding_left">Recipient(Email)<span class="text-danger">&nbsp;*</span></label>
-              <div class="col-md-8">
-                <select multiple class="chosen-select form-control" id="recipientEmail" name="recipientEmail" data-validation="required validate_length length1-250" field-name="Recipient Email">
-               <c:if test="${not empty recipientList}"></c:if>
-               <c:forEach items="${recipientList}" var="recipient">
-   						<option value='${recipient.email }' selected>${recipient.email}</option>
-				</c:forEach>
-                </select>
-                
-              </div>
-              	<div class="col-md-1 noPad">
-					<a href="javascript:void(0)"  data-target="#multiplemail" onclick="selectRadio();" data-toggle="modal" class="btn btn-default"><i class="fa fa-list-alt"></i></a>
-					<div role="dialog" id="multiplemail" class="modal fade">
-              <div class="modal-dialog modal-lg">
-                <div class="modal-content">
-                  <div class="modal-header">
-                    <button data-dismiss="modal" class="close" type="button">×</button>
-                    <h4 class="modal-title" id="receipantCategoryType"></h4>
-                    <label class="paddingLeft paddingRight">
-               	    <input  type="radio" id="vendorCheck" name="users" checked onclick="selectRadio()"><strong class="paddingLeft" id="categoryListType"></strong></label>
-               	    <label class="paddingLeft">
-               	    <input type="radio" id="contactsCheck" name="users" onclick="getContactsList();"><strong class="paddingLeft">My Contacts</strong></label>
-                  </div>
-                  
-                   <div class="modal-body clearfix">
-                    <div class="col-xs-12 col-md-4 col-lg-4 selectpicker100 select-field paddingLeft mb10" id="vendorsListDiv" style="display: none">
-                          <select class="form-control" id="vendorListType" onchange="vendorListChange();">
-                           <option value="listbyVendor" selected>List By Vendor</option>
-                           <option value="listbyContact">List By Contact</option>
-                          </select>
-                    </div>
-                    <div class="clearfix"></div>
-                    <div class="clearfix">
-                     <div id="mailBoxVendorsList" class="datatable_filter"></div>
-                    </div>
-                    
-                  </div>
-                  
-                  
-                  <div class="modal-body clearfix">
-                    <div class="col-xs-12 col-md-4 col-lg-4 selectpicker100 select-field paddingLeft mb10" id="clientsListDiv" style="display: none">
-                          <select class="form-control" id="clientListType" onchange="clientListChange();">
-                           <option value="listbyClient" selected>List By Client</option>
-                           <option value="listbyClientContact">List By Contact</option>
-                          </select>
-                    </div>
-                    <div class="clearfix"></div>
-                    <div class="clearfix">
-                     <div id="mailBoxClientsList" class="datatable_filter"></div>
-                    </div>
-                    
-                  </div> 
-                  
-                </div>
-              </div>
-            </div>
-				</div>              
-			</div>	
-		
-		</div>
-		
-		<div class="popupFoot">
-		<p id="errorMessage" class=""></p>
-            <input value="Save" class="btn btn-primary" type="button" id="addList">
-             <input value="Reset" class="btn btn-primary" type="button" id="resetForm">
-            <input value="Cancel" class="btn btn-default ml popCan" type="button" onclick="recipientClose();">
-          </div>		
-		</form:form>
 
 <jsp:include page="masterFooter.jsp" />

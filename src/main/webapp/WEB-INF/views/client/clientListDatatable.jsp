@@ -113,7 +113,7 @@ function getClientList(){
 		    	  		var result = "";
 		    	  		  '<sec:authorize access="hasAnyRole(\'ROLE_VIEW_CLIENT\',\'ROLE_VIEW_EDIT_CLIENT\')">';
 			   			result = result +'<td>';
-			   			result = result +'<div class="proj_show" onclick="clientSideBar(\''+report.responderLocationId+'\',\''+report.orgRelationId+'\',\''+report.orgName+'\');"><span class="tbldata-dotdot-vsm" title="'+report.orgName+'">'+report.orgName+'</span><i class="fa fa-binoculars"></i>';
+			   			result = result +'<div class="proj_show" onclick="clientSideBar(\''+report.responderLocationId+'\',\''+report.orgRelationId+'\',\''+escape(report.orgName)+'\');"><span class="tbldata-dotdot-vsm" title="'+report.orgName+'">'+report.orgName+'</span><i class="fa fa-binoculars"></i>';
 			   			result = result +'</div>';
 			   			result = result +'</td>';
 			   		   '</sec:authorize>';
@@ -149,7 +149,7 @@ function getClientList(){
 	              "render": function ( data, type, report, meta ) {
 	            	  var result = "";
 	              		var location = "";
-	    		   		if(report.city != null && report.city != '' && report.city != 'undefined'){
+	    		   		if(report.city != null && report.city != '' && report.city != 'undefined' && report.state != null && report.state != '' && report.state != 'undefined'){
 	    		   			location = report.city+", "+report.state+", "+report.country;
 	    		   		}else if(report.state != null && report.state != '' && report.state != 'undefined'){
 	    		   			location = report.state+", "+report.country;

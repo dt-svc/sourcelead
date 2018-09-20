@@ -1,3 +1,3 @@
 set SQL_SAFE_UPDATES=0;
-UPDATE `sourcelead`.`EMAIL_SCENARIO` SET `BODY`='Dear {{MailToTeamMembers.EmployeeFirstName}},
+UPDATE `EMAIL_SCENARIO` SET `BODY`='Dear {{MailToTeamMembers.EmployeeFirstName}},
 \n{{MailToTeamMembers.LoginUserFirstName}} assigned you as a team member for the {{MailToTeamMembers.ProjectName}} and your project manager is {{MailToTeamMembers.ManagerFirstName}} {{MailToTeamMembers.ManagerLastName}}.' WHERE `UNIQUE_SCENARIO_NAME`='Mail To Team Members' and `ENTITY_TYPE`='Email';

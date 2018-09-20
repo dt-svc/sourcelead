@@ -56,9 +56,9 @@ public class CampaignServiceImpl implements CampaignService{
 	ReferContactsService referContactsService;
 	
 	@Override
-	public boolean createSender(CreateSenderDTO createSenderDTO, User user, OrgLocations orgLocation) throws Exception
+	public String createSender(CreateSenderDTO createSenderDTO, User user, OrgLocations orgLocation) throws Exception
 	{
-		boolean isSenderCreated = false;
+		String isSenderCreated = "failure";
 		String senderCreated = null;
 		CreateSender createSender = null;
 		if(StringUtils.isNotBlank(createSenderDTO.getSenderId())) {
@@ -70,7 +70,13 @@ public class CampaignServiceImpl implements CampaignService{
 			 createSender = new CreateSender();
 		}
 		
-		if (senderCreated != null) {
+		if(senderCreated.contains("400Body")) {
+			isSenderCreated = "400Body";
+		}else if(senderCreated.contains("403Body")) {
+			isSenderCreated = "403Body";
+		}
+		
+		if (senderCreated != null && !senderCreated.contains("400Body") && !senderCreated.contains("403Body")) {
 			
 			createSender.setFromName(createSenderDTO.getCpnSenderName().trim());
 			createSender.setFromMail(createSenderDTO.getCpnSenderFromMail().trim());
@@ -108,7 +114,7 @@ public class CampaignServiceImpl implements CampaignService{
 			createSender.setSelectedSender("false");
 			CreateSender sender = campaignDao.createSender(createSender);
 			if(sender !=null) {
-				isSenderCreated = true;
+				isSenderCreated = "success";
 			}
 		}
 		return isSenderCreated;
@@ -168,9 +174,9 @@ public class CampaignServiceImpl implements CampaignService{
 	}
 
 	@Override
-	public boolean saveRecipientList(OrgLocations orgLocation, CampaignListDTO campaignListDTO,User user) throws Exception
+	public String saveRecipientList(OrgLocations orgLocation, CampaignListDTO campaignListDTO,User user) throws Exception
 	{
-		boolean isListInserted = false;
+		String isListInserted = "failure";
 		if(StringUtils.isNotBlank(campaignListDTO.getContactListId())){
 			CampaignList campaignList = campaignDao.getCampaignListById(Long.parseLong(campaignListDTO.getContactListId()));
 			String listResponse = campaignUtil.updaeteList(campaignList,campaignListDTO);
@@ -190,18 +196,23 @@ public class CampaignServiceImpl implements CampaignService{
 						
 						String res =  campaignUtil.addRecipientsToList(list);
 						if(res !=null) {
-							isListInserted = true;
+							isListInserted = "success";
 						}	
 					}
 					
 				}else {
-					isListInserted = false;
+					isListInserted = "failure";
 				}
 			}
 			return isListInserted;
 		}
 		String listResponse = campaignUtil.createList(campaignListDTO);
-		if(StringUtils.isNotBlank(listResponse)) {
+		if(listResponse.contains("400Body")) {
+			isListInserted = "400Body";
+		}else if(listResponse.contains("403Body")) {
+			isListInserted = "403Body";
+		}
+		if(StringUtils.isNotBlank(listResponse) && !listResponse.contains("400Body") && (!listResponse.contains("403Body"))) {
 			JSONObject jObject  = new JSONObject(listResponse); 
 			String listId = jObject.getString("id");
 			CampaignList  campaignList = new CampaignList();
@@ -226,7 +237,7 @@ public class CampaignServiceImpl implements CampaignService{
 			
 			String res =  campaignUtil.addRecipientsToList(list);
 			if(res !=null) {
-				isListInserted = true;
+				isListInserted = "success";
 			}
 			return isListInserted;
 		}
@@ -253,37 +264,72 @@ public class CampaignServiceImpl implements CampaignService{
 	{
 		Set<String> setReci = new HashSet<String>(recipientList);
 		Set<CampaignRecipient> recipientSet = new HashSet<CampaignRecipient>();
-		for (String recipientMail : setReci) {
-			CampaignRecipient campaignRecipient = new CampaignRecipient();
-			String res = campaignUtil.createRecipients(recipientMail);
-			JSONObject reciJObject = new JSONObject(res);
-			JSONArray recipientsIds = reciJObject.getJSONArray("persisted_recipients");
-			String recipientId = (String) recipientsIds.get(0);
-			campaignRecipient.setCampaignListId(campaignList);
-			campaignRecipient.setCreatedBy(user);
-			campaignRecipient.setCreatedDate(date);
-			campaignRecipient.setUpdatedBy(user.getUserCode());
-			campaignRecipient.setStatus(1);
-			campaignRecipient.setUpdatedDate(date);
-			campaignRecipient.setEmail(recipientMail);
-			campaignRecipient.setRecipientId(recipientId);
-			User usr = userService.findByEmail(recipientMail);
-			if(usr != null) {
-				campaignRecipient.setFirstName(usr.getFirstName());
-				if(usr.getLastName() != null) {
-					campaignRecipient.setLastName(usr.getLastName());
-				}
-			}else {
-				ReferContacts referContacts = referContactsService.findByEmail(recipientMail);
-				if(referContacts !=null) {
-					campaignRecipient.setFirstName(referContacts.getFirstName());
-					if(referContacts.getLastName() != null) {
-						campaignRecipient.setLastName(referContacts.getLastName());
+		
+		StringBuilder emailsb = new StringBuilder();
+		 StringBuilder sb = new StringBuilder();
+		 for (String recipientMail : setReci) {
+			 String firstName = "";
+			 String lastName = "";
+				User usr = userService.findByEmail(recipientMail);
+				if(usr != null) {
+					firstName = usr.getFirstName();
+					if(usr.getLastName() != null) {
+						lastName = usr.getLastName();
+					}
+				}else {
+					ReferContacts referContacts = referContactsService.findByEmail(recipientMail);
+					if(referContacts !=null) {
+						firstName = referContacts.getFirstName();
+						if(referContacts.getLastName() != null) {
+							lastName = referContacts.getLastName();
+						}
 					}
 				}
-			}
-			recipientSet.add(campaignRecipient);
-		}
+	    	  sb.append("{\"last_name\":\""+firstName+"\",\"email\":\""+recipientMail+"\",\"first_name\":\""+lastName+"\"}").append(",");
+	    	  emailsb.append(recipientMail).append(",");
+		 }
+		
+		  String str = sb.toString();
+	      str = str.substring(0, str.length() - 1);
+		  String res = campaignUtil.createRecipients(str);
+		  JSONObject jObject  = new JSONObject(res); 
+		  
+		  String emailSstr = emailsb.toString();
+		  emailSstr = emailSstr.substring(0, emailSstr.length() - 1);
+		   String[] emails = emailSstr.split(",");
+		  if(res != null) {
+			  JSONArray jsonArray = jObject.getJSONArray("persisted_recipients");
+			  for (int j = 0; j < jsonArray.length(); j++) {
+					CampaignRecipient campaignRecipient = new CampaignRecipient();
+					String recipientId = jsonArray.getString(j);
+					campaignRecipient.setCampaignListId(campaignList);
+					campaignRecipient.setCreatedBy(user);
+					campaignRecipient.setCreatedDate(date);
+					campaignRecipient.setUpdatedBy(user.getUserCode());
+					campaignRecipient.setStatus(1);
+					campaignRecipient.setUpdatedDate(date);
+					campaignRecipient.setEmail(emails[j]);
+					campaignRecipient.setRecipientId(recipientId);
+					User usr = userService.findByEmail(emails[j]);
+					if(usr != null) {
+						campaignRecipient.setFirstName(usr.getFirstName());
+						if(usr.getLastName() != null) {
+							campaignRecipient.setLastName(usr.getLastName());
+						}
+					}else {
+						ReferContacts referContacts = referContactsService.findByEmail(emails[j]);
+						if(referContacts !=null) {
+							campaignRecipient.setFirstName(referContacts.getFirstName());
+							if(referContacts.getLastName() != null) {
+								campaignRecipient.setLastName(referContacts.getLastName());
+							}
+						}
+					}
+					recipientSet.add(campaignRecipient);
+				}
+		  }
+		  
+		 
 		return recipientSet;
 	}
 

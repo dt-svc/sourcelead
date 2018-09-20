@@ -1,6 +1,7 @@
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <%@taglib uri="http://www.springframework.org/tags/form" prefix="form"%>
 
+
 <c:if test="${staticTime == null || staticTime == 0 }">
     <c:set var='staticTime' value="<%=new java.util.Date().getTime() %>" scope="application"></c:set>
  </c:if>
@@ -22,9 +23,15 @@
 <link href="/resources/css/bootstrap.min.css?staticTime=${staticTime}" rel="stylesheet" type="text/css">
 <script src="https://maps.google.com/maps/api/js?libraries=places&v=3&key=AIzaSyCIbxD8-aZ7Wgp6N-JeEJKVRIHGRpNMdRE" type="text/javascript"></script>
 
+ <script type="text/javascript" src='/resources/js/slead-common.js?staticTime=${staticTime}'></script>
+
 <script type="text/javascript">
 window.onload = function () {
 	loadRegisteredOrgs();
+	var isSuperAdmin = '${SourceLeadWeb_isSuperAdmin}';
+	if(isSuperAdmin == 'Y'){
+		document.getElementById("enrollNewOrgLocationDiv").style.display="";
+	}
  };
 </script>
 
@@ -48,15 +55,25 @@ z-index: 1000000000 !important;
 <script>
   function navtoggle(elementRef){
 	  
-	 if('${SourceLeadWeb_userSpocRolesListCount}' < 6){
+	 if('${SourceLeadWeb_prodSupportLoginUserRole}' != 'ROLE_PRODUCTION_SUPPORT'){
+		 if('${SourceLeadWeb_userSpocRolesListCount}' < 6){
+			 document.getElementById("spockLinksList").removeAttribute("class")
+			 document.getElementById('spockLinksList').className = 'spoclinks-area'
+		     document.getElementById("spockLinksList").style.display="block";
+		 }else{
+			 document.getElementById("spockLinksList").removeAttribute("class")
+			 document.getElementById('spockLinksList').className = 'spoclinks-area spoclinksMore'
+			 document.getElementById("spockLinksList").style.display="block";
+		 }
+	 }
+	 
+	 if('${SourceLeadWeb_prodSupportLoginUserRole}' == 'ROLE_PRODUCTION_SUPPORT'){
 		 document.getElementById("spockLinksList").removeAttribute("class")
 		 document.getElementById('spockLinksList').className = 'spoclinks-area'
 	     document.getElementById("spockLinksList").style.display="block";
-	 }else{
-		 document.getElementById("spockLinksList").removeAttribute("class")
-		 document.getElementById('spockLinksList').className = 'spoclinks-area spoclinksMore'
-		 document.getElementById("spockLinksList").style.display="block";
 	 }
+	 
+	  
   }
   </script>
 
@@ -89,45 +106,17 @@ $(function(){
 				<div class="comLogHead">
 				
 				
-				<c:if test="${!empty SourceLeadWeb_userSpocRolesList}">
-		<div class="offOrg offOrgCompanyOnboard ">
-             <a href="javascript:void(0)" title="Spoc Links" id="spoclinks" onclick="JavaScript: navtoggle(this);"> <i class="fa fa-globe"></i> </a>
-	              <div id="spockLinksList" style="display: none;">
-	              <ul class="list-unstyled">
-	              <c:forEach var="links" items="${SourceLeadWeb_userSpocRolesList}">
-		              <li>
-			              <a href="<c:url value='${sourceleadUrl}/dashboard/${links.orgLocations.id}'/>" class="sopcSwith">
-				                <div class="clearfix">
-				                   <div class="pull-left image-parent positionRelative">
-				                   <div class="imageParent org-imagelink ${links.orgLocations.id == SourceLeadWeb_orgLocationId ? 'active-comp' : ''}">
-				                    <c:if test="${!empty links.orgLocations.org.fileContentType}">
-				                     <img onerror='predefineOrgImage(this);' src="${sourceleadUrl}/displayOrgImage/${links.orgLocations.org.orgCode}">
-				                   </c:if>
-				                   <c:if test="${empty links.orgLocations.org.fileContentType}">
-				                     <img src="/resources/images/office-image.jpg">
-				                   </c:if>
-				                     </div>
-				                   </div>
-				                   <div class="pull-left mt5">
-				                     <p class="tbldata-dotdot"><i class="fa fa-building"></i>&nbsp;${links.orgLocations.org.orgName}</p>
-				                     <p class="tbldata-dotdot"><i class="fa fa-map-marker"></i>&nbsp;${!empty links.orgLocations.city ? links.orgLocations.city : ""} ${links.orgLocations.country}</p>
-				                     <p><i class="fa fa-user"></i>&nbsp;${links.roles.displayName}</p>
-				                   </div>
-				                </div>
-			                </a>
-		              </li>
-	              </c:forEach>
-	              </ul>
-	            </div>
-	            </div>
-          </c:if>
+					<jsp:include page="../userManageAccounts.jsp" />
           
 					<div class="comLogLogoText">${SourceLeadWeb_orgName}</div>
 				  <div class="welSiO onboard-logoutbtn" onclick="logoutFormSubmit();" title="Sign Out"><i class="fa fa-sign-out mt5"></i></div>
 					   <ul>
 						  <li class="actLi">Organization details<i class="fa fa-check-circle"></i></li>
 						  <li class="hoverLi">Locations</li>
-						  <c:if test="${SourceLeadWeb_orgLocations.country != 'India'}">
+						  <c:if test="${SourceLeadWeb_orgLocations.country == 'India'}">
+						  <li>Information</li>
+						  </c:if>
+						  <c:if test="${SourceLeadWeb_orgLocations.country == 'United States'}">
 						  <li>Federal & state taxes</li>
 						  </c:if>
 						  <li>Banking details</li>
@@ -146,20 +135,28 @@ $(function(){
 	        <div class="pull-right">
 	        <button class="btn btn-default btm-sm" id="orgsList" data-toggle="tab" href="#orgRegisteredlocations" onclick="loadRegisteredOrgs();" style="display: none"><i class="fa fa-building"></i>
 	                                         &nbsp;&nbsp;Locations List</button>
-	                                         
-	        <button class="btn btn-default btm-sm pull-right" onclick="createOrg();" id="enrollNewOrgLocation"><i class="fa fa-map-marker"></i>&nbsp;Add Location</button>
 	       </div>
+	       
+	        <div class="pull-right" id="enrollNewOrgLocationDiv" style="display: none;">
+	          <button class="btn btn-default btm-sm pull-right" onclick="createOrg();" id="enrollNewOrgLocation" ><i class="fa fa-map-marker"></i>&nbsp;Add Location</button>
+	        </div>
 	        
 	        <div class="clearfix"></div>
 	        <div class="clearfix compOnBorLoca mt10">
 				<form:form class="login-form clearfix"  id="createOrg_form"  name="createOrg_form" method="post" >
                			<div id="registeredOrgs" class="clearfix"></div>
+    			
     			<div class="welBtns welBtnsA">
 					<input type="button" value="Prev" onClick="javascript:window.location.href = '<c:url value='/app/dashboard'/>'"><input type="submit" value="Save & Continue" class="Brig" id="register_button"  style="display: none;">
-					<c:if test="${SourceLeadWeb_orgLocations.country != 'India'}">
+					<c:if test="${SourceLeadWeb_orgLocations.country == 'United States'}">
 					<input type="button" value="Skip this step" class="skipBtn" onClick="javascript:window.location.href = '<c:url value='/app/companyOnboardFederalAndStateTaxes'/>'">
 					</c:if>
+					
 					<c:if test="${SourceLeadWeb_orgLocations.country == 'India'}">
+					<input type="button" value="Skip this step" class="skipBtn" onClick="javascript:window.location.href = '<c:url value='/app/companyOnboardInformationDetails'/>'"></a>
+					</c:if>
+					
+					<c:if test="${SourceLeadWeb_orgLocations.country != 'India' && SourceLeadWeb_orgLocations.country != 'United States'}">
 					<input type="button" value="Skip this step" class="skipBtn" onClick="javascript:window.location.href = '<c:url value='/app/companyOnboardBankingDetails'/>'"></a>
 					</c:if>
 					<div class="clearfix"></div>
@@ -169,8 +166,13 @@ $(function(){
         </div>
 			</section>
 	</section>
+	 <jsp:include page="../googleApiLocation.jsp" />
 </div>
-
+ <div class="location-alert alert alert-danger alert-dismissable zInPop" id="locationAlert">
+    <a href="#" class="loc-alertclose close">&times;</a>
+    <strong>Alert !</strong> <span>Your are not able to Save Required data is Missing.</span>
+  </div>
+	
  <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.2/jquery.min.js"></script> 
  <script type="text/javascript" src="/resources/js/jquery-1.11.0.min.js?staticTime=${staticTime}"></script>
  <script type="text/javascript" src="/resources/js/jquery.liquidcarousel.pack.js?staticTime=${staticTime}"></script>	
@@ -259,7 +261,7 @@ function loadRegisteredOrgs(){
 	 				result = result +"<div class='user-profile'>";
 	 				result = result +"<div class='col-xs-4 col-sm-4'>";
 	 				result = result +"<div class='comLocaImg'>";
-	 				result = result +"<img  onerror='predefineOrgImage(this);' class='m-t-xs' src='"+sourceleadUrl+"/displayOrgImage/"+orgLoc.orgCode+"' alt='image'>";
+	 				result = result +"<img  onerror='predefineOrgImage(this);' class='m-t-xs' data-id='orgLogoImage' src='"+orgLoc.fileUrl+"' alt='image'>";
 	 				result = result +"</div>";
 	 				result = result +"</div>";
 	 				result = result +"<div class='col-sm-8'>";
@@ -287,6 +289,9 @@ function loadRegisteredOrgs(){
 	        }
 	    }); 
 }
+$(".loc-alertclose").click(function(){
+	 $(".location-alert").fadeOut();
+})
 </script>
 
 
@@ -299,8 +304,13 @@ function createOrg(){
 	
 	 document.getElementById("register_button").style.display=""; 
 	 
-	//$("#registeredOrgLocationSummary").empty();
-	//$("#editPrimaryUserContactDiv").empty();
+	 var subscribedCountries = '${subscribedCountries}';
+		var countries= [];
+		var res = subscribedCountries.split(",");
+		for(var i=0; i <res.length; i++){
+			countries.push(res[i]);
+		};
+		
 	 
 	var result = '';
 	
@@ -398,36 +408,6 @@ function createOrg(){
 	result = result +'</div>';
 	result = result +'</div>';
 	
-	
-	
-	result = result +'<div class="form-group clearfix">';
-	result = result +'<label class="col-md-4 noPad">Modules<span class="text-danger">&nbsp;*</span></label>';
-	result = result +'<div class="col-md-8 padding_right">';
-    result = result +'<div class="clearfix reMar">';
-    result = result +'<c:forEach var="module" items="${modulesList}">';
-    result = result +'<ul class="list-unstyled pull-left">';
-    result = result +'<li>';
-    result = result +'<label class="mr pull-left">';
-    result = result +'<input type="checkbox" id="isRecruiting" value="${module.id}" onclick="getRecruitmentTypes(this)" name="modulesList[]" onblur="moduleCheckValidation(this)">&nbsp;${module.moduleName}';
-    result = result +'</label>';
-    result = result +'<ul class="list-unstyled pull-left tree-checkbox" id="recrutmentTypes" style="display: none;">';
-    result = result +'<li>';
-    result = result +'<c:forEach var="submodules" items="${requirementSubModulesList}">';
-    result = result +'<label>';
-    result = result +'&nbsp;<input type="checkbox" class="allsubmodules" id="submodules" value="${submodules.id}" name="submodulesList[]" >';
-    result = result +'&nbsp;${submodules.moduleName}';
-    result = result +'</label><br/>';
-    result = result +'</c:forEach>';
-    result = result +'</li>';
-    result = result +'</ul>';
-    result = result +'</li>';
-    result = result +'</ul>';
-    result = result +'</c:forEach>';
-    result = result +'</div>';
-    result = result +'<p id="subModule" style="display: none;"><font color="red">Sub Modules Required</font></p>';
-    result = result +'<input type="hidden"  id="moduleValue" name="module" value="${module}" field-name="Module" data-validation="required"/>'; 			    
-    result = result +'</div>';
-	result = result +'</div>';
 
 	result = result +'</div>';
 	
@@ -436,31 +416,42 @@ function createOrg(){
 	result = result +'<div class="form-group clearfix">';
 	result = result +'<label class="col-md-4 noPad">Location</label>';
 	result = result +'<div class="col-md-8 padding_right">';
-	result = result +'<input class="form-control positionRelative" id="orgSetLocation" name="location" placeholder="Enter your Location"  type="text" field-name="Location" onClick="addOrgRefreshGoogleApiLocation();" data-validation="required"></input>';
+	result = result +'<input class="form-control positionRelative" id="orgSetLocation" name="location" placeholder="Enter your Location"  type="text" field-name="Location" onclick="orgSubscriptionApiLocation(\'orgSetLocation\',\'orgSetCountry\',\'orgSetState\',\'orgSetCity\',\'orgSetZipCode\',\''+countries+'\',\'addressId\');" data-validation="required"></input>';
 	result = result +'<i class="fa fa-refresh btn btn-primary refresh-icon" title="Refresh" onClick="refreshOrgEditGoogleApiLocation();"></i>';
 	result = result +'</div>';
 	result = result +'</div>';
 	
 	
+	
+	
 	result = result +'<div class="form-group clearfix">';
 	result = result +'<label class="col-md-4 noPad">Country<span class="text-danger">&nbsp;*</span></label>';
 	result = result +'<div class="col-md-8 padding_right">';
-	result = result +'<input class="form-control" id="orgSetCountry" name="country" placeholder="Country" field-name="Country" value ="${country}" type="text" data-validation="required" readonly></input>';
+	
+	result = result + '   <select class="form-control chosen-select" name="country" id="orgSetCountry" field-name="Country" data-placeholder="Select Country" data-validation="required">';
+ 	result = result + '       <option value="">Select Country</option>';
+ 	result = result +'		<c:forEach var="subscibedCountries" items="${orgSubscribedCountriesList}">';
+ 	result = result + '       <option value="${subscibedCountries}">${subscibedCountries}</option>';
+    result = result +'		</c:forEach>';
+    result = result + '    </select>';
+	
 	result = result +'</div>';
 	result = result +'</div>';
+	
+	
 	
 	
 	result = result +'<div class="form-group clearfix">';
 	result = result +'<label class="col-md-4 noPad">State<span class="text-danger">&nbsp;*</span></label>';
 	result = result +'<div class="col-md-8 padding_right">';
-	result = result +'<input class="form-control" id="orgSetState" name="state" placeholder="State" type="text" field-name="State" data-validation="required" readonly></input>';
+	result = result +'<input class="form-control" id="orgSetState" name="state" placeholder="State" type="text" field-name="State" data-validation="required" ></input>';
 	result = result +'</div>';
 	result = result +'</div>';
 	
 	result = result +'<div class="form-group clearfix">';
 	result = result +'<label class="col-md-4 noPad">City<span class="text-danger">&nbsp;*</span></label>';
 	result = result +'<div class="col-md-8 padding_right">';
-	result = result +'<input class="form-control" id="orgSetCity" name="city" placeholder="City" type="text" field-name="City" data-validation="required"  readonly></input>';
+	result = result +'<input class="form-control" id="orgSetCity" name="city" placeholder="City" type="text" field-name="City" data-validation="required"  ></input>';
 	result = result +'</div>';
 	result = result +'</div>';
 	
@@ -506,10 +497,6 @@ function createOrg(){
 	            document.getElementById("enrollNewOrgLocation").style.display="none";
 	            document.getElementById("orgsList").style.display="";
 	            
-	            setTimeout(function () {
-	    			 editOrgLocationAuto('orgSetLocation','orgSetCountry','orgSetState','orgSetCity','orgSetZipCode');
-	     			}, 2000);
-	            
 	            
 	            var config = {
 	      			  '.chosen-select'           : {},
@@ -524,7 +511,7 @@ function createOrg(){
 	 	       $("#locationCity").chosen();
 	 	       $("#locationTimeZone").chosen();
 	 	       
-	 	   
+	 	       getTimezonesList();
 		      
 		       $('.chosen-select').each(function() {
 					var $this = $(this);
@@ -631,54 +618,7 @@ $(function(){
 </script>
 
 
-<script>
-function editOrgLocationAuto(orgLocationId,orgCountry,orgStateId,orgCityId,orgZipCodeId) {
-	editOrgInitialize(orgLocationId,orgCountry,orgStateId,orgCityId,orgZipCodeId);
-}
-function editOrgInitialize(orgLocationId,orgCountry,orgStateId,orgCityId,orgZipCodeId) {
-   /* 	autocomplete = new google.maps.places.Autocomplete((document.getElementById(orgLocationId)), {
-   	 types: ['geocode']
-     
-       }); */
-       
-  	 var input = (document.getElementById(orgLocationId));
-	    var options = {
-	    		types: ['geocode'],
-	        componentRestrictions: {
-	        	country: ["IN","US","AU","SG","GB","FR"]
-	        }
-	    };
-	    autocomplete = new google.maps.places.Autocomplete(input, options);
-  
- google.maps.event.addListener(autocomplete, 'place_changed', function() {
- place = autocomplete.getPlace();
- var address = {};
- for (var i = 0; i < place.address_components.length; i++) {
-   var addressType = place.address_components[i].types[0];
-   switch (addressType) {
-     case "locality":
-       address.city = place.address_components[i].long_name;
-       break;
-     case "administrative_area_level_1":
-       address.state = place.address_components[i].long_name;
-       break;
-     case "country":
-       address.country = place.address_components[i].long_name;
-       break;
-     case "postal_code":
-       address.zipcode = place.address_components[i].long_name;
-       
-   }
- }
- $("#"+orgCountry).val(address.country).change();
- $("#"+orgStateId).val(address.state).change();
- $("#"+orgCityId).val(address.city).change();
- $("#"+orgZipCodeId).val(address.zipcode).change();
-	  getTimezonesList();
- 
-});
-}
-</script>
+
 
 <script>
 function getTimezonesList(){
@@ -951,39 +891,38 @@ var validationSettings = {
    };  
          $('body').on('submit', '#createOrg_form', function(e){
         	  if ($(this).validate(false, validationSettings)){
+        		  
         		e.preventDefault();
-        		var frm = $('#createOrg_form').serializeFormJSON();
-            	var con = JSON.stringify(frm);
-			    con = con.replace(/[{}]/g, ""); 
-			    var jsonData = encodeURIComponent(con);
+        		var formData = getFormData("createOrg_form");
          		var sourceleadUrl ='${sourceleadUrl}';
-         		 var modulesList = [];
-         		 $("input[name='modulesList[]']:checked").each( function (i) {
-         			modulesList[i] = $(this).val();
-         		});
+         		
+         		
          		 
-         		
-         		 var submodulesList = [];
-         		 $("input[name='submodulesList[]']:checked").each( function (i) {
-         			submodulesList[i] = $(this).val();
-         		});
-         		
          		$("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
          	 	 	$.ajax({
           	      type: "POST",
-          	      contentType : 'application/json; charset=utf-8',
-          	      dataType : 'json',
-                	  url: sourceleadUrl+"/companyRegistration?&${_csrf.parameterName}=${_csrf.token}&modulesList="+modulesList+"&submodulesList="+submodulesList+"&json="+jsonData,
-                			  
-                			  
-                  	success: function(result) {
-			        	if((result == 'orgList')){
-			        		loadRegisteredOrgs();
-			        	}
-			        	else if((result == 'Invalid Sub Modules')){
-			        		$("#loading").removeAttr("style");
-			        		document.getElementById("subModule").style.display="";
-			        	}
+          	      data: formData,
+          		  url: sourceleadUrl+"/companyLocationRegistration?${_csrf.parameterName}=${_csrf.token}",		  
+    			  
+                	success: function(result) {
+                		
+               		if (result && (result.response === "INVALID_DATA" || result.response === "INVALID_USER")) {
+      	    		    showError(result.responseMessage);
+      	    		    $("#loading").removeAttr('style');
+      	    		}
+                		else if (result.response === "AWKWARD") {
+      	    		    location.href = "/errorPage";
+      	    		}
+                		else if(result.response === "SUCCESS"){
+                		   $("#loading").removeAttr('style');
+                			loadRegisteredOrgs();  
+			        	    }
+                		else if (result.indexOf('Sign In') !== -1) {
+      					location.replace(sourceleadUrl);
+      				} else {
+      				    showError("Operation failed, please try again");
+      				    $("#loading").removeAttr('style');
+      				}
 			        	
 			        },  
                });    
@@ -1035,7 +974,7 @@ var validationSettings = {
   });
 </script>
 
-<c:url var="logoutUrl" value="/logout"/>
-<form action="${logoutUrl}" method="post" id="logoutForm">
- <input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}"/>
-</form>
+
+
+
+

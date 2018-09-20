@@ -35,7 +35,6 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 
 @Entity
 @Table(name = "TIMESHEET_SUBMISSIONS")
-@Cache(usage = CacheConcurrencyStrategy.TRANSACTIONAL,region="timeSheetSubmissions")
 public class TimesheetSubmissions implements Serializable{
 	
 	private static final long serialVersionUID = 1L;
@@ -45,19 +44,19 @@ public class TimesheetSubmissions implements Serializable{
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long Id;
 	
-	@NotFound(action=NotFoundAction.IGNORE)
-	@ManyToOne
+	
+	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "PROJECT_MEMBER_ID", nullable=false)
 	private ProjectMembers projectMembers;
 	
 	
-	@NotFound(action=NotFoundAction.IGNORE)
+	
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "PROJECT_ID", nullable=false)
 	private Projects projects;
 	
 	
-	@NotFound(action=NotFoundAction.IGNORE)
+	
 	@ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name="MASTER_CANDIDATE_ID", nullable=false)        
     private MasterCandidate masterCandidateId;
@@ -94,8 +93,8 @@ public class TimesheetSubmissions implements Serializable{
 	@Enumerated(EnumType.STRING)
     private Submission_ApprovalStatus submissionApprovalStatus;*/
 	
-	@NotFound(action=NotFoundAction.IGNORE)
-	@OneToMany(mappedBy = "submissionId")
+	
+	@OneToMany(mappedBy = "submissionId",cascade = CascadeType.ALL)
 	@Fetch(FetchMode.SELECT)
 	private Set<SubmissionApproverHierarchy> approverHierarchyList = new HashSet<SubmissionApproverHierarchy>(0);
 	
@@ -107,8 +106,8 @@ public class TimesheetSubmissions implements Serializable{
 	@Column(name = "LEVEL_OF_APPROVER")
 	private Integer levelOfApprover;
 	
-	@NotFound(action=NotFoundAction.IGNORE)
-	@ManyToOne
+	
+	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "APPROVER_USER_ID", nullable=false)
 	private User approverUserId;
 	

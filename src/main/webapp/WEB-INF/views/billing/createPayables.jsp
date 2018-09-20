@@ -30,6 +30,10 @@ $(document).ready(function(){
 		loadInvoiceDetails(invoiceUUID);
 	}else{
 		getVendors();
+		$("#invoiceId").val("");
+		$("#paymentFrequency").val("");
+		$("#paymentFrequency").trigger("chosen:updated");
+		$("#dueDate").val("");
 	}
 	
 });
@@ -62,6 +66,8 @@ function errRemoveVendorContact(){
 	<div class="content-area content-new clearfix">
 		<div id="invoiceLoading"></div>
 		<form:form id="invoice_form" name="invoice_form" method="post">
+		<input type="hidden" name="vendorOrgRelation" value="createPayables"/>
+<!-- 		<input type="hidden" name="vendorContact" value="createPayables"/> -->
 			<div class="clearfix form-horizontal inner-content">
 				<div class="row">
 					<div class="col-xs-12 col-sm-12 col-md-12 col-lg-12 myForm">
@@ -71,11 +77,11 @@ function errRemoveVendorContact(){
 							<div class="input-group col-md-10 pull-left">
 								<select class="chosen-select form-control"
 									id="vendorOrgRelationId" name="vendorOrgRelationId"
-									onchange="getVendorContacts();errRemoveVendor();getPaymentTerms();" data-validation="required" field-name="Vendor">
+									onchange="getVendorContacts();errRemoveVendor();getPaymentTerms();getPaymentAccountList();" data-validation="required" field-name="Vendor">
 								</select>
 								  <span class="input-group-addon cursorPointer bg-blue" onclick="getVendors();createpayablesEmptyVendorContact();"><i class="fa fa-refresh "></i></span>
 							</div>
-							<sec:authorize access="hasAnyRole('ROLE_CREATE_VENDOR_CONTACT')"> 
+							<sec:authorize access="hasAnyRole('ROLE_CREATE_VENDOR')"> 
 			                         <a href="<c:url value="/app/addVendor" />" target="_blank"><i class="fa fa-plus btn btn-default pull-right minHeBtn"></i></a> 
 			              </sec:authorize>
 							<input type="hidden" name="savedInvoiceId" id="savedInvoiceId">
@@ -86,15 +92,15 @@ function errRemoveVendorContact(){
 							<label class="col-md-3">Vendor Contact<span
 								class="text-danger">*</span></label>
 							<div class="col-md-9 chooRadius" id="errVendorContact">
-								<div class="input-group col-md-10 pull-left">
+								<div class="col-md-9 padding_left padding_right">
 								<select class="chosen-select form-control" id="vendorContact"
-									name="vendorContact" data-validation="required"
+									multiple="multiple" name="vendorContact" data-validation="required"
 									field-name="Vendor Contact"
 									onchange="errRemoveVendorContact();">
 								</select>
-								 <span class="input-group-addon cursorPointer bg-blue" onclick="getVendorContacts();"><i class="fa fa-refresh "></i></span>
 							</div>
-							<span class="col-md-2 noPad clearfix" onclick="selectedVendor();">
+							<span class="col-md-3 noPad clearfix" onclick="selectedVendor();">
+							<span class="btn btn-primary btn-sm" onclick="getVendorContacts();"><i class="fa fa-refresh "></i></span>
 			                  <sec:authorize access="hasAnyRole('ROLE_CREATE_VENDOR_CONTACT')"> 
 			                    <a href="javascript:void(0)"><i class="fa fa-plus btn btn-default pull-right minHeBtn"></i></a>
 			                  </sec:authorize>
@@ -104,8 +110,8 @@ function errRemoveVendorContact(){
 						<div class="form-group">
 							<label class="col-md-3">Bill Id<span
 								class="text-danger">&nbsp;*</span></label>
-							<div class="col-md-9">
-								<input type="text" class="form-control" id="invoiceId"
+							<div class="col-md-9" id="invoiceIdDiv">
+								<input type="text" class="form-control" id="invoiceId" onkeyup="validateBillId();"
 									name="invoiceId" value="" placeholder="Bill Id"
 									data-validation="required" field-name="Bill Id">
 							</div>
@@ -135,7 +141,7 @@ function errRemoveVendorContact(){
 							</div>
 						</div>
 						<div class="form-group">
-							<label class="col-md-3">Due Date<span class="text-danger">&nbsp;*</span></label>
+							<label class="col-md-3">Due Date<span class="text-danger">&nbsp;* </span><i class='fa fa-info-circle' title='The deadline for the bill payment'></i></label>
 							<div class="col-md-9" id="errDuedate">
 								<input type="text" class="form-control calendar" id="dueDate"
 									name="dueDate" value="" placeholder="Due Date" id="dueDate"
@@ -149,13 +155,23 @@ function errRemoveVendorContact(){
 									name="billingAddress" placeholder="Billing Address"></textarea>
 							</div>
 						</div>
-						<div class="form-group">
+						
+						 <div class="form-group">
+			              <label class="col-md-3">Payment Account</label>
+			              <div class="col-md-9 select-field" id="projectMemberIdDiv">
+			                <select class="form-control" id="paymentAccountId"  field-name="paymentAccount Name" name="paymentAccount">
+			                   <option value="">--Select Account--</option>
+			                </select>
+			              </div>
+			            </div>
+			            
+						<!-- <div class="form-group">
 							<label class="col-md-3">Account Details</label>
 							<div class="col-md-9">
 								<textarea class="form-control" rows="2" id="accountDetails"
 									 name="accountDetails" placeholder="Account Details"></textarea>
 							</div>
-						</div>
+						</div> -->
 						
 					</div>
 				</div>
@@ -225,7 +241,7 @@ function errRemoveVendorContact(){
 <div id="divTaskTd6" style="display: none; float: left;">
 	<div class="tbldata-dotdot-100">
 		<input type="text" class="form-control input-sm inline_field"
-			placeholder="HHH:MM" id="REPLACEROWIDtotalHours"
+			placeholder="HHH:MM" id="REPLACEROWIDtotalHours" data-validation="required" field-name="Hours"
 			name="lineItems[REPLACEROWID].totalHours"
 			onblur="totalHoursCalculateAmount(REPLACEROWID);validationHours(REPLACEROWID);">
 			<input type="hidden" id="REPLACEROWIDhiddenHours" name="lineItems[REPLACEROWID].hiddenHours">
@@ -310,14 +326,14 @@ function errRemoveVendorContact(){
          result = result +'  <label class="pull-left mb10"><strong>Attachments</strong></label>';
          
          result = result +' <div id="timesheetDocumentsId">';
-         result = result +' <div class="timesheet_week_comm invoiceDocs">';
+         result = result +' <div class="timesheet_week_comm invoiceDocs width100percnt">';
          result = result +' <span>';
          result = result +' <div id="savedAttachments"></div>';
          result = result +' </span>';
          result = result +' </div>';
          result = result +' </div>';
          
-         result = result +'  <div class="timesheet_week_comm invoiceDocs invoiceDocs_add" >';
+         result = result +'  <div class="timesheet_week_comm invoiceDocs invoiceDocs_add width100percnt">';
          result = result +'  <div id="0invoicedocFileuploadFileGroup"> ';
          result = result +'  <span>';
          result = result +'  <input type="file" id="0invoicedocFile" field-name="Attachment"  class="timesheetAttachmentValidation" onchange="attachFile(0);"><i class="fa fa-times" mouseOver="Clear" title="Clear" onClick="remove()"></i><i class="fa fa-plus" mouseOvere="Add" title="Add" onClick="addInvoiceAttachment()"></i>';
@@ -340,13 +356,13 @@ function errRemoveVendorContact(){
          result = result +'  <div class="col-md-7 select-field">';
          result = result +'  <div class="row">';
          result = result +'  <div class="col-md-7 paddingRight">';
-         result = result +'  <select class="form-control input-sm" id="disCount" name="disCount" onchange="calculateDiscount();validateDiscount();"">';
+         result = result +'  <select class="form-control input-sm" id="disCount" name="disCount" onchange="calculateDiscount();validateDiscount();">';
          result = result +'  <option value="percentage">Discount %</option>';
          result = result +'  <option value="flat">Discount Value</option>';
          result = result +'  </select>';
          result = result +'  </div>';
          result = result +'  <div class="col-md-5 paddingLeft" id="discountValueDiv">';
-         result = result +'  <input type="text" class="form-control input-sm" id="discountValue" disabled="disabled" name="discountValue" placeholder="Enter value" onblur="calculateDiscount();" onkeyup="validateDiscount();">';
+         result = result +'  <input type="text" class="form-control input-sm allownumericwithdecimal" id="discountValue" disabled="disabled" name="discountValue" placeholder="Enter value" onblur="calculateDiscount();" onkeyup="validateDiscount();">';
          result = result +'  </div>';
          result = result +'  </div>';
          result = result +'  </div>';
@@ -420,7 +436,9 @@ function remove(){
 		    	 url: sourceleadUrl+"/getInvoiceDetailsByInvoiceUUID?"+tokenParamName+"="+tokenValue+"&invoiceUUID="+invoiceUUID, 
 		         success: function(data) {
 		        	 var json = JSON.parse(data);
-		        	 
+		        	 if(json.paymentAccountId > 0) {
+		        		 getPaymentAccountList(json.vendorOrgRelationId,json.paymentAccountId)
+		        	 }
 		        	 var result = '';
 		        	 var selected = 'selected';
 		        	 result = result +'<option disabled selected>--Select Vendor--</option>';
@@ -429,9 +447,10 @@ function remove(){
 		           	 $("#vendorOrgRelationId").append(result); 
 		           	 $('#vendorOrgRelationId').trigger("chosen:updated");
 		           	$('#vendorCurrency').val(json['vendorCurrency']);
-		           	getVendorContacts(json['vendorContactId']);
+// 		           	getVendorContacts(json['vendorContactId']);
 		           	$("#invoiceId").val(json['invoiceId']);
-		           	
+		           	getVendorContacts(json['contactUsers']);
+
 		           	if(json['paymentFrequency'] != null && json['paymentFrequency'] != '' && json['paymentFrequency'] != 'undefined'){
 		           		$("#paymentFrequency").val(json['paymentFrequency']);
 		           	    $('#paymentFrequency').trigger("chosen:updated");
@@ -466,9 +485,13 @@ function remove(){
 		        	 $("#exchangeRate").html(json['exchangeRate']);
 		        	
 		        	$("#savedInvoiceId").val(json['id']);
-		        	if("Rejected" == json['invoiceStatus']){
+		        	var test = json['invoiceParentId'];
+		        	if(json['invoiceStatus'] == "Rejected" && test != null){
 			   			 document.getElementById("sendInvoiceId").style.display="none";
 			   			 document.getElementById("saveInvoiceId").style.display="none";
+			       	}else{
+			       		document.getElementById("sendInvoiceId").style.display="inline-block";
+			   			document.getElementById("saveInvoiceId").style.display="inline-block";
 			       	}
 		        	
 		        	
@@ -1134,14 +1157,14 @@ function pagination(){
 			  $.ajax({
 			    	type: "GET",
 			        url: sourceleadUrl+"/getSowcontractListByAssociateId?"+tokenParamName+"="+tokenValue+"&candidateId="+candidateId+"&orgRelationId="+orgRelationId+"&contractType=vendorSow",
-			        success: function(data) {
+			        success: function(json) {
 			        	var result = "";
 			        	result = result + "<option value='' >select sow</option>"
-			        	if(data != null && data != ''){
-			        		var json = JSON.parse(data);
-				        	 for (var i=0; i<json.length; i++)
+			        	if(json.data != null && json.data != ''){
+// 			        		var json = JSON.parse(data);
+				        	 for (var i=0; i<json.data.length; i++)
 							{
-					        		var opt = json[i];
+					        		var opt = json.data[i];
 					        		 var selected = '';
 					        		 if(contractId != null && contractId != "" && contractId !="undefined" && contractId == opt.id){
 					        			selected = 'selected';
@@ -1316,13 +1339,13 @@ function pagination(){
 		   $.ajax({
 				type : "GET",
 				url: sourceleadUrl+"/getConversionExchangeRate?"+tokenParamName+"="+tokenValue+"&orgRelationId="+orgRelationId+"&grandTotal="+grandTotal,
-				success :function(data) {
-					if(data !='' && data != 'undefined' && data != null){
-						var json = JSON.parse(data);
-						$("#exchangeRate").html(json.exchangeRate);
-						$("#exchangeCurrency").html(json.exchangeCurrency);
-						$("#vendorCurrencyCode").html(json.vendorCurrencyCode);
-						$("#convertedCurrencyCode").html(currencyCode +' to '+ json.vendorCurrencyCode);
+				success :function(response) {
+					if(response.object !='' && response.object != 'undefined' && response.object != null){
+// 						var json = JSON.parse(data);
+						$("#exchangeRate").html(response.object.exchangeRate);
+						$("#exchangeCurrency").html(response.object.exchangeCurrency);
+						$("#vendorCurrencyCode").html(response.object.vendorCurrencyCode);
+						$("#convertedCurrencyCode").html(currencyCode +' to '+ response.object.vendorCurrencyCode);
 					}
 				},
 				});   
@@ -1461,7 +1484,7 @@ function calculateDiscount(){
 <!-- ********************************************* Add Rows resume Table functionality start  ************************************************************ -->
 
 <div id="divInvoiceAttachmentTd1" style="display: none; float: left;">
-	<div class="timesheet_week_comm col-md-12 invoiceDocs invoiceDocs_add">
+	<div class="timesheet_week_comm col-md-12 invoiceDocs invoiceDocs_add width100percnt">
 		<div class="form-group" id="REPLACEROWIDinvoicedocFileuploadFileGroup">
 			<span> <input type="file" name='REPLACEROWIDinvoicedocFile'
 				id='REPLACEROWIDinvoicedocFile'
@@ -1518,7 +1541,7 @@ function calculateDiscount(){
 		<div class="tblminwidth-50">
 			<input type="text" class="form-control input-sm" value=""
 				placeholder="Tax type" name='invoiceTax[REPLACEROWID].taxType'
-				id='REPLACEROWIDtaxType'> <input type="hidden"
+				id='REPLACEROWIDtaxType' data-validation="required validate_length length2-100" field-name="Tax Type"> <input type="hidden"
 				name="REPLACEROWIDinvoiceTaxId" id="REPLACEROWIDinvoiceTaxId">
 		</div>
 	</div>
@@ -1536,7 +1559,7 @@ function calculateDiscount(){
 <div id="divTaxTd3" style="display: none; float: left;">
 	<div class="tblminwidth-75" id="REPLACEROWIDdiscountRowDiv">
 		<input type="text"
-			class="form-control input-sm" value=""
+			class="form-control input-sm allownumericwithdecimal" value=""
 			placeholder="Flat / Discount" name='invoiceTax[REPLACEROWID].taxdiscountvalue'
 			id='REPLACEROWIDtaxdiscountvalue'
 			onblur="calculateTaxDiscount(REPLACEROWID);" onkeyup="validateRowDiscount(REPLACEROWID);">
@@ -1816,30 +1839,67 @@ function getVendors(){
 	});
 
 	}
+ 
 </script>
 
-
+<script>
+function getPaymentAccountList(dbOrgRelationId,paymentAccoutId){
+	var	orgRelationId = $("#vendorOrgRelationId").val();
+	if(orgRelationId == null){
+		orgRelationId = dbOrgRelationId;
+	}
+	$.ajax({
+		type : "GET",
+		url: sourceleadUrl+"/getAllPaymentAccountList?"+tokenParamName+"="+tokenValue+"&orgRelationId="+orgRelationId,
+		success :function(json) {
+			var result = "";
+			   result = result +"<option value=''>-- Select Account --</option>";
+			   for (var i=0; i<json.length; i++)
+				{
+				  var report = json[i];
+				  var selected = '';
+					if((paymentAccoutId != null && paymentAccoutId != "" && paymentAccoutId !="undefined" && paymentAccoutId == report.id) || (report.defaultAccount == 1)){
+						selected = 'selected';
+					}
+					if(report.accountType === 'WEPAY'){
+						  result = result +'<option value='+report.id+' '+selected+'> '+report.email+'</option>';
+					  }else{
+						  result = result +'<option value='+report.id+' '+selected+'>'+report.accountNumber+' ('+report.bankName+')</option>';
+					  }
+				}
+			   
+			     $("#paymentAccountId").empty();
+		         $("#paymentAccountId").append(result);
+		}
+	});
+}
+</script>
 <script>
 function getVendorContacts(vendorContactId){
 	var orgRelationId = $("#vendorOrgRelationId").val();
+	$("#vendorContact").empty();
 	$.ajax({
 		type : "GET",
 		url: sourceleadUrl+"/getPayableVendorContactsByOrgRelationId?"+tokenParamName+"="+tokenValue+"&orgRelationId="+orgRelationId,
-		success :function(data) {
-		var json = JSON.parse(data);
+
+		success :function(json) {
 		var output = "";
-		output = output + "<option value=''>Select Vendor Contact</option>";
-		for (var i=0; i<json.length; i++)
-		{
-		var opt = json[i];
-		
-		var selected = '';
-		if(vendorContactId != null && vendorContactId != "" && vendorContactId !="undefined" && vendorContactId == opt.spocUserId){
-			selected = 'selected';
-		}
-		output = output + "<option value='" +opt.spocUserId+ "' "+selected+">"+opt.ownerName+"("+opt.spocName+")</option>";
-		$("#vendorCurrency").val(opt.vendorCurrency);
-		}
+		for (var i=0; i<json.data.length; i++)
+			{
+				var opt = json.data[i];
+				if(vendorContactId != null && vendorContactId != "" && vendorContactId !="undefined"){
+					var array = vendorContactId.split(",");
+					if(array.includes(opt.spocUserId.toString())){
+						output = output + "<option value='"+opt.spocUserId+"' selected >"+opt.ownerName+"("+opt.spocName+")</option>";
+					}else{
+						output = output + "<option value='"+opt.spocUserId+"' >"+opt.ownerName+"("+opt.spocName+")</option>";
+					}
+				}else{
+					output = output + "<option value='" +opt.spocUserId+ "'>"+opt.ownerName+"("+opt.spocName+")</option>";
+				}
+				$("#vendorCurrency").val(opt.vendorCurrency);
+			}
+
 		$("#vendorContact").empty();
 		$("#vendorContact").append(output);
 		$('#vendorContact').trigger("chosen:updated");
@@ -1883,6 +1943,39 @@ function getPaymentTerms(){
 	});
 }
 </script>
+
+<script type="text/javascript">
+ function validateBillId() {
+	 var invoiceId = document.getElementById("invoiceId").value; 
+	
+	 if(invoiceId != null && invoiceId != ""){
+         //$("#create_user" ).addClass('button').val('Processing..');
+		 $.ajax({
+		    	type: "POST",
+		        url: sourceleadUrl+"/validateInvoiceId?"+tokenParamName+"="+tokenValue+"&invoiceId="+invoiceId+"&invoiceType=payables", 
+		        success: function(data) {
+		        	 if(data == true){
+		        		 $("#saveInvoiceId").attr("disabled", "disabled");
+					   	 $("#sendInvoiceId").attr("disabled", "disabled");
+		        		 $('#invoiceIdDiv').find('p.jquery_form_error_message').remove();
+						  $("input#invoiceId").after("<p class='jquery_form_error_message'>"+invoiceId+" is Already Existed</span>");
+						  document.getElementById("invoiceId").setAttribute('record-exist','yes');
+						  document.getElementById("invoiceId").setAttribute('record-exist-errorMsg',invoiceId+' is Already Existed'); 
+		        	}
+		        	else{
+		        		 $('input#invoiceId').removeAttr( "record-exist record-exist-errormsg");
+		        		 $('#invoiceIdDiv').find('p.jquery_form_error_message').remove(); 
+		        		 $("#saveInvoiceId" ).addClass('us-btn').val('Save');
+                         $("#saveInvoiceId").removeAttr("disabled");
+                         $("#sendInvoiceId" ).addClass('us-btn').val('Send');
+                         $("#sendInvoiceId").removeAttr("disabled");
+		        	}
+		        },
+		    });
+	 }
+ }
+ </script>  
+
 <script>
 function saveInvoice(saveType){
          
@@ -1904,7 +1997,7 @@ function saveInvoice(saveType){
          
          
          if ($('#invoice_form').validate(false, validationSettings)){  
- 	 	  var formData = getFormData("invoice_form");
+ 	 	  var formData = getFormData1("invoice_form");
          
  	 	    if(selectedAssociates == null || selectedAssociates == '' || selectedAssociates == 'undefined'){
 	        	var result = "";
@@ -1921,9 +2014,20 @@ function saveInvoice(saveType){
 		        	
 		    	        
 		        	  $("#invoiceLoading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
-		        	  $.post(sourceleadUrl+"/saveInvoice?"+tokenParamName+"="+tokenValue+"&saveType="+saveType+"&invoiceType=payable", formData, function(data) {
-			  				if(data == "success"){
-			  					$("#invoiceLoading").removeAttr("style");
+		        	  $.ajax({
+			        	  url: sourceleadUrl+"/saveInvoice?"+tokenParamName+"="+tokenValue+"&saveType="+saveType+"&invoiceType=payable",
+		        		  type: "POST",
+		        		  data: formData,
+		        		  processData: false,
+		        		  contentType: false,
+		        		  success: function (result) {
+		        	  //$.post(sourceleadUrl+"/saveInvoice?"+tokenParamName+"="+tokenValue+"&saveType="+saveType+"&invoiceType=Receivable", formData, function(result) {
+		        	 		  if (result && result.response === "INVALID_DATA") {
+			          		    showError(result.responseMessage);
+			          		} else if (result.response === "AWKWARD") {
+			          		    location.href = "/errorPage";
+			          		} else if (result.response === "SUCCESS") {
+			          			$("#invoiceLoading").removeAttr("style");
 	    		     			location.replace(sourceleadUrl+"/payablesList");
 	    		     			$("#selector1").removeAttr("style");
 					    		$("#selector1").css({ display: "block" });
@@ -1933,10 +2037,18 @@ function saveInvoice(saveType){
 					    			$("#msgDiv").html("Bill saved Successfully..");
 					    		}
 	    		     			msgFadein();
-			  				}
-			  			   }); 
+			          		} else if (result.indexOf('Sign In') !== -1) {
+			          			location.replace(sourceleadUrl);
+			          		} else {
+			          		    showError("Operation failed, please try again");
+			          		}
+		        		  $("#invoiceLoading").hide();
+		        	  }
+		  			   }); 
+		        	  
 		    	         return true; 
 	        }
+		        	  
          }else{
 	    		return false;
 	    	  } 
@@ -1975,11 +2087,18 @@ function maskme(){
     $.mask.definitions['p'] = "[Mm]";
     $(".inline_field").mask("Hhh:Mm"); 
     
-    $(".allownumericwithdecimal").on("keypress keyup blur",function (event) {
-    $(this).val($(this).val().replace(/[^0-9\.]/g,''));
-        if ((event.which != 46 || $(this).val().indexOf('.') != -1) && (event.which < 48 || event.which > 57)) {
-            event.preventDefault();
-        }
+    $(".allownumericwithdecimal").on("keypress keyup blur",function (evt) {
+    	
+    	
+    	var charCode = (evt.which) ? evt.which : event.keyCode
+   	         if (charCode > 31 && (charCode < 48 || charCode > 57))
+   	            return false;
+   	         return true;
+   	         
+//     $(this).val($(this).val().replace(/[^0-9\.]/g,''));
+//         if ((event.which != 46 || $(this).val().indexOf('.') != -1) && (event.which < 48 || event.which > 57)) {
+//             event.preventDefault();
+//         }
     });
 }
 </script>
@@ -1999,10 +2118,10 @@ function getSowRate(id){
 	$.ajax({
     	type: "GET",
     	url: sourceleadUrl+"/getSowRateByContractId?"+tokenParamName+"="+tokenValue+"&contractId="+contractId,
-        success: function(data) {
-        	 if(data != null && data != ''){
-        		var json = JSON.parse(data);
-	        	 $ ('#'+id+'rate').val(json.billingAmount);
+        success: function(json) {
+        	 if(json.object != null && json.object != ''){
+//         		var json = JSON.parse(data);
+	        	 $ ('#'+id+'rate').val(json.object.billingAmount);
 	        	 totalHoursCalculateAmount(id);
         	} 
         },
@@ -2138,19 +2257,19 @@ function validateDiscount() {
 	 if(selectedTextInvoice =='percentage'){
 		  var floatNum = /^(\d{0,2}(\.\d{0,2})?|100)$/
 		  if(enteredValue.match(floatNum)){
-			  $("#saveButtonId").removeAttr("disabled", "disabled");
-				$("#sendButtonId").removeAttr("disabled", "disabled");
+			  $("#saveInvoiceId").removeAttr("disabled", "disabled");
+				$("#sendInvoiceId").removeAttr("disabled", "disabled");
 			   return true;
 		  }		  
 		 else{
 				$("#discountValueDiv").after("<p class='jquery_form_error_message'><span>Enter Valid Percentage</span>");
-				$("#saveButtonId").attr("disabled", "disabled");
-				$("#sendButtonId").attr("disabled", "disabled");
+				$("#saveInvoiceId").attr("disabled", "disabled");
+				$("#sendInvoiceId").attr("disabled", "disabled");
 				return false; 
 		 	 }
 	  }if(selectedTextInvoice =='flat'){
-			  $("#saveButtonId").removeAttr("disabled", "disabled");
-			  $("#sendButtonId").removeAttr("disabled", "disabled");
+			  $("#saveInvoiceId").removeAttr("disabled", "disabled");
+			  $("#sendInvoiceId").removeAttr("disabled", "disabled");
 		  }		  
 }
 </script>
@@ -2164,14 +2283,14 @@ var enteredValue = $("#"+maxRowNum+"taxdiscountvalue").val();
 if(selectedTextInvoice =='percentage'){
 	  var floatNum = /^(\d{0,2}(\.\d{0,2})?|100)$/
 	  if(enteredValue.match(floatNum)){
-		  $("#saveButtonId").removeAttr("disabled", "disabled");
-			$("#sendButtonId").removeAttr("disabled", "disabled");
+		  $("#saveInvoiceId").removeAttr("disabled", "disabled");
+			$("#sendInvoiceId").removeAttr("disabled", "disabled");
 		   return true;
 	  }		  
 	 else{
 			$("#"+maxRowNum+"discountRowDiv").after("<p class='jquery_form_error_message'><span>Enter Valid Percentage</span>");
-			$("#saveButtonId").attr("disabled", "disabled");
-			$("#sendButtonId").attr("disabled", "disabled");
+			$("#saveInvoiceId").attr("disabled", "disabled");
+			$("#sendInvoiceId").attr("disabled", "disabled");
 			return false; 
 	 	 }
 }if(selectedTextInvoice =='flat'){
@@ -2182,8 +2301,8 @@ if(selectedTextInvoice =='percentage'){
 			   return false;
 		  }
 		else{ */
-			$("#saveButtonId").removeAttr("disabled", "disabled");
-			  $("#sendButtonId").removeAttr("disabled", "disabled");
+			$("#saveInvoiceId").removeAttr("disabled", "disabled");
+			  $("#sendInvoiceId").removeAttr("disabled", "disabled");
 // 		}
 	  }		
 	  

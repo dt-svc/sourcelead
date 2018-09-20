@@ -29,12 +29,15 @@ function prepareHrDeductionsList(url){
  	$("#payrollCycleDiv").find('p.jquery_form_error_message').remove();
 	$('#payrollCycle').val('').trigger("chosen:updated");
  	 var result = "";
- 	result = result +" <div class='modal-header'>";
- 	result = result +" <div class='remove_search'>";
- 	result = result +" <input type='text' placeholder='Search' id='hrDataTableSearch'/>";
- 	result = result +"</div>";
- 	result = result +"</div>";
- 	  result = result +"<table id='hrDeductionsPagination' class='display' cellspacing='0' width='100%' >"; 
+
+ 	 	result = result +" <div class='reportHead'>";
+		result = result + " <ul class='pull-right'>";
+		result = result + " <li><input type='text' placeholder='Search' class='repSearchBar' id='hrDataTableSearch'/><span class='repSearchIcon' onClick='hrDataTableSearch();'></span></li>";
+		result = result + "</ul>";
+		result = result + "</div>"; 	 	
+	 	
+	 	
+ 	  	result = result +"<table id='hrDeductionsPagination' class='display' cellspacing='0' width='100%' >"; 
  	    result = result + '<thead>';
 		result = result + '<tr>';
 		result = result + '<th>Employee Id</th>';
@@ -46,6 +49,7 @@ function prepareHrDeductionsList(url){
 		result = result + '<th>Request Sub.Date</th>';
 		result = result + '<th>Request Approved Date</th>';
 		result = result + '<th>Repaid Status</th>';
+		result = result + '<th>Action</th>';
 		result = result + '</tr>';
 		result = result + '</thead>	';
         result = result +"</table>";
@@ -77,7 +81,8 @@ function hrDeductionsPagination(url){
             { "data": "batchNumber" },
             { "data": "requestSubDate" },
             { "data": "requestApprovedDate"},
-            { "data": "repaidStatus"}
+            { "data": "repaidStatus"},
+            { "data": "action"}
             
         ],
         "columnDefs": [ {
@@ -195,7 +200,16 @@ function hrDeductionsPagination(url){
 						}
                     	return result;
                     }
-                  } ], 
+                  },
+    				{
+    					"targets" : colIndex++,
+    					"data" : "action",
+    					"render" : function(data, type, opt, meta) {
+    						var result = "";
+    						result = result + '<td><div><i class="glyphicon glyphicon-trash" onclick="deletePayrollEntity(\''+opt.uuid+'\',\'HrDeductions\')"></i></div></td>';
+    						return result;
+    					}
+    				} ], 
 	    	"scrollCollapse": false,
 	    	"lengthMenu": [[10, 15, 20], [10, 15, 20]],
 	    	"aaSorting": [[0,'desc']],
@@ -215,6 +229,9 @@ function hrDeductionsPagination(url){
     		   hrDeductionsList();
     	   }
     	});
+}
+function hrDataTableSearch(){
+	hrDeductionsList();
 }
 </script>
 

@@ -19,7 +19,6 @@ import org.hibernate.annotations.NotFoundAction;
 
 @Entity
 @Table(name = "TABS")
-@Cache(usage = CacheConcurrencyStrategy.TRANSACTIONAL,region="tabs")
 public class Tabs implements Serializable{
 	
 	private static final long serialVersionUID = 1L;
@@ -34,7 +33,7 @@ public class Tabs implements Serializable{
 	@Column(name = "TAB_NAME")
 	private String tabName;
 	
-	@NotFound(action=NotFoundAction.IGNORE)
+	
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "TAB_ID", nullable = false)
 	private Tabs tabs;
@@ -49,6 +48,10 @@ public class Tabs implements Serializable{
     
     @Column(name = "STATUS", nullable = false)
    	private Integer status;
+    
+    @Column(name = "TAB_ICON")
+	private String tabIcon;
+	
     
     
 
@@ -98,6 +101,14 @@ public class Tabs implements Serializable{
 
 	public void setStatus(Integer status) {
 		this.status = status;
+	}
+
+	public String getTabIcon() {
+		return tabIcon;
+	}
+
+	public void setTabIcon(String tabIcon) {
+		this.tabIcon = tabIcon;
 	}
     
     

@@ -19,7 +19,6 @@ import org.hibernate.annotations.Type;
 
 @Entity
 @Table(name = "USER_LOGIN_LOGOUT_SESSION")
-//@Cache(usage = CacheConcurrencyStrategy.TRANSACTIONAL, region = "userLoginLogoutSession")
 public class UserLoginLogoutSession  implements Serializable{
 
 	private static final long serialVersionUID = 1L;
@@ -29,8 +28,8 @@ public class UserLoginLogoutSession  implements Serializable{
     @Column(name = "ID", nullable = false)
 	private Long id;
 	
-	@NotFound(action=NotFoundAction.IGNORE)
-	@ManyToOne(fetch = FetchType.EAGER)
+	
+	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "USERID")
 	private User userId;
 	

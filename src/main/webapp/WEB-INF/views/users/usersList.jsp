@@ -5,7 +5,6 @@
 <%@taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
 <%@taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
 
-
 <style type="text/css">
 #loadMoreDiv{
 text-align: center;
@@ -17,7 +16,6 @@ clear: both;
 display: inline-block;
 margin: auto;
 width: 100%;
-
 }
 #loadMoreDiv .fa-spinner{
 margin-right: 15px;
@@ -26,9 +24,62 @@ margin-right: 15px;
   position: relative !important; top: -60px !important;
 }
 </style>
+
+
+<style>
+.approvedPop {
+    position:absolute; z-index:100; width:200px; top:35px; right:2px; display:none; background-color: #fff;
+    }
+.approvedPop ul {
+ width:100% !important; float: none; padding: 0;
+ }
+ .approvedPop ul li {
+ clear: both; width: 100%; margin: 0;
+ }
+ 
+ 
+ .approvedPop1 {
+    position:absolute; z-index:100; width:150px; top:35px; right:2px; display:none; background-color: #fff;
+    }
+.approvedPop1 ul {
+ width:100% !important; float: none; padding: 0;
+ }
+ .approvedPop1 ul li {
+ clear: both; width: 100%; margin: 0;
+ }
+ 
+</style>
+
+
+<script>
+$(document).ready(function() {
+    $("#filterDropDown").click(function(){
+		$(".approvedPop").slideToggle(200);
+		$(".approvedPop1").slideUp(200);
+	});
+    
+    $("#filterDropDown, .approvedPop, .approvedPop1").click(function(e) {  
+        e.stopPropagation();
+    });
+    
+    
+    $("#filterDropDown1").click(function(){
+		$(".approvedPop1").slideToggle(200);
+		$(".approvedPop").slideUp(200);
+	});
+    $("#filterDropDown1, .approvedPop1, .approvedPop").click(function(e) {  
+        e.stopPropagation();
+    });
+    
+    $("html").click(function() {
+        $(".approvedPop, .approvedPop1").slideUp(200);
+    });
+    
+}); 
+</script>
+
 <script type="text/javascript">
 window.onload = function () {
-//getUsersList('manual');
 	usersListCheck("${searchValue}","${searchResult}");
 	var view = $("#listView").val('GRIDVIEW');
  };
@@ -37,12 +88,6 @@ window.onload = function () {
 <script type="text/javascript">
 function usersListCheck(searchValue,searchResult){
 	getDynamciUserList();
-	/* if(searchResult == 'searchresult'){
-		alert("hello")
-		getUsersSearchResult(searchValue);
-	}else{
-		getDynamciUserList();
-	} */
 }
 </script>
 
@@ -80,17 +125,12 @@ function getUsersSearchResult(searchValue){
 		         <i class="fa fa-check-circle"></i><span>${msg}</span>
 			</div>
 	     </c:if>
-      <div class="pull-left">
-        <h2>Associates </h2>
-      </div>
+      <div class="pull-left"><h2>Associates </h2></div>
       
     <div class="pull-right brud-crum"><a href="<c:url value='${appPath}/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a> &raquo; Associates List </div>
     </section>
-    <div class="timesheet_out">
-    <div class="vendor_wrap" style="overflow-x: auto;">
-    
-    </div>
-  </div>
+
+	<div class="project_wrap">
       <section class="clearfix usersHeader positionRelative  hidden">
       
       <div class="pull-left cand-advsrche onboardBtn">
@@ -120,57 +160,219 @@ function getUsersSearchResult(searchValue){
       </div>
       </div>
       </section>
+	    
+				<div class="cand-advsrch-popup advancedsearch-popup filterDynamic-Search">
+				<h5 class="headerAdsrch">Filters
+					<a href="javascript:void(0)" class="close-div" onClick="closePop()"><i
+						class="fa fa-close"></i></a>
+				</h5>
+				<div class="addInner">
+					<div class="row">
+							
+						<div class="col-md-2">
+						<div class="row">
+						<div class="col-md-12 mb">
+							<label><strong>Status</strong></label>
+							 <div class="clearfix">
+								<ul class="list-unstyled" id="statusFilter">
+		                    	    <li class="checkBox positionRelative"><input   type="checkbox" name="userState" id="activeStatus" value ="ACTIVE" checked ><label>&nbsp;Active</label></li>
+									<li class="checkBox positionRelative"><input   type="checkbox" name="userState" id="notloggedInStatus" value ="NOT_LOGGEDIN" checked ><label>&nbsp;Not Logged In</label></li>
+									<li class="checkBox positionRelative"><input   type="checkbox" name="userState" id="inactiveStatus" value ="INACTIVE" ><label>&nbsp;In Active</label></li>
+		               				
+		                        </ul>
+							 </div>
+							 </div> 
+							 
+							 <div class="col-md-12 mb">
+								<label><strong>Employment Type</strong></label>
+								 <div class="clearfix">
+									<ul class="list-unstyled" id="employmentTypeFilter">
+			                    	    <li class="checkBox positionRelative"><input   type="checkbox" name="employmentType"  value ="C2C"><label>&nbsp;C2C</label></li>
+										<li class="checkBox positionRelative"><input   type="checkbox" name="employmentType"  value ="C2C-1099" ><label>&nbsp;C2C-1099</label></li>
+										<li class="checkBox positionRelative"><input   type="checkbox" name="employmentType" value ="W-2" ><label>&nbsp;W-2</label></li>
+			               				<li class="checkBox positionRelative"><input   type="checkbox" name="employmentType" value ="C2H"><label>&nbsp;C2H</label></li>
+			               				<li class="checkBox positionRelative"><input   type="checkbox" name="employmentType" value ="C2H-1099"><label>&nbsp;C2H-1099</label></li>
+			               				<li class="checkBox positionRelative"><input   type="checkbox" name="employmentType" value ="Offshore C2C"><label>&nbsp;Offshore C2C</label></li>
+			               				<li class="checkBox positionRelative"><input   type="checkbox" name="employmentType" value ="Part Time"><label>&nbsp;Part Time</label></li>
+			               				<li class="checkBox positionRelative"><input   type="checkbox" name="employmentType" value ="Full Time"><label>&nbsp;Full Time</label></li>
+			               				<li class="checkBox positionRelative"><input   type="checkbox" name="employmentType" value ="Other"><label>&nbsp;Others</label></li>
+			                        </ul>
+								 </div>
+							 </div> 
+							 
+						  </div>
+						</div>
+						
+						<div class="col-md-10">
+						
+						<div class="row">
+						
+						<c:if test="${reportingManagersListSize > 0}">
+							 <div class="col-md-4 positionRelative mb">
+									<div class="clearfix dynamic_search filterDynamicsearch">
+										<input type="text" id="myManagersInput" onkeyup="myManagersFunction()" placeholder="Managers" title="Type in a managers">
+										<span class="cursorPointer" title="Search"><i class="fa fa-search"></i></span>
+									</div>
+									 <div class="clearfix filterSearch-ul">
+										<ul class="list-unstyled positionRelative filterSearch mt5" id="myManagersUL">
+											<c:forEach var="manager" items="${reportingManagersList}">
+											<li class="checkBox positionRelative"><input  type="checkbox" name="orgManagers" value ="${manager.userId}" ><label>${manager.fullName}</label></li>
+											</c:forEach>
+										</ul>
+									 </div> 
+							 </div> 
+							 </c:if>
+						
+						<div class="col-md-4 positionRelative mb">
+							<div class="clearfix dynamic_search filterDynamicsearch">
+								<input type="text" id="myRolesInput" onkeyup="myRolesFunction()" placeholder="Roles" title="Type in a roles">
+								<span class="cursorPointer" title="Search"><i class="fa fa-search"></i></span>
+							</div>
+							 <div class="clearfix filterSearch-ul">
+								<ul class="list-unstyled positionRelative filterSearch mt5" id="myRolesUL">
+									<c:forEach var="roles" items="${rolesList}">
+									<li class="checkBox positionRelative"><input  type="checkbox" name="userRole" value ="${roles.id}" ><label>${roles.displayName}</label></li>
+									</c:forEach>
+								</ul>
+							 </div> 
+						</div>
+						
+						<c:if test="${clientListSize > 0}">
+						<div class="col-md-4 positionRelative mb">
+							<div class="clearfix dynamic_search filterDynamicsearch">
+								<input type="text" id="myClientsInput" onkeyup="myClientsFunction()" placeholder="Clients" title="Type in a clients">
+								<span class="cursorPointer" title="Search"><i class="fa fa-search"></i></span>
+							</div>
+							 <div class="clearfix filterSearch-ul">
+								<ul class="list-unstyled positionRelative filterSearch mt5" id="myClientsUL">
+									<c:forEach var="client" items="${clientsList}">
+									<li class="checkBox positionRelative"><input  type="checkbox" name="orgClients" value ="${client.orgRelId}" ><label>${client.clientName}</label></li>
+									</c:forEach>
+								</ul>
+							 </div> 
+						</div>
+						</c:if>
+						
+						<c:if test="${!empty associateTagsList}">
+						<div class="col-md-4 positionRelative mb">
+							<div class="clearfix dynamic_search filterDynamicsearch">
+								<input type="text" id="myClientsInput" onkeyup="myClientsFunction()" placeholder="Tags" title="Type in a tag">
+								<span class="cursorPointer" title="Search"><i class="fa fa-search"></i></span>
+							</div>
+							 <div class="clearfix filterSearch-ul">
+								<ul class="list-unstyled positionRelative filterSearch mt5" id="myClientsUL">
+									<c:forEach var="tag" items="${associateTagsList}">
+									<li class="checkBox positionRelative"><input  type="checkbox" name="tags" value ="${tag}" ><label>${tag}</label></li>
+									</c:forEach>
+								</ul>
+							 </div> 
+						</div>
+						</c:if>
+						
+						
+						<c:if test="${teamsListSize > 0}">
+						<div class="col-md-4 mb positionRelative mb">
+							<div class="clearfix dynamic_search filterDynamicsearch">
+								<input type="text" id="myTeamsInput" onkeyup="myTeamsFunction()" placeholder="Teams" title="Type in a teams">
+								<span class="cursorPointer" title="Search"><i class="fa fa-search"></i></span>
+							</div>
+							 <div class="clearfix filterSearch-ul">
+								<ul class="list-unstyled positionRelative filterSearch mt5" id="myTeamsUL">
+									<c:forEach var="team" items="${teamsList}">
+									<li class="checkBox positionRelative"><input  type="checkbox" name="orgTeams" value ="${team.id}" ><label>${team.name}</label></li>
+									</c:forEach>
+								</ul>
+							 </div> 
+						</div>
+						</c:if>
+						
+						<c:if test="${departmentListSize > 0}">
+						<div class="col-md-4 mb positionRelative mb">
+							<div class="clearfix dynamic_search filterDynamicsearch">
+								<input type="text" id="myDepartmentInput" onkeyup="myDepartmentFunction()" placeholder="Departments" title="Type in a departments">
+								<span class="cursorPointer" title="Search"><i class="fa fa-search"></i></span>
+							</div>
+							 <div class="clearfix filterSearch-ul">
+								<ul class="list-unstyled positionRelative filterSearch mt5" id="myDepartmentUL">
+									<c:forEach var="dep" items="${departmentList}">
+									<li class="checkBox positionRelative"><input  type="checkbox" name="orgDepartments" value ="${dep.id}"><label>${dep.departmentName}</label></li>
+									</c:forEach>
+								</ul>
+							 </div> 
+						</div>
+						</c:if>
+						
+						</div>
+						
+						</div>
+						
+						
+					</div>
+					</div>
+					<div class="clearfix advancedsearch-footer">
+						<div class="pull-right mr">
+							<input type="button" value="Apply" id="search_requiremet"
+								onclick="closePop();getDynamciUserList();" class="btn btn-sm btn-success" />
+							<input type="button" value="Reset" id="clear_search"
+								onclick="resetFilter();" class="btn btn-sm btn-primary" />
+						</div>
+					</div>
+				</div>
       
       <div class="project_wrap_table datatable_filter backgroundWhite" id="userListGrid">
-      <div class="positionRelative table_head section-action-btns section-action-btns-associates clearfix">
+      
+      <div class="positionRelative reportHead clearfix">
+      <span class="pull-left refreIcon"><a href="javascript:void(0)" class="refeIcon" title="Refresh" onclick="resetFilter();"></a></span>
       <ul class="pull-right list-unstyled list-inline">
         <input type="hidden" name="usersOffset" id="usersOffset" value="0"/>
-          	
-          <li><i class="fa fa-filter"></i>&nbsp;
-               <select id="userState" onchange="getDynamciUserList()">
-				<option value="ACTIVE" >Active</option>
-				<option value="">All</option>
-				<option value="INACTIVE" >In Active</option>
-				<option value="NOT_LOGGEDIN">Not Logged in</option>
-			   </select>
-          
-          </li>
-          
-		   <li><i class="fa fa-filter"></i>&nbsp;
-				<select id="userRole" onchange="getDynamciUserList();">
-				<option value="">&nbsp;--Select Role--&nbsp;&nbsp;&nbsp;</option>
-				<!-- <option value="All" >All Roles</option> -->
-				<c:forEach var="roles" items="${rolesList}">
-	                 <option value="${roles.id}">${roles.displayName}</option>
-                </c:forEach>
-				</select>
-		   </li>
 		   <sec:authorize access="hasAnyRole('ROLE_CREATE_ASSOCIATE')"> 
-	           <li><a href="<c:url value='${appPath}/userCreation'/>"><i class="fa fa-user-plus"></i>&nbsp;Add Associate</a></li>
+	                    
+                  <c:if test="${orgLocationsCount > 1}">
+		                    <li>
+								<a class="action newAdBtn mr5" onclick="getActions();" href="javascript:void(0)">+ Add <i class="fa fa-caret-down"></i></a>
+								<div class="action-pop">
+									<span> 
+									<a href="<c:url value='${appPath}/userCreation'/>">Add Associate</a>
+									<a href="<c:url value='${appPath}/addAssociateFromLocations'/>">Add From Loc</a>
+									<sec:authorize access="hasAnyRole('ROLE_USER_BULK_IMPORTS')"> 
+										<a href="<c:url value='${appPath}/uploadForm'/>">Import</a>
+									</sec:authorize>									
+									</span>
+								</div>
+							</li>
+				</c:if>
+				
+				<%-- <c:if test="${SourceLeadWeb_currencyCode == 'USD'}">
+				<li><a class="newAdBtn mr5" href="<c:url value='${appPath}/userGroupList'/>"><i class="fa fa-plus"></i>&nbsp;Create Batch</a></li>
+				</c:if> --%>
+				
+				<c:if test="${orgLocationsCount == 1}">
+				<li><a class="newAdBtn mr5" href="<c:url value='${appPath}/userCreation'/>">+  Associate</a></li>
+				</c:if>		
+	           
+						
 	       </sec:authorize>
-
-		     <sec:authorize access="hasAnyRole('ROLE_USER_BULK_IMPORTS')"> 
-	                      <li title="Import"><a href="<c:url value='${appPath}/uploadForm'/>"><i class="glyphicon glyphicon-import expIcon"></i>&nbsp;</a></li>
-	         </sec:authorize>		  
-		  
-		   <sec:authorize access="hasAnyRole('ROLE_EXPORT_ASSOCIATE')"> 
-		   <li title="Export"><a  id="export-pop"><i class="glyphicon glyphicon-export expIcon"></i>&nbsp;</a>
-			    <div id="exportPop" class="user_exp">
-				   <ul class="ul_padding">
-				   <li onclick="exportToPdf();" title="PDF"><i class="fa fa-file-pdf-o"></i>&nbsp; PDF</li>
-				   <li onclick="exportUserData();" title="Excel"><i class="fa fa-file-excel-o"></i>&nbsp; Excel</li>
-				   </ul>
-				</div>
-		   </li>
-		    </sec:authorize>
-		  <li class="positionRelative">
-			  <div class="dynamic_search">
-	   			<input type='text' placeholder='Search' id='dynamicUserDataTableSearch'/>
-	   			<span class="cursorPointer" title="Search"><i class="fa fa-search" onClick="getDynamciUserList();"></i></span>
-			  </div>
-		  </li>
+			
+			<sec:authorize access="hasAnyRole('ROLE_VIEW_ASSOCIATE_ADDITIONAL_DETAILS')"> 
+				<li><a href="javascript:void(0)" class="filtIcon" title="Filters" onclick="openPop();"></a></li>
+			</sec:authorize>
+				
+				<li><a href="javascript:void(0)" class="overIcon" title="Actions" onclick="newActions();"></a>
+					<div class="newActPop">
+						<span>
+	
+						<sec:authorize access="hasAnyRole('ROLE_EXPORT_ASSOCIATE')"> 
+							<a href="javascript:void(0)" onclick="exportToPdf();" title="PDF">Export PDF</a>
+							<a href="javascript:void(0)" onclick="exportUserData();" title="Excel">Export Excel</a>
+						</sec:authorize>
+						</span>
+					</div>
+				</li>
+		    
+		  <li class=""><input type="text" class="repSearchBar" placeholder='Search' id='dynamicUserDataTableSearch'/><span class="repSearchIcon" onClick="getDynamciUserList();"></span></li>
         </ul>
       </div>
+      
               <div id="dynamicUserListViewDiv" class="filter_position positionRelative"></div> 
           </div>  
       <div class="clearfix form-area form-horizontal toggle-div remove-div">
@@ -184,26 +386,195 @@ function getUsersSearchResult(searchValue){
       <div id="popUp"></div>
       </div>
       </div>
+      </div>
   </section>
   
       <!-- Content Area Ends--> 
-
+ <div class="advancedsearch-mask" onClick="closeAdsrch()"></div>
       <jsp:include page="../masterFooter.jsp" />
       <div class="backtotop" style="display: none;"><img src="/resources/images/backtotop.png"></div>  
   
  <!--  Rajashkar
   SCript is used to export user data as xls format -->    
+
+<script>
+function myRolesFunction() {
+    var input, filter, ul, li, a, i;
+    input = document.getElementById("myRolesInput");
+    filter = input.value.toUpperCase();
+    ul = document.getElementById("myRolesUL");
+    li = ul.getElementsByTagName("li");
+    for (i = 0; i < li.length; i++) {
+        a = li[i].getElementsByTagName("label")[0];
+        if (a.innerHTML.toUpperCase().indexOf(filter) > -1) {
+            li[i].style.display = "";
+        } else {
+            li[i].style.display = "none";
+
+        }
+    }
+}
+
+
+function myClientsFunction() {
+    var input, filter, ul, li, a, i;
+    input = document.getElementById("myClientsInput");
+    filter = input.value.toUpperCase();
+    ul = document.getElementById("myClientsUL");
+    li = ul.getElementsByTagName("li");
+    for (i = 0; i < li.length; i++) {
+        a = li[i].getElementsByTagName("label")[0];
+        if (a.innerHTML.toUpperCase().indexOf(filter) > -1) {
+            li[i].style.display = "";
+        } else {
+            li[i].style.display = "none";
+
+        }
+    }
+}
+
+
+function myManagersFunction() {
+    var input, filter, ul, li, a, i;
+    input = document.getElementById("myManagersInput");
+    filter = input.value.toUpperCase();
+    ul = document.getElementById("myManagersUL");
+    li = ul.getElementsByTagName("li");
+    for (i = 0; i < li.length; i++) {
+        a = li[i].getElementsByTagName("label")[0];
+        if (a.innerHTML.toUpperCase().indexOf(filter) > -1) {
+            li[i].style.display = "";
+        } else {
+            li[i].style.display = "none";
+
+        }
+    }
+}
+
+
+function myTeamsFunction() {
+    var input, filter, ul, li, a, i;
+    input = document.getElementById("myTeamsInput");
+    filter = input.value.toUpperCase();
+    ul = document.getElementById("myTeamsUL");
+    li = ul.getElementsByTagName("li");
+    for (i = 0; i < li.length; i++) {
+        a = li[i].getElementsByTagName("label")[0];
+        if (a.innerHTML.toUpperCase().indexOf(filter) > -1) {
+            li[i].style.display = "";
+        } else {
+            li[i].style.display = "none";
+
+        }
+    }
+}
+
+
+function myDepartmentFunction() {
+    var input, filter, ul, li, a, i;
+    input = document.getElementById("myDepartmentInput");
+    filter = input.value.toUpperCase();
+    ul = document.getElementById("myDepartmentUL");
+    li = ul.getElementsByTagName("li");
+    for (i = 0; i < li.length; i++) {
+        a = li[i].getElementsByTagName("label")[0];
+        if (a.innerHTML.toUpperCase().indexOf(filter) > -1) {
+            li[i].style.display = "";
+        } else {
+            li[i].style.display = "none";
+
+        }
+    }
+}
+
+$(document).keyup(function(e) {
+	  if (e.keyCode === 27) {
+		  closePop();
+	  }
+	});
+
+</script>
+
+<script>
+function resetFilter(){
+	$("ul#myRolesUL > li input:checkbox").prop("checked",false);
+	$("ul#statusFilter > li input:checkbox").prop("checked",false);
+	$("ul#myClientsUL > li input:checkbox").prop("checked",false);
+	$("ul#myManagersUL > li input:checkbox").prop("checked",false);
+	$("ul#myTeamsUL > li input:checkbox").prop("checked",false);
+	$("ul#myDepartmentUL > li input:checkbox").prop("checked",false);
+	$("ul#employmentTypeFilter > li input:checkbox").prop("checked",false);
+	$("#dynamicUserDataTableSearch").val('');
+	
+	document.getElementById("activeStatus").checked = true;
+	document.getElementById("notloggedInStatus").checked = true;
+	
+	getDynamciUserList();
+}
+</script>
+
+
 <script>
 function exportUserData(){
 	var userListEmpty = $("#noUsers").val();
 	var exportType = "xls";
 	var loginUserRole = '${SourceLeadWeb_loginUserRole}';
-    var userRole = document.getElementById("userRole").value;
+	
+	 var userRole = [];
+		$('input:checkbox[name=userRole]:checked').each(function() 
+	    {
+			userRole.push($(this).val());
+	    });
+		
+		
+		var userState = [];
+		$('input:checkbox[name=userState]:checked').each(function() 
+	    {
+			userState.push($(this).val());
+	    });
+		
+		var orgClients = [];
+		$('input:checkbox[name=orgClients]:checked').each(function() 
+			    {
+			orgClients.push($(this).val());
+	     });
+		
+		var orgManagers = [];
+		$('input:checkbox[name=orgManagers]:checked').each(function() 
+			    {
+			orgManagers.push($(this).val());
+	     });
+		
+		
+		var orgTeams = [];
+		$('input:checkbox[name=orgTeams]:checked').each(function() 
+			    {
+			orgTeams.push($(this).val());
+	     });
+		
+		
+		var orgDepartments = [];
+		$('input:checkbox[name=orgDepartments]:checked').each(function() 
+			    {
+			orgDepartments.push($(this).val());
+	     });
+		
+		var employmentType = [];
+		$('input:checkbox[name=employmentType]:checked').each(function() 
+			    {
+			employmentType.push($(this).val());
+	     });
+		
+		var tags = [];
+		$('input:checkbox[name=tags]:checked').each(function() 
+	     {
+			tags.push($(this).val());
+	     });
+		
     var searchValue = $("#dynamicUserDataTableSearch").val();
     searchValue = searchValue ? searchValue : "";
-	var userState = document.getElementById("userState").value;
 	if(userListEmpty != 'nousers'){
-		window.location.href = sourceleadUrl + "/getExportUsers?&userRole="+userRole+"&searchValue="+searchValue+"&userState="+userState+"&loginUserRole="+loginUserRole+"&exportType=xls";
+		window.location.href = sourceleadUrl + "/getExportUsers?&userRole="+userRole+"&searchValue="+searchValue+"&userState="+userState+"&loginUserRole="+loginUserRole+"&orgClients="+orgClients+"&orgManagers="+orgManagers+"&orgTeams="+orgTeams+"&orgDepartments="+orgDepartments+"&employeMentType="+employmentType+"&tags="+tags+"&exportType=xls";
 	}else{
 		 var result = "";
 			result = result +"	<div class='project_inn_mask'></div>";
@@ -220,6 +591,27 @@ function exportUserData(){
 
 }
 </script> 
+
+
+<script>
+	// Close Advanced Search
+		function closePop(){
+			$("div.cand-advsrch-popup").hide();
+			$(".advancedsearch-mask").fadeOut();
+		}
+		function openPop(){
+			$("div.cand-advsrch-popup").toggle();
+			 $(".advancedsearch-mask").fadeIn();
+		}
+		
+		function closeAdsrch(){
+			$("div.cand-advsrch-popup").fadeOut();
+			$(".advancedsearch-mask").fadeOut();
+		}
+	</script>
+
+
+
 <script type="text/javascript">
 function cancel(){
 	$("#popUp").empty();
@@ -250,12 +642,63 @@ function exportToPdf(){
 	var userListEmpty = $("#noUsers").val();
 	var exportType = "pdf";
 	var loginUserRole = '${SourceLeadWeb_loginUserRole}';
-    var userRole = document.getElementById("userRole").value;
+    
+    var userRole = [];
+	$('input:checkbox[name=userRole]:checked').each(function() 
+    {
+		userRole.push($(this).val());
+    });
+	
+	
+	var userState = [];
+	$('input:checkbox[name=userState]:checked').each(function() 
+    {
+		userState.push($(this).val());
+    });
+	
+	var orgClients = [];
+	$('input:checkbox[name=orgClients]:checked').each(function() 
+		    {
+		orgClients.push($(this).val());
+     });
+	
+	var orgManagers = [];
+	$('input:checkbox[name=orgManagers]:checked').each(function() 
+		    {
+		orgManagers.push($(this).val());
+     });
+	
+	
+	var orgTeams = [];
+	$('input:checkbox[name=orgTeams]:checked').each(function() 
+		    {
+		orgTeams.push($(this).val());
+     });
+	
+	
+	var orgDepartments = [];
+	$('input:checkbox[name=orgDepartments]:checked').each(function() 
+		    {
+		orgDepartments.push($(this).val());
+     });
+	
+	var employmentType = [];
+	$('input:checkbox[name=employmentType]:checked').each(function() 
+		    {
+		employmentType.push($(this).val());
+     });
+
+	var tags = [];
+	$('input:checkbox[name=tags]:checked').each(function() 
+		    {
+		tags.push($(this).val());
+     });
+    
+    
     var searchValue = $("#dynamicUserDataTableSearch").val();
     searchValue = searchValue ? searchValue : "";
-	var userState = document.getElementById("userState").value;
 	if(userListEmpty != 'nousers'){
-	window.location.href = sourceleadUrl + "/getExportUsers?&userRole="+userRole+"&searchValue="+searchValue+"&userState="+userState+"&loginUserRole="+loginUserRole+"&exportType=pdf";
+	window.location.href = sourceleadUrl + "/getExportUsers?&userRole="+userRole+"&searchValue="+searchValue+"&userState="+userState+"&loginUserRole="+loginUserRole+"&orgClients="+orgClients+"&orgManagers="+orgManagers+"&orgTeams="+orgTeams+"&orgDepartments="+orgDepartments+"&employeMentType="+employmentType+"&tags="+tags+"&exportType=pdf";
 	}else{
 		 var result = "";
 			result = result +"	<div class='project_inn_mask'></div>";
@@ -272,16 +715,7 @@ function exportToPdf(){
 }
 </script>
    
-   <script>
-	// Close Advanced Search
-		function closePop(){
-			$("div.cand-advsrch-popup").hide();
-		}
-		function openPop(){
-		  $("div.cand-advsrch-popup").toggle();
-		  
-		}
-	</script>
+  
 	<script type="text/javascript">	
 	function loadChosenScripts(){
 	    $('#search_user').removeAttr('disabled');
@@ -543,7 +977,7 @@ function getUserSummary(userId){
   $('#selector').delay(2000).fadeOut('slow');
 	   $("#export-pop").click(function(){
 	               $("#exportPop").toggle();
-	       });
+	   });
 	   $("html").click(function() {
 	       $("#exportPop").hide();
 	   });
@@ -704,11 +1138,61 @@ function getUserSummary(userId){
 <script>
 function getDynamciUserList(){
 	var loginUserRole = '${SourceLeadWeb_loginUserRole}';
-    var userRole = document.getElementById("userRole").value;
-	var userState = document.getElementById("userState").value;
+	
+	var userRole = [];
+	$('input:checkbox[name=userRole]:checked').each(function() 
+    {
+		userRole.push($(this).val());
+    });
+	
+	
+	var userState = [];
+	$('input:checkbox[name=userState]:checked').each(function() 
+    {
+		userState.push($(this).val());
+    });
+	
+	var orgClients = [];
+	$('input:checkbox[name=orgClients]:checked').each(function() 
+		    {
+		orgClients.push($(this).val());
+     });
+	
+	var orgManagers = [];
+	$('input:checkbox[name=orgManagers]:checked').each(function() 
+		    {
+		orgManagers.push($(this).val());
+     });
+	
+	
+	var orgTeams = [];
+	$('input:checkbox[name=orgTeams]:checked').each(function() 
+		    {
+		orgTeams.push($(this).val());
+     });
+	
+	var employmentType = [];
+	$('input:checkbox[name=employmentType]:checked').each(function() 
+		    {
+		employmentType.push($(this).val());
+     });
+	
+	
+	var tags = [];
+	$('input:checkbox[name=tags]:checked').each(function() 
+	{
+		tags.push($(this).val());
+     });
+	
+	var orgDepartments = [];
+	$('input:checkbox[name=orgDepartments]:checked').each(function() 
+		    {
+		orgDepartments.push($(this).val());
+     });
+	
 	var searchValue = $("#dynamicUserDataTableSearch").val();
 	 searchValue = searchValue ? searchValue : "";
-	var url = sourceleadUrl+"/detDynamicUserList?"+tokenParamName+"="+tokenValue+"&searchValue="+searchValue+"&userRole="+userRole+"&userState="+userState+"&loginUserRole="+loginUserRole;
+	var url = sourceleadUrl+"/getDynamicUserList?"+tokenParamName+"="+tokenValue+"&searchValue="+searchValue+"&userRole="+userRole+"&userState="+userState+"&loginUserRole="+loginUserRole+"&orgClients="+orgClients+"&orgManagers="+orgManagers+"&orgTeams="+orgTeams+"&orgDepartments="+orgDepartments+"&employeMentType="+employmentType+"&tags="+tags;
     $('#dynamicUserDataTableSearch').removeAttr('disabled');
 	$('#dynamicUserDataTableSearch').attr('disabled','disabled');
 	prepareDynamicUserList(url);
@@ -720,7 +1204,6 @@ function prepareDynamicUserList(url){
 	 	var result = "";
 		result = result	+ '<div class="clearfix minHeight35 hidden">';
 	    result = result	+ '<div class="remove_search">';
-	    result = result +" <input type='text' placeholder='Search' id='dynamicUserDataTableSearch1234123'/>";
 		result = result	+ '</div>';
 		result = result	+ '</div>';
 		result = result	+ '<div class="project_tabs_inn_table project_tabs_inn_table_a">';
@@ -744,24 +1227,26 @@ function prepareDynamicUserList(url){
 }
 </script>
 <script>
+var table = '';
 function dynamicUserListPagination(url){
 	var colIndex = 0;
-    $('#dynamicUserListView').DataTable( { 
+	table = $('#dynamicUserListView').DataTable( { 
 	  "processing": true,
       "serverSide": true,
       "searching": false,
+      "searchHighlight": true,
       "ajax": $.fn.dataTable.pipeline( {
           url: url,
           method: 'POST',
           pages: 10
         }),
         "columns": [
-            { "data": "userNme" },
-            { "data": "emailId"},
-            { "data": "phoneNo"},
-            { "data": "role"},
+            { "data": "userName" },
+            { "data": "email"},
+            { "data": "mobilePhone"},
+            { "data": "displayName"},
             { "data": "manager"},
-            { "data": "employmentType"},
+            { "data": "userEmploymentType"},
             { "data": "status"}
         ],
 		 "columnDefs": [ {
@@ -771,14 +1256,14 @@ function dynamicUserListPagination(url){
 		    	  		var result = "";
 		    	  		if(userRole.userName !=null && userRole.userName !='' && userRole.userName !='undefined'){
 		        			   '<sec:authorize access="hasAnyRole(\'ROLE_VIEW_ASSOCIATE\',\'ROLE_VIEW_EDIT_ASSOCIATE\',\'ROLE_VIEW_DELETE_ASSOCIATE\')">' 
-		        			   result = result +"<td><div class='tbldata-dotdot-200'>"    
-		        			    result = result +" <a href='<c:url value='/app/userSummary/"+userRole.userCode+"'/>'' class='UserTextLeft'>";
+		        			   result = result +"<td><div class='proj_show divmax-width dotdotwithImage'>"    
+		        			    result = result +" <a href='<c:url value='/app/userSummary/"+userRole.userCode+"'/>'' class='UserTextLeft' title = '"+userRole.userName+"'>";
 		        			    if(userRole.fileUrl != null && userRole.fileUrl !="" && userRole.fileUrl != "undefined"){
-				       	    	result = result +"<img data-id= 'userProfileImage' onerror='predefineProfileImage(this);' class='m-t-xs'  src='"+userRole.fileUrl+"' alt='image'>";
+				       	    	result = result +"<img data-id= 'userProfileImage' onerror='predefineProfileImage(this);' class='m-t-xs pull-left'  src='"+userRole.fileUrl+"' alt='image'>";
 		        			    }else{
-					       	    result = result +"<img data-id= 'userProfileImage' onerror='predefineProfileImage(this);' class='m-t-xs'  src='/resources/images/userprofileImg.jpg' alt='image'>";
+					       	    result = result +"<img data-id= 'userProfileImage' onerror='predefineProfileImage(this);' class='m-t-xs pull-left'  src='/resources/images/userprofileImg.jpg' alt='image'>";
 		        			    }
-				       	    	result = result + ''+userRole.userName+'</a></div></td>';
+				       	    	result = result + '<div class="tbldata-dotdot-vsm">'+userRole.userName+'</div><i class="fa fa-binoculars pull-right"></i></a></div></td>';
 								'</sec:authorize>';
 							}else{
 							result = result + ' <td><div>--</div></td>';
@@ -787,11 +1272,11 @@ function dynamicUserListPagination(url){
 		    	  	}
 		      },{
 		    	  "targets": colIndex++,
-		          "data": "emailId",
+		          "data": "email",
 		          "render": function ( data, type, userRole, meta ) {
 		        	  var result = "";
 		        	  if(userRole.userEmail !=null && userRole.userEmail !='' && userRole.userEmail !='undefined'){
-							result = result + ' <td><div class="tbldata-dotdot">'+userRole.userEmail+'</div></td>';
+							result = result + ' <td><div class="tbldata-dotdot" title = "'+userRole.userEmail+'">'+userRole.userEmail+'</div></td>';
 						}else{
 							result = result + ' <td><div class="tbldata-dotdot">--</div></td>';
 						}
@@ -800,7 +1285,7 @@ function dynamicUserListPagination(url){
 		          }
 		          },{
 		        "targets": colIndex++,
-		        "data": "phoneNo",
+		        "data": "mobilePhone",
 		        "render": function ( data, type, userRole, meta ) {
 		        	if(userRole.mobilePhone != null && userRole.mobilePhone != ''){
 					    	mobilePhone = userRole.mobilePhone;
@@ -808,28 +1293,25 @@ function dynamicUserListPagination(url){
 					    	mobilePhone = "--"
 					    }
 		        	  var result = "";
-		        	  if(mobilePhone !=null && mobilePhone !='' && mobilePhone !='undefined'){
-							result = result + ' <td><div class="tbldata-dotdot-100">'+mobilePhone+'</div></td>';
-						}else{
-							result = result + ' <td><div class="tbldata-dotdot-100">--</div></td>';
-						}
+							result = result + ' <td><div class="tbldata-dotdot-100" title = "'+mobilePhone+'">'+mobilePhone+'</div></td>';
 		        	 return result;
 		        }
 		      }, {
 		          "targets": colIndex++,
-		          "data": "role",
+		          "data": "displayName",
 		          "render": function ( data, type, userRole, meta ) {
 		        	  var result = "";
-		        	  result = result + ' <td><div class="tbldata-dotdot-100">'+userRole.userRoleName+'</div></td>';
+		        	  result = result + ' <td><div class="tbldata-dotdot-100" title = "'+userRole.userRoleName+'">'+userRole.userRoleName+'</div></td>';
 		        	  return result;
 		          }
 		        }, {
 		            "targets": colIndex++,
 		            "data": "manager",
+		            "sortable": false,
 		            "render": function ( data, type, userRole, meta ) {
 		            	var result = "";
 		            	if(userRole.reportingManagerName !=null && userRole.reportingManagerName !='' && userRole.reportingManagerName !='undefined'){
-							result = result + ' <td><div class="tbldata-dotdot-sm">'+userRole.reportingManagerName+'</div></td>';
+							result = result + ' <td><div class="tbldata-dotdot-sm" title = "'+userRole.reportingManagerName+'">'+userRole.reportingManagerName+'</div></td>';
 						}else{
 							result = result + ' <td><div class="tbldata-dotdot-sm">--</div></td>';
 						}
@@ -838,11 +1320,12 @@ function dynamicUserListPagination(url){
 		      },
 		      {
 		          "targets": colIndex++,
-		          "data": "employmentType",
+		          "data": "userEmploymentType",
+		          "sortable": false,
 		          "render": function ( data, type, userRole, meta ) {
 		          	var result = "";
 		          	 if(userRole.employeMentType !=null && userRole.employeMentType !='' && userRole.employeMentType !='undefined'){
-							result = result + ' <td><div class="tbldata-dotdot-100">'+userRole.employeMentType+'</div></td>';
+							result = result + ' <td><div class="tbldata-dotdot-100" title = "'+userRole.employeMentType+'">'+userRole.employeMentType+'</div></td>';
 						}else{
 							result = result + ' <td><div class="tbldata-dotdot-100">--</div></td>';
 						}
@@ -852,13 +1335,27 @@ function dynamicUserListPagination(url){
 		    {
 		        "targets": colIndex++,
 		        "data": "status",
+		        "sortable": false,
 		        "render": function ( data, type, userRole, meta ) {
 		        	var result = "";
 		            if(userRole.isMailSent != null && userRole.isMailSent != "" && userRole.isMailSent == 'N'){
-		       	    	  result = result +"<td><p class='tblminwidth-50'><label id='user"+userRole.userId+"' class='label label-info'><b class='fa fa-envelope' aria-hidden='true'></b><a class='color_white' href='javascript:void(0)' onClick='resendInvitation("+userRole.userId+");'>&nbsp;&nbsp;Invite</a></label></p></td>";
-		 			    }else if((userRole.isMailSent != null && userRole.isMailSent != "" && userRole.isMailSent == 'Y') &&
+		            	'<sec:authorize access="hasRole(\'ROLE_VIEW_ASSOCIATE_ADDITIONAL_DETAILS\')">'  
+		            	result = result +"<td><p class='tblminwidth-50'><label id='user"+userRole.userId+"' class='label label-info'><b class='fa fa-envelope' aria-hidden='true'></b><a class='color_white' href='javascript:void(0)' onClick='resendInvitation("+userRole.userId+");'>&nbsp;&nbsp;Invite</a></label></p></td>";
+		            	'</sec:authorize>';
+	 			    	
+	 			    	'<sec:authorize access="!hasRole(\'ROLE_VIEW_ASSOCIATE_ADDITIONAL_DETAILS\')">'  
+	 			    			result = result +"<td><p class='tblminwidth-50'>---</p></td>";
+	 			    	'</sec:authorize>';    
+		            
+		            }else if((userRole.isMailSent != null && userRole.isMailSent != "" && userRole.isMailSent == 'Y') &&
 		 			    		(userRole.userState != null && userRole.userState != "" && userRole.userState == 'NOT_LOGGEDIN') ){
-		 			    	 result = result +"<td><p class='tblminwidth-50'><label id='user"+userRole.userId+"' class='label label-info'><b class='fa fa-envelope' aria-hidden='true'></b><a class='color_white' href='javascript:void(0)' onClick='resendInvitation("+userRole.userId+");'>&nbsp;&nbsp;Resend</a></label></p></td>";
+		 			    	'<sec:authorize access="hasRole(\'ROLE_VIEW_ASSOCIATE_ADDITIONAL_DETAILS\')">'  
+		 			    		result = result +"<td><p class='tblminwidth-50'><label id='user"+userRole.userId+"' class='label label-info'><b class='fa fa-envelope' aria-hidden='true'></b><a class='color_white' href='javascript:void(0)' onClick='resendInvitation("+userRole.userId+");'>&nbsp;&nbsp;Resend</a></label></p></td>";
+		 			    	'</sec:authorize>';
+		 			    	
+		 			    	'<sec:authorize access="!hasRole(\'ROLE_VIEW_ASSOCIATE_ADDITIONAL_DETAILS\')">'  
+		 			    			result = result +"<td><p class='tblminwidth-50'>---</p></td>";
+		 			    	'</sec:authorize>';
 		 			    }else if(userRole.userState != null && userRole.userState != "" && userRole.userState == 'ACTIVE'){
 		 			    	result = result +"<td><p class='tblminwidth-50'><label class='label label-success'><b class='fa fa-check'></b>&nbsp;&nbsp;Active</label></p></td>";
 		 			    }else if(userRole.userState != null && userRole.userState != "" && userRole.userState == 'INACTIVE'){
@@ -880,7 +1377,12 @@ function dynamicUserListPagination(url){
 	     		"sSearch": "",
 	     		 "sZeroRecords": "", "sEmptyTable": "", 
 	     		 "sProcessing": "<img src='/resources/images/loading.gif' style='width: 75px; height: 75px;'/>"
-	     }
+	     },
+    	  drawCallback: function(){
+    	      $('a.paginate_button', this.api().table().container()).on('click', function(){
+    	    	  searchHighlight();
+    	         }); 
+    	   }
     } );
     $("#dynamicUserListView").wrap("<div style='overflow-x: auto; overflow-y: hidden;'></div>"); 
     $("input[type=search]").hide();
@@ -889,9 +1391,54 @@ function dynamicUserListPagination(url){
 $("#dynamicUserDataTableSearch").keydown(function(e) {
 	   if(e.which === 13) {
 		   getDynamciUserList();
+		   searchHighlight();
 	   }
 	});
 </script> 
- 
+ <script>
+ function searchHighlight(){
+	 setTimeout(function () {
+ 		var body = $( table.table().body() );
+	        body.unhighlight();
+	        body.highlight( $("#dynamicUserDataTableSearch").val() );   
+			
+			}, 1000); 
+ }
+ </script>
+ <script>
+	$(document).on( 'init.dt.dth', function (e, settings, json) {
+    table = new $.fn.dataTable.Api( settings );
+    var body = $( table.table().body() );
+    if ( $( table.table().node() ).hasClass( 'searchHighlight' ) || settings.oInit.searchHighlight ||  $.fn.dataTable.defaults.searchHighlight ) {
+	
+	}
+} );
+	</script>
+	
+<script>
+function getActions(){
+	$(".action-pop").slideToggle(200);
+	$(".newActPop").slideUp(200);
+}	
+$("html").click(function(){
+	$(".action-pop").slideUp(200);
+});
+$(".action, .action-pop").click(function(e){
+ 	e.stopPropagation();
+});	
 
+
+function newActions(){
+	$(".newActPop").slideToggle(200);
+	$(".action-pop").slideUp(200);
+}
+$("html").click(function(){
+	$(".newActPop").slideUp(200);
+});
+$(".overIcon, .newActPop").click(function(e){
+ 	e.stopPropagation();
+});	
+
+
+</script>
     

@@ -29,7 +29,33 @@ overflow-x: auto;
 	position: absolute; right: 0px;
 }
 </style>
-<body>
+<script>
+	// Close Advanced Search
+		function closeFilterPop(){
+			$("div.cand-advsrch-popup").hide();
+			$(".advancedsearch-mask").fadeOut();
+		}
+		function openFilterPop(){
+			$("div.cand-advsrch-popup").toggle();
+			 $(".advancedsearch-mask").fadeIn();
+		}
+		
+		 
+		//Export filter
+		function exportpop(){
+		  $("#exportPop").toggle();
+		}
+	   $("#export-pop").click(function(){
+	       $("#exportPop").toggle();
+	   });
+	   $("html").click(function() {
+	       $("#exportPop").hide();
+	   });
+	   $("#exportPop, #export-pop").click(function(e) {
+	       e.stopPropagation();
+	   }); 
+	</script>
+	
       <!-- Content Area -->
        <section class="content-wraper">
         <section class="content-header clearfix">
@@ -48,56 +74,160 @@ overflow-x: auto;
         
 	   <div class="timesheet_out timesheet_background">
 		
-        <div class="timesheet_head topfilters">
-        	<ul>
-				<c:if test="${clientListSize > 0}">
-				<li id="filter1ApprovePop"><i class="fa fa-filter"></i><span>Client</span><i class="glyphicon glyphicon-play"  ></i>|
-                	<div id="filter1ApprovedPop" class="approved_pop">
-                    	<ul>
-                    	  <c:forEach var="report" items="${add_client}">  
-                        	<li><input  id="clientName${report.id}" name="clientNameById" value ="${report.id}"  onclick="filter();"  type="checkbox"><label for="clientName${report.id}">${report.clientName}</label></li>
-						  </c:forEach>
-                        </ul>
-                    </div>                	
-                </li>
-                </c:if>
-                <li id="filter2ApprovePop"><i class="fa fa-filter"></i><span>Status</span><i class="glyphicon glyphicon-play" ></i>|
-                	<div id="filter2ApprovedPop" class="approved_pop">
-                    	<ul>
-                        	<!-- <li><input id="c5" type="checkbox" name="projectStatus" value ="All" onclick="filter();"  ><label for="c5">All</label></li> -->
-                        	<li><input id="c7" name="projectStatus" type="checkbox" value ="In-Progress"  onclick="filter();"><label for="c7">In-Progress</label></li>
-							<li><input id="c9" type="checkbox" name="projectStatus" value ="Not Started"  onclick="filter();"><label for="c9">Not Started</label></li>
-							<li><input id="c8" type="checkbox"  name="projectStatus"   value ="Completed"  onclick="filter();"><label for="c8">Completed</label></li>
-               				<li><input id="c6" type="checkbox"  name="projectStatus"  value ="On-Hold"  onclick="filter();"><label for="c6">On-Hold</label></li>
-               				<li><input id="c10" type="checkbox"  name="projectStatus"   value ="Dropped"  onclick="filter();"><label for="c10">Dropped</label></li>
-                        </ul>
-                    </div>                	
-                </li>
-	             
-	             <li><sec:authorize access="hasAnyRole('ROLE_CREATE_PROJECT')">
-							<a onclick="getActions();" class="action"
-								href="javascript:void(0)">Add Project <i
-								class="fa fa-caret-down"></i>
-							</a>
-							<div class="action-pop">
-								<span> 
-								<a href="<c:url value='${appPath}/project'/>"><i class="fa fa-plus"></i>Internal Project</a>
-								<a href="<c:url value='${appPath}/clientProject'/>"><i class="fa fa-plus"></i>Client Project</a>
-								</span>
-							</div>
-						</sec:authorize></li>
-	             
-                <div class="clearfix"></div>
-            </ul>
-            <div class="clearfix"></div>
-        </div>
+		
+<div class="positionRelative reportHead clearfix">
+      <span class="pull-left refreIcon" id="advanceSearchDiv">
+      		<a href="javascript:void(0)" class="refeIcon" id="resetVendor" title="Refresh" onclick="resetProjectFilter();"></a>
+      </span>
+      
+      <ul class="pull-right list-unstyled list-inline">
+      
+      	  <li><sec:authorize access="hasAnyRole('ROLE_CREATE_PROJECT')">
+			<a class="action newAdBtn mr5" onclick="getActions();" href="javascript:void(0)">+ Add <i class="fa fa-caret-down"></i></a>
+			<div class="action-pop">
+				<span> 
+					<a href="<c:url value='${appPath}/project'/>" > Internal Project</a>
+                    <a href="<c:url value='${appPath}/clientProject'/>" >Client Project </a>	
+                    <a href="<c:url value='${appPath}/project?projectType=sharedProject'/>" > Client Project(Managed) </a>			
+				</span>
+			</div>
+			</sec:authorize>
+			</li>
 			
-	<div class="project_tabs_inn_table vendor_wrap_inn_table dataFilterNew pdtop">
+				<li id="vendorFiletPopup"><a href="javascript:void(0)" class="filtIcon" title="Filters" onclick="openFilterPop();"></a></li>
+				
+				<li><a href="javascript:void(0)" class="overIcon" title="Actions" onclick="newActions();"></a>
+					<div class="newActPop">
+						<span>
+	                	<sec:authorize access="hasRole('ROLE_EXPORT_VENDORS')"> 
+		           	   		<a href="javascript:void(0)" onclick="projectExport('Pdf');" title="PDF">Export PDF</a>
+							<a href="javascript:void(0)" onclick="projectExport('Excel');" title="Excel">Export Excel</a>            
+			          	</sec:authorize>
+						</span>
+					</div>
+				</li>
+		  <li class=""><input type="text" class="repSearchBar" placeholder='Search' id='projectsDataTableSearch'/><span class="repSearchIcon" onClick="filter();"></span></li>
+        </ul>
+      </div>		
+			
+	<div class="project_tabs_inn_table vendor_wrap_inn_table dataFilterNew">
     	<div id="projectFilterList" class="datatable_filter"></div>
 	</div>	   
 				
 		</div>
+		
+		<div class="cand-advsrch-popup advancedsearch-popup filterDynamic-Search">
+				<h5 class="headerAdsrch">Filters
+					<a href="javascript:void(0)" class="close-div" onClick="closeFilterPop()"><i
+						class="fa fa-close"></i></a>
+				</h5>
+				<div class="addInner">
+					<div class="row">
+						<div class="col-md-3">
+						<div class="row">
+						<div class="col-md-12 mb">
+								<label><strong>Project Type</strong></label>
+								 <div class="clearfix">
+									<ul class="list-unstyled" id="typeFilter">
+			                    	    <li class="checkBox positionRelative" ><input id="c11" name="projectType" type="checkbox" value="Internal"><label for="c7">Internal Project(s)</label></li>
+										<li class="checkBox positionRelative" ><input id="c12" type="checkbox" name="projectType" value="Client" ><label for="c9">Client Project(s)</label></li>
+			                        </ul>
+								 </div>
+								 </div> 
+								 
+								 
+						<div class="col-md-12 mb">
+							<label><strong>Project Status</strong></label>
+							 <div class="clearfix">
+								<ul class="list-unstyled" id="statusFilter">
+		                    	    <li class="checkBox positionRelative" ><input id="c7" name="projectStatus" type="checkbox" value ="In-Progress"  checked ><label for="c7">In-Progress</label></li>
+									<li class="checkBox positionRelative" ><input id="c9" type="checkbox" name="projectStatus" value ="Not Started" ><label for="c9">Not Started</label></li>
+									<li class="checkBox positionRelative" ><input id="c8" type="checkbox"  name="projectStatus"   value ="Completed" ><label for="c8">Completed</label></li>
+		               				<li class="checkBox positionRelative" ><input id="c6" type="checkbox"  name="projectStatus"  value ="On-Hold"  checked ><label for="c6">On-Hold</label></li>
+		               				<li class="checkBox positionRelative" ><input id="c10" type="checkbox"  name="projectStatus"   value ="Dropped" ><label for="c10">Dropped</label></li>
+		               				
+		                        </ul>
+							 </div>
+							 </div> 
+							 
+							 
+					 	<div class="col-md-12 mb">
+							<label><strong>Timesheet Frequency</strong></label>
+							 <div class="clearfix">
+								<ul class="list-unstyled" id="frequencyFilter">
+		                    	    <li class="checkBox positionRelative" ><input  name="invoiceFrequency" type="checkbox" value ="Weekly"><label for="c7">Weekly</label></li>
+									<li class="checkBox positionRelative" ><input  type="checkbox" name="invoiceFrequency" value ="Bi-Weekly" ><label for="c9">Bi-Weekly</label></li>
+									<li class="checkBox positionRelative" ><input  type="checkbox"  name="invoiceFrequency"   value ="Semi-Monthly" ><label for="c8">Semi-Monthly</label></li>
+		               				<li class="checkBox positionRelative" ><input  type="checkbox"  name="invoiceFrequency"  value ="Monthly"><label for="c6">Monthly</label></li>
+		               				
+		                        </ul>
+							 </div>
+						 </div> 
+							 
+							 
+						  </div>
+						</div>
+						<c:if test="${clientListSize > 0}">
+							 <div class="col-md-4 mb positionRelative">
+									<div class="clearfix dynamic_search filterDynamicsearch">
+										<input type="text" id="myClientsInput" onkeyup="myClientsFunction()" placeholder="Clients" title="Type in a clients">
+										<span class="cursorPointer" title="Search"><i class="fa fa-search"></i></span>
+									</div>
+									 <div class="clearfix filterSearch-ul">
+										<ul class="list-unstyled positionRelative filterSearch mt5" id="myClientsUL">
+										    <c:forEach var="report" items="${add_client}">
+											     <li class="checkBox positionRelative"><input  type="checkbox" name="clientNameById" value ="${report.orgRelId}" ><label>${report.clientName}</label></li>
+											</c:forEach>
+										</ul>
+									 </div> 
+							 </div> 
+							 </c:if>
+							 
+							 <c:if test="${projectManagersListSize > 0}">
+							 <div class="col-md-4 mb positionRelative">
+									<div class="clearfix dynamic_search filterDynamicsearch">
+										<input type="text" id="myManagersInput" onkeyup="myManagersFunction()" placeholder="Managers" title="Type in a managers">
+										<span class="cursorPointer" title="Search"><i class="fa fa-search"></i></span>
+									</div>
+									 <div class="clearfix filterSearch-ul">
+										<ul class="list-unstyled positionRelative filterSearch mt5" id="myManagersUL">
+											<c:forEach var="manager" items="${projectManagersList}">
+											<li class="checkBox positionRelative"><input  type="checkbox" name="projectManagers" value ="${manager.id}" ><label>${manager.fullName}</label></li>
+											</c:forEach>
+										</ul>
+									 </div> 
+							 </div> 
+							 </c:if>
+							 
+							 <div class="col-md-4 mb positionRelative">
+									<div class="clearfix dynamic_search filterDynamicsearch">
+										<input type="text" id="myTagsInput" onkeyup="myTagsFunction()" placeholder="Tags" title="Type in a tags">
+										<span class="cursorPointer" title="Search"><i class="fa fa-search"></i></span>
+									</div>
+									 <div class="clearfix filterSearch-ul">
+										<ul class="list-unstyled positionRelative filterSearch mt5" id="myTagsUL">
+											<c:forEach var="tags" items="${prjectTagsList}">
+											<li class="checkBox positionRelative"><input  type="checkbox" name="tags" value ="${tags}" ><label>${tags}</label></li>
+											</c:forEach>
+										</ul>
+									 </div> 
+							 </div> 
+						
+						
+					</div>
+					</div>
+					<div class="clearfix advancedsearch-footer">
+						<div class="pull-right mr">
+							<input type="button" value="Apply" id="search_requiremet"
+								onclick="closeFilterPop();filter();" class="btn btn-sm btn-success" />
+							<input type="button" value="Reset" id="clear_search"
+								onclick="resetProjectFilter();" class="btn btn-sm btn-primary" />
+						</div>
+					</div>
+				</div>
+				
 		<%-- </c:if> --%>
+		<div class="advancedsearch-mask" onClick="closeAdsrch()"></div>
 		<div class="side_mask"><div class="proj_close"><i></i></div></div>
 		<div class="project_side_wrap">
 			<div class="project_side_wrap_inn">
@@ -112,11 +242,105 @@ overflow-x: auto;
 		  </div> 
 		   </div>		
 	   </section>
+	   
 	   <div id="popUp"></div>
-	  </body>
+	   
+      <div class="pop_mask"></div>
+     
+	   
+	   
 <!--   Popup's   -->
+
+
+<script>
+function getClientProjectPop(){
+	 $('.addcandidate-popup').fadeIn(200);
+     $('.pop_mask').fadeIn(200);
+     $('#addmorepop').slideUp(200);
+}
+
+function closeClientProject(){
+    $('.addcandidate-popup').fadeOut(200);
+    $('.pop_mask').fadeOut(200);
+   }
+</script>
                
+<script>
+function resetProjectFilter(){
+	$("ul#typeFilter > li input:checkbox").prop("checked",false);
+	$("ul#statusFilter > li input:checkbox").prop("checked",false);
+	$("ul#myClientsUL > li input:checkbox").prop("checked",false);
+	$("ul#myManagersUL > li input:checkbox").prop("checked",false);
+	$("ul#frequencyFilter > li input:checkbox").prop("checked",false);
+	$("ul#myTagsUL > li input:checkbox").prop("checked",false);
 	
+	$("#projectsDataTableSearch").val('');
+	document.getElementById("c6").checked = true;
+	document.getElementById("c7").checked = true;
+	filter();
+	
+}
+
+function myClientsFunction() {
+    var input, filter, ul, li, a, i;
+    input = document.getElementById("myClientsInput");
+    filter = input.value.toUpperCase();
+    ul = document.getElementById("myClientsUL");
+    li = ul.getElementsByTagName("li");
+    for (i = 0; i < li.length; i++) {
+        a = li[i].getElementsByTagName("label")[0];
+        if (a.innerHTML.toUpperCase().indexOf(filter) > -1) {
+            li[i].style.display = "";
+        } else {
+            li[i].style.display = "none";
+
+        }
+    }
+}
+
+
+function myManagersFunction() {
+    var input, filter, ul, li, a, i;
+    input = document.getElementById("myManagersInput");
+    filter = input.value.toUpperCase();
+    ul = document.getElementById("myManagersUL");
+    li = ul.getElementsByTagName("li");
+    for (i = 0; i < li.length; i++) {
+        a = li[i].getElementsByTagName("label")[0];
+        if (a.innerHTML.toUpperCase().indexOf(filter) > -1) {
+            li[i].style.display = "";
+        } else {
+            li[i].style.display = "none";
+
+        }
+    }
+}
+
+function myTagsFunction() {
+    var input, filter, ul, li, a, i;
+    input = document.getElementById("myTagsInput");
+    filter = input.value.toUpperCase();
+    ul = document.getElementById("myTagsUL");
+    li = ul.getElementsByTagName("li");
+    for (i = 0; i < li.length; i++) {
+        a = li[i].getElementsByTagName("label")[0];
+        if (a.innerHTML.toUpperCase().indexOf(filter) > -1) {
+            li[i].style.display = "";
+        } else {
+            li[i].style.display = "none";
+
+        }
+    }
+}
+
+
+$(document).keyup(function(e) {
+	  if (e.keyCode === 27) {
+		  closeFilterPop();
+	  }
+	});
+
+</script>
 <script type="text/javascript">
 window.onload = function () {
 		projectsList("${searchValue}","${searchResult}","${projectId}","${projectName}","${startDate}","${endDate}","${status}","${projectKeyword}");
@@ -196,7 +420,7 @@ function filter(){
 	  
 	  var result = "";
 	 	result = result +" <div class='remove_search'>";
-	 	result = result +" <input type='text' placeholder='Search' id='projectsDataTableSearch'/>";
+// 	 	result = result +" <input type='text' placeholder='Search' id='projectsDataTableSearch'/>";
 	 	result = result +"</div>";
 	 	
 	 	result = result + '<table id="projectsListTable" class="display" cellspacing="0" width="100%" >';
@@ -205,9 +429,8 @@ function filter(){
 		result = result +'	<th>Project Id</th>';
     	result = result +'    <th>Name</th>'; 
     	result = result +'     <th>Manager</th>';
-    	result = result +'     <th>Invoice Frequency</th>';
+    	result = result +'     <th>Timesheet Frequency</th>';
     	result = result +'     <th>Budget</th>';
-    	result = result +'     <th>Project Status</th>';
     	result = result +'     <th>Date<br>(<small class="custom-small">'+projectListDate+'</small>)</th>';
     	result = result +'      <th>Client</th>';
     	result = result +'       <th>Status</th>';
@@ -226,23 +449,49 @@ function filter(){
 
 <script>
 function projectDataTableList(){
-	
 	var values = [];
-	$('input:checkbox[name=projectStatus]:checked').each(function() 
-    {
+	$('input:checkbox[name=projectStatus]:checked').each(function() {
 			values.push($(this).val());
     });
 	
+	
+	var projectType = [];
+	$('input:checkbox[name=projectType]:checked').each(function() {
+		projectType.push($(this).val());
+    });
+	
+	
+	
 	var clients = [];
-	$('input:checkbox[name=clientNameById]:checked').each(function() 
-		    {
+	$('input:checkbox[name=clientNameById]:checked').each(function() {
 		clients.push($(this).val());
-		    });
+	});
+	
+	
+	var projectManagers = [];
+	$('input:checkbox[name=projectManagers]:checked').each(function() 
+		    {
+		projectManagers.push($(this).val());
+     });
+	
+	var invoiceFrequency = [];
+	$('input:checkbox[name=invoiceFrequency]:checked').each(function() 
+		    {
+		invoiceFrequency.push($(this).val());
+     });
+	
+	var tags = [];
+	$('input:checkbox[name=tags]:checked').each(function() 
+    {
+		tags.push($(this).val());
+    });
+	
+	
 	
 	 var sourceleadUrl ='${sourceleadUrl}';
 	 var searchValue = $("#projectsDataTableSearch").val();
 	 searchValue = searchValue ? searchValue : "";
-	 var url = sourceleadUrl+"/getProjectsByStatusAndClient?searchValue="+searchValue+"&values="+values+"&clients="+clients;
+	 var url = sourceleadUrl+"/getProjectsByStatusAndClient?searchValue="+searchValue+"&values="+values+"&clients="+clients+"&projectType="+projectType+"&projectManagers="+projectManagers+"&invoiceFrequency="+invoiceFrequency+"&tags="+tags;
 	 projectsPagination(url,sourceleadUrl);
 }
 </script>
@@ -267,7 +516,6 @@ function projectsPagination(url,sourceleadUrl){
             { "data": "projectManagers"},
             { "data": "invoiceFrequency" },
             { "data": "budget" },
-            { "data": "projectStatus" },
             { "data": "projectDate" },
             { "data": "client"},
             { "data": "projectStatus"}
@@ -280,7 +528,7 @@ function projectsPagination(url,sourceleadUrl){
 	    	  		  if(opt.projectSequeneNumber !=null && opt.projectSequeneNumber !='' && opt.projectSequeneNumber !='undefined'){
 			        		    	result = result + '<td data-title="Id"><div class="tblminwidth-75">'+opt.projectSequeneNumber+'</div></td>';
 			        		    }else{
-			        		    	result = result + '<td data-title="Id"><div class="tblminwidth-75">---</div></td>';
+			        		    	result = result + '<td data-title="Id"><div class="tblminwidth-75">--</div></td>';
 			        		    }
 		             return result;
 	    	  	}
@@ -292,7 +540,17 @@ function projectsPagination(url,sourceleadUrl){
             	  
             	  '<sec:authorize access="hasAnyRole(\'ROLE_VIEW_PROJECT\',\'ROLE_VIEW_EDIT_PROJECT\',\'ROLE_CREATE_PROJECT_TASKS\',\'ROLE_VIEW_EDIT_PROJECT_TASKS\',\'ROLE_VIEW_PROJECT_EMPLOYEES\',\'ROLE_VIEW_EDIT_PROJECT_EMPLOYEES\',\'ROLE_VIEW_DELETE_PROJECT_EMPLOYEES\')">'
  		    		if(opt.projectMode != null && opt.projectMode == 'Draft'){
- 		    			result = result +'<td data-title="Name"><a href="'+sourceleadUrl+'/project?projectUUID='+opt.projectUUID+'" ><div class="proj_show tbldata-dotdot_140"><span class="pull-left" title="'+opt.projectName+'">'+opt.projectName+'</span><i class="fa fa-binoculars pull-right"></i></div></a></td>';
+ 		    			if(opt.isProjectShared == 'Y'){
+ 		    				var locationId ='${SourceLeadWeb_orgLocations.id}';	
+ 		    				if(locationId == opt.sharedClientOrgLocationId){
+ 		    					result = result +'<td data-title="Name"><div class="proj_show tbldata-dotdot_140"><span class="pull-left" title="'+opt.projectName+'">'+opt.projectName+'</span></div></td>';
+ 		    				}else{
+ 		    					result = result +'<td data-title="Name"><a href="'+sourceleadUrl+'/project?projectType=sharedProject&projectUUID='+opt.projectUUID+'" ><div class="proj_show tbldata-dotdot_140"><span class="pull-left" title="'+opt.projectName+'">'+opt.projectName+'</span><i class="fa fa-binoculars pull-right"></i></div></a></td>';
+ 		    				}
+ 		    			}else{
+ 		    				result = result +'<td data-title="Name"><a href="'+sourceleadUrl+'/project?projectUUID='+opt.projectUUID+'" ><div class="proj_show tbldata-dotdot_140"><span class="pull-left" title="'+opt.projectName+'">'+opt.projectName+'</span><i class="fa fa-binoculars pull-right"></i></div></a></td>';
+ 		    			}
+ 		    			
  		    		}else{
  		    			result = result +'<td data-title="Name"><a href="'+sourceleadUrl+'/projectSummary?projectUUID='+opt.projectUUID+'&projectClientUUID='+opt.projectClientUUID+'" ><div class="proj_show tbldata-dotdot_140"><span class="pull-left" title="'+opt.projectName+'">'+opt.projectName+'</span><i class="fa fa-binoculars pull-right"></i></div></a></td>';
  		    		}
@@ -305,16 +563,24 @@ function projectsPagination(url,sourceleadUrl){
 	          },{
 		    	  "targets": colIndex++,
 	              "data": "projectManagers",
+	              "sortable": false,
 	              "render": function ( data, type, opt, meta ) {
 	            	  var result = "";
 	            	  var projectManagers = '';
 	            	  
-	            	    if(opt.managerLevel2 != null && opt.managerLevel2 != '' && opt.managerLevel2 != 'undefined'){
-	            		  projectManagers = opt.managerLevel1+","+opt.managerLevel2;
-   		    		     }else{
-   		    			  projectManagers = opt.managerLevel1;
-	   		    		}
-	            		result = result + '<td><div class="tblminwidth-75"><span title="'+projectManagers+'">'+projectManagers+'</span></div></td>';
+	            	  if(opt.managerLevel1 != null && opt.managerLevel1 != '' && opt.managerLevel1 != 'undefined'){
+	            		  projectManagers = opt.managerLevel1;
+   		    		     }
+	            	  
+	            	  if(opt.managerLevel2 != null && opt.managerLevel2 != '' && opt.managerLevel2 != 'undefined'){
+   		    		    	 projectManagers = opt.managerLevel2;
+	   		    		 }
+	            	  
+	            	  if(opt.managerLevel1 != null && opt.managerLevel1 != '' && opt.managerLevel1 != 'undefined' && opt.managerLevel2 != null && opt.managerLevel2 != '' && opt.managerLevel2 != 'undefined' ){
+   		    		    	 projectManagers = opt.managerLevel1+","+opt.managerLevel2;
+	   		    		 }
+	            		
+	            	  result = result + '<td><div class="tblminwidth-75"><span title="'+projectManagers+'">'+projectManagers+'</span></div></td>';
 	            		return result;
 	              }
 		     },{
@@ -328,6 +594,7 @@ function projectsPagination(url,sourceleadUrl){
 		     }, {
 		    	  "targets": colIndex++,
 	              "data": "budget",
+	              "sortable": false,
 	              "render": function ( data, type, opt, meta ) {
 	            	    var result = "";
 	            	    var projectbudgetAmount = "";
@@ -339,14 +606,6 @@ function projectsPagination(url,sourceleadUrl){
 	            	    	projectbudgetAmount = "--";
 	            	    }
 	            		result = result + '<td><div class="tblminwidth-75" title="'+projectbudgetCurrency+' '+projectbudgetAmount+'">  '+projectbudgetCurrency+' '+projectbudgetAmount+'</div></td>';
-	            		return result;
-	              }
-		     },{
-		    	  "targets": colIndex++,
-	              "data": "projectMode",
-	              "render": function ( data, type, opt, meta ) {
-	            	    var result = "";
-	            		result = result + '<td><div class="tblminwidth-75">'+opt.projectMode+'</div></td>';
 	            		return result;
 	              }
 		     },{
@@ -367,6 +626,7 @@ function projectsPagination(url,sourceleadUrl){
 		     },{
 		    	  "targets": colIndex++,
 	              "data": "client",
+	              "sortable": false,
 	              "render": function ( data, type, opt, meta ) {
 	            	  var result = "";
 	            	  
@@ -379,33 +639,42 @@ function projectsPagination(url,sourceleadUrl){
 	            	    	result = result + '<td><div class="tblminwidth-75"><span title="'+opt.client+'">'+opt.client+'</span></div></td>';
 	            	    	'</sec:authorize>';
    		    		     }else{
-   		    		    	result = result + '<td><div class="tblminwidth-75">---</div></td>';
+   		    		    	result = result + '<td><div class="tblminwidth-75">--</div></td>';
 	   		    		}
 	            		return result;
 	              }
 		     },{
 		    	  "targets": colIndex++,
 	              "data": "projectStatus",
-	              "sortable": false,
+	              "sortable": true,
 	              "render": function ( data, type, opt, meta ) {
 	            	  var result = "";
-	            	  result = result +'<td data-title="Status"><div>';
-	   		    		if(opt.projectStatus == 'INPROGRESS'){
-	  	    			  result = result +'<b class="proj_process">In-Progress</b>';
+	            	  var projectStatus = "";
+	            	  
+	            	  if(opt.projectStatus == 'INPROGRESS'){
+	            		  projectStatus = 'In-Progress';
 	  	    			}
 	   		    		else if(opt.projectStatus == 'COMPLETED'){
-	  	    			  result = result +'<b class="proj_active">Completed</b>';
+	   		    			projectStatus = '<b class="proj_active">Completed</b>';
 	  	    			}
 	   		    		else if(opt.projectStatus == 'ONHOLD'){
-	  	    			  result = result +'<b class="proj_deactivate">On-Hold</b>';
+	   		    			projectStatus = '<b class="proj_deactivate">On-Hold</b>';
 	  	    			}
 	   		    		else if(opt.projectStatus == 'NOTSTARTED'){
-	   	    			  result = result +'<b class="proj_deactivate">Not-Started</b>';
+	   		    			projectStatus = '<b class="proj_deactivate">Not-Started</b>';
 	   	    			}
 	   		    		else if(opt.projectStatus == 'DROPPED'){
-	   	    			  result = result +'<b class="proj_deactivate">Dropped</b>';
+	   		    			projectStatus = '<b class="proj_deactivate">Dropped</b>';
 	   	    			}
-	   		    		result = result +'</div></td>';
+	            	  
+	            	   result = result +'<td data-title="Status"><div class="tblminwidth-75">';
+	            	  
+	            	  if(opt.projectMode == 'Draft'){
+	            		  result = result + projectStatus+'<br/>('+opt.projectMode+')';
+	            	  }else{
+	            		  result = result + projectStatus;
+		   		    	  result = result +'</div></td>';
+	            	  }
 	            	  
 	            	  return result;
 	              }
@@ -413,7 +682,7 @@ function projectsPagination(url,sourceleadUrl){
 		     
 	    	"scrollCollapse": false,
 	    	"lengthMenu": [[10, 15, 20], [10, 15, 20]],
-	    	"aaSorting": [[1,'desc']],
+	    	"aaSorting": [[5,'desc']],
 	    	"bLengthChange": true,
 	    	"bDestroy": true,
 	    	"ordering": true,
@@ -427,7 +696,16 @@ function projectsPagination(url,sourceleadUrl){
     $("input[type=search]").hide();
     $("#projectsDataTableSearch").keyup(function(e) {
     	   if(e.which === 13) {
-    		   projectDataTableList();
+    		   
+    		   $('#projectsDataTableSearch').parent().find('p.jquery_form_error_message').remove();
+    	    	var searchData = $('#projectsDataTableSearch').val();
+    	    	
+    	    	if(searchData.endsWith("-") || searchData.endsWith("\\") || searchData.endsWith("//") || searchData.endsWith("%")){
+       	    		$("#projectsDataTableSearch").after("<p class='jquery_form_error_message'><span><font color='red'>Enter valid Search Data</font></span>");
+       	    	}else{
+       	    		projectDataTableList();
+       	    	}
+    	    	
     	   }
     	});
 }
@@ -736,7 +1014,7 @@ $(document).ready(function() {
 		    	var employeeNameAdvanced = this.value.replace(",","");
 		        if ((e2.which == 13 || e2.which == 188) && (employeeNameAdvanced != null  && employeeNameAdvanced != '' && employeeNameAdvanced != 'undefined'))
 		        {
-		        	var par = this.parent;
+		        	var par = this.1;
 		            var option = $("<option>").val(employeeNameAdvanced).text(employeeNameAdvanced);
 		            selectnine.append(option);
 		            selectnine.find(option).prop('selected', true);
@@ -971,5 +1249,82 @@ function getActions(){
  	});	
 }
 </script>
+
+<!-- ============================================= Export related functionality  By Laxman   ====================================== -->
+<script>
+function projectExport(type){
+	if(type == "Pdf"){
+		exportType = "pdf";
+	}else{
+		exportType = "xls";
+	}
+	var values = [];
+	$('input:checkbox[name=projectStatus]:checked').each(function() {
+			values.push($(this).val());
+    });
+	
+	var projectType = [];
+	$('input:checkbox[name=projectType]:checked').each(function() {
+		projectType.push($(this).val());
+    });
+	
+	var clients = [];
+	$('input:checkbox[name=clientNameById]:checked').each(function() {
+		clients.push($(this).val());
+	});
+	
+	var projectManagers = [];
+	$('input:checkbox[name=projectManagers]:checked').each(function() 
+		    {
+		projectManagers.push($(this).val());
+     });
+	
+	var invoiceFrequency = [];
+	$('input:checkbox[name=invoiceFrequency]:checked').each(function() 
+		    {
+		invoiceFrequency.push($(this).val());
+     });
+	
+	var tags = [];
+	$('input:checkbox[name=tags]:checked').each(function() 
+    {
+		tags.push($(this).val());
+     });
+	
+	 var sourceleadUrl ='${sourceleadUrl}';
+	 var searchValue = $("#projectsDataTableSearch").val();
+	 searchValue = searchValue ? searchValue : "";
+	 window.location.href = sourceleadUrl + "/getExportProjects?&searchValue="+searchValue+"&values="+values+"&clients="+clients+"&projectType="+projectType+"&exportType="+exportType+"&projectManagers="+projectManagers+"&invoiceFrequency="+invoiceFrequency+"&tags="+tags;
+	
+}
+</script>
+
+<script>
+function getActions(){
+	$(".action-pop").slideToggle(200);
+	$(".newActPop").slideUp(200);
+}	
+$("html").click(function(){
+	$(".action-pop").slideUp(200);
+});
+$(".action, .action-pop").click(function(e){
+ 	e.stopPropagation();
+});	
+
+
+function newActions(){
+	$(".newActPop").slideToggle(200);
+	$(".action-pop").slideUp(200);
+}
+$("html").click(function(){
+	$(".newActPop").slideUp(200);
+});
+$(".overIcon, .newActPop").click(function(e){
+ 	e.stopPropagation();
+});	
+
+
+</script>
+
 
 <jsp:include page="../masterFooter.jsp" />	

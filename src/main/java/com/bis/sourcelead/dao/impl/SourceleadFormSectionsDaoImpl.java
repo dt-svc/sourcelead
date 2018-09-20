@@ -22,8 +22,8 @@ public class SourceleadFormSectionsDaoImpl  implements SourceleadFormSectionsDao
 	@Transactional(rollbackFor = { Exception.class })
 	public List<SourceleadActions> getAllSourceleadActions() throws Exception {
 		Session session = this.sessionFactory.getCurrentSession();
-	    String query = "Select sfs.sourceleadActions from SourceleadFormSections sfs Group By sfs.sourceleadActions.id";
-	    List<SourceleadActions> actionList = session.createQuery(query.toString()).setCacheable(true).list();
+	    String query = "Select sfs.sourceleadActions from SourceleadFormSections sfs where sfs.status = 1 Group By sfs.sourceleadActions.id";
+	    List<SourceleadActions> actionList = session.createQuery(query.toString()).list();
         return actionList;
         
 	}  
@@ -33,8 +33,8 @@ public class SourceleadFormSectionsDaoImpl  implements SourceleadFormSectionsDao
 	@Transactional(rollbackFor = { Exception.class })
 	public List<SourceleadFormSections> getSourceleadFormSectionsByActionId(Long actionId) throws Exception{
 		Session session = this.sessionFactory.getCurrentSession();
-	    String query = " from SourceleadFormSections sfs left join fetch sfs.sourceleadActions actions where actions.id = :actionId order by sfs.id";
-	    List<SourceleadFormSections> sectionList = session.createQuery(query.toString()).setLong("actionId", actionId).setCacheable(true).list();
+	    String query = " from SourceleadFormSections sfs left join fetch sfs.sourceleadActions actions where actions.id = :actionId and sfs.status = 1 order by sfs.id";
+	    List<SourceleadFormSections> sectionList = session.createQuery(query.toString()).setLong("actionId", actionId).list();
         return sectionList;
 	}
 }

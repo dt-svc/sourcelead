@@ -1,8 +1,8 @@
 set foreign_key_checks = 0;
-drop table IF EXISTS sourcelead.`webgeocities`;
+drop table IF EXISTS `webgeocities`;
 set foreign_key_checks = 1;
 
-CREATE TABLE sourcelead.`webgeocities` (
+CREATE TABLE `webgeocities` (
   `ID` bigint(20) NOT NULL AUTO_INCREMENT,
   `countryCode` varchar(2) COLLATE utf8_persian_ci DEFAULT NULL,
   `stateCode` varchar(20) COLLATE utf8_persian_ci DEFAULT NULL,
@@ -15,4 +15,4 @@ CREATE TABLE sourcelead.`webgeocities` (
   INDEX `countryCode` (`countryCode`,`stateCode`,`cityName`)
 );
 
-alter table `sourcelead`.`webgeocities` convert to character set utf8 collate utf8_general_ci;
+alter table `webgeocities` convert to character set utf8 collate utf8_general_ci;

@@ -52,4 +52,6 @@ public interface RequirementInterviewHistoryService {
 	
 	List<RequirementInterviewHistory> getCrowdSorurcingInterviews(Long submissionId,OrgLocations orgLocations) throws Exception;
 	
+	Long getCountOfAllInterviewAssignedToLoginUser(OrgLocations loginOrgLocations, String userType, Long userId, String userCode) throws Exception;
+	
 }

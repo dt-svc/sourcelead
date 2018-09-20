@@ -40,19 +40,21 @@ $(document).ready(function(){
 
 <section class="content-header clearfix">
 			<div class="pull-left">
-				<h2>Finance Reports </h2>
+				<h2>Finance</h2>
 			</div>
-          <div class="pull-right brud-crum"><a href="<c:url value='${appPath}/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a> &raquo; <a href="<c:url value='${appPath}/reportsDashboard'/>">Reports Dashboard</a> &raquo; Finance Reports </div>
+          <div class="pull-right brud-crum"><a href="<c:url value='${appPath}/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a> &raquo; <a href="<c:url value='${appPath}/reportsDashboard'/>">Reports Dashboard</a> &raquo; <a href="<c:url value='${appPath}/financialReportsList'/>">Financial Reports</a> &raquo; Finance</div>
 </section>
 
 
 <div class="vendor_wrap clearfix">
 
-   <div class="timesheet_head">
-<div class="pull-left reportBtns reportBtns_custom mt5 mb10">
-<h4 class="pull-left mr">Finance Report</h4>
-	  <div class="reportBtn reportBtn_custom_btn select-field pull-left">
-		<select class="form-control" id="billingReportType" onChange="flushBillingCustom(); getBillingReports('Receivable');custBillingDates();">
+
+
+<div class="reportHead">
+    	<ul class="clearfix pull-right">
+    		<li>
+        <div class="dropdown-select positionRelative repSelWrap clearfix">
+		<select class="form-control repSelFiled" id="billingReportType" onChange="flushBillingCustom();custBillingDates();">
 		  <option value="THIS_MONTH">This Month</option>
 		  <option value="THIS_QUARTER">This quarter</option>
 		  <option value="THIS_YEAR">This Year</option>
@@ -61,25 +63,49 @@ $(document).ready(function(){
 		  <option value="LAST_QUARTER">Last quarter</option>
 		  <option value="LAST_YEAR">Last Year</option>
 		   <option value="CUSTOM">Custom</option> 
-		</select>
+		</select>			
+			
+		<div id="runButtonBillingDiv" class="repSelBtn"><button type="button" class="btn btn-primary btn-sm" id="customize_btn" onclick="getBillingReports('Receivable');">Run</button></div> 
+          
+          <div class="clearfix customLeaves repCustomDate cusShowBilling">
+          	  <div class="repCustomDateInn">
+				 <input type="text" class="form-control calendar" value="" id="billingReportStartDate" name="billingReportStartDate" field-name="Start Date" data-validation="required" readonly="readonly" placeholder="Start Date"> 
+				 <p id="billingErrorReportStartDate">Start Date is Required</p>
+				 </div>
+				<div class="repCustomDateInn">
+				<input type="text"  class="form-control calendar" value="" id="billingReportEndDate" name="billingReportEndDate" field-name="End Date" data-validation="required" readonly="readonly" placeholder="End Date">
+				<p id="billingErrorReportEndDate">End Date is Required</p>
+				</div>
+				<div class="repCustomDateBtn">
+					<button type="button" class="btn btn-primary btn-sm" onclick="getCustomBillingReports('Receivable');" ><i class="fa fa-search"></i></button>
+				</div>
+			</div>
+          </div>
+    		</li>
+    	</ul>
+    </div>   
+
+
+
+   <div class="timesheet_head">
+<div class="pull-left reportBtns reportBtns_custom mt5 mb10">
+	  <div class="reportBtn reportBtn_custom_btn select-field pull-left">
+
 	 </div>	
 	 
-	  <span class="dashboard-datepkr cusShowBilling">
-	 <input type="text" class="form-control" value="" id="billingReportStartDate" name="billingReportStartDate" field-name="Start Date" data-validation="required" readonly="readonly" placeholder="Start Date"> <i class="fa fa-calendar"></i>
-	 <p id="billingErrorReportStartDate" class="ReError"></p>
-	 </span>
-	<span class="dashboard-datepkr cusShowBilling">
-	<input type="text"  class="form-control" value="" id="billingReportEndDate" name="billingReportEndDate" field-name="End Date" data-validation="required" readonly="readonly" placeholder="End Date"><i class="fa fa-calendar"></i>
-	<p id="billingErrorReportEndDate" class="ReError"></p>
-	</span>
-	<span class="cusShowBilling"><input type="button" value="Submit" class="btn btn-primary repBtn" onclick="getCustomBillingReports('Receivable');" /></span>
+
         <div class="clearfix"></div>
       </div>
+      
+       <div class="col-md-2" id = "runButtonBillingDiv">
+       
+		</div>  
+      
  </div>
  
  <div class="clearfix"></div>
-          <div class="clearfix mt10">
-              <div class="col-md-3">
+          <div class="clearfix backWhite">
+              <div class="col-md-3 mt">
                   
                   <div class="clearfix billing_count">
                       <h5>${SourceLeadWeb_currencyCode}</h5><span class="rupee_usd" id="netIncome"></span>
@@ -96,11 +122,6 @@ $(document).ready(function(){
                   </div>
                   
               </div>
-<!--               <div class="col-md-9">
-                  <div id="billing_chartdiv">
-                    
-                  </div>
-              </div> -->
               
               <div class="col-md-9 RepoPad">
 		<div class="project_side_wrap_inn_tabs">
@@ -117,12 +138,6 @@ $(document).ready(function(){
               
           </div>
           </div>
-          <!-- Report Chart desing -->
-
-<!--  Report Div starts here Ends: Rajashekar -->  
-  
-  
-  
   
   </div>
   </div>
@@ -132,12 +147,12 @@ $(document).ready(function(){
 	function addBillingValidClass(){
 		 var StartDate = document.getElementById("billingReportStartDate").value;
 		 if(StartDate){
-			 $('#billingErrorReportStartDate').empty() 
+			  document.getElementById("billingErrorReportStartDate").style.display = "none";
 		 }  
 		 
 		 var EndDate = document.getElementById("billingReportEndDate").value;
 		 if(EndDate){
-			 $('#billingErrorReportEndDate').empty(); 
+			 document.getElementById("billingErrorReportEndDate").style.display = "none";
 		 }
 }
 </script>
@@ -195,16 +210,19 @@ function getCustomBillingReports(invoiceType){
 	var startDate = $("#billingReportStartDate").val();
 	var endDate = $("#billingReportEndDate").val();
 	if(startDate == null || startDate == '' || startDate == 'undefined'){
-		$("#billingErrorReportStartDate").empty().append("Start Date is Required") ; 
+		document.getElementById("billingErrorReportStartDate").style.display = "block";
+	}else{
+		document.getElementById("billingErrorReportStartDate").style.display = "none";
 	}
 	if(endDate == null || endDate == '' || endDate == 'undefined'){
-		$("#billingErrorReportEndDate").empty().append("End Date is Required") ; 
+		document.getElementById("billingErrorReportEndDate").style.display = "block";
 	}else{
+		document.getElementById("billingErrorReportEndDate").style.display = "none";
 		$.ajax({
 	         type : "GET",
 	         url: sourceleadUrl+"/getBillingReportByFrequency?"+tokenParamName+"="+tokenValue+"&billingReportType="+billingReportType+"&invoiceType="+invoiceType+"&startDate="+startDate+"&endDate="+endDate,     
-	         success :function(data) {
-	        	  var json = JSON.parse(data);
+	         success :function(json) {
+// 	        	  var json = JSON.parse(data);
 		        	 getBillingReportsChart(invoiceType,json);
 	        	/*  var json = JSON.parse(data);
 	        	 var result = "";
@@ -259,16 +277,16 @@ function getCustomPayableBillingReports(invoiceType){
 	var startDate = $("#billingReportStartDate").val();
 	var endDate = $("#billingReportEndDate").val();
 	if(startDate == null || startDate == '' || startDate == 'undefined'){
-		$("#billingErrorReportStartDate").empty().append("Start Date is Required") ; 
+		document.getElementById("billingErrorReportStartDate").style.display = "block";
 	}
 	if(endDate == null || endDate == '' || endDate == 'undefined'){
-		$("#billingErrorReportEndDate").empty().append("End Date is Required") ; 
+		document.getElementById("billingErrorReportEndDate").style.display = "block";
 	}else{
 		$.ajax({
 	         type : "GET",
 	         url: sourceleadUrl+"/getBillingReportByFrequency?"+tokenParamName+"="+tokenValue+"&billingReportType="+billingReportType+"&invoiceType="+invoiceType+"&startDate="+startDate+"&endDate="+endDate,     
-	         success :function(data) {
-	        	 var json = JSON.parse(data);
+	         success :function(json) {
+// 	        	 var json = JSON.parse(data);
 	        	 var result = "";
 	        	 result = result +'<div class="project_tabs_inn_head">';
 	        	 result = result +'</div>';
@@ -285,8 +303,8 @@ function getCustomPayableBillingReports(invoiceType){
 	        	 result = result +'</tr>';
 	        	 result = result +'</thead>';	
 	        	 result = result +'<tbody>';
-	        	 for (var i = 0; i < json.length; i++) { 
-	        		 var opt = json[i]; 
+	        	 for (var i = 0; i < json.data.length; i++) { 
+	        		 var opt = json.data[i]; 
 	        		 $("#netIncome").html(opt.netIncome);
 		        	 $("#receivedAmount").html(opt.recievableAmount);
 		        	 $("#payableAmount").html(opt.payableAmount); 
@@ -483,8 +501,8 @@ function getBillingReports(invoiceType){
 	 $("#netIncome").html(0);
 	 $("#receivedAmount").html(0);
 	 $("#payableAmount").html(0);
-	$('#billingErrorReportStartDate').empty();
-	$('#billingErrorReportEndDate').empty(); 
+	/* $('#billingErrorReportStartDate').empty();
+	$('#billingErrorReportEndDate').empty();  */
 		var billingReportType = $("#billingReportType").val();
 		var startDate = null;
 		var endDate = null;
@@ -492,8 +510,8 @@ function getBillingReports(invoiceType){
 			$.ajax({
 		    	type: "GET",
 		    	 url: sourceleadUrl+"/getBillingReportByFrequency?"+tokenParamName+"="+tokenValue+"&billingReportType="+billingReportType+"&invoiceType="+invoiceType+"&startDate="+startDate+"&endDate="+endDate, 
-		         success: function(data) {
-		        	 var json = JSON.parse(data);
+		         success: function(json) {
+// 		        	 var json = JSON.parse(data);
 		        	 getBillingReportsChart(invoiceType,json);
 		         }
 			});	
@@ -539,9 +557,11 @@ function customPayableReportPagination(){
 function custBillingDates(){
 	var billingReportType = $("#billingReportType").val();
 	if(billingReportType=="CUSTOM"){
+		document.getElementById("runButtonBillingDiv").style.display = "none";
 	    $(".cusShowBilling").show();
 	}
 	if(billingReportType!="CUSTOM"){
+		document.getElementById("runButtonBillingDiv").style.display = "block";
 	    $(".cusShowBilling").hide();
 	}
 }

@@ -110,6 +110,7 @@ public class EmailServiceImpl implements EmailService {
 			 emailMessage.setCreatedBy(user.getUserCode());
 			 emailMessage.setFromEmail(user.getEmail());
 			 emailMessage.setFromName(fullName);
+			 emailMessage.setFirstName(fullName);
 			 emailMessage.setEmailType(Constants.EMAIL_CAMPAIGN);
 			 
 			 signature = sourceleadSignatureService.buildSignature(user, orgLocation);
@@ -119,14 +120,16 @@ public class EmailServiceImpl implements EmailService {
 			 globalVarsMap.put("salutation", hotListEmailCampaignDTO.getSaluation());
 			 globalVarsMap.put("body", hotListEmailCampaignDTO.getBodytext());
 			 
-			 EmailScenario emailScenario =  emailScenarioService.getEmailScenarioByUniqueName(Constants.EMAIL_TO_USERS,Constants.ENTITY_TYPE_EMAIL);
-			 //covert subject,body and signature
-			 String subject = emailScenerioUtil.bulidSubject(hotListEmailCampaignDTO.getSubject(),globalVarsMap);
-			 String body = emailScenerioUtil.buildTempBody(emailScenario.getBody(),globalVarsMap);
-			 
-			
-			 
-			 String url = sourceleadUrl;
+			 EmailScenario  emailScenario = null;
+			 if(orgLocation != null)
+			 emailScenario =  emailScenarioService.getEmailScenarioByUniqueNameAndOrgLocationId(Constants.EMAIL_TO_USERS,Constants.ENTITY_TYPE_EMAIL, orgLocation.getId());
+			  if(emailScenario == null){
+					emailScenario = emailScenarioService.getEmailScenarioByUniqueName(Constants.EMAIL_TO_USERS,Constants.ENTITY_TYPE_EMAIL);
+			   }
+			  //covert subject,body and signature
+				 String subject = emailScenerioUtil.bulidTemplateSubject(hotListEmailCampaignDTO.getSubject(),globalVarsMap,emailScenario);
+				 String body = emailScenerioUtil.buildTemplateBody(emailScenario.getBody(),globalVarsMap,emailScenario);
+				 String url = sourceleadUrl;
 			 
 			 //construct HTML template using required data
 			 String emailTemplate = emailScenerioUtil.AssembleEmailMessage(emailScenario,emailMessage, subject, body, signature, url, orgLocation.getOrg(),orgLocation);
@@ -162,7 +165,7 @@ public class EmailServiceImpl implements EmailService {
 			 //calling the sendEmail method of emailScenerioUtil
 			 emailScenerioUtil.sendEmail(emailMessage,orgLocation.getId(),iAdressArray,fileAttachmentList);
 			 
-			saveUserMailBox(user,orgLocation,iAdressArray,subject,hotListEmailCampaignDTO.getBodytext(),signature,fileInfo);
+			saveUserMailBox(user,orgLocation,iAdressArray,subject,hotListEmailCampaignDTO,signature,fileInfo);
 			 
 			saveToUserMailBox(user,orgLocation,iAdressArray,subject,hotListEmailCampaignDTO.getBodytext(),signature,fileInfo);
 		
@@ -171,7 +174,7 @@ public class EmailServiceImpl implements EmailService {
 	
 	
 
-	private void saveUserMailBox(User user,OrgLocations orgLocation,InternetAddress[] iAdressArray,String subject,String body,String signature,FileInfo fileInfo) throws Exception{
+	private void saveUserMailBox(User user,OrgLocations orgLocation,InternetAddress[] iAdressArray,String subject,HotListEmailCampaignDTO hotListEmailCampaignDTO,String signature,FileInfo fileInfo) throws Exception{
 		
 	   UserMailBox userMailBox = new UserMailBox();
        if(iAdressArray != null && iAdressArray.length >0){
@@ -191,8 +194,9 @@ public class EmailServiceImpl implements EmailService {
 		userMailBox.setOrgLocationId(orgLocation);
 		userMailBox.setFromMail(user.getEmail());
 		userMailBox.setMailStatus(Constants.MAIL_BOX_SENT);
+		userMailBox.setSalutation(hotListEmailCampaignDTO.getSaluation());
 		userMailBox.setSubject(subject);
-		userMailBox.setBody(body);
+		userMailBox.setBody(hotListEmailCampaignDTO.getBodytext());
 		userMailBox.setSignature(signature);
 		userMailBox.setIsMailRead(0);
 		userMailBox.setIsFavourite(0);

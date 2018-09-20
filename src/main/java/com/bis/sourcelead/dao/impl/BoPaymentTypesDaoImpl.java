@@ -34,7 +34,7 @@ public class BoPaymentTypesDaoImpl implements BoPaymentTypesDao {
 	public List<BoPaymentTypes> getAllBoPaymentTypes() throws Exception {
 		Session session =  this.sessionFactory.getCurrentSession();
 		String query = "from BoPaymentTypes"; 
-		List<BoPaymentTypes> boPaymentTypesList = session.createQuery(query).setCacheable(true).list();
+		List<BoPaymentTypes> boPaymentTypesList = session.createQuery(query).list();
 		return boPaymentTypesList;
 	}
 

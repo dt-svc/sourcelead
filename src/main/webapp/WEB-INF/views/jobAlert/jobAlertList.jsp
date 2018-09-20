@@ -210,10 +210,12 @@ function createAlert(){
 					 result = result +'         	<label class="col-md-3">Keywords / Skills <span class="text-danger paddingLeft">*</span></label>';
 					 result = result +'         	<div class="col-md-9">';
 					 result = result +'			<select class="form-control chosen-select" data-placeholder="Keywords/Skills"  multiple id="skills" name="skills" data-validation="required" field-name="Keywords/Skills">';
-					 result = result +'         			<c:forEach var="skill" items="${skillsList}">';
-					 result = result +'         			<option value="${skill.name}">${skill.name}</option>';
-					 result = result +'         			</c:forEach>';
-					 result = result +'         		</select>';
+					 
+					          		 <c:forEach var="skill" items="${skillsList}">
+											result = result + "<option value='${skill.name}'>${skill.name}</option>";
+						             </c:forEach>
+						            
+					 result = result +'       </select>';
 					 result = result +'         	</div>';
 					 result = result +'         </div>';
 					 result = result +'       </div>';
@@ -252,10 +254,17 @@ function createAlert(){
 					    	$.ajax({
 						    	type: "POST",
 						        url: sourceleadUrl+"/profileBySkillSet?${_csrf.parameterName}=${_csrf.token}&allSkills="+allSkills, 
-						        success: function(data) {
-						        	var primarySkill = data;
-						        	      $("#primarySkill").val(primarySkill);
-						        	
+						        success: function(response) {
+						        	if (response.response === "AWKWARD") {
+						        	    location.href = "/errorPage";
+						        	} else if (response.response === "SUCCESS") {
+						        		var primarySkill = response.object;
+							        	$("#primarySkill").val(primarySkill);
+						        	} else if (response.indexOf('Sign In') !== -1) {
+						        		location.replace(sourceleadUrl);
+						        	} else {
+						        	    showError("Operation failed, please try again");
+						        	}
 						        },
 						    });
 					    	
@@ -762,17 +771,22 @@ function editAlert(jobAlertUUID){
         		    	$.ajax({
         			    	type: "POST",
         			        url: sourceleadUrl+"/profileBySkillSet?${_csrf.parameterName}=${_csrf.token}&allSkills="+allSkills, 
-        			        success: function(data) {
-        			        	var primarySkill = data;
-        			        	      $("#primarySkill").val(primarySkill);
-        			        	
+        			        success: function(response) {
+        			        	if (response.response === "AWKWARD") {
+        			        	    location.href = "/errorPage";
+        			        	} else if (response.response === "SUCCESS") {
+        			        		var primarySkill = response.object;
+            			        	$("#primarySkill").val(primarySkill);
+        			        	} else if (response.indexOf('Sign In') !== -1) {
+        			        		location.replace(sourceleadUrl);
+        			        	} else {
+        			        	    showError("Operation failed, please try again");
+        			        	}
         			        },
         			    });
-        		    	
         		    });
         		    
         		    if(json['skillsName'] != 'undefined' && json['skillsName'] != null && json['skillsName'] != ''){
-        		    
         		      var alertSkillsList = json['skillsName'].split(',');
                    	  if(alertSkillsList.length > 1){
                    		 for (var i=0; i < alertSkillsList.length; i++) {

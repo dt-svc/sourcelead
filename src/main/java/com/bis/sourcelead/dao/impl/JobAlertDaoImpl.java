@@ -74,7 +74,7 @@ public class JobAlertDaoImpl implements JobAlertDao{
 	public List<JobAlert> getJobAlertByuserId(Long userId) throws Exception {
 		Session session = this.sessionFactory.getCurrentSession();
 		String query = "from JobAlert jobAlert  where jobAlert.userId.id =:userId and jobAlert.status ='1' "; 
-		List<JobAlert> jobAlertList = session.createQuery(query).setLong("userId", userId).setCacheable(true).list();
+		List<JobAlert> jobAlertList = session.createQuery(query).setLong("userId", userId).list();
 		return jobAlertList;
 	}
 
@@ -85,7 +85,7 @@ public class JobAlertDaoImpl implements JobAlertDao{
 	{
 		Session session = this.sessionFactory.getCurrentSession();
 		String query = "from JobAlert jobAlert left join fetch jobAlert.userId where jobAlert.email =:email and jobAlert.status ='1' "; 
-		List<JobAlert> jobAlertList = session.createQuery(query).setString("email", email).setCacheable(true).list();
+		List<JobAlert> jobAlertList = session.createQuery(query).setString("email", email).list();
 		return jobAlertList;
 	}
 
@@ -96,7 +96,7 @@ public class JobAlertDaoImpl implements JobAlertDao{
 	{
 		Session session = this.sessionFactory.getCurrentSession();
 		String query = "from JobAlert jobAlert left join fetch jobAlert.userId where jobAlert.duration = :duration and jobAlert.status ='1' "; 
-		List<JobAlert> jobAlertList = session.createQuery(query).setString("duration", duration).setCacheable(true).list();
+		List<JobAlert> jobAlertList = session.createQuery(query).setString("duration", duration).list();
 		return jobAlertList;
 	}
 
@@ -106,7 +106,7 @@ public class JobAlertDaoImpl implements JobAlertDao{
 	public JobAlert getJobAlertByUUID(String jobAlertUUID) throws Exception
 	{
 		Session session = this.sessionFactory.getCurrentSession();
-		List<JobAlert> jobAlert = session.createQuery("from JobAlert jobAlert where jobAlert.jobAlertUUID =:jobAlertUUID" ).setString( "jobAlertUUID", jobAlertUUID ).setCacheable(true).list();
+		List<JobAlert> jobAlert = session.createQuery("from JobAlert jobAlert where jobAlert.jobAlertUUID =:jobAlertUUID" ).setString( "jobAlertUUID", jobAlertUUID ).list();
 		if (jobAlert.size() > 0) {
 			return jobAlert.get(0);
 		} else {
@@ -142,7 +142,7 @@ public class JobAlertDaoImpl implements JobAlertDao{
 			String query = "select count(jobAlert.id) from JobAlert jobAlert "
 					+ "where jobAlert.email = :email and jobAlert.status = '1' ";
 			
-			List<Long> jobAlertsCount = session.createQuery(query.toString()).setString("email", email).setCacheable(true).list();
+			List<Long> jobAlertsCount = session.createQuery(query.toString()).setString("email", email).list();
 			Integer count = 0;
 			if(jobAlertsCount != null && !jobAlertsCount.isEmpty()){
 					count = jobAlertsCount.get(0).intValue();
@@ -156,7 +156,7 @@ public class JobAlertDaoImpl implements JobAlertDao{
 	public List<JobAlert> getJobAlertByEmailAndAlertDuration(String email, String duration) throws Exception {
 		Session session = this.sessionFactory.getCurrentSession();
 		String query = "from JobAlert jobAlert left join fetch jobAlert.userId where jobAlert.email = :email and jobAlert.duration = :duration and jobAlert.status = '1' "; 
-		List<JobAlert> jobAlertList = session.createQuery(query).setString("email", email).setString("duration", duration).setCacheable(true).list();
+		List<JobAlert> jobAlertList = session.createQuery(query).setString("email", email).setString("duration", duration).list();
 		return jobAlertList;
 	}
 }

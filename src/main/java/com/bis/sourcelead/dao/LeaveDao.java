@@ -2,20 +2,28 @@ package com.bis.sourcelead.dao;
 
 
 import java.text.ParseException;
-
 import java.util.Date;
-
 import java.util.List;
-import java.util.Set;
+import java.util.Map;
+
+import org.springframework.transaction.annotation.Transactional;
+
+import com.bis.sourcelead.dto.DayWiseLeaveReportDTO;
+import com.bis.sourcelead.dto.HrLeaveReportDTO;
 
 import com.bis.sourcelead.dto.LeaveDTO;
 import com.bis.sourcelead.dto.ResponseList;
+import com.bis.sourcelead.entity.AppliedLeaveDateView;
 import com.bis.sourcelead.entity.HolidayAndRestrictday;
 import com.bis.sourcelead.entity.Leave;
 import com.bis.sourcelead.entity.LeaveApproveHierarchy;
+import com.bis.sourcelead.entity.LeaveReportView;
 import com.bis.sourcelead.entity.LeaveRole;
+import com.bis.sourcelead.entity.LeaveType;
+import com.bis.sourcelead.entity.MonthlyLeaves;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.User;
+import com.bis.sourcelead.reportsDTO.LeaveBalanceReportDTO;
 
 public interface LeaveDao {
 
@@ -25,19 +33,19 @@ public interface LeaveDao {
 
 	List<Leave> getLeavesListByLocationIdAndStatus(Long orgLocationId, String status, Long userId);
 
-	Leave getLeaveById(String leaveId) throws Exception;
+	Leave getLeaveById(Long leaveId) throws Exception;
 
 	List<LeaveApproveHierarchy> getEmployeeRequestedLeavesBylocationIdAndDuration(Long locationId, String userId, String status, Date currentWeekStarDate, Date currentWeekEndDate, String department, Date leaveDate) throws Exception;
 
-	List<Leave> getLeavesListByTypeIdAndLocationIdAndUserId(String leaveTypeId, Long orgLocationId, Long userId);
+	List<Leave> getLeavesListByTypeIdAndLocationIdAndUserId(String leaveTypeUUID, Long orgLocationId, Long userId);
 	
-	int getNumberOfLeavesTakenByUser(Long userId, String leaveTypeId) throws Exception;
+	Map<String, Float> getNumberOfLeavesTakenByUser(Long userId, Long leaveTypeId) throws Exception;
 
-	int getThisMonthLeavesTakenByUser(Long userId, String leaveTypeId);
+	float getThisMonthLeavesTakenByUser(Long userId, LeaveType leaveType, OrgLocations orgLocations);
 
 	ResponseList<Leave> getTopLeavetakers(OrgLocations orgLocation, LeaveDTO leaveDTO) throws Exception;
 
-	List<LeaveApproveHierarchy> getAllEmployeesLeavesCounts(Long userId,Long orgLocationId);
+	List<LeaveApproveHierarchy> getAllEmployeesLeavesCounts(Long userId,Long orgLocationId,String loginUserRole, Long orgId);
 
 	List<Leave> getAllSelfLeavesCounts(Long orgLocationId, Long userId);
 	
@@ -47,7 +55,7 @@ public interface LeaveDao {
 
 	boolean validateNameByOrgLocationIdandFromTable(String name, Long orgLocationId, String fromTable, String id);
 
-	boolean deleteAllLeaveRolesByParticularTableId(String from, String fromId);
+	boolean deleteAllLeaveRolesByParticularTableId(String from, Long fromId);
 
 	void storeHolidayAndRestrictDays(HolidayAndRestrictday day);
 
@@ -55,12 +63,48 @@ public interface LeaveDao {
 
 	List<User> getApproversListBasedonHierarchyExceptLoginUser(Long loginUserId, Long roleId, Long locationId) throws Exception;
 
-	List<HolidayAndRestrictday> getHolidayOrRestrictDaysListById(String id, String type);
+	List<HolidayAndRestrictday> getHolidayOrRestrictDaysListById(Long id, String type);
 
-	List<LeaveRole> getLeaveRolesByRestrictDayId(String restrictDayId);
+	List<LeaveRole> getLeaveRolesByRestrictDayId(Long restrictDayId);
 
-	void deleteAllHolidayOrRestrictDayById(String id, String type);
+	void deleteAllHolidayOrRestrictDayById(Long id, String type);
 
 	List<Leave> getAllLeavesByLocationIdAndStatus(Long locationId, String status);
 
+	List<Leave> getLeavesListByTypeIdAndDuration(Long leaveTypeId, Long orgLocationId, Long userId, Date startDate, Date endDate);
+
+	MonthlyLeaves saveMonthlyLeaves(MonthlyLeaves monthlyLeaves);
+
+	MonthlyLeaves getMonthlyLeavesByLeaveId(Long leaveId);
+
+	Leave getLeaveByLeaveUUId(String leaveUUID);
+
+	List<Leave> getAllLeave();
+
+	List<Leave> getLeaveByUserIdOrglocationIdandStatus(Long id, Long orglocationId, String approved);
+
+	List<LeaveApproveHierarchy> getAllLeaveApproversList(Long locationId);
+
+	Map<String, Float> getNumberOfCurrentMonthLeavesTakenByUser(Long userId, Long leaveTypeId);
+
+	List<AppliedLeaveDateView> getLeaveByUserIdAndFromToDate(Long userId, OrgLocations orgLocation, String fromDate, String toDate);
+
+	int deleteApproversByLeaveId(Long leaveId);
+
+	
+	ResponseList<LeaveReportView> getLeaveReportsOrglocationIdAndFromToDate(HrLeaveReportDTO hrLeaveReportDTO,Long orgId, Long orgLocationId,String loginUserRole)throws Exception;
+	
+	ResponseList<LeaveReportView> getLeaveReportsOrglocationIdAndFromToDate(DayWiseLeaveReportDTO dayWiseLeaveReportDTO,Long orgId, Long orgLocationId,String loginUserRole)throws Exception;
+	
+	List<String> getLeaveTypeNamesByOrgLocationId(Long orgLocationId,String topleave);
+	
+
+	Map<String,List<LeaveBalanceReportDTO>> getLeaveNamesByOrgLocationId(Long orgLocationId,List<Long> userleaveTypeList,List<String> leaveTypesList,String topleave) ;
+
+	String getDepartmentTypeNamesByOrgLocationIdAndUserId(Long userId,Long orgLocationId);
+
+	 Float getTakenLeavesByOrgLocationIdAndUserId(Long leaveId,Long userId,Long orglocationId)throws Exception;
 }
+
+
+

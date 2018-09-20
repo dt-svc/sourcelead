@@ -32,15 +32,25 @@ window.onload = function () {
 <script>
   function navtoggle(elementRef){
 	  
-	 if('${SourceLeadWeb_userSpocRolesListCount}' < 6){
+	 if('${SourceLeadWeb_prodSupportLoginUserRole}' != 'ROLE_PRODUCTION_SUPPORT'){
+		 if('${SourceLeadWeb_userSpocRolesListCount}' < 6){
+			 document.getElementById("spockLinksList").removeAttribute("class")
+			 document.getElementById('spockLinksList').className = 'spoclinks-area'
+		     document.getElementById("spockLinksList").style.display="block";
+		 }else{
+			 document.getElementById("spockLinksList").removeAttribute("class")
+			 document.getElementById('spockLinksList').className = 'spoclinks-area spoclinksMore'
+			 document.getElementById("spockLinksList").style.display="block";
+		 }
+	 }
+	 
+	 if('${SourceLeadWeb_prodSupportLoginUserRole}' == 'ROLE_PRODUCTION_SUPPORT'){
 		 document.getElementById("spockLinksList").removeAttribute("class")
 		 document.getElementById('spockLinksList').className = 'spoclinks-area'
 	     document.getElementById("spockLinksList").style.display="block";
-	 }else{
-		 document.getElementById("spockLinksList").removeAttribute("class")
-		 document.getElementById('spockLinksList').className = 'spoclinks-area spoclinksMore'
-		 document.getElementById("spockLinksList").style.display="block";
 	 }
+	 
+	  
   }
   </script>
 
@@ -73,23 +83,24 @@ $(function(){
 			<div class="comLogHead">
 			
 			
-			<c:if test="${!empty SourceLeadWeb_userSpocRolesList}">
+			<c:if test="${!empty SourceLeadWeb_userSpocRolesList && SourceLeadWeb_prodSupportLoginUserRole != 'ROLE_PRODUCTION_SUPPORT'}">
 		<div class="offOrg offOrgCompanyOnboard ">
              <a href="javascript:void(0)" title="Spoc Links" id="spoclinks" onclick="JavaScript: navtoggle(this);"> <i class="fa fa-globe"></i> </a>
 	              <div id="spockLinksList" style="display: none;">
 	              <ul class="list-unstyled">
 	              <c:forEach var="links" items="${SourceLeadWeb_userSpocRolesList}">
 		              <li>
-			              <a href="<c:url value='${sourceleadUrl}/dashboard/${links.orgLocations.id}'/>" class="sopcSwith">
+		              <a onclick="checkAuth(${links.orgLocations.id},${links.id},'${links.orgLocations.loginSecurity}','${links.user.id}');" class="sopcSwith">
 				                <div class="clearfix">
 				                   <div class="pull-left image-parent positionRelative">
 				                   <div class="imageParent org-imagelink ${links.orgLocations.id == SourceLeadWeb_orgLocationId ? 'active-comp' : ''}">
-			                        <c:if test="${!empty links.orgLocations.org.fileContentType}">
-				                     <img onerror='predefineOrgImage(this);' src="${sourceleadUrl}/displayOrgImage/${links.orgLocations.org.orgCode}">
+				                   <c:if test="${!empty links.orgLocations.org.fileContentType}">
+				                     <img onerror='predefineOrgImage(this);' data-id="orgLogoImage" src="${links.orgLocations.org.fileUrl}">
 				                   </c:if>
 				                   <c:if test="${empty links.orgLocations.org.fileContentType}">
 				                     <img src="/resources/images/office-image.jpg">
 				                   </c:if>
+				                     
 				                     </div>
 				                   </div>
 				                   <div class="pull-left mt5">
@@ -105,6 +116,33 @@ $(function(){
 	            </div>
 	            </div>
           </c:if>
+          
+          
+          <c:if test="${SourceLeadWeb_prodSupportLoginUserRole == 'ROLE_PRODUCTION_SUPPORT'}">
+          	<div class="offOrg offOrgCompanyOnboard ">
+             <a href="javascript:void(0)" title="Spoc Links" id="spoclinks" onclick="JavaScript: navtoggle(this);"> <i class="fa fa-globe"></i> </a>
+	              <div id="spockLinksList" style="display: none;">
+	              <ul class="list-unstyled">
+		              <li>
+		              <a href="<c:url value='${sourceleadUrl}/productionSupportdashboard/${SourceLeadWeb_prodSupportOrgLocationId}/${SourceLeadWeb_prodSupportOrgLocationId}'/>" class="sopcSwith">
+					                <div class="clearfix">
+					                   <div class="pull-left image-parent positionRelative">
+						                   <div class="imageParent org-imagelink">
+						                   <img src="/resources/images/office-image.jpg">
+						                     </div>
+						                   </div>
+					                       <div class="pull-left">
+						                     <p class="tbldata-dotdot"><i class="fa fa-building"></i>&nbsp;${SourceLeadWeb_prodSupportLoginOrgName}</p>
+						                     <p><i class="fa fa-user"></i>&nbsp;${SourceLeadWeb_prodSupportLoginUserDisplayName}</p>
+						                   </div>
+					                </div>
+				                </a>
+		              </li>
+	              </ul>
+	            </div>
+	            </div>		
+		              			
+              </c:if>
           
 				 <div class="comLogLogoText">${SourceLeadWeb_orgName}</div>
 				  <div class="welSiO onboard-logoutbtn" onclick="logoutFormSubmit();" title="Sign Out"><i class="fa fa-sign-out mt5"></i></div>
@@ -238,7 +276,10 @@ $(function(){
       </div>
 	</div> 
 					
-
+ <div class="location-alert alert alert-danger alert-dismissable zInPop" id="locationAlert">
+    <a href="#" class="loc-alertclose close">&times;</a>
+    <strong>Alert !</strong> <span>Your are not able to Save Required data is Missing.</span>
+  </div>
 
  <script type="text/javascript" src="/resources/js/jquery-1.11.0.min.js?staticTime=${staticTime}"></script>
  <script type="text/javascript" src="/resources/js/jquery.liquidcarousel.pack.js?staticTime=${staticTime}"></script>	
@@ -282,6 +323,9 @@ $(function(){
 		    } 
 		 
 	}
+	$(".loc-alertclose").click(function(){
+		 $(".location-alert").fadeOut();
+	})
 </script>
  
  
@@ -515,12 +559,22 @@ $('body').on('submit', '#fedralAndTax_form', function(e){
 		    	data : formData,
 		    	  url: sourceleadUrl+"/saveOrgLocationsFederalAndStatesTax?${_csrf.parameterName}=${_csrf.token}",		
 		        success: function(result) {
-		        	
-		        	if(result == 'success'){
-		        		location.replace(sourceleadUrl+"/companyOnboardBankingDetails"); 
-		        	}else{
-		        		$("#loading").removeAttr("style"); 
+		        	if (result && (result.response === "INVALID_DATA" || result.response === "INVALID_USER")) {
+      	    		    showError(result.responseMessage);
+      	    		    $("#loading").removeAttr('style');
+      	    		}
+		        	else if(result.response === "AWKWARD"){
+		        		 location.href = "/errorPage";
 		        	}
+		        	else if(result.response === "SUCCESS"){
+		        		$("#loading").removeAttr('style');
+		        		location.replace(sourceleadUrl+"/companyOnboardBankingDetails"); 
+		        	}else if (result.indexOf('Sign In') !== -1) {
+      					location.replace(sourceleadUrl);
+      				} else {
+      				    showError("Operation failed, please try again");
+      				    $("#loading").removeAttr('style');
+      				}
 		        },
 		    });   
       return true; 
@@ -592,6 +646,63 @@ function cancelPopUp(){
 	});
   });
 </script>
+
+<script type="text/javascript">
+ var hasLocationAccess = "";
+ function checkAuth(locationId,roleId,orgSecurity,userId){
+	 checkLocationAccess(locationId,roleId,orgSecurity,userId);
+	 
+ }
+ function otpClose(){
+	 $(".authenticationMask").fadeOut(); 
+ }
+ $(".loc-alertclose").click(function(){
+	 $(".location-alert").fadeOut();
+ })
+
+ function getUserDetailsbyroleId(roleId){
+	 var sourceleadUrl ='${sourceleadUrl}';
+	 $.ajax({
+		 type : "POST",
+	       url: sourceleadUrl+"/ws/getUserDetailsByRoleId?id="+roleId,        
+	       success :function(data) {
+	    	   if(data != null){
+	    		   $("#directtwoStepAuthDiv").empty();
+	    		   $("#directtwoStepAuthDiv").append(data);
+	    		   $("#gobackBtn").hide();
+	    		   $(".otpBackNew").show();
+	    		   $("#otpBackNewId").val("switchOtp");
+	    		   $("#resendOTP").attr("style","display:none");
+	    		   $("#sendOTP").attr("style","display:block");
+	    	   }
+	       },						     
+	}); 
+ }
+ 
+ function checkLocationAccess(locationId,roleId,orgSecurity,userId){
+	 var sourceleadUrl ='${sourceleadUrl}';
+	 $.ajax({
+	      type : "GET",
+	       url: sourceleadUrl+"/ws/validateWhitelistIp?userRoleId="+roleId,        
+	       success :function(result) {
+	    	   if(result == true){
+	    			 if(('${SourceLeadWeb_isAuthenticated}' == 'Y' && orgSecurity == 'N') || ('${SourceLeadWeb_isAuthenticated}' == 'Y' && orgSecurity == 'Y')){
+	    				 location.replace(sourceleadUrl+"/dashboard/"+locationId+"/"+userId);   
+	    			 }else if('${SourceLeadWeb_isAuthenticated}' == 'N' && orgSecurity == 'Y'){
+	    				 $(".authenticationMask").fadeIn();
+	    				 getUserDetailsbyroleId(roleId);
+	    			 }else{
+	    				 location.replace(sourceleadUrl+"/dashboard/"+locationId+"/"+userId);    
+	    			 }
+	    		 }else{
+	    			 $(".location-alert").fadeIn();
+	    			 $(".location-alert").fadeOut(5000);
+	    		 }
+	    	   
+	      },
+	  });
+ }
+ </script>
 
 <c:url var="logoutUrl" value="/logout"/>
 <form action="${logoutUrl}" method="post" id="logoutForm">

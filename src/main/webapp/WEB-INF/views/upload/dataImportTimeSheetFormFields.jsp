@@ -66,12 +66,13 @@
 		</select>
 	</div>
 </div>
-
+<input type="hidden" value="${timesheetMode}" name="timeFrequencyType">
+<c:if test="${timesheetMode == 'MonthlyWeekWise'}">
 <div class="form-group">
 	<label class="col-md-4 text-right mt5">Month-Year<span
 		class="text-danger paddingLeft">*</span></label>
 	<div class="col-md-8 dropdown-select">
-		<select class="chosen-select form-control" name="actualStartDate" field-name="Start Date" data-validation="required">
+		<select class="chosen-select form-control" name="monthYear" field-name="Start Date" data-validation="required">
 			<option value="">- - - Select - - -</option>
 			<c:forEach var="map" items="${dataWithCellId}">
 				<option value="${map.key}">${map.value}(column-${map.key})</option>
@@ -79,21 +80,36 @@
 		</select>
 	</div>
 </div>
-
-<%-- <div class="form-group">
-	<label class="col-md-4 text-right mt5">Task Name<span
+</c:if>
+<c:if test="${timesheetMode != 'MonthlyWeekWise'}">
+ <div class="form-group">
+	<label class="col-md-4 text-right mt5">Start Date<span
 		class="text-danger paddingLeft">*</span></label>
 	<div class="col-md-8 dropdown-select">
-		<select class="form-control" name="taskName" field-name="End Date" data-validation="required">
+		<select class="chosen-select form-control" name="actualStartDate" field-name="StartDate" data-validation="required">
 			<option value="">- - - Select - - -</option>
 			<c:forEach var="map" items="${dataWithCellId}">
 				<option value="${map.key}">${map.value}(column-${map.key})</option>
 			</c:forEach>
 		</select>
 	</div>
-</div> --%>
+</div> 
 
-<c:forEach var="field" items="${fields}">
+<div class="form-group">
+	<label class="col-md-4 text-right mt5">End Date<span
+		class="text-danger paddingLeft">*</span></label>
+	<div class="col-md-8 dropdown-select">
+		<select class="chosen-select form-control" name="actualEndDate" field-name="End Date" data-validation="required">
+			<option value="">- - - Select - - -</option>
+			<c:forEach var="map" items="${dataWithCellId}">
+				<option value="${map.key}">${map.value}(column-${map.key})</option>
+			</c:forEach>
+		</select>
+	</div>
+</div> 
+</c:if>
+<c:if test="${timesheetMode != 'Monthly' and timesheetMode != 'BiMonthly'}">
+    <c:forEach var="field" items="${fields}">
 	<div class="form-group">
 		<label class="col-md-4 text-right mt5">${field.labelName}</label>
 		<div class="col-md-8 dropdown-select">
@@ -105,7 +121,26 @@
 			</select>
 		</div>
 	</div>
-</c:forEach>
+   </c:forEach>
+</c:if>
+
+<c:if test="${timesheetMode == 'Monthly' or timesheetMode == 'BiMonthly' }">
+	<c:forEach var="field" items="${fields}" varStatus="fieldStatus">
+	<div class="form-group">
+		<label class="col-md-4 text-right mt5">${field.labelName}</label>
+		<div class="col-md-8 dropdown-select">
+			<select class="chosen-select form-control" name="days[${fieldStatus.index}]" field-name="${field.labelName}">
+			<option value="">- - - Select - - -</option>
+			<c:forEach var="map" items="${dataWithCellId}">
+				<option value="${map.key}">${map.value}(column-${map.key})</option>
+			</c:forEach>
+			</select>
+		</div>
+	</div>
+   </c:forEach>
+
+</c:if>
+
 
 <div class="form-group">
 	<label class="col-md-4 text-right mt5">Total Hrs</label>

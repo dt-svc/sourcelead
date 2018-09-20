@@ -15,57 +15,52 @@
   <section class="content-wraper">
     <section class="content-header clearfix">
       <div class="pull-left">
-        <h2>Account Settings</h2>
+        <h2>Bank Accounts</h2>
       </div>
       
      <c:if test="${SourceLeadWeb_loginUserRole != 'ROLE_CROWDSOURCING_PROFESSIONAL' && SourceLeadWeb_loginUserRole != 'ROLE_CROWDSOURCING_RECRUITER'}">
-       <div class="pull-right brud-crum"><a href="<c:url value='${appPath}/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a> &raquo; Account Settings</div>
+       <div class="pull-right brud-crum"><a href="<c:url value='${appPath}/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a> &raquo; Bank Accounts</div>
      </c:if>
      
       <c:if test="${SourceLeadWeb_loginUserRole == 'ROLE_CROWDSOURCING_PROFESSIONAL'}">
-      <div class="pull-right brud-crum"><a href="<c:url value='${appPath}/professionalDashboard'/>">Home</a> &raquo; Account Settings</div>
+      <div class="pull-right brud-crum"><a href="<c:url value='${appPath}/professionalDashboard'/>">Home</a> &raquo; Bank Accounts</div>
       </c:if>
       
        <c:if test="${SourceLeadWeb_loginUserRole == 'ROLE_CROWDSOURCING_RECRUITER'}">
-      <div class="pull-right brud-crum"><a href="<c:url value='${appPath}/recruiterDashboard'/>">Home</a> &raquo; Account Settings</div>
+      <div class="pull-right brud-crum"><a href="<c:url value='${appPath}/recruiterDashboard'/>">Home</a> &raquo; Bank Accounts</div>
       </c:if>
     </section>
-    <div class="content-area clearfix">
-      <div class="clearfix form-area form-horizontal toggle-div remove-div mt">
-        <div id="loading"></div> 
-        <div class="row">
-          <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+    <div class="project_wrap clearfix">
+     <div id="loading"></div> 
 		    <!-- Tab for Profile setting-area -->
-		  <div class="accountsettings-tab">
-		  <ul class="nav nav-tabs">
-			<li class="active"><a data-toggle="tab" href="#account">Account</a></li>
-		  </ul>
+		  <div class="accountsettings-tab noMar">
 
 		  <div class="tab-content panel-body">
 		  <div id="loading"></div>
 			<div id="profile" class="tab-pane fade in active">
 		<form:form class="login-form clearfix"  id="bankAccount_form"  name="bankAccount_form" method="post" >
 			  
-			  <div class="col-xs-12 col-sm-3 col-md-3 text-center well">
+			  <div class="col-xs-12 col-sm-3 col-md-3 text-center well mt">
 				  <div class="password-icon mt mb text-center">
 				    <i class="fa fa-lock" aria-hidden="true"></i>
 				  </div>
 			  </div>
 			 <div id="popUp" ></div>  
 			  
-		   <div class="col-xs-12 col-sm-9 col-md-9">
+		   <div class="col-xs-12 col-sm-9 col-md-9 clearfix">
 			   <div class="row mt">
-				<div class="col-md-6">
-					<div class="form-group">
-					<label class="col-md-4">A/C Holder Name<span
-							class="text-danger">&nbsp;*</span></label>
-					<div class="col-md-8">
+				<div class="col-md-6 clearfix paddingRight">
+				
+					<div class="col-md-12 mb">
+					<label class="labText">A/C Holder Name<span class="text-danger"> *</span></label>
+					<div class="clearfix">
 					  <input type="text" name="accountHolderName" value="${bankAccounts.accountHolderName}" field-name="A/C Holder Name" class="form-control" data-validation="required validate_Alphanumeric validate_Space validate_length length2-100"  >
 					</div>
 					</div>
-				   <div class="form-group">
-					<label class="col-md-4">Country</label>
-					<div class="col-md-8">
+					
+				   <div class="col-md-12 mb">
+					<label class="labText">Country</label>
+					<div class="clearfix">
 					  <select class="form-control select-bg" name="country" id="country" field-name="Country" onchange="getCurrency();" data-validation="required" value="${country}" >
 		                <option value="">Select Location</option>
 		                <c:if test="${empty bankAccounts.country}">
@@ -80,42 +75,38 @@
 		              </select>
 					</div>
 				   </div>
-				  <div class="form-group">
-					<label class="col-md-4">Currency</label>
-					<div class="col-md-8">
+				  <div class="col-md-12 mb">
+					<label class="labText">Currency</label>
+					<div class="clearfix">
 					<input type="text" readonly="readonly"  id="currency"  value="${bankAccounts.currency}" name="currency" field-name="Currency" class="form-control">
 					</div>
 				  </div>
 		
 				</div>
 		
-				<div class="col-md-6">
-						  <div class="form-group">
-							<label class="col-md-4">Bank Name<span
-							class="text-danger">&nbsp;*</span></label>
-							<div class="col-md-8">
+				<div class="col-md-6 clearfix paddingLeft">
+						  <div class="col-md-12 mb">
+							<label class="labText">Bank Name <span class="text-danger"> *</span></label>
+							<div class="clearfix">
 							  <input type="text" name="bankName" field-name="Bank Name" value="${bankAccounts.bankName}" class="form-control" data-validation-optional="true" data-validation="validate_Space validate_Alphanumeric validate_length length2-100" />
 							</div>
 						  </div>
-						  <div class="form-group">
-							<label class="col-md-4">Account Number<span
-							class="text-danger">&nbsp;*</span></label>
-							<div class="col-md-8">
+						  <div class="col-md-12 mb">
+							<label class="labText">Account Number <span class="text-danger"> *</span></label>
+							<div class="clearfix">
 							  <input type="text" name="accountNumber" field-name="Account Number" value="${bankAccounts.accountNumber}" class="form-control" data-validation="required validate_Space validate_int validate_length length2-100" />
 							</div>
 						  </div>
-						  <div class="form-group">
-							<label class="col-md-4" id="code">Code<span
-							class="text-danger">&nbsp;*</span></label>
-							<div class="col-md-8">
+						  <div class="col-md-12 mb">
+							<label class="labText" id="code">Code <span class="text-danger"> *</span></label>
+							<div class="clearfix">
 							   <input type="text" name="bankCode" id="bankCode" field-name="Bank Code" value="${bankAccounts.bankCode}" class="form-control"  />
 							</div>
 						</div>
 					</div>
 			
 				
-					 <div class="col-md-12">
-						 <hr>
+					 <div class="col-md-12 clearfix">
 							<div class="pull-right">
 							  <input type="submit" class="btn btn-primary mr" id="profile_submit" value="Save">
 							  
@@ -135,9 +126,6 @@
 			</div>
 		   </div>
 		</div>
-		  </div>
-		  </div>
-		  </div>
 		  </div>
   </section>
   
@@ -195,8 +183,26 @@ function getCurrency(){
  		          processData: false,
  		          contentType:false, 
                 	  url: sourceleadUrl+"/saveBankAccountDetails?"+tokenParamName+"="+tokenValue+"",
-                  	success: function(result) {
-                  		location.replace(sourceleadUrl+"/bankAccountDetails");
+                  	success: function(data) {
+                  		
+                  		if (data && (data.response === "INVALID_DATA" || data.response === "INVALID_USER")) {
+     		        		showError(data.responseMessage);
+          	    		    $("#loading").removeAttr('style');
+          	    		}
+                    		else if (data.response === "AWKWARD") {
+                    			location.href = "/errorPage";
+          	    		}
+                    		else if(data.response === "SUCCESS"){
+                    			$("#loading").removeAttr('style');
+                    			location.replace(sourceleadUrl+"/bankAccountDetails"); 
+    			        	    }
+                    		else if (data.indexOf('Sign In') !== -1) {
+                    			location.replace(sourceleadUrl);
+          				} else {
+          					showError("Operation failed, please try again");
+          				    $("#loading").removeAttr('style');
+          				}
+                  		
 			        },  
                }); 
             	  return true;

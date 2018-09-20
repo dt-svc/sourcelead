@@ -112,7 +112,7 @@ function addResume(candidateId) {
 	result = result+'	                <div class="form-horizontal clearfix" id="newResumeDiv">';
 	result = result+'	                  <div class="clearfix mb10">';
 	result = result+'	                    <div class="col-md-12">';
-	result = result+'	                      <input type="text" class="form-control input-sm" id="title" name="title" data-validation="validate_Space validate_Description validate_length length2-100" data-validation-optional="true" field-name="Title" value="" placeholder="Title">';
+	result = result+'	                      <input type="text" class="form-control input-sm" id="title" name="title" data-validation="validate_length length2-100" data-validation-optional="true" field-name="Title" value="" placeholder="Title">';
 	result = result+'	                    </div>';
 	result = result+'	                  </div>';
 	result = result+'	                  <div class="clearfix mb10">';
@@ -205,15 +205,14 @@ function addResume(candidateId) {
 		    	        processData: false,
 		    	        contentType:false,
 						url : sourceleadUrl+"/saveCandidateResume?"+tokenParamName+"="+tokenValue+"&candidateId="+candidateId+"&resumeId="+resumeId,
-						success : function(result) {
-							 if( result.indexOf('Sign In') >= 0){
-					    		location.replace(sourceleadUrl);
-					    	 }
-		            		 else if (result.indexOf('exception') >= 0) {
-		            			 location.replace(sourceleadUrl+"/errorPage");
-		            		 }
-		            		 else{
-		            			 $('#perVal').attr('aria-valuenow', result).css('width',result+'%');
+						success : function(response) {
+							if (response && response.response === "INVALID_DATA") {
+							    showError(response.responseMessage);
+							} else if (response.response === "AWKWARD") {
+							    location.href = "/errorPage";
+							} else if (response.response === "SUCCESS") {
+								var result = response.object;
+								$('#perVal').attr('aria-valuenow', result).css('width',result+'%');
 			          			 if(result<50){
 				          			   $("#perVal").removeClass('progress-bar-success');
 				          			   $("#perVal").addClass("progress-bar-danger");
@@ -249,7 +248,11 @@ function addResume(candidateId) {
 		             			}		             			
 						 		candidateResumesList(candidateId);
 						 		resMsgFadeinResumes();
-		            		 }
+							} else if (response.indexOf('Sign In') !== -1) {
+								location.replace(sourceleadUrl);
+							} else {
+							    showError("Operation failed, please try again");
+							}
 						},
 					});
 					return true;
@@ -293,15 +296,7 @@ function addResume(candidateId) {
 //         		 }
 //         		 else{
 					if(json.data.length<=0 || (json == null && json == 'undefined' && json == "")){
-							result = result+"   <div class='row'>"; 
-						 	result = result+"	<div class='col-lg-12'>"; 
-						 	result = result+"		<div class='content-area clearfix'>"; 
-						 	result = result+"			<div class='blank-pages'>";
-						 	result = result+"			        <p><i class='fa fa-5x fa-bar-chart'></i></p>";
-						 	result = result+"			        <p>No Resumes Found</p>";
-						 	result = result+"			 </div>";
-						 	result = result+"		</div>"; 
-						 	result = result+"	</div>"; 
+							result = result+"   <div class='dataTables_empty'>"; 
 						 	result = result+"  </div> "; 
 						}else{
 							result = result+'	      <table>';
@@ -391,51 +386,48 @@ function deleteResume(candidateId, resumeId){
 		$.ajax({
 		   	type: "POST",
 		    url: sourceleadUrl+"/terminateResume?"+tokenParamName+"="+tokenValue+"&loginUserId="+loginUserId+"&orgLocationId="+orgLocationId+"&candidateId="+candidateId+"&resumeId="+resumeId, 	   
-   		    success: function(data) {
-   		    	if( data.indexOf('Sign In') >= 0){
-		    		location.replace(sourceleadUrl);
-		    	 }
-        		 else if (data.indexOf('exception') >= 0) {
-        			 location.replace(sourceleadUrl+"/errorPage");
-        		 }
-        		 else{
-        			 $('#perVal').attr('aria-valuenow', data).css('width',data+'%');
-         			 if(data<50){
-	          			  /* $("#perVal").removeClass("progress-bar-success"); */
-	          			   $("#perVal").removeClass('progress-bar-success');
-	          			  $("#perVal").addClass("progress-bar-danger");
-	          			 }
-	          			 if(data>=50){
-	          				 $("#perVal").removeClass('progress-bar-danger');
-	          				 $("#perVal").addClass("progress-bar-success");
-	          			 }
-
-    			 	$("#disVal").empty();
-    				$("#disVal").append(data+'%');
-    				
-    				
-    				// for quick view bar update
-        			$('#quickPerVal').attr('aria-valuenow', data).css('width',data+'%');
-          			 if(data<50){
-	          			   $("#quickPerVal").removeClass('progress-bar-success');
-	          			   $("#quickPerVal").addClass("progress-bar-danger");
-	          			 }
-	          			 if(data>=50){
-	          				 $("#quickPerVal").removeClass('progress-bar-danger');
-	          				 $("#quickPerVal").addClass("progress-bar-success");
-	          			 }
-
-        			
-        			
-        			 $("#selector2").removeAttr("style");
-         			 $("#selector2").css({ display: "block" });
-         			 $("#resMsgDiv").html("Resume deleted");
-         			 $("#popUpDivResume").removeClass("edit-details-active");
-        			 candidateResumesList(candidateId);
-        			 $("#remove_user_pop_resume, .project_inn_mask").fadeOut();
-        			 resMsgFadeinResumes();
-        		     
-        		 }
+   		    success: function(response) {
+   		    	if (response && response.response === "INVALID_DATA") {
+   		    	    showError(response.responseMessage);
+   		    	} else if (response.response === "AWKWARD") {
+   		    	    location.href = "/errorPage";
+   		    	} else if (response.response === "SUCCESS") {
+   		    		var data = response.object;
+   		    		$('#perVal').attr('aria-valuenow', data).css('width',data+'%');
+        			if(data<50) {
+	          			/* $("#perVal").removeClass("progress-bar-success"); */
+	          			$("#perVal").removeClass('progress-bar-success');
+	          			$("#perVal").addClass("progress-bar-danger");
+	          		}
+	          		if(data>=50) {
+	          			$("#perVal").removeClass('progress-bar-danger');
+	          			$("#perVal").addClass("progress-bar-success");
+	          		}
+   			 	$("#disVal").empty();
+   				$("#disVal").append(data+'%');
+   				
+   				// for quick view bar update
+       			$('#quickPerVal').attr('aria-valuenow', data).css('width',data+'%');
+     			 if(data<50){
+       			   $("#quickPerVal").removeClass('progress-bar-success');
+       			   $("#quickPerVal").addClass("progress-bar-danger");
+       			 }
+       			 if(data>=50){
+       				 $("#quickPerVal").removeClass('progress-bar-danger');
+       				 $("#quickPerVal").addClass("progress-bar-success");
+       			 }
+       			 $("#selector2").removeAttr("style");
+        			 $("#selector2").css({ display: "block" });
+        			 $("#resMsgDiv").html("Resume deleted");
+        			 $("#popUpDivResume").removeClass("edit-details-active");
+       			 candidateResumesList(candidateId);
+       			 $("#remove_user_pop_resume, .project_inn_mask").fadeOut();
+       			 resMsgFadeinResumes();
+   		    	} else if (response.indexOf('Sign In') !== -1) {
+   		    		location.replace(sourceleadUrl);
+   		    	} else {
+   		    	    showError("Operation failed, please try again");
+   		    	}
    		    }
 	     });
 	}
@@ -475,32 +467,32 @@ function getResume(candidateId, resumeId){
 		$.ajax({
 		   	type: "POST",
 		    url: sourceleadUrl+"/getResume?"+tokenParamName+"="+tokenValue+"&resumeId="+resumeId, 	   
-   		    success: function(data) {
-   		    	var json = JSON.parse(data);
-   		    	if( data.indexOf('Sign In') >= 0){
-		    		location.replace(sourceleadUrl);
-		    	 }
-        		 else if (data.indexOf('exception') >= 0) {
-        			 location.replace(sourceleadUrl+"/errorPage");
-        		 }
-        		 else{
-        			 $("#uploadResumeDiv").hide();
-        			 $("#resumeAddButton").hide();
-        			 $("#uploadFile").removeAttr("data-validation");
-        			 $("#resumeNameDiv").show();
-        			 $("#resumeName").append(json.fileName);
-        			 $("#resumeUpdateButton").show();
-        			 
-        			 if(json.title != null && json.title != "undefined" && json.title != ""){
-        				 document.getElementById("title").value = json.title;
-        			 }
-        			 
-        			 if(json.description != null && json.description != "undefined" && json.description != ""){
-        				 $("textarea#description").val(json.description);
-        			 }
-        			 
-        			 $("#update_resume").attr("onclick", "storeCandidateResume("+json.candidateId.id+","+json.id+");");
-        		 }
+   		    success: function(response) {
+   		    	if (response.response === "AWKWARD") {
+   		    	    location.href = "/errorPage";
+   		    	} else if (response.response === "SUCCESS") {
+   		    		 var json = response.object;
+	       			 $("#uploadResumeDiv").hide();
+	       			 $("#resumeAddButton").hide();
+	       			 $("#uploadFile").removeAttr("data-validation");
+	       			 $("#resumeNameDiv").show();
+	       			 $("#resumeName").append(json.fileName);
+	       			 $("#resumeUpdateButton").show();
+	       			 
+	       			 if(json.title != null && json.title != "undefined" && json.title != ""){
+	       				 document.getElementById("title").value = json.title;
+	       			 }
+	       			 
+	       			 if(json.description != null && json.description != "undefined" && json.description != ""){
+	       				 $("textarea#description").val(json.description);
+	       			 }
+	       			 
+	       			 $("#update_resume").attr("onclick", "storeCandidateResume("+json.candidateId.id+","+json.id+");");
+   		    	} else if (response.indexOf('Sign In') !== -1) {
+   		    		location.replace(sourceleadUrl);
+   		    	} else {
+   		    	    showError("Operation failed, please try again");
+   		    	}
    		    }
 	     });
 }
@@ -512,9 +504,14 @@ this script is for remove Resume in edit mode to upload new resume
 1.usage     : onclick
 --%>
 function removeResumeNameDiv(){
+	var resTitle = $("#title").val();
+	var resDocName =  $("#resumeName").text();
 	$("#resumeNameDiv").hide();
 	$("#uploadResumeDiv").show();
 	$("#uploadFile").attr("data-validation", "required validate_Space validatedoc");
+	if(resTitle == resDocName){
+		$("#title").val("");
+	}
 }
 </script>
 

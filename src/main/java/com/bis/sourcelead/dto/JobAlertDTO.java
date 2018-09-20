@@ -1,11 +1,15 @@
 package com.bis.sourcelead.dto;
 
+import com.bis.sourcelead.annotations.Required;
+
 public class JobAlertDTO {
 
 	 private String savedJobAlertId;
 	 
+	 @Required(desc="alertTitle")
 	 private String alertTitle;
 	 
+	 @Required(desc="email", dependsOn = "tabType", parentValue = "openjobsForm")
 	 private String email;
 	 
 	 private String country;
@@ -28,9 +32,13 @@ public class JobAlertDTO {
 	 
 	 private String industry;
 	 
+	 @Required(desc="skills")
 	 private String skills;
 	 
+	 @Required(desc="duration")
 	 private String duration;
+	 
+	 private String tabType;
 
 	public String getSavedJobAlertId()
 	{
@@ -180,6 +188,16 @@ public class JobAlertDTO {
 	public void setDuration(String duration)
 	{
 		this.duration = duration;
+	}
+
+	public String getTabType()
+	{
+		return tabType;
+	}
+
+	public void setTabType(String tabType)
+	{
+		this.tabType = tabType;
 	}
 	 
 }

@@ -5,7 +5,7 @@ import java.util.Arrays;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import org.elasticsearch.index.query.MatchQueryBuilder;
+import org.elasticsearch.index.query.QueryBuilder;
 import org.elasticsearch.index.query.QueryBuilders;
 import org.springframework.stereotype.Component;
 
@@ -13,83 +13,83 @@ import org.springframework.stereotype.Component;
 public class UniversalSearchHelper {
 
 	/**
-	 * MatchQueryBuilder preparation fro requirement
+	 * QueryBuilder preparation fro requirement
 	 * @param keywd
-	 * @return ArrayList<MatchQueryBuilder>
+	 * @return ArrayList<QueryBuilder>
 	 */
-	public ArrayList<MatchQueryBuilder> getMatchQueryBuilderListForRequirementSearch(String keywd) {
+	public ArrayList<QueryBuilder> getQueryBuilderListForRequirementSearch(String keywd) {
 
-		ArrayList<MatchQueryBuilder> matchQueryBuilderList = new ArrayList<MatchQueryBuilder>();
-		matchQueryBuilderList.add(QueryBuilders.matchQuery("jobTitle", keywd));
-		matchQueryBuilderList.add(QueryBuilders.matchQuery("skills", keywd));
-		matchQueryBuilderList.add(QueryBuilders.matchPhraseQuery("requirementStatus", keywd));
-		matchQueryBuilderList.add(QueryBuilders.matchQuery("country", keywd));
-		matchQueryBuilderList.add(QueryBuilders.matchQuery("city", keywd));
-		matchQueryBuilderList.add(QueryBuilders.matchQuery("state", keywd));
-		matchQueryBuilderList.add(QueryBuilders.matchQuery("client", keywd));
-		matchQueryBuilderList.add(QueryBuilders.matchQuery("jobType", keywd));
-		matchQueryBuilderList.add(QueryBuilders.matchQuery("priority", keywd));
+		ArrayList<QueryBuilder> QueryBuilderList = new ArrayList<QueryBuilder>();
+		QueryBuilderList.add(QueryBuilders.matchQuery("jobTitle", keywd));
+		QueryBuilderList.add(QueryBuilders.matchQuery("skills", keywd));
+		QueryBuilderList.add(QueryBuilders.matchPhraseQuery("requirementStatus", keywd));
+		QueryBuilderList.add(QueryBuilders.matchQuery("country", keywd));
+		QueryBuilderList.add(QueryBuilders.matchQuery("city", keywd));
+		QueryBuilderList.add(QueryBuilders.matchQuery("state", keywd));
+		QueryBuilderList.add(QueryBuilders.matchQuery("client", keywd));
+		QueryBuilderList.add(QueryBuilders.matchQuery("jobType", keywd));
+		QueryBuilderList.add(QueryBuilders.matchQuery("priority", keywd));
 		Matcher matcher = Pattern.compile("\\d+").matcher(keywd);
 		if (matcher.find()) {
 			Float expYears = Float.valueOf(matcher.group());
-			matchQueryBuilderList.add(QueryBuilders.matchPhraseQuery("minExperience", expYears));
-			matchQueryBuilderList.add(QueryBuilders.matchPhraseQuery("maxExperience", expYears));
+			QueryBuilderList.add(QueryBuilders.matchPhraseQuery("minExperience", expYears));
+			QueryBuilderList.add(QueryBuilders.matchPhraseQuery("maxExperience", expYears));
 		}
 
-		return matchQueryBuilderList;
+		return QueryBuilderList;
 	}
 
 	/**
-	 * MatchQueryBuilder preparation fro user
+	 * QueryBuilder preparation fro user
 	 * @param keywd
-	 * @return ArrayList<MatchQueryBuilder>
+	 * @return ArrayList<QueryBuilder>
 	 */
-	public ArrayList<MatchQueryBuilder> getUsersMatchQueryBuilderList(String keywd) {
-		ArrayList<MatchQueryBuilder> matchQueryBuilderList = new ArrayList<MatchQueryBuilder>();
-		matchQueryBuilderList.add(QueryBuilders.matchQuery("firstName", keywd));
-		matchQueryBuilderList.add(QueryBuilders.matchQuery("lastName", keywd));
-		matchQueryBuilderList.add(QueryBuilders.matchPhraseQuery("email", keywd));
-		matchQueryBuilderList.add(QueryBuilders.matchPhraseQuery("userType", keywd));
-		matchQueryBuilderList.add(QueryBuilders.matchQuery("ratePer", keywd));
-		matchQueryBuilderList.add(QueryBuilders.matchQuery("employeeId", keywd));
-		matchQueryBuilderList.add(QueryBuilders.matchPhraseQuery("userStatus", keywd));
-		matchQueryBuilderList.add(QueryBuilders.matchQuery("mobilePhone", keywd));
+	public ArrayList<QueryBuilder> getUsersQueryBuilderList(String keywd) {
+		ArrayList<QueryBuilder> QueryBuilderList = new ArrayList<QueryBuilder>();
+		QueryBuilderList.add(QueryBuilders.matchQuery("firstName", keywd));
+		QueryBuilderList.add(QueryBuilders.matchQuery("lastName", keywd));
+		QueryBuilderList.add(QueryBuilders.matchPhraseQuery("email", keywd));
+		QueryBuilderList.add(QueryBuilders.matchPhraseQuery("userType", keywd));
+		QueryBuilderList.add(QueryBuilders.matchQuery("ratePer", keywd));
+		QueryBuilderList.add(QueryBuilders.matchQuery("employeeId", keywd));
+		QueryBuilderList.add(QueryBuilders.matchPhraseQuery("userStatus", keywd));
+		QueryBuilderList.add(QueryBuilders.matchQuery("mobilePhone", keywd));
 		Matcher matcher = Pattern.compile("\\d+").matcher(keywd);
 
 		if (matcher.find()) {
 			Float expYears = Float.valueOf(matcher.group());
-			matchQueryBuilderList.add(QueryBuilders.matchPhraseQuery("rate", expYears));
+			QueryBuilderList.add(QueryBuilders.matchPhraseQuery("rate", expYears));
 			
 			String mobileKeywd =matcher.group().replaceAll("[+91]", "");
-			matchQueryBuilderList.add(QueryBuilders.matchQuery("mobilePhone", mobileKeywd));
+			QueryBuilderList.add(QueryBuilders.matchQuery("mobilePhone", mobileKeywd));
 		}
 
-		return matchQueryBuilderList;
+		return QueryBuilderList;
 	}
 
 	/**
-	 * MatchQueryBuilder preparation fro client and vendor
+	 * QueryBuilder preparation fro client and vendor
 	 * @param keywd
-	 * @return ArrayList<MatchQueryBuilder>
+	 * @return ArrayList<QueryBuilder>
 	 */
-	public ArrayList<MatchQueryBuilder> getMatchQueryBuilderListForClientVendor(String keywd) {
+	public ArrayList<QueryBuilder> getQueryBuilderListForClientVendor(String keywd) {
 		
 		
-//		  matchQueryBuilderList.add(QueryBuilders.matchQuery("initiatorOrgName", keywd));
-//		    matchQueryBuilderList.add(QueryBuilders.matchQuery("responderOrgName", keywd));
-//		    matchQueryBuilderList.add(QueryBuilders.matchPhrasePrefixQuery("initiatorLevel", keywd));
-//		    matchQueryBuilderList.add(QueryBuilders.matchPhrasePrefixQuery("responderLevel", keywd));
-//			matchQueryBuilderList.add(QueryBuilders.matchPhraseQuery("createdBy", keywd));
+//		  QueryBuilderList.add(QueryBuilders.matchQuery("initiatorOrgName", keywd));
+//		    QueryBuilderList.add(QueryBuilders.matchQuery("responderOrgName", keywd));
+//		    QueryBuilderList.add(QueryBuilders.matchPhrasePrefixQuery("initiatorLevel", keywd));
+//		    QueryBuilderList.add(QueryBuilders.matchPhrasePrefixQuery("responderLevel", keywd));
+//			QueryBuilderList.add(QueryBuilders.matchPhraseQuery("createdBy", keywd));
 //			
-//			matchQueryBuilderList.add(QueryBuilders.matchQuery("responderCountry", keywd));
-//			matchQueryBuilderList.add(QueryBuilders.matchQuery("responderState", keywd));
-//			matchQueryBuilderList.add(QueryBuilders.matchQuery("responderCity", keywd));
-//			matchQueryBuilderList.add(QueryBuilders.matchQuery("initiatorCountry", keywd));
-//			matchQueryBuilderList.add(QueryBuilders.matchQuery("initiatorState", keywd));
-//			matchQueryBuilderList.add(QueryBuilders.matchQuery("initiatorCity", keywd));
+//			QueryBuilderList.add(QueryBuilders.matchQuery("responderCountry", keywd));
+//			QueryBuilderList.add(QueryBuilders.matchQuery("responderState", keywd));
+//			QueryBuilderList.add(QueryBuilders.matchQuery("responderCity", keywd));
+//			QueryBuilderList.add(QueryBuilders.matchQuery("initiatorCountry", keywd));
+//			QueryBuilderList.add(QueryBuilders.matchQuery("initiatorState", keywd));
+//			QueryBuilderList.add(QueryBuilders.matchQuery("initiatorCity", keywd));
 //			
-//			matchQueryBuilderList.add(QueryBuilders.matchPhrasePrefixQuery("responderWebSite", keywd));
-//			matchQueryBuilderList.add(QueryBuilders.matchPhrasePrefixQuery("initiatorWebSite", keywd));
+//			QueryBuilderList.add(QueryBuilders.matchPhrasePrefixQuery("responderWebSite", keywd));
+//			QueryBuilderList.add(QueryBuilders.matchPhrasePrefixQuery("initiatorWebSite", keywd));
 		
 		
 		
@@ -103,69 +103,69 @@ public class UniversalSearchHelper {
 		
 		
 		
-		ArrayList<MatchQueryBuilder> matchQueryBuilderList = new ArrayList<MatchQueryBuilder>();
-		  matchQueryBuilderList.add(QueryBuilders.matchQuery("initiatorOrgName", keywd));
-		    matchQueryBuilderList.add(QueryBuilders.matchQuery("responderOrgName", keywd));
-		    matchQueryBuilderList.add(QueryBuilders.matchPhrasePrefixQuery("initiatorLevel", keywd));
-		    matchQueryBuilderList.add(QueryBuilders.matchPhrasePrefixQuery("responderLevel", keywd));
-			matchQueryBuilderList.add(QueryBuilders.matchPhraseQuery("createdBy", keywd));
+		ArrayList<QueryBuilder> QueryBuilderList = new ArrayList<QueryBuilder>();
+		  QueryBuilderList.add(QueryBuilders.matchQuery("initiatorOrgName", keywd));
+		    QueryBuilderList.add(QueryBuilders.matchQuery("responderOrgName", keywd));
+		    QueryBuilderList.add(QueryBuilders.matchPhrasePrefixQuery("initiatorLevel", keywd));
+		    QueryBuilderList.add(QueryBuilders.matchPhrasePrefixQuery("responderLevel", keywd));
+			QueryBuilderList.add(QueryBuilders.matchPhraseQuery("createdBy", keywd));
 			
-			matchQueryBuilderList.add(QueryBuilders.matchQuery("responderCountry", keywd));
-			matchQueryBuilderList.add(QueryBuilders.matchQuery("responderState", keywd));
-			matchQueryBuilderList.add(QueryBuilders.matchQuery("responderCity", keywd));
-			matchQueryBuilderList.add(QueryBuilders.matchQuery("initiatorCountry", keywd));
-			matchQueryBuilderList.add(QueryBuilders.matchQuery("initiatorState", keywd));
-			matchQueryBuilderList.add(QueryBuilders.matchQuery("initiatorCity", keywd));
+			QueryBuilderList.add(QueryBuilders.matchQuery("responderCountry", keywd));
+			QueryBuilderList.add(QueryBuilders.matchQuery("responderState", keywd));
+			QueryBuilderList.add(QueryBuilders.matchQuery("responderCity", keywd));
+			QueryBuilderList.add(QueryBuilders.matchQuery("initiatorCountry", keywd));
+			QueryBuilderList.add(QueryBuilders.matchQuery("initiatorState", keywd));
+			QueryBuilderList.add(QueryBuilders.matchQuery("initiatorCity", keywd));
 			
-			matchQueryBuilderList.add(QueryBuilders.matchPhrasePrefixQuery("responderWebSite", keywd));
-			matchQueryBuilderList.add(QueryBuilders.matchPhrasePrefixQuery("initiatorWebSite", keywd));
-		return matchQueryBuilderList;
+			QueryBuilderList.add(QueryBuilders.matchPhrasePrefixQuery("responderWebSite", keywd));
+			QueryBuilderList.add(QueryBuilders.matchPhrasePrefixQuery("initiatorWebSite", keywd));
+		return QueryBuilderList;
 	}
 	/**
-	 * MatchQueryBuilder preparation fro projects
+	 * QueryBuilder preparation fro projects
 	 * @param keywd
-	 * @return ArrayList<MatchQueryBuilder>
+	 * @return ArrayList<QueryBuilder>
 	 */
-	public ArrayList<MatchQueryBuilder> getProjectsMatchQueryBuilderList(String keywd) {
-		ArrayList<MatchQueryBuilder> matchQueryBuilderList = new ArrayList<MatchQueryBuilder>();
+	public ArrayList<QueryBuilder> getProjectsQueryBuilderList(String keywd) {
+		ArrayList<QueryBuilder> QueryBuilderList = new ArrayList<QueryBuilder>();
 		// Project Search
-		matchQueryBuilderList.add(QueryBuilders.matchQuery("projectSequeneNumber", keywd));
-	    matchQueryBuilderList.add(QueryBuilders.matchQuery("projectName", keywd));
-		matchQueryBuilderList.add(QueryBuilders.matchQuery("level1ManagerName", keywd));
-		matchQueryBuilderList.add(QueryBuilders.matchQuery("level2ManagerName", keywd));
-//		matchQueryBuilderList.add(QueryBuilders.matchPhraseQuery("startDate", keywd));
-//		matchQueryBuilderList.add(QueryBuilders.matchPhraseQuery("invoiceFrequency", keywd));
+		QueryBuilderList.add(QueryBuilders.matchQuery("projectSequeneNumber", keywd));
+	    QueryBuilderList.add(QueryBuilders.matchQuery("projectName", keywd));
+		QueryBuilderList.add(QueryBuilders.matchQuery("level1ManagerName", keywd));
+		QueryBuilderList.add(QueryBuilders.matchQuery("level2ManagerName", keywd));
+//		QueryBuilderList.add(QueryBuilders.matchPhraseQuery("startDate", keywd));
+//		QueryBuilderList.add(QueryBuilders.matchPhraseQuery("invoiceFrequency", keywd));
 		
-		matchQueryBuilderList.add(QueryBuilders.matchPhraseQuery("clientName", keywd));
-		matchQueryBuilderList.add(QueryBuilders.matchPhraseQuery("projectStatus", keywd));
-		matchQueryBuilderList.add(QueryBuilders.matchQuery("projectMembers", keywd));
-		matchQueryBuilderList.add(QueryBuilders.matchPhraseQuery("projectMemberEmail", keywd));
-		return matchQueryBuilderList;
+		QueryBuilderList.add(QueryBuilders.matchPhraseQuery("clientName", keywd));
+		QueryBuilderList.add(QueryBuilders.matchPhraseQuery("projectStatus", keywd));
+		QueryBuilderList.add(QueryBuilders.matchQuery("projectMembers", keywd));
+		QueryBuilderList.add(QueryBuilders.matchPhraseQuery("projectMemberEmail", keywd));
+		return QueryBuilderList;
 	}
 	/**
-	 * MatchQueryBuilder preparation fro candidate
+	 * QueryBuilder preparation fro candidate
 	 * @param keywd
-	 * @return ArrayList<MatchQueryBuilder>
+	 * @return ArrayList<QueryBuilder>
 	 */
-	public ArrayList<MatchQueryBuilder> getMatchQueryBuilderListForCandidate(String keywd) {
-		ArrayList<MatchQueryBuilder> matchQueryBuilderList = new ArrayList<MatchQueryBuilder>();
-		matchQueryBuilderList.add(QueryBuilders.matchQuery("firstName", keywd));
-		matchQueryBuilderList.add(QueryBuilders.matchQuery("lastName", keywd));
-		matchQueryBuilderList.add(QueryBuilders.matchPhraseQuery("email", keywd));
-		matchQueryBuilderList.add(QueryBuilders.matchPhraseQuery("alternateEmail", keywd));
-		matchQueryBuilderList.add(QueryBuilders.matchQuery("country", keywd));
-		matchQueryBuilderList.add(QueryBuilders.matchQuery("city", keywd));
-		matchQueryBuilderList.add(QueryBuilders.matchQuery("state", keywd));
-		matchQueryBuilderList.add(QueryBuilders.matchQuery("designation", keywd));
-		matchQueryBuilderList.add(QueryBuilders.matchPhraseQuery("designationType", keywd));
-		matchQueryBuilderList.add(QueryBuilders.matchQuery("education", keywd));
-		matchQueryBuilderList.add(QueryBuilders.matchQuery("skillsName", keywd));
-		matchQueryBuilderList.add(QueryBuilders.matchQuery("visaType", keywd));
-		matchQueryBuilderList.add(QueryBuilders.matchQuery("primarySkill", keywd));
-		matchQueryBuilderList.add(QueryBuilders.matchQuery("certifications", keywd));
-		matchQueryBuilderList.add(QueryBuilders.matchQuery("candidateType", keywd));
+	public ArrayList<QueryBuilder> getQueryBuilderListForCandidate(String keywd) {
+		ArrayList<QueryBuilder> QueryBuilderList = new ArrayList<QueryBuilder>();
+		QueryBuilderList.add(QueryBuilders.matchQuery("firstName", keywd));
+		QueryBuilderList.add(QueryBuilders.matchQuery("lastName", keywd));
+		QueryBuilderList.add(QueryBuilders.matchPhraseQuery("email", keywd));
+		QueryBuilderList.add(QueryBuilders.matchPhraseQuery("alternateEmail", keywd));
+		QueryBuilderList.add(QueryBuilders.matchQuery("country", keywd));
+		QueryBuilderList.add(QueryBuilders.matchQuery("city", keywd));
+		QueryBuilderList.add(QueryBuilders.matchQuery("state", keywd));
+		QueryBuilderList.add(QueryBuilders.matchQuery("designation", keywd));
+		QueryBuilderList.add(QueryBuilders.matchPhraseQuery("designationType", keywd));
+		QueryBuilderList.add(QueryBuilders.matchQuery("education", keywd));
+		QueryBuilderList.add(QueryBuilders.matchQuery("skillsName", keywd));
+		QueryBuilderList.add(QueryBuilders.matchQuery("visaType", keywd));
+		QueryBuilderList.add(QueryBuilders.matchQuery("primarySkill", keywd));
+		QueryBuilderList.add(QueryBuilders.matchQuery("certifications", keywd));
+		QueryBuilderList.add(QueryBuilders.matchQuery("candidateType", keywd));
 
-		return matchQueryBuilderList;
+		return QueryBuilderList;
 	}
 	 public ArrayList<String> getSearchValuesFromChosenSelectField(String searchValue) {
 		 ArrayList<String> keyWordList = null;

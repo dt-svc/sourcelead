@@ -43,6 +43,16 @@ public class CandidateOnBoardingDTO implements Serializable {
 	
 	private String companyEmail;
 	
+	private String gender;
+	
+	private String dateOfBirth;
+	
+	private String employmentEligibility;
+	
+	private String uscisAlien;
+	
+	private String authorizedWorkUntil;
+	
 	private String onboardCandidateRole;
 	
 	private String startDate;
@@ -56,6 +66,10 @@ public class CandidateOnBoardingDTO implements Serializable {
 	private String reportingManager;
 	
 	private String team;
+	
+	private String shift;
+	
+	private String shiftName;
 	
 	private String employmentType;
 	
@@ -112,6 +126,24 @@ public class CandidateOnBoardingDTO implements Serializable {
 	private String onboardSubmitted;
 	
 	private String rejectedReason;
+	
+	private int start;
+	
+	private int length;
+	
+	private String searchValue;
+	
+	private Map<String, String> search;
+	
+	private List<Map<String, String>> order;
+	
+	private String sortColumn;
+	
+	private String sortOrder;
+	
+	private String vendors;
+	
+	private String vendorContact;
 	
 	public String getCandidateOnBoardStatus() {
 		return candidateOnBoardStatus;
@@ -350,6 +382,47 @@ public class CandidateOnBoardingDTO implements Serializable {
 		return companyEmail;
 	}
 
+	
+	public String getGender() {
+		return gender;
+	}
+
+	public String getDateOfBirth() {
+		return dateOfBirth;
+	}
+
+	public String getEmploymentEligibility() {
+		return employmentEligibility;
+	}
+
+	public String getUscisAlien() {
+		return uscisAlien;
+	}
+
+	public String getAuthorizedWorkUntil() {
+		return authorizedWorkUntil;
+	}
+
+	public void setGender(String gender) {
+		this.gender = gender;
+	}
+
+	public void setDateOfBirth(String dateOfBirth) {
+		this.dateOfBirth = dateOfBirth;
+	}
+
+	public void setEmploymentEligibility(String employmentEligibility) {
+		this.employmentEligibility = employmentEligibility;
+	}
+
+	public void setUscisAlien(String uscisAlien) {
+		this.uscisAlien = uscisAlien;
+	}
+
+	public void setAuthorizedWorkUntil(String authorizedWorkUntil) {
+		this.authorizedWorkUntil = authorizedWorkUntil;
+	}
+
 	public String getOnboardCandidateRole() {
 		return onboardCandidateRole;
 	}
@@ -532,6 +605,92 @@ public class CandidateOnBoardingDTO implements Serializable {
 	{
 		this.rejectedReason = rejectedReason;
 	}
-	
-	
+
+	public int getStart() {
+		return start;
+	}
+
+	public void setStart(int start) {
+		this.start = start;
+	}
+
+	public int getLength() {
+		return length;
+	}
+
+	public void setLength(int length) {
+		this.length = length;
+	}
+
+	public String getSearchValue() {
+		return searchValue;
+	}
+
+	public void setSearchValue(String searchValue) {
+		this.searchValue = searchValue;
+	}
+
+	public Map<String, String> getSearch() {
+		return search;
+	}
+
+	public void setSearch(Map<String, String> search) {
+		this.search = search;
+	}
+
+	public List<Map<String, String>> getOrder() {
+		return order;
+	}
+
+	public void setOrder(List<Map<String, String>> order) {
+		this.order = order;
+	}
+
+	public String getSortColumn() {
+		return sortColumn;
+	}
+
+	public void setSortColumn(String sortColumn) {
+		this.sortColumn = sortColumn;
+	}
+
+	public String getSortOrder() {
+		return sortOrder;
+	}
+
+	public void setSortOrder(String sortOrder) {
+		this.sortOrder = sortOrder;
+	}
+
+	public String getVendors() {
+		return vendors;
+	}
+
+	public void setVendors(String vendors) {
+		this.vendors = vendors;
+	}
+
+	public String getVendorContact() {
+		return vendorContact;
+	}
+
+	public void setVendorContact(String vendorContact) {
+		this.vendorContact = vendorContact;
+	}
+
+	public String getShift() {
+		return shift;
+	}
+
+	public void setShift(String shift) {
+		this.shift = shift;
+	}
+
+	public String getShiftName() {
+		return shiftName;
+	}
+
+	public void setShiftName(String shiftName) {
+		this.shiftName = shiftName;
+	}
 }

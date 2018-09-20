@@ -19,9 +19,10 @@ import org.hibernate.annotations.CacheConcurrencyStrategy;
 import org.hibernate.annotations.NotFound;
 import org.hibernate.annotations.NotFoundAction;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
+
 @Entity
 @Table(name = "INVOICE_LINE_ITEMS")
-@Cache(usage = CacheConcurrencyStrategy.TRANSACTIONAL, region = "invoiceLineItems")
 public class InvoiceLineItems {
 	
 	private static final long serialVersionUID = 1L;
@@ -36,31 +37,31 @@ public class InvoiceLineItems {
 	@Column(name = "END_DATE")
 	private Date endDate;
 	
-	@NotFound(action=NotFoundAction.IGNORE)
-	@ManyToOne
+	
+	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "CANDIDATE_ID", nullable = false)
 	private Candidate candidate;
 	
 	@Column(name = "INLINE_DESCRIPTION",columnDefinition = "TEXT default NULL")
 	private String inlineDescription;
 	
-	@NotFound(action=NotFoundAction.IGNORE)
-	@ManyToOne
+	
+	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "USER_ID", nullable = false)
 	private User user;
 	
-	@NotFound(action=NotFoundAction.IGNORE)
-	@ManyToOne
+	
+	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "CONTRACT_ID", nullable = false)
 	private Contracts contract; 
 	
-	@NotFound(action=NotFoundAction.IGNORE)
+	
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "INVOICE_ID", nullable = false)
 	private Invoice invoice;
 	
-	@NotFound(action=NotFoundAction.IGNORE)
-	@ManyToOne
+	
+	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "ORG_LOCATION_ID", nullable = false)
 	private OrgLocations orgLocation;
 	
@@ -113,24 +114,28 @@ public class InvoiceLineItems {
 	}
 
 	@Transient
+	@JsonProperty
 	private String candidateName;
 	
 	@Transient
+	@JsonProperty
 	private String sowName;
 
 	@Transient
 	private Long candidateId;
 		
 	@Transient
+	@JsonProperty
 	private String startDateStr;
 	
-	@Transient
-	private String endDtaeStr;
+	
 	
 	@Transient
+	@JsonProperty
 	private String employeeId;
 
 	@Transient
+	@JsonProperty 
 	private String endDateStr;
 	
 	@Transient
@@ -356,14 +361,6 @@ public class InvoiceLineItems {
 		this.startDateStr = startDateStr;
 	}
 
-
-	public String getEndDtaeStr() {
-		return endDtaeStr;
-	}
-
-	public void setEndDtaeStr(String endDtaeStr) {
-		this.endDtaeStr = endDtaeStr;
-	}
 
 	public String getEmployeeId() {
 		return employeeId;

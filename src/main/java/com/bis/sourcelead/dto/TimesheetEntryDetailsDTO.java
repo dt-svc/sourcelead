@@ -5,6 +5,7 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
+import com.bis.sourcelead.annotations.Required;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
@@ -15,12 +16,16 @@ public class TimesheetEntryDetailsDTO implements Serializable{
 	
 	private List<ProjectMembersDTO> projectMembersList;
 	
+	@Required(desc="projectMemberId")
 	private Long projectMemberId;
 	
+	@Required(desc="projectId")
 	private Long projectId;
 	
 	private Long masterCandidateId;
 	
+    private Map<String, List<WeekDaysDTO>> weekDaysMap;
+    
     private Map<String,String> timeFrequencies;
 	
 	private String currentTimeFrequency;
@@ -31,6 +36,7 @@ public class TimesheetEntryDetailsDTO implements Serializable{
 	
 	private String currentTimeSubFrequency;
 	
+	@Required(desc = "timesheetSubmission")
 	private TimeSheetSubmissionDTO timesheetSubmission;
 	
 	private String timesheetFor;
@@ -44,6 +50,12 @@ public class TimesheetEntryDetailsDTO implements Serializable{
 	private String employeePhoneNo;
 	
 	private String locDateFomat;
+	
+	private String projectNameForSubmissionPageDisplay;
+	
+	private String employmentTypeForSubmissionPageDisplay;
+	
+	private String clientNameForDisplay;
 	
 	@JsonIgnore
 	private Map<String,String>  timesheetFrequencyMap;
@@ -182,6 +194,37 @@ public class TimesheetEntryDetailsDTO implements Serializable{
 	public void setLocDateFomat(String locDateFomat) {
 		this.locDateFomat = locDateFomat;
 	}
-	
+
+	public Map<String, List<WeekDaysDTO>> getWeekDaysMap() {
+		return weekDaysMap;
+	}
+
+	public void setWeekDaysMap(Map<String, List<WeekDaysDTO>> weekDaysMap) {
+		this.weekDaysMap = weekDaysMap;
+	}
+
+	public String getProjectNameForSubmissionPageDisplay() {
+		return projectNameForSubmissionPageDisplay;
+	}
+
+	public void setProjectNameForSubmissionPageDisplay(String projectNameForSubmissionPageDisplay) {
+		this.projectNameForSubmissionPageDisplay = projectNameForSubmissionPageDisplay;
+	}
+
+	public String getEmploymentTypeForSubmissionPageDisplay() {
+		return employmentTypeForSubmissionPageDisplay;
+	}
+
+	public void setEmploymentTypeForSubmissionPageDisplay(String employmentTypeForSubmissionPageDisplay) {
+		this.employmentTypeForSubmissionPageDisplay = employmentTypeForSubmissionPageDisplay;
+	}
+
+	public String getClientNameForDisplay() {
+		return clientNameForDisplay;
+	}
+
+	public void setClientNameForDisplay(String clientNameForDisplay) {
+		this.clientNameForDisplay = clientNameForDisplay;
+	}
      
 }

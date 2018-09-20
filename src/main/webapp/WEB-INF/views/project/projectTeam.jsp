@@ -24,6 +24,24 @@ left: 115px !important;
 .prRight.prRight_new {
     right: 280px; top: 40px;
 }
+.edit_member_pop {
+	top:12% !important; left: 35%; margin: 0px auto; z-index: 15500; width: 520px;
+	position: fixed !important; background-color: #f9f9f9; box-shadow: 0px 0px 5px rgba(0,0,0,0.3); padding: 15px;
+}
+.edit_member_pop .footerBtns input {
+    width: 50%; border: none; height: 30px; font-size: 14px; font-weight: 500; color: #FFF; background-color: #ff4b4b;
+}
+.edit_member_pop .footerBtns input.u_can_color {
+    background-color: #375d81;
+}
+.edit_member_pop h4 {
+background-color: #dcdcdc; padding: 10px; margin: 0; margin-bottom: 15px; font-size: 15px;
+}
+
+.member_rate_history_pop {
+	top:30% !important; left: 25%; margin: 0px auto; z-index: 15500; width: 850px;
+	position: fixed !important; background-color: #f9f9f9; box-shadow: 0px 0px 5px rgba(0,0,0,0.3); padding: 15px;
+}
 </style>
  <style type="text/css">
  table#assignEmployeePagination tr th {
@@ -151,6 +169,7 @@ function filterStatus() {
 	 var postedOrgLocationId = '${postedOrgLocationId}';
 	 var loginOrgLocationId = '${SourceLeadWeb_orgLocations.id}'
 	 var projectClientUUID = '${projectClientUUID}';
+	 var postedSharedProjectOrgLocationId = '${postedSharedProjectOrgLocationId}';
 	 	 
 	 $("#employeesLoadingImg").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;'); 
 	 var result = "";
@@ -160,6 +179,12 @@ function filterStatus() {
 	 result = result + '</ul>';
 	 
 	 result = result + '<div class="project_tabs mb">';
+	 result = result + '<input type="hidden" id="projectId" value="'+projectId+'">';
+	 result = result + '<input type="hidden" id="startDateStr" value="'+startDateStr+'">';
+	 result = result + '<input type="hidden" id="endDateStr" value="'+endDateStr+'">';
+	 result = result + '<input type="hidden" id="status" value="'+status+'">';
+	 result = result + '<input type="hidden" id="projectName" value="'+projectName+'">';
+	 
 	 
 	//Resources Tab
 	 result = result + '<div id="tab-a" class="newPrTabs_inn" style="display: block;">';
@@ -169,12 +194,12 @@ function filterStatus() {
 			result = result +'<li>';
 	 		'<sec:authorize access="hasAnyRole(\'ROLE_ASSIGN_EMPLOYEE_TO_PROJECT\')">';
 	 		 
-	 		if(postedOrgLocationId == loginOrgLocationId){
+	 	/* 	if(postedOrgLocationId == loginOrgLocationId || postedSharedProjectOrgLocationId == loginOrgLocationId){
 	 			  result = result + '<a href="javascript:void(0)" onclick="getAssociates();" id="addDiv">';
 		 		  result = result + '<i class="fa fa-exchange paddingRight"></i>&nbsp;Transfer Emp</a>&nbsp;&nbsp;&nbsp;&nbsp;'; 
-	 		 }
+	 		 } */
 	 		
-	 	     if('${isClientOrgActive}' == "N" || postedOrgLocationId == loginOrgLocationId){   
+	 	     if('${isClientOrgActive}' == "N" || postedOrgLocationId == loginOrgLocationId || postedSharedProjectOrgLocationId == loginOrgLocationId){   
 	 			 result = result + '<a href="'+sourceleadUrl+'/addNewProjectMembers?projectUUID='+projectUUID+'&projectClientUUID='+projectClientUUID+'">';
 	 		     result = result + '<i class="glyphicon glyphicon-plus"></i>Assign Emp</a></li>';
 	 		}  
@@ -185,27 +210,7 @@ function filterStatus() {
 	 		result = result +'</li>';
 			} 
 			
-			result = result + '	<li><a onClick="filterStatus()" class="dropdown-toggle" data-toggle="dropdown"><i class="fa fa-filter"></i><span>Roles</span><i class="glyphicon glyphicon-play"></i></a>';
-		    result = result + '   	<div class="filterLi dropdown-menu bootstrap_dropdownMenu dropdownPadding">';
-			result = result + '       	<ul>';
-					<c:forEach var="roles" items="${rolesList}">  
-					result = result + '	<li><input  id="roleName${report.id}" name="roleName" value ="${roles.id}"   onclick="getFilterEmployeeDetails('+projectId+',\''+startDateStr+'\',\''+endDateStr+'\',\''+status+'\',\''+projectName+'\')" type="checkbox"><label for="roleName${roles.id}">${roles.displayName}</label></li>';
-				  </c:forEach>
-				  
-		    result = result + '           </ul>';
-			result = result + '       </div>'; 
-			result = result + '   </li>';
 			
-		    result = result + '	<li><a onClick="filterStatus()" class="dropdown-toggle" data-toggle="dropdown"><i class="fa fa-filter"></i><span>Status</span><i class="glyphicon glyphicon-play"></i></a>';
-		    result = result + '   	<div class="filterLi dropdown-menu bootstrap_dropdownMenu dropdownPadding">';
-			result = result + '       	<ul>';
-			result = result + '           	<li><input id="c5" type="checkbox" name="employeeStatus" checked="true" value ="All" onclick="getFilterEmployeeDetails('+projectId+',\''+startDateStr+'\',\''+endDateStr+'\',\''+status+'\',\''+projectName+'\');"><label for="c5">All</label></li>'; 
-			result = result + '				<li><input id="c6" type="checkbox"   name="employeeStatus" value ="Active" onclick="getFilterEmployeeDetails('+projectId+',\''+startDateStr+'\',\''+endDateStr+'\',\''+status+'\',\''+projectName+'\');"><label for="c6">Active</label></li>';
-			result = result + '				<li><input id="c7" name="employeeStatus" type="checkbox" value ="In-Active" onclick="getFilterEmployeeDetails('+projectId+',\''+startDateStr+'\',\''+endDateStr+'\',\''+status+'\',\''+projectName+'\');"><label for="c7">In-Active</label></li> ';
-			result = result + '           </ul>';
-			result = result + '       </div>'; 
-			result = result + '   </li>';
-	 
 				'<sec:authorize access="hasAnyRole(\'ROLE_EXPORT_EMPLOYEE\')">';
 					result = result +'<li class="dropdown">';
 					if(status != 'COMPLETED' &&  status != '' &&  status != 'undefined' ){
@@ -226,8 +231,18 @@ function filterStatus() {
 				'</sec:authorize>';
 			
 			result = result +'</ul>';
+			
+			result = result	+ '<div class="pull-left cand-advsrch advsrch_chosen">';
+			result = result	+ '     <button type="button" class="btn btn-primary dropdown-toggle btn-sm mr" onclick="resetPorjectTeamFilter();" title="Refresh">';
+			result = result	+ '	    <span class="fa fa-refresh"></span>';
+			result = result	+ '	</button>';
+			result = result	+ '	<a href="javascript:void(0)" class="btn btn-default btn-sm anchorBlack text-center" title="Filter Search" onclick="openFilterTeamPop();"><i class="fa fa-filter faFilter padding_right"></i>';
+			result = result	+ '	</a>';
+			result = result	+ ' </div>';
+			
+			
 			result = result + '</div>';
-			getFilterEmployeeDetails(projectId,startDateStr,endDateStr,status,projectName);
+			getFilterEmployeeDetails();
 			result = result +'<div id="employeeDetailsDiv" class="datatable_filter"> </div>';
 			result = result +'</div>';
 		
@@ -274,15 +289,19 @@ function filterStatus() {
 	        var tab = $(this).attr("href");
 	        $(".newPrTabs_inn").not(tab).css("display", "none");
 	        $(tab).fadeIn();
-	    });		
-		
+	    });	
  }
  </script>
  
  
- 
  <script>
- function getFilterEmployeeDetails(projectId,startDateStr,endDateStr,status,projectName){
+ function getFilterEmployeeDetails(){
+	 var projectId = $("#projectId").val();
+	 var startDateStr = $("#startDateStr").val();
+	 var endDateStr = $("#endDateStr").val();
+	 var status = $("#status");
+	 var projectName = $("#projectName").val();
+	 
 	 var values = [];
 	 var chekbox = $('input:checkbox[name=employeeStatus]:checked').val();
 	 if(chekbox != 'undefined' && chekbox != '' && chekbox != null){
@@ -290,8 +309,6 @@ function filterStatus() {
 				    {
 						values.push($(this).val());
 				    });
-	 }else{
-		 values = "All";
 	 }
 	 
 	 var roleIds = [];
@@ -299,6 +316,14 @@ function filterStatus() {
 	     {
 			roleIds.push($(this).val());
 	     });
+		
+		var teamIds = [];
+		$('input:checkbox[name=teams]:checked').each(function() 
+			    {
+			teamIds.push($(this).val());
+		    });
+		
+		
 	 var locationList ='${SourceLeadWeb_orgLocations.dateFormat}';	
 	  if(locationList.match("yyyy-MM-dd")){
 		  projectempListDate = 'YYYY-MM-DD';
@@ -311,8 +336,8 @@ function filterStatus() {
 	  }
 	 var sourceleadUrl ='${sourceleadUrl}';
 	    $.ajax({
-	    	type: "POST",
-	        url: sourceleadUrl+"/getProjectEmployeeListById?${_csrf.parameterName}=${_csrf.token}&projectId="+projectId+"&status="+values+"&roleIds="+roleIds, 
+	    	type: "GET",
+	        url: sourceleadUrl+"/getProjectEmployeeListById?${_csrf.parameterName}=${_csrf.token}&projectId="+projectId+"&status="+values+"&roleIds="+roleIds+"&teamIds="+teamIds, 
 	        success: function(json) {
 	        	
 	        	var result = "";
@@ -324,13 +349,13 @@ function filterStatus() {
 	    	    result = result + '	<table id="projectEmployeePagination" class="display" cellspacing="0" width="100%">';
 	    		result = result + '	<thead>';
 	    		result = result + '		<tr>';
-	    		  if('${postedOrgLocationId}' == '${SourceLeadWeb_orgLocations.id}'){
+	    		  if(('${postedOrgLocationId}' == '${SourceLeadWeb_orgLocations.id}') || ('${postedSharedProjectOrgLocationId}' == '${SourceLeadWeb_orgLocations.id}')){
 	    			  result = result + ' <th><input type="checkbox" onclick="selectAllMembers();"  id="selectAllMembers" ></th>';
 	    		  }
 	    		
 	            result = result + '	 	<th>Emp Name</th>';
-	        /*     result = result + '	 	<th>Emp Email</th>';*/
-	            result = result + '	 	<th>Emp Role</th>'; 
+	        /*     result = result + '	 	<th>Emp Email</th>';
+	            result = result + '	 	<th>Emp Role</th>'; */
 	            result = result + '	     <th>Start Date<br>(<small class="custom-small">'+projectempListDate+'</small>)</th>';
 	            result = result + '	     <th>End Date<br>(<small class="custom-small">'+projectempListDate+'</small>)</th>';
 	            result = result + '	     <th>Bill Rate</th>';
@@ -351,6 +376,7 @@ function filterStatus() {
 		        		var estimatedHours = '';
 		        		var estimatedBudget = '';
 		        		
+		        		
 						if (opt.userRoleType != null && opt.userRoleType != '' && opt.userRoleType != 'undefined') {
 							role = opt.userRoleType;
 						} else {
@@ -361,36 +387,43 @@ function filterStatus() {
 		        		if(opt.projectEndDateStr != null && opt.projectEndDateStr != ''){
 		        			projectEndDateStr = opt.projectEndDateStr;
 		        		}else{
-		        			projectEndDateStr = "--"
+		        			projectEndDateStr = "-----";
+		        		}
+		        		
+		        		var projectStartDateStr = "";
+		        		if(opt.projectAssignedDateStr != null && opt.projectAssignedDateStr != ''){
+		        			projectStartDateStr = opt.projectAssignedDateStr;
+		        		}else{
+		        			projectStartDateStr = "-----";
 		        		}
 		        		
 		        		
-		        		if(opt.currentBillRate != null && opt.currentBillRate != 'undefined' && opt.currentBillRate != ''){
+		        		if(opt.currentBillRate != null && opt.currentBillRate != 'undefined'){
 		        			billRate = opt.billRateCurrency+" "+opt.currentBillRate+" /"+opt.rateType
 		        		}else{
-		        			billRate = "-----"
+		        			billRate = "-----";
 		        		}
 		        		
-		        		if(opt.payRate != null && opt.payRate != 'undefined' && opt.payRate != ''){
+		        		if(opt.payRate != null && opt.payRate != 'undefined'){
 		        			payRate = opt.payRateCurrency+" "+opt.payRate+" /"+opt.payRateType
 		        		}else{
-		        			payRate = "-----"
+		        			payRate = "-----";
 		        		}
 		        		
 		        		if(opt.estimatedHours != null && opt.estimatedHours != 'undefined' && opt.estimatedHours != ''){
 		        			estimatedHours = opt.estimatedHours;
 		        		}else{
-		        			estimatedHours = "------"
+		        			estimatedHours = "------";
 		        		}
 		        		
 		        		if(opt.estimatedBudget != null && opt.estimatedBudget != 'undefined' && opt.estimatedBudget != ''){
 		        			estimatedBudget = opt.estimatedBudget;
 		        		}else{
-		        			estimatedBudget = "------"
+		        			estimatedBudget = "------";
 		        		}
 		        		
 		        		result = result + '	 <tr>';
-		        		 if('${postedOrgLocationId}' == '${SourceLeadWeb_orgLocations.id}'){
+		        		 if(('${postedOrgLocationId}' == '${SourceLeadWeb_orgLocations.id}') || ('${postedSharedProjectOrgLocationId}' == '${SourceLeadWeb_orgLocations.id}')){
 		        			 if(opt.status == 1){
 		        				 result = result + '<td><input type="checkbox" onclick="selectedMember();"  class="projectMembersChecks" value='+opt.id+' name="projectMembers[]" ></td>';
 		        			 }else{
@@ -399,25 +432,13 @@ function filterStatus() {
 		        		 }
 		        		
 		                result = result + '	 	<td><div class="tbldata-dotdot" title="'+opt.candidateName+'"><span title="'+opt.candidateName+'">'+opt.candidateName+'</span></div></td>';
-		              /*   result = result + '	 	<td><div class="tbldata-dotdot" title="'+opt.empEmail+'"><span title="'+opt.empEmail+'">'+opt.empEmail+'</span></div></td>'; */
-		                result = result + '	 	<td><div class="tbldata-dotdot_80" title="'+role+'"><span title="'+role+'">'+role+'</span></div></td>';
-		                result = result + '	     <td><div class="tbldata-dotdot_80"><span title="'+opt.projectAssignedDateStr+'">'+opt.projectAssignedDateStr+'</span></div></td>';
+		              /*   result = result + '	 	<td><div class="tbldata-dotdot" title="'+opt.empEmail+'"><span title="'+opt.empEmail+'">'+opt.empEmail+'</span></div></td>'; 
+		                result = result + '	 	<td><div class="tbldata-dotdot_80" title="'+role+'"><span title="'+role+'">'+role+'</span></div></td>';*/
+		                result = result + '	     <td><div class="tbldata-dotdot_80"><span title="'+projectStartDateStr+'">'+projectStartDateStr+'</span></div></td>';
 		                if(status == 'COMPLETED'){
 		                	result = result + '<td><div>'+projectEndDateStr+'</div></td>';
 		                }else{
-		                	'<sec:authorize access="hasAnyRole(\'ROLE_VIEW_EDIT_PROJECT_EMPLOYEES\')">'; 
-		                	if(opt.status != null && opt.status != '' && opt.status !='undefined' && opt.status != 0){
-			                	result = result + '	     <td><div><input type="text" value="'+projectEndDateStr+'" class="project_inline_field project_inline_field_enddate" id="endDate'+opt.id+'" name = "endDate'+opt.id+'"  readonly="readonly"></div></td>';
-			                }
-			                else{
-			                	  result = result + '	     <td><div class="tbldata-dotdot_80"><span title="'+projectEndDateStr+'">'+projectEndDateStr+'</span></div></td>';
-			                }
-		                	'</sec:authorize>';
-		                	
-		                	'<sec:authorize access="!hasAnyRole(\'ROLE_VIEW_EDIT_PROJECT_EMPLOYEES\')">'; 
 		                	  result = result + '	     <td><div class="tbldata-dotdot_80"><span title="'+projectEndDateStr+'">'+projectEndDateStr+'</span></div></td>';
-	                	   '</sec:authorize>';
-		                	
 		                }
 		                
 		                result = result + '	     <td><div class="tbldata-dotdot_80"><span title="'+billRate+'">'+billRate+'</span></div></td>';
@@ -426,34 +447,53 @@ function filterStatus() {
 		                result = result + '	     <td><div class="tbldata-dotdot_80"><span title="'+estimatedBudget+'">'+estimatedBudget+'</span></div></td>';
 		                result = result + '	     <td><div class="tbldata-dotdot_80"><span title="'+opt.approvedHrs+'">'+opt.approvedHrs+'</span></div></td>';
 		                
-		                
-		                if('${postedOrgLocationId}' == '${SourceLeadWeb_orgLocations.id}' || '${isClientOrgActive}' == "N"){
+		                if('${postedOrgLocationId}' == '${SourceLeadWeb_orgLocations.id}' || '${isClientOrgActive}' == "N" || '${postedSharedProjectOrgLocationId}' == '${SourceLeadWeb_orgLocations.id}'){
 		                	
 		                	 if(opt.status != null && opt.status != '' && opt.status !='undefined' && opt.status != 0){
-				                	result = result + '	<td><div>';
+				                	result = result + '	<td><div class="tbldata-dotdot_80">';
 				                	if(status != 'COMPLETED'){
+				                		
+				                		'<sec:authorize access="hasAnyRole(\'ROLE_VIEW_EDIT_PROJECT_EMPLOYEES\')">'; 
+				                		   
+				                		 if(opt.rateHistroyList == 'Y'){
+				                			 result = result + '<span title="Payrate History"><i class="glyphicon fa fa-money" onClick="getRateTable('+opt.id+'\,\''+opt.candidateName+'\')";></i></span>&nbsp;&nbsp;';
+				                		  }  
+				                		     result = result + '<span title="Edit Employee"><i class="glyphicon glyphicon-edit" onClick="editProjectAssignedMember('+opt.id+'\,\''+opt.candidateName+'\')";></i></span>&nbsp;&nbsp;';
+				                		 '</sec:authorize>';
+				                		
 				                		'<sec:authorize access="hasAnyRole(\'ROLE_VIEW_DELETE_PROJECT_EMPLOYEES\')">'; 
-
-				                		result = result + '<span title="delete employee"><i class="glyphicon glyphicon-trash" onClick="deleteProject('+opt.id+'\,\''+projectId+'\',\''+startDateStr+'\',\''+endDateStr+'\')";></i></span>';
+				                		   result = result + '<span title="Delete Employee"><i class="glyphicon glyphicon-trash" onClick="deleteProject('+opt.id+'\,\''+projectId+'\',\''+startDateStr+'\',\''+endDateStr+'\')";></i></span>';
 				                		'</sec:authorize>';
 				                		
 				                		'<sec:authorize access="!hasAnyRole(\'ROLE_VIEW_DELETE_PROJECT_EMPLOYEES\')">'; 
-				                		result = result + '---';
+				                		      result = result + '---';
 				                		'</sec:authorize>';
 				                	}
 				                	result = result +'</div></td>';
 			                     }
 			                     else{
 			                    	 result = result + '<td><div class="tblminwidth-50">';
+			                    	 if(opt.rateHistroyList == 'Y'){
+			                			 result = result + '<span title="Edit Employee"><i class="glyphicon fa fa-money" onClick="getRateTable('+opt.id+'\,\''+opt.candidateName+'\')";></i></span>&nbsp;&nbsp;';
+			                		  } 
 			                    	 if(status != 'COMPLETED'){
 			                    		 '<sec:authorize access="hasAnyRole(\'ROLE_VIEW_DELETE_PROJECT_EMPLOYEES\',\'ROLE_ASSIGN_EMPLOYEE_TO_PROJECT\')">'; 
-			                    		    result = result + '<a  onclick="reActiveProject(\''+opt.id+'\',\''+opt.empName+'\',\''+opt.projectAssignedDateStr+'\',\''+projectEndDateStr+'\',\''+opt.endDate+'\');flushReProject()" data-target="#Re-AssignProject" data-toggle="modal">Re-Assign &nbsp;</a><span class="show-reason">';
-				                    	if(opt.terminateReason != null && opt.terminateReason != '' && opt.terminateReason != 'undefined'){
+			                    		
+			                    		 if(opt.projectMemberStatus != 'INACTIVE'){
+			                    			 result = result + '<a  onclick="reActiveProject(\''+opt.id+'\',\''+opt.empName+'\',\''+opt.projectAssignedDateStr+'\',\''+projectEndDateStr+'\',\''+opt.endDate+'\');flushReProject()" data-target="#Re-AssignProject" data-toggle="modal"><i class="fa fa-retweet" title="Re Assign"></i> &nbsp;</a>'; 
+			                    		 }
+			                    		
+			                    		 result = result + '<span class="show-reason">';
+			                    		if(opt.terminateReason != null && opt.terminateReason != '' && opt.terminateReason != 'undefined'){
 				                    		result = result + '<b class="glyphicon glyphicon-comment text-success"></b><b class="reason edit-status">'+opt.terminateReason+'</b>';
 				                    	}else{
 				                    		result = result + '';	
 				                    	}
 				                      '</sec:authorize>';
+				                      
+				                      if(opt.projectMemberStatus == 'INACTIVE' && (opt.terminateReason == null || opt.terminateReason == '' || opt.terminateReason == 'undefined')){
+				                    	  result = result + '<font color="red">&nbsp;Terminated</font>';
+				                      }
 				                      
 				                      '<sec:authorize access="!hasAnyRole(\'ROLE_VIEW_DELETE_PROJECT_EMPLOYEES\',\'ROLE_ASSIGN_EMPLOYEE_TO_PROJECT\')">'; 
 				                        result = result + '---';
@@ -467,12 +507,14 @@ function filterStatus() {
 			                     }
 		                	
 		                }else{
-		                	result = result + '<td><div class="tblminwidth-50">---</div></td>';
+		                	 result = result + '<td><div class="tblminwidth-50">';
+			                	if(opt.status != null && opt.status != '' && opt.status !='undefined' && opt.status != 0){
+			                		 result = result + '<font color="green">&nbsp;Active</font>';	 
+			                	 }else{
+			                		 result = result + '<font color="red">&nbsp;In-Active</font>';	
+			                	 }
+		                	 result = result +'</div></td>';
 		                }
-		                
-		               
-	                    	 
-		                
 		                
 		                
 		                result = result + '	 </tr>';
@@ -552,7 +594,7 @@ function filterStatus() {
 function projectEmployeePagination(){
     $('#projectEmployeePagination').DataTable( { 
     	"scrollCollapse": false,
-    	"scrollX": true,
+    	"scrollX": false,
     	"lengthMenu": [[10, 15, 20, -1], [10, 15, 20, "All"]],
     	"bLengthChange": true,
     	"bDestroy": true,
@@ -561,7 +603,8 @@ function projectEmployeePagination(){
      		"sSearch": "",
      		 "sZeroRecords": "", "sEmptyTable": ""
      	}
-    } );
+    });
+    $('#projectEmployeePagination').wrap("<div style='overflow-x: auto; overflow-y: hidden;'></div>");
 }
 </script>
 
@@ -597,6 +640,523 @@ function inlineEditForEndDate(id,projectMemberId){
 	 });  
 }
 </script>
+
+
+<script>
+function getRateTable(projectMemberId,candidateName){
+	$("#projectMemberDetailsPopUp").empty();
+	var sourceleadUrl = '${sourceleadUrl}';
+	 $.ajax({
+		   	type: "POST",
+		    url: sourceleadUrl+"/getProjectMemberRateTablesList?${_csrf.parameterName}=${_csrf.token}&projectMemberId="+projectMemberId,
+		    success: function(data) {
+		    	
+		    	  var result = "";
+		    	  
+		    	  result = result +' <div class="project_inn_mask"></div>'; 
+		    	  result = result +' <div id="edit_member_pop" class="member_rate_history_pop">';
+		    	  
+		    	  result = result +' <div class="row">';
+		    	  result = result +" <p class='col-md-10'>Emp Name : <strong>"+candidateName+"</strong></p>";
+		    	  result = result + '<p class="col-md-2"><i class="pull-right fa fa-times text-danger pull-right cursorPointer"  onClick="closerateHistorydiv();"></i></p>';
+		    	  result = result +' </div>';
+		    	  
+		    	  result = result + '<section class="tbl-scroll project_tabs_inn_table">';
+  			      result = result + '  <table>';
+                  result = result + '    <thead>';
+                  result = result + '      <tr>';
+                  result = result + '        <th>Pay Start Date</th>';
+                  result = result + '        <th>Pay End Date</th>';
+                  result = result + '        <th>Pay Rate</th>';
+                  result = result + '        <th>Bill Start Date</th>';
+                  result = result + '        <th>Bill End Date</th>';
+                  result = result + '        <th>Bill Rate</th>';
+                  result = result + '        <th>Created By</th>';
+                  result = result + '      </tr>';
+                  result = result + '    </thead>';
+                  result = result + '    <tbody>';
+                  
+                 
+                  for (var i=0; i<data.length; i++){
+                	 
+                	  var history = data[i];
+                	  var payRate = '';
+                	  var billRate = '';
+                	  var billStartDate = '';
+                	  var billEndDate = '';
+                	  var payStartDate = '';
+                	  var payEndDate = '';
+                	  
+                	  if(history.payRate != null){
+                		  payRate = history.payRateCurrency+" "+history.payRate+"/ "+history.payRateType;
+                	  }else{
+                		  payRate = "------"
+                	  }
+                	  
+                	  if(history.billRate != null){
+                		  billRate = history.billRateCurrency+" "+history.billRate+"/ "+history.billRateType;
+                	  }else{
+                		  billRate = "------"
+                	  }
+                	  
+                	  if(history.payRateStartDate != null){
+                		  payStartDate = history.payRateStartDate;
+                	  }else{
+                		  payStartDate = "------"
+                	  }
+                	  
+                	  if(history.payRateEndDate != null){
+                		  payEndDate = history.payRateEndDate;
+                	  }else{
+                		  payEndDate = "------"
+                	  }
+                	  
+                	  if(history.billRateStartDate != null){
+                		  billStartDate = history.billRateStartDate;
+                	  }else{
+                		  billStartDate = "------"
+                	  }
+                	  
+                	  if(history.billRateEndDate != null){
+                		 billEndDate = history.billRateEndDate;
+                	  }else{
+                		  billEndDate = "------"
+                	  }
+                	  
+                	  result = result + '<tr class="redtxt">';
+                	  result = result + ' <td><div class="tblminwidth-80">'+payStartDate+'</div></td>';
+                	  result = result + ' <td><div class="tblminwidth-80">'+payEndDate+'</div></td>';
+                	  result = result + ' <td><div class="tblminwidth-80">'+payRate+'</div></td>';
+                	  result = result + ' <td><div class="tblminwidth-80">'+billStartDate+'</div></td>';
+                	  result = result + ' <td><div class="tblminwidth-80">'+billEndDate+'</div></td>';
+                	  result = result + ' <td><div class="tblminwidth-80">'+billRate+'</div></td>';
+                	  result = result + ' <td><div class="tblminwidth-80">'+history.createdBy+'</div></td>'; 
+                	  result = result + '</tr>'; 
+                  }
+                	  
+                  
+                  result = result + '    </tbody>';
+                  result = result + '  </table>';
+                  result = result + '</section>'
+                  
+              	 $("#projectMemberRateHistoryPopUp").append(result);
+                 $("#edit_member_pop").slideDown(200);
+                 $(".project_inn_mask").fadeIn(200); 
+		    }
+	     });
+}
+
+function closerateHistorydiv(){
+	 $("#projectMemberRateHistoryPopUp").empty();
+	 $(".project_inn_mask").fadeOut(200);
+}
+</script>
+
+
+<script>
+function editProjectAssignedMember(projectMemberId,candidateName){
+	var sourceleadUrl = '${sourceleadUrl}';
+	 $.ajax({
+		   	type: "POST",
+		    url: sourceleadUrl+"/editProjectAssignedProjectMember?${_csrf.parameterName}=${_csrf.token}&projectMemberId="+projectMemberId,
+		    success: function(data) {
+		    	loadProjectMembersDetails(data,candidateName);
+		    }
+	     });
+}
+
+
+
+function loadProjectMembersDetails(data,candidateName){
+	  $("#projectMemberRateHistoryPopUp").empty();
+	  var locationDate ='${SourceLeadWeb_orgLocations.dateFormat}'; 
+	  var finalDateFormatAssignEmpUpdate = '';
+	  if(locationDate.match("yyyy-MM-dd")){
+		  finalDateFormatAssignEmpUpdate = 'yy-mm-dd';
+	  }if(locationDate.match("dd-MM-yyyy")){
+		  finalDateFormatAssignEmpUpdate = 'dd-mm-yy'; 
+	  }if(locationDate.match("MM-dd-yyyy")){
+		  finalDateFormatAssignEmpUpdate = 'mm-dd-yy'; 
+	  }if(locationDate.match("yyyy-dd-MM")){
+		  finalDateFormatAssignEmpUpdate = 'yy-dd-mm'; 
+	  }
+	
+	var payrate = '';
+    var billrate = '';
+    var projectStartDate = '';
+    var projectEndDate = '';
+    var estHours = '';
+    var estBudget = '';
+    
+    var payRateEstdDate = '';
+    var billRateEstdDate = '';
+    
+    if(data.payRate != null && data.payRate != 'undefined'){
+    	payrate = data.payRate;
+    }
+    
+    if(data.billRate != null  && data.billRate != 'undefined'){
+    	billrate = data.billRate;
+    }
+    
+    if(data.projectStartDate != null && data.projectStartDate != '' && data.projectStartDate != 'undefined'){
+    	projectStartDate = data.projectStartDate;
+    }
+    
+    if(data.projectEndDate != null && data.projectEndDate != '' && data.projectEndDate != 'undefined'){
+    	projectEndDate = data.projectEndDate;
+    }
+    
+    if(data.estHours != null && data.estHours != '' && data.estHours != 'undefined'){
+    	estHours = data.estHours;
+    }
+    
+    if(data.estBudget != null && data.estBudget != '' && data.estBudget != 'undefined'){
+    	estBudget = data.estBudget;
+    }
+    
+    if(data.payRateEstimatedDate != null && data.payRateEstimatedDate != '' && data.payRateEstimatedDate != 'undefined'){
+    	payRateEstdDate = data.payRateEstimatedDate;
+    }
+    
+    if(data.billRateEstimatedDate != null && data.billRateEstimatedDate != '' && data.billRateEstimatedDate != 'undefined'){
+    	billRateEstdDate = data.billRateEstimatedDate;
+    }
+	
+	var result = "";
+	result = result +"	<div class='project_inn_mask'></div>"; 
+	
+	result = result +" <div id='edit_member_pop' class='edit_member_pop'>";
+	result = result +"	<h4>Edit Team Member</h4>";
+	result = result +"	<p>Emp Name : <strong>"+candidateName+"</strong></p>";
+	result = result + '<div class="form-horizontal clearfix">';
+	result = result + '<form id="editProjectMemberform" name="editProjectMemberform">';
+	result = result +" <div id='editMemberLoading'></div>"; 
+	result = result + '<input type="hidden" id="projectMemberId" name="projectMemberId" value="'+data.projectMemberId+'">';
+	
+	
+	result = result + '<div class="clearfix mb10 row mt">';
+	
+	result = result + '<div class="col-md-8 paddingRight">';
+	result = result + '<div class="row">';
+	result = result + '<label class="clearfix col-md-12">Pay Rate<span class="text-danger">&nbsp;*</span></label>';
+	
+	result = result + '<div class="col-md-3 padding_right dropdown-select drpdownCurrency">';
+	result = result + '<select id="payRateCurrency" name="payRateCurrency">';
+	result = result + '<option value="INR">INR</option>';
+	result = result + '<option value="AUD">AUD</option>';
+	result = result + '<option value="USD">USD</option>';
+	result = result + '<option value="GBP">GBP</option>';
+	result = result + '<option value="SGD">SGD</option>';
+	result = result + '<option value="EUR">EUR</option>';
+	result = result + '</select>';
+	result = result + '</div>';
+	
+	result = result + '<div class="col-md-4 padding_right padding_left inputRate">';
+	result = result + '<input class="form-control" type="text" id="payRate" name="payRate" value = "'+payrate+'" field-name="Pay Rate" data-validation="required validate_Space validate_float validate_length length1-15">';
+	result = result + '</div>';
+	
+	result = result + '<div class="col-md-5 padding_left drpdownMonthly dropdown-select">';
+	result = result + '<select id="payRateRateType" name="payRateRateType">';
+	result = result + '<option value="Hourly">Hourly</option>';
+	result = result + '<option value="Weekly">Weekly</option>';
+	result = result + '<option value="Bi-weekly">Bi-weekly</option>';
+	result = result + '<option value="Semi-Monthly">Semi-Monthly</option>';
+	result = result + '<option value="Monthly">Monthly</option>';
+	result = result + '<option value="Bi-Monthly">Bi-Monthly</option>';
+	result = result + '<option value="Yearly">Yearly</option>';
+	result = result + '</select>';
+	result = result + '</div>';
+	result = result + '</div>';
+	result = result + '</div>';
+	
+	
+	result = result + '<div class="col-md-4 paddingLeft" id="payRateEstdDiv">';
+	result = result + '<label class="clearfix">Estimated Date<span class="text-danger">&nbsp;*</span></label>';
+	result = result + '<div class="padding_right padding_left inputRate">';
+	result = result + '<input type="text" class="form-control calendar"  id="payRateEstimatedDate" value="'+payRateEstdDate+'"  readonly name="payRateEstimatedDate" field-name="Estd Date"  data-validation="required">';
+	result = result + '</div>';
+	result = result + '</div>';
+	
+	result = result + '</div>';
+	
+	result = result + '<div class="clearfix mb10 row mt">';
+	
+	result = result + '<div class="col-md-8 paddingRight">';
+	result = result + '<div class="row">';
+	result = result + '<label class="clearfix col-md-12">Bill Rate<span class="text-danger">&nbsp;*</span></label>';
+	result = result + '<div class="col-md-3 padding_right dropdown-select drpdownCurrency">';
+	result = result + '<select id="billRateCurrency" name="billRateCurrency">';
+	result = result + '<option value="INR">INR</option>';
+	result = result + '<option value="AUD">AUD</option>';
+	result = result + '<option value="USD">USD</option>';
+	result = result + '<option value="GBP">GBP</option>';
+	result = result + '<option value="SGD">SGD</option>';
+	result = result + '<option value="EUR">EUR</option>';
+	result = result + '</select>';
+	result = result + '</div>';
+	
+	result = result + '<div class="col-md-4 padding_right padding_left inputRate">';
+	result = result + '<input class="form-control" type="text" id="billRate" name="billRate" value = "'+billrate+'" field-name="Bill Rate"  data-validation="required validate_Space validate_float validate_length length1-15">';
+	result = result + '</div>';
+	
+	result = result + '<div class="col-md-5 padding_left drpdownMonthly dropdown-select">';
+	result = result + '<select id="billRateRateType" name="billRateRateType">';
+	result = result + '<option value="Hourly">Hourly</option>';
+	result = result + '<option value="Weekly">Weekly</option>';
+	result = result + '<option value="Bi-weekly">Bi-weekly</option>';
+	result = result + '<option value="Semi-Monthly">Semi-Monthly</option>';
+	result = result + '<option value="Monthly">Monthly</option>';
+	result = result + '<option value="Bi-Monthly">Bi-Monthly</option>';
+	result = result + '<option value="Yearly">Yearly</option>';
+	result = result + '</select>';
+	result = result + '</div>';
+	result = result + '</div>';
+	result = result + '</div>';
+	
+	
+	result = result + '<div class="col-md-4 paddingLeft" id="billRateEstdDiv">';
+	result = result + '<label class="clearfix">Estimated Date<span class="text-danger">&nbsp;*</span></label>';
+	result = result + '<div class="padding_right padding_left inputRate">';
+	result = result + '<input type="text" class="form-control calendar"  id="billRateEstimatedDate" value="'+billRateEstdDate+'" placeholder="" readonly name="billRateEstimatedDate" field-name="Estd Date"  data-validation="required">';
+	result = result + '</div>';
+	result = result + '</div>';
+	
+	result = result + '</div>';
+	
+	result = result + '	    <div class="row">';
+	
+	result = result + '	    <div class="col-md-6 mb10" id="startDateDiv">';
+	result = result + '	      <label class="clearfix">Start Date<span class="text-danger">&nbsp;*</span></label>';
+	result = result + '	      <div class="">';
+	result = result + '	        <input type="text" class="form-control input-sm calendar" value="'+projectStartDate+'" readonly id="projectStartDate"  name="memberStartDate" field-name="Start Date"  data-validation="required">';
+	result = result + '	      </div>';
+	result = result + '	    </div>';
+	
+	result = result + '	    <div class="col-md-6 mb10" id="endDateDiv">';
+	result = result + '	      <label class="clearfix">End Date</label>';
+	result = result + '	      <div class="">';
+	result = result + '	        <input type="text" class="form-control input-sm calendar"  value="'+projectEndDate+'" id="projectEndDate" readonly name="memberEndDate" field-name="End Date"  data-validation-optional="true">';
+	result = result + '	      </div>';
+	result = result + '	    </div>';
+	
+	result = result + '	    </div>';
+	
+	result = result + '	    <div class="row">';
+	
+	result = result + '	    <div class="clearfix mb10 col-md-6">';
+	result = result + '	      <label class="clearfix">Estimated Hours</label>';
+	result = result + '	      <div class="">';
+	result = result + '	        <input type="text" class="form-control inlineField"  id="estHours" value="'+estHours+'" name="estHours" field-name="Estimated Hours"  data-validation-optional="true" data-validation="validate_Space validate_int">';
+	result = result + '	      </div>';
+	result = result + '	    </div>';
+	
+	result = result + '	    <div class="clearfix mb10 col-md-6">';
+	result = result + '	      <label class="clearfix">Estimated Budget</label>';
+	result = result + '	      <div class="">';
+	result = result + '	        <input type="text" class="form-control inlineField"  id="estBudget" value="'+estBudget+'"  name="estBudget" field-name="Estimated Budget"  data-validation-optional="true" data-validation="validate_Space validate_int">';
+	result = result + '	      </div>';
+	result = result + '	    </div>';
+	result = result + '	    </div>';
+	
+	
+	result = result + ' <div id="reasonForProjectDiv" class="footerBtns">';
+	result = result +'		<b href="javascript:void(0)"><input id="confirm-id" type="button" value="Update" onclick="updateProjectMember();"><input class="u_can_color" type="button"  value="Cancel" onClick="cancelEditProjectMember();"></b>';
+	result = result +"	</div>";
+	result = result +"	</div>";
+	
+	result = result + '</form>';
+	
+	$("#projectMemberDetailsPopUp").append(result);
+	$("#edit_member_pop").slideDown(200);
+	$(".project_inn_mask").fadeIn(200); 
+	
+	
+	if(data.billRateCurrency != null && data.billRateCurrency != '' && data.billRateCurrency != 'undefined'){
+		$('#billRateCurrency').val(data.billRateCurrency);
+	}else{
+		$('#billRateCurrency').val('${SourceLeadWeb_currencyCode}');
+	}
+	
+	if(data.billRateRateType != null && data.billRateRateType != '' && data.billRateRateType != 'undefined'){
+		$('#billRateRateType').val(data.billRateRateType);
+	}
+	
+	
+	if(data.payRateCurrency != null && data.payRateCurrency != '' && data.payRateCurrency != 'undefined'){
+		$('#payRateCurrency').val(data.payRateCurrency);
+	}else{
+		$('#payRateCurrency').val('${SourceLeadWeb_currencyCode}');
+	}
+	
+	if(data.payRateRateType != null && data.payRateRateType != '' && data.payRateRateType != 'undefined'){
+		$('#payRateRateType').val(data.payRateRateType);
+	}
+	
+	  if(data.projectStartDate == null || data.projectStartDate == '' || data.projectStartDate == 'undefined'){	
+			$("#projectStartDate").datepicker({
+				dateFormat : finalDateFormatAssignEmpUpdate,
+				changeMonth: true,
+				changeYear: true, 
+				minDate:projectStartDate,
+		        onClose : function(selected) {
+		        	var dt = $(this).datepicker('getDate', '+1d');
+					$("#projectStartDate").datepicker("option", "minDate", dt);
+					removeStartDateValidation();
+					getEstimatedHours();
+				}
+			});
+	  }
+	  
+	  if(data.memberEndDate != null && data.memberEndDate != "" && data.memberEndDate != "undefined"){
+		  $("#projectEndDate").datepicker({
+				dateFormat : finalDateFormatAssignEmpUpdate,
+				changeMonth: true,
+				changeYear: true, 
+				maxDate:data.memberEndDate,
+				minDate: projectStartDate,
+		        onClose : function(selected) {
+// 		        	 var dt = $(this).datepicker('getDate', '-1d');
+// 						$("#projectEndDate").datepicker("option", "maxDate", dt);
+						removeEndDateValidation();
+						getEstimatedHours();
+				}
+			});
+	  }else{
+			  $("#projectEndDate").datepicker({
+					dateFormat : finalDateFormatAssignEmpUpdate,
+					changeMonth: true,
+					changeYear: true, 
+					minDate: projectStartDate,
+			        onClose : function(selected) {
+//	 		        	if(projectEndDate != null && projectEndDate != "" && projectEndDate != "undefined"){
+//	 		        		var dt = $(this).datepicker('getDate', '-1d');
+//	 	 						$("#projectEndDate").datepicker("option", "maxDate", dt);
+//	 		        	}
+						removeEndDateValidation();
+						getEstimatedHours();
+					}
+				});
+		
+	  } 
+		
+		
+		$("#billRateEstimatedDate").datepicker({
+			dateFormat : finalDateFormatAssignEmpUpdate,
+			changeMonth: true,
+			changeYear: true, 
+	        onClose : function(selected) {
+	        	removebillRateEstdValidation();
+			}
+		});
+		
+		$("#payRateEstimatedDate").datepicker({
+			dateFormat : finalDateFormatAssignEmpUpdate,
+			changeMonth: true,
+			changeYear: true, 
+	        onClose : function(selected) {
+	        	removePayRateEstdValidation();
+			}
+		});
+		
+		
+		
+	
+}
+
+function removeStartDateValidation(rowId){
+	$('#startDateDiv').find('p.jquery_form_error_message').remove();
+}
+
+function removeEndDateValidation(rowId){
+	$('#endDateDiv').find('p.jquery_form_error_message').remove();
+}
+
+function removebillRateEstdValidation(rowId){
+	$('#billRateEstdDiv').find('p.jquery_form_error_message').remove();
+}
+
+function removePayRateEstdValidation(rowId){
+	$('#payRateEstdDiv').find('p.jquery_form_error_message').remove();
+}
+
+
+
+
+function cancelEditProjectMember(){
+	$("#projectMemberDetailsPopUp").empty();
+	 $(".project_inn_mask").fadeOut(200);
+	 $(".vendor_wrap_mask").fadeOut(200);
+}
+
+
+
+function getEstimatedHours(){
+	var startDate = document.getElementById("projectStartDate").value;
+	var endDate = document.getElementById("projectEndDate").value;
+	var locationId = '${SourceLeadWeb_orgLocationId}';
+	if(startDate && endDate){
+		 var sourceleadUrl ='${sourceleadUrl}';
+		 var averageWorkingHours = '${SourceLeadWeb_orgLocations.averageWorkingHours}';
+		 $("#editMemberLoading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
+		 $.ajax({
+		    	type: "GET",
+		        url: sourceleadUrl+"/getEstimatedHoursForResourceRequest?${_csrf.parameterName}=${_csrf.token}&startDate="+startDate+"&endDate="+endDate+"&averageWorkingHours="+averageWorkingHours+"&locationId="+locationId, 
+		        success: function(estimatedHours) {
+		        	
+		        	$('#estHours').val(estimatedHours);
+		        	 $("#editMemberLoading").removeAttr("style"); 
+		        	
+		        }
+		        
+		 });
+	}
+}
+
+</script>
+
+
+<script>
+function updateProjectMember(){
+	
+	 var validationSettings = {
+				errorMessagePosition : 'element',
+				borderColorOnError : '',
+				scrollToTopOnError : true,
+			}; 
+		
+		 if ($('#editProjectMemberform').validate(false, validationSettings)) {
+				 var sourceleadUrl = '${sourceleadUrl}';
+				 var formData = getFormData("editProjectMemberform");
+				
+				 var projectUUID = '${projectUUID}';
+				 var projectClientUUID = '${projectClientUUID}';
+				 
+				 
+				 $("#editMemberLoading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
+			 	 $.ajax({
+							type : "POST",
+							data :formData,
+							url : sourceleadUrl+"/updateProjectMemberDetails?${_csrf.parameterName}=${_csrf.token}",
+							success : function(result) {
+							
+								location.replace(sourceleadUrl+"/projectSummary?projectUUID="+projectUUID+"&projectClientUUID="+projectClientUUID+"&tabType=team");
+							},
+						}); 
+				return true;
+			} else {
+				return false;
+			}
+	}
+	$('body').on('blur', '#editProjectMemberform', function() {
+		$("#editProjectMemberform").showHelpOnFocus();;
+		$("#editProjectMemberform").validateOnBlur(false, validationSettings);  
+	}); 
+</script>
+
+
+
+
 
 <!-- this script is for Employee Terminate functionality at Projects screen -->
 <script>
@@ -1019,3 +1579,119 @@ function toDate(selector) {
 			dateFormat : 'yyyy/mm/dd' 
             };
 </script>  
+
+
+<!-- ----------------------------Filter Script By Laxman -------------------------------------- -->
+<script>
+function closeFilterTeamPop(){
+	$("div.cand-advsrch-popup").hide();
+	$(".advancedsearch-mask").fadeOut();
+}
+function openFilterTeamPop(){
+	 $("#teamFilterPopup").toggle();
+	 $(".advancedsearch-mask").fadeIn();
+}
+</script>
+
+
+<div class="cand-advsrch-popup advancedsearch-popup filterDynamic-Search-small" id="teamFilterPopup">
+				<h5 class="headerAdsrch">Filter Search
+					<a href="javascript:void(0)" class="close-div" onClick="closeFilterTaskPop()"><i
+						class="fa fa-close"></i></a>
+				</h5>
+				<div class="addInner">
+					<div class="row">
+						<div class="col-md-3">
+						<div class="row">
+						   <div class="col-md-12 mb">
+							  <label><strong>Status</strong></label>
+								 <div class="clearfix">
+									<ul class="list-unstyled" id="StatusFilter">
+										 <li class="checkBox positionRelative"><input id="c6" type="checkbox"   name="employeeStatus" value ="Active" ><label for="c6">Active</label></li>     
+										 <li class="checkBox positionRelative"><input id="c7" name="employeeStatus" type="checkbox" value ="In-Active" ><label for="c7">In-Active</label></li>
+			                        </ul>
+								 </div>
+							 </div>
+							 </div>
+							 </div> 
+							 
+							 <div class="col-md-4 positionRelative">
+								<div class="clearfix dynamic_search filterDynamicsearch">
+									<input type="text" id="myRolesInput" onkeyup="myRolesFunction()" placeholder="Roles" title="Type in a roles">
+									<span class="cursorPointer" title="Search"><i class="fa fa-search"></i></span>
+								</div>
+								 <div class="clearfix filterSearch-ul">
+									<ul class="list-unstyled positionRelative filterSearch mt5" id="myRolesUL">
+									<c:forEach var="roles" items="${rolesList}">  
+										<li class="checkBox positionRelative"><input  id="roleName${report.id}" name="roleName" value ="${roles.id}"   type="checkbox"><label for="roleName${roles.id}">${roles.displayName}</label></li>
+									  </c:forEach>
+									</ul>
+								 </div> 
+							</div>
+							
+							<div class="col-md-4 mb positionRelative">
+									<div class="clearfix dynamic_search filterDynamicsearch">
+										<input type="text" id="myTeamInput" onkeyup="myTeamFunction()" placeholder="Team" title="Type in a managers">
+										<span class="cursorPointer" title="Search"><i class="fa fa-search"></i></span>
+									</div>
+									 <div class="clearfix filterSearch-ul">
+										<ul class="list-unstyled positionRelative filterSearch mt5" id="myTeamUL">
+										<c:forEach var="team" items="${teamList}"> 
+										<li class="checkBox positionRelative clearfix"><input value="${team.id}" name="teams"  type="checkbox" ><label>${team.name}</label></li>
+										</c:forEach>
+										</ul>
+									 </div> 
+							 </div>
+							 
+					</div>
+					</div>
+					<div class="clearfix advancedsearch-footer">
+						<div class="pull-right mr">
+							<input type="button" value="Apply" id="search_requiremet" onclick="closeFilterTeamPop();getFilterEmployeeDetails();" class="btn btn-sm btn-success" />
+							<input type="button" value="Reset" id="clear_search" onclick="resetPorjectTeamFilter();" class="btn btn-sm btn-primary" />
+						</div>
+					</div>
+	  </div>
+	   
+<script>
+function resetPorjectTeamFilter(){
+	$("ul#StatusFilter > li input:checkbox").prop("checked",false);
+	$("ul#myRolesUL > li input:checkbox").prop("checked",false);
+	$("ul#myTeamUL > li input:checkbox").prop("checked",false);
+	
+	getFilterEmployeeDetails();
+}
+function myRolesFunction() {
+    var input, filter, ul, li, a, i;
+    input = document.getElementById("myRolesInput");
+    filter = input.value.toUpperCase();
+    ul = document.getElementById("myRolesUL");
+    li = ul.getElementsByTagName("li");
+    for (i = 0; i < li.length; i++) {
+        a = li[i].getElementsByTagName("label")[0];
+        if (a.innerHTML.toUpperCase().indexOf(filter) > -1) {
+            li[i].style.display = "";
+        } else {
+            li[i].style.display = "none";
+
+        }
+    }
+}
+
+function myTeamFunction() {
+    var input, filter, ul, li, a, i;
+    input = document.getElementById("myTeamInput");
+    filter = input.value.toUpperCase();
+    ul = document.getElementById("myTeamUL");
+    li = ul.getElementsByTagName("li");
+    for (i = 0; i < li.length; i++) {
+        a = li[i].getElementsByTagName("label")[0];
+        if (a.innerHTML.toUpperCase().indexOf(filter) > -1) {
+            li[i].style.display = "";
+        } else {
+            li[i].style.display = "none";
+
+        }
+    }
+}
+</script>

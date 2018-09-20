@@ -16,6 +16,14 @@
 	  </div>
 </div>
 
+	
+<script>
+  $(document).ready(function () {
+	  if('${AWKWARD}' == "true"){
+		   window.location.href =  "/errorPage";
+	  }
+	});
+</script>
 <script>
 	function timesheetEntriesDivByProjectMemberId(){ 
 	               var sourceleadUrl ='${SourceLeadWeb_sourceleadUrl}';
@@ -29,6 +37,7 @@
 	        		    	  $("#timesheetEntriesDivByProjectMemberId").append(data);
 	        		    	  $("#loadTime").removeAttr('style');
 	        		    	  prepareChosenScripts();
+	        		    	  setTotals();
 	        		      }
 	        	    }); 
 	}

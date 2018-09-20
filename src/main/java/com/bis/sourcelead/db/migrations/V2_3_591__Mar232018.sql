@@ -1,0 +1,4 @@
+SET SQL_SAFE_UPDATES=0;
+UPDATE `EMAIL_SCENARIO` SET `BODY`='{{connectionInvitation.loginUserName}} invited you to connect' WHERE `UNIQUE_SCENARIO_NAME`='connectionInvitation' AND `ENTITY_TYPE`='Notification';
+UPDATE `EMAIL_SCENARIO` SET `BODY`='Dear {{ShareRecomendedApplicant.candidateName}},\n\n  We have an excellent opportunity that matches your skills. Please find the details below.\n\n  Job Name : {{ShareRecomendedApplicant.jobName}} \n\n  Job Location : {{ShareRecomendedApplicant.jobLocation}} \n\n  Experience : {{ShareRecomendedApplicant.jobExperience}} \r \r  Rate : {{ShareRecomendedApplicant.jobRate}} \n\n  Job Description : {{ShareRecomendedApplicant.jobDescription}} \n\n   {{ShareRecomendedApplicant.viewJobLink}} \n ' WHERE `UNIQUE_SCENARIO_NAME`='Share Recomended Applicant' AND `ENTITY_TYPE`='Email';
+SET SQL_SAFE_UPDATES=1; 

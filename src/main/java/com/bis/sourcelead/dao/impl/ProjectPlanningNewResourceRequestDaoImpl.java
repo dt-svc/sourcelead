@@ -58,7 +58,7 @@ private static final Logger logger = LoggerFactory.getLogger(ProjectPlanningNewR
 		String query = "select resourceRequest.id from ProjectPlanningNewResourceRequest resourceRequest where resourceRequest.projectPlanningRequestId.id = :projectPlanningRequestId ";
 		@SuppressWarnings("unchecked")
 		List<Long> lineItemsIdsList =  session.createQuery(query.toString()).setLong("projectPlanningRequestId", projectPlanningRequestId)
-									.setCacheable(true).list();
+									.list();
 		
 		return lineItemsIdsList;
 	}
@@ -86,7 +86,7 @@ private static final Logger logger = LoggerFactory.getLogger(ProjectPlanningNewR
 		Session session = this.sessionFactory.getCurrentSession();
 		String query = "from ProjectPlanningNewResourceRequest resourceRequest left join fetch resourceRequest.projectPlanningRequestId "
 				+ " where resourceRequest.id = :id and resourceRequest.status = '1' ";  
-		List<ProjectPlanningNewResourceRequest> projectPlanningNewResourceRequestList = session.createQuery(query).setLong("id", id).setCacheable(true).list();
+		List<ProjectPlanningNewResourceRequest> projectPlanningNewResourceRequestList = session.createQuery(query).setLong("id", id).list();
 		ProjectPlanningNewResourceRequest projectPlanningNewResourceRequest = null;
 		if(projectPlanningNewResourceRequestList != null && !projectPlanningNewResourceRequestList.isEmpty()){
 			projectPlanningNewResourceRequest = projectPlanningNewResourceRequestList.iterator().next();
@@ -117,7 +117,7 @@ private static final Logger logger = LoggerFactory.getLogger(ProjectPlanningNewR
 	public ProjectPlanningNewResourceRequest getProjectPlanningNewResourceRequestByRequestUUID(String requestUUID) throws Exception {
 		Session session = this.sessionFactory.getCurrentSession();
 		String query = "from ProjectPlanningNewResourceRequest resourceRequest left join fetch resourceRequest.projectPlanningRequestId  where resourceRequest.requestUUID = :requestUUID and resourceRequest.status = '1' ";  
-		List<ProjectPlanningNewResourceRequest> newResourceRequestList = session.createQuery(query).setString("requestUUID", requestUUID).setCacheable(true).list();
+		List<ProjectPlanningNewResourceRequest> newResourceRequestList = session.createQuery(query).setString("requestUUID", requestUUID).list();
 		ProjectPlanningNewResourceRequest projectPlanningNewResourceRequest = null;
 		if(newResourceRequestList != null && !newResourceRequestList.isEmpty()){
 			projectPlanningNewResourceRequest = newResourceRequestList.iterator().next();
@@ -166,10 +166,10 @@ private static final Logger logger = LoggerFactory.getLogger(ProjectPlanningNewR
 			
 			queryObj.setFirstResult(resourceRequestDTO.getStart());
 			queryObj.setMaxResults(resourceRequestDTO.getLength());
-			queryObj.setLong("approverUserId", approverUserId).setLong("orgLocationId", orgLocationId).setString("resourceStatus", resourceRequestDTO.getResourceStatus()).setCacheable(true).list();
+			queryObj.setLong("approverUserId", approverUserId).setLong("orgLocationId", orgLocationId).setString("resourceStatus", resourceRequestDTO.getResourceStatus()).list();
 			resourceRequestList= queryObj.list();
 			
-			countlist = session.createQuery("select count(*) " + query).setLong("approverUserId", approverUserId).setLong("orgLocationId", orgLocationId).setString("resourceStatus", resourceRequestDTO.getResourceStatus()).setCacheable(true).list();
+			countlist = session.createQuery("select count(*) " + query).setLong("approverUserId", approverUserId).setLong("orgLocationId", orgLocationId).setString("resourceStatus", resourceRequestDTO.getResourceStatus()).list();
 			if(query1.toString() != null && !query1.toString().isEmpty()){
 				filterCount = resourceRequestList.size();
 			}
@@ -187,10 +187,10 @@ private static final Logger logger = LoggerFactory.getLogger(ProjectPlanningNewR
 			
 			queryObj.setFirstResult(resourceRequestDTO.getStart());
 			queryObj.setMaxResults(resourceRequestDTO.getLength());
-			queryObj.setLong("orgLocationId", orgLocationId).setString("resourceStatus", resourceRequestDTO.getResourceStatus()).setCacheable(true).list();
+			queryObj.setLong("orgLocationId", orgLocationId).setString("resourceStatus", resourceRequestDTO.getResourceStatus()).list();
 			resourceRequestList = queryObj.list();
 			
-			countlist = session.createQuery("select count(*) " + query).setLong("orgLocationId", orgLocationId).setString("resourceStatus", resourceRequestDTO.getResourceStatus()).setCacheable(true).list();
+			countlist = session.createQuery("select count(*) " + query).setLong("orgLocationId", orgLocationId).setString("resourceStatus", resourceRequestDTO.getResourceStatus()).list();
 			if(query1.toString() != null && !query1.toString().isEmpty()){
 				filterCount = resourceRequestList.size();
 			}
@@ -229,6 +229,7 @@ private static final Logger logger = LoggerFactory.getLogger(ProjectPlanningNewR
   				requestDTO.setRequestUUID(resourceRequest.getRequestUUID());
   				requestDTO.setRejectedReason(resourceRequest.getRejectedReason());
   				requestDTO.setProjectPlanningRequestUUID(resourceRequest.getProjectPlanningRequestId().getRequestUUID());
+  				requestDTO.setApprovedUser(resourceRequest.getUpdatedBy().getFullName());
   				
   				ProjectClients pc = projectClientDao.getProjectClientsByProjectIdAndOrgLocationId(resourceRequest.getProjectPlanningRequestId().getProjectId().getId(), orgLocationId);
   				if(pc != null) {
@@ -256,13 +257,13 @@ private static final Logger logger = LoggerFactory.getLogger(ProjectPlanningNewR
 			String query = "from ProjectPlanningNewResourceRequest resourceRequest  "
 					+ " where resourceRequest.projectPlanningRequestId.approverUser.id = :approverUserId and resourceRequest.projectPlanningRequestId.orgLocationId.id = :orgLocationId "
 					+ " and resourceRequest.status = '1' and resourceRequest.projectPlanningRequestId.requestType = 'New Request' ";
-			projectPlanningNewResourceRequestList =  session.createQuery(query.toString()).setLong("approverUserId", approverUserId).setLong("orgLocationId", orgLocationId).setCacheable(true).list();
+			projectPlanningNewResourceRequestList =  session.createQuery(query.toString()).setLong("approverUserId", approverUserId).setLong("orgLocationId", orgLocationId).list();
 			
 		}else {
 			String query = "from ProjectPlanningNewResourceRequest resourceRequest  "
 					+ " where  resourceRequest.projectPlanningRequestId.orgLocationId.id = :orgLocationId "
 					+ " and resourceRequest.status = '1' and resourceRequest.projectPlanningRequestId.requestType = 'New Request' ";
-			projectPlanningNewResourceRequestList =  session.createQuery(query.toString()).setLong("orgLocationId", orgLocationId).setCacheable(true).list();
+			projectPlanningNewResourceRequestList =  session.createQuery(query.toString()).setLong("orgLocationId", orgLocationId).list();
 			
 		}
 		

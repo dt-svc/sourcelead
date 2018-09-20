@@ -4,14 +4,18 @@ import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.springframework.web.multipart.MultipartFile;
 
 import com.bis.sourcelead.dao.OrgDao;
 import com.bis.sourcelead.dao.OrgLocationsDao;
+import com.bis.sourcelead.dto.CompanyRegistrationDTO;
+import com.bis.sourcelead.dto.FileInfo;
+import com.bis.sourcelead.dto.OrgDTO;
+import com.bis.sourcelead.dto.PaymentAccountDTO;
+import com.bis.sourcelead.dto.ResponseList;
 import com.bis.sourcelead.dto.UserDTO;
 import com.bis.sourcelead.entity.Org;
-import com.bis.sourcelead.form.OrgSettings;
 import com.bis.sourcelead.service.OrgService;
+import com.bis.sourcelead.util.FileUploadUtil;
 
 /**
  * 
@@ -54,6 +58,11 @@ public class OrgServiceImpl implements OrgService {
 	public List<Org> getOrgs() throws Exception {
 		return orgDao.getOrgs();
 	}
+	
+	@Override
+	public List<Org> getOpenJobsOrgs() throws Exception {
+		return orgDao.getOrgs();
+	}
 
 	@Override
 	public String websiteValidation(String website,String sourceleadBLockedwebsites) {
@@ -61,14 +70,16 @@ public class OrgServiceImpl implements OrgService {
 	}
 
 	@Override
-	public Org saveOrgSettings(OrgSettings orgSettings, MultipartFile multiFile, Org org) throws Exception {
+	public Org saveOrgSettings(CompanyRegistrationDTO companyRegistrationDTO, Org org) throws Exception {
 		
-		System.out.println(multiFile.getContentType());
 		
-        if(null != multiFile.getContentType() && !multiFile.getContentType().equalsIgnoreCase("application/octet-stream")){
+        if(companyRegistrationDTO.getFileInfo() != null){
+        	FileInfo fileInfo = companyRegistrationDTO.getFileInfo().get(0);
     	  try {
-    	   		org.setFileContentType(multiFile.getContentType());
-    	   		org.setDocFile(multiFile.getBytes());
+    	   		org.setFileContentType(fileInfo.getContentType());
+    	   		org.setFileName(fileInfo.getFileName());
+    	   		org.setFileUrl(fileInfo.getFileURL());
+    	   		FileUploadUtil.moveFile(companyRegistrationDTO.getStaticPath(), fileInfo, "profile");
     	   
 	       }catch (Exception e) {
     	      	 e.printStackTrace();
@@ -82,6 +93,11 @@ public class OrgServiceImpl implements OrgService {
 	@Override
 	public Org getOrgByOrgCode(String orgCode) throws Exception {
 		return orgDao.getOrgByOrgCode(orgCode);
+	}
+	
+	@Override
+	public Org getOrgByCareerPageKey(String careerPageKey) throws Exception {
+		return orgDao.getOrgByCareerPageKey(careerPageKey);
 	}
 
 	@Override
@@ -122,5 +138,67 @@ public class OrgServiceImpl implements OrgService {
 	{
 		return orgDao.getuserListForOrgChart(orgLocationId);
 	}
+
+	@Override
+	public List<Org> getAllOpenJobsOrgsStartsWithAlphabet(String alphabet)
+	{
+		return orgDao.getAllOpenJobsOrgsStartsWithAlphabet(alphabet);
+	}
+
+	@Override
+
+	public ResponseList<Org> getDynamicEnrolledOrgs(Long orgId, OrgDTO orgDTO) throws Exception {
+		return orgDao.getDynamicEnrolledOrgs(orgId, orgDTO);
+	}
+
+	@Override
+    public String generateCareerPageKey(Long id, String orgName) throws Exception {
+        return orgDao.generateCareerPageKey(id, orgName);
+    }
+
+    @Override
+    public int changeCareerPageKeyStatus(Long id) throws Exception {
+        return orgDao.changeCareerPageKeyStatus(id);
+    }
+
+    @Override
+    public long savePaymentAccount(PaymentAccountDTO account) {
+        return orgDao.savePaymentAccount(account);
+    }
+    
+    @Override
+    public List<PaymentAccountDTO> getPaymentAccountList(long orgId, long orgLocactionId,boolean onlyEnabledAccounts) {
+        return orgDao.getPaymentAccountList(orgId, orgLocactionId,onlyEnabledAccounts);
+    }
 	
+    @Override
+    public long changePaymentAccountToAccess(long id, long orgLocactionId) {
+        return orgDao.changePaymentAccountToAccess(id, orgLocactionId);
+    }
+    
+    @Override
+    public int changeDefaultPaymentAccount(long id, long orgLocationId, boolean defaultAccount) {
+        return orgDao.changeDefaultPaymentAccount(id, orgLocationId, defaultAccount);
+    }
+
+    @Override
+    public PaymentAccountDTO getPaymentAccount(long id, Long orgId) {
+        return orgDao.getPaymentAccount(id, orgId);
+    }
+
+	@Override
+	public int changePaymentAccountStatus(long id, long orgLocationId) {
+		return orgDao.changePaymentAccountStatus(id, orgLocationId);
+		
+	}
+
+	@Override
+	public List<PaymentAccountDTO> getPaymentAccountListByUserId(long userId, boolean onlyEnabledAccounts) {
+		 return orgDao.getPaymentAccountListByUserId(userId, onlyEnabledAccounts);
+	}
+
+	@Override
+	public List<PaymentAccountDTO> getPaymentAccountListByCandidateId(long candidateId, boolean onlyEnabledAccounts) {
+		return orgDao.getPaymentAccountListByCandidateId(candidateId, onlyEnabledAccounts);
+	}
 }

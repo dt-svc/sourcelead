@@ -1,5 +1,6 @@
 package com.bis.sourcelead.web;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
@@ -14,17 +15,29 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.servlet.ModelAndView;
 
 import com.bis.sourcelead.constants.Constants;
+import com.bis.sourcelead.dto.OrgLocationBankingDetailsDTO;
+import com.bis.sourcelead.dto.OrgLocationIndiaBankingDetailsDTO;
+import com.bis.sourcelead.dto.PaymentAccountDTO;
+import com.bis.sourcelead.dto.ResponseList;
+import com.bis.sourcelead.entity.Countries;
 import com.bis.sourcelead.entity.LookUpData;
 import com.bis.sourcelead.entity.Modules;
 import com.bis.sourcelead.entity.Org;
+import com.bis.sourcelead.entity.OrgLicenseSubscription;
+import com.bis.sourcelead.entity.OrgLocationInformationDetails;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.OrglocationBankingDetails;
 import com.bis.sourcelead.entity.OrglocationOnboardDocuments;
 import com.bis.sourcelead.entity.Roles;
 import com.bis.sourcelead.entity.States;
 import com.bis.sourcelead.entity.Timezone;
+import com.bis.sourcelead.service.CountriesService;
 import com.bis.sourcelead.service.LookUpDataService;
 import com.bis.sourcelead.service.ModulesService;
+import com.bis.sourcelead.service.OrgLicenseSubscriptionService;
+import com.bis.sourcelead.service.OrgLocationIndiaBankingDetailsService;
+import com.bis.sourcelead.service.OrgLocationInformationDetailsService;
+import com.bis.sourcelead.service.OrgService;
 import com.bis.sourcelead.service.OrglocationBankingDetailsService;
 import com.bis.sourcelead.service.OrglocationOnboardDocumentsService;
 import com.bis.sourcelead.service.RolesService;
@@ -66,7 +79,21 @@ public class CompanyOnboardController {
 	@Autowired
 	CommonUtil commonUtil;
 	
+	@Autowired
+	CountriesService countriesService;
 	
+	@Autowired
+	OrgLicenseSubscriptionService orgLicenseSubscriptionService;
+	
+	@Autowired
+	OrgLocationInformationDetailsService orgLocationInformationDetailsService;
+	
+	@Autowired
+	OrgLocationIndiaBankingDetailsService orglocationIndiaBankingDetailsService;
+	
+	 @Autowired
+	 private OrgService orgService;
+
 	
 		@RequestMapping(value = "/companyOnboard")
 		public ModelAndView companyOnboard(HttpServletRequest request) throws Exception  {
@@ -93,19 +120,29 @@ public class CompanyOnboardController {
 			
 			ModelAndView model = new ModelAndView();  
 			OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+			Org org = (Org) SourceLeadSessionManager.getSessionAttribute(request, "org");
 			
 			if(StringUtils.isNotBlank(orgLocations.getIsCompanyOnboarded()) && orgLocations.getIsCompanyOnboarded().equalsIgnoreCase("N")) {
 			List<Timezone> timezoneList = timeZoneService.getAllTimeZones();
-			List<Modules> modulesList = null;
-			List<Modules> requirementSubModulesList = null;
-			try {
-				modulesList = modulesService.getSourceLeadModules();
-				model.addObject("modulesList", modulesList);
-				requirementSubModulesList = modulesService.getRequirementSubModules();
-				model.addObject("requirementSubModulesList", requirementSubModulesList);
-			} catch (Exception e) {
-				e.printStackTrace();
+			
+			
+			List<OrgLicenseSubscription> subscriptionList = orgLicenseSubscriptionService.getOrgLicenseSubscriptionByOrgId(org.getId());
+			List<String> orgSubscribedCountriesList = new ArrayList<>();
+			StringBuilder subscriptionCountries = new StringBuilder(); 
+			if(subscriptionList != null && !subscriptionList.isEmpty()) {
+				for(OrgLicenseSubscription subscription : subscriptionList) {
+					Countries subscriptionCountry = countriesService.getCountriesByCountryName(subscription.getCountry());
+					subscriptionCountries.append(subscriptionCountry.getCode2()).append(",");
+					orgSubscribedCountriesList.add(subscription.getCountry());
+				}
 			}
+			
+			 String subscribedCountries = subscriptionCountries.toString();
+			 subscribedCountries = subscribedCountries.substring(0,subscribedCountries.length()-1);
+			 
+			model.addObject("orgSubscribedCountriesList", orgSubscribedCountriesList);
+			model.addObject("subscribedCountries", subscribedCountries);
+			
 			model.addObject("timezoneList", timezoneList);
 			model.addObject("orgLocations", orgLocations);
 			model.setViewName("orgSettings");
@@ -136,23 +173,65 @@ public class CompanyOnboardController {
 		}
 		
 		
+		@RequestMapping(value = "/companyOnboardInformationDetails")
+		public ModelAndView companyOnboardInformationDetails(HttpServletRequest request) throws Exception  {
+			
+			ModelAndView model = new ModelAndView();  
+			OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+			
+			if(StringUtils.isNotBlank(orgLocations.getIsCompanyOnboarded()) && orgLocations.getIsCompanyOnboarded().equalsIgnoreCase("N")) {
+				OrgLocationInformationDetails informationDetails = orgLocationInformationDetailsService.getOrgLocationInformationDetailsByOrgLocationId(orgLocations.getId());
+				if(informationDetails != null) {
+					
+					if(informationDetails.getIncorporationDate() != null) {
+						informationDetails.setIncorporationDateStr(commonUtil.dateStrFromOrgDateFormatter(orgLocations.getDateFormat(),informationDetails.getIncorporationDate()));
+					}
+					
+					if(informationDetails.getPfRegistrationDate() != null) {
+						informationDetails.setPfRegistrationDateStr(commonUtil.dateStrFromOrgDateFormatter(orgLocations.getDateFormat(),informationDetails.getPfRegistrationDate()));
+					}
+					
+					if(informationDetails.getEsiRegistrationDate() != null) {
+						informationDetails.setEsiRegistrationDateStr(commonUtil.dateStrFromOrgDateFormatter(orgLocations.getDateFormat(),informationDetails.getEsiRegistrationDate()));
+					}
+					
+					if(informationDetails.getPtRegistrationDate() != null) {
+						informationDetails.setPtRegistrationDateStr(commonUtil.dateStrFromOrgDateFormatter(orgLocations.getDateFormat(),informationDetails.getPtRegistrationDate()));
+					}
+					
+					model.addObject("informationDetails", informationDetails);
+				}
+				model.addObject("sourceleadUrl", sourceleadUrl);
+				model.setViewName("onboard/companyOnboardInformationDetails");
+			}else {
+				model.setViewName("registration/persmissionDenied");
+			}
+			
+			return model;
+		}
+		
+		
 		
 		@RequestMapping(value = "/companyOnboardBankingDetails")
 		public ModelAndView companyOnboardBankingDetails(HttpServletRequest request) throws Exception  {
 			
 			ModelAndView model = new ModelAndView();  
 			OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
-			
+			 Org org = (Org) SourceLeadSessionManager.getSessionAttribute(request, "org");
+			 model.addObject("sourceleadUrl", sourceleadUrl);
 			if(StringUtils.isNotBlank(orgLocations.getIsCompanyOnboarded()) && orgLocations.getIsCompanyOnboarded().equalsIgnoreCase("N")) {
-				OrglocationBankingDetails bankingDetails = orglocationBankingDetailsService.getOrglocationBankingDetailsByOrgLocationId(orgLocations.getId());
-				if(bankingDetails != null) {
-					model.addObject("uuid", bankingDetails.getUuid());
-					SourceLeadSessionManager.setSessionAttribute(request, "bankingDetails", bankingDetails);
+				model.addObject("orgLocationId", orgLocations.getId());
+				if(StringUtils.isNotBlank(orgLocations.getCountry()) && orgLocations.getCountry().equalsIgnoreCase("India")) {
+					 List<PaymentAccountDTO> paymentList  = orgService.getPaymentAccountList(org.getId(), orgLocations.getId(), false);
+					 model.addObject("paymentList", paymentList);
+					 model.addObject("paymentListSize", paymentList.size());
+					model.setViewName("onboard/companyOnboardIndiaBankingDetails");
 				}else {
-					SourceLeadSessionManager.setSessionAttribute(request, "bankingDetails", bankingDetails);
+					 List<PaymentAccountDTO> paymentList  = orgService.getPaymentAccountList(org.getId(), orgLocations.getId(), false);
+					 model.addObject("paymentList", paymentList);
+					 model.addObject("paymentListSize", paymentList.size());
+					model.setViewName("onboard/companyOnboardBankingDetails");
 				}
-				model.addObject("sourceleadUrl", sourceleadUrl);
-				model.setViewName("onboard/companyOnboardBankingDetails");
 			}else {
 				model.setViewName("registration/persmissionDenied");
 			}

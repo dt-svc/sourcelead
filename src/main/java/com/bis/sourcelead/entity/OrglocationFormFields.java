@@ -12,15 +12,13 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
+import javax.persistence.Transient;
 
-import org.hibernate.annotations.Cache;
-import org.hibernate.annotations.CacheConcurrencyStrategy;
-import org.hibernate.annotations.NotFound;
-import org.hibernate.annotations.NotFoundAction;
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonProperty;
 
 @Entity
-@Table(name = "ORGLOCATION_FORM_FIELDS", catalog = "sourcelead")
-@Cache(usage = CacheConcurrencyStrategy.TRANSACTIONAL, region = "orglocationsFormFields")
+@Table(name = "ORGLOCATION_FORM_FIELDS")
 public class OrglocationFormFields implements Serializable{
 	private static final long serialVersionUID = 1L;
 
@@ -29,17 +27,17 @@ public class OrglocationFormFields implements Serializable{
     @Column(name = "ID", nullable = false)
 	private Long id;
 	
-	@NotFound(action=NotFoundAction.IGNORE)
+	
 	@ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name="SECTION_ID", nullable=false )        
     private SourceleadFormSections sourceleadFormSections;
 	
-	@NotFound(action=NotFoundAction.IGNORE)
+	
 	@ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name="ORGLOCATION_ID", nullable=false )        
     private OrgLocations orgLocations;
 	
-	@NotFound(action=NotFoundAction.IGNORE)
+	
 	@ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name="ORG_ID", nullable=false )        
     private Org org;
@@ -66,13 +64,15 @@ public class OrglocationFormFields implements Serializable{
 	@Column(name = "PLACEHOLDER")
 	private String placeHolder;
 	
-	@NotFound(action=NotFoundAction.IGNORE)
+	
 	@ManyToOne(fetch = FetchType.LAZY)
+	@JsonBackReference
     @JoinColumn(name="SL_DEPENDANT_FIELD", nullable=false )        
     private SourceleadFormFields sourceLeadDependantField;
 	
-	@NotFound(action=NotFoundAction.IGNORE)
+	
 	@ManyToOne(fetch = FetchType.LAZY)
+	@JsonBackReference
     @JoinColumn(name="CUSTOM_DEPENDANT_FIELD", nullable=false )        
     private OrglocationFormFields customDependantField;
 	
@@ -100,7 +100,7 @@ public class OrglocationFormFields implements Serializable{
 	@Column(name = "CREATED_DATE")
 	private Date createdDate;
 	
-	@NotFound(action=NotFoundAction.IGNORE)
+	
 	@ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name="CREATED_BY", nullable=false )
 	private User createdBy;
@@ -108,11 +108,19 @@ public class OrglocationFormFields implements Serializable{
 	@Column(name = "UPDATED_DATE")
 	private Date updatedDate;
 	
-	@NotFound(action=NotFoundAction.IGNORE)
+	
 	@ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name="UPDATED_BY", nullable=false )
 	private User updatedBy;
 
+	@Column(name="DATA_VALIDATION_TYPE",columnDefinition = "TEXT default NULL")
+	private String dataValidationType;
+	
+	
+	@Transient
+	@JsonProperty
+	private String dataValidationRange;
+	
 	public Long getId() {
 		return id;
 	}
@@ -303,6 +311,22 @@ public class OrglocationFormFields implements Serializable{
 
 	public void setPlaceHolder(String placeHolder) {
 		this.placeHolder = placeHolder;
+	}
+
+	public String getDataValidationType() {
+		return dataValidationType;
+	}
+
+	public void setDataValidationType(String dataValidationType) {
+		this.dataValidationType = dataValidationType;
+	}
+
+	public String getDataValidationRange() {
+		return dataValidationRange;
+	}
+
+	public void setDataValidationRange(String dataValidationRange) {
+		this.dataValidationRange = dataValidationRange;
 	}
 	
 	

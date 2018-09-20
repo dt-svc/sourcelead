@@ -19,5 +19,7 @@ public interface ClientImportDao {
 
 	public BulkClientDetails getbulkClientByrecordIdAndOrgLocationId(long recordId, Long orgLocationId, String responderType)throws Exception;
 
+	public void updateBulkImportedClients() throws Exception;
+
 	
 }

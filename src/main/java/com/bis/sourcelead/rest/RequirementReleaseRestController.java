@@ -1,5 +1,4 @@
 package com.bis.sourcelead.rest;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -7,6 +6,7 @@ import java.util.concurrent.CopyOnWriteArrayList;
 
 import javax.servlet.http.HttpServletRequest;
 
+import org.apache.commons.lang.StringUtils;
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -21,7 +21,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.dto.OrgRelationDTO;
 import com.bis.sourcelead.dto.OrgSpocDTO;
-import com.bis.sourcelead.dto.ProjectTasksDTO;
+import com.bis.sourcelead.dto.Response;
 import com.bis.sourcelead.dto.ResponseList;
 import com.bis.sourcelead.entity.Org;
 import com.bis.sourcelead.entity.OrgLocations;
@@ -29,18 +29,20 @@ import com.bis.sourcelead.entity.OrgRelations;
 import com.bis.sourcelead.entity.OrgSpoc;
 import com.bis.sourcelead.entity.RecommendedCustomizeScore;
 import com.bis.sourcelead.entity.Requirement;
+import com.bis.sourcelead.entity.RequirementLocations;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.enums.REQUIREMENT_SUBMISSION_STATUS;
+import com.bis.sourcelead.enums.Result;
 import com.bis.sourcelead.service.OrgRelationsService;
 import com.bis.sourcelead.service.OrgSpocService;
 import com.bis.sourcelead.service.RecommendedCustomizeScoreService;
 import com.bis.sourcelead.service.RequirementAssignToService;
+import com.bis.sourcelead.service.RequirementLocationsService;
 import com.bis.sourcelead.service.RequirementService;
 import com.bis.sourcelead.service.UserService;
 import com.bis.sourcelead.util.CommonUtil;
 import com.bis.sourcelead.util.SourceLeadRandomCodeHelper;
 import com.bis.sourcelead.util.SourceLeadSessionManager;
-import com.bis.sourcelead.web.LoginSessionController;
 /**
  * 
  * @author Rajashekar
@@ -55,7 +57,7 @@ public class RequirementReleaseRestController {
 	
 	@Value("${sourceleadUrl}")
 	private String sourceleadUrl;
-	
+        
 	@Autowired
 	RequirementService requirementService;
 	
@@ -76,6 +78,9 @@ public class RequirementReleaseRestController {
 	
 	@Autowired
 	RecommendedCustomizeScoreService recommendedCustomizeScoreService;
+	
+	@Autowired
+	RequirementLocationsService requirementLocationsService;
 	
 	protected boolean isNullOrEmpty(String str) {
 		return (str == null || "".equals(str.trim()));
@@ -132,7 +137,7 @@ public class RequirementReleaseRestController {
 		    		 contactList = orgRelationsService.getAllVendorsContactFilterListByOrgLocationIdAndTabAccessAndDTO(orgSpocDTO,user.getId(),orgLocations.getId(), "Client","Active,New,Contracted", vendorOrgLocationsIds);
 		    	}
 		    	List<OrgSpocDTO> orgSpoclist = new ArrayList<>();
-		      if(contactList.getData() != null){
+		      if(contactList != null && contactList.getData() != null){
 		    	for(OrgSpoc contact : contactList.getData()){
 		    		OrgSpocDTO orgSpocDto = new OrgSpocDTO();
 			    	List<Requirement>  reqList = requirementService.getRequirementListByParentRequirementIdAndSpocId(Long.parseLong(orgSpocDTO.getRequirementId()), contact.getId());
@@ -167,11 +172,10 @@ public class RequirementReleaseRestController {
 					}
 			    	orgSpoclist.add(orgSpocDto);
 				}
-		   }
-		    
-		    response.setRecordsFiltered(contactList.getRecordsFiltered());
-			response.setRecordsTotal(contactList.getRecordsTotal());
-			response.setData(orgSpoclist);
+		    	response.setRecordsFiltered(contactList.getRecordsFiltered());
+				response.setRecordsTotal(contactList.getRecordsTotal());
+		 }
+		   response.setData(orgSpoclist);
 			return response;
 	}
 	
@@ -352,86 +356,91 @@ public class RequirementReleaseRestController {
 	@PreAuthorize("hasRole('ROLE_RELEASE_REQUIREMENT')")
 	@RequestMapping(value = "/releaseJobsToClientsOrVendors", method = RequestMethod.POST)
 	@ResponseBody
-	public String releaseJobsToClientsOrVendors(@RequestParam(value = "requirementId", required = false) Long requirementId,
+	public Response<String> releaseJobsToClientsOrVendors(@RequestParam(value = "requirementId", required = false) Long requirementId,
 												@RequestParam(value = "contactsIds", required = false) String contactsIds,
 			                                    @RequestParam(value="vendorIds", required=false) String vendorIds,
 			                                    HttpServletRequest request) throws Exception {
+			Response<String> response =  new Response<>();
 			
 			User loginUser = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
 		 	OrgLocations loginOrgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 		 	Org org = (Org) SourceLeadSessionManager.getSessionAttribute(request, "org");
-		 	String releasetype = null;
-			Requirement parentRequirement = requirementService.getRequirementByRequirementId(requirementId);
-			String[] contacts = contactsIds.split(",");
-			if(contacts != null &&  contacts.length>0 && contacts[0] != null && contacts[0] != "" ){
-				for(String contact   : contacts){
-						releasetype = Constants.CONTACTS;
-						OrgSpoc orgSpoc = orgSpocService.getOrgSpocById(Long.parseLong(contact));
-						Requirement requirement  = new Requirement();
-						releaseJobToVendorOrContacts(requirement, parentRequirement, orgSpoc,null,loginOrgLocation);
-						requirementService.releaseMailScenario(loginUser, requirement, orgSpoc, loginOrgLocation,releasetype);
-
-				}
-			}	
-			
-			String[] vendors = vendorIds.split(",");
-			if(vendors != null &&  vendors.length>0 && vendors[0] != null && vendors[0] != ""){
-				for(String vendor   : vendors){
+		 	if(loginUser != null) {
+				try {
+				 	String releasetype = null;
+					Requirement parentRequirement = requirementService.getRequirementByRequirementId(requirementId);
+					String[] contacts = contactsIds.split(",");
+					if(contacts != null &&  contacts.length>0 && contacts[0] != null && contacts[0] != "" ){
+						for(String contact   : contacts){
+								releasetype = Constants.CONTACTS;
+								OrgSpoc orgSpoc = orgSpocService.getOrgSpocById(Long.parseLong(contact));
+								Requirement requirement  = new Requirement();
+								releaseJobToVendorOrContacts(requirement, parentRequirement, orgSpoc,null,loginOrgLocation);
+								requirementService.releaseMailScenario(loginUser, requirement, orgSpoc, loginOrgLocation,releasetype);
+		
+						}
+					}	
 					
-					
-					OrgRelations orgRelations = orgRelationsService.getOrRelationsById(Long.parseLong(vendor));
-					List<Long> vendorOrgLocationsIds = new ArrayList<Long>();
-						   if(orgRelations.getResponderLocationId().getId().equals(loginOrgLocation.getId())){
-							   vendorOrgLocationsIds.add(orgRelations.getLocationId().getId());
-						   }else if(orgRelations.getLocationId().getId().equals(loginOrgLocation.getId())){
-							   vendorOrgLocationsIds.add(orgRelations.getResponderLocationId().getId());
-						   }
-					
-					 List<OrgSpoc> vandorsContactListByOrgLocationId = orgRelationsService.getAllVendorsContactFilterListByOrgLocationIdAndTabAccess(loginUser.getId(),loginOrgLocation.getId(), "Client","Active",vendor,"", vendorOrgLocationsIds);
-					
-					for(OrgSpoc orgSpoc : vandorsContactListByOrgLocationId){
-					    Boolean isJobReleased = requirementService.getRequirementByParentRequirementIdAndSpocId(requirementId, orgSpoc.getId());
-					    if(isJobReleased.toString().equalsIgnoreCase("false")){
-					    	Requirement requirement  = new Requirement();
-					    	releasetype = Constants.VENDORSTYPE;
-							releaseJobToVendorOrContacts(requirement, parentRequirement, orgSpoc, orgRelations.getInitiatorType(),loginOrgLocation);
-							requirementService.releaseMailScenario(loginUser, requirement, orgSpoc, loginOrgLocation,releasetype);
-
-					    }
+					String[] vendors = vendorIds.split(",");
+					if(vendors != null &&  vendors.length>0 && vendors[0] != null && vendors[0] != ""){
+						for(String vendor   : vendors){
+							
+							
+							OrgRelations orgRelations = orgRelationsService.getOrRelationsById(Long.parseLong(vendor));
+							List<Long> vendorOrgLocationsIds = new ArrayList<Long>();
+								   if(orgRelations.getResponderLocationId().getId().equals(loginOrgLocation.getId())){
+									   vendorOrgLocationsIds.add(orgRelations.getLocationId().getId());
+								   }else if(orgRelations.getLocationId().getId().equals(loginOrgLocation.getId())){
+									   vendorOrgLocationsIds.add(orgRelations.getResponderLocationId().getId());
+								   }
+							
+							 List<OrgSpoc> vandorsContactListByOrgLocationId = orgRelationsService.getAllVendorsContactFilterListByOrgLocationIdAndTabAccess(loginUser.getId(),loginOrgLocation.getId(), "Client","Active",vendor,"", vendorOrgLocationsIds);
+							
+							for(OrgSpoc orgSpoc : vandorsContactListByOrgLocationId){
+							    Boolean isJobReleased = requirementService.getRequirementByParentRequirementIdAndSpocId(requirementId, orgSpoc.getId());
+							    if(isJobReleased.toString().equalsIgnoreCase("false")){
+							    	Requirement requirement  = new Requirement();
+							    	releasetype = Constants.VENDORSTYPE;
+									releaseJobToVendorOrContacts(requirement, parentRequirement, orgSpoc, orgRelations.getInitiatorType(),loginOrgLocation);
+									requirementService.releaseMailScenario(loginUser, requirement, orgSpoc, loginOrgLocation,releasetype);
+		
+							    }
+							}
+						}
 					}
+					
+					if(null == parentRequirement.getReleasedBy()){
+						parentRequirement.setReleasedBy(loginUser.getId().toString());
+					}else{
+						List<Long> userId = new ArrayList<Long>();
+						for (String s : parentRequirement.getReleasedBy().split(",")){
+							userId.add(Long.parseLong(s));
+						 }
+						boolean flag = userId.contains(loginUser.getId());
+		         		if(flag == false){
+		         			StringBuilder releasedUser = new StringBuilder();
+		    				releasedUser = releasedUser.append(",").append(loginUser.getId().toString());
+		    				parentRequirement.setReleasedBy(parentRequirement.getReleasedBy()+releasedUser.toString());
+		         		}
+					}
+					parentRequirement.setUpdatedDate(new Date());
+					requirementService.addRequirement(parentRequirement);
+					
+					StringBuilder reqReleaseMsg = new StringBuilder();
+					SourceLeadSessionManager.setSessionAttribute(request, "reqReleaseMessage", reqReleaseMsg.append("Success!! ").append(" job  released").toString());
+					
+					response.setObject("vendorsList");
+					response.setResponse(Result.SUCCESS.name());
+					response.setResponseMessage(Result.SUCCESS.getValue());
+				}catch (Exception e) {
+					response.setResponse(Result.AWKWARD.name());
+					response.setResponseMessage(Result.AWKWARD.getValue());
 				}
+		 	}else {
+					response.setResponse(Result.SESSION_TIMEDOUT.name());
+					response.setResponseMessage(Result.SESSION_TIMEDOUT.getValue());
 			}
-			
-			/*if(null != isPublics && !"".equalsIgnoreCase(isPublics) && "undefined" == isPublics){
-				parentRequirement.setIsPublic(isPublics);
-				parentRequirement.setPostedOrgName(org.getOrgName());
-			}
-			if(null != isCrowdScourcing && !"".equalsIgnoreCase(isCrowdScourcing) && "undefined" == isCrowdScourcing){
-				parentRequirement.setIsCrowdSourcing(isCrowdScourcing);
-				parentRequirement.setPostedOrgName(org.getOrgName());
-			}*/
-			
-			if(null == parentRequirement.getReleasedBy()){
-				parentRequirement.setReleasedBy(loginUser.getId().toString());
-			}else{
-				List<Long> userId = new ArrayList<Long>();
-				for (String s : parentRequirement.getReleasedBy().split(",")){
-					userId.add(Long.parseLong(s));
-				 }
-				boolean flag = userId.contains(loginUser.getId());
-         		if(flag == false){
-         			StringBuilder releasedUser = new StringBuilder();
-    				releasedUser = releasedUser.append(",").append(loginUser.getId().toString());
-    				parentRequirement.setReleasedBy(parentRequirement.getReleasedBy()+releasedUser.toString());
-         		}
-			}
-			parentRequirement.setUpdatedDate(new Date());
-			requirementService.addRequirement(parentRequirement);
-			
-			StringBuilder reqReleaseMsg = new StringBuilder();
-			SourceLeadSessionManager.setSessionAttribute(request, "reqReleaseMessage", reqReleaseMsg.append("Success!! ").append(" job  released").toString());
-			
-			return "vendorsList";
+		return response;
 	}
 
 	private void releaseJobToVendorOrContacts(Requirement requirement, Requirement parentRequirement, OrgSpoc orgSpoc, String initiator,OrgLocations loginOrgLocation) throws Exception {
@@ -493,6 +502,7 @@ public class RequirementReleaseRestController {
 		requirement.setDescription(parentRequirement.getDescription());
 		requirement.setNoticePeriod(parentRequirement.getNoticePeriod());
 		requirement.setFileContentType(parentRequirement.getFileContentType());
+		requirement.setUrl(parentRequirement.getUrl());
 		if(parentRequirement.getMedicalClearence() != null){
 		requirement.setMedicalClearence(parentRequirement.getMedicalClearence());
 		}
@@ -551,6 +561,30 @@ public class RequirementReleaseRestController {
 		
 		requirement.setId(null);
         Requirement req= requirementService.addRequirement(requirement);
+        
+        
+        
+        List<RequirementLocations> locationsList = requirementLocationsService.getRequirementLocationsListByRequirementId(parentRequirement.getId());
+        if(locationsList != null && !locationsList.isEmpty()) {
+        	for(RequirementLocations locations : locationsList) {
+        		RequirementLocations requirementLocations = new RequirementLocations();
+				requirementLocations.setRequirementId(req);
+				requirementLocations.setLocation(locations.getLocation());
+				requirementLocations.setCountry(locations.getCountry());
+				requirementLocations.setState(locations.getState());
+				requirementLocations.setCity(locations.getCity());
+				if(StringUtils.isNotBlank(locations.getZipCode())) {
+					requirementLocations.setZipCode(locations.getZipCode());
+				}
+				
+				requirementLocations.setLongitude(locations.getLongitude());
+				requirementLocations.setLatitude(locations.getLatitude());
+				requirementLocations.setStatus(Constants.RECORD_ACTIVE);
+				requirementLocations.setLocationUUID(SourceLeadRandomCodeHelper.generateRandomUUID());
+				requirementLocationsService.saveRequirementLocations(requirementLocations);
+        		
+        	}
+        }
 		
 		//store recommended customizeScore
 	   RecommendedCustomizeScore  recommendedCustomizeScore = recommendedCustomizeScoreService.saveCustomizeScore(req);
@@ -561,7 +595,8 @@ public class RequirementReleaseRestController {
 	 @RequestMapping(value = "/releaseToCrowdSourcingNetwork" , method = RequestMethod.POST)
 	 public  String releaseToCrowdSourcingNetwork(@RequestParam(value="json", required=false) String json,
 			 @RequestParam(value = "requirementId", required = false) Long requirementId,
-			 HttpServletRequest request) throws Exception {
+			 HttpServletRequest request,
+                         @RequestParam(value = "jobBoardAccounts", required = false) ArrayList<Long> jobBoardAccounts) throws Exception {
 		 	
 		 json = "{"+json+"}";
 		 
@@ -572,7 +607,9 @@ public class RequirementReleaseRestController {
 	 	 OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 	 	 
 	 	Requirement requirement = requirementService.getRequirementByRequirementId(requirementId);
-	 	
+//	 	System.out.println(jobBoardAccounts);
+                requirement.setJobBoardAccountIdList(jobBoardAccounts);
+                
 	 	if(jsonObj.has("isPublic") && !isNullOrEmpty(jsonObj.getString("isPublic")) && jsonObj.getString("isPublic").equalsIgnoreCase("Y")){
 	 		requirement.setIsPublic(jsonObj.getString("isPublic"));
 	 		requirement.setPostedOrgName(orgLocations.getOrgLocationName());

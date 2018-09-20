@@ -5,23 +5,27 @@ import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
+import java.util.Map.Entry;
 import java.util.TimeZone;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import javax.mail.internet.InternetAddress;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang.exception.ExceptionUtils;
 import org.codehaus.jackson.map.ObjectMapper;
 import org.elasticsearch.index.query.BoolQueryBuilder;
-import org.elasticsearch.index.query.MatchQueryBuilder;
+import org.elasticsearch.index.query.QueryBuilder;
 import org.elasticsearch.index.query.QueryBuilders;
 import org.elasticsearch.search.SearchHit;
 import org.json.JSONArray;
@@ -42,21 +46,25 @@ import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.multipart.MultipartHttpServletRequest;
 
 import com.bis.sourcelead.SourceleadPasswordEncoder;
+import com.bis.sourcelead.annotations.Validator;
 import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.dto.AddUserDTO;
 import com.bis.sourcelead.dto.CandidateDTO;
+import com.bis.sourcelead.dto.ConnectionsDTO;
 import com.bis.sourcelead.dto.CustomFormFieldDTO;
-import com.bis.sourcelead.dto.OrgSpocDTO;
 import com.bis.sourcelead.dto.OrglocationFormFieldsDTO;
-import com.bis.sourcelead.dto.ProjectTasksDTO;
+import com.bis.sourcelead.dto.Response;
 import com.bis.sourcelead.dto.ResponseList;
 import com.bis.sourcelead.dto.SourceleadSectionDTO;
 import com.bis.sourcelead.dto.UserDTO;
 import com.bis.sourcelead.dto.UserRoleDTO;
 import com.bis.sourcelead.elk.index.ClientVendorContactsIndex;
+import com.bis.sourcelead.elk.index.ProjectsIndex;
 import com.bis.sourcelead.elk.index.UserIndex;
 import com.bis.sourcelead.elk.index.helper.ClientVendorContactsIndexHelper;
+import com.bis.sourcelead.elk.index.helper.ProjectsIndexHelper;
 import com.bis.sourcelead.elk.setup.SourceleadELKBaseIndexer;
+import com.bis.sourcelead.entity.AssociateGrades;
 import com.bis.sourcelead.entity.Candidate;
 import com.bis.sourcelead.entity.Countries;
 import com.bis.sourcelead.entity.Department;
@@ -64,6 +72,7 @@ import com.bis.sourcelead.entity.EmailAttachment;
 import com.bis.sourcelead.entity.EmailMessage;
 import com.bis.sourcelead.entity.EmailScenario;
 import com.bis.sourcelead.entity.Employees;
+import com.bis.sourcelead.entity.Org;
 import com.bis.sourcelead.entity.OrgDocuments;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.OrgRelations;
@@ -75,34 +84,42 @@ import com.bis.sourcelead.entity.Projects;
 import com.bis.sourcelead.entity.Requirement;
 import com.bis.sourcelead.entity.RequirementApproverHierarchy;
 import com.bis.sourcelead.entity.Roles;
+import com.bis.sourcelead.entity.Shift;
 import com.bis.sourcelead.entity.SourceleadActions;
+import com.bis.sourcelead.entity.SourceleadTags;
 import com.bis.sourcelead.entity.Team;
 import com.bis.sourcelead.entity.TeamMembers;
-import com.bis.sourcelead.entity.TimesheetSubmissions;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.entity.UserCustomFieldData;
 import com.bis.sourcelead.entity.UserRole;
-import com.bis.sourcelead.enums.Primary;
+import com.bis.sourcelead.enums.Result;
 import com.bis.sourcelead.enums.Status;
-import com.bis.sourcelead.model.ConnectionBean;
+import com.bis.sourcelead.enums.TagEntites;
+import com.bis.sourcelead.service.AssociateBalanceLeaveService;
+import com.bis.sourcelead.service.AssociateGradesService;
 import com.bis.sourcelead.service.CandidateService;
 import com.bis.sourcelead.service.CountriesService;
 import com.bis.sourcelead.service.DepartmentService;
 import com.bis.sourcelead.service.EmailScenarioService;
 import com.bis.sourcelead.service.EmployeesService;
 import com.bis.sourcelead.service.OrgDocumentsService;
+import com.bis.sourcelead.service.OrgLocationService;
 import com.bis.sourcelead.service.OrgRelationsService;
 import com.bis.sourcelead.service.OrgSpocService;
 import com.bis.sourcelead.service.OrglocationFormFieldsService;
 import com.bis.sourcelead.service.ProjectApproverHierarchyService;
+import com.bis.sourcelead.service.ProjectClientService;
 import com.bis.sourcelead.service.ProjectMembersHistoryService;
 import com.bis.sourcelead.service.ProjectMembersService;
 import com.bis.sourcelead.service.ProjectsService;
 import com.bis.sourcelead.service.RequirementApproverHierarchyService;
 import com.bis.sourcelead.service.RequirementService;
 import com.bis.sourcelead.service.RolesService;
+import com.bis.sourcelead.service.ShiftService;
 import com.bis.sourcelead.service.SourceleadActionsService;
 import com.bis.sourcelead.service.SourceleadFormSectionsService;
+import com.bis.sourcelead.service.SourceleadTagsService;
+import com.bis.sourcelead.service.StatesService;
 import com.bis.sourcelead.service.TabsService;
 import com.bis.sourcelead.service.TeamMembersService;
 import com.bis.sourcelead.service.TeamService;
@@ -119,6 +136,8 @@ import com.thoughtworks.xstream.XStream;
 import com.thoughtworks.xstream.io.HierarchicalStreamWriter;
 import com.thoughtworks.xstream.io.json.JsonHierarchicalStreamDriver;
 import com.thoughtworks.xstream.io.json.JsonWriter;
+
+import opennlp.tools.parser.Cons;
 
 @RestController
 @RequestMapping("/app")
@@ -223,6 +242,30 @@ public class UsersListRestController {
 	@Autowired
 	private SourceleadActionsService sourceleadActionsService;
 	
+	@Autowired
+	ProjectClientService projectClientService;
+	
+	@Autowired
+    ProjectsIndexHelper projectsIndexHelper;
+	
+	@Autowired
+	AssociateGradesService associateGradesService;
+	
+	@Autowired
+	private ShiftService shiftService;
+	
+	@Autowired
+	AssociateBalanceLeaveService associateBalanceLeaveService;
+	
+	@Autowired
+	private SourceleadTagsService sourceleadTagsService;
+	
+	@Autowired
+	OrgLocationService orgLocationService;
+	
+	@Autowired
+	StatesService statesService;
+	
 	
 	/**
 	 * To get All the Users by filtering
@@ -237,43 +280,78 @@ public class UsersListRestController {
 
 
 	/* this method is used to display the users list onload */
-	@RequestMapping(value = "/detDynamicUserList", method = RequestMethod.POST)
-	public @ResponseBody   ResponseList<UserRoleDTO> detDynamicUserList(UserDTO userDTO,HttpServletRequest request) throws Exception {
+	@RequestMapping(value = "/getDynamicUserList", method = RequestMethod.POST)
+	public @ResponseBody   ResponseList<UserRoleDTO> getDynamicUserList(UserDTO userDTO,UserRoleDTO userRoleDto,HttpServletRequest request) throws Exception {
 
 		OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+		Org org = (Org) SourceLeadSessionManager.getSessionAttribute(request, "org");
 		User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+		List<Long> orgRelationsList = new ArrayList<>();
+		List<Long> projectAssignedUserIds = new ArrayList<>();
+		List<Long> projectClientsList = new ArrayList<>();
+		List<Long> managerUserIds = new ArrayList<>();
+		List<Long> teamsList = new ArrayList<>();
+		List<Long> departmentsList = new ArrayList<>();
+		
+		String[] tableColumns = {"firstName", "email", "mobilePhone", "displayName","","userEmploymentType"};
+	    int sortColumnIndex = 5; //by default sorting using updated date
+		String sortColumnOrder = "asc"; //by default descending order
+		if(userRoleDto.getOrder() != null && !userRoleDto.getOrder().isEmpty()) {
+			sortColumnIndex = Integer.parseInt(userRoleDto.getOrder().get(0).get("column"));
+			sortColumnOrder = userRoleDto.getOrder().get(0).get("dir");
+		}
+		userRoleDto.setSortColumn(tableColumns[sortColumnIndex]);
+		userRoleDto.setSortOrder(sortColumnOrder);
+		
 		ResponseList<UserRoleDTO> response = new ResponseList<UserRoleDTO>();
 		List<UserRoleDTO> userRolesList = new ArrayList<>();
-			Long userRoleType ;
-			if(!"".equalsIgnoreCase(userDTO.getUserRole())){
-				 userRoleType = Long.parseLong(userDTO.getUserRole());
-			}else{
-				 userRoleType = null;
+		
+		
+		if(userRoleDto.getOrgClients() != null && !userRoleDto.getOrgClients().isEmpty()) {
+			String[] orgClients = userRoleDto.getOrgClients().split(",");
+			for(int i=0; i < orgClients.length; i++) {
+				orgRelationsList.add(Long.parseLong(orgClients[i]));
 			}
-			ResponseList<UserRole>  rolesList = userRoleService.getDynamicUsersListByRoleAndNameAndLocationId(userDTO, userRoleType, orgLocations.getId(), userDTO.getUserState(), user.getId(), userDTO.getLoginUserRole(), user.getUserCode());
+		}
+		
+		if(userRoleDto.getOrgManagers() != null && !userRoleDto.getOrgManagers().isEmpty()) {
+			String[] orgManagers = userRoleDto.getOrgManagers().split(",");
+			for(int i=0; i < orgManagers.length; i++) {
+				managerUserIds.add(Long.parseLong(orgManagers[i]));
+			}
+		}
+		
+		if(userRoleDto.getOrgTeams() != null && !userRoleDto.getOrgTeams().isEmpty()) {
+			String[] orgTeams = userRoleDto.getOrgTeams().split(",");
+			for(int i=0; i < orgTeams.length; i++) {
+				teamsList.add(Long.parseLong(orgTeams[i]));
+			}
+		}
+		
+		if(userRoleDto.getOrgDepartments() != null && !userRoleDto.getOrgDepartments().isEmpty()) {
+			String[] orgDepts = userRoleDto.getOrgDepartments().split(",");
+			for(int i=0; i < orgDepts.length; i++) {
+				departmentsList.add(Long.parseLong(orgDepts[i]));
+			}
+		}
+			
+			
+			    ResponseList<UserRole>  rolesList = userRoleService.getDynamicUsersListByRoleAndNameAndLocationId(userDTO, userRoleDto, orgLocations.getId(), user.getId(), userDTO.getLoginUserRole(), user.getUserCode(),orgRelationsList,managerUserIds,teamsList,departmentsList);
 				for(UserRole role : rolesList.getData()){
-					UserRoleDTO userRoleDto = new UserRoleDTO();
-					StringBuilder userName = new StringBuilder();
-					
-					userRoleDto.setUserRoleName(role.getRoles().getDisplayName());
-					userRoleDto.setIsMailSent(role.getIsMailSent().toString());
-					if(!isNullOrEmpty(role.getUser().getLastName())){
-						userName = userName.append(role.getUser().getFirstName()).append(" ").append(role.getUser().getLastName());
-						userRoleDto.setUserName(userName.toString());
-						
-					}else{
-						userRoleDto.setUserName(role.getUser().getFirstName());
-					}
-					userRoleDto.setUserEmail(role.getUser().getEmail());
-					userRoleDto.setUserId(role.getUser().getId());
-					userRoleDto.setUserCode(role.getUser().getUserCode());
-					userRoleDto.setUserState(role.getUserState().toString());
+					UserRoleDTO userRoleDTO = new UserRoleDTO();
+					userRoleDTO.setUserRoleName(role.getRoles().getDisplayName());
+					userRoleDTO.setIsMailSent(role.getIsMailSent().toString());
+					userRoleDTO.setUserName(role.getUser().getFullName());
+					userRoleDTO.setUserEmail(role.getUser().getEmail());
+					userRoleDTO.setUserId(role.getUser().getId());
+					userRoleDTO.setUserCode(role.getUser().getUserCode());
+					userRoleDTO.setUserState(role.getUserState().toString());
 					if(role.getUser() != null) {
 						if(role.getUser().getFileUrl() != null) {
-							userRoleDto.setFileUrl(role.getUser().getFileUrl());
+							userRoleDTO.setFileUrl(role.getUser().getFileUrl());
 						}
 					}
-					userRoleDto.setMobilePhone(role.getUser().getMobilePhone());
+					userRoleDTO.setMobilePhone(role.getUser().getMobilePhone());
 					if(role.getReportingManager() !=null){
 						StringBuilder reportingManagerName = new StringBuilder();
 						if(role.getReportingManager().getLastName() !=null && !"".equalsIgnoreCase(role.getReportingManager().getLastName())){
@@ -281,15 +359,15 @@ public class UsersListRestController {
 						}else{
 							reportingManagerName.append(role.getReportingManager().getFirstName());
 						}
-						userRoleDto.setReportingManagerName(reportingManagerName.toString());
+						userRoleDTO.setReportingManagerName(reportingManagerName.toString());
 					}
 					Employees emp = employeesService.getEmployeeByUserIdAndOrgLocationsId(role.getUser().getId(),orgLocations.getId());
 					if(emp !=null){
 						if(emp.getUserEmploymentType()!=null && !"".equalsIgnoreCase(emp.getUserEmploymentType())){
-							userRoleDto.setEmployeMentType(emp.getUserEmploymentType());
+							userRoleDTO.setEmployeMentType(emp.getUserEmploymentType());
 						}
 					}
-					userRolesList.add(userRoleDto);
+					userRolesList.add(userRoleDTO);
 				}
 				response.setRecordsFiltered(rolesList.getRecordsFiltered());
 				response.setRecordsTotal(rolesList.getRecordsTotal());
@@ -429,12 +507,12 @@ public class UsersListRestController {
 			BoolQueryBuilder excludeBoolQueryBuilder = QueryBuilders.boolQuery();
 			for (String keywd : excludeKeyWordArray) {
 				BoolQueryBuilder excludeBoolSubQueryBuilder = QueryBuilders.boolQuery();
-				ArrayList<MatchQueryBuilder> matchQueryBuilderList = getMatchQueryBuilderList(keywd);
+				ArrayList<QueryBuilder> QueryBuilderList = getQueryBuilderList(keywd);
 
-				if (null != matchQueryBuilderList && !matchQueryBuilderList.isEmpty()) {
+				if (null != QueryBuilderList && !QueryBuilderList.isEmpty()) {
 
-					for (MatchQueryBuilder matchQueryBuilder : matchQueryBuilderList) {
-						excludeBoolSubQueryBuilder.should(matchQueryBuilder);
+					for (QueryBuilder QueryBuilder : QueryBuilderList) {
+						excludeBoolSubQueryBuilder.should(QueryBuilder);
 					}
 					excludeBoolQueryBuilder.should(excludeBoolSubQueryBuilder);
 				}
@@ -450,11 +528,11 @@ public class UsersListRestController {
 			BoolQueryBuilder anyBoolQueryBuilder = QueryBuilders.boolQuery();
 			for (String keywd : anyKeyWordArray) {
 				BoolQueryBuilder anyBoolSubQueryBuilder = QueryBuilders.boolQuery();
-				ArrayList<MatchQueryBuilder> matchQueryBuilderList = getMatchQueryBuilderList(keywd);
+				ArrayList<QueryBuilder> QueryBuilderList = getQueryBuilderList(keywd);
 
-				if (null != matchQueryBuilderList && !matchQueryBuilderList.isEmpty()) {
-					for (MatchQueryBuilder matchQueryBuilder : matchQueryBuilderList) {
-						anyBoolSubQueryBuilder.should(matchQueryBuilder);
+				if (null != QueryBuilderList && !QueryBuilderList.isEmpty()) {
+					for (QueryBuilder QueryBuilder : QueryBuilderList) {
+						anyBoolSubQueryBuilder.should(QueryBuilder);
 					}
 					anyBoolQueryBuilder.should(anyBoolSubQueryBuilder);
 				}
@@ -469,11 +547,11 @@ public class UsersListRestController {
 			BoolQueryBuilder allBoolQueryBuilder = QueryBuilders.boolQuery();
 			for (String keywd : allKeyWordArray) {
 				BoolQueryBuilder allBoolSubQueryBuilder = QueryBuilders.boolQuery();
-				ArrayList<MatchQueryBuilder> matchQueryBuilderList = getMatchQueryBuilderList(keywd);
+				ArrayList<QueryBuilder> QueryBuilderList = getQueryBuilderList(keywd);
 
-				if (null != matchQueryBuilderList && !matchQueryBuilderList.isEmpty()) {
-					for (MatchQueryBuilder matchQueryBuilder : matchQueryBuilderList) {
-						allBoolSubQueryBuilder.should(matchQueryBuilder);
+				if (null != QueryBuilderList && !QueryBuilderList.isEmpty()) {
+					for (QueryBuilder QueryBuilder : QueryBuilderList) {
+						allBoolSubQueryBuilder.should(QueryBuilder);
 					}
 					allBoolQueryBuilder.must(allBoolSubQueryBuilder);
 				}
@@ -599,31 +677,31 @@ public class UsersListRestController {
 		return keyWordList;
 	}
 
-	private ArrayList<MatchQueryBuilder> getMatchQueryBuilderList(String keywd) {
-		ArrayList<MatchQueryBuilder> matchQueryBuilderList = new ArrayList<MatchQueryBuilder>();
-		matchQueryBuilderList.add(QueryBuilders.matchQuery("firstName", keywd));
-		matchQueryBuilderList.add(QueryBuilders.matchQuery("lastName", keywd));
-		matchQueryBuilderList.add(QueryBuilders.matchPhraseQuery("email", keywd));
-		matchQueryBuilderList.add(QueryBuilders.matchPhraseQuery("userType", keywd));
-		matchQueryBuilderList.add(QueryBuilders.matchPhraseQuery("ratePer", keywd));
-		matchQueryBuilderList.add(QueryBuilders.matchQuery("employeeId", keywd));
-		matchQueryBuilderList.add(QueryBuilders.matchPhraseQuery("userStatus", keywd));
-		matchQueryBuilderList.add(QueryBuilders.matchPhraseQuery("rate", keywd));
-		matchQueryBuilderList.add(QueryBuilders.matchQuery("mobilePhone", keywd));
+	private ArrayList<QueryBuilder> getQueryBuilderList(String keywd) {
+		ArrayList<QueryBuilder> QueryBuilderList = new ArrayList<QueryBuilder>();
+		QueryBuilderList.add(QueryBuilders.matchQuery("firstName", keywd));
+		QueryBuilderList.add(QueryBuilders.matchQuery("lastName", keywd));
+		QueryBuilderList.add(QueryBuilders.matchPhraseQuery("email", keywd));
+		QueryBuilderList.add(QueryBuilders.matchPhraseQuery("userType", keywd));
+		QueryBuilderList.add(QueryBuilders.matchPhraseQuery("ratePer", keywd));
+		QueryBuilderList.add(QueryBuilders.matchQuery("employeeId", keywd));
+		QueryBuilderList.add(QueryBuilders.matchPhraseQuery("userStatus", keywd));
+		QueryBuilderList.add(QueryBuilders.matchPhraseQuery("rate", keywd));
+		QueryBuilderList.add(QueryBuilders.matchQuery("mobilePhone", keywd));
 
 
 		Matcher matcher = Pattern.compile("\\d+").matcher(keywd);
 
 		if (matcher.find()) {
 			Float expYears = Float.valueOf(matcher.group());
-			matchQueryBuilderList.add(QueryBuilders.matchPhraseQuery("rate", expYears));
-			// matchQueryBuilderList.add(QueryBuilders.matchPhraseQuery("mobilePhone",
+			QueryBuilderList.add(QueryBuilders.matchPhraseQuery("rate", expYears));
+			// QueryBuilderList.add(QueryBuilders.matchPhraseQuery("mobilePhone",
 			// keywd));
 			String mobileKeywd = matcher.group().replaceAll("[+91]", "");
-			matchQueryBuilderList.add(QueryBuilders.matchQuery("mobilePhone", mobileKeywd));
+			QueryBuilderList.add(QueryBuilders.matchQuery("mobilePhone", mobileKeywd));
 		}
 
-		return matchQueryBuilderList;
+		return QueryBuilderList;
 	}
 
 	/**
@@ -637,7 +715,21 @@ public class UsersListRestController {
 	@RequestMapping(value = "/userSummary/{userCode}", method = RequestMethod.GET)
 	public @ResponseBody void userSummary(@PathVariable String userCode, HttpServletRequest request,
 			HttpServletResponse response) throws Exception {
+		 OrgLocations loginOrgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,"orgLocations");
+
 		StringBuilder redirectUrl = new StringBuilder();
+	    Set<String> tagsList = sourceleadTagsService.getSourceleadTagsByOrgLocationId(loginOrgLocation.getId());
+	    request.getSession().setAttribute("tagsList", tagsList);
+	    User user = userService.getUserByUserCode(userCode);
+		Set<String> associateTagsList = sourceleadTagsService.getSourceleadTagsByOrgLocationIdAndEntityName(loginOrgLocation.getId(), TagEntites.ASSOCIATES.getValue(), user.getId());
+		if(associateTagsList != null && !associateTagsList.isEmpty()) {
+			StringBuilder associateTagsStr = new StringBuilder();
+			for(String tags : associateTagsList) {
+				associateTagsStr = associateTagsStr.append(tags).append(",");
+			}
+			associateTagsStr.toString();
+			request.getSession().setAttribute("associateTags", associateTagsStr.substring(0,associateTagsStr.length()-1));
+		}
 		response.sendRedirect(redirectUrl.append("/app/userSummaryDetails?userCode=").append(userCode).toString());
 
 	}
@@ -652,12 +744,13 @@ public class UsersListRestController {
 	 */
 	@PreAuthorize("hasAnyRole('ROLE_VIEW_EDIT_ASSOCIATE','ROLE_VIEW_ASSOCIATE','ROLE_VIEW_DELETE_ASSOCIATE')")
 	@RequestMapping(value = "/getUserDetailsById", method = RequestMethod.POST)
-	public @ResponseBody String getUserDetailsById(HttpServletRequest request,
+	public @ResponseBody UserRole getUserDetailsById(HttpServletRequest request,
 			@RequestParam(value = "userId", required = false) Long userId,AddUserDTO userDto) throws Exception {
-		String resultJson = null;
 
 		OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,
 				"orgLocations");
+		
+		Org org = (Org) SourceLeadSessionManager.getSessionAttribute(request,"org");
 
 		UserRole userRole = userRoleService.getUserRoleByUserIdAndLocationId(userId, orgLocations.getId());
 
@@ -670,15 +763,30 @@ public class UsersListRestController {
 			userRole.setRate(employee.getRate());
 			userRole.setRatePer(employee.getRatePer());
 			userRole.setCurrentCurrency(employee.getCurrentCurrency());
+			
+			Boolean flag = userRoleService.getIsGlobalManager(org.getId(),userId);
+			if(flag == true) {
+				userRole.setIsExistedOrgGlobalUser(Constants.YES);
+			}else {
+				userRole.setIsExistedOrgGlobalUser(Constants.NO);
+			}
+			
 			if (employee.getHireDate() != null) {
 				userRole.setHireDateStr(commonUtil.dateStrFromOrgDateFormatter(orgLocations.getDateFormat(),employee.getHireDate()));
 			} else {
 				userRole.setHireDateStr("");
 			}
-
+			if(userRole != null) {
+				userRole.setTerminateDateStr(commonUtil.dateStrFromOrgDateFormatter(orgLocations.getDateFormat(),userRole.getTerminateDate()));
+			}
 			userRole.setDailyHours(employee.getDailyHours());
 			userRole.setUserEmploymentType(employee.getUserEmploymentType());
 			userRole.setDesignationOtherType(employee.getDesignationOtherType());
+			userRole.setSsn(userRole.getSsn());
+			if(userRole.getShift() != null) {
+				userRole.setShiftId(userRole.getShift().getId());
+				userRole.setShiftName(userRole.getShift().getShiftName());
+			}
 			
 			if(null != employee.getDepartmentId()){
 				userRole.setDepartment(employee.getDepartmentId().getId().toString());
@@ -709,20 +817,75 @@ public class UsersListRestController {
 			
 		}
 		
-		List<User> userList = userService.getManagersByUserIdAndUserRolesAndOrgLocationIdAndUserTabId(userRole.getUser().getId(), userRole.getRoles().getId(), orgLocations.getId(),Long.valueOf(Constants.TAB_USER));
-		 for (User user : userList) {
+		List<AssociateGrades> gradesList = associateGradesService.getAssociateGradesListByOrgLocationId(orgLocations.getId());
+		userRole.setGradesList(gradesList);
+		
+		List<User> reportingManagersList = new ArrayList<>();
+		List<User> userList = userService.getReportingManagersByUserRolesAndOrgLocationId(userRole.getRoles().getId(), orgLocations.getId());
+		List<User> globalUserList = userService.getGlobalReportingManagersUsersByOrgId(userRole.getRoles().getId(), org.getId()); 
+		if(userList != null && !userList.isEmpty()) {
+			reportingManagersList.addAll(userList);
+		}
+		if(globalUserList != null && !globalUserList.isEmpty()) {
+			reportingManagersList.addAll(globalUserList);
+		}
+		for (User user : reportingManagersList) {
 			    UserRole userRole1 = userRoleService.getUserRoleByUserIdAndLocationId(user.getId(), orgLocations.getId());
 				if(null != userRole1){
 					user.setUserType(userRole1.getUserType());
+				}else {
+					UserRole primaryRole = userRoleService.getLoginUserPrimaryRole(user.getId());
+					user.setUserType(primaryRole.getUserType());
 				}
+				
 		  }
-		 userRole.setAllReportingManagers(userList);
+		 userRole.setAllReportingManagers(reportingManagersList);
+		 
+		 
+		 List<User> resourceManagersList = userService.getResourceManagersByOrgLocationIdAndTabId(orgLocations.getId(),Long.valueOf(Constants.TAB_USER));
+		 for (User user : resourceManagersList) {
+			    UserRole ur = userRoleService.getUserRoleByUserIdAndLocationId(user.getId(), orgLocations.getId());
+			    user.setUserType(ur.getUserType());
+		  }
+		 userRole.setAllResourceManagers(resourceManagersList);
 		 
 		 //	old records currency changed code 
 		 Countries countries = countriesService.getCountriesByCountryName(orgLocations.getCountry());
-		 userRole.setCurrencyConversionWithCountry(countries.getCurrency());
 		 
-		 SourceleadActions action = sourceleadActionsService.getSourceleadActionsByActionRole(Constants.ROLE_CREATE_USER);
+		 if(countries !=null) {
+			 userRole.setCurrencyConversionWithCountry(countries.getCurrency());
+		 }
+		 
+
+		 if (userRole.getUser().getDateOfBirth() != null) {
+				userRole.setDateofBirthStr(commonUtil.dateStrFromOrgDateFormatter(orgLocations.getDateFormat(),userRole.getUser().getDateOfBirth()));
+			} else {
+				userRole.setDateofBirthStr("");
+			}
+
+		 
+		 List<OrgLocations> locationList = orgLocationService.getAllRegisteredWorkLocationsByOrgId(org.getId());
+		 userRole.setLocationList(locationList);
+		 
+		  Candidate candidate = candidateService.getCandidateByConsultantUserId(userId, orgLocations.getId());
+		  if(candidate != null) {
+			  if(candidate.getWorkLocation() != null) {
+				  userRole.setWorkLocationId(candidate.getWorkLocation().getId());
+				  userRole.setWorkLocation(candidate.getWorkLocation().getLocation());
+				  userRole.setResidenceAddress(candidate.getResidenceAddress());
+				  userRole.setResidenceCountry(candidate.getResidenceCountry());
+				  userRole.setResidenceState(candidate.getResidenceState());
+				  userRole.setResidenceCity(candidate.getResidenceCity());
+				  userRole.setResidenceZipCode(candidate.getResidenceZipCode());
+				  userRole.setResidenceLatitude(candidate.getResidenceLatitude());
+				  userRole.setResidenceLongitude(candidate.getResidenceLongitude());
+			  }
+			  
+		  }
+		  
+		 
+		 SourceleadActions action = sourceleadActionsService.getSourceleadActionsByActionRole(Constants.ROLE_CREATE_ASSOCIATE);
+
 		 List<SourceleadSectionDTO> sections  = sourceleadFormSectionsService.getSourceleadFormSectionsByActionId(action.getId(),orgLocations.getId());
 		 List<CustomFormFieldDTO> formFieldId = new ArrayList<>();
 		 if(sections != null && !sections.isEmpty()) {
@@ -734,20 +897,23 @@ public class UsersListRestController {
 				 }
 			 }
 			 if(formFieldId != null && !formFieldId.isEmpty() && userId != null) {
-			 List<UserCustomFieldData> userData = userCustomFieldDataService.getUserCustomFieldDataByUserId(userId,formFieldId);
-			 Map<String,String> dataMap = new HashMap<>();
+			 Map<Long, String[]> userData = userCustomFieldDataService.getUserCustomFieldDataByUserId(orgLocations.getOrg().getId(),formFieldId,userId);
+			 Map<Long,String> dataMap = new HashMap<>();
 			 if(userData!= null && !userData.isEmpty()) {
-				 for(UserCustomFieldData userCustomData:userData) {
-					 String labelName = userCustomData.getOrglocationsFormFields().getLabelName();
-					 String labelData = userCustomData.getCustomFormFieldData();
-					 dataMap.put(labelName, labelData);
+				 for(Entry<Long, String[]> userCustomData:userData.entrySet()) {
+					String labelName = userCustomData.getValue()[0];
+					 String labelData = userCustomData.getValue()[1];
+					 Long id = userCustomData.getKey();
+					 StringBuilder keyValue =  new StringBuilder();
+					 keyValue.append(labelName).append("$").append(labelData);
+					 dataMap.put(id, keyValue.toString());
 					 userRole.setUserCustomFieldlabelNameAndValue(dataMap);
 				 	}
 			 	}
 			 }
 		 }
-		resultJson = toJSON(userRole);
-		return resultJson;
+		//resultJson = toJSON(userRole);
+		return userRole;
 	}
 
 	@PreAuthorize("hasAnyRole('ROLE_VIEW_EDIT_ASSOCIATE','ROLE_VIEW_ASSOCIATE','ROLE_VIEW_DELETE_ASSOCIATE')")
@@ -790,6 +956,27 @@ public class UsersListRestController {
 		}
 
 		userRole.setReportingManagers(reportManagerUsersList);
+		
+		
+		
+	// To change resource manager
+			List<Long> resourceMgrUserIds = userRoleService.getAllAssignedUsersIdsByResourceManagerId(userId, orgLocations.getId());
+			userRole.setAssignedUsersCountToResourceManager(resourceMgrUserIds.size());
+			List<User> resourceManagerUsersList = new ArrayList<User>();
+			if (resourceMgrUserIds.size() > 0) {
+				resourceMgrUserIds.add(userId);
+				List<User> managerUsersList = userService.getTabAccessUsersByOrgLocationIdAndTabIdAndUsersIds(
+						orgLocations.getId(), resourceMgrUserIds, Long.valueOf(Constants.TAB_USER));
+				for (User user : managerUsersList) {
+					UserRole role = userRoleService.getUserRoleByUserIdAndLocationId(user.getId(), orgLocations.getId());
+					if (role != null) {
+						user.setUserType(role.getRoles().getDisplayName());
+						resourceManagerUsersList.add(user);
+					}
+				}
+			}
+
+			userRole.setResourceManagers(resourceManagerUsersList);
 
 		// To change client owner and spoc
 		List<Long> cleintSpocIds = orgSpocService.getAssignedAsClientOrVendorSpocCountByUserId(userId,
@@ -1021,7 +1208,29 @@ public class UsersListRestController {
 				}
 
 			}
+			
+			
+			
+			
+			
+			if (StringUtils.isNotBlank(addUserDTO.getAssignResourceManagers())) {
+				List<UserRole> userRolesList = userRoleService.getAllAssignedUsersByResourceManagerId(userId,
+						orgLocations.getId());
+				User resourceManager = new User();
+				resourceManager.setId(Long.valueOf(addUserDTO.getAssignResourceManagers()));
+				//List<Long> userIds = userRoleService.getAllAssignedUsersIdsByResourceManagerId(userId, orgLocations.getId());
+				if (null != userRolesList) {
+					for (UserRole roles : userRolesList) {
+						roles.setResourceManager(resourceManager);
+						roles.setUpdatedBy(user.getUserCode());
+						roles.setUpdatedDate(new Date());
+						userRoleService.addUserRole(roles);
+					}
+				}
 
+			}
+			
+			
 			if (StringUtils.isNotBlank(addUserDTO.getVendorUsers())) {
 				User clientOwnerOrUser = new User();
 				clientOwnerOrUser.setId(Long.valueOf(addUserDTO.getVendorUsers()));
@@ -1063,7 +1272,7 @@ public class UsersListRestController {
 						boolean flag = orgSpocService.getOwnerUserExistedByOrgRelationIdAndOwnerUserId(orgSpoc.getOrgRelations().getId(), vendorOwnerOrUser.getId());
 						
 						if(flag == false){
-							if((orgSpoc.getOrgRelations().getLocationId().getId().longValue() == orgLocations.getId().longValue())&&(orgSpoc.getVendorUser().getId()==orgSpoc.getOwnerUser().getId())){
+							if((orgSpoc.getOrgRelations().getLocationId().getId().longValue() == orgLocations.getId().longValue()) && (orgSpoc.getOwnerUser() != null && (orgSpoc.getVendorUser().getId() == orgSpoc.getOwnerUser().getId()))){
 								orgSpoc.setOwnerUser(vendorOwnerOrUser);
 								orgSpoc.setVendorUser(vendorOwnerOrUser);
 							}else{
@@ -1144,7 +1353,7 @@ public class UsersListRestController {
 
 			List<TeamMembers> teamMembersList = teamMembersService.getTeamMembersListByUserIdAndLocationId(userId,
 					orgLocations.getId());
-			if (null != teamMembersList) {
+			if (null != teamMembersList && !teamMembersList.isEmpty()) {
 				for (TeamMembers teamMembers : teamMembersList) {
 					teamMembers.setStatus("0");
 					teamMembers.setUpdatedBy(user.getUserCode());
@@ -1161,28 +1370,75 @@ public class UsersListRestController {
 						.getAllProjectsAssigendToUserByIdAndStatus(userId, Constants.MEMBER_ACTIVE);
 				if (null != projectmembersList) {
 					for (ProjectMembers pm : projectmembersList) {
-
-						ProjectMembersHistory projectMembersHistory = projectMembersHistoryService
-								.getProjectMembersOpenHistoryByProjectMemberId(pm.getId());
-
-						if (null != projectMembersHistory) {
-							projectMembersHistory.setProjectTerminationDate(new Date());
-							projectMembersHistoryService.updateProjectMembersHistory(projectMembersHistory);
-						}
-
-						commonUtil.terminateProjectMemberByProjectMemberId(pm.getId(), Primary.Yes);
-
-						List<TimesheetSubmissions> submissionsList = timesheetSubmissionsService
-								.getTimeSheetSubmissionByProjectMemberId(pm.getId());
-						if (null != submissionsList) {
-							for (TimesheetSubmissions submissions : submissionsList) {
-								submissions.setStatus(Constants.MEMBER_IN_ACTIVE);
-								submissions.setUpdatedBy(user.getUserCode());
-								submissions.setUpdatedDate(new Date());
-								timesheetSubmissionsService.addTimesheetSubmissions(submissions);
-							}
-						}
-
+						   try {
+							   List<ProjectMembers> pmList = projectMembersService.getAllProjectMembersByMasterCandidateId(pm.getMasterCandidateId().getId(), pm.getProjects().getId());
+						  	 // ProjectMembers projectMembers =	projectMembersService.getProjectMemberById(projectMemberId);
+						  	 if(pmList != null && !pmList.isEmpty()) {
+							   for(ProjectMembers projectMembers: pmList) {
+							  		  String status = Constants.MEMBER_IN_ACTIVE;
+								  	  projectMembers.setTerminateReason(addUserDTO.getTerminateReason());
+									  projectMembers.setUpdatedDate(new Date());
+									  projectMembers.setUpdatedBy(user.getUserCode());
+									  projectMembers.setStatus(status);
+									  projectMembersService.saveProjectMember(projectMembers);
+								  	  
+									  List<ProjectMembersHistory> pmhList = projectMembersHistoryService.getProjectMembersHistoryListByProjectMemberId(projectMembers.getId());
+									  int sendEmailCount = 1;
+									  if(pmhList != null && pmhList.size() > 0){
+										  for(ProjectMembersHistory pmh : pmhList){
+											  pmh.setProjectTerminationDate(new Date());
+											  pmh.setUpdatedDate(new Date());
+											  pmh.setUpdatedBy(user.getUserCode());
+											  pmh.setStatus(Constants.PROJECT_MEMBER_HISTORY_CLOSED);
+											  pmh =  projectMembersHistoryService.updateProjectMembersHistory(pmh);
+											  if(sendEmailCount == 1){
+												  commonUtil.terminatedMailToEmployee(user,pmh,orgLocations);
+											  }
+											  
+											  if(pmh.getProjectMemberId().getProjectClientsId().getOrgLocationsId().getId().equals(orgLocations.getId())){
+												   /*List<ProjectApproverHierarchy>  mangerList = projectApproverHierarchyService.getApproverUsersByProjectId(pmh.getProjectMemberId().getProjects().getId());
+												      for(ProjectApproverHierarchy pah : mangerList){
+												    	  if(user.getId() != pah.getApproverUserId().getId()){
+												    		  employeeTerminationMailToProjectManager(user,pmh,orgLocations);
+												    	  }
+												      }*/
+												  commonUtil.employeeTerminationMailToProjectManager(user,pmh,orgLocations);
+											  }else{
+												  commonUtil.employeeTerminationMailToProjectManager(pmh.getProjectMemberId().getProjectClientsId().getOrgLocationsId().getUser(),pmh,pmh.getProjectMemberId().getProjectClientsId().getOrgLocationsId());
+											  }
+											  commonUtil.inactivateTimesheetSubmissionsBasedOnMemberIdAndMemberTerminationDate(pm.getId(),new Date());
+											  sendEmailCount = sendEmailCount+1;
+										  }
+									  }
+									  
+									  
+									  
+									 /* ProjectMembersHistory pmh = projectMembersHistoryService.getProjectMembersOpenHistoryByProjectMemberId(projectMembers.getId());
+									  if(pmh != null){
+										  pmh.setProjectTerminationDate(new Date());
+										  pmh.setUpdatedDate(new Date());
+										  pmh.setUpdatedBy(user.getUserCode());
+										  pmh.setStatus(Constants.PROJECT_MEMBER_HISTORY_CLOSED);
+										  pmh =  projectMembersHistoryService.updateProjectMembersHistory(pmh);
+									  }
+									  
+									  commonUtil.terminateProjectMemberByProjectMemberId(projectMemberId,Primary.Yes);
+								      updatedCount = 1;*/
+								      
+								   if(null != pm.getProjects() && pm.getProjects().getId() != null){
+										Projects projects = projectsService.getProjectById(pm.getProjects().getId());
+										if(null != projects){
+											Collection<ProjectMembers> projectMembersList = projectMembersService.getAllProjectMembersByProjectId(pm.getProjects().getId());
+											ProjectsIndex projectsIndex = projectsIndexHelper.getProjectsIndexFromProjects(projects, null, projectMembersList);
+											//Elastic Search Document Saving
+											sourceleadELKBaseIndexer.saveOrUpdateElkDocument(projectsIndex, Constants.ELK_PROJECT_INDEX, Constants.ELK_PROJECT_TYPE,projects.getId().toString());
+										}
+								   }
+						  	  }
+						  	 }
+						    } catch (Exception e) {
+						   }
+					    
 					}
 				}
 			}
@@ -1227,6 +1483,7 @@ public class UsersListRestController {
 			userRole.setPreviousUserState(userRole.getUserState());
 			userRole.setUserState(Status.INACTIVE);
 			userRole.setTerminateReason(addUserDTO.getReason());
+			userRole.setTerminateDate(commonUtil.orgLocationDateFormat(orgLocations.getDateFormat(),  addUserDTO.getTerminateDate()));
 			userRole.setUpdatedBy(user.getUserCode());
 			userRole.setUpdatedDate(commonUtil.currentDate());
 						
@@ -1312,36 +1569,16 @@ public class UsersListRestController {
 	         StringBuilder loginBuilder = new StringBuilder();
 			 globalVarsMap.put("loginURL",loginBuilder.append("<a href='").append(sourceleadLoginUrl).append("' style='text-decoration:none; '><div style=' width:220px; border-radius:30px; background-color:#214b90; color:#FFF; font-size:18px; font-weight:500; margin:10px auto 5px auto; padding:10px 0px; text-align:center; letter-spacing:2px;'>Login</div></a>").toString());
 		  
-	         InternetAddress[] iAdressArray = InternetAddress.parse(emailMessage.getToEmail());
-	
-	         
 	          //getting the current EmailScenario by EmailScenario unique name and entity type
-	         EmailScenario  emailScenario = emailScenarioService.getEmailScenarioByUniqueName(Constants.USERTERMINATEDEMAIL,Constants.ENTITY_TYPE_EMAIL);
 	         EmailScenario  notificationScenario = emailScenarioService.getEmailScenarioByUniqueName(Constants.USERTERMINATEDNOTIFICATIONEMAIL,Constants.ENTITY_TYPE_NOTIFICATION);
-
-	        
-	         //covert subject,body and signature
-	         String subject = emailScenerioUtil.bulidSubject(emailScenario.getSubject(),globalVarsMap);
-	         String body = emailScenerioUtil.buildTempBody(emailScenario.getBody(),globalVarsMap);
-	         String signature = emailScenerioUtil.buildSignature(emailScenario.getSignature(),globalVarsMap);
-	         String url = sourceleadUrl;
-	        
-	         String notificationbody = emailScenerioUtil.buildTempBody(notificationScenario.getBody(),globalVarsMap);
+	         String notificationbody = emailScenerioUtil.buildTemplateBody(notificationScenario.getBody(),globalVarsMap,notificationScenario);
 	         notificationScenario.setBody(notificationbody);
-
-	        
-	        // OrgLocations vendorOrgLoc = requirement.getSpocId().getVendorLocationId();
-
-	        
-	         //construct HTML template using required data
-	         String emailTemplate = emailScenerioUtil.AssembleEmailMessage(emailScenario,emailMessage, subject, body, signature, url, orgLocations.getOrg(),orgLocations);
-	         emailMessage.setSubject(subject);
-	         emailMessage.setMessageBody(emailTemplate);
 	        
 	         //calling the sendEmail method of emailScenerioUtil
-	         emailScenerioUtil.sendEmail(emailMessage,orgLocations.getId(),iAdressArray,new ArrayList<EmailAttachment>());
+	         commonUtil.sendTemplateEmail(emailMessage, globalVarsMap,userRole.getOrgLocations().getOrg(),userRole.getOrgLocations(),Constants.USERTERMINATEDEMAIL,new ArrayList<EmailAttachment>());
+
 	         String actionLink="";
-	       emailScenerioUtil.sendNotification(actionLink, userRole.getUser(), user, orgLocations, notificationScenario);
+	       emailScenerioUtil.sendNotification(actionLink, userRole.getUser(), user, orgLocations, notificationScenario,new HashMap<String,String>());
 
 }
 	private void assignedNewUserAsaManager(User loginUser, Requirement requirement, Long userId, OrgLocations orgLocations, Integer requirementsCountAsManager2) throws Exception {
@@ -1369,37 +1606,34 @@ public class UsersListRestController {
 			 globalVarsMap.put("assignedUser", assignedUserName.append(req.getManagerUserId().getFirstName()).toString());
 		 }
 		 globalVarsMap.put("reqCount", requirementsCountAsManager2.toString());
-		 globalVarsMap.put("terminatedUser",termentaedUserName.getFirstName());
+		 
+		 StringBuilder terminatedUserName = new StringBuilder();
+		 
+		 if(termentaedUserName.getLastName() != null) {
+			 globalVarsMap.put("terminatedUser", terminatedUserName.append(termentaedUserName.getFirstName()).append(" ").append(termentaedUserName.getLastName()).toString());
+		 }else {
+			 globalVarsMap.put("terminatedUser", terminatedUserName.append(termentaedUserName.getFirstName()).toString());
+		 }
+		 
+		// globalVarsMap.put("terminatedUser",termentaedUserName.getFirstName());
+		 
 		 StringBuilder loginBuilder = new StringBuilder();
 		 globalVarsMap.put("loginURL",loginBuilder.append("<a href='").append(sourceleadLoginUrl).append("' style='text-decoration:none; '><div style=' width:220px; border-radius:30px; background-color:#214b90; color:#FFF; font-size:18px; font-weight:500; margin:10px auto 5px auto; padding:10px 0px; text-align:center; letter-spacing:2px;'>Login</div></a>").toString());
 	  
 	
-	 InternetAddress[] iAdressArray = InternetAddress.parse(emailMessage.getToEmail());
-	
 	 //getting the current EmailScenario by EmailScenario unique name and entity type
 	 //using same migration which has been already used in updatedRequirementMailToManager method
-	 EmailScenario  emailScenario = emailScenarioService.getEmailScenarioByUniqueName(Constants.USER_NEW_ACTION_ASSIGNED,Constants.ENTITY_TYPE_EMAIL);
  EmailScenario  notificationScenario = emailScenarioService.getEmailScenarioByUniqueName(Constants.USER_NEW_ACTION_ASSIGNED_NOTIFICATION,Constants.ENTITY_TYPE_NOTIFICATION);
 
-	 
-	 //covert subject,body and signature
-	 String subject = emailScenerioUtil.bulidSubject(emailScenario.getSubject(),globalVarsMap);
-	 String body = emailScenerioUtil.buildTempBody(emailScenario.getBody(),globalVarsMap);
-	 String signature = emailScenerioUtil.buildSignature(emailScenario.getSignature(),globalVarsMap);
-	 String url = sourceleadUrl;
-	 
-	 String notificationbody = emailScenerioUtil.buildTempBody(notificationScenario.getBody(),globalVarsMap);
+	 String notificationbody = emailScenerioUtil.buildTemplateBody(notificationScenario.getBody(),globalVarsMap,notificationScenario);
 	 notificationScenario.setBody(notificationbody);
 
-	 //construct HTML template using required data
-	 String emailTemplate = emailScenerioUtil.AssembleEmailMessage(emailScenario,emailMessage, subject, body, signature, url, orgLocations.getOrg(),orgLocations);
-	 emailMessage.setSubject(subject);
-	 emailMessage.setMessageBody(emailTemplate);
 	 
 	 //calling the sendEmail method of emailScenerioUtil
-	 emailScenerioUtil.sendEmail(emailMessage,orgLocations.getId(),iAdressArray,new ArrayList<EmailAttachment>());
+	commonUtil.sendTemplateEmail(emailMessage, globalVarsMap,orgLocations.getOrg(),orgLocations,Constants.USER_NEW_ACTION_ASSIGNED,new ArrayList<EmailAttachment>());
+
 	 String actionLink="";
-	 emailScenerioUtil.sendNotification(actionLink,loginUser, req.getManagerUserId(), orgLocations, notificationScenario);
+	 emailScenerioUtil.sendNotification(actionLink,loginUser, req.getManagerUserId(), orgLocations, notificationScenario,new HashMap<String,String>());
 	}
 	
 	
@@ -1439,32 +1673,22 @@ public class UsersListRestController {
 		  
 		  
 		
-		 InternetAddress[] iAdressArray = InternetAddress.parse(emailMessage.getToEmail());
 		
 		 //getting the current EmailScenario by EmailScenario unique name and entity type
 		 //using same migration which has been already used in updatedRequirementMailToManager method
-		 EmailScenario  emailScenario = emailScenarioService.getEmailScenarioByUniqueName(Constants.USER_NEW_ACTION_ASSIGNED_As_A_Approver,Constants.ENTITY_TYPE_EMAIL);
 		 EmailScenario  notificationScenario = emailScenarioService.getEmailScenarioByUniqueName(Constants.USER_NEW_ACTION_ASSIGNED_As_A_Approver,Constants.ENTITY_TYPE_NOTIFICATION);
 	
 		 
-		 //covert subject,body and signature
-		 String subject = emailScenerioUtil.bulidSubject(emailScenario.getSubject(),globalVarsMap);
-		 String body = emailScenerioUtil.buildTempBody(emailScenario.getBody(),globalVarsMap);
-		 String signature = emailScenerioUtil.buildSignature(emailScenario.getSignature(),globalVarsMap);
-		 String url = sourceleadUrl;
 		 
-		 String notificationbody = emailScenerioUtil.buildTempBody(notificationScenario.getBody(),globalVarsMap);
+		 String notificationbody = emailScenerioUtil.buildTemplateBody(notificationScenario.getBody(),globalVarsMap,notificationScenario);
 		 notificationScenario.setBody(notificationbody);
 	
-		 //construct HTML template using required data
-		 String emailTemplate = emailScenerioUtil.AssembleEmailMessage(emailScenario,emailMessage, subject, body, signature, url, orgLocations.getOrg(),orgLocations);
-		 emailMessage.setSubject(subject);
-		 emailMessage.setMessageBody(emailTemplate);
 		 
 		 //calling the sendEmail method of emailScenerioUtil
-		 emailScenerioUtil.sendEmail(emailMessage,orgLocations.getId(),iAdressArray,new ArrayList<EmailAttachment>());
+		 commonUtil.sendTemplateEmail(emailMessage, globalVarsMap,orgLocations.getOrg(),orgLocations,Constants.USER_NEW_ACTION_ASSIGNED_As_A_Approver,new ArrayList<EmailAttachment>());
+		 
 		 String actionLink="";
-		 emailScenerioUtil.sendNotification(actionLink, loginUser, abc.getApproverUserId(), orgLocations, notificationScenario);
+		 emailScenerioUtil.sendNotification(actionLink, loginUser, abc.getApproverUserId(), orgLocations, notificationScenario,new HashMap<String,String>());
 		}
 	
 	
@@ -1493,34 +1717,18 @@ public class UsersListRestController {
 			 StringBuilder loginBuilder = new StringBuilder();
 			 globalVarsMap.put("loginURL",loginBuilder.append("<a href='").append(sourceleadLoginUrl).append("' style='text-decoration:none; '><div style=' width:220px; border-radius:30px; background-color:#214b90; color:#FFF; font-size:18px; font-weight:500; margin:10px auto 5px auto; padding:10px 0px; text-align:center; letter-spacing:2px;'>Login</div></a>").toString());
 		  
-		  
-		
-		 InternetAddress[] iAdressArray = InternetAddress.parse(emailMessage.getToEmail());
-		
 		 //getting the current EmailScenario by EmailScenario unique name and entity type
 		 //using same migration which has been already used in updatedRequirementMailToManager method
-		 EmailScenario  emailScenario = emailScenarioService.getEmailScenarioByUniqueName(Constants.USER_NEW_ACTION_ASSIGNED_As_A_REPORTING_MANAGER,Constants.ENTITY_TYPE_EMAIL);
 		 EmailScenario  notificationScenario = emailScenarioService.getEmailScenarioByUniqueName(Constants.USER_NEW_ACTION_ASSIGNED_As_A_REPORTING_MANAGER,Constants.ENTITY_TYPE_NOTIFICATION);
 	
-		 
-		 //covert subject,body and signature
-		 String subject = emailScenerioUtil.bulidSubject(emailScenario.getSubject(),globalVarsMap);
-		 String body = emailScenerioUtil.buildTempBody(emailScenario.getBody(),globalVarsMap);
-		 String signature = emailScenerioUtil.buildSignature(emailScenario.getSignature(),globalVarsMap);
-		 String url = sourceleadUrl;
-		 
-		 String notificationbody = emailScenerioUtil.buildTempBody(notificationScenario.getBody(),globalVarsMap);
+		 String notificationbody = emailScenerioUtil.buildTemplateBody(notificationScenario.getBody(),globalVarsMap,notificationScenario);
 		 notificationScenario.setBody(notificationbody);
 	
-		 //construct HTML template using required data
-		 String emailTemplate = emailScenerioUtil.AssembleEmailMessage(emailScenario,emailMessage, subject, body, signature, url, orgLocations.getOrg(),orgLocations);
-		 emailMessage.setSubject(subject);
-		 emailMessage.setMessageBody(emailTemplate);
-		 
 		 //calling the sendEmail method of emailScenerioUtil
-		 emailScenerioUtil.sendEmail(emailMessage,orgLocations.getId(),iAdressArray,new ArrayList<EmailAttachment>());
+			commonUtil.sendTemplateEmail(emailMessage, globalVarsMap,orgLocations.getOrg(),orgLocations,Constants.USER_NEW_ACTION_ASSIGNED_As_A_REPORTING_MANAGER,new ArrayList<EmailAttachment>());
+
 		 String actionLink="";
-		 emailScenerioUtil.sendNotification(actionLink, loginUser, assUserName, orgLocations, notificationScenario);
+		 emailScenerioUtil.sendNotification(actionLink, loginUser, assUserName, orgLocations, notificationScenario,new HashMap<String,String>());
 		}
 	
 	
@@ -1546,34 +1754,18 @@ public class UsersListRestController {
 			 StringBuilder loginBuilder = new StringBuilder();
 			 globalVarsMap.put("loginURL",loginBuilder.append("<a href='").append(sourceleadLoginUrl).append("' style='text-decoration:none; '><div style=' width:220px; border-radius:30px; background-color:#214b90; color:#FFF; font-size:18px; font-weight:500; margin:10px auto 5px auto; padding:10px 0px; text-align:center; letter-spacing:2px;'>Login</div></a>").toString());
 		  
-		  
-		
-		 InternetAddress[] iAdressArray = InternetAddress.parse(emailMessage.getToEmail());
-		
 		 //getting the current EmailScenario by EmailScenario unique name and entity type
 		 //using same migration which has been already used in updatedRequirementMailToManager method
-		 EmailScenario  emailScenario = emailScenarioService.getEmailScenarioByUniqueName(Constants.USER_NEW_ACTION_ASSIGNED_As_A_TEAM_OWNER,Constants.ENTITY_TYPE_EMAIL);
 		 EmailScenario  notificationScenario = emailScenarioService.getEmailScenarioByUniqueName(Constants.USER_NEW_ACTION_ASSIGNED_As_A_TEAM_OWNER,Constants.ENTITY_TYPE_NOTIFICATION);
 	
-		 
-		 //covert subject,body and signature
-		 String subject = emailScenerioUtil.bulidSubject(emailScenario.getSubject(),globalVarsMap);
-		 String body = emailScenerioUtil.buildTempBody(emailScenario.getBody(),globalVarsMap);
-		 String signature = emailScenerioUtil.buildSignature(emailScenario.getSignature(),globalVarsMap);
-		 String url = sourceleadUrl;
-		 
-		 String notificationbody = emailScenerioUtil.buildTempBody(notificationScenario.getBody(),globalVarsMap);
+		 String notificationbody = emailScenerioUtil.buildTemplateBody(notificationScenario.getBody(),globalVarsMap,notificationScenario);
 		 notificationScenario.setBody(notificationbody);
 	
-		 //construct HTML template using required data
-		 String emailTemplate = emailScenerioUtil.AssembleEmailMessage(emailScenario,emailMessage, subject, body, signature, url, orgLocations.getOrg(),orgLocations);
-		 emailMessage.setSubject(subject);
-		 emailMessage.setMessageBody(emailTemplate);
-		 
 		 //calling the sendEmail method of emailScenerioUtil
-		 emailScenerioUtil.sendEmail(emailMessage,orgLocations.getId(),iAdressArray,new ArrayList<EmailAttachment>());
+		 commonUtil.sendTemplateEmail(emailMessage, globalVarsMap,orgLocations.getOrg(),orgLocations,Constants.USER_NEW_ACTION_ASSIGNED_As_A_TEAM_OWNER,new ArrayList<EmailAttachment>());
+
 		 String actionLink="";
-		 emailScenerioUtil.sendNotification(actionLink, loginUser, assUserName, orgLocations, notificationScenario);
+		 emailScenerioUtil.sendNotification(actionLink, loginUser, assUserName, orgLocations, notificationScenario,new HashMap<String,String>());
 		}
 	
 	
@@ -1756,65 +1948,50 @@ public class UsersListRestController {
 			if (null != employee) {
 				userService.saveOrUpdateUserElkDocument(userRole, employee, user.getUserCode());
 			}
-
+			int updated = associateBalanceLeaveService.updateAssociateBalanceLeaves(userRole.getUser(), orgLocations, employee, userRole);
 		}
-
+		
 		return "success";
 	}
 
 	
-	private void userRoleUpdateMail(User loginUser, UserRole userRole, OrgLocations loginOrgLocation,String existingRole) throws Exception {
+	private void userRoleUpdateMail(User loginUser, UserRole userRole, OrgLocations loginOrgLocation, String existingRole) throws Exception
+	{
+		EmailMessage emailMessage = new EmailMessage();
+		emailMessage.setFirstName(loginUser.getFirstName());
+		emailMessage.setLastName(loginUser.getLastName());
+		emailMessage.setToEmail(userRole.getUser().getEmail());
+		emailMessage.setFromEmail(loginUser.getEmail());
+		emailMessage.setCreatedBy(loginUser.getUserCode());
 		
-	 EmailMessage emailMessage = new EmailMessage();
-	 emailMessage.setFirstName(loginUser.getFirstName());
-	 emailMessage.setLastName(loginUser.getLastName());
-	 emailMessage.setToEmail(userRole.getUser().getEmail());
-	 emailMessage.setFromEmail(loginUser.getEmail());
-	 emailMessage.setCreatedBy(loginUser.getUserCode());
-	 emailMessage.setEmailType(Constants.CUSTOM_USER_EMAIL);
-	// StringBuilder msgBuild = new StringBuilder();
-	// emailMessage.setFromName(msgBuild.append(loginUser.getFirstName()).append(" ").append(loginUser.getLastName()).toString());
-	// emailMessage.setEmailType(Constants.CUSTOM_USER_EMAIL);
-	//setting the class filed values
-	 Map<String, String> globalVarsMap = new HashMap<String, String>();
-	 StringBuilder stringBuildername = new StringBuilder();
+		emailMessage.setEmailType(Constants.CUSTOM_USER_EMAIL);
+		// StringBuilder msgBuild = new StringBuilder();
+		// emailMessage.setFromName(msgBuild.append(loginUser.getFirstName()).append("
+		// ").append(loginUser.getLastName()).toString());
+		// emailMessage.setEmailType(Constants.CUSTOM_USER_EMAIL);
+		// setting the class filed values
+		Map<String, String> globalVarsMap = new HashMap<String, String>();
+		StringBuilder stringBuildername = new StringBuilder();
 		globalVarsMap.put("FirstName", stringBuildername.append(userRole.getUser().getFirstName()).append(" ").append(userRole.getUser().getLastName()).toString());
 		globalVarsMap.put("CurrentRole", userRole.getUserType());
 		globalVarsMap.put("ExistingRole", existingRole);
 		StringBuilder stringBuilderLoginname = new StringBuilder();
 		globalVarsMap.put("LoginUser", stringBuilderLoginname.append(loginUser.getFirstName()).append(" ").append(loginUser.getLastName()).toString());
-	 
 		StringBuilder stringBuildforLink = new StringBuilder();
-		globalVarsMap.put("Loginlink",stringBuildforLink.append("<a href='").append(sourceleadLoginUrl).append("' style='text-decoration:none; '><div style=' width:220px; border-radius:30px; background-color:#214b90; color:#FFF; font-size:18px; font-weight:500; margin:10px auto 5px auto; padding:10px 0px; text-align:center; letter-spacing:2px;'>Login</div></a>").toString());
-
-	 InternetAddress[] iAdressArray = InternetAddress.parse(emailMessage.getToEmail());
-	
-	 //getting the current EmailScenario by EmailScenario unique name and entity type
-	 //using same migration which has been already used in updatedRequirementMailToManager method
-	 EmailScenario  emailScenario = emailScenarioService.getEmailScenarioByUniqueName(Constants.UPDATED_USER_ROLE_EMAIL,Constants.ENTITY_TYPE_EMAIL);
-	 EmailScenario  notificationScenario = emailScenarioService.getEmailScenarioByUniqueName(Constants.UPDATED_USER_ROLE_NOTIFICATION,Constants.ENTITY_TYPE_NOTIFICATION);
-
-	 
-	 //covert subject,body and signature
-	 String subject = emailScenerioUtil.bulidSubject(emailScenario.getSubject(),globalVarsMap);
-	 String body = emailScenerioUtil.buildTempBody(emailScenario.getBody(),globalVarsMap);
-	 String signature = emailScenerioUtil.buildSignature(emailScenario.getSignature(),globalVarsMap);
-	 String url = sourceleadUrl;
-	 
-	 String notificationbody = emailScenerioUtil.buildTempBody(notificationScenario.getBody(),globalVarsMap);
-	 notificationScenario.setBody(notificationbody);
-
-	 //construct HTML template using required data
-	 String emailTemplate = emailScenerioUtil.AssembleEmailMessage(emailScenario,emailMessage, subject, body, signature, url, loginOrgLocation.getOrg(),loginOrgLocation);
-	 emailMessage.setSubject(subject);
-	 emailMessage.setMessageBody(emailTemplate);
-	 
-	 //calling the sendEmail method of emailScenerioUtil
-	 emailScenerioUtil.sendEmail(emailMessage,loginOrgLocation.getId(),iAdressArray,new ArrayList<EmailAttachment>());
-	 String actionLink="";
-	 emailScenerioUtil.sendNotification(actionLink, loginUser,  userRole.getUser(), loginOrgLocation, notificationScenario);
-	}
-		
+		globalVarsMap.put("Loginlink", stringBuildforLink.append("<a href='").append(sourceleadLoginUrl).append("' style='text-decoration:none; '><div style=' width:220px; border-radius:30px; background-color:#214b90; color:#FFF; font-size:18px; font-weight:500; margin:10px auto 5px auto; padding:10px 0px; text-align:center; letter-spacing:2px;'>Login</div></a>").toString());
+		// getting the current EmailScenario by EmailScenario unique name and
+		// entity type
+		// using same migration which has been already used in
+		// updatedRequirementMailToManager method
+		EmailScenario notificationScenario = emailScenarioService.getEmailScenarioByUniqueName(Constants.UPDATED_USER_ROLE_NOTIFICATION, Constants.ENTITY_TYPE_NOTIFICATION);
+		// covert subject,body and signature
+		String notificationbody = emailScenerioUtil.buildTemplateBody(notificationScenario.getBody(), globalVarsMap, notificationScenario);
+		notificationScenario.setBody(notificationbody);
+		// calling the sendEmail method of emailScenerioUtil
+		commonUtil.sendTemplateEmail(emailMessage, globalVarsMap, userRole.getOrgLocations().getOrg(), userRole.getOrgLocations(), Constants.UPDATED_USER_ROLE_EMAIL,new ArrayList<EmailAttachment>());
+		String actionLink = "";
+		emailScenerioUtil.sendNotification(actionLink, loginUser, userRole.getUser(), loginOrgLocation, notificationScenario, new HashMap<String, String>());
+	}		
 	
 	
 	private void pointOfContactChangedMial(User loginUser, OrgLocations loginOrgLocation,OrgSpoc orgSpoc,String type,String spocOwnerName,User SpocOwner) throws Exception {
@@ -1844,27 +2021,9 @@ public class UsersListRestController {
 			globalVarsMap.put("loginUser", loginUser.getFullName());
 			globalVarsMap.put("loginOrgName", loginOrgLocation.getOrgLocationName());
 
-		    InternetAddress[] iAdressArray = InternetAddress.parse(emailMessage.getToEmail());
-		
-		 //getting the current EmailScenario by EmailScenario unique name and entity type
-		 //using same migration which has been already used in updatedRequirementMailToManager method
-		 EmailScenario  emailScenario = emailScenarioService.getEmailScenarioByUniqueName(Constants.UPDATED_SPOC_CONTACT,Constants.ENTITY_TYPE_EMAIL);
-
-		 
-		 //covert subject,body and signature
-		 String subject = emailScenerioUtil.bulidSubject(emailScenario.getSubject(),globalVarsMap);
-		 String body = emailScenerioUtil.buildTempBody(emailScenario.getBody(),globalVarsMap);
-		 String signature = emailScenerioUtil.buildSignature(emailScenario.getSignature(),globalVarsMap);
-		 String url = sourceleadUrl;
-		 
-
-		 //construct HTML template using required data
-		 String emailTemplate = emailScenerioUtil.AssembleEmailMessage(emailScenario,emailMessage, subject, body, signature, url, loginOrgLocation.getOrg(),loginOrgLocation);
-		 emailMessage.setSubject(subject);
-		 emailMessage.setMessageBody(emailTemplate);
 		 
 		 //calling the sendEmail method of emailScenerioUtil
-		 emailScenerioUtil.sendEmail(emailMessage,loginOrgLocation.getId(),iAdressArray,new ArrayList<EmailAttachment>());
+		 commonUtil.sendTemplateEmail(emailMessage, globalVarsMap,loginOrgLocation.getOrg(),loginOrgLocation,Constants.UPDATED_SPOC_CONTACT,new ArrayList<EmailAttachment>());
 		}
 	
 	/**
@@ -1879,15 +2038,14 @@ public class UsersListRestController {
 	@PreAuthorize("hasRole('ROLE_VIEW_EDIT_ASSOCIATE')")
 	@RequestMapping(value = "/updateUser", method = RequestMethod.POST)
 	@ResponseBody
-	String updateUser(AddUserDTO addUserDTO,
-			@RequestParam(value = "userId", required = false) Long userId,
+	String updateUser(AddUserDTO addUserDTO,@RequestParam(value = "userId", required = false) Long userId,
 			@RequestParam(value = "emailId", required = false) String emailId, HttpServletRequest request)
 			throws Exception {
-
+		if(Validator.validate(addUserDTO)){
 		User loginUser = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
 		OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,
 				"orgLocations");
-
+		addUserDTO.setDateFormat(orgLocations.getDateFormat());
 		User user = userService.getUserById(userId);
 		UserRole userRole = userRoleService.getUserRoleByUserIdAndLocationId(user.getId(), orgLocations.getId());
 
@@ -1897,11 +2055,16 @@ public class UsersListRestController {
 		boolean isUserActive = false;
 		//SimpleDateFormat simpleDateFormat = orgLocations.getLocFullFormDateFormatter();
 		addUserDTO.setDateFormat(orgLocations.getDateFormat());
+		User updatedUser = null;
 		if (user != null) {
 			user.setFirstName(addUserDTO.getFirstName());
 			user.setLastName(addUserDTO.getLastName());
+			user.setMiddelName(addUserDTO.getMiddleName());
+			user.setGender(addUserDTO.getGender());
+			user.setMaritalStatus(addUserDTO.getMaritalStatus());
 			user.setMobilePhone(addUserDTO.getPhoneNumber());
 			user.setExtensionNumber(addUserDTO.getExtensionNumber());
+			
 			if (StringUtils.isNotBlank(addUserDTO.getReportingManager())) {
 				User reportingManager = new User();
 				reportingManager.setId(Long.parseLong(addUserDTO.getReportingManager()));
@@ -1909,6 +2072,35 @@ public class UsersListRestController {
 			} else {
 				userRole.setReportingManager(null);
 			}
+
+			if(StringUtils.isNotBlank(addUserDTO.getDateofBirth())){
+				try {
+					user.setDateOfBirth(commonUtil.orgLocationDateFormat(addUserDTO.getDateFormat(), addUserDTO.getDateofBirth()));
+					  
+					} catch (Exception e) {
+					  e.printStackTrace();
+					}
+			}else{
+				user.setDateOfBirth(null);
+			}
+
+			
+			if(StringUtils.isNotBlank(addUserDTO.getDesignation())){
+				userRole.setDesignation(addUserDTO.getDesignation());
+			}
+			
+			if(StringUtils.isNotBlank(addUserDTO.getResourceManager())){
+				User resourceManager = new User();
+				resourceManager.setId(Long.parseLong(addUserDTO.getResourceManager()));
+				userRole.setResourceManager(resourceManager);
+			}
+			
+			if(StringUtils.isNotBlank(addUserDTO.getShiftId())){
+				Shift shift = new Shift();
+				shift.setId(Long.parseLong(addUserDTO.getShiftId()));
+				userRole.setShift(shift);
+			}
+
 
 			isUserActive = userRoleService.isUserActive(user.getId());
 			if (isUserActive == false && !emailId.equalsIgnoreCase(addUserDTO.getEmail())) {
@@ -1923,20 +2115,51 @@ public class UsersListRestController {
 			user.setUpdatedDate(commonUtil.currentDate());
 			userRole.setUpdatedBy(loginUser.getUserCode());
 			userRole.setUpdatedDate(commonUtil.currentDate());
-			User updatedUser = userService.addUser(user);
+			String existingUserEmail = null;
 			
-			if(addUserDTO.getCustomFormData() != null){
+			if(isUserActive == true && !user.getEmail().equalsIgnoreCase(addUserDTO.getEmail())) {
+				existingUserEmail = user.getEmail();
+				user.setEmail(addUserDTO.getEmail());
+				user.setUserName(addUserDTO.getEmail());
+			}
+			updatedUser = userService.addUser(user);
+			
+			if(StringUtils.isNotBlank(existingUserEmail)) {
+				userService.sendEmailToUserForEmailUpdation(updatedUser, loginUser, orgLocations, existingUserEmail, existingUserEmail);
+				userService.sendEmailToUserForEmailUpdation(updatedUser, loginUser, orgLocations, user.getEmail(), existingUserEmail);
+			}
+			
+			if(StringUtils.isNotBlank(addUserDTO.getIsGlobalAccess()) && addUserDTO.getIsGlobalAccess().equalsIgnoreCase(Constants.YES)) {
+				userRole.setIsGlobal(Constants.YES);
+			}else {
+				userRole.setIsGlobal(Constants.NO);
+			}
+			
+			if(StringUtils.isNotBlank(addUserDTO.getGrade())) {
+				AssociateGrades grades = new AssociateGrades();
+				grades.setId(Long.valueOf(addUserDTO.getGrade()));
+				userRole.setGradeId(grades);
+			}else {
+				userRole.setGradeId(null);
+			}
+			
+			if(addUserDTO.getCustomFormData() !=null) {
 				for( CustomFormFieldDTO customFields:addUserDTO.getCustomFormData()) {
-					if(customFields.getCustomFormFieldId() > 0 &&StringUtils.isNotEmpty(customFields.getCustomFormFieldData())) {
-					UserCustomFieldData userCustomFields = new UserCustomFieldData();
+					if(customFields!= null && customFields.getCustomFormFieldId() > 0 ) {
+						UserCustomFieldData userCustomFields = null;
+						if(customFields.getEntityId()!= null && customFields.getEntityId() > 0) {
+							userCustomFields = userCustomFieldDataService.getUserCustomFieldDataById(customFields.getEntityId());
+						}else {
+							userCustomFields = new UserCustomFieldData();
+						}
 					userCustomFields.setUser(updatedUser);
-					 OrglocationFormFields orgFormField = orglocationFormFieldsService.getOrglocationFormFieldsById(customFields.getCustomFormFieldId());
-					 userCustomFields.setOrglocationsFormFields(orgFormField);
-					 userCustomFields.setCustomFormFieldData(customFields.getCustomFormFieldData());
-					 userCustomFieldDataService.saveUserCustomFieldData(userCustomFields);
+					OrglocationFormFields orgFormField = orglocationFormFieldsService.getOrglocationFormFieldsById(customFields.getCustomFormFieldId());
+					userCustomFields.setOrglocationsFormFields(orgFormField);
+					userCustomFields.setCustomFormFieldData(customFields.getCustomFormFieldData());
+					userCustomFieldDataService.saveUserCustomFieldData(userCustomFields);
 					}
 					
-				}
+				}	
 			}
 			
 			userRoleService.addUserRole(userRole);
@@ -2032,6 +2255,30 @@ public class UsersListRestController {
 				candidate.setSpocId(null);
 			}
 			
+			candidate.setFirstName(addUserDTO.getFirstName());
+			candidate.setLastName(addUserDTO.getLastName());
+			candidate.setMiddelName(addUserDTO.getMiddleName());
+			candidate.setGender(addUserDTO.getGender());
+			candidate.setMobilePhone(addUserDTO.getPhoneNumber());
+			candidate.setMaritalStatus(addUserDTO.getMaritalStatus());
+			
+			if(StringUtils.isNotBlank(addUserDTO.getResidenceAddress())){
+			   candidate.setResidenceAddress(addUserDTO.getResidenceAddress());
+			   candidate.setResidenceCountry(addUserDTO.getResidenceCountry());
+			   candidate.setResidenceState(addUserDTO.getResidenceState());
+			   candidate.setResidenceCity(addUserDTO.getResidenceCity());
+			   candidate.setResidenceLatitude(addUserDTO.getResidenceLatitude());
+			   candidate.setResidenceLongitude(addUserDTO.getResidenceLongitude());
+			   candidate.setResidenceZipCode(addUserDTO.getResidenceZipCode());
+			   candidate.setResidenceStreetAddress(addUserDTO.getResidenceAddress());
+			   OrgLocations workLocation = orgLocationService.getOrgLocations(Long.parseLong(addUserDTO.getWorkLocation()));
+			   candidate.setWorkLocation(workLocation);
+		    	
+		    	Countries country = countriesService.getCountriesByCountryName(addUserDTO.getResidenceCountry());
+		    	String stateCode = statesService.getStateCodeByCountryCodeAndState(country.getCode2(),addUserDTO.getResidenceState());
+		    	candidate.setResidenceStateCode(stateCode);
+		    }
+			
 			candidateService.saveOrUpdateCandidate(candidate);
 			candidateService.saveOrUpdateCandidateElkDocument(candidate);
 		}
@@ -2050,8 +2297,14 @@ public class UsersListRestController {
 		 */
 		userService.saveOrUpdateUserElkDocument(userRole, employees, loginUser.getUserCode());
 		
-
+//		int updated = associateBalanceLeaveService.updateAssociateBalanceLeaves(updatedUser,orgLocations,employees,userRole);
+		
+		 associateBalanceLeaveService.updateAssociateDateOfJoinBalanceLeaveType(orgLocations.getId(), updatedUser,Constants.CANDIDATE_ACTIVE,Constants.UPDATE);
+		
 		return "success";
+		}else{
+			return "DataMissing";
+		}
 	}
 
 	
@@ -2104,17 +2357,112 @@ public class UsersListRestController {
 	
 	
 	@RequestMapping(value = "/getUserListForConnections", method = RequestMethod.POST)
-	public @ResponseBody List<UserRoleDTO> getUserListForConnections(
+	public @ResponseBody List<ConnectionsDTO> getUserListForConnections(
 			@RequestParam(value = "searchValue", required = false) String searchValue, 
 			@RequestParam(value = "offset", required = false) Integer offset,HttpServletRequest request)
 			throws Exception {
 		User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
-		List<UserRoleDTO> userRoleDTOList = new ArrayList<>();
+		List<ConnectionsDTO> userRoleDTOList = new ArrayList<>();
 		userRoleDTOList = userRoleService.getUserListForConnections(searchValue, offset, user.getId());
 		return userRoleDTOList;
 
 	}
+	
+	@RequestMapping(value = "/getShiftList", method = RequestMethod.POST)
+	public @ResponseBody List<Shift> getShiftList(HttpServletRequest request) throws Exception {
+		OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+		List<Shift> shifList = shiftService.getShiftList(orgLocations.getId());
+		return shifList;
 
+	}
+	
+	@RequestMapping(value = "/saveOrUpdateTagsByAssociateId")
+	public Response<String> saveOrUpdateTagsBycandidateId(@RequestParam(value = "loginUserId", required = false) Long loginUserId,
+			@RequestParam(value = "associateId", required = false) long associateId,
+			@RequestParam(value = "tagName", required = false) String tagName, HttpServletRequest request) throws Exception {
+		Response<String> response = new Response<>();
+		 OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,"orgLocations");
+
+		try {
+			User user = userService.getUserById(loginUserId);
+			if (user != null) {
+				User associate = userService.getUserById(associateId);
+					Set<String> associateTagsList = sourceleadTagsService.getSourceleadTagsByOrgLocationIdAndEntityName(orgLocations.getId(), TagEntites.ASSOCIATES.getValue(), associate.getId());
+					ArrayList<String> newTags = new ArrayList<>(Arrays.asList(tagName.split("\\s*,\\s*")));
+					ArrayList<String> actualNewTags = new ArrayList<>();
+					actualNewTags.addAll(newTags);
+				    Set<String> newTagsSet = new HashSet<String>(actualNewTags);
+				    newTagsSet.removeAll(associateTagsList);
+				    associateTagsList.removeAll(actualNewTags);
+				    associate.setAssociateTags(tagName);
+				    
+				    
+				    if(newTagsSet != null && !newTagsSet.isEmpty() && newTagsSet.size() > 0) {
+				    	for(String tag : newTagsSet) {
+				    		if(StringUtils.isNotBlank(tag)) {
+				    			SourceleadTags tags = new SourceleadTags();
+					    		tags.setEntityType(TagEntites.ASSOCIATES);
+					    		tags.setEntityId(associate.getId());
+					    		tags.setTagName(tag);
+					    		tags.setOrgLocationId(orgLocations);
+					    		tags.setStatus(Constants.CANDIDATE_ACTIVE);
+					    		tags.setCreatedBy(user);
+					    		tags.setCreatedDate(new Date());
+					    		sourceleadTagsService.saveSourceleadTags(tags);
+				    		}
+				    	}
+				    	
+				    }
+				    
+				    if(associateTagsList != null && !associateTagsList.isEmpty() && associateTagsList.size() > 0) {
+				    	for(String removedTags : associateTagsList) {
+				    		SourceleadTags tags = sourceleadTagsService.getSourceleadTagsByEntityIdAndTagNameAndOrgLocationId(orgLocations.getId(), TagEntites.ASSOCIATES.getValue(), associate.getId(),removedTags);
+				    		if(tags != null) {
+				    			tags.setStatus(Constants.CANDIDATE_IN_ACTIVE);
+				    			tags.setUpdatedBy(user);
+				    			tags.setUpdatedDate(new Date());
+				    			sourceleadTagsService.saveSourceleadTags(tags);
+				    		}
+				    	}
+				    	
+				    }
+				    
+			    Set<String> tagsList = sourceleadTagsService.getSourceleadTagsByOrgLocationId(orgLocations.getId());
+			    SourceLeadSessionManager.removeSessionAttribute(request, "tagsList");
+			    SourceLeadSessionManager.setSessionAttribute(request, "tagsList", tagsList);
+				response.setResponse(Result.SUCCESS.name());
+
+			}
+		} catch (Exception e) {
+			response.setResponse(Result.AWKWARD.name());
+			response.setResponseMessage(Result.AWKWARD.getValue());
+			logger.error(ExceptionUtils.getFullStackTrace(e));
+		}
+		return response;
+	}
+
+	
+	@RequestMapping(value = "/getAssociateTags", method = RequestMethod.POST)
+	public User getAssociateTags(@RequestParam(value = "associateId", required = false) Long associateId , HttpServletRequest request,
+			HttpServletResponse response) throws Exception {
+		 OrgLocations loginOrgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,"orgLocations");
+		 User user = userService.getUserById(associateId);
+	    Set<String> tagsList = sourceleadTagsService.getSourceleadTagsByOrgLocationId(loginOrgLocation.getId());
+	    request.getSession().setAttribute("tagsList", tagsList);
+	    user.setTagsList(tagsList);
+		Set<String> associateTagsList = sourceleadTagsService.getSourceleadTagsByOrgLocationIdAndEntityName(loginOrgLocation.getId(), TagEntites.ASSOCIATES.getValue(), user.getId());
+		if(associateTagsList != null && !associateTagsList.isEmpty()) {
+			StringBuilder associateTagsStr = new StringBuilder();
+			for(String tags : associateTagsList) {
+				associateTagsStr = associateTagsStr.append(tags).append(",");
+			}
+			associateTagsStr.toString();
+			user.setAssociateTags(associateTagsStr.substring(0,associateTagsStr.length()-1));
+		}
+		return user;
+
+	}
+	
 	private String toJSON(Object obj) {
 		XStream xstream = new XStream(new JsonHierarchicalStreamDriver() {
 			public HierarchicalStreamWriter createWriter(Writer writer) {

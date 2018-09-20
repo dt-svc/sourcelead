@@ -42,18 +42,21 @@
 			var interviewStatus  = '${interviewStatus}';
 			var intervewStartTime = '${interviewStartTime}';
 			var intervewEndTime = '${interviewEndTime}';
-			if(intervewStartTime != "interviewStartTime" && intervewEndTime != "interviewEndTime"){
-				$("#expire").removeAttr("style");
+			if(interviewStatus == 'Action_Done'){
+				$("#actionDone").removeAttr("style");
 			}else{
-				if(interviewStatus == 'Attending'){     
-					$("#accept").removeAttr("style");
-				}else if(interviewStatus == 'Not_Attending'){
-					$("#reject").removeAttr("style");
-				}else if(interviewStatus == 'Maybe'){
-					$("#tentative").removeAttr("style");
+				if(intervewStartTime != "interviewStartTime" && intervewEndTime != "interviewEndTime"){
+					$("#expire").removeAttr("style");
+				}else{
+					if(interviewStatus == 'Attending'){ 
+						$("#accept").removeAttr("style");
+					}else if(interviewStatus == 'Not_Attending'){
+						$("#reject").removeAttr("style");
+					}else if(interviewStatus == 'Maybe'){
+						$("#tentative").removeAttr("style");
+					}
 				}
 			}
-			
 		});
 </script>
 
@@ -117,6 +120,12 @@ width: 8%;
 									  <i class="fa fa-ban fa-3x"></i>
 									  <p class="reason-msg">You are Rejecting the Interview for position <B>${requirementInterview.submissionId.requirement.jobTitle} </B></p>
 							  </div>
+		  		</div>
+		  		<div id="actionDone" style="display:none">
+				          <div class="col-md-8 col-md-offset-2 inner-widget pending-user">
+					          <i class="fa fa-ban fa-3x"></i>
+							  <p class="reason-msg">Your decision has already submitted</p>
+						  </div>
 		  		</div>
 		 </div>
   </section>

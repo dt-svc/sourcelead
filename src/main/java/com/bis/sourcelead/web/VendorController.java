@@ -109,7 +109,8 @@ public class VendorController {
 			@RequestParam(value="orgRelationId", required=false)String orgRelationId,
 			@RequestParam(value="orgRelationUUID", required=false)String orgRelationUUID,
 			@RequestParam(value="orgName", required=false)String orgName,
-			@RequestParam(value="vendorKeyword", required=false)String vendorKeyword) throws Exception {
+			@RequestParam(value="vendorKeyword", required=false)String vendorKeyword,
+			@RequestParam(value="contactsTab", required=false)String contactsTab) throws Exception {
 		
 		
 		ModelAndView model = new ModelAndView();
@@ -122,10 +123,17 @@ public class VendorController {
 		
 		//for get the owners list for spocs
 		//List<User> userList = userService.getOwnersByOrgLocationId(orgLoc.getId());
+		
+		SourceleadActions action = sourceleadActionsService.getSourceleadActionsByActionRole(Constants.ROLE_CREATE_VENDOR);
+	     model.addObject("actionId",action.getId());
+	     List<SourceleadSectionDTO> sections  = sourceleadFormSectionsService.getSourceleadFormSectionsByActionId(action.getId(),orgLoc.getId());
+		 model.addObject("sourceleadSectionList",sections);
+		
 		List<User> userList = userService.getTabAccessOwnersByOrgLocationIdAndTabId(orgLoc.getId(),Long.valueOf(Constants.TAB_VENDOR));
 		model.addObject("userList", userList);
 	
 		model.addObject("loginOrgLocId",orgLoc.getId());
+		model.addObject("contactsTab",contactsTab);
 		model.addObject("sourceleadUrl", sourceleadUrl);
 		model.setViewName("vendors/vendorsList");
 		List<Countries> countryList = countriesService.getAllCountries();
@@ -150,9 +158,13 @@ public class VendorController {
 			if(null != countries){
 			   model.addObject("loginCountryName", countries.getName());
 			}
+			if(countries!= null && countries.getName()!= null) {
+
 	        List<States> statesList = statesService.getAllStatesByCountry(countries.getName());
 	        model.addObject("statesList", statesList);
-		}
+		    }
+			
+		}	
 		
 		List<OrgRelations> vendorsList = orgRelationsService.getAllVendorsListByOrgLocationId(orgLoc.getId());
 		for(OrgRelations orgRelation :vendorsList){
@@ -309,6 +321,12 @@ public class VendorController {
 			{
 				sessionData = new SessionMaintainanceData();
 			}
+			
+			SourceleadActions action = sourceleadActionsService.getSourceleadActionsByActionRole(Constants.ROLE_CREATE_VENDOR);
+		     model.addObject("actionId",action.getId());
+		     List<SourceleadSectionDTO> sections  = sourceleadFormSectionsService.getSourceleadFormSectionsByActionId(action.getId(),orgLocations.getId());
+			 model.addObject("sourceleadSectionList",sections);
+			 
 			sessionData.setNav(Constants.Vendors);
 			request.getSession().setAttribute("sessionData",sessionData);
 			

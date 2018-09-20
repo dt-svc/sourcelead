@@ -18,7 +18,7 @@ display: none;
 .mt40{
  margin-top: 50px !important;
 }
-.chosen-container-multi .chosen-choices li.search-field input[type="text"] {
+.compose-mail .chosen-container-multi .chosen-choices li.search-field input[type="text"] {
 	height: 35px; line-height: 35px; width: 500px !important;
 }
 </style>
@@ -58,18 +58,12 @@ display: none;
        <form:form id="hotlistCampaign_form" name="hotlistCampaign_form"  >
         <div class="col-md-12 clearfix">
           <label class="col-md-2 control-label text-muted small">From</label>
-          <div class="col-md-9">
-           <%--  <input type="text" value="${SourceLeadWeb_user.email}" class="form-control input-sm" readonly> --%>
-<!--              <select class="chosen-select form-control" id="senderIdentity" name="senderIdentity" data-validation="required" field-name="Sender">             
-			</select>  --> 
-			
-<div class="input-group errorInptgroup">
-<select class="chosen-select form-control" id="senderIdentity" name="senderIdentity" data-validation="required" field-name="Sender">             
+          <div class="col-md-9 clearfix mailFromRefreBtn">
+          <select class="chosen-select form-control" id="senderIdentity" name="senderIdentity" data-validation="required" field-name="Sender">             
 			</select>	
-<span class="input-group-addon cursorPointer bg-blue" onclick="getSenders();"><i class="fa fa-refresh "></i></span>					 
-<!-- <a class="input-group-addon" onclick="campaignSender('','','hotList');"><i class="fa fa-plus cursorPointer"></i></a> -->
-</div>			
-			
+		<div class="input-group">
+		<span class="input-group-addon cursorPointer bg-blue" onclick="getSenders();"><i class="fa fa-refresh "></i></span>	
+		</div>			
           </div>
 
           <div class="col-md-1">
@@ -81,10 +75,15 @@ display: none;
           <label class="col-md-2 control-label text-primary small">To</label>
           <div class="col-md-9 positionRelative disable-choosen-dropdown">
           
-<div class="input-group errorInptgroup positionRelative col-md-12 noPad">
-<select class="form-control"  field-name="To List" multiple data-placeholder="Enter Emails And Press Enter-Key Or Comma(,) Or Space To Add New Email" id="emailsList" data-validation-optional="true" data-validation-optional="true" name="Toemails"></select>
+<div class="input-group positionRelative col-md-12 noPad" onclick="manuallyEnterHotlistToEmail();">
+<select class="form-control"  field-name="To List" multiple data-placeholder="Select Multiple Mails List" id="emailsList"  data-validation="required" name="Toemails"></select>
+
+
+<!-- 		<span class="refreshicon-new input-group-addon cursorPointer bg-blue" onclick="getRecipientContactsList();"><i class="fa fa-refresh "></i></span>	 -->
+		
+		
 <span class="select-multiple poLeft" data-target="#multiplemail" onclick="getRecipientContactsList();" data-toggle="modal"><i class="fa fa-list-alt" title="Multiple Mail"></i></span> 					 
-<!-- <a class="input-group-addon" onclick="campaignRecipient('','','hotList');"><i class="fa fa-plus cursorPointer"></i></a> -->
+<!-- <a class="input-group-addon" onclick="campaignRecipient('','','hotList');"><i class="fa fa-plus cursorPointer"></i></a>
 <!-- <span class="input-group-addon cursorPointer bg-blue" onclick="getContractTemplates();"><i class="fa fa-refresh "></i></span> -->
 </div>
             <!-- Modal content Multiple mail -->
@@ -174,9 +173,10 @@ display: none;
                             <option value="consultants" selected>Associates</option>
                             <option value="candidates">Candidates</option>
                              <option value="openHotlist">Open Hotlist</option>
-                            <option value="hotlistConsultants">Hotlist Associates</option>
+                           <!-- <option value="hotlistConsultants">Hotlist Associates</option> -->
                           </select>
-                        </div>                    
+                        </div>
+                        <div id="popupId"></div>                    
                      <div id="candidatesList" class="mailFil datatable_filter"></div>
                      <div id="candidatesLoading"></div>
                     </div>
@@ -311,6 +311,11 @@ $(function() {
   
   
   <script type="text/javascript">
+  function manuallyEnterHotlistToEmail(){
+	  $('#emailsList_chosen ul li input').attr('readonly', true);
+  }
+  
+  
 	function sendHotListCampaign() {
 		if ($('#hotlistCampaign_form').validate(false, validationSettings)){ 
 		nicEditors.findEditor('bodytext').saveContent();
@@ -959,8 +964,8 @@ function getCandidates(candidatesListType){
 	                 	 result = result +'   </div>'; 
 	                 	 result = result +'   <div class="clearfix">';
 	                 	 result = result +'   <div class="pull-right mr">';
-	                 	 result = result +'     <button data-dismiss="modal" class="btn btn-primary" type="button" onClick="getCheckedCandidates();">Assign</button>';
-	                 	 result = result +'     <button data-dismiss="modal" class="btn btn-default" type="button">Cancel</button>';
+	                 	 result = result +'     <button class="btn btn-primary" type="button" onClick="getCheckedCandidates();">Assign</button>';
+	                 	 result = result +'     <button id="closePopUp" class="btn btn-default" onClick="removeMessage();" type="button">Cancel</button>';
 	                 	 result = result +'   </div>'; 
 	                 	 result = result +'   </div>'; 
 	                 	 $("#candidatesList").empty(); 
@@ -998,6 +1003,12 @@ function getCandidates(candidatesListType){
             
        }); 
   } 
+</script>
+<script>
+	function removeMessage() {
+		$('#popupId').parent().find('p.jquery_form_error_message').remove();
+		$("#requirement").modal('hide');
+	}
 </script>
 
 
@@ -1197,6 +1208,7 @@ function loadHotMailBoxDetails(UUID){
 <script>
 function getCheckedCandidates(){
 	
+	$('#popupId').parent().find('p.jquery_form_error_message').remove();
 	var oTable = $('#candidates').dataTable();
 	var rowcollection =  oTable.$("input[name='candidatesIds[]']:checked", {"page": "all"});
 	
@@ -1206,13 +1218,19 @@ function getCheckedCandidates(){
 		 var checkbox_value = $(elem).val().split(",");
 		 internalOutput = internalOutput+"<option value='" +checkbox_value[0]+ "' selected>"+checkbox_value[1]+"</option>";
 	});
-	 
-	  
-	    $("#selectedCandidates").append(internalOutput);
-		$("#selectedCandidates").trigger("chosen:updated");
-		
-		$("input[name='candidatesIds[]']:checked").removeAttr('checked');
-		$('#checkAllCandidates').removeAttr('checked'); 
+	    if($("input[name='candidatesIds[]']:checked").length == 0){
+	    	$("#popupId").after("<p class='jquery_form_error_message'><span>Select Atleast One Candidate/Associates</span>");
+	    }else{
+	    	$("#requirement").modal('hide');
+	    	$('#popupId').parent().find('p.jquery_form_error_message').remove();
+	    }
+	    	$("#selectedCandidates").append(internalOutput);
+			$("#selectedCandidates").trigger("chosen:updated");
+			
+			$("input[name='candidatesIds[]']:checked").removeAttr('checked');
+			$('#checkAllCandidates').removeAttr('checked'); 
+	    
+	    
 		
 }
 </script>
@@ -1252,7 +1270,13 @@ document.getElementById("attachfileBtn").onchange = function () {
 
 
 <script type="text/javascript">
-	bkLib.onDomLoaded(function() { nicEditors.allTextAreas() });
+bkLib.onDomLoaded(function() {
+    nicEditors.editors.push(
+        new nicEditor().panelInstance(
+            document.getElementById('bodytext')
+        )
+    );
+});
 </script>
 
 <script>
@@ -1278,12 +1302,38 @@ function getSenders(){
 }
 </script>
 
+<script>
+function getRecipient(){
+	    var typeOfCampaign = "0";
+		$.ajax({
+		type : "GET",
+		url: sourceleadUrl+"/getRecipientList?"+tokenParamName+"="+tokenValue+"&typeOfCampaign="+typeOfCampaign,
+		success :function(json) {
+		var output = "";
+		output = output + "<option value=''>Select Recipient</option>";
+		for (var i=0; i<json.length; i++)
+		{
+		var opt = json[i];
+		output = output + "<option value='" +opt.listId+ "'>"+opt.recipientEmail+"("+opt.listName+")</option>";
+		
+		}
+		
+		$("#emailsList").empty();
+		$("#emailsList").append(output);
+		$('#emailsList').trigger("chosen:updated");
+		},
+		});
+}
+</script>
+
  <!-- Added by rajashekar -->
  <script>
 function getRecipientContactsList(){
 	    var result = "";
-	 	result = result +" <div class='remove_search'>";
+	 	result = result +" <div class='dynamic_search dynamic_search-new'>";
 	 	result = result +" <input type='text' placeholder='Search' id='vendorContactsDataTableSearch'/>";
+	 	result = result +"  <span class='cursorPointer' title='Search'><i class='fa fa-search' onclick='vendorContactDataTableList();'></i></span>";     
+
 	 	result = result +"</div>";
 	 	
 	    result = result +'<div class="clearfix popupFilter">';
@@ -1309,20 +1359,20 @@ function getRecipientContactsList(){
 	    $("#mailBoxVendorsList").empty();
 	    $("#mailBoxVendorsList").append(result);
 	    recepiantscontactsList = {}
-	    vendorContactDataTableList();
+	    vendorContactDataTableList1();
 	    
 	   
 }
 </script>
 
 <script>
-function vendorContactDataTableList(){
+function vendorContactDataTableList1(){
 	 var searchValue = $("#vendorContactsDataTableSearch").val();
 	 var responderType ="JobCampaignVendor";
 	 searchValue = searchValue ? searchValue : "";
 	 var typeOfCampaign = "0";
 	 var url = sourceleadUrl+"/getRecipientList?searchValue="+searchValue+"&responderType="+responderType+"&typeOfCampaign="+typeOfCampaign;
-	 vendorContactpagination(url);
+	 vendorContactpagination1(url);
 }
 </script>
 
@@ -1355,7 +1405,7 @@ $('input[class="myRecipantsContactsCheckbox"]').each(function(i) {
 </script>
 
 <script>
-	function vendorContactpagination(url){
+	function vendorContactpagination1(url){
 		var colIndex = 0;
 		 $('#vendorconDataTable').DataTable( { 
 	    	"processing": true,
@@ -1424,7 +1474,7 @@ $('input[class="myRecipantsContactsCheckbox"]').each(function(i) {
 	    $("input[type=search]").hide();
 	    $("#vendorContactsDataTableSearch").keyup(function(e) {
 	    	   if(e.which === 13) {
-	    		   vendorContactDataTableList();
+	    		   vendorContactDataTableList1();
 	    	   }
 	    	});
 }
@@ -1534,23 +1584,37 @@ function listPagination(){
 </script>
 
 <script>
+
+	 
+
 function getRecipantsContacts(){
-		var internalOutput = "";
+		
 		
 		var internalOutput = "";
 		 for(var e in recepiantscontactsList) {
 			 var checkbox_value = recepiantscontactsList[e].split(",");
-			 internalOutput = internalOutput+"<option value='" +checkbox_value[0]+ "' selected>"+checkbox_value[1]+"</option>";
+			 var elist=$("#emailsList").chosen().find("option:selected" ).text();
+			 var searchString=elist.search(checkbox_value[1]);
+			 if(searchString==-1)
+				{
+				 internalOutput = internalOutput+"<option value='" +checkbox_value[0]+ "' selected>"+checkbox_value[1]+"</option>";
+			    }
+			 
+			 
 		  }
 		
-		
-		    $("#emailsList").append(internalOutput);
+            $("#emailsList").append(internalOutput);
 			$("#emailsList").trigger("chosen:updated");
 			
 			$("input[name='contactids[]']:checked").removeAttr('checked');
 			$('#checkAllRecipantsntacts').removeAttr('checked');
 		
 }
+
+
+	  
+	  // this function is run when the country changes
+	
 </script>
   <!-- End -->
   
@@ -1583,109 +1647,6 @@ function checkUniqueSubject(){
 	});
 </script>
 
-	<form:form id="capn_add_Recipient_List" name="capn_add_Recipient_List" method="post">
 	
-		<div class="popupHead">
-		<c:if test="${empty campaignList.id}">
-			<h2>Add Recipient</h2><a onclick="recipientClose();" href="javascript:void(0)" class="fa fa-close popCan"></a>
-		</c:if>
-		
-		<c:if test="${!empty campaignList.id}">
-			<h2>Edit Recipient</h2><a onclick="recipientClose();" href="javascript:void(0)" class="fa fa-close popCan"></a>
-		</c:if>
-		</div>
-		
-		<div id="loading"></div>
-		<div class="popupMid popupMidPad clearfix">
-
-          <div class="col-sm-12 noPad mt clearfix">
-				<label class="col-md-3 padding_left">Choose Campaign<span class="text-danger">&nbsp;*</span></label>
-              	<div class="col-md-9 padding_right clearfix">
-              		<div class="col-md-6 padding_left">
-              			<input type="radio" id="hotlistRadio" value="hotlistCampaign" onclick="clearRecipantsList();" checked name="campaignType"><label for="hotlistRadio">&nbsp;Hot List Campaign</label>
-              		</div>
-              		<div class="col-md-6">
-              			<input type="radio" id="jobRadio" value="jobCampaign" onclick="clearRecipantsList();"  name="campaignType"><label for="jobRadio">&nbsp;Job Campaign</label>
-              		</div>              		
-				</div>
-			</div>
-			
-          <div class="col-sm-12 noPad mt clearfix">
-				<label class="col-md-3 padding_left">List Name<span class="text-danger">&nbsp;*</span></label>
-              	<div class="col-md-9 padding_right" id="cpnListNameDiv">
-                	<input type="text" class="form-control" id="cpnListName" name="cpnListName" value="${campaignList.listName}"  onblur="validateCampaignListName();" data-validation="required validate_length length1-100" field-name="List Name">
-				    <input type="hidden" value="${campaignList.id}" name="contactListId" id="contactListId" >
-				</div>
-			</div>			
-			
-          <div class="col-sm-12 noPad mt clearfix">
-              <label class="col-md-3 padding_left">Recipient(Email)<span class="text-danger">&nbsp;*</span></label>
-              <div class="col-md-8">
-                <select multiple class="chosen-select form-control" id="recipientEmail" name="recipientEmail" data-validation="required validate_length length1-250" field-name="Recipient Email">
-               <c:if test="${not empty recipientList}"></c:if>
-               <c:forEach items="${recipientList}" var="recipient">
-   						<option value='${recipient.email }' selected>${recipient.email}</option>
-				</c:forEach>
-                </select>
-                
-              </div>
-              	<div class="col-md-1 noPad">
-					<a href="javascript:void(0)"  data-target="#multiplemail" onclick="selectRadio();" data-toggle="modal" class="btn btn-default"><i class="fa fa-list-alt"></i></a>
-					<div role="dialog" id="multiplemail" class="modal fade">
-              <div class="modal-dialog modal-lg">
-                <div class="modal-content">
-                  <div class="modal-header">
-                    <button data-dismiss="modal" class="close" type="button">×</button>
-                    <h4 class="modal-title" id="receipantCategoryType"></h4>
-                    <label class="paddingLeft paddingRight">
-               	    <input  type="radio" id="vendorCheck" name="users" checked onclick="selectRadio()"><strong class="paddingLeft" id="categoryListType"></strong></label>
-               	    <label class="paddingLeft">
-               	    <input type="radio" id="contactsCheck" name="users" onclick="getContactsList();"><strong class="paddingLeft">My Contacts</strong></label>
-                  </div>
-                  
-                   <div class="modal-body clearfix">
-                    <div class="col-xs-12 col-md-4 col-lg-4 selectpicker100 select-field paddingLeft mb10" id="vendorsListDiv" style="display: none">
-                          <select class="form-control" id="vendorListType" onchange="vendorListChange();">
-                           <option value="listbyVendor" selected>List By Vendor</option>
-                           <option value="listbyContact">List By Contact</option>
-                          </select>
-                    </div>
-                    <div class="clearfix"></div>
-                    <div class="clearfix">
-                     <div id="mailBoxVendorsList" class="datatable_filter"></div>
-                    </div>
-                    
-                  </div>
-                  
-                  
-                  <div class="modal-body clearfix">
-                    <div class="col-xs-12 col-md-4 col-lg-4 selectpicker100 select-field paddingLeft mb10" id="clientsListDiv" style="display: none">
-                          <select class="form-control" id="clientListType" onchange="clientListChange();">
-                           <option value="listbyClient" selected>List By Client</option>
-                           <option value="listbyClientContact">List By Contact</option>
-                          </select>
-                    </div>
-                    <div class="clearfix"></div>
-                    <div class="clearfix">
-                     <div id="mailBoxClientsList" class="datatable_filter"></div>
-                    </div>
-                    
-                  </div> 
-                  
-                </div>
-              </div>
-            </div>
-				</div>              
-			</div>	
-		
-		</div>
-		
-		<div class="popupFoot">
-		<p id="errorMessage" class=""></p>
-            <input value="Save" class="btn btn-primary" type="button" id="addList">
-             <input value="Reset" class="btn btn-primary" type="button" id="resetForm">
-            <input value="Cancel" class="btn btn-default ml popCan" type="button" onclick="recipientClose();">
-          </div>		
-		</form:form>
 
 <jsp:include page="masterFooter.jsp" />

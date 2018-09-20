@@ -40,7 +40,6 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 
 @Entity
 @Table(name = "PROJECTS")
-@Cache(usage = CacheConcurrencyStrategy.TRANSACTIONAL,region="projects")
 public class Projects implements Serializable{
 	
 	private static final long serialVersionUID = 1L;
@@ -59,7 +58,7 @@ public class Projects implements Serializable{
     @Column(name = "PROJECT_NAME")
     private String projectName;
  
-    @Column(name = "DESCRIPTION", columnDefinition = "TEXT default NULL")
+    @Column(name = "DESCRIPTION", columnDefinition = "LONGTEXT default NULL")
     private String description;
  
     @Column(name = "WEEK_START_DATE")
@@ -107,8 +106,8 @@ public class Projects implements Serializable{
     @Column(name="OVERTIME_RATE_TYPE")
     private String overtimeRateType;
 
-    @NotFound(action=NotFoundAction.IGNORE)
-    @ManyToOne(fetch = FetchType.EAGER)
+    
+    @ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "SUPERIOR_USER_ID")
    	private User superiorUser;
     
@@ -130,15 +129,22 @@ public class Projects implements Serializable{
 	@Column(name = "IS_TIMESHEET_ATTACHMENT_REQUIRED")
 	private Integer isTimesheetAttachmentRequired;
 	
-	@NotFound(action=NotFoundAction.IGNORE)
-    @ManyToOne(fetch = FetchType.EAGER)
+	
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "ORG_RELATION_ID")
     private OrgRelations orgRelationId;
    
-	@NotFound(action=NotFoundAction.IGNORE)
-    @ManyToOne
+	
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "ORG_LOCATIONS_ID")
     private OrgLocations orgLocationsId;
+    
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "SHARED_LOCATION_ID")
+    private OrgLocations sharedLocationId;
+    
+    @Column(name = "IS_PROJECT_SHARED")
+    private String isProjectShared;
 	
     @Column(name = "STATUS")
     private String status;
@@ -178,9 +184,21 @@ public class Projects implements Serializable{
     
     @Column(name = "NOTIFY_BUDGET_AT")
    	private String notifyBudgetAt;
+    
+    @Column(name = "IS_TICKET_NUMBER_REQUIRED")
+   	private String isTicketNumberRequired;
+    
+    @Column(name = "IS_TASK_COMMENTS_REQUIRED")
+   	private String isTaskCommentsRequired;
+    
+    @Column(name="IS_PROJECT_FOR_TIMESHEETS")
+    private String isProjectForTimeSheets;
+    
+    @Column(name="IS_PROJECT_FOR_EXPENSES")
+    private String isProjectForExpenses;
 	
      
-    @NotFound(action=NotFoundAction.IGNORE)
+    
 	@OneToMany(mappedBy = "projectId",cascade = CascadeType.ALL)
 	@Fetch(FetchMode.SELECT)
 	private Set<ProjectBudget> projectBudget = new HashSet<ProjectBudget>(0);
@@ -189,19 +207,19 @@ public class Projects implements Serializable{
     @JsonProperty
     Set<ProjectBudget>  projectBudgetList;
     
-    @NotFound(action=NotFoundAction.IGNORE)
+    
     @OneToMany(mappedBy="projects",cascade = CascadeType.ALL)
     @Fetch(FetchMode.SELECT)
     @JsonBackReference
     private Set<ProjectMembers> projectMembers;
     
-    @NotFound(action=NotFoundAction.IGNORE)
+    
     @OneToMany(mappedBy="projectId",cascade = CascadeType.ALL)
     @Fetch(FetchMode.SELECT)
     @JsonBackReference
     private Set<ProjectApproverHierarchy> projectApprovers;
     
-    @NotFound(action=NotFoundAction.IGNORE)
+    
     @OneToMany(mappedBy="projectId",cascade = CascadeType.ALL)
     @Fetch(FetchMode.SELECT)
     @JsonBackReference
@@ -212,15 +230,19 @@ public class Projects implements Serializable{
     @Fetch(FetchMode.SELECT)
     @JsonBackReference
     private Set<ProjectClients> projectClients;
-  
+    
+    @OneToMany(mappedBy="projectId",cascade = CascadeType.ALL)
+    @Fetch(FetchMode.SELECT)
+    @JsonBackReference
+    private Set<ProjectClients> sharedClientProjectClients;
 
-    @NotFound(action=NotFoundAction.IGNORE)
+    
     @OneToMany(mappedBy="projects")
     @Fetch(FetchMode.SELECT)
     @JsonBackReference
     private Set<ProjectDocuments> projectDocuments;
     
-    @NotFound(action=NotFoundAction.IGNORE)
+    
     @OneToMany(mappedBy="projectId")
     @Fetch(FetchMode.SELECT)
     @JsonBackReference
@@ -229,6 +251,9 @@ public class Projects implements Serializable{
     
     @Column(name="CURRENCY")
     private String currency;
+    
+    @Column(name="IS_REPORTING_MANAGER_AS_APPROVER")
+    private String isReportingManagerAsApprover;
     
     public Set<ProjectDocuments> getProjectDocuments() {
 		return projectDocuments;
@@ -313,6 +338,10 @@ public class Projects implements Serializable{
     Set<ProjectApproverHierarchy>  approverHierarchyList;
     
     @Transient
+    @JsonProperty
+    Set<ExpenseProjectApproverHierarchy>  expenseApproverHierarchyList;
+    
+    @Transient
     private String employeeStartDateStr;
     
     @Transient
@@ -340,9 +369,21 @@ public class Projects implements Serializable{
     private String projectbudgetCurrency;
     
     @Transient
+   	@JsonProperty
+    private Long sharedClientOrgLocationId;
+    
+    @Transient
     @JsonProperty
     Set<ProjectDocuments>  projectDocumentsList;
     
+    @Transient
+    @JsonProperty
+    private String projectsTags;
+	
+	@Transient
+	@JsonProperty
+    private Set<String> tagsList;
+	
     
     @Column(name = "GENERATED_ID")
 	private String generatedId;
@@ -584,12 +625,22 @@ public class Projects implements Serializable{
 	public String getStartDateStr() {
 		if(startDate != null){
 			SimpleDateFormat dateFormat = null;
-			if(orgLocationsId != null && orgLocationsId.getDateFormat() != null && StringUtils.isNotEmpty(orgLocationsId.getDateFormat())){
-				dateFormat = new SimpleDateFormat(orgLocationsId.getDateFormat());
+			if(StringUtils.isNotBlank(isProjectShared) && isProjectShared.equalsIgnoreCase(Constants.YES)) {
+				if(sharedLocationId != null && sharedLocationId.getDateFormat() != null && StringUtils.isNotEmpty(sharedLocationId.getDateFormat())){
+					dateFormat = new SimpleDateFormat(sharedLocationId.getDateFormat());
+				}
+				else{
+					dateFormat = (SimpleDateFormat) Constants.DF_YMD;
+				}
+			}else {
+				if(orgLocationsId != null && orgLocationsId.getDateFormat() != null && StringUtils.isNotEmpty(orgLocationsId.getDateFormat())){
+					dateFormat = new SimpleDateFormat(orgLocationsId.getDateFormat());
+				}
+				else{
+					dateFormat = (SimpleDateFormat) Constants.DF_YMD;
+				}
 			}
-			else{
-				dateFormat = (SimpleDateFormat) Constants.DF_YMD;
-			}
+			
 			startDateStr = dateFormat.format(startDate);	
 		}
 		return startDateStr;
@@ -601,8 +652,24 @@ public class Projects implements Serializable{
 
 	public String getEndDateStr() {
 		if(endDate != null){
-			SimpleDateFormat dateFormat = orgLocationsId.getLocFullFormDateFormatter();
-			endDateStr = dateFormat.format(endDate);
+			SimpleDateFormat dateFormat = null;
+			if(StringUtils.isNotBlank(isProjectShared) && isProjectShared.equalsIgnoreCase(Constants.YES)) {
+				if(sharedLocationId != null && sharedLocationId.getDateFormat() != null && StringUtils.isNotEmpty(sharedLocationId.getDateFormat())){
+					dateFormat = new SimpleDateFormat(sharedLocationId.getDateFormat());
+				}
+				else{
+					dateFormat = (SimpleDateFormat) Constants.DF_YMD;
+				}
+			}else {
+				if(orgLocationsId != null && orgLocationsId.getDateFormat() != null && StringUtils.isNotEmpty(orgLocationsId.getDateFormat())){
+					dateFormat = new SimpleDateFormat(orgLocationsId.getDateFormat());
+				}
+				else{
+					dateFormat = (SimpleDateFormat) Constants.DF_YMD;
+				}
+			}
+			
+			endDateStr = dateFormat.format(endDate);	
 		}
 		return endDateStr;
 	}
@@ -1028,5 +1095,102 @@ public class Projects implements Serializable{
 	public void setWeekStartDate(Date weekStartDate) {
 		this.weekStartDate = weekStartDate;
 	}
+
+	public String getIsReportingManagerAsApprover() {
+		return isReportingManagerAsApprover;
+	}
+
+	public void setIsReportingManagerAsApprover(String isReportingManagerAsApprover) {
+		this.isReportingManagerAsApprover = isReportingManagerAsApprover;
+	}
+
+	public String getIsTicketNumberRequired() {
+		return isTicketNumberRequired;
+	}
+
+	public void setIsTicketNumberRequired(String isTicketNumberRequired) {
+		this.isTicketNumberRequired = isTicketNumberRequired;
+	}
+
+	public String getIsTaskCommentsRequired() {
+		return isTaskCommentsRequired;
+	}
+
+	public void setIsTaskCommentsRequired(String isTaskCommentsRequired) {
+		this.isTaskCommentsRequired = isTaskCommentsRequired;
+	}
+
+	public OrgLocations getSharedLocationId() {
+		return sharedLocationId;
+	}
+
+	public void setSharedLocationId(OrgLocations sharedLocationId) {
+		this.sharedLocationId = sharedLocationId;
+	}
+
+	public String getIsProjectShared() {
+		return isProjectShared;
+	}
+
+	public void setIsProjectShared(String isProjectShared) {
+		this.isProjectShared = isProjectShared;
+	}
+
+	public Set<ProjectClients> getSharedClientProjectClients() {
+		return sharedClientProjectClients;
+	}
+
+	public void setSharedClientProjectClients(Set<ProjectClients> sharedClientProjectClients) {
+		this.sharedClientProjectClients = sharedClientProjectClients;
+	}
+
+	public Long getSharedClientOrgLocationId() {
+		return sharedClientOrgLocationId;
+	}
+
+	public void setSharedClientOrgLocationId(Long sharedClientOrgLocationId) {
+		this.sharedClientOrgLocationId = sharedClientOrgLocationId;
+	}
+
+
+	public Set<ExpenseProjectApproverHierarchy> getExpenseApproverHierarchyList() {
+		return expenseApproverHierarchyList;
+	}
+
+	public void setExpenseApproverHierarchyList(Set<ExpenseProjectApproverHierarchy> expenseApproverHierarchyList) {
+		this.expenseApproverHierarchyList = expenseApproverHierarchyList;
+	}
+
+	public String getIsProjectForTimeSheets() {
+		return isProjectForTimeSheets;
+	}
+
+	public void setIsProjectForTimeSheets(String isProjectForTimeSheets) {
+		this.isProjectForTimeSheets = isProjectForTimeSheets;
+	}
+
+	public String getIsProjectForExpenses() {
+		return isProjectForExpenses;
+	}
+
+	public void setIsProjectForExpenses(String isProjectForExpenses) {
+		this.isProjectForExpenses = isProjectForExpenses;
+	}
 	
+	public String getProjectsTags() {
+		return projectsTags;
+	}
+
+	public Set<String> getTagsList() {
+		return tagsList;
+	}
+
+	public void setProjectsTags(String projectsTags) {
+		this.projectsTags = projectsTags;
+	}
+
+	public void setTagsList(Set<String> tagsList) {
+		this.tagsList = tagsList;
+	}
+
 }

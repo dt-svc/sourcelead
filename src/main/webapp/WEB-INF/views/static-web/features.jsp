@@ -312,3 +312,9 @@
 		  </ul>
 	  </section>
 <jsp:include page="../staticFooter.jsp" />
+
+<script type="text/javascript">
+window.onload = function() {
+	$("#featuresID").addClass("slactive");
+}
+</script>

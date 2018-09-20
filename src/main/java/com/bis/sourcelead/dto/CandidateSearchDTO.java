@@ -27,7 +27,16 @@ public class CandidateSearchDTO extends SearchDTO implements Serializable {
 	private String isAssociate;
 	private String candidateType;
 	private String generatedId;
-
+	private List<String> createdBy;
+	private String employmnetTypes;
+	private String candidateFilterSkills;
+    private String availability;
+    private String candidateTypeFilter;
+    private String createdByCandidates;
+    private String createdByFilter;
+    private List<String> candidateTags;
+    
+    
 	public List<String> getCandidateSkills() {
 		return candidateSkills;
 	}
@@ -209,5 +218,67 @@ public class CandidateSearchDTO extends SearchDTO implements Serializable {
 		this.generatedId = generatedId;
 	}
 
+	public List<String> getCreatedBy() {
+		return createdBy;
+	}
 
+	public void setCreatedBy(List<String> createdBy) {
+		this.createdBy = createdBy;
+	}
+
+	public String getEmploymnetTypes() {
+		return employmnetTypes;
+	}
+
+	public void setEmploymnetTypes(String employmnetTypes) {
+		this.employmnetTypes = employmnetTypes;
+	}
+
+	public String getCandidateFilterSkills() {
+		return candidateFilterSkills;
+	}
+
+	public void setCandidateFilterSkills(String candidateFilterSkills) {
+		this.candidateFilterSkills = candidateFilterSkills;
+	}
+
+	public String getAvailability() {
+		return availability;
+	}
+
+	public void setAvailability(String availability) {
+		this.availability = availability;
+	}
+
+	public String getCandidateTypeFilter() {
+		return candidateTypeFilter;
+	}
+
+	public void setCandidateTypeFilter(String candidateTypeFilter) {
+		this.candidateTypeFilter = candidateTypeFilter;
+	}
+
+	public String getCreatedByCandidates() {
+		return createdByCandidates;
+	}
+
+	public void setCreatedByCandidates(String createdByCandidates) {
+		this.createdByCandidates = createdByCandidates;
+	}
+
+	public String getCreatedByFilter() {
+		return createdByFilter;
+	}
+
+	public void setCreatedByFilter(String createdByFilter) {
+		this.createdByFilter = createdByFilter;
+	}
+
+	public List<String> getCandidateTags() {
+		return candidateTags;
+	}
+
+	public void setCandidateTags(List<String> candidateTags) {
+		this.candidateTags = candidateTags;
+	}
 }

@@ -5,6 +5,7 @@ import java.util.Date;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -21,26 +22,22 @@ import org.hibernate.annotations.NotFoundAction;
 
 @Entity
 @Table(name = "HOLIDAY_RESTRICT_DAYS")
-@Cache(usage = CacheConcurrencyStrategy.TRANSACTIONAL, region = "HolidayAndRestrictday")
 public class HolidayAndRestrictday implements Serializable {
 	private static final long serialVersionUID = 1L;
 	@Id
-	@GeneratedValue(generator = "uuid2", strategy = GenerationType.IDENTITY)
-	@GenericGenerator(name = "uuid2", strategy = "uuid2")
-	private String id;
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "ID", nullable = false)
+    private Long id;
 	
-	@NotFound(action = NotFoundAction.IGNORE)
-	@ManyToOne
+	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "HOLIDAY_ID", nullable = false)
 	private Holiday holiday;
 	
-	@NotFound(action = NotFoundAction.IGNORE)
-	@ManyToOne
+	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "RESTRICTDAY_ID", nullable = false)
 	private RestrictDay restrictDay;
 	
-	@NotFound(action = NotFoundAction.IGNORE)
-	@ManyToOne
+	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "ORGLOCATION_ID", nullable = false)
 	private OrgLocations orgLocations;
 	
@@ -62,12 +59,12 @@ public class HolidayAndRestrictday implements Serializable {
 	@Column(name = "STATUS")
 	private String status;
 	
-	public String getId()
+	public Long getId()
 	{
 		return id;
 	}
 	
-	public void setId(String id)
+	public void setId(Long id)
 	{
 		this.id = id;
 	}

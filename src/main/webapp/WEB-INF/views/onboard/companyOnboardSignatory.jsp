@@ -31,15 +31,25 @@ window.onload = function () {
 <script>
   function navtoggle(elementRef){
 	  
-	 if('${SourceLeadWeb_userSpocRolesListCount}' < 6){
+	 if('${SourceLeadWeb_prodSupportLoginUserRole}' != 'ROLE_PRODUCTION_SUPPORT'){
+		 if('${SourceLeadWeb_userSpocRolesListCount}' < 6){
+			 document.getElementById("spockLinksList").removeAttribute("class")
+			 document.getElementById('spockLinksList').className = 'spoclinks-area'
+		     document.getElementById("spockLinksList").style.display="block";
+		 }else{
+			 document.getElementById("spockLinksList").removeAttribute("class")
+			 document.getElementById('spockLinksList').className = 'spoclinks-area spoclinksMore'
+			 document.getElementById("spockLinksList").style.display="block";
+		 }
+	 }
+	 
+	 if('${SourceLeadWeb_prodSupportLoginUserRole}' == 'ROLE_PRODUCTION_SUPPORT'){
 		 document.getElementById("spockLinksList").removeAttribute("class")
 		 document.getElementById('spockLinksList').className = 'spoclinks-area'
 	     document.getElementById("spockLinksList").style.display="block";
-	 }else{
-		 document.getElementById("spockLinksList").removeAttribute("class")
-		 document.getElementById('spockLinksList').className = 'spoclinks-area spoclinksMore'
-		 document.getElementById("spockLinksList").style.display="block";
 	 }
+	 
+	  
   }
   </script>
 
@@ -72,40 +82,17 @@ $(function(){
 		<div class="comLogHead">
 		
 		
-		<c:if test="${!empty SourceLeadWeb_userSpocRolesList}">
-		<div class="offOrg offOrgCompanyOnboard ">
-             <a href="javascript:void(0)" title="Spoc Links" id="spoclinks" onclick="JavaScript: navtoggle(this);"> <i class="fa fa-globe"></i> </a>
-	              <div id="spockLinksList" style="display: none;">
-	              <ul class="list-unstyled">
-	              <c:forEach var="links" items="${SourceLeadWeb_userSpocRolesList}">
-		              <li>
-			              <a href="<c:url value='${sourceleadUrl}/dashboard/${links.orgLocations.id}'/>" class="sopcSwith">
-				                <div class="clearfix">
-				                   <div class="pull-left image-parent positionRelative">
-				                   <div class="imageParent org-imagelink ${links.orgLocations.id == SourceLeadWeb_orgLocationId ? 'active-comp' : ''}">
-				                     <img onerror='predefineOrgImage(this);' src="${sourceleadUrl}/displayOrgImage/${links.orgLocations.org.orgCode}">
-				                     </div>
-				                   </div>
-				                   <div class="pull-left mt5">
-				                     <p class="tbldata-dotdot"><i class="fa fa-building"></i>&nbsp;${links.orgLocations.org.orgName}</p>
-				                     <p class="tbldata-dotdot"><i class="fa fa-map-marker"></i>&nbsp;${!empty links.orgLocations.city ? links.orgLocations.city : ""} ${links.orgLocations.country}</p>
-				                     <p><i class="fa fa-user"></i>&nbsp;${links.roles.displayName}</p>
-				                   </div>
-				                </div>
-			                </a>
-		              </li>
-	              </c:forEach>
-	              </ul>
-	            </div>
-	            </div>
-          </c:if>
+		<jsp:include page="../userManageAccounts.jsp" />
           
 				 <div class="comLogLogoText">${SourceLeadWeb_orgName}</div>
 				  <div class="welSiO onboard-logoutbtn" onclick="logoutFormSubmit();" title="Sign Out"><i class="fa fa-sign-out mt5"></i></div>
 				       <ul>
 						  <li class="actLi">Organization details<i class="fa fa-check-circle"></i></li>
 						  <li class="actLi">Locations<i class="fa fa-check-circle"></i></li>
-						  <c:if test="${SourceLeadWeb_orgLocations.country != 'India'}">
+						  <c:if test="${SourceLeadWeb_orgLocations.country == 'India'}">
+						  <li class="actLi">Information<i class="fa fa-check-circle"></i></li>
+						  </c:if>
+						  <c:if test="${SourceLeadWeb_orgLocations.country == 'United States'}">
 						  <li class="actLi">Federal & state taxes<i class="fa fa-check-circle"></i></li>
 						  </c:if>
 						  <li class="actLi">Banking details<i class="fa fa-check-circle"></i></li>
@@ -138,7 +125,9 @@ $(function(){
 				     
 				    <div class="clearfix mt10"></div>
 				  <div id="legalUserFormDiv"></div>
-			     
+			     <div class="compSignatoryHelpMes mt">
+						You can add more signatories in Org Settings.
+					</div>
 			     <div class="welBtns welBtnsA">
 						<input type="button" value="Prev" onClick="javascript:window.location.href = '<c:url value='/app/companyOnboardDocuments'/>'"><input type="submit" value="Save & Finish" class="Brig" id="save_button">
 						<input type="button" value="Skip & Finish" class="skipBtn" onclick="onboardMessage('Skip');"></a>
@@ -150,7 +139,11 @@ $(function(){
 			</section>
 	</section>
 </div>
-
+					<div class="location-alert alert alert-danger alert-dismissable zInPop" id="locationAlert">
+    <a href="#" class="loc-alertclose close">&times;</a>
+    <strong>Alert !</strong> <span>Your are not able to Save Required data is Missing.</span>
+  </div>
+  
  <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.2/jquery.min.js"></script> 
  <script type="text/javascript" src="/resources/js/jquery-1.11.0.min.js?staticTime=${staticTime}"></script>
  <script type="text/javascript" src="/resources/js/jquery.liquidcarousel.pack.js?staticTime=${staticTime}"></script>	
@@ -232,6 +225,9 @@ $(function(){
 		 $("#phone").removeAttr("readonly", "readonly");
 	 }
  }
+ $(".loc-alertclose").click(function(){
+	 $(".location-alert").fadeOut();
+})
  </script>  
  
  
@@ -274,12 +270,6 @@ $(function(){
   }
   </script>
  
- <script>
-		function logoutFormSubmit() {
-			document.getElementById("logoutForm").submit();
-		}
-</script>
-
 <script>
 function loadLeagelSignerForm(){
 	$("#legalUserFormDiv").empty();
@@ -355,7 +345,7 @@ function loadLeagelSignerForm(){
 	result = result +"<div class='form-group clearfix' id='firstNameDiv'>";
 	result = result +"<label class='col-md-4 noPad'>Designation</label>";
 	result = result +"<div class='col-md-8 padding_right'>";
-	result = result +"<input class='form-control' type='text' name='designationType' id='designationType' field-name='Designation'  pattern='[A-Za-z\s]*' data-validation-optional='true'  data-validation='validate_Space validate_AlphaNumber validate_length length1-100'>";
+	result = result +"<input class='form-control' type='text' name='designation' id='designation' field-name='Designation' data-validation-optional='true' data-validation='validate_Space validate_AlphaNumber validate_length length1-100'>";
 	result = result +"</div>";
 	result = result +"</div>";
 	result = result +"</div>";
@@ -364,7 +354,7 @@ function loadLeagelSignerForm(){
 	result = result +"<div class='form-group clearfix'>";
 	result = result +"<label class='col-md-4 noPad'>Designation</label>";
 	result = result +"<div class='col-md-8 padding_right'>";
-	result = result +"<select class='chosen-select form-control' id='designation' name='designationType' field-name='Designation' data-validation-optional='true' onchange='getDesignationType()'>";
+	result = result +"<select class='chosen-select form-control' id='designation' nSSNSSName='designationType' field-name='Designation' data-validation-optional='true' onchange='getDesignationType()'>";
 	result = result +"<option value=''>--Select Designation--</option>";
 	result = result +'<option value="CEO">CEO</option>';
 	result = result +'<option value="CFO">CFO</option>';
@@ -430,17 +420,32 @@ $('body').on('submit', '#signatory_form', function(e){
       var formData = getFormData("signatory_form");
      
       if (document.getElementById('legalSigner').checked) {
-    	 saveOrgLocationSignatory(formData);
+    	 saveLoginUserAsOrgLocationSignatory(formData);
       }else{
         var isMailSent = "Y";
    	 	 $("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
 	       $.ajax({
 		    	type: "POST",
 		    	data : formData,
-		    	  url: sourceleadUrl+"/createUser?${_csrf.parameterName}=${_csrf.token}&isMailSent="+isMailSent,		
+		    	  url: sourceleadUrl+"/createSingnatoryUser?${_csrf.parameterName}=${_csrf.token}&isMailSent="+isMailSent,		
 		        success: function(result) {
-		        	
+		        	if (result && (result.response === "INVALID_DATA" || result.response === "INVALID_USER")) {
+      	    		    showError(result.responseMessage);
+      	    		    $("#loading").removeAttr('style');
+      	    		}
+		        	else if(result.response === "AWKWARD"){
+		        		 location.href = "/errorPage";
+		        	}
+		        	else if(result.response === "SUCCESS"){
+		        		$("#loading").removeAttr('style');
 		        	saveOrgLocationSignatory(formData);
+		        	
+		        	}else if (result.indexOf('Sign In') !== -1) {
+      					location.replace(sourceleadUrl);
+      				} else {
+      				    showError("Operation failed, please try again");
+      				    $("#loading").removeAttr('style');
+      				}
 		        },
 		    });   
       }
@@ -465,14 +470,60 @@ $('body').on('submit', '#signatory_form', function(e){
 		   $.ajax({
 		    	type: "POST",
 		    	data : formData,
-		    	 url: sourceleadUrl+"/saveOrgLocationSignatory?${_csrf.parameterName}=${_csrf.token}", 
-		        success: function(data) {
-		        	if(data == 'success'){
+		    	 url: sourceleadUrl+"/saveCompanyOnBoardSignatory?${_csrf.parameterName}=${_csrf.token}", 
+		        success: function(result) {
+		        	if (result && (result.response === "INVALID_DATA" || result.response === "INVALID_USER")) {
+      	    		    showError(result.responseMessage);
+      	    		    $("#loading").removeAttr('style');
+      	    		}
+		        	else if(result.response === "AWKWARD"){
+		        		 location.href = "/errorPage";
+		        	}
+		        	else if(result.response === "SUCCESS"){
 		        		$("#loading").removeAttr("style");
 		        		onboardMessage();
-		        	}
+		        	
+		        	}else if (result.indexOf('Sign In') !== -1) {
+      					location.replace(sourceleadUrl);
+      				} else {
+      				    showError("Operation failed, please try again");
+      				    $("#loading").removeAttr('style');
+      				}
+		        
 		        },
 		    });
+  }
+  </script>
+  
+  
+  <script>
+  function saveLoginUserAsOrgLocationSignatory(){
+	  var sourceleadUrl = '${sourceleadUrl}';
+	  $("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
+	  $.ajax({
+	    	type: "POST",
+	    	 url: sourceleadUrl+"/saveLoginUserAsOrgLocationSignatory?${_csrf.parameterName}=${_csrf.token}", 
+	        success: function(result) {
+	        	if (result && (result.response === "INVALID_DATA" || result.response === "INVALID_USER")) {
+	    		    showError(result.responseMessage);
+	    		    $("#loading").removeAttr('style');
+	    		}
+	        	else if(result.response === "AWKWARD"){
+	        		 location.href = "/errorPage";
+	        	}
+	        	else if(result.response === "SUCCESS"){
+	        		$("#loading").removeAttr("style");
+	        		onboardMessage();
+	        	
+	        	}else if (result.indexOf('Sign In') !== -1) {
+					location.replace(sourceleadUrl);
+				} else {
+				    showError("Operation failed, please try again");
+				    $("#loading").removeAttr('style');
+				}
+	        
+	        },
+	    });
   }
   </script>
   
@@ -518,7 +569,13 @@ $('body').on('submit', '#signatory_form', function(e){
 function goToDashboard(){
 	$("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
 	var sourceleadUrl = '${sourceleadUrl}';
-	location.replace(sourceleadUrl+"/dashboard/${SourceLeadWeb_orgLocationId}");  
+	
+	 if('${SourceLeadWeb_prodSupportLoginUserRole}' != 'ROLE_PRODUCTION_SUPPORT'){
+		 location.replace(sourceleadUrl+"/dashboard/${SourceLeadWeb_orgLocationId}"); 
+	 }else{
+		 location.replace(sourceleadUrl+"/dashboard/${SourceLeadWeb_prodSupportOrgLocationId}"); 
+	 }
+	 
 }
 </script>
 
@@ -542,7 +599,3 @@ function cancel(){
   });
 </script>
 
-<c:url var="logoutUrl" value="/logout"/>
-<form action="${logoutUrl}" method="post" id="logoutForm">
- <input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}"/>
-</form>

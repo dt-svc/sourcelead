@@ -22,7 +22,6 @@ import org.hibernate.annotations.NotFoundAction;
 
 @Entity
 @Table(name = "ORGLOCATION_SIGNATORY")
-@Cache(usage = CacheConcurrencyStrategy.TRANSACTIONAL,region="orglocationSignatory" )
 public class OrglocationSignatory implements Serializable{
 	
 	
@@ -33,20 +32,20 @@ public class OrglocationSignatory implements Serializable{
     @Column(name = "ID", nullable = false)
     private Long id;
 	
-	@NotFound(action=NotFoundAction.IGNORE)
-	@ManyToOne(fetch = FetchType.EAGER)
+	
+	@ManyToOne(fetch = FetchType.LAZY)
 	@Fetch(FetchMode.SELECT)
 	@JoinColumn(name = "ORGLOCATION_ID")
     private OrgLocations orgLocationId;
 	
-	@NotFound(action=NotFoundAction.IGNORE)
-	@ManyToOne(fetch = FetchType.EAGER)
+	
+	@ManyToOne(fetch = FetchType.LAZY)
 	@Fetch(FetchMode.SELECT)
 	@JoinColumn(name = "USER_ID")
     private User userId;
 	
-	@NotFound(action=NotFoundAction.IGNORE)
-	@ManyToOne(fetch = FetchType.EAGER)
+	
+	@ManyToOne(fetch = FetchType.LAZY)
 	@Fetch(FetchMode.SELECT)
 	@JoinColumn(name = "USER_ROLE_ID")
     private UserRole userRoleId;
@@ -64,7 +63,7 @@ public class OrglocationSignatory implements Serializable{
 	private String phone;
 	
 	@Column(name = "SSN")
-	private Integer ssn;
+	private String ssn;
 	
 	@Column(name = "DESIGNATION")
 	private String designation;
@@ -78,12 +77,12 @@ public class OrglocationSignatory implements Serializable{
 	@Column(name = "STATUS")
 	private Integer status;
 	
-    @NotFound(action=NotFoundAction.IGNORE)
+    
     @ManyToOne(fetch = FetchType.LAZY)
    	@JoinColumn(name = "CREATED_BY")
   	private User createdBy;
 	
-    @NotFound(action=NotFoundAction.IGNORE)
+    
 	@ManyToOne(fetch = FetchType.LAZY)
    	@JoinColumn(name = "UPDATED_BY")
   	private User updatedBy;
@@ -94,7 +93,11 @@ public class OrglocationSignatory implements Serializable{
     @Column(name = "UPDATED_DATE")
    	private Date updatedDate;
     
+    @Column(name = "AUTHORIZED_TYPE")
+	private String authorizedType;
     
+    @Column(name = "AUTHORIZED_AMOUNT")
+	private Long authorizedAmount;
 
 	public Long getId() {
 		return id;
@@ -160,11 +163,13 @@ public class OrglocationSignatory implements Serializable{
 		this.phone = phone;
 	}
 
-	public Integer getSsn() {
+	public String getSsn()
+	{
 		return ssn;
 	}
 
-	public void setSsn(Integer ssn) {
+	public void setSsn(String ssn)
+	{
 		this.ssn = ssn;
 	}
 
@@ -232,7 +237,24 @@ public class OrglocationSignatory implements Serializable{
 		this.updatedDate = updatedDate;
 	}
 
-	
-	
+	public String getAuthorizedType()
+	{
+		return authorizedType;
+	}
+
+	public void setAuthorizedType(String authorizedType)
+	{
+		this.authorizedType = authorizedType;
+	}
+
+	public Long getAuthorizedAmount()
+	{
+		return authorizedAmount;
+	}
+
+	public void setAuthorizedAmount(Long authorizedAmount)
+	{
+		this.authorizedAmount = authorizedAmount;
+	}
 
 }

@@ -1,6 +1,7 @@
 package com.bis.sourcelead.service.impl;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import org.apache.commons.lang.StringUtils;
@@ -11,22 +12,31 @@ import org.springframework.stereotype.Service;
 
 import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.dao.OrgSpocDao;
+import com.bis.sourcelead.dao.ReferContactsDao;
+import com.bis.sourcelead.dao.UserDao;
 import com.bis.sourcelead.dto.AddUserDTO;
 import com.bis.sourcelead.dto.CandidateDTO;
 import com.bis.sourcelead.dto.ClientDTO;
+import com.bis.sourcelead.dto.CustomFormFieldDTO;
 import com.bis.sourcelead.elk.index.ClientVendorContactsIndex;
 import com.bis.sourcelead.elk.index.helper.ClientVendorContactsIndexHelper;
 import com.bis.sourcelead.elk.setup.SourceleadELKBaseIndexer;
+import com.bis.sourcelead.entity.ClientCustomFieldData;
 import com.bis.sourcelead.entity.Org;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.OrgRelations;
 import com.bis.sourcelead.entity.OrgSpoc;
+import com.bis.sourcelead.entity.OrglocationFormFields;
+import com.bis.sourcelead.entity.ReferContacts;
 import com.bis.sourcelead.entity.User;
+import com.bis.sourcelead.entity.UserCustomFieldData;
 import com.bis.sourcelead.entity.UserRole;
 import com.bis.sourcelead.entity.VendorOnboarding;
+import com.bis.sourcelead.service.ClientCustomFieldDataService;
 import com.bis.sourcelead.service.OrgLocationService;
 import com.bis.sourcelead.service.OrgRelationsService;
 import com.bis.sourcelead.service.OrgSpocService;
+import com.bis.sourcelead.service.OrglocationFormFieldsService;
 import com.bis.sourcelead.service.UserRoleService;
 import com.bis.sourcelead.service.UserService;
 import com.bis.sourcelead.service.VendorOnboardService;
@@ -71,6 +81,19 @@ public class OrgSpocServiceImpl implements OrgSpocService{
 	@Autowired
 	VendorOnboardService vendorOnboardService;
 	
+	@Autowired
+	ReferContactsDao referContactsDao;
+	
+	@Autowired
+	UserDao userDao;
+	
+	@Autowired
+	private ClientCustomFieldDataService clientCustomFieldDataService;
+	
+	@Autowired
+	private OrglocationFormFieldsService orglocationFormFieldsService;
+	
+	
 	
 	/**
 	 * used to add spoc for vendor and client
@@ -87,6 +110,15 @@ public class OrgSpocServiceImpl implements OrgSpocService{
 		  sourceleadELKBaseIndexer.saveOrUpdateElkDocument(clientVendorContactsIndex, Constants.ELK_CLIENTVENDOR_CONTACT_INDEX, Constants.ELK_CLIENTVENDOR_CONTACT_TYPE,orgSpoc.getId().toString());
 		
 		return  orgSpocElk;
+	}
+	
+	
+	@Override
+	public void addClientVendorContactsELK(OrgSpoc orgSpoc) throws Exception {
+		
+		  ClientVendorContactsIndex clientVendorContactsIndex = clientVendorContactsIndexHelper.getClientVendorContactIndexFromSpoc(orgSpoc);
+		  sourceleadELKBaseIndexer.saveOrUpdateElkDocument(clientVendorContactsIndex, Constants.ELK_CLIENTVENDOR_CONTACT_INDEX, Constants.ELK_CLIENTVENDOR_CONTACT_TYPE,orgSpoc.getId().toString());
+		
 	}
 
 	/**
@@ -135,12 +167,32 @@ public class OrgSpocServiceImpl implements OrgSpocService{
 					orgSpoc.setClientUser(spocUser);
 					orgSpoc.setVendorUser(ownerUser);
 					orgSpoc.setOwnerUser(ownerUser);
+					if(StringUtils.isNotBlank(clientDTO.getInvoiceOrBillSent())){
+					orgSpoc.setInvoiceEmailStatus(clientDTO.getInvoiceOrBillSent());
+					}else{
+					orgSpoc.setInvoiceEmailStatus(Constants.NO);	
+					}
+					if(StringUtils.isNotBlank(clientDTO.getApOrArSent())){
+					orgSpoc.setApEmailStatus(clientDTO.getApOrArSent());
+					}else{
+					orgSpoc.setApEmailStatus(Constants.NO);
+					}
 				}else if(responderType.equalsIgnoreCase("Vendor")){
 					orgSpoc.setVendorLocationId(respondingOrgLocation);
 					orgSpoc.setClientLocationId(orgLocations);
 					orgSpoc.setClientUser(ownerUser);
 					orgSpoc.setVendorUser(spocUser);
 					orgSpoc.setOwnerUser(ownerUser);
+					if(StringUtils.isNotBlank(clientDTO.getInvoiceOrBillSent())){
+					orgSpoc.setBillingEmailStatus(clientDTO.getInvoiceOrBillSent());
+					}else{
+					orgSpoc.setBillingEmailStatus(Constants.NO);	
+					}
+					if(StringUtils.isNotBlank(clientDTO.getApOrArSent())){
+					orgSpoc.setArEmailStatus(clientDTO.getApOrArSent());
+					}else{
+					orgSpoc.setArEmailStatus(Constants.NO);
+					}
 				}
 			
 				if(StringUtils.isNotBlank(clientDTO.getIsMailSent())){
@@ -160,6 +212,100 @@ public class OrgSpocServiceImpl implements OrgSpocService{
 				orgSpoc.setUpdatedDate(CommonUtil.currentDate());
 				orgSpoc.setUpdatedBy(user.getUserCode());
 				OrgSpoc orgs  = orgSpocDao.addOrgSpoc(orgSpoc);
+				
+				
+				if(clientDTO.getCustomFormData() !=null) {
+					for( CustomFormFieldDTO customFields:clientDTO.getCustomFormData()) {
+						if(customFields!= null && customFields.getCustomFormFieldId() > 0) {
+							ClientCustomFieldData clientCustomFields = null;
+							if(customFields.getEntityId()!= null && customFields.getEntityId() > 0) {
+								clientCustomFields = clientCustomFieldDataService.getClientCustomFieldDataById(customFields.getEntityId());
+							}else {
+								clientCustomFields = new ClientCustomFieldData();
+							}
+						clientCustomFields.setOrg(respondingOrgLocation.getOrg());
+						OrglocationFormFields orgFormField = orglocationFormFieldsService.getOrglocationFormFieldsById(customFields.getCustomFormFieldId());
+						clientCustomFields.setOrglocationsFormFields(orgFormField);
+						if(customFields.getCustomFormFieldData() == null || StringUtils.isEmpty(customFields.getCustomFormFieldData())) {
+							clientCustomFields.setCustomFormFieldData("");
+						}else {
+							clientCustomFields.setCustomFormFieldData(customFields.getCustomFormFieldData());
+						}
+						clientCustomFieldDataService.saveClientCustomFieldData(clientCustomFields);
+						}
+						
+					}	
+				}
+				
+				ReferContacts referContacts=null;
+				 referContacts=referContactsDao.getReferContactsByEmails(user.getId(), clientDTO.getEmail());
+			
+				if(referContacts !=null){
+					if(clientDTO.getFirstName() != null){
+						referContacts.setFirstName(clientDTO.getFirstName());
+					}
+					if(clientDTO.getLastName() != null){
+						referContacts.setLastName(clientDTO.getLastName());
+					}
+					if(clientDTO.getPhoneNumber() != null){
+						referContacts.setContactUserPhone(clientDTO.getPhoneNumber());
+					}
+					referContacts.setUpdatedDate(new Date());
+					referContacts.setUpdatedBy(user.getUserCode());
+					if(clientDTO.getResponderType() != null){
+						if(clientDTO.getResponderType().equalsIgnoreCase("vendor")){
+							referContacts.setVendorType(1);
+						}else{
+							referContacts.setClientType(1);
+						}
+					}
+				}else{
+					 referContacts = new ReferContacts();
+					
+					if(clientDTO.getEmail() != null){
+						referContacts.setContactUserEmail(clientDTO.getEmail());
+					}
+					if(clientDTO.getOrgName() != null){
+						referContacts.setCompanyName(clientDTO.getOrgName());
+					}
+					if(clientDTO.getFirstName() != null){
+						referContacts.setFirstName(clientDTO.getFirstName());
+					}
+					if(clientDTO.getLastName() != null){
+						referContacts.setLastName(clientDTO.getLastName());
+					}
+					if(clientDTO.getPhoneNumber() != null){
+						referContacts.setContactUserPhone(clientDTO.getPhoneNumber());
+					}
+					if(clientDTO.getOrgName() != null){
+						referContacts.setCompanyName(clientDTO.getOrgName());
+					}else{
+						
+						referContacts.setCompanyName(respondingOrgLocation.getOrgLocationName());
+					}
+					if(StringUtils.isNotBlank(clientDTO.getEmail())){
+						referContacts.setContactUserEmail(clientDTO.getEmail());
+						User contactUser = userDao.getUserByEmailAndUserType(clientDTO.getEmail(), Constants.PROFESSIONAL);
+						if(null != contactUser){
+							referContacts.setContactUser(contactUser);
+						}
+					}
+					
+					referContacts.setReferFromUser(user);
+					String contactUUID = SourceLeadRandomCodeHelper.generateUUID();
+					referContacts.setContactUserUUID(contactUUID);
+					referContacts.setCreatedDate(new Date());
+					if(clientDTO.getResponderType() != null){
+						if(clientDTO.getResponderType().equalsIgnoreCase("vendor")){
+							referContacts.setVendorType(1);
+						}else{
+							referContacts.setClientType(1);
+						}
+					}
+					referContacts.setCreatedBy(user.getUserCode());
+				}
+			
+			referContactsDao.addReferContacts(referContacts);
 				
 				 //Elastic Search Document Saving
 				  ClientVendorContactsIndex clientVendorContactsIndex = clientVendorContactsIndexHelper.getClientVendorContactIndexFromSpoc(orgs);
@@ -202,7 +348,6 @@ public class OrgSpocServiceImpl implements OrgSpocService{
 		List<OrgSpoc> orgSpocsList  = orgSpocDao.getAllSpocsByOrgRelationId(orgRelationId, userId, userIds,orgLocationId,type);
 		if(orgSpocsList != null && !orgSpocsList.isEmpty()){
 			for (OrgSpoc orgSpoc : orgSpocsList) {
-				
 				 //StringBuilder spocNameSB = new StringBuilder();
 				 StringBuilder ownerNameSB = new StringBuilder();
 				
@@ -592,5 +737,12 @@ public class OrgSpocServiceImpl implements OrgSpocService{
 		List<Long> userIds = userRoleService.getAllUserIdsByReportingManagerId(userId);
 		return orgSpocDao.getNumberOfContactCount(orgRelationId, userId, userIds, orgLocationId,responderType);
 	}
+
+
+	@Override
+	public OrgSpoc getSpocByOrgRelationIdForNewVendor(Long orgRelationId) throws Exception {
+		return orgSpocDao.getSpocByOrgRelationIdForNewVendor(orgRelationId);
+	}
+
 	
 }

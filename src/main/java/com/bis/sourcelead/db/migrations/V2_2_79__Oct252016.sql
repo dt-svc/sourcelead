@@ -1,4 +1,4 @@
-CALL sourcelead.AlterTableAddColumn ('sourcelead','REQUIREMENT_INTERVIEW','NOTIFICATION_TO_OTHERS','VARCHAR(2) NULL AFTER `NOTIFICATION_TO_SPOC`');
-CALL sourcelead.AlterTableAddColumn ('sourcelead','REQUIREMENT_INTERVIEW','NOTIFICATION_TO_OTHERS_EMAILS','TEXT NULL AFTER `NOTIFICATION_TO_OTHERS`');
+CALL AlterTableAddColumn ('REQUIREMENT_INTERVIEW','NOTIFICATION_TO_OTHERS','VARCHAR(2) NULL AFTER `NOTIFICATION_TO_SPOC`');
+CALL AlterTableAddColumn ('REQUIREMENT_INTERVIEW','NOTIFICATION_TO_OTHERS_EMAILS','TEXT NULL AFTER `NOTIFICATION_TO_OTHERS`');
 
-UPDATE `sourcelead`.`EMAIL_SCENARIO` SET `BODY`='Dear {{InviteUser.FirstName}} {{InviteUser.LastName}},\n\n{{InviteUser.AdministratorFirstName}} {{InviteUser.AdministratorLastName}} invited you to SourceLead as a {{InviteUser.Role}}.\n\nYou can simply login into SourceLead by clicking below link with follow credentials\n\nLogin Username : {{InviteUser.UserEmailId}}\n\nPassword : {{InviteUser.Password}}\n\n{{InviteUser.LoginURL}}' WHERE `ID`='4';
+UPDATE `EMAIL_SCENARIO` SET `BODY`='Dear {{InviteUser.FirstName}} {{InviteUser.LastName}},\n\n{{InviteUser.AdministratorFirstName}} {{InviteUser.AdministratorLastName}} invited you to SourceLead as a {{InviteUser.Role}}.\n\nYou can simply login into SourceLead by clicking below link with follow credentials\n\nLogin Username : {{InviteUser.UserEmailId}}\n\nPassword : {{InviteUser.Password}}\n\n{{InviteUser.LoginURL}}' WHERE `ID`='4';

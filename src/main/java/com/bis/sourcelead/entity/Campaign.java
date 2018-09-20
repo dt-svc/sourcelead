@@ -4,6 +4,7 @@ import java.util.Date;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -18,7 +19,6 @@ import org.hibernate.annotations.NotFoundAction;
 
 @Entity
 @Table(name = "CAMPAIGN")
-@Cache(usage = CacheConcurrencyStrategy.TRANSACTIONAL, region = "campaign")
 public class Campaign {
 	
 	@Id
@@ -26,8 +26,7 @@ public class Campaign {
     @Column(name = "ID", nullable = false)
 	private Long id;
 	
-	@NotFound(action = NotFoundAction.IGNORE)
-	@ManyToOne
+	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "ORGLOCATION_ID", nullable = false)
 	private OrgLocations orgLocation;
 	
@@ -76,8 +75,7 @@ public class Campaign {
 	@Column(name = "CREATED_DATE")
 	private Date createdDate;
 
-	@NotFound(action = NotFoundAction.IGNORE)
-	@ManyToOne
+	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "CREATED_BY", nullable = false)
 	private User createdBy;
 

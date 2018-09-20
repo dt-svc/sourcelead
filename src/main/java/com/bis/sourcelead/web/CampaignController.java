@@ -98,7 +98,7 @@ public class CampaignController {
 			
 	}
 	
-	@PreAuthorize("hasRole('ROLE_HOTLIST_CAMPAIGN')")
+	@PreAuthorize("hasAnyRole('ROLE_HOTLIST_CAMPAIGN','ROLE_JOB_CAMPAIGN')")
 	@RequestMapping(value = "/hotListCampaigns")
  	public ModelAndView hotListCampaigns(HttpServletRequest request,@RequestParam(value="mailType", required=false) String mailType) throws Exception {
 		    ModelAndView model = new ModelAndView();
@@ -120,12 +120,13 @@ public class CampaignController {
  			return model;
  	}
 	
-	@PreAuthorize("hasRole('ROLE_HOTLIST_CAMPAIGN')")
+	@PreAuthorize("hasAnyRole('ROLE_HOTLIST_CAMPAIGN','ROLE_JOB_CAMPAIGN')")
 	@RequestMapping(value = "/joblistMail")
  	public ModelAndView joblistMail(HttpServletRequest request) throws Exception{
 		User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
 		    ModelAndView model = new ModelAndView();
  			model.setViewName("joblistMail");
+ 			 commonUtil.highLightMenu(Constants.Campaigns, request);
  			model.addObject("sourceleadUrl", sourceleadUrl);
  			 List<ContactsGroup> contactsGroupList = contactsGroupService.getContactsGroupListByUserId(user.getId());
 			 model.addObject("contactsGroupList", contactsGroupList);
@@ -186,7 +187,7 @@ public class CampaignController {
 	
 	
 	/**
-	 * Resturns campaignSender jsp popup
+	 * Returns campaignSender jsp popup
 	 * @return jsp
 	 * @throws Exception 
 	 * @throws NumberFormatException 

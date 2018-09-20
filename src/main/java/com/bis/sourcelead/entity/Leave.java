@@ -29,14 +29,13 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 
 @Entity
 @Table(name = "USER_LEAVE")
-@Cache(usage = CacheConcurrencyStrategy.TRANSACTIONAL, region = "leave")
 public class Leave {
 
-	@Id
-	@GeneratedValue(strategy = GenerationType.IDENTITY, generator = "uuid2")
-	@GenericGenerator(name = "uuid2", strategy = "uuid2")
-	private String id;
 	
+	@Id
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "ID", nullable = false)
+    private Long id;
 	
 	@NotFound(action = NotFoundAction.IGNORE)
 	@ManyToOne(cascade = CascadeType.ALL)
@@ -67,6 +66,18 @@ public class Leave {
 	
 	@Column(name = "TO_HALF_DAY")
 	private String toHalfDay;
+	
+	@Column(name = "FROM_DATE_FROM_TIME")
+	private String fromDateFromHalfTime;
+	
+	@Column(name = "FROM_DATE_TO_TIME")
+	private String fromDateToHalfTime;
+	
+	@Column(name = "TO_DATE_FROM_TIME")
+	private String toDateFromHalfTime;
+	
+	@Column(name = "TO_DATE_TO_TIME")
+	private String toDateToHalfTime;
 
 //	 
 	@Column(name = "FILE_CONTENT_TYPE")
@@ -82,7 +93,10 @@ public class Leave {
 	private String reason;
 	
 	@Column(name = "NUMBER_OF_DAYS")
-	private String numberOfDays;
+	private int numberOfDays;
+	
+	@Column(name = "EXTRA_LEAVES_TAKEN")
+	private float extraLeavesTaken;
 	
 	@Column(name = "REJECTED_REASON",columnDefinition = "TEXT default NULL")
 	private String rejectedReason;
@@ -123,10 +137,20 @@ public class Leave {
 	@Column(name = "UPDATED_BY")
 	private String updatedBy;
 	
+	@Column(name = "LEAVE_UUID")
+	private String leaveUUID;
+	
+	@Column(name = "NOTIFY_TO_OTHERS")
+	private String notifyToOthers;
+	
 	@NotFound(action=NotFoundAction.IGNORE)
 	@JsonBackReference
 	@OneToMany(cascade = CascadeType.ALL, mappedBy = "leaveid")
 	private Set<LeaveApproveHierarchy> approverHierarchyList;
+	
+	
+	@OneToMany(cascade = CascadeType.ALL, mappedBy = "leave")
+	private Set<AppliedLeaveDate> appliedLeaveDateSet;
 	
 	@Transient
 	@JsonProperty
@@ -150,7 +174,7 @@ public class Leave {
 	
 	@Transient
 	@JsonProperty
-	private Integer balanceLeavesCount;
+	private float balanceLeavesCount;
 	
 	@Transient
 	@JsonProperty
@@ -160,11 +184,11 @@ public class Leave {
 	@JsonProperty
 	private int totalLeavesTaken;
 
-	public String getId() {
+	public Long getId() {
 		return id;
 	}
 
-	public void setId(String id) {
+	public void setId(Long id) {
 		this.id = id;
 	}
 
@@ -394,22 +418,34 @@ public class Leave {
 		this.createdDateStr = createdDateStr;
 	}
 
-	public Integer getBalanceLeavesCount() {
+	public float getBalanceLeavesCount()
+	{
 		return balanceLeavesCount;
 	}
 
-	public void setBalanceLeavesCount(Integer balanceLeavesCount) {
+	public void setBalanceLeavesCount(float balanceLeavesCount)
+	{
 		this.balanceLeavesCount = balanceLeavesCount;
 	}
 
-	public String getNumberOfDays() {
+	public int getNumberOfDays() {
 		return numberOfDays;
 	}
 
-	public void setNumberOfDays(String numberOfDays) {
+	public void setNumberOfDays(int numberOfDays) {
 		this.numberOfDays = numberOfDays;
 	}
 	
+	public float getExtraLeavesTaken()
+	{
+		return extraLeavesTaken;
+	}
+
+	public void setExtraLeavesTaken(float extraLeavesTaken)
+	{
+		this.extraLeavesTaken = extraLeavesTaken;
+	}
+
 	public String getApprovedByUser()
 	{
 		return approvedByUser;
@@ -436,4 +472,64 @@ public class Leave {
 		this.totalLeavesTaken = totalLeavesTaken;
 	}
 
+	public String getLeaveUUID()
+	{
+		return leaveUUID;
+	}
+
+	public void setLeaveUUID(String leaveUUID)
+	{
+		this.leaveUUID = leaveUUID;
+	}
+
+	public Set<AppliedLeaveDate> getAppliedLeaveDateSet()
+	{
+		return appliedLeaveDateSet;
+	}
+
+	public void setAppliedLeaveDateSet(Set<AppliedLeaveDate> appliedLeaveDateSet)
+	{
+		this.appliedLeaveDateSet = appliedLeaveDateSet;
+	}
+
+	public String getFromDateFromHalfTime() {
+		return fromDateFromHalfTime;
+	}
+
+	public void setFromDateFromHalfTime(String fromDateFromHalfTime) {
+		this.fromDateFromHalfTime = fromDateFromHalfTime;
+	}
+
+	public String getFromDateToHalfTime() {
+		return fromDateToHalfTime;
+	}
+
+	public void setFromDateToHalfTime(String fromDateToHalfTime) {
+		this.fromDateToHalfTime = fromDateToHalfTime;
+	}
+
+	public String getToDateFromHalfTime() {
+		return toDateFromHalfTime;
+	}
+
+	public void setToDateFromHalfTime(String toDateFromHalfTime) {
+		this.toDateFromHalfTime = toDateFromHalfTime;
+	}
+
+	public String getToDateToHalfTime() {
+		return toDateToHalfTime;
+	}
+
+	public void setToDateToHalfTime(String toDateToHalfTime) {
+		this.toDateToHalfTime = toDateToHalfTime;
+	}
+
+	public String getNotifyToOthers() {
+		return notifyToOthers;
+	}
+
+	public void setNotifyToOthers(String notifyToOthers) {
+		this.notifyToOthers = notifyToOthers;
+	}
+	
 }

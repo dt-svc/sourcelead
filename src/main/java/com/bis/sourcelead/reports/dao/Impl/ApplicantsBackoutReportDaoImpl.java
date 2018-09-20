@@ -2,20 +2,19 @@ package com.bis.sourcelead.reports.dao.Impl;
 
 import java.util.ArrayList;
 import java.util.Date;
-import java.util.LinkedHashMap;
 import java.util.List;
-import java.util.Map;
 
+import org.hibernate.Query;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.hibernate.transform.Transformers;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.bis.sourcelead.reports.dao.ApplicantsBackoutReportDao;
+import com.bis.sourcelead.reportsDTO.ApplicantsBackoutDTO;
 
 @Repository
 public class ApplicantsBackoutReportDaoImpl implements ApplicantsBackoutReportDao {
@@ -37,38 +36,32 @@ public class ApplicantsBackoutReportDaoImpl implements ApplicantsBackoutReportDa
 	@SuppressWarnings("unchecked")
 	@Override
 	@Transactional
-	public Map<String, Integer> getApplicantBackoutReport(List<Long> jobIdList, Date[] searchDates) {
+	public List<ApplicantsBackoutDTO> getApplicantBackoutReport(List<Long> jobIdList, Date[] searchDates, int offset) {
 
 		Session session = this.sessionFactory.getCurrentSession();
 		String query = null;
-		List<Long> submissionCount = null;
+		Query submissionCount = null;
 		
-		List<String> typeName = new ArrayList<>();
-		Map<String,Integer> typeCount = new LinkedHashMap<>();
-		Integer count= 0;
-		typeName.add("Current Company");
-		typeName.add("Compensation");
-		typeName.add("Better Offer");
-		typeName.add("Cold Feet");
-		typeName.add("Personal");
-		typeName.add("other");
-		for(String type:typeName) {
+		List<ApplicantsBackoutDTO> countList = new ArrayList<ApplicantsBackoutDTO>();
+	
 		if(searchDates != null) {
-			 query ="select count(*) from RequirementSubmission rs where rs.submissionStatus ='BACKOUT' and rs.backOutCategoryType = '"+type+"' and rs.requirement.id IN (:jobIds) "
-					+ " and date(rs.createdDate) BETWEEN :startDate and :endDate";
-			 submissionCount =  session.createQuery(query.toString()).setParameterList("jobIds", jobIdList).setParameter("startDate", searchDates[0]).setParameter("endDate", searchDates[1]).setCacheable(true).list();
-		}else {
-			 query ="select count(*) from RequirementSubmission rs where rs.submissionStatus ='BACKOUT' and rs.backOutCategoryType = '"+type+"' and rs.requirement.id IN (:jobIds) ";
-			 submissionCount =  session.createQuery(query.toString()).setParameterList("jobIds", jobIdList).setCacheable(true).list();
+			 query = "select (select count(rs.BACKOUT_TYPE)  from REQUIREMENT_SUBMISSION rs where rs.SUBMISSION_STATUS ='BACKOUT' and rs.BACKOUT_TYPE LIKE 'Current Company' and rs.REQUIREMENT_ID IN (:jobIds) and DATE(rs.CREATED_DATE) BETWEEN :startDate and :endDate) as currentCompany,"
+					+ "(select count(rs.BACKOUT_TYPE)  from REQUIREMENT_SUBMISSION rs where rs.SUBMISSION_STATUS ='BACKOUT' and rs.BACKOUT_TYPE LIKE 'other' and rs.REQUIREMENT_ID IN (:jobIds ) and DATE(rs.CREATED_DATE) BETWEEN :startDate and :endDate) as other,"
+					+ "(select count(rs.BACKOUT_TYPE)  from REQUIREMENT_SUBMISSION rs where rs.SUBMISSION_STATUS ='BACKOUT' and rs.BACKOUT_TYPE LIKE 'Compensation' and rs.REQUIREMENT_ID IN (:jobIds ) and DATE(rs.CREATED_DATE) BETWEEN :startDate and :endDate) as compensation,"
+					+ "(select count(rs.BACKOUT_TYPE)  from REQUIREMENT_SUBMISSION rs where rs.SUBMISSION_STATUS ='BACKOUT' and rs.BACKOUT_TYPE LIKE 'Better Offer' and rs.REQUIREMENT_ID IN (:jobIds ) and DATE(rs.CREATED_DATE) BETWEEN :startDate and :endDate) as betterOffer,"
+					+ "(select count(rs.BACKOUT_TYPE)  from REQUIREMENT_SUBMISSION rs where rs.SUBMISSION_STATUS ='BACKOUT' and rs.BACKOUT_TYPE LIKE 'Cold Feet' and rs.REQUIREMENT_ID IN (:jobIds ) and DATE(rs.CREATED_DATE) BETWEEN :startDate and :endDate) as coldFeet,"
+					+ "(select count(rs.BACKOUT_TYPE)  from REQUIREMENT_SUBMISSION rs where rs.SUBMISSION_STATUS ='BACKOUT' and rs.BACKOUT_TYPE LIKE 'Personal' and rs.REQUIREMENT_ID IN (:jobIds ) and DATE(rs.CREATED_DATE) BETWEEN :startDate and :endDate) as personal,"
+					+ "(select count(*)  from REQUIREMENT_SUBMISSION rs where rs.SUBMISSION_STATUS ='BACKOUT' and rs.REQUIREMENT_ID IN (:jobIds ) and DATE(rs.CREATED_DATE) BETWEEN :startDate and :endDate) as totalCount";
+			 submissionCount =  session.createSQLQuery(query).setParameterList("jobIds", jobIdList).setParameter("startDate", searchDates[0]).setParameter("endDate", searchDates[1]);
 		}
-		
-			
-			if(submissionCount != null && !submissionCount.isEmpty()){
-					count = submissionCount.get(0).intValue();
+			submissionCount.setFirstResult(offset).setMaxResults(18).setResultTransformer(Transformers.aliasToBean(ApplicantsBackoutDTO.class));
+			countList = submissionCount.list();
+			if (countList.isEmpty()) {
+				ApplicantsBackoutDTO applicantsBackoutDTO = new ApplicantsBackoutDTO();
+				//applicantsBackoutDTO.setCountFlag("true");
+				countList.add(applicantsBackoutDTO);
 			}
-			typeCount.put(type, count);
-		}
-			return typeCount;
+			return countList;
 		
 	}
 

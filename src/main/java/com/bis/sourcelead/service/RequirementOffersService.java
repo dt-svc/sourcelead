@@ -51,5 +51,7 @@ public interface RequirementOffersService {
 	void sendApplicantOfferAcceptMail(RequirementOffers requirementOffers) throws Exception;
 
 	void sendApplicantOfferRejectMail(RequirementOffers requirementOffers) throws Exception;
+	
+	RequirementOffers getOnboardRequirementOfferId(Long offerId)throws Exception;
 }
 

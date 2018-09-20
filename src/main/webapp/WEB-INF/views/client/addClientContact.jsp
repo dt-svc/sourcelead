@@ -64,6 +64,11 @@ function getOrgName(){
 		document.getElementById("firstName").value="";
 		document.getElementById("lastName").value="";
 		document.getElementById("phoneNumber").value="";
+		<c:forEach var="section" items="${sourceleadSectionList}" varStatus="sectionOrder">
+		  var sectionId = '${section.id}';
+		  getCustomDependentField(sectionId);
+		 </c:forEach>
+		 
 		
 	});
 </script>
@@ -164,7 +169,7 @@ function getOrgDetails()
           <div class="clearfix form-horizontal inner-content">
               <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12 myForm">
           <div class="form-group">
-            <label class="col-md-3">Client Name <span class="text-danger">&nbsp;*</span></label>
+            <label class="col-md-3">Client Name <span class="text-danger">&nbsp;*</span><i class='fa fa-info-circle' title='Select the exisitng client name from the list. The new contact will be added to this client name'></i></label>
             <div class="col-md-9 chooRadius">
             <div class="input-group col-md-10 pull-left">
                 <select class="chosen-select form-control" id="vendorName" name="vendorName" field-name="client name" onchange="validateEmail();getSpocUserDetails();getRolesList();" data-validation="required">
@@ -192,12 +197,16 @@ function getOrgDetails()
           
            <div class="form-group" id="EmailIdDiv">
 					<label class="col-md-3" for="Project Manager">Email<span class="text-danger">&nbsp;*</span></label>
-					
-			        	<div class="col-md-9">
-					  <input type="text" class="form-control" id="emailId" name="email" value="${emailId}" field-name="Email Id" data-validation="required validate_Space validate_length length2-100 validate_email" onblur="validateEmail();getSpocUserDetails();getOwnersList();">
-	                            <span class="hidden">Valid Email</span>
+			       <div class="col-md-9">
+			       <div class="input-group errorInptgroup">
+					  <input type="text" class="form-control" id="emailId" name="email" value="${emailId}" field-name="Email" data-validation="required validate_Space validate_length length2-100 validate_email" onblur="validateEmail();getSpocUserDetails();getOwnersList();">
+	                   <span class="hidden">Valid Email</span>
+	                   <span id="emailStatusIconDiv" class="input-group-addon">
+	                    	<i class="fa fa-check text-muted" style="color:#f6f6f6"></i>
+	                  	</span>
 			     	</div>
-					</div>
+			     	</div>
+			</div>
                 <div class="form-group">
 	              <label class="col-md-3">First Name<span class="text-danger">&nbsp;*</span></label>
 	              <div class="col-md-9">
@@ -237,7 +246,7 @@ function getOrgDetails()
 	             <div class="form-group">
 	              <label class="col-md-3">Owner Name<span class="text-danger">&nbsp;*</span></label>
 	              <div class="col-md-9">
-	                <select multiple data-placeholder="Select Owner" class="chosen-select form-control" name="owner" id="owner" field-name="Owner"  data-validation="required">
+	                <select multiple data-placeholder="Select Owner" class="chosen-select form-control" name="owner" id="owner" field-name="Owner Name"  data-validation="required">
 	                <c:forEach var="user" items="${userList}">
 		                       <option value="${user.id}" ${user.id  == SourceLeadWeb_userId ? 'selected' : ''} >${user.fullName}</option>
 	                </c:forEach>
@@ -275,13 +284,37 @@ function getOrgDetails()
 	                </select>
 	              </div>
 	            </div>
+	            
+	            <div class="clearfix mb"></div>
+	            <c:forEach var="section" items="${sourceleadSectionList}" varStatus="sectionOrder">
+	               <c:if test="${sectionOrder.index == 1}">
+	                  <div id="customDiv${section.id}"></div>
+	               </c:if>
+	            </c:forEach>
+	            
 	            <div class="form-group">
                 <label class="col-md-3">&nbsp;</label>
                   <div class="col-md-9 checkBox">
                       <label><input type="checkbox" value="Y"
-							name="isMailSent" checked="checked">Send Invitation</label>
+							name="isMailSent">Send Invitation</label>
                   </div>
                 </div>
+                
+                <div class="form-group">
+              <label class="col-md-3"></label>
+              <div class="col-md-9 checkBox">
+                 <label> <input type="checkbox" value="N" name="invoiceOrBillSent" id= "invoiceOrBillSent" onclick = "allowInvoiceEmailSent();"> Invoice Email
+				</label>
+              </div>
+            </div>
+            
+            <div class="form-group">
+              <label class="col-md-3"></label>
+              <div class="col-md-9 checkBox">
+                 <label> <input type="checkbox" value="N" name="apOrArSent" id="apOrArSent" onclick = "allowApEmailSent();"> AP Email 
+				</label>
+              </div>
+            </div>
                 
                 </div>
                 </div>
@@ -306,6 +339,26 @@ function getOrgDetails()
 
 
 <script type="text/javascript">
+
+function allowApEmailSent(){
+	var checked = document.getElementById("apOrArSent").checked
+	if(checked == true){
+		$("#apOrArSent").val("Y");
+	}else{
+		$("#apOrArSent").val("N");
+	}
+}
+
+
+function allowInvoiceEmailSent(){
+	var checked = document.getElementById("invoiceOrBillSent").checked
+	if(checked == true){
+		$("#invoiceOrBillSent").val("Y");
+	}else{
+		$("#invoiceOrBillSent").val("N");
+	}
+}
+
 	function saveClientContact() {
 		var vendorName = document.getElementById("vendorName").value;
 		var orgLocationId = vendorName.split(',');
@@ -316,6 +369,7 @@ function getOrgDetails()
 				scrollToTopOnError : true,
 				dateFormat : 'yyyy/mm/dd'
 			};
+		
 			if ($('#client_contact_form').validate(false, validationSettings)) {
 		        var formData = $($('#client_contact_form')[0]).serialize();
 				var sourceleadUrl = '${sourceleadUrl}';
@@ -341,37 +395,36 @@ function getOrgDetails()
 function validateEmail(){
 	var email = document.getElementById("emailId").value;
 	var vendorName = document.getElementById("vendorName").value;
-	var orgRelationId = vendorName.split(",")[0];
-	if(email != null  && email != '' && orgRelationId != null){
+	if(email != null  && email != ''){
 		$.ajax({
 			type : "POST",
-			url : sourceleadUrl + "/validateClientOrVendorEmail?"+tokenParamName+"="+tokenValue+"&email="+email+"&orgRelationId="+orgRelationId+"&contactType=client",
+			url : sourceleadUrl + "/validateClientOrVendorEmails?"+tokenParamName+"="+tokenValue+"&email="+email,
 			success : function(data) {
 				var result = data;
 				if(result == 'Invalid Email') {
 					$('#EmailIdDiv').find('p.jquery_form_error_message').remove();
-					$("input#email").after( "<p class='jquery_form_error_message'>Email should not your org user email</span>");
-					document.getElementById("email").setAttribute( 'record-exist', 'yes');
-					document.getElementById("email").setAttribute( 'record-exist-errorMsg',"Email should not your org user email");
-					
-				}else if(result == 'Invalid Spoc') {
-// 					$('#EmailIdDiv').find('p.jquery_form_error_message').remove();
-// 					$("input#email").after( "<p class='jquery_form_error_message'>Spoc is already exists as client contact</span>");
-// 					document.getElementById("email").setAttribute( 'record-exist', 'yes');
-// 					document.getElementById("email").setAttribute( 'record-exist-errorMsg', "Spoc is already exists as client contact");
+					$("input#emailId").after( "<p class='jquery_form_error_message'>Email  should not your org users email</span>");
+					//document.getElementById("emailId").setAttribute( 'record-exist', 'yes');
+					//document.getElementById("emailId").setAttribute( 'record-exist-errorMsg', "Email should not your org users email");
 					
 				}else if(result == 'Valid Email') {
-					$('input#email').removeAttr("class record-exist record-exist-errormsg");
-					$('input#email').attr('class','valid form-control');
 					$('#EmailIdDiv').find('p.jquery_form_error_message').remove();
+					$('input#emailId').removeAttr("class record-exist record-exist-errormsg");
+					$('input#emailId').attr('class','valid form-control');
+					 validateEmailForExistenceUniversally(emailId, "input#emailId");
 					
 				}
 			},
 
 		});
+	}else{
+		$("#emailStatusIconDiv").find("i").remove();
+  		$("#emailStatusIconDiv").append('<i class="fa fa-check text-muted" style="color:#f6f6f6"></i>');
 	}
 }
 </script>
+
+
 
 
 <script type="text/javascript">
@@ -754,23 +807,43 @@ function refreshClientList(){
 		 $.ajax({
 	      type : "POST",
 	       url: sourceleadUrl+"/refreshRequirementClientList",       
-	       success: function(json) {
-	        	var output = "";
-	        	output = output + "<option value=''>Select Client</option>"; 
-	        	for (var i=0; i<json.length; i++)
-				{
-		        		var opt = json[i];
-		        		if(opt.id == selectedOrgId){
-		        			output = output + "<option value='"+opt.id+","+opt.orgid+"' selected>"+opt.orgName+"</option>";
-		        		}else{
-		        			output = output + "<option value='"+opt.id+","+opt.orgid+"'>"+opt.orgName+"</option>";
-		        		}
-				}
-	        	$("#vendorName").empty();
-		        $("#vendorName").append(output);
-		        $('#vendorName').trigger("chosen:updated");
+	       success: function(result) {
+	    	   	  if (result.response === "SESSION_TIMEDOUT") {
+	  				 location.replace(sourceleadUrl);
+	              } else if (result.response === "AWKWARD") {
+	                  location.href = "/errorPage";
+	              } else if (result.response === "SUCCESS") {
+	           	    if(result.data != null && result.data != "" && result.data != 'undefined'){
+	           	    	var json = result.data;
+				        	var output = "";
+				        	output = output + "<option value=''>Select Client</option>"; 
+				        	for (var i=0; i<json.length; i++)
+							{
+				        		var opt = json[i];
+				        		output = output + "<option value='"+opt.id+","+opt.locationID+"' >"+opt.orgName+"</option>";
+							}
+	           	    }
+	           	 	$("#vendorName").empty();
+			        $("#vendorName").append(output);
+			        $('#vendorName').trigger("chosen:updated");
+	              } else if (result.indexOf('Sign In') !== -1) {
+						location.replace(sourceleadUrl);
+				  } else {
+	                  showError("Operation failed, please try again");
+	              }
 	        }
 		 });
 }
 </script>
-
+<script>
+function getCustomDependentField(sectionId){
+	 $.ajax({
+			type : "POST" , 
+				 url: sourceleadUrl+"/getAllASectionCustomFields?sectionId="+sectionId,
+				 success: function(data) {
+		        	$('#customDiv'+sectionId).empty();
+		        	$('#customDiv'+sectionId).append(data);
+				 }
+		  });
+}
+</script>

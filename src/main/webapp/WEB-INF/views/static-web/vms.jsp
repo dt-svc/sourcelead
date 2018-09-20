@@ -1,23 +1,153 @@
 <!--   HTML   -->	  
 <jsp:include page="../staticHeader.jsp" />   
-<section class="atsOutWrap">
- 	<h2>Vendor Management System</h2>
- 	<img src="/resources/css/static-web/images/vms.png" alt=""/>  
-</section>
-<section class="atsText" style="background-image: url(/resources/css/static-web/images/vmsbg-3.jpg)">
-<p>SourceLead VMS(Vendor Management System)  helps firms effectively & efficiently to manage their vendors. VMS system is highly configurable, robust application which is intuitive platform for vendor management.
+<div class="clearfix innerpagesBanner">
+  <div class="container text-center">
+  <div class="row">
+  		<div class="col-md-12">
+  	<h2 class="text-center">Vendor Management System</h2>
+  	<div class="clearfix mt mb"><img src="/resources/static-web/images/vmsicons.png" alt="img"></div>
+  	<p>
+  		We at Sourcelead identify your business need and help recruitment firms design integrated business model. Analyze the requirement,<br>Increase your revenues, and expand your business horizons with Sourcelead VMS solution.
+  	</p>
+  		</div>
+  </div>
+  </div>
+		<div class="thim-click-to-bottom">
+		<a href="#features" class="scroll">
+		<i class="fa  fa-chevron-down"></i>
+		</a>
+		</div>
+  </div>
+<div class="clearfix"></div>
 
-    <span><i class="fa fa-circle-o"></i> Control over the hiring process.<br>
-     <i class="fa fa-circle-o"></i> Optimisation of the administrative processes.<br>
-     <i class="fa fa-circle-o"></i> Assurance of contract agreements.<br>
-     <i class="fa fa-circle-o"></i> Insight into the performance of the vendor.</span>
-     </p>
-</section>
-
-<section class="atsTextInn" style="background-image: url(/resources/css/static-web/images/vmsbg-2.jpg);">
-	<div class="atsTextOne"> 
-        	<h3>Integral Hiring Process</h3>
-            <p>Through SourceLead each step in hiring process is transparent, and everyone knows the status of the application. Entire process can be monitored from a single platform. The vendor uses the same system, functionality and process will be integral part for the hiring process. SourceLead use clear reports of vendors, so there is a clear insight into whether vendors are making use of previously agreed price agreements. SourceLead continuously notify about vendor's performance through customized reports, based on reports the organization can measure the best vendor and will receive qualified applicants.</p>
+ <section class="container-fluid container-area-white">
+ 		
+ 		<div class="clearfix">
+  		<div class="col-md-4 text-center smallwidget">
+  		<div class="iconimg">
+  			<img src="/resources/static-web/images/ats-simple.png" alt="Simple" class="img-responsive animated bounceIn">
+  		</div>
+  		<h4>Integrate</h4>
+  		<p>
+  			It is designed to simplify the frantic tasks<br>in recruitment management.
+  		</p>
+	  </div>
+	  <div class="col-md-4 text-center smallwidget">
+	  <div class="iconimg">
+  			<img src="/resources/static-web/images/ats-secure.png" alt="Simple" class="img-responsive animated bounceIn">
+  		</div>
+  		<h4>Connect</h4>
+  		<p>
+  			Equipped with robust security measures for<br>information security and data integrity.
+  		</p>
+	  </div>
+	  <div class="col-md-4 text-center smallwidget">
+	  <div class="iconimg">
+  			<img src="/resources/static-web/images/ats-scalable.png" alt="Simple" class="img-responsive animated bounceIn">
+  		</div>
+  		<h4>Automate</h4>
+  		<p>
+  			Any one and any company across the globe<br>can access with multiple locations, currencies, and time zones.
+  		</p>
+	  </div>
 	</div>
+	<div class="clearfix text-center col-md-12 headerintro mt"></div>
+<div id="features" class="clearfix"></div>
 </section>
-<jsp:include page="../staticFooter.jsp" />
+ <section class="container-fluid container-area-grey">
+ <h2 class="text-center colorlogo mb">Features</h2>
+<div class="container productfeatures">
+	
+	<div class="col-md-4">
+	<div class="featuresImages">
+		<img src="/resources/static-web/images/vms-automation.png" alt="Image" class="animated bounceIn">
+	</div>
+		<h4>Integrate and Automate</h4>
+		<ul class="list-styles">
+		<li>Customized data integration options</li>
+		<li>Automated tracking and status updates for the VMS requests</li>
+		<li>Load the Candidate database using VMS directly into ATS</li>
+		</ul>
+	</div>
+	<div class="col-md-4">
+		<div class="featuresImages">
+		<img src="/resources/static-web/images/vms-publish.png" alt="Image" class="animated bounceIn">
+	</div>
+		<h4>Hotlist Campaigns</h4>
+		<ul class="list-styles">
+			<li>Publish the hotlist candidates to the clients</li>
+			<li>Creates confidence on the candidate database</li>
+			<li>Opportunity enhancement for both  the candidate and the clients</li>
+		</ul>
+	</div>
+	<div class="col-md-4">
+	<div class="featuresImages">
+		<img src="/resources/static-web/images/vms-seamless.png" alt="Image" class="animated bounceIn">
+	</div>
+		<h4>Seamless Data Sync</h4>
+		<ul class="list-styles">
+			<li>Builds higher levels of efficiency between the vendors and clients </li>
+			<li>Eliminates data duplication</li>
+			<li>Reduces the redundant manual task of data movement</li>
+			<li>Constant updated status of the client and vendor activities</li>
+		</ul>
+	</div>
+	
+	<div class="col-md-4">
+	<div class="featuresImages">
+		<img src="/resources/static-web/images/vms-businessConnection.png" alt="Image" class="animated bounceIn">
+	</div>
+		<h4>Make the Business Connection</h4>
+		<ul class="list-styles">
+			<li>Improves your client and customer relationship</li>
+			<li>Provides visibility into the activity and available opportunity for the clients</li>
+			<li>Real-time insight into the VMS activity</li>
+		</ul>
+	</div>
+	<div class="col-md-4">
+	<div class="featuresImages">
+		<img src="/resources/static-web/images/vms-reports.png" alt="Image" class="animated bounceIn">
+	</div>
+		<h4>Reports and ROI</h4>
+		<ul class="list-styles">
+			<li>Generate Vendor Reports </li>
+			<li>Analyze and determine the high ROI requisitions.</li>
+			<li>Identify the value propositions for business growth</li>
+			<li>Fasten the speed of process workflows </li>
+		</ul>
+	</div>
+	<div class="col-md-4">
+	<div class="featuresImages">
+		<img src="/resources/static-web/images/vms-multi.png" alt="Image" class="animated bounceIn">
+	</div>
+		<h4>Multi-tier Architecture</h4>
+		<ul class="list-styles">
+			<li>The multi-tier MSP model enables you to streamline the contingent  human capital management </li>
+			<li>Monitors the multiple application features  using a single console</li>
+			<li>Reduces time invested on mundane operational tasks </li>
+			<li>Helps divert the available time and resources for new business possibilities</li>
+		</ul>
+	</div>
+</div>
+</section>
+
+<!-- Benefits of sourcelead  -->
+<section class="homewidget-benefitsdiv container-area-white text-center">
+  <div class="container-fluid">
+ 		<div class="col-md-12">
+ 			<h2>Benefits of SourceLead</h2>
+ 			<p>Integration which provides a one-stop solution to entire recruitment life cycle with a single login to Clients, Vendors and Candidates.</p>
+ 		</div>
+  		<div class="col-md-12 clearfix">
+  			<a href="javascript:void(0)" class="btn btn-custom mr" onClick="requestDemo();">GET A DEMO</a>
+  			<a href="/register" class="btn btn-custom" target="_blank">SIGNUP</a>
+  		</div>
+  </div>
+</section>
+<!-- Benefits of sourcelead  --><jsp:include page="../staticFooter.jsp" />
+<script type="text/javascript">
+window.onload = function() {
+	$("#featuresID").addClass("slactive");
+	$("#vmsID").addClass("slactive");
+}
+</script>

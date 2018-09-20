@@ -22,7 +22,6 @@ import com.fasterxml.jackson.annotation.JsonBackReference;
 
 @Entity
 @Table(name = "PROJECT_MEMBERS_HISTORY")
-@Cache(usage = CacheConcurrencyStrategy.TRANSACTIONAL,region="projectMembersHistory")
 public class ProjectMembersHistory implements Serializable{
 	
 	private static final long serialVersionUID = 1L;
@@ -32,19 +31,19 @@ public class ProjectMembersHistory implements Serializable{
     @Column(name = "ID", nullable = false)
     private Long id;
 	
-	@NotFound(action=NotFoundAction.IGNORE)
-	@ManyToOne(fetch=FetchType.EAGER)
+	
+	@ManyToOne(fetch=FetchType.LAZY)
 	@JoinColumn(name="PROJECT_MEMBERS_ID", nullable=false )	
 	private ProjectMembers projectMemberId;
 	
-	/*@NotFound(action=NotFoundAction.IGNORE)
+	/*
 	@ManyToOne
 	@JoinColumn(name = "PROJECT_CLIENTS_ID")
 	@JsonBackReference
     private ProjectClients projectClientsId;
 	
-	@NotFound(action=NotFoundAction.IGNORE)
-	@ManyToOne(fetch=FetchType.EAGER)
+	
+	@ManyToOne(fetch=FetchType.LAZY)
 	@JoinColumn(name="CANDIDATE_ID", nullable=false )	
 	private Candidate candidateId;*/
 	

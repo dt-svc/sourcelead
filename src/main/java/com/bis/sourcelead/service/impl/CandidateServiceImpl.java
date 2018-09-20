@@ -3,8 +3,10 @@ package com.bis.sourcelead.service.impl;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.math.BigInteger;
 import java.text.DateFormat;
 import java.text.DecimalFormat;
+import java.text.NumberFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
@@ -12,6 +14,7 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Scanner;
 import java.util.Set;
 import java.util.TimeZone;
 
@@ -23,8 +26,11 @@ import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
+import org.apache.poi.xwpf.usermodel.XWPFDocument;
+import org.apache.poi.xwpf.usermodel.XWPFParagraph;
+import org.apache.poi.xwpf.usermodel.XWPFRun;
 import org.elasticsearch.index.query.BoolQueryBuilder;
-import org.elasticsearch.index.query.MatchQueryBuilder;
+import org.elasticsearch.index.query.QueryBuilder;
 import org.elasticsearch.index.query.QueryBuilders;
 import org.elasticsearch.search.SearchHit;
 import org.slf4j.Logger;
@@ -37,41 +43,64 @@ import org.springframework.stereotype.Service;
 import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.dao.CandidateDao;
 import com.bis.sourcelead.dao.CandidateTimelineActivityDao;
+import com.bis.sourcelead.dao.EmployeesDao;
+import com.bis.sourcelead.dao.OrgSpocDao;
+import com.bis.sourcelead.dao.ReferContactsDao;
+import com.bis.sourcelead.dao.RolesDao;
+import com.bis.sourcelead.dao.UserDao;
+import com.bis.sourcelead.dto.AddAssociateDTO;
 import com.bis.sourcelead.dto.AddUserDTO;
+import com.bis.sourcelead.dto.AssociateDTO;
 import com.bis.sourcelead.dto.CandidateDTO;
+import com.bis.sourcelead.dto.CustomFormFieldDTO;
 import com.bis.sourcelead.dto.FileInfo;
+import com.bis.sourcelead.dto.ImmigrationCandidateDTO;
 import com.bis.sourcelead.dto.ResponseList;
 import com.bis.sourcelead.elk.index.CandidateIndex;
 import com.bis.sourcelead.elk.index.helper.CandidateIndexHelper;
 import com.bis.sourcelead.elk.setup.SourceleadELKBaseIndexer;
 import com.bis.sourcelead.entity.Candidate;
+import com.bis.sourcelead.entity.CandidateCustomFieldData;
 import com.bis.sourcelead.entity.CandidateDocuments;
 import com.bis.sourcelead.entity.CandidateEducation;
 import com.bis.sourcelead.entity.CandidateEmployers;
 import com.bis.sourcelead.entity.CandidateImportLog;
 import com.bis.sourcelead.entity.CandidateResumes;
+import com.bis.sourcelead.entity.Countries;
 import com.bis.sourcelead.entity.EmailAttachment;
 import com.bis.sourcelead.entity.EmailMessage;
 import com.bis.sourcelead.entity.EmailScenario;
+import com.bis.sourcelead.entity.Employees;
 import com.bis.sourcelead.entity.MasterCandidate;
+import com.bis.sourcelead.entity.Org;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.OrgRelations;
 import com.bis.sourcelead.entity.OrgSpoc;
-import com.bis.sourcelead.entity.Requirement;
+import com.bis.sourcelead.entity.OrglocationFormFields;
+import com.bis.sourcelead.entity.RecruiterReportCandidateCountView;
+import com.bis.sourcelead.entity.ReferContacts;
+import com.bis.sourcelead.entity.Roles;
+import com.bis.sourcelead.entity.SubmissionCandidateListView;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.entity.UserRole;
+import com.bis.sourcelead.enums.Status;
+import com.bis.sourcelead.service.CandidateCustomFieldDataService;
 import com.bis.sourcelead.service.CandidateDocumentsService;
 import com.bis.sourcelead.service.CandidateEducationService;
 import com.bis.sourcelead.service.CandidateEmployersService;
 import com.bis.sourcelead.service.CandidateResumesService;
 import com.bis.sourcelead.service.CandidateService;
+import com.bis.sourcelead.service.ClientService;
+import com.bis.sourcelead.service.CountriesService;
 import com.bis.sourcelead.service.EmailScenarioService;
 import com.bis.sourcelead.service.MasterCandidateService;
 import com.bis.sourcelead.service.OrgLocationService;
 import com.bis.sourcelead.service.OrgRelationsService;
 import com.bis.sourcelead.service.OrgSpocService;
+import com.bis.sourcelead.service.OrglocationFormFieldsService;
 import com.bis.sourcelead.service.ProjectsService;
 import com.bis.sourcelead.service.RequirementSubmissionService;
+import com.bis.sourcelead.service.StatesService;
 import com.bis.sourcelead.service.UserRoleService;
 import com.bis.sourcelead.service.UserService;
 import com.bis.sourcelead.util.CandidateActivityCommonUtil;
@@ -81,6 +110,7 @@ import com.bis.sourcelead.util.FileUploadUtil;
 import com.bis.sourcelead.util.PdfUtil;
 import com.bis.sourcelead.util.SourceLeadRandomCodeHelper;
 import com.bis.sourcelead.util.UniversalSearchHelper;
+import com.bis.sourcelead.web.RegistrationController;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 /**
@@ -98,6 +128,9 @@ public class CandidateServiceImpl implements CandidateService {
 
 	@Autowired
 	CandidateDao candidateDao;
+	
+	@Autowired
+	UserDao userDao;
 
 	@Autowired
 	private CommonUtil commonUtil;
@@ -166,6 +199,38 @@ public class CandidateServiceImpl implements CandidateService {
     @Autowired
     CandidateActivityCommonUtil candidateActivityCommonUtil;
     
+    @Autowired
+    RegistrationController registrationController;
+    
+    @Autowired
+    ClientService clientService;
+    
+    @Autowired
+    RolesDao rolesDao;
+    
+    @Autowired
+    EmployeesDao employeeDao;
+    
+    @Autowired
+    private OrglocationFormFieldsService orglocationFormFieldsService;
+    
+    @Autowired
+    private CandidateCustomFieldDataService candidateCustomFieldDataService;
+    
+    @Autowired
+	ReferContactsDao referContactsDao;
+    
+    @Value("${static.path}")
+	private String staticPath;
+    
+    @Autowired
+    CountriesService countriesService;
+    
+    @Autowired
+    StatesService statesService;
+
+    
+       
     protected boolean isNullOrEmpty(String str) {
 		return (str == null || "".equals(str.trim()));
 	}
@@ -307,44 +372,105 @@ public class CandidateServiceImpl implements CandidateService {
 		candidate.setOrgLocationId(orgLocations);
 		}
 		if(candidateDto.getFirstName() != null){
-			if(candidate.getFirstName() != null){
+			if(candidate.getFirstName() != null && candidate.getFirstName() != "" && !candidateDto.getFirstName().equalsIgnoreCase(candidate.getFirstName())){
 				activitySummary.append("First Name").append(" : ").append(Constants.OLD_VALUE_TAG_INITIATION).append(candidate.getFirstName()).append(Constants.OLD_VALUE_TAG_END).append(" ").append(Constants.NEW_VALUE_TAG_INITIATION).append(candidateDto.getFirstName()).append(Constants.NEW_VALUE_TAG_END).append(" ");
-			}
+			}else if(candidate.getFirstName() != null && candidate.getFirstName() != "" && candidateDto.getFirstName().equalsIgnoreCase(candidate.getFirstName())){
+				activitySummary.append("First Name").append(" : ").append(" ").append(Constants.NEW_VALUE_TAG_INITIATION).append(candidateDto.getFirstName()).append(Constants.NEW_VALUE_TAG_END).append(" ");
+			}else
+				activitySummary.append("First Name").append(" : ").append("---").append(" ");
 		candidate.setFirstName(candidateDto.getFirstName());
 		}
 		
 		if(candidateDto.getLastName() != null){
-			if(candidate.getLastName() != null ){
+			if(candidate.getLastName() != null && !candidateDto.getLastName().equalsIgnoreCase(candidate.getLastName())){
 				activitySummary.append("Last Name").append(" : ").append(Constants.OLD_VALUE_TAG_INITIATION).append(candidate.getLastName()).append(Constants.OLD_VALUE_TAG_END).append(" ").append(Constants.NEW_VALUE_TAG_INITIATION).append(candidateDto.getLastName()).append(Constants.NEW_VALUE_TAG_END).append(" ");
-			}
+			}else if((candidate.getLastName() != null || candidate.getLastName() != "" ||  candidateDto.getLastName().equalsIgnoreCase(candidate.getLastName())) && candidateDto.getLastName() !="" ){
+				activitySummary.append("Last Name").append(" : ").append(" ").append(Constants.NEW_VALUE_TAG_INITIATION).append(candidateDto.getLastName()).append(Constants.NEW_VALUE_TAG_END).append(" ");
+			}else
+				activitySummary.append("Last Name").append(" : ").append("---").append(" ");
 		candidate.setLastName(candidateDto.getLastName());
 		}
 		
+		if(candidateDto.getMiddleName() != null){
+			if(candidate.getMiddelName() != null && !candidateDto.getMiddleName().equalsIgnoreCase(candidate.getMiddelName())){
+				activitySummary.append("Middle Name").append(" : ").append(Constants.OLD_VALUE_TAG_INITIATION).append(candidate.getMiddelName()).append(Constants.OLD_VALUE_TAG_END).append(" ").append(Constants.NEW_VALUE_TAG_INITIATION).append(candidateDto.getMiddleName()).append(Constants.NEW_VALUE_TAG_END).append(" ");
+			}else if((candidate.getLastName() != null || candidate.getLastName() != "" ||  candidateDto.getMiddleName().equalsIgnoreCase(candidate.getMiddelName())) && candidateDto.getMiddleName() !="" ){
+				activitySummary.append("Middle Name").append(" : ").append(" ").append(Constants.NEW_VALUE_TAG_INITIATION).append(candidateDto.getMiddleName()).append(Constants.NEW_VALUE_TAG_END).append(" ");
+			}else
+				activitySummary.append("Middle Name").append(" : ").append("---").append(" ");
+			candidate.setMiddelName(candidateDto.getMiddleName());
+		}
+		
+		if(candidateDto.getGender() != null){
+			if(candidate.getGender() != null && !candidateDto.getGender().equalsIgnoreCase(candidate.getGender())){
+				activitySummary.append("Gender").append(" : ").append(Constants.OLD_VALUE_TAG_INITIATION).append(candidate.getGender()).append(Constants.OLD_VALUE_TAG_END).append(" ").append(Constants.NEW_VALUE_TAG_INITIATION).append(candidateDto.getGender()).append(Constants.NEW_VALUE_TAG_END).append(" ");
+			}else if((candidate.getLastName() != null || candidate.getGender() != "" ||  candidateDto.getGender().equalsIgnoreCase(candidate.getGender())) && candidateDto.getGender() !="" ){
+				activitySummary.append("Gender").append(" : ").append(" ").append(Constants.NEW_VALUE_TAG_INITIATION).append(candidateDto.getGender()).append(Constants.NEW_VALUE_TAG_END).append(" ");
+			}else
+				activitySummary.append("Gender").append(" : ").append("---").append(" ");
+			candidate.setGender(candidateDto.getGender());
+		}
+		
+		if(candidateDto.getMaritalStatus() != null){
+			if(candidate.getMaritalStatus() != null && !candidateDto.getMaritalStatus().equalsIgnoreCase(candidate.getMaritalStatus())){
+				activitySummary.append("Marital Status").append(" : ").append(Constants.OLD_VALUE_TAG_INITIATION).append(candidate.getMaritalStatus()).append(Constants.OLD_VALUE_TAG_END).append(" ").append(Constants.NEW_VALUE_TAG_INITIATION).append(candidateDto.getMaritalStatus()).append(Constants.NEW_VALUE_TAG_END).append(" ");
+			}else if((candidate.getLastName() != null || candidate.getMaritalStatus() != "" ||  candidateDto.getMaritalStatus().equalsIgnoreCase(candidate.getMaritalStatus())) && candidateDto.getMaritalStatus() !="" ){
+				activitySummary.append("Marital Status").append(" : ").append(" ").append(Constants.NEW_VALUE_TAG_INITIATION).append(candidateDto.getMaritalStatus()).append(Constants.NEW_VALUE_TAG_END).append(" ");
+			}else
+				activitySummary.append("Marital Status").append(" : ").append("---").append(" ");
+			candidate.setMaritalStatus(candidateDto.getMaritalStatus());
+		}
+		
+		if(StringUtils.isNotBlank(candidateDto.getDateofBirth())){
+			SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+			if(candidate.getDateOfBirth() != null && !(sdf.parse(candidateDto.getDateofBirth()).compareTo(candidate.getDateOfBirth()) <= 0)){
+				activitySummary.append("Date of Birth").append(" : ").append(Constants.OLD_VALUE_TAG_INITIATION).append(candidate.getDateOfBirth()).append(Constants.OLD_VALUE_TAG_END).append(" ").append(Constants.NEW_VALUE_TAG_INITIATION).append(candidateDto.getMaritalStatus()).append(Constants.NEW_VALUE_TAG_END).append(" ");
+			}else if(candidateDto.getDateofBirth() !="" ){
+				activitySummary.append("Date of Birth").append(" : ").append(" ").append(Constants.NEW_VALUE_TAG_INITIATION).append(candidateDto.getDateofBirth()).append(Constants.NEW_VALUE_TAG_END).append(" ");
+			}else
+				activitySummary.append("Date of Birth").append(" : ").append("---").append(" ");
+			candidate.setDateOfBirth(commonUtil.orgLocationDateFormat(orgLocations.getDateFormat(), candidateDto.getDateofBirth()));
+		}else{
+			candidate.setDateOfBirth(null);
+		}
+		
 		if(candidateDto.getCountry() != null){
-			if(candidate.getCountry() != null){
+			if(candidate.getCountry() != null && candidate.getCountry() != "" && !candidateDto.getCountry().equalsIgnoreCase(candidate.getCountry())){
 				activitySummary.append("Country").append(" : ").append(Constants.OLD_VALUE_TAG_INITIATION).append(candidate.getCountry()).append(Constants.OLD_VALUE_TAG_END).append(" ").append(Constants.NEW_VALUE_TAG_INITIATION).append(candidateDto.getCountry()).append(Constants.NEW_VALUE_TAG_END).append(" ");
-			}
+			}else if((candidate.getCountry() != null || candidate.getCountry() != "" ||  candidateDto.getCountry().equalsIgnoreCase(candidate.getCountry())) && candidateDto.getCountry() !="" ){
+				activitySummary.append("Country").append(" : ").append(" ").append(Constants.NEW_VALUE_TAG_INITIATION).append(candidateDto.getCountry()).append(Constants.NEW_VALUE_TAG_END).append(" ");
+			}else
+				activitySummary.append("Country").append(" : ").append("---").append(" ");
 		candidate.setCountry(candidateDto.getCountry());
 		}
 		if(candidateDto.getState() != null){
-			if(candidate.getState() != null ){
+			if( candidate.getState() != null && candidate.getState() != "" && !candidateDto.getState().equalsIgnoreCase(candidate.getState())){
 				activitySummary.append("State").append(" : ").append(Constants.OLD_VALUE_TAG_INITIATION).append(candidate.getState()).append(Constants.OLD_VALUE_TAG_END).append(" ").append(Constants.NEW_VALUE_TAG_INITIATION).append(candidateDto.getState()).append(Constants.NEW_VALUE_TAG_END).append(" ");
-			}
+			}else if((candidate.getState() != null || candidate.getState() != "" ||  candidateDto.getState().equalsIgnoreCase(candidate.getState())) && candidateDto.getState() !="" ){
+				activitySummary.append("State").append(" : ").append(" ").append(Constants.NEW_VALUE_TAG_INITIATION).append(candidateDto.getState()).append(Constants.NEW_VALUE_TAG_END).append(" ");
+			}else
+				activitySummary.append("State").append(" : ").append("---").append(" ");
 		candidate.setState(candidateDto.getState());
 		}
-		if(candidateDto.getCity() != null){
-			if(candidate.getCity() != null ){
+		if(candidateDto.getCity() != null  ){
+			if(candidate.getCity() != null && candidate.getCity() != "" && !candidateDto.getCity().equalsIgnoreCase(candidate.getCity())){
 				activitySummary.append("City").append(" : ").append(Constants.OLD_VALUE_TAG_INITIATION).append(candidate.getCity()).append(Constants.OLD_VALUE_TAG_END).append(" ").append(Constants.NEW_VALUE_TAG_INITIATION).append(candidateDto.getCity()).append(Constants.NEW_VALUE_TAG_END).append(" ");
-			}
+			}else if((candidate.getCity() != null || candidate.getCity() != "" ||  candidateDto.getCity().equalsIgnoreCase(candidate.getCity())) && candidateDto.getCity() !="" ){
+				activitySummary.append("City").append(" : ").append(" ").append(Constants.NEW_VALUE_TAG_INITIATION).append(candidateDto.getCity()).append(Constants.NEW_VALUE_TAG_END).append(" ");
+			}else
+				activitySummary.append("City").append(" : ").append("---").append(" ");
 		candidate.setCity(candidateDto.getCity());
 		}
 		if(candidateDto.getLocation() != null){
 			candidate.setLocation(candidateDto.getLocation());
 		}
 		if(candidateDto.getZipcode()!= null){
-			if(candidate.getZipCode() != null){
+			if(candidate.getZipCode() != null && candidate.getZipCode() != "" &&  !candidateDto.getZipcode().equalsIgnoreCase(candidate.getZipCode())){
 				activitySummary.append("Zip Code").append(" : ").append(Constants.OLD_VALUE_TAG_INITIATION).append(candidate.getZipCode()).append(Constants.OLD_VALUE_TAG_END).append(" ").append(Constants.NEW_VALUE_TAG_INITIATION).append(candidateDto.getZipcode()).append(Constants.NEW_VALUE_TAG_END).append(" ");
-			}
+			}else if((candidate.getZipCode() != null || candidate.getZipCode() != "" ||  candidateDto.getZipcode().equalsIgnoreCase(candidate.getZipCode())) && candidateDto.getZipcode() !="" ){
+				activitySummary.append("Zip Code").append(" : ").append(" ").append(Constants.NEW_VALUE_TAG_INITIATION).append(candidateDto.getZipcode()).append(Constants.NEW_VALUE_TAG_END).append(" ");
+			}else
+				activitySummary.append("Zip Code").append(" : ").append("---").append(" ");
 			candidate.setZipCode(candidateDto.getZipcode());
 		}
 		
@@ -360,118 +486,175 @@ public class CandidateServiceImpl implements CandidateService {
 		}
 		
 		if(candidateDto.getMobilePhone() != null){
-			if(candidate.getMobilePhone() != null ){
+			if(candidate.getMobilePhone() != null && candidate.getMobilePhone() != "" && !candidateDto.getMobilePhone().equalsIgnoreCase(candidate.getMobilePhone())){
 				activitySummary.append("Mobile Phone").append(" : ").append(Constants.OLD_VALUE_TAG_INITIATION).append(candidate.getMobilePhone()).append(Constants.OLD_VALUE_TAG_END).append(" ").append(Constants.NEW_VALUE_TAG_INITIATION).append(candidateDto.getMobilePhone()).append(Constants.NEW_VALUE_TAG_END).append(" ");
-			}
+			}else if((candidate.getMobilePhone() != null || candidate.getMobilePhone() != "" ||  candidateDto.getMobilePhone().equalsIgnoreCase(candidate.getMobilePhone())) && candidateDto.getMobilePhone() !="" ){
+				activitySummary.append("Mobile Phone").append(" : ").append(" ").append(Constants.NEW_VALUE_TAG_INITIATION).append(candidateDto.getMobilePhone()).append(Constants.NEW_VALUE_TAG_END).append(" ");
+			}else
+				activitySummary.append("Mobile Phone").append(" : ").append("---").append(" ");
 		candidate.setMobilePhone(candidateDto.getMobilePhone());
 		}
-		if(candidateDto.getAlternateMobilePhone() != null){
-			if(candidate.getAlternateMobilePhone() != null){
+		if(candidateDto.getAlternateMobilePhone() != null ){
+			if(candidate.getAlternateMobilePhone() != null && candidate.getAlternateMobilePhone() != "" && !candidateDto.getAlternateMobilePhone().equalsIgnoreCase(candidate.getAlternateMobilePhone())){
 				activitySummary.append("Alternate Mobile Phone").append(" : ").append(Constants.OLD_VALUE_TAG_INITIATION).append(candidate.getAlternateMobilePhone()).append(Constants.OLD_VALUE_TAG_END).append(" ").append(Constants.NEW_VALUE_TAG_INITIATION).append(candidateDto.getAlternateMobilePhone()).append(Constants.NEW_VALUE_TAG_END).append(" ");
-			}
+			}else if((candidate.getAlternateMobilePhone() != null || candidate.getAlternateMobilePhone() != "" ||  candidateDto.getAlternateMobilePhone().equalsIgnoreCase(candidate.getAlternateMobilePhone())) && candidateDto.getAlternateMobilePhone() !="" ){
+				activitySummary.append("Alternate Mobile Phone").append(" : ").append(" ").append(Constants.NEW_VALUE_TAG_INITIATION).append(candidateDto.getAlternateMobilePhone()).append(Constants.NEW_VALUE_TAG_END).append(" ");
+			}else
+				activitySummary.append("Alternate Mobile Phone").append(" : ").append("---").append(" ");
 			candidate.setAlternateMobilePhone(candidateDto.getAlternateMobilePhone());
 		}
 		if(candidateDto.getEmail() != null){
-			if(candidate.getEmail() != null){
+			if(candidate.getEmail() != null && candidate.getEmail() != "" && !candidateDto.getEmail().equalsIgnoreCase(candidate.getEmail())){
 				activitySummary.append("Email").append(" : ").append(Constants.OLD_VALUE_TAG_INITIATION).append(candidate.getEmail()).append(Constants.OLD_VALUE_TAG_END).append(" ").append(Constants.NEW_VALUE_TAG_INITIATION).append(candidateDto.getEmail()).append(Constants.NEW_VALUE_TAG_END).append(" ");
-			}
-		candidate.setEmail(candidateDto.getEmail().trim());
+			}else if((candidate.getEmail() != null || candidate.getEmail() != "" ||  candidateDto.getEmail().equalsIgnoreCase(candidate.getEmail())) && candidateDto.getEmail() !="" ){
+				activitySummary.append("Email").append(" : ").append(" ").append(Constants.NEW_VALUE_TAG_INITIATION).append(candidateDto.getEmail()).append(Constants.NEW_VALUE_TAG_END).append(" ");
+			}else
+				activitySummary.append("Email").append(" : ").append("---").append(" ");
+				candidate.setEmail(candidateDto.getEmail().trim());
 		}
 		if(candidateDto.getCurrentRate() !=null){
-			if(candidate.getCurrentRate() != null ){
+			if(candidate.getCurrentRate() != null && candidate.getCurrentRate() != "" && !candidateDto.getCurrentRate().equalsIgnoreCase(candidate.getCurrentRate())){
 				activitySummary.append("Current Rate").append(" : ").append(Constants.OLD_VALUE_TAG_INITIATION).append(candidate.getCurrentRate()).append(Constants.OLD_VALUE_TAG_END).append(" ").append(Constants.NEW_VALUE_TAG_INITIATION).append(candidateDto.getCurrentRate()).append(Constants.NEW_VALUE_TAG_END).append(" ");
-			}
+			}else if((candidate.getCurrentRate() != null || candidate.getCurrentRate() != "" ||  candidateDto.getCurrentRate().equalsIgnoreCase(candidate.getCurrentRate())) && candidateDto.getCurrentRate() !="" ){
+				activitySummary.append("Current Rate").append(" : ").append(" ").append(Constants.NEW_VALUE_TAG_INITIATION).append(candidateDto.getCurrentRate()).append(Constants.NEW_VALUE_TAG_END).append(" ");
+			}else
+				activitySummary.append("Current Rate").append(" : ").append("---");
 		candidate.setCurrentRate(candidateDto.getCurrentRate());
 		}
 		
 		if(candidateDto.getCurrentRateType() != null){
-			if(candidate.getCurrentRateType() != null){
+			if(candidate.getCurrentRateType() != null && candidate.getCurrentRateType() != "" && !candidateDto.getCurrentRateType().equalsIgnoreCase(candidate.getCurrentRateType())){
 				activitySummary.append("Current Rate Type").append(" : ").append(Constants.OLD_VALUE_TAG_INITIATION).append(candidate.getCurrentRateType()).append(Constants.OLD_VALUE_TAG_END).append(" ").append(Constants.NEW_VALUE_TAG_INITIATION).append(candidateDto.getCurrentRateType()).append(Constants.NEW_VALUE_TAG_END).append(" ");
-			}
+			}else if((candidate.getCurrentRateType() != null || candidate.getCurrentRateType() != "" ||  candidateDto.getCurrentRateType().equalsIgnoreCase(candidate.getCurrentRateType())) && candidateDto.getCurrentRateType() !="" ){
+				activitySummary.append("Current Rate Type").append(" : ").append(" ").append(Constants.NEW_VALUE_TAG_INITIATION).append(candidateDto.getCurrentRateType()).append(Constants.NEW_VALUE_TAG_END).append(" ");
+			}else
+				activitySummary.append("Current Rate Type").append(" : ").append("---").append(" ");
 			candidate.setCurrentRateType(candidateDto.getCurrentRateType());
 			}
 		
 		if(candidateDto.getCurrentRateCurrency() !=null){
-			if(candidate.getCurrentRateCurrency() != null){
+			if(candidate.getCurrentRateCurrency() != null  && candidate.getCurrentRateCurrency() != "" && !candidateDto.getCurrentRateCurrency().equalsIgnoreCase(candidate.getCurrentRateCurrency())){
 				activitySummary.append("Current Rate Currency").append(" : ").append(Constants.OLD_VALUE_TAG_INITIATION).append(candidate.getCurrentRateCurrency()).append(Constants.OLD_VALUE_TAG_END).append(" ").append(Constants.NEW_VALUE_TAG_INITIATION).append(candidateDto.getCurrentRateCurrency()).append(Constants.NEW_VALUE_TAG_END).append(" ");
-			}
+			}else if((candidate.getCurrentRateCurrency() != null || candidate.getCurrentRateCurrency() != "" ||  candidateDto.getCurrentRateCurrency().equalsIgnoreCase(candidate.getCurrentRateCurrency())) && candidateDto.getCurrentRateCurrency() !="" ){
+				activitySummary.append("Current Rate Currency").append(" : ").append(" ").append(Constants.NEW_VALUE_TAG_INITIATION).append(candidateDto.getCurrentRateCurrency()).append(Constants.NEW_VALUE_TAG_END).append(" ");
+			}else
+				activitySummary.append("Current Rate Currency").append(" : ").append("---").append(" ");
 		candidate.setCurrentRateCurrency(candidateDto.getCurrentRateCurrency());
 		}
 		if(candidateDto.getDesignation() !=null){
-			if(candidate.getDesignation() != null){
+			if(candidate.getDesignation() != null && candidate.getDesignation() != "" && !candidateDto.getDesignation().equalsIgnoreCase(candidate.getDesignation())){
 				activitySummary.append("Designation").append(" : ").append(Constants.OLD_VALUE_TAG_INITIATION).append(candidate.getDesignation()).append(Constants.OLD_VALUE_TAG_END).append(" ").append(Constants.NEW_VALUE_TAG_INITIATION).append(candidateDto.getDesignation()).append(Constants.NEW_VALUE_TAG_END).append(" ");
-			}
+			}else if((candidate.getDesignation() != null || candidate.getDesignation() != "" ||  candidateDto.getDesignation().equalsIgnoreCase(candidate.getDesignation())) && candidateDto.getDesignation() !="" ){
+				activitySummary.append("Designation").append(" : ").append(" ").append(Constants.NEW_VALUE_TAG_INITIATION).append(candidateDto.getDesignation()).append(Constants.NEW_VALUE_TAG_END).append(" ");
+			}else
+				activitySummary.append("Designation").append(" : ").append("---").append(" ");
 		candidate.setDesignation(candidateDto.getDesignation());
 		}
 		
-		if(candidateDto.getDesignationOtherType() !=null){
-			if(candidate.getDesignationOtherType() != null){
+		/*if(candidateDto.getDesignationOtherType() !=null){
+			if(candidate.getDesignationOtherType() != null && candidate.getDesignationOtherType() != "" && !candidateDto.getDesignationOtherType().equalsIgnoreCase(candidate.getDesignationOtherType())){
 				activitySummary.append("Designation Other Type").append(" : ").append(Constants.OLD_VALUE_TAG_INITIATION).append(candidate.getDesignationOtherType()).append(Constants.OLD_VALUE_TAG_END).append(" ").append(Constants.NEW_VALUE_TAG_INITIATION).append(candidateDto.getDesignationOtherType()).append(Constants.NEW_VALUE_TAG_END).append(" ");
-			}
+			}else
+				
+			activitySummary.append("Designation Other Type").append(" : ").append(" -- ");
+			
 			candidate.setDesignationOtherType(candidateDto.getDesignationOtherType());
 		}else{
 			candidate.setDesignationOtherType(null);
-		}
+		}*/
 		
 		if(candidateDto.getExpectedRate() !=null ){
-			if(candidate.getExpectedRate() != null){
+			if(candidate.getExpectedRate() != null  && candidate.getExpectedRate() != "" && !candidateDto.getExpectedRate().equalsIgnoreCase(candidate.getExpectedRate())){
 				activitySummary.append("Expected Rate").append(" : ").append(Constants.OLD_VALUE_TAG_INITIATION).append(candidate.getExpectedRate()).append(Constants.OLD_VALUE_TAG_END).append(" ").append(Constants.NEW_VALUE_TAG_INITIATION).append(candidateDto.getExpectedRate()).append(Constants.NEW_VALUE_TAG_END).append(" ");
-			}
+			}else if((candidate.getExpectedRate() != null || candidate.getExpectedRate() != "" ||  candidateDto.getExpectedRate().equalsIgnoreCase(candidate.getExpectedRate())) && candidateDto.getExpectedRate() !="" ){
+				activitySummary.append("Expected Rate").append(" : ").append(" ").append(Constants.NEW_VALUE_TAG_INITIATION).append(candidateDto.getExpectedRate()).append(Constants.NEW_VALUE_TAG_END).append(" ");
+			}else
+				activitySummary.append("Expected Rate").append(" : ").append("---").append(" ");
 		candidate.setExpectedRate(candidateDto.getExpectedRate());
 		}
 		
 		if(candidateDto.getRateType() != null){
-			if(candidate.getRateType() != null){
+			if(candidate.getRateType() != null  && candidate.getRateType() != "" && !candidateDto.getRateType().equalsIgnoreCase(candidate.getRateType())){
 				activitySummary.append("Rate Type").append(" : ").append(Constants.OLD_VALUE_TAG_INITIATION).append(candidate.getRateType()).append(Constants.OLD_VALUE_TAG_END).append(" ").append(Constants.NEW_VALUE_TAG_INITIATION).append(candidateDto.getRateType()).append(Constants.NEW_VALUE_TAG_END).append(" ");
-			}
+			}else if((candidate.getRateType() != null || candidate.getRateType() != "" ||  candidateDto.getRateType().equalsIgnoreCase(candidate.getRateType())) && candidateDto.getRateType() !="" ){
+				activitySummary.append("Rate Type").append(" : ").append(" ").append(Constants.NEW_VALUE_TAG_INITIATION).append(candidateDto.getRateType()).append(Constants.NEW_VALUE_TAG_END).append(" ");
+			}else
+				activitySummary.append("Rate Type").append(" : ").append("---").append(" ");
 			candidate.setRateType(candidateDto.getRateType());
 			}
 		
 		if(candidateDto.getExpectedRateCurrencey() !=null ){
-			if(candidate.getExpectedRateCurrencey() != null ){
+			if(candidate.getExpectedRateCurrencey() != null  && candidate.getExpectedRateCurrencey() != "" && !candidateDto.getExpectedRateCurrencey().equalsIgnoreCase(candidate.getExpectedRateCurrencey())){
 				activitySummary.append("Expected Rate Currencey").append(" : ").append(Constants.OLD_VALUE_TAG_INITIATION).append(candidate.getExpectedRateCurrencey()).append(Constants.OLD_VALUE_TAG_END).append(" ").append(Constants.NEW_VALUE_TAG_INITIATION).append(candidateDto.getExpectedRateCurrencey()).append(Constants.NEW_VALUE_TAG_END).append(" ");
-			}
+			}else if((candidate.getExpectedRateCurrencey() != null || candidate.getExpectedRateCurrencey() != "" ||  candidateDto.getExpectedRateCurrencey().equalsIgnoreCase(candidate.getExpectedRateCurrencey())) && candidateDto.getExpectedRateCurrencey() !="" ){
+				activitySummary.append("Expected Rate Currencey").append(" : ").append(" ").append(Constants.NEW_VALUE_TAG_INITIATION).append(candidateDto.getExpectedRateCurrencey()).append(Constants.NEW_VALUE_TAG_END).append(" ");
+			}else
+				activitySummary.append("Expected Rate Currencey").append(" : ").append("---").append(" ");
 			candidate.setExpectedRateCurrencey(candidateDto.getExpectedRateCurrencey());
 		}
 		
 		if(candidateDto.getSummary() !=null){
-			if(candidate.getSummary() != null){
+			if(candidate.getSummary() != null && candidate.getSummary() != "" && !candidateDto.getSummary().equalsIgnoreCase(candidate.getSummary())){
 				activitySummary.append("Summary").append(" : ").append(Constants.OLD_VALUE_TAG_INITIATION).append(candidate.getSummary()).append(Constants.OLD_VALUE_TAG_END).append(" ").append(Constants.NEW_VALUE_TAG_INITIATION).append(candidateDto.getSummary()).append(Constants.NEW_VALUE_TAG_END).append(" ");
-			}
+			}else if((candidate.getSummary() != null || candidate.getSummary() != "" ||  candidateDto.getSummary().equalsIgnoreCase(candidate.getSummary())) && candidateDto.getSummary() !="" ){
+				activitySummary.append("Summary").append(" : ").append(" ").append(Constants.NEW_VALUE_TAG_INITIATION).append(candidateDto.getSummary()).append(Constants.NEW_VALUE_TAG_END).append(" ");
+			}else
+				activitySummary.append("Summary").append(" : ").append("---").append(" ");
 		candidate.setSummary(candidateDto.getSummary());
 		}
 		
-			if(candidate.getDesignationType() != null ){
-				activitySummary.append("Designation Type").append(" : ").append(Constants.OLD_VALUE_TAG_INITIATION).append(candidate.getDesignationType()).append(Constants.OLD_VALUE_TAG_END).append(" ").append(Constants.NEW_VALUE_TAG_INITIATION).append(candidateDto.getDesignationType()).append(Constants.NEW_VALUE_TAG_END).append(" ");
-			}
+			if(candidate.getDesignationType() != null  && candidate.getDesignationType() != "" && !candidateDto.getDesignationType().equalsIgnoreCase(candidate.getDesignationType()) ){
+				activitySummary.append("Employment Type").append(" : ").append(Constants.OLD_VALUE_TAG_INITIATION).append(candidate.getDesignationType()).append(Constants.OLD_VALUE_TAG_END).append(" ").append(Constants.NEW_VALUE_TAG_INITIATION).append(candidateDto.getDesignationType()).append(Constants.NEW_VALUE_TAG_END).append(" ");
+			}else if((candidate.getDesignationType() != null || candidate.getDesignationType() != "" ||  candidateDto.getDesignationType().equalsIgnoreCase(candidate.getDesignationType())) && candidateDto.getDesignationType() !="" ){
+				activitySummary.append("Employment Type").append(" : ").append(" ").append(Constants.NEW_VALUE_TAG_INITIATION).append(candidateDto.getDesignationType()).append(Constants.NEW_VALUE_TAG_END).append(" ");
+			}else
+				activitySummary.append("Employment Type").append(" : ").append("---").append(" ");
 		candidate.setDesignationType(candidateDto.getDesignationType());
 		
-			if(candidate.getExperienceYears() != null ){
+			if(candidate.getExperienceYears() != null  && candidate.getExperienceYears() != "" && !candidateDto.getExperienceYears().equalsIgnoreCase(candidate.getExperienceYears())){
 				activitySummary.append("Experience Years").append(" : ").append(Constants.OLD_VALUE_TAG_INITIATION).append(candidate.getExperienceYears()).append(Constants.OLD_VALUE_TAG_END).append(" ").append(Constants.NEW_VALUE_TAG_INITIATION).append(candidateDto.getExperienceYears()).append(Constants.NEW_VALUE_TAG_END).append(" ");
-			}
+			}else if((candidate.getExperienceYears() != null || candidate.getExperienceYears() != "" ||  candidateDto.getExperienceYears().equalsIgnoreCase(candidate.getExperienceYears())) && candidateDto.getExperienceYears() !="" ){
+				activitySummary.append("Experience Years").append(" : ").append(" ").append(Constants.NEW_VALUE_TAG_INITIATION).append(candidateDto.getExperienceYears()).append(Constants.NEW_VALUE_TAG_END).append(" ");
+			}else
+				activitySummary.append("Experience Years").append(" : ").append("---").append(" ");
 		candidate.setExperienceYears(candidateDto.getExperienceYears());
 		
 		
 		if(StringUtils.isNotBlank(candidateDto.getExperienceMonths())){
-			if(candidate.getExperienceMonths() != null){
+			if(candidate.getExperienceMonths() != null  && candidate.getExperienceMonths() != "" && !candidateDto.getExperienceMonths().equalsIgnoreCase(candidate.getExperienceMonths())){
 				activitySummary.append("Experience Months").append(" : ").append(Constants.OLD_VALUE_TAG_INITIATION).append(candidate.getExperienceMonths()).append(Constants.OLD_VALUE_TAG_END).append(" ").append(Constants.NEW_VALUE_TAG_INITIATION).append(candidateDto.getExperienceMonths()).append(Constants.NEW_VALUE_TAG_END).append(" ");
-			}
+			}else if((candidate.getExperienceMonths() != null || candidate.getExperienceMonths() != "" ||  candidateDto.getExperienceMonths().equalsIgnoreCase(candidate.getExperienceMonths())) && candidateDto.getExperienceMonths() !="" ){
+				activitySummary.append("Experience Months").append(" : ").append(" ").append(Constants.NEW_VALUE_TAG_INITIATION).append(candidateDto.getExperienceMonths()).append(Constants.NEW_VALUE_TAG_END).append(" ");
+			}else
+				activitySummary.append("Experience Months").append(" : ").append("---").append(" ");
 			candidate.setExperienceMonths(candidateDto.getExperienceMonths());	
 		}else{
 			candidate.setExperienceMonths(null);	
 		}
 		
-			if(candidate.getNoticePeriod() != null){
-				activitySummary.append("Notice Period").append(" : ").append(Constants.OLD_VALUE_TAG_INITIATION).append(candidate.getNoticePeriod()).append(Constants.OLD_VALUE_TAG_END).append(" ").append(Constants.NEW_VALUE_TAG_INITIATION).append(candidateDto.getNoticePeriod()).append(Constants.NEW_VALUE_TAG_END).append(" ");
-			}
-			candidate.setNoticePeriod(candidateDto.getNoticePeriod());	
+		 String noticePeriod = null;
+		if(candidateDto.getNoticePeriod() != null)
+			noticePeriod = candidateDto.getNoticePeriod().replaceAll("\\s+", " ");
+		
+	    if(noticePeriod != null) {
+		if(candidate.getNoticePeriod() != null  && candidate.getNoticePeriod() != "" && !noticePeriod.equalsIgnoreCase(candidate.getNoticePeriod())){
+			 activitySummary.append("Notice Period").append(" : ").append(Constants.OLD_VALUE_TAG_INITIATION).append(candidate.getNoticePeriod()).append(Constants.OLD_VALUE_TAG_END).append(" ").append(Constants.NEW_VALUE_TAG_INITIATION).append(noticePeriod).append(Constants.NEW_VALUE_TAG_END).append(" ");
+		}else if((candidate.getNoticePeriod() != null || candidate.getNoticePeriod() != "" ||  noticePeriod.equalsIgnoreCase(candidate.getNoticePeriod())) && noticePeriod !="" ){
+			  activitySummary.append("Notice Period").append(" : ").append(" ").append(Constants.NEW_VALUE_TAG_INITIATION).append(noticePeriod).append(Constants.NEW_VALUE_TAG_END).append(" ");
+		}else 
+			activitySummary.append("Notice Period").append(" : ").append("---").append(" ");
+			candidate.setNoticePeriod(noticePeriod);	
+	     }
 		
 		if(candidateDto.getAddress() !=null){
-			if(candidate.getAddress() != null ){
+			if(candidate.getAddress() != null   && candidate.getAddress() != "" && !candidateDto.getAddress().equalsIgnoreCase(candidate.getAddress())){
 				activitySummary.append("Address").append(" : ").append(Constants.OLD_VALUE_TAG_INITIATION).append(candidate.getAddress()).append(Constants.OLD_VALUE_TAG_END).append(" ").append(Constants.NEW_VALUE_TAG_INITIATION).append(candidateDto.getAddress()).append(Constants.NEW_VALUE_TAG_END).append(" ");
-			}
+			}else if((candidate.getAddress() != null || candidate.getAddress() != "" ||  candidateDto.getAddress().equalsIgnoreCase(candidate.getAddress())) && candidateDto.getAddress() !="" ){
+				activitySummary.append("Address").append(" : ").append(" ").append(Constants.NEW_VALUE_TAG_INITIATION).append(candidateDto.getAddress()).append(Constants.NEW_VALUE_TAG_END).append(" ");
+			}else
+			activitySummary.append("Address").append(" : ").append("---").append(" ");
 			candidate.setAddress(candidateDto.getAddress());
-		}
+		  }
 		
 		UserRole userRole = userRoleService.getUserDetailsByUserIdAndLocationIdAndUserType(user.getId(),orgLocations.getId(),"Recruiter");
 		if(null != userRole && userRole.getRoles().getRoleName().equalsIgnoreCase("ROLE_CROWDSOURCING_RECRUITER")){
@@ -480,24 +663,33 @@ public class CandidateServiceImpl implements CandidateService {
 		
 		if(StringUtils.isNotBlank(candidateDto.getCandidateSkills())){
 			
-			if(candidate.getSkillsName() != null){
+			if(candidate.getSkillsName() != null  && candidate.getSkillsName() != "" && !candidateDto.getCandidateSkills().equalsIgnoreCase(candidate.getSkillsName())){
 				activitySummary.append("Skills").append(" : ").append(Constants.OLD_VALUE_TAG_INITIATION).append(candidate.getSkillsName()).append(Constants.OLD_VALUE_TAG_END).append(" ").append(Constants.NEW_VALUE_TAG_INITIATION).append(candidateDto.getCandidateSkills()).append(Constants.NEW_VALUE_TAG_END).append(" ");
-			}
+			}else if(candidate.getSkillsName() != null || candidate.getSkillsName() != "" || candidateDto.getCandidateSkills().equalsIgnoreCase(candidate.getSkillsName())){
+				activitySummary.append("Skills").append(" : ").append(" ").append(Constants.NEW_VALUE_TAG_INITIATION).append(candidateDto.getCandidateSkills()).append(Constants.NEW_VALUE_TAG_END).append(" ");
+			}else
+				activitySummary.append("Skills").append(" : ").append("---").append(" ");
 			candidate.setSkillsName(candidateDto.getCandidateSkills());
 		}
 		
 		if(StringUtils.isNotBlank(candidateDto.getVisa())){
 			
-			if(candidate.getVisaType() != null){
+			if(candidate.getVisaType() != null  && candidate.getVisaType() != "" && !candidateDto.getVisa().equalsIgnoreCase(candidate.getVisaType())) {
 				activitySummary.append("Immigration Status").append(" : ").append(Constants.OLD_VALUE_TAG_INITIATION).append(candidate.getVisaType()).append(Constants.OLD_VALUE_TAG_END).append(" ").append(Constants.NEW_VALUE_TAG_INITIATION).append(candidateDto.getVisa()).append(Constants.NEW_VALUE_TAG_END).append(" ");
-			}
+			}else if((candidate.getVisaType() != null || candidate.getVisaType() != "" ||  candidateDto.getVisa().equalsIgnoreCase(candidate.getVisaType())) && candidateDto.getVisa() !="" ){
+				activitySummary.append("Immigration Status").append(" : ").append(" ").append(Constants.NEW_VALUE_TAG_INITIATION).append(candidateDto.getVisa()).append(Constants.NEW_VALUE_TAG_END).append(" ");
+			}else
+				activitySummary.append("Immigration Status").append(" : ").append("---").append(" ");
 			candidate.setVisaType(candidateDto.getVisa());
 	  	 
 		}
 		
-			if(candidate.getPrimarySkill() != null){
+			if(candidate.getPrimarySkill() != null   && candidate.getPrimarySkill() != "" && !candidateDto.getPrimarySkill().equalsIgnoreCase(candidate.getPrimarySkill())){
 				activitySummary.append("Primary Skills").append(" : ").append(Constants.OLD_VALUE_TAG_INITIATION).append(candidate.getPrimarySkill()).append(Constants.OLD_VALUE_TAG_END).append(" ").append(Constants.NEW_VALUE_TAG_INITIATION).append(candidateDto.getPrimarySkill()).append(Constants.NEW_VALUE_TAG_END).append(" ");
-			}
+			}else if((candidate.getPrimarySkill() != null || candidate.getPrimarySkill() != "" ||  candidateDto.getPrimarySkill().equalsIgnoreCase(candidate.getPrimarySkill())) && candidateDto.getPrimarySkill() !="" ){
+				activitySummary.append("Primary Skills").append(" : ").append(" ").append(Constants.NEW_VALUE_TAG_INITIATION).append(candidateDto.getPrimarySkill()).append(Constants.NEW_VALUE_TAG_END).append(" ");
+			}else
+				activitySummary.append("Primary Skills").append(" : ").append("---").append(" ");
 			candidate.setPrimarySkill(candidateDto.getPrimarySkill());
 
 		if(StringUtils.isNotBlank(candidateDto.getVendors())){
@@ -547,6 +739,25 @@ public class CandidateServiceImpl implements CandidateService {
 		Candidate savedCandidate = candidateDao.storeCandidate(candidate);
 		candidateActivityCommonUtil.storeCandidateHistory(savedCandidate, user);
 		
+		if(candidateDto.getCustomFormData() !=null) {
+			for( CustomFormFieldDTO customFields:candidateDto.getCustomFormData()) {
+				if(customFields != null && customFields.getCustomFormFieldId() > 0 ) {
+					CandidateCustomFieldData candidateCustomFields = null;
+					if(customFields.getEntityId()!= null && customFields.getEntityId() > 0) {
+						candidateCustomFields = candidateCustomFieldDataService.getCandidateCustomFieldDataById(customFields.getEntityId());
+					}else {
+						candidateCustomFields = new CandidateCustomFieldData();
+					}
+				candidateCustomFields.setCandidate(savedCandidate);
+				OrglocationFormFields orgFormField = orglocationFormFieldsService.getOrglocationFormFieldsById(customFields.getCustomFormFieldId());
+				candidateCustomFields.setOrglocationsFormFields(orgFormField);
+				candidateCustomFields.setCustomFormFieldData(customFields.getCustomFormFieldData());
+				candidateCustomFieldDataService.savejobCustomFieldData(candidateCustomFields);
+				}
+				
+			}	
+		}
+		
 		
 		/*
 		 * this method is for track candidate activity
@@ -573,6 +784,53 @@ public class CandidateServiceImpl implements CandidateService {
 		 * Saving Candidate DB data as ElasticSearch Documents
 		 */
 		saveOrUpdateCandidateElkDocument(savedCandidate);
+		
+		// store candidate as a contact
+		
+		ReferContacts referContacts=null;
+		 referContacts=referContactsDao.getReferContactsByEmails(user.getId(), candidateDto.getEmail());
+	
+		if(referContacts !=null){
+			if(candidateDto.getFirstName() != null){
+				referContacts.setFirstName(candidateDto.getFirstName());
+			}
+			if(candidateDto.getLastName() != null){
+				referContacts.setLastName(candidateDto.getLastName());
+			}
+			if(candidateDto.getPhoneNumber() != null){
+				referContacts.setContactUserPhone(candidateDto.getPhoneNumber());
+			}
+			referContacts.setUpdatedDate(new Date());
+			referContacts.setUpdatedBy(user.getUserCode());
+					referContacts.setCandidateType(1);
+		}else{
+			 referContacts = new ReferContacts();
+			
+			if(candidateDto.getEmail() != null){
+				referContacts.setContactUserEmail(candidateDto.getEmail());
+			}
+			
+			if(candidateDto.getFirstName() != null){
+				referContacts.setFirstName(candidateDto.getFirstName());
+			}
+			if(candidateDto.getLastName() != null){
+				referContacts.setLastName(candidateDto.getLastName());
+			}
+			if(candidateDto.getPhoneNumber() != null){
+				referContacts.setContactUserPhone(candidateDto.getPhoneNumber());
+			}
+			
+			referContacts.setReferFromUser(user);
+			String contactUUID = SourceLeadRandomCodeHelper.generateUUID();
+			referContacts.setContactUserUUID(contactUUID);
+			referContacts.setCreatedDate(new Date());
+			referContacts.setCandidateType(1);
+			
+			referContacts.setCreatedBy(user.getUserCode());
+		}
+	
+	referContactsDao.addReferContacts(referContacts);
+		
 		// resume details update in elk
 		if(candidateDto.getFileInfo()!= null && !candidateDto.getFileInfo().isEmpty()){
 		candidateResumesService.saveOrUpdateCandidateElkDocumentWithResumeDetails(savedCandidate);
@@ -622,27 +880,8 @@ public class CandidateServiceImpl implements CandidateService {
  		 String sourceleadRegisterUrl =StringUtils.removeEnd(sourceleadUrl, sourceleadUrl.substring(sourceleadUrl.lastIndexOf("/")));
          globalVarsMap.put("registerURL",loginBuilder.append("<a href='").append(sourceleadRegisterUrl).append("/register").append("' style='text-decoration:none; '><div style=' width:220px; border-radius:30px; background-color:#214b90; color:#FFF; font-size:18px; font-weight:500; margin:10px auto 5px auto; padding:10px 0px; text-align:center; letter-spacing:2px;'>Register</div></a>").toString());
         
-         //setting the Recipient information
-         //setting the Recipient information
-         InternetAddress[] iAdressArray = InternetAddress.parse(emailMessage.getToEmail());
-        
-         //getting the current EmailScenario by EmailScenario unique name and entity type
-         EmailScenario  emailScenario = emailScenarioService.getEmailScenarioByUniqueName(Constants.CANDIDATE_INVITATION,Constants.ENTITY_TYPE_EMAIL);
-
-        
-         //covert subject,body and signature
-         String subject = emailScenerioUtil.bulidSubject(emailScenario.getSubject(),globalVarsMap);
-         String body = emailScenerioUtil.buildTempBody(emailScenario.getBody(),globalVarsMap);
-         String signature = emailScenerioUtil.buildSignature(emailScenario.getSignature(),globalVarsMap);
-         String url = sourceleadUrl;
-        
-         //construct HTML template using required data
-         String emailTemplate = emailScenerioUtil.AssembleEmailMessage(emailScenario,emailMessage, subject, body, signature, url, orgLocations.getOrg(),orgLocations);
-         emailMessage.setSubject(subject);
-         emailMessage.setMessageBody(emailTemplate);
-        
         //calling the sendEmail method of emailScenerioUtil
-         emailScenerioUtil.sendEmail(emailMessage,orgLocations.getId(),iAdressArray,new ArrayList<EmailAttachment>());
+         commonUtil.sendTemplateEmail(emailMessage, globalVarsMap,orgLocations.getOrg(),orgLocations,Constants.CANDIDATE_INVITATION,new ArrayList<EmailAttachment>());
         
     }
 
@@ -664,8 +903,8 @@ public class CandidateServiceImpl implements CandidateService {
 	 * @throws Exception
     */
 	@Override
-	public List<Candidate> getCandidatesListByOrgLocationID(Long orgLocationId,Long orgId,Integer candidateStatus,String updatedDateRange,String candidateType,String isAssociate) throws Exception {
-		List<Candidate> candidateList = candidateDao.getCandidatesListByOrgLocationID(orgLocationId,orgId,candidateStatus,updatedDateRange,candidateType,isAssociate);
+	public List<Candidate> getCandidatesListByOrgLocationID(Long orgLocationId,Long orgId,Integer candidateStatus,String updatedDateRange,String candidateType,String isAssociate,String candidateFilterSkills,String availability,String candidateTypeFilter,String createdByFilter,User user) throws Exception {
+		List<Candidate> candidateList = candidateDao.getCandidatesListByOrgLocationID(orgLocationId,orgId,candidateStatus,updatedDateRange,candidateType,isAssociate,candidateFilterSkills,availability,candidateTypeFilter,createdByFilter,user);
 		OrgLocations orgLocations = orgLocationService.getOrgLocations(orgLocationId);
 		//SimpleDateFormat simpleDateFormat = orgLocations.getLocFullFormDateFormatter();
 		for(Candidate can :candidateList){
@@ -993,10 +1232,10 @@ private Sheet createXlsSheet(Sheet createExcelsheet, Row writeRow,Candidate cand
 					 BoolQueryBuilder anyBoolQueryBuilder = QueryBuilders.boolQuery();
 					 for(String keywd : anyKeyWordArray){
 						 BoolQueryBuilder anyBoolSubQueryBuilder = QueryBuilders.boolQuery();
-						ArrayList<MatchQueryBuilder> matchQueryBuilderList = universalSearchHelper.getMatchQueryBuilderListForCandidate(keywd);
-						if(matchQueryBuilderList != null && !matchQueryBuilderList.isEmpty()){
-							for(MatchQueryBuilder matchQueryBuilder :matchQueryBuilderList){
-								anyBoolSubQueryBuilder.should(matchQueryBuilder);
+						ArrayList<QueryBuilder> QueryBuilderList = universalSearchHelper.getQueryBuilderListForCandidate(keywd);
+						if(QueryBuilderList != null && !QueryBuilderList.isEmpty()){
+							for(QueryBuilder QueryBuilder :QueryBuilderList){
+								anyBoolSubQueryBuilder.should(QueryBuilder);
 							}
 							anyBoolQueryBuilder.should(anyBoolSubQueryBuilder);
 						}
@@ -1113,6 +1352,30 @@ private Sheet createXlsSheet(Sheet createExcelsheet, Row writeRow,Candidate cand
 				candidate.setDesignation(null);
 			}
 			
+			if(StringUtils.isNotBlank(candidateDTO.getMiddleName())){
+				candidate.setMiddelName(candidateDTO.getMiddleName());
+			}else{
+				candidate.setMiddelName(null);
+			}
+			
+			if(StringUtils.isNotBlank(candidateDTO.getGender())){
+				candidate.setGender(candidateDTO.getGender());
+			}else{
+				candidate.setGender(null);
+			}
+			
+			if(StringUtils.isNotBlank(candidateDTO.getMaritalStatus())){
+				candidate.setMaritalStatus(candidateDTO.getMaritalStatus());
+			}else{
+				candidate.setMaritalStatus(null);
+			}
+			
+			if(StringUtils.isNotBlank(candidateDTO.getDateofBirth())){
+				candidate.setDateOfBirth(commonUtil.orgLocationDateFormat(orgLocations.getDateFormat(), candidateDTO.getDateofBirth()));
+			}else{
+				candidate.setDateOfBirth(null);
+			}
+			
 			if(StringUtils.isNotBlank(candidateDTO.getDesignationOtherType())){
 				candidate.setDesignationOtherType(candidateDTO.getDesignationOtherType());
 			}else{
@@ -1223,6 +1486,7 @@ private Sheet createXlsSheet(Sheet createExcelsheet, Row writeRow,Candidate cand
 			HashSet<CandidateResumes> candidateResumesList = candidateResumesService.getCandidateResumesDetails(orgLocations,user.getUserCode(),candidate,multiFile);
 			candidate.setCandidateResumes(candidateResumesList);
 			}*/
+			
 			if(candidateDTO.getFileInfo() != null && !candidateDTO.getFileInfo().isEmpty()){
 				FileInfo fileInfo = candidateDTO.getFileInfo().get(0);
 				HashSet<CandidateResumes> candidateResumesList = candidateResumesService.getCandidateResumesDetails(orgLocations,user.getUserCode(),candidate, fileInfo);
@@ -1238,6 +1502,11 @@ private Sheet createXlsSheet(Sheet createExcelsheet, Row writeRow,Candidate cand
 			candidate.setStatus(Constants.CANDIDATE_ACTIVE);
 			candidate.setIsFavourite(0);
 			Candidate savedCandidate = candidateDao.storeCandidate(candidate);
+			
+			/*
+			 * Saving Candidate DB data as ElasticSearch Documents
+			 */
+			saveOrUpdateCandidateElkDocument(savedCandidate);
 			return savedCandidate;
 	}
 
@@ -1359,8 +1628,8 @@ private Sheet createXlsSheet(Sheet createExcelsheet, Row writeRow,Candidate cand
 	}
 	
 	@Override
-	public Long getCountOfAllCandidatesByCreatedUserAndOrglocationId(Long orgLocationId, User user, Date startDateUTC, Date endDateUTC) throws Exception {
-		return candidateDao.getCountOfAllCandidatesByCreatedUserAndOrglocationId(orgLocationId, user, startDateUTC,endDateUTC);
+	public BigInteger getCountOfAllCandidatesByCreatedUserAndOrglocationId(Long orgLocationId, User user, String startDateUTC, String endDateUTC,String isGlobalUser,Long orgId) throws Exception {
+		return candidateDao.getCountOfAllCandidatesByCreatedUserAndOrglocationId(orgLocationId, user, startDateUTC,endDateUTC,isGlobalUser,orgId);
 	}
 
 	@Override
@@ -1473,6 +1742,8 @@ private Sheet createXlsSheet(Sheet createExcelsheet, Row writeRow,Candidate cand
 			candidate.setCandidateType(Constants.CANDIDATE);
 			candidate.setFirstName(candidateUser.getFirstName());
 			candidate.setLastName(candidateUser.getLastName());
+			candidate.setMiddelName(candidateUser.getMiddelName());
+			candidate.setGender(candidateUser.getGender());
 			candidate.setCountry(orgLocations.getCountry());
 			candidate.setIsAssociate(Constants.YES);
 			candidate.setEmail(candidateUser.getEmail());
@@ -1545,6 +1816,34 @@ private Sheet createXlsSheet(Sheet createExcelsheet, Row writeRow,Candidate cand
 			candidate.setConsultantUser(candidateUser);
 			candidate.setMasterCandidateId(masterCandidate);
 		}
+		if(candidateUser.getDateOfBirth() != null){
+			candidate.setDateOfBirth(commonUtil.orgLocationCommonDate(candidateUser.getDateOfBirth(),orgLocations));
+			}
+		if(StringUtils.isNotBlank(candidateUser.getMaritalStatus())) {
+			candidate.setMaritalStatus(candidateUser.getMaritalStatus());
+		}
+		
+		  
+	    if(StringUtils.isNotBlank(addUserDTO.getResidenceAddress())){
+	    	candidate.setResidenceAddress(addUserDTO.getResidenceAddress());
+	    	candidate.setResidenceCountry(addUserDTO.getResidenceCountry());
+	    	candidate.setResidenceState(addUserDTO.getResidenceState());
+	    	candidate.setResidenceCity(addUserDTO.getResidenceCity());
+	    	candidate.setResidenceLatitude(addUserDTO.getResidenceLatitude());
+	    	candidate.setResidenceLongitude(addUserDTO.getResidenceLongitude());
+	    	candidate.setResidenceZipCode(addUserDTO.getResidenceZipCode());
+	    	candidate.setResidenceStreetAddress(addUserDTO.getResidenceAddress());
+	    	OrgLocations workLocation = orgLocationService.getOrgLocations(Long.parseLong(addUserDTO.getWorkLocation()));
+			candidate.setWorkLocation(workLocation);
+	    	
+	    	
+	    	Countries country = countriesService.getCountriesByCountryName(addUserDTO.getResidenceCountry());
+	    	String stateCode = statesService.getStateCodeByCountryCodeAndState(country.getCode2(),addUserDTO.getResidenceState());
+	    	if(stateCode != null) {
+	    		candidate.setResidenceStateCode(stateCode);
+	    	}
+	    	
+	    }
 		candidateDao.storeCandidate(candidate);
 		saveOrUpdateCandidateElkDocument(candidate);
 		return candidate;
@@ -1628,9 +1927,9 @@ private Sheet createXlsSheet(Sheet createExcelsheet, Row writeRow,Candidate cand
 
 
 	@Override
-	public ResponseList<CandidateDTO>  getRequestedCandidatesList(CandidateDTO candidateDTO,Long orgLocationsId, List<Long> roleIds,
+	public ResponseList<CandidateDTO>  getRequestedCandidatesList(CandidateDTO candidateDTO,Long orgLocationsId, List<Long> roleIds,List<Long> teamIds,
 			String resourceType,List<Long> associatesIds,Long projectId) throws Exception {
-		return candidateDao.getRequestedCandidatesList(candidateDTO,orgLocationsId, roleIds, resourceType,associatesIds,projectId);
+		return candidateDao.getRequestedCandidatesList(candidateDTO,orgLocationsId, roleIds,teamIds, resourceType,associatesIds,projectId);
 	}
 
 	@Override
@@ -1711,6 +2010,529 @@ private Sheet createXlsSheet(Sheet createExcelsheet, Row writeRow,Candidate cand
 	@Override
 	public Integer getCandidatesCountByLocation(Long orgLocationId) throws Exception {
 		return candidateDao.getCandidatesCountByLocation(orgLocationId);
+	}
+
+	@Override
+	public List<Candidate> getAllAssociatesByOrglocationIdAndEmploymentType(Long orgLocationId, String employeementType)
+			throws Exception {
+		return candidateDao.getAllAssociatesByOrglocationIdAndEmploymentType(orgLocationId, employeementType);
+	}
+
+	@Override
+	public ResponseList<CandidateDTO> getLocationCandidatesList(CandidateDTO candidateDTO, Long orgLocationsId,
+			List<Long> roleIds, List<Long> associatesIds,Long loginOrgLocationId) throws Exception {
+		return candidateDao.getLocationCandidatesList(candidateDTO, orgLocationsId, roleIds, associatesIds,loginOrgLocationId);
+	}
+
+	@Override
+	public void saveOrglocationAsssociate(AddAssociateDTO addAssociateDTO, User user, OrgLocations orgLocations,Org org)
+			throws Exception {
+		
+		if(addAssociateDTO.getLocationAssociates() != null && !addAssociateDTO.getLocationAssociates().isEmpty()){
+			
+			for(AssociateDTO associateDTO : addAssociateDTO.getLocationAssociates()){
+				if(associateDTO.getCandidateId() != null) {
+					Candidate candidate = candidateDao.getCandidateByCandidateId(associateDTO.getCandidateId());
+					OrgSpoc orgSpoc = null;
+					if(candidate != null) {
+						
+						OrgRelations orgRelations = null;
+						OrgLocations vendorOrgLocation = candidate.getOrgLocationId();
+						orgRelations = orgRelationsService.getOrgRelationByResponderLocationIdAndLocationId(vendorOrgLocation.getId(),orgLocations.getId());
+						if(orgRelations == null) {
+
+    						orgRelations = saveOrgRelations(orgLocations,vendorOrgLocation,user);
+			 				orgRelations = orgRelationsService.addOrgRelations(orgRelations);
+			 			
+							String modules = vendorOrgLocation.getModulesId();
+							List<Integer> moduleIds = new ArrayList<Integer>();
+							 for (String s : vendorOrgLocation.getModulesId().split(",")){
+								 moduleIds.add(Integer.parseInt(s));
+							 }
+							 boolean flag = moduleIds.contains(Constants.MODULE_VMS);
+							 if(flag == false){
+							     modules = modules+","+Constants.MODULE_VMS;
+							 }
+							 
+							 boolean tsflag = moduleIds.contains(Constants.MODULE_TIMESHEET);
+							 if(tsflag == false) {
+				    				modules = modules+","+Constants.MODULE_TIMESHEET;
+				    			}
+							 registrationController.saveUserRoleActions(vendorOrgLocation);
+							
+							 
+							 vendorOrgLocation.setModulesId(modules);
+							 orgLocationService.updateOrgLocations(vendorOrgLocation);
+                              							 
+							 
+							   String clientModules = orgLocations.getModulesId();
+								List<Integer> clientModuleIds = new ArrayList<Integer>();
+								 for (String s : orgLocations.getModulesId().split(",")){
+									 clientModuleIds.add(Integer.parseInt(s));
+								 }
+								 boolean flag1 = moduleIds.contains(Constants.MODULE_ATS);
+								 if(flag1 == false){
+									 clientModules = clientModules+","+Constants.MODULE_ATS;
+								     registrationController.saveVendorUserRoleActions(orgLocations);
+								 }
+								 
+								 orgLocations.setModulesId(clientModules);
+								 orgLocationService.updateOrgLocations(orgLocations);
+							 
+							 Set<OrgSpoc> orgSpocList = orgRelations.getOrgSpocList();
+							 for(OrgSpoc spoc : orgSpocList){
+								 orgSpoc =  spoc;
+							 }
+							 
+							 clientService.saveOrUpdateClientVendorElkDocument(null, vendorOrgLocation, "Vendor", orgSpoc, orgRelations,null, user, orgLocations);
+							 orgSpocService.addClientVendorContactsELK(orgSpoc);
+    					
+						}
+						
+						Candidate vendorCandidate = null;
+						vendorCandidate = candidateDao.findByCandidateEmail(candidate.getEmail(), orgLocations.getId());
+						if(vendorCandidate == null) {
+							vendorCandidate = new Candidate();
+							MasterCandidate masterCandidate = new MasterCandidate();
+							masterCandidate.setId(candidate.getMasterCandidateId().getId());
+							vendorCandidate.setMasterCandidateId(masterCandidate);
+							vendorCandidate.setParentCandidateId(candidate);
+							vendorCandidate.setConsultantUser(candidate.getConsultantUser());
+							vendorCandidate.setOrgRelationId(orgRelations);
+							 Set<OrgSpoc> orgSpocList = orgRelations.getOrgSpocList();
+							 for(OrgSpoc spoc : orgSpocList){
+								 orgSpoc =  spoc;
+							 }
+							vendorCandidate.setSpocId(orgSpoc);
+							vendorCandidate.setCandidateType("Candidate");
+							vendorCandidate.setFirstName(candidate.getFirstName());
+							vendorCandidate.setLastName(candidate.getLastName());
+							vendorCandidate.setEmail(candidate.getEmail());
+							vendorCandidate.setCountry(candidate.getCountry());
+							vendorCandidate.setOrgLocationId(orgLocations);
+							vendorCandidate.setIsAssociate(Constants.YES);
+							vendorCandidate.setDesignationType("Offshore C2C");
+							
+							if(associateDTO.getBillRate() != null){
+								vendorCandidate.setCurrentRate(associateDTO.getBillRate().toString());
+							}
+							if(StringUtils.isNotBlank(associateDTO.getBillRateRateType())){
+								vendorCandidate.setCurrentRateType(associateDTO.getBillRateRateType());
+							}
+							
+							if(StringUtils.isNotBlank(associateDTO.getBillRateCurrency())){
+								vendorCandidate.setCurrentRateCurrency(associateDTO.getBillRateCurrency());
+							}
+							
+							vendorCandidate.setStatus(1);
+							vendorCandidate.setIsAssociate(Constants.YES);
+							vendorCandidate.setCandidateUUID(SourceLeadRandomCodeHelper.generateRandomUUID());
+							vendorCandidate.setCreatedBy(user.getUserCode());
+							vendorCandidate.setCreatedDate(new Date());
+							vendorCandidate.setUpdatedDate(new Date());
+							
+							Candidate savedCandidate = candidateDao.storeCandidate(vendorCandidate);
+	    					saveOrUpdateCandidateElkDocument(savedCandidate);
+	    					
+	    					UserRole userRole = new UserRole();
+	    					userRole.setUser(candidate.getConsultantUser());
+	    					userRole.setIsMailSent(Status.Y);
+	    					userRole.setOrgLocations(orgLocations);
+	    					userRole.setUserState(Status.NOT_LOGGEDIN);
+	    					Roles roles = rolesDao.getRolesById(associateDTO.getAssociateRole());
+	    					userRole.setRoles(roles);
+	    					userRole.setUserType(roles.getDisplayName());
+	    					User managerUser = userService.getUserById(associateDTO.getAssociateManager());
+	    					userRole.setReportingManager(managerUser);
+	    					userRole.setResourceManager(managerUser);
+	    					userRole.setIsPrimary(0);
+	    					userRole.setOrgId(org);
+	    					userRole.setOrgLocations(orgLocations);
+	    					userRole.setIsMailSent(Status.Y);
+	    					
+	    					userRole.setCreatedDate(new Date());
+	    					userRole.setCreatedBy(user.getUserCode());
+	    					userRoleService.addUserRole(userRole);
+	    					
+	    					Employees employee = new Employees();
+	    					employee.setUser(candidate.getConsultantUser());
+	    					employee.setOrgLocations(orgLocations);
+	    					employee.setCreatedBy(user.getUserCode());
+	    					employee.setHireDate(new Date());
+	    					employee.setUserEmploymentType("Offshore C2C");
+	    					employee.setOrgRelationId(orgRelations);
+	    					employee.setSpocId(orgSpoc);
+	    					
+	    					if(associateDTO.getBillRate() != null){
+	    						employee.setRate(associateDTO.getBillRate().toString());
+							}
+							if(StringUtils.isNotBlank(associateDTO.getBillRateRateType())){
+								employee.setRatePer(associateDTO.getBillRateRateType());
+							}
+							
+							if(StringUtils.isNotBlank(associateDTO.getBillRateCurrency())){
+								employee.setCurrentCurrency(associateDTO.getBillRateCurrency());
+							}
+							
+	    					employee.setCreatedDate(new Date());
+	    					employee.setUpdatedDate(new Date());
+	    					employeeDao.addEmployee(employee);
+						}
+					}
+				}
+			}
+		}
+		
+	}
+	
+	
+	
+	
+	public OrgRelations saveOrgRelations(OrgLocations orglocations,OrgLocations vendorOrgLocation,User user){
+		
+		OrgRelations orgRelations = new OrgRelations();
+			orgRelations.setLocationId(orglocations);
+			orgRelations.setResponderLocationId(vendorOrgLocation);
+			orgRelations.setInitiatorType("Client");
+			orgRelations.setResponderType("Vendor");
+			orgRelations.setInitiatorLevel("Tier-5");
+			orgRelations.setResponderLevel("Tier-5");
+			orgRelations.setVendorRelationStatus("Sent");
+			orgRelations.setStatus("ACTIVE");
+			orgRelations.setCreatedBy(user.getUserCode());
+			orgRelations.setUUID(SourceLeadRandomCodeHelper.generateRandomUUID());
+			orgRelations.setCreatedDate(new Date());
+			orgRelations.setUpdatedBy(user.getUserCode());
+			orgRelations.setUpdatedDate(new Date());
+			
+			Set<OrgSpoc> orgSpocSet = new HashSet<>();
+			OrgSpoc orgSpoc = new OrgSpoc();
+			orgSpoc.setOrgRelations(orgRelations);
+			orgSpoc.setClientUser(user);
+			orgSpoc.setVendorUser(vendorOrgLocation.getUser());
+			orgSpoc.setInvitationStatus(Constants.MAIL_NEW);
+			orgSpoc.setClientLocationId(orglocations);
+			orgSpoc.setVendorLocationId(vendorOrgLocation);
+			orgSpoc.setUUID(SourceLeadRandomCodeHelper.generateRandomUUID());
+			orgSpoc.setSpocStatus("Active");
+			orgSpoc.setStatus(Constants.MEMBER_ACTIVE);
+			orgSpoc.setOwnerUser(user);
+			orgSpoc.setCreatedDate(new Date());
+			orgSpoc.setCreatedBy(user.getUserCode());
+			orgSpoc.setUpdatedDate(new Date());
+			orgSpoc.setUpdatedBy(user.getUserCode());
+			orgSpocSet.add(orgSpoc);
+			orgRelations.setOrgSpocList(orgSpocSet);
+			return orgRelations;
+	}
+	
+	@Override
+	public Candidate getCandidateByEmailAndOrgLocationId(String email, Long orgLocationId) throws Exception {
+		return candidateDao.getCandidateByEmailAndOrgLocationId(email, orgLocationId);
+	}
+
+	@Override
+	public Candidate getCandidateByEmail(String email) throws Exception {
+		return candidateDao.getCandidateByEmail(email);
+	}
+
+	@Override
+	public Candidate getCandidateByParentCandidateIdAndOrgLocationId(Long parentCandidateId, Long orgLocationId)
+			throws Exception {
+		return candidateDao.getCandidateByParentCandidateIdAndOrgLocationId(parentCandidateId, orgLocationId);
+	}
+
+	@Override
+	public List<RecruiterReportCandidateCountView> getCandidateCountsCreatedUserList(Long orgLocationId,
+			List<String> userCodesList, String startDateUTC, String endDateUTC, String isGlobalUser, Long orgId)
+			throws Exception {
+		return candidateDao.getCandidateCountsCreatedUserList(orgLocationId, userCodesList, startDateUTC, endDateUTC, isGlobalUser, orgId);
+	}
+
+	@Override
+	public ResponseList<SubmissionCandidateListView> getSubmissionCandidateListView(CandidateDTO candidateDTO,
+			OrgLocations orgLcoations) throws Exception {
+		return candidateDao.getSubmissionCandidateListView(candidateDTO, orgLcoations);
+	}
+
+	@Override
+	public CandidateDTO getCandidateDTOByCandidateId(Long candidateId) throws Exception {
+		return candidateDao.getCandidateDTOByCandidateId(candidateId);
+	}
+
+	@Override
+	public List<CandidateDTO> getCandidateListForAddApplicant(OrgLocations orgLcoations,
+			Long requirementId,String skills,String candidateDetails) throws Exception {
+		return candidateDao.getCandidateListForAddApplicant(orgLcoations, requirementId,skills,candidateDetails);
+	}
+
+	@Override
+	public void saveCandidateBulkImports(CandidateDTO candidateDTO, OrgLocations orgLocations,User user) throws Exception {
+		
+		if (null != candidateDTO.getExperienceYears()) {
+			if (candidateDTO.getExperienceYears().matches("[-a-zA-Z]+")) {
+				candidateDTO.setExperienceYears("0");
+				candidateDTO.setExperienceMonths("0");
+			}else{
+				 String exp[] = getExperienceYearsAndMonths(candidateDTO.getExperienceYears());
+				 if(exp.length >1){
+					 candidateDTO.setExperienceYears(exp[0]);
+						if(!exp[1].matches("[a-zA-Z]+")){
+							if(!"years".equalsIgnoreCase(exp[1])){
+							int months = ((Number)NumberFormat.getInstance().parse(exp[1])).intValue();
+							candidateDTO.setExperienceMonths(String.valueOf(months));
+							}
+								
+						} 
+				 }else{
+					 if(exp[0].contains("years") || exp[0].contains("Years") ){
+						 int years = ((Number)NumberFormat.getInstance().parse(exp[0])).intValue();
+						 candidateDTO.setExperienceYears(String.valueOf(years));
+						 candidateDTO.setExperienceMonths("0");
+					 }else{
+						 candidateDTO.setExperienceYears("");
+						 candidateDTO.setExperienceMonths("");
+					 }
+					 
+				 }
+					
+					
+			}
+		}
+		
+		if (null != candidateDTO.getDesignationType()) {
+			if(candidateDTO.getDesignationType().equalsIgnoreCase("W2")) {
+				candidateDTO.setDesignationType("W-2");
+			}
+			
+			else if(!candidateDTO.getDesignationType().equalsIgnoreCase("C2C") && 
+					!candidateDTO.getDesignationType().equalsIgnoreCase("C2C-1099") &&
+					!candidateDTO.getDesignationType().equalsIgnoreCase("W-2") && 
+					!candidateDTO.getDesignationType().equalsIgnoreCase("C2H") && 
+					!candidateDTO.getDesignationType().equalsIgnoreCase("C2H -1099") &&
+					!candidateDTO.getDesignationType().equalsIgnoreCase("Part Time") && 
+					!candidateDTO.getDesignationType().equalsIgnoreCase("Full Time") && 
+					!candidateDTO.getDesignationType().equalsIgnoreCase("Off Shore")) {
+				
+				candidateDTO.setDesignationType("C2C");
+			}
+		}
+		
+		if (null != candidateDTO.getExpectedRate()) {
+			String rate = getExpectedRate(candidateDTO.getExpectedRate());
+			if (null != rate) {
+				candidateDTO.setExpectedRate(rate);
+				String countryCheck = orgLocations.getCountry();
+				switch (countryCheck) {
+					case "India":
+						candidateDTO.setRateType("Monthly");
+						break;
+					default:
+						candidateDTO.setRateType("Hourly");
+				}
+				
+				if ("India".equals(orgLocations.getCountry())) {
+					
+					//jsonObj.put("expectedRateCurrencey", "INR");
+					candidateDTO.setExpectedRateCurrencey("INR");
+				}
+				else if ("Australia".equals(orgLocations.getCountry())) {
+					
+					candidateDTO.setExpectedRateCurrencey("AUD");
+				}
+				else if ("United States".equals(orgLocations.getCountry())) {
+					
+					candidateDTO.setExpectedRateCurrencey("USD");
+				}
+				else if ("Singapore".equals(orgLocations.getCountry())) {
+					
+					candidateDTO.setExpectedRateCurrencey("SGD");
+				}
+				else if ("United Kingdom".equals(orgLocations.getCountry())) {
+					
+					candidateDTO.setExpectedRateCurrencey("GBP");
+				}
+				else if ("France".equals(orgLocations.getCountry())) {
+					
+					candidateDTO.setExpectedRateCurrencey("EUR");
+				}
+			}
+			else {
+				
+				if ("India".equals(orgLocations.getCountry())) {
+					
+					candidateDTO.setExpectedRateCurrencey("INR");
+				}
+				else if ("Australia".equals(orgLocations.getCountry())) {
+					
+					candidateDTO.setExpectedRateCurrencey("AUD");
+				}
+				else if ("United States".equals(orgLocations.getCountry())) {
+					
+					candidateDTO.setExpectedRateCurrencey("USD");
+				}
+				else if ("Singapore".equals(orgLocations.getCountry())) {
+					
+					candidateDTO.setExpectedRateCurrencey("SGD");
+				}
+				else if ("United Kingdom".equals(orgLocations.getCountry())) {
+					
+					candidateDTO.setExpectedRateCurrencey("GBP");
+				}
+				else if ("France".equals(orgLocations.getCountry())) {
+					
+					candidateDTO.setExpectedRateCurrencey("EUR");
+				}
+				String countryCheck = orgLocations.getCountry();
+				switch (countryCheck) {
+					case "India":
+						//jsonObj.put("rateType", "Monthly");
+						candidateDTO.setRateType("Monthly");
+						break;
+					default:
+						candidateDTO.setRateType("Hourly");
+				}
+			}
+		}
+		
+		
+		
+		if (null != candidateDTO.getExperienceYears()) {
+			if (candidateDTO.getExperienceYears().matches("[-a-zA-Z]+")) {
+				candidateDTO.setExperienceYears("0");
+				candidateDTO.setExperienceMonths("0");
+			}else{
+				 String exp[] = getExperienceYearsAndMonths(candidateDTO.getExperienceYears());
+				 if(exp.length >1){
+					 candidateDTO.setExperienceYears(exp[0]);
+						if(!exp[1].matches("[a-zA-Z]+")){
+							if(!"years".equalsIgnoreCase(exp[1])){
+							int months = ((Number)NumberFormat.getInstance().parse(exp[1])).intValue();
+							candidateDTO.setExperienceMonths(String.valueOf(months));
+							}
+								
+						} 
+				 }else{
+					 if(exp[0].contains("years") || exp[0].contains("Years") ){
+						 int years = ((Number)NumberFormat.getInstance().parse(exp[0])).intValue();
+						 candidateDTO.setExperienceYears(String.valueOf(years));
+						 candidateDTO.setExperienceMonths("0");
+					 }else{
+						 candidateDTO.setExperienceYears("");
+						 candidateDTO.setExperienceMonths("");
+					 }
+					 
+				 }
+					
+					
+			}
+			
+			
+		}
+		
+		
+		// Vendor and Vendor Contact
+		if(candidateDTO.getVendor() != null && !candidateDTO.getVendor().equals("") && candidateDTO.getVendorcontact() != null && !candidateDTO.getVendorcontact().equals("")) {
+			List<OrgRelations> vendorsList = orgRelationsService.getAllVendorsListByOrgLocationId(orgLocations.getId());
+			Long vendorId = 0l;
+			for(OrgRelations rel : vendorsList) {
+				if((candidateDTO.getVendor().equalsIgnoreCase(rel.getLocationId().getOrgLocationName())) || (candidateDTO.getVendor().equalsIgnoreCase(rel.getResponderLocationId().getOrgLocationName()))) {
+					vendorId = rel.getId();
+				}
+			}
+			if(vendorId > 0) {
+				candidateDTO.setVendors(String.valueOf(vendorId));
+			}
+			
+			List<OrgSpoc> vendorContactsList = orgSpocService.getOrgSpocByOrgRelationId(vendorId);
+			
+			for(OrgSpoc vendorContacts : vendorContactsList) {
+				if(candidateDTO.getVendorcontact().equalsIgnoreCase(vendorContacts.getVendorUser().getEmail())) {
+					candidateDTO.setVendorcontact(String.valueOf(vendorContacts.getId()));
+				}
+			}
+		}
+		
+		Candidate candidate = storeCandidate(candidateDTO, orgLocations, user);
+		
+		if(candidateDTO.getDocFile() != null && !candidateDTO.getDocFile().equals("")) {
+			
+			long time = new Date().getTime();
+			File folder = new File(staticPath+"/"+orgLocations.getOrg().getId()+"/"+orgLocations.getId()+"/resumes/");
+			if (!folder.exists())
+				folder.mkdirs();
+			File file = new File(folder,candidateDTO.getFirstName() + time+".docx");
+			String fileUrl = "/slead-static/"+orgLocations.getOrg().getId()+"/"+orgLocations.getId()+"/resumes/"+file.getName();
+			XWPFDocument document = new XWPFDocument(); 
+			FileOutputStream out = new FileOutputStream(file);
+			XWPFParagraph paragraph = document.createParagraph();
+			XWPFRun run = paragraph.createRun();
+			
+			Scanner scanner = new Scanner(candidateDTO.getDocFile());
+			while (scanner.hasNextLine()) {
+			  String line = scanner.nextLine();
+			  run.setText(line);
+			  run.setFontFamily("verdana");
+			  run.setFontSize(12);
+			  run.addBreak();
+			}
+			
+	        document.write(out);
+	        out.close();
+	        document.close();
+	        scanner.close();
+	        
+	        CandidateResumes resume = new CandidateResumes();
+	        resume.setOrgLocationId(orgLocations);
+	        resume.setCandidateId(candidate);
+	        resume.setFileContentType("application/msword");
+	        resume.setFileName(candidateDTO.getFirstName()+" Resume.doc");
+	        resume.setStatus(Constants.CANDIDATE_ACTIVE);
+	        resume.setCreatedDate(new Date());
+	        resume.setCreatedBy(user.getUserCode());
+	        resume.setUpdatedDate(new Date());
+	        resume.setUpdatedBy(user.getUserCode());
+	        resume.setResumeUUID(SourceLeadRandomCodeHelper.generateRandomUUID());
+	        resume.setTitle(candidateDTO.getFirstName()+" Resume");
+	        resume.setFileURL(fileUrl);
+	        candidateResumesService.updateCandidateResume(resume);
+		}
+	
+		
+	}
+	
+	private String[] getExperienceYearsAndMonths(String experience) {
+	    
+		return experience.split("[\\p{Punct}\\s]+");
+		
+	}
+	
+	private String getExpectedRate(String expectedRate)
+	{
+		
+		String[] Res = expectedRate.split("[\\p{Punct}\\s]+");
+		for (String s : Res) {
+			if (isNumeric(s)) {
+				return s;
+			}
+		}
+		return null;
+	}
+	
+	public static boolean isNumeric(String str)
+	{
+		return str.matches("-?\\d+(\\.\\d+)?");
+	}
+
+	@Override
+	public List<Map<String, BigInteger>> getAllActiveCandidatesByLocationName(Long locationId, String name) {
+		return candidateDao.getAllActiveCandidatesByLocationName(locationId, name);
+	}
+
+	@Override
+	public List<CandidateDTO> getAllActiveCandidatesListByOrglocationId(Long orgLocationId, String employeementType)
+			throws Exception {
+		return candidateDao.getAllActiveCandidatesListByOrglocationId(orgLocationId, employeementType);
 	}
 
 }

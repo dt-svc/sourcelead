@@ -43,7 +43,7 @@ public class InvoiceTaxDaoImpl implements InvoiceTaxDao {
 		
 		Session session = this.sessionFactory.getCurrentSession();
 		String query = "from InvoiceTax tax  where tax.invoice.id = :invoiceId and tax.status = '1' ";
-		List<InvoiceTax> invoiceTaxList = session.createQuery(query.toString()).setLong("invoiceId", invoiceId).setCacheable(true).list();
+		List<InvoiceTax> invoiceTaxList = session.createQuery(query.toString()).setLong("invoiceId", invoiceId).list();
 		return invoiceTaxList;
 	}
 
@@ -57,7 +57,7 @@ public class InvoiceTaxDaoImpl implements InvoiceTaxDao {
 			 
 		String query = "select tax.id from InvoiceTax tax where tax.invoice.id = :invoiceId ";
 		List<Long> taxIdsList =  session.createQuery(query.toString()).setLong("invoiceId", invoiceId)
-									.setCacheable(true).list();
+									.list();
 		
 		return taxIdsList;
 	}
@@ -86,7 +86,7 @@ public class InvoiceTaxDaoImpl implements InvoiceTaxDao {
 	public InvoiceTax getInvoiceTaxById(Long Id) throws Exception {
 		
 		Session session = this.sessionFactory.getCurrentSession();
-		List<InvoiceTax> invoiceTax = session.createQuery("from InvoiceTax tax left join fetch tax.invoice where tax.id =:id" ).setLong( "id", Id ).setCacheable(true).list();
+		List<InvoiceTax> invoiceTax = session.createQuery("from InvoiceTax tax left join fetch tax.invoice where tax.id =:id" ).setLong( "id", Id ).list();
 		if (invoiceTax.size() > 0) {
 			return invoiceTax.get(0);
 		} else {

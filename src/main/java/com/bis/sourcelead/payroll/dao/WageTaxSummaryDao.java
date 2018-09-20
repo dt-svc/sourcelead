@@ -34,4 +34,6 @@ public interface WageTaxSummaryDao {
 
 	WageTaxSummary getEmployeeIdByUserId(User consultantUser)throws Exception;
 
+	ResponseList<WageTaxSummary> getWagesAndTaxByEmpId(OrgLocations orgLocation, WagesTaxSummaryDTO wagesTaxSummaryDTO);
+
 }

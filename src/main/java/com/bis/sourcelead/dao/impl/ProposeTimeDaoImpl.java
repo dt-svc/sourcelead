@@ -81,7 +81,7 @@ public class ProposeTimeDaoImpl implements ProposeTimeDao{
 	public List<ProposeTime> getProposeTimeByInterViewId(Long interviewId) throws Exception {
 		Session session = this.sessionFactory.getCurrentSession();
 		String query = "from ProposeTime proposeTime  where proposeTime.interviewId.id =:interviewId and proposeTime.status = '1' "; 
-		List<ProposeTime> proposeTimeList = session.createQuery(query).setLong("interviewId", interviewId).setCacheable(true).list();
+		List<ProposeTime> proposeTimeList = session.createQuery(query).setLong("interviewId", interviewId).list();
 		return proposeTimeList;
 	}
 }

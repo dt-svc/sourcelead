@@ -17,4 +17,7 @@ public interface JobsPipelineReportDao {
 	
 	Integer requirementListStatusCountByJobIdsAndDates(List<Long> jobIds,Date[] searchDates,String JobStage);
 
+	List<Requirement> requirementListStatusCountByJobIdsAndDates(List<Long> jobIds,Date[] searchDates);
+
+	
 }

@@ -8,6 +8,7 @@
  <%@ taglib uri="http://java.sun.com/jsp/jstl/functions" prefix="fn"%>
  <%@taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
  
+ 
  <c:if test="${staticTime == null || staticTime == 0 }">
     <c:set var='staticTime' value="<%=new java.util.Date().getTime() %>" scope="application"></c:set>
  </c:if>
@@ -22,35 +23,91 @@
 </script>
  
  
-    <section class="clearfix">
-      <div class="content-dashboard clearfix"> 
-      	  <div class="clearfix dashboard-widget mb col-md-12">
-      	    <h4>Associate Requests</h4>
+      <div class="mb col-md-12 clearfix"> 
+      	  <div class=" dashboard-widget col-md-12">
+      	    <h4>Project Requests</h4>
       	    
-      	    <div class="project_side_wrap_inn_tabs">
-      	    <div id="resourceRequestsDivLoading"></div>
-			    <ul class="project-tabs-menu">
-			        <li class="current" id="waiting"><a data-toggle="tab" href="javascript:void(0)" onclick="resourceRequestList('Waiting For Approval')">Waiting (<span id="waitingCount"></span>)</a></li>
-			        <li id="requestApproved"><a data-toggle="tab" href="javascript:void(0)"  onclick="resourceRequestList('Approved')">Approved (<span id="approvedCount"></span>)</a></li>
-			        <li id="requestRejected"><a data-toggle="tab" href="javascript:void(0)" onclick="resourceRequestList('Rejected')">Rejected (<span id="rejectedCount"></span>)</a></li>
-			        <li id="requestOnhold"><a data-toggle="tab" href="javascript:void(0)" onclick="resourceRequestList('On hold')">On hold (<span id="onholdCount"></span>)</a></li>
+      	    <div class="clearfix">
+      	    	<div class="project_side_wrap_inn_tabs">
+      	    		<ul class="project-tabs-menu tabnewStyles">
+      	    		   <sec:authorize access="hasRole('ROLE_RESOURCE_REQUEST_APPROVER')">
+				        <li class="current" id="associateDiv"><a  onclick="resourceRequestList('Waiting For Approval')">Associate</a></li>
+				        <li id="newResourceDiv"><a href="javascript:void(0)"  onclick="newResourceRequestList('Waiting For Approval');">New Resource</a></li>
+				       </sec:authorize> 
+				       <sec:authorize access="hasRole('ROLE_BUDGET_APPROVER')">
+				        <li id="budgetDiv"><a href="javascript:void(0)" onclick="getBudgetRequestList('Waiting For Approval')">Budget</a></li>
+				       </sec:authorize>
 			        <div class="clearfix"></div>
 			    </ul>
+			    <div class="clearfix"></div>
+      	    	</div>
+      	    	<!-- <div id="associateDivInner">Associate</div>
+      	    	<div id="newResourceDivInner">New Resource</div>
+      	    	<div id="budgetDivInner">Budget</div> -->
+      	    
+      	    
+      	    
+      	    
+      	    <div class="project_side_wrap_inn_tabs" id="assocaiteRequestsTabDiv" style="display: block;">
+      	    <div id="resourceRequestsDivLoading"></div>
+			    <ul class="project-tabs-menu tabnewStyles  tabnew-styles">
+			        <li class="activeIcon" id="waiting"><a title="Waiting" onclick="resourceRequestList('Waiting For Approval')"><i class="fa fa-hourglass-start paddingRight"></i> (<span id="waitingCount"></span>)</a></li>
+			        <li id="requestApproved"><a title="Approved"  onclick="resourceRequestList('Approved')"><i class="fa fa-check paddingRight"></i> (<span id="approvedCount"></span>)</a></li>
+			        <li id="requestRejected"><a title="Rejected" onclick="resourceRequestList('Rejected')"><i class="fa fa-times paddingRight"></i> (<span id="rejectedCount"></span>)</a></li>
+			        <li id="requestOnhold"><a title="On-Hold" onclick="resourceRequestList('On hold')"><i class="fa fa-clock-o paddingRight"></i>(<span id="onholdCount"></span>)</a></li>
+			        <div class="clearfix"></div>
+			    </ul>
+			    <div class="clearfix mb10"></div>
 			    <div id="resourceRequestList"></div>
 			    <div class="vendor_wrap_mask"></div>
    				<div id="requestedAssociatesDivLoading"></div>
    				<div id="requestOnHoldReasonDiv"></div>
    				<div id="rejectedReasonDiv"></div>
            </div>
+           
+           <div class="project_side_wrap_inn_tabs" id="newResourceRequestTabDiv" style="display: none;">
+      	    <div id="resourceRequestsDivLoading"></div>
+			    <ul class="project-tabs-menu tabnewStyles tabnew-styles">
+			        <li class="activeIcon" id="newReqWaiting"><a title="Waitig" onclick="newResourceRequestList('Waiting For Approval')"><i class="fa fa-hourglass-start paddingRight"></i>(<span id="newWaitingCount"></span>)</a></li>
+			        <li id="newRequestApproved"><a title="Approved" onclick="newResourceRequestList('Approved')"><i class="fa fa-check paddingRight"></i> (<span id="newApprovedCount"></span>)</a></li>
+			        <li id="newRequestRejected"><a title="Rejected" onclick="newResourceRequestList('Rejected')"><i class="fa fa-times paddingRight"></i> (<span id="newRejectedCount"></span>)</a></li>
+			        <li id="newRequestOnhold"><a title="On-Hold" onclick="newResourceRequestList('On hold')"><i class="fa fa-clock-o paddingRight"></i> (<span id="newOnholdCount"></span>)</a></li>
+			        <div class="clearfix"></div>
+			    </ul>
+			    <div class="clearfix mb10"></div>
+			    <div id="newResourceRequestList"></div>
+			    <div class="vendor_wrap_mask"></div>
+   				<div id="requestedNewAssociatesDivLoading"></div>
+   				<div id="newRequestOnHoldReasonDiv"></div>
+   				<div id="resourceRejectedReasonDiv"></div>
+           </div>
+           
+           <div class="project_side_wrap_inn_tabs" id="budgetTabDiv" style="display: none;">
+      	    <div id="resourceRequestsDivLoading"></div>
+			    <ul class="project-tabs-menu tabnewStyles tabnew-styles">
+			        <li class="activeIcon" id="budgetWaiting"><a title="Waiting" onclick="getBudgetRequestList('Waiting For Approval')"><i class="fa fa-hourglass-start paddingRight"></i> (<span id="budgetWaitingCount"></span>)</a></li>
+			        <li id="budgetApproved"><a title="Approved"  onclick="getBudgetRequestList('Approved')"><i class="fa fa-check paddingRight"></i> (<span id="budgetApprovedCount"></span>)</a></li>
+			        <li id="budgetRejected"><a title="Rejected" onclick="getBudgetRequestList('Rejected')"><i class="fa fa-times paddingRight"></i> (<span id="budgetRejectedCount"></span>)</a></li>
+			        <li id="budgetOnhold"><a title="On-Hold" onclick="getBudgetRequestList('On Hold')"<i class="fa fa-clock-o paddingRight"></i> (<span id="budgetOnholdCount"></span>)</a></li>
+			        <div class="clearfix"></div>
+			    </ul>
+			    <div class="clearfix mb10"></div>
+			    <div id="budgetRequestListDiv"></div>
+			    <div class="vendor_wrap_mask"></div>
+   				<div id="budgetRejectedReasonDiv" ></div>
+   				<div id="budgetOnHoldReasonDiv"></div>
+           </div>
+           
+           </div>
       	  </div>
       </div>
     
- </section>
+ 
+ <jsp:include page="projectPopupDetails.jsp"></jsp:include>	 
  
  <script>
  function getProjectResourceReqestsListCount(){
 	 var sourceleadUrl ='${sourceleadUrl}';
-	 alert
 	 $.ajax({
 	    	type: "GET",
 	        url: sourceleadUrl+"/getProjectResourceRequestsCounts?${_csrf.parameterName}=${_csrf.token}", 
@@ -69,10 +126,16 @@
  
  <script>
 function resourceRequestList(requestType){
+	  $('#newResourceRequestTabDiv').hide();
+	  $('#assocaiteRequestsTabDiv').show();
+	  $("#budgetTabDiv").hide();
+	  $("#associateDiv").addClass("current");
+	  $("#newResourceDiv").removeClass("current");
+	  $("#budgetDiv").removeClass("current");
 	  
 	    var result = "";
 	 	result = result +" <div class='remove_search'>";
-	 	result = result +" <input type='text' placeholder='Search' id='requestAssociatesTableSearch'/>";
+	 	result = result +" <input type='text' placeholder='Associate search' id='requestAssociatesTableSearch'/>";
 	 	result = result +"</div>";
 	 	
 	    result = result +'<div class="clearfix popupFilter mt5">';
@@ -116,37 +179,36 @@ function requestAssociatesDataTableList(requestType){
 	 resourceRequestPagination(url,requestType,sourceleadUrl);
 	 
 	   if(requestType == 'Waiting For Approval'){
-	    	 $("#waiting").addClass("current");
-	    	 $("#requestApproved").removeClass("current");
-	    	 $("#requestRejected").removeClass("current");
-	    	 $("#requestOnhold").removeClass("current");
+	    	 $("#waiting").addClass("activeIcon");
+	    	 $("#requestApproved").removeClass("activeIcon");
+	    	 $("#requestRejected").removeClass("activeIcon");
+	    	 $("#requestOnhold").removeClass("activeIcon");
 	    }
 	   
 	    else if(requestType == 'Approved'){
-	    	 $("#requestApproved").addClass("current");
-	    	 $("#waiting").removeClass("current");
-	    	 $("#requestRejected").removeClass("current");
-	    	 $("#requestOnhold").removeClass("current");
+	    	 $("#requestApproved").addClass("activeIcon");
+	    	 $("#waiting").removeClass("activeIcon");
+	    	 $("#requestRejected").removeClass("activeIcon");
+	    	 $("#requestOnhold").removeClass("activeIcon");
 	    }
 	    
 	    else if(requestType == 'Rejected'){
-	    	 $("#requestRejected").addClass("current");
+	    	 $("#requestRejected").addClass("activeIcon");
 	    	 $("#waiting").removeClass("current");
-	    	 $("#requestApproved").removeClass("current");
-	    	 $("#requestOnhold").removeClass("current");
+	    	 $("#requestApproved").removeClass("activeIcon");
+	    	 $("#requestOnhold").removeClass("activeIcon");
 	    }
 	    
 	    else if(requestType == 'On hold'){
-	    	 $("#requestOnhold").addClass("current");
+	    	 $("#requestOnhold").addClass("activeIcon");
 	    	 $("#waiting").removeClass("current");
-	    	 $("#requestApproved").removeClass("current");
-	    	 $("#requestRejected").removeClass("current");
+	    	 $("#requestApproved").removeClass("activeIcon");
+	    	 $("#requestRejected").removeClass("activeIcon");
 	    	
 	    }
 	    
 }
 </script>
-
 
 <script>
 function resourceRequestPagination(url,requestType,sourceleadUrl){
@@ -184,7 +246,13 @@ function resourceRequestPagination(url,requestType,sourceleadUrl){
 	    	  	"data": "projectName",
 	    	  	"render": function(data, type, opt, meta) {
 	    	  		  var result = "";
-	    	  		  result = result + '<td><div  class="tbldata-dotdot-sm"><a href="'+sourceleadUrl+'/projectSummary?projectUUID='+opt.projectUUID+'&projectClientUUID='+opt.projectClientUUID+'&tabType=resources" title="'+opt.projectName+'">'+opt.projectName+'</a></div></td>';
+	    	  		  if(opt.projectClientUUID != null && opt.projectClientUUID != '' && opt.projectClientUUID != 'undefined'){
+	    	  			result = result + '<td><div  class="tbldata-dotdot-sm"><a href="'+sourceleadUrl+'/projectSummary?projectUUID='+opt.projectUUID+'&projectClientUUID='+opt.projectClientUUID+'&tabType=resources" title="'+opt.projectName+'">'+opt.projectName+'</a></div></td>';
+	    	  		  }else{
+	    	  			result = result + '<td><div  class="tbldata-dotdot-sm"><a href="javascript:void(0)" onclick="#">'+opt.projectName+'</a></div></td>';
+	    	  			/* result = result + '<td><div  class="tbldata-dotdot-sm"><a href="javascript:void(0)" onclick="openProjectDetailsPopup(\''+opt.projectUUID+'\','+opt.requestedOrgLocationId+');">'+opt.projectName+'</a></div></td>'; */
+	    	  		  }
+	    	  		  
 		             return result;
 	    	  	}
 	      },{
@@ -192,7 +260,7 @@ function resourceRequestPagination(url,requestType,sourceleadUrl){
               "data": "candidateName",
               "render": function ( data, type, opt, meta ) {
             	  var result = "";
-            	  result = result + '<td><div  class="tbldata-dotdot-sm"><a href="'+sourceleadUrl+'/candidatesList?candidateUUID='+opt.candidateUUID+'" title="'+opt.candidateName+'">'+opt.candidateName+'</a></div></td>';
+            	  result = result + '<td><div  class="tbldata-dotdot-sm"><a href="'+sourceleadUrl+'/userSummary/'+opt.userCode+'" title="'+opt.candidateName+'">'+opt.candidateName+'</a></div></td>';
 	              return result;
               		
               }
@@ -232,6 +300,7 @@ function resourceRequestPagination(url,requestType,sourceleadUrl){
 			    			
 			    			if(opt.resourceStatus == 'On hold'){
 			    			  result = result +"<i class='glyphicon glyphicon-comment edit-reason'><div class='edit-status'><p>"+opt.rejectedReason+"</p></div></i>&nbsp;|&nbsp;";
+			    			  result = result+" <br><span class='rejNam' title='"+opt.approvedUser+"'>By : "+opt.approvedUser+"</span>";
 			    			}
 			    			result = result + '<a href="javascript:void(0)" onclick="acceptAssociate(\''+opt.requestUUID+'\',\''+requestType+'\');"><i class="fa fa-check text-success" alt="Approve" title="Approve"></i></a>&nbsp;|&nbsp;';
 				    		result = result + '<a href="javascript:void(0)" onclick="rejectAssociate(\''+opt.requestUUID+'\',\''+opt.candidateName+'\');"><i class="fa fa-times text-danger" alt="Reject" title="Reject"></i></a>';
@@ -242,10 +311,14 @@ function resourceRequestPagination(url,requestType,sourceleadUrl){
 				    		
 			    		}else{
 			    			if(opt.resourceStatus == 'Rejected'){
+			    				result = result + '<a href="javascript:void(0)" onclick="acceptAssociate(\''+opt.requestUUID+'\',\''+requestType+'\');"><i class="fa fa-check text-success" alt="Approve" title="Approve"></i></a>&nbsp;|&nbsp;';
+			    				result = result + '<a href="javascript:void(0)" onclick="onholdAssociateRequest(\''+opt.requestUUID+'\',\''+opt.requestedUser+'\',\''+requestType+'\');"><i class="fa fa-clock-o text-primary" alt="On hold" title="On hold"></i></a>&nbsp;|&nbsp;';
 			    				result = result +"<i class='glyphicon glyphicon-comment edit-reason'><div class='edit-status'><p>"+opt.rejectedReason+"</p></div></i>";
 			    				result = result + '<b class="bg-red">'+opt.resourceStatus+'</b>';
+			    				result = result+" <br><span class='rejNam' title='"+opt.approvedUser+"'>By : "+opt.approvedUser+"</span>";
 			    			}else{
-			    				result = result + '<b>'+opt.resourceStatus+'</b>';
+			    				result = result + '<b class="bg-green">'+opt.resourceStatus+'</b>';
+			    				result = result+" <br><span class='rejNam' title='"+opt.approvedUser+"'>By : "+opt.approvedUser+"</span>";
 			    			}
 			    			
 			    		}
@@ -301,7 +374,7 @@ function acceptAssociate(requestUUID,requestType){
 
 <script>
 function rejectAssociate(requestUUID,candidateName){
-	
+	$("#requestOnHoldReasonDiv").empty();
 	var result = "";
 	result = result + '	<div class="settPop">';
 	result = result + '	<div id="loading"></div>';
@@ -350,6 +423,7 @@ function cancelRejectedReason(){
 function cancelRequestOnholdReason(){
 	$(".settPop").slideUp(200);
 	$(".vendor_wrap_mask").fadeOut(200);
+	$("#requestOnHoldReasonDiv").empty();
 }
 </script>
 

@@ -22,7 +22,7 @@ function customizeFields(templateId,sourceleadUrl){
     	var result = "";
     	result = result +"<div class='project_inn_mask'></div>";
     	result = result +"<div id='remove_user_pop' class='remove_user_pop remove_user_pop_a'>";
-    	result = result +"<p>Are you sure ?</p>";
+    	result = result +"<p>Are you sure you want to delete?</p>";
     	result = result +"<div>&nbsp;&nbsp;&nbsp;</div>";
     	result = result +"<b href='javascript:void(0)'><input type='button' id='deleteCustomField'  value='Ok' /><input class='u_can_color' type='button' id='cancelDelete' value='Cancel'></b>";
     	result = result +"</div>";
@@ -118,7 +118,7 @@ function addField(fieldType,value,labelValue,labelName,sourceleadUrl,templateId,
             fieldName = "Radio Button";
             break;
         case 'checkbox':
-            hasRequired = false;
+            hasRequired = true;
             hasChoices = true;
             fieldName = "Check Box";
             break;
@@ -256,10 +256,10 @@ function addChoice(labelValue) {
         '</label>' +
         
         
-        '<label class="col-md-2 lblClass"><div class="col-md-9 choice-padLeft lblHeight"> Selected? </div> ' +
+       /* '<label class="col-md-2 lblClass"><div class="col-md-9 choice-padLeft lblHeight"> Selected? </div> ' +
         '<div class="col-md-3 choicePadLeft lblHeight"> ' +
         '<input class="toggle-selected" type="checkbox">' +
-        '</div>' +
+        '</div>' +*/
         
         '</label>' +
         '<button type="button" class="delete pull-left choicebtn-delete"><i class="fa fa-times text-danger"></i></button>' +

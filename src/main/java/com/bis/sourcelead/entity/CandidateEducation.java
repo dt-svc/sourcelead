@@ -7,6 +7,7 @@ import java.util.List;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -15,10 +16,7 @@ import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import javax.persistence.Transient;
 
-import org.hibernate.annotations.Cache;
-import org.hibernate.annotations.CacheConcurrencyStrategy;
-import org.hibernate.annotations.NotFound;
-import org.hibernate.annotations.NotFoundAction;
+import com.fasterxml.jackson.annotation.JsonProperty;
 
 /**
  * @author Shivayogi
@@ -26,7 +24,6 @@ import org.hibernate.annotations.NotFoundAction;
  */
 @Entity
 @Table(name = "CANDIDATE_EDUCATION")
-@Cache(usage = CacheConcurrencyStrategy.TRANSACTIONAL, region = "candidateEducation")
 public class CandidateEducation implements Serializable{
 	
 	private static final long serialVersionUID = 1L;
@@ -36,13 +33,13 @@ public class CandidateEducation implements Serializable{
 	@Column(name = "ID", nullable = false)
 	private Long id;
 	
-	@NotFound(action=NotFoundAction.IGNORE)
-	@ManyToOne
+	
+	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "ORG_LOCATION_ID", nullable = false)
 	private OrgLocations orglocationId;
 
-	@NotFound(action=NotFoundAction.IGNORE)
-	@ManyToOne
+	
+	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "CANDIDATE_ID", nullable = false)
 	private Candidate candidateId;
 
@@ -70,6 +67,19 @@ public class CandidateEducation implements Serializable{
 	@Column(name = "ADDRESS")
 	private String address;
 	
+	// immigration related files purpose start
+	
+	@Column(name = "EDUCATION_FILE_CONTENT_TYPE")
+	private String educationFileContentType;
+	
+	@Column(name = "EDUCATION_FILE_URL",columnDefinition = "TEXT default NULL")
+	private String educationFileUrl;
+	
+	@Column(name = "EDUCATION_FILE_NAME")
+	private String educationFileName;
+	
+	// immigration related files purpose end
+	
 	@Column(name = "CREATED_DATE")
 	private Date createdDate;
 	
@@ -89,12 +99,14 @@ public class CandidateEducation implements Serializable{
     private long candidateEduId;
 	
 	@Transient
+	@JsonProperty
     private String startDateStr;
 	
 	@Transient
 	private String msg;
 	
 	@Transient
+	@JsonProperty
 	private String endDateStr;
 	
 	@Transient
@@ -278,6 +290,31 @@ public class CandidateEducation implements Serializable{
 	public void setAllAndCandidateEducations(LinkedHashSet<String> allAndCandidateEducations) {
 		this.allAndCandidateEducations = allAndCandidateEducations;
 	}
+
+	public String getEducationFileContentType() {
+		return educationFileContentType;
+	}
+
+	public void setEducationFileContentType(String educationFileContentType) {
+		this.educationFileContentType = educationFileContentType;
+	}
+
+	public String getEducationFileUrl() {
+		return educationFileUrl;
+	}
+
+	public void setEducationFileUrl(String educationFileUrl) {
+		this.educationFileUrl = educationFileUrl;
+	}
+
+	public String getEducationFileName() {
+		return educationFileName;
+	}
+
+	public void setEducationFileName(String educationFileName) {
+		this.educationFileName = educationFileName;
+	}
+	
 	
 	
 }

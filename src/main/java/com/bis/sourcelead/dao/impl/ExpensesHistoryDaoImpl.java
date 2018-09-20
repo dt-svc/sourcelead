@@ -60,7 +60,7 @@ public class ExpensesHistoryDaoImpl implements ExpensesHistoryDao {
 		
 		Session session = this.sessionFactory.getCurrentSession();
 		String query = "from ExpensesHistory eh where eh.id =:expensesHistoryId";
-		List<ExpensesHistory> expensesHistoryList = session.createQuery(query).setLong("expensesHistoryId", expensesHistoryId).setCacheable(true).list();
+		List<ExpensesHistory> expensesHistoryList = session.createQuery(query).setLong("expensesHistoryId", expensesHistoryId).list();
 		
 		ExpensesHistory expensesHistory = null;
 		if(expensesHistoryList != null && !expensesHistoryList.isEmpty())
@@ -77,7 +77,7 @@ public class ExpensesHistoryDaoImpl implements ExpensesHistoryDao {
 		Session session = this.sessionFactory.getCurrentSession();
 		List<ExpensesHistory> expensesHistoryList = null;
 		Query expHistoryListQuery= session.createQuery("from ExpensesHistory eh where eh.id = :expensesHistoryId ORDER BY eh.id DESC ");
-		expensesHistoryList = expHistoryListQuery.setLong("expensesHistoryId", expensesHistoryId).setCacheable(true).list();
+		expensesHistoryList = expHistoryListQuery.setLong("expensesHistoryId", expensesHistoryId).list();
 		return expensesHistoryList;
 	}
 	

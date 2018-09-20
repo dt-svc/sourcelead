@@ -6,6 +6,7 @@ import java.util.Date;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -14,16 +15,10 @@ import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import javax.persistence.Transient;
 
-import org.hibernate.annotations.Cache;
-import org.hibernate.annotations.CacheConcurrencyStrategy;
-import org.hibernate.annotations.NotFound;
-import org.hibernate.annotations.NotFoundAction;
-
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 @Entity
 @Table(name = "TASKS")
-@Cache(usage = CacheConcurrencyStrategy.TRANSACTIONAL,region="tasks")
 public class Tasks implements Serializable{
 	
 	private static final long serialVersionUID = 1L;
@@ -33,39 +28,43 @@ public class Tasks implements Serializable{
     @Column(name = "ID", nullable = false)
     private Long id;
 	
-	@NotFound(action=NotFoundAction.IGNORE)
-	@ManyToOne
+	
+	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "OWNER_ORGLOCATION_ID")
    	private OrgLocations ownerOrglocationId;
 	
-	@NotFound(action=NotFoundAction.IGNORE)
-	@ManyToOne
+	
+	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "ASSIGNED_ORGLOCATION_ID")
    	private OrgLocations assignedOrglocationId;
 	
-	@NotFound(action=NotFoundAction.IGNORE)
-	@ManyToOne
+	
+	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "TASK_OWNER_ID")
    	private User taskOwnerId;
 	
-	@NotFound(action=NotFoundAction.IGNORE)
-	@ManyToOne
+	
+	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "ASSIGNED_USER_ID")
    	private User assignedUserId;
 	
-	@NotFound(action=NotFoundAction.IGNORE)
-	@ManyToOne
+	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name = "IMMIGRATION_ID")
+   	private Immigration immigrationId;
+	
+	
+	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "CANDIDATE_ON_BOARDING_ID")
    	private CandidateOnBoarding onboardingId;
 	
-	@NotFound(action=NotFoundAction.IGNORE)
-	@ManyToOne
+	
+	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "CANDIDATE_OFF_BOARDING_ID")
    	private CandidateOffBoarding offboardingId;
 	
 	
-	@NotFound(action=NotFoundAction.IGNORE)
-	@ManyToOne
+	
+	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "VENDOR_ON_BOARDING_ID")
    	private VendorOnboarding vendorOnboardingId;
 	
@@ -333,5 +332,14 @@ public class Tasks implements Serializable{
 	public void setVendorTaskDateStr(String vendorTaskDateStr) {
 		this.vendorTaskDateStr = vendorTaskDateStr;
 	}
+
+	public Immigration getImmigrationId() {
+		return immigrationId;
+	}
+
+	public void setImmigrationId(Immigration immigrationId) {
+		this.immigrationId = immigrationId;
+	}
+	
 }
 

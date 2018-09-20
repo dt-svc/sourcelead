@@ -22,4 +22,6 @@ public interface RequirementOffersDao {
 	RequirementOffers getRequirementOffersByUUID(String offerUUId) throws Exception;
 
 	List<RequirementOffers> getOfferAcceptedVendorCandidatesByOrgLocationId(Long locationId);
+	
+	RequirementOffers getOnboardRequirementOfferId(Long offerId)throws Exception;
 }

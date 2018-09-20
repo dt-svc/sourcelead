@@ -20,7 +20,6 @@ import org.hibernate.annotations.NotFoundAction;
 
 	@Entity
 	@Table(name = "INTERVIEW_REMAINDER")
-	@Cache(usage = CacheConcurrencyStrategy.TRANSACTIONAL, region = "interviewRemainder")
 	public class InterviewRemainder implements Serializable{
 
 	private static final long serialVersionUID = 1L;
@@ -30,13 +29,13 @@ import org.hibernate.annotations.NotFoundAction;
     @Column(name = "ID", nullable = false)
 	private Long id;
 	
-	@NotFound(action=NotFoundAction.IGNORE)
-	@ManyToOne(fetch = FetchType.EAGER)
+	
+	@ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name="INTERVIEW_ID", nullable=false )        
     private RequirementInterview requirementInterview;
 	
-	@NotFound(action=NotFoundAction.IGNORE)
-	@ManyToOne(fetch = FetchType.EAGER)
+	
+	@ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name="NOTIFIED_TO", nullable=false )        
     private User user;
 	

@@ -201,7 +201,7 @@ width: 8%;
 			var result = "";
      		result = result +"	<div class='project_inn_mask'></div>";
      		result = result +"	   <div id='invoice_pop' class='remove_user_pop remove_user_pop_a'>";
-     		result = result +"		<p>Only can Add 5 Rows</p>";
+     		result = result +"		<p>Only you can add 5 Rows</p>";
      		result = result +"		<div>&nbsp;&nbsp;&nbsp;</div>";
      		result = result +"		<b href='javascript:void(0)'><input type='button' value='Ok' onclick='cancel();'><input class='u_can_color' type='button'  value='Cancel' onClick='cancel();'></b>";
      		result = result +"	</div>";
@@ -316,7 +316,8 @@ function cancel(){
  <script>
 function saveProposeTime(){
 	if ($('#proposeTime_form').validate(false, validationSettings)){ 
-		var sourceleadUrl = '${sourceleadUrl}';
+		var sourceleadUrl ='${sourceleadUrl}';
+		sourceleadUrl = sourceleadUrl.split("/app")[0];
 		var frm = $('#proposeTime_form').serializeFormJSON();
 		var con = JSON.stringify(frm);
 		con = con.replace(/[{}]/g, ""); 

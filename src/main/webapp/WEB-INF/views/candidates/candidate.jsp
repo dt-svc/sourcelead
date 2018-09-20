@@ -17,6 +17,21 @@
 			document.getElementById("candidate_form").reset();
 		});
 	</script>
+	
+	 <script type="text/javascript">
+	function genderCheckValidation(id){
+		 var gendersList = [];
+ 		 $("input[name='gender']:checked").each( function (i) {
+ 			gendersList[i] = $(this).val();
+ 		});
+ 		 
+		if (gendersList.length > 0) { 
+		document.getElementById("genderValue").value = id.value;
+		}else{
+			$('#genderValue').val(''); 
+		}
+	} 
+</script>
 
 <!-- Content Area -->
 <section class="content-wraper">
@@ -29,7 +44,7 @@
      </c:if>
       
       <c:if test="${SourceLeadWeb_loginUserRole == 'ROLE_CROWDSOURCING_RECRUITER'}">
-    	<div class="pull-right brud-crum"><a href="<c:url value='/recruiterDashboard'/>">Home</a>&raquo;<a href="<c:url value='/app/candidatesList'/>"> Candidate List</a> &raquo; Import Candidate</div>
+    	<div class="pull-right brud-crum"><a href="<c:url value='${appPath}/recruiterDashboard/${SourceLeadWeb_orgLocationId}/${SourceLeadWeb_displayName}'/>">Home</a>&raquo;<a href="<c:url value='/app/candidatesList'/>"> Candidate List</a> &raquo; Import Candidate</div>
      </c:if>
   </section>
   <div class="content-area content-new clearfix">
@@ -48,7 +63,7 @@
            </label>
             
              <input type="text" class="form-control" readonly id="uploadFile" name="docFile" type="file"  name="" placeholder="Upload Resume ..." field-name="Upload Resume" data-validation="required validate_Space validatedoc " >
-             
+             <div class="clearUpload"></div>
          </div>
           </div>
         </div>
@@ -76,6 +91,17 @@
             <!-- /input-group --> 
           </div>
         </div>
+        
+        <div class="form-group">
+						<label class="col-md-3">Middle Name</label>
+						<div class="col-md-9">
+							<input type="text" class="form-control" id="middleName"
+								name="middleName" value="" field-name="Middle Name"
+								data-validation="validate_AlphaNumber validate_length length1-100"
+								data-validation-optional="true" value="">
+						</div>
+					</div>
+					
         <div class="form-group">
           <label class="col-md-3">Last Name</label>
           <div class="col-md-9">
@@ -85,8 +111,17 @@
         <div class="form-group" id="emailDiv">
           <label class="col-md-3">Email<span class="text-danger">&nbsp;*</span></label>
           <div class="col-md-9">
-            <input type="text" class="form-control" id="email" name="email" value="${email}"  field-name="Email" data-validation="required validate_Space validate_length length2-100 validate_email" onblur="validateCandidateEmail();" onmouseout="validateCandidateEmail();" value="">
-          <span class="hidden">Valid Email</span>
+          <div class="input-group errorInptgroup">
+                  <input type="text" class="form-control" id="email" name="email"
+					value="${email}" field-name="Email"
+					data-validation="required validate_length length2-100 validate_email"
+					onblur="validateCandidateEmail();"
+					 value=""> <span
+					class="hidden">Valid Email</span>
+                  <span id="emailStatusIconDiv" class="input-group-addon">
+                  	<i class="fa fa-check text-muted" style="color:#f6f6f6"></i>
+                	</span>
+                </div>
           </div>
         </div>
 						
@@ -108,7 +143,7 @@
           <label class="col-md-3">Address<span class="text-danger">&nbsp;*</span></label>
           <div class="col-md-9" id="locationField">
           <div class="positionRelative">
-          <input class="form-control positionRelative" id="candidateLocation" name="location" placeholder="Enter your address" type="text" field-name="Address" data-validation="required"></input>
+          <input class="form-control positionRelative" id="candidateLocation" name="location" placeholder="Enter address" type="text" field-name="Address" data-validation="required"></input>
           <i class="fa fa-refresh btn btn-primary refresh-icon" title="Refresh" onClick="refreshGoogleApiLocation('candidateLocation','candidateCountry','candidateState','candidateCity','candidateZipCode','address');"></i>
           </div>
           </div>
@@ -117,21 +152,21 @@
 		<div class="form-group">
           <label class="col-md-3">Street Address</label>
           <div class="col-md-9">
-           <input type="text" class="form-control" id="address" name="address" value="${address}"  field-name="Street Address" placeholder="Enter your Street Addres" data-validation="validate_Space validate_length length2-250" data-validation-optional="true">
+           <input type="text" class="form-control" id="address" name="address" value="${address}"  field-name="Street Address" placeholder="Enter Street Addres" data-validation="validate_Space validate_length length2-250" data-validation-optional="true">
           </div>
         </div>
         
         <div class="form-group">
           <label class="col-md-3">City</label>
           <div class="col-md-9">
-          <input class="form-control" id="candidateCity" name="city" placeholder="Enter your City" type="text" ></input>
+          <input class="form-control" id="candidateCity" name="city" placeholder="Enter City" type="text" ></input>
           </div>
         </div>
         
         <div class="form-group">
           <label class="col-md-3">State</label>
           <div class="col-md-9">
-          <input class="form-control" id="candidateState" name="state" placeholder="Enter your State" type="text" ></input>
+          <input class="form-control" id="candidateState" name="state" placeholder="Enter State" type="text" ></input>
           </div>
         </div>
         
@@ -145,9 +180,38 @@
         <div class="form-group">
           <label class="col-md-3">ZipCode</label>
           <div class="col-md-9">
-          <input class="form-control" id="candidateZipCode" name="zipcode" placeholder="Enter your Zip code" type="text"></input>
+          <input class="form-control" id="candidateZipCode" name="zipcode" placeholder="Enter Zip code" type="text"></input>
           </div>
         </div>
+        
+        <div class="form-group">
+                      <label class="col-md-3">Date of Birth</label>
+                         <div class="col-md-9">
+                           <div class="input-group">
+                              <input type="text" value="" name="dateofBirth" class="form-control calendar" id="dateofBirth" readonly="readonly">
+                              <span class="input-group-addon" onClick="clearDateOfBirth();"><i class="colorRed fa fa-times cursorPointer"></i></span>
+                           </div>
+                        </div>
+                  </div>
+					
+					<div class="form-group">
+						<label class="col-md-3">Marital Status</label>
+						<label class="paddingRight"><input type="radio"  value="Single" name="maritalStatus"><span class="mr5"></span>Single</label>
+						<label class="paddingLeft paddingRight"><input type="radio"  value="Married" name="maritalStatus"><span class="mr5"></span>Married</label>
+						<label class="paddingRight"><input type="radio"  value="Divorsed" name="maritalStatus"><span class="mr5"></span>Divorsed</label>
+						<label class="paddingLeft paddingRight"><input type="radio"  value="Separated" name="maritalStatus"><span class="mr5"></span>Separated</label>
+				
+					</div>
+					
+					<div class="form-group">
+						<label class="col-md-3">Gender<span class="text-danger">&nbsp;*</span></label>
+						<div class="col-md-9" id= "errorGenderMsg">
+						<label class="paddingRight"><input type="radio"  value="Male" name="gender" onblur="genderCheckValidation(this)"><span class="mr5"></span>Male</label>
+						<label class="paddingLeft paddingRight"><input type="radio"  value="Female" name="gender" onblur="genderCheckValidation(this)"><span class="mr5"></span>Female</label>
+						<label class="paddingRight"><input type="radio"  value="Transgender" name="gender" onblur="genderCheckValidation(this)"><span class="mr5"></span>Transgender</label>
+						<input type="hidden"  id="genderValue" name="genderValue"  field-name="Gender" data-validation="required"/> 		
+						</div>
+					</div>
         
 		
 		<div class="form-group hidden">
@@ -225,10 +289,10 @@
        <c:if test="${SourceLeadWeb_userType != 'Recruiter'}">
        <div class="clearfix" id="hideVendor" style="display:none">
        <div class="form-group">
-			<label class="col-md-3" ><span class="pull-left">Vendor</span><span class="text-danger pull-left" id="man1">*</span></label>
+			<label class="col-md-3" ><span class="pull-left">Vendor</span></label>
 			<div class="col-md-9 chooRadius" id="errorvendor">
 			     <div class="input-group col-md-10 pull-left chooRadius">
-			     <select  class="chosen-select form-control" name="vendors" id="vendors" placeholder="Select Vendor" field-name="Vendor" onchange="getVendorContactList();removeValiationVendor();" >
+			     <select  class="chosen-select form-control" name="vendors" id="vendors" data-validation-optional="true" placeholder="Select Vendor" field-name="Vendor" onchange="getVendorContactList();removeValiationVendor();" >
                  </select>
             	 <span class="input-group-addon cursorPointer bg-blue" onclick="getVendorsByOrgLocation();candidateEmptyVendorContact();"><i class="fa fa-refresh "></i></span>
                </div>  
@@ -242,10 +306,10 @@
 		</div>
 		
 		 <div class="form-group">
-			<label class="col-md-3" ><span class="pull-left">Vendor Contact</span><span class="text-danger pull-left" id="man2">*</span></label>
+			<label class="col-md-3" ><span class="pull-left">Vendor Contact</span></label>
 			<div class="col-md-9 chooRadius" id="errorvendorContact">
 			<div class="input-group col-md-10 pull-left chooRadius">
-			     <select  class="chosen-select form-control" name="vendorcontact" id="vendorcontact" field-name="Vendor Contact"  placeholder="Select Vendor Contact" onchange="removeValiationVendorContact();">
+			     <select  class="chosen-select form-control" name="vendorcontact" data-validation-optional="true" id="vendorcontact" field-name="Vendor Contact"  placeholder="Select Vendor Contact" onchange="removeValiationVendorContact();">
                  </select>
                 <span class="input-group-addon cursorPointer bg-blue" onclick="getVendorContactList();"><i class="fa fa-refresh "></i></span>
                  
@@ -493,7 +557,22 @@
 			    	     contentType:false,
 			        	    	url : sourceleadUrl+"/storeCandidate?"+tokenParamName+"="+tokenValue,
 						        success : function(result) {
-									location.replace(sourceleadUrl+"/candidatesList");
+						        	
+						        	if (result.response === "AWKWARD") {
+						        	    location.href = "/errorPage";
+						        	} else if (result.response === "SUCCESS") {
+						        		if(result.object === "DataMissing") {
+											$("#store_candidate").removeAttr("disabled");
+											$("#store_candidate").removeAttr('button').val('Save');	
+											showError("Invalid data");
+										}else{
+											location.replace(sourceleadUrl+"/candidatesList");	
+										}
+						        	} else if (result.indexOf('Sign In') !== -1) {
+						        		location.replace(sourceleadUrl);
+						        	} else {
+						        	    showError("Operation failed, please try again");
+						        	}
 						},
 				});
 			return true;
@@ -559,53 +638,65 @@ function validate_fileupload(fileName)
 
 <!-- Eductions and Skills Autocomplete Scripts Starts Here -->
 <script type="text/javascript">
-		    
-		    $("#candidateSkills").chosen().change(function(event) {
-		    	var allSkills = $(event.target).val();
-		    	
-		    	$.ajax({
-			    	type: "POST",
-			        url: sourceleadUrl+"/profileBySkillSet?"+tokenParamName+"="+tokenValue+"&allSkills="+allSkills, 
-			        success: function(data) {
-			        	var primarySkill = data;
-			        	      $("#primarySkill").val(primarySkill);
-			        	
-			        },
-			    });
-		    	
-		    });
-		    
-			$("#candidateSkills").val('').trigger("chosen:updated");
-	       $("#candidateEducation").val('').trigger("chosen:updated");
-				
-				
+    $("#candidateSkills").chosen().change(function(event) {
+    	var allSkills = $(event.target).val();
+	   	$.ajax({
+	    	type: "POST",
+	        url: sourceleadUrl+"/profileBySkillSet?"+tokenParamName+"="+tokenValue+"&allSkills="+allSkills, 
+	        success: function(response) {
+	        	if (response.response === "AWKWARD") {
+	        	    location.href = "/errorPage";
+	        	} else if (response.response === "SUCCESS") {
+	        		var primarySkill = response.object;
+		        	$("#primarySkill").val(primarySkill);			        		
+	        	} else if (response.indexOf('Sign In') !== -1) {
+	        		location.replace(sourceleadUrl);
+	        	} else {
+	        	    showError("Operation failed, please try again");
+	        	}
+	        },
+	    });
+    });
+	$("#candidateSkills").val('').trigger("chosen:updated");
+	$("#candidateEducation").val('').trigger("chosen:updated");
 </script> 
  
-  
 <script type="text/javascript">
  function validateCandidateEmail() {
-	 var email = document.getElementById("email").value; 
+	 var email = document.getElementById("email").value;
+	 email = email.trim();
 	 $('#emailDiv').find('p.jquery_form_error_message').remove();
 	 if(email != null && email != ""){
 		
 		 $.ajax({
 		    	type: "POST",
 		        url: sourceleadUrl+"/validateCandidateEmail?"+tokenParamName+"="+tokenValue+"&email="+email+"&candidateType=Candidate", 
-		        success: function(data) {
-		        	if(data == 'true'){
-		        		  $('#emailDiv').find('p.jquery_form_error_message').remove();
-						  $("input#email").after("<p class='jquery_form_error_message'>"+email+" is Already Existed</span>");
-						  document.getElementById("email").setAttribute('record-exist','yes');
-						  document.getElementById("email").setAttribute('record-exist-errorMsg',email+' is Already Existed'); 
-		        	}
-		        	else{
-		        		 $('input#email').removeAttr( "record-exist record-exist-errormsg");
-		        		 $('#emailDiv').find('p.jquery_form_error_message').remove(); 
-		        		 $("#store_candidate" ).addClass('button').val('Save');
-                         $("#store_candidate").removeAttr("disabled");
+		        success: function(response) {
+		        	if (response.response === "AWKWARD") {
+		        	    location.href = "/errorPage";
+		        	} else if (response.response === "SUCCESS") {
+		        		if(response.object == 'true'){
+			        		  $('#emailDiv').find('p.jquery_form_error_message').remove();
+							  $("input#email").after("<p class='jquery_form_error_message'>"+email+" is Already Existed</span>");
+							  document.getElementById("email").setAttribute('record-exist','yes');
+							  document.getElementById("email").setAttribute('record-exist-errorMsg',email+' is Already Existed'); 
+			        	} else {
+			        		 $('input#email').removeAttr( "record-exist record-exist-errormsg");
+			        		 $('#emailDiv').find('p.jquery_form_error_message').remove(); 
+			        		 $("#store_candidate" ).addClass('button').val('Save');
+	                         $("#store_candidate").removeAttr("disabled");
+	                         validateEmailForExistenceUniversally(email, "input#email");
+			        	}
+		        	} else if (response.indexOf('Sign In') !== -1) {
+		        		location.replace(sourceleadUrl);
+		        	} else {
+		        	    showError("Operation failed, please try again");
 		        	}
 		        },
 		    });
+	 }else{
+		 $("#emailStatusIconDiv").find("i").remove();
+   		 $("#emailStatusIconDiv").append('<i class="fa fa-check text-muted" style="color:#f6f6f6"></i>');
 	 }
  }
  </script>     
@@ -658,31 +749,17 @@ function getDesignationType(designationType){
 	
 	if(designationType.value == 'C2C'){
 		 document.getElementById("hideVendor").style.display="block";
-		 $('#vendors').attr("data-validation","required"); 
-		 $('#vendorcontact').attr("data-validation","required"); 
-		 document.getElementById("man1").style.display="block";
-		 document.getElementById("man2").style.display="block";
 		  getVendorsByOrgLocation();
 	}else{
 		 document.getElementById("hideVendor").style.display="none";
-		 $('#vendors').removeAttr("data-validation","required"); 
-		 $('#vendorcontact').removeAttr("data-validation","required"); 
 	}
 	
 	if(designationType.value == 'C2C-1099'){
 		 document.getElementById("hideVendor").style.display="block";
-		 document.getElementById("man1").style.display="none";
-		 document.getElementById("man2").style.display="none";
-		 $('#vendors').attr("data-validation-optional", "true"); 
-		 $('#vendorcontact').attr("data-validation-optional", "true");  
 		 $("#errorvendor").find("p.jquery_form_error_message").remove();
 			$("#errorvendorContact").find("p.jquery_form_error_message").remove();
 		  getVendorsByOrgLocation();
-	}else{
-		// document.getElementById("hideVendor").style.display="none";
-		 $('#vendors').removeAttr("data-validation-optional", "true"); 
-		 $('#vendorcontact').removeAttr("data-validation-optional", "true");  
-	} 
+	}
 	
 	
 	
@@ -695,32 +772,28 @@ function getDesignationType(designationType){
 
 function rateValidations(){
 var rateType = document.getElementById("rateType").value; 
-if(rateType != null && rateType != ""){
-	 $('#expectedRate').removeAttr('data-validation-optional');
-	 $('#expectedRate').attr("data-validation","required"); 
-}else{
-	 $('#expectedRate').removeAttr('data-validation');
-	 $('#expectedRate').attr("data-validation-optional","true");
-	 $('#rateType').removeAttr('data-validation');
-	 $('#rateType').attr("data-validation-optional","true"); 
-} 
+	if(rateType != null && rateType != ""){
+		 $('#expectedRate').removeAttr('data-validation-optional');
+		 $('#expectedRate').attr("data-validation","required validate_Space validate_int validate_length length1-8"); 
+	}else{
+		 $('#expectedRate').removeAttr('data-validation');
+		 $('#expectedRate').attr("data-validation-optional","true");
+	} 
 
 var expectedRate = document.getElementById("expectedRate").value; 
-if(expectedRate != null && expectedRate != ""){
-	
-	 $('#rateType').removeAttr('data-validation-optional');
-	 $('#rateType').attr("data-validation","required"); 
-}else{
-$('#rateType').removeAttr('data-validation');
-$('#rateType').attr("data-validation-optional","true"); 
-}
-
-
+    if(expectedRate != null && expectedRate != ""){
+		 $('#rateType').removeAttr('data-validation-optional');
+		 $('#rateType').attr("data-validation", "required");
+	     $('#expectedRate').attr("data-validation", "required validate_Space validate_int validate_length length1-8");
+	}else{
+		$('#rateType').removeAttr('data-validation');
+		$('#rateType').attr("data-validation-optional","true"); 
+	}
 
 var currentRateType = document.getElementById("currentRateType").value; 
 	if(currentRateType != null && currentRateType != ""){
 		$('#currentRate').removeAttr('data-validation-optional');
-		$('#currentRate').attr("data-validation","required"); 
+		$('#currentRate').attr("data-validation","required validate_Space validate_int validate_length length1-8"); 
 	}else{
 		$('#currentRate').removeAttr('data-validation');
 	 	$('#currentRate').attr("data-validation-optional","true"); 
@@ -731,15 +804,12 @@ var currentRateType = document.getElementById("currentRateType").value;
 
 var currentRate = document.getElementById("currentRate").value; 
 	 if(currentRate != null && currentRate != ""){
-		
 		 $('#currentRateType').removeAttr('data-validation-optional');
-		 $('#currentRateType').attr("data-validation","required"); 
-		 
+		 $('#currentRateType').attr("data-validation", "required");
+		 $('#currentRate').attr("data-validation","required validate_Space validate_int validate_length length1-8"); 
 	 }else{
-		 
-			 $('#currentRateType').removeAttr('data-validation');
-			 $('#currentRateType').attr("data-validation-optional","true"); 
-	 
+		 $('#currentRateType').removeAttr('data-validation');
+		 $('#currentRateType').attr("data-validation-optional","true"); 
 	 }
 	 
 }
@@ -813,6 +883,28 @@ function  removeValiationVendorContact() {
  });
  </script>
  <script>
+  $( function() {
+	  var locationDate ='${SourceLeadWeb_orgLocations.dateFormat}'; 
+	  // written common method in slead-common.js for date formats start
+	  var finalDateFormat = getJSDateFormat(locationDate);
+	  //end
+	  $('#dateofBirth').datepicker({
+	      dateFormat: finalDateFormat,
+	      changeMonth: true,
+	  	  changeYear: true, 
+	  	  yearRange: "-100:+0",
+	  	  maxDate:0
+	      //minDate: 0  this line for to restrict selection of previous dates
+	  });
+	  
+  } );
+  
+  function clearDateOfBirth(){
+		$("#dateofBirth").val("");
+		};
+		
+</script>
+ <script>
 function candidateEmptyVendorContact(){
 	$("#vendorcontact").empty();
 	 $('#vendorcontact').append('<option value="">--select Vendor contact--</option>');
@@ -825,6 +917,36 @@ function candidateEmptyVendorContact(){
 		 window.open(sourceleadUrl+"/addVendorContact?vid="+vid,'_blank');
 	 }
 	 </script>
+	 
+<script>
+    $(function () {
+        $("#uploadBtn").change(function () {
+            fileUpload("uploadBtn", "resumes", "candidate_form");
+            $(".clearUpload").show();
+        });
+    });
+</script>
+<script>
+    $(".clearUpload").click(function () {
+        $("#uploadFile").val('');
+        $(".clearUpload").hide();
+        $("#candidate_form input[data-id*=uploadBtn]").remove();
+        $("#firstName").val('');
+        $("#lastName").val('');
+        $("#email").val('');
+        $("#mobilePhone").val('');
+        $('#candidateSkills').val('').trigger('chosen:updated');
+        $('#emailDiv').find('p.jquery_form_error_message').remove();
+    });
+</script>
+
+<script>
+    $(document).ready(function () {
+        $(".clearUpload").hide();
+        document.getElementById("candidate_form").reset();
+   
+    });
+</script>
 <!-- <script>
 	$(".clearUpload").click(function(){
 		$("#uploadFile").val("");

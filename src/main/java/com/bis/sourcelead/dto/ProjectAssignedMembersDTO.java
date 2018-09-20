@@ -13,6 +13,8 @@ public class ProjectAssignedMembersDTO implements Serializable{
 	
 	private List<ProjectMembersDTO> projectMembers;
 
+	private String projectClientUUID;
+	
 	public List<ProjectMembersDTO> getProjectMembers() {
 		return projectMembers;
 	}
@@ -27,6 +29,14 @@ public class ProjectAssignedMembersDTO implements Serializable{
 
 	public void setMaxTsRowNum(Integer maxTsRowNum) {
 		this.maxTsRowNum = maxTsRowNum;
+	}
+
+	public String getProjectClientUUID() {
+		return projectClientUUID;
+	}
+
+	public void setProjectClientUUID(String projectClientUUID) {
+		this.projectClientUUID = projectClientUUID;
 	}
 
 	

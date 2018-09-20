@@ -19,8 +19,8 @@
 }
 </style>
 
-<div class="content-dashboard clearfix"> 
-      <div class="clearfix dashboard-widget mb col-md-12 hdrPosition">
+<div class="mb col-md-12 clearfix"> 
+      <div class=" dashboard-widget col-md-12 hdrPosition minHeight_225">
         <h4 class="clearfix">
         Candidates for Onboarding
         &nbsp;&nbsp;
@@ -42,8 +42,9 @@ $(document).ready(function(){
 <script>
 function onboardingCandidatesList(){  
 	  var sourceleadUrl ='${sourceleadUrl}';
-	  $("#onboardingLoading").attr('style','position:absolute; width:100%; height:350px; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
+	  $("#onboardingLoading").attr('style','position:absolute; width:100%; height:150px; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
 	  var userId = '${SourceLeadWeb_userId}';
+	  var loginUserRole = '${SourceLeadWeb_loginUserRole}';
 	  var locationList ='${SourceLeadWeb_orgLocations.dateFormat}';	
 	  if(locationList.match("yyyy-MM-dd")){
 		  onBoardListDate = 'YYYY-MM-DD';
@@ -57,97 +58,102 @@ function onboardingCandidatesList(){
 	  $.ajax({
            type : "POST",
            url: sourceleadUrl+"/getOnboardingCandidatesList?${_csrf.parameterName}=${_csrf.token}",    
-            success :function(data) {
-               		
-			    	     $("#onboardingLoading").removeAttr("style");
-	                	 $("#onboardingCandidatesList").empty();
-	                	 var result = "";
-	                	 result = result +"<table id='onboardingPagination' class='display' cellspacing='0' width='99.9%' >"; 
-	                     result = result +"<thead>"; 
-	                     result = result +"  <tr>"; 
-	                     result = result +"    <th>Candidate Name</th>";
-	                     result = result +"    <th>Email</th>";
-	                     result = result +"    <th>Title</th>";
-	                     result = result +"    <th>DOJ<br>(<small class='custom-small'>"+onBoardListDate+"</small>)</th>"; 
-	                     result = result +"    <th>Rate</th>"; 
-	                     result = result +"    <th>Position Type</th>";
-	                     result = result +"    <th>Onboard Status</th>";
-	                     '<sec:authorize access="hasRole(\'ROLE_CREATE_ON_BOARD_USER\')">'
-	                    	 result = result +"<th>Actions</th>";
-	                     '</sec:authorize>';
-	                     result = result +"  </tr>"; 
-	                     result = result +"</thead>";
-	                     result = result +"<tbody>"; 
-	                     
-	                     var json = JSON.parse(data);
-	                     
-	                    	 for (var i = 0; i < json.length; i++) { 
-	                    	 var opt = json[i]; 
-	                    	 result = result +"<tr>";
-	                    		 result = result +"<td><div class='tbldata-dotdot-sm'><span title='"+opt.candidateName+"'>"+opt.candidateName+"</span></div></td>";
-	                    		 result = result +"<td><div><span title='"+opt.candidateEmail+"'>"+opt.candidateEmail+"</span></div></td>";
-	                    		 if(opt.reqManagerId == userId || opt.reqReleaseAllJobUserStatus == "Y"){
-	                    		 result = result +"<td><div class='tbldata-dotdot-sm'> <a href='"+sourceleadUrl+"/requirementSummary?requirementUUID="+opt.requirementUUID+"'><span title='"+opt.requirementName+"'>"+opt.requirementName+"</span></a></div></td>";
-	                    		 }
-	                    		 else{
-		                    		 result = result +"<td><div class='tbldata-dotdot-sm'><span title='"+opt.requirementName+"'>"+opt.requirementName+"</span></div></td>";
-	                    		 }
-	                    		 result = result +"<td><div><span>"+opt.offerJoinDate+"</span></div></td>";
-	                    		 
-			                     if(opt.rate != null && opt.rate != '' && opt.rate != 'undefined'){
-				                     result = result +"<td><div><span title='"+opt.paymentType+" "+opt.rate+" / "+opt.rateType+"'>"+opt.paymentType+" "+opt.rate+" / "+opt.rateType+"</span></div></td>";
-			                     }else{
-				                     result = result +"<td><div><span>-----</span></div></td>";
-			                     }
-		                     
-			                     if(opt.positionType != null && opt.positionType != '' && opt.positionType != 'undefined'){
-			                    	 result = result +"<td><div><span title='"+opt.positionType+"'>"+opt.positionType+"</span></div></td>";
-			                     }else{
-				                     result = result +"<td><div><span>-----</span></div></td>";
-			                     }
-			                     
-			                     if(opt.onboardStatus != null && opt.onboardStatus != '' && opt.onboardStatus != 'undefined'){
-			                    	 if(opt.onboardStatus == "Finished"){
-			                    		 result = result +"<td><div><span title='Sent'>Sent</span></div></td>";
-			                    	 }else{
-			                    		 result = result +"<td><div><span title='"+opt.onboardStatus+"'>"+opt.onboardStatus+"</span></div></td>";
-			                    	 }
-			                    	
-			                     }else{
-				                     result = result +"<td><div><span>Ready to onboard</span></div></td>";
-			                     }
-			                     
-			                     '<sec:authorize access="hasRole(\'ROLE_CREATE_ON_BOARD_USER\')">'
-				                     if(opt.onboardUUId != null && opt.onboardUUId != '' && opt.onboardUUId != 'undefined'){
-				                    	 if(opt.onboardStatus == 'Draft'){
-				                    		 result = result +"<td><div class='tbldata-dotdot-sm'> <a href='"+sourceleadUrl+"/viewOnboardCandidateDetails?onboardUUID="+opt.onboardUUId+"'><span class='text-success'>View Onboard</span></a></div></td>";
-				                    	 }else{
-				                    		 result = result +"<td><div class='tbldata-dotdot-sm'> <a href='"+sourceleadUrl+"/viewOnboardCandidateSummary?onboardUUID="+opt.onboardUUId+"'> <span class='text-success'>View Onboard</span></i></a> ";
-				                    		 if(opt.onboardStatus == 'Submitted'){
-				                    			 result = result	+ '<span>&nbsp;&nbsp;|&nbsp;&nbsp;<a><i class="fa fa-check text-success" title="Accept" onclick="acceptOnboardingCandiate(\''+opt.onboardUUId+'\');"></i></a></span>&nbsp;&nbsp;&nbsp;<span><a><i class="fa fa-close text-danger" title="Reject" onclick="rejectedReason(\''+opt.onboardUUId+'\',\''+opt.candidateName+'\',\''+opt.candidateEmail+'\');"></i></a></span>';
-				                    		 }
-				                    		 
-				                    	 }
-				                    	 result = result +"</div></td>";
-				                    	
-				                    }else{
-				                    	result = result +"<td><div class='tbldata-dotdot-sm'><a href='"+sourceleadUrl+"/candidateOnBoardingDetails?candidateUUId="+opt.candidateUUID+"&offerUUID="+opt.offerUUID+"'><span class='text-success'>Onboard</span></a></div></td>";
-				                    }
-			                     '</sec:authorize>';  
-
-		                     
-		                     result = result +"</tr>";
-		                     result = result +"</tr>";
-	                     }
-	                     result = result +" </tbody>";
-	                     result = result +"</table>"; 
-	                     $("#onboardingLoading").removeAttr("style");
-	                     $("#onboardingCandidatesList").append(result); 
-	                     
-	                     onboardingPagenation(); 
+            success :function(response) {
+            	if (response.response === "AWKWARD") {
+            	    location.href = "/errorPage";
+            	} else if (response.response === "SUCCESS") {
+            		$("#onboardingLoading").removeAttr("style");
+               	 $("#onboardingCandidatesList").empty();
+               	 var result = "";
+               	 result = result +"<table id='onboardingPagination' class='display' cellspacing='0' width='99.9%' >"; 
+                    result = result +"<thead>"; 
+                    result = result +"  <tr>"; 
+                    result = result +"    <th>Candidate Name</th>";
+                    result = result +"    <th>Email</th>";
+                    result = result +"    <th>Title</th>";
+                    result = result +"    <th>DOJ<br>(<small class='custom-small'>"+onBoardListDate+"</small>)</th>"; 
+                    result = result +"    <th>Rate</th>"; 
+                    result = result +"    <th>Position Type</th>";
+                    result = result +"    <th>Onboard Status</th>";
+                    '<sec:authorize access="hasRole(\'ROLE_CREATE_ON_BOARD_USER\')">'
+                   	 result = result +"<th>Actions</th>";
+                    '</sec:authorize>';
+                    result = result +"  </tr>"; 
+                    result = result +"</thead>";
+                    result = result +"<tbody>"; 
                     
+                    var json = JSON.parse(response.object);
+                    
+                   	 for (var i = 0; i < json.length; i++) { 
+                   	 var opt = json[i]; 
+                   	 result = result +"<tr>";
+                   		 result = result +"<td><div class='tbldata-dotdot-sm'><span title='"+opt.candidateName+"'>"+opt.candidateName+"</span></div></td>";
+                   		 result = result +"<td><div><span title='"+opt.candidateEmail+"'>"+opt.candidateEmail+"</span></div></td>";
+                   		 if(opt.reqManagerId == userId || opt.reqReleaseAllJobUserStatus == "Y" || loginUserRole == 'ROLE_ADMIN'){
+                   		 result = result +"<td><div class='tbldata-dotdot-sm'> <a href='"+sourceleadUrl+"/requirementSummary?requirementUUID="+opt.requirementUUID+"'><span title='"+opt.requirementName+"'>"+opt.requirementName+"</span></a></div></td>";
+                   		 }
+                   		 else{
+	                    		 result = result +"<td><div class='tbldata-dotdot-sm'><span title='"+opt.requirementName+"'>"+opt.requirementName+"</span></div></td>";
+                   		 }
+                   		 result = result +"<td><div><span>"+opt.offerJoinDate+"</span></div></td>";
+                   		 
+		                     if(opt.rate != null && opt.rate != '' && opt.rate != 'undefined'){
+			                     result = result +"<td><div><span title='"+opt.paymentType+" "+opt.rate+" / "+opt.rateType+"'>"+opt.paymentType+" "+opt.rate+" / "+opt.rateType+"</span></div></td>";
+		                     }else{
+			                     result = result +"<td><div><span>-----</span></div></td>";
+		                     }
+	                     
+		                     if(opt.positionType != null && opt.positionType != '' && opt.positionType != 'undefined'){
+		                    	 result = result +"<td><div><span title='"+opt.positionType+"'>"+opt.positionType+"</span></div></td>";
+		                     }else{
+			                     result = result +"<td><div><span>-----</span></div></td>";
+		                     }
+		                     
+		                     if(opt.onboardStatus != null && opt.onboardStatus != '' && opt.onboardStatus != 'undefined'){
+		                    	 if(opt.onboardStatus == "Finished"){
+		                    		 result = result +"<td><div><span title='Sent'>Sent</span></div></td>";
+		                    	 }else{
+		                    		 result = result +"<td><div><span title='"+opt.onboardStatus+"'>"+opt.onboardStatus+"</span></div></td>";
+		                    	 }
+		                    	
+		                     }else{
+			                     result = result +"<td><div><span>Ready to onboard</span></div></td>";
+		                     }
+		                     
+		                     '<sec:authorize access="hasRole(\'ROLE_CREATE_ON_BOARD_USER\')">'
+			                     if(opt.onboardUUId != null && opt.onboardUUId != '' && opt.onboardUUId != 'undefined'){
+			                    	 if(opt.onboardStatus == 'Draft'){
+			                    		 result = result +"<td><div class='tbldata-dotdot-sm'> <a href='"+sourceleadUrl+"/viewOnboardCandidateDetails?onboardUUID="+opt.onboardUUId+"'><span class='text-success'>View Onboard</span></a></div></td>";
+			                    	 }else{
+			                    		 result = result +"<td><div class='tbldata-dotdot-sm'> <a href='"+sourceleadUrl+"/viewOnboardCandidateSummary?onboardUUID="+opt.onboardUUId+"'> <span class='text-success'>View Onboard</span></i></a> ";
+			                    		 if(opt.onboardStatus == 'Submitted'){
+			                    			 result = result	+ '<span>&nbsp;&nbsp;|&nbsp;&nbsp;<a><i class="fa fa-check text-success" title="Accept" onclick="acceptOnboardingCandiate(\''+opt.onboardUUId+'\');"></i></a></span>&nbsp;&nbsp;&nbsp;<span><a><i class="fa fa-close text-danger" title="Reject" onclick="rejectedReason(\''+opt.onboardUUId+'\',\''+opt.candidateName+'\',\''+opt.candidateEmail+'\');"></i></a></span>';
+			                    		 }
+			                    		 
+			                    	 }
+			                    	 result = result +"</div></td>";
+			                    	
+			                    }else{
+			                    	result = result +"<td><div class='tbldata-dotdot-sm'><a href='"+sourceleadUrl+"/candidateOnBoardingDetails?candidateUUId="+opt.candidateUUID+"&offerUUID="+opt.offerUUID+"'><span class='text-success'>Onboard</span></a></div></td>";
+			                    }
+		                     '</sec:authorize>';  
+
+	                     
+	                     result = result +"</tr>";
+	                     result = result +"</tr>";
+                    }
+                    result = result +" </tbody>";
+                    result = result +"</table>"; 
+                    $("#onboardingLoading").removeAttr("style");
+                    $("#onboardingCandidatesList").append(result); 
+                    
+                    onboardingPagenation(); 
+            	} else if (response.indexOf('Sign In') !== -1) {
+            		location.replace(sourceleadUrl);
+            	} else {
+            	    showError("Operation failed, please try again");
+            	}
           },
-            
        }); 
   } 
 </script> 
@@ -159,8 +165,16 @@ function onboardingCandidatesList(){
 	 	 $.ajax({
 		    	type: "POST",
 		    	 url: sourceleadUrl+"/acceptOnboardingCandiate?${_csrf.parameterName}=${_csrf.token}&onboardCandidateUUID="+onboardCandidateUUID, 
-		        success: function(result) {
-		        	 location.replace(sourceleadUrl+"/dashboard/${SourceLeadWeb_orgLocationId}");
+		        success: function(response) {
+		        	if (response.response === "AWKWARD") {
+		        	    location.href = "/errorPage";
+		        	} else if (response.response === "SUCCESS") {
+		        		location.replace(sourceleadUrl+"/dashboard/${SourceLeadWeb_orgLocationId}");
+		        	} else if (response.indexOf('Sign In') !== -1) {
+		        		location.replace(sourceleadUrl);
+		        	} else {
+		        	    showError("Operation failed, please try again");
+		        	}
 		        },
 		    }); 
   }
@@ -233,16 +247,23 @@ $('body').on('submit', '#rejectedReason_form', function(e){
 	 	 $.ajax({
 		    	type: "POST",
 		    	 url: sourceleadUrl+"/rejectOnboardedCandidate?${_csrf.parameterName}=${_csrf.token}&json="+jsonData, 
-		        success: function(result) {
-		        	cancelRejectedReason();
-		        	location.replace(sourceleadUrl+"/dashboard/${SourceLeadWeb_orgLocationId}");
+		        success: function(response) {
+		        	if (response.response === "AWKWARD") {
+		        	    location.href = "/errorPage";
+		        	} else if (response.response === "SUCCESS") {
+		        		cancelRejectedReason();
+			        	location.replace(sourceleadUrl+"/dashboard/${SourceLeadWeb_orgLocationId}");
+		        	} else if (response.indexOf('Sign In') !== -1) {
+		        		location.replace(sourceleadUrl);
+		        	} else {
+		        	    showError("Operation failed, please try again");
+		        	}
 		        },
 		    }); 
       return true; 
-    }
-    else{
+    } else {
     	return false;	
-       }
+    }
   });
 
 	$('body').on('blur', '#rejectedReason_form', function() {

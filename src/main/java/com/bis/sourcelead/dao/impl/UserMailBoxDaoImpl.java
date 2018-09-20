@@ -65,7 +65,7 @@ public class UserMailBoxDaoImpl implements UserMailBoxDao{
 		 String query = "from UserMailBox mailbox where mailbox.userId.id = :userId and mailbox.orgLocationId.id = :orgLocationId "
 		 		+ "and mailbox.mailStatus = :mailStatus and mailbox.status = '1' ORDER BY mailbox.id DESC ";
 		 List<UserMailBox> mailBoxList = session.createQuery(query.toString()).setLong( "userId", userId)
-				 .setLong( "orgLocationId", orgLocationId).setString("mailStatus", mailStatus).setCacheable(true).list();
+				 .setLong( "orgLocationId", orgLocationId).setString("mailStatus", mailStatus).list();
 		 return mailBoxList;
 	}
 
@@ -76,7 +76,7 @@ public class UserMailBoxDaoImpl implements UserMailBoxDao{
 		Session session = this.sessionFactory.getCurrentSession();
 		List<UserMailBox> mailBox = new ArrayList<UserMailBox>();
 		logger.debug("getUserMailBoxByUUID start");
-		mailBox = session.createQuery("from UserMailBox mailBox where mailBox.uuid = :uuid" ).setString("uuid", UUID).setCacheable(true).list();
+		mailBox = session.createQuery("from UserMailBox mailBox where mailBox.uuid = :uuid" ).setString("uuid", UUID).list();
 		logger.debug("getUserMailBoxByUUID end");
 		if (mailBox.size() > 0) {
 			return mailBox.get(0);
@@ -92,7 +92,7 @@ public class UserMailBoxDaoImpl implements UserMailBoxDao{
 		Session session = this.sessionFactory.getCurrentSession();
 		List<UserMailBox> mailBox = new ArrayList<UserMailBox>();
 		logger.debug("getUserMailBoxById start");
-		mailBox = session.createQuery("from UserMailBox mailBox where mailBox.id = :id" ).setString("id", Id).setCacheable(true).list();
+		mailBox = session.createQuery("from UserMailBox mailBox where mailBox.id = :id" ).setString("id", Id).list();
 		logger.debug("getUserMailBoxById end");
 		if (mailBox.size() > 0) {
 			return mailBox.get(0);
@@ -110,7 +110,7 @@ public class UserMailBoxDaoImpl implements UserMailBoxDao{
 		 String query = "from UserMailBox mailbox where mailbox.userId.id = :userId and mailbox.orgLocationId.id = :orgLocationId "
 		 		+ "and mailbox.isFavourite = '1' and mailbox.status = '1' ORDER BY mailbox.id DESC ";
 		 List<UserMailBox> mailBoxList = session.createQuery(query.toString()).setLong( "userId", userId)
-				 .setLong( "orgLocationId", orgLocationId).setCacheable(true).list();
+				 .setLong( "orgLocationId", orgLocationId).list();
 		 return mailBoxList;
 		
 	}
@@ -157,7 +157,7 @@ public class UserMailBoxDaoImpl implements UserMailBoxDao{
 		Session session = this.sessionFactory.getCurrentSession();
 		List<UserMailBox> mailBox = new ArrayList<UserMailBox>();
 		logger.debug("getUserMailBoxById start");
-		mailBox = session.createQuery("from UserMailBox mailBox where mailBox.id IN ("+selectedMode+")" ).setLong("id", Id).setLong("userId", userId).setLong("orgLocationId", orgLocationId).setCacheable(true).list();
+		mailBox = session.createQuery("from UserMailBox mailBox where mailBox.id IN ("+selectedMode+")" ).setLong("id", Id).setLong("userId", userId).setLong("orgLocationId", orgLocationId).list();
 		logger.debug("getUserMailBoxById end");
 		if (mailBox.size() > 0) {
 			return mailBox.get(0);
@@ -192,7 +192,7 @@ public class UserMailBoxDaoImpl implements UserMailBoxDao{
 		Session session = this.sessionFactory.getCurrentSession();
 		List<UserMailBox> mailBox = new ArrayList<UserMailBox>();
 		logger.debug("getUserMailBoxById start");
-		mailBox = session.createQuery("from UserMailBox mailBox where mailBox.id IN ("+selectedMode+")" ).setLong("id", Id).setLong("userId", userId).setLong("orgLocationId", orgLocationId).setCacheable(true).list();
+		mailBox = session.createQuery("from UserMailBox mailBox where mailBox.id IN ("+selectedMode+")" ).setLong("id", Id).setLong("userId", userId).setLong("orgLocationId", orgLocationId).list();
 		logger.debug("getUserMailBoxById end");
 		if (mailBox.size() > 0) {
 			return mailBox.get(0);
@@ -211,14 +211,14 @@ public class UserMailBoxDaoImpl implements UserMailBoxDao{
 		
 			String query = "select count(*) from UserMailBox mailbox where mailbox.userId.id = :userId and mailbox.orgLocationId.id = :orgLocationId "
 			 		+ "and mailbox.mailStatus = :mailStatus and mailbox.status = '1' ";
-		List<Long> results = session.createQuery(query).setLong( "orgLocationId", orgLocationId).setLong("userId", userId).setString("mailStatus", type).setCacheable(true).list();
+		List<Long> results = session.createQuery(query).setLong( "orgLocationId", orgLocationId).setLong("userId", userId).setString("mailStatus", type).list();
 		logger.debug("..getMailBoxCountByUserIdAndOrgLocationid() Method Ended..");
 		return results.get(0);
 			 
 		}else{
 			String query = "select count(*) from UserMailBox mailbox where mailbox.userId.id = :userId and mailbox.orgLocationId.id = :orgLocationId "
 		 		+ "and mailbox.isFavourite = '1' and mailbox.status = '1' ";
-			List<Long> results = session.createQuery(query).setLong("orgLocationId", orgLocationId).setLong("userId", userId).setCacheable(true).list();
+			List<Long> results = session.createQuery(query).setLong("orgLocationId", orgLocationId).setLong("userId", userId).list();
 			logger.debug("..getMailBoxCountByUserIdAndOrgLocationid() Method Ended..");
 			return results.get(0);
 		}

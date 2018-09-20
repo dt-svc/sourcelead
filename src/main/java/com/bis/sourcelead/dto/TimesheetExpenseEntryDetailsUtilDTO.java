@@ -2,7 +2,7 @@ package com.bis.sourcelead.dto;
 
 import java.io.Serializable;
 
-public class TimesheetExpenseEntryDetailsUtilDTO implements Serializable{
+public class TimesheetExpenseEntryDetailsUtilDTO extends SearchDTO implements Serializable{
 	
 	private static final long serialVersionUID = 1L;
 	
@@ -13,6 +13,8 @@ public class TimesheetExpenseEntryDetailsUtilDTO implements Serializable{
 	private String expenseFrom;
 	
 	private String expenseId;
+	
+	private String expenseLocationCode;
 	
 	private String timeSheetsFor;
 	
@@ -29,6 +31,14 @@ public class TimesheetExpenseEntryDetailsUtilDTO implements Serializable{
 	private String currentTimeSubFrequency;
 	
 	private String timesheetStatus;
+	
+	private String redirectionRequestFrom;
+	
+	private String invoiceFrequency;
+	
+	private String weekFrequency;
+	
+	private String isGlobalUser;
 
 	public Long getUserId() {
 		return userId;
@@ -130,6 +140,45 @@ public class TimesheetExpenseEntryDetailsUtilDTO implements Serializable{
 		this.timesheetStatus = timesheetStatus;
 	}
 
- 
+	public String getRedirectionRequestFrom() {
+		return redirectionRequestFrom;
+	}
+
+	public void setRedirectionRequestFrom(String redirectionRequestFrom) {
+		this.redirectionRequestFrom = redirectionRequestFrom;
+	}
+
+	public String getInvoiceFrequency() {
+		return invoiceFrequency;
+	}
+
+	public void setInvoiceFrequency(String invoiceFrequency) {
+		this.invoiceFrequency = invoiceFrequency;
+	}
+
+	public String getWeekFrequency() {
+		return weekFrequency;
+	}
+
+	public void setWeekFrequency(String weekFrequency) {
+		this.weekFrequency = weekFrequency;
+	}
+
+	public String getIsGlobalUser() {
+		return isGlobalUser;
+	}
+
+	public void setIsGlobalUser(String isGlobalUser) {
+		this.isGlobalUser = isGlobalUser;
+	}
+
+	public String getExpenseLocationCode() {
+		return expenseLocationCode;
+	}
+
+	public void setExpenseLocationCode(String expenseLocationCode) {
+		this.expenseLocationCode = expenseLocationCode;
+	}
+	
 
 }

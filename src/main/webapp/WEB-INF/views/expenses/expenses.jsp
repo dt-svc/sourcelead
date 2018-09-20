@@ -13,7 +13,7 @@
 			if("" != localStorage.getItem("myExpensesListGrid") && null != localStorage.getItem("myExpensesListGrid")){
 				$("#expensesListDiv").empty();
 	       		$("#expensesListDiv").append(localStorage.getItem("myExpensesListGrid"));
-	       		/* localStorage.removeItem("myExpensesListGrid"); */
+	       		preparePaginationEmployee(1);
 	       		localStorage.setItem("myExpensesListGrid","");
 	       		$(":checkbox[value=ALL]").prop("checked",false);
 	       		if("draft" == $("#countType").val()){
@@ -26,12 +26,15 @@
 	       			$(":checkbox[value=REJECTED]").prop("checked",true);
 	       		}
 	       		$("#temp").val("temp");
+	       		$("#appro-pop").hide();
 			}else{
-				getExpensesList('${sourceleadUrl}');
+				getExpensesList();
+				$("#appro-pop").show();
 			}
 		 };
 </script>
 	
+
 <!-- Content Area -->
       <section class="content-wraper">
         <section class="content-header clearfix">
@@ -41,65 +44,64 @@
           <div class="pull-right brud-crum"><a href="<c:url value='${appPath}/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a> &raquo; My Expenses</div>
         </section>
         
+        
 		<!-- Timesheet -->
 <div id="emptyPopup"></div>
+
 <div class="timesheet_out">
-<div class="project_wrap">
-	<div class="timesheet_head">
-        	<ul>
+	
+<div class="positionRelative reportHead clearfix">
+      <span class="pull-left refreIcon">
+      			<sec:authorize access="hasAnyRole('ROLE_VIEW_EDIT_MY_EXPENSES')">
+				    <div class="input-group pull-left">  		
+					     <span class="dashboard-datepkr pull-left mr5">
+						 <input type="text" class="form-control input-sm calendar noMr heiNew" value="" id="filterStartDate" name="StartDate" field-name="Start Date" data-validation="required" readonly="readonly" placeholder="Start Date">
+						 <p id="reportStartDate" class="noPad"></p>
+						 </span>
+						 <span class="dashboard-datepkr pull-left mr5">
+						 <input type="text"  class="calendar form-control input-sm noMr heiNew" value="" id="filterEndDate" name="EndDate" field-name="End Date" data-validation="required" readonly="readonly" placeholder="End Date">
+						 <p id="reportEndDate" class="noPad"></p>
+						 </span>
+					 	<span class="pull-left"><input type="button" value="Submit" class="newAdBtn" onclick="getExpensesList('dateSearch');" /></span>
+					</div>
+				</sec:authorize>        
+      </span>
+      <ul class="pull-right list-unstyled list-inline">
+               <sec:authorize access="hasAnyRole('ROLE_ADD_MY_EXPENSES')">
+			   		<li><a href="<c:url value='${appPath}/addExpense'/>" class="newAdBtn mr5">+ Expenses</a></li>
+			   </sec:authorize>	      		
+			
         		<sec:authorize access="hasAnyRole('ROLE_VIEW_EDIT_MY_EXPENSES')">
-				    <div class="input-group">
-				    <div class="pull-left mt5 mr"> 
-				    <div class="input-group">  		
-				     <span class="dashboard-datepkr pull-left">
-					 <input type="text" class="form-control input-sm calendar" value="" id="filterStartDate" name="StartDate" field-name="Start Date" data-validation="required" readonly="readonly" placeholder="Start Date">
-					 <p id="reportStartDate" class="ReError"></p>
-					 </span>
-					 <span class="dashboard-datepkr pull-left">
-					 <input type="text"  class="calendar form-control input-sm" value="" id="filterEndDate" name="EndDate" field-name="End Date" data-validation="required" readonly="readonly" placeholder="End Date">
-					 <p id="reportEndDate" class="ReError"></p>
-					 </span>
-					 <span class="pull-left"><input type="button" value="Submit" class="btn-sm btn btn-primary" onclick="getExpensesList('${sourceleadUrl}','dateSearch');" /></span>
-					</div>
-					</div>
-					
-					<li class="ml"><i class="fa fa-filter"></i><span>Filter</span><i class="glyphicon glyphicon-play" id="appro-pop"></i>|
+					<li><i class="filtIcon"  id="appro-pop"></i>
 	                	<div class="approved_pop">
 	                    	<ul>
-	                        	<li><input id="expenseAll" type="checkbox" name="expenseStatus" value="ALL" checked onclick="getExpensesList('${sourceleadUrl}');"><label >All</label></li>
-								<li><input id="expenseApproved" type="checkbox" name="expenseStatus" value ="APPROVED" onclick="getExpensesList('${sourceleadUrl}');"><label >Approved</label></li>
-								<li><input id="expenseSubmitted" type="checkbox" name="expenseStatus" value ="SUBMITTED" onclick="getExpensesList('${sourceleadUrl}');"><label >Submitted</label></li>
-								<li><input id="expenseDraft" type="checkbox" name="expenseStatus" value ="DRAFT" onclick="getExpensesList('${sourceleadUrl}');"><label >Draft</label></li>
-								<li><input id="expenseRejected" type="checkbox" name="expenseStatus" value ="REJECTED" onclick="getExpensesList('${sourceleadUrl}');"><label >Rejected</label></li>
+	                        	<li><input id="expenseAll" type="checkbox" name="expenseStatus" value="ALL" checked onclick="getExpensesList();"><label >All</label></li>
+								<li><input id="expenseApproved" type="checkbox" name="expenseStatus" value ="APPROVED" onclick="getExpensesList();"><label >Approved</label></li>
+								<li><input id="expenseSubmitted" type="checkbox" name="expenseStatus" value ="SUBMITTED" onclick="getExpensesList();"><label >Submitted</label></li>
+								<li><input id="expenseDraft" type="checkbox" name="expenseStatus" value ="DRAFT" onclick="getExpensesList();"><label >Draft</label></li>
+								<li><input id="expenseRejected" type="checkbox" name="expenseStatus" value ="REJECTED" onclick="getExpensesList();"><label >Rejected</label></li>
+								<li><input id="expenseReopened" type="checkbox" name="expenseStatus" value ="Reopened" onclick="getExpensesList();"><label >Reopened</label></li>
 	                        </ul>
 	                    </div>                	
 	                </li>
-               </sec:authorize>
-               <sec:authorize access="hasAnyRole('ROLE_ADD_MY_EXPENSES')">
-			   		<li><a href="<c:url value='${appPath}/addExpense'/>"><i class="fa fa-plus"></i>Add Expenses</a></li>
-			   </sec:authorize>	
-			   <li title="Export"  id="hideExportExpenseLink"><a  id="export-pop"><i class="glyphicon glyphicon-export expIcon"></i>&nbsp;</a>
-					    <div id="exportPop" class="user_exp">
-						   <ul class="ul_padding">
-						   <li onclick="exportToPdf('pdf');" title="PDF"><i class="fa fa-file-pdf-o"></i>&nbsp; PDF</li>
-						   <li onclick="exportToPdf('excel');" title="Excel"><i class="fa fa-file-excel-o"></i>&nbsp; Excel</li>
-						   </ul>
-						</div>
-				   	</li>
-               <div class="clearfix"></div>
-               <input type="hidden" id="temp"/>
-            </ul>
-            <div class="clearfix"></div>
-            
-        </div>
-        
-        <div class='remove_search'>
-		       <input type='text' placeholder='Search' value="" id='dataTableSearchExpensesEmp'/>
-	   </div>
-        
-    <div class="project_wrap_table datatable_filter">
-    	<div id="expensesListDiv">	</div>
-	</div>
+               </sec:authorize>			
+				
+				<li><a href="javascript:void(0)" class="overIcon" title="Actions" onclick="newActions();"></a>
+					<div class="newActPop">
+						<span>
+						 	<a href="javascript:void(0)" onclick="exportToPdf('pdf');" title="PDF">Export PDF</a>
+							<a href="javascript:void(0)" onclick="exportToPdf('excel');" title="Excel">Export Excel</a>
+						</span>
+					</div>
+				</li>
+		    
+		  <li class=""><input type="text" class="repSearchBar" placeholder='Search' id='SearchExpensesData'/><span class="repSearchIcon" onClick="searchExpensesDataIcon();"></span></li>
+		  <input type="hidden" id="temp"/>
+        </ul>
+      </div>
+		
+    <div class="project_wrap_table datatable_filter overflow_Auto">
+    	<div id="expensesListDiv"><jsp:include page="expensesEmployeeRedefined.jsp"></jsp:include></div>
 	</div>
 </div>  
 	
@@ -119,150 +121,77 @@
 		
       </section>
       <!-- Content Area Ends--> 
-      
-      
-<!-- <script>
 
-function getExpensesList(){
-	var startDate = $("#filterStartDate").val();
-	var endDate = $("#filterEndDate").val();
-	/* if(startDate == null || startDate == '' || startDate == 'undefined'){
-		$("#reportStartDate").empty().append("Start Date is Required") ; 
-	}
-	if(endDate == null || endDate == '' || endDate == 'undefined'){
-		$("#reportEndDate").empty().append("End Date is Required") ; 
-	} */
-	
-	var expenseStatus = [];
-	$('input:checkbox[name=expenseStatus]:checked').each(function() 
-    {
-		expenseStatus.push($(this).val());
-    });
-	var obj = {}
-	obj['expenseStatus']=expenseStatus;
-	obj['startDate']=startDate;
-	obj['endDate']=endDate;
-	obj['userId']='${SourceLeadWeb_user.id}';
-	obj['locationCode']='${SourceLeadWeb_orgLocations.locationCode}';
-	var jsonData= JSON.stringify(obj);
-	
-	 var locationList ='${SourceLeadWeb_orgLocations.dateFormat}';	
-	  if(locationList.match("yyyy-MM-dd")){
-		  expensesReqListDate = 'YYYY-MM-DD';
-	  }if(locationList.match("dd-MM-yyyy")){
-		  expensesReqListDate = 'DD-MM-YYYY'; 
-	  }if(locationList.match("MM-dd-yyyy")){
-		  expensesReqListDate = 'MM-DD-YYYY'; 
-	  }if(locationList.match("yyyy-dd-MM")){
-		  expensesReqListDate = 'YYYY-DD-MM'; 
-	  }
-	
-	 $.ajax({
-		 type : "POST",
-		  data: jsonData,
-  	      contentType : 'application/json; charset=utf-8',
-  	      dataType : 'json',
-          url: sourceleadUrl+"/getExpensesList?"+tokenParamName+"="+tokenValue+"",     
-          success :function(json) {
-        	  var result = "";
-					result = result +" <table id='expensesPagination'>";
-					result = result +"<thead>";
-					result = result +"<tr>";
-					result = result +"<th>Exp Id</th>";
-					result = result +"<th>Purpose</th>";
-					result = result +"<th>Project</th>";
-					result = result +"<th>Client</th>";
-					result = result +"<th>Start Date<br>(<small class='custom-small'>"+expensesReqListDate+"</small>)</th>";
-					result = result +"<th>End Date<br>(<small class='custom-small'>"+expensesReqListDate+"</small>)</th>";
-					result = result +"<th>No of Items</th>";
-					result = result +"<th>Amount</th>";
-					result = result +"<th>Status</th>";
-					result = result +"</tr>";
-					result = result +"</thead>";
-					result = result +"<tbody>";
-					
-					 if(json !=''){
-			        	  for (var i = 0; i < json.length; i++) { 
-			        		  var report = json[i]; 
-			        		  if(report.expenseAutoId != null && report.expenseAutoId != '' && report.expenseAutoId != 'undefined'){
-			        			  expenseId = report.expenseAutoId;
-			        		  }else{
-			        			  expenseId = "--";
-			        		  }
-			        		  if(report.expensePurpose != null && report.expensePurpose != '' && report.expensePurpose != 'undefined'){
-			        			  purpose = report.expensePurpose;
-			        		  }else{
-			        			  purpose = "--";
-			        		  }
-			        		  if(report.projectName != null && report.projectName != '' && report.projectName != 'undefined'){
-			        			  projectName = report.projectName;
-			        		  }else{
-			        			  projectName = "--";
-			        		  }
-			        		  if(report.clientName != null && report.clientName != '' && report.clientName != 'undefined'){
-			        			  clientName = report.clientName;
-			        		  }else{
-			        			  clientName = "--";
-			        		  }
-			        		  if(report.startDate != null && report.startDate != '' && report.startDate != 'undefined'){
-			        			  startDateStr = report.startDate;
-			        		  }else{
-			        			  startDateStr = "--";
-			        		  }
-			        		  if(report.endDate != null && report.endDate != '' && report.endDate != 'undefined'){
-			        			  endDateStr = report.endDate;
-			        		  }else{
-			        			  endDateStr = "--";
-			        		  }
-			        		  if(report.noOfExpenses != null && report.noOfExpenses != '' && report.noOfExpenses != 'undefined'){
-			        			  noOfExpenses = report.noOfExpenses;
-			        		  }else{
-			        			  noOfExpenses = "--";
-			        		  }
-			        		  if(report.totalAmount != null && report.totalAmount != '' && report.totalAmount != 'undefined'){
-			        			  var  numb = report.totalAmount.toFixed(2);
-			        			  totalAmount = numb;
-			        		  }else{
-			        			  totalAmount = "--";
-			        		  }
-								 result = result +"<tr>";
-								 '<sec:authorize access="hasAnyRole(\'ROLE_VIEW_EDIT_MY_EXPENSES\')">'
-								 result = result +"<td><a href='"+sourceleadUrl+"/addExpense?expenseId="+expenseId+"&expenseLocationCode="+report.expenseLocationCode+" &type=view'><div class='proj_show'><span>"+expenseId+"</span><i class='fa fa-binoculars'></i></div></a></td>";
-								 '</sec:authorize>';
-								 '<sec:authorize access="!hasAnyRole(\'ROLE_VIEW_EDIT_MY_EXPENSES\')">'
-								 result = result +"<td><div class='proj_show'><span>"+expenseId+"</span></div></td>";
-								 '</sec:authorize>';
-								 result = result +"<td><div title="+purpose+">"+purpose+"</div></td>";
-								 result = result +"<td><div title="+projectName+">"+projectName+"</div></td>";
-								 result = result +"<td><div>"+clientName+"</div></td>";
-								 result = result +"<td><div>"+startDateStr+"</div></td>";
-								 result = result +"<td><div>"+endDateStr+"</div></td>";
-								 result = result +"<td><div>"+noOfExpenses+"</div></td>";
-								 result = result +"<td><div>"+totalAmount+"</div></td>";
-								 result = result +"<td> <div>"+report.expenseStatus+"</div></td>";
-								 result = result +"</tr>"; 
-			        	  }
-		        		  $("#temp").val("temp");
-		        	  }else{
-		        		   $("#temp").val(''); 
-// 						  $('#hideExportExpenseLink').hide();
-		        	  }
-	        	 
-   			
-        	  result = result +" </tbody>";
-        	  result = result +" </table>";
-        	  $("#expensesListDiv").empty();
-	          $("#expensesListDiv").append(result);
-	          expensesPagination();
-          },
-          
-     }); 
-	
-	}
-
-</script> -->      
 <script>
+function getExpensesList(dateSearch){
+	var startDate = '';
+	var endDate = '';
+	 if(dateSearch != null && dateSearch != '' && dateSearch != 'undefined' && dateSearch == 'dateSearch' ){ 
+		var startDateFilter = $("#filterStartDate").val();
+		var endDateFilter = $("#filterEndDate").val();
+		if(startDateFilter != null && startDateFilter != '' && startDateFilter !='undefined' &&  endDateFilter != null && endDateFilter != '' && endDateFilter !='undefined' ){
+			 startDate = startDateFilter;
+			 endDate = endDateFilter;
+			$('#reportStartDate').parent().find('p.jquery_form_error_message').remove();
+			$('#reportEndDate').parent().find('p.jquery_form_error_message').remove();
+		}else if(startDateFilter != null && startDateFilter != '' && startDateFilter !='undefined' &&  (endDateFilter == null || endDateFilter == '' || endDateFilter =='undefined')){
+			$('#reportStartDate').parent().find('p.jquery_form_error_message').remove(); 
+			$('#reportEndDate').parent().find('p.jquery_form_error_message').remove(); 
+			$("#reportEndDate").after("<p class='jquery_form_error_message'><span>End Date Is Required</span>");
+		}else if((startDateFilter == null || startDateFilter == ''|| startDateFilter !='undefined') &&  endDateFilter != null && endDateFilter != '' && endDateFilter !='undefined'){
+			$('#reportStartDate').parent().find('p.jquery_form_error_message').remove(); 
+			$('#reportEndDate').parent().find('p.jquery_form_error_message').remove(); 
+			$("#reportStartDate").after("<p class='jquery_form_error_message'><span>Start Date Is Required</span>");
+		}else if((endDateFilter == null || endDateFilter == '' || endDateFilter =='undefined') && (startDateFilter == null || startDateFilter == ''|| startDateFilter !='undefined')){
+			$('#reportStartDate').parent().find('p.jquery_form_error_message').remove(); 
+			$('#reportEndDate').parent().find('p.jquery_form_error_message').remove(); 
+			$("#reportEndDate").after("<p class='jquery_form_error_message'><span>End Date Is Required</span>");
+			$("#reportStartDate").after("<p class='jquery_form_error_message'><span>Start Date Is Required</span>");
+		}		
+	 } 
 
+	var url = '';
+    var searchValue = $("#SearchExpensesData").val();
+	searchValue = searchValue ? searchValue : "";
+	
+	var expenseStatus = '';
+	expenseStatus = $('#expenseStatusDivId').val();
+	var expensesStatusFromDashboard = '${expensesStatusFormDashBoard}';
+	if(expensesStatusFromDashboard != null && expensesStatusFromDashboard != '' && expensesStatusFromDashboard !='undefined'){
+		$(":checkbox[value=ALL]").prop("checked",false);
+		$(":checkbox[value="+expensesStatusFromDashboard+"]").prop("checked",true);
+	}
+	
+	if(expenseStatus != null && expenseStatus != '' && expenseStatus !='undefined'){
+		  	expenseStatus = expenseStatus.toUpperCase();
+		  	$(":checkbox[value="+expenseStatus+"]").prop("checked","true");
+	}else{
+		var expenseStatus = [];
+		$('input:checkbox[name=expenseStatus]:checked').each(function() 
+		{
+			expenseStatus.push($(this).val());
+		});
+	}
+	
+	var userId = '${SourceLeadWeb_user.id}';
+	var locationCode = '${SourceLeadWeb_orgLocations.locationCode}'
+	$.ajax({
+	    type : "POST",
+	     url: sourceleadUrl+"/getExpensesList?&expenseStatus="+expenseStatus+"&startDate="+startDate+"&endDate="+endDate+"&searchValue="+searchValue+"&userId="+userId+"&locationCode="+locationCode,      
+	     success :function(data) {
+	    	 $("#expensesListDiv").empty();
+			 $("#expensesListDiv").append(data);
+			 $("#loadingId").removeAttr('style');
+			 $("#temp").val('temp');
+			 preparePaginationEmployee(1);
+	  		}
+		});
+	}
+</script>
+
+
+    
+<script>
 function expenseView(expenseId){
 	$(".project_side_wrap").addClass("project_side_wrap_active");
 	        $(".side_mask").fadeIn(200);
@@ -523,7 +452,7 @@ function getEditExpense(eId){
 </script>
 
 <script>
-function exportToPdf(type){                                                                        
+function exportToPdf(type){    
 	var temp = $("#temp").val();
 	if(temp != null && temp != ''){
 		var expenseStatus = [];
@@ -557,14 +486,14 @@ function expensesCancel(){
 	$(".project_inn_mask").fadeOut(200);
 }
 </script>
-
+ 
 
 <script>
   $("#selector").fadeIn(200);
   $('#selector').delay(2000).fadeOut('slow');
 	   $("#export-pop").click(function(){
-	               $("#exportPop").toggle();
-	       });
+			$("#exportPop").toggle(1);
+	    });
 	   $("html").click(function() {
 	       $("#exportPop").hide();
 	   });
@@ -572,4 +501,28 @@ function expensesCancel(){
 	       e.stopPropagation();
 	   });        
 </script> 
-<jsp:include page="expensesEmployeeTable.jsp" />
+
+<script>
+function newActions(){
+	$(".newActPop").slideToggle(200);
+	$(".action-pop").slideUp(200);
+	$(".approved_pop").hide();	
+}
+$("html").click(function(){
+	$(".newActPop").slideUp(200);
+});
+$(".overIcon, .newActPop").click(function(e){
+ 	e.stopPropagation();
+});	
+
+
+$("#appro-pop").click(function(){
+	$(".newActPop").hide();
+	$(".approved_pop").toggle();
+});
+
+</script>
+
+
+<jsp:include page="../masterFooter.jsp" />
+<%-- <jsp:include page="expensesEmployeeTable.jsp" /> --%>

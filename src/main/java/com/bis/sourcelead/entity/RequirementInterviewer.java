@@ -19,12 +19,12 @@ import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
 import org.hibernate.annotations.NotFound;
 import org.hibernate.annotations.NotFoundAction;
+import org.hibernate.annotations.Type;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 	@Entity
 	@Table(name = "REQUIREMENT_INTERVIEWER")
-	@Cache(usage = CacheConcurrencyStrategy.TRANSACTIONAL, region = "requirementInterviewer")
 	public class RequirementInterviewer implements Serializable{
 
 	
@@ -35,14 +35,13 @@ import com.fasterxml.jackson.annotation.JsonProperty;
     @Column(name = "ID", nullable = false)
 	private Long id;
 	
-	@NotFound(action=NotFoundAction.IGNORE)
+	
 	@ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name="INTERVIEW_ID", nullable=false )        
     private RequirementInterview requirementInterview;
 	
-	@NotFound(action=NotFoundAction.IGNORE)
-	@ManyToOne
-    @JoinColumn(name="INTERVIEWER_USER_ID", nullable=false )        
+	@ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name="INTERVIEWER_USER_ID" )        
     private User interviewerUser;
 	
 	@Column(name="STATUS")
@@ -60,6 +59,16 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 	@Column(name = "UPDATED_BY")
 	private String updatedBy;
 	
+	@Column(name = "EXTERNAL_INTERVIEWER_NAME")
+	@Type(type="text")
+	private String externalInterviewerName;
+	
+	@Column(name = "EXTERNAL_INTERVIEWER_EMAIL")
+	private String externalInterviewerEmail;
+	
+	@Column(name = "UUID")
+	private String uuid;
+	
 	@Transient
 	@JsonProperty
 	private String interviewerName;
@@ -73,22 +82,28 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 	private String feedbackStatus;
 	
 	@Transient
+	@JsonProperty
 	private String interviewStartTime;
 	
 	@Transient
+	@JsonProperty
 	private String interviewEndTime;
 	
 	@Transient
+	@JsonProperty
 	private String requirementTitle;
 	
 	
 	@Transient
+	@JsonProperty
 	private String interviewType;
 
 	@Transient
+	@JsonProperty
 	private List<RequirementInterviewer> interviewerList;
 	
 	@Transient
+	@JsonProperty
 	private List<RequirementInterview> applicantsList;
 	
 	
@@ -226,6 +241,30 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 
 	public void setInterviewType(String interviewType) {
 		this.interviewType = interviewType;
+	}
+
+	public String getExternalInterviewerName() {
+		return externalInterviewerName;
+	}
+
+	public void setExternalInterviewerName(String externalInterviewerName) {
+		this.externalInterviewerName = externalInterviewerName;
+	}
+
+	public String getExternalInterviewerEmail() {
+		return externalInterviewerEmail;
+	}
+
+	public void setExternalInterviewerEmail(String externalInterviewerEmail) {
+		this.externalInterviewerEmail = externalInterviewerEmail;
+	}
+
+	public String getUuid() {
+		return uuid;
+	}
+
+	public void setUuid(String uuid) {
+		this.uuid = uuid;
 	}
 	
 }

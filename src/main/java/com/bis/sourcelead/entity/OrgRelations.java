@@ -29,7 +29,6 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 
 @Entity
 @Table(name="ORG_RELATIONS")
-@Cache(usage = CacheConcurrencyStrategy.TRANSACTIONAL,region="orgRelation")
 public class OrgRelations implements Serializable{
 
 	private static final long serialVersionUID = 1L;
@@ -39,13 +38,13 @@ public class OrgRelations implements Serializable{
 	@Column(name = "ID",nullable = false)
 	private Long id;
 	
-	@NotFound(action=NotFoundAction.IGNORE)
+	
 	@ManyToOne
     @JoinColumn(name="RESPONDER_LOCATION_ID", nullable=false )   
 	@JsonBackReference
     private OrgLocations responderLocationId;
 	
-	@NotFound(action=NotFoundAction.IGNORE)
+	
 	@ManyToOne
     @JoinColumn(name="LOCATION_ID", nullable=false )  
 	@JsonBackReference
@@ -111,7 +110,7 @@ public class OrgRelations implements Serializable{
 	@Column(name="DUNS_NUMBER")
 	private String dunsNumber;
 	
-	@NotFound(action=NotFoundAction.IGNORE)
+	
     @ManyToOne
     @JoinColumn(name = "BANK_DETAILS_ID")
     private OrgBankDetails bankDetailsId;
@@ -134,9 +133,24 @@ public class OrgRelations implements Serializable{
 	@Column(name="UPDATED_BY")
 	private String updatedBy;
 	
+
+	@Column(name = "IS_LAW_FIRM")
+	private String isLawFirm;
+	
+	@Column(name = "IS_ACCOUNTING_FIRM")
+	private String isAccountingFirm;
+
+	@Column(name="IS_OFFSHORE_RELATION")
+	private String isOffShoreRelation;
+
+	
 	@Transient
 	@JsonProperty
     private String orgName;
+	
+	@Transient
+	@JsonProperty
+    private Long immigrationRelatedId;
 	
 	@Transient
 	@JsonProperty
@@ -324,7 +338,7 @@ public class OrgRelations implements Serializable{
 	@JsonProperty
 	private String clientContactIds;
 	
-	@NotFound(action=NotFoundAction.IGNORE)
+	
 	@JsonBackReference
 	@OneToMany(cascade = CascadeType.ALL, mappedBy = "orgRelations")
 	private Set<OrgSpoc> orgSpocList;
@@ -1119,6 +1133,39 @@ public class OrgRelations implements Serializable{
 	public void setLocationJsonId(Long locationJsonId)
 	{
 		this.locationJsonId = locationJsonId;
+	}
+
+
+	public String getIsLawFirm() {
+		return isLawFirm;
+	}
+
+	public void setIsLawFirm(String isLawFirm) {
+		this.isLawFirm = isLawFirm;
+	}
+
+	public String getIsAccountingFirm() {
+		return isAccountingFirm;
+	}
+
+	public void setIsAccountingFirm(String isAccountingFirm) {
+		this.isAccountingFirm = isAccountingFirm;
+	}
+
+	public Long getImmigrationRelatedId() {
+		return immigrationRelatedId;
+	}
+
+	public void setImmigrationRelatedId(Long immigrationRelatedId) {
+		this.immigrationRelatedId = immigrationRelatedId;
+	}
+	public String getIsOffShoreRelation() {
+		return isOffShoreRelation;
+	}
+
+	public void setIsOffShoreRelation(String isOffShoreRelation) {
+		this.isOffShoreRelation = isOffShoreRelation;
+
 	}
 
 	

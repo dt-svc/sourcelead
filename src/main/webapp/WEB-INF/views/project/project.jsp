@@ -6,8 +6,7 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <%@taglib prefix="sec" uri="http://www.springframework.org/security/tags"%>
 
-<link href="/resources/css/register-style.css?staticTime=${staticTime}" rel="stylesheet">
-<link href="/resources/css/register-style.css?staticTime=${staticTime}" rel="stylesheet">
+
 <script src="/resources/js/summernote.js?staticTime=${staticTime}"></script>
 <link href="/resources/css/summernote.css?staticTime=${staticTime}" rel="stylesheet" />
 <script src="/resources/js/editor.js?staticTime=${staticTime}"></script>
@@ -31,91 +30,6 @@
 }
 </style>
 
-<script>
-	$(document).ready(function() {
-		<c:forEach var="section" items="${sourceleadSectionList}" varStatus="sectionOrder">
-		  var sectionId = '${section.id}';
-		  getCustomDependentField(sectionId);
-		 </c:forEach>
-	});
-</script>
-
-<script type="text/javascript">
-	function validateProjectSequeneNumber() {
-		var ProjectSequeneNumber = document.getElementById("projectSequeneNumber").value.trim();
-		 //space value  consider this condition 
-		if(ProjectSequeneNumber.match(/^[^\s-](.*)*$/) !== null){
-		
-		var orgLocId = '${SourceLeadWeb_orgLocations.id}';
-		$('#ProjectIdDiv').find('p.jquery_form_error_message').remove();
-		if (ProjectSequeneNumber != null && ProjectSequeneNumber != "") {
-			$.ajax({
-						type : "POST",
-						url : sourceleadUrl+ "/validateProjectSequeneNumberById?${_csrf.parameterName}=${_csrf.token}&ProjectSequeneNumber="+ ProjectSequeneNumber+"&orgLocId="+orgLocId,
-						success : function(data) {
-							if (data == true) {
-								$("input#projectSequeneNumber").after("<p class='jquery_form_error_message'>"+ ProjectSequeneNumber+ " is Already Existed</span>");
-								document.getElementById("projectSequeneNumber").setAttribute('record-exist', 'yes');
-								document.getElementById("projectSequeneNumber").setAttribute('record-exist-errorMsg',ProjectSequeneNumber+ ' is Already Existed');
-								$('input#projectSequeneNumber').removeAttr( "record-exist record-exist-errorMsg");
-								$("#save_project").attr("disabled", "disabled");
-			    				
-							} else {
-								$("#save_project").removeAttr("disabled");
-								$('input#projectSequeneNumber').removeAttr("record-exist record-exist-errormsg");
-								
-							}
-						},
-					});
-	     	}
-		}
-	}
-	
-	var fileCounter = 0;
-	function addFileUpload(){
-		$('<div>').attr('style','float:left; width:325px; border:1px solid #ddd; margin:0 15px 15px 0; padding:5px;overflow: hidden; background-color:#367fa9; color:#fff; ').append('<input id="file'+fileCounter+'"  type="file" class="pull-left" onchange="uploadButton('+fileCounter+');"/>' +
-	            '<a id="Button' + fileCounter + '' +
-	            'value="" onclick = "RemoveFileUpload(this)"><i class="fa fa-times btn btn-danger btn-sm btn-sm2 pull-right"></i></a>').appendTo($('#FileUploadContainer'));
-
-	    		fileCounter++;
-	    		
-	}
-	function RemoveFileUpload(div)
-	{
-		 document.getElementById("FileUploadContainer").removeChild(div.parentNode);
-	}
-</script>
-
-<script>
-function uploadButton(id){
-	fileUpload("file"+id+"", "projects", "project_form","uploadedFileInfo");
-}
-function toUpperCase(){
-	var toupper = $('#projectShortCode').val().toUpperCase().trim();
-	$('#projectShortCode').val(toupper);
-}
-function validateShortCode(){
-	var projectShortCode = $('#projectShortCode').val();
-	var orgLocId = '${SourceLeadWeb_orgLocations.id}';
-	$.ajax({
-		type : "POST",
-		url : sourceleadUrl+ "/validateProjectShortCodeByOrgLocationId?${_csrf.parameterName}=${_csrf.token}&projectShortCode="+projectShortCode+"&orgLocId="+orgLocId,
-		success : function(data) {
-			if (data == true) {
-				$("input#projectShortCode").after("<p class='jquery_form_error_message'>"+ projectShortCode+ " is Already Existed</span>");
-				document.getElementById("projectShortCode").setAttribute('record-exist', 'yes');
-				document.getElementById("projectShortCode").setAttribute('record-exist-errorMsg',projectShortCode+ ' is Already Existed');
-				$('input#projectShortCode').removeAttr( "record-exist record-exist-errorMsg");
-				$("#save_project").attr("disabled", "disabled");
-			} else {
-				$('input#projectShortCode').removeAttr("record-exist record-exist-errormsg");
-				$("#save_project").removeAttr("disabled");
-			}
-		},
-	});
-}
-</script>
-
 <!-- Content Area -->
 <section class="content-wraper">
 	<section class="content-header clearfix">
@@ -128,12 +42,12 @@ function validateShortCode(){
 			&raquo; Create Project
 	</section>
 	<div class="content-area clearfix">
-		<div id="loading"></div>
+		<div id="projectDetailsloading"></div>
 		
 		<div class="newPrDetails newPrDetailsPMO"> 
       		<div class="newPrTabs">
    			  <ul class="newPrTabsMenu">
-				<li class="current" onclick="getProjectDetails();"><a href="#tab-a" data-toggle="tab">Details</a></li>
+				<li class="current" onclick="projects.getProjectDetails();"><a href="#tab-a" data-toggle="tab">Details</a></li>
 				<li><a href="#tab-b" data-toggle="tab" id="assignedMembers" onclick="getAssignedMembers();">Assign Members</a></li>
 				<li><a href="#tab-c" data-toggle="tab" id="additionalDetails" onclick="getAdditionalDetails();">Questionnaire</a></li>
 				<div class="clearfix mb"></div>
@@ -154,7 +68,7 @@ function validateShortCode(){
 									name="projectSequeneNumber"
 									data-validation="validate_Space validate_length length2-50"
 									data-validation-optional="true" class="form-control" placeholder="Project Id"
-									onblur="validateProjectSequeneNumber();">
+									onblur="projects.validateProjectSequeneNumber();">
 							</div>
 						</div>
 						
@@ -162,6 +76,7 @@ function validateShortCode(){
 						 <input type="hidden" name="projectUUID" id="projectUUID" value=""/>
 						 <input type="hidden" name="startDateStr" id="startDateStr" value=""/>
 						 <input type="hidden" name="endDateStr" id="endDateStr" value=""/>
+						 <input type="hidden" id="loginOrgLocationId" value="${SourceLeadWeb_orgLocations.id}"/>
 						 
  
 						<div class="form-group">
@@ -172,7 +87,10 @@ function validateShortCode(){
 										<input type="text" class="form-control calendar" value="" id="startDate" name="startDate" field-name="Start Date" placeholder="Start Date" data-validation="required" readonly="readonly" > 
 									</div>
 									<div class="col-lg-6 positionRelative" id="endDateDiv">
+									<div class="input-group errorInptgroup">
 										<input type="text" class="form-control calendar" value="" id="endDate" name="endDate" field-name="End Date" placeholder="End Date" readonly="readonly">
+										 <span class="input-group-addon" onClick="clearProjectEndDate();"><i class="colorRed fa fa-times cursorPointer"></i></span>
+									</div>
 									</div>
 									<span class="hidden">Enter Project Id</span>
 								</div>
@@ -192,25 +110,11 @@ function validateShortCode(){
 								</select> <span class="hidden">Select Status</span>
 							</div>
 						</div>
-						<!--<div class="form-group">
-							<label class="col-md-3">Timesheet Frequency <span
-								class="text-danger">*</span></label>
-							<div class="col-md-9" id="chosen-frequency">
-								<select class="form-control chosen-select"
-									id="timeSheetFrequency" name="timeSheetFrequency"
-									onchange="removeFrequencyValidation();"
-									field-name="Timesheet Frequency" data-validation="required">
-									<option value="">--Timesheet Frequency-</option>
-									<option value="Weekly">Weekly</option>
-									<option value="Bi-Weekly">Bi-Weekly</option>
-									<option value="Semi-Monthly">Semi-Monthly</option>
-									<option value="Monthly">Monthly</option>
-								</select>
-							</div>
-						</div> -->
+						
+						
 						
 						<div class="form-group">
-							<label class="col-md-3">Invoice Frequency <span
+							<label class="col-md-3">Timesheet Frequency <span
 								class="text-danger">*</span></label>
 							<div class="col-md-9" id="chosen-InvoiceFrequency">
 								<select class="form-control chosen-select" id="invoiceFrequency"
@@ -224,6 +128,59 @@ function validateShortCode(){
 								</select>
 							</div>
 						</div>
+						
+						
+					<div class="form-group">
+						<label class="col-md-3">Project For<span class="text-danger">&nbsp;*</span></label>
+						<div class="col-md-9">
+							<label class="paddingLeft paddingRight"><input type="radio" id="timesheets" value="Timesheets" name="projectFor" onclick="projectForCheckValidation(this)"><span class="mr5"></span>Timesheets</label>
+							<label class="paddingRight"><input type="radio" id="expenses"  value="Expenses" name="projectFor" onclick="projectForCheckValidation(this)"><span class="mr5"></span>Expenses</label>
+							<label class="paddingRight"><input type="radio" id="timesheetsandexpenses"  value="TimesheetsAndExpences"  name="projectFor" onclick="projectForCheckValidation(this)"><span class="mr5"></span>Timesheets & Expenses</label>
+							<input type="hidden"  id="projectForValue" name="projectForValue"  field-name="Project For" data-validation="required"/> 		
+						</div>
+						
+					</div>
+						
+						<c:if test="${!empty projectType && projectType == 'sharedProject' }">
+							<input type="hidden" name="savedSharedClientOrgLocId" id="savedSharedClientOrgLocId">
+							<div class="form-group">
+							<label class="col-md-3" for="Client">Client<span class="text-danger">*</span></label>
+							<div class="col-md-9 select-field">
+								<select class="form-control chosen-select"
+											name="sharedClientOrgLocId" id="sharedClientOrgLocId" field-name="Client"
+											data-validation-optional="true">
+											<option value="">-- Select Client --</option>
+											<c:forEach var="report" items="${clientsList}">
+											<option value="${report.clientLocationId}">${report.clientName}</option>
+											</c:forEach>
+								</select>
+							</div>
+						</div>
+							
+					</c:if>
+						
+						
+						<div class="form-group">
+					             <label class="col-md-3"></label>
+					              <div class="col-md-9">
+					                <div class="checkbox checkBox">
+					                  <label>
+					                    <input type="checkbox" value="Y" name="isTicketNumberRequired" id="isTicketNumberRequired">
+					                   Ref/Ticket Number Required In Time Sheets</label>
+					                </div>
+					                 </div>
+			               </div>
+			               
+			               <div class="form-group">
+					             <label class="col-md-3"></label>
+					              <div class="col-md-9">
+					                <div class="checkbox checkBox">
+					                  <label>
+					                    <input type="checkbox" value="Y" name="isTaskCommentsRequired" id="isTaskCommentsRequired">
+					                   Task Comments Required In Time Sheets</label>
+					                </div>
+					                 </div>
+			               </div>
 
 						 <div class="form-group">
 							<label class="col-md-3"></label>
@@ -253,19 +210,19 @@ function validateShortCode(){
 						</div>
 
 
-						<div class="form-group">
+						<div class="form-group" id="flatPercentageDivId">
 							<label class="col-md-3"></label>
 							<div class="col-md-9">
 								<div class="input-group">
 									<div class="input-group-btn selp-custom-min tblminwidth-125" id="flatPercentageId" >
-										<select class="form-control chosen-select"  name="flatPercentageId" id="flatPercentId">
+										<select class="form-control chosen-select"  name="flatPercentageId" id="flatPercentId" onchange="changeOverTime();">
 											<option value="flat">FLAT</option>
 											<option value="percentage">PERCENTAGE</option>
 										</select>
 									</div>
 									<input type="number" min="0" max="100" step="0.5" value="0"
 										id="flatPercentage" name="flatPercentage" maxlength="5"
-										class="form-control" data-validation-optional="true" onblur="">
+										class="form-control" data-validation-optional="true" onkeyup="flatPercentageType();" onblur="">
 								</div>
 							</div>
 						</div>
@@ -286,13 +243,13 @@ function validateShortCode(){
 							</label>
 							<div class="col-md-9">
 
-								<input type="text" class="form-control" name="projectName" id="projectName" placeholder="Project name" onblur="validateProjectName();" data-validation="required validate_Space validate_length length2-250"
+								<input type="text" class="form-control" name="projectName" id="projectName" placeholder="Project name" onblur="projects.validateProjectName();" data-validation="required validate_Space validate_length length2-250"
 									field-name="Project Name" value=""> <span class="hidden">Project Name</span> <span class="hidden" >Enter Project Id</span>
 
 							</div>
 						</div>
 
-						<c:if test="${not empty user_List}">
+					<c:if test="${not empty user_List}">
 							<div class="form-group">
 								<label class="col-md-3" for="Project Manager">Manager <span
 									class="text-danger">*&nbsp;</span></label>
@@ -300,21 +257,17 @@ function validateShortCode(){
 									<div class="form-icon-min" id="chosen-level1Manager">
 										<select class="form-control chosen-select"
 											name="level1Manager" id="level1Manager" field-name="Manager"
-											data-validation="required" onchange="getLevel2Approvers();">
+											data-validation="required" onchange="projects.getLevel2Approvers();">
 											<option value="">-- Select Level1 Manager --</option>
-											<%-- <c:forEach var="option" items="${user_List}">
-												<option value="${option.id},${option.userType}">${option.firstName}
-													${option.lastName}</option>
-											</c:forEach> --%>
 										</select> <span class="btn btn-default formic1 addLevel"
-											id="level2Toggle" onclick="getLevel2Approvers();">Add
+											id="level2Toggle" onclick="projects.getLevel2Approvers();">Add
 											Level-II</span>
 									</div>
 									<span class="hidden">Select Project Manager</span>
 								</div>
 							</div>
 							<div class="form-group level-second" id="level2Div">
-								<label class="col-md-3" for="Level-II">Level-II</label>
+								<label class="col-md-3" for="Level-II">Level-II Manager</label>
 								<div class="col-md-9">
 									<select class="form-control chosen-select" name="level2Manager"
 										id="level2Manager">
@@ -323,23 +276,57 @@ function validateShortCode(){
 							</div>
 						</c:if>
 						
+						
+						
+						<c:if test="${not empty user_List}">
+							<div class="form-group">
+								<label class="col-md-3" for="Project Manager">Expense Approver&nbsp;<i class='fa fa-info-circle' title='Expense Approver for project. If not selected managers will be the default approvers'></i>
+								</label>
+								<div class="col-md-9">
+									<div class="form-icon-min" id="chosen-level1ExpenseApprover">
+										<select class="form-control chosen-select"
+											name="level1ExpenseApprover" id="level1ExpenseApprover" field-name="Expense Approver"
+											data-validation-optional="true" onchange="projects.getLevel2ExpenseApprovers();">
+											<option value="">-- Select Level1 Approver --</option>
+											
+										</select> <span class="btn btn-default formic1 addExpenseApproverLevel"
+											id="level2ExpenseApproverToggle" onclick="projects.getLevel2ExpenseApprovers();">Add
+											Level-II</span>
+									</div>
+									<span class="hidden">Select Project Manager</span>
+								</div>
+							</div>
+							<div class="form-group expenselevel-second" id="level2ExpenseApproverDiv">
+								<label class="col-md-3" for="Level-II">Level-II Approver</label>
+								<div class="col-md-9">
+									<select class="form-control chosen-select" name="level2ExpenseApprover"
+										id="level2ExpenseApprover">
+									</select>
+								</div>
+							</div>
+						</c:if>
+						
+						<div class="form-group">
+					             <label class="col-md-3"></label>
+					              <div class="col-md-9">
+					                <div class="checkbox checkBox">
+					                  <label>
+					                    <input type="checkbox" value="Y" name="isReportingManagerAsApprover" id="isReportingManagerAsApprover">
+					                   Reporting Manager will be T/E approver</label>
+					                </div>
+					                 </div>
+			               </div> 
+						
 						<div class="form-group" id="shortCodeDivId">
-							<label class="col-md-3"> Project Short Code <span
-								class="text-danger">*</span>
+							<label class="col-md-3"> Project Short Code <i class='fa fa-info-circle' title='The internal unique code for the project'></i>
 							</label>
 							<div class="col-md-9">
-								<input type="text" class="form-control" name="projectShortCode" id="projectShortCode" placeholder="Project Short Code" data-validation="required validate_length length3-3"
-									field-name="Project Short Code" value="" onkeyUp="toUpperCase();" onblur="validateShortCode();"  pattern="[a-zA-Z]"  maxlength="3">  
+								<input type="text" class="form-control" name="projectShortCode" id="projectShortCode" placeholder="Project Short Code" data-validation-optional="true" data-validation="validate_length length3-3"
+									field-name="Project Short Code" value="" onkeyUp="projects.toUpperCase();" onblur="projects.validateShortCode();"  pattern="[a-zA-Z]"  maxlength="3">  
 
 							</div>
 						</div>
 						
-						<div class="clearfix mb"></div>
-			            <c:forEach var="section" items="${sourceleadSectionList}" varStatus="sectionOrder">
-			               <c:if test="${sectionOrder.index == 0}">
-			                  <div id="customDiv${section.id}"></div>
-			               </c:if>
-			            </c:forEach>
 						
 						<div class="form-group">
 							<label class="col-md-3"></label>
@@ -376,7 +363,17 @@ function validateShortCode(){
 								</div>
 							</div>
 						</div>
-					</div>
+					</div>	
+						<div class="clearfix mb myForm">
+						<div class="clearfix"></div>
+			            <c:forEach var="section" items="${sourceleadSectionList}" varStatus="sectionOrder">
+			               <c:if test="${sectionOrder.index == 0}">
+			                  <div id="customDiv${section.id}"></div>
+			               </c:if>
+			            </c:forEach>
+						</div>
+						
+					
 				</div>
 				
 				<!--  div row end -->
@@ -400,7 +397,7 @@ function validateShortCode(){
 						<div class="form-group" id="EstimatedHoursDiv">
 							<label class="col-md-3">Estimated hours</label>
 							<div class="col-md-9">
-								<input type="text" value="" id="estimatedHours"  name="estimatedHours" class="form-control" data-validation-optional="true"
+								<input type="text" value="" id="estimatedHours"  class="form-control" data-validation-optional="true"
 									data-validation="validate_Space validate_float validate_length length1-15" class="form-control" onblur="">
 							</div>
 						</div>
@@ -413,7 +410,7 @@ function validateShortCode(){
 								      <input type="text" class="pull-left btn btn-primary btn-block" value="%" readonly>
 					                </div>
 									<input type="text" value="" id="notifyBudgetAt" name="notifyBudgetAt" class="form-control"
-										data-validation="validate_Space validate_length length2-50" data-validation-optional="true" class="form-control" >
+										data-validation="validate_Space validate_length length1-50" data-validation-optional="true" class="form-control" onkeyup="recSelectType();" >
 								</div>
 							</div>
 						</div>
@@ -437,16 +434,16 @@ function validateShortCode(){
 					                  
 					                </select>
 					                </div>
-									<input type="text" value="" id="estimatedBudget" name="estimatedBudget" class="form-control"
+									<input type="text" value="" id="estimatedBudget"  class="form-control"
 										data-validation="validate_Space validate_float validate_length length1-15" data-validation-optional="true" class="form-control" >
 								</div>
 							</div>
 						</div>
 						
 						<div class="form-group">
-							<label class="col-md-3">Budget Approver</label>
+							<label class="col-md-3">Budget Approver <i class='fa fa-info-circle' title='The person who approves the budget for the project'></i></label>
 							<div class="col-md-9" id="chosen-budgetapprover">
-								<select class="form-control" id="budgetApprover" name="budgetApproverUser" onchange="" field-name="Budget Approver" onchange="getBudgetApprover();">
+								<select class="form-control" id="budgetApprover" name="budgetApproverUser" onchange="" field-name="Budget Approver" onchange="projects.getBudgetApprover();">
 								<option value="">-- Select Budget Approver --</option>
 								</select>
 							</div>
@@ -456,7 +453,7 @@ function validateShortCode(){
 
 					<div class="col-xs-12 col-sm-12 col-md-12 col-lg-12  txtEditor_p">
 						<h5>Description</h5>
-						<textarea id="txtEditor" name="projectDescription"   value="" class="form-control newContrtextarea" data-validation="validate_length length2-5000" data-validation-optional="true"></textarea>
+						<textarea id="txtEditor" name="projectDescription"   value="" class="form-control newContrtextarea"  data-validation-optional="true"></textarea>
 					</div>
 					
 					<div id="timesheetDocumentsId">
@@ -470,7 +467,7 @@ function validateShortCode(){
 					<!--  Documents Section -->
 					<div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
 						<div class="row mt mb10">
-						<h5 class="col-md-1 paddingRight">Documents</h5>
+						<h5 class="col-md-1 paddingRight">Documents <i class='fa fa-info-circle' title='The project documents'></i></h5>
 						<div class="col-md-10 paddingLeft">
 						<input id="Button1" type="button" value="Add Document" onclick="addFileUpload()" class="btn btn-sm btn-primary" />
 						</div>
@@ -501,7 +498,7 @@ function validateShortCode(){
 					<div class="col-lg-12">
 						<div class="pull-right">
 							<input type="button" value="Cancel" onClick="javascript:window.location.href = '<c:url value='${appPath}/projectDashboard'/>'" class="btn btn-danger ml">
-							<input type="button" value="Save & Continue" id="save_project" onclick="saveProject();flushSaveProject()" class="btn btn-primary">
+							<input type="button" value="Save & Continue" id="save_project" onclick="projects.saveProject();flushSaveProject()" class="btn btn-primary">
 						</div>
 					</div>
 				</div>
@@ -518,12 +515,23 @@ function validateShortCode(){
 </div>
 </section>
 <!-- Content Area Ends-->
+
+<script type="text/javascript" src="/resources/js/projects.js"></script>
+
+
+<script type="text/javascript">
+	function projectForCheckValidation(id){
+		document.getElementById("projectForValue").value = id.value;
+	} 
+</script>
+
 <script>
 function removeFrequencyValidation(){
 	$('#chosen-frequency').find('p.jquery_form_error_message').remove();
 }
 
 function allowOverTime(){
+	
 	if ($('#isAllowOverTime').is(":checked"))
 	{
 		$('#flatPercentageId').attr('style','visibility:visible');
@@ -531,6 +539,11 @@ function allowOverTime(){
 	}else{
 		$('#flatPercentageId').attr('style','visibility:hidden');
 		$('#flatPercentage').attr('style','visibility:hidden');
+		
+		$('#flatPercentage').val('');
+		$('#flatPercentageDivId').parent().find('p.jquery_form_error_message').remove(); 
+		$("#save_project").removeAttr("disabled");
+		
 	}
 	
 }
@@ -589,8 +602,7 @@ function getStatus(){
 		if(savedProjectId != null && savedProjectId != '' && savedProjectId != 'undefined'){
 			$("#projectId").val(savedProjectId);
 			$("#projectUUID").val(projectUUID);
-			
-			getProjectDetails();
+			projects.getProjectDetails();
 			
 			var isProjectDetailsFilled = '${isProjectDetailsFilled}';
 			if(isProjectDetailsFilled == 'N'){
@@ -621,8 +633,9 @@ function getStatus(){
 				additionalDetails.href = "#";
 				additionalDetails.className = "disabledLink";
 			}
-			getProjectLevel1Approvers();
-			getBudgetApprover();
+			projects.getProjectLevel1Approvers();
+			projects.getProjectLevel1ExpenseApprovers();
+			projects.getBudgetApprover();
 		}
 		
 		$("#tab-a").show()
@@ -637,80 +650,6 @@ function getStatus(){
 	});
 </script>
 
-
-
-
-<script type="text/javascript">
-	function saveProject() {
-		var projectId = document.getElementById("projectId").value;
-		if(projectId == null || projectId == '' || projectId == 'undefined'){
-			validateProjectSequeneNumber();
-		}
-		var validationSettings = {
-			errorMessagePosition : 'element',
-			borderColorOnError : '',
-			scrollToTopOnError : true,
-			dateFormat : 'yyyy/mm/dd'
-		};
-		
-		var ee = $("#txtEditor").val($('.Editor-editor').text()); 
-
-		if ($('#project_form').validate(false, validationSettings)) {
-// 		   var frm = $('#project_form').serializeFormJSON();
-			 
-// 		    var form = $('#project_form')[0];
-// 		    var formData = new FormData(form); 
-		    
-		    var formData = getFormData1("project_form");
-		    var estimatedBudget = document.getElementById("estimatedBudget").value;
-		    var estimatedHours = document.getElementById("estimatedHours").value;
-		    
-		    
-		    if(formData.get("estimatedBudget") === "") {
-		    	formData.set("estimatedBudget","0");
-		    }
-		    if(formData.get("estimatedHours") === "") {
-		    	formData.set("estimatedHours","0");
-		    }
-		    
-		   /*  if(estimatedBudget === "") {
-		    	formData["estimatedBudget"] = "0";
-		    }
-		    if(estimatedHours === "") {
-		    	formData["estimatedHours"] = "0";
-		    } */
-		    
-     		$("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
-			$.ajax({
-						type : "POST",
-						data: formData,
-		  		        processData: false,
-		  		        contentType:false, 
-						url : sourceleadUrl+ "/storeProject?${_csrf.parameterName}=${_csrf.token}",
-						success : function(projects) {
-								 $("#projectId").val(projects.id);
-								 $("#projectUUID").val(projects.projectUUID);
-								 $("#startDateStr").val(projects.startDateStr);
-								 $("#endDateStr").val(projects.endDateStr);
-								 
-								 $("#loading").removeAttr("style");
-								 var assignedMembers = document.getElementById("assignedMembers");
-								 document.getElementById("assignedMembers").removeAttribute("class");
-								 assignedMembers.href="#tab-b"; 
-								 assignedMembers.click();
-
-						},
-					});
-			return true;
-		} else {
-			return false;
-		}
-	}
-	$('body').on('blur', '#project_form', function() {
-		$("#project_form").showHelpOnFocus();
-		$("#project_form").validateOnBlur(false, validationSettings);
-	});
-</script>
 <script type="text/javascript">
 	function flushSaveProject() {
 		$("#save_project").removeAttr("disabled");
@@ -718,194 +657,11 @@ function getStatus(){
 </script>
 
 
-<script>
-function getProjectDetails(){
-	var projectId = document.getElementById("projectId").value;
-	if(projectId){
-		$("#FileUploadContainer").empty();
-		
-		$("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
-		var sourceleadUrl ='${sourceleadUrl}';
-        $.ajax({
-	    	type: "POST",
-	    	 url: sourceleadUrl+"/getProjectDetailsByProjectId?${_csrf.parameterName}=${_csrf.token}&projectId="+projectId, 
-	        success: function(json) {
-	        	
-	        	var level1ApproverUser = '';
-	        	var level2ApproverUser = '';
-	        	
-	        	if(json.projectSequeneNumber != null && json.projectSequeneNumber != 'undefined'){
-	        		 $("input[name=projectSequeneNumber]").val(json.projectSequeneNumber);
-// 	        		 $("input[name=projectSequeneNumber]").attr("readonly","readonly");
-	        		 $('#projectSequeneNumber').removeAttr('onblur');
-	        	}
-	        	
-	        	 $("input[name=projectName]").val(json.projectName);
-	        	 $("input[name=startDate]").val(json.startDateStr);
-	        	 $("input[name=endDate]").val(json.endDateStr);
-	        	 $("#projectShortCode").val(json.projectShortCode);
-	        	 $("input[name=projectShortCode]").attr("readonly","readonly");
-	        	 $('#projectShortCode').removeAttr('onblur');
-	        	 $("#notifyBudgetAt").val(json.notifyBudgetAt);
-	        	 
-	           var projectStatus = '';
-	           if(json.projectStatus == 'NOTSTARTED'){
-	        	   projectStatus = "Not Started"
-	           }else if(json.projectStatus == 'INPROGRESS'){
-	        	   projectStatus = "In-Progress"
-	           }else if(json.projectStatus == 'COMPLETED'){
-	        	   projectStatus = "Completed"
-	           }else if(json.projectStatus == 'ONHOLD'){
-	        	   projectStatus = "On-Hold"
-	           }else if(json.projectStatus == 'DROPPED'){
-	        	   projectStatus = "Dropped"
-	           }
-	           
-	           
-        	   $("select[name=status]").val(projectStatus);
-        	   
-        	 //  $('#timeSheetFrequency').val(json.timesheetFrequency).trigger('chosen:updated');
-        	   $('#invoiceFrequency').val(json.invoiceFrequency).trigger('chosen:updated');
-        	   
-        	   if(json.allowFreeLance == 1){
-        		   document.getElementById("isAllowFreelanceDevelopers").checked = true;
-        	   }
-        	   
-        	   if(json.allowRemote == 1){
-        		   document.getElementById("isAllowRemoteWork").checked = true;
-        	   }
-        	   
-        	   if(json.allowOvertime == 1){
-        		   document.getElementById("isAllowOverTime").checked = true;
-        		   $('#flatPercentageId').attr('style','visibility:visible');
-        		   $('#flatPercentage').attr('style','visibility:visible');
-        		   $('#flatPercentId').val(json.overtimeRateType).trigger('chosen:updated');
-        		   $("input[name=flatPercentage]").val(json.flatPercent);
-        		   
-        	   }
-        	   
-        	   
-        	   if(json.isTimesheetAttachmentRequired == 1){
-        		   document.getElementById("isTimesheetAttachmentRequired").checked = true;
-        	   }
-        	   
-        	   if(json.allowOffShore == 1){
-        		   document.getElementById("isAllowOffshoreResource").checked = true;
-        	   }
-        	   
-        	   if(json.allowTimeEntryAfterDeadLine == 1){
-        		   document.getElementById("isTimeEntryAfterDeadline").checked = true;
-        	   }
-        	   
-        	   if(json.allowBidding == 1){
-        		   document.getElementById("isAllowBidding").checked = true;
-        	   }
-        	   
-        	   
-        	   $("textarea[name=projectDescription]").val(json.description);
-        	   $(".Editor-editor").html(json.description);
-        	   
-        	   
-        	   //Project Budget details
-        	   if(json.projectBudget.length > 0){
-        		   for(var i=0; i<json.projectBudget.length; i++){
-        			   var report = json.projectBudget[i];
-        			   $("#estimatedBudgetCurrency").val(report.estimatedBudgetCurrency);
-        			   $("#estimatedHours").val(report.estimatedHours);
-        			   $("#estimatedBudget").val(report.estimatedBudgetValue);
-        			   getBudgetApprover(report.userId);
-        		   }
-        		   
-        	   }
-        	   
-        	   
-        	   if(json.projectDocumentsList != null && json.projectDocumentsList.length > 0){
-        		   var result = '';
-        		   for(var i=0; i<json.projectDocumentsList.length; i++){
-        			   var opt = json.projectDocumentsList[i];
-        			  
-        			     result = result +"<strong id='projectDocument"+opt.id+"'>";
-      	    		     result = result +"<i class=''><a class='glyphicon glyphicon-save' href=\""+opt.fileUrl+"\"></a></i>";
-      					 result = result +"<input type='button' value='"+opt.fileName+"'>";
-      					 result = result +"</a>";
-      					 result = result +"<input class='dele' type='button' onClick='removeProjectDocuments("+opt.id+","+json.id+");' >";
-      					 result = result +"</strong>";
-        		   }
-        		   
-        		   
-        		   $("#savedProjectDocuments").empty();
-      			   $("#savedProjectDocuments").append(result);
-        	   }
-        	   
-        	   $("input[type=hidden][name*=uploadedFileInfo]").remove();
-      			   
-      			   for(var i=0; i<json.approverHierarchyList.length; i++){
-	        		  var opt = json.approverHierarchyList[i];
-	        		  if(opt.level == "1"){
-	        			  level1ApproverUser = opt.projectApproverUserId;
-	        			  getProjectLevel1Approvers(opt.projectApproverUserId);
-	        		  }
-	        		  
-	        		  if(opt.level == "2"){
-	        				 $("#level2Toggle").hide(); 
-	        				 document.getElementById("level2Div").removeAttribute("class");
-	        				 document.getElementById('level2Div').className = 'form-group level-second level-second-active';
-	        				 level2ApproverUser = opt.projectApproverUserId;
-	        		  }
-	        	  }  
-      			   
-      			   if(level1ApproverUser != '' && level2ApproverUser != ''){
-      				  getChildLevel1Approvers(level1ApproverUser,level2ApproverUser);
-      			   }
-      			 
-      			   
-      			   $("#loading").removeAttr("style");
-		        
-	        },
-	    });  
-	}
-}
-</script>
-
-<script>
-function removeProjectDocuments(documentId,projectId){
-	$.ajax({
-	   	type: "POST",
-	    url: sourceleadUrl+"/terminateProjectDoc?${_csrf.parameterName}=${_csrf.token}&porjectDocumentId="+documentId, 	   
-		    success: function(data) {
-		    	$("#projectDocument"+documentId).remove();
-		    },
-     });
-
-}
-</script>
-
-<script type="text/javascript">
-	function flushProject() {
-		$("#save_client").removeAttr("disabled");
-		$('#orgName').val('');
-		$('#companyWebsite').val('');
-		$(".error").removeClass("error");
-		$('#newClient').find('p.jquery_form_error_message').remove();
-	}
-</script>
-<script>
-function assignEmployeeCancel(){
-	$(".myCheckbox").each(function() {
-		var empAssigned = $(this).attr('emp-assigned');
-		if(empAssigned != null && empAssigned != 'undefined' && empAssigned != '' && empAssigned == 'true'){
-		}
-		else{
-			$(this).prop('checked', false);
-		}
-		
-    });	
-}
-</script>
 
 
 <script>
-	$(function() {
+$(window).load(function() {
+	var dbStartDate = $("#startDate").val();
 		 var locationDate ='${SourceLeadWeb_orgLocations.dateFormat}'; 
 		  var finalDateFormatProjectSave = '';
 		  if(locationDate.match("yyyy-MM-dd")){
@@ -932,6 +688,7 @@ function assignEmployeeCancel(){
 			dateFormat : finalDateFormatProjectSave,
 			changeMonth: true,
 			changeYear: true, 
+			minDate:dbStartDate,
 			onSelect : function(selected) {
 				var dt = $(this).datepicker('getDate', '-1d');
 				dt.setDate(dt.getDate() - 1);
@@ -1042,124 +799,8 @@ function assignEmployeeCancel(){
 		});
 	}
 </script>
-<script type="text/javascript">
-function getLevel2Approvers(level1ApproverUser){
-	var currentApproverId = '';
-	$('#chosen-level1Manager').find('p.jquery_form_error_message').remove();
-	if(level1ApproverUser != null && level1ApproverUser != '' && level1ApproverUser != 'undefined'){
-		currentApproverId = level1ApproverUser;
-	}else{
-		currentApproverId = document.getElementById("level1Manager").value;
-	}
-	var currentUser = currentApproverId.split(',');
-	var currentUserId = currentUser[0];
-	var currentUserType = currentUser[1];
-	var count = 1;
-	$(".myCheckbox").each(
-					function() {
-						var localId = this.id;
-						document.getElementById(localId).checked = false; 
-	});
-	$(".myCheckbox").val('');
-	
-	$("#level2Manager").empty();    
-	$('#level2Manager').val('').trigger('chosen:updated');
-	if(currentUserType != null && currentUserType != '' && currentUserType !='undefined' && currentUserType != 'Admin'){
-	    $("#level2Toggle").show();
-		getChildLevel1Approvers(currentUserId);
-	}else if(currentUserType != null && currentUserType != '' && currentUserType !='undefined' && currentUserType == 'Admin'){
-	    $("#level2Toggle").hide();   
-	    $("#level2Div").removeClass("level-second-active");
-	}
-	
-	
-} 
-</script>
-
-<script type="text/javascript">
-function getChildLevel1Approvers(currentApproverId,level2ApproverUserId){
-	 if(currentApproverId != null && currentApproverId != ''  && currentApproverId != 'undefined'){
-		 $.ajax({
-		    	type: "POST",
-		        url: sourceleadUrl+"/getApproversByUserId?${_csrf.parameterName}=${_csrf.token}&currentApproverId="+currentApproverId,
-		        success: function(json) {
-		        	var output = "";
-		        	output = output + "<option value=''>-Select Manager-</option>"; 
-		        	for (var i=0; i<json.length; i++)
-					{
-			        		var opt = json[i];
-			        		var selected = '';
-			        		if(level2ApproverUserId != null && level2ApproverUserId != 'undefied' && level2ApproverUserId != '' && level2ApproverUserId == opt.id){
-			        			selected = "selected";
-			        		}
-			        		output = output + "<option value='" +opt.id+ "' "+selected+">"+opt.fullName+" ("+opt.userType+")</option>";
-					}
-		        	$("#level2Manager").empty();
-			        $("#level2Manager").append(output);
-			        $('#level2Manager').trigger("chosen:updated");
-		        },
-		        error: function(e){
-		            
-		        }
-		    });
-	 }else{
-		 getApproversLevel2();
-		
-	 }
-} 
-</script>
 
 
-<script type="text/javascript">
-function getProjectLevel1Approvers(approverUserId){
-	 $("#level1Manager").empty();
-		 $.ajax({
-		    	type: "GET",
-		        url: sourceleadUrl+"/getProjectLevel1Approvers?${_csrf.parameterName}=${_csrf.token}",
-		        success: function(json) {
-		        	var output = "";
-		        	output = output + "<option value=''>-- Select Level1 Manager --</option>";
-		        	for (var i=0; i<json.length; i++)
-					{
-		        		var selected = "";
-		        		var opt = json[i];
-		        		if(approverUserId != null && approverUserId != 'undefied' && approverUserId != '' && approverUserId == opt.id){
-		        			selected = "selected";
-		        		}
-			        		output = output + "<option value='" +opt.id+ ","+opt.userType+"' "+selected+">"+opt.fullName+" ("+opt.userType+")</option>";
-					}
-		        	
-			        $("#level1Manager").append(output);
-			        $('#level1Manager').trigger("chosen:updated");
-		        }
-		    });
-	 }
-</script>
-<script>
-function getBudgetApprover(approverUserId){
-	var orgLocationId = '${SourceLeadWeb_orgLocations.id}';
-	var actionType = "ROLE_BUDGET_APPROVER";
-	 $.ajax({
-	    	type: "GET",
-	        url: sourceleadUrl+"/getSourceLeadActionApproversList?${_csrf.parameterName}=${_csrf.token}&orgLocationId="+orgLocationId+"&actionType="+actionType,
-	        success: function(json) {
-	        	var output = "";
-	        	for (var i=0; i<json.length; i++)
-				{
-	        		 var opt = json[i];
-	        		 if(opt.id == approverUserId){
-		        			output = output + "<option value='"+opt.id+"' selected>"+opt.name+" ("+opt.userRole+")</option>";
-		        		}else{
-		        			output = output + "<option value='"+opt.id+"'> "+opt.name+" ("+opt.userRole+")</option>";
-		        		}
-				}
-		        $("#budgetApprover").append(output);
-		        $('#budgetApprover').chosen();
-		        $('#budgetApprover').trigger("chosen:updated");
-	        }
-	    });
-}
-</script>
 									
 <script type="text/javascript">
         var validationSettings = {
@@ -1193,21 +834,35 @@ function getBudgetApprover(approverUserId){
 
 <script>
 	$(document).ready(function() {
-		$("#txtEditor").Editor().trim();
-		$("#txtEditor").find(".Editor-editor").data-validation('validate_length length2-5000');
-		$("#txtEditor").find(".Editor-editor").data-validation-optional('rule-required',true);
 		<c:forEach var="section" items="${sourceleadSectionList}" varStatus="sectionOrder">
 		  var sectionId = '${section.id}';
 		  getCustomDependentField(sectionId);
 		 </c:forEach>
+		 
+		 var projectType = '${projectType}';
+		 if(projectType != '' && projectType != 'undefined' && projectType == 'sharedProject'){
+			 $("#sharedClientOrgLocId").removeAttr("data-validation-optional");
+			 $("#sharedClientOrgLocId").attr("data-validation", "required");
+		 }
+		 
+	});
+</script>
+
+
+<script>
+	$(document).ready(function() {
+		$("#txtEditor").Editor();
+		$("#txtEditor").find(".Editor-editor").data-validation('validate_length length2-5000');
+		$("#txtEditor").find(".Editor-editor").data-validation-optional('rule-required',true);
 	});
 </script>
  
 <script>
 function getCustomDependentField(sectionId){
-	 $.ajax({
+	var projectId = $('#projectId').val();
+	$.ajax({
 			type : "POST" , 
-				 url: sourceleadUrl+"/getAllASectionCustomFields?sectionId="+sectionId,
+				 url: sourceleadUrl+"/getAllASectionCustomFields?sectionId="+sectionId+"&projectId="+projectId+"&requestFrom=project",
 				 success: function(data) {
 		        	$('#customDiv'+sectionId).empty();
 		        	$('#customDiv'+sectionId).append(data);
@@ -1216,36 +871,90 @@ function getCustomDependentField(sectionId){
 }
 </script>
 
-<script>
-function validateProjectName(){
-	var projectUUID = document.getElementById("projectUUID").value;
-	var projectName = document.getElementById("projectName").value;
-	
-	$.ajax({
-		type : "GET",
-		url : sourceleadUrl+ "/validateOrgLocationProjectName?${_csrf.parameterName}=${_csrf.token}&projectUUID="+projectUUID+"&projectName="+projectName,
-		success : function(data) {
-			if (data == true) {
-				$("input#projectName").after("<p class='jquery_form_error_message'>"+ projectName+ " is Already Existed</span>");
-				document.getElementById("projectName").setAttribute('record-exist', 'yes');
-				document.getElementById("projectName").setAttribute('record-exist-errorMsg',projectName+ ' is Already Existed');
-				$('input#projectName').removeAttr( "record-exist record-exist-errorMsg");
-				$("#save_project").attr("disabled", "disabled");
-			} else {
-				$('input#projectName').removeAttr("record-exist record-exist-errormsg");
-				$("#save_project").removeAttr("disabled");
-			}
-		},
-	});
-}
-</script>
+
  
-<!--  <script>
- function clearStartDate(){
-	$("#startDate").val("");
-	}; 
-function clearEndDate(){
-	$("#endDate").val("");
-	};
+ 
+ <script type="text/javascript">
+function recSelectType(){
+	 var canScore = document.getElementById("notifyBudgetAt").value;
+	 $('#EstimatedBudgetDiv').parent().find('p.jquery_form_error_message').remove(); 
+		  var floatNum = /^(\d{0,2}(\.\d{0,2})?|100)$/
+		  if(canScore.match(floatNum)){
+			  $("#save_project").removeAttr("disabled");
+			   return true;
+		  }		  
+		 else{
+				$("input#notifyBudgetAt").parent().after("<p class='jquery_form_error_message'><span>Enter your Valid Percentage</span>");
+				 $("#save_project").attr("disabled", "disabled");
+				return false; 
+		 	 }
+
+	 
 	
+		 }
+	  
+</script>
+
+ <script type="text/javascript">
+function flatPercentageType(){
+	var flatPercentId  = $("#flatPercentId").val();
+	 var flatPercentage = document.getElementById("flatPercentage").value;
+	 $('#flatPercentageDivId').parent().find('p.jquery_form_error_message').remove();
+	 var floatNum = "";
+	 
+	 if(flatPercentage != '' && flatPercentage != 'undefined' && flatPercentage != null){
+		 if(flatPercentId == 'flat'){
+			  var floatNum = /^(\d{0,10}(\.\d{0,10})?|100)$/
+		 }else{
+			  var floatNum = /^(\d{0,2}(\.\d{0,2})?|100)$/
+		 }
+		  if(flatPercentage.match(floatNum)){
+			  $("#save_project").removeAttr("disabled");
+			   return true;
+		  }		  
+		 else{
+			 if(flatPercentId == 'flat'){
+					$("input#flatPercentage").parent().after("<p class='jquery_form_error_message'><span>Enter  valid flat value length 1 to 10</span>");
+			 }else{
+					$("input#flatPercentage").parent().after("<p class='jquery_form_error_message'><span>Enter  valid percentage</span>");
+			 }
+				 $("#save_project").attr("disabled", "disabled");
+				return false; 
+		 	 }
+		 
+	    }else{
+			$("input#flatPercentage").parent().after("<p class='jquery_form_error_message'><span>Enter value</span>");
+			$("#save_project").attr("disabled", "disabled");
+	    }
+}
+function changeOverTime(){
+	 $('#flatPercentageDivId').parent().find('p.jquery_form_error_message').remove();
+	 $("#flatPercentage").val(0);
+
+}
+	  
+</script>
+
+<!-- <script type="text/javascript">
+    $(function () {
+        $("#endDate").bind("click", function () {
+            $("#status")[0].selectedIndex = 0;
+        });
+    });
 </script> -->
+
+  <script>
+ /* function clearStartDate(){
+	$("#startDate").val("");
+	}; */ 
+function clearProjectEndDate(){
+		 $("#endDate").val("");
+		 $("#status").empty();
+		 $('#status').append('<option >Select Status</option>');
+		 $('#status').append('<option >In-Progress</option>');
+		 $('#status').append('<option >Not Started</option>');
+		 $('#status').append('<option >Completed</option>');
+		 $('#status').append('<option >On-Hold</option>');
+		 $('#status').append('<option >Dropped</option>');
+	}
+</script> 

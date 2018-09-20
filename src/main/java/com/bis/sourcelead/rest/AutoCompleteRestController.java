@@ -172,4 +172,21 @@ public class AutoCompleteRestController {
         return result;
 	}
     
+    
+    @RequestMapping(value = {"/app/ws/getCitiesByCountryCode", "app/getCitiesByCountryCode"})
+    public List<String> getCitiesByCountryCode(@RequestParam(value="countryCode", required=false) String countryCode) throws Exception {
+    	
+    	List<String> citiesList = new ArrayList<>();
+    	
+    	List<Webgeocities> cities = webgeocitiesService.getAllCitiesByCountryCode(countryCode);
+    	if(cities != null && !cities.isEmpty())
+    	{
+    		for(Webgeocities city: cities){
+    			citiesList.add(city.getCityName());
+    		}
+    	}
+		
+        return citiesList;
+	}
+    
 }

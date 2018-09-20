@@ -9,7 +9,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 
 public class LeaveDTO extends SearchDTO implements Serializable{
 
-	private String id;
+	private long id;
 	private String orgLocationId;
 	private String userId;
 	private String user;
@@ -18,7 +18,7 @@ public class LeaveDTO extends SearchDTO implements Serializable{
 	private String toDate;
 	private String toHalfDay;
 	private String leaveType;
-	private String leaveTypeId;
+	private long leaveTypeId;
 	private String reason;
 	private List<String> approverUser;
 	private String approvedBy;
@@ -34,7 +34,7 @@ public class LeaveDTO extends SearchDTO implements Serializable{
 	private String staticPath;
 	private String empName;
 	private String duration;
-	private String noOfDays;
+	private int noOfDays;
 	private String balanceleaves;
 	private String fileUrl;
 	private String fileName;
@@ -81,6 +81,32 @@ public class LeaveDTO extends SearchDTO implements Serializable{
 	private String isBillable;
 	private int selfBalancedCounts;
 	private String topLeaveTakersreportYear;
+	private float extraLeavesTaken;
+	private String leaveUUID;
+	private float appliedNoOfDays;
+	private float actualLeavesTaken;
+	private float thisMonthLeavesTaken;
+	private float totalBalLeaves;
+	
+	private String exportType;
+	private float leaveNoDays;
+	private String leaveName;
+	private boolean isSuperUser;
+	
+	private String withdrawReason;
+	private Long leaveId;
+	private String currentStage;
+	
+	private String fromDateFromHalfTime;
+	private String fromDateToHalfTime;
+	private String toDateFromHalfTime;
+	private String toDateToHalfTime;
+	private String durationHrs;
+	
+	private List<String> otherApproverUser;
+	private String notifyToOthers;
+	private String loginUserRole;
+	private String type;
 	
 	public String getLeavesTaken() {
 		return leavesTaken;
@@ -89,11 +115,11 @@ public class LeaveDTO extends SearchDTO implements Serializable{
 		this.leavesTaken = leavesTaken;
 	}
 	
-	public String getId()
+	public long getId()
 	{
 		return id;
 	}
-	public void setId(String id)
+	public void setId(long id)
 	{
 		this.id = id;
 	}
@@ -161,11 +187,11 @@ public class LeaveDTO extends SearchDTO implements Serializable{
 	{
 		this.leaveType = leaveType;
 	}
-	public String getLeaveTypeId()
+	public long getLeaveTypeId()
 	{
 		return leaveTypeId;
 	}
-	public void setLeaveTypeId(String leaveTypeId)
+	public void setLeaveTypeId(long leaveTypeId)
 	{
 		this.leaveTypeId = leaveTypeId;
 	}
@@ -289,11 +315,11 @@ public class LeaveDTO extends SearchDTO implements Serializable{
 	{
 		this.duration = duration;
 	}
-	public String getNoOfDays()
+	public int getNoOfDays()
 	{
 		return noOfDays;
 	}
-	public void setNoOfDays(String noOfDays)
+	public void setNoOfDays(int noOfDays)
 	{
 		this.noOfDays = noOfDays;
 	}
@@ -569,5 +595,158 @@ public class LeaveDTO extends SearchDTO implements Serializable{
 	public void setTopLeaveTakersreportYear(String topLeaveTakersreportYear) {
 		this.topLeaveTakersreportYear = topLeaveTakersreportYear;
 	}
-
+	public float getExtraLeavesTaken() {
+		return extraLeavesTaken;
+	}
+	public void setExtraLeavesTaken(float extraLeavesTaken) {
+		this.extraLeavesTaken = extraLeavesTaken;
+	}
+	public String getLeaveUUID()
+	{
+		return leaveUUID;
+	}
+	public void setLeaveUUID(String leaveUUID)
+	{
+		this.leaveUUID = leaveUUID;
+	}
+	public float getAppliedNoOfDays()
+	{
+		return appliedNoOfDays;
+	}
+	public void setAppliedNoOfDays(float appliedNoOfDays)
+	{
+		this.appliedNoOfDays = appliedNoOfDays;
+	}
+	public float getActualLeavesTaken()
+	{
+		return actualLeavesTaken;
+	}
+	public void setActualLeavesTaken(float actualLeavesTaken)
+	{
+		this.actualLeavesTaken = actualLeavesTaken;
+	}
+	public float getThisMonthLeavesTaken()
+	{
+		return thisMonthLeavesTaken;
+	}
+	public void setThisMonthLeavesTaken(float thisMonthLeavesTaken)
+	{
+		this.thisMonthLeavesTaken = thisMonthLeavesTaken;
+	}
+	public float getTotalBalLeaves()
+	{
+		return totalBalLeaves;
+	}
+	public void setTotalBalLeaves(float totalBalLeaves)
+	{
+		this.totalBalLeaves = totalBalLeaves;
+	}
+	public String getExportType() {
+		return exportType;
+	}
+	public void setExportType(String exportType) {
+		this.exportType = exportType;
+	}
+	public float getLeaveNoDays() {
+		return leaveNoDays;
+	}
+	public void setLeaveNoDays(float leaveNoDays) {
+		this.leaveNoDays = leaveNoDays;
+	}
+	public String getLeaveName() {
+		return leaveName;
+	}
+	public void setLeaveName(String leaveName) {
+		this.leaveName = leaveName;
+	}
+	public boolean getIsSuperUser()
+	{
+		return isSuperUser;
+	}
+	public void setIsSuperUser(boolean isSuperUser)
+	{
+		this.isSuperUser = isSuperUser;
+	}
+	public String getWithdrawReason() {
+		return withdrawReason;
+	}
+	public void setWithdrawReason(String withdrawReason) {
+		this.withdrawReason = withdrawReason;
+	}
+	public Long getLeaveId() {
+		return leaveId;
+	}
+	public void setLeaveId(Long leaveId) {
+		this.leaveId = leaveId;
+	}
+	public String getCurrentStage() {
+		return currentStage;
+	}
+	public void setCurrentStage(String currentStage) {
+		this.currentStage = currentStage;
+	}
+	public List<String> getOtherApproverUser() {
+		return otherApproverUser;
+	}
+	public void setOtherApproverUser(List<String> otherApproverUser) {
+		this.otherApproverUser = otherApproverUser;
+	}
+	public String getNotifyToOthers() {
+		return notifyToOthers;
+	}
+	public void setNotifyToOthers(String notifyToOthers) {
+		this.notifyToOthers = notifyToOthers;
+	}
+	public String getFromDateFromHalfTime() {
+		return fromDateFromHalfTime;
+	}
+	public void setFromDateFromHalfTime(String fromDateFromHalfTime) {
+		this.fromDateFromHalfTime = fromDateFromHalfTime;
+	}
+	public String getFromDateToHalfTime() {
+		return fromDateToHalfTime;
+	}
+	public void setFromDateToHalfTime(String fromDateToHalfTime) {
+		this.fromDateToHalfTime = fromDateToHalfTime;
+	}
+	public String getToDateFromHalfTime() {
+		return toDateFromHalfTime;
+	}
+	public void setToDateFromHalfTime(String toDateFromHalfTime) {
+		this.toDateFromHalfTime = toDateFromHalfTime;
+	}
+	public String getToDateToHalfTime() {
+		return toDateToHalfTime;
+	}
+	public void setToDateToHalfTime(String toDateToHalfTime) {
+		this.toDateToHalfTime = toDateToHalfTime;
+	}
+	public String getDurationHrs()
+	{
+		return durationHrs;
+	}
+	public void setDurationHrs(String durationHrs)
+	{
+		this.durationHrs = durationHrs;
+	}
+	public void setSuperUser(boolean isSuperUser)
+	{
+		this.isSuperUser = isSuperUser;
+	}
+	public String getLoginUserRole()
+	{
+		return loginUserRole;
+	}
+	public void setLoginUserRole(String loginUserRole)
+	{
+		this.loginUserRole = loginUserRole;
+	}
+	public String getType()
+	{
+		return type;
+	}
+	public void setType(String type)
+	{
+		this.type = type;
+	}
 }

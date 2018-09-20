@@ -24,7 +24,6 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 
 @Entity
 @Table(name = "PROJECT_QUESTIONNAIRE")
-@Cache(usage = CacheConcurrencyStrategy.TRANSACTIONAL, region = "projectQuestionnaire")
 public class ProjectQuestionnaire implements Serializable{
 
 	private static final long serialVersionUID = 1L;
@@ -34,11 +33,11 @@ public class ProjectQuestionnaire implements Serializable{
 	@Column(name = "ID", nullable = false)
 	private Long id;
 	
-	@ManyToOne(fetch = FetchType.EAGER)
+	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name="PROJECT_ID", nullable=false )	
 	private Projects projectId;
 	
-	@ManyToOne(fetch = FetchType.EAGER)
+	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name="ORG_LOCATIONS_ID", nullable=false )	
 	private OrgLocations orgLocationId;
 	

@@ -3,6 +3,18 @@
 <%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
 <%@taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
 
+	<c:if test="${timesheetSubmission.submissionStatus eq 'SUBMITTED FOR APPROVAL'}">
+		<td>
+			<input class="checkBoxForSubmitForApproval"  name="checkBoxForSubmitForApproval" type="checkbox" value="${timesheetSubmission.projectMemberId}!${timesheetSubmission.actualStartDate}!${timesheetSubmission.actualEndDate}!${timesheetSubmission.tdSpanLength}!'approval'" onclick="displayAcceptRejectButtonOnHedder();">
+		</td>
+	</c:if>
+	<c:if test="${timesheetSubmission.submissionStatus ne 'SUBMITTED FOR APPROVAL'}">
+		<td>
+		     <small class="positionRelative">
+			<i class="fa fa-ban text-danger"></i>
+			</small>
+		</td>
+	</c:if>
 	<td class="sorting_1">
 		<div class="time_appr_user">
 			<img id="userImage" onerror="predefineProfileImage(this);" src="${timesheetSubmission.profileImageFileUrl}" alt="Profile Image" class="img-circle img-responsive"> 
@@ -56,11 +68,11 @@
     <c:if test="${!empty timesheetSubmission.tableFor && timesheetSubmission.tableFor == 'approver'}">
 		<td>
 			<div class="sm">
-				<a href="#" onclick="timesheetApprovalPopUpByProjectMemberId('${timesheetApprovalDTO.weekFrequency}','${timesheetSubmission.projectId}','${timesheetSubmission.projectMemberId}','${timesheetSubmission.masterCandidateId}','${timesheetSubmission.totalHours}','approver');">${timesheetSubmission.totalHours}/${timesheetSubmission.estimatedHours}</a>
+				<a href="#" id="popuplink" onclick="timesheetApprovalPopUpByProjectMemberId('${timesheetApprovalDTO.weekFrequency}','${timesheetSubmission.projectId}','${timesheetSubmission.projectMemberId}','${timesheetSubmission.masterCandidateId}','${timesheetSubmission.totalHours}','approver');">${timesheetSubmission.totalHours}/${timesheetSubmission.estimatedHours}</a>
 			</div>
 		</td>
 	</c:if>
-	<td><div class="sm" title="New" id="status${timesheetSubmission.projectMemberId}">${timesheetSubmission.submissionStatus}</div></td>
+	<td><div class="sm" title="${timesheetSubmission.submissionStatus}" id="status${timesheetSubmission.projectMemberId}">${timesheetSubmission.submissionStatus}</div></td>
 <c:if test="${!empty timesheetSubmission.submissionStatus && timesheetSubmission.submissionStatus == 'SUBMITTED FOR APPROVAL'}">
 <td>
 	<div class="sm text-center" id="action${timesheetSubmission.projectMemberId}">
@@ -95,3 +107,11 @@
 		<div  class="sm">--</div>
 	</td>
 </c:if>
+
+<script>
+  $(document).ready(function () {
+	  if('${AWKWARD}' == "true"){
+		   window.location.href =  "/errorPage";
+	  }
+	});
+</script>

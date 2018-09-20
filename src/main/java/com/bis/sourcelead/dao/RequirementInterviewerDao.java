@@ -23,4 +23,13 @@ public interface RequirementInterviewerDao {
 	public Boolean isInterviwerForByRequirementIdInterviewIdAndUserId(String reqUUID, Long requirementInterviewerId, Long userId);
 
 	List<RequirementInterviewerDTO> getInterviwersListByInterviewIdFromDTO(Long requirementInterviewId);
+	
+	List<RequirementInterviewerDTO> getInterviwersListByInterviewIdAndSubmissionIdFromDTO(Long interviewId,Long submissionId);
+	
+	RequirementInterviewer getRequirementInterviewerByUUID(String uuid) throws Exception;
+	
+	RequirementInterviewer getRequirementInterviewerByInterviewIdAndExternalInterviewerEmail(Long requirementInterviewId,String email) throws Exception;
+	
+	List<RequirementInterviewer> getInterviwersListByInterviewIdAndUserID(Long requirementInterviewId,Long userId)throws Exception;
+
 }

@@ -1,11 +1,14 @@
 package com.bis.sourcelead.dto;
 
+import java.io.Serializable;
+import java.math.BigInteger;
 import java.util.Date;
 
-public class UserRoleDTO {
+public class UserRoleDTO extends SearchDTO implements Serializable  {
 	private Long id;
 	private String userName;
 	private Long userId;
+	private Long employeeid;
 	private String userRoleName;
 	private String isMailSent;
 	private String userEmail;
@@ -18,6 +21,20 @@ public class UserRoleDTO {
 	private String orgName;
 	private Long mutualCount;
 	private Date createdDate;
+	private Integer sentCount;
+	private Integer receivedCount;
+	private Integer connectedCount;
+	private String connectionUUID;
+	private String userType;
+	private String noOfActivites;
+	private String orgClients;
+	private String orgManagers;
+	private String orgTeams;
+	private String orgDepartments;
+	private String isGlobalUser;
+	private Long orgId;
+	private BigInteger orgLocationId;
+	private String type;
 	
 	
 	public Long getId() {
@@ -110,5 +127,104 @@ public class UserRoleDTO {
 	public void setCreatedDate(Date createdDate) {
 		this.createdDate = createdDate;
 	}
+	public Integer getSentCount() {
+		return sentCount;
+	}
+	public void setSentCount(Integer sentCount) {
+		this.sentCount = sentCount;
+	}
+	public Integer getReceivedCount() {
+		return receivedCount;
+	}
+	public void setReceivedCount(Integer receivedCount) {
+		this.receivedCount = receivedCount;
+	}
+	public Integer getConnectedCount() {
+		return connectedCount;
+	}
+	public void setConnectedCount(Integer connectedCount) {
+		this.connectedCount = connectedCount;
+	}
+	public String getConnectionUUID() {
+		return connectionUUID;
+	}
+	public void setConnectionUUID(String connectionUUID) {
+		this.connectionUUID = connectionUUID;
+	}
+	public String getUserType()
+	{
+		return userType;
+	}
+	public void setUserType(String userType)
+	{
+		this.userType = userType;
+	}
+	public String getNoOfActivites()
+	{
+		return noOfActivites;
+	}
+	public void setNoOfActivites(String noOfActivites)
+	{
+		this.noOfActivites = noOfActivites;
+	}
+	public String getOrgClients() {
+		return orgClients;
+	}
+	public void setOrgClients(String orgClients) {
+		this.orgClients = orgClients;
+	}
+	public String getOrgManagers() {
+		return orgManagers;
+	}
+	public void setOrgManagers(String orgManagers) {
+		this.orgManagers = orgManagers;
+	}
+	public String getOrgTeams() {
+		return orgTeams;
+	}
+	public void setOrgTeams(String orgTeams) {
+		this.orgTeams = orgTeams;
+	}
+	public String getOrgDepartments() {
+		return orgDepartments;
+	}
+	public void setOrgDepartments(String orgDepartments) {
+		this.orgDepartments = orgDepartments;
+	}
+	public String getIsGlobalUser() {
+		return isGlobalUser;
+	}
+	public void setIsGlobalUser(String isGlobalUser) {
+		this.isGlobalUser = isGlobalUser;
+	}
+	public Long getOrgId() {
+		return orgId;
+	}
+	public void setOrgId(Long orgId) {
+		this.orgId = orgId;
+	}
+	public BigInteger getOrgLocationId() {
+		return orgLocationId;
+	}
+	public void setOrgLocationId(BigInteger orgLocationId) {
+		this.orgLocationId = orgLocationId;
+	}
+
+	public Long getEmployeeid() {
+		return employeeid;
+	}
+	public void setEmployeeid(Long employeeid) {
+		this.employeeid = employeeid;
+	}
+	public String getType()
+	{
+		return type;
+	}
+	public void setType(String type)
+	{
+		this.type = type;
+
+	}
+
 	
 }

@@ -1,17 +1,33 @@
 package com.bis.sourcelead.rest;
 
+import java.io.BufferedInputStream;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.net.URLConnection;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Collection;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 
 import org.apache.commons.lang.StringUtils;
+import org.apache.poi.ss.usermodel.Sheet;
+import org.apache.poi.ss.usermodel.Workbook;
+import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.PropertySource;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.util.FileCopyUtils;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -25,30 +41,42 @@ import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.dto.ClientProjectDTO;
 import com.bis.sourcelead.dto.ProjectAdditionalDetailsDTO;
 import com.bis.sourcelead.dto.ProjectAssignedMembersDTO;
+import com.bis.sourcelead.dto.ProjectMembersDTO;
+import com.bis.sourcelead.dto.ProjectMembersRateHistoryDTO;
 import com.bis.sourcelead.dto.ProjectsDTO;
+import com.bis.sourcelead.dto.Response;
+import com.bis.sourcelead.dto.ResponseList;
 import com.bis.sourcelead.elk.index.ProjectsIndex;
 import com.bis.sourcelead.elk.index.helper.ProjectsIndexHelper;
 import com.bis.sourcelead.elk.setup.SourceleadELKBaseIndexer;
+import com.bis.sourcelead.entity.EmailAttachment;
+import com.bis.sourcelead.entity.EmailMessage;
+import com.bis.sourcelead.entity.EmailScenario;
 import com.bis.sourcelead.entity.Employees;
 import com.bis.sourcelead.entity.Org;
 import com.bis.sourcelead.entity.OrgLocations;
-import com.bis.sourcelead.entity.OrgRelations;
 import com.bis.sourcelead.entity.ProjectClients;
 import com.bis.sourcelead.entity.ProjectMembers;
 import com.bis.sourcelead.entity.ProjectMembersHistory;
+import com.bis.sourcelead.entity.ProjectMembersRateHistory;
 import com.bis.sourcelead.entity.ProjectQuestionnaire;
 import com.bis.sourcelead.entity.ProjectTasks;
 import com.bis.sourcelead.entity.Projects;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.entity.UserRole;
+import com.bis.sourcelead.enums.Primary;
+import com.bis.sourcelead.enums.Result;
+import com.bis.sourcelead.service.CandidateService;
 import com.bis.sourcelead.service.EmailScenarioService;
 import com.bis.sourcelead.service.EmployeesService;
+import com.bis.sourcelead.service.LeaveService;
 import com.bis.sourcelead.service.OrgLocationService;
 import com.bis.sourcelead.service.OrgRelationsService;
 import com.bis.sourcelead.service.OrgService;
 import com.bis.sourcelead.service.ProjectApproverHierarchyService;
 import com.bis.sourcelead.service.ProjectClientService;
 import com.bis.sourcelead.service.ProjectMembersHistoryService;
+import com.bis.sourcelead.service.ProjectMembersRateHistoryService;
 import com.bis.sourcelead.service.ProjectMembersService;
 import com.bis.sourcelead.service.ProjectQuestionnaireService;
 import com.bis.sourcelead.service.ProjectTasksService;
@@ -58,7 +86,6 @@ import com.bis.sourcelead.service.UserRoleService;
 import com.bis.sourcelead.service.UserService;
 import com.bis.sourcelead.util.CommonUtil;
 import com.bis.sourcelead.util.EmailScenerioUtil;
-import com.bis.sourcelead.util.FileUploadUtil;
 import com.bis.sourcelead.util.SourceLeadSessionManager;
 
 @RestController
@@ -131,6 +158,18 @@ public class ProjectsRestController {
 	
 	@Autowired
 	ProjectClientService projectClientService;
+	
+	@Autowired
+	ProjectMembersRateHistoryService projectMembersRateHistoryService;
+	
+	@Autowired
+	private LeaveService leaveService;
+	
+	@Autowired
+	private CandidateService candidateService;
+	
+	@Autowired
+	private TimesheetRestController timesheetRestController;
 
 	/**
 	 * This method for save the project by json
@@ -142,61 +181,179 @@ public class ProjectsRestController {
 	 */
 
 	@RequestMapping(value = { "/storeProject", "/rest/storeProject" }, method = RequestMethod.POST)
-	public @ResponseBody ProjectsDTO storeProject(ProjectsDTO projectsDTO) throws Exception {
-		
+	public @ResponseBody Response<ProjectsDTO> storeProject(ProjectsDTO projectsDTO) throws Exception {
+		Response<ProjectsDTO> response =new  Response<>();
 		Projects projects = null;
+		try {
 		 if(Validator.validate(projectsDTO)) {
 			 projectsDTO.setStaticPath(staticPath);
 			 projects = projectsService.storeProject(projectsDTO);
-		 }
-		 
-		ProjectsDTO stroredProjectsDTO = new ProjectsDTO();
-		stroredProjectsDTO.setId(projects.getId());
-		stroredProjectsDTO.setProjectUUID(projects.getProjectUUID());
-		stroredProjectsDTO.setStartDateStr(projects.getStartDateStr());
-		stroredProjectsDTO.setEndDateStr(projects.getEndDateStr());
-		return stroredProjectsDTO;
+			 
+		    ProjectsDTO stroredProjectsDTO = new ProjectsDTO();
+			stroredProjectsDTO.setId(projects.getId());
+			stroredProjectsDTO.setProjectUUID(projects.getProjectUUID());
+			stroredProjectsDTO.setStartDateStr(projects.getStartDateStr());
+			stroredProjectsDTO.setEndDateStr(projects.getEndDateStr());
+			if(StringUtils.isNotBlank(projects.getIsProjectShared()) && projects.getIsProjectShared().equalsIgnoreCase(Constants.YES)) {
+				stroredProjectsDTO.setSavedSharedClientOrgLocId(projects.getSharedLocationId().getId().toString());
+			}
+			
+			response.setObject(stroredProjectsDTO);
+			
+			 response.setResponse(Result.SUCCESS.name());
+			 response.setResponseMessage(Result.SUCCESS.getValue());
+		 }else {
+    		 response.setResponse(Result.INVALID_DATA.name());
+			 response.setResponseMessage(Result.INVALID_DATA.getValue());
+    	 }
+		}catch (Exception e) {
+			e.printStackTrace();
+			response.setResponse(Result.AWKWARD.name());
+			response.setResponseMessage(Result.AWKWARD.getValue());
+		}
+		return response;
 	}
 	
 	
 	
        @RequestMapping(value = "/assignProjectMembersToProject", method = RequestMethod.POST)
-		public  String assignProjectMembersToProject(ProjectAssignedMembersDTO projectAssignedMembersDTO,@RequestParam(value="projectUUID", required=true) String projectUUID,
-			   @RequestParam(value="userId", required=true) Long userId,@RequestParam(value="orgLocationId", required=true) Long orgLocationId) throws Exception {
-		    
-		    User user = userService.getUserById(userId);
-		    OrgLocations orgLocations = orgLocationService.getOrgLocations(orgLocationId);
-		    projectMembersService.saveAssignedProjectMembers(projectAssignedMembersDTO, projectUUID, user, orgLocations);
+		public  Response<String> assignProjectMembersToProject(ProjectAssignedMembersDTO projectAssignedMembersDTO,@RequestParam(value="projectUUID", required=true) String projectUUID,
+			   @RequestParam(value="userId", required=true) Long userId,@RequestParam(value="projectClientUUID", required=false) String projectClientUUID,@RequestParam(value="orgLocationId", required=true) Long orgLocationId,
+			   HttpServletRequest request) throws Exception {
+    	    projectAssignedMembersDTO.setProjectClientUUID(projectClientUUID);
+			Response<String> response = new Response<>();
+			 User user = userService.getUserById(userId);
+			 String isGlobalAccess = (String) SourceLeadSessionManager.getSessionAttribute(request,"isGlobalAccess");
+			try {
+				if(user != null) {
+					outerLoop:{
+					    if(projectAssignedMembersDTO.getProjectMembers() != null && projectAssignedMembersDTO.getProjectMembers().size() > 0){
+				   			for(ProjectMembersDTO projectMembersDTO : projectAssignedMembersDTO.getProjectMembers()){
+				   				if(StringUtils.isEmpty(projectMembersDTO.getValidateRow()))
+									 continue;
+								if(!Validator.validate(projectMembersDTO)) {
+									response.setObject("DataMissing");
+									response.setResponse(Result.INVALID_DATA.name());
+									response.setResponseMessage(Result.INVALID_DATA.getValue());
+									break outerLoop;
+								}
+				   			}
+				   		    OrgLocations orgLocations = orgLocationService.getOrgLocations(orgLocationId);
+				   		    Projects projects = projectsService.getProjectByProjectUUID(projectUUID);
+				   		    if(StringUtils.isNotBlank(projects.getIsProjectShared()) && 
+			   		    		projects.getIsProjectShared().equalsIgnoreCase(Constants.YES) && !projects.getOrgLocationsId().getId().equals(orgLocations.getId())) {
+				   		    	ProjectClients projectClients = projectClientService.getProjectClientsByProjectIdAndOrgLocationId(projects.getId(), orgLocations.getId());
+				   		    	if(StringUtils.isNotBlank(projectClients.getIsProjectShared()) && projectClients.getIsProjectShared().equalsIgnoreCase(Constants.YES)) {
+				   		    		projectMembersService.saveAssignedSharedProjectMembers(projectAssignedMembersDTO, projectUUID, user, orgLocations,isGlobalAccess);
+				   		    	}else {
+				   		    		OrgLocations clientOrgLocation = orgLocationService.getOrgLocations(projects.getOrgLocationsId().getId());
+				   		    		if(StringUtils.isNotBlank(clientOrgLocation.getOrg().getOrgType()) && clientOrgLocation.getOrg().getOrgType().equalsIgnoreCase("Guest")) {
+				   		    			projectMembersService.saveAssignedSharedProjectMembers(projectAssignedMembersDTO, projectUUID, user, orgLocations,isGlobalAccess);
+				   		    		}
+				   		    	}
+				   		    }else {
+				   		        projectMembersService.saveAssignedProjectMembers(projectAssignedMembersDTO, projectUUID, user, orgLocations,isGlobalAccess);
+				   		    }
+						   
+						    response.setResponse(Result.SUCCESS.name());
+							response.setResponseMessage(Result.SUCCESS.getValue());
+					     }else {
+					    	 response.setResponse(Result.SUCCESS.name());
+						     response.setResponseMessage(Result.SUCCESS.getValue());
+					     }
+				       }
+				}else {
+					response.setResponse(Result.SESSION_TIMEDOUT.name());
+					response.setResponseMessage(Result.SESSION_TIMEDOUT.getValue());
+				}
+			}catch (Exception e) {
+				response.setResponse(Result.AWKWARD.name());
+				response.setResponseMessage(Result.AWKWARD.getValue());
+				e.printStackTrace();
+			}
 		   
-		    return "success";
+		    return response;
 	    }
        
        
-       @RequestMapping(value = "/storeProjectAdditionalDetails", method = RequestMethod.POST)
-		public  String storeProjectAdditionalDetails(ProjectAdditionalDetailsDTO projectAdditionalDetailsDTO,@RequestParam(value="projectId", required=true) Long projectId,
+	/*private void approvedLeaveForNewlyAddedEmployee(List<ProjectMembersDTO> projectMembers, OrgLocations orglocationId, User user) throws Exception {
+		if(projectMembers != null && !projectMembers.isEmpty()) {
+			for(ProjectMembersDTO members:projectMembers) {
+				if(members.getCandidateId()!= null) {
+					 Candidate candidate = candidateService.getCandidateByCandidateId(members.getCandidateId());
+					 if(candidate != null && candidate.getConsultantUser()!= null) {
+						 List<Leave> leaveList = leaveService.getLeaveByUserIdOrglocationIdandStatus(candidate.getConsultantUser(),orglocationId.getId(),Constants.APPROVED);
+						 if(leaveList!= null && !leaveList.isEmpty()) {
+							 for(Leave leave:leaveList) {
+							 //	timesheetRestController.linkLeaveTypeWithTimeSheet(user,orglocationId, leave.getLeaveType().getId(),leave,Constants.APPROVED);
+							 } 
+						 }
+					 }
+				}
+			}	
+		}
+	}*/
+
+
+
+	@RequestMapping(value = "/storeProjectAdditionalDetails", method = RequestMethod.POST)
+		public  Response<String> storeProjectAdditionalDetails(ProjectAdditionalDetailsDTO projectAdditionalDetailsDTO,@RequestParam(value="projectId", required=true) Long projectId,
 			   @RequestParam(value="userId", required=true) Long userId,@RequestParam(value="orgLocationId", required=true) Long orgLocationId,
 			   @RequestParam(value="saveType", required=true) String saveType,HttpServletRequest request) throws Exception {
-		    
-		    User user = userService.getUserById(userId);
-		    OrgLocations orgLocations = orgLocationService.getOrgLocations(orgLocationId);
-		    projectAdditionalDetailsDTO.setSaveType(saveType);
-		    projectQuestionnaireService.saveProjectQuestionnaireDetails(projectAdditionalDetailsDTO, projectId, user, orgLocations);
-		    SourceLeadSessionManager.setSessionAttribute(request, "projectCreateMsg", "Success !!New project created");
-		    return "success";
+		       User user = userService.getUserById(userId);
+		       Response<String> response = new Response<>();
+				try {
+					if(user != null) {
+						if(Validator.validate(projectAdditionalDetailsDTO)) {
+							OrgLocations orgLocations = orgLocationService.getOrgLocations(orgLocationId);
+						    projectAdditionalDetailsDTO.setSaveType(saveType);
+						    projectQuestionnaireService.saveProjectQuestionnaireDetails(projectAdditionalDetailsDTO, projectId, user, orgLocations);
+						    SourceLeadSessionManager.setSessionAttribute(request, "projectCreateMsg", "Success !!New project created");
+							response.setResponse(Result.SUCCESS.name());
+							response.setResponseMessage(Result.SUCCESS.getValue());
+						}else {
+							response.setResponse(Result.INVALID_DATA.name());
+							response.setResponseMessage(Result.INVALID_DATA.getValue());
+						}
+					}else {
+			    		 response.setResponse(Result.INVALID_DATA.name());
+						 response.setResponseMessage(Result.INVALID_DATA.getValue());
+			    	 }
+				}catch (Exception e) {
+					response.setResponse(Result.AWKWARD.name());
+					response.setResponseMessage(Result.AWKWARD.getValue());
+				}
+			   
+			    
+			    return response;
 	    }
        
        
        
        
 	   @RequestMapping(value = { "/storeClientProject", "/rest/storeClientProject" }, method = RequestMethod.POST)
-	   	public @ResponseBody ProjectsDTO storeClientProject(ClientProjectDTO clientProjectDTO) throws Exception {
-	   		
-	   		Projects projects = null;
-	   		projects = projectsService.storeClientProject(clientProjectDTO);
-	   		ProjectsDTO projectsDTO = new ProjectsDTO();
-	   		projectsDTO.setProjectUUID(projects.getProjectUUID());
-	   		projectsDTO.setProjectClientUUID(projects.getProjectClientUUID());
-	   		return projectsDTO;
+	   	public @ResponseBody  Response<ProjectsDTO> storeClientProject(ClientProjectDTO clientProjectDTO) throws Exception {
+		   Response<ProjectsDTO> response = new Response<>();
+		   try {
+			   if(Validator.validate(clientProjectDTO)) {
+				   Projects projects = null;
+			   		projects = projectsService.storeClientProject(clientProjectDTO);
+			   		ProjectsDTO projectsDTO = new ProjectsDTO();
+			   		projectsDTO.setProjectUUID(projects.getProjectUUID());
+			   		projectsDTO.setProjectClientUUID(projects.getProjectClientUUID());
+			   		response.setObject(projectsDTO);
+			   		response.setResponse(Result.SUCCESS.name());
+					response.setResponseMessage(Result.SUCCESS.getValue());
+			   }else {
+				     response.setResponse(Result.INVALID_DATA.name());
+					 response.setResponseMessage(Result.INVALID_DATA.getValue());
+			     }
+		    }catch (Exception e) {
+		    	e.printStackTrace();
+				response.setResponse(Result.AWKWARD.name());
+				response.setResponseMessage(Result.AWKWARD.getValue());
+			}
+	   		return response;
 	   	}
        
        
@@ -206,7 +363,8 @@ public class ProjectsRestController {
 		public  List<ProjectMembers> getProjectAssignedMembesListByProjectId(@RequestParam(value="projectId", required=true) Long projectId,HttpServletRequest request) throws Exception {
     	   
     	   OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,"orgLocations");
-    	   List<ProjectMembers> projectMembersList = projectMembersService.getAllProjectMembersByProjectIdAndStatus(projectId,"Active",orgLocations,"");
+    	   String isGlobalAccess = (String) SourceLeadSessionManager.getSessionAttribute(request,"isGlobalAccess");
+    	   List<ProjectMembers> projectMembersList = projectMembersService.getAllProjectMembersByProjectIdAndStatus(projectId,"Active",orgLocations,"","",isGlobalAccess);
 		   return projectMembersList;
 	    }
        
@@ -448,9 +606,9 @@ public class ProjectsRestController {
 	    }
 
 	    @RequestMapping(value = { "/getProjectsListByOrgLocationForTransfer", "/rest/getProjectsListByOrgLocationForTransfer" }, method = RequestMethod.GET)
-		public  List<ProjectsDTO> getProjectsListByOrgLocationForTransfer(@RequestParam(value="orgLocationId", required=true) Long orgLocationId) throws Exception {
+		public  List<ProjectsDTO> getProjectsListByOrgLocationForTransfer(@RequestParam(value="orgLocationId", required=true) Long orgLocationId,@RequestParam(value="projectClientUUID", required=true) String projectClientUUID) throws Exception {
 		   
-		   List<Projects> projectsList = projectsService.getAllProjectsByOrgLocationIdAndStatus(orgLocationId);
+		   List<Projects> projectsList = projectsService.getAllProjectsByOrgLocationIdAndStatusForTransfer(orgLocationId,projectClientUUID);
 		   List<ProjectsDTO> projectsDTOList = new ArrayList<>();
 		   
 		   if(projectsList != null && projectsList.size() > 0) {
@@ -480,9 +638,429 @@ public class ProjectsRestController {
 	    	
 	       return "success";
 	    }
+	    
+	    
+	    @RequestMapping(value = "/editProjectAssignedProjectMember", method = RequestMethod.POST)
+		public  ProjectMembersDTO editProjectAssignedProjectMember(@RequestParam(value="projectMemberId", required=true) Long projectMemberId,
+				HttpServletRequest request) throws Exception {
+	    
+	      OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,"orgLocations");
+	     
+	      ProjectMembersDTO projectMebersDTO = new ProjectMembersDTO();
+	      ProjectMembers projectMebers = projectMembersService.getProjectMemberById(projectMemberId);
+	      if(projectMebers != null) {
+	    	  projectMebersDTO.setBillRateRateType(projectMebers.getRateType());
+	    	  projectMebersDTO.setBillRateCurrency(projectMebers.getBillRateCurrency());
+	    	  projectMebersDTO.setBillRate(projectMebers.getCurrentBillRate());
+	    	  
+	    	  projectMebersDTO.setPayRate(projectMebers.getPayRate());
+	    	  projectMebersDTO.setPayRateRateType(projectMebers.getPayRateType());
+	    	  projectMebersDTO.setPayRateCurrency(projectMebers.getPayRateCurrency());
+	    	  SimpleDateFormat dateFormat = orgLocations.getLocFullFormDateFormatter();
+	    	  
+	    	  ProjectMembersHistory pmh = projectMembersHistoryService.getProjectMembersOpenHistoryByProjectMemberId(projectMebers.getId());
+	    	  if(pmh.getProjectAssignedDate() != null) {
+	    		  projectMebersDTO.setProjectStartDate(dateFormat.format(pmh.getProjectAssignedDate()));
+	    	  }
+	    	 
+	    	  if(pmh.getProjectTerminationDate() != null) {
+	    		  projectMebersDTO.setProjectEndDate(dateFormat.format(pmh.getProjectTerminationDate()));
+	    	  }
+	    	
+	    	  if(projectMebers.getProjects().getEndDate() != null) {
+		    	  projectMebersDTO.setMemberEndDate(dateFormat.format(projectMebers.getProjects().getEndDate()));
+	    	  }
+	    	  
+	    	  projectMebersDTO.setEstHours(projectMebers.getEstimatedHours());
+	    	  projectMebersDTO.setEstBudget(projectMebers.getEstimatedBudget());
+	    	  
+	    	  projectMebersDTO.setProjectMemberId(projectMebers.getId());
+	    	  
+	    	  ProjectMembersRateHistory pmrh = projectMembersRateHistoryService.getProjectMembersRateHistoryByMemberIdAndStatus(projectMebers.getId());
+	    	  if(pmrh != null) {
+	    		  if(pmrh.getPayRateStartDate() != null) {
+	    			  projectMebersDTO.setPayRateEstimatedDate(dateFormat.format(pmrh.getPayRateStartDate()));
+	    		  }
+	    		  
+	    		  if(pmrh.getBillRateStartDate() != null) {
+	    			  projectMebersDTO.setBillRateEstimatedDate(dateFormat.format(pmrh.getBillRateStartDate()));
+	    		  }
+	    	  }
+	      }
+	    	
+	       return projectMebersDTO;
+	    }
+	    
+	    @RequestMapping(value = "/updateProjectMemberDetails", method = RequestMethod.POST)
+		public String updateProjectMemberDetails(ProjectMembersDTO projectMembersDTO,
+				HttpServletRequest request) throws Exception {
+	    	 
+	    	OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,"orgLocations");
+	    	User user = (User) SourceLeadSessionManager.getSessionAttribute(request,"user");
+	    	
+	    	ProjectMembers projectMembers = projectMembersService.getProjectMemberById(projectMembersDTO.getProjectMemberId()); 
+	    	ProjectMembersRateHistory pmrh = null;
+	    	
+	    	boolean flag = projectMembersService.getPayRateOrBillRateChanges(projectMembers, projectMembersDTO);
+	    	
+	    	ProjectMembersRateHistory projectMembersRateHistory = null;
+	    	
+	    	if(projectMembers != null) {
+	    		
+	    		
+	    		if(flag == true) {
+		         pmrh = projectMembersRateHistoryService.getProjectMembersRateHistoryByMemberIdAndStatus(projectMembers.getId());
+		    		if(pmrh == null) {
+		    			pmrh = getProjectMembersRateHistoryDetails(projectMembers, user);
+		    			if(projectMembers.getProjectAssignedDate() != null) {
+		    				pmrh.setPayRateStartDate(projectMembers.getProjectAssignedDate());
+		    				pmrh.setBillRateStartDate(projectMembers.getProjectAssignedDate());
+		    			}else {
+		    				Date projectAssignedStartDate = commonUtil.orgLocationDateFormat(orgLocations.getDateFormat(),projectMembersDTO.getMemberStartDate());
+		    				pmrh.setPayRateStartDate(projectAssignedStartDate);
+		    				pmrh.setBillRateStartDate(projectAssignedStartDate);
+		    			}
+		    		}
+		    		
+	    			
+	    			Date payRateEstimatedDate = commonUtil.orgLocationDateFormat(orgLocations.getDateFormat(),projectMembersDTO.getPayRateEstimatedDate());
+	    			Calendar cal = Calendar.getInstance();
+	    			cal.setTime(payRateEstimatedDate);
+	    			cal.add( Calendar.DAY_OF_YEAR, -1);
+	    			pmrh.setPayRateEndDate(cal.getTime());
+	    			
+	    			Date billRateEstimatedDate = commonUtil.orgLocationDateFormat(orgLocations.getDateFormat(),projectMembersDTO.getBillRateEstimatedDate());
+	    			Calendar cal1 = Calendar.getInstance();
+	    			cal1.setTime(billRateEstimatedDate);
+	    			cal1.add( Calendar.DAY_OF_YEAR, -1);
+	    			pmrh.setBillRateEndDate(cal1.getTime());
+	    			
+	    			pmrh.setStatus(0);
+	    			pmrh = projectMembersRateHistoryService.saveProjectMembersRateHistory(pmrh);
+	    		}
+	    		
+	    		
+	    		projectMembers.setPayRate(projectMembersDTO.getPayRate());
+	    		projectMembers.setPayRateType(projectMembersDTO.getPayRateRateType());
+	    		projectMembers.setPayRateCurrency(projectMembersDTO.getPayRateCurrency());
+	    		
+	    		projectMembers.setCurrentBillRate(projectMembersDTO.getBillRate());
+	    		projectMembers.setRateType(projectMembersDTO.getBillRateRateType());
+	    		projectMembers.setBillRateCurrency(projectMembersDTO.getBillRateCurrency());
+	    		
+	    		if(StringUtils.isNotBlank(projectMembersDTO.getMemberStartDate())){
+	    			Date projectAssignedStartDate = commonUtil.orgLocationDateFormat(orgLocations.getDateFormat(),projectMembersDTO.getMemberStartDate());
+	    			projectMembers.setProjectAssignedDate(projectAssignedStartDate);
+	    		}
+	    		
+	    		if(projectMembersDTO.getEstBudget() != null){
+	    			projectMembers.setEstimatedBudget(projectMembersDTO.getEstBudget());
+	    		}else {
+	    			projectMembers.setEstimatedBudget(null);
+	    		}
+	    		
+	    		if(projectMembersDTO.getEstHours() != null){
+	    			projectMembers.setEstimatedHours(projectMembersDTO.getEstHours());
+	    		}else {
+	    			projectMembers.setEstimatedHours(null);
+	    		}
+	    		
+	    		projectMembersService.saveProjectMember(projectMembers);
+	    		
+	    		if(StringUtils.isNotBlank(projectMembersDTO.getMemberEndDate())){
+
+					ProjectMembersHistory pmh = projectMembersHistoryService.getProjectMembersOpenHistoryByProjectMemberId(projectMembers.getId());
+					
+					if(pmh == null){
+						pmh = projectMembersHistoryService.getProjectMembersRecentClosedByProjectMemberId(projectMembers.getId());
+					}
+					Date endDate1 = commonUtil.orgLocationDateFormat(orgLocations.getDateFormat(),projectMembersDTO.getMemberEndDate());
+					if(pmh.getProjectTerminationDate()== null){
+						projectMembersHistoryService.updateEndDateOfProjectMemberId(endDate1, projectMembers.getId());
+					}
+
+					if (pmh.getProjectTerminationDate() != null && pmh.getProjectTerminationDate().compareTo(commonUtil.orgLocationDateFormat(orgLocations.getDateFormat(),projectMembersDTO.getMemberEndDate())) != 0) {
+						projectMembersHistoryService.updateEndDateOfProjectMemberId(endDate1, projectMembers.getId());
+						
+					}
+					// mail forward to members inline end date edit
+					projectEnddatechangetoEmployee(projectMembers,user, orgLocations, projectMembersDTO.getMemberEndDate());
+					
+					Date terminationDate = commonUtil.orgLocationDateFormat(orgLocations.getDateFormat(),projectMembersDTO.getMemberEndDate());
+					Date currentDate = new  Date();
+					
+					if(currentDate.after(terminationDate) && !currentDate.equals(terminationDate)){
+						commonUtil.terminateProjectMemberByProjectMemberId(projectMembers.getId(),Primary.Yes);
+					}
+					else{
+						commonUtil.inactivateTimesheetSubmissionsBasedOnMemberIdAndMemberTerminationDate(projectMembers.getId(), terminationDate);
+					}
+	    			
+	    		}
+	    		
+	    		
+	    		
+	    		
+	    		if(flag == true) {
+		    		projectMembersRateHistory = getProjectMembersRateHistoryDetails(projectMembers, user);
+		    		Date payRateEstimatedDate = commonUtil.orgLocationDateFormat(orgLocations.getDateFormat(),projectMembersDTO.getPayRateEstimatedDate());
+		    		projectMembersRateHistory.setPayRateStartDate(payRateEstimatedDate);
+		    		Date billRateEstimatedDate = commonUtil.orgLocationDateFormat(orgLocations.getDateFormat(),projectMembersDTO.getBillRateEstimatedDate());
+	    			projectMembersRateHistory.setBillRateStartDate(billRateEstimatedDate);
+	    			projectMembersRateHistory.setStatus(1);
+	    			projectMembersRateHistory.setRateHistoryId(pmrh);
+		    		projectMembersRateHistoryService.saveProjectMembersRateHistory(projectMembersRateHistory);
+	    		}
+	    		
+	    		if(flag == false) {
+	    			
+	    			pmrh = projectMembersRateHistoryService.getProjectMembersRateHistoryByMemberIdAndStatus(projectMembers.getId());
+	    			if(pmrh != null && pmrh.getRateHistoryId() != null) {
+	    				
+	    				ProjectMembersRateHistory parentRateHistory = projectMembersRateHistoryService.getProjectMembersRateHistoryById(pmrh.getRateHistoryId().getId());
+	    				
+	    				Date payRateEstimatedDate = commonUtil.orgLocationDateFormat(orgLocations.getDateFormat(),projectMembersDTO.getPayRateEstimatedDate());
+	    				Date billRateEstimatedDate = commonUtil.orgLocationDateFormat(orgLocations.getDateFormat(),projectMembersDTO.getBillRateEstimatedDate());
+	    				
+	    				if(!pmrh.getPayRateStartDate().equals(payRateEstimatedDate)) {
+	    					pmrh.setPayRateStartDate(payRateEstimatedDate);
+	    					Calendar cal1 = Calendar.getInstance();
+			    			cal1.setTime(payRateEstimatedDate);
+			    			cal1.add( Calendar.DAY_OF_YEAR, -1);
+			    			parentRateHistory.setPayRateEndDate(cal1.getTime());
+	    				}
+	    				
+	    				if(!pmrh.getBillRateStartDate().equals(billRateEstimatedDate)) {
+	    					pmrh.setBillRateStartDate(billRateEstimatedDate);
+	    					Calendar cal1 = Calendar.getInstance();
+			    			cal1.setTime(billRateEstimatedDate);
+			    			cal1.add( Calendar.DAY_OF_YEAR, -1);
+			    			parentRateHistory.setBillRateEndDate(cal1.getTime());
+	    				}
+			    		
+			    		projectMembersRateHistoryService.saveProjectMembersRateHistory(pmrh);
+			    		projectMembersRateHistoryService.saveProjectMembersRateHistory(parentRateHistory);
+			    		
+	    				
+	    			}
+	    			
+	    			
+	    		}
+	    		
+	    	}
+	    	
+	    	
+	    	return "success";
+	    }
+	    
+	    
+	    
+	    private void projectEnddatechangetoEmployee(ProjectMembers emp, User loginUser,  OrgLocations loginOrgLocation, String changedEndDate) throws Exception {
+			 Projects projects = projectsService.getProjectById(emp.getProjects().getId());
+			 //SimpleDateFormat sdf = new SimpleDateFormat("dd-MM-yyyy");
+			 StringBuilder fromNameBuilder=new StringBuilder();
+		     EmailMessage emailMessage = new EmailMessage();
+			 emailMessage.setFirstName(emp.getEmployee().getUser().getFirstName());
+			 emailMessage.setLastName(emp.getEmployee().getUser().getLastName());
+			 emailMessage.setToEmail(emp.getEmployee().getUser().getEmail());
+			 emailMessage.setFromEmail(loginUser.getEmail());
+			 emailMessage.setCreatedBy(loginUser.getUserCode());
+			 emailMessage.setFromName(fromNameBuilder.append(loginUser.getFirstName()).append(" ").append(loginUser.getLastName()).toString());
+			 emailMessage.setEmailType(Constants.CUSTOM_USER_EMAIL);
+			 //setting the class filed values
+			 Map<String, String> globalVarsMap = new HashMap<String, String>();
+			 
+			 globalVarsMap.put("projectStartdate",commonUtil.dateStrFromOrgDateFormatter(loginOrgLocation.getDateFormat(),projects.getStartDate()));
+			 globalVarsMap.put("projectEnddate",changedEndDate);
+			 
+			 if(loginUser.getFirstName() != null && loginUser.getLastName()!=null && !"".equalsIgnoreCase(loginUser.getFirstName()) && !"".equalsIgnoreCase(loginUser.getLastName())){
+				 StringBuilder userBuild = new StringBuilder();
+				 globalVarsMap.put("loginUser",userBuild.append(loginUser.getFirstName()).append(" ").append(loginUser.getLastName()).toString());
+				 }else{
+					 globalVarsMap.put("loginUser",loginUser.getFirstName());
+				}
+			 if(emailMessage.getFirstName() != null && emailMessage.getLastName()!=null && !"".equalsIgnoreCase(emailMessage.getFirstName()) && !"".equalsIgnoreCase(emailMessage.getLastName())){
+				 StringBuilder userBuild = new StringBuilder();
+				 globalVarsMap.put("employeeName",userBuild.append(emailMessage.getFirstName()).append(" ").append(emailMessage.getLastName()).toString());
+				 }else{
+					 globalVarsMap.put("employeeName",emailMessage.getFirstName());
+				}
+			 globalVarsMap.put("projectName", projects.getProjectName());
+			 globalVarsMap.put("loginOrgName",loginOrgLocation.getOrg().getOrgName());
+			 
+			 //calling the sendEmail method of emailScenerioUtil
+			 if(null != projects.getOrgLocationsId())
+			 commonUtil.sendTemplateEmail(emailMessage, globalVarsMap,projects.getOrgLocationsId().getOrg(),projects.getOrgLocationsId(),Constants.EDITPROJECT_MAIL_TEAMMEMBER,new ArrayList<EmailAttachment>());
+			 
+			//calling the sendNotification method of emailScenerioUtil
+			EmailScenario  notificationScenario = emailScenarioService.getEmailScenarioByUniqueName(Constants.EDITPROJECT_MAIL_TEAMMEMBER,Constants.ENTITY_TYPE_NOTIFICATION);
+			String notificationBody = emailScenerioUtil.buildTemplateBody(notificationScenario.getBody(),globalVarsMap,notificationScenario);
+			notificationScenario.setBody(notificationBody);
+			//String url = null;
+			String actionLink = "";
+			emailScenerioUtil.sendNotification(actionLink, loginUser, emp.getEmployee().getUser(), loginOrgLocation, notificationScenario,new HashMap<String,String>());
+		}
+	    
+	    
+	    public ProjectMembersRateHistory getProjectMembersRateHistoryDetails(ProjectMembers projectMembers, User user) {
+	    	
+	    	ProjectMembersRateHistory projectMembersRateHistory = new ProjectMembersRateHistory();
+    		projectMembersRateHistory.setProjectMemberId(projectMembers);
+    		projectMembersRateHistory.setCandidateId(projectMembers.getProjectMemberCandidteId());
+    		
+    		if(projectMembers.getCurrentBillRate() != null) {
+    			projectMembersRateHistory.setBillRate(projectMembers.getCurrentBillRate());
+    		}
+    		
+    		projectMembersRateHistory.setBillRateCurrency(projectMembers.getBillRateCurrency());
+    		projectMembersRateHistory.setBillRateType(projectMembers.getRateType());
+    		
+    		if(projectMembers.getPayRate() != null) {
+    			projectMembersRateHistory.setPayRate(projectMembers.getPayRate());
+    		}
+    		
+    		projectMembersRateHistory.setPayRateCurrency(projectMembers.getPayRateCurrency());
+    		projectMembersRateHistory.setPayRateType(projectMembers.getPayRateType());
+    		
+    		projectMembersRateHistory.setCreatedBy(user);
+    		projectMembersRateHistory.setCreatedDate(new Date());
+    		projectMembersRateHistory.setUpdatedDate(new Date());
+    		
+    		return projectMembersRateHistory;
+	    }
+	    
+	    
+	    
+	    @RequestMapping(value = "/getProjectMemberRateTablesList", method = RequestMethod.POST)
+		public  List<ProjectMembersRateHistoryDTO> getProjectMemberRateTablesList(@RequestParam(value="projectMemberId", required=true) Long projectMemberId,
+				HttpServletRequest request) throws Exception {
+	    	
+	    	OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,"orgLocations");
+	    	List<ProjectMembersRateHistoryDTO> pmrhDTOList = new ArrayList<>();
+	    	List<ProjectMembersRateHistory> pmrhList = projectMembersRateHistoryService.getProjectMembersRateHistoryListByProjectMemberId(projectMemberId);
+	    	
+	    	if(pmrhList != null && !pmrhList.isEmpty()) {
+	    		
+	    		for(ProjectMembersRateHistory pmrh : pmrhList) {
+	    			ProjectMembersRateHistoryDTO  pmrhDTO = new ProjectMembersRateHistoryDTO();
+	    			pmrhDTO.setBillRate(pmrh.getBillRate());
+	    			pmrhDTO.setBillRateCurrency(pmrh.getBillRateCurrency());
+	    			pmrhDTO.setBillRateType(pmrh.getBillRateType());
+	    			if(pmrh.getBillRateStartDate() != null) {
+	    				pmrhDTO.setBillRateStartDate(commonUtil.dateStrFromOrgDateFormatter(orgLocations.getDateFormat(), pmrh.getBillRateStartDate()));
+	    			}
+	    			
+	    			if(pmrh.getBillRateEndDate() != null) {
+	    				pmrhDTO.setBillRateEndDate(commonUtil.dateStrFromOrgDateFormatter(orgLocations.getDateFormat(), pmrh.getBillRateEndDate()));
+	    			}
+	    			
+	    			
+	    			pmrhDTO.setPayRate(pmrh.getPayRate());
+	    			pmrhDTO.setPayRateCurrency(pmrh.getPayRateCurrency());
+	    			pmrhDTO.setPayRateType(pmrh.getPayRateType());
+	    			if(pmrh.getPayRateStartDate() != null) {
+	    				pmrhDTO.setPayRateStartDate(commonUtil.dateStrFromOrgDateFormatter(orgLocations.getDateFormat(), pmrh.getPayRateStartDate()));
+	    			}
+	    			
+	    			if(pmrh.getPayRateEndDate() != null) {
+	    				pmrhDTO.setPayRateEndDate(commonUtil.dateStrFromOrgDateFormatter(orgLocations.getDateFormat(), pmrh.getPayRateEndDate()));
+	    			}
+	    			
+	    			User createdUser = pmrh.getCreatedBy();
+	    			StringBuilder userName = new StringBuilder();
+	    			if(StringUtils.isNotBlank(createdUser.getLastName())) {
+	    				pmrhDTO.setCreatedBy(userName.append(createdUser.getFirstName()).append(" ").append(createdUser.getLastName()).toString());
+	    			}else {
+	    				pmrhDTO.setCreatedBy(userName.append(createdUser.getFirstName()).toString());
+	    			}
+	    			
+	    			pmrhDTOList.add(pmrhDTO);
+	    			
+	    		}
+	    	}
+	    	
+	    	return pmrhDTOList;
+	    	
+	    }
 	  
 
 	protected static boolean isNullOrEmpty(String str) {
 		return str == null || "".equals(str.trim());
 	}
+	
+	
+	@RequestMapping(value = "/getExportProjects")
+	public void getExportUsersData(ProjectsDTO projectsDTO,HttpServletRequest request, HttpServletResponse response) throws Exception {
+		
+		 OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+	 	 User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+	 	String userRole = (String) SourceLeadSessionManager.getSessionAttribute(request, "loginUserRole");
+		Long candidateId = (Long) SourceLeadSessionManager.getSessionAttribute(request, "candidateId");
+		
+		 Workbook createExcelworkbook =  new XSSFWorkbook();
+		 StringBuilder excelSB = new StringBuilder();
+ 		 Sheet createExcelsheet = createExcelworkbook.createSheet(excelSB.append("projects ").append(commonUtil.dateStrFromOrgDateFormatter(orgLocations.getDateFormat(),new Date())).toString());
+
+		 ResponseList<ProjectsDTO> projectsList = projectsService.getProjectsListByClientsAndStatus(projectsDTO,user.getId(), projectsDTO.getClients(), projectsDTO.getValues(),orgLocations.getId(),userRole,candidateId);
+			
+ 		File file = null;
+ 		if(!"pdf".equalsIgnoreCase(projectsDTO.getExportType())){
+ 			createExcelsheet = projectsService.getExcelFile(createExcelsheet,createExcelworkbook,projectsList,orgLocations);
+ 			 StringBuilder templateSB = new StringBuilder();
+	 		  file = File.createTempFile(templateSB.append("projects_").append(commonUtil.dateStrFromOrgDateFormatter(orgLocations.getDateFormat(),new Date())).toString(),".xls");
+	 		  file.setReadable(true);
+	 		  
+			 FileOutputStream fos = new FileOutputStream(file);
+			 try {
+				createExcelworkbook.write(fos);
+				fos.close();
+			} catch (IOException e) {
+				e.printStackTrace();
+			}	 	
+ 		}else {
+ 			file = projectsService.getPdfFile(projectsList,orgLocations);
+ 			
+ 		}
+ 		String mimeType = URLConnection.guessContentTypeFromName(file.getName());
+		if (mimeType == null) {
+			mimeType = "application/octet-stream";
+		}
+		response.setContentType(mimeType);
+		StringBuilder fileNameSB = new StringBuilder();
+		response.setHeader("Content-Disposition", fileNameSB.append("attachment; filename=\"").append(file.getName()).append("\"").toString());
+		response.setContentLength((int) file.length());
+		InputStream inputStream = new BufferedInputStream(new FileInputStream(file));
+		FileCopyUtils.copy(inputStream, response.getOutputStream());
+		inputStream.close();
+		response.getOutputStream().close();
+		response.getOutputStream().flush();	
+		if(file!= null){
+			file.delete();
+		}
+	}
+	
+	
+	
+	 @RequestMapping(value = "/getProjectPopDetails", method = RequestMethod.POST)
+		public  ProjectsDTO getProjectPopDetails(@RequestParam(value="projectUUID", required=true) String projectUUID,
+				@RequestParam(value="orgLocationId", required=true) Long orgLocationId,HttpServletRequest request) throws Exception {
+		    ProjectsDTO projectDTO = null;
+	    	Projects projects = projectsService.getProjectByProjectUUID(projectUUID);
+	    	if(projects != null) {
+	    		projectDTO = new ProjectsDTO();
+	    		projectDTO.setProjectName(projects.getProjectName());
+	    		projectDTO.setDateFormat(projects.getOrgLocationsId().getDateFormat());
+	    		projectDTO.setStartDate(commonUtil.dateStrFromOrgDateFormatter(projects.getOrgLocationsId().getDateFormat(), projects.getStartDate()));
+	    		if(projects.getEndDate() != null) {
+	    			projectDTO.setEndDate(commonUtil.dateStrFromOrgDateFormatter(projects.getOrgLocationsId().getDateFormat(), projects.getEndDate()));
+	    		}
+	    		projectDTO.setTimeSheetFrequency(projects.getTimesheetFrequency());
+	    	}
+	    	
+	    	return projectDTO;
+	    	
+	    }
+	
+	
+	
 }

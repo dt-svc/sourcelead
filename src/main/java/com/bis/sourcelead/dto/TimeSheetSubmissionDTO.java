@@ -4,6 +4,8 @@ import java.io.Serializable;
 import java.util.List;
 import java.util.Map;
 
+import com.bis.sourcelead.annotations.Required;
+import com.bis.sourcelead.entity.TimesheetActivities;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 @JsonIgnoreProperties(ignoreUnknown=true)
@@ -19,7 +21,12 @@ public class TimeSheetSubmissionDTO implements Serializable{
 	
 	private List<WeekDaysDTO> weekDays;
 	
+	@Required(desc="timesheetEntries",timesheetListValidate = true)
 	private List<TimesheetEntriesDTO> timesheetEntries;
+	
+	private Map<String,List<TimesheetEntriesDTO>> entriesMap;
+	
+	private Map<String,List<EmployeeLeaveDTO>> empLeaveMap;
 	
 	private List<Long> removedDocumentIds;
 	
@@ -65,7 +72,42 @@ public class TimeSheetSubmissionDTO implements Serializable{
 	private String responseStatus;
 	
 	private String reopenUserId;
+	
+	private float previousMonthTotalHours;
+	
+	private float previousMonthBillableHours;
+	
+	private float previousMonthNonBillableHours;
+	
+	private float projectToDateTotalHours;
+	
+	private float projectToDateBillableHours;
+	
+	private float projectToDateNonBillableHours;
+	
+	private float currentMonthTotalHours;
+	
+	private float currentMonthBillableHours;
+	
+	private float currentMonthNonBillableHours;
+	
+	private String currentMonthName;
+	
+	private int incrStartsFrom;
 
+	//Single Day Saving Purpose
+    private String timeFrequency;
+	
+	private Long projectMemberId;
+	
+    private Long userId;
+	
+	private String locationCode;
+	
+	String timesheetFor;
+	
+	private List<TimesheetActivities> activityList;
+	
 	public Long getId() {
 		return id;
 	}
@@ -282,7 +324,156 @@ public class TimeSheetSubmissionDTO implements Serializable{
 		this.reopenUserId = reopenUserId;
 	}
 
+	public Map<String, List<TimesheetEntriesDTO>> getEntriesMap() {
+		return entriesMap;
+	}
 
+	public void setEntriesMap(Map<String, List<TimesheetEntriesDTO>> entriesMap) {
+		this.entriesMap = entriesMap;
+	}
 
-	
+	public float getPreviousMonthTotalHours() {
+		return previousMonthTotalHours;
+	}
+
+	public void setPreviousMonthTotalHours(float previousMonthTotalHours) {
+		this.previousMonthTotalHours = previousMonthTotalHours;
+	}
+
+	public float getPreviousMonthBillableHours() {
+		return previousMonthBillableHours;
+	}
+
+	public void setPreviousMonthBillableHours(float previousMonthBillableHours) {
+		this.previousMonthBillableHours = previousMonthBillableHours;
+	}
+
+	public float getPreviousMonthNonBillableHours() {
+		return previousMonthNonBillableHours;
+	}
+
+	public void setPreviousMonthNonBillableHours(float previousMonthNonBillableHours) {
+		this.previousMonthNonBillableHours = previousMonthNonBillableHours;
+	}
+
+	public float getProjectToDateTotalHours() {
+		return projectToDateTotalHours;
+	}
+
+	public void setProjectToDateTotalHours(float projectToDateTotalHours) {
+		this.projectToDateTotalHours = projectToDateTotalHours;
+	}
+
+	public float getProjectToDateBillableHours() {
+		return projectToDateBillableHours;
+	}
+
+	public void setProjectToDateBillableHours(float projectToDateBillableHours) {
+		this.projectToDateBillableHours = projectToDateBillableHours;
+	}
+
+	public float getProjectToDateNonBillableHours() {
+		return projectToDateNonBillableHours;
+	}
+
+	public void setProjectToDateNonBillableHours(float projectToDateNonBillableHours) {
+		this.projectToDateNonBillableHours = projectToDateNonBillableHours;
+	}
+
+	public float getCurrentMonthTotalHours() {
+		return currentMonthTotalHours;
+	}
+
+	public void setCurrentMonthTotalHours(float currentMonthTotalHours) {
+		this.currentMonthTotalHours = currentMonthTotalHours;
+	}
+
+	public float getCurrentMonthBillableHours() {
+		return currentMonthBillableHours;
+	}
+
+	public void setCurrentMonthBillableHours(float currentMonthBillableHours) {
+		this.currentMonthBillableHours = currentMonthBillableHours;
+	}
+
+	public float getCurrentMonthNonBillableHours() {
+		return currentMonthNonBillableHours;
+	}
+
+	public void setCurrentMonthNonBillableHours(float currentMonthNonBillableHours) {
+		this.currentMonthNonBillableHours = currentMonthNonBillableHours;
+	}
+
+	public String getCurrentMonthName() {
+		return currentMonthName;
+	}
+
+	public void setCurrentMonthName(String currentMonthName) {
+		this.currentMonthName = currentMonthName;
+	}
+
+	public int getIncrStartsFrom() {
+		return incrStartsFrom;
+	}
+
+	public void setIncrStartsFrom(int incrStartsFrom) {
+		this.incrStartsFrom = incrStartsFrom;
+	}
+
+	public String getTimeFrequency() {
+		return timeFrequency;
+	}
+
+	public void setTimeFrequency(String timeFrequency) {
+		this.timeFrequency = timeFrequency;
+	}
+
+	public Long getProjectMemberId() {
+		return projectMemberId;
+	}
+
+	public void setProjectMemberId(Long projectMemberId) {
+		this.projectMemberId = projectMemberId;
+	}
+
+	public String getTimesheetFor() {
+		return timesheetFor;
+	}
+
+	public void setTimesheetFor(String timesheetFor) {
+		this.timesheetFor = timesheetFor;
+	}
+
+	public Long getUserId() {
+		return userId;
+	}
+
+	public void setUserId(Long userId) {
+		this.userId = userId;
+	}
+
+	public String getLocationCode() {
+		return locationCode;
+	}
+
+	public void setLocationCode(String locationCode) {
+		this.locationCode = locationCode;
+	}
+
+	public List<TimesheetActivities> getActivityList() {
+		return activityList;
+	}
+
+	public void setActivityList(List<TimesheetActivities> activityList) {
+		this.activityList = activityList;
+	}
+
+	public Map<String, List<EmployeeLeaveDTO>> getEmpLeaveMap() {
+		return empLeaveMap;
+	}
+
+	public void setEmpLeaveMap(Map<String, List<EmployeeLeaveDTO>> empLeaveMap) {
+		this.empLeaveMap = empLeaveMap;
+	}
+
 }

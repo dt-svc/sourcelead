@@ -28,23 +28,22 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 
 @Entity
 @Table(name = "LEAVE_APPROVER_HIERARCHY")
-@Cache(usage = CacheConcurrencyStrategy.TRANSACTIONAL, region = "leaveApproverHierarchy")
 public class LeaveApproveHierarchy {
 
 	@Id
-	@GeneratedValue(strategy = GenerationType.IDENTITY, generator = "uuid2")
-	@GenericGenerator(name = "uuid2", strategy = "uuid2")
-	private String id;
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "ID", nullable = false)
+    private Long id;
 	
-	@NotFound(action = NotFoundAction.IGNORE)
-	@ManyToOne(cascade = CascadeType.ALL)
+	@NotFound(action=NotFoundAction.IGNORE)
+	@ManyToOne
 	@Fetch(FetchMode.SELECT)
 	@JsonBackReference
 	@JoinColumn(name = "LEAVE_ID", nullable = false)
 	private Leave leaveid;
 	
-	@NotFound(action = NotFoundAction.IGNORE)
-	@ManyToOne(cascade = CascadeType.ALL)
+	@NotFound(action=NotFoundAction.IGNORE)
+	@ManyToOne
 	@Fetch(FetchMode.SELECT)
 	@JsonBackReference
 	@JoinColumn(name = "APPROVER_USER_ID", nullable = false)
@@ -65,11 +64,11 @@ public class LeaveApproveHierarchy {
 	@Column(name = "UPDATED_BY")
 	private String updatedBy;
 	
-	public String getId() {
+	public Long getId() {
 		return id;
 	}
 
-	public void setId(String id) {
+	public void setId(Long id) {
 		this.id = id;
 	}
 

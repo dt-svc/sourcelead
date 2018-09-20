@@ -1,301 +1,448 @@
-<footer>
-	<div class="footerInn">
-    	<div class="footerInnCta resFoot">
-        	<h3>SourceLead</h3>
-            <ul>
-            	<li><a href="about-us.html"><i class="fa fa-caret-right"></i>About us</a></li>
-                <li><a href="team.html"><i class="fa fa-caret-right"></i>Our team</a></li>
-                <!--<li><a href="about-us.html#client"><i class="fa fa-caret-right"></i>Clients</a></li>-->
-                <li><a href="testimonial.html"><i class="fa fa-caret-right"></i>Testimonial</a></li>
-                <!--<li><a href="careers.html"><i class="fa fa-caret-right"></i>Careers</a></li>-->
-                <li><a href="contact.html"><i class="fa fa-caret-right"></i>Contact us</a></li>
-            </ul>
-        </div>
-    	<div class="footerInnCta resFoot">
-        	<h3>What we do</h3>
-            <ul>
-				<li><a href="crowdsourcing.html"><i class="fa fa-caret-right"></i>Crowdsourcing</a></li>
-            	<li><a href="ats.html"><i class="fa fa-caret-right"></i>ATS</a></li>
-                <li><a href="vms.html"><i class="fa fa-caret-right"></i>VMS</a></li>
-                <li><a href="timesheet.html"><i class="fa fa-caret-right"></i>Time Management</a></li>
-            </ul>
-        </div> 
-    	<div class="footerInnCta">
-    	<h3>Recent Blogs</h3>
-<div class="hBlogs">
-            	<a href="blog2.html">
-                	<span>Loyal Relationships with Recruiters</span>
-                    <b>FEB 20, 2017</b>
-                </a>            
-            	<a href="blog1.html">
-                	<span>Recruiting Through Social Media Platform</span>
-                    <b>FEB 15, 2017</b>
-                </a>            
-            	<a href="blog3.html">
-                	<span>Existing Process without using any Tool</span>
-                    <b>DEC 20, 2016</b>
-                </a>
-            	<a href="blog.html">View all</a>                                                
-            </div>
-        </div>  
-    	<div class="footerInnCta">
-        	<h3>Get in touch</h3>
-            <a href="mailto:info@sourcelead.com;"><b><i class="fa fa-envelope-o"></i>info@sourcelead.com</b></a>
-			<a href="tel:(214) 295-5535"><b><i class="fa fa-phone"></i>USA : (214) 295-5535</b></a>
-			<a href="tel:(972) 559-3641"><b><i class="fa fa-fax"></i>FAX : (972) 559-3641</b></a>
-			<a href="tel:040-6700-7676"><b><i class="fa fa-phone"></i>IND : +91. 40-6700-7676</b></a>   
-          <h4>Go social</h4>
-            <div class="socila">
-            	<a href="https://www.linkedin.com/company-beta/13268592/" target="_blank"><img src="/resources/css/static-web/images/in.png" alt=""/></a>
-                <a href="https://www.facebook.com/Sourcelead-303008183449158/" target="_blank"><img src="/resources/css/static-web/images/fb.png" alt=""/></a>
-                <a href="https://twitter.com/SourceleadInc" target="_blank"><img src="/resources/css/static-web/images/tw.png" alt=""/></a>
-                <a href="https://plus.google.com/u/0/106307146025514798879" target="_blank"><img src="/resources/css/static-web/images/gp.png" alt=""/></a>
-            </div>
-        </div>                        
-    <div class="clear"></div>
+<footer class="footer-area">
+  <div class="container">
+  <div class="footerinner clearfix">
+  	<div class="col-md-2 sitemap">
+  	<h4>Site Map</h4>
+	 <ul class="list-unstyled">
+		  <li><a href="/">Home</a></li>
+		  <li><a href="/search-jobs.html">Search Job</a></li>
+		  <li><a href="/market-place.html">Marketplace</a></li>
+		  <li><a href="/about-us.html">About Us</a></li>
+		  <li><a href="/help.html">Help</a></li>
+		  <li><a href="/blog/all.html" id="blogID">Blog</a></li>
+		  <li><a href="/contact.html">Contact</a></li>
+	</ul>
+  	</div>
+  	<div class="col-md-2 sitemap">
+  		<h4>Features</h4>
+		<ul class="list-unstyled">
+			<li><a href="/ats.html">ATS</a></li>
+			<li><a href="/vms.html">VMS</a></li>
+			<li><a href="/crms.html">CRM</a></li>
+			<li><a href="/pms.html">PMS</a></li>
+			<li><a href="/hrms.html">HRMS/Contracts</a></li>
+			<li><a href="/ims.html">IMS</a></li>
+			<li><a href="/immigration.html">Immigration</a></li>
+			<li><a href="/mergers-acquisition.html">Mergers &amp; Acquisition</a></li>
+		</ul>
+  	</div>
+  	<div class="col-md-3 col-sm-6">
+  		<h4>Reach Us &#64;</h4>
+  		<div class="reachus">
+  			<h5>INDIA</h5>
+			<p>Hyderabad, Telangana.<br><i class="fa fa-phone"></i>91. 40-6700-7676</p>
+  		</div>
+  		<div class="reachus mt clearfix">
+  			<h5>USA</h5>
+  			<p>3535 Victory Group Way, Frisco,<br>TX 75034, USA<br><i class="fa fa-phone"></i>+1 972 999 2656</p>
+  		</div>
+  	</div>
+  	<div class="col-md-5 col-sm-6">
+  	<div class="clearfix needinfo">
+  		<h4>Need more information?</h4>
+  		<p>Contact our experts for more information. <br> For a live demonstration of our recruitment software, <br>
+mail us to <a href="mailto:info@sourcelead.com"><strong>info@sourcelead.com</strong></a></p>
+		</div>
+			  <div class="social-links social-icons mt">
+	  	<ul class="list-unstyled list-inline">
+			<li><a title="FaceBook" href="https://www.facebook.com/Sourcelead-303008183449158/" target="_blank"><i class="fa fa-facebook text-primary"></i></a></li>
+			<li><a title="Youtube" href="https://www.youtube.com/sourcelead" target="_blank"><i class="fa fa-youtube text-danger"></i></a></li>
+			<li><a title="Twitter" href="https://twitter.com/SourceleadInc" target="_blank"><i class="fa fa-twitter text-info"></i></a></li>
+			<li><a title="GooglePlus" href="https://plus.google.com/u/0/106307146025514798879" target="_blank"><i class="fa fa-google-plus text-danger"></i></a></li>
+			<li><a title="LinedIn" href="https://www.linkedin.com/company-beta/13268592/" target="_blank"><i class="fa fa-linkedin text-primary"></i></a></li>
+		</ul>
+	  </div>
+  	</div>
+  	 </div>
+  	 <div class="clearfix"></div>
+  </div>
+</footer>
+<section class="footer-copyright">
+  <div class="container">
+    <div class="col-xs-12 col-sm-6 text-center">
+      <p>&copy; 2018, All Rights Reserved.</p>
     </div>
-    <div class="copyrightOut">
-    	<div class="copyright">
-    	<b>© 2016 SourceLead. All rights reserved.</b>
-        <span>
-        	<a href="privacy.html">Privacy Policy</a>
-            <a href="terms.html">Terms of Use</a>
-        </span><div class="clear"></div>
-        </div>
-    </div>   
-</footer> 
- 
-      
-  <!--   HTML   -->	  
-  
-  <!--   Responsive Menu   -->	
-<div class="mask"></div> 
-<i class="fa fa-close menuCl"></i>
-<div class="resMenu">
-	<div class="menuBtns">
-<a href="javascript:void(0)" class="requestDemo">Request a Demo</a><a href="javascript:void(0)" class="freeTrail">Free Trial</a><div class="clear"></div>
-    </div>    
-    <section class="accordion-toggle">
-    	<h3 class="accordion-link"><a href="home.html">Home</a></h3>
-		<h3 class="accordion-link"><a href="index.html">Jobs</a></h3>
-        <h3 class="accordion-link"><a href="javascript:void(0)">What we do<span></span></a></h3>
-        <div class="accordion-panel">
-			<a href="crowdsourcing.html">Crowdsourcing</a>
-			<a href="ats.html">ATS</a>
-            <a href="vms.html">VMS</a>
-            <a href="timesheet.html">Time Management</a>
-		</div>  
-        <h3 class="accordion-link"><a href="javascript:void(0)">Resources<span></span></a></h3>
-        <div class="accordion-panel">
-			<a href="demo.html">Product Videos</a>
-            <a href="javascript:void(0)" class="requestDemo">Request Personal Demo</a>
-            <!-- <a href="faqs.html">FAQs</a> -->
-        </div> 
-        <h3 class="accordion-link"><a href="javascript:void(0)">About SourceLead<span></span></a></h3>
-        <div class="accordion-panel">
-			<a href="about-us.html">About SourceLead</a>
-            <a href="team.html">Our team</a>
-			<a href="testimonial.html">Testimonial</a>
-            <!--<a href="careers.html">Careers</a>-->
-            <a href="contact.html">Contact</a>
-        </div>          
-        <h3 class="accordion-link"><a href="blog.html">Blogs</a></h3>        
-    </section>
-    <section class="resUser">
-    	<ul>
-        	<!--<li><a href="javascript:void(0)"><i class="fa fa-user-o"></i> My account</a></li>-->
-            <li><a href="http://www.sourcelead.com/app/"><i class="fa fa-user-o"></i> Login</a></li>
-            <!--<li><a href="javascript:void(0)"><i class="fa fa-sign-out"></i> Sign out</a></li>-->
-            <li><a href="mailto:info@sourcelead.com"><i class="fa fa-envelope-o"></i>info@sourcelead.com</a></li> 
-			<li><a href="tel:5134453394"><i class="fa fa-phone"></i> USA : (214) 295-5535</a></li>
-            <li><a href="tel:04065452333"><i class="fa fa-phone"></i> IND : +91. 40-6700-7676</a></li>           
-        </ul>
-    </section>    
-</div>  
-  <!--   Responsive Menu   -->	 
-  
-<!--   Free trial pop   -->
- 
-<div class="clPop"><img src="/resources/css/static-web/images/menu-close.png" alt=""/></div> 
-<section class="freeTrialPop" id="requestDemo">
-	<div class="Rdemo">
-    	<img src="/resources/css/static-web/images/demo-1.png" alt=""/>
-    	<h3>Request a Demo</h3>
-    	<p>We are so glad for your interest in SourceLead.
-Please mail us at </p>
-		<a href="mailto:info@sourcelead.com"><i class="fa fa-envelope"></i>info@sourcelead.com</a>
-		<span>We will get back to you As soon as possible</span>
+    <div class="col-xs-12 col-sm-6 text-center footer-Qlinks">
+      <ul class="list-unstyled list-inline">
+        <li><a href="/terms-of-use.html">Terms of Use</a></li>
+        <li><a href="/privacy-policy.html">Privacy Policy</a></li>
+        <li><a href="/contact.html">Contact Us</a></li>
+      </ul>
     </div>
+  </div>
 </section>
+
+<!--   Menu Responsive   -->
+<div class="customNavBar-inner resMenu">
+	<a href="javascript:void(0)" class="closebtn" onclick="closeNav()">&times;</a>
+	<ul class="">
+	<li><a href="/" class="slactive">Home</a></li>
+	 <li class="dropdown dropdown-featureshome">
+	 <a data-target="#featureshome" href="javascript:void(0)">Features
+			  <span class="fa fa-angle-down"></span></a>
+			<ul id="featureshome" class="collapse list-unstyled dropdownmenu-custom">
+<!--
+				<li><a href="features.html">Features</a></li>
+-->
+				<li><a href="/ats.html">ATS</a></li>
+				<li><a href="/vms.html">VMS</a></li>
+				<li><a href="/crms.html">CRM</a></li>
+				<li><a href="/pms.html">PMS</a></li>
+				<li><a href="/hrms.html">HRMS/Contracts</a></li>
+				<li><a href="/ims.html">IMS</a></li>
+				 <li><a href="/immigration.html">Immigration</a></li>
+				<li><a href="/mergers-acquisition.html">Mergers &amp; Acquisition</a></li>
+				
+			</ul>
+	</li>
+	<li><a href="/search-jobs.html">Search Job</a></li>
+	<li><a href="/market-place.html">Marketplace</a></li>
+	<li><a href="/about-us.html">About Us</a></li>
+	<li class="dropdown dropdown-featureshome">
+	 <a data-target="#featureshome" href="javascript:void(0)" id="resourcesID">Resources
+			  <span class="fa fa-angle-down"></span></a>
+			<ul id="featureshome" class="collapse list-unstyled dropdownmenu-custom">
+				<li><a class="helpbtn" href="/help.html">Help</a></li>
+				<li><a href="/all.html" id="blogID">Blog</a></li>
+			</ul>
+	</li>
+
+	<li><a href="/contact.html">Contact</a></li>
+	<li><a class="loginbtn" href="/login" title="Login">Login</a></li>
+	<li><a href="/register" title="Login">Sign Up</a></li>
+	</ul>
+		</div>
+<!--   Menu Responsive   -->
+
+<!-- Free trail and demo -->
+<div class="clPop"><img src="/resources/static-web/images/menu-close.png" alt=""/></div> 
 <section class="freeTrialPop" id="freeTrial">
 
-	<div class="Rdemo">
-    	<img src="/resources/css/static-web/images/demo-1.png" alt=""/>
-    	<h3>Free Trial</h3>
-    	<p>We are so glad for your interest in SourceLead.
-Please mail us at </p>
-		<a href="mailto:info@sourcelead.com"><i class="fa fa-envelope"></i>info@sourcelead.com</a>
-		<span>We will get back to you As soon as possible</span>
-    </div>    
-</section> 
- 
- <!--   Free trial pop   -->     
+   <div class="Rdemo getDemo">
+		<div class="clearfix">
+			<div class="clearfix">
+				<h4 class="modal-title mb">Request a Demo</h4>
+			</div>
+		    <div class="clearfix mt">
+				<div class="freeTrialTop getAdemo">
+				<form id="requestDemo_form" name="requestDemo_form" method="post">
+				<input type="hidden" id="orgType" name="orgType" value="Demo">
+			        <div class="freeTrialfields">
+			           <div class="row">
+				           <div class="col-md-6">
+				            	<div class="clearfix">
+				            	<input type="text" class="form-control" placeholder="First Name *" id="firstName" name="firstName" field-name="First Name" data-validation="required validate_Space validate_AlphaNumber validate_length length1-100">
+				            	</div>
+				            </div>
+				           <div class="col-md-6">
+				            	<div class="clearfix">
+				            	<input type="text" class="form-control" placeholder="Last Name" id="lastName" name="lastName" data-validation-optional="true" data-validation="validate_Space validate_AlphaNumber validate_length length1-100">
+				            	</div>
+				            </div>
+				            <div class="col-md-6">
+				            	<div class="clearfix">
+				            	<input type="text" class="form-control" placeholder="Email id *" name="email" field-name="Email"  id="email"  data-validation="required validate_Space validate_length length2-100 validate_email">
+				            	</div>
+				            </div>
+				            <div class="col-md-6">
+				            	<div class="clearfix">
+				            	<input type="text" class="form-control" placeholder="Mobile Number *" id="phoneNumber" field-name="Mobile Number"  name="phoneNumber" data-validation="required validate_Space validate_phone validate_length length9-20">
+				            	</div>
+				            </div>
+				            <div class="col-md-6">
+				            	<div class="clearfix">
+				            	<input type="text" class="form-control" placeholder="Company Name *" id="companyName" name="companyName" field-name="Company Name"  data-validation="required validate_Space validate_length length2-250">
+				            	</div>
+				            </div>
+				            <div class="col-md-6">
+				            	<div class="clearfix">
+				            	<input type="text" class="form-control" placeholder="Company Website *" id="companyWebsite" name="companyWebsite"  field-name="Company Website"  data-validation="required validate_Space validate_domain validate_length length2-100">
+				            	</div>
+				            </div>
+				            <div class="col-md-6">
+				            	<div class="clearfix">
+				            	<input type="text" class="form-control" placeholder="Location *" id="companyAddress" name="companyAddress" field-name="Location"  data-validation="required">
+				            	</div>
+				            </div>
+				            <div class="col-md-6 selectpicker-dropdowndDemo" id="demoCountryDivId">
+				                 <select class="form-control selectpicker" name="country" id="country" field-name="Country" data-validation="required" onchange="getTimezonesList();removeCountryValidation();" data-live-search="true" title="Select Coountry">
+			                        <option disabled selected>Select Country *</option>
+			                        <option value="Australia">Australia</option>
+					                <option value="France">France</option>
+					                <option value="India">India</option>
+					                <option value="Singapore">Singapore</option>
+					                <option value="United Kingdom">United Kingdom</option>
+					                <option value="United States">United States</option>
+			                    </select>
+				            </div>
+				            
+				              <div class="clearfix"></div>
+				             <div class="clearfix mb">
+				             <div class="col-md-6">
+				             <div class="row">
+				             <div class="col-md-6" id="errMsgDate">
+				             	<input type="text" class="form-control calendar" placeholder="Date *" id="demoDate" name="demoDate" field-name="Date" readonly data-validation="required" >
+				             </div>
+				             <div class="col-md-6">
+				             	<input type="text" class="form-control timeicon" placeholder="Time" id="demoTime" name="demoTime">
+				             </div>
+				             </div>
+				              </div>
+				             <div class="col-md-6 selectpicker-dropdowndDemo">
+				                  <select class="form-control selectpicker" name="timeZone" id="demoTimeZone" field-name="TimeZone" data-live-search="true" title="Select Timezone">
+			                    </select>
+				             </div>
+			             
+			             </div>
+			        	
+			        	<div class="col-md-12 mt mb">
+			               <lable><strong>Interested In</strong></lable>
+			               <div class="clearfix"></div>
+				            <div class="clearfix">
+				            <div id="moduleList" class="text-left"></div>
+				            <input type="hidden"  id="demoModuleValue" name="demoModule"  field-name="Module" data-validation="required"/> 		
+				            </div>
+			            </div>
+			            <div class="clearfix mt">
+			            <input type="button" value="Request Demo" class="btn btn-danger" onclick="saveRequestDemo();"> 
+			            </div>                                           
+			        </div>
+			        </div> 
+					</form>
+			    </div>
+		</div>
+		</div>
+    </div>
+</section>  
+ <!--   Free trial pop   -->    
+<section class="asMask"></section>     
+<!-- Free trail and demo -->
 
-	  <section class="pageLoad"></section> 
-<div class="backtotop"><img src="/resources/css/static-web/images/backtotop.png" alt="" /></div> 
-      	
-    <!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
-    <script type="text/javascript" src="/resources/js/modernizr.custom.86080.js"></script>
-	<script src="/resources/js/static-web/jquery-1.12.4.min.js"></script>
-    <script src="/resources/js/static-web/bootstrap.min.js"></script>
-    <script src="/resources/js/static-web/jquery.sldr.js"></script>
-    <script src="/resources/js/static-web/masonry.pkgd.min.js"></script>
-    <script src="/resources/js/static-web/validation.js"></script>
-	  <script>
-	  $(window).load(function() {
-			setTimeout(function() {
-				$(".pageLoad").fadeOut();
-			}, 1000);
-		});	
-	  </script>    
-    
- <!--  Forgot password -->   
+<div class="backtotop" style="display: none;"><img src="/resources/static-web/images/backtotop.png" alt="" style="max-height: 45px;"></div>
+<div class="backshadow" onclick="closeNav();"></div>
+<script src="/resources/static-web/js/jquery-1.11.3.min.js"></script>
+<script src="/resources/js/bootstrap-select.min.js"></script>
+<script src="/resources/static-web/js/owl.carousel.js"></script>
+<script src="/resources/static-web/js/bootstrap.min.js"></script> 
+<script src="/resources/static-web/js/jquery.prettyPhoto.js" type="text/javascript"></script>
+<script src="/resources/static-web/js/customscripts.js" type="text/javascript"></script>
+
 <script>
-$("#forpass").hide();
-$("#pass").click(function(){
-	$("#forpass").show();
-	$("#signin").hide();	
-});
-$(".canbtn").click(function(){
-	$("#forpass").hide();
-	$("#signin").show();	
-});
-</script>   
-
-
-<!--   Responsive Menu   -->
-<script>
-
-$("#menuIcon").click(function(){
-	$(".mask").fadeIn(200);
-	$(".resMenu").addClass("resMenuAct");
-	$("body").css("overflow", "hidden");
-	$(".menuCl").fadeIn(100);	
-});
-$(".mask").click(function(){
-	$(".mask").fadeOut(200);
-	$(".resMenu").removeClass("resMenuAct");
-	$("body").css("overflow", "auto");
-	$(".menuCl").fadeOut(100);
-});
-
-$(function(){
-	$('.accordion-toggle .accordion-link').click(function(){
-		if(!$(this).hasClass('accordion-on'))
-		$('.accordion-toggle .accordion-link').removeClass('accordion-on');
-		$(this).toggleClass('accordion-on');
-		$(this).next(".accordion-panel").slideToggle().siblings(".accordion-panel:visible").slideToggle();
-	})
-});
-</script>
-
-<!--   FreeTrial Pop   -->
-<script>
-$(document).ready(function() {
-    $(".freeTrail").click(function(){
-		$("#freeTrial").addClass("activePop");
-		$(".clPop").addClass("clPopA");
-		$("body").css("overflow", "hidden");
-	});
-    $(".requestDemo").click(function(){
-		$("#requestDemo").addClass("activePop");
-		$(".clPop").addClass("clPopA");
-		$("body").css("overflow", "hidden");
-	});	
-    $(".clPop").click(function(){
-		$("#freeTrial").removeClass("activePop");
-		$("#requestDemo").removeClass("activePop");
-		$(".clPop").removeClass("clPopA");
-		$("body").css("overflow", "auto");
-	});	
-});
-// Key Function
-$(document).bind('keydown', function (e) {
-    if (e.which === 27) {
-		$("#freeTrial").removeClass("activePop");
-		$("#requestDemo").removeClass("activePop");
-		$("body").css("overflow", "auto");
-		$(".clPop").removeClass("clPopA");
-    }
-});
-</script>
-	  
-<script>
-///////////////////// Back To Top 
-    $(window).scroll(function() {
-        if ($(this).scrollTop() > 200) {
-            $('.backtotop').fadeIn('slow');
-        } else {
-            $('.backtotop').fadeOut('slow');
+function removeCountryValidation(){
+	$('#demoCountryDivId').find('p.jquery_form_error_message').remove();
+}
+$(document).ready(function(){
+	// MarQ Script 
+	$(".marQ").hide();
+	var location = window.location.origin;
+	 $.ajax({
+        url: location+"/getScheduleStatus",
+        success: function(data) {
+        	if(data !== ""){
+        		$(".marQ").show();
+        		$("#maintenanceStatus").append(data.mainMessage);
+        		$(".customNavBar").addClass("customNavBarTop");
+        		$(".staticBan").addClass("staticBanTop");
+        		$(".termsWrap").addClass("termsWrapTop");
+        	}else{
+        		$(".marQ").hide();
+        		$(".customNavBar").removeClass("customNavBarTop");
+        		$(".staticBan").removeClass("staticBanTop");
+        		$(".termsWrap").removeClass("termsWrapTop");
+        	}
         }
-    });
-    $('.backtotop').click(function() {
-        $("html, body").animate({scrollTop: 0}, 500);
-        return false;
-    });
-</script>
-<script>
-$( window ).load( function() {
-
-	$( '.sldr' ).each( function() {
-		var th = $( this );
-		th.sldr({
-			focalClass    : 'focalPoint',
-			offset        : th.width() / 5,
-			sldrWidth     : 'responsive',
-			nextSlide     : th.nextAll( '.sldr-nav.next:first' ),
-			previousSlide : th.nextAll( '.sldr-nav.prev:first' ),
-			selectors     : th.nextAll( '.selectors:first' ).find( 'li' ),
-			toggle        : th.nextAll( '.captions:first' ).find( 'div' ),
-			sldrInit      : sliderInit,
-			sldrStart     : slideStart,
-			sldrComplete  : slideComplete,
-			sldrLoaded    : sliderLoaded,
-			swipeDragCoefficient : 5,
-			sldrAuto      : true,
-			sldrTime      : 7000,
-			hasChange     : true
-		});
-	});
-
+	}); 	
+	
 });
-function sliderInit( args ) {}
-function slideLoaded( args ) {}
-function sliderLoaded( args ) {}
-function slideStart( args ) {}
-function slideComplete( args ) {}
+</script>
 
-</script>    
+	<script src="/resources/js/jquery-ui.js"></script>
+    <script src="https://maps.google.com/maps/api/js?libraries=places&v=3&key=AIzaSyCIbxD8-aZ7Wgp6N-JeEJKVRIHGRpNMdRE" type="text/javascript"></script>
+	<script src="/resources/js/formvalidator.js"></script>
+	<script src="/resources/js/jquery.timepicker.js"></script>
+<script>
+$(document).ready(function(){
+	getDemoModules();
+	getTimezonesList();
+	googleApiLocation('companyAddress','country');
+	
+});
+</script>
 
 <script>
-jQuery(document).ready(function($){
-	//create the slider
-	$('.cd-testimonials-wrapper').flexslider({
-		selector: ".cd-testimonials > li",
-		animation: "slide",
-		controlNav: false,
-		slideshow: true,
-		smoothHeight: true,
-		start: function(){
-			$('.cd-testimonials').children('li').css({
-				'opacity': 1,
-				'position': 'relative'
-			});
+$("#demoDate").datepicker({
+	dateFormat : "dd-mm-yy",
+	minDate: 0,
+	onSelect : function(selected) {
+		  removeValidationDate();
+	}
+});
+
+$("#demoTime").timepicker({
+	'showDuration': true,
+	'disableTextInput': true
+});
+
+$(".clPop").click(function(){
+	 document.getElementById("requestDemo_form").reset();
+	 $("#requestDemo_form").find("p.jquery_form_error_message").fadeOut();
+});
+function removeValidationDate(){
+	$("#errMsgDate").find('p.jquery_form_error_message').remove();
+}
+
+</script>
+<jsp:include page="googleApiLocation.jsp" />
+<script>
+function getTimezonesList(){
+	var sourceleadUrl ='${SourceLeadWeb_sourceleadUrl}';
+	var country = $('#country').val();
+	if(country){
+		if(country == "India"){
+			$("select[name = 'dateFormat']").val('dd-MM-yyyy');
+		}else{
+			$("select[name = 'dateFormat']").val('MM-dd-yyyy');
 		}
-	});
+		 $.ajax({
+		    	type: "POST",
+		    	url : sourceleadUrl+"/getDemoTimezonesList?${_csrf.parameterName}=${_csrf.token}", 
+		        success: function(data) {
+		        var json = JSON.parse(data);
+		        var output = "";
+		        output = output + "<option value=''>--Select--</option>";
+		        if(country == 'India'){
+	    			output = output + "<option value='246' selected> Asia/Kolkata </option>";
+	    		}else if(country == 'United States'){
+	    			output = output + "<option value='132' selected> America/Chicago </option>";
+	    		}else if(country == 'United Kingdom'){
+	    			output = output + "<option value='333' selected> Europe/London </option>";
+	    		}else if(country == 'Singapore'){
+	    			output = output + "<option value='272' selected> Asia/Singapore </option>";
+	    		}else if(country == 'France'){
+	    			output = output + "<option value='342' selected> Europe/Paris </option>";
+	    		}else if(country == 'Australia'){
+	    			output = output + "<option value='298' selected> Australia/Adelaide </option>";
+	    		}
+		        	for (var i=0; i<json.length; i++){
+		        		var opt = json[i];
+		        		output = output + "<option value='" +opt.id+ "'>"+opt.timeZoneId+"</option>";
+					}
+		        	$("#demoTimeZone").empty();
+		        	$("#demoTimeZone").append(output);
+		        	$("#demoTimeZone").selectpicker('refresh');
+		        }
+		 });
+	}else{
+		 $.ajax({
+		    	type: "POST",
+		    	url : sourceleadUrl+"/getDemoTimezonesList?${_csrf.parameterName}=${_csrf.token}", 
+		        success: function(data) {
+		        var json = JSON.parse(data);
+		        var output = "";
+		    	for (var i=0; i<json.length; i++){
+	        		var opt = json[i];
+	        		output = output + "<option value='" +opt.id+ "'>"+opt.timeZoneId+"</option>";
+				}
+	        	$("#demoTimeZone").empty();
+	        	$("#demoTimeZone").append(output);
+	        	$("#demoTimeZone").selectpicker('refresh');
+		        }
+		 });
+	}
 
+}
+
+function getDemoModules(){
+	var sourceleadUrl ='${SourceLeadWeb_sourceleadUrl}';
+	$.ajax({
+    	type: "POST",
+    	url : sourceleadUrl+"/getDemoModulesList?${_csrf.parameterName}=${_csrf.token}", 
+        success: function(json) {
+        	var result = "";
+        	for (var i=0; i<json.length; i++){
+        		var report = json[i];
+            	result = result + "<label class='checkbox-area'>"+report.name+"<input type='checkbox' value="+report.id+" name='demoModules' onblur='moduleCheckValidation(this)'>  <span class='checkmark'></span> </label>";
+        	}
+        	$("#moduleList").empty();
+			$("#moduleList").append(result); 
+			$("#moduleList").find(".checkbox-area").css({"minWidth":"86px"})
+        }
+	});
+}
+</script>
+ <script type="text/javascript">
+	function moduleCheckValidation(id){
+		 var modulesList = [];
+ 		 $("input[name='demoModules']:checked").each( function (i) {
+ 			modulesList[i] = $(this).val();
+ 		});
+ 		 
+		if (modulesList.length > 0) { 
+		document.getElementById("demoModuleValue").value = id.value;
+		}else{
+			$('#demoModuleValue').val(''); 
+		}
+	} 
+</script>
+<script>
+function saveRequestDemo(){
+	if ($('#requestDemo_form').validate(false, validationSettings)) {
+		 var sourceleadUrl ='http://localhost:8080';
+		 	$("#recruiter_register").attr("disabled", "disabled");
+		 	var modulesList =  $("input[name='demoModules']:checked").map(function(){
+	            return this.value;
+	        }).get();
+		 	var formData = getFormData("requestDemo_form");
+		 	$.ajax({
+	 	      type: "POST",
+	 	      data: formData,
+	        	  url: "app/ws/demoRequest?${_csrf.parameterName}=${_csrf.token}&modulesList="+modulesList,
+	         	success: function(result) {
+	         		location.reload();
+		        },  
+	     }); 
+		 	return true;
+	}else {
+		return false;
+	}
+}
+   
+$('body').on('blur', '#requestDemo_form', function() {
+	$("#requestDemo_form").showHelpOnFocus();
+	$("#requestDemo_form").validateOnBlur(false, validationSettings);
 });
 </script>
-<script type="text/javascript" src="https://cdn.ywxi.net/js/1.js" async></script>
-  </body>
+<script type="text/javascript">
+var validationSettings = {
+        errorMessagePosition : 'element',
+       borderColorOnError : '',
+		scrollToTopOnError : true,
+		dateFormat : 'yyyy/mm/dd' 
+   }; 
+</script>
+
+<script type="text/javascript">
+	(function($) {
+		$.fn.serializeFormJSON = function() {
+
+			var o = {};
+			var a = this.serializeArray();
+			$.each(a, function() {
+				if (o[this.name]) {
+					if (!o[this.name].push) {
+						o[this.name] = [ o[this.name] ];
+					}
+					o[this.name].push(this.value || '');
+				} else {
+					o[this.name] = this.value || '';
+				}
+			});
+			return o;
+		};
+	})(jQuery);
+</script>
+
+
+<script src="/resources/js/slead-common.js"></script>
+</body>
 </html>

@@ -1,5 +1,6 @@
 package com.bis.sourcelead.elk.index;
 
+import java.io.Serializable;
 import java.util.List;
 
 import javax.persistence.Column;
@@ -9,8 +10,10 @@ import javax.persistence.Column;
  * @author Rajashekar and Prasanna
  * @date 11th jan 2017
  */
-public class RequirementIndex {
+public class RequirementIndex implements Serializable {
 
+	private static final long serialVersionUID = 1L;
+	
 	private Long requirementId;
 	
 	private Long orgLocationId;
@@ -31,9 +34,17 @@ public class RequirementIndex {
 	
 	private String rateType;
 	
-	private String minExperience;
+	private String clientCurrencyCode;
 	
-	private String maxExperience;
+	private Float clientRate;
+	
+	private Float clientMaxRate;
+	
+	private String clientRateType;
+	
+	private Float minExperience;
+	
+	private Float maxExperience;
 	
 	private String requirementStatus;
 	
@@ -190,6 +201,23 @@ public class RequirementIndex {
 	private String url;
 	private String generatedId;
 	
+	private List<String> locationsList;
+	
+	private String isClientJob;
+	
+	private String primaryRecruiterUserId;
+	
+	private String tags;
+	
+	
+	public String getPrimaryRecruiterUserId() {
+		return primaryRecruiterUserId;
+	}
+
+	public void setPrimaryRecruiterUserId(String primaryRecruiterUserId) {
+		this.primaryRecruiterUserId = primaryRecruiterUserId;
+	}
+
 	public String getManagerUserId() {
 		return managerUserId;
 	}
@@ -313,19 +341,59 @@ public class RequirementIndex {
 		this.rateType = rateType;
 	}
 	
-	public String getMinExperience() {
+	public String getClientCurrencyCode()
+	{
+		return clientCurrencyCode;
+	}
+
+	public void setClientCurrencyCode(String clientCurrencyCode)
+	{
+		this.clientCurrencyCode = clientCurrencyCode;
+	}
+
+	public Float getClientRate()
+	{
+		return clientRate;
+	}
+
+	public void setClientRate(Float clientRate)
+	{
+		this.clientRate = clientRate;
+	}
+
+	public Float getClientMaxRate()
+	{
+		return clientMaxRate;
+	}
+
+	public void setClientMaxRate(Float clientMaxRate)
+	{
+		this.clientMaxRate = clientMaxRate;
+	}
+
+	public String getClientRateType()
+	{
+		return clientRateType;
+	}
+
+	public void setClientRateType(String clientRateType)
+	{
+		this.clientRateType = clientRateType;
+	}
+
+	public Float getMinExperience() {
 		return minExperience;
 	}
 
-	public void setMinExperience(String minExperience) {
+	public void setMinExperience(Float minExperience) {
 		this.minExperience = minExperience;
 	}
 
-	public String getMaxExperience() {
+	public Float getMaxExperience() {
 		return maxExperience;
 	}
 
-	public void setMaxExperience(String maxExperience) {
+	public void setMaxExperience(Float maxExperience) {
 		this.maxExperience = maxExperience;
 	}
 
@@ -968,5 +1036,29 @@ public class RequirementIndex {
 	{
 		this.spocId = spocId;
 	}
-	
+
+	public List<String> getLocationsList() {
+		return locationsList;
+	}
+
+	public void setLocationsList(List<String> locationsList) {
+		this.locationsList = locationsList;
+	}
+
+	public String getIsClientJob() {
+		return isClientJob;
+	}
+
+	public void setIsClientJob(String isClientJob) {
+		this.isClientJob = isClientJob;
+	}
+
+	public String getTags() {
+		return tags;
+	}
+
+	public void setTags(String tags) {
+		this.tags = tags;
+	}
+
 }

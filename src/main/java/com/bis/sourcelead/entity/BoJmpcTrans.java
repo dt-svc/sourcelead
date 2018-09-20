@@ -23,7 +23,6 @@ import org.hibernate.annotations.Type;
 
 @Entity
 @Table(name = "BO_JMPC_TRANS")
-@Cache(usage = CacheConcurrencyStrategy.TRANSACTIONAL, region = "boJmpcTrans")
 public class BoJmpcTrans implements Serializable{
 
 	private static final long serialVersionUID = 1L;
@@ -57,8 +56,8 @@ public class BoJmpcTrans implements Serializable{
 	@Column(name = "CHECK_OR_SLIP_NO")
 	private String checkOrSlipNo;
 	
-	@NotFound(action=NotFoundAction.IGNORE)
-	@ManyToOne(fetch = FetchType.EAGER)
+	
+	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "PAYMENT_TYPE_ID")
 	private BoPaymentTypes paymentTypeId;
 	

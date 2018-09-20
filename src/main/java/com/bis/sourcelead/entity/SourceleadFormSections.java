@@ -24,8 +24,7 @@ import org.hibernate.annotations.NotFoundAction;
  *
  */
 @Entity
-@Table(name = "SOURCELEAD_FORM_SECTIONS", catalog = "sourcelead")
-@Cache(usage = CacheConcurrencyStrategy.TRANSACTIONAL, region = "sourceleadFormSections")
+@Table(name = "SOURCELEAD_FORM_SECTIONS")
 public class SourceleadFormSections implements Serializable{
 	private static final long serialVersionUID = 1L;
 	
@@ -34,12 +33,12 @@ public class SourceleadFormSections implements Serializable{
     @Column(name = "ID", nullable = false)
 	private Long id;
 	
-	@NotFound(action=NotFoundAction.IGNORE)
+	
 	@ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name="TAB_ID", nullable=false )        
     private Tabs tabs;
 	
-	@NotFound(action=NotFoundAction.IGNORE)
+	
 	@ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name="SOURCELEAD_ACTION_ID", nullable=false )        
     private SourceleadActions sourceleadActions;
@@ -59,7 +58,9 @@ public class SourceleadFormSections implements Serializable{
 	@Column(name = "CREATED_DATE")
 	private Date createdDate;
 	
-	@NotFound(action=NotFoundAction.IGNORE)
+	@Column(name="IS_DEFAULT_VISIBLE")
+	private String isDefaultVisible;
+	
 	@ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name="CREATED_BY", nullable=false )
 	private User createdBy;
@@ -67,7 +68,7 @@ public class SourceleadFormSections implements Serializable{
 	@Column(name = "UPDATED_DATE")
 	private Date updatedDate;
 	
-	@NotFound(action=NotFoundAction.IGNORE)
+	
 	@ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name="UPDATED_BY", nullable=false )
 	private User updatedBy;
@@ -158,5 +159,13 @@ public class SourceleadFormSections implements Serializable{
 		this.updatedBy = updatedBy;
 	}
 
+	public String getIsDefaultVisible() {
+		return isDefaultVisible;
+	}
+
+	public void setIsDefaultVisible(String isDefaultVisible) {
+		this.isDefaultVisible = isDefaultVisible;
+	}
+	
 	
 }

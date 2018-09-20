@@ -3,6 +3,15 @@
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
 <%@taglib uri="http://www.springframework.org/tags/form" prefix="form"%>
 
+<style>
+.disabledLink
+{
+	color: #333;
+	text-decoration : none;
+	pointer-events: none;
+}
+</style>
+
 
 <section class="content-wraper">
 	<section class="content-header clearfix">
@@ -20,8 +29,8 @@
 		<div id="popup"></div>
 		<ul class="newPrTabsMenu">
 				<li class="current" onclick="getVendorOnboardDetails();"><a href="#tab-a" data-toggle="tab">Details</a></li>
-				<li><a href="#tab-b" data-toggle="tab" id="vendorDocuments">Documents</a></li>
-				<li><a href="#tab-c" data-toggle="tab" id="vendorTasks">Tasks</a></li>
+				<li><a href="#tab-b" data-toggle="tab" id="vendorDocuments" onclick="getOnboardDocuments();">Documents</a></li>
+				<li><a href="#tab-c" data-toggle="tab" id="vendorTasks" onclick="getVendorOnboardTasksList();">Tasks</a></li>
 				<div class="clearfix mb"></div>
 			  </ul>
 			  <div class="clearfix"></div>
@@ -523,11 +532,11 @@ function saveVendorOnboard(){
 					 $("#vendorDocuments").removeClass("disabledLink");
 					 vendorDocuments.href="#tab-b"; 
 					 
-					 vendorDocuments.addEventListener("click", function() {
+					/*  vendorDocuments.addEventListener("click", function() {
 						 getOnboardDocuments();
-					});
+					}); */
 					 
-					 vendorDocuments.click();
+					 $("#vendorDocuments").click();
 					 
 				}); 
 		return true;

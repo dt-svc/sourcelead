@@ -121,6 +121,7 @@ function getRequestedAssociatesList(){
 					 var skills = '';
 					 var billRate = '';
 					 var payRate = '';
+					 var rateType='';
 					 if(opt.startDateStr != null && opt.startDateStr != '' && opt.startDateStr != 'undefined'){
 						 startDate = opt.startDateStr;
 					 }else{
@@ -154,9 +155,12 @@ function getRequestedAssociatesList(){
 					 }
 					 if(opt.minExperience != null && opt.minExperience != '' && opt.minExperience != 'undefined'){
 						 minExperience = "Min Exp."+opt.minExperience;
+					 }else if(opt.minExperience == 0){
+						 minExperience = "Min Exp."+opt.minExperience;
 					 }else{
 						 minExperience = '--';
 					 }
+					 
 					if(opt.maxExperience != null && opt.maxExperience != '' && opt.maxExperience !='undefined'){
 						maxExperience = "Max Exp."+opt.maxExperience;
 					}else{
@@ -178,6 +182,11 @@ function getRequestedAssociatesList(){
 					 }else{
 						 payRate = '--';
 					 }
+					 if(opt.rateType != null && opt.rateType != '' && opt.rateType != 'undefined'){
+						 rateType = opt.rateType;
+						 }else{
+							 rateType = '--';
+						 }
 					 result = result +'<tr>';
 					    
 					    result = result +'<td>';
@@ -190,6 +199,7 @@ function getRequestedAssociatesList(){
 						
 						result = result +'<td>';
 						result = result +'<div class="width90px inr_values">';
+						
 						result = result +'<small>'+minExperience+'</small> <small>'+maxExperience+'</small>';
 						result = result +'</div>';
 						result = result +'</td>';
@@ -206,7 +216,7 @@ function getRequestedAssociatesList(){
 							result = result +'        <div class="clearfix"></div>';
 							result = result +'        <small>'+payRate+'</small>';
 						    result = result +'    </div>';
-						    result = result +'    <small class="text-muted pull-right paddingLeft payrateType mt10" id="rateTypeRow1" title="Hourly">Hourly</small>';
+						    result = result +'    <small class="text-muted pull-right paddingLeft payrateType mt10" id="rateTypeRow1" title="Hourly">'+rateType+'</small>';
 						    result = result +' </div>';
 						result = result +'</td>';
 						
@@ -228,7 +238,15 @@ function getRequestedAssociatesList(){
 						result = result +'</td>';
 						
 						result = result +'<td>';
-					 	result = result +'<div class="tbldata-dotdot_80" title="'+opt.resourceStatus+'" >'+opt.resourceStatus+'</div>';
+						if(opt.rejectedReason==null){
+						result = result +'<div class="tbldata-dotdot-vsm paTp">';
+			     		result = result +'<b class="text-success" title="'+opt.resourceStatus+'" >'+opt.resourceStatus+'</b>';
+						result = result +'</div>';}
+						if(opt.rejectedReason!=null){
+						result = result +'<div class="tbldata-dotdot-vsm paTp">';
+			     		result = result +"<i class='glyphicon glyphicon-comment edit-reason colB'><div class='edit-status'><p>"+opt.rejectedReason+"</p></div></i>";
+	    				result = result +'<b class="holdPro" title="'+opt.resourceStatus+'" >'+opt.resourceStatus+'</b>';
+						result = result +'</div>';}
 						result = result +'</td>';
 						
 					 result = result +'</tr>';

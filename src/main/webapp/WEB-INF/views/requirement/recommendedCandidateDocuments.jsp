@@ -67,106 +67,106 @@ function candDocumentsList(candidateId){
 	 $.ajax({  
           type : "POST",
           url: sourceleadUrl+"/getCandidateDocumentsListByCandidateId?"+tokenParamName+"="+tokenValue+"&candidateId="+candidateId,        
-          success :function(json) {
-           
-//              			 var json = JSON.parse(data); 
-             			 
-	                	 $("#candidateDocumentsList").empty();
-	                	 var result = "";
-	                	 result = result +"<table id='candidateDocumentsPagination' class='display' cellspacing='0' width='100%' >"; 
-	                     result = result +"<thead>"; 
-	                     result = result +"  <tr>"; 
-	                     result = result  + '<th><input type="checkbox" id="checkAllDocuments" onclick="toggleAllDocuments(this);deleteRequestedDoc();"></th>';
-	                     result  = result + '<th>Document Type</th>';
-	                 	 result  = result + '<th>Document</th>';
-	                 	 result  = result + '<th>Description</th>';
-	                 	 result  = result + '<th>Upload Status</th>';
-	                     result  = result + '<th>Document Status</th>';
-	                 	 result  = result + '<th>Action</th>';
-	                     result = result +"  </tr>"; 
-	                     result = result +"</thead>";
-	                     result = result +"<tbody>"; 
-	                     
-	                     for (var i = 0; i < json.data.length; i++) { 
-	                    	 var opt = json.data[i];  
-	                    	 if(opt.isConfidential == 'N' || opt.docUploadStatus =="Requested"|| (opt.isConfidential == 'Y' && '${SourceLeadWeb_user.userCode}' == opt.userIdStr)){
-
-	                    	 result  = result + ' <tr>';
-	                    	 if(opt.requestDocumentId != null && opt.requestedDocStatus == "Submitted"){
-	                    		 result = result +'<td><input id="'+opt.id+'" value="'+opt.id+'"  onclick="deleteRequestedDoc();" type="checkbox" name="documents[]" class="myCheckbox" >';
-	                    	 }else{
-	                    		 result = result +"  <td><div>--</div></td>"; 
-	                    	 }
-	                    	 
-	                    	 
-	                    	 if(opt.documentType != null && opt.documentType != '' && opt.documentType != "undefined")
-	    	             	 {
-	    	            	  if(opt.documentOtherType !=null && opt.documentOtherType !='' && opt.documentOtherType !="undefined"){
-	    	                   result = result +"  <td><div title='"+opt.documentOtherType+"' class='tbldata-dotdot-me'>"+opt.documentOtherType+"</div></td>";
-	    	             	 }else{
-	    	             		result = result +"  <td><div title='"+opt.documentType+"'>"+opt.documentType+"</div></td>"; 
-	    	             	 }
-	    	             	 }else{
-	    	             		 result = result +"  <td><div>----</div></td>"; 
-	    	             	 }
-	                    	 
-	                    	 if(opt.fileName != null && opt.fileName != '' && opt.fileName != 'undefined'){
-				           	 result = result+'<td><div><span title ="'+opt.fileName+'">'+opt.fileName+'</span><a class="fa fa-eye" onClick="viewFile(\''+opt.fileURL+'\',\''+opt.fileName+'\',\''+opt.fileContentType+'\');"></a><a download class="glyphicon glyphicon-download-alt" target="_blank" href=\"'+opt.fileURL+'\" download title="Download"></a></div></td>';
-
-	                    	 }else{
-	                    		 result  = result + ' <td><div><span>----</span></div></td>';
-	                    	 }
-	                    	 
-	                    	 if(opt.description != null && opt.description != '' && opt.description != 'undefined'){
-		                    	 result  = result + ' <td><div><span title="'+opt.description+'">'+opt.description+'</span></div></td>';
-		                    	 }else{
-		                    		 result  = result + ' <td><div><span>----</span></div></td>';
-		                    	 }
-		                    	
-	                    	 
+          success :function(response) {
+        	  if (response && response.response === "INVALID_USER") {
+        		    showError(response.responseMessage);
+        		} else if (response.response === "AWKWARD") {
+        		    location.href = "/errorPage";
+        		} else if (response.response === "SUCCESS") {
+        			$("#candidateDocumentsList").empty();
+               	 	var result = "";
+               	 	result = result +"<table id='candidateDocumentsPagination' class='display' cellspacing='0' width='100%' >"; 
+                    result = result +"<thead>"; 
+                    result = result +"  <tr>"; 
+                    result = result  + '<th><input type="checkbox" id="checkAllDocuments" onclick="toggleAllDocuments(this);deleteRequestedDoc();"></th>';
+                    result  = result + '<th>Document Type</th>';
+                	result  = result + '<th>Document</th>';
+                	result  = result + '<th>Description</th>';
+                	result  = result + '<th>Upload Status</th>';
+                    result  = result + '<th>Document Status</th>';
+                	result  = result + '<th>Action</th>';
+                    result = result +"  </tr>"; 
+                    result = result +"</thead>";
+                    result = result +"<tbody>"; 
+                    
+                    for (var i = 0; i < response.data.length; i++) {
+                   		var opt = response.data[i];  
+                   	 	if(opt.isConfidential == 'N' || opt.docUploadStatus =="Requested"|| (opt.isConfidential == 'Y' && '${SourceLeadWeb_user.userCode}' == opt.userIdStr)) {
+                   	 		result  = result + ' <tr>';
+	                   	 	if(opt.requestDocumentId != null && opt.requestedDocStatus == "Submitted"){
+	                   		 	result = result +'<td><input id="'+opt.id+'" value="'+opt.id+'"  onclick="deleteRequestedDoc();" type="checkbox" name="documents[]" class="myCheckbox" >';
+	                   		} else {
+	                   		 	result = result +"  <td><div>--</div></td>"; 
+	                   		}
+                   	 
+                   	 
+		                   	if(opt.documentType != null && opt.documentType != '' && opt.documentType != "undefined") {
+		   	            	  	if(opt.documentOtherType !=null && opt.documentOtherType !='' && opt.documentOtherType !="undefined"){
+		   	                	result = result +"  <td><div title='"+opt.documentOtherType+"' class='tbldata-dotdot-me'>"+opt.documentOtherType+"</div></td>";
+		   	             	 	} else {
+		   	             			result = result +"  <td><div title='"+opt.documentType+"'>"+opt.documentType+"</div></td>"; 
+		   	             	 	}
+		   	             	} else {
+		   	             		result = result +"  <td><div>----</div></td>"; 
+		   	             	}
+	                   	 
+		                   	if(opt.fileName != null && opt.fileName != '' && opt.fileName != 'undefined') {
+								result = result+'<td><div><span title ="'+opt.fileName+'">'+opt.fileName+'</span><a class="fa fa-eye" onClick="viewFile(\''+opt.fileURL+'\',\''+opt.fileName+'\',\''+opt.fileContentType+'\');"></a><a download class="glyphicon glyphicon-download-alt" target="_blank" href=\"'+opt.fileURL+'\" download title="Download"></a></div></td>';
+		                   	} else {
+		                   		result  = result + ' <td><div><span>----</span></div></td>';
+		                   	}
+		                   	 
+		                   	if(opt.description != null && opt.description != '' && opt.description != 'undefined') {
+								result  = result + ' <td><div><span title="'+opt.description+'">'+opt.description+'</span></div></td>';
+			                } else {
+								result  = result + ' <td><div><span>----</span></div></td>';
+			                }
+                   	 
 							result = result +"  <td><div title='"+opt.docUploadStatus+"'>"+opt.docUploadStatus+"</div></td>"; 
-	                    	 if(opt.requestedDocStatus != null && opt.requestedDocStatus != '' && opt.requestedDocStatus != 'undefined'){
-	                    		 result = result +"<td>";
-	                    		 result = result +"<div title='"+opt.requestedDocStatus+"'>"+opt.requestedDocStatus+" "; 
-	                    		 if(opt.requestedDocStatus == "Rejected" && opt.requestedDocRejectedReason != null && opt.requestedDocRejectedReason != '' && opt.requestedDocRejectedReason != 'undefined'){
-					        		   result = result + '<i class="glyphicon glyphicon-comment ml10 edit-reason"><div class="edit-status"><p>'+"Reason : "+opt.requestedDocRejectedReason+'</p></div></i>';
-					        	   }
-	                    		 result = result +"</div>";
-	                    		 result = result +"</td>";
-	                    	 
-	                    	 }else{
-	                    		 result = result +"  <td><div>----</div></td>"; 
-	                    	 }
-	                    	 
-		                   
-		                   result = result+'<td><div class="tblicons">';
-			           		if(window.candidateStatusGlobal == 0){
-			           			result = result+'<a class="glyphicon glyphicon-pencil" href="javascript:void(0)"></a>';
-				           		result = result+'<i class="glyphicon glyphicon-trash" href="javascript:void(0)"></i>';
-			           		}else{
-			           			var docUUID = opt.documentUUID;
-			           			result = result+' <a class="glyphicon glyphicon-pencil" href="javascript:void(0)" onClick="addDocument('+candidateId+',\''+docUUID+'\'); getDocument('+candidateId+', '+opt.id+');" title="Edit"></a>';
-			           			if(candidateType =="Candidates"){
-			           				'<sec:authorize access="hasAnyRole(\'ROLE_DELETE_CANDIDATE_DOCUMENT\',\'ROLE_CROWDSOURCING_CANDIDATES\')">';
-			           				result = result+'<i class="glyphicon glyphicon-trash" onclick="removeDocument('+candidateId+','+opt.id+');" title= "Remove"></i>';
-			           			'</sec:authorize>';
-			           			}else{
-			           				'<sec:authorize access="hasRole(\'ROLE_DELETE_ASSOCIATE_DOCUMENT\')">';
-			           				result = result+'<i class="glyphicon glyphicon-trash" onclick="removeDocument('+candidateId+','+opt.id+');" title= "Remove"></i>';
-			           			'</sec:authorize>';
-			           			}
-			           			
-			           		}
-			           		result = result+'</div></td>';
-	                    	 result  = result + '</tr>';
-	                    	 }
-	                      } 
-	                     result = result +" </tbody>";
-	                     result = result +"</table>";
-	                     $("#candidateDocumentsList").append(result); 
-	                     documentsPagination();
+		                   	if(opt.requestedDocStatus != null && opt.requestedDocStatus != '' && opt.requestedDocStatus != 'undefined'){
+		                   		result = result +"<td>";
+		                   		result = result +"<div title='"+opt.requestedDocStatus+"'>"+opt.requestedDocStatus+" "; 
+		                   		if(opt.requestedDocStatus == "Rejected" && opt.requestedDocRejectedReason != null && opt.requestedDocRejectedReason != '' && opt.requestedDocRejectedReason != 'undefined') {
+						        	result = result + '<i class="glyphicon glyphicon-comment ml10 edit-reason"><div class="edit-status"><p>'+"Reason : "+opt.requestedDocRejectedReason+'</p></div></i>';
+						        }
+		                   		result = result +"</div>";
+		                   		result = result +"</td>";
+		                   	} else {
+		                   		result = result +"  <td><div>----</div></td>"; 
+		                   	}
+							result = result+'<td><div class="tblicons">';
+				           	if(window.candidateStatusGlobal == 0) {
+				           		result = result+'<a class="glyphicon glyphicon-pencil" href="javascript:void(0)"></a>';
+					           	result = result+'<i class="glyphicon glyphicon-trash" href="javascript:void(0)"></i>';
+				           	} else {
+				           		var docUUID = opt.documentUUID;
+				           		result = result+' <a class="glyphicon glyphicon-pencil" href="javascript:void(0)" onClick="addDocument('+candidateId+',\''+docUUID+'\'); getDocument('+candidateId+', '+opt.id+');" title="Edit"></a>';
+				           		if(candidateType =="Candidates") {
+				           			'<sec:authorize access="hasAnyRole(\'ROLE_DELETE_CANDIDATE_DOCUMENT\',\'ROLE_CROWDSOURCING_CANDIDATES\')">';
+				           				result = result+'<i class="glyphicon glyphicon-trash" onclick="removeDocument('+candidateId+','+opt.id+');" title= "Remove"></i>';
+				           			'</sec:authorize>';
+				           		} else {
+				           			'<sec:authorize access="hasRole(\'ROLE_DELETE_ASSOCIATE_DOCUMENT\')">';
+				           				result = result+'<i class="glyphicon glyphicon-trash" onclick="removeDocument('+candidateId+','+opt.id+');" title= "Remove"></i>';
+				           			'</sec:authorize>';
+				           		}
+				           			
+				           	}
+				           	result = result+'</div></td>';
+		                   	result  = result + '</tr>';
+                   		}
+                    } 
+                    result = result +" </tbody>";
+                    result = result +"</table>";
+                    $("#candidateDocumentsList").append(result); 
+                    documentsPagination();
+        		} else if (response.indexOf('Sign In') !== -1) {
+        			location.replace(sourceleadUrl);
+        		} else {
+        		    showError("Operation failed, please try again");
+        		}
           }
-          });     
+	});     
 }
 </script>
 
@@ -496,77 +496,84 @@ function getDocumentType(documentType){
 --%>
 <script type="text/javascript">
 	function storeCandidateDocument(candidateId, documentUUID){
-			var validationSettings = {
-			        errorMessagePosition : 'element',
-			        borderColorOnError : '',
-					scrollToTopOnError : true,
-					dateFormat : 'yyyy/mm/dd' 
-		         }; 
-			 if ($('#documentType_form').validate(false, validationSettings)){
-				 
-			        var frm = $('#documentType_form')[0];
-					var formData = new FormData(frm);
-					$("#save_doc").attr("disabled", "disabled");
-	         		$("#save_doc" ).addClass('button').val('Processing..');
-	         		
-	         		$.ajax({
-						type : "POST",
-		        	    data: formData,
-		    	        processData: false,
-		    	        contentType:false,
-		        	   	url : sourceleadUrl+"/saveCandidateDocument?"+tokenParamName+"="+tokenValue+"&candidateId="+candidateId+"&documentUUID="+documentUUID,
-						success : function(result) {
-								closePopup();
-								$('#perVal').attr('aria-valuenow', result).css('width',result+'%');
-			          			 if(result<50){
-			          			   $("#perVal").removeClass('progress-bar-success');
-			          			   $("#perVal").addClass("progress-bar-danger");
-			          			 }
-			          			 if(result>=50){
-			          				 $("#perVal").removeClass('progress-bar-danger');
-			          				 $("#perVal").addClass("progress-bar-success");
-			          			 }
-			          			 $("#disVal").empty();
-			          			$("#disVal").append(result+'%');
-			          			
-			          		// for quick view bar update
-		            			$('#quickPerVal').attr('aria-valuenow', result).css('width',result+'%');
-			          			 if(result<50){
-				          			   $("#quickPerVal").removeClass('progress-bar-success');
-				          			   $("#quickPerVal").addClass("progress-bar-danger");
-				          			 }
-				          			 if(result>=50){
-				          				 $("#quickPerVal").removeClass('progress-bar-danger');
-				          				 $("#quickPerVal").addClass("progress-bar-success");
-				          			 }
-
-		            			$("#quickDisVal").empty();
-		            			$("#quickDisVal").append(result+'%');
-		            			$("#popUpDiv").removeClass("edit-details-active");
-		            			$("#selector9").removeAttr("style");
-		            			$("#selector9").css({ display: "block" });
-		            			if(documentUUID != null && documentUUID !="" && documentUUID !="undefined")
-		            			$("#docMsgDiv").html("Document updated");
-			            		else
-			            		$("#docMsgDiv").html("Success!! New Document added");
-		             			candDocumentsList(candidateId);
-		             			docMsgFadein();
-		             			setTimeout(function(){
-		        		 			candidateList();					 			
-		        		 		},100);
-						},
-					}); 
-				
-					return true;
-			 }else{ 
-					return false;
-			 } 
-		}
-		$('body').on('blur', '#documentType_form', function() {
-		$("#documentType_form").showHelpOnFocus();
-		$("#documentType_form").validateOnBlur(false, validationSettings);
-	});
-		
+		var validationSettings = {
+			errorMessagePosition : 'element',
+			borderColorOnError : '',
+			scrollToTopOnError : true,
+			dateFormat : 'yyyy/mm/dd' 
+		}; 
+		if ($('#documentType_form').validate(false, validationSettings)){
+        	var frm = $('#documentType_form')[0];
+			var formData = new FormData(frm);
+			$("#save_doc").attr("disabled", "disabled");
+       		$("#save_doc" ).addClass('button').val('Processing..');
+       		
+       		$.ajax({
+				type : "POST",
+       		    data: formData,
+   	        	processData: false,
+   	        	contentType:false,
+       	   		url : sourceleadUrl+"/saveCandidateDocument?"+tokenParamName+"="+tokenValue+"&candidateId="+candidateId+"&documentUUID="+documentUUID,
+				success : function(response) {
+					if (response && response.response === "INVALID_DATA") {
+				    	showError(response.responseMessage);
+					} else if (response.response === "AWKWARD") {
+				    	location.href = "/errorPage";
+					} else if (response.response === "SUCCESS") {
+						closePopup();
+						var result = response.object;
+						$('#perVal').attr('aria-valuenow', result).css('width',result+'%');
+          			 	if(result < 50) {
+          			   		$("#perVal").removeClass('progress-bar-success');
+          			   		$("#perVal").addClass("progress-bar-danger");
+          			 	}
+          			 	if(result >= 50) {
+          				 	$("#perVal").removeClass('progress-bar-danger');
+          				 	$("#perVal").addClass("progress-bar-success");
+          			 	}
+          			 	$("#disVal").empty();
+          				$("#disVal").append(result+'%');
+          			
+          			// for quick view bar update
+           				$('#quickPerVal').attr('aria-valuenow', result).css('width',result+'%');
+          			 	if(result < 50) {
+	          			   	$("#quickPerVal").removeClass('progress-bar-success');
+	          			   	$("#quickPerVal").addClass("progress-bar-danger");
+	          			 }
+	          			 if(result >= 50) {
+	          				$("#quickPerVal").removeClass('progress-bar-danger');
+	          				$("#quickPerVal").addClass("progress-bar-success");
+	          			 }
+	           			$("#quickDisVal").empty();
+    	       			$("#quickDisVal").append(result+'%');
+        	   			$("#popUpDiv").removeClass("edit-details-active");
+           				$("#selector9").removeAttr("style");
+           				$("#selector9").css({ display: "block" });
+           				if(documentUUID != null && documentUUID !="" && documentUUID !="undefined")
+           					$("#docMsgDiv").html("Document updated");
+            			else
+            				$("#docMsgDiv").html("Success!! New Document added");
+            			candDocumentsList(candidateId);
+            			docMsgFadein();
+            			setTimeout(function(){
+       		 			candidateList();					 			
+       		 		},100);
+				} else if (response.indexOf('Sign In') !== -1) {
+					location.replace(sourceleadUrl);
+				} else {
+				    showError("Operation failed, please try again");
+				}
+			},
+		}); 
+		return true;
+ 	} else { 
+		return false;
+ 	} 
+}
+$('body').on('blur', '#documentType_form', function() {
+	$("#documentType_form").showHelpOnFocus();
+	$("#documentType_form").validateOnBlur(false, validationSettings);
+});
 </script>
 
 
@@ -584,41 +591,44 @@ function getDocument(candidateId, documentId){
 		$.ajax({
 		   	type: "POST",
 		    url: sourceleadUrl+"/getDocument?"+tokenParamName+"="+tokenValue+"&candidateId="+candidateId+"&documentId="+documentId, 	   
-   		    success: function(data) {
-   		    	
-        			 $("#uploadDocDiv").hide();
-        			 $("#docAddButton").hide();
-        			 $("#uploadFile").removeAttr("data-validation");
-        			 if(data.fileName != null && data.fileName !="undefined" && data.fileName != ""){
-        			 $("#docNameDiv").show();
-        			 }
-        			 $("#docsName").append(data.fileName);
-        			 $("#docsName").prop('title', data.fileName);
-        			 $("#docUpdateButton").show();
-        			 if(data !=null){
-        			 if(data.documentType != null && data.documentType != "undefined" && data.documentType != ""){
-        				
-	                     $("select#docName").val(data.documentType);
-	                     $("select#docName").trigger("chosen:updated");
-	                   
-	                    //here documentType is Other then documentOtherType  also display in Edit.
-	                   
-	                     if(data.documentType == 'Other'){
-		        				 if(data.documentOtherType !=null && data.documentOtherType !='' && data.documentOtherType !="undefined"){
-		        					 document.getElementById("documentTypeDiv").style.display="block";
-		        					 $("#documentOtherType").val(data.documentOtherType);
-			    	             }
-	        			 }
-
-        			 }
-        			 
-        			 $("#update_doc").attr("onclick", "storeCandidateDocument("+data.candidateId.id+", \""+data.documentUUID+"\");");
-        			 
-        			 if(data.description != null && data.description != "undefined" && data.description != ""){
-        				 $("textarea#description").val(data.description);
-        			 }
-        			 }
-        			 
+   		    success: function(response) {
+   		    	if (response && (response.response === "INVALID_DATA" || response.response === "INVALID_USER")) {
+   		    	    showError(response.responseMessage);
+   		    	} else if (response.response === "AWKWARD") {
+   		    	    location.href = "/errorPage";
+   		    	} else if (response.response === "SUCCESS") {
+   		    		var data = response.object;
+   		    		$("#uploadDocDiv").hide();
+       			 	$("#docAddButton").hide();
+       			 	$("#uploadFile").removeAttr("data-validation");
+       			 	if(data.fileName != null && data.fileName !="undefined" && data.fileName != ""){
+       			 		$("#docNameDiv").show();
+       			 	}
+       			 	$("#docsName").append(data.fileName);
+       			 	$("#docsName").prop('title', data.fileName);
+       			 	$("#docUpdateButton").show();
+       			 	if(data !=null) {
+       			 		if(data.documentType != null && data.documentType != "undefined" && data.documentType != "") {
+	                    	$("select#docName").val(data.documentType);
+	                     	$("select#docName").trigger("chosen:updated");
+	                    	//here documentType is Other then documentOtherType  also display in Edit.
+	                     	if(data.documentType == 'Other') {
+		        				if(data.documentOtherType !=null && data.documentOtherType !='' && data.documentOtherType !="undefined") {
+		        					document.getElementById("documentTypeDiv").style.display="block";
+		        					$("#documentOtherType").val(data.documentOtherType);
+			    				}
+	        			 	}
+       					}
+       			 		$("#update_doc").attr("onclick", "storeCandidateDocument("+data.candidateId.id+", \""+data.documentUUID+"\");");
+	       			 	if(data.description != null && data.description != "undefined" && data.description != ""){
+	       					$("textarea#description").val(data.description);
+	       			 	}
+       			 	}
+   		    	} else if (response.indexOf('Sign In') !== -1) {
+   		    		location.replace(sourceleadUrl);
+   		    	} else {
+   		    	    showError("Operation failed, please try again");
+   		    	}
    		    }
 	     });
 }
@@ -640,23 +650,30 @@ function deleteDocument(candidateId, documentId){
 	$.ajax({
 		   	type: "POST",
 		    url: sourceleadUrl+"/terminateDoc?"+tokenParamName+"="+tokenValue+"&loginUserId="+loginUserId+"&orgLocationId="+orgLocationId+"&candidateId="+candidateId+"&documentId="+documentId, 	   
-   		    success: function(data) {
-   		    	if(data != null && data != 'undefined' && data != ""){
+   		    success: function(response) {
+   		    	if (response && response.response === "INVALID_DATA") {
+   		    	    showError(response.responseMessage);
+   		    	} else if (response && response.response === "INVALID_USER") {
+   		    	    showError(response.responseMessage);
+   		    	} else if (response.response === "AWKWARD") {
+   		    	    location.href = "/errorPage";
+   		    	} else if (response.response === "SUCCESS") {
+   		    		var data = response.object;
    		    		$('#perVal').attr('aria-valuenow', data).css('width',data+'%');
+       			 if(data<50){
+       			  /* $("#perVal").removeClass("progress-bar-success"); */
+       			   $("#perVal").find('progress-bar-success').remove();
+       			   $("#perVal").addClass("progress-bar-danger");
+       			 }
+       			 if(data>=50){
+       				 $("#perVal").find('progress-bar-danger').remove();
+       				 $("#perVal").addClass("progress-bar-success");
+       			 }
+       			 $("#disVal").empty();
+       			$("#disVal").append(data+'%');
+       			// for quick view bar update
+      			$('#quickPerVal').attr('aria-valuenow', data).css('width',data+'%');
         			 if(data<50){
-        			  /* $("#perVal").removeClass("progress-bar-success"); */
-        			   $("#perVal").find('progress-bar-success').remove();
-        			   $("#perVal").addClass("progress-bar-danger");
-        			 }
-        			 if(data>=50){
-        				 $("#perVal").find('progress-bar-danger').remove();
-        				 $("#perVal").addClass("progress-bar-success");
-        			 }
-        			 $("#disVal").empty();
-        			$("#disVal").append(data+'%');
-        			// for quick view bar update
-       			$('#quickPerVal').attr('aria-valuenow', data).css('width',data+'%');
-         			 if(data<50){
 	          			   $("#quickPerVal").removeClass('progress-bar-success');
 	          			   $("#quickPerVal").addClass("progress-bar-danger");
 	          			 }
@@ -665,23 +682,26 @@ function deleteDocument(candidateId, documentId){
 	          				 $("#quickPerVal").addClass("progress-bar-success");
 	          			 }
 
-       			$("#quickDisVal").empty();
-       			$("#quickDisVal").append(data+'%');
-   		    		
-       		 $("#selector9").removeAttr("style");
-    		 $("#selector9").css({ display: "block" });
-    		 $("#docMsgDiv").html("Document deleted");
-   			 $("#popUpDiv").removeClass("edit-details-active");
-   			 $("#remove_user_pop_documents, .project_inn_mask").fadeOut();
-   			 candDocumentsList(candidateId);
-   			 docMsgFadein();
-   			 setTimeout(function(){
+      			$("#quickDisVal").empty();
+      			$("#quickDisVal").append(data+'%');
+  		    		
+      		 $("#selector9").removeAttr("style");
+   		 $("#selector9").css({ display: "block" });
+   		 $("#docMsgDiv").html("Document deleted");
+  			 $("#popUpDiv").removeClass("edit-details-active");
+  			 $("#remove_user_pop_documents, .project_inn_mask").fadeOut();
+  			 candDocumentsList(candidateId);
+  			 docMsgFadein();
+  			 setTimeout(function(){
 		 			candidateList();					 			
 		 	     },100);
+   		    	} else if (response.indexOf('Sign In') !== -1) {
+   		    		location.replace(sourceleadUrl);
+   		    	} else {
+   		    	    showError("Operation failed, please try again");
    		    	}
    		    },
 	     });
-
 }
 </script>
 
@@ -876,10 +896,19 @@ $('body').on('submit', '#requestForDocuments_form', function(e){
 		    	 //processData: false,
 	    	   //  contentType:false,
 		    	 url: sourceleadUrl+"/requestCandidateForDocuments?"+tokenParamName+"="+tokenValue+"", 
-		        success: function(result) {
-		        	$("#documentLoading").removeAttr("style"); 
-		        	closeRD();
-		        	candidateDocuments(requestedCandidateId);
+		        success: function(response) {
+		        	if (response.response === "AWKWARD") {
+		        	    location.href = "/errorPage";
+		        	} else if (response.response === "SUCCESS") {
+		        		$("#documentLoading").removeAttr("style"); 
+			        	closeRD();
+			        	candidateDocuments(requestedCandidateId);
+		        	} else if (response.indexOf('Sign In') !== -1) {
+		        		location.replace(sourceleadUrl);
+		        	} else {
+		        	    showError("Operation failed, please try again");
+		        	}
+		        	
 		        },
 		    });   
       return true; 
@@ -940,60 +969,67 @@ function addDocumentRow(){
 </script>
  
 <script type="text/javascript">
-$('body').on('submit', '#docrejectedReason_form', function(e){
-	  if ($(this).validate(false, validationSettings)){
-      e.preventDefault();
+$('body').on('submit', '#docrejectedReason_form', function(e) {
+	  if ($(this).validate(false, validationSettings)) {
+      	e.preventDefault();
      
-      var frm = $('#docrejectedReason_form').serializeFormJSON();
-      var con = JSON.stringify(frm);
-      con = con.replace(/[{}]/g, "");
+      	var frm = $('#docrejectedReason_form').serializeFormJSON();
+      	var con = JSON.stringify(frm);
+      	con = con.replace(/[{}]/g, "");
       
-      //It will escape all the special characters
-      var jsonData = encodeURIComponent(con);
-      var rejectedDocsCandidateId = document.getElementById("rejectedDocsCandidateId").value;
+      	//It will escape all the special characters
+      	var jsonData = encodeURIComponent(con);
+      	var rejectedDocsCandidateId = document.getElementById("rejectedDocsCandidateId").value;
       
-      var documentsIds = [];
-	 	 $("input[name='documents[]']:checked").each( function (i) {
-	 		 documentsIds[i] = $(this).val();
+      	var documentsIds = [];
+	 	$("input[name='documents[]']:checked").each( function (i) {
+	 		documentsIds[i] = $(this).val();
 	 	});
 	 	 
-       $("#submit_rejectedReason").attr("disabled", "disabled");
-       $("#docsrejectedLoading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
-  	   $.ajax({
+       	$("#submit_rejectedReason").attr("disabled", "disabled");
+       	$("#docsrejectedLoading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
+  	   	$.ajax({
 	    	type: "POST",
-	    	 url: sourceleadUrl+"/rejectRequestedDocuments?"+tokenParamName+"="+tokenValue+"&json="+jsonData+"&documentsIds="+documentsIds, 
-	        success: function(result) {
-	        	cancelDocumentRejectedReason();
-	        	$("#docsrejectedLoading").removeAttr("style"); 
-	        	candidateDocuments(rejectedDocsCandidateId);
+	    	url: sourceleadUrl+"/rejectRequestedDocuments?"+tokenParamName+"="+tokenValue+"&json="+jsonData+"&documentsIds="+documentsIds, 
+	        success: function(response) {
+	        	if (response && response.response === "INVALID_DATA") {
+	        	    showError(response.responseMessage);
+	        	} else if (response.response === "AWKWARD") {
+	        	    location.href = "/errorPage";
+	        	} else if (response.response === "SUCCESS") {
+	        		cancelDocumentRejectedReason();
+		        	$("#docsrejectedLoading").removeAttr("style"); 
+		        	candidateDocuments(rejectedDocsCandidateId);
+	        	} else if (response.indexOf('Sign In') !== -1) {
+	        		location.replace(sourceleadUrl);
+	        	} else {
+	        	    showError("Operation failed, please try again");
+	        	}
 	        },
 	    });    
-      return true; 
-    }
-    else{
-    	return false;	
-       }
-  });
+      	return true; 
+    } else {
+		return false;	
+	}
+});
 
-	$('body').on('blur', '#docrejectedReason_form', function() {
-		$("#docrejectedReason_form").showHelpOnFocus();
-		$("#docrejectedReason_form").validateOnBlur(false, validationSettings);
-	});
-  </script>
- 
+$('body').on('blur', '#docrejectedReason_form', function() {
+	$("#docrejectedReason_form").showHelpOnFocus();
+	$("#docrejectedReason_form").validateOnBlur(false, validationSettings);
+});
+</script>
  
  <script type="text/javascript">
-$(document).ready(function() {
-    $(".glyphicon-edit").click(function(){
-		$(".settPop").slideDown(200);
-		$(".vendor_wrap_mask").fadeIn(200);
-	});
-	$(".settPop i, .btn-default").click(function(){
-		$(".settPop").slideUp(200);
-		$(".vendor_wrap_mask").fadeOut(200);
-	});
-});		
-	
+	$(document).ready(function() {
+	    $(".glyphicon-edit").click(function(){
+			$(".settPop").slideDown(200);
+			$(".vendor_wrap_mask").fadeIn(200);
+		});
+		$(".settPop i, .btn-default").click(function(){
+			$(".settPop").slideUp(200);
+			$(".vendor_wrap_mask").fadeOut(200);
+		});
+	});		
 </script>  
 
 <!-- Requested Documents scripts End Here -->

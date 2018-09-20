@@ -116,7 +116,7 @@ public class addExpenseController {
 		//ExpensesApproverHierarchy sah = expensesApprovalService.getExpensesApproverHierarchyByApproverUserIdAndExpenseId(loginUser.getId(), Long.parseLong(expenseId));
 		
 		if(StringUtils.isNotEmpty(expenseId) && null != type && !type.equalsIgnoreCase("rejecting")){
-			expensesApprovalService.sendReopenExpenseAcceptOrRejectMail (expense,reason,superUser,orgLoc,type,reopenedUser, expense.getProjectMembers().getProjects().getProjectName());
+			//expensesApprovalService.sendReopenExpenseAcceptOrRejectMail (expense,reason,superUser,orgLoc,type,reopenedUser, expense.getProjectMembers().getProjects().getProjectName());
 				}
 			}
 		 if(!"".equalsIgnoreCase(rejectedReasonDb) && rejectedReasonDb != null) {

@@ -25,7 +25,6 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 
 @Entity
 @Table(name = "PROJECT_PLANNING_RESOURCE_REQUEST")
-@Cache(usage = CacheConcurrencyStrategy.TRANSACTIONAL,region="projectPlanningResourceRequest")
 public class ProjectPlanningResourceRequest implements Serializable{
 
 	private static final long serialVersionUID = 1L;
@@ -35,14 +34,14 @@ public class ProjectPlanningResourceRequest implements Serializable{
     @Column(name = "ID", nullable = false)
     private Long id;
 	
-	@NotFound(action=NotFoundAction.IGNORE)
+	
 	@ManyToOne(fetch = FetchType.LAZY)
    	@JoinColumn(name = "PROJECT_PLANNING_REQUREST_ID")
 	@JsonBackReference
   	private ProjectPlanningRequest projectPlanningRequestId;
 	
-	@NotFound(action=NotFoundAction.IGNORE)
-	@ManyToOne
+	
+	@ManyToOne(fetch = FetchType.LAZY)
    	@JoinColumn(name = "CANDIDATE_ID")
 	@JsonBackReference
   	private Candidate candidateId;
@@ -98,10 +97,23 @@ public class ProjectPlanningResourceRequest implements Serializable{
     @Column(name = "REQUEST_UUID")
    	private String requestUUID;
     
-    @NotFound(action=NotFoundAction.IGNORE)
+    
     @ManyToOne(fetch = FetchType.LAZY)
    	@JoinColumn(name = "ORG_LOCATION_ID")
+    @JsonBackReference
   	private OrgLocations orgLocationId;
+    
+    
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JsonBackReference
+   	@JoinColumn(name = "APPROVER_USER_ID")
+  	private User approverUser;
+    
+    @Column(name = "APPROVER_NAME")
+	private String approverName;
+    
+    @Column(name = "REQUEST_STATUS")
+   	private String requestStatus;
 	
 	@Column(name = "CREATED_DATE")
 	private Date createdDate;
@@ -109,12 +121,12 @@ public class ProjectPlanningResourceRequest implements Serializable{
 	@Column(name = "UPDATED_DATE")
 	private Date updatedDate;
 	
-	@NotFound(action=NotFoundAction.IGNORE)
+	
 	@ManyToOne(fetch = FetchType.LAZY)
    	@JoinColumn(name = "CREATED_BY")
   	private User createdBy;
 	
-	@NotFound(action=NotFoundAction.IGNORE)
+	
 	@ManyToOne(fetch = FetchType.LAZY)
    	@JoinColumn(name = "UPDATED_BY")
   	private User updatedBy;
@@ -142,8 +154,15 @@ public class ProjectPlanningResourceRequest implements Serializable{
     @Transient
     @JsonProperty
     private String candidateLocation;
+    
+    @Transient
+    @JsonProperty
+    private String requestedLocation;
 
-	
+    @Transient
+	@JsonProperty
+	private String requestedUser;
+    
 	
 
 	public Long getId() {
@@ -440,6 +459,55 @@ public class ProjectPlanningResourceRequest implements Serializable{
 	public void setCandidateLocation(String candidateLocation) {
 		this.candidateLocation = candidateLocation;
 	}
-	
-	
+
+	public String getRequestedUser() {
+		return requestedUser;
+	}
+
+	public void setRequestedUser(String requestedUser) {
+		this.requestedUser = requestedUser;
+	}
+
+	public User getApproverUser() {
+		return approverUser;
+	}
+
+	public void setApproverUser(User approverUser) {
+		this.approverUser = approverUser;
+	}
+
+	public String getApproverName() {
+		return approverName;
+	}
+
+	public void setApproverName(String approverName) {
+		this.approverName = approverName;
+	}
+
+	public String getRequestStatus() {
+		return requestStatus;
+	}
+
+	public void setRequestStatus(String requestStatus) {
+		this.requestStatus = requestStatus;
+	}
+
+	public String getRequestedLocation() {
+
+		StringBuilder loc = new StringBuilder();
+		if(orgLocationId.getCity()!= null && !orgLocationId.getCity().isEmpty()){
+			requestedLocation = loc.append(orgLocationId.getOrgLocationName()).append(", ").append(orgLocationId.getCity()).append(", ").append(orgLocationId.getState()).append(", ").append(orgLocationId.getCountry()).toString();
+		}else if(orgLocationId.getState() != null && !orgLocationId.getState().isEmpty() && orgLocationId.getCity() == null){
+			requestedLocation = loc.append(orgLocationId.getOrgLocationName()).append(", ").append(orgLocationId.getState()).append(", ").append(orgLocationId.getCountry()).toString();
+		}else if(orgLocationId.getCountry() != null && !orgLocationId.getCountry().isEmpty() && orgLocationId.getState() == null && orgLocationId.getCity() == null){
+			requestedLocation = loc.append(orgLocationId.getOrgLocationName()).append(", ").append(orgLocationId.getCountry()).toString();
+		}else{
+			requestedLocation = loc.append(orgLocationId.getOrgLocationName()).toString();
+		}
+		return requestedLocation;
+	}
+
+	public void setRequestedLocation(String requestedLocation) {
+		this.requestedLocation = requestedLocation;
+	}
 }

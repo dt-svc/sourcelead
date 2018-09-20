@@ -1,0 +1,4 @@
+SET SQL_SAFE_UPDATES = 0;
+UPDATE `EMAIL_SCENARIO` SET `BODY`= ' Dear {{updatedRequirementEmailToManager.managerName}},\n\n{{updatedRequirementEmailToManager.RequirementTitle}} has been updated by {{updatedRequirementEmailToManager.LoginUser}}\nPlease find the modifications\nJob Title: {{updatedRequirementEmailToManager.RequirementTitle}}\nClient : {{updatedRequirementEmailToManager.clientContactname}}\nJob Location : {{updatedRequirementEmailToManager.RequirementLocation}}\nJob Rate : {{updatedRequirementEmailToManager.RequirementRate}}\nExperience : {{updatedRequirementEmailToManager.Experience}}\nStatus : {{updatedRequirementEmailToManager.status}}\nPlease login to SourceLead to find more details' WHERE `UNIQUE_SCENARIO_NAME`='updatedRequirementEmailToManager' and `ENTITY_TYPE`='Email';
+UPDATE`EMAIL_SCENARIO` SET `TEMPLATE_TYPE`='sourcelead' WHERE `UNIQUE_SCENARIO_NAME`='blogSubscription';
+SET SQL_SAFE_UPDATES = 1;

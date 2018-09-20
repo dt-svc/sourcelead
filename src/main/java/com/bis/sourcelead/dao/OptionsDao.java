@@ -12,4 +12,6 @@ public interface OptionsDao {
 
 	Option getOptionsById(String optionId)throws Exception;
 
+	Option getOptionsByOptionId(String optionID) throws Exception;
+
 }

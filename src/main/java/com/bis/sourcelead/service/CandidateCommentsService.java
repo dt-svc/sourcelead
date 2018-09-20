@@ -6,6 +6,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 import org.springframework.web.multipart.MultipartFile;
 
+import com.bis.sourcelead.dto.CandidateCommentsDTO;
 import com.bis.sourcelead.entity.Candidate;
 import com.bis.sourcelead.entity.CandidateComments;
 import com.bis.sourcelead.entity.OrgLocations;
@@ -27,7 +28,7 @@ public interface CandidateCommentsService {
 	 * @throws JSONException
 	 * @throws Exception
 	 */
-	public CandidateComments storeCandidateComments(JSONObject jsonObj, User user, Candidate candidate, OrgLocations orgLocation, RequirementSubmission submissionId) throws JSONException,Exception;
+	public CandidateComments storeCandidateComments(CandidateCommentsDTO candidateCommentsDTO, User user, Candidate candidate, OrgLocations orgLocation, RequirementSubmission submissionId) throws JSONException,Exception;
 	
 	public List<CandidateComments> getAllCommentsOnCandidateByCandidateIdAndOrgLocation(Long candidateId, OrgLocations orgLocation) throws Exception;
 	

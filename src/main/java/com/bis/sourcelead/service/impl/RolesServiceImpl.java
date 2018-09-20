@@ -118,6 +118,24 @@ public class RolesServiceImpl implements RolesService{
 	public Roles getRolesByRoleNameAndOrgId(String roleName, Long orgId) throws Exception {
 		return rolesDao.getRolesByRoleNameAndOrgId(roleName, orgId);
 	}
+
+
+	@Override
+	public List<Roles> getAllRolesListByOrgLocationIdList(List<Long> orgLocationIdsList) throws Exception {
+		return rolesDao.getAllRolesListByOrgLocationIdList(orgLocationIdsList);
+	}
+
+
+	@Override
+	public Roles getRolesByUUIDAndOrgLocationId(String uuid, Long orgLocationId) throws Exception {
+		return rolesDao.getRolesByUUIDAndOrgLocationId(uuid, orgLocationId);
+	}
+
+
+	@Override
+	public Roles getRolesByUUID(String uuid) throws Exception {
+		return rolesDao.getRolesByUUID(uuid);
+	}
 	
 
 }

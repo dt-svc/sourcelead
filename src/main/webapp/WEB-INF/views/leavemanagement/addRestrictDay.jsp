@@ -5,6 +5,13 @@
 
 <script>
  window.onload = function() {
+	 var restrictdayId = '${restrictDay.id}';
+		if(restrictdayId != null && restrictdayId != '' && restrictdayId != 'undefined'){
+			$("#restrictDayId").val(restrictdayId);
+		}else{
+			$("#restrictDayId").val(0);
+		}
+	 
 	 var applicable = '${restrictDay.applicableToAll}';
 	 if(applicable == 'N'){
 		 $("#selectRoles").show();
@@ -31,7 +38,7 @@
     <div class="form-group">
        <label class="col-md-3">Name<span class="text-danger paddingLeft">*</span></label>
        <div class="col-md-9">
-       <input type="hidden" id="restrictDayId" name="restrictDayId" value="${restrictDay.id}"/>
+       <input type="hidden" id="restrictDayId" name="restrictDayId" value=""/>
        <input type="text" name="restrictName" placeholder="Restrict Name" value="${restrictDay.restrictName}" field-name="Restrict Name" class="form-control" data-validation="required validate_length length1-250">
        </div>
     </div>
@@ -55,7 +62,7 @@
        </div>
     </div>
     <div class="form-group">
-       <label class="col-md-3 paddingRight">Applicable For All</label>
+       <label class="col-md-3 paddingRight">Applicable for all<i class='fa fa-info-circle' title="If 'YES' the Restrict Day will be apllicable for all users .If 'NO' the Restrict Day will be applicable to the selected users"></i></label>
        <div class="col-md-9">
  			<div class="clearfix mb"> 
  			<c:if test="${empty restrictDay.applicableToAll}">
@@ -131,11 +138,20 @@ function storeRestrictedDay(){
          if ($('#restrictDay_form').validate(false, validationSettings)){  
  	 	  	var formData = $($('#restrictDay_form')[0]).serialize();
 		        	  $("#restrictLoading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
-		        	  $.post(sourceleadUrl+"/storeRestrictedDay?"+tokenParamName+"="+tokenValue+"&userId="+userId+"&orgLocationId="+orgLocationId+"",formData, function(data) {
-			  				if(data == "success"){
-			  					$("#restrictLoading").removeAttr("style");
+		        	  $.post(sourceleadUrl+"/storeRestrictedDay?"+tokenParamName+"="+tokenValue+"&userId="+userId+"&orgLocationId="+orgLocationId+"",formData, function(result) {
+		        		  if (result && result.response === "INVALID_DATA") {
+		  	    		    showError(result.responseMessage);
+		  	    		   } else if (result.response === "AWKWARD") {
+		  	    		    location.href = "/errorPage";
+		  	    		   } else if (result.response === "SUCCESS") {   
+		        		        $("#restrictLoading").removeAttr("style");
 	    		     			location.replace(sourceleadUrl+"/viewRestrictDay");
-			  				}
+			  				} else if (result.indexOf('Sign In') !== -1) {
+		               			location.replace(sourceleadUrl);
+		               		} else {
+		               		    showError("Operation failed, please try again");
+		               		}
+						$("#restrictLoading").hide();
 			  			   }); 
 		    	         return true; 
          }else{

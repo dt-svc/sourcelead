@@ -29,7 +29,6 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 
 @Entity
 @Table(name = "PROJECT_CLIENTS")
-@Cache(usage = CacheConcurrencyStrategy.TRANSACTIONAL,region="projectClients")
 public class ProjectClients implements Serializable{
 
 	private static final long serialVersionUID = 1L;
@@ -39,17 +38,21 @@ public class ProjectClients implements Serializable{
     @Column(name = "ID", nullable = false)
     private Long id;
 	
-    @ManyToOne
+    
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "PROJECT_ID")
 	@JsonBackReference
     private Projects projectId;
 	
-    @NotFound(action=NotFoundAction.IGNORE)
-    @ManyToOne
+    
+    
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "ORG_RELATION_ID")
     private OrgRelations orgRelationId;
    
-    @ManyToOne
+    
+    
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "ORG_LOCATIONS_ID")
     private OrgLocations orgLocationsId;
     
@@ -65,6 +68,9 @@ public class ProjectClients implements Serializable{
     @Column(name = "IS_END_CLIENT")
     private String isEndClient;
     
+    @Column(name = "IS_PROJECT_SHARED")
+    private String isProjectShared;
+    
     
 	@Column(name = "CREATED_DATE")
 	private Date createdDate;
@@ -72,10 +78,12 @@ public class ProjectClients implements Serializable{
 	@Column(name = "UPDATED_DATE")
 	private Date updatedDate;
 	
+    
 	@ManyToOne(fetch = FetchType.LAZY)
    	@JoinColumn(name = "CREATED_BY")
   	private User createdBy;
 	
+    
 	@ManyToOne(fetch = FetchType.LAZY)
    	@JoinColumn(name = "UPDATED_BY")
   	private User updatedBy;
@@ -84,6 +92,22 @@ public class ProjectClients implements Serializable{
     @Fetch(FetchMode.SELECT)
 	@JsonBackReference
     private Set<ProjectApproverHierarchy> projectApproverHierarchyList;
+	
+	@OneToMany(mappedBy="projectClientsId",cascade = CascadeType.ALL)
+    @Fetch(FetchMode.SELECT)
+	@JsonBackReference
+    private Set<ExpenseProjectApproverHierarchy> expenseProjectApproverHierarchyList;
+	
+	@OneToMany(mappedBy="projectClientsId",cascade = CascadeType.ALL)
+    @Fetch(FetchMode.SELECT)
+	@JsonBackReference
+    private Set<ProjectApproverHierarchy> sharedClientProjectApproverHierarchyList;
+	
+	
+	@OneToMany(mappedBy="projectClientsId",cascade = CascadeType.ALL)
+    @Fetch(FetchMode.SELECT)
+	@JsonBackReference
+    private Set<ExpenseProjectApproverHierarchy> sharedClientProjectExpenseApproverHierarchyList;
 	
 	@Transient
 	@JsonProperty
@@ -217,6 +241,41 @@ public class ProjectClients implements Serializable{
 	public void setClientName(String clientName)
 	{
 		this.clientName = clientName;
+	}
+
+	public String getIsProjectShared() {
+		return isProjectShared;
+	}
+
+	public void setIsProjectShared(String isProjectShared) {
+		this.isProjectShared = isProjectShared;
+	}
+
+	public Set<ProjectApproverHierarchy> getSharedClientProjectApproverHierarchyList() {
+		return sharedClientProjectApproverHierarchyList;
+	}
+
+	public void setSharedClientProjectApproverHierarchyList(
+			Set<ProjectApproverHierarchy> sharedClientProjectApproverHierarchyList) {
+		this.sharedClientProjectApproverHierarchyList = sharedClientProjectApproverHierarchyList;
+	}
+
+	public Set<ExpenseProjectApproverHierarchy> getExpenseProjectApproverHierarchyList() {
+		return expenseProjectApproverHierarchyList;
+	}
+
+	public void setExpenseProjectApproverHierarchyList(
+			Set<ExpenseProjectApproverHierarchy> expenseProjectApproverHierarchyList) {
+		this.expenseProjectApproverHierarchyList = expenseProjectApproverHierarchyList;
+	}
+
+	public Set<ExpenseProjectApproverHierarchy> getSharedClientProjectExpenseApproverHierarchyList() {
+		return sharedClientProjectExpenseApproverHierarchyList;
+	}
+
+	public void setSharedClientProjectExpenseApproverHierarchyList(
+			Set<ExpenseProjectApproverHierarchy> sharedClientProjectExpenseApproverHierarchyList) {
+		this.sharedClientProjectExpenseApproverHierarchyList = sharedClientProjectExpenseApproverHierarchyList;
 	}
 
 }

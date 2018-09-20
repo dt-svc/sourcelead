@@ -3,11 +3,12 @@
 <%@taglib uri="http://www.springframework.org/tags/form" prefix="form"%>
 <%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 
-<script type="text/javascript" src="https://www.amcharts.com/lib/3/amcharts.js"></script>
-<script type="text/javascript" src="https://www.amcharts.com/lib/3/serial.js"></script>
+<script src="/resources/amcharts/amcharts.js"></script>
+<script src="/resources/amcharts/serial.js"></script>
+<script src="/resources/amcharts/plugins/export/export.min.js"></script>
+<link rel="stylesheet" href="/resources/amcharts/plugins/export/export.css" type="text/css" media="all" />
 
-<script type="text/javascript" src="https://www.amcharts.com/lib/3/plugins/export/export.min.js"></script>
-<link rel="stylesheet" href="https://www.amcharts.com/lib/3/plugins/export/export.css">
+
 
 <script type="text/javascript">
 $(document).ready(function(){
@@ -21,25 +22,31 @@ $(document).ready(function(){
       <div class="pull-left">
         <h2>Applicant(s) by Source</h2>
       </div>
-       <div class="pull-right brud-crum"><a href="<c:url value='${appPath}/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a> &raquo; <a href="<c:url value='${appPath}/reportsDashboard'/>">Reports Dashboard</a> &raquo; Applicants(s) by source </div>
+       <div class="pull-right brud-crum"><a href="<c:url value='${appPath}/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a> &raquo; <a href="<c:url value='${appPath}/reportsDashboard'/>">Reports Dashboard</a> &raquo; <a href="<c:url value='${appPath}/performanceReportList'/>">Performance Reports</a> &raquo; Applicant(s) by source </div>
     </section>
-    <div class="clearfix">
-    <div class="clearfix"></div>
-    	<div class="ReqRepHead clearfix">
-        
-        <div class="col-md-2">
-        <a href="#" id="graphicView" title="Graphical View" class="btn btn-default"><i class="fa fa-pie-chart"></i></a>
-        <a href="#" title="List View" id="listView" class="btn btn-default"><i class="fa fa-list"></i></a>
-        </div>
-        <div class="col-md-4">
-          <select class="chosen-select form-control" multiple data-placeholder="Select Job" name="jobIds" id="jobIds">
-            <c:forEach var="option" items="${requirementsList}">
-				<option value="${option.requirementId}">${option.jobTitle}</option>
-			</c:forEach>
-          </select>
-        </div>
-        <div class="col-md-3 dropdown-select positionRelative">
-          <select class="form-control" name="dateSelection" id="dateSelection" onchange="getCustomDates();">
+    
+    
+    <div class="vendor_wrap clearfix">
+    
+<div class="reportHead clearfix">
+	<div class="listGridWrap reqListBtn">
+          <a title="Graphical View"  id="graphicView" class="btn btn-default rAct"><i class="fa fa-pie-chart"></i></a>
+          <a title="List View" id="listView" class="btn btn-default" ><i class="fa fa-list"></i></a>
+	</div>
+	
+    	<ul class="clearfix pull-right">
+    		<li>
+				<div class="ReqRepHead-chosen repChosen">
+		          <select class="chosen-select form-control" multiple data-placeholder="Select Job" name="jobIds" id="jobIds">
+		            <c:forEach var="option" items="${requirementsList}">
+						<option value="${option.requirementId}">${option.generatedId} - ${option.jobTitle}</option>
+					</c:forEach>
+		          </select>
+		        </div>    		
+    		</li>
+    		<li>
+        <div class="dropdown-select positionRelative repSelWrap clearfix">
+          <select class="form-control repSelFiled" name="dateSelection" id="dateSelection" onchange="getCustomDates();">
             <option value=''>Select Date</option>
             <option value='Last_7_days' selected>Last 7 days</option>
             <option value='Last_15_days'>Last 15 days</option>
@@ -48,45 +55,40 @@ $(document).ready(function(){
             <option value='YTD'>YTD</option>
             <option value='Last_Year'>Last Year</option>
             <option value="custom">Custom</option>
-          </select>
+          </select>          
           
+		<div class="repSelBtn"><button type="button" class="btn btn-primary btn-sm" id="customize_btn" onclick="getApplicantBySourceChart();">Run</button></div> 
           
-          <div class="clearfix pull-lefet col-md-12 paddingRight customLeaves" id="customSearch" style="display: none; width: 346px;">
-            <div class="pull-left">
-              <div class="pull-left mr5" style="width: 140px">
+                    <!-- Custom Date -->
+                    
+                    
+          <div class="clearfix customLeaves repCustomDate" id="customSearch">
+              <div class="repCustomDateInn">
                 <input type="text" class="form-control calendar" value="" id="fromDate" name="fromDate"  placeholder="From Date"  readonly="readonly" >
-                <p id="fromDateDiv" style="display: none; font-size: 12px;"><font color="red">From Date Required</font></p>
+                <p id="fromDateDiv">From Date Required</p>
               </div>
               
-              <div class="pull-left mr5" style="width: 140px">
+              <div class="repCustomDateInn">
                 <input type="text" class="form-control calendar" value="" id="toDate" name="toDate"  placeholder="To Date" field-name="From Date" readonly="readonly" >
-                <p id="toDateDiv" style="display: none; font-size: 12px;"><font color="red">To Date Required</font></p>
+                <p id="toDateDiv">To Date Required</p>
               </div>
-              <button type="button" class="btn btn-primary btn-sm" onclick="getApplicantBySourceChart();"><i class="fa fa-search"></i></button>
-            </div>
-          </div>
-          
-        </div>
-        
-        
-        
-        <div class="col-md-2">
-        <button type="button" class="btn btn-primary btn-sm	mt2" id="customize_btn" onclick="getApplicantBySourceChart();">Customize</button>
-		</div>
-		
-		
-         <div class="col-md-1">
-          <div class="btn-group bootstrap_dropdownMenu dropdownPadding">
-            <button type="button" class="btn btn-primary btn-sm" title="Actions"  onclick="reload();"><i class="fa fa-retweet"></i></button>
-          </div>
-        </div>
-      </div>
-    	<div class="clearfix"></div>
+              <div class="repCustomDateBtn"><button type="button" class="btn btn-primary btn-sm" onclick="getApplicantBySourceChart();"><i class="fa fa-search"></i></button></div>
+          </div>   
+                           
+          <!-- Custom Date --> 
+        </div>    		
+    		</li> 
+    	</ul>
+    </div>     
+      
+      
    	 	<!-- Applicant source Graph 2017 -->
-    	 	<div class="dashboard-widget clearfix mt">
-    	 	<div id="applicantSource" class="" style="height: 425px; width: 100%;"></div>
+    	 	<div class="clearfix backWhite">
+    	 		<div id="applicantSourceGrap" class="" style="height: 425px; width: 100%;" style="display:block"></div>
     	 	</div>
-    	<div class="clearfix"></div>
+    	 	
+	      <div class="project_tabs_inn_table" id="applicantSource" style="display:none"></div>    	 	
+    	 	
     </div>
   </section>
 
@@ -106,11 +108,51 @@ function getCustomDates(){
 		 document.getElementById("customSearch").style.display="block";
 		 $("#customize_btn").attr("disabled", "disabled");
 		 
+			 var locationDate ='${SourceLeadWeb_orgLocations.dateFormat}'; 
+			  var finalDateFormatProjectSave = '';
+			  if(locationDate.match("yyyy-MM-dd")){
+				  finalDateFormatProjectSave = 'yy-mm-dd';
+			  }if(locationDate.match("dd-MM-yyyy")){
+				  finalDateFormatProjectSave = 'dd-mm-yy'; 
+			  }if(locationDate.match("MM-dd-yyyy")){
+				  finalDateFormatProjectSave = 'mm-dd-yy'; 
+			  }if(locationDate.match("yyyy-dd-MM")){
+				  finalDateFormatProjectSave = 'yy-dd-mm'; 
+			  }
+	    
+		  $('#fromDate').datepicker({
+				dateFormat : finalDateFormatProjectSave,
+				changeMonth: true,
+				changeYear: true, 
+				onSelect : function(selected) {
+					var dt = $(this).datepicker('getDate', '+1d');
+					dt.setDate(dt.getDate());
+					removeErrMsg();
+					$("#toDate").datepicker("option", "minDate", dt);
+				}
+			});
+		  
+		  $('#toDate').datepicker({
+				dateFormat : finalDateFormatProjectSave,
+				changeMonth: true,
+				changeYear: true, 
+				onSelect : function(selected) {
+					var dt = $(this).datepicker('getDate', '-1d');
+					dt.setDate(dt.getDate());
+					removeErrMsgTo();
+					$("#fromDate").datepicker("option", "maxDate", dt);
+				}
+			});
+		 
 	 }else{
 		 document.getElementById("customSearch").style.display="none";
 		 $("#customize_btn").removeAttr("disabled");
+		 $("#fromDate").datepicker("destroy");
+		 $("#toDate").datepicker("destroy");
 		 $("#fromDate").val('');
 		 $("#toDate").val('');
+		 document.getElementById("fromDateDiv").style.display="none";
+		  document.getElementById("toDateDiv").style.display="none";
 	 }
 }
 
@@ -120,7 +162,7 @@ function getCustomDates(){
 
 <script>
   function getApplicantBySourceChart(){
-	  
+	 
 	  var flag = true;
 	  var jobIds = $("#jobIds").val();
 	  if(jobIds == null){
@@ -132,22 +174,24 @@ function getCustomDates(){
 	  if(dateSelection == 'custom'){
 		   fromDate = $("#fromDate").val();
 		   toDate = $("#toDate").val();
-		  
 		  if(fromDate == '' || toDate == ''){
 			  flag = false;
 			  if(fromDate == ''){
 				  document.getElementById("fromDateDiv").style.display="block";
 			  }else{
+				
 				  document.getElementById("fromDateDiv").style.display="none";
 			  }
 			  if(toDate == ''){
 				  document.getElementById("toDateDiv").style.display="block";
 			  }else{
+				 
 				  document.getElementById("toDateDiv").style.display="none";
 			  }
 		  }else{
 			  document.getElementById("fromDateDiv").style.display="none";
 			  document.getElementById("toDateDiv").style.display="none";
+			  
 		  }
 		  
 	  }
@@ -156,13 +200,17 @@ function getCustomDates(){
 			$.ajax({ 
 				   	type: "GET",
 				 	url: sourceleadUrl+"/getApplicantBySourceDetails?${_csrf.parameterName}=${_csrf.token}&jobIds="+jobIds+"&dateSelection="+dateSelection+"&fromDate="+fromDate+"&toDate="+toDate,
-				    success: function(json) {
-				    	
-				        	if(json.length > 0)	
+				    success: function(response) {
+				    	if (response && (response.response === "INVALID_DATA" || response.response === "INVALID_USER")) {
+			    		    showError(response.responseMessage);
+			    	  	} else if (response.response === "AWKWARD") {
+			    		    location.href = "/errorPage";
+			    		} else if (response.response === "SUCCESS") {
+			    			if(response.data.length > 0)	
 				 	   		{
 				        		    var chartData = [];
-									for(var i=0; i < json.length ; i++){
-				        			 var applicantSource = json[i];
+									for(var i=0; i < response.data.length ; i++){
+				        			 var applicantSource = response.data[i];
 				        			 
 				        			    chartData.push( {
 				        			    	category: applicantSource.category,
@@ -193,12 +241,26 @@ function getCustomDates(){
 				        		 
 				        		 var listView = document.getElementById("listView");
 					        	 listView.addEventListener("click", function() {
-									 getListView(json);
+									 getListView(response);
+					        		 document.getElementById("applicantSourceGrap").style.display="none";
+								    	document.getElementById("applicantSource").style.display="block";
+								    	var element = document.getElementById("listView");
+								    	var grid = document.getElementById("graphicView");
+								    	element.classList.add("rAct");
+								    	grid.classList.remove("rAct");
+								    	$(".listSearch").show();
 								  });
 					        	 
 					        	 var graphicView = document.getElementById("graphicView");
 					        	 graphicView.addEventListener("click", function() {
 					        		 loadApplicantSourceChart(chartData);
+					        		 document.getElementById("applicantSourceGrap").style.display="block";
+								    	document.getElementById("applicantSource").style.display="none";
+								    	
+								    	var element = document.getElementById("listView");
+								    	var grid = document.getElementById("graphicView");
+								    	element.classList.remove("rAct");
+								    	grid.classList.add("rAct");
 								  });
 				 	   		}else{
 				 	   			var result = '';
@@ -207,9 +269,13 @@ function getCustomDates(){
 				 	   	        $("#applicantSource").empty();
 				                $("#applicantSource").append(result);
 				 	   		}
-				        	
-				        	 
-			        	
+			    			
+			    		}else if (response.indexOf('Sign In') !== -1) {
+			    			location.replace(sourceleadUrl);
+			    		} else {
+			    		    showError("Operation failed, please try again");
+			    		}
+			    		
 			        },
 			        error: function(e){
 			        }
@@ -221,9 +287,7 @@ function getCustomDates(){
  <script>
  function loadApplicantSourceChart(result){
 	 
-	 $("#applicantSource").empty();
-     
-	 var chart = AmCharts.makeChart("applicantSource", {
+	 var chart = AmCharts.makeChart("applicantSourceGrap", {
 		 
 			"type": "serial",
 			"categoryField": "category",
@@ -237,7 +301,8 @@ function getCustomDates(){
 				"enabled": true
 			},
 			"export": {
-				"enabled": true
+				"enabled": true,
+				"fileName":"Applicant(s) by Source"
 			},
 			
 			"categoryAxis": {
@@ -411,12 +476,14 @@ function getCustomDates(){
  </script> 
 
  <script>
- function getListView(json){
-	 if(json.length > 0)	
+ function getListView(response){
+	
+	 if(response.data.length > 0)	
  		{
+		// alert("SS"+response.data.length);
 		 var result = "";
-		 result = result +"<div class='clearfix tableStyles mt'>"; 
-		 result = result +"<table class='table table-bordered mt10'>"; 
+		 result = result +"<div class='clearfix project_tabs_inn_table'>"; 
+		 result = result +"<table class='table'>"; 
          result = result +"<thead>"; 
          result = result +"  <tr>"; 
          result = result +"    <th>Source</th>";
@@ -432,10 +499,10 @@ function getCustomDates(){
          result = result +"  </tr>"; 
          result = result +"</thead>";
          result = result +"<tbody>"; 
-			 for(var i=0; i < json.length ; i++){
-				 var applicantSource = json[i];
+			 for(var i=0; i < response.data.length ; i++){
+				 var applicantSource = response.data[i];
 				 
-	   					
+	   					console.log(applicantSource);
 				 result = result +"<tr>"; 
 				
 				 result = result +"<td>"; 
@@ -492,40 +559,12 @@ function getCustomDates(){
  }
  </script>
  <script>
-  $( function() {
-		 var locationDate ='${SourceLeadWeb_orgLocations.dateFormat}'; 
-		  var finalDateFormatProjectSave = '';
-		  if(locationDate.match("yyyy-MM-dd")){
-			  finalDateFormatProjectSave = 'yy-mm-dd';
-		  }if(locationDate.match("dd-MM-yyyy")){
-			  finalDateFormatProjectSave = 'dd-mm-yy'; 
-		  }if(locationDate.match("MM-dd-yyyy")){
-			  finalDateFormatProjectSave = 'mm-dd-yy'; 
-		  }if(locationDate.match("yyyy-dd-MM")){
-			  finalDateFormatProjectSave = 'yy-dd-mm'; 
-		  }
-    
-	  $('#fromDate').datepicker({
-			dateFormat : finalDateFormatProjectSave,
-			changeMonth: true,
-			changeYear: true, 
-			onSelect : function(selected) {
-				var dt = $(this).datepicker('getDate', '+1d');
-				dt.setDate(dt.getDate());
-				$("#toDate").datepicker("option", "minDate", dt);
-			}
-		});
+ function removeErrMsg(){
+	  document.getElementById("fromDateDiv").style.display="none";
+ }
+ function removeErrMsgTo(){
+	  document.getElementById("toDateDiv").style.display="none";
 	  
-	  $('#toDate').datepicker({
-			dateFormat : finalDateFormatProjectSave,
-			changeMonth: true,
-			changeYear: true, 
-			onSelect : function(selected) {
-				var dt = $(this).datepicker('getDate', '-1d');
-				dt.setDate(dt.getDate());
-				$("#fromDate").datepicker("option", "maxDate", dt);
-			}
-		});
-  } );
+ }
   </script>
  

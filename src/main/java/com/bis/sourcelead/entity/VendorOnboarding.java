@@ -21,7 +21,6 @@ import org.hibernate.annotations.Type;
 
 @Entity
 @Table(name = "VENDOR_ON_BOARDING")
-@Cache(usage = CacheConcurrencyStrategy.TRANSACTIONAL,region="vendorOnboarding")
 public class VendorOnboarding implements Serializable{
 
 private static final long serialVersionUID = 1L;
@@ -31,23 +30,23 @@ private static final long serialVersionUID = 1L;
     @Column(name = "ID", nullable = false)
     private Long id;
 	
-	@NotFound(action=NotFoundAction.IGNORE)
-    @ManyToOne
+	
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "ORG_RELATION_ID")
     private OrgRelations orgRelationId;
 	
-	@NotFound(action=NotFoundAction.IGNORE)
-	@ManyToOne
+	
+	@ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "ORG_LOCATIONS_ID")
     private OrgLocations orgLocationsId;
     
-	@NotFound(action=NotFoundAction.IGNORE)
-    @ManyToOne
+	
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "VENDOR_LOCATION_ID")
     private OrgLocations vendorLocationId;
 	
-	@NotFound(action=NotFoundAction.IGNORE)
-    @ManyToOne
+	
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "SPOC_USER_ID")
     private User spocUserId;
 	

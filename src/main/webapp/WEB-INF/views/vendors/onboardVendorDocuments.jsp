@@ -53,10 +53,10 @@ function saveDocuments(){
 		    	  var vendorTasks = document.getElementById("vendorTasks");
 					 $("#vendorTasks").removeClass("disabledLink");
 					 vendorTasks.href="#tab-c";
-					 vendorTasks.addEventListener("click", function() {
+					/*  vendorTasks.addEventListener("click", function() {
 						 getVendorOnboardTasksList();
-					  });
-					 vendorTasks.click();
+					  }); */
+					  $("#vendorTasks").click();
 		    	  
 	      	      $("#save_continue_doc_button").removeAttr("disabled");
 		    	  $("#loading").removeAttr("style");
@@ -103,13 +103,12 @@ function getOnboardDocuments(){
 	         		 }
                 	 result = result +"<tr>";
                 	 result = result +"<td><input type='text' readonly='readonly' class='form-control input-sm vendorinput' value='"+opt.documentName+"'></td>";
-                	 
                 	 if(opt.uploadedFileUrl != null){
                 		 result = result +"<td class='inputpadding positionRelative'>";
                 		 result = result +"<i class=''><a class='downloadbtn glyphicon glyphicon-save' target='_blank' href=\""+opt.uploadedFileUrl+"\"></a></i>";
            				 result = result +"<input type='button' value='"+opt.uploadedFileName+"' class='tbldata-dotdot'>";
            				 result = result +"</td>";
-           				 result = result +"<td><i class='fa fa-times'  onClick='deleteVendorUploadedDocument("+opt.id+");'></i></td>";
+           				 result = result +"<td><i class='fa fa-times'  onClick='deleteVendorUploadedDocument("+opt.id+","+i+");'></i></td>";
                 	 }else{
                 		 result = result +"<td><div class='positionRelative'><input type='file' id='"+i+"vendorDocFile' field-name='Attachment' "+datavalidation+"  onchange='uploadVendorDocument("+i+")'  class='timesheetAttachmentValidation'>"+requiredAstrik+"</div></td>";
                     	 result = result +"<td><input type='hidden' value="+opt.id+"  name='vendorDocumentsFileInfo["+i+"].docId'></td>";
@@ -139,13 +138,15 @@ function uploadVendorDocument(id){
 
 
 <script>
-function deleteVendorUploadedDocument(documentId){
+function deleteVendorUploadedDocument(documentId,id){
 	 $.ajax({
 	    	type: "POST",
 	    	 url: sourceleadUrl+"/deleteVendorUploadedOnboardDocument?${_csrf.parameterName}=${_csrf.token}&documentId="+documentId, 
 	         success: function(result) {
 	        	 $("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
 	        	 getOnboardDocuments();
+	        	 $("#vendorOnboardUploadedDocuments_form input[data-id*="+id+"vendorDocFile]").remove();
+	        	 
 	        	 $("#loading").removeAttr("style");
 	        }
 	 });

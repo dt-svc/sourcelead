@@ -7,6 +7,7 @@ import java.util.UUID;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -27,22 +28,18 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 
 @Entity
 @Table(name = "LEAVE_TYPE")
-@Cache(usage = CacheConcurrencyStrategy.TRANSACTIONAL, region = "leaveType")
 public class LeaveType {
 
 	@Id
-	@GeneratedValue(strategy = GenerationType.IDENTITY, generator = "uuid2")
-	@GenericGenerator(name = "uuid2", strategy = "uuid2")
-//	@Column(columnDefinition = "BINARY(16)")
-	private String id;
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "ID", nullable = false)
+    private Long id;
 	
-	@NotFound(action = NotFoundAction.IGNORE)
-	@ManyToOne
+	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "ORGLOCATION_ID", nullable = false)
 	private OrgLocations orgLocations;
 	
-	@NotFound(action = NotFoundAction.IGNORE)
-	@ManyToOne
+	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "DEPARTMENT_ID", nullable = false)
 	private Department departmentId;
 	
@@ -82,6 +79,9 @@ public class LeaveType {
 	@Column(name = "COLOR_CODE")
 	private String colorCode;
 
+	@Column(name = "DEPARTMENT_IDS")
+	private String departmentIds;
+	
 	@Column(name = "CREATED_DATE")
 	private Date createdDate;
 
@@ -94,7 +94,9 @@ public class LeaveType {
 	@Column(name = "UPDATED_BY")
 	private String updatedBy;
 	
-	@NotFound(action=NotFoundAction.IGNORE)
+	@Column(name = "LEAVE_TYPE_UUID")
+	private String leaveTypeUUID;
+	
 	@JsonBackReference
 	@OneToMany(cascade = CascadeType.ALL, mappedBy = "leaveTypeid")
 	private Set<LeaveRole> leaveTypeRolesSet;
@@ -154,13 +156,74 @@ public class LeaveType {
 	private String leaveDuration;
 	
 	@Column(name = "MIN_DAYS")
-	private Integer minDays;
+	private Float minDays;
 	
 	@Column(name = "MAX_DAYS")
-	private Integer maxDays;
+	private Float maxDays;
 	
 	@Column(name = "NO_OF_DAYS")
 	private Integer noOfDays;
+	
+	@Column(name = "NO_OF_DAYS_PER_PERIOD")
+	private Float noOfDaysPerPeriod;
+	
+	@Column(name = "AUTO_APPROVE")
+	private String autoApprove;
+	
+	@Column(name = "AUTO_APPROVE_TYPE")
+	private String autoApproveType;
+	
+	@Column(name = "AUTO_APPROVE_TYPE_LIST")
+	private String autoApproveTypeList;
+	
+	@Column(name = "TIMESHEET_AUTOFILL")
+	private String timeSheetAutofill;
+	
+	@Column(name = "EFFECTIVE_GENDER")
+	private String effectiveGender;
+	
+	@Column(name = "INCLUDE_WEEKOFF")
+	private String includeWeekoff;
+	
+	@Column(name = "INCLUDE_HOLIDAYS")
+	private String includeHolidays;
+	
+	@Column(name = "VISIBLE_IN_BALANCE_LEAVES")
+	private String visibleInBalanceLeaves;
+	
+	@Column(name = "LEAVE_EMP_TYPE")
+	private String leaveEmpType;
+	
+	@Column(name = "ALLOWABILITY")
+	private String allowability;
+	
+	@Column(name = "MAX_DAYS_TO_CARRYFORWARD")
+	private Integer maxDaysToCarryforward;
+	
+	@Column(name = "INCLUDE_IN_PAYROLL")
+	private String includeInPayroll;
+	
+	@Column(name = "LEAVE_ENCASHMENT")
+	private String leaveEncashment;
+	
+	@Column(name = "LEAVE_ENCASH_MIN_DAYS")
+	private Integer leaveEncashMinDays;
+	
+	@Column(name = "LEAVE_ENCASH_MAX_DAYS")
+	private Integer leaveEncashMaxDays;
+	
+	@Column(name = "ACCURAL_POLICY")
+	private String accuralPolicy;
+	
+	@Column(name = "NEW_JOINEE_PER_PERIOD")
+	private Float newJoinPerPeriod;
+	
+	@Column(name = "EXPERIENCED_PER_PERIOD")
+	private Float experiencedPerPeriod;
+	
+	@Transient
+	@JsonProperty
+	private String autoApproveTypeListNames;
 	
 	@Transient
 	@JsonProperty
@@ -176,7 +239,7 @@ public class LeaveType {
 	
 	@Transient
 	@JsonProperty
-	private int pendingLeaveCounts;
+	private float pendingLeaveCounts;
 	
 	@Transient
 	@JsonProperty
@@ -185,13 +248,47 @@ public class LeaveType {
 	@Transient
 	@JsonProperty
 	private int takenLeaveCounts;
-
-	public String getId()
+	
+	@Transient
+	@JsonProperty
+	private float totalBalanceLeaveCounts;
+	
+	@Transient
+	@JsonProperty
+	private float leaveTypeBalanceLeaveCount;
+	
+	@Transient
+	@JsonProperty
+	private float takenLeaves;
+	
+	@Transient
+	@JsonProperty
+	private String userGender;
+	
+	@Transient
+	private float diffLeaves;
+	
+	@Transient
+	private String actionType;
+	
+	@Transient
+	float diffFresherLeaves;
+	
+	@Transient
+	float diffExpLeaves;
+	
+	@Transient
+	String actionFresherType;
+	
+	@Transient
+	String actionExpType;
+	
+	public Long getId()
 	{
 		return id;
 	}
 
-	public void setId(String id)
+	public void setId(Long id)
 	{
 		this.id = id;
 	}
@@ -374,6 +471,16 @@ public class LeaveType {
 	public void setUpdatedBy(String updatedBy)
 	{
 		this.updatedBy = updatedBy;
+	}
+
+	public String getLeaveTypeUUID()
+	{
+		return leaveTypeUUID;
+	}
+
+	public void setLeaveTypeUUID(String leaveTypeUUID)
+	{
+		this.leaveTypeUUID = leaveTypeUUID;
 	}
 
 	public Set<LeaveRole> getLeaveTypeRolesSet()
@@ -566,22 +673,22 @@ public class LeaveType {
 		this.leaveDuration = leaveDuration;
 	}
 
-	public Integer getMinDays()
+	public Float getMinDays()
 	{
 		return minDays;
 	}
 
-	public void setMinDays(Integer minDays)
+	public void setMinDays(Float minDays)
 	{
 		this.minDays = minDays;
 	}
 
-	public Integer getMaxDays()
+	public Float getMaxDays()
 	{
 		return maxDays;
 	}
 
-	public void setMaxDays(Integer maxDays)
+	public void setMaxDays(Float maxDays)
 	{
 		this.maxDays = maxDays;
 	}
@@ -594,6 +701,186 @@ public class LeaveType {
 	public void setNoOfDays(Integer noOfDays)
 	{
 		this.noOfDays = noOfDays;
+	}
+
+	public Float getNoOfDaysPerPeriod()
+	{
+		return noOfDaysPerPeriod;
+	}
+
+	public void setNoOfDaysPerPeriod(Float noOfDaysPerPeriod)
+	{
+		this.noOfDaysPerPeriod = noOfDaysPerPeriod;
+	}
+
+	public String getAutoApprove()
+	{
+		return autoApprove;
+	}
+
+	public void setAutoApprove(String autoApprove)
+	{
+		this.autoApprove = autoApprove;
+	}
+
+	public String getAutoApproveType()
+	{
+		return autoApproveType;
+	}
+
+	public void setAutoApproveType(String autoApproveType)
+	{
+		this.autoApproveType = autoApproveType;
+	}
+
+	public String getAutoApproveTypeList()
+	{
+		return autoApproveTypeList;
+	}
+
+	public void setAutoApproveTypeList(String autoApproveTypeList)
+	{
+		this.autoApproveTypeList = autoApproveTypeList;
+	}
+
+	public String getTimeSheetAutofill()
+	{
+		return timeSheetAutofill;
+	}
+
+	public void setTimeSheetAutofill(String timeSheetAutofill)
+	{
+		this.timeSheetAutofill = timeSheetAutofill;
+	}
+
+	public String getEffectiveGender()
+	{
+		return effectiveGender;
+	}
+
+	public void setEffectiveGender(String effectiveGender)
+	{
+		this.effectiveGender = effectiveGender;
+	}
+
+	public String getIncludeWeekoff()
+	{
+		return includeWeekoff;
+	}
+
+	public void setIncludeWeekoff(String includeWeekoff)
+	{
+		this.includeWeekoff = includeWeekoff;
+	}
+
+	public String getIncludeHolidays()
+	{
+		return includeHolidays;
+	}
+
+	public void setIncludeHolidays(String includeHolidays)
+	{
+		this.includeHolidays = includeHolidays;
+	}
+
+	public String getVisibleInBalanceLeaves()
+	{
+		return visibleInBalanceLeaves;
+	}
+
+	public void setVisibleInBalanceLeaves(String visibleInBalanceLeaves)
+	{
+		this.visibleInBalanceLeaves = visibleInBalanceLeaves;
+	}
+
+	public String getLeaveEmpType()
+	{
+		return leaveEmpType;
+	}
+
+	public void setLeaveEmpType(String leaveEmpType)
+	{
+		this.leaveEmpType = leaveEmpType;
+	}
+
+	public String getAllowability()
+	{
+		return allowability;
+	}
+
+	public void setAllowability(String allowability)
+	{
+		this.allowability = allowability;
+	}
+
+	public Integer getMaxDaysToCarryforward()
+	{
+		return maxDaysToCarryforward;
+	}
+
+	public void setMaxDaysToCarryforward(Integer maxDaysToCarryforward)
+	{
+		this.maxDaysToCarryforward = maxDaysToCarryforward;
+	}
+
+	public String getIncludeInPayroll()
+	{
+		return includeInPayroll;
+	}
+
+	public void setIncludeInPayroll(String includeInPayroll)
+	{
+		this.includeInPayroll = includeInPayroll;
+	}
+
+	public String getLeaveEncashment()
+	{
+		return leaveEncashment;
+	}
+
+	public void setLeaveEncashment(String leaveEncashment)
+	{
+		this.leaveEncashment = leaveEncashment;
+	}
+
+	public Integer getLeaveEncashMinDays()
+	{
+		return leaveEncashMinDays;
+	}
+
+	public void setLeaveEncashMinDays(Integer leaveEncashMinDays)
+	{
+		this.leaveEncashMinDays = leaveEncashMinDays;
+	}
+
+	public Integer getLeaveEncashMaxDays()
+	{
+		return leaveEncashMaxDays;
+	}
+
+	public void setLeaveEncashMaxDays(Integer leaveEncashMaxDays)
+	{
+		this.leaveEncashMaxDays = leaveEncashMaxDays;
+	}
+
+	public String getAccuralPolicy()
+	{
+		return accuralPolicy;
+	}
+
+	public void setAccuralPolicy(String accuralPolicy)
+	{
+		this.accuralPolicy = accuralPolicy;
+	}
+
+	public String getAutoApproveTypeListNames()
+	{
+		return autoApproveTypeListNames;
+	}
+
+	public void setAutoApproveTypeListNames(String autoApproveTypeListNames)
+	{
+		this.autoApproveTypeListNames = autoApproveTypeListNames;
 	}
 
 	public String getCreatedUser()
@@ -626,12 +913,12 @@ public class LeaveType {
 		this.remainingTotalLeaveCounts = remainingTotalLeaveCounts;
 	}
 
-	public int getPendingLeaveCounts()
+	public float getPendingLeaveCounts()
 	{
 		return pendingLeaveCounts;
 	}
 
-	public void setPendingLeaveCounts(int pendingLeaveCounts)
+	public void setPendingLeaveCounts(float pendingLeaveCounts)
 	{
 		this.pendingLeaveCounts = pendingLeaveCounts;
 	}
@@ -656,6 +943,127 @@ public class LeaveType {
 		this.takenLeaveCounts = takenLeaveCounts;
 	}
 
-	
- 
+	public float getTotalBalanceLeaveCounts()
+	{
+		return totalBalanceLeaveCounts;
+	}
+
+	public void setTotalBalanceLeaveCounts(float totalBalanceLeaveCounts)
+	{
+		this.totalBalanceLeaveCounts = totalBalanceLeaveCounts;
+	}
+
+	public float getLeaveTypeBalanceLeaveCount()
+	{
+		return leaveTypeBalanceLeaveCount;
+	}
+
+	public void setLeaveTypeBalanceLeaveCount(float leaveTypeBalanceLeaveCount)
+	{
+		this.leaveTypeBalanceLeaveCount = leaveTypeBalanceLeaveCount;
+	}
+
+	public float getTakenLeaves()
+	{
+		return takenLeaves;
+	}
+
+	public void setTakenLeaves(float takenLeaves)
+	{
+		this.takenLeaves = takenLeaves;
+	}
+
+	public String getUserGender()
+	{
+		return userGender;
+	}
+
+	public void setUserGender(String userGender)
+	{
+		this.userGender = userGender;
+	}
+
+	public Float getNewJoinPerPeriod() {
+		return newJoinPerPeriod;
+	}
+
+	public Float getExperiencedPerPeriod() {
+		return experiencedPerPeriod;
+	}
+
+	public void setNewJoinPerPeriod(Float newJoinPerPeriod) {
+		this.newJoinPerPeriod = newJoinPerPeriod;
+	}
+
+	public void setExperiencedPerPeriod(Float experiencedPerPeriod) {
+		this.experiencedPerPeriod = experiencedPerPeriod;
+	}
+
+	public String getDepartmentIds() {
+		return departmentIds;
+	}
+
+	public void setDepartmentIds(String departmentIds) {
+		this.departmentIds = departmentIds;
+	}
+
+	public float getDiffFresherLeaves()
+	{
+		return diffFresherLeaves;
+	}
+
+	public void setDiffFresherLeaves(float diffFresherLeaves)
+	{
+		this.diffFresherLeaves = diffFresherLeaves;
+	}
+
+	public float getDiffExpLeaves()
+	{
+		return diffExpLeaves;
+	}
+
+	public void setDiffExpLeaves(float diffExpLeaves)
+	{
+		this.diffExpLeaves = diffExpLeaves;
+	}
+
+	public String getActionFresherType()
+	{
+		return actionFresherType;
+	}
+
+	public void setActionFresherType(String actionFresherType)
+	{
+		this.actionFresherType = actionFresherType;
+	}
+
+	public String getActionExpType()
+	{
+		return actionExpType;
+	}
+
+	public void setActionExpType(String actionExpType)
+	{
+		this.actionExpType = actionExpType;
+	}
+
+	public float getDiffLeaves()
+	{
+		return diffLeaves;
+	}
+
+	public void setDiffLeaves(float diffLeaves)
+	{
+		this.diffLeaves = diffLeaves;
+	}
+
+	public String getActionType()
+	{
+		return actionType;
+	}
+
+	public void setActionType(String actionType)
+	{
+		this.actionType = actionType;
+	}
 }

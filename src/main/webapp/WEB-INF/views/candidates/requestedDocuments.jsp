@@ -95,7 +95,7 @@ var sourceleadUrl ='${sourceleadUrl}';
 					   				
 					   				<td>
 					   				<c:if test="${!empty docs.description}">
-					   				<div class="tbldata-dotdot-big" title="${docs.description}">${docs.description}</div>
+					   				<div class="tbldata-dotdot-big" title="'${docs.description}'">${docs.description}</div>
 					   				</c:if>
 					   				<c:if test="${empty docs.description}">
 					   				<div class="tbldata-dotdot-big">-------</div>
@@ -104,7 +104,7 @@ var sourceleadUrl ='${sourceleadUrl}';
 								    <td class="text-center">
 								    <div class="width300px mt5" id="attachmentDiv${docs.id}">
 								        <c:if test="${docs.isRequestedDocRequired == 'Y'}">
-								        	<input type="file"  class="form-control welFile"  id="uploadDocFile${docs.id}"    placeholder="Upload Resume ..." field-name="Document" data-validation="required validate_docimgpdf" onchange="uploadFileReqDoc(${docs.id});">
+								        	<input type="file"  class="form-control welFile"  id="uploadDocFile${docs.id}"    placeholder="Upload Resume ..." field-name="Document" data-validation="required validatedoc" onchange="uploadFileReqDoc(${docs.id});">
 								        </c:if>
 								        
 								        <c:if test="${docs.isRequestedDocRequired == 'N'}">
@@ -120,7 +120,7 @@ var sourceleadUrl ='${sourceleadUrl}';
 		   	</table>
 		   	<div class="clearfix mt mb">
 		   	<div class="pull-right">
-		   		<button type="submit" id="submit_docs" class="btn btn-primary">Upload</button>
+		   		<button type="button" id="submit_docs" onclick="requestDocSave();" class="btn btn-primary">Upload</button>
 		   	</div>
 		   	</div>
 		   </div>
@@ -135,46 +135,49 @@ var sourceleadUrl ='${sourceleadUrl}';
         </div>
     </c:if>
    
-   <script type="text/javascript">
-   var validationSettings = {
+<script type="text/javascript">
+   function requestDocSave(){
+	   var validationSettings = {
 	        errorMessagePosition : 'element',
 	        borderColorOnError : '',
 			scrollToTopOnError : true,
 			dateFormat : 'yyyy/mm/dd' 
         }; 
-$('body').on('submit', '#requestForDocs_form', function(e){
-	
-	  if ($("#requestForDocs_form").validate(false, validationSettings)){
-      e.preventDefault();
-     
-	  var requestDocUUID = '${requestDocUUID}';
-	    var formData = getFormData1("requestForDocs_form");
-		$("#submit_docs").attr("disabled", "disabled");
-		$("#submit_docs" ).addClass('button').val('Processing..');
-		$.ajax({
-				 type : "POST",
-				 data: formData,
-		         processData: false,
-		         contentType:false, 
-			url : sourceleadUrl+"/uploadRequestedDocuments?"+tokenParamName+"="+tokenValue+"",
-			success : function(data) {
-				 location.replace(sourceleadUrl+"/ws/requestedDocuments?requestDocUUID="+requestDocUUID); 
-
-			},
-		});
-		
-      return true; 
-    }
-    else{
-    	return false;	
-       }
-  });
-
+		if ($("#requestForDocs_form").validate(false, validationSettings)){
+		  	var requestDocUUID = '${requestDocUUID}';
+		    var formData = getFormData1("requestForDocs_form");
+			$("#submit_docs").attr("disabled", "disabled");
+			$("#submit_docs" ).addClass('button').val('Processing..');
+			$.ajax({
+				type : "POST",
+				data: formData,
+			    processData: false,
+			    contentType:false, 
+				url : sourceleadUrl+"/ws/uploadRequestedDocuments?"+tokenParamName+"="+tokenValue+"",
+				success : function(response) {
+					if (response && response.response === "INVALID_DATA") {
+					    showError(response.responseMessage);
+					} else if (response.response === "AWKWARD") {
+					    location.href = "/errorPage";
+					} else if (response.response === "SUCCESS") {
+						location.replace(sourceleadUrl+"/ws/requestedDocuments?requestDocUUID="+requestDocUUID); 
+					} else if (response.indexOf('Sign In') !== -1) {
+						location.replace(sourceleadUrl);
+					} else {
+					    showError("Operation failed, please try again");
+					}
+				},
+			});
+			return true;
+    	} else {
+			return false;
+		}
+	}
 	$('body').on('blur', '#requestForDocs_form', function() {
 		$("#requestForDocs_form").showHelpOnFocus();
 		$("#requestForDocs_form").validateOnBlur(false, validationSettings);
 	});
-  </script>
+</script>
   <script type="text/javascript">
 var tokenParamName = "${_csrf.parameterName}";
 var tokenValue = "${_csrf.token}";

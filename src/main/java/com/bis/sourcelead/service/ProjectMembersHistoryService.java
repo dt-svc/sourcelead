@@ -15,7 +15,7 @@ public interface ProjectMembersHistoryService {
 	
 	HashSet<Date> getAllProjectMemberHistoryDatesByProjectMemberIdAndWeekStartDateEndDate(Long projectMemberId,Date startDate,Date endDate);
 	
-	 HashMap<String, Date> getProjectMembersStartDateAndEndDateByProjectMemberId(Long projectMemberId) throws Exception;
+	 HashMap<String, Date> getProjectMembersStartDateAndEndDateByProjectMemberId(Long projectMemberId,String reportFor) throws Exception;
 	
 	 ProjectMembersHistory updateProjectMembersHistory(ProjectMembersHistory projectMembersHistory) throws Exception ;
 	 
@@ -34,5 +34,7 @@ public interface ProjectMembersHistoryService {
 	List<ProjectMembersHistory> getProjectMembersHistoryListByProjectMemberId(Long projectMemberId) throws Exception;
 	
 	ProjectMembersHistory getProjectMembersHistoryByProjectMemberIdAndOrgLoctionId(Long projectMemberId,Long orgLocationId) throws Exception;
+	
+	public ProjectMembersHistory getProjectMembersHistoryByProjectMemberIdAndOrgId(Long projectMemberId,Long orgId) throws Exception;
 	
 }

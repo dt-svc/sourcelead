@@ -2,22 +2,30 @@ package com.bis.sourcelead.entity;
 
 import java.io.Serializable;
 import java.util.Date;
+import java.util.Set;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.persistence.Transient;
 
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
+import org.hibernate.annotations.Fetch;
+import org.hibernate.annotations.FetchMode;
 import org.hibernate.annotations.GenericGenerator;
 import org.hibernate.annotations.NotFound;
 import org.hibernate.annotations.NotFoundAction;
+
+import com.fasterxml.jackson.annotation.JsonBackReference;
 
 
 /**
@@ -26,17 +34,15 @@ import org.hibernate.annotations.NotFoundAction;
  */
 @Entity
 @Table(name = "HOLIDAY")
-@Cache(usage = CacheConcurrencyStrategy.TRANSACTIONAL, region = "holiday")
 public class Holiday implements Serializable {
 private static final long serialVersionUID = 1L;
 
 	@Id
-	@GeneratedValue(generator = "uuid2" ,strategy = GenerationType.IDENTITY)
-	@GenericGenerator(name = "uuid2" ,strategy = "uuid2")
-	private String id;
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	@Column(name = "ID", nullable = false)
+	private Long id;
 	
-	@NotFound(action = NotFoundAction.IGNORE)
-	@ManyToOne
+	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "ORGLOCATION_ID", nullable = false)
 	private OrgLocations orgLocations;
 	
@@ -67,6 +73,9 @@ private static final long serialVersionUID = 1L;
 	@Column(name = "STATUS")
 	private String status;
 	
+	@Column(name = "BILLABLE_TYPE")
+	private String billableType;
+	
 	@Column(name = "HOLIDAY_STATUS")
 	private String holidayStatus;
 	
@@ -82,17 +91,29 @@ private static final long serialVersionUID = 1L;
 	@Column(name = "UPDATED_DATE")
 	private Date updatedDate;
 	
+	@Column(name = "HOLIDAY_UUID")
+	private String holidayUUID;
+	
+	@Column(name = "ORG_AVG_HRS")
+	private String orgAvgHrs;
+	
 	@Transient
 	private String fromDateStr;
 	
 	@Transient
 	private String toDateStr;
 	
-	public String getId() {
+	@OneToMany(mappedBy="holiday",cascade = CascadeType.ALL)
+    @Fetch(FetchMode.SELECT)
+    @JsonBackReference
+    private Set<HolidayShift> holidayShift;
+	
+	
+	public Long getId() {
 		return id;
 	}
 
-	public void setId(String id) {
+	public void setId(Long id) {
 		this.id = id;
 	}
 
@@ -242,6 +263,48 @@ private static final long serialVersionUID = 1L;
 	public void setToDateStr(String toDateStr) {
 		this.toDateStr = toDateStr;
 	}
-	
+
+	public static long getSerialversionuid()
+	{
+		return serialVersionUID;
+	}
+
+	public String getHolidayUUID()
+	{
+		return holidayUUID;
+	}
+
+	public void setHolidayUUID(String holidayUUID)
+	{
+		this.holidayUUID = holidayUUID;
+	}
+
+	public Set<HolidayShift> getHolidayShift() {
+		return holidayShift;
+	}
+
+	public void setHolidayShift(Set<HolidayShift> holidayShift) {
+		this.holidayShift = holidayShift;
+	}
+
+	public String getOrgAvgHrs()
+	{
+		return orgAvgHrs;
+	}
+
+	public void setOrgAvgHrs(String orgAvgHrs)
+	{
+		this.orgAvgHrs = orgAvgHrs;
+	}
+
+	public String getBillableType()
+	{
+		return billableType;
+	}
+
+	public void setBillableType(String billableType)
+	{
+		this.billableType = billableType;
+	}
 	
 }

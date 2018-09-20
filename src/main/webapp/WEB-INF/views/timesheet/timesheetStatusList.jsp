@@ -9,7 +9,7 @@
 
 <script src="/resources/js/jquery.simplePagination.js"></script>
 
-<jsp:include page="timesheetApprovalCommonScriptsRedefined.jsp" />
+<jsp:include page="timesheetApprovalCommonScripts.jsp" />
 <div id="TimeshgeetStatusListId"></div>
 
  <body  onclick="bodyClick();">
@@ -29,6 +29,7 @@
 			<div class="timesheet_appr_wrap">
 			 
 			<div class="timesheet_head">
+			<div class="pull-left ml mt5" id="hedderAcceptRejectButton" style="display: none"><input class="btn btn-success btn-sm" type="button" value="Approve" onclick="acceptTimeSheetSubmissionBySubmissionId('dashboard');"><input class="btn btn-danger btn-sm ml10" type="button" value="Reject" onclick="rejectTimeSheetSubmissionBySubmissionId('dashboard');"></div>
 	        	 <ul>
 	        	 	<li>&nbsp;</li>
 	            </ul> 
@@ -36,12 +37,18 @@
        					<input type="text" placeholder="Search..." value="" id="dataTableSearchExpenses123">
         			</div>	            
 	            <div class="clearfix"></div>
-	        </div> 
-			
+	        </div>
+	        <div id="rejectedPopup"></div> 
 			<div class="timesheet_appr_table datatable_filter pt5" id="tableDivId">
 					<table id='example'  style='width:100%' >
 						 <thead id="timesheetApprHead">                                
-						    <tr>                               
+						    <tr> 
+						        <c:if test="${status eq 'SUBMITTED'}">
+						        	<th><input type="checkbox" id="selectAllTimeSheetCheckBoxForSubmitForApproval"></th>
+						        </c:if>
+						        <c:if test="${status ne 'SUBMITTED'}">
+						        	<th><input type="checkbox" disabled="disabled"></th>
+						        </c:if>                          
 						        <th>Employee</th>              
 						        <th>Project</th>               
 						        <th>Client</th>                
@@ -100,7 +107,7 @@ window.onload = function () {
 	    	$('#dataTableSearchExpenses123').val(searchData);
 	    }
 	});
-	</script>
+</script>
  <script type="text/javascript">
 function filter(){
 	var status = '${status}';
@@ -114,6 +121,9 @@ function filter(){
 		        	   if(data != null && data != 'undefined' && data != ""){
 			                	 $("#timesheetApprList").empty();
 			                     $("#timesheetApprList").append(data); 
+			                     	$(".checkBoxForSubmitForApproval").click(function () {
+				             	    	selectedRecords[$(this).val()] = $(this).is(":checked");
+				             	    });
 			                     $("#TimeshgeetStatusListIdLoading").empty();
 			                     $("#TimeshgeetStatusListIdLoading").removeAttr('style');
 			                     $("#timesheetApprHead").removeAttr('style');
@@ -150,6 +160,20 @@ function filter(){
 						        	   if(data != null && data !='undefined' && data != ''){
 							                	 $("#timesheetApprList").empty();
 							                     $("#timesheetApprList").append(data); 
+							                     $("#selectAllTimeSheetCheckBoxForSubmitForApproval").removeProp('checked');
+							                     $(".checkBoxForSubmitForApproval").each(function() {
+							                    	 for(var e in selectedRecords) {
+							                    		 if($(this).val() === e) {
+							                    			 if(selectedRecords[e])
+							                    			 	$(this).prop('checked', selectedRecords[e]);
+							                    			 break;
+							                    		 }
+							                    	 }
+							         	        });
+
+							             	    $(".checkBoxForSubmitForApproval").click(function () {
+							             	    	selectedRecords[$(this).val()] = $(this).is(":checked");
+							             	    });
 							                     $("#TimeshgeetStatusListIdLoading").empty();
 							                     $("#TimeshgeetStatusListIdLoading").removeAttr('style');
 							                     $("#timesheetApprHead").removeAttr('style');
@@ -166,7 +190,7 @@ function filter(){
 				  var pageCount = $('#pageCount').val();
 				  var pageSize = $("#pageSize").val();
 				  $("#currentPageNumber").val(pageNo);
-				  var searchData = '${timesheetApprovalDTO.searchValue}';
+				  var searchData = $('#searchData').val();
 			      if(totalRows !=null && totalRows != '' && totalRows != 'undefined' && totalRows != 0){
 					  $('#paginationDiv').show();
 					  $('#dataTableSearchExpenses123').val('') ;
@@ -183,7 +207,7 @@ function filter(){
 				              ellipsePageSet :false,
 				              cssStyle: 'light-theme',
 				               onPageClick: function (pageNumber, event) {
-				            	   getStatusListData(""+pageNumber+"","");
+				            	   getStatusListData(""+pageNumber+"",searchData);
 				              }
 			      };
 			      $("#pagination-demo").pagination(options);
@@ -198,11 +222,36 @@ function filter(){
 				  $('#dataTableSearchExpenses123').val(searchData);
 				  $('#paginationDiv').hide();
 				  
+				  
 			}
 			    $('#pageMsg').html('');
 			    $('#pageMsg').html(pageMsg);
 			}
 
+</script>
+
+
+ <script>
+ var selectedRecords = {};
+  $(document).ready(function () {
+	    $("#selectAllTimeSheetCheckBoxForSubmitForApproval").click(function () {
+	        $(".checkBoxForSubmitForApproval").prop('checked', $(this).prop('checked'));
+	        $(".checkBoxForSubmitForApproval").each(function() {
+	        	selectedRecords[$(this).val()] = $(this).is(":checked");
+	        });
+	        displayAcceptRejectButtonOnHedder();
+	    });
+	});
+ </script>
+ <script type="text/javascript">
+function displayAcceptRejectButtonOnHedder() {
+	if($('[name="checkBoxForSubmitForApproval"]:checked').length > 0){
+		$('#hedderAcceptRejectButton').removeAttr('style');
+	}else{
+		$('#hedderAcceptRejectButton').attr('style','display:none');
+	}
+	
+}
 </script>
 
 <jsp:include page="../masterFooter.jsp" />

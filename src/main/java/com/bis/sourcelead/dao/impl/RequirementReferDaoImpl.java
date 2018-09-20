@@ -71,7 +71,7 @@ public class RequirementReferDaoImpl implements RequirementReferDao {
 		Session session =  this.sessionFactory.getCurrentSession();
 		String query = "from RequirementRefer refer left join fetch refer.referFromUser user left join fetch refer.requirementId requirement "
 				+ "where user.id = :userId and requirement.id = :requirementId and refer.referToEmail = :email"; 
-		List<RequirementRefer> requirementReferList = session.createQuery(query.toString()).setString("email", email).setLong("requirementId", requirementId).setLong("userId", userId).setCacheable(true).list();
+		List<RequirementRefer> requirementReferList = session.createQuery(query.toString()).setString("email", email).setLong("requirementId", requirementId).setLong("userId", userId).list();
          boolean isReferFound = false;
 		if (requirementReferList != null && !requirementReferList.isEmpty()) {
 			isReferFound = true;
@@ -86,7 +86,7 @@ public class RequirementReferDaoImpl implements RequirementReferDao {
 		Session session =  this.sessionFactory.getCurrentSession();
 		String query = "from RequirementRefer refer left join fetch refer.referFromUser user left join fetch refer.requirementId requirement "
 				+ "where requirement.id = :requirementId and refer.referFromEmail = :email"; 
-		List<RequirementRefer> requirementReferList = session.createQuery(query.toString()).setString("email", fromEmail).setLong("requirementId", requirementId).setCacheable(true).list();
+		List<RequirementRefer> requirementReferList = session.createQuery(query.toString()).setString("email", fromEmail).setLong("requirementId", requirementId).list();
          boolean isReferFound = false;
 		if (requirementReferList != null && !requirementReferList.isEmpty()) {
 			isReferFound = true;
@@ -103,7 +103,7 @@ public class RequirementReferDaoImpl implements RequirementReferDao {
 		List<RequirementRefer> requirementRefer = new ArrayList<RequirementRefer>();
 		logger.debug("getProfessionalReferToRequirement start");
 		requirementRefer = session.createQuery("from RequirementRefer refer left join fetch refer.referFromUser user left join fetch refer.requirementId requirement "
-				+ "where user.id = :userId and requirement.id = :requirementId and refer.referToEmail = :email" ).setString("email", email).setLong("requirementId", requirementId).setLong("userId", userId).setCacheable(true).list();
+				+ "where user.id = :userId and requirement.id = :requirementId and refer.referToEmail = :email" ).setString("email", email).setLong("requirementId", requirementId).setLong("userId", userId).list();
 		logger.debug("getProfessionalReferToRequirement end");
 		if (requirementRefer.size() > 0) {
 			return requirementRefer.get(0);
@@ -121,7 +121,7 @@ public class RequirementReferDaoImpl implements RequirementReferDao {
 		
 		String query = "select distinct refer.requirementId.id from RequirementRefer refer  where refer.referFromUser.id = :userId ";
 		List<Long> modulesIdList =  session.createQuery(query.toString()).setLong("userId", userId)
-									.setCacheable(true).list();
+									.list();
 		
 
 		/*if(modulesIdList.size() >= offset){
@@ -140,7 +140,7 @@ public class RequirementReferDaoImpl implements RequirementReferDao {
 	public List<RequirementRefer> getRequirementReferListByEmail(String email) throws Exception {
 		Session session =  this.sessionFactory.getCurrentSession();
 		String query = " from RequirementRefer refer where refer.referToEmail = :email ";
-		List<RequirementRefer> referList = session.createQuery(query.toString()).setString("email", email).setCacheable(true).list();
+		List<RequirementRefer> referList = session.createQuery(query.toString()).setString("email", email).list();
         return referList;
 	}
 
@@ -167,7 +167,7 @@ public class RequirementReferDaoImpl implements RequirementReferDao {
 		
 		String query = " from RequirementRefer refer left join fetch refer.referToUser left join fetch refer.referFromUser left join fetch refer.requirementId requirement "
 				+ "where refer.referToUser.id = :userId and requirement.requirementSubmissionStatus = 'OPEN' " + jobTitleSubQuery + " " + locationSubQuery + " " + postedOnSubQuery + "  ";
-		List<RequirementRefer> referList = session.createQuery(query.toString()).setLong("userId", userId).setCacheable(true).list();
+		List<RequirementRefer> referList = session.createQuery(query.toString()).setLong("userId", userId).list();
 		
 		if(referList.size() >= offset){
 				if(referList.size() > offset + maxResults){
@@ -217,7 +217,7 @@ public class RequirementReferDaoImpl implements RequirementReferDao {
 		List<RequirementRefer> requirementRefer = new ArrayList<RequirementRefer>();
 		logger.debug("getRequirementReferById start");
 		requirementRefer = session.createQuery("from RequirementRefer refer left join fetch refer.referFromUser user left join fetch refer.requirementId requirement "
-				+ "where refer.id = :referId" ).setLong("referId", referId).setCacheable(true).list();
+				+ "where refer.id = :referId" ).setLong("referId", referId).list();
 		logger.debug("getRequirementReferById end");
 		if (requirementRefer.size() > 0) {
 			return requirementRefer.get(0);
@@ -236,7 +236,7 @@ public class RequirementReferDaoImpl implements RequirementReferDao {
 		List<RequirementRefer> requirementRefer = new ArrayList<RequirementRefer>();
 		logger.debug("getAppliedRequirementReferByRequirementIdAndUserId start");
 		requirementRefer = session.createQuery("from RequirementRefer refer left join fetch refer.referFromUser user left join fetch refer.requirementId requirement "
-				+ "left join fetch refer.referFromUser toUser where toUser.id = :userId and requirement.id = :requirementId and refer.referStatus = 'Applied' " ).setLong("userId", userId).setLong("requirementId", requirementId).setCacheable(true).list();
+				+ "left join fetch refer.referFromUser toUser where toUser.id = :userId and requirement.id = :requirementId and refer.referStatus = 'Applied' " ).setLong("userId", userId).setLong("requirementId", requirementId).list();
 		logger.debug("getAppliedRequirementReferByRequirementIdAndUserId end");
 		if (requirementRefer.size() > 0) {
 			return requirementRefer.get(0);
@@ -265,7 +265,7 @@ public class RequirementReferDaoImpl implements RequirementReferDao {
 	     
 	     List<Long> referCount = session.createQuery(query).setLong("userId", userId)
 	    		   .setDate("startDate", startDate)
-				   .setDate("endDate", endDate).setCacheable(true).list();
+				   .setDate("endDate", endDate).list();
 		 Integer count= 0;
 		 
 		 if(referCount != null && !referCount.isEmpty()){
@@ -294,7 +294,7 @@ public class RequirementReferDaoImpl implements RequirementReferDao {
 		 String query = "select  count(distinct refer.requirementId) from RequirementRefer refer where "+subQuery+" and DATE(refer.createdDate) = :referedDate ";
 	     
 	     List<Long> referCount = session.createQuery(query).setLong("userId", userId)
-				   .setDate("referedDate", ourJavaDateObject).setCacheable(true).list();
+				   .setDate("referedDate", ourJavaDateObject).list();
 		 Integer count= 0;
 		 
 		 if(referCount != null && !referCount.isEmpty()){
@@ -319,7 +319,7 @@ public class RequirementReferDaoImpl implements RequirementReferDao {
 		 
 		 java.sql.Date ourJavaDateObject = new java.sql.Date(referedDate.getTime());
 		 String query = "from RequirementRefer refer left join fetch refer.requirementId  where "+subQuery+" and DATE(refer.createdDate) = :referedDate ";
-		 List<RequirementRefer>  referCountList = session.createQuery(query).setLong("userId", userId).setDate("referedDate", ourJavaDateObject).setCacheable(true).list();
+		 List<RequirementRefer>  referCountList = session.createQuery(query).setLong("userId", userId).setDate("referedDate", ourJavaDateObject).list();
 		return referCountList;
 	}
 
@@ -337,7 +337,7 @@ public class RequirementReferDaoImpl implements RequirementReferDao {
 			 subQuery = "refer.referFromUser.id = :userId ";
 		 }
 		 String query = "from RequirementRefer refer left join fetch refer.requirementId where "+subQuery+" and (refer.createdDate BETWEEN :startDate and :endDate))";
-		 List<RequirementRefer>  referCountList = session.createQuery(query).setLong("userId", userId) .setDate("startDate", startDate).setDate("endDate", endDate).setCacheable(true).list();
+		 List<RequirementRefer>  referCountList = session.createQuery(query).setLong("userId", userId) .setDate("startDate", startDate).setDate("endDate", endDate).list();
 		return referCountList;
 	}
 	
@@ -353,7 +353,7 @@ public class RequirementReferDaoImpl implements RequirementReferDao {
 	     
 	     List<Long> referCount = session.createQuery(query).setLong("userId", userId)
 	    		   .setDate("startDate", startDate)
-				   .setDate("endDate", endDate).setCacheable(true).list();
+				   .setDate("endDate", endDate).list();
 		 Integer count= 0;
 		 
 		 if(referCount != null && !referCount.isEmpty()){
@@ -371,7 +371,7 @@ public class RequirementReferDaoImpl implements RequirementReferDao {
 		 java.sql.Timestamp startDate = new java.sql.Timestamp(startDateFormat.getTime());
 		 java.sql.Timestamp endDate = new java.sql.Timestamp(endDateFormat.getTime());
 		 String query = "from RequirementRefer refer left join fetch refer.requirementId left join fetch refer.referToUser left join fetch refer.referFromUser  where refer.referFromUser.id = :userId  and (refer.createdDate BETWEEN :startDate and :endDate))";
-		 List<RequirementRefer> referCountList = session.createQuery(query).setLong("userId", userId).setDate("startDate", startDate).setDate("endDate", endDate).setCacheable(true).list();
+		 List<RequirementRefer> referCountList = session.createQuery(query).setLong("userId", userId).setDate("startDate", startDate).setDate("endDate", endDate).list();
 		
 		return referCountList;
 	}
@@ -386,7 +386,7 @@ public class RequirementReferDaoImpl implements RequirementReferDao {
 		 
 		 String query = "from RequirementRefer refer left join fetch refer.requirementId left join fetch refer.referToUser where "
 		 		+ "refer.referFromUser.id = :userId and refer.requirementId.id = :requirementId)";
-		 List<RequirementRefer>  referCountList = session.createQuery(query).setLong("userId", userId) .setLong("requirementId", requirementId).setCacheable(true).list();
+		 List<RequirementRefer>  referCountList = session.createQuery(query).setLong("userId", userId) .setLong("requirementId", requirementId).list();
 		return referCountList;
 	}
 
@@ -399,7 +399,7 @@ public class RequirementReferDaoImpl implements RequirementReferDao {
 		 String subQuery = "";
 		 
 		 String query = "from RequirementRefer refer left join fetch refer.requirementId left join fetch refer.referToUser where refer.referToUser.id = :userId ";
-		 List<RequirementRefer>  referList = session.createQuery(query).setLong("userId", userId).setCacheable(true).list();
+		 List<RequirementRefer>  referList = session.createQuery(query).setLong("userId", userId).list();
 		return referList;
 	
 	}
@@ -413,7 +413,7 @@ public class RequirementReferDaoImpl implements RequirementReferDao {
 		List<RequirementRefer> requirementRefer = new ArrayList<RequirementRefer>();
 		logger.debug("getRequirementReferByReferUUID start");
 		requirementRefer = session.createQuery("from RequirementRefer refer left join fetch refer.referFromUser user left join fetch refer.requirementId requirement "
-				+ "where refer.referUUID = :referUUID" ).setString("referUUID", referUUID).setCacheable(true).list();
+				+ "where refer.referUUID = :referUUID" ).setString("referUUID", referUUID).list();
 		logger.debug("getRequirementReferByReferUUID end");
 		if (requirementRefer.size() > 0) {
 			return requirementRefer.get(0);

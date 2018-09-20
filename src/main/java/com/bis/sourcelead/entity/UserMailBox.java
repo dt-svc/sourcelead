@@ -25,7 +25,6 @@ import org.hibernate.annotations.Type;
 
 @Entity
 @Table(name = "USER_MAIL_BOX")
-@Cache(usage = CacheConcurrencyStrategy.TRANSACTIONAL, region = "userMailBox")
 public class UserMailBox implements Serializable{
 
 	private static final long serialVersionUID = 1L;
@@ -35,13 +34,13 @@ public class UserMailBox implements Serializable{
     @Column(name = "ID")
 	private Long id;
 	
-	@NotFound(action=NotFoundAction.IGNORE)
-	@ManyToOne(fetch = FetchType.EAGER)
+	
+	@ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name="USER_ID")        
     private User userId;
 
-	@NotFound(action=NotFoundAction.IGNORE)
-	@ManyToOne(fetch = FetchType.EAGER)
+	
+	@ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name="ORG_LOCATION_ID")        
     private OrgLocations orgLocationId;
 	
@@ -64,6 +63,9 @@ public class UserMailBox implements Serializable{
 	@Column(name = "SUBJECT")
 	@Type(type="text")
 	private String subject;
+	
+	@Column(name = "SALUTATION")
+	private String salutation;
 	
 	@Column(name = "BODY")
 	@Type(type="text")
@@ -470,6 +472,15 @@ public class UserMailBox implements Serializable{
 	{
 		this.requirementId = requirementId;
 	}
+
+	public String getSalutation() {
+		return salutation;
+	}
+
+	public void setSalutation(String salutation) {
+		this.salutation = salutation;
+	}
+	
 	
 	
 }

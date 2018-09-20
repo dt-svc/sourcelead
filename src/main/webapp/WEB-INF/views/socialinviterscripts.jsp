@@ -131,8 +131,8 @@
              },
              apikeys:{
             	 "facebook":{
-                     "consumerKey":"1839828886269747",
-                     "consumerSecret":"dd4ee8b1292808c381148421204b0ef2"
+                     "consumerKey":"2066960683592341",
+                     "consumerSecret":"a5e28872fb1b6456392f1c58b1649ca0"
                  }
              },
              callbacks: {

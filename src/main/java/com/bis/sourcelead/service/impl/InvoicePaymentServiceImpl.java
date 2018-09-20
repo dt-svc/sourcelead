@@ -1,8 +1,12 @@
 package com.bis.sourcelead.service.impl;
 
+import java.math.BigDecimal;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.apache.commons.lang.StringUtils;
 import org.joda.time.LocalDate;
@@ -31,7 +35,9 @@ import com.bis.sourcelead.service.OrgRelationsService;
 import com.bis.sourcelead.service.UserService;
 import com.bis.sourcelead.util.CommonUtil;
 import com.bis.sourcelead.util.ConversionUtil;
-import com.ibm.icu.math.BigDecimal;
+import com.bis.sourcelead.util.FileUploadUtil;
+import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
 
 @Service
 public class InvoicePaymentServiceImpl implements InvoicePaymentService {
@@ -61,13 +67,17 @@ public class InvoicePaymentServiceImpl implements InvoicePaymentService {
 
 	@Autowired
 	ConversionUtil conversionUtil;
+	
+	@Autowired
+	InvoiceService invoiceService;
 
 	@Override
-	public InvoicePayment saveInvoicePayment(InvoicePaymentDTO invoicePaymentDTO,JSONObject jsonObj, User user, OrgLocations orgLocation,
+	public InvoicePayment saveInvoicePayment(InvoicePaymentDTO invoicePaymentDTO, User user, OrgLocations orgLocation,
 			MultipartFile multiFile, Long invoiceId) throws Exception {
 
+		
 		Invoice invoice = invoiceDao.getInvoicetById(invoiceId);
-
+		Invoice parentInvoice = null;
 		InvoicePayment invoicePayment = new InvoicePayment();
 		/*String pattern = "dd-MM-yyyy";
 		SimpleDateFormat format = new SimpleDateFormat(pattern);*/
@@ -114,9 +124,9 @@ public class InvoicePaymentServiceImpl implements InvoicePaymentService {
 			if (Constants.INVOICE_SENT.equalsIgnoreCase(invoice.getInvoiceStatus())) {
 				invoice.setInvoiceStatus(Constants.INVOICE_ACCEPETED);
 			}
+			invoice.setUpdatedBy(user.getUserCode());
+			invoice.setUpdatedDate(commonUtil.currentDate());
 			Invoice childInvoice = invoiceDao.saveInvoce(invoice);
-
-			Invoice parentInvoice = null;
 			if (null != childInvoice) {
 				if (null != childInvoice.getId()) {
 					parentInvoice = invoiceDao.getInvoicetBySelfJoinInvoiceId(childInvoice.getId());
@@ -134,6 +144,8 @@ public class InvoicePaymentServiceImpl implements InvoicePaymentService {
 							invoicePayment.setPaymentAmount(invoicePaymentDTO.getTotalAmount());
 							parentInvoice.setPaymentStatus(Constants.INVOICE_STATUS_PAID);
 							parentInvoice.setDueAmount("00.00");
+							parentInvoice.setUpdatedBy(user.getUserCode());
+							parentInvoice.setUpdatedDate(commonUtil.currentDate());
 						}
 					}
 					if (invoicePaymentDTO.getPaymentAmount().equalsIgnoreCase("custom")) {
@@ -170,6 +182,7 @@ public class InvoicePaymentServiceImpl implements InvoicePaymentService {
 								}else {
 									parentInvoice.setPaymentStatus(Constants.INVOICE_STATUS_PARTIAL_PAID);
 								}
+								
 							}
 
 							if (receivedAmount != null) {
@@ -183,7 +196,10 @@ public class InvoicePaymentServiceImpl implements InvoicePaymentService {
 					if (Constants.INVOICE_RECEIVED.equalsIgnoreCase(parentInvoice.getInvoiceStatus())) {
 						parentInvoice.setInvoiceStatus(Constants.INVOICE_ACCEPETED);
 					}
+					parentInvoice.setUpdatedBy(user.getUserCode());
+					parentInvoice.setUpdatedDate(commonUtil.currentDate());
 					invoiceDao.saveInvoce(parentInvoice);
+					
 				}
 
 			}
@@ -199,6 +215,7 @@ public class InvoicePaymentServiceImpl implements InvoicePaymentService {
 				invoicePayment.setFileContentType(file.getContentType());
 				invoicePayment.setFileName(file.getFileName());
 				invoicePayment.setFileURL(file.getFileURL());
+				FileUploadUtil.moveFile(invoicePaymentDTO.getStaticPath(), file, "incoiceDocuments");
 			}
 		}
 		
@@ -218,7 +235,167 @@ public class InvoicePaymentServiceImpl implements InvoicePaymentService {
 		invoicePayment.setStatus(Constants.RECORD_ACTIVE.toString());
 		invoicePayment.setCreatedBy(user.getUserCode());
 		invoicePayment.setCreatedDate(commonUtil.currentDate());
-		return invoicePaymentDao.saveInvoicePayment(invoicePayment);
+		invoicePayment.setUpdatedBy(user.getUserCode());
+		invoicePayment.setUpdatedDate(commonUtil.currentDate());
+		InvoicePayment invoicePaymentObject =invoicePaymentDao.saveInvoicePayment(invoicePayment); 
+		invoiceService.saveInvoiceTimelineHistory(parentInvoice, user, null, null, invoicePaymentObject.getId(), null);
+		invoiceService.saveInvoiceTimelineHistory(invoice, user, null, null, invoicePaymentObject.getId(), null);
+		return invoicePaymentObject;
+	}
+	
+	
+	@Override
+	public InvoicePayment saveInvoiceBulkPayment(InvoicePaymentDTO invoicePaymentDTO, User user, OrgLocations orgLocation,Map<Long,String> invoiceIdsMap) throws Exception {
+
+		 List<Invoice> list = invoiceDao.getInvoiceListByIdsAndLocationId(new ArrayList(invoiceIdsMap.keySet()),orgLocation.getId());
+		 InvoicePayment invoicePayment = null;
+		 for(Invoice invoice : list){
+			invoicePayment = new InvoicePayment();
+			Invoice parentInvoice = null;
+		/*String pattern = "dd-MM-yyyy";
+		SimpleDateFormat format = new SimpleDateFormat(pattern);*/
+			 System.out.println(" inovice id : "+invoice.getId());
+            System.out.println(" amount value "+invoiceIdsMap.get(invoice.getId()));
+            
+		if (StringUtils.isNotBlank(invoicePaymentDTO.getPaymentDate())) {
+			Date paymentDate = commonUtil.orgLocationDateFormat(orgLocation.getDateFormat(),invoicePaymentDTO.getPaymentDate());
+			invoicePayment.setPaymentDate(paymentDate);
+		}
+		if (StringUtils.isNotBlank(invoicePaymentDTO.getPaymentMethod())) {
+			invoicePayment.setPaymentMethod(invoicePaymentDTO.getPaymentMethod());
+		}
+		if (StringUtils.isNotBlank(invoicePaymentDTO.getReferenceNumber())) {
+			invoicePayment.setPaymentReferenceNumber(invoicePaymentDTO.getReferenceNumber());
+
+		}
+		BigDecimal remainAmount =  null;
+		if (StringUtils.isNotBlank(invoicePaymentDTO.getPaymentAmount())) {
+				if (StringUtils.isNotBlank(invoicePaymentDTO.getTotalAmount())) {
+					if(invoice.getDueAmount().equals(invoiceIdsMap.get(invoice.getId()))){
+					invoicePayment.setPaymentAmount(invoiceIdsMap.get(invoice.getId()));
+					invoice.setPaymentStatus(Constants.INVOICE_STATUS_PAID);
+					invoice.setDueAmount("00.00");
+					}else{
+						String due = invoice.getDueAmount();
+						BigDecimal dueDecimal = (new BigDecimal(due));
+						String received = invoiceIdsMap.get(invoice.getId());
+						BigDecimal receivedDecimal = (new BigDecimal(received));
+						remainAmount = dueDecimal.subtract(receivedDecimal);
+						invoice.setPaymentStatus(Constants.INVOICE_STATUS_PARTIAL_PAID);
+						invoicePayment.setPaymentAmount(invoiceIdsMap.get(invoice.getId()));
+						invoice.setDueAmount(remainAmount.toString());
+					}
+				}
+		
+			if (Constants.INVOICE_SENT.equalsIgnoreCase(invoice.getInvoiceStatus())) {
+				invoice.setInvoiceStatus(Constants.INVOICE_ACCEPETED);
+			}
+			invoice.setUpdatedBy(user.getUserCode());
+			invoice.setUpdatedDate(commonUtil.currentDate());
+			Invoice childInvoice = invoiceDao.saveInvoce(invoice);
+
+			
+			if (null != childInvoice) {
+				if (null != childInvoice.getId()) {
+					parentInvoice = invoiceDao.getInvoicetBySelfJoinInvoiceId(childInvoice.getId());
+					if (parentInvoice == null) {
+						parentInvoice = invoiceDao.getInvoicetByParentInvoiceId(invoice.getParentInvoiceId().getId());
+					}
+					String childCurrencyCode = invoice.getCurrencyCode();
+					String parentCurrencyCode = parentInvoice.getCurrencyCode();
+					// float totalAmount = 0;
+					// float customAmount = 0;
+					if(childCurrencyCode.equalsIgnoreCase(parentCurrencyCode)){
+						if (StringUtils.isNotBlank(invoicePaymentDTO.getTotalAmount())) {
+							if(parentInvoice.getDueAmount().equals(invoiceIdsMap.get(invoice.getId()))){
+								// total amount paid
+							invoicePayment.setPaymentAmount(invoiceIdsMap.get(invoice.getId()));
+							parentInvoice.setPaymentStatus(Constants.INVOICE_STATUS_PAID);
+							parentInvoice.setDueAmount("00.00");
+							}else{
+								// partial amount paid
+								String due = parentInvoice.getDueAmount();
+								BigDecimal dueDecimal = (new BigDecimal(due));
+								String received = invoiceIdsMap.get(invoice.getId());
+								BigDecimal receivedDecimal = (new BigDecimal(received));
+								remainAmount = dueDecimal.subtract(receivedDecimal);
+								parentInvoice.setPaymentStatus(Constants.INVOICE_STATUS_PARTIAL_PAID);
+								invoicePayment.setPaymentAmount(invoiceIdsMap.get(invoice.getId()));
+								parentInvoice.setDueAmount(remainAmount.toString());
+							}
+						}
+					}else{
+						// currency conversion code start
+						float conAmount = conversionUtil.convert(childCurrencyCode, parentCurrencyCode,1);
+						float convertedAmount1 = (float) (Math.round(conAmount * 100.0) / 100.0);
+						// currency conversion code ends
+						float amountPaid = convertedAmount1 *Float.valueOf((invoiceIdsMap.get(invoice.getId())));
+						if(parentInvoice.getDueAmount().equals(String.valueOf(amountPaid))){
+							// total amount paid
+							invoicePayment.setPaymentAmount(String.valueOf(amountPaid));
+							parentInvoice.setPaymentStatus(Constants.INVOICE_STATUS_PAID);
+							parentInvoice.setDueAmount("00.00");
+						}else{
+							// partial amount paid
+							String due = parentInvoice.getDueAmount();
+							BigDecimal dueDecimal = (new BigDecimal(due));
+							String received = invoiceIdsMap.get(invoice.getId());
+							float amountreceived = convertedAmount1 *Float.valueOf(received);
+							BigDecimal receivedDecimal = (new BigDecimal(amountreceived));
+							remainAmount = dueDecimal.subtract(receivedDecimal);
+							parentInvoice.setPaymentStatus(Constants.INVOICE_STATUS_PARTIAL_PAID);
+							invoicePayment.setPaymentAmount(String.valueOf(amountreceived));
+							parentInvoice.setDueAmount(remainAmount.toString());
+						}
+					}
+					if (Constants.INVOICE_RECEIVED.equalsIgnoreCase(parentInvoice.getInvoiceStatus())) {
+						parentInvoice.setInvoiceStatus(Constants.INVOICE_ACCEPETED);
+					}
+					parentInvoice.setUpdatedBy(user.getUserCode());
+					parentInvoice.setUpdatedDate(commonUtil.currentDate());
+					invoiceDao.saveInvoce(parentInvoice);
+				}
+
+			}
+		}
+
+		invoicePayment.setCurrencyCode(invoice.getCurrencyCode());
+		if (StringUtils.isNotBlank(invoicePaymentDTO.getPaymentMemo())) {
+			invoicePayment.setPaymentComment(invoicePaymentDTO.getPaymentMemo());
+		}
+		
+		if(invoicePaymentDTO.getFileInfo() != null && invoicePaymentDTO.getFileInfo().size() > 0){
+			for(FileInfo file : invoicePaymentDTO.getFileInfo()){
+				invoicePayment.setFileContentType(file.getContentType());
+				invoicePayment.setFileName(file.getFileName());
+				invoicePayment.setFileURL(file.getFileURL());
+			}
+		}
+		
+		invoicePayment.setOrgLocation(orgLocation);
+		if (invoice.getParentInvoiceId() != null) {
+			invoicePayment.setInvoiceId(invoice.getParentInvoiceId());
+		} else {
+			invoicePayment.setInvoiceId(invoice);
+		}
+
+		invoicePayment.setStatus(Constants.RECORD_ACTIVE.toString());
+		invoicePayment.setCreatedBy(user.getUserCode());
+		invoicePayment.setCreatedDate(commonUtil.currentDate());
+		invoicePayment.setUpdatedBy(user.getUserCode());
+		invoicePayment.setUpdatedDate(commonUtil.currentDate());
+		InvoicePayment invoicePaymentObject = invoicePaymentDao.saveInvoicePayment(invoicePayment);
+		invoiceService.saveInvoiceTimelineHistory(parentInvoice, user, null, null, invoicePaymentObject.getId(), null);
+		invoiceService.saveInvoiceTimelineHistory(invoice, user, null, null, invoicePaymentObject.getId(), null);
+		 }
+		 // this for moving file to folder after setting values (same information set to selected invoices)
+		 if(invoicePaymentDTO.getFileInfo() != null && invoicePaymentDTO.getFileInfo().size() > 0){
+			 for(FileInfo file : invoicePaymentDTO.getFileInfo()){
+				 FileUploadUtil.moveFile(invoicePaymentDTO.getStaticPath(), file, "incoiceDocuments");	 
+			 }
+		 }
+		
+		return invoicePayment;
 	}
 
 	@Override

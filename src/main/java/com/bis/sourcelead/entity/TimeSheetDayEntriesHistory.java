@@ -4,7 +4,6 @@ package com.bis.sourcelead.entity;
 import java.io.Serializable;
 import java.util.Date;
 
-import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
@@ -16,15 +15,10 @@ import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import javax.validation.constraints.NotNull;
 
-import org.hibernate.annotations.Cache;
-import org.hibernate.annotations.CacheConcurrencyStrategy;
-import org.hibernate.annotations.NotFound;
-import org.hibernate.annotations.NotFoundAction;
 import org.springframework.format.annotation.DateTimeFormat;
 
 @Entity
 @Table(name = "TIMESHEET_DAY_ENTRIES_HISTORY")
-@Cache(usage = CacheConcurrencyStrategy.TRANSACTIONAL,region="timeSheetDayEntriesHistory")
 public class TimeSheetDayEntriesHistory implements Serializable{
 	
 	private static final long serialVersionUID = 1L;
@@ -34,18 +28,18 @@ public class TimeSheetDayEntriesHistory implements Serializable{
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long Id;
 	
-	@NotFound(action=NotFoundAction.IGNORE)
-	@ManyToOne(fetch=FetchType.EAGER)
+	
+	@ManyToOne(fetch=FetchType.LAZY)
 	@JoinColumn(name="ENTRY_ID") 
 	private TimeSheetDayEntries timeSheetDayEntries;
 	
-	@NotFound(action=NotFoundAction.IGNORE)
-	@ManyToOne(fetch=FetchType.EAGER)
+	
+	@ManyToOne(fetch=FetchType.LAZY)
 	@JoinColumn(name="SUBMISSION_ID") 
 	private TimesheetSubmissions timesheetSubmissions;
 	
-	@NotFound(action=NotFoundAction.IGNORE)
-	@ManyToOne(fetch=FetchType.EAGER)
+	
+	@ManyToOne(fetch=FetchType.LAZY)
 	@JoinColumn(name = "PROJECT_TASK_ID")
 	private ProjectTasks projectTask;
 	
@@ -69,7 +63,13 @@ public class TimeSheetDayEntriesHistory implements Serializable{
 	
 	@Column(name = "COMMENTS", columnDefinition = "TEXT default NULL")
     private String comments;
-	 
+
+	@Column(name="STATUS")
+	private Integer status;
+	
+	@Column(name = "ACTIVITY_ID")
+	private Long timesheetActivityId;
+	
 	@NotNull
     @DateTimeFormat(pattern="dd/MM/yyyy  HH:mm:ss") 
 	@Column(name = "CREATED_DATE")
@@ -201,5 +201,20 @@ public class TimeSheetDayEntriesHistory implements Serializable{
 	public void setTaskType(String taskType) {
 		this.taskType = taskType;
 	}
-	
+
+	public Integer getStatus() {
+		return status;
+	}
+
+	public void setStatus(Integer status) {
+		this.status = status;
+	}
+
+	public Long getTimesheetActivityId() {
+		return timesheetActivityId;
+	}
+
+	public void setTimesheetActivityId(Long timesheetActivityId) {
+		this.timesheetActivityId = timesheetActivityId;
+	}
 }

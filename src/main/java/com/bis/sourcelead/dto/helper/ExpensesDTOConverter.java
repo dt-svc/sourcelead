@@ -9,10 +9,11 @@ import com.bis.sourcelead.dto.ExpensesDTO;
 import com.bis.sourcelead.dto.ExpensesEntriesDTO;
 import com.bis.sourcelead.entity.Expenses;
 import com.bis.sourcelead.entity.ExpensesEntries;
+import com.bis.sourcelead.entity.OrgLocations;
 
 public class ExpensesDTOConverter {
 
-	public static ExpensesDTO  getExpensesDTOFromExpenses(Expenses expenses,ExpensesDTO expensesDTO){
+	public static ExpensesDTO  getExpensesDTOFromExpenses(OrgLocations orgLoc,Expenses expenses,ExpensesDTO expensesDTO){
 		expensesDTO = new ExpensesDTO();
 		expensesDTO.setId(expenses.getId());
 		expensesDTO.setExpenseAutoId(expenses.getExpenseId());
@@ -22,9 +23,9 @@ public class ExpensesDTOConverter {
 		if(expenses.getOrgRelationUUID() != null){
 		expensesDTO.setOrgRelationUUID(expenses.getOrgRelationUUID());
 		}
-		BigDecimal totalAmo = new BigDecimal(expenses.getTotalAmount());
-		BigDecimal totalAmountRoundOff = totalAmo.setScale(2, BigDecimal.ROUND_HALF_EVEN);
-		expensesDTO.setExpenseAmountDivId(totalAmountRoundOff);
+		/*BigDecimal totalAmo = new BigDecimal(expenses.getTotalAmount());
+		BigDecimal totalAmountRoundOff = totalAmo.setScale(2, BigDecimal.ROUND_HALF_EVEN);*/
+		expensesDTO.setExpenseAmountDivId( expenses.getTotalAmount());
 		expensesDTO.setClientName(expenses.getClientName());
 		if(expenses.getProjectMembers() != null && expenses.getProjectMembers().getProjects() != null){
 			expensesDTO.setProjectMemberId(expenses.getProjectMembers().getId());
@@ -33,6 +34,7 @@ public class ExpensesDTOConverter {
 			expensesDTO.setProjectName(expenses.getProjectMembers().getProjects().getProjectName());
 			expensesDTO.setProjectUUID(expenses.getProjectMembers().getProjects().getProjectUUID());
 			expensesDTO.setProjectClientUUID(expenses.getProjectMembers().getProjectClientUUID());
+			expensesDTO.setProjectStatus(expenses.getProjectMembers().getProjects().getProjectStatus().name());
 		}
 		SimpleDateFormat dateFormat=expenses.getOrgLocationId().getLocFullFormDateFormatter();
 		if(expenses.getStartDate() != null){
@@ -46,7 +48,9 @@ public class ExpensesDTOConverter {
 		TreeMap<Long,ExpensesEntriesDTO> eeDTOMap = new TreeMap<>();
 		if(expenses.getExpensesEntries() != null && !expenses.getExpensesEntries().isEmpty() && expenses.getExpensesEntries().size() > 0){
 			for(ExpensesEntries ee : expenses.getExpensesEntries()){
-				eeDTOMap.put(ee.getId(), ExpensesEntriesDTOConverter.getExpensesEntriesDTOFromExpensesEntries(ee, expensesDTO));
+				if(ee != null) {
+					eeDTOMap.put(ee.getId(), ExpensesEntriesDTOConverter.getExpensesEntriesDTOFromExpensesEntries(orgLoc,ee, expensesDTO));
+				}
 			}
 		}
 		if(expenses.getProjectMembers() != null && expenses.getProjectMembers().getProjectMemberCandidteId() != null){
@@ -55,8 +59,7 @@ public class ExpensesDTOConverter {
 		if(eeDTOMap != null && !eeDTOMap.isEmpty()){
 			expensesDTO.setExpenseEntry(new LinkedList(eeDTOMap.values()));
 		}
-		
-		
+		expensesDTO.setExpensesRejectedReason(expenses.getExpensesRejectedReason());
 		expensesDTO.setExpenseStatus(expenses.getExpenseStatus().getValue().toUpperCase());
 		
 		return expensesDTO;

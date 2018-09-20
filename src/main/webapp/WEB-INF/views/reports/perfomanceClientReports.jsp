@@ -16,9 +16,9 @@ $(document).ready(function(){
 <section class="content-wraper">
     <section class="content-header clearfix">
       <div class="pull-left">
-        <h2>Clients Report</h2>
+        <h2>Client(s) Report</h2>
       </div>
-      <div class="pull-right brud-crum"><a href="<c:url value='${appPath}/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a> &raquo; Clients Report</div>
+      <div class="pull-right brud-crum"><a href="<c:url value='${appPath}/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a>&raquo; <a href="<c:url value='${appPath}/reportsDashboard'/>">Reports Dashboard</a> &raquo; <a href="<c:url value='${appPath}/performanceReportList'/>">Performance Reports</a> &raquo; Client(s) Report</div>
    </section>
     <div class="clearfix"></div>
     <div class="clearfix row mb">
@@ -82,7 +82,7 @@ $(document).ready(function(){
     </div>
     <div class="ReqRepHead clearfix">
       <div class="col-md-2 dropdown-select positionRelative col-md-offset-9">
-        <select class="form-control" id="dateFrequency" onchange="refreshWithNewFreq(); showCustomFields();">
+        <select class="form-control" id="dateFrequency" onchange="showCustomFields();">
           <option value="Last_7_days" selected>Last 7 days</option>
           <option value="Last_15_days">Last 15 days</option>
           <option value="1_month">1 month</option>
@@ -104,6 +104,10 @@ $(document).ready(function(){
         </div>
         <!-- Top Leave Takers Custom Date --> 
       </div>
+      
+       <div class="col-md-2" id = "RunDivId">
+        <button type="button" class="btn btn-primary btn-sm	mt2" id="customize_btn" onclick="refreshWithNewFreq();">Run</button>
+		</div>
 <!--       <div class="col-md-1">
         <div class="btn-group bootstrap_dropdownMenu dropdownPadding">
           <button type="button" class="btn btn-primary btn-sm" title="Actions"><i class="fa fa-retweet"></i></button>
@@ -124,7 +128,8 @@ $(document).ready(function(){
             <div class="clearfix mb"></div>
             <div class="clearfix mb row">
               <div class="col-md-6">
-                <div class="projectDashboad clearfix positionRelative">
+                <div class="projectDashboad clearfix positionRelative"><h4>Top 5 Receivables</h4>
+                <div id="top5receivablesDiv" style="width:100%; height:250px"></div>
                   <div id="top5receivables" style="width:100%; height: 250px" class="amchartAnchor-Hide"></div>
                   
                   <ul class="list-unstyled list-inline vendor-listcount mt">
@@ -148,7 +153,7 @@ $(document).ready(function(){
                 </div>
               </div>
               <div class="col-md-6">
-                <div class="projectDashboad clearfix positionRelative">
+                <div class="projectDashboad clearfix positionRelative"><h4>Top 5 Engaged Contracts</h4>
                 <div id="engagedContractsDiv" style="width:100%; height:250px"></div>
                   <div id="engagedContracts" style="width:100%; height:250px" class="amchartAnchor-Hide"></div>
                   <ul class="list-unstyled list-inline vendor-listcount mt">
@@ -174,12 +179,12 @@ $(document).ready(function(){
             </div>
             <div class="clearfix mt mb row">
               <div class="col-md-6">
-                <div class="projectDashboad clearfix positionRelative">
+                <div class="projectDashboad clearfix positionRelative"><h4>Average Time to Fill</h4>
                   <div id="timeToFill" style="width:100%; height: 250px" class="amchartAnchor-Hide"></div>
                 </div>
               </div>
               <div class="col-md-6">
-                <div class="projectDashboad clearfix positionRelative">
+                <div class="projectDashboad clearfix positionRelative"><h4>Success Percentage</h4>
                   <div id="successPercentage" style="width:100%; height: 250px" class="amchartAnchor-Hide"></div>
                 </div>
               </div>
@@ -192,7 +197,7 @@ $(document).ready(function(){
           
             <div class="projectDashboad clearfix positionRelative">
               <div class="row">
-                <h4 class="col-md-8" id="vr">Top 10 Clients Report</h4>
+                <h4 class="col-md-8" id="vr">Top 10 Clients Billing Report</h4>
                 <h4 class="col-md-8" style="display: none;" id="cr">Contact Report</h4>
                 <div class="select-fild col-md-2">
                   <select id="topClientList" onchange="changeTopTenList();">
@@ -470,17 +475,17 @@ function prepareContractChart(client1,client2,client3,client4,client5,client1Cou
             "export": {
                 "enabled": true
             },
-            "allLabels": [
-                {
-                    "bold": true,
-                    "color": "#3F51B5",
-                    "id": "Label-1",
-                    "size": 15,
-                    "text": "Top 5 Engaged Contracts",
-                    "x": "5%",
-                    "y": "5%"
-                }
-            ],
+//             "allLabels": [
+//                 {
+//                     "bold": true,
+//                     "color": "#3F51B5",
+//                     "id": "Label-1",
+//                     "size": 15,
+//                      "text": "Top 5 Engaged Contracts",
+//                     "x": "5%",
+//                     "y": "5%"
+//                 }
+//             ],
             "balloon": {},
             "legend": {
                 "enabled": true,
@@ -545,6 +550,8 @@ function getTopFiveConracts(){
                     $("#engagedContractsDiv").hide();
                 }else{
                 	result = result + '<div class="dataTables_empty center" ></div>';
+                	$("#engagedContractsDiv").show();
+                	$("#engagedContractsDiv").empty();
                 	$("#engagedContractsDiv").append(result);
                 	$("#engagedContracts").hide();
                 }
@@ -573,7 +580,6 @@ function getTopFiveReceivsblesReports(){
         type : "GET",
         url : sourceleadUrl+"/getTopFiveReceivablesReports?&dateFrequency="+frequency+"&fromDate="+fromDate+"&toDate="+toDate+"&type=Receivable",
         success: function(data) {
-            getAmchartData(data);
             if(data.draftInvoiceTotal != null && data.draftInvoiceTotal != 'undefined' && data.draftInvoiceTotal != ''){
             	$("#draftTotalAmount").html(data.draftInvoiceTotal)
             }else{
@@ -594,13 +600,13 @@ function getTopFiveReceivsblesReports(){
             }else{
             	$("#openTotalAmount").html(0)
             }
+            getAmchartData(data);
          }
     });
 }
 function getAmchartData(data){
     var clientName = '';
     var amount = '';
-    var count = 1;
     var colors = ["#7E57C2", "#5C6BC0", "#64B5F6", "#81C784", "#FFB74D", "#FF7043"];
     var i = 0;
     var mainAmcahrt = [];
@@ -608,11 +614,15 @@ function getAmchartData(data){
     	 for(var k in data.newAmountList) {
     	        mainAmcahrt[i] = {"category": k, "column-1": data.newAmountList[k].toFixed(2), "color": colors[i++] };
     	    }
+    	 $("#top5receivables").show();
+    	 $("#top5receivablesDiv").hide();
     }else{
     	var result = '';
     	result = result + '<div class="dataTables_empty center" ></div>';
-    	 $("#top5receivables").empty();
-    	 $("#top5receivables").append(result);
+    	 $("#top5receivablesDiv").show();
+    	 $("#top5receivablesDiv").empty();
+    	 $("#top5receivablesDiv").append(result);
+    	 $("#top5receivables").hide();
     }
    
     if(data.othersAmountList != null && data.othersAmountList != '' && data.othersAmountList != 'undefined'){
@@ -648,17 +658,17 @@ function getAmchartData(data){
                 "export": {
                     "enabled": true
                 },
-                "allLabels": [
-                    {
-                        "bold": true,
-                        "color": "#CC0000",
-                        "id": "Label-1",
-                        "size": 15,
-                        "text": "Top 5 Receivables",
-                        "x": "5%",
-                        "y": "5%"
-                    }
-                ],
+//                 "allLabels": [
+//                     {
+//                         "bold": true,
+//                         "color": "#CC0000",
+//                         "id": "Label-1",
+//                         "size": 15,
+//                         "text": "Top 5 Receivables",
+//                         "x": "5%",
+//                         "y": "5%"
+//                     }
+//                 ],
                 "balloon": {},
                 "legend": {
                     "enabled": true,
@@ -729,17 +739,18 @@ function topTenClientReports(){
                        result += '</table>';
                        
                        var opt = "";
-                       opt += '<option >Select Client</option>';
+                       opt += '<option value="">Select Client</option>';
                        for(i=0; i<data.length; i++){
                            report = data[i];
                            opt += '<option value='+report.orgRelationUUID+'>'+report.clientName+'</option>';
                        }
-                       
+
                        $("#topTenClientList").empty();
                        $("#topTenClientList").show();
                        $("#topTenClientContactList").hide();
                        $("#topClientloadingDiv").removeAttr('style');
                        $("#topTenClientList").append(result);
+                    $("#topTenClientSelect").empty();
                     $("#topTenClientSelect").append(opt);
                     $("#clientSelectDiv").show();
                     $("#clientContactSelectDiv").hide();
@@ -751,6 +762,9 @@ function topTenClientReports(){
                     $("#topTenClientContactList").hide();
                     $("#topClientloadingDiv").removeAttr('style');
                     $("#topTenClientList").append(result);
+                    
+                    $("#topTenClientSelect").empty();
+                    $("#topTenClientSelect").trigger("chosen:updated");
              }
             }
         });
@@ -782,7 +796,6 @@ function getTimeToFillReports(){
 <script>
 function getTimeToFillAmchartData(data){
     
-    
     AmCharts.makeChart("timeToFill",
         {
 "type": "pie",
@@ -811,41 +824,41 @@ function getTimeToFillAmchartData(data){
 "valueWidth": 35,
 "verticalGap": 15
 },
-"titles": [
-{
-    "id": "Title-1",
-    "text": "Average Time to Fill"
-}
-],
+// "titles": [
+// {
+//     "id": "Title-1",
+//     "text": "Average Time to Fill"
+// }
+// ],
 "dataProvider": [
 {
     "category": "Applicants",
-    "column-1": data.applicantsDays,
+    "column-1": data.object.applicantsDays,
     "color": "#80CBC4"
 },
 {
     "category": "Shortlisted",
-    "column-1": data.shortlistedDays,
+    "column-1": data.object.shortlistedDays,
     "color": "#FFB74D"
 },
 {
     "category": "Submit to Client",
-    "column-1": data.submitToClientDays,
+    "column-1": data.object.submitToClientDays,
     "color": "#9575CD"
 },
 {
     "category": "Interviewed",
-    "column-1": data.interviewsDays,
+    "column-1": data.object.interviewsDays,
     "color": "#4DD0E1"
 },
 {
     "category": "Offered",
-    "column-1": data.offeredDays,
+    "column-1": data.object.offeredDays,
     "color": "#AED581"
 },
 {
     "category": "Joined",
-    "column-1": data.offeredAcceptedDays,
+    "column-1": data.object.offeredAcceptedDays,
     "color": "#81D4FA"
 }
 ]
@@ -901,42 +914,42 @@ function getSuccessPercentageAmchartData(data){
             ],
             "allLabels": [],
             "balloon": {},
-            "titles": [
-                {
-                    "id": "Title-1",
-                    "size": 15,
-                    "text": "Success Percentage"
-                }
-            ],
+//             "titles": [
+//                 {
+//                     "id": "Title-1",
+//                     "size": 15,
+//                     "text": "Success Percentage"
+//                 }
+//             ],
             "dataProvider": [
                 {
                     "category": "Applicants",
-                    "column-1": 100,
+                    "column-1": data.object.applicantsMove,
                     "color": "#9575CD"
                 },
                 {
                     "category": "Shortlisted",
                     "color": "#9575CD",
-                    "column-1": data.shortlistedMove
+                    "column-1": data.object.shortlistedMove,
                 },
                 {
                     "category": "Submit to Client",
-                    "column-1": data.submitToClientMove,
+                    "column-1": data.object.submitToClientMove,
                     "color": "#FFB74D"
                 },
                 {
                     "category": "Interviewed",
-                    "column-1": data.interviewsMove,
+                    "column-1": data.object.interviewsMove,
                     "color": "#5C6BC0"
                 },
                 {
                     "category": "Offered",
-                    "column-1": data.offeredMove,
+                    "column-1": data.object.offeredMove,
                     "color": "#9CCC65"
                 },
                 {
                     "category": "Joined",
-                    "column-1": data.offeredAcceptedMove,
+                    "column-1": data.object.offeredAcceptedMove,
                     "color": "#1E88E5"
                 }
             ]
@@ -996,7 +1009,7 @@ function topTenClientContactReports(){
                        result += '</table>';
                        
                        var opt = "";
-                       opt += '<option >Select Client Contact</option>';
+                       opt += '<option value="">Select Client Contact</option>';
                        for(i=0; i<data.length; i++){
                            repo = data[i];
                            opt += '<option value='+repo.orgSpocUUID+'>'+repo.clientContactName+'</option>';
@@ -1007,6 +1020,7 @@ function topTenClientContactReports(){
                        $("#topTenClientList").hide();
                        $("#topClientloadingDiv").removeAttr('style');
                        $("#topTenClientContactList").append(result);
+                       $("#topTenClientContactSelect").empty();
                        $("#topTenClientContactSelect").append(opt);
                        $("#clientSelectDiv").hide();
                     $("#clientContactSelectDiv").show();
@@ -1018,6 +1032,9 @@ function topTenClientContactReports(){
                     $("#topTenClientList").hide();
                     $("#topClientloadingDiv").removeAttr('style');
                     $("#topTenClientContactList").append(result);
+                    
+                    $("#topTenClientContactSelect").empty();
+                    $("#topTenClientContactSelect").trigger("chosen:updated");
                 }
              }
         });

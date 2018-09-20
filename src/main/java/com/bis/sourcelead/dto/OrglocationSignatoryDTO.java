@@ -1,5 +1,9 @@
 package com.bis.sourcelead.dto;
 
+import java.util.List;
+
+import com.bis.sourcelead.annotations.Required;
+
 public class OrglocationSignatoryDTO {
 
 	private String firstName;
@@ -19,6 +23,23 @@ public class OrglocationSignatoryDTO {
 	private String designationOtherType;
 	
 	private String uuid;
+	
+	@Required(desc="associateId")
+	private Long associateId;
+	
+	@Required(desc="authorizedType")
+	private List<String> authorizedType;
+	
+	private String authorizedAmount;
+	
+	private String signatoryFromType;
+	
+	private String status;
+
+	
+	public void setStatus(String status) {
+		this.status = status;
+	}
 
 	public String getFirstName() {
 		return firstName;
@@ -91,6 +112,49 @@ public class OrglocationSignatoryDTO {
 	public void setUuid(String uuid) {
 		this.uuid = uuid;
 	}
-	
-	
+
+	public Long getAssociateId()
+	{
+		return associateId;
+	}
+
+	public void setAssociateId(Long associateId)
+	{
+		this.associateId = associateId;
+	}
+
+	public List<String> getAuthorizedType()
+	{
+		return authorizedType;
+	}
+
+	public void setAuthorizedType(List<String> authorizedType)
+	{
+		this.authorizedType = authorizedType;
+	}
+
+	public String getAuthorizedAmount()
+	{
+		return authorizedAmount;
+	}
+
+	public void setAuthorizedAmount(String authorizedAmount)
+	{
+		this.authorizedAmount = authorizedAmount;
+	}
+
+	public String getSignatoryFromType()
+	{
+		return signatoryFromType;
+	}
+
+	public void setSignatoryFromType(String signatoryFromType)
+	{
+		this.signatoryFromType = signatoryFromType;
+	}
+
+	public String getStatus()
+	{
+		return status;
+	}
 }

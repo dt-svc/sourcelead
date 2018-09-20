@@ -24,11 +24,11 @@ function vendorOnboardDocumentsList(orgRelationId){
 						result = result +'    <div class="col-md-2 text-center mb10">';
 						result = result +'    <span class="tbldata-dotdot-sm" title="'+report.documentName+'">'+report.documentName+'</span>';
 						if(report.uploadedFileUrl != null && report.uploadedFileUrl != 'undefined' && report.uploadedFileUrl != ''){
-							result = result +'<a target="_blank" href=\"'+report.uploadedFileUrl+'\"><div class="uploaded_file mt5"> <i class="fa fa-file-text-o fa-4x"></i>  ';
+							result = result +'<a target="_blank" href=\"'+report.uploadedFileUrl+'\"><div class="uploaded_file uploaded_wizet mt5"> <i class="fa fa-file-text-o fa-4x"></i>  ';
 							result = result +'<p class="small mt tbldata-dotdot-100" title="'+report.uploadedFileName+'">'+report.uploadedFileName+'</p>';
 							result = result +'</div></a>';
 						}else{
-							result = result +'<div class="uploaded_file mt5"><i class="fa fa-times-circle text-danger fa-4x"></i><p>No Document Found</p>';
+							result = result +'<div class="uploaded_file uploaded_wizet mt5"><i class="fa fa-times-circle text-danger fa-4x"></i><p class="small mt5">No Document Found</p>';
 							result = result +'</div>';
 						}
 					

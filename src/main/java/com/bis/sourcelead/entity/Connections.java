@@ -24,7 +24,6 @@ import com.bis.sourcelead.enums.ConnectionStatus;
 
 @Entity
 @Table(name = "CONNECTIONS")
-@Cache(usage = CacheConcurrencyStrategy.TRANSACTIONAL, region = "connections")
 public class Connections {
 
 	private static final long serialVersionUID = 1L;
@@ -34,13 +33,13 @@ public class Connections {
     @Column(name = "ID", nullable = false)
 	private Long id;
 	
-	@NotFound(action=NotFoundAction.IGNORE)
-	@ManyToOne(fetch = FetchType.EAGER)
+	
+	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "FROM_UID", nullable = false)
 	private User fromUser;
 	
-	@NotFound(action=NotFoundAction.IGNORE)
-	@ManyToOne(fetch = FetchType.EAGER)
+	
+	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "TO_UID", nullable = false)
 	private User toUser;
 	
@@ -50,6 +49,9 @@ public class Connections {
 	
 	@Column(name = "STATUS")
 	private Integer status;
+	
+	@Column(name = "CONNECTION_UID")
+	private String connectionUID;
 	
 	@Column(name = "CREATED_DATE")
 	private Timestamp createdDate;
@@ -99,6 +101,12 @@ public class Connections {
 	}
 	public void setUpdatedDate(Timestamp updatedDate) {
 		this.updatedDate = updatedDate;
+	}
+	public String getConnectionUID() {
+		return connectionUID;
+	}
+	public void setConnectionUID(String connectionUID) {
+		this.connectionUID = connectionUID;
 	}
 	
 	

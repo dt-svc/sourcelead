@@ -1,6 +1,7 @@
 package com.bis.sourcelead.service.impl;
 
 import java.util.List;
+import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -22,8 +23,11 @@ public class UserCustomFieldDataServiceImpl implements UserCustomFieldDataServic
 	}
 
 	@Override
-	public List<UserCustomFieldData> getUserCustomFieldDataByUserId(Long userId, List<CustomFormFieldDTO> formFieldId) {
-		return userCustomFieldDataDao.getUserCustomFieldDataByUserId(userId,formFieldId);
+	public Map<Long, String[]> getUserCustomFieldDataByUserId(Long orgId, List<CustomFormFieldDTO> formFieldList,	Long userId) {
+		return userCustomFieldDataDao.getUserCustomFieldDataByUserId(orgId,formFieldList,userId);
 	}
 
-}
+	@Override
+	public UserCustomFieldData getUserCustomFieldDataById(Long entityId) {
+		return userCustomFieldDataDao.getUserCustomFieldDataById(entityId);
+	}}

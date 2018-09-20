@@ -43,7 +43,7 @@ public class ClientReportDaoImpl implements ClientReportDao {
 	{
 		Session session = this.sessionFactory.getCurrentSession();
 		List<UserRole> userRole = new ArrayList<UserRole>();
-		userRole = session.createQuery("from UserRole userRole left join fetch userRole.roles role left join fetch userRole.user  where (role.roleName = 'ROLE_ADMIN' OR  role.roleName = 'ROLE_SOURCELEAD_ADMIN') and userRole.user =:userId and userRole.orgLocations.id = :orgLocationId").setLong("userId", userId).setLong("orgLocationId", orgLocationId).setCacheable(true).list();
+		userRole = session.createQuery("from UserRole userRole left join fetch userRole.roles role left join fetch userRole.user  where (role.roleName = 'ROLE_ADMIN' OR  role.roleName = 'ROLE_SOURCELEAD_ADMIN') and userRole.user =:userId and userRole.orgLocations.id = :orgLocationId").setLong("userId", userId).setLong("orgLocationId", orgLocationId).list();
 		Boolean flag = false;
 		if (userRole.size() > 0) {
 			flag = true;
@@ -62,11 +62,11 @@ public class ClientReportDaoImpl implements ClientReportDao {
 		List<Long> clientsActive;
 		if (isadmin) {
 			clientsActiveCount = session.createQuery("select count(*) from OrgRelations orgrelation where ((orgrelation.locationId = :orgLocationId and orgrelation.initiatorType = 'Vendor') or (orgrelation.responderLocationId = :orgLocationId and orgrelation.responderType = 'Vendor')) and orgrelation.status = 'ACTIVE'");
-			clientsActive = clientsActiveCount.setLong("orgLocationId", orgLocationId).setCacheable(true).list();
+			clientsActive = clientsActiveCount.setLong("orgLocationId", orgLocationId).list();
 		}
 		else {
 			clientsActiveCount = session.createQuery("select count(*) from OrgRelations orgrelation where ((orgrelation.locationId = :orgLocationId and orgrelation.initiatorType = 'Vendor') or (orgrelation.responderLocationId = :orgLocationId and orgrelation.responderType = 'Vendor')) and orgrelation.status = 'ACTIVE' and orgrelation.createdBy IN(select user.createdBy from User user where user.id =:userId)");
-			clientsActive = clientsActiveCount.setLong("orgLocationId", orgLocationId).setLong("userId", userId).setCacheable(true).list();
+			clientsActive = clientsActiveCount.setLong("orgLocationId", orgLocationId).setLong("userId", userId).list();
 		}
 		
 		if (clientsActive != null && !clientsActive.isEmpty()) {
@@ -77,11 +77,11 @@ public class ClientReportDaoImpl implements ClientReportDao {
 		List<Long> clientsInActive;
 		if (isadmin) {
 			clientsInActiveCount = session.createQuery("select count(*) from OrgRelations orgrelation where ((orgrelation.locationId = :orgLocationId and orgrelation.initiatorType = 'Vendor') or (orgrelation.responderLocationId = :orgLocationId and orgrelation.responderType = 'Vendor')) and orgrelation.status = 'In-Active'");
-			clientsInActive = clientsInActiveCount.setLong("orgLocationId", orgLocationId).setCacheable(true).list();
+			clientsInActive = clientsInActiveCount.setLong("orgLocationId", orgLocationId).list();
 		}
 		else {
 			clientsInActiveCount = session.createQuery("select count(*) from OrgRelations orgrelation where ((orgrelation.locationId = :orgLocationId and orgrelation.initiatorType = 'Vendor') or (orgrelation.responderLocationId = :orgLocationId and orgrelation.responderType = 'Vendor')) and orgrelation.status = 'In-Active' and orgrelation.createdBy IN(select user.createdBy from User user where user.id =:userId)");
-			clientsInActive = clientsInActiveCount.setLong("orgLocationId", orgLocationId).setLong("userId", userId).setCacheable(true).list();
+			clientsInActive = clientsInActiveCount.setLong("orgLocationId", orgLocationId).setLong("userId", userId).list();
 		}
 		
 		if (clientsInActive != null && !clientsInActive.isEmpty()) {
@@ -101,10 +101,10 @@ public class ClientReportDaoImpl implements ClientReportDao {
 		
 		if (isadmin) {
 			Query query= session.createQuery("select count(*) from OrgSpoc spoc where spoc.orgRelations.id = :orgRelationId and spoc.status <> '0' ");
-			activespocList = query.setLong("orgRelationId", orgRelationId).setCacheable(true).list();
+			activespocList = query.setLong("orgRelationId", orgRelationId).list();
 		}else{
 			Query query= session.createQuery("select count(*) from OrgSpoc spoc where spoc.orgRelations.id = :orgRelationId and spoc.vendorUser.id = :userId and spoc.status <> '0' ");
-			activespocList = query.setLong("orgRelationId", orgRelationId).setLong("userId", userId).setCacheable(true).list();
+			activespocList = query.setLong("orgRelationId", orgRelationId).setLong("userId", userId).list();
 		}
 		
 		if (activespocList != null && !activespocList.isEmpty()) {
@@ -114,10 +114,10 @@ public class ClientReportDaoImpl implements ClientReportDao {
 		List<Long> inactivespocList = null;
 		if (isadmin) {
 			Query query= session.createQuery("select count(*) from OrgSpoc spoc where spoc.orgRelations.id = :orgRelationId and spoc.status <> '1' ");
-			inactivespocList = query.setLong("orgRelationId", orgRelationId).setCacheable(true).list();
+			inactivespocList = query.setLong("orgRelationId", orgRelationId).list();
 		}else{
 			Query query= session.createQuery("select count(*) from OrgSpoc spoc where spoc.orgRelations.id = :orgRelationId and spoc.vendorUser.id = :userId and spoc.status <> '1' ");
-			inactivespocList = query.setLong("orgRelationId", orgRelationId).setLong("userId", userId).setCacheable(true).list();
+			inactivespocList = query.setLong("orgRelationId", orgRelationId).setLong("userId", userId).list();
 		}
 		
 		if (inactivespocList != null && !inactivespocList.isEmpty()) {
@@ -135,12 +135,12 @@ public class ClientReportDaoImpl implements ClientReportDao {
 		Query orgRelationList;
 		List<OrgRelations> clients;
 		if (isadmin) {
-			orgRelationList = session.createQuery("from OrgRelations orgrelation left join fetch orgrelation.responderLocationId orgLocation left join fetch orgLocation.org where (orgrelation.locationId = :orgLocationId and orgrelation.initiatorType = 'Vendor') or (orgrelation.responderLocationId = :orgLocationId and orgrelation.responderType = 'Vendor')");
-			clients = orgRelationList.setLong("orgLocationId", orgLocationId).setCacheable(true).list();
+			orgRelationList = session.createQuery("from OrgRelations orgrelation left join fetch orgrelation.locationId left join fetch orgrelation.responderLocationId orgLocation left join fetch orgLocation.org where (orgrelation.locationId = :orgLocationId and orgrelation.initiatorType = 'Vendor') or (orgrelation.responderLocationId = :orgLocationId and orgrelation.responderType = 'Vendor')");
+			clients = orgRelationList.setLong("orgLocationId", orgLocationId).list();
 		}
 		else {
-			orgRelationList = session.createQuery("from OrgRelations orgrelation left join fetch orgrelation.responderLocationId orgLocation left join fetch orgLocation.org where ((orgrelation.locationId = :orgLocationId and orgrelation.initiatorType = 'Vendor') or (orgrelation.responderLocationId = :orgLocationId and orgrelation.responderType = 'Vendor')) and orgrelation.createdBy IN(select user.createdBy from User user where user.id =:userId)");
-			clients = orgRelationList.setLong("orgLocationId", orgLocationId).setLong("userId", userId).setCacheable(true).list();
+			orgRelationList = session.createQuery("from OrgRelations orgrelation left join fetch orgrelation.locationId left join fetch orgrelation.responderLocationId orgLocation left join fetch orgLocation.org where ((orgrelation.locationId = :orgLocationId and orgrelation.initiatorType = 'Vendor') or (orgrelation.responderLocationId = :orgLocationId and orgrelation.responderType = 'Vendor')) and orgrelation.createdBy IN(select user.createdBy from User user where user.id =:userId)");
+			clients = orgRelationList.setLong("orgLocationId", orgLocationId).setLong("userId", userId).list();
 		}
 		
 		if (clients.size() > 0)
@@ -199,12 +199,12 @@ public class ClientReportDaoImpl implements ClientReportDao {
 					+ "where contracts.orgLocationId.id = :orgLocationId and contracts.orgRelations.id =:orgRelationId and contracts.contractType like '%Client%' "+submissionStatus+userRoleCondition+subQuery+spocCondition ;
 			if(freqDates[0] != null && freqDates[1] != null) {
 				if(userRoleName != null && "ROLE_ADMIN".equalsIgnoreCase(userRoleName) || "ROLE_SOURCELEAD_ADMIN".equalsIgnoreCase(userRoleName)){
-					ContractsList = session.createQuery(query).setLong("orgLocationId", orgLocations.getId()).setLong("orgRelationId", orgRelationId).setParameter("startDate", freqDates[0]).setParameter("endDate", freqDates[1]).setCacheable(true).list();
+					ContractsList = session.createQuery(query).setLong("orgLocationId", orgLocations.getId()).setLong("orgRelationId", orgRelationId).setParameter("startDate", freqDates[0]).setParameter("endDate", freqDates[1]).list();
 				}else{
-					ContractsList = session.createQuery(query).setLong("orgLocationId", orgLocations.getId()).setLong("orgRelationId", orgRelationId).setLong("userId", user.getId()).setString("userCode", user.getUserCode()).setParameter("startDate", freqDates[0]).setParameter("endDate", freqDates[1]).setCacheable(true).list();
+					ContractsList = session.createQuery(query).setLong("orgLocationId", orgLocations.getId()).setLong("orgRelationId", orgRelationId).setLong("userId", user.getId()).setString("userCode", user.getUserCode()).setParameter("startDate", freqDates[0]).setParameter("endDate", freqDates[1]).list();
 				}
 			}else {
-				ContractsList = session.createQuery(query).setLong("orgLocationId", orgLocations.getId()).setLong("orgRelationId", orgRelationId).setCacheable(true).list();
+				ContractsList = session.createQuery(query).setLong("orgLocationId", orgLocations.getId()).setLong("orgRelationId", orgRelationId).list();
 			}
 		
 		if (ContractsList.size() > 0)
@@ -231,18 +231,18 @@ public class ClientReportDaoImpl implements ClientReportDao {
 		if(freqDates != null) {
 			if(contactUserId != null) {
 				String query = "from Invoice invoice  where invoice.orgRelationID.id = :orgRelationId and invoice.contactUser.id = :contactUserId and invoice.orgLocation.id = :orgLocationId and invoice.linkInvoiceReferenceId IS NULL and invoice.invoiceStatus <> 'Linked'"+subQuery+subQuery1+"";
-				clientInvoiceList = session.createQuery(query.toString()).setLong("orgLocationId", orgLocId).setLong("orgRelationId", orgRelationId).setLong("contactUserId", contactUserId).setParameter("startDate", freqDates[0]).setParameter("endDate",freqDates[1]).setCacheable(true).list();
+				clientInvoiceList = session.createQuery(query.toString()).setLong("orgLocationId", orgLocId).setLong("orgRelationId", orgRelationId).setLong("contactUserId", contactUserId).setParameter("startDate", freqDates[0]).setParameter("endDate",freqDates[1]).list();
 			}else {
 				String query = "from Invoice invoice  where invoice.orgRelationID.id = :orgRelationId and invoice.orgLocation.id = :orgLocationId and invoice.linkInvoiceReferenceId IS NULL and invoice.invoiceStatus <> 'Linked'"+subQuery+subQuery1+"";
-				clientInvoiceList = session.createQuery(query.toString()).setLong("orgLocationId", orgLocId).setLong("orgRelationId", orgRelationId).setParameter("startDate", freqDates[0]).setParameter("endDate",freqDates[1]).setCacheable(true).list();
+				clientInvoiceList = session.createQuery(query.toString()).setLong("orgLocationId", orgLocId).setLong("orgRelationId", orgRelationId).setParameter("startDate", freqDates[0]).setParameter("endDate",freqDates[1]).list();
 			}
 		}else {
 			if(contactUserId != null) {
 				String query = "from Invoice invoice  where invoice.orgRelationID.id = :orgRelationId and invoice.contactUser.id = :contactUserId and invoice.orgLocation.id = :orgLocationId and invoice.linkInvoiceReferenceId IS NULL and invoice.invoiceStatus <> 'Linked'"+subQuery+"";
-				clientInvoiceList = session.createQuery(query.toString()).setLong("orgLocationId", orgLocId).setLong("orgRelationId", orgRelationId).setLong("contactUserId", contactUserId).setCacheable(true).list();
+				clientInvoiceList = session.createQuery(query.toString()).setLong("orgLocationId", orgLocId).setLong("orgRelationId", orgRelationId).setLong("contactUserId", contactUserId).list();
 			}else {
 				String query = "from Invoice invoice  where invoice.orgRelationID.id = :orgRelationId and invoice.orgLocation.id = :orgLocationId and invoice.linkInvoiceReferenceId IS NULL and invoice.invoiceStatus <> 'Linked'"+subQuery+"";
-				clientInvoiceList = session.createQuery(query.toString()).setLong("orgLocationId", orgLocId).setLong("orgRelationId", orgRelationId).setCacheable(true).list();
+				clientInvoiceList = session.createQuery(query.toString()).setLong("orgLocationId", orgLocId).setLong("orgRelationId", orgRelationId).list();
 			}
 		}
 		return clientInvoiceList;
@@ -261,10 +261,10 @@ public class ClientReportDaoImpl implements ClientReportDao {
 		List<OrgSpoc> spocList = null;
 		if (isadmin) {
 			Query query= session.createQuery("from OrgSpoc spoc where spoc.orgRelations.id = :orgRelationId "+subQuery);
-			spocList = query.setLong("orgRelationId", orgRelationId).setParameter("startDate", freqDates[0]).setParameter("endDate", freqDates[1]).setCacheable(true).list();
+			spocList = query.setLong("orgRelationId", orgRelationId).setParameter("startDate", freqDates[0]).setParameter("endDate", freqDates[1]).list();
 		}else{
 			Query query= session.createQuery("from OrgSpoc spoc where spoc.orgRelations.id = :orgRelationId and spoc.vendorUser.id = :userId "+subQuery);
-			spocList = query.setLong("orgRelationId", orgRelationId).setLong("userId", userId).setParameter("startDate", freqDates[0]).setParameter("endDate", freqDates[1]).setCacheable(true).list();
+			spocList = query.setLong("orgRelationId", orgRelationId).setLong("userId", userId).setParameter("startDate", freqDates[0]).setParameter("endDate", freqDates[1]).list();
 		}
 		return spocList;
 	}
@@ -288,14 +288,14 @@ public class ClientReportDaoImpl implements ClientReportDao {
 		if(freqDates != null) {
 		if(spocId != null){
 			Query query= session.createQuery("from Requirement requirement  left join fetch requirement.parentRequirement left join fetch requirement.clientId where requirement.clientId.id =:orgRelationId and requirement.isClientJob ='Y' and requirement.orgLocationId.id =:orgLocationId "+subQuery+subQuery1);
-			reqList = query.setLong("orgRelationId", orgRelationId).setLong("orgLocationId", orgLocationId).setParameter("startDate", freqDates[0]).setParameter("endDate", freqDates[1]).setLong("spocId", spocId).setCacheable(true).list();	
+			reqList = query.setLong("orgRelationId", orgRelationId).setLong("orgLocationId", orgLocationId).setParameter("startDate", freqDates[0]).setParameter("endDate", freqDates[1]).setLong("spocId", spocId).list();	
 		}else{
 			Query query= session.createQuery("from Requirement requirement  left join fetch requirement.parentRequirement left join fetch requirement.clientId where requirement.clientId.id =:orgRelationId and requirement.isClientJob ='Y' and requirement.orgLocationId.id =:orgLocationId "+subQuery);
-			reqList = query.setLong("orgRelationId", orgRelationId).setLong("orgLocationId", orgLocationId).setParameter("startDate", freqDates[0]).setParameter("endDate", freqDates[1]).setCacheable(true).list();
+			reqList = query.setLong("orgRelationId", orgRelationId).setLong("orgLocationId", orgLocationId).setParameter("startDate", freqDates[0]).setParameter("endDate", freqDates[1]).list();
 		}
 		}else {
 			Query query= session.createQuery("from Requirement requirement  left join fetch requirement.parentRequirement left join fetch requirement.clientId where requirement.clientId.id =:orgRelationId and requirement.orgLocationId.id =:orgLocationId and requirement.isClientJob ='Y'");
-			reqList = query.setLong("orgRelationId", orgRelationId).setLong("orgLocationId", orgLocationId).setCacheable(true).list();
+			reqList = query.setLong("orgRelationId", orgRelationId).setLong("orgLocationId", orgLocationId).list();
 		}
 
 		return reqList;
@@ -325,17 +325,17 @@ public class ClientReportDaoImpl implements ClientReportDao {
 		if(freqDates != null) {
 			
 			Query query= session.createQuery("from RequirementSubmission reqSub left join fetch reqSub.requirement req where reqSub.orgLocations.id =:orgLocationId and reqSub.requirement.id =:requirementId "+subQuery);
-			reqSubList = query.setLong("requirementId", requirementId).setLong("orgLocationId", orgLocationId).setParameter("startDate", freqDates[0]).setParameter("endDate", freqDates[1]).setCacheable(true).list();
+			reqSubList = query.setLong("requirementId", requirementId).setLong("orgLocationId", orgLocationId).setParameter("startDate", freqDates[0]).setParameter("endDate", freqDates[1]).list();
 			if(reqSubList != null)	
 				subCount.put("submissionCount", reqSubList.size());
 			
 			Query hiredQuery= session.createQuery("from RequirementSubmission reqSub left join fetch reqSub.requirement req where reqSub.orgLocations.id =:orgLocationId and reqSub.requirement.id =:requirementId and reqSub.submissionStatus = 'OFFERACCEPTED' "+subQuery);
-			hiredList = hiredQuery.setLong("requirementId", requirementId).setLong("orgLocationId", orgLocationId).setParameter("startDate", freqDates[0]).setParameter("endDate", freqDates[1]).setCacheable(true).list();
+			hiredList = hiredQuery.setLong("requirementId", requirementId).setLong("orgLocationId", orgLocationId).setParameter("startDate", freqDates[0]).setParameter("endDate", freqDates[1]).list();
 			if(hiredList != null)
 				subCount.put("hiredCount", hiredList.size());
 		}else {
 			Query reqSubQuery= session.createQuery("from RequirementSubmission reqSub left join fetch reqSub.requirement req where reqSub.orgLocations.id =:orgLocationId and reqSub.requirement.id =:requirementId");
-			reqSubList = reqSubQuery.setLong("requirementId", requirementId).setLong("orgLocationId", orgLocationId).setCacheable(true).list();
+			reqSubList = reqSubQuery.setLong("requirementId", requirementId).setLong("orgLocationId", orgLocationId).list();
 			if(reqSubList != null && reqSubList.size() > 0) {
 				for(RequirementSubmission reqSub : reqSubList){
 					if("submission".equalsIgnoreCase(reqSub.getSubmissionStatus().toString())){

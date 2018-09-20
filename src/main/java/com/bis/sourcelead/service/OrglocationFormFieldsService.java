@@ -17,12 +17,14 @@ public interface OrglocationFormFieldsService {
 	
 	public Long getCurrentIndexBySourceleadActionIdAndOrders(Long actionId,List<Long> orders);
 
-	public String deleteCustomFieldById(Long customID);
+	public String deleteCustomFieldById(Long customID, String status);
 
 	public List<OrglocationFormFields> getAllSectionByActionId(Long actionId, OrgLocations orgLocation);
 
 	public OrglocationFormFields getOrglocationFormFieldsById(Long id) throws Exception;
 
 	public List<OrglocationFormSubFields> getAllCustomFormSubFieldsBySectionIdandOrgLocationId(Long customFieldId);
+	
+	public List<OrglocationFormFields> getAllCustomFormFieldsBySectionIdandOrgLocationIdForCustomList(Long sectionId,Long orgLocation);
 
 }

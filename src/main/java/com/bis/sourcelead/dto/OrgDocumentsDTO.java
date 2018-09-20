@@ -23,6 +23,7 @@ public class OrgDocumentsDTO {
 	 private User spocUser;
 	 private User ownerUser;
 	 private Long ownerId;
+	 private Long spocId;
 	 
 	 public Long getOwnerId() {
 		return ownerId;
@@ -129,6 +130,14 @@ public class OrgDocumentsDTO {
 	}
 	public void setId(String id) {
 		this.id = id;
+	}
+	public Long getSpocId()
+	{
+		return spocId;
+	}
+	public void setSpocId(Long spocId)
+	{
+		this.spocId = spocId;
 	}
 	 
 

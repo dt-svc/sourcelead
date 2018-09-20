@@ -6,7 +6,7 @@
 		<div class="modal-content">
 			<div class="modalHeader">
 				<button type="button" id="assignToPopUpCloseId" class="close" data-dismiss="modal">&times;</button>
-				<h4 class="modal-title">Assign To</h4>
+				<h4 class="modal-title">Assign To<i class='fa fa-info-circle' title='Assign the job to the internal team to process the resources for the job'></i></h4>
 			</div>
 			<div class="modal-body">
 
@@ -85,10 +85,10 @@
 				</div>
 			</div>
 			<div class="clearfix mb">
-				<div class="pull-right mr">
+				<div class="pull-right mr" id="summaryButtonsDiv">
 					<c:choose>
 					  <c:when test="${!empty requirement.id}">
-					    <button type="button" class="btn btn-primary mr5 btn-sm" data-dismiss="modal" onclick="editAssignedTeamsOrUsers('${requirement.id}');">Save<span id="assignToSelectedPopupCount"> (0) </span></button>
+					    <button type="button" id = "editAssignedTeamsOrUsersBtn" class="btn btn-primary mr5 btn-sm" data-dismiss="modal" onclick="editAssignedTeamsOrUsers('${requirement.id}');">Save<span id="assignToSelectedPopupCount"> (0) </span></button>
 					  </c:when>
 					  <c:otherwise>
 					    <button type="button" class="btn btn-primary mr5 btn-sm" data-dismiss="modal" onclick="getAssignedTeamsOrUsers();">Assign<span id="assignToSelectedPopupCount"> (0) </span></button>
@@ -97,6 +97,9 @@
 					<c:if test="${empty requirement.id}"> 
 					<button type="button" class="btn btn-default btn-sm" data-dismiss="modal" onclick="clearAssignedTeamsOrUsers();">Reset</button>
 					</c:if>
+				</div>
+				<div class="pull-right mr" id="listButtonsDiv" style="display: none;">
+					<button type="button" id="listSaveButton" class="btn btn-primary mr5 btn-sm" data-dismiss="modal">Save</button>
 				</div>
 			</div>
 		</div>
@@ -112,12 +115,22 @@ function getAssignedMembersListForEdit(reqId){
 		$.ajax({
 	           type : "POST",
 	           url: sourceleadUrl+"/getAssignedMembersForEdit?"+tokenParamName+"="+tokenValue+"&reqId="+reqId,    
-	            success :function(data) {
-	            	var json = JSON.parse(data);
-	            	selectAssignUsersIds = json;
-	            	$("#assignedTeamId").val(json);
+	            success :function(result) {
+		            	var json = result.object;
+		            	if (result.response === "SESSION_TIMEDOUT") {
+			  				location.replace(sourceleadUrl);
+		                } else if (result.response === "AWKWARD") {
+		                    location.href = "/errorPage";
+		                } else if (result.response === "SUCCESS") {
+		                	selectAssignUsersIds = json;
+			            	$("#assignedTeamId").val(json);	
+		                } else if (result.indexOf('Sign In') !== -1) {
+							location.replace(sourceleadUrl);
+						} else {
+		                    showError("Operation failed, please try again");
+		                }
 	            },
-	            complete: function (data) {
+	            complete: function (result) {
 	            	getTeamsList(reqId);
 	            }
 	      }); 
@@ -128,47 +141,55 @@ function getTeamsList(reqId){
 	  $.ajax({
            type : "POST",
            url: sourceleadUrl+"/getTeamsList?"+tokenParamName+"="+tokenValue+"&reqId="+reqId,    
-            success :function(data) {
-            	var json = JSON.parse(data);
-				var output = "";
-			  '<sec:authorize access="hasAnyRole(\'ROLE_VIEW_TEAM\')">';
-			  if(json.teams.length > 0){
-				  output = output + "<optgroup label='Teams'>";
-				  for (var i = 0; i < json.teams.length; i++) {
-						var opt = json.teams[i];
-						if('Y' == opt.isTeamAssigned){
-							output = output + "<option name='TeamAndRole' value='"+opt.id+"' selected >"+ opt.name + "</option>";
-						}else if($.inArray(''+opt.id, teamRoleIds) > -1){
-							output = output + "<option name='TeamAndRole' value='"+opt.id+"' selected>"+ opt.name + "</option>";	
-					    }else{
-							output = output + "<option name='TeamAndRole' value='"+opt.id+"'>"+ opt.name + "</option>";	
+            success :function(result) {
+            	var json = result.object;
+            	if (result.response === "SESSION_TIMEDOUT") {
+	  				location.replace(sourceleadUrl);
+                } else if (result.response === "AWKWARD") {
+                    location.href = "/errorPage";
+                } else if (result.response === "SUCCESS") {
+					var output = "";
+				  '<sec:authorize access="hasAnyRole(\'ROLE_VIEW_TEAM\')">';
+				  if(json.teams.length > 0){
+					  output = output + "<optgroup label='Teams'>";
+					  for (var i = 0; i < json.teams.length; i++) {
+							var opt = json.teams[i];
+							if('Y' == opt.isTeamAssigned){
+								output = output + "<option name='TeamAndRole' value='"+opt.id+"' selected >"+ opt.name + "</option>";
+							}else if($.inArray(''+opt.id, teamRoleIds) > -1){
+								output = output + "<option name='TeamAndRole' value='"+opt.id+"' selected>"+ opt.name + "</option>";	
+						    }else{
+								output = output + "<option name='TeamAndRole' value='"+opt.id+"'>"+ opt.name + "</option>";	
+							}
 						}
-
-					}
-				  output = output + "</optgroup>";
-			  }
-			  '</sec:authorize>';
-
-			  if(json.roles.length > 0){
-				  output = output + "<optgroup label='Roles'>"; 
-					for (var i = 0; i < json.roles.length; i++) {
-						var opt = json.roles[i];
-						if('Y' == opt.isRoleAssigned){
-							output = output + "<option name='TeamAndRole' value='"+opt.id+"role' selected >"+ opt.displayName + "</option>";
-						}else if($.inArray(''+opt.id+'role', teamRoleIds) > -1){
-							output = output + "<option name='TeamAndRole' value='"+opt.id+"role' selected>"+ opt.displayName + "</option>";
-						}else{
-							output = output + "<option name='TeamAndRole' value='"+opt.id+"role'>"+ opt.displayName + "</option>";	
+					  output = output + "</optgroup>";
+				  }
+				  '</sec:authorize>';
+	
+				  if(json.roles.length > 0){
+					  output = output + "<optgroup label='Roles'>"; 
+						for (var i = 0; i < json.roles.length; i++) {
+							var opt = json.roles[i];
+							if('Y' == opt.isRoleAssigned){
+								output = output + "<option name='TeamAndRole' value='"+opt.id+"role' selected >"+ opt.displayName + "</option>";
+							}else if($.inArray(''+opt.id+'role', teamRoleIds) > -1){
+								output = output + "<option name='TeamAndRole' value='"+opt.id+"role' selected>"+ opt.displayName + "</option>";
+							}else{
+								output = output + "<option name='TeamAndRole' value='"+opt.id+"role'>"+ opt.displayName + "</option>";	
+							}
 						}
-					}
-					output = output + "</optgroup>";
-			  }
-				$("#teamSelectionCategory").empty();
-			    $("#teamSelectionCategory").append(output);
-			    $("#teamSelectionCategory").selectpicker("refresh");
-            	
+						output = output + "</optgroup>";
+				  }
+					$("#teamSelectionCategory").empty();
+				    $("#teamSelectionCategory").append(output);
+				    $("#teamSelectionCategory").selectpicker("refresh");
+                } else if (result.indexOf('Sign In') !== -1) {
+					location.replace(sourceleadUrl);
+				} else {
+                    showError("Operation failed, please try again");
+                }
             },
-            complete: function (data) {
+            complete: function (result) {
             	var teamType = $("#teamSelectionCategory").val();
           		getUserList(teamType);
             }
@@ -182,6 +203,62 @@ function getTeamsList(reqId){
 		var teamType = $("#teamSelectionCategory").val();
 		getUserList(teamType);
 	}
+</script>
+<script>
+window.selectAssignUsersIds = new Array();
+var isIE = /*@cc_on!@*/false || !!document.documentMode;
+if(isIE){
+(function() {
+	  function remove() { this.parentNode && this.parentNode.removeChild(this); }
+	  if (!Element.prototype.remove) Element.prototype.remove = remove;
+	  if (Text && !Text.prototype.remove) Text.prototype.remove = remove;
+	})();
+};	
+function deSelectAssignUsers(){
+	$("input:checkbox[name=selectedUser]:checked").each(function(){
+		var deSelectedId = $(this).attr('value');
+		$(this).closest( 'tr' )[0].remove();
+		$("#assignToDataTableId input[type=checkbox]").each(function(){
+			if(deSelectedId == $(this).attr('value')){
+				$(this).prop('disabled', false);
+			}
+	     });
+		
+		const index = selectAssignUsersIds.indexOf(deSelectedId);
+		selectAssignUsersIds.splice(index,1);
+		
+// 		selectAssignUsersIds = selectAssignUsersIds.filter(item => item !== deSelectedId);
+	});
+	$("#assignToSelectedPopupCount").text(" ("+$('#assignToSelectedDataTableDiv >table >tbody >tr').length+") ");
+	if($('#assignToSelectedDataTableDiv >table >tbody >tr').length == 0){
+		$("#noAssignedmembers").show();
+	}else{
+		$("#noAssignedmembers").hide();
+	}
+}
+
+function selectAssignUsers(){
+	$("#selectedUsersGrid").empty();
+	selectAssignUsersIds = [];
+	$("input:checkbox[name=team]:checked").each(function(){
+		var thisRow = $(this).closest( 'tr' )[0];
+	    $("#selectedUsersGrid").append($(thisRow).clone());
+	    $(this).attr('disabled', 'disabled');
+	    selectAssignUsersIds.push($(this).val());
+	});
+	$("#selectedUsersGrid input[type=checkbox]").each(function(){
+		$(this).attr('name', 'selectedUser');
+		$(this).prop('disabled', false);
+		$(this).removeAttr('onchange');
+		$(this).attr('checked', false);
+     });
+	$("#assignToSelectedPopupCount").text(" ("+$('#assignToSelectedDataTableDiv >table >tbody >tr').length+") ");
+	if($('#assignToSelectedDataTableDiv >table >tbody >tr').length == 0){
+		$("#noAssignedmembers").show();
+	}else{
+		$("#noAssignedmembers").hide();
+	}
+}
 </script>
 
 <script>
@@ -200,75 +277,83 @@ function getUserList(teamType){
 			}
 		});
 	}
-	
-	   /* var selectedUsersForAssign = [];
-	   $('input[name^="assignUserId"]').each(function() {
-	 		selectedUsersForAssign.push($(this).val());
-	   }); */
  	   $("#usersGrid-loader").attr('style','position:absolute; width:100%; height:200px; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
  	   $.ajax({
            type : "POST",
            url: sourceleadUrl+"/getUserList?"+tokenParamName+"="+tokenValue+"&teamType="+teamType,    
             success :function(data) {
-                 if(data != null && data != 'undefined' && data != "" && data != '[]'){
-               		 if( data.indexOf('Sign In') >= 0){
-			    		location.replace(sourceleadUrl);
-			    	 }
-               		 else if (data.indexOf('exception') >= 0) {
-               			 location.replace(sourceleadUrl+"/errorPage");
-               		 }
-               		 else{
-			    	     $("#usersGrid").removeAttr("style");
-	                	    var result = '';
-	                	    //result = result+"<input type='hidden' name='assignedTeamId' id='assignedTeamId' value='"+teamType+"'/>";
-		                    var json = JSON.parse(data);
-		                    //var selectedTempIds = $("#assignedTeamId").val();
-		                    for (var i = 0; i < json.length; i++) {
-		                    	 var opt = json[i]; 
-			                     var isSelected = "";
-			                     var isBlockedBySelected = "";
-			                     var selectAssignUsersIdsStr = ""+selectAssignUsersIds+"";
-			                     if(selectAssignUsersIds.includes(opt.id+','+opt.assignedTeamId)){
-			                    	 isSelected = "checked disabled";
-			                     }else if(selectAssignUsersIdsStr.includes(opt.id)){
-			                    	 isBlockedBySelected = "fa fa-ban";
-			                    	 isSelected = "disabled";
-			                     }
-		                    	 result = result +'<tr>';
-		                    	 
-		                    	 var lastName = '';
-		                    	 if(opt.lastName != null && opt.lastName != '' && opt.lastName != 'undefined'){
-		                    		 lastName = ' '+opt.lastName;
-		                    	 }
-		                    	 var owner ='';
-		         				 if(null != opt.isAssignedOwner && 'undefined' != opt.isAssignedOwner){
-		         					 owner = opt.isAssignedOwner;
-		         				 }
-		         				 var assignedTeam = '';
-		         				 if(null != opt.assignedTeam && 'undefined' != opt.assignedTeam && '' != opt.assignedTeam){
-		         					 assignedTeam = opt.assignedTeam;
-		         				 }
-		                    	 
-		         				 result = result +'  <td><input id="'+opt.id+'"  class="myCheckbox '+isBlockedBySelected+'" value="'+opt.id+','+opt.assignedTeamId+'"  type="checkbox" '+isSelected+' name="team" onchange="handleChange(this);"></td>';
-		                    	 result = result +'             <td><span class="tbldata-dotdot-custom" title="'+opt.firstName+''+lastName+''+assignedTeam+''+owner+'">'+opt.firstName+''+lastName+''+assignedTeam+''+owner+'</span></td>';
-		                    	 result = result +'             <td><span class="tbldata-dotdot-100" title="'+opt.email+'">'+opt.email+'</span></td>';
-		                    	 result = result +'             <td><span class="tbldata-dotdot_80">'+opt.userType+'</span></td>';
-		                    	 result = result +'             <td><span class="tbldata-dotdot_30">'+opt.assignJobCount+'</span></td>';
-		                    	 result = result +'           </tr>';
-	                       }
-		                    
-	                 	   //result = result +'	<span class="jquery_form_error_message" style="display:none;">Assign at least to a new member</span>'; */
-	                 	   $("#usersGrid-loader").removeAttr("style");
-	                       $("#usersGrid").append(result);
-	                       $("#checkAll").prop('checked', false);
-	                       if(isTeamExists && isRoleExists){
-	                    	   $("#checkAll").prop('disabled', true);
-	                       }else{
-	                    	   $("#checkAll").prop('disabled', false);
-	                       }
-	                       //paginations(); 
-			    		}
-                 	}
+            	$("#usersGrid").removeAttr("style");
+            	if (data.response === "SESSION_TIMEDOUT") {
+	  				location.replace(sourceleadUrl);
+                } else if (data.response === "AWKWARD") {
+                    location.href = "/errorPage";
+                } else if (data.response === "SUCCESS") {
+	                 if(data != null && data != 'undefined' && data != "" && data != '[]'){
+		                	    var result = '';
+		                	    //result = result+"<input type='hidden' name='assignedTeamId' id='assignedTeamId' value='"+teamType+"'/>";
+			                    var json = data.data;
+			                    //var selectedTempIds = $("#assignedTeamId").val();
+			                    for (var i = 0; i < json.length; i++) {
+			                    	 var opt = json[i];
+				                     var isSelected = "";
+				                     var isBlockedBySelected = "";
+				                     var selectAssignUsersIdsStr = ""+selectAssignUsersIds+"";
+				                     var str_array = selectAssignUsersIdsStr.match(/[^,]+,[^,]+/g);
+				                     if(str_array != null && str_array != 'undefined' && str_array != "" && str_array != '[]'){
+					                     for(var j = 0; j < str_array.length; j++) {
+					                        if((""+str_array[j]+"") === (""+opt.id+','+opt.assignedTeamId+"")){
+						                    	 isSelected = "checked disabled";
+						                     }else if((""+str_array[j]+"") === (""+opt.id+"")){
+						                    	 isBlockedBySelected = "fa fa-ban";
+						                    	 isSelected = "disabled";
+						                     }
+					                     }
+				                     }
+				                     /* if(selectAssignUsersIds.includes(opt.id+','+opt.assignedTeamId)){
+				                    	 isSelected = "checked disabled";
+				                     }else if(selectAssignUsersIdsStr.includes(opt.id)){
+				                    	 isBlockedBySelected = "fa fa-ban";
+				                    	 isSelected = "disabled";
+				                     } */
+			                    	 result = result +'<tr>';
+			                    	 
+			                    	 var lastName = '';
+			                    	 if(opt.lastName != null && opt.lastName != '' && opt.lastName != 'undefined'){
+			                    		 lastName = ' '+opt.lastName;
+			                    	 }
+			                    	 var owner ='';
+			         				 if(null != opt.isAssignedOwner && 'undefined' != opt.isAssignedOwner){
+			         					 owner = opt.isAssignedOwner;
+			         				 }
+			         				 var assignedTeam = '';
+			         				 if(null != opt.assignedTeam && 'undefined' != opt.assignedTeam && '' != opt.assignedTeam){
+			         					 assignedTeam = opt.assignedTeam;
+			         				 }
+			                    	 
+			         				 result = result +'  <td><input id="'+opt.id+'"  class="myCheckbox '+isBlockedBySelected+'" value="'+opt.id+','+opt.assignedTeamId+'"  type="checkbox" '+isSelected+' name="team" onchange="handleChange(this);"></td>';
+			                    	 result = result +'             <td><span class="tbldata-dotdot-custom" title="'+opt.firstName+''+lastName+''+assignedTeam+''+owner+'">'+opt.firstName+''+lastName+''+assignedTeam+''+owner+'</span></td>';
+			                    	 result = result +'             <td><span class="tbldata-dotdot-100" title="'+opt.email+'">'+opt.email+'</span></td>';
+			                    	 result = result +'             <td><span class="tbldata-dotdot_80">'+opt.userType+'</span></td>';
+			                    	 result = result +'             <td><span class="tbldata-dotdot_30">'+opt.assignJobCount+'</span></td>';
+			                    	 result = result +'           </tr>';
+		                       }
+			                    
+		                 	   //result = result +'	<span class="jquery_form_error_message" style="display:none;">Assign at least to a new member</span>'; */
+		                 	   $("#usersGrid-loader").removeAttr("style");
+		                       $("#usersGrid").append(result);
+		                       $("#checkAll").prop('checked', false);
+		                       if(isTeamExists && isRoleExists){
+		                    	   $("#checkAll").prop('disabled', true);
+		                       }else{
+		                    	   $("#checkAll").prop('disabled', false);
+		                       }
+		                       //paginations(); 
+	                 	}
+	                } else if (data.indexOf('Sign In') !== -1) {
+						location.replace(sourceleadUrl);
+					} else {
+	                    showError("Operation failed, please try again");
+	                }
           		},complete: function (data) {
                 	selectAssignUsers();
                 }
@@ -295,51 +380,6 @@ function paginations(){
      	},
     });
     $("#assignToDataTableId").wrap("<div class='modal-body-custom mailerpopup modalAlign'></div>");
-}
-</script>
-
-<script>
-window.selectAssignUsersIds = new Array();
-function selectAssignUsers(){
-	$("#selectedUsersGrid").empty();
-	selectAssignUsersIds = [];
-	$("input:checkbox[name=team]:checked").each(function(){
-		var thisRow = $(this).closest( 'tr' )[0];
-	    $("#selectedUsersGrid").append($(thisRow).clone());
-	    $(this).attr('disabled', 'disabled');
-	    selectAssignUsersIds.push($(this).val());
-	});
-	$("#selectedUsersGrid input[type=checkbox]").each(function(){
-		$(this).attr('name', 'selectedUser');
-		$(this).prop('disabled', false);
-		$(this).removeAttr('onchange');
-		$(this).attr('checked', false);
-     });
-	$("#assignToSelectedPopupCount").text(" ("+$('#assignToSelectedDataTableDiv >table >tbody >tr').length+") ");
-	if($('#assignToSelectedDataTableDiv >table >tbody >tr').length == 0){
-		$("#noAssignedmembers").show();
-	}else{
-		$("#noAssignedmembers").hide();
-	}
-}
-
-function deSelectAssignUsers(){
-	$("input:checkbox[name=selectedUser]:checked").each(function(){
-		var deSelectedId = $(this).attr('value');
-		$(this).closest( 'tr' )[0].remove();
-		$("#assignToDataTableId input[type=checkbox]").each(function(){
-			if(deSelectedId == $(this).attr('value')){
-				$(this).prop('disabled', false);
-			}
-	     });
-		selectAssignUsersIds = selectAssignUsersIds.filter(item => item !== deSelectedId);
-	});
-	$("#assignToSelectedPopupCount").text(" ("+$('#assignToSelectedDataTableDiv >table >tbody >tr').length+") ");
-	if($('#assignToSelectedDataTableDiv >table >tbody >tr').length == 0){
-		$("#noAssignedmembers").show();
-	}else{
-		$("#noAssignedmembers").hide();
-	}
 }
 </script>
 
@@ -406,8 +446,18 @@ function deSelectAssignUsers(){
 			$.ajax({
 		           type : "POST",
 		           url: sourceleadUrl+"/saveOrUpdateAssignToTeam?"+tokenParamName+"="+tokenValue+"&assignedIdVal="+assignedIdVal+"&requirementId="+requirementId,    
-		            success :function(data) {
-		            	
+		            success :function(result) {
+		            	if (result.response === "SESSION_TIMEDOUT") {
+			  				location.replace(sourceleadUrl);
+		                } else if (result.response === "AWKWARD") {
+		                    location.href = "/errorPage";
+		                } else if (result.response === "SUCCESS") {
+		                	
+		                } else if (result.indexOf('Sign In') !== -1) {
+							location.replace(sourceleadUrl);
+						} else {
+		                    showError("Operation failed, please try again");
+		                }
 		            },
 	   		});
 		$("#usersGrid").empty();

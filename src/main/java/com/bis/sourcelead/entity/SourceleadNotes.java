@@ -4,6 +4,7 @@ import java.util.Date;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -12,15 +13,14 @@ import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import javax.persistence.Transient;
 
-import org.hibernate.annotations.Cache;
-import org.hibernate.annotations.CacheConcurrencyStrategy;
 import org.hibernate.annotations.NotFound;
 import org.hibernate.annotations.NotFoundAction;
+
+import com.fasterxml.jackson.annotation.JsonProperty;
 
 
 @Entity
 @Table(name = "SOURCELEAD_NOTES")
-@Cache(usage = CacheConcurrencyStrategy.TRANSACTIONAL, region = "sourceleadNotes")
 public class SourceleadNotes {
 	
 	private static final long serialVersionUID = 1L;
@@ -65,6 +65,19 @@ public class SourceleadNotes {
     @JoinColumn(name="INVOICE_ID", nullable=false )     
 	private Invoice invoicdeId;
 	
+	@NotFound(action=NotFoundAction.IGNORE)
+	@ManyToOne
+    @JoinColumn(name="ASSET_ID", nullable=false )     
+	private Asset assetId;
+	
+	@ManyToOne
+	@JoinColumn(name = "IMMIGRATION_ID")
+	private Immigration immigration;
+	
+	@ManyToOne
+	@JoinColumn(name = "CANDIDATE_ID")
+	private Candidate candidate;
+	
 	@Transient
 	private Long commentAuthorUserId;
 	
@@ -96,30 +109,44 @@ public class SourceleadNotes {
 	private String updatedBy;
 	
 	@Transient
+	@JsonProperty
 	private String userName;
 	
 	@Transient
+	@JsonProperty
 	private String createdDateString;
 	
 	@Transient
+	@JsonProperty
 	private String requirementTitle;
 	
 	@Transient
+	@JsonProperty
 	private String contactName;
 	
 	@Transient
+	@JsonProperty
 	private String contract;
 	
 	@Transient
+	@JsonProperty
 	private String invoiceId;
 	
 	@Transient
+	@JsonProperty
 	private Long userIdStr;
 	
 	@Transient
+	@JsonProperty
+	private String assetName;
+	
+	@Transient
+	@JsonProperty
 	private String updatedDateString;
 	
-
+	@Transient
+	private String immigrationId;
+	
 	public Long getId()
 	{
 		return id;
@@ -377,6 +404,47 @@ public class SourceleadNotes {
 	public void setCommentAuthorImage(String commentAuthorImage) {
 		this.commentAuthorImage = commentAuthorImage;
 	}
+
+	public Asset getAssetId() {
+		return assetId;
+	}
+
+	public void setAssetId(Asset assetId) {
+		this.assetId = assetId;
+	}
+
+	public String getAssetName() {
+		return assetName;
+	}
+
+	public void setAssetName(String assetName) {
+		this.assetName = assetName;
+	}
+
+	public Immigration getImmigration() {
+		return immigration;
+	}
+
+	public void setImmigration(Immigration immigration) {
+		this.immigration = immigration;
+	}
+
+	public Candidate getCandidate() {
+		return candidate;
+	}
+
+	public void setCandidate(Candidate candidate) {
+		this.candidate = candidate;
+	}
+
+	public String getImmigrationId() {
+		return immigrationId;
+	}
+
+	public void setImmigrationId(String immigrationId) {
+		this.immigrationId = immigrationId;
+	}
+	
 	
 	
 }

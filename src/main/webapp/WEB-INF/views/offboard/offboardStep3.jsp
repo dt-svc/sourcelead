@@ -31,36 +31,11 @@
 		
 		   <div class="welcoHead">
 		   
-		   <c:if test="${!empty SourceLeadWeb_userSpocRolesList}">
-			<div class="offOrg">
-	             <a href="javascript:void(0)" title="Spoc Links" id="spoclinks" onclick="JavaScript: navtoggle(this);"> <i class="fa fa-globe"></i> </a>
-		              <div id="spockLinksList" style="display: none;">
-		              <ul class="list-unstyled">
-		              <c:forEach var="links" items="${SourceLeadWeb_userSpocRolesList}">
-			              <li>
-				              <a href="<c:url value='${sourceleadUrl}/dashboard/${links.orgLocations.id}'/>" class="sopcSwith">
-					                <div class="clearfix">
-					                   <div class="pull-left image-parent positionRelative">
-					                   <div class="imageParent org-imagelink ${links.orgLocations.id == SourceLeadWeb_orgLocationId ? 'active-comp' : ''}">
-					                     <img onerror='predefineOrgImage(this);' src="${sourceleadUrl}/displayOrgImage/${links.orgLocations.org.orgCode}">
-					                     </div>
-					                   </div>
-					                   <div class="pull-left mt5">
-					                     <p class="tbldata-dotdot"><i class="fa fa-building"></i>&nbsp;${links.orgLocations.org.orgName}</p>
-					                     <p class="tbldata-dotdot"><i class="fa fa-map-marker"></i>&nbsp;${!empty links.orgLocations.city ? links.orgLocations.city : ""} ${links.orgLocations.country}</p>
-					                     <p><i class="fa fa-user"></i>&nbsp;${links.roles.displayName}</p>
-					                   </div>
-					                </div>
-				                </a>
-			              </li>
-		              </c:forEach>
-		              </ul>
-		            </div>
-		            </div>
-	          </c:if>
+		   <jsp:include page="../userManageAccounts.jsp" />
+	          
 				<c:if test="${!empty SourceLeadWeb_org.fileContentType}">
 					<div class="welLogo">
-					<img class="logo" src="<c:url value='${sourceleadUrl}/displayOrgImage/${SourceLeadWeb_orgCode}'/>" title="${SourceLeadWeb_orgName}" />
+					<img class="logo" data-id="orgLogoImage" src="${SourceLeadWeb_org.fileUrl}" title="${SourceLeadWeb_orgName}" />
 					</div>
 				</c:if>
 				
@@ -110,8 +85,8 @@
 		  </div>	
 		  
 		  <div class="welBtns">
-			<input type="button"  value="Previous" onClick="javascript:window.location.href = '<c:url value='${appPath}/offboardStep2'/>'" >
-			<input type="button"  value="Proceed to next step" id="save_button"  onclick="javascript:window.location.href = '<c:url value='${appPath}/offboardStep4'/>'" class="Brig">
+			<input type="button"  value="Previous" onClick="javascript:window.location.href = '<c:url value='/app/offboardStep2'/>'" >
+			<input type="button"  value="Proceed to next step" id="save_button"  onclick="javascript:window.location.href = '<c:url value='/app/offboardStep4'/>'" class="Brig">
 			<div class="clearfix"></div>
 		</div>
 		
@@ -127,16 +102,21 @@
 <script>
 function changeTaskStatus(taskId){
 	$("#task"+taskId).attr('style',' height:50px; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/linear-loader.gif"); background-position:center; background-repeat:no-repeat;');
-	
 	 $.ajax({
 	    	type: "POST",
 	    	 url: sourceleadUrl+"/changeTaskStatusForOnboardAndOffboardCandidate?${_csrf.parameterName}=${_csrf.token}&taskId="+taskId, 
-	        success: function(onboardId) {
-	        	$("#task"+taskId).removeAttr("style");
+	        success: function(response) {
+	        	if (response.response === "AWKWARD") {
+	        	    location.href = "/errorPage";
+	        	} else if (response.response === "SUCCESS") {
+	        		$("#task"+taskId).removeAttr("style");
+	        	} else if (response.indexOf('Sign In') !== -1) {
+	        		location.replace(sourceleadUrl);
+	        	} else {
+	        	    showError("Operation failed, please try again");
+	        	}
 	        },
 	    });
-	
-	 
 }
 </script>
 
@@ -169,17 +149,3 @@ function changeTaskStatus(taskId){
 </script>
 
 
-<script>
-		function logoutFormSubmit() {
-			document.getElementById("logoutForm").submit();
-		}
-</script>
-
-<c:url var="logoutUrl" value="/logout"/>
-<form action="${logoutUrl}" method="post" id="logoutForm">
- <input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}"/>
-</form>
-
-<form action="${logoutUrl}" method="post" id="logoutForm">
- <input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}"/>
-</form>

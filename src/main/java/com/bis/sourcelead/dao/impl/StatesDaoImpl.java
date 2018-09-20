@@ -21,22 +21,21 @@ import com.bis.sourcelead.entity.States;
  *
  */
 @Repository
-public class StatesDaoImpl implements StatesDao{
-	
+public class StatesDaoImpl implements StatesDao {
+
 	@Autowired
 	private SessionFactory sessionFactory;
-	
+
 	private static final Logger logger = LoggerFactory.getLogger(UserDaoImpl.class);
-
-
 
 	@Override
 	@Transactional(rollbackFor = { Exception.class })
 	public List<States> getAllStatesByCountryCode(String countryCode) throws Exception {
 		logger.debug("In StatesDaoImpl getAllStatesByCountryCode method");
 		Session session = this.sessionFactory.getCurrentSession();
-		Query query= session.createQuery("from States states where states.countryCode = :countryCode order by states.stateName ASC");
-		List<States> statesList = query.setString("countryCode", countryCode).setCacheable(true).list();
+		Query query = session.createQuery(
+				"from States states where states.countryCode = :countryCode order by states.stateName ASC");
+		List<States> statesList = query.setString("countryCode", countryCode).list();
 		return statesList;
 	}
 
@@ -46,13 +45,13 @@ public class StatesDaoImpl implements StatesDao{
 		Session session = this.sessionFactory.getCurrentSession();
 		List<States> states = new ArrayList<States>();
 		logger.debug("StatesDaoImpl getStatesByStateName");
-		states = session.createQuery("from States where stateName = :name" ).setString( "name", name ).setCacheable(true).list();
+		states = session.createQuery("from States where stateName = :name").setString("name", name).list();
 		if (states.size() > 0) {
 			return states.get(0);
 		} else {
 			return null;
 		}
-   	}
+	}
 
 	@Override
 	@Transactional(rollbackFor = { Exception.class })
@@ -63,9 +62,36 @@ public class StatesDaoImpl implements StatesDao{
 		String[] states = name.split(",");
 		for (String stateName : states) {
 			String query = "select state.stateCode from States state where state.stateName = :name";
-			statesList =  session.createQuery(query).setString( "name", stateName ).setCacheable(true).list();
+			statesList = session.createQuery(query).setString("name", stateName).list();
 			stateCodesList.addAll(statesList);
 		}
 		return stateCodesList;
+	}
+
+	@Override
+	@Transactional
+	public States getStateById(long stateId) {
+		try {
+			Session session = this.sessionFactory.getCurrentSession();
+			return session.get(States.class, stateId);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return null;
+	}
+	
+	@Transactional(rollbackFor = { Exception.class })
+	public String getStateCodeByCountryCodeAndState(String countryCode, String state)
+	{
+		Session session = this.sessionFactory.getCurrentSession();
+		List<String> stateCode = new ArrayList<String>();
+		logger.debug("StatesDaoImpl getStatesByStateName");
+		stateCode = session.createQuery("select states.stateCode from States states where states.stateName = :state and states.countryCode = :countryCode" ).setString("countryCode", countryCode).setString( "state", state ).list();
+		if (stateCode.size() > 0) {
+			return stateCode.get(0);
+		} else {
+			return null;
+		}
+
 	}
 }

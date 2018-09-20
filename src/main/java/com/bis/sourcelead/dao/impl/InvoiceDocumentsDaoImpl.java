@@ -43,7 +43,7 @@ public class InvoiceDocumentsDaoImpl implements InvoiceDocumentsDao {
 		
 		Session session = this.sessionFactory.getCurrentSession();
 		String query = "from InvoiceDocument documents  where documents.invoice.id = :invoiceId and documents.status = '1' ";
-		List<InvoiceDocument> invoiceDocumentsList = session.createQuery(query.toString()).setLong("invoiceId", invoiceId).setCacheable(true).list();
+		List<InvoiceDocument> invoiceDocumentsList = session.createQuery(query.toString()).setLong("invoiceId", invoiceId).list();
 		return invoiceDocumentsList;
 	}
 
@@ -52,7 +52,7 @@ public class InvoiceDocumentsDaoImpl implements InvoiceDocumentsDao {
 	public InvoiceDocument getInvoiceDocumentById(Long documentId) throws Exception {
 		
 		Session session = this.sessionFactory.getCurrentSession();
-		List<InvoiceDocument> documents = session.createQuery("from InvoiceDocument documents where documents.id =:id" ).setLong( "id", documentId ).setCacheable(true).list();
+		List<InvoiceDocument> documents = session.createQuery("from InvoiceDocument documents where documents.id =:id" ).setLong( "id", documentId ).list();
 		if (documents.size() > 0) {
 			return documents.get(0);
 		} else {

@@ -52,6 +52,7 @@
 			                  </select>
 			              </div>
                       </div>
+                      
                     </div>
                  </div>
               </div>
@@ -80,7 +81,7 @@
             <div class="row">
               <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12 myForm">
           <div class="form-group">
-            <label class="col-md-3">Vendor Name <span class="text-danger">&nbsp;*</span></label>
+            <label class="col-md-3">Vendor Name<span class="text-danger">&nbsp;*</span></label>
 
             <div class="col-md-9 chooRadius">
             <div class="input-group col-md-10 pull-left">
@@ -110,10 +111,14 @@
           
             <div class="form-group" id="EmailIdDiv">
 					<label class="col-md-3" for="Project Manager">Email<span class="text-danger">&nbsp;*</span></label>
-					
-			        	<div class="col-md-9">
-					  <input type="text" class="form-control" id="email" name="email" value="${emailId}" field-name="Email Id" data-validation="required validate_Space validate_length length2-100 validate_email" onblur="validateEmail();">
-	                            <span class="hidden">Valid Email</span>
+			        <div class="col-md-9">
+					  <div class="input-group errorInptgroup">
+					  <input type="text" class="form-control" id="email" name="email" value="${emailId}" field-name="Email" data-validation="required validate_Space validate_length length2-100 validate_email" onblur="validateEmail();">
+	                   <span class="hidden">Valid Email</span>
+	                    <span id="emailStatusIconDiv" class="input-group-addon">
+	                    	<i class="fa fa-check text-muted" style="color:#f6f6f6"></i>
+	                  	</span>
+	                   </div>
 			     	</div>
 					</div>
                 <div class="form-group">
@@ -164,7 +169,7 @@
 	             <div class="form-group">
 	              <label class="col-md-3">Owner Name<span class="text-danger">&nbsp;*</span></label>
 	              <div class="col-md-9">
-	                <select multiple data-placeholder="select owner" class="chosen-select form-control" name="owner" id="owner" field-name="Owner"  data-validation="required">
+	                <select multiple data-placeholder="select owner" class="chosen-select form-control" name="owner" id="owner" field-name="Owner Name"  data-validation="required">
 	                 <c:forEach var="user" items="${userList}">
 		                     <option value="${user.id}" ${user.id  == SourceLeadWeb_userId ? 'selected' : ''} >${user.fullName}</option>
 	                </c:forEach> 
@@ -215,14 +220,34 @@
 	              </div>
 	            </div>
 	            
+				 <c:forEach var="section" items="${sourceleadSectionList}" varStatus="sectionOrder">
+	               <c:if test="${sectionOrder.index == 1}">
+	                  <div id="customDiv${section.id}"></div>
+	               </c:if>
+	            </c:forEach>
+		            
                 <div class="form-group">
                 <label class="col-md-3"></label>
                   <div class="col-md-9 checkBox">
                       <label>
-                      <input type="checkbox" value="Y"
-							name="isMailSent" checked="checked">Send Invitation</label>
+                      <input type="checkbox" value="Y" name="isMailSent">Send Invitation</label>
                   </div>
                 </div>
+                
+                	<div class="form-group">
+              <label class="col-md-3"></label>
+              <div class="col-md-9 checkBox">
+                 <label> <input type="checkbox" value="N" name="invoiceOrBillSent" id= "invoiceOrBillSent" onclick = "allowInvoiceEmailSent();"> Billing Email </label>
+              </div>
+            </div>
+            
+            <div class="form-group">
+              <label class="col-md-3"></label>
+              <div class="col-md-9 checkBox">
+                 <label> <input type="checkbox" value="N" name="apOrArSent" id="apOrArSent" onclick = "allowApEmailSent();"> AR Email </label>
+              </div>
+            </div>
+                
                  <input type="hidden" name="vendorContact" value="vendorContact"/>
                 </div>
                 </div>
@@ -299,6 +324,28 @@ function getOrgName(){
 </script>
 
 <script type="text/javascript">
+
+
+function allowApEmailSent(){
+	var checked = document.getElementById("apOrArSent").checked
+	if(checked == true){
+		$("#apOrArSent").val("Y");
+	}else{
+		$("#apOrArSent").val("N");
+	}
+}
+
+
+function allowInvoiceEmailSent(){
+	var checked = document.getElementById("invoiceOrBillSent").checked
+	if(checked == true){
+		$("#invoiceOrBillSent").val("Y");
+	}else{
+		$("#invoiceOrBillSent").val("N");
+	}
+}
+
+
 function getOrgDetails()
 {
 	var orgName = document.getElementById("orgName").value;
@@ -337,6 +384,10 @@ function getOrgDetails()
 		document.getElementById("firstName").value="";
 		document.getElementById("lastName").value="";
 		document.getElementById("phoneNumber").value="";
+		<c:forEach var="section" items="${sourceleadSectionList}" varStatus="sectionOrder">
+		  var sectionId = '${section.id}';
+		  getCustomVendorContactDependentField(sectionId);
+		</c:forEach>
 		
 	});
 </script>
@@ -531,11 +582,14 @@ function validateEmail(){
 					$('#EmailIdDiv').find('p.jquery_form_error_message').remove();
 					getSpocUserDetails();
 					getOwnersList();
-					
+					validateEmailForExistenceUniversally(email, "input#email");
 				}
 			},
 
 		});
+	}else{
+		 $("#emailStatusIconDiv").find("i").remove();
+  		 $("#emailStatusIconDiv").append('<i class="fa fa-check text-muted" style="color:#f6f6f6"></i>');
 	}
 }
 </script>
@@ -808,5 +862,16 @@ function getRolesList(){
 		        }
 		 });
  }
+ 
+ function getCustomVendorContactDependentField(sectionId){
+	 $.ajax({
+			type : "POST" , 
+				 url: sourceleadUrl+"/getAllASectionCustomFields?sectionId="+sectionId,
+				 success: function(data) {
+		        	$('#customDiv'+sectionId).empty();
+		        	$('#customDiv'+sectionId).append(data);
+				 }
+		  });
+}
  </script>
 

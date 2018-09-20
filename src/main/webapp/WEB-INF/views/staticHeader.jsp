@@ -1,92 +1,118 @@
 <!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta charset="utf-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1.0; user-scalable=0;">
-	<link rel="icon" type="image/png" sizes="16x16" href="/resources/css/static-web/images/favicon.png">
-	<link rel="manifest" href="/manifest.json">
+<head>
+<title>${title}</title>
+<%@taglib uri="http://www.springframework.org/tags/form" prefix="form"%>
+<%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
+<meta name="google-site-verification" content="lRRPwOWi0M3yAREOGoDPAjQ4cj4otBXHl_uTWJd93rI" />
+<meta name="msvalidate.01" content="D6B1571D75BB0A86C42A01713002F6FF" />
+<meta name="p:domain_verify" content="e1f8f19c0866ae573868239c1f7893bc"/>
+<meta http-equiv="content-type" content="text/html; charset=utf-8" />
+<meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
+<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no, user-scalable=no">
+<meta property='og:title' content="sourcelead.com"/> 
+<meta property='og:url' content="https://www.sourcelead.com/"/> 
+<meta property='og:description' content='Bridging talent through technology'/> 
+<meta property="og:type" content="article" /> 
+<meta property="og:image" content="https://www.sourcelead.com/resources/images/fav.png"/> 
+<meta name="description" content="${description}">
+<meta name="keywords" content="${keywords}">
+<meta name="robots" content="index, follow">
+	
+	<link rel="stylesheet" href="/resources/css/bootstrap-select.min.css">
+	<link href="/resources/css/jquery-ui.css" rel="stylesheet">
+	<link rel="stylesheet" href="/resources/css/jquery.timepicker.css">
+	
+	<link rel="stylesheet" href="/resources/static-web/css/prettyPhoto.css" type="text/css"/>
+	<link rel="stylesheet" href="/resources/static-web/css/owl.carousel.min.css">
+	<link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+	<link href="/resources/static-web/css/font-awesome.min.css" rel="stylesheet" type="text/css">
+	<link href="/resources/static-web/css/animate.css" rel="stylesheet">
+	<link href="/resources/static-web/css/bootstrap.min.css" rel="stylesheet">
+	<link href="/resources/static-web/css/slwebsite.css" rel="stylesheet">
+	<link href="/resources/static-web/css/slwebsite-res.css" rel="stylesheet">
 	<link rel="icon" type="image/png" href="/resources/images/fav.png" />
-    <title>::Welcome to SourceLead::</title>
-
-    <!-- Bootstrap -->
-    <link href="https://fonts.googleapis.com/css?family=Roboto:300,400,500,700,900" rel="stylesheet">
-    <link href="/resources/css/font-awesome.min.css" rel="stylesheet" type="text/css">
-    <link href="/resources/css/bootstrap.min.css" rel="stylesheet">
-    <link rel="stylesheet" href="/resources/css/static-web/reset.css">
-    <link href="/resources/css/static-web/source-style.css" rel="stylesheet">
-    <link href="/resources/css/static-web/source-responsive.css" rel="stylesheet">
-    <link href="/resources/css/static-web/main-style.css" rel="stylesheet"> 
-
-    <!-- HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries -->
+	<!-- HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries -->
     <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
     <!--[if lt IE 9]>
       <script src="https://oss.maxcdn.com/html5shiv/3.7.3/html5shiv.min.js"></script>
       <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
     <![endif]-->
-  </head>
-  <body> 
-  
-  <header class="headerInpage">
-<section class="headTop headTopFix">
-	<div class="headTopInn">
-    	<ul>
-        	<li><a href="tel:(214) 295-5535"><i class="fa fa-phone"></i> (214) 295-5535</a></li>
-            <li><a href="mailto:info@sourcelead.com"><i class="fa fa-envelope-o"></i>info@sourcelead.com</a></li>
-            <li class="hideres"><a href="/login"><i class="fa fa-user-o"></i> Login</a></li>
-            <div class="clear"></div>
-        </ul>
-    	<div class="clear"></div>    
-    </div>
-</section>
-
-<div class="head_inn">
-  
-  <div class="logo"><a href="/"><img src="/resources/css/static-web/images/logo.png" alt="SourceLead" title="SourceLead"/></a></div>
-  <nav>
-  	<ul class="menu">
-    	<li><a href="/"><i class="fa fa-home"></i></a></li>
-		<li><a href="/jobs">Jobs</a></li>
-        <li><a href="javascript:void(0)" class="ma">What we do<i class="fa fa-caret-down"></i></a>
-			<ul>
-				<li><a href="/crowdsourcing.html">Crowdsourcing</a></li>
-            	<li><a href="/ats.html">ATS</a></li>
-                <li><a href="/vms.html">VMS</a></li>
-                <li><a style="border-bottom:none;" href="/timesheet.html">Time Management</a></li>
-            </ul>
-        </li>
-        <li><a href="javascript:void(0)" class="ma">Resources<i class="fa fa-caret-down"></i></a>
-        	<ul>
-            	<li><a href="/demo.html">Product Videos</a></li>
-                <li><a href="javascript:void(0)" class="requestDemo">Request Personal Demo</a></li>
-                <!-- <li><a style="border-bottom:none;" href="faqs.html">FAQs</a></li> -->
-            </ul>
-        </li>
-        <li><a href="javascript:void(0)">About SourceLead<i class="fa fa-caret-down"></i></a>
-        	<ul>
-            	<li><a href="/about-us.html">About SourceLead</a></li>
-                <li><a href="/team.html">Our team</a></li>
-                <!--<li><a href="about-us.html#client">Clienef="testimonial.html">Testimonial</a></li>
-                <!--<li><a href="careers.html">Careers</a></li>-->
-                <li><a style="border-bottom:none;" href="/contact.html">Contact</a></li>
-            </ul>        
-        </li>
-        <li><a href="/blog.html">Blogs</a></li>
-        <li><a href="javascript:void(0)" class="freeTril freeTrail">Free Trial</a></li>
-        <div class="clear"></div>
-    </ul>
-  </nav>
-  
-  <section class="responsiveMenu">
-  		<a href="javascript:void(0)" class="freeTril freeTrail">Free Trial</a>
-        <i id="menuIcon" class="fa fa-bars"></i>
-  </section>
-  
-  <div class="clear"></div>
-</div>
-
-</header>
-<section class="menuGapInpage"></section>
+    <!-- <script src="/resources/js/jquery-2.1.4.min.js"></script> --> 
+    <!-- Global site tag (gtag.js) - Google Analytics -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=UA-115098165-1"></script>
 <script>
- var sourceleadUrl ='${SourceLeadWeb_sourceleadUrl}';
+window.dataLayer = window.dataLayer || [];
+function gtag(){dataLayer.push(arguments);}
+gtag('js', new Date());
+
+gtag('config', 'UA-115098165-1');
 </script>
+</head>
+<body>
+<div class="marQ">
+        <marquee behavior="scroll" direction="left">
+        <p id="maintenanceStatus"></p>
+        </marquee>
+    </div>
+<nav class="navbar navbar-default customNavBar" id="navHeader-scroll">
+	  <div class="container-fluid">
+		
+	    <div class="navbar-header">
+		  <a class="navbar-brand" href="/"><img src="/resources/images/SourceLead-logo.png"></a>
+		</div>
+
+		<!-- Mobile Nav -->
+		<div onClick="mobileNavfun()" style="float:right" id="mobileNav">
+			<div class="bar1"></div>
+			<div class="bar2"></div>
+			<div class="bar3"></div>
+		</div>
+		<!-- Mobile Nav -->
+
+	<div class="customNavBar-inner deskMenu">
+	<a href="javascript:void(0)" class="closebtn" onclick="closeNav()">&times;</a>
+	<ul class="">
+	<li><a href="/" id="indexpageID">Home</a></li>
+	 <li class="dropdown dropdown-featureshome">
+	 <a data-target="#featureshome" href="javascript:void(0)" id="featuresID">Features
+			  <span class="fa fa-angle-down"></span></a>
+			<ul id="featureshome" class="collapse list-unstyled dropdownmenu-custom">
+<!--
+				<li><a href="features.html">Features</a></li>
+-->
+				<li><a href="/ats.html" id="atsID">ATS</a></li>
+				<li><a href="/vms.html" id="vmsID">VMS</a></li>
+				<li><a href="/crms.html" id="crmID">CRM</a></li>
+				<li><a href="/pms.html" id="pmsID">PMS</a></li>
+				<li><a href="/hrms.html" id="hrmsID">HRMS/Contracts</a></li>
+				<li><a href="/ims.html" id="imsID">IMS</a></li>
+				<li><a href="/immigration.html" id="immigrationID">Immigration</a></li>
+				<li><a href="/mergers-acquisition.html" id="maId">Mergers &amp; Acquisition</a></li>
+			</ul>
+	</li>
+	<li><a href="/search-jobs.html" id="searchjobID">Search Job</a></li>
+	<li><a href="/market-place.html" id="marketplaceID">Marketplace</a></li>
+	<li><a href="/about-us.html" id="aboutusID">About Us</a></li>
+	<!--<li><a href="helpManuals.html">Help</a></li>-->
+
+	<!-- <li><a href="/blog/all.html" id="blogID">Blog</a></li> -->
+
+	<li class="dropdown dropdown-featureshome">
+	 <a data-target="#featureshome" href="javascript:void(0)" id="resourcesID">Resources
+			  <span class="fa fa-angle-down"></span></a>
+			<ul id="featureshome" class="collapse list-unstyled dropdownmenu-custom">
+				<li><a class="helpbtn" href="/help.html">Help Manuals</a></li>
+				<li><a href="/blog/all.html" id="blogID">Blog</a></li>
+			</ul>
+	</li>
+
+	<li><a href="/contact.html" id="contactID">Contact</a></li>
+	<!-- <li><a href="/register" title="Login">Sign Up</a></li> -->
+		 <li><a class="loginbtn" href="/login" title="Login">Login</a></li>
+	
+	</ul>
+		</div>
+		
+	  </div>
+	</nav>

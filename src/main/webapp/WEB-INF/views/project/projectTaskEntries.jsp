@@ -48,11 +48,13 @@
 	        
 <!-- TimeEntry Modal Pop -->
 					<form id="time_entry_form" name="time_entry_form">
-					<div class="modal-Time clearfix">
+					<div class="modal-Time clearfix" id="contentDivTimeSheetId">
 					    <!-- Modal content-->
 					      <div class="clearfix">
 					      <input type="hidden" name="taskUUID" value="${taskUUID}">
 					      <input type="hidden" name="projectId" value="${projectId}">
+					      <input type="hidden" id="editTask" name="editTask" value="">
+					      
 					          <button type="button" class="close" onclick="closeTimeEntryTasks()">&times;</button> 
 					          <p><strong>Time Entry</strong></p>
 					      </div>
@@ -61,7 +63,7 @@
 					            <div class="row">
 					              <div class="col-md-12">
 					                <input type="hidden" id="projectTaskMemberId" name="projectTaskMemberId" value="${projectmember.id}"/>
-					                <input type="text" data-validation="required" class="form-control input-sm calendar" field-name="Date" name="timesheetDate"  id="timesheetDate" placeholder="Date">
+					                <input type="text" data-validation="required" class="form-control input-sm calendar" field-name="Date" name="timesheetDate"   id="timesheetDate" placeholder="Date">
 					                	<input type="hidden" value="${startDate}" id="projectAssignedDate">
 					                	<input type="hidden" value="${endDate}" id="projectTerminationDate">
 					              </div>
@@ -70,13 +72,13 @@
 					          <div class="col-md-2">
 					            <div class="row">
 					              <div class="col-md-12" id="projectTaskErrorMsgDiv">
-					                <input type="text" data-validation="required" class="form-control input-sm timeicon editMe" field-name="Hours" name="hours" onblur="editMe(this);" id= "timesheetHours"  placeholder="HH:MM">
+					                <input type="text" data-validation="required" class="form-control input-sm timeicon editMe" field-name="Hours" name="hours" onblur="editMe(this);getTaskEntriesBydate();" id= "timesheetHours"  placeholder="HH:MM">
 					              </div>
 					            </div>
 					          </div>
 					          <div class="clearfix mb"></div>
 					          <div class="col-md-12 mb10">
-					                <textarea class="form-control" rows="2" id="entryComment" name="comments" field-name="Comments" data-validation-optional="true" placeholder="Comments"></textarea>
+					                <textarea class="form-control" id="timesheetComments" rows="2" id="entryComment" name="comments" field-name="Comments" data-validation-optional="true" placeholder="Comments"></textarea>
 					          </div>
 					        </div>
 					      <div class="modalFooter mt5">
@@ -88,8 +90,8 @@
 					</div>
 					</form>
 					                <!-- TimeEntry Modal Pop Ends -->	        
-
-					 <div id="tableContent" class="clearfix project_wrap_table">
+                     
+					 <div id="tableContent" class="clearfix project_wrap_table overflow_Auto">
 			                    <table>
 			                        <thead>
 			                            <tr>
@@ -98,8 +100,10 @@
 			                                <th>Hours</th>
 			                                <th>Comments</th>
 			                                <th>Status</th>
+			                                <th>Edit</th>
 			                            </tr>
 			                        </thead>
+			                        <c:set var="projectMemID" value="${projectmember.id}" scope="session"/>
 			                        <tbody id="timeDayEntriesData">
 			                        		<jsp:include page="projectTaskTableData.jsp"></jsp:include>
 			                        </tbody>
@@ -136,7 +140,7 @@
 function saveTaskDetails(){
    if ($('#time_entry_form').validate(false, validationSettings)){  
   		   var form = $('#time_entry_form')[0];
-   	       var formData = new FormData(form); 
+   	       var formData = new FormData(form);
 	         $.ajax({
 				 type : "POST",
 				 data: formData,
@@ -144,8 +148,14 @@ function saveTaskDetails(){
   		         contentType:false, 
 				 url : sourceleadUrl+"/addTimeSheetDayEntries",
 				  		success : function(data) {
-				  			getSavedTaskDetails();
-				  			flushTimeEntryTasks();
+				  			if(data.response === "SESSION_TIMEDOUT") {
+					    			location.replace(sourceleadUrl);
+					    	 } else if (data.response === "AWKWARD") {
+			                        location.href = "/errorPage";
+					    	 } else if (data.response === "SUCCESS") {
+						  			getSavedTaskDetails();
+						  			closeTimeEntryTasks();
+				  			}
 				},
 			});
 			return true; 
@@ -154,6 +164,91 @@ function saveTaskDetails(){
 	 }   
 }
 </script>
+
+<script>
+	function getTaskEntriesBydate(){
+		var projectMember = '${projectmember.id}';
+		var timesheetHour =  $('#timesheetHours').val();
+		var timeDate =  $('#timesheetDate').val();
+		var taskUUID = '${taskUUID}';
+		var editTaskTime = $('#editTask').val();
+		$("#projectTaskErrorMsgDiv").find('p.jquery_form_error_message').remove();
+		if(timesheetHour != null && timesheetHour != 'undefined' && timesheetHour != '' && timeDate != null && timeDate != 'undefined' && timeDate != ''){
+			$("#projectTaskErrorMsgDiv").find('p.jquery_form_error_message').remove();
+			$.ajax({
+				 type : "POST",
+				 	 url : sourceleadUrl+"/ProjectTasks/calculateTotalTaskHoursForADay?&timeDate="+timeDate+"&projectMember="+projectMember+"&timesheetHour="+timesheetHour+"&editTaskTime="+editTaskTime,
+				  		success : function(data) {
+				  			if(data == "false"){   
+				  				$("#projectTaskErrorMsgDiv").append("<p class='jquery_form_error_message'>Day hours should not be more than 24</p>");
+				  				$('#savetask').attr('disabled','disabled');
+				  			 }else if(data =="noDate"){
+				  				$("#projectTaskErrorMsgDiv").append("<p class='jquery_form_error_message'>Please Select Date.</p>");
+				  				//$('#timesheetHours').val('');
+				  				$('#savetask').attr('disabled','disabled');
+				  			}else if(data =="true"){
+				  				$("#projectTaskErrorMsgDiv").find('p.jquery_form_error_message').remove();
+				  			    $('#savetask').removeAttr('disabled','disabled');
+				  			}
+				  			
+				},
+			});	
+		}else if(timesheetHour != null && (timeDate == '' || timeDate == 'undefined' || timeDate == null)){
+			    $("#projectTaskErrorMsgDiv").append("<p class='jquery_form_error_message'>Please Select Date.</p>");
+				$('#savetask').attr('disabled','disabled');
+		}
+		 else if(timeDate  != null && (timesheetHour == '' || timesheetHour == 'undefined' || timesheetHour == null)){
+		     		editProjectTaskTimesheetDayEntry();
+			     }
+			}
+</script>
+
+
+<script>
+function editProjectTaskTimesheetDayEntry(timesheetDate,type){
+	var projectMember = '${projectmember.id}';
+	$('#editTask').val(type);
+	if(projectMember!= null && projectMember !='' && projectMember!='undefined'){
+	var timeDate = '';
+	if(timesheetDate != null && timesheetDate !='' && timesheetDate !='undefined'){
+		 $(".modal-Time").fadeIn();
+		 var timeDate =  $('#timesheetDate').val(timesheetDate);
+		timeDate = timesheetDate;	
+	}else{
+		timeDate =  $('#timesheetDate').val();	
+	}
+	var taskUUID = '${taskUUID}';
+	$.ajax({
+		 type : "POST",
+		 	 url : sourceleadUrl+"/ProjectTasks/editProjectTaskTimesheetDayEntry?&timeDate="+timeDate+"&projectMember="+projectMember+"&taskUUID="+taskUUID,
+		  		success : function(data) {
+		  			if(data != null && data !='' && data !='undefined'){
+		  				$('#timesheetHours').val('');
+		  				$('#timesheetHours').val(data.totalHours);
+		  				$('textarea#timesheetComments').val(data.comments);
+		  			}else{
+		  				$('#timesheetHours').val('');
+		  				$('textarea#timesheetComments').val('');
+		  			}
+				},
+			});
+	}
+}
+</script>
+
+
+<script>
+function deleteProjectTaskEntry(timesheetEntryId){
+$.ajax({
+	 type : "POST",
+	 	 url : sourceleadUrl+"/ProjectTasks/deleteProjectTaskTimesheetDayEntry?&timesheetEntryId="+timesheetEntryId,
+	  		success : function(data) {
+	  			getSavedTaskDetails();
+	  		},
+		});
+}
+</script>
+
 
 <script>
 function getSavedTaskDetails(){
@@ -165,6 +260,7 @@ function getSavedTaskDetails(){
     }else{
     	searchValue = '';
     }
+    $("#projectTaskDiv").attr('style','position:absolute; width:100%; height:350px; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
 	$.ajax({
 		 type : "POST",
 		 	 url : sourceleadUrl+"/ProjectTasks/getSavedTaskDetails?&taskUUID="+taskUUID+"&searchValue="+searchValue,
@@ -182,7 +278,7 @@ function getSavedTaskDetails(){
 <script>
 function flushTimeEntryTasks(){
 	 $('#timesheetDate').val('');
-	 $('#timesheetHours').val('');
+	 $('#timesheetHours').val();
 	 $('#entryComment').val('');
 	 $(".modal-Time").fadeOut();
 	 $('#time_entry_form').find('p.jquery_form_error_message').remove();
@@ -310,6 +406,9 @@ $("#projectTaskSearch").keyup(function(event) {
 	  	  changeYear: true,
 	  	  minDate:projectAssignedDate,
 		  maxDate:projectTerminationDate,
+		  onSelect: function (selected) {
+			  editProjectTaskTimesheetDayEntry();
+	        }
 	  });
 </script>
 					  
@@ -338,37 +437,30 @@ function editMe(local){
 		 var min2 = minutes.charAt(1);
 		 if(!isNaN(hours1) && isNaN(hours2) && isNaN(min1) && isNaN(min2)){
 			 $("#"+id).val("0"+hours1+":00");
-			 //setTotals();
 			 checkHours(); 
 		 }
 		 if(isNaN(hours1) && !isNaN(hours2) && isNaN(min1) && isNaN(min2)){
 			 $("#"+id).val("0"+hours2+":00");
-			 //setTotals();
 			 checkHours(); 
 		 }
 		 else if(isNaN(hours)  && !isNaN(min1) && isNaN(min2)){
 			 $("#"+id).val("00:"+min1+"0");
-			 //setTotals();
 			 checkHours(); 
 		 }
 		 else if(isNaN(hours)  && isNaN(min1) && !isNaN(min2)){
 			 $("#"+id).val("00:0"+min2);
-			 //setTotals();
 			 checkHours(); 
 		 }
 		 else if(!isNaN(hours)  && isNaN(min1) && isNaN(min2)){
 			 $("#"+id).val(hours+":00");
-			 //setTotals();
 			 checkHours(); 
 		 }
 		 else if(!isNaN(hours)&& !isNaN(min1) && isNaN(min2)){
 			 $("#"+id).val(hours+":"+"0"+min1);
-			 //setTotals();
 			 checkHours(); 
 		 }
 		 else if(!isNaN(hours)&& isNaN(min1) && !isNaN(min2)){
 			 $("#"+id).val(hours+":"+"0"+min2);
-			 //setTotals();
 			 checkHours(); 
 		 }
 		 else if(!isNaN(hours)&& !isNaN(minutes)){
@@ -383,11 +475,7 @@ function editMe(local){
 				  minutes = "0"+minutes;
 			  }
 			  $("#"+id).val(hours+":"+minutes);
-			 // setTotals();
 			  checkHours(); 
-		 }else if(isNaN(hours1) && isNaN(hours2) && isNaN(min1) && isNaN(min2)){
-		     $("#"+id).val("00:00");
-		    // setTotals();
 		 }
 		 
 }
@@ -420,33 +508,12 @@ function checkHours(){
 	    		result = result+"Day";
 	 	}
   }
-	    if(result != "" && result != null && result != 'undefined'){   
-			var outPut = "<p>"+result+" hours should not be more than 24<b onclick='flushTimeValue();'>X</b></p>";
-			$("#projectTaskErrorMsg").removeAttr('style');
-			$("#projectTaskErrorMsg").attr('style','display:block;');
-			$("#projectTaskErrorMsg").empty();
-			$("#projectTaskErrorMsg").append(outPut);
-			$("#projectTaskErrorMsgDiv").append("<p class='jquery_form_error_message'>Day hours should not be more than 24</p>");
-			$('#savetask').attr('disabled','disabled');
-		 }else{
-		    $("#projectTaskErrorMsg").removeAttr('style');
-		    $("#projectTaskErrorMsg").attr('style','display:none;');
-			$("#projectTaskErrorMsg").empty();
-			$("#hideError").empty();
-		} 
-		
-		$(".time_pop b").click(function(){
-			$("#projectTaskErrorMsg").removeAttr('style');
-			$("#projectTaskErrorMsg").attr('style','display:none;');
-		    $("#projectTaskErrorMsg").empty();
-		}); 
-	
 }
 
 </script>
 <script>
 function flushTimeValue(){
-	$('#timesheetHours').val('00:00');
+	$('#timesheetHours').val();
 	$("#projectTaskErrorMsgDiv").find('p.jquery_form_error_message').remove();
 	$('#savetask').removeAttr('disabled','disabled');
 }

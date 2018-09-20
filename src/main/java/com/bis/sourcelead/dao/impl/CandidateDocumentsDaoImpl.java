@@ -85,7 +85,7 @@ public class CandidateDocumentsDaoImpl implements CandidateDocumentsDao{
 	public List<CandidateDocuments> getCandidateDocumentsListByCandidateIdAndOrgLocationID(Long candidateId, Long orgLocationId) throws Exception {
 		Session session = this.sessionFactory.getCurrentSession();
 		String query = "from CandidateDocuments cd left join fetch cd.requestedDocumentsId where cd.candidateId.id =:candidateId  and cd.status = 1 ORDER BY cd.id DESC";
-		List<CandidateDocuments> candidateDocumentsList = session.createQuery(query).setLong("candidateId", candidateId).setCacheable(true).list();
+		List<CandidateDocuments> candidateDocumentsList = session.createQuery(query).setLong("candidateId", candidateId).list();
 		return candidateDocumentsList;
 	}
 
@@ -112,7 +112,7 @@ public class CandidateDocumentsDaoImpl implements CandidateDocumentsDao{
 	public CandidateDocuments getCandidateDocumentByCandidateId(Long candidateId,String documentUUID) throws Exception {
 		Session session = this.sessionFactory.getCurrentSession();
 		String query = "from CandidateDocuments  cd left join fetch cd.candidateId where cd.candidateId.id = :candidateId and cd.documentUUID =:documentUUID";
-		List<CandidateDocuments> candidateDocumentsList =  session.createQuery(query.toString()).setLong("candidateId", candidateId).setString("documentUUID", documentUUID).setCacheable(true).list();
+		List<CandidateDocuments> candidateDocumentsList =  session.createQuery(query.toString()).setLong("candidateId", candidateId).setString("documentUUID", documentUUID).list();
 		CandidateDocuments canDoc = null;
 		if (candidateDocumentsList != null && candidateDocumentsList.size() > 0) {
 			canDoc = (CandidateDocuments) candidateDocumentsList.iterator().next();
@@ -125,8 +125,8 @@ public class CandidateDocumentsDaoImpl implements CandidateDocumentsDao{
 	public CandidateDocuments getCandidateDocumentByDocumentId(Long documentId) throws Exception {
 		logger.debug("In Candidate Document By documentId");
 		Session session = this.sessionFactory.getCurrentSession();
-		String query = " from CandidateDocuments cd where cd.id = :documentId" ;
-		List<CandidateDocuments> candidateDocumentsList =session.createQuery(query).setLong("documentId", documentId).setCacheable(true).list(); 
+		String query = " from CandidateDocuments cd  where cd.id = :documentId" ;
+		List<CandidateDocuments> candidateDocumentsList =session.createQuery(query).setLong("documentId", documentId).list(); 
 		CandidateDocuments candidateDocuments = null;
 		if(candidateDocumentsList != null && !candidateDocumentsList.isEmpty()){
 			candidateDocuments = candidateDocumentsList.iterator().next();
@@ -140,7 +140,7 @@ public class CandidateDocumentsDaoImpl implements CandidateDocumentsDao{
 		logger.debug("In Candidate Resume By ResumeId");
 		Session session = this.sessionFactory.getCurrentSession();
 		String query = " from CandidateDocuments cd where cd.documentUUID = :documentUUID" ;
-		List<CandidateDocuments> candidateDocumentsList = session.createQuery(query).setString("documentUUID", documentUUID).setCacheable(true).list(); 
+		List<CandidateDocuments> candidateDocumentsList = session.createQuery(query).setString("documentUUID", documentUUID).list(); 
 		CandidateDocuments candidateDocuments = null;
 		if(candidateDocumentsList != null && !candidateDocumentsList.isEmpty()){
 			candidateDocuments = candidateDocumentsList.iterator().next();
@@ -154,7 +154,7 @@ public class CandidateDocumentsDaoImpl implements CandidateDocumentsDao{
 	{
 		Session session = this.sessionFactory.getCurrentSession();
 		String query = "from CandidateDocuments cd left join fetch cd.candidateId where cd.requestedDocumentsId.id =:requestedDocumentsId and cd.status = 1 ";
-		List<CandidateDocuments> candidateDocumentsList = session.createQuery(query).setLong("requestedDocumentsId", requestedDocumentsId).setCacheable(true).list();
+		List<CandidateDocuments> candidateDocumentsList = session.createQuery(query).setLong("requestedDocumentsId", requestedDocumentsId).list();
 		return candidateDocumentsList;
 	}
 
@@ -165,7 +165,7 @@ public class CandidateDocumentsDaoImpl implements CandidateDocumentsDao{
 		Session session = this.sessionFactory.getCurrentSession();
 		boolean flag = false;
 		String query ="from CandidateDocuments cd where cd.documentType = :candidateDocument and cd.candidateId.id = :candidateId and cd.status ='1' ";
-		List<CandidateDocuments> candidateDocumentsList = session.createQuery(query).setLong("candidateId", candidateId).setString("candidateDocument", candidateDocument).setCacheable(true).list();
+		List<CandidateDocuments> candidateDocumentsList = session.createQuery(query).setLong("candidateId", candidateId).setString("candidateDocument", candidateDocument).list();
 		if(candidateDocumentsList !=null && candidateDocumentsList.size() >0){
 			flag = true;
 			return flag;

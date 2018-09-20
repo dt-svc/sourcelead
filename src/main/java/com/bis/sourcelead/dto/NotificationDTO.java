@@ -2,7 +2,7 @@ package com.bis.sourcelead.dto;
 
 import java.io.Serializable;
 
-public class NotificationDTO implements Serializable{
+public class NotificationDTO extends SearchDTO implements Serializable{
 	
 	private String firstName;
 	private String lastName;
@@ -10,6 +10,14 @@ public class NotificationDTO implements Serializable{
 	private String fileUrl;
 	private String body;
 	private String calDays;
+	private String spocUUID;
+	private String actionLink;
+	private String spocInvitationStatus;
+	private String responderType;
+	private String orgRelationUUID;
+	private String uuId;
+	private String mode;
+	
 	public String getFirstName()
 	{
 		return firstName;
@@ -58,7 +66,47 @@ public class NotificationDTO implements Serializable{
 	{
 		this.calDays = calDays;
 	}
-	
-	
+	public String getSpocUUID() {
+		return spocUUID;
+	}
+	public String getActionLink() {
+		return actionLink;
+	}
+	public String getSpocInvitationStatus() {
+		return spocInvitationStatus;
+	}
+	public String getResponderType() {
+		return responderType;
+	}
+	public String getOrgRelationUUID() {
+		return orgRelationUUID;
+	}
+	public void setSpocUUID(String spocUUID) {
+		this.spocUUID = spocUUID;
+	}
+	public void setActionLink(String actionLink) {
+		this.actionLink = actionLink;
+	}
+	public void setSpocInvitationStatus(String spocInvitationStatus) {
+		this.spocInvitationStatus = spocInvitationStatus;
+	}
+	public void setResponderType(String responderType) {
+		this.responderType = responderType;
+	}
+	public void setOrgRelationUUID(String orgRelationUUID) {
+		this.orgRelationUUID = orgRelationUUID;
+	}
+	public String getUuId() {
+		return uuId;
+	}
+	public void setUuId(String uuId) {
+		this.uuId = uuId;
+	}
+	public String getMode() {
+		return mode;
+	}
+	public void setMode(String mode) {
+		this.mode = mode;
+	}
 	
 }

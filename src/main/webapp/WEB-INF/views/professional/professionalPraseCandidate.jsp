@@ -59,7 +59,7 @@
     <div class="pull-left">
       <h2>Profile Update</h2>
     </div>
-    <div class="pull-right brud-crum"><a href="<c:url value='${appPath}/professionalDashboard'/>">Home</a> &raquo; Profile Update</div>
+    <div class="pull-right brud-crum"><a href="<c:url value='${appPath}/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a> &raquo; Profile Update</div>
   </section>
   <div class="content-area content-new clearfix">
   <div id="loading"></div> 
@@ -76,7 +76,7 @@
               </span> 
            </label>
 
-             <input type="text" class="form-control" readonly id="uploadFile" name="docFile" type="file"  name="" placeholder="Upload Resume ..." field-name="Upload Resume" data-validation="required validate_Space validatedoc " >
+             <input type="text" class="form-control" readonly id="uploadFile" name="docFile" type="file"  name="" placeholder="Upload Resume ..." field-name="Resume" data-validation="required validate_Space validatedoc " >
          </div>
           </div>
         </div>
@@ -88,6 +88,17 @@
             <input type="text" class="form-control" id="firstName" name="firstName" readonly="readonly" value="${SourceLeadWeb_loginUserFirstName}"  field-name="First Name" data-validation="required validate_AlphaNumber validate_Space validate_length length1-100" >
           </div>
         </div>
+        
+        <div class="form-group">
+						<label class="col-md-3">Middle Name</label>
+						<div class="col-md-9">
+							<input type="text" class="form-control" id="middleName"
+								name="middleName" value="" field-name="Middle Name"
+								data-validation="validate_AlphaNumber validate_length length1-100"
+								data-validation-optional="true" value="">
+						</div>
+					</div>
+        
         <div class="form-group">
           <label class="col-md-3">Last Name</label>
           <div class="col-md-9">
@@ -170,6 +181,36 @@
           </div>
         </div>
         
+        	<div class="form-group">
+                      <label class="col-md-3">Date of Birth</label>
+                         <div class="col-md-9">
+                           <div class="input-group">
+                              <input type="text" value="" name="dateofBirth" class="form-control calendar" id="dateofBirth" readonly="readonly">
+                              <span class="input-group-addon" onClick="clearDateOfBirth();"><i class="colorRed fa fa-times cursorPointer"></i></span>
+                           </div>
+                        </div>
+                  </div>
+					
+					<div class="form-group">
+						<label class="col-md-3">Marital Status</label>
+						<div class="col-md-9">
+						<label class="paddingRight"><input type="radio"  value="Single" name="maritalStatus"><span class="mr5"></span>Single</label>
+						<label class="paddingLeft paddingRight"><input type="radio"  value="Married" name="maritalStatus"><span class="mr5"></span>Married</label>
+						<label class="paddingRight"><input type="radio"  value="Divorsed" name="maritalStatus"><span class="mr5"></span>Divorsed</label>
+						<label class="paddingLeft paddingRight"><input type="radio"  value="Separated" name="maritalStatus"><span class="mr5"></span>Separated</label>
+						</div>
+					</div>
+					
+					<div class="form-group">
+						<label class="col-md-3">Gender</label>
+						<div class="col-md-9" id= "errorGenderMsg">
+						<label class="paddingRight"><input type="radio"  value="Male"  name="gender" onblur="genderCheckValidation(this)"><span class="mr5"></span>Male</label>
+						<label class="paddingLeft paddingRight"><input type="radio"  value="Female" name="gender" onblur="genderCheckValidation(this)"><span class="mr5"></span>Female</label>
+						<label class="paddingRight"><input type="radio"  value="Transgender" name="gender" onblur="genderCheckValidation(this)"><span class="mr5"></span>Transgender</label>
+						<input type="hidden"  id="genderValue" name="genderValue"  field-name="Gender" data-validation="required"/> 		
+						</div>
+					</div>
+        
         <!-- <div class="form-group">
 				<label class="col-md-3">Country</label>
 				<div class="col-md-9">
@@ -204,9 +245,9 @@
        </div>
        
         <div class="form-group">
-         <label class="col-md-3">Employment type</label>
+         <label class="col-md-3">Employment type<span class="text-danger">&nbsp;*</span></label>
          <div class="col-md-9">
-              <select class="selectpicker form-control" id="designationType" name="designationType" onChange="getDesignationType(this);">
+              <select class="selectpicker form-control" id="designationType" field-name="Employment Type" name="designationType" data-validation="required" onChange="getDesignationType(this);">
                 <option value="">--Select--</option>
                  <option>C2C</option>
                  <option>W-2</option>
@@ -451,9 +492,8 @@
     --%>
 <script type="text/javascript">
 	function storeCandidate() {
-		var candidateId = '${candidateId}'
+		var candidateId = '${SourceLeadWeb_candidateId}';
 		rateValidations();
-		
 		var validationSettings = {
 				errorMessagePosition : 'element',
 				borderColorOnError : '',
@@ -475,8 +515,20 @@
 		        	    processData: false,
 		    	        contentType:false,
 						url : sourceleadUrl+"/storeProfessionalParseCandidate?${_csrf.parameterName}=${_csrf.token}&candidateId="+candidateId,
-						success : function(result) {
-								location.replace(sourceleadUrl+"/professionalProfile");
+						success : function(response) {
+							if (response && response.response === "INVALID_DATA") {
+			                    $("#store_candidate").removeAttr("disabled");
+			                    $("#store_candidate").removeAttr('button').val('Save');
+			                    showError(result.responseMessage);
+			                } else if (response.response === "AWKWARD") {
+			                    location.href = "/errorPage";
+			                } else if (response.response === "SUCCESS") {
+			                	location.replace(sourceleadUrl+"/professionalProfile");	
+			                } else if (response.indexOf('Sign In') !== -1) {
+								location.replace(sourceleadUrl);
+							} else {
+			                    showError("Operation failed, please try again");
+			                }
 						},
 					});
 			return true;
@@ -489,6 +541,42 @@
 		$("#candidate_form").showHelpOnFocus();
 		$("#candidate_form").validateOnBlur(false, validationSettings);
 	});
+</script>
+ <script type="text/javascript">
+	function genderCheckValidation(id){
+		 var gendersList = [];
+ 		 $("input[name='gender']:checked").each( function (i) {
+ 			gendersList[i] = $(this).val();
+ 		});
+ 		 
+		if (gendersList.length > 0) { 
+		document.getElementById("genderValue").value = id.value;
+		}else{
+			$('#genderValue').val(''); 
+		}
+	} 
+</script>
+<script>
+  $( function() {
+	  var locationDate ='${SourceLeadWeb_orgLocations.dateFormat}'; 
+	  // written common method in slead-common.js for date formats start
+	  var finalDateFormat = getJSDateFormat(locationDate);
+	  //end
+	  $('#dateofBirth').datepicker({
+	      dateFormat: finalDateFormat,
+	      changeMonth: true,
+	  	  changeYear: true,
+	  	  yearRange: "-100:+0",
+	  	  maxDate:0
+	      //minDate: 0  this line for to restrict selection of previous dates
+	  });
+	  
+  } );
+  
+  function clearDateOfBirth(){
+		$("#dateofBirth").val("");
+		};
+		
 </script>
 
 <script type="text/javascript">
@@ -548,13 +636,19 @@ function validate_fileupload(fileName)
 		    	$.ajax({
 			    	type: "POST",
 			        url: sourceleadUrl+"/profileBySkillSet?${_csrf.parameterName}=${_csrf.token}&allSkills="+allSkills, 
-			        success: function(data) {
-			        	var primarySkill = data;
-			        	      $("#primarySkill").val(primarySkill);
-			        	
+			        success: function(response) {
+			        	if (response.response === "AWKWARD") {
+			        	    location.href = "/errorPage";
+			        	} else if (response.response === "SUCCESS") {
+			        		var primarySkill = response.object;
+				        	$("#primarySkill").val(primarySkill);
+			        	} else if (response.indexOf('Sign In') !== -1) {
+			        		location.replace(sourceleadUrl);
+			        	} else {
+			        	    showError("Operation failed, please try again");
+			        	}
 			        },
 			    });
-		    	
 		    });
 		   $("#candidateSkills").val('').trigger("chosen:updated");
 	       $("#candidateEducation").val('').trigger("chosen:updated");
@@ -573,18 +667,26 @@ function validate_fileupload(fileName)
 		 $.ajax({
 		    	type: "POST",
 		        url: sourceleadUrl+"/validateCandidateEmail?${_csrf.parameterName}=${_csrf.token}&email="+email+"&candidateType=Candidate", 
-		        success: function(data) {
-		        	if(data == 'true'){
-		        		  $('#emailDiv').find('p.jquery_form_error_message').remove();
-						  $("input#email").after("<p class='jquery_form_error_message'>"+email+" is Already Existed</span>");
-						  document.getElementById("email").setAttribute('record-exist','yes');
-						  document.getElementById("email").setAttribute('record-exist-errorMsg',email+' is Already Existed'); 
-		        	}
-		        	else{
-		        		 $('input#email').removeAttr( "record-exist record-exist-errormsg");
-		        		 $('#emailDiv').find('p.jquery_form_error_message').remove(); 
-		        		 $("#store_candidate" ).addClass('button').val('Save');
-                         $("#store_candidate").removeAttr("disabled");
+		        success: function(response) {
+		        	if (response.response === "AWKWARD") {
+		        	    location.href = "/errorPage";
+		        	} else if (response.response === "SUCCESS") {
+		        		if(response.object == 'true'){
+			        		  $('#emailDiv').find('p.jquery_form_error_message').remove();
+							  $("input#email").after("<p class='jquery_form_error_message'>"+email+" is Already Existed</span>");
+							  document.getElementById("email").setAttribute('record-exist','yes');
+							  document.getElementById("email").setAttribute('record-exist-errorMsg',email+' is Already Existed'); 
+			        	}
+			        	else{
+			        		 $('input#email').removeAttr( "record-exist record-exist-errormsg");
+			        		 $('#emailDiv').find('p.jquery_form_error_message').remove(); 
+			        		 $("#store_candidate" ).addClass('button').val('Save');
+	                         $("#store_candidate").removeAttr("disabled");
+			        	}
+		        	} else if (response.indexOf('Sign In') !== -1) {
+		        		location.replace(sourceleadUrl);
+		        	} else {
+		        	    showError("Operation failed, please try again");
 		        	}
 		        },
 		    });
@@ -661,33 +763,33 @@ function getDesignationType(designationType){
 <script>
 
 function rateValidations(){
+	
 var rateType = document.getElementById("rateType").value; 
-if(rateType != null && rateType != ""){
-	 $('#expectedRate').removeAttr('data-validation-optional');
-	 $('#expectedRate').attr("data-validation","required"); 
-}else{
-	 $('#expectedRate').removeAttr('data-validation');
-	 $('#expectedRate').attr("data-validation-optional","true");
-	 $('#rateType').removeAttr('data-validation');
-	 $('#rateType').attr("data-validation-optional","true"); 
-} 
+	
+	if(rateType != null && rateType != ""){
+		 $('#expectedRate').removeAttr('data-validation-optional');
+		 $('#expectedRate').attr("data-validation","required validate_Space validate_int validate_length length1-8"); 
+	}else{
+		 $('#expectedRate').removeAttr('data-validation');
+		 $('#expectedRate').attr("data-validation-optional","true");
+		 $('#rateType').removeAttr('data-validation');
+		 $('#rateType').attr("data-validation-optional","true"); 
+	} 
 
 var expectedRate = document.getElementById("expectedRate").value; 
-if(expectedRate != null && expectedRate != ""){
-	
-	 $('#rateType').removeAttr('data-validation-optional');
-	 $('#rateType').attr("data-validation","required"); 
-}else{
-$('#rateType').removeAttr('data-validation');
-$('#rateType').attr("data-validation-optional","true"); 
-}
-
-
+	if(expectedRate != null && expectedRate != ""){
+		 $('#rateType').removeAttr('data-validation-optional');
+		 $('#rateType').attr("data-validation","required"); 
+		 $('#expectedRate').attr("data-validation", "required validate_Space validate_int validate_length length1-8");
+	}else{
+		$('#rateType').removeAttr('data-validation');
+		$('#rateType').attr("data-validation-optional","true"); 
+	}
 
 var currentRateType = document.getElementById("currentRateType").value; 
 	if(currentRateType != null && currentRateType != ""){
 		$('#currentRate').removeAttr('data-validation-optional');
-		$('#currentRate').attr("data-validation","required"); 
+		$('#currentRate').attr("data-validation","required validate_Space validate_int validate_length length1-8"); 
 	}else{
 		$('#currentRate').removeAttr('data-validation');
 	 	$('#currentRate').attr("data-validation-optional","true"); 
@@ -695,18 +797,14 @@ var currentRateType = document.getElementById("currentRateType").value;
 	 	$('#currentRateType').attr("data-validation-optional","true"); 
 	} 
 
-
 var currentRate = document.getElementById("currentRate").value; 
 	 if(currentRate != null && currentRate != ""){
-		
 		 $('#currentRateType').removeAttr('data-validation-optional');
 		 $('#currentRateType').attr("data-validation","required"); 
-		 
+		 $('#currentRate').attr("data-validation", "required validate_Space validate_int validate_length length1-8");
 	 }else{
-		 
-			 $('#currentRateType').removeAttr('data-validation');
-			 $('#currentRateType').attr("data-validation-optional","true"); 
-	 
+		 $('#currentRateType').removeAttr('data-validation');
+		 $('#currentRateType').attr("data-validation-optional","true"); 
 	 }
 	 
 }

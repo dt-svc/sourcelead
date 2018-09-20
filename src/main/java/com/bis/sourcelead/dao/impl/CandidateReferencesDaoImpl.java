@@ -16,6 +16,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.bis.sourcelead.dao.CandidateReferencesDao;
 import com.bis.sourcelead.entity.CandidateReferences;
+import com.bis.sourcelead.entity.ContactsGroup;
 import com.bis.sourcelead.entity.Projects;
 import com.bis.sourcelead.exception.SourceLeadConstraintViolationException;
 
@@ -83,7 +84,7 @@ public class CandidateReferencesDaoImpl implements CandidateReferencesDao{
 			Long orgLocationId) throws Exception {
 		Session session = this.sessionFactory.getCurrentSession();
 		String query = "from CandidateReferences cr left join fetch cr.candidateId where cr.candidateId.id =:candidateId and cr.status ='1' ORDER BY cr.createdDate DESC";
-		List<CandidateReferences> candidateReferencesList = session.createQuery(query).setLong("candidateId", candidateId).setCacheable(true).list();
+		List<CandidateReferences> candidateReferencesList = session.createQuery(query).setLong("candidateId", candidateId).list();
 		return candidateReferencesList;
 	}
 
@@ -93,7 +94,7 @@ public class CandidateReferencesDaoImpl implements CandidateReferencesDao{
 		
 		Session session = this.sessionFactory.getCurrentSession();
 		String query = "from CandidateReferences  cr left join fetch cr.candidateId left join fetch cr.orgLocationId where cr.id = :refId and cr.candidateId.id = :candidateId ";
-		List<CandidateReferences> candidateReferencesList =  session.createQuery(query.toString()).setLong("candidateId", candidateId).setLong("refId", refId).setCacheable(true).list();
+		List<CandidateReferences> candidateReferencesList =  session.createQuery(query.toString()).setLong("candidateId", candidateId).setLong("refId", refId).list();
 		CandidateReferences canRef = null;
 		if (candidateReferencesList != null && candidateReferencesList.size() > 0) {
 			canRef = (CandidateReferences) candidateReferencesList.iterator().next();
@@ -125,7 +126,7 @@ public class CandidateReferencesDaoImpl implements CandidateReferencesDao{
 		logger.debug("In Candidate Reference By refId");
 		Session session = this.sessionFactory.getCurrentSession();
 		String query = " from CandidateReferences cr where cr.id = :refId" ;
-		List<CandidateReferences> candidateReferencesList =session.createQuery(query).setLong("refId", refId).setCacheable(true).list(); 
+		List<CandidateReferences> candidateReferencesList =session.createQuery(query).setLong("refId", refId).list(); 
 		CandidateReferences candidateReferences = null;
 		if(candidateReferencesList != null && !candidateReferencesList.isEmpty()){
 			candidateReferences = candidateReferencesList.iterator().next();
@@ -143,7 +144,7 @@ public class CandidateReferencesDaoImpl implements CandidateReferencesDao{
 		 if(referenceEmail != null && candidateId != null){
 			 if(candidateReferenceId != null) {
 				 String query = "from CandidateReferences canRef where canRef.email = :referenceEmail and canRef.candidateId.id = :candidateId and canRef.id =:candidateReferenceId and canRef.status='1'";
-					candidateReferencesList = session.createQuery(query.toString()).setLong("candidateReferenceId", candidateReferenceId).setLong("candidateId", candidateId).setString("referenceEmail", referenceEmail).setCacheable(true).list();
+					candidateReferencesList = session.createQuery(query.toString()).setLong("candidateReferenceId", candidateReferenceId).setLong("candidateId", candidateId).setString("referenceEmail", referenceEmail).list();
 					if (candidateReferencesList != null && candidateReferencesList.size() > 0) {
 						flag = false;
 					}else {
@@ -151,7 +152,7 @@ public class CandidateReferencesDaoImpl implements CandidateReferencesDao{
 					}
 			 }else {
 				 String query = "from CandidateReferences canRef where canRef.email = :referenceEmail and canRef.candidateId.id = :candidateId and canRef.status='1'";
-				 candidateReferencesList = session.createQuery(query.toString()) .setLong("candidateId", candidateId).setString("referenceEmail", referenceEmail).setCacheable(true).list();
+				 candidateReferencesList = session.createQuery(query.toString()) .setLong("candidateId", candidateId).setString("referenceEmail", referenceEmail).list();
 				 if (candidateReferencesList != null && candidateReferencesList.size() > 0) {
 						flag = true;
 					}
@@ -159,6 +160,35 @@ public class CandidateReferencesDaoImpl implements CandidateReferencesDao{
 
 				
 		 }
+		return flag;
+	}
+
+	@SuppressWarnings("unchecked")
+	@Override
+	@Transactional(rollbackFor = { Exception.class })
+	public CandidateReferences validateReferenceEmailByReferEmailAndReferId(String referEmail, Long referId) throws Exception {
+		Session session = this.sessionFactory.getCurrentSession();
+		String query = "from CandidateReferences cr  where cr.id =:referId and cr.email =:referEmail ";
+		List<CandidateReferences> candidateReferencesList =session.createQuery(query) .setString("referEmail", referEmail).setLong("referId", referId).list();
+		CandidateReferences candidateReferences = null;
+		if(candidateReferencesList != null && !candidateReferencesList.isEmpty())
+		{
+			candidateReferences = (CandidateReferences) candidateReferencesList.iterator().next();
+		}
+		return candidateReferences;
+	}
+
+	@SuppressWarnings("unchecked")
+	@Override
+	@Transactional(rollbackFor = { Exception.class })
+	public Boolean validateReferenceEmailByReferEmailAndCandidateId(String referenceEmail, Long candidateId) throws Exception {
+		Session session = this.sessionFactory.getCurrentSession();
+		 boolean flag = false;
+			 String query = "from CandidateReferences cr  where cr.email =:referenceEmail and cr.candidateId.id =:candidateId ";
+				Collection<CandidateReferences> candidateReferencesList = session.createQuery(query) .setString("referenceEmail", referenceEmail).setLong("candidateId", candidateId).list();
+				if (candidateReferencesList != null && candidateReferencesList.size() > 0) {
+					flag = true;
+				}
 		return flag;
 	}
 	

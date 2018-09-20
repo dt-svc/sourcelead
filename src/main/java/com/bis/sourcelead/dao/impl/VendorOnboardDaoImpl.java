@@ -60,7 +60,7 @@ public class VendorOnboardDaoImpl implements VendorOnboardDao{
 		
 		Session session = this.sessionFactory.getCurrentSession();
 		List<VendorOnboarding> vendorOnboard = session.createQuery("from VendorOnboarding onboard left join fetch onboard.orgRelationId "
-				+ " left join fetch onboard.vendorLocationId left join fetch onboard.orgLocationsId where onboard.orgRelationId.id = :orgRelationId" ).setLong( "orgRelationId", orgRelationId ).setCacheable(true).list();
+				+ " left join fetch onboard.vendorLocationId left join fetch onboard.orgLocationsId where onboard.orgRelationId.id = :orgRelationId" ).setLong( "orgRelationId", orgRelationId ).list();
 		if (vendorOnboard.size() > 0) {
 			return vendorOnboard.get(0);
 		} else {
@@ -74,7 +74,7 @@ public class VendorOnboardDaoImpl implements VendorOnboardDao{
 	public VendorOnboarding getVendorOnboardingById(Long id) throws Exception {
 		Session session = this.sessionFactory.getCurrentSession();
 		List<VendorOnboarding> vendorOnboard = session.createQuery("from VendorOnboarding onboard left join fetch onboard.orgRelationId left join fetch onboard.spocUserId "
-				+ " left join fetch onboard.vendorLocationId left join fetch onboard.vendorLocationId.org left join fetch onboard.orgLocationsId where onboard.id = :id" ).setLong( "id", id ).setCacheable(true).list();
+				+ " left join fetch onboard.vendorLocationId left join fetch onboard.vendorLocationId.org left join fetch onboard.orgLocationsId where onboard.id = :id" ).setLong( "id", id ).list();
 		if (vendorOnboard.size() > 0) {
 			return vendorOnboard.get(0);
 		} else {
@@ -87,7 +87,7 @@ public class VendorOnboardDaoImpl implements VendorOnboardDao{
 	public VendorOnboarding getVendorOnboardingByUUID(String onboardUUID) throws Exception {
 		Session session = this.sessionFactory.getCurrentSession();
 		List<VendorOnboarding> vendorOnboard = session.createQuery("from VendorOnboarding onboard left join fetch onboard.orgRelationId left join fetch onboard.spocUserId "
-				+ " left join fetch onboard.vendorLocationId left join fetch onboard.orgLocationsId where onboard.onboardUUID = :onboardUUID" ).setString( "onboardUUID", onboardUUID ).setCacheable(true).list();
+				+ " left join fetch onboard.vendorLocationId left join fetch onboard.orgLocationsId where onboard.onboardUUID = :onboardUUID" ).setString( "onboardUUID", onboardUUID ).list();
 		if (vendorOnboard.size() > 0) {
 			return vendorOnboard.get(0);
 		} else {
@@ -103,7 +103,7 @@ public class VendorOnboardDaoImpl implements VendorOnboardDao{
 		Session session = this.sessionFactory.getCurrentSession();
 		List<VendorOnboarding> vendorOnboard = session.createQuery("from VendorOnboarding onboard left join fetch onboard.orgRelationId "
 				+ " left join fetch onboard.vendorLocationId left join fetch onboard.orgLocationsId where onboard.vendorLocationId.id = :vendorLocationId "
-				+ " and  onboard.orgLocationsId.id = :orgLocationId" ).setLong( "vendorLocationId", vendorLocationId ).setLong( "orgLocationId", orgLocationId ).setCacheable(true).list();
+				+ " and  onboard.orgLocationsId.id = :orgLocationId" ).setLong( "vendorLocationId", vendorLocationId ).setLong( "orgLocationId", orgLocationId ).list();
 		if (vendorOnboard.size() > 0) {
 			return vendorOnboard.get(0);
 		} else {

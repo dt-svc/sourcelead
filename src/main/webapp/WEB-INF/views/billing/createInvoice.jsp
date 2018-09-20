@@ -33,6 +33,10 @@ $(document).ready(function(){
 		loadInvoiceDetails(invoiceUUID);
 	}else{
 		getClients();
+		$("#invoiceId").val("");
+		$("#paymentFrequency").val("");
+		$("#paymentFrequency").trigger("chosen:updated");
+		$("#dueDate").val("");
 	}
 
 	
@@ -69,6 +73,8 @@ function errRemoveClientContact(){
 	<div class="content-area content-new clearfix">
 		<div id="invoiceLoading"></div>
 		<form:form id="invoice_form" name="invoice_form" method="post">
+		<input type="hidden" name="clientOrgRelation" value="createInvoice"/>
+		<!-- <input type="hidden" name="clientContact" value="createInvoice"/> -->
 			<div class="clearfix form-horizontal inner-content">
 				<div class="row">
 					<div class="col-xs-12 col-sm-12 col-md-12 col-lg-12 myForm">
@@ -77,7 +83,7 @@ function errRemoveClientContact(){
 				              <div class="col-md-9 select-field chooRadius" id="errClient">
                					<div class="input-group col-md-10 pull-left">				              
 
-				                <select class="chosen-select form-control" id="clientOrgRelationId" name="clientOrgRelationId" onchange="getClientContacts();errRemoveClient();getPaymentTerms();" data-validation="required" field-name="Client">             
+				                <select class="chosen-select form-control" id="clientOrgRelationId" name="clientOrgRelationId" onchange="getClientContacts();errRemoveClient();getPaymentTerms();" data-validation="required" field-name="clientName">             
 				                </select>
 				                <span class="input-group-addon cursorPointer bg-blue" onclick="getClients();createInvoiceEmptyClientContact();"><i class="fa fa-refresh "></i></span>
 				                </div>
@@ -90,13 +96,13 @@ function errRemoveClientContact(){
 				            </div>
 				             <div class="form-group">
 				              <label class="col-md-3">Client Contact<span class="text-danger">*</span></label>
-				              <div class="col-md-9 select-field chooRadius" id="errClientContact">
-				              	<div class="input-group col-md-10 pull-left">	
-				                  <select class="chosen-select form-control" id="clientContact" name="clientContact" data-validation="required" field-name="Client Contact" onchange="errRemoveClientContact();">
+				              <div class="col-md-9 chooRadius" id="errClientContact">
+				              	<div class="col-md-9 padding_right padding_left">	
+				                  <select class="chosen-select form-control" multiple="multiple" id="clientContact" name="clientContact" data-validation="required" field-name="Client Contact" onchange="errRemoveClientContact();">
 				                  </select>
-				                    <span class="input-group-addon cursorPointer bg-blue" onclick="getClientContacts();"><i class="fa fa-refresh "></i></span>
 				              </div>
-				               <span class="col-md-2 noPad clearfix" onclick="selectedClient();">
+				               <span class="col-md-3 noPad clearfix" onclick="selectedClient();">
+				               <span class="btn btn-primary" onclick="getClientContacts();"><i class="fa fa-refresh "></i></span>
 			                             <sec:authorize access="hasAnyRole('ROLE_CREATE_CLIENT_CONTACT')"> 
 			                              <a href="javascript:void(0)"><i class="fa fa-plus btn btn-default pull-right minHeBtn"></i></a>
 			                             </sec:authorize>
@@ -106,8 +112,8 @@ function errRemoveClientContact(){
 						<div class="form-group">
 							<label class="col-md-3">Invoice Id<span
 								class="text-danger">&nbsp;*</span></label>
-							<div class="col-md-9">
-								<input type="text" class="form-control" id="invoiceId"
+							<div class="col-md-9" id="invoiceIdDiv">
+								<input type="text" class="form-control" id="invoiceId" onkeyup="validateInvoiceId();"
 									name="invoiceId" value="" placeholder="Invoice Id"
 									data-validation="required" field-name="Invoice Id">
 							</div>
@@ -116,10 +122,13 @@ function errRemoveClientContact(){
 							<label class="col-md-3">Invoice Date<span
 								class="text-danger">&nbsp;*</span></label>
 							<div class="col-md-9 select-field" id="errInvoiceDate">
+							<div class="input-group">
 								<input type="text" class="form-control calendar"
 									id="invoiceDate" name="invoiceDate" value="${currentDate}"
 									placeholder="Invoice Date" id="invoiceDate" readonly
 									data-validation="required" field-name="Invoice Date">
+									<span class="input-group-addon" onClick="clearInvoiceDate();"><i class="colorRed fa fa-times cursorPointer"></i></span>
+							</div>
 							</div>
 						</div>
 						<div class="form-group">
@@ -133,14 +142,18 @@ function errRemoveClientContact(){
 									<option value="45 days">45 days</option>
 									<option value="60 days">60 days</option>
 								</select>
-							</div>
+								
+						</div>
 						</div>
 						<div class="form-group">
-							<label class="col-md-3" >Due Date<span class="text-danger">&nbsp;*</span></label>
+							<label class="col-md-3" >Due Date<span class="text-danger">&nbsp;* </span><i class='fa fa-info-circle' title='The deadline for the invoice payment'></i></label>
 							<div class="col-md-9 " id="errDuedate">
+							<div class="input-group">
 								<input type="text" class="form-control calendar" id="dueDate"
 									name="dueDate" value="" placeholder="Due Date"
 									readonly data-validation="required" field-name="Due Date">
+									<span class="input-group-addon" onClick="clearDueDate();"><i class="colorRed fa fa-times cursorPointer"></i></span>
+							</div>		
 							</div>
 						</div>
 						<div class="form-group">
@@ -151,12 +164,25 @@ function errRemoveClientContact(){
 							</div>
 						</div>
 						<div class="form-group">
-							<label class="col-md-3">Account Details</label>
-							<div class="col-md-9">
-								<textarea class="form-control" rows="2" id="accountDetails"
-									name="accountDetails" placeholder="Account Details"></textarea>
-							</div>
-						</div>
+			              <label class="col-md-3">Payment Account</label>
+			              <div class="col-md-9 select-field" id="projectMemberIdDiv">
+			                <select class="form-control" id="paymentAccountId"  field-name="paymentAccountId Name" name="paymentAccount">
+			                   <option value="">--Select Account--</option>
+			                    <c:forEach items="${paymentAccountList}" var="p">
+			                        <option value="${p.id}" ${p.defaultAccount ? 'selected="selected"' : ""}>${p.accountType == "WEPAY" ? p.email.concat(" (WePay)") : p.accountNumber.concat(" (").concat(p.bankName).concat(")")}</option>
+			                    </c:forEach>
+			                </select>
+			              </div>
+			            </div>
+			            
+<!-- 						<div class="form-group"> -->
+<!-- 							<label class="col-md-3">Account Details</label> -->
+<!-- 							<div class="col-md-9"> -->
+<!-- 								<textarea class="form-control" rows="2" id="accountDetails" -->
+<!-- 									name="accountDetails" placeholder="Account Details"></textarea> -->
+<!-- 							</div> -->
+<!-- 						</div> -->
+
 					</div>
 				</div>
 
@@ -225,7 +251,7 @@ function errRemoveClientContact(){
 
 <div id="divTaskTd6" style="display: none; float: left;">
 	<div class="tbldata-dotdot-100">
-		<input type="text" class="form-control input-sm inline_field" placeholder="HHH:MM" id="REPLACEROWIDtotalHours" name="lineItems[REPLACEROWID].totalHours" onblur="totalHoursCalculateAmount(REPLACEROWID);validationHours(REPLACEROWID);">
+		<input type="text" class="form-control input-sm inline_field" placeholder="HHH:MM" data-validation = "required" field-name = "Hours" id="REPLACEROWIDtotalHours" name="lineItems[REPLACEROWID].totalHours" onblur="totalHoursCalculateAmount(REPLACEROWID);validationHours(REPLACEROWID);">
 			<input type="hidden" id="REPLACEROWIDhiddenHours" name="REPLACEROWIDhiddenHours">
 <!-- 			<i class=" text-info fa fa-info-circle" title="Before Assinging Team Project Start Date &amp; Manager is Mandatory"></i> -->
 			<u id="REPLACEROWIDerrMsg" style="display: none;"><i class=" text-info fa fa-info-circle" >Avg Hours</i></u>
@@ -309,14 +335,14 @@ function errRemoveClientContact(){
          result = result +'  <label class="pull-left mb10"><strong>Attachments</strong></label>';
          
          result = result +' <div id="timesheetDocumentsId">';
-         result = result +' <div class="timesheet_week_comm invoiceDocs">';
+         result = result +' <div class="timesheet_week_comm invoiceDocs width100percnt">';
          result = result +' <span>';
          result = result +' <div id="savedAttachments"></div>';
          result = result +' </span>';
          result = result +' </div>';
          result = result +' </div>';
          
-         result = result +'  <div class="timesheet_week_comm invoiceDocs invoiceDocs_add" >';
+         result = result +'  <div class="timesheet_week_comm invoiceDocs invoiceDocs_add width100percnt" >';
          result = result +'  <div id="0invoicedocFileuploadFileGroup"> ';
          result = result +'  <span>';
          result = result +'  <input type="file"  id="0invoicedocFile" field-name="Attachment"  class="timesheetAttachmentValidation" onchange="attachFile(0);"><i class="fa fa-times" mouseOver="Clear" title="Clear" onClick="remove()"></i><i class="fa fa-plus" mouseOver="Add" title="Add" onClick="addInvoiceAttachment()"></i>';
@@ -345,7 +371,7 @@ function errRemoveClientContact(){
          result = result +'  </select>';
          result = result +'  </div>';
          result = result +'  <div class="col-md-5 paddingLeft" id="discountValueDiv">';
-         result = result +'  <input type="text" class="form-control input-sm" id="discountValue" disabled="disabled" name="discountValue" placeholder="Enter value" onblur="calculateDiscount();"  onkeyup="validateDiscount();">';
+         result = result +'  <input type="text" class="form-control input-sm allownumericwithdecimal" id="discountValue" disabled="disabled" name="discountValue" placeholder="Enter value" onblur="calculateDiscount();"  onkeyup="validateDiscount();">';
          result = result +'  </div>';
          result = result +'  </div>';
          result = result +'  </div>';
@@ -481,8 +507,11 @@ if(selectedTextInvoice =='percentage'){
 		    	 url: sourceleadUrl+"/getInvoiceDetailsByInvoiceUUID?"+tokenParamName+"="+tokenValue+"&invoiceUUID="+invoiceUUID, 
 		         success: function(data) {
 		        	 var json = JSON.parse(data);
-		        	 
 		        	 var result = '';
+		        	 if(json.paymentAccountId > 0) {
+		        		 $("#paymentAccountId").val(json.paymentAccountId);
+		        	 }
+		        	 
 		        	 var selected = 'selected';
 		        	 result = result +'<option disabled selected>--Select Vendor--</option>';
 		        	 result = result +'<option value='+json['vendorOrgRelationId']+' '+selected+' >'+json['orgName']+'</option>';
@@ -490,7 +519,10 @@ if(selectedTextInvoice =='percentage'){
 		           	 $("#clientOrgRelationId").append(result); 
 		           	 $('#clientOrgRelationId').trigger("chosen:updated"); 
 		           	 $('#clientCurrency').val(json['clientCurrency']);
-		           	getClientContacts(json['vendorContactId']);
+		           	/* getClientContacts(json['vendorContactId']); */
+		           	//alert(json['contactUsers']);
+		           	//var clientContact = json['contactUsers'];
+		           	getClientContacts(json['contactUsers']);
 		           	$("#invoiceId").val(json['invoiceId']);
 		           	
 		           	if(json['paymentFrequency'] != null && json['paymentFrequency'] != '' && json['paymentFrequency'] != 'undefined'){
@@ -504,9 +536,9 @@ if(selectedTextInvoice =='percentage'){
 		           	if(json['billingAddress'] != null && json['billingAddress'] != '' && json['billingAddress'] != 'undefined'){
 		           		$("#billingAddress").val(json['billingAddress']);
 		           	}
-		           	if(json['accountDetails'] != null && json['accountDetails'] != '' && json['accountDetails'] != 'undefined'){
+		           	/* if(json['accountDetails'] != null && json['accountDetails'] != '' && json['accountDetails'] != 'undefined'){
 		           		$("#accountDetails").val(json['accountDetails']);
-		           	}
+		           	} */
 		           	buildLineItemAndTaxAddRows();
 		           	
 		           	editInvoice(json['invoiceLineItemsList']);
@@ -528,6 +560,15 @@ if(selectedTextInvoice =='percentage'){
 		        	  
 		        	 
 		        	$("#savedInvoiceId").val(json['id']);
+		        	
+		        	var test = json['invoiceParentId'];
+		        	if(json['invoiceStatus'] == "Rejected" && test != null){
+			   			 document.getElementById("sendButtonId").style.display="none";
+			   			 document.getElementById("saveButtonId").style.display="none";
+			       	}else{
+			       		document.getElementById("sendButtonId").style.display="inline-block";
+			   			document.getElementById("saveButtonId").style.display="inline-block";
+			       	}
 		        	
 		        	
 		        	
@@ -1014,9 +1055,9 @@ function cancelDelDoc(){
 	   $.ajax({
 	    	type: "GET",
 	        url: sourceleadUrl+"/getInvoiceAssociatesList?"+tokenParamName+"="+tokenValue+"&selectedAssociates="+selectedAssociates+"&orgRelationId="+orgRelationId+"&contractType=clientSow",
-	        success: function(data) {
+	        success: function(json) {
 	        	
-	        	if(data != null && data != 'undefined' && data != "" && data != '[]'){
+	        	if(json.data != null && json.data != 'undefined' && json.data != "" && json.data != '[]'){
 	        		
 	        		
 	        		    var result = '';
@@ -1033,10 +1074,10 @@ function cancelDelDoc(){
 	             		result = result +'           </thead>';
 	                    result = result +"<tbody>"; 
 	                    
-	                    var json = JSON.parse(data);
+// 	                    var json = JSON.parse(data);
 	                    
-	                    for (var i = 0; i < json.length; i++) { 
-	                    	 var opt = json[i]; 
+	                    for (var i = 0; i < json.data.length; i++) { 
+	                    	 var opt = json.data[i]; 
 	                    	 var mobilephone = '';
 	                    	 var associateName
 	                    	 
@@ -1105,6 +1146,7 @@ function cancelDelDoc(){
 		
   }
   </script>
+  
 
 
 <script>
@@ -1170,6 +1212,38 @@ function pagination(){
 </script>
 
 
+<script type="text/javascript">
+ function validateInvoiceId() {
+	 var invoiceId = document.getElementById("invoiceId").value; 
+	
+	 if(invoiceId != null && invoiceId != ""){
+         //$("#create_user" ).addClass('button').val('Processing..');
+		 $.ajax({
+		    	type: "POST",
+		        url: sourceleadUrl+"/validateInvoiceId?"+tokenParamName+"="+tokenValue+"&invoiceId="+invoiceId+"&invoiceType=Receivable", 
+		        success: function(data) {
+		        	 if(data == true){
+		        		  $('#invoiceIdDiv').find('p.jquery_form_error_message').remove();
+						  $("input#invoiceId").after("<p class='jquery_form_error_message'>"+invoiceId+" is Already Existed</span>");
+						  document.getElementById("invoiceId").setAttribute('record-exist','yes');
+						  document.getElementById("invoiceId").setAttribute('record-exist-errorMsg',invoiceId+' is Already Existed'); 
+						  $("#saveButtonId").attr("disabled", "disabled");
+						  $("#sendButtonId").attr("disabled", "disabled");
+		        	}
+		        	else{
+		        		 $('input#invoiceId').removeAttr( "record-exist record-exist-errormsg");
+		        		 $('#invoiceIdDiv').find('p.jquery_form_error_message').remove(); 
+		        		 $("#saveButtonId" ).addClass('us-btn').val('Save');
+                         $("#saveButtonId").removeAttr("disabled");
+                         $("#sendButtonId" ).addClass('us-btn').val('Send');
+                         $("#sendButtonId").removeAttr("disabled");
+		        	}
+		        },
+		    });
+	 }
+ }
+ </script>  
+
 
 <!-- Get contract sow between client and the associate -->
   <script>
@@ -1178,14 +1252,14 @@ function pagination(){
 			  $.ajax({
 			    	type: "GET",
 			        url: sourceleadUrl+"/getSowcontractListByAssociateId?"+tokenParamName+"="+tokenValue+"&candidateId="+candidateId+"&orgRelationId="+orgRelationId+"&contractType=clientSow",
-			        success: function(data) {
+			        success: function(json) {
 			        	var result = "";
 			        	result = result + "<option value='' >select sow</option>"
-			        	if(data != null && data != ''){
-			        		var json = JSON.parse(data);
-				        	 for (var i=0; i<json.length; i++)
+			        	if(json.data != null && json.data != ''){
+// 			        		var json = JSON.parse(data);
+				        	 for (var i=0; i<json.data.length; i++)
 							{
-					        		var opt = json[i];
+					        		var opt = json.data[i];
 					        		 var selected = '';
 					        		 if(contractId != null && contractId != "" && contractId !="undefined" && contractId == opt.id){
 					        			selected = 'selected';
@@ -1358,13 +1432,13 @@ function pagination(){
 		   $.ajax({
 				type : "GET",
 				url: sourceleadUrl+"/getConversionExchangeRate?"+tokenParamName+"="+tokenValue+"&orgRelationId="+orgRelationId+"&grandTotal="+grandTotal,
-				success :function(data) {
-					if(data !='' && data != 'undefined' && data != null){
-						var json = JSON.parse(data);
-						$("#exchangeRate").html(json.exchangeRate);
-						$("#exchangeCurrency").html(json.exchangeCurrency);
-						$("#vendorCurrencyCode").html(json.vendorCurrencyCode);
-						$("#convertedCurrencyCode").html(currencyCode +' to '+ json.vendorCurrencyCode);
+				success :function(response) {
+					if(response.object !='' && response != 'undefined' && response != null){
+// 						var json = JSON.parse(data);
+						$("#exchangeRate").html(response.object.exchangeRate);
+						$("#exchangeCurrency").html(response.object.exchangeCurrency);
+						$("#vendorCurrencyCode").html(response.object.vendorCurrencyCode);
+						$("#convertedCurrencyCode").html(currencyCode +' to '+ response.object.vendorCurrencyCode);
 					}
 				},
 				});   
@@ -1503,7 +1577,7 @@ function calculateDiscount(){
 <!-- ********************************************* Add Rows resume Table functionality start  ************************************************************ -->
 
 <div id="divInvoiceAttachmentTd1" style="display: none; float: left;">
-	<div class="timesheet_week_comm col-md-12 invoiceDocs invoiceDocs_add">
+	<div class="timesheet_week_comm col-md-12 invoiceDocs invoiceDocs_add width100percnt">
 		<div class="form-group" id="REPLACEROWIDinvoicedocFileuploadFileGroup">
 			<span> <input type="file" name='REPLACEROWIDinvoicedocFile'
 				id='REPLACEROWIDinvoicedocFile'
@@ -1560,7 +1634,7 @@ function calculateDiscount(){
 		<div class="tblminwidth-50">
 			<input type="text" class="form-control input-sm" value=""
 				placeholder="Tax type" name='invoiceTax[REPLACEROWID].taxType'
-				id='REPLACEROWIDtaxType'> <input type="hidden"
+				id='REPLACEROWIDtaxType' data-validation="required validate_length length2-100" field-name="Tax Type"> <input type="hidden"
 				name="invoiceTax[REPLACEROWID].invoiceTaxId" id="REPLACEROWIDinvoiceTaxId">
 			<!-- 	<input type= "hidden" id="REPLACEROWIDsubmissionInvoiceId" name = "invoiceTax[REPLACEROWID].submissionInvoiceId"> -->
 		</div>
@@ -1579,7 +1653,7 @@ function calculateDiscount(){
 <div id="divTaxTd3" style="display: none; float: left;">
 	<div class="tblminwidth-75" id="REPLACEROWIDdiscountRowDiv">
 		<input type="text"
-			class="form-control input-sm" value=""
+			class="form-control input-sm allownumericwithdecimal" value=""
 			placeholder="Flat / Discount" name='invoiceTax[REPLACEROWID].taxdiscountvalue'
 			id='REPLACEROWIDtaxdiscountvalue'
 			onblur="calculateTaxDiscount(REPLACEROWID);" onkeyup="validateRowDiscount(REPLACEROWID);">
@@ -1646,7 +1720,7 @@ function calculateDiscount(){
 		var taxTotal = $("#"+rowId+"taxTotal").val(); 
 		var first=parseFloat(grandTotal);
         var second=parseFloat(taxTotal);
-        total = (first-second);
+        total = Math.round(first-second);
         $("#grandTotal").val(total);
         $("#conversionFrom").val(total);
        //=======================================
@@ -1675,6 +1749,8 @@ function calculateTaxDiscount(){
 		    	if(taxValue){
 		    		first = parseFloat(taxValue);
 			        $("#"+i+"taxTotal").val(first.toFixed(2));
+		    	}else{
+		    		$("#"+i+"taxTotal").val("00.00");
 		    	}
 		    	
 		    }
@@ -1765,10 +1841,10 @@ function getSowRate(id){
 	$.ajax({
     	type: "GET",
     	url: sourceleadUrl+"/getSowRateByContractId?"+tokenParamName+"="+tokenValue+"&contractId="+contractId,
-        success: function(data) {
-        	 if(data != null && data != ''){
-        		var json = JSON.parse(data);
-	        	 $ ('#'+id+'rate').val(json.billingAmount);
+        success: function(json) {
+        	 if(json.object != null && json.object != ''){
+//         		var json = JSON.parse(data);
+	        	 $ ('#'+id+'rate').val(json.object.billingAmount);
 	        	 totalHoursCalculateAmount(id);
         	} 
         },
@@ -1856,13 +1932,13 @@ function getClients(){
 	$.ajax({
 		type : "GET",
 		url: sourceleadUrl+"/getClientList?"+tokenParamName+"="+tokenValue+"",
-		success :function(data) {
-		var json = JSON.parse(data);
+		success :function(json) {
+// 		var json = JSON.parse(data);
 		var output = "";
 			output = output + "<option value=''>Select Client</option>";
-		for (var i=0; i<json.length; i++)
+		for (var i=0; i<json.data.length; i++)
 		{
-		var opt = json[i];
+		var opt = json.data[i];
 		if(orgRelationId == opt.id){
 			var selected = 'selected';
 			output = output + "<option value='" +opt.id+ "'"+selected+">"+opt.orgName+"</option>";
@@ -1890,33 +1966,35 @@ function getClients(){
 
 <script>
 function getClientContacts(clientContactId){
+	//alert(clientContactId);
 	var orgRelationId = $("#clientOrgRelationId").val();
 	$("#clientContact").empty();
 	$.ajax({
-	type : "GET",
-	url: sourceleadUrl+"/getClientContactsByOrgRelationId?"+tokenParamName+"="+tokenValue+"&orgRelationId="+orgRelationId,
-	success :function(data) {
-	var json = JSON.parse(data);
-	var output = "";
-	output = output + "<option value=''>Select Client Contact</option>";
-	for (var i=0; i<json.length; i++)
-	{
-	var opt = json[i];
-	var selected = "";
-	if(clientContactId != null && clientContactId != "" && clientContactId !="undefined" && clientContactId == opt.spocUserId){
-		selected = 'selected';
-	}
-	output = output + "<option value='" +opt.spocUserId+ "' "+selected+">"+opt.ownerName+"("+opt.spocName+")</option>";
-	$("#clientCurrency").val(opt.clientCurrency);
-	}
-	
-	
-	$("#clientContact").append(output);
-	$('#clientContact').trigger("chosen:updated");
-	if(clientContactId == null || clientContactId == '' || clientContactId == 'undefined'){
-		buildLineItemAndTaxAddRows();
-	}
-	},
+		type : "GET",
+		url: sourceleadUrl+"/getClientContactsByOrgRelationId?"+tokenParamName+"="+tokenValue+"&orgRelationId="+orgRelationId,
+		success :function(json) {
+			var output = "";
+			for (var i=0; i<json.data.length; i++)
+			{
+				var opt = json.data[i];
+				if(clientContactId != null && clientContactId != "" && clientContactId !="undefined"){
+					var array = clientContactId.split(",");
+					if(array.includes(opt.spocUserId.toString())){
+						output = output + "<option value='"+opt.spocUserId+"' selected >"+opt.ownerName+"("+opt.spocName+")</option>";
+					}else{
+						output = output + "<option value='"+opt.spocUserId+"' >"+opt.ownerName+"("+opt.spocName+")</option>";
+					}
+				}else{
+					output = output + "<option value='" +opt.spocUserId+ "'>"+opt.ownerName+"("+opt.spocName+")</option>";
+				}
+				$("#clientCurrency").val(opt.clientCurrency);
+			}
+			$("#clientContact").append(output);
+			$('#clientContact').trigger("chosen:updated");
+			if(clientContactId == null || clientContactId == '' || clientContactId == 'undefined'){
+				buildLineItemAndTaxAddRows();
+			}
+		},
 	});
 	}
 </script>
@@ -1995,7 +2073,7 @@ function saveInvoice(saveType){
 			  }
 		  }
 		  if ($('#invoice_form').validate(false, validationSettings)){  
- 	 	    var formData = getFormData("invoice_form");
+ 	 	    var formData = getFormData1("invoice_form");
          
  	 	    if(selectedAssociates == null || selectedAssociates == '' || selectedAssociates == 'undefined'){
 	        	var result = "";
@@ -2010,19 +2088,36 @@ function saveInvoice(saveType){
 	     		$(".project_inn_mask").fadeIn(200);
 		        }else{
 		        	  $("#invoiceLoading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
-		        	  $.post(sourceleadUrl+"/saveInvoice?"+tokenParamName+"="+tokenValue+"&saveType="+saveType+"&invoiceType=Receivable", formData, function(data) {
-		  				if(data == "success"){
-		  					$("#invoiceLoading").removeAttr("style");
-    		     			location.replace(sourceleadUrl+"/invoiceList");
-    		     			$("#selector1").removeAttr("style");
-				    		$("#selector1").css({ display: "block" });
+		        	  $.ajax({
+		        		  url: sourceleadUrl+"/saveInvoice?"+tokenParamName+"="+tokenValue+"&saveType="+saveType+"&invoiceType=Receivable",
+		        		  type: "POST",
+		        		  data: formData,
+		        		  processData: false,
+		        		  contentType: false,
+		        		  success: function (result) {
+		        	  //$.post(sourceleadUrl+"/saveInvoice?"+tokenParamName+"="+tokenValue+"&saveType="+saveType+"&invoiceType=Receivable", formData, function(result) {
+		        		  if (result && result.response === "INVALID_DATA") {
+		          		    showError(result.responseMessage);
+		          		} else if (result.response === "AWKWARD") {
+		          		    location.href = "/errorPage";
+		          		} else if (result.response === "SUCCESS") {
+			  					$("#invoiceLoading").removeAttr("style");
+	    		     			location.replace(sourceleadUrl+"/invoiceList");
+	    		     			$("#selector1").removeAttr("style");
+					    		$("#selector1").css({ display: "block" });
 				    		if(saveType == 'SENT'){
 				    			$("#msgDiv").html("Successfully you have sent a Invoice..");
 				    		}else if(saveType == 'DRAFT'){
 				    			$("#msgDiv").html("Invoice saved Successfully..");
 				    		}
     		     			msgFadein();
-		  				}
+		          		} else if (result.indexOf('Sign In') !== -1) {
+		          			location.replace(sourceleadUrl);
+		          		} else {
+		          		    showError("Operation failed, please try again");
+		          		}
+		        		  $("#invoiceLoading").hide();
+		        	  }
 		  			   }); 
 		        	  
 		    	         return true; 
@@ -2067,23 +2162,30 @@ function maskme(){
     $.mask.definitions['p'] = "[Mm]";
     $(".inline_field").mask("Hhh:Mm"); 
     
-    $(".allownumericwithdecimal").on("keypress keyup blur",function (event) {
-    $(this).val($(this).val().replace(/[^0-9\.]/g,''));
-        if ((event.which != 46 || $(this).val().indexOf('.') != -1) && (event.which < 48 || event.which > 57)) {
-            event.preventDefault();
-        }
+    $(".allownumericwithdecimal").on("keypress keyup blur",function (evt) {
+    	
+    	var charCode = (evt.which) ? evt.which : event.keyCode
+    	         if (charCode > 31 && (charCode < 48 || charCode > 57))
+    	            return false;
+    	         return true;
+    	
+    	
+//     $(this).val($(this).val().replace(/[^0-9\.]/g,''));
+//         if ((event.which != 46 || $(this).val().indexOf('.') != -1) && (event.which < 48 || event.which > 57)) {
+//             event.preventDefault();
+//         }
     });
 }
 </script>
 
-<script>
+<!-- <script>
 $(".allownumericwithdecimal").on("keypress keyup blur",function (event) {
 $(this).val($(this).val().replace(/[^0-9\.]/g,''));
     if ((event.which != 46 || $(this).val().indexOf('.') != -1) && (event.which < 48 || event.which > 57)) {
         event.preventDefault();
     }
 });
-</script>
+</script> -->
 <script type="text/javascript">
 function cancel(){
 	$("#popUp").empty();
@@ -2189,5 +2291,13 @@ function clearDate(){
 	$("#dueDate").val("");
 	};
 </script> -->
-
+<script>
+function clearInvoiceDate(){
+	$("#invoiceDate").val("");
+	};
+	
+function clearDueDate(){
+	$("#dueDate").val("");
+	};
+</script>
 <jsp:include page="../masterFooter.jsp" />

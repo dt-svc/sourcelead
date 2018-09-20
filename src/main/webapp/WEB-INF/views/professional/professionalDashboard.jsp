@@ -319,7 +319,8 @@ function flushDate(){
               result = result +'</div>';
 
               result = result +'</div>';
-              result = result +'<div class="col-sm-6 col-md-3">';
+              
+/*               result = result +'<div class="col-sm-6 col-md-3">';
               result = result +'<div class="content_widget jobs-graphview buttonView">';
               result = result +'<span class="label label-primary">Hired</span>';
               
@@ -327,7 +328,9 @@ function flushDate(){
               result = result +'<span class="count">0</span>';
               result = result +'</div>';
 
-              result = result +'</div>';
+              result = result +'</div>'; */
+              
+              
               result = result +'<div class="col-sm-6 col-md-3">';
               result = result +'<div class="content_widget jobs-graphview buttonView">';
               result = result +'<span class="label label-danger">Rejected';
@@ -439,7 +442,8 @@ function getReferredToMeProtletList(startDate,endDate,status){
               result = result +'</div>';
 
               result = result +'</div>';
-              result = result +'<div class="col-sm-6 col-md-3">';
+             
+          /*  result = result +'<div class="col-sm-6 col-md-3">';
               result = result +'<div class="content_widget jobs-graphview buttonView">';
               result = result +'<span class="label label-primary">Hired</span>';
               
@@ -447,7 +451,9 @@ function getReferredToMeProtletList(startDate,endDate,status){
               result = result +'<span class="count">0</span>';
               result = result +'</div>';
 
-              result = result +'</div>';
+              result = result +'</div>'; */
+             
+              
               result = result +'<div class="col-sm-6 col-md-3">';
               result = result +'<div class="content_widget jobs-graphview buttonView">';
               result = result +'<span class="label label-danger">Rejected';

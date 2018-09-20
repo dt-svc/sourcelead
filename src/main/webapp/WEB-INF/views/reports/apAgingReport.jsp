@@ -15,9 +15,9 @@ $(document).ready(function(){
  <section class="content-wraper">
     <section class="content-header clearfix">
       <div class="pull-left">
-        <h2>A/P Aging List</h2>
+        <h2>A/P Aging</h2>
       </div>
-      <div class="pull-right brud-crum"><a href="<c:url value='${appPath}/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a> &raquo; <a href="<c:url value='${appPath}/reportsDashboard'/>">Reports Dashboard</a> &raquo; A/P Agings List</div>
+      <div class="pull-right brud-crum"><a href="<c:url value='${appPath}/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a> &raquo; <a href="<c:url value='${appPath}/reportsDashboard'/>">Reports Dashboard</a> &raquo; <a href="<c:url value='${appPath}/financialReportsList'/>">Financial Reports</a> &raquo; A/P Aging</div>
     </section>
     <div class="clearfix"></div>
     <div class="ReqRepHead clearfix">

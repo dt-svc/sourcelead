@@ -5,9 +5,10 @@
 <%@taglib prefix="sec"
 	uri="http://www.springframework.org/security/tags"%>
 	
-<jsp:include page="addApplicant.jsp" />
-<jsp:include page="compareCandidatesProfile.jsp"></jsp:include>
+<%-- <jsp:include page="addApplicant.jsp" />
+<jsp:include page="compareCandidatesProfile.jsp"></jsp:include> --%>
 
+<div id="popUp" ></div>
 <script>
 	function requirementRecommendations(requirementId, requirementSubmissionStatus){
 	 	$("#actionsDiv" ).hide();
@@ -40,6 +41,10 @@
 function prepareRecommendationList(url,requirementRecommendationsDate,requirementId, requirementSubmissionStatus) {
 	var result = '';
 	result = result +" <div class='clearfix'>";
+	result  = result + '<div class="success_pop" id="selector4" style="display: none;">';
+    result  = result + '<i class="fa fa-check-circle"></i><span id="eduMsgDiv"></span>';
+    result  = result + '</div>';
+    
  	result = result +" <div class='remove_search'>";
  	result = result +" <input type='text' placeholder='Search' id='recommendationTableSearch'/>";
  	result = result +"</div>";
@@ -77,12 +82,16 @@ function prepareRecommendationList(url,requirementRecommendationsDate,requiremen
 	    result = result +'<div class="rec_head">';
 	    if(requirementSubmissionStatus != 'SUBMITTED' && requirementSubmissionStatus != 'CLOSED' && requirementSubmissionStatus != 'REJECTED' &&  requirementSubmissionStatus != 'CANCEL' && requirementSubmissionStatus != 'DRAFT' && requirementSubmissionStatus != 'ONHOLD' && requirementSubmissionStatus != 'FILLEDCLOSED'  && requirementSubmissionStatus != 'UNFILLEDCLOSED'){
 		    result = result +'		   <div class="pull-left cand-advsrch">																							';
-		    result = result +'		    <a href="javascript:void(0)" class="btn btn-primary btn-sm" title="" onClick="openPop('+requirementId+')">Customize Score </a>            ';
+		    result = result +'		    <a href="javascript:void(0)" class="btn btn-primary btn-sm" title="" onClick="openPop('+requirementId+')">Customize Score <i class="fa fa-info-circle" title="Customise Score based on your requierement"></i>             ';
 		    result = result + '<input type="hidden"  id="compareCandListMap" name="compareCandListMap"/>';
-		    result = result +'			<a class="comTextLi" title="Compare" onclick="compareRecommendedUsers('+requirementId+');" >Compare</a>            ';
+		    result = result +'			<a class="comTextLi" title="Compare" onclick="compareRecommendedUsers('+requirementId+');" >Compare <i class="fa fa-info-circle" title="Compare Recommended Resumes,Minimum 2 candidates should select to compare"></i> </a>            ';
+		    result = result +'			<a class="comTextLi" title="Share" onclick="shareAllRecommendations('+requirementId+');" ><i class="fa fa-share-alt"></i></a>';
+		    result = result +'			<a class="comTextLi" title="Submit" onclick="submitRecommendationCandidates('+requirementId+');" ><i class="fa fa-user-plus"></i></a>';
+		    result = result +'<input type="hidden" value="N" name="candidateResume"  id="candidateResume">';
 		    result = result +'		        </div>';
 	    }
 	    result = result +'                   <div id="customizeScoreDiv"></div>';
+	    result = result + '<div id="attachResumeDiv"></div>';
 	    
 	    result = result +'</div>';
 	    result = result +'</div>';
@@ -91,7 +100,7 @@ function prepareRecommendationList(url,requirementRecommendationsDate,requiremen
 	    result = result +'<table id="recommendationTable" class="display" cellspacing="0" width="100%"">';
 	    result = result +'<thead>';
 	    result = result +'<tr>';
-	    result = result +'<th></th>';
+	    result = result +'<th class="text-center"><input type="checkbox" id="sharedcheckbox" onclick="toggleShareRecommendation(this);"/></th>'; 
 	    result = result +'<th>Name</th>';
 	    result = result +'<th>Email</th>';
 	    result = result +'<th>City</th>';
@@ -115,6 +124,7 @@ function prepareRecommendationList(url,requirementRecommendationsDate,requiremen
 		$("#tab-3").append(result);
 		
 		recommendationpagination(url,requirementId, requirementSubmissionStatus);
+		compareCandidates = {};
 		$("#tab-3").show();
 		$(".project-tabs-menu a").click(function(event) {
 		     event.preventDefault();
@@ -158,13 +168,27 @@ function recommendationpagination(url,requirementId, requirementSubmissionStatus
 	    	  	"render": function(data, type, report, meta) {
 	    	  		 var result = "";
 	    	  		 var flag = false;
-	    	  		 for(var e in compareCandidates) {
-	    	  			 if(report.candidateId+"" === compareCandidates[e]) {
-	    	  				 flag = true;
-	    	  				 break;
-	    	  			 }
-	    	  		 }
-	    	  		 result = result + '<td><input'+(flag ? " checked='checked'" : "")+' onchange="compareCandidateCheck(this)" type="checkbox" value='+report.candidateId+' name="compareCandi" id="compareCandiId"  ></td>';
+	    	  	
+	        			 
+   	        		 for(var e in compareCandidates) {
+	   	     	    	   if(!e || !compareCandidates[e] || compareCandidates[e] === "")
+	   	     				   continue;
+	   	     	    	   if(e === report.candidateId+"") {
+	   	     	    		    if(!$("#sharedcheckbox").is(":checked"))
+	   	     	    		 	checkOrUncheckParent("recommendationTable",compareCandidates, "sharedcheckbox"); 
+	   	     	    	   	flag = true;
+	   	     	    	   	break;
+	   	     	    	   }
+	   	        		 }
+	   	        		 if(!flag)
+	   	        			$("#sharedcheckbox").removeAttr('checked');
+	   	        		 
+	   	        		 if(report.isCandidateSubmitted == 'N'){
+	   	        			result = result +'  <td><input'+(flag ? " checked='checked'" : "")+' class="contactscheckbox" name="sharedcheckbox"  type="checkbox" id="'+report.candidateId+'" data-id="'+report.candidateId+'" value="'+report.candidateId+'" onchange="checkShareRecommendation(this)"/></td>';
+	   	        		 }else{
+	   	        			result = result +'  <td>--</td>';
+	   	        		 }
+	   	        		 
 	    	  		 return result; 
 	    	  	}
 	        	},{
@@ -374,7 +398,9 @@ function recommendationpagination(url,requirementId, requirementSubmissionStatus
 					    	  		 var result = "";
 					    	  		 if(report.isCandidateSubmitted == 'N'){
 					    	  			if(requirementSubmissionStatus != 'SUBMITTED' && requirementSubmissionStatus != 'CLOSED' && requirementSubmissionStatus != 'REJECTED' &&  requirementSubmissionStatus != 'CANCEL' && requirementSubmissionStatus != 'DRAFT' && requirementSubmissionStatus != 'ONHOLD' && requirementSubmissionStatus != 'FILLEDCLOSED'  && requirementSubmissionStatus != 'UNFILLEDCLOSED'){
-					    			    	result = result +'<td class="text-center"><div id="recommendedCandidate'+report.candidateId+'"><a href="javascript:void(0)" title="" onclick="submitRecomendedApplicant('+requirementId+','+report.candidateId+');" class="add-applicant">Add</a></div>';
+					    	  				result = result +'<td class="tblminwidth-100"><div id="recommendedCandidate'+report.candidateId+'" class="pull-left"><a href="javascript:void(0)" title="Add"   onclick="submitRecomendedApplicant('+requirementId+','+report.candidateId+');" class="add-applicant fa fa-user-plus"></a></div>';
+					    			    	result = result +'<div class="pull-left ml5"><a href="javascript:void(0)" title="Share" onclick="shareRecomendedApplicant('+requirementId+','+report.candidateId+');" class="add-applicant fa fa-share-alt"></a></div>';
+					    			    	result = result +'</td>';
 					    	  			}
 					    			 }else{
 					    			    	result = result +'<td class="text-center"><div class="text-success">Added</div>';
@@ -385,7 +411,7 @@ function recommendationpagination(url,requirementId, requirementSubmissionStatus
 					  }],
 		    	"scrollCollapse": false,
 		    	"lengthMenu": [[10, 15, 20], [10, 15, 20]],
-		    	"aaSorting": [[1,'desc']],
+		    	"aaSorting": [[7,'desc']],
 		    	"bLengthChange": true,
 		    	"bDestroy": true,
 		    	"ordering": true,
@@ -395,7 +421,11 @@ function recommendationpagination(url,requirementId, requirementSubmissionStatus
 		    			 var td = cacheLastJson.data;
 		    			 for(var i in td)
 		    			 {
-		    				 map[td[i].candidateId] = td[i].firstName + td[i].lastName;
+		    				 if(td[i].lastName != null && td[i].lastName !='' && td[i].lastName !='undefined'){
+		    				     map[td[i].candidateId] = td[i].firstName +" "+ td[i].lastName;
+		    				 }else{
+		    					 map[td[i].candidateId] = td[i].firstName;
+		    				 }
 		    			 }
 		    			 $("input[name='compareCandListMap']").val(JSON.stringify(map));
 		    		 }
@@ -420,12 +450,13 @@ function recommendationpagination(url,requirementId, requirementSubmissionStatus
 var compareCandidates = [];
 function compareCandidateCheck(ele) {
 	if($(ele).is(":checked")) {
-		if (compareCandidates.length < 4) {
+        compareCandidates[compareCandidates.length] = $(ele).val();
+		/* if (compareCandidates.length < 4) {
 	        compareCandidates[compareCandidates.length] = $(ele).val();
 	    }else{
 		   $(ele).prop('checked', false)
-		   alert("Allowed only 4");
-	    }
+		   maxAlertMessage();
+	    } */
 	} else {
 		var d = [];
 		var i = 0;
@@ -441,4 +472,246 @@ function compareCandidateCheck(ele) {
 }
 </script>
 
+<script>
+function maxAlertMessage(){ 
+	var result = "";
+	result = result +"	<div class='project_inn_mask'></div>"; 
+	result = result +"	   <div id='remove_user_pop' class='remove_user_pop remove_user_pop_a'>";
+	result = result +"		<p>Allowed only 4</p>";
+	result = result + ' <div id="reasonForInvoiceDiv"/>';
+	result = result +'		<b href="javascript:void(0)"><input id="confirm-id" type="button" value="Ok" onclick="cancelTermination();"><input class="u_can_color" type="button"  value="Cancel" onClick="cancelTermination();"></b>';
+	result = result +"	</div>";
+	$("#popUp").append(result);
+	$("#remove_user_pop").slideDown(200);
+	$(".project_inn_mask").fadeIn(200);
+}
 
+function cancelTermination(){
+	$("#popUp").empty();
+	 $(".project_inn_mask").fadeOut(200);
+}
+
+function shareRecomendedApplicant(requirementId,candidateId){
+	var sourceleadUrl ='${sourceleadUrl}';
+	$.ajax({
+    	type: "POST",
+        url: sourceleadUrl+"/shareRecomendedApplicant?"+tokenParamName+"="+tokenValue+"&requirementId="+requirementId+"&candidateId="+candidateId, 
+        success: function(data) {
+        	if (data.response === "FAILED") {
+	    		showError(data.responseMessage);
+	    	} else if (data.response === "AWKWARD") {
+	    		location.href = "/errorPage";
+	    	} else if (data.response === "SUCCESS") {
+	            $("#recommendationsLoading").removeAttr("style");
+	        	$("#selector4").removeAttr("style");
+	   			$("#selector4").css({ display: "block" });
+	   			$("#eduMsgDiv").html("You have successfully shared the job with selected candidate(s)");
+	   			eduMsgFadeinFunction();
+	   			toggleShareRecommendation();
+	    	}else if (data.indexOf('Sign In') !== -1) {
+	    		location.replace(sourceleadUrl);
+	    	} else {
+	    		showError("Operation failed, please try again");
+	    	}
+         },
+    });
+}
+function toggleShareRecommendation(source){
+	  var checkboxes = document.querySelectorAll('input[class="contactscheckbox"]');
+	  if($(source).is(":checked"))
+		  $('input[class="contactscheckbox"]').prop('checked', 'checked');
+	  else 
+		  $('input[class="contactscheckbox"]').removeProp('checked');
+	  
+	  $('input[class="contactscheckbox"]').each(function(i) {
+		  if($(this).is(":checked")) {
+		      compareCandidates[$(this).data("id")] = $(this).val();
+		  } else {
+			  compareCandidates[$(this).data("id")] = "";
+		  }
+	  });
+}
+
+function checkOrUncheckParent(tableId, selectedItems, checkboxId) {
+	$("#"+checkboxId).removeProp("checked");
+	   var count = 0;
+	   var data = $("#"+tableId).DataTable().data();
+	 for(var e in selectedItems) {
+	   if(!e || !selectedItems[e] || selectedItems[e] === "")
+		   continue;
+	   
+	   for(var f in data) {
+   	   if(e === data[f].id+"") {
+   		count ++;
+   	   }
+		}
+	 }
+	 if(count == data.count()) {
+		$("#"+checkboxId).prop("checked", "checked");
+	 }
+}
+</script>
+<script>
+var compareCandidates = {};
+function checkShareRecommendation(elem) {
+	if($(elem).is(":checked")) {
+		compareCandidates[$(elem).data("id")] = $(elem).val();
+	} else{
+		$("#sharedcheckbox").removeProp('checked');
+		compareCandidates[$(elem).data("id")] = "";
+	}
+}
+</script>
+
+
+<script>
+function submitRecommendationCandidates(requirementId){
+	
+	var candidateIds = new Array();
+	 for(var e in compareCandidates) {
+		 if(!e || !compareCandidates[e] || compareCandidates[e] === "")
+			   continue;
+		 candidateIds.push(compareCandidates[e]);
+	 }
+	
+	 if(candidateIds.length > 0){ 
+		var result = "";
+		result = result +" <div class='comMask'></div>";
+		result = result +" <div id='remove_user_pop' class='remove_user_pop remove_user_pop_a'>";
+		 result = result +" <div class='mr pull-left mt5'>";
+		 result = result +'<label class="switch mr">';
+		 result = result +'<input type="checkbox" onclick="checkResume();" value="N" id="applicantResume">';
+		 result = result +'&nbsp;&nbsp;<div class="slider round" title="Attach Applicants Resume"></div>';
+		 result = result +'</label>';
+		 result = result +"<span class='paddingLeft mt2'>Attach Resume</span></div>";
+		 result = result +"		<div>&nbsp;&nbsp;&nbsp;</div>";
+		 result = result +"		<b href='javascript:void(0)'><input id='confirm-id' type='button' value='Ok' onclick='submitRecommendationCandidatesToJob("+requirementId+");'><input class='u_can_color' type='button'  value='Cancel' onClick='cancelSubmitApplicant();'></b>";
+		 result = result +"	</div>";
+		 $("#attachResumeDiv").append(result);
+		 $("#remove_user_pop").slideDown(200);
+		 $(".comMask").fadeIn(200);
+	 
+	 
+	}else{
+	    var result = "";
+		result = result +"	<div class='project_inn_mask'></div>"; 
+		result = result +"	   <div id='remove_user_pop' class='remove_user_pop remove_user_pop_a'>";
+		result = result +"		<p>Please select at least one Candidate</p>";
+		result = result + ' <div id="reasonForInvoiceDiv"/>';
+		result = result +'		<b href="javascript:void(0)"><input id="confirm-id" type="button" value="Ok" onclick="cancelTermination();"><input class="u_can_color" type="button"  value="Cancel" onClick="cancelTermination();"></b>';
+		result = result +"	</div>";
+		$("#popUp").append(result);
+		$("#remove_user_pop").slideDown(200);
+		$(".project_inn_mask").fadeIn(200);
+	}
+}
+</script>
+
+<script type="text/javascript">
+function cancelSubmitApplicant(){
+	$("#attachResumeDiv").empty();
+	$(".comMask").fadeOut(200);
+}
+</script>
+
+<script>
+function checkResume(){
+	 var flag = document.getElementById("applicantResume").checked;
+	 if(flag == true){
+		 $("#candidateResume").val('Y'); 
+	 }else{
+		 $("#candidateResume").val('N'); 
+	 }
+}
+</script>
+
+<script>
+function submitRecommendationCandidatesToJob(requirementId){
+	var sourceleadUrl ='${sourceleadUrl}';
+	var candidateIds = new Array();
+	 for(var e in compareCandidates) {
+		 if(!e || !compareCandidates[e] || compareCandidates[e] === "")
+			   continue;
+		 candidateIds.push(compareCandidates[e]);
+	 }
+	 var candidateResume = $("#candidateResume").val(); 
+	 if(candidateIds.length > 0){
+		 $("#recommendationsLoading").attr('style','position:absolute; width:100%; height:95%; background-color:rgba(255,255,255,0.8); top:34px; left:1px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
+		 $.ajax({
+	          type : "POST",
+	          url: sourceleadUrl+"/submitRecommendationCandidates?"+tokenParamName+"="+tokenValue+"&candidateIds="+candidateIds+"&requirementId="+requirementId+"&candidateResume="+candidateResume,    
+	           success :function(data) {
+	        	   $("#recommendationsLoading").removeAttr("style");
+	        	   if (data.response === "FAILED") {
+			    		showError(data.responseMessage);
+			    	} else if (data.response === "AWKWARD") {
+			    		location.href = "/errorPage";
+			    	} else if (data.response === "SUCCESS") {
+			    		$("#candMsgDiv").html(candidateIds.length+" Candidate(s) Submitted Successfully...");
+			    		candMsgFadein();
+		       			cancelSubmitApplicant();
+		       			requirementRecommendations(requirementId);
+			    	}else if (data.indexOf('Sign In') !== -1) {
+			    		location.replace(sourceleadUrl);
+			    	} else {
+			    		showError("Operation failed, please try again");
+			    	}
+	           },
+	   });
+	 }
+}
+</script>
+
+<script>
+function shareAllRecommendations(requirementId){
+	var sourceleadUrl ='${sourceleadUrl}';
+	var candidateIds = new Array();
+	 for(var e in compareCandidates) {
+		 if(!e || !compareCandidates[e] || compareCandidates[e] === "")
+			   continue;
+		 candidateIds.push(compareCandidates[e]);
+	 }
+	 if(candidateIds.length > 0){
+			$("#recommendationsLoading").attr('style','position:absolute; width:100%; height:95%; background-color:rgba(255,255,255,0.8); top:34px; left:1px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
+		 $.ajax({
+	          type : "POST",
+	          url: sourceleadUrl+"/shareAllRecommendations?"+tokenParamName+"="+tokenValue+"&candidateIds="+candidateIds+"&requirementId="+requirementId,    
+	           success :function(data) {
+	        	   $("#recommendationsLoading").removeAttr("style");
+	        	   if (data.response === "FAILED") {
+			    		showError(data.responseMessage);
+			    	} else if (data.response === "AWKWARD") {
+			    		location.href = "/errorPage";
+			    	} else if (data.response === "SUCCESS") {
+		        	    $("#selector4").removeAttr("style");
+		       			$("#selector4").css({ display: "block" });
+		       			$("#eduMsgDiv").html("Great ! you have successfully shared this job");
+		       			eduMsgFadeinFunction();
+		       			toggleShareRecommendation();
+			    	}else if (data.indexOf('Sign In') !== -1) {
+			    		location.replace(sourceleadUrl);
+			    	} else {
+			    		showError("Operation failed, please try again");
+			    	}
+	           },
+	   });  
+	 }else{
+		 var result = "";
+			result = result +"	<div class='project_inn_mask'></div>"; 
+			result = result +"	   <div id='remove_user_pop' class='remove_user_pop remove_user_pop_a'>";
+			result = result +"		<p>Please select at least one Candidate</p>";
+			result = result + ' <div id="reasonForInvoiceDiv"/>';
+			result = result +'		<b href="javascript:void(0)"><input id="confirm-id" type="button" value="Ok" onclick="cancelTermination();"><input class="u_can_color" type="button"  value="Cancel" onClick="cancelTermination();"></b>';
+			result = result +"	</div>";
+			$("#popUp").append(result);
+			$("#remove_user_pop").slideDown(200);
+			$(".project_inn_mask").fadeIn(200);
+	 }
+}
+</script>
+<script>
+	function eduMsgFadeinFunction() {
+		$("#selector4").fadeIn(200);
+        $('#selector4').delay(2000).fadeOut('slow');
+	}
+</script>

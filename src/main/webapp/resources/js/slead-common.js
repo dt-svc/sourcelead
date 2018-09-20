@@ -24,7 +24,7 @@ function tagIt(id, noResultText, func,type,placeholderName) {
 	             }
 	    	 }else{
 		    	var newEmail = this.value.replace(","," ");
-		        if (window[func](e) && (newEmail != null  && newEmail != '' && newEmail != 'undefined'))
+		        if ((newEmail != null  && newEmail != '' && newEmail != 'undefined') && window[func](e))
 		        {
 		        	preventTabkey(e); 
 		        	var par = this.parent;
@@ -62,7 +62,7 @@ function tagIt(id, noResultText, func,type,placeholderName) {
 				    	 }else{
 				    		var focussedSkills = $("ul.chosen-results").find("li.active-result.highlighted");
 			    			var newSkill = this.value.replace(","," ");
-			    			 if (window[func](e) && (newSkill != null  && newSkill != '' && newSkill != 'undefined'))
+			    			 if ((newSkill != null  && newSkill != '' && newSkill != 'undefined') && window[func](e))
 			                 {
 			    				 preventTabkey(e);
 			                   // below code manually enter skills are taken
@@ -97,7 +97,69 @@ function tagIt(id, noResultText, func,type,placeholderName) {
 					       
 		    	         }
 	    	});
-	}
+	}else if(type =="tags"){
+		
+		var select, chosen;
+		    select = $("#"+id);
+		    select.chosen({ no_results_text: noResultText });
+		    chosen = select.data('chosen');
+		    chosen.search_field.on('keydown keyup', function(e)
+				    {
+					    	if(this.value === placeholderName) {
+					    		this.placeholder = this.value;
+					    		this.value = "";
+					    	} else {
+					    		this.placeholder = "";
+					    	}
+						    	
+				    	   var tagsArray = this.value.split(",");
+					    	 if(tagsArray.length > 1){
+				        		 for (var i=0; i < tagsArray.length; i++) {
+				        			 var option = $("<option>").val(tagsArray[i].replace(",","")).text(tagsArray[i].replace(",",""));
+				        			 select.append(option);
+				 		             select.find(option).prop('selected', true);
+				 		             select.find(option).siblings("[value='"+ tagsArray[i].replace(",","")+"']").remove();
+				 	        		 $("#"+id).trigger("chosen:updated");
+				                 }
+					    	 }else{
+					    		var focussedTags = $("ul.chosen-results").find("li.active-result.highlighted");
+				    			var newTag = this.value.replace(","," ");
+				    			 if ((newTag != null  && newTag != '' && newTag != 'undefined') && window[func](e))
+				                 {
+				    				 preventTabkey(e);
+				                   // below code manually enter tag are taken
+				    				  
+				                   var isNewTag = true;
+									 $("#"+id+" option:selected").each(function(){
+										 if(this.value.toUpperCase() === newTag.toUpperCase() && this.value.toLowerCase() === newTag.toLowerCase()){
+											 isNewTag = false;
+											 return false;
+										 }
+				                    
+				                   });
+									
+										if(focussedTags.length > 0){
+											var tagOption  = $("<option>").val(focussedTags.first().text()).text(focussedTags.first().text());
+											select.append(tagOption);
+											select.find(tagOption).prop('selected',true);
+											select.find(tagOption).siblings("[value='"+ focussedTags.first().text()+"']").remove();
+											$("#"+id).trigger("chosen:updated");
+									   }
+									   else{
+										   if(isNewTag){
+											var option = $("<option>").val(newTag).text(newTag);
+											select.append(option);
+											select.find(option).prop('selected', true);
+										   }
+									   }
+									
+					               $("#"+id).trigger("chosen:updated"); 
+				                   
+				                }
+						       
+			    	         }
+		    	});
+		}
 	
 }
 
@@ -127,7 +189,7 @@ function getFormData(formId) {
 	$.map(unindexed_array, function (n, i) {
 		if(($("[name="+n[name]+"]").attr('type') && $("[name="+n[name]+"]").attr('type').toLowerCase() === "text") || $("[name="+n[name]+"]").is("textarea"))
 			indexed_array[n['name']] = n['value'].trim().replace(/  +/g,' ');
-		else
+		else if(n['name'])
 			indexed_array[n['name']] = n['value'];
 	});
 	return indexed_array;
@@ -140,7 +202,7 @@ function getFormData1(formId) {
 	$.map(unindexed_array, function (n, i) {
 		if(($("[name="+n[name]+"]").attr('type') && $("[name="+n[name]+"]").attr('type').toLowerCase() === "text") || $("[name="+n[name]+"]").is("textarea"))
 			formData.append(n['name'], n['value'].trim().replace(/  +/g,' '));
-		else
+		else if(n['name'])
 			formData.append(n['name'], n['value']);
 	});
 	return formData;
@@ -158,16 +220,21 @@ function fileUpload(id, type, formId, name, orgId, orgLocationId,url) {
 		orgLocationId = 0;
 	var data = new FormData();
 	var files = document.getElementById(id).files;
+	var invalidFiles = false;
 	var count = 0;
+	expr = /.zip/;
+	ecpr1=/.rar/;
 	for(var e in files) {
 		if(!$.isNumeric(e))
 			continue;
-		if(files[e].name.toLowerCase().endsWith(".zip") || files[e].name.toLowerCase().endsWith(".rar"))
+		//if(files[e].name.toLowerCase().endsWith(".zip") || files[e].name.toLowerCase().endsWith(".rar"))
+		if(files[e].name.toLowerCase().match(expr) || files[e].name.toLowerCase().match(ecpr1))
 			continue;
 		data.append('file', files[e]);
 		count ++;
 	}
 	if(count === 0) {
+		$("#"+formId+" input[data-id*="+id+"]").remove();
 		$(".file_mask").hide();
 		alert("Please select valid file (zip files and rar files are not allowed)");
 		return;
@@ -175,7 +242,7 @@ function fileUpload(id, type, formId, name, orgId, orgLocationId,url) {
 	data.append('orgId', orgId);
 	data.append('orgLocationId', orgLocationId);
 	$.ajax({ 
-		url: sourceleadUrl+(url ? url : "/upload/"+type), 
+		url: sourceleadUrl+(url ? url : "/ws/upload/"+type), 
 		data: data, 
 		processData: false, 
 		type: 'POST', 
@@ -246,11 +313,10 @@ var rFlag = false;
 function showMessage(message, type, redirectFlag) {
     rFlag = redirectFlag ? redirectFlag : false;
     $(".alert" + (type === 1 ? ".alert-success" : ".alert-danger") + " span").html(message);
-    $(".alert" + (type === 1 ? ".alert-success" : ".alert-danger")).show();
+    $(".alert").show();
     $(".alert" + (type === 1 ? ".alert-success" : ".alert-danger")).addClass('bounceInUp animated').one('webkitAnimationEnd mozAnimationEnd MSAnimationEnd oanimationend animationend', function () {
         $(".alert" + (type === 1 ? ".alert-success" : ".alert-danger")).removeClass('bounceInUp animated');
     });
-     $(".mask").fadeIn(400);
 }
 
 function hideMessage(type) {
@@ -258,7 +324,6 @@ function hideMessage(type) {
          $(".alert" + (type === 1 ? ".alert-success" : ".alert-danger")).removeClass('bounceOutDown animated');
          $(".alert" + (type === 1 ? ".alert-success" : ".alert-danger")).hide();
     });
-    $(".mask").fadeOut(400);
     if(rFlag) {
         location.href = "/";
     }
@@ -296,25 +361,35 @@ function saveCandidateImage(candidateId, formId, data){
 
 
 function saveUserProfileImage(formId,data){
-	
-	if ($('#'+formId).validate(false, validationSettings)){
-  		var formData = getFormData(formId);
-        		
+    if ($('#'+formId).validate(false, validationSettings)){
+          var formData = getFormData(formId);
+        if(formId === "profileImage_form"){    
         $.ajax({
-            	      type: "POST",
-            	      data: formData,
-            	      url: sourceleadUrl+"/saveUserProfileImage?"+tokenParamName+"="+tokenValue,
-                      success: function(result) {
-                    	  if(result)
-                    		  $("img[data-id=userProfileImage]").each(function(i) { $(this).attr('src', data[0].fileURL); });
-                  		  location.replace(sourceleadUrl+"/userProfile");  
-			          },  
+              type: "POST",
+              data: formData,
+              url: sourceleadUrl+"/saveUserProfileImage?"+tokenParamName+"="+tokenValue,
+              success: function(result) {
+                  if(result)
+                      $("img[data-id=userProfileImage]").each(function(i) { $(this).attr('src', data[0].fileURL); });
+                    location.replace(sourceleadUrl+"/userProfile");  
+              },  
         });
-        return true;         
-}else{ 
-return false;
-}
-	
+        } else{
+            $.ajax({
+                type: "POST",
+                data: formData,
+                url: sourceleadUrl+"/saveOrgImage?"+tokenParamName+"="+tokenValue,
+                success: function(result) {
+                    if(result)
+                        $("img[data-id=orgLogoImage]").each(function(i) { $(this).attr('src', data[0].fileURL); });
+                    location.reload();
+                  },  
+              });
+        }
+        return true;
+     }else{ 
+           return false;
+     }
 }
 
 function uploadResumeOnSelect(formId) {
@@ -450,10 +525,153 @@ var reqListDate = '';
 function removeEmptyLines(ele) { //removeEmptyLines($(".."))
 	if($(ele).is(":visible")) {
 		$(ele).val($(ele).val().trim().replace(/  +/g,' ').replace(/(^(\r\n|\n|\r))/gm, ''));
-		if($(ele).val().endsWith("\n")) {
+		if($(ele).val().match("\n")) {
 			$(ele).val($(ele).val().substring(0, $(ele).val().lastIndexOf("\n")));
-		} else if($(ele).val().endsWith("\r")) {
+		} else if($(ele).val().match("\r")) {
 			$(ele).val($(ele).val().substring(0, $(ele).val().lastIndexOf("\r")));
 		}
-	}	
+	}
+	 return ele;
+}
+
+//=========== getMultiple cites written by Laxman ==============
+multicities = {};
+function getcites(locatinId,cityId,type){
+	if(type == "recommendation"){
+		var countryCode = "";
+	}else{
+		 var countryName = $("#country").val().split(',');
+		 var countryCode = countryName[1];
+	}
+	 initializeCities(locatinId,countryCode,cityId,type);
+}
+function initializeCities(locatinId,countryCode,cityId,type) {
+	if(type == "recommendation"){
+		autocomplete = new google.maps.places.Autocomplete((document.getElementById(locatinId)), {
+			types: ['(cities)']
+	       });
+	}else{
+		autocomplete = new google.maps.places.Autocomplete((document.getElementById(locatinId)), {
+	   		types: ['geocode'],
+	   		componentRestrictions: {
+	        	country: countryCode
+	        }
+	       });
+	}
+   google.maps.event.addListener(autocomplete, 'place_changed', function() {
+   place = autocomplete.getPlace();
+   var address = {};
+   for (var i = 0; i < place.address_components.length; i++) {
+   var addressType = place.address_components[i].types[0];
+   switch (addressType) {
+      case "route":
+   	 address.name=place.address_components[i].long_name;
+   	 break;
+     case "locality":
+       address.city = place.address_components[i].long_name;
+       break;
+     case "administrative_area_level_1":
+       address.state = place.address_components[i].long_name;
+       break;
+     case "country":
+       address.country = place.address_components[i].long_name;
+       address.countryShortName = place.address_components[i].short_name;
+       
+   }
+ }
+
+ $("#"+locatinId).val(address.city).change();
+ multicities[address.city] = address.city;
+ 
+ var option = $("<option>").val(address.city).text(address.city);
+ $("#"+cityId).append(option);
+ $("#"+cityId).find(option).prop('selected', true);
+ $("#"+cityId).find(option).siblings("[value='"+ address.city+"']").remove();
+ $("#"+cityId).trigger("chosen:updated");
+	 
+   });
+   
+}
+function refreshGoogleApiCity(cityId){
+	$("#"+cityId).val('');
+}
+
+
+function validateEmail(emailId) {
+    var email = $("#" + emailId).val().trim();
+    if (email === "") {
+        showError("Please enter email id");
+        return false;
+    } else if (!/^((([a-z]|\d|[!#\$%&'\*\+\-\/=\?\^_`{\|}~]|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])+(\.([a-z]|\d|[!#\$%&'\*\+\-\/=\?\^_`{\|}~]|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])+)*)|((\x22)((((\x20|\x09)*(\x0d\x0a))?(\x20|\x09)+)?(([\x01-\x08\x0b\x0c\x0e-\x1f\x7f]|\x21|[\x23-\x5b]|[\x5d-\x7e]|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])|(\\([\x01-\x09\x0b\x0c\x0d-\x7f]|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF]))))*(((\x20|\x09)*(\x0d\x0a))?(\x20|\x09)+)?(\x22)))@((([a-z]|\d|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])|(([a-z]|\d|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])([a-z]|\d|-|\.|_|~|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])*([a-z]|\d|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])))\.)+(([a-z]|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])|(([a-z]|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])([a-z]|\d|-|\.|_|~|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])*([a-z]|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])))\.?$/i.test(email)) {
+        showError("Please enter valid email id");
+        return false;
+    }
+    return true;
+}
+
+function validateEmailForExistenceUniversally(email, divId, spanId) {
+	var flag = null;
+	/*$.ajax({
+	    type: "GET",
+	    url: sourceleadUrl + "/validateEmailForExistenceUniversally?email="+email,
+	    async: false,
+	    cache: false,
+	    success: function (data) {
+	    	if(data.object === "true"){
+	    		flag =  true;
+	    	}else if(data.object === "false"){
+	    		flag= false;
+	    	}else if(data.object === "invalidDomain"){
+	    		flag= "invalidDomain";
+	    	}else if(data.object === "noResponse"){
+	    		flag = "noResponse";
+	    	}
+	    }
+	});
+
+	if(flag === true){
+		$(spanId).find("i").remove();
+		$(spanId).append('<i class="fa fa-check text-succes"></i>');
+	}else if(flag === false){
+		$(spanId).find("i").remove();
+		$(spanId).append('<i class="fa fa-exclamation-triangle text-warning"></i>');
+		$(divId).after("<p class='jquery_form_error_message textWarning'><i class='fa fa-exclamation-triangle' aria-hidden='true'></i>This email universally not existed</span>");
+	}else if(flag === "invalidDomain"){
+		$(spanId).find("i").remove();
+		$(spanId).append('<i class="fa fa-ban text-danger"></i>');
+		$(divId).after("<p class='jquery_form_error_message textWarning'><i class='fa fa-ban' aria-hidden='true'></i>This domain universally not existed</span>");
+	}*/
+return true;
+}
+
+
+function validate(id, label) {
+    var val = $('#' + id).val().trim();
+    if (val === "") {
+        showError("Please enter " + label);
+        return false;
+    }
+    if($('#' + id).data('min')) {
+        var v = parseInt($('#' + id).data('min'));
+        if(val.length < v) {
+            showError(label+" should be minimum "+ v+" character length");
+            return false;
+        }
+    }
+    if($('#' + id).data('max')) {
+        var v = parseInt($('#' + id).data('max'));
+        if(val.length > v) {
+            showError(label+" should be maxinum "+ v+" character length");
+            return false;
+        }
+    }
+    return true;
+}
+function validateSelect(id, label) {
+    var val = $('#' + id).val().trim();
+    if (val === "" || val === "0") {
+        showError("please select " + label);
+        return false;
+    }
+    return true;
 }

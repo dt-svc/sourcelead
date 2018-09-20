@@ -3,7 +3,7 @@
 <section class="staticBan blogBan">
 	<div class="staticBanInn"><h4>SourceLead blogs</h4><div class="clear"></div></div>
 </section>  
-
+          
 <section class="testiWrap">
 
 <section class="blogWrap">
@@ -13,16 +13,16 @@
     	<h2>Recent Posts<i class="fa fa-caret-down"></i></h2>
         <div class="resSlide">
     	<div class="blogRight">
-    		<a href="blog1.html"><i class="fa fa-caret-right"></i>Recruiting Through Social Media Platform</a>
-			<a href="blog2.html"><i class="fa fa-caret-right"></i>Loyal Relationships with Recruiters</a>
-        	<a href="blog3.html"><i class="fa fa-caret-right"></i>Existing Process without using any Tool</a>
-            <a href="blog4.html"><i class="fa fa-caret-right"></i>Problems of Existing Recruiting process without Tools.</a>
-            <a href="blog5.html"><i class="fa fa-caret-right"></i>Applicant Tracking System</a>
+    		<a href="/blog1.html"><i class="fa fa-caret-right"></i>Recruiting Through Social Media Platform</a>
+			<a href="/blog2.html"><i class="fa fa-caret-right"></i>Loyal Relationships with Recruiters</a>
+        	<a href="/blog3.html"><i class="fa fa-caret-right"></i>Existing Process without using any Tool</a>
+            <a href="/blog4.html"><i class="fa fa-caret-right"></i>Problems of Existing Recruiting process without Tools.</a>
+            <a href="/blog5.html"><i class="fa fa-caret-right"></i>Applicant Tracking System</a>
         </div>                      
         <div class="blogRightBot">
         	<p>Ready to Learn More?</p>
             <span>Let us help you choose the perfect solution for your firm.</span>
-            <a href="javascript:void(0)" class="requestDemo">Request a Demo</a><a href="javascript:void(0)" class="freeTrail">Free Trial</a>
+            <a href="javascript:void(0)" class="requestDemo">Get a Demo</a>
         </div>
         </div>
     </div>
@@ -31,7 +31,7 @@
     	<div class="blogInn">
         	<h1>Loyal Relationships with Recruiters</h1>
             <h3><i class="fa fa-calendar-check-o"></i>Posted On : <span>20 FEB 2017 at 12:05 AM</span></h3>
-            <div class="blogImg"><img src="/resources/css/static-web/images/bl5.jpg" alt=""/></div>
+            <div class="blogImg"><img src="/resources/static-web/images/bl5.jpg" alt=""/></div>
 			<b>What is Loyalty?</b>
             <p>Measure of commitment based on obligation or, in consumer preference,degree of satisfaction.</p>
             <p>When you are searching for a job change, previous relationships with recruiter plays critical role. When engaging recruiters in your job search, realize that they are leading to successful relationship.Recruiters don’t work for the candidate; recruiters represent the employer. The best way to get connected to a recruiter is when they reach out to you.</p>
@@ -39,6 +39,7 @@
             
           </div>         
   
+
     </div>
     
 <div class="clear"></div>  

@@ -27,8 +27,6 @@ import org.hibernate.annotations.NotFoundAction;
 
 @Entity
 @Table(name = "CANDIDATE_EMPLOYERS")
-@Cache(usage = CacheConcurrencyStrategy.TRANSACTIONAL, region = "candidateEmployers")
-
 public class CandidateEmployers implements Serializable{
 	
 	
@@ -40,13 +38,13 @@ public class CandidateEmployers implements Serializable{
     @Column(name = "ID", nullable = false)
 	private Long id;
 	
-	@NotFound(action=NotFoundAction.IGNORE)
-	@ManyToOne
+	
+	@ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name="ORG_LOCATION_ID", nullable=false )        
     private OrgLocations orgLocationId;
 	
-	@NotFound(action=NotFoundAction.IGNORE)
-	@ManyToOne(fetch = FetchType.EAGER)
+	
+	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "CANDIDATE_ID", nullable=false)
 	private Candidate candidateId;
 		
@@ -80,7 +78,32 @@ public class CandidateEmployers implements Serializable{
 	
 	@Column(name = " ENDDATE  ")
 	private Date endDate;
+
+	// immigration column start
+	@Column(name = " TAX_ID")
+	private String taxId;
 	
+	// immigration related files purpose start
+	
+	@Column(name = "EMPLOYER_FILE_CONTENT_TYPE")
+	private String employerFileContentType;
+		
+	@Column(name = "EMPLOYER_FILE_URL",columnDefinition = "TEXT default NULL")
+	private String employerFileUrl;
+		
+	@Column(name = "EMPLOYER_FILE_NAME")
+	private String employerFileName;
+		
+	// immigration related files purpose end
+
+	@Column(name = " EMPLOYMENT_TYPE")
+	private String employmentType;
+
+	@Column(name = " JOB_TITLE")
+	private String jobTitle;
+
+	// immigration column end
+
 	@Column(name = "STATUS ")
 	private Integer status;
 	
@@ -211,6 +234,30 @@ public class CandidateEmployers implements Serializable{
 
 	
 
+	public String getTaxId() {
+		return taxId;
+	}
+
+	public void setTaxId(String taxId) {
+		this.taxId = taxId;
+	}
+
+	public String getEmploymentType() {
+		return employmentType;
+	}
+
+	public void setEmploymentType(String employmentType) {
+		this.employmentType = employmentType;
+	}
+
+	public String getJobTitle() {
+		return jobTitle;
+	}
+
+	public void setJobTitle(String jobTitle) {
+		this.jobTitle = jobTitle;
+	}
+
 	public Integer getStatus() {
 		return status;
 	}
@@ -265,6 +312,30 @@ public class CandidateEmployers implements Serializable{
 
 	public void setMsg(String msg) {
 		this.msg = msg;
+	}
+
+	public String getEmployerFileContentType() {
+		return employerFileContentType;
+	}
+
+	public void setEmployerFileContentType(String employerFileContentType) {
+		this.employerFileContentType = employerFileContentType;
+	}
+
+	public String getEmployerFileUrl() {
+		return employerFileUrl;
+	}
+
+	public void setEmployerFileUrl(String employerFileUrl) {
+		this.employerFileUrl = employerFileUrl;
+	}
+
+	public String getEmployerFileName() {
+		return employerFileName;
+	}
+
+	public void setEmployerFileName(String employerFileName) {
+		this.employerFileName = employerFileName;
 	}
 	
 }

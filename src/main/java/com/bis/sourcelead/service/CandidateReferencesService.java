@@ -22,7 +22,7 @@ public interface CandidateReferencesService {
 	 */
 	public CandidateReferences storeCandidateReferences(CandidateReferencesDTO candidateReferencesDTO,Long candidateId,Long orgLocationId,User user) throws JSONException,Exception;
 	
-    public ResponseList<CandidateReferencesDTO>  getCandidateReferencesListByCandidateIdAndOrgLocationID(Long candidateId, Long orgLocationId) throws Exception;
+    public ResponseList<CandidateReferencesDTO>  getCandidateReferencesListByCandidateIdAndOrgLocationID(Long candidateId, Long orgLocationId, String loginUserCode) throws Exception;
 	
 	public CandidateReferences getCandidateReferencesByCandidateIdAndReferenceId(Long candidateId,Long refId) throws Exception;
 	
@@ -33,4 +33,11 @@ public interface CandidateReferencesService {
 	void saveOrUpdateCandidateElkDocumentWithReferenceDetails(Candidate candidate, Long locationId) throws Exception;
 	
 	Boolean validateReferenceEmail(String referenceEmail, Long candidateId,Long candidateReferenceId) throws Exception;
+	
+    public CandidateReferences validateReferenceEmailByReferEmailAndReferId(String referEmail,Long referId) throws Exception;
+
+	Boolean validateReferenceEmailByReferEmailAndCandidateId(String referenceEmail, Long candidateId) throws Exception;
+
+	
+	
 }

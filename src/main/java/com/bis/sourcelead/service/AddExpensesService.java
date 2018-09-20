@@ -7,6 +7,7 @@ import javax.servlet.http.HttpServletRequest;
 import org.json.JSONException;
 
 import com.bis.sourcelead.dto.ExpensesDTO;
+import com.bis.sourcelead.dto.Response;
 import com.bis.sourcelead.entity.Expenses;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.ProjectMembers;
@@ -25,5 +26,7 @@ public interface AddExpensesService {
 	public Expenses storeAddExpensesData(Expenses expenses) throws Exception;
 
 	public void deleteDocumentByDocumentId(String documentId);
+
+	public Response<String> changeStatusToBillable(long expenseEntriesId,String  billableStatus);
 
 }

@@ -34,20 +34,20 @@ public class ExpensesApproverHierarchyServiceImpl implements ExpensesApproverHie
 	 */
 	
 	@Override
-	public ExpensesCount getExpensesCountByUserIdAndOrgLocationIdForApprover(Long userId, Long orgLocationId)
+	public ExpensesCount getExpensesCountByUserIdAndOrgLocationIdForApprover(Long userId, Long orgLocationId,String isGlobalAccess)
 			throws Exception {
 		        ExpensesCount expCount = new ExpensesCount();
 				
-		        Collection<ExpensesApproverHierarchy> submittedForApprovalEmployeeList   = expensesApproverHierarchyDao.getEmployeeExpensesApproverHierarchyListByuserIdAndOrgLocationIdForApproverLogin(userId, orgLocationId,"SUBMITTEDFORAPPROVAL");
+		        Collection<ExpensesApproverHierarchy> submittedForApprovalEmployeeList   = expensesApproverHierarchyDao.getEmployeeExpensesApproverHierarchyListByuserIdAndOrgLocationIdForApproverLogin(userId, orgLocationId,"SUBMITTEDFORAPPROVAL",isGlobalAccess);
 				expCount.setEmpExpensesSubmittedForApprovalCount(submittedForApprovalEmployeeList.size());
 				
-				Collection<ExpensesApproverHierarchy> reopenEmployeeList   = expensesApproverHierarchyDao.getEmployeeExpensesApproverHierarchyListByuserIdAndOrgLocationIdForApproverLogin(userId, orgLocationId,"REOPENED");
+				Collection<ExpensesApproverHierarchy> reopenEmployeeList   = expensesApproverHierarchyDao.getEmployeeExpensesApproverHierarchyListByuserIdAndOrgLocationIdForApproverLogin(userId, orgLocationId,"REOPENED",isGlobalAccess);
 				expCount.setEmpExpensesReopenCount(reopenEmployeeList.size());
 				
-				Collection<ExpensesApproverHierarchy> approvedEmployeeList   = expensesApproverHierarchyDao.getEmployeeExpensesApproverHierarchyListByuserIdAndOrgLocationIdForApproverLogin(userId, orgLocationId,"APPROVED");
+				Collection<ExpensesApproverHierarchy> approvedEmployeeList   = expensesApproverHierarchyDao.getEmployeeExpensesApproverHierarchyListByuserIdAndOrgLocationIdForApproverLogin(userId, orgLocationId,"APPROVED",isGlobalAccess);
 				expCount.setEmpExpensesApprovedCount(approvedEmployeeList.size());
 				
-				Collection<ExpensesApproverHierarchy> rejectedEmployeeList   = expensesApproverHierarchyDao.getEmployeeExpensesApproverHierarchyListByuserIdAndOrgLocationIdForApproverLogin(userId, orgLocationId,"REJECTED");
+				Collection<ExpensesApproverHierarchy> rejectedEmployeeList   = expensesApproverHierarchyDao.getEmployeeExpensesApproverHierarchyListByuserIdAndOrgLocationIdForApproverLogin(userId, orgLocationId,"REJECTED",isGlobalAccess);
 				expCount.setEmpExpensesRejectedCount(rejectedEmployeeList.size());
 				
 				return expCount;

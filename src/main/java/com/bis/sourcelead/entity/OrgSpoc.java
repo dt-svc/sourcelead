@@ -3,6 +3,8 @@ package com.bis.sourcelead.entity;
 import java.io.Serializable;
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -15,17 +17,11 @@ import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import javax.persistence.Transient;
 
-import org.hibernate.annotations.Cache;
-import org.hibernate.annotations.CacheConcurrencyStrategy;
-import org.hibernate.annotations.NotFound;
-import org.hibernate.annotations.NotFoundAction;
-
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 @Entity
 @Table(name = "ORG_SPOC")
-@Cache(usage = CacheConcurrencyStrategy.TRANSACTIONAL,region="orgSpoc")
 public class OrgSpoc implements Serializable{
 
 	private static final long serialVersionUID = 1L;
@@ -35,39 +31,52 @@ public class OrgSpoc implements Serializable{
     @Column(name = "ID", nullable = false)
 	private Long id;
 	
-	@NotFound(action=NotFoundAction.IGNORE)
-	@ManyToOne(fetch = FetchType.EAGER)
+	
+	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "ORG_RELATION_ID")
+	@JsonBackReference
 	private OrgRelations orgRelations;
 	
-	@NotFound(action=NotFoundAction.IGNORE)
-	@ManyToOne
+	
+	@ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name="VENDOR_LOCATION_ID") 
 	@JsonBackReference
     private OrgLocations vendorLocationId;
 	
-	@NotFound(action=NotFoundAction.IGNORE)
-	@ManyToOne
+	
+	@ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name="CLIENT_LOCATION_ID")        
     private OrgLocations clientLocationId;
 	
-	@NotFound(action=NotFoundAction.IGNORE)
-	@ManyToOne(fetch = FetchType.EAGER)
+	
+	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "VENDOR_USER_ID")
 	private User vendorUser;
 	
-	@NotFound(action=NotFoundAction.IGNORE)
-	@ManyToOne(fetch = FetchType.EAGER)
+	
+	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "CLIENT_USER_ID")
 	private User clientUser;
 	
-	@NotFound(action=NotFoundAction.IGNORE)
-	@ManyToOne(fetch = FetchType.EAGER)
+	
+	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "OWNER_USER_ID")
 	private User ownerUser;
 	
 	@Column(name = "INVITATION_STATUS")
 	private String invitationStatus;
+	
+	@Column(name = "INVOICE_EMAIL_STATUS")
+	private String invoiceEmailStatus;
+	
+	@Column(name = "BILLING_EMAIL_STATUS")
+	private String billingEmailStatus;
+	
+	@Column(name = "AP_EMAIL_STATUS")
+	private String apEmailStatus;
+	
+	@Column(name = "AR_EMAIL_STATUS")
+	private String arEmailStatus;
 	
 	@Column(name = "SPOC_STATUS")
 	private String spocStatus;
@@ -104,6 +113,10 @@ public class OrgSpoc implements Serializable{
 	@Transient
 	@JsonProperty
 	private String spocUserCode;
+	
+	@Transient
+	@JsonProperty
+	private Map<String,String> clientCustomFieldlabelNameAndValue;
 	
 	public String getVendorCurrency() {
 		return vendorCurrency;
@@ -658,6 +671,46 @@ public class OrgSpoc implements Serializable{
 	public void setSpocExtensionNumber(String spocExtensionNumber)
 	{
 		this.spocExtensionNumber = spocExtensionNumber;
+	}
+
+	public Map<String, String> getClientCustomFieldlabelNameAndValue() {
+		return clientCustomFieldlabelNameAndValue;
+	}
+
+	public void setClientCustomFieldlabelNameAndValue(Map<String, String> clientCustomFieldlabelNameAndValue) {
+		this.clientCustomFieldlabelNameAndValue = clientCustomFieldlabelNameAndValue;
+	}
+
+	public String getInvoiceEmailStatus() {
+		return invoiceEmailStatus;
+	}
+
+	public void setInvoiceEmailStatus(String invoiceEmailStatus) {
+		this.invoiceEmailStatus = invoiceEmailStatus;
+	}
+
+	public String getBillingEmailStatus() {
+		return billingEmailStatus;
+	}
+
+	public void setBillingEmailStatus(String billingEmailStatus) {
+		this.billingEmailStatus = billingEmailStatus;
+	}
+
+	public String getApEmailStatus() {
+		return apEmailStatus;
+	}
+
+	public void setApEmailStatus(String apEmailStatus) {
+		this.apEmailStatus = apEmailStatus;
+	}
+
+	public String getArEmailStatus() {
+		return arEmailStatus;
+	}
+
+	public void setArEmailStatus(String arEmailStatus) {
+		this.arEmailStatus = arEmailStatus;
 	}
 	
 }

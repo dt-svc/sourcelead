@@ -1,5 +1,7 @@
 package com.bis.sourcelead.dto;
 
+import java.util.List;
+
 /**
  * @author BIS115
  *
@@ -25,6 +27,18 @@ public class ImportTimesheetDTO {
 	private String week3;
 	private String week4;
 	private String week5;
+	private String week6;
+	private String sun;
+	private String mon;
+	private String tue;
+	private String wed;
+	private String thu;
+	private String fri;
+	private String sat;
+	private List<String> days;
+	private String weekComments;
+	private String monthYear;
+	private String timeFrequencyType;
 	
 	public String getEmployeeId() {
 		return employeeId;
@@ -134,11 +148,84 @@ public class ImportTimesheetDTO {
 	public void setWeek5(String week5) {
 		this.week5 = week5;
 	}
+	public String getWeek6() {
+		return week6;
+	}
+	public void setWeek6(String week6) {
+		this.week6 = week6;
+	}
+	public String getSun() {
+		return sun;
+	}
+	public void setSun(String sun) {
+		this.sun = sun;
+	}
+	public String getMon() {
+		return mon;
+	}
+	public void setMon(String mon) {
+		this.mon = mon;
+	}
+	public String getTue() {
+		return tue;
+	}
+	public void setTue(String tue) {
+		this.tue = tue;
+	}
+	public String getWed() {
+		return wed;
+	}
+	public void setWed(String wed) {
+		this.wed = wed;
+	}
+	public String getThu() {
+		return thu;
+	}
+	public void setThu(String thu) {
+		this.thu = thu;
+	}
+	public String getFri() {
+		return fri;
+	}
+	public void setFri(String fri) {
+		this.fri = fri;
+	}
+	public String getSat() {
+		return sat;
+	}
+	public void setSat(String sat) {
+		this.sat = sat;
+	}
 	public String getTaskName() {
 		return taskName;
 	}
 	public void setTaskName(String taskName) {
 		this.taskName = taskName;
 	}
+	public String getWeekComments() {
+		return weekComments;
+	}
+	public void setWeekComments(String weekComments) {
+		this.weekComments = weekComments;
+	}
+	public String getMonthYear() {
+		return monthYear;
+	}
+	public void setMonthYear(String monthYear) {
+		this.monthYear = monthYear;
+	}
+	public String getTimeFrequencyType() {
+		return timeFrequencyType;
+	}
+	public void setTimeFrequencyType(String timeFrequencyType) {
+		this.timeFrequencyType = timeFrequencyType;
+	}
+	public List<String> getDays() {
+		return days;
+	}
+	public void setDays(List<String> days) {
+		this.days = days;
+	}
+	
 	
 }

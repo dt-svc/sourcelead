@@ -8,7 +8,7 @@ import com.bis.sourcelead.annotations.Required;
 public class HolidayDTO implements Serializable {
 private static final long serialVersionUID = 1L;
 
-	private String id;
+	private long id;
 	
 	private String orgLocationId;
 	
@@ -17,8 +17,10 @@ private static final long serialVersionUID = 1L;
 	@Required(desc = "Holiday Name")
 	private String holidayName;  
 	
+	@Required(desc = "From Date")
 	private String fromDate;
 	
+	@Required(desc = "To Date")
 	private String toDate;
 	
 	private String fromHalfDayCheckBox;
@@ -48,13 +50,19 @@ private static final long serialVersionUID = 1L;
 	private String isFuture;
 	
 	private String isPast;
+	
+	private String holidayBillableType;
+	
+	private String holidayUUID;
+	
+	private String shift;
 
-	public String getId()
+	public long getId()
 	{
 		return id;
 	}
 
-	public void setId(String id)
+	public void setId(long id)
 	{
 		this.id = id;
 	}
@@ -253,6 +261,33 @@ private static final long serialVersionUID = 1L;
 	{
 		return serialVersionUID;
 	}
-	
+
+	public String getHolidayUUID()
+	{
+		return holidayUUID;
+	}
+
+	public void setHolidayUUID(String holidayUUID)
+	{
+		this.holidayUUID = holidayUUID;
+	}
+
+	public String getShift() {
+		return shift;
+	}
+
+	public void setShift(String shift) {
+		this.shift = shift;
+	}
+
+	public String getHolidayBillableType()
+	{
+		return holidayBillableType;
+	}
+
+	public void setHolidayBillableType(String holidayBillableType)
+	{
+		this.holidayBillableType = holidayBillableType;
+	}
 	
 }

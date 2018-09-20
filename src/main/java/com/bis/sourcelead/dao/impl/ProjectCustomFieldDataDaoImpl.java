@@ -1,7 +1,9 @@
 package com.bis.sourcelead.dao.impl;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.apache.commons.lang.exception.ExceptionUtils;
 import org.hibernate.Session;
@@ -39,18 +41,43 @@ public class ProjectCustomFieldDataDaoImpl implements ProjectCustomFieldDataDao 
 		return projectCustomFields;
 	}
 	
-	
+
+	@SuppressWarnings("unchecked")
 	@Override
 	@Transactional
-	public List<ProjectCustomFieldData> getProjectCustomFieldDataByProjectId(Long projectId,List<CustomFormFieldDTO> formFieldId) {
+	public Map<Long, String[]> getProjectCustomFieldDataByProjectId(Long orgId, List<CustomFormFieldDTO> formFieldId,Long projectId) {
 		Session session = this.sessionFactory.getCurrentSession();
 		List<Long> formIds = new ArrayList<>();
 		for(CustomFormFieldDTO form:formFieldId) {
 			formIds.add(form.getCustomFormFieldId());
 		}
-		String query = "from ProjectCustomFieldData projectData left join fetch projectData.orglocationsFormFields formField left join fetch projectData.projects proj where proj.id =:projectId and formField.id IN(:formFieldId)";
-		List<ProjectCustomFieldData> projectFieldData  = session.createQuery(query).setLong("projectId", projectId).setParameterList("formFieldId", formIds).setCacheable(true).list();
-		return projectFieldData;
+		String query = "from ProjectCustomFieldData projectData left join fetch projectData.orglocationsFormFields formField left join fetch formField.org org left join fetch projectData.projects pro where pro.id =:projectId and formField.id IN(:formFieldId) and org.id =:orgId";
+		List<ProjectCustomFieldData> projectFieldData  = session.createQuery(query).setLong("projectId", projectId).setLong("orgId", orgId).setParameterList("formFieldId", formIds).list();
+		Map<Long,String[]> projectCustomFieldDataMap = new HashMap<Long,String[]>();
+		if(projectFieldData != null && !projectFieldData.isEmpty()) {
+			for(ProjectCustomFieldData projectData:projectFieldData) {
+				String projectDataArray[] =  new String[4];
+				projectDataArray[0] = projectData.getOrglocationsFormFields().getLabelName();
+				projectDataArray[1] = projectData.getCustomFormFieldData();
+				projectDataArray[2] = projectData.getId().toString();
+				projectCustomFieldDataMap.put(projectData.getOrglocationsFormFields().getId(), projectDataArray);
+			}
+		}
+		return projectCustomFieldDataMap;
+	}
+
+
+	@Override
+	@Transactional
+	public ProjectCustomFieldData getprojectFieldDataById(Long projectId) {
+		Session session = sessionFactory.getCurrentSession();
+		ProjectCustomFieldData projectsCustomFields = null;
+		try {
+			projectsCustomFields = (ProjectCustomFieldData) session.get(ProjectCustomFieldData.class, projectId);
+		}catch (Exception e) {
+			e.printStackTrace();
+		}
+		return projectsCustomFields;
 	}
 
 }

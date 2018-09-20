@@ -78,7 +78,12 @@ function getRestrictDayList(){
          
     }); 
 }
-function populateRestrictDayList(json){
+function populateRestrictDayList(response){
+	if (response && (response.response === "INVALID_DATA" || response.response === "INVALID_USER")) {
+	    showError(response.responseMessage);
+  	} else if (response.response === "AWKWARD") {
+	    location.href = "/errorPage";
+	} else if (response.response === "SUCCESS") {
 	var result = '';
 	result = result +' <table width="100%" width="100%" cellpadding="0" cellspacing="0" id="restrictDayTableId">';
     result = result +' <thead>';
@@ -90,8 +95,8 @@ function populateRestrictDayList(json){
     result = result +' </tr>';
     result = result +' </thead>';
     result = result +' <tbody>';
-    for (var i=0; i<json.data.length; i++){
-    	var report = json.data[i];
+    for (var i=0; i<response.data.length; i++){
+    	var report = response.data[i];
     	result = result +'  <tr>                                                                                                                       ';
     	result = result +'  <td>                                                                                                                       ';
     	result = result +'    <div class="tbldata-dotdot-big">                                                                               ';
@@ -110,8 +115,8 @@ function populateRestrictDayList(json){
     	result = result +'  </td>                                                                                                                      ';
     	result = result +'  <td>                                                                                                                       ';
     	result = result +'     <div class="tblminwidth-50">                                                                                            ';
-    	result = result +'          <span title="Edit" class="paddingRight"><a href="<c:url value="/app/addRestrictDay?restrictDayID='+report.restrictDayId+'"/>"><i class="fa fa-pencil text-primary cursorPointer"></i></a></span>             ';
-    	result = result +'          <span title="Delete" class="paddingLeft"><i class="fa fa-trash text-danger cursorPointer" onclick="deleteRestrictDay(\''+report.restrictDayId+'\');"></i></span>              ';
+    	result = result +'          <span title="Edit" class="paddingRight"><a href="<c:url value="/app/addRestrictDay?restrictUUID='+report.restrictUUID+'"/>"><i class="fa fa-pencil text-primary cursorPointer"></i></a></span>             ';
+    	result = result +'          <span title="Delete" class="paddingLeft"><i class="fa fa-trash text-danger cursorPointer" onclick="deleteRestrictDay(\''+report.restrictUUID+'\');"></i></span>              ';
     	result = result +'      </div>                                                                                                                 ';
     	result = result +'  </td>                                                                                                                      ';
     	result = result +'</tr>       																													';
@@ -122,6 +127,11 @@ function populateRestrictDayList(json){
     $("#restricDayList").empty();
     $("#restricDayList").append(result);
     restrictDayPagination();
+	} else if (response.indexOf('Sign In') !== -1) {
+		location.replace(sourceleadUrl);
+	} else {
+	    showError("Operation failed, please try again");
+	}
 }
 </script>
 
@@ -173,7 +183,7 @@ function saveDeletedReason(id){
 		}else{
 			 $.ajax({
 				   	type: "POST",
-				    url: sourceleadUrl+"/deleteRestrictedDay?"+tokenParamName+"="+tokenValue+"&id="+id+"&reason="+reason,
+				    url: sourceleadUrl+"/deleteRestrictedDay?"+tokenParamName+"="+tokenValue+"&restrictUUID="+id+"&reason="+reason,
 		   		    success: function(data) {
 		   		    	$("#popUp").empty();
 		   			 	$(".project_inn_mask").fadeOut(200);

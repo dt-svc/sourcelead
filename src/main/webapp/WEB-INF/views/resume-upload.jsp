@@ -203,6 +203,7 @@ padding: 2px
 </style>
 <body>
 	<header>
+	
 		<div class="logo">
 		<c:if test="${SourceLeadWeb_loginUserRole != 'ROLE_CROWDSOURCING_PROFESSIONAL' && SourceLeadWeb_loginUserRole != 'ROLE_CROWDSOURCING_RECRUITER' && SourceLeadWeb_prodSupportLoginUserRole == null}">
   <a href="${appPath}/dashboard/${SourceLeadWeb_orgLocationId}" title="Source Lead"></a>
@@ -223,10 +224,10 @@ padding: 2px
   </c:if>
 		 <c:if test="${!empty SourceLeadWeb_org.fileContentType}">
  	 <c:if test="${SourceLeadWeb_loginUserRole == 'ROLE_CROWDSOURCING_PROFESSIONAL' || SourceLeadWeb_loginUserRole == 'ROLE_CROWDSOURCING_RECRUITER'}">
- 	 	<img src="<c:url value='${appPath}/displayOrgImage/${SourceLeadWeb_orgCode}'/>" title="${SourceLeadWeb_displayName == 'Professional' ? 'Job Seeker' : SourceLeadWeb_displayName}" class="img-responsive mt5">
+ 	 	<img data-id="orgLogoImage" src="${SourceLeadWeb_org.fileUrl}" title="${SourceLeadWeb_displayName == 'Professional' ? 'Job Seeker' : SourceLeadWeb_displayName}" class="img-responsive mt5">
  	 </c:if>
  	  <c:if test="${SourceLeadWeb_loginUserRole != 'ROLE_CROWDSOURCING_PROFESSIONAL' && SourceLeadWeb_loginUserRole != 'ROLE_CROWDSOURCING_RECRUITER'}">
- 	  <img src="<c:url value='${appPath}/displayOrgImage/${SourceLeadWeb_orgCode}'/>" title="${SourceLeadWeb_orgName}" class="img-responsive mt5">
+ 	  <img data-id="orgLogoImage" src="${SourceLeadWeb_org.fileUrl}" title="${SourceLeadWeb_orgName}" class="img-responsive mt5">
  	 </c:if>
  	 </c:if>
  	 	<c:if test="${empty SourceLeadWeb_org.fileContentType}">
@@ -420,9 +421,9 @@ $(function() {
 		if(uploadid == 0)
 			return;
 		$.post("bulk-resume-import-export-failed", {uploadid: uploadid}, function(data) {
-			if(data !== "" && data.indexOf("files found") === -1)
+			if(data !== "" && data.indexOf("Resumes Found") === -1)
 				location.href = '/app/downloadFile.html?file='+data;
-			else if(data !== "" && data.indexOf("files found") !== -1)
+			else if(data !== "" && data.indexOf("Resumes Found") !== -1)
 				alert(data);
 			else
 				alert("Unable to locate logs for this upload");
@@ -433,9 +434,9 @@ $(function() {
 		if(uploadid == 0)
 			return;
 		$.post("bulk-resume-import-export-duplicate", {uploadid: uploadid}, function(data) {
-			if(data !== "" && data.indexOf("files found") === -1)
+			if(data !== "" && data.indexOf("Resumes Found") === -1)
 				location.href = '/app/downloadFile.html?file='+data;
-			else if(data !== "" && data.indexOf("files found") !== -1)
+			else if(data !== "" && data.indexOf("Resumes Found") !== -1)
 				alert(data);
 			else
 				alert("Unable to locate logs for this upload");

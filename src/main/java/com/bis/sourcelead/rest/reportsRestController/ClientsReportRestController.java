@@ -216,9 +216,11 @@ public class ClientsReportRestController {
 							clientDto.setTotalPaidAmount(paidTotalAmount);
 						}
 					}
+					if(clientDto.getTotalPaidAmount() != 0)
+					clientDtoList.add(clientDto);
 				}
 				
-				clientDtoList.add(clientDto);
+				
 			}
 		}
 		
@@ -311,10 +313,10 @@ public class ClientsReportRestController {
 							clientDto.setTotalPaidAmount(paidTotalAmount);
 						}
 					}
-
+					if(clientDto.getTotalPaidAmount() != 0)
+					clientDtoList.add(clientDto);
 				}
 				
-				clientDtoList.add(clientDto);
 			}
 		}
 		
@@ -463,16 +465,23 @@ public class ClientsReportRestController {
 			reqList = clientReportService.getClientJobsByOrgRelationId(spoc.getOrgRelations().getId(),orgLocation.getId(),user.getId(),null,spoc.getClientUser().getId());
 		}
 		if(reqList != null && reqList.size() > 0) {
+			int submissionCount = 0;
+			int shortListCount  = 0;
+			int submitToClientCount  = 0;
+			int interviewedCount  = 0;
+			int offermadeCount  = 0;
+			int offeracceptedCount  = 0;
+			int rejectCount  = 0;
 			for(Requirement req : reqList) {
-				
 				Map<String, Integer> reqSubmissionCount = clientReportService.getSubmissionListByRequirementId(req.getId(), orgLocation.getId(), user.getId(), null);
-				clientReportDTO.setApplicantsCount(reqSubmissionCount.get("submissionCount"));
-				clientReportDTO.setShortlistedCount(reqSubmissionCount.get("shortListCount"));
-				clientReportDTO.setSubmitToClientCount(reqSubmissionCount.get("submitToClientCount"));
-				clientReportDTO.setInterviewsCount(reqSubmissionCount.get("interviewedCount"));
-				clientReportDTO.setOfferedCount(reqSubmissionCount.get("offermadeCount"));
-				clientReportDTO.setOfferacceptedCount(reqSubmissionCount.get("offeracceptedCount"));
-				clientReportDTO.setRejectedCount(reqSubmissionCount.get("rejectedCount"));
+				
+				submissionCount = submissionCount + reqSubmissionCount.get("submissionCount");
+				shortListCount = shortListCount + reqSubmissionCount.get("shortListCount");
+				submitToClientCount = submitToClientCount + reqSubmissionCount.get("submitToClientCount");
+				interviewedCount = interviewedCount + reqSubmissionCount.get("interviewedCount");
+				offermadeCount = offermadeCount + reqSubmissionCount.get("offermadeCount");
+				offeracceptedCount = offeracceptedCount + reqSubmissionCount.get("offeracceptedCount");
+				rejectCount = rejectCount + reqSubmissionCount.get("rejectedCount");
 				
 				if("open".equalsIgnoreCase(req.getRequirementSubmissionStatus().toString())) {
 					openCount += 1;
@@ -491,6 +500,13 @@ public class ClientsReportRestController {
 					totalPostedCount += 1;
 				}
 				}
+				clientReportDTO.setApplicantsCount(submissionCount);
+				clientReportDTO.setShortlistedCount(shortListCount);
+				clientReportDTO.setSubmitToClientCount(submitToClientCount);
+				clientReportDTO.setInterviewsCount(interviewedCount);
+				clientReportDTO.setOfferedCount(offermadeCount);
+				clientReportDTO.setOfferacceptedCount(offeracceptedCount);
+				clientReportDTO.setRejectedCount(rejectCount);
 			}
 
 		clientReportDTO.setTotalPaidAmount(totalPaidAmount);

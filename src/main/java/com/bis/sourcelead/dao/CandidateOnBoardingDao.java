@@ -2,7 +2,10 @@ package com.bis.sourcelead.dao;
 
 import java.util.List;
 
+import com.bis.sourcelead.dto.CandidateOnBoardingDTO;
+import com.bis.sourcelead.dto.ResponseList;
 import com.bis.sourcelead.entity.CandidateOnBoarding;
+import com.bis.sourcelead.entity.OrgLocations;
 
 public interface CandidateOnBoardingDao {
 
@@ -25,4 +28,6 @@ public interface CandidateOnBoardingDao {
 	CandidateOnBoarding getCandidateOnBoardingByPersonalEmailAndLocationId(String personalEmail,Long orgLocationId) throws Exception;
 	
 	CandidateOnBoarding getCandidateOnBoardingByCandidateIdAndLocationId(Long candidateId,Long orgLocationId) throws Exception;
+	
+	ResponseList<CandidateOnBoardingDTO> getCandidateOnBoardingList(CandidateOnBoardingDTO candidateOnBoardingDTO,OrgLocations orgLocations) throws Exception;
 }

@@ -44,7 +44,7 @@ public class OnBoardingTemplateDaoImpl implements OnBoardingTemplateDao{
 	public List<OnBoardingTemplate> getOnBoardingTemplatesList(Long orgLocationId) throws Exception {
 		Session session = this.sessionFactory.getCurrentSession();
 	    String query = "from OnBoardingTemplate template left join fetch template.orgLocationId where template.orgLocationId.id =:orgLocationId ";
-	    List<OnBoardingTemplate> onBoardingTemplateList = session.createQuery(query.toString()).setLong("orgLocationId", orgLocationId).setCacheable(true).list();
+	    List<OnBoardingTemplate> onBoardingTemplateList = session.createQuery(query.toString()).setLong("orgLocationId", orgLocationId).list();
         return onBoardingTemplateList;
 	}
 
@@ -74,7 +74,7 @@ public class OnBoardingTemplateDaoImpl implements OnBoardingTemplateDao{
 	public OnBoardingTemplate getOnBoardingTemplateById(Long templateId) throws Exception {
 		
 		Session session = this.sessionFactory.getCurrentSession();
-		List<OnBoardingTemplate> onBoardingTemplate = session.createQuery("from OnBoardingTemplate template where template.id =:templateId" ).setLong( "templateId", templateId ).setCacheable(true).list();
+		List<OnBoardingTemplate> onBoardingTemplate = session.createQuery("from OnBoardingTemplate template where template.id =:templateId" ).setLong( "templateId", templateId ).list();
 		if (onBoardingTemplate.size() > 0) {
 			return onBoardingTemplate.get(0);
 		} else {
@@ -91,7 +91,7 @@ public class OnBoardingTemplateDaoImpl implements OnBoardingTemplateDao{
 		
 		Session session = this.sessionFactory.getCurrentSession();
 		List<OnBoardingTemplate> onBoardingTemplate = session.createQuery("from OnBoardingTemplate template left join fetch template.orgLocationId "
-				+ " where template.templateName =:templateName and template.orgLocationId.id =:orgLocationId" ).setString("templateName", templateName).setLong( "orgLocationId", orgLocationId ).setCacheable(true).list();
+				+ " where template.templateName =:templateName and template.orgLocationId.id =:orgLocationId" ).setString("templateName", templateName).setLong( "orgLocationId", orgLocationId ).list();
 		if (onBoardingTemplate.size() > 0) {
 			return onBoardingTemplate.get(0);
 		} else {
@@ -106,7 +106,7 @@ public class OnBoardingTemplateDaoImpl implements OnBoardingTemplateDao{
 	public OnBoardingTemplate getOnBoardingTemplateByTemplateUUID(String templateUUID) throws Exception {
 	
 		Session session = this.sessionFactory.getCurrentSession();
-		List<OnBoardingTemplate> onBoardingTemplate = session.createQuery("from OnBoardingTemplate template where template.templateUUID =:templateUUID" ).setString( "templateUUID", templateUUID ).setCacheable(true).list();
+		List<OnBoardingTemplate> onBoardingTemplate = session.createQuery("from OnBoardingTemplate template where template.templateUUID =:templateUUID" ).setString( "templateUUID", templateUUID ).list();
 		if (onBoardingTemplate.size() > 0) {
 			return onBoardingTemplate.get(0);
 		} else {
@@ -123,7 +123,7 @@ public class OnBoardingTemplateDaoImpl implements OnBoardingTemplateDao{
 		Session session = this.sessionFactory.getCurrentSession();
 	    String query = "from OnBoardingTemplate template left join fetch template.orgLocationId where template.orgLocationId.id =:orgLocationId "
 	    		+ " and template.templateStatus = 'Finished' and template.status = '1' ";
-	    List<OnBoardingTemplate> onBoardingTemplateList = session.createQuery(query.toString()).setLong("orgLocationId", orgLocationId).setCacheable(true).list();
+	    List<OnBoardingTemplate> onBoardingTemplateList = session.createQuery(query.toString()).setLong("orgLocationId", orgLocationId).list();
         return onBoardingTemplateList;
 	}
 

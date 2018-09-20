@@ -30,6 +30,7 @@ import org.springframework.web.servlet.ModelAndView;
 
 import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.dto.ApplicantAuthorizationDTO;
+import com.bis.sourcelead.dto.Response;
 import com.bis.sourcelead.entity.Notifications;
 import com.bis.sourcelead.entity.Org;
 import com.bis.sourcelead.entity.OrgLocations;
@@ -41,6 +42,7 @@ import com.bis.sourcelead.entity.RequirementSubmissionHistory;
 import com.bis.sourcelead.entity.RequirementSubmissionTemplateFields;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.enums.ApplicantSubmissionStatus;
+import com.bis.sourcelead.enums.Result;
 import com.bis.sourcelead.enums.SubmissionRateStatus;
 import com.bis.sourcelead.service.CandidateService;
 import com.bis.sourcelead.service.NotificationsService;
@@ -142,6 +144,10 @@ public class RequirementOfferRestController {
 		String isClientRequirement = null;
 		
 		Requirement requirement = requirementService.getRequirementByRequirementId(requirementId);
+		
+		if (requirement != null && requirement.getPrimaryRecruiterUserId() != null) {
+			loginUser = requirement.getManagerUserId();
+		}
 		if(requirement.getIsClientJob() != null && requirement.getIsClientJob().equalsIgnoreCase(Constants.YES)){
 			isClientRequirement = Constants.YES;
 		}else{
@@ -208,6 +214,9 @@ public class RequirementOfferRestController {
 		RequirementOffers  requirementOffers =null;
 		
 		List<RequirementOfferHistory> offersList = requirementOfferHistoryService.getRequirementInternalAndIsClientOfferssBySubmissionIdAndOrgLocationsId(submissionId, orgLocations.getId());
+		for(RequirementOfferHistory offers : offersList) {
+			offers.setSubmissionStatusStr(offers.getSubmissionId().getSubmissionStatus().toString());
+		}
 		return resultJson = commonUtil.toJSON(offersList);
 		
 		/*requirementSubmission = requirementSubmissionService.getRequirementSubmissionById(submissionId);
@@ -525,39 +534,55 @@ public class RequirementOfferRestController {
 	}
 	
 	@RequestMapping(value = "/acceptRejectCandidateFromDashboard", method = RequestMethod.POST)
-	public @ResponseBody String acceptRejectCandidateFromDashboard(ApplicantAuthorizationDTO applicantAuthorizationDTO, Long submissionId, String status, HttpServletRequest request) throws Exception
+	public @ResponseBody Response<String> acceptRejectCandidateFromDashboard(ApplicantAuthorizationDTO applicantAuthorizationDTO, Long submissionId, String status, HttpServletRequest request) throws Exception
 	{
-		
+		Response<String> response = new Response<>();
 		User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
-		OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
-		Org loginOrg = (Org) SourceLeadSessionManager.getSessionAttribute(request, "org");
-		if (null != submissionId) {
-			RequirementSubmission requirementSubmission = requirementSubmissionService.getRequirementSubmissionById(submissionId);
-			if (StringUtils.equalsIgnoreCase(status, "accept")) {
-				requirementSubmission.setSubmissionStatus(ApplicantSubmissionStatus.SUBMISSION);
-				requirementSubmission.setSubmissionRateStatus(SubmissionRateStatus.ACCEPTED);
-				requirementSubmission.setSubmissionRequestUser(user.getFirstName() + ""	+ user.getLastName());
-				requirementSubmissionService.storeRequirementSubmission(requirementSubmission);
-				requirementSubmissionService.sendEmailtoApplicant(loginOrg, user, requirementSubmission, orgLocation);
-				
-				requirementSubmissionService.sendEmailtoAssignedMemberApplicantAuthorization(loginOrg, user, requirementSubmission, orgLocation);
+		if(user != null) {
+			try {
+					OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+					Org loginOrg = (Org) SourceLeadSessionManager.getSessionAttribute(request, "org");
+					if (null != submissionId) {
+						RequirementSubmission requirementSubmission = requirementSubmissionService.getRequirementSubmissionById(submissionId);
+						RequirementSubmissionHistory requirementSubmissionHistory = new RequirementSubmissionHistory();
+						requirementSubmissionHistory.setFromStage(requirementSubmission.getSubmissionStatus().toString());
+						if (StringUtils.equalsIgnoreCase(status, "accept")) {
+							requirementSubmission.setSubmissionStatus(ApplicantSubmissionStatus.SUBMISSION);
+							requirementSubmission.setSubmissionRateStatus(SubmissionRateStatus.ACCEPTED);
+							requirementSubmission.setSubmissionRequestUser(user.getFirstName() + ""	+ user.getLastName());
+							requirementSubmission = requirementSubmissionService.storeRequirementSubmission(requirementSubmission);
+							requirementSubmissionHistoryService.updateRequirementHistory(requirementSubmission, user, requirementSubmissionHistory);
+							requirementSubmissionService.sendEmailtoApplicant(loginOrg, user, requirementSubmission, orgLocation);
+							requirementSubmissionService.sendEmailtoAssignedMemberApplicantAuthorization(loginOrg, user, requirementSubmission, orgLocation);
+						}
+						else if (StringUtils.equalsIgnoreCase(status, "rejected")) {
+							requirementSubmission.setSubmissionStatus(ApplicantSubmissionStatus.REJECTED);
+							requirementSubmission.setSubmissionRequestUser(user.getFirstName() + ""	+ user.getLastName());
+							requirementSubmission.setSubmissionRateStatus(SubmissionRateStatus.REJECTED);
+							if (StringUtils.isNotBlank(applicantAuthorizationDTO.getComment())) {
+								requirementSubmission.setRejectedReason(applicantAuthorizationDTO.getComment());
+							}
+							if (StringUtils.isNotBlank(applicantAuthorizationDTO.getRejectedCategory())) {
+								requirementSubmission.setRejectedCategoryType(applicantAuthorizationDTO.getRejectedCategory());
+							}
+							if (StringUtils.isNotBlank(applicantAuthorizationDTO.getRejectedCategoryOther())) {
+								requirementSubmission.setRejectedCategoryOther(applicantAuthorizationDTO.getRejectedCategoryOther());
+							}
+							requirementSubmission = requirementSubmissionService.storeRequirementSubmission(requirementSubmission);
+							requirementSubmissionHistoryService.updateRequirementHistory(requirementSubmission, user, requirementSubmissionHistory);
+						}
+					}
+					response.setObject("success");
+				    response.setResponse(Result.SUCCESS.name());
+					response.setResponseMessage(Result.SUCCESS.getValue());
+				}catch (Exception e) {
+					response.setResponse(Result.AWKWARD.name());
+					response.setResponseMessage(Result.AWKWARD.getValue());
+				}
+			}else {
+				response.setResponse(Result.SESSION_TIMEDOUT.name());
+				response.setResponseMessage(Result.SESSION_TIMEDOUT.getValue());
 			}
-			else if (StringUtils.equalsIgnoreCase(status, "rejected")) {
-				requirementSubmission.setSubmissionStatus(ApplicantSubmissionStatus.REJECTED);
-				requirementSubmission.setSubmissionRequestUser(user.getFirstName() + ""	+ user.getLastName());
-				requirementSubmission.setSubmissionRateStatus(SubmissionRateStatus.REJECTED);
-				if (StringUtils.isNotBlank(applicantAuthorizationDTO.getComment())) {
-					requirementSubmission.setRejectedReason(applicantAuthorizationDTO.getComment());
-				}
-				if (StringUtils.isNotBlank(applicantAuthorizationDTO.getRejectedCategory())) {
-					requirementSubmission.setRejectedCategoryType(applicantAuthorizationDTO.getRejectedCategory());
-				}
-				if (StringUtils.isNotBlank(applicantAuthorizationDTO.getRejectedCategoryOther())) {
-					requirementSubmission.setRejectedCategoryOther(applicantAuthorizationDTO.getRejectedCategoryOther());
-				}
-				requirementSubmissionService.storeRequirementSubmission(requirementSubmission);
-			}
-		}
-		return "success";
+		return response;
 	}
 }

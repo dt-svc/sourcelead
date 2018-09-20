@@ -19,8 +19,7 @@ import org.hibernate.annotations.NotFound;
 import org.hibernate.annotations.NotFoundAction;
 
 @Entity
-@Table(name = "SOURCELEAD_FORM_FIELDS", catalog = "sourcelead")
-@Cache(usage = CacheConcurrencyStrategy.TRANSACTIONAL, region = "sourceleadFormFields")
+@Table(name = "SOURCELEAD_FORM_FIELDS")
 public class SourceleadFormFields implements Serializable{
 	private static final long serialVersionUID = 1L;
 
@@ -29,7 +28,7 @@ public class SourceleadFormFields implements Serializable{
     @Column(name = "ID", nullable = false)
 	private Long id;
 	
-	@NotFound(action=NotFoundAction.IGNORE)
+	
 	@ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name="SECTION_ID", nullable=false )        
     private SourceleadFormSections sourceleadFormSections;
@@ -53,7 +52,7 @@ public class SourceleadFormFields implements Serializable{
 	private String fieldDesc;
 	
 	@Column(name = "IS_FIELD_REQUIRED")
-	private int isFieldRequired;
+	private Integer isFieldRequired;
 	
 	@Column(name = "IS_IMPORT_FIELD")
 	private int isImportField;
@@ -67,7 +66,7 @@ public class SourceleadFormFields implements Serializable{
 	@Column(name = "CREATED_DATE")
 	private Date createdDate;
 	
-	@NotFound(action=NotFoundAction.IGNORE)
+	
 	@ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name="CREATED_BY", nullable=false )
 	private User createdBy;
@@ -75,7 +74,7 @@ public class SourceleadFormFields implements Serializable{
 	@Column(name = "UPDATED_DATE")
 	private Date updatedDate;
 	
-	@NotFound(action=NotFoundAction.IGNORE)
+	
 	@ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name="UPDATED_BY", nullable=false )
 	private User updatedBy;
@@ -144,11 +143,11 @@ public class SourceleadFormFields implements Serializable{
 		this.fieldDesc = fieldDesc;
 	}
 
-	public int getIsFieldRequired() {
+	public Integer getIsFieldRequired() {
 		return isFieldRequired;
 	}
 
-	public void setIsFieldRequired(int isFieldRequired) {
+	public void setIsFieldRequired(Integer isFieldRequired) {
 		this.isFieldRequired = isFieldRequired;
 	}
 

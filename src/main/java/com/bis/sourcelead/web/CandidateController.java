@@ -2,7 +2,9 @@ package com.bis.sourcelead.web;
 
 import java.io.FileNotFoundException;
 import java.io.OutputStream;
+import java.util.Collection;
 import java.util.List;
+import java.util.Set;
 
 import javax.servlet.ServletOutputStream;
 import javax.servlet.http.HttpServletRequest;
@@ -23,6 +25,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.ModelAndView;
 
 import com.bis.sourcelead.constants.Constants;
+import com.bis.sourcelead.dto.OrgRelationDTO;
 import com.bis.sourcelead.dto.SourceleadSectionDTO;
 import com.bis.sourcelead.entity.Candidate;
 import com.bis.sourcelead.entity.CandidateDocuments;
@@ -31,6 +34,7 @@ import com.bis.sourcelead.entity.Countries;
 import com.bis.sourcelead.entity.LookUpData;
 import com.bis.sourcelead.entity.Org;
 import com.bis.sourcelead.entity.OrgLocations;
+import com.bis.sourcelead.entity.OrgRelations;
 import com.bis.sourcelead.entity.Roles;
 import com.bis.sourcelead.entity.SourceleadActions;
 import com.bis.sourcelead.entity.States;
@@ -40,11 +44,15 @@ import com.bis.sourcelead.service.CandidateResumesService;
 import com.bis.sourcelead.service.CandidateService;
 import com.bis.sourcelead.service.CountriesService;
 import com.bis.sourcelead.service.LookUpDataService;
+import com.bis.sourcelead.service.OrgRelationsService;
+import com.bis.sourcelead.service.OrglocationStateTaxService;
 import com.bis.sourcelead.service.RolesService;
 import com.bis.sourcelead.service.SourceleadActionsService;
 import com.bis.sourcelead.service.SourceleadFormSectionsService;
+import com.bis.sourcelead.service.SourceleadTagsService;
 import com.bis.sourcelead.service.StatesService;
 import com.bis.sourcelead.service.TimeZoneService;
+import com.bis.sourcelead.service.UserService;
 import com.bis.sourcelead.util.CommonUtil;
 import com.bis.sourcelead.util.PdfConversionUtil;
 import com.bis.sourcelead.util.SessionMaintainanceData;
@@ -85,14 +93,24 @@ public class CandidateController {
 	@Autowired
 	private PdfConversionUtil pdfConversionUtil;
 	
+	@Autowired
+	private UserService userService;
 	
 	@Autowired
 	private CandidateDocumentsService candidateDocumentsService;
 	
 	@Autowired
 	private SourceleadFormSectionsService sourceleadFormSectionsService;
+	
 	@Autowired
 	private SourceleadActionsService sourceleadActionsService;
+	
+	@Autowired
+	OrgRelationsService orgRelationsService;
+	
+	@Autowired
+	SourceleadTagsService sourceleadTagsService;
+	
 	/**
 	 * Handles to display candidate jsp
 	 * @return ModelAndView
@@ -193,6 +211,11 @@ public class CandidateController {
 		    model.addObject("candidateIdSearchId",candidateIdSearchId);
 		}
 		
+		if(candidateKeyword != null && !candidateKeyword.equalsIgnoreCase("undefined") && candidateKeyword.equalsIgnoreCase("requestedDocumentNotification")){
+		    model.addObject("candidateKeyword", candidateKeyword);
+		    model.addObject("candidateIdSearchId",candidateIdSearchId);
+		}
+		
 		if(searchResult != null && !searchResult.equalsIgnoreCase("undefined") && searchResult.equalsIgnoreCase("universalCanddateList")){
 		    model.addObject("universalCanddateList", "universalCanddateList");
 		    model.addObject("serachValue",searchValue);
@@ -223,6 +246,11 @@ public class CandidateController {
 	        model.addObject("statesList", statesList);
 		}
 		
+		//approver list
+		List<User> requirementApproverList = userService.getTabAccessOwnersByOrgLocationIdAndTabId(orgLocations.getId(),Long.valueOf(Constants.TAB_REQUIREMENT));
+		model.addObject("requirementApproverList", requirementApproverList);
+				
+		
 	/*	List<Candidate>   candidatesList = candidateService.getCandidatesListByOrgLocationID(orgLocations.getId(),org.getId(),Constants.CANDIDATE_ACTIVE,"");
 		model.addObject("candidatesList", candidatesList);*/
 		
@@ -232,12 +260,19 @@ public class CandidateController {
 		List<LookUpData> visaList = lookUpDataService.getLookUpDataByCategory(Constants.VISA);
 		model.addObject("visaList", visaList);
 		
+		
+		Set<String> tagsList = sourceleadTagsService.getSourceleadTagsByOrgLocationId(orgLocations.getId());
+		SourceLeadSessionManager.setSessionAttribute(request, "tagsList", tagsList);
+		
 		List<LookUpData> educationsList = lookUpDataService.getLookUpDataByCategory(Constants.EDUCATIONS);
 		model.addObject("educationsList", educationsList);
 		
 		List<LookUpData> documentsList = lookUpDataService.getLookUpDataByCategory(Constants.DOCUMENT_TYPE);
 		model.addObject("documentsList", documentsList);
 		
+		List<OrgRelationDTO> orgClientList = orgRelationsService.getAllClientsListOrgLocationId(orgLocations.getId());
+	    model.addObject("clientsList", orgClientList);
+		  
 		SessionMaintainanceData sessionData = (SessionMaintainanceData)request.getSession().getAttribute("sessionData");
 		if(null == sessionData)
 		{

@@ -178,12 +178,65 @@ $(document).ready(function() {
                                   </div>
                                   
               <div class="form-group">
+	              <label class="col-md-3">Billable Type</label>
+	              <div class="col-md-9">
+	              	<c:if test="${!empty holidayDTO.holidayBillableType}">
+	              		<c:if test="${holidayDTO.holidayBillableType  == 'Billable'}">
+	              			<label class="paddingRight col-md-4">
+		                       	<input type="radio" value="Billable" checked name="holidayBillableType" > Billable
+	                      	</label>
+	                      	<label class="paddingLeft col-md-4">
+		                        <input type="radio" value="NonBillable" name="holidayBillableType"> Non-Billable 
+	                      	</label>
+	              		</c:if>
+	              		<c:if test="${holidayDTO.holidayBillableType  == 'NonBillable'}">
+	              			<label class="paddingRight col-md-4">
+		                       	<input type="radio" value="Billable" name="holidayBillableType" > Billable
+	                      	</label>
+	                      	<label class="paddingLeft col-md-4">
+		                        <input type="radio" value="NonBillable" checked name="holidayBillableType"> Non-Billable 
+	                      	</label>
+	              		</c:if>
+	              	</c:if>
+	              	<c:if test="${empty holidayDTO.holidayBillableType}">
+	              		<label class="paddingRight col-md-4">
+                       	<input type="radio" value="Billable"  name="holidayBillableType" > Billable
+                        </label>
+                        <label class="paddingLeft col-md-4">
+                        <input type="radio" value="NonBillable" checked name="holidayBillableType"> Non-Billable 
+                        </label>
+	              	</c:if>
+	                  
+	              </div>
+              </div>
+            
+            
+              <div class="form-group">
               <label class="col-md-3">Description</label>
               <div class="col-md-9">
                   <textarea rows="2" class="form-control" name="description" data-validation="validate_length length1-500" data-validation-optional="true" placeholder="Description" value="${holidayDTO.description}">${holidayDTO.description}</textarea>
               </div>
             </div>
-              
+            
+            <div class="form-group">
+              <label class="col-md-3">Shift<span class="text-danger">&nbsp;*</span></label>
+              <div class="col-md-9">
+				<select multiple data-placeholder="Select Shift" class="chosen-select form-control" name="shift" field-name="Shift" id="shiftId" data-validation="required">
+				<c:forEach var="shift" items="${shiftList}">
+               		<c:set var = "NUM" value = "${0}"/>
+               		 <c:forEach var="holidayShift" items="${holidayShiftList}">
+					    <c:if test="${holidayShift.shift.id eq shift.id}">
+					    	<c:set var = "NUM" value = "${1}"/>
+					       <option  selected value="${shift.id}">${shift.shiftName}</option>
+					    </c:if>
+					</c:forEach> 
+					<c:if test="${NUM == 0}">
+						<option  value="${shift.id}">${shift.shiftName}</option>
+					</c:if>
+                </c:forEach>
+				</select>   
+	           </div>
+            </div>
               </div>
               
               
@@ -208,9 +261,21 @@ $(document).ready(function() {
 		if ($('#holiday_form').validate(false, validationSettings)) {
 		  	var formData = $($('#holiday_form')[0]).serialize();
 		  	 $("#holidayLoading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
-			$.post(sourceleadUrl+"/saveHoliday?"+tokenParamName+"="+tokenValue+"&orgLocationId="+orgLocationId+"&userId="+userId+"", formData, function(data) {
-				$("#holidayLoading").removeAttr("style");	
-				location.replace(sourceleadUrl+ "/viewHoliday");
+			$.post(sourceleadUrl+"/saveHoliday?"+tokenParamName+"="+tokenValue+"&orgLocationId="+orgLocationId+"&userId="+userId+"", formData, function(result) {
+				if (result.response === "INVALID_DATA") {
+	    		    showError(result.responseMessage);
+	    		} else if (result.response === "AWKWARD") {
+	    		    location.href = "/errorPage";
+	    		} else if (result.response === "SUCCESS") {
+	    			$("#holidayLoading").removeAttr("style");	
+					location.replace(sourceleadUrl+ "/viewHoliday");
+	    		} else if (result.indexOf('Sign In') !== -1) {
+	    			location.replace(sourceleadUrl);
+	    		} else {
+	    		    showError("Operation failed, please try again");
+	    		}
+				 $("#holidayLoading").hide();
+				 $('#save_holiday').attr('disabled','disabled');
 			});
 			return true;
 		} else {
@@ -322,4 +387,5 @@ function clearToDate(){
 	};
 	
 </script> -->
+
 <jsp:include page="../masterFooter.jsp" />

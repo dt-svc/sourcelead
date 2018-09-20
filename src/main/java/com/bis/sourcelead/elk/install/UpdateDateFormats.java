@@ -20,7 +20,8 @@ public class UpdateDateFormats {
 	
 
 	private ComboPooledDataSource comboPooledDataSource;
-	
+	ApplicationContext ctx = new AnnotationConfigApplicationContext(PropertyPathConfiguration.class);
+	DatabaseConnectionConfig dbconfig = ctx.getBean(DatabaseConnectionConfig.class);
 /**
  * @author Ajith
  * this method is using for update the RequirmentUUID	
@@ -34,14 +35,14 @@ try {
 		
 		DataSource dataSource = comboPooledDataSource();
 		conn = dataSource.getConnection();
-			 String sql2 = "SELECT * FROM sourcelead.ORG_LOCATIONS group by COUNTRY";
+			 String sql2 = "SELECT * FROM "+dbconfig.getSchema()+".ORG_LOCATIONS group by COUNTRY";
 			 stmt1 = conn.createStatement();
 			 ResultSet rs = stmt1.executeQuery(sql2);
 			 System.out.println("Updating Dateformat Starts.....");
 			 while(rs.next()){
 					 String country = rs.getString("COUNTRY");
 					 if(country != null && !country.isEmpty()){
-						 String query = "update sourcelead.ORG_LOCATIONS orgLoc set DATE_FORMAT = ? where  orgLoc.COUNTRY = '"+country+"' ";
+						 String query = "update "+dbconfig.getSchema()+".ORG_LOCATIONS orgLoc set DATE_FORMAT = ? where  orgLoc.COUNTRY = '"+country+"' ";
 					  	 java.sql.PreparedStatement pstmt = conn.prepareStatement(query); // create a statement
 					  	 if(country.equalsIgnoreCase("India")){
 					  		pstmt.setString(1, "dd-MM-yyyy");
@@ -71,10 +72,6 @@ try {
  * @return DataSource
  */ 
 private DataSource comboPooledDataSource() {
-		@SuppressWarnings("resource")
-		ApplicationContext ctx = new AnnotationConfigApplicationContext(PropertyPathConfiguration.class);
-		DatabaseConnectionConfig dbconfig = ctx.getBean(DatabaseConnectionConfig.class);
-
 		this.comboPooledDataSource = new ComboPooledDataSource();
 		try {
 			comboPooledDataSource.setDriverClass(dbconfig.getDriverClass());

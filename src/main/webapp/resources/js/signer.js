@@ -15,8 +15,21 @@ var Signer = (function() {
 
 
     //Upload pdf doc for signing
-    let uploadDoc = function(publicUrl) {
+    let uploadDoc = function(publicUrl,permission) {
     	let sourceleadUrl = '';
+    	var result = "";
+    	if(publicUrl == 'public' && permission == 'No'){
+            	result = result +"<div class='col-md-6 col-md-offset-3 inner-widget pending-user'>";
+            	result = result +"	<i class='fa fa-clock-o fa-3x noPad'></i>";
+            	result = result +"<p class='reason-msg'>Document Already signed..<br></p>";
+            	$("#successPop").empty();
+            	$("#successPop").append(result);
+            	$('.signContainer').hide();
+            	$('#hideSig').hide();
+    		
+    		
+    	}else{
+    		init();
     	if(publicUrl == 'public')
     		{
     		 url = publicUrl;
@@ -42,6 +55,7 @@ var Signer = (function() {
                     }
     	      },
     	  });
+    	}
     }
     
     let uploadDone = function(pages, userId,sourceleadUrl){
@@ -687,7 +701,7 @@ var Signer = (function() {
         });
     }
     
-    init();
+//    init();
     
     //Exposed public methods
     return {

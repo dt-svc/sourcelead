@@ -91,7 +91,7 @@ public class ActionRolesDaoImpl implements ActionRolesDao{
 		return session.createQuery("from ActionRoles actionRoles left join fetch actionRoles.org where actionRoles.org.id = :orgId "
 				+ "and actionRoles.tabActions.modules.id IN (:modulesId) "+actionRoles+" ")
 					  .setLong("orgId", orgId).setParameterList("modulesId", modulesId)
-					  .setCacheable(true).list();
+					  .list();
 		
 	}
 
@@ -106,7 +106,7 @@ public class ActionRolesDaoImpl implements ActionRolesDao{
 				+ "where actionRoles.roles.id = :roleId and actionRoles.orgLocations.id = :orgLocationId ")
 					  .setLong("roleId", roleId)
 					  .setLong("orgLocationId", orgLocationId)
-					  .setCacheable(true).list();
+					  .list();
 	}
 	
 	
@@ -122,7 +122,7 @@ public class ActionRolesDaoImpl implements ActionRolesDao{
 		String query = "from ActionRoles actionRoles left join fetch actionRoles.tabActions actons left join fetch actionRoles.roles roles "
 				+ "left join fetch actionRoles.org org where actons.id = :actionId and roles.id = :roleId and org.id = :orgId ";
 		actionRoles = session.createQuery(query).setLong( "actionId", actionId )
-				.setLong("roleId", roleId).setLong("orgId", orgId).setCacheable(true).list();
+				.setLong("roleId", roleId).setLong("orgId", orgId).list();
 		logger.debug("getActionRolesByActionIdAndRoleIdAndLocationId end");
 		if (actionRoles.size() > 0) {
 			return actionRoles.get(0);

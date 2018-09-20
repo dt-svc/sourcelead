@@ -23,7 +23,6 @@ import org.springframework.format.annotation.DateTimeFormat;
 
 @Entity
 @Table(name = "PROJECT_TASK_DOCUMENTS")
-@Cache(usage = CacheConcurrencyStrategy.TRANSACTIONAL,region="projectTaskDocuments")
 public class ProjectTaskDocuments implements Serializable {
 	private static final long serialVersionUID = 1L;
 	
@@ -41,7 +40,7 @@ public class ProjectTaskDocuments implements Serializable {
 	@Column(name = "FILE_TYPE")
 	private String fileType;
 	
-	@NotFound(action=NotFoundAction.IGNORE)
+	
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name="PROJECT_TASK_ID", nullable=false )	
 	private ProjectTasks projectTaskId;

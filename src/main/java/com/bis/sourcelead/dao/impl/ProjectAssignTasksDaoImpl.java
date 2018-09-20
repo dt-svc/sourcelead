@@ -56,7 +56,7 @@ public class ProjectAssignTasksDaoImpl implements ProjectAssignTasksDao{
 	public ProjectAssignTask getProjectAssignTaskById(Long projectTaskId) throws Exception {
 		Session session = this.sessionFactory.getCurrentSession();
 		String query = "from ProjectAssignTask  projectAssignTask  where projectAssignTask.projectTaskId.id =:projectTaskId and projectAssignTask.status ='1'";
-		List<ProjectAssignTask> projectassignTaskList = session.createQuery(query).setLong("projectTaskId", projectTaskId).setCacheable(true).list();
+		List<ProjectAssignTask> projectassignTaskList = session.createQuery(query).setLong("projectTaskId", projectTaskId).list();
 		ProjectAssignTask projectAssignTask = null;
 		if (projectassignTaskList != null && projectassignTaskList.size() > 0) {
 			projectAssignTask = (ProjectAssignTask) projectassignTaskList.iterator().next();
@@ -69,7 +69,7 @@ public class ProjectAssignTasksDaoImpl implements ProjectAssignTasksDao{
 	public List<ProjectAssignTask> getProjectAssignTaskListByProjectTaskId(Long projectTaskId) throws Exception {
 		Session session = this.sessionFactory.getCurrentSession();
 		String query = "from ProjectAssignTask  projectAssignTask  where projectAssignTask.projectTaskId.id =:projectTaskId and projectAssignTask.status ='1'";
-		List<ProjectAssignTask> projectassignTaskList = session.createQuery(query).setLong("projectTaskId", projectTaskId).setCacheable(true).list();
+		List<ProjectAssignTask> projectassignTaskList = session.createQuery(query).setLong("projectTaskId", projectTaskId).list();
 		return projectassignTaskList;
 	}
 
@@ -78,7 +78,7 @@ public class ProjectAssignTasksDaoImpl implements ProjectAssignTasksDao{
 	public List<Long> getProjectAssignTaskListOfLongByProjectTaskId(Long projectTaskId) throws Exception {
 		Session session = this.sessionFactory.getCurrentSession();
 		String query = "select projectAssignTask.projectMemberId.id from ProjectAssignTask  projectAssignTask  where projectAssignTask.projectTaskId.id =:projectTaskId and projectAssignTask.status ='1'";
-		List<Long> projectassignTaskList = session.createQuery(query).setLong("projectTaskId", projectTaskId).setCacheable(true).list();
+		List<Long> projectassignTaskList = session.createQuery(query).setLong("projectTaskId", projectTaskId).list();
 		return projectassignTaskList;
 	}
 
@@ -102,7 +102,7 @@ public class ProjectAssignTasksDaoImpl implements ProjectAssignTasksDao{
 	public ProjectAssignTask getProjectAssignTaskByIdAndMemberId(Long projectTaskId, Long memberId) throws Exception {
 		Session session = this.sessionFactory.getCurrentSession();
 		String query = "from ProjectAssignTask  projectAssignTask  where projectAssignTask.projectTaskId.id =:projectTaskId and projectAssignTask.projectMemberId.id =:memberId and projectAssignTask.status ='1'";
-		List<ProjectAssignTask> projectassignTaskList = session.createQuery(query).setLong("projectTaskId", projectTaskId).setLong("memberId", memberId).setCacheable(true).list();
+		List<ProjectAssignTask> projectassignTaskList = session.createQuery(query).setLong("projectTaskId", projectTaskId).setLong("memberId", memberId).list();
 		ProjectAssignTask projectAssignTask = null;
 		if (projectassignTaskList != null && projectassignTaskList.size() > 0) {
 			projectAssignTask = (ProjectAssignTask) projectassignTaskList.iterator().next();

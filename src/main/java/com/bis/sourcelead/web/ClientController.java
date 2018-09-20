@@ -105,7 +105,7 @@ public class ClientController {
 			sessionData.setNav(Constants.Clients);
 			request.getSession().setAttribute("sessionData",sessionData);
 			
-			SourceleadActions action = sourceleadActionsService.getSourceleadActionsByActionRole(Constants.ROLE_CREATE_CLIENT);
+			 SourceleadActions action = sourceleadActionsService.getSourceleadActionsByActionRole(Constants.ROLE_CREATE_CLIENT);
 		     model.addObject("actionId",action.getId());
 		     List<SourceleadSectionDTO> sections  = sourceleadFormSectionsService.getSourceleadFormSectionsByActionId(action.getId(),orgLocations.getId());
 			 model.addObject("sourceleadSectionList",sections);
@@ -135,12 +135,20 @@ public class ClientController {
 				@RequestParam(value = "orgRelationUUID", required = false) String orgRelationUUID,
 				@RequestParam(value = "orgSpocUUID", required = false) String orgSpocUUID,
 				@RequestParam(value = "orgName", required = false) String orgName,
-				@RequestParam(value = "clientKeyword", required = false) String clientKeyword) throws Exception {
+				@RequestParam(value = "clientKeyword", required = false) String clientKeyword,
+				@RequestParam(value="contactsTab", required=false)String contactsTab) throws Exception {
 		 
 		    OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 		    User loginUser = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
 		    ModelAndView model = new ModelAndView();
-			model.setViewName("client/clientDashboard");
+			
+		    SourceleadActions action = sourceleadActionsService.getSourceleadActionsByActionRole(Constants.ROLE_CREATE_CLIENT);
+		     model.addObject("actionId",action.getId());
+		     List<SourceleadSectionDTO> sections  = sourceleadFormSectionsService.getSourceleadFormSectionsByActionId(action.getId(),orgLocations.getId());
+			 model.addObject("sourceleadSectionList",sections);
+		    
+			 model.addObject("contactsTab",contactsTab);
+		    model.setViewName("client/clientDashboard");
 			
 			if(null != searchResult && !searchResult.equalsIgnoreCase("") && searchResult.equals("clientSearchResult")){
 				model.addObject("clientSearchResult","clientSearchResult");
@@ -198,8 +206,10 @@ public class ClientController {
 				if(null != countries){
 				   model.addObject("loginCountryName", countries.getName());
 				}
+				if(countries!= null && countries.getName()!= null) {
 		        List<States> statesList = statesService.getAllStatesByCountry(countries.getName());
 		        model.addObject("statesList", statesList);
+			}
 			}
 			
 			commonUtil.highLightMenu(Constants.Clients, request);
@@ -279,6 +289,11 @@ public class ClientController {
 					model.addObject("loginOrgLocId", orgLocations.getId());
 					model.addObject("clientContactList", vandorsListByOrgLocationId);
 					
+					 SourceleadActions action = sourceleadActionsService.getSourceleadActionsByActionRole(Constants.ROLE_CREATE_CLIENT);
+				     model.addObject("actionId",action.getId());
+				     List<SourceleadSectionDTO> sections  = sourceleadFormSectionsService.getSourceleadFormSectionsByActionId(action.getId(),orgLocations.getId());
+					 model.addObject("sourceleadSectionList",sections);
+					 
 					SessionMaintainanceData sessionData = (SessionMaintainanceData)request.getSession().getAttribute("sessionData");
 					if(sessionData == null)
 					{

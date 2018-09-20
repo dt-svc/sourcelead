@@ -1,22 +1,10 @@
 package com.bis.sourcelead.rest;
 
-import java.text.DateFormat;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Date;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import org.joda.time.DateTime;
-import org.joda.time.DateTimeZone;
-import org.joda.time.format.DateTimeFormat;
-import org.joda.time.format.DateTimeFormatter;
 import org.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -30,18 +18,13 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.bis.sourcelead.beans.ApplicantReport;
 import com.bis.sourcelead.beans.AssignedRequirementReports;
-import com.bis.sourcelead.beans.RequirementStagesReport;
-import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.Requirement;
-import com.bis.sourcelead.entity.RequirementAssignTo;
-import com.bis.sourcelead.entity.RequirementRateSubmissionNegotiation;
 import com.bis.sourcelead.entity.RequirementSubmission;
-import com.bis.sourcelead.entity.RequirementSubmissionHistory;
-import com.bis.sourcelead.entity.RequirementSubmissionTemplateFields;
 import com.bis.sourcelead.entity.Timezone;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.service.RequirementAssignToService;
+import com.bis.sourcelead.service.RequirementLocationsService;
 import com.bis.sourcelead.service.RequirementRateSubmissionNegotiationService;
 import com.bis.sourcelead.service.RequirementReportService;
 import com.bis.sourcelead.service.RequirementService;
@@ -89,6 +72,9 @@ public class RequirementReportRestController {
 	 
 	 @Autowired
 	 RequirementSubmissionHistoryService requirementSubmissionHistoryService;
+	 
+	 @Autowired
+	private RequirementLocationsService requirementLocationsService;
 	
 	
 	 /**
@@ -102,12 +88,17 @@ public class RequirementReportRestController {
 	  * @throws Exception
 	  */
 	@RequestMapping(value = "/getRequirementReports")
-	public String getRequirementReports(@RequestParam(value = "reportType", required = false) String reportType, @RequestParam(value = "startDate", required = false) String customStartDate, @RequestParam(value = "endDate", required = false) String customEndDate, HttpServletRequest request, HttpServletResponse response) throws Exception
+	public String getRequirementReports(@RequestParam(value = "reportType", required = false) String reportType, 
+			@RequestParam(value = "startDate", required = false) String customStartDate,
+			@RequestParam(value = "endDate", required = false) String customEndDate,
+			@RequestParam(value = "status", required = false) String status,
+			@RequestParam(value = "searchValue", required = false) String searchValue,
+			HttpServletRequest request, HttpServletResponse response) throws Exception
 	{
 		String userRoleName = (String) SourceLeadSessionManager.getSessionAttribute(request, "loginUserRole");
 		OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 		User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
-		List<Requirement> requirementList = requirementReportService.getRequirementReports(userRoleName, orgLocation, user, reportType, customStartDate, customEndDate);
+		List<Requirement> requirementList = requirementReportService.getRequirementReports(userRoleName, orgLocation, user, reportType,customStartDate,customEndDate,status,searchValue);
 		String reportsList;
 		if (null != requirementList) {
 			reportsList = commonUtil.toJSON(requirementList);
@@ -168,39 +159,6 @@ public class RequirementReportRestController {
 
 	}
 			
-		 
-	
-	/**
-	 * returns applicants counts based on stage status
-	 * 
-	 * @param applicantStatus
-	 * @param request
-	 * @return json
-	 * @throws Exception
-	 */
-	@Async
-	@RequestMapping(value = "/getReceivedApplicantsCountForReports", method = RequestMethod.POST)
-	@ResponseBody
-	String getReceivedApplicantsCountForReports(@RequestParam(value="reportType", required=false) String reportType,
-			 @RequestParam(value="startDate", required=false) String customStartDate,
-			 @RequestParam(value="endDate", required=false) String customEndDate,
-			 HttpServletRequest request,HttpServletResponse response) throws Exception {
-		
-
-		 String reportsList = null;
-
-		 OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
-		 // started
-		 ApplicantReport applicantReceived = requirementReportService.getApplicantsReceivedCountsByDateRange(orgLocation,reportType,customStartDate,customEndDate);
-		
-		 if(null != applicantReceived){
-			 reportsList = commonUtil.toJSON(applicantReceived); 
-		 }else{
-			 reportsList = commonUtil.toJSON(""); 
-		 }
-			return reportsList;
-	}
-	
 	/**
 	 * Used to get all applicants recieved from the client
 	 * 
@@ -213,12 +171,16 @@ public class RequirementReportRestController {
 	 * @throws Exception
 	 */
 	@RequestMapping(value = "/getApplicantReceivedReports")
-	public String getApplicantReceivedReports(@RequestParam(value = "reportType", required = false) String reportType, @RequestParam(value = "startDate", required = false) String customStartDate, @RequestParam(value = "endDate", required = false) String customEndDate, HttpServletRequest request, HttpServletResponse response) throws Exception
+	public String getApplicantReceivedReports(@RequestParam(value = "reportType", required = false) String reportType, 
+			@RequestParam(value = "startDate", required = false) String customStartDate, 
+			@RequestParam(value = "endDate", required = false) String customEndDate, 
+			@RequestParam(value = "searchValue", required = false) String searchValue, 
+			HttpServletRequest request, HttpServletResponse response) throws Exception
 	{
 		
 		String reportsList = null;
 		OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
-		List<ApplicantReport> applicantReportList = requirementReportService.getReceivedApplicantsCountsPerOrgLocId(orgLocation, reportType, customStartDate, customEndDate);
+		List<ApplicantReport> applicantReportList = requirementReportService.getReceivedApplicantsCountsPerOrgLocId(orgLocation, reportType, customStartDate, customEndDate,searchValue);
 		if (null != applicantReportList) {
 			reportsList = commonUtil.toJSON(applicantReportList);
 		}
@@ -256,62 +218,7 @@ public class RequirementReportRestController {
 		return reportsList;
 	}
 		
-	/**
-	 * get Requirement count based on status
-	 * 
-	 * @param status
-	 * @param request
-	 * @param response
-	 * @return json
-	 * @throws Exception
-	 */
-	@RequestMapping(value = "/getRequirementCountBasedOnStatus")
-	public String getRequirementCountBasedOnStatus(@RequestParam(value = "status", required = false) String status, HttpServletRequest request, HttpServletResponse response) throws Exception
-	{
-		
-		OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
-		RequirementStagesReport requirementStagesReport = new RequirementStagesReport();
-		String reqStageReport = "";
-		if (null == status) {
-			int newCount = requirementReportService.getRequirementStagesCountsForReports(orgLocation.getId(), "NEW");
-			int draftCount = requirementReportService.getRequirementStagesCountsForReports(orgLocation.getId(), "DRAFT");
-			int submittedCount = requirementReportService.getRequirementStagesCountsForReports(orgLocation.getId(), "SUBMITTED");
-			int approvedCount = requirementReportService.getRequirementStagesCountsForReports(orgLocation.getId(), "APPROVED");
-			int rejectedCount = requirementReportService.getRequirementStagesCountsForReports(orgLocation.getId(), "REJECTED");
-			int openCount = requirementReportService.getRequirementStagesCountsForReports(orgLocation.getId(), "OPEN");
-			int onholdCount = requirementReportService.getRequirementStagesCountsForReports(orgLocation.getId(), "ONHOLD");
-			int filledclosedCount = requirementReportService.getRequirementStagesCountsForReports(orgLocation.getId(), "FILLEDCLOSED");
-			int cancelCount = requirementReportService.getRequirementStagesCountsForReports(orgLocation.getId(), "CANCEL");
-			int unfilledclosedCount = requirementReportService.getRequirementStagesCountsForReports(orgLocation.getId(), "UNFILLEDCLOSED");
-			int closedCount = requirementReportService.getRequirementStagesCountsForReports(orgLocation.getId(), "CLOSED");
-			requirementStagesReport.setCancelRequirementsCount(cancelCount);
-			requirementStagesReport.setDraftRequirementsCount(draftCount);
-			requirementStagesReport.setFilledclosedRequirementsCount(filledclosedCount);
-			requirementStagesReport.setNewRequirementsCount(newCount);
-			requirementStagesReport.setOnholdRequirementsCount(onholdCount);
-			requirementStagesReport.setOpenRequirementsCount(openCount);
-			requirementStagesReport.setSubmittedRequirementsCount(submittedCount);
-			requirementStagesReport.setUnfilledclosedRequirementsCount(unfilledclosedCount);
-			requirementStagesReport.setApprovedRequirementsCount(approvedCount);
-			requirementStagesReport.setRejectedRequirementsCount(rejectedCount);
-			requirementStagesReport.setClosedRequirementsCount(closedCount);
-			reqStageReport = commonUtil.toJSON(requirementStagesReport);
-		}
-		else {
-			List<Requirement> reqList = requirementReportService.getRequirementStageReports(orgLocation, status);
-			reqStageReport = commonUtil.toJSON(reqList);
-		}
-		return reqStageReport;
-		 
-	 }
 	 
-	 @RequestMapping(value = "/getRequirementListBasedOnStatus")
-	 public String getRequirementListBasedOnStatus(@RequestParam(value="status", required=false) String status, HttpServletRequest request,HttpServletResponse response) throws Exception{
-		 OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations"); 
-		 List<Requirement> reqList = requirementReportService.getRequirementStageReports(orgLocation,status);
-		 return commonUtil.toJSON(reqList);
-	 }
-
 	/**
 	 * get applicants reports based on day wise
 	 * 
@@ -329,9 +236,9 @@ public class RequirementReportRestController {
 		
 		String reportsList = null;
 		OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
-		List<ApplicantReport> applicantReportList = requirementReportService.getAllDayWiseApplicantsRecievedRports(reportType, customStartDate, customEndDate, orgLocation);
-		if (null != applicantReportList) {
-			reportsList = commonUtil.toJSON(applicantReportList);
+		ApplicantReport  applicantReceived= requirementReportService.getAllDayWiseApplicantsRecievedRports(reportType,customStartDate, customEndDate,orgLocation);
+		if (null != applicantReceived) {
+			reportsList = commonUtil.toJSON(applicantReceived);
 		}
 		else {
 			reportsList = commonUtil.toJSON("");

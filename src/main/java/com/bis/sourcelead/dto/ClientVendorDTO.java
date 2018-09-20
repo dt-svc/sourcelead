@@ -3,6 +3,8 @@ package com.bis.sourcelead.dto;
 import java.io.Serializable;
 import java.util.List;
 import java.util.Map;
+
+import com.bis.sourcelead.annotations.CleanHtml;
 /**
  * DTO foe client and Vendor
  * Date :16-08-1989
@@ -24,6 +26,7 @@ public class ClientVendorDTO extends SearchDTO implements Serializable {
 	private String longitude;
 	private String level;
 	private String address;
+	@CleanHtml(escape=false)
 	private String billingAddress;
 	//private String PaymentTerm;
 	private String paymentTerms;
@@ -79,6 +82,8 @@ public class ClientVendorDTO extends SearchDTO implements Serializable {
 	
 	private String searchValue;
 	
+	private String filterSearchValue;
+	
 	private String orgType;
 	
 	private Map<String,String> clientCustomFieldlabelNameAndValue;
@@ -86,6 +91,10 @@ public class ClientVendorDTO extends SearchDTO implements Serializable {
 	private String recipientsEmails;
 	
 	private String orgRelationIds;
+	
+	private String isLawFirm;
+	
+	private String isAccountingFirm;
 	
 	public String getOrgRelationIds() {
 		return orgRelationIds;
@@ -633,6 +642,30 @@ public class ClientVendorDTO extends SearchDTO implements Serializable {
 
 	public void setRecipientsEmails(String recipientsEmails) {
 		this.recipientsEmails = recipientsEmails;
+	}
+
+	public String getFilterSearchValue() {
+		return filterSearchValue;
+	}
+
+	public void setFilterSearchValue(String filterSearchValue) {
+		this.filterSearchValue = filterSearchValue;
+	}
+
+	public String getIsLawFirm() {
+		return isLawFirm;
+	}
+
+	public void setIsLawFirm(String isLawFirm) {
+		this.isLawFirm = isLawFirm;
+	}
+
+	public String getIsAccountingFirm() {
+		return isAccountingFirm;
+	}
+
+	public void setIsAccountingFirm(String isAccountingFirm) {
+		this.isAccountingFirm = isAccountingFirm;
 	}
 
 	

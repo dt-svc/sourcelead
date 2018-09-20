@@ -1,4 +1,4 @@
-<meta http-equiv="Pragma" content="private">
+	<meta http-equiv="Pragma" content="private">
 <meta http-equiv="Cache-Control" content="private">
 <meta http-equiv="Expires" content="0">
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
@@ -46,72 +46,61 @@ function taskNameValidation(){
 	});
 }
 </script>
- 
+
+<script>
+	$(document).ready(function() {
+		document.getElementById("addProjectTasks_form").reset();
+		/* <c:forEach var="section" items="${sourceleadSectionList}" varStatus="sectionOrder">
+		  var sectionId = '${section.id}';
+		  getCustomDependentField(sectionId);
+		 </c:forEach> */
+	});
+</script>
+
 
 <script>
 function projectTask(projectId, status) {
+	var projectClientUUID = '${projectClientUUID}';
+	var projectUUID = '${projectUUID}';
+	
 	var result = "";
 	result = result + '<div class="timesheet_head clearfix timesheet_headul-custom timeHd_minHeight">';
 	result = result + '<input type="hidden" value='+projectId+' id="projectId">';
 	result = result + '<input type="hidden" value='+status+' id="projectStatus">';
-	 result = result	+ '<ul>';
+	result = result	+ '<ul>';
+	 
+	result = result +'<li title="Import"><a href="<c:url value="${appPath}/uploadProjectTasks?projectUUID='+projectUUID+'&projectClientUUID='+projectClientUUID+'"/>"><i class="glyphicon glyphicon-import expIcon"></i>&nbsp;</a></li>';
+
+	
+	result = result +'<li class="dropdown">';
+	result = result +' <a title="Export" id="export-pop" class="dropdown-toggle" data-toggle="dropdown"><i class="glyphicon glyphicon-export expIcon"></i>&nbsp;</a>';	
+	result = result +'<div class="dropdown-menu bootstrap_dropdownMenu">';
+	result = result +'<ul class="ul_padding">';
+	result = result +'<li onclick="projectTaskExport(\'Pdf\');"><i class="fa fa-file-pdf-o text-danger paddingRight"></i>PDF</li>';
+	result = result +'<li onclick="projectTaskExport(\'Excel\');"><i class="fa fa-file-excel-o text-success paddingRight"></i>Excel</li>';
+	result = result +'</ul>';
+	result = result +'</div>';
+	result = result +'</li> ';
+	 
 	if (status != 'COMPLETED' && status != '' && status != 'undefined' && status != null) {
 		result = result +'<li>';
-		result = result	+ '<span class="pad-sea">';
+		result = result	+ '<span class="padding_right">';
 		'<sec:authorize access="hasAnyRole(\'ROLE_CREATE_PROJECT_TASKS\')">';  
-		result = result	+ '<span onclick="addtask();" class="cursorPointer"><i class="glyphicon glyphicon-plus paddingRight"></i>Add Task</span>';
+		result = result	+ '<span onclick="addtask();" class="cursorPointer padding_right mr5"><i class="glyphicon glyphicon-plus paddingRight"></i>Add Task</span>';
    		'</sec:authorize>'; 
 		result = result	+ '</span>';
 		result = result +'</li>';
 	}
-	
-		result = result	+ '	<li class="dropdown"><div class="dropdown-toggle pull-left" data-toggle="dropdown"><i class="fa fa-filter"></i><span>Assigned To</span><i class="glyphicon glyphicon-play" id="appro-pop"></i>|</div>';
-		result = result	+ '		<div class="dropdown-menu bootstrap_dropdownMenu dropdownPadding checkBox">';
-		result = result	+ '	    	<ul>';
-		<c:forEach var="assignedMembers" items="${projectAssignMemberList}">     
-			  result = result	+ '	 <li><input   name="assignedtaskId" value ="${assignedMembers.id}"   onclick="projectTaskList();"  type="checkbox"><label for="assignedtaskId${assignedMembers.id}">${assignedMembers.candidateName}</label></li>';
-		</c:forEach>  
-	    result = result	+ '	        </ul>';
-		result = result	+ '	    </div>';                	
-		result = result	+ '	</li>';
-	
-		result = result	+ '	<li class="dropdown"><div class="dropdown-toggle pull-left" data-toggle="dropdown"><i class="fa fa-filter"></i><span>Status</span><i class="glyphicon glyphicon-play" id="appro-pop"></i>|</div>';
-		result = result	+ '		<div class="dropdown-menu bootstrap_dropdownMenu dropdownPadding checkBox">';
-		result = result	+ '	    	<ul>';
 		
-		<c:forEach var="status" items="${taskStatusList}">     
-			<c:if test="${taskStatusList[0] == status || taskStatusList[1] == status}">
-			  result = result	+ '	 <li><input   name="taskStatusId" value ="${status.id}" checked  onclick="projectTaskList();"  type="checkbox"><label for="taskStatusId${status.id}">${status.name}</label></li>';
-			  </c:if>	  
-		    <c:if test="${taskStatusList[0] != status  && taskStatusList[1] != status}">
-		      result = result	+ '	 <li><input   name="taskStatusId" value ="${status.id}"  onclick="projectTaskList();"  type="checkbox"><label for="taskStatusId${status.id}">${status.name}</label></li>';
-		    </c:if>
-		</c:forEach>  
-	    result = result	+ '	        </ul>';
-		result = result	+ '	    </div>';                	
-		result = result	+ '	</li>';
-		
-		result = result	+ '	<li class="dropdown"><div class="dropdown-toggle pull-left" data-toggle="dropdown"><i class="fa fa-filter"></i><span>Task Type</span><i class="glyphicon glyphicon-play" id="appro-pop"></i>|</div>';
-		result = result	+ '		<div class="dropdown-menu bootstrap_dropdownMenu dropdownPadding checkBox">';
-		result = result	+ '	    	<ul>';   
-		<c:forEach var="type" items="${taskTypeList}">        
+		result = result	+ '</ul>';
+		result = result	+ '<div class="pull-left cand-advsrch advsrch_chosen">';
+		result = result	+ '     <button type="button" class="btn btn-primary dropdown-toggle btn-sm mr" onclick="resetTaskFilter();" title="Refresh">';
+		result = result	+ '	    <span class="fa fa-refresh"></span>';
+		result = result	+ '	</button>';
+		result = result	+ '	<a href="javascript:void(0)" class="btn btn-default btn-sm anchorBlack text-center" title="Filter Search" onclick="openFilterTaskPop();"><i class="fa fa-filter faFilter padding_right"></i>';
+		result = result	+ '	</a>';
+		result = result	+ ' </div>';
 		 
-		<c:if test="${taskTypeList[1] == type || taskTypeList[2] == type}">
-		result = result	+ '	 <li><input  name="taskTypeId" value ="${type.id}"  onclick="projectTaskList();" checked type="checkbox"><label for="taskTypeId${type.id}">${type.name}</label></li>';
-	    
-		</c:if>	
-	    <c:if test="${taskTypeList[1] != type && taskTypeList[2] != type}">
-	    result = result	+ '	 <li><input  name="taskTypeId" value ="${type.id}"  onclick="projectTaskList();"  type="checkbox"><label for="taskTypeId${type.id}">${type.name}</label></li>';
-	    </c:if>
-	    
-		</c:forEach>  
-		 result = result	+ '	        </ul>';                                                              
-		result = result	+ '	    </div>';                	                                            
-		result = result	+ '	</li>';                                                                      
-		 
-	
-		
-		 result = result	+ '</ul>';
 		 result = result + '</div>';
 // 	result = result +'<div id="taskListdivId" class="datatable_filter"> </div>';
 	result = result +'<div id="taskTitledivId" class="datatable_filter"> </div>';
@@ -137,10 +126,24 @@ function projectTask(projectId, status) {
 				$(tab).fadeIn();
 			});
 	projectTaskList();
-	
 }
 </script>
+<script>
+//Export filter
+function exportpop(){
+  $(".userExp").toggle();
+}
+/* $("#export-pop").click(function(){
+   $(".export_pop").toggle();
+}); */
+  /* $("html").click(function() {
+   $(".userExp").hide();
+}); 
+$("#exportTaskPop, #export-pop, .userExp").click(function(e) {
+   e.stopPropagation();
+}); */
 
+</script>
 
 <!-- this script is for Tasks list functionality at Projects screen -->
 <script>
@@ -166,9 +169,23 @@ function projectTask(projectId, status) {
 			assignedMembers.push($(this).val());
 	    });
 		
+		var teams = [];
+		$('input:checkbox[name=teams]:checked').each(function() 
+	    {
+			teams.push($(this).val());
+		});
+		
+		var tags = [];
+		$('input:checkbox[name=tags]:checked').each(function() 
+	    {
+			tags.push($(this).val());
+		});
+		
+		
+		
 		var searchValue = $("#taskDataTableSearch").val();
 		 searchValue = searchValue ? searchValue : "";
-		var url = sourceleadUrl	+"/getAllProjectTasks?searchValue="+searchValue+"&projectId="+projectId+"&projectTaskStatus="+projectTaskStatus+"&projectTaskType="+projectTaskType+"&assignedMembers="+assignedMembers;
+		var url = sourceleadUrl	+"/getAllProjectTasks?searchValue="+searchValue+"&projectId="+projectId+"&projectTaskStatus="+projectTaskStatus+"&projectTaskType="+projectTaskType+"&assignedMembers="+assignedMembers+"&teams="+teams+"&tags="+tags;
 		prepareTasksList(url);
 	}
 </script>
@@ -177,8 +194,10 @@ function prepareTasksList(url){
 	var status =  $("#projectStatus").val();
 	var result = "";
 	result = result	+ '<input type="hidden" id="projectStatus" value="'+status+'">';
-    result = result	+ '<div class="remove_search">';
+    result = result	+ '<div class="dynamic_search dynamic_search-new">';
     result = result +" <input type='text' placeholder='Search' id='taskDataTableSearch'/>";
+ 	result = result +"  <span class='cursorPointer' title='Search'><i class='fa fa-search' onclick='projectTaskList();'></i></span>";     
+
 	result = result	+ '</div><div class="project_tabs_inn_table project_tabs_inn_table_a">';
 	result = result	+ '<div id="tasksLoadingImg"></div>';
 	result = result + '<table id="projectTaskPagination" class="display" cellspacing="0" width="100%">';
@@ -186,7 +205,7 @@ function prepareTasksList(url){
 	result = result + '<tr">';
 	result = result + '<th>Task Name</th>';
 	result = result + '<th>Task Type</th>';
-	result = result + '<th>Priotiry</th>';
+	result = result + '<th>Priority</th>';
 	result = result + '<th>Assigned To</th>';
 	result = result + '<th>Status</th>';
 	result = result + '<th>Action</th>';
@@ -212,7 +231,7 @@ function projectTaskPaginations(url){
         }),
         "columns": [
             { "data": "taskName" },
-            { "data": "taskstype"},
+            { "data": "taskType"},
             { "data": "priority"},
             { "data": "assignedTo" },
             { "data": "projectTaskStatus" },
@@ -228,15 +247,16 @@ function projectTaskPaginations(url){
 					}else{
 						generatedId = "";
 					}
-	    	  		result = result+ '<td><div class="proj_show width215px"><a href="'+sourceleadUrl+'/projectTaskSummary?taskUUID='+opt.projectTasksUUID+'&projectClientUUID='+projectClientUUID+'" title="'+generatedId+' '+ opt.taskName+ '" class="tbldata-dotdot pull-left anchorBlack">'+generatedId+' '+ opt.taskName+ '</a><i class="fa fa-binoculars pull-right"></i></div></td>';
+	    	  		result = result+ '<td><div class="proj_show width215px"><a href="'+sourceleadUrl+'/projectTaskSummary?taskUUID='+opt.projectTasksUUID+'&projectClientUUID='+projectClientUUID+'" title="'+generatedId+' '+ opt.taskName+ '" class="tbldata-dotdot pull-left anchorBlack">'+generatedId+' '+ opt.taskName+ '<i class="fa fa-binoculars pull-right"></i></a></div></td>';
 		             return result;
 	    	  	}
 	      },{
 	    	  "targets": colIndex++,
-              "data": "taskstype",
+              "data": "taskType",
+              "sortable": false,
               "render": function ( data, type, opt, meta ) {
             	  var result = "";
-            	  result = result	+ '<td><div class="tbldata-dotdot_50" title="'+opt.taskTypes+'">'+opt.taskTypes+ '</div></td>';
+            	  result = result	+ '<td><div class="tbldata-dotdot_80" title="'+opt.taskTypes+'">'+opt.taskTypes+ '</div></td>';
 	              return result;
               		
               }
@@ -256,6 +276,7 @@ function projectTaskPaginations(url){
           }, {
               "targets": colIndex++,
               "data": "assignedTo",
+              "sortable": false,
               "render": function ( data, type, opt, meta ) {
             	  if(opt.taskAssignedUsers != null && opt.taskAssignedUsers != "" && opt.taskAssignedUsers !="undefined"){
 						taskAssignedUsers = opt.taskAssignedUsers;
@@ -269,6 +290,7 @@ function projectTaskPaginations(url){
             }, {
                 "targets": colIndex++,
                 "data": "projectTaskStatus",
+                "sortable": false,
                 "render": function ( data, type, opt, meta ) {
                 	if(opt.taskStaus != null && opt.taskStaus != "" && opt.taskStaus !="undefined"){
 						taskStaus = opt.taskStaus;
@@ -282,6 +304,7 @@ function projectTaskPaginations(url){
           },{
               "targets": colIndex++,
               "data": "projectTaskActin",
+              "sortable": false,
               "render": function ( data, type, opt, meta ) {
                
               	var result = "";
@@ -293,7 +316,7 @@ function projectTaskPaginations(url){
         }],
 	    	"scrollCollapse": false,
 	    	"lengthMenu": [[10, 15, 20], [10, 15, 20]],
-	    	"aaSorting": [[1,'desc']],
+// 	    	"aaSorting": [[1,'desc']],
 	    	"bLengthChange": true,
 	    	"bDestroy": true,
 	    	"ordering": true,
@@ -457,27 +480,27 @@ function editCancel(){
 		 document.getElementById("userStory").style.display="none";
 		 document.getElementById("epic").style.display="none";
 		 document.getElementById("task").style.display="none";
-		 $('#taskId').removeAttr("data-validation","required"); 
+		 $('#subTasksId').removeAttr("data-validation","required"); 
 	 } 
 	   if(taskType ==  "UserStory"){
 		 document.getElementById("epic").style.display="block";
 		 document.getElementById("userStory").style.display="none";
 		 document.getElementById("task").style.display="none";
-		 $('#taskId').removeAttr("data-validation","required"); 
+		 $('#subTasksId').removeAttr("data-validation","required"); 
 		 getSubEpicsByUserStory();
 	 }
 	    if(taskType ==  "Bug"){
 		 document.getElementById("epic").style.display="none";
 		 document.getElementById("userStory").style.display="block";
 		 document.getElementById("task").style.display="none";
-		 $('#taskId').removeAttr("data-validation","required"); 
+		 $('#subTasksId').removeAttr("data-validation","required"); 
 		 getUserStoryByBug();
 	 }
 	 if(taskType ==  "SubTask"){
 		 document.getElementById("epic").style.display="none";
 		 document.getElementById("userStory").style.display="none";
 		 document.getElementById("task").style.display="block";
-		 $('#taskId').attr("data-validation","required"); 
+		 $('#subTasksId').attr("data-validation","required"); 
 		 getSubTasks(taskType);
 	 } 
 	 
@@ -550,7 +573,6 @@ function editCancel(){
 	    	 url: sourceleadUrl+"/ProjectTasks/getProjectTasksBySubTaskType?${_csrf.parameterName}=${_csrf.token}&projectId="+projectId+"&taskType="+taskType,
 	    		success: function(json) {
 	     		var output = "";
-	     			output = output + "<option value=''>--Select Task--</option>";
 	     		for (var i=0; i<json.length; i++)
 	     		{
 		     		var opt = json[i];
@@ -583,6 +605,11 @@ function editCancel(){
         $(".modal-Time").fadeOut();
     } 
     function addtask(){
+	   <c:forEach var="section" items="${sourceleadSectionListForProjectTask}" varStatus="sectionOrder">
+		  var sectionId = '${section.id}';
+		  getCustomDependentFieldProjectTask(sectionId);
+	   </c:forEach> 
+    	
     	var projectId =  $("#projectId").val();
     	var projectStartDate = '${projectStartDate}';
         	var result = "";
@@ -592,8 +619,8 @@ function editCancel(){
 			result = result	+ '     <form name="projectTask_form" id="projectTask_form" method="post">';
 			result = result	+ '       <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12 myForm">';
 			result = result	+ '         <div class="form-group">';
-			result = result	+ '           <label class="col-md-4">Task Type<span class="text-danger paddingLeft">*</span></label>';
-			result = result	+ '           <div class="col-md-8 dropdown-select">';
+			result = result	+ '           <label class="col-md-3">Task Type<span class="text-danger paddingLeft">*</span></label>';
+			result = result	+ '           <div class="col-md-9 dropdown-select">';
 		    result = result	+ '             <select class="form-control" onchange="showtasktype()" id="taskstype" name="taskstype" field-name="Task Type"  data-validation="required">'; 
 		    result = result	+ '     <c:forEach var="type" items="${taskTypeList}">  ';        
 		    result = result	+ '  	 	  <option value="${type.uniqueKey}">${type.name}</option>';   
@@ -602,23 +629,23 @@ function editCancel(){
 			result = result	+ '           </div>';
 			result = result	+ '         </div>';
 			result = result	+ '           <div class="form-group" style="display: none" id="epic">';
-			result = result	+ '           <label class="col-md-4">Epic</label>';
-			result = result	+ '           <div class="col-md-8 dropdown-select">';
+			result = result	+ '           <label class="col-md-3">Epic</label>';
+			result = result	+ '           <div class="col-md-9 dropdown-select">';
 			result = result	+ '             <select class="chosen-select form-control" id="epicId" name="epic">';
 			result = result	+ '             </select>';
 			result = result	+ '           </div>';
 			result = result	+ '         </div>';
 			result = result	+ '           <div class="form-group" style="display: none" id="userStory">';
-			result = result	+ '           <label class="col-md-4">User Story</label>';
-			result = result	+ '           <div class="col-md-8 dropdown-select">';
+			result = result	+ '           <label class="col-md-3">User Story</label>';
+			result = result	+ '           <div class="col-md-9 dropdown-select">';
 			result = result	+ '             <select class="chosen-select form-control" id="userStroyId" name="userStory">';
 			result = result	+ '             </select>';
 			result = result	+ '           </div>';
 			result = result	+ '         </div>';
 			
 			result = result	+ '           <div class="form-group" style="display: none" id="task">';
-			result = result	+ '           <label class="col-md-4">Task<span class="text-danger paddingLeft">*</span></label>';
-			result = result	+ '           <div class="col-md-8 dropdown-select">';
+			result = result	+ '           <label class="col-md-3">Task<span class="text-danger paddingLeft">*</span></label>';
+			result = result	+ '           <div class="col-md-9 dropdown-select">';
 			result = result	+ '             <select class="chosen-select form-control" id="subTasksId" name="subTask" field-name="Task">';
 			result = result	+ '             </select>';
 			result = result	+ '           </div>';
@@ -626,21 +653,21 @@ function editCancel(){
 			
 			
 			result = result	+ '         <div class="form-group">';
-			result = result	+ '           <label class="col-md-4">Task Title<span class="text-danger paddingLeft">*</span></label>';
-			result = result	+ '           <div class="col-md-8">';
+			result = result	+ '           <label class="col-md-3">Task Title<span class="text-danger paddingLeft">*</span></label>';
+			result = result	+ '           <div class="col-md-9">';
 			result = result	+ '             <input class="form-control"  placeholder="Task Title" type="text" id="taskName" name="taskName" field-name="Task Title"  data-validation="required validate_length length2-250" >';
 			result = result	+ '           </div>';
 			result = result	+ '         </div>';
 			result = result	+ '         <div class="form-group">';
-			result = result	+ '           <label class="col-md-4">Assign To</label>';
-			result = result	+ '           <div class="col-md-8">';
+			result = result	+ '           <label class="col-md-3">Assign To <i class="fa fa-info-circle" title="Select the project team members who will handle this task (can be assigned to multiple members)"></i></label>';
+			result = result	+ '           <div class="col-md-9">';
 			result = result	+ '             <select class="form-control chosen-select choose" multiple  id="assignTaskId" name="assignTaskId" data-placeholder="Select Assign To">';
 			result = result	+ '             </select>';
 			result = result	+ '           </div>';
 			result = result	+ '         </div>';
 			result = result	+ '         <div class="form-group">';
-			result = result	+ '           <label class="col-md-4">Due Date</label>';
-			result = result	+ '           <div class="col-md-8">';
+			result = result	+ '           <label class="col-md-3">Due Date <i class="fa fa-info-circle" title="The deadline for the assigned project task"></i></label>';
+			result = result	+ '           <div class="col-md-9">';
 			result = result +'<div class="input-group">';
 			result = result	+ '             <input class="form-control calendar" value="" name="duDate" id="dueDate" placeholder="Due Date" type="text" readonly>';
 			 result = result +'<span class="input-group-addon" onClick="clearDueDate();"><i class="colorRed fa fa-times cursorPointer"></i></span>';
@@ -649,8 +676,8 @@ function editCancel(){
 			result = result	+ '           </div>';
 			result = result	+ '         </div>';
 			result = result	+ '         <div class="form-group">';
-			result = result	+ '           <label class="col-md-4">Priority</label>';
-			result = result	+ '           <div class="col-md-8 dropdown-select">';
+			result = result	+ '           <label class="col-md-3">Priority</label>';
+			result = result	+ '           <div class="col-md-9 dropdown-select">';
 			result = result	+ '             <select class="form-control" id="priority" name="priority">';
 			result = result	+ '           <c:forEach var="priority" items="${taskPriorityList}"> ';        
 			result = result	+ '		             <option value="${priority.id}" ${priority.name  == "P2" ? "selected" : ''} >${priority.name}</option>';   
@@ -659,14 +686,14 @@ function editCancel(){
 			result = result	+ '           </div>';
 			result = result	+ '         </div>';
 			result = result	+ '         <div class="form-group">';
-			result = result	+ '           <label class="col-md-4">Estimated Time</label>';
-			result = result	+ '           <div class="col-md-8">';
+			result = result	+ '           <label class="col-md-3">Estimated Time <i class="fa fa-info-circle" title="The estimated of time taken for the project task"></i></label>';
+			result = result	+ '           <div class="col-md-9">';
 			result = result	+ '             <input class="form-control"  placeholder="Estimated Time" type="text" id="estimatedTime" name="estimatedTime" field-name="Estimated Time"  data-validation="validate_Space validate_float validate_length length1-10" data-validation-optional="true" >';
 			result = result	+ '           </div>';
 			result = result	+ '         </div>';
 			result = result	+ '         <div class="form-group">';
-			result = result	+ '           <label class="col-md-4">Severity</label>';
-			result = result	+ '           <div class="col-md-8 dropdown-select">';
+			result = result	+ '           <label class="col-md-3">Severity</label>';
+			result = result	+ '           <div class="col-md-9 dropdown-select">';
 			result = result	+ '             <select class="form-control" id="severity" name="severity">';
 			result = result	+ '               <option value="">-- Select Severity --</option>';
 			result = result	+ '                 <c:forEach var="severity" items="${taskSeverityList}">  ';       
@@ -676,8 +703,8 @@ function editCancel(){
 			result = result	+ '           </div>';
 			result = result	+ '         </div>';
 			result = result	+ '         <div class="form-group">';
-			result = result	+ '           <label class="col-md-4">Status<span class="text-danger paddingLeft">*</span></label>';
-			result = result	+ '           <div class="col-md-8 dropdown-select">';
+			result = result	+ '           <label class="col-md-3">Status<span class="text-danger paddingLeft">*</span></label>';
+			result = result	+ '           <div class="col-md-9 dropdown-select">';
 			result = result	+ '             <select class="form-control" field-name="Status"  id="taskStatus" name="taskStatus" data-validation="required">';
 			result = result	+ '              <c:forEach var="Status" items="${taskStatusList}">    ';   
 			result = result	+ ' 			  <option value="${Status.id}">${Status.name}</option> ';
@@ -686,15 +713,15 @@ function editCancel(){
 			result = result	+ '           </div>';
 			result = result	+ '         </div>';
 			result = result	+ '         <div class="form-group">';
-			result = result	+ '           <label class="col-md-4">Owner</label>';
-			result = result	+ '           <div class="col-md-8">';
+			result = result	+ '           <label class="col-md-3">Owner</label>';
+			result = result	+ '           <div class="col-md-9">';
 			result = result	+ '             <select class="form-control" data-placeholder="Select Owner" id="ownerId" name="taskOwner">';
 			result = result	+ '             </select>';
 			result = result	+ '           </div>';
 			result = result	+ '         </div>';
 			result = result	+ '         <div class="form-group">';
-			result = result	+ '           <label class="col-md-4">Billing Type<span class="text-danger paddingLeft">*</span></label>';
-			result = result	+ '           <div class="col-md-8 dropdown-select">';
+			result = result	+ '           <label class="col-md-3">Billing Type<span class="text-danger paddingLeft">*</span></label>';
+			result = result	+ '           <div class="col-md-9 dropdown-select">';
 			result = result	+ '             <select class="form-control" field-name="Billing Type" id="taskBillableType" name="taskBillableType" data-validation="required">';
 			result = result	+ '               <option value="Billable">Billable</option>';
 			result = result	+ '               <option value="Non-Billable">Non-Billable</option>';
@@ -703,8 +730,8 @@ function editCancel(){
 			result = result	+ '         </div>';
 			
 			result = result	+ '         <div class="form-group">';
-			result = result	+ '           <label class="col-md-4">Business Value</label>';
-			result = result	+ '             <div  class="col-md-8 positionRelative">';
+			result = result	+ '           <label class="col-md-3">Business Value</label>';
+			result = result	+ '             <div  class="col-md-9 positionRelative">';
 			result = result	+ '             <div class="input-group er ratetype">';
 			result = result	+ '					<div class="input-group-btn">';
 			result = result	+ '					<select class="selectpicker" id="currencyType" name="currencyType">';
@@ -721,11 +748,24 @@ function editCancel(){
 			result = result	+ '					<div class="clearfix"></div>';
 			result = result	+ '					</div>';
 			result = result	+ '             </div>';
+			
+			
+			result = result	+ '           <c:if test= "${!empty sourceleadSectionListForProjectTask}">  ';
+			result = result	+ '           <c:forEach var="section" items="${sourceleadSectionListForProjectTask}" varStatus="sectionOrder"> ';
+			result = result	+ '	          <c:if test="${sectionOrder.index == 0}">';
+			result = result	+ '           <div class="clearfix" id="customDiv${section.id}"></div>';
+			result = result	+ '           </c:if>';
+			result = result	+ '           </c:forEach>';
+			result = result	+ '           </c:if>';
+			
+			
+			
+			
 			result = result	+ '         <div class="clearfix"></div>';
 			result = result	+ '         <div class="clearfix mb">';
 			result = result	+ '           <label class="col-md-12">Description</label>';
 			result = result	+ '           <div class="col-md-12 txtEditor_p">';
-			result = result	+ '            <textarea id="txtEditor" name="taskDescription"  class="form-control newContrtextarea" data-validation="validate_length length2-5000" data-validation-optional="true"></textarea>';
+			result = result	+ '            <textarea id="txtEditor" name="taskDescription"  class="form-control newContrtextarea"></textarea>';
 			result = result	+ '           </div>';
 			result = result	+ '         </div>';
 			result = result	+ '         <div class="clearfix"></div>';
@@ -823,7 +863,7 @@ function editCancel(){
 		$(".tasks_side_wrap").removeClass("tasks_side_wrap_active");
 		$(".side_mask").fadeOut(200);
 		$("body").css('overflow-y', 'auto');
-		$("#txtEditor").val($('.Editor-editor').text('')); 
+		$("#txtEditor").val($('.Editor-editor').html('')); 
 		$("div.row-fluid .Editor-container").remove();
 		document.getElementById("projectTask_form").reset();
 		$("projectTask_form").validate().resetForm();
@@ -871,7 +911,7 @@ function tasksAssignList(projectId){
 	var sourceleadUrl ='${sourceleadUrl}';
 	var values = "Active";
 	$.ajax({
-    	type: "POST",
+    	type: "GET",
         url: sourceleadUrl+"/getProjectEmployeeListById?${_csrf.parameterName}=${_csrf.token}&projectId="+projectId+"&status="+values, 
         success: function(json) {
         	var output = "";
@@ -891,13 +931,14 @@ function tasksAssignList(projectId){
 
 <script>
 function saveTasks(){
-	var ee = $("#txtEditor").val($('.Editor-editor').text()); 
+	var ee = $("#txtEditor").val($('.Editor-editor').html()); 
 	 if ($('#projectTask_form').validate(false, validationSettings)) {
 		var form = $('#projectTask_form')[0];
 		var formData = new FormData(form);
 		var projectId = $("#projectId").val();
 		var userId = '${SourceLeadWeb_userId}';
-	  	
+		var projectClientUUID = '${projectClientUUID}';
+		
 	  	$("#save_task").attr("disabled", "disabled");
 		$("#save_task").addClass('button').val('Processing..');
 		$.ajax({
@@ -905,11 +946,22 @@ function saveTasks(){
 			 data: formData,
 	         processData: false,
 	         contentType:false, 
-    	     url : sourceleadUrl + "/ProjectTasks/saveProjectTasks?${_csrf.parameterName}=${_csrf.token}&projectId="+projectId+"&userId="+userId,
-			  success : function(data) {
-				var status = $("#projectStatus").val();
-				projectTask(projectId, status);
-				cancelTask();
+	         url : sourceleadUrl + "/ProjectTasks/saveProjectTasks?${_csrf.parameterName}=${_csrf.token}&projectId="+projectId+"&userId="+userId+"&projectClientUUID="+projectClientUUID,
+			  success : function(result) {
+				  if (result && result.response === "INVALID_DATA") {
+	                    showError(result.responseMessage);
+	                } else if (result.response === "AWKWARD") {
+	                    location.href = "/errorPage";
+	                } else if (result.response === "SUCCESS") {
+	                	var status = $("#projectStatus").val();
+	    				projectTask(projectId, status);
+	    				cancelTask();
+	                }else if (result.indexOf('Sign In') !== -1) {
+						location.replace(sourceleadUrl);
+					} else {
+	                    showError("Operation failed, please try again");
+	                }
+				
 			}, 
 		});
 		return true;
@@ -960,3 +1012,244 @@ function clearDueDate(){
 	};
 
 </script>
+
+<script>
+function getCustomDependentFieldProjectTask(sectionId){
+	$.ajax({
+			type : "POST" , 
+				 url: sourceleadUrl+"/getAllASectionCustomFields?sectionId="+sectionId,
+				 success: function(data) {
+		        	$('#customDiv'+sectionId).empty();
+		        	var result ='';
+		        	result = result + data;
+		        	$('#customDiv'+sectionId).append(result);
+		        	
+				 }
+		  }); 
+}
+</script>
+
+
+
+
+<!-- ------------------------ Filter related script By Laxman ------------------------------- -->
+
+<script>
+function closeFilterTaskPop(){
+	$("div.cand-advsrch-popup").hide();
+	$(".advancedsearch-mask").fadeOut();
+}
+function openFilterTaskPop(){
+	$("#projTaskPop").toggle();
+	 $(".advancedsearch-mask").fadeIn();
+}
+
+</script>
+
+  <div class="cand-advsrch-popup advancedsearch-popup filterDynamic-Search" id="projTaskPop">
+				<h5 class="headerAdsrch">Filter Search
+					<a href="javascript:void(0)" class="close-div" onClick="closeFilterTaskPop()"><i
+						class="fa fa-close"></i></a>
+				</h5>
+				<div class="addInner">
+					<div class="row">
+						<div class="col-md-2">
+						<div class="row">
+						   <div class="col-md-12 mb">
+							  <label><strong>Task Type</strong></label>
+								 <div class="clearfix">
+									<ul class="list-unstyled" id="taskTypeFilter">
+										<c:forEach var="type" items="${taskTypeList}"> 
+											<c:if test="${taskTypeList[1] == type || taskTypeList[2] == type}">
+												 <li class="checkBox positionRelative"><input  name="taskTypeId" value ="${type.id}"   type="checkbox"><label for="taskTypeId${type.id}">${type.name}</label></li>
+											</c:if>
+											<c:if test="${taskTypeList[1] != type && taskTypeList[2] != type}">
+											<li  class="checkBox positionRelative"><input  name="taskTypeId" value ="${type.id}"   type="checkbox"><label for="taskTypeId${type.id}">${type.name}</label></li>
+											</c:if>
+										</c:forEach>
+			                        </ul>
+								 </div>
+							 </div>
+							 </div>
+							 </div> 
+							 
+							 <div class="col-md-2">
+								<div class="row">
+									 <div class="col-md-12 mb">
+									  <label><strong>Status</strong></label>
+										 <div class="clearfix">
+											<ul class="list-unstyled" id="taskStatusFilter">
+												<c:forEach var="status" items="${taskStatusList}">  
+													<c:if test="${taskStatusList[0] == status || taskStatusList[1] == status}">
+														 <li class="checkBox positionRelative"><input   name="taskStatusId" value ="${status.id}" checked   id="taskStatusId${status.id}"  type="checkbox"><label for="taskStatusId${status.id}">${status.name}</label></li>
+													</c:if>
+													<c:if test="${taskStatusList[0] != status  && taskStatusList[1] != status}">
+													<li  class="checkBox positionRelative"><input   name="taskStatusId" value ="${status.id}"    type="checkbox"><label for="taskStatusId${status.id}">${status.name}</label></li>
+													</c:if>
+												</c:forEach>
+					                        </ul>
+										 </div>
+									 </div> 
+						        </div>
+						     </div>
+						     
+						     <div class="col-md-4 mb positionRelative">
+									<div class="clearfix dynamic_search filterDynamicsearch">
+										<input type="text" id="myAssignedInput" onkeyup="myAssignedFunction()" placeholder="Assigned To" title="Type in a managers">
+										<span class="cursorPointer" title="Search"><i class="fa fa-search"></i></span>
+									</div>
+									 <div class="clearfix filterSearch-ul">
+										<ul class="list-unstyled positionRelative filterSearch mt5" id="myAssignedUL">
+										<c:forEach var="assignedMembers" items="${projectAssignMemberList}">  
+										    <li class="checkBox positionRelative clearfix" ><input   name="assignedtaskId" value ="${assignedMembers.id}"  type="checkbox" class="pull-left"><label for="assignedtaskId${assignedMembers.id}" title="${assignedMembers.candidateName}"  class="tbldata-dotdot-me pull-left mt5">${assignedMembers.candidateName}</label></li>
+										</c:forEach>
+										</ul>
+									 </div> 
+							 </div> 
+							 
+							 <div class="col-md-4 mb positionRelative">
+									<div class="clearfix dynamic_search filterDynamicsearch">
+										<input type="text" id="myTaskTeamInput" onkeyup="myTaskTeamFunction()" placeholder="Team" title="Type in a managers">
+										<span class="cursorPointer" title="Search"><i class="fa fa-search"></i></span>
+									</div>
+									 <div class="clearfix filterSearch-ul">
+										<ul class="list-unstyled positionRelative filterSearch mt5" id="myTaskTeamUL">
+											<c:forEach var="team" items="${teamList}"> 
+											<li class="checkBox positionRelative clearfix"><input value="${team.id}" name="teams"  type="checkbox" ><label>${team.name}</label></li>
+											</c:forEach>
+										</ul>
+									 </div> 
+							 </div> 
+							 
+							 <div class="col-md-4 mb positionRelative">
+									<div class="clearfix dynamic_search filterDynamicsearch">
+										<input type="text" id="myTagsInput" onkeyup="myTagsFunction()" placeholder="Tags" title="Type in a tags">
+										<span class="cursorPointer" title="Search"><i class="fa fa-search"></i></span>
+									</div>
+									 <div class="clearfix filterSearch-ul">
+										<ul class="list-unstyled positionRelative filterSearch mt5" id="myTagsTeamUL">
+											<c:forEach var="tag" items="${taskTagsList}"> 
+											<li class="checkBox positionRelative clearfix"><input value="${tag}" name="tags"  type="checkbox" ><label>${tag}</label></li>
+											</c:forEach>
+										</ul>
+									 </div> 
+							 </div> 
+							 
+							 
+					</div>
+					</div>
+					<div class="clearfix advancedsearch-footer">
+						<div class="pull-right mr">
+							<input type="button" value="Apply" id="search_requiremet" onclick="closeFilterTaskPop();projectTaskList();" class="btn btn-sm btn-success" />
+							<input type="button" value="Reset" id="clear_search" onclick="resetTaskFilter();" class="btn btn-sm btn-primary" />
+						</div>
+					</div>
+	  </div>
+				
+<script>
+function resetTaskFilter(){
+	$("ul#taskTypeFilter > li input:checkbox").prop("checked",false);
+	$("ul#taskStatusFilter > li input:checkbox").prop("checked",false);
+	$("ul#myAssignedUL > li input:checkbox").prop("checked",false);
+	$("ul#myTaskTeamUL > li input:checkbox").prop("checked",false);
+	$("ul#myTagsTeamUL > li input:checkbox").prop("checked",false);
+	
+	document.getElementById("taskStatusId1069").checked = true;
+	document.getElementById("taskStatusId1070").checked = true;
+	projectTaskList();
+}
+function myAssignedFunction() {
+    var input, filter, ul, li, a, i;
+    input = document.getElementById("myAssignedInput");
+    filter = input.value.toUpperCase();
+    ul = document.getElementById("myAssignedUL");
+    li = ul.getElementsByTagName("li");
+    for (i = 0; i < li.length; i++) {
+        a = li[i].getElementsByTagName("label")[0];
+        if (a.innerHTML.toUpperCase().indexOf(filter) > -1) {
+            li[i].style.display = "";
+        } else {
+            li[i].style.display = "none";
+
+        }
+    }
+}
+
+function myTaskTeamFunction() {
+    var input, filter, ul, li, a, i;
+    input = document.getElementById("myTaskTeamInput");
+    filter = input.value.toUpperCase();
+    ul = document.getElementById("myTaskTeamUL");
+    li = ul.getElementsByTagName("li");
+    for (i = 0; i < li.length; i++) {
+        a = li[i].getElementsByTagName("label")[0];
+        if (a.innerHTML.toUpperCase().indexOf(filter) > -1) {
+            li[i].style.display = "";
+        } else {
+            li[i].style.display = "none";
+
+        }
+    }
+}
+function myTagsFunction() {
+    var input, filter, ul, li, a, i;
+    input = document.getElementById("myTagsInput");
+    filter = input.value.toUpperCase();
+    ul = document.getElementById("myTagsTeamUL");
+    li = ul.getElementsByTagName("li");
+    for (i = 0; i < li.length; i++) {
+        a = li[i].getElementsByTagName("label")[0];
+        if (a.innerHTML.toUpperCase().indexOf(filter) > -1) {
+            li[i].style.display = "";
+        } else {
+            li[i].style.display = "none";
+
+        }
+    }
+}
+</script>			
+
+<script>
+function projectTaskExport(type){
+	if(type == "Pdf"){
+		exportType = "pdf";
+	}else{
+		exportType = "xls";
+	}
+	
+	
+	var projectClientUUID = '${projectClientUUID}';
+	var projectId = $("#projectId").val();
+	var status =  $("#projectStatus").val();
+	 var projectTaskStatus = [];
+	$('input:checkbox[name=taskStatusId]:checked').each(function() 
+    {
+		projectTaskStatus.push($(this).val());
+    });
+	
+	var projectTaskType = [];
+	$('input:checkbox[name=taskTypeId]:checked').each(function() 
+     {
+		projectTaskType.push($(this).val());
+	 });
+	
+    var assignedMembers = [];
+	$('input:checkbox[name=assignedtaskId]:checked').each(function() 
+    {
+		assignedMembers.push($(this).val());
+    });
+	
+	var teams = [];
+	$('input:checkbox[name=teams]:checked').each(function() 
+    {
+		teams.push($(this).val());
+	});
+	
+	var searchValue = $("#taskDataTableSearch").val();
+	 searchValue = searchValue ? searchValue : "";
+	 window.location.href = sourceleadUrl + "/getExportTasks?searchValue="+searchValue+"&projectId="+projectId+"&projectTaskStatus="+projectTaskStatus+"&projectTaskType="+projectTaskType+"&assignedMembers="+assignedMembers+"&teams="+teams+"&exportType="+exportType;
+
+	
+}
+</script>
+

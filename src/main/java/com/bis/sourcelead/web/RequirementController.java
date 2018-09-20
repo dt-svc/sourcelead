@@ -1,11 +1,22 @@
 package com.bis.sourcelead.web;
 
 
+import java.io.BufferedInputStream;
 import java.io.ByteArrayInputStream;
+import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.net.URISyntaxException;
+import java.net.URL;
+import java.net.URLConnection;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.Collection;
+import java.util.Date;
 import java.util.List;
 import java.util.Set;
 
@@ -13,13 +24,31 @@ import javax.servlet.ServletOutputStream;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.exception.ExceptionUtils;
+import org.apache.poi.hssf.usermodel.DVConstraint;
+import org.apache.poi.hssf.usermodel.HSSFCell;
+import org.apache.poi.hssf.usermodel.HSSFDataValidation;
+import org.apache.poi.hssf.usermodel.HSSFRow;
+import org.apache.poi.hssf.usermodel.HSSFSheet;
+import org.apache.poi.hssf.usermodel.HSSFWorkbook;
+import org.apache.poi.ss.usermodel.DataValidation;
+import org.apache.poi.ss.usermodel.Name;
+import org.apache.poi.ss.usermodel.Row;
+import org.apache.poi.ss.usermodel.Sheet;
+import org.apache.poi.ss.usermodel.Workbook;
+import org.apache.poi.ss.util.CellRangeAddressList;
+import org.apache.poi.xssf.usermodel.XSSFWorkbook;
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
+import org.springframework.util.FileCopyUtils;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -28,9 +57,13 @@ import org.springframework.web.servlet.ModelAndView;
 
 import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.dto.ContractsDTO;
+import com.bis.sourcelead.dto.JobFairDTO;
+import com.bis.sourcelead.dto.JobFairRequirementsDTO;
+import com.bis.sourcelead.dto.OrgRelationDTO;
 import com.bis.sourcelead.dto.SourceleadSectionDTO;
 import com.bis.sourcelead.entity.Candidate;
 import com.bis.sourcelead.entity.Countries;
+import com.bis.sourcelead.entity.JobFair;
 import com.bis.sourcelead.entity.LookUpData;
 import com.bis.sourcelead.entity.Org;
 import com.bis.sourcelead.entity.OrgLocations;
@@ -40,6 +73,8 @@ import com.bis.sourcelead.entity.ProjectClients;
 import com.bis.sourcelead.entity.Requirement;
 import com.bis.sourcelead.entity.RequirementApproverHierarchy;
 import com.bis.sourcelead.entity.RequirementAssignTo;
+import com.bis.sourcelead.entity.RequirementIncentive;
+import com.bis.sourcelead.entity.RequirementLocations;
 import com.bis.sourcelead.entity.RequirementOfferHistory;
 import com.bis.sourcelead.entity.RequirementOffers;
 import com.bis.sourcelead.entity.RequirementSubmission;
@@ -50,16 +85,20 @@ import com.bis.sourcelead.entity.SubmissionTemplate;
 import com.bis.sourcelead.entity.Timezone;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.enums.ApplicantSubmissionStatus;
+import com.bis.sourcelead.rest.DashboardRestController;
 import com.bis.sourcelead.service.CandidateService;
 import com.bis.sourcelead.service.ContractsTemplateService;
 import com.bis.sourcelead.service.CountriesService;
+import com.bis.sourcelead.service.JobCustomFieldDataService;
 import com.bis.sourcelead.service.LookUpDataService;
+import com.bis.sourcelead.service.OrgLocationService;
 import com.bis.sourcelead.service.OrgRelationsService;
 import com.bis.sourcelead.service.OrgSpocService;
 import com.bis.sourcelead.service.ProjectClientService;
 import com.bis.sourcelead.service.RequirementApproverHierarchyService;
 import com.bis.sourcelead.service.RequirementAssignToService;
 import com.bis.sourcelead.service.RequirementInterviewerService;
+import com.bis.sourcelead.service.RequirementLocationsService;
 import com.bis.sourcelead.service.RequirementOfferHistoryService;
 import com.bis.sourcelead.service.RequirementOffersService;
 import com.bis.sourcelead.service.RequirementService;
@@ -94,8 +133,8 @@ public class RequirementController {
 	@Autowired
 	LookUpDataService lookUpDataService;
 	
-	/*@Autowired
-	RequirementDao requirementDao;*/
+	@Autowired
+	OrgLocationService orgLocationService;
 	
 	@Autowired
 	RequirementService requirementService;
@@ -170,6 +209,15 @@ public class RequirementController {
 	@Autowired
 	private SourceleadFormSectionsService sourceleadFormSectionsService;
 	
+	@Autowired
+	RequirementLocationsService requirementLocationsService;
+	
+	@Autowired
+	private JobCustomFieldDataService jobCustomFieldDataService;
+	
+	@Autowired
+	private DashboardRestController dashboardRestController;
+	
 	protected boolean isNullOrEmpty(String str) {
 		return (str == null || "".equals(str.trim()));
 	}
@@ -181,10 +229,21 @@ public class RequirementController {
 		Requirement requirement ;
 		ModelAndView model = new ModelAndView();
 		
-		User loginUser = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
-		OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+		SessionMaintainanceData sessionData = (SessionMaintainanceData)request.getSession().getAttribute("sessionData");
+		if(sessionData == null)
+		{
+			sessionData = new SessionMaintainanceData();
+		}
+		sessionData.setNav(Constants.Requirement);
 		
-		SourceleadActions action = sourceleadActionsService.getSourceleadActionsByActionRole(Constants.ROLE_CREATE_REQUIREMENT);
+		request.getSession().setAttribute("sessionData",sessionData);
+		
+		
+		User loginUser = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+		model.addObject("loginUser",loginUser);
+		OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+		model.addObject("orgLocationDateFormat", orgLocations.getDateFormat());
+		 SourceleadActions action = sourceleadActionsService.getSourceleadActionsByActionRole(Constants.ROLE_CREATE_REQUIREMENT);
 	     model.addObject("actionId",action.getId());
 		
 	    List<SourceleadSectionDTO> sections  = sourceleadFormSectionsService.getSourceleadFormSectionsByActionId(action.getId(),orgLocations.getId());
@@ -192,6 +251,22 @@ public class RequirementController {
 	    
 		if(null != requirementUUID && !requirementUUID.isEmpty()){
 			requirement = this.requirementService.getRequirementByRequirementUUID(requirementUUID);
+			model.addObject("requirementUUID", requirementUUID);
+			model.addObject("requirementStatus", requirement.getRequirementSubmissionStatus());
+			List<RequirementIncentive> requirementIncentiveList = requirementService.getRequirementIncentiveListByRequirementId(requirement.getId());
+			model.addObject("requirementIncentiveList", requirementIncentiveList);
+			model.addObject("requirementIncentiveListSize", requirementIncentiveList.size());
+			
+			if (requirement != null) {
+				requirement.setJobFairList(requirementService.getJobFairsListByRequirementId(requirement.getId()));
+				if (requirement.getJobFairList() != null) {
+					String selectedJobFairsString = "";
+					for (JobFair jobFair : requirement.getJobFairList()) {
+						selectedJobFairsString += (selectedJobFairsString.isEmpty() ? "" : ",") + jobFair.getId() + ":" + jobFair.getName();
+					}
+					model.addObject("selectedJobFairsString", selectedJobFairsString);
+				}
+			}
 
 			if (requirement != null && requirement.getOrgLocationId().getId().equals(orgLocations.getId())) {
 
@@ -244,7 +319,12 @@ public class RequirementController {
 			model.addObject("requirement",requirement);
 			model.addObject("requirementId",requirement.getId());
 			if(null != requirement.getClientId()){
-				List<OrgSpoc> clientContactList  = orgSpocService.getAllSpocsByOrgRelationId(requirement.getClientId().getId(), loginUser.getId(),orgLocations.getId(),"Client");
+				long managerUserId = 0;
+				if (requirement.getPrimaryRecruiterUserId() != null && requirement.getPrimaryRecruiterUserId().getId() == loginUser.getId())
+					managerUserId = requirement.getManagerUserId().getId();
+				else
+					managerUserId = loginUser.getId();
+				List<OrgSpoc> clientContactList  = orgSpocService.getAllSpocsByOrgRelationId(requirement.getClientId().getId(), managerUserId, orgLocations.getId(),"Client");
 				/*commented by Prasad salina, here no need to iterate list, because in service impl we already itarated the list.
 				 * if(null != clientContactList){
 					for(OrgSpoc orgSpoc : clientContactList){
@@ -554,194 +634,307 @@ public class RequirementController {
 				}
 		   }
 		model.addObject("usersListForAssignTeam", usersListForAssignTeam);*/
-		
-
 		return model;
 
+	}
+	
+	@PreAuthorize("hasAnyRole('ROLE_CREATE_REQUIREMENT', 'ROLE_VIEW_REQUIREMENT', 'ROLE_VIEW_EDIT_REQUIREMENT')")
+	@RequestMapping(value = { "/addJobFair", "/editJobFair" })
+	public ModelAndView jobFair(HttpServletRequest request, @RequestParam(defaultValue = "") String uuid) {
+		ModelAndView modelAndView = new ModelAndView();
+		try {
+			User loginUser = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+			if (loginUser != null) {
+				modelAndView.addObject("sourceleadUrl", sourceleadUrl);
+				JobFairDTO jobFairDTO = new JobFairDTO();
+				jobFairDTO.setPostedFrom("week");
+				String requirementString = "";
+				if (!uuid.isEmpty()) {
+					jobFairDTO = requirementService.getJobFairByUUID(uuid);
+					modelAndView.addObject("jobFair", jobFairDTO);
+
+					for (JobFairRequirementsDTO jobFairRequirementsDTO : jobFairDTO.getJobFairRequirementList()) {
+						String req = jobFairRequirementsDTO.getRequirementId() + ":" + jobFairRequirementsDTO.getRequirementTitle();
+						if (!requirementString.contains(req)) {
+							requirementString += (requirementString.isEmpty() ? "" : ",") + req;
+						}
+					}
+				}
+				
+				OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+
+//				String reqString = dashboardRestController
+//						.getAssignedRequirementListByOrgLocationIdAndUserIdAndPostedDate(jobFairDTO.getPostedFrom(), request);
+				List<Requirement> requirementList = requirementService.getRequirementListByPostedDateAndSelectedClients(orgLocations.getId(), loginUser.getId(), "week", "");
+				String reqString = commonUtil.toJSON(requirementList);
+				if (reqString != null) {
+					JSONArray jsonArray = new JSONArray(reqString);
+					for (int i = 0; i < jsonArray.length(); i++) {
+						JSONObject jsonObject = jsonArray.getJSONObject(i);
+						String req = jsonObject.getString("id") + ":" + jsonObject.getString("jobTitle");
+						if (!requirementString.contains(req)) {
+							requirementString += (requirementString.isEmpty() ? "" : ",") + (req);
+						}
+					}
+				}
+				/*System.out.println("Requirement String : " + requirementString);*/
+				modelAndView.addObject("requirementString", requirementString);
+				
+				Collection<OrgRelations> orgClientList =orgRelationsService.getAllClientsByOrgLocationId(orgLocations.getId()); 
+				for(OrgRelations ocl :orgClientList){
+					ocl.setOrgName(ocl.getResponderLocationId().getOrgLocationName());
+					ocl.setOrgid(ocl.getResponderLocationId().getOrg().getId());
+				 }
+				modelAndView.addObject("add_clientList", orgClientList);
+				modelAndView.addObject("loginOrgLocId", orgLocations.getId());
+			} else {
+				modelAndView.setViewName("login");
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		modelAndView.setViewName("requirement/addJobFair");
+		return modelAndView;
+	}
+	
+	@PreAuthorize("hasAnyRole('ROLE_CREATE_REQUIREMENT', 'ROLE_VIEW_REQUIREMENT', 'ROLE_VIEW_EDIT_REQUIREMENT')")
+	@RequestMapping(value = "/jobFairSummary")
+	public ModelAndView jobFairSummary(HttpServletRequest request, @RequestParam(defaultValue = "") String uuid) {
+		ModelAndView modelAndView = new ModelAndView();
+		try {
+			User loginUser = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+			if (loginUser != null) {
+				modelAndView.addObject("sourceleadUrl", sourceleadUrl);
+				modelAndView.addObject("jobFair", requirementService.getJobFairByUUID(uuid));
+			} else {
+				modelAndView.setViewName("login");
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		modelAndView.setViewName("requirement/jobFairSummary");
+		return modelAndView;
 	}
 	
 	@PreAuthorize("hasAnyRole('ROLE_VIEW_REQUIREMENT','ROLE_VIEW_EDIT_REQUIREMENT')")
 	@RequestMapping(value = "/requirementSummary")
 	public ModelAndView requirementSummary(HttpServletRequest request,@RequestParam(value="requirementUUID", required=false)String requirementUUID,
 			@RequestParam(value="type", required=false) String type,@RequestParam(value="candidateUUID", required=false) String candidateUUID,
-			@RequestParam(value="submissionId", required=false) String submissionId) throws Exception {
+			@RequestParam(value="submissionId", required=false) String submissionId,@RequestParam(value="candidateKeyword", required=false)String candidateKeyword,@RequestParam(value="submissionStatus", required=false)String submissionStatus) throws Exception {
 
 		OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
-		Org loginOrg= (Org) SourceLeadSessionManager.getSessionAttribute(request, "org");
 		User loginUser = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
 		Boolean isAdmin = (Boolean) SourceLeadSessionManager.getSessionAttribute(request,"isAdmin");
 		ModelAndView model = new ModelAndView();
-		
 		SessionMaintainanceData sessionData = (SessionMaintainanceData)request.getSession().getAttribute("sessionData");
 		if(sessionData == null)
 		{
 			sessionData = new SessionMaintainanceData();
 		}
 		sessionData.setNav(Constants.Requirement);
-		
-		
-		
-		Timezone timezone = timeZoneService.getTimezone(orgLocations.getTimezone().getId());
-		Requirement requirement = requirementService.getRequirementByRequirementUUID(requirementUUID);
-		
-		//Projects project = projectsService.getProjectById(requirement.getProjectID().getId());
-		if(requirement.getProjectClientID() !=null && requirement.getProjectClientID().getProjectId() !=null && requirement.getProjectClientID().getProjectId().getProjectName() != null){
-		requirement.setProjectName(requirement.getProjectClientID().getProjectId().getProjectName());
-		}
-		/*Set<RequirementAssignTo> requirementAssignToList = requirement.getRequirementAssignTo();
-		for (RequirementAssignTo assing : requirementAssignToList) {
-			RequirementAssignTo ra = new RequirementAssignTo();
-			StringBuilder assignUserSB = new StringBuilder();
-			if (assing.getAssignUserId().getLastName() != null) {
-				ra.setAssignedUserName(assignUserSB.append(assing.getAssignUserId().getFirstName()).append(" ").append(assing.getAssignUserId().getLastName()).toString());
-			}
-			else {
-				ra.setAssignedUserName(assignUserSB.append(assing.getAssignUserId().getFirstName()).toString());
-			}
-			requirementAssignToList.add(ra);
-		}*/
-		if(requirement.getCreatedDate()!=null){
-			requirement.setRequirementCreatedDateToString(commonUtil.dateStrFromOrgDateFormatter(orgLocations.getDateFormat(),requirement.getCreatedDate()));
-		}
-		if (null != requirement.getClosedDate()) {
-			requirement.setClosedDateStringFormat(commonUtil.dateStrFromOrgDateFormatter(orgLocations.getDateFormat(),requirement.getClosedDate()));
-		}
-		if (requirement.getSpocId() != null) {
-			if (requirement.getClientId() != null) {
-				if (requirement.getClientId().getInitiatorType().equalsIgnoreCase("Client")) {
-					requirement.setClientName(requirement.getClientId().getLocationId().getOrgLocationName());
-					requirement.setOrgRelationUUID(requirement.getClientId().getUUID());
-				}
-				if (requirement.getClientId().getInitiatorType().equalsIgnoreCase("Vendor")) {
-					requirement.setClientName(requirement.getClientId().getResponderLocationId().getOrgLocationName());
-				}
-			}
-			if (requirement.getSpocId().getClientUser().getFirstName() != null
-					&& requirement.getSpocId().getClientUser().getFirstName() != ""
-					&& requirement.getSpocId().getClientUser().getLastName() != null
-					&& requirement.getSpocId().getClientUser().getLastName() != "") {
-				StringBuilder spocSB = new StringBuilder();
-				requirement.setSpocName(spocSB.append(requirement.getSpocId().getClientUser().getFirstName()).append(" ").append(requirement.getSpocId().getClientUser().getLastName()).toString());
-			}
-			else {
-				requirement.setSpocName(requirement.getSpocId().getClientUser().getFirstName());
-			}
-			requirement.setSpocEmail(requirement.getSpocId().getClientUser().getEmail());
-			requirement.setSpocMobilePhone(requirement.getSpocId().getClientUser().getMobilePhone());
-			requirement.setSpocUUID(requirement.getSpocId().getUUID());
-		}
-		 Set<RequirementApproverHierarchy> approverList = requirement.getRequirementApprover();
-		 Integer maxLevel =  requirementApproverHierarchyService.getRequirementApproverHierarachyWithHighestLevel(requirement.getId());
-			if(null != maxLevel && maxLevel >1){
-				if(null != approverList && !approverList.isEmpty()){
-					for(RequirementApproverHierarchy reApprover :approverList){
-						if((loginUser.getId().equals(reApprover.getApproverUserId().getId())) && reApprover.getLevel() == 1){
-							 requirement.setRequirementApproverHierarchyStatus(reApprover.getRequirementApproverStatus().toString());
-						}
-						else if((isAdmin || loginUser.getId().equals(reApprover.getApproverUserId().getId())) && reApprover.getLevel() == 2){
-							 requirement.setRequirementApproverHierarchyStatus(reApprover.getRequirementApproverStatus().toString());
-						}
-					}
-				}
-			}else if(null != maxLevel && maxLevel ==1){
-				int i = 0;
-				if(null != approverList && !approverList.isEmpty()){
-					for(RequirementApproverHierarchy reApprover :approverList){
-						if(null != reApprover.getRequirementApproverStatus().toString() && "" != reApprover.getRequirementApproverStatus().toString()){
-							 requirement.setRequirementApproverHierarchyStatus(reApprover.getRequirementApproverStatus().toString());
-						}
-						i++;
-					}
-				}
-			}
-		Boolean isManager = requirementService.checkLoginUserIsRequirementManagerByRequirementIdAndUserId(requirement.getId(), loginUser.getId());
-		Boolean isLoginUserAsApprover = false;
-		RequirementApproverHierarchy requirementApproverHierarchy = null;
-		if(isAdmin || isManager){
-			requirementApproverHierarchy = requirementApproverHierarchyService.getApproverHierarchyByRequirementId(requirement.getId());
-		}else{
-			requirementApproverHierarchy = requirementApproverHierarchyService.getRequirementApproverHierarchyByRequirementId(requirement.getId(), loginUser.getId());
-		}
-		if (requirementApproverHierarchy != null) {
-			isLoginUserAsApprover = true;
-			requirement.setRejectReasonForRequirement(requirementApproverHierarchy.getRejectedReason());
-		}
-		requirement.setIsLoginUserAsApprover(isLoginUserAsApprover.toString());
-		
-		if (requirement.getCreatedBy().getId().equals(loginUser.getId())) {
-			requirement.setIsLoginUserAsInitiator("true");
+		//Timezone timezone = timeZoneService.getTimezone(orgLocations.getTimezone().getId());
+		Requirement requirement = null;
+		if(isAdmin){
+			requirement = requirementService.getRequirementByRequirementUUID(requirementUUID);
 		}else {
-			requirement.setIsLoginUserAsInitiator("false");
-		}
-
-		
-		if(requirement.getClientId() != null){
-		requirement.setOrgRelationUUID(requirement.getClientId().getUUID());
+			requirement = requirementService.getRequirementByAccessibleUserIdAndRequirementUUID(loginUser.getId(), requirementUUID);
 		}
 		
-
-		Integer requirementAssignToListCount = requirementAssignToService.getRequirementAssignToListCountByRequirementId(requirement.getId());
-		model.addObject("requirementAssignToListCount",requirementAssignToListCount);
-		
-		if(null != requirement && requirement.getOrgLocationId().getId().equals(orgLocations.getId())){
-			Long requirementId = requirement.getId();
-			
-			model.setViewName("requirement/requirementSummary");
-			model.addObject("requirementId",requirementId);
-			
-			model.addObject("requirement",requirement);
-			
-			model.addObject("timezone",timezone.getTimeZoneId());
-			
-			Boolean isTeamMember = requirementAssignToService.checkLoginUserIsRequirementAssignedToByRequirementIdAndUserId(requirementId, loginUser.getId());
-			model.addObject("isTeamMember",isTeamMember);
-			
-			model.addObject("isManager",isManager);
-			
-			model.addObject("isAdmin",isAdmin);
-	
-			model.addObject("sourceleadUrl", sourceleadUrl);
-			
-			List<LookUpData> skillsList = lookUpDataService.getLookUpDataByCategory(Constants.SKILLS);
-			model.addObject("skillsList", skillsList);
-			
-			List<LookUpData> educationsList = lookUpDataService.getLookUpDataByCategory(Constants.EDUCATIONS);
-			model.addObject("educationsList", educationsList);
-			
-			List<LookUpData> documentsList = lookUpDataService.getLookUpDataByCategory(Constants.DOCUMENT_TYPE);
-			model.addObject("documentsList", documentsList);
-	
-			// This code is commented as not in use 
-	
-			//to get time zone list
-			/*Countries countries = countriesService.getCountriesByCountryName(orgLocations.getCountry());
-			if(countries != null){
-				String[] timezonesList = com.ibm.icu.util.TimeZone.getAvailableIDs(countries.getCode2());
-				model.addObject("timezonesList", timezonesList);
-			}*/
-			
-			if(null != requirement.getIsClientJob() && requirement.getIsClientJob().equalsIgnoreCase("Y")){
-				model.addObject("clientSubmissions","Y");
-			}else{
-				model.addObject("clientSubmissions","N");
+		if(null != requirement) {
+			if(requirement.getProjectClientID() !=null && requirement.getProjectClientID().getProjectId() !=null && requirement.getProjectClientID().getProjectId().getProjectName() != null){
+			requirement.setProjectName(requirement.getProjectClientID().getProjectId().getProjectName());
 			}
-			
-			Requirement parentRequirement = requirementService.getRequirementByParentRequirementId(requirementId);
-	        if(null != parentRequirement){
-	            model.addObject("parentRequirement","Y");
-	        }else{
-	            model.addObject("parentRequirement","N");
-	        }
-	        
-	        if(null != requirement.getSpocId() && null != requirement.getSpocId().getId()){
-				OrgSpoc orgSpoc = orgSpocService.getOrgSpocById(requirement.getSpocId().getId());
-				if(null != orgSpoc && null != orgSpoc.getSpocStatus() && "In-Active".equalsIgnoreCase(orgSpoc.getSpocStatus())){
-					model.addObject("isSpocActive", Constants.NO);
-				}else{
-					model.addObject("isSpocActive", Constants.YES);
+			if(requirement.getCreatedDate()!=null){
+				requirement.setRequirementCreatedDateToString(commonUtil.dateStrFromOrgDateFormatter(orgLocations.getDateFormat(),requirement.getCreatedDate()));
+			}
+			if (null != requirement.getClosedDate()) {
+				requirement.setClosedDateStringFormat(commonUtil.dateStrFromOrgDateFormatter(orgLocations.getDateFormat(),requirement.getClosedDate()));
+			}
+			if (requirement.getSpocId() != null) {
+				if (requirement.getClientId() != null) {
+					if (requirement.getClientId().getInitiatorType().equalsIgnoreCase("Client")) {
+						requirement.setClientName(requirement.getClientId().getLocationId().getOrgLocationName());
+						requirement.setOrgRelationUUID(requirement.getClientId().getUUID());
+					}
+					if (requirement.getClientId().getInitiatorType().equalsIgnoreCase("Vendor")) {
+						requirement.setClientName(requirement.getClientId().getResponderLocationId().getOrgLocationName());
+					}
 				}
+				if (requirement.getSpocId().getClientUser().getFirstName() != null
+						&& requirement.getSpocId().getClientUser().getFirstName() != ""
+						&& requirement.getSpocId().getClientUser().getLastName() != null
+						&& requirement.getSpocId().getClientUser().getLastName() != "") {
+					StringBuilder spocSB = new StringBuilder();
+					requirement.setSpocName(spocSB.append(requirement.getSpocId().getClientUser().getFirstName()).append(" ").append(requirement.getSpocId().getClientUser().getLastName()).toString());
+				}
+				else {
+					requirement.setSpocName(requirement.getSpocId().getClientUser().getFirstName());
+				}
+				requirement.setSpocEmail(requirement.getSpocId().getClientUser().getEmail());
+				requirement.setSpocMobilePhone(requirement.getSpocId().getClientUser().getMobilePhone());
+				requirement.setSpocUUID(requirement.getSpocId().getUUID());
+			}
+			 Set<RequirementApproverHierarchy> approverList = requirement.getRequirementApprover();
+			 Integer maxLevel =  requirementApproverHierarchyService.getRequirementApproverHierarachyWithHighestLevel(requirement.getId());
+				if(null != maxLevel && maxLevel >1){
+					if(null != approverList && !approverList.isEmpty()){
+						for(RequirementApproverHierarchy reApprover :approverList){
+							if((loginUser.getId().equals(reApprover.getApproverUserId().getId())) && reApprover.getLevel() == 1){
+								 requirement.setRequirementApproverHierarchyStatus(reApprover.getRequirementApproverStatus().toString());
+							}
+							else if((isAdmin || loginUser.getId().equals(reApprover.getApproverUserId().getId())) && reApprover.getLevel() == 2){
+								 requirement.setRequirementApproverHierarchyStatus(reApprover.getRequirementApproverStatus().toString());
+							}
+						}
+					}
+				}else if(null != maxLevel && maxLevel ==1){
+					int i = 0;
+					if(null != approverList && !approverList.isEmpty()){
+						for(RequirementApproverHierarchy reApprover :approverList){
+							if(null != reApprover.getRequirementApproverStatus().toString() && "" != reApprover.getRequirementApproverStatus().toString()){
+								 requirement.setRequirementApproverHierarchyStatus(reApprover.getRequirementApproverStatus().toString());
+							}
+							i++;
+						}
+					}
+				}
+			Boolean isManager = false;
+			if(requirement.getManagerUserId()!= null && requirement.getManagerUserId().getId().equals(loginUser.getId())) {
+				isManager = true;
+				//requirementService.checkLoginUserIsRequirementManagerByRequirementIdAndUserId(requirement.getId(), loginUser.getId());
+			}
+			Boolean isLoginUserAsApprover = false;
+			RequirementApproverHierarchy requirementApproverHierarchy = null;
+			if(isAdmin || isManager){
+				requirementApproverHierarchy = requirementApproverHierarchyService.getRejectedApproverHierarchyByRequirementId(requirement.getId());
+			}else{
+				requirementApproverHierarchy = requirementApproverHierarchyService.getRequirementApproverHierarchyByRequirementId(requirement.getId(), loginUser.getId());
+			}
+			if (requirementApproverHierarchy != null) {
+				isLoginUserAsApprover = true;
+				requirement.setRejectReasonForRequirement(requirementApproverHierarchy.getRejectedReason());
+			}
+			requirement.setIsLoginUserAsApprover(isLoginUserAsApprover.toString());
+			
+			if (requirement.getCreatedBy().getId().equals(loginUser.getId())
+					|| (requirement.getPrimaryRecruiterUserId() != null && requirement.getPrimaryRecruiterUserId().getId().equals(loginUser.getId()))) {
+				requirement.setIsLoginUserAsInitiator("true");
+			} else {
+				requirement.setIsLoginUserAsInitiator("false");
+			}
+	
+			
+			if(requirement.getClientId() != null){
+			requirement.setOrgRelationUUID(requirement.getClientId().getUUID());
 			}
 			
+	
+			Integer requirementAssignToListCount = requirementAssignToService.getRequirementAssignToListCountByRequirementId(requirement.getId());
+			model.addObject("requirementAssignToListCount",requirementAssignToListCount);
+			
+			Boolean isPrimaryRecruiter = false;
+			if(requirement.getPrimaryRecruiterUserId() != null && requirement.getPrimaryRecruiterUserId().getId() == loginUser.getId()) {
+				isPrimaryRecruiter = true;
+				model.addObject("isPrimaryRecruiter",isPrimaryRecruiter);
+			}
+			
+			if(null != requirement && requirement.getOrgLocationId().getId().equals(orgLocations.getId())){
+				Long requirementId = requirement.getId();
+				
+				model.setViewName("requirement/requirementSummary");
+				model.addObject("requirementId",requirementId);
+				
+				model.addObject("requirement",requirement);
+				
+				List<Countries> allCountryList = countriesService.getAllCountries();
+				model.addObject("allCountryList", allCountryList);
+				
+				List<RequirementLocations> locationsList = requirementLocationsService.getRequirementLocationsListByRequirementId(requirement.getId());
+				model.addObject("locationsList",locationsList);
+				
+				model.addObject("timezone",orgLocations.getTimezone().getTimeZoneId());
+				
+				Boolean isTeamMember = requirementAssignToService.checkLoginUserIsRequirementAssignedToByRequirementIdAndUserId(requirementId, loginUser.getId());
+				model.addObject("isTeamMember",isTeamMember);
+				
+				model.addObject("isManager",isManager);
+				
+				model.addObject("isAdmin",isAdmin);
+		
+				model.addObject("sourceleadUrl", sourceleadUrl);
+				
+				List<LookUpData> skillsList = lookUpDataService.getLookUpDataByCategory(Constants.SKILLS);
+				model.addObject("skillsList", skillsList);
+				
+				List<LookUpData> educationsList = lookUpDataService.getLookUpDataByCategory(Constants.EDUCATIONS);
+				model.addObject("educationsList", educationsList);
+				
+				List<LookUpData> documentsList = lookUpDataService.getLookUpDataByCategory(Constants.DOCUMENT_TYPE);
+				model.addObject("documentsList", documentsList);
+		
+				// This code is commented as not in use 
+		
+				//to get time zone list
+				/*Countries countries = countriesService.getCountriesByCountryName(orgLocations.getCountry());
+				if(countries != null){
+					String[] timezonesList = com.ibm.icu.util.TimeZone.getAvailableIDs(countries.getCode2());
+					model.addObject("timezonesList", timezonesList);
+				}*/
+				
+				if(null != requirement.getIsClientJob() && requirement.getIsClientJob().equalsIgnoreCase("Y")){
+					model.addObject("clientSubmissions","Y");
+				}else{
+					model.addObject("clientSubmissions","N");
+				}
+				
+				Requirement parentRequirement = requirementService.getRequirementByParentRequirementId(requirementId);
+		        if(null != parentRequirement){
+		            model.addObject("parentRequirement","Y");
+		        }else{
+		            model.addObject("parentRequirement","N");
+		        }
+		        
+		        if(null != requirement.getSpocId() && null != requirement.getSpocId().getId()){
+					OrgSpoc orgSpoc = orgSpocService.getOrgSpocById(requirement.getSpocId().getId());
+					if(null != orgSpoc && null != orgSpoc.getSpocStatus() && "In-Active".equalsIgnoreCase(orgSpoc.getSpocStatus())){
+						model.addObject("isSpocActive", Constants.NO);
+					}else{
+						model.addObject("isSpocActive", Constants.YES);
+					}
+				}
+				
+				String msg = (String) SourceLeadSessionManager.getSessionAttribute(request, "reqsummaryMsg");
+				if(!isNullOrEmpty(msg)){
+					model.addObject("msg", msg);
+					SourceLeadSessionManager.removeSessionAttribute(request, "reqsummaryMsg");
+				}
+				model.addObject("requirementUUID",requirementUUID);
+				if(!isNullOrEmpty(type)){
+					model.addObject("type",type);
+				}
+				
+				if(!isNullOrEmpty(candidateUUID)){
+					Candidate canidate = candidateService.getCandidateByUUID(candidateUUID);
+					model.addObject("candidateId", canidate.getId());
+				}
+				
+				if(!isNullOrEmpty(submissionId)){
+					model.addObject("submissionId", submissionId);
+				}
+				if(submissionId != null && StringUtils.isNotEmpty(submissionId)){
+				 RequirementSubmission requirementSubmission = requirementSubmissionService.getRequirementSubmissionById(Long.parseLong(submissionId));
+				 String subStatus  = requirementSubmission.getSubmissionStatus().toString();
+				 model.addObject("subStatus", subStatus);
+				}
+				if(!isNullOrEmpty(submissionStatus)){
+					model.addObject("submissionStatus", submissionStatus);
+				}
+				
+			    
+			    List<OrgRelationDTO> orgVendorsList = orgRelationsService.getAllVendorsListOrgLocationId(orgLocations.getId());
+			    model.addObject("add_VendorList", orgVendorsList);
+				
+			}
 			String msg = (String) SourceLeadSessionManager.getSessionAttribute(request, "reqsummaryMsg");
 			if(!isNullOrEmpty(msg)){
 				model.addObject("msg", msg);
@@ -760,7 +953,20 @@ public class RequirementController {
 			if(!isNullOrEmpty(submissionId)){
 				model.addObject("submissionId", submissionId);
 			}
-			
+			if(!isNullOrEmpty(candidateKeyword)){
+				model.addObject("candidateKeyword", candidateKeyword);
+			}
+			 SourceleadActions action = sourceleadActionsService.getSourceleadActionsByActionRole(Constants.ROLE_CREATE_REQUIREMENT);
+		     model.addObject("actionId",action.getId());
+		     
+		    List<SourceleadSectionDTO> sections  = sourceleadFormSectionsService.getSourceleadFormSectionsByActionId(action.getId(),orgLocations.getId());
+		    model.addObject("sourceleadSectionList",sections);
+		   
+		    requirement.setJobFairList(requirementService.getJobFairsListByRequirementId(requirement.getId()));
+		    
+		    List<RequirementIncentive> requirementIncentiveList = requirementService.getRequirementIncentiveListByRequirementId(requirement.getId());
+			model.addObject("requirementIncentiveList", requirementIncentiveList);
+			model.addObject("requirementIncentiveListSize", requirementIncentiveList.size());
 		}else{
 			model.setViewName("registration/persmissionDenied");
 		}
@@ -1310,6 +1516,100 @@ public void viewOffersListAttachment(@RequestParam(value="offerId", required=fal
 
 } 
 
+
+
+@RequestMapping(value = "/getRequirementSubmissionTemplateForBulkImprtApplicants")
+public ModelAndView getRequirementSubmissionTemplateForBulkImprtApplicants(@RequestParam(value="requirementId", required=false) Long requirementId,
+		HttpServletRequest request) throws Exception{
+	ModelAndView model = new ModelAndView();
+	 model.addObject("sourceleadUrl", sourceleadUrl);
+	 model.addObject("requirementId", requirementId);
+	 model.setViewName("requirement/importApplicantsForSubmission");
+	 model.addObject("sourceleadUrl", sourceleadUrl);
+	return model;
+}
+
+
+@RequestMapping(value = "/downloadRequirenetSubmissionTemplateByRequirementId/{requirementId}", method = RequestMethod.GET)
+public void downloadRequirenetSubmissionTemplateByRequirementId(HttpServletRequest request,HttpServletResponse response,@PathVariable(value="requirementId") Long requirementId) throws IOException, URISyntaxException{
+	
+	try {
+		Requirement requirement = requirementService.getRequirementDetailsById(requirementId);
+		String jsonString = null;
+		if(StringUtils.isNotBlank(requirement.getClientSubmissionTemplateJsonString())) {
+			jsonString = requirement.getClientSubmissionTemplateJsonString();
+		}else {
+			jsonString = requirement.getSubmissionTemplateJsonString();
+		}
+		 JSONArray jsonarray = new JSONArray(jsonString);
+		 HSSFWorkbook createExcelworkbook = new HSSFWorkbook();
+		 DateFormat dateFormat = new SimpleDateFormat("MM-dd-yyyy");
+		 HSSFSheet createExcelsheet = createExcelworkbook.createSheet(requirement.getJobTitle() + "_" + dateFormat.format(new Date()));
+		 HSSFRow writeRow = null;
+			createExcelsheet = (HSSFSheet) createXlsSheet(createExcelworkbook,createExcelsheet, writeRow,jsonarray);
+			File file = File.createTempFile(requirement.getJobTitle() + "_Submissions_" + dateFormat.format(new Date()), ".xls");
+			file.setReadable(true);
+			FileOutputStream fos = new FileOutputStream(file);
+			try {
+				createExcelworkbook.write(fos);
+				fos.close();
+				createExcelworkbook.close();
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+			String mimeType = URLConnection.guessContentTypeFromName(file.getName());
+			if (mimeType == null) {
+				mimeType = "application/octet-stream";
+			}
+			response.setContentType(mimeType);
+			StringBuilder fileName = new StringBuilder();
+			response.setHeader("Content-Disposition", fileName.append("attachment; filename=\"").append(file.getName()).append("\"").toString());
+			response.setContentLength((int) file.length());
+			InputStream inputStream = new BufferedInputStream(new FileInputStream(file));
+			FileCopyUtils.copy(inputStream, response.getOutputStream());
+			inputStream.close();
+			response.getOutputStream().close();
+			response.getOutputStream().flush();
+			
+		
+	} catch (Exception e) {
+		e.printStackTrace();
+	}
+	
+}
+
+private Sheet createXlsSheet(HSSFWorkbook createExcelworkbook,HSSFSheet createExcelsheet, HSSFRow writeRow, JSONArray jsonarray) throws JSONException {
+	 writeRow = createExcelsheet.createRow(0);
+	 HSSFSheet hidden = null;
+	 for(int i=0; i<jsonarray.length(); i++){
+	        JSONObject obj = jsonarray.getJSONObject(i);
+	        writeRow.createCell(i).setCellValue(obj.getString("label"));
+	     if(obj.has("choices")) {
+	    	 hidden = createExcelworkbook.createSheet("hidden"+i);
+	        	 String choices = obj.getString("choices");
+	        	 JSONArray choiceJsonArray = new JSONArray(choices);
+	        	 String[] choicesArray =  new String [choiceJsonArray.length()];
+	        	 for(int j=0; j<choiceJsonArray.length(); j++){
+	        		  JSONObject chioceObj = choiceJsonArray.getJSONObject(j);
+	        		  String label = chioceObj.getString("label");
+	        		  choicesArray[j] = label;
+		     		  HSSFRow row = hidden.createRow(j);
+		 			  HSSFCell cell = row.createCell(0);
+		 			  cell.setCellValue(choicesArray[j]);
+	        	  }
+	        	
+	        	 Name namedCell = createExcelworkbook.createName();
+	        	 namedCell.setNameName("hidden"+i);
+	        	 namedCell.setRefersToFormula("hidden"+i+"!$A$1:$A$" + choicesArray.length);
+	 			 DVConstraint constraint = DVConstraint.createFormulaListConstraint("hidden"+i);
+	 			 CellRangeAddressList choicesList = new CellRangeAddressList(1, 500, i, i);
+	 			 HSSFDataValidation validation = new HSSFDataValidation(choicesList, constraint);
+	 			 createExcelsheet.addValidationData(validation);
+	        }
+	    }
+	
+	return createExcelsheet;
+}
 
 	
 }

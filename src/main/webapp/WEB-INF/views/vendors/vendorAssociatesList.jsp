@@ -109,9 +109,10 @@ function vendorAssociatesList(orgRelationId){
 			                    result = result +"<td><div class='tbldata-dotdot-100'><span title='"+opt.city+', '+opt.state+', '+opt.country+"'>"+opt.city+', '+opt.state+', '+opt.country+"</span></div></td>";
 			                }else if(opt.state!=null && opt.state !='' && opt.state !='undefined'){
 			                    result = result +"<td><div class='tbldata-dotdot-100'><span title='"+opt.state+', '+opt.country+"'>"+opt.state+', '+opt.country+"</span></div></td>";
-
-			                }else{
+			                }else if(opt.country != null && opt.country !='' && opt.country !='undefined'){
 			                    result = result +"<td><div><span title='"+opt.country+"'>"+opt.country+"</span></div></td>";
+			                }else{
+			                	result = result +"<td><div><span>--</span></div></td>";
 			                }
 			               	
 			               	if(opt.primarySkill != null && opt.primarySkill != '' && opt.primarySkill !='undefined'){

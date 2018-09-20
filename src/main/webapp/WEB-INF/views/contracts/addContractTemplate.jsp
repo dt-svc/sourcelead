@@ -3,10 +3,10 @@
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
 <%@taglib uri="http://www.springframework.org/tags/form" prefix="form"%>
 
-<link href="/resources/css/register-style.css?staticTime=${staticTime}"
+<%-- <link href="/resources/css/register-style.css?staticTime=${staticTime}"
 	rel="stylesheet">
 <link href="/resources/css/register-style.css?staticTime=${staticTime}"
-	rel="stylesheet">
+	rel="stylesheet"> --%>
 <script src="/resources/js/summernote.js?staticTime=${staticTime}"></script>
 <link href="/resources/css/summernote.css?staticTime=${staticTime}"
 	rel="stylesheet" />
@@ -42,7 +42,7 @@
 								<input type="text" id="templateName" name="templateName"
 									value="${contractsTemplate.templateName}"
 									field-name="Template Name"
-									data-validation="required validate_Space"
+									data-validation="required validate_Space validate_length length2-200"
 									onblur="validateContractTemplateName();" type="text"
 									class="form-control">
 							</div>

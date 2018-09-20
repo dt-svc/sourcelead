@@ -26,6 +26,8 @@
     <link href="/resources/css/register-style.css?staticTime=${staticTime}" rel="stylesheet">
      <link href="/resources/css/jquery-ui.css?staticTime=${staticTime}" rel="stylesheet">
      
+     
+     
 </head>
 
 <body>
@@ -49,16 +51,29 @@
                 <b></b>
             </span>
             <div class="clearfix"></div>
-            <span>
+            <div class="col-xs-12 col-md-12 mb10 posiRela">
+             <span class="positionRelative">
             	<label>Password</label>
-                <input type="Password" class="signin_fild" name="password" field-name="Password" data-validation="required validate_length length6-100" value="${password}" id="password" onkeydown="$(this).clear();" />
+                <input type="password" class="signin_fild" name="password" field-name="Password" pattern="^(?=.*[a-z])(?=.*[A-Z])(?=.*\d.*)(?=.*\W.*)[a-zA-Z0-9\S]{8,}$" data-validation="required validate_length length6-100" title="Must contain at least one number and one uppercase and lowercase letter, and at least 8 or more characters" value="${password}" id="password" onkeydown="$(this).clear();" onkeyup="passwordValidation('password','fp_letter','fp_capital','fp_number','fp_special','fp_length');" />
                 <b></b>
-            </span>
+                <i class="fa fa-eye showPassword" onclick="showPassword();"></i>
+            </span>  
+            
+            			<div id="fp_message" class="passHint" style="left:-310px; box-shadow: 1px 1px 1px 2px #ddd; top:-10px;">
+				  			<p  id="fp_letter" class="invalid">At least one lowercase letter</p>
+				  			<p  id="fp_capital" class="invalid">At least one uppercase letter</p>
+				  			<p  id="fp_number" class="invalid">At least one number</p>
+				  			<p  id="fp_special" class="invalid">At least one special character</p>
+				  			<p  id="fp_length" class="invalid">Minimum 8 characters required</p>
+						</div> 
+            </div>
+           
             <div class="clearfix"></div>
-            <span>
+            <span class="positionRelative">
             	<label>Confirm Password</label>
-                <input type="Password" class="signin_fild" value="" data-validation="required" field-name="Confirm Password" id="confirmPassword" onblur="$(this).checkPass();" />
+                <input type="password" class="signin_fild" value="" data-validation="required" field-name="Confirm Password" id="confirmPassword" onblur="$(this).checkPass();" />
                 <b></b>
+                  <i class="fa fa-eye showPassword" onclick="showConfirmPassword();"></i>
             </span>
             <div class="clearfix"></div>
             </div>
@@ -78,6 +93,31 @@
     
     
 </body>
+
+<script>
+function showPassword(){
+	var passwordInput = document.getElementById('password');
+	if(passwordInput.type === "password"){
+		passwordInput.type = "text"
+	}else{
+		passwordInput.type = "password"
+	}
+	
+	
+}
+</script>
+
+<script>
+function showConfirmPassword(){
+	var confPasswordInput = document.getElementById('confirmPassword');
+	if(confPasswordInput.type === "password"){
+		confPasswordInput.type = "text"
+	}else{
+		confPasswordInput.type = "password"
+	}
+	
+}
+</script>
 
 <script>
 $(function () {
@@ -115,7 +155,7 @@ function applyInputSlide() {
 	    else{ 
 		        $('#passwordDiv').find('span.jquery_form_error_message').remove();
 		        document.getElementById("confirmPassword").setAttribute('class','error signin_fild');
-		        $("input#confirmPassword").after("<span class='jquery_form_error_message'> <font color='red'>Passwords Not Matched</font></span>");
+		        $("input#confirmPassword").after("<span class='jquery_form_error_message'> <font color='red'>Those passwords didn't matched.Try again.</font></span>");
 				document.getElementById("confirmPassword").setAttribute('pass-exist','yes');
 				document.getElementById("confirmPassword").setAttribute('pass-exist-errorMsg', ' Passwords Not Matched'); 
 				$("input#confirmPassword").removeAttr("style");
@@ -227,6 +267,62 @@ var validationSettings = {
        return o;
    };
 })(jQuery);
+</script>
+
+<script>
+$(document).ready(function(){
+	$(".posiRela input").focus(function(){
+		$(".passHint").show();
+	});
+	$(".posiRela input").blur(function(){
+		$(".passHint").hide();
+	});	
+});
+</script>
+
+<script>
+function passwordValidation(idValue,fp_letter,fp_capital,fp_number,fp_special,fp_length){
+	var myInput = $("#"+idValue).val();
+	 
+	if(myInput.match(/[a-z]/g)){
+		$("#"+fp_letter).removeClass("invalid");
+		$("#"+fp_letter).addClass("actTe");
+	}else{
+		$("#"+fp_letter).removeClass("actTe");
+		$("#"+fp_letter).addClass("invalid");
+	} 
+	if(myInput.match(/[A-Z]/g)){
+		$("#"+fp_capital).removeClass("invalid");
+		$("#"+fp_capital).addClass("actTe");
+	}else{
+		$("#"+fp_capital).removeClass("actTe");
+		$("#"+fp_capital).addClass("invalid");
+	}
+	if(myInput.match(/[0-9]/g)){
+		$("#"+fp_number).removeClass("invalid");
+		$("#"+fp_number).addClass("actTe");
+	}else{
+		$("#"+fp_number).removeClass("actTe");
+		$("#"+fp_number).addClass("invalid");
+	}
+	if(myInput.match(/[$&+,:;=?@#|'<>.^*()%!-]/g)){
+		$("#"+fp_special).removeClass("invalid");
+		$("#"+fp_special).addClass("actTe");
+	}else{
+		$("#"+fp_special).removeClass("actTe");
+		$("#"+fp_special).addClass("invalid");
+	}
+	if(myInput.length >= 8){
+		$("#"+fp_length).removeClass("invalid");
+		$("#"+fp_length).addClass("actTe");
+	}else{
+		$("#"+fp_length).removeClass("actTe");
+		$("#"+fp_length).addClass("invalid");
+	}
+	
+}
+
+
 </script>
 
 <script>

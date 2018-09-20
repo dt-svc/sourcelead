@@ -11,15 +11,14 @@
 <script>
 window.onload = function() {
 	var userName = '${username}';
-	var password = '${password}';
+	var password = '';
 	var sourceleadUrl ='${sourceleadUrl}';
+	var requirementUUID ='${requirementUUID}';
 	userName = userName.trim();
-	$("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
 	$.ajax({
 	      type : "POST",
-	       url: sourceleadUrl+"/ws/userEnrolledOrgLocations?userName="+userName+"&password="+password,        
+	       url: sourceleadUrl+"/ws/userEnrolledOrgLocations?userName="+userName+"&requirementUUID="+requirementUUID,        
 	       success :function(data) {
-	    	   $("#loading").removeAttr('style');
 	    	   $("#enrolledLocDiv").removeAttr("style");
 	    	   $("#enrolledLocDiv").attr("style","display : block");
 	    	   $("#enrolledLocDiv").empty();
@@ -27,7 +26,6 @@ window.onload = function() {
 	    	   $(".signWrap").addClass("orgOutWrap");
 	    	   $(".SignSlide").hide();
 	    	   $(".orgWrap").show();
-// 	    	   $(".signWrap").addClass("orgOutWrap");
 	      },
 	  }); 
 }
@@ -37,8 +35,8 @@ window.onload = function() {
 function getUserDetailsByUserRoleId(id,userName,password){
 	var sourceleadUrl ='${sourceleadUrl}';
 	$.ajax({
-	      type : "GET",
-	       url: sourceleadUrl+"/ws/getUserDetailsByRoleId?id="+id+"&userName="+userName+"&password="+password,        
+	      type : "POST",
+	       url: sourceleadUrl+"/ws/getUserDetailsByRoleId?id="+id+"&userName="+userName,        
 	       success :function(data) {
 	    	   if(data != null){
 	    		   $("#twoStepAuthDiv").removeAttr("style");
@@ -65,7 +63,7 @@ function goToLocations(){
     $("#enrolledLocDiv").attr("style","display : block");
 	$("#twoStepAuthDiv").removeAttr("style");
     $("#twoStepAuthDiv").attr("style","display : none");
-    $("#loading").removeAttr("style");
+//     $("#loading").removeAttr("style");
     $(".signWrap").addClass("orgOutWrap");
     $("div.raBtnActive").children().removeAttr("checked");
  	$(".orgCta").parent().find('div.raBtnActive').removeClass('raBtnActive');

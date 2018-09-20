@@ -19,4 +19,8 @@ public interface ContactsGroupDao {
 	void deleteContactsGroup(ContactsGroup contactsGroup) throws Exception;
 	
 	public ContactsGroup findByContactsGroupAndUserId(String groupName, Long userId) throws Exception;
+	
+    public ContactsGroup validateGrouppNameByGroupNameAndGroupId(String groupName, Long groupId) throws Exception;
+	
+	Boolean validateGroupNameByGroupNameAndUserId(String groupName,Long userId)throws Exception;
 }

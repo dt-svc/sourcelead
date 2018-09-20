@@ -3,26 +3,24 @@
 <section class="staticBan blogBan">
 	<div class="staticBanInn"><h4>SourceLead blogs</h4><div class="clear"></div></div>
 </section>  
-
+          
 <section class="testiWrap">
-
 <section class="blogWrap">
-
 <div class="blogWrapRight">
     
     	<h2>Recent Posts<i class="fa fa-caret-down"></i></h2>
         <div class="resSlide">
     	<div class="blogRight">
-    		<a href="blog1.html"><i class="fa fa-caret-right"></i>Recruiting Through Social Media Platform</a>
-			<a href="blog2.html"><i class="fa fa-caret-right"></i>Loyal Relationships with Recruiters</a>
-        	<a href="blog3.html"><i class="fa fa-caret-right"></i>Existing Process without using any Tool</a>
-            <a href="blog4.html"><i class="fa fa-caret-right"></i>Problems of Existing Recruiting process without Tools.</a>
-            <a href="blog5.html"><i class="fa fa-caret-right"></i>Applicant Tracking System</a>
+    		<a href="/blog1.html"><i class="fa fa-caret-right"></i>Recruiting Through Social Media Platform</a>
+			<a href="/blog2.html"><i class="fa fa-caret-right"></i>Loyal Relationships with Recruiters</a>
+        	<a href="/blog3.html"><i class="fa fa-caret-right"></i>Existing Process without using any Tool</a>
+            <a href="/blog4.html"><i class="fa fa-caret-right"></i>Problems of Existing Recruiting process without Tools.</a>
+            <a href="/blog5.html"><i class="fa fa-caret-right"></i>Applicant Tracking System</a>
         </div>                      
         <div class="blogRightBot">
         	<p>Ready to Learn More?</p>
             <span>Let us help you choose the perfect solution for your firm.</span>
-            <a href="javascript:void(0)" class="requestDemo">Request a Demo</a><a href="javascript:void(0)" class="freeTrail">Free Trial</a>
+            <a href="javascript:void(0)" class="requestDemo">Get a Demo</a>
         </div>
         </div>
     </div>
@@ -31,7 +29,7 @@
     	<div class="blogInn">
         	<h1>Recruiting Through Social Media Platform</h1>
             <h3><i class="fa fa-calendar-check-o"></i>Posted On : <span>15 FEB 2017 at 12:05 AM</span></h3>
-            <div class="blogImg"><img src="/resources/css/static-web/images/bl4.jpg" alt=""/></div>
+            <div class="blogImg"><img src="/resources/static-web/images/bl4.jpg" alt=""/></div>
             <p>We know that many organizations recruiting are a time-honored process and difficult to find out the right talented even more manual efficiency. Due to that organization's recruiting are moving towards Digital Marketing [ Social Media - Linkedin, Facebook, Twitter, Pinterest].One of the major challenges for recruiting firms is attracting the talent resources and making hires through Social Media. It's about engaging with resources and using social media tools to source and recruit talent.
             </p>
             <p>LinkedIn, Facebook, and Twitter has over 600 million combined users. That equals a lot of potential talent for your organization. But how do you find the right talent for the requirement you have available using social media? Here's how to get started.</p>
@@ -65,6 +63,7 @@
 			<b>Twitter</b>
          <p>Resources check company profiles and follow them if they like what they see, and a third of them search job-specific hashtags, apply for tweeted Requirement openings, and communicate with companies over Twitter.To more effectively chat with recruits, many Fortune 500 companies maintain a Twitter account dedicated solely to recruiting. With so many job seekers on the market, 64 percent of those companies tweet one to three times per day about job postings, specific employees, or company events. And the best recruiting accounts follow the same rules they would at a networking event: be social, active, and human.</p>
           </div>
+          
     </div>
     
 <div class="clear"></div>  

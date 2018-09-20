@@ -1,22 +1,35 @@
 package com.bis.sourcelead.reportsDTO;
 
+import java.math.BigInteger;
+
 public class ApplicantDeclineDTO {
 	
 	private String jobName;
+	
+	private String generatedId;
 
-	private int skillsCount;
+	private BigInteger skillsCount;
 	
-	private int unsuitableCount;
+	private BigInteger unsuitableCount;
 	
-	private int badfitCount;
+	private BigInteger badfitCount;
 	
-	private int interviewCount;
+	private BigInteger interviewCount;
 	
-	private int salaryCount;
+	private BigInteger salaryCount;
 	
-	private int otherCount;
+	private BigInteger otherCount;
 	
-	private int totalCount;
+	private BigInteger totalCount;
+	
+	
+	public String getGeneratedId() {
+		return generatedId;
+	}
+
+	public void setGeneratedId(String generatedId) {
+		this.generatedId = generatedId;
+	}
 
 	public String getJobName() {
 		return jobName;
@@ -26,61 +39,62 @@ public class ApplicantDeclineDTO {
 		this.jobName = jobName;
 	}
 
-	public int getSkillsCount() {
+	public BigInteger getSkillsCount() {
 		return skillsCount;
 	}
 
-	public void setSkillsCount(int skillsCount) {
+	public void setSkillsCount(BigInteger skillsCount) {
 		this.skillsCount = skillsCount;
 	}
 
-	public int getUnsuitableCount() {
+	public BigInteger getUnsuitableCount() {
 		return unsuitableCount;
 	}
 
-	public void setUnsuitableCount(int unsuitableCount) {
+	public void setUnsuitableCount(BigInteger unsuitableCount) {
 		this.unsuitableCount = unsuitableCount;
 	}
 
-	public int getBadfitCount() {
+	public BigInteger getBadfitCount() {
 		return badfitCount;
 	}
 
-	public void setBadfitCount(int badfitCount) {
+	public void setBadfitCount(BigInteger badfitCount) {
 		this.badfitCount = badfitCount;
 	}
 
-	public int getInterviewCount() {
+	public BigInteger getInterviewCount() {
 		return interviewCount;
 	}
 
-	public void setInterviewCount(int interviewCount) {
+	public void setInterviewCount(BigInteger interviewCount) {
 		this.interviewCount = interviewCount;
 	}
 
-	public int getSalaryCount() {
+	public BigInteger getSalaryCount() {
 		return salaryCount;
 	}
 
-	public void setSalaryCount(int salaryCount) {
+	public void setSalaryCount(BigInteger salaryCount) {
 		this.salaryCount = salaryCount;
 	}
 
-	public int getOtherCount() {
+	public BigInteger getOtherCount() {
 		return otherCount;
 	}
 
-	public void setOtherCount(int otherCount) {
+	public void setOtherCount(BigInteger otherCount) {
 		this.otherCount = otherCount;
 	}
 
-	public int getTotalCount() {
+	public BigInteger getTotalCount() {
 		return totalCount;
 	}
 
-	public void setTotalCount(int totalCount) {
+	public void setTotalCount(BigInteger totalCount) {
 		this.totalCount = totalCount;
 	}
+
 	
 		
 }

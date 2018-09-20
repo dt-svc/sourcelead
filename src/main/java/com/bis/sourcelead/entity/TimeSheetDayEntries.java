@@ -4,7 +4,6 @@ package com.bis.sourcelead.entity;
 import java.io.Serializable;
 import java.util.Date;
 
-import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
@@ -14,17 +13,16 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
+import javax.persistence.Transient;
 import javax.validation.constraints.NotNull;
 
-import org.hibernate.annotations.Cache;
-import org.hibernate.annotations.CacheConcurrencyStrategy;
-import org.hibernate.annotations.NotFound;
-import org.hibernate.annotations.NotFoundAction;
 import org.springframework.format.annotation.DateTimeFormat;
+
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonProperty;
 
 @Entity
 @Table(name = "TIMESHEET_DAY_ENTRIES")
-@Cache(usage = CacheConcurrencyStrategy.TRANSACTIONAL,region="timeSheetDayEntries")
 public class TimeSheetDayEntries implements Serializable{
 	
 	private static final long serialVersionUID = 1L;
@@ -34,13 +32,13 @@ public class TimeSheetDayEntries implements Serializable{
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long Id;
 	
-	@NotFound(action=NotFoundAction.IGNORE)
-	@ManyToOne(fetch=FetchType.EAGER)
+	
+	@ManyToOne(fetch=FetchType.LAZY)
 	@JoinColumn(name="SUBMISSION_ID") 
 	private TimesheetSubmissions timesheetSubmissions;
 	
-	@NotFound(action=NotFoundAction.IGNORE)
-	@ManyToOne(fetch=FetchType.EAGER)
+	
+	@ManyToOne(fetch=FetchType.LAZY)
 	@JoinColumn(name = "PROJECT_TASK_ID")
 	private ProjectTasks projectTask;
 	
@@ -52,20 +50,24 @@ public class TimeSheetDayEntries implements Serializable{
 	@Column(name = "BILLABLE_HOURS")
 	private String billableHours;
 	
+	@Column(name = "TICKET_NUMBER")
+	private String ticketNumber;
+	
 	 
 	@Column(name = "NONBILLABLE_HOURS")
 	private String nonBillableHours;
 	  
 	@Column(name = "TOTALHOURS")
 	private String totalHours;
-	 
-	@Column(name ="TASK_TYPE")
-	private String taskType;
 	
 	@Column(name = "COMMENTS", columnDefinition = "TEXT default NULL")
     private String comments;
 	
+	@Column(name ="STATUS")
+	private Integer status;
 	
+	@Column(name ="TASK_TYPE")
+	private String taskType;
 	
 	@Column(name = "IS_MANUALLY_ADDED")
 	private String isManuallyAdded;
@@ -85,6 +87,11 @@ public class TimeSheetDayEntries implements Serializable{
 		
 	@Column(name = "UPDATED_BY")
 	private String updatedBy;
+	
+	@Transient
+	@JsonProperty
+	@JsonBackReference
+	private Long timesheetActivityId;
 
 	public Long getId() {
 		return Id;
@@ -201,5 +208,32 @@ public class TimeSheetDayEntries implements Serializable{
 	public void setIsManuallyAdded(String isManuallyAdded) {
 		this.isManuallyAdded = isManuallyAdded;
 	}
+
+	public Integer getStatus() {
+		return status;
+	}
+
+	public void setStatus(Integer status) {
+		this.status = status;
+	}
+
+
+	public Long getTimesheetActivityId() {
+		return timesheetActivityId;
+	}
+
+	public void setTimesheetActivityId(Long timesheetActivityId) {
+		this.timesheetActivityId = timesheetActivityId;
+	}
+
+	public String getTicketNumber() {
+		return ticketNumber;
+	}
+
+	public void setTicketNumber(String ticketNumber) {
+		this.ticketNumber = ticketNumber;
+	}
+
+
 	
 }

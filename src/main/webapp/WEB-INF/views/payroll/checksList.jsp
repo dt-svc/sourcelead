@@ -28,12 +28,15 @@ function prepareBisChecksList(url){
  	$("#payrollCycleDiv").find('p.jquery_form_error_message').remove();
 	$('#payrollCycle').val('').trigger("chosen:updated");
  	 var result = "";
- 	result = result +" <div class='clearfix col-md-12 mb10'>";
- 	result = result +'<a href="/app/addChecks" class="btn btn-primary btn-sm pull-left" id="generateReportId" title="Generate Report">Add Payment</a>';
- 	result = result +" <div class='remove_search'>";
- 	result = result +" <input type='text' placeholder='Search' id='checksDataTableSearch'/>";
- 	result = result +"</div>";
- 	result = result +"</div>";
+ 	 
+		result = result +" <div class='reportHead'>";
+		result = result + " <ul class='pull-right'>";
+		result = result + " <li><a href='/app/addChecks' class='newAdBtn' id='generateReportId' title='Generate Report'>+ Payment</a></li>";		
+		result = result + " <li><input type='text' placeholder='Search' class='repSearchBar' id='checksDataTableSearch'/><span class='repSearchIcon' onClick='checksDataTableSearch();'></span></li>";
+		result = result + "</ul>";
+		result = result + "</div>";  	
+ 	
+ 	
  	result = result + '<table id="checksListTable" class="display" cellspacing="0" width="100%" >';
 	result = result + '<thead>';
 	result = result + '<tr>';
@@ -53,6 +56,7 @@ function prepareBisChecksList(url){
 	result = result + '<th>Payroll Chks</th>';
 	result = result + '<th>Amount</th>';
 	result = result + '<th>Check No</th>';
+	result = result + '<th>Action</th>';
 	result = result + '</tr>';
 	result = result + '</thead>	';
     result = result +"</table>";
@@ -92,7 +96,8 @@ function checksPagination(url){
             { "data": "immigration"},
             { "data": "payrollChecks"},
             { "data": "amount"},
-            { "data": "checkNo"}
+            { "data": "checkNo"},
+            { "data": "action"}
         ],
         "columnDefs": [ {
 	    	  	"targets": colIndex++,
@@ -287,7 +292,16 @@ function checksPagination(url){
 								}
                             	  return result;
                               }
-                } ],
+                } ,
+				{
+					"targets" : colIndex++,
+					"data" : "action",
+					"render" : function(data, type, opt, meta) {
+						var result = "";
+						result = result + '<td><div><i class="glyphicon glyphicon-trash" onclick="deletePayrollEntity(\''+opt.uuid+'\',\'Checks\')"></i></div></td>';
+						return result;
+					}
+				}],
 	    	"scrollCollapse": false,
 	    	"lengthMenu": [[10, 15, 20], [10, 15, 20]],
 	    	"aaSorting": [[1,'desc']],
@@ -308,7 +322,9 @@ function checksPagination(url){
     	   }
     	});
 }
-
+function checksDataTableSearch(){
+	bisChecksList();
+}
 </script>
 
 <!-- TODO do not delete @Rajashekar -->

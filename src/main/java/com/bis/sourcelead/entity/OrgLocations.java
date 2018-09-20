@@ -22,12 +22,8 @@ import javax.persistence.Table;
 import javax.persistence.Transient;
 
 import org.apache.commons.lang3.StringUtils;
-import org.hibernate.annotations.Cache;
-import org.hibernate.annotations.CacheConcurrencyStrategy;
 import org.hibernate.annotations.Fetch;
 import org.hibernate.annotations.FetchMode;
-import org.hibernate.annotations.NotFound;
-import org.hibernate.annotations.NotFoundAction;
 import org.hibernate.annotations.Type;
 
 import com.bis.sourcelead.constants.Constants;
@@ -37,7 +33,6 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 
 @Entity
 @Table(name = "ORG_LOCATIONS")
-@Cache(usage = CacheConcurrencyStrategy.TRANSACTIONAL,region="orgLocation" )
 public class OrgLocations implements Serializable{
 	
 	private static final long serialVersionUID = 1L;
@@ -47,24 +42,23 @@ public class OrgLocations implements Serializable{
     @Column(name = "ID", nullable = false)
     private Long id;
 	
-	@NotFound(action=NotFoundAction.IGNORE)
-	@ManyToOne(fetch = FetchType.EAGER)
-	@Fetch(FetchMode.SELECT)
+	
+	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "ORG_ID")
+	@JsonProperty
     private Org org;
 	
-	@NotFound(action=NotFoundAction.IGNORE)
-	@ManyToOne(fetch = FetchType.EAGER)
-	@Fetch(FetchMode.SELECT)
+	
+	@ManyToOne
 	@JoinColumn(name = "TIMEZONE_ID")
     private Timezone timezone;
 	
-	@NotFound(action=NotFoundAction.IGNORE)
+	
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "PRIMARY_CONTACT_USER_ID")
     private User user;
 	
-	@NotFound(action=NotFoundAction.IGNORE)
+	
 	@OneToMany(mappedBy="responderLocationId",cascade = CascadeType.ALL,fetch=FetchType.LAZY)
     @Fetch(FetchMode.SELECT)
     private Set<OrgRelations> orgRelationsList;
@@ -130,8 +124,8 @@ public class OrgLocations implements Serializable{
 	@Column(name = "FILLING_FORM")
 	private String fillingForm;
 	
-	@NotFound(action=NotFoundAction.IGNORE)
-	@ManyToOne(fetch = FetchType.EAGER)
+	
+	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name="BUSINESS_TYPE", nullable=false )	
 	private LookUpData businessType;
 	
@@ -201,6 +195,54 @@ public class OrgLocations implements Serializable{
 	
 	@Column(name="PAYMENT_REMITTANCE_EMIL")
 	private String remittanceEmail;
+	
+	@Column(name="FINANCIAL_YEAR_START_MONTH")
+	private String startMonth;
+	
+	@Column(name="FINANCIAL_YEAR_END_MONTH")
+	private String endMonth;
+	
+	@Column(name = "RECOMMENDED_SKILL_PERCENT")
+	private Integer recommendedSkillPercent;
+	
+	@Column(name = "RECOMMENDED_LOCATION_PERCENT")
+	private Integer recommendedLocationPercent;
+	
+	@Column(name = "RECOMMENDED_NOTICE_PERCENT")
+	private Integer recommendedNoticePercent;
+	
+	@Column(name = "RECOMMENDED_EXP_PERCENT")
+	private Integer recommendedExpPercent;
+	
+	@Column(name = "RECOMMENDED_VISATYPE_PERCENT")
+	private Integer recommendedVisatypePercent;
+	
+	@Column(name = "RECOMMENDED_EDUCATION_PERCENT")
+	private Integer recommendedEducationPercent;
+	
+	@Column(name = "RECOMMENDED_RATE_PERCENT")
+	private Integer recommendedRatePercent;
+	
+	@Column(name = "RECOMMENDED_KEYWORDS_PERCENT")
+	private Integer recommendedKeywordsPercent;
+	
+	@Column(name = "REGISTRATION_STATUS")
+	private String registrationStatus;
+
+	@Column(name = "IS_LAW_FIRM")
+	private String isLawFirm;
+	
+	@Column(name = "IS_ACCOUNTING_FIRM")
+	private String isAccountingFirm;
+
+	@Column(name = "WORKING_DAYS_PER_WEEK")
+	private Integer workingDaysPerWeek;
+	
+	@Column(name = "WEEK_OFF_DAYS")
+	private String weekOffDays;
+	
+	@Column(name = "IS_TIMESHEET_AVG_HOURS_REQUIRED")
+    private String isTimesheetAvgHoursRequired;
     
     @Transient
     private String orgName;
@@ -255,6 +297,10 @@ public class OrgLocations implements Serializable{
     @Transient
     @JsonProperty
     private Long vendorOnboardId;
+    
+    @Transient
+    @JsonProperty
+    private String registeredLocation;
    
    
 	public Timezone getTimezone() {
@@ -827,5 +873,180 @@ public class OrgLocations implements Serializable{
 	public void setRemittanceEmail(String remittanceEmail) {
 		this.remittanceEmail = remittanceEmail;
 	}
+
+	public String getStartMonth()
+	{
+		return startMonth;
+	}
+
+	public void setStartMonth(String startMonth)
+	{
+		this.startMonth = startMonth;
+	}
+
+	public String getEndMonth()
+	{
+		return endMonth;
+	}
+
+	public void setEndMonth(String endMonth)
+	{
+		this.endMonth = endMonth;
+	}
+
+	public Integer getRecommendedSkillPercent()
+	{
+		return recommendedSkillPercent;
+	}
+
+	public void setRecommendedSkillPercent(Integer recommendedSkillPercent)
+	{
+		this.recommendedSkillPercent = recommendedSkillPercent;
+	}
+
+	public Integer getRecommendedLocationPercent()
+	{
+		return recommendedLocationPercent;
+	}
+
+	public void setRecommendedLocationPercent(Integer recommendedLocationPercent)
+	{
+		this.recommendedLocationPercent = recommendedLocationPercent;
+	}
+
+	public Integer getRecommendedNoticePercent()
+	{
+		return recommendedNoticePercent;
+	}
+
+	public void setRecommendedNoticePercent(Integer recommendedNoticePercent)
+	{
+		this.recommendedNoticePercent = recommendedNoticePercent;
+	}
+
+	public Integer getRecommendedExpPercent()
+	{
+		return recommendedExpPercent;
+	}
+
+	public void setRecommendedExpPercent(Integer recommendedExpPercent)
+	{
+		this.recommendedExpPercent = recommendedExpPercent;
+	}
+
+	public Integer getRecommendedVisatypePercent()
+	{
+		return recommendedVisatypePercent;
+	}
+
+	public void setRecommendedVisatypePercent(Integer recommendedVisatypePercent)
+	{
+		this.recommendedVisatypePercent = recommendedVisatypePercent;
+	}
+
+	public Integer getRecommendedEducationPercent()
+	{
+		return recommendedEducationPercent;
+	}
+
+	public void setRecommendedEducationPercent(Integer recommendedEducationPercent)
+	{
+		this.recommendedEducationPercent = recommendedEducationPercent;
+	}
+
+	public Integer getRecommendedRatePercent()
+	{
+		return recommendedRatePercent;
+	}
+
+	public void setRecommendedRatePercent(Integer recommendedRatePercent)
+	{
+		this.recommendedRatePercent = recommendedRatePercent;
+	}
+
+	public Integer getRecommendedKeywordsPercent()
+	{
+		return recommendedKeywordsPercent;
+	}
+
+	public void setRecommendedKeywordsPercent(Integer recommendedKeywordsPercent)
+	{
+		this.recommendedKeywordsPercent = recommendedKeywordsPercent;
+	}
+
+
+	public String getRegistrationStatus() {
+		return registrationStatus;
+	}
+
+	public void setRegistrationStatus(String registrationStatus) {
+		this.registrationStatus = registrationStatus;
+	}
+
+
+	public String getIsLawFirm() {
+		return isLawFirm;
+	}
+
+	public void setIsLawFirm(String isLawFirm) {
+		this.isLawFirm = isLawFirm;
+	}
+
+	public String getIsAccountingFirm() {
+		return isAccountingFirm;
+	}
+
+	public void setIsAccountingFirm(String isAccountingFirm) {
+		this.isAccountingFirm = isAccountingFirm;
+	}
 	
+	
+
+	public Integer getWorkingDaysPerWeek() {
+		return workingDaysPerWeek;
+	}
+
+	public void setWorkingDaysPerWeek(Integer workingDaysPerWeek) {
+		this.workingDaysPerWeek = workingDaysPerWeek;
+	}
+
+	public String getWeekOffDays() {
+		return weekOffDays;
+	}
+
+	public void setWeekOffDays(String weekOffDays) {
+		this.weekOffDays = weekOffDays;
+	}
+
+	public String getIsTimesheetAvgHoursRequired() {
+		return isTimesheetAvgHoursRequired;
+	}
+
+	public void setIsTimesheetAvgHoursRequired(String isTimesheetAvgHoursRequired) {
+		this.isTimesheetAvgHoursRequired = isTimesheetAvgHoursRequired;
+	}
+
+	public String getRegisteredLocation() {
+		
+		if(StringUtils.isNotEmpty(registeredLocation))
+			return registeredLocation;
+		else{
+			if(StringUtils.isNotEmpty(country) && StringUtils.isEmpty(state) && StringUtils.isEmpty(city)){
+				registeredLocation = country;
+			}else if(StringUtils.isNotEmpty(country) && StringUtils.isNotEmpty(state) && StringUtils.isEmpty(city)){
+				registeredLocation = country +" "+state;
+			}else if(StringUtils.isNotEmpty(country) && StringUtils.isEmpty(state) && StringUtils.isNotEmpty(city)){
+				registeredLocation = country +" "+city;
+			}else if(StringUtils.isNotEmpty(country) && StringUtils.isNotEmpty(state) && StringUtils.isNotEmpty(city)){
+				registeredLocation = country+" "+state+" "+city;
+			}
+			return registeredLocation;
+		}
+		
+	}
+
+	public void setRegisteredLocation(String registeredLocation) {
+		this.registeredLocation = registeredLocation;
+	}
+
 }

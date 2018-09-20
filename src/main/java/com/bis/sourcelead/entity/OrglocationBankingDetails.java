@@ -23,7 +23,6 @@ import org.hibernate.annotations.NotFoundAction;
 
 @Entity
 @Table(name = "ORGLOCATION_BANKING_DETAILS")
-@Cache(usage = CacheConcurrencyStrategy.TRANSACTIONAL,region="orglocationBankingDetails" )
 public class OrglocationBankingDetails implements Serializable{
 
 	private static final long serialVersionUID = 1L;
@@ -33,8 +32,8 @@ public class OrglocationBankingDetails implements Serializable{
     @Column(name = "ID", nullable = false)
     private Long id;
 	
-	@NotFound(action=NotFoundAction.IGNORE)
-	@ManyToOne(fetch = FetchType.EAGER)
+	
+	@ManyToOne(fetch = FetchType.LAZY)
 	@Fetch(FetchMode.SELECT)
 	@JoinColumn(name = "ORGLOCATION_ID")
     private OrgLocations orgLocationId;
@@ -51,18 +50,24 @@ public class OrglocationBankingDetails implements Serializable{
 	@Column(name = "ACCOUNT_NUMBER")
 	private String accountNumber;
 	
+	@Column(name = "BANK_NAME")
+	private String bankName;
+	
+	@Column(name = "BANK_ADDRESS", columnDefinition = "TEXT default NULL")
+	private String bankAddress;
+	
 	@Column(name = "UUID")
 	private String uuid;
 	
 	@Column(name = "STATUS")
 	private Integer status;
 	
-    @NotFound(action=NotFoundAction.IGNORE)
+    
     @ManyToOne(fetch = FetchType.LAZY)
    	@JoinColumn(name = "CREATED_BY")
   	private User createdBy;
 	
-    @NotFound(action=NotFoundAction.IGNORE)
+    
 	@ManyToOne(fetch = FetchType.LAZY)
    	@JoinColumn(name = "UPDATED_BY")
   	private User updatedBy;
@@ -167,6 +172,22 @@ public class OrglocationBankingDetails implements Serializable{
 
 	public void setUpdatedDate(Date updatedDate) {
 		this.updatedDate = updatedDate;
+	}
+
+	public String getBankName() {
+		return bankName;
+	}
+
+	public void setBankName(String bankName) {
+		this.bankName = bankName;
+	}
+
+	public String getBankAddress() {
+		return bankAddress;
+	}
+
+	public void setBankAddress(String bankAddress) {
+		this.bankAddress = bankAddress;
 	}
     
 }

@@ -1,11 +1,14 @@
 package com.bis.sourcelead.dto;
 
+import com.bis.sourcelead.annotations.Required;
+
 public class ContactsGroupDTO {
 
 	 private Long id;
 	 
 	 private String groupId;
 	 
+	 @Required(desc = "group name")
 	 private String groupName;
 	 
 	 private String createdUser;

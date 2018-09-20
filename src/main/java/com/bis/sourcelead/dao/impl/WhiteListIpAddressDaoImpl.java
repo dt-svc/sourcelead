@@ -63,11 +63,17 @@ public class WhiteListIpAddressDaoImpl implements WhiteListIpAddressDao {
 
 	@Override
 	@Transactional(rollbackFor = { Exception.class })
-	public List<WhiteListIPAddress> getWhiteListIpsByLocationId(Long locationId)
+	public List<WhiteListIPAddress> getWhiteListIpsByLocationId(Long locationId,Long whiteListIpId)
 	{
 		Session session = this.sessionFactory.getCurrentSession();
-		String query = "from WhiteListIPAddress wlip left join fetch wlip.orgLocation left join fetch wlip.createdBy left join fetch wlip.updatedBy where wlip.orgLocation.id = :locationId and wlip.status = 'Active'";
-		List<WhiteListIPAddress> ipList = session.createQuery(query).setLong("locationId", locationId).setCacheable(false).list();
+		List<WhiteListIPAddress> ipList = null;
+		if(whiteListIpId != null){
+			String query = "from WhiteListIPAddress wlip left join fetch wlip.orgLocation left join fetch wlip.createdBy left join fetch wlip.updatedBy where wlip.orgLocation.id = :locationId and wlip.status = 'Active' and wlip.id <> :whiteListIpId";
+			ipList = session.createQuery(query).setLong("locationId", locationId).setLong("whiteListIpId", whiteListIpId).list();
+		}else{
+			String query = "from WhiteListIPAddress wlip left join fetch wlip.orgLocation left join fetch wlip.createdBy left join fetch wlip.updatedBy where wlip.orgLocation.id = :locationId and wlip.status = 'Active'";
+			ipList = session.createQuery(query).setLong("locationId", locationId).list();
+		}
 		if(ipList != null && ipList.size() >0){
 			return ipList;
 		}
@@ -79,7 +85,7 @@ public class WhiteListIpAddressDaoImpl implements WhiteListIpAddressDao {
 	public WhiteListIPAddress getWhiteListIpsById(Long whiteListIpId) {
 		Session session = this.sessionFactory.getCurrentSession();
 		String query = "from WhiteListIPAddress wlip left join fetch wlip.orgLocation where wlip.id = :whiteListIpId";
-		List<WhiteListIPAddress> ipList = session.createQuery(query).setLong("whiteListIpId", whiteListIpId).setCacheable(false).list();
+		List<WhiteListIPAddress> ipList = session.createQuery(query).setLong("whiteListIpId", whiteListIpId).list();
 		if(ipList != null && ipList.size() >0){
 			return ipList.get(0);
 		}

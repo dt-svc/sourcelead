@@ -18,7 +18,9 @@ public interface ReferContactsService {
 
 	ReferContacts getReferContactsByEmails(Long userId,String toEmail) throws Exception;
 
-	public void saveuserContacts(User user, OrgLocations orgLocations,ReferContactsDTO referContactsDTO) throws Exception;
+	public void saveuserContacts(User user,ReferContactsDTO referContactsDTO) throws Exception;
+	
+	public void saveuserContactsFromConnections(User fromUser,User toUser) throws Exception;
 	
 	 void saveAllReferContacts(List<ReferContacts> referContactsList) throws Exception;
 	
@@ -29,5 +31,9 @@ public interface ReferContactsService {
 	Boolean validateGoogleEamil(String email, Long loginUserId) throws Exception;
 
 	ReferContacts findByEmail(String recipientMail)throws Exception;
+	
+	ReferContacts getReferContactsByFromUserIdAndToUserId(Long fromUserId, Long toUserId) throws Exception;
+	
+	boolean deleteContactById(Long id) throws Exception;
 
 }

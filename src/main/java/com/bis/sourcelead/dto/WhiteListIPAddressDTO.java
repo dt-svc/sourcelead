@@ -1,9 +1,16 @@
 package com.bis.sourcelead.dto;
 
+import com.bis.sourcelead.annotations.Required;
+
 public class WhiteListIPAddressDTO {
 	private long id;
+	
+	@Required(desc="fromIpAddress")
 	private String fromIpAddress;
+	
+	@Required(desc="toIpAddress")
 	private String toIpAddress;
+	
 	private String status;
 	private String createdBy;
 	private String updatedBy;

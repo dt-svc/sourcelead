@@ -6,18 +6,20 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.io.Writer;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collection;
 import java.util.Date;
-import java.util.Iterator;
 import java.util.List;
 
 import javax.imageio.ImageIO;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.exception.ExceptionUtils;
 import org.json.JSONObject;
+import org.modelmapper.ModelMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -30,39 +32,68 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
-import org.springframework.web.multipart.MultipartFile;
-import org.springframework.web.multipart.MultipartHttpServletRequest;
 import org.springframework.web.servlet.ModelAndView;
 
+import com.bis.sourcelead.annotations.Validator;
 import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.dao.WhiteListIpAddressDao;
+import com.bis.sourcelead.dto.AddNewRoleDTO;
+import com.bis.sourcelead.dto.AddNewRoleHierarcyDTO;
+import com.bis.sourcelead.dto.AddUserDTO;
+import com.bis.sourcelead.dto.AssociateGradesDTO;
+import com.bis.sourcelead.dto.CompanyRegistrationDTO;
+import com.bis.sourcelead.dto.OrgLocationDTO;
+import com.bis.sourcelead.dto.OrgSettingsDTO;
+import com.bis.sourcelead.dto.Response;
+import com.bis.sourcelead.dto.ResponseList;
+import com.bis.sourcelead.dto.RoleDTO;
+import com.bis.sourcelead.dto.SourceleadRolesDTO;
+import com.bis.sourcelead.dto.TabsDTO;
 import com.bis.sourcelead.dto.WhiteListIPAddressDTO;
+import com.bis.sourcelead.entity.AssociateGrades;
+import com.bis.sourcelead.entity.Expenses;
 import com.bis.sourcelead.entity.Modules;
 import com.bis.sourcelead.entity.Org;
+import com.bis.sourcelead.entity.OrgLicenseSubscription;
+import com.bis.sourcelead.entity.OrgLicenseSubscriptionTypes;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.OrgRelations;
+import com.bis.sourcelead.entity.OrglocationSignatory;
 import com.bis.sourcelead.entity.RoleHierarchy;
 import com.bis.sourcelead.entity.Roles;
-import com.bis.sourcelead.entity.Shift;
+import com.bis.sourcelead.entity.SourceleadRoles;
 import com.bis.sourcelead.entity.SourceleadSignature;
+import com.bis.sourcelead.entity.Tabs;
+import com.bis.sourcelead.entity.Timezone;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.entity.UserRole;
 import com.bis.sourcelead.entity.WhiteListIPAddress;
+import com.bis.sourcelead.enums.Result;
 import com.bis.sourcelead.form.OrgSettings;
+import com.bis.sourcelead.service.AddExpensesService;
+import com.bis.sourcelead.service.AssociateGradesService;
+import com.bis.sourcelead.service.ExpensesService;
 import com.bis.sourcelead.service.ModulesService;
+import com.bis.sourcelead.service.OrgLicenseSubscriptionService;
+import com.bis.sourcelead.service.OrgLicenseSubscriptionTypesService;
 import com.bis.sourcelead.service.OrgLocationService;
 import com.bis.sourcelead.service.OrgRelationsService;
 import com.bis.sourcelead.service.OrgService;
+import com.bis.sourcelead.service.OrglocationSignatoryService;
 import com.bis.sourcelead.service.RoleHierarchyService;
 import com.bis.sourcelead.service.RolesService;
+import com.bis.sourcelead.service.SourceleadRolesService;
 import com.bis.sourcelead.service.SourceleadSignatureService;
+import com.bis.sourcelead.service.TabsService;
+import com.bis.sourcelead.service.TimeZoneService;
 import com.bis.sourcelead.service.UserRoleService;
+import com.bis.sourcelead.service.UserService;
 import com.bis.sourcelead.service.WhiteListIpAddressService;
+import com.bis.sourcelead.util.CalendarUtil;
 import com.bis.sourcelead.util.CommonUtil;
+import com.bis.sourcelead.util.SourceLeadRandomCodeHelper;
 import com.bis.sourcelead.util.SourceLeadSessionManager;
-import com.bis.sourcelead.web.LoginSessionController;
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
+import com.ibm.icu.util.Calendar;
 import com.thoughtworks.xstream.XStream;
 import com.thoughtworks.xstream.io.HierarchicalStreamWriter;
 import com.thoughtworks.xstream.io.json.JsonHierarchicalStreamDriver;
@@ -75,57 +106,145 @@ public class OrgSettingsRestController {
 	@Value("${sourceleadUrl}")
 	private String sourceleadUrl;
 	@Autowired
-	OrgService orgService;
+	private OrgService orgService;
 	@Autowired
-	OrgRelationsService orgRelationsService;
+	private OrgRelationsService orgRelationsService;
 	@Autowired
-	OrgLocationService orgLocationService;
+	private OrglocationSignatoryService orglocationSignatoryService;
 	@Autowired
-	RolesService rolesService;
+	private OrgLocationService orgLocationService;
 	@Autowired
-	RoleHierarchyService roleHierarchyService;
+	private RolesService rolesService;
 	@Autowired
-	CommonUtil commonUtil;
+	private RoleHierarchyService roleHierarchyService;
 	@Autowired
-	SourceleadSignatureService sourceleadSignatureService;
+	private CommonUtil commonUtil;
 	@Autowired
-	UserRoleService userRoleService;
+	private SourceleadSignatureService sourceleadSignatureService;
 	@Autowired
-	ModulesService modulesService;
+	private UserRoleService userRoleService;
 	@Autowired
-	WhiteListIpAddressService whiteListIpAddressService;
+	private ModulesService modulesService;
 	@Autowired
-	WhiteListIpAddressDao whiteListIpAddressDao;
+	private WhiteListIpAddressService whiteListIpAddressService;
+	@Autowired
+	private WhiteListIpAddressDao whiteListIpAddressDao;
+	@Autowired
+	private ExpensesService expensesService;
+	@Autowired
+	private AddExpensesService addExpensesService;
+	@Autowired
+	OrgLicenseSubscriptionService orgLicenseSubscriptionService;
+	@Autowired
+	TabsService tabsService;
+	@Autowired
+	UserService userService;
+	@Autowired
+	OrgLicenseSubscriptionTypesService orgLicenseSubscriptionTypesService;
+	@Autowired
+	TimeZoneService timeZoneService;
+	@Autowired
+	AssociateGradesService associateGradesService;
+
+	@Value("${static.path}")
+	private String staticPath;
+	
+	@Autowired
+	SourceleadRolesService sourceleadRolesService;
+	
+	@PreAuthorize("hasRole('ROLE_VIEW_EDIT_ORG_SETTINGS')")
+	@RequestMapping(value = "/app/saveOrgImage", method = RequestMethod.POST)
+	public String saveOrgImage(CompanyRegistrationDTO companyRegistrationDTO, HttpServletRequest request) throws Exception
+	{
+		Org org = (Org) SourceLeadSessionManager.getSessionAttribute(request, "org");
+		companyRegistrationDTO.setStaticPath(staticPath);
+		org = orgService.saveOrgSettings(companyRegistrationDTO, org);
+		return "success";
+	}
 	
 	@PreAuthorize("hasRole('ROLE_VIEW_EDIT_ORG_SETTINGS')")
 	@RequestMapping(value = "/app/saveOrgSettings", method = RequestMethod.POST)
-	public String saveOrgSettings(@RequestParam(value = "json", required = false) String json, MultipartHttpServletRequest request) throws Exception
+	public Response<String> saveOrgSettings(OrgSettingsDTO orgSettingsDTO, HttpServletRequest request) throws Exception
 	{
-		Iterator<String> itrator = request.getFileNames();
-		MultipartFile multiFile = request.getFile(itrator.next());
+		/*
+		 * Iterator<String> itrator = request.getFileNames(); MultipartFile
+		 * multiFile = request.getFile(itrator.next());
+		 */
 		Org org = (Org) SourceLeadSessionManager.getSessionAttribute(request, "org");
 		OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
-		String json1 = "{" + json + "}";
-		Gson gson = new GsonBuilder().setDateFormat("yyyy-MM-dd").create();
-		OrgSettings orgSettings = gson.fromJson(json1, OrgSettings.class);
+		User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+		Response<String> response = new Response<>();
+	
 		try {
-			org = orgService.saveOrgSettings(orgSettings, multiFile, org);
-			orgLocations = orgLocationService.saveOrgLocations(orgSettings, orgLocations);
-			//LoginSessionController.DATEFORMAT = new SimpleDateFormat(orgLocations.getDateFormat());
-			SourceLeadSessionManager.setSessionAttribute(request, "org", org);
-			SourceLeadSessionManager.setSessionAttribute(request, "orgLocations", orgLocations);
-			SourceLeadSessionManager.setSessionAttribute(request, "orgName", orgLocations.getOrgLocationName());
-			SourceLeadSessionManager.setSessionAttribute(request, "address", orgLocations.getOrgLocationAddress());
-			SourceLeadSessionManager.setSessionAttribute(request, "website", orgLocations.getWebsite());
-			SourceLeadSessionManager.setSessionAttribute(request, "dba", orgLocations.getDba());
-			SourceLeadSessionManager.setSessionAttribute(request, "businessType", orgSettings.getBusinessType());
-		} catch (Exception e) {
-			logger.error(ExceptionUtils.getFullStackTrace(e));
+			if(user != null){
+			if (Validator.validate(orgSettingsDTO)) {
+				ModelMapper mapper1 = new ModelMapper();
+				OrgSettings orgSettings = mapper1.map(orgSettingsDTO, OrgSettings.class);
+				
+					orgLocations = orgLocationService.saveOrgLocations(orgSettings, orgLocations);
+					if (orgLocations.getGeneratedUserId() != null) {
+						changeShortCodeForExpenses(orgLocations.getGeneratedUserId(), orgLocations.getId());
+					}
+					SourceLeadSessionManager.setSessionAttribute(request, "org", org);
+					SourceLeadSessionManager.setSessionAttribute(request, "orgLocations", orgLocations);
+					SourceLeadSessionManager.setSessionAttribute(request, "orgName", orgLocations.getOrgLocationName());
+					SourceLeadSessionManager.setSessionAttribute(request, "address", orgLocations.getOrgLocationAddress());
+					SourceLeadSessionManager.setSessionAttribute(request, "website", orgLocations.getWebsite());
+					SourceLeadSessionManager.setSessionAttribute(request, "dba", orgLocations.getDba());
+					SourceLeadSessionManager.setSessionAttribute(request, "businessType", orgSettings.getBusinessType());
+					List<String> weekOffDaysList = new ArrayList<>();
+					if(orgLocations.getWeekOffDays() != null && !orgLocations.getWeekOffDays().isEmpty()) {
+						String[] weekOffDays = orgLocations.getWeekOffDays().split(",");
+						for(int i=0; i < weekOffDays.length; i++) {
+							weekOffDaysList.add(weekOffDays[i]);
+						}
+					}
+					SourceLeadSessionManager.setSessionAttribute(request, "weekOffDaysList", weekOffDaysList);
+					response.setResponse(Result.SUCCESS.name());
+					response.setResponseMessage(Result.SUCCESS.getValue());
+			}else{
+				response.setObject("DataMissing");
+				response.setResponse(Result.INVALID_DATA.name());
+				response.setResponseMessage(Result.INVALID_DATA.getValue());
+			}
+		}else{
+			response.setResponse(Result.SESSION_TIMEDOUT.name());
+			response.setResponseMessage(Result.SESSION_TIMEDOUT.getValue());
 		}
-		return "home";
+
+	} catch (Exception e) {
+			response.setResponse(Result.AWKWARD.name());
+			response.setResponseMessage(Result.AWKWARD.getValue());
+			logger.error(ExceptionUtils.getFullStackTrace(e));
+			e.printStackTrace();
+		}
+
+		return response;
 	}
 	
-	@RequestMapping(value = {"/app/displayOrgImage/{orgCode}","/app/ws/displayOrgImage/{orgCode}"}, method = RequestMethod.GET)
+	private void changeShortCodeForExpenses(String generatedUserId, Long orgLocationId) throws Exception
+	{
+		List<Expenses> expenses = expensesService.getAllExpensesByOrgLocationId(orgLocationId);
+		if (!expenses.isEmpty()) {
+			for (Expenses exp : expenses) {
+				String expId = exp.getExpenseId();
+				int twoGenId = expId.lastIndexOf("EP", expId.length());
+				String genId = expId.substring(0, twoGenId);
+				if (exp.getExpenseId() != null && StringUtils.isNotBlank(exp.getExpenseId())
+						&& !genId.equalsIgnoreCase(generatedUserId)) {
+					int two = expId.lastIndexOf("EP", expId.length());
+					String finalExpId = expId.substring(two, expId.length());
+					StringBuilder expensesId = new StringBuilder();
+					expensesId.append(generatedUserId).append(finalExpId);
+					exp.setExpenseId(expensesId.toString());
+					addExpensesService.storeAddExpensesData(exp);
+				}
+			}
+		}
+	}
+	
+	@RequestMapping(value = { "/app/displayOrgImage/{orgCode}",
+			"/app/ws/displayOrgImage/{orgCode}" }, method = RequestMethod.GET)
 	public void displayOrgImage(@PathVariable String orgCode, HttpServletResponse response)
 	{
 		Org org = null;
@@ -174,7 +293,8 @@ public class OrgSettingsRestController {
 		}
 	}
 	
-	@RequestMapping(value = {"/displayOrgImageInMail/{orgCode}" ,"/app/displayOrgImageInMail/{orgCode}"} , method = RequestMethod.GET)
+	@RequestMapping(value = { "/ws/displayOrgImageInMail/{orgCode}",
+			"/app/ws/displayOrgImageInMail/{orgCode}" }, method = RequestMethod.GET)
 	public void displayOrgImageInMail(@PathVariable String orgCode, HttpServletResponse response)
 	{
 		Org org = null;
@@ -200,6 +320,8 @@ public class OrgSettingsRestController {
 	{
 		Org org = (Org) SourceLeadSessionManager.getSessionAttribute(request, "org");
 		org.setDocFile(null);
+		org.setFileName(null);
+		org.setFileUrl(null);
 		org.setFileContentType(null);
 		orgService.updateOrg(org);
 		SourceLeadSessionManager.setSessionAttribute(request, "org", org);
@@ -223,75 +345,147 @@ public class OrgSettingsRestController {
 	
 	@PreAuthorize("hasRole('ROLE_ENROLL_NEW_ROLE')")
 	@RequestMapping(value = "/app/addNewRoleHierarcy", method = RequestMethod.POST)
-	public String addNewRoleHierarcy(@RequestParam(value = "json", required = false) String json, HttpServletRequest request) throws Exception
+	public Response<String> addNewRoleHierarcy(AddNewRoleHierarcyDTO addNewRoleHierarcyDTO, HttpServletRequest request) throws Exception
 	{
-		json = "{" + json + "}";
-		JSONObject jsonObj = new JSONObject(json);
 		User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
 		OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 		RoleHierarchy hierarchy = null;
-		if (jsonObj.has("hierarchyId") && !isNullOrEmpty(jsonObj.getString("hierarchyId"))) {
-			hierarchy = roleHierarchyService.getRoleHierarchyById(Long.parseLong(jsonObj.getString("hierarchyId")));
-			hierarchy.setHierarchyName(jsonObj.getString("level"));
-			hierarchy.setOrgLocations(orgLocations);
-			hierarchy.setUpdatedBy(user.getUserCode());
-			hierarchy.setUpdatedDate(new Date());
+		Response<String> response=new Response<>();
+		
+		try{
+			if(user !=null){
+				if (Validator.validate(addNewRoleHierarcyDTO)) {	
+					if (addNewRoleHierarcyDTO.getHierarchyId()!= null) {
+					hierarchy = roleHierarchyService.getRoleHierarchyById(addNewRoleHierarcyDTO.getHierarchyId());
+					hierarchy.setHierarchyName(addNewRoleHierarcyDTO.getLevel());
+					hierarchy.setOrgLocations(orgLocations);
+					hierarchy.setUpdatedBy(user.getUserCode());
+					hierarchy.setUpdatedDate(new Date());
+					}else{
+						Integer maxHirearchyLevel = roleHierarchyService.getMaxHierarchyValueByOrgLocationId(orgLocations.getId());
+						hierarchy = new RoleHierarchy();
+						hierarchy.setHierarchyName(addNewRoleHierarcyDTO.getLevel());
+						hierarchy.setHierarchyLevel(maxHirearchyLevel + 1);
+						hierarchy.setOrgLocations(orgLocations);
+						hierarchy.setStatus(Constants.RECORD_ACTIVE);
+						hierarchy.setCreatedDate(new Date());
+						hierarchy.setCreatedBy(user.getUserCode());
+						hierarchy.setUpdatedBy(user.getUserCode());
+						hierarchy.setUpdatedDate(new Date());
+					}
+					roleHierarchyService.saveRoleHierarchy(hierarchy);
+					response.setResponse(Result.SUCCESS.name());
+					response.setResponseMessage(Result.SUCCESS.getValue());
+					
+			}
+				else{
+					response.setObject("DataMissing");
+					response.setResponse(Result.INVALID_DATA.name());
+					response.setResponseMessage(Result.INVALID_DATA.getValue());
+					}
+				}
+			else{
+				response.setResponse(Result.SESSION_TIMEDOUT.name());
+				response.setResponseMessage(Result.SESSION_TIMEDOUT.getValue());
+				
+			}
+			
+			
+		}catch (Exception e) {
+			response.setResponse(Result.AWKWARD.name());
+			response.setResponseMessage(Result.AWKWARD.getValue());
+			logger.error(ExceptionUtils.getFullStackTrace(e));
+			e.printStackTrace();
 		}
-		else {
-			Integer maxHirearchyLevel = roleHierarchyService.getMaxHierarchyValueByOrgLocationId(orgLocations.getId());
-			hierarchy = new RoleHierarchy();
-			hierarchy.setHierarchyName(jsonObj.getString("level"));
-			hierarchy.setHierarchyLevel(maxHirearchyLevel + 1);
-			hierarchy.setOrgLocations(orgLocations);
-			hierarchy.setStatus(Constants.RECORD_ACTIVE);
-			hierarchy.setCreatedDate(new Date());
-			hierarchy.setCreatedBy(user.getUserCode());
-			hierarchy.setUpdatedBy(user.getUserCode());
-			hierarchy.setUpdatedDate(new Date());
-		}
-		roleHierarchyService.saveRoleHierarchy(hierarchy);
-		return "home";
+		return response;
 	}
 	
 	@RequestMapping(value = "/app/getOrgEnrolledList")
 	@ResponseBody
-	public String getOrgEnrolledList(HttpServletRequest request) throws Exception
+	public List<RoleDTO> getOrgEnrolledList(HttpServletRequest request) throws Exception
 	{
-		String resultJson = null;
 		OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 		Org org = (Org) SourceLeadSessionManager.getSessionAttribute(request, "org");
-		User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
-		ArrayList<Roles> rolesList = new ArrayList<Roles>();
 		List<Roles> orgRolesList = new ArrayList<Roles>();
 		orgRolesList = rolesService.getOrgEnrolledRolesByOrgLocationId(org, orgLocations.getId());
+		List<RoleDTO> orgRolesDTOList = new ArrayList<>();
+		
 		for (Roles roles : orgRolesList) {
-			roles.setHierarchyName(roles.getRoleHierarchy().getHierarchyName());
+			RoleDTO roleDTO = new RoleDTO();
+			roleDTO.setId(roles.getId());
+			roleDTO.setDisplayName(roles.getDisplayName());
 			List<Long> roleActonsList = new ArrayList<Long>();
 			if (null != roles.getActionId()) {
-				for (String s : roles.getActionId().split(",")) {
+				/*for (String s : roles.getActionId().split(",")) {
 					roleActonsList.add(Long.parseLong(s));
-				}
+				}*/
+				for (String s : Arrays.stream(roles.getActionId().split(",")).filter(value -> value != null && value.length() > 0).toArray(size -> new String[size])){
+	    			 roleActonsList.add(Long.parseLong(s));
+	        	 }
 			}
-			roles.setActionsCount(roleActonsList.size());
-			rolesList.add(roles);
+			roleDTO.setUuid(roles.getUuid());
+			roleDTO.setActionsCount(roleActonsList.size());
+			roleDTO.setHierarchyId(roles.getRoleHierarchy().getId());
+			roleDTO.setHierarchyName(roles.getRoleHierarchy().getHierarchyName());
+			orgRolesDTOList.add(roleDTO);
 		}
-		resultJson = toJSON(rolesList);
-		return resultJson;
+		return orgRolesDTOList;
 	}
 	
-	@RequestMapping(value = "/app/roleActions/{roleId}", method = RequestMethod.GET)
-	public @ResponseBody void roleActions(@PathVariable Long roleId, HttpServletRequest request, HttpServletResponse response) throws Exception
+	
+	@PreAuthorize("hasRole('ROLE_ENROLL_ORG')")
+	@RequestMapping(value = "/app/getGuestOrgEnrolledList")
+	public List<SourceleadRolesDTO> getGuestOrgEnrolledList(HttpServletRequest request) throws Exception
+	{
+		List<SourceleadRolesDTO> rolesDTOList = new ArrayList<>();
+		
+		List<SourceleadRoles> orgRolesList = sourceleadRolesService.getGuestOrgSourceleadRoles();
+		for (SourceleadRoles roles : orgRolesList) {
+			
+			SourceleadRolesDTO rolesDTO = new SourceleadRolesDTO();
+			rolesDTO.setDisplayName(roles.getDisplayName());
+			rolesDTO.setUuid(roles.getUuid());
+			
+			List<Long> roleActonsList = new ArrayList<Long>();
+			if (null != roles.getActionId()) {
+				/*for (String s : roles.getActionId().split(",")) {
+					roleActonsList.add(Long.parseLong(s));
+				}*/
+				for (String s : Arrays.stream(roles.getActionId().split(",")).filter(value -> value != null && value.length() > 0).toArray(size -> new String[size])){
+	    			 roleActonsList.add(Long.parseLong(s));
+	        	 }
+			}
+			rolesDTO.setActionsCount(roleActonsList.size());
+			rolesDTOList.add(rolesDTO);
+		}
+		return rolesDTOList;
+	}
+	
+	@RequestMapping(value = "/app/roleActions/{uuid}", method = RequestMethod.GET)
+	public @ResponseBody void roleActions(@PathVariable String uuid, HttpServletRequest request, HttpServletResponse response) throws Exception
 	{
 		StringBuilder redirectUrl = new StringBuilder();
-		response.sendRedirect(redirectUrl.append("/app/enrollRoleActions?roleId=").append(roleId).toString());
+		response.sendRedirect(redirectUrl.append("/app/enrollRoleActions?uuid=").append(uuid).toString());
+	}
+	
+	
+	@RequestMapping(value = "/app/guestRoleActions/{uuid}", method = RequestMethod.GET)
+	public @ResponseBody void guestRoleActions(@PathVariable String uuid, HttpServletRequest request, HttpServletResponse response) throws Exception
+	{
+		StringBuilder redirectUrl = new StringBuilder();
+		response.sendRedirect(redirectUrl.append("/app/guestEnrollRoleActions?uuid=").append(uuid).toString());
 	}
 	
 	@PreAuthorize("hasRole('ROLE_ENROLL_NEW_ROLE')")
 	@RequestMapping(value = "/app/saveRoleActions", method = RequestMethod.POST)
-	public String saveRoleActions(@RequestParam(value = "roleId", required = false) Long roleId, @RequestParam(value = "actionIds", required = false) String actionIds, HttpServletRequest request) throws Exception
+	public String saveRoleActions(@RequestParam(value = "uuid", required = false) String uuid, @RequestParam(value = "actionIds", required = false) String actionIds, HttpServletRequest request) throws Exception
 	{
-		Roles roles = rolesService.getRolesById(roleId);
+		Roles roles = rolesService.getRolesByUUID(uuid);
+		
 		if (null != roles) {
+			if(roles.getRoleName().equalsIgnoreCase("ROLE_PRODUCTION_SUPPORT")) {
+				actionIds = actionIds+",115";
+			}
 			roles.setActionId(actionIds);
 			rolesService.storeRoles(roles);
 			SourceLeadSessionManager.setSessionAttribute(request, "actionRolesMsg", "Action Roles Modified Successfully");
@@ -311,6 +505,33 @@ public class OrgSettingsRestController {
 		else {
 			return "valid";
 		}
+	}
+	
+	
+	@PreAuthorize("hasRole('ROLE_ENROLL_NEW_ROLE')")
+	@RequestMapping(value = "/app/validateExistingRoleName", method = RequestMethod.GET)
+	public String validateExistingRoleName(@RequestParam(value = "roleName", required = true) String roleName,@RequestParam(value = "roleId", required = true) Long roleId,HttpServletRequest request) throws Exception
+	{
+		OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+		Roles roles = rolesService.getRolesById(roleId);
+		
+		String result = null;
+		
+		if(roles != null) {
+			if(roles.getDisplayName().equalsIgnoreCase(roleName)) {
+				result = "valid";
+			}else {
+				Roles orgRole = rolesService.getRolesByRoleDisplayNameAndOrgLocationId(roleName, orgLocations.getId());
+				if(orgRole != null) {
+					result = "invalid";
+				}
+			}
+		}else {
+			result = "valid";
+		}
+		
+		return result;
+		
 	}
 	
 	@PreAuthorize("hasRole('ROLE_ENROLL_NEW_ROLE')")
@@ -349,32 +570,60 @@ public class OrgSettingsRestController {
 	
 	@PreAuthorize("hasRole('ROLE_ENROLL_NEW_ROLE')")
 	@RequestMapping(value = "/app/addNewRole", method = RequestMethod.POST)
-	public String addNewRole(@RequestParam(value = "json", required = false) String json, HttpServletRequest request) throws Exception
+	public String addNewRole(AddNewRoleDTO addNewRoleDTO, HttpServletRequest request) throws Exception
 	{
-		json = "{" + json + "}";
-		JSONObject jsonObj = new JSONObject(json);
 		User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
 		OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 		Org org = (Org) SourceLeadSessionManager.getSessionAttribute(request, "org");
 		Roles roles = new Roles();
-		if (jsonObj.has("roleName") && !isNullOrEmpty(jsonObj.getString("roleName"))) {
-			StringBuilder role = new StringBuilder();
-			roles.setRoleName(role.append("ROLE_").append(jsonObj.getString("roleName")).toString().replaceAll(" ", "_").toUpperCase());
-			roles.setDisplayName(jsonObj.getString("roleName"));
-			roles.setOrg(org);
-			roles.setOrgLocations(orgLocations);
-			roles.setStatus("1");
-			roles.setDefaultRole(0);
-			RoleHierarchy roleHierarchy = roleHierarchyService.getRoleHierarchyById(Long.parseLong(jsonObj.getString("level")));
-			roles.setRoleHierarchy(roleHierarchy);
-			roles.setCreatedBy(user.getUserCode());
-			roles.setCreatedDate(new Date());
-			roles = rolesService.storeRoles(roles);
+		String response = null;
+		try{
+			if(user != null){
+				if (Validator.validate(addNewRoleDTO)) {
+					StringBuilder role = new StringBuilder();
+					roles.setRoleName(role.append("ROLE_").append(addNewRoleDTO.getRoleName()).toString().replaceAll(" ", "_").toUpperCase());
+					roles.setDisplayName(addNewRoleDTO.getRoleName());
+					roles.setOrg(org);
+					roles.setOrgLocations(orgLocations);
+					roles.setStatus("1");
+					roles.setDefaultRole(0);
+					RoleHierarchy roleHierarchy = roleHierarchyService.getRoleHierarchyById(Long.parseLong(addNewRoleDTO.getLevel()));
+					roles.setRoleHierarchy(roleHierarchy);
+					roles.setCreatedBy(user.getUserCode());
+					roles.setCreatedDate(new Date());
+					roles = rolesService.storeRoles(roles);
+					response = roles.getUuid();
+				}else{
+					response = "INVALID_DATA";
+				}
+			}else{
+				response = "SESSION_TIMEDOUT";
+			}
+		}catch (Exception e) {
+			response = "AWKWARD";
 		}
-		ArrayList<String> rolesList = new ArrayList<String>();
-		rolesList.add(roles.getId().toString());
-		return commonUtil.toJSON(rolesList);
+		return response;
 	}
+	
+	
+	@PreAuthorize("hasRole('ROLE_ENROLL_NEW_ROLE')")
+	@RequestMapping(value = "/app/updateOrgLocationRole", method = RequestMethod.POST)
+	public String updateOrgLocationRole(RoleDTO roleDTO, HttpServletRequest request) throws Exception
+	{
+		Roles roles = rolesService.getRolesById(roleDTO.getRoleId());
+		if(roles != null) {
+			roles.setDisplayName(roleDTO.getDisplayName());
+			RoleHierarchy roleHierarchy = new RoleHierarchy();
+			roleHierarchy.setId(roleDTO.getHierarchyId());
+			roles.setRoleHierarchy(roleHierarchy);
+			rolesService.storeRoles(roles);
+			SourceLeadSessionManager.setSessionAttribute(request, "displayName",roleDTO.getDisplayName());
+		}
+
+		return "success";
+	}
+	
+	
 	
 	@RequestMapping(value = "/app/getOrgSignature")
 	public String getOrgSignature(HttpServletRequest request) throws Exception
@@ -441,7 +690,8 @@ public class OrgSettingsRestController {
 		String resultJson = null;
 		Org org = (Org) SourceLeadSessionManager.getSessionAttribute(request, "org");
 		OrgLocations orgLocations = orgLocationService.getOrgLocations(orgLocationId);
-		//SimpleDateFormat simpleDateFormat = orgLocations.getLocFullFormDateFormatter();
+		// SimpleDateFormat simpleDateFormat =
+		// orgLocations.getLocFullFormDateFormatter();
 		if (null != orgLocations && null != orgLocations.getUser()) {
 			StringBuilder userName = new StringBuilder();
 			if (!isNullOrEmpty(orgLocations.getUser().getLastName())) {
@@ -456,7 +706,7 @@ public class OrgSettingsRestController {
 			orgLocations.setOrglocationUserId(orgLocations.getUser().getId());
 			orgLocations.setOrgCode(org.getOrgCode());
 			orgLocations.setTimeZoneName(orgLocations.getTimezone().getTimeZoneId());
-			orgLocations.setCreatedDateStr(commonUtil.dateStrFromOrgDateFormatter(orgLocations.getDateFormat(),orgLocations.getCreatedDate()));
+			orgLocations.setCreatedDateStr(commonUtil.dateStrFromOrgDateFormatter(orgLocations.getDateFormat(), orgLocations.getCreatedDate()));
 			UserRole userRole = userRoleService.getUserDetailsByUserIdAndLocationId(orgLocations.getUser().getId(), orgLocations.getId());
 			if (null != userRole) {
 				orgLocations.setOrglocationUserStatus(userRole.getUserState().toString());
@@ -508,11 +758,10 @@ public class OrgSettingsRestController {
 			orgLocations.setOrgLocationUserFirstName(orgLocations.getUser().getFirstName());
 			orgLocations.setOrgLocationUserLastName(orgLocations.getUser().getLastName());
 			orgLocations.setOrglocationUserEmail(orgLocations.getUser().getEmail());
-			if(orgLocations.getUser().getMobilePhone()!=null){
-			orgLocations.setOrglocationUserPhone(orgLocations.getUser().getMobilePhone());
+			if (orgLocations.getUser().getMobilePhone() != null) {
+				orgLocations.setOrglocationUserPhone(orgLocations.getUser().getMobilePhone());
 			}
-			else
-			{
+			else {
 				orgLocations.setOrglocationUserPhone("");
 			}
 			orgLocations.setOrglocationUserId(orgLocations.getUser().getId());
@@ -521,26 +770,24 @@ public class OrgSettingsRestController {
 		return resultJson;
 	}
 	
-	
-	@RequestMapping(value = "/app/saveOrgShortCodeform",method = RequestMethod.POST)
-	public String saveOrgShortCodeform(@RequestParam(value = "json", required = false) String json,@RequestParam(value = "locationCode", required = false) String locationCode,HttpServletRequest request) throws Exception
+	@RequestMapping(value = "/app/saveOrgShortCodeform", method = RequestMethod.POST)
+	public String saveOrgShortCodeform(@RequestParam(value = "json", required = false) String json, @RequestParam(value = "locationCode", required = false) String locationCode, HttpServletRequest request) throws Exception
 	{
 		JSONObject jsonObj = new JSONObject(json);
 		OrgLocations orgLocations = orgLocationService.getOrgLocationsByLocationCode(locationCode);
-		OrgLocations orgLocationsSession = orgLocationService.saveOrgLocationsOrgShortCode(orgLocations,jsonObj);
+		OrgLocations orgLocationsSession = orgLocationService.saveOrgLocationsOrgShortCode(orgLocations, jsonObj);
 		SourceLeadSessionManager.setSessionAttribute(request, "orgLocations", orgLocationsSession);
 		return "success";
 	}
 	
-	@RequestMapping(value = "/app/validateOrgShortCode",method = RequestMethod.POST)
+	@RequestMapping(value = "/app/validateOrgShortCode", method = RequestMethod.POST)
 	public boolean validateOrgShortCode(@RequestParam(value = "orgShortId") String orgShortId) throws Exception
 	{
 		boolean validateCode = orgLocationService.validateOrgShortCode(orgShortId);
 		return validateCode;
 	}
 	
-	
-	@RequestMapping(value = "/app/getDateFormatByOrgLocation",method = RequestMethod.POST)
+	@RequestMapping(value = "/app/getDateFormatByOrgLocation", method = RequestMethod.POST)
 	public String getDateFormatByOrgLocation(@RequestParam(value = "locationCode") String locationCode) throws Exception
 	{
 		OrgLocations orgLocations1 = orgLocationService.getOrgLocationsByLocationCode(locationCode);
@@ -548,28 +795,51 @@ public class OrgSettingsRestController {
 		return orgLocatDateFormat;
 	}
 	
-	@RequestMapping(value = "/app/updateLoginSecurity",method = RequestMethod.GET)
-	public String updateLoginSecurity(@RequestParam(value = "security") String security,@RequestParam(value = "locationId") Long locationId,HttpServletRequest request) throws Exception
+	@RequestMapping(value = "/app/updateLoginSecurity", method = RequestMethod.GET)
+	public String updateLoginSecurity(@RequestParam(value = "security") String security, @RequestParam(value = "locationId") Long locationId, HttpServletRequest request) throws Exception
 	{
-		
 		OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
-		if(Constants.YES.equalsIgnoreCase(security)){
+		if (Constants.YES.equalsIgnoreCase(security)) {
 			orgLocations.setLoginSecurity(Constants.YES);
 			orgLocationService.updateOrgLocations(orgLocations);
-		}else{
+		}
+		else {
 			orgLocations.setLoginSecurity(Constants.NO);
 			orgLocationService.updateOrgLocations(orgLocations);
 		}
 		return "Success";
 	}
 	
-	@RequestMapping(value = "/app/saveWhiteListIps",method = RequestMethod.GET)
-	public String saveWhiteListIps(WhiteListIPAddressDTO whiteListIPAddressDTO,HttpServletRequest request) throws Exception
+	@RequestMapping(value = "/app/saveWhiteListIps", method = RequestMethod.GET)
+	public Response<String> saveWhiteListIps(WhiteListIPAddressDTO whiteListIPAddressDTO, HttpServletRequest request) throws Exception
 	{
 		OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 		User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
-		whiteListIpAddressService.addWhiteListIps(whiteListIPAddressDTO,orgLocations,user);
-		return "Success";
+		Response<String> response = new Response<>();
+		if (user != null) {
+			try {
+				if (Validator.validate(whiteListIPAddressDTO)) {
+					whiteListIpAddressService.addWhiteListIps(whiteListIPAddressDTO, orgLocations, user);
+					response.setResponse(Result.SUCCESS.name());
+					response.setResponseMessage(Result.SUCCESS.getValue());
+				}
+				else {
+					response.setObject("DataMissing");
+					response.setResponse(Result.INVALID_DATA.name());
+					response.setResponseMessage(Result.INVALID_DATA.getValue());
+				}
+			}catch (Exception e) {
+				response.setResponse(Result.AWKWARD.name());
+				response.setResponseMessage(Result.AWKWARD.getValue());
+				logger.error(ExceptionUtils.getFullStackTrace(e));
+				e.printStackTrace();
+			}
+		}else {
+			response.setResponse(Result.SESSION_TIMEDOUT.name());
+			response.setResponseMessage(Result.SESSION_TIMEDOUT.getValue());
+		}
+ 
+		return response;
 	}
 	
 	@RequestMapping(value = "/app/getWhiteListIps", method = RequestMethod.GET)
@@ -577,7 +847,7 @@ public class OrgSettingsRestController {
 	{
 		OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 		User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
-		List<WhiteListIPAddressDTO> ipList = whiteListIpAddressService.getWhiteListIpsByLocationId(orgLocations.getId());
+		List<WhiteListIPAddressDTO> ipList = whiteListIpAddressService.getWhiteListIpsByLocationId(orgLocations.getId(), null);
 		return ipList;
 	}
 	
@@ -598,22 +868,481 @@ public class OrgSettingsRestController {
 	}
 	
 	@RequestMapping(value = "/app/deleteIP", method = RequestMethod.POST)
-	public Boolean deleteWhiteListIpById(HttpServletRequest request,@RequestParam(value = "id", required = false) Long whiteListIpId) throws Exception
+	public Boolean deleteWhiteListIpById(HttpServletRequest request, @RequestParam(value = "id", required = false) Long whiteListIpId) throws Exception
 	{
 		boolean isDeleted = false;
 		WhiteListIPAddress deleteWhiteListIPAddress = whiteListIpAddressService.getWhiteListIpsById(whiteListIpId);
-		 if(deleteWhiteListIPAddress !=null) {
-			 deleteWhiteListIPAddress.setStatus(Constants.INACTIVE);
-			 whiteListIpAddressDao.addWhiteListIps(deleteWhiteListIPAddress);
-			 isDeleted = true;
-		 }
+		if (deleteWhiteListIPAddress != null) {
+			deleteWhiteListIPAddress.setStatus(Constants.INACTIVE);
+			whiteListIpAddressDao.addWhiteListIps(deleteWhiteListIPAddress);
+			isDeleted = true;
+		}
 		return isDeleted;
 	}
 	
 	@RequestMapping(value = "/app/editWhiteListIp", method = RequestMethod.GET)
-	public WhiteListIPAddress editWhiteListIp(@RequestParam(value = "whiteListId", required = false) long whiteListId,HttpServletRequest request) throws Exception
+	public WhiteListIPAddress editWhiteListIp(@RequestParam(value = "whiteListId", required = false) long whiteListId, HttpServletRequest request) throws Exception
 	{
 		WhiteListIPAddress whiteListIp = whiteListIpAddressService.getWhiteListIpsById(whiteListId);
 		return whiteListIp;
 	}
+	
+	@PreAuthorize("hasRole('ROLE_VIEW_EDIT_ORG_SETTINGS')")
+	@RequestMapping(value = "/app/saveFinanacialYear", method = RequestMethod.GET)
+	public String saveFinanacialYear(@RequestParam(value = "locationId", required = false) Long locationId, @RequestParam(value = "startMonth", required = false) String startMonth, @RequestParam(value = "endMonth", required = false) String endMonth, HttpServletRequest request) throws Exception
+	{
+		OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+		if (startMonth != null && endMonth != null) {
+			orgLocations.setStartMonth(startMonth);
+			orgLocations.setEndMonth(endMonth);
+			orgLocationService.updateOrgLocations(orgLocations);
+		}
+		return "Success";
+	}
+	
+
+	@PreAuthorize("hasRole('ROLE_VIEW_EDIT_ORG_SETTINGS')")
+	@RequestMapping(value = "/app/saveCustomRecommendation", method = RequestMethod.POST)
+	public String saveCustomRecommendation(OrgLocationDTO locationDto, HttpServletRequest request) throws Exception
+	{
+		OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+		orgLocations.setRecommendedSkillPercent(locationDto.getRecommSkill());
+		orgLocations.setRecommendedEducationPercent(locationDto.getRecommEducation());
+		orgLocations.setRecommendedLocationPercent(locationDto.getRecommLocation());
+		orgLocations.setRecommendedNoticePercent(locationDto.getRecommNoticePeriod());
+		orgLocations.setRecommendedExpPercent(locationDto.getRecommExp());
+		orgLocations.setRecommendedVisatypePercent(locationDto.getRecommVisaType());
+		orgLocations.setRecommendedRatePercent(locationDto.getRecommRate());
+		orgLocations.setRecommendedKeywordsPercent(locationDto.getRecommKeywords());
+		orgLocationService.updateOrgLocations(orgLocations);
+		
+		return "Success";
+	}
+	
+	@PreAuthorize("hasRole('ROLE_VIEW_EDIT_ORG_SETTINGS')")
+	@RequestMapping(value = "/app/getAssociatesForSignatory", method = RequestMethod.GET)
+	public List<AddUserDTO> getAssociatesForSignatory(HttpServletRequest request) throws Exception
+	{
+		OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+		List<User> associatesList = userService.getUsersListForSignatoryByOrglocationId(orgLocations.getId());
+		List<AddUserDTO> userDtoList = new ArrayList<>();
+		for(User user : associatesList){
+			AddUserDTO userdto = new AddUserDTO();
+			userdto.setUserId(user.getId().toString());
+			userdto.setFirstName(user.getFirstName());
+			if(StringUtils.isNotBlank(user.getLastName()))
+				userdto.setLastName(user.getLastName());
+			userDtoList.add(userdto);
+		}
+		return userDtoList;
+	}
+	
+	
+
+	@PreAuthorize("hasRole('ROLE_ENROLL_ORG')")
+	@RequestMapping(value = "/app/saveGuestRoleActions", method = RequestMethod.POST)
+	public String saveGuestRoleActions(@RequestParam(value = "uuid", required = false) String uuid, @RequestParam(value = "actionIds", required = false) String actionIds, HttpServletRequest request) throws Exception
+	{
+		SourceleadRoles roles = sourceleadRolesService.getSourceleadRolesByUUID(uuid);
+		if (null != roles) {
+			roles.setActionId(actionIds);
+			sourceleadRolesService.saveSourceleadRoles(roles);
+			SourceLeadSessionManager.setSessionAttribute(request, "actionRolesMsg", "Action Roles Modified Successfully");
+		}
+		return "success";
+	}
+
+	@RequestMapping(value = "/app/validateAssociate",  method = RequestMethod.POST)
+    public @ResponseBody boolean validateAssociate(@RequestParam(value="userId", required=false) Long userId, @RequestParam(value="id", required=false) String uuid, HttpServletRequest request) throws Exception {
+	       OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+	       OrglocationSignatory signatory=null;
+	       if(null != uuid){
+	        signatory = orglocationSignatoryService.getUserBySignatoryUuId(userId, uuid, orgLocation.getId());
+	       }
+	       
+	       Boolean flag = false;
+	       if(signatory == null){
+
+	    	   flag = orglocationSignatoryService.getUserByUserId(userId, orgLocation.getId());
+	       }
+	      return flag;
+		 
+	    }
+
+	
+
+	@RequestMapping(value = "/app/generate-career-page-key", method = RequestMethod.POST)
+	public String generateCareerPageKey(HttpServletRequest request) throws Exception
+	{
+		try {
+			Org org = (Org) SourceLeadSessionManager.getSessionAttribute(request, "org");
+			if (org == null) {
+				return "logout";
+			}
+			String key = orgService.generateCareerPageKey(org.getId(), org.getOrgName());
+			org.setCareerPageKey(key);
+			org.setCareerPageKeyActive(true);
+			SourceLeadSessionManager.setSessionAttribute(request, "org", org);
+			return "key;" + key;
+		} catch (Exception ex) {
+			ex.printStackTrace();
+		}
+		return "failed";
+	}
+	
+	@RequestMapping(value = "/app/career-page-key-status", method = RequestMethod.POST)
+	public String careerPageKeyStatus(HttpServletRequest request) throws Exception
+	{
+		try {
+			Org org = (Org) SourceLeadSessionManager.getSessionAttribute(request, "org");
+			if (org == null) {
+				return "logout";
+			}
+			int status = orgService.changeCareerPageKeyStatus(org.getId());
+			org.setCareerPageKeyActive(status == 1);
+			SourceLeadSessionManager.setSessionAttribute(request, "org", org);
+			return "status;" + status;
+		} catch (Exception ex) {
+			ex.printStackTrace();
+		}
+		return "failed";
+	}
+	
+	
+	
+	@RequestMapping(value = "/app/orgLicenseSubscriptionList")
+	public ModelAndView orgLicenseSubscriptionList(HttpServletRequest request) throws Exception
+	{
+		Org org = (Org) SourceLeadSessionManager.getSessionAttribute(request, "org");
+		OrgLocations loginOrgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+		ModelAndView model = new ModelAndView();
+		commonUtil.highLightMenu(Constants.OrgSettings, request);
+		List<OrgLicenseSubscription> orgLicenseSubscriptionList = new ArrayList<>();
+		List<OrgLicenseSubscription> licenseSubscriptionList =  orgLicenseSubscriptionService.getOrgLicenseSubscriptionByOrgId(org.getId());
+		if(licenseSubscriptionList != null && !licenseSubscriptionList.isEmpty()) {
+			
+			for(OrgLicenseSubscription subscription :licenseSubscriptionList ) {
+				List<Long> tabIdsList = new ArrayList<>();
+				String[] subscribedTabsList = subscription.getSubscriptionTabs().split(",");
+				for(int i=0; i<subscribedTabsList.length; i++) {
+			    	tabIdsList.add(Long.parseLong(subscribedTabsList[i]));
+			    }
+				
+				List<Tabs> tabsList = tabsService.getTabsListByIds(tabIdsList);
+				List<String> registeredTabs = new ArrayList<>();
+				if(tabsList != null && !tabsList.isEmpty()) {
+					for(Tabs tabs : tabsList) {
+						registeredTabs.add(tabs.getTabName());
+					}
+				}
+				subscription.setModulesList(registeredTabs);
+				
+				
+				if(subscription.getFromDate() != null) {
+					subscription.setFromDateStr(commonUtil.dateStrFromOrgDateFormatter(loginOrgLocation.getDateFormat(),subscription.getFromDate()));
+				}
+				
+				if(subscription.getToDate() != null) {
+					subscription.setToDateStr(commonUtil.dateStrFromOrgDateFormatter(loginOrgLocation.getDateFormat(),subscription.getToDate()));
+				}
+				
+				Date currentDate = CalendarUtil.getDateTimeForGivenTimeZone(subscription.getTimezone().getTimeZoneId(), new Date(), "dd-MM-yyyy");
+				Calendar toDate = Calendar.getInstance();
+				toDate.setTime(currentDate); 
+				toDate.add(Calendar.DATE, +15); 
+				Date upcommingDate = toDate.getTime();
+				Date subscriptionDate = CalendarUtil.getDateTimeForGivenTimeZone(subscription.getTimezone().getTimeZoneId(), subscription.getToDate(), "dd-MM-yyyy");
+				
+				if(upcommingDate.after(subscriptionDate) || upcommingDate.equals(subscriptionDate)) {
+					subscription.setShowRenewal(Constants.YES);
+				}
+				
+				orgLicenseSubscriptionList.add(subscription);
+			}
+	
+		}
+		
+		model.setViewName("orgLicenseSubscriptionList");
+		model.addObject("sourceleadUrl", sourceleadUrl);
+		model.addObject("orgLicenseSubscriptionList", orgLicenseSubscriptionList);
+		
+		return model;
+	}
+	
+	
+	 @RequestMapping(value = "/app/upgradeOrgLicenseSubscription/{orgSubscriptionUUID}" , method = RequestMethod.GET)
+	 public @ResponseBody void upgradeOrgLicenseSubscription(@PathVariable String orgSubscriptionUUID,HttpServletRequest request,HttpServletResponse response) throws Exception {
+			StringBuilder redirectUrl = new StringBuilder();
+			response.sendRedirect(redirectUrl.append("/app/upgradeLicenseSubscription?licenseSubscriptionUUID=").append(orgSubscriptionUUID).toString());
+			
+	   }
+	
+	@RequestMapping(value = "/app/upgradeLicenseSubscription")
+	public ModelAndView upgradeLicenseSubscription(@RequestParam(value="licenseSubscriptionUUID", required=true) String orgSubscriptionUUID,HttpServletRequest request) throws Exception
+	{
+		Org org = (Org) SourceLeadSessionManager.getSessionAttribute(request, "org");
+		OrgLocations loginOrgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+		ModelAndView model = new ModelAndView();
+		commonUtil.highLightMenu(Constants.OrgSettings, request);
+		OrgLicenseSubscription orgLicenseSubscription = null;
+		if(orgSubscriptionUUID != null && !orgSubscriptionUUID.isEmpty()) {
+			orgLicenseSubscription = orgLicenseSubscriptionService.getOrgLicenseSubscriptionByUUID(orgSubscriptionUUID);
+			
+			OrgLicenseSubscriptionTypes subscriptionType = orgLicenseSubscription.getSubscriptionType();
+			List<OrgLicenseSubscriptionTypes> subscriptionTypeList = orgLicenseSubscriptionTypesService.getUpgradeLicenseSubscriptionTypesByCategoryAndSubscriptionTypeOrderId(Constants.SUBSCRIPTION_TYPE,subscriptionType.getSubscriptionTypeOrder());
+			model.addObject("subscriptionTypeList", subscriptionTypeList);
+			
+			OrgLicenseSubscriptionTypes userSubscriptionType = orgLicenseSubscription.getUserSubscriptionType();
+			List<OrgLicenseSubscriptionTypes> userSubscriptionTypeList = orgLicenseSubscriptionTypesService.getUpgradeLicenseSubscriptionTypesByCategoryAndSubscriptionTypeOrderId(Constants.USER_SUBSCRIPTION,userSubscriptionType.getSubscriptionTypeOrder());
+			model.addObject("userSubscriptionTypeList", userSubscriptionTypeList);
+			
+			OrgLicenseSubscriptionTypes storageSubscriptionType = orgLicenseSubscription.getStorageSubscriptionType();
+			List<OrgLicenseSubscriptionTypes> dataStorageTypeList = orgLicenseSubscriptionTypesService.getUpgradeLicenseSubscriptionTypesByCategoryAndSubscriptionTypeOrderId(Constants.DATA_STORAGE,storageSubscriptionType.getSubscriptionTypeOrder());
+			model.addObject("dataStorageTypeList", dataStorageTypeList);
+			
+			orgLicenseSubscription.setFromDateStr(commonUtil.dateStrFromOrgDateFormatter(loginOrgLocation.getDateFormat(),orgLicenseSubscription.getFromDate()));
+			
+			String[] subscribedTabsList = orgLicenseSubscription.getSubscriptionTabs().split(",");
+			List<Long> tabIdsList = new ArrayList<>();
+		    for(int i=0; i<subscribedTabsList.length; i++) {
+		    	tabIdsList.add(Long.parseLong(subscribedTabsList[i]));
+		    }
+		    orgLicenseSubscription.setTabIdsList(tabIdsList);
+		
+		
+		List<TabsDTO> tabsDTOList = new ArrayList<>();
+		Collection<Tabs> tabsList = tabsService.getAllTabsList();
+		List<Long> tabIs = new ArrayList<>();
+		tabIs.add(14L);
+		tabIs.add(11L);
+		List<Tabs> otherTabsList = tabsService.getTabsListByIds(tabIs);
+		tabsList.addAll(otherTabsList);
+		if(tabsList != null) {
+			for(Tabs tabs : tabsList) {
+				TabsDTO tabsDTO = new TabsDTO();
+				tabsDTO.setId(tabs.getId());
+				if(tabs.getTabName().equalsIgnoreCase("Billing")) {
+					tabsDTO.setTabName("Finance");
+				}else {
+					tabsDTO.setTabName(tabs.getTabName());
+				}
+				tabsDTO.setTabIcon(tabs.getTabIcon());
+				if(tabIdsList.contains(tabs.getId())) {
+					tabsDTO.setIsTabSubscribed(Constants.YES);
+				}else {
+					tabsDTO.setIsTabSubscribed(Constants.NO);
+				}
+				tabsDTOList.add(tabsDTO);
+			}
+		}
+		orgLicenseSubscription.setTabsDTOList(tabsDTOList);
+		}
+		
+		List<Timezone> timezoneList = timeZoneService.getAllTimeZones();
+		
+		model.setViewName("upgradeOrgLicenseSubscription");
+		model.addObject("sourceleadUrl", sourceleadUrl);
+		model.addObject("orgSubscriptionUUID", orgSubscriptionUUID);
+		model.addObject("orgLicenseSubscription", orgLicenseSubscription);
+		model.addObject("timezoneList", timezoneList);
+		return model;
+	}
+	
+	
+	@RequestMapping(value = "/app/getAssociatesGradesList", method = RequestMethod.POST)
+	public ResponseList<AssociateGradesDTO> getOnboardCandidateList(AssociateGradesDTO associateGradesDTO,
+			HttpServletRequest request) throws Exception {
+		OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+		String[] tableColumns = { "gradeName", "designation", "minSalary", "midSalary", "maxSalary", "actions" };
+		int sortColumnIndex = 1; // by default sorting using updated date
+		String sortColumnOrder = "desc"; // by default descending order
+		if (associateGradesDTO.getOrder() != null && !associateGradesDTO.getOrder().isEmpty()) {
+			sortColumnIndex = Integer.parseInt(associateGradesDTO.getOrder().get(0).get("column"));
+			sortColumnOrder = associateGradesDTO.getOrder().get(0).get("dir");
+		}
+		associateGradesDTO.setSortColumn(tableColumns[sortColumnIndex]);
+		associateGradesDTO.setSortOrder(sortColumnOrder);
+		ResponseList<AssociateGradesDTO> gradesOnBoardingDTOList = associateGradesService.getAssociateGradesDTOListByOrgLocationId(associateGradesDTO, orgLocations.getId());
+		return gradesOnBoardingDTOList;
+	}
+	
+	@RequestMapping(value = "/app/getGradeDetails", method = RequestMethod.POST)
+	public AssociateGradesDTO getGradeDetails(@RequestParam(value="uuid", required=true) String uuid,
+			HttpServletRequest request) throws Exception {
+		AssociateGradesDTO gradesDTO = new AssociateGradesDTO();
+		AssociateGrades grades = associateGradesService.getAssociateGradesByUUID(uuid);
+		if(grades != null) {
+			gradesDTO.setGradeName(grades.getGradeName());
+			gradesDTO.setDesignation(grades.getDesignation());
+			
+			if(grades.getMinSalary() != null) {
+				gradesDTO.setMinSalary(String.valueOf(grades.getMinSalary()));
+				gradesDTO.setMinSalaryRateType(grades.getMinSalaryRateType());
+				gradesDTO.setMinSalaryRatePer(grades.getMinSalaryRatePer());
+				
+			}
+			
+			if(grades.getMidSalary() != null) {
+				gradesDTO.setMidSalary(String.valueOf(grades.getMidSalary()));
+				gradesDTO.setMidSalaryRateType(grades.getMidSalaryRateType());
+				gradesDTO.setMidSalaryRatePer(grades.getMidSalaryRatePer());
+			}
+			
+			if(grades.getMaxSalary() != null) {
+				gradesDTO.setMaxSalary(String.valueOf(grades.getMaxSalary()));
+				gradesDTO.setMaxSalaryRateType(grades.getMaxSalaryRateType());
+				gradesDTO.setMaxSalaryRatePer(grades.getMaxSalaryRatePer());
+			}
+			
+			
+			gradesDTO.setUuid(grades.getUuid());
+		}
+		return gradesDTO;
+	}
+	
+	
+	@RequestMapping(value = "/app/refreshGradesList", method = RequestMethod.POST)
+	public List<AssociateGradesDTO> refreshGradesList(HttpServletRequest request) throws Exception {
+		OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+		List<AssociateGradesDTO> gradesDTOList = new ArrayList<>();
+		List<AssociateGrades> gradesList = associateGradesService.getAssociateGradesListByOrgLocationId(orgLocations.getId());
+		if(gradesList != null && !gradesList.isEmpty()) {
+			for(AssociateGrades grades : gradesList) {
+				AssociateGradesDTO gradesDTO = new AssociateGradesDTO();
+				gradesDTO.setId(grades.getId());
+				gradesDTO.setGradeName(grades.getGradeName());	
+				gradesDTOList.add(gradesDTO);
+			}
+		}
+		return gradesDTOList;
+	}
+	
+	
+	@RequestMapping(value = "/app/deleteGradeDetails", method = RequestMethod.POST)
+	public AssociateGradesDTO deleteGradeDetails(@RequestParam(value="uuid", required=true) String uuid,
+			HttpServletRequest request) throws Exception {
+		AssociateGradesDTO gradesDTO = new AssociateGradesDTO();
+		AssociateGrades grades = associateGradesService.getAssociateGradesByUUID(uuid);
+		if(grades != null) {
+			grades.setStatus(Constants.CANDIDATE_IN_ACTIVE);
+			associateGradesService.saveAssociateGrades(grades);
+		}
+		return gradesDTO;
+	}
+	
+	@RequestMapping(value = "/app/validateGradeName", method = RequestMethod.POST)
+	public String validateGradeName(@RequestParam(value="gradeName", required=true) String gradeName,@RequestParam(value="uuid", required=false) String uuid,
+			HttpServletRequest request) throws Exception {
+		OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+		String result = "true";
+		List<AssociateGrades> gradesList = null;
+		if(StringUtils.isNotBlank(uuid)) {
+			AssociateGrades associateGrades = associateGradesService.getAssociateGradesByUUID(uuid);
+			if(associateGrades != null && associateGrades.getGradeName().equalsIgnoreCase(gradeName)) {
+				result = "true";
+			}else {
+				gradesList = associateGradesService.getAssociateGradesListByOrgLocationId(orgLocations.getId());
+			}
+		}else {
+			  gradesList = associateGradesService.getAssociateGradesListByOrgLocationId(orgLocations.getId());
+		}
+		
+		if(gradesList != null) {
+			for(AssociateGrades grades : gradesList) {
+				if(grades.getGradeName().equalsIgnoreCase(gradeName)) {
+					result = "false";
+				}
+			}
+		}
+		return result;
+	}
+	
+	
+	
+	@RequestMapping(value = "/app/addNewGrade", method = RequestMethod.POST)
+	public Response<String> addNewGrade(AssociateGradesDTO associateGradesDTO, HttpServletRequest request) throws Exception
+	{
+		OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+		User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+		Response<String> response = new Response<>();
+		AssociateGrades associateGrades = null;
+		if (user != null) {
+			try {
+				if (Validator.validate(associateGradesDTO)) {
+					if(StringUtils.isNotBlank(associateGradesDTO.getUuid())) {
+						associateGrades = associateGradesService.getAssociateGradesByUUID(associateGradesDTO.getUuid());
+					}else {
+						associateGrades = new AssociateGrades();
+						associateGrades.setUuid(SourceLeadRandomCodeHelper.generateRandomUUID());
+					}
+					
+					associateGrades.setGradeName(associateGradesDTO.getGradeName());
+					
+					if(StringUtils.isNotBlank(associateGradesDTO.getDesignation())) {
+						associateGrades.setDesignation(associateGradesDTO.getDesignation());
+					}else {
+						associateGrades.setDesignation(null);
+					}
+					
+					if(StringUtils.isNotBlank(associateGradesDTO.getMinSalary())) {
+						associateGrades.setMinSalary(Double.valueOf(associateGradesDTO.getMinSalary()));
+						associateGrades.setMinSalaryRateType(associateGradesDTO.getMinSalaryRateType());
+						associateGrades.setMinSalaryRatePer(associateGradesDTO.getMinSalaryRatePer());
+					}else {
+						associateGrades.setMinSalary(null);
+						associateGrades.setMinSalaryRateType(null);
+						associateGrades.setMinSalaryRatePer(null);
+					}
+					
+					
+
+					if(StringUtils.isNotBlank(associateGradesDTO.getMidSalary())) {
+						associateGrades.setMidSalary(Double.valueOf(associateGradesDTO.getMidSalary()));
+						associateGrades.setMidSalaryRateType(associateGradesDTO.getMidSalaryRateType());
+						associateGrades.setMidSalaryRatePer(associateGradesDTO.getMidSalaryRatePer());
+					}else {
+						associateGrades.setMidSalary(null);
+						associateGrades.setMidSalaryRateType(null);
+						associateGrades.setMidSalaryRatePer(null);
+					}
+					
+					if(StringUtils.isNotBlank(associateGradesDTO.getMaxSalary())) {
+						associateGrades.setMaxSalary(Double.valueOf(associateGradesDTO.getMaxSalary()));
+						associateGrades.setMaxSalaryRateType(associateGradesDTO.getMaxSalaryRateType());
+						associateGrades.setMaxSalaryRatePer(associateGradesDTO.getMaxSalaryRatePer());
+					}else {
+						associateGrades.setMaxSalary(null);
+						associateGrades.setMaxSalaryRateType(null);
+						associateGrades.setMaxSalaryRatePer(null);
+					}
+					
+					associateGrades.setStatus(Constants.CANDIDATE_ACTIVE);
+					associateGrades.setCreatedBy(user);
+					associateGrades.setUpdatedBy(user);
+					associateGrades.setOrgLocationId(orgLocations);
+					associateGradesService.saveAssociateGrades(associateGrades);
+					
+					response.setResponse(Result.SUCCESS.name());
+					response.setResponseMessage(Result.SUCCESS.getValue());
+				}
+				else {
+					response.setObject("DataMissing");
+					response.setResponse(Result.INVALID_DATA.name());
+					response.setResponseMessage(Result.INVALID_DATA.getValue());
+				}
+			}catch (Exception e) {
+				response.setResponse(Result.AWKWARD.name());
+				response.setResponseMessage(Result.AWKWARD.getValue());
+				logger.error(ExceptionUtils.getFullStackTrace(e));
+				e.printStackTrace();
+			}
+		}else {
+			response.setResponse(Result.SESSION_TIMEDOUT.name());
+			response.setResponseMessage(Result.SESSION_TIMEDOUT.getValue());
+		}
+ 
+		return response;
+	}
+	
+
 }

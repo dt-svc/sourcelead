@@ -3,6 +3,9 @@ package com.bis.sourcelead.service.impl;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.servlet.http.HttpServletRequest;
+import com.bis.sourcelead.entity.OrgLocations;
+import com.bis.sourcelead.dto.ProjectTasksDTO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -14,15 +17,23 @@ import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.service.ProjectAssignTasksService;
 import com.bis.sourcelead.service.ProjectMembersService;
 import com.bis.sourcelead.service.ProjectTaskActivityService;
+
 import com.bis.sourcelead.service.ProjectTasksService;
 import com.bis.sourcelead.util.CommonUtil;
+import com.bis.sourcelead.util.SourceLeadSessionManager;
 
 @Service
 public class ProjectAssignTasksServiceImpl implements ProjectAssignTasksService{
 	
 	@Autowired
 	ProjectAssignTasksDao projectAssignTasksDao;
-
+  
+	@Autowired
+    ProjectTasksService projectTasksService;
+		
+	@Autowired
+	HttpServletRequest request;
+	
 	 @Autowired
 	 CommonUtil commonUtil;
 	 
@@ -69,7 +80,7 @@ public class ProjectAssignTasksServiceImpl implements ProjectAssignTasksService{
 	}
 
 	@Override
-	public void inlineUpdateAssignTaskUsers(String assignValue, String projectTaskId ,Long userId)throws Exception {
+	public void inlineUpdateAssignTaskUsers(ProjectTasksDTO projectTasksDTO,String assignValue, String projectTaskId ,Long userId)throws Exception {
 		User user = userServiceImpl.getUserById(userId);
 		StringBuffer activity  = null;
 		 StringBuffer activitySummary = null;
@@ -97,7 +108,10 @@ public class ProjectAssignTasksServiceImpl implements ProjectAssignTasksService{
 				 assignTasks.setStatus("1");
 				 assignTasks.setCreatedDate(commonUtil.currentDate());
 				 projectAssignTasksDao.saveProjectAssignTask(assignTasks);
-				 
+				 OrgLocations loginOrgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+				 		
+				 projectTasksService.SendMailtoAssigntoMembersaboutAddingTask(assignTasks,projectTasksDTO,projectTask,loginOrgLocation,user);
+				  				 
 				 //this code is Assigned to user Activity
 				 activity = new StringBuffer();
 			     activitySummary = new StringBuffer();

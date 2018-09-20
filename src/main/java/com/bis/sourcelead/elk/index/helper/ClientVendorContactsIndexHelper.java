@@ -92,7 +92,11 @@ public class ClientVendorContactsIndexHelper {
     			clientVendorContactsIndex.setClientUserId(orgSpoc.getClientUser().getId());
             	
             }
-            clientVendorContactsIndex.setOwnerUserId(orgSpoc.getOwnerUser().getId());
+            
+            if(orgSpoc.getOwnerUser() != null) {
+            	clientVendorContactsIndex.setOwnerUserId(orgSpoc.getOwnerUser().getId());
+            }
+            
 			clientVendorContactsIndex.setVendorOrgName(orgSpoc.getVendorLocationId().getOrgLocationName());
 			clientVendorContactsIndex.setClientOrgName(orgSpoc.getClientLocationId().getOrgLocationName());
 			clientVendorContactsIndex.setOrgSpocUUUID(orgSpoc.getUUID());

@@ -5,6 +5,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -18,12 +19,15 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.bis.sourcelead.constants.Constants;
+import com.bis.sourcelead.dto.RequirementDTO;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.Requirement;
 import com.bis.sourcelead.entity.RequirementInterview;
+import com.bis.sourcelead.entity.RequirementLocations;
 import com.bis.sourcelead.entity.RequirementSubmission;
 import com.bis.sourcelead.entity.RequirementSubmissionCounts;
 import com.bis.sourcelead.service.OrgLocationService;
+import com.bis.sourcelead.service.RequirementLocationsService;
 import com.bis.sourcelead.service.RequirementPipelineExportService;
 import com.bis.sourcelead.service.RequirementService;
 import com.bis.sourcelead.util.CommonUtil;
@@ -41,6 +45,9 @@ public class RequirementPipelineExportServiceImpl implements RequirementPipeline
 
 	@Autowired
 	RequirementService requirementService;
+	
+	@Autowired
+	private RequirementLocationsService requirementLocationService;
 
 	@Autowired
 	PdfUtilPipelineHelper pdfUtilPipelineHelper;
@@ -596,14 +603,40 @@ public class RequirementPipelineExportServiceImpl implements RequirementPipeline
 		Cell cell3 = writeRow.createCell(0);
 		cell3.setCellValue("Location :");
 		cell3.setCellStyle(style);
+		
+		
 
+		List<String> requirementLocationsList = new ArrayList<>();
+		List<RequirementLocations> locationsList;
 		String location = "";
+		StringBuilder requirementBuilder=new StringBuilder();
+		try {
+			locationsList = requirementLocationService.getRequirementLocationsListByRequirementId(requirement.getId());
+			if(locationsList != null && !locationsList.isEmpty()) {
+				for(RequirementLocations locationsJob : locationsList) {
+					requirementLocationsList.add(locationsJob.getLocation());
+					if(locationsJob.getLocation() !=null && locationsJob.getLocation() !=null){
+						location = requirementBuilder.append(locationsJob.getLocation()).toString();
+					}else{
+						location = "--";
+					}
+				}
+			}
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
+		
+		//reqListDTO.add(RequirementDTO);
+
+		/*String locations = "";
 		StringBuilder requirementBuilder=new StringBuilder();
 		if(requirement.getCountry() !=null && requirement.getState() !=null){
 			location = requirementBuilder.append(requirement.getCountry()).append(" ").append(requirement.getState()).toString();
 		}else{
 			location = requirement.getCountry();
-		}
+		}*/
 		Cell cell4 = writeRow.createCell(1);
 		cell4.setCellValue(location);
 		cell4.setCellStyle(style);

@@ -4,17 +4,27 @@ import java.io.Serializable;
 import java.util.LinkedList;
 import java.util.List;
 
+import com.bis.sourcelead.annotations.Required;
+
 public class ClientProjectDTO implements Serializable{
 
 	private static final long serialVersionUID = 1L; 
 	
+	@Required(desc="level1Manager")
     private String level1Manager;
 	
 	private String level2Manager;
 	
+	@Required(desc="clientOrgLocId")
 	private String clientOrgLocId;
 	
+	@Required(desc="clientProject")
 	private String clientProject;
+	
+    private String level1ExpenseApprover;
+	
+	private String level2ExpenseApprover;
+	
 
 	public String getLevel1Manager() {
 		return level1Manager;
@@ -46,6 +56,22 @@ public class ClientProjectDTO implements Serializable{
 
 	public void setClientProject(String clientProject) {
 		this.clientProject = clientProject;
+	}
+
+	public String getLevel1ExpenseApprover() {
+		return level1ExpenseApprover;
+	}
+
+	public void setLevel1ExpenseApprover(String level1ExpenseApprover) {
+		this.level1ExpenseApprover = level1ExpenseApprover;
+	}
+
+	public String getLevel2ExpenseApprover() {
+		return level2ExpenseApprover;
+	}
+
+	public void setLevel2ExpenseApprover(String level2ExpenseApprover) {
+		this.level2ExpenseApprover = level2ExpenseApprover;
 	}
 
 }

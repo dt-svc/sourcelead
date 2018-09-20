@@ -48,16 +48,17 @@ public class VendorOnboardTemplateDocumentsServiceImpl implements VendorOnboardT
 	}
 
 	@Override
-	public void storeVendorOnBoardTemplateDocuments(OnBoardingTemplateDTO onBoardingTemplateDTO, User loginUser)
+	public VendorOnboardingTemplateDocuments storeVendorOnBoardTemplateDocuments(OnBoardingTemplateDTO onBoardingTemplateDTO, User loginUser)
 			throws Exception {
 		
 		VendorOnboardingTemplate template = vendorOnboardTemplateDao.getVendorOnBoardingTemplateById(Long.valueOf(onBoardingTemplateDTO.getTemplateId()));
+		 VendorOnboardingTemplateDocuments vendorOnboardingTemplateDocuments =null;
 		if(onBoardingTemplateDTO.getVendorDocumentsFileInfo() != null &&  onBoardingTemplateDTO.getVendorDocumentsFileInfo().size() > 0) {
 			for(VendorDocumentsFileInfo fileInfo : onBoardingTemplateDTO.getVendorDocumentsFileInfo()) {
 				
 				if(StringUtils.isNotBlank(fileInfo.getDocFileName())) {
 					
-					     VendorOnboardingTemplateDocuments documents = new VendorOnboardingTemplateDocuments();
+					 VendorOnboardingTemplateDocuments documents = new VendorOnboardingTemplateDocuments();
 					/*	if(fileInfo != null && fileInfo.getFileURL() != null) {
 							   documents.setFileName(fileInfo.getFileName());
 							   documents.setFileContentType(fileInfo.getContentType());
@@ -77,13 +78,14 @@ public class VendorOnboardTemplateDocumentsServiceImpl implements VendorOnboardT
 		                    documents.setCreatedBy(loginUser);
 		                    documents.setUpdatedDate(CommonUtil.currentDate());
 		                    documents.setUpdatedBy(loginUser);
-		                    saveVendorOnBoardingTemplateDocuments(documents);
+		                    vendorOnboardingTemplateDocuments =  saveVendorOnBoardingTemplateDocuments(documents);
 		                  //  FileUploadUtil.moveFile(onBoardingTemplateDTO .getStaticPath(), fileInfo, "Vendor-Onboard-Template-Documents");
+		                   
 				}
 				
 			}
 		}
-		
+		 return vendorOnboardingTemplateDocuments;
 	}
 
 	@Override

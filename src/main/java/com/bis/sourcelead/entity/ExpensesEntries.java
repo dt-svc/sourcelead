@@ -1,6 +1,7 @@
 package com.bis.sourcelead.entity;
 
 import java.io.Serializable;
+import java.math.BigDecimal;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
@@ -11,6 +12,7 @@ import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -31,7 +33,6 @@ import com.bis.sourcelead.enums.PaymentModes;
 
 @Entity
 @Table(name = "EXPENSES_ENTRIES")
-@Cache(usage = CacheConcurrencyStrategy.TRANSACTIONAL, region = "ExpensesEntries")
 public class ExpensesEntries implements Serializable {
 	private static final long serialVersionUID = 1L;
 
@@ -40,13 +41,13 @@ public class ExpensesEntries implements Serializable {
 	@Column(name = "ID", nullable = false)
 	private Long id;
 
-	@NotFound(action=NotFoundAction.IGNORE)
-	@ManyToOne
+	
+	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "EXPENSESID", nullable = false)
 	private Expenses expensesId;
 	
-	@NotFound(action=NotFoundAction.IGNORE)
-	@ManyToOne
+	
+	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "EXPENSE_CATEGORY_ID", nullable = false)
 	private ExpensesCategory expensesCategoryId;
 
@@ -57,7 +58,7 @@ public class ExpensesEntries implements Serializable {
 	@Enumerated(EnumType.STRING)
 	private PaymentModes paymentMode;
 
-	@NotFound(action=NotFoundAction.IGNORE)
+	
 	@OneToMany(mappedBy = "expensesEntriesId")
 	//@Fetch(FetchMode.SELECT)
 	private Set<ExpensesEntryDocuments> expensesEntryDocuments;
@@ -68,8 +69,14 @@ public class ExpensesEntries implements Serializable {
 	@Column(name = "CURRENCY_TYPE")
 	private String currencyType;
 
-	@Column(name = "AMOUNT")
-	private Float amount;
+	@Column(name = "APPROVED_AMOUNT")
+	private BigDecimal amount;
+	
+	@Column(name = "SUBMITTED_AMOUNT")
+	private BigDecimal submittedamount;
+	
+	@Column(name = "AMOUNT_CHANGE_REASON")
+	private String amountchangereason;
 	
 	@Column(name = "PAID_BY")
 	private String paidBy;
@@ -91,6 +98,9 @@ public class ExpensesEntries implements Serializable {
 
 	@Column(name = "UPDATED_BY")
 	private String updatedBy;
+	
+	@Column(name = "BILLABLE")
+	private Boolean billable;
 
 	@Transient
 	private String expenseDateStr;
@@ -157,11 +167,11 @@ public class ExpensesEntries implements Serializable {
 		this.currencyType = currencyType;
 	}
 
-	public Float getAmount() {
+	public BigDecimal getAmount() {
 		return amount;
 	}
 
-	public void setAmount(Float amount) {
+	public void setAmount(BigDecimal amount) {
 		this.amount = amount;
 	}
 
@@ -256,6 +266,33 @@ public class ExpensesEntries implements Serializable {
 	public void setPaidBy(String paidBy) {
 		this.paidBy = paidBy;
 	}
+
+	public Boolean getBillable() {
+		return billable;
+	}
+
+	public void setBillable(Boolean billable) {
+		this.billable = billable;
+	}
+
+	public BigDecimal getSubmittedamount() {
+		return submittedamount;
+	}
+
+	public void setSubmittedamount(BigDecimal submittedamount) {
+		this.submittedamount = submittedamount;
+	}
+
+	public String getAmountchangereason() {
+		return amountchangereason;
+	}
+
+	public void setAmountchangereason(String amountchangereason) {
+		this.amountchangereason = amountchangereason;
+	}
+
+	
+	
 	
 	
 }

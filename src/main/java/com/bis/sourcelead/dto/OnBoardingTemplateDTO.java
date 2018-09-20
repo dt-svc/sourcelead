@@ -3,6 +3,8 @@ package com.bis.sourcelead.dto;
 import java.io.Serializable;
 import java.util.List;
 
+import com.bis.sourcelead.annotations.Required;
+
 /**
  * @author Laxman
  *
@@ -14,8 +16,10 @@ public class OnBoardingTemplateDTO implements Serializable {
 	
 	 private String templateId;
 	 
+	 @Required(desc = "templateName",dependsOn = "tab", parentValue = "details")
 	 private String templateName;
 	 
+	 @Required(desc = "description",dependsOn = "tab", parentValue = "details")
 	 private String description;
 
 	 private String contractsAttcahmentMaxRowNumber;
@@ -60,6 +64,7 @@ public class OnBoardingTemplateDTO implements Serializable {
 	 
 	 private String isDefaultTemplate;
 	 
+	 private String tab;
 	 
 	public String getTemplateId() {
 		return templateId;
@@ -261,5 +266,12 @@ public class OnBoardingTemplateDTO implements Serializable {
 		this.isDefaultTemplate = isDefaultTemplate;
 	}
 
+	public String getTab() {
+		return tab;
+	}
+
+	public void setTab(String tab) {
+		this.tab = tab;
+	}
 	
 }

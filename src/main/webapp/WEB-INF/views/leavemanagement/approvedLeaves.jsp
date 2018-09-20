@@ -6,6 +6,12 @@
 <script type="text/javascript">
 $(document).ready(function(){
 	getApprovedLeavesList();
+	if ('${notifyLink}' == "notifyLink") 
+	{
+	var leaveUUID = '${leaveUUID}';
+	var orgLocationId = '${orgLocationId}';
+	getRequestedAproveSummary(leaveUUID,orgLocationId);
+	}
 });
 </script>
 
@@ -31,6 +37,7 @@ $(document).ready(function(){
                 <div class="pull-left select-fild">
                         <select onchange="redirectlocation(this.value);">
                         <option value="/pendingLeaves">Pending Leaves</option>
+                        <option value="/withdrawLeaves">Withdraw Leaves</option>
                         <option value="/approvedLeaves" selected>Approved Leaves</option>
                         <option value="/rejectedLeaves">Rejected Leaves</option>
                         <option value="/cancelLeaves">Cancelled Leaves</option>
@@ -65,7 +72,8 @@ function getApprovedLeavesList(){
 	var orgLocationId = '${SourceLeadWeb_orgLocationId}';
 	var userId = '${SourceLeadWeb_user.id}';
 	$("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:999;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
-	$.get(sourceleadUrl+"/getLeavesListByLocationIdAndStatus?"+tokenParamName+"="+tokenValue+"&orgLocationId="+orgLocationId+"&status=APPROVED&userId="+userId, function(json) {
+	$.get(sourceleadUrl+"/getLeavesListByLocationIdAndStatus?"+tokenParamName+"="+tokenValue+"&orgLocationId="+orgLocationId+"&status=APPROVED&userId="+userId, function(response) {
+		if (response.response === "SUCCESS") {
 		var result = "";				        	
 				result = result + '<table id="approvedListTable" class="display" cellspacing="0" width="100%" >';
 				result = result + '<thead>';
@@ -80,15 +88,15 @@ function getApprovedLeavesList(){
 				result = result + '</tr>';
 				result = result + '</thead>	';
 				result = result + '<tbody>';
-				var data = json.data;
-				if(data !=null && data !=''){
-					 for (var i=0; i<data.length; i++)
+				//var data = json.data;
+				if(response !=null && response !=''){
+					 for (var i=0; i<response.data.length; i++)
 						{
-			        		 var opt = data[i];
+			        		 var opt = response.data[i];
 			        		 result = result + ' <tr>';
 			        		 result = result + ' <td>';
 			        		 result = result + ' <div class="proj_show divmax-width">';
-			        		 result = result + '     <div class="pull-left tbldata-dotdot" title="'+opt.leaveType+'" onclick="getRequestedAproveSummary(\''+opt.id+'\','+orgLocationId+');">'+opt.leaveType+' <i class="fa fa-binoculars pull-right"></i></div>';
+			        		 result = result + '     <div class="pull-left tbldata-dotdot" title="'+opt.leaveType+'" onclick="getRequestedAproveSummary(\''+opt.leaveUUID+'\','+orgLocationId+');">'+opt.leaveType+' <i class="fa fa-binoculars pull-right"></i></div>';
 			        		 result = result + '  </div>';
 			        		 result = result + ' </td>';
 			        		 result = result + ' <td>';
@@ -116,17 +124,17 @@ function getApprovedLeavesList(){
 			        		 }
 			        		 result = result + '  </td>';
 			        		 result = result + ' <td>';
-			        		 if(opt.updatedBy !=null && opt.updatedBy != 'undefined' && opt.updatedBy != ''){
-			        			 result = result + '     <div title="'+opt.updatedBy+'" class="tblminwidth-75">'+opt.updatedBy+'</div>';	 
+			        		 if(opt.approvedByUser !=null && opt.approvedByUser != 'undefined' && opt.approvedByUser != ''){
+			        			 result = result + '     <div title="'+opt.approvedByUser+'" class="tblminwidth-75">'+opt.approvedByUser+'</div>';	 
 			        		 }else{
-			        			 result = result + '     <div title="" class="tblminwidth-75">--</div>';	
+			        			 result = result + '     <div title="" class="tblminwidth-75">System Approved</div>';	
 			        		 }
 			        		 result = result + '  </td>';
 			        		 result = result + ' <td>';
 			        		 result = result + '  <div title="'+opt.status+'" class="tblminwidth-75">';
 			        		 result = result +' <b class="proj_active mt5 mb5">'+opt.status+'</b> ';
 			        		 if(opt.isWithdrawEnable !=null && opt.isWithdrawEnable !='' && opt.isWithdrawEnable == 'Y' ){
-			        			 result = result +' <b class="proj_closed mb5 cursorPointer" title="WITHDRAW" onClick="withDrawLeave(\''+opt.id+'\','+orgLocationId+');">WITHDRAW</b>';	 
+			        			 result = result +' <b class="proj_closed mb5 cursorPointer" title="WITHDRAW" onClick="withDrawLeave(\''+opt.leaveUUID+'\','+orgLocationId+');">WITHDRAW</b>';	 
 			        		 }
 			        		 result = result + '  </div>';
 			        		 result = result + ' </td>';
@@ -151,17 +159,29 @@ function getApprovedLeavesList(){
 					$("body").css('overflow-y', 'auto');
 				    $('.addcandidate-popup').fadeOut(200);
 				}); 
+				
+		}else if (response.indexOf('Sign In') !== -1) {
+			location.replace(sourceleadUrl);
+	    } else if (response.response === "AWKWARD") {
+		    location.href = "/errorPage";
+	     }
+		else {
+		    showError("Operation failed, please try again");
+		}
+		
 		}); 
  }
 </script>
 
 <script>
-function getRequestedAproveSummary(leaveId,orgLocationId){
-	   $.get(sourceleadUrl+"/getRequestedAproveSummary?"+tokenParamName+"="+tokenValue+"&leaveId="+leaveId+"&orgLocationId="+orgLocationId, function(data) {
-		   if(data != null){
+function getRequestedAproveSummary(leaveUUID,orgLocationId){
+	   $.get(sourceleadUrl+"/getRequestedAproveSummary?"+tokenParamName+"="+tokenValue+"&leaveUUID="+leaveUUID+"&orgLocationId="+orgLocationId, function(response) {
+		   if(response.response === "SUCCESS") {
+			   if(response != null){
 			$(".new_side_wrap").addClass("new_side_wrap_active");
 			$(".side_mask").fadeIn(200);
 			$("body").css('overflow-y', 'hidden');
+			var data = response.object;
 			 var result = "";	
 			 result = result +' <div class="viewgrid-header pull-right zIndex positionRelative">';
 			 result = result +' <span class="btn btn-primary btn-sm mr10" title="APPROVED">APPROVED</span>';
@@ -179,8 +199,8 @@ function getRequestedAproveSummary(leaveId,orgLocationId){
 			 result = result +'<div class="col-md-12 mb">';
 			 result = result +'<label class="col-md-2 control-label"><b>Leave Type:</b></label>';
 			 result = result +'<div class="col-md-8">';
-			 if(data.leaveType != null && data.leaveType !='' && data.leaveType !='undefined'){
-				 result = result +'<span>'+data.leaveType+'</span>';
+			 if(data.leaveName != null && data.leaveName !='' && data.leaveName !='undefined'){
+				 result = result +'<span>'+data.leaveName+'</span>';
 			 }else{
 	            	result = result +' <span>--</span>';
 	            }
@@ -206,16 +226,16 @@ function getRequestedAproveSummary(leaveId,orgLocationId){
 	            }
              result = result +' </div>';
              result = result +' </div>';
-             result = result +'<div class="col-md-12 mb">';
+             /* result = result +'<div class="col-md-12 mb">';
              result = result +'<label class="col-md-2 control-label"><b>No of leaves taken:</b></label>';
              result = result +' <div class="col-md-8">';
-             if(data.leavesTaken != null && data.leavesTaken !='' && data.leavesTaken !='undefined'){
-				 result = result +'<span>'+data.leavesTaken+'</span>';
+             if(data.actualLeavesTaken != null && data.actualLeavesTaken !='' && data.actualLeavesTaken !='undefined'){
+				 result = result +'<span>'+data.actualLeavesTaken+'</span>';
 			 }else{
 	            	result = result +' <span>--</span>';
 	            }
              result = result +'</div>';
-             result = result +'</div>';
+             result = result +'</div>'; */
              result = result +'<div class="col-md-12 mb">';
              result = result +'<label class="col-md-2 control-label"><b>Applied on:</b></label>';
              result = result +'<div class="col-md-8">';
@@ -286,6 +306,17 @@ function getRequestedAproveSummary(leaveId,orgLocationId){
              $("#leaveSummaryId").append(result);
             
 		}	
+		   } else if (response && response.response === "INVALID_DATA") {
+				//$(".new_side_wrap").removeClass("new_side_wrap_active");
+  		    showError(response.responseMessage);
+		   } else if (response.indexOf('Sign In') !== -1) {
+				location.replace(sourceleadUrl);
+		    } else if (response.response === "AWKWARD") {
+			    location.href = "/errorPage";
+		     }
+			else {
+			    showError("Operation failed, please try again");
+			}	   
 		 
 	});  
 }
@@ -326,13 +357,13 @@ function approvedListPagination(){
 <div id="popUp"></div>
 
 <script>
-function withDrawLeave(leaveId, userId){
+function withDrawLeave(leaveUUID, locationId){
 	var result = "";
 	result = result +"	<div class='comMask'></div>";
 	result = result +"	   <div id='remove_user_pop' class='remove_user_pop remove_user_pop_a'>";
 	result = result +"		<textarea id='withdrawReason' class='form-control' field-name='Withdraw Reason'  data-validation='required validate_Space validate_Description validate_length length2-250' name='reasonForSpoc' value='' placeholder='Withdraw Reason' rows='2'></textarea>";
 	result = result + ' <div id="withdrawReasonDiv"/>';
-	result = result +'		<b href="javascript:void(0)"><input id="confirm-id" type="button" value="Withdraw" onclick="withdraw(\''+leaveId+'\','+userId+');"><input class="u_can_color" type="button"  value="Cancel" onClick="cancelTermination();"></b>';
+	result = result +'		<b href="javascript:void(0)"><input id="confirm-id" type="button" value="Withdraw" onclick="withdraw(\''+leaveUUID+'\','+locationId+');"><input class="u_can_color" type="button"  value="Cancel" onClick="cancelTermination();"></b>';
 	result = result +"	</div>";
 	$("#popUp").append(result);
 	$("#remove_user_pop").slideDown(200);
@@ -349,8 +380,9 @@ function cancelTermination(){
 }
 </script>
 <script>
-function withdraw(leaveId,userId){
+function withdraw(leaveUUID,locationId){
 	 var reason = document.getElementById("withdrawReason").value;
+	 var userId = '${SourceLeadWeb_user.id}';
 	 var orgLocationId = '${SourceLeadWeb_orgLocationId}';
 // 	 var userId = '${SourceLeadWeb_userId}';
 	 if(reason == null || reason == '' || reason == 'undefined'){
@@ -358,8 +390,12 @@ function withdraw(leaveId,userId){
 	  	 $("#withdrawReasonDiv").append("<p class='jquery_form_error_message'>Reason Is Required</p>");
 	 }else{
 		 $("#withdrawReasonDiv").find('p.jquery_form_error_message').remove();
-		  $.get(sourceleadUrl+"/withdrawLeave?"+tokenParamName+"="+tokenValue+"&orgLocationId="+orgLocationId+"&leaveId="+leaveId+"&reason="+reason+"&userId="+userId, function(data) {
-				if(data == true){
+		  $.get(sourceleadUrl+"/withdrawLeave?"+tokenParamName+"="+tokenValue+"&orgLocationId="+orgLocationId+"&leaveUUID="+leaveUUID+"&reason="+reason+"&userId="+userId, function(response) {
+			  if (response && response.response === "INVALID_DATA") {
+	    		    showError(response.responseMessage);
+	    		} else if (response.response === "AWKWARD") {
+	    		    location.href = "/errorPage";
+	    		} else if (response.response === "SUCCESS") {
 					$("#popUp").empty();
 		 			$("#remove_user_pop, .sideMask").fadeOut();
 		 			$("#selector1").removeAttr("style");
@@ -367,6 +403,10 @@ function withdraw(leaveId,userId){
 		    	     $("#msgDiv").html("Withdraw Leave Successfully..");
 		    	     msgFadein();
 		    	     getApprovedLeavesList();
+				} else if (response.indexOf('Sign In') !== -1) {
+					location.replace(sourceleadUrl);
+				} else {
+				    showError("Operation failed, please try again");
 				}
 			});
 	 }

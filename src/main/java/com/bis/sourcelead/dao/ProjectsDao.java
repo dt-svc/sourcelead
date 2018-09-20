@@ -3,6 +3,7 @@ package com.bis.sourcelead.dao;
 import java.util.Date;
 import java.util.List;
 
+import com.bis.sourcelead.dto.DayWiseTimesheetReoprtsDTO;
 import com.bis.sourcelead.dto.ProjectsDTO;
 import com.bis.sourcelead.dto.ResponseList;
 import com.bis.sourcelead.entity.Projects;
@@ -17,6 +18,8 @@ public interface ProjectsDao {
 	public Projects getProjectById(Long id) throws Exception;
 	
 	List<Projects> getProjectByOrgLocationsId(Long orgLocationsId) throws Exception;
+	
+	List<Projects> getAllProjectByOrgLocationsId(Long orgLocationId) throws Exception;
 	
 	List<Projects> getEndClientProjectByOrgLocationsIdAndClientOrgLocationId(Long orgLocationsId,Long clientOrgLocationId) throws Exception;
 	
@@ -90,5 +93,17 @@ public interface ProjectsDao {
 	public List<Projects> getAllProjectsByOrgLocationIdAndStatus(Long orgLocationId)throws Exception;
 	
 	Projects getProjectByProjectUUID(String projectUUID) throws Exception;
+	
+	List<Projects> getAllProjectsByOrgLocationIdAndStatusForTransfer(Long orgLocationId,String projectClientUUID) throws Exception ;
+
+	Projects getProjectByProjectName(String projectName) throws Exception;
+
+	public List<Projects> getAllProjectsBasedOnProjectType(DayWiseTimesheetReoprtsDTO dayWiseTimesheetReoprtsDto);
+	
+	List<Projects> getAllClientProjectsByOrgLocationId(Long locationId) throws Exception;
+	
+	public List<Projects> getProjectsListByUserIdAndOrgLocationIdAndStatus(Long userId,Long orgLocationsId,Long orgId,Long candidateId,String userRole,String globalAccess) throws Exception;
+	
+	List<ProjectsDTO> getProjectListForDaywiseReports(Long orgLocationsId,Long orgId,String isGlobalManager,Long userId,String type,String userRole) throws Exception;
 
 }

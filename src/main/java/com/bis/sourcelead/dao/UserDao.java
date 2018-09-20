@@ -1,18 +1,27 @@
 package com.bis.sourcelead.dao;
 
 import java.util.Collection;
+import java.util.Date;
 import java.util.LinkedHashSet;
 import java.util.List;
 
+import com.bis.sourcelead.dto.ResponseList;
+import com.bis.sourcelead.dto.UserDTO;
+import com.bis.sourcelead.entity.DashboardItems;
 import com.bis.sourcelead.entity.Employees;
 import com.bis.sourcelead.entity.Org;
+import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.User;
+import com.bis.sourcelead.entity.UserRole;
+import com.bis.sourcelead.reportsDTO.LeaveBalanceReportDTO;
 
 public interface UserDao {
 
 	User findByUserName(String username);
 	
 	public User addUser(User user) throws Exception;
+	
+	public void deleteUser(User user) throws Exception;
 	
 	User getUserById(Long Id) throws Exception;
 	
@@ -126,6 +135,8 @@ public interface UserDao {
 	
 	User getUserByEmailAndUserType(String email,String userType) throws Exception;
 	
+	User getUserByEmail(String email) throws Exception;
+	
 	User getUserByUserName(String userName) throws Exception;
 
 	List<User> getTabAccessOwnersByOrgLocationIdAndTabIdAndNotOwners(Long orgLocationsId, Long tabId,
@@ -147,5 +158,51 @@ public interface UserDao {
 	User getUserByVerficationUUID(String token);
 	
 	User getUserByUserCodeAndOrgLocationsId(String userCode, Long orgLocationsId) throws Exception;
+	
+	public ResponseList<UserDTO> getUsersDTOListByOrglocationId(Long orgLocationId,UserDTO userDTO) throws Exception;
 
+	ResponseList<UserRole> getUsersResponseListByOrglocationId(UserDTO userDTO, OrgLocations orgLocation,Date[] searchDates) throws Exception;
+	
+
+	List<UserDTO> getLinkedUserListByUserId(Long id) throws Exception;
+	
+	public List<Long> getUserIdsListByLinkedUserId(Long userId) throws Exception;
+
+	User getUserbyConsultantUserId(Long consultantUserId);
+
+	List<User> getUsersListForSignatoryByOrglocationId(Long locationId);
+
+	List<User> getGlobalUsersByOrgId(Long roleId,Long orgId,Long tabId) throws Exception;
+	
+	public List<User> getTabAccessGlobalOwnersByOrgIdAndTabId(Long orgId,Long tabId) throws Exception;
+	
+	public List<User> getTabAccessGlobalOwnersByOrgLocationIdAndTabIdAndNoCurrentUser(Long currentApproverId, Long orgId,Long tabId)throws Exception;
+	
+	List<User> getResourceManagersByOrgLocationIdAndTabId(Long orgLocationsId,Long tabId) throws Exception;
+	
+	List<User> getReportingManagersByUserRolesAndOrgLocationId(Long roleId , Long orgLocationsId) throws Exception;
+	
+	public List<User> getGlobalReportingManagersUsersByOrgId(Long roleId, Long orgId) throws Exception;
+	
+	List<User> getReportingManagersByUserIdAndUserRolesAndOrgLocationIdAndUserTabId(Long userId, Long roleId, Long orgLocationsId) throws Exception;
+	
+	public ResponseList<UserDTO> getRecruitersReports(Long userId,Long orgLocationId,Long orgId,String isGlobalUser,UserDTO userDTO,String loginUserRole,Date[] searchDates,List<Long> teamsList,String type) throws Exception;
+
+
+	public DashboardItems getDashboardItemsByUserId(long loginUserId, long orgLocationId);
+	
+	public DashboardItems getDashboardItemsByDashboardId(long dashboardItemId);
+
+	public long saveDashboardItems(DashboardItems dashboardItems);
+	
+	
+	public List<User> getUsersListUsingMultipleStringIdsWithLocationId(String ids, Long orgLocationId) throws Exception;
+	
+	public List<LeaveBalanceReportDTO> getUserNameAndTypeByOrgLocationId(String searchValue, Long orgLocationId,List<Long> userRole,List<Long> orgDepartmentsList,String topleave,Date MonthStart,Date MonthEnd) throws Exception;
+
+	public List<User> getUsersListUsingMultipleStringIds(String ids) throws Exception;
+	
+	public List<Long> getUserHierarchyIdList(Long userId) throws Exception;
+	
+	public List<String> getUserHierarchyUserCodeList(Long userId) throws Exception;
 }

@@ -1,6 +1,8 @@
 
-<div class="content-dashboard clearfix" id="contractListDiv" style="display: none;"> 
-      <div class="clearfix dashboard-widget mb col-md-12" >
+
+
+<div class="mb col-md-12 clearfix" id="contractListDiv" style="display: none;"> 
+      <div class="dashboard-widget col-md-12" >
         <h4 class="clearfix">Contracts</h4>
         <div class="clearfix require_wrap_table dashboard-data filter_position"> 
         		 <div id="contractList"></div>
@@ -70,7 +72,7 @@ function contractList(){
 			                    	 result = result +"<td><div class='tbldata-dotdot-sm'>---</div></td>";
 			                     }
 		                    	 if(opt.amount != null && opt.amount != '' && opt.amount != 'undefined' && opt.paymentMode != null && opt.paymentMode != '' && opt.paymentMode != 'undefined'){
-				                     result = result +"<td><div><span  title='"+opt.paymentType+"&nbsp;"+opt.amount+"/"+opt.paymentMode+"&nbsp;"+opt.rateType+"'>"+opt.paymentType+"&nbsp;"+opt.amount+"/"+opt.paymentMode+"</span></div></td>";
+				                     result = result +"<td><div><span  title='"+opt.paymentType+"&nbsp;"+opt.amount+"/"+opt.paymentMode+"&nbsp;'>"+opt.paymentType+"&nbsp;"+opt.amount+"/"+opt.paymentMode+"</span></div></td>";
 			                     }else if(opt.rate != null && opt.rate != '' && opt.rate != 'undefined'){
 				                     result = result +"<td><div>---</div></td>";
 			                     }

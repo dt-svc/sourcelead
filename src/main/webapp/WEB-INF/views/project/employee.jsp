@@ -15,7 +15,8 @@
   position: absolute !important; right: 0 !important;
 }
 .countShow {
-display: none;  border: none; min-width: 10px; text-align: center; cursor: pointer; max-width: 25px; 
+display: none;  border: none; min-width: 10px; text-align: center; cursor: pointer; max-width: 25px;
+margin-top: 0; 
 }
 .remove_user_pop.remove_user_pop_a {
 top:20% !important;
@@ -50,7 +51,7 @@ left: 115px !important;
 	 var postedOrgLocationId = '${postedOrgLocationId}';
 	 var loginOrgLocationId = '${SourceLeadWeb_orgLocations.id}'
 	 var projectClientUUID = '${projectClientUUID}';
-	 	 
+	 var postedSharedProjectOrgLocationId = '${postedSharedProjectOrgLocationId}';
 	   $("#employeesLoadingImg").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;'); 
  	 
 	   var resourceRequestsCount = '${resourceRequestsCount}';
@@ -68,7 +69,7 @@ left: 115px !important;
 	/* Dont delete this commented code. Functionality is in progress '+projectBudgetCount+' */
 	 result = result + '<li class="current"><a href="#tab-b" id="resourceTab" onclick="resourceRequestsTab();">Resource Requests ('+resourceRequestsCount+')</a></li>'; 
 	
-	 if(postedOrgLocationId == loginOrgLocationId){
+	 if((postedOrgLocationId == loginOrgLocationId) || (postedSharedProjectOrgLocationId == loginOrgLocationId)){
 		result = result + '<li class=""><a href="#tab-c" id="budgetRequestsTab" onclick="budgetRequests();">Budget Requests ';
 		result = result + '(<b class="countClose">'+projectBudgetCount+'</b><input class="countShow" type="text" id="projectBudgetCount" readonly/>)';
 		result = result + '</a></li>';
@@ -161,6 +162,10 @@ function resourceRequestsTab(){
 	 var projectUUID = '${projectUUID}';
 	 var projectClientUUID = '${projectClientUUID}';
 	 
+	 var postedOrgLocationId = '${postedOrgLocationId}';
+	 var loginOrgLocationId = '${SourceLeadWeb_orgLocations.id}';
+	 var postedSharedProjectOrgLocationId = '${postedSharedProjectOrgLocationId}';
+	 
 	 var locationList ='${SourceLeadWeb_orgLocations.dateFormat}';	
 	  if(locationList.match("yyyy-MM-dd")){
 		  resourceReqListDate = 'YYYY-MM-DD';
@@ -174,14 +179,23 @@ function resourceRequestsTab(){
 	 $.ajax({
 	    	type: "GET",
 	        url: sourceleadUrl+"/getPlanningRequestListByProjectUUID?${_csrf.parameterName}=${_csrf.token}&projectUUID="+projectUUID, 
-	        success: function(json) {
+	        success: function(data) {
 	        	
-	        	
-	        	var result = "";
+	        	if (data && data.response === "INVALID_DATA") {
+					$("#associateRequestLoading").removeAttr("style");
+                    showError(data.responseMessage);
+                } else if (data.response === "AWKWARD") {
+                    location.href = "/errorPage";
+                } else if (data.response === "SUCCESS") {
+                	var json = data.data;
+                	
+	        	  var result = "";
 	        	
 	    		result = result + '	<div class="timesheet_head anchorTag-black">';
 	    		result = result + '	<ul>';
 	    		
+	    		if('${isClientOrgActive}' == "N" || postedOrgLocationId == loginOrgLocationId || postedSharedProjectOrgLocationId == loginOrgLocationId){  
+	    			+	    
 	    		 '<sec:authorize access="hasRole(\'ROLE_ADD_RESOURCE_REQUEST\')">';
 		    		result = result + '	      <li><a href="'+sourceleadUrl+'/requestAssociates?projectUUID='+projectUUID+'&projectClientUUID='+projectClientUUID+'">';
 		    		result = result + '	       <i class="glyphicon glyphicon-plus"></i>Associate Request</a></li>';
@@ -191,6 +205,7 @@ function resourceRequestsTab(){
 		    		result = result + '	      <li><a href="'+sourceleadUrl+'/newResourceRequest?projectUUID='+projectUUID+'&projectClientUUID='+projectClientUUID+'">';
 		    		result = result + '	       <i class="glyphicon glyphicon-plus"></i>New Resource Request</a>&nbsp; &nbsp;</li>';
 	    		 '</sec:authorize>';
+	    		}
 		    		 
 	    		result = result + '	</ul>';
 	    		result = result + '	       </div>';
@@ -199,12 +214,11 @@ function resourceRequestsTab(){
 	    		result = result + '	    <thead>';
 	    		result = result + '	     	<tr>';
 	    		result = result + '	         	<th>Request Id</th>';
-	    		result = result + '	             <th>Approver</th>';
 	    		result = result + '	             <th>Req. Resources</th>';
-	    		result = result + '	             <th>Alloted Resources</th>';
-	    		result = result + '	             <th>Estimated Hours<br>(<small class="custom-small">'+resourceReqListDate+'</small>)</th>';
-	    		result = result + '	             <th>Estimated Budget<br>(<small class="custom-small">'+resourceReqListDate+'</small>)</th>';
-	    		result = result + '	             <th>Req. On</th>';
+	    		result = result + '	             <th>Allocated Resource</th>';
+	    		result = result + '	             <th>Estimated Hours<br></th>';
+	    		result = result + '	             <th>Estimated Budget<br></th>';
+	    		result = result + '	             <th>Req. On<br>(<small class="custom-small">'+resourceReqListDate+'</small>)</th>';
 	    		result = result + '	             <th>Req. By</th>';
 	    		/* result = result + '	             <th>Action</th>'; */
 	    		result = result + '	         </tr>';
@@ -240,7 +254,6 @@ function resourceRequestsTab(){
 						}
 	    				
 	    			}
-	    			result = result + '	             <td><div class="tbldata-dotdot-vsm">'+report.approverName+'</div></td>';
 		    		result = result + '	             <td><div>'+report.requestedResources+'</div></td>';
 		    		result = result + '	             <td><div>'+report.allocatedResources+'</div></td>';
 		    		result = result + '	             <td><div>'+report.estimatedHours+' hrs</div></td>';
@@ -263,6 +276,12 @@ function resourceRequestsTab(){
 	    	    $("#resourceRequestsTabDiv").empty();
 	    	    $("#resourceRequestsTabDiv").append(result); 
 	    	    planningRequestsPagination();
+	    	    
+               }else if (data.indexOf('Sign In') !== -1) {
+					location.replace(sourceleadUrl);
+				} else {
+                   showError("Operation failed, please try again");
+               }
 	        }
 	   
      });
@@ -343,10 +362,11 @@ function getOrgLocationProjects(){
 	    });
 	
 	 var sourceleadUrl = '${sourceleadUrl}';
+	 var projectClientUUID = '${projectClientUUID}';
 	 $("#projectDetailsLoading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
 	 $.ajax({
 	    	type: "GET",
-	        url: sourceleadUrl+"/getProjectsListByOrgLocationForTransfer?${_csrf.parameterName}=${_csrf.token}&orgLocationId="+orgLocations, 
+	        url: sourceleadUrl+"/getProjectsListByOrgLocationForTransfer?${_csrf.parameterName}=${_csrf.token}&orgLocationId="+orgLocations+"&projectClientUUID="+projectClientUUID, 
 	        success: function(json) {
 	        
 	        	var output = "";
@@ -577,7 +597,7 @@ function transferToProject(){
 		        url: sourceleadUrl+"/transferProjectMembers?${_csrf.parameterName}=${_csrf.token}&projectUUID="+projectUUID+"&projectId="+projectId+"&projectOrgLocationId="+orgLocations+"&projectMembers="+projectMembers, 
 		        success: function() {
 		        
-		        	location.replace(sourceleadUrl+"/projectSummary?projectUUID="+projectUUID+"&projectClientUUID="+projectClientUUID+"&tabType=projectMembers");
+		        	location.replace(sourceleadUrl+"/projectSummary?projectUUID="+projectUUID+"&projectClientUUID="+projectClientUUID+"&tabType=team");
 			        $("#projectDetailsLoading").removeAttr("style"); 
 		        }
 		   
@@ -610,6 +630,7 @@ function alertProjectMembersMessage(){
 function cancel(){
 	$("#membersChoicepopUp").empty();
 	$(".project_inn_mask").fadeOut(200);
+	
 }
 </script>
 
@@ -694,104 +715,115 @@ function budgetRequests(){
 	 $.ajax({
 	    	type: "GET",
 	        url: sourceleadUrl+"/getBudgetRequestListByProjectUUID?${_csrf.parameterName}=${_csrf.token}&projectUUID="+projectUUID, 
-	        success: function(json) {
-	        	var result = "";
-	    		result = result + '	<div class="timesheet_head anchorTag-black">';
-	    		result = result + '	<ul>';
-	    		result = result + '	<li><a href="javascript:void(0)" onclick="addBudgetRequestPopUp();getApproversList();"><i class="glyphicon glyphicon-plus paddingRight"></i>Budget Request</a></li>';
-	    		result = result + '	</ul>';
-	    		result = result + '	       </div>';
-	    		result = result + '	       <div id="budgetRequestPopUpid"></div>';
-	    		result = result + '	       <div id="editBudgetRequestPopUpid"></div>';
-	    		result = result + '		<div class="project_tabs_inn_table vendor_wrap_inn_table datatable_filter overflow_inherint">';
-	    		result = result + '		<table id="projectBudgetRequestList" cellspacing="0" width="100%">';
-	    		result = result + '	    <thead>';
-	    		result = result + '	     	<tr>';
-	            result = result + '	 	<th>Request Id</th>';
-	            result = result + '	   <th>Base Line</th>';
-	            result = result + '	   <th>Budget Total</th>';
-	            result = result + '	   <th>Estimated Hours</th>';
-	            result = result + '	   <th>Date</th>';
-	            result = result + '	   <th>Initiator</th>';
-	            result = result + '	   <th>Action</th>';
-	    		result = result + '	         </tr>';
-	    		result = result + '	    </thead>';
-	    		result = result + '	 	<tbody>';
-	    		for(i=0;i<json.length;i++){
-	    			var report = json[i];
-	    			if(report.estimatedBudgetValue != null  && report.estimatedBudgetValue != "" && report.estimatedBudgetValue != "undefined"){
-	    				estimatedBudgetValue = report.estimatedBudgetValue;
-	    			}else{
-	    				estimatedBudgetValue = "--";
-	    			}
-	    			
-	    			if(report.estimatedHours != null && report.estimatedHours != "" && report.estimatedHours !="undefined"){
-	    				estimatedHours = report.estimatedHours;
-	    			}else{
-	    				estimatedHours = "--";
-	    			}
-	    			if(report.budgetDescription != null && report.budgetDescription != "" && report.budgetDescription !="undefined"){
-	    				budgetDescription = report.budgetDescription;
-	    			}else{
-	    				budgetDescription = "--";
-	    			}
-	    			result = result + '	<tr>';
-	    			if((report.approverUserIdlLong == '${SourceLeadWeb_user.id}') && (report.budgetStatus == "On Hold" || report.budgetStatus == "Rejected" || report.budgetStatus == "Waiting For Approval")){
-	    				result = result + ' 	<td><div class="tbldata-dotdot-sm"> <div class="tbldata-dotdot-100 pull-left">'+report.budgetRequestedId+'</div> <i class="fa fa-pencil ml10 pull-right" onclick="editBudgetrequest('+report.id+')"></i></div></td>';
-	    			}else{
-	    				result = result + '  <td><div class="tbldata-dotdot-sm"> <div class="tbldata-dotdot-100 pull-left">'+report.budgetRequestedId+'</div></div></td>';
-	    			}
-					
-					result = result + '     <td><div class="tbldata-dotdot-me" title=\''+budgetDescription+'\'>'+budgetDescription+'</div></td>';
-					result = result + '     <td><div class="tbldata-dotdot_80" title="'+estimatedBudgetValue+'">'+estimatedBudgetValue+'</div></td>';
-					result = result + '     <td><div  class="tbldata-dotdot_80">'+estimatedHours+'</div></td>';
-					result = result + '     <td><div  class="tbldata-dotdot_80">'+report.createdStr+'</div></td>';
-					result = result + '     <td><div  class="tbldata-dotdot-vsm" title="'+report.createdUserName+'">'+report.createdUserName+'</div></td>';
-					if(report.budgetStatus == "Waiting For Approval"){
-						result = result + '     <td><div class="tblminwidth-90">';
-						result = result + '     <i class="fa fa-check" alt="Approve" title="Approved" onclick="acceptBudgetRequset('+report.id+')"></i>|';
-						result = result + '     <i class="fa fa-times" alt="Rejected" title="Rejected" onclick="deleteBudgetRequaet('+report.id+');"></i>';
-						result = result + '     <i class="fa fa-clock-o" alt="On hold" title="On hold" onclick="onholdBudgetRequaet('+report.id+');"></i></div></td>';
-					}
-					if(report.budgetStatus == "Rejected"){
-						result = result + '<td><div class="tblminwidth-90 paTp"><b class="Rejec">Rejected</b>';
-						 result = result+"  <i class='glyphicon glyphicon-comment colB' id='"+report.id+"' onclick='rejectedMessage(\""+report.rejectedReason+"\");'>";
-					 	 result = result+" <div class='app_error_mes' id='rejectedMessage"+report.id+"'>"+report.rejectedReason+"</div></i>";
-					 	 result = result+" <br><span class='rejNam' title='"+report.updatedUserName+"'>By : "+report.updatedUserName+"</span>";
-						result = result + '</div></td>';
-					}
-					if(report.budgetStatus == "Approved"){
-						result = result + '<td><div class="tblminwidth-90 paTp"><b>Approved</b>';
-						 result = result+" <br><span class='rejNam' title='"+report.updatedUserName+"'>By : "+report.updatedUserName+"</span>";
-						 result = result + '</div></td>';
-					}
-					
-					if((report.approverUserIdlLong ==  '${SourceLeadWeb_user.id}') &&  report.budgetStatus == "On Hold"){
-						result = result + '     <td><div class="tblminwidth-75">';
-						result = result + '     <i class="fa fa-check" alt="Approve" title="Approved" onclick="acceptBudgetRequset('+report.id+')"></i>|';
-						result = result + '     <i class="fa fa-times" alt="Rejected" title="Rejected" onclick="deleteBudgetRequaet('+report.id+');"></i>';
-						result = result + '     </div></td>';
-						
-					}
-					if(report.budgetStatus == "On Hold" && (report.approverUserIdlLong !=  '${SourceLeadWeb_user.id}')){
-						result = result + '<td><div class="tblminwidth-90 paTp"><b class="processs-hold">On Hold</b>';
-						 result = result+"  <i class='glyphicon glyphicon-comment colB' id='"+report.id+"' onclick='rejectedMessage(\""+report.rejectedReason+"\");'>";
-					 	 result = result+" <div class='app_error_mes' id='rejectedMessage"+report.id+"'>"+report.rejectedReason+"</div></i>";
-					 	 result = result+" <br><span class='rejNam' title='"+report.updatedUserName+"'>By : "+report.updatedUserName+"</span>";
-						result = result + '</div></td>';
-					}
-					
-					result = result + ' </tr>';
-	    		}
-	    		result = result + '	     </tbody>';
-	    		result = result + '	 </table>';
-	    		result = result + '</div>';
-	    	    $("#budgetRequestsTabDiv").empty();
-	    	    $("#budgetRequestsTabDiv").append(result); 
-	    	    
-	    	    $("#projectBudgetCount").val(json.length); 
-	    	    
-	    	    budgetRequestPagination();
+	        success: function(data) {
+	        	if (data && data.response === "INVALID_DATA") {
+						$("#associateRequestLoading").removeAttr("style");
+	                    showError(data.responseMessage);
+	                } else if (data.response === "AWKWARD") {
+	                    location.href = "/errorPage";
+	                } else if (data.response === "SUCCESS") {
+	                	var json = data.data;
+			        	var result = "";
+			    		result = result + '	<div class="timesheet_head anchorTag-black">';
+			    		result = result + '	<ul>';
+			    		result = result + '	<li><a href="javascript:void(0)" onclick="addBudgetRequestPopUp();getApproversList();"><i class="glyphicon glyphicon-plus paddingRight"></i>Budget Request</a></li>';
+			    		result = result + '	</ul>';
+			    		result = result + '	       </div>';
+			    		result = result + '	       <div id="budgetRequestPopUpid"></div>';
+			    		result = result + '	       <div id="editBudgetRequestPopUpid"></div>';
+			    		result = result + '		<div class="project_tabs_inn_table vendor_wrap_inn_table datatable_filter overflow_inherint">';
+			    		result = result + '		<table id="projectBudgetRequestList" cellspacing="0" width="100%">';
+			    		result = result + '	    <thead>';
+			    		result = result + '	     	<tr>';
+			            result = result + '	 	<th>Request Id</th>';
+			            result = result + '	   <th>Description</th>';
+			            result = result + '	   <th>Estimated Budget</th>';
+			            result = result + '	   <th>Estimated Hours</th>';
+			            result = result + '	   <th>Date</th>';
+			            result = result + '	   <th>Initiator</th>';
+			            result = result + '	   <th>Action</th>';
+			    		result = result + '	         </tr>';
+			    		result = result + '	    </thead>';
+			    		result = result + '	 	<tbody>';
+			    		for(i=0;i<json.length;i++){
+			    			var report = json[i];
+			    			if(report.estimatedBudgetValue != null  && report.estimatedBudgetValue != "" && report.estimatedBudgetValue != "undefined"){
+			    				estimatedBudgetValue = report.estimatedBudgetValue;
+			    			}else{
+			    				estimatedBudgetValue = "--";
+			    			}
+			    			
+			    			if(report.estimatedHours != null && report.estimatedHours != "" && report.estimatedHours !="undefined"){
+			    				estimatedHours = report.estimatedHours;
+			    			}else{
+			    				estimatedHours = "--";
+			    			}
+			    			if(report.budgetDescription != null && report.budgetDescription != "" && report.budgetDescription !="undefined"){
+			    				budgetDescription = report.budgetDescription;
+			    			}else{
+			    				budgetDescription = "--";
+			    			}
+			    			result = result + '	<tr>';
+			    			if((report.approverUserIdlLong == '${SourceLeadWeb_user.id}') && (report.budgetStatus == "On Hold" || report.budgetStatus == "Rejected" || report.budgetStatus == "Waiting For Approval")){
+			    				result = result + ' 	<td><div class="tbldata-dotdot-sm"> <div class="tbldata-dotdot-100 pull-left">'+report.budgetRequestedId+'</div> <i class="fa fa-pencil ml10 pull-right" onclick="editBudgetrequest('+report.id+')"></i></div></td>';
+			    			}else{
+			    				result = result + '  <td><div class="tbldata-dotdot-sm"> <div class="tbldata-dotdot-100 pull-left">'+report.budgetRequestedId+'</div></div></td>';
+			    			}
+							
+							result = result + '     <td><div class="tbldata-dotdot-me" title=\''+budgetDescription+'\'>'+budgetDescription+'</div></td>';
+							result = result + '     <td><div class="tbldata-dotdot_80" title="'+estimatedBudgetValue+'">'+estimatedBudgetValue+'</div></td>';
+							result = result + '     <td><div  class="tbldata-dotdot_80">'+estimatedHours+'</div></td>';
+							result = result + '     <td><div  class="tbldata-dotdot_80">'+report.createdStr+'</div></td>';
+							result = result + '     <td><div  class="tbldata-dotdot-vsm" title="'+report.createdUserName+'">'+report.createdUserName+'</div></td>';
+							if(report.budgetStatus == "Waiting For Approval"){
+								result = result + '     <td><div class="tblminwidth-90">';
+								result = result + '     <i class="fa fa-check" alt="Approve" title="Approve" onclick="acceptBudgetRequset('+report.id+')"></i>|';
+								result = result + '     <i class="fa fa-times" alt="Rejected" title="Reject" onclick="deleteBudgetRequaet('+report.id+');"></i>|';
+								result = result + '     <i class="fa fa-clock-o" alt="On hold" title="On hold" onclick="onholdBudgetRequaet('+report.id+');"></i></div></td>';
+							}
+							if(report.budgetStatus == "Rejected"){
+								result = result + '<td><div class="tblminwidth-90 paTp"><b class="Rejec">Rejected</b>';
+								 result = result+"  <i class='glyphicon glyphicon-comment colB' id='"+report.id+"' onclick='rejectedMessage(\""+report.rejectedReason+"\");'>";
+							 	 result = result+" <div class='app_error_mes' id='rejectedMessage"+report.id+"'>"+report.rejectedReason+"</div></i>";
+							 	 result = result+" <br><span class='rejNam' title='"+report.updatedUserName+"'>By : "+report.updatedUserName+"</span>";
+								result = result + '</div></td>';
+							}
+							if(report.budgetStatus == "Approved"){
+								result = result + '<td><div class="tblminwidth-90 paTp"><b>Approved</b>';
+								 result = result+" <br><span class='rejNam' title='"+report.updatedUserName+"'>By : "+report.updatedUserName+"</span>";
+								 result = result + '</div></td>';
+							}
+							
+							if((report.approverUserIdlLong ==  '${SourceLeadWeb_user.id}') &&  report.budgetStatus == "On Hold"){
+								result = result + '     <td><div class="tblminwidth-75">';
+								result = result + '     <i class="fa fa-check" alt="Approve" title="Approve" onclick="acceptBudgetRequset('+report.id+')"></i>|';
+								result = result + '     <i class="fa fa-times" alt="Rejected" title="Reject" onclick="deleteBudgetRequaet('+report.id+');"></i>';
+								result = result + '     </div></td>';
+								
+							}
+							if(report.budgetStatus == "On Hold" && (report.approverUserIdlLong !=  '${SourceLeadWeb_user.id}')){
+								result = result + '<td><div class="tblminwidth-90 paTp"><b class="processs-hold">On Hold</b>';
+								 result = result+"  <i class='glyphicon glyphicon-comment colB' id='"+report.id+"' onclick='rejectedMessage(\""+report.rejectedReason+"\");'>";
+							 	 result = result+" <div class='app_error_mes' id='rejectedMessage"+report.id+"'>"+report.rejectedReason+"</div></i>";
+							 	 result = result+" <br><span class='rejNam' title='"+report.updatedUserName+"'>By : "+report.updatedUserName+"</span>";
+								result = result + '</div></td>';
+							}
+							
+							result = result + ' </tr>';
+			    		}
+			    		result = result + '	     </tbody>';
+			    		result = result + '	 </table>';
+			    		result = result + '</div>';
+			    	    $("#budgetRequestsTabDiv").empty();
+			    	    $("#budgetRequestsTabDiv").append(result); 
+			    	    
+			    	    $("#projectBudgetCount").val(json.length); 
+	    	             budgetRequestPagination();
+	                }else if (data.indexOf('Sign In') !== -1) {
+							location.replace(sourceleadUrl);
+					} else {
+	                    showError("Operation failed, please try again");
+	                }
 	        }
 	   
      });
@@ -832,19 +864,20 @@ function deleteBudgetRequaet(budgetRequestedId){
 	result = result +"		<p>Are you sure you want to reject ?</p>";
 	result = result +"		<textarea  id='reasonForProjectBudget' name='reasonForProjectBudget'  placeholder='Comments here' field-name='Reason' data-validation='required validate_length length2-5000'></textarea>";
 	result = result +"</form>";
-	result = result +'		<b href="javascript:void(0)"><input id="delete_budget-id" type="button" value="Reject" onclick="saveBudgetReason('+budgetRequestedId+');"><input class="u_can_color" type="button"  value="Cancel" onClick="cancelTermination();"></b>';
+	result = result +'		<b href="javascript:void(0)"><input id="delete_budget-id" type="button" value="Reject" onclick="saveBudgetReason('+budgetRequestedId+');"><input class="u_can_color" type="button"  value="Cancel" onClick="CancelTermination();"></b>';
 	result = result +"	</div>";
 
 	$("#popUp").append(result);
 	$("#remove_user_pop").slideDown(200);
-	$(".project_inn_mask").fadeIn(200);
+	$(".project_inn_mask").fadeIn(200); 
+
 
 }
-function cancelTermination(){
+function CancelTermination(){
 	$("#popUp").empty();
-	 $(".project_inn_mask").fadeOut(200);
-	 $(".vendor_wrap_mask").fadeOut(200);
-}
+	$("#remove_user_pop, .project_inn_mask").fadeOut();
+	$(".project_inn_mask").slideUp(200);
+	}
 function saveBudgetReason(budgetRequestedId){
 	if ($('#deleteBudget_form').validate(false, validationSettings)) {
 	var sourceleadUrl = '${sourceleadUrl}';
@@ -858,6 +891,7 @@ function saveBudgetReason(budgetRequestedId){
 				success : function(result) {
 					$("#popUp").empty();
 	   			 	$(".project_inn_mask").fadeOut(200);
+	   			   cancelTermination();
 	   			 	budgetRequests();
 				},
 			}); 
@@ -885,43 +919,33 @@ function onholdBudgetRequaet(budgetRequestedId){
 	var result = "";
 	result = result +"	<div class='project_inn_mask'></div>"; 
 	result = result +"	   <div id='remove_user_pop' class='remove_user_pop remove_user_pop_a'>";
-	result = result +"<form id='deleteBudget_form' name='deleteBudget_form' >";
+	result = result +"<form id='onHoldBudget_form' name='onHoldBudget_form' >";
 	result = result +"<input type='hidden' id='budgetRequestedId' name='budgetRequestedId' value='"+budgetRequestedId+"'>";
 	result = result +"<input type='hidden' id='loginUserid' name='loginUserid' value='${SourceLeadWeb_user.id}'>";
 	result = result +"		<p>Are you sure you want to On-Hold ?</p>";
 	result = result +"		<textarea  id='reasonForProjectBudget' name='reasonForProjectBudget'  placeholder='Comments here' field-name='Reason' data-validation='required validate_length length2-5000'></textarea>";
 	result = result +"</form>";
-	result = result +'		<b href="javascript:void(0)"><input id="delete_budget-id" type="button" value="On-Hold" onclick="onHoldBudgetRequest('+budgetRequestedId+');"><input class="u_can_color" type="button"  value="Cancel" onClick="cancelTermination();"></b>';
+	result = result +'		<b href="javascript:void(0)"><input id="onHold_budget-id" type="button" value="On-Hold" onclick="onHoldBudgetRequest('+budgetRequestedId+');"><input class="u_can_color" type="button"  value="Cancel" onClick="CancelTermination();"></b>';
 	result = result +"	</div>";
 
 	$("#popUp").append(result);
 	$("#remove_user_pop").slideDown(200);
-	$(".vendor_wrap_mask").fadeIn(200);
+	$(".project_inn_mask").fadeIn(200);
 	
-	var sourceleadUrl = '${sourceleadUrl}';
-	var userId = '${SourceLeadWeb_user.id}';
-	 $.ajax({
-				type : "POST",
-				url : sourceleadUrl+"/onHoldBudgetRequest?${_csrf.parameterName}=${_csrf.token}&budgetRequestedId="+budgetRequestedId+"&userId="+userId,
-				success : function(result) {
-					budgetRequests();
-				},
-			}); 
 }
 function onHoldBudgetRequest(budgetRequestedId){
-	if ($('#deleteBudget_form').validate(false, validationSettings)) {
-	var sourceleadUrl = '${sourceleadUrl}';
-     $("#delete_budget").attr("disabled", "disabled");
-	 $("#delete_budget").attr("disabled", "disabled");
-	 var formData = getFormData("deleteBudget_form");
+	if ($('#onHoldBudget_form').validate(false, validationSettings)) {
+		var sourceleadUrl = '${sourceleadUrl}';
+	     $("#onHold_budget").attr("disabled", "disabled");
+		 $("#onHold_budget").attr("disabled", "disabled");
+		 var formData = getFormData("onHoldBudget_form");
 	 $.ajax({
 				type : "POST",
 				data :formData,
 				url : sourceleadUrl+"/onHoldBudgetRequest?${_csrf.parameterName}=${_csrf.token}",
 				success : function(result) {
 					$("#popUp").empty();
-	   			 	//$(".project_inn_mask").fadeOut(200);
-	   			 	$(".vendor_wrap_mask").fadeOut(200);
+	   			 	$(".project_inn_mask").fadeOut(200);
 	   			 	budgetRequests();
 				},
 			}); 
@@ -960,7 +984,7 @@ function editBudgetrequest(budgetRequestedId){
 					 
 					result = result + '	    <div class="clearfix mb10">';
 					result = result + '	      <div class="col-md-12">';
-					result = result + '	        <input type="text" class="form-control inlineField" value="'+json.estimatedHours+'" id="estimatedHours" placeholder="Estimated Hours *" name="estimatedHours" field-name="Estimated Hours"  data-validation="required">';
+					result = result + '	        <input type="text" class="form-control inlineField" value="'+json.estimatedHours+'" id="estimatedHours" placeholder="Estimated Hours *" name="estimatedHours" field-name="Estimated Hours"  data-validation="required validate_length length1-10 validate_int">';
 					result = result + '	      </div>';
 					result = result + '	    </div>';
 				  
@@ -1029,6 +1053,12 @@ function budgetRequestPagination(){
 }
 </script>
 <script>
+function cancelTermination(){
+	$("#popUp").empty();
+	$("#remove_user_pop, .project_inn_mask").fadeOut();
+}
+</script>
+<script>
 function addBudgetRequestPopUp(){
 	var result = "";
 	result = result + '	<div class="collapse-div-adduser prRight col-md-4 show-div prRight_new"> <i class="fa fa-close close-div" onClick="closeDiv();"></i>';
@@ -1052,7 +1082,7 @@ function addBudgetRequestPopUp(){
 	 
 	result = result + '	    <div class="clearfix mb10">';
 	result = result + '	      <div class="col-md-12">';
-	result = result + '	        <input type="text" class="form-control input-sm inlineField" value="" id="estimatedHours"  placeholder="Estimated Hours *" name="estimatedHours"  field-name="Estimated Hours"  data-validation="required">';
+	result = result + '	        <input type="text" class="form-control input-sm inlineField" value="" id="estimatedHours"  placeholder="Estimated Hours *" name="estimatedHours"  field-name="Estimated Hours"  data-validation="required validate_length length1-10 validate_int">';
 	result = result + '	      </div>';
 	result = result + '	    </div>';
  
@@ -1152,7 +1182,19 @@ function saveBudgetRequest(){
 						data :formData,
 						url : sourceleadUrl+"/saveBudgetRequest?${_csrf.parameterName}=${_csrf.token}",
 						success : function(result) {
-							budgetRequests();
+							if (result && result.response === "INVALID_DATA") {
+  								$("#associateRequestLoading").removeAttr("style");
+  			                    showError(result.responseMessage);
+  			                } else if (result.response === "AWKWARD") {
+  			                    location.href = "/errorPage";
+  			                } else if (result.response === "SUCCESS") {
+  			                	budgetRequests();
+  			                } else if (result.indexOf('Sign In') !== -1) {
+  								location.replace(sourceleadUrl);
+  							} else {
+  			                    showError("Operation failed, please try again");
+  			                }
+							
 						},
 					}); 
 			return true;

@@ -19,6 +19,22 @@
 }
 </style>
 
+<script type="text/javascript">
+var uploadflag= true;
+		window.onload = function () {
+			var refreshId = setInterval(function(){
+				if(uploadflag == true){
+					xlsupload.getUploadInprogressProgressBar("Jobs");
+				  }else{
+					     clearInterval(refreshId);
+						 $(".browseProgress").hide();
+						 $("#upload_button").removeAttr("disabled");
+						 xlsupload.getUploadInprogressProgressBar("Jobs");
+				  }
+			},1000);
+		 };
+</script>
+
 
 <section class="content-wraper">
 	<section class="content-header clearfix">
@@ -29,13 +45,13 @@
 			<i class="fa fa-check-circle"></i><span id="msgDiv"></span>
 		</div>
 		<div class="pull-right brud-crum">
-			<a href="#">Home</a> &raquo; <a href="${appPath}/jobs">Job List</a>
+			<a href="<c:url value='${appPath}/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a>&raquo; <a href="${appPath}/jobs">Job List</a>
 			&raquo; Import Jobs
 		</div>
 	</section>
-	<div class="content-area clearfix" id="jobFileImportDiv">
+	<div id="loading"></div>
+	<div class="content-area clearfix" id="dataFileImportDiv">
 		<form:form id="upload_job_form" name="upload_job_form" method="post" enctype="multipart/form-data">
-		<div id="loading"></div>
 			<div class="clearfix form-area form-horizontal toggle-div remove-div mt">
 			<div class="row minHyewtriuwe rwrghek	fghjqwehjgfwej tkjreight">
 				<div class="col-xs-12 col-sm-12 col-md-8 col-lg-8">
@@ -59,7 +75,7 @@
 								</div>
 								<div class="btn-group">
 									<input type="reset" class="btn btn-danger" value="Reset"
-										onClick="javascript:window.location.href = '<c:url value='${appPath}/jobs'/>'">
+										onClick="javascript:window.location.href = '<c:url value='${appPath}/uploadJobs'/>'">
 								</div>
 							</div>
 						</div>
@@ -95,6 +111,8 @@
 						</div>
 						<!--  Downloaded File show here -->
 					</div>
+					
+					<div id="errorDownloadDiv" style="display: none"></div>
 				</div>
 				<div class="col-xs-12 col-sm-12 col-md-4 col-lg-4">
 					<div class="bgInfo bg-info clearfix text-center">
@@ -118,13 +136,18 @@
 		</div>
 		</form:form>
 	</div>
-	<div id="jobFieldsDiv" style="display: none">
-	</div>
-	<%-- <jsp:include page="importJobs.jsp"></jsp:include> --%>
-	
+	<div id="dataFieldsDiv" style="display: none"></div>
+	<div class="project_tabs_inn_table project_tabs_inn_table_a datatable_filter dataSeaTop">
+	    	<table id="uploadXlsHistoryDiv" class="display" cellspacing="0" width="100%"></table>
+	    	<input type="hidden"  id="uploadedPercentage" value="0">
+		</div>	 
 </section>
 
+<div class="success_pop" id="selector11" style="display: none;">
+    <i class="fa fa-check-circle"></i><span id="msgDiv"></span>
+</div>
 
+<script type="text/javascript" src="/resources/js/xlsupload.js"></script>
 <script type="text/javascript">
 document.getElementById("uploadBtn").onchange = function () {
 	$('#newUploadFile').text($(this).val().replace(/C:\\fakepath\\/i, ''));
@@ -143,11 +166,12 @@ function fetchFieldsWithMatchedColumn(){
     			type: "POST",
     		    url: sourceleadUrl+"/dataMigrationCommon?"+tokenParamName+"="+tokenValue+"&filePath="+fileUrl+"&uploadType="+uploadType+"&headerPosition="+headerPosition, 
     		    success: function(data) {
-    		    	$("#jobFileImportDiv").attr("style","display:none");
-    		    	$('#jobFieldsDiv').removeAttr("style");
-    		    	$('#jobFieldsDiv').append(data);
+    		    	$("#dataFileImportDiv").attr("style","display:none");
+    		    	$('#dataFieldsDiv').removeAttr("style");
+    		    	$('#dataFieldsDiv').append(data);
     		    },
     		});
+          	$('#loading').removeAttr("style");
         }
         else{
       	  return false;	

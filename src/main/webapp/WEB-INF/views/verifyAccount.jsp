@@ -51,7 +51,7 @@ window.onload = function () {
 </div>
 
 <section class="emailBg">
-    <section class="emailVeri" id="thanksForRegisterDiv" style="display:none">
+    <section class="emailVeri emailverification-contnet" id="thanksForRegisterDiv" style="display:none">
 <!--         <span><img src="/resources/images/email-veri.png" alt=""/></span> -->
         <h2>Thank You! For Registering into Sourcelead.</h2>
 		<p>You are almost done! We have emailed you a verification link on your registered email. Kindly click on the link.</p>
@@ -59,14 +59,14 @@ window.onload = function () {
         <p><a onclick="resendVerf();">Resend Verification Mail</a></p>
     </section>
     
-    <section class="emailVeri" id="urlExpiredDiv" style="display:none">
+    <section class="emailVeri emailverification-contnet" id="urlExpiredDiv" style="display:none">
         <span><img src="/resources/images/email-veri.png" alt=""/></span>
         <h2>Sorry your verification Link has been expired</h2>
 		<p>Your Verification link has expired,kindly click on the link below to resend the verification mail.</p>
         <p><a onclick="resendVerf();">Resend Verification Mail</a></p>
     </section>
     
-    <section class="emailVeri" id="emailVerifiedDiv" style="display:none">
+    <section class="emailVeri emailverification-contnet" id="emailVerifiedDiv" style="display:none">
         <span><img src="/resources/images/email-veri.png" alt=""/></span>
         <h2>Congratulations !! </h2><p>Your Sourcelead account was successfully verified. You may start using your account.</p>
         <p>Click to <a onclick="redirect();">Login</a></p>
@@ -84,7 +84,7 @@ function resendVerf(){
 		
 	 $.ajax({
        type : "GET",
-        url: sourceleadUrl+"/resendVerificationEmail?userId="+userId,        
+        url: sourceleadUrl+"/ws/resendVerificationEmail?userId="+userId,        
         success :function(data) {
         	if(data == "success"){
         		$("#selector1").removeAttr("style");

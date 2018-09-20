@@ -10,8 +10,6 @@
 				$("#approverDataExpensesDiv").empty();
 	       		$("#approverDataExpensesDiv").append(localStorage.getItem("empExpensesListGrid"));
 	       		preparePagination(1);
-	       		/* pagination(); */
-	       		/* localStorage.removeItem("empExpensesListGrid"); */
 	       		localStorage.setItem("empExpensesListGrid","");
 	       		$(":checkbox[value=ALL]").prop("checked",false);
 	       		if("reopen" == $("#countType").val()){
@@ -26,7 +24,6 @@
 	       		$("#temp").val("temp");
 	       		$("#appro-pop").hide();
 			}else{
-				//expensesApprovalList('${sourceleadUrl}');
 				getExpensesApprovalDataList();
 				$("#appro-pop").show();
 			}
@@ -34,7 +31,13 @@
 		 
 </script>
 
-
+<script>
+$(document).ready(function(){
+	if('${AWKWARD}' == "true"){
+		   window.location.href =  "/errorPage";
+	 }
+});
+</script>
 
 <style type="text/css">
 .glyphicon-none:before {
@@ -76,6 +79,8 @@ margin-top: 3px;
 	</div>
 </div>	
 <div class="mask_time"></div>	
+
+
 <section class="content-header clearfix">
 	<section class="content-wraper">
 		<section class="content-header clearfix">
@@ -84,64 +89,68 @@ margin-top: 3px;
 			</div>
 			<div class="pull-right brud-crum"><a href="<c:url value='${appPath}/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a> &raquo; Expenses Approval</div>
 		</section>
+		
+		
+		
 		<!-- Project -->
 		<div class="timesheet_out">
 			<div class="vendor_wrap">
 			
 			
-				<div class="timesheet_head">
-							
-				<ul>
-				<sec:authorize access="hasAnyRole('ROLE_VIEW_EDIT_EMPLOYEE_EXPENSES')">
-
-					<div class="pull-left mt5 mr">   		
-				     <span class="dashboard-datepkr pull-left">
-					 <input type="text" class="form-control input-sm calendar" value="" id="filterStartDate" name="StartDate" field-name="Start Date" data-validation="required" readonly="readonly" placeholder="Start Date">
-					 <p id="reportStartDate" class="ReError"></p>
-					 </span>
-					 <span class="dashboard-datepkr pull-left">
-					 <input type="text"  class="calendar form-control input-sm" value="" id="filterEndDate" name="EndDate" field-name="End Date" data-validation="required" readonly="readonly" placeholder="End Date">
-					 <p id="reportEndDate" class="ReError"></p>
-					 </span>
-					 <span class="pull-left"><input type="button" value="Submit" class="btn-sm btn btn-primary" onclick="getExpensesApprovalDataList('dateSearch');" /></span>
+			
+<div class="positionRelative reportHead clearfix">
+      <span class="pull-left refreIcon">
+      			<sec:authorize access="hasAnyRole('ROLE_VIEW_EDIT_EMPLOYEE_EXPENSES')">
+				    <div class="input-group pull-left">  		
+					     <span class="dashboard-datepkr pull-left mr5">
+						 <input type="text" class="form-control input-sm calendar noMr heiNew" value="" id="filterStartDate" name="StartDate" field-name="Start Date" data-validation="required" readonly="readonly" placeholder="Start Date">
+						 <p id="reportStartDate" class="noPad"></p>
+						 </span>
+						 <span class="dashboard-datepkr pull-left mr5">
+						 <input type="text"  class="calendar form-control input-sm noMr heiNew" value="" id="filterEndDate" name="EndDate" field-name="End Date" data-validation="required" readonly="readonly" placeholder="End Date">
+						 <p id="reportEndDate" class="noPad"></p>
+						 </span>
+					 	<span class="pull-left"><input type="button" value="Submit" class="newAdBtn" onclick="getExpensesApprovalDataList('dateSearch');" /></span>
 					</div>
-
-					<li><i class="fa fa-filter"></i><span>Filter</span><i class="glyphicon glyphicon-play" id="appro-pop"></i>|
+				</sec:authorize>        
+      </span>
+      <ul class="pull-right list-unstyled list-inline">
+      
+               <sec:authorize access="hasAnyRole('ROLE_ADD_EMPLOYEE_EXPENSES')">
+			   		<li><a href="<c:url value='${appPath}/addApprovalExpense'/>" class="newAdBtn mr5">+ Expenses</a></li>
+			   </sec:authorize>	   
+			
+				<sec:authorize access="hasAnyRole('ROLE_VIEW_EDIT_EMPLOYEE_EXPENSES')">
+					<li><i class="filtIcon"  id="appro-pop"></i>
 	                	<div class="approved_pop">
 	                    	<ul>
-	                        	<li><input id="expenseAll" type="checkbox" name="expenseStatus" value="ALL" checked onclick="getExpensesApprovalDataList();"><label >All</label></li>
-								<li><input id="expenseSubmitForApproval" type="checkbox" name="expenseStatus" value ="SUBMITTEDFORAPPROVAL" onclick="getExpensesApprovalDataList();"><label >Sub for Approval</label></li>
-								<li><input id="expenseApproved" type="checkbox" name="expenseStatus" value ="APPROVED" onclick="getExpensesApprovalDataList();"><label >Approved</label></li>
-								<li><input id="expenseRejected" type="checkbox" name="expenseStatus" value ="REJECTED" onclick="getExpensesApprovalDataList();"><label >Rejected</label></li>
+	                        	<li><input id="expenseAll" type="checkbox" name="expenseStatus" value="ALL" checked onclick="getExpensesApprovalDataList('dateSearch');"><label >All</label></li>
+								<li><input id="expenseSubmitForApproval" type="checkbox" name="expenseStatus" value ="SUBMITTEDFORAPPROVAL" onclick="getExpensesApprovalDataList('dateSearch');"><label >Sub for Approval</label></li>
+								<li><input id="expenseApproved" type="checkbox" name="expenseStatus" value ="APPROVED" onclick="getExpensesApprovalDataList('dateSearch');"><label >Approved</label></li>
+								<li><input id="expenseRejected" type="checkbox" name="expenseStatus" value ="REJECTED" onclick="getExpensesApprovalDataList('dateSearch');"><label >Rejected</label></li>
+								<li><input id="expenseReopened" type="checkbox" name="expenseStatus" value ="REOPENED" onclick="getExpensesApprovalDataList('dateSearch');"><label >Reopened</label></li>
 								<!-- <li><input id="expenseReopned" type="checkbox" name="expenseStatus" value ="REOPENED" onclick="getExpensesApprovalDataList();"><label >Re-Opened</label></li> -->
 	                        </ul>
 	                    </div>                	
-	                </li>
-                </sec:authorize>
-                <sec:authorize access="hasAnyRole('ROLE_ADD_EMPLOYEE_EXPENSES')">
-		   			<li><a href="<c:url value='${appPath}/addApprovalExpense'/>"><i class="glyphicon glyphicon-plus"></i>&nbsp;Add Expense</a></li>
-		   		</sec:authorize>
-				<sec:authorize access="hasAnyRole('ROLE_EXPORT_EMPLOYEE_EXPENSES')">			
-					<li title="Export" id="hideExportIfDataEmptyId"><a  id="export-pop"><i class="glyphicon glyphicon-export expIcon"></i>&nbsp;</a>
-					    <div id="exportPop" class="user_exp">
-						   <ul class="ul_padding">
-						   <li onclick="exportToPdf('pdf');" title="PDF"><i class="fa fa-file-pdf-o"></i>&nbsp; PDF</li>
-						   <li onclick="exportToPdf('excel');" title="Excel"><i class="fa fa-file-excel-o"></i>&nbsp; Excel</li>
-						   </ul>
-						</div>
-				   	</li>
-		   		</sec:authorize>
-		   		<div class="clearfix"></div>
-		   		<input type="hidden" id="temp"/>
-		   		</ul>
-					<div class="clearfix"></div>
-				</div>
+	                </li>        		
+               </sec:authorize>			
 				
-				 <div class='remove_search'>
-
-		        		<input type='text' placeholder="Search" value="" id='SearchExpensesData'/>
-
-		         </div>
+				<li><a href="javascript:void(0)" class="overIcon" title="Actions" onclick="newActions();"></a>
+					<div class="newActPop">
+						<span>
+						<sec:authorize access="hasAnyRole('ROLE_EXPORT_EMPLOYEE_EXPENSES')">	
+						 	<a href="javascript:void(0)" onclick="exportToPdf('pdf');" title="PDF">Export PDF</a>
+							<a href="javascript:void(0)" onclick="exportToPdf('excel');" title="Excel">Export Excel</a>
+						</sec:authorize>
+						</span>
+					</div>
+				</li>
+		    
+		  <li class=""><input type="text" class="repSearchBar" placeholder='Search' id='SearchExpensesData'/><span class="repSearchIcon" onClick="searchExpensesDataIcon();"></span></li>
+		  <input type="hidden" id="temp"/>
+        </ul>
+      </div>			
+			
 				
 				<div class="overflow_inherint">
 				<!-- <div class="timesheet_appr_table datatable_filter overflow_inherint"> -->
@@ -187,34 +196,56 @@ if(dateSearch != null && dateSearch != '' && dateSearch != 'undefined' && dateSe
 	}else if((endDateFilter == null || endDateFilter == '' || endDateFilter =='undefined') && (startDateFilter == null || startDateFilter == ''|| startDateFilter !='undefined')){
 		$('#reportStartDate').parent().find('p.jquery_form_error_message').remove(); 
 		$('#reportEndDate').parent().find('p.jquery_form_error_message').remove(); 
-		$("#reportEndDate").after("<p class='jquery_form_error_message'><span>End Date Is Required</span>");
-		$("#reportStartDate").after("<p class='jquery_form_error_message'><span>Start Date Is Required</span>");
+	   $("#reportEndDate").after("<p class='jquery_form_error_message'><span>End Date Is Required</span>");
+		$("#reportStartDate").after("<p class='jquery_form_error_message'><span>Start Date Is Required</span>");  
+		
 	}		
 }
 
 
 var searchData = $('#SearchExpensesData').val();
-/* var expenseStatus = $('#expenseStatusDivId').val();
+
+/* var expenseStatus = [];
+$('input:checkbox[name=expenseStatus]:checked').each(function() 
+{
+	expenseStatus.push($(this).val());
+}); */
+
+
+
+
+var expenseStatus = '';
+var expensesStatusFromDashboard = '${expensesStatusFormDashBoard}';
+if(expensesStatusFromDashboard != null && expensesStatusFromDashboard != '' && expensesStatusFromDashboard !='undefined'){
+	$(":checkbox[value=ALL]").prop("checked",false);
+	$(":checkbox[value="+expensesStatusFromDashboard+"]").prop("checked",true);
+		if(expensesStatusFromDashboard === 'SUBMITTED' || expensesStatusFromDashboard === 'submitted'){
+			$(":checkbox[value=SUBMITTEDFORAPPROVAL]").prop("checked",true);	
+		}else{
+			$(":checkbox[value=ALL]").prop("checked",false);
+		}
+}
+
 if(expenseStatus != null && expenseStatus != '' && expenseStatus !='undefined'){
-	expenseStatus = expenseStatus
+	  	expenseStatus = expenseStatus.toUpperCase();
+	  	$(":checkbox[value="+expenseStatus+"]").prop("checked","true");
 }else{
 	var expenseStatus = [];
 	$('input:checkbox[name=expenseStatus]:checked').each(function() 
 	{
 		expenseStatus.push($(this).val());
-	});	
-} */
-var expenseStatus = [];
-$('input:checkbox[name=expenseStatus]:checked').each(function() 
-{
-	expenseStatus.push($(this).val());
-});
+	});
+}
+
+
+
+
 var locationList ='${SourceLeadWeb_orgLocations.dateFormat}';	
  var expensesApprvListDate = getJSDateFormat(locationList);
  
 var searchvalue = '';
 if(searchData != null && searchData !='' && searchData!='undefined'){
-	searchValue = searchData;
+	searchValue = encodeURIComponent(searchData);
 }else{
 	searchValue = '';
  }
@@ -223,7 +254,7 @@ $.ajax({
     type : "POST",
      url: sourceleadUrl+"/getExpensesApprovalList?"+tokenParamName+"="+tokenValue+"&expenseStatus="+expenseStatus+"&startDate="+startDate+"&endDate="+endDate+"&searchValue="+searchValue,      
      success :function(data) {
-    	$("#approverDataExpensesDiv").empty();
+    	 $("#approverDataExpensesDiv").empty(); 
 		$("#approverDataExpensesDiv").append(data);
 		$("#loadingId").removeAttr('style');
 		preparePagination(1);
@@ -252,19 +283,26 @@ function acceptOrRejectReopenExpenseBySuperUser(expenseId,tdSpanSize,from){
 		    $.ajax({
 		    type: "POST",
 		    url: sourceleadUrl+"/saveExpenseApprovalStatusByExpenseId?"+tokenParamName+"="+tokenValue+"&expenseId="+expenseId+"&approvalStatus=REJECTED"+"&rejectedReason="+(encodeMsg.replace(/\n/g,'<br/>').replace(/\r/g,'<br/>')),       
-		    success: function(data) {    
-		   	   // approvalList();
-		       if(from != null && from != '' && from != 'undefined' && from == 'dashboard'){
-		    	   var table = $('#example').DataTable();
-			   		 table.row('#row'+expenseId).remove().draw( false );
-			   }
-		   	   else{
-		   		  	  $("#row"+expenseId).empty();
-		 	    	  $("#row"+expenseId).html(rowHtmlContent);
-		 	    	  $("#status"+expenseId).html("REJECTED");
-		 	    	  $("#action"+expenseId).empty();
-		 	    	  $("#action"+expenseId).append("<h3 class='reje_color'>Rejected</h3><i class='glyphicon glyphicon-comment' id='"+expenseId+"' onclick='rejectedMessage(\"rejectedMessage"+expenseId+"\");'><div class='app_error_mes' id='rejectedMessage"+expenseId+"'>"+msg+"</div></i><b class='Rname'>By :"+locationName+"</b>");
-		   	   }
+		    success: function(data) {
+		    	if(data.response === "SESSION_TIMEDOUT") {
+		    		location.replace(sourceleadUrl);
+		    	 } else if (data.response === "AWKWARD") {
+                        location.href = "/errorPage";
+		    	 } else if (data.response === "SUCCESS"){ 
+			    	if(from != null && from != '' && from != 'undefined' && from == 'dashboard'){
+			    	   var table = $('#example').DataTable();
+				   		 table.row('#row'+expenseId).remove().draw( false );
+				   }
+			   	   else{
+			   		  	  $("#row"+expenseId).empty();
+			 	    	  $("#row"+expenseId).html(rowHtmlContent);
+			 	    	  $("#status"+expenseId).html("REJECTED");
+			 	    	  $("#action"+expenseId).empty();
+			 	    	  $("#action"+expenseId).append("<h3 class='reje_color'>Rejected</h3><i class='glyphicon glyphicon-comment' id='"+expenseId+"' onclick='rejectedMessage(\"rejectedMessage"+expenseId+"\");'><div class='app_error_mes' id='rejectedMessage"+expenseId+"'>"+msg+"</div></i><b class='Rname'>By :"+locationName+"</b>");
+			   	   }
+		    	}else if (result.indexOf('Sign In') !== -1) {
+  					location.replace(sourceleadUrl);
+				 }
 		      }
 		    }); 
 		 }
@@ -280,11 +318,11 @@ function acceptOrRejectReopenExpenseBySuperUser(expenseId,tdSpanSize,from){
 	}
     $(document).on("mouseover", ".glyphicon-comment", function() { 
 		var localId = $(this).attr('id');
-		$("#rejectedMessage"+localId).addClass('app_error_mes_active');
+		$("#rejectedMessage"+localId).addClass('app_error_mes_active app_error_mes_full');
 		});	
 		$(document).on("mouseleave", ".glyphicon-comment", function() { 
 		var localId = $(this).attr('id');
-		$("#rejectedMessage"+localId).removeClass('app_error_mes_active');
+		$("#rejectedMessage"+localId).removeClass('app_error_mes_active  app_error_mes_full');
     });	
 	function rejectedMessage(local){ 
 	   $("#"+local).slideToggle(200);
@@ -345,7 +383,12 @@ function acceptOrRejectReopenExpenseBySuperUser(expenseId,tdSpanSize,from){
 	    type: "POST",
 	    url: sourceleadUrl+"/saveExpenseApprovalStatusByExpenseId?"+tokenParamName+"="+tokenValue+"&expenseId="+expenseId+"&approvalStatus=APPROVED&rejectedReason="+rejectedReason,        
 		    success: function(data) {
-	        	 if(from != null && from != '' && from != 'undefined' && from == 'dashboard'){
+		    	if(data.response === "SESSION_TIMEDOUT") {
+		    		location.replace(sourceleadUrl);
+		    	 } else if (data.response === "AWKWARD") {
+                        location.href = "/errorPage";
+		    	 } else if (data.response === "SUCCESS"){  
+		    	if(from != null && from != '' && from != 'undefined' && from == 'dashboard'){
 			    	 var table = $('#example').DataTable();
 			    	 table.row('#row'+expenseId).remove().draw( false );
 	        	 }
@@ -355,20 +398,23 @@ function acceptOrRejectReopenExpenseBySuperUser(expenseId,tdSpanSize,from){
 			    	 $("#status"+expenseId).html("APPROVED");
 			    	 $("#action"+expenseId).html("<h3>Approved</h3><b class='Rname'>By :"+locationName+"</b>"); 
 	        	   }
+		    	}else if (result.indexOf('Sign In') !== -1) {
+  					location.replace(sourceleadUrl);
+				 }
 		    	 
 		    }
 	    });   
 }
 </script>
     
-<script>
+<!-- <script>
 function prepareCategoryDivForApprovalPopUp(expenseId){
 	    var locationCode ='${SourceLeadWeb_locationCode}'; 
 	 $.ajax({
          type : "POST",
          url: sourceleadUrl+"/getExpensesApprovalCategoryByExpenseId?"+tokenParamName+"="+tokenValue+"&expenseId="+expenseId+"&locationCode="+locationCode,       
-         success :function(data) {
-        		var jsonList = JSON.parse(data);
+         success :function(jsonList) {
+        		//var jsonList = JSON.parse(data);
         		var result = '';
         		result = result +'<table>';
         		result = result +'<thead>';
@@ -438,7 +484,7 @@ function prepareCategoryDivForApprovalPopUp(expenseId){
        }
 	 });
 }    
-</script>
+</script> -->
     
  <script>
 function activeTabExpenseApproval(){
@@ -607,5 +653,30 @@ function expensesCancel(){
 		
 	});
 </script>
+
+<script>
+
+function newActions(){
+	$(".newActPop").slideToggle(200);
+	$(".action-pop").slideUp(200);
+	$(".approved_pop").hide();	
+}
+$("html").click(function(){
+	$(".newActPop").slideUp(200);
+});
+$(".overIcon, .newActPop").click(function(e){
+ 	e.stopPropagation();
+});	
+
+
+$("#appro-pop").click(function(){
+	$(".newActPop").hide();
+	$(".approved_pop").toggle();
+	
+});
+
+</script>
+
+
 <%-- <jsp:include page="expensesApproverTable.jsp" /> --%>
 <jsp:include page="../masterFooter.jsp" />

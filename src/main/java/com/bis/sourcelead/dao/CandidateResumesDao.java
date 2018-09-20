@@ -2,6 +2,7 @@ package com.bis.sourcelead.dao;
 
 import java.util.List;
 
+import com.bis.sourcelead.dto.CandidateResumesDTO;
 import com.bis.sourcelead.entity.CandidateResumes;
 
 /**
@@ -37,4 +38,6 @@ public interface CandidateResumesDao {
 	public CandidateResumes getCandidateResumesListByCandidateId(Long candidateId);
 	
 	public CandidateResumes getCandidateResumeByCandidateId(Long candidateId) throws Exception;
+	
+	CandidateResumesDTO getCandidateResumesDTOByCandidateId(Long candidateId) throws Exception;
 }

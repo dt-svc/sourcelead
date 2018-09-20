@@ -1,5 +1,6 @@
 package com.bis.sourcelead.web;
 
+import java.util.Collection;
 import java.util.Date;
 import java.util.List;
 
@@ -7,6 +8,7 @@ import javax.servlet.ServletOutputStream;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,15 +23,24 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.ModelAndView;
 
 import com.bis.sourcelead.constants.Constants;
+import com.bis.sourcelead.dto.CreditDebitNoteListDTO;
+import com.bis.sourcelead.dto.Response;
+import com.bis.sourcelead.dto.ResponseList;
 import com.bis.sourcelead.entity.Countries;
+import com.bis.sourcelead.entity.CreditDebitNote;
 import com.bis.sourcelead.entity.Invoice;
 import com.bis.sourcelead.entity.InvoiceDocument;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.OrgRelations;
+import com.bis.sourcelead.entity.User;
+import com.bis.sourcelead.enums.TagEntites;
 import com.bis.sourcelead.service.CandidateService;
 import com.bis.sourcelead.service.CountriesService;
 import com.bis.sourcelead.service.InvoiceService;
 import com.bis.sourcelead.service.OrgRelationsService;
+import com.bis.sourcelead.service.OrgService;
+import com.bis.sourcelead.service.SourceleadTagsService;
+import com.bis.sourcelead.service.UserService;
 import com.bis.sourcelead.service.impl.InvoiceDocumentsService;
 import com.bis.sourcelead.util.CommonUtil;
 import com.bis.sourcelead.util.ConversionUtil;
@@ -53,6 +64,9 @@ public class InvoiceController {
 	
 	@Autowired
 	OrgRelationsService orgRelationsService;
+        
+    @Autowired
+	private OrgService orgService;
 	
 	@Autowired
 	CommonUtil commonUtil;
@@ -68,6 +82,12 @@ public class InvoiceController {
 	
 	@Autowired
 	private ConversionUtil conversionUtil;
+	
+	@Autowired
+	private UserService userService;
+	
+	@Autowired
+	private SourceleadTagsService sourceleadTagsService;
 	
 /**
  * @author Laxman
@@ -102,12 +122,112 @@ public class InvoiceController {
 		model.addObject("sourceleadUrl", sourceleadUrl);
 		Date currentDate = new Date();
 		String convertedDate = commonUtil.dateStrFromOrgDateFormatter(orgLocations.getDateFormat(),currentDate);
+        model.addObject("paymentAccountList", orgService.getPaymentAccountList(orgLocations.getOrg().getId(), orgLocations.getId(),true));
 		model.addObject("currentDate", convertedDate);
 		sessionData.setNav(Constants.Receivable);
 		request.getSession().setAttribute("sessionData",sessionData);
 	return model;
 	}
 	
+	@RequestMapping(value = "/addPaymentInvoice")
+	public ModelAndView addPayment(HttpServletRequest request) throws Exception{
+		OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+		ModelAndView model = new ModelAndView();
+		model.setViewName("billing/addPaymentInvoice");
+		model.addObject("sourceleadUrl", sourceleadUrl);
+		Collection<OrgRelations> orgClientList =orgRelationsService.getAllClientsByOrgLocationId(orgLocations.getId()); 
+		for(OrgRelations vendors:orgClientList){
+			if(vendors.getLocationId().getId().equals(orgLocations.getId())){
+				vendors.setOrgName(vendors.getResponderLocationId().getOrgLocationName());
+			}
+			if(vendors.getResponderLocationId().getId().equals(orgLocations.getId())){
+				vendors.setOrgName(vendors.getLocationId().getOrgLocationName());
+			}
+			
+		}
+		model.addObject("clientsList", orgClientList);
+		return model;
+		
+	}
+	
+	@RequestMapping(value = "/addCreditNote")
+	public ModelAndView addCreditNote(HttpServletRequest request,
+			@RequestParam(value="creditDebitUUID", required=false)String creditDebitUUID) throws Exception{
+		OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+		ModelAndView model = new ModelAndView();
+		model.setViewName("billing/addCreditNote");
+		model.addObject("sourceleadUrl", sourceleadUrl);
+		Collection<OrgRelations> orgClientList =orgRelationsService.getAllClientsByOrgLocationId(orgLocations.getId()); 
+		List<User> approversList = userService.getOwnersByOrgLocationId(orgLocations.getId());
+		orgClientList.forEach(clients->{
+			if(clients.getLocationId().getId().equals(orgLocations.getId())){
+				clients.setOrgName(clients.getResponderLocationId().getOrgLocationName());
+			}
+			if(clients.getResponderLocationId().getId().equals(orgLocations.getId())){
+				clients.setOrgName(clients.getLocationId().getOrgLocationName());
+			}
+		});
+		if(StringUtils.isNotBlank(creditDebitUUID)){
+			CreditDebitNote creditDebitNote = invoiceService.getCreditDebitNoteByUUID(creditDebitUUID);
+			CreditDebitNoteListDTO creditDebitNoteListDTO = invoiceService.editCreditDebitNote(creditDebitNote.getId(), orgLocations, null);
+			model.addObject("creditDebitNote", creditDebitNoteListDTO);
+		}
+		model.addObject("clientsList", orgClientList);
+		//model.addObject("paymentAccountList", orgService.getPaymentAccountList(orgLocations.getOrg().getId(), orgLocations.getId(),true));
+		model.addObject("approversList",approversList);
+		return model;
+		
+	}
+	
+	@RequestMapping(value = "/addDebitNote")
+	public ModelAndView addDebitNote(HttpServletRequest request,
+			@RequestParam(value="creditDebitUUID", required=false)String creditDebitUUID) throws Exception{
+		OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+		ModelAndView model = new ModelAndView();
+		model.setViewName("billing/addDebitNote");
+		model.addObject("sourceleadUrl", sourceleadUrl);
+		Collection<OrgRelations> orgVendorsList =orgRelationsService.getAllVendorsListByOrgLocationId(orgLocations.getId()); 
+		List<User> approversList = userService.getOwnersByOrgLocationId(orgLocations.getId());
+		orgVendorsList.forEach(vendors->{
+			if(vendors.getLocationId().getId().equals(orgLocations.getId())){
+				vendors.setOrgName(vendors.getResponderLocationId().getOrgLocationName());
+			}
+			if(vendors.getResponderLocationId().getId().equals(orgLocations.getId())){
+				vendors.setOrgName(vendors.getLocationId().getOrgLocationName());
+			}
+		});
+		if(StringUtils.isNotBlank(creditDebitUUID)){
+			CreditDebitNote creditDebitNote = invoiceService.getCreditDebitNoteByUUID(creditDebitUUID);
+			CreditDebitNoteListDTO creditDebitNoteListDTO = invoiceService.editCreditDebitNote(creditDebitNote.getId(), orgLocations, null);
+			model.addObject("creditDebitNote", creditDebitNoteListDTO);
+		}
+		model.addObject("vendorsList", orgVendorsList);
+		//model.addObject("paymentAccountList", orgService.getPaymentAccountList(orgLocations.getOrg().getId(), orgLocations.getId(),true));
+		model.addObject("approversList",approversList);
+		return model;
+		
+	}
+	
+	@RequestMapping(value = "/addPaymentBill")
+	public ModelAndView addPaymentBill(HttpServletRequest request) throws Exception{
+		OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+		ModelAndView model = new ModelAndView();
+		model.setViewName("billing/addPaymentBill");
+		model.addObject("sourceleadUrl", sourceleadUrl);
+		Collection<OrgRelations> vendorsList =orgRelationsService.getAllVendorsListByOrgLocationId(orgLocations.getId()); 
+		for(OrgRelations vendors:vendorsList){
+			if(vendors.getLocationId().getId().equals(orgLocations.getId())){
+				vendors.setOrgName(vendors.getResponderLocationId().getOrgLocationName());
+			}
+			if(vendors.getResponderLocationId().getId().equals(orgLocations.getId())){
+				vendors.setOrgName(vendors.getLocationId().getOrgLocationName());
+			}
+			
+		}
+		model.addObject("vendorsList", vendorsList);
+		return model;
+		
+	}
 	
 	/**
 	 * @author Laxman
@@ -117,11 +237,13 @@ public class InvoiceController {
 	 * @throws Exception
 	 */
 	
+	
 	@RequestMapping(value = "/getReceivableInvoiceByUUID")
 	public ModelAndView getReceivableInvoiceByUUID(@RequestParam(value="invoiceUUID", required=false) String invoiceUUID,@RequestParam(value="projectId", required=false) String projectId,HttpServletRequest request) throws Exception {
 		
 		OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 		ModelAndView model = new ModelAndView();
+		model.addObject("paymentAccountList", orgService.getPaymentAccountList(orgLocations.getOrg().getId(), orgLocations.getId(),true));
 		Countries countries = countriesService.getCountriesByCountryName(orgLocations.getCountry());
 		if(null != countries){
         model.addObject("loginCountryName", countries.getName());
@@ -164,7 +286,7 @@ public class InvoiceController {
 	 * @return modelView
 	 * @throws Exception
 	 */
-	@PreAuthorize("hasAnyRole('ROLE_VIEW_EDIT_INVOICE')")
+//	@PreAuthorize("hasAnyRole('ROLE_VIEW_EDIT_INVOICE')")
 	@RequestMapping(value = "/viewInvoice")
 	public ModelAndView viewInvoice(@RequestParam(value="invoiceUUID", required=false) String invoiceUUID,@RequestParam(value="invoiceType", required=false) String invoiceType,HttpServletRequest request) throws Exception {
 		OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
@@ -188,6 +310,35 @@ public class InvoiceController {
 		}else{
 			sessionData.setNav(Constants.Payables);
 		}
+		request.getSession().setAttribute("sessionData",sessionData);
+	return model;
+	}
+	
+	@RequestMapping(value = "/viewCreditDebitNote")
+	public ModelAndView viewCreditDebitNote(@RequestParam(value="creditDebitUUID", required=false) String creditDebitUUID,
+			@RequestParam(value="noteType", required=false) String noteType,HttpServletRequest request) throws Exception {
+		OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+		ModelAndView model = new ModelAndView();
+		Countries countries = countriesService.getCountriesByCountryName(orgLocations.getCountry());
+		if(null != countries){
+        model.addObject("loginCountryName", countries.getName());
+        model.addObject("currencyCode", countries.getCurrency());
+		}
+		SessionMaintainanceData sessionData = (SessionMaintainanceData)request.getSession().getAttribute("sessionData");
+		if(null == sessionData)
+		{
+			sessionData = new SessionMaintainanceData();
+		}
+		if(noteType.equalsIgnoreCase("Credit")){
+			sessionData.setNav(Constants.CREDIT_NOTE);
+		}else{
+			sessionData.setNav(Constants.DEBIT_NOTE);
+		}
+		model.setViewName("billing/viewCreditDebitNote");
+		model.addObject("sourceleadUrl", sourceleadUrl);
+		model.addObject("creditDebitUUID", creditDebitUUID);
+		model.addObject("noteType", noteType);
+		
 		request.getSession().setAttribute("sessionData",sessionData);
 	return model;
 	}
@@ -216,14 +367,73 @@ public class InvoiceController {
 		model.setViewName("billing/invoiceList");
 		model.addObject("sourceleadUrl", sourceleadUrl);
 		
+		List<String> invoiceTagsList = sourceleadTagsService.sourceleadTagsListByEntitypeAndOrgloactionId(TagEntites.INVOICES.toString(), orgLocations.getId());
+        model.addObject("invoiceTagsList", invoiceTagsList);
+        
 		sessionData.setNav(Constants.Receivable);
 		request.getSession().setAttribute("sessionData",sessionData);
 	return model;
 	}
 	
+	@RequestMapping(value = "/creditNoteList")
+	public ModelAndView creditNoteList(@RequestParam(value="type", required=false) String type ,HttpServletRequest request) throws Exception {
+		
+		OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+		ModelAndView model = new ModelAndView();
+		Countries countries = countriesService.getCountriesByCountryName(orgLocations.getCountry());
+		if(null != countries){
+        model.addObject("loginCountryName", countries.getName());
+        model.addObject("currencyCode", countries.getCurrency());
+		}
+		SessionMaintainanceData sessionData = (SessionMaintainanceData)request.getSession().getAttribute("sessionData");
+		if(null == sessionData)
+		{
+			sessionData = new SessionMaintainanceData();
+		}
+		String msg = (String) SourceLeadSessionManager.getSessionAttribute(request, "invoiceCreateMsg");
+		if(!isNullOrEmpty(msg)){
+			model.addObject("msg", msg);
+			SourceLeadSessionManager.removeSessionAttribute(request, "invoiceCreateMsg");
+		}
+		model.setViewName("billing/creditNoteList");
+		model.addObject("sourceleadUrl", sourceleadUrl);
+		request.getSession().setAttribute("sessionData",sessionData);
+		
+	return model;
+	}
 	
+	@RequestMapping(value = "/debitNoteList")
+	public ModelAndView debitNoteList(@RequestParam(value="type", required=false) String type ,HttpServletRequest request) throws Exception {
+		
+		OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+		ModelAndView model = new ModelAndView();
+		Countries countries = countriesService.getCountriesByCountryName(orgLocations.getCountry());
+		if(null != countries){
+        model.addObject("loginCountryName", countries.getName());
+        model.addObject("currencyCode", countries.getCurrency());
+		}
+		SessionMaintainanceData sessionData = (SessionMaintainanceData)request.getSession().getAttribute("sessionData");
+		if(null == sessionData)
+		{
+			sessionData = new SessionMaintainanceData();
+		}
+		String msg = (String) SourceLeadSessionManager.getSessionAttribute(request, "invoiceCreateMsg");
+		if(!isNullOrEmpty(msg)){
+			model.addObject("msg", msg);
+			SourceLeadSessionManager.removeSessionAttribute(request, "invoiceCreateMsg");
+		}
+		model.setViewName("billing/debitNoteList");
+		model.addObject("sourceleadUrl", sourceleadUrl);
+		request.getSession().setAttribute("sessionData",sessionData);
+		
+	return model;
+	}
+	
+	@PreAuthorize("hasAnyRole('ROLE_CREATE_CLIENT','ROLE_VIEW_CLIENT','ROLE_VIEW_EDIT_CLIENT','ROLE_CLIENT_BULK_IMPORTS','ROLE_CREATE_CLIENT_CONTACT','ROLE_VIEW_CLIENT_CONTACT','ROLE_VIEW_EDIT_CLIENT_CONTACT')")
 	@RequestMapping(value = "/getClientList", method = RequestMethod.GET)
-	public @ResponseBody String getClientList(HttpServletRequest request,HttpServletResponse response) throws Exception {
+	public @ResponseBody ResponseList<OrgRelations> getClientList(HttpServletRequest request,HttpServletResponse response) throws Exception {
+		
+		ResponseList<OrgRelations> responseList = new ResponseList<>();
 		OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 		List<OrgRelations> clientList = orgRelationsService.getAllClientsByOrgLocationId(orgLocations.getId());
 		if(null != clientList){
@@ -239,7 +449,9 @@ public class InvoiceController {
 				orgRelations.setOrgName(orgName);
 			}
 		}
-		return commonUtil.toJSON(clientList);
+//		return commonUtil.toJSON(clientList);
+		responseList.setData(clientList);
+		return responseList;
 	} 
 	
 	private boolean isNullOrEmpty(String msg) {
@@ -250,7 +462,7 @@ public class InvoiceController {
 	
 	
 	
-	@PreAuthorize("hasAnyRole('ROLE_ADD_INVOICE')")
+//	@PreAuthorize("hasAnyRole('ROLE_ADD_INVOICE')")
 	@RequestMapping(value = "/createInvoiceProjectBased")
 	public ModelAndView createInvoiceProjectBased(HttpServletRequest request,@RequestParam(value="orgRelationId", required=false) Long orgRelationId) throws Exception {
 		
@@ -275,6 +487,7 @@ public class InvoiceController {
 		
 		Date currentDate = new Date();
 		String convertedDate = commonUtil.dateStrFromOrgDateFormatter(orgLocations.getDateFormat(),currentDate);
+        model.addObject("paymentAccountList", orgService.getPaymentAccountList(orgLocations.getOrg().getId(), orgLocations.getId(),true));
 		model.addObject("currentDate", convertedDate);
 		model.setViewName("billing/createProjectReceivableInvoice");
 		model.addObject("sourceleadUrl", sourceleadUrl);
@@ -283,7 +496,7 @@ public class InvoiceController {
 	return model;
 	}
 
-	@PreAuthorize("hasAnyRole('ROLE_ADD_INVOICE')")
+//	@PreAuthorize("hasAnyRole('ROLE_ADD_INVOICE')")
 	@RequestMapping(value = "/createInvoiceProjectPayableBased")
 	public ModelAndView createInvoiceProjectPayableBased(@RequestParam(value="orgRelationId", required=false) Long orgRelationId,HttpServletRequest request) throws Exception {
 		
@@ -334,6 +547,7 @@ public class InvoiceController {
 		model.setViewName("billing/createExpensesReceivableInvoice");
 		model.addObject("currentDate", commonUtil.dateStrFromOrgDateFormatter(orgLocations.getDateFormat(),new Date()));
 		model.addObject("sourceleadUrl", sourceleadUrl);
+                model.addObject("paymentAccountList", orgService.getPaymentAccountList(orgLocations.getOrg().getId(), orgLocations.getId(),true));
 		sessionData.setNav(Constants.Receivable);
 		request.getSession().setAttribute("sessionData",sessionData);
 	return model;

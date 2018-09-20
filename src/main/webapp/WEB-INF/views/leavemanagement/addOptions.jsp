@@ -171,10 +171,17 @@ function saveLeaveOption(){
 		  	/* var formData = getFormData("add_option_form"); */
 		  	var formData = $($('#add_option_form')[0]).serialize();
 			$("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
-			$.post(sourceleadUrl+"/saveLeaveOption?"+tokenParamName+"="+tokenValue+"&orgLocationId="+orgLocationId+"&userId="+userId, formData, function(data) {
-				if(data == true){
+			$.post(sourceleadUrl+"/saveLeaveOption?"+tokenParamName+"="+tokenValue+"&orgLocationId="+orgLocationId+"&userId="+userId, formData, function(result) {
+				 if (result.response === "AWKWARD") {
+	    		    location.href = "/errorPage";
+	    		   }  else if (result.response === "SUCCESS") { 
 					location.replace(sourceleadUrl+ "/viewOptions");
-				}
+				}else if (result.indexOf('Sign In') !== -1) {
+           			location.replace(sourceleadUrl);
+           		} else {
+           		    showError("Operation failed, please try again");
+           		}
+			$("#loading").hide();
 			}); 
 			return true;
 	 }else{ 

@@ -65,7 +65,7 @@ public interface TimesheetSubmissionsService {
 	
 	public Collection<TimesheetSubmissions> getTimeSheetSubmissionsListByStatus(Long userId,String approvalStatus)throws Exception;
 	
-    public TimeSheetSubmissionCount getTimeSheetSubmissionsCountByUserId(Long userId) throws Exception;
+//    public TimeSheetSubmissionCount getTimeSheetSubmissionsCountByUserId(Long userId) throws Exception;
 	
 	public TimeSheetSubmissionCount getTimeSheetSubmissionsHoursCountByUserId(Long userId);
 	
@@ -75,7 +75,7 @@ public interface TimesheetSubmissionsService {
 	
 	public TimeSheetSubmissionCount getTimeSheetSubmissionsCountByMasterCandidateIdAndOrgLocationId(Long userId,Long orgLocationId, String timesheetCountType) throws Exception;
 	
-	public TimeSheetSubmissionCount getTimeSheetSubmissionsCountByUserIdAndOrgLocationIdForApprover(Long userId,Long orgLocationId, String timesheetCountType) throws Exception;
+	public TimeSheetSubmissionCount getTimeSheetSubmissionsCountByUserIdAndOrgLocationIdForApprover(Long userId,Long orgLocationId, String timesheetCountType,String isGlobalUser) throws Exception;
 	
 	public List<TimesheetSubmissions> getSubmissionApproverHierarchyForEmployeeList(Long approverUserId)throws Exception ;
 	
@@ -90,5 +90,9 @@ public interface TimesheetSubmissionsService {
 	public HashSet<TimesheetSubmissions> getWeekFrequencyByProjMemId(Long projectId) throws Exception;
 	
 	public List<TimesheetSubmissions> getTimeSheetSubmissionByProjectMemberId(Long pojectMemberId) throws Exception;
+	
+	public List<TimesheetSubmissions> getTimesheetSubmissionsByProjectIdAndMasterCandidateId(Long  projectId,Long masterCandidateId) throws Exception;
+
+	public TimesheetSubmissions getSubmissionDetailsByProjectIdMasterCandiDateIdStartDateandEndDate(Long projectId,Long masterCanidateId, Date frequencyStartDate, Date frequencyEndDate);
 
 }

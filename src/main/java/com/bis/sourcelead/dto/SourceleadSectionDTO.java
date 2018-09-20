@@ -10,6 +10,7 @@ public class SourceleadSectionDTO {
 	private Long tabID;
 	private String tabName;
 	private Long sourceleadActionId;
+	private String isDefaultVisible;
 	private String sourceleadActionName;
 	private String sectionName;
 	private String sectionDescription;
@@ -40,6 +41,12 @@ public class SourceleadSectionDTO {
 	}
 	public void setSourceleadActionId(Long sourceleadActionId) {
 		this.sourceleadActionId = sourceleadActionId;
+	}
+	public String getIsDefaultVisible() {
+		return isDefaultVisible;
+	}
+	public void setIsDefaultVisible(String isDefaultVisible) {
+		this.isDefaultVisible = isDefaultVisible;
 	}
 	public String getSourceleadActionName() {
 		return sourceleadActionName;
@@ -77,6 +84,4 @@ public class SourceleadSectionDTO {
 	public void setCustomFieldsList(List<OrglocationFormFieldsDTO> customFieldsList) {
 		this.customFieldsList = customFieldsList;
 	}
-	
-	
 }

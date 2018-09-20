@@ -37,6 +37,7 @@ import com.bis.sourcelead.entity.EmailMessage;
 import com.bis.sourcelead.entity.EmailScenario;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.Requirement;
+import com.bis.sourcelead.entity.RequirementLocations;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.entity.UserMailBox;
 import com.bis.sourcelead.rest.MailBoxRestController;
@@ -44,6 +45,7 @@ import com.bis.sourcelead.service.CampaignService;
 import com.bis.sourcelead.service.CandidateService;
 import com.bis.sourcelead.service.EmailScenarioService;
 import com.bis.sourcelead.service.HotListEmailCampaignService;
+import com.bis.sourcelead.service.RequirementLocationsService;
 import com.bis.sourcelead.service.RequirementService;
 import com.bis.sourcelead.service.SourceleadSignatureService;
 import com.bis.sourcelead.service.UserMailBoxService;
@@ -101,6 +103,9 @@ public class HotListEmailCampaignServiceImpl implements HotListEmailCampaignServ
 	@Autowired
 	private CommonUtil commonUtil;
 	
+	@Autowired
+	private RequirementLocationsService requirementLocationsService;
+	
 	protected static boolean isNullOrEmpty(String str) {
 		return (str == null || "".equals(str.trim()));
 	}
@@ -134,7 +139,7 @@ public class HotListEmailCampaignServiceImpl implements HotListEmailCampaignServ
 				CampaignList campaignList = campaignService.getRecipientListByListId(listId,0);
 				if(campaignList.getCampaignRecipient() !=null && campaignList.getCampaignRecipient().size() >0) {
 					String reciEmail = getToReciEmails(campaignList.getCampaignRecipient());
-					toRecipantsEmailsList.append(reciEmail);
+					toRecipantsEmailsList.append(reciEmail).append(",");
 				}
 			}			
 			
@@ -153,8 +158,10 @@ public class HotListEmailCampaignServiceImpl implements HotListEmailCampaignServ
 //		    		 }
 //		    	 }
 		    	 
+
 		    	 emails = toRecipantsEmailsList.toString();
-//		    	 emails = emails.substring(0,emails.length()-1);
+		    	 emails = emails.substring(0,emails.length()-1);
+
 		}
 		
 		String otherRecilistId = null;
@@ -223,8 +230,9 @@ public class HotListEmailCampaignServiceImpl implements HotListEmailCampaignServ
 		 
 		String UUID = SourceLeadRandomCodeHelper.generateUUID();
 		signature = sourceleadSignatureService.buildSignature(user, orgLocation);
-		String table =  getHotListCandidatesTable(hotlistedCandidates,hotListEmailCampaignDTO,signature);
-		
+		String str =  getHotListCandidatesTable(hotlistedCandidates,hotListEmailCampaignDTO,signature);
+//		String table = str.replace("\"","\'");
+		String  table = str.replaceAll("\\s+"," ");
 		JobListEmailCampaignDTO jobListEmailCampaignDTO = new JobListEmailCampaignDTO();
 		 jobListEmailCampaignDTO.setSenderIdentity(hotListEmailCampaignDTO.getSenderIdentity());
 		 jobListEmailCampaignDTO.setSubject(hotListEmailCampaignDTO.getSubject());
@@ -367,6 +375,11 @@ private UserMailBox saveUserMailBox(User user,OrgLocations orgLocation,InternetA
 	private String getHotListCandidatesTable(String[] hotlistedCandidates,HotListEmailCampaignDTO hotListEmailCampaignDTO, String signature) throws Exception{
 		
 		String tempHTML = "";
+		String bodyText = "";
+		String bText = hotListEmailCampaignDTO.getBodytext();
+		if(StringUtils.isNotBlank(bText)) {
+			bodyText = bText.replace("\"","\'");
+		}
 		
 		String imageUrl = sourceleadUrl+"/resources/images/logo-sourceld.png";
 		
@@ -388,7 +401,7 @@ private UserMailBox saveUserMailBox(User user,OrgLocations orgLocation,InternetA
 		tempHTML = tempHTML + "    <br></td>";
 		tempHTML = tempHTML + "   </tr>";
 		tempHTML = tempHTML + "  <tr>";
-		tempHTML = tempHTML + "<td align='left'><p>"+hotListEmailCampaignDTO.getBodytext()+"</p></td>";
+		tempHTML = tempHTML + "<td align='left'><p>"+bodyText+"</p></td>";
 		tempHTML = tempHTML + "    </tr>";
 		tempHTML = tempHTML + "   </tbody>";
 		tempHTML = tempHTML + "  </table>";
@@ -498,6 +511,7 @@ private UserMailBox saveUserMailBox(User user,OrgLocations orgLocation,InternetA
 		tempHTML = tempHTML + "</tbody>";
 		tempHTML = tempHTML + " </table>";
 		      // table end
+		tempHTML = tempHTML + signature;
 		      tempHTML = tempHTML + " <table width='650' bgcolor='#ededed' align='center' cellpadding='0' cellspacing='0' style='background-color:#ededed; padding:0px; margin-top: 15px;'>";
 		      tempHTML = tempHTML + " <tr>";
 		      tempHTML = tempHTML + "   <td><table bgcolor='#ededed'  width='650' align='center' style='background-color:#ededed; padding:10px 15px; border:solid #E0E0E0; border-width:0 1px 0px 1px; margin:0px;'>";
@@ -507,14 +521,15 @@ private UserMailBox saveUserMailBox(User user,OrgLocations orgLocation,InternetA
 		      tempHTML = tempHTML + "       <p style='padding:0px 0px 2px 0px; margin:0px 0px; font-weight:400; font-size:11px; text-align:center'>3535 Victory Group Way, Building 4 Frisco, TX 75034, USA, Phone : (214) 295-5535, FAX : (972) 559-3641</p></td>";
 		      tempHTML = tempHTML + "    </tr>";
 		      tempHTML = tempHTML + "   <tr>";
-		      tempHTML = tempHTML + "   <td><p style='text-align:center; padding:2px 0px; margin:0px 0px; font-size:11px; font-weight:400; border-top:1px solid #BDBDBD;'><a target='blank' href='http://www.sourcelead.com/about-us.html' style='text-decoration:none; color:#333;' title='About SourceLead'>About SourceLead</a> | <a target='blank' href='http://www.sourcelead.com/contact.html' style='text-decoration:none; color:#333;' title='Contact Us'>Contact Us</a> | <a target='blank' href='http://www.sourcelead.com/ats.html' style='text-decoration:none; color:#333;' title='ATS'>ATS</a> | <a target='blank' href='http://www.sourcelead.com/vms.html' style='text-decoration:none; color:#333;' title='VMS'>VMS</a> | <a target='blank' href='http://www.sourcelead.com/timesheet.html' style='text-decoration:none; color:#333;' title='Time Management'>Time Management</a> | <a target='blank' href='http://www.sourcelead.com' style='text-decoration:none; color:#333;' title='Terms of Use'>Terms of Use</a></p></td>";
+		      tempHTML = tempHTML + "   <td><p style='text-align:center; padding:2px 0px; margin:0px 0px; font-size:11px; font-weight:400; border-top:1px solid #BDBDBD;'><a target='blank' href='http://www.sourcelead.com/about-us.html' style='text-decoration:none; color:#333;' title='About Us'>About Us</a> | <a target='blank' href='http://www.sourcelead.com/contact.html' style='text-decoration:none; color:#333;' title='Contact Us'>Contact Us</a> | <a target='blank' href='http://www.sourcelead.com/ats.html' style='text-decoration:none; color:#333;' title='ATS'>ATS</a> | <a target='blank' href='http://www.sourcelead.com/vms.html' style='text-decoration:none; color:#333;' title='VMS'>VMS</a> | <a target='blank' href='http://www.sourcelead.com/crms.html' style='text-decoration:none; color:#333;' title='CRMS'>CRMS</a> | <a target='blank' href='http://www.sourcelead.com/pms.html' style='text-decoration:none; color:#333;' title='PMS'>PMS</a> | <a target='blank' href='http://www.sourcelead.com/hrms.html' style='text-decoration:none; color:#333;' title='HRMS'>HRMS</a> | <a target='blank' href='http://www.sourcelead.com/ims.html' style='text-decoration:none; color:#333;' title='IMS'>IMS</a> | <a target='blank' href='http://www.sourcelead.com/search-jobs.html' style='text-decoration:none; color:#333;' title='Job Search'>Job Search</a> | <a target='blank' href='http://www.sourcelead.com/market-place.html' style='text-decoration:none; color:#333;' title='Marketplace'>Marketplace</a> <br> <a target='blank' href='http://www.sourcelead.com/terms-of-use.html' style='text-decoration:none; color:#333;' title='Terms of Use'>Terms of Use</a> | <a target='blank' href='http://www.sourcelead.com/privacy-policy.html' style='text-decoration:none; color:#333;' title='Privacy policy'>Privacy policy</a></p></td>";
 		      tempHTML = tempHTML + "   </tr>";
+		      tempHTML = tempHTML + "   <tr><td><p style='padding:5px 0px 5px 0px; margin:0px 0px; font-weight:400; font-size:11px; text-align:center;'>If you do not wish to receive any further communication, please  <a target='_blank' href='"+sourceleadUrl+"/ws/unsubscribe' style='color:#a21e23;'>unsubscribe</a></p></td></tr>";
 		      tempHTML = tempHTML + "    </table></td>";
 		      tempHTML = tempHTML + "  </tr>";
 		      tempHTML = tempHTML + "   </table></td>";
 		      tempHTML = tempHTML + " </tr>";
               tempHTML = tempHTML + "</table>";
-              tempHTML = tempHTML + "<a href='[unsubscribe]'>Click Here to Unsubscribe</a>";
+              tempHTML = tempHTML + "<a href='[unsubscribe]' style='display:none'>Click Here to Unsubscribe</a>";
 		
 		/* String tempHTML = null;
 		 
@@ -652,7 +667,7 @@ private UserMailBox saveUserMailBox(User user,OrgLocations orgLocation,InternetA
 					CampaignList campaignList = campaignService.getRecipientListByListId(listId,1);
 					if(campaignList.getCampaignRecipient() !=null && campaignList.getCampaignRecipient().size() >0) {
 						String reciEmail = getToReciEmails(campaignList.getCampaignRecipient());
-						toRecipantsEmailsList.append(reciEmail);
+						toRecipantsEmailsList.append(reciEmail).append(",");
 					}
 				}
 				
@@ -670,9 +685,8 @@ private UserMailBox saveUserMailBox(User user,OrgLocations orgLocation,InternetA
 //			    			 toRecipantsEmailsList.append(",");
 //			    		 }
 //			    	 }
-			    	 
 			    	 emails = toRecipantsEmailsList.toString();
-//			    	 emails = emails.substring(0,emails.length()-1);
+			    	 emails = emails.substring(0,emails.length()-1);
 			}
 			
 			String otherReciListId = null; 
@@ -736,7 +750,9 @@ private UserMailBox saveUserMailBox(User user,OrgLocations orgLocation,InternetA
 			 }
 			String signature = sourceleadSignatureService.buildSignature(user, orgLocation);
 			 String UUID = SourceLeadRandomCodeHelper.generateUUID();
-			 String table =  getJobListCampaignsTable(campaignJobs,UUID,jobListEmailCampaignDTO,signature); 
+			 String str =  getJobListCampaignsTable(campaignJobs,UUID,jobListEmailCampaignDTO,signature); 
+//			 String table = str.replace("\"","\'");
+			 String  table = str.replaceAll("\\s+"," ");
 			 String createCampaignRes = campaignUtil.createCampaign(jobListEmailCampaignDTO, table,otherReciListId);
 			 if (createCampaignRes != null) {
 					JSONObject jObject = new JSONObject(createCampaignRes);
@@ -860,8 +876,8 @@ private UserMailBox saveUserMailBox(User user,OrgLocations orgLocation,InternetA
 	private String getToReciEmails(Set<CampaignRecipient> campaignRecipient)
 	{
 		List<String> reciList = new ArrayList<>();
-		for(String email : reciList) {
-			reciList.add(email);
+		for(CampaignRecipient campaignEmail : campaignRecipient) {
+			reciList.add(campaignEmail.getEmail());
 		}
 		String reciEmail = String.join(",", reciList);
 		return reciEmail;
@@ -871,6 +887,11 @@ private UserMailBox saveUserMailBox(User user,OrgLocations orgLocation,InternetA
 	private String getJobListCampaignsTable(String[] campaignJobs, String UUID, JobListEmailCampaignDTO jobListEmailCampaignDTO, String signature) throws Exception
 	{
 		String tempHTML = "";
+		String bodyText = "";
+		String bText = jobListEmailCampaignDTO.getBodytext();
+		if(StringUtils.isNotBlank(bText)) {
+			bodyText = bText.replace("\"","\'");
+		}
 		String imageUrl = sourceleadUrl+"/resources/images/logo-sourceld.png";
 		tempHTML = tempHTML + "<table width='650px' cellpadding='0' cellspacing='0' style='background-color:#fff; font-family:verdana, arial; margin:0px;'>";
 		tempHTML = tempHTML + " <tr>";
@@ -886,11 +907,11 @@ private UserMailBox saveUserMailBox(User user,OrgLocations orgLocation,InternetA
 		tempHTML = tempHTML + "<table width='650px'style='border-spacing:0; font-family:sans-serif; font-size: 14px; padding:20px 0; line-height: 22px; margin:0px;'>";
 		tempHTML = tempHTML +  "<tbody>";
 		tempHTML = tempHTML +   "<tr>";
-		tempHTML = tempHTML +   "<td align='left'>"+jobListEmailCampaignDTO.getSaluation()+",<br>";
+		tempHTML = tempHTML +   "<td align='left' class='text-left'>"+jobListEmailCampaignDTO.getSaluation()+",<br>";
 		tempHTML = tempHTML +     " <br></td>";
 		tempHTML = tempHTML +   " </tr>";
 		tempHTML = tempHTML +   "<tr>";
-		tempHTML = tempHTML +    " <td align='left'><p>"+jobListEmailCampaignDTO.getBodytext()+"</p></td>";
+		tempHTML = tempHTML +    " <td align='left'  class='text-left'><p class='text-left'>"+bodyText+"</p></td>";
 		tempHTML = tempHTML +   "  </tr>";
 		tempHTML = tempHTML +    "</tbody>";
 		tempHTML = tempHTML + "</table>";
@@ -915,6 +936,16 @@ private UserMailBox saveUserMailBox(User user,OrgLocations orgLocation,InternetA
 			 if(j<=10){
 				 
 				 Requirement requirement = requirementService.getRequirementByRequirementId(jobId);
+				 List<RequirementLocations> reqLoc = requirementLocationsService.getRequirementLocationsListByRequirementId(jobId);
+				 StringBuilder location = new StringBuilder();
+				 for (RequirementLocations requirementLocations : reqLoc) {
+					 if(requirement.getId().longValue() == requirementLocations.getRequirementId().getId().longValue()) {
+						 if(!isNullOrEmpty(requirementLocations.getCity())){
+							 location = location.append(requirementLocations.getCity());
+						 }
+					 }
+				}
+				 
 				 StringBuilder jobTitle = new StringBuilder();
 				 if(!isNullOrEmpty(requirement.getJobId())){
 					 jobTitle = jobTitle.append(requirement.getJobId()).append("-").append(requirement.getJobTitle());
@@ -923,10 +954,10 @@ private UserMailBox saveUserMailBox(User user,OrgLocations orgLocation,InternetA
 				 }
 				 
 				 
-				 StringBuilder location = new StringBuilder();
-				 if(!isNullOrEmpty(requirement.getCity())){
-					 location = location.append(requirement.getCity());
-				 }
+//				 StringBuilder location = new StringBuilder();
+//				 if(!isNullOrEmpty(reqLoc.getCity())){
+//					 location = location.append(reqLoc.getCity());
+//				 }
 				 
 				 StringBuilder employmentType = new StringBuilder();
 				 if(!isNullOrEmpty(requirement.getJobType())){
@@ -997,14 +1028,15 @@ private UserMailBox saveUserMailBox(User user,OrgLocations orgLocation,InternetA
 		tempHTML = tempHTML +"<p style='padding:0px 0px 2px 0px; margin:0px 0px; font-weight:400; font-size:11px; text-align:center'>3535 Victory Group Way, Building 4 Frisco, TX 75034, USA, Phone : (214) 295-5535, FAX : (972) 559-3641</p></td>";
 		tempHTML = tempHTML +"</tr>";
 		tempHTML = tempHTML +"<tr>";
-		tempHTML = tempHTML +"<td><p style='text-align:center; padding:2px 0px; margin:0px 0px; font-size:11px; font-weight:400; border-top:1px solid #BDBDBD;'><a target='blank' href='http://www.sourcelead.com/about-us.html' style='text-decoration:none; color:#333;' title='About SourceLead'>About SourceLead</a> | <a target='blank' href='http://www.sourcelead.com/contact.html' style='text-decoration:none; color:#333;' title='Contact Us'>Contact Us</a> | <a target='blank' href='http://www.sourcelead.com/ats.html' style='text-decoration:none; color:#333;' title='ATS'>ATS</a> | <a target='blank' href='http://www.sourcelead.com/vms.html' style='text-decoration:none; color:#333;' title='VMS'>VMS</a> | <a target='blank' href='http://www.sourcelead.com/timesheet.html' style='text-decoration:none; color:#333;' title='Time Management'>Time Management</a> | <a target='blank' href='http://www.sourcelead.com' style='text-decoration:none; color:#333;' title='Terms of Use'>Terms of Use</a></p></td>";
+		tempHTML = tempHTML +"<td><p style='text-align:center; padding:2px 0px; margin:0px 0px; font-size:11px; font-weight:400; border-top:1px solid #BDBDBD;'><a target='blank' href='http://www.sourcelead.com/about-us.html' style='text-decoration:none; color:#333;' title='About Us'>About Us</a> | <a target='blank' href='http://www.sourcelead.com/contact.html' style='text-decoration:none; color:#333;' title='Contact Us'>Contact Us</a> | <a target='blank' href='http://www.sourcelead.com/ats.html' style='text-decoration:none; color:#333;' title='ATS'>ATS</a> | <a target='blank' href='http://www.sourcelead.com/vms.html' style='text-decoration:none; color:#333;' title='VMS'>VMS</a> | <a target='blank' href='http://www.sourcelead.com/crms.html' style='text-decoration:none; color:#333;' title='CRMS'>CRMS</a> | <a target='blank' href='http://www.sourcelead.com/pms.html' style='text-decoration:none; color:#333;' title='PMS'>PMS</a> | <a target='blank' href='http://www.sourcelead.com/hrms.html' style='text-decoration:none; color:#333;' title='HRMS'>HRMS</a> | <a target='blank' href='http://www.sourcelead.com/ims.html' style='text-decoration:none; color:#333;' title='IMS'>IMS</a> | <a target='blank' href='http://www.sourcelead.com/search-jobs.html' style='text-decoration:none; color:#333;' title='Job Search'>Job Search</a> | <a target='blank' href='http://www.sourcelead.com/market-place.html' style='text-decoration:none; color:#333;' title='Marketplace'>Marketplace</a> <br> <a target='blank' href='http://www.sourcelead.com/terms-of-use.html' style='text-decoration:none; color:#333;' title='Terms of Use'>Terms of Use</a> | <a target='blank' href='http://www.sourcelead.com/privacy-policy.html' style='text-decoration:none; color:#333;' title='Privacy policy'>Privacy policy</a></p></td>";
 		tempHTML = tempHTML +" </tr>";
+		tempHTML = tempHTML +"<tr><td><p style='padding:5px 0px 5px 0px; margin:0px 0px; font-weight:400; font-size:11px; text-align:center;'>If you do not wish to receive any further communication, please  <a target='_blank' href='"+sourceleadUrl+"/ws/unsubscribe' style='color:#a21e23;'>unsubscribe</a></p></td></tr>";
 		tempHTML = tempHTML + "</table></td>";
 		tempHTML = tempHTML +" </tr>";
 		tempHTML = tempHTML + " </table></td>";
 		tempHTML = tempHTML +"</tr>";
 		tempHTML = tempHTML +"</table>";
-        tempHTML = tempHTML + "<a href='[unsubscribe]'>Click Here to Unsubscribe</a>";
+        tempHTML = tempHTML + "<a href='[unsubscribe]' style='display:none'>Click Here to Unsubscribe</a>";
 		
 		
 		

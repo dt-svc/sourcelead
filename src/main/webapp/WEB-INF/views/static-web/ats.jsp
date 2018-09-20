@@ -1,27 +1,171 @@
   
   <!--   HTML   -->	  
   <jsp:include page="../staticHeader.jsp" />
-<section class="atsOutWrap">
- 	<h2>Applicant Tracking System</h2>
- 	<img src="/resources/css/static-web/images/ats.png" alt=""/>  
-</section>
+<div class="innerpagesBanner clearfix">
+<div class="clearfix"></div>	
+  <div class="clearfix">
+  <div class="container text-center">
+  <div class="row">
+  		<div class="col-md-12">
+  	<h2 class="text-center">Applicant Tracking System</h2>
+  	<div class="clearfix mt mb"><img src="/resources/static-web/images/atsicons.png" alt="img"></div>
+<p>In the realm of passion for innovation in recruitment process, Sourcelead provides an automated process for the talent search.<br>Be it a niche profile or a generic role, you have access to marketplace using ATS.
+ 		</p>
+  		</div>
+  </div>
+  </div>
+		<div class="thim-click-to-bottom">
+		<a href="#features" class="scroll">
+		<i class="fa  fa-chevron-down"></i>
+		</a>
+		</div>
+  </div>
+<div class="clearfix"></div>
+</div>
 
-<section class="atsText">
-<p>SourceLead powerful, easy-to-use applicant tracking system lets you manage the entire recruitment process from a single Platform. From Requirement Posting to Resource placement, the SourceLead Applicant Tracking System reduce time on manual data entry, streamlining the end-to-end recruiting process and enabling your team to move faster and work smarter.
-
-    <span><i class="fa fa-circle-o"></i> Ease the workload of recruiters.<br>
-     <i class="fa fa-circle-o"></i> Reduce administrative and personnel costs.<br>
-     <i class="fa fa-circle-o"></i> Improve overall quality of hire.<br>
-     <i class="fa fa-circle-o"></i> Alleviate compliance concerns.<br>
-     <i class="fa fa-circle-o"></i> Automation of the requisition approval process.<br>
-     <i class="fa fa-circle-o"></i> Improve communication internally and externally.</span></p>
-</section>
-
-<section class="atsTextInn" style="background-image: url(images/astbg-2.jpg);">
-	<div class="atsTextOne"> 
-		<h3>More Efficient</h3>
-        <p>SourceLead allows your recruitment campaign and candidate in one easily accessible platform. Managing all your candidates information through one system, instead of a complicated spreadsheets, will simplify your recruitment process. SourceLead use pre-identified standards and qualifications to help you recognize and select right candidates. It reduce time-to-hire, you can keep high-quality applicants more engaged and less prone to removing themselves from the recruitment mix.</p>
+<section class="container-fluid container-area-white">
+ 		
+ 		<div class="clearfix">
+  		<div class="col-md-4 text-center smallwidget">
+  		<div class="iconimg">
+  			<img src="/resources/static-web/images/ats-simple.png" alt="Simple" class="img-responsive animated bounceIn">
+  		</div>
+  		<h4>Simple</h4>
+  		<p>
+  			It is designed to simplify the frantic tasks<br>in recruitment management.
+  		</p>
+	  </div>
+	  <div class="col-md-4 text-center smallwidget">
+	  <div class="iconimg">
+  			<img src="/resources/static-web/images/ats-secure.png" alt="Simple" class="img-responsive animated bounceIn">
+  		</div>
+  		<h4>Secure</h4>
+  		<p>
+  			Equipped with robust security measures for<br>information security and data integrity.
+  		</p>
+	  </div>
+	  <div class="col-md-4 text-center smallwidget">
+	  <div class="iconimg">
+  			<img src="/resources/static-web/images/ats-scalable.png" alt="Simple" class="img-responsive animated bounceIn">
+  		</div>
+  		<h4>Scalable</h4>
+  		<p>
+  			Any one and any company across the globe<br>can access with multiple locations, currencies, and time zones.
+  		</p>
+	  </div>
 	</div>
-</section>
-<jsp:include page="../staticFooter.jsp" />
+	</section>
+ <section class="container-area-grey">
+<div id="features"></div>  
+  <div class="container productfeatures">
+  <h2 class="text-center colorlogo">Features</h2>
+<div class="col-md-4">
+	<div class="featuresImages">
+		<img src="/resources/static-web/images/ats-intelligent.png" alt="Image" class="animated bounceIn">
+	</div>
+	<div class="clearfix"></div>
+		<h4>Quick &amp; Easy Access to RDA</h4>
+		<ul class="list-styles">
+			<li>Create and get a quick view into the candidates multiple profiles</li>
+			<li>Effortlessly import and export the resume database</li>
+			<li>Intuitive outreach through Hotlist Campaigns</li>
+			<li>Access the large candidate database </li>
+			<li>and Bulk Uploads, Email Parsing, Multiple File Formats, Advanced Duplicate Detection </li>
+		</ul>
+</div>
+	 
+<div class="col-md-4">
+	<div class="featuresImages">
+		<img src="/resources/static-web/images/ats-jobposting.png" alt="Image" class="animated bounceIn">
+	</div>
+	<div class="clearfix"></div>
+		<h4>Job Advertising</h4>
+		<ul class="list-styles">
+			<li>Effective strategy for job posting on free and premium job boards</li>
+			<li>Increase profile potential by posting on Company Career Page and Sourcelead Marketplace</li>
+			<li>Design the Job Template your way</li>
+			<li>Spearhead the job postings among social communities</li>
+		</ul>
+	</div>
+	
 
+
+	<div class="col-md-4">
+		<div class="featuresImages">
+			<img src="/resources/static-web/images/ats-hiringprocess.png" alt="Image" class="animated bounceIn">
+		</div>
+		<div class="clearfix"></div>
+		<h4>Refined by Integration</h4>
+		<ul class="list-styles">
+			<li>VMS, HRMS, and PMO integration</li>
+			<li>Integrated VMS minimizes time and efforts and provides streamlined hiring process</li>
+			<li>HRMS integration enables simple and automated On Boarding process</li>
+			<li>Project management integration helps strategic resource planning and contract creation for candidate and vendor, track  offer letter acceptance and rejections</li>
+		</ul>
+	</div>
+
+<div class="col-md-4">
+	<div class="featuresImages">
+		<img src="/resources/static-web/images/ats-versatility.png" alt="Image" class="animated bounceIn">
+	</div>
+	
+		<div class="clearfix"></div>
+		<h4>Perfected with the Versatility</h4>
+		<ul class="list-styles">
+			<li>Data recommendation gives the best suitable profiles in marketplace</li>
+			<li>Skill/Trait based resume scoring mechanism</li>
+			<li>Compare and pick the best using resume comparison</li>
+			<li>Adapting All for resume screening and scoring</li>
+			<li>Automated Notifications on Interview Schedule and Progress</li>
+			<li>Smart Email alerts and Avoids duplicate applications, Online Salary Negotiation, Online Offer acceptance, Interview Notes</li>
+		</ul>
+	</div>
+	<div class="col-md-4">
+	<div class="featuresImages">
+		<img src="/resources/static-web/images/ats-community.png" alt="Image" class="animated bounceIn">
+	</div>
+	<div class="clearfix"></div>
+		<h4>Building Corporate Community </h4>
+		<ul class="list-styles">
+			<li>Automated alerts for employee referrals</li>
+			<li>Track the referrals interview progress through the integrated system</li>
+			<li>Efficient hiring through refer and earn program</li>
+		</ul>
+	</div>
+
+	<div class="col-md-4">
+		<div class="featuresImages">
+		<img src="/resources/static-web/images/ats-morefeatures.png" alt="Image" class="animated bounceIn">
+	</div>
+		<div class="clearfix"></div>
+		<h4>Additional Features</h4>
+		<ul class="list-styles">
+			<li>Task assignment to teams</li>
+			<li>Customized fields</li>
+			<li>Customizable Dashboards and Reports</li>
+		</ul>
+	</div>
+
+</div>
+</section>
+<!-- Benefits of sourcelead  -->
+<section class="homewidget-benefitsdiv text-center">
+  <div class="container-fluid">
+ 		<div class="col-md-12">
+ 			<h2>Benefits of SourceLead</h2>
+ 			<p>Integration which provides a one-stop solution to entire recruitment life cycle with a single login to Clients, Vendors and Candidates.</p>
+ 		</div>
+  		<div class="col-md-12 clearfix">
+  			<a href="javascript:void(0)" class="btn btn-custom mr" onClick="requestDemo();">GET A DEMO</a>
+  			<a href="/register" class="btn btn-custom" target="_blank">SIGNUP</a>
+  		</div>
+  </div>
+</section>
+<!-- Benefits of sourcelead  -->
+<jsp:include page="../staticFooter.jsp" />
+<script type="text/javascript">
+window.onload = function() {
+	$("#featuresID").addClass("slactive");
+	$("#atsID").addClass("slactive");
+}
+</script>

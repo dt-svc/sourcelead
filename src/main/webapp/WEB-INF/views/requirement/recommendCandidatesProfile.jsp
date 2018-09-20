@@ -46,9 +46,14 @@ function editCandidate(candidateId){
 	  $.ajax({
 	        type : "POST",
 	         url: sourceleadUrl+"/getCandidateById?"+tokenParamName+"="+tokenValue+"&candidateId="+candidateId,        
-	         success :function(json) {  
-	              if(json != null){  
-	              	// var json = JSON.parse(data);
+	         success :function(result) { 
+	        	   var json = result.object;
+	        	   if(result.response === "SESSION_TIMEDOUT") {
+						location.replace(sourceleadUrl);
+					} else if (result.response === "AWKWARD") {
+						location.href = "/errorPage";
+					} else if (result.response === "SUCCESS") {
+	              		if(json != null){  
 	            			 	var lastName = '';
 	            			 	if(json.lastName != null && json.lastName != '' && json.lastName != 'undefined'){
 	            			 		lastName = json.lastName;            			 		
@@ -159,6 +164,7 @@ function editCandidate(candidateId){
 								if(json.candidateType == "Candidate"){
 									result = result + '<input type="hidden" name="candidateType" id="candidateType" value="'+json.candidateType+'" />';
 									result = result + '<input type="text" class="form-control input-sm" id="email" name="email" value="'+json.email+'" placeholder="Email*" field-name="Email" data-validation="validate_Space required validate_email validate_length length2-100" onblur="validateCandidateEmail();">';
+									result = result + '<input type="hidden" id="tempEmail" value="'+json.email+'" />';
 								}
 								 
 								if(json.candidateType == "Consultant"){
@@ -203,18 +209,18 @@ function editCandidate(candidateId){
 								result = result + '</div>';
 								
 								result = result + '<div class="col-md-6 custom-fields select-arrow">';
-								result = result + '<input class="form-control" id="cpState" name="state" value="'+state+'" placeholder="Enter your State" type="text" readonly></input>';
+								result = result + '<input class="form-control" id="cpState" name="state" value="'+state+'" placeholder="Enter State" type="text" readonly></input>';
 								result = result + '</div>';
 								
 								result = result + '</div>';
 								
 								result = result + '<div class="clearfix mb10">';
 								result = result + '<div class="col-md-6 custom-fields">';
-								result = result + '<input class="form-control" id="cpCity" name="city" value="'+city+'" placeholder="Enter your City" type="text" readonly></input>';
+								result = result + '<input class="form-control" id="cpCity" name="city" value="'+city+'" placeholder="Enter City" type="text" readonly></input>';
 								result = result + '</div>';
 								
 								result = result + '<div class="col-md-6 custom-fields">';
-								result = result + '<input class="form-control" id="cpZipCode" name="zipcode" value="'+zipCode+'" placeholder="Enter your Zip code" type="text"></input>';
+								result = result + '<input class="form-control" id="cpZipCode" name="zipcode" value="'+zipCode+'" placeholder="Enter Zip code" type="text"></input>';
 								result = result + '</div>';
 								
 								result = result + '<div class="col-md-6 custom-fields hidden">';
@@ -276,7 +282,7 @@ function editCandidate(candidateId){
 								result = result + '</div>';
 								result = result + '</div>';
 								
-								
+								result = result + '<div class="clearfix mb">';
 								result = result + '<div class="col-md-6">';
 								
 								result = result + '<div class="input-group er ratetype">';
@@ -479,9 +485,14 @@ function editCandidate(candidateId){
 	        					$("#profileEditPopup").empty();
 	        				    $("#profileEditPopup").append(result); 
 	                        }
-	                 },
-	                   
-	              }); 
+					} else if (result.indexOf('Sign In') !== -1) {
+						location.replace(sourceleadUrl);
+					} else {
+						showError("Operation failed, please try again");
+					}
+                 },
+                   
+              }); 
 		 }
 }
 </script> 
@@ -514,27 +525,26 @@ function deleteCandidate(candidateId){
 	  $.ajax({
         type : "POST",
          url: sourceleadUrl+"/deleteCandidateByCandidateId?"+tokenParamName+"="+tokenValue+"&candidateId="+candidateId+"&reason="+reason+"&candidateType=Candidates",        
-         success :function(data) {
-              if(data != null && data != 'undefined' && data != ""){
-//             		 if( data.indexOf('Sign In') >= 0){
-// 			    		location.replace(sourceleadUrl);
-// 			    	 }
-//             		 else if (data.indexOf('exception') >= 0) {
-//             			 location.replace(sourceleadUrl+"/errorPage");
-//             		 }
-//             		 else{
-            			 $("#recommendationsLoading").attr('style','position:absolute; width:100%; height:95%; background-color:rgba(255,255,255,0.8); top:34px; left:1px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
-            			 
-            			 setTimeout(function () {
-            				requirementRecommendations(requirementId);
-             			 	$(".clients_side_wrap").removeClass("clients_side_wrap_active");
-             			 	$(".side_mask").fadeOut();
-             			 	$(".project_inn_mask").fadeOut();
-                           }, 100);
-            			 
-            			 
-//             		 }
-                }
+         success :function(response) {
+        	 if (response && response.response === "INVALID_DATA") {
+        		    showError(response.responseMessage);
+        		} else if (response && response.response === "INVALID_USER") {
+        		    showError(response.responseMessage);
+        		} else if (response.response === "AWKWARD") {
+        		    location.href = "/errorPage";
+        		} else if (response.response === "SUCCESS") {
+        			 $("#recommendationsLoading").attr('style','position:absolute; width:100%; height:95%; background-color:rgba(255,255,255,0.8); top:34px; left:1px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
+        			 setTimeout(function () {
+        				requirementRecommendations(requirementId);
+         			 	$(".clients_side_wrap").removeClass("clients_side_wrap_active");
+         			 	$(".side_mask").fadeOut();
+         			 	$(".project_inn_mask").fadeOut();
+                       }, 100);
+        		} else if (response.indexOf('Sign In') !== -1) {
+        			location.replace(sourceleadUrl);
+        		} else {
+        		    showError("Operation failed, please try again");
+        		}
                  },
               }); 
 		  }
@@ -596,27 +606,26 @@ function reActivateCandidateAlertMessage(candidateId){
 		$.ajax({
 	        type : "POST",
 	         url: sourceleadUrl+"/reActivateCandidateByCandidateId?"+tokenParamName+"="+tokenValue+"&loginUserId="+loginUserId+"&orgLocationId="+orgLocationId+"&candidateId="+candidateId+"&reActivate="+reactivate,        
-	         success :function(data) {
-	               if(data != null && data != 'undefined' && data != ""){
-	            		 if( data.indexOf('Sign In') >= 0){
-				    		location.replace(sourceleadUrl);
-				    	 }
-	            		 else if (data.indexOf('exception') >= 0) {
-	            			 location.replace(sourceleadUrl+"/errorPage");
-	            		 }
-	            		 else{
-	            			 location.replace(sourceleadUrl+"/candidatesList");
-	            		 }
-	                } 
+	         success :function(result) {
+	        	 if (result && result.response === "INVALID_DATA") {
+	 			    $("#update_candidate").removeAttr("disabled");
+	 			    $("#update_candidate").removeAttr('button').val('Save');
+	 			    showError(result.responseMessage);
+	 			} else if (result.response === "AWKWARD") {
+	 			    location.href = "/errorPage";
+	 			} else if (result.response === "SUCCESS") {
+	 				location.replace(sourceleadUrl+"/candidatesList");
+	 			} else if (result.indexOf('Sign In') !== -1) {
+	 				location.replace(sourceleadUrl);
+	 			} else {
+	 			    showError("Operation failed, please try again");
+	 			}
 	                 },
 	              }); 
 		
 	}
-	
 }
 </script>
-
-
 
 <%-- 
      @author : sarath kumar.
@@ -632,16 +641,14 @@ function candidateProfile(candidateId){
 	  $.ajax({
         type : "POST",
          url: sourceleadUrl+"/getCandidateById?"+tokenParamName+"="+tokenValue+"&candidateId="+candidateId,        
-         success :function(json) {  
-              if(json != null){  
-              //	var json = JSON.parse(data);
-            		 /* if( data.indexOf('Sign In') >= 0){
-			    		location.replace(sourceleadUrl);
-			    	 }
-            		 else if (data.indexOf('exception') >= 0) {
-            			 location.replace(sourceleadUrl+"/errorPage");
-            		 }
-            		 else{  */
+         success :function(result) {
+        	var json = result.object;
+      	   if(result.response === "SESSION_TIMEDOUT") {
+					location.replace(sourceleadUrl);
+				} else if (result.response === "AWKWARD") {
+					location.href = "/errorPage";
+				} else if (result.response === "SUCCESS") {
+              		if(json != null){  
 							var result ="";
 							var summary= "";
 							if(json.summary != null && json.summary != '' && json.summary != 'undefined'){
@@ -870,8 +877,7 @@ function candidateProfile(candidateId){
 								 
 							     event.preventDefault();
 								   
-            		/*  } */
-              }else{
+              		}else{
                      	 $("#candidateSideDiv").removeAttr("style");
        	    	         var result ="";
       		    	     result = result+"   <div class='row'>"; 
@@ -887,6 +893,11 @@ function candidateProfile(candidateId){
       					$("#candidateSideDiv").empty();
       				    $("#candidateSideDiv").append(result); 
                       }
+		         } else if (result.indexOf('Sign In') !== -1) {
+						location.replace(sourceleadUrl);
+					} else {
+						showError("Operation failed, please try again");
+					}
                },
                  
             }); 
@@ -916,16 +927,23 @@ function candidateProfile(candidateId){
 	 $.ajax({  
          type : "POST",
          url: Urlcheck,        
-         success :function(data) {
-            	  //candidateProfile(candidateId);
-            	  //candidateQuickViewProfile(candidateId);
-            	  clientSideBar(candidateId);
-            	  $("#loading").removeAttr('style');
-       },
-         
+         success :function(response) {
+       	 	if (response && response.response === "INVALID_DATA") {
+       		    showError(response.responseMessage);
+       		} else if (response.response === "AWKWARD") {
+       		    location.href = "/errorPage";
+       		} else if (response.response === "SUCCESS") {
+       			//candidateProfile(candidateId);
+             	  //candidateQuickViewProfile(candidateId);
+             	  clientSideBar(candidateId);
+             	  $("#loading").removeAttr('style');        			
+       		} else if (response.indexOf('Sign In') !== -1) {
+       			location.replace(sourceleadUrl);
+       		} else {
+       		    showError("Operation failed, please try again");
+       		}
+       	},
     }); 
-	 
-	 
 	 
 	/*  
 	 var skillName = $("#skillName").val();
@@ -940,12 +958,10 @@ function candidateProfile(candidateId){
 	            	   removeSkillPopUp(candidateId);
 	               }
 	        },
-	          
 	     }); 
 	 }else{
 		 alert("Enter Skill");
 	 } */
-	 
  }  
 </script>
  
@@ -1026,6 +1042,7 @@ function removeSkillPopUp(candidateId){
 				scrollToTopOnError : true,
 				dateFormat : 'yyyy/mm/dd' 
 	         }; 
+			  rateValidations();
 		 if ($('#candidateProfileEdit_form').validate(false, validationSettings)){ 
 			
 			var formData = getFormData('candidateProfileEdit_form');
@@ -1034,7 +1051,12 @@ function removeSkillPopUp(candidateId){
 						data : formData,
 						url : sourceleadUrl+"/updateCandidate?"+tokenParamName+"="+tokenValue+"",
 						success : function(result) {
+							if(result && result === "failed") {
+								 //$("#update_candidate").removeAttr("disabled");
+								showError("Invalid data");
+							} else{
 							clientSideBar(candidateId);
+							}
 						},
 					});
 			return true;
@@ -1053,8 +1075,54 @@ function cancelEdit(){
 	$("#profileEditPopup").empty();
 }
 </script>
+<!-- This script for Current Rate ,Rate Type,Expected Rate, Expected Rate Type validation checks -->
+<script type="text/javascript">
 
+function rateValidations(){
+	
+var rateType = document.getElementById("expectedRateType").value; 
+	if(rateType != null && rateType != ""){
+		 $('#expectedRate').removeAttr('data-validation-optional');
+		 $('#expectedRate').attr("data-validation","required validate_Space validate_int validate_length length1-8"); 
+	}else{
+		 $('#expectedRate').removeAttr('data-validation');
+		 $('#expectedRate').attr("data-validation-optional","true");
+		 $('#expectedRateType').removeAttr('data-validation');
+		 $('#expectedRateType').attr("data-validation-optional","true"); 
+	}
 
+var expectedRate = document.getElementById("expectedRate").value; 
+	if(expectedRate != null && expectedRate != ""){
+		 $('#expectedRateType').removeAttr('data-validation-optional');
+		 $('#expectedRateType').attr("data-validation","required");
+		 $('#expectedRate').attr("data-validation", "required validate_Space validate_int validate_length length1-8");
+	}else{
+		$('#expectedRateType').removeAttr('data-validation');
+		$('#expectedRateType').attr("data-validation-optional","true"); 
+	}
+
+var currentRateType = document.getElementById("currentRateType").value; 
+	if(currentRateType != null && currentRateType != ""){
+		$('#currentRate').removeAttr('data-validation-optional');
+		$('#currentRate').attr("data-validation","required validate_Space validate_int validate_length length1-8"); 
+	}else{
+		$('#currentRate').removeAttr('data-validation');
+	 	$('#currentRate').attr("data-validation-optional","true"); 
+		$('#currentRateType').removeAttr('data-validation');
+	 	$('#currentRateType').attr("data-validation-optional","true"); 
+	}
+	
+var currentRate = document.getElementById("currentRate").value; 
+	 if(currentRate != null && currentRate != ""){
+		 $('#currentRateType').removeAttr('data-validation-optional');
+		 $('#currentRateType').attr("data-validation","required"); 
+		 $('#currentRate').attr("data-validation", "required validate_Space validate_int validate_length length1-8");
+	 }else{
+		 $('#currentRateType').removeAttr('data-validation');
+		 $('#currentRateType').attr("data-validation-optional","true"); 
+	 }
+}
+</script>
 
 <%-- 
      @author : sarath Kumar.
@@ -1069,15 +1137,14 @@ function candidateSkillsList(candidateId){
 	 $.ajax({  
           type : "POST",
           url: sourceleadUrl+"/getCandidateById?"+tokenParamName+"="+tokenValue+"&candidateId="+candidateId,        
-          success :function(json) {
-               if(json != null){
-             		/*  if( data.indexOf('Sign In') >= 0){
-			    		location.replace(sourceleadUrl);
-			    	 }
-             		 else if (data.indexOf('exception') >= 0) {
-             			 location.replace(sourceleadUrl+"/errorPage");
-             		 }
-             		 else{ */
+          success :function(result) {
+        	  var json = result.object;
+       	   		if(result.response === "SESSION_TIMEDOUT") {
+					location.replace(sourceleadUrl);
+				} else if (result.response === "AWKWARD") {
+					location.href = "/errorPage";
+				} else if (result.response === "SUCCESS") {
+               		if(json != null){
 	                	 $("#candidateSkillList").empty();
 	                	 var result = "";
                 	     result = result + '      <table class="table table-responsive table-hover clearfix">';
@@ -1197,9 +1264,6 @@ function candidateSkillsList(candidateId){
 	                     $("#candidateSkillList").append(result); 
 	                     
 	                     $("#candidateSkills").trigger("chosen:updated");
-	                     
-	                /*      
-			    	}  */
                }else{
 	    	         var result ="";
 		    	     result = result+"   <div class='row'>"; 
@@ -1215,6 +1279,11 @@ function candidateSkillsList(candidateId){
 					$("#candidateSkillList").empty();
 				    $("#candidateSkillList").append(result); 
                }
+			} else if (result.indexOf('Sign In') !== -1) {
+				location.replace(sourceleadUrl);
+			} else {
+				showError("Operation failed, please try again");
+			}
         },
           
      }); 
@@ -1380,28 +1449,39 @@ function updateDesignationType(){
 <script type="text/javascript">
  function validateCandidateEmail() {
 	 var email = $('#email').val(); 
+	 
+     var tempEmail = $('#tempEmail').val(); 
+	 if(tempEmail != email){
 	 var candidateType = $('#candidateType').val();
 	 $('#emailDiv').find('p.jquery_form_error_message').remove();
 	 if(email != null && email != ""){
 		 $.ajax({
 		    	type: "POST",
 		        url: sourceleadUrl+"/validateCandidateEmail?"+tokenParamName+"="+tokenValue+"&email="+email+"&candidateType="+candidateType, 
-		        success: function(data) {
-		        	if(data == 'true'){
-		        		 
-						  $("input#email").after("<p class='jquery_form_error_message'>"+email+" is Already Existed</span>");
-						  $("#update_candidate").attr("disabled", "disabled");
-						  $("#update_candidate").addClass('button').val('Processing..');
-		        	}
-		        	else{
-		        		
-		        		 $('input#email').removeAttr( "record-exist record-exist-errormsg");
-		        		 $('#emailDiv').find('p.jquery_form_error_message').remove(); 
-		        		 $("#update_candidate" ).addClass('button').val('Save');
-                         $("#update_candidate").removeAttr("disabled");
+		        success: function(response) {
+		        	if (response.response === "AWKWARD") {
+		        	    location.href = "/errorPage";
+		        	} else if (response.response === "SUCCESS") {
+		        		if(response.object == 'true'){
+							  $("input#email").after("<p class='jquery_form_error_message'>"+email+" is Already Existed</span>");
+							  $("#update_candidate").attr("disabled", "disabled");
+							  $("#update_candidate").addClass('button').val('Processing..');
+			        	} else{
+			        		 $('input#email').removeAttr( "record-exist record-exist-errormsg");
+			        		 $('#emailDiv').find('p.jquery_form_error_message').remove(); 
+			        		 $("#update_candidate" ).addClass('button').val('Save');
+	                         $("#update_candidate").removeAttr("disabled");
+			        	}
+		        	} else if (response.indexOf('Sign In') !== -1) {
+		        		location.replace(sourceleadUrl);
+		        	} else {
+		        	    showError("Operation failed, please try again");
 		        	}
 		        },
 		    });
+	 }
+	 }else{
+		 $('#update_candidate').removeAttr('disabled');
 	 }
  }
  </script>     
@@ -1415,67 +1495,76 @@ function updateDesignationType(){
 				$.ajax({
 					type : "POST",
 					url : sourceleadUrl	+ "/getCandidatesEmployersListByCandidateIdAndOrgLocationID?"+tokenParamName+"="+tokenValue+"&candidateId=" + candidateId,
-					success : function(data) {
-						if (data != null && data != 'undefined' && data != "" && data != '[]') {
-								$("#employeeSubmissionDetailsList").empty();
-								var result = "";
-								result = result +'        <div class="clearfix design-view">';
-								result = result +'          <h2 class="education"><i class="fa fa-black-tie"></i>&nbsp;&nbsp;Employers</h2>';
-								result = result +'          <div class="row">';
-								result = result +'            <div class="col-md-12">';
-								result = result +'              <ul class="list-unstyled personal-info">';
-								var json = JSON.parse(data);
-								for (var i = 0; i < json.length; i++) {
-									var opt = json[i];
-									if (opt.name != null && opt.name != '' && opt.name != 'undefined') {
-										name = opt.name;
-									} else {
-										name = " ";
-									}
-									if (opt.designation != null	&& opt.designation!='' && opt.designation != 'undefined') {
-										designation = opt.designation;
-									} else {
-										designation = " "; 
-									}
-									
-									
-									/*  if (opt.startMonth != null && opt.startMonth != '' && opt.startMonth != 'undefined') {
-										startMonth=   opt.startMonth +' - ';
-									}else{
-										startMonth = " ";
-									} */
-									
-									if (opt.startYear != null && opt.startYear != '' && opt.startYear != 'undefined' && opt.endYear != null	&& opt.endYear != '' && opt.endYear != 'undefined') {
-										startYear=   opt.startYear  +' To '+opt.endYear;
-									}else if(opt.startYear != null && opt.startYear != '' && opt.startYear != 'undefined'){
-										startYear=   opt.startYear;
-									}else if(opt.endYear != null	&& opt.endYear != '' && opt.endYear != 'undefined'){
-										startYear = opt.endYear;  
-									}else{
-										startYear = " ";
-									}
-									
-									/* if (opt.endMonth != null	&& opt.endMonth != '' && opt.endMonth != 'undefined') {
-										endMonth = opt.endMonth +' - ';  
-									} else {
-										endMonth = " ";
-									} */
-									
-									result = result +'   <li>';
-									result = result +'   <div class="clearfix">';
-									result = result +' <h3>'+name+'</h3>';
-									result = result +' <p>'+designation+'</p>';
-									result = result +' <p>';
-								    result = result + startYear; 
-									result = result +'  </p>';
-									result = result +'  </div>';
-									result = result +'</li>';
+					success : function(response) {
+						if (response && response.response === "INVALID_DATA") {
+						    showError(response.responseMessage);
+						} else if (response && response.response === "INVALID_USER") {
+						    showError(response.responseMessage);
+						} else if (response.response === "AWKWARD") {
+						    location.href = "/errorPage";
+						} else if (response.response === "SUCCESS") {
+							$("#employeeSubmissionDetailsList").empty();
+							var result = "";
+							result = result +'        <div class="clearfix design-view">';
+							result = result +'          <h2 class="education"><i class="fa fa-black-tie"></i>&nbsp;&nbsp;Employers</h2>';
+							result = result +'          <div class="row">';
+							result = result +'            <div class="col-md-12">';
+							result = result +'              <ul class="list-unstyled personal-info">';
+							for (var i = 0; i < response.data.length; i++) {
+								var opt = response.data[i];
+								if (opt.name != null && opt.name != '' && opt.name != 'undefined') {
+									name = opt.name;
+								} else {
+									name = " ";
 								}
-								result = result +'              </ul>';
-								result = result +'            </div>';
-								result = result +'          </div>';
-								result = result +'        </div>';
-								$("#employeeSubmissionProfile").append(result);
+								if (opt.designation != null	&& opt.designation!='' && opt.designation != 'undefined') {
+									designation = opt.designation;
+								} else {
+									designation = " "; 
+								}
+								
+								
+								/*  if (opt.startMonth != null && opt.startMonth != '' && opt.startMonth != 'undefined') {
+									startMonth=   opt.startMonth +' - ';
+								}else{
+									startMonth = " ";
+								} */
+								
+								if (opt.startYear != null && opt.startYear != '' && opt.startYear != 'undefined' && opt.endYear != null	&& opt.endYear != '' && opt.endYear != 'undefined') {
+									startYear=   opt.startYear  +' To '+opt.endYear;
+								}else if(opt.startYear != null && opt.startYear != '' && opt.startYear != 'undefined'){
+									startYear=   opt.startYear;
+								}else if(opt.endYear != null	&& opt.endYear != '' && opt.endYear != 'undefined'){
+									startYear = opt.endYear;  
+								}else{
+									startYear = " ";
+								}
+								
+								/* if (opt.endMonth != null	&& opt.endMonth != '' && opt.endMonth != 'undefined') {
+									endMonth = opt.endMonth +' - ';  
+								} else {
+									endMonth = " ";
+								} */
+								
+								result = result +'   <li>';
+								result = result +'   <div class="clearfix">';
+								result = result +' <h3>'+name+'</h3>';
+								result = result +' <p>'+designation+'</p>';
+								result = result +' <p>';
+							    result = result + startYear; 
+								result = result +'  </p>';
+								result = result +'  </div>';
+								result = result +'</li>';
+							}
+							result = result +'              </ul>';
+							result = result +'            </div>';
+							result = result +'          </div>';
+							result = result +'        </div>';
+							$("#employeeSubmissionProfile").append(result);
+						} else if (response.indexOf('Sign In') !== -1) {
+							location.replace(sourceleadUrl);
+						} else {
+						    showError("Operation failed, please try again");
 						}
 					},
 
@@ -1486,81 +1575,83 @@ function updateDesignationType(){
 <script>
 function educationSubmissionProfile(candidateId){
 	 $.ajax({  
-          type : "POST",
+          type : "GET",
           url: sourceleadUrl+"/getCandidateEducationListByCandidateId?"+tokenParamName+"="+tokenValue+"&candidateId="+candidateId,        
-          success :function(data) {
-        	  if (data != null && data != 'undefined' && data != "" && data != '[]') {
-	                	 $("#educationSubmissionDetailsList").empty();
-	                	 var result = "";
-	                	 
-	                	 
-	                	     result = result +'        <div class="clearfix design-view">';
-							result = result +'          <h2 class="education"><i class="fa fa-graduation-cap"></i>&nbsp;&nbsp;Education</h2>';
-							result = result +'          <div class="row">';
-							result = result +'            <div class="col-md-12">';
-							result = result +'              <ul class="list-unstyled personal-info">';
-							
-							
-							 var json = JSON.parse(data);
-		                     for (var i = 0; i < json.length; i++) { 
-		                    	 var opt = json[i];  
-		                    	 if(opt.name != null && opt.name != '' && opt.name != 'undefined'){
-	                    		        EducationName = opt.name;
-		                    	    }else{
-		                    	    	EducationName = " ";
-		                    	    }
-			                     if(opt.specialization != null && opt.specialization != '' && opt.specialization != 'undefined'){
-			                    	 specialization= '(' + opt.specialization +')';
-		                    	  }else{
-		                    		  specialization= " ";
-		                       	 }
-			                     if(opt.institute != null && opt.institute != '' && opt.institute != 'undefined'){
-			                    	 institute = opt.institute;
-		                    	 }else{
-		                    		 institute = " ";
-		                    	 }
-			                     if(opt.grade != null && opt.grade != '' && opt.grade  != 'undefined'){
-			                    	 Educationgrade= opt.grade + ' , ';
-		                    	 }else{
-		                    		 Educationgrade = ""; 
-		                    	 }
-		                    	 if(opt.gradeType != null && opt.gradeType != '' && opt.grgradeTypeade  != 'undefined'){
-		                    		 EducationgradeType  = opt.gradeType + ' - ';
-				                 }else{
-				                	 EducationgradeType = " "; 
-				                 }
-		                    	 if(opt.address != null && opt.address != '' && opt.address != 'undefined'){
-		                    		 Educationaddress = ' , ' +opt.address;
-		                    	 }else{
-		                    		 Educationaddress = " ";
-		                    	 }
-		                    	 if(opt.startDateStr != null && opt.startDateStr != '' && opt.startDateStr != 'undefined' && opt.endDateStr != null && opt.endDateStr != '' && opt.endDateStr != 'undefined'){
-		                    		 EducationstartDateStr = opt.startDateStr +' To '+opt.endDateStr;
-		                    	 }else if(opt.startDateStr != null && opt.startDateStr != '' && opt.startDateStr != 'undefined'){
-		                    		 EducationstartDateStr = opt.startDateStr;
-		                    	 }else if(opt.endDateStr != null && opt.endDateStr != '' && opt.endDateStr != 'undefined'){
-		                    		 EducationstartDateStr = opt.endDateStr;
-		                    	 }else{
-		                    		 EducationstartDateStr ='';
-		                    	 }
-			                        result = result +'                <li>';
-									result = result +'                  <div class="clearfix">';
-		                    	    result = result +'                    <h3>'+EducationName+' <span class="small text-muted">&nbsp;'+specialization+'</span></h3>';
-		                    	    result = result +'                    <p>'+EducationgradeType + ' '+Educationgrade+' '+institute+' '+Educationaddress+'</p>';
-									result = result +'                    <p>'+EducationstartDateStr+'</p>';
-									result = result +'                  </div>';
-									result = result +'                </li>';
-		                     }
-							
-							
-							result = result +'              </ul>';
-							result = result +'            </div>';
-							result = result +'          </div>';
-							result = result +'        </div>';
-	                     $("#educationSubmissionProfile").append(result); 
-        	  }
+          success :function(response) {
+        	  	if (response && response.response === "INVALID_DATA") {
+        		    showError(response.responseMessage);
+        		} else if (response && response.response === "INVALID_USER") {
+        		    showError(response.responseMessage);
+        		} else if (response.response === "AWKWARD") {
+        		    location.href = "/errorPage";
+        		} else if (response.response === "SUCCESS") {
+        			$("#educationSubmissionDetailsList").empty();
+               	 		var result = "";
+               	     	result = result +'        <div class="clearfix design-view">';
+						result = result +'          <h2 class="education"><i class="fa fa-graduation-cap"></i>&nbsp;&nbsp;Education</h2>';
+						result = result +'          <div class="row">';
+						result = result +'            <div class="col-md-12">';
+						result = result +'              <ul class="list-unstyled personal-info">';
+	                     for (var i = 0; i < response.data.length; i++) { 
+	                    	 var opt = response.data[i];  
+	                    	 if(opt.name != null && opt.name != '' && opt.name != 'undefined'){
+                   		        EducationName = opt.name;
+	                    	    }else{
+	                    	    	EducationName = " ";
+	                    	    }
+		                     if(opt.specialization != null && opt.specialization != '' && opt.specialization != 'undefined'){
+		                    	 specialization= '(' + opt.specialization +')';
+	                    	  }else{
+	                    		  specialization= " ";
+	                       	 }
+		                     if(opt.institute != null && opt.institute != '' && opt.institute != 'undefined'){
+		                    	 institute = opt.institute;
+	                    	 }else{
+	                    		 institute = " ";
+	                    	 }
+		                     if(opt.grade != null && opt.grade != '' && opt.grade  != 'undefined'){
+		                    	 Educationgrade= opt.grade + ' , ';
+	                    	 }else{
+	                    		 Educationgrade = ""; 
+	                    	 }
+	                    	 if(opt.gradeType != null && opt.gradeType != '' && opt.grgradeTypeade  != 'undefined'){
+	                    		 EducationgradeType  = opt.gradeType + ' - ';
+			                 }else{
+			                	 EducationgradeType = " "; 
+			                 }
+	                    	 if(opt.address != null && opt.address != '' && opt.address != 'undefined'){
+	                    		 Educationaddress = ' , ' +opt.address;
+	                    	 }else{
+	                    		 Educationaddress = " ";
+	                    	 }
+	                    	 if(opt.startDateStr != null && opt.startDateStr != '' && opt.startDateStr != 'undefined' && opt.endDateStr != null && opt.endDateStr != '' && opt.endDateStr != 'undefined'){
+	                    		 EducationstartDateStr = opt.startDateStr +' To '+opt.endDateStr;
+	                    	 }else if(opt.startDateStr != null && opt.startDateStr != '' && opt.startDateStr != 'undefined'){
+	                    		 EducationstartDateStr = opt.startDateStr;
+	                    	 }else if(opt.endDateStr != null && opt.endDateStr != '' && opt.endDateStr != 'undefined'){
+	                    		 EducationstartDateStr = opt.endDateStr;
+	                    	 }else{
+	                    		 EducationstartDateStr ='';
+	                    	 }
+		                        result = result +'                <li>';
+								result = result +'                  <div class="clearfix">';
+	                    	    result = result +'                    <h3>'+EducationName+' <span class="small text-muted">&nbsp;'+specialization+'</span></h3>';
+	                    	    result = result +'                    <p>'+EducationgradeType + ' '+Educationgrade+' '+institute+' '+Educationaddress+'</p>';
+								result = result +'                    <p>'+EducationstartDateStr+'</p>';
+								result = result +'                  </div>';
+								result = result +'                </li>';
+	                     }
+						result = result +'              </ul>';
+						result = result +'            </div>';
+						result = result +'          </div>';
+						result = result +'        </div>';
+                    $("#educationSubmissionProfile").append(result); 
+        		} else if (response.indexOf('Sign In') !== -1) {
+        			location.replace(sourceleadUrl);
+        		} else {
+        		    showError("Operation failed, please try again");
+        		}
         },
-          
      }); 
 }
 </script> 
@@ -1570,57 +1661,61 @@ function certificationSubmissionProfile(candidateId){
 	 $.ajax({  
           type : "POST",
           url: sourceleadUrl+"/getCandidateCertificationListByCandidateIdAndOrgLocationID?"+tokenParamName+"="+tokenValue+"&candidateId="+candidateId,        
-          success :function(json) {
-        	  if (json != null && json != 'undefined' && json != "" && json != '[]') {
-	                	 $("#certificationSubmissionProfile").empty();
-	                	 var result = "";
-	                	 
-	                	 result = result +'        <div class="clearfix design-view">';
-							result = result +'          <h2 class="education"><i class="fa fa-certificate"></i>&nbsp;&nbsp;Certification</h2>';
-							result = result +'          <div class="row">';
-							result = result +'            <div class="col-md-12">';
-							result = result +'              <ul class="list-unstyled personal-info">';
-// 							 var json = JSON.parse(data);
-							for (var i = 0; i < json.data.length; i++) { 
-		                    	var opt = json.data[i];  
-		                    	if(opt.score != null && opt.score != 'undefined' && opt.score != ""){
-				            		score =' ( ' + opt.score;
-				            	}else{
-				            		score = " ";
-				            	}
-				            	if(opt.scoreType != null && opt.scoreType != 'undefined' && opt.scoreType != ""){
-				            		scoreType = opt.scoreType +' ) ';
-				            	}else{
-				            		scoreType = " ";
-				            	}
-				            	
-				            	if(opt.candidatevalidFromDateToString != null && opt.candidatevalidFromDateToString != 'undefined' && opt.candidatevalidFromDateToString != "" && opt.candidatevalidToDateToString != null && opt.candidatevalidToDateToString != 'undefined' && opt.candidatevalidToDateToString != ""){
-				            		candidatevalidFromDateToString = opt.candidatevalidFromDateToString +' To '+opt.candidatevalidToDateToString;
-				            	}else if(opt.candidatevalidFromDateToString != null && opt.candidatevalidFromDateToString != 'undefined' && opt.candidatevalidFromDateToString != ""){
-				            		candidatevalidFromDateToString = opt.candidatevalidFromDateToString;
-				            	}else if(opt.candidatevalidToDateToString != null && opt.candidatevalidToDateToString != 'undefined' && opt.candidatevalidToDateToString != ""){
-				            		candidatevalidFromDateToString = opt.candidatevalidToDateToString;
-				            	}else{
-				            		candidatevalidFromDateToString = " ";
-				            	}
-				            	
-								result = result +'                <li>';
-								result = result +'                  <div class="clearfix">';
-								result = result +'                    <h3>'+opt.name+' <span class="small text-muted">&nbsp;'+score+'  '+scoreType+'</span></h3>';
-								result = result +'                    <p>'+opt.provider+' </p>';
-								result = result +'                    <p> '+candidatevalidFromDateToString+'</p>';
-								result = result +'                  </div>';
-								result = result +'                </li>';
-							}
-							result = result +'              </ul>';
-							result = result +'            </div>';
-							result = result +'          </div>';
-							result = result +'        </div>';
-							
-							$("#certificationSubmissionProfile").append(result); 
-        	  }
+          success :function(response) {
+        	  if (response && response.response === "INVALID_DATA") {
+        		    showError(response.responseMessage);
+        		} else if (response && response.response === "INVALID_USER") {
+        		    showError(response.responseMessage);
+        		} else if (response.response === "AWKWARD") {
+        		    location.href = "/errorPage";
+        		} else if (response.response === "SUCCESS") {
+        			 $("#certificationSubmissionProfile").empty();
+                	 var result = "";
+                	 result = result +'        <div class="clearfix design-view">';
+						result = result +'          <h2 class="education"><i class="fa fa-certificate"></i>&nbsp;&nbsp;Certification</h2>';
+						result = result +'          <div class="row">';
+						result = result +'            <div class="col-md-12">';
+						result = result +'              <ul class="list-unstyled personal-info">';
+						for (var i = 0; i < response.data.length; i++) { 
+	                    	var opt = response.data[i];  
+	                    	if(opt.score != null && opt.score != 'undefined' && opt.score != ""){
+			            		score =' ( ' + opt.score;
+			            	}else{
+			            		score = " ";
+			            	}
+			            	if(opt.scoreType != null && opt.scoreType != 'undefined' && opt.scoreType != ""){
+			            		scoreType = opt.scoreType +' ) ';
+			            	}else{
+			            		scoreType = " ";
+			            	}
+			            	if(opt.candidatevalidFromDateToString != null && opt.candidatevalidFromDateToString != 'undefined' && opt.candidatevalidFromDateToString != "" && opt.candidatevalidToDateToString != null && opt.candidatevalidToDateToString != 'undefined' && opt.candidatevalidToDateToString != ""){
+			            		candidatevalidFromDateToString = opt.candidatevalidFromDateToString +' To '+opt.candidatevalidToDateToString;
+			            	}else if(opt.candidatevalidFromDateToString != null && opt.candidatevalidFromDateToString != 'undefined' && opt.candidatevalidFromDateToString != ""){
+			            		candidatevalidFromDateToString = opt.candidatevalidFromDateToString;
+			            	}else if(opt.candidatevalidToDateToString != null && opt.candidatevalidToDateToString != 'undefined' && opt.candidatevalidToDateToString != ""){
+			            		candidatevalidFromDateToString = opt.candidatevalidToDateToString;
+			            	}else{
+			            		candidatevalidFromDateToString = " ";
+			            	}
+							result = result +'                <li>';
+							result = result +'                  <div class="clearfix">';
+							result = result +'                    <h3>'+opt.name+' <span class="small text-muted">&nbsp;'+score+'  '+scoreType+'</span></h3>';
+							result = result +'                    <p>'+opt.provider+' </p>';
+							result = result +'                    <p> '+candidatevalidFromDateToString+'</p>';
+							result = result +'                  </div>';
+							result = result +'                </li>';
+						}
+						result = result +'              </ul>';
+						result = result +'            </div>';
+						result = result +'          </div>';
+						result = result +'        </div>';
+						$("#certificationSubmissionProfile").append(result); 
+        		} else if (response.indexOf('Sign In') !== -1) {
+        			location.replace(sourceleadUrl);
+        		} else {
+        		    showError("Operation failed, please try again");
+        		}
         },
-          
      }); 
 }
 </script>
@@ -1682,13 +1777,13 @@ function employementType(){
 		if(employementType == 'C2C-1099'){
 			if(employementType == preval){
 				document.getElementById("hideVendor").style.display="block";
-				 $('#vendorName').attr("data-validation","required"); 
-				 $('#vendorcontactName').attr("data-validation","required");
+				$('#vendorName').removeAttr("data-validation-optional", "true"); 
+				 $('#vendorcontactName').removeAttr("data-validation-optional", "true"); 
 				 getVendorsByOrgLocation();
 			}else{
 				document.getElementById("hideVendor").style.display="block";
-			 $('#vendorName').attr("data-validation","required"); 
-			 $('#vendorcontactName').attr("data-validation","required"); 
+				$('#vendorName').removeAttr("data-validation-optional", "true"); 
+				 $('#vendorcontactName').removeAttr("data-validation-optional", "true");  
 			  $('#vendorName').val(''); 
 			 
 	            $('#vendorName').trigger("chosen:updated");
@@ -1829,15 +1924,22 @@ function employementType(){
 	 $.ajax({  
          type : "POST",
          url: Urlcheck,        
-         success :function(data) {
-           	  	 // candidateProfile(candidateId);
-            	//  candidateQuickViewProfile(candidateId);
-            	  clientSideBar(candidateId);
-            	  $("#loading").removeAttr('style');
+         success :function(result) {
+        	 	if(result && (result.response === "INVALID_DATA" || result.response === "INVALID_USER")) {
+        			showError(result.responseMessage);
+        		} else if (result.response === "AWKWARD") {
+        	    	location.href = "/errorPage";
+        		} else if (result.response === "SUCCESS") {
+        			getProfessionalInfo();
+           	  		$("#loading").removeAttr('style');
+        		} else if (result.indexOf('Sign In') !== -1) {
+           			location.replace(sourceleadUrl);
+	           	} else {
+	           	    showError("Operation failed, please try again");
+	           	}
        },
          
     }); 
-	 
  }  
 </script>
  

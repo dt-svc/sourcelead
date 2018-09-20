@@ -10,6 +10,7 @@ import com.bis.sourcelead.dto.ResponseList;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.payroll.entity.InvoiceData;
+import com.bis.sourcelead.payroll.entity.PayrollBalance;
 
 public interface InvoiceDataService {
 
@@ -20,4 +21,6 @@ public interface InvoiceDataService {
 	List<InvoiceData> getInvoiceDetailsByEmpId(Long empId, OrgLocations orgLocations)throws Exception;
 	
 	int getInvoiceDataVersionByOrgLocationId(Long orgLocationId);
+
+	ResponseList<InvoiceData> getAllEmployeeInvoiceDetailsByEmpIdAndOrgLocationId(Long orgLocationId, Long userId);
 }

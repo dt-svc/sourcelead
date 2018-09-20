@@ -33,9 +33,9 @@
 			&raquo; Import Timesheets
 		</div>
 	</section>
-	<div class="content-area clearfix" id="timesheetFileImportDiv">
+	<div id="loading"></div>
+	<div class="content-area clearfix" id="dataFileImportDiv">
 		<form:form id="upload_timesheet_form" name="upload_timesheet_form" method="post" enctype="multipart/form-data">
-		<div id="loading"></div>
 		<div class="clearfix form-area form-horizontal toggle-div remove-div mt">
 			<div class="row minHyewtriuwe rwrghek	fghjqwehjgfwej tkjreight">
 				<div class="col-xs-12 col-sm-12 col-md-8 col-lg-8">
@@ -47,15 +47,15 @@
 					<div class="col-xs-3 col-md-3 paddingLeft">
 							<select class="selectpicker form-control" id="timesheetMode" name="timesheetMode" field-name="Upload mode" data-validation="required" >
 								<option value="" disabled selected>--- Select Mode ---</option>
-								<option value="BiMonthly">Bi-Monthly</option>
-								<option value="Monthly">Monthly</option>
+								<!-- <option value="BiMonthly">Bi-Monthly</option>
+								<option value="Monthly">Monthly</option>  -->
 								<option value="MonthlyWeekWise">Monthly-Week wise</option>
-								<option value="Weekly">Weekly</option>
+								<!-- <option value="Weekly">Weekly</option> -->
 							</select>
 					</div>
 						<div class="col-xs-3 col-md-3 paddingLeft">
 							<a href="#"
-								class="btn btn-success btn-block" title="Download Timesheet Template"> <i class="fa fa-download"></i>&nbsp;&nbsp;
+								class="btn btn-success btn-block" title="Download Timesheet Template" > <i class="fa fa-download"></i>&nbsp;&nbsp;
 								Template
 							</a>
 						</div>
@@ -68,7 +68,7 @@
 								</div>
 								<div class="btn-group">
 									<input type="reset" class="btn btn-danger" value="Reset"
-										onClick="javascript:window.location.href = '<c:url value='${appPath}/timesheet'/>'">
+										onClick="javascript:window.location.href = '<c:url value='${appPath}/uploadTimesheet'/>'">
 								</div>
 							</div>
 						</div>
@@ -103,6 +103,7 @@
 						</div>
 						<!--  Downloaded File show here -->
 					</div>
+					<div id="errorDownloadDiv" style="display: none"></div>
 				</div>
 				<div class="col-xs-12 col-sm-12 col-md-4 col-lg-4">
 					<div class="bgInfo bg-info clearfix text-center">
@@ -132,7 +133,9 @@
 	<%-- <jsp:include page="importJobs.jsp"></jsp:include> --%>
 	
 </section>
-
+<div class="success_pop" id="selector11" style="display: none;">
+    <i class="fa fa-check-circle"></i><span id="msgDiv"></span>
+</div>
 
 <script type="text/javascript">
 document.getElementById("uploadBtn").onchange = function () {
@@ -153,11 +156,12 @@ function fetchFieldsWithMatchedColumn(){
     			type: "POST",
     			url: sourceleadUrl+"/dataMigrationCommon?"+tokenParamName+"="+tokenValue+"&filePath="+fileUrl+"&uploadType="+uploadType+"&timesheetMode="+timesheetMode+"&headerPosition="+headerPosition, 
     		    success: function(data) {
-    		    	$("#timesheetFileImportDiv").attr("style","display:none");
+    		    	$("#dataFileImportDiv").attr("style","display:none");
     		    	$('#dataFieldsDiv').removeAttr("style");
     		    	$('#dataFieldsDiv').append(data);
     		    },
     		});
+          	$('#loading').removeAttr("style");
         }
         else{
       	  return false;	

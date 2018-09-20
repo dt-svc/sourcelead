@@ -230,7 +230,7 @@ function publicRequirementProfile(requirementUUID){
 				 result = result +'            <div class="row">';
 				 result = result +'              <div class="col-md-3">';
 				 result = result +' 			 <div class="company-logo">';
-				 result = result +' 				<img id="orgImage" onerror="predefineProfileImage(this);"  src="<c:url value="'+sourceleadUrl+'/displayOrgImage/'+json.orgcode+'"/>" alt="Company" title="Company Logo" class="img-responsive">';
+				 result = result +' 				<img id="orgImage" onerror="predefineProfileImage(this);"  data-id="orgLogoImage" src="'+sourceleadUrl+""+json.fileUrl+'" alt="Company" title="Company Logo" class="img-responsive">';
 				 result = result +' 				</div>';
 				 result = result +'              </div>';
 				 result = result +'              <div class="col-md-9">';
@@ -241,7 +241,17 @@ function publicRequirementProfile(requirementUUID){
 				 result = result +'                        <li><i class="fa fa-black-tie"></i><span>Min Experience - '+minExp+'</span></li>';
 				 result = result +'                        <li><i class="fa fa-black-tie"></i><span>Max Experience - '+maxExp+'</span></li>';
 				 result = result +'                        <li><i class="fa fa-rupee"></i><span>'+rate+' '+rateType+'</span></li>';
-				 result = result +'                        <li><i class="fa fa-map-marker"></i><span>'+city+' '+state+' '+country+'</span></li>';
+				 if(json.locationsList != null){
+					 result = result +'<li><i class="fa fa-map-marker pull-left mt5"></i>';
+					 result = result +'<ul class="list-unstyled joblocations-public">';
+	 					for(var k=0; k<json.locationsList.length; k++){
+	 						result = result +'<li>'+json.locationsList[k]+'</li>';
+	 					}
+	 					result = result +'</ul>';
+	 					result = result +'</li>';
+	 				}
+				 
+// 				 result = result +'                        <li><i class="fa fa-map-marker"></i><span>'+city+' '+state+' '+country+'</span></li>';
 				 result = result +'                      </ul>';
 				 result = result +'                    </div>';
 				 result = result +'                  </div>';
@@ -268,9 +278,7 @@ function publicRequirementProfile(requirementUUID){
 				 result = result +'          </div>';
 				 result = result +'          <div class="col-md-3">';
 				 result = result +'         <div class="openPostBtns">';
-				 
-				 //result = result +'<a href="'+sourceleadUrl+'" class="refer">Refer</a>';
-				/*  result = result +'<a href="'+sourceleadUrl+"/login?requirementUUID="+requirementUUID+'" class="jobApply">Apply To Job</a>'; */
+				 result = result +'<a href="/guestApplyToJob?requirementUUID='+requirementUUID+'" class="rbtn btn-warning btn-sm">Apply</a>';
 				 
 				
 				 result = result +'          </div>';

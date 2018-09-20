@@ -7,6 +7,11 @@ function candidateListCheck(searchValue,universalCanddateSearchList,candidateKey
 		candidateQuickViewProfile(candidateIdSearchId);
 		candidateList();
 		$("#upcandidateStatus").val('');
+	} else if(candidateKeyword == "requestedDocumentNotification"){
+		candidateSideBar(candidateIdSearchId);
+		candidateQuickViewProfile(candidateIdSearchId);
+		candidateList();
+		$("#upcandidateStatus").val('');
 	} else {
 		candidateList();
 		$("#upcandidateStatus").val('');
@@ -27,9 +32,38 @@ function candidateListCheck(searchValue,universalCanddateSearchList,candidateKey
            $("#canDiv").removeAttr("onClick");
        }
 	  
-	  
+ 	 var employmnetTypes = [];
+ 	 $('input:checkbox[name=employmentType]:checked').each(function() 
+      {
+ 		employmnetTypes.push($(this).val());
+ 	 });
+ 	 
+ 	var candidateFilterSkills = [];
+	 $('input:checkbox[name=candidateFilterSkills]:checked').each(function() 
+     {
+		 candidateFilterSkills.push($(this).val());
+	 });
+	 
+	 
+	 var availability = []
+	 $('input:checkbox[name=availability]:checked').each(function() 
+	     {
+	       availability.push($(this).val());
+		 });
+	 
+	 var candidateTypeFilter = []
+	 $('input:checkbox[name=candidateTypeFilter]:checked').each(function() 
+	     {
+		 candidateTypeFilter.push($(this).val());
+		 });
+	 
+	 
+ 	 
  	  var candTypeRadio = $('input[name=candidateType]');
  	  var candidateType = candTypeRadio.filter(':checked').val();
+ 	  
+ 	 var createdByRadio = $('input[name=createdByFilter]');
+	  var createdByFilter = createdByRadio.filter(':checked').val();
 	  
 	 	var upcandidateStatus =   $('input[name=upcandidateStatus]:checked').val();
 		  
@@ -68,10 +102,11 @@ function candidateListCheck(searchValue,universalCanddateSearchList,candidateKey
 	  		var formData = new FormData(form); 
 	  		var searchValue = $("#dataTableSearch").val();
 	  		searchValue = searchValue ? searchValue : "";
-	  		var url = sourceleadUrl+"/searchCandidate?"+_csrfParam+"="+_csrfToken+"&candidateStatus="+candidateStatus+"&searchValue="+searchValue+"&updatedDateRange="+upcandidateStatus+"&isAssociate="+isAssociate+"&candidateType="+candidateType;
+	  		var url = sourceleadUrl+"/searchCandidate?"+_csrfParam+"="+_csrfToken+"&candidateStatus="+candidateStatus+"&searchValue="+searchValue+"&updatedDateRange="+upcandidateStatus+"&isAssociate="+isAssociate+"&candidateType="+candidateType+"&employmnetTypes="+employmnetTypes+"&candidateFilterSkills="+candidateFilterSkills+"&availability="+availability+"&candidateTypeFilter="+candidateTypeFilter+"&createdByFilter="+createdByFilter;
 	  		url += "&"+$($('#candidatelist_form')[0]).serialize();
 	  		prepareCandidateList(url);
-	  		closePop();
+	  		// advanced search pop up close 
+//	  		closePop();
 			return true;
 		 }else{ 
 				return false;
@@ -90,15 +125,18 @@ function candidateListCheck(searchValue,universalCanddateSearchList,candidateKey
      	  result = result +"<table id='candidatePagination' class='display' cellspacing='0' width='100%' >"; 
           result = result +"<thead>"; 
           result = result +"  <tr>"; 
+  	      result = result +'<th class="text-center"><input type="checkbox" id="sharedcheckbox" onclick="toggleShareCandidates(this);"/></th>'; 
           result = result +"    <th>&nbsp;</th>";
           result = result +"    <th>Generated ID</th>";
           result = result +"    <th>Name</th>"; 
           result = result +"    <th>Primary Skill</th>"; 
           result = result +"    <th>Employment Type</th>"; 
           result = result +"    <th>Email</th>"; 
-          result = result +"    <th>Mobile Number</th>"; 
+          result = result +"    <th>Mobile Number</th>";
+          result = result +"    <th>Profile Percentage</th>"
           result = result +"    <th>Location</th>"; 
           result = result +"    <th>Last Update</th>"; 
+          result = result +"    <th>Created By</th>"; 
           result = result +"  </tr>"; 
           result = result +"</thead>";
           result = result +"<tbody>"; 
@@ -107,7 +145,26 @@ function candidateListCheck(searchValue,universalCanddateSearchList,candidateKey
           $("#noCandidates").val(1);
           $("#candidateList").append(result);
           cpagination(url); 
+          shareCandidates = {};
   }
+  
+  
+  function candidateSearchHighlight(){
+ 	 setTimeout(function () {
+  		var body = $( table.table().body() );
+ 	        body.unhighlight();
+ 	        body.highlight( $("#dataTableSearch").val() );   
+ 			
+ 			}, 1000); 
+  }
+ 
+ 	$(document).on( 'init.dt.dth', function (e, settings, json) {
+     table = new $.fn.dataTable.Api( settings );
+     var body = $( table.table().body() );
+     if ( $( table.table().node() ).hasClass( 'searchHighlight' ) || settings.oInit.searchHighlight ||  $.fn.dataTable.defaults.searchHighlight ) {
+ 	
+ 	}
+ });
 
 function cpagination(url){ 
 	var colIndex = 0;
@@ -116,12 +173,14 @@ function cpagination(url){
     		"processing": true,
         "serverSide": true,
         "searching": false,
+        "searchHighlight": true,
         "ajax": $.fn.dataTable.pipeline( {
             url: url,
             method: 'POST',
             pages: 10
         }),
         "columns": [
+        	{ "data": "id" },
             { "data": "isAssociate" },
             { "data": "generatedId"},
             { "data": "firstName"},
@@ -129,10 +188,34 @@ function cpagination(url){
             { "data": "designationType"},
             { "data": "email" },
             { "data": "mobilePhone" },
+            { "data": "profilePercentage" },
             { "data": "country"},
-            { "data": "updatedDate" }
+            { "data": "updatedDate" },
+            { "data": "createdBy" }
         ],
         "columnDefs": [ {
+    	  	"targets": colIndex++,
+    	  	"sortable": false,
+    	  	"render": function(data, type, report, meta) {
+    	  		 var result = "";
+    	  		 var shareflag = false;
+	        		 for(var e in shareCandidates) {
+   	     	    	   if(!e || !shareCandidates[e] || shareCandidates[e] === "")
+   	     				   continue;
+   	     	    	   if(e === report.candidateId+"") {
+   	     	    		    if(!$("#sharedcheckbox").is(":checked"))
+   	     	    		 	checkOrUncheckParent("candidatePagination",shareCandidates, "sharedcheckbox"); 
+   	     	    		    shareflag = true;
+   	     	    	   	break;
+   	     	    	   }
+   	        		 }
+	        		 if(!shareflag)
+   	        			$("#sharedcheckbox").removeAttr('checked');
+   	        		 
+	        			result = result +'  <td><input'+(shareflag ? " checked='checked'" : "")+' class="contactscheckbox" name="sharedcheckbox"  type="checkbox" id="'+report.candidateId+'" data-id="'+report.candidateId+'" value="'+report.candidateId+'" onchange="checkShareCandidates(this)"/></td>';
+    	  		 return result; 
+    	  	}
+        	},{
 	    	  	"targets": colIndex++,
 	    	  	//"className": "tbldata-dotdot_50",
 	    	  	"data": "isAssociate",
@@ -141,9 +224,11 @@ function cpagination(url){
 	    	  		var result = "";
 	    	  		var isFavourite = "";
 	    	  		var isFavClass = "";
+	    	  		var title = "title = 'Add as Favourite'";
 	    	  		if(full.isFavourite == '1' && isAssociate == "N"){
 	            		isFavourite = "checked";
 	            		isFavClass = "activestar-rating";
+	            		title = "title = 'Change to un Favourite'";
 	            	} else if(full.isFavouriteAssociate == '1' && isAssociate == "Y") {
 	            		isFavourite = "checked";
 	            		isFavClass = "activestar-rating";
@@ -152,10 +237,9 @@ function cpagination(url){
 	    	  		if(data == "Y" && isAssociate == 'N'){
 		            	  result = result +"<i class='fa fa-black-tie pull-right mt10' title='Added as Associate'></i> ";  
 		             }
-	
 		              result = result +"<div class='iconClass pull-left star-rating "+isFavClass+"' id='favourite"+full.candidateId+"'>";
 		              if(associateFlag)
-		            	  	result = result +"   <input type='checkbox' id='fav"+full.candidateId+"' "+isFavourite+" onclick='addFavourite("+full.candidateId+")'></input>";
+		            	  	result = result +"   <input type='checkbox' id='fav"+full.candidateId+"' "+isFavourite+" "+title+" onclick='addFavourite("+full.candidateId+")'></input>";
 		             
 		              result = result +" <label></label>";
 		              result = result +"</div>";
@@ -171,7 +255,7 @@ function cpagination(url){
               		if(full.generatedId != null && full.generatedId != '' && full.generatedId != "undefined"){
   	            	  		result = result +"<div><span title='"+full.generatedId+"'>"+full.generatedId+"</span></div>";
   	              	}else{
-  	            	  		result = result +"<div>----</div>";
+  	            	  		result = result +"<div>--</div>";
   	             	}
   	              return result;
               }
@@ -181,16 +265,22 @@ function cpagination(url){
             "render": function ( data, type, full, meta ) {
             		var result = "";
             		var lastName = "";
+            		var middleName = "";
             		if(full.lastName != null && full.lastName != "" && full.lastName != 'undefined'){
 	            		lastName = full.lastName;
 	            	}else{
 	            		lastName = "";
 	            	}
+            		if(full.middleName != null && full.middleName != "" && full.middleName != 'undefined'){
+	            		middleName = full.middleName;
+	            	}else{
+	            		middleName = "";
+	            	}
             		if(name1Flag)
-	                result = result +"  <td><div class='proj_show divmax-width' onclick='candidateQuickViewProfile("+full.candidateId+");'><span title='"+full.firstName+" "+lastName+"'>"+full.firstName+" "+lastName+"</span><i class='fa fa-binoculars'></i></div></td>";
+	                result = result +"  <td><div class='proj_show divmax-width' onclick='candidateQuickViewProfile("+full.candidateId+");'><span title='"+full.firstName+" "+middleName+"  "+lastName+"'>"+full.firstName+" "+middleName+"  "+lastName+"</span><i class='fa fa-binoculars'></i></div></td>";
 	              
 	              if(name2Flag)
-	               result = result +"  <td><div class='proj_show' onclick='#'><span title='"+full.firstName+" "+lastName+"'>"+full.firstName+" "+lastName+"</span></div></td>";
+	               result = result +"  <td><div class='proj_show' onclick='#'><span title='"+full.firstName+" "+middleName+" "+lastName+"'>"+full.firstName+" "+middleName+" "+lastName+"</span></div></td>";
 	              return result;
             }
           }, {
@@ -201,7 +291,7 @@ function cpagination(url){
               		if(full.primarySkill != null && full.primarySkill != '' && full.primarySkill != "undefined"){
   	            	  		result = result +"<div><span title='"+full.primarySkill+"'>"+full.primarySkill+"</span></div>";
   	              	}else{
-  	            	  		result = result +"<div>----</div>";
+  	            	  		result = result +"<div>--</div>";
   	             	}
   	              return result;
               }
@@ -218,7 +308,7 @@ function cpagination(url){
    	             		result = result +"<div>"+opt.designationType+"</div>"; 
    	             	 }
    	             	 }else{
-   	             		 result = result +"<div>----</div>"; 
+   	             		 result = result +"<div>--</div>"; 
    	             	 }
     	              return result;
                 }
@@ -237,11 +327,24 @@ function cpagination(url){
 	    	  		if(full.mobilePhone != null && full.mobilePhone != 'undefined' && full.mobilePhone != ""){
 	         		       mobilePhone = full.mobilePhone;
 		            	}else{
-		            		mobilePhone = "----";
+		            		mobilePhone = "--";
 		            	}
 	    	  		return "<div class='tbldata-dotdot-vsm'>"+mobilePhone+"</div>";
 	    	  	}
-	    	  }, {
+	    	  },{
+		    	  	"targets": colIndex++,
+		    	  	"data": "profilePercentage",
+		    	  	"sortable": false,
+		    	  	"render": function(data, type, full, meta) {
+		    	  		var profilePercentage = "";
+		    	  		if(full.profilePercentage != null && full.profilePercentage != 'undefined' && full.profilePercentage != ""){
+		    	  			profilePercentage = full.profilePercentage + "%";
+			            	}else{
+			            		profilePercentage = "--";
+			            	}
+		    	  		return "<div class='tbldata-dotdot-vsm'>"+profilePercentage+"</div>";
+		    	  	}
+		    	  }, {
                   "targets": colIndex++,
                   "data": "country",
                   "render": function ( data, type, opt, meta ) {
@@ -254,6 +357,8 @@ function cpagination(url){
 			            		if(opt.city != null && opt.city != "" &&  opt.city != 'undefined'){
 			            			 location = opt.city+", "+location;
 				            	}
+		            		}else{
+		            			location = "--";
 		            		}
       	              return "<div><span title='"+location+"'>"+location+"</span></div>";
                   }
@@ -266,14 +371,27 @@ function cpagination(url){
                   		if(opt.candidateUpdateDateToString != null && opt.candidateUpdateDateToString != 'undefined' && opt.candidateUpdateDateToString != ""){
                   			result = "<div>"+opt.candidateUpdateDateToString+"</div>"; 
 			            	}else{
-			            		result = "<div>---</div>";
+			            		result = "<div>--</div>";
 			            	}
       	              return result;
                   }
-                } ],
+                } , {
+                    "targets": colIndex++,
+                    "data": "createdBy",
+                    "className": "tblminwidth-75",
+                    "render": function ( data, type, opt, meta ) {
+                    		var result = "";
+                    		if(opt.createdBy != null && opt.createdBy != 'undefined' && opt.createdBy != ""){
+                    			return "<div><span title='"+opt.createdBy+"'>"+opt.createdBy+"</span></div>";
+  			            	}else{
+  			            		result = "<div>--</div>";
+  			            	}
+        	              return result;
+                    }
+                  } ],
 	    	"scrollCollapse": false,
 	    	"lengthMenu": [[10, 15, 20], [10, 15, 20]],
-	    	"aaSorting": [[8,'desc']],
+	    	"aaSorting": [[9,'desc']],
 	    	"bLengthChange": true,
 	    	"bDestroy": true,
 	    	"ordering": true,
@@ -281,13 +399,19 @@ function cpagination(url){
 	     		"sSearch": "",
 	     		 "sZeroRecords": "", "sEmptyTable": "", 
 	     		 "sProcessing": "<img src='/resources/images/loading.gif' style='width: 75px; height: 75px;'/>"
-	     }
+	     },
+	     drawCallback: function(){
+   	      $('a.paginate_button', this.api().table().container()).on('click', function(){
+   	    	candidateSearchHighlight();
+	         }); 
+	   }
     } );
     $("#candidatePagination").wrap("<div style='overflow-x: auto; overflow-y: hidden;'></div>"); 
     $("input[type=search]").hide();
     $("#dataTableSearch").keyup(function(e) {
     	   if(e.which === 13) {
 		candidateList();
+		candidateSearchHighlight();
     	   }
     	});
 }

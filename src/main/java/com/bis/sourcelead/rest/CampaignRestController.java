@@ -65,11 +65,11 @@ public class CampaignRestController {
 	 * @throws Exception
 	 */
 	@RequestMapping(value = "/saveCampaignSender")
-	public boolean createSender(CreateSenderDTO createSenderDTO, HttpServletRequest request, HttpServletResponse response) throws Exception
+	public String createSender(CreateSenderDTO createSenderDTO, HttpServletRequest request, HttpServletResponse response) throws Exception
 	{
 		User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
 		OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
-		boolean isSenderCreated = campaignService.createSender(createSenderDTO, user, orgLocation);
+		String isSenderCreated = campaignService.createSender(createSenderDTO, user, orgLocation);
 		return isSenderCreated;
 	}
 	
@@ -133,12 +133,12 @@ public class CampaignRestController {
 	 * @throws Exception
 	 */
 	@RequestMapping(value = "/saveRecipientList", method = RequestMethod.POST)
-	public boolean saveRecipientList(CampaignListDTO campaignListDTO, HttpServletRequest request, HttpServletResponse response) throws Exception
+	public String saveRecipientList(CampaignListDTO campaignListDTO, HttpServletRequest request, HttpServletResponse response) throws Exception
 	{
 		
 		User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
 		OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
-		boolean isSenderDeleted = campaignService.saveRecipientList(orgLocation, campaignListDTO, user);
+		String isSenderDeleted = campaignService.saveRecipientList(orgLocation, campaignListDTO, user);
 		return isSenderDeleted;
 	}
 	
@@ -188,16 +188,13 @@ public class CampaignRestController {
 	 * @throws Exception
 	 */
 	@RequestMapping(value = "/getCampaignRecipientList")
-	public @ResponseBody List<CampaignListDTO> getCampaignRecipientList(CampaignListDTO campaignListDTO, @RequestParam(value = "orgLocationId", required = false) Long orgLocationId, @RequestParam(value = "user", required = false) Long userId, HttpServletRequest request) throws Exception
+	public @ResponseBody ResponseList<CampaignListDTO> getCampaignRecipientList(CampaignListDTO campaignListDTO, @RequestParam(value = "orgLocationId", required = false) Long orgLocationId, @RequestParam(value = "user", required = false) Long userId, HttpServletRequest request) throws Exception
 	{
 		List<CampaignListDTO> campaignList = null;
 		OrgLocations orgLocation = orgLocationService.getOrgLocations(Long.valueOf(orgLocationId));
 		User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
 		ResponseList<CampaignListDTO> cpnDtoList = campaignService.getRecipientListByUserId(user, orgLocation, campaignListDTO);
-		if (cpnDtoList.getData() != null) {
-			campaignList = cpnDtoList.getData();
-		}
-		return campaignList;
+		return cpnDtoList;
 	}
 	
 	

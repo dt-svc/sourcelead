@@ -50,7 +50,7 @@ public class InvoicePaymentDaoImpl implements InvoicePaymentDao {
 	public List<InvoicePayment> getInvoicePaymentList(Long invoiceId) throws Exception {
 		Session session = this.sessionFactory.getCurrentSession();
 		String query = "from InvoicePayment invoicePayment  where invoicePayment.invoiceId = :invoiceId and invoicePayment.status = '1' ";
-		List<InvoicePayment> invoicePaymentList = session.createQuery(query.toString()).setLong("invoiceId", invoiceId).setCacheable(true).list();
+		List<InvoicePayment> invoicePaymentList = session.createQuery(query.toString()).setLong("invoiceId", invoiceId).list();
 		return invoicePaymentList;
 		
 	}
@@ -74,7 +74,7 @@ public class InvoicePaymentDaoImpl implements InvoicePaymentDao {
 		java.sql.Date sqlEndDate = new java.sql.Date(endDate.getTime());
 		
 		String query = "from InvoicePayment invoicePayment  left join fetch invoicePayment.invoiceId invoice  where (invoice.orgLocation.id  = :orgLocationId or invoice.responderLocationId.id  = :orgLocationId) and invoicePayment.paymentDate >= :startDate and invoicePayment.paymentDate <= :endDate ";
-		List<InvoicePayment> invoicePaymentList = session.createQuery(query.toString()).setLong("orgLocationId", orgLocationId).setDate("startDate", sqlStartDate).setDate("endDate", sqlEndDate).setCacheable(true).list();
+		List<InvoicePayment> invoicePaymentList = session.createQuery(query.toString()).setLong("orgLocationId", orgLocationId).setDate("startDate", sqlStartDate).setDate("endDate", sqlEndDate).list();
 		return invoicePaymentList;
 		
 		
@@ -102,7 +102,7 @@ public class InvoicePaymentDaoImpl implements InvoicePaymentDao {
 				qry.setParameter(str, (Date) params.get("endDateUTC"));
 			}
         }
-		return qry.setCacheable(false).list();*/
+		return qry.list();*/
 		 
 	}
 }

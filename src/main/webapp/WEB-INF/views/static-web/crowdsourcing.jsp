@@ -8,7 +8,7 @@
 				<span class="OneText">Search | Apply | Refer & Get paid</span>
            </h1>
             <span>
-            	<a href="http://localhost:8080/register" target="_blank">Register</a>
+            	<a href="/register" target="_blank">Register</a>
             </span>
         </div>
         <div class="clear"></div>

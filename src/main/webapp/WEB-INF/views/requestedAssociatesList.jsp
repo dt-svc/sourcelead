@@ -86,39 +86,11 @@ function getRequestedAssociatesList(){
 				result = result +'</div>';
 				
 				result = result +'<div class="col-md-6">'; 
-				result = result +'<label class="col-md-4 control-label">Total Hours :</label>';
-				result = result +'<div class="col-md-8">';
-				result = result +'<label><strong>'+json.estimatedHours+'</strong> hours</label>  ';
-				result = result +' </div>';    
-				result = result +'</div>';
-				
-				result = result +'<div class="col-md-6">'; 
-				result = result +'<label class="col-md-4 control-label">Approver :</label>';
-				result = result +'<div class="col-md-8">';
-				result = result +'<label><strong>'+json.approverName+'</strong></label>  ';
-				result = result +' </div>';    
-				result = result +'</div>';
-				
-				result = result +'<div class="col-md-6">'; 
-				result = result +'<label class="col-md-4 control-label">Total Budget :</label>';
-				result = result +'<div class="col-md-8">';
-				result = result +'<label>${SourceLeadWeb_currencyCode}&nbsp;<strong>'+json.estimatedBudget+'</strong></label>  ';
-				result = result +' </div>';    
-				result = result +'</div>';
-				
-				result = result +'<div class="col-md-6">'; 
 				result = result +'<label class="col-md-4 control-label">Description :</label>';
 				result = result +'<div class="col-md-8">';
 				result = result +'<label><strong>'+json.description+'</strong></label>  ';
 				result = result +' </div>';    
 				result = result +'</div>';
-				
-				/* result = result +'<div class="col-md-6">'; 
-				result = result +'<label class="col-md-4 control-label">Status :</label>';
-				result = result +'<div class="col-md-8">';
-				result = result +'<label><strong>'+json.requestStatus+'</strong></label>  ';
-				result = result +' </div>';    
-				result = result +'</div>'; */
 				
 				result = result +'</div>';
 				result = result +'</div> ';  
@@ -128,7 +100,8 @@ function getRequestedAssociatesList(){
 				result = result +'             <thead>';
 				result = result +'                 <tr>';
 				result = result +'                     <th>Name</th>';
-				result = result +'                     <th>Location</th>';
+				result = result +'                     <th>Requested Location</th>';
+				result = result +'                     <th>Approver</th>';
 				result = result +'                     <th>Pay Rate</th>';
 				result = result +'                     <th>Bill Rate</th>';
 				result = result +'                     <th>Start Date</th>';
@@ -166,7 +139,11 @@ function getRequestedAssociatesList(){
 						result = result +'</td>'; 
 						
 					    result = result +'<td>';
-					 	result = result +'<div class="tbldata-dotdot-vsm" title="'+opt.candidateLocation+'">'+opt.candidateLocation+'</div>';
+					 	result = result +'<div class="tbldata-dotdot-vsm" title="'+opt.requestedLocation+'">'+opt.requestedLocation+'</div>';
+						result = result +'</td>';
+						
+					    result = result +'<td>';
+					 	result = result +'<div class="tbldata-dotdot-vsm" title="'+opt.approverName+'">'+opt.approverName+'</div>';
 						result = result +'</td>';
 						
 						result = result +'<td>';
@@ -206,7 +183,7 @@ function getRequestedAssociatesList(){
 							result = result + '<a href="javascript:void(0)" onclick="acceptAssociate(\''+opt.requestUUID+'\');"><i class="fa fa-check text-success" alt="Approve" title="Approve"></i></a>&nbsp;|&nbsp;';
 				    		result = result + '<a href="javascript:void(0)" onclick="rejectAssociate(\''+opt.requestUUID+'\',\''+opt.candidateName+'\');"><i class="fa fa-times text-danger" alt="Reject" title="Reject"></i></a>';
 				    		if(opt.resourceStatus == 'Waiting For Approval'){
-				    			result = result + '&nbsp;|&nbsp;<a href="javascript:void(0)" onclick="onholdAssociateRequest(\''+opt.requestUUID+'\',\''+opt.candidateName+'\');"><i class="fa fa-clock-o" alt="Onhold" title="Onhold"></i></a>';
+				    			result = result + '&nbsp;|&nbsp;<a href="javascript:void(0)" onclick="onholdAssociateRequest(\''+opt.requestUUID+'\',\''+opt.requestedUser+'\');"><i class="fa fa-clock-o" alt="Onhold" title="Onhold"></i></a>';
 				    		}
 				    		result = result +'</div>';	
 			    		}else{
@@ -232,7 +209,7 @@ function getRequestedAssociatesList(){
 
 <script>
 function rejectAssociate(requestUUID,candidateName){
-	
+	$("#requestOnHoldReasonDiv").empty();
 	var result = "";
 	result = result + '	<div class="settPop">';
 	result = result + '	<div id="loading"></div>';
@@ -274,6 +251,8 @@ function rejectAssociate(requestUUID,candidateName){
 function cancelRejectedReason(){
 	$(".settPop").slideUp(200);
 	$(".vendor_wrap_mask").fadeOut(200);
+	 $("#rejectedReasonDiv").empty();
+	$("#requestOnHoldReasonDiv").empty();
 }
 </script>
 

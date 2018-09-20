@@ -80,7 +80,7 @@ public class DepartmentDaoImpl implements DepartmentDao{
 	public List<Department> getDepartmentByOrgLocationId(Long orgLocationId) throws Exception {
 		Session session = this.sessionFactory.getCurrentSession();
 		String query = "from Department department  where department.orgLocationId.id =:orgLocationId and department.status = '1' "; 
-		List<Department> departmentList = session.createQuery(query).setLong("orgLocationId", orgLocationId).setCacheable(true).list();
+		List<Department> departmentList = session.createQuery(query).setLong("orgLocationId", orgLocationId).list();
 		return departmentList;
 	}
 
@@ -90,7 +90,7 @@ public class DepartmentDaoImpl implements DepartmentDao{
 			throws Exception {
 		Session session = this.sessionFactory.getCurrentSession();
 		String query = "from Department department  where department.id =:departmentId and department.departmentName =:departmentName ";
-		List<Department> departmentList =session.createQuery(query) .setString("departmentName", departmentName).setLong("departmentId", departmentId).setCacheable(true).list();
+		List<Department> departmentList =session.createQuery(query) .setString("departmentName", departmentName).setLong("departmentId", departmentId).list();
 		Department department = null;
 		if(departmentList != null && !departmentList.isEmpty())
 		{
@@ -106,7 +106,7 @@ public class DepartmentDaoImpl implements DepartmentDao{
 		Session session = this.sessionFactory.getCurrentSession();
 		 boolean flag = false;
 			 String query = "from Department department  where department.orgLocationId.id =:orgLocationId and department.departmentName =:departmentName ";
-				Collection<Department> departmentList = session.createQuery(query) .setString("departmentName", departmentName).setLong("orgLocationId", orgLocationId).setCacheable(true).list();
+				Collection<Department> departmentList = session.createQuery(query) .setString("departmentName", departmentName).setLong("orgLocationId", orgLocationId).list();
 				if (departmentList != null && departmentList.size() > 0) {
 					flag = true;
 				}
@@ -118,7 +118,7 @@ public class DepartmentDaoImpl implements DepartmentDao{
 	public List<Department> getDepartmentByOrgLocationIdAndStatus(Long orgLocationId, String status) throws Exception {
 		Session session = this.sessionFactory.getCurrentSession();
 		String query = "from Department department  where department.orgLocationId.id =:orgLocationId and department.status =:status "; 
-		List<Department> departmentList = session.createQuery(query).setLong("orgLocationId", orgLocationId).setString("status", status).setCacheable(true).list();
+		List<Department> departmentList = session.createQuery(query).setLong("orgLocationId", orgLocationId).setString("status", status).list();
 		return departmentList;
 	}
 

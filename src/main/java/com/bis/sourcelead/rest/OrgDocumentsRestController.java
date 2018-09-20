@@ -95,7 +95,7 @@ public class OrgDocumentsRestController {
 	 * @return
 	 * @throws Exception
 	 */
-	@PreAuthorize("hasRole('ROLE_VIEW_VENDOR_DOCUMENT')")
+	@PreAuthorize("hasAnyRole('ROLE_VIEW_VENDOR_DOCUMENT','ROLE_VIEW_CLIENT','ROLE_VIEW_VENDOR')")
 	@RequestMapping(value = {"/getclientDocumentsListByResponderLocationId","/rest/getclientDocumentsListByResponderLocationId"},method = RequestMethod.POST)
 	public List<OrgDocumentsDTO> getclientDocumentsListByResponderLocationId(@RequestParam(value = "responderLocationId", required = false) String responderLocationId,
 			                                                 @RequestParam(value = "sourceType", required = false) String sourceType,

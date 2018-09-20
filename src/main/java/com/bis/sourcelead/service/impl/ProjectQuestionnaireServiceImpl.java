@@ -26,6 +26,7 @@ import com.bis.sourcelead.entity.EmailScenario;
 import com.bis.sourcelead.entity.Employees;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.ProjectApproverHierarchy;
+import com.bis.sourcelead.entity.ProjectClients;
 import com.bis.sourcelead.entity.ProjectMembers;
 import com.bis.sourcelead.entity.ProjectPlanningResourceRequest;
 import com.bis.sourcelead.entity.ProjectQuestionnaire;
@@ -33,7 +34,9 @@ import com.bis.sourcelead.entity.Projects;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.enums.Status;
 import com.bis.sourcelead.service.EmailScenarioService;
+import com.bis.sourcelead.service.ProjectClientService;
 import com.bis.sourcelead.service.ProjectQuestionnaireService;
+import com.bis.sourcelead.util.CommonUtil;
 import com.bis.sourcelead.util.EmailScenerioUtil;
 import com.bis.sourcelead.util.SourceLeadRandomCodeHelper;
 
@@ -48,6 +51,9 @@ public class ProjectQuestionnaireServiceImpl implements ProjectQuestionnaireServ
 	
 	@Autowired
 	ProjectApproverHierarchyDao projectApproverHierarchyDao;
+	
+	@Autowired
+	ProjectClientService projectClientService;
 	
 	@Autowired
 	UserDao userDao;
@@ -67,6 +73,9 @@ public class ProjectQuestionnaireServiceImpl implements ProjectQuestionnaireServ
 	
 	@Autowired
 	ProjectMembersDao projectMembersDao;
+	
+	@Autowired
+	private CommonUtil commonUtil;
 	    
 	
     protected static boolean isNullOrEmpty(String str) {
@@ -256,7 +265,7 @@ public class ProjectQuestionnaireServiceImpl implements ProjectQuestionnaireServ
 			   if(projectMembersList != null && projectMembersList.size() > 0){
 				   teamMembersTable = getTeamMembersTable(projectMembersList);
 			   }else{
-				   teamMembersTable = "-----";
+				   teamMembersTable = "";
 			   }
 			   List<ProjectApproverHierarchy> projectApproverHierarchiesList = projectApproverHierarchyDao.getApproverUsersByProjectId(projects.getId());
 			   if(projectApproverHierarchiesList != null && projectApproverHierarchiesList.size() > 0){
@@ -267,10 +276,23 @@ public class ProjectQuestionnaireServiceImpl implements ProjectQuestionnaireServ
 		   }
 		   
 		   if(projects.getIsMailToTeamMembers().equals(Status.Y)){
-			   ProjectApproverHierarchy approverHierarchy = projectApproverHierarchyDao.getProjectApproverByProjectIdAndLevel(projects.getId(), 1);
+			   List<ProjectApproverHierarchy> approverHierarchy = projectApproverHierarchyDao.getApproverUsersByProjectId(projects.getId());
+			   StringBuilder managers = new StringBuilder();
+			  
+			   for (ProjectApproverHierarchy projectApproverHierarchy : approverHierarchy) {
+				 StringBuilder fullname=new StringBuilder();
+				 if(projectApproverHierarchy.getApproverUserId().getLastName()!=null && projectApproverHierarchy.getApproverUserId().getLastName()!="")
+				   managers=managers.append(fullname.append(projectApproverHierarchy.getApproverUserId().getFirstName()).append(" ").append(projectApproverHierarchy.getApproverUserId().getLastName())).append(" & ");
+				 else
+					 managers=managers.append(projectApproverHierarchy.getApproverUserId().getFirstName()).append(" & ");
+			}
+			  String projectManagers=managers.toString();
+			  String projectmanagerss= managers.substring(0, projectManagers.length()-2);
+		 
+			 
 			   if(projectMembersList != null && projectMembersList.size() > 0){
 				   for(ProjectMembers projectMembers : projectMembersList){
-					   sendEmailToTeamMembers(projects, projectMembers, user, approverHierarchy.getApproverUserId(), orgLocations, orgLocations.getOrg().getOrgCode());
+					   sendEmailToTeamMembers(projects, projectMembers, user, projectmanagerss, orgLocations, orgLocations.getOrg().getOrgCode());
 				   }
 			   }
 		   }
@@ -333,7 +355,7 @@ public class ProjectQuestionnaireServiceImpl implements ProjectQuestionnaireServ
 	
 	
 	
-	private void sendEmailToTeamMembers(Projects projects, ProjectMembers projectMembers, User loginUser, User projectManager, OrgLocations loginOrgLocation, String loginOrgCode) throws Exception {
+	private void sendEmailToTeamMembers(Projects projects, ProjectMembers projectMembers, User loginUser, String managers, OrgLocations loginOrgLocation, String loginOrgCode) throws Exception {
 	  	 StringBuilder fromNameBuilder=new StringBuilder();
 	     EmailMessage emailMessage = new EmailMessage();
 		 emailMessage.setFirstName(projectMembers.getProjectMemberCandidteId().getFirstName());
@@ -346,52 +368,48 @@ public class ProjectQuestionnaireServiceImpl implements ProjectQuestionnaireServ
 		 //setting the class filed values
 		 Map<String, String> globalVarsMap = new HashMap<String, String>();
 		 StringBuilder sb=new StringBuilder();
-		 globalVarsMap.put("loginUserFirstName",sb.append(loginUser.getFirstName()).append(" ").append(loginUser.getLastName()).toString());
-		// globalVarsMap.put("loginUserLastName",loginUser.getLastName());
-		 globalVarsMap.put("managerFirstName",projectManager.getFirstName());
-		 globalVarsMap.put("managerLastName",projectManager.getLastName());
-		 globalVarsMap.put("employeeFirstName",emailMessage.getFirstName());
-		 globalVarsMap.put("employeeLastName",emailMessage.getLastName());
-		 globalVarsMap.put("projectName", projects.getProjectName());
-		 globalVarsMap.put("orgName",loginOrgLocation.getOrgLocationName());
+		 String name="";
+		 if(loginUser.getLastName()!=null)
+		 {
+		 name=sb.append(loginUser.getFirstName()).append(" ").append(loginUser.getLastName()).toString();
+		 }
+		 else
+		 {
+		name= sb.append(loginUser.getFirstName()).toString();
+		 }
+		 globalVarsMap.put("LoginUserFirstName",name);
+//	 globalVarsMap.put("loginUserLastName",loginUser.getLastName());
+		 globalVarsMap.put("managersName",managers.toString());
+//		globalVarsMap.put("managerLastName",projectManager.getLastName());
+		 globalVarsMap.put("EmployeeFirstName",emailMessage.getFirstName());
+//		 globalVarsMap.put("employeeLastName",emailMessage.getLastName());
+		 globalVarsMap.put("ProjectName", projects.getProjectName());
+		 globalVarsMap.put("OrgName",loginOrgLocation.getOrgLocationName());
+		 globalVarsMap.put("userStartDate",projectMembers.getStartDateStr());
+		 globalVarsMap.put("projectEndDate",projectMembers.getEndDateStr());
 		 StringBuilder loginURLBuilder=new StringBuilder();
 		 globalVarsMap.put("loginURL",loginURLBuilder.append("<a href='").append(sourceleadLoginUrl).append("' style='text-decoration:none; '><div style=' width:220px; border-radius:30px; background-color:#214b90; color:#FFF; font-size:18px; font-weight:500; margin:10px auto 5px auto; padding:10px 0px; text-align:center; letter-spacing:2px;'>Login</div></a>").toString());
 		 
-		 //setting the Recipient information
-		 InternetAddress[] iAdressArray = InternetAddress.parse(emailMessage.getToEmail());
-		 
-		 //getting the current EmailScenario by EmailScenario unique name and entity type
-		 EmailScenario  emailScenario = emailScenarioService.getEmailScenarioByUniqueName(Constants.MAIL_TEAM_MEMBERS,Constants.ENTITY_TYPE_EMAIL);
-		
-		 //covert subject,body and signature
-		 String subject = emailScenerioUtil.bulidSubject(emailScenario.getSubject(),globalVarsMap);
-		 String body = emailScenerioUtil.buildTempBody(emailScenario.getBody(),globalVarsMap);
-		 String signature = emailScenerioUtil.buildSignature(emailScenario.getSignature(),globalVarsMap);
-		 String url = sourceleadUrl;
-		 
-		 //construct HTML template using required data
-		 String emailTemplate = emailScenerioUtil.AssembleEmailMessage(emailScenario,emailMessage, subject, body, signature, url, loginOrgLocation.getOrg(),loginOrgLocation);
-		 emailMessage.setSubject(subject);
-		 emailMessage.setMessageBody(emailTemplate);
-		 
 		 //calling the sendEmail method of emailScenerioUtil
 		 if(null != projects.getOrgLocationsId())
-		 emailScenerioUtil.sendEmail(emailMessage,projects.getOrgLocationsId().getId(),iAdressArray,new ArrayList<EmailAttachment>());
-		 
+		 commonUtil.sendTemplateEmail(emailMessage, globalVarsMap,loginOrgLocation.getOrg(),loginOrgLocation,Constants.MAIL_TEAM_MEMBERS,new ArrayList<EmailAttachment>());
 		 
 		//calling the sendNotification method of emailScenerioUtil
 		EmailScenario  notificationScenario = emailScenarioService.getEmailScenarioByUniqueName(Constants.MAIL_TEAM_MEMBERS,Constants.ENTITY_TYPE_NOTIFICATION);
-		String notificationBody = emailScenerioUtil.buildBody(notificationScenario.getBody(),globalVarsMap);
+		String notificationBody = emailScenerioUtil.buildTemplateBody(notificationScenario.getBody(),globalVarsMap,notificationScenario);
 		notificationScenario.setBody(notificationBody);
 		notificationScenario.setOrgCode(loginOrgCode);
 		//String url = null;
-		String actionLink = "";
-		emailScenerioUtil.sendNotification(actionLink, loginUser, projectMembers.getProjectMemberCandidteId().getConsultantUser(), loginOrgLocation, notificationScenario);
+		StringBuilder actionLinkBuilder = new StringBuilder();
+		String actionLink = actionLinkBuilder.append("").append(sourceleadUrl).append("/").append("projectSummary?projectUUID="+projects.getProjectUUID()+"&projectClientUUID="+projectMembers.getProjectClientUUID()).toString();
+	
+		emailScenerioUtil.sendNotification(actionLink, loginUser, projectMembers.getProjectMemberCandidteId().getConsultantUser(), loginOrgLocation, notificationScenario,new HashMap<String,String>());
 	}
 	
 	
 	  private void sendEmailToProjectManager(Projects projects, User loginUser, User projectManager, OrgLocations loginOrgLocation, String loginOrgCode,String teamMembersTable) throws Exception {
 		  	 
+		     ProjectClients pc = projectClientService.getProjectClientsByProjectIdAndOrgLocationId(projects.getId(),projects.getOrgLocationsId().getId());
 		  	 StringBuilder fromNameBuilder=new StringBuilder();
 		     EmailMessage emailMessage = new EmailMessage();
 			 emailMessage.setFirstName(projectManager.getFirstName());
@@ -403,45 +421,27 @@ public class ProjectQuestionnaireServiceImpl implements ProjectQuestionnaireServ
 			 emailMessage.setEmailType(Constants.CUSTOM_USER_EMAIL);
 			 //setting the class filed values
 			 Map<String, String> globalVarsMap = new HashMap<String, String>();
-			 globalVarsMap.put("loginUserFirstName",loginUser.getFirstName());
-			 globalVarsMap.put("loginUserLastName",loginUser.getLastName());
-			 globalVarsMap.put("managerFirstName",projectManager.getFirstName());
-			 globalVarsMap.put("managerLastName",projectManager.getLastName());
-			 globalVarsMap.put("teamMembers",teamMembersTable);
-			 globalVarsMap.put("projectName", projects.getProjectName());
-			 globalVarsMap.put("orgName",loginOrgLocation.getOrgLocationName());
+			 globalVarsMap.put("LoginUserFirstName",loginUser.getFirstName());
+			 globalVarsMap.put("LoginUserLastName",loginUser.getLastName());
+			 globalVarsMap.put("ManagerFirstName",projectManager.getFirstName());
+			 globalVarsMap.put("ManagerLastName",projectManager.getLastName());
+			 globalVarsMap.put("TeamMembers",teamMembersTable);
+			 globalVarsMap.put("ProjectName", projects.getProjectName());
+			 globalVarsMap.put("OrgName",loginOrgLocation.getOrgLocationName());
 			 StringBuilder loginURLBuilder=new StringBuilder();
 			 globalVarsMap.put("loginURL",loginURLBuilder.append("<a href='").append(sourceleadLoginUrl).append("' style='text-decoration:none; '><div style=' width:220px; border-radius:30px; background-color:#214b90; color:#FFF; font-size:18px; font-weight:500; margin:10px auto 5px auto; padding:10px 0px; text-align:center; letter-spacing:2px;'>Login</div></a>").toString());
-			 
-			 //setting the Recipient information
-			 InternetAddress[] iAdressArray = InternetAddress.parse(emailMessage.getToEmail());
-			 
-			 //getting the current EmailScenario by EmailScenario unique name and entity type
-			 EmailScenario  emailScenario = emailScenarioService.getEmailScenarioByUniqueName(Constants.MAIL_PROJECT_MANAGER,Constants.ENTITY_TYPE_EMAIL);
-			
-			 //covert subject,body and signature
-			 String subject = emailScenerioUtil.bulidSubject(emailScenario.getSubject(),globalVarsMap);
-			 String body = emailScenerioUtil.buildTempBody(emailScenario.getBody(),globalVarsMap);
-			 String signature = emailScenerioUtil.buildSignature(emailScenario.getSignature(),globalVarsMap);
-			 String url = sourceleadUrl;
-			 
-			 //construct HTML template using required data
-			 String emailTemplate = emailScenerioUtil.AssembleEmailMessage(emailScenario,emailMessage, subject, body, signature, url, loginOrgLocation.getOrg(),loginOrgLocation);
-			 emailMessage.setSubject(subject);
-			 emailMessage.setMessageBody(emailTemplate);
-			 
 			 //calling the sendEmail method of emailScenerioUtil
 			 if(null != projects.getOrgLocationsId())
-			 emailScenerioUtil.sendEmail(emailMessage,projects.getOrgLocationsId().getId(),iAdressArray,new ArrayList<EmailAttachment>());
-			 
+			 commonUtil.sendTemplateEmail(emailMessage, globalVarsMap,loginOrgLocation.getOrg(),loginOrgLocation,Constants.MAIL_PROJECT_MANAGER,new ArrayList<EmailAttachment>());
 			 
 			//calling the sendNotification method of emailScenerioUtil
 			EmailScenario  notificationScenario = emailScenarioService.getEmailScenarioByUniqueName(Constants.MAIL_PROJECT_MANAGER,Constants.ENTITY_TYPE_NOTIFICATION);
-			String notificationBody = emailScenerioUtil.buildTempBody(notificationScenario.getSubject(),globalVarsMap);
+			String notificationBody = emailScenerioUtil.buildTemplateBody(notificationScenario.getBody(),globalVarsMap,notificationScenario);
 			notificationScenario.setBody(notificationBody);
 			notificationScenario.setOrgCode(loginOrgCode);
 			//String url = null;
-			String actionLink = "";
-			emailScenerioUtil.sendNotification(actionLink, loginUser, projectManager, loginOrgLocation, notificationScenario);
+			StringBuilder actionLinkBuilder = new StringBuilder();
+			String actionLink = actionLinkBuilder.append("").append(sourceleadUrl).append("/").append("projectSummary?projectUUID="+projects.getProjectUUID()+"&projectClientUUID="+pc.getUuid()).toString();
+			emailScenerioUtil.sendNotification(actionLink, loginUser, projectManager, loginOrgLocation, notificationScenario,new HashMap<String,String>());
 		}
 }

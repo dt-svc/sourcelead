@@ -618,9 +618,9 @@ function deleteClientDocument(clientLocationId,orgRelationId,docId,docName){
 	var result = "";
 	result = result  +'          <form role="form"  id="doc_form" name="document_delete" method="post" > ';
 	result = result +"	<div class='project_inn_mask'></div>";
-	result = result +"	   <div id='remove_user_pop' class='remove_user_pop remove_user_pop_a'>";
+	result = result +"	   <div id='remove_user_pop' class='remove_user_pop remove_user_pop_a remove_uservalidation'>";
 	result = result +"		<p>Document delete message here</p>";
-	result = result +"		<textarea  id='terminateReason' name='terminateReason'  placeholder='Comments here'></textarea>";
+	result = result +"		<textarea  id='terminateReason' name='terminateReason'  data-validation = 'required' field-name='comment'  placeholder='Comments here'></textarea>";
 	result = result + ' <div id="terminateReasonDiv"/>';
 	result = result +"		<b href='javascript:void(0)'><input id='confirm-id' type='button' value='Submit' onclick='saveReasonForDoc("+clientLocationId+","+orgRelationId+","+docId+",\""+docName+"\");'><input class='u_can_color' type='button'  value='Cancel' onClick='cancelDocTermination();'></b>";
 	result = result +"	</div>";
@@ -643,9 +643,17 @@ function saveReasonForDoc(clientLocationId,orgRelationId,docId,docName){
 	var terminateReason = document.getElementById("terminateReason").value;
 	 if ($('#doc_form').validate(false, validationSettings)){
 		$("#terminateReasonDiv").empty();
+		 var formData = new FormData();
+	     formData.append("tokenParamName", tokenValue);
+	     formData.append("docId", docId);
+	     formData.append("terminateReason", terminateReason);
 		$.ajax({
-		   	type: "POST",
-		    url: sourceleadUrl+"/terminateOrgDocumnet?"+tokenParamName+"="+tokenValue+"&docId="+docId+"&terminateReason="+terminateReason, 	   
+			 type : "POST",
+	          data: formData,
+	          processData: false,
+	          contentType:false, 
+	     	  url: sourceleadUrl+"/terminateOrgDocumnet",
+// 		    url: sourceleadUrl+"/terminateOrgDocumnet?"+tokenParamName+"="+tokenValue+"&docId="+docId+"&terminateReason="+terminateReason, 	   
    		    success: function(data) {
         			 $("#deleteDocpopUp").empty();
         			 $(".project_inn_mask").fadeOut(200);
@@ -657,12 +665,16 @@ function saveReasonForDoc(clientLocationId,orgRelationId,docId,docName){
    		    }
 	     });
 	}else{
+		return false;
+	  }
+	 
+	 /* else{
 		if(terminateReason){
 			$("#terminateReasonDiv").empty().append("<font color='red' style='padding: 5px 10px; '>Must not Start With Space</font>") ;
 		}else{
 			$("#terminateReasonDiv").empty().append("<font color='red' style='padding: 5px 10px; '>Reason is required</font>") ; 
 		}
-	}
+	} */
 }
 </script>
 

@@ -6,6 +6,7 @@ import java.util.Date;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -23,7 +24,6 @@ import org.springframework.format.annotation.DateTimeFormat;
 
 @Entity
 @Table(name = "TIMESHEET_SUBMISSIONS_DOCUMENTS")
-@Cache(usage = CacheConcurrencyStrategy.TRANSACTIONAL,region="timeSheetSubmissionsDocuments")
 public class TimesheetSubmissionsDocuments implements Serializable{
 	
 	 
@@ -34,8 +34,8 @@ public class TimesheetSubmissionsDocuments implements Serializable{
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long Id;
 	
-	@NotFound(action=NotFoundAction.IGNORE)
-	@ManyToOne
+	
+	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "TIMESHEET_SUBMISSION_ID", nullable=false)
 	private TimesheetSubmissions timesheetSubmissions;
 	

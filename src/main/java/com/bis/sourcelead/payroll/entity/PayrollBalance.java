@@ -24,6 +24,7 @@ public class PayrollBalance extends SearchDTO implements Serializable{
 	private String due;
 	private String billed;
 	private String empName;
+	private String searchValue;
 	
 	public String getBalance() {
 		return balance;
@@ -169,6 +170,14 @@ public class PayrollBalance extends SearchDTO implements Serializable{
 
 	public void setEmpName(String empName) {
 		this.empName = empName;
+	}
+
+	public String getSearchValue() {
+		return searchValue;
+	}
+
+	public void setSearchValue(String searchValue) {
+		this.searchValue = searchValue;
 	}
 	
 

@@ -20,7 +20,7 @@ public interface RequirementInterviewService {
 	
 	void acceptProposeTimeBytProposeTimeId(String proposeDate,String proposeTime, User user, OrgLocations orgLocations, Org loginOrg ,Long proposeTimeId) throws Exception;
 	
-	List<RequirementInterview> getRequirementInterviewsBySubmissionIdAndOrgLocationsId(Long submissionId, Long orgLocationsId) throws Exception;
+	List<RequirementInterview> getRequirementInterviewsBySubmissionIdAndOrgLocationsId(Long submissionId, OrgLocations orgLocations) throws Exception;
 	
 	List<RequirementInterview> getRequirementInterviewsHistoryBySubmissionIdAndOrgLocationsId(Long submissionId, Long orgLocationsId) throws Exception;
 	
@@ -46,7 +46,7 @@ public interface RequirementInterviewService {
 	 */
 	RequirementInterview getRequirementInterviewByIdAndSubmissionIdAndOrgLocationsId(Long requirementInterviewId, Long submissionId, Long orgLocationsId);
 
-	void saveRequirementInterview(RequirementInterview requirementInterview) throws Exception;
+	RequirementInterview saveRequirementInterview(RequirementInterview requirementInterview) throws Exception;
 
 	List<RequirementInterview> getAllInterviewAssignedToLoginUser(Long orgLocationsId, String dateRange, String currentTime, String userType, Long userId, String userCode)throws Exception; 
 
@@ -70,6 +70,15 @@ public interface RequirementInterviewService {
 	void applicantInterviewProposeTimeEmailToInterviewInitiator(String requirementInterviewId, OrgLocations orgLocations, Org loginOrg, User user) throws Exception;
 
 	RequirementInterview getinterviewBySubmissionId(Long submissionId);
+	
+	RequirementInterview getLatestInterviewBySubmissionId(Long submissionId);
+	
+	List<Date> getInterviewDatesForCalendarEvent(Long userId,Long orgLocationId) throws Exception;
+	
+	List<Date> getInterviewDatesForInterviewrsInterviewSlots(List<Long> interivewerIds,Long orgLocationId) throws Exception;
+	
+	List<Date> getInterviewDatesForCandidateInterviewSlots(List<Long> applicantSubmissionIds) throws Exception;
+	
 	
 	//List<RequirementInterview> getAllInterviewListByCurrentDate(String currentTime, String triggerTime);
 	

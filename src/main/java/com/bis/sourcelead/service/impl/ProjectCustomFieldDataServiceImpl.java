@@ -1,6 +1,7 @@
 package com.bis.sourcelead.service.impl;
 
 import java.util.List;
+import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -18,12 +19,16 @@ public class ProjectCustomFieldDataServiceImpl implements ProjectCustomFieldData
 	private ProjectCustomFieldDataDao projectCustomFieldDataDao;
 	
 	@Override
-	public List<ProjectCustomFieldData> getProjectCustomFieldDataByProjectId(Long projectId,List<CustomFormFieldDTO> formFieldId) {
-		return projectCustomFieldDataDao.getProjectCustomFieldDataByProjectId(projectId,formFieldId);
-	}
-	@Override
 	public ProjectCustomFieldData saveProjectCustomFieldData(ProjectCustomFieldData projectCustomFields) {
 		return projectCustomFieldDataDao.saveProjectCustomFieldData(projectCustomFields);
+	}
+	@Override
+	public Map<Long, String[]> getProjectCustomFieldDataByProjectId(Long orgId, List<CustomFormFieldDTO> formFieldId, Long projectId) {
+		return projectCustomFieldDataDao.getProjectCustomFieldDataByProjectId(orgId,formFieldId,projectId);
+	}
+	@Override
+	public ProjectCustomFieldData getprojectFieldDataById(Long projectId) {
+		return projectCustomFieldDataDao.getprojectFieldDataById(projectId);
 	}
 
 }

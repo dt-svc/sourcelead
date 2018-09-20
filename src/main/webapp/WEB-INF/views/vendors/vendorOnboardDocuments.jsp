@@ -60,7 +60,7 @@ function validateDocumentName(id){
 		 if(id != i){
 			 if(documentName != "undefined"){
 				 var docName = $("#"+i+"contractsdocFileName").val();
-				 if(documentName == docName){
+				 if(documentName.localeCompare(docName) == 0){
 					 flag = false;
 					 break;
 				 } 
@@ -73,7 +73,7 @@ function validateDocumentName(id){
 	 var savedDoc = $("#vendorDocumentsList strong[id*=contractsdocument]").length;
 	 for (var i = 0; i <= savedDoc; i++) { 
 		 var docName = $("#"+i+"savedDoc").val();
-		 if(documentName == docName){
+		 if(documentName.localeCompare(docName) == 0){
 			 flag = false;
 			 break;
 		 }
@@ -102,7 +102,10 @@ function validateSavedDocuments(){
 	 var docNames = [];
 	 var savedDoc = $("#vendorDocumentsList strong[id*=contractsdocument]").length;
 	 for (var i = 0; i <= savedDoc; i++) { 
-		  docNames.push($("#"+i+"savedDoc").val());
+		 var saveDoc = $("#"+i+"savedDoc").val();
+		 if(typeof  saveDoc !== "undefined"){
+			 docNames.push($("#"+i+"savedDoc").val());
+		 }
 	 }
 	 
 	 var documentName = "";
@@ -163,7 +166,7 @@ function saveDocuments(){
 	   if ($('#vendorDocuments_form').validate(false, validationSettings)){ 
 	   $("#save_continue_doc_button").attr("disabled", "disabled");
 	   var formData = getFormData("vendorDocuments_form");
-	   $("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
+	   $("#vendorDocumentsLoading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
 		$.ajax({
 		      type : "POST",
     	      data: formData,
@@ -173,13 +176,14 @@ function saveDocuments(){
 		    	     var vendorTasks = document.getElementById("vendorTasks");
 					 document.getElementById("vendorTasks").removeAttribute("class");
 					 vendorTasks.href="#tab-c";
-					 vendorTasks.addEventListener("click", function() {
+					/*  vendorTasks.addEventListener("click", function() {
 						 getVendorOnboardTasksList();
-					  });
-					 vendorTasks.click();
-		    	  
+					  }); */
+					 $("#vendorTasks").click();
+// 					 vendorTasks.click();
+					 
 	      	      $("#save_continue_doc_button").removeAttr("disabled");
-		    	  $("#loading").removeAttr("style");
+		    	  $("#vendorDocumentsLoading").removeAttr("style");
 		    	  
 		      }
 	    	  
@@ -246,7 +250,7 @@ function getOnboardDocuments(){
 		         result = result +"<input type='hidden' id='addedDocumentsRowCount' value='1' />";
             	 result = result +"<table class='timesheetAttachment'  id='contractsAttachmentTable' cellpadding='0' cellspacing='0'>";
             	 result = result +"<tr id='divAttachmentTsRow0'>";
-            	 result = result +"<td><input type='text' onblur='validateDocumentName(0)' placeholder='Document Name' class='form-control input-sm vendorinput'  data-validation-optional='true' field-name='Document Name' name='vendorOnboardDocumentsFileInfo[0].docFileName' id='0contractsdocFileName'></td>";
+            	 result = result +"<td><input type='text' placeholder='Document Name' onblur='validateDocumentName(0)' class='form-control input-sm vendorinput'  data-validation-optional='true' field-name='Document Name' name='vendorOnboardDocumentsFileInfo[0].docFileName' id='0contractsdocFileName'></td>";
             	 result = result +"<td>"; 
             	 result = result +"<label class='switch pull-left ml-mr switchvendor-custom'>";
             	 result = result +"<input type='checkbox'  checked id='0checked' name='vendorOnboardDocumentsFileInfo[0].checked' onclick='checkDocument(0)' value='Y'>"

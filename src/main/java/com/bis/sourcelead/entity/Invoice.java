@@ -25,12 +25,12 @@ import org.hibernate.annotations.FetchMode;
 import org.hibernate.annotations.NotFound;
 import org.hibernate.annotations.NotFoundAction;
 
+import com.bis.sourcelead.dto.PaymentAccountDTO;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 
 @Entity
 @Table(name = "INVOICE")
-@Cache(usage = CacheConcurrencyStrategy.TRANSACTIONAL, region = "invoice")
 public class Invoice {
 	
 	private static final long serialVersionUID = 1L;
@@ -40,45 +40,51 @@ public class Invoice {
     @Column(name = "ID", nullable = false)
 	private Long id;
 	
-	@NotFound(action=NotFoundAction.IGNORE)
-	@ManyToOne
+	
+	@ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name="ORG_RELATION_ID", nullable=false )
 	@Fetch(FetchMode.JOIN)
 	private OrgRelations orgRelationID;
 	
-	@NotFound(action=NotFoundAction.IGNORE)
-	@ManyToOne(fetch = FetchType.EAGER)
+	
+	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "CONTACT_USER_ID")
 	private User contactUser;
 	
-	@NotFound(action=NotFoundAction.IGNORE)
-	@ManyToOne
+	
+	@ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name="ORG_LOCATION_ID", nullable=false )     
 	private OrgLocations orgLocation;
 	
-	@NotFound(action=NotFoundAction.IGNORE)
-	@ManyToOne
+	
+	@ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name="OWNER_USER_ID", nullable=false )     
 	private User ownerUserId;
 	
-	@NotFound(action=NotFoundAction.IGNORE)
-	@ManyToOne
+	
+	@ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name="RESPONDER_LOCATION_ID", nullable=false )     
 	private OrgLocations responderLocationId;
 	
 	@Column(name = "INVOICE_ID")
 	private String invoiceId;
 	
-	@NotFound(action=NotFoundAction.IGNORE)
+	
 	@ManyToOne
     @JoinColumn(name="PROJECT_ID", nullable=true) 
 	private Projects projectID;
 	
+	
+	@ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name="PAYMENT_ACCOUNT_ID", nullable=false )     
+	private PaymentAccount paymentAccount;
+	
+	
 	@Column(name = "INVOICE_TYPE")
 	private String invoiceType;
 	
-	@NotFound(action=NotFoundAction.IGNORE)
-	@ManyToOne
+	
+	@ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name="PARENT_INVOICE_ID")        
 	private Invoice parentInvoiceId;
 	
@@ -190,28 +196,33 @@ public class Invoice {
 	@Column(name = "EXPENSES_INVOICES")
 	private String expensesInvoices;
 	
-	@NotFound(action=NotFoundAction.IGNORE)
-	@ManyToOne
+	@Column(name = "OWNER_USERS")
+	private String ownerUsers;
+	
+	@Column(name = "CONTACT_USERS")
+	private String contactUsers;
+	
+	
+	@ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name="EXPENSES_ID", nullable=true) 
 	private Expenses expensesId;
 	
-	@NotFound(action = NotFoundAction.IGNORE)
-	@ManyToOne
+	@ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name="PROJECT_MEMBER_ID", nullable=true) 
 	private ProjectMembers projectMemberId;
 	
 	@Column(name = "IS_GENERATE_AUTOMATIC_INVOICE")
 	private String isAutomaticGenerateInvoice;
 	
-	@NotFound(action=NotFoundAction.IGNORE)
+	
 	@OneToMany(cascade = CascadeType.ALL, mappedBy = "invoice")
 	private Set<InvoiceLineItems> invoiceLineItems;
 	
-	@NotFound(action=NotFoundAction.IGNORE)
+	
 	@OneToMany(cascade = CascadeType.ALL, mappedBy = "invoice")
 	private Set<InvoiceTax> invoiceTax;
 	
-	@NotFound(action=NotFoundAction.IGNORE)
+	
 	@OneToMany(cascade = CascadeType.ALL, mappedBy = "invoice")
 	private Set<InvoiceDocument> invoiceDocumentSet;
 	
@@ -224,6 +235,7 @@ public class Invoice {
 	private String clientContactName;
 	
 	@Transient
+	@JsonProperty
 	private String clientContactEmail;
 	
 	@Transient
@@ -232,24 +244,34 @@ public class Invoice {
 	
 	@Transient
 	@JsonProperty
+	private long paymentAccountId;
+
+	@Transient
+	@JsonProperty
 	private String dueDateStr;
 
 	@Transient
+	@JsonProperty
 	private Long vendorOrgRelationId;
 	
 	@Transient
+	@JsonProperty
 	private Long vendorContactId;
 	
 	@Transient
+	@JsonProperty
 	private String orgName;
 	
+	@JsonProperty
 	@Transient
 	List<InvoiceLineItems> invoiceLineItemsList;
 	
 	@Transient
+	@JsonProperty
 	List<InvoiceDocument> invoiceDocumentsList;
 	
 	@Transient
+	@JsonProperty
 	List<InvoiceTax> invoiceTaxList;
 
 	@Transient
@@ -294,26 +316,33 @@ public class Invoice {
 	private Integer dueBeforeInvoiceCount;
 	
 	@Transient
+	@JsonProperty
 	private Long invoiceParentId;
 	
 	@Transient
+	@JsonProperty
 	private List<String> submissionApproverHierarchyIds;
 	
 //	  
 	
 	@Transient
+	@JsonProperty
 	private float netIncome;
 	
 	@Transient
+	@JsonProperty
 	private float recievableAmount;
 	
 	@Transient
+	@JsonProperty
 	private float payableAmount;
 	
 	@Transient
+	@JsonProperty
 	private String vendorCurrency;
 	
 	@Transient
+	@JsonProperty
 	private String clientCurrency;
 	
 	@Transient
@@ -336,6 +365,26 @@ public class Invoice {
 	@JsonProperty
 	private String orgRelationUUID;
 	
+	@Transient
+	@JsonProperty
+	private PaymentAccountDTO paymentAccountDTO;
+	
+	@Transient
+	@JsonProperty
+	private String timelineHistoryReminder;
+	
+	@Transient
+    @JsonProperty
+    private String invoiceTags;
+	
+	@Transient
+    @JsonProperty
+    private String billsTags;
+	
+	@Transient
+	@JsonProperty
+    private Set<String> tagsList;
+
 	
 	public Long getId()
 	{
@@ -1092,6 +1141,78 @@ public class Invoice {
 	public void setOrgRelationUUID(String orgRelationUUID)
 	{
 		this.orgRelationUUID = orgRelationUUID;
+	}
+
+	public PaymentAccount getPaymentAccount() {
+		return paymentAccount;
+	}
+
+	public long getPaymentAccountId() {
+		return paymentAccountId;
+	}
+
+	public void setPaymentAccount(PaymentAccount paymentAccount) {
+		this.paymentAccount = paymentAccount;
+	}
+
+	public void setPaymentAccountId(long paymentAccountId) {
+		this.paymentAccountId = paymentAccountId;
+	}
+
+	public PaymentAccountDTO getPaymentAccountDTO() {
+		return paymentAccountDTO;
+	}
+
+	public void setPaymentAccountDTO(PaymentAccountDTO paymentAccountDTO) {
+		this.paymentAccountDTO = paymentAccountDTO;
+	}
+
+	public String getTimelineHistoryReminder() {
+		return timelineHistoryReminder;
+	}
+
+	public void setTimelineHistoryReminder(String timelineHistoryReminder) {
+		this.timelineHistoryReminder = timelineHistoryReminder;
+	}
+	
+	public String getInvoiceTags() {
+		return invoiceTags;
+	}
+
+	public String getBillsTags() {
+		return billsTags;
+	}
+
+	public Set<String> getTagsList() {
+		return tagsList;
+	}
+
+	public void setInvoiceTags(String invoiceTags) {
+		this.invoiceTags = invoiceTags;
+	}
+
+	public void setBillsTags(String billsTags) {
+		this.billsTags = billsTags;
+	}
+
+	public void setTagsList(Set<String> tagsList) {
+		this.tagsList = tagsList;
+	}
+
+	public String getOwnerUsers() {
+		return ownerUsers;
+	}
+
+	public void setOwnerUsers(String ownerUsers) {
+		this.ownerUsers = ownerUsers;
+	}
+
+	public String getContactUsers() {
+		return contactUsers;
+	}
+
+	public void setContactUsers(String contactUsers) {
+		this.contactUsers = contactUsers;
 	}
 	
 }

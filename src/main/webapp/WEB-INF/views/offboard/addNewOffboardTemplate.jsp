@@ -104,7 +104,7 @@
                 <div class="form-footer">
                   <div class="pull-right mr">
                      <input type="button" value="Cancel" class="btn btn-sm btn-default" onClick="self.location='/app/offboardingTemplatesList'">
-                    <input type="button" value="Save" id="save_doc_button"  onclick="createTemplateDocs('save');" class="btn btn-sm btn-success">
+                    <input type="button" value="Save" id="save_doc_button"  onclick="createTemplateDocs('save');" class="btn btn-sm btn-success ml mr">
                     <input type="button" value="Save and Continue" id="save_continue_doc_button" onclick="createTemplateDocs('saveAndContinue');" class="btn btn-sm btn-primary">
                   </div>
                 </div>
@@ -206,7 +206,7 @@
                                       Offboard User </label>
                                     <label class="paddingLeft">
                                       <input type="radio" name="assignedToType"  onclick="validateAssignToType('assingToUser');">
-                                      User </label>
+                                      Associate </label>
                                   </div>
                                   
                                   <div id="assignToUserDiv" style="display: none;" class="mt10">
@@ -227,7 +227,7 @@
 										   <div class="col-md-6 paddingRight">
 											<label class="small">Months</label> <br>
 												<div class="select-field">
-													<select class="form-control input-sm" id="taskMonths" data-validation="required" field-name="Due after" name="taskMonths" onchange="validateDueAfter();">
+													<select class="form-control input-sm" id="taskMonths" data-validation="required" field-name="Due before" name="taskMonths" onchange="validateDueAfter();">
 														<option selected value=''>--Select Month--</option>
 														<option value="1">1</option>
 														<option value="2">2</option>
@@ -392,13 +392,11 @@
   
   <script>
   function validateDueAfter(){
-	  
 	  var taskMonths = document.getElementById("taskMonths").value;
 	  var taskDays = document.getElementById("taskDays").value;
 	  
-	  
 	  if(taskMonths == '' && taskDays == '' ){
-			  $('#taskMonths').removeAttr('data-validation-optional');
+		  $('#taskMonths').removeAttr('data-validation-optional');
 			  $("#taskMonths").attr("data-validation", "required");
 		    
 	  }else{
@@ -592,49 +590,44 @@ function getAssignToUsersList(){
 	$.ajax({
 	   	type: "POST",
 	    url: sourceleadUrl+"/getOnboardTasksAssignToUsersList?${_csrf.parameterName}=${_csrf.token}",	    	   
-	    success: function(json) {
-        	 var result = "";
-        	for (var i=0; i<json.length; i++)
-			{
-        		var report = json[i];
-        		result = result +'<option value='+report.userId+' >'+report.userName+'</option>';
-			}
-        	 $("#onboardAssignedTo").empty();
-           	 $("#onboardAssignedTo").append(result); 
-           	 $('#onboardAssignedTo').trigger("chosen:updated");
+	    success: function(response) {
+	    	if (response.response === "AWKWARD") {
+	    	    location.href = "/errorPage";
+	    	} else if (response.response === "SUCCESS") {
+	    		var result = "";
+	    		var json = response.data;
+	        	for (var i=0; i<json.length; i++) {
+	        		var report = json[i];
+	        		result = result +'<option value='+report.userId+' >'+report.userName+'</option>';
+				}
+	        	 $("#onboardAssignedTo").empty();
+	           	 $("#onboardAssignedTo").append(result); 
+	           	 $('#onboardAssignedTo').trigger("chosen:updated");
+	    	} else if (response.indexOf('Sign In') !== -1) {
+	    		location.replace(sourceleadUrl);
+	    	} else {
+	    	    showError("Operation failed, please try again");
+	    	}
 	    }
    }); 
 }
 </script>
 
-
-
-
 <script type="text/javascript">
-function validate_fileupload(fileName)
-{
-
+function validate_fileupload(fileName) {
     var allowed_extensions = new Array("ppt", "pptx", "pps", "ppsx", "doc", "docx", "pdf", "rtf", "odt", "xls", "xlsx", "csv", "zip", "txt", "jpg","jpeg","bmp","png","gif","eps","tiff","TGA","psd","svg","msg","wpd","wps");
     var file_extension = fileName.split('.').pop(); 
-
-    for(var i = 0; i <= allowed_extensions.length; i++)
-    {
-        if(allowed_extensions[i] != null && allowed_extensions[i] != '' && allowed_extensions[i] != 'undefined' && allowed_extensions[i]==file_extension.toLowerCase())
-        {
+    for(var i = 0; i <= allowed_extensions.length; i++) {
+        if(allowed_extensions[i] != null && allowed_extensions[i] != '' && allowed_extensions[i] != 'undefined' && allowed_extensions[i]==file_extension.toLowerCase()) {
             return true; // valid file extension
         }
     }
-
     return false;
 }
 </script>
 
-
-
-
 <script>
-function createTemplate(saveType){
-	
+function createTemplate(saveType) {
 	var validationSettings = {
 	        errorMessagePosition : 'element',
 	       borderColorOnError : '',
@@ -642,7 +635,7 @@ function createTemplate(saveType){
 			dateFormat : 'yyyy/mm/dd' 
          }; 
 	
-	  if ($('#offboardTemplate_form').validate(false, validationSettings)){ 
+	  if ($('#offboardTemplate_form').validate(false, validationSettings)) { 
 		    
 	        
 	        var sourceleadUrl ='${sourceleadUrl}';
@@ -655,28 +648,35 @@ function createTemplate(saveType){
 		    	type: "POST",
 		    	data: formData,
 		    	 url: sourceleadUrl+"/createNewOffBoardingTemplate?${_csrf.parameterName}=${_csrf.token}", 
-		        success: function(json) {
-		        	
-		        	if(saveType == 'saveAndContinue'){
-		        		var $tabs = $('.tabbable li');
-		     	        $tabs.filter('.active').next('li').find('a[data-toggle="tab"]').tab('show');
-		     	        document.getElementById("templateDocs").disabled = false;
-		     	       getTemplateResignationDocumentsDetails(json.id);
-		     	       getTemplateOffboardPackDocumentsDetails(json.id);
-		     	       
+		        success: function(response) {
+		        	if (response && (response.response === "INVALID_DATA" || response.response === "INVALID_USER")) {
+	        		    showError(response.responseMessage);
+	        	  	}else if (response.response === "AWKWARD") {
+		        	    location.href = "/errorPage";
+		        	} else if (response.response === "SUCCESS") {
+		        		var json = response.object;
+			        	if(saveType == 'saveAndContinue'){
+			        		var $tabs = $('.tabbable li');
+			     	        $tabs.filter('.active').next('li').find('a[data-toggle="tab"]').tab('show');
+			     	        document.getElementById("templateDocs").disabled = false;
+			     	       	getTemplateResignationDocumentsDetails(json.id);
+			     	       	getTemplateOffboardPackDocumentsDetails(json.id);
+			        	}
+		     	        $("#templateId").val(json.id);
+		     	        $("#offboardtemplateId").val(json.id);
+		     	        $("#documentstemplateId").val(json.id);
+		     	        $("#loading").removeAttr("style");		     	        
+		     	        $("#save_button").removeAttr("disabled");
+		        	    $("#save_continue_button").removeAttr("disabled");
+		        	} else if (response.indexOf('Sign In') !== -1) {
+		        		location.replace(sourceleadUrl);
+		        	} else {
+		        	    showError("Operation failed, please try again");
 		        	}
-	     	        $("#templateId").val(json.id);
-	     	        $("#offboardtemplateId").val(json.id);
-	     	        $("#documentstemplateId").val(json.id);
-	     	        $("#loading").removeAttr("style");
-	     	        
-	     	        $("#save_button").removeAttr("disabled")
-	        	    $("#save_continue_button").removeAttr("disabled")
 		        },
 		    }); 
 	        return true;
-		
-	  }else{
+	  } else {
 		return false;
 	  }
 }
@@ -694,54 +694,53 @@ function createTemplateDocs(saveType){
 	       borderColorOnError : '',
 			scrollToTopOnError : true,
 			dateFormat : 'yyyy/mm/dd' 
-         }; 
+    }; 
 	
-	  var sourceleadUrl ='${sourceleadUrl}';
+	var sourceleadUrl ='${sourceleadUrl}';
 	  
-	  if ($('#templateDocuments_form').validate(false, validationSettings)){ 
-		    $("#save_doc_button").attr("disabled", "disabled");
-			$("#save_continue_doc_button").attr("disabled", "disabled");
-			var formData = getFormData("templateDocuments_form");
-	   $("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
+	if ($('#templateDocuments_form').validate(false, validationSettings)) {
+		$("#save_doc_button").attr("disabled", "disabled");
+		$("#save_continue_doc_button").attr("disabled", "disabled");
+		var formData = getFormData("templateDocuments_form");
+	   	$("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
 		$.ajax({
 	        type : "POST",
 		      data: formData,
 	    	  url: sourceleadUrl+"/saveOffboardingTemplateDocuments?${_csrf.parameterName}=${_csrf.token}",		
-		      success :function(result) {
-		    	  
-		    	  if(saveType == 'saveAndContinue'){
-		        		var $tabs = $('.tabbable li');
-		     	        $tabs.filter('.active').next('li').find('a[data-toggle="tab"]').tab('show');
-		     	        document.getElementById("checkList").disabled = false;
-		     	        getOffboardingCheckList();
-		        	}
-		    	  
-		    	  else{
-		        		getTemplateResignationDocumentsDetails();
-		     	        getTemplateOffboardPackDocumentsDetails();
-		        	}
-		    	  
-		    	  $("#save_doc_button").removeAttr("disabled");
-	      	      $("#save_continue_doc_button").removeAttr("disabled");
-		    	  $("#loading").removeAttr("style");
-		    	  
+		      success :function(response) {
+		    	  	if (response.response === "AWKWARD") {
+		    		    location.href = "/errorPage";
+		    		} else if (response.response === "SUCCESS") {
+		    			if(saveType == 'saveAndContinue'){
+			        		var $tabs = $('.tabbable li');
+			     	        $tabs.filter('.active').next('li').find('a[data-toggle="tab"]').tab('show');
+			     	        document.getElementById("checkList").disabled = false;
+			     	        getOffboardingCheckList();
+			        	} else{
+			        		getTemplateResignationDocumentsDetails();
+			     	        getTemplateOffboardPackDocumentsDetails();
+			        	}
+			    	  
+			    	  $("#save_doc_button").removeAttr("disabled");
+		      	      $("#save_continue_doc_button").removeAttr("disabled");
+			    	  $("#loading").removeAttr("style");
+		    		} else if (response.indexOf('Sign In') !== -1) {
+		    			location.replace(sourceleadUrl);
+		    		} else {
+		    		    showError("Operation failed, please try again");
+		    		}
 		      }
-	    	  
-	  });
+	  	});
 		return true;
-	  }else{
+	  } else {
 		  return false;
 	  }
-	  
 	  $('body').on('blur', '#templateDocuments_form', function() {
 			$("#templateDocuments_form").showHelpOnFocus();
 			$("#templateDocuments_form").validateOnBlur(false, validationSettings);  
-	   });
-	  
+	  });
 }
 </script>
-
-
 
 <script>
 function saveOffboardTask(){
@@ -763,24 +762,29 @@ function saveOffboardTask(){
 		    	 processData: false,
 			     contentType:false,
 		    	 url: sourceleadUrl+"/saveOffBoardTasks?${_csrf.parameterName}=${_csrf.token}", 
-		        success: function(result) {
-		        	
-		        	if(result == 'success'){
+		        success: function(response) {
+		        	if (response && (response.response === "INVALID_DATA" || response.response === "INVALID_USER")) {
+	        		    showError(response.responseMessage);
+	        		    $("#offboardtasksLoading").removeAttr('style');
+	        	  	}else  if (response.response === "AWKWARD") {
+		        	    location.href = "/errorPage";
+		        	} else if (response.response === "SUCCESS") {
 		        		$("#offboardtasksLoading").removeAttr("style");
 			        	flushOffboardTask();
 			        	getAssignToUsersList();
 			        	getOffboardingTasksList();
-			        	
 			        	document.getElementById("selector").style.display = 'block';
 			        	$("#selector").fadeIn(150);
 			        	$('#selector').delay(1000).fadeOut('slow');
+		        	} else if (response.indexOf('Sign In') !== -1) {
+		        		location.replace(sourceleadUrl);
+		        	} else {
+		        	    showError("Operation failed, please try again");
 		        	}
-		        	
 		        },
 		    });  
 	        return true;
-		
-	  }else{
+	  } else {
 		return false;
 	  }
 }
@@ -835,13 +839,19 @@ function getTemplateDetails(){
         $.ajax({
 	    	type: "POST",
 	    	 url: sourceleadUrl+"/getOffboardTemplateById?${_csrf.parameterName}=${_csrf.token}&templateId="+templateId, 
-	        success: function(json) {
-	        	
-	        	 $("input[name=templateName]").val(json['templateName']);
-	        	 $("textarea[name=description]").val(json['description']);
-	        	 
-	        	 $("#offboardTasksList").empty();
-		        
+	        success: function(response) {
+	        	if (response.response === "AWKWARD") {
+	        	    location.href = "/errorPage";
+	        	} else if (response.response === "SUCCESS") {
+	        		var json = response.object;
+		        	 $("input[name=templateName]").val(json['templateName']);
+		        	 $("textarea[name=description]").val(json['description']);
+		        	 $("#offboardTasksList").empty();
+	        	} else if (response.indexOf('Sign In') !== -1) {
+	        		location.replace(sourceleadUrl);
+	        	} else {
+	        	    showError("Operation failed, please try again");
+	        	}
 	        },
 	    }); 
 	}
@@ -864,30 +874,35 @@ function getTemplateResignationDocumentsDetails(templateId){
 	     $.ajax({
 		    	type: "POST",
 		    	 url: sourceleadUrl+"/getOffboardTemplateDocumentByTemplateId?${_csrf.parameterName}=${_csrf.token}&templateId="+templateId+"&documentType="+documentType, 
-		        success: function(json) {
-		        	
-		        	 var result = "";
-		        	 
-                	 for (var i = 0; i < json.length; i++) { 
-                		 var opt = json[i]; 
-                		 result = result +"<strong id='resignationdocument"+opt.id+"'>";
-                		 result = result +"<i class=''><a class='glyphicon glyphicon-save' href=\""+opt.fileURL+"\"></a></i>";
-           				 result = result +"<input type='button' value='"+opt.fileName+"'>";
-           				 result = result +"</a>";
-           				 result = result +"<input class='dele' type='button' onClick='deleteOffBoardingDocument(\""+opt.documentUUID+"\","+opt.id+",\""+documentType+"\");' >";
-           				 result = result +"</strong>";
-                	 }
-                	 
-                	 result = result +"<input type='hidden' name='resignationAttcahmentMaxRowNumber'  id='resignationAttcahmentMaxRowNumber' value='1' />";
-                	 result = result +"<table class='timesheetAttachment' id='resignationAttachmentTable' cellpadding='0' cellspacing='0'>";
-                	 result = result +"<tr id='divAttachmentTsRow0'>";
-                	 result = result +"<td><div id='0ResignationdocFileuploadFileGroup'><input type='file' id='0resignationdocFile' field-name='Attachment' data-validation='validatedoc' data-validation-optional='true' onchange='uploadResignationTerminationDoc(0)'  class='timesheetAttachmentValidation'><i class='fa fa-plus' onClick='addResignationAttachment()'></i></div></td>";
-                	 result = result +"</tr>";
-                	 result = result +"</table>";
-                	 $("#savedResignationAttachments").empty();
-                	 $("#savedResignationAttachments").append(result);
-                	 $("#offboardTasksList").empty();
-			        
+		        success: function(response) {
+		        	if (response.response === "AWKWARD") {
+		        	    location.href = "/errorPage";
+		        	} else if (response.response === "SUCCESS") {
+		        		 var json = response.data;
+		        		 var result = "";
+	                	 for (var i = 0; i < json.length; i++) { 
+	                		 var opt = json[i]; 
+	                		 result = result +"<strong id='resignationdocument"+opt.id+"'>";
+	                		 result = result +"<i class=''><a class='glyphicon glyphicon-save' target='_blank'  href=\""+opt.fileURL+"\"></a></i>";
+	           				 result = result +"<input type='button' value='"+opt.fileName+"'>";
+	           				 result = result +"</a>";
+	           				 result = result +"<input class='dele' type='button' onClick='deleteOffBoardingDocument(\""+opt.documentUUID+"\","+opt.id+",\""+documentType+"\");' >";
+	           				 result = result +"</strong>";
+	                	 }
+	                	 result = result +"<input type='hidden' name='resignationAttcahmentMaxRowNumber'  id='resignationAttcahmentMaxRowNumber' value='1' />";
+	                	 result = result +"<table class='timesheetAttachment' id='resignationAttachmentTable' cellpadding='0' cellspacing='0'>";
+	                	 result = result +"<tr id='divAttachmentTsRow0'>";
+	                	 result = result +"<td><div id='0ResignationdocFileuploadFileGroup'><input type='file' id='0resignationdocFile' field-name='Attachment' data-validation='validatedoc' data-validation-optional='true' onchange='uploadResignationTerminationDoc(0)'  class='timesheetAttachmentValidation'><i class='fa fa-plus' onClick='addResignationAttachment()'></i></div></td>";
+	                	 result = result +"</tr>";
+	                	 result = result +"</table>";
+	                	 $("#savedResignationAttachments").empty();
+	                	 $("#savedResignationAttachments").append(result);
+	                	 $("#offboardTasksList").empty();
+		        	} else if (response.indexOf('Sign In') !== -1) {
+		        		location.replace(sourceleadUrl);
+		        	} else {
+		        	    showError("Operation failed, please try again");
+		        	}
 		        },
 		    });
 	}
@@ -909,29 +924,36 @@ function getTemplateOffboardPackDocumentsDetails(templateId){
 	     $.ajax({
 		    	type: "POST",
 		    	 url: sourceleadUrl+"/getOffboardTemplateDocumentByTemplateId?${_csrf.parameterName}=${_csrf.token}&templateId="+templateId+"&documentType="+documentType, 
-		        success: function(json) {
-		        	
-		        	 var result = "";
-		        	 
-                	 for (var i = 0; i < json.length; i++) { 
-                		 var opt = json[i]; 
-                		 result = result +"<strong id='offboardPackdocument"+opt.id+"'>";
-                		 result = result +"<i class=''><a class='glyphicon glyphicon-save' href=\""+opt.fileURL+"\"></a></i>";
-           				 result = result +"<input type='button' value='"+opt.fileName+"'>";
-           				 result = result +"</a>";
-           				 result = result +"<input class='dele' type='button' onClick='deleteOffBoardingDocument(\""+opt.documentUUID+"\","+opt.id+",\""+documentType+"\");' >";
-           				 result = result +"</strong>";
-                	 }
-                	 
-                	 result = result +"<input type='hidden' name='offboardPackAttcahmentMaxRowNumber'  id='offboardPackAttcahmentMaxRowNumber' value='1' />";
-                	 result = result +"<table class='timesheetAttachment' id='offboardPackAttachmentTable' cellpadding='0' cellspacing='0'>";
-                	 result = result +"<tr id='divAttachmentTsRow0'>";
-                	 result = result +"<td><div id='0OffboardPackdocFileuploadFileGroup'><input type='file' data-validation='validatedoc' data-validation-optional='true' id='0offboardPackdocFile' field-name='Attachment' onchange='uploadOffboardPackDoc(0)'  class='timesheetAttachmentValidation'><i class='fa fa-plus' onClick='addOffboardPackAttachment();'></i></div></td>";
-                	 result = result +"</tr>";
-                	 result = result +"</table>";
-                	 $("#savedOffboardPackAttachments").empty();
-                	 $("#savedOffboardPackAttachments").append(result);
-			        
+		        success: function(response) {
+		        	if (response && response.response === "INVALID_DATA") {
+		        	    showError(response.responseMessage);
+		        	} else if (response.response === "AWKWARD") {
+		        	    location.href = "/errorPage";
+		        	} else if (response.response === "SUCCESS") {
+		        		 var result = "";
+			        	 var json = response.data;
+	                	 for (var i = 0; i < json.length; i++) { 
+	                		 var opt = json[i]; 
+	                		 result = result +"<strong id='offboardPackdocument"+opt.id+"'>";
+	                		 result = result +"<i class=''><a class='glyphicon glyphicon-save'  target='_blank' href=\""+opt.fileURL+"\"></a></i>";
+	           				 result = result +"<input type='button' value='"+opt.fileName+"'>";
+	           				 result = result +"</a>";
+	           				 result = result +"<input class='dele' type='button' onClick='deleteOffBoardingDocument(\""+opt.documentUUID+"\","+opt.id+",\""+documentType+"\");' >";
+	           				 result = result +"</strong>";
+	                	 }
+	                	 result = result +"<input type='hidden' name='offboardPackAttcahmentMaxRowNumber'  id='offboardPackAttcahmentMaxRowNumber' value='1' />";
+	                	 result = result +"<table class='timesheetAttachment' id='offboardPackAttachmentTable' cellpadding='0' cellspacing='0'>";
+	                	 result = result +"<tr id='divAttachmentTsRow0'>";
+	                	 result = result +"<td><div id='0OffboardPackdocFileuploadFileGroup'><input type='file' data-validation='validatedoc' data-validation-optional='true' id='0offboardPackdocFile' field-name='Attachment' onchange='uploadOffboardPackDoc(0)'  class='timesheetAttachmentValidation'><i class='fa fa-plus' onClick='addOffboardPackAttachment();'></i></div></td>";
+	                	 result = result +"</tr>";
+	                	 result = result +"</table>";
+	                	 $("#savedOffboardPackAttachments").empty();
+	                	 $("#savedOffboardPackAttachments").append(result);		        		
+		        	} else if (response.indexOf('Sign In') !== -1) {
+		        		location.replace(sourceleadUrl);
+		        	} else {
+		        	    showError("Operation failed, please try again");
+		        	}
 		        },
 		    });
 	}
@@ -942,23 +964,26 @@ function getTemplateOffboardPackDocumentsDetails(templateId){
 
 <script>
 function deleteOffBoardingDocument(documentUUID,documentId,documentType){
-	
 	var sourceleadUrl ='${sourceleadUrl}';
-	   $.ajax({
-	    	type: "POST",
-	    	 url: sourceleadUrl+"/deleteOffBoardingDocumentByDocumentUUID?${_csrf.parameterName}=${_csrf.token}&documentUUID="+documentUUID, 
-	        success: function(data) {
-	        	if(data == 'success'){
-	        		if(documentType == 'Resignation'){
-	        			document.getElementById("resignationdocument"+documentId).remove();
-	        		}else if(documentType == 'Offboard Pack'){
-	        			document.getElementById("offboardPackdocument"+documentId).remove();
-	        		}
-	        		
-	        	}
-	        },
-	    });
-	 
+   	$.ajax({
+    	type: "POST",
+    	url: sourceleadUrl+"/deleteOffBoardingDocumentByDocumentUUID?${_csrf.parameterName}=${_csrf.token}&documentUUID="+documentUUID, 
+        success: function(response) {
+        	if (response.response === "AWKWARD") {
+        	    location.href = "/errorPage";
+        	} else if (response.response === "SUCCESS") {
+        		if(documentType == 'Resignation'){
+        			document.getElementById("resignationdocument"+documentId).remove();
+        		}else if(documentType == 'Offboard Pack'){
+        			document.getElementById("offboardPackdocument"+documentId).remove();
+        		}	
+        	} else if (response.indexOf('Sign In') !== -1) {
+        		location.replace(sourceleadUrl);
+        	} else {
+        	    showError("Operation failed, please try again");
+        	}
+        },
+   });
 }
 </script>
 
@@ -973,22 +998,29 @@ function validateTemplateName(){
 		$.ajax({
 	    	type: "POST",
 	    	url : sourceleadUrl+"/validateOffboardingTemplateName?${_csrf.parameterName}=${_csrf.token}&templateName="+templateName+"&templateId="+templateId, 
-	        success: function(result) {
-	        	if (result == 'invalid') {
-	        		$("#save_button").attr("disabled", "disabled");
-	        		$("#save_continue_button").attr("disabled", "disabled");
-	        		$('#templateNameDiv').find('p.jquery_form_error_message').remove();
-	        		$("input#templateName").after( "<p class='jquery_form_error_message'>" + templateName + " is Already Existed</span>");
-					document.getElementById("templateName").setAttribute( 'record-exist', 'yes');
-					document.getElementById("templateName").setAttribute( 'record-exist-errorMsg', templateName +"  already existed");
-	        	}else{
-	        		$('input#templateName').removeAttr("class record-exist record-exist-errormsg");
-					$('input#templateName').attr('class','valid form-control');
-					$('#templateNameDiv').find('p.jquery_form_error_message').remove();
-					
-	        		$("#save_button").removeAttr("disabled")
-	        		$("#save_continue_button").removeAttr("disabled")
-	        		
+	        success: function(response) {
+	        	if (response.response === "AWKWARD") {
+	        	    location.href = "/errorPage";
+	        	} else if (response.response === "SUCCESS") {
+		        	if (response.object == 'invalid') {
+		        		$("#save_button").attr("disabled", "disabled");
+		        		$("#save_continue_button").attr("disabled", "disabled");
+		        		$('#templateNameDiv').find('p.jquery_form_error_message').remove();
+		        		$("input#templateName").after( "<p class='jquery_form_error_message'>" + templateName + " is Already Existed</span>");
+						document.getElementById("templateName").setAttribute( 'record-exist', 'yes');
+						document.getElementById("templateName").setAttribute( 'record-exist-errorMsg', templateName +"  already existed");
+		        	} else {
+		        		$('input#templateName').removeAttr("class record-exist record-exist-errormsg");
+						$('input#templateName').attr('class','valid form-control');
+						$('#templateNameDiv').find('p.jquery_form_error_message').remove();
+						
+		        		$("#save_button").removeAttr("disabled")
+		        		$("#save_continue_button").removeAttr("disabled")
+		        	}
+	        	} else if (response.indexOf('Sign In') !== -1) {
+	        		location.replace(sourceleadUrl);
+	        	} else {
+	        	    showError("Operation failed, please try again");
 	        	}
 	        }
 		 });
@@ -1011,80 +1043,79 @@ function getOffboardingTasksList(){
 		$.ajax({
 		   	type: "POST",
 		    url: sourceleadUrl+"/getOffboardTasksListByTemplateId?${_csrf.parameterName}=${_csrf.token}&templateId="+templateId,	    	   
-		    success: function(json) {
-	        	 var result = "";
-	        	 
-	        	if(json.length > 0){ 
-		        	for (var i=0; i<json.length; i++)
-					{
-		        		var report = json[i];
-		        		
-		        		var prority = '';
-		        		var repeat = '';
-		        		
-		        		if(report.priority != null && report.priority != '' && report.priority != 'undefined'){
-		        			prority = report.priority;
-		        		}else{
-		        			prority = '----';
-		        		}
-		        		
-		        		if(report.taskRepeat != null && report.taskRepeat != '' && report.taskRepeat != 'undefined'){
-		        			repeat = report.taskRepeat;
-		        		}else{
-		        			repeat = '----';
-		        		}
-		        		
-		        		result = result +'<div class="clearfix taskwidget_inner" id="onboardTask'+report.id+'">';
-		        		result = result +'<div class="media-body">';
-		        		result = result +'<div class="clearfix taskheder">';
-		        		result = result +'<label> <span class="paddingRight">Subject:</span> <strong class="text-primary">'+report.taskName+'</strong><a href="#"><i class="fa fa-trash text-danger paddingLeft" onClick="deleteTask('+report.id+');"></i></a></label>';
-		        		result = result +'<label class="small pull-right text-muted"> <span>'+report.dueAfterString+'</span> </label>';
-		        		result = result +'</div>';
-		        		result = result +'<ul class="list-inline list-description mt10">';
-		        		
-		        		result = result +'<li><span>Assign To:</span>';
-		        		
-		        		if(report.usersList.length > 0){
-		        			for(var j=0; j<report.usersList.length; j++){
-			 					result = result +'<label>'+report.usersList[j]+'</label>';
+		    success: function(response) {
+		    	if (response.response === "AWKWARD") {
+		    	    location.href = "/errorPage";
+		    	} else if (response.response === "SUCCESS") {
+		    		var json = response.data;
+		        	var result = "";
+		        	if(json.length > 0) { 
+			        	for (var i=0; i<json.length; i++) {
+			        		var report = json[i];
+			        		var prority = '';
+			        		var repeat = '';
+			        		if(report.priority != null && report.priority != '' && report.priority != 'undefined'){
+			        			prority = report.priority;
+			        		} else {
+			        			prority = '----';
+			        		}
+			        		
+			        		if(report.taskRepeat != null && report.taskRepeat != '' && report.taskRepeat != 'undefined'){
+			        			repeat = report.taskRepeat;
+			        		} else {
+			        			repeat = '----';
+			        		}
+			        		
+			        		result = result +'<div class="clearfix taskwidget_inner" id="onboardTask'+report.id+'">';
+			        		result = result +'<div class="media-body">';
+			        		result = result +'<div class="clearfix taskheder">';
+			        		result = result +'<label> <span class="paddingRight">Subject:</span> <strong class="text-primary">'+report.taskName+'</strong><a href="#"><i class="fa fa-trash text-danger paddingLeft" onClick="deleteTask('+report.id+');"></i></a></label>';
+			        		result = result +'<label class="small pull-right text-muted"> <span>'+report.dueAfterString+'</span> </label>';
+			        		result = result +'</div>';
+			        		result = result +'<ul class="list-inline list-description mt10">';
+			        		
+			        		result = result +'<li><span>Assign To:</span>';
+			        		
+			        		if(report.usersList.length > 0){
+			        			for(var j=0; j<report.usersList.length; j++){
+				 					result = result +'<label>'+report.usersList[j]+'</label>';
+				 				}
+			        		} else {
+			 					result = result +'Offboarding Candidate';
 			 				}
-		        		}else{
-		 					result = result +'Offboarding Candidate';
-		 				}
-		        		result = result +'</li>';
-		        		
-		        		result = result +'<li><span>Priority:</span>'+prority+'</li>';
-		        		result = result +'<li><span>Repeat:</span> '+repeat+'</li>';
-		        		result = result +'</ul>';
-		        		result = result +'</div>';
-		        		result = result +'</div>';
-					}
-	        	}else{
-	        		result = result +'<div><h4>No Tasks Found</h4></div>';
-	        	}
-	        	
-	        	result = result +'<div class="form-footer clearfix mt">';
-	    		result = result +'<div class="pull-right mr">';
-	    		result = result +'<input type="button" value="Cancel" id="finish_task" onClick="redirect();" class="btn btn-sm btn-default">';
-	    		result = result +'<input type="button" value="Finish" id="finish_task" onclick="saveAndFinishOffboardTemplate('+templateId+');" class="btn btn-sm btn-primary">';
-	    		result = result +'</div>';
-	    		result = result +'</div>';
-	    		
-	    		 $("#offboardTasksList").empty();
-	           	 $("#offboardTasksList").append(result); 
-	    		
-	        	 
+			        		result = result +'</li>';
+			        		
+			        		result = result +'<li><span>Priority:</span>'+prority+'</li>';
+			        		result = result +'<li><span>Repeat:</span> '+repeat+'</li>';
+			        		result = result +'</ul>';
+			        		result = result +'</div>';
+			        		result = result +'</div>';
+						}
+		        	} else {
+		        		result = result +'<div><h4>No Tasks Found</h4></div>';
+		        	}
+		        	
+		        	result = result +'<div class="form-footer clearfix mt">';
+		    		result = result +'<div class="pull-right mr">';
+		    		result = result +'<input type="button" value="Cancel" id="finish_task" onClick="redirect();" class="btn btn-sm btn-default mr">';
+		    		result = result +'<input type="button" value="Finish" id="finish_task" onclick="saveAndFinishOffboardTemplate('+templateId+');" class="btn btn-sm btn-primary">';
+		    		result = result +'</div>';
+		    		result = result +'</div>';
+		    		
+		    		$("#offboardTasksList").empty();
+		           	$("#offboardTasksList").append(result); 
+		    	} else if (response.indexOf('Sign In') !== -1) {
+		    		location.replace(sourceleadUrl);
+		    	} else {
+		    	    showError("Operation failed, please try again");
+		    	}
 		    }
-		    
 	   }); 
-		
 	  $("#loading").removeAttr("style");
-  
 	}
-	
 }
 function redirect(){
-	window.location.href = sourceleadUrl +  "/onboardingTemplatesList";
+	window.location.href = sourceleadUrl +  "/offboardingTemplatesList";
 }
 </script>
 
@@ -1097,12 +1128,20 @@ function deleteTask(taskId){
 	   $.ajax({
 	    	type: "POST",
 	    	 url: sourceleadUrl+"/deleteOffboardTaskByTaskId?${_csrf.parameterName}=${_csrf.token}&taskId="+taskId, 
-	        success: function(data) {
-	        	if(data == 'success'){
+	        success: function(response) {
+	        	if (response && response.response === "INVALID_DATA") {
+	        	    showError(response.responseMessage);
+	        	} else if (response.response === "AWKWARD") {
+	        	    location.href = "/errorPage";
+	        	} else if (response.response === "SUCCESS") {
 	        		document.getElementById("onboardTask"+taskId).remove();
 	        		if($("#offboardTasksList div[id*=onboardTask]").length === 0) {
 	        			$("#offboardTasksList").prepend("<div><h4>No Tasks Found</h4></div>");
-	        		}
+	        		}	
+	        	} else if (response.indexOf('Sign In') !== -1) {
+	        		location.replace(sourceleadUrl);
+	        	} else {
+	        	    showError("Operation failed, please try again");
 	        	}
 	        },
 	    });
@@ -1112,26 +1151,29 @@ function deleteTask(taskId){
 
 <script>
 function saveAndFinishOffboardTemplate(templateId){
-	
-	
 	$("#finish_task").attr("disabled", "disabled");
 	$("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
 	$.ajax({
 	   	type: "POST",
 	    url: sourceleadUrl+"/saveAndFinishOffboardTemplate?${_csrf.parameterName}=${_csrf.token}&templateId="+templateId,	    	   
-	    success: function(data) {
-       	 
-	    	 $("#finish_task").removeAttr("disabled");
-	    	 $("#loading").removeAttr("style");
-	    	 location.replace(sourceleadUrl+"/offboardingTemplatesList"); 
-	    	
+	    success: function(response) {
+	    	if (response && (response.response === "INVALID_DATA" || response.response === "INVALID_USER")) {
+    		    showError(response.responseMessage);
+    	  	}else if (response.response === "AWKWARD") {
+	    	    location.href = "/errorPage";
+	    	} else if (response.response === "SUCCESS") {
+	    		$("#finish_task").removeAttr("disabled");
+		    	$("#loading").removeAttr("style");
+		    	location.replace(sourceleadUrl+"/offboardingTemplatesList"); 
+	    	} else if (response.indexOf('Sign In') !== -1) {
+	    		location.replace(sourceleadUrl);
+	    	} else {
+	    	    showError("Operation failed, please try again");
+	    	}
 	    }
    }); 
-	
-
 }
 </script>
-
 
 <script>
 function getOffboardingCheckList(){
@@ -1141,6 +1183,7 @@ function getOffboardingCheckList(){
 	var templateId = document.getElementById("templateId").value;
 	var sourceleadUrl ='${sourceleadUrl}';
 	var locationId = '${SourceLeadWeb_orgLocationId}';
+	
 	
 	result = result + '<div class="clearfix">';
 	        result = result + '</div>';
@@ -1193,8 +1236,9 @@ function getOffboardingCheckList(){
 	           $("#offboardingCheckList").empty();
 	           $("#offboardingCheckList").append(result); 
 	           $("#offboardTasksList").empty();
-	           customizeFields(templateId,sourceleadUrl,"template");
-	           
+	           if(templateId){
+	           		customizeFields(templateId,sourceleadUrl,"template");
+				}     
 	
 }
 </script>
@@ -1339,33 +1383,36 @@ function createTemplateCheckList(saveType){
 	      	    	type: "POST",
 	      	    	data: formData,
 	      	        url: sourceleadUrl+"/saveOffboardTemplateCheckList?${_csrf.parameterName}=${_csrf.token}&checkListTemplateId="+checkListTemplateId+"&jsonStringData="+jsonStringData, 
-	      	        success: function(result) {
-	      	        	if((result == 'home')){
-	      	        		
-	      	        		 if(saveType == 'saveAndContinue'){
-	      		        		var $tabs = $('.tabbable li');
-	      		     	        $tabs.filter('.active').next('li').find('a[data-toggle="tab"]').tab('show');
-	      		     	        document.getElementById("templateTasks").disabled = false;
-	      		     	        $("#offboardTaskDiv").val('Y');
-	      		     	        getOffboardingTasksList();
-	      		        	}
-	      	        		 
-	      	        		 else{
-	      		        		getOffboardingCheckList();
-	      		        	}
-	      		        } 
-	      	        	
-	      	        	  $("#save_checkList_button").removeAttr("disabled")
-	      	      	      $("#save_continue_checkList_button").removeAttr("disabled")
-	      	        	 $("#offboardcheckListLoading").removeAttr("style");
+	      	        success: function(response) {
+	      	        	if (response.response === "AWKWARD") {
+	      	        	    location.href = "/errorPage";
+	      	        	} else if (response.response === "SUCCESS") {
+	      	        		if((response.object == 'home')) {
+		      	        		 if(saveType == 'saveAndContinue'){
+		      		        		var $tabs = $('.tabbable li');
+		      		     	        $tabs.filter('.active').next('li').find('a[data-toggle="tab"]').tab('show');
+		      		     	        document.getElementById("templateTasks").disabled = false;
+		      		     	        $("#offboardTaskDiv").val('Y');
+		      		     	        getOffboardingTasksList();
+		      		        	} else {
+		      		        		getOffboardingCheckList();
+		      		        	}
+		      		        } 
+		      	        	$("#save_checkList_button").removeAttr("disabled")
+		      	      	    $("#save_continue_checkList_button").removeAttr("disabled")
+		      	        	$("#offboardcheckListLoading").removeAttr("style");
+	      	        	} else if (response.indexOf('Sign In') !== -1) {
+	      	        		location.replace(sourceleadUrl);
+	      	        	} else {
+	      	        	    showError("Operation failed, please try again");
+	      	        	}
 	      	        },
 	      	    });  
 	              return true;
-	        }else{
+	        } else {
 	        	alertMessage("Provide choice for "+fieldLabel)
 	        }
-		
-	  }else{
+	  } else {
 		return false;
 	  }
 }

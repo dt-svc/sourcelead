@@ -25,6 +25,7 @@ import com.bis.sourcelead.entity.ProjectPlanningRequest;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.service.EmailScenarioService;
 import com.bis.sourcelead.service.ProjectPlanningNewResourceRequestService;
+import com.bis.sourcelead.util.CommonUtil;
 import com.bis.sourcelead.util.EmailScenerioUtil;
 
 @Service
@@ -45,6 +46,9 @@ public class ProjectPlanningNewResourceRequestServiceImpl implements ProjectPlan
 	
 	@Autowired
 	EmailScenerioUtil emailScenerioUtil;
+	
+	@Autowired
+	private CommonUtil commonUtil;
 	
 	@Override
 	public ProjectPlanningNewResourceRequest saveProjectPlanningNewResourceRequest(ProjectPlanningNewResourceRequest projectPlanningNewResourceRequest) throws Exception {
@@ -106,42 +110,29 @@ public class ProjectPlanningNewResourceRequestServiceImpl implements ProjectPlan
         EmailScenario  emailScenario = null;
         EmailScenario  notificationScenario  = null;
         if(projectPlanningRequest.getResourceStatus().equalsIgnoreCase("Approved")){
-          	 emailScenario = emailScenarioService.getEmailScenarioByUniqueName(Constants.ACCEPT_SINGLE_NEW_RESOURCE_REQUEST,Constants.ENTITY_TYPE_EMAIL);
    		   notificationScenario = emailScenarioService.getEmailScenarioByUniqueName(Constants.ACCEPT_SINGLE_NEW_RESOURCE_REQUEST_NOTIFICATION,Constants.ENTITY_TYPE_NOTIFICATION);
+           commonUtil.sendTemplateEmail(emailMessage, globalVarsMap,orgLocations.getOrg(),orgLocations,Constants.ACCEPT_SINGLE_NEW_RESOURCE_REQUEST,new ArrayList<EmailAttachment>());       
 
            }else if(projectPlanningRequest.getResourceStatus().equalsIgnoreCase("On hold")){
           	globalVarsMap.put("rejectReason", projectPlanningRequest.getRejectedReason());
-          	 emailScenario = emailScenarioService.getEmailScenarioByUniqueName(Constants.ONHOLD_BULK_NEW_RESOURCE_REQUEST,Constants.ENTITY_TYPE_EMAIL);
    		   notificationScenario = emailScenarioService.getEmailScenarioByUniqueName(Constants.ONHOLD_BULK_NEW_RESOURCE_REQUEST_NOTIFICATION,Constants.ENTITY_TYPE_NOTIFICATION);
+           commonUtil.sendTemplateEmail(emailMessage, globalVarsMap,orgLocations.getOrg(),orgLocations,Constants.ONHOLD_BULK_NEW_RESOURCE_REQUEST,new ArrayList<EmailAttachment>());       
 
           }else if(projectPlanningRequest.getResourceStatus().equalsIgnoreCase("Rejected")){
           	 globalVarsMap.put("rejectReason", projectPlanningRequest.getRejectedReason());
-        	   emailScenario = emailScenarioService.getEmailScenarioByUniqueName(Constants.REJECT_SINGLE_NEW_RESOURCE_REQUEST,Constants.ENTITY_TYPE_EMAIL);
      		   notificationScenario = emailScenarioService.getEmailScenarioByUniqueName(Constants.REJECT_SINGLE_NEW_RESOURCE_REQUEST_NOTIFICATION,Constants.ENTITY_TYPE_NOTIFICATION);
+     	        commonUtil.sendTemplateEmail(emailMessage, globalVarsMap,orgLocations.getOrg(),orgLocations,Constants.REJECT_SINGLE_NEW_RESOURCE_REQUEST,new ArrayList<EmailAttachment>());       
 
           }
      
         
-        String notificationbody = emailScenerioUtil.buildTempBody(notificationScenario.getBody(),globalVarsMap);
+        String notificationbody = emailScenerioUtil.buildTemplateBody(notificationScenario.getBody(),globalVarsMap,notificationScenario);
         notificationScenario.setBody(notificationbody);
-        
-        //covert subject,body and signature
-        String subject = emailScenerioUtil.bulidSubject(emailScenario.getSubject(),globalVarsMap);
-        String body = emailScenerioUtil.buildTempBody(emailScenario.getBody(),globalVarsMap);
-        String signature = emailScenerioUtil.buildSignature(emailScenario.getSignature(),globalVarsMap);
-        String url = sourceleadUrl;
        
-        InternetAddress[] iAdressArray = InternetAddress.parse(emailMessage.getToEmail());
-       
-        String emailTemplate = emailScenerioUtil.AssembleEmailMessage(emailScenario,emailMessage, subject, body, signature, url, orgLocations.getOrg(),orgLocations);
-        emailMessage.setSubject(subject);
-        emailMessage.setMessageBody(emailTemplate);
-       
-        emailScenerioUtil.sendEmail(emailMessage,orgLocations.getId(),iAdressArray,new ArrayList<EmailAttachment>());
+       /* Commented by Pradeep Konda -- We are not maintaining the Resource Requested User Details in database.
         StringBuilder notificationLink = new StringBuilder();
         String actionLink = notificationLink.append(sourceleadUrl).append("/").append("newRequestedAssociatesList?requestUUID="+projectPlanningRequest.getRequestUUID()).toString();
-         
-        emailScenerioUtil.sendNotification(actionLink, loginUser, projectPlanningRequest.getProjectPlanningRequestId().getApproverUser(), orgLocations, notificationScenario);
+        emailScenerioUtil.sendNotification(actionLink, loginUser, projectPlanningRequest.getProjectPlanningRequestId().getApproverUser(), orgLocations, notificationScenario);*/
 	}
 
 	@Override
@@ -176,35 +167,22 @@ public class ProjectPlanningNewResourceRequestServiceImpl implements ProjectPlan
         EmailScenario  notificationScenario = null;
         if(projectPlanningRequest.getRejectedReason() != null){
         	globalVarsMap.put("rejectReason", projectPlanningRequest.getRejectedReason());
-        	 emailScenario = emailScenarioService.getEmailScenarioByUniqueName(Constants.REJECT_BULK_NEW_RESOURCE_REQUEST,Constants.ENTITY_TYPE_EMAIL);
-             notificationScenario = emailScenarioService.getEmailScenarioByUniqueName(Constants.REJECT_BULK_NEW_RESOURCE_REQUEST_NOTIFICATION,Constants.ENTITY_TYPE_NOTIFICATION);
+     		commonUtil.sendTemplateEmail(emailMessage, globalVarsMap,orgLocations.getOrg(),orgLocations,Constants.REJECT_BULK_NEW_RESOURCE_REQUEST,new ArrayList<EmailAttachment>());
+        	 notificationScenario = emailScenarioService.getEmailScenarioByUniqueName(Constants.REJECT_BULK_NEW_RESOURCE_REQUEST_NOTIFICATION,Constants.ENTITY_TYPE_NOTIFICATION);
             
         }else{
-        	 emailScenario = emailScenarioService.getEmailScenarioByUniqueName(Constants.ACCEPT_BULK_NEW_RESOURCE_REQUEST,Constants.ENTITY_TYPE_EMAIL);
-             notificationScenario = emailScenarioService.getEmailScenarioByUniqueName(Constants.ACCEPT_BULK_NEW_RESOURCE_REQUEST_NOTIFICATION,Constants.ENTITY_TYPE_NOTIFICATION);
+      		commonUtil.sendTemplateEmail(emailMessage, globalVarsMap,orgLocations.getOrg(),orgLocations,Constants.ACCEPT_BULK_NEW_RESOURCE_REQUEST,new ArrayList<EmailAttachment>());
+        	 notificationScenario = emailScenarioService.getEmailScenarioByUniqueName(Constants.ACCEPT_BULK_NEW_RESOURCE_REQUEST_NOTIFICATION,Constants.ENTITY_TYPE_NOTIFICATION);
             
         }
         
-        String notificationbody = emailScenerioUtil.buildTempBody(notificationScenario.getBody(),globalVarsMap);
+        String notificationbody = emailScenerioUtil.buildTemplateBody(notificationScenario.getBody(),globalVarsMap,notificationScenario);
         notificationScenario.setBody(notificationbody);
-        
-        //covert subject,body and signature
-        String subject = emailScenerioUtil.bulidSubject(emailScenario.getSubject(),globalVarsMap);
-        String body = emailScenerioUtil.buildTempBody(emailScenario.getBody(),globalVarsMap);
-        String signature = emailScenerioUtil.buildSignature(emailScenario.getSignature(),globalVarsMap);
-        String url = sourceleadUrl;
        
-        InternetAddress[] iAdressArray = InternetAddress.parse(emailMessage.getToEmail());
-       
-        String emailTemplate = emailScenerioUtil.AssembleEmailMessage(emailScenario,emailMessage, subject, body, signature, url, orgLocations.getOrg(),orgLocations);
-        emailMessage.setSubject(subject);
-        emailMessage.setMessageBody(emailTemplate);
-       
-        emailScenerioUtil.sendEmail(emailMessage,orgLocations.getId(),iAdressArray,new ArrayList<EmailAttachment>());
         StringBuilder notificationLink = new StringBuilder();
         String actionLink = notificationLink.append(sourceleadUrl).append("/").append("newRequestedAssociatesList?requestUUID="+projectPlanningRequest.getRequestUUID()).toString();
          
-        emailScenerioUtil.sendNotification(actionLink, loginUser, projectPlanningRequest.getApproverUser(), orgLocations, notificationScenario);
+        emailScenerioUtil.sendNotification(actionLink, loginUser, projectPlanningRequest.getApproverUser(), orgLocations, notificationScenario,new HashMap<String,String>());
 		
 	}
 
@@ -237,10 +215,15 @@ public class ProjectPlanningNewResourceRequestServiceImpl implements ProjectPlan
         globalVarsMap.put("resourceTable", resourceTable);
         globalVarsMap.put("rejectReason", projectPlanningRequest.getRejectedReason());
         
-        EmailScenario  emailScenario = emailScenarioService.getEmailScenarioByUniqueName(Constants.ONHOLD_BULK_NEW_RESOURCE_REQUEST,Constants.ENTITY_TYPE_EMAIL);
+        EmailScenario  emailScenario = null;
+        if(orgLocations != null)
+			 emailScenario =  emailScenarioService.getEmailScenarioByUniqueNameAndOrgLocationId(Constants.ONHOLD_BULK_NEW_RESOURCE_REQUEST,Constants.ENTITY_TYPE_EMAIL, orgLocations.getId());
+			  if(emailScenario == null){
+					emailScenario = emailScenarioService.getEmailScenarioByUniqueName(Constants.ONHOLD_BULK_NEW_RESOURCE_REQUEST,Constants.ENTITY_TYPE_EMAIL);
+			   }
         EmailScenario  notificationScenario = emailScenarioService.getEmailScenarioByUniqueName(Constants.ONHOLD_BULK_NEW_RESOURCE_REQUEST_NOTIFICATION,Constants.ENTITY_TYPE_NOTIFICATION);
             
-        String notificationbody = emailScenerioUtil.buildTempBody(notificationScenario.getBody(),globalVarsMap);
+        String notificationbody = emailScenerioUtil.buildTemplateBody(notificationScenario.getBody(),globalVarsMap,notificationScenario);
         notificationScenario.setBody(notificationbody);
         
         //covert subject,body and signature
@@ -259,7 +242,7 @@ public class ProjectPlanningNewResourceRequestServiceImpl implements ProjectPlan
         StringBuilder notificationLink = new StringBuilder();
         String actionLink = notificationLink.append(sourceleadUrl).append("/").append("newRequestedAssociatesList?requestUUID="+projectPlanningRequest.getRequestUUID()).toString();
          
-        emailScenerioUtil.sendNotification(actionLink, loginUser, projectPlanningRequest.getApproverUser(), orgLocations, notificationScenario);
+        emailScenerioUtil.sendNotification(actionLink, loginUser, projectPlanningRequest.getApproverUser(), orgLocations, notificationScenario,new HashMap<String,String>());
 	}
 	
 	

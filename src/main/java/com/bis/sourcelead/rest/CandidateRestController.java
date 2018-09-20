@@ -23,7 +23,6 @@ import org.codehaus.jackson.map.ObjectMapper;
 import org.elasticsearch.index.query.BoolQueryBuilder;
 import org.elasticsearch.index.query.QueryBuilders;
 import org.elasticsearch.search.SearchHit;
-import org.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -41,6 +40,8 @@ import org.springframework.web.multipart.commons.CommonsMultipartFile;
 import com.bis.sourcelead.annotations.Validator;
 import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.dto.CandidateDTO;
+import com.bis.sourcelead.dto.Response;
+import com.bis.sourcelead.dto.ResponseList;
 import com.bis.sourcelead.elk.index.CandidateIndex;
 import com.bis.sourcelead.elk.setup.SourceleadELKBaseIndexer;
 import com.bis.sourcelead.entity.Candidate;
@@ -51,6 +52,7 @@ import com.bis.sourcelead.entity.Requirement;
 import com.bis.sourcelead.entity.RequirementInterview;
 import com.bis.sourcelead.entity.RequirementInterviewHistory;
 import com.bis.sourcelead.entity.RequirementInterviewer;
+import com.bis.sourcelead.entity.RequirementLocations;
 import com.bis.sourcelead.entity.RequirementOfferHistory;
 import com.bis.sourcelead.entity.RequirementOffers;
 import com.bis.sourcelead.entity.RequirementSubmission;
@@ -58,12 +60,14 @@ import com.bis.sourcelead.entity.RequirementSubmissionHistory;
 import com.bis.sourcelead.entity.Team;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.entity.UserRole;
+import com.bis.sourcelead.enums.Result;
 import com.bis.sourcelead.service.CandidateResumesService;
 import com.bis.sourcelead.service.CandidateService;
 import com.bis.sourcelead.service.OrgLocationService;
 import com.bis.sourcelead.service.RequirementInterviewHistoryService;
 import com.bis.sourcelead.service.RequirementInterviewService;
 import com.bis.sourcelead.service.RequirementInterviewerService;
+import com.bis.sourcelead.service.RequirementLocationsService;
 import com.bis.sourcelead.service.RequirementOfferHistoryService;
 import com.bis.sourcelead.service.RequirementOffersService;
 import com.bis.sourcelead.service.RequirementService;
@@ -74,8 +78,8 @@ import com.bis.sourcelead.service.UserRoleService;
 import com.bis.sourcelead.service.UserService;
 import com.bis.sourcelead.util.CalendarUtil;
 import com.bis.sourcelead.util.CommonUtil;
-import com.bis.sourcelead.util.FileUploadUtil;
 import com.bis.sourcelead.util.PrimarySkillUtil;
+import com.bis.sourcelead.util.ResumeParserJsonUtil;
 import com.bis.sourcelead.util.SourceLeadSessionManager;
 import com.bis.sourcelead.util.SourceleadResumeParser;
 import com.thoughtworks.xstream.XStream;
@@ -85,14 +89,15 @@ import com.thoughtworks.xstream.io.json.JsonWriter;
 
 /**
  * Handles requests for the Candidate service.
- * 
+ *
  * @author Prasad K
  * @date 30th June 2016
  *
  */
 @RestController
-@RequestMapping("/app")
+// @RequestMapping("/app")
 public class CandidateRestController {
+
 	private static final Logger logger = LoggerFactory.getLogger(CandidateRestController.class);
 	@Value("${sourceleadUrl}")
 	private String sourceleadUrl;
@@ -104,7 +109,8 @@ public class CandidateRestController {
 	private CandidateResumesService candidateResumesService;
 	/*
 	 * @Autowired private CandidateSkillsService candidateSkillsService;
-	 */
+     */
+   
 	@Autowired
 	private UserService userService;
 	@Autowired
@@ -135,189 +141,183 @@ public class CandidateRestController {
 	RequirementService requirementService;
 	@Autowired
 	OrgLocationService orgLocationService;
-	
-	protected boolean isNullOrEmpty(String str)
-	{
+
+
+	@Autowired
+	RequirementLocationsService requirementLocationsService;
+
+	protected boolean isNullOrEmpty(String str) {
 		return (str == null || "".equals(str.trim()));
 	}
-	
+
 	/**
 	 * @author prasad k
 	 * @since sep 1 2016
 	 * @version 0.0.1
-	 * 
+	 *
 	 *          This method is used to store/save candidate in candidate table.
-	 *          1.internalley store/save in candidateEducation in
-	 *          candidateEducation table . 2.internalley store/save in
-	 *          candidateSkills in candidateSkills table . 3.internalley
-	 *          store/save in candidateResumes in candidateResumes table .
-	 *          4.internalley store/save in candidateEmployers in
-	 *          candidateEmployers table .
-	 * 
-	 * 
-	 * 
-	 * @param jsonObj
-	 *            This is the first paramter to storeCandidate method
-	 * @param orgLocations
-	 *            This is the second paramter to storeCandidate method
-	 * @param user
-	 *            This is the third paramter to storeCandidate method
-	 * @param multiFile
-	 *            This is the fourth paramter to storeCandidate method
-	 * 
+	 *          1.internalley store/save in candidateEducation in candidateEducation
+	 *          table . 2.internalley store/save in candidateSkills in
+	 *          candidateSkills table . 3.internalley store/save in candidateResumes
+	 *          in candidateResumes table . 4.internalley store/save in
+	 *          candidateEmployers in candidateEmployers table .
+	 * @param candidateDto
+	 * @param request
 	 * @return Candidate
-	 * 
-	 * @throws NullPointer
 	 */
 	@PreAuthorize("hasAnyRole('ROLE_CREATE_CANDIDATE','ROLE_VIEW_CANDIDATE','ROLE_VIEW_EDIT_CANDIDATE_EDUCATION','ROLE_CROWDSOURCING_CANDIDATES')")
-	@RequestMapping(value = "/storeCandidate", method = RequestMethod.POST)
-	public @ResponseBody String storeCandidate(CandidateDTO candidateDto, HttpServletRequest request) throws Exception
-	{
-		if(Validator.validate(candidateDto)) {
-			candidateDto.setStaticPath(staticPath);
-			//FileUploadUtil.fillUploadedFileInfo(candidateDto, candidateDto.getFileInfo());
-			User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
-			OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
-			Candidate candidate = candidateService.storeCandidate(candidateDto, orgLocation, user);
-		} else{
-			return "DataMissing";
+	@RequestMapping(value = "/app/storeCandidate", method = RequestMethod.POST)
+	@ResponseBody
+	public Response<String> storeCandidate(CandidateDTO candidateDto, HttpServletRequest request) throws Exception {
+		Response<String> response = new Response<>();
+		User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+		if (user != null) {
+			try {
+
+				if (Validator.validate(candidateDto)) {
+					candidateDto.setStaticPath(staticPath);
+					// FileUploadUtil.fillUploadedFileInfo(candidateDto,
+					// candidateDto.getFileInfo());
+					OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+					Candidate candidate = candidateService.storeCandidate(candidateDto, orgLocation, user);
+					SourceLeadSessionManager.setSessionAttribute(request, "candidateCreateMsg", "Success new candidate is created");
+					response.setResponse(Result.SUCCESS.name());
+					response.setResponseMessage(Result.SUCCESS.getValue());
+				} else {
+					response.setObject("DataMissing");
+					response.setResponse(Result.INVALID_DATA.name());
+					response.setResponseMessage(Result.INVALID_DATA.getValue());
+				}
+			} catch (Exception e) {
+				response.setResponse(Result.AWKWARD.name());
+				response.setResponseMessage(Result.AWKWARD.getValue());
+				logger.error(ExceptionUtils.getFullStackTrace(e));
+			}
+		} else {
+			response.setResponse(Result.SESSION_TIMEDOUT.name());
+			response.setResponseMessage(Result.SESSION_TIMEDOUT.getValue());
 		}
-		 SourceLeadSessionManager.setSessionAttribute(request, "candidateCreateMsg", "Success new candidate is created");
-		
-		return "success";
+		return response;
 	}
-	
-	@RequestMapping(value = "/parseResume", method = RequestMethod.POST)
-	public @ResponseBody String parseResume(@RequestParam(value = "json", required = false) String json, MultipartHttpServletRequest request, @RequestParam(value = "locationMapFile", required = false) CommonsMultipartFile locationMapFileData) throws Exception
-	{
-		MultipartFile multiFile = null;
-		Iterator<String> itrator = request.getFileNames();
-		if (itrator.hasNext()) {
-			multiFile = request.getFile(itrator.next());
+
+	@RequestMapping(value = { "/parseResume", "/app/parseResume" }, method = RequestMethod.POST)
+	public @ResponseBody Response<ResumeParserJsonUtil> parseResume(@RequestParam(value = "json", required = false) String json,
+			MultipartHttpServletRequest request,
+			@RequestParam(value = "locationMapFile", required = false) CommonsMultipartFile locationMapFileData) throws Exception {
+		Response<ResumeParserJsonUtil> response = new Response<>();
+		try {
+			MultipartFile multiFile = null;
+			Iterator<String> itrator = request.getFileNames();
+			if (itrator.hasNext()) {
+				multiFile = request.getFile(itrator.next());
+			}
+			ResumeParserJsonUtil resumeDetails = null;
+			if (null != multiFile) {
+				String country = (String) SourceLeadSessionManager.getSessionAttribute(request, "country");
+				resumeDetails = sourceleadResumeParser.getCandidateDetailsFromResume(multiFile.getBytes(), country);
+			}
+			response.setObject(resumeDetails);
+			response.setResponse(Result.SUCCESS.name());
+			response.setResponseMessage(Result.SUCCESS.getValue());
+		} catch (Exception e) {
+			response.setResponse(Result.AWKWARD.name());
+			response.setResponseMessage(Result.AWKWARD.getValue());
+			logger.error(ExceptionUtils.getFullStackTrace(e));
 		}
-		String resumeDetails = null;
-		if (null != multiFile) {
-			resumeDetails = sourceleadResumeParser.getCandidateDetailsFromResume(multiFile.getBytes(), request);
-		}
-		return resumeDetails;
+		return response;
 	}
-	
+
 	/**
 	 * To validate user email
-	 * 
+	 *
 	 * @param EmailId
 	 * @return
 	 * @throws Exception
 	 */
-	@RequestMapping(value = "/validateCandidateEmail", method = RequestMethod.POST)
-	public @ResponseBody String validateCandidateEmail(@RequestParam(value = "email", required = false) String email, @RequestParam(value = "candidateType", required = false) String candidateType, HttpServletRequest request) throws Exception
-	{
-		String result = null;
-		OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
-		Candidate candidate = candidateService.findByCandidateEmail(email, orgLocation.getId());
-		if (null != candidate) {
-			result = "true";
+	@RequestMapping(value = "/app/validateCandidateEmail", method = RequestMethod.POST)
+	public @ResponseBody Response<String> validateCandidateEmail(@RequestParam(value = "email", required = false) String email,
+			@RequestParam(value = "candidateType", required = false) String candidateType, HttpServletRequest request) throws Exception {
+		Response<String> response = new Response<>();
+		try {
+			OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+			Candidate candidate = candidateService.findByCandidateEmail(email, orgLocation.getId());
+			if (null != candidate) {
+				response.setObject("true");
+			} else {
+				response.setObject("false");
+			}
+			response.setResponse(Result.SUCCESS.name());
+			response.setResponseMessage(Result.SUCCESS.getValue());
+		} catch (Exception e) {
+			response.setResponse(Result.AWKWARD.name());
+			response.setResponseMessage(Result.AWKWARD.getValue());
+			logger.error(ExceptionUtils.getFullStackTrace(e));
 		}
-		else {
-			result = "false";
-		}
-		return result;
+		return response;
 	}
+
 	/*
-	 * @RequestMapping(value = "/validateSkillName" , method =
-	 * RequestMethod.POST) public @ResponseBody Boolean
+	 * @RequestMapping(value = "/validateSkillName" , method = RequestMethod.POST)
+	 * public @ResponseBody Boolean
+
 	 * validateSkillName(@RequestParam(value="skillName", required=false) String
 	 * skillName, @RequestParam(value="candidateId", required=false) String
-	 * candidateId, HttpServletRequest request) throws Exception { Boolean flag
-	 * = false; CandidateSkills candidateSkills =
+	 * candidateId, HttpServletRequest request) throws Exception { Boolean flag =
+	 * false; CandidateSkills candidateSkills =
 	 * candidateSkillsService.getSkillsByCandidateIdSkillName(candidateId,
 	 * skillName); if(null != candidateSkills){ flag =
 	 * candidateSkillsService.validateSkillName(skillName); } return flag; }
 	 */
-	
-	@RequestMapping(value = "/getCandidatesList", method = RequestMethod.POST)
-	public @ResponseBody String getCandidatesList(@RequestParam(value = "requirementId", required = false) Long requirementId, @RequestParam(value = "candidateType", required = false) String candidateType, @RequestParam(value = "isAssociate", required = false) String isAssociate, HttpServletRequest request) throws Exception
-	{
-		String resultJson = null;
-		String candidateStatus = null;
-		OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
-		// List<Candidate> candidatesList =
-		// candidateService.getCandidatesByOrgLocationID(orgLocations.getId(),requirementId,candidateType);
-		List<Long> candidateIdsList = requirementSubmissionService.getSubmittedCandidateIdsByRequirementId(requirementId);
-		Requirement requirement = requirementService.getRequirementByRequirementId(requirementId);
-		List<CandidateIndex> candidatesList = new ArrayList<CandidateIndex>();
-		DateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-		df.setTimeZone(TimeZone.getTimeZone("GMT"));
-		BoolQueryBuilder boolQueryBuilder = new BoolQueryBuilder();
-		boolQueryBuilder.must(QueryBuilders.matchQuery("orgLocationId", orgLocations.getId()));
-		// boolQueryBuilder.must(QueryBuilders.matchQuery("candidateType",
-		// candidateType));
-		boolQueryBuilder.must(QueryBuilders.matchQuery("status", 1));
-		// Long maxResults =
-		// candidateService.getCandidatesCountByOrgLocationID(orgLocations.getId(),candidateStatus);
-		if (null != candidateIdsList && candidateIdsList.size() > 0) {
-			BoolQueryBuilder candidateBoolQueryBuilder = QueryBuilders.boolQuery();
-			for (Long candidateId : candidateIdsList) {
-				candidateBoolQueryBuilder.should(QueryBuilders.matchQuery("candidateId", candidateId));
-			}
-			boolQueryBuilder.mustNot(candidateBoolQueryBuilder);
-		}
-		if (null != requirement && !isNullOrEmpty(requirement.getSkills())) {
-			String[] skills = requirement.getSkills().split(",");
-			BoolQueryBuilder skillsBoolQuery = QueryBuilders.boolQuery();
-			for (int i = 0; i < skills.length; i++) {
-				skillsBoolQuery.should(QueryBuilders.matchQuery("skillsName", skills[i]));
-			}
-			boolQueryBuilder.must(skillsBoolQuery);
-		}
-		if (null != isAssociate && isAssociate.equalsIgnoreCase(Constants.YES)) {
-			boolQueryBuilder.must(QueryBuilders.matchQuery("isAssociate", isAssociate));
-			boolQueryBuilder.must(QueryBuilders.matchQuery("isFavourite", "1"));
-		}
-		else {
-			boolQueryBuilder.must(QueryBuilders.matchQuery("isAssociate", isAssociate));
-		}
+	@RequestMapping(value = "/app/getCandidatesList", method = RequestMethod.POST)
+	public @ResponseBody ResponseList<CandidateDTO> getCandidatesList(
+			@RequestParam(value = "requirementId", required = false) Long requirementId,HttpServletRequest request) throws Exception {
+		ResponseList<CandidateDTO> responseList = new ResponseList<>();
 		try {
-			SearchHit[] searchHits = sourceleadELKBaseIndexer.searchDocumentWithMaxResults(Constants.ELK_CANDIDATE_INDEX, Constants.ELK_CANDIDATE_TYPE, 0, Constants.MAX_RESULTS_200, boolQueryBuilder).getHits();
-			if (null != searchHits && searchHits.length > 0) {
-				ObjectMapper mapper = new ObjectMapper();
-				for (SearchHit hit : searchHits) {
-					String json = hit.getSourceAsString();
-					mapper.setDateFormat(df);
-					CandidateIndex candidateIndex = mapper.readValue(json, CandidateIndex.class);
-					candidatesList.add(candidateIndex);
-				}
-			}
+			OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+			Requirement requirement = requirementService.getRequirementByRequirementId(requirementId);
+			List<CandidateDTO> candidateDTOList  = candidateService.getCandidateListForAddApplicant(orgLocations, requirementId,requirement.getSkills(),null);
+			responseList.setData(candidateDTOList);
+			responseList.setResponse(Result.SUCCESS.name());
+			responseList.setResponseMessage(Result.SUCCESS.getValue());
 		} catch (Exception e) {
-			e.printStackTrace();
+			responseList.setResponse(Result.AWKWARD.name());
+			responseList.setResponseMessage(Result.AWKWARD.getValue());
+			logger.error(ExceptionUtils.getFullStackTrace(e));
 		}
-		resultJson = toJSON(candidatesList);
-		return resultJson;
+		return responseList;
 	}
-	
+
 	/**
 	 * @author sarath kumar
 	 * @since Dec 1 2016
 	 * @version 0.0.1
-	 * 
-	 * 
+	 *
+	 *
 	 * @throws NullPointer
 	 */
-	@RequestMapping(value = "/checkCandidateState", method = RequestMethod.POST)
-	public @ResponseBody String checkCandidateState(@RequestParam(value = "candidateId", required = false) Long candidateId, HttpServletRequest request) throws Exception
-	{
-		String resultJson = null;
-		Candidate candidate = candidateService.getCandidateByCandidateId(candidateId);
-		Boolean isCandidateActive = false;
-		if (null != candidate) {
-			if (candidate.getStatus() == 1) {
-				isCandidateActive = true;
+	@RequestMapping(value = "/app/checkCandidateState", method = RequestMethod.POST)
+	public @ResponseBody Response<Boolean> checkCandidateState(@RequestParam(value = "candidateId", required = false) Long candidateId,
+			HttpServletRequest request) throws Exception {
+		Response<Boolean> response = new Response<>();
+		try {
+			Candidate candidate = candidateService.getCandidateByCandidateId(candidateId);
+			Boolean isCandidateActive = false;
+			if (null != candidate) {
+				if (candidate.getStatus() == 1) {
+					isCandidateActive = true;
+				}
 			}
+			response.setObject(isCandidateActive);
+			response.setResponse(Result.SUCCESS.name());
+			response.setResponseMessage(Result.SUCCESS.getValue());
+		} catch (Exception e) {
+			response.setResponse(Result.AWKWARD.name());
+			response.setResponseMessage(Result.AWKWARD.getValue());
+			logger.error(ExceptionUtils.getFullStackTrace(e));
 		}
-		resultJson = toJSON(isCandidateActive);
-		return resultJson;
+		return response;
 	}
-	
+
 	/**
 	 * @author Rajashekar
 	 * @param candidateId
@@ -325,13 +325,14 @@ public class CandidateRestController {
 	 * @return string
 	 * @throws Exception
 	 */
-	@RequestMapping(value = "/downloadCandidateResume", method = RequestMethod.GET)
-	public @ResponseBody void downloadCandidateResume(@RequestParam(value = "candidateId", required = false) Long candidateId, HttpServletRequest request, HttpServletResponse response) throws Exception
-	{
+	@RequestMapping(value = "/app/downloadCandidateResume", method = RequestMethod.GET)
+	public @ResponseBody void downloadCandidateResume(@RequestParam(value = "candidateId", required = false) Long candidateId,
+			HttpServletRequest request, HttpServletResponse response) throws Exception {
 		CandidateResumes candidateResume = candidateResumesService.getCandidateLatesResumes(candidateId, 1);
 		response.setContentType("application/octet-stream");
 		StringBuilder fileName = new StringBuilder();
-		response.setHeader("Content-Disposition", fileName.append("attachment; filename=\"").append(candidateResume.getFileName()).append("\"").toString());
+		response.setHeader("Content-Disposition",
+				fileName.append("attachment; filename=\"").append(candidateResume.getFileName()).append("\"").toString());
 		if (candidateResume.getFileURL() != null) {
 			InputStream inputStream = new FileInputStream(new File(staticPath, candidateResume.getFileURL()));
 			try {
@@ -348,90 +349,133 @@ public class CandidateRestController {
 			}
 		}
 	}
-	
-	@RequestMapping(value = "/getUserByRoleId", method = RequestMethod.POST)
-	public @ResponseBody String getUserByRoleId(@RequestParam(value = "roleId", required = false) Long roleId, HttpServletRequest request) throws Exception
-	{
-		String resultJson = null;
-		OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
-		List<User> userList = userService.getUsersForConsultantsByUserRoleIdAndOrgLocationId(roleId, orgLocations.getId());
-		resultJson = toJSON(userList);
-		return resultJson;
-	}
-	
-	@RequestMapping(value = "/getAllRoleUsers", method = RequestMethod.POST)
-	public @ResponseBody String getAllRoleUsers(HttpServletRequest request) throws Exception
-	{
-		String resultJson = null;
-		OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
-		Org org = (Org) SourceLeadSessionManager.getSessionAttribute(request, "org");
-		List<User> userList = userService.getUsersForAddAsConsultant(org, orgLocations.getId());
-		for (User user : userList) {
-			UserRole userRole = userRoleService.getUserRoleByUserIdAndLocationId(user.getId(), orgLocations.getId());
-			if (null != userRole) {
-				user.setUserType(userRole.getRoles().getDisplayName());
-			}
-		}
-		resultJson = toJSON(userList);
-		return resultJson;
-	}
-	
-	@RequestMapping(value = "/getConsultantUserDetailsById", method = RequestMethod.POST)
-	public @ResponseBody String getConsultantUserDetailsById(@RequestParam(value = "userId", required = false) Long userId)
-	{
-		ArrayList<String> userList = new ArrayList<String>();
-		User user = null;
+
+	@RequestMapping(value = "/app/getUserByRoleId", method = RequestMethod.POST)
+	public @ResponseBody ResponseList<User> getUserByRoleId(@RequestParam(value = "roleId", required = false) Long roleId,
+			HttpServletRequest request) throws Exception {
+		ResponseList<User> response = new ResponseList<>();
 		try {
-			user = userService.getUserById(userId);
+			OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+			List<User> userList = userService.getUsersForConsultantsByUserRoleIdAndOrgLocationId(roleId, orgLocations.getId());
+			response.setData(userList);
+			response.setResponse(Result.SUCCESS.name());
+			response.setResponseMessage(Result.SUCCESS.getValue());
 		} catch (Exception e) {
+			response.setResponse(Result.AWKWARD.name());
+			response.setResponseMessage(Result.AWKWARD.getValue());
 			logger.error(ExceptionUtils.getFullStackTrace(e));
 		}
-		if (null != user) {
-			userList.add(user.getFirstName());
-			userList.add(user.getLastName());
-			userList.add(user.getEmail());
-			userList.add(user.getMobilePhone());
-		}
-		return commonUtil.toJSON(userList);
+		return response;
 	}
-	
-	@RequestMapping(value = "/getCandidatesListByCandidateType", method = RequestMethod.POST)
-	public @ResponseBody String getCandidatesListByCandidateType(@RequestParam(value = "requirementId", required = false) Long requirementId, @RequestParam(value = "candidateType", required = false) String candidateType, @RequestParam(value = "applicantSearch", required = false) String applicantSearch, HttpServletRequest request) throws Exception
-	{
-		List<Candidate> candidatesList = null;
-		OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
-		HashMap<String, Long> hm = new HashMap<String, Long>();
+
+	@RequestMapping(value = "/app/getAllRoleUsers", method = RequestMethod.POST)
+	public @ResponseBody ResponseList<User> getAllRoleUsers(HttpServletRequest request) throws Exception {
+		ResponseList<User> response = new ResponseList<>();
 		try {
-			candidatesList = candidateService.getCandidatesByOrgLocationIDAndSearchText(orgLocations.getId(), requirementId, candidateType, applicantSearch);
+			OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+			Org org = (Org) SourceLeadSessionManager.getSessionAttribute(request, "org");
+			List<User> userList = userService.getUsersForAddAsConsultant(org, orgLocations.getId());
+			for (User user : userList) {
+				UserRole userRole = userRoleService.getUserRoleByUserIdAndLocationId(user.getId(), orgLocations.getId());
+				if (null != userRole) {
+					user.setUserType(userRole.getRoles().getDisplayName());
+				}
+			}
+			response.setData(userList);
+			response.setResponse(Result.SUCCESS.name());
+			response.setResponseMessage(Result.SUCCESS.getValue());
 		} catch (Exception e) {
+			response.setResponse(Result.AWKWARD.name());
+			response.setResponseMessage(Result.AWKWARD.getValue());
 			logger.error(ExceptionUtils.getFullStackTrace(e));
 		}
-		if (candidatesList != null) {
-			for (Candidate candidate : candidatesList) {
-				StringBuilder candidateName = new StringBuilder();
-				if (!isNullOrEmpty(candidate.getLastName())) {
-					candidateName = candidateName.append(candidate.getFirstName()).append(" ").append(candidate.getLastName());
-				}
-				else {
-					candidateName = candidateName.append(candidate.getFirstName());
-				}
-				hm.put(candidateName.toString(), candidate.getId());
-			}
-		}
-		return commonUtil.toJSON(hm);
+		return response;
 	}
-	
+
+	@RequestMapping(value = "/app/getConsultantUserDetailsById", method = RequestMethod.POST)
+	public @ResponseBody ResponseList<String> getConsultantUserDetailsById(@RequestParam(value = "userId", required = false) Long userId) {
+		ResponseList<String> response = new ResponseList<>();
+		try {
+			ArrayList<String> userList = new ArrayList<String>();
+			User user = null;
+			try {
+				user = userService.getUserById(userId);
+			} catch (Exception e) {
+				logger.error(ExceptionUtils.getFullStackTrace(e));
+			}
+			if (null != user) {
+				userList.add(user.getFirstName());
+				userList.add(user.getLastName());
+				userList.add(user.getEmail());
+				userList.add(user.getMobilePhone());
+				response.setResponse(Result.SUCCESS.name());
+				response.setResponseMessage(Result.SUCCESS.getValue());
+				response.setData(userList);
+			} else {
+				response.setResponse(Result.SESSION_TIMEDOUT.name());
+				response.setResponseMessage(Result.SESSION_TIMEDOUT.getValue());
+			}
+		} catch (Exception e) {
+			response.setResponse(Result.AWKWARD.name());
+			response.setResponseMessage(Result.AWKWARD.getValue());
+			logger.error(ExceptionUtils.getFullStackTrace(e));
+		}
+		return response;
+	}
+
+	@RequestMapping(value = "/app/getCandidatesListByCandidateType", method = RequestMethod.POST)
+	public @ResponseBody Response<String> getCandidatesListByCandidateType(
+			@RequestParam(value = "requirementId", required = false) Long requirementId,
+			@RequestParam(value = "candidateType", required = false) String candidateType,
+			@RequestParam(value = "applicantSearch", required = false) String applicantSearch, HttpServletRequest request)
+			throws Exception {
+		Response<String> response = new Response<>();
+		try {
+			List<Candidate> candidatesList = null;
+			OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+			HashMap<String, Long> hm = new HashMap<String, Long>();
+			candidatesList = candidateService.getCandidatesByOrgLocationIDAndSearchText(orgLocations.getId(), requirementId, candidateType,
+					applicantSearch);
+			if (candidatesList != null) {
+				for (Candidate candidate : candidatesList) {
+					StringBuilder candidateName = new StringBuilder();
+					if (!isNullOrEmpty(candidate.getLastName())) {
+						candidateName = candidateName.append(candidate.getFirstName()).append(" ").append(candidate.getLastName());
+					} else {
+						candidateName = candidateName.append(candidate.getFirstName());
+					}
+					hm.put(candidateName.toString(), candidate.getId());
+				}
+			}
+			response.setObject(commonUtil.toJSON(hm));
+			response.setResponse(Result.SUCCESS.name());
+			response.setResponseMessage(Result.SUCCESS.getValue());
+		} catch (Exception e) {
+			response.setResponse(Result.AWKWARD.name());
+			response.setResponseMessage(Result.AWKWARD.getValue());
+			logger.error(ExceptionUtils.getFullStackTrace(e));
+		}
+		return response;
+	}
+
 	@PreAuthorize("hasRole('ROLE_ASSIGN_HOTLIST_TO_TEAM')")
-	@RequestMapping(value = "/getTeams", method = RequestMethod.POST)
-	public @ResponseBody String getTeams(HttpServletRequest request) throws Exception
-	{
-		String resultJson = null;
-		OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
-		List<Team> teamList = teamService.getTeamListByOrgLocationID(orgLocations.getId());
-		resultJson = toJSON(teamList);
-		return resultJson;
+	@RequestMapping(value = "/app/getTeams", method = RequestMethod.POST)
+	public @ResponseBody ResponseList<Team> getTeams(HttpServletRequest request) throws Exception {
+		ResponseList<Team> responseList = new ResponseList<>();
+		try {
+			OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+			List<Team> teamList = teamService.getTeamListByOrgLocationID(orgLocations.getId());
+			responseList.setData(teamList);
+			responseList.setResponse(Result.SUCCESS.name());
+			responseList.setResponseMessage(Result.SUCCESS.getValue());
+		} catch (Exception e) {
+			responseList.setResponse(Result.AWKWARD.name());
+			responseList.setResponseMessage(Result.AWKWARD.getValue());
+			logger.error(ExceptionUtils.getFullStackTrace(e));
+		}
+		return responseList;
 	}
-	
+
 	/**
 	 * @author Venkat Kesav @ this method is uses for verify Cooling Off Period
 	 * @param
@@ -439,26 +483,29 @@ public class CandidateRestController {
 	 * @return
 	 * @throws Exception
 	 */
-	@RequestMapping(value = "/verifyCoolingOffPeriod")
-	public String verifyCoolingOffPeriod(@RequestParam(value = "requirementId", required = false) Long requirementId, @RequestParam(value = "candidateEmail", required = false) String candidateEmail, @RequestParam(value = "reqCoolingOffPeriod", required = false) String reqCoolingOffPeriod, Long orgLocationId) throws Exception
-	{
-		OrgLocations loginOrgLocation = orgLocationService.getOrgLocations(orgLocationId);
-		String resultJson = "false";
-		String[] coolingOffArr = null;
-		String period = "0";
-		if (reqCoolingOffPeriod != null && !reqCoolingOffPeriod.isEmpty() && reqCoolingOffPeriod != "undefined") {
-			coolingOffArr = reqCoolingOffPeriod.split(" ");
-			period = coolingOffArr[1];
-		}else {
-			Requirement requirement =  requirementService.getRequirementByRequirementId(requirementId);
-			if(requirement != null && StringUtils.isNotBlank(requirement.getReqCoolingOffPeriod())) {
-				coolingOffArr = requirement.getReqCoolingOffPeriod().split(" ");
+	@RequestMapping(value = "/app/verifyCoolingOffPeriod")
+	public Response<Boolean> verifyCoolingOffPeriod(@RequestParam(value = "requirementId", required = false) Long requirementId,
+			@RequestParam(value = "candidateEmail", required = false) String candidateEmail,
+			@RequestParam(value = "reqCoolingOffPeriod", required = false) String reqCoolingOffPeriod, Long orgLocationId)
+			throws Exception {
+		Response<Boolean> response = new Response<>();
+		try {
+			OrgLocations loginOrgLocation = orgLocationService.getOrgLocations(orgLocationId);
+			String[] coolingOffArr = null;
+			String period = "0";
+			if (reqCoolingOffPeriod != null && !reqCoolingOffPeriod.isEmpty() && reqCoolingOffPeriod != "undefined") {
+				coolingOffArr = reqCoolingOffPeriod.split(" ");
 				period = coolingOffArr[1];
+			} else {
+				Requirement requirement = requirementService.getRequirementByRequirementId(requirementId);
+				if (requirement != null && StringUtils.isNotBlank(requirement.getReqCoolingOffPeriod())) {
+					coolingOffArr = requirement.getReqCoolingOffPeriod().split(" ");
+					period = coolingOffArr[1];
+				}
 			}
-		}
-		String reqCoolingOffPeriodDays;
-		int Days;
-		switch (period) {
+			String reqCoolingOffPeriodDays;
+			int Days;
+			switch (period) {
 			case "Week":
 				reqCoolingOffPeriodDays = "7";
 				break;
@@ -478,19 +525,26 @@ public class CandidateRestController {
 				break;
 			default:
 				reqCoolingOffPeriodDays = "0";
-		}
-		RequirementSubmissionHistory requirementSubmissionHistory = requirementSubmissionHistoryService.isInCoolingOffPeriodByEmailAndLocationsId(candidateEmail, loginOrgLocation, reqCoolingOffPeriodDays, requirementId);
-		if (null != requirementSubmissionHistory) {
-			if (requirementSubmissionHistory.getIsInCoolingOffPeriod()) {
-				resultJson = commonUtil.toJSON(requirementSubmissionHistory.getIsInCoolingOffPeriod());
 			}
-			else {
-				resultJson = commonUtil.toJSON("false");
+			RequirementSubmissionHistory requirementSubmissionHistory = requirementSubmissionHistoryService
+					.isInCoolingOffPeriodByEmailAndLocationsId(candidateEmail, loginOrgLocation, reqCoolingOffPeriodDays, requirementId);
+			if (null != requirementSubmissionHistory) {
+				if (requirementSubmissionHistory.getIsInCoolingOffPeriod()) {
+					response.setObject(requirementSubmissionHistory.getIsInCoolingOffPeriod());
+				} else {
+					response.setObject(false);
+				}
 			}
+			response.setResponse(Result.SUCCESS.name());
+			response.setResponseMessage(Result.SUCCESS.getValue());
+		} catch (Exception e) {
+			response.setResponse(Result.AWKWARD.name());
+			response.setResponseMessage(Result.AWKWARD.getValue());
+			logger.error(ExceptionUtils.getFullStackTrace(e));
 		}
-		return resultJson;
+		return response;
 	}
-	
+
 	/**
 	 * @author Laxman @ this method is uses for get the requirement History by
 	 *         candidate
@@ -499,42 +553,62 @@ public class CandidateRestController {
 	 * @return
 	 * @throws Exception
 	 */
-	@RequestMapping(value = "/getRequirementHistoryListByCandidateId")
+	@RequestMapping(value = "/app/getRequirementHistoryListByCandidateId")
 
-	public String getRequirementHistoryListByCandidateId(@RequestParam(value = "candidateId", required = false) Long candidateId,HttpServletRequest request) throws Exception {
-		 OrgLocations loginOrgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,"orgLocations");
-		 String resultJson;
-		 //SimpleDateFormat format = loginOrgLocation.getLocFullFormDateFormatter();
-		 List<RequirementSubmission> requirementSubmission =requirementSubmissionService.getRequirementHistoryListByCandidateIdAndOrgLocationID(candidateId, loginOrgLocation.getId());
-		 for(RequirementSubmission req :requirementSubmission ){
-			 req.setPositionType(req.getRequirement().getJobTitle());
-			 req.setCountry(req.getRequirement().getCountry());
-			 req.setState(req.getRequirement().getState());
-			 req.setCity(req.getRequirement().getCity());
-			 req.setRate(req.getRequirement().getRate());
-			 req.setCreatedDateStr(commonUtil.dateStrFromOrgDateFormatter(loginOrgLocation.getDateFormat(),req.getCreatedDate()));
-			 if(req.getRequirement().getManagerUserId().getLastName() != null){
-				 req.setOwnerName(req.getRequirement().getManagerUserId().getFirstName() +" "+req.getRequirement().getManagerUserId().getLastName());
-			 }else{
-				 req.setOwnerName(req.getRequirement().getManagerUserId().getFirstName());
-			 }
-			
-			 if(null != req.getRequirement().getSpocId()){
-				 if(!"".equalsIgnoreCase(req.getRequirement().getSpocId().getClientUser().getLastName()) && null != req.getRequirement().getSpocId().getClientUser().getLastName() ){
-					 req.setClientName(req.getRequirement().getSpocId().getClientUser().getFirstName() +""+req.getRequirement().getSpocId().getClientUser().getLastName());
-				 }else{
-					 req.setClientName(req.getRequirement().getSpocId().getClientUser().getFirstName());
-				 }
-			 }
-			 
-		 }
-		 resultJson = commonUtil.toJSON(requirementSubmission);
-		 return resultJson;
-	}	
-	
+	public ResponseList<RequirementSubmission> getRequirementHistoryListByCandidateId(
+			@RequestParam(value = "candidateId", required = false) Long candidateId, HttpServletRequest request) throws Exception {
+		ResponseList<RequirementSubmission> responseList = new ResponseList<>();
+		try {
+			OrgLocations loginOrgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+			// SimpleDateFormat format = loginOrgLocation.getLocFullFormDateFormatter();
+			List<RequirementSubmission> requirementSubmission = requirementSubmissionService
+					.getRequirementHistoryListByCandidateIdAndOrgLocationID(candidateId, loginOrgLocation.getId());
+			for (RequirementSubmission req : requirementSubmission) {
+				if(req.getRequirement() != null) {
+				req.setPositionType(req.getRequirement().getJobTitle());
+				req.setCountry(req.getRequirement().getCountry());
+				req.setState(req.getRequirement().getState());
+				req.setCity(req.getRequirement().getCity());
+				req.setRate(req.getRequirement().getRate());
+				req.setCreatedDateStr(commonUtil.dateStrFromOrgDateFormatter(loginOrgLocation.getDateFormat(), req.getCreatedDate()));
+				if (req.getRequirement().getManagerUserId().getLastName() != null) {
+					req.setOwnerName(req.getRequirement().getManagerUserId().getFirstName() + " "
+							+ req.getRequirement().getManagerUserId().getLastName());
+				} else {
+					req.setOwnerName(req.getRequirement().getManagerUserId().getFirstName());
+				}
+				List<String> requirementLocationsList = new ArrayList<>();
+				List<RequirementLocations> locationsList = requirementLocationsService
+						.getRequirementLocationsListByRequirementId(req.getRequirement().getId());
+				if (locationsList != null && !locationsList.isEmpty()) {
+					for (RequirementLocations location : locationsList) {
+						requirementLocationsList.add(location.getLocation());
+					}
+				}
+				req.setLocationsList(requirementLocationsList);
 
+				if (null != req.getRequirement().getSpocId()) {
+					if (!"".equalsIgnoreCase(req.getRequirement().getSpocId().getClientUser().getLastName())
+							&& null != req.getRequirement().getSpocId().getClientUser().getLastName()) {
+						req.setClientName(req.getRequirement().getSpocId().getClientUser().getFirstName() + ""
+								+ req.getRequirement().getSpocId().getClientUser().getLastName());
+					} else {
+						req.setClientName(req.getRequirement().getSpocId().getClientUser().getFirstName());
+					}
+				}
+			}
+			}
+			responseList.setData(requirementSubmission);
+			responseList.setResponse(Result.SUCCESS.name());
+			responseList.setResponseMessage(Result.SUCCESS.getValue());
+		} catch (Exception e) {
+			responseList.setResponse(Result.AWKWARD.name());
+			responseList.setResponseMessage(Result.AWKWARD.getValue());
+			logger.error(ExceptionUtils.getFullStackTrace(e));
+		}
+		return responseList;
+	}
 
-	
 	/**
 	 * @author Laxman this method is used for candidate submitte related resumes
 	 *         list
@@ -543,145 +617,169 @@ public class CandidateRestController {
 	 * @return
 	 * @throws Exception
 	 */
-	@RequestMapping(value = "/getRequirementHistoryDetailsByCandidateId")
-	public String getRequirementHistoryDetailsByCandidateId(@RequestParam(value = "candidateId", required = false) Long candidateId, @RequestParam(value = "requirementId", required = false) Long requirementId, @RequestParam(value = "submissionId", required = false) Long submissionId, HttpServletRequest request) throws Exception
-	{
-		OrgLocations loginOrgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
-		String resultJson;
-		List<RequirementSubmissionHistory> requirementSubmissionhistory = requirementSubmissionHistoryService.getRequirementHistoryListByCandidateIdAndOrgLocationIdAndRequirementIdAndSubmissionId(candidateId, loginOrgLocation.getId(), requirementId, submissionId);
-		//SimpleDateFormat simpleDateFormat = loginOrgLocation.getLocFullFormDateFormatter();
-		for (RequirementSubmissionHistory rsh : requirementSubmissionhistory) {
-			RequirementOffers ros = requirementOffersService.getRequirementOfferSubmissionById(rsh.getSubmissionId().getId());
-			if (null != ros) {
-				rsh.setOfferResumeid(ros.getId());
-				
-			}
-			if (null != rsh.getSubmissionId().getCandidateResumes()) {
-				rsh.setResumeid(rsh.getSubmissionId().getCandidateResumes().getFileURL());
-				rsh.setFileName(rsh.getSubmissionId().getCandidateResumes().getFileName());
-				rsh.setFileUrl(rsh.getSubmissionId().getCandidateResumes().getFileURL());
-				rsh.setContentType(rsh.getSubmissionId().getCandidateResumes().getFileContentType());
-			}
-			if (!"".equalsIgnoreCase(rsh.getSubmissionId().getOrgLocations().getOrg().toString())
-					&& null != rsh.getSubmissionId().getOrgLocations().getOrg()) {
-				rsh.setOrgLocationId(rsh.getSubmissionId().getOrgLocations().getOrg().getOrgCode());
-			}
-			rsh.setToStage(rsh.getToStage());
-			rsh.setSubmissionStage(rsh.getSubmissionId().getSubmissionStatus().toString());
-			rsh.setRequirementReson(rsh.getSubmissionId().getRejectedReason());
-			StringBuilder userName = new StringBuilder();
-			if (null != rsh.getSubmissionId().getCandidate().getLastName()) {
-				rsh.setUserName(userName.append(rsh.getSubmissionId().getCandidate().getFirstName()).append(" ").append(rsh.getSubmissionId().getCandidate().getLastName()).toString());
-			}
-			else {
-				rsh.setUserName(userName.append(rsh.getSubmissionId().getCandidate().getFirstName()).toString());
-			}
-			// user related data is getting
-			User user = userService.getUserDetailsByUserCode(rsh.getCreatedBy());
-			StringBuilder loginUserName = new StringBuilder();
-			if (null != user.getLastName()) {
-				rsh.setLoginUserName(loginUserName.append(user.getFirstName()).append(" ").append(user.getLastName()).toString());
-			}
-			else {
-				rsh.setLoginUserName(loginUserName.append(user.getFirstName()).toString());
-			}
-			// get the inteviewerName
-			if (null != rsh.getInterviewerId() && null != rsh.getInterviewerId().getId()) {
-				RequirementInterviewer requirementInterviewer = requirementInterviewerService.getInterviwerstByInterviewId(rsh.getInterviewerId().getId());
-				StringBuilder interviewerName = new StringBuilder();
-				if (!"".equalsIgnoreCase(requirementInterviewer.getInterviewerUser().getLastName())
-						&& requirementInterviewer.getInterviewerUser().getLastName() != null) {
-					rsh.setInterviewerName(interviewerName.append(requirementInterviewer.getInterviewerUser().getFirstName()).append(requirementInterviewer.getInterviewerUser().getLastName()).toString());
+	@RequestMapping(value = "/app/getRequirementHistoryDetailsByCandidateId")
+	public ResponseList<RequirementSubmissionHistory> getRequirementHistoryDetailsByCandidateId(
+			@RequestParam(value = "candidateId", required = false) Long candidateId,
+			@RequestParam(value = "requirementId", required = false) Long requirementId,
+			@RequestParam(value = "submissionId", required = false) Long submissionId, HttpServletRequest request) throws Exception {
+		ResponseList<RequirementSubmissionHistory> response = new ResponseList<>();
+		try {
+			OrgLocations loginOrgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+			List<RequirementSubmissionHistory> requirementSubmissionhistory = requirementSubmissionHistoryService
+					.getRequirementHistoryListByCandidateIdAndOrgLocationIdAndRequirementIdAndSubmissionId(candidateId,
+							loginOrgLocation.getId(), requirementId, submissionId);
+			// SimpleDateFormat simpleDateFormat =
+			// loginOrgLocation.getLocFullFormDateFormatter();
+			for (RequirementSubmissionHistory rsh : requirementSubmissionhistory) {
+				RequirementOffers ros = requirementOffersService.getRequirementOfferSubmissionById(rsh.getSubmissionId().getId());
+				if (null != ros) {
+					rsh.setOfferResumeid(ros.getId());
 				}
-				else {
-					rsh.setInterviewerName(interviewerName.append(requirementInterviewer.getInterviewerUser().getFirstName()).toString());
+				if (null != rsh.getSubmissionId().getCandidateResumes()) {
+					rsh.setResumeid(rsh.getSubmissionId().getCandidateResumes().getFileURL());
+					rsh.setFileName(rsh.getSubmissionId().getCandidateResumes().getFileName());
+					rsh.setFileUrl(rsh.getSubmissionId().getCandidateResumes().getFileURL());
+					rsh.setContentType(rsh.getSubmissionId().getCandidateResumes().getFileContentType());
 				}
-			}
-			// get the client side offer history
-			List<RequirementOfferHistory> requirementOfferHistory = requirementOfferHistoryService.getRequirementInternalAndIsClientOffersHistoryBySubmissionIdAndOrgLocationsId(submissionId, loginOrgLocation.getId());
-			for (RequirementOfferHistory roh : requirementOfferHistory) {
-				StringBuilder offerClientName = new StringBuilder();
-				user = userService.getUserDetailsByUserCode(roh.getCreatedBy());
+				if (!"".equalsIgnoreCase(rsh.getSubmissionId().getOrgLocations().getOrg().toString())
+						&& null != rsh.getSubmissionId().getOrgLocations().getOrg()) {
+					rsh.setOrgLocationId(rsh.getSubmissionId().getOrgLocations().getOrg().getOrgCode());
+				}
+				rsh.setToStage(rsh.getToStage());
+				rsh.setSubmissionStage(rsh.getSubmissionId().getSubmissionStatus().toString());
+				rsh.setRequirementReson(rsh.getSubmissionId().getRejectedReason());
+				StringBuilder userName = new StringBuilder();
+				if (null != rsh.getSubmissionId().getCandidate().getLastName()) {
+					rsh.setUserName(userName.append(rsh.getSubmissionId().getCandidate().getFirstName()).append(" ")
+							.append(rsh.getSubmissionId().getCandidate().getLastName()).toString());
+				} else {
+					rsh.setUserName(userName.append(rsh.getSubmissionId().getCandidate().getFirstName()).toString());
+				}
+				// user related data is getting
+				User user = userService.getUserDetailsByUserCode(rsh.getCreatedBy());
+				StringBuilder loginUserName = new StringBuilder();
 				if (null != user.getLastName()) {
-					roh.setClientName(offerClientName.append(user.getFirstName()).append(" ").append(user.getLastName()).toString());
+					rsh.setLoginUserName(loginUserName.append(user.getFirstName()).append(" ").append(user.getLastName()).toString());
+				} else {
+					rsh.setLoginUserName(loginUserName.append(user.getFirstName()).toString());
 				}
-				else {
-					roh.setClientName(offerClientName.append(user.getFirstName()).toString());
-				}
-				// this logic is date conversion
-				long diff = commonUtil.currentDate().getTime() - roh.getCreatedDate().getTime();
-				Object object = getCnadidateHistoryTimeConversion(diff, roh);
-				roh = (RequirementOfferHistory) object;
-				roh.setOfferResumeId(roh.getOfferId().getId());
-				roh.setOfferSourceType(roh.getOfferSourceType());
-				roh.setNotifyToVendor(roh.getNotifyToVendor());
-				rsh.setRequirementOfferHistoryList(requirementOfferHistory);
-			}
-			// get the client side interview interviewHistory
-			List<RequirementInterviewHistory> requirementInterviewHistory = requirementInterviewHistoryService.getClientInterviewsHistoryBySubmissionIdAndOrgLocationsId(rsh.getSubmissionId().getId(), loginOrgLocation.getId());
-			for (RequirementInterviewHistory rh : requirementInterviewHistory) {
-				StringBuilder clientName = new StringBuilder();
-				rh.setInterviewSourceType(rh.getInterviewSourceType());
-				user = userService.getUserDetailsByUserCode(rh.getCreatedBy());
-				if (null != user.getLastName()) {
-					rh.setClientName(clientName.append(user.getFirstName()).append(" ").append(user.getLastName()).toString());
-				}
-				else {
-					rh.setClientName(clientName.append(user.getFirstName()).toString());
-				}
-				long diff = commonUtil.currentDate().getTime() - rh.getCreatedDate().getTime();
-				Object object = getCnadidateHistoryTimeConversion(diff, rh);
-				rh = (RequirementInterviewHistory) object;
-				if (null != rh.getInterviewId()) {
-					if (null != rh.getInterviewId().getDateOfInterview()) {
-						rh.setDateOfInterviewStr(commonUtil.dateStrFromOrgDateFormatter(loginOrgLocation.getDateFormat(),rh.getInterviewId().getDateOfInterview()));
+				// get the inteviewerName
+				if (null != rsh.getInterviewerId() && null != rsh.getInterviewerId().getId()) {
+					RequirementInterviewer requirementInterviewer = requirementInterviewerService
+							.getInterviwerstByInterviewId(rsh.getInterviewerId().getId());
+					StringBuilder interviewerName = new StringBuilder();
+					if (!"".equalsIgnoreCase(requirementInterviewer.getInterviewerUser().getLastName())
+							&& requirementInterviewer.getInterviewerUser().getLastName() != null) {
+						rsh.setInterviewerName(interviewerName.append(requirementInterviewer.getInterviewerUser().getFirstName())
+								.append(requirementInterviewer.getInterviewerUser().getLastName()).toString());
+					} else {
+						rsh.setInterviewerName(
+								interviewerName.append(requirementInterviewer.getInterviewerUser().getFirstName()).toString());
 					}
-					if (null != rh.getInterviewId().getStartTime()) {
+				}
+				// get the client side offer history
+				List<RequirementOfferHistory> requirementOfferHistory = requirementOfferHistoryService
+						.getRequirementInternalAndIsClientOffersHistoryBySubmissionIdAndOrgLocationsId(submissionId,
+								loginOrgLocation.getId());
+				for (RequirementOfferHistory roh : requirementOfferHistory) {
+					StringBuilder offerClientName = new StringBuilder();
+					user = userService.getUserDetailsByUserCode(roh.getCreatedBy());
+					if (null != user.getLastName()) {
+						roh.setClientName(offerClientName.append(user.getFirstName()).append(" ").append(user.getLastName()).toString());
+					} else {
+						roh.setClientName(offerClientName.append(user.getFirstName()).toString());
+					}
+					// this logic is date conversion
+					long diff = commonUtil.currentDate().getTime() - roh.getCreatedDate().getTime();
+					Object object = getCnadidateHistoryTimeConversion(diff, roh);
+					roh = (RequirementOfferHistory) object;
+					roh.setOfferResumeId(roh.getOfferId().getId());
+					if (roh.getOfferId().getDocFile() != null) {
+						roh.setDocFile(roh.getOfferId().getDocFile());
+						roh.setFileContentType(roh.getOfferId().getFileContentType());
+					}
+					roh.setOfferSourceType(roh.getOfferSourceType());
+					roh.setNotifyToVendor(roh.getNotifyToVendor());
+					rsh.setRequirementOfferHistoryList(requirementOfferHistory);
+				}
+				// get the client side interview interviewHistory
+				List<RequirementInterviewHistory> requirementInterviewHistory = requirementInterviewHistoryService
+						.getClientInterviewsHistoryBySubmissionIdAndOrgLocationsId(rsh.getSubmissionId().getId(), loginOrgLocation.getId());
+				for (RequirementInterviewHistory rh : requirementInterviewHistory) {
+					StringBuilder clientName = new StringBuilder();
+					rh.setInterviewSourceType(rh.getInterviewSourceType());
+					user = userService.getUserDetailsByUserCode(rh.getCreatedBy());
+					if (null != user.getLastName()) {
+						rh.setClientName(clientName.append(user.getFirstName()).append(" ").append(user.getLastName()).toString());
+					} else {
+						rh.setClientName(clientName.append(user.getFirstName()).toString());
+					}
+					long diff = commonUtil.currentDate().getTime() - rh.getCreatedDate().getTime();
+					Object object = getCnadidateHistoryTimeConversion(diff, rh);
+					rh = (RequirementInterviewHistory) object;
+					if (null != rh.getInterviewId()) {
+						if (null != rh.getInterviewId().getDateOfInterview()) {
+							rh.setDateOfInterviewStr(commonUtil.dateStrFromOrgDateFormatter(loginOrgLocation.getDateFormat(),
+									rh.getInterviewId().getDateOfInterview()));
+						}
+						if (null != rh.getInterviewId().getStartTime()) {
+							StringBuilder startTime = new StringBuilder();
+							String hours = Integer.toString(rh.getInterviewId().getStartTime().getHours());
+							String minutes = Integer.toString(rh.getInterviewId().getStartTime().getMinutes());
+							rh.setStartTimeStr(CalendarUtil
+									.get12FormatTimeFrom24FormatTime(startTime.append(hours).append(":").append(minutes).toString()));
+						}
+						if (null != rh.getInterviewId().getEndTime()) {
+							StringBuilder endTime = new StringBuilder();
+							String hours = Integer.toString(rh.getInterviewId().getEndTime().getHours());
+							String minutes = Integer.toString(rh.getInterviewId().getEndTime().getMinutes());
+							rh.setEndTimeStr(CalendarUtil
+									.get12FormatTimeFrom24FormatTime(endTime.append(hours).append(":").append(minutes).toString()));
+						}
+					}
+					rh.setInterviewType(rh.getInterviewId().getInterviewType());
+					rsh.setRequirementInterviewHistoryList(requirementInterviewHistory);
+				}
+				long diff = commonUtil.currentDate().getTime() - rsh.getCreatedDate().getTime();
+				Object object = getCnadidateHistoryTimeConversion(diff, rsh);
+				rsh = (RequirementSubmissionHistory) object;
+				// interview related data is getting
+				List<RequirementInterview> RequirementInterview = requirementInterviewService
+						.getRequirementInterviewsHistoryBySubmissionIdAndOrgLocationsId(submissionId, loginOrgLocation.getId());
+				for (RequirementInterview requirementInterview : RequirementInterview) {
+					if (null != requirementInterview.getDateOfInterview()) {
+						rsh.setInterviewDateStr(commonUtil.dateStrFromOrgDateFormatter(loginOrgLocation.getDateFormat(),
+								requirementInterview.getDateOfInterview()));
+					}
+					if (null != requirementInterview.getStartTime()) {
 						StringBuilder startTime = new StringBuilder();
-						String hours = Integer.toString(rh.getInterviewId().getStartTime().getHours());
-						String minutes = Integer.toString(rh.getInterviewId().getStartTime().getMinutes());
-						rh.setStartTimeStr(CalendarUtil.get12FormatTimeFrom24FormatTime(startTime.append(hours).append(":").append(minutes).toString()));
+						String hours = Integer.toString(requirementInterview.getStartTime().getHours());
+						String minutes = Integer.toString(requirementInterview.getStartTime().getMinutes());
+						rsh.setInterviewStartTime(CalendarUtil
+								.get12FormatTimeFrom24FormatTime(startTime.append(hours).append(":").append(minutes).toString()));
 					}
-					if (null != rh.getInterviewId().getEndTime()) {
+					if (null != requirementInterview.getEndTime()) {
 						StringBuilder endTime = new StringBuilder();
-						String hours = Integer.toString(rh.getInterviewId().getEndTime().getHours());
-						String minutes = Integer.toString(rh.getInterviewId().getEndTime().getMinutes());
-						rh.setEndTimeStr(CalendarUtil.get12FormatTimeFrom24FormatTime(endTime.append(hours).append(":").append(minutes).toString()));
+						String hours = Integer.toString(requirementInterview.getEndTime().getHours());
+						String minutes = Integer.toString(requirementInterview.getEndTime().getMinutes());
+						rsh.setInterviewEndTime(
+								CalendarUtil.get12FormatTimeFrom24FormatTime(endTime.append(hours).append(":").append(minutes).toString()));
 					}
+					rsh.setInterviewType(requirementInterview.getInterviewType());
 				}
-				rh.setInterviewType(rh.getInterviewId().getInterviewType());
-				rsh.setRequirementInterviewHistoryList(requirementInterviewHistory);
 			}
-			long diff = commonUtil.currentDate().getTime() - rsh.getCreatedDate().getTime();
-			Object object = getCnadidateHistoryTimeConversion(diff, rsh);
-			rsh = (RequirementSubmissionHistory) object;
-			// interview related data is getting
-			List<RequirementInterview> RequirementInterview = requirementInterviewService.getRequirementInterviewsHistoryBySubmissionIdAndOrgLocationsId(submissionId, loginOrgLocation.getId());
-			for (RequirementInterview requirementInterview : RequirementInterview) {
-				if (null != requirementInterview.getDateOfInterview()) {
-					rsh.setInterviewDateStr(commonUtil.dateStrFromOrgDateFormatter(loginOrgLocation.getDateFormat(),requirementInterview.getDateOfInterview()));
-				}
-				if (null != requirementInterview.getStartTime()) {
-					StringBuilder startTime = new StringBuilder();
-					String hours = Integer.toString(requirementInterview.getStartTime().getHours());
-					String minutes = Integer.toString(requirementInterview.getStartTime().getMinutes());
-					rsh.setInterviewStartTime(CalendarUtil.get12FormatTimeFrom24FormatTime(startTime.append(hours).append(":").append(minutes).toString()));
-				}
-				if (null != requirementInterview.getEndTime()) {
-					StringBuilder endTime = new StringBuilder();
-					String hours = Integer.toString(requirementInterview.getEndTime().getHours());
-					String minutes = Integer.toString(requirementInterview.getEndTime().getMinutes());
-					rsh.setInterviewEndTime(CalendarUtil.get12FormatTimeFrom24FormatTime(endTime.append(hours).append(":").append(minutes).toString()));
-				}
-				rsh.setInterviewType(requirementInterview.getInterviewType());
-			}
+			response.setData(requirementSubmissionhistory);
+			response.setResponse(Result.SUCCESS.name());
+			response.setResponseMessage(Result.SUCCESS.getValue());
+		} catch (Exception e) {
+			response.setResponse(Result.AWKWARD.name());
+			response.setResponseMessage(Result.AWKWARD.getValue());
+			logger.error(ExceptionUtils.getFullStackTrace(e));
 		}
-		resultJson = commonUtil.toJSON(requirementSubmissionhistory);
-		return resultJson;
+		return response;
 	}
-	
-	private Object getCnadidateHistoryTimeConversion(long diff, Object obj)
-	{
+
+	private Object getCnadidateHistoryTimeConversion(long diff, Object obj) {
 		long diffSeconds = diff / 1000 % 60;
 		long diffMinutes = diff / (60 * 1000) % 60;
 		long diffHours = diff / (60 * 60 * 1000) % 24;
@@ -691,61 +789,49 @@ public class CandidateRestController {
 			RequirementInterviewHistory rih = (RequirementInterviewHistory) obj;
 			if (diffDays == 0 && diffHours == 0 && diffMinutes == 0) {
 				rih.setInterviewHistoryCreatedDate(time.append(diffSeconds).append(" seconds ago ").toString());
-			}
-			else if (diffDays == 0 && diffHours == 0) {
+			} else if (diffDays == 0 && diffHours == 0) {
 				rih.setInterviewHistoryCreatedDate(time.append(diffMinutes).append(" minutes ago").toString());
-			}
-			else if (diffDays == 0) {
-				rih.setInterviewHistoryCreatedDate(time.append(diffHours).append(" hours ").append(diffMinutes).append(" minutes ago ").toString());
-			}
-			else if (diffDays < 7) {
-				rih.setInterviewHistoryCreatedDate(time.append(diffDays).append(" days ").append(diffHours).append(" hours ago ").toString());
-			}
-			else {
+			} else if (diffDays == 0) {
+				rih.setInterviewHistoryCreatedDate(
+						time.append(diffHours).append(" hours ").append(diffMinutes).append(" minutes ago ").toString());
+			} else if (diffDays < 7) {
+				rih.setInterviewHistoryCreatedDate(
+						time.append(diffDays).append(" days ").append(diffHours).append(" hours ago ").toString());
+			} else {
 				DateFormat standardFormat = new SimpleDateFormat("MMM dd, yyyy hh:mm:ss aa");
 				String commonDateFormat = standardFormat.format(rih.getCreatedDate());
 				rih.setInterviewHistoryCreatedDate(commonDateFormat.toString());
 			}
 			return rih;
-		}
-		else if (obj instanceof RequirementSubmissionHistory) {
+		} else if (obj instanceof RequirementSubmissionHistory) {
 			StringBuilder time = new StringBuilder();
 			RequirementSubmissionHistory rsh = (RequirementSubmissionHistory) obj;
 			if (diffDays == 0 && diffHours == 0 && diffMinutes == 0) {
 				rsh.setCreatedDateStr(time.append(diffSeconds).append(" seconds ago ").toString());
-			}
-			else if (diffDays == 0 && diffHours == 0) {
+			} else if (diffDays == 0 && diffHours == 0) {
 				rsh.setCreatedDateStr(time.append(diffMinutes).append(" minutes ago").toString());
-			}
-			else if (diffDays == 0) {
+			} else if (diffDays == 0) {
 				rsh.setCreatedDateStr(time.append(diffHours).append(" hours ").append(diffMinutes).append(" minutes ago ").toString());
-			}
-			else if (diffDays < 7) {
+			} else if (diffDays < 7) {
 				rsh.setCreatedDateStr(time.append(diffDays).append(" days ").append(diffHours).append(" hours ago ").toString());
-			}
-			else {
+			} else {
 				DateFormat standardFormat = new SimpleDateFormat("MMM dd, yyyy hh:mm:ss aa");
 				String commonDateFormat = standardFormat.format(rsh.getCreatedDate());
 				rsh.setCreatedDateStr(commonDateFormat.toString());
 			}
 			return rsh;
-		}
-		else if (obj instanceof RequirementOfferHistory) {
+		} else if (obj instanceof RequirementOfferHistory) {
 			StringBuilder time = new StringBuilder();
 			RequirementOfferHistory roh = (RequirementOfferHistory) obj;
 			if (diffDays == 0 && diffHours == 0 && diffMinutes == 0) {
 				roh.setCreateDateStr(time.append(diffSeconds).append(" seconds ago ").toString());
-			}
-			else if (diffDays == 0 && diffHours == 0) {
+			} else if (diffDays == 0 && diffHours == 0) {
 				roh.setCreateDateStr(time.append(diffMinutes).append(" minutes ago").toString());
-			}
-			else if (diffDays == 0) {
+			} else if (diffDays == 0) {
 				roh.setCreateDateStr(time.append(diffHours).append(" hours ").append(diffMinutes).append(" minutes ago ").toString());
-			}
-			else if (diffDays < 7) {
+			} else if (diffDays < 7) {
 				roh.setCreateDateStr(time.append(diffDays).append(" days ").append(diffHours).append(" hours ago ").toString());
-			}
-			else {
+			} else {
 				DateFormat standardFormat = new SimpleDateFormat("MMM dd, yyyy hh:mm:ss aa");
 				String commonDateFormat = standardFormat.format(roh.getCreatedDate());
 				roh.setCreateDateStr(commonDateFormat.toString());
@@ -754,19 +840,27 @@ public class CandidateRestController {
 		}
 		return null;
 	}
-	
-	@RequestMapping(value = {"/ws/profileBySkillSet", "/profileBySkillSet"}, method = RequestMethod.POST)
-	public @ResponseBody String profileBySkillSet(@RequestParam(value = "allSkills", required = false) String allSkills, HttpServletRequest request) throws Exception
-	{
-		String[] mySkills = allSkills.split(",");
-		return PrimarySkillUtil.returnMyskill(mySkills);
+
+	@RequestMapping(value = { "/app/ws/profileBySkillSet", "/app/profileBySkillSet" }, method = RequestMethod.POST)
+	public @ResponseBody Response<String> profileBySkillSet(@RequestParam(value = "allSkills", required = false) String allSkills,
+			HttpServletRequest request) throws Exception {
+		Response<String> response = new Response<>();
+		try {
+			String[] mySkills = allSkills.split(",");
+			response.setObject(PrimarySkillUtil.returnMyskill(mySkills));
+			response.setResponse(Result.SUCCESS.name());
+			response.setResponseMessage(Result.SUCCESS.getValue());
+		} catch (Exception e) {
+			response.setResponse(Result.AWKWARD.name());
+			response.setResponseMessage(Result.AWKWARD.getValue());
+			logger.error(ExceptionUtils.getFullStackTrace(e));
+		}
+		return response;
 	}
-	
-	public String toJSON(Object obj)
-	{
+
+	public String toJSON(Object obj) {
 		XStream xstream = new XStream(new JsonHierarchicalStreamDriver() {
-			public HierarchicalStreamWriter createWriter(Writer writer)
-			{
+			public HierarchicalStreamWriter createWriter(Writer writer) {
 				return new JsonWriter(writer, JsonWriter.DROP_ROOT_MODE);
 			}
 		});

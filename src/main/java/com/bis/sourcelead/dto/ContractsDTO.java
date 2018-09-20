@@ -1,10 +1,8 @@
 package com.bis.sourcelead.dto;
 
 import java.util.List;
-import java.util.Map;
-
 import javax.persistence.Transient;
-
+import com.bis.sourcelead.annotations.CleanHtml;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 public class ContractsDTO {
@@ -26,6 +24,7 @@ public class ContractsDTO {
 	private String candiRateType;
 	private String candiFlatReward;
 	private String candiRatePer;
+	@CleanHtml(escape=false)
 	private String description;
 	private String workLocation;
 	private String joinDate;
@@ -61,6 +60,24 @@ public class ContractsDTO {
 	private String spocUUID;
 	
 	private List<CustomFormFieldDTO> customFormData;
+	
+	private String joinedDateStr;
+	
+	private String ownersType;
+	
+	private Long sequentialOwner1;
+	
+	private Long sequentialOwner2;
+	
+	private String saveType;
+	
+	private List<Long> parallelOwner;
+	
+	private String contractUUID;
+	
+	private String revisedReason;
+	
+	private String typeOfContract;
 	
 	public String getStaticPath()
 	{
@@ -543,7 +560,95 @@ public class ContractsDTO {
 	public void setCustomFormData(List<CustomFormFieldDTO> customFormData) {
 		this.customFormData = customFormData;
 	}
-	
-	
 
+	public String getJoinedDateStr()
+	{
+		return joinedDateStr;
+	}
+
+	public void setJoinedDateStr(String joinedDateStr)
+	{
+		this.joinedDateStr = joinedDateStr;
+	}
+
+	public Long getSequentialOwner1()
+	{
+		return sequentialOwner1;
+	}
+
+	public void setSequentialOwner1(Long sequentialOwner1)
+	{
+		this.sequentialOwner1 = sequentialOwner1;
+	}
+
+	public Long getSequentialOwner2()
+	{
+		return sequentialOwner2;
+	}
+
+	public void setSequentialOwner2(Long sequentialOwner2)
+	{
+		this.sequentialOwner2 = sequentialOwner2;
+	}
+
+	public List<Long> getParallelOwner()
+	{
+		return parallelOwner;
+	}
+
+	public void setParallelOwner(List<Long> parallelOwner)
+	{
+		this.parallelOwner = parallelOwner;
+	}
+
+	public String getOwnersType()
+	{
+		return ownersType;
+	}
+
+	public void setOwnersType(String ownersType)
+	{
+		this.ownersType = ownersType;
+	}
+
+	public String getSaveType()
+	{
+		return saveType;
+	}
+
+	public void setSaveType(String saveType)
+	{
+		this.saveType = saveType;
+	}
+
+	public String getContractUUID()
+	{
+		return contractUUID;
+	}
+
+	public void setContractUUID(String contractUUID)
+	{
+		this.contractUUID = contractUUID;
+	}
+
+	public String getRevisedReason()
+	{
+		return revisedReason;
+	}
+
+	public void setRevisedReason(String revisedReason)
+	{
+		this.revisedReason = revisedReason;
+	}
+
+	public String getTypeOfContract()
+	{
+		return typeOfContract;
+	}
+
+	public void setTypeOfContract(String typeOfContract)
+	{
+		this.typeOfContract = typeOfContract;
+	}
+	
 }

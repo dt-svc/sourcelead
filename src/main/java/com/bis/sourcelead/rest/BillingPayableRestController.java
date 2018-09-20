@@ -113,6 +113,9 @@ public class BillingPayableRestController {
 		    Invoice invoice = invoiceService.getInvoicetByInvoiceUUID(invoiceUUID);
 		  //SimpleDateFormat dateFormat = orgLocations.getLocFullFormDateFormatter();
 		    if(null != invoice){
+		    	if(invoice.getPaymentAccount() != null) {
+		    		invoice.setPaymentAccountId(invoice.getPaymentAccount().getId());
+		    	}
 		    	invoice.setVendorOrgRelationId(invoice.getOrgRelationID().getId());
 		    	
 		    	if(invoice.getOrgRelationID().getLocationId().getId().longValue() == orgLocations.getId().longValue()){
@@ -121,9 +124,10 @@ public class BillingPayableRestController {
 				if(invoice.getOrgRelationID().getResponderLocationId().getId().longValue() == orgLocations.getId().longValue()){
 					invoice.setOrgName(invoice.getOrgRelationID().getLocationId().getOrgLocationName());
 				}
-				if(invoice.getContactUser() != null){
+				/*if(invoice.getContactUser() != null){
+					//invoice.setVendorContactId(invoice.getContactUser().getId());
 					invoice.setVendorContactId(invoice.getContactUser().getId());
-				}
+				}*/
 		    	invoice.setInvoiceId(invoice.getInvoiceId());
 		    	if(invoice.getInvoiceDate() != null){
 		    		invoice.setInvoiceDateStr(commonUtil.dateStrFromOrgDateFormatter(orgLocations.getDateFormat(),invoice.getInvoiceDate()));	
@@ -132,7 +136,11 @@ public class BillingPayableRestController {
 		    		invoice.setDueDateStr(commonUtil.dateStrFromOrgDateFormatter(orgLocations.getDateFormat(),invoice.getDueDate()));	
 		    	}
 		    	
-		    	List<InvoiceLineItems> invoiceLineItemsList = invoiceLineItemService.getInvoiceLineItemsByInvoiceId(invoice.getId());
+		    	if(invoice.getParentInvoiceId() != null) {
+		    		invoice.setInvoiceParentId(invoice.getParentInvoiceId().getId());
+		    	}else
+		    		invoice.setInvoiceParentId(null);
+		    	List<InvoiceLineItems> invoiceLineItemsList = invoiceLineItemService.getInvoiceLineItemsByInvoiceId((invoice.getParentInvoiceId() != null)?invoice.getParentInvoiceId().getId():invoice.getId());
 		    	List<InvoiceLineItems> lineItemsList = new ArrayList<InvoiceLineItems>();
 		    	
 		    	for(InvoiceLineItems lineItems : invoiceLineItemsList){
@@ -217,7 +225,12 @@ public class BillingPayableRestController {
 		    	List<InvoiceDocument> invoiceDocumentsList = invoiceDocumentsService.getInvoiceDocumentsListByInvoiceId(invoice.getId());
 		    	invoice.setInvoiceDocumentsList(invoiceDocumentsList);
 		    	
-		    	List<InvoiceTax> invoiceTaxList = invoiceTaxService.getInvoiceTaxListByInvoiceId(invoice.getId());
+		    	List<InvoiceTax> invoiceTaxList = null;
+		    	if(invoice.getParentInvoiceId() != null)
+		    	 invoiceTaxList = invoiceTaxService.getInvoiceTaxListByInvoiceId(invoice.getParentInvoiceId().getId());
+		    	else
+		    	 invoiceTaxList = invoiceTaxService.getInvoiceTaxListByInvoiceId(invoice.getId());
+		    	
 		    	invoice.setInvoiceTaxList(invoiceTaxList);
 		    	
 		    	String currency = "";
@@ -231,7 +244,6 @@ public class BillingPayableRestController {
 		    	invoice.setClientCurrency(currency);
 		    	invoice.setVendorCurrency(currency);
 		    }
-		    
 		    resultJson = commonUtil.toJSON(invoice);
 			
 			return resultJson;

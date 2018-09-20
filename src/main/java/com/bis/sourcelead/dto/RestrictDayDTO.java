@@ -2,24 +2,37 @@ package com.bis.sourcelead.dto;
 
 import java.util.List;
 
+import com.bis.sourcelead.annotations.Required;
+
 public class RestrictDayDTO extends SearchDTO {
 
-	private String restrictDayId;
+	private long restrictDayId;
+	
+	@Required(desc = "Restrict Name")
 	private String restrictName;
+	
+	@Required(desc = "Start date")
 	private String startDate;
+	
+	@Required(desc = "End Date")
 	private String endDate;
+	
 	private String reason;
 	private String status;
 	private String orgLocationId;
 	private String userId;
 	private String isApllicable;
+	private String restrictUUID;
 	private List<String> rolesList;
 	
+	private String validateType;
 	
-	public String getRestrictDayId() {
+	private String erroMsg;
+	
+	public long getRestrictDayId() {
 		return restrictDayId;
 	}
-	public void setRestrictDayId(String restrictDayId) {
+	public void setRestrictDayId(long restrictDayId) {
 		this.restrictDayId = restrictDayId;
 	}
 	public String getRestrictName() {
@@ -75,6 +88,30 @@ public class RestrictDayDTO extends SearchDTO {
 	}
 	public void setRolesList(List<String> rolesList) {
 		this.rolesList = rolesList;
+	}
+	public String getRestrictUUID()
+	{
+		return restrictUUID;
+	}
+	public void setRestrictUUID(String restrictUUID)
+	{
+		this.restrictUUID = restrictUUID;
+	}
+	public String getValidateType()
+	{
+		return validateType;
+	}
+	public String getErroMsg()
+	{
+		return erroMsg;
+	}
+	public void setValidateType(String validateType)
+	{
+		this.validateType = validateType;
+	}
+	public void setErroMsg(String erroMsg)
+	{
+		this.erroMsg = erroMsg;
 	}
 	
 }

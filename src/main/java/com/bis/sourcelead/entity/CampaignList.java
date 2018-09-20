@@ -6,6 +6,7 @@ import java.util.Set;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -21,7 +22,6 @@ import org.hibernate.annotations.NotFoundAction;
 
 @Entity
 @Table(name = "CAMPAIGN_LIST")
-@Cache(usage = CacheConcurrencyStrategy.TRANSACTIONAL, region = "campaignList")
 public class CampaignList {
 	
 	@Id
@@ -29,8 +29,7 @@ public class CampaignList {
     @Column(name = "ID", nullable = false)
 	private Long id;
 	
-	@NotFound(action = NotFoundAction.IGNORE)
-	@ManyToOne
+	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "ORGLOCATION_ID", nullable = false)
 	private OrgLocations orgLocation;
 	
@@ -60,8 +59,7 @@ public class CampaignList {
 	@Column(name = "CREATED_DATE")
 	private Date createdDate;
 
-	@NotFound(action = NotFoundAction.IGNORE)
-	@ManyToOne
+	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "CREATED_BY", nullable = false)
 	private User createdBy;
 
@@ -71,7 +69,7 @@ public class CampaignList {
 	@Column(name = "UPDATED_BY")
 	private String updatedBy;
 	
-	@NotFound(action=NotFoundAction.IGNORE)
+	
 	@OneToMany(cascade = CascadeType.ALL, mappedBy = "campaignListId")
 	private Set<CampaignRecipient> campaignRecipient;
 

@@ -63,7 +63,7 @@ public class ExpensesEntriesDaoImpl implements ExpensesEntriesDao {
 	public List<ExpensesEntries> getExpensesEntriesByExpenseId(long expenseId) {
 		Session session = this.sessionFactory.getCurrentSession();
 		String query = "from ExpensesEntries expensesEntries left join fetch expensesEntries.expensesCategoryId ec left join fetch expensesEntries.expensesId expenses where expenses.id =:expenseId";
-		List<ExpensesEntries> expensesEntryList = session.createQuery(query).setLong("expenseId", expenseId).setCacheable(true).list();
+		List<ExpensesEntries> expensesEntryList = session.createQuery(query).setLong("expenseId", expenseId).list();
 		return expensesEntryList;
 	}
 	
@@ -72,7 +72,7 @@ public class ExpensesEntriesDaoImpl implements ExpensesEntriesDao {
 	public List<Long> getExpensesEntryIdsByExpenseId(long expenseId) {
 		Session session = this.sessionFactory.getCurrentSession();
 		String query = "Select expensesEntries.id from ExpensesEntries expensesEntries  where expensesEntries.expensesId.id =:expenseId";
-		List<Long> expensesEntryList = session.createQuery(query).setLong("expenseId", expenseId).setCacheable(true).list();
+		List<Long> expensesEntryList = session.createQuery(query).setLong("expenseId", expenseId).list();
 		return expensesEntryList;
 	}
 
@@ -81,7 +81,7 @@ public class ExpensesEntriesDaoImpl implements ExpensesEntriesDao {
 	public ExpensesEntries getExpensesEntriesById(Long id) throws Exception {
 		Session session = this.sessionFactory.getCurrentSession();
 		String query = "from ExpensesEntries expensesEntries left join fetch expensesEntries.expensesId left join fetch expensesEntries.expensesCategoryId  where expensesEntries.id =:id";
-		List<ExpensesEntries> expensesEntryList = session.createQuery(query).setLong("id", id).setCacheable(true).list();
+		List<ExpensesEntries> expensesEntryList = session.createQuery(query).setLong("id", id).list();
 		ExpensesEntries expensesEntries = null;
 		if(expensesEntryList != null && !expensesEntryList.isEmpty()){
 			expensesEntries = expensesEntryList.iterator().next();

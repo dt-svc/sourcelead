@@ -534,7 +534,7 @@ function getClientDocument(vendorLocationId,orgRelationId,docId){
     		            for(var i=0; i<json.orgSpocsList.length; i++){
     		            	 spoc = json.orgSpocsList[i];
 	    		 	    	  if(json.spocUser != null && json.spocUser != "" && json.spocUser != 'undefined' && json.spocUser.id == spoc.vendorUser.id){
-	    		 	    		 $('#spoc').append('<option value="'+spoc.spocUserId+'" selected>'+spoc.spocName+'</option>');
+	    		 	    		  $('#spoc').append('<option value="'+spoc.spocUserId+'" selected>'+spoc.spocName+'&nbsp;('+spoc.ownerName+')</option>');
 	    		 	    	  }else{
 	    		 	    		 $('#spoc').append('<option value="'+spoc.spocUserId+'">'+spoc.spocName+'</option>');
 	    		 	    	  }
@@ -549,7 +549,7 @@ function getClientDocument(vendorLocationId,orgRelationId,docId){
     		            for(var j=0; j<json.ownersList.length; j++){
     		            	  owner = json.ownersList[j];
 	    		 	    	  if(json.ownerUser != null && json.ownerUser != "" && json.ownerUser != 'undefined' && json.ownerId == owner.id){
-	    		 	    		 $('#owner').append('<option value="'+owner.id+'" selected>'+owner.firstName+' '+owner.lastName+'</option>');
+	    		 	    		  $('#owner').append('<option value="'+owner.id+'" selected>'+owner.firstName+' '+owner.lastName+'</option>');
 	    		 	    	  }
 	    		 	    	  else if((json.ownerUser == null || json.ownerUser == "" || json.ownerUser == 'undefined') && (owner.id == sourceLeadUserId)){
 	    		 	    		 $('#owner').append('<option value="'+owner.id+'" selected>'+owner.firstName+' '+owner.lastName+'</option>');
@@ -641,9 +641,9 @@ function deleteVendorDocument(vendorLocationId,orgRelationId,docId,docName){
 	var result = "";
 	result = result  +'          <form role="form"  id="docu_form" name="docu_form" method="post" > ';
 	result = result +"	<div class='project_inn_mask'></div>";
-	result = result +"	   <div id='remove_user_pop' class='remove_user_pop remove_user_pop_a'>";
+	result = result +"	   <div id='remove_user_pop' class='remove_user_pop remove_user_pop_a remove_uservalidation'>";
 	result = result +"		<p>Document delete message here</p>";
-	result = result +"		<textarea  id='terminateReason' name='terminateReason'  placeholder='Comments here'></textarea>";
+	result = result +"		<textarea  id='terminateReason' name='terminateReason'  data-validation = 'required' field-name='comment' placeholder='Comments here'></textarea>";
 	result = result + ' <div id="terminateReasonDiv"/>';
 	result = result +"		<b href='javascript:void(0)'><input id='confirm-id' type='button' value='Submit' onclick='saveReasonForVendorDoc("+vendorLocationId+","+orgRelationId+","+docId+",\""+docName+"\");'><input class='u_can_color' type='button'  value='Cancel' onClick='cancelDocTermination();'></b>";
 	result = result +"	</div>";
@@ -666,9 +666,17 @@ function saveReasonForVendorDoc(vendorLocationId,orgRelationId,docId,docName){
 	var terminateReason = document.getElementById("terminateReason").value;
 	if ($('#docu_form').validate(false, validationSettings)){
 		$("#terminateReasonDiv").empty();
+		 var formData = new FormData();
+	     formData.append("tokenParamName", tokenValue);
+	     formData.append("docId", docId);
+	     formData.append("terminateReason", terminateReason);
 		$.ajax({
-		   	type: "POST",
-		    url: sourceleadUrl+"/terminateOrgDocumnet?"+tokenParamName+"="+tokenValue+"&docId="+docId+"&terminateReason="+terminateReason, 	   
+			 type : "POST",
+	          data: formData,
+	          processData: false,
+	          contentType:false, 
+	     	  url: sourceleadUrl+"/terminateOrgDocumnet",
+// 		    url: sourceleadUrl+"/terminateOrgDocumnet?"+tokenParamName+"="+tokenValue+"&docId="+docId+"&terminateReason="+terminateReason, 	   
    		    success: function(data) {
         			 $("#deleteDocpopUp").empty();
         			 $(".project_inn_mask").fadeOut(200);
@@ -679,14 +687,21 @@ function saveReasonForVendorDoc(vendorLocationId,orgRelationId,docId,docName){
         			 vendorDocMsgFadein();
    		    }
 	     });
+		
 	}else{
-		if(terminateReason){
-			$("#terminateReasonDiv").empty().append("<font color='red' style='padding: 5px 10px; '>Must not Start With Space</font>") ;
-		}else{
-			$("#terminateReasonDiv").empty().append("<font color='red' style='padding: 5px 10px; '>Reason is required</font>") ; 
-		}
+		return false;
+	  }
+	
+	 /* else{
+	if(terminateReason){
+		$("#terminateReasonDiv").empty().append("<font color='red' style='padding: 5px 10px; '>Must not Start With Space</font>") ;
+	}else{
+		$("#terminateReasonDiv").empty().append("<font color='red' style='padding: 5px 10px; '>Reason is required</font>") ; 
 	}
+} */
+
 }
+
 </script>
 <!-- Show success message after form submission script -->
 <script>

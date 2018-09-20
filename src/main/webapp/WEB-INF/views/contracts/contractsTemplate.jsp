@@ -6,38 +6,14 @@
 <%@taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
 
 
-<style type="text/css">
-.statusFiler-1 {
-width: 150px;
-}
-.statusFiler-1 ul{
-padding: 5px;
-}
-.statusFiler-1 li label {
-padding-left: 5px;
-position: relative;
-top: -2px;
-}
-.statusFiler-1 li {
-padding: 2px 10px !important;
-margin: 0 !important;
-}
-</style>
-
 <!-- Content Area -->
 <section class="content-wraper">
 <section class="content-header clearfix">
   <div class="pull-left">
       <!-- <h2>Submission Templates</h2> -->
       <h2 class="pull-left">Contract Templates</h2>
-				<div class=" pull-left reportsH">
-			
-			<div class="RePop openTemplates">
-				
-			</div>
-		</div>
     </div>
-  <div class="pull-right brud-crum"><a href="<c:url value='${appPath}/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a> &raquo; <a href="<c:url value='${appPath}/orgTemplates'/>"> Templates</a> &raquo; Contract Template List</div>
+  <div class="pull-right brud-crum"><a href="<c:url value='${appPath}/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a> &raquo; <a href="<c:url value='${appPath}/orgTemplates'/>"> Templates </a> &raquo; Contract Template List</div>
 </section>
 	
 	
@@ -47,13 +23,16 @@ $(document).ready(function(){
 });
 </script>
 	
-	
-<div class="content-area content-new clearfix">
  <div class="project_wrap">
-	<div class="timesheet_head">
-        	<ul>
-        	
-        	<li id="filterContractTypePop"><i class="fa fa-filter"></i><span>Type</span><i class="glyphicon glyphicon-play"></i>
+ 
+ <div class="reportHead  clearfix">
+      <ul class="pull-right list-unstyled list-inline">
+			
+        	<sec:authorize access="hasAnyRole('ROLE_ADD_CONTRACT_TEMPLATE')">
+				<li><a href="<c:url value="/app/addContractTemplate" />" class="newAdBtn mr5">+ Template</a></li>	
+			</sec:authorize>      
+      
+        	<li id="filterContractTypePop"><a href="javascript:void(0)" class="filtIcon" title="Filters"></a>
 	           	<div class="statusFiler-1">
 					<ul class="list-unstyled">
 						<li><input id="c1" type="checkbox" name="templateType" value="Client MSA" onclick="getTemplateList();"><label for="c1">Client MSA</label></li>
@@ -69,21 +48,19 @@ $(document).ready(function(){
 					</ul>
 				</div>	                	
 			</li>
-			
-        		<sec:authorize access="hasAnyRole('ROLE_ADD_CONTRACT_TEMPLATE')">
-				<li><a href="<c:url value="/app/addContractTemplate" />"><i class="fa fa-plus"></i>Add Template</a></li>	
-				</sec:authorize>
-                <div class="clearfix"></div>
-            </ul>
-            <div class="clearfix"></div>
-                         
-            
-        </div>
+
+			<li class=""><input type="text" class="repSearchBar" placeholder='Search' id='contractTemplateTableSearch'/><span class="repSearchIcon" onClick=""></span></li>
+		
+        </ul>
+        
+      </div>
+      
     <div class="project_wrap_table">
     <div id="templateList" class="datatable_filter"></div>
 	</div>
     
 </div>
+</section>
       
  <script type="text/javascript">
 function getTemplateList(){
@@ -107,11 +84,13 @@ function prepareTemplateList(url,sourceleadUrl){
 	 $("#templateList").removeAttr("style");
  	 $("#templateList").empty();
  	 var result = "";
- 	result = result +" <div class='clearfix'>";
+ 	 
+/*  	result = result +" <div class='clearfix'>";
  	result = result +" <div class='remove_search'>";
  	result = result +" <input type='text' placeholder='Search' id='contractTemplateTableSearch'/>";
  	result = result +"</div>";
- 	result = result +"</div>";
+ 	result = result +"</div>"; */
+ 	
  	result = result +"<table id='contractTemplatePagination' class='display' cellspacing='0' width='100%' >"; 
     result = result + '	<thead>';
 	result = result + '   <tr>';
@@ -195,7 +174,7 @@ function contractTemplatePagination(url,sourceleadUrl){
              "render": function ( data, type, report, meta ) {
              	var result = "";
              	'<sec:authorize access="hasAnyRole(\'ROLE_VIEW_EDIT_CONTRACT_TEMPLATE\')">';
-             	result = result + '<div class="tbldata-dotdot-vsm"><a href="#" title="Preview" class="mr"><i class="fa fa-eye" onclick="previewPDF(\''+report.templateUUID+'\',\''+report.templateName+'\');" ></i></a> <a href="'+sourceleadUrl+'/editTemplate?templateId='+report.id+'" title="Edit"><i class="fa fa-edit"></i></a></div>';
+             	result = result + '<div class="tblicons"><a href="#" title="Preview" class="mr10"><i class="fa fa-eye" onclick="previewPDF(\''+report.templateUUID+'\',\''+report.templateName+'\');" ></i></a> <a href="'+sourceleadUrl+'/editTemplate?templateId='+report.id+'" title="Edit"><i class="fa fa-pencil"></i></a></div>';
              	'</sec:authorize>';
              	return result;
                 }

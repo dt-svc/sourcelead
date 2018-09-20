@@ -34,26 +34,25 @@ function reloadFunction(){
       <div class="pull-left">
         <h2>Pending for Approval</h2>
       </div>
-      <div class="pull-right brud-crum"><a href="<c:url value='${appPath}/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a> &raquo;<a href="<c:url value='${appPath}/reportsDashboard'/>"> Report(s) Dashboard </a>&raquo; Pending for Approval</div>
+      <div class="pull-right brud-crum"><a href="<c:url value='${appPath}/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a> &raquo;<a href="<c:url value='${appPath}/reportsDashboard'/>"> Reports Dashboard </a>&raquo; <a href="<c:url value='${appPath}/hrReportsList'/>">HR Reports</a> &raquo; Pending for Approval</div>
     </section>
 
     <div class="ReqRepHead clearfix">
-		<div class="col-md-3"></div>
-	<div class="col-md-4">
-	      <select class="chosen-select form-control" multiple data-placeholder="Select Job" name="projectIds" id="projectIds">
+    <div class="col-md-8 clearfix pull-right">
+	<div class="col-md-6 noPad">
+	      <select class="chosen-select form-control" multiple data-placeholder="Select Project" name="projectIds" id="projectIds">
             <c:forEach var="option" items="${projectList}">
 				<option value="${option.id}">${option.projectName}</option>
 			</c:forEach>
           </select>
 	</div>
 	
-   <div class="col-md-2 dropdown-select">
+   <div class="col-md-5 dropdown-select">
         <div class="dropdown-select positionRelative">
         <select class="form-control" name="dateSelection" id="dateSelection" onchange="getJobsReportCustomDates();">
-            <option value=''>Select Date</option>
-            <option value='Last_7_days' selected >Last 7 days</option>
+            <option value='Last_7_days' >Last 7 days</option>
             <option value='Last_15_days'>Last 15 days</option>
-            <option value='1_month'>1 month</option>
+            <option value='1_month' selected>1 month</option>
             <option value='3_months'>3 months</option>
             <option value='YTD' >YTD</option>
             <option value='Last_Year'>Last Year</option>
@@ -71,21 +70,17 @@ function reloadFunction(){
                 <input type="text" class="form-control calendar" value="" id="toDate" name="toDate"  placeholder="To Date" field-name="From Date" readonly="readonly" >
                 <p id="toDateDiv" style="display: none; font-size: 12px;"><font color="red">To Date Required</font></p>
               </div>
-              <button type="button" class="btn btn-primary btn-sm" onclick="getMissingTimesheetReports();"><i class="fa fa-search"></i></button>
+              <button type="button" class="btn btn-primary btn-sm" onclick="getPendingForApprovalTimesheetReports();"><i class="fa fa-search"></i></button>
             </div>
           </div>
       </div>
 
         </div>
-     <div class="col-md-2">
-        <button type="button" class="btn btn-primary btn-sm	mt2" onclick="getMissingTimesheetReports();">Run</button>
+     <div class="pull-left">
+        <button type="button" class="btn btn-primary btn-sm	mt2" onclick="getPendingForApprovalTimesheetReports();">Run</button>
 		</div>
-      <div class="col-md-1 noPad">
-        <div class="btn-group bootstrap_dropdownMenu dropdownPadding">
-          <button type="button" class="btn btn-primary" title="Reload" onclick="reloadFunction();"><i class="fa fa-retweet"></i></button>
-        </div>
-      </div>
-      
+		<div class="clearfix"></div>
+		</div>
     </div>
      
   <div class="vendor_wrap mt">
@@ -146,20 +141,54 @@ function getPendingForApprovalTimesheetReports(){
 		        result = result	+ '    <th>Project</th>  ';
 		        result = result	+ '    <th>Duration</th>';
 		        result = result	+ '    <th>Manager</th> ';
-		        result = result	+ '    <th>Due</th>';
+		        result = result	+ '    <th>Submitted On</th> ';
+		        result = result	+ '    <th>no.of days</th>';
 		        result = result	+ '  </tr> ';
 		        result = result	+ '  </thead>';
 		        result = result +'<tbody>';
 		       for (var i=0; i<data.length; i++)
    				{
 		    	   var report = data[i];
+		    	   var employeName="";
+	        		  if(report.employeName != null && report.employeName != '' && report.employeName != 'undefined'){
+	        			  employeName = report.employeName;
+	        		  }else{
+	        			  employeName = "--";
+	        		  }
+	        		  if(report.employeType != null && report.employeType != '' && report.employeType != 'undefined'){
+	        			  employeType = report.employeType;
+	        		  }else{
+	        			  employeType = "--";
+	        		  }
+	        		  if(report.projectName != null && report.projectName != '' && report.projectName != 'undefined'){
+	        			  projectName = report.projectName;
+	        		  }else{
+	        			  projectName = "--";
+	        		  }
+	        		  if(report.frequency != null && report.frequency != '' && report.frequency != 'undefined'){
+	        			  frequency = report.frequency;
+	        		  }else{
+	        			  frequency = "--";
+	        		  }
+	        		  if(report.managerName != null && report.managerName != '' && report.managerName != 'undefined'){
+	        			  managerName = report.managerName;
+	        		  }else{
+	        			  managerName = "--";
+	        		  }
+	        		  if(report.dueDays != null && report.dueDays != '' && report.dueDays != 'undefined'){
+	        			  dueDays = report.dueDays;
+	        		  }else{
+	        			  dueDays = "--";
+	        		  }
+		    	   
 		    	  result = result	+ '<tr>';
-				  result = result	+ '	  <td><div class="tbldata-dotdot-sm">'+report.employeName+'</div></td>';
-	              result = result	+ '   <td><div class="tbldata-dotdot-sm">'+report.employeType+' </div></td>';
-	              result = result	+ '   <td><div class="tbldata-dotdot-sm">'+report.projectName+' </div></td>';
-	              result = result	+ '   <td><div class="tbldata-dotdot-me">'+report.frequency+' </div></td>';
-	              result = result	+ '   <td><div class="tbldata-dotdot-sm">'+report.managerName+' </div></td>';
-	              result = result	+ '   <td><div class="tbldata-dotdot-vsm">'+report.dueDays+'  Days</div></td>';
+				  result = result	+ '	  <td><div class="tbldata-dotdot-sm">'+employeName+'</div></td>';
+	              result = result	+ '   <td><div class="tbldata-dotdot-sm">'+employeType+' </div></td>';
+	              result = result	+ '   <td><div class="tbldata-dotdot-sm">'+projectName+' </div></td>';
+	              result = result	+ '   <td><div class="tbldata-dotdot-me">'+frequency+' </div></td>';
+	              result = result	+ '   <td><div class="tbldata-dotdot-sm">'+managerName+' </div></td>';
+	              result = result	+ '   <td><div class="tbldata-dotdot-sm">'+report.submittedOn+' </div></td>';
+	              result = result	+ '   <td><div class="tbldata-dotdot-vsm">'+dueDays+'  Days</div></td>';
 	              result = result	+ '	</tr>';
    				}
 		        result = result +'</tbody>';
@@ -181,9 +210,7 @@ function dynamicMissingTimesheetReportPagination(){
     	"responsive": true,
     	"scrollCollapse": false,
     	"lengthMenu": [[10, 15, 20, -1], [10, 15, 20, "All"]],
-    	"buttons": [
-    		'pageLength', 'excel', 'pdf'
-        ],
+    	"buttons": ['excel', 'pdf'],
     	"bLengthChange": true,
     	"bDestroy": true,
     	"ordering": true,

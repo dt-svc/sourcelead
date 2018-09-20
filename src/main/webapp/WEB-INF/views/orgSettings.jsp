@@ -6,15 +6,23 @@
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <%@taglib uri="http://www.springframework.org/tags/form" prefix="form"%>
 <%@taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/functions" prefix="fn" %>
 
 <style type="text/css">
 .selectChosen .chosen-container {
-width: 100% !important;
-}
+	width: 100% !important;
+	}
 .icon1 {
-right: 15px;
-}
+	right: 15px;
+	}
 </style>
+
+<!--success msg -->
+
+<div class="success_pop" id="mailMsg" style="display: none;">
+	<i class="fa fa-check-circle"></i><span>Invitation sent successfully</span>
+</div>
+
 
 <!-- end files for autocomplete with tagit -->
 <script type="text/javascript">
@@ -83,7 +91,6 @@ window.onload = function () {
 <script type="text/javascript">
 function alertMessage(message){
 	var result = "";
-	result = result +"	<div class='project_inn_mask'></div>";
 	result = result +"	   <div id='remove_user_pop' class='remove_user_pop remove_user_pop_a'>";
 	result = result +"		<p>"+message+"</p>";
 	result = result +"		<div>&nbsp;&nbsp;&nbsp;</div>";
@@ -91,7 +98,7 @@ function alertMessage(message){
 	result = result +"	</div>";
 	$("#popUp").append(result);
 	$("#remove_user_pop").slideDown(200);
-	$(".project_inn_mask").fadeIn(200);
+	$(".mask").show();
 
 }
 
@@ -100,15 +107,14 @@ function alertMessage(message){
 <script type="text/javascript">
 function deleteImage(){
 	var result = "";
-	result = result +"	<div class='project_inn_mask'></div>";
 	result = result +"	   <div id='remove_user_pop' class='remove_user_pop remove_user_pop_a'>";
-	result = result +"		<p>Are you sure ?</p>";
+	result = result +"		<p>Are you sure to delete image?</p>";
 	result = result +"		<div>&nbsp;&nbsp;&nbsp;</div>";
 	result = result +"		<b href='javascript:void(0)'><input type='button' value='Ok' onclick='deleteOrgImage();'><input class='u_can_color' type='button'  value='Cancel' onClick='cancelOrgImg();'></b>";
 	result = result +"	</div>";
 	$("#popUp").append(result);
 	$("#remove_user_pop").slideDown(200);
-	$(".project_inn_mask").fadeIn(200);
+	$(".mask").show();
 }
 </script>
 
@@ -134,7 +140,7 @@ function deleteOrgImage(){
 <script type="text/javascript">
 function cancelOrgImg(){
 	$("#popUp").empty();
-	$(".project_inn_mask").fadeOut(200);
+	$(".mask").hide();
 }
 </script>
 
@@ -152,53 +158,70 @@ function cancelOrgImg(){
       </div>
       <div class="pull-right brud-crum"><a href="<c:url value='${appPath}/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a> &raquo; Account Settings</div>
     </section>
-    <div class="content-area clearfix">
-      <div class="clearfix form-area form-horizontal toggle-div remove-div mt">
+    
+    <div class="project_wrap clearfix">
+      <div class="clearfix form-area form-horizontal customedTabStyles">
+      
       <div id="loading"></div>
+      <div id="regLoading"></div>
       <div id="popUp"></div>  
       <div id="signatureLoading"></div>
+      
+<div class="success_pop" id="resendOrg" style="display: none;"><i class="fa fa-check-circle"></i><span>Invitation sent successfully</span></div>
+		
         <!-- Tab Pills navbar -->
-      <ul class="nav nav-tabs">
+      <ul class="nav nav-tabs newTabs">
         <li class="active"><a data-toggle="tab" href="#orgsetting">Settings</a></li>
         
         <c:if test="${SourceLeadWeb_isSuperAdmin == 'Y'}">
         	<li><a data-toggle="tab" href="#orgRegisteredlocations" onclick="loadRegisteredOrgs();">Locations</a></li>
         </c:if>
         <c:if test="${SourceLeadWeb_orgLocations.country != 'India'}">
-        <li><a data-toggle="tab" href="#federalAndStateTaxes" onclick="getStateTaxes();">Federal And State Taxes</a></li>
+        <li><a data-toggle="tab" href="#federalAndStateTaxes" onclick="getStateTaxes();">Taxes</a></li>
         </c:if>
-        <li><a data-toggle="tab" href="#bankingDetails">Banking Details</a></li>
+        <c:if test="${SourceLeadWeb_orgLocations.country == 'India'}">
+        <li><a data-toggle="tab" href="#informationDetails">Information</a></li>
+        </c:if>
+         
         <li><a data-toggle="tab" id="documentsClick" href="#orglocationDocuments">Documents</a></li>
-        <li><a data-toggle="tab" href="#orglocationSignatory" onclick="validateLegalSigner();">Signatory</a></li>
+        <li><a data-toggle="tab" href="#orglocationSignatory" onclick="getAllSignatory();">Signatory</a></li>
         <li><a data-toggle="tab" href="#emailSign" onclick="loadSignature();">Email Signature</a></li>
         <li><a data-toggle="tab" href="#configCoolingOff" onclick="configCoolingOff();">Configure</a></li>
+        <li><a data-toggle="tab" href="#emailNotifications">Email Configuration</a></li> 
+       
+        <!-- <li><a data-toggle="tab" href="#emailNotifications">Email Configuration</a></li> -->
+         <%-- <li><a href="${appPath}/emailNontificationConfigure" >Email Notifications</a></li> --%>
 
-        <c:if test="${SourceLeadWeb_isSuperAdmin == 'Y'}">
-        	<li><a data-toggle="tab" href="#whiteListIp" onclick="getWhiteListIps();">Whitelist Ips</a></li>
-        </c:if>
+<%--         <c:if test="${SourceLeadWeb_isSuperAdmin == 'Y'}"> --%>
 
+        <li><a data-toggle="tab" href="#whiteListIp" onclick="getWhiteListIps();">Whitelist Ips</a></li>
+                <%--<c:if test="${SourceLeadWeb_orgLocations.country == 'United States' || SourceLeadWeb_orgLocations.country == 'USA'}">--%>
+		<li><a data-toggle="tab" href="#paymentAccount" onclick="getPaymentAccounts();">Payment Accounts</a></li>
+                <%--</c:if>--%>
+<%--         </c:if> --%>
       </ul>
+      
+      
       <!-- Tab Pills navbar -->
       <div class="tab-content">
-        <div id="orgsetting" class="tab-pane fade in active">   
-        <div class="row">
-          <div class="clearfix">
+      
+        <div id="orgsetting" class="tab-pane fade in active">  
+         
 		    <!-- Tab for Profile setting-area -->
-		  <div class="accountsettings-tab org-settings-area">
-		  <div class="tab-content panel-body">
-			<div class="clearfix">
-			  <form:form class="login-form clearfix mt10"  id="orgSettings_form"  name="orgSettings_form" method="post" > 
-			  
-			  <div class="col-xs-12 col-sm-3 col-md-3">
+		  <div class="accountsettings-tab org-settings-area noMar">
+		  <div class="tab-content panel-body noBor">
+		  
+		  	<form:form class="login-form mt10"  id="orgImage_form"  name="orgImage_form" method="post" > 
+		  <div class="col-xs-12 col-sm-3 col-md-3">
 				 <div class="well well-sm text-center">
 				  <div class="profile-img-container" style="position:relative;">
-				   <img id="orgImage" onerror="predefineOrgImage(this);" src="<c:url value='/app/displayOrgImage/${SourceLeadWeb_orgCode}'/>" alt="Org Image" class="comp-image img-responsive">
+				   <img id="orgImage" data-id="orgLogoImage" onerror="predefineOrgImage(this);" src="${SourceLeadWeb_org.fileUrl}" alt="Org Image" class="comp-image img-responsive">
 				  
 				  <div class="btn-group uploadfile">
 					  <button type="button" class="btn btn-sm btn-primary">
 					  <i class="fa fa-upload"></i></button>
 					   <label class="btn btn-sm btn-primary">
-	                    Upload / Change<input type="file" name="file" id="uploadedImage"  onchange="loadFile(event)" style="visibility:hidden;height:0;width:10px;overflow:hidden" >
+	                    Upload / Change<input type="file" name="file" id="uploadedImage" data-id='orgLogo'  accept="image/*" onchange="cropImage(this, 'orgImage_form', '', true);" style="visibility:hidden;height:0;width:10px;overflow:hidden" >
 	                  </label>
 	 				  <c:if test="${!empty SourceLeadWeb_org.fileContentType}">
 		                  <button type="button" class="btn btn-sm btn-danger" onclick="deleteImage()">
@@ -211,71 +234,75 @@ function cancelOrgImg(){
 				  <p class="text-muted small" style="font-size: 11px;"><i class="fa fa-info-circle"></i>&nbsp;png, svg and gif images are not allowed</p>
 				  <p class="text-muted small" style="font-size: 11px;"><i class="fa fa-info-circle"></i>&nbsp;Image size should not more than 200 KB</p>
 			  </div>
+			  </form:form>
+			  
+			  
+			<div class="clearfix">
+			  <form:form class="login-form  mt10"  id="orgSettings_form"  name="orgSettings_form" method="post" > 
 			  <div id="popUp" ></div>
-			  			
-				<div class="col-xs-12 col-sm-9 col-md-9">
+				<div class="col-xs-12 col-sm-9 col-md-9 clearfix">
 					<div class="row">
-						<div class="col-md-7">
-							<div class="form-group" id="companyNameDiv">
-							<label class="col-md-3">Company<span class="text-danger">&nbsp;*</span></label>
-							<div class="col-md-9">
+						<div class="col-md-6">
+							<div class="clearfix mb" id="companyNameDiv">
+							<label class="labText">Company <b class="valStar">*</b></label>
+							<div class="clearfix">
 							<input type="text" id="orgLocationCompanyName" name="companyName" class="form-control"  field-name="Company" data-validation="required validate_Space validate_length length2-250" onblur="validateCompanyName();"  value="${SourceLeadWeb_orgName}" />
 							</div>
 							</div>
 							
 							 
-							<div class="form-group">
-								<label class="col-md-3">Country<span class="text-danger">&nbsp;*</span></label>
-								<div class="col-md-9">
+							<div class="clearfix mb">
+								<label class="labText">Country <b class="valStar">*</b></label>
+								<div class="clearfix">
 								 <input type="text" class=" form-control" name="country" value="${SourceLeadWeb_country}" id="orgEditCountry" field-name="Country" data-validation="required" readonly="readonly" >
 								</div>
 							</div>
 								
-							<div class="form-group">
-								<label class="col-md-3">City<span class="text-danger">&nbsp;*</span></label>
-								<div class="col-md-9">
+							<div class="clearfix mb">
+								<label class="labText">City <b class="valStar">*</b></label>
+								<div class="clearfix positionRelative">
 								 <input type="text" class=" form-control" name="city" value="${SourceLeadWeb_orgLocations.city}" id="orgEditCity" field-name="City" data-validation="required">
-								 <i class="fa fa-refresh btn btn-primary refresh-icon icon1 " title="Refresh" onClick="refreshOrgEditGoogleApiLocation('orgEditState','orgEditCity','orgEditZipCode');"></i>
+								 <i class="fa fa-refresh btn btn-primary refresh-icon" title="Refresh" onClick="refreshOrgEditGoogleApiLocation('orgEditState','orgEditCity','orgEditZipCode');"></i>
 								</div>
 							</div>
-							<div class="form-group">
-								<label class="col-md-3">State<span class="text-danger">&nbsp;*</span></label>
-								<div class="col-md-9">
+							<div class="clearfix mb">
+								<label class="labText">State <b class="valStar">*</b></label>
+								<div class="clearfix">
 								 <input type="text" class=" form-control" name="state" value="${SourceLeadWeb_orgLocations.state}" id="orgEditState" field-name="State" data-validation="required" >
 								</div>
 							</div>
 								
-							<div class="form-group">
-								<label class="col-md-3">ZipCode</label>
-								<div class="col-md-9">
-								<input type="text"  class="form-control" name="zipcode" id="orgEditZipCode" field-name="Zip" data-validation="validate_Space" data-validation-optional="true" value="${SourceLeadWeb_orgLocations.zipCode}" />
+							<div class="clearfix mb">
+								<label class="labText">ZipCode</label>
+								<div class="clearfix">
+								<input type="text"  class="form-control" name="zipCode" id="orgEditZipCode" field-name="Zip" data-validation="validate_Space" data-validation-optional="true" value="${SourceLeadWeb_orgLocations.zipCode}" />
 								</div>
 							</div>
 							
-						<div class="form-group">
-							<label class="col-md-3">Email regarding Po</label>
-							<div class="col-md-9">
+						<div class="clearfix mb">
+							<label class="labText">Email id for PO</label>
+							<div class="clearfix">
 							<input type="text"  class="form-control" name="poEmail" field-name="po Email" data-validation="validate_email validate_Space" data-validation-optional="true" value="${SourceLeadWeb_orgLocations.poEmail}" />
 							</div>
 						</div>
 						
-						<div class="form-group">
-							<label class="col-md-3">Email for Remittance</label>
-							<div class="col-md-9">
+						<div class="clearfix mb">
+							<label class="labText">Email for Remittance</label>
+							<div class="clearfix">
 							<input type="text"  class="form-control" name="remittanceEmail" field-name="Remittance Email" data-validation="validate_email validate_Space" data-validation-optional="true" value="${SourceLeadWeb_orgLocations.remittanceEmail}" />
 							</div>
 						</div>
 							
-							<div class="form-group">
-							<label class="col-md-3">Address</label>
-							<div class="col-md-9">
+							<div class="clearfix mb">
+							<label class="labText">Address</label>
+							<div class="clearfix">
 							<input type="text" id="address" name="address" class="form-control"  field-name="Address" data-validation="validate_Space" data-validation-optional="true" value="${SourceLeadWeb_address}" />
 							</div>
 							</div>
 							
-							<div class="form-group">
-				            <label class="col-md-3">Time Zone<span class="text-danger">&nbsp;*</span></label>
-				            <div class="col-md-9">
+							<div class="clearfix mb">
+							<label class="labText">Time Zone <b class="valStar">*</b></label>
+							<div class="clearfix">
 								 <select class="chosen-select form-control" data-placeholder="Time Zone" field-name="Timezone" data-validation="required" id="timeZone" name="timeZone">
 									 <option value="" >Select Timezone</option>
 									 <c:forEach items="${timezoneList}" var="timezone">
@@ -293,10 +320,9 @@ function cancelOrgImg(){
 							</div>
 							</div>
 							
-						<div class="form-group">
-							<label class="col-md-3">Date Format</label>
-							<div class="col-md-9">
-							
+						<div class="clearfix mb">
+							<label class="labText">Date Format</label>
+							<div class="clearfix">
 							 <select class="chosen-select form-control" id="dateFormat1" name="dateFormat1">
 							 <option ${SourceLeadWeb_orgLocations.dateFormat  == 'dd-MM-yyyy' ? 'selected' : ''} value="dd-MM-yyyy">dd-MM-yyyy</option>
 							 <option ${SourceLeadWeb_orgLocations.dateFormat  == 'MM-dd-yyyy' ? 'selected' : ''} value="MM-dd-yyyy">MM-dd-yyyy</option>
@@ -306,28 +332,20 @@ function cancelOrgImg(){
 							</div>
 							</div>
 							
-							<div class="form-group mt">
-							<label class="col-md-3">Org Short Code<span class="text-danger">&nbsp;*</span></label>
-							<div class="col-md-9">
-							<input type="text"  class="form-control" name="generatedUserId" id="generatedUserId" field-name="Org Short Code" style="text-transform:uppercase" data-validation="required validate_length length1-4"  onkeyup="validateOrgShortCode();" maxlength="4" value="${SourceLeadWeb_orgLocations.generatedUserId}" />
+						<div class="clearfix mb mt" id="generatedUserIdDiv">
+							<label class="labText">Org Short Code <b class="valStar">* </b> <i class='fa fa-info-circle' title="The internal unique code used to auto generate the ID's for jobs, candidates, etc"></i></label>
+							<div class="clearfix">
+							<input type="text"  class="form-control" name="generatedUserId" id="generatedUserId" field-name="Org Short Code" style="text-transform:uppercase" readonly="readonly" data-validation="required validate_length length1-4" maxlength="4" value="${SourceLeadWeb_orgLocations.generatedUserId}" />
 							</div>
 						</div>
-						
-						<div class="form-group mt">
-							<label class="col-md-3">Working Hours<span class="text-danger">&nbsp;*</span></label>
-							<div class="col-md-9">
-							<input type="text" class="form-control" maxlength="2" name="averageWorkingHours" id="averageWorkingHours" data-validation="required" field-name="Average Working Hours" value="${SourceLeadWeb_orgLocations.averageWorkingHours}"/>
-							</div>
-						</div>
-							
-							<input type="hidden" id="existingCity" value="${SourceLeadWeb_orgLocations.city}" >
+						<input type="hidden" id="existingCity" value="${SourceLeadWeb_orgLocations.city}" >
 				   </div>
 				
-					<div class="col-md-5">
+					<div class="col-md-6">
 							
-						<div class="form-group">
-							<label class="col-md-3">DBA<span class="text-danger">&nbsp;*</span></label>
-							<div class="col-md-9">
+						<div class="clearfix mb">
+							<label class="labText">DBA <b class="valStar">*</b></label>
+							<div class="clearfix">
 								 <div class="col-md-10 noPad">
 				                    <input id="dba" name="dba" class="form-control" type="text" value="${SourceLeadWeb_orgLocations.dba}" field-name="DBA" data-validation="required validate_Space validate_length length2-250">
 				                </div>
@@ -341,9 +359,9 @@ function cancelOrgImg(){
 							</div>
 						</div>
 							
-							<div class="form-group">
-							<label class="col-md-3">Website<span class="text-danger">&nbsp;*</span></label>
-							<div class="col-md-9" id="websiteDiv">
+							<div class="clearfix mb">
+							<label class="labText">Website <b class="valStar">*</b></label>
+							<div class="clearfix" id="websiteDiv">							
 							<c:if test="${SourceLeadWeb_website == null}">
 							   <input type="text"  class="form-control"  onblur="validateOrgLocationWebsite();" data-validation="required" field-name="Website" id="website"  name="website" value="${SourceLeadWeb_website}">
 							</c:if>
@@ -355,23 +373,55 @@ function cancelOrgImg(){
 							</div>
 							</div>
 							
-						<div class="form-group mt">
-							<label class="col-md-3">Phone</label>
-							<div class="col-md-9">
+							
+						<div class="clearfix mb">
+							<label class="labText">Week Off Days</label>
+							<div class="clearfix">
+							 <select multiple class="chosen-select form-control" id="weekOffDays" name="weekOffDays" data-validation-optional="true" field-name="Week Off Days">
+								 <option  value='Sun' ${fn:contains(SourceLeadWeb_weekOffDaysList, 'Sun') ? 'selected' : ''}>Sunday</option>
+								 <option  value='Mon' ${fn:contains(SourceLeadWeb_weekOffDaysList, 'Mon') ? 'selected' : ''}>Monday</option>
+								 <option  value='Tue' ${fn:contains(SourceLeadWeb_weekOffDaysList, 'Tue') ? 'selected' : ''}>Tuesday</option>
+								 <option  value='Wed' ${fn:contains(SourceLeadWeb_weekOffDaysList, 'Wed') ? 'selected' : ''}>Wednesday</option>
+								 <option  value='Thu' ${fn:contains(SourceLeadWeb_weekOffDaysList, 'Thu') ? 'selected' : ''}>Thursday</option>
+								 <option  value='Fri' ${fn:contains(SourceLeadWeb_weekOffDaysList, 'Fri') ? 'selected' : ''}>Friday</option>
+								 <option  value='Sat' ${fn:contains(SourceLeadWeb_weekOffDaysList, 'Sat') ? 'selected' : ''}>Saturday</option>
+							 </select>
+							</div>
+						</div>
+							
+						
+						<div class="clearfix mb" id="averageWorkingHoursDiv">
+							<label class="labText">Working Hours <b class="valStar">*</b></label>
+							<div class="clearfix">
+							<input type="text" class="form-control" maxlength="2" name="averageWorkingHours" id="averageWorkingHours" data-validation="required validate_int" field-name="Average Working Hours" value="${SourceLeadWeb_orgLocations.averageWorkingHours}"/>
+							</div>
+						</div>
+						
+						<div class="clearfix mb">
+								<div class="col-md-11">
+									<div class="checkBox">
+										<label><input type="checkbox" value="Y" ${SourceLeadWeb_orgLocations.isTimesheetAvgHoursRequired == 'Y' ? 'checked' : ''} name="isTimesheetAvgHoursRequired" id="isTimesheetAvgHoursRequired"> Average Hours Validation Is Required</label> 
+									</div>
+								</div>
+					    </div>
+							
+						<div class="clearfix mb">
+							<label class="labText">Phone </label>
+							<div class="clearfix">
 							<input type="text"  class="form-control" name="phone" field-name="phone" data-validation="validate_phone validate_Space validate_length length9-20" data-validation-optional="true" value="${SourceLeadWeb_orgLocations.phone}" />
 							</div>
 						</div>
-						<div class="form-group mt">
-							<label class="col-md-3">Fax</label>
-							<div class="col-md-9">
+						<div class="clearfix mb">
+							<label class="labText">Fax </label>
+							<div class="clearfix">
 							<input type="text"  class="form-control" name="fax" id="faxId" field-name="fax" data-validation="validate_phone validate_Space validate_length length9-20" data-validation-optional="true" value="${SourceLeadWeb_orgLocations.fax}" />
 							</div>
 						</div>
 						
 						
-						<div class="form-group mt">
-							<label class="col-md-3">Business type<span class="text-danger">&nbsp;*</span></label>
-							<div class="col-md-9">
+						<div class="clearfix mb">
+							<label class="labText">Business type <b class="valStar">*</b></label>
+							<div class="clearfix">
 									<select class="chosen-select" id="businessType" name="businessType" data-validation="required" onchange="getBusinessTypeValue();"  field-Name="Business Type">
 									<option value="">--Select Business type--</option>
 									<c:forEach var="bt" items="${bussinessTypesList}">
@@ -397,23 +447,23 @@ function cancelOrgImg(){
 							</div>
 						</div>
 						
-						<div class="form-group mt" id="otherBusinessTypeDiv" style="display: none;">
-							<label class="col-md-3">Other Business type<span class="text-danger">&nbsp;*</span></label>
-							<div class="col-md-9">
+						<div class="clearfix mb" id="otherBusinessTypeDiv" style="display: none;">
+							<label class="labText">Other Business type <b class="valStar">*</b></label>
+							<div class="clearfix">
 							<input type="text"  class="form-control" name="otherBusinessType" id="otherBusinessType" value="${SourceLeadWeb_orgLocations.otherBusinessType}" field-name="Other Business Type"  data-validation-optional="true" value="${SourceLeadWeb_orgLocations.zipCode}" />
 							</div>
 						</div>
 						
-						
-						<div class="form-group comp-textarea mt">
-						  <label class="col-md-3">About</label>
-							<div class="col-md-9">
+					    
+					    <div class="clearfix mb comp-textarea">
+							<label class="labText">About </label>
+							<div class="clearfix">
 							   <textarea rows="6" name="aboutCompany" field-name="About" data-validation-optional="true" data-validation="validate_length length5-5000" class="form-control">${SourceLeadWeb_orgLocations.orgDescription}</textarea>
 							</div>
 						</div>
 							
 						</div>
-						</div>
+					</div>
 					<div class="clearfix">
 					<div class="pull-right">
 					<sec:authorize access="hasAnyRole('ROLE_VIEW_EDIT_ORG_SETTINGS')">
@@ -423,22 +473,19 @@ function cancelOrgImg(){
 					</div>
 					</div>
 					</div>
-					</form:form>
-				</div>
+			</form:form>
+			</div>
 
-			
-			</div>
-			</div>
 		   </div>
 		</div>
 		</div>
 		
 		<div id="orgRegisteredlocations" class="tab-pane fade form-horizontal"> 
-			<div class="accountsettings-tab">
-	                        <div class="tab-content panel-body">
-	                            <div class="clearfix mb">
+			<div class="accountsettings-tab noMar">
+	                        <div class="tab-content panel-body noBor">
+	                            <div class="clearfix mb10">
 	                                <div class="pull-left">
-	                                    <h4 id="locationOrgsName"></h4>
+	                                    <h4 id="locationOrgsName" class="loaHeadtxt"></h4>
 	                                </div>
                                <div class="pull-right">
                                 <button class="btn btn-default btm-sm pull-right" id="orgsList" data-toggle="tab" href="#orgRegisteredlocations" onclick="loadRegisteredOrgs();" style="display: none"><i class="fa fa-map-marker"></i>
@@ -447,10 +494,10 @@ function cancelOrgImg(){
                                     &nbsp;&nbsp;Add Location</button>
                                </div>
 	                            </div>
-	                			<div class="clearfix form-area form-horizontal mt">
+	                			<div class="clearfix form-area form-horizontal">
 	                			
 	                			<form:form class="login-form clearfix"  id="createOrg_form"  name="createOrg_form" method="post" >
-	                			<div id="registeredOrgs"></div>  
+	                			<div id="registeredOrgs" class="newLocaWrap clearfix"></div>  
 	                			</form:form>
 	                			
 	                			<form:form class="login-form clearfix"  id="update_module_form"  name="update_module_form" method="post" >
@@ -496,6 +543,7 @@ function cancelOrgImg(){
     
     		<div id="configCoolingOff" class="tab-pane fade form-horizontal"> 
                 <!-- Tab for Profile setting-area -->
+                <div id="recommLoading"></div>
                     <div class="accountsettings-tab">
                         <div class="tab-content panel-body">
                             <div class="clearfix mb">
@@ -543,26 +591,288 @@ function cancelOrgImg(){
 	                   			</div>
 	               			</div>         
 	           			</div> 
+                                        <div class="tab-content panel-body">
+                                            <div class="clearfix mb">
+                                                <div class="pull-left">
+                                                    <h4 id="careerPageKeyHeading">Career Page Key</h4>
+                                                    <div id="careerPageKeyLoading"></div>
+                                                </div>
+                                                <div class="pull-right">
+                                                    <span title="Click to copy key to clipboard"><i id="copyCareerKey" class="fa fa-clipboard copy-icon hidden {SourceLeadWeb_org.careerPageKey == null ? 'hidden' : ''}" aria-hidden="true"></i></span>
+                                                    <input type="button" value="${SourceLeadWeb_org.careerPageKey == null ? 'Generate Key' : 'Regenerate Key'}" id="generateCareerPageKey" class="btn btn-primary"/>
+                                                </div>
+                                            </div>
+                                            <div class="form-group" id="careerPageInnerContent">
+                                                <c:if test="${SourceLeadWeb_org.careerPageKey != null}">
+                                                    <div class="clearfix">
+                                                        <div class="col-md-2">Career Page Key</div>
+                                                        <div class="col-md-9 break_all">${SourceLeadWeb_org.careerPageKey}</div>
+                                                        <div class="col-md-1">
+                                                            <div class="toggle-button">
+                                                                <label class="switch">
+                                                                    <input type="checkbox" ${SourceLeadWeb_org.careerPageKeyActive ? 'checked' : ''} id="changeCareerPageKeyStatus"/>
+                                                                    <div class="slider round"></div>
+                                                                </label>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </c:if>
+                                            </div>  
+                                                <div class='clearfix'>
+                                                    <span>Please copy & paste this in your career page</span>
+                                                    <textarea class='form-control' rows="3" readonly="readonly" id='careerPageCode'>
+                                                        
+                                                    </textarea>
+                                                </div>
+                                        </div> 
            			</c:if>
+           			
+           			<c:if test="${SourceLeadWeb_isSuperAdmin == 'Y'}">
+	            			<div class="tab-content panel-body">
+	               			<h4>Financial Year</h4>
+	               			<div class="form-group">
+		               			<label class="col-md-3">Financial Year<i class="" title="Login Security"></i></label>  
+		               			<div class="col-md-2 toggle-button" >
+			                      <select class="chosen-select" id="financialStartYear" onChange="validateFinancialYear();">
+			                      <option value = "">--Select Month--</option>
+			                      <option ${orgLocations.startMonth == 'January' ? 'selected' : ''}>January</option>
+			                      <option ${orgLocations.startMonth == 'February' ? 'selected' : ''}>February</option>
+			                      <option ${orgLocations.startMonth == 'March' ? 'selected' : ''}>March</option>
+			                      <option ${orgLocations.startMonth == 'April' ? 'selected' : ''}>April</option>
+			                      <option ${orgLocations.startMonth == 'May' ? 'selected' : ''}>May</option>
+			                      <option ${orgLocations.startMonth == 'June' ? 'selected' : ''}>June</option>
+			                      <option ${orgLocations.startMonth == 'July' ? 'selected' : ''}>July</option>
+			                      <option ${orgLocations.startMonth == 'August' ? 'selected' : ''}>August</option>
+			                      <option ${orgLocations.startMonth == 'September' ? 'selected' : ''}>September</option>
+			                      <option ${orgLocations.startMonth == 'October' ? 'selected' : ''}>October</option>
+			                      <option ${orgLocations.startMonth == 'November' ? 'selected' : ''}>November</option>
+			                      <option ${orgLocations.startMonth == 'December' ? 'selected' : ''}>December</option>
+			                      </select>
+	                   			</div>
+	                   			<div class="col-md-2 toggle-button">
+			                      <select class="chosen-select" id="financialEndYear" disabled="disabled" readonly="">
+			                      <option value = "">--Select Month--</option>
+			                      <option ${orgLocations.endMonth == 'January' ? 'selected' : ''}>January</option>
+			                      <option ${orgLocations.endMonth == 'February' ? 'selected' : ''}>February</option>
+			                      <option ${orgLocations.endMonth == 'March' ? 'selected' : ''}>March</option>
+			                      <option ${orgLocations.endMonth == 'April' ? 'selected' : ''}>April</option>
+			                      <option ${orgLocations.endMonth == 'May' ? 'selected' : ''}>May</option>
+			                      <option ${orgLocations.endMonth == 'June' ? 'selected' : ''}>June</option>
+			                      <option ${orgLocations.endMonth == 'July' ? 'selected' : ''}>July</option>
+			                      <option ${orgLocations.endMonth == 'August' ? 'selected' : ''}>August</option>
+			                      <option ${orgLocations.endMonth == 'September' ? 'selected' : ''}>September</option>
+			                      <option ${orgLocations.endMonth == 'October' ? 'selected' : ''}>October</option>
+			                      <option ${orgLocations.endMonth == 'November' ? 'selected' : ''}>November</option>
+			                      <option ${orgLocations.endMonth == 'December' ? 'selected' : ''}>December</option>
+			                      </select>
+	                   			</div>
+	               			</div>
+	               			<div class="mt clearfix">
+           			  	<div class="pull-right">
+           			  		<button type="button" class="btn btn-primary btn-sm mr" onclick="financialYear();">Save</button>
+           			  		<!-- <button type="button" class="btn btn-default btn-sm" onclick="cancel();">Cancel</button> -->
+           			  	</div>
+           			  </div>
+           			  
+           			  <c:if test="${!empty msg}">
+	                       <div class="success_pop" id="selector"  style="display: none;">
+		                   <i class="fa fa-check-circle"></i><span>${msg}</span>
+			               </div>
+	              </c:if>
+	                 <div class="success_pop" id="selector1" style="display: none;">
+ 		            	<i class="fa fa-check-circle"></i><span id="msgDiv"></span>
+                     </div>
+	               			         
+	           			</div> 
+           			</c:if>
+           			
+					<!--   Recommendations Configure starts -->
+           			   <div class="tab-content panel-body positionRelative">
+           			   <div class="alert alert-success alert-dismissible recommendations-msgs text-center" id="recommSuccessDiv" style="display:none">
+						  <a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
+						  Recommendation details updated successfully ..!
+						</div>
+						<div class="alert alert-danger alert-dismissible recommendations-msgs text-center" id="recommErrorDiv" style="display:none">
+						  <a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
+						  Total recommendations should not be more than 100.
+						</div>
+           			   
+                            <div class="clearfix mb">
+                                    <h4 id="coolingOffHeading">Recommendations Configure</h4>
+                            </div>
+                            <form id="recommendations_form"  name="recommendations_form" method="post">
+                            <div class="row">
+                           <div class="col-md-3 mb">
+						<label class="clearfix">Skills</label>
+						<div class="clearfix dropdown-select mt5">
+							<select class="form-control chosen-select" name="recommSkill" id="recommSkill">
+							<option value="0">-- Select Skills --</option>
+							<option ${orgLocations.recommendedSkillPercent == '10' ? 'selected' : ''}>10</option>
+							<option ${orgLocations.recommendedSkillPercent == '20' ? 'selected' : ''}>20</option>
+							<option ${orgLocations.recommendedSkillPercent == '30' ? 'selected' : ''}>30</option>
+							<option ${orgLocations.recommendedSkillPercent == '40' ? 'selected' : ''}>40</option>
+							<option ${orgLocations.recommendedSkillPercent == '50' ? 'selected' : ''}>50</option>
+							<option ${orgLocations.recommendedSkillPercent == '60' ? 'selected' : ''}>60</option>
+							<option ${orgLocations.recommendedSkillPercent == '70' ? 'selected' : ''}>70</option>
+							<option ${orgLocations.recommendedSkillPercent == '80' ? 'selected' : ''}>80</option>
+							<option ${orgLocations.recommendedSkillPercent == '90' ? 'selected' : ''}>90</option>
+							<option ${orgLocations.recommendedSkillPercent == '100' ? 'selected' : ''}>100</option>
+							</select>
+						</div>
+						</div> 
+                            
+						<div class="col-md-3 mb">
+						<label class="clearfix">Location</label>
+						<div class="clearfix dropdown-select mt5">
+							<select class="form-control chosen-select" name="recommLocation" id="recommLocation">
+							<option value="0">-- Select Location --</option>
+							<option ${orgLocations.recommendedLocationPercent == '10' ? 'selected' : ''}>10</option>
+							<option ${orgLocations.recommendedLocationPercent == '20' ? 'selected' : ''}>20</option>
+							<option ${orgLocations.recommendedLocationPercent == '30' ? 'selected' : ''}>30</option>
+							<option ${orgLocations.recommendedLocationPercent == '40' ? 'selected' : ''}>40</option>
+							<option ${orgLocations.recommendedLocationPercent == '50' ? 'selected' : ''}>50</option>
+							<option ${orgLocations.recommendedLocationPercent == '60' ? 'selected' : ''}>60</option>
+							<option ${orgLocations.recommendedLocationPercent == '70' ? 'selected' : ''}>70</option>
+							<option ${orgLocations.recommendedLocationPercent == '80' ? 'selected' : ''}>80</option>
+							<option ${orgLocations.recommendedLocationPercent == '90' ? 'selected' : ''}>90</option>
+							<option ${orgLocations.recommendedLocationPercent == '100' ? 'selected' : ''}>100</option>
+							</select>
+						</div>
+						</div>
+						
+						<div class="col-md-3 mb">
+						<label class="clearfix">Notice Period</label>
+						<div class="clearfix dropdown-select mt5">
+							<select class="form-control chosen-select" name="recommNoticePeriod" id="recommNoticePeriod">
+							<option value="0">-- Select Notice Period --</option>
+							<option ${orgLocations.recommendedNoticePercent == '10' ? 'selected' : ''}>10</option>
+							<option ${orgLocations.recommendedNoticePercent == '20' ? 'selected' : ''}>20</option>
+							<option ${orgLocations.recommendedNoticePercent == '30' ? 'selected' : ''}>30</option>
+							<option ${orgLocations.recommendedNoticePercent == '40' ? 'selected' : ''}>40</option>
+							<option ${orgLocations.recommendedNoticePercent == '50' ? 'selected' : ''}>50</option>
+							<option ${orgLocations.recommendedNoticePercent == '60' ? 'selected' : ''}>60</option>
+							<option ${orgLocations.recommendedNoticePercent == '70' ? 'selected' : ''}>70</option>
+							<option ${orgLocations.recommendedNoticePercent == '80' ? 'selected' : ''}>80</option>
+							<option ${orgLocations.recommendedNoticePercent == '90' ? 'selected' : ''}>90</option>
+							<option ${orgLocations.recommendedNoticePercent == '100' ? 'selected' : ''}>100</option>
+							</select>
+						</div>
+						</div>
+						
+						<div class="col-md-3 mb">
+						<label class="clearfix">Experience</label>
+						<div class="clearfix dropdown-select mt5">
+							<select class="form-control chosen-select" name="recommExp" id="recommExp">
+							<option value="0">-- Select Experience --</option>
+							<option ${orgLocations.recommendedExpPercent == '10' ? 'selected' : ''}>10</option>
+							<option ${orgLocations.recommendedExpPercent == '20' ? 'selected' : ''}>20</option>
+							<option ${orgLocations.recommendedExpPercent == '30' ? 'selected' : ''}>30</option>
+							<option ${orgLocations.recommendedExpPercent == '40' ? 'selected' : ''}>40</option>
+							<option ${orgLocations.recommendedExpPercent == '50' ? 'selected' : ''}>50</option>
+							<option ${orgLocations.recommendedExpPercent == '60' ? 'selected' : ''}>60</option>
+							<option ${orgLocations.recommendedExpPercent == '70' ? 'selected' : ''}>70</option>
+							<option ${orgLocations.recommendedExpPercent == '80' ? 'selected' : ''}>80</option>
+							<option ${orgLocations.recommendedExpPercent == '90' ? 'selected' : ''}>90</option>
+							<option ${orgLocations.recommendedExpPercent == '100' ? 'selected' : ''}>100</option>
+							</select>
+						</div>
+						</div> 
+						<div class="col-md-3 mb">
+						<label class="clearfix">Visa Type</label>
+						<div class="clearfix dropdown-select mt5">
+							<select class="form-control chosen-select" name="recommVisaType" id="recommVisaType">
+							<option value="0">-- Select Visa Type --</option>
+							<option ${orgLocations.recommendedVisatypePercent == '10' ? 'selected' : ''}>10</option>
+							<option ${orgLocations.recommendedVisatypePercent == '20' ? 'selected' : ''}>20</option>
+							<option ${orgLocations.recommendedVisatypePercent == '30' ? 'selected' : ''}>30</option>
+							<option ${orgLocations.recommendedVisatypePercent == '40' ? 'selected' : ''}>40</option>
+							<option ${orgLocations.recommendedVisatypePercent == '50' ? 'selected' : ''}>50</option>
+							<option ${orgLocations.recommendedVisatypePercent == '60' ? 'selected' : ''}>60</option>
+							<option ${orgLocations.recommendedVisatypePercent == '70' ? 'selected' : ''}>70</option>
+							<option ${orgLocations.recommendedVisatypePercent == '80' ? 'selected' : ''}>80</option>
+							<option ${orgLocations.recommendedVisatypePercent == '90' ? 'selected' : ''}>90</option>
+							<option ${orgLocations.recommendedVisatypePercent == '100' ? 'selected' : ''}>100</option>
+							</select>
+						</div>
+						</div> 
+						<div class="col-md-3 mb">
+						<label class="clearfix">Education</label>
+						<div class="clearfix dropdown-select mt5">
+							<select class="form-control chosen-select" name="recommEducation" id="recommEducation">
+							<option value="0">-- Select Education --</option>
+							<option ${orgLocations.recommendedEducationPercent == '10' ? 'selected' : ''}>10</option>
+							<option ${orgLocations.recommendedEducationPercent == '20' ? 'selected' : ''}>20</option>
+							<option ${orgLocations.recommendedEducationPercent == '30' ? 'selected' : ''}>30</option>
+							<option ${orgLocations.recommendedEducationPercent == '40' ? 'selected' : ''}>40</option>
+							<option ${orgLocations.recommendedEducationPercent == '50' ? 'selected' : ''}>50</option>
+							<option ${orgLocations.recommendedEducationPercent == '60' ? 'selected' : ''}>60</option>
+							<option ${orgLocations.recommendedEducationPercent == '70' ? 'selected' : ''}>70</option>
+							<option ${orgLocations.recommendedEducationPercent == '80' ? 'selected' : ''}>80</option>
+							<option ${orgLocations.recommendedEducationPercent == '90' ? 'selected' : ''}>90</option>
+							<option ${orgLocations.recommendedEducationPercent == '100' ? 'selected' : ''}>100</option>
+							</select>
+						</div>
+						</div> 
+						<div class="col-md-3 mb">
+						<label class="clearfix">Rate</label>
+						<div class="clearfix dropdown-select mt5">
+							<select class="form-control chosen-select" name="recommRate" id="recommRate">
+							<option value="0">-- Select Rate --</option>
+							<option ${orgLocations.recommendedRatePercent == '10' ? 'selected' : ''}>10</option>
+							<option ${orgLocations.recommendedRatePercent == '20' ? 'selected' : ''}>20</option>
+							<option ${orgLocations.recommendedRatePercent == '30' ? 'selected' : ''}>30</option>
+							<option ${orgLocations.recommendedRatePercent == '40' ? 'selected' : ''}>40</option>
+							<option ${orgLocations.recommendedRatePercent == '50' ? 'selected' : ''}>50</option>
+							<option ${orgLocations.recommendedRatePercent == '60' ? 'selected' : ''}>60</option>
+							<option ${orgLocations.recommendedRatePercent == '70' ? 'selected' : ''}>70</option>
+							<option ${orgLocations.recommendedRatePercent == '80' ? 'selected' : ''}>80</option>
+							<option ${orgLocations.recommendedRatePercent == '90' ? 'selected' : ''}>90</option>
+							<option ${orgLocations.recommendedRatePercent == '100' ? 'selected' : ''}>100</option>
+							</select>
+						</div>
+						</div> 
+						<div class="col-md-3 mb">
+						<label class="clearfix">Keywords</label>
+						<div class="clearfix dropdown-select mt5">
+							<select class="form-control chosen-select" name="recommKeywords" id="recommKeywords">
+							<option value="0">-- Select Keywords --</option>
+							<option ${orgLocations.recommendedKeywordsPercent == '10' ? 'selected' : ''}>10</option>
+							<option ${orgLocations.recommendedKeywordsPercent == '20' ? 'selected' : ''}>20</option>
+							<option ${orgLocations.recommendedKeywordsPercent == '30' ? 'selected' : ''}>30</option>
+							<option ${orgLocations.recommendedKeywordsPercent == '40' ? 'selected' : ''}>40</option>
+							<option ${orgLocations.recommendedKeywordsPercent == '50' ? 'selected' : ''}>50</option>
+							<option ${orgLocations.recommendedKeywordsPercent == '60' ? 'selected' : ''}>60</option>
+							<option ${orgLocations.recommendedKeywordsPercent == '70' ? 'selected' : ''}>70</option>
+							<option ${orgLocations.recommendedKeywordsPercent == '80' ? 'selected' : ''}>80</option>
+							<option ${orgLocations.recommendedKeywordsPercent == '90' ? 'selected' : ''}>90</option>
+							<option ${orgLocations.recommendedKeywordsPercent == '100' ? 'selected' : ''}>100</option>
+							</select>
+						</div>
+						</div> 
+                            </div>
+                           <div class="pull-right">
+								<input type="button" value="Save" id="saveRecommendationSettings" onclick="validateTotalRecommValue();" class="btn btn-primary mr">
+								<input type="button" value="Cancel" class="btn btn-default" onClick="flushRecomSettings();">
+							</div>
+							</form>
+            			</div>
+           			      <!-- Recommendations Configure ends -->     		
            			           			
         			</div>
     			</div>
     			
     			<div id="whiteListIp" class="tab-pane fade form-horizontal"> 
                 <!-- Tab for Profile setting-area -->
-                    <div class="accountsettings-tab">
-                        <div class="tab-content panel-body">
+                    <div class="accountsettings-tab noMar">
+                        <div class="tab-content panel-body noPad noBor">
                         <div id="whiteListLoading"></div>
-                            <div class="clearfix mb">
-                                <div class="pull-left">
-                                    <h4 id="whiteListHeading">Whitelist Ips</h4>
-                                </div>
-                                <div class="pull-right">
-                                	<button data-toggle="modal" type="button" class="btn btn-primary" onClick="addipPopup();"><i class="fa fa-plus paddingRight"></i>Add IP</button>
-                                </div>
+                            <div class="reportHead reportHeadDataTab clearfix">
+                                <ul class="pull-right list-unstyled list-inline">
+                                	<li><a class="action newAdBtn" onClick="addipPopup();" href="javascript:void(0)">+ IP</a></li>
+                                </ul>
                              </div>
                             
-                            <div class="tableStyles datatable_filter mt40">
+                            <div class="clients_wrap_table datatable_filter dataSeaTop">
                 				<div id="whiteListIpsDiv"></div>   
                 			</div>
                 			
@@ -570,11 +880,44 @@ function cancelOrgImg(){
             			</div>
             			
         			</div>
-        			
+        			<div id="paymentAccount" class="tab-pane fade form-horizontal"> 
+                <!-- Tab for Profile setting-area -->
+                    
+                    <div class="accountsettings-tab noMar">
+                        <div class="tab-content panel-body noPad noBor">
+                        <div id="paymentAccountLoading"></div>
+                        
+                            <div class="reportHead clearfix">
+                                <ul class="pull-right list-unstyled list-inline">
+                                	<li><a class="action newAdBtn mr5" onClick="showPaymentAccountPopup();" href="javascript:void(0)">+ Payment Account</a></li>
+                                </ul>
+                             </div>                        
+                            
+                            <div class="require_wrap_table datatable_filter">
+                				<div id="payemntAccountsDiv"></div>   
+                			</div>
+                			
+                			</div>         
+            			</div>
+            			
+        			</div>
    			 <jsp:include page="federalAndStateTaxes.jsp" />
+   			 <jsp:include page="locationInformationDetails.jsp" />
+     		 <%-- <c:if test="${SourceLeadWeb_orgLocations.country != 'India'}">
      		 <jsp:include page="orglocationBankingDetails.jsp" />
+     		 </c:if>
+     		 <c:if test="${SourceLeadWeb_orgLocations.country == 'India'}">
+     		 <jsp:include page="orglocationIndiaBankingDetails.jsp" />
+     		 </c:if> --%>
      		 <jsp:include page="orglocationDocuments.jsp" />
      		 <jsp:include page="orglocationSignatory.jsp" />
+     		 <jsp:include page="googleApiLocation.jsp" />
+     		 
+   			<jsp:include page="emailNontificationConfigure.jsp" />
+
+     		 <%--  <jsp:include page="emailNontificationConfigure.jsp" /> --%>
+
+     		 
      		 
     			</div>
      		
@@ -588,44 +931,136 @@ function cancelOrgImg(){
   </section>
   <!-- Tab for Profile setting-area starts Ends -->
   <!-- Content Area Ends-->
-
+  <style>
+      .clients_wrap_table.table1 tr td div { position: unset !important; }
+      </style>
 </body>
-<<div class="comMask"></div>
-<!-- Add IP Modal -->
-  <div class="modal addipPopup-modal" id="addipPopup" role="dialog">
-    <div class="modal-dialog">
-    
-      <!-- Modal content-->
-      <div class="modal-content">
-        <div class="modal-header">
-          <button type="button" class="close" onclick="closeWhiteListIp();" data-dismiss="modal">&times;</button>
-          <h4 class="modal-title">Add IP</h4>
-        </div>
-        <div class="modal-body">
-        <form:form class="clearfix"  id="whiteListIp_form"  name="whiteListIp_form" method="GET" >
-        <input type="hidden" name="id" id="whiteListId"/>
-         <div class="form-group clearfix minHeight40" id="fromIpAddressDiv">
-           <label class="col-md-3">From IP<span class="text-danger">&nbsp;*</span></label>
-           <div class="col-md-9">
-           		<input type="text" id="fromIpAddress" name="fromIpAddress" class="form-control" onblur="ValidateIPaddress()">
+<!-- Add Payment Account Modal -->
+  <div class="popupWrapMid" id="paymentAccountPopup" role="dialog">
+  	<div class="popupHead">Add/Edit Payment Account <i class="closePop pull-right popClose" onclick="closePaymentAccountPopup();"></i></div>
+  
+        <div class="popupContent popupContentFixed">
+        <form:form class="clearfix"  id="paymentaccount_form"  name="paymentaccount_form" method="POST" >
+         <inpu type="hidden" id='paymentAccountId' value='0'/>
+         <input type="hidden" name="id" id="paymentAccountId"/>
+          <div class="col-md-6 minHe">
+           <label class="noPad">Account Type <b class="valStar">*</b></label>
+           <div class="clearfix">
+                <select onchange="showOrHidePaymentFormFields($(this).val());" id="paymentAccountType" name="paymentAccountLocation" class="form-control" data-required="required">
+                    <option value="0">--Select Location--</option>
+                    <option value="SAVINGS" data-type="1">Savings</option>
+                    <option value="CHECKING" data-type="2">Checking</option>
+                    <option value="WEPAY" data-type="3">WePay</option>
+                </select>
+           </div>
+          </div>
+           
+         <div data-fieldtype="account" data-fieldfor="1,2,3" class="col-md-6 minHe">
+           <label class="noPad">Location <b class="valStar">*</b></label>
+           <div class="clearfix">
+                <select id="paymentAccountLocation" name="paymentAccountLocation" class="form-control" data-required="required">
+                    <option>Select Location</option>
+                </select>
+           </div>
+         </div>
+           
+        <div data-fieldtype="account"  data-fieldfor="1,2" class="col-md-6 minHe">
+           <label class="noPad">Bank Name <b class="valStar">*</b></label>
+           <div class="clearfix">
+                <input type="text" id="paymentAccountBankName" name="paymentAccountBankName" placeholder="Bank Name" class="form-control" data-required="required"/>
            </div>
            </div>
-           <div class="form-group clearfix minHeight40" id="toIpAddressDiv">
-           <label class="col-md-3">To IP<span class="text-danger">&nbsp;*</span></label>
-           <div class="col-md-9">
-           		<input type="text" id="toIpAddress" name="toIpAddress" class="form-control" onblur="ValidateIPaddress()">
+          <div data-fieldtype="account"  data-fieldfor="1,2" class="col-md-6 minHe">
+           <label class="clearfix">Account Number<span class="text-danger">&nbsp;*</span></label>
+           <div class="clearfix">
+                <input type="text" id="paymentAccountNumber" data-min='9' data-max='15' placeholder="Account Number" name="paymentAccountNumber" class="form-control" data-required="required"/>
            </div>
            </div>
+          <c:if test="${SourceLeadWeb_orgLocations.country == 'India'}"> 
+           <div data-fieldtype="account"  data-fieldfor="1,2" class="col-md-6 minHe">
+              <label class="clearfix">BSR Number <span class="text-danger">&nbsp;*</span></label>
+	           <div class="clearfix">
+	                <input type="text" id="paymentBSRNumber" data-min='9' placeholder="BSR Number" data-max='15' name="paymentBSRNumber" class="form-control" data-required="required"/>
+	           </div>
+           </div>
+           
+           <div data-fieldtype="account"  data-fieldfor="1,2" class="col-md-6 minHe">
+              <label class="noPad">MICR Code <b class="valStar">*</b></label>
+	           <div class="clearfix">
+	                <input type="text" id="paymentMICRCode" data-min='9' data-max='15' placeholder="MICR Code" name="paymentMICRCode" class="form-control" data-required="required"/>
+	           </div>
+           </div>
+           </c:if>
+        
+        <div data-fieldtype="account" data-fieldfor="1,2" class="col-md-6 minHe">
+           <c:if test="${SourceLeadWeb_orgLocations.country != 'India'}">
+              <label class="noPad">Routing Number <b class="valStar">*</b></label>
+           </c:if>
+           <c:if test="${SourceLeadWeb_orgLocations.country == 'India'}">
+              <label class="noPad">IFSC Code <b class="valStar">*</b></label>
+           </c:if>
+           <div class="clearfix">
+                <input type="text" id="paymentAccountRoutingNumber" data-min='9' data-max='9' placeholder="IFC Code / Routing Number" name="paymentAccountRoutingNumber" class="form-control" data-required="required"/>
+           </div>
+           </div>
+           <div data-fieldtype="account" data-fieldfor="3" class="col-md-6 minHe">
+           <label class="noPad">Email <b class="valStar">*</b></label>
+           <div class="clearfix">
+                <input type="text" id="paymentAccountEmail" name="paymentAccountEmail" placeholder="Email"  class="form-control" data-required="required"/>
+           </div>
+           </div>
+        <div data-fieldtype="account" data-fieldfor="1,2,3" class="col-md-6 minHe">
+           <label class="noPad">First Name <b class="valStar">*</b></label>
+           <div class="clearfix">
+                <input type="text" id="paymentAccountFirstName" name="paymentAccountFirstName" placeholder="First Name" class="form-control" data-required="required"/>
+           </div>
+           </div>
+        
+        <div data-fieldtype="account" data-fieldfor="1,2,3" class="col-md-6 minHe">
+           <label class="noPad">Last Name <b class="valStar">*</b></label>
+           <div class="clearfix">
+                <input type="text" id="paymentAccountLastName" name="paymentAccountLastName" placeholder="Last Name" class="form-control" data-required="required"/>
+           </div>
+           </div>
+        
         
         </form:form>
           
         </div>
-        <div class="clearfix"></div>
-        <div class="modal-footer">
-          <button type="button" class="btn btn-primary" id="saveWhiteListbtn" onclick="saveWhiteListIps();" >Save</button>
+        
+        <div class="popupFoot text-right">
+          <button type="button" class="slBtn md colorBtn" id="savePaymentButton" onclick="savePaymentAccount();" >Save</button>
+          <button type="button" class="slBtn md popClose" onClick="closePaymentAccountPopup();">Cancel</button>
         </div>
-      </div>
-    </div>
+  </div>
+  
+<!-- Add IP Modal -->
+  <div class="popupWrap" id="addipPopup" role="dialog">
+	<div class="popupHead">Add IP <i class="closePop pull-right close" onclick="closeWhiteListIp();"></i></div>
+          
+
+        <div class="popupContent">
+        <form:form class="clearfix"  id="whiteListIp_form"  name="whiteListIp_form" method="GET" >
+        <input type="hidden" name="id" id="whiteListId"/>
+         <div class="clearfix mb" id="fromIpAddressDiv">
+           <label class="noPad">From IP <b class="valStar">*</b></label>
+           <div class="clearfix">
+           		<input type="text" id="fromIpAddress" name="fromIpAddress" class="form-control" onblur="ValidateIPaddress(); validateDuplicateIpAddress('fromIpAddr');">
+           </div>
+           </div>
+           <div class="clearfix mb" id="toIpAddressDiv">
+           <label class="noPad">To IP <b class="valStar">*</b></label>
+           <div class="clearfix">
+           		<input type="text" id="toIpAddress" name="toIpAddress" class="form-control" onblur="ValidateIPaddress(); validateDuplicateIpAddress('toIpAddr');">
+           </div>
+           </div>
+        </form:form>
+        </div>
+        
+        <div class="popupFoot text-right">
+          <button type="button" class="slBtn md colorBtn" id="saveWhiteListbtn" onclick="saveWhiteListIps();" >Save</button>
+          <input type="button" value="Cancel" class="slBtn md" onclick="closeWhiteListIp();">
+        </div>
   </div>
   <!-- Add IP Modal -->
 
@@ -654,13 +1089,110 @@ function switchLoginSecurity(){
 	  }); 
 	
 }
+$(function() {
+    $("#generateCareerPageKey").click(function() {
+        $.post(sourceleadUrl+"/generate-career-page-key", {}, function(data) {
+            if(data && data.indexOf("key") === 0) {
+                $("#copyCareerKey").show();
+                $("#generateCareerPageKey").val("Regenerate Key");
+                var text = '<div class="clearfix">';
+                text += '<div class="col-md-2">Career Page Key</div>';
+                text += '<div class="col-md-9 break_all">'+(data.split(';')[1])+'</div>';
+                text += '<div class="col-md-1"><div class="toggle-button"><label class="switch"><input type="checkbox" checked id="changeCareerPageKeyStatus"/><div class="slider round"></div></label></div></div>';
+                text += '</div>';
+                $("#careerPageInnerContent").html(text);
+                applyCareerPageCode(data.split(';')[1]);
+                applyCareerPageStatusEvent();
+            } else  if(data && (data === "logout" || data.indexOf("Sign In") !== -1)) {
+                showError("Session timedout");
+                window.setTimeout('location.href='+sourceleadLoginUrl, 3000);
+            } else {
+                showError("Operation failed, please try again");
+            }
+        });
+    });
+    
+    applyCareerPageCode('${SourceLeadWeb_org.careerPageKey}')
+    applyCareerPageStatusEvent();
+});
+function applyCareerPageStatusEvent() {
+    $("#copyCareerKey").click(function() {
+        $("#careerKeyDummy").remove();
+       $("#copyCareerKey").append("<input type='text' style='display:none' id='careerKeyDummy'/>");
+       var copyText = document.getElementById("careerKeyDummy");
+       copyText.value = $(".col-md-9.break_all").html();
+       copyText.select();
+       document.execCommand("Copy");
+    });
+    
+    $("#changeCareerPageKeyStatus").click(function() {
+        $.post(sourceleadUrl+"/career-page-key-status", {}, function(data) {
+            if(data && data.indexOf("status") === 0) {
+                var status = data.split(";")[1];
+                if(parseInt(status) === 1)
+                    $("#changeCareerPageKeyStatus").prop('checked', 'checked');
+                else
+                    $("#changeCareerPageKeyStatus").removeProp('checked');
+            } else  if(data && (data === "logout" || data.indexOf("Sign In") !== -1)) {
+                showError("Session timedout");
+                window.setTimeout('location.href='+sourceleadLoginUrl, 3000);
+            } else {
+                showError("Operation failed, please try again");
+            }
+        });
+    });
+}
+
+function applyCareerPageCode(code) {
+    var url = '${sourceleadUrl}'.replace('app','');
+    $("#careerPageCode").text("<div id='jobList'></div>\n<script type='text/javascript' src='"+url+"resources/careers.js?key="+code+"'></script"+">");
+}
 </script>
+
+<script>
+
+function validateTotalRecommValue(){
+	var skillPercent = parseInt($("#recommSkill").val());
+	var locationPercent = parseInt($("#recommLocation").val());
+	var visatypePercent = parseInt($("#recommVisaType").val());
+	var educationPercent = parseInt($("#recommEducation").val());
+	var noticePercent = parseInt($("#recommNoticePeriod").val());
+	var expPercent = parseInt($("#recommExp").val());
+	var ratePercent = parseInt($("#recommRate").val());
+	var keyWordPercent = parseInt($("#recommKeywords").val());
+	
+	var totalPercecnt = skillPercent + locationPercent + visatypePercent + educationPercent + noticePercent + expPercent + ratePercent + keyWordPercent;
+	
+	if(totalPercecnt <= 100){
+		saveRecomSettings();
+	}else{
+		$("#recommErrorDiv").removeAttr("style");
+    	$("#recommErrorDiv").attr("style","display:block");
+    	$("#recommErrorDiv").fadeOut(2500);
+	}
+}
+
+function saveRecomSettings(){
+	var sourceleadUrl = '${sourceleadUrl}';
+	var formData = $($('#recommendations_form')[0]).serialize();
+	    $("#recommLoading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:70px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
+	    $.post(sourceleadUrl + "/saveCustomRecommendation", formData, function(data){
+	    	$("#recommSuccessDiv").removeAttr("style");
+	    	$("#recommLoading").removeAttr('style');
+	    	$("#recommSuccessDiv").attr("style","display:block");
+	    	$("#recommSuccessDiv").fadeOut(2500);
+		});  
+}
+</script>
+
 
 <script>
 function closeWhiteListIp(){
 	$("#fromIpAddress").val("");
 	 $("#toIpAddress").val("");
 	 $("#whiteListId").val("");
+	$("#addipPopup").fadeOut(100);
+	$(".mask").hide();	 
 }
 
 function saveWhiteListIps(){
@@ -681,15 +1213,28 @@ function saveWhiteListIps(){
 			      type : "GET",
 			      url : url,
 			               
-			       success :function(data) {
-			       if(data == "Success"){
+			       success :function(result) {
+			    		if (result && (result.response === "INVALID_DATA" || result.response === "INVALID_USER")) {
+	      	    		    showError(result.responseMessage);
+	      	    		    $("#loading").removeAttr('style');
+	      	    		}
+			    		else if(result.response === "AWKWARD"){
+			        		 location.href = "/errorPage";
+			        	}
+			    		else if(result.response === "SUCCESS"){
 			    	   $("#fromIpAddress").val("");
 			    	   $("#toIpAddress").val("");
-			    	   $(".modal.addipPopup-modal").fadeOut();
-			    	   $(".comMask").fadeOut();
+			    	   $("#addipPopup").fadeOut(100);
+			    	   $(".mask").hide();
 			    	   closeWhiteListIp();
 			    	   getWhiteListIps();
 			       	} 
+			    		else if (result.indexOf('Sign In') !== -1) {
+	      					location.replace(sourceleadUrl);
+	      				} else {
+	      				    showError("Operation failed, please try again");
+	      				    $("#loading").removeAttr('style');
+	      				}
 			      },
 			  }); 
 		
@@ -711,6 +1256,245 @@ function saveWhiteListIps(){
 </script>
 
 <script>
+    function savePaymentAccount() {
+        var data =  {};
+        var val = $("#paymentAccountType").val();
+        var flag = false;
+        if(validateSelect('paymentAccountType', 'Account Type')) {
+            if(val === "WEPAY") {
+                if(validateEmail('paymentAccountEmail')
+                        && validate('paymentAccountFirstName', "First Name")
+                        && validate('paymentAccountLastName', "Last Name")
+                        && validateSelect("paymentAccountLocation", 'Location')) {
+                    data["email"] = $("#paymentAccountEmail").val();
+                    flag = true;
+                }
+            } else {
+                if(validate('paymentAccountBankName', "Bank Name")
+                        && validate('paymentAccountNumber', "Account Number")
+                        && validate('paymentBSRNumber', "BSR Number")
+                        && validate('paymentMICRCode', "MICR Code")
+                        && validate('paymentAccountRoutingNumber', "Routing Number")
+                        && validate('paymentAccountFirstName', "First Name")
+                        && validate('paymentAccountLastName', "Last Name")
+                        && validateSelect("paymentAccountLocation", 'Location')) {
+                	data["micrCode"] = $("#paymentMICRCode").val().trim();
+                	data["bsrNumber"] = $("#paymentBSRNumber").val().trim();
+                    data["accountNumber"] = $("#paymentAccountNumber").val().trim();
+                    data["bankName"] = $("#paymentAccountBankName").val().trim();
+                    data["routingNumber"] = $("#paymentAccountRoutingNumber").val().trim();
+                    flag = true;
+                }
+            }
+            data["firstName"] = $("#paymentAccountFirstName").val().trim();
+            data["lastName"] = $("#paymentAccountLastName").val().trim();
+            data["orgLocationId"] = $("#paymentAccountLocation").val();
+            data["accountType"] = val;
+            data["id"] = $("#paymentAccountId").val();
+        }
+        if(flag) {
+        	$("#savePaymentButton").attr("disabled", "disabled");
+            $.post(sourceleadUrl+"/save-payment-account", data, function(data) {
+                showError(data.responseMessage);
+                if(data.response === "SUCCESS" || data.response === "UNABLE_SET_PAYMENT_ACCOUNT") {
+                    closePaymentAccountPopup(val);
+                    $("#savePaymentButton").removeAttr("disabled", "disabled");
+                }
+                getPaymentAccounts(true);
+            });
+        }
+    }
+function getPaymentAccounts(flag) {
+    if(!flag) {
+        var idd = ${SourceLeadWeb_orgLocationId};
+        $("#paymentAccountLocation").empty();
+        $("#paymentAccountLocation").append("<option value='0'>Select Location</option>");
+        $.post(sourceleadUrl+"/org-location-list", {}, function(data) {
+            if(data && data.response === "SUCCESS") {
+                for (var e in data.data) {
+                    var report= data.data[e];
+                    $("#paymentAccountLocation").append("<option data-country='"+report.country+"' "+(idd === report.id ? "selected='selected'" : "")+" value='"+report.id+"'>"+report.orgLocationName+"</option>");
+                }
+            }
+        });
+    }
+    $.post(sourceleadUrl+"/payment-account-list", {}, function(data) {
+        if(data && data.response === "SUCCESS") {
+            $("#payemntAccountsDiv").empty();
+            var result = '';
+            result = result + '<table id="payemntAccountsTable" class="display" cellspacing="0" width="100%" >';
+            result = result + ' <thead>';
+            result = result + '   <tr>';
+            result = result + '    <th>Type</th>';
+            result = result + '    <th>Email</th>';
+            result = result + '    <th>Bank Name</th>';
+            result = result + '    <th>Account Number</th>';
+            result = result + '    <th>Routing Number</th>';
+            result = result + '    <th>First Name</th>';
+            result = result + '    <th>Last Name</th>';
+            result = result + '    <th>Location</th>';
+            result = result + '    <th>Default</th>';
+            result = result + '    <th>Active</th>';
+            result = result + '    <th></th>';
+            result = result + '   </tr>';
+            result = result + '	</thead>';
+            result = result + '	<tbody>';
+            
+            for (var e in data.data) {
+                var report= data.data[e];
+                result = result + '<tr>';
+                result = result + '<td>';
+                result = result + '<div class="tblminwidth-75">'+(report.accountType ? report.accountType : "")+'</div>';
+                result = result + '</td>';
+                result = result + '<td>';
+                result = result + '<div class="tblminwidth-125">'+(report.email ? report.email : "--")+'</div>';
+                result = result + '</td>';
+                result = result + '<td>';
+                result = result + '<div class="tblminwidth-125">'+(report.bankName ? report.bankName : "--")+'</div>';
+                result = result + '</td>';
+                result = result + '<td>';
+                result = result + '<div class="tblminwidth-75">'+(report.accountNumber ? report.accountNumber : "--")+'</div>';
+                result = result + '</td>';
+                result = result + '<td>';
+                result = result + '<div class="tblminwidth-75">'+(report.routingNumber ? report.routingNumber : "--")+'</div>';
+                result = result + '</td>';
+                result = result + '<td>';
+                result = result + '<div class="tblminwidth-75">'+(report.firstName ? report.firstName : "")+'</div>';
+                result = result + '</td>';
+                result = result + '<td>';
+                result = result + '<div class="tblminwidth-75">'+(report.lastName ? report.lastName : "")+'</div>';
+                result = result + '</td>';
+                result = result + '<td>';
+                result = result + '<div class="tblminwidth-125">'+(report.orgLocationName ? report.orgLocationName : "")+'</div>';
+                result = result + '</td>';
+                result = result + '<td>';
+                result = result + '<div class="tblminwidth-50"><div class="toggle-button"><label class="switch" style="top: 5px;"><input onclick="changeDefaultPaymentAccount(this, '+report.id+')" type="checkbox" '+(report.defaultAccount ? 'checked' : '')+'/> <div class="slider round"></div> </label> </div></div>';
+                result = result + '</td>';
+                result = result + '<td>';
+                result = result + '<div class="tblminwidth-50"><div class="toggle-button"><label class="switch" style="top: 5px;"><input onclick="changeActivePaymentAccount('+report.id+')" type="checkbox" '+(!report.disabled ? 'checked' : '')+'/> <div class="slider round"></div> </label> </div></div>';
+                result = result + '</td>';
+                
+                if(report.accountType !== 'WEPAY') {
+                    result = result + '<td>';
+                    result = result + '<div class="tblminwidth-50"><a href="javascript:void(0)" onclick="editPaymentAccount(\''+report.accountType+'\','+ report.id+','+report.orgLocationId+',\''+report.firstName+'\',\''+report.lastName+'\',\''+report.accountNumber+'\',\''+report.routingNumber+'\',\''+report.bankName+'\',\''+report.bsrNumber+'\',\''+report.micrCode+'\')">Edit</a></div>';
+                    result = result + '</td>';
+                } else {
+                    result = result + '<td>';
+                    result = result + '<div class="tblminwidth-50">'+(report.access ? "" : "<a href='javascript:void(0)' onclick='grantWePayAccess("+report.id+")'>Resend Mail</a>")+'</div>';
+                    result = result + '</td>';
+                    
+                }
+                result = result + '</tr>';
+            }
+            result = result + '	</tbody>';
+            result = result + '</table>';
+            $("#payemntAccountsDiv").append(result);
+            $('#payemntAccountsTable').DataTable({ 
+                        "scrollCollapse": false,
+                "lengthMenu": [[10, 15, 20, -1], [10, 15, 20, "All"]],
+                "bLengthChange": true,
+                "bDestroy": true,
+                "ordering": true,
+                "oLanguage": {
+                        "sSearch": "",
+                         "sZeroRecords": "", "sEmptyTable": ""
+                }
+            });
+        } else if(data && data.response === "SESSION_TIMEDOUT") {
+            showError("Session timedout");
+            window.setTimeout('location.href='+sourceleadLoginUrl, 3000);
+        } else if(data) {
+            showError(data.responseMessage);
+        } else {
+            showError("Operation failed, please try again");
+        }
+    });
+    
+}
+
+function grantWePayAccess(id) {
+    $.post(sourceleadUrl+"/resend-wepay-mail", {id: id}, function(data) {
+        showError(data.responseMessage);
+    });
+}
+
+function changeDefaultPaymentAccount(ele, id) {
+    $.post(sourceleadUrl+"/change-default-payment-account", {id: id, defaultAccount: $(ele).is(":checked")}, function(data) {
+        showError(data.responseMessage);
+        getPaymentAccounts();
+    });
+}
+function changeActivePaymentAccount(id){
+	 $.post(sourceleadUrl+"/change-active-payment-account", {id: id}, function(data) {
+	        showError(data.responseMessage);
+	        getPaymentAccounts();
+	    });
+}
+
+function editPaymentAccount(type, id, locationId, firstName, lastName, accountNumber, routingNumber, bankName,bsrNumber,micrCode) {
+	$("[data-fieldtype=account]").hide();
+	showOrHidePaymentFormFields(type);
+	$("#paymentAccountPopup").fadeIn(100);
+	$(".mask").show();
+	$("#paymentAccountFirstName").val(firstName);
+	$("#paymentAccountBankName").val(bankName);
+	$("#paymentAccountLastName").val(lastName);
+	$("#paymentAccountLocation").val(locationId);
+	$("#paymentAccountNumber").val(accountNumber);
+	$("#paymentBSRNumber").val(bsrNumber);
+	$("#paymentMICRCode").val(micrCode);
+	$("#paymentAccountRoutingNumber").val(routingNumber);
+	$("#paymentAccountId").val(id);
+}
+        
+function showPaymentAccountPopup() {
+    $("#paymentAccountId").val('0');
+    $("[data-fieldtype=account]").hide();
+    showOrHidePaymentFormFields('SAVINGS');
+    $("#paymentAccountPopup").fadeIn(100);
+    $(".mask").show();
+    $("input[id*=paymentAccount]").val("");
+    $('#paymentaccount_form')[0].reset();
+}
+function showOrHidePaymentFormFields(type) {
+    $("#paymentAccountLocation").val('0');
+    $("#paymentAccountLocation option").removeProp('disabled');
+    if(type === "WEPAY") {
+        $("#paymentAccountLocation option").prop('disabled', 'disabled');
+        $("#paymentAccountLocation option").each(function() {
+            if($(this).data('country') === "USA" || $(this).data('country') === "United States"
+                    ||  $(this).attr('value') === '0' ||  $(this).attr('value') === 0)
+                $(this).removeProp('disabled');        
+        });
+    }
+    $("[data-fieldtype=account]").hide();
+    $("#paymentAccountType").val(type);
+    var id = $("#paymentAccountType option[value="+type+"]").data('type');
+    $("[data-fieldtype=account]").each(function() {
+        var val = $(this).data('fieldfor');
+        if(typeof val === "number") {
+            if(parseInt(val) === parseInt(id)) 
+                $(this).show();
+        } else {
+            console.log(val);
+            val = val.split(",");
+            for(var e in val) {
+                if(parseInt(val[e]) === parseInt(id)) {
+                    $(this).show();
+                }
+            }
+        }
+    });
+}
+function closePaymentAccountPopup(type) {
+    $("#paymentAccountPopup").fadeOut(100);
+    $(".mask").hide();
+    if(type) {
+        showOrHidePaymentFormFields('0');
+        showOrHidePaymentFormFields(type);
+        $("input[id*=paymentAccount]").val("");
+    }
+}
 function getWhiteListIps(){
 	$.ajax({
       type : "GET",
@@ -760,7 +1544,7 @@ function WhiteListIpTablePagination(){
 	$('#WhiteListIpTable').DataTable({ 
 		"scrollCollapse": false,
     	"lengthMenu": [[10, 15, 20, -1], [10, 15, 20, "All"]],
-    	"bLengthChange": false,
+    	"bLengthChange": true,
     	"bDestroy": true,
     	"ordering": true,
     	"oLanguage": {
@@ -778,8 +1562,8 @@ function editWhiteListIp(id){
 	    type: "GET",
         url: sourceleadUrl+"/editWhiteListIp?whiteListId="+id,
         success: function(data) {
-        	$(".modal.addipPopup-modal").fadeIn();
-        	$(".comMask").fadeIn();
+        	$("#addipPopup").fadeIn(100);
+        	$(".mask").show();
         	if(data.id != null && data.id != '' && data.id != 'undefined'){
         		$("#whiteListId").val(data.id);
         	}
@@ -852,19 +1636,10 @@ var validationSettings = {
         	  if ($(this).validate(false, validationSettings)){
         		    e.preventDefault(); 
 	          		
-	          		var frm = $('#orgSettings_form').serializeFormJSON();
-	            	var con = JSON.stringify(frm);
-				    con = con.replace(/[{}]/g, "");
-				  //It will escape all the special characters
-    		        var jsonData = encodeURIComponent(con);
-				    
-	          		
 	          		var sourceleadUrl ='${sourceleadUrl}';
-	          		var form = $('#orgSettings_form')[0];
-	           		var formData = new FormData(form);
+	           		var formData = $($('#orgSettings_form')[0]).serialize();
 	           		var uploadedImage = document.getElementById('uploadedImage').value;
              		var imageExtension = uploadedImage.substring(uploadedImage.lastIndexOf(".")+1);
-	           		
              		if(imageExtension == 'gif' || imageExtension == 'png' || imageExtension == 'svg'){
 		        		document.getElementById("errorImage").style.display=""; 
              		}else{
@@ -873,17 +1648,24 @@ var validationSettings = {
 	                  $.ajax({
 	              	      type: "POST",
 	              	      data: formData,
-	              	      contentType : 'application/json; charset=utf-8',
-	              	      enctype: 'multipart/form-data',
-	          	          processData: false,
-	          	          contentType:false,
-	              	      dataType : 'json',
-	              	      
-	                    	  url: sourceleadUrl+"/saveOrgSettings?${_csrf.parameterName}=${_csrf.token}&json="+jsonData,
+	                    	  url: sourceleadUrl+"/saveOrgSettings?"+tokenParamName+"="+tokenValue+"",
 	                      	success: function(result) {
-	  			        	 if((result == 'home')){
+	                      		if (result && (result.response === "INVALID_DATA" || result.response === "INVALID_USER")) {
+	            	    		    showError(result.responseMessage);
+	            	    		    $("#loading").removeAttr('style');
+	            	    		}
+	                      		else if (result.response === "AWKWARD") {
+	            	    		    location.href = "/errorPage";
+	            	    		}
+	                      		else if(result.response === "SUCCESS"){
 	  			        		location.replace(sourceleadUrl+"/orgSettings");  
-	  			        	}
+	  			        	    }
+	                      		else if (result.indexOf('Sign In') !== -1) {
+	            					location.replace(sourceleadUrl);
+	            				} else {
+	            				    showError("Operation failed, please try again");
+	            				    $("#loading").removeAttr('style');
+	            				}
 	  			        },  
 	                  });
              		}
@@ -1201,7 +1983,7 @@ function loadSignature(){
 						result = result + '</div>';
 						
 						}else{
-							result = result + '<div class="col-md-3" title="Text Box"><img id="orgImage" onerror="predefineOrgImage(this);" src="<c:url value="/app/displayOrgImage/${SourceLeadWeb_orgCode}"/>" alt="Org Image" style="height:60px; width: 100px;"></div>';
+							result = result + '<div class="col-md-3" title="Text Box"><img id="orgImage" onerror="predefineOrgImage(this);" data-id="orgLogoImage" src="${SourceLeadWeb_org.fileUrl}" alt="Org Image" style="height:60px; width: 100px;"></div>';
 							result = result + '<div class="col-md-8 select-field">';
 							result = result + '</div>';
 						}
@@ -1401,7 +2183,6 @@ function getSignaturePreview(){
 function restoreSignature(){
 	
 	var result = "";
-	result = result +"	<div class='project_inn_mask'></div>";
 	result = result +"	   <div id='remove_user_pop' class='remove_user_pop remove_user_pop_a'>";
 	result = result +"		<p>Are you sure to restore</p>";
 	result = result +"		<div>&nbsp;&nbsp;&nbsp;</div>";
@@ -1409,7 +2190,7 @@ function restoreSignature(){
 	result = result +"	</div>";
 	$("#restorePopUp").append(result);
 	$("#remove_user_pop").slideDown(200);
-	$(".project_inn_mask").fadeIn(200);
+	$(".mask").show();
 
 }
 </script>
@@ -1417,7 +2198,7 @@ function restoreSignature(){
 <script type="text/javascript">
 function cancel(){
 	$("#restorePopUp").empty();
-	$(".project_inn_mask").fadeOut(200);
+	$(".mask").hide();
 }
 </script>
 
@@ -1425,7 +2206,7 @@ function cancel(){
 function restSignature(){
 	var sourceleadUrl ='${sourceleadUrl}';
 	$("#restorePopUp").empty();
-	$(".project_inn_mask").fadeOut(200);
+	$(".mask").hide();
 	$("#signLoading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:70px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
 	
 	   $.ajax({
@@ -1489,12 +2270,12 @@ function loadRegisteredOrgs(){
 	 			    	email = "---"
 	 			    }
 	 				
-	       	    	result = "<div class='col-xs-12 col-sm-12 col-md-6 col-lg-4'>";
+	       	    	result = "<div class='col-xs-12 col-sm-12 col-md-6 col-lg-4 noPad'>";
 	       	    	result = result +"<div class='user-profile'>";
 	       	    	result = result +"<div class='col-xs-4 col-sm-4'>";
 	       	    	result = result +"<div class='text-center image-parent'>";
 	       	    	result = result +"<div class='imageParent'>";
-	       	    	result = result +"<img onerror='predefineOrgImage(this);' class='m-t-xs' src='"+sourceleadUrl+"/displayOrgImage/"+orgLoc.orgCode+"' alt='image'>";
+	       	    	result = result +"<img onerror='predefineOrgImage(this);' class='m-t-xs' data-id='orgLogoImage' src="+orgLoc.fileUrl+" alt='image'>";
 	       	    	result = result +"</div>";
 	       	    	
 	       	    	result = result +"</div>";
@@ -1661,84 +2442,6 @@ function getOrgLocationDetails(orgLocationId){
 	    	        
     	            result = result +'</div>';
     	            
-    	             result = result +'<div class="col-md-6">';
-	    	            
-    	            	result = result +'<div class="form-group">';
-		    	        result = result +'<div class="col-md-12 clearfix">';
-		    	        result = result +'<h5>Registered Modules</h5>';
-		    	        result = result +'</div>';
-		    	        result = result +'</div>';
-		    	        
-		    	        result = result +'<div class="form-group">';
-		    	        result = result +'<div class="col-md-12 checkbox">';
-		    	        
-		    	        if(json.modulesList != null && json.modulesList != "" && json.modulesList != 'undefined' && json.modulesList.length > 0){
-		    	        	
-		    	        	 for(var i=0; i<json.modulesList.length; i++){
-				    	        	var module = json.modulesList[i];
-				    	        	
-				    	       	 result = result +'<ul class="list-unstyled pull-left">';
-			    	        	 result = result +'<li>';
-			    	        	 
-			    	        	 	if(module.id == '1'){
-			    	        	 		result = result +'<label class="mr pull-left NoPad">';
-			    	        	        result = result +'<p>'+module.moduleName+'</p>';
-			    	        	        result = result +'</label>';
-			    	        	        
-			    	        	        result = result +'<ul class="list-unstyled pull-left tree-checkbox">';
-			    	        	        if(json.subModulesList != null && json.subModulesList != "" && json.subModulesList != 'undefined' && json.subModulesList.length > 0){
-			    	        	        	for(var j=0; j<json.subModulesList.length; j++){
-			    	        	        		var subModules = json.subModulesList[j];
-			    	        	        		    result = result +'<label>';
-			    	        	        	        if(subModules.isModuleConfigured == 'Y'){
-				    	        	        	         result = result +'<input type="checkbox" class="allsubmodules" id="submodules"  checked="checked" disabled="disabled">';
-				    	        	        	         result = result +'<p>'+subModules.moduleName+'</p>';
-			    	        	        			} 
-			    	        	        	        if(subModules.isModuleConfigured != 'Y'){
-				    	        	        	         result = result +'<input type="checkbox" class="allsubmodules" value="'+subModules.id+'"  id="submodules"  name="submodulesList[]">';
-				    	        	        	         result = result +'<p>'+subModules.moduleName+'</p>';
-			    	        	        			} 
-			    	        	        	        result = result +'</label><br/>';
-			    	        	        	}
-			    	        	        }
-			    	        	        
-			    	        	        result = result +'</ul>';
-			    	        	 	}
-			    	        	 
-			    	        	 result = result +'</li>';
-			    	        	 
-			    	        	 
-			    	        	 
-			    	        	 
-			    	        	 result = result +'<li>';
-			    	             result = result +'<label class="mr pull-left">';
-				    	             if(module.id != "1" && module.isModuleConfigured  == "Y"){
-				    	            	 result = result +'<input type="checkbox" id="isRecruiting"  checked="checked" disabled="disabled" >';
-				    	            	 result = result +'<p>'+module.moduleName+'</p>';
-				    	             }
-				    	             
-				    	             if(module.id != "1" && module.isModuleConfigured  != "Y"){
-				    	            	 result = result +'<input type="checkbox" id="isRecruiting" value="'+module.id+'"  name="modulesList[]"  >';
-				    	            	 result = result +'<p>'+module.moduleName+'</p>';
-				    	             } 
-			    	             result = result +'</label>';
-			    	             result = result +'</li>';
-			    	        	 
-			    	        	 result = result +'</ul>';
-				    	        	
-				    	        	
-				    	        }
-		    	        }
-		    	        
-		    	        result = result +'</div>';
-		    	        result = result +'</div>';
-		    	        
-		    	        result = result +'<div class="clearfix">';
-		    	        result = result +'<div class="pull-right">';
-		    	        result = result +'<input type="button" value="Upgrade" onclick="updateModules('+orgLocationId+');" id="save_button" class="btn btn-primary mr">';
-		    	        result = result +'<input type="button" value="Cancel" class="btn btn-default" onClick="loadRegisteredOrgs();">';
-		    	        result = result +'</div>';
-		    	        result = result +'</div>';
 		    	        
     	                result = result +'</div>'; 
     	       	
@@ -1751,27 +2454,18 @@ function getOrgLocationDetails(orgLocationId){
 </script>
 
 
-<script type="text/javascript">
+<!-- <script type="text/javascript">
 	function updateModules(orgLocationId) {
 		
 			var sourceleadUrl ='${sourceleadUrl}'; 
 			
-			 var modulesList = [];
-			 $("input[name='modulesList[]']:checked").each( function (i) {
-				modulesList[i] = $(this).val();
-			});
-			 
 			
-			 var submodulesList = [];
-			 $("input[name='submodulesList[]']:checked").each( function (i) {
-				submodulesList[i] = $(this).val();
-			});
 			 
 	 	 
 		 $("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:70px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
 			$.ajax({ 
 		    	type: "POST",
-		    	 url: sourceleadUrl+"/updateOrgModules?${_csrf.parameterName}=${_csrf.token}&modulesList="+modulesList+"&submodulesList="+submodulesList+"&orgLocationId="+orgLocationId,
+		    	 url: sourceleadUrl+"/updateOrgModules?${_csrf.parameterName}=${_csrf.token}&orgLocationId="+orgLocationId+"&submodulesList="+submodulesList+"&orgLocationId="+orgLocationId,
 		        success: function(result) {
 		        	if((result == 'success')){
 		        		loadRegisteredOrgs();
@@ -1781,7 +2475,7 @@ function getOrgLocationDetails(orgLocationId){
 		  
 	}
 
-</script>
+</script> -->
 
 
 
@@ -1798,8 +2492,8 @@ function resendInvitation(userId){
 			        success: function(result) {
 			        	$("#user"+userId).html("<i class='fa fa-envelope' aria-hidden='true'></i><a href='javascript:void(0)'  onClick='resendInvitation("+userId+");'>&nbsp;Resend</a>");
 			        	$("#loading").removeAttr("style"); 
-			        	$("#mailMsg").fadeIn(200);
-		   		        $('#mailMsg').delay(2000).fadeOut('slow');
+			        	$("#resendOrg").fadeIn(100);
+		   		        $('#resendOrg').delay(2000).fadeOut(100);
 			        },
 			    });
 		 }
@@ -1814,7 +2508,14 @@ function createOrg(){
 	$("#registeredOrgs").empty();
 	$("#registeredOrgLocationSummary").empty();
 	$("#editPrimaryUserContactDiv").empty();
-	 
+	
+	var subscribedCountries = '${subscribedCountries}';
+	var countries= [];
+	var res = subscribedCountries.split(",");
+	for(var i=0; i <res.length; i++){
+		countries.push(res[i]);
+	};
+	
 	var result = '';
 	
 	result = result +'<div class="row">';
@@ -1827,7 +2528,23 @@ function createOrg(){
 	result = result +'<span class="hidden">Company</span>';
 	result = result +'</div>';
 	result = result +'</div>';
-          
+	
+	result = result +'<div class="form-group">';
+	result = result +'<label class="col-md-3">DBA<span class="text-danger">&nbsp;*</span></label>';
+	result = result +'<div class="col-md-9">';
+	result = result +'<div class="col-md-10 noPad">';
+	result = result +'<input id="dbaLoc" name="dba" class="form-control" type="text" field-name="DBA" data-validation="required validate_Space validate_length length2-250">';
+	result = result +'</div>';
+	result = result +'<div class="col-md-2 dbaCheck dbaCheck-cs">';
+             
+	result = result +'<div class="ml10">';
+	result = result +'<input id="dbaLocCheckbox" name="dbaLocCheckbox"  class="checkbox-custom" onclick="getLocDBAName();"  type="checkbox">';
+	result = result +'<label for="dbaLocCheckbox" class="checkbox-custom-label" title="Make company name as dba"></label>';
+	result = result +'</div>';
+	result = result +'</div>';
+	result = result +'</div>';
+	result = result +'</div>';	
+	
 	            result = result +'<div class="form-group">';
 	            result = result +'<label class="col-md-3">Website<span class="text-danger">&nbsp;*</span></label>';
 	            result = result +'<div class="col-md-9">';
@@ -1869,36 +2586,26 @@ function createOrg(){
 	            result = result +'<span class="hidden">Phone Number</span>';
 	            result = result +'</div>';
 	            result = result +'</div>';
+	            
+	            result = result +'<div class="form-group" >';
+	        	result = result +'<label class="col-md-3">Org Short Code<span class="text-danger">*</span></label>';
+	        	result = result +'<div class="col-md-9">';
+	        	result = result +'<div id="generatedShortCodeIdDiv">';
+	        	result = result +'<input type="text"  class="form-control" name="generatedUserId" id="generatedShortCodeId" field-name="Org Short Code" style="text-transform:uppercase" data-validation="required validate_length length1-4"  onkeyup="validateOrgLocationShortCode();" maxlength="4" />';
+	            result = result +'<span class="hidden">Short Code</span>';
+	        	result = result +'</div>';
+	        	result = result +'</div>';
+	        	result = result +'</div>';
+	        	
+	        	
+	        	result = result +'<div class="form-group">';
+	            result = result +'<label class="col-md-3">Working Hours<span class="text-danger">&nbsp;*</span></label>';
+	            result = result +'<div class="col-md-9" id="averageLocWorkingHoursDiv">';
+	            result = result +'<input type="text" class="form-control" id="averageLocWorkingHours" name="averageWorkingHours" maxlength="2" field-name="Working Hours" data-validation="required validate_int" />';
+	            result = result +'<span class="hidden">Working Hours</span>';
+	            result = result +'</div>';
+	            result = result +'</div>';
           
-	            result = result +'<div class="form-group">';
-	            result = result +'<label class="col-md-3">Modules<span class="text-danger">&nbsp;*</label>';
-	            result = result +'<div class="col-md-9 checkBox">';
-	            result = result +'<div class="clearfix reMar">';
-	            result = result +'<c:forEach var="module" items="${modulesList}">';
-	            result = result +'<ul class="list-unstyled pull-left">';
-	            result = result +'<li>';
-	            result = result +'<label class="mr pull-left">';
-	            result = result +'<input type="checkbox" id="isRecruiting" value="${module.id}" onclick="getRecruitmentTypes(this)" name="modulesList[]" onblur="moduleCheckValidation(this)">${module.moduleName}';
-	            result = result +'</label>';
-	            result = result +'<ul class="list-unstyled pull-left tree-checkbox" id="recrutmentTypes" style="display: none;">';
-	            result = result +'<li>';
-	            result = result +'<c:forEach var="submodules" items="${requirementSubModulesList}">';
-	            result = result +'<label>';
-	            result = result +'<input type="checkbox" class="allsubmodules" id="submodules" value="${submodules.id}" name="submodulesList[]" >';
-	            result = result +'${submodules.moduleName}';
-	            result = result +'</label><br/>';
-	            result = result +'</c:forEach>';
-	            result = result +'</li>';
-	            result = result +'</ul>';
-	            result = result +'</li>';
-	            result = result +'</ul>';
-	            result = result +'</c:forEach>';
-	            result = result +'</div>';
-	            result = result +'<p id="subModule" style="display: none;"><font color="red">Sub Modules Required</font></p>';
-	            result = result +'<input type="hidden"  id="moduleValue" name="module" value="${module}" field-name="Module" data-validation="required"/>'; 			    
-	            result = result +'</div>';
-	            result = result +'</div>'; 
-        
         
 	            result = result +'</div>';
                                  
@@ -1908,7 +2615,7 @@ function createOrg(){
 				result = result +' 			<label class="col-md-3">Address<span class="text-danger">&nbsp;*</span></label>';
 				result = result +' 			 <div class="col-md-9" id="locationField">';
 				result = result +' 		          <div class="positionRelative">';
-				result = result +' 			          <input class="form-control positionRelative" id="orgSetLocation" name="location" placeholder="Enter your Addres"  type="text" field-name="Location" onclick="initLocationAuto(\'orgSetLocation\',\'orgSetCountry\',\'orgSetState\',\'orgSetCity\',\'orgSetZipCode\',\'orgSetLatitude\',\'orgSetLongitude\',\'invite\',\'addressId\');" data-validation="required"></input>';
+				result = result +' 			          <input class="form-control positionRelative" id="orgSetLocation" name="location" placeholder="Enter Addres"  type="text" field-name="Location" onclick="orgSubscriptionApiLocation(\'orgSetLocation\',\'orgSetCountry\',\'orgSetState\',\'orgSetCity\',\'orgSetZipCode\',\''+countries+'\',\'addressId\');" data-validation="required"></input>';
 				result = result +' 			          <i class="fa fa-refresh btn btn-primary refresh-icon" title="Refresh" onClick="addOrgRefreshGoogleApiLocation();"></i>';
 				result = result +' 			        </div>';
 				result = result +' 	          </div>';
@@ -1917,7 +2624,7 @@ function createOrg(){
 			    result = result +'<div class="form-group">';
 	            result = result +'<label class="col-md-3">Street Address</label>';
 	            result = result +'<div class="col-md-9">';
-	            result = result +'<input type="text" name="address" id="addressId" field-name="Street Address" data-validation-optional="true" placeholder="Enter your Street Addres" data-validation="validate_length length5-5000" class="form-control"/>';
+	            result = result +'<input type="text" name="address" id="addressId" field-name="Street Address" data-validation-optional="true" placeholder="Enter Street Addres" data-validation="validate_length length5-5000" class="form-control"/>';
 	            result = result +'</div>';
 	            result = result +'</div>';
 		            
@@ -1947,20 +2654,15 @@ function createOrg(){
 				result = result +'       <div class="form-group" id="errCoutryMsg">';
 				result = result +'         <label class="col-md-3">Country<span class="text-danger">&nbsp;*</span></label>';
 				result = result +'         <div class="col-md-9">';
-			 	 result = result + '   <select class="form-control chosen-select" name="country" id="orgSetCountry" field-name="Country" data-placeholder="Select Country" data-validation="required" onchange="changeCountry();">';
+			 	result = result + '   <select class="form-control chosen-select" name="country" id="orgSetCountry" field-name="Country" data-placeholder="Select Country" data-validation="required" onchange="changeCountry();">';
 			 	result = result + '       <option value="">Select Country</option>';
-				result = result + '       <option >Australia</option>';
-				result = result + '       <option >France</option>';
-				result = result + '       <option >India</option>';
-				result = result + '       <option >Singapore</option>';
-				result = result + '       <option >United Kingdom</option>';
-				result = result + '       <option >United States</option>'; 
+			 	result = result +'		<c:forEach var="subscibedCountries" items="${orgSubscribedCountriesList}">';
+			 	result = result + '       <option value="${subscibedCountries}">${subscibedCountries}</option>';
+		        result = result +'		</c:forEach>';
                 result = result + '    </select>';
 				result = result +'         </div>';
 				result = result +'       </div>';
 				
-						        
-	          
      
 	            result = result +'<div class="form-group">';
 	            result = result +'<label class="col-md-3">Time Zone<span class="text-danger">&nbsp;*</span></label>';
@@ -1976,7 +2678,6 @@ function createOrg(){
 	            result = result +'<div class="col-md-9">';
 	            result = result +'<select class="chosen-select form-control" data-placeholder="Date Format" field-name="Date Format" data-validation="required" id="dateFormat" name="dateFormat">';
 	            result = result +'</select>';
-	            //result = result +'<span class="hidden">Time Zone</span>';
 	            result = result +'</div>';
 	            result = result +'</div>';
 	            
@@ -2205,7 +2906,7 @@ function validateRegisterCompanyName(){
 							$('#companyNameDiv').find('p.jquery_form_error_message').remove();
 							$('input#companyName').attr('class','valid form-control');
 							$( "#register_button" ).removeAttr("style");
-							$( "#register_button" ).addClass('sign_btn').val('Register');
+							$( "#register_button" ).addClass('btn btn-primary').val('Register');
 							$( "#register_button" ).click(function() {
 							 if ($(this).validate(false, validationSettings)){
 							 }
@@ -2289,7 +2990,7 @@ function validateWebsite (){
 		    	    		$("input#companyWebsite").closest('b').after("<p class='jquery_form_error_message'> "+website+" "+result+"</p>");
 		    				$('input#companyWebsite').attr('record-exist','yes');
 		    				$('input#companyWebsite').attr('record-exist-errorMsg',website+' '+result+''); 
-		    				$( "#register_button" ).addClass('sign_btn').val('Register');
+		    				$( "#register_button" ).addClass('btn btn-primary').val('Register');
 		    				$("#register_button").removeAttr("disabled");
 			        	}
 			        	else{
@@ -2299,7 +3000,7 @@ function validateWebsite (){
 							$('#companyWebsiteDiv').find('p.jquery_form_error_message').remove();
 							$('input#companyWebsite').attr('class','valid form-control');
 							$( "#register_button" ).removeAttr("style");
-							$( "#register_button" ).addClass('sign_btn').val('Register');
+							$( "#register_button" ).addClass('btn btn-primary').val('Register');
 							$( "#register_button" ).click(function() {
 							 if ($(this).validate(false, validationSettings)){
 							 }
@@ -2331,7 +3032,7 @@ function validateCompanyEmail(){
 			    	    		$("input#companyEmail").closest('b').after("<p class='jquery_form_error_message'> "+emailValue+" is Invalid</p>");
 			    				$('input#companyEmail').attr('record-exist','yes');
 			    				$('input#companyEmail').attr('record-exist-errorMsg',emailValue+' is Invalid'); 
-			    				$( "#register_button" ).addClass('sign_btn').val('Register');
+			    				$( "#register_button" ).addClass('btn btn-primary').val('Register');
 			    				$("#register_button").removeAttr("disabled");
 					     } 
 					     else if(data == 'Existed Email'){
@@ -2341,7 +3042,7 @@ function validateCompanyEmail(){
 			    	    		$("input#companyEmail").closest('b').after("<p class='jquery_form_error_message'> "+emailValue+" is Already Existed</p>");
 			    				$('input#companyEmail').attr('record-exist','yes');
 			    				$('input#companyEmail').attr('record-exist-errorMsg',emailValue+' is Already Existed'); 
-			    				$( "#register_button" ).addClass('sign_btn').val('Register');
+			    				$( "#register_button" ).addClass('btn btn-primary').val('Register');
 			    				$("#register_button").removeAttr("disabled");
 					    	 
 					     }
@@ -2352,7 +3053,7 @@ function validateCompanyEmail(){
 							$('#emailDiv').find('p.jquery_form_error_message').remove();
 							$('input#companyEmail').attr('class','valid form-control');
 							$( "#register_button" ).removeAttr("style");
-							$( "#register_button" ).addClass('sign_btn').val('Register');
+							$( "#register_button" ).addClass('btn btn-primary').val('Register');
 							$( "#register_button" ).click(function() {
 							 if ($(this).validate(false, validationSettings)){
 							 }
@@ -2524,23 +3225,32 @@ function validatePrimaryUserEmail(){
 		   }; 
 	 if ($('#editPrimaryUser_form').validate(false, validationSettings)){ 
 		 
-		 var frm = $('#editPrimaryUser_form').serializeFormJSON();
-         var con = JSON.stringify(frm);
-         con = con.replace(/[{}]/g, "");
-         var jsonData = encodeURIComponent(con);
          var sourceleadUrl ='${sourceleadUrl}';
-         
+         var formData = getFormData("editPrimaryUser_form");
          $("#editPrimaryUserLoading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
           
           $.ajax({
              type: "POST",
-             url: sourceleadUrl+"/editOrgPrimaryUser?${_csrf.parameterName}=${_csrf.token}&userId="+userId+"&orgLocationId="+orgLocationId+"&json="+jsonData,
-             success: function(data) {
-                 if(data == "success"){
-                	 $("#editPrimaryUserLoading").removeAttr("style");
-                	 getOrgLocationDetails(orgLocationId);
-                 }
-                 
+             data: formData,
+             url: sourceleadUrl+"/editOrgPrimaryUser?${_csrf.parameterName}=${_csrf.token}&userId="+userId+"&orgLocationId="+orgLocationId,
+             success: function(result) {
+            		if (result && (result.response === "INVALID_DATA" || result.response === "INVALID_USER")) {
+    	    		    showError(result.responseMessage);
+    	    		    $("#editPrimaryUserLoading").removeAttr('style');
+    	    		}
+              		else if (result.response === "AWKWARD") {
+    	    		    location.href = "/errorPage";
+    	    		}
+              		else if(result.response === "SUCCESS"){
+              			 $("#editPrimaryUserLoading").removeAttr("style");
+                    	 getOrgLocationDetails(orgLocationId); 
+		        	    }
+              		else if (result.indexOf('Sign In') !== -1) {
+    					location.replace(sourceleadUrl);
+    				} else {
+    				    showError("Operation failed, please try again");
+    				    $("#editPrimaryUserLoading").removeAttr('style');
+    				}
              }
              });  
          
@@ -2570,40 +3280,38 @@ var validationSettings = {
         	  if ($(this).validate(false, validationSettings)){
         		e.preventDefault();
             	
-        		var frm = $('#createOrg_form').serializeFormJSON();
-            	var con = JSON.stringify(frm);
-			    con = con.replace(/[{}]/g, ""); 
-			    var jsonData = encodeURIComponent(con);
+        	
          		var sourceleadUrl ='${sourceleadUrl}';
+         		var formData = getFormData("createOrg_form");
          		
-         		 var modulesList = [];
-         		 $("input[name='modulesList[]']:checked").each( function (i) {
-         			modulesList[i] = $(this).val();
-         		});
-         		 
          		
-         		 var submodulesList = [];
-         		 $("input[name='submodulesList[]']:checked").each( function (i) {
-         			submodulesList[i] = $(this).val();
-         		});
-         		
-         		$("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
+         		$("#regLoading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
          		 	$.ajax({
           	      type: "POST",
-          	      contentType : 'application/json; charset=utf-8',
-          	      dataType : 'json',
-                	  url: sourceleadUrl+"/companyRegistration?&${_csrf.parameterName}=${_csrf.token}&modulesList="+modulesList+"&submodulesList="+submodulesList+"&json="+jsonData,
+          	      data: formData,
+                	  url: sourceleadUrl+"/companyLocationRegistration?${_csrf.parameterName}=${_csrf.token}",
                 			  
                 			  
                   	success: function(result) {
-			        	if((result == 'orgList')){
-			        		loadRegisteredOrgs();
-			        	}
-			        	else if((result == 'Invalid Sub Modules')){
-			        		$("#loading").removeAttr("style");
-			        		document.getElementById("subModule").style.display="";
-			        	}
-			        	
+                  		
+                  		if (result && (result.response === "INVALID_DATA" || result.response === "INVALID_USER")) {
+        	    		    showError(result.responseMessage);
+        	    		    $("#regLoading").removeAttr('style');
+        	    		}
+                  		else if (result.response === "AWKWARD") {
+        	    		    location.href = "/errorPage";
+        	    		}
+                  		else if(result.response === "SUCCESS"){
+                  		   $("#regLoading").removeAttr('style');
+                  			loadRegisteredOrgs();  
+			        	    }
+                  		else if (result.indexOf('Sign In') !== -1) {
+        					location.replace(sourceleadUrl);
+        				} else {
+        				    showError("Operation failed, please try again");
+        				    $("#regLoading").removeAttr('style');
+        				}
+                  		
 			        },  
                });  
                 
@@ -2654,24 +3362,77 @@ function validateOrgShortCode(){
 		        }
 		 }); 
 }
+
+function validateOrgLocationShortCode(){
+	var sourceleadUrl ='${sourceleadUrl}';
+	var orgLocShortId = $("#generatedShortCodeId").val();
+	$('#generatedShortCodeIdDiv').parent().find('p.jquery_form_error_message').remove();
+		  $.ajax({
+		    	type: "POST",
+		    	url : sourceleadUrl+"/validateOrgShortCode?${_csrf.parameterName}=${_csrf.token}&orgShortId="+orgLocShortId, 
+		        success: function(data) {
+		        	if(data == true){
+		        		$('#generatedShortCodeIdDiv').parent().find('p.jquery_form_error_message').remove();
+		        		$("input#generatedShortCodeId").parent().after("<p class='jquery_form_error_message'><span>Org Short Code Already Exists !!!</span>");
+		        		$("#register_button").attr("disabled","disabled");
+		        		
+		        	}else{
+		        		 $('#generatedShortCodeIdDiv').parent().find('p.jquery_form_error_message').remove();
+		        		 $("#register_button").removeAttr("disabled","disabled");
+		        	}
+		        }
+		 }); 
+}
+
+
 $(function(){
 	$("#generatedUserId").keypress(function (event) {
         return event.key.length > 1 || event.ctrlKey || !!event.key.match(/[a-zA-Z]/);
     });
 });
+
+
+$(function(){
+	$("#generatedShortCodeId").keypress(function (event) {
+        return event.key.length > 1 || event.ctrlKey || !!event.key.match(/[a-zA-Z]/);
+    });
+});
+
 $(function() {
 	  $('#averageWorkingHoursDiv').on('keydown', '#averageWorkingHours', function(e){-1!==$.inArray(e.keyCode,[46,8,9,27,13,110,190])||/65|67|86|88/.test(e.keyCode)&&(!0===e.ctrlKey||!0===e.metaKey)||35<=e.keyCode&&40>=e.keyCode||(e.shiftKey||48>e.keyCode||57<e.keyCode)&&(96>e.keyCode||105<e.keyCode)&&e.preventDefault()});
 });
+
 $(function(){
     $("#averageWorkingHours").keyup(function(event){
         var ew = $("#averageWorkingHours").val();
         $('#averageWorkingHoursDiv').parent().find('p.jquery_form_error_message').remove(); 
         if(ew > 24){
-        	$("#averageWorkingHours").val('');
+//         	$("#averageWorkingHours").val('');
         	$("input#averageWorkingHours").parent().after("<p class='jquery_form_error_message'><span>Average Working Hours should be less then or equal to 24</span>");
+        	$('#averageWorkingHours').removeAttr('data-validation');
+        	$("#save_button").attr("disabled","true");
+        }else{
+        	$("#save_button").removeAttr("disabled","false");
         }
+        
     });
 });
+
+$(function() {
+	  $('#averageLocWorkingHoursDiv').on('keydown', '#averageLocWorkingHours', function(e){-1!==$.inArray(e.keyCode,[46,8,9,27,13,110,190])||/65|67|86|88/.test(e.keyCode)&&(!0===e.ctrlKey||!0===e.metaKey)||35<=e.keyCode&&40>=e.keyCode||(e.shiftKey||48>e.keyCode||57<e.keyCode)&&(96>e.keyCode||105<e.keyCode)&&e.preventDefault()});
+});
+
+$(function(){
+  $("#averageLocWorkingHours").keyup(function(event){
+      var ew = $("#averageLocWorkingHours").val();
+      $('#averageLocWorkingHoursDiv').parent().find('p.jquery_form_error_message').remove(); 
+      if(ew > 24){
+      	$("#averageLocWorkingHours").val('');
+      	$("input#averageLocWorkingHours").parent().after("<p class='jquery_form_error_message'><span>Average Working Hours should be less then or equal to 24</span>");
+      }
+  });
+});
+
 
 </script>
 
@@ -2685,6 +3446,20 @@ function getDBAName(){
 		 }
      }else{
     	 $("#dba").val('');
+     } 
+}
+</script>
+
+
+<script>
+function getLocDBAName(){
+	 if (document.getElementById('dbaLocCheckbox').checked) {
+		 var companyName = document.getElementById("companyName").value;
+		 if(companyName != null && companyName != '' && companyName != 'undefined'){
+			$("#dbaLoc").val(companyName); 
+		 }
+     }else{
+    	 $("#dbaLoc").val('');
      } 
 }
 </script>
@@ -2854,13 +3629,13 @@ function addipPopup(){
 	$('#toIpAddressDiv').val("");
 	$('#fromIpAddressDiv').find('p.jquery_form_error_message').remove();
 	$('#toIpAddressDiv').find('p.jquery_form_error_message').remove();
-	$(".modal.addipPopup-modal").fadeIn();
-	$(".comMask").fadeIn();
+	$("#addipPopup").fadeIn(100);
+	$(".mask").show();
 }
 $(function(){
 $(".close").click(function(){
-	$(".modal.addipPopup-modal").fadeOut();
-	$(".comMask").fadeOut();
+	$("#addipPopup").fadeOut(100);
+	$(".mask").hide();
 });
 })
 </script>
@@ -2895,27 +3670,54 @@ function ValidateIPaddress()
 				$('#toIpAddressDiv').find('p.jquery_form_error_message').remove();
 			}
 		}
-		
 	}  
+	
+	
+function validateDuplicateIpAddress(fromType){
+	var ipAddress;
+	if(fromType == "fromIpAddr"){
+		ipAddress = $("#fromIpAddress").val();
+	}else{
+		ipAddress = $("#toIpAddress").val();
+	}
+	var userRoleId = '${SourceLeadWeb_userRoleId}';
+	var whiteListId = $("#whiteListId").val();
+	$.ajax({
+	      type : "GET",
+	       url: sourceleadUrl+"/ws/validateWhitelistIp?userRoleId="+userRoleId+"&ipAddress="+ipAddress+"&whiteListId="+whiteListId+"&accessingType=settings",        
+	       success :function(result) {
+	    	 if(result == true){
+	    		 document.getElementById("saveWhiteListbtn").disabled = true;
+	    		 if(fromType == "fromIpAddr"){
+	 	 			$('#fromIpAddressDiv').find('p.jquery_form_error_message').remove();
+	  				$("input#fromIpAddress").after( "<p class='jquery_form_error_message'>"+ipAddress+" already exists.</p>");
+	    		 }else{
+	 	 			$('#toIpAddressDiv').find('p.jquery_form_error_message').remove();
+	  				$("input#toIpAddress").after( "<p class='jquery_form_error_message'>"+ipAddress+" already exists.</p>");
+	    		 }
+	    		
+	    	 }
+	      },
+	  });
+}
 </script>
 
 
 <script>
 function deleteWhiteListIp(whiteListIpId){
 	var result = "";
-	result = result +"	<div class='project_inn_mask'></div>"; 
 	result = result +"	   <div id='remove_user_pop' class='remove_user_pop remove_user_pop_a'>";
 	result = result +"		<p>Are you sure you want to delete ?</p>";
 	result = result +'		<b href="javascript:void(0)"><input id="confirm-id" type="button" value="Delete" onclick="deleteIP(\''+whiteListIpId+'\');"><input class="u_can_color" type="button"  value="Cancel" onClick="cancelTermination();"></b>';
 	result = result +"	</div>";
 	$("#popUp").append(result);
 	$("#remove_user_pop").slideDown(200);
-	$(".project_inn_mask").fadeIn(200);
+	$(".mask").show();
 }
 
 function cancelTermination(){
 	$("#popUp").empty();
-	 $(".project_inn_mask").fadeOut(200);
+	 $(".mask").hide();
 }
 
 function deleteIP(id){
@@ -2924,13 +3726,102 @@ function deleteIP(id){
 				    url: sourceleadUrl+"/deleteIP?"+tokenParamName+"="+tokenValue+"&id="+id,
 		   		    success: function(data) {
 		   		    	$("#popUp").empty();
-		   			 	$(".project_inn_mask").fadeOut(200);
+		   			 	$(".mask").hide();
 		   			 getWhiteListIps()
 		   		    }
 			     });
 }
 
+
 </script>
+
+<script>
+function validateFinancialYear(){
+	var startMonth = $("#financialStartYear").val();
+	if(startMonth == ""){
+		$("#financialEndYear").val("");
+	}else if(startMonth == "January"){
+		$("#financialEndYear").val("December");
+	}else if(startMonth == "February"){
+		$("#financialEndYear").val("January");
+	}else if(startMonth == "March"){
+		$("#financialEndYear").val("February");
+	}else if(startMonth == "April"){
+		$("#financialEndYear").val("March");
+	}else if(startMonth == "May"){
+		$("#financialEndYear").val("April");
+	}else if(startMonth == "June"){
+		$("#financialEndYear").val("May");
+	}else if(startMonth == "July"){
+		$("#financialEndYear").val("June");
+	}else if(startMonth == "August"){
+		$("#financialEndYear").val("July");
+	}else if(startMonth == "September"){
+		$("#financialEndYear").val("August");
+	}else if(startMonth == "October"){
+		$("#financialEndYear").val("September");
+	}else if(startMonth == "November"){
+		$("#financialEndYear").val("October");
+	}else if(startMonth == "December"){
+		$("#financialEndYear").val("November");
+	}
+	$("#financialEndYear").trigger("chosen:updated");
+}
+</script>
+
+<script>
+function financialYear(){
+	
+	var locationId = '${SourceLeadWeb_orgLocationId}';
+	var startMonth = $("#financialStartYear").val();
+	var endMonth = $("#financialEndYear").val();
+	if(startMonth != null && startMonth != 'undefined' && endMonth != null && endMonth != 'undefined'){
+		$.ajax({
+			type : "GET",
+			url : sourceleadUrl+"/saveFinanacialYear?&locationId="+locationId+"&startMonth="+startMonth+"&endMonth="+endMonth,
+			success : function(result) {
+				$("#selector1").removeAttr("style");
+    			$("#selector1").css({ display: "block" });
+    			$("#msgDiv").html("Details Updated Successfully");
+		    	 msgFadein();
+				
+			},
+		});
+	}
+}
+</script>
+
+<script>
+	function msgFadein() {
+		$("#selector1").fadeIn(100);
+        $('#selector1').delay(2000).fadeOut(100);
+	}
+</script> 
+
+<!-- <script>
+function loadEmailConfig(){
+	alert("hello")
+	var sourceleadUrl ='${sourceleadUrl}';
+	$.ajax({
+	      type : "POST",
+	       url: sourceleadUrl+"/emailNontificationConfigure",        
+	       success :function(data) {
+//	    	   $("#loading").removeAttr('style');
+	    	  /*  $("#enrolledLocDiv").removeAttr("style");
+	    	   $("#enrolledLocDiv").attr("style","display : block");
+	    	   $("#enrolledLocDiv").empty(); */
+	    	   //$("#emailNotifications").empty();
+	    	   $("#emailNotifications").append(data);
+	    	  /*  $(".signWrap").addClass("orgOutWrap");
+	    	   $(".SignSlide").hide();
+	    	   $(".orgWrap").show(); */
+//	    	   $(".signWrap").addClass("orgOutWrap");
+	      },
+	  }); 
+
+}
+
+</script> -->
 
 <jsp:include page="masterFooter.jsp" />
 

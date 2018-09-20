@@ -157,6 +157,7 @@ public class MailBoxController {
  				if(null != mailBox){
  					model.addObject("subject", mailBox.getSubject());
  					model.addObject("fromEmail", mailBox.getFromMail());
+ 					model.addObject("toEmail",mailBox.getToMail());
  				}else{
  					model.setViewName("registration/persmissionDenied");
  				}
@@ -204,7 +205,7 @@ public class MailBoxController {
 		    ModelAndView model = new ModelAndView();
  			model.setViewName("hotlistMail");
  			model.addObject("sourceleadUrl", sourceleadUrl);
- 			
+ 			 commonUtil.highLightMenu(Constants.Campaigns, request);
  			 List<ContactsGroup> contactsGroupList = contactsGroupService.getContactsGroupListByUserId(user.getId());
 			 model.addObject("contactsGroupList", contactsGroupList);
  			return model;
@@ -212,7 +213,7 @@ public class MailBoxController {
 	
 	
 
-	@RequestMapping(value = "/requestForCandidateResume")
+	@RequestMapping(value = "/app/requestForCandidateResume")
  	public ModelAndView requestForCandidateResume(@RequestParam(value="UUID", required=false) String UUID,
 			 HttpServletRequest request) {
 		    ModelAndView model = new ModelAndView();
@@ -456,6 +457,7 @@ public class MailBoxController {
 				DateFormat TZ_DF_TS = new SimpleDateFormat ("yyyy-MM-dd HH:mm:ss");
 				Date converteDate = TZ_DF_TS.parse(currentDateInTimezone);
 				String commonDateFormat = standardFormat.format(converteDate);
+				userMailBox.setCalDays(commonDateFormat);
 			} 
 
 		}

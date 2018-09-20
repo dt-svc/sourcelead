@@ -43,6 +43,7 @@ import com.bis.sourcelead.entity.ProjectMembers;
 import com.bis.sourcelead.entity.SubmissionApproverHierarchy;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.enums.Submission_ApprovalStatus;
+import com.bis.sourcelead.service.OrgLocationService;
 import com.bis.sourcelead.service.OrgRelationsService;
 import com.bis.sourcelead.service.ProjectMembersHistoryService;
 import com.bis.sourcelead.service.ProjectMembersService;
@@ -84,6 +85,9 @@ public class TimesheetReportServiceImpl implements TimesheetReportService {
 	
 	@Autowired
 	private CommonUtil commonUtil;
+	
+	@Autowired
+	private OrgLocationService orgLocationService;
 	
 	@Value("${sourceleadUrl}")
     String sourceleadUrl;
@@ -347,7 +351,7 @@ public class TimesheetReportServiceImpl implements TimesheetReportService {
 				     }else{
 				    	 timesheetApprovalDiv.append("<td><div class='sm'><i title='").append("--").append("'>").append("--").append("</i></div></td>");	 
 				     }
-				     SubmissionApproverHierarchy sah = submissionApproverHierarchyService.getSubmissionApproverHierarchyByProjectMemberIdStartDateAndEndDateForApproverLoginForTsReports(loginUser.getId(),projectMember.getId(),startDate,endDate);
+				     SubmissionApproverHierarchy sah = submissionApproverHierarchyService.getSubmissionApproverHierarchyByProjectMemberIdStartDateAndEndDateForApproverLoginForTsReports(loginUser.getId(),orgLocations.getId(),projectMember.getId(),startDate,endDate,"");
 			    	 Submission_ApprovalStatus combinedApprovalStatus = null; 
 				     float monthTotalHours            = 0f;
 					 float monthBillableTotalHours    = 0f;
@@ -427,13 +431,13 @@ public class TimesheetReportServiceImpl implements TimesheetReportService {
 				    	        monthNonBillableTotalHours =  CommonUtil.getCombinedHours(monthNonBillableTotalHours, weekNonBillableHours);
 				    	    	 timesheetApprovalDiv.append("<td>")
 				    	    	                        .append(" <div class='week'>")
-				    	    	                          .append(" <span "+approvalClass+">").append("<d title='").append("week-Total-Hours").append(":").append(CommonUtil.getHoursDisplayFormat(weekTotalHours)).append("'>").append(CommonUtil.getHoursDisplayFormat(weekTotalHours)).append("</d>").append("</span>")
+				    	    	                          .append(" <span "+approvalClass+">").append("<d title='").append("week-Total-Hours").append(":").append(CommonUtil.getHoursDisplayFormat(weekTotalHours,null)).append("'>").append(CommonUtil.getHoursDisplayFormat(weekTotalHours,null)).append("</d>").append("</span>")
 				    	    	                             .append(" <div class='progress'>")
-				    	    	                                     .append(" <div class='progress-bar progress-bar-striped active progress-bar-info' role='progressbar' style='width:60%'>").append("<d title='").append("Billable").append(":").append(CommonUtil.getHoursDisplayFormat(weekBillableHours)).append("'>")
-				    	    	                                        .append(CommonUtil.getHoursDisplayFormat(weekBillableHours))
+				    	    	                                     .append(" <div class='progress-bar progress-bar-striped active progress-bar-info' role='progressbar' style='width:60%'>").append("<d title='").append("Billable").append(":").append(CommonUtil.getHoursDisplayFormat(weekBillableHours,null)).append("'>")
+				    	    	                                        .append(CommonUtil.getHoursDisplayFormat(weekBillableHours,null))
 				    	    	                                     .append("</d>").append("</div>")
-				    	    	                                     .append(" <div class='progress-bar progress-bar-striped active progress-bar-warning' role='progressbar' style='width:40%'>").append("<d title='").append("Non-Billable").append(":").append(CommonUtil.getHoursDisplayFormat(weekNonBillableHours)).append("'>")
-				    	    	                                        .append(CommonUtil.getHoursDisplayFormat(weekNonBillableHours))
+				    	    	                                     .append(" <div class='progress-bar progress-bar-striped active progress-bar-warning' role='progressbar' style='width:40%'>").append("<d title='").append("Non-Billable").append(":").append(CommonUtil.getHoursDisplayFormat(weekNonBillableHours,null)).append("'>")
+				    	    	                                        .append(CommonUtil.getHoursDisplayFormat(weekNonBillableHours,null))
 				    	    	                                        .append("</d>").append("</div>")
 				    	    	                             .append(" </div>")
 				    	    	                           
@@ -447,13 +451,13 @@ public class TimesheetReportServiceImpl implements TimesheetReportService {
 			    	 
 				     timesheetApprovalDiv.append("<td>")
                      .append(" <div class='week'>")
-                       .append(" <span class='draft'>").append("<d title='").append("Month-Total-Hours").append(":").append(CommonUtil.getHoursDisplayFormat(monthTotalHours)).append("'>").append(CommonUtil.getHoursDisplayFormat(monthTotalHours)).append("</d>").append("</span>")
+                       .append(" <span class='draft'>").append("<d title='").append("Month-Total-Hours").append(":").append(CommonUtil.getHoursDisplayFormat(monthTotalHours,null)).append("'>").append(CommonUtil.getHoursDisplayFormat(monthTotalHours,null)).append("</d>").append("</span>")
                           .append(" <div class='progress'>")
-                                  .append(" <div class='progress-bar progress-bar-striped active progress-bar-info' role='progressbar' style='width:60%'>").append("<d title='").append("Month-Billable-Hours").append(":").append(CommonUtil.getHoursDisplayFormat(monthBillableTotalHours)).append("'>")
-                                     .append(CommonUtil.getHoursDisplayFormat(monthBillableTotalHours))
+                                  .append(" <div class='progress-bar progress-bar-striped active progress-bar-info' role='progressbar' style='width:60%'>").append("<d title='").append("Month-Billable-Hours").append(":").append(CommonUtil.getHoursDisplayFormat(monthBillableTotalHours,null)).append("'>")
+                                     .append(CommonUtil.getHoursDisplayFormat(monthBillableTotalHours,null))
                                      .append("</d>").append("</div>")
-                                  .append(" <div class='progress-bar progress-bar-striped active progress-bar-warning' role='progressbar' style='width:40%'>").append("<d title='").append("Month-NonBillable-Hours").append(":").append(CommonUtil.getHoursDisplayFormat(monthNonBillableTotalHours)).append("'>")
-                                 .append(CommonUtil.getHoursDisplayFormat(monthNonBillableTotalHours))
+                                  .append(" <div class='progress-bar progress-bar-striped active progress-bar-warning' role='progressbar' style='width:40%'>").append("<d title='").append("Month-NonBillable-Hours").append(":").append(CommonUtil.getHoursDisplayFormat(monthNonBillableTotalHours,null)).append("'>")
+                                 .append(CommonUtil.getHoursDisplayFormat(monthNonBillableTotalHours,null))
                                  .append("</d>").append("</div>")
                           .append(" </div>")
                         
@@ -483,13 +487,13 @@ public class TimesheetReportServiceImpl implements TimesheetReportService {
 				     
 				     timesheetApprovalDiv.append("<td>")
                      .append(" <div class='week'>")
-                       .append(" <span class='draft'>").append("<d title='").append("ProjectToDate-Total-Hours").append(":").append(CommonUtil.getHoursDisplayFormat(sah.getProjectToDateTotalHours())).append("'>").append(CommonUtil.getHoursDisplayFormat(sah.getProjectToDateTotalHours())).append("</d></span>")
+                       .append(" <span class='draft'>").append("<d title='").append("ProjectToDate-Total-Hours").append(":").append(CommonUtil.getHoursDisplayFormat(sah.getProjectToDateTotalHours(),null)).append("'>").append(CommonUtil.getHoursDisplayFormat(sah.getProjectToDateTotalHours(),null)).append("</d></span>")
                           .append(" <div class='progress'>")
-                                  .append(" <div class='progress-bar progress-bar-striped active progress-bar-info' role='progressbar' style='width:60%'>").append("<d title='").append("ProjectToDate-Billable-Hours").append(":").append(CommonUtil.getHoursDisplayFormat(sah.getProjectToDateBillableHours())).append("'>")
-                                     .append(CommonUtil.getHoursDisplayFormat(sah.getProjectToDateBillableHours()))
+                                  .append(" <div class='progress-bar progress-bar-striped active progress-bar-info' role='progressbar' style='width:60%'>").append("<d title='").append("ProjectToDate-Billable-Hours").append(":").append(CommonUtil.getHoursDisplayFormat(sah.getProjectToDateBillableHours(),null)).append("'>")
+                                     .append(CommonUtil.getHoursDisplayFormat(sah.getProjectToDateBillableHours(),null))
                                   .append("</d></div>")
-                                  .append(" <div class='progress-bar progress-bar-striped active progress-bar-warning' role='progressbar' style='width:40%'>").append("<d title='").append("ProjectToDate-NonBillable-Hours").append(":").append(CommonUtil.getHoursDisplayFormat(sah.getProjectToDateNonBillableHours())).append("'>")
-                                     .append(CommonUtil.getHoursDisplayFormat(sah.getProjectToDateNonBillableHours()))
+                                  .append(" <div class='progress-bar progress-bar-striped active progress-bar-warning' role='progressbar' style='width:40%'>").append("<d title='").append("ProjectToDate-NonBillable-Hours").append(":").append(CommonUtil.getHoursDisplayFormat(sah.getProjectToDateNonBillableHours(),null)).append("'>")
+                                     .append(CommonUtil.getHoursDisplayFormat(sah.getProjectToDateNonBillableHours(),null))
                                   .append("</d></div>")
                           .append("</div>")
                         
@@ -498,13 +502,13 @@ public class TimesheetReportServiceImpl implements TimesheetReportService {
 				     
 				     timesheetApprovalDiv.append("<td>")
                      .append(" <div class='week'>")
-                       .append(" <span class='draft'>").append("<d title='").append("PreMonth-Total-Hours").append(":").append(CommonUtil.getHoursDisplayFormat(sah.getPreviousMonthTotalHours())).append("'>").append(CommonUtil.getHoursDisplayFormat(sah.getPreviousMonthTotalHours())).append("</d></span>")
+                       .append(" <span class='draft'>").append("<d title='").append("PreMonth-Total-Hours").append(":").append(CommonUtil.getHoursDisplayFormat(sah.getPreviousMonthTotalHours(),null)).append("'>").append(CommonUtil.getHoursDisplayFormat(sah.getPreviousMonthTotalHours(),null)).append("</d></span>")
                           .append(" <div class='progress'>")
-                                  .append(" <div class='progress-bar progress-bar-striped active progress-bar-info' role='progressbar' style='width:60%'>").append("<d title='").append("PreMonth-Billable-Hours").append(":").append(CommonUtil.getHoursDisplayFormat(sah.getPreviousMonthBillableHours())).append("'>")
-                                     .append(CommonUtil.getHoursDisplayFormat(sah.getPreviousMonthBillableHours()))
+                                  .append(" <div class='progress-bar progress-bar-striped active progress-bar-info' role='progressbar' style='width:60%'>").append("<d title='").append("PreMonth-Billable-Hours").append(":").append(CommonUtil.getHoursDisplayFormat(sah.getPreviousMonthBillableHours(),null)).append("'>")
+                                     .append(CommonUtil.getHoursDisplayFormat(sah.getPreviousMonthBillableHours(),null))
                                   .append("</d></div>")
-                                  .append(" <div class='progress-bar progress-bar-striped active progress-bar-warning' role='progressbar' style='width:40%'>").append("<d title='").append("PreMonth-NonBillable-Hours").append(":").append(CommonUtil.getHoursDisplayFormat(sah.getPreviousMonthNonBillableHours())).append("'>")
-                                     .append(CommonUtil.getHoursDisplayFormat(sah.getPreviousMonthNonBillableHours()))
+                                  .append(" <div class='progress-bar progress-bar-striped active progress-bar-warning' role='progressbar' style='width:40%'>").append("<d title='").append("PreMonth-NonBillable-Hours").append(":").append(CommonUtil.getHoursDisplayFormat(sah.getPreviousMonthNonBillableHours(),null)).append("'>")
+                                     .append(CommonUtil.getHoursDisplayFormat(sah.getPreviousMonthNonBillableHours(),null))
                                   .append("</d></div>")
                           .append(" </div>")
                         
@@ -535,7 +539,7 @@ public class TimesheetReportServiceImpl implements TimesheetReportService {
 
 	@SuppressWarnings("deprecation")
 	@Override
-	public File prepareTimeSheetExport(TimesheetReportsDTO timesheetReportsDTO,User loginUser,OrgLocations orgLocations) throws Exception {
+	public File prepareTimeSheetExport(TimesheetReportsDTO timesheetReportsDTO,User loginUser,OrgLocations orgLocations,String globalUser) throws Exception {
 		File file = null;
 		StringBuilder weekFrequencyDates = new StringBuilder(); 
 		//DateFormat format = Constants.DF_DMY;
@@ -643,10 +647,11 @@ public class TimesheetReportServiceImpl implements TimesheetReportService {
 	            table.addCell(cell);
 	        }
             table.completeRow();
-            ResponseList<ProjectMembers> projectMembers = projectMembersService.getProjectMembersListByTimesheetFrequencyOrgLocationsIdAndApproverUserId(null,startDate, endDate, null,null,orgLocations.getId(), loginUser.getId(), timesheetReportsDTO.getSearchValue(), 0, timesheetReportsDTO.getTotalRows());
+            ResponseList<ProjectMembers> projectMembers = projectMembersService.getProjectMembersListByTimesheetFrequencyOrgLocationsIdAndApproverUserId(null,startDate, endDate, null,null,null,orgLocations.getId(), loginUser.getId(), timesheetReportsDTO.getSearchValue(),"", 0, timesheetReportsDTO.getTotalRows(),"reports",globalUser);
+            
             java.util.List<String[]> reportList = new ArrayList<>();
             for(ProjectMembers promembers:projectMembers.getData()){
-            	reportList.add(prepareTimesheetReportData(promembers,header,displayWeeksList,loginUser,startDate,endDate));
+            	reportList.add(prepareTimesheetReportData(promembers,orgLocations.getId(),header,displayWeeksList,loginUser,startDate,endDate));
             }
             for (String[] tsreportList: reportList) {
                 for (int i = 0; i < tsreportList.length; i++) {
@@ -668,7 +673,7 @@ public class TimesheetReportServiceImpl implements TimesheetReportService {
 		return file;
 	}
 	
-	private String[] prepareTimesheetReportData(ProjectMembers projectMember, String[] header, LinkedHashMap<Date, Date> displayWeeksList, User loginUser, Date startDate, Date endDate) throws Exception {
+	private String[] prepareTimesheetReportData(ProjectMembers projectMember,Long locationId, String[] header, LinkedHashMap<Date, Date> displayWeeksList, User loginUser, Date startDate, Date endDate) throws Exception {
 		String timeSheetReportsArray[] = new String[header.length];
 		
 		StringBuilder nameAndId = new StringBuilder();
@@ -710,21 +715,28 @@ public class TimesheetReportServiceImpl implements TimesheetReportService {
 			 }else{
 				 timeSheetReportsArray[5] = "--";
 			 }
-			
-			if(null != projectMember.getProjectMemberCandidteId() && null != projectMember.getProjectMemberCandidteId().getOrgRelationId()){
-				OrgRelations orgRelation =  projectMember.getProjectMemberCandidteId().getOrgRelationId();
-				 timeSheetReportsArray[6] = orgRelation.getResponderLocationId().getOrgLocationName(); 
-				 
-			 }else{
-				 timeSheetReportsArray[6] = "--";
-			 }
-			if(null != projectMember.getProjectMemberCandidteId() && null != projectMember.getProjectMemberCandidteId().getOrgRelationId() && (projectMember.getProjectMemberCandidteId().getDesignationType().equalsIgnoreCase("C2C-1099")||projectMember.getProjectMemberCandidteId().getDesignationType().equalsIgnoreCase("C2C"))){
+			 
+			 if(null != projectMember.getProjectClientsId().getOrgRelationId()){
+			   	 OrgRelations orgRelations = orgRelationsService.getOrgRelationById(projectMember.getProjectClientsId().getOrgRelationId().getId());
+			  	 if(null != projectMember.getProjectClientsId().getOrgRelationId().getLocationId() && projectMember.getProjectClientsId().getOrgRelationId().getLocationId().getId() != null && projectMember.getProjectClientsId().getOrgRelationId().getLocationId().getId().longValue() == locationId.longValue()){
+							if(orgRelations.getResponderLocationId() != null){
+								timeSheetReportsArray[6] = orgRelations.getResponderLocationId().getOrgLocationName();
+								
+							}
+						}
+						if(null != projectMember.getProjectClientsId().getOrgRelationId().getResponderLocationId() && null != projectMember.getProjectClientsId().getOrgRelationId().getResponderLocationId().getId() && projectMember.getProjectClientsId().getOrgRelationId().getResponderLocationId().getId().longValue() == locationId.longValue()){
+							if(orgRelations.getLocationId() != null){
+								timeSheetReportsArray[6] = orgRelations.getLocationId().getOrgLocationName();
+							}
+						}
+			    }else{
+			    	timeSheetReportsArray[6] = "--";
+				}
+			 
+			if(null != projectMember.getProjectMemberCandidteId() && null !=  projectMember.getProjectMemberCandidteId().getOrgRelationId() && (projectMember.getProjectMemberCandidteId().getDesignationType().equalsIgnoreCase("C2C-1099")||projectMember.getProjectMemberCandidteId().getDesignationType().equalsIgnoreCase("C2C"))){
 				OrgRelations orgRelation = projectMember.getProjectMemberCandidteId().getOrgRelationId();
-				timeSheetReportsArray[7] = orgRelation.getResponderLocationId().getOrgLocationName();
-				
-			 }else{
-				 timeSheetReportsArray[7] = "--";
-			 }
+				timeSheetReportsArray[7] = orgRelation.getResponderLocationId().getOrgLocationName(); 
+			}
 			
 			if(projectMember.getProjects().getInvoiceFrequency() !=null){
 				timeSheetReportsArray[8] = projectMember.getProjects().getInvoiceFrequency();
@@ -737,7 +749,7 @@ public class TimesheetReportServiceImpl implements TimesheetReportService {
 			 float  monthBillableTotalHours = 0f;
 			 float monthNonBillableTotalHours = 0f;
 			 Submission_ApprovalStatus combinedApprovalStatus = null; 
-			 sah = submissionApproverHierarchyService.getSubmissionApproverHierarchyByProjectMemberIdStartDateAndEndDateForApproverLoginForTsReports(loginUser.getId(),projectMember.getId(),startDate,endDate);
+			 sah = submissionApproverHierarchyService.getSubmissionApproverHierarchyByProjectMemberIdStartDateAndEndDateForApproverLoginForTsReports(loginUser.getId(),locationId,projectMember.getId(),startDate,endDate,"");
 			if(displayWeeksList != null && !displayWeeksList.isEmpty()){
 	    	    for (Map.Entry<Date,Date> entry : displayWeeksList.entrySet()) { 
 	    	    	 //String approvalClass = "class='draft'";
@@ -803,23 +815,23 @@ public class TimesheetReportServiceImpl implements TimesheetReportService {
 		    	     monthNonBillableTotalHours =  CommonUtil.getCombinedHours(monthNonBillableTotalHours, weekNonBillableHours);
 		    	     
 	    	    	 StringBuilder listSb = new StringBuilder();
-	    	         timeSheetReportsArray[count] = listSb.append(CommonUtil.getHoursDisplayFormat(weekTotalHours)).toString();
-	    	         timeSheetReportsArray[count+1] = listSb.append(CommonUtil.getHoursDisplayFormat(weekBillableHours)).toString();
-	    	         timeSheetReportsArray[count+2] = listSb.append(CommonUtil.getHoursDisplayFormat(weekNonBillableHours)).toString();
+	    	         timeSheetReportsArray[count] = listSb.append(CommonUtil.getHoursDisplayFormat(weekTotalHours,null)).toString();
+	    	         timeSheetReportsArray[count+1] = listSb.append(CommonUtil.getHoursDisplayFormat(weekBillableHours,null)).toString();
+	    	         timeSheetReportsArray[count+2] = listSb.append(CommonUtil.getHoursDisplayFormat(weekNonBillableHours,null)).toString();
 	    	         count++;
 	    	     }
 	            }
-				timeSheetReportsArray[count] =  CommonUtil.getHoursDisplayFormat(monthTotalHours);
-				timeSheetReportsArray[count+1] = CommonUtil.getHoursDisplayFormat(monthBillableTotalHours);
-				timeSheetReportsArray[count+2] = CommonUtil.getHoursDisplayFormat(monthNonBillableTotalHours);
+				timeSheetReportsArray[count] =  CommonUtil.getHoursDisplayFormat(monthTotalHours,null);
+				timeSheetReportsArray[count+1] = CommonUtil.getHoursDisplayFormat(monthBillableTotalHours,null);
+				timeSheetReportsArray[count+2] = CommonUtil.getHoursDisplayFormat(monthNonBillableTotalHours,null);
 				
-				timeSheetReportsArray[count+3] = CommonUtil.getHoursDisplayFormat(sah.getProjectToDateTotalHours());
-				timeSheetReportsArray[count+4] = CommonUtil.getHoursDisplayFormat(sah.getProjectToDateBillableHours());
-				timeSheetReportsArray[count+5] = CommonUtil.getHoursDisplayFormat(sah.getProjectToDateNonBillableHours());
+				timeSheetReportsArray[count+3] = CommonUtil.getHoursDisplayFormat(sah.getProjectToDateTotalHours(),null);
+				timeSheetReportsArray[count+4] = CommonUtil.getHoursDisplayFormat(sah.getProjectToDateBillableHours(),null);
+				timeSheetReportsArray[count+5] = CommonUtil.getHoursDisplayFormat(sah.getProjectToDateNonBillableHours(),null);
 				
-				timeSheetReportsArray[count+6] =CommonUtil.getHoursDisplayFormat(sah.getPreviousMonthTotalHours());
-				timeSheetReportsArray[count+7] =CommonUtil.getHoursDisplayFormat(sah.getPreviousMonthBillableHours());
-				timeSheetReportsArray[count+8] =CommonUtil.getHoursDisplayFormat(sah.getPreviousMonthNonBillableHours());
+				timeSheetReportsArray[count+6] =CommonUtil.getHoursDisplayFormat(sah.getPreviousMonthTotalHours(),null);
+				timeSheetReportsArray[count+7] =CommonUtil.getHoursDisplayFormat(sah.getPreviousMonthBillableHours(),null);
+				timeSheetReportsArray[count+8] =CommonUtil.getHoursDisplayFormat(sah.getPreviousMonthNonBillableHours(),null);
 				
 				timeSheetReportsArray[count+9] = combinedApprovalStatus.toString();
 			
@@ -838,7 +850,7 @@ public class TimesheetReportServiceImpl implements TimesheetReportService {
 
 
 	@Override
-	public File prepareTimeSheetExportExcel(TimesheetReportsDTO timesheetReportsDTO, User loginUser,OrgLocations orgLocations) throws IOException, Exception {
+	public File prepareTimeSheetExportExcel(TimesheetReportsDTO timesheetReportsDTO, User loginUser,OrgLocations orgLocations,String globalUser) throws IOException, Exception {
 		File file = null;
 		
 		StringBuilder weekFrequencyDates = new StringBuilder(); 
@@ -901,7 +913,7 @@ public class TimesheetReportServiceImpl implements TimesheetReportService {
 		
 		
 		int column = 0;
-		 ResponseList<ProjectMembers> projectMembers = projectMembersService.getProjectMembersListByTimesheetFrequencyOrgLocationsIdAndApproverUserId(null,startDate, endDate,null,null, orgLocations.getId(), loginUser.getId(), timesheetReportsDTO.getSearchValue(), 0, timesheetReportsDTO.getTotalRows());
+		 ResponseList<ProjectMembers> projectMembers = projectMembersService.getProjectMembersListByTimesheetFrequencyOrgLocationsIdAndApproverUserId(null,startDate, endDate,null,null,null, orgLocations.getId(), loginUser.getId(), timesheetReportsDTO.getSearchValue(),"", 0, timesheetReportsDTO.getTotalRows(),"reports",globalUser);
 		 for(ProjectMembers promembers:projectMembers.getData()){
 			 writeRow = createExcelsheet.createRow(column + 1);
 			 createExcelsheet = prepareTimesheetReportDataExcel(promembers,displayWeeksList,loginUser,createExcelsheet,writeRow,startDate,endDate,orgLocations);
@@ -943,10 +955,13 @@ public class TimesheetReportServiceImpl implements TimesheetReportService {
 	
 	private Sheet prepareTimesheetReportDataExcel(ProjectMembers projectMember, LinkedHashMap<Date, Date> displayWeeksList,User loginUser, Sheet createExcelsheet, Row writeRow, Date startDate, Date endDate, OrgLocations orgLocations) throws Exception {
 		createExcelsheet.getDefaultRowHeight();
+		
+		ProjectMembers  consultantProjectMembers = projectMembersService.getConsultantUserProjectMemberByProjectMemberId(projectMember.getId());
+		
 		StringBuilder sbid = new StringBuilder();
-		if(projectMember.getEmployee()!= null) {
-		if(projectMember.getEmployee() != null && projectMember.getEmployee().getEmployeeId() != null && StringUtils.isNotBlank(projectMember.getEmployee().getEmployeeId())){
-			 writeRow.createCell(0).setCellValue(sbid.append(projectMember.getEmployee().getEmployeeId()).toString());
+		if(projectMember.getProjectMemberCandidteId()!= null) {
+		if(consultantProjectMembers.getEmployee() != null && consultantProjectMembers.getEmployee().getEmployeeId() != null && StringUtils.isNotBlank(consultantProjectMembers.getEmployee().getEmployeeId())){
+			 writeRow.createCell(0).setCellValue(sbid.append(consultantProjectMembers.getEmployee().getEmployeeId()).toString());
 			 createExcelsheet.autoSizeColumn(0);
 		}
 		if(null != projectMember.getProjectMemberCandidteId()){
@@ -965,7 +980,7 @@ public class TimesheetReportServiceImpl implements TimesheetReportService {
 			 writeRow.createCell(4).setCellValue(projectMember.getProjectMemberCandidteId().getDesignationType());
 			 createExcelsheet.autoSizeColumn(4);
 		}
-		if( projectMember.getEmployee().getRate() != null){
+		if( projectMember.getProjectMemberCandidteId().getRate() != null){
 			StringBuilder rateString = new StringBuilder();
 			 writeRow.createCell(5).setCellValue(rateString.append(projectMember.getEmployee().getRate()).append("/").append(projectMember.getEmployee().getRatePer()).toString());
 			 createExcelsheet.autoSizeColumn(5);
@@ -979,9 +994,30 @@ public class TimesheetReportServiceImpl implements TimesheetReportService {
 		
 		if(null != projectMember.getProjectMemberCandidteId() && null !=  projectMember.getProjectMemberCandidteId().getOrgRelationId()){
 			OrgRelations orgRelation = projectMember.getProjectMemberCandidteId().getOrgRelationId();
-			 writeRow.createCell(7).setCellValue(orgRelation.getResponderLocationId().getOrgLocationName()); 
-			 createExcelsheet.autoSizeColumn(7);
+				if(orgRelation.getLocationId().getId().longValue()  == orgLocations.getId().longValue()) {
+					writeRow.createCell(7).setCellValue(" "); 
+					 createExcelsheet.autoSizeColumn(7);
+				}else {
+					writeRow.createCell(7).setCellValue(orgRelation.getLocationId().getOrgLocationName()); 
+					 createExcelsheet.autoSizeColumn(7);
+				} 
+			
 		}
+		
+		if(projectMember.getProjectClientsId() != null ){
+			 OrgRelations orgRelation = projectMember.getProjectClientsId().getOrgRelationId();
+			 if(projectMember.getProjectClientsId().getOrgRelationId() != null) { 
+			 OrgLocations orglocations = orgLocationService.getOrgLocations(orgRelation.getResponderLocationId().getId());
+			 writeRow.createCell(7).setCellValue(orglocations.getOrg().getOrgName());
+			 createExcelsheet.autoSizeColumn(7);
+			 	}else {
+			 		 writeRow.createCell(7).setCellValue(" ");
+				}
+			}else {
+				 writeRow.createCell(7).setCellValue(" ");
+			}
+		
+		
 		if(null != projectMember.getProjectMemberCandidteId() && null !=  projectMember.getProjectMemberCandidteId().getOrgRelationId() && (projectMember.getProjectMemberCandidteId().getDesignationType().equalsIgnoreCase("C2C-1099")||projectMember.getProjectMemberCandidteId().getDesignationType().equalsIgnoreCase("C2C"))){
 			OrgRelations orgRelation = projectMember.getProjectMemberCandidteId().getOrgRelationId();
 			writeRow.createCell(8).setCellValue(orgRelation.getResponderLocationId().getOrgLocationName()); 
@@ -999,7 +1035,7 @@ public class TimesheetReportServiceImpl implements TimesheetReportService {
 		 float  monthBillableTotalHours = 0f;
 		 float monthNonBillableTotalHours = 0f;
 		 Submission_ApprovalStatus combinedApprovalStatus = null;
-    	sah = submissionApproverHierarchyService.getSubmissionApproverHierarchyByProjectMemberIdStartDateAndEndDateForApproverLoginForTsReports(loginUser.getId(),projectMember.getId(),startDate,endDate);
+    	sah = submissionApproverHierarchyService.getSubmissionApproverHierarchyByProjectMemberIdStartDateAndEndDateForApproverLoginForTsReports(loginUser.getId(),orgLocations.getId(),projectMember.getId(),startDate,endDate,"");
 		if(displayWeeksList != null && !displayWeeksList.isEmpty()){
     	    for (Map.Entry<Date,Date> entry : displayWeeksList.entrySet()) { 
     	     float weekTotalHours = 0f;
@@ -1063,11 +1099,11 @@ public class TimesheetReportServiceImpl implements TimesheetReportService {
 	    	     monthNonBillableTotalHours =  CommonUtil.getCombinedHours(monthNonBillableTotalHours, weekNonBillableHours);
     	    	
     	    	 StringBuilder listSb = new StringBuilder();
-    	    	 writeRow.createCell(count).setCellValue(listSb.append(CommonUtil.getHoursDisplayFormat(weekTotalHours)).toString());
+    	    	 writeRow.createCell(count).setCellValue(listSb.append(CommonUtil.getHoursDisplayFormat(weekTotalHours,null)).toString());
     	    	 createExcelsheet.autoSizeColumn(count);
-    	    	 writeRow.createCell(count+1).setCellValue( listSb.append(CommonUtil.getHoursDisplayFormat(weekBillableHours)).toString());
+    	    	 writeRow.createCell(count+1).setCellValue( listSb.append(CommonUtil.getHoursDisplayFormat(weekBillableHours,null)).toString());
     	    	 createExcelsheet.autoSizeColumn(count+1);
-    	    	 writeRow.createCell(count+2).setCellValue(listSb.append(CommonUtil.getHoursDisplayFormat(weekNonBillableHours)).toString());
+    	    	 writeRow.createCell(count+2).setCellValue(listSb.append(CommonUtil.getHoursDisplayFormat(weekNonBillableHours,null)).toString());
     	    	 createExcelsheet.autoSizeColumn(count+2);
     	         count++;
     	         
@@ -1075,23 +1111,23 @@ public class TimesheetReportServiceImpl implements TimesheetReportService {
      }
 		
 		
-		writeRow.createCell(count).setCellValue( CommonUtil.getHoursDisplayFormat(monthTotalHours));
+		writeRow.createCell(count).setCellValue( CommonUtil.getHoursDisplayFormat(monthTotalHours,null));
 		createExcelsheet.autoSizeColumn(count);
-		writeRow.createCell(count+1).setCellValue( CommonUtil.getHoursDisplayFormat(monthBillableTotalHours));
+		writeRow.createCell(count+1).setCellValue( CommonUtil.getHoursDisplayFormat(monthBillableTotalHours,null));
 		 createExcelsheet.autoSizeColumn(count+1);
-		writeRow.createCell(count+2).setCellValue( CommonUtil.getHoursDisplayFormat(monthNonBillableTotalHours));
+		writeRow.createCell(count+2).setCellValue( CommonUtil.getHoursDisplayFormat(monthNonBillableTotalHours,null));
 		 createExcelsheet.autoSizeColumn(count+2);
-		writeRow.createCell(count+3).setCellValue( CommonUtil.getHoursDisplayFormat(sah.getProjectToDateTotalHours()));
+		writeRow.createCell(count+3).setCellValue( CommonUtil.getHoursDisplayFormat(sah.getProjectToDateTotalHours(),null));
 		createExcelsheet.autoSizeColumn(count+3);
-		writeRow.createCell(count+4).setCellValue( CommonUtil.getHoursDisplayFormat(sah.getProjectToDateBillableHours()));
+		writeRow.createCell(count+4).setCellValue( CommonUtil.getHoursDisplayFormat(sah.getProjectToDateBillableHours(),null));
 		createExcelsheet.autoSizeColumn(count+4);
-		writeRow.createCell(count+5).setCellValue( CommonUtil.getHoursDisplayFormat(sah.getProjectToDateNonBillableHours()));
+		writeRow.createCell(count+5).setCellValue( CommonUtil.getHoursDisplayFormat(sah.getProjectToDateNonBillableHours(),null));
 		createExcelsheet.autoSizeColumn(count+5);
-		writeRow.createCell(count+6).setCellValue( CommonUtil.getHoursDisplayFormat(sah.getPreviousMonthTotalHours()));
+		writeRow.createCell(count+6).setCellValue( CommonUtil.getHoursDisplayFormat(sah.getPreviousMonthTotalHours(),null));
 		createExcelsheet.autoSizeColumn(count+6);
-		writeRow.createCell(count+7).setCellValue( CommonUtil.getHoursDisplayFormat(sah.getPreviousMonthBillableHours()));
+		writeRow.createCell(count+7).setCellValue( CommonUtil.getHoursDisplayFormat(sah.getPreviousMonthBillableHours(),null));
 		createExcelsheet.autoSizeColumn(count+7);
-		writeRow.createCell(count+8).setCellValue( CommonUtil.getHoursDisplayFormat(sah.getPreviousMonthNonBillableHours()));
+		writeRow.createCell(count+8).setCellValue( CommonUtil.getHoursDisplayFormat(sah.getPreviousMonthNonBillableHours(),null));
 		createExcelsheet.autoSizeColumn(count+8);
 		writeRow.createCell(count+9).setCellValue(combinedApprovalStatus.toString());
 		createExcelsheet.autoSizeColumn(count+9);

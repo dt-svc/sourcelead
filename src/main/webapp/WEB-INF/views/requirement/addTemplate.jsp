@@ -4,6 +4,7 @@
 <%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/functions" prefix="fn"%>
 <%@taglib prefix="sec" uri="http://www.springframework.org/security/tags"%>
+<script type="text/javascript" src='/resources/js/slead-common.js?staticTime=${staticTime}'></script>
 <style type="text/css">
 .pras.req-title p{
 bottom:-14px;
@@ -145,17 +146,19 @@ width: 100% !important;
 								<label class="col-md-3">Employment Type</label>
 									<div class="col-md-9">
 										<select class="selectpicker" id="jobType" name="jobType" onChange="getJobType(this);">
-											<option value="">Select</option>
-											<option ${requirement.jobType  == "C2C" ? 'selected' : ''}><a href="#">C2C</a></option>
-											<option ${requirement.jobType  == "W-2" ? 'selected' : ''}><a href="#">W-2</a></option>
-											<option ${requirement.jobType  == "C2H" ? 'selected' : ''}><a href="#">C2H</a></option>
-											<option ${requirement.jobType  == "Contract" ? 'selected' : ''}><a href="#">Contract</a></option>
-											<option ${requirement.jobType  == "Part Time" ? 'selected' : ''}><a href="#">Part Time</a></option>
-											<option ${requirement.jobType  == "Full Time" ? 'selected' : ''}><a href="#">Full Time</a></option>
-											<option ${requirement.jobType  == "Other" ? 'selected' : ''}><a href="#">Other</a></option>
+											<option value="" selected>--- Select Employment Type ---</option>
+											<option ${requirement.jobType  == "C2C" ? 'selected' : ''}>C2C</option>
+											<option ${requirement.jobType  == "W-2" ? 'selected' : ''}>W-2</option>
+											<option ${requirement.jobType  == "C2H" ? 'selected' : ''}>C2H</option>
+											<option ${requirement.jobType  == "Contract" ? 'selected' : ''}>Contract</option>
+											<option ${requirement.jobType  == "Part Time" ? 'selected' : ''}>Part Time</option>
+											<option ${requirement.jobType  == "Full Time" ? 'selected' : ''}>Full Time</option>
+											<option ${requirement.jobType  == "Other" ? 'selected' : ''}>Other</option>
 										</select>
 								</div>
 					</div>
+					
+					
 						<div class="form-group">
 								<label class="col-md-3">Experience</label>
 								<div class="col-md-9">
@@ -183,6 +186,41 @@ width: 100% !important;
 	
 								</div>
 							</div>
+							
+							
+							
+					  <div class="form-group jobTypeDiv" id="jobTypeDiv" style="display:none">
+            <label class="col-md-3">Other</label>
+            <div class="col-md-9">
+              <input type="text" class="form-control" id="jobOtherType" name="jobOtherType" value="${requirement.otherJobType}"  field-name="Job Type" value="">
+            </div>
+          </div>
+          
+                       <div class="form-group" id="projectDurationYearsDiv" style="display:none">
+            <label class="col-md-3">Project Duration </label>
+            <div class="col-md-9">
+              <div class="row">
+	                <div class="col-md-6 dropdown-select">
+						<select class="form-control" id="projectDurationYears" name="projectDurationYears">
+							<option value="">--Select Years--</option>
+							<c:forEach var="durationYears" begin="0" end="30" >
+							    <option  ${requirement.projectDurationYears  == durationYears ? 'selected' : ''}>${durationYears}</option>
+							</c:forEach>
+	                   
+						</select>	                 
+	                </div>
+	                <div class="col-md-6 dropdown-select" id="projectDurationMonthsDiv" style="display:none">
+	                <select class="form-control" id="projectDurationMonths" name="projectDurationMonths">
+							<option value="">--Select Months--</option>
+							<c:forEach var="durationMonths" begin="0" end="11" >
+							    <option  ${requirement.projectDurationMonths  == durationMonths ? 'selected' : ''}>${durationMonths}</option>
+							</c:forEach>
+							 
+						</select>
+	                </div>
+              </div>
+            </div>
+          </div>
     <div class="form-group" >
             <label class="col-md-3">Experience Level</label>
             <div class="col-md-9 dropdown-select"> 
@@ -300,12 +338,12 @@ width: 100% !important;
 		 
 		 
 		 <!--  Radio Buttons -->
-					<div class="form-group" id="jobTypeDiv" style="display: none">
+					<%-- <div class="form-group" id="jobTypeDiv" style="display: none">
 							<label class="col-md-3">Employment Type</label>
 								<div class="col-md-9">
 									<input type="text" class="form-control" id="jobOtherType" name="jobOtherType" value="${requirement.otherJobType}" field-name="Job Type" value="">
 								</div>
-					</div>
+					</div> --%>
 					
 					</div>
 	
@@ -428,6 +466,19 @@ width: 100% !important;
 				  $("#jobOtherType").val('');
 			}
 			
+			  if(jobType == 'C2C' || jobType == 'C2H' || jobType == 'Contract'){
+					 
+					
+					 document.getElementById("projectDurationYearsDiv").style.display="block";
+					 document.getElementById("projectDurationMonthsDiv").style.display="block";
+					 
+					 
+				  
+				}else{
+					document.getElementById("projectDurationYearsDiv").style.display="none";
+					document.getElementById("projectDurationMonthsDiv").style.display="none";
+					
+				}
 			
 		 };
 </script> 
@@ -452,10 +503,9 @@ width: 100% !important;
 	       $("#state").on('change', function (e) {
 	    	   getCities();
 	       });
-		       
 	       
            
-            //Adding Customized Educations to the list
+/*             //Adding Customized Educations to the list
 	        var selectone, chosenone;
 	        selectone = $("#education");
 	        selectone.chosen({ no_results_text: 'Press Enter-Key Or Comma(,) To Add New Education:' });
@@ -463,7 +513,7 @@ width: 100% !important;
 	        chosenone.search_field.on('keydown keyup', function(e1)
 		    {
 		    	var newEducation = this.value.replace(",","");
-		        if (tagItBykeyForSkills(e1) && (newEducation != null  && newEducation != '' && newEducation != 'undefined'))
+		        if ((newEducation != null  && newEducation != '' && newEducation != 'undefined') && tagItBykeyForSkills(e1))
 		        {
 		        	preventTabkey(e1);
 		        	var par = this.parent;
@@ -496,7 +546,7 @@ width: 100% !important;
 			    	var newSkill = this.value.replace(","," ");
 			    	
 			    	 
-			        if (tagItBykeyForSkills(e) && (newSkill != null  && newSkill != '' && newSkill != 'undefined'))
+			        if ((newSkill != null  && newSkill != '' && newSkill != 'undefined') && tagItBykeyForSkills(e))
 			        {
 			        	preventTabkey(e); 
 			        	var par = this.parent;
@@ -508,7 +558,7 @@ width: 100% !important;
 				        		
 			        }
 		    	 }
-		    });
+		    }); */
 		    
 			for (var selector in config) {
 			  $(selector).chosen(config[selector]);
@@ -519,6 +569,15 @@ width: 100% !important;
 			})
 			
 </script>
+
+
+ <script>
+	       $(function() { 
+	     	  tagIt("education", 'Press Enter-Key Or Comma(,) To Add New Education:', 'tagItBykeyForSkills','skills','Select Education');
+	     	  tagIt("skills", 'Press Enter-Key Or Comma(,) To Add New Skill:', 'tagItBykeyForSkills','skills','Select Skills');
+	     	});
+ </script>
+
 <!-- Eductions and Skills Autocomplete Scripts End Here -->
 
 <script>
@@ -545,16 +604,25 @@ function minMaxExperience(){
 function getJobType(jobType){
 	var existingJobType = '${requirement.jobType}';
 	if(jobType.value == 'Other'){
-		  document.getElementById("jobTypeDiv").style.display="";
+		  document.getElementById("jobTypeDiv").style.display="block";
 		  $("#jobOtherType").attr("data-validation-optional", "true");
 		  $("#jobOtherType").attr("data-validation", "validate_Space validate_length length2-250");
+		  document.getElementById("projectDurationYearsDiv").style.display="none";
+		  document.getElementById("projectDurationMonthsDiv").style.display="none";
 	}else{
-		document.getElementById("jobTypeDiv").style.display="none";
+		  document.getElementById("jobTypeDiv").style.display="none";
 		  $("#jobOtherType").attr("data-validation-optional", "true");
 		  $("#jobTypeDiv").find('p.jquery_form_error_message').remove();
 		  if(existingJobType ==null || existingJobType == "" || existingJobType == "undefined" || existingJobType != 'Other'){
 			  $("#jobOtherType").val('');
 		  }
+		  if(jobType.value == 'C2C' || jobType.value == 'C2H' || jobType.value == 'Contract'){
+				 document.getElementById("projectDurationYearsDiv").style.display="block";
+				 document.getElementById("projectDurationMonthsDiv").style.display="block";
+			}else{
+				document.getElementById("projectDurationYearsDiv").style.display="none";
+				document.getElementById("projectDurationMonthsDiv").style.display="none";
+			}
 	}
 }
 </script>

@@ -74,7 +74,6 @@ function clientContacts(orgRelationID,clientLocationId){
  					$("#clientMsgDiv").append(opt);
  				} */
 	      
-    		if(json.data.length != null && json.data.length != ''){
     			$("#clientContactList").empty();
 				var result = "";
 				result = result +"<table id='clientContactsPagination' class='display' cellspacing='0' width='100%' >"; 
@@ -215,23 +214,8 @@ function clientContacts(orgRelationID,clientLocationId){
 			    result = result + '	<a class="close_color" href="javascript:void(0)">Yes</a><a href="javascript:void(0)">No</a> ';
 			    result = result + '</div>';
 			    $("#clientContactList").append(result); 
-	    	    contactPagination();
 	    	    clientMsgFadein();
-    		}else{
-    			 var result ="";
-	    	     result = result+"   <div class='row'>"; 
-				 result = result+"	<div class='col-lg-12'>"; 
-				 result = result+"		<div class='content-area clearfix'>"; 
-				 result = result+"			<div class='blank-pages'>";
-				 result = result+"			        <p><i class='fa fa-5x fa-bar-chart'></i></p>";
-				 result = result+"			        <p>No Contacts Found</p>";
-				 result = result+"			 </div>";
-				 result = result+"		</div>"; 
-				 result = result+"	</div>"; 
-				 result = result+"  </div> "; 
-				$("#clientContactList").empty();
-			    $("#clientContactList").append(result); 
-       		 }
+ 				contactPagination();
     		$("#tab-4").empty();  
     		$("#tab-2-addContact").empty();  
     	    $("#tab-2-addContact").append(res);
@@ -354,9 +338,21 @@ function saveSpocTerminateReason(spocId, orgRelationID,clientLocationId,spocName
 	if(reason.match(/^[^\s-](.*)*$/) != null){
 	      
 		  $("#reasonForSpocDiv").empty();
+		  var formData = new FormData();
+		     formData.append("tokenParamName", tokenValue);
+		     formData.append("spocId", spocId);
+		     formData.append("reason", reason);
+		     formData.append("userId", userId);
+		     formData.append("orgLocationId", orgLocationId);
+		     formData.append("responderType", "Client");
+		     
 		$.ajax({
-		   	type: "POST",
-		    url: sourceleadUrl+"/terminateSpoc?"+tokenParamName+"="+tokenValue+"&spocId="+spocId+"&reason="+reason+"&userId="+userId+"&orgLocationId="+orgLocationId+"&responderType=Client",	    	   
+			 type : "POST",
+          data: formData,
+          processData: false,
+          contentType:false, 
+     	  url: sourceleadUrl+"/terminateSpoc",
+// 		    url: sourceleadUrl+"/terminateSpoc?"+tokenParamName+"="+tokenValue+"&spocId="+spocId+"&reason="+reason+"&userId="+userId+"&orgLocationId="+orgLocationId+"&responderType=Client",	    	   
 		    success: function(data) {
 		    	$("#popUp").empty();
    			 	$(".project_inn_mask").fadeOut(200);
@@ -423,43 +419,49 @@ function resendSpocInvitation(spocUserId,orgRelationID,clientLocationId,spocId){
 
    <!-- This Script is For Popup Div Starts-->  
 <script>
-function addContact(orgRelationID,clientLocationId) {	  
+function addContact(orgRelationID,clientLocationId) {	
 	var result = "";
 	result = result  +'	<form id="clinetContact_form" name="clinetContact_form" method="post">';
 	result = result  +'          <i class="fa fa-close close-div"  onClick="closePopupDiv();"></i> ';
 	result = result  +'	<div class="form-horizontal clearfix">';
 	result = result  +'                  </div>  ';             
 	
-	result = result  +'	 <div class="clearfix mb10" id="EmailIdDiv">';
+	result = result  +'	 <div class="clearfix mb" id="EmailIdDiv">';
 	result = result  +'	  <div class="col-md-12">';
-	result = result  +'	    <input type="text" class="form-control input-sm" id="EmailId" name="email"  value="" field-name="Email" placeholder="Email Id *" onblur="validateEmail('+orgRelationID+'); getSpocUserDetails('+clientLocationId+','+orgRelationID+');" data-validation="required validate_Space validate_length length2-100 validate_email">';
+	result = result + '<div class="input-group errorInptgroup">';
+	result = result  +'<input type="text" class="form-control input-sm" id="EmailId" name="email"  value="" field-name="Email" placeholder="Email Id *" onblur="validateEmail1('+orgRelationID+'); getSpocUserDetails('+clientLocationId+','+orgRelationID+');" data-validation="required validate_Space validate_length length2-100 validate_email">';
+	
+	result = result + ' <span id="emailStatusIconDiv" class="input-group-addon">';
+	result = result + '<i class="fa fa-check text-muted" style="color:#f6f6f6">';
+	result = result + '</i>';
+	result = result + '</span>';
+	result = result  +'	   </div>';
 	result = result  +'	   </div>';
 	result = result  +'	 </div>';
 	
-	result = result  +'	<div class="clearfix mb10">';
-	result = result  +'	 <div class="col-md-12">';
+	result = result  +'	<div class="clearfix mb mt">';
+	result = result  +'	 <div class="col-md-12 mt2">';
 	result = result  +'	<input type="text" class="form-control input-sm" value="" id="firstName" name="firstName" field-name="First name" placeholder="First name *" data-validation="required validate_Space validate_length length1-100">';
 	result = result  +'	</div>';
 	result = result  +'	</div>';
 	
-	result = result  +'	<div class="clearfix mb10">';
+	result = result  +'	<div class="clearfix mb">';
 	result = result  +'	  <div class="col-md-12">';
 	result = result  +'	     <input type="text" class="form-control input-sm" name="lastName" id="lastName" value="" placeholder="Last name" data-validation="validate_Space validate_Alphanumeric validate_length length1-100" data-validation-optional="true">';
 	result = result  +'	   </div>';
 	result = result  +'	 </div>';
 	
 	
-	result = result  +'	 <div class="clearfix mb10">';
+	result = result  +'	 <div class="clearfix mb">';
 	result = result  +'	   <div class="col-md-12">';
 	result = result  +'	     <input type="text" class="form-control input-sm" value="" name="phoneNumber" id="phoneNumber" placeholder="Phone number" data-validation="validate_Space validate_phone validate_length length9-20" data-validation-optional="true">';
 	result = result  +'	    </div>';
 	result = result  +'	  </div>';
 	
 	
-	result = result  +'	 <div class="clearfix mb10">';
-	result = result  +'	 <label class="col-md-12">Status</label>';
+	result = result  +'	 <div class="clearfix mb">';
 	result = result  +'	 <div class="col-md-12">';
-	result = result  +'	  <select class="form-control" id="spocStatus" name="spocStatus">';
+	result = result  +'	  <select class="width100percnt form-control" id="spocStatus" name="spocStatus">';
 	result = result  +'	   <option value="Active">Active</option>';
 	result = result  +'	   <option value="In-Active">In-Active</option>';
 	/* result = result  +'	   <option value="New">New</option>';
@@ -469,8 +471,7 @@ function addContact(orgRelationID,clientLocationId) {
 	result = result  +'	 </div>';
 	result = result  +'	 </div>';
 	
-	result = result  +'	 <div class="clearfix mb10">';
-	result = result  +'	 <label class="col-md-12">Owner<span class="text-danger">&nbsp;*</span></label>';
+	result = result  +'	 <div class="clearfix">';
 	result = result  +'	 <div class="col-md-12">';
 	result = result  +'	   <select multiple class="form-contorl chosen-select" name="owner" id="owner" field-name="Owner" data-validation="required">';
 	result = result  +'	       <c:forEach var="user" items="${userList}">';
@@ -504,10 +505,20 @@ function addContact(orgRelationID,clientLocationId) {
 	result = result  +'</div>';
 	
 	
-	result = result  +'	 <div class="clearfix mb10">';
-	result = result  +'	   <div class="col-md-12 checkbox">';
+	result = result  +'	 <div class="clearfix">';
+	result = result  +'	   <div class="col-md-6 checkbox margin-top0">';
 	result = result  +'	     <label>';
-	result = result  +'	      <input type="checkbox" value="Y" name="isMailSent" checked="checked">Send Invitation</label>';
+	result = result  +'	      <input type="checkbox" value="Y" name="isMailSent">Send Invitation</label>';
+	result = result  +'	   </div>';
+	
+	result = result  +'	   <div class="col-md-6 checkbox margin-top0">';
+	result = result  +'	     <label>';
+	result = result  +'	      <input type="checkbox" value="N" name="apOrArSent" id="apOrArSent" onclick = "allowApEmailSent();"> AP Email</label>';
+	result = result  +'	   </div>';
+	
+	result = result  +'	   <div class="col-md-6 checkbox margin-top0">';
+	result = result  +'	     <label>';
+	result = result  +'	      <input type="checkbox" value="N" name="invoiceOrBillSent" id= "invoiceOrBillSent" onclick = "allowInvoiceEmailSent();"> Invoice Email</label>';
 	result = result  +'	   </div>';
 	result = result  +'	 </div>';
 	
@@ -521,6 +532,7 @@ function addContact(orgRelationID,clientLocationId) {
 	$("#popUpDivContact").empty();
 	$("#popUpDivContact").append(result);
 	
+	
 	$(".edit-details").toggleClass("edit-details-active");
 	 $(".close-div").click(function(){ 
 		 $(this).parent("div.edit-details").removeClass("edit-details-active");
@@ -528,6 +540,7 @@ function addContact(orgRelationID,clientLocationId) {
 	 $(".addUser-org, .assign-org, .collapse-div-adduser, .collapse-div, .edit-details").click(function(e){
 		 e.stopPropagation();
 	 });
+
 	 
 	 var config = {
 			  '.chosen-select'           : {},
@@ -543,8 +556,9 @@ function addContact(orgRelationID,clientLocationId) {
 				var $this = $(this);
 				$this.next().css({'width': '100%'});
 				})
-	 
+				 $("#owner_chosen").find("ul.chosen-choices > li input").attr("placeholder", "Select Owners *");
 	}
+	
 </script>
  <!-- This Script is For Popup Div Ends --> 
  
@@ -552,6 +566,26 @@ function addContact(orgRelationID,clientLocationId) {
 function closePopupDiv(){
 	 $("#popUpDivContact").removeClass("edit-details-active");
 }
+
+function allowApEmailSent(){
+	var checked = document.getElementById("apOrArSent").checked
+	if(checked == true){
+		$("#apOrArSent").val("Y");
+	}else{
+		$("#apOrArSent").val("N");
+	}
+}
+
+
+function allowInvoiceEmailSent(){
+	var checked = document.getElementById("invoiceOrBillSent").checked
+	if(checked == true){
+		$("#invoiceOrBillSent").val("Y");
+	}else{
+		$("#invoiceOrBillSent").val("N");
+	}
+}
+
 </script>
 
 <!-- to add new contact -->
@@ -585,6 +619,7 @@ function closePopupDiv(){
 
 <script type="text/javascript">
  function validateSpocEmail(orgRelationId) {
+	 
 	 var EmailId = document.getElementById("EmailId").value; 
 	 $('#EmailIdDiv').find('p.jquery_form_error_message').remove();
 	 var sourceleadUrl ='${sourceleadUrl}';
@@ -661,26 +696,26 @@ function getSpocUserDetails(orgLocationId,orgRelationID){
 	        		var json = JSON.parse(data);
 	        		
 	        		 if(json[0] != null && json[0] != ''){
-	        			$("#firstName").attr("disabled", true);
+	        			$("#firstName").attr("readOnly", true);
 	        		    $("#firstName").val(json[0]);
 	        		 }else{
-	        			 $("#firstName").attr("disabled", false);
+	        			 $("#firstName").attr("readOnly", false);
 	        			 $("#firstName").val('');
 	        		 }
 	        		 
 	        		 if(json[1] != null && json[1] != ''){
-		        			$("#lastName").attr("disabled", true);
+		        			$("#lastName").attr("readOnly", true);
 		        		    $("#lastName").val(json[1]);
 	        		 }else{
-	        			    $("#lastName").attr("disabled", false);
+	        			    $("#lastName").attr("readOnly", false);
 	        			    $("#lastName").val('');
 	        		 }
 		        		
 	        		 if(json[2] != null && json[2] != ''){
-		        			$("#phoneNumber").attr("disabled", true);
+		        			$("#phoneNumber").attr("readOnly", true);
 		        		    $("#phoneNumber").val(json[2]);
 	        		 }else{
-	        			    $("#phoneNumber").attr("disabled", false);
+	        			    $("#phoneNumber").attr("readOnly", false);
 	        			    $("#phoneNumber").val('');
 	        		 }
 	        		 
@@ -810,14 +845,14 @@ function rejectSpocInvitation(spocId,orgRelationId,clientLocationId){
 </script>
 
 <script type="text/javascript">
-function validateEmail(orgRelationID){
+function validateEmail1(orgRelationID){
 	 getOwners(orgRelationID);
 	var email = document.getElementById("EmailId").value;
 	var sourceleadUrl = '${sourceleadUrl}';
 	if(email != null){
 		$.ajax({
 			type : "POST",
-			url : sourceleadUrl + "/validateClientOrVendorEmail?"+tokenParamName+"="+tokenValue+"&email="+email,
+			url : sourceleadUrl + "/validateClientOrVendorEmails?"+tokenParamName+"="+tokenValue+"&email="+email,
 			success : function(data) {
 				var result = data;
 				if(result == 'Invalid Email') {
@@ -830,11 +865,15 @@ function validateEmail(orgRelationID){
 					$('input#EmailId').removeAttr("class record-exist record-exist-errormsg");
 					$('input#EmailId').attr('class','valid form-control');
 					$('#EmailIdDiv').find('p.jquery_form_error_message').remove();
+					validateEmailForExistenceUniversally(EmailId, "input#EmailId");
 					
 				}
 			},
 
 		});
+	}else{
+		$("#emailStatusIconDiv").find("i").remove();
+  		$("#emailStatusIconDiv").append('<i class="fa fa-check text-muted" style="color:#f6f6f6"></i>');
 	}
 }
 </script>

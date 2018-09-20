@@ -14,12 +14,14 @@ public interface OrglocationFormFieldsDao {
 	
     Long getCurrentIndexBySourceleadActionIdAndOrders(Long actionId,List<Long> orders);
 
-	String deleteCustomFieldById(Long customID);
+	String deleteCustomFieldById(Long customID, String status);
 
 	OrglocationFormFields getOrglocationFormFieldsById(Long id) throws Exception;
 
 	List<OrglocationFormFields> getAllSectionByActionId(Long actionId, OrgLocations orgLocation);
 
 	List<OrglocationFormSubFields> getAllCustomFormSubFieldsBySectionIdandOrgLocationId(Long formFieldID);
+
+	List<OrglocationFormFields> getAllCustomFormFieldsBySectionIdandOrgLocationIdForCustomList(Long sectionId,Long orgLocation);
 
 }

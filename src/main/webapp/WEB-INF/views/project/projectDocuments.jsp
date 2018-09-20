@@ -13,7 +13,12 @@
 .file_mask {
     z-index: 999999  !important;
 }
+.popupMid {
+	min-height: 100px;
+}
 </style>
+ 
+
 <div class="backtotop" style="display: none;"><img src="/resources/images/backtotop.png"></div>  
 <!-- this script is for Tasks list functionality at Projects screen -->
 <script>
@@ -35,7 +40,7 @@
 						result = result + '    	<div class="clearfix mb">                                                          ';
 						result = result + '    		<div class="pull-right">                                                       ';
 						result = result + '    			<button type="button" class="btn btn-primary btn-sm mr cancel" data-toggle="modal" data-target="#uploadFile_fm">UPLOAD</button>    ';
-						result = result + '    			<button type="button" class="btn btn-primary btn-sm cancel" data-toggle="modal" data-target="#createFolder">CREATE FOLDER</button> ';
+						result = result + '    			<button type="button" class="btn btn-primary btn-sm cancel" onclick="createFolder();" >CREATE FOLDER</button> ';
 						result = result + '    		</div>                                                                                    ';
 						result = result + '    	</div>                                                                                        ';
 						
@@ -47,7 +52,6 @@
 						result = result + '	 				<i class="fa fa-folder-o mr"></i>All Folders                                      ';
 						result = result + '	 		    </a>                                                                                  ';
 						result = result + '	 			</li>                                                                                 ';
-						 
 						for (var i=0; i<json.length; i++)
 		   				{
 							var report = json[i];
@@ -56,14 +60,13 @@
 							result = result + '	 				<i class="fa fa-folder-o mr"></i>'+report.foderName+'  (<span>'+report.count+'</span>)';
 							result = result + '	 		    </a>                                                                  ';
 							if(report.permissionAccess == 0){
-							 
 							}else{
 								result = result + '	 				<span class="fmsettings-dropdown dropdown">                       ';
 								result = result + '	 					<span class="dropdown-toggle" data-toggle="dropdown">         ';
 								result = result + '	 					<i class="fa fa-gear text-muted cursorPointer"></i>           ';
 								result = result + '	 					</span>                                                       ';
 								result = result + '	 					<ul class="dropdown-menu dropdown-menu-right fmdropdown-menu">         ';
-								result = result + '	 						<li><a href="#" data-toggle="modal" data-target="#reNameCreateFolder" onclick="folederReName('+report.id+',\''+report.foderName+'\');"><i class="fa fa-pencil mr10"></i>Rename</a></li>   ';
+								result = result + '	 						<li><a href="#" data-toggle="modal" onclick="renameFolder();folederReName('+report.id+',\''+report.foderName+'\');"><i class="fa fa-pencil mr10"></i>Rename</a></li>   ';
 								result = result + '	 						<li><a href="#"  onclick="deleteFolderPopUp('+report.id+');"><i class="fa fa-trash-o mr10" ></i>Delete</a></li>  ';
 								result = result + '	 						<li><a href="#" onclick="permissionPopUp('+report.id+');"><i class="fa fa-key mr10"></i>Permission</a></li>  ';
 								result = result + '	 					</ul>                                                                  ';
@@ -121,7 +124,7 @@
 
 	}
 	
-	
+
 	//get the document list
 	function getdocumentListById(folderId,folderName){
 		if(folderName != null && folderName != "" && folderName != 'undefined'){
@@ -200,12 +203,12 @@
 					if(report.permissionAccess == 0){
 						result = result + '	 								<ul class="list-unstyled list-inline text-center extrafields">                                     ';
 						result = result + '	 										<li>                                                                                       ';
-						result = result + '	 										<a href=\"'+report.fileUrl+'\" target="_new"> ';
+						result = result + '	 										<a href=\"'+report.fileUrl+'\" download> ';
 						result = result + '	 										<i class="fa fa-download"></i> <br>                                                             ';
 						result = result + '	 										Download                                                                                       ';
 						result = result + '	 										</a></li>                                                                                  ';
 						result = result + '	 										<li>                                                                                       ';
-						result = result + '	 										<a href="javascript:void(0)" onClick="viewFile(\''+report.fileUrl+'\',\''+report.fileName+'\',\''+report.fileContentType+'\');">                                                              ';
+						result = result + '	 										<a href="javascript:void(0)" onClick="viewFile(\''+report.fileUrl+'\',\''+report.fileName+'\',\''+report.fileType+'\');">                                                              ';
 						result = result + '	 										<i class="fa fa-eye"></i> <br> View   ';
 						result = result + '	 										</a></li>                                                                                  ';
 						
@@ -219,12 +222,12 @@
 					}else{
 						result = result + '	 								<ul class="list-unstyled list-inline text-center extrafields">                                     ';
 						result = result + '	 										<li>                                                                                       ';
-						result = result + '	 										<a href=\"'+report.fileUrl+'\" target="_new"> ';
+						result = result + '	 										<a href=\"'+report.fileUrl+'\" download> ';
 						result = result + '	 										<i class="fa fa-download"></i> <br>                                                             ';
 						result = result + '	 										Download                                                                                       ';
 						result = result + '	 										</a></li>                                                                                  ';
 						result = result + '	 										<li>                                                                                       ';
-						result = result + '	 										<a href="javascript:void(0)" onClick="viewFile(\''+report.fileUrl+'\',\''+report.fileName+'\',\''+report.fileContentType+'\');">                                                              ';
+						result = result + '	 										<a href="javascript:void(0)" onClick="viewFile(\''+report.fileUrl+'\',\''+report.fileName+'\',\''+report.fileType+'\');">                                                              ';
 						result = result + '	 										<i class="fa fa-eye"></i> <br> View   ';
 						result = result + '	 										</a></li>                                                                                  ';
 						
@@ -407,26 +410,23 @@
  	}
 	function folederReName(folderId,folderName){
 	    var result = "";
-	    result = result  +'<form role="form"  id="reNameFolder_form" name="reNameFolder_form" method="post" > ';
-		result = result +'<div class="modal-content">';
-	    result = result +'<div class="modal-header">';
-		result = result +'     <button type="button" class="close" data-dismiss="modal">&times;</button>';
-		result = result +'     <h4 class="modal-title">Rename Folder</h4>';
-		result = result +'   </div>';
-		result = result +'   <div class="modal-body mt mb">';
-		result = result +'     <div class="row">';
-		result = result +'     	<label class="col-md-3">Rename Folder<span class="text-danger">&nbsp;*</span></label>';
-		result = result +'     	<div class="col-md-9" id="rmoveErrMsgEditCF">';
-		result = result +'     		<input type="text" class="form-control input-sm" placeholder="Create Folder" value="'+folderName+'" id="folderReName" name="folderName" field-name="Folder Name" data-validation="required validate_AlphaNumber validate_length length2-100" onkeyUp="validateRenameFolderName('+folderId+');">';
-		result = result +'     	</div>';
-		result = result +'     </div>';
-		result = result +'   </div>';
-		result = result +'   <div class="modal-footer">';
-		result = result +'    <button type="button" class="btn btn-primary mr10" id="save_reNmaeFolder" onclick="saveReNameFolder('+folderId+');">Save</button>';
-		result = result +'     <button type="button" class="btn btn-default cancel" data-dismiss="modal">Cancel</button>';
-		result = result +'   </div>';
-		result = result +' </div>';
-		result = result  +'</form>';
+		 result = result  +'<form role="form"  id="reNameFolder_form" name="reNameFolder_form" method="post" >';
+		 result = result  +'	<div class="popupHead">';
+		 result = result  +'		<h2>Rename Folder</h2><a href="javascript:void(0)" class="fa fa-close popCan" onclick="closeFolder();"></a>';
+		 result = result  +'	</div>';
+		 result = result  +'	<div class="popupMid clearfix">';
+		 result = result  +'      <div class="col-sm-12 noPad mt clearfix">';
+		 result = result  +'			<label class="col-md-4 padding_left">Create Folder<span class="text-danger">&nbsp;*</span></label>';
+		 result = result  +'          	<div class="col-md-8 padding_right" id="rmoveErrMsgEditCF">';
+		 result = result  +'          	   <input type="text" class="form-control input-sm" placeholder="Create Folder" value="'+folderName+'" id="folderReName" name="folderName" field-name="Folder Name" data-validation="required validate_AlphaNumber validate_length length2-100" onkeyUp="validateRenameFolderName('+folderId+');"  onPaste="" onkeydown="if (event.keyCode == 13) { return false;}">';
+		 result = result  +'			</div>';
+		 result = result  +'		</div>';	         
+		 result = result  +'	</div>';
+		 result = result  +'	<div class="immiPopFoot">';
+		 result = result  +'        <input value="Save" class="" type="button" id="save_reNmaeFolder"  onclick="saveReNameFolder('+folderId+');">';
+		 result = result  +'        <input value="Cancel" class="popCan" type="button" onclick="closeFolder();">';
+		 result = result  +'      </div>	';	
+		 result = result  +'  </form>';
 		$("#renameFolderDivId").empty();
 		$("#renameFolderDivId").append(result); 
 		
@@ -442,7 +442,7 @@ function saveReNameFolder(folderId){
 			type : "POST",
 				url : sourceleadUrl+"/projectDocumentFolderRename?${_csrf.parameterName}=${_csrf.token}&folderId="+folderId+"&folderName="+folderName,
 			success : function(data) {
-				$("#reNameCreateFolder").modal("hide");
+				closeFolder();
 				projectDocuments(projectId);
 			}
 	 }); 
@@ -460,11 +460,9 @@ $('body').on('blur', '#reNameFolder_form', function() {
 
 <div class="advancedsearch-mask"></div>
 
-  <div class="modal fade" id="reNameCreateFolder" role="dialog">
-    <div class="modal-dialog fm-modaldialog">
+    <div class="popUpOut" id="renameFolder" role="dialog">
       <div id="renameFolderDivId"></div>
     </div>
-  </div>
   
   
  <!-- Create Folder Popup Modal-->
@@ -699,7 +697,7 @@ function getProjectMemberlist(){
 		        	    data: formData,
 						url : sourceleadUrl+"/saveProjectDocumentFolder?${_csrf.parameterName}=${_csrf.token}&projectId="+projectId,
 						success : function(result) {
-								$('#createFolder').modal('hide');
+							    closeFolder();
 								$("#save_folder").removeAttr("disabled");
 								$("#projectDocumentType_form")[0].reset();
 								$("#projectFolder_form")[0].reset();
@@ -830,30 +828,48 @@ $('body').on('blur', '#reNameFile_form', function() {
 	<i class="fa fa-check-circle fa-2x paddingRight pull-left"></i><span class="pull-left">Success fully Folder Created</span>
 </div> -->
 
-<form role="form"  id="projectFolder_form" name="projectFolder_form" method="post" >
-  <div class="modal fade" id="createFolder" role="dialog">
-    <div class="modal-dialog fm-modaldialog">
-      <div class="modal-content">
-        <div class="modal-header">
-          <button type="button" class="close" data-dismiss="modal">&times;</button>
-          <h4 class="modal-title">Create Folder</h4>
-        </div>
-        <div class="modal-body mt mb">
-          <div class="row" >
-          	<label class="col-md-3">Create Folder<span class="text-danger">&nbsp;*</span></label>
-          	<div class="col-md-9" id="rmoveErrMsgCF">
-          		<input type="text" class="form-control input-sm" placeholder="Create Folder" id="folderName" name="folderName" field-name="Folder Name" data-validation="required validate_length length2-100" onkeyUp="validateFolderName()">
-          	</div>
-          </div>
-        </div>
-        <div class="modal-footer">
-         <button type="button" class="btn btn-primary mr10"  id="save_folder" onclick="saveFolderName();">Save</button>
-          <button type="button" class="btn btn-default cancel" data-dismiss="modal">Cancel</button>
-        </div>
-      </div>
-    </div>
-  </div>
-  </form>
+
+
+	<div class="popMask"></div>
+	<form role="form"  id="projectFolder_form" name="projectFolder_form" method="post" >
+    <div class="popUpOut" id="createFolder">
+		<div class="popupHead">
+			<h2>Create Folder</h2><a href="javascript:void(0)" class="fa fa-close popCan" onclick="closeFolder();"></a>
+		</div>
+		<div class="popupMid clearfix">
+          <div class="col-sm-12 noPad mt clearfix">
+				<label class="col-md-4 padding_left">Create Folder<span class="text-danger">&nbsp;*</span></label>
+              	<div class="col-md-8 padding_right" id="rmoveErrMsgCF">
+              	   <input type="text" class="form-control" placeholder="Create Folder" id="folderName" name="folderName" field-name="Folder Name" data-validation="required validate_AlphaNumber validate_length length2-100" onkeyUp="validateFolderName()"  onPaste="" onkeydown="if (event.keyCode == 13) { return false;}">
+				</div>
+			</div>	         
+		</div>
+		<div class="immiPopFoot">
+            <input value="Save" class="" type="button" id="save_folder"  onclick="saveFolderName();">
+            <input value="Cancel" class="popCan" type="button" onclick="closeFolder();">
+          </div>		
+	  </div>
+	  </form>
+	
+	 
+  
+<script>
+function createFolder(){
+	$(".popMask").fadeIn(200);
+	$("#createFolder").fadeIn(100);
+}
+function closeFolder(){
+	$(".popMask").fadeOut(200);
+	$("#createFolder, #renameFolder").fadeOut(100);
+}
+
+function renameFolder(){
+	$(".popMask").fadeIn(200);
+	$("#renameFolder").fadeIn(100);
+}
+
+</script>
+
  <script>
  
  function validateDocumentName(){
@@ -940,7 +956,7 @@ document.getElementById("uploadBtn").onchange = function () {
 	$('#uploadFile').val($(this).val().replace(/C:\\fakepath\\/i, ''))
 };
 /* upload file script for size validation 2MB*/
-   var selectedFile = document.getElementById("uploadBtn");
+   /* var selectedFile = document.getElementById("uploadBtn");
     selectedFile.addEventListener("change", function() {
   var docSize = this.files[0].size;
   $("#uploadFileGroup").find('p.jquery_form_error_message').remove();
@@ -948,7 +964,7 @@ document.getElementById("uploadBtn").onchange = function () {
 	  document.getElementById("uploadFile").value = '';
 	  $("#uploadFileGroup").append("<p class='jquery_form_error_message'>Limit is exceeded than 2MB </p>");
   }
-});
+}); */
 function uploadProjectDocument(){
 	fileUpload("uploadBtn", "ProjectDoument", "projectDocumentType_form");
 }
@@ -1031,7 +1047,7 @@ function uploadProjectDocument(){
 		result = result  +'      <div class="row">';
 		result = result  +'       	<label class="col-md-3">Message<span class="text-danger">*</span></label>';
 		result = result  +'       	<div class="col-md-9">';
-		result = result  +'       		<textarea rows="2" cols="50" placeholder="Message" class="form-control input-sm" name="message" field-name="Message" data-validation="required validate_Space validate_length length2-500"></textarea>';
+		result = result  +'       		<textarea rows="2" cols="50" placeholder="Message" class="form-control input-sm" name="message" field-name="Message" data-validation="required validate_length length2-500"></textarea>';
 		result = result  +'       	</div>';
 		result = result  +'       </div>';
 		result = result  +'     </div>';
@@ -1143,25 +1159,28 @@ $(document).ready(function() {
 		$(".settPop").slideUp(200);
 		$(".vendor_wrap_mask").fadeOut(200);
 	});
-});		
 	
+	$("input:text").keypress(function(event) {
+        if (event.keyCode == 13) {
+            event.preventDefault();
+            return false;
+        }
+    });
+});		
 </script> 
 
 <script>
-
 // Back To Top 
-						    $(window).scroll(function() {
-						        if ($(this).scrollTop() > 200) {
-						            $('.backtotop').fadeIn('slow');
-						        } else {
-						            $('.backtotop').fadeOut('slow');
-						        }
-						    });
-						    $('.backtotop').click(function() {
-						        $("html, body").animate({scrollTop: 0}, 500);
-						        return false;
-						    });
-
-
+   $(window).scroll(function() {
+       if ($(this).scrollTop() > 200) {
+           $('.backtotop').fadeIn('slow');
+       } else {
+           $('.backtotop').fadeOut('slow');
+       }
+   });
+   $('.backtotop').click(function() {
+       $("html, body").animate({scrollTop: 0}, 500);
+       return false;
+   });
 </script>
  
