@@ -2337,7 +2337,7 @@ public class ImmigrationRestController {
 	/*
 	 * LCA Code Starts Here
 	 */
-     
+	@PreAuthorize("hasRole('ROLE_ADD_LCA')")
 	@RequestMapping(value = { "/loadNewLCA" })
 	public ModelAndView loadNewLCA(HttpServletRequest request) throws Exception {
 		ModelAndView model = new ModelAndView();
@@ -2432,6 +2432,7 @@ public class ImmigrationRestController {
 		return response;
 	}
 	
+	@PreAuthorize("hasRole('ROLE_VIEW_EDIT_LCA')")
 	@RequestMapping(value = { "/editLcaDetails" })
 	public ModelAndView editLcaDetails(
 			@RequestParam(value = "lcaUuid", required = false) String lcaUuid,
@@ -2452,6 +2453,7 @@ public class ImmigrationRestController {
 		return model;
 	}
 	
+	@PreAuthorize("hasRole('ROLE_VIEW_DELETE_LCA')")
 	@RequestMapping(value = { "/deleteLcaDetailsById" })
 	public String deleteLcaDetailsById(
 			@RequestParam(value = "lcaUuid", required = false) String lcaUuid,
@@ -2462,6 +2464,7 @@ public class ImmigrationRestController {
 
 	}
 	
+	@PreAuthorize("hasRole('ROLE_VIEW_EDIT_LCA')")
 	@RequestMapping(value = { "/reActivateLca" })
 	public String reActivateLca(
 			@RequestParam(value = "lcaUuid", required = false) String lcaUuid,
@@ -2500,7 +2503,7 @@ public class ImmigrationRestController {
 		return immigrationCommonService.getOesSocCodeById(id, socType);
 	}
 	
-	
+	@PreAuthorize("hasRole('ROLE_VIEW_LCA')")
 	@RequestMapping(value = { "/viewLca" })
 	public ModelAndView viewLCA(HttpServletRequest request,
 			@RequestParam(value = "lcaUuid", required = false) String lcaUuid,
