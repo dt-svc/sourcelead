@@ -3799,10 +3799,16 @@ function assocSalarySummary(candidateId){
 		    	    $("#candidateSideDiv").append(response);
 				},
 			    complete: function (response) {
-			    	$('#editAssociateBtn').css('display','block');
-			  		$('#associateSalary_form input').attr('disabled','true');
-			  		$('#associateSalary_form select').prop('disabled', true);
-			  		$('#saveAssociateBtnDiv').css('display','none');
+			  		if($("#status").val() == "NODATA"){
+			  			$('#saveAssociateBtnDiv').css('display','block');
+			  			$('#editAssociateBtn').css('display','none');
+			  			$('#cancelAssociateSalaryIndBtn').css('display','none');
+			  		}else{
+			  			$('#editAssociateBtn').css('display','block');
+			  			$('#saveAssociateBtnDiv').css('display','none');
+			  			$('#associateSalary_form input').attr('disabled','true');
+				  		$('#associateSalary_form select').prop('disabled', true);
+			  		}
 			       }
 			});
 	}
