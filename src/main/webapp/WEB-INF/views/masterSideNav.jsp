@@ -296,17 +296,31 @@
 						
 						<c:if test="${sessionData.nav == 'Payroll' || sessionData.nav == 'My Payroll'}">
 							<ul class="collapses" style="display: none">
-							<li class="${sessionData.nav == 'Payroll' ? 'treview-active' : ''}"><a href="<c:url value='${appPath}/payrollList'/>" title="Run Payroll">Run Payroll</a></li>
-							<li><a href="<c:url value='${appPath}/userPay'/>" title="Legacy Payroll">Legacy Payroll</a></li>
-							<li><a href="<c:url value='${appPath}/myPayroll'/>" title="My Payroll">My Payroll</a></li>
+							 <c:if test="${SourceLeadWeb_orgLocations.country == 'United States'}">
+								<li class="${sessionData.nav == 'Payroll' ? 'treview-active' : ''}"><a href="<c:url value='${appPath}/payrollList'/>" title="Run Payroll">Run Payroll</a></li>
+								<li><a href="<c:url value='${appPath}/userPay'/>" title="Legacy Payroll">Legacy Payroll</a></li>
+								<li><a href="<c:url value='${appPath}/myPayroll'/>" title="My Payroll">My Payroll</a></li>
+							</c:if>
+							
+							<c:if test="${SourceLeadWeb_orgLocations.country == 'India'}">
+								<li class="${sessionData.nav == 'Payroll' ? 'treview-active' : ''}"><a href="#" title="My Pays">My Pays</a></li>
+								<li><a href="#" title="Payroll">Payroll</a></li>
+							</c:if>
 							</ul>
 						</c:if>
 						
 						<c:if test="${sessionData.nav != 'Payroll' || sessionData.nav != 'My Payroll'}">
 							<ul class="collapses" style="display: none">
-							<li class="${sessionData.nav == 'Payroll' ? 'treview-active' : ''}"><a href="<c:url value='${appPath}/payrollList'/>" title="Run Payroll">Run Payroll</a></li>
-							<li><a href="<c:url value='${appPath}/userPay'/>" title="Legacy Payroll">Legacy Payroll</a></li>
-							<li><a href="<c:url value='${appPath}/myPayroll'/>" title="My Payroll">My Payroll</a></li>
+							<c:if test="${SourceLeadWeb_orgLocations.country == 'United States'}">
+								<li class="${sessionData.nav == 'Payroll' ? 'treview-active' : ''}"><a href="<c:url value='${appPath}/payrollList'/>" title="Run Payroll">Run Payroll</a></li>
+								<li><a href="<c:url value='${appPath}/userPay'/>" title="Legacy Payroll">Legacy Payroll</a></li>
+								<li><a href="<c:url value='${appPath}/myPayroll'/>" title="My Payroll">My Payroll</a></li>
+							</c:if>
+							
+							<c:if test="${SourceLeadWeb_orgLocations.country == 'India'}">
+								<li class="${sessionData.nav == 'Payroll' ? 'treview-active' : ''}"><a href="#" title="My Pays"> My Pays</a></li>
+								<li><a href="#" title="Payroll">Payroll</a></li>
+							</c:if>
 							</ul>
 						</c:if>
 						
@@ -314,21 +328,33 @@
 					</c:if>
 					
 					<c:if test="${SourceLeadWeb_paryrollTabCount < 2 && userTabs.tabName == 'Run Payroll'}">
-							<li class="${sessionData.nav == 'Payroll' ? 'side-nav-active' : ''}"><a href="<c:url value='${appPath}/payrollList'/>" title="Run Payroll"><span><i class="fa fa-usd"></i></span><i class="subMenu">Run Payroll</i></a></li>
+							<c:if test="${SourceLeadWeb_orgLocations.country == 'United States'}">
+								<li class="${sessionData.nav == 'Payroll' ? 'side-nav-active' : ''}"><a href="<c:url value='${appPath}/payrollList'/>" title="Run Payroll"><span><i class="fa fa-usd"></i></span><i class="subMenu">Run Payroll</i></a></li>
+							</c:if>
+							
+							<c:if test="${SourceLeadWeb_orgLocations.country == 'India'}">
+								<li class="${sessionData.nav == 'Payroll' ? 'side-nav-active' : ''}"><a href="#" title="Payroll"><span><i class="fa fa-usd"></i></span><i class="subMenu">Payroll</i></a></li>
+							</c:if>
 					</c:if>
 					
 					<c:if test="${SourceLeadWeb_paryrollTabCount < 2 && userTabs.tabName == 'My Payroll'}">
-							<li class="${sessionData.nav == 'My Payroll' ? 'side-nav-active' : ''}"><a href="<c:url value='${appPath}/userPay'/>" title="Leagacy Payroll"><span><i class="fa fa-usd"></i></span><i class="subMenu">Legacy Payroll</i></a></li>
-							<li class="${sessionData.nav == 'My Payroll' ? 'side-nav-active' : ''}"><a href="<c:url value='${appPath}/myPayroll'/>" title="My Payroll"><span><i class="fa fa-usd"></i></span><i class="subMenu">My Payroll</i></a></li>
+							<c:if test="${SourceLeadWeb_orgLocations.country == 'United States'}">
+								<li class="${sessionData.nav == 'My Payroll' ? 'side-nav-active' : ''}"><a href="<c:url value='${appPath}/userPay'/>" title="Leagacy Payroll"><span><i class="fa fa-usd"></i></span><i class="subMenu">Legacy Payroll</i></a></li>
+								<li class="${sessionData.nav == 'My Payroll' ? 'side-nav-active' : ''}"><a href="<c:url value='${appPath}/myPayroll'/>" title="My Payroll"><span><i class="fa fa-usd"></i></span><i class="subMenu">My Payroll</i></a></li>
+							</c:if>
+							
+							<c:if test="${SourceLeadWeb_orgLocations.country == 'India'}">
+								<li class="${sessionData.nav == 'My Payroll' ? 'side-nav-active' : ''}"><a href="#" title="My Pays"><span><i class="fa fa-usd"></i></span><i class="subMenu">My Pays</i></a></li>
+							</c:if>
 					</c:if>
 
-		       	   <c:if test="${userTabs.tabName == 'Payroll' && SourceLeadWeb_loginUserRole != 'ROLE_USER'}">
+		       	   <%-- <c:if test="${userTabs.tabName == 'Payroll' && SourceLeadWeb_loginUserRole != 'ROLE_USER'}">
 		             <li class="${sessionData.nav == 'Payroll' ? 'side-nav-active' : ''}"><a href="<c:url value='${appPath}/payrollList'/>" title="Payroll"><span><i class="fa fa-usd"></i></span><i class="subMenu">Payroll</i></a></li>
 		          	</c:if>	
 		          	
 		          	<c:if test="${userTabs.tabName == 'Payroll' && SourceLeadWeb_loginUserRole != 'ROLE_ADMIN'}">
 		              <li class="${sessionData.nav == 'Pay' ? 'side-nav-active' : ''}"><a href="<c:url value='${appPath}/userPay'/>" title="Pay"><span><i class="fa fa-usd"></i></span><i class="subMenu">Pay</i></a></li>
-		          	</c:if>	
+		          	</c:if>	 --%>
 
 					<c:if test="${userTabs.tabName == 'Immigrations'}">
 					 <sec:authorize access="hasAnyRole('ROLE_ADD_PETITION','ROLE_EDIT_VIEW_PETITION','ROLE_DELETE_PETITION','ROLE_VIEW_MY_PETITION')"> 
