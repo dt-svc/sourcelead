@@ -381,6 +381,22 @@
 		             <li class="${sessionData.nav == 'Leave Management' ? 'side-nav-active' : ''}"><a href="<c:url value='${appPath}/leaveManagementReports'/>" title="Leave Management"><span><i class="fa fa-calendar"></i></span><i class="subMenu">Leave Management</i></a></li>
 		          	</c:if>	
           </c:forEach>
+          
+          			
+	            	<li class="${sessionData.nav == 'Forms' || sessionData.nav == 'MyPayroll' ? 'side-nav-active' : ''}">
+						<a href="#" class="billingLi" title="Payroll">
+							<span><i class="fa fa-money"></i></span>
+							<i class="subMenu">Payroll</i> <i class="fa fa-fw fa-caret-down"></i>
+						</a>
+                        <ul class="collapses" style="display: none">
+                        	<%-- <li class="${sessionData.nav == 'Receivable' ? 'treview-active' : ''}"><a href="<c:url value='${appPath}/itDeclaration'/>" title="IT Declaration">IT Declaration</a></li> --%>
+                        	<li class="${sessionData.nav == 'Forms' ? 'treview-active' : ''}"><a href="<c:url value='${appPath}/forms/list'/>" title="Forms">Forms</a></li>
+                        	<li class="${sessionData.nav == 'RunPayroll' ? 'treview-active' : ''}"><a href="<c:url value='${appPath}/myPayroll/payrollList'/>" title="Run Payroll">Run Payroll</a></li>
+                        	<li class="${sessionData.nav == 'MyPayroll' ? 'treview-active' : ''}"><a href="<c:url value='${appPath}/myPayroll/pays'/>" title="My Payroll">My Payroll</a></li>
+						</ul>
+					</li>
+	         
+             <li class="${sessionData.nav == 'Taxes' ? 'side-nav-active' : ''}"><a href="<c:url value='${appPath}/stateTax/list'/>" title="Taxes"><span><i class="fa fa-dashboard"></i></span><i class="subMenu">Taxes</i></a></li>
           	
           	  <c:if test="${SourceLeadWeb_loginUserRole == 'ROLE_SOURCELEAD_ADMIN'}">
           			 <li class="${sessionData.nav == 'Taxes' ? 'side-nav-active' : ''}"><a href="<c:url value='${appPath}/stateTax/list'/>" title="Taxes"><span><i class="fa fa-dashboard"></i></span><i class="subMenu">Taxes</i></a></li>
