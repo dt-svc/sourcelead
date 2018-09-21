@@ -392,18 +392,43 @@ public class CandidateServiceImpl implements CandidateService {
 		}
 		
 		if(candidateDto.getMiddleName() != null){
+			if(candidate.getMiddelName() != null && !candidateDto.getMiddleName().equalsIgnoreCase(candidate.getMiddelName())){
+				activitySummary.append("Middle Name").append(" : ").append(Constants.OLD_VALUE_TAG_INITIATION).append(candidate.getMiddelName()).append(Constants.OLD_VALUE_TAG_END).append(" ").append(Constants.NEW_VALUE_TAG_INITIATION).append(candidateDto.getMiddleName()).append(Constants.NEW_VALUE_TAG_END).append(" ");
+			}else if((candidate.getLastName() != null || candidate.getLastName() != "" ||  candidateDto.getMiddleName().equalsIgnoreCase(candidate.getMiddelName())) && candidateDto.getMiddleName() !="" ){
+				activitySummary.append("Middle Name").append(" : ").append(" ").append(Constants.NEW_VALUE_TAG_INITIATION).append(candidateDto.getMiddleName()).append(Constants.NEW_VALUE_TAG_END).append(" ");
+			}else
+				activitySummary.append("Middle Name").append(" : ").append("---").append(" ");
 			candidate.setMiddelName(candidateDto.getMiddleName());
 		}
 		
 		if(candidateDto.getGender() != null){
+			if(candidate.getGender() != null && !candidateDto.getGender().equalsIgnoreCase(candidate.getGender())){
+				activitySummary.append("Gender").append(" : ").append(Constants.OLD_VALUE_TAG_INITIATION).append(candidate.getGender()).append(Constants.OLD_VALUE_TAG_END).append(" ").append(Constants.NEW_VALUE_TAG_INITIATION).append(candidateDto.getGender()).append(Constants.NEW_VALUE_TAG_END).append(" ");
+			}else if((candidate.getLastName() != null || candidate.getGender() != "" ||  candidateDto.getGender().equalsIgnoreCase(candidate.getGender())) && candidateDto.getGender() !="" ){
+				activitySummary.append("Gender").append(" : ").append(" ").append(Constants.NEW_VALUE_TAG_INITIATION).append(candidateDto.getGender()).append(Constants.NEW_VALUE_TAG_END).append(" ");
+			}else
+				activitySummary.append("Gender").append(" : ").append("---").append(" ");
 			candidate.setGender(candidateDto.getGender());
 		}
 		
 		if(candidateDto.getMaritalStatus() != null){
+			if(candidate.getMaritalStatus() != null && !candidateDto.getMaritalStatus().equalsIgnoreCase(candidate.getMaritalStatus())){
+				activitySummary.append("Marital Status").append(" : ").append(Constants.OLD_VALUE_TAG_INITIATION).append(candidate.getMaritalStatus()).append(Constants.OLD_VALUE_TAG_END).append(" ").append(Constants.NEW_VALUE_TAG_INITIATION).append(candidateDto.getMaritalStatus()).append(Constants.NEW_VALUE_TAG_END).append(" ");
+			}else if((candidate.getLastName() != null || candidate.getMaritalStatus() != "" ||  candidateDto.getMaritalStatus().equalsIgnoreCase(candidate.getMaritalStatus())) && candidateDto.getMaritalStatus() !="" ){
+				activitySummary.append("Marital Status").append(" : ").append(" ").append(Constants.NEW_VALUE_TAG_INITIATION).append(candidateDto.getMaritalStatus()).append(Constants.NEW_VALUE_TAG_END).append(" ");
+			}else
+				activitySummary.append("Marital Status").append(" : ").append("---").append(" ");
 			candidate.setMaritalStatus(candidateDto.getMaritalStatus());
 		}
 		
 		if(StringUtils.isNotBlank(candidateDto.getDateofBirth())){
+			SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+			if(candidate.getDateOfBirth() != null && !(sdf.parse(candidateDto.getDateofBirth()).compareTo(candidate.getDateOfBirth()) <= 0)){
+				activitySummary.append("Date of Birth").append(" : ").append(Constants.OLD_VALUE_TAG_INITIATION).append(candidate.getDateOfBirth()).append(Constants.OLD_VALUE_TAG_END).append(" ").append(Constants.NEW_VALUE_TAG_INITIATION).append(candidateDto.getMaritalStatus()).append(Constants.NEW_VALUE_TAG_END).append(" ");
+			}else if(candidateDto.getDateofBirth() !="" ){
+				activitySummary.append("Date of Birth").append(" : ").append(" ").append(Constants.NEW_VALUE_TAG_INITIATION).append(candidateDto.getDateofBirth()).append(Constants.NEW_VALUE_TAG_END).append(" ");
+			}else
+				activitySummary.append("Date of Birth").append(" : ").append("---").append(" ");
 			candidate.setDateOfBirth(commonUtil.orgLocationDateFormat(orgLocations.getDateFormat(), candidateDto.getDateofBirth()));
 		}else{
 			candidate.setDateOfBirth(null);
@@ -1808,10 +1833,16 @@ private Sheet createXlsSheet(Sheet createExcelsheet, Row writeRow,Candidate cand
 	    	candidate.setResidenceLongitude(addUserDTO.getResidenceLongitude());
 	    	candidate.setResidenceZipCode(addUserDTO.getResidenceZipCode());
 	    	candidate.setResidenceStreetAddress(addUserDTO.getResidenceAddress());
+	    	OrgLocations workLocation = orgLocationService.getOrgLocations(Long.parseLong(addUserDTO.getWorkLocation()));
+			candidate.setWorkLocation(workLocation);
+	    	
 	    	
 	    	Countries country = countriesService.getCountriesByCountryName(addUserDTO.getResidenceCountry());
 	    	String stateCode = statesService.getStateCodeByCountryCodeAndState(country.getCode2(),addUserDTO.getResidenceState());
-	    	candidate.setResidenceStateCode(stateCode);
+	    	if(stateCode != null) {
+	    		candidate.setResidenceStateCode(stateCode);
+	    	}
+	    	
 	    }
 		candidateDao.storeCandidate(candidate);
 		saveOrUpdateCandidateElkDocument(candidate);

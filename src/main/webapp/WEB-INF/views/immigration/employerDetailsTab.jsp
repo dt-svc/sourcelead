@@ -63,17 +63,17 @@
 				<td><div class="">${empItems.endMonth} ${empItems.endYear}</div></td>
 				<c:choose>
 				    <c:when test="${myImmigrationPage == 'N'}">
-				        <td><div><i id="edit" onclick="editEmpDetailsByRowId(${empItems.id});"
+				        <td><div><i id="edit" onclick="immigration.editEmpDetailsByRowId(${empItems.id});"
 								class="glyphicon glyphicon-pencil cursorPointer"></i><i id="delete" 
-								 onclick="deleteImmigrationRecord('deleteEmpDetails',${empItems.id});" 
+								 onclick="deleteImmigrationRecord('immigration.deleteEmpDetails',${empItems.id});" 
 								 class="glyphicon glyphicon-trash ml10 cursorPointer"></i></div></td>
 				    </c:when>
 				    <c:otherwise>
 				        <c:choose>
 						    <c:when test="${curUscisMyImmi == 'Request to fill' || curUscisMyImmi == 'Request for modifications'}">
-						      <td><div><i id="edit" onclick="editEmpDetailsByRowId(${empItems.id});"
+						      <td><div><i id="edit" onclick="immigration.editEmpDetailsByRowId(${empItems.id});"
 										class="glyphicon glyphicon-pencil cursorPointer"></i><i id="delete" 
-										 onclick="deleteImmigrationRecord('deleteEmpDetails',${empItems.id});" 
+										 onclick="deleteImmigrationRecord('immigration.deleteEmpDetails',${empItems.id});" 
 										 class="glyphicon glyphicon-trash ml10 cursorPointer"></i></div></td>
 						    </c:when>
 						    <c:otherwise>
@@ -235,13 +235,13 @@
 		
 		<div class="clearfix"></div>
 		<div class="immiPopFoot mt clearfix">
-            <input value="Save"class="" type="button" id="employerSave_Buton" onclick="saveEmployerDetails('save');"> 
+            <input value="Save"class="" type="button" id="employerSave_Buton" onclick="immigration.saveEmployerDetails('save');"> 
             <input value="Cancel" id = "cancel_button" class="popCan" type="button" onClick="popFunEmployer();">
           </div>		
 	</div><!-- popup code end -->
 	<div class="immFoot clearfix">
 			<div class="pull-right text-right">
-				<input type="button" value="Back" onclick="goToSummaryTab('#visasTab');" class="btn btn-default btn-sm">
+				<input type="button" value="Back" onclick="goToSummaryTab('#lcaTab');" class="btn btn-default btn-sm">
              <!-- 	<input type="button" value="Skip" onclick="goToSummaryTab('#residencesTab');" class="btn btn-default btn-sm">  -->
               	<input type="button" value="Continue" onclick="goToSummaryNextTab('#educationsTab');" class="btn btn-primary btn-sm ml10">
             </div>
@@ -291,7 +291,7 @@
 	
 	$("#employersDataSearch").keyup(function (e) {
 	    if (e.which === 13) {
-	    	getCandidateEmployerList(candidateId);
+	    	immigration.getCandidateEmployerList(candidateId);
 	    }
 	});
 	

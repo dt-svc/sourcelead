@@ -839,6 +839,7 @@ function deleteProfileImage(candidateId){
      }); 
 }
 
+
 </script>
 
 <%-- 
@@ -1388,9 +1389,23 @@ function cancel(candidateId){
 	  </li>        
       
            <sec:authorize access="hasAnyRole('ROLE_CREATE_CANDIDATE','ROLE_CROWDSOURCING_CANDIDATES')">
-          <li><b id="addmore"><a onClick="addCandidate();" title="Add Candidate" class="newAdBtn mr5" href="javascript:void(0)">+  Candidate</a></b>
+          <!-- <li><b id="addmore"><a onClick="addCandidate();" title="Add Candidate" class="newAdBtn mr5" href="javascript:void(0)">+  Candidate</a></b>
           		<div id="addmorepop" class="approved_pop"></div>
-          </li>
+          </li> -->
+          
+          <li>
+				<a class="action newAdBtn mr5" onclick="getActions();" href="javascript:void(0)">+ Candidate <i class="fa fa-caret-down"></i></a>
+				<div class="action-pop">
+					<span> 
+						<a href="<c:url value='${appPath}/candidate'/>">Parse Resume</a>
+                        <a href="<c:url value='${appPath}/addCandidate'/>">Add Manual</a>
+                        <a href="<c:url value='${appPath}/bulk-resume-import.html'/>">Bulk Resume Parsing</a>
+                        <a href="uploadCandidateForm">Import XLS</a>
+					</span>
+				</div>
+			</li>
+          
+          
           </sec:authorize>
       
 				<li><a href="javascript:void(0)" class="filtIcon" title="Filters" onclick="openCandidateFilterPop();"></a></li>
@@ -1398,7 +1413,6 @@ function cancel(candidateId){
 				<li><a href="javascript:void(0)" class="overIcon" title="Actions" onclick="newActions();"></a>
 					<div class="newActPop">
 						<span>
-		                 <a href="uploadCandidateForm">Import</a>
          				 <sec:authorize access="hasAnyRole('ROLE_EXPORT_CANDIDATES','ROLE_CROWDSOURCING_CANDIDATES')">
           					<a href="javascript:void(0)" onclick="exportToPdf();" title="PDF">Export PDF</a>
 							<a href="javascript:void(0)" onclick="exportToExcel();" title="Excel">Export Excel</a>
@@ -2371,67 +2385,7 @@ function getCities(){
 				$this.next().css({'width': '100%'});
 				}) */
 </script> 
-    <!-- <script type="text/javascript">
-		window.onload = function () {
-			loadChosenScripts();
-		 };
-	</script> -->
-<!-- Add candidate Popup -->
-      <div class="addcandidate-popup">
-				  <div class="row">
-                      <div class="col-md-offset-1 col-md-10">
-				  <a href="javascript:void(0)" class="close-popdiv" onClick="closeCandidate()"><i class="fa fa-close"></i></a>
-                          <div class="col-md-4 mt">
-                        <div class="small-widget bg-purple">
-                            <a href="<c:url value='${appPath}/candidate'/>"  title="Import Candidate">
-                                <div class="clearfix mb10">
-                                <i class="fa fa-file-text-o fa-4x"></i>
-                                    <span class="fa fa-arrow-right"></span>
-                                </div>
-                                <strong class="clearfix">Import Candidate</strong>
-                                </a>
-                        </div>
-					  </div>
-					  <div class="col-md-4 mt">
-                          <div class="small-widget bg-yellow">
-                              <a href="<c:url value='${appPath}/addCandidate'/>" title="Add Candidate">
-                                  <div class="clearfix mb10">
-                                      <i class="fa fa-user-circle fa-4x"></i>
-                                      <span class="fa fa-plus"></span>
-                                  </div>
-                                  <strong class="clearfix">Add Candidate</strong>
-                                </a>
-                                
-                          </div>
-					  </div>
-					  
-					  <div class="col-md-4 mt">
-                          <div class="small-widget bgGreen">
-                              <a href="<c:url value='${appPath}/bulk-resume-import.html'/>" title="Bulk Imports" target="_blank">
-                                  <div class="clearfix mb10">
-                                      <i class="fa fa-upload fa-4x"></i>
-                                      <span class="fa fa-plus"></span>
-                                  </div>
-                                  <strong class="clearfix">Bulk Imports</strong>
-                                </a>
-                                
-                          </div>
-					  </div>					  
-					  
-                      </div>
-                          <div class="col-md-4 hidden">
-                          <div class="small-widget bg-green">
-                              <a href="import-candidate.html" title="Import Candidate">
-                                  <div class="clearfix mb10">
-                                <i class="fa fa-user-circle fa-4x"></i>
-                                      <span class="fa fa-download"></span>
-                                  </div>
-                                  <strong class="clearfix">Import Candidate</strong>
-                                </a>
-                          </div>
-                      </div>
-				  </div>
-			  </div>
+     
       <div class="pop_mask"></div>
     
     <div class="advancedsearch-mask" onClick="closeAdsrch()"></div>
@@ -2897,7 +2851,7 @@ function resetCandidateFilter(){
 	document.getElementById("candidateTypeAll").checked = true;
 	document.getElementById("candidateAll").checked = true;
 	document.getElementById("candidateCheck").checked = true;
-	document.getElementById("allCandidatesRadio").checked = true;
+	document.getElementById("myCandidatesRadio").checked = true;
 	candidateList();
 }
 </script>		
@@ -2973,8 +2927,8 @@ function resetCandidateFilter(){
 				<label><strong>Created By</strong></label>
 				 <div class="clearfix">
 					<ul class="list-unstyled" id="createdByTypeFilter">
-					    <li class="radioIput positionRelative" ><input  type="radio" id="myCandidatesRadio" name="createdByFilter"  value ="myCandidates"  ><label>My Candidates</label></li>
-						<li class="radioIput positionRelative" ><input  type="radio" id="allCandidatesRadio"  name="createdByFilter"  value ="allCandidates" checked ><label>All Candidates</label></li>
+					    <li class="radioIput positionRelative" ><input  type="radio" id="myCandidatesRadio" name="createdByFilter"  value ="myCandidates" checked ><label>My Candidates</label></li>
+						<li class="radioIput positionRelative" ><input  type="radio" id="allCandidatesRadio"  name="createdByFilter"  value ="allCandidates"  ><label>All Candidates</label></li>
                     </ul>
 				 </div>
 				 </div>  

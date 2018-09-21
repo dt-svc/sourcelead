@@ -29,8 +29,8 @@ $( document ).ready(function() {
 </a> &raquo; Leave Report</div>
  <div id="popUp"></div>
     </section>
-      <div class="positionRelative reportHead clearfix">
-      <span class="pull-left refreIcon"><a href="javascript:void(0)" class="refeIcon" title="Refresh" onclick="resetFilter();" oncontextmenu="return false"></a></span>
+      <div class="positionRelative reportHead clearfix" style="display:none" id="hearderId">
+      <span class="pull-left refreIcon"><a href="javascript:void(0)" class="refeIcon" title="Refresh" onclick="searchReportCollapse();" oncontextmenu="return false"></a></span>
          
       <ul class="pull-right list-unstyled list-inline">
         <input type="hidden" name="usersOffset" id="usersOffset" value="0"/>
@@ -50,8 +50,8 @@ $( document ).ready(function() {
     <form id="leaveReportForm" name="leaveReportForm">
     <div class="contentareaInner-styles clearfix">
     <h4 class="panel-title">
-          <a href="javascript:void(0)" id="showReport">Search Report</a>
-          <a href="javascript:void(0)" onclick="searchReportCollapse();" id="searchReport" style="display:none;">Search Report</a>
+          <a href="javascript:void(0)" id="showReport" style="display:none;"><i class="fa fa-angle-double-left paddingRight"></i>Search Report</a>
+<!--           <a href="javascript:void(0)" onclick="searchReportCollapse();" id="searchReport" style="display:none;"><i class="fa fa-angle-double-left paddingRight"></i>Search Report</a> -->
     </h4>
     <div id="reportCollapse" class="rundiv mt">
       <div class="clearfix form-horizontal minHeight_225 minHeightcol5">
@@ -122,6 +122,18 @@ $( document ).ready(function() {
                 <select id="leaveTypeList" name="leaveTypeIds"  class="form-control chosen-select" field-name="Leave Type" data-placeholder="Select LeaveType" multiple></select>
               </div>
             </div>
+            
+                    <div class="col-md-5">
+              <label class="clearfix">Status</label>
+              <div class="clearfix">
+                <select class="form-control chosen-select" id="status" name="status" data-placeholder="Status" multiple field-name="Status" >
+	                 <option value="PENDING">PENDING</option>
+	                 <option value="APPROVED" selected>APPROVED</option>
+	                 <option value="REJECTED">REJECTED</option>
+	                 <option value="CANCELLED">CANCELLED</option>
+                </select>
+              </div>
+            </div>
 
         <div class="clearfix"></div>
       </div>
@@ -165,8 +177,32 @@ function exportToPdf(){
 	var startDate = $('#fromDate').val();
 	var endDate = $('#toDate').val();
 	var searchValue = $("#leaveReportDataTableSearch").val();
+	var status="";
+	var leaveTypeIds="";
+	var departmentIds=""
+	var reportRolesId="";
+	var employmentType="";
+	var associateListId="";
+	if($("#status").val() != null){
+		status = $("#status").val();
+		}
+	if($("#leaveTypeList").val() != null){
+		leaveTypeIds = $("#leaveTypeList").val();
+		}
+	if($("#departmentList").val() != null){
+		departmentIds = $("#departmentList").val();
+		}
+	if($("#reportRoles").val() != null){
+		reportRolesId = $("#reportRoles").val();
+		}
+	if($("#designationType").val() != null){
+		employmentType = $("#designationType").val();
+		}
+	if($("#associateList").val() != null){
+		associateListId = $("#associateList").val();
+		}
 	if(ReportsListEmpty > 0){
-		window.location.href = sourceleadUrl + "/getExportLeaveReport?"+tokenParamName+"="+tokenValue+"&startDate="+startDate+"&endDate="+endDate+"&exportType="+exportType+"&searchValue="+searchValue+"&type="+type;
+		window.location.href = sourceleadUrl + "/getExportLeaveReport?"+tokenParamName+"="+tokenValue+"&startDate="+startDate+"&endDate="+endDate+"&exportType="+exportType+"&searchValue="+searchValue+"&type="+type+"&status="+status+"&leaveTypeIds="+leaveTypeIds+"&departmentIds="+departmentIds+"&reportRolesId="+reportRolesId+"&employmentType="+employmentType+"&associateListId="+associateListId;
 	}else{
 		var result = "";
 			result = result +"	<div class='project_inn_mask'></div>";
@@ -191,8 +227,32 @@ function exportUserData(){
 	var endDate = $('#toDate').val();
 	var searchValue = $("#leaveReportDataTableSearch").val();
 	searchValue = searchValue ? searchValue : "";
+	var status="";
+	var leaveTypeIds="";
+	var departmentIds="";
+	var reportRolesId="";
+	var employmentType="";
+	var associateListId="";
+		if($("#status").val() != null){
+			status = $("#status").val();
+			}
+		if($("#leaveTypeList").val() != null){
+			leaveTypeIds = $("#leaveTypeList").val();
+			}
+		if($("#departmentList").val() != null){
+			departmentIds = $("#departmentList").val();
+			}
+		if($("#reportRoles").val() != null){
+			reportRolesId = $("#reportRoles").val();
+			}
+		if($("#designationType").val() != null){
+			employmentType = $("#designationType").val();
+			}
+		if($("#associateList").val() != null){
+			associateListId = $("#associateList").val();
+			}
 	if(ReportsListEmpty > 0){
-		window.location.href = sourceleadUrl + "/getExportLeaveReport?"+tokenParamName+"="+tokenValue+"&startDate="+startDate+"&endDate="+endDate+"&exportType="+exportType+"&searchValue="+searchValue;
+		window.location.href = sourceleadUrl + "/getExportLeaveReport?"+tokenParamName+"="+tokenValue+"&startDate="+startDate+"&endDate="+endDate+"&exportType="+exportType+"&searchValue="+searchValue+"&status="+status+"&leaveTypeIds="+leaveTypeIds+"&departmentIds="+departmentIds+"&reportRolesId="+reportRolesId+"&associateListId="+associateListId;
 	}else{
 		 var result = "";
 			result = result +"	<div class='project_inn_mask'></div>";
@@ -211,12 +271,42 @@ function exportUserData(){
 </script> 
 <script>
 function leaveReport(){
-	var formData = getFormData("leaveReportForm");
+// 	var formData = getFormData("leaveReportForm");
+document.getElementById("showReport").style.display="none";
+document.getElementById("hearderId").style.display="block";
+var reportRolesId="";
+var employmentType="";
+var associateListId="";
+var leaveTypeIds="";
+var departmentIds="";
+var status="";
 	var searchValue = $("#leaveReportDataTableSearch").val();
+	var fromDate = $("#fromDate").val();
+	var toDate = $("#toDate").val();
+	if($("#reportRoles").val() != null){
+		reportRolesId = $("#reportRoles").val();
+	}
+	if($("#designationType").val() != null){
+		employmentType = $("#designationType").val();
+
+	}
+	if($("#associateList").val() != null){
+	associateListId = $("#associateList").val();
+	}
+	if($("#leaveTypeList").val() != null){
+	leaveTypeIds = $("#leaveTypeList").val();
+	}
+	if($("#departmentList").val() != null){
+    departmentIds = $("#departmentList").val();
+	}
+	if($("#status").val() != null){
+	status = $("#status").val();
+	}
 	searchValue = searchValue ? searchValue : "";
-    var url = sourceleadUrl+"/leaveReportsList?searchValue="+searchValue;
+	var url = sourceleadUrl+"/leaveReportsList?"+tokenParamName+"="+tokenValue+"&searchValue="+searchValue+"&startDate="+fromDate+"&endDate="+toDate+"&departmentIds="+departmentIds+"&reportRolesId="+reportRolesId+"&employmentType="+employmentType+"&associateListId="+associateListId+"&leaveTypeIds="+leaveTypeIds+"&status="+status;
+//     var url = sourceleadUrl+"/leaveReportsList?searchValue="+searchValue;
     if ($('#leaveReportForm').validate(false, validationSettings)){	
-    prepareAllLeaveReportList(url,formData);
+    prepareAllLeaveReportList(url);
     }else{ 
 		return false;
  } 
@@ -224,7 +314,7 @@ function leaveReport(){
 	$("#showReport, #reportCollapse").hide();
 	$("#searchReport, #leaveReportsList").show();
 }
-function prepareAllLeaveReportList(url,formData){
+function prepareAllLeaveReportList(url){
 	var result = "";
 		result = result	+ '<div class="project_tabs_inn_table project_tabs_inn_table_a mt">';
 		result = result + '<table id="leaveReportsListView" class="display" cellspacing="0" width="100%" >';
@@ -249,12 +339,12 @@ function prepareAllLeaveReportList(url,formData){
 		$("#leaveReportsList").empty();
 		$("#leaveReportsList").append(result);
 		$("#noReports").val(result.length);
-		leaveReportsListPagination(url,formData);
+		leaveReportsListPagination(url);
 }
 </script>
 
 <script>
-function leaveReportsListPagination(url,formData){
+function leaveReportsListPagination(url){
 	var colIndex = 0;
 	table = $('#leaveReportsListView').DataTable( { 
 		  "processing": true,
@@ -264,7 +354,7 @@ function leaveReportsListPagination(url,formData){
 	      "ajax": $.fn.dataTable.pipeline( {
 	    	  url: url,
 	          method: 'POST',
-	          data: formData,
+	      
 	          pages: 10
 	        }),
 	        "columns": [
@@ -289,8 +379,8 @@ function leaveReportsListPagination(url,formData){
 	    	  	"render": function(data, type, user, meta) {
 	    	  	  var result = '';
 	        	  result = result + ' <td>';
-		          if(user.employeeId !=null && user.employeeId !='' && user.employeeId !='undefined'){
-						 result = result +'<div class="tblminwidth-75" title="'+user.employeeId+'">'+user.employeeId+'</div>';
+		          if(user.eid !=null && user.eid !='' && user.eid !='undefined'){
+						 result = result +'<div class="tblminwidth-75" title="'+user.eid+'">'+user.eid+'</div>';
 		          }else{
 						result = result + ' <div class="tblminwidth-75">--</div>';
 					}
@@ -683,6 +773,11 @@ function reportCollapse() {
 	//$("#leaveReportsList").slideUp();
 }
 function searchReportCollapse() {
+	document.getElementById("showReport").style.display="none";
+	document.getElementById("hearderId").style.display="none";
+	var fromDate = $("#fromDate").val();
+    var toDate = $("#toDate").val();
+	leaveReport(fromDate,toDate);
 	$("#fromDate").val('');
 	$("#toDate").val('');
 	$("#departmentList").val('');
@@ -690,14 +785,17 @@ function searchReportCollapse() {
 	$("#designationType").val('');
 	$("#associateList").val('');
 	$("#leaveTypeList").val('');
+	$("#status").val('');
+	$('#status').trigger("chosen:updated");
 	$('#departmentList').trigger("chosen:updated");
 	$('#reportRoles').trigger("chosen:updated");
 	$('#designationType').trigger("chosen:updated");
 	$('#associateList').trigger("chosen:updated");
 	$('#leaveTypeList').trigger("chosen:updated");
 	$("#leaveTypeList").val('');
-	$("#leaveReportsList").hide();
+	$("#leaveReportsList, #searchReport").hide();
 	$("#reportCollapse").show();
+	
 }
 
 </script>

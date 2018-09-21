@@ -2,6 +2,7 @@ package com.bis.sourcelead.dao.impl;
 
 import java.util.List;
 
+import org.apache.commons.lang.StringUtils;
 import org.hibernate.Query;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
@@ -12,14 +13,17 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.dao.AssociateSalaryDao;
 import com.bis.sourcelead.dto.AssociatePayItemDTO;
+import com.bis.sourcelead.dto.CandidateDTO;
+import com.bis.sourcelead.dto.ResponseList;
 import com.bis.sourcelead.entity.AssociatePayItem;
 import com.bis.sourcelead.entity.AssociateSalary;
 import com.bis.sourcelead.entity.AssociateSalaryHistory;
+import com.bis.sourcelead.entity.AssociateSalaryInd;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.payroll.dao.impl.AssociateBankDataDaoImpl;
-import com.bis.sourcelead.payroll.dto.DeductionHistoryDTO;
 
 @Repository
 public class AssociateSalaryDaoImpl implements AssociateSalaryDao{
@@ -133,14 +137,40 @@ private static final Logger logger = LoggerFactory.getLogger(AssociateBankDataDa
 
 	@Override
 	@Transactional
-	public List<AssociateSalary> getAssociateSalaryListByGroupId(OrgLocations orgLocation, long groupId) {
+	public List<AssociateSalary> getAssociateSalaryListByGroupId(OrgLocations orgLocation, long groupId,String payType) {
+		
+		String qry = "";
+		List<AssociateSalary> assList = null;
 		Session session = this.sessionFactory.getCurrentSession();
-		String qry = "from AssociateSalary ass where ass.orgLocations.id = :orgLocationId and ass.groupId = :groupId and ass.status = '1'";
-		List<AssociateSalary> assList = session.createQuery(qry).setLong("orgLocationId", orgLocation.getId()).setLong("groupId", groupId).list();
+		if(Constants.ALL_RECORDS.equalsIgnoreCase(payType)) {
+			qry = "from AssociateSalary ass where ass.orgLocations.id = :orgLocationId and ass.groupId = :groupId and ass.status = '1'";
+			 assList = session.createQuery(qry).setLong("orgLocationId", orgLocation.getId()).setLong("groupId", groupId).list();
+		}else {
+			qry = "from AssociateSalary ass where ass.orgLocations.id = :orgLocationId and ass.groupId = :groupId and ass.payType = :payType and ass.status = '1'";
+			 assList = session.createQuery(qry).setLong("orgLocationId", orgLocation.getId()).setLong("groupId", groupId).setParameter("payType", payType).list();
+		}
+		 
 		if(assList != null)
 			return assList;
 		else
 			return null;
+	}
+
+
+	@SuppressWarnings("unchecked")
+	@Override
+	@Transactional
+	public List<AssociateSalaryInd> getIndAssociateSalaryListByGroupId(OrgLocations orgLocation, long groupId) {
+		try {
+			Session session = this.sessionFactory.getCurrentSession();
+			String qry = "from AssociateSalaryInd ass where ass.orgLocations.id = :orgLocationId and ass.groupId = :groupId and ass.status = '1'";
+			List<AssociateSalaryInd> assList = session.createQuery(qry).setLong("orgLocationId", orgLocation.getId()).setLong("groupId", groupId).list();
+			if (assList != null)
+				return assList;
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return null;
 	}
 
 
@@ -166,5 +196,82 @@ private static final Logger logger = LoggerFactory.getLogger(AssociateBankDataDa
 			e.printStackTrace();
 		}
 		return payItemHis;
+	}
+
+
+	@Override
+	@Transactional
+	public AssociateSalary getAssociateSalaryByCandidateIdAndOrgLocationId(Long candidateId, Long locationId)
+	{
+		List<AssociateSalary> assSal = null;
+		try {
+			Session session = this.sessionFactory.getCurrentSession();
+			String query = "from AssociateSalary ass where ass.orgLocations.id = :locationId and ass.candidate.id = :candidateId";
+			assSal = session.createQuery(query).setLong("locationId", locationId).setLong("candidateId", candidateId).list();
+		}catch (Exception e) {
+			e.printStackTrace();
+		}
+		if(assSal != null) {
+			return assSal.get(0);
+		}else {
+			return null;
+		}
+	}
+
+
+	@SuppressWarnings("unchecked")
+	@Override
+	@Transactional
+	public ResponseList<AssociateSalary> getAssociateSalaryListByLocationIdAndGroupId(OrgLocations orgLocation, Long groupId,CandidateDTO candidateDto) {
+		
+		List<AssociateSalary> assSalList = null;
+		ResponseList<AssociateSalary> response = new ResponseList<>();
+		
+		Session session = this.sessionFactory.getCurrentSession();
+		String qry = "from AssociateSalary ass where ass.orgLocations.id = :orgLocationId and ass.groupId = :groupId and ass.status = '1'";
+		
+		
+		StringBuilder query1 = new StringBuilder("");
+		if (StringUtils.isNotBlank(candidateDto.getSearchValue())) {
+					query1.append(" and (ass.candidate.firstName like '%" + candidateDto.getSearchValue() + "%' ")
+							.append("OR ass.candidate.lastName like '%"
+									+ candidateDto.getSearchValue() + "%' ")
+							.append("OR ass.candidate.email like '%" + candidateDto.getSearchValue()
+									+ "%' ")
+							.append("OR ass.candidate.designationType like '%" + candidateDto.getSearchValue()
+									+ "%' ")
+							.append("OR ass.candidate.mobilePhone like '%" + candidateDto.getSearchValue() + "%' )");
+
+			}
+		Query queryObj = session.createQuery(qry + query1.toString());
+		
+		if (candidateDto != null && candidateDto.getLength() > 0) {
+			queryObj.setFirstResult(candidateDto.getStart());
+			queryObj.setMaxResults(candidateDto.getLength());
+		}
+		assSalList = queryObj.setLong("orgLocationId", orgLocation.getId()).setLong("groupId", groupId).list();
+		int count = 0;
+		int filteredCount = 0;
+
+		List<Long> countlist = session.createQuery("select count(*) " + qry)
+				.setLong("orgLocationId", orgLocation.getId())
+				.setLong("groupId", groupId).list();
+
+		if (countlist != null && !countlist.isEmpty()) {
+			count = countlist.iterator().next().intValue();
+		}
+		response.setRecordsTotal(count);
+		if (candidateDto != null) {
+			List<Long> filteredCountlist = session.createQuery("select count(*) " + qry + query1.toString())
+					.setLong("orgLocationId", orgLocation.getId())
+					.setLong("groupId", groupId).list();
+			if (filteredCountlist != null && !filteredCountlist.isEmpty()) {
+				filteredCount = filteredCountlist.iterator().next().intValue();
+			}
+			response.setRecordsFiltered(filteredCount);
+		}
+		response.setData(assSalList);
+		return response;
+		
 	}
 }

@@ -1,5 +1,11 @@
 package com.bis.sourcelead.payroll.rest;
 
+import java.io.BufferedInputStream;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.InputStream;
+import java.net.URL;
+import java.net.URLConnection;
 import java.util.Calendar;
 import java.util.Collections;
 import java.util.Comparator;
@@ -11,11 +17,13 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.apache.commons.lang.exception.ExceptionUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.util.FileCopyUtils;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -221,7 +229,7 @@ public class EmployeePayrollRestController {
 		wagesTaxSummaryDTO.setSortOrder(sortColumnOrder);
 		
 		ResponseList<WageTaxSummary> list = wageTaxSummaryService.getWagesAndTaxListByOrgLocationId(orgLocation,wagesTaxSummaryDTO);
-		List<WageTaxSummary> data = getSortWageTaxList(list.getData());
+		List<WageTaxSummary> data = getSortWageTaxList(list.getData(),orgLocation);
 		list.setData(data);
 		return list;
 //		return wageTaxSummaryService.getWagesAndTaxListByOrgLocationId(orgLocation,wagesTaxSummaryDTO);
@@ -231,21 +239,22 @@ public class EmployeePayrollRestController {
 	/**
 	 * Hiding ssn number into unreadable format
 	 * @param wagesAndTaxList
+	 * @param orgLocation 
 	 * @return List<WageTaxSummary>
 	 */
-	private List<WageTaxSummary> getSortWageTaxList(List<WageTaxSummary> wagesAndTaxList) {
+	private List<WageTaxSummary> getSortWageTaxList(List<WageTaxSummary> wagesAndTaxList, OrgLocations orgLocation) {
 		if(wagesAndTaxList != null){
 			for(WageTaxSummary wts : wagesAndTaxList){
 				StringBuilder sb = new StringBuilder();
 				if(null !=  wts.getFromDate()){
-					wts.setFromDateStr(conversionUtil.getDateAsString(wts.getFromDate()));
+					wts.setFromDateStr(commonUtil.dateStrFromOrgDateFormatter(orgLocation.getDateFormat(), wts.getFromDate()));
 				}
 				if(null != wts.getToDate()){
-					wts.setToDateStr(conversionUtil.getDateAsString(wts.getToDate()));
+					wts.setToDateStr(commonUtil.dateStrFromOrgDateFormatter(orgLocation.getDateFormat(),wts.getToDate()));
 				}
 				
 				if(wts.getCheckDate() !=null   ){
-					wts.setCheckDateStr(conversionUtil.getDateAsString(wts.getCheckDate()));
+					wts.setCheckDateStr(commonUtil.dateStrFromOrgDateFormatter(orgLocation.getDateFormat(),wts.getCheckDate()));
 				}
 				if(wts.getCheckNo() != null){
 					wts.setCheckNo(wts.getCheckNo());
@@ -619,20 +628,26 @@ public class EmployeePayrollRestController {
 	 * @return
 	 * @throws Exception
 	 */
-	@RequestMapping(value = { "/getWagesTaxSummaryByEmpId", "/rest/getWagesTaxSummaryByEmpId"}, method = RequestMethod.GET)
-	public List<WageTaxSummary> getWagesTaxSummaryByEmpId(@RequestParam(value = "empId", required = false) Long empId,
-			@RequestParam(value = "orgLocationId", required = false) Long orgLocationId) throws Exception {
-		OrgLocations orgLocations = orgLocationService.getOrgLocations(orgLocationId);
-		List<WageTaxSummary>  wagesAndTaxList = null;
-		if(empId !=null){
-			 wagesAndTaxList = wageTaxSummaryService.getWagesAndTaxListByEmployeeId(orgLocations,empId);
-		}else{
-			return wagesAndTaxList;
+	@RequestMapping(value = { "/getWagesTaxSummaryByEmpId", "/rest/getWagesTaxSummaryByEmpId"}, method = RequestMethod.POST)
+	public ResponseList<WageTaxSummary> getWagesTaxSummaryByEmpId(WagesTaxSummaryDTO wagesTaxSummaryDTO,HttpServletRequest request,HttpServletResponse response) throws Exception {
+		OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+		ResponseList<WageTaxSummary>  wagesAndTaxList = null;
+		if(StringUtils.isNotBlank(wagesTaxSummaryDTO.getEmpId())){
+//			 wagesAndTaxList = wageTaxSummaryService.getWagesAndTaxListByEmployeeId(orgLocation,Long.parseLong(wagesTaxSummaryDTO.getEmpId()));
+			String[] tableColumns = {"fromDate", "toDate", "employeeId", "employeeName", "ssnNumber", "checkDate","checkNo","gross","fwt","ssec","med","swt","sdiSui","local","deds","net","batchNumber"};
+		     int sortColumnIndex = 1; //by default sorting using updated date
+			String sortColumnOrder = "asc"; //by default descending order
+			if(wagesTaxSummaryDTO.getOrder() != null && !wagesTaxSummaryDTO.getOrder().isEmpty()) {
+				sortColumnIndex = Integer.parseInt(wagesTaxSummaryDTO.getOrder().get(0).get("column"));
+				sortColumnOrder = wagesTaxSummaryDTO.getOrder().get(0).get("dir");
+			}
+			wagesTaxSummaryDTO.setSortColumn(tableColumns[sortColumnIndex]);
+			wagesTaxSummaryDTO.setSortOrder(sortColumnOrder);
+			  wagesAndTaxList = wageTaxSummaryService.getWagesAndTaxByEmpId(orgLocation,wagesTaxSummaryDTO);
+			  List<WageTaxSummary> data = getSortWageTaxList(wagesAndTaxList.getData(),orgLocation);
+			  wagesAndTaxList.setData(data);
 		}
-		if(wagesAndTaxList !=null && wagesAndTaxList.size() >0){
-			return wagesAndTaxList;
-		}
-		return null;
+		return wagesAndTaxList;
 	}
 	
 	/**
@@ -781,5 +796,42 @@ public class EmployeePayrollRestController {
 			logger.error(ExceptionUtils.getFullStackTrace(e));
 		}
 		return response;
+	}
+	
+	@RequestMapping(value = "/downloadPayrollTemplates")
+	public void downloadLeaveTemplate(@RequestParam(value = "templateType", required = false) String templateType,HttpServletRequest request, HttpServletResponse response) throws Exception
+	{
+		OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+		File file = null;
+		String fn = null;
+		if ("EMPLOYEE_PAYROLL".equalsIgnoreCase(templateType)) {
+			fn = "/templates/EmpPayroll_Template.xlsx";
+		}else if ("WAGE_TAX".equalsIgnoreCase(templateType)) {
+			fn = "/templates/Wage&TaxSummary_Template.xls";
+		}else if ("ACCOUNT_DEDUCTIONS".equalsIgnoreCase(templateType)) {
+			fn = "/templates/AccountDetails_Template.xlsx";
+		}else if ("HR_DEDUCTIONS".equalsIgnoreCase(templateType)) {
+			fn = "/templates/HrDeductions_Template.xlsx";
+		}else if ("BIS_CHECKS".equalsIgnoreCase(templateType)) {
+			fn = "/templates/Checks_Template.xlsx";
+		}else if ("INVOICE".equalsIgnoreCase(templateType)) {
+			fn = "/templates/InvoiceData_Template.xlsx";
+		}
+		
+		URL url = getClass().getResource(fn);
+		file = new File(url.toURI());
+		String mimeType = URLConnection.guessContentTypeFromName(file.getName());
+		if (mimeType == null) {
+			mimeType = "application/octet-stream";
+		}
+		response.setContentType(mimeType);
+		StringBuilder fileNameSB = new StringBuilder();
+		response.setHeader("Content-Disposition", fileNameSB.append("attachment; filename=\"").append(file.getName()).append("\"").toString());
+		response.setContentLength((int) file.length());
+		InputStream inputStream = new BufferedInputStream(new FileInputStream(file));
+		FileCopyUtils.copy(inputStream, response.getOutputStream());
+		inputStream.close();
+		response.getOutputStream().close();
+		response.getOutputStream().flush();
 	}
 }

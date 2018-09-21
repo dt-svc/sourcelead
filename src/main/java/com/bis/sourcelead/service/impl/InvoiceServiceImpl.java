@@ -10,9 +10,9 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.math.BigDecimal;
 import java.text.DateFormat;
+import java.text.DecimalFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.time.ZoneId;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
@@ -59,18 +59,25 @@ import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.dao.AddExpensesDao;
 import com.bis.sourcelead.dao.InvoiceDao;
 import com.bis.sourcelead.dao.InvoiceLineItemDao;
-import com.bis.sourcelead.dao.InvoicePaymentDao;
 import com.bis.sourcelead.dao.InvoiceTaxDao;
+import com.bis.sourcelead.dao.UserDao;
+
+import com.bis.sourcelead.dto.CreditDebitNoteDTO;
+import com.bis.sourcelead.dto.CreditDebitNoteLineItemsDTO;
+import com.bis.sourcelead.dto.CreditDebitNoteListDTO;
+
 import com.bis.sourcelead.dto.FileInfo;
 import com.bis.sourcelead.dto.InvoiceDTO;
 import com.bis.sourcelead.dto.InvoiceExpensesDTO;
 import com.bis.sourcelead.dto.InvoiceLineItemsDTO;
 import com.bis.sourcelead.dto.InvoiceTaxDTO;
 import com.bis.sourcelead.dto.InvoiceTimelineDTO;
+import com.bis.sourcelead.dto.Response;
 import com.bis.sourcelead.dto.ResponseList;
-import com.bis.sourcelead.entity.Asset;
 import com.bis.sourcelead.entity.Candidate;
 import com.bis.sourcelead.entity.Contracts;
+import com.bis.sourcelead.entity.CreditDebitLineItems;
+import com.bis.sourcelead.entity.CreditDebitNote;
 import com.bis.sourcelead.entity.EmailAttachment;
 import com.bis.sourcelead.entity.EmailMessage;
 import com.bis.sourcelead.entity.EmailScenario;
@@ -117,8 +124,10 @@ import com.bis.sourcelead.util.FileUploadUtil;
 import com.bis.sourcelead.util.InvoicePdfHelper;
 import com.bis.sourcelead.util.PdfUtil;
 import com.bis.sourcelead.util.SourceLeadRandomCodeHelper;
-import com.bis.sourcelead.util.SourceLeadSessionManager;
 import com.bis.sourcelead.util.TimesheetFrequencyGeneratorUtil;
+
+import edu.emory.mathcs.backport.java.util.Arrays;
+
 
 @Service
 public class InvoiceServiceImpl implements InvoiceService {
@@ -147,6 +156,9 @@ public class InvoiceServiceImpl implements InvoiceService {
 
 	@Autowired
 	InvoiceTaxDao invoiceTaxDao;
+	
+	@Autowired
+	private UserDao userDao;
 
 	@Value("${sourceleadUrl}")
 	private String sourceleadUrl;
@@ -211,7 +223,7 @@ public class InvoiceServiceImpl implements InvoiceService {
 
 	@Autowired
 	private ExpensesInvoicePdfHelper expensesInvoicePdfHelper;
-
+	
 	@Override
 	public ResponseList<Invoice> invoiceListByOrgLocationId(OrgLocations orgLocations, Date startDateUTC,
 			Date endDateUTC, InvoiceDTO invoiceDTO) throws Exception {
@@ -260,8 +272,9 @@ public class InvoiceServiceImpl implements InvoiceService {
       		}
       		
       		if(StringUtils.isNotBlank(invoiceDTO.getVendorContact())){
-      			User contactUser = userService.getUserById(Long.parseLong(invoiceDTO.getVendorContact()));
-      			invoice.setContactUser(contactUser);
+//      			User contactUser = userService.getUserById(Long.parseLong(invoiceDTO.getVendorContact()));
+      			//invoice.setContactUser(contactUser);
+      			invoice.setContactUsers(invoiceDTO.getVendorContact());
       		}
       		invoice.setInvoiceType(Constants.Payables);
       		 //generatedId = getInvoiceOrBillGeneratedId(orgLocation, vendorOrgLocation, Constants.Receivable);
@@ -279,8 +292,9 @@ public class InvoiceServiceImpl implements InvoiceService {
      		}
      		
      		if(StringUtils.isNotBlank(invoiceDTO.getClientContact())){
-     			User userContactName = userService.getUserById(Long.parseLong(invoiceDTO.getClientContact()));
-     			invoice.setContactUser(userContactName);
+     			//User userContactName = userService.getUserById(Long.parseLong(invoiceDTO.getClientContact()));
+     			//invoice.setContactUser(userContactName);
+     			invoice.setContactUsers(invoiceDTO.getClientContact());
      		}
      		invoice.setInvoiceType(Constants.Receivable);
      		 //generatedId = getInvoiceOrBillGeneratedId(orgLocation, vendorOrgLocation, Constants.Receivable);
@@ -298,8 +312,8 @@ public class InvoiceServiceImpl implements InvoiceService {
 	      	invoice.setExchangeRate(String.valueOf(exchangeAmoiunt));
 	        }	
 	    }
-		
-        invoice.setOwnerUserId(user);
+		invoice.setOwnerUsers(user.getId().toString());
+        //invoice.setOwnerUserId(user);
 		invoice.setOrgLocation(orgLocation);
 		if (StringUtils.isNotBlank(invoiceDTO.getInvoiceId())) {
 			invoice.setInvoiceId(invoiceDTO.getInvoiceId());
@@ -414,8 +428,7 @@ public class InvoiceServiceImpl implements InvoiceService {
 
 		if (file.exists() && !file.isDirectory()) {
 			invoice.setFileName(file.getName());
-			invoice.setFileUrl(
-					FileUploadUtil.moveFile(staticPath, org.getId(), orgLocation.getId(), "InvoicePdf", file));
+			invoice.setFileUrl(FileUploadUtil.moveFile(staticPath, org.getId(), orgLocation.getId(), "InvoicePdf", file));
 		}
 		if (null != file) {
 			file.delete();
@@ -497,6 +510,8 @@ public class InvoiceServiceImpl implements InvoiceService {
 		Invoice parentInvoice = invoiceDao.getParentInvoiceByInvoiceId(invoice.getId());
 		if (parentInvoice == null) {
 			parentInvoice = new Invoice();
+			parentInvoice.setCreatedDate(commonUtil.orgLocationCommonDate(new Date(), vendorOrgLocation));
+			parentInvoice.setCreatedBy(user.getUserCode());
 		}
 		if (invoice.getInvoiceType().equalsIgnoreCase(Constants.Payables)) {
 			parentInvoice.setInvoiceType(Constants.Receivable);
@@ -523,9 +538,11 @@ public class InvoiceServiceImpl implements InvoiceService {
 		parentInvoice.setInvoiceId(invoice.getInvoiceId());
 		parentInvoice.setParentInvoiceId(invoice);
 		parentInvoice.setOrgRelationID(invoice.getOrgRelationID());
-		parentInvoice.setContactUser(invoice.getOwnerUserId());
+		parentInvoice.setContactUsers(invoice.getOwnerUsers());
+		//parentInvoice.setContactUser(invoice.getOwnerUserId());
 		parentInvoice.setOrgLocation(invoice.getResponderLocationId());
-		parentInvoice.setOwnerUserId(invoice.getContactUser());
+		parentInvoice.setOwnerUsers(invoice.getContactUsers());
+		//parentInvoice.setOwnerUserId(invoice.getContactUser());
 		parentInvoice.setResponderLocationId(invoice.getOrgLocation());
 		parentInvoice.setInvoiceDate(invoice.getInvoiceDate());
 		parentInvoice.setBillingAddress(invoice.getBillingAddress());
@@ -541,12 +558,14 @@ public class InvoiceServiceImpl implements InvoiceService {
 		parentInvoice.setInvoiceUUID(SourceLeadRandomCodeHelper.generateRandomUUID());
 		parentInvoice.setPaymentStatus(invoice.getPaymentStatus());
 		parentInvoice.setDueDate(invoice.getDueDate());
+		parentInvoice.setFileName(invoice.getFileName());
+		parentInvoice.setFileUrl(invoice.getFileUrl());
 		if (invoice.getProjectID() != null) {
 			parentInvoice.setProjectID(invoice.getProjectID());
 		}
 		parentInvoice.setStatus(Constants.RECORD_ACTIVE.toString());
-		parentInvoice.setCreatedDate(invoice.getCreatedDate());
-		parentInvoice.setCreatedBy(invoice.getCreatedBy());
+		parentInvoice.setUpdatedDate(commonUtil.orgLocationCommonDate(new Date(), vendorOrgLocation));
+		parentInvoice.setUpdatedBy(user.getUserCode());
 		invoiceDao.saveInvoce(parentInvoice);
 		return parentInvoice;
 	}
@@ -839,11 +858,18 @@ public class InvoiceServiceImpl implements InvoiceService {
 		Map<String, String> returnMap = null;
 		EmailScenario emailScenario = null;
 		// EmailScenario notificationScenario = null;
+		EmailMessage emailMessage = null;
+		StringBuilder sb1 = new StringBuilder();
+		if(null != invoice.getContactUsers()){
+			String[] contactUsers = invoice.getContactUsers().split(",");
+			if(contactUsers.length != 0){
+				for(String contactUserId : contactUsers){
+					User contactUser = userService.getUserById(Long.parseLong(contactUserId.trim()));
 		String UUID = SourceLeadRandomCodeHelper.generateUUID();
-		EmailMessage emailMessage = new EmailMessage();
+		emailMessage=new EmailMessage();
 		emailMessage.setFirstName(user.getFirstName());
 		emailMessage.setLastName(user.getLastName());
-		emailMessage.setToEmail(invoice.getContactUser().getEmail());
+		emailMessage.setToEmail(contactUser.getEmail());
 		emailMessage.setFromEmail(user.getEmail());
 		emailMessage.setCreatedBy(user.getUserCode());
 		StringBuilder msgBuild = new StringBuilder();
@@ -861,19 +887,19 @@ public class InvoiceServiceImpl implements InvoiceService {
 		globalVarsMap.put("LoginUser", user.getFirstName());
 		if (invoice.getInvoiceType().equalsIgnoreCase(Constants.RECEIVABLE)) {
 			StringBuilder vendorName = new StringBuilder();
-			if (invoice.getContactUser().getLastName() != null) {
-				globalVarsMap.put("vendorName", vendorName.append(invoice.getContactUser().getFirstName()).append(" ")
-						.append(invoice.getContactUser().getLastName()).toString());
+			if (contactUser.getLastName() != null) {
+				globalVarsMap.put("vendorName", vendorName.append(contactUser.getFirstName()).append(" ")
+						.append(contactUser.getLastName()).toString());
 			} else {
-				globalVarsMap.put("vendorName", invoice.getContactUser().getFirstName());
+				globalVarsMap.put("vendorName", contactUser.getFirstName());
 			}
 		} else {
 			StringBuilder clientName = new StringBuilder();
-			if (invoice.getContactUser().getLastName() != null) {
-				globalVarsMap.put("clientName", clientName.append(invoice.getContactUser().getFirstName()).append(" ")
-						.append(invoice.getContactUser().getLastName()).toString());
+			if (contactUser.getLastName() != null) {
+				globalVarsMap.put("clientName", clientName.append(contactUser.getFirstName()).append(" ")
+						.append(contactUser.getLastName()).toString());
 			} else {
-				globalVarsMap.put("clientName", invoice.getContactUser().getFirstName());
+				globalVarsMap.put("clientName", contactUser.getFirstName());
 			}
 		}
 		globalVarsMap.put("totalAmouprojectMembersListnt", invoice.getTotal());
@@ -935,17 +961,17 @@ public class InvoiceServiceImpl implements InvoiceService {
 		EmailScenario notificationScenario = null;
 		if (invoiceType.equalsIgnoreCase("payable")) {
 			returnMap = commonUtil.sendTemplateEmail(emailMessage, globalVarsMap, orglocations.getOrg(), orglocations,
-					Constants.INVOICE_ACCEPT_MAIL_VENDOR_EMAIL, attachmentList);
+					Constants.INVOICE_CLIENT_PAYABLE_MAIL, attachmentList);
 			notificationScenario = emailScenarioService.getEmailScenarioByUniqueName(
 					Constants.INVOICE_CLIENT_PAYABLE_MAIL, Constants.ENTITY_TYPE_NOTIFICATION);
 		} else {
 			returnMap = commonUtil.sendTemplateEmail(emailMessage, globalVarsMap, orglocations.getOrg(), orglocations,
-					Constants.INVOICE_ACCEPT_MAIL_CLIENT_EMAIL, attachmentList);
+					Constants.INVOICE_CLIENT_RECEIVABLE_MAIL, attachmentList);
 			notificationScenario = emailScenarioService.getEmailScenarioByUniqueName(
 					Constants.INVOICE_CLIENT_RECEIVABLE_MAIL, Constants.ENTITY_TYPE_NOTIFICATION);
 		}
-		returnMap.put("toEmail", emailMessage.getToEmail());
-		returnMap.put("fromEmail", emailMessage.getFromEmail());
+		
+		sb1.append(emailMessage.getToEmail()).append(",").toString();
 		String notificationbody = emailScenerioUtil.buildTemplateBody(notificationScenario.getBody(), globalVarsMap,
 				notificationScenario);
 		notificationScenario.setBody(notificationbody);
@@ -963,9 +989,13 @@ public class InvoiceServiceImpl implements InvoiceService {
 					.toString();
 
 		}
-		emailScenerioUtil.sendNotification(actionLink, user, invoice.getContactUser(), invoice.getResponderLocationId(),
+		emailScenerioUtil.sendNotification(actionLink, user, contactUser, invoice.getResponderLocationId(),
 				notificationScenario, new HashMap<String, String>());
-
+				}
+				returnMap.put("toEmail", sb1.toString());
+				returnMap.put("fromEmail", emailMessage.getFromEmail());
+			}
+		}
 		/*
 		 * if(invoiceType.equalsIgnoreCase("payable")){ emailScenario =
 		 * emailScenarioService.getEmailScenarioByUniqueName(Constants.
@@ -2500,117 +2530,124 @@ public class InvoiceServiceImpl implements InvoiceService {
 		EmailScenario emailScenario = null;
 		Map<String, String> returnMap = null;
 		// EmailScenario notificationScenario = null;
-		String UUID = SourceLeadRandomCodeHelper.generateUUID();
-		EmailMessage emailMessage = new EmailMessage();
-		emailMessage.setFirstName(user.getFirstName());
-		emailMessage.setLastName(user.getLastName());
-		emailMessage.setToEmail(invoice.getContactUser().getEmail());
-		emailMessage.setFromEmail(user.getEmail());
-		emailMessage.setCreatedBy(user.getUserCode());
-		StringBuilder msgBuild = new StringBuilder();
-		emailMessage
-				.setFromName(msgBuild.append(user.getFirstName()).append(" ").append(user.getLastName()).toString());
-		emailMessage.setEmailType(Constants.CUSTOM_USER_EMAIL);
-
-		// SimpleDateFormat simpleDateFormat =
-		// orgLocation.getLocFullFormDateFormatter();
-		String date = (commonUtil.dateStrFromOrgDateFormatter(orgLocation.getDateFormat(), invoice.getDueDate()));
-
-		// setting the class filed values
-		Map<String, String> globalVarsMap = new HashMap<String, String>();
-		globalVarsMap.put("invoiceID", invoice.getInvoiceId());
-		globalVarsMap.put("LoginUser", user.getFirstName());
-		if (invoice.getInvoiceType().equalsIgnoreCase(Constants.RECEIVABLE)) {
-			globalVarsMap.put("vendorName", invoice.getContactUser().getFirstName());
-		} else {
-			globalVarsMap.put("clientName", invoice.getContactUser().getFirstName());
-		}
-		globalVarsMap.put("grandTotal", invoice.getTotal());
-		globalVarsMap.put("dueDate", date);
-		globalVarsMap.put("orgName", orgLocation.getOrgLocationName());
-		// globalVarsMap.put("address",invoice.getBillingAddress());
-
-		InternetAddress[] iAdressArray = InternetAddress.parse(emailMessage.getToEmail());
-
-		// send mail logic
-		List<EmailAttachment> attachmentList1 = new ArrayList<>();
-
-		// send notification logic
-		ArrayList<EmailAttachment> attachmentList = new ArrayList<EmailAttachment>();
-		ArrayList<EmailAttachment> documentList = new ArrayList<EmailAttachment>();
-		EmailAttachment emailAttachment = new EmailAttachment();
-		emailAttachment.setUUID(UUID);
-		EmailAttachment attachmentZip = zipFiles(docusList);
-		if (null != invoice.getInvoiceDocumentSet() && invoice.getInvoiceDocumentSet().size() > 0
-				&& !invoice.getInvoiceDocumentSet().isEmpty()) {
-			Set<InvoiceDocument> documenetSet = invoice.getInvoiceDocumentSet();
-			for (InvoiceDocument doc : documenetSet) {
-				EmailAttachment docAttachment = new EmailAttachment();
-				String fileUrl = doc.getFileUrl();
-				if (StringUtils.isNotBlank(fileUrl)) {
-					docAttachment.setDocFile(CommonUtil.readBytesFromFile(fileUrl));
-					docAttachment.setName(doc.getFileName());
-					documentList.add(docAttachment);
+		if(null != invoice.getContactUsers()){
+			String[] contactUsers = invoice.getContactUsers().split(",");
+			if(contactUsers.length != 0){
+				for(String contactUserId : contactUsers){
+					User contactUser = userService.getUserById(Long.parseLong(contactUserId.trim()));
+					String UUID = SourceLeadRandomCodeHelper.generateUUID();
+					EmailMessage emailMessage = new EmailMessage();
+					emailMessage.setFirstName(user.getFirstName());
+					emailMessage.setLastName(user.getLastName());
+					emailMessage.setToEmail(contactUser.getEmail());
+					emailMessage.setFromEmail(user.getEmail());
+					emailMessage.setCreatedBy(user.getUserCode());
+					StringBuilder msgBuild = new StringBuilder();
+					emailMessage
+							.setFromName(msgBuild.append(user.getFirstName()).append(" ").append(user.getLastName()).toString());
+					emailMessage.setEmailType(Constants.CUSTOM_USER_EMAIL);
+			
+					// SimpleDateFormat simpleDateFormat =
+					// orgLocation.getLocFullFormDateFormatter();
+					String date = (commonUtil.dateStrFromOrgDateFormatter(orgLocation.getDateFormat(), invoice.getDueDate()));
+			
+					// setting the class filed values
+					Map<String, String> globalVarsMap = new HashMap<String, String>();
+					globalVarsMap.put("invoiceID", invoice.getInvoiceId());
+					globalVarsMap.put("LoginUser", user.getFirstName());
+					if (invoice.getInvoiceType().equalsIgnoreCase(Constants.RECEIVABLE)) {
+						globalVarsMap.put("vendorName", contactUser.getFirstName());
+					} else {
+						globalVarsMap.put("clientName", contactUser.getFirstName());
+					}
+					globalVarsMap.put("grandTotal", invoice.getTotal());
+					globalVarsMap.put("dueDate", date);
+					globalVarsMap.put("orgName", orgLocation.getOrgLocationName());
+					// globalVarsMap.put("address",invoice.getBillingAddress());
+			
+					InternetAddress[] iAdressArray = InternetAddress.parse(emailMessage.getToEmail());
+			
+					// send mail logic
+					List<EmailAttachment> attachmentList1 = new ArrayList<>();
+			
+					// send notification logic
+					ArrayList<EmailAttachment> attachmentList = new ArrayList<EmailAttachment>();
+					ArrayList<EmailAttachment> documentList = new ArrayList<EmailAttachment>();
+					EmailAttachment emailAttachment = new EmailAttachment();
+					emailAttachment.setUUID(UUID);
+					EmailAttachment attachmentZip = zipFiles(docusList);
+					if (null != invoice.getInvoiceDocumentSet() && invoice.getInvoiceDocumentSet().size() > 0
+							&& !invoice.getInvoiceDocumentSet().isEmpty()) {
+						Set<InvoiceDocument> documenetSet = invoice.getInvoiceDocumentSet();
+						for (InvoiceDocument doc : documenetSet) {
+							EmailAttachment docAttachment = new EmailAttachment();
+							String fileUrl = doc.getFileUrl();
+							if (StringUtils.isNotBlank(fileUrl)) {
+								docAttachment.setDocFile(CommonUtil.readBytesFromFile(fileUrl));
+								docAttachment.setName(doc.getFileName());
+								documentList.add(docAttachment);
+							}
+			
+						}
+			
+					}
+					String invoiceFileUrl = invoice.getFileUrl();
+					if (StringUtils.isNotBlank(invoiceFileUrl)) {
+						emailAttachment.setDocFile(CommonUtil.readBytesFromFile(invoiceFileUrl));
+						emailAttachment.setName(invoice.getFileName());
+						attachmentList.add(emailAttachment);
+					}
+					if (attachmentZip != null) {
+						attachmentList.add(attachmentZip);
+					}
+					if (documentList != null && !documentList.isEmpty() && documentList.size() > 0) {
+						attachmentList.addAll(documentList);
+					}
+			
+					EmailScenario notificationScenario = null;
+					if (invoiceType.equalsIgnoreCase("payables")) {
+						returnMap = commonUtil.sendTemplateEmail(emailMessage, globalVarsMap, orgLocation.getOrg(), orgLocation,
+								Constants.INVOICE_CLIENT_PAYABLE_REMINDER_MAIL, attachmentList1);
+						notificationScenario = emailScenarioService.getEmailScenarioByUniqueName(
+								Constants.INVOICE_CLIENT_PAYABLE_REMINDER_MAIL, Constants.ENTITY_TYPE_NOTIFICATION);
+					} else {
+						returnMap = commonUtil.sendTemplateEmail(emailMessage, globalVarsMap, orgLocation.getOrg(), orgLocation,
+								Constants.INVOICE_CLIENT_RECEIVABLE_REMINDER_MAIL, attachmentList1);
+						notificationScenario = emailScenarioService.getEmailScenarioByUniqueName(
+								Constants.INVOICE_CLIENT_RECEIVABLE_REMINDER_MAIL, Constants.ENTITY_TYPE_NOTIFICATION);
+					}
+					returnMap.put("toEmail", emailMessage.getToEmail());
+					returnMap.put("fromEmail", emailMessage.getFromEmail());
+					String notificationbody = emailScenerioUtil.buildTemplateBody(notificationScenario.getBody(), globalVarsMap,
+							notificationScenario);
+					notificationScenario.setBody(notificationbody);
+					System.out.println("************** :" + notificationbody);
+					String actionLink = "";
+					StringBuilder notificationLink = new StringBuilder();
+					// Invoice invoice2=getInvoicetByParentId(invoice.getId());
+					Invoice notificationInvoice = getInvoicetByParentId(invoice.getId());
+					if (Constants.RECEIVABLE.equalsIgnoreCase(invoiceType)) {
+						actionLink = notificationLink.append(sourceleadUrl).append("/")
+								.append("viewInvoice?invoiceUUID=" + notificationInvoice.getInvoiceUUID() + "&invoiceType=Payables")
+								.toString();
+					} else {
+						actionLink = notificationLink.append(sourceleadUrl).append("/").append(
+								"viewInvoice?invoiceUUID=" + notificationInvoice.getInvoiceUUID() + "&invoiceType=Receivable")
+								.toString();
+			
+					}
+					emailScenerioUtil.sendNotification(actionLink, user, invoice.getContactUser(), invoice.getResponderLocationId(),
+							notificationScenario, new HashMap<String, String>());
 				}
-
+				invoice.setTimelineHistoryReminder("Reminder");
+				saveInvoiceTimelineHistory(invoice, user, null, null, null, returnMap);
+				Invoice childInvoice = invoiceDao.getInvoicetBySelfJoinInvoiceId(invoice.getId());
+				if (childInvoice != null) {
+					childInvoice.setTimelineHistoryReminder("Reminder");
+					saveInvoiceTimelineHistory(childInvoice, user, null, null, null, returnMap);
+				}
 			}
-
 		}
-		String invoiceFileUrl = invoice.getFileUrl();
-		if (StringUtils.isNotBlank(invoiceFileUrl)) {
-			emailAttachment.setDocFile(CommonUtil.readBytesFromFile(invoiceFileUrl));
-			emailAttachment.setName(invoice.getFileName());
-			attachmentList.add(emailAttachment);
-		}
-		if (attachmentZip != null) {
-			attachmentList.add(attachmentZip);
-		}
-		if (documentList != null && !documentList.isEmpty() && documentList.size() > 0) {
-			attachmentList.addAll(documentList);
-		}
-
-		EmailScenario notificationScenario = null;
-		if (invoiceType.equalsIgnoreCase("payables")) {
-			returnMap = commonUtil.sendTemplateEmail(emailMessage, globalVarsMap, orgLocation.getOrg(), orgLocation,
-					Constants.INVOICE_CLIENT_PAYABLE_REMINDER_MAIL, attachmentList1);
-			notificationScenario = emailScenarioService.getEmailScenarioByUniqueName(
-					Constants.INVOICE_CLIENT_PAYABLE_REMINDER_MAIL, Constants.ENTITY_TYPE_NOTIFICATION);
-		} else {
-			returnMap = commonUtil.sendTemplateEmail(emailMessage, globalVarsMap, orgLocation.getOrg(), orgLocation,
-					Constants.INVOICE_CLIENT_RECEIVABLE_REMINDER_MAIL, attachmentList1);
-			notificationScenario = emailScenarioService.getEmailScenarioByUniqueName(
-					Constants.INVOICE_CLIENT_RECEIVABLE_REMINDER_MAIL, Constants.ENTITY_TYPE_NOTIFICATION);
-		}
-		returnMap.put("toEmail", emailMessage.getToEmail());
-		returnMap.put("fromEmail", emailMessage.getFromEmail());
-		String notificationbody = emailScenerioUtil.buildTemplateBody(notificationScenario.getBody(), globalVarsMap,
-				notificationScenario);
-		notificationScenario.setBody(notificationbody);
-		System.out.println("************** :" + notificationbody);
-		String actionLink = "";
-		StringBuilder notificationLink = new StringBuilder();
-		// Invoice invoice2=getInvoicetByParentId(invoice.getId());
-		Invoice notificationInvoice = getInvoicetByParentId(invoice.getId());
-		if (Constants.RECEIVABLE.equalsIgnoreCase(invoiceType)) {
-			actionLink = notificationLink.append(sourceleadUrl).append("/")
-					.append("viewInvoice?invoiceUUID=" + notificationInvoice.getInvoiceUUID() + "&invoiceType=Payables")
-					.toString();
-		} else {
-			actionLink = notificationLink.append(sourceleadUrl).append("/").append(
-					"viewInvoice?invoiceUUID=" + notificationInvoice.getInvoiceUUID() + "&invoiceType=Receivable")
-					.toString();
-
-		}
-		emailScenerioUtil.sendNotification(actionLink, user, invoice.getContactUser(), invoice.getResponderLocationId(),
-				notificationScenario, new HashMap<String, String>());
-		invoice.setTimelineHistoryReminder("Reminder");
-		saveInvoiceTimelineHistory(invoice, user, null, null, null, returnMap);
-		Invoice childInvoice = invoiceDao.getInvoicetBySelfJoinInvoiceId(invoice.getId());
-		if (childInvoice != null) {
-			childInvoice.setTimelineHistoryReminder("Reminder");
-			saveInvoiceTimelineHistory(childInvoice, user, null, null, null, returnMap);
-		}
-
 	}
 
 	@Override
@@ -2666,7 +2703,7 @@ public class InvoiceServiceImpl implements InvoiceService {
 		} else {
 			invoice = new Invoice();
 			invoice.setInvoiceUUID(SourceLeadRandomCodeHelper.generateRandomUUID());
-			invoice.setCreatedDate(commonUtil.currentDate());
+			invoice.setCreatedDate(commonUtil.orgLocationCommonDate(new Date(), orgLocation));
 			invoice.setCreatedBy(user.getUserCode());
 		}
 
@@ -2687,8 +2724,10 @@ public class InvoiceServiceImpl implements InvoiceService {
 			}
 
 			if (StringUtils.isNotBlank(invoiceDTO.getVendorContact())) {
-				User contactUser = userService.getUserById(Long.parseLong(invoiceDTO.getVendorContact()));
-				invoice.setContactUser(contactUser);
+				/*User contactUser = userService.getUserById(Long.parseLong(invoiceDTO.getVendorContact()));
+				invoice.setContac(contactUser);*/
+				invoice.setContactUsers(invoiceDTO.getVendorContact());
+
 			}
 			invoice.setInvoiceType(Constants.Payables);
 		} else {
@@ -2707,8 +2746,10 @@ public class InvoiceServiceImpl implements InvoiceService {
 			}
 
 			if (StringUtils.isNotBlank(invoiceDTO.getClientContact())) {
-				User userContactName = userService.getUserById(Long.parseLong(invoiceDTO.getClientContact()));
-				invoice.setContactUser(userContactName);
+				/*User userContactName = userService.getUserById(Long.parseLong(invoiceDTO.getClientContact()));
+				invoice.setContactUser(userContactName);*/
+     			invoice.setContactUsers(invoiceDTO.getClientContact());
+
 			}
 			invoice.setInvoiceType(Constants.Receivable);
 		}
@@ -2727,7 +2768,7 @@ public class InvoiceServiceImpl implements InvoiceService {
 			}
 		}
 
-		invoice.setOwnerUserId(user);
+		invoice.setOwnerUsers(user.getId().toString());
 		invoice.setOrgLocation(orgLocation);
 		if (StringUtils.isNotBlank(invoiceDTO.getInvoiceId())) {
 			invoice.setInvoiceId(invoiceDTO.getInvoiceId());
@@ -2822,7 +2863,7 @@ public class InvoiceServiceImpl implements InvoiceService {
 		invoice.setStatus(Constants.RECORD_ACTIVE.toString());
 		invoice.setInvoiceStatus(saveType);
 		invoice.setUpdatedBy(user.getUserCode());
-		invoice.setUpdatedDate(commonUtil.currentDate());
+		invoice.setUpdatedDate(commonUtil.orgLocationCommonDate(new Date(), orgLocation));
 		
 
 		List<String> submissionApproverHierarchyIds = new ArrayList<>();
@@ -3025,14 +3066,25 @@ public class InvoiceServiceImpl implements InvoiceService {
 		timelineHistory.setInvoice(invoice);
 		timelineHistory.setOrgLocation(invoice.getOrgLocation());
 		timelineHistory.setOrgRelation(invoice.getOrgRelationID());
-		timelineHistory.setContactUser(invoice.getContactUser());
-		timelineHistory.setOwnerUser(invoice.getOwnerUserId());
+		timelineHistory.setContactUsers(invoice.getContactUsers());
+		timelineHistory.setOwnerUsers(invoice.getOwnerUsers());
 		timelineHistory.setCreatedBy(user);
 		String invoiceStatus = null;
-		if ((savedInvoiceId != null && invoice.getInvoiceStatus().equalsIgnoreCase("DRAFT"))
+		if(invoice.getInvoiceStatus().equalsIgnoreCase("DRAFT")){
+			invoice.setInvoiceStatus(Constants.INVOICE_TIMELINE_STATUS_CREATED);
+		}
+		if ((savedInvoiceId != null && invoice.getInvoiceStatus().equalsIgnoreCase(Constants.INVOICE_TIMELINE_STATUS_CREATED))
 				|| (savedInvoiceId != null && invoice.getInvoiceStatus().equalsIgnoreCase("Rejected"))) {
 			invoiceStatus = "Updated";
 		} else if (invoice.getInvoiceStatus().equalsIgnoreCase("Sent")) {
+			invoiceStatus = invoice.getInvoiceStatus();
+			if (returnMap != null) {
+				timelineHistory.setInvoicePaymentReminderEmailBody(returnMap.get("emailBody"));
+				timelineHistory.setInvoicePaymentReminderEmailFrom(returnMap.get("fromEmail"));
+				timelineHistory.setInvoicePaymentReminderEmailTo(returnMap.get("toEmail"));
+				timelineHistory.setInvoicePaymentReminderEmailSubject(returnMap.get("emailSubject"));
+			}
+		}else if (invoice.getInvoiceStatus().equalsIgnoreCase("Received")) {
 			invoiceStatus = invoice.getInvoiceStatus();
 			if (returnMap != null) {
 				timelineHistory.setInvoicePaymentReminderEmailBody(returnMap.get("emailBody"));
@@ -3054,8 +3106,11 @@ public class InvoiceServiceImpl implements InvoiceService {
 		if (linkedChildInvoice != null) {
 			timelineHistory.setLinkedChildinvoice(linkedChildInvoice);
 			timelineHistory.setInvoiceStatus(linkedChildInvoice.getInvoiceStatus());
-		}
-		if (invoice.getPaymentStatus().equalsIgnoreCase("Paid")) {
+		}else if (invoice.getPaymentStatus().equalsIgnoreCase("Paid")) {
+			timelineHistory.setInvoicePaymentReminderId(invoicePaymentId);
+			timelineHistory.setInvoicePaymentReminderStatus(invoice.getPaymentStatus());
+			timelineHistory.setInvoiceStatus(Constants.INVOICE_TIMELINE_STATUS_PAID);
+		}else if (invoice.getPaymentStatus().equalsIgnoreCase(Constants.INVOICE_STATUS_PARTIAL_PAID) && invoicePaymentId != null) {
 			timelineHistory.setInvoicePaymentReminderId(invoicePaymentId);
 			timelineHistory.setInvoicePaymentReminderStatus(invoice.getPaymentStatus());
 			timelineHistory.setInvoiceStatus(invoice.getPaymentStatus());
@@ -3071,7 +3126,7 @@ public class InvoiceServiceImpl implements InvoiceService {
 	}
 
 	@Override
-	public List<InvoiceTimelineDTO> getInvoiceTimelineHistoryList(Long id, User user, String searchVal, String orderVal, Date[] datesRange, String[] checkedStatus) throws Exception {
+	public List<InvoiceTimelineDTO> getInvoiceTimelineHistoryList(Long id, User user, String searchVal, String orderVal, Date[] datesRange, String[] checkedStatus, String[] namesStatus) throws Exception {
 		List<InvoiceTimelineDTO> timelineDTOs = new ArrayList<>();
 		List<InvoiceTimelineHistory> timelineHistories = invoiceDao.getInvoiceTimelineHistoryList(id, searchVal, orderVal, datesRange, checkedStatus);
 		for (InvoiceTimelineHistory timelineHistory : timelineHistories) {
@@ -3100,16 +3155,17 @@ public class InvoiceServiceImpl implements InvoiceService {
 			timelineDTO.setStatus(status);
 			String statusValue = null;
 			String statusVal = null;
+			String statusBy = null;
 			if (timelineHistory.getLinkedChildinvoice() != null) {
 				statusVal = "Linked to ";
 				timelineDTO.setInvoiceId(timelineHistory.getLinkedChildinvoice().getInvoiceId());
 				timelineDTO.setInvoiceUUID(timelineHistory.getLinkedChildinvoice().getInvoiceUUID());
-				timelineDTO.setOwnerName(timelineHistory.getLinkedChildinvoice().getOwnerUserId().getFullName());
+				statusValue = timelineHistory.getLinkedChildinvoice().getOwnerUserId().getFullName();
 				//statusValue = " to " + timelineHistory.getLinkedChildinvoice().getInvoiceId()+" by "+timelineHistory.getLinkedChildinvoice().getOwnerUserId().getFullName();
 			} else {
 				if (timelineHistory.getInvoicePaymentReminderStatus() != null) {
 					timelineDTO.setInvoicePaymentReminderStatus(timelineHistory.getInvoicePaymentReminderStatus());
-					if (timelineHistory.getInvoicePaymentReminderStatus().equalsIgnoreCase("Paid")) {
+					if (timelineHistory.getInvoicePaymentReminderStatus().equalsIgnoreCase(Constants.INVOICE_STATUS_PAID)) {
 						InvoicePayment invoicePayment = invoicePaymentService
 								.invoicePaymentById(timelineHistory.getInvoicePaymentReminderId());
 						timelineDTO.setPaymentAmount(invoicePayment.getPaymentAmount());
@@ -3126,15 +3182,55 @@ public class InvoiceServiceImpl implements InvoiceService {
 							emailAttachment.setContent(invoicePayment.getFileContentType());
 							timelineDTO.setEmailAttachment(emailAttachment);
 						}
-						if (timelineHistory.getCreatedBy().getId().equals(timelineHistory.getOwnerUser().getId())) {
+						List<User> usersList = userDao.getUsersListUsingMultipleStringIds(timelineHistory.getOwnerUsers());
+						 
+						for(User ownerUser: usersList){
+						if(ownerUser.getId().equals(timelineHistory.getCreatedBy().getId())){
+
 							statusVal = "Payment updated";
-							statusValue = " by " + timelineHistory.getCreatedBy().getFullName();
-						} else if (!timelineHistory.getCreatedBy().getId()
-								.equals(timelineHistory.getOwnerUser().getId())) {
+							statusBy = " by ";
+							statusValue =timelineHistory.getCreatedBy().getFullName();	
+							}
+						else if (!timelineHistory.getCreatedBy().getId()
+								.equals(ownerUser.getId())) {
 							statusVal = "Payment updated";
-							statusValue = " by " + timelineHistory.getCreatedBy().getFullName();
+							statusBy = " by ";
+							statusValue = timelineHistory.getCreatedBy().getFullName();
 						}
-					} else if (timelineHistory.getInvoicePaymentReminderStatus().equalsIgnoreCase("Reminder")) {
+					}
+					}
+					else if (timelineHistory.getInvoicePaymentReminderStatus().equalsIgnoreCase(Constants.INVOICE_STATUS_PARTIAL_PAID)) {
+						InvoicePayment invoicePayment = invoicePaymentService
+								.invoicePaymentById(timelineHistory.getInvoicePaymentReminderId());
+						timelineDTO.setPaymentAmount(invoicePayment.getPaymentAmount());
+						timelineDTO.setPaymentCurrency(invoicePayment.getCurrencyCode());
+						timelineDTO.setPaymentMethod(invoicePayment.getPaymentMethod());
+						timelineDTO.setPaymentReferenceNum(invoicePayment.getPaymentReferenceNumber());
+						timelineDTO.setPaymentDate(formatter.format(invoicePayment.getPaymentDate()));
+						timelineDTO.setPaymentComment(invoicePayment.getPaymentComment());
+						timelineDTO.setInvoicePaymentReminderStatus(timelineHistory.getInvoicePaymentReminderStatus());
+						if(invoicePayment.getFileName() != null) {
+							EmailAttachment emailAttachment = new EmailAttachment();
+							emailAttachment.setFileUrl(invoicePayment.getFileURL());
+							emailAttachment.setName(invoicePayment.getFileName());
+							emailAttachment.setContent(invoicePayment.getFileContentType());
+							timelineDTO.setEmailAttachment(emailAttachment);
+						}
+						List<User> usersList = userDao.getUsersListUsingMultipleStringIds(timelineHistory.getOwnerUsers());
+						 
+						for(User ownerUser: usersList){
+							if (ownerUser.getId().equals(timelineHistory.getCreatedBy().getId())) {
+								statusVal = "Partial Paid updated";
+								statusBy = " by ";
+								statusValue =timelineHistory.getCreatedBy().getFullName();
+							} else if (!timelineHistory.getCreatedBy().getId()
+									.equals(ownerUser.getId())) {
+								statusVal = "Partial Paid updated";
+								statusBy = " by ";
+								statusValue = timelineHistory.getCreatedBy().getFullName();
+							}
+					}
+					}else if (timelineHistory.getInvoicePaymentReminderStatus().equalsIgnoreCase("Reminder")) {
 
 						timelineDTO.setInvoiceReminderEmailBody(timelineHistory.getInvoicePaymentReminderEmailBody());
 						timelineDTO.setInvoiceReminderEmailTo(timelineHistory.getInvoicePaymentReminderEmailTo());
@@ -3142,40 +3238,76 @@ public class InvoiceServiceImpl implements InvoiceService {
 						timelineDTO.setInvoiceReminderEmailSubject(
 								timelineHistory.getInvoicePaymentReminderEmailSubject());
 						timelineDTO.setInvoicePaymentReminderStatus(timelineHistory.getInvoicePaymentReminderStatus());
-						if (timelineHistory.getCreatedBy().getId().equals(timelineHistory.getOwnerUser().getId())) {
-							statusVal = "Reminder ";
-							statusValue = " to " + timelineHistory.getInvoice().getContactUser().getFullName();
-							EmailAttachment emailAttachment = null;
-							String invoiceFileUrl = timelineHistory.getInvoice().getFileUrl();
-							if (StringUtils.isNotBlank(invoiceFileUrl)) {
-								emailAttachment = new EmailAttachment();
-								emailAttachment.setFileUrl(invoiceFileUrl);
-								emailAttachment.setName(timelineHistory.getInvoice().getFileName());
-								emailAttachment.setContent("application/pdf");
+						List<User> usersList = userDao.getUsersListUsingMultipleStringIds(timelineHistory.getOwnerUsers());
+						StringBuilder sb=new StringBuilder();
+						String conUser1=null;
+						for(User ownerUser: usersList){
+							if (ownerUser.getId().equals(timelineHistory.getCreatedBy().getId())) {
+								statusVal = "Reminder";
+								statusBy = " to ";
+								List<User> contactUsersList = userDao.getUsersListUsingMultipleStringIds(timelineHistory.getInvoice().getContactUsers());
+								for(User contactUsers :contactUsersList){
+									conUser1 = sb.append(contactUsers.getFullName()).append(",").toString();
+									statusValue = contactUsers.getFullName();
+								
+								}
+								
+								statusValue = conUser1.replace(conUser1.substring(conUser1.length()-1), "");
+								EmailAttachment emailAttachment = null;
+								String invoiceFileUrl = timelineHistory.getInvoice().getFileUrl();
+								if (StringUtils.isNotBlank(invoiceFileUrl)) {
+									emailAttachment = new EmailAttachment();
+									emailAttachment.setFileUrl(invoiceFileUrl);
+									emailAttachment.setName(timelineHistory.getInvoice().getFileName());
+									emailAttachment.setContent("application/pdf");
+								}
+								timelineDTO.setEmailAttachment(emailAttachment);	
 							}
-							timelineDTO.setEmailAttachment(emailAttachment);
-						}
-						if (!timelineHistory.getCreatedBy().getId().equals(timelineHistory.getOwnerUser().getId())) {
-							statusVal = "Reminder ";
-							statusValue = " from " + timelineHistory.getInvoice().getContactUser().getFullName();
-							EmailAttachment emailAttachment = null;
-							String invoiceFileUrl = timelineHistory.getInvoice().getFileUrl();
-							if (StringUtils.isNotBlank(invoiceFileUrl)) {
-								emailAttachment = new EmailAttachment();
-								emailAttachment.setFileUrl(invoiceFileUrl);
-								emailAttachment.setName(timelineHistory.getInvoice().getFileName());
-								emailAttachment.setContent("application/pdf");
+							if (!timelineHistory.getCreatedBy().getId()
+									.equals(ownerUser.getId())) {
+								statusVal = "Reminder";
+								statusBy = " from ";
+								List<User> contactUsersList = userDao.getUsersListUsingMultipleStringIds(timelineHistory.getInvoice().getContactUsers());
+								for(User contactUsers :contactUsersList){
+									statusValue = contactUsers.getFullName();
+								
+								}
+								EmailAttachment emailAttachment = null;
+								String invoiceFileUrl = timelineHistory.getInvoice().getFileUrl();
+								if (StringUtils.isNotBlank(invoiceFileUrl)) {
+									emailAttachment = new EmailAttachment();
+									emailAttachment.setFileUrl(invoiceFileUrl);
+									emailAttachment.setName(timelineHistory.getInvoice().getFileName());
+									emailAttachment.setContent("application/pdf");
+								}
+								timelineDTO.setEmailAttachment(emailAttachment);
 							}
-							timelineDTO.setEmailAttachment(emailAttachment);
+
 						}
 					}
 				} else {
-					if (status.equalsIgnoreCase("Draft")) {
+					if (status.equalsIgnoreCase(Constants.INVOICE_TIMELINE_STATUS_CREATED)) {
 						statusVal = "Created";
-						statusValue = " by " + timelineHistory.getInvoice().getOwnerUserId().getFullName();
+						statusBy = " by ";
+						List<User> usersList = userDao.getUsersListUsingMultipleStringIds(timelineHistory.getInvoice().getOwnerUsers());
+						 
+						for(User ownerUser: usersList){
+						if(ownerUser.getUserCode().equals(timelineHistory.getInvoice().getUpdatedBy())){
+							statusValue = ownerUser.getFullName();	
+						}
+						}
+//						statusValue = timelineHistory.getInvoice().getOwnerUserId().getFullName();
 					} else if (status.equalsIgnoreCase("Sent")) {
 						statusVal = "Sent";
-						statusValue = " by " + timelineHistory.getInvoice().getOwnerUserId().getFullName();
+						statusBy = " by ";
+						List<User> usersList = userDao.getUsersListUsingMultipleStringIds(timelineHistory.getInvoice().getOwnerUsers());
+						 
+						for(User ownerUser: usersList){
+//						if(ownerUser.getUserCode().equals(timelineHistory.getInvoice().getUpdatedBy())){
+							statusValue = ownerUser.getFullName();	
+//						}
+						}
+//						statusValue = timelineHistory.getInvoice().getOwnerUserId().getFullName();
 						timelineDTO.setInvoiceReminderEmailBody(timelineHistory.getInvoicePaymentReminderEmailBody());
 						timelineDTO.setInvoiceReminderEmailTo(timelineHistory.getInvoicePaymentReminderEmailTo());
 						timelineDTO.setInvoiceReminderEmailFrom(timelineHistory.getInvoicePaymentReminderEmailFrom());
@@ -3183,41 +3315,146 @@ public class InvoiceServiceImpl implements InvoiceService {
 								timelineHistory.getInvoicePaymentReminderEmailSubject());
 					} else if (status.equalsIgnoreCase("Received")) {
 						statusVal = "Received";
-						statusValue = " from " + timelineHistory.getInvoice().getContactUser().getFullName();
+						statusBy = " from ";
+						
+						List<User> usersList = userDao.getUsersListUsingMultipleStringIds(timelineHistory.getInvoice().getContactUsers());
+					 
+					for(User contactUser: usersList){
+//					if(contactUser.getUserCode().equals(timelineHistory.getInvoice().getUpdatedBy())){
+						statusValue = contactUser.getFullName();	
+//					}
+					}
+//						statusValue = timelineHistory.getInvoice().getContactUser().getFullName();
+						timelineDTO.setInvoiceReminderEmailBody(timelineHistory.getInvoicePaymentReminderEmailBody());
+						timelineDTO.setInvoiceReminderEmailTo(timelineHistory.getInvoicePaymentReminderEmailTo());
+						timelineDTO.setInvoiceReminderEmailFrom(timelineHistory.getInvoicePaymentReminderEmailFrom());
+						timelineDTO.setInvoiceReminderEmailSubject(
+								timelineHistory.getInvoicePaymentReminderEmailSubject());
 					} else if (status.equalsIgnoreCase("Accepted")) {
-						if (timelineHistory.getCreatedBy().getId().equals(timelineHistory.getOwnerUser().getId())) {
-							statusVal = "Accepted";
-							statusValue = " by " + timelineHistory.getInvoice().getOwnerUserId().getFullName();
-						} else if (!timelineHistory.getCreatedBy().getId()
-								.equals(timelineHistory.getOwnerUser().getId())) {
-							statusVal = "Accepted";
-							statusValue = " by " + timelineHistory.getInvoice().getContactUser().getFullName();
+						List<User> ownerUsersList = userDao.getUsersListUsingMultipleStringIds(timelineHistory.getInvoice().getOwnerUsers());
+						List<User> contactUsersList = userDao.getUsersListUsingMultipleStringIds(timelineHistory.getInvoice().getContactUsers());
+						for(User ownerUser: ownerUsersList){
+							if (timelineHistory.getCreatedBy().getId().equals(ownerUser.getId())) {
+								statusVal = "Accepted";
+								statusBy = " by ";
+								if(ownerUser.getUserCode().equals(timelineHistory.getInvoice().getUpdatedBy())){
+									statusValue = ownerUser.getFullName();	
+								}
+//								statusValue = timelineHistory.getInvoice().getOwnerUserId().getFullName();
+							} 
+							else if (!timelineHistory.getCreatedBy().getId()
+									.equals(ownerUser.getId())) {
+								statusVal = "Accepted";
+								statusBy = " by ";
+							for(User contactUser: contactUsersList){
+							if(contactUser.getUserCode().equals(timelineHistory.getInvoice().getUpdatedBy())){
+								statusValue = contactUser.getFullName();	
+							}
+							}
+//								statusValue = timelineHistory.getInvoice().getContactUser().getFullName();
+							}
 						}
+						
 					} else if (status.equalsIgnoreCase("Rejected")) {
-						if (timelineHistory.getCreatedBy().getId().equals(timelineHistory.getOwnerUser().getId())) {
-							statusVal = "Rejected";
-							statusValue = " by " + timelineHistory.getInvoice().getOwnerUserId().getFullName();
-							timelineDTO.setReason(timelineHistory.getRejectReason());
-						} else if (!timelineHistory.getCreatedBy().getId()
-								.equals(timelineHistory.getOwnerUser().getId())) {
-							statusVal = "Rejected";
-							statusValue = " by " + timelineHistory.getInvoice().getContactUser().getFullName();
-							timelineDTO.setReason(timelineHistory.getRejectReason());
+						List<User> ownerUsersList = userDao.getUsersListUsingMultipleStringIds(timelineHistory.getInvoice().getOwnerUsers());
+						List<User> contactUsersList = userDao.getUsersListUsingMultipleStringIds(timelineHistory.getInvoice().getContactUsers());
+						for(User ownerUser: ownerUsersList){
+							if (timelineHistory.getCreatedBy().getId().equals(ownerUser.getId())) {
+								statusVal = "Rejected";
+								statusBy = " by ";
+								if(ownerUser.getUserCode().equals(timelineHistory.getInvoice().getUpdatedBy())){
+									statusValue = ownerUser.getFullName();	
+								}
 
+								
+//								statusValue = timelineHistory.getInvoice().getOwnerUserId().getFullName();
+								timelineDTO.setReason(timelineHistory.getRejectReason());
+							}
+
+							else if (!timelineHistory.getCreatedBy().getId()
+									.equals(ownerUser.getId())) {
+								statusVal = "Rejected";
+								statusBy = " by ";
+							 
+							for(User contactUser: contactUsersList){
+							if(contactUser.getUserCode().equals(timelineHistory.getInvoice().getUpdatedBy())){
+								statusValue = contactUser.getFullName();	
+							}
+							}
+//								statusValue = timelineHistory.getInvoice().getContactUser().getFullName();
+								timelineDTO.setReason(timelineHistory.getRejectReason());
+
+							}
 						}
+
 					} else if (status.equalsIgnoreCase("Updated")) {
 						statusVal = "Updated";
-						statusValue = " by " + timelineHistory.getInvoice().getOwnerUserId().getFullName();
+						statusBy = " by ";
+						List<User> usersList = userDao.getUsersListUsingMultipleStringIds(timelineHistory.getInvoice().getOwnerUsers());
+						 
+						for(User ownerUser: usersList){
+						if(ownerUser.getUserCode().equals(timelineHistory.getInvoice().getUpdatedBy())){
+							statusValue = ownerUser.getFullName();	
+						}
+						}
+//						statusValue = timelineHistory.getInvoice().getOwnerUserId().getFullName();
 					} else if (status.equalsIgnoreCase("Deleted")) {
 						statusVal = "Deleted";
+						statusBy = " by ";
 						timelineDTO.setReason(timelineHistory.getRejectReason());
-						statusValue = " by " + timelineHistory.getInvoice().getOwnerUserId().getFullName();
+						List<User> usersList = userDao.getUsersListUsingMultipleStringIds(timelineHistory.getInvoice().getOwnerUsers());
+						 
+						for(User ownerUser: usersList){
+						if(ownerUser.getUserCode().equals(timelineHistory.getInvoice().getUpdatedBy())){
+							statusValue = ownerUser.getFullName();	
+						}
+						}
+//						statusValue = timelineHistory.getInvoice().getOwnerUserId().getFullName();
+					} else if (status.equalsIgnoreCase("Void")) {
+						List<User> ownerUsersList = userDao.getUsersListUsingMultipleStringIds(timelineHistory.getInvoice().getOwnerUsers());
+						List<User> contactUsersList = userDao.getUsersListUsingMultipleStringIds(timelineHistory.getInvoice().getContactUsers());
+						for(User ownerUser: ownerUsersList){
+							if (timelineHistory.getCreatedBy().getId().equals(ownerUser.getId())) {
+								statusVal = "Void";
+								statusBy = " by ";
+								if(ownerUser.getUserCode().equals(timelineHistory.getInvoice().getUpdatedBy())){
+									statusValue = ownerUser.getFullName();	
+								}
+//								statusValue = timelineHistory.getInvoice().getOwnerUserId().getFullName();
+							}	
+							 else if (!timelineHistory.getCreatedBy().getId()
+										.equals(ownerUser.getId())) {
+									statusVal = "Void";
+									statusBy = " by ";
+									 
+									for(User contactUser: contactUsersList){
+									if(contactUser.getUserCode().equals(timelineHistory.getInvoice().getUpdatedBy())){
+										statusValue = contactUser.getFullName();	
+									}
+									}
+//									statusValue = timelineHistory.getInvoice().getContactUser().getFullName();
+								}
+						}
+						
 					}
 				}
-			}
+			}	
 			timelineDTO.setStatus(statusVal);
 			timelineDTO.setStatusValue(statusValue);
+			timelineDTO.setStatusBy(statusBy);
 			timelineDTOs.add(timelineDTO);
+		}
+		
+		if(namesStatus.length != 0 ) {
+			if( namesStatus[0] != null && !namesStatus[0].equals("null")) {
+				List<InvoiceTimelineDTO> filterList = new ArrayList<>();
+				for(String name: namesStatus){
+					List<InvoiceTimelineDTO> timelineList = timelineDTOs.stream()
+						    .filter(p -> p.getStatusValue().equalsIgnoreCase(name)).collect(Collectors.toList());
+					filterList.addAll(timelineList);
+				}
+				return filterList;
+			}
 		}
 		return timelineDTOs;
 	}
@@ -3294,6 +3531,489 @@ public class InvoiceServiceImpl implements InvoiceService {
 		return attachmentList;
 	}
 
+	@Override
+	public CreditDebitNote saveCreditDebitNote(User user, OrgLocations orgLocation, String saveType, String noteType,
+			CreditDebitNoteDTO creditDebitNoteDTO,String loginCurrencyCode) throws Exception {
+		
+		CreditDebitNote creditDebitNote = null;
+		if(StringUtils.isNotBlank(creditDebitNoteDTO.getSavedNoteId())){
+			creditDebitNote = invoiceDao.getCreditDebitNoteById(Long.parseLong(creditDebitNoteDTO.getSavedNoteId()));
+		}else{
+			creditDebitNote = new CreditDebitNote();
+			creditDebitNote.setCreditDebitUUID(SourceLeadRandomCodeHelper.generateRandomUUID());
+			creditDebitNote.setCreatedBy(user);
+			creditDebitNote.setCreatedDate(commonUtil.orgLocationCommonDate(new Date(), orgLocation));
+			creditDebitNote.setStatus(Constants.RECORD_ACTIVE.toString());
+			creditDebitNote.setIsNewRecord(Constants.YES);
+		}
+		
+		OrgLocations vendorOrgLocation = null;
+		creditDebitNote.setOrgLocations(orgLocation);
+		creditDebitNote.setInvoice(creditDebitNoteDTO.getInvoceId());
+        if(Constants.CREDIT_NOTE.equalsIgnoreCase(noteType)){
+        	// client details
+        	if(StringUtils.isNotBlank(creditDebitNoteDTO.getOrgRelationId())){
+     			OrgRelations orgRelation = orgRelationsService.getOrRelationsById(Long.parseLong(creditDebitNoteDTO.getOrgRelationId()));
+     			if(orgRelation.getResponderLocationId().getId().longValue() == orgLocation.getId().longValue()){
+     				vendorOrgLocation = orgRelation.getLocationId();
+     				creditDebitNote.setResponderLocation(vendorOrgLocation);
+      			}if(orgRelation.getLocationId().getId().longValue() == orgLocation.getId().longValue()){
+      				vendorOrgLocation = orgRelation.getResponderLocationId();
+      				creditDebitNote.setResponderLocation(orgRelation.getResponderLocationId());
+      			}
+      			creditDebitNote.setOrgRelations(orgRelation);	
+     		}
+     		
+     		if(StringUtils.isNotBlank(creditDebitNoteDTO.getSpocUser())){
+     			//User userContactName = userService.getUserById(Long.parseLong(creditDebitNoteDTO.getSpocUser()));
+     			creditDebitNote.setContactUser(creditDebitNoteDTO.getSpocUser());
+     		}
+     		creditDebitNote.setNoteType(Constants.CREDIT_NOTE);
+        }else{
+        	//vendor details
+        	if(StringUtils.isNotBlank(creditDebitNoteDTO.getOrgRelationId())){
+      			OrgRelations orgRelation = orgRelationsService.getOrRelationsById(Long.parseLong(creditDebitNoteDTO.getOrgRelationId()));
+      			if(orgRelation.getResponderLocationId().getId().longValue() == orgLocation.getId().longValue()){
+      				vendorOrgLocation = orgRelation.getLocationId();
+      				creditDebitNote.setResponderLocation(vendorOrgLocation);
+      			}if(orgRelation.getLocationId().getId().longValue() == orgLocation.getId().longValue()){
+      				vendorOrgLocation = orgRelation.getResponderLocationId();
+      				creditDebitNote.setResponderLocation(orgRelation.getResponderLocationId());
+      			}
+      			creditDebitNote.setOrgRelations(orgRelation);	
+      		}
+        	creditDebitNote.setNoteStatus(saveType);
+      		if(StringUtils.isNotBlank(creditDebitNoteDTO.getSpocUser())){
+      			//User contactUser = userService.getUserById(Long.parseLong(creditDebitNoteDTO.getSpocUser()));
+      			creditDebitNote.setContactUser(creditDebitNoteDTO.getSpocUser());
+      		}
+      		creditDebitNote.setNoteType(Constants.DEBIT_NOTE);
+        }
+        creditDebitNote.setOwnerUser(user.getId().toString());
+        creditDebitNote.setNoteStatus(saveType);
+        creditDebitNote.setSubTotal(new BigDecimal(creditDebitNoteDTO.getSubTotalAmount()));
+        creditDebitNote.setTotal(new BigDecimal(creditDebitNoteDTO.getGrandTotal()));
+        
+        String vendorCurrencyCode =  conversionUtil.getVendorOrgCurrencyCode(vendorOrgLocation.getCountry());
+		if(!loginCurrencyCode.equalsIgnoreCase(vendorCurrencyCode)){
+	        if(null != vendorCurrencyCode){
+	      	float convertedAmount = conversionUtil.convert(loginCurrencyCode, vendorCurrencyCode, Float.parseFloat(creditDebitNoteDTO.getGrandTotal()));
+	      	float convertedAmount1 = 	(float) (Math.round(convertedAmount * 100.0) / 100.0);
+	      	creditDebitNote.setExchangeCurrencyRate(new BigDecimal(convertedAmount1));
+	      	creditDebitNote.setVendorCurrencyCode(vendorCurrencyCode);
+	      	creditDebitNote.setExchangeCurrencyRate(new BigDecimal(creditDebitNoteDTO.getExchangeCurrencyRate()));
+	      	creditDebitNote.setAfterExchangeGrandTotal(new BigDecimal(creditDebitNoteDTO.getAfterExchangeGrandTotal()));
+	        }	
+	    }
+        
+        if(StringUtils.isEmpty(creditDebitNoteDTO.getSavedNoteId())){
+        creditDebitNote.setGeneratedId(getCreditDebitGeneratedId(orgLocation,vendorOrgLocation,noteType));
+        }
+        creditDebitNote.setLoginCurrencyCode(loginCurrencyCode);
+        
+        if(StringUtils.isNotBlank(creditDebitNoteDTO.getDiscountValue())){
+        	creditDebitNote.setDiscountType(creditDebitNoteDTO.getDiscountType());
+            creditDebitNote.setDiscountValue(new BigDecimal(creditDebitNoteDTO.getDiscountValue()));
+            creditDebitNote.setDiscountTotal(new BigDecimal(creditDebitNoteDTO.getDiscountTotal()));
+        }
+		if(StringUtils.isNotBlank(creditDebitNoteDTO.getBillingAddress())){
+			creditDebitNote.setBillingAddress(creditDebitNoteDTO.getBillingAddress());
+		}else{
+			creditDebitNote.setBillingAddress(null);
+		}
+		if(StringUtils.isNotBlank(creditDebitNoteDTO.getShippingAddress())){
+			creditDebitNote.setShippingAddress(creditDebitNoteDTO.getShippingAddress());
+		}else{
+			creditDebitNote.setShippingAddress(null);
+		}
+		if(StringUtils.isNotBlank(creditDebitNoteDTO.getReferenceNumber())){
+			creditDebitNote.setReferenceNumber(creditDebitNoteDTO.getReferenceNumber());
+		}else{
+			creditDebitNote.setReferenceNumber(null);
+		}
+		if(StringUtils.isNotBlank(creditDebitNoteDTO.getReason())){
+			creditDebitNote.setReason(creditDebitNoteDTO.getReason());
+		}else{
+			creditDebitNote.setReason(null);
+		}
+		if(StringUtils.isNotBlank(creditDebitNoteDTO.getAccount())){
+			PaymentAccount paymentaccount = new PaymentAccount();
+			paymentaccount.setId(Long.valueOf(creditDebitNoteDTO.getAccount()));
+			creditDebitNote.setPaymentAccount(paymentaccount);
+		}
+		if(StringUtils.isNotBlank(creditDebitNoteDTO.getCreditDebitNotedate())){
+			creditDebitNote.setCreditNoteDate(commonUtil.orgLocationDateFormat(orgLocation.getDateFormat(), creditDebitNoteDTO.getCreditDebitNotedate()));
+		}else{
+			creditDebitNote.setCreditNoteDate(null);
+		}
+		if(StringUtils.isNotBlank(creditDebitNoteDTO.getApproverCheckBox()) && "Y".equalsIgnoreCase(creditDebitNoteDTO.getApproverCheckBox())){
+			creditDebitNote.setApproverCheckBox(Constants.YES);
+			creditDebitNote.setApprovers(creditDebitNoteDTO.getApprovers());
+		}else{
+			creditDebitNote.setApproverCheckBox(Constants.NO);
+			creditDebitNote.setApprovers(null);
+		}
+		creditDebitNote.setUpdatedBy(user);
+		creditDebitNote.setUpdatedDate(commonUtil.orgLocationCommonDate(new Date(), orgLocation));
+		
+		// storing Credit or Debit line items
+		List<CreditDebitLineItems> creditDebitLineItemsIdsList = null;
+		if (null != creditDebitNote.getId()) {
+			creditDebitLineItemsIdsList = invoiceDao.getCreditDebitLineItemsListByNoteIdAndLocationId(creditDebitNote.getId(), orgLocation.getId());
+		}
+		Set<CreditDebitLineItems> invoiceLineItemSet = getCreditDebitLineItems(user, orgLocation, creditDebitNote,creditDebitNoteDTO,creditDebitLineItemsIdsList);
+		creditDebitNote.setCreditDebitLineItems(invoiceLineItemSet);
+
+		invoiceDao.saveCreditDebitNote(creditDebitNote);
+		// save child record
+		if(saveType.equalsIgnoreCase("Send")){
+			saveChildCreditDebitNote(creditDebitNote,user,vendorOrgLocation,loginCurrencyCode);
+		}
+		return creditDebitNote;
+	}
+
+	private CreditDebitNote saveChildCreditDebitNote(CreditDebitNote parentCreditDebitNote, User user, OrgLocations vendorOrgLocation,String vendorOrgCurrencyCode) throws Exception {
+		
+		CreditDebitNote childCreditDebitNote = invoiceDao.getParentCreditDebitNoteById(parentCreditDebitNote.getId());
+		
+		if(childCreditDebitNote == null){
+			childCreditDebitNote = new CreditDebitNote();
+			childCreditDebitNote.setCreatedDate(commonUtil.orgLocationCommonDate(new Date(), vendorOrgLocation));
+			childCreditDebitNote.setCreatedBy(user);
+		}
+		if(parentCreditDebitNote.getNoteType().equalsIgnoreCase(Constants.CREDIT_NOTE)){
+			childCreditDebitNote.setNoteType(Constants.DEBIT_NOTE);
+		}else{
+			childCreditDebitNote.setNoteType(Constants.CREDIT_NOTE);
+		}
+		childCreditDebitNote.setOrgRelations(parentCreditDebitNote.getOrgRelations());
+		childCreditDebitNote.setOrgLocations(parentCreditDebitNote.getResponderLocation());
+		childCreditDebitNote.setResponderLocation(parentCreditDebitNote.getOrgLocations());
+		childCreditDebitNote.setOwnerUser(parentCreditDebitNote.getContactUser());
+		childCreditDebitNote.setNoteStatus(Constants.INVOICE_RECEIVED);
+		childCreditDebitNote.setCreditNoteDate(parentCreditDebitNote.getCreditNoteDate());
+		childCreditDebitNote.setStatus(parentCreditDebitNote.getStatus());
+		childCreditDebitNote.setContactUser(parentCreditDebitNote.getOwnerUser());
+		childCreditDebitNote.setParentCreditDebitNote(parentCreditDebitNote);
+		childCreditDebitNote.setReferenceNumber(parentCreditDebitNote.getReferenceNumber());
+		childCreditDebitNote.setReason(parentCreditDebitNote.getReason());
+		childCreditDebitNote.setBillingAddress(parentCreditDebitNote.getBillingAddress());
+		childCreditDebitNote.setShippingAddress(parentCreditDebitNote.getShippingAddress());
+		List<Invoice> childInvoiceList = null;
+		StringBuilder sbChild = new StringBuilder();
+		// get child record using parentIds
+		 childInvoiceList = invoiceDao.getInvoiceListUsingMultipleIdsForChild(parentCreditDebitNote.getInvoice());
+		 if(childInvoiceList.size()>0){
+		childInvoiceList.forEach(childInvoice1->{
+			sbChild.append(childInvoice1.getId()).append(",").toString();	
+		});
+		 }else{
+			// get parent record using childIds
+			 childInvoiceList = invoiceDao.getInvoiceListUsingMultipleIds(parentCreditDebitNote.getInvoice()); 
+			 childInvoiceList.forEach(childInvoice1->{
+					sbChild.append(childInvoice1.getParentInvoiceId().getId()).append(",").toString();	
+				});
+		 }
+		 String invoiceIds = sbChild.deleteCharAt(sbChild.length() - 1).toString();
+		childCreditDebitNote.setInvoice(invoiceIds);
+		childCreditDebitNote.setGeneratedId(parentCreditDebitNote.getGeneratedId());
+		childCreditDebitNote.setCreditDebitUUID(SourceLeadRandomCodeHelper.generateRandomUUID());
+		childCreditDebitNote.setUpdatedBy(user);
+		childCreditDebitNote.setUpdatedDate(commonUtil.orgLocationCommonDate(new Date(), vendorOrgLocation));
+		childCreditDebitNote.setSubTotal(parentCreditDebitNote.getSubTotal());
+		String loginCurrencyCode = conversionUtil.getVendorOrgCurrencyCode(vendorOrgLocation.getCountry());
+		if (!vendorOrgCurrencyCode.equalsIgnoreCase(loginCurrencyCode)) {
+			if (null != loginCurrencyCode) {
+				float convertedAmount = conversionUtil.convert(vendorOrgCurrencyCode, loginCurrencyCode,parentCreditDebitNote.getTotal());
+				float convertedAmount1 = (float) (Math.round(convertedAmount * 100.0) / 100.0);
+				childCreditDebitNote.setExchangeCurrencyRate(new BigDecimal(convertedAmount1));
+				childCreditDebitNote.setVendorCurrencyCode(parentCreditDebitNote.getLoginCurrencyCode());
+				childCreditDebitNote.setTotal(parentCreditDebitNote.getAfterExchangeGrandTotal());
+			}
+		} else {
+			childCreditDebitNote.setTotal(parentCreditDebitNote.getTotal());
+		}
+		childCreditDebitNote.setLoginCurrencyCode(loginCurrencyCode);
+		childCreditDebitNote.setDiscountType(parentCreditDebitNote.getDiscountType());
+		childCreditDebitNote.setDiscountValue(parentCreditDebitNote.getDiscountValue());
+		childCreditDebitNote.setDiscountTotal(parentCreditDebitNote.getDiscountTotal());
+		
+		invoiceDao.saveCreditDebitNote(childCreditDebitNote);
+		
+		return childCreditDebitNote;
+		
+	}
+
+	private Set<CreditDebitLineItems> getCreditDebitLineItems(User user, OrgLocations orgLocation,
+			CreditDebitNote creditDebitNote, CreditDebitNoteDTO creditDebitNoteDTO,List<CreditDebitLineItems> creditDebitLineItemsSavedList) {
+		
+		Set<CreditDebitLineItems> creditDebitLineItemsList = new HashSet<CreditDebitLineItems>();
+		
+		List<CreditDebitLineItems> updatedLineItems = new ArrayList<CreditDebitLineItems>();
+		
+		for(CreditDebitNoteLineItemsDTO creditDebitLineItemsDTO :creditDebitNoteDTO.getCreditDebitNoteLineItems())
+		{
+			if (creditDebitLineItemsDTO.getPrice() == null) {
+                continue;
+            }
+			CreditDebitLineItems creditDebitLineItems = new CreditDebitLineItems();
+			
+			if(StringUtils.isNotBlank(creditDebitLineItemsDTO.getLineItemId())){
+				creditDebitLineItems.setId(Long.parseLong(creditDebitLineItemsDTO.getLineItemId()));
+			}
+			
+			if(StringUtils.isNotBlank(creditDebitLineItemsDTO.getInlineDescription())){
+			creditDebitLineItems.setInlineDescription(creditDebitLineItemsDTO.getInlineDescription());
+			}else{
+				creditDebitLineItems.setInlineDescription(null);	
+			}
+			if(StringUtils.isNotBlank(creditDebitLineItemsDTO.getLineItemDate())){
+			creditDebitLineItems.setLineItemDate(commonUtil.orgLocationDateFormat(orgLocation.getDateFormat(), creditDebitLineItemsDTO.getLineItemDate()));
+			}else{
+			creditDebitLineItems.setLineItemDate(null);	
+			}
+			creditDebitLineItems.setPrice(new BigDecimal(creditDebitLineItemsDTO.getPrice()));
+			creditDebitLineItems.setOrgLocation(orgLocation);
+			creditDebitLineItems.setAmount(new BigDecimal(creditDebitLineItemsDTO.getRowTotal()));
+			creditDebitLineItems.setTotalAmount(new BigDecimal(creditDebitLineItemsDTO.getRowTotalAmount()));
+			creditDebitLineItems.setQuantity(creditDebitLineItemsDTO.getQuantity());
+			if(StringUtils.isNotBlank(creditDebitLineItemsDTO.getTaxType())){
+			creditDebitLineItems.setTaxType(creditDebitLineItemsDTO.getTaxType());
+			}else{
+			creditDebitLineItems.setTaxType(null);	
+			}
+			if(StringUtils.isNotBlank(creditDebitLineItemsDTO.getTaxAmount())){
+			creditDebitLineItems.setTaxAmount(new BigDecimal(creditDebitLineItemsDTO.getTaxAmount()));
+			}else{
+			creditDebitLineItems.setTaxAmount(null);	
+			}
+			if(StringUtils.isNotBlank(creditDebitLineItemsDTO.getAssociates())){
+				try {
+					User associate = userService.getUserById(Long.parseLong(creditDebitLineItemsDTO.getAssociates()));
+					creditDebitLineItems.setAssociate(associate);	
+				}catch (Exception e) {
+					e.printStackTrace();
+				}
+			}
+			creditDebitLineItems.setStatus(Constants.RECORD_ACTIVE.toString());
+			creditDebitLineItems.setCreatedBy(user);
+			creditDebitLineItems.setUpdatedBy(user);
+			creditDebitLineItems.setCreatedDate(commonUtil.orgLocationCommonDate(new Date(), orgLocation));
+			creditDebitLineItems.setUpdatedDate(commonUtil.orgLocationCommonDate(new Date(), orgLocation));
+			creditDebitLineItems.setCreditDebitNote(creditDebitNote);
+			creditDebitLineItemsList.add(creditDebitLineItems);
+		}
+		if (null != creditDebitNote.getId()) {
+			updatedLineItems.retainAll(creditDebitLineItemsSavedList);
+			creditDebitLineItemsSavedList.removeAll(updatedLineItems);
+		}
+		return creditDebitLineItemsList;
+	}
+
+	@Override
+	public ResponseList<CreditDebitNoteListDTO> creditDebtListByOrgLocationId(OrgLocations orgLocations,
+			Date startDateUTC, Date endDateUTC, CreditDebitNoteDTO creditDebitNoteDTO) throws Exception {
+		
+		List<CreditDebitNoteListDTO> creditDebitList = new ArrayList<>();
+		ResponseList<CreditDebitNoteListDTO> creditDebitDTOList = new ResponseList<CreditDebitNoteListDTO>();
+		
+		ResponseList<CreditDebitNote> creditDebitNoteList = invoiceDao.creditDebtListByOrgLocationId(orgLocations, startDateUTC, endDateUTC, creditDebitNoteDTO);
+		List<CreditDebitNote> notesFilterList = creditDebitNoteList.getData();
+			notesFilterList.forEach(creditDebitNote->{
+			CreditDebitNoteListDTO creditDebitNoteListDTO = new CreditDebitNoteListDTO();
+			creditDebitNoteListDTO.setReferenceNumber(creditDebitNote.getReferenceNumber());
+			creditDebitNoteListDTO.setGrandTotal(creditDebitNote.getTotal().toString());
+			OrgRelations orgRelations = null;
+			try {
+				orgRelations = orgRelationsService.getOrgRelationById(creditDebitNote.getOrgRelations().getId());
+				if (orgRelations.getLocationId().getId().equals(orgLocations.getId())) {
+					creditDebitNoteListDTO.setClientName(orgRelations.getResponderLocationId().getOrgLocationName());
+				}
+				if (orgRelations.getResponderLocationId().getId().equals(orgLocations.getId())) {
+					creditDebitNoteListDTO.setClientName(orgRelations.getLocationId().getOrgLocationName());
+				}
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+			creditDebitNoteListDTO.setGeneratedId(creditDebitNote.getGeneratedId());
+			// get Invoice List
+			List<Invoice> listInvoice = null;
+			StringBuilder sbInvoice = new StringBuilder();
+			try {
+				listInvoice = invoiceDao.getInvoiceListUsingMultipleIds(creditDebitNote.getInvoice());
+				listInvoice.forEach(invoice->{
+					sbInvoice.append(invoice.getInvoiceId()).append(" , ").toString();
+				});
+				if(listInvoice !=null){
+				creditDebitNoteListDTO.setInvoceId(sbInvoice.deleteCharAt(sbInvoice.length() - 2).toString());
+				}
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+			creditDebitNoteListDTO.setCreditDebitNotedate(commonUtil.dateStrFromOrgDateFormatter(orgLocations.getDateFormat(), creditDebitNote.getCreditNoteDate()));
+			creditDebitNoteListDTO.setCreditDebitNoteStatus(creditDebitNote.getNoteStatus());
+			creditDebitNoteListDTO.setCreditDebitUUID(creditDebitNote.getCreditDebitUUID());
+			creditDebitNoteListDTO.setSavedNoteId(creditDebitNote.getId().toString());
+			creditDebitNoteListDTO.setContactUser(creditDebitNote.getContactUser());
+			creditDebitNoteListDTO.setApproverCheckBox(creditDebitNote.getApproverCheckBox());
+			creditDebitNoteListDTO.setApprovers(creditDebitNote.getApprovers());
+			creditDebitNoteListDTO.setStatus(creditDebitNote.getStatus());
+			if(StringUtils.isNotBlank(creditDebitNote.getApprovers())){
+			List<String> appUserList = Arrays.asList(creditDebitNoteListDTO.getApprovers().split(","));
+				creditDebitNoteListDTO.setApproverUserSplitId(appUserList);
+				System.out.println(appUserList.size());
+			}
+			creditDebitNoteListDTO.setOwnerUser(creditDebitNote.getOwnerUser());
+			creditDebitList.add(creditDebitNoteListDTO);	
+		});
+		
+		creditDebitDTOList.setData(creditDebitList);
+		creditDebitDTOList.setRecordsFiltered(creditDebitNoteList.getRecordsFiltered());
+		creditDebitDTOList.setRecordsTotal(creditDebitNoteList.getRecordsTotal());
+		return creditDebitDTOList;
+	}
+
+	@Override
+	public boolean deleteCreditDebitNote(String noteUUID,String noteType,User user,OrgLocations orgLocations)throws Exception {
+		boolean result = false;
+		CreditDebitNote note = invoiceDao.getCreditDebitNoteByUUID(noteUUID);
+		Date date = new Date();
+		if(note!= null){
+				note.setStatus(Constants.MEMBER_IN_ACTIVE);
+				note.setUpdatedDate(commonUtil.orgLocationCommonDate(date, orgLocations));
+				note.setUpdatedBy(user);
+				CreditDebitNote savedNote = invoiceDao.saveCreditDebitNote(note);
+				if ((null != savedNote) && ((savedNote.getNoteStatus().equalsIgnoreCase("Received")) || (savedNote.getNoteStatus().equalsIgnoreCase("Send")))) {
+					if (null != note.getParentCreditDebitNote()) {
+						// parent invoice update
+						CreditDebitNote parentnote = invoiceDao.getCreditDebitNoteById(savedNote.getParentCreditDebitNote().getId());
+						parentnote.setStatus(Constants.MEMBER_IN_ACTIVE);
+						parentnote.setUpdatedBy(user);
+						parentnote.setUpdatedDate(commonUtil.orgLocationCommonDate(date, orgLocations));
+						invoiceDao.saveCreditDebitNote(parentnote);
+					}else{
+						// update child invoice
+						CreditDebitNote childInvoice = invoiceDao.getParentCreditDebitNoteById(savedNote.getId());
+						childInvoice.setStatus(Constants.MEMBER_IN_ACTIVE);
+						childInvoice.setUpdatedBy(user);
+						childInvoice.setUpdatedDate(commonUtil.orgLocationCommonDate(date, orgLocations));
+						invoiceDao.saveCreditDebitNote(childInvoice);
+					}
+				}
+				result = true;	
+		}
+		return result;
+	}
+	
+	@Override
+	public boolean reactiveCreditDebitNote(String noteUUID,String noteType,User user,OrgLocations orgLocations)throws Exception {
+		boolean result = false;
+		CreditDebitNote note = invoiceDao.getCreditDebitNoteByUUID(noteUUID);
+		Date date = new Date();
+		if(note!= null){
+				note.setStatus(Constants.MEMBER_ACTIVE);
+				note.setUpdatedDate(commonUtil.orgLocationCommonDate(date, orgLocations));
+				note.setUpdatedBy(user);
+				CreditDebitNote savedNote = invoiceDao.saveCreditDebitNote(note);
+				if ((null != savedNote) && ((savedNote.getNoteStatus().equalsIgnoreCase("Received")) || (savedNote.getNoteStatus().equalsIgnoreCase("Send")))) {
+					if (null != note.getParentCreditDebitNote()) {
+						// parent invoice update
+						CreditDebitNote parentnote = invoiceDao.getCreditDebitNoteById(savedNote.getParentCreditDebitNote().getId());
+						parentnote.setStatus(Constants.MEMBER_ACTIVE);
+						parentnote.setUpdatedBy(user);
+						parentnote.setUpdatedDate(commonUtil.orgLocationCommonDate(date, orgLocations));
+						invoiceDao.saveCreditDebitNote(parentnote);
+					}else{
+						// update child invoice
+						CreditDebitNote childInvoice = invoiceDao.getParentCreditDebitNoteById(savedNote.getId());
+						childInvoice.setStatus(Constants.MEMBER_ACTIVE);
+						childInvoice.setUpdatedBy(user);
+						childInvoice.setUpdatedDate(commonUtil.orgLocationCommonDate(date, orgLocations));
+						invoiceDao.saveCreditDebitNote(childInvoice);
+					}
+				}
+				result = true;	
+		}
+		return result;
+	}
+	
+	@Override
+	public CreditDebitNote getCreditDebitNoteByUUID(String noteUUID) throws Exception {
+		return invoiceDao.getCreditDebitNoteByUUID(noteUUID);
+	}
+	
+	@Override
+	public Response<CreditDebitNote> getCreditDebitNoteByIdAndOrglocationId(Long id, Long orgLocationId)
+			throws Exception {
+		Response<CreditDebitNote> response = new Response<CreditDebitNote>();
+		
+		Long newLocationId = null;
+		Long newId = null;
+		CreditDebitNote parentNote = invoiceDao.getCreditDebitNoteById(id);
+		if (parentNote.getParentCreditDebitNote() != null) {
+			newId = parentNote.getParentCreditDebitNote().getId();
+			newLocationId = parentNote.getParentCreditDebitNote().getOrgLocations().getId();
+		}
+		else {
+			newId = id;
+			newLocationId = orgLocationId;
+		}
+		
+		CreditDebitNote creditDebitNote = invoiceDao.getCreditDebitNoteByIdAndOrglocationId(id, orgLocationId);
+		// get CreditDebit Line Items 
+		List<CreditDebitLineItems> lineItemsList = invoiceDao.getCreditDebitLineItemsListByNoteIdAndLocationId(newId, newLocationId);
+		lineItemsList.forEach(lineItem->{
+			lineItem.setLineItemDateStr(commonUtil.dateStrFromOrgDateFormatter(lineItem.getOrgLocation().getDateFormat(), lineItem.getLineItemDate()));	
+			if(lineItem.getAssociate() !=null){
+			lineItem.setAssociateName(lineItem.getAssociate().getFullName());
+			}
+		});
+		creditDebitNote.setListOfCreditDebitLineItems(lineItemsList);
+		// get Invoice List
+		List<Invoice> listInvoice = invoiceDao.getInvoiceListUsingMultipleStringIdsAndLocationId(creditDebitNote.getInvoice(),creditDebitNote.getOrgLocations().getId());
+		StringBuilder sbInvoice = new StringBuilder();
+		listInvoice.forEach(invoice->{
+			sbInvoice.append(invoice.getInvoiceId()).append(" , ").toString();
+		});
+		creditDebitNote.setInvoiceMultipleIds(sbInvoice.deleteCharAt(sbInvoice.length() - 2).toString());
+		// get users list 
+		StringBuilder appSb = new StringBuilder();
+		if(StringUtils.isNotBlank(creditDebitNote.getApprovers())){
+		List<User> approversList = userDao.getUsersListUsingMultipleStringIdsWithLocationId(creditDebitNote.getApprovers(),creditDebitNote.getOrgLocations().getId());
+		approversList.forEach(approver->{
+			appSb.append(approver.getFullName()).append(" , ").toString();	
+		});
+		creditDebitNote.setApproversMultipleNames(appSb.deleteCharAt(appSb.length() - 2).toString());
+		}
+		creditDebitNote.setCreditDebitNoteDateStr(commonUtil.dateStrFromOrgDateFormatter(creditDebitNote.getOrgLocations().getDateFormat(), creditDebitNote.getCreditNoteDate()));
+		StringBuilder contactName = new StringBuilder();
+		StringBuilder contactEmails = new StringBuilder();
+		if (creditDebitNote.getOrgRelations().getLocationId().getId().equals(orgLocationId)) {
+			creditDebitNote.setClientOrVendorName(creditDebitNote.getOrgRelations().getResponderLocationId().getOrgLocationName());
+			List<User> contactsUserList = userDao.getUsersListUsingMultipleStringIdsWithLocationId(creditDebitNote.getContactUser(),creditDebitNote.getOrgRelations().getResponderLocationId().getId());
+			contactsUserList.forEach(contactUser->{
+				contactName.append(contactUser.getFullName()).append(" , ").toString();	
+				contactEmails.append(contactUser.getEmail()).append(" , ").toString();
+			});
+			creditDebitNote.setContactsMultipleNames(contactName.deleteCharAt(contactName.length() - 2).toString());
+			creditDebitNote.setContactsMultipleEmails(contactEmails.deleteCharAt(contactEmails.length() - 2).toString());
+		}
+		
+		if(creditDebitNote.getOrgRelations().getResponderLocationId().getId().equals(orgLocationId)){
+			creditDebitNote.setClientOrVendorName(creditDebitNote.getOrgRelations().getLocationId().getOrgLocationName());
+			List<User> contactsUserList = userDao.getUsersListUsingMultipleStringIdsWithLocationId(creditDebitNote.getContactUser(),creditDebitNote.getOrgRelations().getLocationId().getId());
+			contactsUserList.forEach(contactUser->{
+				contactName.append(contactUser.getFullName()).append(" , ").toString();	
+				contactEmails.append(contactUser.getEmail()).append(" , ").toString();
+			});
+			creditDebitNote.setContactsMultipleNames(contactName.deleteCharAt(contactName.length() - 2).toString());
+			creditDebitNote.setContactsMultipleEmails(contactEmails.deleteCharAt(contactEmails.length() - 2).toString());
+		}
+		
+		response.setObject(creditDebitNote);
+		
+		return response;
+	}
 	/*public EmailAttachment zipFileReminderInvoiceAttachedDoc(List<EmailAttachment> docusList) throws MessagingException {
 
 		EmailAttachment ema = null;
@@ -3351,5 +4071,130 @@ public class InvoiceServiceImpl implements InvoiceService {
 		}
 		return ema;
 	}*/
+
+	@Override
+	public CreditDebitNote saveAcceptedCreditDebitNote(User user, OrgLocations orgLocation, String noteType,
+			CreditDebitNote creditDebitNote) throws Exception {
+		
+		creditDebitNote.setNoteStatus("Send");
+		creditDebitNote.setUpdatedBy(user);
+		creditDebitNote.setUpdatedDate(commonUtil.orgLocationCommonDate(new Date(),orgLocation));
+		CreditDebitNote creditDebitNoteSave = invoiceDao.saveCreditDebitNote(creditDebitNote);
+		
+		OrgLocations vendorOrgLocation = null;
+		if(Constants.CREDIT_NOTE.equalsIgnoreCase(noteType)){
+        	// client details
+     			OrgRelations orgRelation = orgRelationsService.getOrRelationsById(creditDebitNoteSave.getOrgRelations().getId());
+     			if(orgRelation.getResponderLocationId().getId().longValue() == orgLocation.getId().longValue()){
+     				vendorOrgLocation = orgRelation.getLocationId();
+     			}if(orgRelation.getLocationId().getId().longValue() == orgLocation.getId().longValue()){
+				vendorOrgLocation = orgRelation.getResponderLocationId();
+			}
+     		}else{
+        	//vendor details
+      			OrgRelations orgRelation = orgRelationsService.getOrRelationsById(creditDebitNoteSave.getOrgRelations().getId());
+      			if(orgRelation.getResponderLocationId().getId().longValue() == orgLocation.getId().longValue()){
+      				vendorOrgLocation = orgRelation.getLocationId();
+      			}
+      			if(orgRelation.getLocationId().getId().longValue() == orgLocation.getId().longValue()){
+      				vendorOrgLocation = orgRelation.getResponderLocationId();
+      			}
+        }
+        String currencyCode =  conversionUtil.getVendorOrgCurrencyCode(orgLocation.getCountry());
+
+		// save child record
+				if(creditDebitNote.getNoteStatus().equalsIgnoreCase("Send")){
+					saveChildCreditDebitNote(creditDebitNote,user,vendorOrgLocation,currencyCode);
+				}
+		
+		return creditDebitNote;
+
+	
+		}
+	
+	public String getCreditDebitGeneratedId(OrgLocations loginOrgLoc,OrgLocations vendorOrgLocation,String noteType) {
+		String type = "";
+		if(noteType.equalsIgnoreCase(Constants.CREDIT_NOTE)){
+			type = Constants.CREDIT_ENTITY_SHORTCODE;
+		}else{
+			type = Constants.DEBIT_ENTITY_SHORTCODE;
+		}
+		Calendar cal = Calendar.getInstance();
+		int year = cal.getWeekYear();
+		StringBuilder sbuilder = new StringBuilder();
+		sbuilder.append(loginOrgLoc.getGeneratedUserId()).append("-").append(type).append("-").append(vendorOrgLocation.getGeneratedUserId()).append("-").append(year).append("-");
+		String generatedUsreId = sbuilder.toString();
+		return generatedUsreId;
+	}
+
+	@Override
+	public CreditDebitNoteListDTO editCreditDebitNote(Long noteId, OrgLocations orgLocation, String noteType)throws Exception {
+		CreditDebitNoteListDTO creditDebitNoteListDTO = new CreditDebitNoteListDTO();
+		CreditDebitNote note = invoiceDao.getCreditDebitNoteByIdAndOrglocationId(noteId, orgLocation.getId());
+		
+		creditDebitNoteListDTO.setReferenceNumber(note.getReferenceNumber());
+		creditDebitNoteListDTO.setBillingAddress(note.getBillingAddress());
+		creditDebitNoteListDTO.setShippingAddress(note.getShippingAddress());
+		creditDebitNoteListDTO.setCreditDebitNotedate(commonUtil.dateStrFromOrgDateFormatter(orgLocation.getDateFormat(), note.getCreditNoteDate()));
+		creditDebitNoteListDTO.setReason(note.getReason());
+		creditDebitNoteListDTO.setApproverCheckBox(note.getApproverCheckBox());
+		creditDebitNoteListDTO.setApprovers(note.getApprovers());
+		creditDebitNoteListDTO.setInvoceId(note.getInvoice());
+		creditDebitNoteListDTO.setContactUser(note.getContactUser());
+		creditDebitNoteListDTO.setOrgRelationId(note.getOrgRelations().getId().toString());
+		creditDebitNoteListDTO.setGrandTotal(note.getTotal().toString());
+		creditDebitNoteListDTO.setSubTotalAmount(note.getSubTotal().toString());
+		creditDebitNoteListDTO.setAccount(note.getPaymentAccount().getId().toString());
+		if(note.getDiscountValue() !=null){
+		creditDebitNoteListDTO.setDiscountValue(note.getDiscountValue().toString());
+		creditDebitNoteListDTO.setDiscountTotal(note.getDiscountTotal().toString());
+		creditDebitNoteListDTO.setDiscountType(note.getDiscountType());
+		}
+		creditDebitNoteListDTO.setSavedNoteId(note.getId().toString());
+		creditDebitNoteListDTO.setLoginCurrencyCode(note.getLoginCurrencyCode());
+		if(StringUtils.isNotBlank(note.getVendorCurrencyCode())){
+			creditDebitNoteListDTO.setAfterExchangeGrandTotal(note.getAfterExchangeGrandTotal().toString());	
+			creditDebitNoteListDTO.setExchangeCurrencyRate(note.getExchangeCurrencyRate().toString());
+			creditDebitNoteListDTO.setVendorCurrencyCode(note.getVendorCurrencyCode());
+			//creditDebitNoteListDTO.setConversionFrom(note.);
+		}
+		creditDebitNoteListDTO.setLoginCurrencyCode(note.getLoginCurrencyCode());
+		//Credit Debit Note Line Items
+		List<CreditDebitLineItems> lineItemsList = invoiceDao.getCreditDebitLineItemsListByNoteIdAndLocationId(noteId, orgLocation.getId());
+		List<CreditDebitNoteLineItemsDTO> lineItemsDTOList = new ArrayList<CreditDebitNoteLineItemsDTO>();
+		lineItemsList.forEach(lineItems->{
+		CreditDebitNoteLineItemsDTO	 listDto = new CreditDebitNoteLineItemsDTO();
+		listDto.setInlineDescription(lineItems.getInlineDescription());
+		listDto.setPrice(lineItems.getPrice().toString());
+		listDto.setQuantity(lineItems.getQuantity());
+		listDto.setLineItemDate(commonUtil.dateStrFromOrgDateFormatter(orgLocation.getDateFormat(), lineItems.getLineItemDate()));
+		if(lineItems.getAssociate() !=null){
+			listDto.setAssociates(lineItems.getAssociate().getId().toString());	
+		}
+		if(lineItems.getTaxAmount() !=null){
+		listDto.setTaxAmount(lineItems.getTaxAmount().toString());
+		listDto.setTaxType(lineItems.getTaxType());
+		}
+		listDto.setRowTotalAmount(lineItems.getTotalAmount().toString());
+		listDto.setRowTotal(lineItems.getAmount().toString());
+		listDto.setLineItemId(lineItems.getId().toString());
+			
+		lineItemsDTOList.add(listDto);	 	
+		});
+		creditDebitNoteListDTO.setCreditDebitNoteLineItems(lineItemsDTOList);
+		
+		return creditDebitNoteListDTO;
+	}
+
+	@Override
+	public CreditDebitLineItems getCreditDebitLineItemById(Long id) {
+		return invoiceDao.getCreditDebitLineItemById(id);
+	}
+
+	@Override
+	public void deleteCreditDebitLineItem(CreditDebitLineItems creditDebitLineItems) {
+		invoiceDao.deleteCreditDebitLineItem(creditDebitLineItems);
+	}
+	
 
 }

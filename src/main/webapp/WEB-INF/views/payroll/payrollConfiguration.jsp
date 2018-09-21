@@ -51,7 +51,7 @@
         <div class="pull-left">
           <h4 class="text-muted">Pay Schedule</h4>
           <small class="text-muted">Configure Pay Schedule</small>
-          <div class="clearfix mt10"> <a href="<c:url value='${appPath}/paySchedule'/>" class="btn btn-info btn-sm mr10" title="Add">Add</a> <a href="restrictday-list.html" class="btn btn-primary btn-sm" title="View">View</a> </div>
+          <div class="clearfix mt10"> <a href="<c:url value='${appPath}/paySchedule'/>" class="btn btn-info btn-sm mr10" title="Add">Add</a></div>
         </div>
         <div class="clearfix"></div>
       </div>
@@ -89,7 +89,21 @@
         </div>
         <div class="clearfix"></div>
       </div>
+      
+      <div class="col-md-3 mb">
+        <div class="pull-left mr10"> <i class="fa fa-suitcase fa-2x text-muted"></i> </div>
+        <div class="pull-left">
+          <h4 class="text-muted">Loan & Advances</h4>
+          <small class="text-muted">Manage your loan & advances</small>
+          <div class="mt10">
+          	<a class="btn btn-info btn-sm mr10" href="<c:url value='${appPath}/payrollLoanAndAdvances'/>">Add</a> 
+			<a class="btn btn-primary btn-sm" href="<c:url value='${appPath}/payrollLoanAndAdvancesList'/>">View</a>
+		  </div>
+        </div>
+        <div class="clearfix"></div>
+      </div>
       <div class="clearfix"></div>
+      
     </div>
   </section>
 

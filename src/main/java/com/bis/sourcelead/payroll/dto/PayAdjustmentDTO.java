@@ -1,5 +1,6 @@
 package com.bis.sourcelead.payroll.dto;
 
+import java.math.BigDecimal;
 import java.util.List;
 
 import com.bis.sourcelead.dto.AssociatePayItemDTO;
@@ -37,6 +38,22 @@ public class PayAdjustmentDTO {
 	
 	private List<ContributionDTO> contribution;
 	
+	private String assSalType;
+    
+    private BigDecimal assSalary;
+    
+    private BigDecimal assSalaryAmount;
+	
+
+	public BigDecimal getAssSalaryAmount()
+	{
+		return assSalaryAmount;
+	}
+
+	public void setAssSalaryAmount(BigDecimal assSalaryAmount)
+	{
+		this.assSalaryAmount = assSalaryAmount;
+	}
 
 	public String getDepositType()
 	{
@@ -187,7 +204,24 @@ public class PayAdjustmentDTO {
 	{
 		this.preOverTimeHoursAmt = preOverTimeHoursAmt;
 	}
-	
-	
-	
+
+	public String getAssSalType()
+	{
+		return assSalType;
+	}
+
+	public void setAssSalType(String assSalType)
+	{
+		this.assSalType = assSalType;
+	}
+
+	public BigDecimal getAssSalary()
+	{
+		return assSalary;
+	}
+
+	public void setAssSalary(BigDecimal assSalary)
+	{
+		this.assSalary = assSalary;
+	}
 }

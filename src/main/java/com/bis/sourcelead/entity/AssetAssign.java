@@ -1,5 +1,7 @@
 package com.bis.sourcelead.entity;
 
+import java.util.Date;
+
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
@@ -9,8 +11,11 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
+import javax.persistence.Transient;
 
 import org.hibernate.annotations.Type;
+
+import com.fasterxml.jackson.annotation.JsonProperty;
 
 /**
  * @author Laxman
@@ -37,6 +42,11 @@ public class AssetAssign {
     @JoinColumn(name="SHIFT_ID")        
     private Shift shift;
 	
+	@Column(name = "ASSIGNED_ON")
+	private Date assignedOn;
+	
+	@Column(name = "RETURNED_ON")
+	private Date returnedOn;
 	
 	@Column(name = "FILE_URL")
 	@Type(type="text")
@@ -51,6 +61,15 @@ public class AssetAssign {
 	@Column(name = "STATUS")
 	private int status;
 
+	
+	@Transient
+    @JsonProperty
+    private String assignedOnStr;
+
+	@Transient
+    @JsonProperty
+    private String returnedOnStr;
+	
 	public Long getId() {
 		return id;
 	}
@@ -114,5 +133,36 @@ public class AssetAssign {
 	public void setStatus(int status) {
 		this.status = status;
 	}
-	 
+
+	public Date getAssignedOn() {
+		return assignedOn;
+	}
+
+	public void setAssignedOn(Date assignedOn) {
+		this.assignedOn = assignedOn;
+	}
+
+	public Date getReturnedOn() {
+		return returnedOn;
+	}
+
+	public void setReturnedOn(Date returnedOn) {
+		this.returnedOn = returnedOn;
+	}
+
+	public String getAssignedOnStr() {
+		return assignedOnStr;
+	}
+
+	public String getReturnedOnStr() {
+		return returnedOnStr;
+	}
+
+	public void setAssignedOnStr(String assignedOnStr) {
+		this.assignedOnStr = assignedOnStr;
+	}
+
+	public void setReturnedOnStr(String returnedOnStr) {
+		this.returnedOnStr = returnedOnStr;
+	}
 }

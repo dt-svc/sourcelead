@@ -53,19 +53,21 @@ $(document).ready(function(){
 					        </sec:authorize>
 					        <sec:authorize access="hasRole('ROLE_ADD_ASSET_CATEGORY')"> 
 					        	<a href="<c:url value='${appPath}/assetCategory'/>" class="">Categories List</a>
-					        </sec:authorize>						  
+					        </sec:authorize>	
+					        
+					        <a href="<c:url value='${appPath}/uploadassetManagement'/>">Import</a>	  
 					</span>
 				</div>
 			</li>
 				<li id="vendorFiletPopup"><a href="javascript:void(0)" class="filtIcon" title="Filters" onclick="openAssetFilterPop();"></a></li>
 				
-				<li><a href="javascript:void(0)" class="overIcon" title="Actions" onclick="newActions();"></a>
+				<%-- <li><a href="javascript:void(0)" class="overIcon" title="Actions" onclick="newActions();"></a>
 					<div class="newActPop">
 						<span>
 		           	   		<a href="<c:url value='${appPath}/uploadassetManagement'/>">Import</a>
 						</span>
 					</div>
-				</li>
+				</li> --%>
 		    
 		  <li class=""><input type="text" class="repSearchBar" placeholder='Search' id='assetDataTableSearch'/><span class="repSearchIcon" onClick="getDynamicAssetList();"></span></li>
         </ul>
@@ -109,15 +111,15 @@ $(document).ready(function(){
  		<jsp:include page="addAssetPopup.jsp"></jsp:include> 
  	</div>
   <script>
-  function addAndEditAssetAssign(assetId){
+  function addAndEditAssetAssign(assetUUID){
 	  $.ajax({
 	    	type: "POST",
-	    	url: sourceleadUrl+"/addAndEditAssetAssign?&assetId="+assetId, 
+	    	url: sourceleadUrl+"/addAndEditAssetAssign?&assetUUID="+assetUUID, 
 	        success: function(result) {
 	        	$(".assetManagementPopup, .comMask").fadeIn();
 	        	$('#assetManagementPopup').empty();
 	        	$('#assetManagementPopup').append(result);
-	        	issueDateScript();
+// 	        	issueDateScript();
 	        	populateDropdownValues();
 	        	<c:forEach var="section" items="${sourceleadSectionList}" varStatus="sectionOrder">
 	  		 	 var sectionId = '${section.id}';
@@ -131,7 +133,7 @@ $(document).ready(function(){
   
    
   <script>
-  function issueDateScript(){
+  function issueDateScript1(){
   var locationDate ='${SourceLeadWeb_orgLocations.dateFormat}'; 
   var finalDateFormat = getJSDateFormat(locationDate);
   $('#issueDate').datepicker({
@@ -139,11 +141,53 @@ $(document).ready(function(){
       changeMonth: true,
   	  changeYear: true, 
   });
+  $('#purchaseDate').datepicker({
+      dateFormat: finalDateFormat,
+      changeMonth: true,
+  	  changeYear: true, 
+  });
+  $('#depreciationDate').datepicker({
+      dateFormat: finalDateFormat,
+      changeMonth: true,
+  	  changeYear: true, 
+  });
+  
+  
+  <c:forEach var="shift" items="${siftList}" varStatus="shiftOrder">
+	     $('#assignedOn${shiftOrder.index}').datepicker({
+		      dateFormat: finalDateFormat,
+		      changeMonth: true,
+		  	  changeYear: true, 
+		  	  onSelect : function(selected) {
+				var dt = $(this).datepicker('getDate', '+1d');
+				dt.setDate(dt.getDate() + 1);
+				$('#returnedOn${shiftOrder.index}').datepicker("option", "minDate", dt);
+			}
+		  });
+		  
+		  $('#returnedOn${shiftOrder.index}').datepicker({
+		      dateFormat: finalDateFormat,
+		      changeMonth: true,
+		  	  changeYear: true, 
+		  	  onSelect : function(selected) {
+				var dt = $(this).datepicker('getDate', '+1d');
+				dt.setDate(dt.getDate() + 1);
+				$('#assignedOn${shiftOrder.index}').datepicker("option", "minDate", dt);
+			}
+		  });
+     
+	  
+  </c:forEach>
   }
   function clearDate(){
   	$("#issueDate").val("");
   	};
-  
+  function clearPurchaseDate(){
+	  $("#purchaseDate").val("");
+  };
+  function clearDepreciationDate(){
+	  $("#depreciationDate").val("");
+  };
 </script>
   
   <script type="text/javascript">
@@ -420,7 +464,7 @@ function prepareDynamicAssetList(url){
 	result = result + '<table id="assetPagination" class="display" cellspacing="0" width="100%">';
 	result = result + '<thead>';
 	result = result + '<tr">';
-	result = result +'	<th>Serial / Port Number</th>';
+	result = result +'	<th>Serial Number</th>';
    	result = result +'  <th>Category</th>';
    	result = result +'  <th>Model</th>';
 	result = result +'  <th>issue Date</th>';
@@ -452,9 +496,16 @@ function projectAssetPaginations(url){
     	  	"data": "",
     	  	"render": function(data, type, report) {
     	  		var result = "";
-    	  	    result = result+'<td><a href="javascript:void(0)" class="tbldata-dotdot-sm">';
-   		       	result = result +"<a href='<c:url value='/app/assetManagementSummary?assetId="+report.id+"'/>'><div class='proj_show tbldata-dotdot_140'><span class='pull-left' title='"+report.slno+"'>"+report.slno+"</span><i class='fa fa-binoculars'></i></div></a>";
-			   	result = result+'</a></td>';
+    	  	    result = result+'<td>';
+    	  	  '<sec:authorize access="hasAnyRole(\'ROLE_VIEW_ASSET_BASIC_DETAILS\',\'ROLE_VIEW_ASSET_ADDITIONAL_DETAILS\')">'; 
+	   	  	     result = result +"<a class='tbldata-dotdot-sm'><a href='<c:url value='/app/assetManagementSummary?assetUUID="+report.assetUUID+"'/>'><div class='proj_show tbldata-dotdot_140'><span class='pull-left' title='"+report.slno+"'>"+report.slno+"</span><i class='fa fa-binoculars'></i></div></a></a>";
+	   	  	  '</sec:authorize>';
+	   	  	  
+		   	   '<sec:authorize access="!hasAnyRole(\'ROLE_VIEW_ASSET_BASIC_DETAILS\',\'ROLE_VIEW_ASSET_ADDITIONAL_DETAILS\')">'; 
+	 	  	     result = result +"<div class='tbldata-dotdot_140'><span class='pull-left' title='"+report.slno+"'>"+report.slno+"</span></div>";
+	 	  	  '</sec:authorize>';
+	   	  	  
+			   	result = result+'</td>';
 	             return result;
     	  	}
         },{
@@ -532,12 +583,12 @@ function projectAssetPaginations(url){
 			  	"render": function(data, type, report) {
 			  		var result = "";
 				   	result = result+'<td><div class="tblminwidth-50">';
-				    '<sec:authorize access="hasRole(\'ROLE_VIEW_EDIT_ASSET\')">' 
-				   			result = result+'<a class="glyphicon glyphicon-edit" title="Edit" onclick="addAndEditAssetAssign(\''+report.id+'\');"></a> ';
+				    '<sec:authorize access="hasRole(\'ROLE_EDIT_ASSET\')">' 
+				   			result = result+'<a class="glyphicon glyphicon-edit" title="Edit" onclick="addAndEditAssetAssign(\''+report.assetUUID+'\');"></a> ';
 				   	'</sec:authorize>';
 				   	
 				   	'<sec:authorize access="hasRole(\'ROLE_DELETE_ASSET\')">' 
-				   	   result = result+'<i class="glyphicon glyphicon-trash text-danger ml" onClick="deleteAsset(\''+report.id+'\')";></i>';
+				   	   result = result+'<i class="glyphicon glyphicon-trash text-danger ml" onClick="deleteAsset(\''+report.assetUUID+'\')";></i>';
 				   	'</sec:authorize>';
 				   	
 				   	
@@ -597,13 +648,13 @@ function updateWorkingStatus(assetId){
 </script>
 
 <script type="text/javascript">
-function deleteAsset(assetId){
+function deleteAsset(assetUUID){
 	var result = "";
 	result = result +"	<div class='project_inn_mask'></div>";
 	result = result +"	   <div id='remove_user_pop' class='remove_user_pop remove_user_pop_a'>";
 	result = result +"		<p>Are you sure delete Asset?</p>";
 	result = result +"		<div>&nbsp;&nbsp;&nbsp;</div>";
-	result = result +"		<b href='javascript:void(0)'><input type='button' value='Ok' onclick='removeAssetManagement("+assetId+");'><input class='u_can_color' type='button'  value='Cancel' onClick='cancel();'></b>";
+	result = result +"		<b href='javascript:void(0)'><input type='button' value='Ok' onclick='removeAssetManagement(\""+assetUUID+"\");'><input class='u_can_color' type='button'  value='Cancel' onClick='cancel();'></b>";
 	result = result +"	</div>";
 	$("#popUp").append(result);
 	$("#remove_user_pop").slideDown(200);
@@ -621,17 +672,17 @@ function cancel(){
 <div id="popUp"></div>
 
 <script>
-function removeAssetManagement(assetId){
+function removeAssetManagement(assetUUID){
 	 $("#popUp").empty();
 	 $(".project_inn_mask").fadeOut(200);
 	
-	 $("#asset"+assetId).empty();
-	 $("#asset"+assetId).html("<td colspan='7'  id='loading"+assetId+"'></td>");
-	 $("#loading"+assetId).attr('style',' height:40px; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/linear-loader.gif"); background-position:center; background-repeat:no-repeat;');
+	 $("#asset"+assetUUID).empty();
+	 $("#asset"+assetUUID).html("<td colspan='7'  id='loading"+assetUUID+"'></td>");
+	 $("#loading"+assetUUID).attr('style',' height:40px; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/linear-loader.gif"); background-position:center; background-repeat:no-repeat;');
 	
 	 $.ajax({
 	   	type: "POST",
-	    url: sourceleadUrl+"/removeAssetManagement?"+tokenParamName+"="+tokenValue+"&assetId="+assetId,	    	   
+	    url: sourceleadUrl+"/removeAssetManagement?"+tokenParamName+"="+tokenValue+"&assetUUID="+assetUUID,	    	   
 	    success: function(result) {
   			if (result && result.response === "INVALID_DATA") {
 			    showError(result.responseMessage);
@@ -656,7 +707,7 @@ function removeAssetManagement(assetId){
 		    $(".clients_side_wrap").addClass("clients_side_wrap_active");
 		    $(".side_mask").fadeIn(200);
 			$("body").css('overflow-y', 'hidden');
-			assetDetails(assetId);
+// 			assetDetails(assetId);
  }
 </script> 
   
@@ -685,7 +736,6 @@ function removeAssetManagement(assetId){
 			  document.getElementById("cpuDiv").style.display="none";
 			  document.getElementById("harddiskDiv").style.display="none";
 			  $("#monitor").val('');
-			  $("#name").val('');
 			  $("#memory").val('');
 			  $("#cpu").val('');
 			  $("#harddisk").val('');
@@ -698,7 +748,6 @@ function removeAssetManagement(assetId){
   <script>
   function loadCategory(){
 	  document.getElementById("monitorDiv").style.display="none";
-	  document.getElementById("name").style.display="";
 	  document.getElementById("memoryDiv").style.display="";
 	  document.getElementById("cpuDiv").style.display="";
 	  document.getElementById("harddiskDiv").style.display="";

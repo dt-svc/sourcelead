@@ -168,4 +168,10 @@ public class TeamServiceImpl implements TeamService {
 	{
 		return teamDao.findByTeamName(name, orgLocationId);
 	}
+
+	@Override
+	public List<Team> getTeamListByTeamOwnerAndStatus(Long userId, Long orgLocationId) throws Exception
+	{
+		return teamDao.getTeamListByTeamOwnerAndStatus(userId,orgLocationId);
+	}
 }

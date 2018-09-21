@@ -74,8 +74,8 @@
 					  <li class="clearfix"><span>I-94 Number</span><p>: ${immigration.i_94_number}</p></li>
 					  <li class="clearfix"><span>I-20 SEVIS Number If Student</span><p>: ${immigration.i_20_number}</p></li>
 					  <li class="clearfix"><span>EAD Number If Student</span><p>: ${immigration.eadNumber}</p></li>
-					  <li class="clearfix"><span>Previous LCA Number</span><p>: ${immigration.prevLcaNumber}</p></li>
-					  <li class="clearfix"><span>Previous LCA Start Dates</span><p>: ${immigration.prevLcaStartDate}</p></li>
+					 <%--  <li class="clearfix"><span>Previous LCA Number</span><p>: ${immigration.prevLcaNumber}</p></li>
+					  <li class="clearfix"><span>Previous LCA Start Dates</span><p>: ${immigration.prevLcaStartDate}</p></li> --%>
 					  <li class="clearfix"><span>Experience</span><p>: ${not empty immigration.experienceYears ? immigration.experienceYears : '0'} years ${not empty immigration.experienceMonths ? immigration.experienceMonths : '0'} months </p></li>
 				  </ul>
 			  </div>	

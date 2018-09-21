@@ -802,7 +802,7 @@ public class ProjectMembersServiceImpl implements ProjectMembersService{
 						List<Expenses> expensesClaimendAmount = expensesReportService.getExpensesByProjectMemberIdAndExpenseStartAndEndDate(projectMember.getId(), null, null);
 						if (expensesClaimendAmount != null && !expensesClaimendAmount.isEmpty()) {
 							for (Expenses exp : expensesClaimendAmount) {
-								finalExpenseAmount = finalExpenseAmount + exp.getTotalAmount();
+								finalExpenseAmount = finalExpenseAmount + exp.getTotalAmount().floatValue();
 								projectMember.setUserExpensesClaimedAmount(finalExpenseAmount);
 							}
 						}

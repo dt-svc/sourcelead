@@ -20,7 +20,7 @@ import javax.persistence.Table;
 import com.fasterxml.jackson.annotation.JsonBackReference;
 
 @Entity
-@Table(name = "SOURCELEAD_TAX_CHALLAN_ITEM", catalog = "sourcelead")
+@Table(name = "SOURCELEAD_TAX_CHALLAN_ITEM")
 public class SourceleadTaxChallanItem implements Serializable {
 
 	/**

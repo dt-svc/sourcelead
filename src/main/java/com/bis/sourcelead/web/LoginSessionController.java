@@ -53,6 +53,7 @@ import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.entity.UserLoginLogoutSession;
 import com.bis.sourcelead.entity.UserRole;
 import com.bis.sourcelead.enums.Status;
+import com.bis.sourcelead.payroll.service.ConfigurePayrollApproverService;
 import com.bis.sourcelead.service.CandidateOffBoardingService;
 import com.bis.sourcelead.service.CandidateOnBoardingService;
 import com.bis.sourcelead.service.CandidateService;
@@ -179,6 +180,9 @@ public class LoginSessionController {
 	@Autowired
 	UserLoginLogoutSessionService userLoginLogoutSessionService;
 	
+	@Autowired
+	ConfigurePayrollApproverService configurePayrollApproverService;
+	
 	
 	protected static boolean isNullOrEmpty(String str) {
 		return (str == null || "".equals(str.trim()));
@@ -200,13 +204,11 @@ public class LoginSessionController {
 			return model;
 		}
 		SourceLeadSessionManager.setSessionAttribute(request, "googleMapsLocationApiKey", googleMapsLocationApiKey);
+		SourceLeadSessionManager.setSessionAttribute(request, "sessionId", request.getSession().getId());
 		User user = userService.findByUserName(authentication.getName());
 		UserRole userRole = null;
 		OrgLocations orgLocations = null;
-		if(orgLocationId != null){
-			orgLocations = orgLocationService.getOrgLocations(orgLocationId);
-			userRole = userRoleService.getUserDetailsByUserIdAndLocationId(orgLocations.getUser().getId(), orgLocationId);
-		}else{
+	
 			if(userRoleId == null){
 				userRoleId =  (Long) request.getSession().getAttribute("userRoleId");
 				if(userRoleId == null)
@@ -224,7 +226,7 @@ public class LoginSessionController {
 				user = userRole.getUser();
 				orgLocations = userRole.getOrgLocations();
 			}
-		}
+		
 		
 		Collection<Tabs> tabsList = null;
 		Integer associatesTabsCount = 0; 
@@ -305,6 +307,9 @@ public class LoginSessionController {
 				for(int i=0; i < weekOffDays.length; i++) {
 					weekOffDaysList.add(weekOffDays[i]);
 				}
+			}else {
+				weekOffDaysList.add("Sat");
+				weekOffDaysList.add("Sun");
 			}
 			SourceLeadSessionManager.setSessionAttribute(request, "weekOffDaysList", weekOffDaysList);
 			
@@ -340,6 +345,12 @@ public class LoginSessionController {
 				SourceLeadSessionManager.setSessionAttribute(request, "isSuperAdmin", Constants.NO);
 			}
 			
+			boolean isPayRollApprover = configurePayrollApproverService.isLoginUserIsPayRollApprover(userRole.getUser().getId(),orgLocations.getId());
+			if(isPayRollApprover == true){
+				SourceLeadSessionManager.setSessionAttribute(request, "isPayRollApprover", Constants.YES);
+			}else{
+				SourceLeadSessionManager.setSessionAttribute(request, "isPayRollApprover", Constants.NO);
+			}
 			
 			String[] modules = orgLocations.getModulesId().split(",");
 			for(int i = 0 ; i< modules.length ; i++){
@@ -364,38 +375,44 @@ public class LoginSessionController {
 			SecurityContextHolder.getContext().setAuthentication(new UsernamePasswordAuthenticationToken(userName,null, buildUserAuthority(actionsList)));
 			setLoginSession(request, authentication,user,userRole);
 			
-			if("ROLE_PRODUCTION_SUPPORT".equalsIgnoreCase(userRole.getRoles().getRoleName())){
-				List<OrgLocations> orgLocationsList = orgLocationService.getAllRegisteredOrgLocations();
-				if(orgLocationsList.size() > 1){
-					SourceLeadSessionManager.setSessionAttribute(request, "userSpocRolesList", orgLocationsList);
-					SourceLeadSessionManager.setSessionAttribute(request, "userSpocRolesListCount", orgLocationsList.size());
-					SourceLeadSessionManager.setSessionAttribute(request, "prodSupportLoginUserRole", userRole.getRoles().getRoleName());
-					SourceLeadSessionManager.setSessionAttribute(request, "prodSupportLoginUserDisplayName", userRole.getRoles().getDisplayName());
-					SourceLeadSessionManager.setSessionAttribute(request, "prodSupportLoginOrgName", userRole.getRoles().getOrgLocations().getOrgLocationName());
-					SourceLeadSessionManager.setSessionAttribute(request, "prodSupportOrgLocationId", userRole.getRoles().getOrgLocations().getId());
-				}
-			}else{
-				List<Long> accountUserList = new ArrayList<>();
-				List<Long> userIdsList = userService.getUserIdsListByLinkedUserId(userRole.getUser().getId());
-				if(userIdsList != null && !userIdsList.isEmpty()) {
-					for(Long userId : userIdsList) {
-						List<Long> linkedUserIdsList = userService.getUserIdsListByLinkedUserId(userId);
-						accountUserList.addAll(linkedUserIdsList);
-					}
-				}
-				userIdsList.addAll(accountUserList);
-				userIdsList.add(userRole.getUser().getId());
-				if(userRole.getUser().getLinkUserId() != null) {
-					userIdsList.add(userRole.getUser().getLinkUserId().getId());
-				}
-				
-				List<UserRole> userSpocRolesList = userRoleService.getUserAccountsListByUserId(userIdsList);
-				if(userSpocRolesList.size() > 1){
-					SourceLeadSessionManager.setSessionAttribute(request, "userSpocRolesList", userSpocRolesList);
-					SourceLeadSessionManager.setSessionAttribute(request, "userSpocRolesListCount", userSpocRolesList.size());
-					SourceLeadSessionManager.setSessionAttribute(request, "prodSupportLoginUserRole", null);
+
+			List<Long> accountUserList = new ArrayList<>();
+			List<Long> userIdsList = null;
+			Long productionLoginUserId =  (Long) SourceLeadSessionManager.getSessionAttribute(request, "productionLoginUserId");
+			if(productionLoginUserId != null){
+				userIdsList = userService.getUserIdsListByLinkedUserId(productionLoginUserId);
+			}else {
+				userIdsList = userService.getUserIdsListByLinkedUserId(userRole.getUser().getId());
+			}
+			
+			
+			if(userIdsList != null && !userIdsList.isEmpty()) {
+				for(Long userId : userIdsList) {
+					List<Long> linkedUserIdsList = userService.getUserIdsListByLinkedUserId(userId);
+					accountUserList.addAll(linkedUserIdsList);
 				}
 			}
+			userIdsList.addAll(accountUserList);
+			if(productionLoginUserId != null){
+				userIdsList.add(productionLoginUserId);
+				userIdsList.add(userRole.getUser().getId());
+			}else {
+				userIdsList.add(userRole.getUser().getId());
+			}
+			
+			if(userRole.getUser().getLinkUserId() != null) {
+				userIdsList.add(userRole.getUser().getLinkUserId().getId());
+			}
+			
+			List<UserRole> userSpocRolesList = userRoleService.getUserAccountsListByUserId(userIdsList);
+			if(userSpocRolesList.size() > 1){
+				SourceLeadSessionManager.setSessionAttribute(request, "userSpocRolesList", userSpocRolesList);
+				SourceLeadSessionManager.setSessionAttribute(request, "userSpocRolesListCount", userSpocRolesList.size());
+			}else {
+				SourceLeadSessionManager.setSessionAttribute(request, "userSpocRolesList", null);
+				SourceLeadSessionManager.setSessionAttribute(request, "userSpocRolesListCount", 0);
+			}
+			
 			
 			SourceLeadSessionManager.setSessionAttribute(request, "displayName", userRole.getRoles().getDisplayName());
 			SourceLeadSessionManager.setSessionAttribute(request, "userRoleId", userRole.getId());
@@ -514,10 +531,43 @@ public class LoginSessionController {
 			SourceLeadSessionManager.setSessionAttribute(request, "loginUserFirstName", user.getFirstName());
 			SourceLeadSessionManager.setSessionAttribute(request, "loginUserLastName", user.getLastName());
 			SourceLeadSessionManager.setSessionAttribute(request, "loginUserEmail", user.getEmail());
-			List<UserRole> userSpocRolesList = userRoleService.getUserSpocsListByUserId(user.getId());
+			
+			
+			List<Long> accountUserList = new ArrayList<>();
+			List<Long> userIdsList = null;
+			Long productionLoginUserId =  (Long) SourceLeadSessionManager.getSessionAttribute(request, "productionLoginUserId");
+			if(productionLoginUserId != null){
+				userIdsList = userService.getUserIdsListByLinkedUserId(productionLoginUserId);
+			}else {
+				userIdsList = userService.getUserIdsListByLinkedUserId(userRole.getUser().getId());
+			}
+			
+			
+			if(userIdsList != null && !userIdsList.isEmpty()) {
+				for(Long userId : userIdsList) {
+					List<Long> linkedUserIdsList = userService.getUserIdsListByLinkedUserId(userId);
+					accountUserList.addAll(linkedUserIdsList);
+				}
+			}
+			userIdsList.addAll(accountUserList);
+			if(productionLoginUserId != null){
+				userIdsList.add(productionLoginUserId);
+				userIdsList.add(userRole.getUser().getId());
+			}else {
+				userIdsList.add(userRole.getUser().getId());
+			}
+			
+			if(userRole.getUser().getLinkUserId() != null) {
+				userIdsList.add(userRole.getUser().getLinkUserId().getId());
+			}
+			
+			List<UserRole> userSpocRolesList = userRoleService.getUserAccountsListByUserId(userIdsList);
 			if(userSpocRolesList.size() > 1){
 				SourceLeadSessionManager.setSessionAttribute(request, "userSpocRolesList", userSpocRolesList);
 				SourceLeadSessionManager.setSessionAttribute(request, "userSpocRolesListCount", userSpocRolesList.size());
+			}else {
+				SourceLeadSessionManager.setSessionAttribute(request, "userSpocRolesList", null);
+				SourceLeadSessionManager.setSessionAttribute(request, "userSpocRolesListCount", 0);
 			}
 			
 			try {
@@ -925,7 +975,7 @@ public class LoginSessionController {
   
 
   @RequestMapping(value = "/app/ws/userEnrolledOrgLocations" , method = RequestMethod.POST)
-  public ModelAndView userEnrolledOrgLocations(@RequestParam(value = "userName", required = false) String userName,@RequestParam(value = "password", required = false) String password ,@RequestParam(value = "requirementUUID", required = false) String requirementUUID,HttpServletRequest request) throws Exception {
+  public ModelAndView userEnrolledOrgLocations(@RequestParam(value = "userName", required = false) String userName,@RequestParam(value = "requirementUUID", required = false) String requirementUUID,HttpServletRequest request) throws Exception {
 	  ModelAndView model = new ModelAndView();
 	  User user = userService.findByUserName(userName);
 
@@ -938,7 +988,6 @@ public class LoginSessionController {
 		boolean alreadyVerifiedBefore = userLoginLogoutSessionService.validatePreviouslyAuthenticatedByUserIdAndIpAddress(ipAddress,user.getId());
 		model.addObject("alreadyVerifiedBefore", alreadyVerifiedBefore);
 		model.addObject("username", userName);
-//		model.addObject("password", password);
 		model.addObject("sourceleadUrl", sourceleadUrl);
 		model.addObject("requirementUUID", requirementUUID);
 		model.addObject("roleList", userSpocRolesList);

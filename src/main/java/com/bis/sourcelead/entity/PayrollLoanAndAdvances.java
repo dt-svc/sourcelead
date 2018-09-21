@@ -70,7 +70,7 @@ public class PayrollLoanAndAdvances implements Serializable{
 	
 	@Column(name = "STATUS")
 	private Integer status;
-    
+	
     @ManyToOne(fetch = FetchType.LAZY)
    	@JoinColumn(name = "CREATED_BY")
   	private User createdBy;
@@ -86,7 +86,6 @@ public class PayrollLoanAndAdvances implements Serializable{
    	private Date updatedDate;
     
     
-
 	public Long getId() {
 		return id;
 	}
@@ -230,9 +229,5 @@ public class PayrollLoanAndAdvances implements Serializable{
 	public void setUpdatedDate(Date updatedDate) {
 		this.updatedDate = updatedDate;
 	}
-    
-    
-
-	
 
 }

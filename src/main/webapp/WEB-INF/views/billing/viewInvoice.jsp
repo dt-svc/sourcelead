@@ -115,11 +115,11 @@ $(document).ready(function(){
               </a>
             </li>
             
-            <!--  <li class="">
-              <a href="#invoiceTimeline" data-toggle="tab" title="Notes" aria-expanded="false" onclick="timelineHistoryFunction('', 'desc', null, null);">
+             <li class="">
+              <a href="#invoiceTimeline" data-toggle="tab" title="Notes" aria-expanded="false" onclick="timelineHistoryFunction('', 'desc', null, null, null);">
                 <h5>Timeline</h5>
               </a>
-            </li> -->           
+            </li>        
             
           </ul>
           <div class="tab-content"> 
@@ -149,35 +149,9 @@ $(document).ready(function(){
 					<div class="clearfix">
 						 <div class="headActions">
 							<ul class="clearfix">
-								<li><input type="button" value="Reset" id="clear_search"
-								onclick="restTimelineFileter();" class="btn btn-sm btn-primary" /></li>
-								<li><a href="javascript:void(0)"><i class="filtIcon" onclick="newActions();"></i></a>
-										<div class="" style="display: block;">
-											<span>
-												<div class="clearfix newSort mb">
-													<a class="active" id="descAnchor" onclick="sortTimelineHistory('desc')"><i class="fa fa-sort"></i> Top to Bottom</a>
-													<a id="ascAnchor" onclick="sortTimelineHistory('asc')"><i class="fa fa-sort"></i> Bottom to Top</a>
-												</div>
-												<div class="clearfix mb10">
-													<input type="text" id="timelineFromDate" class="form-control calendar mb10" placeholder="from date">
-													<input type="text" id="timelineToDate" class="form-control calendar mb10" placeholder="to date">
-													<button type="button" class="btn btn-primary btn-sm" onclick="timelineDateSubmit();"><i class="fa fa-search"></i></button>
-												</div>
-												<div class="clearfix">
-													<label class="col-md-6 paddingLeft mb5"><input name="timelineStatusCheck" onclick="checkTimelineStatus();" value="Accepted" type="checkbox"> Accepted</label>
-													<label class="col-md-6 paddingLeft mb5"><input name="timelineStatusCheck" onclick="checkTimelineStatus();" value="Rejected" type="checkbox"> Rejected</label>
-													<label class="col-md-6 paddingLeft mb5"><input name="timelineStatusCheck" onclick="checkTimelineStatus();" value="Sent" type="checkbox"> Sent</label>
-													<label class="col-md-6 paddingLeft mb5"><input name="timelineStatusCheck" onclick="checkTimelineStatus();" value="Received" type="checkbox"> Received</label>
-													<label class="col-md-6 paddingLeft mb5"><input name="timelineStatusCheck" onclick="checkTimelineStatus();" value="Updated" type="checkbox"> Updated</label>
-													<label class="col-md-6 paddingLeft mb5"><input name="timelineStatusCheck" onclick="checkTimelineStatus();" value="Linked" type="checkbox"> Linked</label>
-													<label class="col-md-6 paddingLeft mb5"><input name="timelineStatusCheck" onclick="checkTimelineStatus();" value="Paid" type="checkbox"> Paid</label>
-													<label class="col-md-6 paddingLeft mb5"><input name="timelineStatusCheck" onclick="checkTimelineStatus();" value="Reminder" type="checkbox"> Reminder</label>
-													<label class="col-md-6 paddingLeft mb5"><input name="timelineStatusCheck" onclick="checkTimelineStatus();" value="Deleted" type="checkbox"> Deleted</label>
-												</div>
-											</span>
-										</div>									
-								</li>							
-								<li><input class="innSeaFld" id="invoiceTimelineSearch" placeholder="Search" type="text"></li>	
+								<li><a href="javascript:void(0)" class="sortIcon" id="sortTimeline"></a></li>
+								<li><a href="javascript:void(0)"><i class="filtIcon" onclick="openPop();"></i></a></li>
+								<li><input class="innSeaFld" id="invoiceTimelineSearch" placeholder="Status/Reason" type="text"></li>	
 							</ul>
 						</div> 
 					</div>
@@ -191,6 +165,75 @@ $(document).ready(function(){
       </div>
     </div>
   </section>
+  
+  <div class="cand-advsrch-popup advancedsearch-popup filterDynamic-Search">
+				<h5 class="headerAdsrch">Filters
+					<a href="javascript:void(0)" class="close-div" onClick="closePop()"><i
+						class="fa fa-close"></i></a>
+				</h5>
+				<div class="addInner newOver">
+					<div class="row">
+							
+						<div class="col-md-7">
+						<div class="row">
+							 <div class="col-md-6 positionRelative mb">
+									<div class="clearfix dynamic_search filterDynamicsearch">
+										<input type="text" id="timelineStatusSearch" onkeyup="myManagersFunction()" placeholder="Timeline Status" title="Timeline Status">
+										<span class="cursorPointer" title="Search"><i class="fa fa-search"></i></span>
+									</div>
+									 <div class="clearfix filterSearch-ul">
+									<ul class="list-unstyled" id="timelineStatusFilter">
+										<li class="checkBox positionRelative"><label class="paddingLeft mb5"><input name="timelineStatusCheck" value="Created" type="checkbox"> Created</label></li>
+			                    	    <li class="checkBox positionRelative"><label class="paddingLeft mb5"><input name="timelineStatusCheck" value="Accepted" type="checkbox"> Accepted</label></li>
+										<li class="checkBox positionRelative"><label class="paddingLeft mb5"><input name="timelineStatusCheck" value="Rejected" type="checkbox"> Rejected</label></li>
+										<li class="checkBox positionRelative"><label class="paddingLeft mb5"><input name="timelineStatusCheck" value="Sent" type="checkbox"> Sent</label></li>
+			               				<li class="checkBox positionRelative"><label class="paddingLeft mb5"><input name="timelineStatusCheck" value="Received" type="checkbox"> Received</label></li>
+			               				<li class="checkBox positionRelative"><label class="paddingLeft mb5"><input name="timelineStatusCheck" value="Updated" type="checkbox"> Updated</label></li>
+			               				<li class="checkBox positionRelative"><label class="paddingLeft mb5"><input name="timelineStatusCheck" value="Linked" type="checkbox"> Linked</label></li>
+			               				<li class="checkBox positionRelative"><label class="paddingLeft mb5"><input name="timelineStatusCheck" value="Payment" type="checkbox"> Paid</label></li>
+			               				<li class="checkBox positionRelative"><label class="paddingLeft mb5"><input name="timelineStatusCheck" value="Reminder" type="checkbox"> Reminder</label></li>
+			               				<li class="checkBox positionRelative"><label class="paddingLeft mb5"><input name="timelineStatusCheck" value="Deleted" type="checkbox"> Deleted</label></li>
+			               				
+			                        </ul>
+									 </div> 
+							 </div> 
+						
+						<div class="col-md-6 positionRelative mb">
+							<div class="clearfix dynamic_search filterDynamicsearch">
+								<input type="text" id="timelineUsearsSearch" onkeyup="timelineUsearsFilter()" placeholder="Users" title="Users">
+								<span class="cursorPointer" title="Search"><i class="fa fa-search"></i></span>
+							</div>
+							 <div class="clearfix filterSearch-ul">
+									<ul class="list-unstyled" id="userNameDiv">
+			                        </ul>
+							 </div> 
+						</div>
+
+						
+						</div>
+						
+						</div>
+						
+						<div class="col-md-3">
+						<div class="col-md-12 mb">
+							<label class="mb"><strong>Custom Date</strong></label>
+							 <div class="clearfix"><input type="text" id="timelineFromDate" class="form-control calendar mb10" placeholder="from date"></div>
+							  <div class="clearfix"><input type="text" id="timelineToDate" class="form-control calendar mb10" placeholder="to date"></div>
+							 </div> 
+						</div>						
+						
+						
+					</div>
+					</div>
+					<div class="clearfix advancedsearch-footer">
+						<div class="pull-right mr">
+							<input type="button" value="Apply" id="search_requiremet"
+								onclick="closePop();submitFilterActions();" class="btn btn-sm btn-success" />
+							<input type="button" value="Reset" id="clear_search"
+								onclick="restTimelineFileter();" class="btn btn-sm btn-primary" />
+						</div>
+					</div>
+				</div>
 <div class="modal-backdrop" style="display: none"></div>
 <div id="recvPymntpopOnline" class="modal" style="display: none;">
     
@@ -249,6 +292,8 @@ $(document).ready(function(){
         </div>                                                                                                        
     </div>
 </div>
+
+
 <script>
 var finalDateFormatEduUpdate = '';
 if(locationDate.match("yyyy-MM-dd")){
@@ -289,123 +334,105 @@ function initPaymentOnline(invoiceId, dueAmount) {
     $('.modal-backdrop').fadeIn(200).addClass('in');
 }
 
-function timelineDateSubmit(){
-	var fromDate = $("#timelineFromDate").val();
-	var toDate = $("#timelineToDate").val();
-	var dateRange = []; 
-	dateRange[0] = fromDate;
-	dateRange[1] = toDate;
-	timelineHistoryFunction('','desc',dateRange, null);
-}
-
 $("#invoiceTimelineSearch").keypress(function(e) {
     if(e.which == 13) {
-    	timelineHistoryFunction($("#invoiceTimelineSearch").val(),'desc',null, null);
+    	timelineHistoryFunction($("#invoiceTimelineSearch").val(),'desc',null, null, null);
     }
 });
-function checkTimelineStatus(){
+var locationDate ='${SourceLeadWeb_orgLocations.dateFormat}'; 
+var finalDateFormatPetitionSave = getJSDateFormat(locationDate);
+
+
+$(document).ready(function(){
+	    $("#timelineFromDate").datepicker({
+	        numberOfMonths: 1,
+	        dateFormat: finalDateFormatPetitionSave,
+	        onSelect: function(selected) {
+	          $("#timelineToDate").datepicker("option","minDate", selected)
+	        }
+	    });
+	    $("#timelineToDate").datepicker({
+	        numberOfMonths: 1,
+	        dateFormat: finalDateFormatPetitionSave,
+	        onSelect: function(selected) {
+	           $("#timelineFromDate").datepicker("option","maxDate", selected)
+	        }
+	    }); 
+});
+ 
+
+
+
+function restTimelineFileter(){
+	//$('#timelineFromDate, #timelineToDate').val("");
+	$.datepicker._clearDate('#timelineFromDate');
+	$.datepicker._clearDate('#timelineToDate');
+	$('input[name="timelineStatusCheck"]:checkbox').attr('checked',false);
+	timelineHistoryFunction('', 'desc', null, null,null);
+	$('input[name="userNameCheck"]:checkbox').attr('checked',false);
+}
+
+function submitFilterActions(){
 	var checkedStatus = [];
 	$('input[name="timelineStatusCheck"]:checked').each(function() {
 		   checkedStatus.push(this.value);
 	});
-	timelineHistoryFunction("","desc",null, checkedStatus);
-}
-var locationDate ='${SourceLeadWeb_orgLocations.dateFormat}'; 
-var finalDateFormatPetitionSave = getJSDateFormat(locationDate);
-
-$(function() {
-	$('#timelineFromDate').datetimepicker({
-		//dateFormat: finalDateFormatPetitionSave,
-		//inline: true, sideBySide: true,
-		//minDate: new Date()
-		 maxDate: moment()
-	});/* .val('').on('dp.change', function (e) {
-		startDateTime = e.date;
-	}); */
-	 
-	$('#timelineToDate').datetimepicker({
-		//dateFormat: finalDateFormatPetitionSave,
-		//minDate: new Date()
-	//	 maxDate: moment()
-	});/* .val('').on('dp.change', function (e) {
-		endDateTime = e.date;
-	}); */
-}); 
-
-function restTimelineFileter(){
-	$('#timelineFromDate, #timelineToDate').val("");
-	$('input[name="timelineStatusCheck"]:checkbox').attr('checked',false);
-	timelineHistoryFunction('', 'desc', null, null);
-	$("#ascAnchor").removeClass("active");
-	$("#descAnchor").addClass("active");
+	var fromDate = $("#timelineFromDate").val();
+	var toDate = $("#timelineToDate").val();
+	var dateRange = []; 
+	dateRange[0] = fromDate;	
+	dateRange[1] = toDate;
+	var checkedNames = [];
+	$('input[name="userNameCheck"]:checked').each(function() {
+		checkedNames.push(this.value);
+	});
+	timelineHistoryFunction("",'desc',dateRange, checkedStatus,checkedNames);
 }
 
-/* $('#timelineFromDate, #timelineToDate').datepicker({
-    dateFormat: finalDateFormatPetitionSave,
-    changeMonth: true,
-	changeYear: true 
-	//maxDate:0  
-    
-}); */
-
-function sortTimelineHistory(order){
-	if(order == 'desc'){
-		$("#ascAnchor").removeClass("active");
-		$("#descAnchor").addClass("active");
-	}else if(order == 'asc'){
-		$("#descAnchor").removeClass("active");
-		$("#ascAnchor").addClass("active");
-	}
-	timelineHistoryFunction("", order,null, null);	
-}
-
-
-function timelineHistoryFunction(searchVal, order,dateRange,checkedStatus){
+function timelineHistoryFunction(searchVal, order,dateRange,checkedStatus,namesStatus){
 	var invoiceUUID ='${invoiceUUID}';
 	var locationId = '${SourceLeadWeb_orgLocationId}';
 	console.log(dateRange);
 	$.ajax({
 	  	type: "GET",
-	    url: sourceleadUrl+"/getInvoiceTimelineHistory?"+tokenParamName+"="+tokenValue+"&locationId="+locationId+"&invoiceUUID="+invoiceUUID+"&searchVal="+searchVal+"&orderVal="+order+"&dateRange="+dateRange+"&checkedStatus="+checkedStatus,
+	    url: sourceleadUrl+"/getInvoiceTimelineHistory?"+tokenParamName+"="+tokenValue+"&locationId="+locationId+"&invoiceUUID="+invoiceUUID+"&searchVal="+searchVal+"&orderVal="+order+"&dateRange="+dateRange+"&checkedStatus="+checkedStatus+"&namesStatus="+namesStatus,
 	    success: function(json) {
 			var resultDiv = "";
 			$("#dynamicTimelineHistoryAppend").empty();
 			if(json.length != 0){
+				var ownerNames = [];
 				$("#dynamicTimelineHistoryAppend").empty();
 				for(var i = 0;i<json.length;i++){
 					var dayVal = json[i].dateValue;
 					for(var j = i; j<json.length; j++,i++){
-						var statusClass = (json[i].status == 'Draft' ? 'textWarning' : json[i].status == 'Sent' ? 'text-primary' : json[i].status == 'Received' ? 'textWarning' : json[i].status == 'Updated' ? 'text-primary' : json[i].status == 'Accepted' ? 'textSuccess' : json[i].status == 'Rejected' ? 'colorRed' : '');
+						var statusClass = (json[i].status == 'Draft' ? 'creatcolor' : json[i].status == 'Sent' ? 'sentcolor' : json[i].status == 'Received' ? 'creatcolor' : json[i].status == 'Updated' ? 'updacolor' : json[i].status == 'Accepted' ? 'sentcolor' : json[i].status == 'Rejected' ? 'colorRed' : json[i].status == 'Created' ? 'updacolor' : json[i].status == 'Reminder' ? 'sentcolor' : json[i].status == 'Payment updated' ? 'updacolor' : '');
 						if(j==0){
-							resultDiv = resultDiv + '<ul><div class="timeLiDate">'+json[i].dateValue+'</div>';
+							resultDiv = resultDiv + '<ul id="ulId"><div class="timeLiDate">'+json[i].dateValue+'</div>';
 						}
 						if(dayVal != json[j].dateValue){
 							resultDiv = resultDiv + '</ul>';
-							resultDiv = resultDiv + '<ul><div class="timeLiDate">'+json[i].dateValue+'</div>';
+							resultDiv = resultDiv + '<ul id="ulId"><div class="timeLiDate">'+json[i].dateValue+'</div>';
 							dayVal = json[j].dateValue;
 						}
 				    	resultDiv = resultDiv + '<li>';
 				    	resultDiv = resultDiv + '<div class="pull-left timeLiHead">';
 				    	if(json[j].invoiceUUID != null){
-				    		resultDiv = resultDiv + '<span class="'+statusClass+'">'+json[j].status+' <a href="<c:url value="/app/viewInvoice?invoiceUUID='+json[j].invoiceUUID+'&invoiceType=Receivable"/>" title="'+json[j].invoiceId+'"> '+json[j].invoiceId+'</a> by '+'</span><span>'+json[j].ownerName+'</span>';
+				    		resultDiv = resultDiv + '<span class="'+statusClass+'">'+json[j].status+' <a href="<c:url value="/app/viewInvoice?invoiceUUID='+json[j].invoiceUUID+'&invoiceType=Receivable"/>" title="'+json[j].invoiceId+'"> '+json[j].invoiceId+'</a> by '+'</span><span>'+json[j].statusValue+'</span>';
 				    	}else if(json[j].status == "Deleted"){
-				    		resultDiv = resultDiv + '<span class="'+statusClass+'">'+json[j].status+'</span><span>'+json[j].statusValue+'</span>';
-				    		resultDiv = resultDiv + '<p> Reason :'+json[j].reason+'</p>';
+				    		resultDiv = resultDiv + '<span class="'+statusClass+'">'+json[j].status+'</span><span>'+json[j].statusBy+'</span><span>'+json[j].statusValue+'</span>';
+				    		resultDiv = resultDiv + '<p class="timRes"> Reason :'+json[j].reason+'</p>';
 				    	}else if(json[j].status == "Rejected"){
-				    		resultDiv = resultDiv + '<span class="'+statusClass+'">'+json[j].status+'</span><span>'+json[j].statusValue+'</span>';
-				    		resultDiv = resultDiv + '<p> Reason : '+json[j].reason+'</p>';
+				    		resultDiv = resultDiv + '<span class="'+statusClass+'">'+json[j].status+'</span><span>'+json[j].statusBy+'</span><span>'+json[j].statusValue+'</span>';
+				    		resultDiv = resultDiv + '<p class="timRes"> Reason : '+json[j].reason+'</p>';
 				    	}else{
-				    		resultDiv = resultDiv + '<span class="'+statusClass+'">'+json[j].status+'</span><span>'+json[j].statusValue+'</span>';
+				    		resultDiv = resultDiv + '<span class="'+statusClass+'">'+json[j].status+'</span><span>'+json[j].statusBy+'</span><span>'+json[j].statusValue+'</span>';
 				    	}
 				    	resultDiv = resultDiv + '</div>';
 				    	resultDiv = resultDiv + '<div class="timeLeft">'+json[j].timeValue+'</div>';
-				    	alert(json[j].invoicePaymentReminderStatus);
-				    	if(json[j].invoicePaymentReminderStatus != null || json[j].status == 'Sent'){
-				    		alert("inside arrow");
+				    	if(json[j].invoicePaymentReminderStatus != null || json[j].status == 'Sent' || json[j].status == 'Received'){
 				    		resultDiv = resultDiv + '<div class="timeLibtn pull-right clearfix" id="timeLineBtn">';
-				    		if(json[j].invoicePaymentReminderStatus == "Paid" || json[j].invoicePaymentReminderStatus == "Reminder"){
+				    		if(json[j].invoicePaymentReminderStatus == "Paid" || json[j].invoicePaymentReminderStatus == "Reminder" || json[j].invoicePaymentReminderStatus == "Partial Paid"){
 				    			if(json[j].emailAttachment != null){
-				    				alert("inside attachment");
 				    				resultDiv = resultDiv + '<i class="attaIcon pull-left"></i>';		
 				    			}
 				    		}
@@ -413,6 +440,24 @@ function timelineHistoryFunction(searchVal, order,dateRange,checkedStatus){
 				    		resultDiv = resultDiv + '</div>';
 				    		resultDiv = resultDiv + '<div class="clearfix"></div>';
 				    		if(json[j].invoicePaymentReminderStatus == "Paid"){
+				    			resultDiv = resultDiv + '<div class="timelineInn">';
+				    			resultDiv = resultDiv + '<div class="mesText">';
+				    			resultDiv = resultDiv + '<p>Payment Reference Number : '+json[j].paymentReferenceNum+'</p>';
+				    			resultDiv = resultDiv + '<p>Payment On : '+json[j].paymentDate+'</p>';
+				    			resultDiv = resultDiv + '<p>Payment Method : '+json[j].paymentMethod+'</p>';
+				    			resultDiv = resultDiv + '<p>Payment Amount : '+json[j].paymentCurrency+' '+json[j].paymentAmount+'</p>';
+				    			resultDiv = resultDiv + '<p>Payment Memo : '+(json[j].paymentComment != null ? json[j].paymentComment : "---")+'</p>';
+				    			resultDiv = resultDiv + '</div>';
+				    			if(json[j].emailAttachment != null){
+					    			resultDiv = resultDiv + '<div class="attaWrap">';
+					    			resultDiv = resultDiv + '<h2>Attachment</h2>';
+					    			resultDiv = resultDiv + '<p class="pull-left" title="'+json[j].emailAttachment.name+'">'+json[j].emailAttachment.name+'</p>';
+					    			resultDiv = resultDiv + "<span class='pull-right'> <i class=''><a class='glyphicon glyphicon-save' href=\'"+json[j].emailAttachment.fileUrl+"\' title='download' download></a><a class='fa fa-eye ml10' onClick='viewFile(\""+json[j].emailAttachment.fileUrl+"\",\""+json[j].emailAttachment.name+"\",\""+json[j].emailAttachment.content+"\");'title='preview'></a></i>";
+					    			resultDiv = resultDiv + '</div>';
+				    			}
+				    			resultDiv = resultDiv + '</div>';
+				    		}
+				    		if(json[j].invoicePaymentReminderStatus == "Partial Paid"){
 				    			resultDiv = resultDiv + '<div class="timelineInn">';
 				    			resultDiv = resultDiv + '<div class="mesText">';
 				    			resultDiv = resultDiv + '<p>Payment Reference Number : '+json[j].paymentReferenceNum+'</p>';
@@ -457,18 +502,44 @@ function timelineHistoryFunction(searchVal, order,dateRange,checkedStatus){
 				    			resultDiv = resultDiv + '</div>';
 				    			resultDiv = resultDiv + '</div>';
 				    		}
+				    		if(json[j].status == "Received"){
+				    			resultDiv = resultDiv + '<div class="timelineInn">';
+				    			resultDiv = resultDiv + '<div class="mesText">';
+				    			resultDiv = resultDiv + '<p> To : '+json[j].invoiceReminderEmailTo+'</p>';
+				    			resultDiv = resultDiv + '<p> From : '+json[j].invoiceReminderEmailFrom+'</p>';
+				    			resultDiv = resultDiv + '<p> Subject : '+json[j].invoiceReminderEmailSubject+'</p>';
+				    			resultDiv = resultDiv + '<p>'+json[j].invoiceReminderEmailBody+'</p>';
+				    			resultDiv = resultDiv + '</div>';
+				    			resultDiv = resultDiv + '</div>';
+				    		}
 				    	}
 				    	resultDiv = resultDiv + '<div class="clearfix"></div>';
 				    	resultDiv = resultDiv + '</div>';
 						resultDiv = resultDiv + '</li>';
+						/* if(json[j].ownerName != null){
+							json[j].statusValue = json[j].ownerName;
+						} */
+						ownerNames.push(json[j].statusValue);
 					}
 				}
 				resultDiv = resultDiv + '</ul>';
-				$("#dynamicTimelineHistoryAppend").append(resultDiv);	
+				$("#dynamicTimelineHistoryAppend").append(resultDiv);
+				var uniqueNames = [];
+				var userNameValue = "";
+				if(searchVal=='' && order=='desc' && dateRange == null && checkedStatus == null && namesStatus == null){
+					$.each(ownerNames, function(i, el){
+					    if($.inArray(el, uniqueNames) === -1){
+					    	 uniqueNames.push(el);
+					    	 userNameValue = userNameValue + '<li class="checkBox positionRelative"><input name="userNameCheck" value="'+el+'" type="checkbox">'+el+'</label></li>';
+					    }
+					});
+					$("#userNameDiv").empty().append(userNameValue);
+				}
 			}
 	      }
 	});
 }
+
 
 function removeMask(){
 	 $("#customeAmountOnline").removeAttr("readonly");
@@ -583,7 +654,9 @@ function getViewInvoice(){
 	        		
 					result = result +'<div class="invoiceview_area clearfix">';
 					result = result +'<div class="form-horizontal row">';
-					result = result +'<div class="col-md-6"> ';
+					result = result +'<div class="col-md-4"> ';
+					result = result +'<div class="col-md-12"> ';
+					result = result +'<div class="row"> ';
 					if(invoiceType == "Receivable"){
 						result = result +' <label class="col-md-4 control-label">Client :</label>';
 					}
@@ -607,49 +680,56 @@ function getViewInvoice(){
 					'</sec:authorize>';
 					
 					result = result +'</div>                                                               ';
+					result = result +'</div>';
 					result = result +'</div>                                                                 ';
 					
 					if(report.invoiceStatus == "Rejected"){
-					result = result +'            <div class="col-md-6">                                                 ';
-					result = result +'              <label class="col-md-4 control-label">Invoice Status :</label>        ';
+					result = result +'            <div class="col-md-12">';
+					result = result +'            <div class="row">';
+					result = result +'              <label class="col-md-4 control-label paddig">Invoice Status :</label>        ';
 					result = result +'              <div class="col-md-8 addressInvoice">                                ';
 					result = result +'                <p>'+report.invoiceStatus+'</p>';
 					result = result +'              </div>';
+					result = result +'              </div>';
 					result = result +'            </div>';
 					}
-					result = result +'<div class="col-md-6">                                                 ';
-					result = result +'<label class="col-md-4 control-label">Contact Name :</label>         ';
+					result = result +'<div class="col-md-12">                                                 ';
+					result = result +'            <div class="row">';
+					result = result +'<label class="col-md-4 control-label">Contact :</label>         ';
 					result = result +'<div class="col-md-8">                                               ';
 					result = result +'<label>'+report.clientContactName+'</label>';
 					result = result +'              </div>                                                               ';
-					result = result +'            </div>                                                                 ';
-					result = result +'            <div class="col-md-6">                                                 ';
+					result = result +'            </div>';
+					result = result +'            </div>';
+					result = result +'            </div>';
+					/* result = result +'            <div class="col-md-6">                                                 ';
 					result = result +'              <label class="col-md-4 control-label">Contact Email :</label>           ';
 					result = result +'              <div class="col-md-8">                                               ';
 					result = result +'                <label>'+clientContactEmail+'</label>                         ';
 					result = result +'              </div>                                                               ';
-					result = result +'            </div>                                                                 ';
+					result = result +'            </div>                                                                 '; */
+					result = result +'            <div class="col-md-4">';
 					if(invoiceType == "Payables"){
-						result = result +'            <div class="col-md-6">                                                 ';
+						result = result +'            <div class="row">';
 						result = result +'              <label class="col-md-4 control-label">Bill Id :</label>             ';
 						result = result +'              <div class="col-md-8">                                               ';
 						result = result +'                <label>'+report.invoiceId+'</label>                                          ';
 						result = result +'              </div>                                                               ';
 						result = result +'            </div>                                                                 ';
-						result = result +'            <div class="col-md-6">                                                 ';
+						result = result +'            <div class="row">                                                 ';
 						result = result +'              <label class="col-md-4 control-label">Bill Date :</label>           ';
 						result = result +'              <div class="col-md-8">                                               ';
 						result = result +'                <label>'+invoiceDateStr+'</label>                                          ';
 						result = result +'              </div>                                                               ';
 						result = result +'            </div>                                                                 ';
 					}else{
-						result = result +'            <div class="col-md-6">                                                 ';
+						result = result +'            <div class="row">                                                 ';
 						result = result +'              <label class="col-md-4 control-label">Invoice Id :</label>             ';
 						result = result +'              <div class="col-md-8">                                               ';
 						result = result +'                <label>'+report.invoiceId+'</label>                                          ';
 						result = result +'              </div>                                                               ';
 						result = result +'            </div>                                                                 ';
-						result = result +'            <div class="col-md-6">                                                 ';
+						result = result +'            <div class="row">                                                 ';
 						result = result +'              <label class="col-md-4 control-label">Invoice Date :</label>           ';
 						result = result +'              <div class="col-md-8">                                               ';
 						result = result +'                <label>'+invoiceDateStr+'</label>                                          ';
@@ -657,38 +737,43 @@ function getViewInvoice(){
 						result = result +'            </div>                                                                 ';
 					}
 					
-					result = result +'            <div class="col-md-6">                                                 ';
+					result = result +'            <div class="row">                                                 ';
 					result = result +'              <label class="col-md-4 control-label">Payment Term :</label>           ';
 					result = result +'              <div class="col-md-8">                                               ';
 					result = result +'                <label>'+paymentFrequency+'</label>                                             ';
 					result = result +'              </div>                                                               ';
-					result = result +'            </div>                                                                 ';
-					result = result +'            <div class="col-md-6">                                                 ';
-					result = result +'              <label class="col-md-4 control-label">Due Date :</label>               ';
-					result = result +'              <div class="col-md-8">                                               ';
+					result = result +'            </div>';
+					
+					result = result +'            </div>';
+					
+					result = result +'            <div class="col-md-4">';
+					
+					result = result +'            <div class="row">';
+					result = result +'              <label class="col-md-5 control-label">Due Date :</label>               ';
+					result = result +'              <div class="col-md-7">                                               ';
 					result = result +'                <label>'+dueDateStr+'</label>                                          ';
 					result = result +'              </div>                                                               ';
 					result = result +'            </div>                                                                 ';
                                         if(report.invoiceCategory != "expenses" || invoiceType == "Payables"){
-                                            result = result +'            <div class="col-md-6">                                                 ';
-                                            result = result +'              <label class="col-md-4 control-label">Due Amount :</label>               ';
-                                            result = result +'              <div class="col-md-8">';
+                                            result = result +'            <div class="row">                                                 ';
+                                            result = result +'              <label class="col-md-5 control-label">Due Amount :</label>               ';
+                                            result = result +'              <div class="col-md-7">';
                                             result = result +'                <label>'+( typeof dueAmount === 'number' ? dueAmount.toFixed(2) : dueAmount)+'</label>';
                                             result = result +'                <label>'+(report.invoiceStatus == "Accepted" && report.paymentAccountDTO != null && typeof dueAmount === 'number' && report.paymentAccountDTO.accountType == "WEPAY" && invoiceType === "Payables" ? "<span class='receiveBtn pull-left' onclick='initPaymentOnline(\""+invoiceUUID+"\", "+dueAmount+");'>Pay</span>" : "")+'</label>';
                                             result = result +'              </div>                                                               ';
                                             result = result +'            </div>';
                                         }
 					if(invoiceType == "Payables"){
-						result = result +'            <div class="col-md-6">                                                 ';
-						result = result +'              <label class="col-md-4 control-label">Billing Address :</label>        ';
-						result = result +'              <div class="col-md-8 addressInvoice">                                ';
+						result = result +'            <div class="row">                                                 ';
+						result = result +'              <label class="col-md-5 control-label">Billing Address :</label>        ';
+						result = result +'              <div class="col-md-7 addressInvoice">                                ';
 						result = result +'                <p>'+billingAddress+'</p>';
 						result = result +'              </div>';
 						result = result +'            </div>';
 					}else{
-						result = result +'            <div class="col-md-6">';
-						result = result +'              <label class="col-md-4 control-label">Invoice Address :</label>        ';
-						result = result +'              <div class="col-md-8 addressInvoice">                                ';
+						result = result +'            <div class="row">';
+						result = result +'              <label class="col-md-5 control-label">Invoice Address :</label>        ';
+						result = result +'              <div class="col-md-7 addressInvoice">                                ';
 						result = result +'                <p>'+billingAddress+'</p>';
 						result = result +'              </div>';
 						result = result +'            </div>';
@@ -698,7 +783,7 @@ function getViewInvoice(){
 					
 					
 					
-					
+					result = result +'          </div>';
 					result = result +'          </div>';
 					result = result +'      </div>';
 					
@@ -1343,6 +1428,7 @@ function paymentHistroy(){
 					if(report.fileURL != null && report.fileURL != '' && report.fileURL != 'undefined'){
 // 					result = result +" <span class='pull-right'> <i class=''><a class='glyphicon glyphicon-save' href=\""+sourceleadUrl+"/downloadInvoicePaymentDocument?paymentHistoryId="+report.id+"\"></a></i>";
 					result = result+' <a download class="glyphicon glyphicon-download-alt" href="'+report.fileURL+'" title="Download"></a>';
+					result = result+' <a class="fa fa-eye" href="javascript:void(0)" onClick="viewFile(\''+report.fileURL+'\',\''+report.fileName+'\',\''+report.fileContentType+'\');"title="preview"></a>';		           						          
 					}else{
 						result = result +" --";	
 					}
@@ -1651,18 +1737,81 @@ function showDeleteStatusPopup(status) {
 
 <script>
 function newActions(){
-	$(".newActPop").slideToggle(100);
+	$(".newActFilter").slideToggle(100);
 }
 $("html").click(function(){
-	$(".newActPop").slideUp(100);
+	$(".newActFilter").slideUp(100);
 });
-$(".filtIcon, .newActPop").click(function(e){
+$(".filtIcon, .newActFilter").click(function(e){
  	e.stopPropagation();
 });	
 </script>
 
+<script>
+	// Close Advanced Search
+		function closePop(){
+			$("div.cand-advsrch-popup").hide();
+			$(".mask").fadeOut();
+		}
+		function openPop(){
+			$("div.cand-advsrch-popup").toggle();
+			 $(".mask").fadeIn();
+		}
+		
+		function closeAdsrch(){
+			$("div.cand-advsrch-popup").fadeOut();
+			$(".mask").fadeOut();
+		}
+		
+		function myManagersFunction() {
+		    var input, filter, ul, li, a, i;
+		    input = document.getElementById("timelineStatusSearch");
+		    filter = input.value.toUpperCase();
+		    ul = document.getElementById("timelineStatusFilter");
+		    li = ul.getElementsByTagName("li");
+		    for (i = 0; i < li.length; i++) {
+		        a = li[i].getElementsByTagName("label")[0];
+		        if (a.innerHTML.toUpperCase().indexOf(filter) > -1) {
+		            li[i].style.display = "";
+		        } else {
+		            li[i].style.display = "none";
 
+		        }
+		    }
+		}
+		function timelineUsearsFilter() {
+		    var input, filter, ul, li, a, i;
+		    input = document.getElementById("timelineUsearsSearch");
+		    filter = input.value.toUpperCase();
+		    ul = document.getElementById("userNameDiv");
+		    li = ul.getElementsByTagName("li");
+		    for (i = 0; i < li.length; i++) {
+		        a = li[i].getElementsByTagName("label")[0];
+		        if (a.innerHTML.toUpperCase().indexOf(filter) > -1) {
+		            li[i].style.display = "";
+		        } else {
+		            li[i].style.display = "none";
 
+		        }
+		    }
+		}
+		
+	</script>
+
+<script>
+function ascFunctionCall(){
+	timelineHistoryFunction('', 'asc', null, null, null);
+}
+
+function descFunctionCall(){
+	timelineHistoryFunction('', 'desc', null, null, null);
+}
+
+$('#sortTimeline').click(function(){
+	  $(this).toggleClass('sortUp');
+	  return $(this).hasClass('sortUp') ? ascFunctionCall() : descFunctionCall();
+});
+</script>
 
 
 <jsp:include page="../masterFooter.jsp" />	

@@ -38,7 +38,7 @@
 				   <td><div class="tblminwidth-50" title="${loanAdv.loanAdvanceType}">${loanAdv.loanAdvanceType}</div></td>
 				   <td><div class="tblminwidth-50" title="${loanAdv.payrollLoanAndAdvanceId.name}">${loanAdv.payrollLoanAndAdvanceId.name}</div></td>
 				   <td><div class="tblminwidth-50" title="${loanAdv.loanAndAdvanceStatus}">${loanAdv.loanAndAdvanceStatus}</div></td>
-				   <td><div class="tblminwidth-50" title="${loanAdv.amount}">${loanAdv.amount}</div></td>
+				   <td><div class="tblminwidth-50" title="${loanAdv.amount}">${SourceLeadWeb_orgLocations.country == 'United States' ? '$' : ''}   ${loanAdv.amount}</div></td>
 				   <td><div class="tblminwidth-50" title="${loanAdv.scheduler}">${loanAdv.scheduler}</div></td>
 				   <td><div class="tblminwidth-30" title="${loanAdv.noOfSchedules}">${loanAdv.noOfSchedules}</div></td>
 				   <td><div class="tblminwidth-50" title="${loanAdv.effectiveDateStr}">${loanAdv.effectiveDateStr}</div></td>
@@ -90,7 +90,7 @@
                     <select class="form-control" data-placeholder="Select Type" id="loanAndAdvType" onchange="loanAdv.getLoanAndAdvNames();loanAdv.getDetuctAmountDetails();" name="loanAndAdvType" data-validation="required" field-name="Type">
                       <option value="">-- Select Type --</option>
                       <option value="Loan">Loan</option>
-                      <option value="Amount">Amount</option>
+                      <option value="Advance">Advance</option>
                     </select>
                   </div>
               </div>

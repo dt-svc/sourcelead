@@ -255,7 +255,7 @@ function getSelectedDateFromCalendar(selectedDate) {
 						 
 						  if(report.interviewerUUID != null  &&  report.interviewerUUID !='' && report.interviewerUUID !='undefined' && report.interviewTemplateUUId != null && report.interviewTemplateUUId != '' && report.interviewTemplateUUId != 'undefined'){
 	                    	  result = result+'	 <a  href="'+sourceleadUrl+'/'+'dashboardInterviewFeedBackTemplate?templateId='+report.interviewTemplateUUId+'&requirementInterviewid='+report.interviewerUUID+'" >';
-							  if(report.feedbackDate != null && report.feedbackDate != '' && report.feedbackDate != 'undefined'){
+	                    	  if(report.feedbackDate != null && report.feedbackDate != '' && report.feedbackDate != 'undefined'){
 	                        	   result = result+'<i class="fa fa-handshake-o success_color"></i>';
 							  }else{
 								  result = result+'<i class="fa fa-handshake-o"></i>';
@@ -1031,7 +1031,6 @@ function cancelAddInterviewDiv(){
         e.preventDefault();
         var frm = $('#addInterview_form').serializeFormJSON();
         var con = JSON.stringify(frm);
-        con = con.replace(/[{}]/g, "");
         var jsonData = encodeURIComponent(con);
         var sourceleadUrl ='${sourceleadUrl}';
         var requirementId = '${requirementId}';

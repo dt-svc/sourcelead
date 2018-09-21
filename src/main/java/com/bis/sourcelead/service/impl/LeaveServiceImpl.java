@@ -290,7 +290,10 @@ public class LeaveServiceImpl implements LeaveService{
 			leave.setFileName(fileinfo.getFileName());
 			leave.setFileContentType(fileinfo.getContentType());
 			leave.setFileUrl(fileinfo.getFileURL());
-			FileUploadUtil.moveFile(leaveDTO.getStaticPath(), fileinfo, "leaveDocuments");
+			try {
+				FileUploadUtil.moveFile(leaveDTO.getStaticPath(), fileinfo, "leaveDocuments");
+			} catch (Exception e) {
+			}
 		}
 		
 		UserRole urole = userRoleService.getUserRoleByUserIdAndLocationId(leave.getUser().getId(), orgLocations.getId());
@@ -298,6 +301,7 @@ public class LeaveServiceImpl implements LeaveService{
 			if("Grade".equalsIgnoreCase(leaveType.getAutoApproveType())){
 				if(urole.getGradeId() != null){
 					if(leaveType.getAutoApproveTypeListNames().contains(urole.getGradeId().getGradeName())){
+						leave.setApproverHierarchyList(getApproverList(leaveDTO,leave,user));
 						leave.setStatus(Constants.LEAVE_APPROVED);
 					}else{
 						leave.setApproverHierarchyList(getApproverList(leaveDTO,leave,user));
@@ -309,12 +313,14 @@ public class LeaveServiceImpl implements LeaveService{
 				}
 			}else if("Role".equalsIgnoreCase(leaveType.getAutoApproveType())){
 				if(leaveType.getAutoApproveTypeListNames().contains(urole.getRoles().getRoleName())){
+					leave.setApproverHierarchyList(getApproverList(leaveDTO,leave,user));
 					leave.setStatus(Constants.LEAVE_APPROVED);
 				}else{
 					leave.setApproverHierarchyList(getApproverList(leaveDTO,leave,user));
 					leave.setStatus(Constants.LEAVE_PENDING);
 				}
 			}else {
+				leave.setApproverHierarchyList(getApproverList(leaveDTO,leave,user));
 				leave.setStatus(Constants.LEAVE_APPROVED);
 			}
 		}else if(leaveDTO.getIsSuperUser()){
@@ -873,18 +879,20 @@ public class LeaveServiceImpl implements LeaveService{
 //					if("Mothly".equalsIgnoreCase(userLeave.getLeaveType().getPeriod()) && Constants.YES.equalsIgnoreCase(userLeave.getLeaveType().getLeavesCarryforward())){
 						MonthlyLeaves monthlyLeaves = getMonthlyLeavesByLeaveId(userLeave.getId());
 //						float monthlyTotalLeaves = difInMonths * monthlyAllowedLeaves;
-						janLeaves += monthlyLeaves.getJanuaryLeaves();
-						febLeaves += monthlyLeaves.getFebruaryLeaves();
-						marLeaves += monthlyLeaves.getMarchLeaves();
-						aprLeaves += monthlyLeaves.getAprilLeaves();
-						mayLeaves += monthlyLeaves.getMayLeaves();
-						junLeaves += monthlyLeaves.getJuneLeaves();
-						julLeaves += monthlyLeaves.getJulyLeaves();
-						augLeaves += monthlyLeaves.getAugustLeaves();
-						sepLeaves += monthlyLeaves.getSeptLeaves();
-						octLeaves += monthlyLeaves.getOctoberLeaves();
-						novLeaves += monthlyLeaves.getNovLeaves();
-						decLeaves += monthlyLeaves.getDecLeaves();
+						if(monthlyLeaves != null) {
+							janLeaves += monthlyLeaves.getJanuaryLeaves();
+							febLeaves += monthlyLeaves.getFebruaryLeaves();
+							marLeaves += monthlyLeaves.getMarchLeaves();
+							aprLeaves += monthlyLeaves.getAprilLeaves();
+							mayLeaves += monthlyLeaves.getMayLeaves();
+							junLeaves += monthlyLeaves.getJuneLeaves();
+							julLeaves += monthlyLeaves.getJulyLeaves();
+							augLeaves += monthlyLeaves.getAugustLeaves();
+							sepLeaves += monthlyLeaves.getSeptLeaves();
+							octLeaves += monthlyLeaves.getOctoberLeaves();
+							novLeaves += monthlyLeaves.getNovLeaves();
+							decLeaves += monthlyLeaves.getDecLeaves();
+						}
 //					}
 				}
 				
@@ -2323,7 +2331,7 @@ public class LeaveServiceImpl implements LeaveService{
 						if(associa != null) {
 							int result = associateBalanceLeaveService.addOrSubAssociateBalanceLeaveType(userList, orgLocation.getId(), leaveType, 1,Float.parseFloat(ltdto.getNumberOfLeaves()),"IMPORT",Constants.UPDATE);
 						}else {
-							int result = associateBalanceLeaveService.addLeaveTypeToAssociate(userList,orgLocation,leaveType,user);
+							int result = associateBalanceLeaveService.addLeaveTypeToAssociate(userList,orgLocation,leaveType,user,Float.parseFloat(ltdto.getNumberOfLeaves()));
 						}
 						i++;
 					}
@@ -2568,6 +2576,8 @@ public class LeaveServiceImpl implements LeaveService{
 		return pdfUtil.createDayWiseLeaveReportPdfTable(leaveReportsList,orgLocations);
 	}
 
+
+
 	@Override
 	public Sheet getLeaveReportExcelFile(Sheet createExcelsheet, Workbook createExcelworkbook, ResponseList<LeaveReportView> leaveReportsList, OrgLocations orgLocations) throws Exception
 	{
@@ -2612,8 +2622,8 @@ public class LeaveServiceImpl implements LeaveService{
 		return createExcelsheet = commonUtil.setExcelHeaders(createExcelsheet,style,headers,0);
 	}
 	private Sheet createLeaveReportXlsSheet(Sheet createExcelsheet, Row writeRow, int column,LeaveReportView leaveReportDTO) throws Exception {
-		if(leaveReportDTO.getEmployeeId() !=null){
-			 writeRow.createCell(0).setCellValue(leaveReportDTO.getEmployeeId()); 
+		if(leaveReportDTO.getEid() !=null && !leaveReportDTO.getEid().isEmpty()){
+			 writeRow.createCell(0).setCellValue(leaveReportDTO.getEid()); 
 		 }
 		else{
 			   writeRow.createCell(0).setCellValue("--");   
@@ -2716,8 +2726,8 @@ public class LeaveServiceImpl implements LeaveService{
 		return leaveDao.getLeaveNamesByOrgLocationId(orgLocationId,userleaveTypeList,leaveTypesList,topleave);
 	}
 
-	public String getDepartmentTypeNamesByOrgLocationIdAndUserId(Long userId ) throws Exception {
-		return leaveDao.getDepartmentTypeNamesByOrgLocationIdAndUserId(userId);
+	public String getDepartmentTypeNamesByOrgLocationIdAndUserId(Long userId ,Long orgLocationId) throws Exception {
+		return leaveDao.getDepartmentTypeNamesByOrgLocationIdAndUserId(userId,orgLocationId);
 	}
 
 

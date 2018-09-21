@@ -41,6 +41,8 @@ import com.bis.sourcelead.beans.CurrencyConversionResponse;
 import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.dao.InvoiceDao;
 import com.bis.sourcelead.dto.BillingDTO;
+import com.bis.sourcelead.dto.CreditDebitNoteDTO;
+import com.bis.sourcelead.dto.CreditDebitNoteListDTO;
 import com.bis.sourcelead.dto.ExpensesEntriesDTO;
 import com.bis.sourcelead.dto.InvoiceDTO;
 import com.bis.sourcelead.dto.InvoicePaymentDTO;
@@ -50,6 +52,8 @@ import com.bis.sourcelead.dto.Response;
 import com.bis.sourcelead.dto.ResponseList;
 import com.bis.sourcelead.entity.Candidate;
 import com.bis.sourcelead.entity.Contracts;
+import com.bis.sourcelead.entity.CreditDebitLineItems;
+import com.bis.sourcelead.entity.CreditDebitNote;
 import com.bis.sourcelead.entity.EmailAttachment;
 import com.bis.sourcelead.entity.EmailMessage;
 import com.bis.sourcelead.entity.EmailScenario;
@@ -61,7 +65,6 @@ import com.bis.sourcelead.entity.InvoiceDocument;
 import com.bis.sourcelead.entity.InvoiceLineItems;
 import com.bis.sourcelead.entity.InvoicePayment;
 import com.bis.sourcelead.entity.InvoiceTax;
-import com.bis.sourcelead.entity.InvoiceTimelineHistory;
 import com.bis.sourcelead.entity.Org;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.OrgRelations;
@@ -173,16 +176,13 @@ public class InvoiceRestController {
 			for (OrgSpoc orgSpoc : orgSpocList) {
 				StringBuilder sb = new StringBuilder();
 				StringBuilder clientSb = new StringBuilder();
-				if (null != orgSpoc.getVendorUser().getFirstName()
-						&& null != orgSpoc.getVendorUser().getLastName()
-						&& !"".equalsIgnoreCase(orgSpoc.getVendorUser().getLastName())) {
+				if (null != orgSpoc.getVendorUser().getFirstName() && null != orgSpoc.getVendorUser().getLastName() && !"".equalsIgnoreCase(orgSpoc.getVendorUser().getLastName())) {
 					sb.append(orgSpoc.getVendorUser().getFirstName()).append(" ").append(orgSpoc.getVendorUser().getLastName());
 				}
 				else {
 					sb.append(orgSpoc.getVendorUser().getFirstName());
 				}
-				if (null != orgSpoc.getClientUser().getFirstName()
-						&& null != orgSpoc.getClientUser().getLastName()) {
+				if (null != orgSpoc.getClientUser().getFirstName() && null != orgSpoc.getClientUser().getLastName()) {
 					clientSb.append(orgSpoc.getClientUser().getFirstName()).append(" ").append(orgSpoc.getClientUser().getLastName());
 				}
 				else {
@@ -262,6 +262,41 @@ public class InvoiceRestController {
 		return response;
 	}
 	
+	@RequestMapping(value = "/saveCreditDebitNote", method = RequestMethod.POST)
+	public @ResponseBody Response<String> saveCreditDebitNote(CreditDebitNoteDTO creditDebitNoteDTO, 
+			@RequestParam(value = "saveType", required = false) String saveType, 
+			@RequestParam(value = "noteType", required = false) String noteType, HttpServletRequest request) throws Exception
+	{
+		Response<String> response = new Response<>();
+			try {
+				User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+				if (user != null) {
+				if (Validator.validate(creditDebitNoteDTO)) {
+					OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+					String currencyCode = (String) SourceLeadSessionManager.getSessionAttribute(request, "currencyCode");
+					Org org = (Org) SourceLeadSessionManager.getSessionAttribute(request, "org");
+					//Invoice invoice = invoiceService.saveInvoice(user, orgLocation, saveType, invoiceType, org, currencyCode, invoiceDTO);
+					invoiceService.saveCreditDebitNote(user, orgLocation, saveType, noteType, creditDebitNoteDTO,currencyCode);
+						response.setResponse(Result.SUCCESS.name());
+						response.setResponseMessage(Result.SUCCESS.getValue());
+				}
+				else {
+					response.setObject("DataMissing");
+					response.setResponse(Result.INVALID_DATA.name());
+					response.setResponseMessage(Result.INVALID_DATA.getValue());
+				}
+			 }else if (user == null) {
+					response.setResponse(Result.SESSION_TIMEDOUT.name());
+					response.setResponseMessage(Result.SESSION_TIMEDOUT.getValue());
+				}
+			} catch (Exception e) {
+				response.setResponse(Result.AWKWARD.name());
+				response.setResponseMessage(Result.AWKWARD.getValue());
+				logger.error(ExceptionUtils.getFullStackTrace(e));
+			}
+		
+		return response;
+	}
 	
 	@RequestMapping(value = "/validateInvoiceId",  method = RequestMethod.POST)
     public @ResponseBody Boolean validateInvoiceId(@RequestParam(value="invoiceId", required=false) String invoiceId, @RequestParam(value="invoiceType", required=false) String invoiceType,
@@ -314,6 +349,65 @@ public class InvoiceRestController {
 		responseList.setData(projectsList);
 		return responseList;
 	}
+	
+	
+@RequestMapping(value = { "/getCreDitNotesList","/rest/getCreDitNotesList" }, method = RequestMethod.POST)
+public ResponseList<CreditDebitNoteListDTO> getCreDitNotesList(CreditDebitNoteDTO creditDebitNoteDTO, HttpServletRequest request) throws Exception
+{
+
+OrgLocations orgLocations = orgLocationService.getOrgLocations(Long.parseLong(creditDebitNoteDTO.getOrglocationId()));
+String[] tableColumns = { "","date", "id", "referenceNumber", "clientName","invoiceId", "total", "balance", "status"};
+
+int sortColumnIndex = 1; // by default sorting using invoice date
+String sortColumnOrder = "asc"; // by default descending order
+if (creditDebitNoteDTO.getOrder() != null && !creditDebitNoteDTO.getOrder().isEmpty()) {
+	sortColumnIndex = Integer.parseInt(creditDebitNoteDTO.getOrder().get(0).get("column"));
+	sortColumnOrder = creditDebitNoteDTO.getOrder().get(0).get("dir");
+}
+creditDebitNoteDTO.setSortColumn(tableColumns[sortColumnIndex]);
+creditDebitNoteDTO.setSortOrder(sortColumnOrder);
+
+Timezone timezone = timeZoneService.getTimezone(orgLocations.getTimezone().getId());
+DateTime zoned = new DateTime();
+DateTimeFormatter outputFormatter = DateTimeFormat.forPattern("yyyy-MM-dd HH:mm:ss");
+DateTimeFormatter outputFormatter1 = DateTimeFormat.forPattern("yyyy-MM-dd HH:mm:ss");
+DateFormat TZ_DF_TS = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+Date endDateUTC = null;
+Date startDateUTC = null;
+if (!Constants.CUSTOM_REPORTS.equalsIgnoreCase(creditDebitNoteDTO.getDayWiseType())	&& !"".equals(creditDebitNoteDTO.getDayWiseType())) {
+	String endDate = outputFormatter1.print(zoned);
+	endDateUTC = TZ_DF_TS.parse(endDate);
+}
+if (null != creditDebitNoteDTO.getDayWiseType() && !"".equals(creditDebitNoteDTO.getDayWiseType())) {
+	if (!Constants.CUSTOM_REPORTS.equalsIgnoreCase(creditDebitNoteDTO.getDayWiseType())) {
+		String startDate = outputFormatter.print(zoned);
+		// String startDateString =
+		// CommonUtil.convertTimeZones(timezone.getTimeZoneId(),
+		// Constants.UTC_TIMEZONE, startDate);
+		startDateUTC = TZ_DF_TS.parse(startDate);
+		if (Constants.ONE_MONTH.equals(creditDebitNoteDTO.getDayWiseType())) {
+			startDateUTC = getPreviousDate(zoned, outputFormatter, TZ_DF_TS, timezone, 30);
+		}
+		else if (Constants.TWO_MONTHS.equals(creditDebitNoteDTO.getDayWiseType())) {
+			startDateUTC = getPreviousDate(zoned, outputFormatter, TZ_DF_TS, timezone, 60);
+		}
+		else if (Constants.THREE_MONTHS.equals(creditDebitNoteDTO.getDayWiseType())) {
+			startDateUTC = getPreviousDate(zoned, outputFormatter, TZ_DF_TS, timezone, 90);
+		}
+		else if (Constants.SIX_MONTHS.equals(creditDebitNoteDTO.getDayWiseType())) {
+			startDateUTC = getPreviousDate(zoned, outputFormatter, TZ_DF_TS, timezone, 180);
+		}
+		else if (Constants.ONE_YEAR.equals(creditDebitNoteDTO.getDayWiseType())) {
+			startDateUTC = getPreviousDate(zoned, outputFormatter, TZ_DF_TS, timezone, 365);
+		}
+	}
+	
+}
+
+ResponseList<CreditDebitNoteListDTO> responseList = invoiceService. creditDebtListByOrgLocationId(orgLocations, startDateUTC,endDateUTC,creditDebitNoteDTO);
+
+return responseList;
+}
 	
 	@RequestMapping(value = "/getSowcontractListByAssociateId", method = RequestMethod.GET)
 	public @ResponseBody ResponseList<Contracts> getSowcontractListByAssociateId(@RequestParam(value = "candidateId", required = false) Long candidateId, @RequestParam(value = "orgRelationId", required = false) Long orgRelationId, @RequestParam(value = "contractType", required = false) String contractType, HttpServletRequest request) throws Exception
@@ -393,31 +487,32 @@ public class InvoiceRestController {
 					startDateUTC = getPreviousDate(zoned, outputFormatter, TZ_DF_TS, timezone, 365);
 				}
 			}
-		}
-		else {
-			if (StringUtils.isNotBlank(invoiceDTO.getStartDate())
-					&& StringUtils.isNotBlank(invoiceDTO.getEndDate())
-					&& !"undefined".equalsIgnoreCase(invoiceDTO.getStartDate())
-					&& !"undefined".equalsIgnoreCase(invoiceDTO.getEndDate())) {
-				DateFormat TZ_DF_CSD = new SimpleDateFormat("yyyy-MM-dd");
-				DateFormat TZ_DF_CED = new SimpleDateFormat("yyyy-MM-dd");
-				Date startTime = commonUtil.orgLocationDateFormat(orgLocations.getDateFormat(), invoiceDTO.getStartDate());
-				Date endTime = commonUtil.orgLocationDateFormat(orgLocations.getDateFormat(), invoiceDTO.getEndDate());
-				String customStartTimeStr = TZ_DF_CSD.format(startTime);
-				String customEndTimeStr = TZ_DF_CED.format(endTime);
-				// String startDateString =
-				// CommonUtil.convertTimeZones(timezone.getTimeZoneId(),
-				// Constants.UTC_TIMEZONE, customStartTimeStr);
-				// String endDateString =
-				// CommonUtil.convertTimeZones(timezone.getTimeZoneId(),
-				// Constants.UTC_TIMEZONE, customEndTimeStr);
-				startDateUTC = TZ_DF_TS.parse(customStartTimeStr);
-				endDateUTC = TZ_DF_TS.parse(customEndTimeStr);
-			}
 			else {
-				startDateUTC = getPreviousDate(zoned, outputFormatter, TZ_DF_TS, timezone, 30);
+				if (StringUtils.isNotBlank(invoiceDTO.getStartDate())
+						&& StringUtils.isNotBlank(invoiceDTO.getEndDate())
+						&& !"undefined".equalsIgnoreCase(invoiceDTO.getStartDate())
+						&& !"undefined".equalsIgnoreCase(invoiceDTO.getEndDate())) {
+					DateFormat TZ_DF_CSD = new SimpleDateFormat("yyyy-MM-dd");
+					DateFormat TZ_DF_CED = new SimpleDateFormat("yyyy-MM-dd");
+					Date startTime = commonUtil.orgLocationDateFormat(orgLocations.getDateFormat(), invoiceDTO.getStartDate());
+					Date endTime = commonUtil.orgLocationDateFormat(orgLocations.getDateFormat(), invoiceDTO.getEndDate());
+					String customStartTimeStr = TZ_DF_CSD.format(startTime);
+					String customEndTimeStr = TZ_DF_CED.format(endTime);
+					// String startDateString =
+					// CommonUtil.convertTimeZones(timezone.getTimeZoneId(),
+					// Constants.UTC_TIMEZONE, customStartTimeStr);
+					// String endDateString =
+					// CommonUtil.convertTimeZones(timezone.getTimeZoneId(),
+					// Constants.UTC_TIMEZONE, customEndTimeStr);
+					startDateUTC = TZ_DF_TS.parse(customStartTimeStr);
+					endDateUTC = TZ_DF_TS.parse(customEndTimeStr);
+				}
+				else {
+					startDateUTC = getPreviousDate(zoned, outputFormatter, TZ_DF_TS, timezone, 30);
+				}
 			}
 		}
+		
 		ResponseList<Invoice> invoiceList = invoiceService.invoiceListByOrgLocationId(orgLocations, startDateUTC, endDateUTC, invoiceDTO);
 		Date todayDate = new Date();
 		SimpleDateFormat dateFormat = orgLocations.getLocFullFormDateFormatter();
@@ -450,15 +545,31 @@ public class InvoiceRestController {
 			if (orgRelations != null) {
 				billingDto.setOrgRelationUUID(orgRelations.getUUID());
 			}
-			StringBuilder contactName = new StringBuilder();
-			if (null != invoice.getContactUser()) {
+			//StringBuilder contactName = new StringBuilder();
+			if(null != invoice.getContactUsers()){
+				String[] contactUsers = invoice.getContactUsers().split(",");
+				if(contactUsers.length != 0){
+					StringBuilder contactUserName = new StringBuilder();
+					for(String contactUserId : contactUsers){
+						User contactUser = userService.getUserById(Long.parseLong(contactUserId.trim()));
+						if(contactUser.getLastName() != null){
+							contactUserName = contactUserName.append(contactUser.getFirstName()).append(" ").append(contactUser.getLastName()).append(", ");
+						}else{
+							contactUserName = contactUserName.append(contactUser.getFirstName()).append(", ");
+						}
+					}
+					
+					 billingDto.setClientContactName(contactUserName.toString().substring(0, contactUserName.toString().length() - 2));
+				}
+			}
+			/*if (null != invoice.getContactUser()) {
 				if (invoice.getContactUser().getLastName() != null) {
 					billingDto.setClientContactName(contactName.append(invoice.getContactUser().getFirstName()).append(" ").append(invoice.getContactUser().getLastName()).toString());
 				}
 				else {
 					billingDto.setClientContactName(contactName.append(invoice.getContactUser().getFirstName()).toString());
 				}
-			}
+			}*/
 			if (null != invoice.getDueDate()) {
 				billingDto.setDueDateStr(dateFormat.format(invoice.getDueDate()));
 			}
@@ -755,6 +866,16 @@ public class InvoiceRestController {
 		
 	}
 	
+	@RequestMapping(value = "/getCreditDebitNoteDetails", method = RequestMethod.GET)
+	public @ResponseBody Response<CreditDebitNote> getCreditDebitNoteDetails(@RequestParam(value = "creditDebitUUID", required = false) String creditDebitUUID, HttpServletRequest request) throws Exception
+	{
+		OrgLocations loginOrgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+		CreditDebitNote creditDebitNote = invoiceService.getCreditDebitNoteByUUID(creditDebitUUID);
+		Response<CreditDebitNote> response = invoiceService.getCreditDebitNoteByIdAndOrglocationId(creditDebitNote.getId(), loginOrgLocation.getId());
+		
+	return response;	
+	}
+	
 	@RequestMapping(value = "/getViewInvoice", method = RequestMethod.GET)
 	public @ResponseBody ResponseList<Invoice> getViewInvoice(@RequestParam(value = "invoiceUUID", required = false) String invoiceUUID, HttpServletRequest request, HttpServletResponse response) throws Exception
 	{
@@ -777,11 +898,31 @@ public class InvoiceRestController {
 		List<Invoice> viewinvoiceList = invoiceService.getViewInvoiceListByInvoiceIdAndOrglocationId(Id, orgLocations.getId());
 		for (Invoice invoice : viewinvoiceList) {
 			OrgLocations LoginOrgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
-			User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
-			if (invoice.getOrgRelationID().getLocationId().getId().longValue() == LoginOrgLocations.getId().longValue()) {
+			//User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+			if (invoice.getOrgRelationID().getLocationId().getId().equals(LoginOrgLocations.getId())) {
 				invoice.setClientName(invoice.getOrgRelationID().getResponderLocationId().getOrgLocationName());
-				StringBuilder contactName = new StringBuilder();
-				if (invoice.getContactUser() != null) {
+				//StringBuilder contactName = new StringBuilder();
+				if(null != invoice.getContactUsers()){
+					String[] contactUsers = invoice.getContactUsers().split(",");
+					if(contactUsers.length != 0){
+						StringBuilder contactUserName = new StringBuilder();
+						StringBuilder contactUserEmail = new StringBuilder();
+						for(String contactUserId : contactUsers){
+							User contactUser = userService.getUserById(Long.parseLong(contactUserId.trim()));
+							if(contactUser.getLastName() != null){
+								contactUserName = contactUserName.append(contactUser.getFirstName()).append(" ").append(contactUser.getLastName()).append("- ").append(contactUser.getEmail()).append(", ").append("\n ");
+							}else{
+								contactUserName = contactUserName.append(contactUser.getFirstName()).append("- ").append(contactUser.getEmail()).append(", ").append("\n ");
+							}
+							if(contactUser.getEmail() != null){
+								contactUserEmail = contactUserEmail.append(contactUser.getEmail()).append(", ");
+							}
+						}
+						invoice.setClientContactEmail(contactUserEmail.toString().substring(0, contactUserEmail.toString().length() - 2));
+						invoice.setClientContactName(contactUserName.toString().substring(0, contactUserName.toString().length() - 2).replaceAll("\n ", "<br/>"));
+					}
+				}
+				/*if (invoice.getContactUser() != null) {.
 					if (invoice.getContactUser().getLastName() != null) {
 						invoice.setClientContactName(contactName.append(invoice.getContactUser().getFirstName()).append(" ").append(invoice.getContactUser().getLastName()).toString());
 					}
@@ -791,32 +932,52 @@ public class InvoiceRestController {
 				}
 				if (null != invoice.getContactUser()) {
 					invoice.setClientContactEmail(invoice.getContactUser().getEmail());
-				}
+				}*/
 				if (invoice.getOrgRelationID() != null) {
 					invoice.setOrgRelationUUID(invoice.getOrgRelationID().getUUID());
 				}
 			}
 		    	StringBuilder contactName = new StringBuilder();
-				if(invoice.getOrgRelationID().getResponderLocationId().getId().longValue() == LoginOrgLocations.getId().longValue()){
+				if(invoice.getOrgRelationID().getResponderLocationId().getId().equals(LoginOrgLocations.getId())){
 					invoice.setClientName(invoice.getOrgRelationID().getLocationId().getOrgLocationName());
-					if(invoice.getContactUser().getLastName() != null){
+					if(null != invoice.getOwnerUsers()){
+						String[] ownerUsers = invoice.getOwnerUsers().split(",");
+						if(ownerUsers.length != 0){
+							StringBuilder ownerUserName = new StringBuilder();
+							StringBuilder ownerUserEmail = new StringBuilder();
+							for(String ownerUserId : ownerUsers){
+								User ownerUser = userService.getUserById(Long.parseLong(ownerUserId.trim()));
+								if(ownerUser.getLastName() != null){
+									ownerUserName = ownerUserName.append(ownerUser.getFirstName()).append(" ").append(ownerUser.getLastName()).append(", ");
+								}else{
+									ownerUserName = ownerUserName.append(ownerUser.getFirstName()).append(", ");
+								}
+								if(ownerUser.getEmail() != null){
+									ownerUserEmail = ownerUserEmail.append(ownerUser.getEmail()).append(", ");
+								}
+							}
+							invoice.setClientContactEmail(ownerUserEmail.toString().substring(0, ownerUserEmail.toString().length() - 2));
+							invoice.setClientContactName(ownerUserName.toString().substring(0, ownerUserName.toString().length() - 2));
+						}
+					}
+					/*if(invoice.getContactUser().getLastName() != null){
 						invoice.setClientContactName(contactName.append(invoice.getOwnerUserId().getFirstName()).append(" ").append(invoice.getOwnerUserId().getLastName()).toString());	
 					}else{
 						invoice.setClientContactName(contactName.append(invoice.getOwnerUserId().getFirstName()).toString());
 					}
 					if(null != invoice.getContactUser()){
 						invoice.setClientContactEmail(invoice.getOwnerUserId().getEmail());	
-					}
+					}*/
 					if(invoice.getOrgRelationID() != null){
 						invoice.setOrgRelationUUID(invoice.getOrgRelationID().getUUID());
 						}
 				}
-				else {
+				/*else {
 					invoice.setClientContactName(contactName.append(invoice.getOwnerUserId().getFirstName()).toString());
 				}
 				if (null != invoice.getContactUser()) {
 					invoice.setClientContactEmail(invoice.getOwnerUserId().getEmail());
-				}
+				}*/
 			
 			invoice.setExchangeRate(invoice.getExchangeRate());
 			if (invoice.getConvertAmount() != null) {
@@ -907,6 +1068,7 @@ public class InvoiceRestController {
 			ip.setPaymentReferenceNumber(ip.getPaymentReferenceNumber());
 			ip.setFileURL(ip.getFileURL());
 			ip.setFileName(ip.getFileName());
+			ip.setFileContentType(ip.getFileContentType());
 			ip.setPaymentComment(ip.getPaymentComment());
 			ip.setPaymentAmount(ip.getPaymentAmount());
 			StringBuilder name = new StringBuilder();
@@ -1268,70 +1430,143 @@ public class InvoiceRestController {
 	
 	private void invoiceAcceptMailtoVendor(User loginUser, Invoice invoice, OrgLocations loginOrgLocation, String invoiceType) throws Exception
 	{
-		
-		EmailMessage emailMessage = new EmailMessage();
-		emailMessage.setFirstName(loginUser.getFirstName());
-		emailMessage.setLastName(loginUser.getLastName());
-		emailMessage.setToEmail(invoice.getContactUser().getEmail());
-		emailMessage.setFromEmail(loginUser.getEmail());
-		emailMessage.setCreatedBy(loginUser.getUserCode());
-		emailMessage.setEmailType(Constants.CUSTOM_USER_EMAIL);
-		StringBuilder msgBuild = new StringBuilder();
-		emailMessage.setFromName(msgBuild.append(loginUser.getFirstName()).append(" ").append(loginUser.getLastName()).toString());
-		// emailMessage.setEmailType(Constants.CUSTOM_USER_EMAIL);
-		// setting the class filed values
-		Map<String, String> globalVarsMap = new HashMap<String, String>();
-		SimpleDateFormat dateFormat = loginOrgLocation.getLocFullFormDateFormatter();
-		String createdDate = (dateFormat.format(invoice.getCreatedDate()));
-		String dueDate = (dateFormat.format(invoice.getDueDate()));
-		StringBuilder stringBuildername = new StringBuilder();
-		
-		if(invoice.getInvoiceType().equalsIgnoreCase(Constants.RECEIVABLE)){
-			globalVarsMap.put("vendorName", stringBuildername.append(invoice.getContactUser().getFirstName()).append(" ").append(invoice.getContactUser().getLastName()).toString());
-
-		}else{
-			globalVarsMap.put("clientName", stringBuildername.append(invoice.getContactUser().getFirstName()).append(" ").append(invoice.getContactUser().getLastName()).toString());
-
+		if(null != invoice.getContactUsers()){
+			String[] contactUsers = invoice.getContactUsers().split(",");
+			if(contactUsers.length != 0){
+				for(String contactUserId : contactUsers){
+					User contactUser = userService.getUserById(Long.parseLong(contactUserId.trim()));
+					EmailMessage emailMessage = new EmailMessage();
+					emailMessage.setFirstName(loginUser.getFirstName());
+					emailMessage.setLastName(loginUser.getLastName());
+					emailMessage.setToEmail(contactUser.getEmail());
+					emailMessage.setFromEmail(loginUser.getEmail());
+					emailMessage.setCreatedBy(loginUser.getUserCode());
+					emailMessage.setEmailType(Constants.CUSTOM_USER_EMAIL);
+					StringBuilder msgBuild = new StringBuilder();
+					emailMessage.setFromName(msgBuild.append(loginUser.getFirstName()).append(" ").append(loginUser.getLastName()).toString());
+					// emailMessage.setEmailType(Constants.CUSTOM_USER_EMAIL);
+					// setting the class filed values
+					Map<String, String> globalVarsMap = new HashMap<String, String>();
+					SimpleDateFormat dateFormat = loginOrgLocation.getLocFullFormDateFormatter();
+					String createdDate = (dateFormat.format(invoice.getCreatedDate()));
+					String dueDate = (dateFormat.format(invoice.getDueDate()));
+					StringBuilder stringBuildername = new StringBuilder();
+					
+					if(invoice.getInvoiceType().equalsIgnoreCase(Constants.RECEIVABLE)){
+						globalVarsMap.put("vendorName", stringBuildername.append(contactUser.getFirstName()).append(" ").append(contactUser.getLastName()).toString());
+			
+					}else{
+						globalVarsMap.put("clientName", stringBuildername.append(contactUser.getFirstName()).append(" ").append(contactUser.getLastName()).toString());
+			
+					}
+					globalVarsMap.put("invoiceID", invoice.getInvoiceId());
+					globalVarsMap.put("totalAmouprojectMembersListnt", invoice.getTotal());
+					globalVarsMap.put("date", createdDate);
+					globalVarsMap.put("dueDate", dueDate);
+					globalVarsMap.put("orgName", loginOrgLocation.getOrgLocationName());
+					StringBuilder stringBuilderLoginname = new StringBuilder();
+					globalVarsMap.put("LoginUser", stringBuilderLoginname.append(loginUser.getFirstName()).append(" ").append(loginUser.getLastName()).toString());
+					StringBuilder stringBuildforLink = new StringBuilder();
+					globalVarsMap.put("loginLink", stringBuildforLink.append("<a href='").append(sourceleadLoginUrl).append("' style='text-decoration:none; '><div style=' width:220px; border-radius:30px; background-color:#214b90; color:#FFF; font-size:18px; font-weight:500; margin:10px auto 5px auto; padding:10px 0px; text-align:center; letter-spacing:2px;'>Login</div></a>").toString());
+					InternetAddress[] iAdressArray = InternetAddress.parse(emailMessage.getToEmail());
+					
+					//send mail logic
+					List<EmailAttachment> attachmentList = new ArrayList<>();
+					
+					//send notification logic
+					EmailScenario notificationScenario = null;
+					if (invoiceType.equalsIgnoreCase("Payables")) {
+						commonUtil.sendTemplateEmail(emailMessage, globalVarsMap, loginOrgLocation.getOrg(), loginOrgLocation, Constants.INVOICE_ACCEPT_MAIL_VENDOR_EMAIL,attachmentList);
+						notificationScenario = emailScenarioService.getEmailScenarioByUniqueName(Constants.INVOICE_ACCEPT_MAIL_VENDOR_EMAIL, Constants.ENTITY_TYPE_NOTIFICATION);
+					}
+					else {
+						commonUtil.sendTemplateEmail(emailMessage, globalVarsMap, loginOrgLocation.getOrg(), loginOrgLocation, Constants.INVOICE_ACCEPT_MAIL_CLIENT_EMAIL,attachmentList);
+						notificationScenario = emailScenarioService.getEmailScenarioByUniqueName(Constants.INVOICE_ACCEPT_MAIL_CLIENT_EMAIL, Constants.ENTITY_TYPE_NOTIFICATION);
+					}
+					String notificationbody = emailScenerioUtil.buildTemplateBody(notificationScenario.getBody(), globalVarsMap, notificationScenario);
+					notificationScenario.setBody(notificationbody);
+					String actionLink = "";
+					StringBuilder notificationLink = new StringBuilder();
+					if (Constants.RECEIVABLE.equalsIgnoreCase(invoiceType)) {
+						actionLink = notificationLink.append(sourceleadUrl).append("/").append("viewInvoice?invoiceUUID="
+								+ invoice.getInvoiceUUID() + "&invoiceType=Payables").toString();
+					}
+					else {
+						actionLink = notificationLink.append(sourceleadUrl).append("/").append("viewInvoice?invoiceUUID="
+								+ invoice.getInvoiceUUID() + "&invoiceType=Receivable").toString();
+					}
+					emailScenerioUtil.sendNotification(actionLink, loginUser, contactUser, invoice.getResponderLocationId(), notificationScenario, new HashMap<String, String>());
+				}
+			}
 		}
-		globalVarsMap.put("invoiceID", invoice.getInvoiceId());
-		globalVarsMap.put("totalAmouprojectMembersListnt", invoice.getTotal());
-		globalVarsMap.put("date", createdDate);
-		globalVarsMap.put("dueDate", dueDate);
-		globalVarsMap.put("orgName", loginOrgLocation.getOrgLocationName());
-		StringBuilder stringBuilderLoginname = new StringBuilder();
-		globalVarsMap.put("LoginUser", stringBuilderLoginname.append(loginUser.getFirstName()).append(" ").append(loginUser.getLastName()).toString());
-		StringBuilder stringBuildforLink = new StringBuilder();
-		globalVarsMap.put("loginLink", stringBuildforLink.append("<a href='").append(sourceleadLoginUrl).append("' style='text-decoration:none; '><div style=' width:220px; border-radius:30px; background-color:#214b90; color:#FFF; font-size:18px; font-weight:500; margin:10px auto 5px auto; padding:10px 0px; text-align:center; letter-spacing:2px;'>Login</div></a>").toString());
-		InternetAddress[] iAdressArray = InternetAddress.parse(emailMessage.getToEmail());
 		
-		//send mail logic
-		List<EmailAttachment> attachmentList = new ArrayList<>();
-		
-		//send notification logic
-		EmailScenario notificationScenario = null;
-		if (invoiceType.equalsIgnoreCase("Payables")) {
-			commonUtil.sendTemplateEmail(emailMessage, globalVarsMap, loginOrgLocation.getOrg(), loginOrgLocation, Constants.INVOICE_ACCEPT_MAIL_VENDOR_EMAIL,attachmentList);
-			notificationScenario = emailScenarioService.getEmailScenarioByUniqueName(Constants.INVOICE_ACCEPT_MAIL_VENDOR_EMAIL, Constants.ENTITY_TYPE_NOTIFICATION);
+	}
+	
+	
+	@RequestMapping(value = "/acceptCreditDebitNote", method = RequestMethod.POST)
+	public @ResponseBody Response<String> acceptCreditDebitNote(@RequestParam(value = "creditDebitUUID", required = false) String creditDebitUUID, 
+			@RequestParam(value = "noteType", required = false) String noteType, 
+			 HttpServletRequest request) throws Exception
+	{
+		Response<String> response = new Response<>();
+		try {
+			User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+			if (user != null) {
+				OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+				if (creditDebitUUID != null) {
+					CreditDebitNote creditDebitNote = invoiceService.getCreditDebitNoteByUUID(creditDebitUUID);
+					
+					 invoiceService.saveAcceptedCreditDebitNote(user, orgLocation, noteType, creditDebitNote);
+						response.setResponse(Result.SUCCESS.name());
+						response.setResponseMessage(Result.SUCCESS.getValue());
+				}
+			}
+			else {
+				response.setResponse(Result.SESSION_TIMEDOUT.name());
+				response.setResponseMessage(Result.SESSION_TIMEDOUT.getValue());
+			}
+		} catch (Exception e) {
+			response.setResponse(Result.AWKWARD.name());
+			response.setResponseMessage(Result.AWKWARD.getValue());
+			logger.error(ExceptionUtils.getFullStackTrace(e));
 		}
-		else {
-			commonUtil.sendTemplateEmail(emailMessage, globalVarsMap, loginOrgLocation.getOrg(), loginOrgLocation, Constants.INVOICE_ACCEPT_MAIL_CLIENT_EMAIL,attachmentList);
-			notificationScenario = emailScenarioService.getEmailScenarioByUniqueName(Constants.INVOICE_ACCEPT_MAIL_CLIENT_EMAIL, Constants.ENTITY_TYPE_NOTIFICATION);
+		return response;
+	}
+	
+	
+	@RequestMapping(value = "/rejectCreditDebitNote", method = RequestMethod.POST)
+	public @ResponseBody Response<String> rejectCreditDebitNote(@RequestParam(value = "creditDebitUUID", required = false) String creditDebitUUID, 
+			@RequestParam(value = "reason", required = false) String reason, HttpServletRequest request) throws Exception
+	{
+		Response<String> response = new Response<>();
+		try {
+			User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+			if (user != null) {
+				OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+				if (creditDebitUUID != null) {
+					CreditDebitNote creditDebitNote = invoiceService.getCreditDebitNoteByUUID(creditDebitUUID);
+					if (creditDebitNote != null) {
+						creditDebitNote.setNoteStatus(Constants.CREDIT_DEBIT_NOTE_REJECTED);
+						creditDebitNote.setRejectReason(reason);
+						creditDebitNote.setUpdatedBy(user);
+						creditDebitNote.setUpdatedDate(commonUtil.orgLocationCommonDate(new Date(),orgLocation));
+						invoiceDao.saveCreditDebitNote(creditDebitNote);
+						
+						response.setResponse(Result.SUCCESS.name());
+						response.setResponseMessage(Result.SUCCESS.getValue());
+					}
+				}
+			}
+			else {
+				response.setResponse(Result.SESSION_TIMEDOUT.name());
+				response.setResponseMessage(Result.SESSION_TIMEDOUT.getValue());
+			}
+		} catch (Exception e) {
+			response.setResponse(Result.AWKWARD.name());
+			response.setResponseMessage(Result.AWKWARD.getValue());
+			logger.error(ExceptionUtils.getFullStackTrace(e));
 		}
-		String notificationbody = emailScenerioUtil.buildTemplateBody(notificationScenario.getBody(), globalVarsMap, notificationScenario);
-		notificationScenario.setBody(notificationbody);
-		String actionLink = "";
-		StringBuilder notificationLink = new StringBuilder();
-		if (Constants.RECEIVABLE.equalsIgnoreCase(invoiceType)) {
-			actionLink = notificationLink.append(sourceleadUrl).append("/").append("viewInvoice?invoiceUUID="
-					+ invoice.getInvoiceUUID() + "&invoiceType=Payables").toString();
-		}
-		else {
-			actionLink = notificationLink.append(sourceleadUrl).append("/").append("viewInvoice?invoiceUUID="
-					+ invoice.getInvoiceUUID() + "&invoiceType=Receivable").toString();
-		}
-		emailScenerioUtil.sendNotification(actionLink, loginUser, invoice.getContactUser(), invoice.getResponderLocationId(), notificationScenario, new HashMap<String, String>());
-		
-		
+		return response;
 	}
 	
 	@RequestMapping(value = "/rejectInvoice", method = RequestMethod.POST)
@@ -1400,6 +1635,7 @@ public class InvoiceRestController {
 						invoice.setDueAmount("0.0");
 						invoice.setUpdatedDate(commonUtil.currentDate());
 						Invoice childOrParentInvoice = invoiceDao.saveInvoce(invoice);
+						invoiceService.saveInvoiceTimelineHistory(invoice, user, null, null, null, null);
 						if (null != childOrParentInvoice) {
 							if (null != invoice.getParentInvoiceId()) {
 								// parent invoice update
@@ -1409,6 +1645,7 @@ public class InvoiceRestController {
 								parentInvoice.setUpdatedBy(user.getUserCode());
 								parentInvoice.setUpdatedDate(commonUtil.currentDate());
 								invoiceDao.saveInvoce(parentInvoice);
+								invoiceService.saveInvoiceTimelineHistory(parentInvoice, user, null, null, null, null);
 							}else{
 								// update child invoice
 								Invoice childInvoice = invoiceDao.getInvoicetBySelfJoinInvoiceId(invoice.getId());
@@ -1417,6 +1654,7 @@ public class InvoiceRestController {
 								childInvoice.setUpdatedBy(user.getUserCode());
 								childInvoice.setUpdatedDate(commonUtil.currentDate());
 								invoiceDao.saveInvoce(childInvoice);
+								invoiceService.saveInvoiceTimelineHistory(childInvoice, user, null, null, null, null);
 							}
 						}
 						response.setResponse(Result.SUCCESS.name());
@@ -1438,64 +1676,69 @@ public class InvoiceRestController {
 	
 	private void invoiceRejectMailtoVendor(User loginUser, Invoice invoice, OrgLocations loginOrgLocation, String invoiceType) throws Exception
 	{
-		
-		EmailMessage emailMessage = new EmailMessage();
-		emailMessage.setFirstName(loginUser.getFirstName());
-		emailMessage.setLastName(loginUser.getLastName());
-		emailMessage.setToEmail(invoice.getContactUser().getEmail());
-		emailMessage.setFromEmail(loginUser.getEmail());
-		emailMessage.setCreatedBy(loginUser.getUserCode());
-		emailMessage.setEmailType(Constants.CUSTOM_USER_EMAIL);
-		StringBuilder msgBuild = new StringBuilder();
-		emailMessage.setFromName(msgBuild.append(loginUser.getFirstName()).append(" ").append(loginUser.getLastName()).toString());
-		// emailMessage.setEmailType(Constants.CUSTOM_USER_EMAIL);
-		// setting the class filed values
-		Map<String, String> globalVarsMap = new HashMap<String, String>();
-		StringBuilder stringBuildername = new StringBuilder();
-		if(invoice.getInvoiceType().equalsIgnoreCase(Constants.PAYABLES)){
-			globalVarsMap.put("vendorName", stringBuildername.append(invoice.getContactUser().getFirstName()).append(" ").append(invoice.getContactUser().getLastName()).toString());
-
+		if(null != invoice.getContactUsers()){
+			String[] contactUsers = invoice.getContactUsers().split(",");
+			if(contactUsers.length != 0){
+				for(String contactUserId : contactUsers){
+					User contactUser = userService.getUserById(Long.parseLong(contactUserId.trim()));
+					EmailMessage emailMessage = new EmailMessage();
+					emailMessage.setFirstName(loginUser.getFirstName());
+					emailMessage.setLastName(loginUser.getLastName());
+					emailMessage.setToEmail(contactUser.getEmail());
+					emailMessage.setFromEmail(loginUser.getEmail());
+					emailMessage.setCreatedBy(loginUser.getUserCode());
+					emailMessage.setEmailType(Constants.CUSTOM_USER_EMAIL);
+					StringBuilder msgBuild = new StringBuilder();
+					emailMessage.setFromName(msgBuild.append(loginUser.getFirstName()).append(" ").append(loginUser.getLastName()).toString());
+					// emailMessage.setEmailType(Constants.CUSTOM_USER_EMAIL);
+					// setting the class filed values
+					Map<String, String> globalVarsMap = new HashMap<String, String>();
+					StringBuilder stringBuildername = new StringBuilder();
+					if(invoice.getInvoiceType().equalsIgnoreCase(Constants.PAYABLES)){
+						globalVarsMap.put("vendorName", stringBuildername.append(contactUser.getFirstName()).append(" ").append(contactUser.getLastName()).toString());
+					}
+					else{
+					globalVarsMap.put("clientName", stringBuildername.append(contactUser.getFirstName()).append(" ").append(contactUser.getLastName()).toString());
+					}
+					globalVarsMap.put("invoiceID", invoice.getInvoiceId());
+					globalVarsMap.put("totalAmount", invoice.getTotal());
+					globalVarsMap.put("reason", invoice.getRejectReason());
+					globalVarsMap.put("orgName", loginOrgLocation.getOrgLocationName());
+					StringBuilder stringBuilderLoginname = new StringBuilder();
+					globalVarsMap.put("LoginUser", stringBuilderLoginname.append(loginUser.getFirstName()).append(" ").append(loginUser.getLastName()).toString());
+					StringBuilder stringBuildforLink = new StringBuilder();
+					globalVarsMap.put("loginLink", stringBuildforLink.append("<a href='").append(sourceleadLoginUrl).append("' style='text-decoration:none; '><div style=' width:220px; border-radius:30px; background-color:#214b90; color:#FFF; font-size:18px; font-weight:500; margin:10px auto 5px auto; padding:10px 0px; text-align:center; letter-spacing:2px;'>Login</div></a>").toString());
+					InternetAddress[] iAdressArray = InternetAddress.parse(emailMessage.getToEmail());
+					
+						    //send mail logic
+					        List<EmailAttachment> attachmentList = new ArrayList<>();
+					
+					        //send notification logic
+							EmailScenario notificationScenario = null;
+							if (invoiceType.equalsIgnoreCase("Payables")) {
+							    commonUtil.sendTemplateEmail(emailMessage, globalVarsMap, loginOrgLocation.getOrg(), loginOrgLocation, Constants.INVOICE_REJECT_MAIL_VENDOR_EMAIL,attachmentList);
+								notificationScenario = emailScenarioService.getEmailScenarioByUniqueName(Constants.INVOICE_REJECT_MAIL_VENDOR_EMAIL, Constants.ENTITY_TYPE_NOTIFICATION);
+							}
+							else {
+							    commonUtil.sendTemplateEmail(emailMessage, globalVarsMap, loginOrgLocation.getOrg(), loginOrgLocation, Constants.INVOICE_REJECT_MAIL_CLIENT_EMAIL,attachmentList);
+								notificationScenario = emailScenarioService.getEmailScenarioByUniqueName(Constants.INVOICE_REJECT_MAIL_CLIENT_EMAIL, Constants.ENTITY_TYPE_NOTIFICATION);
+							}
+							String notificationbody = emailScenerioUtil.buildTemplateBody(notificationScenario.getBody(), globalVarsMap, notificationScenario);
+							notificationScenario.setBody(notificationbody);
+							String actionLink = "";
+							StringBuilder notificationLink = new StringBuilder();
+							if (Constants.RECEIVABLE.equalsIgnoreCase(invoiceType)) {
+								actionLink = notificationLink.append(sourceleadUrl).append("/").append("viewInvoice?invoiceUUID="
+										+ invoice.getInvoiceUUID() + "&invoiceType=Payables").toString();
+							}
+							else {
+								actionLink = notificationLink.append(sourceleadUrl).append("/").append("viewInvoice?invoiceUUID="
+										+ invoice.getInvoiceUUID() + "&invoiceType=Receivable").toString();
+							}
+							emailScenerioUtil.sendNotification(actionLink, loginUser, contactUser, invoice.getResponderLocationId(), notificationScenario, new HashMap<String, String>());
+				}
+			}
 		}
-		else{
-		globalVarsMap.put("clientName", stringBuildername.append(invoice.getContactUser().getFirstName()).append(" ").append(invoice.getContactUser().getLastName()).toString());
-		}
-		globalVarsMap.put("invoiceID", invoice.getInvoiceId());
-		globalVarsMap.put("totalAmount", invoice.getTotal());
-		globalVarsMap.put("reason", invoice.getRejectReason());
-		globalVarsMap.put("orgName", loginOrgLocation.getOrgLocationName());
-		StringBuilder stringBuilderLoginname = new StringBuilder();
-		globalVarsMap.put("LoginUser", stringBuilderLoginname.append(loginUser.getFirstName()).append(" ").append(loginUser.getLastName()).toString());
-		StringBuilder stringBuildforLink = new StringBuilder();
-		globalVarsMap.put("loginLink", stringBuildforLink.append("<a href='").append(sourceleadLoginUrl).append("' style='text-decoration:none; '><div style=' width:220px; border-radius:30px; background-color:#214b90; color:#FFF; font-size:18px; font-weight:500; margin:10px auto 5px auto; padding:10px 0px; text-align:center; letter-spacing:2px;'>Login</div></a>").toString());
-		InternetAddress[] iAdressArray = InternetAddress.parse(emailMessage.getToEmail());
-		
-			    //send mail logic
-		        List<EmailAttachment> attachmentList = new ArrayList<>();
-		
-		        //send notification logic
-				EmailScenario notificationScenario = null;
-				if (invoiceType.equalsIgnoreCase("Payables")) {
-				    commonUtil.sendTemplateEmail(emailMessage, globalVarsMap, loginOrgLocation.getOrg(), loginOrgLocation, Constants.INVOICE_REJECT_MAIL_VENDOR_EMAIL,attachmentList);
-					notificationScenario = emailScenarioService.getEmailScenarioByUniqueName(Constants.INVOICE_REJECT_MAIL_VENDOR_EMAIL, Constants.ENTITY_TYPE_NOTIFICATION);
-				}
-				else {
-				    commonUtil.sendTemplateEmail(emailMessage, globalVarsMap, loginOrgLocation.getOrg(), loginOrgLocation, Constants.INVOICE_REJECT_MAIL_CLIENT_EMAIL,attachmentList);
-					notificationScenario = emailScenarioService.getEmailScenarioByUniqueName(Constants.INVOICE_REJECT_MAIL_CLIENT_EMAIL, Constants.ENTITY_TYPE_NOTIFICATION);
-				}
-				String notificationbody = emailScenerioUtil.buildTemplateBody(notificationScenario.getBody(), globalVarsMap, notificationScenario);
-				notificationScenario.setBody(notificationbody);
-				String actionLink = "";
-				StringBuilder notificationLink = new StringBuilder();
-				if (Constants.RECEIVABLE.equalsIgnoreCase(invoiceType)) {
-					actionLink = notificationLink.append(sourceleadUrl).append("/").append("viewInvoice?invoiceUUID="
-							+ invoice.getInvoiceUUID() + "&invoiceType=Payables").toString();
-				}
-				else {
-					actionLink = notificationLink.append(sourceleadUrl).append("/").append("viewInvoice?invoiceUUID="
-							+ invoice.getInvoiceUUID() + "&invoiceType=Receivable").toString();
-				}
-				emailScenerioUtil.sendNotification(actionLink, loginUser, invoice.getContactUser(), invoice.getResponderLocationId(), notificationScenario, new HashMap<String, String>());
-		
 	}
 	
 	/**
@@ -1792,6 +2035,33 @@ public class InvoiceRestController {
 		return TZ_DF_TS.parse(yesterDayDate);
 	}
 	
+	@RequestMapping(value = "/getInvoiceListForCreditDebitNote", method = RequestMethod.GET)
+	@ResponseBody
+	public ResponseList<Invoice> getInvoiceListForCreditDebitNote(@RequestParam(value = "orgRelationId", required = false) String orgRelationId, 
+			@RequestParam(value = "invoiceType", required = false) String invoiceType, 
+			HttpServletRequest request, HttpServletResponse response) throws Exception
+	{
+		ResponseList<Invoice> responseList = new ResponseList<>();
+		OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+		List<Invoice> invoiceList = null;
+		if(StringUtils.isNotBlank(orgRelationId)){
+		invoiceList = invoiceService.getClientBasedInvoiceLists(Long.parseLong(orgRelationId), orgLocation.getId(), invoiceType);
+		}
+			responseList.setData(invoiceList);
+		return responseList;
+	}
+	
+	@RequestMapping(value = "/getApproversListForCreditDebitNote", method = RequestMethod.GET)
+	@ResponseBody
+	public ResponseList<User> getApproversListForCreditDebitNote(HttpServletRequest request, HttpServletResponse response) throws Exception
+	{
+		ResponseList<User> responseList = new ResponseList<>();
+		OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+		List<User> approversList = userService.getOwnersByOrgLocationId(orgLocation.getId());
+		responseList.setData(approversList);
+		return responseList;
+	}
+	
 	@RequestMapping(value = "/getClientBasedInvoiceList", method = RequestMethod.POST)
 	@ResponseBody
 	public ResponseList<Invoice> getClientBasedInvoiceList(@RequestParam(value = "invoiceType", required = false) String invoiceType, @RequestParam(value = "invoiceUUID", required = false) String invoiceUUID, HttpServletRequest request, HttpServletResponse response) throws Exception
@@ -1812,7 +2082,23 @@ public class InvoiceRestController {
 				if (invce.getDueDate() != null) {
 					invce.setDueDateStr(commonUtil.dateStrFromOrgDateFormatter(orgLocation.getDateFormat(), invce.getDueDate()));
 				}
-				if (null != invce.getContactUser()) {
+				if(null != invce.getContactUsers()){
+					String[] contactUsers = invoice.getContactUsers().split(",");
+					if(contactUsers.length != 0){
+						StringBuilder contactUserName = new StringBuilder();
+						for(String contactUserId : contactUsers){
+							User contactUser = userService.getUserById(Long.parseLong(contactUserId.trim()));
+							if(contactUser.getLastName() != null){
+								contactUserName = contactUserName.append(contactUser.getFirstName()).append(" ").append(contactUser.getLastName()).append(", ");
+							}else{
+								contactUserName = contactUserName.append(contactUser.getFirstName()).append(", ");
+							}
+						}
+						
+						invce.setClientContactName(contactUserName.toString().substring(0, contactUserName.toString().length() - 2));
+					}
+				}
+				/*if (null != invce.getContactUser()) {
 					StringBuilder username = new StringBuilder();
 					if (null != invce.getContactUser().getLastName()) {
 						username.append(invce.getContactUser().getFirstName()).append(" ").append(invce.getContactUser().getLastName()).toString();
@@ -1821,7 +2107,7 @@ public class InvoiceRestController {
 						username.append(invce.getContactUser().getFirstName());
 					}
 					invce.setClientContactName(username.toString());
-				}
+				}*/
 				clientList.add(invce);
 			}
 		}
@@ -2159,23 +2445,66 @@ public class InvoiceRestController {
 			@RequestParam(value = "searchVal", required = false) String searchVal,@RequestParam(value = "orderVal", required = false) String orderVal,
 			@RequestParam(value = "locationId", required = false) String locationId,
 			@RequestParam(value = "checkedStatus") String[] checkedStatus,
+			@RequestParam(value = "namesStatus") String[] namesStatus,
 			HttpServletRequest request, HttpServletResponse response) throws Exception{
 		Invoice invoice = invoiceService.getInvoicetByInvoiceUUID(invoiceUUID);
 		User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
 		List<InvoiceTimelineDTO> timelineHistories = new ArrayList<>();
 		Date datesRange[] = new Date[2];
-		if(dateRange[0] != null && !dateRange[0].equals("null")) {
-			OrgLocations orgLocation = orgLocationService.getOrgLocations(Long.parseLong(locationId));
-			DateFormat dateFormat = new SimpleDateFormat ("MM/dd/yyyy hh:mm a");
-			Date fromDate = dateFormat.parse(dateRange[0]);
-			Date toDate = dateFormat.parse(dateRange[1]);
-			//Date fromDate = commonUtil.orgLocationDateFormat(orgLocation.getDateFormat(), dateRange[0]);
-			//Date toDate = commonUtil.orgLocationDateFormat(orgLocation.getDateFormat(), dateRange[1]);
+		if(dateRange[0] != null && !dateRange[0].equals("null") && !dateRange[0].equalsIgnoreCase("") && !dateRange[1].equalsIgnoreCase("")) {
+				OrgLocations orgLocation = orgLocationService.getOrgLocations(Long.parseLong(locationId));
+				Date fromDate = commonUtil.orgLocationDateFormat(orgLocation.getDateFormat(), dateRange[0]);
+				Date toDate = commonUtil.orgLocationDateFormat(orgLocation.getDateFormat(), dateRange[1]);
+				/*Calendar cal = Calendar.getInstance();
+			    cal.setTime(fromDate);
+			    cal.add(Calendar.DATE, 1);
+			    cal.add(Calendar.SECOND, -1);
+			    cal.getTime();*/
+			    Calendar cal1 = Calendar.getInstance();
+			    cal1.setTime(toDate);
+			    cal1.add(Calendar.DATE, 1);
+			    cal1.add(Calendar.SECOND, -1);
+			    cal1.getTime();
+			System.out.println("from date : "+fromDate);
+			System.out.println("to date : "+cal1.getTime());
 			datesRange[0] = fromDate;
-			datesRange[1] = toDate;
+			datesRange[1] = cal1.getTime();
 		}
-		
-		timelineHistories = invoiceService.getInvoiceTimelineHistoryList(invoice.getId(), user, searchVal, orderVal, datesRange, checkedStatus);
+		timelineHistories = invoiceService.getInvoiceTimelineHistoryList(invoice.getId(), user, searchVal, orderVal, datesRange, checkedStatus,namesStatus);
 		return timelineHistories;
+	}
+	
+	@RequestMapping(value = "/deleteCreditDebitNote", method = RequestMethod.POST)
+	@ResponseBody
+	public boolean deleteCreditDebitNote(@RequestParam(value = "creditDebitUUID", required = false) String creditDebitUUID, 
+			@RequestParam(value = "noteType", required = false) String noteType, HttpServletRequest request) throws Exception
+	{
+		User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+		OrgLocations orglocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+		boolean isDeleted = invoiceService.deleteCreditDebitNote(creditDebitUUID, noteType, user,orglocations);
+		
+		return isDeleted;
+	}
+	
+	@RequestMapping(value = "/reactiveCreditDebitNote", method = RequestMethod.POST)
+	@ResponseBody
+	public boolean reactiveCreditDebitNote(@RequestParam(value = "creditDebitUUID", required = false) String creditDebitUUID, 
+			@RequestParam(value = "noteType", required = false) String noteType, HttpServletRequest request) throws Exception
+	{
+		User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+		OrgLocations orglocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+		boolean reactive = invoiceService.reactiveCreditDebitNote(creditDebitUUID, noteType, user,orglocations);
+		
+		return reactive;
+	}
+	
+	@RequestMapping(value = "/deleteLineItemEditModeId", method = RequestMethod.POST)
+	@ResponseBody
+	public String deleteLineItemEditModeId(@RequestParam(value = "id", required = false) String id, HttpServletRequest request) throws Exception
+	{
+		OrgLocations orglocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+		CreditDebitLineItems lineItem = invoiceService.getCreditDebitLineItemById(Long.parseLong(id));
+		invoiceService.deleteCreditDebitLineItem(lineItem);
+		return "Success";
 	}
 }

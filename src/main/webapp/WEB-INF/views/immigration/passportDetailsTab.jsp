@@ -58,7 +58,7 @@
 				    <c:when test="${myImmigrationPage == 'N'}">
 				        <td><div><i id="edit" onclick="immigration.editPassportVisaDetailsByRowId(${passportdetails.id},'${passportdetails.idType}');"
 				class="glyphicon glyphicon-pencil cursorPointer"></i><i id="delete" 
-				 onclick="deleteImmigrationRecord('deletePassportVisaDetails',${passportdetails.id},'${passportdetails.idType}');" 
+				 onclick="deleteImmigrationRecord('immigration.deletePassportVisaDetails',${passportdetails.id},'${passportdetails.idType}');" 
 				 class="glyphicon glyphicon-trash ml10 cursorPointer"></i></div></td>
 				    </c:when>
 				    <c:otherwise>
@@ -66,7 +66,7 @@
 						    <c:when test="${curUscisMyImmi == 'Request to fill' || curUscisMyImmi == 'Request for modifications'}">
 						       <td><div><i id="edit" onclick="immigration.editPassportVisaDetailsByRowId(${passportdetails.id},'${passportdetails.idType}');"
 				class="glyphicon glyphicon-pencil cursorPointer"></i><i id="delete" 
-				 onclick="deleteImmigrationRecord('deletePassportVisaDetails',${passportdetails.id},'${passportdetails.idType}');" 
+				 onclick="deleteImmigrationRecord('immigration.deletePassportVisaDetails',${passportdetails.id},'${passportdetails.idType}');" 
 				 class="glyphicon glyphicon-trash ml10 cursorPointer"></i></div></td>
 						    </c:when>
 						    <c:otherwise>
@@ -159,6 +159,7 @@
 				$(".popMask").fadeOut(200);
 				$("#popPassView").fadeOut(200);
 				$("#CandidatePassportform")[0].reset();
+				$("#countryName").selectpicker("refresh");
 				$("#candidatePassportId").val('');
 				$('#popPassView').find('p.jquery_form_error_message').remove();
 				$("#passport_save_id").removeAttr("disabled");

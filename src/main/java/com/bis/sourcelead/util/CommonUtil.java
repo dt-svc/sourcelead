@@ -10,6 +10,7 @@ import java.io.Writer;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.net.URLEncoder;
+import java.nio.file.Files;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -59,12 +60,14 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
+import org.springframework.web.bind.annotation.RequestParam;
 
 import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.dao.ProjectTasksDao;
 import com.bis.sourcelead.dao.ShiftDao;
 import com.bis.sourcelead.dto.ApplicantRejectBackOutDTO;
 import com.bis.sourcelead.dto.CandidateDTO;
+import com.bis.sourcelead.dto.FileInfo;
 import com.bis.sourcelead.dto.PayrollPayheadDTO;
 import com.bis.sourcelead.dto.RequirementDTO;
 import com.bis.sourcelead.dto.ResponseList;
@@ -2693,5 +2696,40 @@ public String getOrglocationDateFormatHHMMSS(String dateFormat, Date date)
 		return createExcelsheet;
 	}
 
+	public List<FileInfo> getListOfFileInfo(List<File> filesList, String type,
+			@RequestParam(defaultValue = "0") long orgId, @RequestParam(defaultValue = "0") long orgLocationId)
+			throws IOException {
+		//System.out.println(" orgId :   "+orgId +", orgLocationId : "+orgLocationId);
+		 logger.debug("***** orgId :   "+orgId +", orgLocationId : "+orgLocationId);
+		List<FileInfo> fileInfoList = new ArrayList<>();
+		try {
+			filesList.forEach(fileObj -> {
+				FileInfo fileInfo = new FileInfo();
+				String fileName = fileObj.getName();
+				File file = new File(staticPath, "tempResumes" + System.getProperty("file.separator") + fileName);
+				FileUploadUtil fileUploadUtil = new FileUploadUtil();
+				String extenstion = fileName.substring(fileName.lastIndexOf("."));
+				if (extenstion.equalsIgnoreCase(".rar"))
+					return;
+				if (extenstion.equalsIgnoreCase(".zip")) {
+					fileInfoList.addAll(fileUploadUtil.uploadZipFile(staticPath, orgId, orgLocationId, type, file));
+				} else {
+					String fileURL = fileUploadUtil.uploadFile(staticPath, orgId, orgLocationId, type, file);
+					fileInfo.setFileName(fileName);
+					fileInfo.setFileURL(fileURL);
+					try {
+						fileInfo.setContentType(Files.probeContentType(file.toPath()));
+					} catch (IOException e) {
+						e.printStackTrace();
+					}
+					fileInfoList.add(fileInfo);
+				}
+			}); // for each close.
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		// System.out.println(" before file return list size ");
+		return fileInfoList;
+	}
 }
 

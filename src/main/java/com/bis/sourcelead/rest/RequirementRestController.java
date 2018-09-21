@@ -60,8 +60,10 @@ import com.bis.sourcelead.entity.RequirementApproverHierarchy;
 import com.bis.sourcelead.entity.RequirementAssignTo;
 import com.bis.sourcelead.entity.RequirementSubmission;
 import com.bis.sourcelead.entity.RequirementSubmissionHistory;
+import com.bis.sourcelead.entity.RequirementSubmissionTemplateFields;
 import com.bis.sourcelead.entity.Roles;
 import com.bis.sourcelead.entity.Shift;
+import com.bis.sourcelead.entity.SourceleadFormFields;
 import com.bis.sourcelead.entity.Team;
 import com.bis.sourcelead.entity.Timezone;
 import com.bis.sourcelead.entity.User;
@@ -82,6 +84,7 @@ import com.bis.sourcelead.service.RequirementAssignToService;
 import com.bis.sourcelead.service.RequirementService;
 import com.bis.sourcelead.service.RequirementSubmissionHistoryService;
 import com.bis.sourcelead.service.RequirementSubmissionService;
+import com.bis.sourcelead.service.RequirementSubmissionTemplateFieldsService;
 import com.bis.sourcelead.service.RolesService;
 import com.bis.sourcelead.service.SourceleadRolesService;
 import com.bis.sourcelead.service.TeamService;
@@ -187,6 +190,9 @@ public class RequirementRestController {
 	 
 	 @Autowired
 	 TimeZoneService timeZoneService;
+	 
+	 @Autowired
+	 RequirementSubmissionTemplateFieldsService requirementSubmissionTemplateFieldsService;
 	 
 	@RequestMapping(value = "/storeFairJob", method = RequestMethod.POST)
 	public @ResponseBody Response<String> storeFairJob(JobFairDTO jobFairDTO, HttpServletRequest request)
@@ -1359,6 +1365,7 @@ public class RequirementRestController {
 							if(StringUtils.isNotBlank(candidate.getPhoneNumber())) {
 								JSONObject mobilePhoneItem = new JSONObject();
 								mobilePhoneItem.put("label", "Phone Number");
+								mobilePhoneItem.put("type", "text");
 								mobilePhoneItem.put("id", "text-"+SourceLeadRandomCodeHelper.generateRandomBulkSubmissionId());
 								mobilePhoneItem.put("name", "PhoneNumber");
 								mobilePhoneItem.put("value", candidate.getPhoneNumber());
@@ -1368,6 +1375,7 @@ public class RequirementRestController {
 							
 							JSONObject emailItem = new JSONObject();
 							emailItem.put("label", "Email Id");
+							emailItem.put("type", "text");
 							emailItem.put("id", "text-"+SourceLeadRandomCodeHelper.generateRandomBulkSubmissionId());
 							emailItem.put("name", "EmailId");
 							emailItem.put("value", candidate.getEmail());
@@ -1376,6 +1384,7 @@ public class RequirementRestController {
 							
 							JSONObject locationItem = new JSONObject();
 							locationItem.put("label", "Location");
+							locationItem.put("type", "text");
 							locationItem.put("id", "submissionLocation");
 							locationItem.put("name", "location");
 							locationItem.put("value", candidate.getLocation());
@@ -1384,6 +1393,7 @@ public class RequirementRestController {
 							
 							JSONObject countryItem = new JSONObject();
 							countryItem.put("label", "Country");
+							countryItem.put("type", "text");
 							countryItem.put("id", "submissionCountry");
 							countryItem.put("name", "country");
 							countryItem.put("value", candidate.getCountry());
@@ -1393,6 +1403,7 @@ public class RequirementRestController {
 							if(StringUtils.isNotBlank(candidate.getState())) {
 								JSONObject stateItem = new JSONObject();
 								stateItem.put("label", "State");
+								stateItem.put("type", "text");
 								stateItem.put("id", "submissionState");
 								stateItem.put("name", "state");
 								stateItem.put("value", candidate.getState());
@@ -1403,6 +1414,7 @@ public class RequirementRestController {
 							if(StringUtils.isNotBlank(candidate.getCity())) {
 								JSONObject cityItem = new JSONObject();
 								cityItem.put("label", "City");
+								cityItem.put("type", "text");
 								cityItem.put("id", "submissionCity");
 								cityItem.put("name", "city");
 								cityItem.put("value", candidate.getCity());
@@ -1413,6 +1425,7 @@ public class RequirementRestController {
 							if(StringUtils.isNotBlank(candidate.getNoticePeriod())) {
 								JSONObject npItem = new JSONObject();
 								npItem.put("label", "Notice Period");
+								npItem.put("type", "text");
 								npItem.put("id", "select-"+SourceLeadRandomCodeHelper.generateRandomBulkSubmissionId());
 								npItem.put("name", "NoticePeriod");
 								npItem.put("value", candidate.getNoticePeriod());
@@ -1470,5 +1483,126 @@ public class RequirementRestController {
 		requirementService.assignGeneratedIdToJobFairs();
 		return "Successfully added Generated Id's to JobFairs";
 	}
+	
+	
+	@RequestMapping(value = "/ws/dumpSubmissionTemplateFileds", method = RequestMethod.GET)
+    public void dumpSubmissionTemplateFileds(HttpServletRequest request, HttpServletResponse response) throws Exception
+    {
+		   List<RequirementSubmission> requirementSubmissionList =  requirementSubmissionService.getAllSubmissionsNotInTemplateFileds();
+	       
+		   if(requirementSubmissionList != null && !requirementSubmissionList.isEmpty()) {
+			   for(RequirementSubmission rs : requirementSubmissionList) {
+		    	   JSONArray jsonarray = new JSONArray(rs.getSubmissionTemplateJsonStringValue());
+		    	   RequirementSubmissionTemplateFields rsf = new RequirementSubmissionTemplateFields();
+			  		 for(int i=0; i<jsonarray.length(); i++){
+			  		        JSONObject obj = jsonarray.getJSONObject(i);
+			  		         rsf.setRequirementSubmission(rs);
+			  		         if(obj.has("name") && obj.getString("name").equalsIgnoreCase("FirstName")) {
+			  		        	rsf.setFirstName(obj.getString("value"));
+			  		         }
+			  		         
+			  		         if(obj.has("name") && obj.getString("name").equalsIgnoreCase("LastName") && StringUtils.isNotBlank(obj.getString("value")) && obj.getString("value") != null) {
+			  		        	rsf.setLastName(obj.getString("value"));
+			  		         }
+			  		         
+			  		         if(obj.has("name") && obj.getString("name").equalsIgnoreCase("PhoneNumber") && StringUtils.isNotBlank(obj.getString("value")) && obj.getString("value") != null) {
+			  		        	rsf.setPhoneNumber(obj.getString("value"));
+			  		         }
+			  		         
+			  		         
+			  		         if(obj.has("name") && obj.getString("name").equalsIgnoreCase("EmailId") && StringUtils.isNotBlank(obj.getString("value")) && obj.getString("value") != null) {
+			  		        	rsf.setEmailId(obj.getString("value"));
+			  		         }
+			  		         
+			  		         
+			  		         if(obj.has("name") && obj.getString("name").equalsIgnoreCase("location") && StringUtils.isNotBlank(obj.getString("value")) && obj.getString("value") != null) {
+			  		        	rsf.setLocation(obj.getString("value"));
+			  		         }
+			  		         
+			  		         if(obj.has("name") && obj.getString("name").equalsIgnoreCase("country") && StringUtils.isNotBlank(obj.getString("value")) && obj.getString("value") != null) {
+			  		        	rsf.setCountry(obj.getString("value"));
+			  		         }
+			  		         
+			  		         if(obj.has("name") && obj.getString("name").equalsIgnoreCase("state") && StringUtils.isNotBlank(obj.getString("value")) && obj.getString("value") != null) {
+			  		        	rsf.setState(obj.getString("value"));
+			  		         }
+			  		       
+			  		         if(obj.has("name") && obj.getString("name").equalsIgnoreCase("city") && StringUtils.isNotBlank(obj.getString("value")) && obj.getString("value") != null) {
+			  		        	rsf.setCity(obj.getString("value"));
+			  		         }
+			  		         
+			  		         if(obj.has("name") && obj.getString("name").equalsIgnoreCase("Current/LastCompany") && StringUtils.isNotBlank(obj.getString("value")) && obj.getString("value") != null) {
+			  		        	rsf.setCurrentORLastCompany(obj.getString("value"));
+			  		         }
+			  		         
+			  		         if(obj.has("name") && obj.getString("name").equalsIgnoreCase("Designation") && StringUtils.isNotBlank(obj.getString("value")) && obj.getString("value") != null) {
+			  		        	rsf.setDesignation(obj.getString("value"));
+			  		         }
+			  		         
+			  		         if(obj.has("name") && obj.getString("name").equalsIgnoreCase("Education") && StringUtils.isNotBlank(obj.getString("value")) && obj.getString("value") != null) {
+			  		        	rsf.setEducation(obj.getString("value"));
+			  		         }
+			  		         
+			  		         if(obj.has("name") && obj.getString("name").equalsIgnoreCase("CurrentCTC") && StringUtils.isNotBlank(obj.getString("value")) && obj.getString("value") != null) {
+			  		        	 String[] currentCTC = obj.getString("value").split(" ");
+				  		        	if(currentCTC.length > 1) {
+				  		        		 rsf.setCurrentRateType(currentCTC[0]);
+					  		        	 rsf.setCurrentCTC(currentCTC[1]);
+					  		        	 rsf.setCurrentRatePer(currentCTC[3]);
+				  		        	}else {
+				  		        		rsf.setCurrentCTC(obj.getString("value"));
+				  		        	}
+				  		        	
+			  		         }
+			  		       
+			  		         if(obj.has("name") && obj.getString("name").equalsIgnoreCase("ExpectedCTC") && StringUtils.isNotBlank(obj.getString("value")) && obj.getString("value") != null) {
+			  		        	 String[] expectedCTC = obj.getString("value").split(" ");
+			  		        	 if(expectedCTC.length > 1) {
+			  		        		 rsf.setExpectedRateType(expectedCTC[0]);
+				  		        	 rsf.setExpectedCTC(expectedCTC[1]);
+				  		        	 rsf.setExpectedRatePer(expectedCTC[3]);
+			  		        	 }else {
+			  		        		rsf.setExpectedCTC(obj.getString("value"));
+			  		        	 }
+			  		        	 
+			  		         } 
+			  		         
+			  		        if(obj.has("name") && obj.getString("name").equalsIgnoreCase("NoticePeriod") && StringUtils.isNotBlank(obj.getString("value")) && obj.getString("value") != null) {
+			  		        	rsf.setNoticePeriod(obj.getString("value"));
+			  		         } 
+			  		        
+			  		         if(obj.has("name") && obj.getString("name").equalsIgnoreCase("WorkExperience") && StringUtils.isNotBlank(obj.getString("value")) && obj.getString("value") != null) {
+			  		        	String[] experience = obj.getString("value").split(" ");
+			  		        	if(experience.length > 1) {
+			  		        		rsf.setWorkExperience(experience[0]+"."+experience[2]);
+			  		        	}else {
+			  		        		rsf.setWorkExperience(obj.getString("value"));
+			  		        	}
+			  		        	
+			  		         } 
+			  		        
+			  		         if(obj.has("name") && obj.getString("name").equalsIgnoreCase("zipcode") && StringUtils.isNotBlank(obj.getString("value")) && obj.getString("value") != null) {
+			  		        	rsf.setZipCode(obj.getString("value"));
+			  		         } 
+			  		       
+			  		         if(obj.has("name") && obj.getString("name").equalsIgnoreCase("DOB") && StringUtils.isNotBlank(obj.getString("value")) && obj.getString("value") != null) {
+			  		        	rsf.setDateOfBirth(commonUtil.orgLocationDateFormat("MM-dd-yyyy",obj.getString("value")));
+			  		         } 
+			  		       
+			  		         
+			  		       rsf.setStatus(1);
+			  		       rsf.setCreatedBy(rs.getCreatedBy());
+			  		       rsf.setUpdatedBy(rs.getUpdatedBy());
+			  		       rsf.setCreatedDate(rs.getCreatedDate());
+			  		       rsf.setUpdatedDate(rs.getUpdatedDate());
+			  		       
+			  		       requirementSubmissionTemplateFieldsService.storeRequirementSubmissionTemplateFields(rsf);
+			  		 }
+		  		 
+		       }
+		   }
+		  
+
+    }
 	
 }

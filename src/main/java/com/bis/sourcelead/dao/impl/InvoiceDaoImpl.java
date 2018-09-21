@@ -16,6 +16,7 @@ import java.util.stream.Collectors;
 
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.exception.ExceptionUtils;
+import org.hibernate.HibernateException;
 import org.hibernate.Query;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
@@ -28,10 +29,16 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.dao.InvoiceDao;
+import com.bis.sourcelead.dto.CreditDebitNoteDTO;
 import com.bis.sourcelead.dto.InvoiceDTO;
+import com.bis.sourcelead.dto.Response;
 import com.bis.sourcelead.dto.ResponseList;
 import com.bis.sourcelead.entity.Asset;
+import com.bis.sourcelead.entity.CandidateFamilyDetails;
+import com.bis.sourcelead.entity.CandidatePassportVisa;
 import com.bis.sourcelead.entity.Contracts;
+import com.bis.sourcelead.entity.CreditDebitLineItems;
+import com.bis.sourcelead.entity.CreditDebitNote;
 import com.bis.sourcelead.entity.Invoice;
 import com.bis.sourcelead.entity.InvoicePayment;
 import com.bis.sourcelead.entity.InvoiceTimelineHistory;
@@ -47,6 +54,41 @@ public class InvoiceDaoImpl implements InvoiceDao {
 	@Value("${jdbc.schema}")
 	private String schema;
 
+	@Override
+	@Transactional
+	public CreditDebitNote saveCreditDebitNote(CreditDebitNote creditDebitNote) throws Exception {
+		Session session = this.sessionFactory.getCurrentSession();
+		try {
+			if (creditDebitNote != null) {
+				// for new Record increment generatedId based on orglocationId
+				if (creditDebitNote.getIsNewRecord() !=null && creditDebitNote.getIsNewRecord().equalsIgnoreCase("Y") ) {
+					Integer maxValue = 1;
+					String type = null;
+					if(creditDebitNote.getNoteType().equals(Constants.CREDIT_NOTE)){
+					type = Constants.CREDIT_ENTITY_SHORTCODE;	
+					}else{
+					type=Constants.DEBIT_ENTITY_SHORTCODE;	
+					}
+					String generatedId = checkCreditDebitIdNumberInDatebase(creditDebitNote.getOrgLocations().getId(),type);
+					if (generatedId != null) {
+						maxValue = Integer.parseInt(generatedId.substring(generatedId.lastIndexOf("-") + 1));
+							maxValue = maxValue + 1;
+							creditDebitNote.setGeneratedId(creditDebitNote.getGeneratedId().concat(maxValue.toString()));
+					} else {
+						creditDebitNote.setGeneratedId(creditDebitNote.getGeneratedId().concat(maxValue.toString()));
+					}
+					session.saveOrUpdate(creditDebitNote);
+				}else{
+					session.saveOrUpdate(creditDebitNote);	
+				}
+				
+			}
+		} catch (Exception exception) {
+			logger.error(ExceptionUtils.getFullStackTrace(exception));
+		}
+		return creditDebitNote;
+	}
+	
 	@Override
 	@Transactional
 	public Invoice saveInvoce(Invoice invoice) throws Exception {
@@ -113,6 +155,9 @@ public class InvoiceDaoImpl implements InvoiceDao {
 		if (Arrays.asList(invoiceTokens).contains("REJECTED")) {
 			subQuery = subQuery + "invoice.invoiceStatus <> 'Linked' and invoice.invoiceStatus = 'Rejected' or ";
 		}
+		if (Arrays.asList(invoiceTokens).contains("VOID")) {
+			subQuery = subQuery + "invoice.invoiceStatus <> 'Linked' and invoice.invoiceStatus = 'Void' or ";
+		}
 		if (Arrays.asList(invoiceTokens).contains("LINKED")) {
 			subQuery = subQuery + "invoice.invoiceStatus = 'Linked' or ";
 		}
@@ -134,6 +179,13 @@ public class InvoiceDaoImpl implements InvoiceDao {
 		}
 		if ((paymentTokens[0] != null && paymentTokens[0].length() > 0)) {
 			subQuery1 = "and (" + subQuery1.substring(0, subQuery1.length() - 4) + ")";
+		}
+		
+		String subQuery4 = "";
+		if (invoiceDTO.getInvoiceDeleteStatus().equals("ACTIVE")) {
+			subQuery4 = " and invoice.status = 1 ";
+		}else{
+			subQuery4 = " and invoice.status = 0 ";
 		}
 
 		String subQuery2 = "";
@@ -170,17 +222,17 @@ public class InvoiceDaoImpl implements InvoiceDao {
 		}
 
 		String query = "from Invoice invoice  left join fetch  invoice.orgRelationID left join fetch invoice.projectMemberId pm left join fetch pm.projects left join fetch pm.employee emp left join fetch emp.user "
-				+ "left join fetch invoice.expensesId left join fetch invoice.projectID where  invoice.orgLocation.id =:orgLocationId and invoice.status = '1' "
-				+ subQuery + " " + subQuery1 + " " + subQuery2 + " " + subQuery3 + " " + tagsQuery
+				+ "left join fetch invoice.expensesId left join fetch invoice.projectID where  invoice.orgLocation.id =:orgLocationId "
+				+ subQuery + " " + subQuery1 + " " + subQuery2 + " " +subQuery4 + " " + subQuery3 +" "+ tagsQuery
 				+ " and invoice.createdDate >= :startDateUTC and invoice.createdDate <= :endDateUTC";
 		String countQuery = "";
 		if (invoiceDTO.getInvoiceType().equalsIgnoreCase(Constants.RECEIVABLE)) {
-			countQuery = "from Invoice invoice  where invoice.orgLocation.id =:orgLocationId and invoice.invoiceType='Receivable' and invoice.status = '1' "
-					+ subQuery + " " + subQuery1 + " " + subQuery2 + " " + subQuery3 + " " + tagsQuery
+			countQuery = "from Invoice invoice  where invoice.orgLocation.id =:orgLocationId and invoice.invoiceType='Receivable' "
+					+ subQuery + " " + subQuery1 + " " + subQuery2 + " " +subQuery4 + " " + subQuery3 + " " +subQuery4 + " " + tagsQuery
 					+ " and invoice.createdDate >= :startDateUTC and invoice.createdDate <= :endDateUTC";
 		} else {
-			countQuery = "from Invoice invoice  where invoice.orgLocation.id =:orgLocationId and invoice.invoiceType='payables' and invoice.status = '1' "
-					+ subQuery + " " + subQuery1 + " " + subQuery2 + " " + subQuery3 + " " + tagsQuery
+			countQuery = "from Invoice invoice  where invoice.orgLocation.id =:orgLocationId and invoice.invoiceType='payables' "
+					+ subQuery + " " + subQuery1 + " " + subQuery2 + " " +subQuery4 + " " + subQuery3 + " " +subQuery4 + " " + tagsQuery
 					+ " and invoice.createdDate >= :startDateUTC and invoice.createdDate <= :endDateUTC";
 		}
 
@@ -198,31 +250,23 @@ public class InvoiceDaoImpl implements InvoiceDao {
 				String newDate = parsedDate.format(f2);
 				Date searchDate = new SimpleDateFormat("yyyy-MM-dd").parse(newDate);
 				java.sql.Date sqlDate = new java.sql.Date(searchDate.getTime());
-				String queryDate = "from Invoice invoice where invoice.orgLocation.id =:orgLocationId and ( invoice.invoiceDate =:sqlDate or invoice.dueDate =:sqlDate )";
-				Query queryObjDate = session.createQuery(queryDate.toString()).setDate("sqlDate", sqlDate)
-						.setLong("orgLocationId", orgLocations.getId());
-				response.setData(queryObjDate.list());
+				query1.append(" and (invoice.dueDate like '%" + sqlDate + "%'  ")
+					  .append("OR invoice.invoiceDate like '%" + sqlDate + "%' )");
 			} else {
 				if (invoiceDTO.getSearchValue() != null && !"".equalsIgnoreCase(invoiceDTO.getSearchValue())) {
 					query1.append(" and (invoice.invoiceId like '%" + invoiceDTO.getSearchValue() + "%' ")
-							.append("OR invoice.responderLocationId.orgLocationName like '%"
-									+ invoiceDTO.getSearchValue() + "%' ")
-							.append("OR invoice.orgLocation.orgLocationName like '%" + invoiceDTO.getSearchValue()
-									+ "%' ")
-							.append("OR invoice.contactUser.firstName like '%" + invoiceDTO.getSearchValue() + "%' ")
-							.append("OR invoice.contactUser.lastName like '%" + invoiceDTO.getSearchValue() + "%' ")
+							.append("OR invoice.responderLocationId.orgLocationName like '%" + invoiceDTO.getSearchValue() + "%' ")
+							.append("OR invoice.orgLocation.orgLocationName like '%" + invoiceDTO.getSearchValue() + "%' ")
 							.append("OR invoice.projectID.projectName like '%" + invoiceDTO.getSearchValue() + "%' ")
-							.append("OR invoice.invoiceDate like '%" + invoiceDTO.getSearchValue() + "%' ")
 							.append("OR invoice.total like '%" + invoiceDTO.getSearchValue() + "%' ")
 							.append("OR invoice.dueAmount like '%" + invoiceDTO.getSearchValue() + "%' ")
-							.append("OR invoice.dueDate like '%" + invoiceDTO.getSearchValue() + "%' ")
 							.append("OR invoice.invoiceStatus like '%" + invoiceDTO.getSearchValue() + "%' ")
 							.append("OR invoice.paymentStatus like '%" + invoiceDTO.getSearchValue() + "%' )");
 
 				}
 			}
 		}
-		Query queryObj = session.createQuery(query + query1.toString() + qry);
+		Query queryObj = session.createQuery(query + query1 + qry);
 		if (invoiceDTO != null && invoiceDTO.getLength() > 0) {
 			queryObj.setFirstResult(invoiceDTO.getStart());
 			queryObj.setMaxResults(invoiceDTO.getLength());
@@ -245,7 +289,7 @@ public class InvoiceDaoImpl implements InvoiceDao {
 		}
 		response.setRecordsTotal(count);
 		if (invoiceDTO != null) {
-			List<Long> filteredCountlist = session.createQuery("select count(*) " + countQuery + query1.toString())
+			List<Long> filteredCountlist = session.createQuery("select count(*) " + countQuery + query1)
 					.setLong("orgLocationId", orgLocations.getId()).setParameter("startDateUTC", startDateUTC)
 					.setParameter("endDateUTC", endDateUTC).setString("varString", "")
 					.setParameterList("tagsList", tagsList).list();
@@ -255,6 +299,140 @@ public class InvoiceDaoImpl implements InvoiceDao {
 			response.setRecordsFiltered(filteredCount);
 		}
 		response.setData(invoiceList);
+		return response;
+
+	}
+	
+	
+	@Override
+	@Transactional(rollbackFor = { Exception.class })
+	public ResponseList<CreditDebitNote> creditDebtListByOrgLocationId(OrgLocations orgLocations,Date startDateUTC,Date endDateUTC,CreditDebitNoteDTO creditDebitNoteDTO) throws Exception {
+		Session session = this.sessionFactory.getCurrentSession();
+
+		String[] noteTokens = creditDebitNoteDTO.getCreditDebitNoteStatus().split(",");
+
+		String subQuery = "";
+
+		if (Arrays.asList(noteTokens).contains("Draft")) {
+			subQuery = subQuery + "creditDebitNote.noteStatus = 'Draft' or ";
+		}
+		if (Arrays.asList(noteTokens).contains("Send")) {
+			subQuery = subQuery + "creditDebitNote.noteStatus = 'Send' or ";
+		}
+		if (Arrays.asList(noteTokens).contains("Received")) {
+			subQuery = subQuery + "creditDebitNote.noteStatus = 'Received' or ";
+		}
+		if (Arrays.asList(noteTokens).contains("Rejected")) {
+			subQuery = subQuery + "creditDebitNote.noteStatus = 'Rejected' or ";
+		}
+		
+		if ((noteTokens[0] != null && noteTokens[0].length() > 0)) {
+			subQuery = " and (" + subQuery.substring(0, subQuery.length() - 4) + ")";
+		}
+
+		
+		String subQuery1 = "";
+		if (creditDebitNoteDTO.getStatus().equals("ACTIVE")) {
+			subQuery1 = " and creditDebitNote.status = 1 ";
+		}else{
+			subQuery1 = " and creditDebitNote.status = 0 ";
+		}
+
+		String subQuery2 = "";
+
+		if (creditDebitNoteDTO.getNoteType().equalsIgnoreCase(Constants.CREDIT_NOTE)) {
+			subQuery2 = " and creditDebitNote.noteType = 'Credit' ";
+		} else {
+			subQuery2 = " and creditDebitNote.noteType = 'Debit' ";
+		}
+
+
+		/*List<String> tagsList = new ArrayList<>();
+		if (creditDebitNoteDTO.getTags() != null && !creditDebitNoteDTO.getTags().isEmpty()) {
+			String[] tags = creditDebitNoteDTO.getTags().split(",");
+			for (int i = 0; i < tags.length; i++) {
+				tagsList.add(tags[i]);
+			}
+		} else {
+			tagsList.add("");
+		}*/
+		//String tagsQuery = " and ((:varString  IN (:tagsList)) OR (:varString NOT IN (:tagsList) and creditDebitNote.id IN (select st.entityId from SourceleadTags st where st.tagName IN (:tagsList) and st.status ='1' ))) ";
+
+		List<CreditDebitNote> notesList = null;
+		ResponseList<CreditDebitNote> response = new ResponseList<>();
+
+		String qry = "";
+		if (StringUtils.isNotBlank(creditDebitNoteDTO.getSortColumn())) {
+			qry = " order by creditDebitNote." + creditDebitNoteDTO.getSortColumn() + " " + creditDebitNoteDTO.getSortOrder();
+		}
+
+		String query = "from CreditDebitNote creditDebitNote  left join fetch  creditDebitNote.orgRelations left join fetch  creditDebitNote.orgRelations where  creditDebitNote.orgLocations.id =:orgLocationId"
+				+ subQuery + " " + subQuery1 + " " + subQuery2+ " and creditDebitNote.createdDate >= :startDateUTC and creditDebitNote.createdDate <= :endDateUTC";
+				
+				
+		
+		String countQuery = "";
+		if (creditDebitNoteDTO.getNoteType().equalsIgnoreCase(Constants.CREDIT_NOTE)) {
+			countQuery = "from CreditDebitNote creditDebitNote  where creditDebitNote.orgLocations.id =:orgLocationId and creditDebitNote.noteType='Credit' "
+					+ subQuery + " " + subQuery1 + " " + subQuery2+" and creditDebitNote.createdDate >= :startDateUTC and creditDebitNote.createdDate <= :endDateUTC";
+		} else {
+			countQuery = "from CreditDebitNote creditDebitNote  where creditDebitNote.orgLocations.id =:orgLocationId and creditDebitNote.noteType='Debit'"
+					+ subQuery + " " + subQuery1 + " " + subQuery2+" and creditDebitNote.createdDate >= :startDateUTC and creditDebitNote.createdDate <= :endDateUTC";
+		}
+		
+		
+		StringBuilder query1 = new StringBuilder("");
+		if (StringUtils.isNotBlank(creditDebitNoteDTO.getSearchValue())) {
+			if (creditDebitNoteDTO.getSearchValue().contains("/") || creditDebitNoteDTO.getSearchValue().contains("-")) {
+				String convertedDate = creditDebitNoteDTO.getSearchValue();
+				if (creditDebitNoteDTO.getSearchValue().contains("/")) {
+					convertedDate = creditDebitNoteDTO.getSearchValue().replaceAll("/", "-");
+				}
+				DateTimeFormatter orgFormat = new DateTimeFormatterBuilder().appendPattern(orgLocations.getDateFormat()).toFormatter();
+				LocalDate parsedDate = LocalDate.parse(convertedDate, orgFormat);
+				DateTimeFormatter f2 = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+				String newDate = parsedDate.format(f2);
+				Date searchDate = new SimpleDateFormat("yyyy-MM-dd").parse(newDate);
+				java.sql.Date sqlDate = new java.sql.Date(searchDate.getTime());
+				query1.append(" and (creditDebitNote.creditNoteDate like '%" + sqlDate + "%' )");
+			}else{
+			
+				if (creditDebitNoteDTO.getSearchValue() != null && !"".equalsIgnoreCase(creditDebitNoteDTO.getSearchValue())) {
+					query1.append(" and (creditDebitNote.referenceNumber like '%" + creditDebitNoteDTO.getSearchValue() + "%' ")
+							.append("OR creditDebitNote.responderLocation.orgLocationName like '%" + creditDebitNoteDTO.getSearchValue() + "%' ")
+							.append("OR creditDebitNote.orgLocations.orgLocationName like '%" + creditDebitNoteDTO.getSearchValue() + "%' ")
+							.append("OR creditDebitNote.generatedId like '%" + creditDebitNoteDTO.getSearchValue() + "%' ")
+							.append("OR creditDebitNote.total like '%" + creditDebitNoteDTO.getSearchValue() + "%' ")
+							.append("OR creditDebitNote.creditNoteDate like '%" + creditDebitNoteDTO.getSearchValue() + "%' ")
+							.append("OR creditDebitNote.noteStatus like '%" + creditDebitNoteDTO.getSearchValue() + "%' )");
+
+				}
+			}
+		}
+		
+		Query queryObj = session.createQuery(query+query1+ qry);
+		if (creditDebitNoteDTO != null && creditDebitNoteDTO.getLength() > 0) {
+			queryObj.setFirstResult(creditDebitNoteDTO.getStart());
+			queryObj.setMaxResults(creditDebitNoteDTO.getLength());
+		}
+		notesList = queryObj.setLong("orgLocationId", orgLocations.getId()).setParameter("startDateUTC", startDateUTC).setParameter("endDateUTC", endDateUTC).list();
+		int count = 0;
+		int filteredCount = 0;
+
+		List<Long> countlist = session.createQuery("select count(*) " + countQuery)	.setLong("orgLocationId", orgLocations.getId()).setParameter("startDateUTC", startDateUTC).setParameter("endDateUTC", endDateUTC).list();
+
+		if (countlist != null && !countlist.isEmpty()) {
+			count = countlist.iterator().next().intValue();
+		}
+		response.setRecordsTotal(count);
+		if (creditDebitNoteDTO != null) {
+			List<Long> filteredCountlist = session.createQuery("select count(*) " + countQuery+query1).setLong("orgLocationId", orgLocations.getId()).setParameter("startDateUTC", startDateUTC).setParameter("endDateUTC", endDateUTC).list();
+			if (filteredCountlist != null && !filteredCountlist.isEmpty()) {
+				filteredCount = filteredCountlist.iterator().next().intValue();
+			}
+			response.setRecordsFiltered(filteredCount);
+		}
+		response.setData(notesList);
 		return response;
 
 	}
@@ -591,6 +769,104 @@ public class InvoiceDaoImpl implements InvoiceDao {
 			return null;
 		}
 	}
+	
+	
+	@Override
+	@Transactional(rollbackFor = { Exception.class })
+	public CreditDebitNote getParentCreditDebitNoteById(Long noteId) throws Exception {
+		Session session = this.sessionFactory.getCurrentSession();
+		String query = "from CreditDebitNote note  where note.parentCreditDebitNote =:noteId";
+		CreditDebitNote parentCreditDebitNote = (CreditDebitNote) session.createQuery(query).setLong("noteId", noteId).uniqueResult();
+		return parentCreditDebitNote;
+	}
+	
+	@Override
+	@Transactional(rollbackFor = { Exception.class })
+	@SuppressWarnings("unchecked")
+	public List<CreditDebitLineItems> getCreditDebitLineItemsListByNoteIdAndLocationId(Long noteId,Long locationId)throws Exception {
+		Session session = this.sessionFactory.getCurrentSession();
+		String query = "from CreditDebitLineItems noteLineItems  where noteLineItems.creditDebitNote.id =:noteId and noteLineItems.orgLocation.id =:locationId";
+		List<CreditDebitLineItems> list = session.createQuery(query).setLong("noteId", noteId).setParameter("locationId", locationId).list();
+		return list;
+	}
+	
+	@Override
+	@Transactional(rollbackFor = { Exception.class })
+	@SuppressWarnings("unchecked")
+	public List<Invoice> getInvoiceListUsingMultipleStringIdsAndLocationId(String ids, Long orgLocationId) throws Exception {
+		Session session = this.sessionFactory.getCurrentSession();
+		String[] idsValues = ids.split(",");
+		// convert string array to long array
+		Long[] data = new Long[idsValues.length];
+		for (int i = 0; i < idsValues.length; i++) {
+		  data[i] = Long.valueOf(idsValues[i]);
+		}
+		
+		String query = "from Invoice invoice  where invoice.id IN ( :ids ) and invoice.orgLocation.id =:orgLocationId";
+		List<Invoice> list = session.createQuery(query).setParameterList("ids", data).setParameter("orgLocationId", orgLocationId).list();
+		return list;
+	}
+	
+	@Override
+	@Transactional(rollbackFor = { Exception.class })
+	@SuppressWarnings("unchecked")
+	public List<Invoice> getInvoiceListUsingMultipleIds(String ids) throws Exception {
+		Session session = this.sessionFactory.getCurrentSession();
+		String[] idsValues = ids.split(",");
+		// convert string array to long array
+		Long[] data = new Long[idsValues.length];
+		for (int i = 0; i < idsValues.length; i++) {
+		  data[i] = Long.valueOf(idsValues[i]);
+		}
+		
+		String query = "from Invoice invoice  where invoice.id IN ( :ids )";
+		List<Invoice> list = session.createQuery(query).setParameterList("ids", data).list();
+		return list;
+	}
+	
+	@Override
+	@Transactional(rollbackFor = { Exception.class })
+	@SuppressWarnings("unchecked")
+	public List<Invoice> getInvoiceListUsingMultipleIdsForChild(String ids) throws Exception {
+		Session session = this.sessionFactory.getCurrentSession();
+		String[] idsValues = ids.split(",");
+		// convert string array to long array
+		Long[] data = new Long[idsValues.length];
+		for (int i = 0; i < idsValues.length; i++) {
+		  data[i] = Long.valueOf(idsValues[i]);
+		}
+		
+		String query = "from Invoice invoice  where invoice.parentInvoiceId.id IN ( :ids )";
+		List<Invoice> list = session.createQuery(query).setParameterList("ids", data).list();
+		return list;
+	}
+	
+	@Override
+	@Transactional(rollbackFor = { Exception.class })
+	public CreditDebitNote getCreditDebitNoteByUUID(String noteUUID) throws Exception {
+		Session session = this.sessionFactory.getCurrentSession();
+		String query = "from CreditDebitNote note  where note.creditDebitUUID =:noteUUID";
+		CreditDebitNote creditDebitNote = (CreditDebitNote) session.createQuery(query).setParameter("noteUUID", noteUUID).uniqueResult();
+		return creditDebitNote;
+	}
+	
+	@Override
+	@Transactional(rollbackFor = { Exception.class })
+	@SuppressWarnings("unchecked")
+	public CreditDebitNote getCreditDebitNoteByIdAndOrglocationId(Long id, Long orgLocationId) throws Exception {
+		Session session = this.sessionFactory.getCurrentSession();
+		String query = "from CreditDebitNote note  where note.id =:id and note.orgLocations.id =:orgLocationId";
+		CreditDebitNote creditDebitNote = (CreditDebitNote) session.createQuery(query).setParameter("id", id).setParameter("orgLocationId", orgLocationId).uniqueResult();
+		return creditDebitNote;
+	}
+	
+	@Override
+	@Transactional(rollbackFor = { Exception.class })
+	public CreditDebitNote getCreditDebitNoteById(Long noteId) {
+			Session session = this.sessionFactory.getCurrentSession();
+			CreditDebitNote	note = (CreditDebitNote) session.get(CreditDebitNote.class, noteId);
+		return note;
+	}
 
 	@SuppressWarnings("unchecked")
 	@Override
@@ -678,17 +954,6 @@ public class InvoiceDaoImpl implements InvoiceDao {
 		String resultQuery = "";
 		String checkedStatusQuery = "";
 		
-		/*if(checkedStatus.length != 0) {
-			if (checkedStatus[0] != null && !checkedStatus[0].equals("null")) {
-				if(Arrays.asList(checkedStatus).contains("Paid") || Arrays.asList(checkedStatus).contains("Reminder")) {
-					checkedStatusQuery += " or (ith.invoicePaymentReminderStatus IN (:checkedStatus))";
-				}else {
-					checkedStatusQuery += " or (ith.invoiceStatus IN ( :checkedStatus ) and ith.linkedChildinvoice = null and ith.invoicePaymentReminderId = null) ";
-				}	
-				//checkedStatusQuery += ")";
-			}
-			
-		}*/
 		if (orderVal.equalsIgnoreCase("desc")) {
 			queryOrder = " order by ith.createdDate desc";
 		} else if (orderVal.equalsIgnoreCase("asc")) {
@@ -700,7 +965,7 @@ public class InvoiceDaoImpl implements InvoiceDao {
 			}
 		}
 		if (!searchVal.isEmpty()) {
-			searchValQuery = " and ith.invoiceStatus like :searchVal ";
+			searchValQuery = " and (ith.invoiceStatus like :searchVal or ith.rejectReason like :searchVal)";
 		}
 		
 		if (dateRange[0] != null) {
@@ -710,7 +975,7 @@ public class InvoiceDaoImpl implements InvoiceDao {
 				.concat(queryOrder);
 		Query hqlQuery = session.createQuery(resultQuery).setParameter("invoiceId", id);
 		if (!searchVal.isEmpty()) {
-			hqlQuery.setString("searchVal", "%" + searchVal + "%");
+			hqlQuery.setString("searchVal", "%"+searchVal+"%");
 		}
 		if(checkedStatus.length != 0 ) {
 			if( checkedStatus[0] != null && !checkedStatus[0].equals("null")) {
@@ -737,4 +1002,38 @@ public class InvoiceDaoImpl implements InvoiceDao {
 		}
 		return count;	
 	}
+	
+	@Override
+	@Transactional
+	public String checkCreditDebitIdNumberInDatebase(Long orgLocationId,String type) {
+		Session session = this.sessionFactory.getCurrentSession();
+
+			String query = "SELECT GENERATED_ID FROM "+schema+".CREDIT_DEBIT_NOTE WHERE ORG_LOCATIONS_ID = '"+ orgLocationId + "' AND  ID = (SELECT MAX(ID) FROM "+schema+".CREDIT_DEBIT_NOTE WHERE ORG_LOCATIONS_ID = '"+ orgLocationId + "' AND GENERATED_ID LIKE '%-"+type+"-%')" ;
+			String generatedId = (String) session.createSQLQuery(query).uniqueResult();
+		return generatedId;	
+	}
+
+	@Override
+	@Transactional(rollbackFor = { Exception.class })
+	public CreditDebitLineItems getCreditDebitLineItemById(Long id) {
+		Session session = this.sessionFactory.getCurrentSession();
+		String query = "from CreditDebitLineItems lineItems where lineItems.id =:id";
+		CreditDebitLineItems noteLineItem = (CreditDebitLineItems) session.createQuery(query).setParameter("id", id).uniqueResult();
+		return noteLineItem;
+	}
+
+	@Override
+	@Transactional
+	public void deleteCreditDebitLineItem(CreditDebitLineItems creditDebitLineItems) {
+		try {
+			Session session = this.sessionFactory.getCurrentSession();
+			session.delete(creditDebitLineItems);
+			session.flush();
+		} catch (HibernateException e) {
+			logger.error("SQL Exception occured while doing delete -->" + e.getMessage());
+			e.printStackTrace();
+		}
+
+	}
+	
 }

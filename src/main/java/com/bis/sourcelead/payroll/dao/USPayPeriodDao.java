@@ -19,8 +19,7 @@ public interface USPayPeriodDao {
 
 	int updatedPayperiod(String parseInt);
 
-	USPayPeriod getPaySheetFrequencyIdAndOrglocationId(OrgLocations orgLocation,
-			Long payfrequencyId);
+	USPayPeriod getPayPeriodByOrglocationId(OrgLocations orgLocation,Long payfrequencyId);
 
 	List<EmployeePayroll> getEmployeePayrollListByPayperiodNum(Integer payPeriodNum);
 }

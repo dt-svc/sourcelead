@@ -13,8 +13,10 @@ public interface AssociateContributionDao {
 
 	AssociateContribution findAssociateContributionById(Long assContriId);
 
-	AssociateContribution getValidateContribution(Long contriTypId, OrgLocations orgLocation);
+	AssociateContribution getValidateContribution(Long candidateId,Long contriTypId, OrgLocations orgLocation);
 
 	AssociateContribution findContributionByUserIdContributionId(Long userId, Long contributionId);
+
+	void deleteAssociateContributionByCandidateIdAndOrgLocationId(Long candidateId, Long orgLocationId);
 
 }

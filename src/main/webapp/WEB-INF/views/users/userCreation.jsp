@@ -16,7 +16,7 @@
 </script>  -->
 <script type="text/javascript">
 		window.onload = function () {
-			initLocationAuto('residenceLocation','residenceCountry','residenceState','residenceCity','residenceZipCode','residenceLatitude','residenceLongitude','editAssociate','');
+			initLocationAuto('residenceLocation','residenceCountry','residenceState','residenceCity','residenceZipCode','residenceLatitude','residenceLongitude','editAssociate','','address');
 			getDesignationType();
 			getDepartmentsList();
 			getResourceManagers();
@@ -61,11 +61,6 @@
         <ul class="list-unstyled">
           <li class="current"><a href="#tab-1" id="associates">Associates</a></li>
 
-
-         <%--  <c:if test="${SourceLeadWeb_country != 'United States'}">
-          <li class=""><a href="#tab-7" data-toggle="tab" id="associateLeaveType" >Leave Type</a></li>
-          </c:if>  --%>
-           
           <c:if test="${SourceLeadWeb_orgLocations.country == 'India'}">
          		 <li><a href="#tab-2" data-toggle="tab" id="indBankingDetails" onclick="getIndAssociateBankingDetails();">Banking Details</a></li>
        		     <li><a href="#tab-3" data-toggle="tab" id="indInformationDetails" onclick="getIndAssociateInformationDetails();">Information</a></li>
@@ -73,18 +68,13 @@
        		     <li><a href="#tab-5" data-toggle="tab" id="indSalaryDetails" onClick="indAssociateSalarySummary();">Salary</a></li>
           </c:if>
 
-
-          <%-- <c:if test="${SourceLeadWeb_country != 'United States'}">
-          <li class=""><a href="#tab-7" data-toggle="tab" id="associateLeaveType" >Leave Type</a></li>
-          </c:if> --%>
-
-          <c:if test="${SourceLeadWeb_country == 'United States'}">
+          <c:if test="${SourceLeadWeb_orgLocations.country == 'United States'}">
             <li class=""><a href="#tab-6" data-toggle="tab" id="associateSalary" >Salary</a></li>
 	          <li class=""><a href="#tab-2" data-toggle="tab" id="associateBanking" >Banking</a></li>
 	          <li class=""><a href="#tab-3" data-toggle="tab" id="associateTax" >TAX</a></li>
 	          <li class=""><a href="#tab-4" data-toggle="tab" id="associateDeduction">Deduction</a></li>
 	          <li class=""><a href="#tab-5" data-toggle="tab" id="associateContribution">Contribution</a></li>
-	          <li class=""><a href="#tab-7" data-toggle="tab" id="associateLeaveType" >Leave Type</a></li>
+              <li class=""><a href="#tab-7" data-toggle="tab" id="associateLeaveType" >Leave Type</a></li> 
 	      </c:if>
           <div class="clearfix"></div>
         </ul>
@@ -166,12 +156,14 @@
 	                  </div>
                   </div>
                   </div>
-                  <div class="form-group" id="EmailIdDiv">
+                  <c:if test="${SourceLeadWeb_orgLocations.country == 'United States'}">
+                  <div class="form-group" id="ssnNumberDiv">
                   <label class="col-md-3">SSN<span class="text-danger">&nbsp;*</span></label>
                   <div class="col-md-9">
-                    <input type="text" class="form-control" id="ssn" name="SSN" field-name="First Name" data-validation="required validate_Space validate_int validate_length length9-9">
+                    <input type="text" class="form-control" id="ssnNumber" name="ssn" field-name="SSN" onblur="validateSSNNumber();">
                   </div>
                   </div>
+                  </c:if>
                   
                 <div class="form-group" id="FirstNameDiv">
                   <label class="col-md-3">First Name<span class="text-danger">&nbsp;*</span></label>
@@ -201,7 +193,7 @@
                    	<select class="form-control chosen-select" id="workLocation" name="workLocation" field-name="Work Location" data-validation="required" >
                         <option value="">--Select Location--</option>
                         <c:forEach var="option" items="${locationList}">
-							<option value="${option.id}">${option.orgLocationAddress != '' ? option.orgLocationAddress : option.registeredLocation}</option>
+							<option value="${option.id}">${(option.orgLocationAddress != '' && option.orgLocationAddress != null) ? option.orgLocationAddress : option.registeredLocation}</option>
 						</c:forEach>
               		</select>
                   </div>
@@ -214,12 +206,21 @@
                      <input type="hidden" id="residenceCountry" name="residenceCountry" />
                      <input type="hidden" id="residenceState" name="residenceState" />
                      <input type="hidden" id="residenceCity" name="residenceCity" />
-                     <input type="hidden" id="residenceZipCode" name="residenceZipCode" />
+					 <input type="hidden" id="residenceZipCode" name="residenceZipCode" />
                      <input type="hidden" id="residenceLatitude" name="residenceLatitude" />
                      <input type="hidden" id="residenceLongitude" name="residenceLongitude" />
                   <i class="fa fa-refresh btn btn-primary refresh-icon bg-blue" title="Refresh" onClick="refreshGoogleApiLocation('residenceLocation','residenceCountry','residenceState','residenceCity','residenceZipCode','');"></i>
                   </div>
                 </div>
+                
+                
+          <!--       <div class="form-group">
+                  <label class="col-md-3">Zip Code<span class="text-danger">&nbsp;*</span></label>
+                  <div class="col-md-9 positionRelative" id="ZipCode">
+						<input  class="form-control" id="residenceZipCode" name="residenceZipCode" placeholder="Enter Zip code" field-name="Zip Code" type="text" data-validation="required">                    
+                  </div>
+                </div> -->
+                
                   
                  <div class="form-group">
                   <label class="col-md-3">Phone Number</label>
@@ -550,7 +551,44 @@ if(type == 'C2C' || type == 'C2C-1099'){
 	 $('#vendors').removeAttr("data-validation","required"); 
 	 $('#vendorcontact').removeAttr("data-validation","required"); 
 }
- }
+}
+ 
+function validateSSNNumber(){
+	var ssnNumber = $("#ssnNumber").val();
+	var length  = $("#ssnNumber").val().length;
+	if(ssnNumber.search("-") > 0){
+		ssnNumber = ssnNumber.replace(/-/g, "");
+		length = ssnNumber.length;
+		calculateSSNLength(length,ssnNumber);
+	}else{
+		calculateSSNLength(length,ssnNumber);
+	}
+}
+function calculateSSNLength(length,ssnNumber){
+	if(length == 0){
+		$("#ssnNumberDiv").find('span.ssn_errmsg').remove();
+		$("#ssnNumber").after("<span class='ssn_errmsg' style='color:red'>SSN number is required</span>");
+	}else if(length != 9){
+		$("#ssnNumberDiv").find('span.ssn_errmsg').remove();
+		$("#ssnNumber").after("<span class='ssn_errmsg' style='color:red'>SSN number should be 9 digits</span>");
+	}else{
+		$("#ssnNumberDiv").find('span.ssn_errmsg').remove();
+		var value = "";
+		var ssn = ssnNumber.substring(0,3);
+		value += ssn+"-";
+		ssn = ssnNumber.substring(3,5);
+		value += ssn+"-";
+		ssn = ssnNumber.substring(5,9);
+		value += ssn;
+		$("#ssnNumber").val(value);
+		if(value.match(/^(?!000|666)[0-8][0-9]{2}-(?!00)[0-9]{2}-(?!0000)[0-9]{4}$/) === null){
+			$("#ssnNumberDiv").find('span.ssn_errmsg').remove();
+			$("#ssnNumber").after("<span class='ssn_errmsg' style='color:red'>Invalid SSN number</span>");
+		}else{
+			$("#ssnNumberDiv").find('span.ssn_errmsg').remove();
+		}
+	}
+}
  </script>
 
 <script>
@@ -1528,7 +1566,7 @@ var loginLocationCountry = '${SourceLeadWeb_orgLocations.country}';
 				if(associateLeaveType){
 					associateLeaveType.href = "#";
 					associateLeaveType.className = "disabledLink";
-				}  
+				}   
 
 
 		if(loginLocationCountry == 'India'){

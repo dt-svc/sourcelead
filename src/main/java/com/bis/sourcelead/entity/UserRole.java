@@ -48,6 +48,9 @@ public class UserRole implements Serializable {
 	@JoinColumn(name = "USER_ID", nullable = false)
 	private User user;
 
+	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name = "EMPLOYEE_ID", nullable = false)
+	private Employees employee;
 	
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "REPORTING_MANAGER_ID")
@@ -388,6 +391,51 @@ public class UserRole implements Serializable {
 	@Transient
 	@JsonProperty
 	private String isExistedOrgGlobalUser;
+	
+	@Transient
+	@JsonProperty
+	private String ssn;
+	
+	@Transient
+	@JsonProperty
+	private String workLocation;
+	
+	@Transient
+	@JsonProperty
+	private String residenceAddress;
+	
+	@Transient
+	@JsonProperty
+	private List<OrgLocations> locationList;
+	
+	@Transient
+	@JsonProperty
+	private Long workLocationId;
+	
+	@Transient
+	@JsonProperty
+	private String residenceCountry;
+	
+	@Transient
+	@JsonProperty
+	private String residenceState;
+	
+	
+	@Transient
+	@JsonProperty
+	private String residenceCity;
+	
+	@Transient
+	@JsonProperty
+	private String residenceZipCode;
+	
+	@Transient
+	@JsonProperty
+	private String residenceLatitude;
+	
+	@Transient
+	@JsonProperty
+	private String residenceLongitude;
 	
 	
 	public BigInteger getUserRoleId() {
@@ -1153,5 +1201,102 @@ public class UserRole implements Serializable {
 	public void setIsExistedOrgGlobalUser(String isExistedOrgGlobalUser) {
 		this.isExistedOrgGlobalUser = isExistedOrgGlobalUser;
 	}
+
+	public Employees getEmployee() {
+		return employee;
+	}
+
+	public void setEmployee(Employees employee) {
+		this.employee = employee;
+	}
+
+	public String getSsn() {
+		return ssn;
+	}
+
+	public void setSsn(String ssn) {
+		this.ssn = ssn;
+	}
+
+	public String getWorkLocation() {
+		return workLocation;
+	}
+
+	public void setWorkLocation(String workLocation) {
+		this.workLocation = workLocation;
+	}
+
+	public String getResidenceAddress() {
+		return residenceAddress;
+	}
+
+	public void setResidenceAddress(String residenceAddress) {
+		this.residenceAddress = residenceAddress;
+	}
+
+	public List<OrgLocations> getLocationList() {
+		return locationList;
+	}
+
+	public void setLocationList(List<OrgLocations> locationList) {
+		this.locationList = locationList;
+	}
+
+	public Long getWorkLocationId() {
+		return workLocationId;
+	}
+
+	public void setWorkLocationId(Long workLocationId) {
+		this.workLocationId = workLocationId;
+	}
+
+	public String getResidenceCountry() {
+		return residenceCountry;
+	}
+
+	public void setResidenceCountry(String residenceCountry) {
+		this.residenceCountry = residenceCountry;
+	}
+
+	public String getResidenceState() {
+		return residenceState;
+	}
+
+	public void setResidenceState(String residenceState) {
+		this.residenceState = residenceState;
+	}
+
+	public String getResidenceCity() {
+		return residenceCity;
+	}
+
+	public void setResidenceCity(String residenceCity) {
+		this.residenceCity = residenceCity;
+	}
+
+	public String getResidenceZipCode() {
+		return residenceZipCode;
+	}
+
+	public void setResidenceZipCode(String residenceZipCode) {
+		this.residenceZipCode = residenceZipCode;
+	}
+
+	public String getResidenceLatitude() {
+		return residenceLatitude;
+	}
+
+	public void setResidenceLatitude(String residenceLatitude) {
+		this.residenceLatitude = residenceLatitude;
+	}
+
+	public String getResidenceLongitude() {
+		return residenceLongitude;
+	}
+
+	public void setResidenceLongitude(String residenceLongitude) {
+		this.residenceLongitude = residenceLongitude;
+	}
+	
 
 }

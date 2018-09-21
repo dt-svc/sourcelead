@@ -54,16 +54,22 @@ public class CandidateHistory implements Serializable {
 	private String alternateMobilePhone;
 	@Column(name = "MOBILE_PHONE")
 	private String mobilePhone;
-	@Column(name = "COUNTRY")
+	
+	@Column(name = "COUNTRY", columnDefinition = "TEXT default NULL")
 	private String country;
-	@Column(name = "STATE")
+
+	@Column(name = "STATE", columnDefinition = "TEXT default NULL")
 	private String state;
-	@Column(name = "CITY")
+
+	@Column(name = "CITY", columnDefinition = "TEXT default NULL")
 	private String city;
-	@Column(name = "ADDRESS")
+
+	@Column(name = "ADDRESS", columnDefinition = "LONGTEXT default NULL")
 	private String address;
-	@Column(name = "LOCATION")
+	
+	@Column(name = "LOCATION", columnDefinition = "LONGTEXT default NULL")
 	private String location;
+	
 	@Column(name = "ZIPCODE")
 	private String zipCode;
 	@Column(name = "LATITUDE")

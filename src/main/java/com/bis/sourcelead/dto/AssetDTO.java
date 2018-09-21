@@ -1,6 +1,7 @@
 package com.bis.sourcelead.dto;
 
 import java.io.Serializable;
+import java.math.BigDecimal;
 import java.util.List;
 import java.util.Map;
 
@@ -72,6 +73,24 @@ public class AssetDTO extends SearchDTO implements Serializable {
 		private List<AssetAssign> assetAssignList;
 		
 		private String tags;
+		
+		private String purchaseDate;
+		
+		private String depreciationDate;
+		
+		private String operatingSystem;
+		
+		private String osKey;
+		
+		private String antiVirus;
+		
+		private BigDecimal cost;
+		
+		private BigDecimal depreciationAmount;
+		
+		private String cpuSerialNumber;
+		
+		private String vendorDetails;
 		
 		public List<CustomFormFieldDTO> getCustomFormData() {
 			return customFormData;
@@ -314,5 +333,77 @@ public class AssetDTO extends SearchDTO implements Serializable {
 
 		public void setTags(String tags) {
 			this.tags = tags;
+		}
+
+		public String getPurchaseDate() {
+			return purchaseDate;
+		}
+
+		public String getDepreciationDate() {
+			return depreciationDate;
+		}
+
+		public String getOperatingSystem() {
+			return operatingSystem;
+		}
+
+		public String getOsKey() {
+			return osKey;
+		}
+
+		public String getAntiVirus() {
+			return antiVirus;
+		}
+
+		public BigDecimal getCost() {
+			return cost;
+		}
+
+		public BigDecimal getDepreciationAmount() {
+			return depreciationAmount;
+		}
+
+		public void setPurchaseDate(String purchaseDate) {
+			this.purchaseDate = purchaseDate;
+		}
+
+		public void setDepreciationDate(String depreciationDate) {
+			this.depreciationDate = depreciationDate;
+		}
+
+		public void setOperatingSystem(String operatingSystem) {
+			this.operatingSystem = operatingSystem;
+		}
+
+		public void setOsKey(String osKey) {
+			this.osKey = osKey;
+		}
+
+		public void setAntiVirus(String antiVirus) {
+			this.antiVirus = antiVirus;
+		}
+
+		public void setCost(BigDecimal cost) {
+			this.cost = cost;
+		}
+
+		public void setDepreciationAmount(BigDecimal depreciationAmount) {
+			this.depreciationAmount = depreciationAmount;
+		}
+
+		public String getCpuSerialNumber() {
+			return cpuSerialNumber;
+		}
+
+		public void setCpuSerialNumber(String cpuSerialNumber) {
+			this.cpuSerialNumber = cpuSerialNumber;
+		}
+
+		public String getVendorDetails() {
+			return vendorDetails;
+		}
+
+		public void setVendorDetails(String vendorDetails) {
+			this.vendorDetails = vendorDetails;
 		}
 }

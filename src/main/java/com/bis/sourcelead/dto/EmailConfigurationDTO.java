@@ -14,7 +14,11 @@ public class EmailConfigurationDTO implements Serializable{
 	
 	private String portNumber;
 	
+	private String usageType;
+	
 	private String encryptType;
+	
+	private String emailUUID;
 	
 
 	public String getEncryptType() {
@@ -63,6 +67,22 @@ public class EmailConfigurationDTO implements Serializable{
 
 	public void setPortNumber(String portNumber) {
 		this.portNumber = portNumber;
+	}
+
+	public String getUsageType() {
+		return usageType;
+	}
+
+	public void setUsageType(String usageType) {
+		this.usageType = usageType;
+	}
+
+	public String getEmailUUID() {
+		return emailUUID;
+	}
+
+	public void setEmailUUID(String emailUUID) {
+		this.emailUUID = emailUUID;
 	}
 	
 }

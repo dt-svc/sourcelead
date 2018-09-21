@@ -24,8 +24,18 @@ public class AssociatePayItemDTO {
 	private String prePayItemName;
 	private String prePayItemBlock;
 	private String prePayItemAmt;
+	private double payItemAmt;
+	private String isBlocked;
 	
 	
+	public String getIsBlocked()
+	{
+		return isBlocked;
+	}
+	public void setIsBlocked(String isBlocked)
+	{
+		this.isBlocked = isBlocked;
+	}
 	public String getId()
 	{
 		return id;
@@ -177,6 +187,14 @@ public class AssociatePayItemDTO {
 	public void setPrePayItemAmt(String prePayItemAmt)
 	{
 		this.prePayItemAmt = prePayItemAmt;
+	}
+	public double getPayItemAmt()
+	{
+		return payItemAmt;
+	}
+	public void setPayItemAmt(double payItemAmt)
+	{
+		this.payItemAmt = payItemAmt;
 	}
 	
 	

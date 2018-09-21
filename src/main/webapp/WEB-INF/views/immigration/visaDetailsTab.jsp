@@ -56,7 +56,7 @@
 				    <c:when test="${myImmigrationPage == 'N'}">
 				        <td><div><i id="edit" onclick="immigration.editPassportVisaDetailsByRowId(${visadetails.id},'${visadetails.idType}');"
 				class="glyphicon glyphicon-pencil cursorPointer"></i><i id="delete" 
-				 onclick="deleteImmigrationRecord('deletePassportVisaDetails',${visadetails.id},'${visadetails.idType}');" 
+				 onclick="deleteImmigrationRecord('immigration.deletePassportVisaDetails',${visadetails.id},'${visadetails.idType}');" 
 				 class="glyphicon glyphicon-trash ml10 cursorPointer"></i></div></td>
 				    </c:when>
 				    <c:otherwise>
@@ -64,7 +64,7 @@
 						    <c:when test="${curUscisMyImmi == 'Request to fill' || curUscisMyImmi == 'Request for modifications'}">
 						      <td><div><i id="edit" onclick="immigration.editPassportVisaDetailsByRowId(${visadetails.id},'${visadetails.idType}');"
 				class="glyphicon glyphicon-pencil cursorPointer"></i><i id="delete" 
-				 onclick="deleteImmigrationRecord('deletePassportVisaDetails',${visadetails.id},'${visadetails.idType}');" 
+				 onclick="deleteImmigrationRecord('immigration.deletePassportVisaDetails',${visadetails.id},'${visadetails.idType}');" 
 				 class="glyphicon glyphicon-trash ml10 cursorPointer"></i></div></td>
 						    </c:when>
 						    <c:otherwise>
@@ -154,8 +154,8 @@
 	<div class="immFoot clearfix">
 			<div class="pull-right text-right">
 				<input type="button" value="Back" onclick="goToSummaryTab('#passportsTab');" class="btn btn-default btn-sm">
-             	<input type="button" value="Skip" onclick="goToSummaryNextTab('#employersTab');" class="btn btn-default btn-sm"> 
-              	<input type="button" value="Continue" onclick="goToSummaryNextTab('#employersTab');" class="btn btn-primary btn-sm ml10">
+             	<input type="button" value="Skip" onclick="goToSummaryNextTab('#lcaTab');" class="btn btn-default btn-sm"> 
+              	<input type="button" value="Continue" onclick="goToSummaryNextTab('#lcaTab');" class="btn btn-primary btn-sm ml10">
             </div>
 		</div>	
 	</form>
@@ -169,6 +169,8 @@
 				$(".popMask").fadeOut(200);
 				$("#popUpVisa").fadeOut(200);
 				$("#CandidateVisaform")[0].reset();
+				$("#visaType").selectpicker("refresh");
+				$("#visaCountry").selectpicker("refresh");
 				$("#candidateVisaId").val('');
 				$('#popUpVisa').find('p.jquery_form_error_message').remove();
 				$("#visa_save_id").removeAttr("disabled");

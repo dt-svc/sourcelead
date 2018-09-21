@@ -103,6 +103,7 @@ import com.bis.sourcelead.service.DepartmentService;
 import com.bis.sourcelead.service.EmailScenarioService;
 import com.bis.sourcelead.service.EmployeesService;
 import com.bis.sourcelead.service.OrgDocumentsService;
+import com.bis.sourcelead.service.OrgLocationService;
 import com.bis.sourcelead.service.OrgRelationsService;
 import com.bis.sourcelead.service.OrgSpocService;
 import com.bis.sourcelead.service.OrglocationFormFieldsService;
@@ -118,6 +119,7 @@ import com.bis.sourcelead.service.ShiftService;
 import com.bis.sourcelead.service.SourceleadActionsService;
 import com.bis.sourcelead.service.SourceleadFormSectionsService;
 import com.bis.sourcelead.service.SourceleadTagsService;
+import com.bis.sourcelead.service.StatesService;
 import com.bis.sourcelead.service.TabsService;
 import com.bis.sourcelead.service.TeamMembersService;
 import com.bis.sourcelead.service.TeamService;
@@ -257,6 +259,14 @@ public class UsersListRestController {
 	
 	@Autowired
 	private SourceleadTagsService sourceleadTagsService;
+	
+	@Autowired
+	OrgLocationService orgLocationService;
+	
+	@Autowired
+	StatesService statesService;
+	
+	
 	/**
 	 * To get All the Users by filtering
 	 * 
@@ -772,6 +782,7 @@ public class UsersListRestController {
 			userRole.setDailyHours(employee.getDailyHours());
 			userRole.setUserEmploymentType(employee.getUserEmploymentType());
 			userRole.setDesignationOtherType(employee.getDesignationOtherType());
+			userRole.setSsn(userRole.getSsn());
 			if(userRole.getShift() != null) {
 				userRole.setShiftId(userRole.getShift().getId());
 				userRole.setShiftName(userRole.getShift().getShiftName());
@@ -852,6 +863,26 @@ public class UsersListRestController {
 				userRole.setDateofBirthStr("");
 			}
 
+		 
+		 List<OrgLocations> locationList = orgLocationService.getAllRegisteredWorkLocationsByOrgId(org.getId());
+		 userRole.setLocationList(locationList);
+		 
+		  Candidate candidate = candidateService.getCandidateByConsultantUserId(userId, orgLocations.getId());
+		  if(candidate != null) {
+			  if(candidate.getWorkLocation() != null) {
+				  userRole.setWorkLocationId(candidate.getWorkLocation().getId());
+				  userRole.setWorkLocation(candidate.getWorkLocation().getLocation());
+				  userRole.setResidenceAddress(candidate.getResidenceAddress());
+				  userRole.setResidenceCountry(candidate.getResidenceCountry());
+				  userRole.setResidenceState(candidate.getResidenceState());
+				  userRole.setResidenceCity(candidate.getResidenceCity());
+				  userRole.setResidenceZipCode(candidate.getResidenceZipCode());
+				  userRole.setResidenceLatitude(candidate.getResidenceLatitude());
+				  userRole.setResidenceLongitude(candidate.getResidenceLongitude());
+			  }
+			  
+		  }
+		  
 		 
 		 SourceleadActions action = sourceleadActionsService.getSourceleadActionsByActionRole(Constants.ROLE_CREATE_ASSOCIATE);
 
@@ -2033,6 +2064,7 @@ public class UsersListRestController {
 			user.setMaritalStatus(addUserDTO.getMaritalStatus());
 			user.setMobilePhone(addUserDTO.getPhoneNumber());
 			user.setExtensionNumber(addUserDTO.getExtensionNumber());
+			
 			if (StringUtils.isNotBlank(addUserDTO.getReportingManager())) {
 				User reportingManager = new User();
 				reportingManager.setId(Long.parseLong(addUserDTO.getReportingManager()));
@@ -2083,8 +2115,19 @@ public class UsersListRestController {
 			user.setUpdatedDate(commonUtil.currentDate());
 			userRole.setUpdatedBy(loginUser.getUserCode());
 			userRole.setUpdatedDate(commonUtil.currentDate());
-			 updatedUser = userService.addUser(user);
+			String existingUserEmail = null;
 			
+			if(isUserActive == true && !user.getEmail().equalsIgnoreCase(addUserDTO.getEmail())) {
+				existingUserEmail = user.getEmail();
+				user.setEmail(addUserDTO.getEmail());
+				user.setUserName(addUserDTO.getEmail());
+			}
+			updatedUser = userService.addUser(user);
+			
+			if(StringUtils.isNotBlank(existingUserEmail)) {
+				userService.sendEmailToUserForEmailUpdation(updatedUser, loginUser, orgLocations, existingUserEmail, existingUserEmail);
+				userService.sendEmailToUserForEmailUpdation(updatedUser, loginUser, orgLocations, user.getEmail(), existingUserEmail);
+			}
 			
 			if(StringUtils.isNotBlank(addUserDTO.getIsGlobalAccess()) && addUserDTO.getIsGlobalAccess().equalsIgnoreCase(Constants.YES)) {
 				userRole.setIsGlobal(Constants.YES);
@@ -2218,6 +2261,23 @@ public class UsersListRestController {
 			candidate.setGender(addUserDTO.getGender());
 			candidate.setMobilePhone(addUserDTO.getPhoneNumber());
 			candidate.setMaritalStatus(addUserDTO.getMaritalStatus());
+			
+			if(StringUtils.isNotBlank(addUserDTO.getResidenceAddress())){
+			   candidate.setResidenceAddress(addUserDTO.getResidenceAddress());
+			   candidate.setResidenceCountry(addUserDTO.getResidenceCountry());
+			   candidate.setResidenceState(addUserDTO.getResidenceState());
+			   candidate.setResidenceCity(addUserDTO.getResidenceCity());
+			   candidate.setResidenceLatitude(addUserDTO.getResidenceLatitude());
+			   candidate.setResidenceLongitude(addUserDTO.getResidenceLongitude());
+			   candidate.setResidenceZipCode(addUserDTO.getResidenceZipCode());
+			   candidate.setResidenceStreetAddress(addUserDTO.getResidenceAddress());
+			   OrgLocations workLocation = orgLocationService.getOrgLocations(Long.parseLong(addUserDTO.getWorkLocation()));
+			   candidate.setWorkLocation(workLocation);
+		    	
+		    	Countries country = countriesService.getCountriesByCountryName(addUserDTO.getResidenceCountry());
+		    	String stateCode = statesService.getStateCodeByCountryCodeAndState(country.getCode2(),addUserDTO.getResidenceState());
+		    	candidate.setResidenceStateCode(stateCode);
+		    }
 			
 			candidateService.saveOrUpdateCandidate(candidate);
 			candidateService.saveOrUpdateCandidateElkDocument(candidate);

@@ -20,11 +20,14 @@ import com.bis.sourcelead.dao.CandidateDao;
 import com.bis.sourcelead.dao.UserGroupDao;
 import com.bis.sourcelead.dto.AssociatePayItemDTO;
 import com.bis.sourcelead.dto.AssociateSalaryDTO;
+import com.bis.sourcelead.dto.CandidateDTO;
 import com.bis.sourcelead.dto.Response;
+import com.bis.sourcelead.dto.ResponseList;
 import com.bis.sourcelead.dto.UserGroupDTO;
 import com.bis.sourcelead.entity.AssociatePayItem;
 import com.bis.sourcelead.entity.AssociateSalary;
 import com.bis.sourcelead.entity.AssociateSalaryHistory;
+import com.bis.sourcelead.entity.AssociateSalaryInd;
 import com.bis.sourcelead.entity.Candidate;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.User;
@@ -308,9 +311,9 @@ public class AssociateSalaryServiceImpl implements AssociateSalaryService{
 	}
 
 	@Override
-	public List<AssociateSalary> getAssociateSalaryListByGroupId(OrgLocations orgLocation,long groupId) {
+	public List<AssociateSalary> getAssociateSalaryListByGroupId(OrgLocations orgLocation,long groupId,String payType) {
 		
-		List<AssociateSalary> list = associateSalaryDao.getAssociateSalaryListByGroupId(orgLocation,groupId);
+		List<AssociateSalary> list = associateSalaryDao.getAssociateSalaryListByGroupId(orgLocation,groupId,payType);
 		return list;
 	}
 
@@ -318,5 +321,21 @@ public class AssociateSalaryServiceImpl implements AssociateSalaryService{
 	public List<AssociatePayItemDTO> findAssociatePayItemByPayrollId(Long payrollId)
 	{
 		return associateSalaryDao.findAssociatePayItemByPayrollId(payrollId);
+	}
+	
+	public AssociateSalary getAssociateSalaryByCandidateIdAndOrgLocationId(Long candidateId, Long locationId)
+	{
+		return associateSalaryDao.getAssociateSalaryByCandidateIdAndOrgLocationId(candidateId, locationId);
+	}
+
+	@Override
+	public ResponseList<AssociateSalary> getAssociateSalaryListByLocationIdAndGroupId(OrgLocations orgLocation, Long groupId,CandidateDTO dto) {
+		return associateSalaryDao.getAssociateSalaryListByLocationIdAndGroupId(orgLocation, groupId,dto);
+	}
+
+	@Override
+	public List<AssociateSalaryInd> getIndAssociateSalaryListByGroupId(OrgLocations orgLocation, long groupId) {
+		List<AssociateSalaryInd> list = associateSalaryDao.getIndAssociateSalaryListByGroupId(orgLocation, groupId);
+		return list;
 	}
 }

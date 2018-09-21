@@ -1,5 +1,6 @@
 package com.bis.sourcelead.payroll.entity;
 
+import java.math.BigDecimal;
 import java.util.Date;
 
 import javax.persistence.Column;
@@ -10,6 +11,8 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
+
+import com.bis.sourcelead.entity.AssociatePayItem;
 
 @Entity
 @Table(name = "US_PAYITEM_HIS")
@@ -23,8 +26,12 @@ public class PayitemHistory {
 	@Column(name = "ID", nullable = false)
 	private Long id;
 	
-	@Column (name="PAY_ITEM_ID")
-	private Long payItemId;
+	@ManyToOne
+	@JoinColumn (name="PAY_ITEM_ID")
+	private AssociatePayItem associatePayItem;
+	
+	@Column (name ="AMOUNT")
+	private BigDecimal amount;
 	
 	@ManyToOne
 	@JoinColumn(name = "PAYROLL_ID")
@@ -45,6 +52,9 @@ public class PayitemHistory {
 	
 	@Column (name="PAYITEM_HIS_UUID")
 	private String payItemHisUUID;
+	
+	@Column(name = "IS_BLOCKED")
+	private String isBlocked;
 	
 	@Column(name = "CREATED_DATE")
 	private Date createdDate;
@@ -68,10 +78,6 @@ public class PayitemHistory {
 		return id;
 	}
 
-	public Long getPayItemId()
-	{
-		return payItemId;
-	}
 
 	public Date getFrequencyStartDate()
 	{
@@ -120,10 +126,6 @@ public class PayitemHistory {
 		this.id = id;
 	}
 
-	public void setPayItemId(Long payItemId)
-	{
-		this.payItemId = payItemId;
-	}
 
 	public void setFrequencyStartDate(Date frequencyStartDate)
 	{
@@ -184,6 +186,44 @@ public class PayitemHistory {
 	{
 		this.payItemHisUUID = payItemHisUUID;
 	}
+
+	public AssociatePayItem getAssociatePayItem()
+	{
+		return associatePayItem;
+	}
+
+	public void setAssociatePayItem(AssociatePayItem associatePayItem)
+	{
+		this.associatePayItem = associatePayItem;
+	}
+
+	public BigDecimal getAmount()
+	{
+		if(amount != null) {
+			return amount;
+		}else{
+			return BigDecimal.ZERO;
+		}
+		
+	}
+
+	public void setAmount(BigDecimal amount)
+	{
+		this.amount = amount;
+	}
+
+	public String getIsBlocked()
+	{
+		return isBlocked;
+	}
+
+	public void setIsBlocked(String isBlocked)
+	{
+		this.isBlocked = isBlocked;
+	}
+	
+	
+	
 	
 	
 }

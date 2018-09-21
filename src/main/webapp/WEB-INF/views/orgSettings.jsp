@@ -377,7 +377,7 @@ function cancelOrgImg(){
 						<div class="clearfix mb">
 							<label class="labText">Week Off Days</label>
 							<div class="clearfix">
-							 <select multiple class="chosen-select form-control" id="weekOffDays" name="weekOffDays" data-validation-optional="true" field-name="Week Off Days">
+							 <select multiple class="chosen-select form-control" id="weekOffDays" name="weekOffDays" data-validation="required" field-name="Week Off Days">
 								 <option  value='Sun' ${fn:contains(SourceLeadWeb_weekOffDaysList, 'Sun') ? 'selected' : ''}>Sunday</option>
 								 <option  value='Mon' ${fn:contains(SourceLeadWeb_weekOffDaysList, 'Mon') ? 'selected' : ''}>Monday</option>
 								 <option  value='Tue' ${fn:contains(SourceLeadWeb_weekOffDaysList, 'Tue') ? 'selected' : ''}>Tuesday</option>
@@ -1347,16 +1347,16 @@ function getPaymentAccounts(flag) {
                 result = result + '<div class="tblminwidth-75">'+(report.accountType ? report.accountType : "")+'</div>';
                 result = result + '</td>';
                 result = result + '<td>';
-                result = result + '<div class="tblminwidth-125">'+(report.email ? report.email : "")+'</div>';
+                result = result + '<div class="tblminwidth-125">'+(report.email ? report.email : "--")+'</div>';
                 result = result + '</td>';
                 result = result + '<td>';
-                result = result + '<div class="tblminwidth-125">'+(report.bankName ? report.bankName : "")+'</div>';
+                result = result + '<div class="tblminwidth-125">'+(report.bankName ? report.bankName : "--")+'</div>';
                 result = result + '</td>';
                 result = result + '<td>';
-                result = result + '<div class="tblminwidth-75">'+(report.accountNumber ? report.accountNumber : "")+'</div>';
+                result = result + '<div class="tblminwidth-75">'+(report.accountNumber ? report.accountNumber : "--")+'</div>';
                 result = result + '</td>';
                 result = result + '<td>';
-                result = result + '<div class="tblminwidth-75">'+(report.routingNumber ? report.routingNumber : "")+'</div>';
+                result = result + '<div class="tblminwidth-75">'+(report.routingNumber ? report.routingNumber : "--")+'</div>';
                 result = result + '</td>';
                 result = result + '<td>';
                 result = result + '<div class="tblminwidth-75">'+(report.firstName ? report.firstName : "")+'</div>';

@@ -1,5 +1,6 @@
 package com.bis.sourcelead.immigration.service;
 
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
@@ -12,6 +13,9 @@ import com.bis.sourcelead.dto.ImmigrationListViewDTO;
 import com.bis.sourcelead.dto.ImmigrationPassportVisaDTO;
 import com.bis.sourcelead.dto.ImmigrationTemplateDocDTO;
 import com.bis.sourcelead.dto.ImmigrationTemplateFormDTO;
+import com.bis.sourcelead.dto.LcaDTO;
+import com.bis.sourcelead.dto.LcaDetailsDTO;
+import com.bis.sourcelead.dto.LcaListViewDTO;
 import com.bis.sourcelead.dto.MyImmigrationViewDTO;
 import com.bis.sourcelead.dto.ResidenceDTO;
 import com.bis.sourcelead.dto.ResponseList;
@@ -25,6 +29,8 @@ import com.bis.sourcelead.entity.ImmigrationCandidateDocumentsHistory;
 import com.bis.sourcelead.entity.ImmigrationCandidateForms;
 import com.bis.sourcelead.entity.ImmigrationDashboardView;
 import com.bis.sourcelead.entity.ImmigrationTemplate;
+import com.bis.sourcelead.entity.Lca;
+import com.bis.sourcelead.entity.LcaHistory;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.User;
 
@@ -141,4 +147,53 @@ public interface ImmigrationCommonService {
 
 	List<Immigration> getImmigrationsByOrgId(Long id);
 	
+    ResponseList<LcaListViewDTO> getLcasList(LcaListViewDTO lcaListViewDTO, String status,String lcaStatus, String searchValue, OrgLocations orgLocations, Map<String, Long[]> filterVal,String filterByDays) throws Exception;
+    
+    //Lca method declaration
+    
+    // below method added to get the LCA list which end dates are lesser than current date used in CRON.
+     public List<Lca> getAllLcaList(Date currentDate);
+ 
+    // below method used to the update lca status through cron.
+    public String updateLcaStatusWithExpired(Long lcaId);
+    
+    public List<Map<String, String>> getSocCodeWithSOCOccupationTitleList(String name,String category,String socType);
+    
+    Lca saveLcaDetails(LcaDTO lcaDTO, User user, OrgLocations orgLocations) throws Exception;
+    
+    LcaDTO editLcaDetails(Long lcaId,OrgLocations orgLocations);
+    
+    Long getLcaIdByUUID(String lcaUUID);
+    
+    String deleteLcaDetailsById(Long lcaId);
+    
+    String reActiveLcaById(Long lcaId);
+    
+	String getOesSocCodeById(Long id, String socType);
+
+	
+    Sheet getLCAExcelFile(Sheet createExcelsheet, Workbook createExcelworkbook, OrgLocations orgLocations);
+    
+    public Lca getLcaDetailsByLcaNoAndId(String lcaNo, Long lcaId) throws Exception;
+    
+    public Boolean validateLcaNumber(String lcaNo, Long orgLocationId) throws Exception;
+    
+    public Lca getLcaDetailsByLcaTitleAndId(String lcaTitle, Long lcaId) throws Exception;
+    
+    public Boolean validateLcaTitle(String lcaTitle, Long orgLocationId) throws Exception;
+    
+    List<Map<String, String>> getLcaNumbersList(String lcaNum,String orgLocationId,String statusLca,String candidateId);
+    
+    public Lca getLcaByLcaId(Long lcaId) throws Exception;
+    
+    List<LcaDTO> getLcaHistoryDetailsInfo(Long immigrationId);
+    
+    List<LcaDetailsDTO> getEmployeeByLcaId(Long lcaId ,OrgLocations orgLocations)throws Exception;
+   
+    LcaHistory  getLcaHistoryByStatus(Long immigrationId,Long candidateId, String isCurrent);  
+    
+    LcaHistory saveLcaHistory(LcaHistory lcaHistory);
+    
+    int updateLcaHistoryStatusByLcaNumber(Long lhId,Long immigrationId,Long candidateId);
+ //   void deleteLcaPlaceOfEmpmntDetails(Long remaininglpoeIds[]);
 }

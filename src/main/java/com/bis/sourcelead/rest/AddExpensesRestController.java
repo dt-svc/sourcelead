@@ -1,6 +1,6 @@
 package com.bis.sourcelead.rest;
 
-import java.util.ArrayList;
+import java.util.ArrayList;	
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -23,6 +23,7 @@ import com.bis.sourcelead.dao.ExpenseProjectApproverHierarchyDao;
 import com.bis.sourcelead.dao.OrgLocationsDao;
 import com.bis.sourcelead.dao.ProjectMembersDao;
 import com.bis.sourcelead.dto.ExpensesDTO;
+import com.bis.sourcelead.dto.Response;
 import com.bis.sourcelead.entity.Countries;
 import com.bis.sourcelead.entity.EmailAttachment;
 import com.bis.sourcelead.entity.EmailMessage;
@@ -35,11 +36,11 @@ import com.bis.sourcelead.entity.OrgRelations;
 import com.bis.sourcelead.entity.ProjectMembers;
 import com.bis.sourcelead.entity.Projects;
 import com.bis.sourcelead.entity.User;
+import com.bis.sourcelead.enums.Result;
 import com.bis.sourcelead.enums.Submission_Status;
 import com.bis.sourcelead.service.AddExpensesService;
 import com.bis.sourcelead.service.CountriesService;
 import com.bis.sourcelead.service.EmailScenarioService;
-import com.bis.sourcelead.service.ExpenseProjectApproverHierarchyService;
 import com.bis.sourcelead.service.ExpensesApprovalService;
 import com.bis.sourcelead.service.ExpensesEntryDocumentsService;
 import com.bis.sourcelead.service.ExpensesService;
@@ -418,7 +419,7 @@ public class AddExpensesRestController {
 				 }
 				 
 				 StringBuilder amopuntRate = new StringBuilder();
-				 amopuntRate.append(Float.toString(expenses.getTotalAmount())).append(" ").append(currencyCode);
+				 amopuntRate.append((expenses.getTotalAmount())).append(" ").append(currencyCode);
 				 
 				 globalVarsMap.put("amount",amopuntRate.toString());
 				 
@@ -492,12 +493,30 @@ public class AddExpensesRestController {
 				notificationScenario.setBody(notificationBody);
 				notificationScenario.setOrgCode(orgLoc.getOrg().getOrgCode());
 				String actionLink = "";
-				emailScenerioUtil.sendNotification(actionLink,loginUser,orgLoc.getUser(), orgLoc, notificationScenario,new HashMap<String,String>()) ;
+				emailScenerioUtil.sendNotification(actionLink,loginUser,pah.getApproverUserId(), orgLoc, notificationScenario,new HashMap<String,String>()) ;
 		 	   
 			
 		}
 	
-	
+		@RequestMapping(value = "/changeStatusToBillable",method=RequestMethod.POST)
+		@ResponseBody
+		public Response<String> changeStatusToBillable(HttpServletRequest request, @RequestParam(defaultValue = "0") long ExpenseEntriesId, @RequestParam(defaultValue = "non-billable") String billableStatus) {
+			Response<String> response = new Response<>();
+			try {
+				User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+				if (user != null) {
+					response = addExpensesService.changeStatusToBillable(ExpenseEntriesId,billableStatus);
+				} else {
+					response.setResponse(Result.SESSION_TIMEDOUT.name());
+					response.setResponseMessage(Result.SESSION_TIMEDOUT.getValue());
+				}
+			} catch (Exception e) {
+				response.setResponse(Result.AWKWARD.name());
+				response.setResponseMessage(Result.AWKWARD.getValue());
+			}
+			return response;
+		}
+
 	 
 	 
 }

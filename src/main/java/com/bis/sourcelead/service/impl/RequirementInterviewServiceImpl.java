@@ -569,6 +569,7 @@ public class RequirementInterviewServiceImpl implements RequirementInterviewServ
 	         tempHTML.append("<th> Interview Type </th>");
 	         tempHTML.append("<th> Interview Time & Date </th>");
 	         tempHTML.append("<th> Details </th>");
+	         tempHTML.append("<th> Resume </th>");
 	         if(null != templateId && !"".equalsIgnoreCase(templateId)){
 	         tempHTML.append("<th> Feedback </th>");
 	         }
@@ -606,8 +607,17 @@ public class RequirementInterviewServiceImpl implements RequirementInterviewServ
 					}
 					
 	     		     }*/
-			         
-			         
+
+			         if(requirementSubmissionTemplateFields.getRequirementSubmission().getCandidateResumes() != null){
+                         String url = StringUtils.removeEnd(sourceleadUrl, sourceleadUrl.substring(sourceleadUrl.lastIndexOf("/")));
+
+                          tempHTML.append("<td>").append("<a title='Download Resume' href='").append(url).append(requirementSubmissionTemplateFields.getRequirementSubmission().getCandidateResumes().getFileURL()).append("'style='text-decoration:none; '><div style='width:20px; height:20px; color:#333; font-size:30px; margin:auto; position:relative; top:-11px;'><strong>&#x21E9;</strong></div></a>").append("</td>");
+
+                   }
+			         else {
+		        		 tempHTML.append("<td style='text-align: center;'>").append("--").append("</td>");
+ 
+			         }
 			         int i=0;
 			         if(null != templateId && !"".equalsIgnoreCase(templateId)){
 					for (RequirementInterview interviersArray : interviewersArrayList) {
@@ -759,6 +769,7 @@ public class RequirementInterviewServiceImpl implements RequirementInterviewServ
 	         tempHTML.append("<th> Interview Type </th>");
 	         tempHTML.append("<th> Interview Time & Date </th>");
 	         tempHTML.append("<th> Details </th>");
+	         tempHTML.append("<th> Resume </th>");
 	         if(null != templateId && !"".equalsIgnoreCase(templateId)){
 	         tempHTML.append("<th> Feedback </th>");
 	         }
@@ -789,6 +800,18 @@ public class RequirementInterviewServiceImpl implements RequirementInterviewServ
 		        	 }else{
 		        		 tempHTML.append("<td style='text-align: center;'>").append("--").append("</td>");
 		        	 }
+
+			         if(requirementSubmissionTemplateFields.getRequirementSubmission().getCandidateResumes() != null){
+                         String url = StringUtils.removeEnd(sourceleadUrl, sourceleadUrl.substring(sourceleadUrl.lastIndexOf("/")));
+
+                          tempHTML.append("<td>").append("<a title='Download Resume' href='").append(url).append(requirementSubmissionTemplateFields.getRequirementSubmission().getCandidateResumes().getFileURL()).append("'style='text-decoration:none; '><div style='width:20px; height:20px; color:#333; font-size:30px; margin:auto; position:relative; top:-11px;'><strong>&#x21E9;</strong></div></a>").append("</td>");
+
+                   }
+			         else {
+		        		 tempHTML.append("<td style='text-align: center;'>").append("--").append("</td>");
+ 
+			         }
+
 			         int i=0;
 			         if(null != templateId && !"".equalsIgnoreCase(templateId)){
 					for (RequirementInterview interviersArray : intervieresArrayList) {
@@ -1882,13 +1905,18 @@ public class RequirementInterviewServiceImpl implements RequirementInterviewServ
 		RequirementSubmission reqSubmission = requirementSubmissionService.getRequirementSubmissionById(reqnterview.getSubmissionId().getId());
 		OrgLocations orglo = orgLocationService.getOrgLocations(reqSubmission.getOrgLocations().getId());
 		EmailMessage emailMessage = new EmailMessage();
+		User interviewScheduler=userService.getUserByUserCode(reqnterview.getCreatedBy());
 		 OrgSpoc spoc= null;
 		 RequirementSubmissionTemplateFields interviewDetails = requirementSubmissionTemplateFieldsService
 					.getSubmissionsTemplateFieldsByRequirementSubmissionsId(reqnterview.getSubmissionId().getId());
 		if(null != reqSubmission.getVendorLocationId()){
-			emailMessage.setFirstName(interviewCreactorUser.getFirstName());
+			/*emailMessage.setFirstName(interviewCreactorUser.getFirstName());
 			 emailMessage.setLastName(interviewCreactorUser.getLastName());
-			 emailMessage.setToEmail(interviewCreactorUser.getEmail());
+			 emailMessage.setToEmail(interviewCreactorUser.getEmail());*/
+			emailMessage.setFirstName(interviewScheduler.getFirstName());
+			 emailMessage.setLastName(interviewScheduler.getLastName());
+			 emailMessage.setToEmail(interviewScheduler.getEmail());
+
 			
 			 if(null != reqnterview.getSubmissionId().getSourceSubmission()){
 				 RequirementSubmission reqSub =  requirementSubmissionService.getSubmissionsBySourceSubmissionId(reqSubmission.getId(), reqSubmission.getVendorLocationId().getId());
@@ -1899,9 +1927,12 @@ public class RequirementInterviewServiceImpl implements RequirementInterviewServ
 			 emailMessage.setCreatedBy(interviewCreactorUser.getUserCode());
 			 emailMessage.setEmailType(Constants.CUSTOM_USER_EMAIL);
 		}else{
-		 emailMessage.setFirstName(interviewCreactorUser.getFirstName());
+		/* emailMessage.setFirstName(interviewCreactorUser.getFirstName());
 		 emailMessage.setLastName(interviewCreactorUser.getLastName());
-		 emailMessage.setToEmail(interviewCreactorUser.getEmail());
+		 emailMessage.setToEmail(interviewCreactorUser.getEmail());*/
+			emailMessage.setFirstName(interviewScheduler.getFirstName());
+			 emailMessage.setLastName(interviewScheduler.getLastName());
+			 emailMessage.setToEmail(interviewScheduler.getEmail());
 		/* emailMessage.setFromEmail(defaultFromEmailAddressForProd);*/
 		 emailMessage.setFromEmail(interviewDetails.getEmailId());
 		 emailMessage.setCreatedBy(interviewCreactorUser.getUserCode());
@@ -2094,6 +2125,7 @@ public class RequirementInterviewServiceImpl implements RequirementInterviewServ
 	      RequirementSubmission requirementSubmission = requirementSubmissionService.getRequirementSubmissionById(requirementinterview.getSubmissionId().getId());
 	      List<RequirementInterviewer> requirementInterviewer=requirementInterviewerDao.getInterviwersListByInterviewId(requirementinterview.getId());
 	      User intUser=userService.getUserByUserCode(requirementinterview.getCreatedBy()) ;
+			User interviewScheduler=userService.getUserByUserCode(requirementinterview.getCreatedBy());
 	     // SimpleDateFormat simpleDateFormat = orgLocations.getLocFullFormDateFormatter();
 	      List<User> interviewrUserList = new ArrayList<>(); 
 	      if(!requirementInterviewer.isEmpty() && requirementInterviewer.size() > 0){
@@ -2130,9 +2162,12 @@ public class RequirementInterviewServiceImpl implements RequirementInterviewServ
 	    						 emailMessage.setFromName(timeStringBuilder.append(user.getFirstName()).toString());
 	    					 }
 	    				}else{
-	    					emailMessage.setFirstName(interviewrUser.getFirstName());
+	    				/*	emailMessage.setFirstName(interviewrUser.getFirstName());
 	    					 emailMessage.setLastName(interviewrUser.getLastName());
-	    					 emailMessage.setToEmail(interviewrUser.getEmail());
+	    					 emailMessage.setToEmail(interviewrUser.getEmail());*/
+	    					emailMessage.setFirstName(interviewScheduler.getFirstName());
+	    					 emailMessage.setLastName(interviewScheduler.getLastName());
+	    					 emailMessage.setToEmail(interviewScheduler.getEmail());
 	    					 emailMessage.setFromEmail(candidate.getEmail());
 	    					 if(user!=null){
 	    						 emailMessage.setCreatedBy(user.getUserCode());

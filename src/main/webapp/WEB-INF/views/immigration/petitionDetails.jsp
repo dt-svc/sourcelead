@@ -27,9 +27,12 @@
 			<input type = "hidden" id="editMode" name = "editMode" value = "true">
 			</c:if>
           <div class="col-md-12 col-lg-12 myForm margin-top0">
-          	<input type="hidden" name="immigrationId" value="${immigrationDTO.immigrationId}">
-          	<input type="hidden" name="candidateId" value="${immigrationDTO.candidateId}">
+          	<input type="hidden" name="immigrationId" id="immigrationId" value="${immigrationDTO.immigrationId}">
+          	<input type="hidden" name="candidateId"  value="${immigrationDTO.candidateId}">
           	<input type="hidden" name="templateId" value="${immigrationDTO.templateId}">
+          	<input type="hidden" name="lcaId" id="currLcaId" value="${immigrationDTO.lcaId}">
+          	<input type="hidden" name="prevLcaId" id="prevLcaId" value="${immigrationDTO.prevLcaId}">
+          	
             <h4 class="col-md-12 mb clearfix">1. Petition detail</h4>
             <div class="clearfix"></div>         
          	<div class="form-group">
@@ -300,7 +303,7 @@
 									<input type="hidden" id="candidateId" name="candidateId" value="${immigrationDTO.candidateId}"/>
 								</div>
 							<span class="col-md-2 noPad clearfix">
-							<a href=">" target="_blank"><i class="fa fa-plus btn btn-default pull-right minHeBtn"></i></a> 
+							<a href="<c:url value="/app/userCreation" />" target="_blank"><i class="fa fa-plus btn btn-default pull-right minHeBtn"></i></a> 
 							</span>	
 							</div>
 							</div>
@@ -330,7 +333,7 @@
 									<input type="hidden" id="candidateId" name="candidateId" value="${immigrationDTO.candidateId}"/>
 								</div>
 							<span class="col-md-2 noPad clearfix">
-							<a href="<c:url value="" />" target="_blank"><i class="fa fa-plus btn btn-default pull-right minHeBtn"></i></a> 
+							<a href="<c:url value="/app/userCreation" />" target="_blank"><i class="fa fa-plus btn btn-default pull-right minHeBtn"></i></a> 
 							</span>
 							</div>
 							</div>
@@ -433,27 +436,27 @@
              <div class="form-group">
               <label class="col-md-4">I-94 Number</label>
               <div class="col-md-8">
-                <input type="text" class="form-control" name="i_94_number" id ="i_94_number" value="${immigrationDTO.i_94_number}" placeholder="XXXXXXXXX-XX" data-validation="required validate_Space validate_length length2-100" data-validation-optional="true">
+                <input type="text" class="form-control" name="i_94_number" id ="i_94_number" value="${immigrationDTO.i_94_number}" placeholder="XXXXXXXXX-XX" data-validation=" validate_Space validate_length length12" data-validation-optional="true">
               </div>
             </div>
            
              <div class="form-group">
               <label class="col-md-4">I-20 SEVIS Number If Student</label>
               <div class="col-md-8">
-					<input type="text" class="form-control" name="i_20_number"  id="i_20_number" value="${immigrationDTO.i_20_number}" placeholder="N-XXXXXXXXXX" data-validation="required validate_Space validate_length length2-100" data-validation-optional="true">
+					<input type="text" class="form-control" name="i_20_number"   placeholder="N-XXXXXXXXXX" id="i_20_number" value="${immigrationDTO.i_20_number}" data-validation="" data-validation-optional="true">
               </div>
             </div>
                          
             <div class="form-group">
               <label class="col-md-4">EAD Number If Student</label>
               <div class="col-md-8">
-                <input type="text" class="form-control" name="eadNumber" id="eadNumber" value="${immigrationDTO.eadNumber}" placeholder="" data-validation="required validate_Space validate_length length2-100" data-validation-optional="true">
+                <input type="text" class="form-control" name="eadNumber" placeholder="000-000-000"  id="eadNumber" value="${immigrationDTO.eadNumber}" placeholder="" data-validation="required validate_Space validate_length length2-100" data-validation-optional="true">
               </div>
             </div>
             <div class="form-group">
               <label class="col-md-4">Previous LCA Number</label>
               <div class="col-md-8">
-                <input type="text" class="form-control" name="prevLcaNumber" id="prevLcaNumber" value="${immigrationDTO.prevLcaNumber}" placeholder="I-XXX-XXXXX-XXXXXX" data-validation="required validate_Space validate_length length2-100" data-validation-optional="true">
+                <input type="text" class="form-control" name="prevLcaNumber" id="prevLcaNumber" value="${immigrationDTO.prevLcaNumber}" placeholder="I-XXX-XXXXX-XXXXXX" data-validation="required validate_Space validate_length length2-100" data-validation-optional="true" >
               </div>
             </div>
             
@@ -461,7 +464,7 @@
               <label class="col-md-4">Previous LCA Start Date</label>
               <div class="col-md-8">
                <div class="input-group">
-                <input class="form-control calendar" readonly='true' id="prevLcaStartDate" name="prevLcaStartDate" value="${immigrationDTO.prevLcaStartDate}" placeholder="Previous LCA Start Dates" type="text">
+                <input class="form-control calendar"  id="prevLcaStartDate" name="prevLcaStartDate" value="${immigrationDTO.prevLcaStartDate}" placeholder="Previous LCA Start Dates" type="text">
                 <span class="input-group-addon"><i class="fa fa-times text-danger cursorPointer" onclick="clearDateValue('prevLcaStartDate');"></i></span>
             </div>
               </div>
@@ -471,7 +474,7 @@
               <label class="col-md-4">Previous LCA End date</label>
               <div class="col-md-8">
                <div class="input-group">
-                <input class="form-control calendar" readonly='true' id="prevLcaEndDate" name="prevLcaEndDate" value="${immigrationDTO.prevLcaEndDate}" placeholder="Previous LCA End date" type="text">
+                <input class="form-control calendar"  id="prevLcaEndDate" name="prevLcaEndDate" value="${immigrationDTO.prevLcaEndDate}" placeholder="Previous LCA End date" type="text">
                 <span class="input-group-addon"><i class="fa fa-times text-danger cursorPointer" onclick="clearDateValue('prevLcaEndDate');"></i></span>
             </div>
               </div>
@@ -500,10 +503,10 @@
               <div class="col-md-4 dropdown-select">
                 <select id="experienceYears" name="experienceYears">
                 	<option value="">--Select Year--</option>
-                	<c:forEach begin="0" end="25" varStatus="loop">
+                	<c:forEach begin="0" end="40" varStatus="loop">
 				    	<option ${immigrationDTO.experienceYears == loop.index ? 'selected' : ''} value="${loop.index}" >${loop.index}</option>
 					</c:forEach>
-                	<option ${immigrationDTO.experienceYears == '25+' ? 'selected' : ''} value="25+" >25+</option>
+                	<%-- <option ${immigrationDTO.experienceYears == '40' ? 'selected' : ''} value="" >40</option> --%>
                 </select>
               </div>
              <div class="col-md-4 dropdown-select">
@@ -636,7 +639,7 @@
              <div class="form-group">
               <label class="col-md-4">LCA Number</label>
               <div class="col-md-8">
-                 <input type="text" class="form-control" value="${immigrationDTO.lcaNumber}" name="lcaNumber" id="lcaNumber" placeholder="I-XXX-XXXXX-XXXXXX" data-validation="required validate_Space validate_length length2-100" data-validation-optional="true">
+                 <input type="text" class="form-control" value="${immigrationDTO.lcaNumber}" name="lcaNumber" id="lcaNumber" placeholder="LCA Number" data-validation="required validate_Space validate_length length2-100" data-validation-optional="true" onkeypress="selectBeneficiary();">
               </div>
           </div>
             
@@ -644,7 +647,7 @@
               <label class="col-md-4">LCA Start date</label>
               <div class="col-md-8">
                <div class="input-group">
-                <input type="text" class="form-control calendar" readonly='true' id="lcaStartDate" value="${immigrationDTO.lcaStartDate}" name="lcaStartDate" placeholder="LCA Start dates">
+                <input type="text" class="form-control calendar" id="lcaStartDate" value="${immigrationDTO.lcaStartDate}" name="lcaStartDate" placeholder="LCA Start date">
                 <span class="input-group-addon"><i class="fa fa-times text-danger cursorPointer" onclick="clearDateValue('lcaStartDate');"></i></span>
             </div>
               </div>
@@ -653,9 +656,23 @@
               <label class="col-md-4">LCA End date</label>
               <div class="col-md-8">
                <div class="input-group">
-                <input type="text" class="form-control calendar" readonly='true' value="${immigrationDTO.lcaEndDate}" id="lcaEndDate" name="lcaEndDate" placeholder="LCA End date">
+                <input type="text" class="form-control calendar"  value="${immigrationDTO.lcaEndDate}" id="lcaEndDate" name="lcaEndDate" placeholder="LCA End date">
                 <span class="input-group-addon"><i class="fa fa-times text-danger cursorPointer" onclick="clearDateValue('lcaEndDate');"></i></span>
             </div>
+              </div>
+            </div>
+            
+            <div class="form-group">
+              <label class="col-md-4">LCA Current Location</label>
+              <div class="col-md-8">
+                  <div class="positionRelative">
+								<input class="form-control positionRelative"
+									id="lcaCurrLocation" name="lcaCurrLocation" value="${immigrationDTO.lcaCurrLocation}" 
+									placeholder="Enter LCA Current Location" type="text" field-name="LCA Current Location" ></input> <i
+									class="fa fa-refresh btn btn-primary refresh-icon"
+									title="Refresh"
+									></i>
+					</div>
               </div>
             </div>
 
@@ -775,7 +792,7 @@
 
    
     <script type="text/javascript">
-   
+    //var isValidBeneficiary=false;
     function prepareDynamicResidenceDiv(rowId,residenceVal){
     	var prepareResidencediv ='';
 	   prepareResidencediv =prepareResidencediv+ "<div id ='dynamicResidenceDiv"+rowId+"'>";
@@ -867,6 +884,43 @@
    	</script>
 	
 <script>
+/* $("input[id='candidateNameEmail']").focusin(function(){
+   isValidBeneficiary = false;
+});
+ */
+ var locationDate ='${SourceLeadWeb_orgLocations.dateFormat}'; 
+ var finalDateFormatOrg = getOrgDateFormat(locationDate);
+ 
+$("input[id='candidateNameEmail']").focusout(function(){
+	 var seletedVal= $("#candidateNameEmail").attr("selecedVal")
+  if(typeof seletedVal =='undefined') {
+	  resetBeneficiaryDetails();
+  }else if (typeof seletedVal !='undefined' && $("#candidateNameEmail").attr("selecedVal")!=$("#candidateNameEmail").val().trim()){
+	  resetBeneficiaryDetails();
+  }
+});
+
+function resetBeneficiaryDetails(){
+	$("#candidateNameEmail").val("");
+	$("#firstName").val("");
+	$("#lastName").val("");
+	$("#middleName").val("");
+	$("#email").val("");
+	$("#mobile").val("");
+	$("#alternateMobile").val("");
+	$('input[name="gender"]').prop('checked', false); 
+	$('input[name="maritalStatus"]').prop('checked', false); // reset the value 
+	$("#country").val("");
+	$("#state").val("");
+	$("#city").val("");
+	$("#address").val("");
+	$("#zipcode").val("");
+	$("#location").val("");
+	$("#experienceYears").val("");
+	$("#experienceMonths").val("");
+	$("#birthDate").val("");
+	
+}
 	 $("#candidateNameEmail").autocomplete({ 
 			minLength: 2, 
 			source : function(request, response) {
@@ -886,13 +940,14 @@
 			select: function( event, ui ) {
 				$("#candidateNameEmail").val(ui.item.label);
 				$("#candidateId").val(ui.item.value);
+				$("#candidateNameEmail").attr("selecedVal", ui.item.label); //this value will be compared when refoces on input.
 				 $.ajax({
 				    	type: "GET",
 				        url: sourceleadUrl+immiModulePath+"/getCandidateById?id="+ui.item.value, 
 				        success: function(candidateObj) {
 				        	$("#firstName").val(candidateObj.firstName);
 				    		$("#lastName").val(candidateObj.lastName);
-				    		$("#middleName").val(candidateObj.middleName);
+				    		$("#middleName").val(candidateObj.middelName);
 				    		$("#email").val(candidateObj.email);
 				    		$("#mobile").val(candidateObj.mobilePhone);
 				    		$("#alternateMobile").val(candidateObj.alternateMobilePhone);
@@ -913,16 +968,17 @@
 				    		$("#state").val(candidateObj.state);
 				    		$("#city").val(candidateObj.city);
 				    		$("#address").val(candidateObj.address);
-				    		$("#zipcode").val(candidateObj.zipcode);
+				    		$("#zipcode").val(candidateObj.zipCode);
 				    		$("#location").val(candidateObj.location);
 				    		$("#experienceYears").val(candidateObj.experienceYears);
 				    		$("#experienceMonths").val(candidateObj.experienceMonths);
 				    		
 				    		// setting the date for the date of birth field.
-				    		if(candidateObj.dateOfBirth != null && typeof  candidateObj.dateOfBirth != 'undefined' && candidateObj.dateOfBirth!=''){
-				    			var dateOfBirth =  moment(candidateObj.dateOfBirth).format("DD-MM-YYYY");
-				    		   $("#birthDate").val(dateOfBirth);
+				    		if(candidateObj.dateofBirthString != null && typeof  candidateObj.dateofBirthString != 'undefined' && candidateObj.dateofBirthString!=''){
+				    		//	var dateOfBirth =  moment(candidateObj.dateOfBirth).format(finalDateFormatOrg);
+				    		   $("#birthDate").val(candidateObj.dateofBirthString);
 				    		}
+				   
 				        }
 				 });
 				return false;
@@ -938,6 +994,8 @@ function deleteResumeDoc(){
 	$("#documentName").html("");
 	$("#downloadBrowseFile").attr("href","");
 }
+
+
 // to get the resume details for the candidate.
 function getCandidatesResumeDetailsById(candidateId){
 	 console.log(" before getCandidatesResumeDetailsById function calling ---->"+candidateId);
@@ -964,7 +1022,7 @@ function getCandidatesResumeDetailsById(candidateId){
 }
 
 $("#experienceValue").change(function () {
-    if(this.value == '25+'){
+    if(this.value == '40'){
     	$("#expMonthValue").val("");
     	$("#expMonthValue").prop("disabled", true);
     }else{
@@ -1247,7 +1305,7 @@ $("#experienceValue").change(function () {
 		  	  maxDate:0  
 		  })
 		  
-		  
+		 
 // previou lca start and end date 
 		  $('#prevLcaStartDate').datepicker({
 		      dateFormat: finalDateFormatPetitionSave,
@@ -1301,7 +1359,7 @@ $("#experienceValue").change(function () {
 		  $('#lcaStartDate').datepicker({
 		      dateFormat: finalDateFormatPetitionSave,
 		      changeMonth: true,
-		  	  changeYear: true, 
+		  	  changeYear: true,
 		  	  maxDate:0  
 		  });
 		  
@@ -1330,9 +1388,6 @@ $("#experienceValue").change(function () {
 	   $("#"+id).val(""); 
    }
    </script>
-   
-
- 
  <script>
 function addCandiadateEmptyAttorneyContact(){
 	$("#attorneyContact").empty();
@@ -1425,7 +1480,7 @@ function  removeValidationAttorneyContact() {
 		}
 		$(function() {
 		    $("#experienceYears").change(function() {
-		    	if($("#experienceYears").val() == '25+'){
+		    	if($("#experienceYears").val() == '40'){
 		    		$("#experienceMonths").prop("disabled", true);
 		    	}else{
 		    		$("#experienceMonths").prop("disabled", false);
@@ -1433,4 +1488,199 @@ function  removeValidationAttorneyContact() {
 		    });
 		});
 	 </script>
-	
+
+<!-- LcaNumber AutoPopulate Ui script -->
+<script type="text/javascript">
+var locationDate ='${SourceLeadWeb_orgLocations.dateFormat}'; 
+var finalDateFormatOrg = getOrgDateFormat(locationDate);
+ $("#lcaNumber").autocomplete({ 
+	 minLength: 2, 
+	 source : function(request, response) {
+		 $.ajax({
+			 url :sourceleadUrl+immiModulePath+ "/getLcaNumbersList",
+			 type : "GET",
+			 data : {
+				 lcaNum : request.term,
+				 expiryStatus:'1',
+				 candidateId :$("#candidateId").val()
+			 	},
+			 dataType : "json",
+			 success : function(data) {
+			 	response(data);
+			 }
+		 });
+	 },
+	   select: function(event, ui ) {
+		    $("#lcaNumber").val(ui.item.label);
+		 	$("#currLcaId").val(ui.item.value);//currentLcaId for LcaHistory
+		 	$("#lcaNumber").attr("selecedVal", ui.item.label);
+			 $.ajax({
+			    	type: "GET",
+			        url: sourceleadUrl+immiModulePath+"/getLcaByLcaId?id="+ui.item.value, 
+			        success: function(data) {
+			        	
+			        	if(data.lcaLocation != null && typeof data.lcaLocation != 'undefined' && data.lcaLocation !=''){
+			    			 $("#lcaCurrLocation").val(data.lcaLocation);
+			    		}
+			    		// Job And LCA Locations Are Equal Or Not Show Alert msg.
+			    		var jobLocation = $("#jobLocation").val();
+			    		if(jobLocation !=''){
+				    		if (jobLocation !== data.lcaLocation){
+				    			alert("Job And LCA Locations are not matched");
+				    		}
+			    		}
+			    		// setting the startDate,endDate for current Lca.
+			    		
+			    		 if(data.lcaStartDateStr != null && typeof  data.lcaStartDateStr != 'undefined' && data.lcaStartDateStr!=''){
+			    			//var startDateStr =  moment(data.lcaStartDateStr).format(finalDateFormatOrg);
+			    		   $("#lcaStartDate").val(data.lcaStartDateStr);
+			    		   $("#lcaStartDate").datepicker('disable');
+			    		}
+			    		if(data.lcaEndDateStr != null && typeof  data.lcaEndDateStr != 'undefined' && data.lcaEndDateStr!=''){
+			    		//	var lcaEndDateStr =  moment(data.lcaEndDateStr).format(finalDateFormatOrg);
+			    		   $("#lcaEndDate").val(data.lcaEndDateStr);
+			    		   $("#lcaEndDate").datepicker('disable');
+			    		} 
+			    		
+			    		
+			        }
+			 });
+		 	return false;
+		 },
+	 focus: function(event, ui){
+	          return false;
+	    }
+	 });
+ 
+ $("input[id='lcaNumber']").focusout(function(){
+	 var seletedVal= $("#lcaNumber").attr("selecedVal")
+	  if(typeof seletedVal =='undefined') {
+		  resetLcaDetails();
+	  }else if (typeof seletedVal !='undefined' && $("#lcaNumber").attr("selecedVal")!=$("#lcaNumber").val().trim()){
+		  resetLcaDetails();
+	  }
+ });
+ 
+ function resetLcaDetails(){
+		$("#lcaNumber").val("");
+		$("#lcaStartDate").val("");
+		$("#lcaEndDate").val("");
+		$("#lcaCurrLocation").val("");
+		$("#lcaStartDate").datepicker('enable');
+		$("#lcaEndDate").datepicker('enable');
+	}
+ 
+</script> 
+
+<script type="text/javascript">
+var locationDate ='${SourceLeadWeb_orgLocations.dateFormat}'; 
+var finalDateFormatOrg = getOrgDateFormat(locationDate);
+ $("#prevLcaNumber").autocomplete({ 
+	 minLength: 2, 
+	 source : function(request, response) {
+		 $.ajax({
+			 url :sourceleadUrl+immiModulePath+ "/getLcaNumbersList",
+			 type : "GET",
+			 data : {
+				 lcaNum : request.term,
+				 expiryStatus:'0'
+			 	},
+			 dataType : "json",
+			 success : function(data) {
+			 	response(data);
+			 }
+		 });
+	 },
+	   select: function(event, ui ) {
+		    $("#prevLcaNumber").val(ui.item.label);
+		 	$("#prevLcaId").val(ui.item.value);//currentLcaId for LcaHistory
+		 	$("#prevLcaNumber").attr("selecedVal", ui.item.label);
+			 $.ajax({
+			    	type: "GET",
+			        url: sourceleadUrl+immiModulePath+"/getLcaByLcaId?id="+ui.item.value, 
+			        success: function(data) {
+			    		// setting the startDate,endDate for current Lca.
+			    		 if(data.lcaStartDateStr != null && typeof  data.lcaStartDateStr != 'undefined' && data.lcaStartDateStr!=''){
+			    		//	var prevLcaStartDate =  moment(data.startDate).format(finalDateFormatOrg);
+			    		   $("#prevLcaStartDate").val(data.lcaStartDateStr);
+			    		   $("#prevLcaStartDate").datepicker('disable');
+			    		}
+			    		
+			    		if(data.lcaEndDateStr != null && typeof  data.lcaEndDateStr != 'undefined' && data.lcaEndDateStr!=''){
+			    			//var prevLcaEndDate =  moment(data.endDate).format(finalDateFormatOrg);
+			    		   $("#prevLcaEndDate").val(data.lcaEndDateStr);
+			    		   $("#prevLcaEndDate").datepicker('disable');
+			    		} 
+			        }
+			 });
+		 	return false;
+		 },
+	 focus: function(event, ui){
+	          return false;
+	    }
+	 });
+ 
+ $("input[id='prevLcaNumber']").focusout(function(){
+	 var seletedVal= $("#prevLcaNumber").attr("selecedVal")
+	  if(typeof seletedVal =='undefined') {
+		  resetPreLcaDetails();
+	  }else if (typeof seletedVal !='undefined' && $("#prevLcaNumber").attr("selecedVal")!=$("#prevLcaNumber").val().trim()){
+		  resetPreLcaDetails();
+	  }
+ });
+ 
+ function resetPreLcaDetails(){
+		$("#prevLcaNumber").val("");
+		$("#prevLcaStartDate").val("");
+		$("#prevLcaEndDate").val("");
+		$("#prevLcaStartDate").datepicker('enable');
+		$("#prevLcaEndDate").datepicker('enable');
+		
+	} 
+ 
+</script> 
+<script>
+function  selectBeneficiary() {
+    if(($('#candidateNameEmail').val() == '' || $('#candidateNameEmail').val() == 'undefined' || $('#candidateNameEmail').val() == null )){
+    	alert("Please Select Your Beneficiary ");
+    }      
+}
+</script>
+
+<script type="text/javascript">
+$('#i_20_number').mask('N-9999999999', {
+    translation: {
+        '#': {
+            pattern: "/N{1}[0-9]{10}/", optional: true
+        }
+    },
+ placeholder: ""
+});
+
+$('#eadNumber').mask('999-999-999', {
+    translation: {
+        '#': {
+            pattern: "/[0-9]{9}/", optional: true
+        }
+    },
+   placeholder: ""
+});
+
+$('#ssnNumber').mask('000-00-0000', {
+    translation: {
+        '#': {
+            pattern: "/[0-9]{9}/", optional: true
+        }
+    },
+   placeholder: ""
+});
+
+$('#i_94_number').mask('000000000-00', {
+    translation: {
+        '#': {
+            pattern: "/[0-9]{11}/", optional: true
+        }
+    },
+   placeholder: ""
+});
+</script>

@@ -22,7 +22,7 @@ import org.hibernate.annotations.NotFoundAction;
 import org.hibernate.annotations.Type;
 
 @Entity
-@Table(name = "IMMIGRATION_TEMPLATE_TASKS", schema = "SOURCELEAD")
+@Table(name = "IMMIGRATION_TEMPLATE_TASKS")
 public class ImmigrationTemplateTasks implements Serializable{
 	
 private static final long serialVersionUID = 1L;

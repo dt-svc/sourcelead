@@ -17,7 +17,7 @@ import javax.persistence.Transient;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 @Entity
-@Table(name = "CANDIDATE_FAMILY_DETAILS", schema = "SOURCELEAD")
+@Table(name = "CANDIDATE_FAMILY_DETAILS")
 public class CandidateFamilyDetails implements Serializable {
 
 	private static final long serialVersionUID = 1L;

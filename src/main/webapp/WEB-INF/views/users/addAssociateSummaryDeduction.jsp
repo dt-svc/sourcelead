@@ -4,18 +4,30 @@
 <%@taglib uri="http://www.springframework.org/tags/form" prefix="form"%>
 
  <script type="text/javascript">
+ var value =[];
+ var tempIndex = null;
     $(document).ready(function(){
     	$(".add-row").click(function(){
             var i = $("#index").val();
         	var deductionType = $("#dedType").val();
         	var deductionTypeValue = $('#dedType :selected').text();
         	var amount = $("#amt").val();
+        	if(!value.includes(deductionTypeValue)){
+                 value.push(deductionTypeValue);
         	if(deductionType != null && deductionType != '' && deductionType != 'undefined' && amount != null && amount != '' && amount != 'undefined'){
                   var method = $("#mthd").val();
-                  var markup = "<tr><td><input type='checkbox' name='record'></td><td><input type='hidden' id='deductionType' name='deductionDTOList["+i+"].deductionType' value='"+deductionType+"'/>" + deductionTypeValue + "</td><td><input type='hidden' id='method' name='deductionDTOList["+i+"].method' value='"+method+"' />" + method + "</td><td><input type='hidden' id='amount' name='deductionDTOList["+i+"].amount' value='"+amount+"'/>" + amount + "</td><td><a onclick='deleteRow();'><i class='fa fa-remove text-danger'></i></a></td></tr>";
+                  var markup = "";
+                  if(tempIndex >= 0 && tempIndex != null){
+                	  var markup = '<tr id="row'+tempIndex+'"><td><input type="hidden" id="deductionType" name="deductionDTOList['+i+'].deductionType" value="'+deductionType+'"/><span id="dedTypeVal'+i+'">'+deductionTypeValue+'</span></td><td><input type="hidden" id="method" name="deductionDTOList['+i+'].method" value="'+method+'" />' + method + '</td><td><input type="hidden" id="amount" name="deductionDTOList['+i+'].amount" value="'+amount+'"/>' + amount + '</td><td><a onclick="deleteRow(\''+tempIndex+'\');"><i class="fa fa-remove text-danger"></i></a></td></tr>'; 
+                  }else{
+                	  var markup = '<tr id="row'+i+'"><td><input type="hidden" id="deductionType" name="deductionDTOList['+i+'].deductionType" value="'+deductionType+'"/><span id="dedTypeVal'+i+'">'+deductionTypeValue+'</span></td><td><input type="hidden" id="method" name="deductionDTOList['+i+'].method" value="'+method+'" />' + method + '</td><td><input type="hidden" id="amount" name="deductionDTOList['+i+'].amount" value="'+amount+'"/>' + amount + '</td><td><a onclick="deleteRow(\''+i+'\');"><i class="fa fa-remove text-danger"></i></a></td></tr>';
+                	  i++;
+  					  tempIndex = null;
+                  }
+                  
                   $("#deductionTrAdd").append(markup);
-                  i++;
                   $("#index").val(i);	
+        	}
         	}
           
         });
@@ -29,20 +41,26 @@
             });
         }); */
         
-    });    
-</script>
-
-<script>
-
-function deleteRow(){
-	var i = $("#index").val();
+    }); 
+    
+function deleteRow(rowId){
+	var dedValue = $("#dedTypeVal"+rowId).html();
+	$("#row"+rowId).remove();
+	var deleted= value.indexOf(dedValue);
+	tempIndex = deleted;
+	value.splice(deleted,1);
+	
+	
+	/* var i = $("#index").val();
 	 $("#deductionTrAdd").find('input[name="record"]').each(function(){
-     	if($(this).is(":checked")){
+     	if($(this).is(':checked')){
              $(this).parents("tr").remove();
              i--;
              $("#index").val(i);
+             var deleted = value.indexOf(deductionTypeValue);
+             value.splice(deleted,1);
          }
-     });
+     }); */
 }
 
 </script>
@@ -80,7 +98,7 @@ getDeductionType();
                   <div class="col-md-5">
                     <label class="clearfix">Amount</label>
                     <div class="clearfix">
-                      <input type="text" class="form-control" id="amt" name="amt" data-validation="required validate_int" field-name="Amount">
+                      <input type="text" class="form-control" id="amt" name="amt" data-validation="required validate_float" field-name="Amount">
                     </div>
                   </div>
                   </div>
@@ -92,7 +110,7 @@ getDeductionType();
                   </div>
                   <div class="clearfix"></div>
                   <div class="col-md-10">
-                  	<button type="button" class="btn btn-success btnSuccess pull-right add-row" onclick="validateForm();"><i class="fa fa-plus paddingRight"></i>Add</button>
+                  	<button type="button" id="deductionAddButtonId" class="btn btn-success btnSuccess pull-right add-row" onclick="validateForm();"><i class="fa fa-plus paddingRight"></i>Add</button>
                   </div>
                 <div class="clearfix"></div>
                 
@@ -101,10 +119,11 @@ getDeductionType();
                 <table>
                 	<thead>
                 		<tr>
-                		    <th>Select</th>
+<!--                 		    <th>Select</th> -->
                 			<th>Type</th>
                 			<th>Method</th>
                 			<th>Amount</th>
+                			<th>Action</th>
                 		</tr>
                 	</thead>
                 	<tbody id="deductionTrAdd">
@@ -125,7 +144,7 @@ getDeductionType();
                   <div class="col-md-6">
                    <div class="pull-right">
                     <input value="Save" class="btn btn-success btnSuccess" type="button" id="associate_deduction_save_button" onclick="saveAssociateDeduction();">
-                    <input value="Cancel" class="btn btn-default ml10" onclick="javascript:window.location.href = '/app/usersList'" type="button">
+                    <input value="Cancel" class="btn btn-default ml10" onclick="javascript:window.location.href = '/app/userSummaryDetails?userCode=${userCode}'" type="button">
                     </div>
                   </div>
                 </div>
@@ -154,7 +173,9 @@ $('body').on('blur', '#associate_deduction_form', function() {
  <div id="deductionPopup"></div>
  <script>
  function saveAssociateDeduction(){
-	 var userId = '${userId}';  
+	 var userCode = '${userCode}';
+	 var userId = '${userId}';
+	 var saveType = '${saveType}';  
 	 var deductionType = $("#deductionType").val();
 	 if(deductionType != null && deductionType != '' && deductionType != "undefined"){
 		var formData = getFormData("associate_deduction_form");
@@ -165,7 +186,7 @@ $('body').on('blur', '#associate_deduction_form', function() {
      $.ajax({
 			type : "POST",
  	    data: formData,
-			url : sourceleadUrl+"/saveAssociateDeduction?"+tokenParamName+"="+tokenValue+"&userId="+userId,
+			url : sourceleadUrl+"/saveAssociateDeduction?"+tokenParamName+"="+tokenValue+"&userId="+userId+"&saveType="+saveType,
 			success : function(result) {
 				 if (result && result.response === "INVALID_DATA") {
 	                    $("#associate_deduction_save_button").removeAttr("disabled");
@@ -174,7 +195,7 @@ $('body').on('blur', '#associate_deduction_form', function() {
 	                } else if (result.response === "AWKWARD") {
 	                    location.href = "/errorPage";
 	                } else if (result.response === "SUCCESS") {
-	                	location.replace(sourceleadUrl+"/usersList");
+	                	location.replace(sourceleadUrl+"/userSummaryDetails?userCode="+userCode);
 	                } else if (result.indexOf('Sign In') !== -1) {
 						location.replace(sourceleadUrl);
 					} else {
@@ -259,17 +280,20 @@ function deductionPopup(){
  <script>
  function validateDuplicateDeductions(){
 	 var dedType = $("#dedType").val();
+	 var userId = '${userId}';
 	 if(dedType != null && dedType != '' && dedType != 'undefined'){
 		 $.ajax({
 				type : "GET",
-				url: sourceleadUrl+"/validateDeduction?"+tokenParamName+"="+tokenValue+"&dedType="+dedType,
+				url: sourceleadUrl+"/validateDeduction?"+tokenParamName+"="+tokenValue+"&dedType="+dedType+"&userId="+userId,
 				success :function(data) {
 					if(data == true){
 						$("#dedType").after("<p class='jquery_form_error_message'>This type is Already Existed</span>");
 						document.getElementById("associate_deduction_save_button").disabled = true;
+						document.getElementById("contributionAddButtonId").disabled = true;
 					}else{
 						$('#dedType').find('p.jquery_form_error_message').remove();
 						document.getElementById("associate_deduction_save_button").disabled = false;
+						document.getElementById("contributionAddButtonId").disabled = false;
 					}
 					
 			 },

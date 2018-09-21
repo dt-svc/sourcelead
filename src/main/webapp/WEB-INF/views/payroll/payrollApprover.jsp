@@ -41,7 +41,7 @@ $(document).ready(function(){
          <label class="col-md-12">&nbsp;</label>
 		<div class="col-md-12">
             <input value="Save" class="btn btn-success btnSuccess" type="button" onclick="savePayrollApprover();">
-            <input value="Cancel" class="btn btn-defualt ml10" type="button">
+            <input value="Cancel" class="btn btn-defualt ml10" type="button" onclick="cancelButton();">
 		</div>
             </div>
 			</div>
@@ -97,18 +97,11 @@ $(document).ready(function(){
 				for (var i=0; i<json.length; i++)
 				{
 					var opt = json[i];
-					if(data.payrollApprover != null && data.payrollApprover != 'undefined'){
-						for (var j=0; j<data.payrollApprover.length; j++){
-							var usrId = data.payrollApprover[j];
-							if(usrId == opt.id){
+							if(opt.isPayRollApprover == 'Y'){
 								output = output + "<option selected value='" +opt.id+ "'>"+opt.fullName+"  ("+opt.role+")</option>";
 							}else{
 								output = output + "<option value='" +opt.id+ "'>"+opt.fullName+"  ("+opt.role+")</option>";
 							}
-						}
-					}else{
-						output = output + "<option value='" +opt.id+ "'>"+opt.fullName+"  ("+opt.role+")</option>";
-					}
 					
 				}
 				$("#approver").empty();
@@ -161,6 +154,12 @@ $('body').on('blur', '#payroll_approver_form', function() {
 	$("#payroll_approver_form").showHelpOnFocus();
 	$("#payroll_approver_form").validateOnBlur(false, validationSettings);
 });
+</script>
+
+<script>
+function cancelButton(){
+	location.replace(sourceleadUrl+ "/payrollConfiguration");
+}
 </script>
 
 

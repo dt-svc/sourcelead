@@ -1070,7 +1070,7 @@ public class LeaveManagementRestController {
 						    }
 						}
 						if(!insertUserList.isEmpty() && insertUserList.size() >0) {
-							int result = associateBalanceLeaveService.addLeaveTypeToAssociate(insertUserList,orgLocation,leaveType,user);
+							int result = associateBalanceLeaveService.addLeaveTypeToAssociate(insertUserList,orgLocation,leaveType,user,0);
 						}
 						if(!updatedUserList.isEmpty() && updatedUserList.size() >0) {
 							float previousNoOfDays = 0;
@@ -1988,7 +1988,8 @@ public class LeaveManagementRestController {
 					.append(commonUtil.dateStrFromOrgDateFormatter(orgLocations.getDateFormat(), leave.getToDate()));
 
 			leaveDto.setDuration(durationSb.toString());
-			leaveDto.setLeaveType(leave.getLeaveType().getLeaveType());
+			leaveDto.setLeaveType(leave.getLeaveType().getName());
+			leaveDto.setType(leave.getLeaveType().getLeaveType());
 			leaveDto.setLeaveTypeId(leave.getLeaveType().getId());
 			leaveDto.setStatus(leave.getStatus());
 			leaveDto.setLeaveName(leave.getLeaveType().getName());
@@ -2057,16 +2058,14 @@ public class LeaveManagementRestController {
 				try {
 					UserRole role = userRoleService.getUserRoleByUserIdAndLocationId(laph1.getApproverUserId().getId(),
 							orgLocations.getId());
-					if (role != null) {
+//					if (role != null) {
 						if (StringUtils.isNotBlank(laph1.getApproverUserId().getLastName())) {
-							aphlist.add(sb1.append(role.getUserType()).append(" ( ")
-									.append(laph1.getApproverUserId().getFirstName()).append(" ")
-									.append(laph1.getApproverUserId().getLastName()).append(" )").toString());
+							aphlist.add(sb1.append(laph1.getApproverUserId().getFirstName()).append(" ")
+									.append(laph1.getApproverUserId().getLastName()).toString());
 						} else {
-							aphlist.add(sb1.append(role.getUserType()).append(" ( ")
-									.append(laph1.getApproverUserId().getFirstName()).append(" )").toString());
+							aphlist.add(sb1.append(laph1.getApproverUserId().getFirstName()).toString());
 						}
-					}
+//					}
 				} catch (Exception e) {
 					e.printStackTrace();
 				}

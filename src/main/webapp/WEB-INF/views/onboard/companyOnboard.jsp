@@ -293,7 +293,7 @@ right: 15px;
 		<div class="col-md-6 clearfix mb">
 		<label class="col-md-3 noPad">Week Off Days</label>
 			<div class="col-md-9 padding_right">
-			 <select multiple class="chosen-select form-control" id="weekOffDays" name="weekOffDays" data-validation-optional="true" field-name="Week Off Days">
+			 <select multiple class="chosen-select form-control" id="weekOffDays" name="weekOffDays" field-name="Week Off Days" data-validation="required">
 					 <option  value='Sun' ${fn:contains(SourceLeadWeb_weekOffDaysList, 'Sun') ? 'selected' : ''}>Sunday</option>
 					 <option  value='Mon' ${fn:contains(SourceLeadWeb_weekOffDaysList, 'Mon') ? 'selected' : ''}>Monday</option>
 					 <option  value='Tue' ${fn:contains(SourceLeadWeb_weekOffDaysList, 'Tue') ? 'selected' : ''}>Tuesday</option>
