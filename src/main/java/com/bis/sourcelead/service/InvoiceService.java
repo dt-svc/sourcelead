@@ -98,6 +98,8 @@ public interface InvoiceService {
 	boolean deleteInvoice(String invoiceUUID, String reason, String invoiceType, User user)throws Exception;
 	
 	boolean deleteCreditDebitNote(String noteUUID,String noteType,User user,OrgLocations orgLocations)throws Exception;
+	
+	boolean reactiveCreditDebitNote(String noteUUID,String noteType,User user,OrgLocations orgLocations)throws Exception;
 
 	Invoice saveExpenseInvoice(InvoiceDTO invoiceDTO, User user, OrgLocations orgLocation, String saveType,String invoiceType, Org org, String currencyCode, String invoiceCategory)throws Exception;
 
