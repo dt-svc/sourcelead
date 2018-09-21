@@ -1462,14 +1462,14 @@ function leavepolicyDescription(){
 		$('#noOfdaysToCarryforward').attr('data-validation-optional', "true");
 		$('#errorNoOfdaysToCarryforward').find('p.jquery_form_error_message').remove();
 		$("#noOfDaysDiv").hide();
-		$("#noOfdaysToCarryforward").val();
+// 		$("#noOfdaysToCarryforward").val();
 	}
 	
 	function carryForwardYesUsers(){
 		$('#noOfdaysToCarryforward').attr('data-validation-optional', "true");
 		$('#noOfdaysToCarryforward').attr('data-validation', "validate_int");
 		$("#noOfDaysDiv").show();
-		$("#noOfdaysToCarryforward").val('');
+// 		$("#noOfdaysToCarryforward").val('');
 	}
 	
 	function validateNoDays(){

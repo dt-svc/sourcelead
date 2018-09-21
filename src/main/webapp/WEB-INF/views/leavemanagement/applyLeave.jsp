@@ -10,7 +10,7 @@ window.onload = function() {
 
 	var leaveUUID = '${leaveUUID}';
 	if(leaveUUID != null && leaveUUID != '' && leaveUUID != 'undefined'){
-		getLeaveDetails();
+// 		getLeaveDetails();
 		getUsersBasedOnHierarchy('edit');
 		var checkFromEdit = '${leave.fromHalfDay}';
 		var checkToEdit = '${leave.toHalfDay}';
@@ -28,6 +28,9 @@ window.onload = function() {
 	getPieChartBasedOnUser();
 	getApproversList();
    
+	if(leaveUUID != null && leaveUUID != '' && leaveUUID != 'undefined'){
+		setTimeout(function(){ getLeaveDetails(); }, 1000);
+	}
    var isSuperUser = '${SourceLeadWeb_isSuperUser}';
    if(isSuperUser){
 	   $("#approvalDiv").hide();
@@ -1039,16 +1042,22 @@ function getLeaveDetails(finalDateFormatEndDate){
 
 <script>
 function validateOverDrawLeaves(leaveTypeName){
-	var fromDate = $("#fromDate").val();
-	var toDate = $("#toDate").val();
-	var date1 = new Date(fromDate);
-	var date2 = new Date(toDate);
-	var timeDiff = Math.abs(date2.getTime() - date1.getTime());
-	var diffDays = Math.ceil(timeDiff / (1000 * 3600 * 24)); 
-	var typeName = leaveTypeName.replace(/ /g,"_");
-	var typeIdBalCount = parseFloat($("#"+typeName+"Span").text());
-	if(((diffDays > typeIdBalCount) || typeIdBalCount ==  0) && typeIdBalCount != "" ){
-		errorMessage += "You Have Not Enough Leaves To Apply.";
+	var from = $("#fromDate").val();
+	var to = $("#toDate").val();
+	var parts = from.split('-');
+	var date1 = new Date(parts[2], parts[1] - 1, parts[0]); 
+	console.log(date1.getTime());
+	var parts1 = to.split('-');
+	var date2 = new Date(parts1[2], parts1[1] - 1, parts1[0]); 
+	console.log(date2.getTime());
+	if(to != ""){
+		var timeDiff = Math.abs(date2.getTime() - date1.getTime());
+		var diffDays = Math.ceil(timeDiff / (1000 * 3600 * 24)); 
+		var typeName = leaveTypeName.replace(/ /g,"_");
+		var typeIdBalCount = parseFloat($("#"+typeName+"Span").text());
+		if((diffDays > typeIdBalCount) || typeIdBalCount ==  0){
+			errorMessage += "You Have Not Enough Leaves To Apply.";
+		}
 	}
 }
 </script>

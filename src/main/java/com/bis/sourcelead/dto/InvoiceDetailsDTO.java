@@ -33,6 +33,7 @@ public class InvoiceDetailsDTO extends SearchDTO implements Serializable {
 	private String updatedBy;
 	private String dateStr;
 	private String userId;
+	private String empId;
 	public String getId()
 	{
 		return id;
@@ -241,7 +242,12 @@ public class InvoiceDetailsDTO extends SearchDTO implements Serializable {
 	{
 		this.userId = userId;
 	}
-	
+	public String getEmpId() {
+		return empId;
+	}
+	public void setEmpId(String empId) {
+		this.empId = empId;
+	}
 	
 
 }

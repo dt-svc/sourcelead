@@ -510,6 +510,8 @@ public class InvoiceServiceImpl implements InvoiceService {
 		Invoice parentInvoice = invoiceDao.getParentInvoiceByInvoiceId(invoice.getId());
 		if (parentInvoice == null) {
 			parentInvoice = new Invoice();
+			parentInvoice.setCreatedDate(commonUtil.orgLocationCommonDate(new Date(), vendorOrgLocation));
+			parentInvoice.setCreatedBy(user.getUserCode());
 		}
 		if (invoice.getInvoiceType().equalsIgnoreCase(Constants.Payables)) {
 			parentInvoice.setInvoiceType(Constants.Receivable);
@@ -562,8 +564,8 @@ public class InvoiceServiceImpl implements InvoiceService {
 			parentInvoice.setProjectID(invoice.getProjectID());
 		}
 		parentInvoice.setStatus(Constants.RECORD_ACTIVE.toString());
-		parentInvoice.setCreatedDate(invoice.getCreatedDate());
-		parentInvoice.setCreatedBy(invoice.getCreatedBy());
+		parentInvoice.setUpdatedDate(commonUtil.orgLocationCommonDate(new Date(), vendorOrgLocation));
+		parentInvoice.setUpdatedBy(user.getUserCode());
 		invoiceDao.saveInvoce(parentInvoice);
 		return parentInvoice;
 	}
@@ -2701,7 +2703,7 @@ public class InvoiceServiceImpl implements InvoiceService {
 		} else {
 			invoice = new Invoice();
 			invoice.setInvoiceUUID(SourceLeadRandomCodeHelper.generateRandomUUID());
-			invoice.setCreatedDate(commonUtil.currentDate());
+			invoice.setCreatedDate(commonUtil.orgLocationCommonDate(new Date(), orgLocation));
 			invoice.setCreatedBy(user.getUserCode());
 		}
 
@@ -2861,7 +2863,7 @@ public class InvoiceServiceImpl implements InvoiceService {
 		invoice.setStatus(Constants.RECORD_ACTIVE.toString());
 		invoice.setInvoiceStatus(saveType);
 		invoice.setUpdatedBy(user.getUserCode());
-		invoice.setUpdatedDate(commonUtil.currentDate());
+		invoice.setUpdatedDate(commonUtil.orgLocationCommonDate(new Date(), orgLocation));
 		
 
 		List<String> submissionApproverHierarchyIds = new ArrayList<>();
@@ -3222,7 +3224,7 @@ public class InvoiceServiceImpl implements InvoiceService {
 								statusBy = " by ";
 								statusValue =timelineHistory.getCreatedBy().getFullName();
 							} else if (!timelineHistory.getCreatedBy().getId()
-									.equals(timelineHistory.getOwnerUser().getId())) {
+									.equals(ownerUser.getId())) {
 								statusVal = "Partial Paid updated";
 								statusBy = " by ";
 								statusValue = timelineHistory.getCreatedBy().getFullName();
@@ -3238,18 +3240,19 @@ public class InvoiceServiceImpl implements InvoiceService {
 						timelineDTO.setInvoicePaymentReminderStatus(timelineHistory.getInvoicePaymentReminderStatus());
 						List<User> usersList = userDao.getUsersListUsingMultipleStringIds(timelineHistory.getOwnerUsers());
 						StringBuilder sb=new StringBuilder();
-						String cc=null;
+						String conUser1=null;
 						for(User ownerUser: usersList){
 							if (ownerUser.getId().equals(timelineHistory.getCreatedBy().getId())) {
 								statusVal = "Reminder";
 								statusBy = " to ";
 								List<User> contactUsersList = userDao.getUsersListUsingMultipleStringIds(timelineHistory.getInvoice().getContactUsers());
 								for(User contactUsers :contactUsersList){
-									cc = sb.append(contactUsers.getFullName()).append(",").toString();
+									conUser1 = sb.append(contactUsers.getFullName()).append(",").toString();
 									statusValue = contactUsers.getFullName();
 								
 								}
-								statusValue = cc;
+								
+								statusValue = conUser1.replace(conUser1.substring(conUser1.length()-1), "");
 								EmailAttachment emailAttachment = null;
 								String invoiceFileUrl = timelineHistory.getInvoice().getFileUrl();
 								if (StringUtils.isNotBlank(invoiceFileUrl)) {
@@ -3409,11 +3412,11 @@ public class InvoiceServiceImpl implements InvoiceService {
 //						statusValue = timelineHistory.getInvoice().getOwnerUserId().getFullName();
 					} else if (status.equalsIgnoreCase("Void")) {
 						List<User> ownerUsersList = userDao.getUsersListUsingMultipleStringIds(timelineHistory.getInvoice().getOwnerUsers());
+						List<User> contactUsersList = userDao.getUsersListUsingMultipleStringIds(timelineHistory.getInvoice().getContactUsers());
 						for(User ownerUser: ownerUsersList){
 							if (timelineHistory.getCreatedBy().getId().equals(ownerUser.getId())) {
 								statusVal = "Void";
 								statusBy = " by ";
-								List<User> usersList = userDao.getUsersListUsingMultipleStringIds(timelineHistory.getInvoice().getOwnerUsers());
 								if(ownerUser.getUserCode().equals(timelineHistory.getInvoice().getUpdatedBy())){
 									statusValue = ownerUser.getFullName();	
 								}
@@ -3423,9 +3426,8 @@ public class InvoiceServiceImpl implements InvoiceService {
 										.equals(ownerUser.getId())) {
 									statusVal = "Void";
 									statusBy = " by ";
-									List<User> usersList = userDao.getUsersListUsingMultipleStringIds(timelineHistory.getInvoice().getContactUsers());
 									 
-									for(User contactUser: usersList){
+									for(User contactUser: contactUsersList){
 									if(contactUser.getUserCode().equals(timelineHistory.getInvoice().getUpdatedBy())){
 										statusValue = contactUser.getFullName();	
 									}
@@ -3633,6 +3635,11 @@ public class InvoiceServiceImpl implements InvoiceService {
 			creditDebitNote.setReason(creditDebitNoteDTO.getReason());
 		}else{
 			creditDebitNote.setReason(null);
+		}
+		if(StringUtils.isNotBlank(creditDebitNoteDTO.getAccount())){
+			PaymentAccount paymentaccount = new PaymentAccount();
+			paymentaccount.setId(Long.valueOf(creditDebitNoteDTO.getAccount()));
+			creditDebitNote.setPaymentAccount(paymentaccount);
 		}
 		if(StringUtils.isNotBlank(creditDebitNoteDTO.getCreditDebitNotedate())){
 			creditDebitNote.setCreditNoteDate(commonUtil.orgLocationDateFormat(orgLocation.getDateFormat(), creditDebitNoteDTO.getCreditDebitNotedate()));
@@ -3850,6 +3857,7 @@ public class InvoiceServiceImpl implements InvoiceService {
 			creditDebitNoteListDTO.setContactUser(creditDebitNote.getContactUser());
 			creditDebitNoteListDTO.setApproverCheckBox(creditDebitNote.getApproverCheckBox());
 			creditDebitNoteListDTO.setApprovers(creditDebitNote.getApprovers());
+			creditDebitNoteListDTO.setStatus(creditDebitNote.getStatus());
 			if(StringUtils.isNotBlank(creditDebitNote.getApprovers())){
 			List<String> appUserList = Arrays.asList(creditDebitNoteListDTO.getApprovers().split(","));
 				creditDebitNoteListDTO.setApproverUserSplitId(appUserList);
@@ -3875,10 +3883,10 @@ public class InvoiceServiceImpl implements InvoiceService {
 				note.setUpdatedDate(commonUtil.orgLocationCommonDate(date, orgLocations));
 				note.setUpdatedBy(user);
 				CreditDebitNote savedNote = invoiceDao.saveCreditDebitNote(note);
-				if (null != savedNote) {
+				if ((null != savedNote) && ((savedNote.getNoteStatus().equalsIgnoreCase("Received")) || (savedNote.getNoteStatus().equalsIgnoreCase("Send")))) {
 					if (null != note.getParentCreditDebitNote()) {
 						// parent invoice update
-						CreditDebitNote parentnote = invoiceDao.getParentCreditDebitNoteById(savedNote.getParentCreditDebitNote().getId());
+						CreditDebitNote parentnote = invoiceDao.getCreditDebitNoteById(savedNote.getParentCreditDebitNote().getId());
 						parentnote.setStatus(Constants.MEMBER_IN_ACTIVE);
 						parentnote.setUpdatedBy(user);
 						parentnote.setUpdatedDate(commonUtil.orgLocationCommonDate(date, orgLocations));
@@ -3887,6 +3895,38 @@ public class InvoiceServiceImpl implements InvoiceService {
 						// update child invoice
 						CreditDebitNote childInvoice = invoiceDao.getParentCreditDebitNoteById(savedNote.getId());
 						childInvoice.setStatus(Constants.MEMBER_IN_ACTIVE);
+						childInvoice.setUpdatedBy(user);
+						childInvoice.setUpdatedDate(commonUtil.orgLocationCommonDate(date, orgLocations));
+						invoiceDao.saveCreditDebitNote(childInvoice);
+					}
+				}
+				result = true;	
+		}
+		return result;
+	}
+	
+	@Override
+	public boolean reactiveCreditDebitNote(String noteUUID,String noteType,User user,OrgLocations orgLocations)throws Exception {
+		boolean result = false;
+		CreditDebitNote note = invoiceDao.getCreditDebitNoteByUUID(noteUUID);
+		Date date = new Date();
+		if(note!= null){
+				note.setStatus(Constants.MEMBER_ACTIVE);
+				note.setUpdatedDate(commonUtil.orgLocationCommonDate(date, orgLocations));
+				note.setUpdatedBy(user);
+				CreditDebitNote savedNote = invoiceDao.saveCreditDebitNote(note);
+				if ((null != savedNote) && ((savedNote.getNoteStatus().equalsIgnoreCase("Received")) || (savedNote.getNoteStatus().equalsIgnoreCase("Send")))) {
+					if (null != note.getParentCreditDebitNote()) {
+						// parent invoice update
+						CreditDebitNote parentnote = invoiceDao.getCreditDebitNoteById(savedNote.getParentCreditDebitNote().getId());
+						parentnote.setStatus(Constants.MEMBER_ACTIVE);
+						parentnote.setUpdatedBy(user);
+						parentnote.setUpdatedDate(commonUtil.orgLocationCommonDate(date, orgLocations));
+						invoiceDao.saveCreditDebitNote(parentnote);
+					}else{
+						// update child invoice
+						CreditDebitNote childInvoice = invoiceDao.getParentCreditDebitNoteById(savedNote.getId());
+						childInvoice.setStatus(Constants.MEMBER_ACTIVE);
 						childInvoice.setUpdatedBy(user);
 						childInvoice.setUpdatedDate(commonUtil.orgLocationCommonDate(date, orgLocations));
 						invoiceDao.saveCreditDebitNote(childInvoice);
@@ -4104,6 +4144,9 @@ public class InvoiceServiceImpl implements InvoiceService {
 		creditDebitNoteListDTO.setOrgRelationId(note.getOrgRelations().getId().toString());
 		creditDebitNoteListDTO.setGrandTotal(note.getTotal().toString());
 		creditDebitNoteListDTO.setSubTotalAmount(note.getSubTotal().toString());
+		if(note.getPaymentAccount() !=null){
+		creditDebitNoteListDTO.setAccount(note.getPaymentAccount().getId().toString());
+		}
 		if(note.getDiscountValue() !=null){
 		creditDebitNoteListDTO.setDiscountValue(note.getDiscountValue().toString());
 		creditDebitNoteListDTO.setDiscountTotal(note.getDiscountTotal().toString());

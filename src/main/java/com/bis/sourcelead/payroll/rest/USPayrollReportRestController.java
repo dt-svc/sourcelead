@@ -26,12 +26,13 @@ import org.springframework.web.servlet.ModelAndView;
 import com.bis.sourcelead.annotations.Validator;
 import com.bis.sourcelead.dto.AssociatePayItemDTO;
 import com.bis.sourcelead.dto.Response;
+
 import com.bis.sourcelead.dto.ResponseList;
 import com.bis.sourcelead.entity.OrgLocations;
-import com.bis.sourcelead.entity.RestrictDay;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.entity.UserGroup;
 import com.bis.sourcelead.enums.Result;
+
 import com.bis.sourcelead.payroll.dto.CompareDataDTO;
 import com.bis.sourcelead.payroll.dto.ContributionDTO;
 import com.bis.sourcelead.payroll.dto.DeductionDTO;
@@ -46,6 +47,16 @@ import com.bis.sourcelead.payroll.entity.PaysheetFrequency;
 import com.bis.sourcelead.payroll.service.PaysheetFrequencyService;
 import com.bis.sourcelead.payroll.service.USPayPeriodService;
 import com.bis.sourcelead.payroll.util.PayrollUtil;
+
+import com.bis.sourcelead.payroll.dto.CheckRegisterReportDTO;
+import com.bis.sourcelead.payroll.dto.PayPeriodDTO;
+import com.bis.sourcelead.payroll.dto.PayrollReportDTO;
+
+import com.bis.sourcelead.payroll.service.PayrollReportService;
+
+import com.bis.sourcelead.payroll.dto.USPayrollDTO;
+import com.bis.sourcelead.payroll.service.PaysheetFrequencyService;
+
 import com.bis.sourcelead.service.UserGroupService;
 import com.bis.sourcelead.util.SourceLeadSessionManager;
 
@@ -67,6 +78,12 @@ public class USPayrollReportRestController {
 	@Autowired
 	PaysheetFrequencyService paysheetFrequencyService;
 	
+	@Autowired
+	PayrollReportService payrollReportService;
+
+	@Autowired
+	PaysheetFrequencyService paysheetFrequencyService;
+
 	/**
 	 * Returning Us Payroll Jsp
 	 * 
@@ -392,5 +409,82 @@ public class USPayrollReportRestController {
 			e.printStackTrace();
 		}
 		return compare;
+	}
+
+	@RequestMapping(value = { "/runPayrollregister","/rest/runPayrollregister" }, method = RequestMethod.POST)
+	@ResponseBody
+	public ResponseList<USPayrollDTO> runPayrollregister(PayrollReportDTO payrollReportDTO,HttpServletRequest request, HttpServletResponse response) throws Exception
+	{
+		ResponseList<USPayrollDTO> responseList = new ResponseList<>();
+		try {
+			User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+			if (user != null) { 
+				List<USPayrollDTO> payrollRegisterReports = paysheetFrequencyService.getPayrollRegisterReports(payrollReportDTO);
+				responseList.setData(payrollRegisterReports);
+				responseList.setResponse(Result.SUCCESS.name());
+				responseList.setResponseMessage(Result.SUCCESS.getValue());
+			}else{
+				responseList.setResponse(Result.SESSION_TIMEDOUT.name());
+				responseList.setResponseMessage(Result.SESSION_TIMEDOUT.getValue());
+			}
+		} catch (Exception e) {
+			responseList.setResponse(Result.AWKWARD.name());
+			responseList.setResponseMessage(Result.AWKWARD.getValue());
+			logger.error(ExceptionUtils.getFullStackTrace(e));
+		}
+		return responseList;
+	}
+
+	
+	/**
+	 * Get Payroll Summary by pay period and paycheck Date
+	 * @param groupId
+	 * @param request
+	 * @param response
+	 * @return
+	 * @throws Exception
+	 */
+	@RequestMapping(value = { "/getPayCheckDateReports","/rest/getPayCheckDateReports" }, method = RequestMethod.POST)
+	@ResponseBody
+	public ResponseList<PayrollReportDTO> getPayCheckDateReports(PayrollReportDTO payrollReportDTO,HttpServletRequest request, HttpServletResponse response) throws Exception
+	{
+		OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+		String[] tableColumns = {"empName", "empPayRate", "regularHours", "overTimeHours", "preTaxDeduction", "postTaxDeduction", "taxes", "netPay", "lastPay", "YTD",""};
+	    int sortColumnIndex = 1;		 //by default sorting using updated date
+		String sortColumnOrder = "asc";  //by default descending order
+		if(payrollReportDTO.getOrder() != null && !payrollReportDTO.getOrder().isEmpty()) {
+			sortColumnIndex = Integer.parseInt(payrollReportDTO.getOrder().get(0).get("column"));
+			sortColumnOrder = payrollReportDTO.getOrder().get(0).get("dir");
+		}
+		payrollReportDTO.setSortColumn(tableColumns[sortColumnIndex]);
+		payrollReportDTO.setSortOrder(sortColumnOrder);
+		ResponseList<PayrollReportDTO> res = payrollReportService.getPayrollSummaryByPayPeriodAndPayCheckDate(orgLocation,payrollReportDTO);
+		return res;
+	}
+	
+	/**
+	 * Get Check Register Payroll Reports 
+	 * @param groupId
+	 * @param request
+	 * @param response
+	 * @return
+	 * @throws Exception
+	 */
+	@RequestMapping(value = { "/getCheckRegisterReports","/rest/getCheckRegisterReports" }, method = RequestMethod.POST)
+	@ResponseBody
+	public ResponseList<CheckRegisterReportDTO> getCheckRegisterReports(PayrollReportDTO payrollReportDTO,HttpServletRequest request, HttpServletResponse response) throws Exception
+	{
+		OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+		String[] tableColumns = {"empId",  "empName", "department", "netPay"};
+	    int sortColumnIndex = 1;		 //by default sorting using updated date
+		String sortColumnOrder = "asc";  //by default descending order
+		if(payrollReportDTO.getOrder() != null && !payrollReportDTO.getOrder().isEmpty()) {
+			sortColumnIndex = Integer.parseInt(payrollReportDTO.getOrder().get(0).get("column"));
+			sortColumnOrder = payrollReportDTO.getOrder().get(0).get("dir");
+		}
+		payrollReportDTO.setSortColumn(tableColumns[sortColumnIndex]);
+		payrollReportDTO.setSortOrder(sortColumnOrder);
+		ResponseList<CheckRegisterReportDTO> res = payrollReportService.getCheckRegisterReports(orgLocation,payrollReportDTO);
+		return res;
 	}
 }

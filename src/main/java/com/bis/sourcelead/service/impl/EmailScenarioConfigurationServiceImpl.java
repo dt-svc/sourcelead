@@ -162,10 +162,15 @@ private static final Logger logger = LoggerFactory.getLogger(EmailScenarioConfig
 				properties.put("mail.pop3.port", portNumber);
 				properties.put("mail.pop3.starttls.enable", "true");
 			 //	System.out.println(" before properties");
-				
-				Session emailSession = Session.getDefaultInstance(properties);
+				Session session = Session.getInstance(properties, new Authenticator() {
+					@Override
+					protected PasswordAuthentication getPasswordAuthentication() {
+						return new PasswordAuthentication(user, password);
+					}
+				});
+				//Session emailSession = Session.getDefaultInstance(properties);
 
-				Store store = emailSession.getStore("pop3s");
+				Store store = session.getStore("pop3s");
 
 				System.out.println("connect before pop3s ==============>");
 				logger.debug("***********************trying to connect mail with details****************");

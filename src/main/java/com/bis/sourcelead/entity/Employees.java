@@ -45,13 +45,13 @@ public class Employees implements Serializable{
 	@Column(name ="DOB")
 	private Date dob;
 	
-	@Column(name="COUNTRY")
+	@Column(name="COUNTRY", columnDefinition = "LONGTEXT default NULL")
 	private String country;
 	
-	@Column(name="STATE")
+	@Column(name="STATE", columnDefinition = "LONGTEXT default NULL")
 	private String state;
 	
-	@Column(name="CITY")
+	@Column(name="CITY", columnDefinition = "LONGTEXT default NULL")
 	private String city;
 	
 	@Column(name="EMPLOYEE_STATE")

@@ -343,7 +343,7 @@ public class LeaveDaoImpl implements LeaveDao{
 //			subQuery = "and leave.status = :leaveStatus";
 		if(!"Admin".equalsIgnoreCase(role.getUserType())){
 			if(currentWeekStarDate != null && currentWeekEndDate != null){
-				String query = "from LeaveApproveHierarchy laph left join fetch laph.leaveid leave left join fetch leave.leaveType left join fetch leave.user ltype where leave.orgLocations.id = :orgLocationId and laph.approverUserId.id= :userId and leave.status = :leaveStatus "+subQuery1+" "+subQuery2+" "+subQuery3+"";
+				String query = "from LeaveApproveHierarchy laph left join fetch laph.leaveid leave left join fetch leave.leaveType left join fetch leave.user ltype where leave.orgLocations.id = :orgLocationId and laph.approverUserId.id= :userId and leave.status = :leaveStatus or leave.status = 'PENDING' "+subQuery1+" "+subQuery2+" "+subQuery3+"";
 				if(deptList.size() >0)
 					return session.createQuery(query).setParameter("leaveStatus",status).setLong("orgLocationId", locationId).setLong("userId", usrId).setParameter("weekStartDate", currentWeekStarDate).setParameter("weekEnddate", currentWeekEndDate).setParameterList("deptList", deptList).list();
 				else 
@@ -931,7 +931,7 @@ public class LeaveDaoImpl implements LeaveDao{
 		Session session = this.sessionFactory.getCurrentSession();
 		java.sql.Date sqlStartDate = new java.sql.Date(from.getTime());
 		java.sql.Date sqlEndDate = new java.sql.Date(to.getTime());
-		String query = "from AppliedLeaveDateView aleave where aleave.orglocationId = :orgLocationId and aleave.userId = :userId and (( aleave.applyLeaveDate = :startDate) OR (aleave.applyLeaveDate = :endDate)) and (aleave.leaveStatus = 'APPROVED' or aleave.leaveStatus = 'PENDING')";
+		String query = "from AppliedLeaveDateView aleave where aleave.orglocationId = :orgLocationId and aleave.userId = :userId and ((aleave.applyLeaveDate >= :startDate and aleave.applyLeaveDate <= :endDate) or ( aleave.applyLeaveDate = :startDate) OR (aleave.applyLeaveDate = :endDate)) and (aleave.leaveStatus = 'APPROVED' or aleave.leaveStatus = 'PENDING')";
 		List<AppliedLeaveDateView> list = session.createQuery(query).setLong("orgLocationId", orgLocation.getId()).setParameter("startDate", sqlStartDate).setParameter("endDate", sqlEndDate).setLong("userId", userId).list();
 		return list;
 	}
@@ -1024,14 +1024,15 @@ public class LeaveDaoImpl implements LeaveDao{
 
 	@Override
 	@Transactional
-	public String getDepartmentTypeNamesByOrgLocationIdAndUserId(Long userId)  {
+	public String getDepartmentTypeNamesByOrgLocationIdAndUserId(Long userId,Long orgLocationId)  {
 		String depart =new String();
 		try {
 			LeaveBalanceReportDTO depar = null;
 		Session session = this.sessionFactory.getCurrentSession();
-		String query="select d.DEPARTMENT_NAME As department  from DEPARTMENT d,EMPLOYEE e where e.DEPARTMENT_ID=d.ID and e.USER_ID =:userId ";
+		String query="select d.DEPARTMENT_NAME As department  from DEPARTMENT d,EMPLOYEE e where e.DEPARTMENT_ID=d.ID and e.USER_ID =:userId and e.ORG_LOCATIONS_ID=:orgLocationId";
 		Query department=session.createSQLQuery(query);
 		department.setLong("userId", userId);
+		department.setLong("orgLocationId", orgLocationId);
 	    department.setResultTransformer(Transformers.aliasToBean(LeaveBalanceReportDTO.class));
 		List<LeaveBalanceReportDTO> dep=department.list();
 		if(dep !=null && dep.size() > 0) {

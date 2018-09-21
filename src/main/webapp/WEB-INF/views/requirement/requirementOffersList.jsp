@@ -465,14 +465,14 @@ $(".overIcon, .newActPop").click(function(e){
 </script>
    
    <div class="advancedsearch-mask"></div>
-          <div class="cand-advsrch-popup advancedsearch-popup filterDynamic-Search-small" id="invoiceFilterId">
+          <div class="cand-advsrch-popup advancedsearch-popup filterDynamic-Search" id="invoiceFilterId">
 				<h5 class="headerAdsrch">Filter Search
 					<a href="javascript:void(0)" class="close-div" onClick="closeApplicantFilterPop()"><i
 						class="fa fa-close"></i></a>
 				</h5>
 				<div class="addInner">
 					<div class="row">
-					  <div class="col-md-4">
+					  <div class="col-md-3">
 						<div class="row">
 						  <div class="col-md-12 mb">
 								<label><strong>Search for</strong></label>
@@ -523,7 +523,7 @@ $(".overIcon, .newActPop").click(function(e){
 						</div>
 						
 						 
-						<div class="col-md-4">
+						<div class="col-md-3">
 						<div class="row">
 						    <div class="col-md-12 mb">
 								<label><strong>Employment Type</strong></label>
@@ -550,7 +550,7 @@ $(".overIcon, .newActPop").click(function(e){
 						  </div>
 						</div>
 	                 
-						<div class="col-md-4 positionRelative mb">
+						<div class="col-md-3 positionRelative mb">
 							<div class="clearfix dynamic_search filterDynamicsearch">
 																<input type="text" id="myTeamsInput" onkeyup="myTeamsFunction()" placeholder="Teams" title="Search teams">
 								<span class="cursorPointer" title="Search"><i class="fa fa-search"></i></span>
@@ -561,7 +561,7 @@ $(".overIcon, .newActPop").click(function(e){
 							 </div> 
 						</div>
 						
-						<div class="col-md-4 positionRelative mb">
+						<div class="col-md-3 positionRelative mb">
 							<div class="clearfix dynamic_search filterDynamicsearch">
 								<input type="text" id="myClientInput" onkeyup="myClientFunction()" placeholder="Clients" title="Type in a client">
 								<span class="cursorPointer" title="Search"><i class="fa fa-search"></i></span>

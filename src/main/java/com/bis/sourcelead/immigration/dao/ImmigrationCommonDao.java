@@ -227,11 +227,15 @@ public interface ImmigrationCommonDao {
 	
 	void deleteLcaPlaceOfEmpmntDetails(Long remaininglpoeIds[]); 
 	
+	void deleteLcaDocumentsDetails(Long remaininglcaDocIds[]); 
+	
 	
 	CandidateLcaJobDetails saveCandidateLcaJobDetails(CandidateLcaJobDetails candidateLcaJobDetails);
 
 	LcaHistory getLcaHistoryByStatus(Long immigrationId,Long candidateId,  String isCurrent);
 	
 	String deletetLcaHistoryDetails(Long id);
+	
+	int updateLcaHistoryStatusByLcaNumber(Long lhId,Long immigrationId,Long candidateId);
 	
 }

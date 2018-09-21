@@ -246,11 +246,15 @@ public interface UserService  {
 
 	Response<String> saveDashboardItems(DashboardItemsDTO dashboardItemsDTO, User user, OrgLocations orgLocations);
 	
- List<LeaveBalanceReportDTO> getUserNameAndTypeByOrgLocationId(Long OrgLocationId,List<Long> userRole,List<Long> orgDepartmentsList,String topleave,Date monthStartDate,Date monthEndDate) throws Exception;
+ List<LeaveBalanceReportDTO> getUserNameAndTypeByOrgLocationId(String searchValue,Long OrgLocationId,List<Long> userRole,List<Long> orgDepartmentsList,String topleave,Date monthStartDate,Date monthEndDate) throws Exception;
  
  public void sendEmailToUserForEmailUpdation(User user, User loginUser, OrgLocations orgLocations,String toEmail,String existingEmail) throws Exception;
 
 public List<User> getUsersListUsingMultipleStringIds(String id) throws Exception;
+
+public List<Long> getUserHierarchyIdList(Long userId) throws Exception;
+
+public List<String> getUserHierarchyUserCodeList(Long userId) throws Exception;
 
 }	
 

@@ -333,13 +333,16 @@ public class RequirementInterviewHistoryServiceImpl implements RequirementInterv
 				interviewHistory.setRequirementId(interviewHistory.getSubmissionId().getRequirement().getId().toString());
 			}
 			
-			List<RequirementInterviewer> interviewers = requirementInterviewerService.getInterviwersListByInterviewId(interviewHistory.getInterviewId().getId());
-			for(RequirementInterviewer interviewer:interviewers){
-				InterviewFeedbackTemplate feedbackTemplate = interviewFeedbackTemplateService.getInterviewFeedbackTemplateById(interviewer.getId()) ;
-				if(null != feedbackTemplate){
-					interviewHistory.setFeedbackDate(commonUtil.dateStrFromOrgDateFormatter(loginOrgLocations.getDateFormat(),feedbackTemplate.getCreatedDate()));	
+			if(userId != null) {
+				List<RequirementInterviewer> interviewers = requirementInterviewerService.getInterviwersListByInterviewIdAndUserID(interviewHistory.getInterviewId().getId(),userId);
+				for(RequirementInterviewer interviewer:interviewers){
+					InterviewFeedbackTemplate feedbackTemplate = interviewFeedbackTemplateService.getInterviewFeedbackTemplateById(interviewer.getId()) ;
+					if(null != feedbackTemplate){
+						interviewHistory.setFeedbackDate(commonUtil.dateStrFromOrgDateFormatter(loginOrgLocations.getDateFormat(),feedbackTemplate.getCreatedDate()));	
+					}
 				}
 			}
+			
 			
 			//changed as per the timezone
 			DateFormat standardFormat = new SimpleDateFormat( "MMM dd, yyyy hh:mm aa");

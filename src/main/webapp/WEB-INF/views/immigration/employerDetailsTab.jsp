@@ -291,7 +291,7 @@
 	
 	$("#employersDataSearch").keyup(function (e) {
 	    if (e.which === 13) {
-	    	getCandidateEmployerList(candidateId);
+	    	immigration.getCandidateEmployerList(candidateId);
 	    }
 	});
 	

@@ -1896,7 +1896,7 @@ public class UserDaoImpl implements UserDao {
 		String myPerformanceReportQuery="";
 		
 		if(loginUserRole.equalsIgnoreCase("ROLE_ADMIN")) {
-			
+			//List<String> userList = this.getUserHierarchyUserCodeList(userId);
 			if(userDTO.getSearchValue() !=null && !"".equalsIgnoreCase(userDTO.getSearchValue())) {
 				searchQuery = " AND U.FIRST_NAME LIKE '%" + userDTO.getSearchValue() + "%' OR U.LAST_NAME LIKE '%" + userDTO.getSearchValue() + "%'";
 			}
@@ -2049,7 +2049,8 @@ public class UserDaoImpl implements UserDao {
 
 			
 		}else {
-			
+			List<String> userList = this.getUserHierarchyUserCodeList(userId);
+			String users = "'" + StringUtils.join(userList, "','")  + "'";
 			if(teamsList != null && teamsList.isEmpty()){
 				teamsList.add(0l);
 			}
@@ -2072,10 +2073,10 @@ public class UserDaoImpl implements UserDao {
 					sortingQry = " order by user."+ userDTO.getSortColumn() +" "+userDTO.getSortOrder();
 			}
 			if(StringUtils.isNotBlank(type) && type.equalsIgnoreCase("myPerformanceReports")) {
-				query = "from User user where (user.id IN (select userRole.user.id from UserRole userRole where userRole.user.id = :userId and userRole.userState = 'ACTIVE' "+globalAccessQuery+" )) ";
+				query = "from User user where (user.userCode IN("+users+") OR user.id IN (select userRole.user.id from UserRole userRole where userRole.user.id = :userId and userRole.userState = 'ACTIVE' "+globalAccessQuery+" )) ";
 			}
 			else{
-				query = "from User user where (user.id IN (select userRole.user.id from UserRole userRole where (userRole.reportingManager.id = :userId OR userRole.resourceManager.id = :userId) and userRole.userState = 'ACTIVE' "+globalAccessQuery+" ) "
+				query = "from User user where (user.userCode IN("+users+") OR user.id IN (select userRole.user.id from UserRole userRole where (userRole.reportingManager.id = :userId OR userRole.resourceManager.id = :userId) and userRole.userState = 'ACTIVE' "+globalAccessQuery+" ) "
 						+ " OR user.id IN (select tm.memberUserId.id from TeamMembers tm where tm.teamId.ownerUserId = :userId and tm.status = '1'  and tm.teamId.orgLocationsId = :orgLocationId  "+subQuery+"))";
 			}
 			
@@ -2297,7 +2298,7 @@ public class UserDaoImpl implements UserDao {
 
 	@Override
 	@Transactional
-	public List<LeaveBalanceReportDTO> getUserNameAndTypeByOrgLocationId(Long orgLocationId,List<Long> userRole,List<Long> orgDepartmentsList,String topleave,Date MonthStart,Date MonthEnd) {
+	public List<LeaveBalanceReportDTO> getUserNameAndTypeByOrgLocationId(String searchValue,Long orgLocationId,List<Long> userRole,List<Long> orgDepartmentsList,String topleave,Date MonthStart,Date MonthEnd) {
 		try {
 		java.sql.Date startDateSqlDate = null;
 		java.sql.Date endDateSqlDate = null;
@@ -2318,6 +2319,7 @@ public class UserDaoImpl implements UserDao {
 		String subQuery5 =" ";
 		String subQuery6 =" ";
 		String subQuery7 =" ";
+        StringBuilder subQuery8 = new StringBuilder();
 		if("yes".equalsIgnoreCase(topleave)) {
 
 			if(startDateSqlDate !=null) {
@@ -2328,8 +2330,21 @@ public class UserDaoImpl implements UserDao {
 				subQuery7=" and ul.TO_DATE <=:endDateSqlDate";
 			}
 		}
+		
+		
+		if(searchValue !=null && !"".equalsIgnoreCase(searchValue)) {
+			subQuery8.append("and (u.FIRST_NAME like '%" + searchValue + "%' ")
+					.append("OR u.LAST_NAME like '%" + searchValue + "%' ")
+					.append("OR concat(u.FIRST_NAME,u.LAST_NAME) like '%" + searchValue + "%' ")
+					.append("OR concat(u.FIRST_NAME,u.LAST_NAME) like '%" + searchValue + "%' ")
+			.append("OR e.EMPLOYMENT_TYPE like '%" + searchValue + "%' ) ");
+
+		}
+			
+					
+		
 	
-		String query ="select distinct CONCAT (u.FIRST_NAME,' ',IFNULL(u.LAST_NAME,'')) AS empName ,e.EMPLOYMENT_TYPE AS empType,u.ID AS userId,ur.USER_TYPE AS role from USER u,USER_ROLE ur,EMPLOYEE e,USER_LEAVE ul where u.ID=ur.USER_ID and u.ID=e.USER_ID and ur.ORG_LOCATIONS_ID=e.ORG_LOCATIONS_ID and ur.ORG_LOCATIONS_ID =:orgLocationId "+subQuery4+subQuery3+subQuery5+subQuery6+subQuery7;
+		String query ="select distinct CONCAT (u.FIRST_NAME,' ',IFNULL(u.LAST_NAME,'')) AS empName ,e.EMPLOYMENT_TYPE AS empType,u.ID AS userId,ur.USER_TYPE AS role from USER u,USER_ROLE ur,EMPLOYEE e,USER_LEAVE ul where u.ID=ur.USER_ID and u.ID=e.USER_ID and  u.ID = ul.USER_ID and ur.ORG_LOCATIONS_ID=e.ORG_LOCATIONS_ID and ur.ORG_LOCATIONS_ID =:orgLocationId "+subQuery8.toString()+subQuery4+subQuery3+subQuery5+subQuery6+subQuery7;
 		//Query queryString = (Query) session.createSQLQuery(query).setLong("orgLocationId",orgLocationId).setResultTransformer(Transformers.aliasToBean(LeaveBalanceReportDTO.class)).list();
 		Query queryString = session.createSQLQuery(query);
 		queryString.setParameter("orgLocationId", orgLocationId);
@@ -2393,6 +2408,21 @@ public class UserDaoImpl implements UserDao {
 	return list;
 
 	}
+	
+	@Override
+    @Transactional
+    public List<Long> getUserHierarchyIdList(Long userId) {
+         Session session = this.sessionFactory.getCurrentSession();
+         List<Long> userIds = session.createSQLQuery("CALL User_Hierarchy_Id_List(:userId)").setParameter("userId", userId).list();
+        return userIds;
+    }
 
+    @Override
+    @Transactional
+    public List<String> getUserHierarchyUserCodeList(Long userId) {
+         Session session = this.sessionFactory.getCurrentSession();
+         List<String> userCodes = session.createSQLQuery("CALL User_Hierarchy_UserCode_List(:userId)").setParameter("userId", userId).list();
+        return userCodes;
+    }
 
 }

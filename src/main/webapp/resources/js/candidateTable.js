@@ -133,7 +133,7 @@ function candidateListCheck(searchValue,universalCanddateSearchList,candidateKey
           result = result +"    <th>Employment Type</th>"; 
           result = result +"    <th>Email</th>"; 
           result = result +"    <th>Mobile Number</th>";
-          result = result +"    <th>Profile Percentage</th>"
+          result = result +"    <th>Profile %</th>"
           result = result +"    <th>Location</th>"; 
           result = result +"    <th>Last Update</th>"; 
           result = result +"    <th>Created By</th>"; 
@@ -337,12 +337,20 @@ function cpagination(url){
 		    	  	"sortable": false,
 		    	  	"render": function(data, type, full, meta) {
 		    	  		var profilePercentage = "";
+		    	  		var color = "";
 		    	  		if(full.profilePercentage != null && full.profilePercentage != 'undefined' && full.profilePercentage != ""){
 		    	  			profilePercentage = full.profilePercentage + "%";
+		    	  			if(full.profilePercentage >= 50){
+		    	  				color = "text-green";
+		    	  			}else{
+		    	  				color = "colorRed";
+		    	  			}
 			            	}else{
 			            		profilePercentage = "--";
 			            	}
-		    	  		return "<div class='tbldata-dotdot-vsm'>"+profilePercentage+"</div>";
+		    	  		return "<div class='tbldata-dotdot-vsm "+color+"'>"+profilePercentage+"</div>";
+		    	  		
+		    	  		
 		    	  	}
 		    	  }, {
                   "targets": colIndex++,

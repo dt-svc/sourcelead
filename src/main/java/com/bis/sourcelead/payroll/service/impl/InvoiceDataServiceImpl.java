@@ -318,8 +318,8 @@ public class InvoiceDataServiceImpl implements InvoiceDataService{
 		return invoiceDataList;*/
 	}
 	@Override
-	public List<InvoiceData> getInvoiceDetailsByEmpId(Long empId, OrgLocations orgLocations) throws Exception {
-		return invoiceDataDao.getInvoiceDetailsByEmpId(empId,orgLocations);
+	public ResponseList<InvoiceData> getInvoiceDetailsByEmpId(OrgLocations orgLocations,InvoiceDetailsDTO invoiceDetailsDTO) throws Exception {
+		return invoiceDataDao.getInvoiceDetailsByEmpId(orgLocations,invoiceDetailsDTO);
 	}
 	
 	@Override
@@ -332,5 +332,10 @@ public class InvoiceDataServiceImpl implements InvoiceDataService{
 	public ResponseList<InvoiceData> getAllEmployeeInvoiceDetailsByEmpIdAndOrgLocationId(Long orgLocationId, Long userId)
 	{
 		return invoiceDataDao.getAllEmployeeInvoiceDetailsByEmpIdAndOrgLocationId(orgLocationId,userId);
+	}
+
+	@Override
+	public List<InvoiceData> getInvoiceDetailsByEmpId(Long empId, OrgLocations orgLocations) {
+		return invoiceDataDao.getInvoiceDetailsByEmpId(empId,orgLocations);
 	}
 }
