@@ -1,5 +1,6 @@
 package com.bis.sourcelead.payroll.dao.impl;
 
+import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
 
@@ -15,9 +16,11 @@ import com.bis.sourcelead.entity.Candidate;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.payroll.dao.PaysheetFrequencyDao;
 import com.bis.sourcelead.payroll.dto.MyPayrollSummaryDTO;
+import com.bis.sourcelead.payroll.dto.PayrollComparisonDTO;
 import com.bis.sourcelead.payroll.entity.EmployeePayroll;
 import com.bis.sourcelead.payroll.entity.PaysheetFrequency;
 import com.bis.sourcelead.payroll.util.PayrollUtil;
+import com.bis.sourcelead.util.CommonUtil;
 
 @Repository
 public class PaysheetFrequencyDaoImpl implements PaysheetFrequencyDao{
@@ -29,6 +32,9 @@ private static final Logger logger = LoggerFactory.getLogger(AssociateTaxDaoImpl
 	
 	@Autowired
 	PayrollUtil payrollUtil;
+	
+	@Autowired
+	CommonUtil commonUtil;
 	
 	@SuppressWarnings("unchecked")
 	@Override
@@ -84,5 +90,30 @@ private static final Logger logger = LoggerFactory.getLogger(AssociateTaxDaoImpl
 			e.printStackTrace();
 		}
 		return payrollList;
+	}
+
+	@SuppressWarnings("unchecked")
+	@Override
+	@Transactional
+	public PaysheetFrequency getPaySheetFrequencyByGroupIdAndFrequencyStartEnddate(String dates, OrgLocations orgLocation,Long groupId) {
+		
+		List<PaysheetFrequency> frequencyList = null;
+		try {
+			String[] dateas = dates.split(" - ");
+			
+			Date startDate = new SimpleDateFormat("yyyy-MM-dd").parse(dateas[0]);
+			Date endDate = new SimpleDateFormat("yyyy-MM-dd").parse(dateas[1]);
+			
+			Session session = this.sessionFactory.getCurrentSession();
+			frequencyList = session.createQuery("from PaysheetFrequency paysheet where paysheet.userGroup.id=:groupId and paysheet.orgLocation.id=:orgLocationId and paysheet.frequencyStartDate = :startDate and paysheet.frequencyEndDate = :endDate")
+											   .setLong("orgLocationId", orgLocation.getId())
+											   .setLong("groupId", groupId)
+											   .setParameter("startDate",startDate)
+											   .setParameter("endDate", endDate)
+											   .list();
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return frequencyList.get(0);
 	}
 }
