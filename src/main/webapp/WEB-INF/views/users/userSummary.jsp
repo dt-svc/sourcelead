@@ -1837,10 +1837,12 @@ $("#editRoleDetailsList").empty();
 					result = result + ' <input type="text" value="'+json.user.email+'" '+readonly+' id="EmailId" name="email" field-name="EmailId" onblur="validateUserUpdatedEmail('+userId+');" data-validation="required validate_Space validate_email validate_length length2-100"/>';
 					result = result + ' </div>';
 					
+					if("${SourceLeadWeb_orgLocations.country}" == 'United States'){
 					result = result + ' <div class="user_summary_edit_cta">';
 					result = result + ' <label>SSN<span class="text-danger">&nbsp;*</span></label>';
 					result = result + ' <input type="text" value="'+json.user.ssn+'" field-name="SSN" data-validation="required validate_Space"/>';
 					result = result + ' </div>';
+					}
 					
 					result = result + ' <div class="user_summary_edit_cta">';
 					result = result + ' <label>Work Location<span class="text-danger">&nbsp;*</span></label>';
@@ -1862,7 +1864,12 @@ $("#editRoleDetailsList").empty();
 					
 					result = result + ' <div class="user_summary_edit_cta">';
 					result = result + ' <label>Residence Location<span class="text-danger">&nbsp;*</span></label>';
-					result = result + ' <input type="text" value="'+json.residenceAddress+'" id="residenceLocation" name="residenceLocation" field-name="Residence Location" data-validation="required validate_Space"/>';
+					if(json.residenceAddress != null && json.residenceAddress != '' && json.residenceAddress != 'undefined'){
+						result = result + ' <input type="text" value="'+json.residenceAddress+'" id="residenceLocation" name="residenceAddress" field-name="Residence Location" data-validation="required validate_Space"/>';
+					}else{
+						result = result + ' <input type="text" value="" id="residenceLocation" name="residenceAddress" field-name="Residence Location" data-validation="required validate_Space"/>';
+					}
+					
 					result = result + ' <input type="hidden" id="residenceCountry" name="residenceCountry" value="'+json.residenceCountry+'" />';
 	                result = result + ' <input type="hidden" id="residenceState" name="residenceState" value="'+json.residenceState+'"/>';
 	                result = result + ' <input type="hidden" id="residenceCity" name="residenceCity" value="'+json.residenceCity+'"/>';

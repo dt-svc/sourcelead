@@ -22,7 +22,7 @@ public interface CandidateReferencesService {
 	 */
 	public CandidateReferences storeCandidateReferences(CandidateReferencesDTO candidateReferencesDTO,Long candidateId,Long orgLocationId,User user) throws JSONException,Exception;
 	
-    public ResponseList<CandidateReferencesDTO>  getCandidateReferencesListByCandidateIdAndOrgLocationID(Long candidateId, Long orgLocationId) throws Exception;
+    public ResponseList<CandidateReferencesDTO>  getCandidateReferencesListByCandidateIdAndOrgLocationID(Long candidateId, Long orgLocationId, String loginUserCode) throws Exception;
 	
 	public CandidateReferences getCandidateReferencesByCandidateIdAndReferenceId(Long candidateId,Long refId) throws Exception;
 	

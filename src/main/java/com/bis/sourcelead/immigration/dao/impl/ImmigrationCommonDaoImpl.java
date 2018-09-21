@@ -783,9 +783,8 @@ public class ImmigrationCommonDaoImpl implements ImmigrationCommonDao {
 		List<ImmigrationListView> ImmigrationViewLst = null;
 		ResponseList<ImmigrationListViewDTO> responseList = new ResponseList<>();
 		StringBuilder query1 = new StringBuilder("");
-		if (searchValue.contains("-") || searchValue.contains("/")) {
-			DateTimeFormatter orgFormat = new DateTimeFormatterBuilder().appendPattern(orgLocations.getDateFormat())
-					.toFormatter();
+		if ((searchValue.contains("-") || searchValue.contains("/")) && (searchValue.matches("^[0-9 \\-]+$"))) {
+			DateTimeFormatter orgFormat = new DateTimeFormatterBuilder().appendPattern(orgLocations.getDateFormat()).toFormatter();
 			LocalDate parsedDate = LocalDate.parse(searchValue, orgFormat);
 			DateTimeFormatter f2 = DateTimeFormatter.ofPattern("yyyy-MM-dd");
 			String newDate = parsedDate.format(f2);
@@ -1806,8 +1805,8 @@ public class ImmigrationCommonDaoImpl implements ImmigrationCommonDao {
 					subQuery2 = subQuery2 + "lcaView.lcaStatus = 'Initiated' or ";
 				}
 				
-				if (Arrays.asList(statusFilter).contains("In-progress")) {
-					subQuery2 = subQuery2 + "lcaView.lcaStatus = 'In-progress' or ";
+				if (Arrays.asList(statusFilter).contains("In progress")) {
+					subQuery2 = subQuery2 + "lcaView.lcaStatus = 'In progress' or ";
 				}
 				
 				if (Arrays.asList(statusFilter).contains("Certified")) {
@@ -2281,15 +2280,6 @@ public class ImmigrationCommonDaoImpl implements ImmigrationCommonDao {
 		
 	}
 
-	
-
-	/*@Override
-	@Transactional(rollbackFor = { Exception.class })
-	public CandidateLcaJobDetails getCandidateLcaJobDetails(Long id) {
-		// TODO Auto-generated method stub
-		return null;
-	}*/
-
 	@Override
 	@Transactional(rollbackFor = { Exception.class })
 	public CandidateLcaJobDetails saveCandidateLcaJobDetails(CandidateLcaJobDetails candidateLcaJobDetails) {
@@ -2343,4 +2333,35 @@ public class ImmigrationCommonDaoImpl implements ImmigrationCommonDao {
 		logger.debug("Deleted record id -->" + id);
 		return "success";
 	}
+
+	@Override
+	@Transactional(rollbackFor = { Exception.class })
+	public void deleteLcaDocumentsDetails(Long[] remaininglcaDocIds) {
+		    logger.debug("Delete LcaDocumentHistory ids-->");
+	        Session session = this.sessionFactory.getCurrentSession();
+	        Query query = session.createQuery("delete from LcaDocumentHistory ldoc where ldoc.id in (:docId)").setParameterList("docId", remaininglcaDocIds);
+	        int count = query.executeUpdate();
+	        logger.debug("Number of records deleted-->" + count);
+	}
+
+	@Override
+	@Transactional(rollbackFor = { Exception.class })
+	public int updateLcaHistoryStatusByLcaNumber(Long lhId, Long immigrationId, Long candidateId) {
+		
+		Session session = this.sessionFactory.getCurrentSession();
+		int result=0;
+		try {
+			if (immigrationId != null) {
+				logger.debug(" update lcaHistory " + immigrationId);
+				String queryString = "UPDATE LcaHistory lh  SET lh.isCurrent ='N' where lh.immigrationId.id=:immigrationId and lh.candidate.id = :candidateId and lh.id<:lhId";
+				 result=session.createQuery(queryString).setLong("immigrationId", immigrationId).setLong("candidateId", candidateId).setLong("lhId", lhId).executeUpdate();
+			   
+			}
+		} catch (Exception exception) {
+			logger.error("Exception caught while  lcaHistory information " + exception.getMessage());
+			exception.printStackTrace();
+		}
+		return result;
+	}
+	
 }

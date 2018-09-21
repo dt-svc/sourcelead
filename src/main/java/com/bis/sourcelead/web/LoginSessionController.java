@@ -204,6 +204,7 @@ public class LoginSessionController {
 			return model;
 		}
 		SourceLeadSessionManager.setSessionAttribute(request, "googleMapsLocationApiKey", googleMapsLocationApiKey);
+		SourceLeadSessionManager.setSessionAttribute(request, "sessionId", request.getSession().getId());
 		User user = userService.findByUserName(authentication.getName());
 		UserRole userRole = null;
 		OrgLocations orgLocations = null;
@@ -306,6 +307,9 @@ public class LoginSessionController {
 				for(int i=0; i < weekOffDays.length; i++) {
 					weekOffDaysList.add(weekOffDays[i]);
 				}
+			}else {
+				weekOffDaysList.add("Sat");
+				weekOffDaysList.add("Sun");
 			}
 			SourceLeadSessionManager.setSessionAttribute(request, "weekOffDaysList", weekOffDaysList);
 			

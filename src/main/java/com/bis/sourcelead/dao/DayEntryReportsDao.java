@@ -10,6 +10,6 @@ import com.bis.sourcelead.entity.User;
 
 public interface DayEntryReportsDao {
 
-	public ResponseList<DayWiseTimesheetReoprtsListDTO> getDayWiseReportListBasedOnProjectListIdStartDateEndDate(List<Long> projectId,Date startDate,Date endDate, String searchString, int start, int length, OrgLocations orgloc, User loginUser, String isGlobalUser, List<Long> projectMemberIds);
+	public ResponseList<DayWiseTimesheetReoprtsListDTO> getDayWiseReportListBasedOnProjectListIdStartDateEndDate(List<Long> projectId,Date startDate,Date endDate, String searchString, int start, int length, OrgLocations orgloc, User loginUser, String isGlobalUser, List<Long> projectMemberIds)  throws Exception;
 	
 }

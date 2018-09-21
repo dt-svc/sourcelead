@@ -1711,7 +1711,7 @@ public class UserServiceImpl implements UserService {
 				DashboardItemsDTO dashboardItemsDTO = new DashboardItemsDTO();
 				
 				JSONArray jsonArray = new JSONArray(dashboardItems.getItems());
-				if (jsonArray != null) {
+				if (jsonArray != null && jsonArray.length() > 0) {
 					List<JSONObject> itemsObjectList = new LinkedList<>();
 					for (int i = 0; i < jsonArray.length(); i++) {
 						JSONObject jsonObject = jsonArray.getJSONObject(i);
@@ -1766,8 +1766,8 @@ public class UserServiceImpl implements UserService {
 	}
 
 	@Override
-	public List<LeaveBalanceReportDTO> getUserNameAndTypeByOrgLocationId(Long OrgLocationId,List<Long> userRole,List<Long> orgDepartmentsList,String topleave,Date MonthStart,Date MonthEnd) throws Exception {
-		 return userDao.getUserNameAndTypeByOrgLocationId(OrgLocationId,userRole,orgDepartmentsList,topleave,MonthStart,MonthEnd);
+	public List<LeaveBalanceReportDTO> getUserNameAndTypeByOrgLocationId(String searchValue,Long OrgLocationId,List<Long> userRole,List<Long> orgDepartmentsList,String topleave,Date MonthStart,Date MonthEnd) throws Exception {
+		 return userDao.getUserNameAndTypeByOrgLocationId(searchValue,OrgLocationId,userRole,orgDepartmentsList,topleave,MonthStart,MonthEnd);
 	 }
 
 	@Override
@@ -1804,9 +1804,18 @@ public class UserServiceImpl implements UserService {
 	public List<User> getUsersListUsingMultipleStringIds(String ids) throws Exception
 	{
 		return userDao.getUsersListUsingMultipleStringIds(ids);
-
 	}
-
-
+	
+	@Override
+	public List<String> getUserHierarchyUserCodeList(Long userId) throws Exception
+	{
+		return userDao.getUserHierarchyUserCodeList(userId);
+	}
+	
+	@Override
+	public List<Long> getUserHierarchyIdList(Long userId) throws Exception
+	{
+		return userDao.getUserHierarchyIdList(userId);
+	}
 }
 

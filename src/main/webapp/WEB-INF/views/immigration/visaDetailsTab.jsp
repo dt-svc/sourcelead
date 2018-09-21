@@ -114,7 +114,7 @@
           <div class="col-sm-12 noPad mt clearfix" id="idNumberVisaDiv">
 				<label class="col-md-4 padding_left">Visa Id<span class="text-danger">&nbsp;*</span></label>
               	<div class="col-md-8 padding_right">
-              		<input type="text" name = "idNumber" id = "idNumber" placeholder="Visa Id" field-name = "Visa Id" class="form-control" data-validation = "required validate_length length8-20 validate_AtLeastOneAlphaNumber" onkeyup = "validateCandidatePassportVisa('Visa');"/>
+              		<input type="text" name = "idNumber" id = "idNumber" placeholder="Visa Id" field-name = "Visa Id" class="form-control" data-validation = "required validate_length length8-20 validate_AtLeastOneAlphaNumber" onchange="immigration.validateCandidatePassportVisa('Visa');" onkeyup="immigration.validateCandidatePassportVisa('Visa');"/>
 				</div>
 			</div>				          
           	<div class="col-sm-12 noPad mt clearfix">

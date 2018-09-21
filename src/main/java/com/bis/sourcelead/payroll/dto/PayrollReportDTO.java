@@ -2,15 +2,19 @@ package com.bis.sourcelead.payroll.dto;
 
 import java.math.BigDecimal;
 
-public class PayrollReportDTO {
+import com.bis.sourcelead.dto.SearchDTO;
+
+public class PayrollReportDTO extends SearchDTO{
+	
+	private String empId;
 	
 	private String empName;
 	
-	private BigDecimal payRate;
+	private BigDecimal empPayRate;
 	
 	private String regularHours;
 	
-	private String overtimeHours;
+	private String overTimeHours;
 	
 	private BigDecimal preTaxDeduction;
 	
@@ -20,31 +24,52 @@ public class PayrollReportDTO {
 	
 	private BigDecimal netPay;
 	
+	private BigDecimal grossPay;
+	
 	private BigDecimal lastPay;
 	
-	private BigDecimal YTD;
+	private BigDecimal ytdNet;
 	
 	private String action;
+	
+	private String freqStartDate;
+	
+	private String freqEndDate;
+	
+	private String payPeriod;
+	
+	private String approverStatus;
+	
+	private String department;
+	
+	private Long payGroup;
+	
+	private String payRollType;
+	
+	private String departmentName;
 
+	private String groupId;
+	
+	private String payCheckDate;
+	
+	private BigDecimal deductions;
+	
+	private BigDecimal ytdTaxes;
+	
+	private BigDecimal ytdDeductions;
+	
 	public String getEmpName()
 	{
 		return empName;
 	}
 
-	public BigDecimal getPayRate()
-	{
-		return payRate;
-	}
-
+	
 	public String getRegularHours()
 	{
 		return regularHours;
 	}
 
-	public String getOvertimeHours()
-	{
-		return overtimeHours;
-	}
+	
 
 	public BigDecimal getPreTaxDeduction()
 	{
@@ -71,10 +96,6 @@ public class PayrollReportDTO {
 		return lastPay;
 	}
 
-	public BigDecimal getYTD()
-	{
-		return YTD;
-	}
 
 	public String getAction()
 	{
@@ -86,20 +107,12 @@ public class PayrollReportDTO {
 		this.empName = empName;
 	}
 
-	public void setPayRate(BigDecimal payRate)
-	{
-		this.payRate = payRate;
-	}
 
 	public void setRegularHours(String regularHours)
 	{
 		this.regularHours = regularHours;
 	}
 
-	public void setOvertimeHours(String overtimeHours)
-	{
-		this.overtimeHours = overtimeHours;
-	}
 
 	public void setPreTaxDeduction(BigDecimal preTaxDeduction)
 	{
@@ -126,15 +139,190 @@ public class PayrollReportDTO {
 		this.lastPay = lastPay;
 	}
 
-	public void setYTD(BigDecimal yTD)
-	{
-		YTD = yTD;
-	}
-
 	public void setAction(String action)
 	{
 		this.action = action;
 	}
-	
+
+	public String getFreqStartDate()
+	{
+		return freqStartDate;
+	}
+
+	public void setFreqStartDate(String freqStartDate)
+	{
+		this.freqStartDate = freqStartDate;
+	}
+
+	public String getFreqEndDate()
+	{
+		return freqEndDate;
+	}
+
+	public void setFreqEndDate(String freqEndDate)
+	{
+		this.freqEndDate = freqEndDate;
+	}
+
+
+	public String getPayPeriod()
+	{
+		return payPeriod;
+	}
+
+	public void setPayPeriod(String payPeriod)
+	{
+		this.payPeriod = payPeriod;
+	}
+
+	public String getApproverStatus()
+	{
+		return approverStatus;
+	}
+
+	public void setApproverStatus(String approverStatus)
+	{
+		this.approverStatus = approverStatus;
+	}
+
+	public String getDepartment()
+	{
+		return department;
+	}
+
+	public void setDepartment(String department)
+	{
+		this.department = department;
+	}
+
+	public Long getPayGroup()
+	{
+		return payGroup;
+	}
+
+	public void setPayGroup(Long payGroup)
+	{
+		this.payGroup = payGroup;
+	}
+
+	public String getPayRollType()
+	{
+		return payRollType;
+	}
+
+	public void setPayRollType(String payRollType)
+	{
+		this.payRollType = payRollType;
+	}
+
+	public String getEmpId()
+	{
+		return empId;
+	}
+
+	public void setEmpId(String empId)
+	{
+		this.empId = empId;
+	}
+
+	public String getDepartmentName()
+	{
+		return departmentName;
+	}
+
+	public void setDepartmentName(String departmentName)
+	{
+		this.departmentName = departmentName;
+	}
+
+	public String getGroupId()
+	{
+		return groupId;
+	}
+
+	public String getPayCheckDate()
+	{
+		return payCheckDate;
+	}
+
+	public void setGroupId(String groupId)
+	{
+		this.groupId = groupId;
+	}
+
+	public void setPayCheckDate(String payCheckDate)
+	{
+		this.payCheckDate = payCheckDate;
+	}
+
+	public BigDecimal getGrossPay()
+	{
+		return grossPay;
+	}
+
+	public void setGrossPay(BigDecimal grossPay)
+	{
+		this.grossPay = grossPay;
+	}
+
+	public BigDecimal getDeductions()
+	{
+		return deductions;
+	}
+
+	public void setDeductions(BigDecimal deductions)
+	{
+		this.deductions = deductions;
+	}
+
+	public BigDecimal getYtdTaxes()
+	{
+		return ytdTaxes;
+	}
+
+	public void setYtdTaxes(BigDecimal ytdTaxes)
+	{
+		this.ytdTaxes = ytdTaxes;
+	}
+
+	public BigDecimal getYtdDeductions()
+	{
+		return ytdDeductions;
+	}
+
+	public void setYtdDeductions(BigDecimal ytdDeductions)
+	{
+		this.ytdDeductions = ytdDeductions;
+	}
+
+	public BigDecimal getEmpPayRate()
+	{
+		return empPayRate;
+	}
+
+	public String getOverTimeHours()
+	{
+		return overTimeHours;
+	}
+
+	public void setOverTimeHours(String overTimeHours)
+	{
+		this.overTimeHours = overTimeHours;
+	}
+
+	public void setEmpPayRate(BigDecimal empPayRate)
+	{
+		this.empPayRate = empPayRate;
+	}
+
+	public BigDecimal getYtdNet()
+	{
+		return ytdNet;
+	}
+
+	public void setYtdNet(BigDecimal ytdNet)
+	{
+		this.ytdNet = ytdNet;
+	}
 	
 }
