@@ -2502,7 +2502,6 @@ public class RequirementSubmissionDaoImpl implements RequirementSubmissionDao{
 		}
 
 		
-		
 		@SuppressWarnings({ "unchecked", "unused" })
 		@Override
 		@Transactional(rollbackFor = { Exception.class })
@@ -2573,14 +2572,14 @@ public class RequirementSubmissionDaoImpl implements RequirementSubmissionDao{
 	        StringBuilder query1 = new StringBuilder("");
 			if(requirementSubmissionHistoryDTO.getSearchValue() !=null && !"".equalsIgnoreCase(requirementSubmissionHistoryDTO.getSearchValue())) {
 			
-				query1.append("and( (can.firstName like '" + requirementSubmissionHistoryDTO.getSearchValue() + "%' OR can.lastName like '%" + requirementSubmissionHistoryDTO.getSearchValue() + "' )")
-				      .append("OR (concat(can.firstName,can.lastName) like '%" + requirementSubmissionHistoryDTO.getSearchValue().trim() + "%')" )
-				      .append("OR can.email like '%" + requirementSubmissionHistoryDTO.getSearchValue() + "%' ")
-			          .append("OR can.mobilePhone like '%" + requirementSubmissionHistoryDTO.getSearchValue() + "%' ")
-			          .append("OR rs.createdUser like '%" + requirementSubmissionHistoryDTO.getSearchValue() + "%' ")
-			          .append("OR rs.candidateScore like '%" + requirementSubmissionHistoryDTO.getSearchValue() + "%' ")
-			          .append("OR rs.submissionStatus like '%" + requirementSubmissionHistoryDTO.getSearchValue() + "%' ")
-			          .append("OR req.jobTitle like '%" + requirementSubmissionHistoryDTO.getSearchValue() + "%' ")
+				query1.append("and( (rsh.submissionId.candidate.firstName like '%" + requirementSubmissionHistoryDTO.getSearchValue() + "%' OR rsh.submissionId.candidate.lastName like '%" + requirementSubmissionHistoryDTO.getSearchValue() + "%' )")
+				      .append("OR (concat(rsh.submissionId.candidate.firstName,rsh.submissionId.candidate.lastName) like '%" + requirementSubmissionHistoryDTO.getSearchValue().trim() + "%')" )
+				      .append("OR rsh.submissionId.candidate.email like '%" + requirementSubmissionHistoryDTO.getSearchValue() + "%' ")
+			          .append("OR rsh.submissionId.candidate.mobilePhone like '%" + requirementSubmissionHistoryDTO.getSearchValue() + "%' ")
+			          .append("OR rsh.submissionId.createdUser like '%" + requirementSubmissionHistoryDTO.getSearchValue() + "%' ")
+			          .append("OR rsh.submissionId.candidateScore like '%" + requirementSubmissionHistoryDTO.getSearchValue() + "%' ")
+			          .append("OR rsh.submissionId.submissionStatus like '%" + requirementSubmissionHistoryDTO.getSearchValue() + "%' ")
+			          .append("OR rsh.submissionId.requirement.jobTitle like '%" + requirementSubmissionHistoryDTO.getSearchValue() + "%' ")
 				      .append("OR rsh.toStage like '%" + requirementSubmissionHistoryDTO.getSearchValue() + "%' ")
 				      .append("OR rsh.createdUser like '%" + requirementSubmissionHistoryDTO.getSearchValue() + "%') ");
 			}
