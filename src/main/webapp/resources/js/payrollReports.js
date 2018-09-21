@@ -29,7 +29,7 @@ function getPayPeriodByGroupId(payGroupid,payPeriodId1,payPeriodId2){
 			for (var i=0; i<json.data.length; i++)
 			{
 				var opt = json.data[i];
-				output = output + "<option value='"+opt.payPeriodNumber+"'>"+opt.freqStartDate+" "+opt.freqEndDate+"</option>";
+				output = output + "<option value='"+opt.freqStartDate+"#"+opt.freqEndDate+"'>"+opt.freqStartDate+" "+opt.freqEndDate+"</option>";
 			}
 			$("#"+payPeriodId1).empty();
 			$("#"+payPeriodId1).append(output);
@@ -60,7 +60,7 @@ function getDepartments(id){
 function getFreqdates(freqSDId,fredEDId){
 	var payPeriod = $("#payPeriod").val();
 	var str = payPeriod.toString();
-	var dates = str.split("/");
+	var dates = str.split("#");
 	$("#"+freqSDId).val(dates[0]);
 	$("#"+fredEDId).val(dates[1]);
 }

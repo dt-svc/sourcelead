@@ -1641,8 +1641,6 @@ function Immigration() {
 	   });
 	}
 
-
-
 	this.validateImmigrationCandidateForms = function() {
 		 var validationSettings = {
 	           errorMessagePosition: 'element',
