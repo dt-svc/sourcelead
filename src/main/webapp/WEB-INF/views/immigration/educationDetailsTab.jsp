@@ -120,7 +120,7 @@
 				<label class="col-md-4 padding_left">Select Education</label>
               	<div class="col-md-8 padding_right" id="nameIdDiv">
 					
-					<select class="chosen-select form-control" name="name" id= "eduName" field-name="Education" data-validation="required" onchange="validateEduname();" onkeyup = "validateEduname();">
+					<select class="chosen-select form-control" name="name" id= "eduName" field-name="Education" data-validation="required" onchange="immigration.validateEduname();" onkeyup = "immigration.validateEduname();">
 					<option value="" selected>--Select Education--</option>
 					  <c:forEach var="edu" items="${educationsDropList}">
 											<option value="${edu.name}">${edu.name}</option>

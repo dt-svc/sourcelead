@@ -2533,7 +2533,7 @@ public class ImmigrationRestController {
 		return model;
 	}
 	
-	@PreAuthorize("hasRole('ROLE_EXPORT_LCA')")
+	@PreAuthorize("hasRole('ROLE_VIEW_LCA')")
 	@RequestMapping(value = { "/getLcaListExport" })
 	public void getLCAListExport(@RequestParam(value = "exportType", required = false) String exportType,
 			HttpServletRequest request, HttpServletResponse response) throws Exception {
