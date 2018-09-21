@@ -271,7 +271,7 @@
 		</div>
 		
 		<div class="immiPopFoot">
-            <input value="Save" id="uploadDocSave_Button" class="" type="button" onclick="uploadRequestDoc();">
+            <input value="Save" id="uploadDocSave_Button" class="" type="button" onclick="immigration.uploadRequestDoc();">
             <input value="Cancel" class="popCan"  onclick="removeDocPopUp12();" type="button">
           </div>		
 	</div>	<!--  popup code end  -->
