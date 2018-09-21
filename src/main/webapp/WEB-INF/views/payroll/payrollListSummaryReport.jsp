@@ -6,7 +6,7 @@
 
 <script>
 $(document).ready(function(){
-	getPayGroupList("payPeriod");
+	getPayGroupList("payGroup");
 });
 </script>
 
@@ -26,7 +26,7 @@ $(document).ready(function(){
             <div class="row">
               <div class="col-md-3">
                 <div class="dropdown-select">
-                  <select class="chosen-select" id="payPeriod" name="payPeriod" onchange="clearDropDown();">
+                  <select class="chosen-select" id="payGroup" name="payGroup" onchange="clearDropDown();">
                    <!--  <option selected>Pay Period</option>
                     <option>Group-1</option>
                     <option>Group-2</option>
@@ -146,7 +146,7 @@ $(document).ready(function(){
 <script>
 	function getPayCheckDateReports() {
 		var payCheckDate = $('#payCheckDate').val();
-		var groupId = $('#payPeriod').val();
+		var groupId = $('#payGroup').val();
 		if(groupId != '' && groupId != 'undefined'){
 			var searchValue = $("#dataTableSearch").val();
 			searchValue = searchValue ? searchValue : "";

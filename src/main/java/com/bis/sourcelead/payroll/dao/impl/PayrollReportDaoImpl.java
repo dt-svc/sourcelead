@@ -1,5 +1,6 @@
 package com.bis.sourcelead.payroll.dao.impl;
 
+import java.math.BigInteger;
 import java.text.SimpleDateFormat;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
@@ -11,17 +12,24 @@ import org.apache.commons.lang3.StringUtils;
 import org.hibernate.Query;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
+import org.hibernate.transform.Transformers;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.bis.sourcelead.dto.CandidateDTO;
 import com.bis.sourcelead.dto.ResponseList;
+import com.bis.sourcelead.entity.Department;
+import com.bis.sourcelead.entity.Employees;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.payroll.dao.PayrollReportDao;
+import com.bis.sourcelead.payroll.dto.CheckRegisterReportDTO;
 import com.bis.sourcelead.payroll.dto.PayrollReportDTO;
 import com.bis.sourcelead.payroll.entity.EmployeePayroll;
+import com.bis.sourcelead.service.DepartmentService;
+import com.bis.sourcelead.service.EmployeesService;
 import com.bis.sourcelead.util.CommonUtil;
 
 @Repository
@@ -34,6 +42,12 @@ public class PayrollReportDaoImpl implements PayrollReportDao{
 	
 	@Autowired 
 	CommonUtil commonUtil;
+	
+	@Autowired
+	EmployeesService employeesService;
+	
+	@Autowired
+	DepartmentService departmentService;
 
 	@SuppressWarnings("unchecked")
 	@Override
@@ -76,16 +90,6 @@ public class PayrollReportDaoImpl implements PayrollReportDao{
 				if(payrollReportDTO.getSearchValue() !=null && !"".equalsIgnoreCase(payrollReportDTO.getSearchValue())) {
 					searchQuery.append(" and payroll.candidate.firstName like '%" + payrollReportDTO.getSearchValue() + "%' ")
 						.append("OR  payroll.candidate.lastName like '%" + payrollReportDTO.getSearchValue() + "%' ");
-//						.append("OR wts.checkDate like '%" + payrollReportDTO.getSearchValue() + "%' ");
-//						.append("OR wts.ssnNumber like '%" + payrollReportDTO.getSearchValue() + "%' ")
-//						.append("OR wts.checkNo like '%" + payrollReportDTO.getSearchValue() + "%' ")
-//						.append("OR wts.gross like '%" + payrollReportDTO.getSearchValue() + "%' ")
-//						.append("OR wts.fwt like '%" + payrollReportDTO.getSearchValue() + "%' ")
-//						.append("OR wts.ssec like '%" + payrollReportDTO.getSearchValue() + "%' ")
-//						.append("OR wts.batchNumber like '%" + payrollReportDTO.getSearchValue() + "%' ")
-//						.append("OR wts.fromDate like '%" + payrollReportDTO.getSearchValue() + "%' ")
-//						.append("OR wts.toDate like '%" + payrollReportDTO.getSearchValue() + "%' ");
-							/*+ "OR wts.checkDate like '%" + payrollReportDTO.getSearchValue() + "%'";*/
 				}
 			Query queryObj = session.createQuery(query + searchQuery.toString() + qry);
 			if (payrollReportDTO != null && payrollReportDTO.getLength() > 0) {
@@ -114,6 +118,128 @@ public class PayrollReportDaoImpl implements PayrollReportDao{
 			e.printStackTrace();
 		}
 
+		return response;
+	}
+
+	@SuppressWarnings("unchecked")
+	@Override
+	@Transactional
+	public ResponseList<CheckRegisterReportDTO> getCheckRegisterReports(OrgLocations orgLocation, PayrollReportDTO payrollReportDTO)
+	{
+		ResponseList<CheckRegisterReportDTO> response = new ResponseList<>();
+		try {
+			Date sDate =  new SimpleDateFormat("yyyy-MM-dd").parse(payrollReportDTO.getFreqStartDate());  
+			Date eDate =new SimpleDateFormat("yyyy-MM-dd").parse(payrollReportDTO.getFreqEndDate());
+			java.sql.Date freqStartDate = new java.sql.Date(sDate.getTime());
+			java.sql.Date freqEndDate = new java.sql.Date(eDate.getTime());
+			Session session = this.sessionFactory.getCurrentSession();
+			List<CheckRegisterReportDTO> payrollList = null;
+			String qry = "";
+			if (StringUtils.isNotBlank(payrollReportDTO.getSortColumn())) {
+				qry = " order by payroll." + payrollReportDTO.getSortColumn() + " "
+						+ payrollReportDTO.getSortOrder();
+			}
+			StringBuilder query = new StringBuilder();
+			query.append("select payroll.ID as empPayrollId,") 
+			.append("payroll.EMPLOYEE_ID as empId,")
+			.append("grp.DEPARTMENT_ID as departmentId,")
+			.append("can.FIRST_NAME as firstName,") 
+			.append("can.LAST_NAME as lastName,") 
+			.append("payroll.PAY_TYPE as payType,") 
+			.append("payroll.NET_PAY as netPay,")
+			.append("payroll.TAXES as taxes,")
+			.append("payroll.GROSS_PAY as grossPay,")
+			.append("sheet.FREQUENCY_START_DATE as freqStartDate,")
+			.append("sheet.FREQUENCY_END_DATE as freqEndDate,")
+			.append("sheet.PAY_CHECK_DATE as payCheckDate ")
+			.append(" from US_EMP_PAYROLL payroll,")
+			.append(" ASSOCIATE_BANK_DATA bank, ")
+			.append(" PAY_SHEET_FREQUENCY sheet,")
+			.append(" CANDIDATE can,USER_GROUP grp ")
+			.append(" where sheet.ID = payroll.PAY_SHEET_FREQUENCY_ID ")
+			.append(" and payroll.CANDIDATE_ID = bank.CANDIDATE_ID ")
+			.append(" and payroll.CANDIDATE_ID = can.ID ")
+			.append(" and sheet.GROUP_ID = grp.ID ")
+			.append(" and sheet.GROUP_ID =  bank.ACCOUNT_TYPE = 'Cheque' ")
+			.append(" and sheet.ORG_LOCATION_ID = :orgLocationId and sheet.GROUP_ID = :groupId and sheet.FREQUENCY_START_DATE = :freqStartDate ")
+			.append(" and sheet.FREQUENCY_END_DATE = :freqEndDate ");
+//			String query = "from EmployeePayroll payroll where payroll.paysheetFrequency.userGroup.id = :groupId and payroll.paysheetFrequency.orgLocation.id = :orgLocationId and payroll.payCheckDate = :payCheckDatde and payroll.submitForAproverStatus = 'APPROVED'";
+			StringBuilder countQuery = new StringBuilder();
+			countQuery.append("select count(*) from US_EMP_PAYROLL payroll,ASSOCIATE_BANK_DATA bank,PAY_SHEET_FREQUENCY sheet,CANDIDATE can,USER_GROUP grp ")
+					.append(" where sheet.ID = payroll.PAY_SHEET_FREQUENCY_ID ") 
+					.append(" and payroll.CANDIDATE_ID = bank.CANDIDATE_ID ")
+					.append(" and payroll.CANDIDATE_ID = can.ID ")
+					.append(" and sheet.GROUP_ID = grp.ID ")
+					.append(" and sheet.GROUP_ID =  bank.ACCOUNT_TYPE = 'Cheque'")
+					.append(" and sheet.ORG_LOCATION_ID = :orgLocationId and sheet.GROUP_ID = :groupId and sheet.FREQUENCY_START_DATE = :freqStartDate ") 
+					.append(" and sheet.FREQUENCY_END_DATE = :freqEndDate ");
+			//			String countQuery = "from EmployeePayroll payroll where payroll.paysheetFrequency.userGroup.id = :groupId and payroll.paysheetFrequency.orgLocation.id = :orgLocationId and payroll.payCheckDate = :payCheckDatde and payroll.submitForAproverStatus = 'APPROVED'";
+			if (false) {
+				String convertedDate = payrollReportDTO.getSearchValue();
+				if (payrollReportDTO.getSearchValue().contains("/")) {
+					convertedDate = payrollReportDTO.getSearchValue().replaceAll("/", "-");
+				}
+				DateTimeFormatter orgFormat = new DateTimeFormatterBuilder().appendPattern(orgLocation.getDateFormat()).toFormatter();
+				LocalDate parsedDate = LocalDate.parse(convertedDate, orgFormat);
+				DateTimeFormatter f2 = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+				String newDate = parsedDate.format(f2);
+				Date searchDate = new SimpleDateFormat("yyyy-MM-dd").parse(newDate);
+				java.sql.Date sqlDate = new java.sql.Date(searchDate.getTime());
+				String queryDate = "from EmployeePayroll payroll where payroll.paysheetFrequency.userGroup.id = :groupId and payroll.paysheetFrequency.orgLocation.id = :orgLocationId and payroll.payCheckDate = :payCheckDatde and payroll.submitForAproverStatus = 'APPROVED'";
+				Query queryObjDate = session.createQuery(queryDate.toString()).setLong("orgLocationId", orgLocation.getId()).setLong("groupId", Long.parseLong(payrollReportDTO.getGroupId())).setDate("payCheckDatde", sqlDate);
+				response.setData(queryObjDate.list());
+			}
+			else {
+//				StringBuilder searchQuery = new StringBuilder("");
+//				if (payrollReportDTO.getSearchValue() != null && !"".equalsIgnoreCase(payrollReportDTO.getSearchValue())) {
+//					searchQuery.append(" and payroll.candidate.firstName like '%"
+//							+ payrollReportDTO.getSearchValue()
+//							+ "%' ").append("OR  payroll.candidate.lastName like '%"
+//									+ payrollReportDTO.getSearchValue() + "%' ");
+//				}
+				Query queryObj = session.createSQLQuery(query.toString());
+				if (payrollReportDTO != null && payrollReportDTO.getLength() > 0) {
+					queryObj.setFirstResult(payrollReportDTO.getStart());
+					queryObj.setMaxResults(payrollReportDTO.getLength());
+					queryObj.setLong("orgLocationId", orgLocation.getId()).setLong("groupId", Long.parseLong(payrollReportDTO.getGroupId())).setDate("freqStartDate", freqStartDate).setDate("freqEndDate", freqEndDate);
+					queryObj.setResultTransformer(Transformers.aliasToBean(CheckRegisterReportDTO.class));
+				}
+				payrollList = queryObj.list();
+				int count = 0;
+				int filteredCount = 0;
+//				Query queryObj = session.createSQLQuery(query.toString() + searchQuery.toString());
+				Query  countQry = session.createSQLQuery(countQuery.toString()).setLong("orgLocationId", orgLocation.getId()).setLong("groupId", Long.parseLong(payrollReportDTO.getGroupId())).setDate("freqStartDate", freqStartDate).setDate("freqEndDate", freqEndDate);
+//				countQry.setResultTransformer(Transformers.aliasToBean(CheckRegisterReportDTO.class));
+				List<BigInteger> countlist = countQry.list();
+				if (countlist != null && !countlist.isEmpty()) {
+					count = countlist.iterator().next().intValue();
+				}
+				response.setRecordsTotal(count);
+				if (payrollReportDTO != null) {
+					Query  filteredCountQry= session.createSQLQuery(countQuery.toString()).setLong("orgLocationId", orgLocation.getId()).setLong("groupId", Long.parseLong(payrollReportDTO.getGroupId())).setDate("freqStartDate", freqStartDate).setDate("freqEndDate", freqEndDate);
+//					filteredCountQry.setResultTransformer(Transformers.aliasToBean(CheckRegisterReportDTO.class));
+					List<BigInteger> filteredCountlist = filteredCountQry.list();
+					if (filteredCountlist != null && !filteredCountlist.isEmpty()) {
+						filteredCount = filteredCountlist.iterator().next().intValue();
+					}
+					response.setRecordsFiltered(filteredCount);
+				}
+				for(CheckRegisterReportDTO reportDTo : payrollList) {
+					if(reportDTo.getEmpId() != null) {
+						Employees employee = employeesService.getEmployee(reportDTo.getEmpId().toString());
+						reportDTo.setEmployeeId(employee.getEmployeeId());
+					}
+					if(StringUtils.isNotBlank(reportDTo.getDepartmentId())) {
+						Department dept = departmentService.getDepartmentById(Long.parseLong(reportDTo.getDepartmentId()));
+						reportDTo.setDepartmentId(dept.getDepartmentName());
+					}
+					reportDTo.setTotalChecks(count);
+				}
+				response.setData(payrollList);
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
 		return response;
 	}
 	
