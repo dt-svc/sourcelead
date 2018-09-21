@@ -28,5 +28,7 @@ public interface HrDeductionsDao {
 
 	int getHrDeductionsVersionByLocationId(Long locationId);
 
+	ResponseList<HrDeductions> getHrDeductionsByEmployeeId(OrgLocations orgLocation, HrDeductionsDTO hrDeductionsDTO);
+
 
 }
