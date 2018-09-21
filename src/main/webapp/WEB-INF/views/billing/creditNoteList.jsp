@@ -251,13 +251,13 @@ function creditNotePagination(url){
     	  	"render": function(data, type, report, meta) {
     	  		var result = "";
     	  		result = result +'         <td>   ';
-    	  		if((report.approverCheckBox == 'Y' && (report.approverUserSplitId.length >0)) && report.creditDebitNoteStatus != "Rejected"){
+    	  		if((report.approverCheckBox == 'Y') && (report.approverUserSplitId.length >0)){
     	  			for(var i=0; i<report.approverUserSplitId.length; i++) {
     	  				result = result +'<div class="tbldata-dotdot-vsm">';
     	  				if((report.approverUserSplitId[i] == '${SourceLeadWeb_user.id}') && report.creditDebitNoteStatus != "Send"){
 						result = result +'           <span class="clearfix" ><a onclick="acceptCreditDebitNote(\''+report.creditDebitUUID+'\');" title="Accept"><i class="fa fa-check text-success paddingRight"></i></a><a onclick="rejectCreditDebitNote(\''+report.creditDebitUUID+'\');" title="Reject"><i class="paddingLeft fa fa-times text-danger"></i></a></span>';
 			    	}else{
-			    		if(((report.creditDebitNoteStatus == "Submit") ||  (report.creditDebitNoteStatus == "Draft")) && (report.status !="0"))
+			    		if(((report.creditDebitNoteStatus == "Submit") ||  (report.creditDebitNoteStatus == "Draft") ||  (report.creditDebitNoteStatus == "Rejected")) && (report.status !="0"))
 	    				 {
 						result = result +' <span class="clearfix"><a href="<c:url value="/app/addCreditNote?creditDebitUUID='+report.creditDebitUUID+'&noteType=Credit"/>" <i class="fa fa-edit paddingRight paddingLeft" title="Edit"></i></a></span>';
 	    				result = result +' <span class="clearfix"><a onClick="deleteCreditDebitNote(\''+report.creditDebitUUID+'\');"><i class="fa fa-trash paddingRight paddingLeft" title="Remove"></i></a></span>';
@@ -276,7 +276,7 @@ function creditNotePagination(url){
 			    }
     	  		}else{
     	  			result = result +'<div class="tbldata-dotdot-vsm">';
-    	  			if(((report.creditDebitNoteStatus == "Submit") ||  (report.creditDebitNoteStatus == "Draft")) && (report.status !="0"))
+    	  			if((report.creditDebitNoteStatus == "Draft") && (report.status !="0"))
    				 {
 					result = result +' <span class="clearfix"><a href="<c:url value="/app/addCreditNote?creditDebitUUID='+report.creditDebitUUID+'&noteType=Credit"/>" <i class="fa fa-edit paddingRight paddingLeft" title="Edit"></i></a></span>';
    				 	result = result +' <span class="clearfix"><a onClick="deleteCreditDebitNote(\''+report.creditDebitUUID+'\');"><i class="fa fa-trash paddingRight paddingLeft" title="Remove"></i></a></span>';
