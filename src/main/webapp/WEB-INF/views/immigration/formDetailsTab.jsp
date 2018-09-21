@@ -197,7 +197,7 @@
 		
 		</div>
 		<div class="immiPopFoot">
-            <input value="Save" id="uploadFormSave_Button"  class="" type="button" onclick="uploadRequestForm();">
+            <input value="Save" id="uploadFormSave_Button"  class="" type="button" onclick="immigration.uploadRequestForm();">
             <input value="Cancel" class="popCan" type="button" onclick="removeFormPopUp();">
           </div>		
 	</div>	<!-- popup code end -->
