@@ -2354,6 +2354,7 @@ public class ImmigrationRestController {
 		return model;
 	}
 	
+	@PreAuthorize("hasAnyRole('ROLE_ADD_LCA','ROLE_VIEW_LCA','ROLE_VIEW_EDIT_LCA','ROLE_VIEW_DELETE_LCA','ROLE_IMPORT_LCA','ROLE_EXPORT_LCA')")
 	@RequestMapping(value = { "/viewLCAList" })
 	public ModelAndView loadLCAList(HttpServletRequest request) {
 		
@@ -2532,6 +2533,7 @@ public class ImmigrationRestController {
 		return model;
 	}
 	
+	@PreAuthorize("hasRole('ROLE_EXPORT_LCA')")
 	@RequestMapping(value = { "/getLcaListExport" })
 	public void getLCAListExport(@RequestParam(value = "exportType", required = false) String exportType,
 			HttpServletRequest request, HttpServletResponse response) throws Exception {

@@ -59,9 +59,13 @@
 				<li><a href="javascript:void(0)" class="overIcon" title="Actions" onclick="newActions();"></a>
 					<div class="newActPop">
 						<span>
+						<%--  <sec:authorize access="hasAnyRole(\'ROLE_IMPORT_LCA\')"> --%>
 							<a href="/app/uploadLcaForm">Import LCA</a>
-							<!-- <a href="javascript:void(0)" onclick=";" title="PDF">Export PDF</a> -->
+						 <%--  </sec:authorize>	 --%>
+						  
+						  <sec:authorize access="hasAnyRole(\'ROLE_EXPORT_LCA\')">
 							<a href="javascript:void(0)" onclick="exportToLCAExcel();" title="Excel">Export Excel</a>
+						  </sec:authorize>	
 						</span>
 					</div>
 				</li>
@@ -388,7 +392,7 @@
                      result = result + '<td><div><a href=/app/immigration/editLcaDetails?lcaUuid='+opt.lcaUuid+'><i id="edit' + opt.lcaUuid + '" class="glyphicon glyphicon-edit" title="Edit"></i></a>';
                      '</sec:authorize>';
                      if(opt.status  ==  1){
-                   '<sec:authorize access="hasRole(\'ROLE_VIEW_DELETE_LCA\')">'; 
+                    '<sec:authorize access="hasRole(\'ROLE_VIEW_DELETE_LCA\')">'; 
                       result = result + '<i id="delete'+opt.lcaUuid+'" onclick="deleteLcaListId(\''+opt.lcaUuid+'\');" class="glyphicon glyphicon-trash ml10" title="Delete"></i></div></td>';
                     '</sec:authorize>';
                      }else{
