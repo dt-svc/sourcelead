@@ -1154,6 +1154,7 @@ public class LeaveServiceImpl implements LeaveService{
 			currentWeekEndDate = CalendarUtil.getCurrentWeekDayByCalendar(cal, "SAT", orgLocations.getDateFormat()).getTime();
 		}else{
 			leaveDates = commonUtil.orgLocationDateFormat(orgLocations.getDateFormat(),leaveDate);
+			cal.setTime(leaveDates);
 		}
 		List<LeaveApproveHierarchy> leaveApproveHierarchiesList = leaveDao.getEmployeeRequestedLeavesBylocationIdAndDuration(orgLocations.getId(), userId, status, currentWeekStarDate, currentWeekEndDate,department,leaveDates);
 			currentWeekStarDate = CalendarUtil.getPreviousWeekDayByCalendar(cal, "SUN", orgLocations.getDateFormat()).getTime();
