@@ -4144,7 +4144,9 @@ public class InvoiceServiceImpl implements InvoiceService {
 		creditDebitNoteListDTO.setOrgRelationId(note.getOrgRelations().getId().toString());
 		creditDebitNoteListDTO.setGrandTotal(note.getTotal().toString());
 		creditDebitNoteListDTO.setSubTotalAmount(note.getSubTotal().toString());
+		if(note.getPaymentAccount() !=null){
 		creditDebitNoteListDTO.setAccount(note.getPaymentAccount().getId().toString());
+		}
 		if(note.getDiscountValue() !=null){
 		creditDebitNoteListDTO.setDiscountValue(note.getDiscountValue().toString());
 		creditDebitNoteListDTO.setDiscountTotal(note.getDiscountTotal().toString());
