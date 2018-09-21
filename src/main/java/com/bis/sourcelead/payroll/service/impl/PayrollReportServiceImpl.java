@@ -11,6 +11,7 @@ import org.springframework.stereotype.Service;
 import com.bis.sourcelead.dto.ResponseList;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.payroll.dao.PayrollReportDao;
+import com.bis.sourcelead.payroll.dto.CheckRegisterReportDTO;
 import com.bis.sourcelead.payroll.dto.PayrollReportDTO;
 import com.bis.sourcelead.payroll.dto.YTDPayrollDTO;
 import com.bis.sourcelead.payroll.entity.EmployeePayroll;
@@ -72,6 +73,13 @@ public class PayrollReportServiceImpl implements PayrollReportService{
 			e.printStackTrace();
 		}
 		return res;
+	}
+
+	@Override
+	public ResponseList<CheckRegisterReportDTO> getCheckRegisterReports(OrgLocations orgLocation, PayrollReportDTO payrollReportDTO)
+	{
+			ResponseList<CheckRegisterReportDTO> res = payrollReportDao.getCheckRegisterReports(orgLocation,payrollReportDTO);
+		    return res;
 	}
 	
 }

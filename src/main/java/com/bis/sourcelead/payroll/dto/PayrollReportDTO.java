@@ -58,6 +58,9 @@ public class PayrollReportDTO extends SearchDTO{
 	
 	private BigDecimal ytdDeductions;
 	
+	
+	
+	
 	public String getEmpName()
 	{
 		return empName;
