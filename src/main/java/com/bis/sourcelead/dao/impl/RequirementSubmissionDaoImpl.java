@@ -11,12 +11,10 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.StringTokenizer;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
-import org.apache.commons.collections.set.TransformedSet;
 import org.apache.commons.lang.StringUtils;
 import org.hibernate.Query;
 import org.hibernate.Session;
@@ -40,7 +38,6 @@ import com.bis.sourcelead.dao.UserRoleDao;
 import com.bis.sourcelead.dto.RequirementSubmissionHistoryDTO;
 import com.bis.sourcelead.dto.RequirementSubmissionsCountDTO;
 import com.bis.sourcelead.dto.RequirementSubmissionsDTO;
-import com.bis.sourcelead.dto.Response;
 import com.bis.sourcelead.dto.ResponseList;
 import com.bis.sourcelead.entity.CandidateEducation;
 import com.bis.sourcelead.entity.OrgLocations;
@@ -49,6 +46,7 @@ import com.bis.sourcelead.entity.RequirementRateSubmissionNegotiation;
 import com.bis.sourcelead.entity.RequirementSubmission;
 import com.bis.sourcelead.entity.RequirementSubmissionHistory;
 import com.bis.sourcelead.entity.RequirementSubmissionsView;
+import com.bis.sourcelead.entity.SubmissionCandidateListView;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.exception.SourceLeadConstraintViolationException;
 import com.bis.sourcelead.service.RequirementAssignToService;
@@ -3421,6 +3419,63 @@ public class RequirementSubmissionDaoImpl implements RequirementSubmissionDao{
 				     String query = "from RequirementSubmission rs where rs.id NOT IN (select rsf.requirementSubmission.id from RequirementSubmissionTemplateFields rsf)";
 				     List<RequirementSubmission> shortListCandidatesList = session.createQuery(query).list();
 				     return shortListCandidatesList;
+				}
+				
+				@Override
+				@Transactional
+				public Integer getRequirementSubmissionCountByCandiateIdAndOrgLocationId(Long candidateId,
+						Long orgLocationId) throws Exception {
+					
+					
+					List<Long> submissionsList = null;
+					Session session = this.sessionFactory.getCurrentSession();
+					String query = "select distinct count(rs.requirement.id)  from RequirementSubmission rs  where rs.candidate.id = :candidateId and rs.orgLocations.id = :orgLocationId ";  
+					submissionsList = session.createQuery(query)
+													       .setLong("orgLocationId", orgLocationId)
+													       .setLong("candidateId", candidateId)
+													       .list();
+					
+					  Integer count = 0;
+				  		if(submissionsList != null && !submissionsList.isEmpty()){
+				  				count = submissionsList.get(0).intValue();
+				  		}
+			  		return count;
+				}
+				
+				@Override
+				@Transactional
+				public List<RequirementSubmissionsDTO> getCandidateSubmittedRequirementsListByCandidateId(
+						Long candidateId, Long orgLocationId) throws Exception {
+					
+				    List<RequirementSubmissionsDTO> requirementSubmissionsDTOList = null;
+					Session session = this.sessionFactory.getCurrentSession();
+					String query = null;
+					
+					query =  "SELECT "
+							+" REQ.ID AS reqId, "
+							+" REQ.GENERATED_ID AS generatedId,"  
+							+" REQ.JOB_TITLE AS requirementName, "
+							+" SUBMISSION.SUBMISSION_STATUS AS submissionStatus, "
+							+" DATE_FORMAT(SUBMISSION.CREATED_DATE, '%Y-%m-%d') AS submissionDate, "
+							+" DATE_FORMAT(SUBMISSION.CREATED_DATE, '%h:%i:%s %p') AS submissionTime, "
+							+ " (SELECT " + 
+							  " CONCAT (U.FIRST_NAME,' ',IFNULL(U.LAST_NAME,'')) " + 
+							  " FROM " + 
+							  " USER U " + 
+							  " WHERE " + 
+							  " U.USER_CODE = SUBMISSION.CREATED_BY) AS submittedBy " 
+							+" FROM REQUIREMENT_SUBMISSION SUBMISSION, "
+							+ "REQUIREMENT REQ "
+							+" WHERE SUBMISSION.REQUIREMENT_ID = REQ.ID  AND"
+							+" SUBMISSION.CANDIDATE_ID = :candidateId AND "
+							+" SUBMISSION.ORG_LOCATION_ID = :orgLocationId ORDER BY SUBMISSION.ID DESC";
+					
+					Query queryObj = session.createSQLQuery(query);
+					queryObj.setLong("candidateId", candidateId);
+					queryObj.setLong("orgLocationId", orgLocationId);
+					queryObj.setResultTransformer(Transformers.aliasToBean(RequirementSubmissionsDTO.class));
+					requirementSubmissionsDTOList = queryObj.list();
+					return requirementSubmissionsDTOList;
 				}
 
 				}
