@@ -793,7 +793,7 @@ public class RequirementSubmissionDaoImpl implements RequirementSubmissionDao{
                         // This Condition is if The Requirement is Released by the login User
                     }else{
                         //This is for Requirement Manger
-                        String subQuery1 = "(reqSub.requirement.managerUserId.id  =:userId or reqSub.requirement.primaryRecruiterUserId.id = :userId) ";
+                        String subQuery1 = "(reqSub.requirement.managerUserId.id  =:userId or reqSub.requirement.primaryRecruiterUserId.id = :userId) and reqSub.createdBy =:usercode ";
                         params.put("userId",user.getId());
                         
                         // This is if the user is  created by
