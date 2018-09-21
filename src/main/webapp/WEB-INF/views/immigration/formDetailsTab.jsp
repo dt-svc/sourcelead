@@ -1,6 +1,6 @@
 <%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <c:set var ="allFormsUploaded" value ="No"/>
-<div class="immigraTabsHead">
+		<div class="immigraTabsHead">
 			<c:choose>
 				    <c:when test="${myImmigrationPage == 'N'}">
 				        <a href="javascript:void(0)" id="addForm"><i class="glyphicon glyphicon-plus"></i> Add Form</a>
@@ -18,7 +18,6 @@
 		  	<span id='formZipfile' class="cursorPointer"><i class="glyphicon glyphicon-download-alt paddingRight"></i>Download All Documents</span> 
 		  	<span><input class="immigraTabSerach" id="immigraFormTabSerach" placeholder="Form Name/Status" type="text"></span>
 		</div>
-		
 	  	<div class="immigraTable">
 		  <table id="formsTbl">
 			<tbody>
@@ -62,8 +61,7 @@
 				        <td><div>
 							 <a title="Upload" class="fa fa-upload uploadForm" onclick=""></a>
 							 <c:if test="${items.isTemplateConfigured =='N'}">
-							 <i id="edit" class="glyphicon glyphicon-pencil ml10 cursorPointer" onclick="immigration.editImmigrationCandidateForm(${items.id});"></i>
-							 <i id="delete" class="glyphicon glyphicon-trash ml10 cursorPointer" onclick="deleteImmigrationRecord('immigration.deleteImmigrationCandidateForm',${items.id});" ></i>
+							
 							 </c:if>
 							 </div>
 							 <c:if test="${items.isRequired == 'Y' and not empty items.uploadedFileUrl}">
@@ -77,8 +75,7 @@
 						        <td><div>
 								 <a title="Upload" class="fa fa-upload uploadForm" onclick=""></a>
 								 <c:if test="${items.isTemplateConfigured =='N'}">
-								 <i id="edit" class="glyphicon glyphicon-pencil ml10 cursorPointer" onclick="immigration.editImmigrationCandidateForm(${items.id});"></i>
-								 <i id="delete" class="glyphicon glyphicon-trash ml10 cursorPointer" onclick="deleteImmigrationRecord('immigration.deleteImmigrationCandidateForm',${items.id});" ></i>
+								
 								 </c:if>
 								 </div>
 								 <c:if test="${items.isRequired == 'Y' and not empty items.uploadedFileUrl}">
@@ -121,7 +118,7 @@
           <div class="col-sm-12 noPad mt clearfix" id="errformNameDiv">
 				<label class="col-md-4 padding_left">Form name<span class="text-danger">&nbsp;*</span></label>
               	<div class="col-md-8 padding_right">
-					<input type="text" class="form-control" name="formName" id="formName"  field-name="Form Name"  data-validation = "required validate_length length2-100" placeholder="Form name" data-name="formName" onkeyup = "validateImmigrationCandidateForms();"/>
+					<input type="text" class="form-control" name="formName" id="formName"  field-name="Form Name"  data-validation = "required validate_length length2-100" placeholder="Form name" data-name="formName" onchange="immigration.validateImmigrationCandidateForms();" onkeyup ="immigration.validateImmigrationCandidateForms();"/>
 				</div>
 			</div>	      
 			   
@@ -200,7 +197,7 @@
 		
 		</div>
 		<div class="immiPopFoot">
-            <input value="Save" id="uploadFormSave_Button"  class="" type="button" onclick="uploadRequestForm();">
+            <input value="Save" id="uploadFormSave_Button"  class="" type="button" onclick="immigration.uploadRequestForm();">
             <input value="Cancel" class="popCan" type="button" onclick="removeFormPopUp();">
           </div>		
 	</div>	<!-- popup code end -->

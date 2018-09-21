@@ -25,8 +25,11 @@
     <div class="project_side_wrap_inn_tabs clearfix">
 	    <ul class="project-tabs-menu">
 		    <li class="current"><a href="/app/immigration/viewImmigrationList">Immigration List</a></li>
+		  
+		   <sec:authorize access="hasAnyRole(\'ROLE_ADD_LCA\',\'ROLE_VIEW_LCA\',\'ROLE_VIEW_EDIT_LCA\',\'ROLE_VIEW_DELETE_LCA\',\'ROLE_IMPORT_LCA\',\'ROLE_EXPORT_LCA\')">
 		    <li class=""><a href="${appPath}/immigration/viewLCAList">LCA List</a></li>
-		    
+		   </sec:authorize> 
+		   
 	    </ul>
     </div>
     

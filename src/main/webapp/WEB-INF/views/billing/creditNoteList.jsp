@@ -257,29 +257,35 @@ function creditNotePagination(url){
     	  				if((report.approverUserSplitId[i] == '${SourceLeadWeb_user.id}') && report.creditDebitNoteStatus != "Send"){
 						result = result +'           <span class="clearfix" ><a onclick="acceptCreditDebitNote(\''+report.creditDebitUUID+'\');" title="Accept"><i class="fa fa-check text-success paddingRight"></i></a><a onclick="rejectCreditDebitNote(\''+report.creditDebitUUID+'\');" title="Reject"><i class="paddingLeft fa fa-times text-danger"></i></a></span>';
 			    	}else{
-			    		if((report.creditDebitNoteStatus == "Submit") ||  (report.creditDebitNoteStatus == "Draft"))
+			    		if(((report.creditDebitNoteStatus == "Submit") ||  (report.creditDebitNoteStatus == "Draft")) && (report.status !="0"))
 	    				 {
 						result = result +' <span class="clearfix"><a href="<c:url value="/app/addCreditNote?creditDebitUUID='+report.creditDebitUUID+'&noteType=Credit"/>" <i class="fa fa-edit paddingRight paddingLeft" title="Edit"></i></a></span>';
 	    				result = result +' <span class="clearfix"><a onClick="deleteCreditDebitNote(\''+report.creditDebitUUID+'\');"><i class="fa fa-trash paddingRight paddingLeft" title="Remove"></i></a></span>';
 						// to avoid multiple edit buttons for multiple approvers 
 						break;
-	    				 }else{
+	    				 }else if(report.status !="0"){
 	 	    				result = result +' <span class="clearfix"><a onClick="deleteCreditDebitNote(\''+report.creditDebitUUID+'\');"><i class="fa fa-trash paddingRight paddingLeft" title="Remove"></i></a></span>';
 	 	    			// to avoid multiple edit buttons for multiple approvers 
 							break;
+	    				 }else{
+		 	    			result = result +' <span class="clearfix"><a onClick="reactiveCreditDebitNote(\''+report.creditDebitUUID+'\');"><i class="fa fa-rotate-left ml10" title="Reactive"></i></a></span>';
+		 	    			break;
 	    				 }
 			    	}
 			    	result = result +' </div>';	
 			    }
     	  		}else{
     	  			result = result +'<div class="tbldata-dotdot-vsm">';
-    	  			if((report.creditDebitNoteStatus == "Submit") ||  (report.creditDebitNoteStatus == "Draft"))
+    	  			if(((report.creditDebitNoteStatus == "Submit") ||  (report.creditDebitNoteStatus == "Draft")) && (report.status !="0"))
    				 {
 					result = result +' <span class="clearfix"><a href="<c:url value="/app/addCreditNote?creditDebitUUID='+report.creditDebitUUID+'&noteType=Credit"/>" <i class="fa fa-edit paddingRight paddingLeft" title="Edit"></i></a></span>';
    				 	result = result +' <span class="clearfix"><a onClick="deleteCreditDebitNote(\''+report.creditDebitUUID+'\');"><i class="fa fa-trash paddingRight paddingLeft" title="Remove"></i></a></span>';
 
-   				 }else{
+   				 }else if(report.status !="0"){
     				result = result +' <span class="clearfix"><a onClick="deleteCreditDebitNote(\''+report.creditDebitUUID+'\');"><i class="fa fa-trash paddingRight paddingLeft" title="Remove"></i></a></span>';
+ 
+   				 }else{
+	 	    		result = result +' <span class="clearfix"><a onClick="reactiveCreditDebitNote(\''+report.creditDebitUUID+'\');"><i class="fa fa-rotate-left ml10" title="Reactive"></i></a></span>';
  
    				 }
     				 result = result +'</div>  ';	
@@ -748,11 +754,12 @@ function closePopup() {
 <script>
 function deleteCreditDebitNote(creditDebitUUID){ 
 	var result = "";
+	$("#popUp").empty();
 	result = result +"	<div class='project_inn_mask'></div>"; 
 	result = result +"	   <div id='remove_user_pop' class='remove_user_pop remove_user_pop_a'>";
 
 	result = result +"<div class='modal-body'><p>Are you sure you want to delete ?</p></div>";
-	result = result + ' <div id="reasonForInvoiceDiv"/>';
+	result = result + ' <div id="deleteCreditDebitNoteDiv"/>';
 	result = result +'		<b href="javascript:void(0)"><input id="confirm-id" type="button" value="Delete" onclick="deleteCreditDebitMethod(\''+creditDebitUUID+'\');"><input class="u_can_color" type="button"  value="Cancel" onClick="cancelTermination();"></b>';
 	result = result +"	</div>";
 	$("#popUp").append(result);
@@ -771,6 +778,33 @@ function deleteCreditDebitMethod(creditDebitUUID){
 		   		    }
 			     });
 		}
+
+function reactiveCreditDebitNote(creditDebitUUID){ 
+	var result = "";
+	$("#popUp").empty();
+	result = result +"	<div class='project_inn_mask'></div>"; 
+	result = result +"	   <div id='remove_user_pop' class='remove_user_pop remove_user_pop_a'>";
+
+	result = result +"<div class='modal-body'><p>Are you sure you want to Re-Active ?</p></div>";
+	result = result + ' <div id="reactiveCreditDebitNoteDiv"/>';
+	result = result +'		<b href="javascript:void(0)"><input id="confirm-id" type="button" value="Reactive" onclick="reactiveCreditDebitMethod(\''+creditDebitUUID+'\');"><input class="u_can_color" type="button"  value="Cancel" onClick="cancelTermination();"></b>';
+	result = result +"	</div>";
+	$("#popUp").append(result);
+	$("#remove_user_pop").slideDown(200);
+	$(".project_inn_mask").fadeIn(200);
+}
+
+function reactiveCreditDebitMethod(creditDebitUUID){
+	 $.ajax({
+		   	type: "POST",
+		    url: sourceleadUrl+"/reactiveCreditDebitNote?"+tokenParamName+"="+tokenValue+"&noteType=Credit&creditDebitUUID="+creditDebitUUID,
+  		    success: function(data) {
+  		    	$("#popUp").empty();
+  			 	$(".project_inn_mask").fadeOut(200);
+  			 	location.replace(sourceleadUrl+"/creditNoteList");	
+  		    }
+	     });
+}
 	
 
 function cancelTermination(){

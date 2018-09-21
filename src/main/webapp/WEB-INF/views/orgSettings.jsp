@@ -377,7 +377,7 @@ function cancelOrgImg(){
 						<div class="clearfix mb">
 							<label class="labText">Week Off Days</label>
 							<div class="clearfix">
-							 <select multiple class="chosen-select form-control" id="weekOffDays" name="weekOffDays" data-validation-optional="true" field-name="Week Off Days">
+							 <select multiple class="chosen-select form-control" id="weekOffDays" name="weekOffDays" data-validation="required" field-name="Week Off Days">
 								 <option  value='Sun' ${fn:contains(SourceLeadWeb_weekOffDaysList, 'Sun') ? 'selected' : ''}>Sunday</option>
 								 <option  value='Mon' ${fn:contains(SourceLeadWeb_weekOffDaysList, 'Mon') ? 'selected' : ''}>Monday</option>
 								 <option  value='Tue' ${fn:contains(SourceLeadWeb_weekOffDaysList, 'Tue') ? 'selected' : ''}>Tuesday</option>

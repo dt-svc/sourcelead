@@ -200,7 +200,7 @@ function approvedEmployeesPagination(url){
 	    	  		 if(opt.approvedBy != null && opt.approvedBy != 'undefined' && opt.approvedBy != ''){
 	    	  			result = result + '     <div title="'+opt.approvedBy+'" class="tblminwidth-75">'+opt.approvedBy+'</div>';
 	    	  		 }else{
-	    	  			result = result + '     <div class="tblminwidth-75">System Approved</div>';
+	    	  			result = result + '     <div class="tblminwidth-75">Auto Approved</div>';
 	    	  		 }
   	                return result; 
 	    	  	}

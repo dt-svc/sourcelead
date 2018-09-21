@@ -34,16 +34,16 @@ private static final long serialVersionUID = 1L;
 	@JoinColumn(name = "USER_ID", nullable = false)
 	private User userId;
     
-    @Column(name = "LOCATION")
+    @Column(name = "LOCATION", columnDefinition = "LONGTEXT default NULL")
    	private String location;
     
-    @Column(name = "COUNTRY")
+    @Column(name = "COUNTRY", columnDefinition = "LONGTEXT default NULL")
    	private String country;
     
-    @Column(name = "STATE")
+    @Column(name = "STATE", columnDefinition = "LONGTEXT default NULL")
    	private String state;
     
-    @Column(name = "CITY")
+    @Column(name = "CITY", columnDefinition = "LONGTEXT default NULL")
    	private String city;
     
     @Column(name = "COMPANY_NAME")
