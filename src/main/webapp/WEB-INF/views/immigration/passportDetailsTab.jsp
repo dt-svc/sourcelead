@@ -202,7 +202,7 @@
 			
 			  $("#searchValuePassport").keyup(function (e) {
 				    if (e.which === 13) {
-				    	searchPassportValue();
+				    	immigration.searchPassportValue();
 				    }
 				});
 			
