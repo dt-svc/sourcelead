@@ -3857,6 +3857,7 @@ public class InvoiceServiceImpl implements InvoiceService {
 			creditDebitNoteListDTO.setContactUser(creditDebitNote.getContactUser());
 			creditDebitNoteListDTO.setApproverCheckBox(creditDebitNote.getApproverCheckBox());
 			creditDebitNoteListDTO.setApprovers(creditDebitNote.getApprovers());
+			creditDebitNoteListDTO.setStatus(creditDebitNote.getStatus());
 			if(StringUtils.isNotBlank(creditDebitNote.getApprovers())){
 			List<String> appUserList = Arrays.asList(creditDebitNoteListDTO.getApprovers().split(","));
 				creditDebitNoteListDTO.setApproverUserSplitId(appUserList);
@@ -3882,10 +3883,10 @@ public class InvoiceServiceImpl implements InvoiceService {
 				note.setUpdatedDate(commonUtil.orgLocationCommonDate(date, orgLocations));
 				note.setUpdatedBy(user);
 				CreditDebitNote savedNote = invoiceDao.saveCreditDebitNote(note);
-				if (null != savedNote) {
+				if ((null != savedNote) && ((savedNote.getNoteStatus().equalsIgnoreCase("Received")) || (savedNote.getNoteStatus().equalsIgnoreCase("Send")))) {
 					if (null != note.getParentCreditDebitNote()) {
 						// parent invoice update
-						CreditDebitNote parentnote = invoiceDao.getParentCreditDebitNoteById(savedNote.getParentCreditDebitNote().getId());
+						CreditDebitNote parentnote = invoiceDao.getCreditDebitNoteById(savedNote.getParentCreditDebitNote().getId());
 						parentnote.setStatus(Constants.MEMBER_IN_ACTIVE);
 						parentnote.setUpdatedBy(user);
 						parentnote.setUpdatedDate(commonUtil.orgLocationCommonDate(date, orgLocations));
@@ -3894,6 +3895,38 @@ public class InvoiceServiceImpl implements InvoiceService {
 						// update child invoice
 						CreditDebitNote childInvoice = invoiceDao.getParentCreditDebitNoteById(savedNote.getId());
 						childInvoice.setStatus(Constants.MEMBER_IN_ACTIVE);
+						childInvoice.setUpdatedBy(user);
+						childInvoice.setUpdatedDate(commonUtil.orgLocationCommonDate(date, orgLocations));
+						invoiceDao.saveCreditDebitNote(childInvoice);
+					}
+				}
+				result = true;	
+		}
+		return result;
+	}
+	
+	@Override
+	public boolean reactiveCreditDebitNote(String noteUUID,String noteType,User user,OrgLocations orgLocations)throws Exception {
+		boolean result = false;
+		CreditDebitNote note = invoiceDao.getCreditDebitNoteByUUID(noteUUID);
+		Date date = new Date();
+		if(note!= null){
+				note.setStatus(Constants.MEMBER_ACTIVE);
+				note.setUpdatedDate(commonUtil.orgLocationCommonDate(date, orgLocations));
+				note.setUpdatedBy(user);
+				CreditDebitNote savedNote = invoiceDao.saveCreditDebitNote(note);
+				if ((null != savedNote) && ((savedNote.getNoteStatus().equalsIgnoreCase("Received")) || (savedNote.getNoteStatus().equalsIgnoreCase("Send")))) {
+					if (null != note.getParentCreditDebitNote()) {
+						// parent invoice update
+						CreditDebitNote parentnote = invoiceDao.getCreditDebitNoteById(savedNote.getParentCreditDebitNote().getId());
+						parentnote.setStatus(Constants.MEMBER_ACTIVE);
+						parentnote.setUpdatedBy(user);
+						parentnote.setUpdatedDate(commonUtil.orgLocationCommonDate(date, orgLocations));
+						invoiceDao.saveCreditDebitNote(parentnote);
+					}else{
+						// update child invoice
+						CreditDebitNote childInvoice = invoiceDao.getParentCreditDebitNoteById(savedNote.getId());
+						childInvoice.setStatus(Constants.MEMBER_ACTIVE);
 						childInvoice.setUpdatedBy(user);
 						childInvoice.setUpdatedDate(commonUtil.orgLocationCommonDate(date, orgLocations));
 						invoiceDao.saveCreditDebitNote(childInvoice);

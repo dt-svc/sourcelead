@@ -56,7 +56,7 @@
                <select class="form-control sel" name="lcaStatus" id="lcaStatus" field-name="LCA Status" data-validation="required">
                 <option value=""> --Select--</option>
                 <option ${lcaDTO.lcaStatus == 'Initiated' ? 'selected': ''} value='Initiated'>Initiated</option>
-                <option ${lcaDTO.lcaStatus == 'In-progress' ? 'selected': ''} value='In-progress'>In-progress</option>
+                <option ${lcaDTO.lcaStatus == 'In-progress' ? 'selected': ''} value='In progress'>In progress</option>
                 <option ${lcaDTO.lcaStatus == 'Certified' ? 'selected': ''} value='Certified'>Certified</option>
                 <option ${lcaDTO.lcaStatus == 'Denied' ? 'selected': ''}  value='Denied'>Denied</option>
                 <option ${lcaDTO.lcaStatus == 'Withdrawn' ? 'selected': ''} value='Withdrawn'>Withdrawn</option>
