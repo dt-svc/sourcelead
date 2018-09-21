@@ -52,6 +52,7 @@ import com.bis.sourcelead.dto.AddAssociateDTO;
 import com.bis.sourcelead.dto.AddUserDTO;
 import com.bis.sourcelead.dto.AssociateDTO;
 import com.bis.sourcelead.dto.CandidateDTO;
+import com.bis.sourcelead.dto.CandidateMarketPlaceDTO;
 import com.bis.sourcelead.dto.CustomFormFieldDTO;
 import com.bis.sourcelead.dto.FileInfo;
 import com.bis.sourcelead.dto.ImmigrationCandidateDTO;
@@ -2533,6 +2534,11 @@ private Sheet createXlsSheet(Sheet createExcelsheet, Row writeRow,Candidate cand
 	public List<CandidateDTO> getAllActiveCandidatesListByOrglocationId(Long orgLocationId, String employeementType)
 			throws Exception {
 		return candidateDao.getAllActiveCandidatesListByOrglocationId(orgLocationId, employeementType);
+	}
+
+	@Override
+	public ResponseList<CandidateMarketPlaceDTO> getGlobalMarketCandidateList(CandidateMarketPlaceDTO candidateMarketPlaceDTO, String searchValue) {
+		return candidateDao.getGlobalMarketCandidateList(candidateMarketPlaceDTO, searchValue);
 	}
 
 }

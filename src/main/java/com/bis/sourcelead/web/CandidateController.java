@@ -22,13 +22,18 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.ModelAndView;
 
 import com.bis.sourcelead.constants.Constants;
+import com.bis.sourcelead.dto.CandidateMarketPlaceDTO;
+import com.bis.sourcelead.dto.ImmigrationListViewDTO;
 import com.bis.sourcelead.dto.OrgRelationDTO;
+import com.bis.sourcelead.dto.ResponseList;
 import com.bis.sourcelead.dto.SourceleadSectionDTO;
 import com.bis.sourcelead.entity.Candidate;
 import com.bis.sourcelead.entity.CandidateDocuments;
+import com.bis.sourcelead.entity.CandidateMarketPlace;
 import com.bis.sourcelead.entity.CandidateResumes;
 import com.bis.sourcelead.entity.Countries;
 import com.bis.sourcelead.entity.LookUpData;
@@ -117,6 +122,66 @@ public class CandidateController {
 	 * @throws Exception
 	 */
 	
+	// Note this method is marketplace Candidate method
+
+	@PreAuthorize("hasAnyRole('ROLE_CREATE_CANDIDATE','ROLE_CROWDSOURCING_CANDIDATES')")
+	@RequestMapping(value = "/addToMarketPlace")
+	public ModelAndView goToMarketplace(HttpServletRequest request) throws Exception {
+		logger.debug("Display the candiade page");
+		ModelAndView model = new ModelAndView();
+		model.setViewName("candidates/candidateMarketPlaceList");
+		model.addObject("sourceleadUrl", sourceleadUrl);
+		return model;
+	}
+
+	// Note this method is Global marketplace Candidate method
+	@PreAuthorize("hasAnyRole('ROLE_CREATE_CANDIDATE','ROLE_CROWDSOURCING_CANDIDATES')")
+	@RequestMapping(value = "/globalMarketplace")
+	public ModelAndView goToGlobalMarketplace(HttpServletRequest request) throws Exception {
+		logger.debug("inisde goToGlobalMarketplace  conroller =========>");
+		System.out.println("inisde goToGlobalMarketplace  conroller =========>");
+		ModelAndView model = new ModelAndView();
+		model.setViewName("candidates/candidateGlobalMarketPlaceList");
+		model.addObject("sourceleadUrl", sourceleadUrl);
+		return model;
+	}
+	
+	//Note this method is Global Maarketplace to get all the all the candidate list.
+	@PreAuthorize("hasAnyRole('ROLE_CREATE_CANDIDATE','ROLE_CROWDSOURCING_CANDIDATES')")
+	@RequestMapping(value = "/getGlobalMarketplaceList")
+	public @ResponseBody ResponseList<CandidateMarketPlaceDTO> getGlobalMarketplaceCandList(
+			CandidateMarketPlaceDTO candidateMarketPlaceDTO,
+			@RequestParam(value = "searchValue", required = false) String searchValue, HttpServletRequest request) {
+		ResponseList<CandidateMarketPlaceDTO> candidateMarketPlaceDTOList = null;
+		logger.debug("inisde getGlobalMarketplaceCandList  conroller =========> --> ");
+		System.out.println("inisde getGlobalMarketplaceCandList  conroller =========>");
+		try {
+			String[] tableColumns = { "fullName", "location", "skillsName", "currentRate", "expectedRate", "score" };// should
+																														// be
+			// entity names
+			int sortColumnIndex = -1; // by default sorting using updated date
+			String sortColumnOrder = "desc"; // by default ascending order
+			if (candidateMarketPlaceDTO.getOrder() != null && !candidateMarketPlaceDTO.getOrder().isEmpty()) {
+				sortColumnIndex = Integer.parseInt(candidateMarketPlaceDTO.getOrder().get(0).get("column"));
+				sortColumnOrder = candidateMarketPlaceDTO.getOrder().get(0).get("dir"); // sorting order 'dir' means
+				candidateMarketPlaceDTO.setSortOrder(sortColumnOrder); // direction
+				// of the sorting.candidateMarketPlaceDTO
+			}
+
+			if (sortColumnIndex != -1)
+				candidateMarketPlaceDTO.setSortColumn(tableColumns[sortColumnIndex]);
+
+			candidateMarketPlaceDTOList = candidateService.getGlobalMarketCandidateList(candidateMarketPlaceDTO,
+					searchValue);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		logger.debug(
+				"after controller  getGlobalMarketplaceCandList  --> " + candidateMarketPlaceDTOList.getRecordsTotal());
+		System.out.println("inisde getGlobalMarketplaceCandList  conroller =========>"
+				+ candidateMarketPlaceDTOList.getRecordsTotal());
+		return candidateMarketPlaceDTOList;
+	}
 	//Note this method is ResumeParsing Candidate method
 	
 	 @PreAuthorize("hasAnyRole('ROLE_CREATE_CANDIDATE','ROLE_CROWDSOURCING_CANDIDATES')")

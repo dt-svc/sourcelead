@@ -29,7 +29,9 @@ import com.bis.sourcelead.dao.CandidateResumesDao;
 import com.bis.sourcelead.dao.ProjectsDao;
 import com.bis.sourcelead.dao.UserRoleDao;
 import com.bis.sourcelead.dto.CandidateDTO;
+import com.bis.sourcelead.dto.CandidateMarketPlaceDTO;
 import com.bis.sourcelead.dto.ImmigrationCandidateDTO;
+import com.bis.sourcelead.dto.ImmigrationListViewDTO;
 import com.bis.sourcelead.dto.ResponseList;
 import com.bis.sourcelead.entity.Candidate;
 import com.bis.sourcelead.entity.CandidateIdendities;
@@ -2046,6 +2048,17 @@ public class CandidateDaoImpl implements CandidateDao {
 			queryObj.setResultTransformer(Transformers.aliasToBean(CandidateDTO.class));
 			candidateDTOList = queryObj.list();
 			return candidateDTOList;
+	}
+
+	@Override
+	public ResponseList<CandidateMarketPlaceDTO> getGlobalMarketCandidateList(
+			CandidateMarketPlaceDTO candidateMarketPlaceDTO, String searchValue) {
+		    List<CandidateMarketPlaceDTO> globalMarketCandDTOList = new ArrayList<CandidateMarketPlaceDTO>();
+		    ResponseList<CandidateMarketPlaceDTO> responseList=  new ResponseList<>();
+			responseList.setRecordsTotal(0);
+			responseList.setRecordsFiltered(0);
+			responseList.setData(globalMarketCandDTOList);
+		return responseList;
 	}
 
 }

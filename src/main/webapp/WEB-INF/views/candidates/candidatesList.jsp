@@ -1063,11 +1063,11 @@ function cancel(candidateId){
 			</div>
 	     </c:if>
     <div class="pull-left">
-      <h2>Candidate List</h2>
+      <h2 id="headerLbl">Candidate List</h2>
     </div>
     
     <c:if test="${SourceLeadWeb_loginUserRole != 'ROLE_CROWDSOURCING_RECRUITER'}">
-    <div class="pull-right brud-crum"><a href="<c:url value='${appPath}/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home </a> &raquo; Candidate List  </div>
+    <div class="pull-right brud-crum"><a href="<c:url value='${appPath}/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home </a> &raquo; <label id="brudCrumLbl">Candidate List </label> </div>
     </c:if> 
     
     <c:if test="${SourceLeadWeb_loginUserRole == 'ROLE_CROWDSOURCING_RECRUITER'}">
@@ -1084,7 +1084,13 @@ function cancel(candidateId){
 		</div>   --%> 
 		
   </section>
-  
+  <div class="clearfix">
+	<ul class="project-tabs-menu projecttabs-custom clearfix">
+         <li id="" class="current"><a href="javascript:void(0)" onclick="javascript:goToCandidateList();">Candidate List</a></li>
+         <li id=""><a href="javascript:void(0)" onclick="javascript:goToGlaobalMarketList();" >Marketplace</a></li>
+         <div class="clearfix"></div>
+     </ul>
+</div>	
   		  <form:form id="candidatelist_form" name="candidatelist_form"  enctype='multipart/form-data' >
 				  <!-- <div class="cand-advsrch-popup cand-advsrchPopup"> -->
 				  <div class="cand-advsrch-popup advancedsearch-popup">
@@ -1373,7 +1379,7 @@ function cancel(candidateId){
 				  </div>
 			  </form:form>
   
-  <div class="timesheet_out">
+  <div class="timesheet_out" id="candidatesInfoDiv">
     
  <div class="positionRelative reportHead clearfix">
       <span class="pull-left refreIcon" id="advanceSearchDiv">
@@ -1596,9 +1602,9 @@ $(document).ready(function() {
         $(this).parent().addClass("current");
         $(this).parent().siblings().removeClass("current");
         var tab = $(this).attr("href");
-        $(".project_tabs_inn").not(tab).css("display", "none");
-        $(tab).fadeIn();
-    });
+       // $(".project_tabs_inn").not(tab).css("display", "none"); // commented due to script error in UI.
+       // $(tab).fadeIn();
+    }); 
 
 	
 });
@@ -3046,5 +3052,20 @@ $(".overIcon, .newActPop").click(function(e){
 });	
 
 </script>
- 
+ <script type="text/javascript">
+	function goToGlaobalMarketList() {
+		 $.ajax({
+			type : "GET",
+			url : sourceleadUrl + "/globalMarketplace?" + tokenParamName + "=" + tokenValue,
+			success : function(result) {
+				$('#candidatesInfoDiv').html(result);
+				$('#brudCrumLbl').html("Global Marketplace");
+				$('#headerLbl').html("Global Marketplace List");
+			},
+		}); 
+	}
+function goToCandidateList(){
+	location.href = "${appPath}/candidatesList";
+}
+</script>
 <jsp:include page="../masterFooter.jsp" /> 

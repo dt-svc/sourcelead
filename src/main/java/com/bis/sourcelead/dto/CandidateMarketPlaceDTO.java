@@ -1,0 +1,339 @@
+package com.bis.sourcelead.dto;
+
+
+public class CandidateMarketPlaceDTO extends SearchDTO {
+
+
+	private Long id;
+
+	private String masterCandidateId;
+
+	private String orgLocationId;
+
+	private String  fullName;
+
+	private String email;
+
+	private String alternateEmail;
+
+	private String alternateMobilePhone;
+
+	private String mobilePhone;
+
+	private String location;
+	
+	private String score;
+	
+	private String experienceYears;
+
+	private String experienceMonths;
+
+	private String noticePeriod;
+
+	private String designation;
+
+	private String employmentType;
+
+	private String currentRate;
+
+	private String currentRateType;
+
+	private String currentRateCurrency;
+
+	private String expectedRate;
+
+	private String expectedRateType;
+
+	private String expectedRateCurrencey;
+	
+	private String marketPrice;
+
+	private String maretRateCurrencey;
+	
+	private String status;
+
+	private String createdDate;
+
+	private String createdBy;
+
+	private String updatedDate;
+
+	private String updatedBy;
+
+	private String candidateUUID;
+
+	private String skillsName;
+	
+	private String gender;
+
+	private String nationality;
+
+	private String maritalStatus;
+
+	public Long getId() {
+		return id;
+	}
+
+	public void setId(Long id) {
+		this.id = id;
+	}
+
+	public String getMasterCandidateId() {
+		return masterCandidateId;
+	}
+
+	public void setMasterCandidateId(String masterCandidateId) {
+		this.masterCandidateId = masterCandidateId;
+	}
+
+	public String getOrgLocationId() {
+		return orgLocationId;
+	}
+
+	public void setOrgLocationId(String orgLocationId) {
+		this.orgLocationId = orgLocationId;
+	}
+
+	public String getFullName() {
+		return fullName;
+	}
+
+	public void setFullName(String fullName) {
+		this.fullName = fullName;
+	}
+
+	public String getEmail() {
+		return email;
+	}
+
+	public void setEmail(String email) {
+		this.email = email;
+	}
+
+	public String getAlternateEmail() {
+		return alternateEmail;
+	}
+
+	public void setAlternateEmail(String alternateEmail) {
+		this.alternateEmail = alternateEmail;
+	}
+
+	public String getAlternateMobilePhone() {
+		return alternateMobilePhone;
+	}
+
+	public void setAlternateMobilePhone(String alternateMobilePhone) {
+		this.alternateMobilePhone = alternateMobilePhone;
+	}
+
+	public String getMobilePhone() {
+		return mobilePhone;
+	}
+
+	public void setMobilePhone(String mobilePhone) {
+		this.mobilePhone = mobilePhone;
+	}
+
+	public String getLocation() {
+		return location;
+	}
+
+	public void setLocation(String location) {
+		this.location = location;
+	}
+
+	public String getScore() {
+		return score;
+	}
+
+	public void setScore(String score) {
+		this.score = score;
+	}
+
+	public String getExperienceYears() {
+		return experienceYears;
+	}
+
+	public void setExperienceYears(String experienceYears) {
+		this.experienceYears = experienceYears;
+	}
+
+	public String getExperienceMonths() {
+		return experienceMonths;
+	}
+
+	public void setExperienceMonths(String experienceMonths) {
+		this.experienceMonths = experienceMonths;
+	}
+
+	public String getNoticePeriod() {
+		return noticePeriod;
+	}
+
+	public void setNoticePeriod(String noticePeriod) {
+		this.noticePeriod = noticePeriod;
+	}
+
+	public String getDesignation() {
+		return designation;
+	}
+
+	public void setDesignation(String designation) {
+		this.designation = designation;
+	}
+
+	public String getEmploymentType() {
+		return employmentType;
+	}
+
+	public void setEmploymentType(String employmentType) {
+		this.employmentType = employmentType;
+	}
+
+	public String getCurrentRate() {
+		return currentRate;
+	}
+
+	public void setCurrentRate(String currentRate) {
+		this.currentRate = currentRate;
+	}
+
+	public String getCurrentRateType() {
+		return currentRateType;
+	}
+
+	public void setCurrentRateType(String currentRateType) {
+		this.currentRateType = currentRateType;
+	}
+
+	public String getCurrentRateCurrency() {
+		return currentRateCurrency;
+	}
+
+	public void setCurrentRateCurrency(String currentRateCurrency) {
+		this.currentRateCurrency = currentRateCurrency;
+	}
+
+	public String getExpectedRate() {
+		return expectedRate;
+	}
+
+	public void setExpectedRate(String expectedRate) {
+		this.expectedRate = expectedRate;
+	}
+
+	public String getExpectedRateType() {
+		return expectedRateType;
+	}
+
+	public void setExpectedRateType(String expectedRateType) {
+		this.expectedRateType = expectedRateType;
+	}
+
+	public String getExpectedRateCurrencey() {
+		return expectedRateCurrencey;
+	}
+
+	public void setExpectedRateCurrencey(String expectedRateCurrencey) {
+		this.expectedRateCurrencey = expectedRateCurrencey;
+	}
+
+	public String getMarketPrice() {
+		return marketPrice;
+	}
+
+	public void setMarketPrice(String marketPrice) {
+		this.marketPrice = marketPrice;
+	}
+
+	public String getMaretRateCurrencey() {
+		return maretRateCurrencey;
+	}
+
+	public void setMaretRateCurrencey(String maretRateCurrencey) {
+		this.maretRateCurrencey = maretRateCurrencey;
+	}
+
+	public String getStatus() {
+		return status;
+	}
+
+	public void setStatus(String status) {
+		this.status = status;
+	}
+
+	public String getCreatedDate() {
+		return createdDate;
+	}
+
+	public void setCreatedDate(String createdDate) {
+		this.createdDate = createdDate;
+	}
+
+	public String getCreatedBy() {
+		return createdBy;
+	}
+
+	public void setCreatedBy(String createdBy) {
+		this.createdBy = createdBy;
+	}
+
+	public String getUpdatedDate() {
+		return updatedDate;
+	}
+
+	public void setUpdatedDate(String updatedDate) {
+		this.updatedDate = updatedDate;
+	}
+
+	public String getUpdatedBy() {
+		return updatedBy;
+	}
+
+	public void setUpdatedBy(String updatedBy) {
+		this.updatedBy = updatedBy;
+	}
+
+	public String getCandidateUUID() {
+		return candidateUUID;
+	}
+
+	public void setCandidateUUID(String candidateUUID) {
+		this.candidateUUID = candidateUUID;
+	}
+
+	public String getSkillsName() {
+		return skillsName;
+	}
+
+	public void setSkillsName(String skillsName) {
+		this.skillsName = skillsName;
+	}
+
+	public String getGender() {
+		return gender;
+	}
+
+	public void setGender(String gender) {
+		this.gender = gender;
+	}
+
+	public String getNationality() {
+		return nationality;
+	}
+
+	public void setNationality(String nationality) {
+		this.nationality = nationality;
+	}
+
+	public String getMaritalStatus() {
+		return maritalStatus;
+	}
+
+	public void setMaritalStatus(String maritalStatus) {
+		this.maritalStatus = maritalStatus;
+	}
+
+	
+
+}
