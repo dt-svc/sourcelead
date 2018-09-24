@@ -11,7 +11,7 @@
 	</section>	
 
 	<div class="project_wrap">
-		<jsp:include page="../my_payroll/myPayrollHeader.jsp"></jsp:include>	
+		<jsp:include page="../payroll/myPayrollHeader.jsp"></jsp:include>	
 		<div class="positionRelative reportHead clearfix">
 			<ul class="pull-right list-unstyled list-inline">
 				<li>
