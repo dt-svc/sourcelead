@@ -524,7 +524,8 @@ public class RequirementSubmissionServiceImpl implements RequirementSubmissionSe
 					 }
 					
 					 candidate = candidateDao.storeCandidate(candidate);
-					CandidateIndex candidateIndex = candidateIndexHelper.getCandidateIndexFromCandidate(candidate);
+					 candidateService.getCandidatePercentage(candidate, orgLocations);
+					 CandidateIndex candidateIndex = candidateIndexHelper.getCandidateIndexFromCandidate(candidate);
 					
 					sourceleadELKBaseIndexer.saveOrUpdateElkDocument(candidateIndex, Constants.ELK_CANDIDATE_INDEX, Constants.ELK_CANDIDATE_TYPE,candidate.getId().toString());
 					

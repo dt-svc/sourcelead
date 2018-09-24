@@ -1,8 +1,10 @@
 package com.bis.sourcelead.dao.impl;
 
+import java.math.BigInteger;
 import java.text.MessageFormat;
 import java.util.List;
 
+import org.hibernate.Query;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.exception.ConstraintViolationException;
@@ -173,5 +175,24 @@ public class CandidateDocumentsDaoImpl implements CandidateDocumentsDao{
 			return flag;
 		}
 	}
+
+	@Override
+	@Transactional(rollbackFor = { Exception.class })
+	public Integer getCandidateActiveDocumentsByCandidateId(Long candidateId) {
+		Session session = this.sessionFactory.getCurrentSession();
+		Integer documentsCount = 0;
+		
+		String countQuery ="SELECT"
+				+ " COUNT(DOCS.ID) AS DOCS_COUNT"
+				+ " FROM"
+				    + " CANDIDATE_DOCUMENTS DOCS "
+					+ " WHERE DOCS.CANDIDATE_ID = :candidateId AND DOCS.STATUS = '1' ";
+		
+		Query countqueryString = session.createSQLQuery(countQuery);
+		countqueryString.setParameter("candidateId", candidateId);
+		BigInteger filterCount =  (BigInteger) countqueryString.uniqueResult();
+		documentsCount = filterCount.intValue();
+		return documentsCount;
+}
 
 }

@@ -27,6 +27,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -44,7 +45,11 @@ import com.bis.sourcelead.dto.Response;
 import com.bis.sourcelead.dto.ResponseList;
 import com.bis.sourcelead.elk.index.CandidateIndex;
 import com.bis.sourcelead.elk.setup.SourceleadELKBaseIndexer;
+import com.bis.sourcelead.entity.Asset;
 import com.bis.sourcelead.entity.Candidate;
+import com.bis.sourcelead.entity.CandidateDocuments;
+import com.bis.sourcelead.entity.CandidateEducation;
+import com.bis.sourcelead.entity.CandidateEmployers;
 import com.bis.sourcelead.entity.CandidateResumes;
 import com.bis.sourcelead.entity.Org;
 import com.bis.sourcelead.entity.OrgLocations;
@@ -61,6 +66,9 @@ import com.bis.sourcelead.entity.Team;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.entity.UserRole;
 import com.bis.sourcelead.enums.Result;
+import com.bis.sourcelead.service.CandidateDocumentsService;
+import com.bis.sourcelead.service.CandidateEducationService;
+import com.bis.sourcelead.service.CandidateEmployersService;
 import com.bis.sourcelead.service.CandidateResumesService;
 import com.bis.sourcelead.service.CandidateService;
 import com.bis.sourcelead.service.OrgLocationService;
@@ -80,6 +88,7 @@ import com.bis.sourcelead.util.CalendarUtil;
 import com.bis.sourcelead.util.CommonUtil;
 import com.bis.sourcelead.util.PrimarySkillUtil;
 import com.bis.sourcelead.util.ResumeParserJsonUtil;
+import com.bis.sourcelead.util.SourceLeadRandomCodeHelper;
 import com.bis.sourcelead.util.SourceLeadSessionManager;
 import com.bis.sourcelead.util.SourceleadResumeParser;
 import com.thoughtworks.xstream.XStream;
@@ -141,8 +150,16 @@ public class CandidateRestController {
 	RequirementService requirementService;
 	@Autowired
 	OrgLocationService orgLocationService;
-
-
+	
+	@Autowired
+	CandidateEducationService candidateEducationService;
+	
+	@Autowired
+	CandidateEmployersService candidateEmployersService;
+	
+	@Autowired
+	CandidateDocumentsService candidateDocumentsService;
+	
 	@Autowired
 	RequirementLocationsService requirementLocationsService;
 
@@ -275,7 +292,7 @@ public class CandidateRestController {
 		try {
 			OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 			Requirement requirement = requirementService.getRequirementByRequirementId(requirementId);
-			List<CandidateDTO> candidateDTOList  = candidateService.getCandidateListForAddApplicant(orgLocations, requirementId,requirement.getSkills(),null);
+			List<CandidateDTO> candidateDTOList  = candidateService.getCandidateListForAddApplicant(orgLocations, requirementId,requirement.getSkills(),null,requirement.getProfilePercentage());
 			responseList.setData(candidateDTOList);
 			responseList.setResponse(Result.SUCCESS.name());
 			responseList.setResponseMessage(Result.SUCCESS.getValue());
@@ -857,6 +874,90 @@ public class CandidateRestController {
 		}
 		return response;
 	}
+	
+	
+	@RequestMapping(value = "/app/ws/dumpCandidateProfilePercentage", method = RequestMethod.GET)
+    public void dumpCandidateProfilePercentage(HttpServletRequest request, HttpServletResponse response) throws Exception
+    {
+		System.out.println("Dumping Profile percentage to candidates starts.....");
+		List<Candidate> candidatesList = candidateService.getAllCandidatesList();
+        for (Candidate can : candidatesList) {
+        
+        	 int percentage = 0;
+    			if(can != null){
+    				//Basic Details - 30 %
+    				if(can.getFirstName()!=null && can.getLocation()!=null && can.getEmail()!=null && can.getDesignationType()!=null){
+    					percentage = 30;
+    				}
+    				//Resume  Details - 10 %
+    				Integer resumesCount = candidateResumesService.getCandidateActiveResumeCountByCandidateId(can.getId());
+    				if(resumesCount > 0){
+    					percentage = percentage +10;
+    				}
+    				//Education Details - 10 %
+    				 Integer educationsCount = candidateEducationService.getCandidateActiveEducationsCountByCandidateId(can.getId());
+    				 if(educationsCount > 0){
+    						percentage = percentage +10;
+    				 }
+    				//Employment  Details - 10 %
+    				 Integer employersCount = candidateEmployersService.getCandidateActiveEmployersCountByCandidateId(can.getId());
+    				 if(employersCount > 0){
+    						percentage = percentage +10;
+    				 }
+    				 
+    				 //Skills Details - 10 %
+    				 if(can.getSkillsName()!=null && !"".equalsIgnoreCase(can.getSkillsName()) ){
+    						percentage = percentage +10;
+    				 }
+    				 
+    				//PrimarySkill Details - 5 %
+    				 if(can.getPrimarySkill()!=null && !"".equalsIgnoreCase(can.getPrimarySkill())){
+    						percentage = percentage + 5;
+    				 }
+    				 
+    				 
+    				 int countOtherDetails = 0;
+    				 if(can.getSummary() != null && !"".equalsIgnoreCase(can.getSummary()) ){
+    					 countOtherDetails++;
+    				 }
+    				 if(can.getVisaType()!=null && !"".equalsIgnoreCase(can.getVisaType())){
+    					 countOtherDetails++;
+    				 }
+    				 if(can.getExpectedRate()!=null && !"".equalsIgnoreCase(can.getExpectedRate())){
+    					 countOtherDetails++;
+    				 }
+    				 if((can.getExperienceYears()!= null && !"".equalsIgnoreCase(can.getExperienceYears()) && Long.parseLong(can.getExperienceYears())>0) || (can.getExperienceMonths()!= null && !"".equalsIgnoreCase(can.getExperienceMonths())&& Long.parseLong(can.getExperienceMonths())>0)){
+    					 countOtherDetails++;
+    				 }
+    				//any two OtherDetails - 10 %
+    				 if(countOtherDetails>=2){
+    					 percentage = percentage + 10; 
+    				 }
+    				//if only one OtherDetails - 5 %
+    				 else if(countOtherDetails==1){
+    					 percentage = percentage + 5; 
+    				 }
+    				 
+    				//photo Details - 5 %
+    				 if(can.getFileUrl()!=null){
+    					 percentage = percentage + 5; 
+    				 }else if(can.getConsultantUser() != null && can.getConsultantUser().getFileUrl() != null){
+    					 percentage = percentage + 5; 
+    				 }
+
+    				//document Details - 10 %
+    				Integer documentsCount = candidateDocumentsService.getCandidateActiveDocumentsByCandidateId(can.getId());
+    				 if(documentsCount > 0){
+    						percentage = percentage +10;
+    				 }
+    				 
+    				 can.setCandidateProfilePercentage(percentage);
+    				 candidateService.addCandidate(can);
+        }
+    }
+        
+        System.out.println("Dumping Profile percentage to candidates ends.....");
+    }
 
 	public String toJSON(Object obj) {
 		XStream xstream = new XStream(new JsonHierarchicalStreamDriver() {
