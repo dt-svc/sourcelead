@@ -11,4 +11,7 @@ public interface PayrollReportDao {
 	ResponseList<EmployeePayroll> getPayrollSummaryByPayPeriodAndPayCheckDate(OrgLocations orgLocation, PayrollReportDTO payrollReportDTO);
 
 	ResponseList<CheckRegisterReportDTO> getCheckRegisterReports(OrgLocations orgLocation, PayrollReportDTO payrollReportDTO);
+
+	ResponseList<EmployeePayroll> getDeductionAndContributionReports(OrgLocations orgLocation, PayrollReportDTO payrollReportDTO);
+
 }

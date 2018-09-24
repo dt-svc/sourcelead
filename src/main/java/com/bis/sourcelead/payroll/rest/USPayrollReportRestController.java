@@ -78,8 +78,6 @@ public class USPayrollReportRestController {
 	@Autowired
 	PayrollReportService payrollReportService;
 
-	@Autowired
-	PaysheetFrequencyService paysheetFrequencyService;
 
 	/**
 	 * Returning Us Payroll Jsp
@@ -482,6 +480,33 @@ public class USPayrollReportRestController {
 		payrollReportDTO.setSortColumn(tableColumns[sortColumnIndex]);
 		payrollReportDTO.setSortOrder(sortColumnOrder);
 		ResponseList<CheckRegisterReportDTO> res = payrollReportService.getCheckRegisterReports(orgLocation,payrollReportDTO);
+		return res;
+	}
+	
+	
+	/**
+	 * Get Check Register Payroll Reports 
+	 * @param groupId
+	 * @param request
+	 * @param response
+	 * @return
+	 * @throws Exception
+	 */
+	@RequestMapping(value = { "/getContributionReports","/rest/getContributionReports" }, method = RequestMethod.POST)
+	@ResponseBody
+	public ResponseList<PayrollReportDTO> getContributionReports(PayrollReportDTO payrollReportDTO,HttpServletRequest request, HttpServletResponse response) throws Exception
+	{
+		OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+		String[] tableColumns = {"type",  "empId","empName", "","schedule","dedAmount","ytdDeductions"};
+	    int sortColumnIndex = 1;		 //by default sorting using updated date
+		String sortColumnOrder = "asc";  //by default descending order
+		if(payrollReportDTO.getOrder() != null && !payrollReportDTO.getOrder().isEmpty()) {
+			sortColumnIndex = Integer.parseInt(payrollReportDTO.getOrder().get(0).get("column"));
+			sortColumnOrder = payrollReportDTO.getOrder().get(0).get("dir");
+		}
+		payrollReportDTO.setSortColumn(tableColumns[sortColumnIndex]);
+		payrollReportDTO.setSortOrder(sortColumnOrder);
+		ResponseList<PayrollReportDTO> res = payrollReportService.getDeductionAndContributionReports(orgLocation,payrollReportDTO);
 		return res;
 	}
 }

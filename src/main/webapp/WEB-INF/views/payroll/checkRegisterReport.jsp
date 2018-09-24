@@ -48,7 +48,7 @@ $(document).ready(function(){
           <div class="col-lg-12">
             <div class="pull-right">
               <input value="Run" class="btn btn-success btnSuccess" type="button" onClick="getCheckRegisterReports();<!-- runPayrollregister(); -->">
-              <input value="Reset" class="btn btn-defualt ml10" type="button">
+              <input value="Reset" class="btn btn-defualt ml10" type="button" onclick="resetForm();">
             </div>
           </div>
         </div>
@@ -93,58 +93,22 @@ $(document).ready(function(){
 		</ul>
 		</div>
           <div id="checkRegisterReportDIV" class="datatable_filter"></div>
-          
-        <!-- <div class="clearfix">
-          <div class="positionRelative reportHead clearfix"> <span class="pull-left refreIcon"><a href="javascript:void(0)" class="refeIcon" title="Refresh" onclick="resetFilter();"></a></span>
-            <ul class="pull-right list-unstyled list-inline">
-              <li><a class="newAdBtn mr5 hidden" href="/app/userCreation">+  Associate</a></li>
-              <li><a href="javascript:void(0)" class="filtIcon" title="Filters" onclick="openPop();"></a></li>
-              <li><a href="javascript:void(0)" class="overIcon" title="Actions" onclick="newActions();"></a>
-                <div class="newActPop" style=""> <span><a href="javascript:void(0)" onclick="exportToPdf();" title="PDF">Export PDF</a> <a href="javascript:void(0)" onclick="exportUserData();" title="Excel">Export Excel</a> </span> </div>
-              </li>
-              <li class="">
-                <input class="repSearchBar" placeholder="Search" id="dynamicUserDataTableSearch" type="text">
-                <span class="repSearchIcon" onclick="getDynamciUserList();"></span></li>
-            </ul>
-          </div>
-          <div class="require_wrap_table tableFirstSecond clearfix">
-            <table>
-              <thead>
-                <tr>
-                  <th>Employee ID</th>
-                  <th>Employee Name</th>
-                  <th>Department</th>
-                  <th>Amount</th>
-                </tr>
-              </thead>
-              <tbody>
-                <tr>
-                  <td><div class="tblminwidth-75">MIS00414</div></td>
-                  <td><div class="tbldata-dotdot-vsm">Karan Kumar Sahoo</div></td>
-                  <td><div class="tbldata-dotdot-vsm">Depatment</div></td>
-                  <td><div class="tblminwidth-50">$ 1000000</div></td>
-                </tr>
-              </tbody>
-            </table>
-          </div>
-          <nav>
-            <ul id="paging" class="pagination">
-              <li><a href="#">Previous</a></li>
-              <li><a href="#">2</a></li>
-              <li><a href="#">3</a></li>
-              <li><a href="#">4</a></li>
-              <li><a href="#">5</a></li>
-              <li class="disabled"><a href="#">6</a></li>
-              <li data-page="last"><a href="#">Next</a></li>
-            </ul>
-            <div class="clearfix"></div>
-          </nav>
-        </div> -->
       </div>
       
       <!-- Content Area Ends--> 
     </div>
   </section>
+  
+  
+  
+  
+  
+ <script>
+ function resetForm(){
+	
+ }
+ </script>
+  
   <script type="text/javascript">
             $(function () {
                 $('#datetimepicker3').datetimepicker({
@@ -327,6 +291,7 @@ function checkRegisterReports(){
 									{
 										"targets" : colIndex++,
 										"data" : "empName",
+										"sortable": false,
 										"render" : function(data, type, opt,meta) {
 											var result = "";
 											if(opt.lastName != null && opt.lastName != '' && opt.lastName != 'undefined'){
@@ -342,6 +307,7 @@ function checkRegisterReports(){
 									{
 										"targets" : colIndex++,
 										"data" : "department",
+										"sortable": false,
 										"render" : function(data, type, opt,meta) {
 											var result = "";
 											if(opt.departmentId != null && opt.departmentId != '' && opt.departmentId != 'undefined'){
@@ -380,13 +346,13 @@ function checkRegisterReports(){
 		$("input[type=search]").hide();
 		$("#dataTableSearch").keyup(function(e) {
 			if (e.which === 13) {
-				getPayCheckDateReports();
+				checkRegisterReports()();
 			}
 		});
 		
 	}
 	function payCheckDateSearch(){
-		getPayCheckDateReports();
+		checkRegisterReports()();
 	}
 	
 </script>
