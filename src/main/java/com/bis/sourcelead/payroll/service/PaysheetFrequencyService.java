@@ -3,6 +3,7 @@ package com.bis.sourcelead.payroll.service;
 import java.util.List;
 
 import com.bis.sourcelead.dto.Response;
+import com.bis.sourcelead.dto.ResponseList;
 import com.bis.sourcelead.entity.Candidate;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.User;
@@ -24,6 +25,6 @@ public interface PaysheetFrequencyService {
 
 	List<EmployeePayroll> employeePayrollYTD(Candidate candidate, OrgLocations orgLocation, String approverStatus);
 
-	List<USPayrollDTO> getPayrollRegisterReports(PayrollReportDTO payPeriodDTO);
+	ResponseList<PayrollReportDTO> getPayrollRegisterReports(PayrollReportDTO payPeriodDTO, OrgLocations orgLocations);
 	
 }

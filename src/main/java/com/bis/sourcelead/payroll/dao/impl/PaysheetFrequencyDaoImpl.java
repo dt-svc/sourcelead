@@ -14,6 +14,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.bis.sourcelead.dto.ResponseList;
 import com.bis.sourcelead.entity.Candidate;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.payroll.dao.PaysheetFrequencyDao;
@@ -99,9 +100,59 @@ private static final Logger logger = LoggerFactory.getLogger(AssociateTaxDaoImpl
 	@SuppressWarnings("unchecked")
 	@Override
 	@Transactional
-	public List<PaysheetFrequency> getPayrollRegisterReports(PayrollReportDTO payrollReportDTO)
+	public ResponseList<EmployeePayroll> getPayrollRegisterReports(PayrollReportDTO payrollReportDTO)
 	{
-		List<PaysheetFrequency> payrollList = null;
+		ResponseList<EmployeePayroll> response = new ResponseList<>();
+//		List<PaysheetFrequency> payrollList = null;
+		
+		
+		try {
+			java.sql.Date freqStartDate = new java.sql.Date(commonUtil.dateFromElk(payrollReportDTO.getFreqStartDate()).getTime());
+			java.sql.Date freqEndDate = new java.sql.Date(commonUtil.dateFromElk(payrollReportDTO.getFreqEndDate()).getTime());
+			Session session = this.sessionFactory.getCurrentSession();
+			List<EmployeePayroll> payrollList = null;
+			
+			String qry = "";
+			if(StringUtils.isNotBlank(payrollReportDTO.getSortColumn())) {
+				qry = " order by payroll."+ payrollReportDTO.getSortColumn() +" "+payrollReportDTO.getSortOrder();
+			}
+			
+			String query = "from EmployeePayroll payroll where payroll.paysheetFrequency.userGroup.id = :groupId and payroll.paysheetFrequency.orgLocation.id = :orgLocationId and payroll.paysheetFrequency.frequencyStartDate = :freqStartDate and payroll.paysheetFrequency.frequencyEndDate = :freqEndDate and payroll.submitForAproverStatus = 'APPROVED'";
+			String countQuery = "from EmployeePayroll payroll where payroll.paysheetFrequency.userGroup.id = :groupId and payroll.paysheetFrequency.orgLocation.id = :orgLocationId and payroll.paysheetFrequency.frequencyStartDate = :freqStartDate and payroll.paysheetFrequency.frequencyEndDate = :freqEndDate and payroll.submitForAproverStatus = 'APPROVED'";
+			StringBuilder searchQuery = new StringBuilder("");
+			if(payrollReportDTO.getSearchValue() !=null && !"".equalsIgnoreCase(payrollReportDTO.getSearchValue())) {
+					searchQuery.append(" and payroll.candidate.firstName like '%" + payrollReportDTO.getSearchValue() + "%' ")
+						.append("OR  payroll.candidate.lastName like '%" + payrollReportDTO.getSearchValue() + "%' ");
+			}
+			Query queryObj = session.createQuery(query + searchQuery.toString() + qry);
+			if (payrollReportDTO != null && payrollReportDTO.getLength() > 0) {
+				queryObj.setFirstResult(payrollReportDTO.getStart());
+				queryObj.setMaxResults(payrollReportDTO.getLength());
+				queryObj.setLong("orgLocationId", payrollReportDTO.getOrgLocationid()).setLong("groupId", payrollReportDTO.getPayGroup()).setDate("freqStartDate", freqStartDate).setDate("freqEndDate",freqEndDate);
+			}
+			payrollList = queryObj.list();
+			int count = 0;
+			int filteredCount = 0;
+			List<Long> countlist = session.createQuery("select count(*) " + countQuery).setLong("orgLocationId", payrollReportDTO.getOrgLocationid()).setLong("groupId", payrollReportDTO.getPayGroup()).setDate("freqStartDate", freqStartDate).setDate("freqEndDate",freqEndDate).list();
+			if(countlist != null && !countlist.isEmpty()) {
+				count = countlist.iterator().next().intValue();
+			}
+			response.setRecordsTotal(count);
+			if (payrollReportDTO != null) {
+				List<Long> filteredCountlist  = session.createQuery("select count(*) " + countQuery + searchQuery.toString()).setLong("orgLocationId", payrollReportDTO.getOrgLocationid()).setLong("groupId", payrollReportDTO.getPayGroup()).setDate("freqStartDate", freqStartDate).setDate("freqEndDate",freqEndDate).list();
+				if(filteredCountlist != null && !filteredCountlist.isEmpty()) {
+					filteredCount = filteredCountlist.iterator().next().intValue();
+				}
+				response.setRecordsFiltered(filteredCount);
+			} 
+				response.setData(payrollList);
+		}catch (Exception e) {
+			e.printStackTrace();
+		}
+		
+		
+		
+		/*
 		try {
 			java.sql.Date startDate = new java.sql.Date(commonUtil.dateFromElk(payrollReportDTO.getFreqStartDate()).getTime());
 			java.sql.Date endDate = new java.sql.Date(commonUtil.dateFromElk(payrollReportDTO.getFreqEndDate()).getTime());
@@ -109,6 +160,10 @@ private static final Logger logger = LoggerFactory.getLogger(AssociateTaxDaoImpl
 			String subQuery = "";
 			if(StringUtils.isNotBlank(payrollReportDTO.getDepartment())) {
 				subQuery = " and pay.userGroup.departmentId =:departmentId";
+			}
+			StringBuilder searchQuery = new StringBuilder();
+			if(StringUtils.isNotBlank(payrollReportDTO.getSearchValue())) {
+				searchQuery.append(" and (");
 			}
 			Query queryString = session.createQuery("from PaysheetFrequency pay where pay.userGroup.id =:groupId"+subQuery+" and (pay.frequencyStartDate =:startDate and pay.frequencyEndDate = :endDate)");
 		    queryString.setParameter("startDate", startDate);
@@ -119,9 +174,11 @@ private static final Logger logger = LoggerFactory.getLogger(AssociateTaxDaoImpl
 			}
 //		    queryString.setResultTransformer(Transformers.aliasToBean(USPayrollDTO.class));
 			payrollList  =  queryString.list();
+			responseList.setData(payrollList);
+			responseList.setRecordsTotal(payrollList.size());
 		}catch (Exception e) {
 			e.printStackTrace();
-		}
-		return payrollList;
+		}*/
+		return response;
 	}
 }
