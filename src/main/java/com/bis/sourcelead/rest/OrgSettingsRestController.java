@@ -1149,6 +1149,34 @@ public class OrgSettingsRestController {
 	}
 	
 	
+	@RequestMapping(value = "/app/saveProfilePercentage")
+	public Response<String> saveProfilePercentage(@RequestParam(value = "profilePercentage", required = true) Integer profilePercentage,HttpServletRequest request) throws Exception
+	{
+		OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+		User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+		Response<String> response = new Response<>();
+		try {
+				if (user != null) {
+					orgLocations.setProfilePercentage(profilePercentage);
+					orgLocationService.updateOrgLocations(orgLocations);
+					SourceLeadSessionManager.setSessionAttribute(request, "orgLocations", orgLocations);
+					response.setResponse(Result.SUCCESS.name());
+					response.setResponseMessage(Result.SUCCESS.getValue());
+					
+				}else {
+					response.setResponse(Result.SESSION_TIMEDOUT.name());
+					response.setResponseMessage(Result.SESSION_TIMEDOUT.getValue());
+				}
+		
+		}catch (Exception e) {
+			response.setResponse(Result.AWKWARD.name());
+			response.setResponseMessage(Result.AWKWARD.getValue());
+			logger.error(ExceptionUtils.getFullStackTrace(e));
+		}
+		return response;
+	}
+	
+	
 	@RequestMapping(value = "/app/getAssociatesGradesList", method = RequestMethod.POST)
 	public ResponseList<AssociateGradesDTO> getOnboardCandidateList(AssociateGradesDTO associateGradesDTO,
 			HttpServletRequest request) throws Exception {

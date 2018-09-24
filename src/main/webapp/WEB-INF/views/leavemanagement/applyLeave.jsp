@@ -1055,7 +1055,7 @@ function validateOverDrawLeaves(leaveTypeName){
 		var diffDays = Math.ceil(timeDiff / (1000 * 3600 * 24)); 
 		var typeName = leaveTypeName.replace(/ /g,"_");
 		var typeIdBalCount = parseFloat($("#"+typeName+"Span").text());
-		if((diffDays > typeIdBalCount) || typeIdBalCount ==  0){
+		if((diffDays >= typeIdBalCount) || typeIdBalCount ==  0){
 			errorMessage += "You Have Not Enough Leaves To Apply.";
 		}
 	}

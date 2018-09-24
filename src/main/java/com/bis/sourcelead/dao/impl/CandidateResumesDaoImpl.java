@@ -1,5 +1,6 @@
 package com.bis.sourcelead.dao.impl;
 
+import java.math.BigInteger;
 import java.text.MessageFormat;
 import java.util.List;
 
@@ -301,5 +302,27 @@ public CandidateResumesDTO getCandidateResumesDTOByCandidateId(Long candidateId)
 		return candidateResumesDTO;
 
 }
+
+
+@Override
+@Transactional(rollbackFor = { Exception.class })
+public Integer getCandidateActiveResumeCountByCandidateId(Long candidateId) throws Exception {
+	Session session = this.sessionFactory.getCurrentSession();
+	Integer educationsCount = 0;
+	
+	String countQuery ="SELECT"
+			+ " COUNT(CR.ID) AS RESUMES_COUNT"
+			+ " FROM "
+			    + " CANDIDATE_RESUMES CR "
+				+ " WHERE CR.CANDIDATE_ID = :candidateId AND CR.STATUS = '1' ";
+	
+	
+	Query countqueryString = session.createSQLQuery(countQuery);
+	countqueryString.setParameter("candidateId", candidateId);
+	BigInteger filterCount =  (BigInteger) countqueryString.uniqueResult();
+	educationsCount = filterCount.intValue();
+	return educationsCount;
+}
+
 
 }
