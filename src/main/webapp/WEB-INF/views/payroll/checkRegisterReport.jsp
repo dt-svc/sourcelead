@@ -256,7 +256,7 @@ function checkRegisterReports(){
 	    var freqEndDate = $("#freqEndDate").val();
 		var searchValue = $("#dataTableSearch").val();
 		searchValue = searchValue ? searchValue : "";
-		var url = sourceleadUrl+"/getCheckRegisterReports?searchValue="+searchValue+"&groupId="+groupId+"&freqStartDate="+freqStartDate+"&freqEndDate="+freqEndDate;
+		var url = sourceleadUrl+"/getCheckRegisterReports?searchValue="+searchValue+"&groupId="+groupId+"&freqStartDate="+freqStartDate+"&freqEndDate="+freqEndDate+"&depositType=Cheque";
 		checkRegisterReportsList(url);	
 }
 

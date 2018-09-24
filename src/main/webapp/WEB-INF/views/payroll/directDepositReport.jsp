@@ -2,6 +2,13 @@
 <jsp:include page="../masterSideNav.jsp" />
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <%@taglib uri="http://www.springframework.org/tags/form" prefix="form"%>
+<script src="/resources/js/payrollReports.js"></script>
+
+<script>
+$(document).ready(function(){
+	getPayGroupList("payGroup");
+});
+</script>
 
 <!-- Content Area -->
   <section class="content-wraper contentWraper">
@@ -15,16 +22,14 @@
     <div class="contentareaInner-styles clearfix">
     
     <div class="clearfix minHeight">
+    <form:form id="direct_deposit_report_form" name="direct_deposit_report_form" method="post">
         <div class="clearfix row">
           <div class="col-md-5">
             <div class="form-group">
               <label class="col-md-12 paddingRight">Pay Group</label>
 				<div class="col-md-12">
-					<select class="form-control sel">
-					<option>Select Group</option>
-						<option>Monthly</option>
-						<option>Weekly</option>
-					</select>
+					<select class="form-control chosen-select" id="payGroup" name="groupId" field-name="Pay Group" data-validation="required" onchange="getPariodDates();">
+                	</select>
 				</div>
             </div>
 			</div>
@@ -32,12 +37,10 @@
              <div class="form-group">
               <label class="col-md-12">Pay Period</label>
               <div class="col-md-12">
-                <select class="form-control sel">
-					    <option>Select Period</option>
-						<option>01-02-2018 28-02-2018</option>
-						<option>01-03-2018 28-03-2018</option>
-						<option>01-02-2018 28-02-2018</option>
-					</select>
+                <select class="form-control chosen-select" id="payPeriod" name="payPeriod" field-name="Pay Period" data-validation="required">
+                </select>
+                <input type="hidden" id="freqStartDate" name="freqStartDate"/>
+                 <input type="hidden" id="freqEndDate" name="freqEndDate"/>
               </div>
             </div>
        </div>
@@ -46,20 +49,64 @@
 	<div class="clearfix footerstyelsNew">
         <div class="col-lg-12">
           <div class="pull-right">
-            <input value="Run" class="btn btn-success btnSuccess" type="button" onClick="runPayrollregister();">
+            <input value="Run" class="btn btn-success btnSuccess" type="button" onClick="getDirectDepositReport();">
             <input value="Reset" class="btn btn-defualt ml10" type="button">
           </div>
         </div>
       </div>      
+        </form:form>
 	</div>
     
      
      	
      </div>
+     
+     <div class="clearfix"></div>
+      <div class="timesheet_out" id="payrollRegister" style="display: none;">
+       
+       <div class="clearfix">
+                  	<div class="col-md-12">
+                  		<div class="row">
+                  			<label class="col-md-2">No.of Check:</label>
+                  			<span class="col-md-5" id="noOfChecks">0</span>
+                  		</div>
+                  	</div>
+                  	<div class="col-md-12">
+                  		<div class="row">
+                  			<label class="col-md-2">Employee Live Checks:</label>
+                  			<span class="col-md-5" id="liveChecks">0</span>
+                  		</div>
+                  	</div>
+                  	<div class="col-md-12">
+                  		<div class="row">
+                  			<label class="col-md-2">Void Checks:</label>
+                  			<span class="col-md-5">0</span>
+                  		</div>
+                  	</div>
+                  	<div class="col-md-12">
+                  		<div class="row">
+                  			<label class="col-md-2">Manual Checks:</label>
+                  			<span class="col-md-5">0</span>
+                  		</div>
+                  	</div>
+
+                  	<div class="clearfix mb mt"></div>
+       </div>
+       
+           <div class="styleTables clearfix mt">
+        <div class='reportHead'>
+		<ul class='pull-right'>
+		<li><input type='text' placeholder='Search' class='repSearchBar' id='directDataTableSearch'/><span class='repSearchIcon' onClick='checkDirectDepositReports();'></span></li>
+		</ul>
+		</div>
+          <div id="directDepositReportDIV" class="datatable_filter"></div>
+       
+       </div>
+       </div>
     		
     		
     		
-    		
+<!--     		
   <div class="timesheet_out" id="payrollRegister" style="display: none;">
       <div class="clearfix">
         <div class="positionRelative reportHead clearfix"> <span class="pull-left refreIcon"><a href="javascript:void(0)" class="refeIcon" title="Refresh" onclick="resetFilter();"></a></span>
@@ -120,7 +167,7 @@
           <div class="clearfix"></div>
         </nav>
       </div>
-    </div>
+    </div> -->
       <!-- Content Area Ends--> 
   </section>
   
@@ -192,9 +239,159 @@ $("html").click(function(){
 $(".overIcon, .newActPop").click(function(e){
  	e.stopPropagation();
 });
-function runPayrollregister() {
-	$("#payrollRegister").toggle();
+
+</script>
+
+<script>
+function getPariodDates(){
+	getPayPeriodByGroupId("payGroup","payPeriod","");
 }
 </script>
 
+<script>
+function getDirectDepositReport(){
+	if ($('#direct_deposit_report_form').validate(false, validationSettings)){ 
+		$("#payrollRegister").toggle();
+		checkDirectDepositReports();
+			return true;
+	}else{ 
+			return false;
+	}   
+}
+
+
+function checkDirectDepositReports(){
+// 	    var payCheckDate = $('#payCheckDate').val();
+	    var groupId = $('#payGroup').val();
+	    getFreqdates("freqStartDate", "freqEndDate");
+	    var  freqStartDate = $("#freqStartDate").val();
+	    var freqEndDate = $("#freqEndDate").val();
+		var searchValue = $("#directDataTableSearch").val();
+		searchValue = searchValue ? searchValue : "";
+		var url = sourceleadUrl+"/getCheckRegisterReports?searchValue="+searchValue+"&groupId="+groupId+"&freqStartDate="+freqStartDate+"&freqEndDate="+freqEndDate+"&depositType=Direct Deposit";
+		checkDirectDepositReportsList(url);	
+}
+
+function checkDirectDepositReportsList(url) {
+	$("#directDepositReportDIV").empty();
+	var result = "";
+	result = result + '<table id="directDepositReportTable" class="display" cellspacing="0" width="100%" >';
+	result = result + '<thead>';
+	result = result + '<tr>';
+	result = result + '<th>Employee Id</th>';
+	result = result + '<th>Employee Name</th>';
+	result = result + '<th>Department</th>';
+	result = result + '<th>Amount</th>';
+	result = result + '</tr>';
+	result = result + '</thead>	';
+	result = result + "</table>";
+	$("#directDepositReportDIV").append(result);
+	directDepositData(url);
+
+}
+
+function directDepositData(url) {
+	var colIndex = 0;
+	$('#directDepositReportTable')
+			.DataTable(
+					{
+						"processing" : true,
+						"serverSide" : true,
+						"searching" : false,
+						"ajax" : $.fn.dataTable.pipeline({
+							url : url,
+							method : 'POST',
+							pages : 10
+						}),
+						"columns" : [ {
+							"data" : "empName"
+						}, {
+							"data" : "empId"
+						}, {
+							"data" : "department"
+						}, {
+							"data" : "netPay"
+						}],
+						"columnDefs" : [
+								{
+									"targets" : colIndex++,
+									"data" : "empId",
+									"sortable": false,
+									"render" : function(data, type, opt,meta) {
+										
+										var result = "";
+										if(opt.employeeId != null && opt.EmployeeId != '' && opt.employeeId != 'undefined'){
+											result = result+ ' <td><div class="tblminwidth-75">'+opt.employeeId+'</div></td>';
+										}else{
+											result = result+ ' <td><div class="tblminwidth-75">--</div></td>';
+										}
+										$("#noOfChecks").text(opt.totalChecks);
+										$("#liveChecks").text(opt.totalChecks);
+										return result;
+									}
+								},
+								{
+									"targets" : colIndex++,
+									"data" : "empName",
+									"render" : function(data, type, opt,meta) {
+										var result = "";
+										if(opt.lastName != null && opt.lastName != '' && opt.lastName != 'undefined'){
+											result = result+ '<td><div class="tblminwidth-75">'+opt.firstName+' '+opt.lastName+'</div></td>';
+										}else{
+											result = result+ '<td><div class="tblminwidth-75">'+opt.firstName+'</div></td>';
+										}
+										
+										return result;
+
+									}
+								},
+								{
+									"targets" : colIndex++,
+									"data" : "department",
+									"render" : function(data, type, opt,meta) {
+										var result = "";
+										if(opt.departmentId != null && opt.departmentId != '' && opt.departmentId != 'undefined'){
+											result = result + '<td class="tblminwidth-75"><div>'+opt.departmentId+'</div></td>';
+										}else{
+											result = result + '<td class="tblminwidth-75"><div>--</div></td>';
+										}
+										
+										return result;
+									}
+								},
+								{
+									"targets" : colIndex++,
+									"data" : "netPay",
+									"render" : function(data, type, opt,meta) {
+										var result = "";
+										result = result+ '<td><div class="tbldata-dotdot-vsm" title="">'+opt.netPay+'</div></td>';
+										return result;
+									}
+								}],
+						"scrollCollapse" : false,
+						"lengthMenu" : [ [ 10, 15, 20 ], [ 10, 15, 20 ] ],
+						"aaSorting" : [ [ 3, 'desc' ] ],
+						"bLengthChange" : true,
+						"bDestroy" : true,
+						"ordering" : true,
+						"oLanguage" : {
+							"sSearch" : "",
+							"sZeroRecords" : "",
+							"sEmptyTable" : "",
+							"sProcessing" : "<img src='/resources/images/loading.gif' style='width: 75px; height: 75px;'/>"
+						}
+					});
+	$("#directDepositReportTable").wrap(
+			"<div style='overflow-x: auto; overflow-y: hidden;'></div>");
+	$("input[type=search]").hide();
+	$("#directDataTableSearch").keyup(function(e) {
+		if (e.which === 13) {
+			getDirectDepositReport();
+		}
+	});
+	
+}
+
+
+</script>
 <jsp:include page="../masterFooter.jsp" />

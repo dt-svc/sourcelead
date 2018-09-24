@@ -90,6 +90,8 @@ public class EmployeePayroll {
 	@Column (name="SUBMIT_FOR_APROVER_STATUS")
 	private String submitForAproverStatus;
 	
+	@Column (name="TYPE")
+	private String type;
 	
 	@Column (name = "FREQUENCY")
 	private Integer frequency;
@@ -549,8 +551,13 @@ public class EmployeePayroll {
 	{
 		this.paySlipFileURL = paySlipFileURL;
 	}
-	
-	
-	
+
+	public String getType() {
+		return type;
+	}
+
+	public void setType(String type) {
+		this.type = type;
+	}
 	
 }

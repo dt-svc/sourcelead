@@ -58,6 +58,8 @@ public class PayrollReportDTO extends SearchDTO{
 	
 	private BigDecimal ytdDeductions;
 	
+	private String depositType;
+	
 	
 	
 	
@@ -327,5 +329,16 @@ public class PayrollReportDTO extends SearchDTO{
 	{
 		this.ytdNet = ytdNet;
 	}
+
+
+	public String getDepositType() {
+		return depositType;
+	}
+
+
+	public void setDepositType(String depositType) {
+		this.depositType = depositType;
+	}
+	
 	
 }

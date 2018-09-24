@@ -76,9 +76,6 @@ public class USPayrollReportRestController {
 	PayrollUtil payrollUtil;
 	
 	@Autowired
-	PaysheetFrequencyService paysheetFrequencyService;
-	
-	@Autowired
 	PayrollReportService payrollReportService;
 
 	@Autowired
