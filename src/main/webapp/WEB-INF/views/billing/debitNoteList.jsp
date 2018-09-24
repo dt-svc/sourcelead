@@ -33,7 +33,7 @@ $(document).ready(function(){
     
     <div class="project_side_wrap_inn_tabs clearfix">
 	    <ul class="project-tabs-menu">
-		    <li class=""><a href="${appPath}/payablesList">Invoice List</a></li>
+		    <li class=""><a href="${appPath}/payablesList">Bill List</a></li>
 		    <li class="current"><a href="${appPath}/debitNoteList">Debit Note List</a></li>
 		    
 	    </ul>
@@ -148,16 +148,16 @@ function getDebitList(){
 	$('input:radio[name=invoiceCustomDays]:checked').each(function() {
 		dayWisetype = $(this).val();
 		if(dayWisetype == 'custom'){
-			startDate = $("#billingStartDate").val();
-			endDate = $("#billingEndDate").val();
+			startDate = $("#customStartDate").val();
+			endDate = $("#customEndDate").val();
 			$("#errStartDate").find('p.jquery_form_error_message').remove();
 			$("#errEndDate").find('p.jquery_form_error_message').remove();
 			if(startDate == null || startDate == '' || startDate == 'undefined'){
-				$("input#billingStartDate") .after( "<p class='jquery_form_error_message'>Start Date is Required</span>");
+				$("input#customStartDate") .after( "<p class='jquery_form_error_message'>Start Date is Required</span>");
 				returnStat =  false;
 			}
 			if(endDate == null || endDate == '' || endDate == 'undefined'){
-				$("input#billingEndDate") .after( "<p class='jquery_form_error_message'>End Date is Required</span>");
+				$("input#customEndDate") .after( "<p class='jquery_form_error_message'>End Date is Required</span>");
 				returnStat =  false;
 			}
 		}
@@ -619,6 +619,35 @@ function cancelbtn(){
         $('.menupop').toggle();
         
     };
+    
+    function showDatesDiv(){
+    	var locationDate ='${SourceLeadWeb_orgLocations.dateFormat}'; 
+    	var finalDateFormat = getJSDateFormat(locationDate);
+
+    	$('#customStartDate').datepicker({
+    	    dateFormat: finalDateFormat,
+    	    changeMonth: true,
+    		  changeYear: true, 
+    	    onSelect: function (selected) {
+    	          //var dt = new Date(selected);
+    	          var dt = $(this).datepicker('getDate', '+1d');
+    	          dt.setDate(dt.getDate() + 1);
+    	          $("#customEndDate").datepicker("option", "minDate", dt);
+    	      }
+    	});
+
+    	$('#customEndDate').datepicker({
+    	    dateFormat: finalDateFormat,
+    	    changeMonth: true,
+    		  changeYear: true, 
+    	      onSelect: function (selected) {
+    	          //var dt = new Date(selected);
+    	          var dt = $(this).datepicker('getDate', '-1d');
+    	          dt.setDate(dt.getDate() - 1);
+    	          $("#customStartDate").datepicker("option", "maxDate", dt);
+    	      }
+    	});
+    	}
 </script>
 <script>
 function removeMask(){
@@ -697,10 +726,10 @@ $(document).ready(function() {
             if (selectVal == "custom") {
             	var result = '';
             	result  = result + '<div class="col-md-6 paddingLeft" id="errStartDate">';                                                                       
-            	result = result +'     <input type="text" class="form-control input-sm calendar" onclick="showInvoiceStartDate();" id="billingStartDate" placeholder="Start Date"> ';
+            	result = result +'     <input type="text" class="form-control input-sm calendar" onclick="showDatesDiv();" id="customStartDate" placeholder="Start Date"> ';
             	result = result +'   </div> ';
             	result = result +'   <div class="col-md-6 noPad" id="errEndDate">';
-            	result = result +'     <input type="text" class="form-control input-sm calendar" onclick="showInvoiceEndDate();" id="billingEndDate" placeholder="End Date">';
+            	result = result +'     <input type="text" class="form-control input-sm calendar" onclick="showDatesDiv();" id="customEndDate" placeholder="End Date">';
             	result = result +'   </div>';
                 $(".custom_search").empty().append(result);
                 $(".custom_search").show();
