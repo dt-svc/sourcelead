@@ -474,8 +474,19 @@ function submitCandidtesToJob(){
 			       			$(".clients_side_wrap").removeClass("clients_side_wrap_active");
 			       			$(".side_mask").fadeOut(200);
 			       			$("body").css('overflow-y', 'auto');
-			       			$("#candMsgDiv").html(candidateIds.length+" Candidate(s) Submitted Successfully...");
 			       			msgFadein();
+			       			var submittedlength = '';
+			       			if(data.responseObject.length > 0){
+			       				 submittedlength = candidateIds.length - data.responseObject.length;
+			       				 getFailuredCandidates(data.responseObject);
+			       			}else{
+			       				 submittedlength = candidateIds.length;
+			       			}
+			       			
+			       			if(submittedlength > 0){
+			       				$("#candMsgDiv").html(submittedlength+" Candidate(s) Submitted Successfully...");
+			       			}
+			       			
 				    	}else if (data.indexOf('Sign In') !== -1) {
 				    		location.replace(sourceleadUrl);
 				    	} else {
@@ -501,8 +512,58 @@ function submitCandidtesToJob(){
 	 }
 	 
 }
-</script>
 
+
+function getFailuredCandidates(json){
+	
+	var result = '';
+   	
+   	result = result +'<div class="modal paymentaccount-modal" id="paymentAccountPopup" role="dialog">';
+    result = result +'<div class="modal-dialog modal-lg" style="width: 950px;">';
+    result = result +'<div class="modal-content"  style="height: 550px; overflow: auto;">';
+    result = result +'<div class="modal-header">';
+    result = result +'<button type="button" class="close" onclick="closeCandiatesSubmitedList();" data-dismiss="modal">&times;</button>';
+    result = result +'<h4 class="modal-title">Failed Candidates List</h4>';
+    result = result +'</div>';
+        
+    result = result +'<div>';
+    result = result +'<div class="project_wrap_table datatable_filter mt40 overflow_inherint">';
+    result = result +"<table id='failedCandidatesPagination' class='display' cellspacing='0' width='100%' >"; 
+   	result = result +'<thead>';
+   	result = result +'<tr>';
+    result = result +'<th>Candidate Name</th>';
+    result = result +'<th>Email</th>';   
+    result = result +'<th>Profile Percentage</th>';         
+    result = result +'<th>Status</th>'; 
+   	result = result +'    </tr>';
+   	result = result +'</thead>	';
+		
+    result = result +'<tbody>';
+    for(var i=0;i<json.length;i++){
+     	 var opt = json[i];
+     	 result = result +'<tr>';
+         result = result +'<td><div class="tbldata-dotdot_100" title="'+opt.candidateName+'">'+opt.candidateName+'</div></td>';
+         result = result +'<td><div class="tbldata-dotdot-big text-center" title="'+opt.email+'">'+opt.email+'</div></td>';
+         result = result +'<td><div class="tbldata-dotdot_100" title="'+opt.profilePercentage+'">'+opt.profilePercentage+'</div></td>';
+         result = result +'<td><div class="tblminwidth-150">Failed</div></td>';
+         result = result +'</tr>';
+    }
+   
+    result = result +'</tbody>';
+    result = result +'</table>';
+	
+    result = result +'</div>';
+    result = result +'</div>';
+    result = result +'</div>';
+    result = result +'</div>';
+    result = result +'</div>';
+    
+    $("#candidateRejectedDiv").empty();  
+    $("#candidateRejectedDiv").append(result);
+    $(".modal.paymentaccount-modal").fadeIn();
+    $(".comMask").fadeIn();
+}
+</script>
 
 
 <script type="text/javascript">
