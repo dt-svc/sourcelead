@@ -10,4 +10,6 @@ public interface PayrollReportService {
 	ResponseList<PayrollReportDTO> getPayrollSummaryByPayPeriodAndPayCheckDate(OrgLocations orgLocation, PayrollReportDTO payrollReportDTO);
 
 	ResponseList<CheckRegisterReportDTO> getCheckRegisterReports(OrgLocations orgLocation, PayrollReportDTO payrollReportDTO);
+
+	ResponseList<PayrollReportDTO> getContributionReports(OrgLocations orgLocation, PayrollReportDTO payrollReportDTO);
 }

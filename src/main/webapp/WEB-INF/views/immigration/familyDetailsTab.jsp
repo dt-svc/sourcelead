@@ -167,7 +167,7 @@
           <div class="col-sm-12 noPad mt clearfix">
 				<label class="col-md-4 padding_left">Place of Birth</label>
               	<div class="col-md-8 padding_right">
-              		<input type="text" id="placeOfBirthSpouse" name="placeOfBirth"  class="form-control" placeholder="Place Of Birth" data-validation="required validate_Space validate_length length2-100" data-validation-optional="true"/>
+              		<input type="text" id="placeOfBirthSpouse" name="placeOfBirth"  class="form-control" placeholder="Place Of Birth" data-validation="required validate_Space validate_AlphaNumber validate_length length2-100" data-validation-optional="true"/>
 				</div>
 			</div>
           <div class="col-sm-12 noPad mt clearfix">

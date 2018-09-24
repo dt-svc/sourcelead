@@ -58,9 +58,64 @@ public class PayrollReportDTO extends SearchDTO{
 	
 	private BigDecimal ytdDeductions;
 	
+	private String payrollUUID;
+	
+	private String type;
+	
+	private String schedule;
+	
+	private BigDecimal dedAmount;
 	
 	
 	
+	public BigDecimal getDedAmount()
+	{
+		return dedAmount;
+	}
+
+
+	public void setDedAmount(BigDecimal dedAmount)
+	{
+		this.dedAmount = dedAmount;
+	}
+
+
+	public String getSchedule()
+	{
+		return schedule;
+	}
+
+
+	public void setSchedule(String schedule)
+	{
+		this.schedule = schedule;
+	}
+
+
+	public String getType()
+	{
+		return type;
+	}
+
+
+	public void setType(String type)
+	{
+		this.type = type;
+	}
+
+
+	public String getPayrollUUID()
+	{
+		return payrollUUID;
+	}
+
+
+	public void setPayrollUUID(String payrollUUID)
+	{
+		this.payrollUUID = payrollUUID;
+	}
+
+
 	public String getEmpName()
 	{
 		return empName;
