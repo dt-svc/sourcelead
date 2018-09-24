@@ -20,6 +20,7 @@ function getPayGroupList(id){
 
 function getPayPeriodByGroupId(payGroupid,payPeriodId1,payPeriodId2){
 	var groupId = $("#"+payGroupid).val();
+	$("#groupId").val(groupId);
 	$.ajax({
 	    	type: "GET",
 	        url: sourceleadUrl+"/getPayPeriodByGroupId?"+tokenParamName+"="+tokenValue+"&groupId="+groupId               , 
@@ -33,7 +34,13 @@ function getPayPeriodByGroupId(payGroupid,payPeriodId1,payPeriodId2){
 			}
 			$("#"+payPeriodId1).empty();
 			$("#"+payPeriodId1).append(output);
-			$('#'+payPeriodId1).trigger("chosen:updated"); 
+			$('#'+payPeriodId1).trigger("chosen:updated");
+			if(payPeriodId2 != null && payPeriodId2 != '' && payPeriodId2 != 'undefined'){
+				$("#"+payPeriodId2).empty();
+				$("#"+payPeriodId2).append(output);
+				$("#"+payPeriodId2).trigger("chosen:updated");
+			}
+			
 	        },
 	    });	
 }
