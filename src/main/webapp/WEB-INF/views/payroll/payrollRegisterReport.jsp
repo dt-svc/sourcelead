@@ -75,7 +75,7 @@ $(document).ready(function(){
         <div class="col-lg-12">
           <div class="pull-right">
             <input value="Run" class="btn btn-success btnSuccess" type="button" onclick="runPayrollregisterReport();">
-            <input value="Reset" class="btn btn-defualt ml10" type="button">
+            <input value="Reset" class="btn btn-defualt ml10" type="button" onclick="resetForm();">
           </div>
         </div>
       </div>      
@@ -158,7 +158,11 @@ $(document).ready(function(){
 
 	});
 </script>
-
+<script>
+function resetForm(){
+	
+}
+</script>
 <script type="text/javascript">
 function runPayrollregisterReport(){
 	var formData = getFormData('payrollregister_form');
@@ -365,10 +369,10 @@ function payrollRegisterPagination(url){
                 }],
                 "scrollCollapse": false,
     	    	"lengthMenu": [[10, 15, 20], [10, 15, 20]],
-    	    	"aaSorting": [[1,'desc']],
+//     	    	"aaSorting": [[1,'desc']],
     	    	"bLengthChange": true,
     	    	"bDestroy": true,
-    	    	"ordering": true,
+    	    	"ordering": false,
     	    	"oLanguage": {
     	     		"sSearch": "",
     	     		 "sZeroRecords": "", "sEmptyTable": "", 
