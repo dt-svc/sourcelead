@@ -278,7 +278,7 @@ function checkRegisterReports(){
 										"render" : function(data, type, opt,meta) {
 											
 											var result = "";
-											if(opt.employeeId != null && opt.EmployeeId != '' && opt.employeeId != 'undefined'){
+											if(opt.employeeId != null && opt.employeeId != '' && opt.employeeId != 'undefined'){
 												result = result+ ' <td><div class="tblminwidth-75">'+opt.employeeId+'</div></td>';
 											}else{
 												result = result+ ' <td><div class="tblminwidth-75">--</div></td>';

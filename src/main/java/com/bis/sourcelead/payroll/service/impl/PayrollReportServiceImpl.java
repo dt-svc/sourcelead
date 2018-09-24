@@ -99,38 +99,51 @@ public class PayrollReportServiceImpl implements PayrollReportService{
 	public ResponseList<PayrollReportDTO> getDeductionAndContributionReports(OrgLocations orgLocation, PayrollReportDTO payrollReportDTO)
 	{
 		ResponseList<DeductionHistory> payrollResponse = payrollReportDao.getDeductionAndContributionReports(orgLocation,payrollReportDTO);
-		
+		ResponseList<PayrollReportDTO>  res = new ResponseList<>();
+		List<PayrollReportDTO> list = new ArrayList<>();
 		try {
-//			if(payrollResponse.getData() != null) {
-//				for(DeductionHistory payroll : payrollResponse.getData()) {
-//					PayrollReportDTO dto = new PayrollReportDTO();
-//					StringBuilder sb = new StringBuilder();
-//					if(StringUtils.isNotBlank(payroll.getCandidate().getLastName())) {
-//						sb.append(payroll.getCandidate().getFirstName()).append(" ").append(payroll.getCandidate().getLastName());
-//					}else {
-//						sb.append(payroll.getCandidate().getFirstName());
-//					}
-//					dto.setEmpName(sb.toString());
-//					if(payroll.getEmployee() != null) {
-//						Employees employee = employeesService.getEmployee(payroll.getEmployee().getId().toString());
-//						dto.setEmpId(employee.getEmployeeId());
-//					}
-//					if(StringUtils.isNotBlank(payroll.getPaysheetFrequency().getUserGroup().getDepartmentId())) {
-//						Department dept = departmentService.getDepartmentById(Long.parseLong(payroll.getPaysheetFrequency().getUserGroup().getDepartmentId()));
-//						dto.setDepartmentName(dept.getDepartmentName());
-//					}
-//					if(payroll.getDeductionHistory() != null && payroll.getDeductionHistory().size() >0) {
-//						Set<DeductionHistory> deductionHistory = payroll.getDeductionHistory();
-////						dto.setContribtionType(dedHis.getContributionId().getContributionTypeId().getDeductionTypeId().getPayrollDeductionType());
-//					}
-//					
-//				}
-//			}
-			
+			if(payrollResponse.getData() != null) {
+				for(DeductionHistory dedHis : payrollResponse.getData()) {
+					PayrollReportDTO dto = new PayrollReportDTO();
+					StringBuilder sb = new StringBuilder();
+					if(StringUtils.isNotBlank(dedHis.getPayroll().getCandidate().getLastName())) {
+						sb.append(dedHis.getPayroll().getCandidate().getFirstName()).append(" ").append(dedHis.getPayroll().getCandidate().getLastName());
+					}else {
+						sb.append(dedHis.getPayroll().getCandidate().getFirstName());
+					}
+					dto.setEmpName(sb.toString());
+					if(dedHis.getPayroll().getEmployee() != null) {
+						Employees employee = employeesService.getEmployee(dedHis.getPayroll().getEmployee().getId().toString());
+						dto.setEmpId(employee.getEmployeeId());
+					}
+					if(StringUtils.isNotBlank(dedHis.getPayroll().getPaysheetFrequency().getUserGroup().getDepartmentId())) {
+						Department dept = departmentService.getDepartmentById(Long.parseLong(dedHis.getPayroll().getPaysheetFrequency().getUserGroup().getDepartmentId()));
+						dto.setDepartmentName(dept.getDepartmentName());
+					}
+					dto.setContributionType(dedHis.getContributionId().getContributionTypeId().getDeductionTypeId().getPayrollDeductionType());
+					BigDecimal dedAmount = BigDecimal.ZERO;
+					if (dedHis.getPreContributionAmount() != null) {
+						if (dedHis.getPreContributionAmount().compareTo(BigDecimal.ZERO) !=  0) {
+							dedAmount = dedHis.getPreContributionAmount();
+						}
+					}
+					if (dedHis.getPostContributionAmount() != null) {
+						if (dedHis.getPostContributionAmount().compareTo(BigDecimal.ZERO) !=  0 ) {
+							dedAmount = dedHis.getPostContributionAmount();
+						}
+					}
+					dto.setDedAmount(dedAmount);
+					dto.setSchedule(dedHis.getContributionId().getContributionTypeId().getDeductionTypeId().getPayrollScheduled().toLowerCase());
+					list.add(dto);
+				}
+			}
+			res.setData(list);
+			res.setRecordsFiltered(payrollResponse.getRecordsFiltered());
+			res.setRecordsTotal(payrollResponse.getRecordsTotal());
 		}catch (Exception e) {
 			e.printStackTrace();
 		}
-		return null;
+		return res;
 	}
 	
 }
