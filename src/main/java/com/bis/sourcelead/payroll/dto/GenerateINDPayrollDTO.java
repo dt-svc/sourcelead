@@ -14,6 +14,18 @@ public class GenerateINDPayrollDTO extends SearchDTO {
 	private String payPeriod;
 
 	private String payrollPayDate;
+	
+	private String paytype;
+	
+	
+
+	public String getPaytype() {
+		return paytype;
+	}
+
+	public void setPaytype(String paytype) {
+		this.paytype = paytype;
+	}
 
 	public String getGroupId() {
 		return groupId;

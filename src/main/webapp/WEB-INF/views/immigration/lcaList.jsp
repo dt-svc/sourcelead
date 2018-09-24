@@ -6,13 +6,6 @@
 <jsp:include page="../masterHeader.jsp" />
 <jsp:include page="../masterSideNav.jsp" /> 
 
-
-<!-- Tabs -->
-
-
-<!-- END Tabs -->
-
-
 <title>Insert title here</title>
     <section class="content-wraper">
    
@@ -59,9 +52,13 @@
 				<li><a href="javascript:void(0)" class="overIcon" title="Actions" onclick="newActions();"></a>
 					<div class="newActPop">
 						<span>
+						<%--  <sec:authorize access="hasAnyRole(\'ROLE_IMPORT_LCA\')"> --%>
 							<a href="/app/uploadLcaForm">Import LCA</a>
-							<!-- <a href="javascript:void(0)" onclick=";" title="PDF">Export PDF</a> -->
+						 <%--  </sec:authorize>	 --%>
+						  
+						  <sec:authorize access="hasAnyRole(\'ROLE_EXPORT_LCA\')">
 							<a href="javascript:void(0)" onclick="exportToLCAExcel();" title="Excel">Export Excel</a>
+						  </sec:authorize>	
 						</span>
 					</div>
 				</li>
@@ -172,10 +169,6 @@
  
   <!-- data table code starts below -->
  <script type="text/javascript">
- 
- var hideColumns = [];
- var table = "";
- 
  $(document).ready(function () {
      $("#statusFilter a").on('click', function (e) {
          getDynamicLCAList();
@@ -388,7 +381,7 @@
                      result = result + '<td><div><a href=/app/immigration/editLcaDetails?lcaUuid='+opt.lcaUuid+'><i id="edit' + opt.lcaUuid + '" class="glyphicon glyphicon-edit" title="Edit"></i></a>';
                      '</sec:authorize>';
                      if(opt.status  ==  1){
-                   '<sec:authorize access="hasRole(\'ROLE_VIEW_DELETE_LCA\')">'; 
+                    '<sec:authorize access="hasRole(\'ROLE_VIEW_DELETE_LCA\')">'; 
                       result = result + '<i id="delete'+opt.lcaUuid+'" onclick="deleteLcaListId(\''+opt.lcaUuid+'\');" class="glyphicon glyphicon-trash ml10" title="Delete"></i></div></td>';
                     '</sec:authorize>';
                      }else{
@@ -420,9 +413,7 @@
      $("#lcaSearch").keyup(function (e) {
          if (e.which === 13) {
         	 getDynamicLCAList( $("#myLcaStatus").val(),"");
-             for (var i=0; i<hideColumns.length; i++) {
-        		 table.column(hideColumns[i]).visible(false); // hide the columns after filters also.
-        		}
+            
          }
      });
      
@@ -436,34 +427,6 @@
 		getDynamicLCAList(null);
 	   
 	});
-		
-	function columHide(){
-		hideColumns=[]; // reset the array object.
-		$(".toggle-vis").each(function() {
-			columClose();// 
-		   var chkdVal= $(this).prop('checked');
-		   var column = table.column($(this).attr('data-column'));
-			  if(chkdVal == true){
-			         column.visible(true);
-			    }
-			    else{
-			      column.visible(false);
-			      hideColumns.push($(this).attr('data-column')); // used for hiding the columns when user searched the data.
-			  }
-	    });
-		$(".colPop").hide();
-	   
-	}
-	function checkAllColumns(obj){
-		var id = obj.id;
-		if(id =='columnsPickerCheckAll'){
-			$('.toggle-vis:input:checkbox').prop('checked',true);
-		}
-		else if(id =='columnsPickerUnCheckAll'){
-			$('.toggle-vis:input:checkbox').prop('checked',false);
-		}
-	}
-	
 </script>
 
 <script type="text/javascript">

@@ -72,8 +72,8 @@ public class UserPayrollServiceImpl implements UserPayrollService{
 	}
 
 	@Override
-	public List<Checks> getChecksListByEmployeeId(Long empId, OrgLocations orgLocations) throws Exception {
-		return userPayrollDao.getChecksListByEmployeeId(empId,orgLocations);
+	public ResponseList<Checks> getChecksListByEmployeeId(OrgLocations orgLocations,ChecksDTO checksDTO) throws Exception {
+		return userPayrollDao.getChecksListByEmployeeId(orgLocations,checksDTO);
 	}
 
 	@Override
@@ -120,6 +120,11 @@ public class UserPayrollServiceImpl implements UserPayrollService{
 	public Object getPayrollEntitiesByUUIDAndEntityType(String uuid, String entityType)
 	{
 		return userPayrollDao.getPayrollEntitiesByUUIDAndEntityType(uuid,entityType);
+	}
+
+	@Override
+	public List<Checks> getChecksListByEmployeeId(Long empId, OrgLocations orgLocations) throws Exception {
+		return userPayrollDao.getChecksListByEmployeeId(empId,orgLocations);
 	}
 
 }

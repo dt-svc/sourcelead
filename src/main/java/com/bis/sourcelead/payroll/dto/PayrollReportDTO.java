@@ -58,6 +58,70 @@ public class PayrollReportDTO extends SearchDTO{
 	
 	private BigDecimal ytdDeductions;
 	
+	private String searchValue;
+	
+	private Long orgLocationid;
+
+	private String payrollUUID;
+	
+	private String contributionId;
+	
+	private String contributionType;
+	
+	private String schedule;
+	
+	private BigDecimal dedAmount;
+	
+	
+	
+	public BigDecimal getDedAmount()
+	{
+		return dedAmount;
+	}
+
+
+	public void setDedAmount(BigDecimal dedAmount)
+	{
+		this.dedAmount = dedAmount;
+	}
+
+
+	public String getSchedule()
+	{
+		return schedule;
+	}
+
+
+	public void setSchedule(String schedule)
+	{
+		this.schedule = schedule;
+	}
+
+
+	public String getContributionId()
+	{
+		return contributionId;
+	}
+
+
+	public void setContributionId(String contributionId)
+	{
+		this.contributionId = contributionId;
+	}
+
+
+	public String getPayrollUUID()
+	{
+		return payrollUUID;
+	}
+
+
+	public void setPayrollUUID(String payrollUUID)
+	{
+		this.payrollUUID = payrollUUID;
+	}
+
+
 	public String getEmpName()
 	{
 		return empName;
@@ -324,5 +388,34 @@ public class PayrollReportDTO extends SearchDTO{
 	{
 		this.ytdNet = ytdNet;
 	}
-	
+
+	public String getContributionType()
+	{
+		return contributionType;
+	}
+
+	public void setContributionType(String contributionType)
+	{
+		this.contributionType = contributionType;
+	}
+
+	public String getSearchValue()
+	{
+		return searchValue;
+	}
+
+	public void setSearchValue(String searchValue)
+	{
+		this.searchValue = searchValue;
+	}
+
+	public Long getOrgLocationid()
+	{
+		return orgLocationid;
+	}
+
+	public void setOrgLocationid(Long orgLocationid)
+	{
+		this.orgLocationid = orgLocationid;
+	}	
 }

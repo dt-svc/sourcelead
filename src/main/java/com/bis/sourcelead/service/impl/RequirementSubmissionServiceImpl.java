@@ -524,7 +524,8 @@ public class RequirementSubmissionServiceImpl implements RequirementSubmissionSe
 					 }
 					
 					 candidate = candidateDao.storeCandidate(candidate);
-					CandidateIndex candidateIndex = candidateIndexHelper.getCandidateIndexFromCandidate(candidate);
+					 candidateService.getCandidatePercentage(candidate, orgLocations);
+					 CandidateIndex candidateIndex = candidateIndexHelper.getCandidateIndexFromCandidate(candidate);
 					
 					sourceleadELKBaseIndexer.saveOrUpdateElkDocument(candidateIndex, Constants.ELK_CANDIDATE_INDEX, Constants.ELK_CANDIDATE_TYPE,candidate.getId().toString());
 					
@@ -5476,6 +5477,18 @@ private void createXlsSheet(Sheet createExcelsheet,Row writeRow,int column,Strin
 	@Override
 	public List<RequirementSubmission> getAllSubmissionsNotInTemplateFileds() throws Exception {
 		return requirementSubmissionDao.getAllSubmissionsNotInTemplateFileds();
+	}
+
+	@Override
+	public Integer getRequirementSubmissionCountByCandiateIdAndOrgLocationId(Long candidateId, Long orgLocationId)
+			throws Exception {
+		return requirementSubmissionDao.getRequirementSubmissionCountByCandiateIdAndOrgLocationId(candidateId, orgLocationId);
+	}
+
+	@Override
+	public List<RequirementSubmissionsDTO> getCandidateSubmittedRequirementsListByCandidateId(Long candidateId,
+			Long orgLocationId) throws Exception {
+		return requirementSubmissionDao.getCandidateSubmittedRequirementsListByCandidateId(candidateId, orgLocationId);
 	}
 
 }

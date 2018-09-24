@@ -376,4 +376,10 @@ public class CandidateResumesServiceImpl implements CandidateResumesService {
 	{
 		return candidateResumesDao.getCandidateResumeByCandidateId(candidateId);
 	}
+
+
+	@Override
+	public Integer getCandidateActiveResumeCountByCandidateId(Long candidateId) throws Exception {
+		return candidateResumesDao.getCandidateActiveResumeCountByCandidateId(candidateId);
+	}
 }

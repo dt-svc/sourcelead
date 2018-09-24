@@ -23,6 +23,9 @@ public class RequirementDTO extends CommonDTO {
 
 	@Required(desc = "job title")
 	private String jobTitle;
+	
+	@Required(desc = "profilePercentage")
+	private String profilePercentage;
 
 	private String jobType;
 
@@ -1548,6 +1551,14 @@ public class RequirementDTO extends CommonDTO {
 
 	public void setJobFairDates(String[] jobFairDates) {
 		this.jobFairDates = jobFairDates;
+	}
+
+	public String getProfilePercentage() {
+		return profilePercentage;
+	}
+
+	public void setProfilePercentage(String profilePercentage) {
+		this.profilePercentage = profilePercentage;
 	}
 	
 	

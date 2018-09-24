@@ -5,6 +5,7 @@ import java.util.List;
 import com.bis.sourcelead.dto.ResponseList;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.User;
+import com.bis.sourcelead.payroll.dto.ContributionDTO;
 import com.bis.sourcelead.payroll.dto.PayrollContributionDTO;
 import com.bis.sourcelead.payroll.entity.PayrollContribution;
 
@@ -23,5 +24,6 @@ public interface PayrollContributionService {
 	List<PayrollContributionDTO> getAllContributionTypeByLocationId(OrgLocations orgLocation);
 
 	PayrollContributionDTO getContributionAmount(long contributionId);
+
 
 }

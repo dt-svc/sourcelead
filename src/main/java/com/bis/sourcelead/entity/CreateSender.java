@@ -54,20 +54,20 @@ private static final long serialVersionUID = 1L;
 	private String selectedSender;
 	
 	
-	@Column(name = "CITY")
+	@Column(name = "CITY", columnDefinition = "LONGTEXT default NULL")
 	private String city;
 	
 	@Column(name = "ZIP")
 	private String zip;
 	
-	@Column(name = "COUNTRY")
+	@Column(name = "COUNTRY", columnDefinition = "LONGTEXT default NULL")
 	private String country;
 	
-	@Column(name = "STATE")
+	@Column(name = "STATE", columnDefinition = "LONGTEXT default NULL")
 	private String state;
 	
 	
-	@Column(name = "ADDRESS")
+	@Column(name = "ADDRESS", columnDefinition = "LONGTEXT default NULL")
 	private String address;
 	
 	@Column(name = "STATUS")
