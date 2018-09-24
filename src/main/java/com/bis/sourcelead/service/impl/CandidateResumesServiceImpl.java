@@ -108,7 +108,10 @@ public class CandidateResumesServiceImpl implements CandidateResumesService {
 				candidateResume.setFileURL(fileInfo.getFileURL());
 				candidateResume.setFileName(fileInfo.getFileName());
 				candidateResume.setFileContentType(fileInfo.getContentType());
-				FileUploadUtil.moveFile(candidateResumeDTO.getStaticPath(), fileInfo, "resumes");
+				try {
+					FileUploadUtil.moveFile(candidateResumeDTO.getStaticPath(), fileInfo, "resumes");
+				} catch (Exception e) {
+				}
 			}
 			if (StringUtils.isNotBlank(candidateResumeDTO.getTitle())) {
 				candidateResume.setTitle(candidateResumeDTO.getTitle());
@@ -372,5 +375,11 @@ public class CandidateResumesServiceImpl implements CandidateResumesService {
 	public CandidateResumes getCandidateResumeByCandidateId(Long candidateId) throws Exception
 	{
 		return candidateResumesDao.getCandidateResumeByCandidateId(candidateId);
+	}
+
+
+	@Override
+	public Integer getCandidateActiveResumeCountByCandidateId(Long candidateId) throws Exception {
+		return candidateResumesDao.getCandidateActiveResumeCountByCandidateId(candidateId);
 	}
 }

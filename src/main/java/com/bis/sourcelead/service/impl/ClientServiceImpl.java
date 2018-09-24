@@ -1606,6 +1606,7 @@ public class ClientServiceImpl implements ClientService {
 					}
 					
 					Candidate savedCandidate = candidateService.addCandidate(candidate);
+					candidateService.getCandidatePercentage(savedCandidate, orgLocation);
 					candidateService.saveOrUpdateCandidateElkDocument(savedCandidate);
 				}
 				

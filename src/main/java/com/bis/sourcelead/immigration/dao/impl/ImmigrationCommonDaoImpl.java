@@ -1805,8 +1805,8 @@ public class ImmigrationCommonDaoImpl implements ImmigrationCommonDao {
 					subQuery2 = subQuery2 + "lcaView.lcaStatus = 'Initiated' or ";
 				}
 				
-				if (Arrays.asList(statusFilter).contains("In-progress")) {
-					subQuery2 = subQuery2 + "lcaView.lcaStatus = 'In-progress' or ";
+				if (Arrays.asList(statusFilter).contains("In progress")) {
+					subQuery2 = subQuery2 + "lcaView.lcaStatus = 'In progress' or ";
 				}
 				
 				if (Arrays.asList(statusFilter).contains("Certified")) {

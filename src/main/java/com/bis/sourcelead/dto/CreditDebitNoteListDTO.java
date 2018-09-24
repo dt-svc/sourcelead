@@ -36,6 +36,7 @@ public class CreditDebitNoteListDTO extends SearchDTO {
 	private String loginCurrencyCode;
 	private String vendorCurrencyCode;
 	private String account;
+	private String status;
 	
 	 
 	public List<FileInfo> getFileInfo() {
@@ -230,6 +231,12 @@ public class CreditDebitNoteListDTO extends SearchDTO {
 	}
 	public void setAccount(String account) {
 		this.account = account;
+	}
+	public String getStatus() {
+		return status;
+	}
+	public void setStatus(String status) {
+		this.status = status;
 	}
 	
 	

@@ -112,6 +112,35 @@ function getfileUrl(){
 function remove(){
 	$('#paymentAttachment').val("");
 }
+
+function showDatesDiv(){
+var locationDate ='${SourceLeadWeb_orgLocations.dateFormat}'; 
+var finalDateFormat = getJSDateFormat(locationDate);
+
+$('#customStartDate').datepicker({
+    dateFormat: finalDateFormat,
+    changeMonth: true,
+	  changeYear: true, 
+    onSelect: function (selected) {
+          //var dt = new Date(selected);
+          var dt = $(this).datepicker('getDate', '+1d');
+          dt.setDate(dt.getDate() + 1);
+          $("#customEndDate").datepicker("option", "minDate", dt);
+      }
+});
+
+$('#customEndDate').datepicker({
+    dateFormat: finalDateFormat,
+    changeMonth: true,
+	  changeYear: true, 
+      onSelect: function (selected) {
+          //var dt = new Date(selected);
+          var dt = $(this).datepicker('getDate', '-1d');
+          dt.setDate(dt.getDate() - 1);
+          $("#customStartDate").datepicker("option", "maxDate", dt);
+      }
+});
+}
 </script>
 <script>
 function removeValidate(){
@@ -148,16 +177,16 @@ function getCreditList(){
 	$('input:radio[name=invoiceCustomDays]:checked').each(function() {
 		dayWisetype = $(this).val();
 		if(dayWisetype == 'custom'){
-			startDate = $("#billingStartDate").val();
-			endDate = $("#billingEndDate").val();
+			startDate = $("#customStartDate").val();
+			endDate = $("#customEndDate").val();
 			$("#errStartDate").find('p.jquery_form_error_message').remove();
 			$("#errEndDate").find('p.jquery_form_error_message').remove();
 			if(startDate == null || startDate == '' || startDate == 'undefined'){
-				$("input#billingStartDate") .after( "<p class='jquery_form_error_message'>Start Date is Required</span>");
+				$("input#customStartDate") .after( "<p class='jquery_form_error_message'>Start Date is Required</span>");
 				returnStat =  false;
 			}
 			if(endDate == null || endDate == '' || endDate == 'undefined'){
-				$("input#billingEndDate") .after( "<p class='jquery_form_error_message'>End Date is Required</span>");
+				$("input#customEndDate") .after( "<p class='jquery_form_error_message'>End Date is Required</span>");
 				returnStat =  false;
 			}
 		}
@@ -180,7 +209,6 @@ function getCreditList(){
      {
 		tags.push($(this).val());
      });
-	
 	
 	var searchValue = $("#creditDebitDataTableSearch").val();
 	searchValue = searchValue ? searchValue : "";
@@ -251,35 +279,41 @@ function creditNotePagination(url){
     	  	"render": function(data, type, report, meta) {
     	  		var result = "";
     	  		result = result +'         <td>   ';
-    	  		if((report.approverCheckBox == 'Y' && (report.approverUserSplitId.length >0)) && report.creditDebitNoteStatus != "Rejected"){
+    	  		if((report.approverCheckBox == 'Y') && (report.approverUserSplitId.length >0)){
     	  			for(var i=0; i<report.approverUserSplitId.length; i++) {
     	  				result = result +'<div class="tbldata-dotdot-vsm">';
     	  				if((report.approverUserSplitId[i] == '${SourceLeadWeb_user.id}') && report.creditDebitNoteStatus != "Send"){
 						result = result +'           <span class="clearfix" ><a onclick="acceptCreditDebitNote(\''+report.creditDebitUUID+'\');" title="Accept"><i class="fa fa-check text-success paddingRight"></i></a><a onclick="rejectCreditDebitNote(\''+report.creditDebitUUID+'\');" title="Reject"><i class="paddingLeft fa fa-times text-danger"></i></a></span>';
 			    	}else{
-			    		if((report.creditDebitNoteStatus == "Submit") ||  (report.creditDebitNoteStatus == "Draft"))
+			    		if(((report.creditDebitNoteStatus == "Submit") ||  (report.creditDebitNoteStatus == "Draft") ||  (report.creditDebitNoteStatus == "Rejected")) && (report.status !="0"))
 	    				 {
 						result = result +' <span class="clearfix"><a href="<c:url value="/app/addCreditNote?creditDebitUUID='+report.creditDebitUUID+'&noteType=Credit"/>" <i class="fa fa-edit paddingRight paddingLeft" title="Edit"></i></a></span>';
 	    				result = result +' <span class="clearfix"><a onClick="deleteCreditDebitNote(\''+report.creditDebitUUID+'\');"><i class="fa fa-trash paddingRight paddingLeft" title="Remove"></i></a></span>';
 						// to avoid multiple edit buttons for multiple approvers 
 						break;
-	    				 }else{
+	    				 }else if(report.status !="0"){
 	 	    				result = result +' <span class="clearfix"><a onClick="deleteCreditDebitNote(\''+report.creditDebitUUID+'\');"><i class="fa fa-trash paddingRight paddingLeft" title="Remove"></i></a></span>';
 	 	    			// to avoid multiple edit buttons for multiple approvers 
 							break;
+	    				 }else{
+		 	    			result = result +' <span class="clearfix"><a onClick="reactiveCreditDebitNote(\''+report.creditDebitUUID+'\');"><i class="fa fa-rotate-left ml10" title="Reactive"></i></a></span>';
+		 	    			break;
 	    				 }
 			    	}
 			    	result = result +' </div>';	
 			    }
     	  		}else{
     	  			result = result +'<div class="tbldata-dotdot-vsm">';
-    	  			if((report.creditDebitNoteStatus == "Submit") ||  (report.creditDebitNoteStatus == "Draft"))
+    	  			if((report.creditDebitNoteStatus == "Draft") && (report.status !="0"))
    				 {
 					result = result +' <span class="clearfix"><a href="<c:url value="/app/addCreditNote?creditDebitUUID='+report.creditDebitUUID+'&noteType=Credit"/>" <i class="fa fa-edit paddingRight paddingLeft" title="Edit"></i></a></span>';
    				 	result = result +' <span class="clearfix"><a onClick="deleteCreditDebitNote(\''+report.creditDebitUUID+'\');"><i class="fa fa-trash paddingRight paddingLeft" title="Remove"></i></a></span>';
 
-   				 }else{
+   				 }else if(report.status !="0"){
     				result = result +' <span class="clearfix"><a onClick="deleteCreditDebitNote(\''+report.creditDebitUUID+'\');"><i class="fa fa-trash paddingRight paddingLeft" title="Remove"></i></a></span>';
+ 
+   				 }else{
+	 	    		result = result +' <span class="clearfix"><a onClick="reactiveCreditDebitNote(\''+report.creditDebitUUID+'\');"><i class="fa fa-rotate-left ml10" title="Reactive"></i></a></span>';
  
    				 }
     				 result = result +'</div>  ';	
@@ -691,10 +725,10 @@ $(document).ready(function() {
             if (selectVal == "custom") {
             	var result = '';
             	result  = result + '<div class="col-md-6 paddingLeft" id="errStartDate">';                                                                       
-            	result = result +'     <input type="text" class="form-control input-sm calendar" onclick="showInvoiceStartDate();" id="billingStartDate" placeholder="Start Date"> ';
+            	result = result +'     <input type="text" class="form-control input-sm calendar" onclick="showDatesDiv();" id="customStartDate" placeholder="Start Date"> ';
             	result = result +'   </div> ';
             	result = result +'   <div class="col-md-6 noPad" id="errEndDate">';
-            	result = result +'     <input type="text" class="form-control input-sm calendar" onclick="showInvoiceEndDate();" id="billingEndDate" placeholder="End Date">';
+            	result = result +'     <input type="text" class="form-control input-sm calendar" onclick="showDatesDiv();" id="customEndDate" placeholder="End Date">';
             	result = result +'   </div>';
                 $(".custom_search").empty().append(result);
                 $(".custom_search").show();
@@ -748,11 +782,12 @@ function closePopup() {
 <script>
 function deleteCreditDebitNote(creditDebitUUID){ 
 	var result = "";
+	$("#popUp").empty();
 	result = result +"	<div class='project_inn_mask'></div>"; 
 	result = result +"	   <div id='remove_user_pop' class='remove_user_pop remove_user_pop_a'>";
 
 	result = result +"<div class='modal-body'><p>Are you sure you want to delete ?</p></div>";
-	result = result + ' <div id="reasonForInvoiceDiv"/>';
+	result = result + ' <div id="deleteCreditDebitNoteDiv"/>';
 	result = result +'		<b href="javascript:void(0)"><input id="confirm-id" type="button" value="Delete" onclick="deleteCreditDebitMethod(\''+creditDebitUUID+'\');"><input class="u_can_color" type="button"  value="Cancel" onClick="cancelTermination();"></b>';
 	result = result +"	</div>";
 	$("#popUp").append(result);
@@ -771,6 +806,33 @@ function deleteCreditDebitMethod(creditDebitUUID){
 		   		    }
 			     });
 		}
+
+function reactiveCreditDebitNote(creditDebitUUID){ 
+	var result = "";
+	$("#popUp").empty();
+	result = result +"	<div class='project_inn_mask'></div>"; 
+	result = result +"	   <div id='remove_user_pop' class='remove_user_pop remove_user_pop_a'>";
+
+	result = result +"<div class='modal-body'><p>Are you sure you want to Re-Active ?</p></div>";
+	result = result + ' <div id="reactiveCreditDebitNoteDiv"/>';
+	result = result +'		<b href="javascript:void(0)"><input id="confirm-id" type="button" value="Reactive" onclick="reactiveCreditDebitMethod(\''+creditDebitUUID+'\');"><input class="u_can_color" type="button"  value="Cancel" onClick="cancelTermination();"></b>';
+	result = result +"	</div>";
+	$("#popUp").append(result);
+	$("#remove_user_pop").slideDown(200);
+	$(".project_inn_mask").fadeIn(200);
+}
+
+function reactiveCreditDebitMethod(creditDebitUUID){
+	 $.ajax({
+		   	type: "POST",
+		    url: sourceleadUrl+"/reactiveCreditDebitNote?"+tokenParamName+"="+tokenValue+"&noteType=Credit&creditDebitUUID="+creditDebitUUID,
+  		    success: function(data) {
+  		    	$("#popUp").empty();
+  			 	$(".project_inn_mask").fadeOut(200);
+  			 	location.replace(sourceleadUrl+"/creditNoteList");	
+  		    }
+	     });
+}
 	
 
 function cancelTermination(){

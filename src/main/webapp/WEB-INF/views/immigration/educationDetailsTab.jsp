@@ -120,7 +120,7 @@
 				<label class="col-md-4 padding_left">Select Education</label>
               	<div class="col-md-8 padding_right" id="nameIdDiv">
 					
-					<select class="chosen-select form-control" name="name" id= "eduName" field-name="Education" data-validation="required" onchange="validateEduname();" onkeyup = "validateEduname();">
+					<select class="chosen-select form-control" name="name" id= "eduName" field-name="Education" data-validation="required" onchange="immigration.validateEduname();" onkeyup = "immigration.validateEduname();">
 					<option value="" selected>--Select Education--</option>
 					  <c:forEach var="edu" items="${educationsDropList}">
 											<option value="${edu.name}">${edu.name}</option>
@@ -132,7 +132,7 @@
           <div class="col-sm-12 noPad mt clearfix">
 				<label class="col-md-4 padding_left">Specialization</label>
               	<div class="col-md-8 padding_right">
-              		<input type="text" class="form-control" id = "specialization" name = "specialization" placeholder="Specialization" data-validation="required validate_Space validate_length length2-100" data-validation-optional="true"/>
+              		<input type="text" class="form-control" id = "specialization" name = "specialization" placeholder="Specialization" data-validation="required validate_AlphaNumber validate_Space validate_length length2-100" data-validation-optional="true"/>
 				</div>
 			</div>				          
           <div class="col-sm-12 noPad mt clearfix">
@@ -174,7 +174,7 @@
           <div class="col-sm-12 noPad mt clearfix">
 				<label class="col-md-4 padding_left">Institute/University</label>
               	<div class="col-md-8 padding_right">
-              		<input type="text" class="form-control" id = "institute" name = "institute" placeholder="Institute" data-validation="required validate_Space validate_length length2-100" data-validation-optional="true"/>
+              		<input type="text" class="form-control" id = "institute" name = "institute" placeholder="Institute" data-validation="required validate_Space validate_AlphaNumber validate_length length2-100" data-validation-optional="true"/>
 				</div>
 			</div>
           <div class="col-sm-12 noPad mt clearfix">

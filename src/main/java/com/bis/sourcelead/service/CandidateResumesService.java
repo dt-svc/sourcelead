@@ -93,4 +93,6 @@ public interface CandidateResumesService {
 	
 	public CandidateResumes getCandidateResumeByCandidateId(Long candidateId) throws Exception;
 	
+	Integer getCandidateActiveResumeCountByCandidateId(Long candidateId) throws Exception;
+	
 }
