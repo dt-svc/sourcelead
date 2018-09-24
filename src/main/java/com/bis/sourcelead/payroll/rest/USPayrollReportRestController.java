@@ -1,11 +1,6 @@
 package com.bis.sourcelead.payroll.rest;
 
-import java.math.BigDecimal;
-import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
-import java.util.stream.Collectors;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -21,24 +16,15 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.ModelAndView;
 
-import com.bis.sourcelead.dto.AssociatePayItemDTO;
 import com.bis.sourcelead.dto.ResponseList;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.entity.UserGroup;
 import com.bis.sourcelead.enums.Result;
 import com.bis.sourcelead.payroll.dto.CheckRegisterReportDTO;
-import com.bis.sourcelead.payroll.dto.CompareDataDTO;
-import com.bis.sourcelead.payroll.dto.ContributionDTO;
-import com.bis.sourcelead.payroll.dto.DeductionDTO;
 import com.bis.sourcelead.payroll.dto.PayPeriodDTO;
 import com.bis.sourcelead.payroll.dto.PayrollComparisonDTO;
-import com.bis.sourcelead.payroll.dto.PayrollConstant;
 import com.bis.sourcelead.payroll.dto.PayrollReportDTO;
-import com.bis.sourcelead.payroll.dto.USPayrollDTO;
-import com.bis.sourcelead.payroll.entity.EmployeePayroll;
-import com.bis.sourcelead.payroll.entity.EmployeePayrollTax;
-import com.bis.sourcelead.payroll.entity.PaysheetFrequency;
 import com.bis.sourcelead.payroll.service.PayrollReportService;
 import com.bis.sourcelead.payroll.service.PaysheetFrequencyService;
 import com.bis.sourcelead.payroll.service.USPayPeriodService;
@@ -66,12 +52,6 @@ public class USPayrollReportRestController {
 	
 	@Autowired
 	PayrollUtil payrollUtil;
-	
-	@Autowired
-	PayrollReportService payrollReportService;
-	
-	@Autowired
-	PaysheetFrequencyService paysheetFrequencyService;
 
 	/**
 	 * Returning Us Payroll Jsp
