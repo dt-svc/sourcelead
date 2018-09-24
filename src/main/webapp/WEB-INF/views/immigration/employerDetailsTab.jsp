@@ -131,7 +131,7 @@
 				<div class="row">
 				<label class="col-md-4">Designation</label>
               	<div class="col-md-8">
-              		<input type="text" placeholder="Designation" id ="designation" name="designation" data-validation="required validate_Space validate_length length2-100" data-validation-optional="true" field-name="Designation"  class="form-control" />
+              		<input type="text" placeholder="Designation" id ="designation" name="designation" data-validation="required validate_AlphaNumber validate_Space validate_length length2-100" data-validation-optional="true" field-name="Designation"  class="form-control" />
 				</div>
 				</div>
 			</div>				          

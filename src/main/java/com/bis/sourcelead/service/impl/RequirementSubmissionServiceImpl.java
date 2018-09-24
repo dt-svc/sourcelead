@@ -5478,4 +5478,16 @@ private void createXlsSheet(Sheet createExcelsheet,Row writeRow,int column,Strin
 		return requirementSubmissionDao.getAllSubmissionsNotInTemplateFileds();
 	}
 
+	@Override
+	public Integer getRequirementSubmissionCountByCandiateIdAndOrgLocationId(Long candidateId, Long orgLocationId)
+			throws Exception {
+		return requirementSubmissionDao.getRequirementSubmissionCountByCandiateIdAndOrgLocationId(candidateId, orgLocationId);
+	}
+
+	@Override
+	public List<RequirementSubmissionsDTO> getCandidateSubmittedRequirementsListByCandidateId(Long candidateId,
+			Long orgLocationId) throws Exception {
+		return requirementSubmissionDao.getCandidateSubmittedRequirementsListByCandidateId(candidateId, orgLocationId);
+	}
+
 }
