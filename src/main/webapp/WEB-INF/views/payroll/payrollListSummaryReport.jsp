@@ -342,7 +342,7 @@ $(document).ready(function(){
 											var result = "";
 											result = result + '<td>';
 											result = result + '<div class="tblminwidth-30 text-center">';
-											result = result + '<a href="javascript:void(0)" class="anchorBlack"><i class="fa fa-eye"></i></a>';
+											result = result + '<a href="javascript:void(0)" class="anchorBlack" onclick="payAdjustment(\''+opt.payrollUUID+'\',\'APPROVED\');"><i class="fa fa-eye"></i></a>';
 											result = result + '</div>';
 											result = result + '</td>';
 											return result;
@@ -377,5 +377,6 @@ $(document).ready(function(){
 	
 
 </script>
+<jsp:include page="./viewPayRollSummary.jsp" /> 
  
 <jsp:include page="../masterFooter.jsp" />

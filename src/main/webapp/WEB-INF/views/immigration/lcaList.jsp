@@ -6,13 +6,6 @@
 <jsp:include page="../masterHeader.jsp" />
 <jsp:include page="../masterSideNav.jsp" /> 
 
-
-<!-- Tabs -->
-
-
-<!-- END Tabs -->
-
-
 <title>Insert title here</title>
     <section class="content-wraper">
    
@@ -176,10 +169,6 @@
  
   <!-- data table code starts below -->
  <script type="text/javascript">
- 
- var hideColumns = [];
- var table = "";
- 
  $(document).ready(function () {
      $("#statusFilter a").on('click', function (e) {
          getDynamicLCAList();
@@ -424,9 +413,7 @@
      $("#lcaSearch").keyup(function (e) {
          if (e.which === 13) {
         	 getDynamicLCAList( $("#myLcaStatus").val(),"");
-             for (var i=0; i<hideColumns.length; i++) {
-        		 table.column(hideColumns[i]).visible(false); // hide the columns after filters also.
-        		}
+            
          }
      });
      
@@ -440,34 +427,6 @@
 		getDynamicLCAList(null);
 	   
 	});
-		
-	function columHide(){
-		hideColumns=[]; // reset the array object.
-		$(".toggle-vis").each(function() {
-			columClose();// 
-		   var chkdVal= $(this).prop('checked');
-		   var column = table.column($(this).attr('data-column'));
-			  if(chkdVal == true){
-			         column.visible(true);
-			    }
-			    else{
-			      column.visible(false);
-			      hideColumns.push($(this).attr('data-column')); // used for hiding the columns when user searched the data.
-			  }
-	    });
-		$(".colPop").hide();
-	   
-	}
-	function checkAllColumns(obj){
-		var id = obj.id;
-		if(id =='columnsPickerCheckAll'){
-			$('.toggle-vis:input:checkbox').prop('checked',true);
-		}
-		else if(id =='columnsPickerUnCheckAll'){
-			$('.toggle-vis:input:checkbox').prop('checked',false);
-		}
-	}
-	
 </script>
 
 <script type="text/javascript">

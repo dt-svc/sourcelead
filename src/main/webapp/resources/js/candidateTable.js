@@ -134,7 +134,8 @@ function candidateListCheck(searchValue,universalCanddateSearchList,candidateKey
           result = result +"    <th>Email</th>"; 
           result = result +"    <th>Mobile Number</th>";
           result = result +"    <th>Profile %</th>"
-          result = result +"    <th>Location</th>"; 
+          result = result +"    <th>No Of Jobs</th>"; 
+          result = result +"    <th>Location</th>";
           result = result +"    <th>Last Update</th>"; 
           result = result +"    <th>Created By</th>"; 
           result = result +"  </tr>"; 
@@ -189,6 +190,7 @@ function cpagination(url){
             { "data": "email" },
             { "data": "mobilePhone" },
             { "data": "profilePercentage" },
+            { "data": "noOfJobs"},
             { "data": "country"},
             { "data": "updatedDate" },
             { "data": "createdBy" }
@@ -353,6 +355,18 @@ function cpagination(url){
 		    	  		
 		    	  	}
 		    	  }, {
+	    	    	  	"targets": colIndex++,
+	    	    	  	"data": "noOfJobs",
+	    	    		"sortable": false,
+	    	    	  	"render": function(data, type, opt, meta) {
+	    	    	  		if(opt.submittedJobsCount == 0){
+	    	    	  			return "<div class='tbldata-dotdot-vsm'>"+opt.submittedJobsCount+"</div>";
+	    	    	  		}else{
+	    	    	  			return "<div class='tbldata-dotdot-vsm'><a href='#' onclick='getSubmittedJobsList("+opt.candidateId+")'>"+opt.submittedJobsCount+"</div></a></div>";
+	    	    	  		}
+	    	    	  		
+	    	    	  	}
+    	    	  },{
                   "targets": colIndex++,
                   "data": "country",
                   "render": function ( data, type, opt, meta ) {
@@ -370,7 +384,7 @@ function cpagination(url){
 		            		}
       	              return "<div><span title='"+location+"'>"+location+"</span></div>";
                   }
-                }, {
+                },{
                   "targets": colIndex++,
                   "data": "updatedDate",
                   "className": "tblminwidth-75",
@@ -422,4 +436,17 @@ function cpagination(url){
 		candidateSearchHighlight();
     	   }
     	});
+}
+
+function getSubmittedJobsList(candidateId){
+	$.ajax({
+		  type: "GET",
+		    url: sourceleadUrl+"/getCandidateSubmittedJobsList?candidateId="+candidateId,
+		     success :function(response) {
+		    	    $("#candidateSubmittedJobsDiv").empty();  
+		    	    $("#candidateSubmittedJobsDiv").append(response);
+		    	    $(".modal.paymentaccount-modal").fadeIn();
+		    	    $(".comMask").fadeIn();
+				},
+			});
 }

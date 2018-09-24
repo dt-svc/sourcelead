@@ -300,5 +300,9 @@ public interface RequirementSubmissionService {
 	Sheet getExcelFile(Sheet createExcelsheet, Workbook createExcelworkbook, ResponseList<RequirementSubmissionHistory> dashboardJobsCountlist, OrgLocations loginOrgLocations, String submissionStatus) throws Exception;
 	
 	List<RequirementSubmission> getAllSubmissionsNotInTemplateFileds() throws Exception;
+	
+	Integer getRequirementSubmissionCountByCandiateIdAndOrgLocationId(Long candidateId,Long orgLocationId) throws Exception;
+	
+	List<RequirementSubmissionsDTO> getCandidateSubmittedRequirementsListByCandidateId(Long candidateId,Long orgLocationId) throws Exception;
 
 }
