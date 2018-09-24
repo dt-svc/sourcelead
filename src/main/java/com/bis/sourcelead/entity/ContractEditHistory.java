@@ -63,7 +63,7 @@ public class ContractEditHistory {
 	@Column(name = "JOIN_DATE")
 	private Date joinDate;
 	
-	@Column(name = "WORK_LOCATION")
+	@Column(name = "WORK_LOCATION", columnDefinition = "LONGTEXT default NULL")
 	private String workLocation;
 	
 	@Column(name = "INITIATOR_TYPE")

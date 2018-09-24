@@ -51,7 +51,7 @@
             </div>
           </div>
           
-          <div class="col-md-3">
+          <!-- <div class="col-md-3">
             <div class="pull-left mr10"> <i class="fa fa-line-chart fa-2x text-primary"></i> </div>
             <div class="pull-left">
               <h4 class="text-primary"><a href="apaging-graph.html" class="anchorBlue">Employee Report</a></h4>
@@ -74,7 +74,7 @@
               <small class="text-muted">Loremipsum Loremipsum</small>
               <div class="clearfix mt10"><a href="javascript:void(0)" class="btn btn-primary btn-sm" title="View">View</a> </div>
             </div>
-          </div>
+          </div> -->
           <div class="col-md-3">
             <div class="pull-left mr10"> <i class="fa fa-scissors fa-2x text-muted"></i> </div>
             <div class="pull-left">
@@ -91,7 +91,7 @@
               <div class="clearfix mt10"> <a href="${appPath}/contributionReport" class="btn btn-primary btn-sm" title="View">View</a> </div>
             </div>
           </div>
-          <div class="col-md-3">
+         <!--  <div class="col-md-3">
             <div class="pull-left mr10"> <i class="fa fa-suitcase fa-2x text-muted"></i> </div>
             <div class="pull-left">
               <h4 class="text-muted"><a href="financial-paidbills.html" class="anchorBlue">Tax Liability Report</a></h4>
@@ -107,7 +107,7 @@
               <small class="text-muted">Loremipsum Loremipsum</small>
               <div class="clearfix mt10"><a href="javascript:void(0)" class="btn btn-primary btn-sm" title="View">View</a> </div>
             </div>
-          </div>
+          </div> -->
            <div class="col-md-3">
             <div class="pull-left mr10"> <i class="fa fa-arrow-circle-right fa-2x text-muted"></i> </div>
             <div class="pull-left">

@@ -225,5 +225,9 @@ public interface RequirementSubmissionDao {
 	boolean getRequirementSubmissionByCandidateIdAndJobId(Long candidateId,Long requirementId) throws Exception;
 	
 	List<RequirementSubmission> getAllSubmissionsNotInTemplateFileds() throws Exception;
+	
+	Integer getRequirementSubmissionCountByCandiateIdAndOrgLocationId(Long candidateId,Long orgLocationId) throws Exception;
+	
+	List<RequirementSubmissionsDTO> getCandidateSubmittedRequirementsListByCandidateId(Long candidateId,Long orgLocationId) throws Exception;
 
 }

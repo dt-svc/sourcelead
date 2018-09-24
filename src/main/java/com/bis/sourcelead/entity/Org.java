@@ -126,10 +126,10 @@ public class Org implements Serializable{
 	@Type(type="text")
 	private String modulesId;
 	
-    @Column(name = "CLIENT_ADDRESS")
+    @Column(name = "CLIENT_ADDRESS", columnDefinition = "LONGTEXT default NULL")
 	private String clientAddress;
     
-    @Column(name = "CLIENT_BILLING_ADDRESS")
+    @Column(name = "CLIENT_BILLING_ADDRESS", columnDefinition = "LONGTEXT default NULL")
 	private String clientBillingAddress;
     
     @Column(name = "PAYMENT_TERM")

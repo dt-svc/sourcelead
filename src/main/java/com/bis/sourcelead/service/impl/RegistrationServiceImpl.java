@@ -406,6 +406,7 @@ public class RegistrationServiceImpl implements RegistrationService{
 		Candidate candidate = getCandidateDetails(user,orgLocations,masterCandidate);
 		try {
 			Candidate savedCandidate = candidateService.addCandidate(candidate);
+			candidateService.getCandidatePercentage(savedCandidate, orgLocations);
 			candidateService.saveOrUpdateCandidateElkDocument(savedCandidate);
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -1166,6 +1167,7 @@ public class RegistrationServiceImpl implements RegistrationService{
 		Candidate candidate = getCandidateDetails(orgUser,orgLocations,masterCandidate);
 		try {
 			Candidate savedCandidate = candidateService.addCandidate(candidate);
+			candidateService.getCandidatePercentage(savedCandidate, orgLocations);
 			candidateService.saveOrUpdateCandidateElkDocument(savedCandidate);
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -1378,6 +1380,7 @@ public class RegistrationServiceImpl implements RegistrationService{
 		
 		
 		candidateService.addCandidate(candidate);
+		candidateService.getCandidatePercentage(candidate, orgLocations);
 		candidateService.saveOrUpdateCandidateElkDocument(candidate);
 		
 		
@@ -1648,6 +1651,7 @@ public class RegistrationServiceImpl implements RegistrationService{
 		
 		
 		candidateService.addCandidate(candidate);
+		candidateService.getCandidatePercentage(candidate, orgLocations);
 		candidateService.saveOrUpdateCandidateElkDocument(candidate);
 		
 		if("Newly Registered".equalsIgnoreCase(user.getRegistrationType()))
@@ -1933,6 +1937,7 @@ public class RegistrationServiceImpl implements RegistrationService{
 				
 				
 				candidateService.addCandidate(candidate);
+				candidateService.getCandidatePercentage(candidate, orgLocations);
 				candidateService.saveOrUpdateCandidateElkDocument(candidate);
 		 }
 		loginWithSocialInviter(user, userRole, orgLocations);
@@ -2084,6 +2089,7 @@ public class RegistrationServiceImpl implements RegistrationService{
 			
 			
 			candidateService.addCandidate(candidate);
+			candidateService.getCandidatePercentage(candidate, orgLocations);
 			candidateService.saveOrUpdateCandidateElkDocument(candidate);
 		}
 		 
