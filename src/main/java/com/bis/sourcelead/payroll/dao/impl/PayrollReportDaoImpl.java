@@ -161,7 +161,7 @@ public class PayrollReportDaoImpl implements PayrollReportDao{
 			.append(" and payroll.CANDIDATE_ID = bank.CANDIDATE_ID ")
 			.append(" and payroll.CANDIDATE_ID = can.ID ")
 			.append(" and sheet.GROUP_ID = grp.ID ")
-			.append(" and bank.ACCOUNT_TYPE = 'Cheque' ")
+			.append(" and bank.ACCOUNT_TYPE = :depositType")
 			.append(" and payroll.SUBMIT_FOR_APROVER_STATUS = 'APPROVED' ")
 			.append(" and sheet.ORG_LOCATION_ID = :orgLocationId and sheet.GROUP_ID = :groupId and sheet.FREQUENCY_START_DATE = :freqStartDate ")
 			.append(" and sheet.FREQUENCY_END_DATE = :freqEndDate ");
@@ -172,13 +172,13 @@ public class PayrollReportDaoImpl implements PayrollReportDao{
 					.append(" and payroll.CANDIDATE_ID = bank.CANDIDATE_ID ")
 					.append(" and payroll.CANDIDATE_ID = can.ID ")
 					.append(" and sheet.GROUP_ID = grp.ID ")
-					.append(" and sheet.GROUP_ID =  bank.ACCOUNT_TYPE = 'Cheque'")
+					.append(" and bank.ACCOUNT_TYPE = :depositType")
 					.append(" and sheet.ORG_LOCATION_ID = :orgLocationId and sheet.GROUP_ID = :groupId and sheet.FREQUENCY_START_DATE = :freqStartDate ") 
 					.append(" and sheet.FREQUENCY_END_DATE = :freqEndDate ");
 			//			String countQuery = "from EmployeePayroll payroll where payroll.paysheetFrequency.userGroup.id = :groupId and payroll.paysheetFrequency.orgLocation.id = :orgLocationId and payroll.payCheckDate = :payCheckDatde and payroll.submitForAproverStatus = 'APPROVED'";
 			if (payrollReportDTO.getSearchValue() != null && !"".equalsIgnoreCase(payrollReportDTO.getSearchValue())) {
-					searchQuery.append(" and can.FIRST_NAME like '%"+ payrollReportDTO.getSearchValue()+ "%' ")
-							  .append("OR  can.LAST_NAME like '%" + payrollReportDTO.getSearchValue() + "%' ");
+					searchQuery.append(" and ( can.FIRST_NAME like '%"+ payrollReportDTO.getSearchValue()+ "%' ")
+							  .append("OR  can.LAST_NAME like '%" + payrollReportDTO.getSearchValue() + "%')");
 			}
 //			else {
 
@@ -186,14 +186,14 @@ public class PayrollReportDaoImpl implements PayrollReportDao{
 				if (payrollReportDTO != null && payrollReportDTO.getLength() > 0) {
 					queryObj.setFirstResult(payrollReportDTO.getStart());
 					queryObj.setMaxResults(payrollReportDTO.getLength());
-					queryObj.setLong("orgLocationId", orgLocation.getId()).setLong("groupId", Long.parseLong(payrollReportDTO.getGroupId())).setDate("freqStartDate", freqStartDate).setDate("freqEndDate", freqEndDate);
+					queryObj.setLong("orgLocationId", orgLocation.getId()).setLong("groupId", Long.parseLong(payrollReportDTO.getGroupId())).setDate("freqStartDate", freqStartDate).setDate("freqEndDate", freqEndDate).setParameter("depositType", payrollReportDTO.getDepositType());
 					queryObj.setResultTransformer(Transformers.aliasToBean(CheckRegisterReportDTO.class));
 				}
 				payrollList = queryObj.list();
 				int count = 0;
 				int filteredCount = 0;
 //				Query queryObj = session.createSQLQuery(query.toString() + searchQuery.toString());
-				Query  countQry = session.createSQLQuery(countQuery.toString()).setLong("orgLocationId", orgLocation.getId()).setLong("groupId", Long.parseLong(payrollReportDTO.getGroupId())).setDate("freqStartDate", freqStartDate).setDate("freqEndDate", freqEndDate);
+				Query  countQry = session.createSQLQuery(countQuery.toString()).setLong("orgLocationId", orgLocation.getId()).setLong("groupId", Long.parseLong(payrollReportDTO.getGroupId())).setDate("freqStartDate", freqStartDate).setDate("freqEndDate", freqEndDate).setParameter("depositType", payrollReportDTO.getDepositType());
 //				countQry.setResultTransformer(Transformers.aliasToBean(CheckRegisterReportDTO.class));
 				List<BigInteger> countlist = countQry.list();
 				if (countlist != null && !countlist.isEmpty()) {
@@ -201,7 +201,7 @@ public class PayrollReportDaoImpl implements PayrollReportDao{
 				}
 				response.setRecordsTotal(count);
 				if (payrollReportDTO != null) {
-					Query  filteredCountQry= session.createSQLQuery(countQuery.toString()).setLong("orgLocationId", orgLocation.getId()).setLong("groupId", Long.parseLong(payrollReportDTO.getGroupId())).setDate("freqStartDate", freqStartDate).setDate("freqEndDate", freqEndDate);
+					Query  filteredCountQry= session.createSQLQuery(countQuery.toString()).setLong("orgLocationId", orgLocation.getId()).setLong("groupId", Long.parseLong(payrollReportDTO.getGroupId())).setDate("freqStartDate", freqStartDate).setDate("freqEndDate", freqEndDate).setParameter("depositType", payrollReportDTO.getDepositType());
 //					filteredCountQry.setResultTransformer(Transformers.aliasToBean(CheckRegisterReportDTO.class));
 					List<BigInteger> filteredCountlist = filteredCountQry.list();
 					if (filteredCountlist != null && !filteredCountlist.isEmpty()) {

@@ -20,9 +20,8 @@ $(document).ready(function(){
     </section>
     
     <div class="contentareaInner-styles clearfix">
-    
-    <div class="clearfix minHeight">
     <form:form id="direct_deposit_report_form" name="direct_deposit_report_form" method="post">
+    <div class="clearfix minHeight">
         <div class="clearfix row">
           <div class="col-md-5">
             <div class="form-group">
@@ -50,13 +49,12 @@ $(document).ready(function(){
         <div class="col-lg-12">
           <div class="pull-right">
             <input value="Run" class="btn btn-success btnSuccess" type="button" onClick="getDirectDepositReport();">
-            <input value="Reset" class="btn btn-defualt ml10" type="button">
+            <input value="Reset" class="btn btn-defualt ml10" type="button" onclick="resetData();">
           </div>
         </div>
       </div>      
+      </div>
         </form:form>
-	</div>
-    
      
      	
      </div>
@@ -261,7 +259,6 @@ function getDirectDepositReport(){
 
 
 function checkDirectDepositReports(){
-// 	    var payCheckDate = $('#payCheckDate').val();
 	    var groupId = $('#payGroup').val();
 	    getFreqdates("freqStartDate", "freqEndDate");
 	    var  freqStartDate = $("#freqStartDate").val();
@@ -285,6 +282,8 @@ function checkDirectDepositReportsList(url) {
 	result = result + '</tr>';
 	result = result + '</thead>	';
 	result = result + "</table>";
+	$("#noOfChecks").text(0);
+	$("#liveChecks").text(0);
 	$("#directDepositReportDIV").append(result);
 	directDepositData(url);
 
@@ -394,4 +393,14 @@ function directDepositData(url) {
 
 
 </script>
+
+ <script>
+ function resetData(){
+	 $("#payrollRegister").hide();
+	 $("#payGroup").val('');
+	 $("#payGroup").trigger("chosen:updated"); 
+	 $("#payPeriod").val('');
+	 $("#payPeriod").trigger("chosen:updated"); 
+ }
+ </script>
 <jsp:include page="../masterFooter.jsp" />
