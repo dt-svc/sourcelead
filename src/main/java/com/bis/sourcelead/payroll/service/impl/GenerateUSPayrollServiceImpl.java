@@ -299,6 +299,7 @@ public class GenerateUSPayrollServiceImpl implements GenerateUSPayrollService{
 							employeePayroll.setPreTaxContribution(postContriSum);
 							employeePayroll.setPostTaxContribution(postContriSum);
 							employeePayroll.setGrossPay(amount);
+							employeePayroll.setType(Constants.REGULAR);
 							BigDecimal grossAmount = (amount.subtract(preTax)).add(preContriSum);
 							YTDPayrollDTO ytdTaxes= payrollUtil.getEmployeeYTDPayroll(assoSal.getCandidate(),orgLocation,"APPROVED");
 							PayrollCalculatorDTO payrollCalculator = symmetryPayrollCalculator.runUSPayroll(assoSal.getCandidate(),totalHours,grossAmount,invoiceFrequency,associateTaxView,paySheetFreq.getPayCheckDate(),ytdTaxes);
