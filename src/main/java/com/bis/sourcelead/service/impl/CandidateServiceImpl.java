@@ -785,6 +785,7 @@ public class CandidateServiceImpl implements CandidateService {
 		 * Saving Candidate DB data as ElasticSearch Documents
 		 */
 		saveOrUpdateCandidateElkDocument(savedCandidate);
+		getCandidatePercentage(savedCandidate, orgLocations);
 		
 		// store candidate as a contact
 		
@@ -1922,6 +1923,9 @@ private Sheet createXlsSheet(Sheet createExcelsheet, Row writeRow,Candidate cand
 				 if(!candidateDocumentsList.isEmpty()){
 						percentage = percentage +10;
 				 }
+				 
+				 can.setCandidateProfilePercentage(percentage);
+				 candidateDao.storeCandidate(can);
 			}
 			return percentage;
 	}
@@ -2263,8 +2267,8 @@ private Sheet createXlsSheet(Sheet createExcelsheet, Row writeRow,Candidate cand
 
 	@Override
 	public List<CandidateDTO> getCandidateListForAddApplicant(OrgLocations orgLcoations,
-			Long requirementId,String skills,String candidateDetails) throws Exception {
-		return candidateDao.getCandidateListForAddApplicant(orgLcoations, requirementId,skills,candidateDetails);
+			Long requirementId,String skills,String candidateDetails,Integer profilePercentage) throws Exception {
+		return candidateDao.getCandidateListForAddApplicant(orgLcoations, requirementId,skills,candidateDetails,profilePercentage);
 	}
 
 	@Override
@@ -2539,6 +2543,9 @@ private Sheet createXlsSheet(Sheet createExcelsheet, Row writeRow,Candidate cand
 	@Override
 	public ResponseList<CandidateMarketPlaceDTO> getGlobalMarketCandidateList(CandidateMarketPlaceDTO candidateMarketPlaceDTO, String searchValue) {
 		return candidateDao.getGlobalMarketCandidateList(candidateMarketPlaceDTO, searchValue);
+	}
+	public List<Candidate> getAllCandidatesList() throws Exception {
+		return candidateDao.getAllCandidatesList();
 	}
 
 }
