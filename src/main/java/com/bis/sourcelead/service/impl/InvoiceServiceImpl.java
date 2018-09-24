@@ -3337,9 +3337,9 @@ public class InvoiceServiceImpl implements InvoiceService {
 							if (timelineHistory.getCreatedBy().getId().equals(ownerUser.getId())) {
 								statusVal = "Accepted";
 								statusBy = " by ";
-								if(ownerUser.getUserCode().equals(timelineHistory.getInvoice().getUpdatedBy())){
+								//if(ownerUser.getUserCode().equals(timelineHistory.getInvoice().getUpdatedBy())){
 									statusValue = ownerUser.getFullName();	
-								}
+								//}
 //								statusValue = timelineHistory.getInvoice().getOwnerUserId().getFullName();
 							} 
 							else if (!timelineHistory.getCreatedBy().getId()
@@ -3347,9 +3347,9 @@ public class InvoiceServiceImpl implements InvoiceService {
 								statusVal = "Accepted";
 								statusBy = " by ";
 							for(User contactUser: contactUsersList){
-							if(contactUser.getUserCode().equals(timelineHistory.getInvoice().getUpdatedBy())){
+							//if(contactUser.getUserCode().equals(timelineHistory.getInvoice().getUpdatedBy())){
 								statusValue = contactUser.getFullName();	
-							}
+							//}
 							}
 //								statusValue = timelineHistory.getInvoice().getContactUser().getFullName();
 							}
