@@ -81,8 +81,6 @@ public class USPayrollReportRestController {
 	@Autowired
 	PayrollReportService payrollReportService;
 
-	@Autowired
-	PaysheetFrequencyService paysheetFrequencyService;
 
 	/**
 	 * Returning Us Payroll Jsp
