@@ -368,7 +368,7 @@ creditDebitNoteDTO.setSortColumn(tableColumns[sortColumnIndex]);
 creditDebitNoteDTO.setSortOrder(sortColumnOrder);
 
 Timezone timezone = timeZoneService.getTimezone(orgLocations.getTimezone().getId());
-DateTime zoned = new DateTime();
+DateTime zoned = new DateTime(commonUtil.orgLocationCommonDate(new Date(), orgLocations)); //get date and time based on orglocation
 DateTimeFormatter outputFormatter = DateTimeFormat.forPattern("yyyy-MM-dd HH:mm:ss");
 DateTimeFormatter outputFormatter1 = DateTimeFormat.forPattern("yyyy-MM-dd HH:mm:ss");
 DateFormat TZ_DF_TS = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");

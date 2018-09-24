@@ -11,6 +11,7 @@ import org.springframework.stereotype.Service;
 import com.bis.sourcelead.dto.ResponseList;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.payroll.dao.PayrollReportDao;
+import com.bis.sourcelead.payroll.dto.CheckRegisterReportDTO;
 import com.bis.sourcelead.payroll.dto.PayrollReportDTO;
 import com.bis.sourcelead.payroll.dto.YTDPayrollDTO;
 import com.bis.sourcelead.payroll.entity.EmployeePayroll;
@@ -54,6 +55,7 @@ public class PayrollReportServiceImpl implements PayrollReportService{
 					if (StringUtils.isNotBlank(payroll.getOverTimeHours())) {
 						otHours = payroll.getOverTimeHours();
 					}
+					dto.setPayrollUUID(payroll.getUsEmpPayrollUUID());
 					dto.setOverTimeHours(otHours);
 					dto.setPreTaxDeduction(payroll.getPreTaxDeduction());
 					dto.setPostTaxDeduction(payroll.getPostTaxDeduction());
@@ -72,6 +74,20 @@ public class PayrollReportServiceImpl implements PayrollReportService{
 			e.printStackTrace();
 		}
 		return res;
+	}
+
+	@Override
+	public ResponseList<CheckRegisterReportDTO> getCheckRegisterReports(OrgLocations orgLocation, PayrollReportDTO payrollReportDTO)
+	{
+			ResponseList<CheckRegisterReportDTO> res = payrollReportDao.getCheckRegisterReports(orgLocation,payrollReportDTO);
+		    return res;
+	}
+
+	@Override
+	public ResponseList<PayrollReportDTO> getContributionReports(OrgLocations orgLocation, PayrollReportDTO payrollReportDTO)
+	{
+		ResponseList<EmployeePayroll> payrollResponse = payrollReportDao.getContributionReports(orgLocation,payrollReportDTO);
+		return null;
 	}
 	
 }
