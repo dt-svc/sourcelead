@@ -444,14 +444,14 @@ public class DumpPublicRestCalls {
 			}
 			logger.info("dumping uuid for EmployerPayrollCost completed");
 			
-			List<AccountDeductions> accountDeductions = accountDeductionsService.getAccountDeductionsByEmployeeId(orgLoc, null);
+			List<AccountDeductions> accountDeductions = accountDeductionsService.getAccountDeductionsByEmployeeId(orgLoc, 0l);
 			for(AccountDeductions ad : accountDeductions){
 				ad.setUuid(SourceLeadRandomCodeHelper.generateRandomUUID());
 				accountDeductionsService.saveAccountDeductions(ad);
 			}
 			logger.info("dumping uuid for AccountDeductions completed");
 			
-			List<HrDeductions> hrdList = hrDeductionsService.getHrDeductionsByEmployeeId(orgLoc, null);
+			List<HrDeductions> hrdList = hrDeductionsService.getHrDeductionsByEmployeeId(orgLoc, 0l);
 			for(HrDeductions hrd : hrdList){
 				hrd.setUuid(SourceLeadRandomCodeHelper.generateRandomUUID());
 				hrDeductionsService.saveHrDeductions(hrd);
