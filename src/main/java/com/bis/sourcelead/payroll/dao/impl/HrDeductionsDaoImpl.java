@@ -187,7 +187,7 @@ public class HrDeductionsDaoImpl implements HrDeductionsDao{
 		Session session = this.sessionFactory.getCurrentSession();
 		List<HrDeductions> hrdeductionlist = null;
 		String query = "";
-		if(empId != null){
+		if(empId != null && empId > 0){
 			query = "from HrDeductions hrd  left join fetch hrd.orgLocationId where hrd.orgLocationId.id =:orgLocationId and hrd.employeeId = :empId";
 			hrdeductionlist = session.createQuery(query).setLong("orgLocationId", orgLocations.getId()).setLong("empId", empId).list();
 			if(hrdeductionlist != null && hrdeductionlist.size() >0)

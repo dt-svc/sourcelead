@@ -57,7 +57,7 @@ public class PayrollReportDaoImpl implements PayrollReportDao{
 		ResponseList<EmployeePayroll> response = new ResponseList<>();
 		
 		try {
-			Date date = commonUtil.orgLocationDateFormat(orgLocation.getDateFormat(), payrollReportDTO.getPayCheckDate());
+			Date date =  new SimpleDateFormat("yyyy-MM-dd").parse(payrollReportDTO.getPayCheckDate());  
 			java.sql.Date payCheckDate = new java.sql.Date(date.getTime());
 			Session session = this.sessionFactory.getCurrentSession();
 			List<EmployeePayroll> payrollList = null;
@@ -230,14 +230,15 @@ public class PayrollReportDaoImpl implements PayrollReportDao{
 
 	@SuppressWarnings("unchecked")
 	@Override
-	public ResponseList<EmployeePayroll> getContributionReports(OrgLocations orgLocation, PayrollReportDTO payrollReportDTO)
+	@Transactional
+	public ResponseList<EmployeePayroll> getDeductionAndContributionReports(OrgLocations orgLocation, PayrollReportDTO payrollReportDTO)
 	{
-ResponseList<EmployeePayroll> response = new ResponseList<>();
+        ResponseList<EmployeePayroll> response = new ResponseList<>();
 		
 		try {
-			Date sDate = commonUtil.orgLocationDateFormat(orgLocation.getDateFormat(), payrollReportDTO.getFreqStartDate());
+			Date sDate =  new SimpleDateFormat("yyyy-MM-dd").parse(payrollReportDTO.getFreqStartDate());  
+			Date eDate =new SimpleDateFormat("yyyy-MM-dd").parse(payrollReportDTO.getFreqEndDate());
 			java.sql.Date freqStartDate = new java.sql.Date(sDate.getTime());
-			Date eDate = commonUtil.orgLocationDateFormat(orgLocation.getDateFormat(), payrollReportDTO.getFreqEndDate());
 			java.sql.Date freqEndDate = new java.sql.Date(eDate.getTime());
 			Session session = this.sessionFactory.getCurrentSession();
 			List<EmployeePayroll> payrollList = null;
