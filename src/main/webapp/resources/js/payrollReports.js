@@ -44,7 +44,7 @@ function getDepartments(id){
         url: sourceleadUrl+"/getDepartmentList?&departmentStatus=1", 
         success: function(json) {
         var output = "";
-        output = output + "<option value=''>Select Department</option>";
+        output = output + "<option value=''>select</option>";
 		for (var i=0; i<json.data.length; i++)
 		{
 			var opt = json.data[i];
