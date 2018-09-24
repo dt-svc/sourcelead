@@ -77,4 +77,6 @@ public interface CandidateEmployersService {
 	
 	public List<CandidateEmployers>   getCandidatesEmployersListByCandidateIdAndOrgLocationIDImmigration(Long candidateId, String searchVal) throws Exception;
 	
+	public Integer getCandidateActiveEmployersCountByCandidateId(Long candidateId);
+	
 }
