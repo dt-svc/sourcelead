@@ -243,6 +243,9 @@ public class OrgLocations implements Serializable{
 	
 	@Column(name = "IS_TIMESHEET_AVG_HOURS_REQUIRED")
     private String isTimesheetAvgHoursRequired;
+	
+	@Column(name = "PROFILE_PERCENTAGE")
+	private Integer profilePercentage;
     
     @Transient
     private String orgName;
@@ -1049,4 +1052,13 @@ public class OrgLocations implements Serializable{
 		this.registeredLocation = registeredLocation;
 	}
 
+	public Integer getProfilePercentage() {
+		return profilePercentage;
+	}
+
+	public void setProfilePercentage(Integer profilePercentage) {
+		this.profilePercentage = profilePercentage;
+	}
+
+	
 }
