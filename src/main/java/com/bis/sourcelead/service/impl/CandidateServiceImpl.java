@@ -1921,6 +1921,9 @@ private Sheet createXlsSheet(Sheet createExcelsheet, Row writeRow,Candidate cand
 				 if(!candidateDocumentsList.isEmpty()){
 						percentage = percentage +10;
 				 }
+				 
+				 can.setCandidateProfilePercentage(percentage);
+				 candidateDao.storeCandidate(can);
 			}
 			return percentage;
 	}
