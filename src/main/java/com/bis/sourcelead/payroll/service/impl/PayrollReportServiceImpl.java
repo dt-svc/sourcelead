@@ -113,8 +113,7 @@ public class PayrollReportServiceImpl implements PayrollReportService{
 					}
 					dto.setEmpName(sb.toString());
 					if(dedHis.getPayroll().getEmployee() != null) {
-						Employees employee = employeesService.getEmployee(dedHis.getPayroll().getEmployee().getId().toString());
-						dto.setEmpId(employee.getEmployeeId());
+						dto.setEmpId(dedHis.getPayroll().getEmployee().getEmployeeId());
 					}
 					if(StringUtils.isNotBlank(dedHis.getPayroll().getPaysheetFrequency().getUserGroup().getDepartmentId())) {
 						Department dept = departmentService.getDepartmentById(Long.parseLong(dedHis.getPayroll().getPaysheetFrequency().getUserGroup().getDepartmentId()));

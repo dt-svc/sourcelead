@@ -87,7 +87,7 @@ $(document).ready(function(){
     		
     		
     		
-  <div class="timesheet_out" id="payrollRegister" style="display: none;">
+  <div class="timesheet_out" id="payrollRegister">
       <div class="clearfix">
         
         <div class="positionRelative reportHead clearfix"> <span class="pull-left refreIcon"><a href="javascript:void(0)" class="refeIcon" title="Refresh" onclick="resetFilter();"></a></span>
@@ -226,9 +226,9 @@ $("html").click(function(){
 $(".overIcon, .newActPop").click(function(e){
  	e.stopPropagation();
 });
-function runPayrollregister() {
+/* function runPayrollregister() {
 	$("#payrollRegister").toggle();
-}
+} */
 </script>    
 
 
@@ -237,7 +237,7 @@ function runPayrollregister() {
 <script type="text/javascript">
 function contributionReport(){
 	 if ($('#contribution_report_form').validate(false, validationSettings)){ 
-		 runPayrollregister();   
+		 /* runPayrollregister();    */
 		 getContributionReports(); 
 			return true;
 	 }else{ 
@@ -324,7 +324,7 @@ function getContributionReports(){
 								{
 									"targets" : colIndex++,
 									"data" : "type",
-									"sortable": false,
+									"sortable": true,
 									"render" : function(data, type, opt,meta) {
 										
 										     var result = "";
@@ -351,7 +351,7 @@ function getContributionReports(){
 									{
 										"targets" : colIndex++,
 										"data" : "empName",
-										"sortable": false,
+										"sortable": true,
 										"render" : function(data, type, opt,meta) {
 											var result = "";
 												result = result+ '<td><div class="tblminwidth-75">'+opt.empName+'</div></td>';
@@ -362,7 +362,7 @@ function getContributionReports(){
 									{
 										"targets" : colIndex++,
 										"data" : "departmentName",
-										"sortable": false,
+										"sortable": true,
 										"render" : function(data, type, opt,meta) {
 											var result = "";
 											if(opt.departmentName != null && opt.departmentName != '' && opt.departmentName != 'undefined'){
@@ -376,6 +376,7 @@ function getContributionReports(){
 									{
 										"targets" : colIndex++,
 										"data" : "schedule",
+										"sortable": false,
 										"render" : function(data, type, opt,meta) {
 											var result = "";
 											result = result+ '<td><div class="tbldata-dotdot-vsm" title="">'+opt.schedule+'</div></td>';
@@ -384,6 +385,7 @@ function getContributionReports(){
 									},{
 										"targets" : colIndex++,
 										"data" : "dedAmount",
+										"sortable": false,
 										"render" : function(data, type, opt,meta) {
 											var result = "";
 											result = result+ '<td><div class="tbldata-dotdot-vsm" title="">'+opt.dedAmount+'</div></td>';
@@ -416,7 +418,7 @@ function getContributionReports(){
 		$("input[type=search]").hide();
 		$("#dataTableSearch").keyup(function(e) {
 			if (e.which === 13) {
-				checkRegisterReports()();
+				getContributionReports()();
 			}
 		});
 		
