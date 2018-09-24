@@ -1,7 +1,13 @@
 package com.bis.sourcelead.dto;
 
+import java.io.Serializable;
 
-public class CandidateMarketPlaceDTO extends SearchDTO {
+public class CandidateMarketPlaceDTO extends SearchDTO implements Serializable  {
+	
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
 
 
 	private Long id;

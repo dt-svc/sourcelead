@@ -4,6 +4,7 @@ import java.math.BigInteger;
 import java.text.MessageFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
@@ -18,6 +19,7 @@ import org.hibernate.SessionFactory;
 import org.hibernate.transform.Transformers;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Repository;
@@ -32,11 +34,14 @@ import com.bis.sourcelead.dto.CandidateDTO;
 import com.bis.sourcelead.dto.CandidateMarketPlaceDTO;
 import com.bis.sourcelead.dto.ImmigrationCandidateDTO;
 import com.bis.sourcelead.dto.ImmigrationListViewDTO;
+import com.bis.sourcelead.dto.LcaListViewDTO;
 import com.bis.sourcelead.dto.ResponseList;
 import com.bis.sourcelead.entity.Candidate;
 import com.bis.sourcelead.entity.CandidateIdendities;
 import com.bis.sourcelead.entity.CandidateImportLog;
+import com.bis.sourcelead.entity.CandidateMarketPlace;
 import com.bis.sourcelead.entity.CandidateResumes;
+import com.bis.sourcelead.entity.LcaListView;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.RecruiterReportCandidateCountView;
 import com.bis.sourcelead.entity.SubmissionCandidateListView;
@@ -2051,15 +2056,68 @@ public class CandidateDaoImpl implements CandidateDao {
 	}
 
 	@Override
+	@Transactional(rollbackFor = { Exception.class })
 	public ResponseList<CandidateMarketPlaceDTO> getGlobalMarketCandidateList(
 			CandidateMarketPlaceDTO candidateMarketPlaceDTO, String searchValue) {
-		    List<CandidateMarketPlaceDTO> globalMarketCandDTOList = new ArrayList<CandidateMarketPlaceDTO>();
+		Session session = this.sessionFactory.getCurrentSession();
+		logger.debug(" inside getGlobalMarketCandidateList searchValue is: "+searchValue);
+		List<Long> countlist = null;
+		Integer filterCount = 0;
+		
+		List<CandidateMarketPlace> globalMarketCandList = null;
 		    ResponseList<CandidateMarketPlaceDTO> responseList=  new ResponseList<>();
-			responseList.setRecordsTotal(0);
-			responseList.setRecordsFiltered(0);
+		    try {
+		    		
+		    StringBuilder query1 = new StringBuilder("");
+		    if (searchValue != null && !"".equalsIgnoreCase(searchValue)) {
+				query1.append(" and ((marketplace.fullName like '%" + searchValue + "%' )");
+				query1.append(" or (marketplace.location like '%" + searchValue + "%' )");
+				query1.append(" or (marketplace.skillsName like '%" + searchValue + "%' )");
+				query1.append(" or (marketplace.currentRate like '%" + searchValue + "%' )");
+				query1.append(" or (marketplace.expectedRate like '%" + searchValue + "%' )");
+				query1.append(" or (marketplace.score like '%" + searchValue + "%' ))");
+			}
+			StringBuilder query2 = new StringBuilder("");
+			 String sortingQry = "";
+	    		if (StringUtils.isNotBlank(candidateMarketPlaceDTO.getSortColumn())) {
+	    			String sortColumnName = candidateMarketPlaceDTO.getSortColumn();
+	    			sortingQry = " order by marketplace." + sortColumnName + " " + candidateMarketPlaceDTO.getSortOrder();
+	    		} 
+	    		String listQuery = "from CandidateMarketPlace marketplace  where  marketplace.status = 1 "+query1+" "+sortingQry ;
+	    		Query hqlQuery = session.createQuery(listQuery);
+	    		globalMarketCandList = hqlQuery.setFirstResult(candidateMarketPlaceDTO.getStart()).setMaxResults(candidateMarketPlaceDTO.getLength()).list();
+	    		//System.out.println(" after executing query result  list size is :::>>"+globalMarketCandList.size());
+				String listQueryCount = "select count(*) from CandidateMarketPlace marketplace  where  marketplace.status = 1  "+query1+" "+sortingQry;
+				Query hqlQuery1 = session.createQuery(listQueryCount);
+				countlist = hqlQuery1.list();
+				//System.out.println(" after executing query countlist   :::>>"+countlist);
+				int totalCount = 0;
+				if (candidateMarketPlaceDTO != null) {
+					if (countlist != null && !countlist.isEmpty()) {
+						totalCount = countlist.iterator().next().intValue();
+						filterCount = totalCount;
+					}
+				}
+				responseList.setRecordsTotal(totalCount);
+				if (query1.toString() != null && !query1.toString().isEmpty()) {
+					responseList.setRecordsFiltered(filterCount);
+				} else {
+					responseList.setRecordsFiltered(totalCount);
+				}
+				 List<CandidateMarketPlaceDTO> globalMarketCandDTOList = new ArrayList<CandidateMarketPlaceDTO>();
+			        for (CandidateMarketPlace source : globalMarketCandList) {
+			        	CandidateMarketPlaceDTO target = new CandidateMarketPlaceDTO();
+			            BeanUtils.copyProperties(source, target);
+			            globalMarketCandDTOList.add(target);
+			   }
+		    logger.debug(" After executing query result  list size is :::>>"+globalMarketCandList.size());
 			responseList.setData(globalMarketCandDTOList);
+		    }
+		    catch(Exception e) {
+		    	e.printStackTrace();
+		    }
 		return responseList;
 	}
-
+ 
 }
 

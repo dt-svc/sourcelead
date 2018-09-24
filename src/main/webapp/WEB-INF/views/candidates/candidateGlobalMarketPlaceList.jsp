@@ -97,13 +97,11 @@
 	         "columnDefs": [
 	             {
 	                 "targets": colIndex++,
-	                 bSortable: true,
-	                 aTargets: [ -1 ],
-	                  "data": "fullName", 
+	                 "data": "fullName", 
 	                 "render": function (data, type, opt, meta) {
 	                     var result = "";
 	                     if (opt.fullName !== null && opt.fullName !== '' && opt.fullName !== 'undefined') {
-	                    	    result = result + "<td><div class='tbldata-dotdot-sm' title = '"+opt.fullName +"'></div></td>";
+	                    	    result = result + "<td><div class='tbldata-dotdot-sm' title = '"+opt.fullName +"'>" + opt.fullName + "</div></td>";
 	                     } else {
 	                         result = result + "<td><div class='tbldata-dotdot-sm'>---</div></td>";
 	                     }
@@ -181,12 +179,7 @@
 	               /*   "data": "action", */
 	                 "render": function (data, type, opt, meta) {
 	                     var result = "";
-	                     if(opt.status  ==  1){
-	                    	 result = result + "<td><div class='tbldata-dotdot-sm' title = 'Active'>Active</div></td>";
-	                     }else{
-	                    	 result = result + "<td><div class='tbldata-dotdot-sm' title = 'In-Active'>In-Active</div></td>";
-	                     }
-	                     
+	                    	 result = result + "<td><div class='tbldata-dotdot-sm' title = 'Add To Marketplace'><a href='' >Add</a></div></td>";
 	                     return result;
 	                 }
 	             }
