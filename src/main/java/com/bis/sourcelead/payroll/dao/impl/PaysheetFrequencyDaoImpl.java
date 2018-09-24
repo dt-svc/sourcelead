@@ -127,7 +127,7 @@ private static final Logger logger = LoggerFactory.getLogger(AssociateTaxDaoImpl
 	@SuppressWarnings("unchecked")
 	@Override
 	@Transactional
-	public List<PaysheetFrequency> getPayrollRegisterReports(PayrollReportDTO payrollReportDTO)
+	public ResponseList<EmployeePayroll> getPayrollRegisterReports(PayrollReportDTO payrollReportDTO)
 	{
 		ResponseList<EmployeePayroll> response = new ResponseList<>();
 //		List<PaysheetFrequency> payrollList = null;

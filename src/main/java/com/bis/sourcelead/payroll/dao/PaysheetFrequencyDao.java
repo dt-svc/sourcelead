@@ -24,5 +24,4 @@ public interface PaysheetFrequencyDao {
 	PaysheetFrequency getPaySheetFrequencyByGroupIdAndFrequencyStartEnddate(String date,
 			OrgLocations orgLocation, Long groupId);
 			
-	List<PaysheetFrequency> getPayrollRegisterReports(PayrollReportDTO payPeriodDTO);
 }
