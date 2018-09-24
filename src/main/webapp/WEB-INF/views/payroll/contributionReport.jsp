@@ -8,6 +8,7 @@
 $(document).ready(function(){
 	getPayGroupList("payGroup");
 	getDepartments("departmentId");
+	getcontributionList();
 });
 </script>
 
@@ -39,10 +40,10 @@ $(document).ready(function(){
             <div class="form-group">
               <label class="col-md-12">Contribution Type</label>
               <div class="col-md-12">
-                <select class="form-control chosen-select" data-placeholder="Contribution Type" id="type" name="type">
-					    <option value="">Select Type</option>
+                <select class="form-control chosen-select" multiple data-placeholder="Contribution Type" id="contributionId" name="contributionId" field-name="Pay Group" data-validation="required">
+					 <!--    <option value="">Select Type</option>
 						<option value="Regular">Regular</option>
-						<option value="Additional">Additional</option>
+						<option value="Additional">Additional</option> -->
 					</select>
               </div>
             </div>
@@ -73,7 +74,7 @@ $(document).ready(function(){
 	<div class="clearfix footerstyelsNew">
         <div class="col-lg-12">
           <div class="pull-right">
-            <input value="Run" class="btn btn-success btnSuccess" type="button" onClick="getContributionReports();"> <!-- runPayrollregister -->
+            <input value="Run" class="btn btn-success btnSuccess" type="button" onClick="contributionReport();"> <!-- runPayrollregister -->
             <input value="Reset" class="btn btn-defualt ml10" type="button">
           </div>
         </div>
@@ -236,7 +237,7 @@ function runPayrollregister() {
 <script type="text/javascript">
 function contributionReport(){
 	 if ($('#contribution_report_form').validate(false, validationSettings)){ 
-		 /* runPayrollregister(); */    
+		 runPayrollregister();   
 		 getContributionReports(); 
 			return true;
 	 }else{ 
@@ -257,9 +258,10 @@ function getContributionReports(){
 	    getFreqdates("freqStartDate", "freqEndDate");
 	    var  freqStartDate = $("#freqStartDate").val();
 	    var freqEndDate = $("#freqEndDate").val();
+	    var contributionId = $("#contributionId").val();
 		var searchValue = $("#dataTableSearch").val();
 		searchValue = searchValue ? searchValue : "";
-		var url = sourceleadUrl+"/getContributionReports?searchValue="+searchValue+"&groupId="+groupId+"&freqStartDate="+freqStartDate+"&freqEndDate="+freqEndDate;
+		var url = sourceleadUrl+"/getContributionReports?searchValue="+searchValue+"&groupId="+groupId+"&freqStartDate="+freqStartDate+"&freqEndDate="+freqEndDate+"&contributionId="+contributionId;
 		contributionReportURL(url);	
 }
 
@@ -326,7 +328,7 @@ function getContributionReports(){
 									"render" : function(data, type, opt,meta) {
 										
 										     var result = "";
-											result = result+ ' <td><div class="tblminwidth-75">--</div></td>';
+											result = result+ ' <td><div class="tblminwidth-75">'+opt.contributionType+'</div></td>';
 										
 										return result;
 									}
@@ -338,13 +340,11 @@ function getContributionReports(){
 										"render" : function(data, type, opt,meta) {
 											
 											var result = "";
-											if(opt.employeeId != null && opt.EmployeeId != '' && opt.employeeId != 'undefined'){
-												result = result+ ' <td><div class="tblminwidth-75">'+opt.employeeId+'</div></td>';
+											if(opt.empId != null && opt.empId != '' && opt.empId != 'undefined'){
+												result = result+ ' <td><div class="tblminwidth-75">'+opt.empId+'</div></td>';
 											}else{
 												result = result+ ' <td><div class="tblminwidth-75">--</div></td>';
 											}
-											$("#noOfChecks").text(opt.totalChecks);
-											$("#liveChecks").text(opt.totalChecks);
 											return result;
 										}
 									},
@@ -354,12 +354,7 @@ function getContributionReports(){
 										"sortable": false,
 										"render" : function(data, type, opt,meta) {
 											var result = "";
-											if(opt.lastName != null && opt.lastName != '' && opt.lastName != 'undefined'){
-												result = result+ '<td><div class="tblminwidth-75">'+opt.firstName+' '+opt.lastName+'</div></td>';
-											}else{
-												result = result+ '<td><div class="tblminwidth-75">'+opt.firstName+'</div></td>';
-											}
-											
+												result = result+ '<td><div class="tblminwidth-75">'+opt.empName+'</div></td>';
 											return result;
 
 										}
@@ -370,12 +365,11 @@ function getContributionReports(){
 										"sortable": false,
 										"render" : function(data, type, opt,meta) {
 											var result = "";
-											if(opt.departmentId != null && opt.departmentId != '' && opt.departmentId != 'undefined'){
-												result = result + '<td class="tblminwidth-75"><div>'+opt.departmentId+'</div></td>';
+											if(opt.departmentName != null && opt.departmentName != '' && opt.departmentName != 'undefined'){
+												result = result + '<td class="tblminwidth-75"><div>'+opt.departmentName+'</div></td>';
 											}else{
 												result = result + '<td class="tblminwidth-75"><div>--</div></td>';
 											}
-											
 											return result;
 										}
 									},
@@ -384,7 +378,7 @@ function getContributionReports(){
 										"data" : "schedule",
 										"render" : function(data, type, opt,meta) {
 											var result = "";
-											result = result+ '<td><div class="tbldata-dotdot-vsm" title="">'+opt.netPay+'</div></td>';
+											result = result+ '<td><div class="tbldata-dotdot-vsm" title="">'+opt.schedule+'</div></td>';
 											return result;
 										}
 									},{
@@ -392,7 +386,7 @@ function getContributionReports(){
 										"data" : "dedAmount",
 										"render" : function(data, type, opt,meta) {
 											var result = "";
-											result = result+ '<td><div class="tbldata-dotdot-vsm" title="">'+opt.netPay+'</div></td>';
+											result = result+ '<td><div class="tbldata-dotdot-vsm" title="">'+opt.dedAmount+'</div></td>';
 											return result;
 										}
 									},{
@@ -400,7 +394,7 @@ function getContributionReports(){
 										"data" : "ytdDeductions",
 										"render" : function(data, type, opt,meta) {
 											var result = "";
-											result = result+ '<td><div class="tbldata-dotdot-vsm" title="">'+opt.netPay+'</div></td>';
+											result = result+ '<td><div class="tbldata-dotdot-vsm" title="">XXXXX</div></td>';
 											return result;
 										}
 									}],
@@ -430,6 +424,26 @@ function getContributionReports(){
 	function contributionReportSearch(){
 		getContributionReports()();
 	}
-	
 </script>			
+
+<script>
+function getcontributionList(){
+	$.ajax({
+	    	type: "GET",
+	        url: sourceleadUrl+"/getContributionList?"+tokenParamName+"="+tokenValue                 , 
+	        success: function(json) {
+	        var output = "";
+			for (var i=0; i<json.length; i++)
+			{
+				var opt = json[i];
+				output = output + "<option value='" +opt.contributionId+ "'>"+opt.contributionType+"</option>";
+			}
+			$("#contributionId").empty();
+			$("#contributionId").append(output);
+			$('#contributionId').trigger("chosen:updated"); 
+	        },
+	    });
+}
+
+</script>
 <jsp:include page="../masterFooter.jsp" />

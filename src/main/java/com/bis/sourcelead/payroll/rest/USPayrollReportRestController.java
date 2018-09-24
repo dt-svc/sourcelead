@@ -56,6 +56,12 @@ public class USPayrollReportRestController {
 	UserGroupService userGroupService;
 	
 	@Autowired
+	PayrollReportService payrollReportService;
+
+	@Autowired
+	PaysheetFrequencyService paysheetFrequencyService;
+
+	@Autowired
 	USPayPeriodService usPayPeriodService;
 	
 	@Autowired
@@ -66,7 +72,6 @@ public class USPayrollReportRestController {
 	
 	@Autowired
 	PaysheetFrequencyService paysheetFrequencyService;
-
 
 	/**
 	 * Returning Us Payroll Jsp
@@ -260,14 +265,13 @@ public class USPayrollReportRestController {
 
 	@RequestMapping(value = { "/runPayrollregister","/rest/runPayrollregister" }, method = RequestMethod.POST)
 	@ResponseBody
-	public ResponseList<USPayrollDTO> runPayrollregister(PayrollReportDTO payrollReportDTO,HttpServletRequest request, HttpServletResponse response) throws Exception
+	public ResponseList<PayrollReportDTO> runPayrollregister(PayrollReportDTO payrollReportDTO,HttpServletRequest request, HttpServletResponse response) throws Exception
 	{
-		ResponseList<USPayrollDTO> responseList = new ResponseList<>();
+		ResponseList<PayrollReportDTO> responseList = new ResponseList<>();
 		try {
-			User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
-			if (user != null) { 
-				List<USPayrollDTO> payrollRegisterReports = paysheetFrequencyService.getPayrollRegisterReports(payrollReportDTO);
-				responseList.setData(payrollRegisterReports);
+			OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+			if (orgLocations != null) { 
+				responseList = paysheetFrequencyService.getPayrollRegisterReports(payrollReportDTO,orgLocations);
 				responseList.setResponse(Result.SUCCESS.name());
 				responseList.setResponseMessage(Result.SUCCESS.getValue());
 			}else{
