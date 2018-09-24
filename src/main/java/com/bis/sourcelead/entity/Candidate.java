@@ -72,13 +72,13 @@ public class Candidate implements Serializable {
 	@Column(name = "RESIDENCE_STREET_ADDRESS", columnDefinition = "LONGTEXT default NULL")
 	private String residenceStreetAddress;
 	
-	@Column(name = "RESIDENCE_COUNTRY")
+	@Column(name = "RESIDENCE_COUNTRY", columnDefinition = "LONGTEXT default NULL")
 	private String residenceCountry;
 	
-	@Column(name = "RESIDENCE_STATE")
+	@Column(name = "RESIDENCE_STATE", columnDefinition = "LONGTEXT default NULL")
 	private String residenceState;
 	
-	@Column(name = "RESIDENCE_CITY")
+	@Column(name = "RESIDENCE_CITY", columnDefinition = "LONGTEXT default NULL")
 	private String residenceCity;
 	
 	@Column(name = "RESIDENCE_ZIP_CODE")

@@ -513,4 +513,11 @@ public class AccountDeductionsServiceImpl implements AccountDeductionsService{
 	{
 		return accountDeductionsDao.getAccountDeductionsVersionByLocationId(locationId);
 	}
+
+
+	@Override
+	public ResponseList<AccountDeductions> getAccountDeductionsByEmployeeId(OrgLocations orgLocation,
+			AccountDeductionsDTO accountDeductionsDTO) {
+		return accountDeductionsDao.getAccountDeductionsByEmployeeId(orgLocation,accountDeductionsDTO);
+	}
 }

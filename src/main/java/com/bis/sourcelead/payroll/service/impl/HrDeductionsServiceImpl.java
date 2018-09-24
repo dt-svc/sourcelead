@@ -363,4 +363,11 @@ public class HrDeductionsServiceImpl implements HrDeductionsService{
 		return hrDeductionsDao.getHrDeductionsVersionByLocationId(locationId);
 	}
 
+
+	@Override
+	public ResponseList<HrDeductions> getHrDeductionsByEmployeeId(OrgLocations orgLocation,HrDeductionsDTO hrDeductionsDTO) {
+		
+		return hrDeductionsDao.getHrDeductionsByEmployeeId(orgLocation,hrDeductionsDTO);
+	}
+
 }

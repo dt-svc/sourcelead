@@ -368,7 +368,7 @@ creditDebitNoteDTO.setSortColumn(tableColumns[sortColumnIndex]);
 creditDebitNoteDTO.setSortOrder(sortColumnOrder);
 
 Timezone timezone = timeZoneService.getTimezone(orgLocations.getTimezone().getId());
-DateTime zoned = new DateTime();
+DateTime zoned = new DateTime(commonUtil.orgLocationCommonDate(new Date(), orgLocations)); //get date and time based on orglocation
 DateTimeFormatter outputFormatter = DateTimeFormat.forPattern("yyyy-MM-dd HH:mm:ss");
 DateTimeFormatter outputFormatter1 = DateTimeFormat.forPattern("yyyy-MM-dd HH:mm:ss");
 DateFormat TZ_DF_TS = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
@@ -2484,6 +2484,18 @@ return responseList;
 		boolean isDeleted = invoiceService.deleteCreditDebitNote(creditDebitUUID, noteType, user,orglocations);
 		
 		return isDeleted;
+	}
+	
+	@RequestMapping(value = "/reactiveCreditDebitNote", method = RequestMethod.POST)
+	@ResponseBody
+	public boolean reactiveCreditDebitNote(@RequestParam(value = "creditDebitUUID", required = false) String creditDebitUUID, 
+			@RequestParam(value = "noteType", required = false) String noteType, HttpServletRequest request) throws Exception
+	{
+		User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+		OrgLocations orglocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+		boolean reactive = invoiceService.reactiveCreditDebitNote(creditDebitUUID, noteType, user,orglocations);
+		
+		return reactive;
 	}
 	
 	@RequestMapping(value = "/deleteLineItemEditModeId", method = RequestMethod.POST)
