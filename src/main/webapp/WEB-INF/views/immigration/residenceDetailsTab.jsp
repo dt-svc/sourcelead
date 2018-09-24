@@ -260,7 +260,7 @@
 			 
 				$("#residenceSearch").keyup(function (e) {
 			        if (e.which === 13) {
-			        	getCandidateResidenceList(candidateId);
+			        	immigration.getCandidateResidenceList(candidateId);
 			        }
 			    });
 		</script>

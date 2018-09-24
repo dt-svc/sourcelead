@@ -59,6 +59,9 @@
 		</div>
 	</div>
 </div>
+
+
+<div id="candidateSubmittedJobsDiv" class="project_tabs clearfix"></div> 
 	
 	<script>
 	var isAssociate = 'N';

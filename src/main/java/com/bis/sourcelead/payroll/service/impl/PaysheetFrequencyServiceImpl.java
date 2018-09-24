@@ -46,6 +46,7 @@ import com.bis.sourcelead.payroll.dto.MyPayrollSummaryDTO;
 import com.bis.sourcelead.payroll.dto.PayItemDTO;
 import com.bis.sourcelead.payroll.dto.PayPeriodDTO;
 import com.bis.sourcelead.payroll.dto.PayrollApproverDTO;
+import com.bis.sourcelead.payroll.dto.PayrollComparisonDTO;
 import com.bis.sourcelead.payroll.dto.PayrollConstant;
 import com.bis.sourcelead.payroll.dto.PayrollDeductionDTO;
 import com.bis.sourcelead.payroll.dto.PayrollReportDTO;
@@ -549,6 +550,11 @@ public class PaysheetFrequencyServiceImpl implements PaysheetFrequencyService{
 		return paysheetFrequencyDao.employeePayrollYTD(candidate,orgLocation,approverStatus);
 	}
 
+	@Override
+	public PaysheetFrequency getPaySheetFrequencyByGroupIdAndFrequencyStartEnddate(String date, OrgLocations orgLocation,Long groupId) {
+		return paysheetFrequencyDao.getPaySheetFrequencyByGroupIdAndFrequencyStartEnddate(date,orgLocation,groupId);
+	}
+	
 	@Override
 	public ResponseList<PayrollReportDTO> getPayrollRegisterReports(PayrollReportDTO payPeriodDTO,OrgLocations orgLocations)
 	{
