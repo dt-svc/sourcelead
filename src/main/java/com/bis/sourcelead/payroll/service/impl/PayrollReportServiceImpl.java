@@ -3,20 +3,26 @@ package com.bis.sourcelead.payroll.service.impl;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.bis.sourcelead.dto.ResponseList;
+import com.bis.sourcelead.entity.Department;
+import com.bis.sourcelead.entity.Employees;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.payroll.dao.PayrollReportDao;
 import com.bis.sourcelead.payroll.dto.CheckRegisterReportDTO;
 import com.bis.sourcelead.payroll.dto.PayrollReportDTO;
 import com.bis.sourcelead.payroll.dto.YTDPayrollDTO;
+import com.bis.sourcelead.payroll.entity.DeductionHistory;
 import com.bis.sourcelead.payroll.entity.EmployeePayroll;
 import com.bis.sourcelead.payroll.service.PayrollReportService;
 import com.bis.sourcelead.payroll.util.PayrollUtil;
+import com.bis.sourcelead.service.DepartmentService;
+import com.bis.sourcelead.service.EmployeesService;
 
 @Service
 public class PayrollReportServiceImpl implements PayrollReportService{
@@ -26,6 +32,12 @@ public class PayrollReportServiceImpl implements PayrollReportService{
 	
 	@Autowired
 	PayrollUtil payrollUtil;
+	
+	@Autowired
+	EmployeesService employeesService;
+	
+	@Autowired
+	DepartmentService departmentService;
 	
 	@Override
 	public ResponseList<PayrollReportDTO> getPayrollSummaryByPayPeriodAndPayCheckDate(OrgLocations orgLocation, PayrollReportDTO payrollReportDTO)
@@ -86,7 +98,38 @@ public class PayrollReportServiceImpl implements PayrollReportService{
 	@Override
 	public ResponseList<PayrollReportDTO> getDeductionAndContributionReports(OrgLocations orgLocation, PayrollReportDTO payrollReportDTO)
 	{
-		ResponseList<EmployeePayroll> payrollResponse = payrollReportDao.getDeductionAndContributionReports(orgLocation,payrollReportDTO);
+		ResponseList<DeductionHistory> payrollResponse = payrollReportDao.getDeductionAndContributionReports(orgLocation,payrollReportDTO);
+		
+		try {
+//			if(payrollResponse.getData() != null) {
+//				for(DeductionHistory payroll : payrollResponse.getData()) {
+//					PayrollReportDTO dto = new PayrollReportDTO();
+//					StringBuilder sb = new StringBuilder();
+//					if(StringUtils.isNotBlank(payroll.getCandidate().getLastName())) {
+//						sb.append(payroll.getCandidate().getFirstName()).append(" ").append(payroll.getCandidate().getLastName());
+//					}else {
+//						sb.append(payroll.getCandidate().getFirstName());
+//					}
+//					dto.setEmpName(sb.toString());
+//					if(payroll.getEmployee() != null) {
+//						Employees employee = employeesService.getEmployee(payroll.getEmployee().getId().toString());
+//						dto.setEmpId(employee.getEmployeeId());
+//					}
+//					if(StringUtils.isNotBlank(payroll.getPaysheetFrequency().getUserGroup().getDepartmentId())) {
+//						Department dept = departmentService.getDepartmentById(Long.parseLong(payroll.getPaysheetFrequency().getUserGroup().getDepartmentId()));
+//						dto.setDepartmentName(dept.getDepartmentName());
+//					}
+//					if(payroll.getDeductionHistory() != null && payroll.getDeductionHistory().size() >0) {
+//						Set<DeductionHistory> deductionHistory = payroll.getDeductionHistory();
+////						dto.setContribtionType(dedHis.getContributionId().getContributionTypeId().getDeductionTypeId().getPayrollDeductionType());
+//					}
+//					
+//				}
+//			}
+			
+		}catch (Exception e) {
+			e.printStackTrace();
+		}
 		return null;
 	}
 	
