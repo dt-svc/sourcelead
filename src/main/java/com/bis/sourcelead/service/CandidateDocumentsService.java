@@ -36,4 +36,6 @@ public interface CandidateDocumentsService {
 	public List<CandidateDocumentsDTO> getCandidateDocumentsDTOListByCandidateIdAndOrgLocationID(Long candidateId, Long orgLocationId) throws Exception;
 
 	void saveOrUpdateCandidateElkDocumentWithDocumentDetails(Long candidateId,Long orgLocationId) throws Exception;
+	
+	public Integer getCandidateActiveDocumentsByCandidateId(Long candidateId);
 }

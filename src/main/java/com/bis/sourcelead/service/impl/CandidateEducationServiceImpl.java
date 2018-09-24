@@ -429,4 +429,10 @@ public class CandidateEducationServiceImpl implements CandidateEducationService 
 	}
 		return "success";
 	}
+
+
+	@Override
+	public Integer getCandidateActiveEducationsCountByCandidateId(Long candidateId) throws Exception {
+		return candidateEducationDao.getCandidateActiveEducationsCountByCandidateId(candidateId);
+	}
 }

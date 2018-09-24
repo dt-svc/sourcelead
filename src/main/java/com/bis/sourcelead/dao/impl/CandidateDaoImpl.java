@@ -1873,6 +1873,7 @@ public class CandidateDaoImpl implements CandidateDao {
 					 		 "WHERE  CAND.ORG_LOCATION_ID = OL.ID  AND CAND.STATUS = '1' " + 
 					 		 "AND CAND.ORG_LOCATION_ID = :orgLocationId " + 
 					 		 "AND CAND.ID NOT IN (SELECT SUB.CANDIDATE_ID FROM REQUIREMENT_SUBMISSION SUB WHERE SUB.REQUIREMENT_ID = :requirementId) "+
+					 		 "AND CAND.PROFILE_PERCENTAGE >= (SELECT REQ.PROFILE_PERCENTAGE FROM REQUIREMENT REQ WHERE REQ.ID = :requirementId) "+
 					 		 "GROUP BY CAND.ID,  " + 
 					 		 "DATE_FORMAT(CAND.CREATED_DATE ,\"%Y-%m-%d\"))Q1 "+querySeachStr+advSeachStr+sortingQry;
 				
@@ -1953,7 +1954,7 @@ public class CandidateDaoImpl implements CandidateDao {
 	@Override
 	@Transactional
 	public List<CandidateDTO> getCandidateListForAddApplicant(OrgLocations orgLcoations,
-			Long requirementId,String skills,String candidateDetails) throws Exception {
+			Long requirementId,String skills,String candidateDetails,Integer profilePercentage) throws Exception {
 		
 		List<CandidateDTO> candidateDTOList = null;
 		Session session = this.sessionFactory.getCurrentSession();
@@ -2001,6 +2002,7 @@ public class CandidateDaoImpl implements CandidateDao {
 				+" FROM CANDIDATE CAND "
 				+" WHERE CAND.STATUS = '1' " 
 		 		+" AND CAND.ORG_LOCATION_ID = :orgLocationId " 
+		 		+" AND CAND.PROFILE_PERCENTAGE >= :profilePercentage "
 				+subQuery
 		 		+ " AND CAND.ID NOT IN (SELECT SUB.CANDIDATE_ID FROM REQUIREMENT_SUBMISSION SUB WHERE SUB.REQUIREMENT_ID = :requirementId) "
 				+ " ORDER BY CAND.ID DESC "; 
@@ -2008,6 +2010,7 @@ public class CandidateDaoImpl implements CandidateDao {
             Query queryObj = session.createSQLQuery(query);
 			queryObj.setLong("orgLocationId", orgLcoations.getId());
 			queryObj.setLong("requirementId", requirementId);
+			queryObj.setInteger("profilePercentage", profilePercentage);
 			queryObj.setMaxResults(5000);
 			queryObj.setResultTransformer(Transformers.aliasToBean(CandidateDTO.class));
 			candidateDTOList = queryObj.list();
@@ -2046,6 +2049,17 @@ public class CandidateDaoImpl implements CandidateDao {
 			queryObj.setResultTransformer(Transformers.aliasToBean(CandidateDTO.class));
 			candidateDTOList = queryObj.list();
 			return candidateDTOList;
+	}
+
+	@Override
+	@Transactional
+	public List<Candidate> getAllCandidatesList() throws Exception {
+
+		Session session = this.sessionFactory.getCurrentSession();
+		String query = "from Candidate candidates  ";
+		List<Candidate> candidatesList = session.createQuery(query).list();
+		return candidatesList;
+	
 	}
 
 }

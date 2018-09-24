@@ -385,4 +385,9 @@ public class CandidateEmployersServiceImpl implements CandidateEmployersService 
 		return "success";
 	}
 
+	@Override
+	public Integer getCandidateActiveEmployersCountByCandidateId(Long candidateId) {
+		return candidateEmployersDao.getCandidateActiveEmployersCountByCandidateId(candidateId);
+	}
+
 }
