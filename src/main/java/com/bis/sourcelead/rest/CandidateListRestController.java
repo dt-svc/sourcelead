@@ -728,6 +728,8 @@ public class CandidateListRestController {
 					
 					int percentage = candidateService.getCandidatePercentage(can, loginOrgLocation);
 					candidateIndex.setProfilePercentage(percentage);
+					Integer submittedJobCount = requirementSubmissionService.getRequirementSubmissionCountByCandiateIdAndOrgLocationId(candidateIndex.getCandidateId(), loginOrgLocation.getId());
+					candidateIndex.setSubmittedJobsCount(submittedJobCount);
 					candidatesList.add(candidateIndex);
 				}
 				response.setRecordsFiltered(Long.valueOf(searchResponse.getHits().getTotalHits()).intValue());
