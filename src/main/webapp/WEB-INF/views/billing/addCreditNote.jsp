@@ -304,7 +304,7 @@
                       </select>
                     </div>
                     <div class="col-md-5 paddingLeft" id="discountValueDiv">
-                      <input class="form-control input-sm allownumericwithdecimal" id="discountValue" value = "${creditDebitNote.discountValue}" placeholder="Flat / Discount" name="discountValue" type="text" onkeyup="calculateDisCount();">
+                      <input class="form-control input-sm allownumericwithdecimal" id="discountValue" value = "${creditDebitNote.discountValue}" placeholder="Flat / Discount" name="discountValue" type="text" onkeyup="calculateDisCount();validateNumber(this);">
                     </div>
                   </div>
                 </div>

@@ -277,7 +277,7 @@ function creditNotePagination(url){
 			    }
     	  		}else{
     	  			result = result +'<div class="tbldata-dotdot-vsm">';
-    	  			if((report.creditDebitNoteStatus == "Draft")) && (report.status !="0"))
+    	  			if((report.creditDebitNoteStatus == "Draft") && (report.status !="0"))
    				 {
 					result = result +' <span class="clearfix"><a href="<c:url value="/app/addDebitNote?creditDebitUUID='+report.creditDebitUUID+'&noteType=Debit"/>" <i class="fa fa-edit paddingRight paddingLeft" title="Edit"></i></a></span>';
    				 	result = result +' <span class="clearfix"><a onClick="deleteCreditDebitNote(\''+report.creditDebitUUID+'\');"><i class="fa fa-trash paddingRight paddingLeft" title="Remove"></i></a></span>';
