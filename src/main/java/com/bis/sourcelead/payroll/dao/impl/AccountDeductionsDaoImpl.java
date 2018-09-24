@@ -207,7 +207,7 @@ public class AccountDeductionsDaoImpl implements AccountDeductionsDao{
 		Session session = this.sessionFactory.getCurrentSession();
 		List<AccountDeductions> accountDeductionslist = null;
 		String query = "";
-		if(empId != null){
+		if(empId != null && empId > 0){
 			query = "from AccountDeductions ad left join fetch ad.orgLocationId where ad.orgLocationId.id =:orgLocationId and ad.employeeId = :empId";
 			accountDeductionslist = session.createQuery(query).setLong("orgLocationId", orgLocations.getId()).setLong("empId", empId).list();
 			if(accountDeductionslist != null && accountDeductionslist.size() >0)
