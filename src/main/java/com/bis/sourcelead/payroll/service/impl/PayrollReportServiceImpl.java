@@ -84,9 +84,9 @@ public class PayrollReportServiceImpl implements PayrollReportService{
 	}
 
 	@Override
-	public ResponseList<PayrollReportDTO> getContributionReports(OrgLocations orgLocation, PayrollReportDTO payrollReportDTO)
+	public ResponseList<PayrollReportDTO> getDeductionAndContributionReports(OrgLocations orgLocation, PayrollReportDTO payrollReportDTO)
 	{
-		ResponseList<EmployeePayroll> payrollResponse = payrollReportDao.getContributionReports(orgLocation,payrollReportDTO);
+		ResponseList<EmployeePayroll> payrollResponse = payrollReportDao.getDeductionAndContributionReports(orgLocation,payrollReportDTO);
 		return null;
 	}
 	
