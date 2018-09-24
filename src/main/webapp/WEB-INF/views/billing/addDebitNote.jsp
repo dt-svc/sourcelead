@@ -624,11 +624,15 @@ function  conversionRate(){
 			$("#approversDivId").show();
 			$("#submitButtonId").show();
 			$("#sendButtonId").hide();
+			$("#draftButtonId").hide();
+			$("#approvers").attr("data-validation","required");
 		} else {
 			$("#approverCheckBox").val("N");
 			$("#approversDivId").hide();
 			$("#submitButtonId").hide();
 			$("#sendButtonId").show();
+			$("#approvers").removeAttr('data-validation');
+			$("#approvers").find("p.jquery_form_error_message").remove();
 		}
 	}
 

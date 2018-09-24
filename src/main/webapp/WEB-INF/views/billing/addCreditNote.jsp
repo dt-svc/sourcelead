@@ -97,9 +97,9 @@
 		</div>
 		<div class="col-xs-12 col-sm-6 col-md-6">
 		<div class="form-group row" id="approversDivId" style="display: none;">
-		<label class="col-md-3 paddingRight">Approvers</label>
+		<label class="col-md-3 paddingRight">Approvers<span class="text-danger">&nbsp;*</span></label>
 		<div class="col-md-9">
-		<select multiple="multiple" class="chosen-select form-control" value="" id="approvers" name="approvers" field-name="Approvers" data-validation="true" placeholder="Approvers">
+		<select multiple="multiple" class="chosen-select form-control" value="" id="approvers" name="approvers" field-name="Approvers"  placeholder="Approvers">
 		</select>
 		</div>
 		</div>
@@ -548,11 +548,16 @@ function removeDynamicRowDiv(id,lineItemId){
 			$("#approversDivId").show();
 			$("#submitButtonId").show();
 			$("#sendButtonId").hide();
+			$("#draftButtonId").hide();
+			$("#approvers").attr("data-validation","required");
 		} else {
 			$("#approverCheckBox").val("N");
 			$("#approversDivId").hide();
 			$("#submitButtonId").hide();
 			$("#sendButtonId").show();
+			$("#draftButtonId").show();
+			$("#approvers").removeAttr('data-validation');
+			$("#approvers").find("p.jquery_form_error_message").remove();
 		}
 	}
 
