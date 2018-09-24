@@ -81,5 +81,7 @@ public interface CandidateEducationService {
 			Long orgLocationId, String searchVal) throws Exception;
 	
 	String removeCandidateEucationrDocById(Long candidateEduId) throws Exception;
+	
+	Integer getCandidateActiveEducationsCountByCandidateId(Long candidateId) throws Exception;
 
 }

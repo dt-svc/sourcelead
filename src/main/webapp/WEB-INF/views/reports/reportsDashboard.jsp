@@ -289,18 +289,18 @@
 				<span class="dropdown-toggle btn btn-sm btn-default repDropBtn" type="button" id="menu4" data-toggle="dropdown"><span class="caret cursorPointer"></span></span>
 				<ul class="dropdown-menu" role="menu" aria-labelledby="menu3">
 			     <sec:authorize access="hasRole('ROLE_USAGE_REPORT')">
-				<li><a href="payrollRegister.html">Payroll Register Reports</a></li>
-				<li><a href="payrollComparisionReport.html">Comparsion</a></li>
-				<li><a href="payrollSummary.html">Payroll Summary</a></li>
-				<li><a href="payrollRegister.html">Check Register Report</a></li>
-				<li><a href="employeePayroll.html">Employee Report</a></li>
+				<li><a href="${appPath}/payrollRegisterReport">Payroll Register Reports</a></li>
+				<li><a href="${appPath}/payrollComparison">Comparsion</a></li>
+				<li><a href="${appPath}/payrollListSummaryReport">Payroll Summary</a></li>
+				<li><a href="${appPath}/checkRegisterReport">Check Register Report</a></li>
+				<!-- <li><a href="employeePayroll.html">Employee Report</a></li>
 				<li><a href="companysnapshot.html">Employee Hours Paid</a></li>
-				<li><a href="companysnapshot.html">Taxable Wages Report</a></li>
-				<li><a href="deduction.html">Deduction Reports</a></li>
-				<li><a href="contribution.html">Contribution Reports</a></li>
-				<li><a href="companysnapshot.html">Tax Liability Report</a></li>
-				<li><a href="companysnapshot.html">Payroll Timesheet Report</a></li>
-				<li><a href="directdeposit.html">Direct Deposit</a></li>
+				<li><a href="companysnapshot.html">Taxable Wages Report</a></li> -->
+				<li><a href="${appPath}/deductionReport">Deduction Reports</a></li>
+				<li><a href="${appPath}/contributionReport">Contribution Reports</a></li>
+				<!-- <li><a href="companysnapshot.html">Tax Liability Report</a></li>
+				<li><a href="companysnapshot.html">Payroll Timesheet Report</a></li> -->
+				<li><a href="${appPath}/directDepositReport">Direct Deposit</a></li>
 				</sec:authorize>
 				</ul>
 			</div>
