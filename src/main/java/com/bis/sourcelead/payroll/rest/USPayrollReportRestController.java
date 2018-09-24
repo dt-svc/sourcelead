@@ -498,7 +498,7 @@ public class USPayrollReportRestController {
 	public ResponseList<PayrollReportDTO> getContributionReports(PayrollReportDTO payrollReportDTO,HttpServletRequest request, HttpServletResponse response) throws Exception
 	{
 		OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
-		String[] tableColumns = {"type",  "empId","empName", "","schedule","dedAmount","ytdDeductions"};
+		String[] tableColumns = {"payrollDeductionType",  "employeeId","firstName", "departmentName","schedule","dedAmount","ytdDeductions"};
 	    int sortColumnIndex = 1;		 //by default sorting using updated date
 		String sortColumnOrder = "asc";  //by default descending order
 		if(payrollReportDTO.getOrder() != null && !payrollReportDTO.getOrder().isEmpty()) {
