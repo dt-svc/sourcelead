@@ -454,7 +454,7 @@
               </div>
             </div>
             
-             <c:if test="${empty immigrationDTO}">
+             <c:if test="${empty immigrationDTO.prevLcaNumber}">
             <div class="form-group">
               <label class="col-md-4">Previous LCA Number</label>
               <div class="col-md-8">
@@ -463,7 +463,7 @@
             </div>
             </c:if>
             
-            <c:if test="${!empty immigrationDTO}">
+            <c:if test="${!empty immigrationDTO.prevLcaNumber}">
             <div class="form-group">
               <label class="col-md-4">Previous LCA Number</label>
               <div class="col-md-8">
