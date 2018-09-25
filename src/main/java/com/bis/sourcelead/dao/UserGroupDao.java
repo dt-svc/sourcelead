@@ -32,4 +32,6 @@ public interface UserGroupDao {
 	List<UserGroup> getAllUserGroupsByLocationIdAndPayFrequency(OrgLocations orgLocation, String payFrequency);
 
 	List<PayPeriodDTO> getPayPeriodsByGroupId(Long groupId);
+
+	List<UserGroup> getAllUserGroupsByLocationIdAndDepartmentId(OrgLocations orgLocation, String userId);
 }

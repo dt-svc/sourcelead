@@ -10,7 +10,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMapping;	
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
@@ -22,21 +22,26 @@ import com.bis.sourcelead.dto.SourceleadTaxSubmissionMasterDTO;
 import com.bis.sourcelead.dto.helper.Paginator;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.User;
+import com.bis.sourcelead.entity.UserGroup;
 import com.bis.sourcelead.enums.Result;
 import com.bis.sourcelead.service.TaxService;
+import com.bis.sourcelead.service.UserGroupService;
 import com.bis.sourcelead.util.CommonUtil;
 import com.bis.sourcelead.util.SourceLeadSessionManager;
 
 @Controller
 @RequestMapping("/app/myPayroll")
-public class MyPayrollController {
-	private static final Logger logger = LoggerFactory.getLogger(MyPayrollController.class);
+public class IndianPayrollController {
+	private static final Logger logger = LoggerFactory.getLogger(IndianPayrollController.class);
 
 	@Value("${sourceleadUrl}")
 	private String sourceleadUrl;
 
 	@Autowired
 	private TaxService taxService;
+	
+	@Autowired
+	UserGroupService userGroupService;
 	
 	@Autowired
 	private CommonUtil commonUtil;
@@ -47,7 +52,7 @@ public class MyPayrollController {
 		try {
 			commonUtil.highLightMenu(Constants.MYPAYROLL, request);
 			modelAndView.addObject("activeTaxTab", "pays");
-			modelAndView.setViewName("payroll_india/my_payroll/pays");
+			modelAndView.setViewName("payroll_india/payroll/pays");
 		} catch (Exception e) {
 			e.printStackTrace();
 			logger.error(e.getMessage());
@@ -55,13 +60,14 @@ public class MyPayrollController {
 		return modelAndView;
 	}
 
+	
 	@RequestMapping(value = "/forms")
 	public ModelAndView forms(HttpServletRequest request) {
 		ModelAndView modelAndView = new ModelAndView();
 		try {
 			TaxAdminController.setYears(modelAndView, null);
 			modelAndView.addObject("activeTaxTab", "forms");
-			modelAndView.setViewName("payroll_india/my_payroll/forms");
+			modelAndView.setViewName("payroll_india/payroll/forms");
 		} catch (Exception e) {
 			e.printStackTrace();
 			logger.error(e.getMessage());
@@ -74,7 +80,7 @@ public class MyPayrollController {
 		ModelAndView modelAndView = new ModelAndView();
 		try {
 			modelAndView.addObject("activeTaxTab", "loansAndAdvances");
-			modelAndView.setViewName("payroll_india/my_payroll/loansAndAdvances");
+			modelAndView.setViewName("payroll_india/payroll/loansAndAdvances");
 		} catch (Exception e) {
 			e.printStackTrace();
 			logger.error(e.getMessage());
@@ -108,5 +114,65 @@ public class MyPayrollController {
 		}
 		return response;
 	}
+	
+	@RequestMapping(value = "/payrollList")
+	public ModelAndView payrollList(HttpServletRequest request) {
+		ModelAndView modelAndView = new ModelAndView();
+		try {
+			commonUtil.highLightMenu(Constants.RUNPAYROLL, request);
+			modelAndView.setViewName("payroll_india/org/payrollList");
+		} catch (Exception e) {
+			e.printStackTrace();
+			logger.error(e.getMessage());
+		}
+		return modelAndView;
+	}
+	
+	@RequestMapping(value = "/payrollListSummary")
+	public ModelAndView payrollListSummary(HttpServletRequest request) {
+		ModelAndView modelAndView = new ModelAndView();
+		try {
+			commonUtil.highLightMenu(Constants.RUNPAYROLL, request);
+//			modelAndView.addObject("activeTaxTab", "pays");
+			modelAndView.setViewName("payroll_india/org/payrollListSummary");
+		} catch (Exception e) {
+			e.printStackTrace();
+			logger.error(e.getMessage());
+		}
+		return modelAndView;
+	}
+	
+	@RequestMapping(value = "/runPayroll")
+	public ModelAndView runPayroll(HttpServletRequest request) {
+		ModelAndView modelAndView = new ModelAndView();
+		try {
+			commonUtil.highLightMenu(Constants.RUNPAYROLL, request);
+//			modelAndView.addObject("activeTaxTab", "pays");
+			OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+			List<UserGroup> userGroupList = userGroupService.getAllUserGroupsByLocationId(orgLocations);
+			modelAndView.addObject("userGroupList",userGroupList);
+			modelAndView.setViewName("payroll_india/org/runPayroll");
+		} catch (Exception e) {
+			e.printStackTrace();
+			logger.error(e.getMessage());
+		}
+		return modelAndView;
+	}
 
+	@RequestMapping (value = "/indianRunPayroll")
+	public ModelAndView indianRunPayRoll(HttpServletRequest request) {
+		ModelAndView modelAndView = new ModelAndView();
+		try {
+			OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+			commonUtil.highLightMenu(Constants.RUNPAYROLL, request);
+			List<UserGroup> userGroupList = userGroupService.getAllUserGroupsByLocationId(orgLocations);
+			modelAndView.addObject("userGroupList",userGroupList);
+			modelAndView.setViewName("payroll_india/payroll/indianRunPayRoll");
+		}catch (Exception e) {
+			// TODO: handle exception
+			e.printStackTrace();
+			logger.error(e.getMessage());
+		}
+		return modelAndView;
+	}
 }
