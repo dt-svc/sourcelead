@@ -1396,7 +1396,7 @@ public class SubmissionsRestController {
 			requirementSubmissionHistory.setToStage(ApplicantSubmissionStatus.SUBMISSION.toString());
 
 				}
-		else if(status.equalsIgnoreCase("ON-Hold")){
+		else if(status.equalsIgnoreCase("On Hold")){
 			requirementSubmissionHistory.setToStage(ApplicantSubmissionStatus.ONHOLD.toString());
 		}
 		else if(status.equalsIgnoreCase("Interview")){
@@ -1417,7 +1417,7 @@ public class SubmissionsRestController {
 				if(status.equalsIgnoreCase("Status")){
 					requirementSubmission.setSubmissionStatus(ApplicantSubmissionStatus.SUBMISSION);
 				}
-				else if(status.equalsIgnoreCase("ON-Hold")){
+				else if(status.equalsIgnoreCase("On Hold")){
 					requirementSubmission.setSubmissionStatus(ApplicantSubmissionStatus.ONHOLD);
 				}
 				else if(status.equalsIgnoreCase("Interview")){

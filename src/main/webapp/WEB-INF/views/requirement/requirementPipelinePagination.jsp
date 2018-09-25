@@ -487,10 +487,10 @@
 													if(opt.previousSubmissionStatus != null && opt.previousSubmissionStatus == 'OFFERMADE' && opt.submissionStatus != 'JOINED'){
 														result = result + "<option value='Offer Made'>OFFERMADE</option>";
 													}
-													if (opt.submissionStatus != 'ONHOLD' && opt.submissionStatus != 'JOINED'){	
-														result = result + "<option value='ON-Hold'>ON-Hold</option>";
+													if (opt.submissionStatus != 'ONHOLD' && opt.submissionStatus != 'JOINED' && opt.submissionStatus != 'NORESPONSE'){	
+														result = result + "<option value='On Hold'>On Hold</option>";
 														}
-													if (opt.submissionStatus != 'NORESPONSE' && opt.submissionStatus != 'JOINED'){	
+													if (opt.submissionStatus != 'NORESPONSE' && opt.submissionStatus != 'JOINED' && opt.submissionStatus != 'ONHOLD'){	
 														result = result + "<option value='NoResponse'>NoResponse</option>";
 														}
 													result = result + "<option value='Reject'>Reject</option>";
