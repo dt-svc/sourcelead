@@ -35,6 +35,8 @@ public class CreditDebitNoteDTO extends SearchDTO {
 	private String vendorCurrencyCode;
 	private String loginCurrencyCode;
 	private String account;
+	private String startDate;
+	private String endDate;
 	
 	 
 	public List<FileInfo> getFileInfo() {
@@ -223,6 +225,18 @@ public class CreditDebitNoteDTO extends SearchDTO {
 	}
 	public void setAccount(String account) {
 		this.account = account;
+	}
+	public String getStartDate() {
+		return startDate;
+	}
+	public void setStartDate(String startDate) {
+		this.startDate = startDate;
+	}
+	public String getEndDate() {
+		return endDate;
+	}
+	public void setEndDate(String endDate) {
+		this.endDate = endDate;
 	}
 
 	

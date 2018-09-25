@@ -8,6 +8,7 @@
 $(document).ready(function(){
 	getPayGroupList("payGroup");
 	getDepartments("departmentId");
+	getcontributionList();
 });
 </script>
 
@@ -39,10 +40,10 @@ $(document).ready(function(){
             <div class="form-group">
               <label class="col-md-12">Contribution Type</label>
               <div class="col-md-12">
-                <select class="form-control chosen-select" data-placeholder="Contribution Type" id="type" name="type">
-					    <option value="">Select Type</option>
+                <select class="form-control chosen-select" multiple data-placeholder="Contribution Type" id="contributionId" name="contributionId" field-name="Pay Group" data-validation="required">
+					 <!--    <option value="">Select Type</option>
 						<option value="Regular">Regular</option>
-						<option value="Additional">Additional</option>
+						<option value="Additional">Additional</option> -->
 					</select>
               </div>
             </div>
@@ -257,9 +258,10 @@ function getContributionReports(){
 	    getFreqdates("freqStartDate", "freqEndDate");
 	    var  freqStartDate = $("#freqStartDate").val();
 	    var freqEndDate = $("#freqEndDate").val();
+	    var contributionId = $("#contributionId").val();
 		var searchValue = $("#dataTableSearch").val();
 		searchValue = searchValue ? searchValue : "";
-		var url = sourceleadUrl+"/getContributionReports?searchValue="+searchValue+"&groupId="+groupId+"&freqStartDate="+freqStartDate+"&freqEndDate="+freqEndDate;
+		var url = sourceleadUrl+"/getContributionReports?searchValue="+searchValue+"&groupId="+groupId+"&freqStartDate="+freqStartDate+"&freqEndDate="+freqEndDate+"&contributionId="+contributionId;
 		contributionReportURL(url);	
 }
 
@@ -430,6 +432,27 @@ function getContributionReports(){
 	function contributionReportSearch(){
 		getContributionReports()();
 	}
-	
 </script>			
+
+<script>
+function getcontributionList(){
+	$.ajax({
+	    	type: "GET",
+	        url: sourceleadUrl+"/getContributionList?"+tokenParamName+"="+tokenValue                 , 
+	        success: function(json) {
+	        var output = "";
+	        output = output + "<option value=''>select</option>";
+			for (var i=0; i<json.length; i++)
+			{
+				var opt = json[i];
+				output = output + "<option value='" +opt.contributionId+ "'>"+opt.contributionType+"</option>";
+			}
+			$("#contributionId").empty();
+			$("#contributionId").append(output);
+			$('#contributionId').trigger("chosen:updated"); 
+	        },
+	    });
+}
+
+</script>
 <jsp:include page="../masterFooter.jsp" />

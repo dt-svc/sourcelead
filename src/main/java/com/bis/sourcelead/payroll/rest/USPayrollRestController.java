@@ -1537,6 +1537,13 @@ public class USPayrollRestController {
 		return res;
 	}
 
+	/**
+	 * My Payroll Data
+	 * @param request
+	 * @param response
+	 * @return
+	 * @throws Exception
+	 */
 	@RequestMapping(value = {"/getMyPayrollList","/rest/getMyPayrollList"}, method = RequestMethod.GET)
 	@ResponseBody
 	public MyPayrollSummaryDTO getMyPayrollList(HttpServletRequest request, HttpServletResponse response) throws Exception
@@ -1673,6 +1680,15 @@ public class USPayrollRestController {
 			sb.append(candidate.getResidenceCity()).append(",").append(candidate.getResidenceStateCode());
 			
 			return sb.toString();
+		}
+		
+		
+		@RequestMapping(value = {"/getContributionList","/rest/getContributionList"}, method = RequestMethod.GET)
+		@ResponseBody
+		public List<PayrollContributionDTO> getContributionList(HttpServletRequest request, HttpServletResponse response) throws Exception
+		{
+			OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+			return payrollContributionService.getAllContributionTypeByLocationId(orgLocation);
 		}
 
 }

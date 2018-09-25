@@ -64,7 +64,7 @@ public class PayrollReportDTO extends SearchDTO{
 
 	private String payrollUUID;
 	
-	private String type;
+	private String contributionId;
 	
 	private String schedule;
 	
@@ -96,15 +96,15 @@ public class PayrollReportDTO extends SearchDTO{
 	}
 
 
-	public String getType()
+	public String getContributionId()
 	{
-		return type;
+		return contributionId;
 	}
 
 
-	public void setType(String type)
+	public void setContributionId(String contributionId)
 	{
-		this.type = type;
+		this.contributionId = contributionId;
 	}
 
 

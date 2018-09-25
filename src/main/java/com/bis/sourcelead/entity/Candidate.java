@@ -339,6 +339,9 @@ public class Candidate implements Serializable {
 
 	@Column(name = "RANK")
 	private String rank;
+	
+	@Column(name = "PROFILE_PERCENTAGE")
+	private Integer candidateProfilePercentage;
 
 	// Immigration columns End
 	@JsonProperty
@@ -1825,4 +1828,14 @@ public class Candidate implements Serializable {
 	public void setWorkLocation(OrgLocations workLocation) {
 		this.workLocation = workLocation;
 	}
+
+	public Integer getCandidateProfilePercentage() {
+		return candidateProfilePercentage;
+	}
+
+	public void setCandidateProfilePercentage(Integer candidateProfilePercentage) {
+		this.candidateProfilePercentage = candidateProfilePercentage;
+	}
+
+	
 }
