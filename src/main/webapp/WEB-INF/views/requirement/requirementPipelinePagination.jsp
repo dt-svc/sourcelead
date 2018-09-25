@@ -472,6 +472,27 @@
 													if (opt.submissionStatus == 'OFFERMADE' || opt.submissionStatus == 'OFFERACCEPTED'){
 														result = result + "<option value='Joined'>Joined</option>";
 													}
+													if(opt.previousSubmissionStatus != null && opt.previousSubmissionStatus == 'SUBMISSION' && opt.submissionStatus  != 'SHORTLIST' && opt.submissionStatus  != 'INTERVIEW'){
+														result = result + "<option value='Status'>Submission</option>";
+													}
+													if(opt.previousSubmissionStatus != null && opt.previousSubmissionStatus == 'SHORTLIST'){
+														result = result + "<option value='shortlist'>Shortlist</option>";
+													}
+													if(opt.previousSubmissionStatus != null && opt.previousSubmissionStatus == 'INTERVIEW' && opt.submissionStatus != 'SELECTED_ON_INTERVIEW'){
+														result = result + "<option value='Interview'>INTERVIEW</option>";
+													}
+													if(opt.previousSubmissionStatus != null && opt.previousSubmissionStatus == 'SELECTED_ON_INTERVIEW'){
+														result = result + "<option value='Selected on Interview'>Selected on Interview</option>";
+													}
+													if(opt.previousSubmissionStatus != null && opt.previousSubmissionStatus == 'OFFERMADE' && opt.submissionStatus != 'JOINED'){
+														result = result + "<option value='Offer Made'>OFFERMADE</option>";
+													}
+													if (opt.submissionStatus != 'ONHOLD' && opt.submissionStatus != 'JOINED'){	
+														result = result + "<option value='ON-Hold'>ON-Hold</option>";
+														}
+													if (opt.submissionStatus != 'NORESPONSE' && opt.submissionStatus != 'JOINED'){	
+														result = result + "<option value='NoResponse'>NoResponse</option>";
+														}
 													result = result + "<option value='Reject'>Reject</option>";
 													if (opt.submissionStatus == 'OFFERMADE' || opt.submissionStatus == 'OFFERACCEPTED' || opt.submissionStatus == 'JOINED'
 														 || opt.submissionStatus == 'CLIENT_OFFERMADE' || opt.submissionStatus == 'CLIENT_OFFERACCEPTED') {

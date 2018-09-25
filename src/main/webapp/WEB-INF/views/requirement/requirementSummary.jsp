@@ -923,7 +923,7 @@ function viewOfferDocument(offerID,title){
 <div id="customizePopUp"></div>
 <script>
 function rejectApplicant(submissionId,requirementId,submissionType){
-    //reject refresh
+	//reject refresh
 	$("#reasonForApplicantDiv").empty();
     $("#reasonForReject").val("");
     $("#designationType").val('');
@@ -1098,6 +1098,64 @@ function rejectApplicant(submissionId,requirementId,submissionType){
     	    	},
   		  });
     }
+    else if(selectBox == "ON-Hold"){
+    	$.ajax({
+    	      type : "POST",
+    	      url: sourceleadUrl+"/saveOnHoldStatusForApplicant?"+tokenParamName+"="+tokenValue+"&submissionId="+submissionId+"&status="+selectBox, 
+    	    	success :function(data) {
+    	    		if (data.response === "AWKWARD") {
+  		    		location.href = "/errorPage";
+  		    	} else if (data.response === "SUCCESS") {
+  		    		$("tr").removeClass("row-success");
+  		    		 requirementPipeline(requirementId,submissionType);
+  		    	}else if (data.indexOf('Sign In') !== -1) {
+  		    		location.replace(sourceleadUrl);
+  		    	} else {
+  		    		showError("Operation failed, please try again");
+  		    	}
+    	    	},
+  		  });
+    }
+    
+    else if(selectBox == "Status" || selectBox == "Selected on Interview" || selectBox == "Offer Made" || selectBox == "NoResponse"){
+    	$.ajax({
+    	      type : "POST",
+    	      url: sourceleadUrl+"/saveOnHoldStatusForApplicant?"+tokenParamName+"="+tokenValue+"&submissionId="+submissionId+"&status="+selectBox, 
+    	    	success :function(data) {
+    	    		if (data.response === "AWKWARD") {
+  		    		location.href = "/errorPage";
+  		    	} else if (data.response === "SUCCESS") {
+  		    		$("tr").removeClass("row-success");
+  		    		 requirementPipeline(requirementId,submissionType);
+  		    	}else if (data.indexOf('Sign In') !== -1) {
+  		    		location.replace(sourceleadUrl);
+  		    	} else {
+  		    		showError("Operation failed, please try again");
+  		    	}
+    	    	},
+  		  });
+    }
+    
+    else if(selectBox == "Interview"){
+    	$.ajax({
+    	      type : "POST",
+    	      url: sourceleadUrl+"/saveOnHoldStatusForApplicant?"+tokenParamName+"="+tokenValue+"&submissionId="+submissionId+"&status="+selectBox, 
+    	    	success :function(data) {
+    	    		if (data.response === "AWKWARD") {
+  		    		location.href = "/errorPage";
+  		    	} else if (data.response === "SUCCESS") {
+  		    		$("tr").removeClass("row-success");
+  		    		 requirementPipeline(requirementId,submissionType);
+  		    	}else if (data.indexOf('Sign In') !== -1) {
+  		    		location.replace(sourceleadUrl);
+  		    	} else {
+  		    		showError("Operation failed, please try again");
+  		    	}
+    	    	},
+  		  });
+    }
+    
+    
 }
 </script>
 <script>

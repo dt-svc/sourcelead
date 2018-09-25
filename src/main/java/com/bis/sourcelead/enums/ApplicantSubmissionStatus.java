@@ -13,6 +13,8 @@ public enum ApplicantSubmissionStatus {
 	/*OFFER("offer"),*/
 	REQUEST_SENT("request_sent"),
 	REJECTED("rejected"),
+	ONHOLD("onHold"),
+	NORESPONSE("NoResponse"),
 	BACKOUT("backout"),
     SUBMIT_TO_CLIENT("submit_to_client"),
     OFFERMADE("offer_made"),
