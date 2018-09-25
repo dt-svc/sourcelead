@@ -75,7 +75,7 @@ $(document).ready(function(){
         <div class="col-lg-12">
           <div class="pull-right">
             <input value="Run" class="btn btn-success btnSuccess" type="button" onClick="contributionReport();"> <!-- runPayrollregister -->
-            <input value="Reset" class="btn btn-defualt ml10" type="button">
+            <input value="Reset" class="btn btn-defualt ml10" type="button" onclick="resetContributionReport();">
           </div>
         </div>
       </div>     
@@ -87,10 +87,10 @@ $(document).ready(function(){
     		
     		
     		
-  <div class="timesheet_out" id="payrollRegister">
+  <div class="timesheet_out" id="payrollRegister" style="display: none;">
       <div class="clearfix">
         
-        <div class="positionRelative reportHead clearfix"> <span class="pull-left refreIcon"><a href="javascript:void(0)" class="refeIcon" title="Refresh" onclick="resetFilter();"></a></span>
+        <div class="positionRelative reportHead clearfix">
   <ul class="pull-right list-unstyled list-inline">
     <li><a class="newAdBtn mr5 hidden" href="/app/userCreation">+  Associate</a></li>
     <!-- <li><a href="javascript:void(0)" class="filtIcon" title="Filters" onclick="openPop();"></a></li> -->
@@ -107,41 +107,6 @@ $(document).ready(function(){
            <div class="styleTables clearfix mt">
           <div id="contributionReportDIV" class="datatable_filter"></div>
       </div>
-         <!--  <table>
-            <thead>
-              <tr>
-                <th>Employee ID</th>
-                <th>Employee Name</th>
-                <th>Department</th>
-                <th>Type</th>
-				<th>QTD</th>
-                <th>YTD</th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr>
-                <td><div class="tblminwidth-75">MIS00414</div></td>
-                <td><div class="tbldata-dotdot">Karan Kumar Sahoo</div></td>
-                <td><div class="tbldata-dotdot-vsm">Depatment</div></td>
-                <td><div class="tbldata-dotdot-vsm">Department Type</div></td>
-                <td><div class="tblminwidth-50">QTD</div></td>
-                <td><div class="tblminwidth-50">YTD</div></td>
-              </tr>
-            </tbody>
-          </table>
-        </div>
-        <nav>
-          <ul id="paging" class="pagination">
-            <li><a href="#">Previous</a></li>
-            <li><a href="#">2</a></li>
-            <li><a href="#">3</a></li>
-            <li><a href="#">4</a></li>
-            <li><a href="#">5</a></li>
-            <li class="disabled"><a href="#">6</a></li>
-            <li data-page="last"><a href="#">Next</a></li>
-          </ul>
-          <div class="clearfix"></div>
-        </nav> -->
       </div>
     </div>
     		
@@ -154,6 +119,18 @@ $(document).ready(function(){
  <script>
  function getPayPeriod(){
 	 getPayPeriodByGroupId("payGroup","payPeriod");
+ }
+ 
+ function resetContributionReport(){
+	 $("#payrollRegister").hide();
+	 $("#payGroup").val('');
+	 $("#payGroup").trigger("chosen:updated"); 
+	 $("#payPeriod").val('');
+	 $("#payPeriod").trigger("chosen:updated"); 
+	 $("#contributionId").val('');
+	 $("#contributionId").trigger("chosen:updated"); 
+	 $("#departmentId").val('');
+	 $("#departmentId").trigger("chosen:updated"); 
  }
  </script>
   
@@ -270,6 +247,7 @@ function getContributionReports(){
 
 <script>
 	function contributionReportURL(url) {
+		$("#payrollRegister").show();
 		$("#contributionReportDIV").empty();
 		var result = "";
 		result = result + '<table id="contributionReportTabble" class="display" cellspacing="0" width="100%" >';
