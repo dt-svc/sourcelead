@@ -245,7 +245,7 @@
 		        	} else if (response.response === "SUCCESS") {
 		        		if (response.object > 0) {
 			        		$(".success_pop").css("display","block");
-			        		$(".success_pop span").html("Tax Configuration" + (taxId > 0 ? "updated" : "added") + " successfully....");
+			        		$(".success_pop span").html("Tax Configuration " + (taxId > 0 ? "updated" : "added") + " successfully....");
 			        		setTimeout(function() {
 			        			location.reload();					 			
 					 		},100);    
