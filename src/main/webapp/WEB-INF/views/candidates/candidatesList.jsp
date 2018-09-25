@@ -1393,6 +1393,7 @@ function cancel(candidateId){
       <ul class="pull-right list-unstyled list-inline">
       
 	  <li class="tableShare" style="display: none;">
+	  	<a class="marketplaceIcon mr5" title="Market Place"	href="<c:url value='${appPath}/addToMarketPlace'/>"></a>
 	  	<a class="shareIcon mr5" title="Share" href="javascript:void(0)" onclick="shareJob();"></a>
 	  	<a class="sendIcon mr5" title="Submit" href="javascript:void(0)" onclick="submitCandidatesToJob();"></a>
 	  </li>        
