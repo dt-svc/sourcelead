@@ -142,6 +142,12 @@ public class OrgRelations implements Serializable{
 
 	@Column(name="IS_OFFSHORE_RELATION")
 	private String isOffShoreRelation;
+	
+	@Column(name="GENERATE_INVOICE")
+	private String generateInvoice;
+	
+	@Column(name="GENERATE_BILL")
+	private String generateBill;
 
 	
 	@Transient
@@ -1166,6 +1172,22 @@ public class OrgRelations implements Serializable{
 	public void setIsOffShoreRelation(String isOffShoreRelation) {
 		this.isOffShoreRelation = isOffShoreRelation;
 
+	}
+
+	public String getGenerateInvoice() {
+		return generateInvoice;
+	}
+
+	public void setGenerateInvoice(String generateInvoice) {
+		this.generateInvoice = generateInvoice;
+	}
+
+	public String getGenerateBill() {
+		return generateBill;
+	}
+
+	public void setGenerateBill(String generateBill) {
+		this.generateBill = generateBill;
 	}
 
 	
