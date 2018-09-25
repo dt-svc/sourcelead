@@ -9,7 +9,7 @@
 </section>	
 	
 	<div class="project_wrap">
-		<jsp:include page="../my_payroll/myPayrollHeader.jsp"></jsp:include>
+		<jsp:include page="../payroll/myPayrollHeader.jsp"></jsp:include>
 		<p>Under Construction</p>
 	</div>
 	

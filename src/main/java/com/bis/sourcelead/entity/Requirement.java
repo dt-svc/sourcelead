@@ -340,6 +340,9 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 	
 	@Column(name = "WALK_IN_DAYS", columnDefinition = "TEXT default NULL")
 	private String walkInDays;
+	
+	@Column(name = "PROFILE_PERCENTAGE")
+	private Integer profilePercentage;
 
 	@Transient
 	private String closedDateStringFormat;
@@ -2082,5 +2085,13 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 
 	public void setTagsList(Set<String> tagsList) {
 		this.tagsList = tagsList;
+	}
+
+	public Integer getProfilePercentage() {
+		return profilePercentage;
+	}
+
+	public void setProfilePercentage(Integer profilePercentage) {
+		this.profilePercentage = profilePercentage;
 	}
 }

@@ -1,5 +1,6 @@
 package com.bis.sourcelead.dao.impl;
 
+import java.math.BigInteger;
 import java.text.MessageFormat;
 import java.util.List;
 
@@ -209,6 +210,25 @@ public class CandidateEmployersDaoImpl  implements CandidateEmployersDao{
 		}
 		return candidateEmployer;
 	}
+
+	@Override
+	@Transactional(rollbackFor = { Exception.class })	
+	public Integer getCandidateActiveEmployersCountByCandidateId(Long candidateId) {
+		Session session = this.sessionFactory.getCurrentSession();
+		Integer employersCount = 0;
+		
+		String countQuery ="SELECT"
+				+ " COUNT(EMPL.ID) AS EMPL_COUNT"
+				+ " FROM"
+				    + " CANDIDATE_EMPLOYERS EMPL "
+					+ " WHERE EMPL.CANDIDATE_ID = :candidateId AND EMPL.STATUS = '1' ";
+		
+		Query countqueryString = session.createSQLQuery(countQuery);
+		countqueryString.setParameter("candidateId", candidateId);
+		BigInteger filterCount =  (BigInteger) countqueryString.uniqueResult();
+		employersCount = filterCount.intValue();
+		return employersCount;
+}
 
 
 }

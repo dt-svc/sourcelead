@@ -400,6 +400,26 @@ if (null != creditDebitNoteDTO.getDayWiseType() && !"".equals(creditDebitNoteDTO
 		else if (Constants.ONE_YEAR.equals(creditDebitNoteDTO.getDayWiseType())) {
 			startDateUTC = getPreviousDate(zoned, outputFormatter, TZ_DF_TS, timezone, 365);
 		}
+	}else {
+		if (StringUtils.isNotBlank(creditDebitNoteDTO.getStartDate())
+				&& StringUtils.isNotBlank(creditDebitNoteDTO.getEndDate())
+				&& !"undefined".equalsIgnoreCase(creditDebitNoteDTO.getStartDate())
+				&& !"undefined".equalsIgnoreCase(creditDebitNoteDTO.getEndDate())) {
+			/*DateFormat TZ_DF_CSD = new SimpleDateFormat("yyyy-MM-dd");
+			DateFormat TZ_DF_CED = new SimpleDateFormat("yyyy-MM-dd");*/
+			Date startTime = commonUtil.orgLocationDateFormat(orgLocations.getDateFormat(), creditDebitNoteDTO.getStartDate());
+			Date endTime = commonUtil.orgLocationDateFormat(orgLocations.getDateFormat(), creditDebitNoteDTO.getEndDate());
+			DateTime zoned1 = new DateTime(commonUtil.orgLocationCommonDate(startTime, orgLocations)); //get date and time based on orglocation
+			DateTime zoned2 = new DateTime(commonUtil.orgLocationCommonDate(endTime, orgLocations)); //get date and time based on orglocation
+			
+			String customStartTimeStr = outputFormatter.print(zoned1);
+			String customEndTimeStr = outputFormatter1.print(zoned2);
+			startDateUTC = TZ_DF_TS.parse(customStartTimeStr);
+			endDateUTC = TZ_DF_TS.parse(customEndTimeStr);
+		}
+		else {
+			startDateUTC = getPreviousDate(zoned, outputFormatter, TZ_DF_TS, timezone, 30);
+		}
 	}
 	
 }
