@@ -8,6 +8,8 @@ public class TotalHoursDTO {
 	private BigInteger candidateID;
     
 	private BigInteger projectMemId;
+	
+	private BigInteger projectId;
     
 	private double payRate;
     
@@ -32,8 +34,18 @@ public class TotalHoursDTO {
 	private String estimatedHours;
     
 	private String nonBillableHours;
-
 	
+	
+	public BigInteger getProjectId()
+	{
+		return projectId;
+	}
+
+	public void setProjectId(BigInteger projectId)
+	{
+		this.projectId = projectId;
+	}
+
 	public double getPayRate()
 	{
 		return payRate;

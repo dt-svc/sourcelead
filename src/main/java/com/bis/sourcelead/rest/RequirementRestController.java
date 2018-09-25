@@ -1326,6 +1326,8 @@ public class RequirementRestController {
 		User loginUser = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
 		OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 		String loginUserRole = (String) SourceLeadSessionManager.getSessionAttribute(request, "loginUserRole");
+		List<CandidateDTO> faliureCandidateDTO = new ArrayList<>();
+		
 		if(loginUser != null) {
 			try {
 				Requirement requirement = requirementService.getRequirementByRequirementId(requirementId);
@@ -1339,135 +1341,140 @@ public class RequirementRestController {
 						if(flag == false) {
 						
 							CandidateDTO candidate = candidateService.getCandidateDTOByCandidateId(Long.valueOf(candidateid));
-							JSONObject labelItems = new JSONObject();
-							labelItems.put("requirementId", requirementId);
-							labelItems.put("reqCoolingOffPeriod", requirement.getReqCoolingOffPeriod());
-							labelItems.put("candidateId", candidate.getCandId());
-							labelItems.put("candidateResumeRequired", candidateResume);
-							
-							JSONArray array = new JSONArray();
-							JSONObject firstNameItem = new JSONObject();
-							firstNameItem.put("label", "First Name");
-							firstNameItem.put("id", "text-"+SourceLeadRandomCodeHelper.generateRandomBulkSubmissionId());
-							firstNameItem.put("name", "FirstName");
-							firstNameItem.put("value", candidate.getFirstName());
-							labelItems.put("FirstName", candidate.getFirstName());
-							array.put(firstNameItem);
-							
-							JSONObject lastNameItem = new JSONObject();
-							lastNameItem.put("label", "Last Name");
-							lastNameItem.put("id", "text-"+SourceLeadRandomCodeHelper.generateRandomBulkSubmissionId());
-							lastNameItem.put("name", "LastName");
-							lastNameItem.put("value", candidate.getLastName());
-							labelItems.put("LastName", candidate.getLastName());
-							array.put(lastNameItem);
-							
-							if(StringUtils.isNotBlank(candidate.getPhoneNumber())) {
-								JSONObject mobilePhoneItem = new JSONObject();
-								mobilePhoneItem.put("label", "Phone Number");
-								mobilePhoneItem.put("type", "text");
-								mobilePhoneItem.put("id", "text-"+SourceLeadRandomCodeHelper.generateRandomBulkSubmissionId());
-								mobilePhoneItem.put("name", "PhoneNumber");
-								mobilePhoneItem.put("value", candidate.getPhoneNumber());
-								array.put(mobilePhoneItem);
-								labelItems.put("PhoneNumber", candidate.getPhoneNumber());
-							}
-							
-							JSONObject emailItem = new JSONObject();
-							emailItem.put("label", "Email Id");
-							emailItem.put("type", "text");
-							emailItem.put("id", "text-"+SourceLeadRandomCodeHelper.generateRandomBulkSubmissionId());
-							emailItem.put("name", "EmailId");
-							emailItem.put("value", candidate.getEmail());
-							labelItems.put("EmailId", candidate.getEmail());
-							array.put(emailItem);
-							
-							JSONObject locationItem = new JSONObject();
-							locationItem.put("label", "Location");
-							locationItem.put("type", "text");
-							locationItem.put("id", "submissionLocation");
-							locationItem.put("name", "location");
-							locationItem.put("value", candidate.getLocation());
-							labelItems.put("location", candidate.getLocation());
-							array.put(locationItem);
-							
-							JSONObject countryItem = new JSONObject();
-							countryItem.put("label", "Country");
-							countryItem.put("type", "text");
-							countryItem.put("id", "submissionCountry");
-							countryItem.put("name", "country");
-							countryItem.put("value", candidate.getCountry());
-							labelItems.put("country", candidate.getCountry());
-							array.put(countryItem);
-							
-							if(StringUtils.isNotBlank(candidate.getState())) {
-								JSONObject stateItem = new JSONObject();
-								stateItem.put("label", "State");
-								stateItem.put("type", "text");
-								stateItem.put("id", "submissionState");
-								stateItem.put("name", "state");
-								stateItem.put("value", candidate.getState());
-								labelItems.put("state", candidate.getState());
-								array.put(stateItem);
-							}
-							
-							if(StringUtils.isNotBlank(candidate.getCity())) {
-								JSONObject cityItem = new JSONObject();
-								cityItem.put("label", "City");
-								cityItem.put("type", "text");
-								cityItem.put("id", "submissionCity");
-								cityItem.put("name", "city");
-								cityItem.put("value", candidate.getCity());
-								labelItems.put("city", candidate.getCity());
-								array.put(cityItem);
-							}
-							
-							if(StringUtils.isNotBlank(candidate.getNoticePeriod())) {
-								JSONObject npItem = new JSONObject();
-								npItem.put("label", "Notice Period");
-								npItem.put("type", "text");
-								npItem.put("id", "select-"+SourceLeadRandomCodeHelper.generateRandomBulkSubmissionId());
-								npItem.put("name", "NoticePeriod");
-								npItem.put("value", candidate.getNoticePeriod());
-								labelItems.put("NoticePeriod", candidate.getNoticePeriod());
-								array.put(npItem);
-							}
-							
-							
-							String con = array.toString();
-							RequirementSubmission requirementSubmission = requirementSubmissionService.saveRequirementSubmission(labelItems,loginUser, orgLocation, con, loginUserRole);
-					
-							RequirementSubmissionHistory requirementSubmissionHistory = new RequirementSubmissionHistory();
-							requirementSubmissionHistory.setToStage(requirementSubmission.getSubmissionStatus().toString());
-							requirementSubmissionHistory.setFromStage("NEW");
-							requirementSubmissionHistoryService.updateRequirementHistory(requirementSubmission, loginUser,requirementSubmissionHistory);
-							
-							if(null != requirement){
-								Integer totalApplicatsCountForRequirement = 0;
-							   //updating total number of applicants for requrement
-								totalApplicatsCountForRequirement = requirementSubmissionService.getNumberOfApplicantsForRequirement(requirement.getOrgLocationId().getId(), requirement.getId());
-								if(totalApplicatsCountForRequirement > 0){
-									requirement.setTotalApplicants(totalApplicatsCountForRequirement); 
-									requirementService.updateRequirement(requirement);
-								}else{
-									requirement.setTotalApplicants(0); 
+							if(candidate.getProfilePercentage() >= requirement.getProfilePercentage()) {
+								
+								JSONObject labelItems = new JSONObject();
+								labelItems.put("requirementId", requirementId);
+								labelItems.put("reqCoolingOffPeriod", requirement.getReqCoolingOffPeriod());
+								labelItems.put("candidateId", candidate.getCandId());
+								labelItems.put("candidateResumeRequired", candidateResume);
+								
+								JSONArray array = new JSONArray();
+								JSONObject firstNameItem = new JSONObject();
+								firstNameItem.put("label", "First Name");
+								firstNameItem.put("id", "text-"+SourceLeadRandomCodeHelper.generateRandomBulkSubmissionId());
+								firstNameItem.put("name", "FirstName");
+								firstNameItem.put("value", candidate.getFirstName());
+								labelItems.put("FirstName", candidate.getFirstName());
+								array.put(firstNameItem);
+								
+								JSONObject lastNameItem = new JSONObject();
+								lastNameItem.put("label", "Last Name");
+								lastNameItem.put("id", "text-"+SourceLeadRandomCodeHelper.generateRandomBulkSubmissionId());
+								lastNameItem.put("name", "LastName");
+								lastNameItem.put("value", candidate.getLastName());
+								labelItems.put("LastName", candidate.getLastName());
+								array.put(lastNameItem);
+								
+								if(StringUtils.isNotBlank(candidate.getPhoneNumber())) {
+									JSONObject mobilePhoneItem = new JSONObject();
+									mobilePhoneItem.put("label", "Phone Number");
+									mobilePhoneItem.put("type", "text");
+									mobilePhoneItem.put("id", "text-"+SourceLeadRandomCodeHelper.generateRandomBulkSubmissionId());
+									mobilePhoneItem.put("name", "PhoneNumber");
+									mobilePhoneItem.put("value", candidate.getPhoneNumber());
+									array.put(mobilePhoneItem);
+									labelItems.put("PhoneNumber", candidate.getPhoneNumber());
 								}
 								
-								// pass dto as parameter
-								RequirementDTO requirementDTO = commonUtil.getRequirementDTO(requirement);
-								requirementElkUtil.saveElkRequirement(requirement,requirementDTO);	
-							}
+								JSONObject emailItem = new JSONObject();
+								emailItem.put("label", "Email Id");
+								emailItem.put("type", "text");
+								emailItem.put("id", "text-"+SourceLeadRandomCodeHelper.generateRandomBulkSubmissionId());
+								emailItem.put("name", "EmailId");
+								emailItem.put("value", candidate.getEmail());
+								labelItems.put("EmailId", candidate.getEmail());
+								array.put(emailItem);
+								
+								JSONObject locationItem = new JSONObject();
+								locationItem.put("label", "Location");
+								locationItem.put("type", "text");
+								locationItem.put("id", "submissionLocation");
+								locationItem.put("name", "location");
+								locationItem.put("value", candidate.getLocation());
+								labelItems.put("location", candidate.getLocation());
+								array.put(locationItem);
+								
+								JSONObject countryItem = new JSONObject();
+								countryItem.put("label", "Country");
+								countryItem.put("type", "text");
+								countryItem.put("id", "submissionCountry");
+								countryItem.put("name", "country");
+								countryItem.put("value", candidate.getCountry());
+								labelItems.put("country", candidate.getCountry());
+								array.put(countryItem);
+								
+								if(StringUtils.isNotBlank(candidate.getState())) {
+									JSONObject stateItem = new JSONObject();
+									stateItem.put("label", "State");
+									stateItem.put("type", "text");
+									stateItem.put("id", "submissionState");
+									stateItem.put("name", "state");
+									stateItem.put("value", candidate.getState());
+									labelItems.put("state", candidate.getState());
+									array.put(stateItem);
+								}
+								
+								if(StringUtils.isNotBlank(candidate.getCity())) {
+									JSONObject cityItem = new JSONObject();
+									cityItem.put("label", "City");
+									cityItem.put("type", "text");
+									cityItem.put("id", "submissionCity");
+									cityItem.put("name", "city");
+									cityItem.put("value", candidate.getCity());
+									labelItems.put("city", candidate.getCity());
+									array.put(cityItem);
+								}
+								
+								if(StringUtils.isNotBlank(candidate.getNoticePeriod())) {
+									JSONObject npItem = new JSONObject();
+									npItem.put("label", "Notice Period");
+									npItem.put("type", "text");
+									npItem.put("id", "select-"+SourceLeadRandomCodeHelper.generateRandomBulkSubmissionId());
+									npItem.put("name", "NoticePeriod");
+									npItem.put("value", candidate.getNoticePeriod());
+									labelItems.put("NoticePeriod", candidate.getNoticePeriod());
+									array.put(npItem);
+								}
+								
+								
+								String con = array.toString();
+								RequirementSubmission requirementSubmission = requirementSubmissionService.saveRequirementSubmission(labelItems,loginUser, orgLocation, con, loginUserRole);
 						
+								RequirementSubmissionHistory requirementSubmissionHistory = new RequirementSubmissionHistory();
+								requirementSubmissionHistory.setToStage(requirementSubmission.getSubmissionStatus().toString());
+								requirementSubmissionHistory.setFromStage("NEW");
+								requirementSubmissionHistoryService.updateRequirementHistory(requirementSubmission, loginUser,requirementSubmissionHistory);
+								
+								if(null != requirement){
+									Integer totalApplicatsCountForRequirement = 0;
+								   //updating total number of applicants for requrement
+									totalApplicatsCountForRequirement = requirementSubmissionService.getNumberOfApplicantsForRequirement(requirement.getOrgLocationId().getId(), requirement.getId());
+									if(totalApplicatsCountForRequirement > 0){
+										requirement.setTotalApplicants(totalApplicatsCountForRequirement); 
+										requirementService.updateRequirement(requirement);
+									}else{
+										requirement.setTotalApplicants(0); 
+									}
+									
+									// pass dto as parameter
+									RequirementDTO requirementDTO = commonUtil.getRequirementDTO(requirement);
+									requirementElkUtil.saveElkRequirement(requirement,requirementDTO);	
+								}
+							}else {
+								faliureCandidateDTO.add(candidate);
+							}
 					  }
 					}
-					
 					response.setObject("success");
 					response.setResponse(Result.SUCCESS.name());
+					response.setResponseObject(faliureCandidateDTO);
 					response.setResponseMessage(Result.SUCCESS.getValue());
 				}
 			}catch(Exception e) {
 					response.setResponse(Result.AWKWARD.name());
 					response.setResponseMessage(Result.AWKWARD.getValue());
+					e.printStackTrace();
 			}
 		}else {
 			response.setResponse(Result.SESSION_TIMEDOUT.name());

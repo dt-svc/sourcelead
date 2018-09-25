@@ -1002,6 +1002,13 @@ public class ClientRestController {
 			clientVendorDTO.setPaymentTerms(orgRelation.getPaymentTerms());
 		}
 		
+		if(orgRelation.getGenerateInvoice() !=null){
+			clientVendorDTO.setGenerateInvoice(orgRelation.getGenerateInvoice());
+		}
+		if(orgRelation.getGenerateBill() != null){
+			clientVendorDTO.setGenerateBill(orgRelation.getGenerateBill());
+		}
+		
 		if(orgRelation.getCreatedBy() != null){
 			User user = userService.getUserByUserCode(orgRelation.getCreatedBy());
 			clientVendorDTO.setVendorCreateduserName(user.getFullName());

@@ -273,6 +273,9 @@ margin-bottom: 15px;
 						var paymentTerms5 = '';
 						var paymentTerms6 = '';
 						
+						var generateInvoice = '';
+						var generateInvoice1 = '';
+						
 						<c:forEach var="section" items="${sourceleadSectionList}" varStatus="sectionOrder">
 						  var sectionId = '${section.id}';
 						  preapareClientCustomFieldDetails(clientLocationId,orgRelationID,sectionId);
@@ -321,6 +324,12 @@ margin-bottom: 15px;
 					if(json.paymentTerms == '90 days'){
 						paymentTerms6 = 'selected';
 					}
+					
+					if(json.generateInvoice == 'Bulk'){
+						generateInvoice = 'selected';
+					}else if(json.generateInvoice == 'Individual'){
+						generateInvoice1 = 'selected';
+					} 
 						
 						 var country = '';
 						 var state = '';
@@ -505,6 +514,14 @@ margin-bottom: 15px;
                         result = result + ' <option '+paymentTerms6+'>90 days</option>';
                         result = result + ' </select>';
                         result = result + ' </div>'; 
+                        
+                        result = result + ' <div class="user_summary_edit_cta">';
+                        result = result + ' <label>Generate Invoice</label>';
+                        result = result + ' <select id="generateInvoice" name="generateInvoice" >';
+                        result = result + ' <option '+generateInvoice+'>Bulk</option>';
+                        result = result + ' <option '+generateInvoice1+'>Individual</option>';
+                        result = result + ' </select>';
+                        result = result + ' </div>';
 						
                         result = result + ' <div class="user_summary_edit_cta NewStyleFullWidth"  id="customFieldDataId"></div>';
                         
