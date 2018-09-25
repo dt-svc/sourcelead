@@ -40,9 +40,9 @@ function approvePayrollDiv(){
 <div class="project_wrap">
 <div class="clearfix project-tabs-menu">
 	<ul class="nav nav-tabs newTabs">
-		<li class="current"><a onclick="reviewPayrollDiv();">Payroll</a></li>
-		<li class=""><a onclick="#">DRAFT</a></li>
-		<li class=""><a onclick="#">EMPLOYEES</a></li>
+		<li class="current"><a onclick="reviewPayrollDiv();">Initiate Payroll</a></li>
+		<li class=""><a onclick="#">PayRoll</a></li>
+		<li class=""><a onclick="#">Groups</a></li>
 		<li class=""><a href="<c:url value='${appPath}/forms/list'/>" title="Forms">Forms</a></li>
 	</ul>
    </div>
