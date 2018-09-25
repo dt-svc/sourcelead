@@ -3,7 +3,6 @@ package com.bis.sourcelead.service;
 import org.json.JSONObject;
 
 import com.bis.sourcelead.dto.CandidateDTO;
-import com.bis.sourcelead.dto.MasterCandidateDTO;
 import com.bis.sourcelead.entity.MasterCandidate;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.User;
