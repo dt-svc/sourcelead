@@ -2,11 +2,12 @@ package com.bis.sourcelead.payroll.dao;
 
 import java.util.List;
 
+import com.bis.sourcelead.dto.ResponseList;
 import com.bis.sourcelead.entity.Candidate;
 import com.bis.sourcelead.entity.OrgLocations;
+import com.bis.sourcelead.payroll.dto.PayrollComparisonDTO;
 import com.bis.sourcelead.payroll.dto.PayPeriodDTO;
 import com.bis.sourcelead.payroll.dto.PayrollReportDTO;
-import com.bis.sourcelead.payroll.dto.USPayrollDTO;
 import com.bis.sourcelead.payroll.entity.EmployeePayroll;
 import com.bis.sourcelead.payroll.entity.PaysheetFrequency;
 
@@ -18,5 +19,9 @@ public interface PaysheetFrequencyDao {
 
 	List<EmployeePayroll> employeePayrollYTD(Candidate candidate, OrgLocations orgLocation, String approverStatus);
 
-	List<PaysheetFrequency> getPayrollRegisterReports(PayrollReportDTO payPeriodDTO);
+	ResponseList<EmployeePayroll> getPayrollRegisterReports(PayrollReportDTO payPeriodDTO);
+
+	PaysheetFrequency getPaySheetFrequencyByGroupIdAndFrequencyStartEnddate(String date,
+			OrgLocations orgLocation, Long groupId);
+			
 }

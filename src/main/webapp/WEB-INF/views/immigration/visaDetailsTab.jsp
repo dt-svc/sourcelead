@@ -213,7 +213,7 @@
 				}
 		  $("#searchValueVisa").keyup(function (e) {
 			    if (e.which === 13) {
-			    	searchVisaValue();
+			    	immigration.searchVisaValue();
 			    }
 			});
 		 
