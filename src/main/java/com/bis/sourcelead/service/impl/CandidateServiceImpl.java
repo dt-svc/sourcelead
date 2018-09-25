@@ -1858,7 +1858,7 @@ private Sheet createXlsSheet(Sheet createExcelsheet, Row writeRow,Candidate cand
 		 int percentage = 0;
 			if(can != null){
 				//Basic Details - 30 %
-				if(can.getFirstName()!=null && can.getLocation()!=null && can.getEmail()!=null){
+				if(can.getFirstName() != null  && can.getEmail() != null){
 					percentage = 30;
 				}
 				//Resume  Details - 10 %
