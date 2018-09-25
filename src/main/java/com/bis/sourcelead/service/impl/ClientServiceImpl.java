@@ -1182,6 +1182,8 @@ public class ClientServiceImpl implements ClientService {
 				orgLocations = orgRelation.getResponderLocationId();
 				if (StringUtils.isNotBlank(clientDTO.getLevel())) {
 					orgRelation.setInitiatorLevel(clientDTO.getLevel());
+				}if(StringUtils.isNotBlank(clientDTO.getGenerateInvoice())){
+				orgRelation.setGenerateInvoice(clientDTO.getGenerateInvoice());
 				}
 			}
 			if (orgRelation.getResponderLocationId().getId().longValue() == loginLocationId.longValue()) {
@@ -1333,6 +1335,9 @@ public class ClientServiceImpl implements ClientService {
 				orgLocations = orgRelation.getResponderLocationId();
 				if (StringUtils.isNotBlank(clientDTO.getLevel())) {
 					orgRelation.setInitiatorLevel(clientDTO.getLevel());
+				}
+				if(StringUtils.isNotBlank(clientDTO.getGenerateBill())){
+				orgRelation.setGenerateBill(clientDTO.getGenerateBill());
 				}
 			}
 			if (orgRelation.getResponderLocationId().getId().longValue() == loginOrgId.longValue()) {
