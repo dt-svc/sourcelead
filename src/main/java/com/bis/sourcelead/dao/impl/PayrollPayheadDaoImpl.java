@@ -2,7 +2,6 @@ package com.bis.sourcelead.dao.impl;
 
 import java.text.MessageFormat;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -28,6 +27,7 @@ import com.bis.sourcelead.entity.PayrollPayhead;
 import com.bis.sourcelead.entity.PayrollPayheadSalarySetup;
 import com.bis.sourcelead.exception.SourceLeadConstraintViolationException;
 import com.bis.sourcelead.util.CommonUtil;
+import com.bis.sourcelead.util.INDPayrollCommonUtil;
 
 @Repository
 public class PayrollPayheadDaoImpl implements PayrollPayheadDao{
@@ -37,6 +37,9 @@ public class PayrollPayheadDaoImpl implements PayrollPayheadDao{
 	
 	@Autowired
 	CommonUtil commonUtil;
+	
+	@Autowired
+	INDPayrollCommonUtil payrollCommonUtil;
 	
 	@Value("${SourceLead.100}")
 	private String notFound;
@@ -70,38 +73,15 @@ public class PayrollPayheadDaoImpl implements PayrollPayheadDao{
 
 	@Override
 	@Transactional
-	public ResponseList<PayrollPayheadDTO> getPayrollPayheadList(OrgLocations orgLocations) throws Exception {
-		ResponseList<PayrollPayheadDTO> payrollPayheadDTOList = new ResponseList<>();
-		Session session = this.sessionFactory.getCurrentSession();
+	public List<PayrollPayhead> getPayrollPayheadList(OrgLocations orgLocations) throws Exception {
 		
-		/*String query = " FROM PayrollPayhead payhead WHERE  payhead.id NOT IN(SELECT ph1.parentPayhead FROM PayrollPayhead ph1 where ph1.parentPayhead IN (SELECT ph2.id FROM PayrollPayhead ph2) and (ph1.orgLocationId.id=:orgLocationId OR ph1.orgLocationId.id='1') and ph1.status = '1') and (payhead.orgLocationId.id=:orgLocationId OR payhead.orgLocationId.id='1') and payhead.status = '1'";*/
+		Session session = this.sessionFactory.getCurrentSession();
 		
 		String query = " FROM PayrollPayhead payhead WHERE  payhead.orgLocationId.id=:orgLocationId and payhead.status = '1'";
 		
 		List<PayrollPayhead> payrollPayheadList = session.createQuery(query).setLong("orgLocationId", orgLocations.getId()).list();
 		
-		payrollPayheadDTOList.setData(setPayrollPayheadList(payrollPayheadList,orgLocations));
-		return payrollPayheadDTOList;
-	}
-	private List<PayrollPayheadDTO> setPayrollPayheadList(List<PayrollPayhead> payrollPayheadList,OrgLocations orgLocations) throws Exception {
-		List<PayrollPayheadDTO> payrollPayheadDTOList = new ArrayList<>();
-		if(payrollPayheadList != null && !payrollPayheadList.isEmpty()) {
-			for(PayrollPayhead payRollPayhead : payrollPayheadList) {
-				PayrollPayheadDTO payheadDTO = new PayrollPayheadDTO();
-				payheadDTO.setEffectiveDate(commonUtil.dateStrFromOrgDateFormatter(orgLocations.getDateFormat(),payRollPayhead.getEffectiveDate()));
-				payheadDTO.setId(payRollPayhead.getId());
-				payheadDTO.setName(payRollPayhead.getName());
-				payheadDTO.setShortCode(payRollPayhead.getShortCode());
-				payheadDTO.setType(payRollPayhead.getType());
-				payheadDTO.setComponent(payRollPayhead.getComponent());
-				payheadDTO.setTax(payRollPayhead.getTax());
-				payheadDTO.setUuid(payRollPayhead.getUuid());
-				payheadDTO.setMethod(payRollPayhead.getMethod());
-				payheadDTO.setFormula(payRollPayhead.getFormula());
-				payrollPayheadDTOList.add(payheadDTO);
-			}
-		}
-		return payrollPayheadDTOList;
+		return payrollPayheadList;
 	}
 	
 	@Override
@@ -183,8 +163,7 @@ public class PayrollPayheadDaoImpl implements PayrollPayheadDao{
 		}else {
 			response.setRecordsFiltered(totalCount);
 		}
-		
-		response.setData(setPayrollPayheadList(payrollPayheadList,orgLocations));
+		response.setData(payrollCommonUtil.setPayrollPayheadList(payrollPayheadList,orgLocations));
 		return response;
 	}
 	
@@ -338,5 +317,11 @@ public class PayrollPayheadDaoImpl implements PayrollPayheadDao{
 			associateSalaryPayheadInd = (AssociateSalaryPayheadInd) associateSalaryPayheadIndList.iterator().next();
 		}
 		return associateSalaryPayheadInd;
+	}
+
+	@Override
+	public void generateINDPayrollPayheadForOldOrgs() throws Exception {
+		
+		
 	}
 }
