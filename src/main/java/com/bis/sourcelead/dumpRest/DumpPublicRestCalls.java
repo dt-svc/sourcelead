@@ -10,8 +10,6 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-import org.elasticsearch.common.CheckedSupplier;
-import org.elasticsearch.index.cache.bitset.BitsetFilterCache;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,6 +21,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.dao.AppliedLeaveDateDao;
 import com.bis.sourcelead.dao.HolidayDAO;
+import com.bis.sourcelead.dao.PayrollPayheadDao;
 import com.bis.sourcelead.dao.ProjectApproverHierarchyDao;
 import com.bis.sourcelead.dao.ProjectClientDao;
 import com.bis.sourcelead.dao.ProjectMembersDao;
@@ -35,6 +34,7 @@ import com.bis.sourcelead.entity.Holiday;
 import com.bis.sourcelead.entity.Leave;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.OrgSpoc;
+import com.bis.sourcelead.entity.PayrollPayhead;
 import com.bis.sourcelead.entity.ProjectApproverHierarchy;
 import com.bis.sourcelead.entity.ProjectClients;
 import com.bis.sourcelead.entity.ProjectMembers;
@@ -55,7 +55,6 @@ import com.bis.sourcelead.payroll.entity.WageTaxSummary;
 import com.bis.sourcelead.payroll.service.AccountDeductionsService;
 import com.bis.sourcelead.payroll.service.EmployerPayrollCostService;
 import com.bis.sourcelead.payroll.service.HrDeductionsService;
-import com.bis.sourcelead.payroll.service.InvoiceDataService;
 import com.bis.sourcelead.payroll.service.UserPayrollService;
 import com.bis.sourcelead.payroll.service.WageTaxSummaryService;
 import com.bis.sourcelead.service.CandidateService;
@@ -131,6 +130,9 @@ public class DumpPublicRestCalls {
 	
 	@Autowired
 	InvoiceDataDao invoiceDataDao;
+	
+	@Autowired
+	PayrollPayheadDao payrollPayheadDao;
 	
 	@RequestMapping(value = "/ws/dumpAllAppliedLeaveDatesData", method = RequestMethod.GET)
 	@ResponseBody
@@ -473,6 +475,52 @@ public class DumpPublicRestCalls {
 			logger.info("dumping uuid for InvoiceData completed");
 		}
 		
+		logger.info("End Time"+java.time.LocalDateTime.now());
+	}
+	
+	
+	@RequestMapping(value = "/ws/generateINDPayrollPayheadForOldOrgs", method = RequestMethod.GET)
+	@ResponseBody
+	public void generateINDPayrollPayheadForOldOrgs() throws Exception {
+		logger.info("Start Time"+java.time.LocalDateTime.now());
+		OrgLocations orgLoc = new OrgLocations();
+		orgLoc.setId(1l);
+		List<PayrollPayhead> payheadList = payrollPayheadDao.getPayrollPayheadList(orgLoc);
+		List<OrgLocations> orgLocList = orgLocationService.getAllOrgLocations();
+		for(OrgLocations loc : orgLocList){
+			List<PayrollPayhead> existed = payrollPayheadDao.getPayrollPayheadList(loc);
+			for(PayrollPayhead payHead : payheadList) {
+				if (existed.stream().filter(o -> o.getShortCode().equals(payHead.getShortCode())).findFirst().isPresent()) {
+				}else {
+					PayrollPayhead newPayhead = new PayrollPayhead();
+					newPayhead.setName(payHead.getName());
+					newPayhead.setShortCode(payHead.getShortCode());
+					newPayhead.setEffectiveDate(payHead.getEffectiveDate());
+					newPayhead.setType(payHead.getType());
+					newPayhead.setPayType(payHead.getPayType());
+					newPayhead.setForm16(payHead.getForm16());
+					newPayhead.setTax(payHead.getTax());
+					newPayhead.setApplicableFor(payHead.getApplicableFor());
+					newPayhead.setExperienceYears(payHead.getExperienceYears());
+					newPayhead.setExperienceMonths(payHead.getExperienceMonths());
+					newPayhead.setFbpComponent(payHead.getFbpComponent());
+					newPayhead.setPaidComponent(payHead.getPaidComponent());
+					newPayhead.setComponent(payHead.getComponent());
+					newPayhead.setPartOfGratitutiy(payHead.getPartOfGratitutiy());
+					newPayhead.setLeaveDependent(payHead.getLeaveDependent());
+					newPayhead.setShowInPayslip(payHead.getShowInPayslip());
+					newPayhead.setPfApplicable(payHead.getPfApplicable());
+					newPayhead.setEsiApplicable(payHead.getEsiApplicable());
+					newPayhead.setMethod(payHead.getMethod());
+					newPayhead.setFormula(payHead.getFormula());
+					newPayhead.setUuid(SourceLeadRandomCodeHelper.generateRandomUUID());
+					newPayhead.setStatus(payHead.getStatus());
+					newPayhead.setOrgLocationId(loc);
+					payrollPayheadDao.savePayrollPayhead(newPayhead);
+				}
+			}
+			logger.info("Org Payhead>> "+java.time.LocalDateTime.now());
+		}
 		logger.info("End Time"+java.time.LocalDateTime.now());
 	}
 }

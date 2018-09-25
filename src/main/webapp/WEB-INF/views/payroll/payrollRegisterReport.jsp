@@ -372,7 +372,7 @@ function payrollRegisterPagination(url){
 //     	    	"aaSorting": [[1,'desc']],
     	    	"bLengthChange": true,
     	    	"bDestroy": true,
-    	    	"ordering": false,
+    	    	"ordering": true,
     	    	"oLanguage": {
     	     		"sSearch": "",
     	     		 "sZeroRecords": "", "sEmptyTable": "", 
