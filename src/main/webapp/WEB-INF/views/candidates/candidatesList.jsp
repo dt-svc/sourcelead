@@ -95,24 +95,6 @@ function closeCandiatesSubmitedList() {
     $(".modal.paymentaccount-modal").fadeOut();
     $(".comMask").fadeOut();
 }
-
-$('#failedCandidatesPagination').DataTable( { 
-	"scrollCollapse": false,
-	"bPaginate": true,
-	"bLengthChange": true,
-	"lengthMenu": [[10, 15, 20, -1], [10, 15, 20, "All"]],
-	"bDestroy": true,
-	"ordering": false,
-	"aoColumnDefs": [{
-           'bSortable': false,
-           'aTargets': 0
-		}],
-	"oLanguage": {
- 	"sSearch": "",
- 	 "sZeroRecords": "", "sEmptyTable": ""
- 	}
-	
-} );
 </script>
 
 

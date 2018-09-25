@@ -528,7 +528,7 @@ function getFailuredCandidates(json){
         
     result = result +'<div>';
     result = result +'<div class="project_wrap_table datatable_filter mt40 overflow_inherint">';
-    result = result +"<table id='failedCandidatesPagination' class='display' cellspacing='0' width='100%' >"; 
+    result = result +"<table id='failedCandidatesPagination'  width='100%' >"; 
    	result = result +'<thead>';
    	result = result +'<tr>';
     result = result +'<th>Candidate Name</th>';
@@ -562,6 +562,26 @@ function getFailuredCandidates(json){
     $("#candidateRejectedDiv").append(result);
     $(".modal.paymentaccount-modal").fadeIn();
     $(".comMask").fadeIn();
+    
+    
+    
+    $('#failedCandidatesPagination').DataTable({ 
+    	"scrollCollapse": false,
+    	"bPaginate": true,
+    	"bLengthChange": true,
+    	"lengthMenu": [[10, 15, 20, -1], [10, 15, 20, "All"]],
+    	"bDestroy": true,
+    	"ordering": false,
+    	"aoColumnDefs": [{
+               'bSortable': false,
+               'aTargets': 0
+    		}],
+    	"oLanguage": {
+     	"sSearch": "",
+     	 "sZeroRecords": "", "sEmptyTable": ""
+     	}
+    	
+    });
 }
 </script>
 
