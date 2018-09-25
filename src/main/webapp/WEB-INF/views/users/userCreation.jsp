@@ -1516,7 +1516,7 @@ function clearDateofJoin(){
 <script>
 var loginLocationCountry = '${SourceLeadWeb_orgLocations.country}';
 
-               var associateLeaveType = document.getElementById("associateLeaveType");
+              /*  var associateLeaveType = document.getElementById("associateLeaveType");
 				if(associateLeaveType){
 					associateLeaveType.href = "#";
 					associateLeaveType.className = "disabledLink";
@@ -1566,7 +1566,7 @@ var loginLocationCountry = '${SourceLeadWeb_orgLocations.country}';
 				if(associateLeaveType){
 					associateLeaveType.href = "#";
 					associateLeaveType.className = "disabledLink";
-				}   
+				}  */  
 
 
 		if(loginLocationCountry == 'India'){

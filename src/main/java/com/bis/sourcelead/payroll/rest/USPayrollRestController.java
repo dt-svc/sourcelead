@@ -1424,7 +1424,8 @@ public class USPayrollRestController {
 		OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 		
 		List<UserGroup> filteredGroupList = new ArrayList<>();
-		List<UserGroup> groupList = userGroupService.getAllUserGroupsByLocationId(orgLocation);
+//		List<UserGroup> groupList = userGroupService.getAllUserGroupsByLocationId(orgLocation);
+		List<UserGroup> groupList = userGroupService.getAllUserGroupsByLocationIdAndDepartmentId(orgLocation,userGroupDTO.getUserId());
 		if(groupList != null)
 		filteredGroupList = groupList.stream().filter(i->i.getPayFrequency().equalsIgnoreCase(userGroupDTO.getPayFrequency())).collect(Collectors.toList());
 		return filteredGroupList;
