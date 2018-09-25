@@ -1,11 +1,14 @@
 package com.bis.sourcelead.dto;
 
+import java.util.List;
+
 public class Response<T> {
 
     private T object;
     private String error;
     private String response;
     private String responseMessage;
+    private List<CandidateDTO> responseObject;
 
     public T getObject() {
         return object;
@@ -38,4 +41,15 @@ public class Response<T> {
     public void setResponseMessage(String responseMessage) {
         this.responseMessage = responseMessage;
     }
+
+	public List<CandidateDTO> getResponseObject() {
+		return responseObject;
+	}
+
+	public void setResponseObject(List<CandidateDTO> responseObject) {
+		this.responseObject = responseObject;
+	}
+
+
+	
 }

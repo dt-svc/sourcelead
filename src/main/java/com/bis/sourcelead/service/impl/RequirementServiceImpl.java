@@ -337,6 +337,7 @@ public class RequirementServiceImpl implements RequirementService {
 				requirement.setUrl(jobTitle);
 			}
 		}
+		requirement.setProfilePercentage(Integer.parseInt(requirementDTO.getProfilePercentage()));
 		if (orgLocations != null) {
 			requirement.setOrgLocationId(orgLocations);
 		}

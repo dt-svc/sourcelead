@@ -96,6 +96,10 @@ public class ClientVendorDTO extends SearchDTO implements Serializable {
 	
 	private String isAccountingFirm;
 	
+	private String generateBill;
+	
+	private String generateInvoice;
+	
 	public String getOrgRelationIds() {
 		return orgRelationIds;
 	}
@@ -666,6 +670,22 @@ public class ClientVendorDTO extends SearchDTO implements Serializable {
 
 	public void setIsAccountingFirm(String isAccountingFirm) {
 		this.isAccountingFirm = isAccountingFirm;
+	}
+
+	public String getGenerateBill() {
+		return generateBill;
+	}
+
+	public void setGenerateBill(String generateBill) {
+		this.generateBill = generateBill;
+	}
+
+	public String getGenerateInvoice() {
+		return generateInvoice;
+	}
+
+	public void setGenerateInvoice(String generateInvoice) {
+		this.generateInvoice = generateInvoice;
 	}
 
 	

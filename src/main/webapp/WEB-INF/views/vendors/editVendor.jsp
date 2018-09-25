@@ -35,6 +35,9 @@
 						var paymentTerms6 = '';
 						var paymentTerms0 = '';
 						
+						var generateBill = '';
+						var generateBill1 = '';
+						
 						<c:forEach var="section" items="${sourceleadSectionList}" varStatus="sectionOrder">
 						  var sectionId = '${section.id}';
 						  preapareCustomFieldDetails(vendorLocationId,orgRelationId,sectionId);
@@ -82,6 +85,12 @@
 						if(json.paymentTerms == '90 days'){
 							paymentTerms6 = 'selected';
 						}
+						
+						if(json.generateBill == 'Bulk'){
+							generateBill = 'selected';
+						}else if(json.generateBill == 'Individual'){
+							generateBill1 = 'selected';
+						} 
 						
 						 var country = '';
 						 var state = '';
@@ -250,6 +259,14 @@
                         result = result + ' <option '+paymentTerms6+'>90 days</option>';
                         result = result + ' </select>';
                         result = result + ' </div>'; 
+                        
+                        result = result + ' <div class="user_summary_edit_cta">';
+                        result = result + ' <label>Generate Bill</label>';
+                        result = result + ' <select id="generateBill" name="generateBill" >';
+                        result = result + ' <option '+generateBill+'>Bulk</option>';
+                        result = result + ' <option '+generateBill1+'>Individual</option>';
+                        result = result + ' </select>';
+                        result = result + ' </div>';
 						
 	                    result = result +' <div class="col-md-9">';
 			            result = result +' <div class="checkbox checkBox">';

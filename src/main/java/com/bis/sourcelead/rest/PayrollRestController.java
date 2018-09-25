@@ -3,6 +3,7 @@ package com.bis.sourcelead.rest;
 import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -15,6 +16,10 @@ import org.springframework.web.bind.annotation.RestController;
 import com.bis.sourcelead.entity.BulkClientDetails;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.Payroll;
+import com.bis.sourcelead.entity.User;
+import com.bis.sourcelead.payroll.dto.GenerateINDPayrollDTO;
+import com.bis.sourcelead.payroll.dto.GenerateUSPayrollDTO;
+import com.bis.sourcelead.payroll.dto.PaysheetFrequencyDTO;
 import com.bis.sourcelead.service.PayrollService;
 import com.bis.sourcelead.util.CommonUtil;
 import com.bis.sourcelead.util.SourceLeadSessionManager;
@@ -81,7 +86,14 @@ public class PayrollRestController {
 	    
 	}
 		
-
+	@RequestMapping(value = { "/generateINDPayroll", "/rest/generateINDPayroll" }, method = RequestMethod.POST)
+	public PaysheetFrequencyDTO generateUSPayroll(GenerateINDPayrollDTO generateINDPayrollDTO, HttpServletRequest request,
+			HttpServletResponse response) throws Exception {
+		OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+		User loginUser = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+		PaysheetFrequencyDTO existedData = payrollService.getPayrollData(generateINDPayrollDTO, orgLocation, loginUser);
+		return payrollService.generateINDPayroll(existedData,orgLocation,generateINDPayrollDTO,loginUser);
+	}
 
 	 
 }
