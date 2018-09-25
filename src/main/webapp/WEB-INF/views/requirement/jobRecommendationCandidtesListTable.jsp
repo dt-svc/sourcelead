@@ -20,7 +20,7 @@
 <div class="success_pop" id="candSelector" style="display: none;"> 
     	 <i class="fa fa-check-circle"></i><span id="candMsgDiv"></span> 
    		</div>
-
+<div id="candidateSubmittedJobsDiv" class="project_tabs clearfix"></div>  
 
  <script>
 	   function candMsgFadein() {
@@ -279,7 +279,13 @@ function recommendationpagination(url,requirementId, requirementSubmissionStatus
 		    	  	"data": "noOfReq",
 		    	  	"render": function(data, type, report, meta) {
 		    	  		var result = "";
-		    	  		result = result +'<td class="text-center"><div class="show-tooltip"><span>'+report.noOfReq+'</span>';
+		    	  		
+		    	  		if(report.noOfReq == 0){
+		    	  			result = result +'<td class="text-center"><div class="show-tooltip"><span>'+report.noOfReq+'</span>';
+		    	  		}else{
+		    	  			result = result +'<td class="text-center"><div class="show-tooltip"><a href="#" onclick="getSubmittedJobsList('+report.candidateId+')">'+report.noOfReq+'</div></a>';
+		    	  		}
+		    	  		
 		    		    result = result +' </div></td>';
 		    	  		 return result; 
 		    	  	}
@@ -453,6 +459,21 @@ function recommendationpagination(url,requirementId, requirementSubmissionStatus
 } 
 
 
+</script>
+
+<script>
+function getSubmittedJobsList(candidateId){
+	$.ajax({
+		  type: "GET",
+		    url: sourceleadUrl+"/getCandidateSubmittedJobsList?candidateId="+candidateId,
+		     success :function(response) {
+		    	    $("#candidateSubmittedJobsDiv").empty();  
+		    	    $("#candidateSubmittedJobsDiv").append(response);
+		    	    $(".modal.paymentaccount-modal").fadeIn();
+		    	    $(".comMask").fadeIn();
+				},
+			});
+}
 </script>
 
 <script>
