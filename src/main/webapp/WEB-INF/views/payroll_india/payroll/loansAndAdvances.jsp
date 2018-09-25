@@ -9,7 +9,7 @@
 	</section>
 	<div class="clearfix"></div>
 	<div class="project_wrap">
-		<jsp:include page="../my_payroll/myPayrollHeader.jsp"></jsp:include>
+		<jsp:include page="../payroll/myPayrollHeader.jsp"></jsp:include>
 		
 		<div class="tablelist-wrap">
 			<div class="col-md-12">
