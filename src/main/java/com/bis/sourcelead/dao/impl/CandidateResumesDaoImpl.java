@@ -325,4 +325,35 @@ public Integer getCandidateActiveResumeCountByCandidateId(Long candidateId) thro
 }
 
 
+@Override
+@Transactional(rollbackFor = { Exception.class })
+public CandidateResumesDTO getCandidateLatesResumeDetails(Long candidateId) throws Exception {
+	
+	List<CandidateResumesDTO> candidateResumesDTOList = null;
+	CandidateResumesDTO candidateResumesDTO = null;
+	Session session = this.sessionFactory.getCurrentSession();
+	String query = null;
+			query ="SELECT "
+			+" CR.ID AS resumeId, "
+			+" CR.FILE_NAME AS resumeName, "
+			+" CR.FILE_CONTENT_TYPE AS fileContentType, "
+			+" CR.FILE_URL AS fileUrl "
+			+" FROM CANDIDATE_RESUMES CR "
+			+" WHERE "
+			+" CR.CANDIDATE_ID = :candidateId AND CR.STATUS = '1' "
+			+" ORDER BY CR.CREATED_DATE DESC ";
+			
+        Query queryObj = session.createSQLQuery(query);
+		queryObj.setLong("candidateId", candidateId);
+		queryObj.setResultTransformer(Transformers.aliasToBean(CandidateResumesDTO.class));
+		candidateResumesDTOList = queryObj.list();
+		if(candidateResumesDTOList != null && !candidateResumesDTOList.isEmpty()) {
+			candidateResumesDTO = candidateResumesDTOList.get(0);
+		}
+		
+		return candidateResumesDTO;
+
+}
+
+
 }
