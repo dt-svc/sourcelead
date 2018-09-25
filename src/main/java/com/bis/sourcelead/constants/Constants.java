@@ -1241,6 +1241,8 @@ public class Constants {
 	public static final String USER_EMAIL_UPDATION = "UserEmailUpdation";
 	
 	public static final String JOB_PARSING = "job_parsing";
+	
+	public static final String REGULAR = "Regular";
 
 
 }
