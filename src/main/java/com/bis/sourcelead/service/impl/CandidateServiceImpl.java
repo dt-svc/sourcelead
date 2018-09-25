@@ -1858,7 +1858,7 @@ private Sheet createXlsSheet(Sheet createExcelsheet, Row writeRow,Candidate cand
 		 Integer status = Constants.CANDIDATE_ACTIVE;
 			if(can != null){
 				//Basic Details - 30 %
-				if(can.getFirstName()!=null && can.getLocation()!=null && can.getEmail()!=null && can.getDesignationType()!=null){
+				if(can.getFirstName()!=null && can.getLocation()!=null && can.getEmail()!=null){
 					percentage = 30;
 				}
 				//Resume  Details - 10 %
