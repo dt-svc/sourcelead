@@ -135,6 +135,10 @@ public class EmployeePayroll {
 	
 	@Column(name = "TAXES")
 	private BigDecimal taxes;
+	
+	
+	@Column(name = "EXPENSES_AMOUNT")
+	private BigDecimal expensesAmount;
 
 	@OneToMany(cascade = CascadeType.ALL, mappedBy = "employeePayroll")
 	private Set<EmployeePayrollTax> usPayrollTax;
@@ -559,5 +563,16 @@ public class EmployeePayroll {
 	public void setType(String type) {
 		this.type = type;
 	}
+
+	public BigDecimal getExpensesAmount()
+	{
+		return expensesAmount;
+	}
+
+	public void setExpensesAmount(BigDecimal expensesAmount)
+	{
+		this.expensesAmount = expensesAmount;
+	}
+	
 	
 }

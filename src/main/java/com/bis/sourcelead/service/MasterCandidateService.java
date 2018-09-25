@@ -19,4 +19,6 @@ public interface MasterCandidateService {
 	
 	MasterCandidate storeMasterCandidateByCandidateDTO(CandidateDTO candidateDTO,User user) throws Exception;
 	
+	Long getMasterCandidateIdByEmail(String email) throws Exception;
+	
 }
