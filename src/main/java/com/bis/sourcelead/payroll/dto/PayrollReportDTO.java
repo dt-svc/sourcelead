@@ -57,7 +57,9 @@ public class PayrollReportDTO extends SearchDTO{
 	private BigDecimal ytdTaxes;
 	
 	private BigDecimal ytdDeductions;
-	
+
+	private String depositType;
+
 	private String searchValue;
 	
 	private Long orgLocationid;
@@ -65,6 +67,8 @@ public class PayrollReportDTO extends SearchDTO{
 	private String payrollUUID;
 	
 	private String contributionId;
+	
+	private String contributionType;
 	
 	private String schedule;
 	
@@ -387,6 +391,27 @@ public class PayrollReportDTO extends SearchDTO{
 		this.ytdNet = ytdNet;
 	}
 
+
+	public String getDepositType() {
+		return depositType;
+	}
+
+
+	public void setDepositType(String depositType) {
+		this.depositType = depositType;
+	}
+	
+
+	public String getContributionType()
+	{
+		return contributionType;
+	}
+
+	public void setContributionType(String contributionType)
+	{
+		this.contributionType = contributionType;
+	}
+
 	public String getSearchValue()
 	{
 		return searchValue;
@@ -405,6 +430,5 @@ public class PayrollReportDTO extends SearchDTO{
 	public void setOrgLocationid(Long orgLocationid)
 	{
 		this.orgLocationid = orgLocationid;
-	}
-	
+	}	
 }
