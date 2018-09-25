@@ -132,6 +132,7 @@ $(document).ready(function() {
 					
 			</div>
 
+<script type="text/javascript" src="/resources/js/submissionFailedCandidatesList.js"></script>
 
 <script>
 function clearJobAdvSearch(){
@@ -215,6 +216,7 @@ function submitCandidatesToJob(){
 		result = result +'  <th>&nbsp;</th>';
 		result = result +'	<th>Generated Id</th>';
 		result = result +'	<th>Title</th>';
+		result = result +'	<th>Profile (%)</th>';
 		result = result +'	<th>Client</th>';
 		result = result +'  <th>Posted On<br>(<small class="custom-small">YYYY-MM-DD</small>)</th>';
 	  	result = result +'  <th>Location</th>';
@@ -328,6 +330,7 @@ function requirementListPagination(url,sourceleadUrl){
             { "data": "action" },
             { "data": "generatedId"},
             { "data": "jobTitle"},
+            { "data": "profilePercentage"},
             { "data": "clientName"},
             { "data": "createdDate" },
             { "data": "location"}
@@ -369,6 +372,15 @@ function requirementListPagination(url,sourceleadUrl){
 	              }
 		     },{
 		    	  "targets": colIndex++,
+	              "data": "profilePercentage",
+	              "sortable": true,
+	              "render": function ( data, type, opt, meta ) {
+	            	  var result = "";
+	            	  result = result +"<td><div class='tbldata-dotdot_50'><span  title='"+opt.profilePercentage+"'>"+opt.profilePercentage+"</span></div></td>";
+	            	  return result;
+	              }
+		     },{
+		    	  "targets": colIndex++,
 	              "data": "client",
 	              "sortable": true,
 	              "render": function ( data, type, opt, meta ) {
@@ -404,7 +416,7 @@ function requirementListPagination(url,sourceleadUrl){
 	    	"scrollCollapse": false,
 	    	"lengthMenu": [[10, 15, 20], [10, 15, 20]],
 	    	"bLengthChange": true,
-	    	"aaSorting": [[4,'desc']],
+	    	"aaSorting": [[5,'desc']],
 	    	"bDestroy": true,
 	    	"ordering": true,
 	    	"oLanguage": {
@@ -478,7 +490,7 @@ function submitCandidtesToJob(){
 			       			var submittedlength = '';
 			       			if(data.responseObject.length > 0){
 			       				 submittedlength = candidateIds.length - data.responseObject.length;
-			       				 getFailuredCandidates(data.responseObject);
+			       				failedCandidates.getFailuredCandidates(data.responseObject);
 			       			}else{
 			       				 submittedlength = candidateIds.length;
 			       			}
@@ -513,76 +525,6 @@ function submitCandidtesToJob(){
 	 
 }
 
-
-function getFailuredCandidates(json){
-	
-	var result = '';
-   	
-   	result = result +'<div class="modal paymentaccount-modal" id="paymentAccountPopup" role="dialog">';
-    result = result +'<div class="modal-dialog modal-lg" style="width: 950px;">';
-    result = result +'<div class="modal-content"  style="height: 550px; overflow: auto;">';
-    result = result +'<div class="modal-header">';
-    result = result +'<button type="button" class="close" onclick="closeCandiatesSubmitedList();" data-dismiss="modal">&times;</button>';
-    result = result +'<h4 class="modal-title">Failed Candidates List</h4>';
-    result = result +'</div>';
-        
-    result = result +'<div>';
-    result = result +'<div class="project_wrap_table datatable_filter mt40 overflow_inherint">';
-    result = result +"<table id='failedCandidatesPagination'  width='100%' >"; 
-   	result = result +'<thead>';
-   	result = result +'<tr>';
-    result = result +'<th>Candidate Name</th>';
-    result = result +'<th>Email</th>';   
-    result = result +'<th>Profile Percentage</th>';         
-    result = result +'<th>Status</th>'; 
-   	result = result +'    </tr>';
-   	result = result +'</thead>	';
-		
-    result = result +'<tbody>';
-    for(var i=0;i<json.length;i++){
-     	 var opt = json[i];
-     	 result = result +'<tr>';
-         result = result +'<td><div class="tbldata-dotdot_100" title="'+opt.candidateName+'">'+opt.candidateName+'</div></td>';
-         result = result +'<td><div class="tbldata-dotdot-big text-center" title="'+opt.email+'">'+opt.email+'</div></td>';
-         result = result +'<td><div class="tbldata-dotdot_100" title="'+opt.profilePercentage+'">'+opt.profilePercentage+'</div></td>';
-         result = result +'<td><div class="tblminwidth-150">Failed</div></td>';
-         result = result +'</tr>';
-    }
-   
-    result = result +'</tbody>';
-    result = result +'</table>';
-	
-    result = result +'</div>';
-    result = result +'</div>';
-    result = result +'</div>';
-    result = result +'</div>';
-    result = result +'</div>';
-    
-    $("#candidateRejectedDiv").empty();  
-    $("#candidateRejectedDiv").append(result);
-    $(".modal.paymentaccount-modal").fadeIn();
-    $(".comMask").fadeIn();
-    
-    
-    
-    $('#failedCandidatesPagination').DataTable({ 
-    	"scrollCollapse": false,
-    	"bPaginate": true,
-    	"bLengthChange": true,
-    	"lengthMenu": [[10, 15, 20, -1], [10, 15, 20, "All"]],
-    	"bDestroy": true,
-    	"ordering": false,
-    	"aoColumnDefs": [{
-               'bSortable': false,
-               'aTargets': 0
-    		}],
-    	"oLanguage": {
-     	"sSearch": "",
-     	 "sZeroRecords": "", "sEmptyTable": ""
-     	}
-    	
-    });
-}
 </script>
 
 
