@@ -567,7 +567,7 @@ input.inline_field::-moz-placeholder { color: #333; }-->*/
     /*    Project Css    */
        
 .project_wrap {
-    background-color: #fff; padding: 0px 0px; box-shadow: 0px 0px 3px rgba(0,0,0,0.3); border-radius: 3px;
+    background-color: #fff; padding: 0px 0px; box-shadow: 0px 2px 2px rgba(0,0,0,0.15); border-radius: 3px;
     }
 .project_wrap .timesheet_head ul li {
     float:left; margin: 5px 0px 5px 5px;
@@ -847,7 +847,7 @@ input.inline_field::-moz-placeholder { color: #333; }-->*/
     /*    Clients Css    */
        
 .clients_wrap {
-    background-color: #fff; padding: 0px 0px; box-shadow: 0px 0px 3px rgba(0,0,0,0.3); border-radius: 3px;
+    background-color: #fff; padding: 0px 0px; box-shadow: 0px 2px 2px rgba(0,0,0,0.15); border-radius: 3px;
     }
 .clients_wrap .timesheet_head ul li {
     float:left;
@@ -1311,7 +1311,7 @@ right:0px;
     /*    Vendors Css    */
        
 .vendor_wrap {
-    background-color: #fff; padding: 0px 0px; box-shadow: 0px 0px 3px rgba(0,0,0,0.3); border-radius: 3px;
+    background-color: #fff; padding: 0px 0px; box-shadow: 0px 2px 2px rgba(0,0,0,0.15); border-radius: 3px;
     }
 .vendor_wrap .timesheet_head ul li {
     float:left; cursor: pointer;
