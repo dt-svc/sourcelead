@@ -5,10 +5,13 @@
 <%@taglib prefix="sec"
 	uri="http://www.springframework.org/security/tags"%>
 	
+	<script type="text/javascript" src="/resources/js/submissionFailedCandidatesList.js"></script>
+	
 <%-- <jsp:include page="addApplicant.jsp" />
 <jsp:include page="compareCandidatesProfile.jsp"></jsp:include> --%>
 
 <div id="popUp" ></div>
+<div id="candidateRejectedDiv" class="project_tabs clearfix"></div> 
 <script>
 	function requirementRecommendations(requirementId, requirementSubmissionStatus){
 	 	$("#actionsDiv" ).hide();
@@ -647,10 +650,24 @@ function submitRecommendationCandidatesToJob(requirementId){
 			    	} else if (data.response === "AWKWARD") {
 			    		location.href = "/errorPage";
 			    	} else if (data.response === "SUCCESS") {
-			    		$("#candMsgDiv").html(candidateIds.length+" Candidate(s) Submitted Successfully...");
+			    		
+			    		
 			    		candMsgFadein();
 		       			cancelSubmitApplicant();
 		       			requirementRecommendations(requirementId);
+		       			
+			    		var submittedlength = '';
+		       			if(data.responseObject.length > 0){
+		       				 submittedlength = candidateIds.length - data.responseObject.length;
+		       				failedCandidates.getFailuredCandidates(data.responseObject);
+		       			}else{
+		       				 submittedlength = candidateIds.length;
+		       			}
+		       			
+		       			if(submittedlength > 0){
+		       				$("#candMsgDiv").html(submittedlength+" Candidate(s) Submitted Successfully...");
+		       			}
+			    		
 			    	}else if (data.indexOf('Sign In') !== -1) {
 			    		location.replace(sourceleadUrl);
 			    	} else {

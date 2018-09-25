@@ -369,4 +369,9 @@ public class CandidateDocumentsServiceImpl implements CandidateDocumentsService 
 	public Boolean validateCandidateDocument(Long candidateId, String candidateDocument) throws Exception {
 		return candidateDocumentsDao.validateCandidateDocument(candidateId, candidateDocument);
 	}
+
+	@Override
+	public Integer getCandidateActiveDocumentsByCandidateId(Long candidateId) {
+		return candidateDocumentsDao.getCandidateActiveDocumentsByCandidateId(candidateId);
+	}
 }

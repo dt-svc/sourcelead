@@ -43,6 +43,18 @@ public class RequirementSubmissionsDTO extends SearchDTO implements Serializable
 	private BigInteger offerId;
 	private String onboardUUId;
 	private String onboardStatus;
+	
+    private BigInteger reqId;
+	
+	private String submissionStatus;
+	
+	private String submissionDate;
+	
+	private String submissionTime;
+	
+	private String generatedId;
+	
+	private String submittedBy;
 		
 	public long getRequirementId()
 	{
@@ -292,5 +304,41 @@ public class RequirementSubmissionsDTO extends SearchDTO implements Serializable
 	}
 	public void setOnboardStatus(String onboardStatus) {
 		this.onboardStatus = onboardStatus;
+	}
+	public BigInteger getReqId() {
+		return reqId;
+	}
+	public void setReqId(BigInteger reqId) {
+		this.reqId = reqId;
+	}
+	public String getSubmissionStatus() {
+		return submissionStatus;
+	}
+	public void setSubmissionStatus(String submissionStatus) {
+		this.submissionStatus = submissionStatus;
+	}
+	public String getSubmissionDate() {
+		return submissionDate;
+	}
+	public void setSubmissionDate(String submissionDate) {
+		this.submissionDate = submissionDate;
+	}
+	public String getSubmissionTime() {
+		return submissionTime;
+	}
+	public void setSubmissionTime(String submissionTime) {
+		this.submissionTime = submissionTime;
+	}
+	public String getGeneratedId() {
+		return generatedId;
+	}
+	public void setGeneratedId(String generatedId) {
+		this.generatedId = generatedId;
+	}
+	public String getSubmittedBy() {
+		return submittedBy;
+	}
+	public void setSubmittedBy(String submittedBy) {
+		this.submittedBy = submittedBy;
 	}
 }

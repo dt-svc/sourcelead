@@ -209,6 +209,12 @@ public class UserGroupServiceImpl implements UserGroupService{
 	{
 		return userGroupDao.getPayPeriodsByGroupId(groupId);
 	}
+
+	@Override
+	public List<UserGroup> getAllUserGroupsByLocationIdAndDepartmentId(OrgLocations orgLocation, String userId)
+	{
+		return userGroupDao.getAllUserGroupsByLocationIdAndDepartmentId(orgLocation,userId);
+	}
 	
 	
 	

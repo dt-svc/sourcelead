@@ -2,6 +2,8 @@ package com.bis.sourcelead.dao.impl;
 
 import java.text.MessageFormat;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 import java.util.regex.Matcher;
@@ -27,7 +29,9 @@ import com.bis.sourcelead.entity.TimeSheetDayEntries;
 import com.bis.sourcelead.entity.TimeSheetDayEntriesHistory;
 import com.bis.sourcelead.exception.SourceLeadConstraintViolationException;
 import com.bis.sourcelead.service.OrgLocationService;
+import com.bis.sourcelead.util.CalendarUtil;
 import com.bis.sourcelead.util.CommonUtil;
+import com.ibm.icu.util.Calendar;
 
 @Repository
 public class TimeSheetDayEntriesDaoImpl implements TimeSheetDayEntriesDao{
@@ -357,7 +361,6 @@ public class TimeSheetDayEntriesDaoImpl implements TimeSheetDayEntriesDao{
 		}else {
 			return null;
 		}
-		
 	}
 	
 	@Override
@@ -373,6 +376,50 @@ public class TimeSheetDayEntriesDaoImpl implements TimeSheetDayEntriesDao{
 		return timesheetEntriesList;
 	}
 
+	
+	@Override
+	@Transactional(rollbackFor = { Exception.class })
+	public Double getOverTimeHoursByMasterCandidateIdAndOrgLocationWithStartEndDates(Long masterCandidateId,Date startDate,Date endDate,OrgLocations orgLocations) throws Exception {
+		Session session = this.sessionFactory.getCurrentSession();
+		java.sql.Date sqlStartDate = new java.sql.Date(startDate.getTime());
+		java.sql.Date sqlEndDate = new java.sql.Date(endDate.getTime());
+		long weekOffCount = 0;
+		if(StringUtils.isNotEmpty(orgLocations.getWeekOffDays())) {
+			 String[] strArray = orgLocations.getWeekOffDays().split(",");
+		     List<String> weekOffs = new ArrayList<String>(Arrays.asList(strArray));
+		     if(weekOffs != null && !weekOffs.isEmpty()) {
+		    	 for(String day_Of_Week : weekOffs) {
+		    		 weekOffCount = weekOffCount+CalendarUtil.numberOfDayOccurancesBetweenTwoDates(startDate, endDate, day_Of_Week);
+		    	 }
+		     }
+		    
+		}
+		 long noOfDays =  CalendarUtil.getNumberOfDaysCount(startDate, endDate);
+		 long workingDays = noOfDays-weekOffCount;
+		 Integer avgWorkingHoursPerDay = orgLocations.getAverageWorkingHours();
+         if(avgWorkingHoursPerDay == null || avgWorkingHoursPerDay == 0) {
+				avgWorkingHoursPerDay = 8; 
+		 }
+         double estimatedHours = avgWorkingHoursPerDay*workingDays;
+ 		String query = "from TimeSheetDayEntries tde left join fetch tde.projectTask pt  left join fetch tde.projectMembers pm left join fetch pm.orgLocationId loc where pm.masterCandidateId.id =:masterCandidateId and loc.id =:locationId and  and tde.timesheetDate between :startDate and :endDate and tde.status = '1' ";
+ 		List<TimeSheetDayEntries> tdeList = session.createQuery(query).setLong("masterCandidateId", masterCandidateId).setLong("locationId", orgLocations.getId()).setParameter("startDate", sqlStartDate).setParameter("endDate", sqlEndDate).list();	
+ 		double overTimeHours = 0;
+ 		if (tdeList != null && !tdeList.isEmpty()) {
+ 			float weekTotalHours = 0f;
+			for (TimeSheetDayEntries tde : tdeList) {
+				float totalHours = 0f;
+				if (StringUtils.isNotEmpty(tde.getTotalHours())) {
+					totalHours = CommonUtil.getCombinedHours(Float.parseFloat(tde.getTotalHours().replaceAll(":", ".")), totalHours);
+				}
+				weekTotalHours = CommonUtil.getCombinedHours(weekTotalHours, totalHours);
+			}
+			overTimeHours = weekTotalHours-estimatedHours;
+		}
+ 		if(overTimeHours <0) {
+ 			overTimeHours = 0;
+ 		}
+ 		return overTimeHours;
+	}
 	
 
 }

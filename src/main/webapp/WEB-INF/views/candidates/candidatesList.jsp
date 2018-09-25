@@ -59,7 +59,11 @@
 		</div>
 	</div>
 </div>
-	
+
+
+<div id="candidateSubmittedJobsDiv" class="project_tabs clearfix"></div> 
+<div id="candidateRejectedDiv" class="project_tabs clearfix"></div> 
+
 	<script>
 	var isAssociate = 'N';
 	var _csrfParam = '${_csrf.parameterName}';
@@ -83,6 +87,15 @@
 			}
 	};
 	</script>
+	
+	
+<script>
+function closeCandiatesSubmitedList() {
+	$("#candidateRejectedDiv").empty();  
+    $(".modal.paymentaccount-modal").fadeOut();
+    $(".comMask").fadeOut();
+}
+</script>
 
 
 <style type="text/css">
