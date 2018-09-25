@@ -11,7 +11,8 @@
 <jsp:include page="compareCandidatesProfile.jsp"></jsp:include> --%>
 
 <div id="popUp" ></div>
-<div id="candidateRejectedDiv" class="project_tabs clearfix"></div> 
+<div id="candidateRejectedDiv" class="project_tabs clearfix"></div>
+<div id="candidateSubmittedJobsDiv" class="project_tabs clearfix"></div>  
 <script>
 	function requirementRecommendations(requirementId, requirementSubmissionStatus){
 	 	$("#actionsDiv" ).hide();
@@ -276,7 +277,11 @@ function recommendationpagination(url,requirementId, requirementSubmissionStatus
 		    	  	"data": "noOfReq",
 		    	  	"render": function(data, type, report, meta) {
 		    	  		var result = "";
-		    	  		result = result +'<td class="text-center"><div class="show-tooltip"><span>'+report.noOfReq+'</span>';
+		    	  		if(report.noOfReq == 0){
+		    	  			result = result +'<td class="text-center"><div class="show-tooltip"><span>'+report.noOfReq+'</span>';
+		    	  		}else{
+		    	  			result = result +'<td class="text-center"><div class="show-tooltip"><a href="#" onclick="getSubmittedJobsList('+report.candidateId+')">'+report.noOfReq+'</div></a>';
+		    	  		}
 		    		    result = result +' </div></td>';
 		    	  		 return result; 
 		    	  	}
@@ -563,6 +568,21 @@ function checkShareRecommendation(elem) {
 		$("#sharedcheckbox").removeProp('checked');
 		compareCandidates[$(elem).data("id")] = "";
 	}
+}
+</script>
+
+<script>
+function getSubmittedJobsList(candidateId){
+	$.ajax({
+		  type: "GET",
+		    url: sourceleadUrl+"/getCandidateSubmittedJobsList?candidateId="+candidateId,
+		     success :function(response) {
+		    	    $("#candidateSubmittedJobsDiv").empty();  
+		    	    $("#candidateSubmittedJobsDiv").append(response);
+		    	    $(".modal.paymentaccount-modal").fadeIn();
+		    	    $(".comMask").fadeIn();
+				},
+			});
 }
 </script>
 
