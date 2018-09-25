@@ -1,10 +1,13 @@
 package com.bis.sourcelead.dao.impl;
 
+import java.math.BigInteger;
 import java.text.MessageFormat;
 import java.util.List;
 
+import org.hibernate.Query;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
+import org.hibernate.transform.Transformers;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -13,6 +16,8 @@ import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.bis.sourcelead.dao.MasterCandidateDao;
+import com.bis.sourcelead.dto.CandidateResumesDTO;
+import com.bis.sourcelead.dto.MasterCandidateDTO;
 import com.bis.sourcelead.entity.MasterCandidate;
 import com.bis.sourcelead.exception.SourceLeadConstraintViolationException;
 import com.bis.sourcelead.util.CommonUtil;
@@ -93,6 +98,29 @@ private static final Logger logger = LoggerFactory.getLogger(MasterCandidateDaoI
 			masterCandidate = (MasterCandidate) masterCandidateList.iterator().next();
 		}
 		return masterCandidate;
+	}
+
+
+	@Override
+	@Transactional
+	public Long getMasterCandidateIdByEmail(String email) throws Exception {
+		
+		Long masterCandidateId = null;
+		Session session = this.sessionFactory.getCurrentSession();
+		String query = null;
+		query ="SELECT "
+				+" MC.ID "
+				+" FROM MASTER_CANDIDATE MC "
+				+" WHERE "
+				+" MC.EMAIL = :email ";
+		Query queryObj = session.createSQLQuery(query);
+		queryObj.setString("email", email);	
+		BigInteger id = (BigInteger) queryObj.uniqueResult();
+		if(id != null) {
+			masterCandidateId = id.longValue();
+		}
+		
+		return masterCandidateId;
 	}
 	
 }

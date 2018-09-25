@@ -24,6 +24,7 @@ import com.bis.sourcelead.dao.AssociateSalaryDao;
 import com.bis.sourcelead.dao.ProjectMembersDao;
 import com.bis.sourcelead.dao.SubmissionApproverHierarchyDao;
 import com.bis.sourcelead.dao.UserGroupDao;
+import com.bis.sourcelead.dao.impl.ExpensesDaoImpl;
 import com.bis.sourcelead.dto.AssociateLoanAndAdvancesDTO;
 import com.bis.sourcelead.dto.AssociatePayItemDTO;
 import com.bis.sourcelead.dto.Response;
@@ -164,6 +165,9 @@ public class GenerateUSPayrollServiceImpl implements GenerateUSPayrollService{
 	
 	@Autowired
 	AssociateLoanAndAdvancesHistoryService associateLoanAndAdvancesHistoryService;
+	
+	@Autowired
+	ExpensesDaoImpl expensesDaoImpl;
 	 
 	@Override
 	public PaysheetFrequencyDTO generateUSPayroll(PaysheetFrequencyDTO existedData,OrgLocations orgLocation, GenerateUSPayrollDTO generateUSPayrollDTO,User loginUser) throws Exception
@@ -331,7 +335,9 @@ public class GenerateUSPayrollServiceImpl implements GenerateUSPayrollService{
 								if(assLoanAndAdvDTO.getTotalLoanAmount() != null && assLoanAndAdvDTO.getTotalAdvanceAmount() != null)
 									netPay = netPay.subtract((assLoanAndAdvDTO.getTotalLoanAmount().add(assLoanAndAdvDTO.getTotalAdvanceAmount())));
 								logger.info("*** Net Pay :"+netPay);
-								employeePayroll.setNetPay(netPay);
+								BigDecimal expenses = expensesDaoImpl.getExpenseAmountByCandidateIdAndExpenseStartAndEndDateForClaimedExpenses(assoSal.getCandidate().getId(),freqStartDate,freqEndDate);
+								employeePayroll.setExpensesAmount(expenses);
+								employeePayroll.setNetPay(netPay.add(expenses));
 								Employees employee = employeesService.getEmployeeByUserAndOrgLocationId(assoSal.getCandidate().getConsultantUser().getId(),orgLocation.getId());
 								if (employee != null) {
 									employeePayroll.setEmployee(employee);

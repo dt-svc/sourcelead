@@ -973,8 +973,8 @@ public class PayrollConfigurationRestController {
 					model.addObject("candidateCTCPerYear", new BigDecimal(amount));
 			        
 			        model.addObject("candidateCTCPerYear", candidateCTCPerYear);
-					model.addObject("candidate", candidate);
 				}
+				model.addObject("candidate", candidate);
 				model.addObject("status", "NODATA");
 			}
 			model.setViewName("indPayroll/associateSalary");

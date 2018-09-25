@@ -68,9 +68,14 @@ public class PayrollConfigurationController {
 	@RequestMapping(value = "/indPayrollConfiguration")
 	public ModelAndView payrollConfiguration(HttpServletRequest request)
 	{
+		OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 		ModelAndView model = new ModelAndView();
 		commonUtil.highLightMenu(Constants.OrgSettings, request);
-		model.setViewName("indPayroll/payrollConfiguration");
+		if(orgLocations.getCountry().equalsIgnoreCase("India")) {
+			model.setViewName("indPayroll/payrollConfiguration");
+		}else if(orgLocations.getCountry().equalsIgnoreCase("United States")) {
+			model.setViewName("payroll/payrollConfiguration");
+		}
 		model.addObject("sourceleadUrl", sourceleadUrl);
 		return model;
 	}
