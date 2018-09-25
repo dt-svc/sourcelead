@@ -383,7 +383,7 @@ public class InvoiceDaoImpl implements InvoiceDao {
 		
 		StringBuilder query1 = new StringBuilder("");
 		if (StringUtils.isNotBlank(creditDebitNoteDTO.getSearchValue())) {
-			if (creditDebitNoteDTO.getSearchValue().contains("/") || creditDebitNoteDTO.getSearchValue().contains("-")) {
+			if ((creditDebitNoteDTO.getSearchValue().contains("/") || creditDebitNoteDTO.getSearchValue().contains("-")) && (creditDebitNoteDTO.getSearchValue().matches("^[0-9 \\-]+$"))) {
 				String convertedDate = creditDebitNoteDTO.getSearchValue();
 				if (creditDebitNoteDTO.getSearchValue().contains("/")) {
 					convertedDate = creditDebitNoteDTO.getSearchValue().replaceAll("/", "-");
