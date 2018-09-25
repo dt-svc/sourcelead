@@ -4,6 +4,8 @@
 <%@ taglib uri="http://java.sun.com/jsp/jstl/functions" prefix="fn"%>
 <%@taglib prefix="sec"
 	uri="http://www.springframework.org/security/tags"%>
+	
+<script type="text/javascript" src="/resources/js/submissionFailedCandidatesList.js"></script>
 
 <div id="popUp" ></div>
 <script type="text/javascript">
@@ -14,6 +16,7 @@
 		 };
 </script> 
 <div id="recommendedList" ></div>
+<div id="candidateRejectedDiv" class="project_tabs clearfix"></div> 
 <div class="success_pop" id="candSelector" style="display: none;"> 
     	 <i class="fa fa-check-circle"></i><span id="candMsgDiv"></span> 
    		</div>
@@ -624,11 +627,24 @@ function submitRecommendationCandidatesToJob(requirementId){
 			    	} else if (data.response === "AWKWARD") {
 			    		location.href = "/errorPage";
 			    	} else if (data.response === "SUCCESS") {
-			    		$("#candMsgDiv").html(candidateIds.length+" Candidate(s) Submitted Successfully...");
+			    		
 			    		candMsgFadein();
 			    		var requirementId = '${requirementId}';
 						var requirementSubmissionStatus = '${requirementSubmissionStatus}';
 						requirementRecommendations(requirementId,requirementSubmissionStatus);
+						
+			    		var submittedlength = '';
+		       			if(data.responseObject.length > 0){
+		       				 submittedlength = candidateIds.length - data.responseObject.length;
+		       				failedCandidates.getFailuredCandidates(data.responseObject);
+		       			}else{
+		       				 submittedlength = candidateIds.length;
+		       			}
+		       			
+		       			if(submittedlength > 0){
+		       				$("#candMsgDiv").html(submittedlength+" Candidate(s) Submitted Successfully...");
+		       			}
+			    		
 			    	}else if (data.indexOf('Sign In') !== -1) {
 			    		location.replace(sourceleadUrl);
 			    	} else {
