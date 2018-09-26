@@ -22,6 +22,11 @@ function approvePayrollDiv(){
 }
 </script>
 
+<div id="userGroupList" style="display: none;">
+	<jsp:include page="../../payroll/usergroupList.jsp"></jsp:include>
+</div>
+
+
 <!-- Content Area -->
 <section class="content-wraper contentWraper">
 <section class="content-header clearfix">
@@ -36,10 +41,10 @@ function approvePayrollDiv(){
 <div class="project_wrap">
 <div class="clearfix project-tabs-menu">
 	<ul class="nav nav-tabs newTabs">
-		<li class="current"><a onclick="reviewPayrollDiv();">Initiate Payroll</a></li>
-		<li class=""><a onclick="#">Payroll</a></li>
-		<li class=""><a onclick="#">Groups</a></li>
-		<li class=""><a href="<c:url value='${appPath}/forms/list'/>" title="Forms">Forms</a></li>
+		<li id ="InitialPayroll" class="current"><a onclick="reviewPayrollDiv();">Initiate Payroll</a></li>
+		<li id = "Payroll" class=""><a onclick="#">PayRoll</a></li>
+		<li class=""><a onclick="showGroupTab();">Groups</a></li>
+		<li id ="Forms" class=""><a href="<c:url value='${appPath}/forms/list'/>" title="Forms">Forms</a></li>
 	</ul>
    </div>
    </div>
@@ -401,7 +406,13 @@ function msgFadein() {
 	$("#selector1").fadeIn(200);
     $('#selector1').delay(2000).fadeOut('slow');
 }
-
+function showGroupTab() {
+	$("#userGroupList").show();
+	$("#InitialPayroll").hide();
+	$("#Payroll").hide();
+	$("#Forms").hide();
+	//hide remaining tabs
+}
 </script>
 
 <jsp:include page="../../masterFooter.jsp" />
