@@ -26,5 +26,7 @@ public interface PaysheetFrequencyDao {
 			OrgLocations orgLocation, Long groupId);
 
 	List<DeductionHistory> getContributionYTD(EmployeePayroll payroll,Long contributionId,OrgLocations orgLocations);
+
+	List<DeductionHistory> getDeductionYTD(EmployeePayroll payroll, Long deductionId, OrgLocations orgLocation);
 			
 }
