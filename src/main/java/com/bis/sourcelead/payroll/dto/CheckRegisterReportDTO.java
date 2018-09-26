@@ -4,6 +4,7 @@ import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.util.Date;
 
+
 public class CheckRegisterReportDTO {
 	
 	private BigInteger empPayrollId;
@@ -32,8 +33,55 @@ public class CheckRegisterReportDTO {
 	
 	private Date payCheckDate;
 	
+	public String getType()
+	{
+		return type;
+	}
+
+	public Date getRunDate()
+	{
+		return runDate;
+	}
+
+	public String getPayGroupName()
+	{
+		return payGroupName;
+	}
+
+	public String getPayFrequency()
+	{
+		return payFrequency;
+	}
+
+	public void setType(String type)
+	{
+		this.type = type;
+	}
+
+	public void setRunDate(Date runDate)
+	{
+		this.runDate = runDate;
+	}
+
+	public void setPayGroupName(String payGroupName)
+	{
+		this.payGroupName = payGroupName;
+	}
+
+	public void setPayFrequency(String payFrequency)
+	{
+		this.payFrequency = payFrequency;
+	}
+
 	private int totalChecks;
 	
+	private String type;
+	
+	private Date runDate;
+	
+	private String payGroupName;
+	
+	private String payFrequency;
 	
 
 	public String getEmployeeId()

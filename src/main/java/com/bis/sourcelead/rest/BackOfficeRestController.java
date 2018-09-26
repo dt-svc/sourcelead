@@ -1,21 +1,13 @@
 package com.bis.sourcelead.rest;
 
-import java.io.ByteArrayInputStream;
-import java.io.FileNotFoundException;
-import java.io.InputStream;
-import java.io.OutputStream;
 import java.io.Writer;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
-import java.util.Map.Entry;
 
 import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 
 import org.apache.commons.lang.exception.ExceptionUtils;
 import org.json.JSONObject;
@@ -34,23 +26,19 @@ import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.dao.AssetDao;
 import com.bis.sourcelead.dto.AssetCategoryDTO;
 import com.bis.sourcelead.dto.AssetDTO;
-import com.bis.sourcelead.dto.CustomFormFieldDTO;
-import com.bis.sourcelead.dto.OrglocationFormFieldsDTO;
-import com.bis.sourcelead.dto.ReferContactsDTO;
+import com.bis.sourcelead.dto.AssetServiceDTO;
 import com.bis.sourcelead.dto.Response;
 import com.bis.sourcelead.dto.ResponseList;
-import com.bis.sourcelead.dto.SourceleadSectionDTO;
 import com.bis.sourcelead.entity.Asset;
 import com.bis.sourcelead.entity.AssetAssign;
 import com.bis.sourcelead.entity.AssetCategory;
+import com.bis.sourcelead.entity.AssetServices;
 import com.bis.sourcelead.entity.BoAmexTrans;
 import com.bis.sourcelead.entity.BoComericaTrans;
 import com.bis.sourcelead.entity.BoJmpcTrans;
 import com.bis.sourcelead.entity.BoUploadedFiles;
 import com.bis.sourcelead.entity.Employees;
 import com.bis.sourcelead.entity.OrgLocations;
-import com.bis.sourcelead.entity.SourceleadActions;
-import com.bis.sourcelead.entity.SourceleadBlogs;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.enums.Result;
 import com.bis.sourcelead.service.AssetCategoryService;
@@ -413,7 +401,7 @@ public class BackOfficeRestController {
 			
 			if (user != null && orgLocations != null) {
 				
-				String[] tableColumns = {"slno", "assetCategory", "model", "issueDate","macAddress","workingStatus"};
+				String[] tableColumns = {"id","slno", "assetCategory", "model", "issueDate","macAddress","workingStatus"};
 		    int sortColumnIndex = 1; //by default sorting using updated date
 			String sortColumnOrder = "asc"; //by default referContactsDTO order
 			if(assetDTO.getOrder() != null && !assetDTO.getOrder().isEmpty()) {
@@ -577,7 +565,7 @@ public class BackOfficeRestController {
 		assetDTO.setName(asset.getName());
 		assetDTO.setCost(asset.getCost());
 		assetDTO.setDepreciationAmount(asset.getDepreciationAmount());
-		
+		assetDTO.setVendorDetails(asset.getVendorDetails());
 		
 		
 		List<AssetAssign> assetAssignList = assetService.getAssignAssetListByAssetId(asset.getId());
@@ -809,6 +797,61 @@ public class BackOfficeRestController {
 		 return assignAssetList;
 	 }
 	 
+
+	 @RequestMapping(value = "/saveAssetService" , method = RequestMethod.POST)
+	   public Response<String> saveAssetService(AssetServiceDTO assetServiceDTO,HttpServletRequest request) throws Exception {
+		Response<String> response = new Response<>();
+		OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+	    User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+		try {
+			if (user != null && orgLocations != null) {
+				if (Validator.validate(assetServiceDTO)) {
+					assetServiceDTO.setDateFormat(orgLocations.getDateFormat());
+					assetService.saveAssetServiceDetails(assetServiceDTO,orgLocations);
+					
+					Asset asset = assetService.getAssetById(assetServiceDTO.getAssetId());
+			        if(asset != null){
+						asset.setWorkingStatus(assetServiceDTO.getWorkingStatus());
+						assetService.saveAsset(asset);
+					}
+					response.setResponse(Result.SUCCESS.name());
+					response.setResponseMessage(Result.SUCCESS.getValue());
+				} else {
+					response.setResponse(Result.INVALID_DATA.name());
+					response.setResponseMessage(Result.INVALID_DATA.getValue());
+				}
+
+			} else {
+				response.setResponse(Result.SESSION_TIMEDOUT.name());
+				response.setResponseMessage(Result.SESSION_TIMEDOUT.getValue());
+			}
+		} catch (Exception e) {
+			response.setResponse(Result.AWKWARD.name());
+			response.setResponseMessage(Result.AWKWARD.getValue());
+			logger.error(ExceptionUtils.getFullStackTrace(e));
+		}
+		return response; 
+	    
+	   }
+	 
+	 @RequestMapping(value = "/cancelAssetManagementService", method = RequestMethod.POST)
+		public Asset cancelAssetManagementService(@RequestParam(value="assetUUID", required=false) String assetUUID,HttpServletRequest request) throws Exception {
+		       Asset asset = assetService.getAssetByUUID(assetUUID);
+			return asset;
+		}
+	 
+	 
+	 @RequestMapping(value = "/getAssetManagementServiceHistory", method = RequestMethod.POST)
+	 @ResponseBody  List<AssetServices> getAssetManagementServiceHistory(@RequestParam(value = "assetUUID", required = false) String assetUUID,HttpServletRequest request) throws Exception {
+		 OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+		 Asset asset = assetService.getAssetByUUID(assetUUID);
+		 List<AssetServices> assetServicesList =  assetService.getAssetServicesListByAssetId(asset.getId());
+		 for(AssetServices as :assetServicesList) {
+				 as.setServiceDateStr(commonUtil.dateStrFromOrgDateFormatter(orgLocations.getDateFormat(),as.getServiceDate()));
+				 as.setReceivedDateStr(commonUtil.dateStrFromOrgDateFormatter(orgLocations.getDateFormat(),as.getRecivedDate()));
+			}
+		 return assetServicesList;
+	 }
 	 
 	private String toJSON(Object obj){
         XStream xstream = new XStream(new JsonHierarchicalStreamDriver() {
