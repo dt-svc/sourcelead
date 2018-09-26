@@ -117,6 +117,7 @@ function logoutForConfigure() {
 	      </div>
 	    </section>
 	    
+	    
 	    <div class="clearfix row mb">
 	    	
 	      <sec:authorize access="hasAnyRole('ROLE_FILL_MY_TIMESHEETS','ROLE_EXPORT_MY_TIMESHEETS','ROLE_MODIFY_MY_TIMESHEETS','ROLE_FILL_MEMBER_TIMESHEETS','ROLE_VIEW_MEMBER_TIMESHEETS','ROLE_EXPORT_MEMBER_TIMESHEETS')"> 

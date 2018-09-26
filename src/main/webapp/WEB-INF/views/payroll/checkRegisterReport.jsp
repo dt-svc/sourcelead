@@ -19,9 +19,9 @@ $(document).ready(function(){
       <div class="pull-right brud-crum">Home &raquo; Payhead List &raquo; Check Register Report</div>
     </section>
     <div class="contentareaInner-styles clearfix">
+    <div id="loading"></div>
+    <form:form id="check_register_report_form" name="check_register_report_form" method="post">
       <div class="clearfix minHeight">
-      <div id="loading"></div>
-      <form:form id="check_register_report_form" name="check_register_report_form" method="post">
         <div class="clearfix row">
           <div class="col-md-5">
             <div class="form-group">
@@ -52,6 +52,7 @@ $(document).ready(function(){
             </div>
           </div>
         </div>
+         </div>
         </form:form>
       </div>
       <div class="clearfix"></div>
@@ -105,7 +106,11 @@ $(document).ready(function(){
   
  <script>
  function resetForm(){
-	
+	 $("#payrollRegister").hide();
+	 $("#payGroup").val('');
+	 $("#payGroup").trigger("chosen:updated"); 
+	 $("#payPeriod").val('');
+	 $("#payPeriod").trigger("chosen:updated"); 
  }
  </script>
   
@@ -220,7 +225,7 @@ function checkRegisterReports(){
 	    var freqEndDate = $("#freqEndDate").val();
 		var searchValue = $("#dataTableSearch").val();
 		searchValue = searchValue ? searchValue : "";
-		var url = sourceleadUrl+"/getCheckRegisterReports?searchValue="+searchValue+"&groupId="+groupId+"&freqStartDate="+freqStartDate+"&freqEndDate="+freqEndDate;
+		var url = sourceleadUrl+"/getCheckRegisterReports?searchValue="+searchValue+"&groupId="+groupId+"&freqStartDate="+freqStartDate+"&freqEndDate="+freqEndDate+"&depositType=Cheque";
 		checkRegisterReportsList(url);	
 }
 
@@ -242,6 +247,8 @@ function checkRegisterReports(){
 		result = result + '</thead>	';
 		result = result + "</table>";
 		$("#checkRegisterReportDIV").append(result);
+		$("#noOfChecks").text(0);
+		$("#liveChecks").text(0);
 		payCheckDateData(url);
 
 	}
@@ -276,7 +283,6 @@ function checkRegisterReports(){
 										"data" : "empId",
 										"sortable": false,
 										"render" : function(data, type, opt,meta) {
-											
 											var result = "";
 											if(opt.employeeId != null && opt.employeeId != '' && opt.employeeId != 'undefined'){
 												result = result+ ' <td><div class="tblminwidth-75">'+opt.employeeId+'</div></td>';

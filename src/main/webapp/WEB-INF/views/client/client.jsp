@@ -223,6 +223,16 @@ margin-top: -50px;
 				</div>
 			</div>
 			
+			<div class="form-group ">
+				<label class="col-md-3">Generate Invoice </label>
+				<div class="col-md-9">
+				<select class="form-control selectpicker" id="generateInvoice" name="generateInvoice">
+                    <option value="Bulk">Bulk</option>
+                    <option value="Individual">Individual</option>
+                  </select>				
+                  </div>
+			</div>
+			
             <div class="clearfix mb"></div>
             <c:forEach var="section" items="${sourceleadSectionList}" varStatus="sectionOrder">
                <c:if test="${sectionOrder.index == 0}">

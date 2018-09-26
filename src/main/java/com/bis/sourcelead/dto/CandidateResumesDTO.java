@@ -16,6 +16,11 @@ public class CandidateResumesDTO {
 	 
 	 private String updatedDate;
 	 
+	 private String resumeName;
+	 
+	 private String fileContentType;
+	 
+	 private String fileUrl;
 	 
 
 	public BigInteger getResumeId() {
@@ -64,5 +69,29 @@ public class CandidateResumesDTO {
 
 	public void setUpdatedDate(String updatedDate) {
 		this.updatedDate = updatedDate;
+	}
+
+	public String getResumeName() {
+		return resumeName;
+	}
+
+	public void setResumeName(String resumeName) {
+		this.resumeName = resumeName;
+	}
+
+	public String getFileContentType() {
+		return fileContentType;
+	}
+
+	public void setFileContentType(String fileContentType) {
+		this.fileContentType = fileContentType;
+	}
+
+	public String getFileUrl() {
+		return fileUrl;
+	}
+
+	public void setFileUrl(String fileUrl) {
+		this.fileUrl = fileUrl;
 	}
 }
