@@ -651,6 +651,7 @@ public class RegistrationServiceImpl implements RegistrationService{
 		orgLocations.setUser(user);
 		orgLocations.setDateFormat(registration.getDateFormat());
 		orgLocations.setStatus(Status.ACTIVE);
+		orgLocations.setProfilePercentage(Constants.PROFILE_PERCENTAGE);
 
 		orgLocations.setLoginSecurity(Constants.NO);
 		Countries countries = countriesService.getCountriesByCountryName(registration.getCountry());
