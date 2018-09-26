@@ -30,6 +30,7 @@ function assetNotes(assetId,assetUUID){
 	    $("#tab-1").empty(); 
 	    $("#tab-2").empty();
 	    $("#tab-3").empty();
+	    $("#tab-4").empty();
 	    $("#tab-2").append(result);  
 	    assetNotesList(assetUUID);    
 }
@@ -298,8 +299,8 @@ function assetDetails(assetUUID) {
 							result = result + ' <div class="clearfix"></div>';
 							result = result + ' </div>';
 						}
-						if(json.hardDisk != null && json.hardDisk != '' && json.hardDisk != 'undefined'){
-							result = result + ' <div class="require_wrap_details_cta"> <b><strong>Hard Disk:</strong></b> <span class = "wordWrap-breakword">'+json.hardDisk+'</span>';
+						if(json.harddisk != null && json.harddisk != '' && json.harddisk != 'undefined'){
+							result = result + ' <div class="require_wrap_details_cta"> <b><strong>Hard Disk:</strong></b> <span class = "wordWrap-breakword">'+json.harddisk+'</span>';
 							result = result + ' <div class="clearfix"></div>';
 							result = result + ' </div>';
 						}
@@ -426,6 +427,7 @@ function assetDetails(assetUUID) {
 					$("#tab-1").empty();
 					$("#tab-2").empty();
 					$("#tab-3").empty();
+					$("#tab-4").empty();
 					$("#tab-1").append(result);
 					$("#tab-1").show();
 			}
