@@ -76,6 +76,7 @@ public class Constants {
 	public static final Integer RECORD_DRAFT = 2;
 	public static final Integer LEVEL1 = 1;
 	public static final Integer LEVEL2 = 2;
+	public static final Integer PROFILE_PERCENTAGE = 20;
 	public static final DateFormat DMY = new SimpleDateFormat("dd-MM-yyyy");
 	public static final DateFormat DF = new SimpleDateFormat("yyyy/MM/dd");
 	public static final DateFormat DF_STD = new SimpleDateFormat("yyyy/MM/dd");
@@ -1242,6 +1243,8 @@ public class Constants {
 	public static final String USER_EMAIL_UPDATION = "UserEmailUpdation";
 	
 	public static final String JOB_PARSING = "job_parsing";
+	
+	public static final String REGULAR = "Regular";
 
 
 }

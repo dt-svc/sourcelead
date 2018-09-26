@@ -23,7 +23,7 @@
 </script>
  
  
-      <div class="mb col-md-12 clearfix"> 
+      <div class="mb clearfix"> 
       	  <div class=" dashboard-widget col-md-12">
       	    <h4>Project Requests</h4>
       	    

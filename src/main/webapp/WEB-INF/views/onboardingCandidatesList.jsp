@@ -19,7 +19,7 @@
 }
 </style>
 
-<div class="mb col-md-12 clearfix"> 
+<div class="mb clearfix"> 
       <div class=" dashboard-widget col-md-12 hdrPosition minHeight_225">
         <h4 class="clearfix">
         Candidates for Onboarding

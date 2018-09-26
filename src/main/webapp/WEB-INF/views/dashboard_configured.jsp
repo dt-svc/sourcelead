@@ -88,6 +88,7 @@ var loaded = false;
 		    	<h2>Dashboard<a href="javascript:void(0)" onclick="$('#configureDashboard').show();$('.advancedsearch-mask').fadeIn();"><i class="fa fa-cog ml"></i></a></h2>
 		  	</div>
 		</section>
+		
 		<div class="row">
 	    <c:if test="${dashboardItems != null && dashboardItems.itemsObjectList.size() > 0}">
 			<c:forEach items="${dashboardItems.itemsObjectList}" var="itemObj">
@@ -106,7 +107,7 @@ var loaded = false;
 			      	<c:if test="${userTabs.tabName == 'Jobs'}">
 						 <sec:authorize access="hasAnyRole('ROLE_VIEW_REQUIREMENT')">
 							<c:if test = "${SourceLeadWeb_ats == 'Y' || SourceLeadWeb_vms == 'Y'}">
-								<jsp:include page="dashboardRequirement.jsp"></jsp:include> 
+								<jsp:include page="dashboardRequirement.jsp"></jsp:include>
 							</c:if>
 					     </sec:authorize>
 				     </c:if>
@@ -129,21 +130,21 @@ var loaded = false;
 				    		<c:if test="${userTabs.tabName == 'Jobs'}">
 				    			<c:if test='${itemName eq "Assigned Jobs" && itemChecked == true}'>
 					    			<sec:authorize access="hasAnyRole('ROLE_VIEW_REQUIREMENT')">
-										<jsp:include page="dashboardAssignedRequirements.jsp"></jsp:include> 
+										<div class="col-md-12"><jsp:include page="dashboardAssignedRequirements.jsp"></jsp:include></div> 
 									</sec:authorize>
 				    			</c:if>
 							</c:if>	
 						</c:forEach>
 						<sec:authorize access="hasAnyRole('ROLE_CREATE_ON_BOARD_USER','ROLE_VIEW_EDIT_ON_BOARD_USER')">
 							<c:if test='${itemName eq "Candidates for Onboarding" && itemChecked == true}'>
-								<jsp:include page="onboardingCandidatesList.jsp"></jsp:include> 
+								<div class="col-md-12"><jsp:include page="onboardingCandidatesList.jsp"></jsp:include></div>
 							</c:if>
 						</sec:authorize>
 							
 						<sec:authorize access="hasRole('ROLE_RESOURCE_REQUEST_APPROVER')">
 							   <%-- <jsp:include page="resourceRequest.jsp"></jsp:include>  --%>
 							<c:if test='${itemName eq "Associate Requests" && itemChecked == true}'>
-							    <jsp:include page="projectResourceRequest.jsp"></jsp:include>  
+							   <div class="col-md-12"> <jsp:include page="projectResourceRequest.jsp"></jsp:include> </div> 
 							</c:if>
 							<c:if test='${itemName eq "New Resource Requests" && itemChecked == true}'>
 							    <jsp:include page="projectNewResourceRequest.jsp"></jsp:include>  
@@ -202,13 +203,13 @@ var loaded = false;
 	    	
 	    		<c:if test='${itemName eq "Events" && itemChecked == true}'>
 					<div class="clearfix"></div>
-					<jsp:include page="dashboardEvents.jsp"></jsp:include>
+					<div class="col-md-12"><jsp:include page="dashboardEvents.jsp"></jsp:include></div>
 					<div class="clearfix"></div>
 	    		</c:if>
 	     	
 				<sec:authorize access="hasAnyRole('ROLE_VIEW_CONTRACT')">
 		     		<c:if test='${itemName eq "Contracts" && itemChecked == true}'>
-						<jsp:include page="dashboardContracts.jsp"></jsp:include>
+						<div class="col-md-12"><jsp:include page="dashboardContracts.jsp"></jsp:include></div>
 		     		</c:if>
 				</sec:authorize>
 	    	</c:forEach>

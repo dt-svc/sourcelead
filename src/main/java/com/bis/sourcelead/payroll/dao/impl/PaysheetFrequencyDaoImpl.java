@@ -141,15 +141,24 @@ private static final Logger logger = LoggerFactory.getLogger(AssociateTaxDaoImpl
 			
 			String qry = "";
 			if(StringUtils.isNotBlank(payrollReportDTO.getSortColumn())) {
-				qry = " order by payroll."+ payrollReportDTO.getSortColumn() +" "+payrollReportDTO.getSortOrder();
+				if("empId".equalsIgnoreCase(payrollReportDTO.getSortColumn())) {
+					qry = " order by payroll.employee.employeeId "+payrollReportDTO.getSortOrder();
+				}else if("empName".equalsIgnoreCase(payrollReportDTO.getSortColumn())) {
+					qry = " order by payroll.candidate.firstName "+payrollReportDTO.getSortOrder();
+				}else if("department".equalsIgnoreCase(payrollReportDTO.getSortColumn())) {
+					qry = " order by payroll.employee.departmentId.departmentName "+payrollReportDTO.getSortOrder();
+				}
+				
 			}
 			
 			String query = "from EmployeePayroll payroll where payroll.paysheetFrequency.userGroup.id = :groupId and payroll.paysheetFrequency.orgLocation.id = :orgLocationId and payroll.paysheetFrequency.frequencyStartDate = :freqStartDate and payroll.paysheetFrequency.frequencyEndDate = :freqEndDate and payroll.submitForAproverStatus = 'APPROVED'";
 			String countQuery = "from EmployeePayroll payroll where payroll.paysheetFrequency.userGroup.id = :groupId and payroll.paysheetFrequency.orgLocation.id = :orgLocationId and payroll.paysheetFrequency.frequencyStartDate = :freqStartDate and payroll.paysheetFrequency.frequencyEndDate = :freqEndDate and payroll.submitForAproverStatus = 'APPROVED'";
 			StringBuilder searchQuery = new StringBuilder("");
 			if(payrollReportDTO.getSearchValue() !=null && !"".equalsIgnoreCase(payrollReportDTO.getSearchValue())) {
-					searchQuery.append(" and payroll.candidate.firstName like '%" + payrollReportDTO.getSearchValue() + "%' ")
-						.append("OR  payroll.candidate.lastName like '%" + payrollReportDTO.getSearchValue() + "%' ");
+					searchQuery.append(" and ((concat(payroll.candidate.firstName,payroll.candidate.lastName) like '%" + payrollReportDTO.getSearchValue() + "%' )")
+						.append("OR  payroll.candidate.lastName like '%" + payrollReportDTO.getSearchValue() + "%' ")
+						.append("OR  payroll.employee.departmentId.departmentName like '%" + payrollReportDTO.getSearchValue() + "%' ")
+						.append("OR  payroll.employee.employeeId like '%" + payrollReportDTO.getSearchValue() + "%' )");
 			}
 			Query queryObj = session.createQuery(query + searchQuery.toString() + qry);
 			if (payrollReportDTO != null && payrollReportDTO.getLength() > 0) {
