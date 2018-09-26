@@ -147,12 +147,9 @@ public class IndianPayrollController {
 	@RequestMapping (value = "/runIndianPayRoll")
 	public ModelAndView indianRunPayRoll(HttpServletRequest request) {
 		ModelAndView modelAndView = new ModelAndView();
+		commonUtil.highLightMenu(Constants.RUNPAYROLL, request);
 		try {
-			OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
-			commonUtil.highLightMenu(Constants.RUNPAYROLL, request);
-			List<UserGroup> userGroupList = userGroupService.getAllUserGroupsByLocationId(orgLocations);
-			modelAndView.addObject("userGroupList",userGroupList);
-			modelAndView.setViewName("payroll_india/payroll/initiatePayrollInd");
+			modelAndView.setViewName("payroll_india/payroll/runPayrollInd");
 		}catch (Exception e) {
 			e.printStackTrace();
 			logger.error(e.getMessage());
