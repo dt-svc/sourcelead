@@ -214,8 +214,6 @@ public class ImmigrationCommonServiceImpl implements ImmigrationCommonService {
 				lca.setId(Long.parseLong(immigrationDTO.getLcaId()));
 				if(StringUtils.isNotBlank(immigrationDTO.getLcaNumber())) {
 					saveLcaHistoryDetails(immigrationObj,candidate,lca,user,orgLocations,true);
-				}else {
-					immigrationCommonDao.deletetLcaHistoryDetails(lca.getId());
 				}
 				
 			}
@@ -225,11 +223,14 @@ public class ImmigrationCommonServiceImpl implements ImmigrationCommonService {
 				if(StringUtils.isNotBlank(immigrationDTO.getPrevLcaNumber())) {
 					saveLcaHistoryDetails(immigrationObj,candidate,prevLca,user,orgLocations, false);
 					
-				}else {
-					immigrationCommonDao.deletetLcaHistoryDetails(prevLca.getId());
 				}
 				
 			}
+			
+			
+			/*else {
+				immigrationCommonDao.deletetLcaHistoryDetails(prevLca.getId());
+			}*/
 			
 			StringBuilder actionDesc = new StringBuilder();
 			if (StringUtils.isNotBlank(immigrationDTO.getImmigrationId())) {

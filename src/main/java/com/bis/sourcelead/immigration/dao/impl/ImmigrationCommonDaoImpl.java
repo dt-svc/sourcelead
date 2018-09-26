@@ -214,6 +214,7 @@ public class ImmigrationCommonDaoImpl implements ImmigrationCommonDao {
 			logger.error("Exception caught while saving immigration information " + exception.getMessage());
 			exception.printStackTrace();
 		}
+		
 		return immigration;
 	}
 
@@ -658,6 +659,7 @@ public class ImmigrationCommonDaoImpl implements ImmigrationCommonDao {
 		try {
 			Session session = this.sessionFactory.getCurrentSession();
 			immigration = (Immigration) session.get(Immigration.class, id);
+			
 		} catch (HibernateException e) {
 			logger.error("SQL Exception occured while doing getting record -->" + e.getMessage());
 			e.printStackTrace();
@@ -706,7 +708,7 @@ public class ImmigrationCommonDaoImpl implements ImmigrationCommonDao {
 		}
 		
 		if(myImmigration.equalsIgnoreCase("Y")) {
-			query.setParameter("docCategory", "PetitionerCategory");
+			query.setParameter("docCategory", "Document Type");
 		}
 		immigrationCandidateDocumentsList = query.list();
 		return immigrationCandidateDocumentsList;
@@ -2353,7 +2355,7 @@ public class ImmigrationCommonDaoImpl implements ImmigrationCommonDao {
 		try {
 			if (immigrationId != null) {
 				logger.debug(" update lcaHistory " + immigrationId);
-				String queryString = "UPDATE LcaHistory lh  SET lh.isCurrent ='N' where lh.immigrationId.id=:immigrationId and lh.candidate.id = :candidateId and lh.id<:lhId";
+				String queryString = "UPDATE LcaHistory lh  SET lh.isCurrent ='N' where lh.immigrationId.id=:immigrationId and lh.candidate.id = :candidateId and lh.id<:lhId order by date(creationDate) desc";
 				 result=session.createQuery(queryString).setLong("immigrationId", immigrationId).setLong("candidateId", candidateId).setLong("lhId", lhId).executeUpdate();
 			   
 			}
@@ -2363,5 +2365,14 @@ public class ImmigrationCommonDaoImpl implements ImmigrationCommonDao {
 		}
 		return result;
 	}
+
+	/*@Override
+	@Transactional(rollbackFor = { Exception.class })
+	public LcaHistory getLcaHistoryById(Long lhId) {
+		logger.debug("getLcaHistoryById starts");
+		Session session = this.sessionFactory.getCurrentSession();
+		LcaHistory lh = (LcaHistory) session.get(LcaHistory.class, lhId);
+		return lh;
+	}*/
 	
 }

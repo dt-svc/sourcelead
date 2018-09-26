@@ -238,4 +238,7 @@ public interface ImmigrationCommonDao {
 	
 	int updateLcaHistoryStatusByLcaNumber(Long lhId,Long immigrationId,Long candidateId);
 	
+	
+	//LcaHistory getLcaHistoryById(Long Id);
+	
 }
