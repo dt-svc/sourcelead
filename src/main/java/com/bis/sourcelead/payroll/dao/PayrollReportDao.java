@@ -13,6 +13,8 @@ public interface PayrollReportDao {
 
 	ResponseList<CheckRegisterReportDTO> getCheckRegisterReports(OrgLocations orgLocation, PayrollReportDTO payrollReportDTO);
 
-	ResponseList<DeductionHistory> getDeductionAndContributionReports(OrgLocations orgLocation, PayrollReportDTO payrollReportDTO);
+	ResponseList<DeductionHistory> getContributionReports(OrgLocations orgLocation, PayrollReportDTO payrollReportDTO);
+
+	ResponseList<DeductionHistory> getDeductionReports(OrgLocations orgLocation, PayrollReportDTO payrollReportDTO);
 
 }
