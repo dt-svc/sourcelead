@@ -214,4 +214,27 @@ private static final Logger logger = LoggerFactory.getLogger(AssociateTaxDaoImpl
 		}
 		return deductioHistory;
 	}
+
+	@SuppressWarnings("unchecked")
+	@Override
+	@Transactional
+	public List<DeductionHistory> getDeductionYTD(EmployeePayroll payroll, Long deductionId, OrgLocations orgLocation) {
+		List<DeductionHistory> dedHistory = null;
+		try {
+			Session session = this.sessionFactory.getCurrentSession();
+			Date[] ytdDates = payrollUtil.getYTDDates(orgLocation);
+			java.sql.Date startDate = new java.sql.Date(ytdDates[0].getTime());
+			java.sql.Date endDate = new java.sql.Date(ytdDates[1].getTime());
+			dedHistory = session.createQuery("from DeductionHistory dedHis where dedHis.payroll.candidate.id= :candidateId and dedHis.deductionId.id = :deductionId and dedHis.deductionDate >= :startDate and dedHis.deductionDate <= :endDate ")
+					   .setLong("candidateId", payroll.getCandidate().getId())
+					   .setLong("deductionId", deductionId)
+					   .setDate("startDate", startDate)
+					   .setDate("endDate", endDate)
+					   .list();	
+			
+		}catch (Exception e) {
+			e.printStackTrace();
+		}
+		return dedHistory;
+	}
 }
