@@ -2320,24 +2320,6 @@ public class ImmigrationCommonDaoImpl implements ImmigrationCommonDao {
 
 	@Override
 	@Transactional(rollbackFor = { Exception.class })
-	public String deletetLcaHistoryDetails(Long id) {
-		logger.debug("Delete deletetLcaHistoryDetails  ---> " + id);
-
-		try {
-			Session session = this.sessionFactory.getCurrentSession();
-			LcaHistory lh = (LcaHistory) session.load(LcaHistory.class,id);
-			session.delete(lh);
-			session.flush();
-		} catch (HibernateException e) {
-			logger.error("SQL Exception occured while doing delete -->" + e.getMessage());
-			e.printStackTrace();
-		}
-		logger.debug("Deleted record id -->" + id);
-		return "success";
-	}
-
-	@Override
-	@Transactional(rollbackFor = { Exception.class })
 	public void deleteLcaDocumentsDetails(Long[] remaininglcaDocIds) {
 		    logger.debug("Delete LcaDocumentHistory ids-->");
 	        Session session = this.sessionFactory.getCurrentSession();
@@ -2366,13 +2348,17 @@ public class ImmigrationCommonDaoImpl implements ImmigrationCommonDao {
 		return result;
 	}
 
-	/*@Override
+	@Override
 	@Transactional(rollbackFor = { Exception.class })
-	public LcaHistory getLcaHistoryById(Long lhId) {
-		logger.debug("getLcaHistoryById starts");
+	public LcaVisaClarifications getLcaVisaClarificationsDetailsById(Long visaClsId, Long lcaId) {
 		Session session = this.sessionFactory.getCurrentSession();
-		LcaHistory lh = (LcaHistory) session.get(LcaHistory.class, lhId);
-		return lh;
-	}*/
+		String query = "from LcaVisaClarifications lcaVisaClfs left join fetch lcaVisaClfs.lcaId  where lcaVisaClfs.id = :visaClsId and lcaVisaClfs.lcaId.id = :lcaId";
+		List<LcaVisaClarifications> visaClarificatinsList = session.createQuery(query.toString()).setLong("visaClsId", visaClsId).setLong("lcaId", lcaId).list();
+		LcaVisaClarifications visaClarifications = null;
+		if (visaClarificatinsList != null && visaClarificatinsList.size() > 0) {
+			visaClarifications = (LcaVisaClarifications) visaClarificatinsList.iterator().next();
+		}
+		return visaClarifications;
+	}
 	
 }

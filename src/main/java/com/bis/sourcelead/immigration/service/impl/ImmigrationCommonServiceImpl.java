@@ -50,6 +50,7 @@ import com.bis.sourcelead.dto.LcaDetailsDTO;
 import com.bis.sourcelead.dto.LcaDocumentHistoryDTO;
 import com.bis.sourcelead.dto.LcaListViewDTO;
 import com.bis.sourcelead.dto.LcaPlaceOfEmploymentDTO;
+import com.bis.sourcelead.dto.LcaVisaClarificationDTO;
 import com.bis.sourcelead.dto.MyImmigrationViewDTO;
 import com.bis.sourcelead.dto.ResidenceDTO;
 import com.bis.sourcelead.dto.ResponseList;
@@ -226,11 +227,6 @@ public class ImmigrationCommonServiceImpl implements ImmigrationCommonService {
 				}
 				
 			}
-			
-			
-			/*else {
-				immigrationCommonDao.deletetLcaHistoryDetails(prevLca.getId());
-			}*/
 			
 			StringBuilder actionDesc = new StringBuilder();
 			if (StringUtils.isNotBlank(immigrationDTO.getImmigrationId())) {
@@ -2233,14 +2229,7 @@ public class ImmigrationCommonServiceImpl implements ImmigrationCommonService {
 			lca = saveLcaDetailsInfo(lcaDTO,user,orgLocations);
 			
 			// Lca Place Of employment
-			/*
-			if (ids != null && ids.length != 0) {
-				for (String id : ids) {
-					if(!id.equals("")) {
-						immigrationCommonDao.deleteLcaPlaceOfEmpmntDetails(Long.parseLong(id), Long.parseLong("0"));
-					}
-				}
-			}*/
+			
 			List<LcaPlaceOfEployment> lcaPlaceOfEploymentList = new ArrayList<LcaPlaceOfEployment>(); 
 			lcaPlaceOfEploymentList = saveLcaPlaceOfEploymentList(lcaDTO,lca, user, orgLocations);
 			
@@ -2249,12 +2238,10 @@ public class ImmigrationCommonServiceImpl implements ImmigrationCommonService {
 			lcaDocumentList = saveLcaDocumentHistoryList(lcaDTO, lca, user, orgLocations);
 			lcaObj = immigrationCommonDao.saveLcaDetails(lca,lcaPlaceOfEploymentList,lcaDocumentList);
 			
+			copyLcaVisaClarificationsToVisaClarifications(lcaObj,lcaDTO, user, orgLocations);
 			
 			System.out.println("LCA Saved Successfully");
-			if (StringUtils.isEmpty(lcaDTO.getLcaId())) {
-				copyLcaVisaClarificationsToVisaClarifications(lcaObj,lcaDTO, user, orgLocations);
-				//copyLcaDocumentHistoryToDocumentHistory(lcaObj,lcaDTO, user, orgLocations);
-			}
+			
 
 		} catch (Exception e) {
 			logger.error("Exception caugth in savePetitionDetails service" + e.getMessage());
@@ -2397,10 +2384,17 @@ private List<LcaDocumentHistory> saveLcaDocumentHistoryList(LcaDTO lcaDTO, Lca l
 	private void copyLcaVisaClarificationsToVisaClarifications(Lca lcaObj,LcaDTO lcaDTO, User user, OrgLocations orgLocations) {
 		
 		
-		    LcaVisaClarifications lcaVisaClfsObj = null;
-
+		
+		   LcaVisaClarifications lcaVisaClfsObj = null;
+		   Date currentDate = commonUtil.orgLocationCommonDate(new Date(), orgLocations);
+		  
+		   if(StringUtils.isNotBlank(lcaDTO.getVisaClsfId())) {
+		    lcaVisaClfsObj= immigrationCommonDao.getLcaVisaClarificationsDetailsById(Long.parseLong(lcaDTO.getVisaClsfId()),lcaObj.getId());
+		   }else {
 		    lcaVisaClfsObj = new LcaVisaClarifications();
-		    
+		    lcaVisaClfsObj.setCreatedBy(user);
+		    lcaVisaClfsObj.setCreatedDate(currentDate);
+		   }
 		    lcaVisaClfsObj.setLcaId(lcaObj);
 		    
 		    if(lcaDTO.getNewEmployment() != null && !lcaDTO.getNewEmployment().isEmpty()) {
@@ -2435,11 +2429,11 @@ private List<LcaDocumentHistory> saveLcaDocumentHistoryList(LcaDTO lcaDTO, Lca l
 		   
 		    
 			lcaVisaClfsObj.setStatus(Constants.RECORD_ACTIVE);
-			lcaVisaClfsObj.setCreatedBy(user);
+		//	lcaVisaClfsObj.setCreatedBy(user);
 			lcaVisaClfsObj.setUpdatedBy(user);
-			Date currentDate = commonUtil.orgLocationCommonDate(new Date(), orgLocations);
+			
 			lcaVisaClfsObj.setUpdatedDate(currentDate);
-			lcaVisaClfsObj.setCreatedDate(currentDate);
+			//lcaVisaClfsObj.setCreatedDate(currentDate);
 			try {
 				immigrationCommonDao.saveLcaVisaClarifications(lcaVisaClfsObj);
 			} catch (Exception e) {
@@ -2573,6 +2567,8 @@ private List<LcaDocumentHistory> saveLcaDocumentHistoryList(LcaDTO lcaDTO, Lca l
 		    LcaVisaClarifications lcaVisaClfs = null;
 		    lcaVisaClfs = immigrationCommonDao.getLcaVisaClarificationsByIDAndLcaId(lca.getId());
 			if(lcaVisaClfs != null) {
+				
+				lcaDTO.setVisaClsfId(lcaVisaClfs.getId().toString());
 				
 				if(lcaVisaClfs.getNewEmployment() != null){
 				lcaDTO.setNewEmployment(lcaVisaClfs.getNewEmployment());

@@ -32,9 +32,7 @@
 			</c:if>
 			
   	<input type="hidden" id="lcaId" name="lcaId" value="${lcaDTO.lcaId}">
-	<%-- <input type="hidden" id="plsofEmpmtId" name="i -->d">--%>
-  	
-  	<%-- <input type="hidden" name="lcaDocumentList[0].docId" value="${lcaDTO.lcaDocumentList[0].docId}"> --%>
+  	<input type="hidden" id="visaClsfId" name="visaClsfId" value="${lcaDTO.visaClsfId}">
     <div class="row clearfix mt" >
          <div class="col-xs-12 col-sm-6 col-md-6 minHeight50 mb" id="errLcaNoDiv">
             <label class="col-md-4">LCA No<span class="text-danger paddingLeft">*</span></label>
