@@ -422,24 +422,5 @@ function getcontributionList(){
 </script>
 
 
-<script>
-function exportToPdf(){
-	
-	var groupId = $('#payGroup').val();
-    getFreqdates("freqStartDate", "freqEndDate");
-    var  freqStartDate = $("#freqStartDate").val();
-    var freqEndDate = $("#freqEndDate").val();
-    var contributionId = $("#contributionId").val();
-	var searchValue = $("#dataTableSearch").val();
-	searchValue = searchValue ? searchValue : "";
-	var depositType = 'Cheque';
-	/* alert("groupId = "+groupId);
-	alert("freqStartDate = "+freqStartDate);
-	alert("freqEndDate = "+freqEndDate);
-	alert("contributionId = "+freqEndDate);
-	alert("searchValue = "+searchValue); */
-	
-	window.location.href = sourceleadUrl+"/exportToPdfCheckRegisterReport?searchValue="+searchValue+"&groupId="+groupId+"&freqStartDate="+freqStartDate+"&freqEndDate="+freqEndDate+"&contributionId="+contributionId+"&depositType="+depositType;
-}
-</script>
+
 <jsp:include page="../masterFooter.jsp" />
