@@ -1,10 +1,12 @@
 package com.bis.sourcelead.rest;
 
+import java.math.BigDecimal;
 import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -12,11 +14,19 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.servlet.ModelAndView;
 
+import com.bis.sourcelead.dto.PayrollPayheadDTO;
+import com.bis.sourcelead.dto.ResponseList;
+import com.bis.sourcelead.entity.AssociateSalaryInd;
 import com.bis.sourcelead.entity.BulkClientDetails;
+import com.bis.sourcelead.entity.Candidate;
+import com.bis.sourcelead.entity.Countries;
+import com.bis.sourcelead.entity.Employees;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.Payroll;
 import com.bis.sourcelead.entity.User;
+import com.bis.sourcelead.entity.UserGroup;
 import com.bis.sourcelead.payroll.dto.GenerateINDPayrollDTO;
 import com.bis.sourcelead.payroll.dto.GenerateUSPayrollDTO;
 import com.bis.sourcelead.payroll.dto.PaysheetFrequencyDTO;
@@ -93,6 +103,32 @@ public class PayrollRestController {
 		User loginUser = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
 		PaysheetFrequencyDTO existedData = payrollService.getPayrollData(generateINDPayrollDTO, orgLocation, loginUser);
 		return payrollService.generateINDPayroll(existedData,orgLocation,generateINDPayrollDTO,loginUser);
+	}
+	
+	
+	@RequestMapping(value = { "/reviewPayrollInd","/rest/reviewPayrollInd" })
+	public ModelAndView reviewPayrollInd(HttpServletRequest request) throws Exception
+	{
+	 	ModelAndView model = new ModelAndView();
+		OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,"orgLocations");
+		User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+		
+		model.setViewName("payroll_india/payroll/reviewPayrollInd");
+		model.addObject("sourceleadUrl", sourceleadUrl);
+		return model;
+	}
+	
+
+	@RequestMapping(value = { "/runPayrollInd","/rest/runPayrollInd" })
+	public ModelAndView runPayrollInd(HttpServletRequest request) throws Exception
+	{
+	 	ModelAndView model = new ModelAndView();
+		OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,"orgLocations");
+		User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+		
+		model.setViewName("payroll_india/payroll/runPayrollInd");
+		model.addObject("sourceleadUrl", sourceleadUrl);
+		return model;
 	}
 
 	 

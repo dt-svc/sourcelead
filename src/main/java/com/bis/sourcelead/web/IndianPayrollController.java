@@ -30,7 +30,7 @@ import com.bis.sourcelead.util.CommonUtil;
 import com.bis.sourcelead.util.SourceLeadSessionManager;
 
 @Controller
-@RequestMapping("/app/myPayroll")
+@RequestMapping("/app")
 public class IndianPayrollController {
 	private static final Logger logger = LoggerFactory.getLogger(IndianPayrollController.class);
 
@@ -46,7 +46,7 @@ public class IndianPayrollController {
 	@Autowired
 	private CommonUtil commonUtil;
 
-	@RequestMapping(value = "/pays")
+	@RequestMapping(value = "/myPayRoll")
 	public ModelAndView paySlips(HttpServletRequest request) {
 		ModelAndView modelAndView = new ModelAndView();
 		try {
@@ -115,19 +115,6 @@ public class IndianPayrollController {
 		return response;
 	}
 	
-	@RequestMapping(value = "/payrollList")
-	public ModelAndView payrollList(HttpServletRequest request) {
-		ModelAndView modelAndView = new ModelAndView();
-		try {
-			commonUtil.highLightMenu(Constants.RUNPAYROLL, request);
-			modelAndView.setViewName("payroll_india/org/payrollList");
-		} catch (Exception e) {
-			e.printStackTrace();
-			logger.error(e.getMessage());
-		}
-		return modelAndView;
-	}
-	
 	@RequestMapping(value = "/payrollListSummary")
 	public ModelAndView payrollListSummary(HttpServletRequest request) {
 		ModelAndView modelAndView = new ModelAndView();
@@ -159,7 +146,7 @@ public class IndianPayrollController {
 		return modelAndView;
 	}
 
-	@RequestMapping (value = "/indianRunPayroll")
+	@RequestMapping (value = "/runIndianPayRoll")
 	public ModelAndView indianRunPayRoll(HttpServletRequest request) {
 		ModelAndView modelAndView = new ModelAndView();
 		try {
@@ -167,7 +154,7 @@ public class IndianPayrollController {
 			commonUtil.highLightMenu(Constants.RUNPAYROLL, request);
 			List<UserGroup> userGroupList = userGroupService.getAllUserGroupsByLocationId(orgLocations);
 			modelAndView.addObject("userGroupList",userGroupList);
-			modelAndView.setViewName("payroll_india/payroll/indianRunPayRoll");
+			modelAndView.setViewName("payroll_india/payroll/initiatePayrollInd");
 		}catch (Exception e) {
 			// TODO: handle exception
 			e.printStackTrace();

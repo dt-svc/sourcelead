@@ -912,8 +912,6 @@ public class PayrollConfigurationRestController {
 			ResponseList<PayrollPayheadDTO> response = payrollPayheadService.getPayrollPayheadList(orgLocations);
 			model.addObject("payrollPayheadList", response.getData());
 			
-			
-			
 			AssociateSalaryInd associateSalaryInd = payrollPayheadService.getAssociateSalaryIndByCandidateId(payrollPayheadDTO.getCandidateId());
 			if(associateSalaryInd != null) {
 				if(associateSalaryInd.getEffectiveDate() != null) {

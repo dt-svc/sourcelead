@@ -12,7 +12,9 @@ public interface PayrollReportService {
 
 	ResponseList<CheckRegisterReportDTO> getCheckRegisterReports(OrgLocations orgLocation, PayrollReportDTO payrollReportDTO);
 
-	ResponseList<PayrollReportDTO> getDeductionAndContributionReports(OrgLocations orgLocation, PayrollReportDTO payrollReportDTO);
-
 	PayrollComparisonDTO payrollComparisonData(PayrollComparisonDTO payrollComparisonDTO, OrgLocations orgLocation);
+
+	ResponseList<PayrollReportDTO> getContributionReports(OrgLocations orgLocation, PayrollReportDTO payrollReportDTO);
+
+	ResponseList<PayrollReportDTO> getDeductionReports(OrgLocations orgLocation, PayrollReportDTO payrollReportDTO);
 }
