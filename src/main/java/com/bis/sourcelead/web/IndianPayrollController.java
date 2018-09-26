@@ -120,7 +120,6 @@ public class IndianPayrollController {
 		ModelAndView modelAndView = new ModelAndView();
 		try {
 			commonUtil.highLightMenu(Constants.RUNPAYROLL, request);
-//			modelAndView.addObject("activeTaxTab", "pays");
 			modelAndView.setViewName("payroll_india/org/payrollListSummary");
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -134,7 +133,6 @@ public class IndianPayrollController {
 		ModelAndView modelAndView = new ModelAndView();
 		try {
 			commonUtil.highLightMenu(Constants.RUNPAYROLL, request);
-//			modelAndView.addObject("activeTaxTab", "pays");
 			OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 			List<UserGroup> userGroupList = userGroupService.getAllUserGroupsByLocationId(orgLocations);
 			modelAndView.addObject("userGroupList",userGroupList);
@@ -156,7 +154,6 @@ public class IndianPayrollController {
 			modelAndView.addObject("userGroupList",userGroupList);
 			modelAndView.setViewName("payroll_india/payroll/initiatePayrollInd");
 		}catch (Exception e) {
-			// TODO: handle exception
 			e.printStackTrace();
 			logger.error(e.getMessage());
 		}
