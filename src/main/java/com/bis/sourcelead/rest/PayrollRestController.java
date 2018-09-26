@@ -113,7 +113,7 @@ public class PayrollRestController {
 		OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,"orgLocations");
 		User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
 		
-		model.setViewName("payroll_india/payroll/indReviewpayroll");
+		model.setViewName("payroll_india/payroll/reviewPayrollInd");
 		model.addObject("sourceleadUrl", sourceleadUrl);
 		return model;
 	}
@@ -126,7 +126,7 @@ public class PayrollRestController {
 		OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,"orgLocations");
 		User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
 		
-		model.setViewName("payroll_india/payroll/indRunPayroll");
+		model.setViewName("payroll_india/payroll/runPayrollInd");
 		model.addObject("sourceleadUrl", sourceleadUrl);
 		return model;
 	}
