@@ -134,7 +134,7 @@ public class CandidateController {
 
 	@PreAuthorize("hasAnyRole('ROLE_CREATE_CANDIDATE','ROLE_CROWDSOURCING_CANDIDATES')")
 	@RequestMapping(value = "/addToMarketPlace")
-	public ModelAndView goToMarketplace(HttpServletRequest request) throws Exception {
+	public ModelAndView goToMarketplace(@RequestParam(value = "candidateIds", required = false) String candidateIdsStr, HttpServletRequest request) throws Exception {
 		logger.debug("Display the candiade page");
 		ModelAndView model = new ModelAndView();
 		model.setViewName("candidates/candidateMarketPlaceList");

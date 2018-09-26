@@ -1393,7 +1393,7 @@ function cancel(candidateId){
       <ul class="pull-right list-unstyled list-inline">
       
 	  <li class="tableShare" style="display: none;">
-	  	<a class="marketplaceIcon mr5" title="Market Place"	href="<c:url value='${appPath}/addToMarketPlace'/>"></a>
+	  	<a class="marketplaceIcon mr5" title="Market Place" onclick="callAddToMarket()"></a>
 	  	<a class="shareIcon mr5" title="Share" href="javascript:void(0)" onclick="shareJob();"></a>
 	  	<a class="sendIcon mr5" title="Submit" href="javascript:void(0)" onclick="submitCandidatesToJob();"></a>
 	  </li>        
@@ -1498,6 +1498,22 @@ function cancel(candidateId){
 
    
    <script>
+   function callAddToMarket(){
+	   var candidateIds = [];
+	 	$('input:checkbox[name=sharedcheckbox]:checked').each(function(){
+	 		candidateIds.push($(this).attr("id"));
+	 	});
+	 	$.ajax({
+	    	type: "GET",
+	        url: sourceleadUrl+"/addToMarketPlace?"+tokenParamName+"="+tokenValue+"&candidateIds="+candidateIds, 
+	        success: function(json) {
+	        	
+	        }
+	 	});
+	 	alert(candidateIds);
+   }
+   
+   
    function getSourceleadTags(){
  		 $.ajax({
 		    	type: "GET",
