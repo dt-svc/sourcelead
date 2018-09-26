@@ -256,7 +256,7 @@ public class MasterCandidateServiceImpl implements MasterCandidateService{
 	public MasterCandidate getMasterCandidateByInteligenceCandidateDTO(CandidateDTO candidateDTO) throws Exception {
 		String email = null;
 		String phoneNumber = null;
-		
+		MasterCandidate masterCandidate = null;
 		if(StringUtils.isNotBlank(candidateDTO.getEmail())){
 			email = candidateDTO.getEmail();
 		}
@@ -287,8 +287,18 @@ public class MasterCandidateServiceImpl implements MasterCandidateService{
 			phoneNumber = jsonObj.getString("AlternateNumber");
 		}*/
 		
-		MasterCandidate masterCandidate = masterCandidateDao.getMasterCandidateByEmailOrPhoneNumber(email, phoneNumber);
+		Long masterCandidateId = masterCandidateDao.getMasterCandidateIdByEmail(email);
+		
+		if(masterCandidateId != null) {
+			masterCandidate = new MasterCandidate();
+			masterCandidate.setId(masterCandidateId);
+		}
 		
 		return masterCandidate;
+	}
+
+	@Override
+	public Long getMasterCandidateIdByEmail(String email) throws Exception {
+		return masterCandidateDao.getMasterCandidateIdByEmail(email);
 	}
 }
