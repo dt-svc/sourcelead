@@ -28,7 +28,7 @@ $(document).ready(function(){
         <div class="clearfix row">
           <div class="col-md-5">
             <div class="form-group">
-              <label class="col-md-12 paddingRight">Pay Group</label>
+              <label class="col-md-12 paddingRight">Pay Group<span class="text-danger">&nbsp;*</span></label>
 				<div class="col-md-12">
 					<select class="form-control chosen-select" id="payGroup" name="payGroup" onchange="getPayPeriod();" field-name="Pay Group" data-validation="required">
 				<!-- 	<option>Select Group</option>
@@ -38,9 +38,9 @@ $(document).ready(function(){
 				</div>
             </div>
             <div class="form-group">
-              <label class="col-md-12">Deduction Type</label>
+              <label class="col-md-12">Deduction Type<span class="text-danger">&nbsp;*</span></label>
               <div class="col-md-12">
-                <select class="form-control chosen-select" multiple data-placeholder="Deduction Type" id="deductionId" name="deductionId" field-name="Pay Group" data-validation="required">
+                <select class="form-control chosen-select" multiple data-placeholder="Deduction Type" id="deductionId" name="deductionId" field-name="Deduction Type" data-validation="required">
 					 <!--    <option value="">Select Type</option>
 						<option value="Regular">Regular</option>
 						<option value="Additional">Additional</option> -->
@@ -50,9 +50,9 @@ $(document).ready(function(){
 			</div>
             <div class="col-md-5">
              <div class="form-group">
-              <label class="col-md-12">Pay Period</label>
+              <label class="col-md-12">Pay Period<span class="text-danger">&nbsp;*</span></label>
               <div class="col-md-12">
-                <select class="form-control chosen-select" id="payPeriod" name="payPeriod" field-name="Pay Group" data-validation="required">
+                <select class="form-control chosen-select" id="payPeriod" name="payPeriod" field-name="Pay Period" data-validation="required">
 					</select>
 					<input type="hidden" id="freqStartDate" name="freqStartDate"/>
                     <input type="hidden" id="freqEndDate" name="freqEndDate"/>
@@ -366,7 +366,7 @@ function getDeductionReports(){
 										"sortable": false,
 										"render" : function(data, type, opt,meta) {
 											var result = "";
-											result = result+ '<td><div class="tbldata-dotdot-vsm" title="">'+opt.dedAmount+'</div></td>';
+											result = result+ '<td><div class="tbldata-dotdot-vsm" title="">$ '+opt.dedAmount+'</div></td>';
 											return result;
 										}
 									},{
@@ -374,7 +374,7 @@ function getDeductionReports(){
 										"data" : "ytdDeductions",
 										"render" : function(data, type, opt,meta) {
 											var result = "";
-											result = result+ '<td><div class="tbldata-dotdot-vsm" title="">XXXXX</div></td>';
+											result = result+ '<td><div class="tbldata-dotdot-vsm" title="">$ '+opt.deductionYTD+'</div></td>';
 											return result;
 										}
 									}],

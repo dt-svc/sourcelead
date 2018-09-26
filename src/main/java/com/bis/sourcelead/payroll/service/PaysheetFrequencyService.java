@@ -34,5 +34,7 @@ public interface PaysheetFrequencyService {
 			OrgLocations orgLocation, Long groupId);
 
 	List<DeductionHistory> getContributionYTD(EmployeePayroll payroll,Long contributionId,OrgLocations ogLocations);
+
+	List<DeductionHistory> getDeductionYTD(EmployeePayroll payroll, Long deductionId, OrgLocations orgLocation);
 	
 }
