@@ -214,6 +214,7 @@ public class ImmigrationCommonDaoImpl implements ImmigrationCommonDao {
 			logger.error("Exception caught while saving immigration information " + exception.getMessage());
 			exception.printStackTrace();
 		}
+		
 		return immigration;
 	}
 
@@ -658,6 +659,7 @@ public class ImmigrationCommonDaoImpl implements ImmigrationCommonDao {
 		try {
 			Session session = this.sessionFactory.getCurrentSession();
 			immigration = (Immigration) session.get(Immigration.class, id);
+			
 		} catch (HibernateException e) {
 			logger.error("SQL Exception occured while doing getting record -->" + e.getMessage());
 			e.printStackTrace();
@@ -706,7 +708,7 @@ public class ImmigrationCommonDaoImpl implements ImmigrationCommonDao {
 		}
 		
 		if(myImmigration.equalsIgnoreCase("Y")) {
-			query.setParameter("docCategory", "PetitionerCategory");
+			query.setParameter("docCategory", "Document Type");
 		}
 		immigrationCandidateDocumentsList = query.list();
 		return immigrationCandidateDocumentsList;
@@ -2318,24 +2320,6 @@ public class ImmigrationCommonDaoImpl implements ImmigrationCommonDao {
 
 	@Override
 	@Transactional(rollbackFor = { Exception.class })
-	public String deletetLcaHistoryDetails(Long id) {
-		logger.debug("Delete deletetLcaHistoryDetails  ---> " + id);
-
-		try {
-			Session session = this.sessionFactory.getCurrentSession();
-			LcaHistory lh = (LcaHistory) session.load(LcaHistory.class,id);
-			session.delete(lh);
-			session.flush();
-		} catch (HibernateException e) {
-			logger.error("SQL Exception occured while doing delete -->" + e.getMessage());
-			e.printStackTrace();
-		}
-		logger.debug("Deleted record id -->" + id);
-		return "success";
-	}
-
-	@Override
-	@Transactional(rollbackFor = { Exception.class })
 	public void deleteLcaDocumentsDetails(Long[] remaininglcaDocIds) {
 		    logger.debug("Delete LcaDocumentHistory ids-->");
 	        Session session = this.sessionFactory.getCurrentSession();
@@ -2353,7 +2337,7 @@ public class ImmigrationCommonDaoImpl implements ImmigrationCommonDao {
 		try {
 			if (immigrationId != null) {
 				logger.debug(" update lcaHistory " + immigrationId);
-				String queryString = "UPDATE LcaHistory lh  SET lh.isCurrent ='N' where lh.immigrationId.id=:immigrationId and lh.candidate.id = :candidateId and lh.id<:lhId";
+				String queryString = "UPDATE LcaHistory lh  SET lh.isCurrent ='N' where lh.immigrationId.id=:immigrationId and lh.candidate.id = :candidateId and lh.id<:lhId order by date(creationDate) desc";
 				 result=session.createQuery(queryString).setLong("immigrationId", immigrationId).setLong("candidateId", candidateId).setLong("lhId", lhId).executeUpdate();
 			   
 			}
@@ -2362,6 +2346,19 @@ public class ImmigrationCommonDaoImpl implements ImmigrationCommonDao {
 			exception.printStackTrace();
 		}
 		return result;
+	}
+
+	@Override
+	@Transactional(rollbackFor = { Exception.class })
+	public LcaVisaClarifications getLcaVisaClarificationsDetailsById(Long visaClsId, Long lcaId) {
+		Session session = this.sessionFactory.getCurrentSession();
+		String query = "from LcaVisaClarifications lcaVisaClfs left join fetch lcaVisaClfs.lcaId  where lcaVisaClfs.id = :visaClsId and lcaVisaClfs.lcaId.id = :lcaId";
+		List<LcaVisaClarifications> visaClarificatinsList = session.createQuery(query.toString()).setLong("visaClsId", visaClsId).setLong("lcaId", lcaId).list();
+		LcaVisaClarifications visaClarifications = null;
+		if (visaClarificatinsList != null && visaClarificatinsList.size() > 0) {
+			visaClarifications = (LcaVisaClarifications) visaClarificatinsList.iterator().next();
+		}
+		return visaClarifications;
 	}
 	
 }

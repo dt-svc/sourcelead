@@ -49,8 +49,9 @@ $(document).ready(function() {
 		<ul class="project-tabs-menu">
 			<li class="current"><a href="#tab-1" onclick="assetDetails('${asset.assetUUID}');">Details</a></li>
 			<sec:authorize access="hasAnyRole(\'ROLE_VIEW_ASSET_ADDITIONAL_DETAILS\')">
-			  <li><a href="#tab-3" onclick="assetHistory('${asset.assetUUID}');">History</a></li>
+			  <li><a href="#tab-3" onclick="assetHistory('${asset.assetUUID}');">Assign History</a></li>
 			</sec:authorize>
+			<li><a href="#tab-4" onclick="assetServiceHistory('${asset.assetUUID}');">Service History</a></li>
 			<li><a href="#tab-2" onclick="assetNotes('${asset.id}','${asset.assetUUID}');">Notes</a></li>
 		</ul>
 		<div class="clearfix"></div>
@@ -60,6 +61,7 @@ $(document).ready(function() {
 				</div>
 				<div id="tab-2" class="project_tabs_inn"></div>
 				<div id="tab-3" class="project_tabs_inn_table dataFilterNew datatable_filter mt10"></div>
+				<div id="tab-4" class="project_tabs_inn_table dataFilterNew datatable_filter mt10"></div>
 			</div>
 	</div>
 	<!-- Asset Management Summary tabs starts here  -->
@@ -109,7 +111,7 @@ function assetHistory(assetUUID){
 			url : sourceleadUrl+ "/getReturnedOnAssetDetaisl?${_csrf.parameterName}=${_csrf.token}&assetUUID="+assetUUID,
 			success : function(json) {
 				var result = "";
-   	        	result = result +'<table id="departmentPagination">';
+   	        	result = result +'<table id="assignAssetPagination">';
    		    	result = result +'<thead>';
    		    	result = result +'	<tr>';
    		    	result = result +'	<th>Shift Name</th>';
@@ -146,13 +148,14 @@ function assetHistory(assetUUID){
 	   		    $("#tab-1").empty(); 
 	   		    $("#tab-2").empty();
 	  		    $("#tab-3").empty();
+	  		    $("#tab-4").empty();
 	   		    $("#tab-3").append(result);
    	    	    returnedAssetPagination();
 			}
 		});
 }
 function returnedAssetPagination(){
-	$('#departmentPagination').DataTable( { 
+	$('#assignAssetPagination').DataTable( { 
     	"scrollCollapse": false,
     	"lengthMenu": [[10, 15, 20, -1], [10, 15, 20, "All"]],
     	"bLengthChange": true,
@@ -168,18 +171,65 @@ function returnedAssetPagination(){
 
 </script> 
 
-
-
-
-
-
-
-
 <!-- ===================== History related scripts written by Laxman Ends ======================================== -->
 
 
+<!-- ===================== Assert Service History related scripts written by Laxman Start ======================================== -->
+<script>
+function assetServiceHistory(assetUUID){
+	 var sourceleadUrl = '${sourceleadUrl}';
+		$.ajax({
+			type : "POST",
+			url : sourceleadUrl+ "/getAssetManagementServiceHistory?${_csrf.parameterName}=${_csrf.token}&assetUUID="+assetUUID,
+			success : function(json) {
+				var result = "";
+   	        	result = result +'<table id="assetServicePagination">';
+   		    	result = result +'<thead>';
+   		    	result = result +'	<tr>';
+   		    	result = result +'	  <th>Service Date</th>';
+   		    	result = result +'    <th>Received Date</th>'; 
+   		    	result = result +'     <th>Cost</th>';
+   		    	result = result +'     <th>Description</th>';
+   		    	result = result +'    </tr>';
+   		    	result = result +'</thead>	';
+   		    	result = result +'<tbody>';
+   		    	for (var i=0; i<json.length; i++)
+   				{
+   		    		var report = json[i];
+   		    		result = result +'<tr>';
+   		    		result = result +'<td><div class="tblminwidth-175" title="'+report.serviceDateStr+'">'+report.serviceDateStr+'</div></td>';
+   		    		result = result +'<td><div class="tblminwidth-175" title="'+report.receivedDateStr+'">'+report.receivedDateStr+'</div></td>';
+   	   		    	result = result +'<td><div class="tblminwidth-175" title="'+report.cost+'">'+report.cost+'</div></td>';
+   	   		    	result = result +'<td><div class="tbldata-dotdot-verybig" title="'+report.description+'">'+report.description+'</div></td>';
+   		    		result = result +'</tr>';
+   				}
+	   		    $("#tab-1").empty(); 
+	   		    $("#tab-2").empty();
+	  		    $("#tab-3").empty();
+	  		    $("#tab-4").empty();
+	   		    $("#tab-4").append(result);
+   	    	    assetServicePagination();
+			}
+		});
+}
+function assetServicePagination(){
+	$('#assetServicePagination').DataTable( { 
+    	"scrollCollapse": false,
+    	"lengthMenu": [[10, 15, 20, -1], [10, 15, 20, "All"]],
+    	"bLengthChange": true,
+    	"bDestroy": true,
+    	"ordering": true,
+    	"oLanguage": {
+     		"sSearch": "",
+     		"sZeroRecords": "", "sEmptyTable": ""
+     	}
+    } );
+}
 
 
+</script> 
+
+<!-- ===================== Assert Service History related scripts written by Laxman Ends ======================================== -->
 
 
 <!--  ======================== Tags Related Scripts written by Laxman Start =============================== -->
