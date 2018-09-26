@@ -251,6 +251,17 @@ public class USPayrollReportRestController {
 		try {
 			OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 			if (orgLocations != null) { 
+				
+				String[] tableColumns = {"empId", "empName", "department", "", "", "", "", "", "", ""};
+			    int sortColumnIndex = 1;		 //by default sorting using updated date
+				String sortColumnOrder = "asc";  //by default descending order
+				if(payrollReportDTO.getOrder() != null && !payrollReportDTO.getOrder().isEmpty()) {
+					sortColumnIndex = Integer.parseInt(payrollReportDTO.getOrder().get(0).get("column"));
+					sortColumnOrder = payrollReportDTO.getOrder().get(0).get("dir");
+				}
+				payrollReportDTO.setSortColumn(tableColumns[sortColumnIndex]);
+				payrollReportDTO.setSortOrder(sortColumnOrder);
+				
 				responseList = paysheetFrequencyService.getPayrollRegisterReports(payrollReportDTO,orgLocations);
 				responseList.setResponse(Result.SUCCESS.name());
 				responseList.setResponseMessage(Result.SUCCESS.getValue());
@@ -342,7 +353,26 @@ public class USPayrollReportRestController {
 		}
 		payrollReportDTO.setSortColumn(tableColumns[sortColumnIndex]);
 		payrollReportDTO.setSortOrder(sortColumnOrder);
-		ResponseList<PayrollReportDTO> res = payrollReportService.getDeductionAndContributionReports(orgLocation,payrollReportDTO);
+		ResponseList<PayrollReportDTO> res = payrollReportService.getContributionReports(orgLocation,payrollReportDTO);
+		return res;
+	}
+	
+	
+	@RequestMapping(value = { "/getDeductionReports","/rest/getDeductionReports" }, method = RequestMethod.POST)
+	@ResponseBody
+	public ResponseList<PayrollReportDTO> getDeductionReports(PayrollReportDTO payrollReportDTO,HttpServletRequest request, HttpServletResponse response) throws Exception
+	{
+		OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+		String[] tableColumns = {"payrollDeductionType",  "employeeId","firstName", "departmentName","schedule","dedAmount","ytdDeductions"};
+	    int sortColumnIndex = 1;		 //by default sorting using updated date
+		String sortColumnOrder = "asc";  //by default descending order
+		if(payrollReportDTO.getOrder() != null && !payrollReportDTO.getOrder().isEmpty()) {
+			sortColumnIndex = Integer.parseInt(payrollReportDTO.getOrder().get(0).get("column"));
+			sortColumnOrder = payrollReportDTO.getOrder().get(0).get("dir");
+		}
+		payrollReportDTO.setSortColumn(tableColumns[sortColumnIndex]);
+		payrollReportDTO.setSortOrder(sortColumnOrder);
+		ResponseList<PayrollReportDTO> res = payrollReportService.getDeductionReports(orgLocation,payrollReportDTO);
 		return res;
 	}
 }

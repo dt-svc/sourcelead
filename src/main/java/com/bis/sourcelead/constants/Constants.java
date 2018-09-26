@@ -76,6 +76,7 @@ public class Constants {
 	public static final Integer RECORD_DRAFT = 2;
 	public static final Integer LEVEL1 = 1;
 	public static final Integer LEVEL2 = 2;
+	public static final Integer PROFILE_PERCENTAGE = 20;
 	public static final DateFormat DMY = new SimpleDateFormat("dd-MM-yyyy");
 	public static final DateFormat DF = new SimpleDateFormat("yyyy/MM/dd");
 	public static final DateFormat DF_STD = new SimpleDateFormat("yyyy/MM/dd");
@@ -482,6 +483,7 @@ public class Constants {
 	public static final String TAXES = "Taxes";
 	public static final String FORMS = "Forms";
 	public static final String MYPAYROLL = "MyPayroll";
+	public static final String RUNPAYROLL = "RunPayroll";
 	public static final String SOURCELEAD_ORGCODE = "sourcelead.com";
 	public static final String SOURCELEAD_LOCATIONCODE_IN = "in.sourcelead.com";
 	/** Constants values for unique emails and notification **/
