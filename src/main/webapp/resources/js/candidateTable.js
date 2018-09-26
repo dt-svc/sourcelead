@@ -340,16 +340,13 @@ function cpagination(url){
 		    	  	"render": function(data, type, full, meta) {
 		    	  		var profilePercentage = "";
 		    	  		var color = "";
-		    	  		if(full.profilePercentage != null && full.profilePercentage != 'undefined' && full.profilePercentage != ""){
 		    	  			profilePercentage = full.profilePercentage + "%";
 		    	  			if(full.profilePercentage >= 50){
 		    	  				color = "text-green";
 		    	  			}else{
 		    	  				color = "colorRed";
 		    	  			}
-			            	}else{
-			            		profilePercentage = "--";
-			            	}
+			            	
 		    	  		return "<div class='tbldata-dotdot-vsm "+color+"'>"+profilePercentage+"</div>";
 		    	  		
 		    	  		

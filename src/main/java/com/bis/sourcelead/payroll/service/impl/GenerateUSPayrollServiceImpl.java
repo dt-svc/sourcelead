@@ -1,6 +1,7 @@
 package com.bis.sourcelead.payroll.service.impl;
 
 import java.math.BigDecimal;
+import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
@@ -23,6 +24,7 @@ import com.bis.sourcelead.dao.AssociateSalaryDao;
 import com.bis.sourcelead.dao.ProjectMembersDao;
 import com.bis.sourcelead.dao.SubmissionApproverHierarchyDao;
 import com.bis.sourcelead.dao.UserGroupDao;
+import com.bis.sourcelead.dao.impl.ExpensesDaoImpl;
 import com.bis.sourcelead.dto.AssociateLoanAndAdvancesDTO;
 import com.bis.sourcelead.dto.AssociatePayItemDTO;
 import com.bis.sourcelead.dto.Response;
@@ -163,6 +165,9 @@ public class GenerateUSPayrollServiceImpl implements GenerateUSPayrollService{
 	
 	@Autowired
 	AssociateLoanAndAdvancesHistoryService associateLoanAndAdvancesHistoryService;
+	
+	@Autowired
+	ExpensesDaoImpl expensesDaoImpl;
 	 
 	@Override
 	public PaysheetFrequencyDTO generateUSPayroll(PaysheetFrequencyDTO existedData,OrgLocations orgLocation, GenerateUSPayrollDTO generateUSPayrollDTO,User loginUser) throws Exception
@@ -248,14 +253,25 @@ public class GenerateUSPayrollServiceImpl implements GenerateUSPayrollService{
 							
 							if(PayrollConstant.HOURLY_RATE.equalsIgnoreCase(assoSal.getPayType())) {
 								 List<TotalHoursDTO> totalHoursDto = userGroupDao.getTotalHoursByCandidateId(assoSal.getCandidate().getId(),freqStartDate,freqEndDate);
-								 payRate = generateUSPayrollDao.payRateByCandidateLocation(assoSal.getCandidate(),orgLocation,freqStartDate,freqEndDate,assoSal.getGroupId().getPayFrequency());								 
-//								payRate = assoSal.getHourlyRate();
-								if(totalHoursDto !=null ) {
-									for(TotalHoursDTO totalHoursDTO : totalHoursDto) {
-										totalHours  = commonUtil.getTotalRegularOverTimeHours(Double.parseDouble(totalHoursDTO.getBillableHours()),totalHours);
+								Map<BigInteger, List<TotalHoursDTO>> map = totalHoursDto.stream().collect(Collectors.groupingBy(TotalHoursDTO::getProjectId));
+								
+								for (Map.Entry<BigInteger, List<TotalHoursDTO>> entry : map.entrySet()) {
+									BigDecimal projectGross = BigDecimal.ZERO;
+									double projectTotalHours = 0;
+									BigDecimal projectPayRate = BigDecimal.ZERO;
+									if(entry.getValue() !=null ) {
+										for(TotalHoursDTO totalHoursDTO : entry.getValue()) {
+											projectPayRate = new BigDecimal(totalHoursDTO.getPayRate());
+											if(StringUtils.isNotBlank(totalHoursDTO.getBillableHours())) {
+												projectTotalHours  = commonUtil.getTotalRegularOverTimeHours(Double.parseDouble(totalHoursDTO.getBillableHours()),projectTotalHours);
+											}
+										}
 									}
-								}
-								amount = getTotalAmount(totalHours,payRate);
+									projectGross = getTotalAmount(projectTotalHours,projectPayRate);
+									amount = amount.add(projectGross);
+									payRate = payRate.add(projectPayRate);
+									totalHours = totalHours + projectTotalHours;
+								} 
 								regularHoursAmount = amount;
 							}else if(PayrollConstant.SALARY.equalsIgnoreCase(assoSal.getPayType())) {
 								amount = assoSal.getGrossSalary();
@@ -319,7 +335,9 @@ public class GenerateUSPayrollServiceImpl implements GenerateUSPayrollService{
 								if(assLoanAndAdvDTO.getTotalLoanAmount() != null && assLoanAndAdvDTO.getTotalAdvanceAmount() != null)
 									netPay = netPay.subtract((assLoanAndAdvDTO.getTotalLoanAmount().add(assLoanAndAdvDTO.getTotalAdvanceAmount())));
 								logger.info("*** Net Pay :"+netPay);
-								employeePayroll.setNetPay(netPay);
+								BigDecimal expenses = expensesDaoImpl.getExpenseAmountByCandidateIdAndExpenseStartAndEndDateForClaimedExpenses(assoSal.getCandidate().getId(),freqStartDate,freqEndDate);
+								employeePayroll.setExpensesAmount(expenses);
+								employeePayroll.setNetPay(netPay.add(expenses));
 								Employees employee = employeesService.getEmployeeByUserAndOrgLocationId(assoSal.getCandidate().getConsultantUser().getId(),orgLocation.getId());
 								if (employee != null) {
 									employeePayroll.setEmployee(employee);

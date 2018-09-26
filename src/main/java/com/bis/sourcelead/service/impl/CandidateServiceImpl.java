@@ -1856,25 +1856,24 @@ private Sheet createXlsSheet(Sheet createExcelsheet, Row writeRow,Candidate cand
 	{
 
 		 int percentage = 0;
-		 Integer status = Constants.CANDIDATE_ACTIVE;
 			if(can != null){
 				//Basic Details - 30 %
-				if(can.getFirstName()!=null && can.getLocation()!=null && can.getEmail()!=null && can.getDesignationType()!=null){
+				if(can.getFirstName() != null  && can.getEmail() != null){
 					percentage = 30;
 				}
 				//Resume  Details - 10 %
-				List<CandidateResumes> candidateResumesList = candidateResumesService.getCandidateResumesListByCandidateIdAndStatus(can.getId(), status);
-				if(!candidateResumesList.isEmpty()){
+				Integer resumesCount = candidateResumesService.getCandidateActiveResumeCountByCandidateId(can.getId());
+				if(resumesCount > 0){
 					percentage = percentage +10;
 				}
 				//Education Details - 10 %
-				 List<CandidateEducation>  candidatesEducationList = candidateEducationService.getCandidateEducationListByCandidateIdAndOrgLocationID(can.getId(), loginOrgLocation.getId());
-				 if(!candidatesEducationList.isEmpty()){
+				 Integer educationsCount = candidateEducationService.getCandidateActiveEducationsCountByCandidateId(can.getId());
+				 if(educationsCount > 0){
 						percentage = percentage +10;
 				 }
 				//Employment  Details - 10 %
-				 List<CandidateEmployers>   candidatesEmployersList = candidateEmployersService.getCandidatesEmployersListByCandidateIdAndOrgLocationID(can.getId(), loginOrgLocation.getId());
-				 if(!candidatesEmployersList.isEmpty()){
+				 Integer employersCount = candidateEmployersService.getCandidateActiveEmployersCountByCandidateId(can.getId());
+				 if(employersCount > 0){
 						percentage = percentage +10;
 				 }
 				 
@@ -1919,8 +1918,8 @@ private Sheet createXlsSheet(Sheet createExcelsheet, Row writeRow,Candidate cand
 				 }
 
 				//document Details - 10 %
-				 List<CandidateDocuments>   candidateDocumentsList = candidateDocumentsService.getCandidateDocumentsListByCandidateIdAndOrgLocationID(can.getId(), loginOrgLocation.getId());
-				 if(!candidateDocumentsList.isEmpty()){
+				 Integer documentsCount = candidateDocumentsService.getCandidateActiveDocumentsByCandidateId(can.getId());
+				 if(documentsCount > 0){
 						percentage = percentage +10;
 				 }
 				 

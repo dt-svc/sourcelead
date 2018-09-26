@@ -1,8 +1,10 @@
 package com.bis.sourcelead.dao.impl;
 
+import java.math.BigInteger;
 import java.text.MessageFormat;
 import java.util.List;
 
+import org.hibernate.Query;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.slf4j.Logger;
@@ -93,6 +95,29 @@ private static final Logger logger = LoggerFactory.getLogger(MasterCandidateDaoI
 			masterCandidate = (MasterCandidate) masterCandidateList.iterator().next();
 		}
 		return masterCandidate;
+	}
+
+
+	@Override
+	@Transactional
+	public Long getMasterCandidateIdByEmail(String email) throws Exception {
+		
+		Long masterCandidateId = null;
+		Session session = this.sessionFactory.getCurrentSession();
+		String query = null;
+		query ="SELECT "
+				+" MC.ID "
+				+" FROM MASTER_CANDIDATE MC "
+				+" WHERE "
+				+" MC.EMAIL = :email ";
+		Query queryObj = session.createSQLQuery(query);
+		queryObj.setString("email", email);	
+		BigInteger id = (BigInteger) queryObj.uniqueResult();
+		if(id != null) {
+			masterCandidateId = id.longValue();
+		}
+		
+		return masterCandidateId;
 	}
 	
 }
