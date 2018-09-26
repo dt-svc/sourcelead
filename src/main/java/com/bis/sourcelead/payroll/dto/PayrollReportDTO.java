@@ -75,7 +75,11 @@ public class PayrollReportDTO extends SearchDTO{
 	private BigDecimal dedAmount;
 	
 	private BigDecimal contributionYTD;
+
+	private String deductionId;
 	
+	private String deductionType;
+		
 	private BigDecimal contributionAmount;
 	
 	
@@ -458,5 +462,27 @@ public class PayrollReportDTO extends SearchDTO{
 	public void setOrgLocationid(Long orgLocationid)
 	{
 		this.orgLocationid = orgLocationid;
+	}
+
+
+	public String getDeductionId() {
+		return deductionId;
+	}
+
+
+	public void setDeductionId(String deductionId) {
+		this.deductionId = deductionId;
+	}
+
+
+	public String getDeductionType() {
+		return deductionType;
+	}
+
+
+	public void setDeductionType(String deductionType) {
+		this.deductionType = deductionType;
 	}	
+	
+	
 }

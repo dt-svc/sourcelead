@@ -8,7 +8,7 @@
  <%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %>
  <%@ taglib uri="http://java.sun.com/jsp/jstl/functions" prefix="fn"%>
 <jsp:include page="../views/requirement/requirementAssignedTo.jsp"/>
-<div class="mb col-md-12 clearfix" >
+<div class="mb clearfix" >
       <!-- Assigned Requirements -->
       <div class=" dashboard-widget col-md-12" id="assignedRequirementsDiv">
         <h4 class="pull-left">Jobs</h4>
