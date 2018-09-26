@@ -520,7 +520,7 @@
         	<div class="col-md-4 mb">
         		<label class="col-md-12">Comment</label>
         		<div class="col-md-12">
-					<textarea class="form-control" name="lcaDocumentList[0].description"  id="description" placeholder="Comment" rows="2">${lcaDTO.lcaDocumentList[0].description}</textarea>
+					<textarea class="form-control" name="lcaDocumentList[0].description" data-validation="validate_Space validate_length length1-500" data-validation-optional="true"  id="description" placeholder="Comment" rows="2">${lcaDTO.lcaDocumentList[0].description}</textarea>
         		</div>
         	</div>
         	
@@ -569,7 +569,7 @@
         	<div class="col-md-4 mb">
         		<label class="col-md-12">Comment</label>
         		<div class="col-md-12">
-					<textarea class="form-control" name="lcaDocumentList[${rows.count-1}].description"  id="description${rows.count-1}" placeholder="Comment" rows="2">${lcaDTO.lcaDocumentList[rows.count-1].description}</textarea>
+					<textarea class="form-control" name="lcaDocumentList[${rows.count-1}].description"  id="description${rows.count-1}" placeholder="Comment" rows="2" data-validation="validate_Space validate_length length1-500">${lcaDTO.lcaDocumentList[rows.count-1].description}</textarea>
         		</div>
         	</div>
         	
@@ -931,7 +931,7 @@ $('#endDate').datepicker({
 	   prepareAttachmentdiv =prepareAttachmentdiv+ " <div class='col-md-4 mb pr0'>";
 	   prepareAttachmentdiv =prepareAttachmentdiv+ " <label class='col-md-12'>Comment</label>";
 	   prepareAttachmentdiv =prepareAttachmentdiv+ " <div class='col-md-12'>";
-	   prepareAttachmentdiv =prepareAttachmentdiv+ " <textarea class='form-control' name='lcaDocumentList["+rowId+"].description' id='description"+rowId+"' value='"+(typeof attachmentVal[3]==="undefined"?"":attachmentVal[3])+"' placeholder='Comment' rows='2'>";
+	   prepareAttachmentdiv =prepareAttachmentdiv+ " <textarea class='form-control' name='lcaDocumentList["+rowId+"].description' id='description"+rowId+"' value='"+(typeof attachmentVal[3]==="undefined"?"":attachmentVal[3])+"' placeholder='Comment' rows='2' data-validation='validate_Space validate_length length1-500' data-validation-optional='true'>";
 	   prepareAttachmentdiv =prepareAttachmentdiv+ "</textarea>";
 	   prepareAttachmentdiv =prepareAttachmentdiv+ " </div>";
 	   prepareAttachmentdiv =prepareAttachmentdiv+ " </div>";
