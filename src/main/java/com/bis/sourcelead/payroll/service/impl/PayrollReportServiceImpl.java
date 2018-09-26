@@ -136,19 +136,21 @@ public class PayrollReportServiceImpl implements PayrollReportService{
 						dto.setDepartmentName(dept.getDepartmentName());
 					}
 					dto.setContributionType(dedHis.getContributionId().getContributionTypeId().getDeductionTypeId().getPayrollDeductionType());
-					BigDecimal dedAmount = BigDecimal.ZERO;
+					BigDecimal contributionAmount = BigDecimal.ZERO;
 					if (dedHis.getPreContributionAmount() != null) {
 						if (dedHis.getPreContributionAmount().compareTo(BigDecimal.ZERO) !=  0) {
-							dedAmount = dedHis.getPreContributionAmount();
+							contributionAmount = dedHis.getPreContributionAmount();
 						}
 					}
 					if (dedHis.getPostContributionAmount() != null) {
 						if (dedHis.getPostContributionAmount().compareTo(BigDecimal.ZERO) !=  0 ) {
-							dedAmount = dedHis.getPostContributionAmount();
+							contributionAmount = dedHis.getPostContributionAmount();
 						}
 					}
-					dto.setDedAmount(dedAmount);
+					dto.setContributionAmount(contributionAmount);
 					dto.setSchedule(dedHis.getContributionId().getContributionTypeId().getDeductionTypeId().getPayrollScheduled().toLowerCase());
+					BigDecimal contributionYTD = payrollUtil.getContributionYTD(dedHis.getPayroll(), dedHis.getContributionId().getId(), orgLocation);
+					dto.setContributionYTD(contributionYTD);
 					list.add(dto);
 				}
 			}

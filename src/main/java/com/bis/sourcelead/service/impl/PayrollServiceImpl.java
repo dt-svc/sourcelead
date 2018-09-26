@@ -120,7 +120,7 @@ public class PayrollServiceImpl implements PayrollService {
 //					payrollDTO.setTaxes(pay.getTaxes());
 					payrollDTO.setOtHoursTotalAmt(pay.getOverTimeAmount());
 					payrollDTO.setCandidateId(pay.getCandidate().getId());
-					payrollDTO.setPaySheetFrequencyId(pay.getPaysheetFrequency().getId());
+					//payrollDTO.setPaySheetFrequencyId(pay.getPaysheetFrequency().getId());
 					double overTimeHours = 0;
 					if(StringUtils.isNoneBlank(pay.getOverTimeHours())) {
 						overTimeHours = Double.parseDouble(pay.getOverTimeHours());
@@ -212,7 +212,7 @@ public class PayrollServiceImpl implements PayrollService {
 					if (employee != null) {
 						indEmployeePayroll.setEmployee(employee);
 					}
-					indEmployeePayroll.setPaysheetFrequency(paysheetFrequency);
+					//indEmployeePayroll.setPaysheetFrequency(paysheetFrequency);
 					
 					float totalHours = 0;
 					BigDecimal payRate = BigDecimal.ZERO;
