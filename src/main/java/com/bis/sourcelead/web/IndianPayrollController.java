@@ -154,7 +154,7 @@ public class IndianPayrollController {
 			commonUtil.highLightMenu(Constants.RUNPAYROLL, request);
 			List<UserGroup> userGroupList = userGroupService.getAllUserGroupsByLocationId(orgLocations);
 			modelAndView.addObject("userGroupList",userGroupList);
-			modelAndView.setViewName("payroll_india/payroll/indianRunPayRoll");
+			modelAndView.setViewName("payroll_india/payroll/initiatePayrollInd");
 		}catch (Exception e) {
 			// TODO: handle exception
 			e.printStackTrace();
