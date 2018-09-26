@@ -1908,7 +1908,7 @@ private Sheet createXlsSheet(Sheet createExcelsheet, Row writeRow,Candidate cand
 	}
 
 	@Override
-	public void saveCandidateBulkImports(CandidateDTO candidateDTO, OrgLocations orgLocations,User user) throws Exception {
+	public Candidate saveCandidateBulkImports(CandidateDTO candidateDTO, OrgLocations orgLocations,User user) throws Exception {
 		
 		StringBuffer activitySummary = new StringBuffer();
 		HashSet<CandidateResumes> candidateResumesList = null;
@@ -2208,12 +2208,14 @@ private Sheet createXlsSheet(Sheet createExcelsheet, Row writeRow,Candidate cand
 		 
 		candidate.setCandidateProfilePercentage(percentage);
 		
-		Candidate savedCandidate = candidateDao.storeCandidate(candidate);
+		/*Candidate savedCandidate = candidateDao.storeCandidate(candidate);
 		saveOrUpdateCandidateElkDocument(savedCandidate);
 		
 	    if(StringUtils.isNotBlank(candidateDTO.getInviteEmail()) && Constants.YES.equalsIgnoreCase(candidateDTO.getInviteEmail())){
 			inviteCandidateToSourceLead(user,savedCandidate,orgLocations);
-	    }
+	    }*/
+		
+	    return candidate;
 		
 	}
 	
@@ -2621,6 +2623,11 @@ private Sheet createXlsSheet(Sheet createExcelsheet, Row writeRow,Candidate cand
 		candidate.setStatus(Constants.CANDIDATE_ACTIVE);
 		candidate.setOrgLocationId(orgLocations);
 		return candidate;
+	}
+
+	@Override
+	public void saveBulkCandidates(List<Candidate> candidatesList) throws Exception {
+		candidateDao.saveBulkCandidates(candidatesList);
 	}
 
 }

@@ -58,6 +58,7 @@ import com.bis.sourcelead.dto.RequirementDTO;
 import com.bis.sourcelead.dto.RequirementLocationsDTO;
 import com.bis.sourcelead.elk.setup.RequirementElkUtil;
 import com.bis.sourcelead.entity.Asset;
+import com.bis.sourcelead.entity.Candidate;
 import com.bis.sourcelead.entity.CandidatePassportVisa;
 import com.bis.sourcelead.entity.Countries;
 import com.bis.sourcelead.entity.Immigration;
@@ -221,6 +222,7 @@ public class DataMigrationServiceImpl implements DataMigrationService {
 		String ac = StringUtils.removeEnd(staticPath, "/slead-static");
 		FileInputStream inputStream = new FileInputStream(
 				new File(ac + dataMigrationDTO.getExportFilePath().replace("/dataMigration/", "/temp/")));
+		
 		Workbook workbook = null;
 		DataFormatter objDefaultFormat = new DataFormatter();
 		FormulaEvaluator objFormulaEvaluator;
@@ -237,6 +239,7 @@ public class DataMigrationServiceImpl implements DataMigrationService {
 		UploadXlsHistory history = null;
 		history = saveUploadXlsHistory(rowCount, fileName[5], null, dataMigrationDTO, user, orgLocation);
 		uploadXlsHistoryService.storeUploadXlsHistory(history);
+		List<Candidate> uploadedCandidatesList = new ArrayList<>();
 		Iterator<Row> rowIterator = firstSheet.iterator();
 		int colCount = 0;
 		Boolean isEmptyExcel = true;
@@ -416,7 +419,7 @@ public class DataMigrationServiceImpl implements DataMigrationService {
 				}
 
 				if (errorSet.isEmpty()) {
-					mapToEntities(dataMigrationDTOJsonCopy, user, orgLocation, dataMigrationDTO.getUploadType(),jsonString,dataMigrationDTO.getUploadid());
+					mapToEntities(dataMigrationDTOJsonCopy, user, orgLocation, dataMigrationDTO.getUploadType(),jsonString,dataMigrationDTO.getUploadid(),uploadedCandidatesList);
 					importStatus = "success";
 					FileOutputStream outputStream = new FileOutputStream(
 							new File(ac + dataMigrationDTO.getExportFilePath()));
@@ -463,6 +466,14 @@ public class DataMigrationServiceImpl implements DataMigrationService {
 		
 		history.setUploadProcessingStatus("Completed");
 		uploadXlsHistoryService.storeUploadXlsHistory(history);
+		
+		
+		if(dataMigrationDTO.getUploadType().equalsIgnoreCase("candidatesUpload")) {
+			System.out.println(System.currentTimeMillis());
+			candidateService.saveBulkCandidates(uploadedCandidatesList);
+			System.out.println(System.currentTimeMillis());
+		}
+		
 		
 		workbook.close();
 		inputStream.close();
@@ -541,7 +552,7 @@ public class DataMigrationServiceImpl implements DataMigrationService {
 
 	@SuppressWarnings("unused")
 	private void mapToEntities(JSONObject dataMigrationDTOJsonCopy, User user, OrgLocations orgLocation,
-			String uploadType,String jsonString,String uploadId) throws Exception {
+			String uploadType,String jsonString,String uploadId,List<Candidate> uploadedCandidatesList) throws Exception {
 		Gson gson = new Gson();
 		switch (uploadType) {
 		case "jobUpload":
@@ -629,9 +640,8 @@ public class DataMigrationServiceImpl implements DataMigrationService {
 				candidateDTO.setCountry(orgLocation.getCountry());
 			}
 			try {
-				System.out.println(System.currentTimeMillis());
-				candidateService.saveCandidateBulkImports(candidateDTO, orgLocation, user);
-				System.out.println(System.currentTimeMillis());
+				Candidate candidate = candidateService.saveCandidateBulkImports(candidateDTO, orgLocation, user);
+				uploadedCandidatesList.add(candidate);
 			}catch (Exception e) {
 				UploadXlsHistory history = uploadXlsHistoryService.getUploadXlsHistoryDetailsByUploadId(uploadId);
 				history.setUploadProcessingStatus("Completed");
