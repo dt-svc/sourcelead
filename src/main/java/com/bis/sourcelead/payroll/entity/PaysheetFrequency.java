@@ -74,9 +74,6 @@ public class PaysheetFrequency {
 	
 	@OneToMany(cascade = CascadeType.ALL, mappedBy = "paysheetFrequency")
 	private Set<EmployeePayroll> employeepayroll;
-	
-	@OneToMany(cascade = CascadeType.ALL, mappedBy = "paysheetFrequency")
-	private Set<IndEmployeePayroll> indEmployeepayroll;
 
 	public static long getSerialversionuid()
 	{
@@ -248,17 +245,4 @@ public class PaysheetFrequency {
 		this.approverStatus = approverStatus;
 	}
 
-	public Set<IndEmployeePayroll> getIndEmployeepayroll() {
-		return indEmployeepayroll;
-	}
-
-	public void setIndEmployeepayroll(Set<IndEmployeePayroll> indEmployeepayroll) {
-		this.indEmployeepayroll = indEmployeepayroll;
-	}
-
-
-
-
-	
-	
 }

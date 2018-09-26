@@ -3279,7 +3279,6 @@ public class RequirementSubmissionDaoImpl implements RequirementSubmissionDao{
 						+" WHERE "
 						+" CANDIDATE_ID = :candidateId AND REQUIREMENT_ID = :requirementId";
 			    
-						System.out.println(query);
 	            Query queryObj = session.createSQLQuery(query);
 				queryObj.setLong("candidateId", candidateId).setLong("requirementId", requirementId);
 				submissionList = queryObj.list();

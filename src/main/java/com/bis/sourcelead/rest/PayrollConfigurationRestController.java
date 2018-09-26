@@ -911,7 +911,7 @@ public class PayrollConfigurationRestController {
 			User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
 			ResponseList<PayrollPayheadDTO> response = payrollPayheadService.getPayrollPayheadList(orgLocations);
 			model.addObject("payrollPayheadList", response.getData());
-			
+			model.addObject("loginUser", user);
 			
 			
 			AssociateSalaryInd associateSalaryInd = payrollPayheadService.getAssociateSalaryIndByCandidateId(payrollPayheadDTO.getCandidateId());
@@ -973,8 +973,8 @@ public class PayrollConfigurationRestController {
 					model.addObject("candidateCTCPerYear", new BigDecimal(amount));
 			        
 			        model.addObject("candidateCTCPerYear", candidateCTCPerYear);
-					model.addObject("candidate", candidate);
 				}
+				model.addObject("candidate", candidate);
 				model.addObject("status", "NODATA");
 			}
 			model.setViewName("indPayroll/associateSalary");
