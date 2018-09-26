@@ -591,4 +591,16 @@ public class PaysheetFrequencyServiceImpl implements PaysheetFrequencyService{
 		return dtoList;
 	}
 
+	@Override
+	public List<DeductionHistory> getContributionYTD(EmployeePayroll payroll,Long contributionId,OrgLocations orgLocations)
+	{
+		return paysheetFrequencyDao.getContributionYTD(payroll,contributionId,orgLocations);
+	}
+
+	@Override
+	public List<DeductionHistory> getDeductionYTD(EmployeePayroll payroll, Long deductionId, OrgLocations orgLocation) {
+		
+		return paysheetFrequencyDao.getDeductionYTD(payroll,deductionId,orgLocation);
+	}
+
 }

@@ -2,7 +2,9 @@ package com.bis.sourcelead.payroll.entity;
 
 import java.io.Serializable;
 import java.math.BigDecimal;
+import java.util.Set;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -10,8 +12,10 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
+import com.bis.sourcelead.entity.AssociatePayrollPayheadHistory;
 import com.bis.sourcelead.entity.Candidate;
 import com.bis.sourcelead.entity.Employees;
 
@@ -38,11 +42,9 @@ public class IndEmployeePayroll implements Serializable {
 	private Candidate candidate;
 
 	@ManyToOne
-	@JoinColumn(name = "PAY_SHEET_FREQUENCY_ID", nullable = false)
-	private PaysheetFrequency paysheetFrequency;
+	@JoinColumn(name = "IND_PAY_SHEET_FREQUENCY_ID", nullable = false)
+	private IndPaysheetFrequency indPaysheetFrequency;
 
-	@Column(name = "EMP_PAY_RATE")
-	private BigDecimal empPayRate;
 
 	@Column(name = "REGULAR_HOURS")
 	private String regularHours;
@@ -55,6 +57,12 @@ public class IndEmployeePayroll implements Serializable {
 
 	@Column(name = "NO_OF_LEAVES")
 	private BigDecimal noOfLeaves;
+	
+	@Column(name = "NO_OF_DAYS")
+	private BigDecimal noOfDays;
+	
+	@Column(name = "EMP_PAY_RATE")
+	private BigDecimal empPayRate;
 
 	@Column(name = "GROSS_PAY")
 	private BigDecimal grossPay;
@@ -70,6 +78,10 @@ public class IndEmployeePayroll implements Serializable {
 
 	@Column(name = "SUBMIT_FOR_APROVER_STATUS")
 	private String submitForAproverStatus;
+	
+	@OneToMany(cascade = CascadeType.ALL, mappedBy = "indEmployeePayrollId")
+	private Set<AssociatePayrollPayheadHistory> associatePayrollPayheadHistory;
+	
 
 	public Long getId() {
 		return id;
@@ -95,12 +107,12 @@ public class IndEmployeePayroll implements Serializable {
 		this.candidate = candidate;
 	}
 
-	public PaysheetFrequency getPaysheetFrequency() {
-		return paysheetFrequency;
+	public IndPaysheetFrequency getIndPaysheetFrequency() {
+		return indPaysheetFrequency;
 	}
 
-	public void setPaysheetFrequency(PaysheetFrequency paysheetFrequency) {
-		this.paysheetFrequency = paysheetFrequency;
+	public void setIndPaysheetFrequency(IndPaysheetFrequency indPaysheetFrequency) {
+		this.indPaysheetFrequency = indPaysheetFrequency;
 	}
 
 	public BigDecimal getEmpPayRate() {
@@ -143,6 +155,14 @@ public class IndEmployeePayroll implements Serializable {
 		this.noOfLeaves = noOfLeaves;
 	}
 
+	public BigDecimal getNoOfDays() {
+		return noOfDays;
+	}
+
+	public void setNoOfDays(BigDecimal noOfDays) {
+		this.noOfDays = noOfDays;
+	}
+
 	public BigDecimal getGrossPay() {
 		return grossPay;
 	}
@@ -175,10 +195,6 @@ public class IndEmployeePayroll implements Serializable {
 		this.tds = tds;
 	}
 
-	public static long getSerialversionuid() {
-		return serialVersionUID;
-	}
-
 	public String getSubmitForAproverStatus() {
 		return submitForAproverStatus;
 	}
@@ -187,18 +203,17 @@ public class IndEmployeePayroll implements Serializable {
 		this.submitForAproverStatus = submitForAproverStatus;
 	}
 
-	/*
-	 * @OneToMany(cascade = CascadeType.ALL, mappedBy = "employeePayroll") private
-	 * Set<EmployeePayrollTax> usPayrollTax;
-	 * 
-	 * @OneToMany(cascade = CascadeType.ALL, mappedBy = "employeePayroll") private
-	 * Set<EmployerPayrollTax> employerpayrolltax;
-	 * 
-	 * @OneToMany(cascade = CascadeType.ALL, mappedBy = "payroll") private
-	 * Set<DeductionHistory> deductionHistory;
-	 * 
-	 * @OneToMany(cascade = CascadeType.ALL, mappedBy = "payrollId") private
-	 * Set<PayitemHistory> payitemHistory;
-	 */
+	public static long getSerialversionuid() {
+		return serialVersionUID;
+	}
 
+	public Set<AssociatePayrollPayheadHistory> getAssociatePayrollPayheadHistory() {
+		return associatePayrollPayheadHistory;
+	}
+
+	public void setAssociatePayrollPayheadHistory(Set<AssociatePayrollPayheadHistory> associatePayrollPayheadHistory) {
+		this.associatePayrollPayheadHistory = associatePayrollPayheadHistory;
+	}
+
+	
 }

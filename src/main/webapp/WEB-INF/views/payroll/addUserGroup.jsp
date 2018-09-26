@@ -28,10 +28,10 @@
                         </div>
                 
                        <div class="col-md-6">
-                                 <label>Department</label>
+                                 <label>Department<span class="text-danger">*</span></label>
                                		 <div class="clearfix">
-                               		 <select class="form-control chosen-select" onchange="getUsersByDepartment();" id="department" name="department">
-                                     <option value=" ">--Select Department--</option>
+                               		 <select class="form-control chosen-select" onchange="getUsersByDepartment();" id="department" name="department" data-validation="required" field-name="Department">
+                                     <option value="">Select</option>
                         				  <c:forEach var="dept" items="${departmentList}">
 										   <option value="${dept.id}" ${userGroup.departmentId == dept.id ? 'selected' : ''}>${dept.departmentName}</option>
 										  </c:forEach>
@@ -42,7 +42,7 @@
 							<label>Pay Frequencey<span class="text-danger">*</span> </label>
 							<div class="clearfix" >
 								<select class="form-control sel" id="payFrequency" name="payFrequency" data-validation="required" field-name="Pay Frequency">
-									<option value="">Selected</option>
+									<option value="">Select</option>
 									<option value="Weekly" ${userGroup.payFrequency == 'Weekly' ? 'selected' : ''}>Weekly</option>
 									<option value="Bi-Weekly" ${userGroup.payFrequency == 'Bi-Weekly' ? 'selected' : ''}>Bi-Weekly</option>
 									<option value="Monthly" ${userGroup.payFrequency == 'Monthly' ? 'selected' : ''}>Monthly</option>
