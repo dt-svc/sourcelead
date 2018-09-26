@@ -686,8 +686,8 @@ public class DataMigrationCommonUtil {
 				
 				if(!dataMigrationDTOJsonCopy.getString("email").equals("null") && StringUtils.isNotEmpty(dataMigrationDTOJsonCopy.getString("email"))) {
 					
-					Candidate candidate = candidateDao.findByCandidateEmail(dataMigrationDTOJsonCopy.getString("email").toString().trim(),orgLocation.getId());
-					if (candidate != null) {
+					Long candidateId = candidateDao.getCandidateIdByEmailAndOrgLocationId(dataMigrationDTOJsonCopy.getString("email").toString().trim(),orgLocation.getId());
+					if (candidateId != null) {
 						errorSet.put("email", "Candidate already exist.!");
 					}else {
 						

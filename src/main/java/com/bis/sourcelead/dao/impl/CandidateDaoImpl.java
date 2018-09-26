@@ -2064,5 +2064,28 @@ public class CandidateDaoImpl implements CandidateDao {
 	
 	}
 
+	@Override
+	@Transactional
+	public Long getCandidateIdByEmailAndOrgLocationId(String email, Long orgLocationId) throws Exception {
+		
+		Long candidateId = null;
+		Session session = this.sessionFactory.getCurrentSession();
+		String query = null;
+		query ="SELECT "
+				+" CAND.ID "
+				+" FROM CANDIDATE CAND "
+				+" WHERE "
+				+" CAND.EMAIL = :email AND CAND.ORG_LOCATION_ID = :orgLocationId";
+		Query queryObj = session.createSQLQuery(query);
+		queryObj.setString("email", email);	
+		queryObj.setLong("orgLocationId", orgLocationId);	
+		BigInteger id = (BigInteger) queryObj.uniqueResult();
+		if(id != null) {
+			candidateId = id.longValue();
+		}
+		
+		return candidateId;
+	}
+
 }
 

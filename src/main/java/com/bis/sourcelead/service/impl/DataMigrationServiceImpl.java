@@ -416,7 +416,7 @@ public class DataMigrationServiceImpl implements DataMigrationService {
 				}
 
 				if (errorSet.isEmpty()) {
-					mapToEntities(dataMigrationDTOJsonCopy, user, orgLocation, dataMigrationDTO.getUploadType(),jsonString);
+					mapToEntities(dataMigrationDTOJsonCopy, user, orgLocation, dataMigrationDTO.getUploadType(),jsonString,dataMigrationDTO.getUploadid());
 					importStatus = "success";
 					FileOutputStream outputStream = new FileOutputStream(
 							new File(ac + dataMigrationDTO.getExportFilePath()));
@@ -541,7 +541,7 @@ public class DataMigrationServiceImpl implements DataMigrationService {
 
 	@SuppressWarnings("unused")
 	private void mapToEntities(JSONObject dataMigrationDTOJsonCopy, User user, OrgLocations orgLocation,
-			String uploadType,String jsonString) throws Exception {
+			String uploadType,String jsonString,String uploadId) throws Exception {
 		Gson gson = new Gson();
 		switch (uploadType) {
 		case "jobUpload":
@@ -623,10 +623,22 @@ public class DataMigrationServiceImpl implements DataMigrationService {
 			candidtemapper.configure(DeserializationFeature.ACCEPT_SINGLE_VALUE_AS_ARRAY, true);
 			candidtemapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
 			candidateDTO = gson.fromJson(dataMigrationDTOJsonCopy.toString(), CandidateDTO.class);
+			candidateDTO.setCandidateCreationType(Constants.IMPORT_CANDIDATE);
+			candidateDTO.setUploadId(uploadId);
 			if(candidateDTO.getCountry() == null || candidateDTO.getCountry().isEmpty()) {
 				candidateDTO.setCountry(orgLocation.getCountry());
 			}
-			candidateService.saveCandidateBulkImports(candidateDTO, orgLocation, user);
+			try {
+				System.out.println(System.currentTimeMillis());
+				candidateService.saveCandidateBulkImports(candidateDTO, orgLocation, user);
+				System.out.println(System.currentTimeMillis());
+			}catch (Exception e) {
+				UploadXlsHistory history = uploadXlsHistoryService.getUploadXlsHistoryDetailsByUploadId(uploadId);
+				history.setUploadProcessingStatus("Completed");
+				uploadXlsHistoryService.storeUploadXlsHistory(history);
+				e.printStackTrace();
+			}
+			
 			break;
 			
 		case "submmissionTemplateUpload":

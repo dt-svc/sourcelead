@@ -150,4 +150,6 @@ public interface CandidateDao {
 	public List<CandidateDTO> getAllActiveCandidatesListByOrglocationId(Long orgLocationId, String employeementType) throws Exception;
 	
 	public List<Candidate> getAllCandidatesList() throws Exception;
+	
+	Long getCandidateIdByEmailAndOrgLocationId(String email,Long orgLocationId) throws Exception;
 }
