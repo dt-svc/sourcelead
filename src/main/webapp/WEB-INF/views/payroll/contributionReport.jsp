@@ -366,7 +366,7 @@ function getContributionReports(){
 										"sortable": false,
 										"render" : function(data, type, opt,meta) {
 											var result = "";
-											result = result+ '<td><div class="tbldata-dotdot-vsm" title="">'+opt.dedAmount+'</div></td>';
+											result = result+ '<td><div class="tbldata-dotdot-vsm" title="">$ '+opt.contributionAmount+'</div></td>';
 											return result;
 										}
 									},{
@@ -374,7 +374,7 @@ function getContributionReports(){
 										"data" : "ytdDeductions",
 										"render" : function(data, type, opt,meta) {
 											var result = "";
-											result = result+ '<td><div class="tbldata-dotdot-vsm" title="">XXXXX</div></td>';
+											result = result+ '<td><div class="tbldata-dotdot-vsm" title="">$ '+opt.contributionYTD+'</div></td>';
 											return result;
 										}
 									}],

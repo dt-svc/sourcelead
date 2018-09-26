@@ -141,7 +141,7 @@
                 <input type="text" style="display:none" name="candidateId" id="assocandidateId" value="${candidate.id}">
                 <input type="text" style="display:none" name="uuid" value="${uuid}">
                 <input type="text" style="display:none" id="status" value="${status}">
-                <input type="text" style="display:none" id="userId" name="userId" value="${candidate.consultantUser}">
+                <input type="text" style="display:none" id="userId" name="userId" value="${candidate.consultantUser.id}">
                   
                 <div class="clearfix footerstyelsNew">
                  <div class="col-md-6">

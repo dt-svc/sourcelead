@@ -235,7 +235,7 @@ public class PayrollReportDaoImpl implements PayrollReportDao{
 	@SuppressWarnings("unchecked")
 	@Override
 	@Transactional
-	public ResponseList<DeductionHistory> getDeductionAndContributionReports(OrgLocations orgLocation, PayrollReportDTO payrollReportDTO)
+	public ResponseList<DeductionHistory> getContributionReports(OrgLocations orgLocation, PayrollReportDTO payrollReportDTO)
 	{
         ResponseList<DeductionHistory> response = new ResponseList<>();
 		
@@ -288,6 +288,74 @@ public class PayrollReportDaoImpl implements PayrollReportDao{
 			response.setRecordsTotal(count);
 			if (payrollReportDTO != null) {
 				List<Long> filteredCountlist  = session.createQuery("select count(*) " + countQuery + searchQuery.toString()).setLong("orgLocationId", orgLocation.getId()).setLong("groupId", Long.parseLong(payrollReportDTO.getGroupId())).setDate("freqStartDate", freqStartDate).setDate("freqEndDate",freqEndDate).setParameterList("contributionList", contributionIds).list();
+				if(filteredCountlist != null && !filteredCountlist.isEmpty()) {
+					filteredCount = filteredCountlist.iterator().next().intValue();
+				}
+				response.setRecordsFiltered(filteredCount);
+			} 
+				response.setData(payrollList);
+		}catch (Exception e) {
+			e.printStackTrace();
+		}
+
+		return response;
+	}
+
+	@Override
+	@Transactional
+	public ResponseList<DeductionHistory> getDeductionReports(OrgLocations orgLocation,PayrollReportDTO payrollReportDTO) {
+		
+     ResponseList<DeductionHistory> response = new ResponseList<>();
+		
+		try {
+			Date sDate =  new SimpleDateFormat("yyyy-MM-dd").parse(payrollReportDTO.getFreqStartDate());  
+			Date eDate =new SimpleDateFormat("yyyy-MM-dd").parse(payrollReportDTO.getFreqEndDate());
+			java.sql.Date freqStartDate = new java.sql.Date(sDate.getTime());
+			java.sql.Date freqEndDate = new java.sql.Date(eDate.getTime());
+			Session session = this.sessionFactory.getCurrentSession();
+			
+			List<Long> deductionIds = Stream.of(payrollReportDTO.getDeductionId().split(",")).map(Long::parseLong).collect(Collectors.toList());
+			List<DeductionHistory> payrollList = null;
+			
+			String qry = "";
+			if(StringUtils.isNotBlank(payrollReportDTO.getSortColumn())) {
+				if("departmentName".equalsIgnoreCase(payrollReportDTO.getSortColumn())) {
+					qry = " order by ded.payroll.employee.departmentId."+ payrollReportDTO.getSortColumn() +" "+payrollReportDTO.getSortOrder();
+				}else if("payrollDeductionType".equalsIgnoreCase(payrollReportDTO.getSortColumn())) {
+					qry = " order by ded.deductionId.deductionTypeId.payrollDeductionType."+ payrollReportDTO.getSortColumn() +" "+payrollReportDTO.getSortOrder();
+				}else if("employeeId".equalsIgnoreCase(payrollReportDTO.getSortColumn())) {
+					qry = " order by ded.payroll.employee.employeeId."+payrollReportDTO.getSortColumn() + " "+payrollReportDTO.getSortOrder();
+				}else if("firstName".equalsIgnoreCase(payrollReportDTO.getSortColumn())) {
+					qry = " order by ded.payroll.candidate.firstName."+payrollReportDTO.getSortColumn() + " "+payrollReportDTO.getSortOrder();
+				}
+			}
+			String query =      "from DeductionHistory ded where ded.payroll.paysheetFrequency.userGroup.id = :groupId and ded.payroll.paysheetFrequency.orgLocation.id = :orgLocationId and ded.payroll.paysheetFrequency.frequencyStartDate = :freqStartDate and ded.payroll.paysheetFrequency.frequencyEndDate = :freqEndDate and ded.payroll.submitForAproverStatus = 'APPROVED' and ded.deductionId.deductionTypeId.id IN (:deductionList)";
+			String countQuery = "from DeductionHistory ded where ded.payroll.paysheetFrequency.userGroup.id = :groupId and ded.payroll.paysheetFrequency.orgLocation.id = :orgLocationId and ded.payroll.paysheetFrequency.frequencyStartDate = :freqStartDate and ded.payroll.paysheetFrequency.frequencyEndDate = :freqEndDate and ded.payroll.submitForAproverStatus = 'APPROVED' and ded.deductionId.deductionTypeId.id IN (:deductionList)";
+			StringBuilder searchQuery = new StringBuilder("");
+			if(payrollReportDTO.getSearchValue() !=null && !"".equalsIgnoreCase(payrollReportDTO.getSearchValue())) {
+					searchQuery.append(" and ( ded.payroll.candidate.firstName like '%" + payrollReportDTO.getSearchValue() + "%' ")
+						.append("OR  ded.payroll.candidate.lastName like '%" + payrollReportDTO.getSearchValue() + "%' ")
+						.append("OR  ded.deductionId.deductionTypeId.payrollScheduled like '%" + payrollReportDTO.getSearchValue() + "%' ")
+						.append("OR  ded.deductionId.deductionTypeId.payrollDeductionType like '%" + payrollReportDTO.getSearchValue() + "%' ")
+						.append("OR  ded.payroll.employee.departmentId.departmentName like '%" + payrollReportDTO.getSearchValue() + "%' ")
+					    .append("OR  ded.payroll.employee.employeeId like '%" + payrollReportDTO.getSearchValue() + "%') ");
+			}
+			Query queryObj = session.createQuery(query + searchQuery.toString() + qry);
+			if (payrollReportDTO != null && payrollReportDTO.getLength() > 0) {
+				queryObj.setFirstResult(payrollReportDTO.getStart());
+				queryObj.setMaxResults(payrollReportDTO.getLength());
+				queryObj.setLong("orgLocationId", orgLocation.getId()).setLong("groupId", Long.parseLong(payrollReportDTO.getGroupId())).setDate("freqStartDate", freqStartDate).setDate("freqEndDate",freqEndDate).setParameterList("deductionList", deductionIds);
+			}
+			payrollList = queryObj.list();
+			int count = 0;
+			int filteredCount = 0;
+			List<Long> countlist = session.createQuery("select count(*) " + countQuery).setLong("orgLocationId", orgLocation.getId()).setLong("groupId", Long.parseLong(payrollReportDTO.getGroupId())).setDate("freqStartDate", freqStartDate).setDate("freqEndDate",freqEndDate).setParameterList("deductionList", deductionIds).list();
+			if(countlist != null && !countlist.isEmpty()) {
+				count = countlist.iterator().next().intValue();
+			}
+			response.setRecordsTotal(count);
+			if (payrollReportDTO != null) {
+				List<Long> filteredCountlist  = session.createQuery("select count(*) " + countQuery + searchQuery.toString()).setLong("orgLocationId", orgLocation.getId()).setLong("groupId", Long.parseLong(payrollReportDTO.getGroupId())).setDate("freqStartDate", freqStartDate).setDate("freqEndDate",freqEndDate).setParameterList("deductionList", deductionIds).list();
 				if(filteredCountlist != null && !filteredCountlist.isEmpty()) {
 					filteredCount = filteredCountlist.iterator().next().intValue();
 				}
