@@ -7,6 +7,7 @@
 			$('.theme_sideMenu').toggleClass('themeSideMenu_Active');
 			$('.cusFieldHeadFixed').toggleClass('cusFieldHeadFixedAct');
 			$(".collapses").hide();
+			$('aside').toggleClass("asideAct");
 			});
 		$('.srch-btn-xs').click(function(){
 		  $(".search-area").toggleClass("search-area-active");

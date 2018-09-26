@@ -378,6 +378,7 @@ public class ClientServiceImpl implements ClientService {
 			clientOrgLocations.setIsCompanyOnboarded(Constants.NO);
 			clientOrgLocations.setCoolingOffPeriod("3 Months");
 			clientOrgLocations.setRegistrationStatus("Registered");
+			clientOrgLocations.setProfilePercentage(Constants.PROFILE_PERCENTAGE);
 			orgLocationsList.add(clientOrgLocations);
 			org.setOrgLocationsList(orgLocationsList);
 			Org savedClient = orgService.addOrganization(org);
