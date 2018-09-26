@@ -634,6 +634,27 @@ public class PayrollUtil {
 	
 	
 	/**
+	 * Get YTD Deductions and Contributions
+	 * @param payrollId
+	 * @param candidateId
+	 * @return BigDecimal
+	 */
+	public BigDecimal getContributionYTD(EmployeePayroll payroll,Long contributionId,OrgLocations orglocation) {
+		List<DeductionHistory> dedHisList = paysheetFrequencyService.getContributionYTD(payroll,contributionId,orglocation);
+		BigDecimal contributionYTD = BigDecimal.ZERO;
+		for(DeductionHistory dedHis : dedHisList) {
+			if(dedHis.getPreContributionAmount() != null) {
+				contributionYTD = contributionYTD.add(dedHis.getPreContributionAmount());
+			}
+			if(dedHis.getPostContributionAmount() != null) {
+				contributionYTD = contributionYTD.add(dedHis.getPostContributionAmount());
+			}
+		}
+		return contributionYTD;
+		
+	}
+	
+	/**
 	 * Get start date and end date of months
 	 * @param month
 	 * @param orgLocation

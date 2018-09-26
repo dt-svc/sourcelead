@@ -74,12 +74,40 @@ public class PayrollReportDTO extends SearchDTO{
 	
 	private BigDecimal dedAmount;
 	
+	private BigDecimal contributionYTD;
+
 	private String deductionId;
 	
 	private String deductionType;
+		
+	private BigDecimal contributionAmount;
 	
 	
 	
+	public BigDecimal getContributionAmount()
+	{
+		return contributionAmount;
+	}
+
+
+	public void setContributionAmount(BigDecimal contributionAmount)
+	{
+		this.contributionAmount = contributionAmount;
+	}
+
+
+	public BigDecimal getContributionYTD()
+	{
+		return contributionYTD;
+	}
+
+
+	public void setContributionYTD(BigDecimal contributionYTD)
+	{
+		this.contributionYTD = contributionYTD;
+	}
+
+
 	public BigDecimal getDedAmount()
 	{
 		return dedAmount;
