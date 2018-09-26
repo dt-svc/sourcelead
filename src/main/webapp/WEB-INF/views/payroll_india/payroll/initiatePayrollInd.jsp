@@ -1,31 +1,5 @@
-<jsp:include page="../../masterHeader.jsp" />
-<jsp:include page="../../masterSideNav.jsp" />
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <%@taglib uri="http://www.springframework.org/tags/form" prefix="form"%>
-
-<!-- Content Area -->
-<section class="content-wraper contentWraper">
-<section class="content-header clearfix">
-<div class="pull-left">
-<h2>Run Payroll</h2>
-</div>
-   <div class="pull-right brud-crum"><a href="<c:url value='${appPath}/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a> &raquo;Run Payroll</div>
-  </section>
-		<div class="success_pop" id="selector1" style="display: none;">
- 			<i class="fa fa-check-circle"></i><span id="msgDiv"></span>
-       </div>
-<div class="project_wrap">
-<div class="clearfix project-tabs-menu">
-	<ul class="nav nav-tabs newTabs">
-		<li class="current"><a onclick="reviewPayrollDiv();">Initiate Payroll</a></li>
-		<li class=""><a onclick="#">Payroll</a></li>
-		<li class=""><a onclick="#">Groups</a></li>
-		<li class=""><a href="<c:url value='${appPath}/forms/list'/>" title="Forms">Forms</a></li>
-	</ul>
-   </div>
-   </div>
-
-<div class="clearfix"></div>
 <div class="timesheet_out" id="reviewPayrollDiv">
 <div class="tablelist-wrap">
 <div class="timesheet_head minHeight_225">
@@ -68,7 +42,6 @@
 </div>
 </div>
 </div>
-</section>
 <script>
 function getGroupFrequency(){
 	var groupUUID = $("#groupId").val();
@@ -100,9 +73,27 @@ function getGroupFrequency(){
 		  });
 	});
 </script>
+<script type="text/javascript">
+         function prepareChosenScripts(){ 
+        	      var config = {
+        			  '.chosen-select'           : {},
+        			  '.chosen-select-deselect'  : {allow_single_deselect:true},
+        			  '.chosen-select-no-single' : {disable_search_threshold:10},
+        			  '.chosen-select-no-results': {no_results_text:'Oops, nothing found!'},
+        			  '.chosen-select-width'     : {width:"95%"}
+        			};
+        		   for (var selector in config) {
+        			  $(selector).chosen(config[selector]);
+        			};
+        			$('.chosen-select').each(function() {
+        			var $this = $(this);
+        			$this.next().css({'width': '100%'});
+        			})
+           };
+         
+</script> 
 <script>
 function reviewIndPayroll(){
 	location.replace(sourceleadUrl+"/reviewPayrollInd");
 }
 </script>
-<jsp:include page="../../masterFooter.jsp" />
