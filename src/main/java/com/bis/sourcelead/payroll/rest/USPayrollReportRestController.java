@@ -391,6 +391,8 @@ public class USPayrollReportRestController {
 		OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 		List<CheckRegisterReportDTO> res = payrollReportService.getexportToPdfCheckRegisterReport(orgLocation,payrollReportDTO);
 		
+//		File file = 
+		
 //		OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 //		String[] tableColumns = {"payrollDeductionType",  "employeeId","firstName", "departmentName","schedule","dedAmount","ytdDeductions"};
 //	    int sortColumnIndex = 1;		 //by default sorting using updated date
