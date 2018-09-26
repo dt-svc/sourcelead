@@ -165,13 +165,32 @@ public class MailBoxController {
  			
  			return model;
  	}
+
 	@RequestMapping(value = "/app/emailSettings")
- 	public ModelAndView emailSettings(HttpServletRequest request) {
-		    ModelAndView model = new ModelAndView();
- 			model.setViewName("emailSettings");
- 			model.addObject("sourceleadUrl", sourceleadUrl);
- 			return model;
- 	}
+	public ModelAndView emailSettings(HttpServletRequest request, @RequestParam(defaultValue = "others") String source) {
+//		User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+		ModelAndView model = new ModelAndView();
+		String server = "secure.emailsrvr.com";
+		String port = "993";
+		switch (source) {
+		case "gmail":
+			server = "imap.gmail.com";
+			port = "993";
+			break;
+		case "yahoo":
+			server = "imap.mail.yahoo.com";
+			port = "993";
+			break;
+		default:
+			break;
+		}
+		model.addObject("server", server);
+		model.addObject("port", port);
+//		model.addObject("username", user.getFullName());
+		model.addObject("sourceleadUrl", sourceleadUrl);
+		model.setViewName("emailSettings");
+		return model;
+	}
 	
 	
 	@PreAuthorize("hasRole('ROLE_MAIL_BOX')")

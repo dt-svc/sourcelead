@@ -4,21 +4,22 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
-import org.json.JSONArray;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import com.bis.sourcelead.dao.EmailAccountSettingsDao;
 import com.bis.sourcelead.dto.EmailAccountSettingsDTO;
 import com.bis.sourcelead.dto.ReadMailDTO;
+import com.bis.sourcelead.dto.Response;
+import com.bis.sourcelead.dto.ResponseList;
+import com.bis.sourcelead.dto.helper.Paginator;
 import com.bis.sourcelead.entity.EmailAccountSettings;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.User;
+import com.bis.sourcelead.enums.Result;
 import com.bis.sourcelead.service.EmailAccountSettingsService;
 import com.bis.sourcelead.util.CommonUtil;
-import com.bis.sourcelead.util.ReadMail;
-import com.bis.sourcelead.util.ReadMailFolder;
+import com.bis.sourcelead.util.MailBox;
 
 @Service
 public class EmailAccountSettingsServiceImpl implements EmailAccountSettingsService{
@@ -88,31 +89,60 @@ public class EmailAccountSettingsServiceImpl implements EmailAccountSettingsServ
 	}
 
 	@Override
-	public  List<String> emailAccountRead(Long id, Long userId) throws Exception {
-		
-		EmailAccountSettings emailAccountSettings=emailAccountSettingsDao.getEmailAccount(id, userId);
-		List<String> foldersList=new ArrayList<>();
-		String email=emailAccountSettings.getEmail();
-		String password=emailAccountSettings.getPassword();
-		String host = "imap.gmail.com";
+	public ResponseList<String> emailAccountRead(Long id, Long userId) throws Exception {
+		ResponseList<String> responseList = new ResponseList<>();
+		EmailAccountSettings emailAccountSettings = emailAccountSettingsDao.getEmailAccount(id, userId);
+//		List<String> foldersList = new LinkedList<>();
+		String email = emailAccountSettings.getEmail();
+		String password = emailAccountSettings.getPassword();
+		// String host = "imap.gmail.com";
+		String host = emailAccountSettings.getRecieveServerName();
 		String storeType = "imaps";
-		foldersList=ReadMail.readMail(host, storeType, email, password);
-		
-		
-		return foldersList;
-		
+		responseList = MailBox.readMail(host, storeType, email, password);
+		return responseList;
+
 	}
 
 	@Override
-	public List<ReadMailDTO> emailFolderRead(Long id,String folderName, Long userId) {
+	public List<ReadMailDTO> emailFolderRead(Long id,String folderName, Long userId, Long orgLocationId, Paginator paginator) {
 		EmailAccountSettings emailAccountSettings=emailAccountSettingsDao.getEmailAccount(id, userId);
 		String email=emailAccountSettings.getEmail();
 		String password=emailAccountSettings.getPassword();
-		String host = "imap.gmail.com";
+//		String host = "imap.gmail.com";
+		String host = emailAccountSettings.getRecieveServerName();
 		String storeType = "imaps";
 		List<ReadMailDTO> mailsList=new ArrayList<>();
-		mailsList=ReadMailFolder.readMail(host, storeType, email, password,folderName);
+		mailsList=MailBox.readMailFromFolder(host, storeType, email, password,folderName,userId, orgLocationId, paginator);
 		return mailsList;
+	}
+	
+	@Override
+	public ReadMailDTO getEmailByUID(long emailAccountId, long userId, long orgLocationId, long uid, String folderName) {
+		EmailAccountSettings emailAccountSettings = emailAccountSettingsDao.getEmailAccount(emailAccountId, userId);
+		String email = emailAccountSettings.getEmail();
+		String password = emailAccountSettings.getPassword();
+		String host = emailAccountSettings.getRecieveServerName();
+		String storeType = "imaps";
+		return MailBox.getMailDTOByUID(host, storeType, email, password, folderName, userId, orgLocationId, uid);
+	}
+	
+	@Override
+	public Response<Boolean> deleteEmailsByUID(long emailAccountId, long userId, long[] messageIds, String folderName) {
+		Response<Boolean> response = new Response<>();
+		try {
+			EmailAccountSettings emailAccountSettings = emailAccountSettingsDao.getEmailAccount(emailAccountId, userId);
+			String email = emailAccountSettings.getEmail();
+			String password = emailAccountSettings.getPassword();
+			String host = emailAccountSettings.getRecieveServerName();
+			String storeType = "imaps";
+			boolean flag = MailBox.deleteEmailsByUid(host, storeType, email, password, messageIds, folderName);
+			response.setObject(flag);
+			response.setResponse(flag ? Result.SUCCESS.name() : Result.FAILED.name());
+			response.setResponseMessage(flag ? Result.SUCCESS.getValue() : Result.FAILED.getValue());
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return response;
 	}
 
 	@Override

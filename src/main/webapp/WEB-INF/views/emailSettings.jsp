@@ -41,12 +41,12 @@ display: none;
             
             <div class="col-md-6 minHeight">
                 <label>Email<span class="text-danger">&nbsp;*</span></label>
-                <input class="form-control" value="" id="emailId" name="email"  field-name="Email Id" data-validation="required validate_Space validate_length length2-100 validate_email" placeholder="Enter email" type="text"> 
+                <input class="form-control" value="" name="email" id="email" field-name="Email Id" data-validation="required validate_Space validate_length length2-100 validate_email" placeholder="Enter email" type="text"> 
                  
             </div>
             <div class="col-md-6 minHeight">
                 <label>Password<span class="text-danger">&nbsp;*</span></label>
-                <input class="form-control" value="" id="passwordId" name="password"  field-name="Password" data-validation="required validate_Space" placeholder="Enter password" type="password"> 
+                <input class="form-control" value="" name="password"  field-name="Password" data-validation="required validate_Space" placeholder="Enter password" type="password"> 
             </div>
             
             <div class="col-md-6 mb">
@@ -55,11 +55,11 @@ display: none;
                 <p>IMPA Mail Server</p>
                 <div class="col-md-8 noPad minHeight">
                     <label>Server name<span class="text-danger">&nbsp;*</span></label>
-                    <input class="form-control" value="" id="serverNameID" name="recieveServerName" data-validation="required validate_Space" field-name="RecieveServerName" placeholder="e.g.domain@gmail.com" type="text">                 
+                    <input class="form-control" value="${server}" name="recieveServerName" data-validation="required validate_Space" field-name="RecieveServerName" placeholder="example ${server}" type="text">                 
                 </div>
                 <div class="col-md-4 padding_right minHeight">
                     <label>Port<span class="text-danger">&nbsp;*</span></label>
-                    <input class="form-control" value="" id="portId" name="recievePort" data-validation="required validate_Space"  field-name="recievePort" placeholder="123" type="text">                
+                    <input class="form-control" value="${port}" name="recievePort" data-validation="required validate_Space"  field-name="recievePort" placeholder="123" type="text">                
                 </div>                
             </div>
                             
@@ -69,38 +69,38 @@ display: none;
                 <p>SMTP Mail Server</p>
                 <div class="col-md-8 noPad minHeight">
                     <label>Server name<span class="text-danger">&nbsp;*</span></label>
-                    <input class="form-control" value="" id="PortId" name="SendServerName" data-validation="required validate_Space"  field-name="SendServer" placeholder="e.g.domain@gmail.com" type="text">                 
+                    <input class="form-control" value="${server}" name="SendServerName" data-validation="required validate_Space" field-name="SendServer" placeholder="example ${server}" type="text">                 
                 </div>
                 <div class="col-md-4 padding_right minHeight">
                     <label>Port<span class="text-danger">&nbsp;*</span></label>
-                    <input class="form-control" value="" id="PortId" name="sendPort" data-validation="required validate_Space" field-name="SendPort" placeholder="123" type="text">                
+                    <input class="form-control" value="${port}" name="sendPort" data-validation="required validate_Space" field-name="SendPort" placeholder="123" type="text">                
                 </div>                
             </div> 
 
             <div class="col-md-6 minHeight">
                 <label>User name<span class="text-danger">&nbsp;*</span><b class="small text-muted ml">This is usually same as your email</b></label>
-                <input class="form-control" value="" id="PortId" name="recieveEmail"  field-name="recieveName" data-validation="required validate_Space" id="" placeholder="User name" type="text"> 
+                <input class="form-control" value="${username}" name="recieveEmail" id="recieveEmail" field-name="recieveName" data-validation="required validate_Space" id="" placeholder="User name" type="text"> 
             </div>
             <div class="col-md-6 minHeight">
                 <label>User name<span class="text-danger">&nbsp;*</span><b class="small text-muted ml">This is usually same as your email</b></label>
-                <input class="form-control" value="" id="PortId" name="sendEmail"  field-name="SendName" data-validation="required validate_Space" id="" placeholder="User name" type="text"> 
+                <input class="form-control" value="${username}" name="sendEmail" id="sendEmail" field-name="SendName" data-validation="required validate_Space" id="" placeholder="User name" type="text"> 
             </div>  
                             
             <div class="col-md-6 minHeight">
                 <h4>Security Settings</h4>
                     <label>SSL (Connection protection)</label>
-                <select class="form-control" id="SSLId" name="recieveSSL" field-name="SSLName">
+                <select class="form-control" name="recieveSSL" field-name="SSLName">
                     <option>Autodetect</option>
-                    <option>Autodetect1</option>
+                   <!--  <option>Autodetect1</option> -->
                 </select>            
             </div> 
                                                                    
             <div class="col-md-6 minHeight">
                 <h4>Security Settings</h4>
                     <label>SSL (Connection protection)</label>
-                <select class="form-control" id="SSLId" name="sendSSL" field-name="SSLName">
+                <select class="form-control" name="sendSSL" field-name="SSLName">
                     <option>Autodetect</option>
-                    <option>Autodetect1</option>
+                    <!-- <option>Autodetect1</option> -->
                 </select>            
             </div>                              
 
@@ -132,6 +132,15 @@ display: none;
   </section>
 
 <script type="text/javascript">
+	$("#email").change(function() {
+		if(jQueryFormUtils.validateEmail($("#email").val())) {
+			$("#recieveEmail").val($("#email").val());
+			$("#sendEmail").val($("#email").val());
+		} else {
+			$("#recieveEmail").val("");
+			$("#sendEmail").val("");
+		}
+	});
 	function addEmailAccount() {
 		if ($('#email_settings_form').validate(false, validationSettings)){ 
 			

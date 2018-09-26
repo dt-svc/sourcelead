@@ -3,6 +3,8 @@ package com.bis.sourcelead.service.impl;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.LinkedList;
+import java.util.List;
 import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -16,8 +18,12 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.bis.sourcelead.constants.Constants;
+import com.bis.sourcelead.dao.EmailAccountSettingsDao;
+import com.bis.sourcelead.dto.AttachmentDTO;
 import com.bis.sourcelead.dto.FileInfo;
 import com.bis.sourcelead.dto.HotListEmailCampaignDTO;
+import com.bis.sourcelead.dto.ReadMailDTO;
+import com.bis.sourcelead.entity.EmailAccountSettings;
 import com.bis.sourcelead.entity.EmailAttachment;
 import com.bis.sourcelead.entity.EmailMessage;
 import com.bis.sourcelead.entity.EmailScenario;
@@ -33,6 +39,7 @@ import com.bis.sourcelead.service.UserRoleService;
 import com.bis.sourcelead.service.UserSignatureService;
 import com.bis.sourcelead.util.EmailScenerioUtil;
 import com.bis.sourcelead.util.FileUploadUtil;
+import com.bis.sourcelead.util.MailBox;
 import com.bis.sourcelead.util.SourceLeadRandomCodeHelper;
 
 @Service
@@ -58,6 +65,9 @@ public class EmailServiceImpl implements EmailService {
 	
 	@Autowired
 	SourceleadSignatureService sourceleadSignatureService;
+	
+	@Autowired
+	private EmailAccountSettingsDao emailAccountSettingsDao;
 	
 	
 	protected static boolean isNullOrEmpty(String str) {
@@ -266,4 +276,62 @@ public class EmailServiceImpl implements EmailService {
   		Matcher matcher = pattern.matcher(email);
   		return matcher.matches();
   	}
+
+	@Override
+	public boolean sendEmailFromMailBox(ReadMailDTO readMailDTO, long userId, OrgLocations orgLocation, MultipartFile multiFile) {
+		try {
+			EmailAccountSettings emailAccountSettings = emailAccountSettingsDao.getEmailAccount(readMailDTO.getEmailAccountId(), userId);
+			String email = emailAccountSettings.getEmail();
+			String password = emailAccountSettings.getPassword();
+			String outgoingHost = emailAccountSettings.getSendServerName();
+			String outgoingPort = emailAccountSettings.getSendPort();
+			String incomingHost = emailAccountSettings.getRecieveServerName();
+			String incomingPort = emailAccountSettings.getRecievePort();
+			String storeType = "smtp";
+
+			List<AttachmentDTO> attachmentList = new LinkedList<>();
+			if (multiFile.getSize() > 0) {
+				AttachmentDTO attachment = new AttachmentDTO();
+				attachment.setFileName(multiFile.getOriginalFilename());
+				attachment.setDocFile(multiFile.getBytes());
+				attachment.setFileType(multiFile.getContentType());
+				attachmentList.add(attachment);
+			}
+
+			boolean result = MailBox.composeEmail(outgoingHost, outgoingPort, incomingHost, incomingPort, storeType, email, password,
+					readMailDTO.getTo(), readMailDTO.getCc(), readMailDTO.getSubject(), readMailDTO.getBody());
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return false;
+	}
+
+	@Override
+	public boolean replyEmailFromMailBox(ReadMailDTO readMailDTO, long userId, long orgLocationId , MultipartFile multiFile) {
+		try {
+			EmailAccountSettings emailAccountSettings = emailAccountSettingsDao.getEmailAccount(readMailDTO.getEmailAccountId(), userId);
+			String email = emailAccountSettings.getEmail();
+			String password = emailAccountSettings.getPassword();
+			String outgoingHost = emailAccountSettings.getSendServerName();
+			String outgoingPort = emailAccountSettings.getSendPort();
+			String incomingHost = emailAccountSettings.getRecieveServerName();
+			String incomingPort = emailAccountSettings.getRecievePort();
+			String storeType = "smtp";
+			
+			List<AttachmentDTO> attachmentList =  new LinkedList<>();
+			if(multiFile.getSize() > 0){
+				AttachmentDTO attachment = new AttachmentDTO();
+				attachment.setFileName(multiFile.getOriginalFilename());
+				attachment.setDocFile(multiFile.getBytes());
+				attachment.setFileType(multiFile.getContentType());
+				attachmentList.add(attachment);
+			 }
+			MailBox.replyEmail(outgoingHost, outgoingPort, incomingHost, incomingPort, storeType, email, password, readMailDTO.getTo(), readMailDTO.getSubject(), readMailDTO.getBody(), readMailDTO.getFolderName(), userId, orgLocationId, readMailDTO.getMessageId());
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return false;
+	}
+	
+	
 }
