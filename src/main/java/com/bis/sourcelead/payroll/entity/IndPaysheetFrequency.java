@@ -14,6 +14,8 @@ import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
+import org.hibernate.annotations.Type;
+
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.UserGroup;
 
@@ -47,6 +49,10 @@ public class IndPaysheetFrequency {
 	
 	@Column (name = "PAY_SHEET_FREQUENCY_UUID")
 	private String paySheetFrequencyUUID;
+	
+	@Column(name = "ACTIONPERFORMEDBY")
+	@Type(type="text")
+	private String actionPerformedBy;
 	
 	@Column (name="APPROVER_STATUS")
 	private String approverStatus;
@@ -183,6 +189,14 @@ public class IndPaysheetFrequency {
 
 	public static long getSerialversionuid() {
 		return serialVersionUID;
+	}
+
+	public String getActionPerformedBy() {
+		return actionPerformedBy;
+	}
+
+	public void setActionPerformedBy(String actionPerformedBy) {
+		this.actionPerformedBy = actionPerformedBy;
 	}
 
 }
