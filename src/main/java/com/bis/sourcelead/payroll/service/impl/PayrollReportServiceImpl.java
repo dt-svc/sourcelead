@@ -112,9 +112,9 @@ public class PayrollReportServiceImpl implements PayrollReportService{
 	}
 
 	@Override
-	public ResponseList<PayrollReportDTO> getDeductionAndContributionReports(OrgLocations orgLocation, PayrollReportDTO payrollReportDTO)
+	public ResponseList<PayrollReportDTO> getContributionReports(OrgLocations orgLocation, PayrollReportDTO payrollReportDTO)
 	{
-		ResponseList<DeductionHistory> payrollResponse = payrollReportDao.getDeductionAndContributionReports(orgLocation,payrollReportDTO);
+		ResponseList<DeductionHistory> payrollResponse = payrollReportDao.getContributionReports(orgLocation,payrollReportDTO);
 		ResponseList<PayrollReportDTO>  res = new ResponseList<>();
 		List<PayrollReportDTO> list = new ArrayList<>();
 		try {
@@ -304,5 +304,54 @@ public class PayrollReportServiceImpl implements PayrollReportService{
 		return compare;
 		
 	}
-	
+
+	@Override
+	public ResponseList<PayrollReportDTO> getDeductionReports(OrgLocations orgLocation,PayrollReportDTO payrollReportDTO) {
+		ResponseList<DeductionHistory> payrollResponse = payrollReportDao.getDeductionReports(orgLocation,payrollReportDTO);
+		ResponseList<PayrollReportDTO>  res = new ResponseList<>();
+		List<PayrollReportDTO> list = new ArrayList<>();
+		try {
+			if(payrollResponse.getData() != null) {
+				for(DeductionHistory dedHis : payrollResponse.getData()) {
+					PayrollReportDTO dto = new PayrollReportDTO();
+					StringBuilder sb = new StringBuilder();
+					if(StringUtils.isNotBlank(dedHis.getPayroll().getCandidate().getLastName())) {
+						sb.append(dedHis.getPayroll().getCandidate().getFirstName()).append(" ").append(dedHis.getPayroll().getCandidate().getLastName());
+					}else {
+						sb.append(dedHis.getPayroll().getCandidate().getFirstName());
+					}
+					dto.setEmpName(sb.toString());
+					if(dedHis.getPayroll().getEmployee() != null) {
+						dto.setEmpId(dedHis.getPayroll().getEmployee().getEmployeeId());
+					}
+					if(StringUtils.isNotBlank(dedHis.getPayroll().getPaysheetFrequency().getUserGroup().getDepartmentId())) {
+						Department dept = departmentService.getDepartmentById(Long.parseLong(dedHis.getPayroll().getPaysheetFrequency().getUserGroup().getDepartmentId()));
+						dto.setDepartmentName(dept.getDepartmentName());
+					}
+					dto.setDeductionType(dedHis.getDeductionId().getDeductionTypeId().getPayrollDeductionType());
+					BigDecimal dedAmount = BigDecimal.ZERO;
+					if (dedHis.getPreDeductionAmount() != null) {
+						if (dedHis.getPreDeductionAmount().compareTo(BigDecimal.ZERO) !=  0) {
+							dedAmount = dedHis.getPreDeductionAmount();
+						}
+					}
+					if (dedHis.getPostDeductionAmount() != null) {
+						if (dedHis.getPostDeductionAmount().compareTo(BigDecimal.ZERO) !=  0 ) {
+							dedAmount = dedHis.getPostDeductionAmount();
+						}
+					}
+					dto.setDedAmount(dedAmount);
+					dto.setSchedule(dedHis.getDeductionId().getDeductionTypeId().getPayrollScheduled().toLowerCase());
+					list.add(dto);
+				}
+			}
+			res.setData(list);
+			res.setRecordsFiltered(payrollResponse.getRecordsFiltered());
+			res.setRecordsTotal(payrollResponse.getRecordsTotal());
+		}catch (Exception e) {
+			e.printStackTrace();
+		}
+		return res;
+	}
+
 }
