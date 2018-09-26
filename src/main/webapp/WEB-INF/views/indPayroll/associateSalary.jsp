@@ -141,6 +141,7 @@
                 <input type="text" style="display:none" name="candidateId" id="assocandidateId" value="${candidate.id}">
                 <input type="text" style="display:none" name="uuid" value="${uuid}">
                 <input type="text" style="display:none" id="status" value="${status}">
+                <input type="text" style="display:none" id="userId" name="userId" value="${loginUser.id}">
                   
                 <div class="clearfix footerstyelsNew">
                  <div class="col-md-6">
@@ -285,9 +286,10 @@ $('.selectall').click(function() {
 <script>
 function getPayGroups(){
 	var payFrequency = $("#payFrequency").val();
+	var userId = $("#userId").val();
 		 $.ajax({
 				type : "GET",
-				url : sourceleadUrl+"/getPayGroupsByPayFrequency?"+tokenParamName+"="+tokenValue+"&payFrequency="+payFrequency,
+				url : sourceleadUrl+"/getPayGroupsByPayFrequency?"+tokenParamName+"="+tokenValue+"&payFrequency="+payFrequency+"&userId="+userId,
 				success : function(result) {
 				var output = "";
 				output = output + "<option value=''>Select Group</option>";
