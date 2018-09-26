@@ -375,4 +375,32 @@ public class USPayrollReportRestController {
 		ResponseList<PayrollReportDTO> res = payrollReportService.getDeductionReports(orgLocation,payrollReportDTO);
 		return res;
 	}
+	
+	
+	/**
+	 * Get Check Register Payroll Reports 
+	 * @param groupId
+	 * @param request
+	 * @param response
+	 * @return
+	 * @throws Exception
+	 */
+	@RequestMapping(value = "/exportToPdfCheckRegisterReport")
+	public void exportToPdfCheckRegisterReport(PayrollReportDTO payrollReportDTO,HttpServletRequest request, HttpServletResponse response) throws Exception
+	{
+		OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+		List<CheckRegisterReportDTO> res = payrollReportService.getexportToPdfCheckRegisterReport(orgLocation,payrollReportDTO);
+		
+//		OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+//		String[] tableColumns = {"payrollDeductionType",  "employeeId","firstName", "departmentName","schedule","dedAmount","ytdDeductions"};
+//	    int sortColumnIndex = 1;		 //by default sorting using updated date
+//		String sortColumnOrder = "asc";  //by default descending order
+//		if(payrollReportDTO.getOrder() != null && !payrollReportDTO.getOrder().isEmpty()) {
+//			sortColumnIndex = Integer.parseInt(payrollReportDTO.getOrder().get(0).get("column"));
+//			sortColumnOrder = payrollReportDTO.getOrder().get(0).get("dir");
+//		}
+//		payrollReportDTO.setSortColumn(tableColumns[sortColumnIndex]);
+//		payrollReportDTO.setSortOrder(sortColumnOrder);
+//		ResponseList<PayrollReportDTO> res = payrollReportService.getContributionReports(orgLocation,payrollReportDTO);
+	}
 }

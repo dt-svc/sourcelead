@@ -368,5 +368,47 @@ public class PayrollReportDaoImpl implements PayrollReportDao{
 
 		return response;
 	}
+
+	@SuppressWarnings("unchecked")
+	@Override
+	@Transactional
+	public List<CheckRegisterReportDTO> getexportToPdfCheckRegisterReport(OrgLocations orgLocation, PayrollReportDTO payrollReportDTO)
+	{
+		List<CheckRegisterReportDTO> payrollList = null;
+		try {
+			Date sDate = new SimpleDateFormat("yyyy-MM-dd").parse(payrollReportDTO.getFreqStartDate());
+			Date eDate = new SimpleDateFormat("yyyy-MM-dd").parse(payrollReportDTO.getFreqEndDate());
+			java.sql.Date freqStartDate = new java.sql.Date(sDate.getTime());
+			java.sql.Date freqEndDate = new java.sql.Date(eDate.getTime());
+			Session session = this.sessionFactory.getCurrentSession();
+			StringBuilder searchQuery = new StringBuilder("");
+			StringBuilder query = new StringBuilder();
+			query.append("select payroll.ID as empPayrollId,").append("payroll.EMPLOYEE_ID as empId,").append("grp.DEPARTMENT_ID as departmentId,").append("can.FIRST_NAME as firstName,").append("can.LAST_NAME as lastName,").append("payroll.PAY_TYPE as payType,").append("payroll.NET_PAY as netPay,").append("payroll.TAXES as taxes,").append("payroll.GROSS_PAY as grossPay,").append("sheet.FREQUENCY_START_DATE as freqStartDate,").append("sheet.FREQUENCY_END_DATE as freqEndDate,").append("sheet.PAY_CHECK_DATE as payCheckDate ").append(" from US_EMP_PAYROLL payroll,").append(" ASSOCIATE_BANK_DATA bank, ").append(" PAY_SHEET_FREQUENCY sheet,").append(" CANDIDATE can,USER_GROUP grp ").append(" where sheet.ID = payroll.PAY_SHEET_FREQUENCY_ID ").append(" and payroll.CANDIDATE_ID = bank.CANDIDATE_ID ").append(" and payroll.CANDIDATE_ID = can.ID ").append(" and sheet.GROUP_ID = grp.ID ").append(" and bank.ACCOUNT_TYPE = :depositType").append(" and payroll.SUBMIT_FOR_APROVER_STATUS = 'APPROVED' ").append(" and sheet.ORG_LOCATION_ID = :orgLocationId and sheet.GROUP_ID = :groupId and sheet.FREQUENCY_START_DATE = :freqStartDate ").append(" and sheet.FREQUENCY_END_DATE = :freqEndDate ");
+			if (payrollReportDTO.getSearchValue() != null
+					&& !"".equalsIgnoreCase(payrollReportDTO.getSearchValue())) {
+				searchQuery.append(" and ( can.FIRST_NAME like '%"
+						+ payrollReportDTO.getSearchValue()
+						+ "%' ").append("OR  can.LAST_NAME like '%"
+								+ payrollReportDTO.getSearchValue() + "%')");
+			}
+			Query queryObj = session.createSQLQuery(query.toString());
+			queryObj.setLong("orgLocationId", orgLocation.getId()).setLong("groupId", Long.parseLong(payrollReportDTO.getGroupId())).setDate("freqStartDate", freqStartDate).setDate("freqEndDate", freqEndDate).setParameter("depositType", payrollReportDTO.getDepositType());
+			queryObj.setResultTransformer(Transformers.aliasToBean(CheckRegisterReportDTO.class));
+			payrollList = queryObj.list();
+			for (CheckRegisterReportDTO reportDTo : payrollList) {
+				if (reportDTo.getEmpId() != null) {
+					Employees employee = employeesService.getEmployee(reportDTo.getEmpId().toString());
+					reportDTo.setEmployeeId(employee.getEmployeeId());
+				}
+				if (StringUtils.isNotBlank(reportDTo.getDepartmentId())) {
+					Department dept = departmentService.getDepartmentById(Long.parseLong(reportDTo.getDepartmentId()));
+					reportDTo.setDepartmentId(dept.getDepartmentName());
+				}
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return payrollList;
+	}
 	
 }

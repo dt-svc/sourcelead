@@ -356,4 +356,11 @@ public class PayrollReportServiceImpl implements PayrollReportService{
 		return res;
 	}
 
+	@Override
+	public List<CheckRegisterReportDTO> getexportToPdfCheckRegisterReport(OrgLocations orgLocation, PayrollReportDTO payrollReportDTO)
+	{
+		List<CheckRegisterReportDTO>  checkRegisterList = payrollReportDao.getexportToPdfCheckRegisterReport(orgLocation,payrollReportDTO);
+		return checkRegisterList;
+	}
+
 }
