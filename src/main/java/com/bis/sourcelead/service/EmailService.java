@@ -11,7 +11,7 @@ public interface EmailService {
 
 	public void sendEmail(HotListEmailCampaignDTO hotListEmailCampaignDTO,User user,OrgLocations orgLocation,MultipartFile multiFile) throws Exception;
 
-	public boolean sendEmailFromMailBox(ReadMailDTO readMailDTO, long userId , OrgLocations orgLocation, MultipartFile multiFile);
+	public boolean sendEmailFromMailBox(ReadMailDTO readMailDTO, long userId, long orgLocationId, MultipartFile multiFile);
 
-	public boolean replyEmailFromMailBox(ReadMailDTO readMailDTO, long id, long orgLocationId, MultipartFile multiFile);
+//	public boolean replyEmailFromMailBox(ReadMailDTO readMailDTO, long id, long orgLocationId, MultipartFile multiFile);
 }

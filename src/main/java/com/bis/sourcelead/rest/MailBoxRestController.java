@@ -927,27 +927,31 @@ public class MailBoxRestController {
 			long uid, @RequestParam(defaultValue = "") String folderName) throws Exception {
 		ReadMailDTO readMailDTO = null;
 		User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
-		OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
-		folderName = folderName.replaceAll("-and-", "&");
-		readMailDTO = emailAccountSettingsService.getEmailByUID(emailAccountId, user.getId(), orgLocation.getId(), uid, folderName);
+		if (user != null) {
+			OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+			folderName = folderName.replaceAll("-and-", "&");
+			readMailDTO = emailAccountSettingsService.getEmailByUID(emailAccountId, user.getId(), orgLocation.getId(), uid, folderName);
+		}
 		return readMailDTO;
 	}
 
 	@PreAuthorize("hasRole('ROLE_MAIL_BOX')")
 	@RequestMapping(value = "/sendEmailFromMailBox", method = RequestMethod.POST)
 	public boolean sendEmailFromMailBox(MultipartHttpServletRequest request, ReadMailDTO readMailDTO) throws Exception {
-		MultipartFile multiFile = null;
-		Iterator<String> itrator = request.getFileNames();
-		if (itrator.hasNext()) {
-			multiFile = request.getFile(itrator.next());
-		}
-
 		User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
-		OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
-		return emailService.sendEmailFromMailBox(readMailDTO, user.getId(), orgLocation, multiFile);
+		if (user != null) {
+			OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+			MultipartFile multiFile = null;
+			Iterator<String> itrator = request.getFileNames();
+			if (itrator.hasNext()) {
+				multiFile = request.getFile(itrator.next());
+			}
+			return emailService.sendEmailFromMailBox(readMailDTO, user.getId(), orgLocation.getId(), multiFile);
+		}
+		return false;
 	}
 	
-	@PreAuthorize("hasRole('ROLE_MAIL_BOX')")
+/*	@PreAuthorize("hasRole('ROLE_MAIL_BOX')")
 	@RequestMapping(value = "/replyEmailFromMailBox", method = RequestMethod.POST)
 	public boolean replyEmailFromMailBox(MultipartHttpServletRequest request, ReadMailDTO readMailDTO) throws Exception {
 		MultipartFile multiFile = null;
@@ -959,6 +963,6 @@ public class MailBoxRestController {
 		User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
 		OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 		return emailService.replyEmailFromMailBox(readMailDTO, user.getId(), orgLocation.getId(), multiFile);
-	}
+	}*/
 	
 }

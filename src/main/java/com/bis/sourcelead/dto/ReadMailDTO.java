@@ -16,7 +16,7 @@ public class ReadMailDTO {
 	private int attachmentsCount;
 
 	private long emailAccountId;
-	
+	private String sendType; // compose, reply, forward
 
 	public List<AttachmentDTO> getFilesList() {
 		return filesList;
@@ -112,6 +112,14 @@ public class ReadMailDTO {
 
 	public void setEmailAccountId(long emailAccountId) {
 		this.emailAccountId = emailAccountId;
+	}
+
+	public String getSendType() {
+		return sendType;
+	}
+
+	public void setSendType(String sendingType) {
+		this.sendType = sendingType;
 	}
 
 }

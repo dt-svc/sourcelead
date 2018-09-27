@@ -278,7 +278,7 @@ public class EmailServiceImpl implements EmailService {
   	}
 
 	@Override
-	public boolean sendEmailFromMailBox(ReadMailDTO readMailDTO, long userId, OrgLocations orgLocation, MultipartFile multiFile) {
+	public boolean sendEmailFromMailBox(ReadMailDTO readMailDTO, long userId, long orgLocationId, MultipartFile multiFile) {
 		try {
 			EmailAccountSettings emailAccountSettings = emailAccountSettingsDao.getEmailAccount(readMailDTO.getEmailAccountId(), userId);
 			String email = emailAccountSettings.getEmail();
@@ -298,15 +298,15 @@ public class EmailServiceImpl implements EmailService {
 				attachmentList.add(attachment);
 			}
 
-			boolean result = MailBox.composeEmail(outgoingHost, outgoingPort, incomingHost, incomingPort, storeType, email, password,
-					readMailDTO.getTo(), readMailDTO.getCc(), readMailDTO.getSubject(), readMailDTO.getBody());
+			/*boolean result = MailBox.composeEmail(outgoingHost, outgoingPort, incomingHost, incomingPort, storeType, email, password,
+					userId, orgLocationId, readMailDTO);*/
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
 		return false;
 	}
 
-	@Override
+	/*@Override
 	public boolean replyEmailFromMailBox(ReadMailDTO readMailDTO, long userId, long orgLocationId , MultipartFile multiFile) {
 		try {
 			EmailAccountSettings emailAccountSettings = emailAccountSettingsDao.getEmailAccount(readMailDTO.getEmailAccountId(), userId);
@@ -331,7 +331,7 @@ public class EmailServiceImpl implements EmailService {
 			e.printStackTrace();
 		}
 		return false;
-	}
+	}*/
 	
 	
 }

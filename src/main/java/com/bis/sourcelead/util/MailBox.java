@@ -381,7 +381,7 @@ public class MailBox {
 	
 	@SuppressWarnings("static-access")
 	public static boolean composeEmail(String outgoingHost, String outgoingPort, String incomingHost, String incomingPort,
-			String transportType, String email, String password, String to, String cc, String subject, String body) {
+			String transportType, String email, String password, long userId, long orgLocationId, ReadMailDTO readMailDTO) {
 		try {
 			Properties properties = new Properties();
 			properties.put("mail.transport.protocol", transportType);
@@ -402,16 +402,26 @@ public class MailBox {
 				}
 			});
 
-			Message message = new MimeMessage(session);
+			Message message = null;
+			
+			String sendType = "";
+			if(sendType.equalsIgnoreCase("reply")) {
+				message = getMailByUID(incomingHost, incomingPort, transportType, email, password, readMailDTO.getFolderName(), userId, orgLocationId, readMailDTO.getMessageId());
+				message.setReplyTo(message.getReplyTo());
+			} else {
+				message = new MimeMessage(session);
+			}
+			
 			message.setFrom(new InternetAddress(email));
-			message.setRecipients(Message.RecipientType.TO, InternetAddress.parse(to));
+			message.setRecipients(Message.RecipientType.TO, InternetAddress.parse(readMailDTO.getTo()));
 			
-			if(cc != null && !cc.isEmpty())
-				message.addRecipients(Message.RecipientType.CC, InternetAddress.parse(cc));
+			if(readMailDTO.getCc() != null && !readMailDTO.getCc().isEmpty())
+				message.addRecipients(Message.RecipientType.CC, InternetAddress.parse(readMailDTO.getCc()));
 			
-			message.setSubject(subject);
+			message.setSubject(readMailDTO.getSubject());
 			/*message.setText(body);*/
-			message.setContent(body, "text/html");
+			message.setContent(readMailDTO.getBody(), "text/html");
+			
 			Transport transport = session.getTransport();
 			transport.connect(outgoingHost, email, password);
 			transport.send(message, message.getAllRecipients());
@@ -447,7 +457,7 @@ public class MailBox {
 		return false;
 	}
 	
-	@SuppressWarnings("static-access")
+	/*@SuppressWarnings("static-access")
 	public static boolean replyEmail(String outgoingHost, String outgoingPort, String incomingHost, String incomingPort,
 			String transportType, String email, String password, String to, String subject, String body, String folderName,
 			long userId, long orgLocationId, long uid) {
@@ -479,7 +489,8 @@ public class MailBox {
 			Transport transport = session.getTransport();
 			transport.connect(outgoingHost, email, password);
 			transport.send(message, message.getAllRecipients());
-			/*if (!outgoingHost.equalsIgnoreCase("smtp.gmail.com")) {
+			
+			if (!outgoingHost.equalsIgnoreCase("smtp.gmail.com")) {
 				Properties properties1 = new Properties();
 				properties1.put("mail.imap.host", incomingHost);
 				properties1.put("mail.imap.port", incomingPort);
@@ -501,14 +512,14 @@ public class MailBox {
 				folder.open(Folder.READ_WRITE);
 				message.setSentDate(new Date());
 				folder.appendMessages(new Message[] { message });
-			}*/
+			}
 			transport.close();
 			System.out.println("------------------ Reply Email Sent ------------------");
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
 		return false;
-	}
+	}*/
 	
 /*	@SuppressWarnings("static-access")
 	public static boolean forwardEmail(String outgoingHost, String outgoingPort, String incomingHost, String incomingPort,

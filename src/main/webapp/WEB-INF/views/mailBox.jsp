@@ -287,7 +287,7 @@
 							<!-- Text Area Ends -->
 
 							<!-- Attachment button-->
-							<div class="col-md-12 clearfix mb10">
+							<!-- <div class="col-md-12 clearfix mb10">
 								<div class="col-md-12 attachment">
 									<div class="input-group">
 										<label class="input-group-btn">
@@ -297,13 +297,21 @@
 											</b>
 										</label>
 										<input type="text" class="form-control" readonly id="attachfile-mail" placeholder="Files are not selected...">
-										<div class="clearUpload"></div>
+										<div class="clearUpload" style="display: none;"></div>
 									</div>
 								</div>
+							</div> -->
+
+							<div onclick="alert('div');">
+								<b class="btn btn-primary"> <i class="fa fa-paperclip"></i>
+									<input name="attachfile" style="display: none;" id="attachfileBtn" class="upload" type="file">
+								</b>
 							</div>
-
 							<!-- Attachment button-->
-
+							<!-- Attachments preview-->
+							<div class="col-md-12 clearfix mb10" id="mailAttachmentsDiv">
+							</div>
+							<!-- Attachments preview-->
 						</div>
 						<!-- Attachment button -->
 					</form:form>
@@ -313,8 +321,9 @@
 	</div>
 	<div class="clearfix advancedsearch-footer">
 		<div class="pull-right mr">
-			<input value="Send" id="sendEmail" onclick="sendEmail();" class="btn btn-sm btn-success" type="button">
-			<input value="Reply" id="replyEmail" onclick="sendReplyEmail();" class="btn btn-sm btn-success" type="button" style="display: none;">
+			<input value="Send" id="sendEmail" onclick="sendEmailFromMailBox('compose');" class="btn btn-sm btn-success" type="button">
+			<input value="Reply" id="replyEmail" onclick="replyEmailFromMailBox('reply');" class="btn btn-sm btn-success" type="button" style="display: none;">
+			<input value="Forward" id="forwardEmail" onclick="sendEmailFromMailBox('forward');" class="btn btn-sm btn-success" type="button" style="display: none;">
 			<input value="Cancel" id="clear_search" onclick="closeComposeEmailPopup();" class="btn btn-sm btn-primary" type="button">
 		</div>
 	</div>
@@ -327,6 +336,21 @@
 	$(function() { 
 		tagIt("emailsList", 'Enter Emails And Press Enter-Key Or Comma(,) Or Space To Add New Email', 'tagItBykeyForEmails','emails');
 		tagIt("ccList", 'Enter Emails And Press Enter-Key Or Comma(,) Or Space To Add New Email', 'tagItBykeyForEmails','emails');
+		
+	
+		$("#attachfileBtn").change(function() {
+			uploadAttachment("attachfileBtn", "Email Documents", "email_form");
+			$(".clearUpload").show();
+		});
+		
+		$(".clearUpload").click(function(){
+			alert("Remove Attachment");
+			/* $("#attachfile-mail").val("");
+			$("#attachfileBtn").val("");
+		    $("#email_form input[data-id*=attachfileBtn]").remove();
+		    $(".clearUpload").hide(); */
+		});
+		
 	});
 
   function getMails(type) {
@@ -926,7 +950,7 @@ function readFolder(name, fullName, id, pageNo, pageSize, index){
 			       			result = result +'</div>';
 			       			result = result +'</td>';
 			       			
-			       			result = result +'<td style="text-align: left !important;" class="mailbox-subject" onclick="getEmailBody(' + id + ',' + emailList[e].messageId + ',\''+fullName+'\')" data-id="' + emailList[e].messageId + '">';
+			       			result = result +'<td style="text-align: left !important;" class="mailbox-subject" onclick="getEmailBodyForMailBox(' + id + ',' + emailList[e].messageId + ',\''+fullName+'\')" data-id="' + emailList[e].messageId + '">';
 			       			result = result +'<div>';
 			       			result = result +'	<div>' + (fullName.indexOf("Sent") !== -1 ? (emailList[e].to != null ? emailList[e].to.replace(/</g, "&lt;").replace(/>/g,"&gt;") : "") : (emailList[e].from != null ? emailList[e].from.replace(/</g, "&lt;").replace(/>/g,"&gt;") : "")) + '</div>';
 			       			result = result +'	<div style="font-size: 12px;color: #666;">' + emailList[e].subject + '</div>';
@@ -1024,106 +1048,110 @@ function emailMailDetailsPagination(){
 }
 </script>
 <script>
-function backFun(){
+function backToEmailList(){
 	$("#inbox").show();
     $("#details").hide();
+    emailDetails = null;
 }
 
 </script>
 
 <script type="text/javascript">
-
-function getEmailBody(emailAccountId, uid, folderName){
-    /* $("#mailDetails").html($("#mailBody"+id).html()); */
-    $("#body-details").empty();
-    $("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:70px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:50px;');
-	$.ajax({
-		type : "POST",
-		url : sourceleadUrl+"/getEmailByUID?${_csrf.parameterName}=${_csrf.token}&emailAccountId=" + emailAccountId + "&uid="+uid + "&folderName=" + folderName,
-		success : function(data) {
-			if(data && data != null) {
-				var body ="<div class='mail-widget'>";
-				body += "	<i onclick='backFun();' aria-hidden='true' class='fa fa-arrow-left' title='back'></i>";
-				body += "	<div class='pull-right'>";
-				if($("#mailboxLabel").html().toLowerCase() === "trash") 
-					body += "		<i title='delete' onclick='deleteEmailForEver(" + emailAccountId + ", " + data.messageId + ", \"" + folderName + "\");'>Delete forever</i>";
-				else
-					body += "		<i aria-hidden='true' class='fa fa-trash-o' title='Move to Trash' onclick='moveEmailToTrash(" + emailAccountId + ", " + data.messageId + ", \"" + folderName + "\");'></i>";
-				body += "		<i aria-hidden='true' class='fa fa-reply' title='Reply to sender' onclick='showReplyEmailPopup(" + emailAccountId + ", " + data.messageId + ", \"" + folderName + "\", false);'></i>";
-				body += "		<i aria-hidden='true' class='fa fa-reply-all' title='Reply to all senders/recipients' onclick='showReplyEmailPopup(" + emailAccountId + ", " + data.messageId + ", \"" + folderName + "\", true);'></i>";
-				body += "		<i aria-hidden='true' class='fa fa-arrow-right' title='Forward selected message' onclick='showForwardEmailPopup(" + emailAccountId + ", " + data.messageId + ", \"" + folderName + "\");'></i>";
-				body += "	</div>";
-				body += "</div>";
-				body+="<div class='mailbox-read-info' id='mailBody" + data.messageId + "'>"; 
-				body+="<h4 class='clearfix' style='border-bottom:1px solid #ddd; padding-bottom:10px;'>" + data.subject + "</h4>";
-
-				body+="<div class='row'>";
-				/* body+="<p class='clearfix mb10 col-md-8'><i class='text-muted fa fa-user paddingRight'></i>" + (folderName.indexOf("Sent") !== -1 ? data.to : data.from) + "</p>"; */
-				body+="<p class='clearfix mb10 col-md-8'>" + (folderName.indexOf("Sent") !== -1 ? "To" : "From") +" : " + (folderName.indexOf("Sent") !== -1 ? data.to.replace(/</g, "&lt;").replace(/>/g,"&gt;") : data.from.replace(/</g, "&lt;").replace(/>/g,"&gt;")) + "</p>";
-				if(data.cc != null && data.cc !== "") {
-					body+="<p class='clearfix mb10 col-md-8'>Cc : " + data.cc.replace(/</g, "&lt;").replace(/>/g,"&gt;") + "</p>";
-				}
-				body+="<p class='clearfix mb10 col-md-4 text-right'>" + data.sentDate + "</p>";
-				body+="</div>";
-				body+="<p class='col-md-12 clearfix'>" + data.body + "</p>";
-				if(data.filesList != null && data.filesList.length > 0) {
-					var text = "<div class='mailAttaWrap clearfix'>";
-					text += "       <h2>Attachments</h2>";
-
-					for(var e in data.filesList) {
-						var attachment = data.filesList[e];
-						
-						text += "           <div class='AttaCta'>";
-						var attachClass = "fa-file-o";
-						
-						if(attachment.fileExtension === ".jpg" || attachment.fileExtension === ".jpeg" || attachment.fileExtension === ".png") {
-							attachClass = "fa-file-image-o";
-						} else if(attachment.fileExtension === ".pdf") {
-							attachClass = "fa-file-pdf-o";
-						} else if(attachment.fileExtension === ".xls" || attachment.fileExtension === ".xlsx") {
-							attachClass = "fa-file-excel-o";
-						} else if(attachment.fileExtension === ".doc" || attachment.fileExtension === ".docx") {
-							attachClass = "fa-file-word-o";
-						} else if(attachment.fileExtension === ".txt") {
-							attachClass = "fa-file-text-o";
-						} else if(attachment.fileExtension === ".rar") {
-							attachClass = "fa-file-archive-o";
-						}
-						
-						text += "               <div class='AttaIcon'>";
-						if(attachment.fileExtension === ".jpg" || attachment.fileExtension === ".jpeg" || attachment.fileExtension === ".png")
-							text += "					<img src='" + (attachment.url + "/" + attachment.fileName) + "' alt='" + attachment.fileName + "'></img>";
-						else
-							text += "					<i class='fa " + attachClass + "' aria-hidden='true'></i>";
-						text += "				</div>";
-						text += "               <div class='AttaText'><i class='fa fa-paperclip' aria-hidden='true'></i>" + attachment.fileName + "</div>";
-						text += "               <div class='AttaCtaAct'>";
-						text += "                   <i class='fa fa-paperclip' aria-hidden='true'></i>";
-						text += "                   <p>" + attachment.fileName + "</p>";
-						text += "                   <a href='" + (attachment.url + "/" + attachment.fileName) + "'><span class='fa fa-arrow-down' aria-hidden='true'></span></a>";
-						text += "               </div>";
-						text += "           </div>";
-						
-						/* body += "<div class='col-md-10' style='width: auto;border: 1px solid #CECECE;'>";
-						body += "<img src='" + attachment.url + "/" + attachment.fileName + "' style='width: 100px;'>";
-						body += "<span>" + attachment.fileName + " : " + attachment.fileSize.toFixed(2) + " " + attachment.sizeUnit + "</span></div>"; */
+	var emailDetails = null;
+	function getEmailBodyForMailBox(emailAccountId, uid, folderName){
+	    /* $("#mailDetails").html($("#mailBody"+id).html()); */
+	    $("#body-details").empty();
+	    $("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:70px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:50px;');
+		$.ajax({
+			type : "POST",
+			url : sourceleadUrl+"/getEmailByUID?${_csrf.parameterName}=${_csrf.token}&emailAccountId=" + emailAccountId + "&uid="+uid + "&folderName=" + folderName,
+			success : function(data) {
+				if(data && data != null) {
+					emailDetails = data;
+					var body ="<div class='mail-widget'>";
+					body += "	<i onclick='backToEmailList();' aria-hidden='true' class='fa fa-arrow-left' title='back'></i>";
+					body += "	<div class='pull-right'>";
+					if($("#mailboxLabel").html().toLowerCase() === "trash") 
+						body += "		<i title='delete' onclick='deleteEmailForEver(" + emailAccountId + ", " + data.messageId + ", \"" + folderName + "\");'>Delete forever</i>";
+					else
+						body += "		<i aria-hidden='true' class='fa fa-trash-o' title='Move to Trash' onclick='moveEmailToTrash(" + emailAccountId + ", " + data.messageId + ", \"" + folderName + "\");'></i>";
+					body += "		<i aria-hidden='true' class='fa fa-reply' title='Reply to sender' onclick='showReplyEmailPopup(" + emailAccountId + ", " + data.messageId + ", \"" + folderName + "\", false);'></i>";
+					body += "		<i aria-hidden='true' class='fa fa-reply-all' title='Reply to all senders/recipients' onclick='showReplyEmailPopup(" + emailAccountId + ", " + data.messageId + ", \"" + folderName + "\", true);'></i>";
+					body += "		<i aria-hidden='true' class='fa fa-arrow-right' title='Forward selected message' onclick='showForwardEmailPopup(" + emailAccountId + ", " + data.messageId + ", \"" + folderName + "\");'></i>";
+					body += "	</div>";
+					body += "</div>";
+					body+="<div class='mailbox-read-info' id='mailBody" + data.messageId + "'>"; 
+					body+="<h4 class='clearfix' style='border-bottom:1px solid #ddd; padding-bottom:10px;'>" + data.subject + "</h4>";
+	
+					body+="<div class='row'>";
+					/* body+="<p class='clearfix mb10 col-md-8'><i class='text-muted fa fa-user paddingRight'></i>" + (folderName.indexOf("Sent") !== -1 ? data.to : data.from) + "</p>"; */
+					body+="<p class='clearfix mb10 col-md-8'> From : " + data.from.replace(/</g, "&lt;").replace(/>/g,"&gt;") + "</p>";
+					body+="<p class='clearfix mb10 col-md-8'> To : " + data.to.replace(/</g, "&lt;").replace(/>/g,"&gt;") + "</p>";
+					/* body+="<p class='clearfix mb10 col-md-8'>" + (folderName.indexOf("Sent") !== -1 ? "To" : "From") +" : " + (folderName.indexOf("Sent") !== -1 ? data.to.replace(/</g, "&lt;").replace(/>/g,"&gt;") : data.from.replace(/</g, "&lt;").replace(/>/g,"&gt;")) + "</p>";
+					body+="<p class='clearfix mb10 col-md-8'>" + (folderName.indexOf("Sent") !== -1 ? "From" : "To") +" : " + (folderName.indexOf("Sent") !== -1 ? data.from.replace(/</g, "&lt;").replace(/>/g,"&gt;") : data.to.replace(/</g, "&lt;").replace(/>/g,"&gt;")) + "</p>"; */						
+					if(data.cc != null && data.cc !== "") {
+						body+="<p class='clearfix mb10 col-md-8'>Cc : " + data.cc.replace(/</g, "&lt;").replace(/>/g,"&gt;") + "</p>";
 					}
-					text += "       </div>";
-					body += text;
+					body+="<p class='clearfix mb10 col-md-4 text-right'>" + data.sentDate + "</p>";
+					body+="</div>";
+					body+="<p class='col-md-12 clearfix'>" + data.body + "</p>";
+					if(data.filesList != null && data.filesList.length > 0) {
+						var text = "<div class='mailAttaWrap clearfix'>";
+						text += "       <h2>Attachments</h2>";
+	
+						for(var e in data.filesList) {
+							var attachment = data.filesList[e];
+							
+							text += "           <div class='AttaCta'>";
+							var attachClass = "fa-file-o";
+							
+							if(attachment.fileExtension === ".jpg" || attachment.fileExtension === ".jpeg" || attachment.fileExtension === ".png") {
+								attachClass = "fa-file-image-o";
+							} else if(attachment.fileExtension === ".pdf") {
+								attachClass = "fa-file-pdf-o";
+							} else if(attachment.fileExtension === ".xls" || attachment.fileExtension === ".xlsx") {
+								attachClass = "fa-file-excel-o";
+							} else if(attachment.fileExtension === ".doc" || attachment.fileExtension === ".docx") {
+								attachClass = "fa-file-word-o";
+							} else if(attachment.fileExtension === ".txt") {
+								attachClass = "fa-file-text-o";
+							} else if(attachment.fileExtension === ".rar") {
+								attachClass = "fa-file-archive-o";
+							}
+							
+							text += "               <div class='AttaIcon'>";
+							if(attachment.fileExtension === ".jpg" || attachment.fileExtension === ".jpeg" || attachment.fileExtension === ".png")
+								text += "					<img src='" + (attachment.url + "/" + attachment.fileName) + "' alt='" + attachment.fileName + "'></img>";
+							else
+								text += "					<i class='fa " + attachClass + "' aria-hidden='true'></i>";
+							text += "				</div>";
+							text += "               <div class='AttaText'><i class='fa fa-paperclip' aria-hidden='true'></i>" + attachment.fileName + "</div>";
+							text += "               <div class='AttaCtaAct'>";
+							text += "                   <i class='fa fa-paperclip' aria-hidden='true'></i>";
+							text += "                   <p>" + attachment.fileName + "</p>";
+							text += "                   <a href='" + (attachment.url + "/" + attachment.fileName) + "'><span class='fa fa-arrow-down' aria-hidden='true'></span></a>";
+							text += "               </div>";
+							text += "           </div>";
+							
+							/* body += "<div class='col-md-10' style='width: auto;border: 1px solid #CECECE;'>";
+							body += "<img src='" + attachment.url + "/" + attachment.fileName + "' style='width: 100px;'>";
+							body += "<span>" + attachment.fileName + " : " + attachment.fileSize.toFixed(2) + " " + attachment.sizeUnit + "</span></div>"; */
+						}
+						text += "       </div>";
+						body += text;
+					}
+					body+="</div>";
+					
+					$("#body-details").append(body);
+					$("#inbox").hide();
+				    $("#details").show();
+				} else {
+					alert("error while reading email");
 				}
-				body+="<button type='button' class='btn btn-sm btn-default pull-right' onClick='backFun();'>Back</button>";
-				body+="</div>";getEmailBody
-				
-				$("#body-details").append(body);
-				$("#inbox").hide();
-			    $("#details").show();
-			} else {
-				alert("error while reading email");
+				$("#loading").removeAttr("style");
 			}
-			$("#loading").removeAttr("style");
-		}
-	});
-}
+		});
+	}
 
 </script>
 
@@ -1243,10 +1271,12 @@ function forwardEmailToHotMail(uuid){
 		$('#dynamicmailcompose').hide();
 		$("#sendEmail").show();
 		$("#replyEmail").hide();
+		$("#forwardEmail").hide();
 		$(".headerAdsrch span").html("Send Email");
 	}
 	function refreshComposeMailFields() {
 		$("#fromEmail").val("");
+		$("#fromEmail").prop("disabled", false);
 		$("#fromEmail").trigger("chosen:updated");
 		$("#emailsList").val("");
 		$("#emailsList").trigger("chosen:updated");
@@ -1255,52 +1285,104 @@ function forwardEmailToHotMail(uuid){
 		$("#sendSubject").val("");
 		nicEditors.findEditor('bodytext').setContent("");
 	}
+	
+	/* function to show compose email popup with auto-filled values required for reply / replyAll */
 	function showReplyEmailPopup(emailAccountId, messageId, folderName, replyToAllFlag) {
+		$("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:70px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:50px;');
 		refreshComposeMailFields();
-		$.ajax({
-			type : "POST",
-			url : sourceleadUrl+"/getEmailByUID?${_csrf.parameterName}=${_csrf.token}&emailAccountId=" + emailAccountId + "&uid=" + messageId + "&folderName=" + folderName,
-			success : function(data) {
-				if(data && data != null) {
-					$("#fromEmail").val(data.from);
-					$("#fromEmail").trigger("chosen:updated");
-					$("#emailsList").append("<option selected value='" + data.to.replace(/</g, "&lt;").replace(/>/g,"&gt;") + "'>" + data.to.replace(/</g, "&lt;").replace(/>/g,"&gt;") + "</option>");
-					$("#emailsList").trigger("chosen:updated");
-					if(replyToAllFlag) {
-						for(var e in data.cc.split(";")) {
-							$("#ccList").append("<option selected value='" + data.cc.split(";")[e].trim().replace(/</g, "&lt;").replace(/>/g,"&gt;") + "'>" + data.cc.split(";")[e].trim().replace(/</g, "&lt;").replace(/>/g,"&gt;") + "</option>");
-						}
-						$("#ccList").trigger("chosen:updated");
-					}
-					$("#sendSubject").val("RE: " + data.subject);
-					
-					var text = "<p style=\"margin:0;padding:0;font-family: 'times new roman'; font-size: 10pt; word-wrap: break-word;\">";
-					text += "	<br/>";
-					text += "	<br/>";
-					text += "	-----Original Message-----<br/>";
-					text += "	From: " + data.from.replace(/</g, "&lt;").replace(/>/g,"&gt;") + "<br/>";
-					text += "	Sent: " + data.sentDate + "<br/>";
-					text += "	To: " + data.to.replace(/</g, "&lt;").replace(/>/g,"&gt;") + "<br/>";
-					if(data.cc !== null && data.cc !== "")
-						text += "	Cc: " + data.cc.replace(/</g, "&lt;").replace(/>/g,"&gt;") + "<br/>";
-					text += "	Subject: " + data.subject + "<br/>";
-					text += "</p>";
-					
-					nicEditors.findEditor('bodytext').setContent(text + "<br/> " + data.body);
-					
-					$(".headerAdsrch span").html("Reply Email");
-					$("#sendEmail").hide();
-					$("#replyEmail").show();
-					$('.side_mask').show();
-					$('#dynamicmailcompose').show();
-				} else {
-					alert("error while reading email");
+		var activeEmail = $("li[class='Act']").find("p").html();
+		$("#fromEmail").prop("disabled",true);
+		$("#fromEmail").trigger("chosen:updated");
+		
+		if(emailDetails !== null) {
+			$("#fromEmail").val(activeEmail);
+			$("#fromEmail").trigger("chosen:updated");
+			$("#emailsList").append("<option selected value='" + emailDetails.from.replace(/</g, "&lt;").replace(/>/g,"&gt;") + "'>" + emailDetails.from.replace(/</g, "&lt;").replace(/>/g,"&gt;") + "</option>");
+			$("#emailsList").trigger("chosen:updated");
+			if(replyToAllFlag) {
+				if(emailDetails.cc !== null && emailDetails.cc !== "" && emailDetails.to.replace(/</g, "&lt;").replace(/>/g,"&gt;").indexOf(activeEmail) === -1)
+					$("#ccList").append("<option selected value='" + emailDetails.to.replace(/</g, "&lt;").replace(/>/g,"&gt;") + "'>" + emailDetails.to.replace(/</g, "&lt;").replace(/>/g,"&gt;") + "</option>");
+				for(var e in emailDetails.cc.split(";")) {
+					var ccMail = emailDetails.cc.split(";")[e].trim().replace(/</g, "&lt;").replace(/>/g,"&gt;");
+					if(ccMail.indexOf(activeEmail) === -1)
+						$("#ccList").append("<option selected value='" + ccMail + "'>" + ccMail + "</option>");
 				}
-				$("#loading").removeAttr("style");
+				$("#ccList").trigger("chosen:updated");
 			}
-		});
+			$("#sendSubject").val("RE: " + emailDetails.subject);
+			
+			var text = "<p style=\"margin:0;padding:0;font-family: 'times new roman'; font-size: 10pt; word-wrap: break-word;\">";
+			text += "	<br/>";
+			text += "	<br/>";
+			text += "	-----Original Message-----<br/>";
+			text += "	From: " + emailDetails.from.replace(/</g, "&lt;").replace(/>/g,"&gt;") + "<br/>";
+			text += "	Sent: " + emailDetails.sentDate + "<br/>";
+			text += "	To: " + emailDetails.to.replace(/</g, "&lt;").replace(/>/g,"&gt;") + "<br/>";
+			if(emailDetails.cc !== null && emailDetails.cc !== "")
+				text += "	Cc: " + emailDetails.cc.replace(/</g, "&lt;").replace(/>/g,"&gt;") + "<br/>";
+			text += "	Subject: " + emailDetails.subject + "<br/>";
+			text += "</p>";
+			
+			nicEditors.findEditor('bodytext').setContent(text + "<br/> " + emailDetails.body);
+			
+			$(".headerAdsrch span").html("Reply Email");
+			$("#sendEmail").hide();
+			$("#replyEmail").show();
+			$('.side_mask').show();
+			$('#dynamicmailcompose').show();
+			$("#loading").removeAttr("style");
+		} else {
+			$.ajax({
+				type : "POST",
+				url : sourceleadUrl+"/getEmailByUID?${_csrf.parameterName}=${_csrf.token}&emailAccountId=" + emailAccountId + "&uid=" + messageId + "&folderName=" + folderName,
+				success : function(data) {
+					if(data && data != null) {
+						$("#fromEmail").val(activeEmail);
+						$("#fromEmail").trigger("chosen:updated");
+						$("#emailsList").append("<option selected value='" + data.from.replace(/</g, "&lt;").replace(/>/g,"&gt;") + "'>" + data.from.replace(/</g, "&lt;").replace(/>/g,"&gt;") + "</option>");
+						$("#emailsList").trigger("chosen:updated");
+						if(replyToAllFlag) {
+							if(emailDetails.cc !== null && emailDetails.cc !== "")
+								$("#ccList").append("<option selected value='" + data.to.replace(/</g, "&lt;").replace(/>/g,"&gt;") + "'>" + data.to.replace(/</g, "&lt;").replace(/>/g,"&gt;") + "</option>");
+							for(var e in data.cc.split(";")) {
+								var ccMail = data.cc.split(";")[e].trim().replace(/</g, "&lt;").replace(/>/g,"&gt;");
+								if(ccMail.indexOf(activeEmail) === -1)
+									$("#ccList").append("<option selected value='" + ccMail + "'>" + ccMail + "</option>");
+							}
+							$("#ccList").trigger("chosen:updated");
+						}
+						$("#sendSubject").val("RE: " + data.subject);
+						
+						var text = "<p style=\"margin:0;padding:0;font-family: 'times new roman'; font-size: 10pt; word-wrap: break-word;\">";
+						text += "	<br/>";
+						text += "	<br/>";
+						text += "	-----Original Message-----<br/>";
+						text += "	From: " + data.from.replace(/</g, "&lt;").replace(/>/g,"&gt;") + "<br/>";
+						text += "	Sent: " + data.sentDate + "<br/>";
+						text += "	To: " + data.to.replace(/</g, "&lt;").replace(/>/g,"&gt;") + "<br/>";
+						if(data.cc !== null && data.cc !== "")
+							text += "	Cc: " + data.cc.replace(/</g, "&lt;").replace(/>/g,"&gt;") + "<br/>";
+						text += "	Subject: " + data.subject + "<br/>";
+						text += "</p>";
+						
+						nicEditors.findEditor('bodytext').setContent(text + "<br/> " + data.body);
+						
+						$(".headerAdsrch span").html("Reply Email");
+						$("#sendEmail").hide();
+						$("#replyEmail").show();
+						$('.side_mask').show();
+						$('#dynamicmailcompose').show();
+					} else {
+						alert("error while reading email");
+					}
+					$("#loading").removeAttr("style");
+				}
+			});
+		}
 	}
-	function sendReplyEmail() {
+	
+	/* function to send reply message */
+	function replyEmailFromMailBox(sendType) {
 		if ($('#email_form').validate(false, validationSettings)) {
 			var sourceleadUrl = '${sourceleadUrl}';
 			
@@ -1315,6 +1397,7 @@ function forwardEmailToHotMail(uuid){
 		   		alert("Provide atleast one email id");
 		   	} else {
 		   		var emailAccountId = $("#fromEmail option:selected").data("id");
+		   		var from = $("#fromEmail option:selected").val();
 				$("#mailLoading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:70px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
 				$.ajax({
 					type : "POST",
@@ -1322,7 +1405,7 @@ function forwardEmailToHotMail(uuid){
 				  	enctype: 'multipart/form-data',
 				  	processData: false,
 				  	contentType:false, 
-				  	url : sourceleadUrl+"/sendEmailFromMailBox?${_csrf.parameterName}=${_csrf.token}&emailAccountId=" + emailAccountId,
+				  	url : sourceleadUrl+"/sendEmailFromMailBox?${_csrf.parameterName}=${_csrf.token}&emailAccountId=" + emailAccountId + "&from=" + from + "&sendType=" + sendType,
 				  	success : function(result) {
 				  		$("#mailLoading").removeAttr('style');
 				  	},
@@ -1333,10 +1416,77 @@ function forwardEmailToHotMail(uuid){
 			return false;
 		}		
 	}
-	function showReplyEmailPopup(emailAccountId, messageId, folderName) {
-		alert("Forward Mail : " + id);
+
+	/* function to show compose email popup with auto-filled values required for forwarding */
+	function showForwardEmailPopup(emailAccountId, messageId, folderName) {
+		$("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:70px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:50px;');
+		refreshComposeMailFields();
+		var activeEmail = $("li[class='Act']").find("p").html();
+		$("#fromEmail").prop("disabled",true);
+		$("#fromEmail").trigger("chosen:updated");
+		if(emailDetails !== null) {
+			$("#sendSubject").val("FW: " + emailDetails.subject);
+			var text = "<p style=\"margin:0;padding:0;font-family: 'times new roman'; font-size: 10pt; word-wrap: break-word;\">";
+			text += "	<br/>";
+			text += "	<br/>";
+			text += "	-----Original Message-----<br/>";
+			text += "	From: " + emailDetails.from.replace(/</g, "&lt;").replace(/>/g,"&gt;") + "<br/>";
+			text += "	Sent: " + emailDetails.sentDate + "<br/>";
+			text += "	To: " + emailDetails.to.replace(/</g, "&lt;").replace(/>/g,"&gt;") + "<br/>";
+			if(emailDetails.cc !== null && emailDetails.cc !== "")
+				text += "	Cc: " + emailDetails.cc.replace(/</g, "&lt;").replace(/>/g,"&gt;") + "<br/>";
+			text += "	Subject: " + emailDetails.subject + "<br/>";
+			text += "</p>";
+			
+			$("#fromEmail").val(activeEmail);
+			$("#fromEmail").trigger("chosen:updated");
+			nicEditors.findEditor('bodytext').setContent(text + "<br/> " + emailDetails.body);
+			
+			$(".headerAdsrch span").html("Forward Email");
+			$("#sendEmail").hide();
+			$("#replyEmail").hide();
+			$("#forwardEmail").show();
+			$(".side_mask").show();
+			$("#dynamicmailcompose").show();
+			$("#loading").removeAttr("style");
+		} else {
+			$.ajax({
+				type : "POST",
+				url : sourceleadUrl+"/getEmailByUID?${_csrf.parameterName}=${_csrf.token}&emailAccountId=" + emailAccountId + "&uid=" + messageId + "&folderName=" + folderName,
+				success : function(data) {
+					if(data && data != null) {
+						$("#sendSubject").val("FW: " + data.subject);
+						var text = "<p style=\"margin:0;padding:0;font-family: 'times new roman'; font-size: 10pt; word-wrap: break-word;\">";
+						text += "	<br/>";
+						text += "	<br/>";
+						text += "	-----Original Message-----<br/>";
+						text += "	From: " + data.from.replace(/</g, "&lt;").replace(/>/g,"&gt;") + "<br/>";
+						text += "	Sent: " + data.sentDate + "<br/>";
+						text += "	To: " + data.to.replace(/</g, "&lt;").replace(/>/g,"&gt;") + "<br/>";
+						if(data.cc !== null && data.cc !== "")
+							text += "	Cc: " + data.cc.replace(/</g, "&lt;").replace(/>/g,"&gt;") + "<br/>";
+						text += "	Subject: " + data.subject + "<br/>";
+						text += "</p>";
+						
+						nicEditors.findEditor('bodytext').setContent(text + "<br/> " + data.body);
+						
+						$(".headerAdsrch span").html("Forward Email");
+						$("#sendEmail").hide();
+						$("#replyEmail").hide();
+						$("#forwardEmail").show();
+						$('.side_mask').show();
+						$('#dynamicmailcompose').show();
+					} else {
+						alert("error while reading email");
+					}
+					$("#loading").removeAttr("style");
+				}
+			});
+		}
 	}
-	function sendEmail() {
+	
+	/* function for sending / forwarding emails */
+	function sendEmailFromMailBox(sendType) {
 		if ($('#email_form').validate(false, validationSettings)) {
 			var sourceleadUrl = '${sourceleadUrl}';
 					
@@ -1351,6 +1501,7 @@ function forwardEmailToHotMail(uuid){
 		   		alert("Provide atleast one email id");
 		   	} else {
 		   		var emailAccountId = $("#fromEmail option:selected").data("id");
+		   		var from = $("#fromEmail option:selected").val();
 				$("#mailLoading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:70px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
 				$.ajax({
 					type : "POST",
@@ -1358,7 +1509,7 @@ function forwardEmailToHotMail(uuid){
 				  	enctype: 'multipart/form-data',
 				  	processData: false,
 				  	contentType:false, 
-				  	url : sourceleadUrl+"/sendEmailFromMailBox?${_csrf.parameterName}=${_csrf.token}&emailAccountId=" + emailAccountId,
+				  	url : sourceleadUrl+"/sendEmailFromMailBox?${_csrf.parameterName}=${_csrf.token}&emailAccountId=" + emailAccountId + "&from=" + from + "&sendType=" + sendType,
 				  	success : function(result) {
 				  		$("#mailLoading").removeAttr('style');
 				  	},
@@ -1369,27 +1520,63 @@ function forwardEmailToHotMail(uuid){
 			return false;
 		}
 	}
-	
-/* 	$('#bodytext').summernote({
-		toolbar: [
-		    // [groupName, [list of button]]
-		    ['style', ['bold', 'italic', 'underline', 'clear']],
-		    ['font', ['strikethrough', 'superscript', 'subscript']],
-		    ['fontsize', ['fontsize']],
-		    ['color', ['color']],
-		    ['para', ['ul', 'ol', 'paragraph']],
-			['table',['table']],
-		    ['height', ['height']]
-		  ]
-	}); */
 </script>
 <script type="text/javascript">
-bkLib.onDomLoaded(function() {
-    nicEditors.editors.push(
-    	new nicEditor({fullPanel: true}).panelInstance(document.getElementById('bodytext'))
-    );
-});
+	bkLib.onDomLoaded(function() {
+	    nicEditors.editors.push(
+	    	new nicEditor({fullPanel: true}).panelInstance(document.getElementById('bodytext'))
+	    );
+	});
+	
+	function uploadAttachment() {
+		$(".file_mask").show();
+		
+		var data = new FormData();
+		var files = document.getElementById("attachfileBtn").files;
+		var count = 0;
+		expr = /.zip/;
+		ecpr1=/.rar/;
+		for(var e in files) {
+			if(!$.isNumeric(e))
+				continue;
+			//if(files[e].name.toLowerCase().endsWith(".zip") || files[e].name.toLowerCase().endsWith(".rar"))
+			if(files[e].name.toLowerCase().match(expr) || files[e].name.toLowerCase().match(ecpr1))
+				continue;
+			data.append('file', files[e]);
+			count ++;
+		}
+		if(count === 0) {
+			$("#email_form input[data-id*= 'attachfileBtn']").remove();
+			$(".file_mask").hide();
+			alert("Please select valid file (zip files and rar files are not allowed)");
+			return;
+		}
+		$.ajax({ 
+			url: sourceleadUrl + "/ws/upload/Email Documents", 
+			data: data, 
+			processData: false, 
+			type: 'POST', 
+			contentType: false, 
+			success: function (data) {
+				if(data && data.length > 0) {
+					for(var e in data) {						
+						var fileURL = data[e].fileURL.replace("Email Documents", "temp");
+						var text = "<p>" + data[e].fileName + "<i onclick='removeAttachment(this);' class='fa fa-close' style='cursor: pointer;'></i></p>";
+						$("#mailAttachmentsDiv").append(text);
+					}
+					/* applyData(data, "email_form", "fileInfo", "attachfileBtn"); */
+					$(".file_mask").hide();
+				}
+			}, 
+			error: function (err) { 
+				 $(".file_mask").hide();
+			}
+		});
+	}
+	
+	function removeAttachment(ele) {
+		$(ele).parent().remove();
+	}
 </script>		
  	
-
 <jsp:include page="masterFooter.jsp" />
