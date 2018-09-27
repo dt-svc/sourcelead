@@ -15,6 +15,7 @@ import org.apache.commons.lang.exception.ExceptionUtils;
 import org.hibernate.Query;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
+import org.hibernate.Transaction;
 import org.hibernate.transform.Transformers;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -41,6 +42,7 @@ import com.bis.sourcelead.entity.SubmissionCandidateListView;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.entity.UserRole;
 import com.bis.sourcelead.exception.SourceLeadConstraintViolationException;
+import com.bis.sourcelead.service.CandidateService;
 import com.bis.sourcelead.util.CommonUtil;
 import com.bis.sourcelead.util.ReportsUtil;
 
@@ -69,6 +71,9 @@ public class CandidateDaoImpl implements CandidateDao {
 	
 	@Autowired
 	private CommonUtil commonUtil;
+	
+	@Autowired
+	CandidateService candidateService;
 	
 	@Value("${SourceLead.100}")
 	private String notFound;
@@ -1928,13 +1933,15 @@ public class CandidateDaoImpl implements CandidateDao {
 				+" CAND.ID AS candId, "
 				+" CAND.FIRST_NAME AS firstName, "
 				+" CAND.LAST_NAME AS lastName, "
+				+" CONCAT (CAND.FIRST_NAME,' ',IFNULL(CAND.LAST_NAME,'')) AS candidateName," 
 				+" CAND.MOBILE_PHONE AS phoneNumber, "
 				+" CAND.EMAIL AS email, "
 				+" CAND.LOCATION AS location, "
 				+" CAND.COUNTRY AS country, "
 				+" CAND.STATE AS state, "
 				+" CAND.CITY AS city, "
-				+" CAND.NOTICE_PERIOD AS noticePeriod "
+				+" CAND.NOTICE_PERIOD AS noticePeriod, "
+				+" CAND.PROFILE_PERCENTAGE AS profilePercentage "
 				+" FROM CANDIDATE CAND "
 				+" WHERE "
 				+" CAND.ID = :candidateId ";
@@ -2060,6 +2067,49 @@ public class CandidateDaoImpl implements CandidateDao {
 		List<Candidate> candidatesList = session.createQuery(query).list();
 		return candidatesList;
 	
+	}
+
+	@Override
+	@Transactional
+	public Long getCandidateIdByEmailAndOrgLocationId(String email, Long orgLocationId) throws Exception {
+		
+		Long candidateId = null;
+		Session session = this.sessionFactory.getCurrentSession();
+		String query = null;
+		query ="SELECT "
+				+" CAND.ID "
+				+" FROM CANDIDATE CAND "
+				+" WHERE "
+				+" CAND.EMAIL = :email AND CAND.ORG_LOCATION_ID = :orgLocationId";
+		Query queryObj = session.createSQLQuery(query);
+		queryObj.setString("email", email);	
+		queryObj.setLong("orgLocationId", orgLocationId);	
+		BigInteger id = (BigInteger) queryObj.uniqueResult();
+		if(id != null) {
+			candidateId = id.longValue();
+		}
+		
+		return candidateId;
+	}
+
+	@Override
+	@Transactional
+	public void saveBulkCandidates(List<Candidate> candidatesList) throws Exception {
+		Session session = sessionFactory.openSession();
+		Transaction tx = session.beginTransaction();
+		int i = 0;
+		for (Candidate candidate : candidatesList) {
+		    session.save(candidate);
+		    candidateService.saveOrUpdateCandidateElkDocument(candidate);
+		    if ( i % 20 == 0 ) { //20, same as the JDBC batch size
+		        //flush a batch of inserts and release memory:
+		        session.flush();
+		        session.clear();                                          
+		    }
+		    i = i+1;
+		}
+		tx.commit();
+		session.close();
 	}
 
 }

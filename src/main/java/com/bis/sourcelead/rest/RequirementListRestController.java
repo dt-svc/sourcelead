@@ -2466,7 +2466,7 @@ public class RequirementListRestController {
 	      User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
 	    
 			
-			String[] tableColumns = { "action","generatedId", "jobTitle", "clientName", "createdDate", "location"};
+			String[] tableColumns = { "action","generatedId", "jobTitle", "profilePercentage", "clientName", "createdDate", "location"};
 			int sortColumnIndex = 1; // by default sorting using updated date
 			String sortColumnOrder = "desc"; // by default descending order
 			if (requirementDTO.getOrder() != null && !requirementDTO.getOrder().isEmpty()) {

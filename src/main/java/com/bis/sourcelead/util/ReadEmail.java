@@ -42,7 +42,6 @@ public class ReadEmail {
 			properties.put("mail.imap.host", host);
 			properties.put("mail.imap.port", portNumber);
 			properties.put("mail.imap.starttls.enable", "true");
-			Session emailSession = Session.getInstance(properties);
 
 			// create the IMAP store object and connect with the pop server
 
