@@ -2,8 +2,10 @@ package com.bis.sourcelead.payroll.util;
 
 import java.io.File;
 import java.io.FileOutputStream;
+import java.math.BigDecimal;
 import java.util.List;
 
+import org.apache.commons.lang3.StringUtils;
 import org.hibernate.annotations.Check;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -50,12 +52,14 @@ public class PayrollReportPdfUtil {
 		    	headerDTO.setCheckDate(registerDTO.getPayCheckDate());
 		    	headerDTO.setGroupName(registerDTO.getPayGroupName());
 		    	headerDTO.setOrgName(orgLocation.getOrgLocationName());
+		    	headerDTO.setLocationAddress(orgLocation.getLocation());
 		    	headerDTO.setPayPeriod(registerDTO.getPayFrequency());
 		    	headerDTO.setPayrollType(registerDTO.getType());
 		    	headerDTO.setPeriodBeginDate(registerDTO.getFreqStartDate());
 		    	headerDTO.setPeriodEndDate(registerDTO.getFreqEndDate());
 		    	headerDTO.setReportType("CHECK REGISTER");
 		    	headerDTO.setRunDate(registerDTO.getRunDate());
+//		    	headerDTO.setLiveChecks(checkRegData.size());
 		    	headerDTO.setRunNumber(0);
 		    	
 		    	createHeaderTable(document,headerDTO,orgLocation);
@@ -79,25 +83,40 @@ public class PayrollReportPdfUtil {
 		    	
 		    	PdfPTable empDataTable = getPdfTable(7,document);
 		    	empDataTable.setSpacingBefore(2);  
-		    	
-		    	empDataTable.addCell(getPdfCell("Total Number of Checks: 1",normalFont,5));
-		    	empDataTable.addCell(getPdfCell("2",normalFont,0));
-		    	empDataTable.addCell(getPdfCell("Kakula Varam, Kunila",normalFont,0));
-		    	empDataTable.addCell(getPdfCell("4/5/2018",normalFont,0));
-		    	empDataTable.addCell(getPdfCell("",normalFont,0));
-		    	empDataTable.addCell(getPdfCell("15221458",normalFont,0));
-		    	empDataTable.addCell(getPdfCell("$ 930.00",normalFont,0));
+		    	BigDecimal checksTotal = BigDecimal.ZERO;
+		    	for(CheckRegisterReportDTO checkRegisterData : checkRegData) {
+		    		empDataTable.addCell(getPdfCell(checkRegisterData.getDepartmentId(),normalFont,5));
+		    		if(StringUtils.isNotBlank(checkRegisterData.getEmployeeId())) {
+		    			empDataTable.addCell(getPdfCell(checkRegisterData.getEmployeeId(),normalFont,0));
+		    		}else {
+		    			empDataTable.addCell(getPdfCell("--",normalFont,0));	
+		    		}
+		    		StringBuilder sb = new StringBuilder();
+		    		if(StringUtils.isNotBlank(checkRegisterData.getLastName())) {
+		    			sb.append(checkRegisterData.getFirstName()).append(" ").append(checkRegisterData.getLastName());
+		    		}else {
+		    			sb.append(checkRegisterData.getFirstName());
+		    		}
+			    	empDataTable.addCell(getPdfCell(sb.toString(),normalFont,0));
+			    	empDataTable.addCell(getPdfCell(commonUtil.dateStrFromOrgDateFormatter(orgLocation.getDateFormat(), checkRegisterData.getPayCheckDate()),normalFont,0));
+			    	empDataTable.addCell(getPdfCell("",normalFont,0));
+			    	empDataTable.addCell(getPdfCell("XXXXX",normalFont,0));
+			    	empDataTable.addCell(getPdfCell("$ "+checkRegisterData.getNetPay(),normalFont,0));
+			    	checksTotal = checksTotal.add(checkRegisterData.getNetPay());
+		    	}
 		    	empDataTable.setSpacingAfter(8);
 		    	document.add(empDataTable);
 		    	
 		    	PdfPTable lineTable = getPdfTable(1,document);
 		    	
 		    	
-		    	PdfPTable lineChildTable = new PdfPTable(4);
+		    	PdfPTable lineChildTable = new PdfPTable(6);
 		    	lineChildTable.addCell(getPdfCell("",boldFont,0));
 		    	lineChildTable.addCell(getPdfCell("",boldFont,0));
-		    	lineChildTable.addCell(getPdfCell("Total Number of Checks: 1",boldFont,0));
-		    	lineChildTable.addCell(getPdfCell("930.80",boldFont,0));
+		    	lineChildTable.addCell(getPdfCell("",boldFont,0));
+		    	lineChildTable.addCell(getPdfCell("",boldFont,0));
+		    	lineChildTable.addCell(getPdfCell("Total Number of Checks: "+checkRegData.size(),boldFont,0));
+		    	lineChildTable.addCell(getPdfCell("$ "+checksTotal.toString(),boldFont,0));
 		    	
 		    	PdfPCell lineTableCell = new PdfPCell(lineChildTable);
 		    	lineTableCell.setFixedHeight(30);
@@ -111,18 +130,24 @@ public class PayrollReportPdfUtil {
 		    	checksTable.setTotalWidth(document.getPageSize().getWidth() - 80);
 		    	checksTable.setLockedWidth(true);
 		    	
-		    	PdfPTable checksChildTable = new PdfPTable(4);
+		    	PdfPTable checksChildTable = new PdfPTable(6);
 		    	
 		    	checksChildTable.addCell(getPdfCell("",boldFont,0));
 		    	checksChildTable.addCell(getPdfCell("",boldFont,0));
-		    	checksChildTable.addCell(getPdfCell("Total Employee Live Checks: 1",boldFont,0));
-		    	checksChildTable.addCell(getPdfCell("930.83",boldFont,0));
+		    	checksChildTable.addCell(getPdfCell("",boldFont,0));
+		    	checksChildTable.addCell(getPdfCell("",boldFont,0));
+		    	checksChildTable.addCell(getPdfCell("Total Employee Live Checks: "+headerDTO.getLiveChecks(),boldFont,0));
+		    	checksChildTable.addCell(getPdfCell("$ "+checksTotal.toString(),boldFont,0));
 		    	
 		    	checksChildTable.addCell(getPdfCell("",boldFont,0));
 		    	checksChildTable.addCell(getPdfCell("",boldFont,0));
-		    	checksChildTable.addCell(getPdfCell("Total Manual Checks: 0",boldFont,0));
+		    	checksChildTable.addCell(getPdfCell("",boldFont,0));
+		    	checksChildTable.addCell(getPdfCell("",boldFont,0));
+		    	checksChildTable.addCell(getPdfCell("Total Manual Checks: "+checkRegData.size(),boldFont,0));
 		    	checksChildTable.addCell(getPdfCell("0.00",boldFont,0));
 		    	
+		    	checksChildTable.addCell(getPdfCell("",boldFont,0));
+		    	checksChildTable.addCell(getPdfCell("",boldFont,0));
 		    	checksChildTable.addCell(getPdfCell("",boldFont,0));
 		    	checksChildTable.addCell(getPdfCell("",boldFont,0));
 		    	checksChildTable.addCell(getPdfCell("Total Void Checks: 0",boldFont,0));
@@ -133,6 +158,8 @@ public class PayrollReportPdfUtil {
 		    	checksChildTable.addCell(getPdfCell("Total Third Party Checks: 0",boldFont,0));
 		    	checksChildTable.addCell(getPdfCell("0.00",boldFont,0));
 		    	
+		    	checksChildTable.addCell(getPdfCell("",boldFont,0));
+		    	checksChildTable.addCell(getPdfCell("",boldFont,0));
 		    	checksChildTable.addCell(getPdfCell("",boldFont,0));
 		    	checksChildTable.addCell(getPdfCell("",boldFont,0));
 		    	checksChildTable.addCell(getPdfCell("Total Third Party Void Checks: 0",boldFont,0));
@@ -186,7 +213,7 @@ public class PayrollReportPdfUtil {
 			chunk.setBackground(new BaseColor(220, 220, 220));
 			cell2.addElement(new Paragraph(chunk));
 			cell2.addElement(new Paragraph(headerData.getOrgName(), boldFont));
-//			cell2.addElement(new Paragraph("DBA: MI Softech Inc", boldFont));
+			cell2.addElement(new Paragraph(headerData.getLocationAddress(), boldFont));
 			cell2.addElement(new Paragraph(""));
 			cell2.setBorder(Rectangle.NO_BORDER);
 			cell2.setColspan(6);
