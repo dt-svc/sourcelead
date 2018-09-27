@@ -375,7 +375,7 @@ public class PayrollReportPdfUtil {
 		BigDecimal totalDeposit = BigDecimal.ZERO;
 		for (CheckRegisterReportDTO checkRegisterReportDTO : checkRegData) {
 			PdfPCell detailCell0 = new PdfPCell();
-			detailCell0.addElement(new Paragraph(checkRegisterReportDTO.getEmployeeId(),detailFont));
+			detailCell0.addElement(new Paragraph(checkRegisterReportDTO.getEmpId().toString(),detailFont));
 			detailCell0.setBorder(Rectangle.NO_BORDER);
 			detailCell0.setColspan(1);
 			detailCell0.setPaddingLeft(45f);
@@ -428,7 +428,7 @@ public class PayrollReportPdfUtil {
 			detailCell6.setColspan(1);
 			detailCell6.setPaddingLeft(25f);
 			detailTable.addCell(detailCell6);
-			totalDeposit.add(checkRegisterReportDTO.getNetPay());
+			totalDeposit = totalDeposit.add(checkRegisterReportDTO.getNetPay());
 		}
 		
 		PdfPTable detailTable1 = new PdfPTable(1);
