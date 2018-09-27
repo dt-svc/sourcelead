@@ -33,7 +33,7 @@
 			<input name="" class="form-control calendar" placeholder="Check Date" id="payrollPayDate" name="payrollPayDate" type="text" data-validation="required" field-name="Pay Date">
 		</div>
 		<div class="col-md-2">
-			<a  class="btn btn-success btnSuccess btn-sm anchorWhite" id="generateUSPayroll" onclick="reviewIndPayroll();">Initiate Payroll</a>
+			<a  class="btn btn-success btnSuccess btn-sm anchorWhite" id="generateUSPayroll" onclick="runINDPayroll()">Initiate Payroll</a>
 		</div>
 	</div>						
 </div>
@@ -92,6 +92,35 @@ function getGroupFrequency(){
            };
          
 </script> 
+
+<script>
+function runINDPayroll(){
+	if ($('#generate_payroll_form').validate(false, validationSettings)){  
+		//$("#initiateLoading").attr('style','position:absolute; width:100%; height:140%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
+		var groupId = $("#groupId").val();
+		var payPeriod = $("#payPeriod").val();
+		var payType = $("#payType").val();
+		var payrollPayDate = $("#payrollPayDate").val();
+		 $.ajax({
+		    	   type: "POST",
+		           url: sourceleadUrl+"/generateUSPayroll?searchValue="+searchValue+"&groupId="+groupId+"&payPeriod="+payPeriod+"&payrollPayDate="+payrollPayDate+"&payType="+payType,                 
+		           success: function(data) {
+		        	  
+		        	    
+		        	},
+		    });
+		 
+		return true; 
+    }else{
+   return false;
+   	  } 
+	}
+	
+$('body').on('blur', '#generate_payroll_form', function() {
+	$("#generate_payroll_form").showHelpOnFocus();
+	$("#generate_payroll_form").validateOnBlur(false, validationSettings);  
+});
+</script>
 <script>
 function reviewIndPayroll(){
 	location.replace(sourceleadUrl+"/reviewPayrollInd");
