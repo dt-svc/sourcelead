@@ -1,12 +1,10 @@
 package com.bis.sourcelead.rest;
 
-import java.math.BigDecimal;
 import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -16,20 +14,13 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.ModelAndView;
 
-import com.bis.sourcelead.dto.PayrollPayheadDTO;
 import com.bis.sourcelead.dto.ResponseList;
-import com.bis.sourcelead.entity.AssociateSalaryInd;
-import com.bis.sourcelead.entity.BulkClientDetails;
-import com.bis.sourcelead.entity.Candidate;
-import com.bis.sourcelead.entity.Countries;
-import com.bis.sourcelead.entity.Employees;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.Payroll;
 import com.bis.sourcelead.entity.User;
-import com.bis.sourcelead.entity.UserGroup;
-import com.bis.sourcelead.payroll.dto.GenerateINDPayrollDTO;
-import com.bis.sourcelead.payroll.dto.GenerateUSPayrollDTO;
+import com.bis.sourcelead.payroll.dto.IndPaysheetFrequencyDTO;
 import com.bis.sourcelead.payroll.dto.PaysheetFrequencyDTO;
+import com.bis.sourcelead.payroll.service.IndPayrollService;
 import com.bis.sourcelead.service.PayrollService;
 import com.bis.sourcelead.util.CommonUtil;
 import com.bis.sourcelead.util.SourceLeadSessionManager;
@@ -56,7 +47,8 @@ public class PayrollRestController {
 	@Autowired
 	CommonUtil commonUtil;
 	
-	
+	@Autowired
+	IndPayrollService indPayrollService;
 	
 	/**
 	 * @author sarath kumar punnana and Ajith Matta
@@ -120,6 +112,26 @@ public class PayrollRestController {
 		model.addObject("sourceleadUrl", sourceleadUrl);
 		return model;
 	}
+	
+	
+	@RequestMapping(value = { "/calculateAssociateSalaryInd","/rest/calculateAssociateSalaryInd" })
+	public ModelAndView calculateAssociateSalaryInd(HttpServletRequest request) throws Exception
+	{
+	 	ModelAndView model = new ModelAndView();
+		OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,"orgLocations");
+		User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+		
+		model.setViewName("payroll_india/payroll/associatePayrollSummaryInd");
+		model.addObject("sourceleadUrl", sourceleadUrl);
+		return model;
+	}
+	
+	@RequestMapping(value = { "/getPaySheetFrequencyDataInd", "/rest/getPaySheetFrequencyDataInd" })
+	@ResponseBody
+	public ResponseList<IndPaysheetFrequencyDTO> getPaySheetFrequencyList(IndPaysheetFrequencyDTO indpaysheetFrequencyDTO, @RequestParam(value = "paySheetFrequencyUUID", required = false) String searchValue, HttpServletRequest request, HttpServletResponse response) throws Exception
+	{
+		OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+		return indPayrollService.getPayPeriodListByOrgLocationId(orgLocation, indpaysheetFrequencyDTO);
+	}
 
-	 
 }
