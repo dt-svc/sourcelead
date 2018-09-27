@@ -83,5 +83,7 @@ public interface CandidateEducationService {
 	String removeCandidateEucationrDocById(Long candidateEduId) throws Exception;
 	
 	Integer getCandidateActiveEducationsCountByCandidateId(Long candidateId) throws Exception;
+	
+	HashSet<CandidateEducation> getCandidateEducationDetailsList(CandidateDTO candidateDTO,OrgLocations orgLocations,Candidate candidate,User user) throws Exception;
 
 }

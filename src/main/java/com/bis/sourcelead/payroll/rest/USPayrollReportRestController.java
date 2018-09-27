@@ -1,6 +1,10 @@
 package com.bis.sourcelead.payroll.rest;
 
+import java.io.BufferedInputStream;
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.InputStream;
+import java.net.URLConnection;
 import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
@@ -10,6 +14,7 @@ import org.apache.commons.lang.exception.ExceptionUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.util.FileCopyUtils;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -396,7 +401,29 @@ public class USPayrollReportRestController {
 		OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 		List<CheckRegisterReportDTO> checkRegData = payrollReportService.getexportToPdfCheckRegisterReport(orgLocation,payrollReportDTO);
 		
-		File file = payrollReportPdfUtil.getCheckRegisterReportPdf(checkRegData,orgLocation);
+		File file = null;
+		if("Cheque".equalsIgnoreCase(payrollReportDTO.getDepositType())) {
+			file = payrollReportPdfUtil.getCheckRegisterReportPdf(checkRegData,orgLocation);
+		}else {
+			file = payrollReportPdfUtil.getDirectDepositExportFile(checkRegData,orgLocation,payrollReportDTO);
+		}
+		
+		String mimeType = URLConnection.guessContentTypeFromName(file.getName());
+		if (mimeType == null) {
+			mimeType = "application/octet-stream";
+		}
+		response.setContentType(mimeType);
+		StringBuilder fileName = new StringBuilder();
+		response.setHeader("Content-Disposition", fileName.append("attachment; filename=\"").append(file.getName()).append("\"").toString());
+		response.setContentLength((int) file.length());
+		InputStream inputStream = new BufferedInputStream(new FileInputStream(file));
+		FileCopyUtils.copy(inputStream, response.getOutputStream());
+		inputStream.close();
+		response.getOutputStream().close();
+		response.getOutputStream().flush();
+		if (file != null) {
+			file.delete();
+		}
 		
 	}
 }
