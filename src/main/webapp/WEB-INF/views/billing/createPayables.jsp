@@ -76,7 +76,7 @@ function errRemoveVendorContact(){
 							<div class="col-md-9 chooRadius" id="errVendor">
 							<div class="input-group col-md-10 pull-left">
 								<select class="chosen-select form-control"
-									id="vendorOrgRelationId" name="vendorOrgRelationId"
+									id="vendorOrgRelationId" name="vendorOrgRelationId" data-Bill
 									onchange="getVendorContacts();errRemoveVendor();getPaymentTerms();getPaymentAccountList();" data-validation="required" field-name="Vendor">
 								</select>
 								  <span class="input-group-addon cursorPointer bg-blue" onclick="getVendors();createpayablesEmptyVendorContact();"><i class="fa fa-refresh "></i></span>
@@ -299,7 +299,7 @@ function errRemoveVendorContact(){
          result = result +'  <div class="clearfix invoice_other mt">';
          result = result +'  <div class="col-md-5">';
          result = result +'  <div class="clearfix mb">';
-         result = result +'  <button type="button" class="btn btn-sm btn-primary mr" onclick="getAllVendorAssociates();"><i class="fa fa-plus paddingRight"></i>Add</button>';
+         result = result +'  <button type="button" class="btn btn-sm btn-primary mr" id="addAssociateBtn" onclick="getAllVendorAssociates();"><i class="fa fa-plus paddingRight"></i>Add</button>';
          result = result +'  </div>';
            
            
@@ -442,7 +442,7 @@ function remove(){
 		        	 var result = '';
 		        	 var selected = 'selected';
 		        	 result = result +'<option disabled selected>--Select Vendor--</option>';
-		        	 result = result +'<option value='+json['vendorOrgRelationId']+' '+selected+' >'+json['orgName']+'</option>';
+		        	 result = result +'<option value='+json['vendorOrgRelationId']+' '+selected+' data-Bill='+json['generateBill']+'>'+json['orgName']+'</option>';
 		        	 $("#vendorOrgRelationId").empty();
 		           	 $("#vendorOrgRelationId").append(result); 
 		           	 $('#vendorOrgRelationId').trigger("chosen:updated");
@@ -450,6 +450,11 @@ function remove(){
 // 		           	getVendorContacts(json['vendorContactId']);
 		           	$("#invoiceId").val(json['invoiceId']);
 		           	getVendorContacts(json['contactUsers']);
+		           	if($("#vendorOrgRelationId").find(':selected').attr("data-Bill") == 'Individual'){
+		      			$("#addAssociateBtn").prop("disabled", true);
+		      		}else{
+		      			$("#addAssociateBtn").prop('disabled', false);
+		      		}
 
 		           	if(json['paymentFrequency'] != null && json['paymentFrequency'] != '' && json['paymentFrequency'] != 'undefined'){
 		           		$("#paymentFrequency").val(json['paymentFrequency']);
@@ -497,6 +502,11 @@ function remove(){
 		        	
 		        }
     		});
+		 if($("#vendorOrgRelationId").find(':selected').attr("data-Bill") == 'Individual'){
+	  			$("#addAssociateBtn").prop('disabled', true);
+	  		}else{
+	  			$("#addAssociateBtn").prop('disabled', false);
+	  		}
 	}
 	</script>
 
@@ -647,6 +657,9 @@ function remove(){
 		var count = r.cells.length;
 		for (i = 0; i <= count; i++) {
 			r.deleteCell(0);
+			if($("#addInvoiceTbl").find("td").length == 0){
+				$("#addAssociateBtn").prop('disabled', false);
+			}
 		}
 		
 	}
@@ -956,6 +969,11 @@ function cancelDelDoc(){
 	    $(".new_side_wrap").removeClass("new_side_wrap_active");
  		$(".side_mask").fadeOut(200);
  		$("body").css('overflow-y', 'auto')
+ 		if(($("#addInvoiceTbl").find("td").length != 0) && ($("#vendorOrgRelationId").find(':selected').attr("data-Bill") == 'Individual')){
+ 			$("#addAssociateBtn").prop('disabled', true);
+ 		}else{
+ 			$("#addAssociateBtn").prop('disabled', false);
+ 		}
 	}
   </script>
 
@@ -967,7 +985,10 @@ function cancelDelDoc(){
 <script>
   function getAllVendorAssociates(){
 	  var maxTsRowNum = parseInt($("input[name = 'maxTsRowNum']").val());
-	  
+	  var invoiceCreateType = $("#vendorOrgRelationId").find(':selected').attr("data-Bill");
+	  if(invoiceCreateType == "Individual"){
+		  alert("Allow only One Associate");
+	  }
 	  var selectedAssociates = '';
 	  if(maxTsRowNum > 0){
 		  for(var i=0; i<maxTsRowNum; i++){
@@ -1001,7 +1022,11 @@ function cancelDelDoc(){
 	             	    result = result +'       <table id="invoiceAssociatesList" class="table table-bordered table-striped  clearfix" cellspacing="0" width="100%" >';
 	             		result = result +'           <thead>';
 	             		result = result +'           <tr>';
+	             		if(invoiceCreateType == "Bulk"){
 	             		result = result +'             <th><input type="checkbox" id="checkAllAssociates" onclick="toggleAssociates(this);"></th>';
+	             		}else if(invoiceCreateType == "Individual"){
+		             	result = result +'             <th></th>';
+	             		}
 	             		result = result +'             <th>Associate Name</th>';
 	             		result = result +'             <th>Email</th>';
 	             		result = result +'             <th>Phone</th>';
@@ -1030,7 +1055,11 @@ function cancelDelDoc(){
 	                    	 
 	                    	 
 	                    	 result = result +'<tr>';
+	                    	 if(invoiceCreateType == "Bulk"){
 	                    	 result = result +'<td><input id="'+opt.id+'" value="'+opt.id+','+associateName+'"  type="checkbox" name="associates[]" class="myCheckbox" >';
+	                    	 }else if(invoiceCreateType == "Individual"){
+		                    	result = result +'<td><input id="'+opt.id+'" value="'+opt.id+','+associateName+'"  type="radio" name="associates[]" class="myCheckbox" >';
+	                    	 }
 	                    	 result = result +'<td>'+associateName+'</td>';
 	                    	 result = result +'<td>'+opt.email+'</td>';
 	                    	 result = result +'<td>'+mobilephone+'</td>';
@@ -1821,9 +1850,9 @@ function getVendors(){
 		var opt = json[i];
 		if(orgRelationId == opt.id){
 			var selected = 'selected';
-			output = output + "<option value='" +opt.id+ "'"+selected+">"+opt.orgName+"</option>";
+			output = output + "<option value='" +opt.id+ "'"+selected+" data-Bill = '"+opt.generateBill+"'>"+opt.orgName+"</option>";
 		}else{
-			output = output + "<option value='" +opt.id+ "'>"+opt.orgName+"</option>";
+			output = output + "<option value='" +opt.id+ "' data-Bill = '"+opt.generateBill+"'>"+opt.orgName+"</option>";
 		}
 		}
 		$("#vendorOrgRelationId").empty();

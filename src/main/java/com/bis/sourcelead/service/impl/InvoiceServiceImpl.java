@@ -1648,7 +1648,7 @@ public class InvoiceServiceImpl implements InvoiceService {
 			String vendorCurrencyCode =  conversionUtil.getVendorOrgCurrencyCode(vendorOrgLocation.getCountry());
   			if(null != projectsList && projectsList.size() >0){
   				for(Projects project : projectsList){
-  	  				List<String> frequencyDates = getProjectsFrequency(project);
+  	  				List<String> frequencyDates = getProjectsFrequency(project,orgLocation);
   	  				for(String frequency :frequencyDates){
   	  				   Invoice invoice = new Invoice();
   	  					List<ProjectMembers> projectMembersList = null;
@@ -2059,11 +2059,11 @@ public class InvoiceServiceImpl implements InvoiceService {
 	 * @return List<String>
 	 * @throws Exception
 	 */
-	private List<String> getProjectsFrequency(Projects projects) throws Exception {
+	private List<String> getProjectsFrequency(Projects projects,OrgLocations orgLocations) throws Exception {
 		// Projects projects = projectsService.getProjectById(projectId);
 		List<String> frequencyDates = new ArrayList<>();
 		Map<String, String> map = timesheetFrequencyGeneratorUtil
-				.getTimesheetFrequencyListFromProjectInvoiceFrequency(projects);
+				.getTimesheetFrequencyListFromProjectInvoiceFrequency(projects,orgLocations);
 		for (Map.Entry<String, String> entry : map.entrySet()) {
 			StringBuffer sb = new StringBuffer();
 			sb.append(entry.getKey().replaceAll("/", "-")).append("/").append(entry.getValue().replaceAll("/", "-"));

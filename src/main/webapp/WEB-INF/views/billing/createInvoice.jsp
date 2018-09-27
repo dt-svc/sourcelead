@@ -83,7 +83,7 @@ function errRemoveClientContact(){
 				              <div class="col-md-9 select-field chooRadius" id="errClient">
                					<div class="input-group col-md-10 pull-left">				              
 
-				                <select class="chosen-select form-control" id="clientOrgRelationId" name="clientOrgRelationId" onchange="getClientContacts();errRemoveClient();getPaymentTerms();" data-validation="required" field-name="clientName">             
+				                <select class="chosen-select form-control" id="clientOrgRelationId" data-Invoice name="clientOrgRelationId" onchange="getClientContacts();errRemoveClient();getPaymentTerms();" data-validation="required" field-name="clientName">             
 				                </select>
 				                <span class="input-group-addon cursorPointer bg-blue" onclick="getClients();createInvoiceEmptyClientContact();"><i class="fa fa-refresh "></i></span>
 				                </div>
@@ -308,7 +308,7 @@ function errRemoveClientContact(){
          result = result +'  <div class="clearfix invoice_other mt">';
          result = result +'  <div class="col-md-5">';
          result = result +'  <div class="clearfix mb">';
-         result = result +'  <button type="button" class="btn btn-sm btn-primary mr" onclick="getAllAssociates();"><i class="fa fa-plus paddingRight"></i>Add</button>';
+         result = result +'  <button type="button" class="btn btn-sm btn-primary mr" id="addAssociateBtn" onclick="getAllAssociates();"><i class="fa fa-plus paddingRight"></i>Add</button>';
          result = result +'  </div>';
            
            
@@ -425,6 +425,12 @@ function errRemoveClientContact(){
                    result = result +'  </div>';
                    $("#lineItemAddRows").empty();
                    $("#lineItemAddRows").append(result);
+                   var invoiceUUID = '${invoiceUUID}';
+                   if($("#clientOrgRelationId").find(':selected').attr("data-Invoice") == 'Individual' && invoiceUUID != null && invoiceUUID != "" && invoiceUUID !="undefined"){
+              			$("#addAssociateBtn").prop("disabled", true);
+              		}else{
+              			$("#addAssociateBtn").prop('disabled', false);
+              		}
                    maskme();
 		
 	}
@@ -514,11 +520,12 @@ if(selectedTextInvoice =='percentage'){
 		        	 
 		        	 var selected = 'selected';
 		        	 result = result +'<option disabled selected>--Select Vendor--</option>';
-		        	 result = result +'<option value='+json['vendorOrgRelationId']+' '+selected+' >'+json['orgName']+'</option>';
+		        	 result = result +'<option value='+json['vendorOrgRelationId']+' '+selected+' data-Invoice ='+json['generateInvoice']+'>'+json['orgName']+'</option>';
 		        	 $("#clientOrgRelationId").empty();
 		           	 $("#clientOrgRelationId").append(result); 
 		           	 $('#clientOrgRelationId').trigger("chosen:updated"); 
 		           	 $('#clientCurrency').val(json['clientCurrency']);
+		           
 		           	/* getClientContacts(json['vendorContactId']); */
 		           	//alert(json['contactUsers']);
 		           	//var clientContact = json['contactUsers'];
@@ -570,10 +577,14 @@ if(selectedTextInvoice =='percentage'){
 			   			document.getElementById("saveButtonId").style.display="inline-block";
 			       	}
 		        	
-		        	
-		        	
 		        }
     		});
+		 if($("#clientOrgRelationId").find(':selected').attr("data-Invoice") == 'Individual'){
+  			$("#addAssociateBtn").prop('disabled', true);
+  		}else{
+  			$("#addAssociateBtn").prop('disabled', false);
+  		}
+		 
 	}
 	</script>
 
@@ -720,6 +731,9 @@ if(selectedTextInvoice =='percentage'){
 		var count = r.cells.length;
 		for (i = 0; i <= count; i++) {
 			r.deleteCell(0);
+			if($("#addInvoiceTbl").find("td").length == 0){
+				$("#addAssociateBtn").prop('disabled', false);
+			}
 		}
 	}
 </script>
@@ -975,7 +989,8 @@ function cancelDelDoc(){
 			            getEstimatedHours(maxRowNum);
 					 /*  var dt = toDate("#"+maxRowNum+"edate-input");
 						dt.setDate(dt.getDate() - 1);
-						$("#"+maxRowNum+"sdate-input").datepicker("option", "maxDate", dt); */
+						$("#"+maxRowNum+"sdate-input").date
+						picker("option", "maxDate", dt); */
 			 	  }
 			    });
 			
@@ -1029,6 +1044,12 @@ function cancelDelDoc(){
 	    $(".new_side_wrap").removeClass("new_side_wrap_active");
  		$(".side_mask").fadeOut(200);
  		$("body").css('overflow-y', 'auto')
+ 		if(($("#addInvoiceTbl").find("td").length != 0) && ($("#clientOrgRelationId").find(':selected').attr("data-Invoice") == 'Individual')){
+ 			$("#addAssociateBtn").prop('disabled', true);
+ 		}else{
+ 			$("#addAssociateBtn").prop('disabled', false);
+ 		}
+ 		
 	}
   </script>
 
@@ -1037,6 +1058,10 @@ function cancelDelDoc(){
   function getAllAssociates(){
 	  var maxTsRowNum = parseInt($("input[name = 'maxTsRowNum']").val());
 	  var orgRelationId = $("#clientOrgRelationId").val();
+	  var invoiceCreateType = $("#clientOrgRelationId").find(':selected').attr("data-Invoice");
+	  if(invoiceCreateType == "Individual"){
+		  alert("Allow only One Associate");
+	  }
 	  var selectedAssociates = '';
 	  if(maxTsRowNum > 0){
 		  for(var i=0; i<maxTsRowNum; i++){
@@ -1066,7 +1091,11 @@ function cancelDelDoc(){
 	             	    result = result +'       <table id="invoiceAssociatesList" class="table table-bordered table-striped  clearfix" cellspacing="0" width="100%" >';
 	             		result = result +'           <thead>';
 	             		result = result +'           <tr>';
+	             		if(invoiceCreateType == "Bulk"){
 	             		result = result +'             <th><input type="checkbox" id="checkAllAssociates" onclick="toggleAssociates(this);"></th>';
+	             		}else if(invoiceCreateType == "Individual"){
+		             		result = result +'             <th></th>';
+	             		}
 	             		result = result +'             <th>Associate Name</th>';
 	             		result = result +'             <th>Email</th>';
 	             		result = result +'             <th>Phone</th>';
@@ -1095,7 +1124,11 @@ function cancelDelDoc(){
 	                    	 
 	                    	 
 	                    	 result = result +'<tr>';
+	                    	 if(invoiceCreateType == "Bulk"){
 	                    	 result = result +'<td><input id="'+opt.id+'" value="'+opt.id+','+associateName+'"  type="checkbox" name="associates[]" class="myCheckbox" >';
+	                    	 }else if(invoiceCreateType == "Individual"){
+		                     result = result +'<td><input id="'+opt.id+'" value="'+opt.id+','+associateName+'"  type="radio" name="associates[]" class="myCheckbox" >';
+	                    	 }
 	                    	 result = result +'<td>'+associateName+'</td>';
 	                    	 result = result +'<td>'+opt.email+'</td>';
 	                    	 result = result +'<td>'+mobilephone+'</td>';
@@ -1143,7 +1176,6 @@ function cancelDelDoc(){
 	  $(".new_side_wrap").addClass("new_side_wrap_active");
 		$(".side_mask").fadeIn(200);
 		$("body").css('overflow-y', 'hidden');
-		
   }
   </script>
   
@@ -1941,12 +1973,12 @@ function getClients(){
 		var opt = json.data[i];
 		if(orgRelationId == opt.id){
 			var selected = 'selected';
-			output = output + "<option value='" +opt.id+ "'"+selected+">"+opt.orgName+"</option>";
+			output = output + "<option value='" +opt.id+ "'"+selected+" data-Invoice = '"+opt.generateInvoice+"'>"+opt.orgName+"</option>";
 		}else{
-			output = output + "<option value='" +opt.id+ "'>"+opt.orgName+"</option>";
+			output = output + "<option value='" +opt.id+ "' data-Invoice = '"+opt.generateInvoice+"'>"+opt.orgName+"</option>";
+		}
 		}
 		
-		}
 		$("#clientOrgRelationId").empty();
 		$("#clientOrgRelationId").append(output);
 		$('#clientOrgRelationId').trigger("chosen:updated");

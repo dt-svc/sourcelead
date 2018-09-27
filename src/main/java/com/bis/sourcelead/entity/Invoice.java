@@ -384,6 +384,14 @@ public class Invoice {
 	@Transient
 	@JsonProperty
     private Set<String> tagsList;
+	
+	@Transient
+	@JsonProperty
+	private String generateInvoice;
+	
+	@Transient
+	@JsonProperty
+	private String generateBill;
 
 	
 	public Long getId()
@@ -1213,6 +1221,22 @@ public class Invoice {
 
 	public void setContactUsers(String contactUsers) {
 		this.contactUsers = contactUsers;
+	}
+
+	public String getGenerateInvoice() {
+		return generateInvoice;
+	}
+
+	public void setGenerateInvoice(String generateInvoice) {
+		this.generateInvoice = generateInvoice;
+	}
+
+	public String getGenerateBill() {
+		return generateBill;
+	}
+
+	public void setGenerateBill(String generateBill) {
+		this.generateBill = generateBill;
 	}
 	
 }
