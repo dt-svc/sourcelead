@@ -45,23 +45,21 @@ public class IndPayrollServiceImpl  implements IndPayrollService{
 		ResponseList<IndPaysheetFrequencyDTO> res = new ResponseList<>();
 		List<IndPaysheetFrequencyDTO> totalList = new ArrayList<>();
 		frequencyList.getData().forEach(pay -> {
-			/*IndPaysheetFrequencyDTO pfd = new IndPaysheetFrequencyDTO();
-			pfd.setPayPeriodNum(pay.getPayPeriodNum());
-			pfd.setGroupName(pay.getPaysheetFrequency().getUserGroup().getGroupName());
-			pfd.setPaySheetFrequencyuuid(pay.getPaysheetFrequency().getPaySheetFrequencyUUID());
-			pfd.setPayFrequency(pay.getPaysheetFrequency().getUserGroup().getPayFrequency());
-			pfd.setPayDate(commonUtil.dateStrFromOrgDateFormatter(orgLocation.getDateFormat(), pay.getPaysheetFrequency().getPayCheckDate()));
-			pfd.setPaySheetFrequencyType(pay.getPaysheetFrequency().getType());
-			pfd.setApproverStatus(pay.getApproverStatus());
+			IndPaysheetFrequencyDTO pfd = new IndPaysheetFrequencyDTO();
 			
+			//pfd.setPayPeriodNum(pay.getPayRunId());
+			pfd.setGroupId(String.valueOf(pay.getUserGroup().getId()));
+			pfd.setGroupName(pay.getUserGroup().getGroupName());
 			StringBuilder sbDate = new StringBuilder();
-			pfd.setPayPeriod(sbDate.append(commonUtil.dateStrFromOrgDateFormatter(orgLocation.getDateFormat(), pay.getPaysheetFrequency().getFrequencyStartDate())).append(" / ").append(commonUtil.dateStrFromOrgDateFormatter(orgLocation.getDateFormat(), pay.getPaysheetFrequency().getFrequencyEndDate())).toString());
-		
-			Set<EmployeePayroll> payRollSet = pay.getEmployeepayroll();
-			double sum = payRollSet.stream().filter(paySet -> paySet.getPayPeriodNum() != null && Integer.parseInt(paySet.getPayPeriodNum()) == pay.getPayPeriodNum()).mapToDouble(i->i.getNetPay().doubleValue()).sum();
-			pfd.setTotal(BigDecimal.valueOf(sum));
-			pfd.setGroupId(String.valueOf(pay.getPaysheetFrequency().getUserGroup().getId()));
-			totalList.add(pfd);*/
+			pfd.setPayPeriod(sbDate.append(commonUtil.dateStrFromOrgDateFormatter(orgLocation.getDateFormat(), pay.getFrequencyStartDate())).append(" / ").append(commonUtil.dateStrFromOrgDateFormatter(orgLocation.getDateFormat(), pay.getFrequencyEndDate())).toString());
+			pfd.setPayDate(commonUtil.dateStrFromOrgDateFormatter(orgLocation.getDateFormat(), pay.getPayCheckDate()));
+			//pfd.setType(pay.getType());
+			//Set<EmployeePayroll> payRollSet = pay.getEmployeepayroll();
+			//double sum = payRollSet.stream().filter(paySet -> paySet.getPayPeriodNum() != null && Integer.parseInt(paySet.getPayPeriodNum()) == pay.getPayPeriodNum()).mapToDouble(i->i.getNetPay().doubleValue()).sum();
+			//pfd.setTotal(BigDecimal.valueOf(sum));
+			pfd.setApproverStatus(pay.getApproverStatus());
+
+			totalList.add(pfd);
 		});
 		res.setData(totalList);
 		res.setRecordsFiltered(totalList.size());

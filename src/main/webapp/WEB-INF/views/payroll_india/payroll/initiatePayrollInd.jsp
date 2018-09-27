@@ -121,8 +121,3 @@ $('body').on('blur', '#generate_payroll_form', function() {
 	$("#generate_payroll_form").validateOnBlur(false, validationSettings);  
 });
 </script>
-<script>
-function reviewIndPayroll(){
-	location.replace(sourceleadUrl+"/reviewPayrollInd");
-}
-</script>
