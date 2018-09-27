@@ -21,6 +21,7 @@ import org.apache.poi.hssf.usermodel.HSSFFormulaEvaluator;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.apache.poi.hssf.util.CellReference;
 import org.apache.poi.hssf.util.HSSFColor;
+import org.apache.poi.openxml4j.opc.OPCPackage;
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.CellStyle;
 import org.apache.poi.ss.usermodel.DataFormatter;
@@ -31,6 +32,7 @@ import org.apache.poi.ss.usermodel.IndexedColors;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
+import org.apache.poi.ss.usermodel.WorkbookFactory;
 import org.apache.poi.xssf.usermodel.XSSFFormulaEvaluator;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.json.JSONArray;
@@ -58,6 +60,7 @@ import com.bis.sourcelead.dto.RequirementDTO;
 import com.bis.sourcelead.dto.RequirementLocationsDTO;
 import com.bis.sourcelead.elk.setup.RequirementElkUtil;
 import com.bis.sourcelead.entity.Asset;
+import com.bis.sourcelead.entity.Candidate;
 import com.bis.sourcelead.entity.CandidatePassportVisa;
 import com.bis.sourcelead.entity.Countries;
 import com.bis.sourcelead.entity.Immigration;
@@ -219,16 +222,16 @@ public class DataMigrationServiceImpl implements DataMigrationService {
 		String finalImportStatus = null;
 		String jsonString = null;
 		String ac = StringUtils.removeEnd(staticPath, "/slead-static");
-		FileInputStream inputStream = new FileInputStream(
-				new File(ac + dataMigrationDTO.getExportFilePath().replace("/dataMigration/", "/temp/")));
+		
 		Workbook workbook = null;
 		DataFormatter objDefaultFormat = new DataFormatter();
 		FormulaEvaluator objFormulaEvaluator;
 		if (dataMigrationDTO.getExportFilePath().endsWith(".xls")) {
-			workbook = new HSSFWorkbook(inputStream);
+			workbook = WorkbookFactory.create(new File(ac + dataMigrationDTO.getExportFilePath().replace("/dataMigration/", "/temp/")));
 			objFormulaEvaluator = new HSSFFormulaEvaluator((HSSFWorkbook) workbook);
 		} else {
-			workbook = new XSSFWorkbook(inputStream);
+			OPCPackage pkg = OPCPackage.open(new File(ac + dataMigrationDTO.getExportFilePath().replace("/dataMigration/", "/temp/")));
+			workbook = new XSSFWorkbook(pkg);
 			objFormulaEvaluator = new XSSFFormulaEvaluator((XSSFWorkbook) workbook);
 		}
 		Sheet firstSheet = workbook.getSheetAt(0);
@@ -237,6 +240,7 @@ public class DataMigrationServiceImpl implements DataMigrationService {
 		UploadXlsHistory history = null;
 		history = saveUploadXlsHistory(rowCount, fileName[5], null, dataMigrationDTO, user, orgLocation);
 		uploadXlsHistoryService.storeUploadXlsHistory(history);
+		List<Candidate> uploadedCandidatesList = new ArrayList<>();
 		Iterator<Row> rowIterator = firstSheet.iterator();
 		int colCount = 0;
 		Boolean isEmptyExcel = true;
@@ -381,7 +385,7 @@ public class DataMigrationServiceImpl implements DataMigrationService {
 				case "timesheetUpload":
 					String timeFrequency = dataMigrationDTOJson.get("timeFrequencyType").toString();
 					dataMigrationCommonUtil.dataValidationForTimesheets(errorSet, dataMigrationDTOJsonCopy,
-							objFormulaEvaluator, objDefaultFormat, user, orgLocation, timeFrequency);
+							 objDefaultFormat, user, orgLocation, timeFrequency);
 					break;
 				case "assetUpload":
 					dataMigrationCommonUtil.dataValidationForAssets(errorSet, dataMigrationDTOJsonCopy, user,
@@ -416,7 +420,7 @@ public class DataMigrationServiceImpl implements DataMigrationService {
 				}
 
 				if (errorSet.isEmpty()) {
-					mapToEntities(dataMigrationDTOJsonCopy, user, orgLocation, dataMigrationDTO.getUploadType(),jsonString);
+					mapToEntities(dataMigrationDTOJsonCopy, user, orgLocation, dataMigrationDTO.getUploadType(),jsonString,dataMigrationDTO.getUploadid(),uploadedCandidatesList);
 					importStatus = "success";
 					FileOutputStream outputStream = new FileOutputStream(
 							new File(ac + dataMigrationDTO.getExportFilePath()));
@@ -456,7 +460,6 @@ public class DataMigrationServiceImpl implements DataMigrationService {
 					history.setFileUrl(dataMigrationDTO.getExportFilePath());
 					uploadXlsHistoryService.storeUploadXlsHistory(history);
 				}
-				
 			}
 			
 		}
@@ -464,8 +467,13 @@ public class DataMigrationServiceImpl implements DataMigrationService {
 		history.setUploadProcessingStatus("Completed");
 		uploadXlsHistoryService.storeUploadXlsHistory(history);
 		
+		
+		if(dataMigrationDTO.getUploadType().equalsIgnoreCase("candidatesUpload")) {
+			candidateService.saveBulkCandidates(uploadedCandidatesList);
+		}
+		
+		
 		workbook.close();
-		inputStream.close();
 		if (isEmptyExcel) {
 			return "fail";
 		} else if (finalImportStatus != null) {
@@ -541,7 +549,7 @@ public class DataMigrationServiceImpl implements DataMigrationService {
 
 	@SuppressWarnings("unused")
 	private void mapToEntities(JSONObject dataMigrationDTOJsonCopy, User user, OrgLocations orgLocation,
-			String uploadType,String jsonString) throws Exception {
+			String uploadType,String jsonString,String uploadId,List<Candidate> uploadedCandidatesList) throws Exception {
 		Gson gson = new Gson();
 		switch (uploadType) {
 		case "jobUpload":
@@ -623,10 +631,21 @@ public class DataMigrationServiceImpl implements DataMigrationService {
 			candidtemapper.configure(DeserializationFeature.ACCEPT_SINGLE_VALUE_AS_ARRAY, true);
 			candidtemapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
 			candidateDTO = gson.fromJson(dataMigrationDTOJsonCopy.toString(), CandidateDTO.class);
+			candidateDTO.setCandidateCreationType(Constants.IMPORT_CANDIDATE);
+			candidateDTO.setUploadId(uploadId);
 			if(candidateDTO.getCountry() == null || candidateDTO.getCountry().isEmpty()) {
 				candidateDTO.setCountry(orgLocation.getCountry());
 			}
-			candidateService.saveCandidateBulkImports(candidateDTO, orgLocation, user);
+			try {
+				Candidate candidate = candidateService.saveCandidateBulkImports(candidateDTO, orgLocation, user);
+				uploadedCandidatesList.add(candidate);
+			}catch (Exception e) {
+				UploadXlsHistory history = uploadXlsHistoryService.getUploadXlsHistoryDetailsByUploadId(uploadId);
+				history.setUploadProcessingStatus("Completed");
+				uploadXlsHistoryService.storeUploadXlsHistory(history);
+				e.printStackTrace();
+			}
+			
 			break;
 			
 		case "submmissionTemplateUpload":
