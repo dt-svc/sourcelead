@@ -2,6 +2,7 @@ package com.bis.sourcelead.payroll.entity;
 
 import java.io.Serializable;
 import java.math.BigDecimal;
+import java.util.Date;
 import java.util.Set;
 
 import javax.persistence.CascadeType;
@@ -66,9 +67,18 @@ public class IndEmployeePayroll implements Serializable {
 	@Column(name = "NO_OF_DAYS")
 	private BigDecimal noOfDays;
 	
+	@Column (name = "PAY_CHECK_DATE")
+	private Date payCheckDate;
+	
 	@Column(name = "EMP_PAY_RATE")
 	private BigDecimal empPayRate;
-
+	
+	@Column(name = "PAY_TYPE")
+	private String payType; 
+	 
+	@Column(name = "PAY_PER_SALARY")
+    private BigDecimal payPerSalary;
+	
 	@Column(name = "GROSS_PAY")
 	private BigDecimal grossPay;
 
@@ -77,6 +87,7 @@ public class IndEmployeePayroll implements Serializable {
 
 	@Column(name = "PROFESSIONAL_TAX")
 	private BigDecimal professionalTax;
+	
 
 	@Column(name = "TDS")
 	private BigDecimal tds;
@@ -86,8 +97,25 @@ public class IndEmployeePayroll implements Serializable {
 	
 	@OneToMany(cascade = CascadeType.ALL, mappedBy = "indEmployeePayrollId")
 	private Set<AssociatePayrollPayheadHistory> associatePayrollPayheadHistory;
-	
 
+	@Column(name = "STATUS")
+	private Integer status;
+	
+	@Column (name="TYPE")
+	private String type;
+	
+	@Column(name = "CREATED_DATE")
+	private Date createdDate;
+	
+	@Column(name = "CREATED_BY")
+	private Long createdBy;
+	
+	@Column(name = "UPDATED_DATE")
+	private Date updatedDate;
+	
+	@Column(name = "UPDATED_BY")
+	private Long updatedBy;
+	
 	public Long getId() {
 		return id;
 	}
@@ -234,6 +262,79 @@ public class IndEmployeePayroll implements Serializable {
 
 	public void setIndEmpPayrollUUID(String indEmpPayrollUUID) {
 		this.indEmpPayrollUUID = indEmpPayrollUUID;
+	}
+
+	public Integer getStatus() {
+		return status;
+	}
+
+	public void setStatus(Integer status) {
+		this.status = status;
+	}
+
+	public Date getCreatedDate() {
+		return createdDate;
+	}
+
+	public void setCreatedDate(Date createdDate) {
+		this.createdDate = createdDate;
+	}
+
+	public Long getCreatedBy() {
+		return createdBy;
+	}
+
+	public void setCreatedBy(Long createdBy) {
+		this.createdBy = createdBy;
+	}
+
+	public Date getUpdatedDate() {
+		return updatedDate;
+	}
+
+	public void setUpdatedDate(Date updatedDate) {
+		this.updatedDate = updatedDate;
+	}
+
+	public Long getUpdatedBy() {
+		return updatedBy;
+	}
+
+	public void setUpdatedBy(Long updatedBy) {
+		this.updatedBy = updatedBy;
+	}
+
+	public String getPayType() {
+		return payType;
+	}
+
+	public void setPayType(String payType) {
+		this.payType = payType;
+	}
+
+	public BigDecimal getPayPerSalary() {
+		return payPerSalary;
+	}
+
+	public void setPayPerSalary(BigDecimal payPerSalary) {
+		this.payPerSalary = payPerSalary;
+	}
+
+
+	public Date getPayCheckDate() {
+		return payCheckDate;
+	}
+
+	public void setPayCheckDate(Date payCheckDate) {
+		this.payCheckDate = payCheckDate;
+	}
+
+	public String getType() {
+		return type;
+	}
+
+	public void setType(String type) {
+		this.type = type;
 	}
 
 	

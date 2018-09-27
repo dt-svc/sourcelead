@@ -8,6 +8,7 @@ import java.util.Date;
 import java.util.List;
 
 import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang.exception.ExceptionUtils;
 import org.hibernate.Query;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
@@ -76,6 +77,20 @@ private static final Logger logger = LoggerFactory.getLogger(AssociateTaxDaoImpl
 		frequencyList = queryObj.setLong("orgLocationId", orgLocation.getId()).list();
 		response.setData(frequencyList);
 		return response;
+	}
+
+	@Override
+	@Transactional
+	public IndPaysheetFrequency addIndPaysheetFrequency(IndPaysheetFrequency paySheetFreq) {
+		Session session = this.sessionFactory.getCurrentSession();
+		try {
+			if (paySheetFreq != null) {
+				session.saveOrUpdate(paySheetFreq);
+			}
+		} catch (Exception e) {
+			logger.error(ExceptionUtils.getFullStackTrace(e));
+		}
+		return paySheetFreq;
 	}
 
 }
