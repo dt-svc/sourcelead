@@ -277,6 +277,12 @@
 													/* if (opt.submissionStatus == 'INTERVIEW'){
 														result = result + "<option value='SelectedOnInterview'>Selected on Interview</option>";
 													} */
+													if (opt.submissionStatus != 'ONHOLD' && opt.submissionStatus != 'JOINED'){	
+														result = result + "<option value='ON-Hold'>ON-Hold</option>";
+														}
+													if (opt.submissionStatus != 'NORESPONSE' && opt.submissionStatus != 'JOINED'){	
+														result = result + "<option value='NoResponse'>NoResponse</option>";
+														}
 													result = result + "<option value='Reject'>Reject</option>";
 													if (opt.submissionStatus == 'OFFERMADE' || opt.submissionStatus == 'OFFERACCEPTED' || opt.submissionStatus == 'JOINED'
 														 || opt.submissionStatus == 'CLIENT_OFFERMADE' || opt.submissionStatus == 'CLIENT_OFFERACCEPTED') {

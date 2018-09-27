@@ -174,7 +174,7 @@ private static final Logger logger = LoggerFactory.getLogger(EmailScenarioConfig
 
 				//System.out.println(" trying to connect mail with IMAP Deatils ==============>");
 				logger.debug("***********************trying to connect mail with IMAP Deatils ****************");
-				//session.setDebug(true);    //Enable flag for debug.
+				session.setDebug(true);    //Enable flag for debug.
 				store.connect(host, user, password);
 				
 				Folder emailFolder = store.getFolder("INBOX"); // Reading inbox folder.
