@@ -309,6 +309,7 @@ public class PayrollReportServiceImpl implements PayrollReportService{
 
 	@Override
 	public ResponseList<PayrollReportDTO> getDeductionReports(OrgLocations orgLocation,PayrollReportDTO payrollReportDTO) {
+		
 		ResponseList<DeductionHistory> payrollResponse = payrollReportDao.getDeductionReports(orgLocation,payrollReportDTO);
 		ResponseList<PayrollReportDTO>  res = new ResponseList<>();
 		List<PayrollReportDTO> list = new ArrayList<>();
@@ -344,6 +345,9 @@ public class PayrollReportServiceImpl implements PayrollReportService{
 					}
 					dto.setDedAmount(dedAmount);
 					dto.setSchedule(dedHis.getDeductionId().getDeductionTypeId().getPayrollScheduled().toLowerCase());
+					BigDecimal deductionYTD = payrollUtil.getDeductionYTD(dedHis.getPayroll(), dedHis.getDeductionId().getId(), orgLocation);
+					dto.setDeductionYTD(deductionYTD);
+					list.add(dto);
 					list.add(dto);
 				}
 			}
@@ -354,6 +358,13 @@ public class PayrollReportServiceImpl implements PayrollReportService{
 			e.printStackTrace();
 		}
 		return res;
+	}
+
+	@Override
+	public List<CheckRegisterReportDTO> getexportToPdfCheckRegisterReport(OrgLocations orgLocation, PayrollReportDTO payrollReportDTO)
+	{
+		List<CheckRegisterReportDTO>  checkRegisterList = payrollReportDao.getexportToPdfCheckRegisterReport(orgLocation,payrollReportDTO);
+		return checkRegisterList;
 	}
 
 }

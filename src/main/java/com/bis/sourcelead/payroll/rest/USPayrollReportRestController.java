@@ -1,5 +1,6 @@
 package com.bis.sourcelead.payroll.rest;
 
+import java.io.File;
 import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
@@ -28,6 +29,7 @@ import com.bis.sourcelead.payroll.dto.PayrollReportDTO;
 import com.bis.sourcelead.payroll.service.PayrollReportService;
 import com.bis.sourcelead.payroll.service.PaysheetFrequencyService;
 import com.bis.sourcelead.payroll.service.USPayPeriodService;
+import com.bis.sourcelead.payroll.util.PayrollReportPdfUtil;
 import com.bis.sourcelead.payroll.util.PayrollUtil;
 import com.bis.sourcelead.service.UserGroupService;
 import com.bis.sourcelead.util.SourceLeadSessionManager;
@@ -52,6 +54,9 @@ public class USPayrollReportRestController {
 	
 	@Autowired
 	PayrollUtil payrollUtil;
+	
+	@Autowired
+	PayrollReportPdfUtil payrollReportPdfUtil;
 
 	/**
 	 * Returning Us Payroll Jsp
@@ -374,5 +379,24 @@ public class USPayrollReportRestController {
 		payrollReportDTO.setSortOrder(sortColumnOrder);
 		ResponseList<PayrollReportDTO> res = payrollReportService.getDeductionReports(orgLocation,payrollReportDTO);
 		return res;
+	}
+	
+	
+	/**
+	 * Get Check Register Payroll Reports 
+	 * @param groupId
+	 * @param request
+	 * @param response
+	 * @return
+	 * @throws Exception
+	 */
+	@RequestMapping(value = "/exportToPdfCheckRegisterReport")
+	public void exportToPdfCheckRegisterReport(PayrollReportDTO payrollReportDTO,HttpServletRequest request, HttpServletResponse response) throws Exception
+	{
+		OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+		List<CheckRegisterReportDTO> checkRegData = payrollReportService.getexportToPdfCheckRegisterReport(orgLocation,payrollReportDTO);
+		
+		File file = payrollReportPdfUtil.getCheckRegisterReportPdf(checkRegData,orgLocation);
+		
 	}
 }

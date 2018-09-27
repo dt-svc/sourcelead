@@ -42,46 +42,51 @@ public class Test {
     	Document document = new Document(PageSize.A4.rotate());
     	PdfWriter.getInstance(document, new FileOutputStream(dest));
     	document.open();
-    	PdfPTable maintable = new PdfPTable(1);
-    	maintable.setTotalWidth(document.getPageSize().getWidth() - 80);
-    	maintable.setLockedWidth(true);
+    	
+    	PdfPTable maintable = getPdfTable(1, document);
 
-    	PdfPTable table = new PdfPTable(3);
-    	table.setTotalWidth(document.getPageSize().getWidth() - 80);
-    	table.setLockedWidth(true);
+    	PdfPTable table = getPdfTable(14, document);
 
-    	StringBuilder sb = new StringBuilder();
-    	sb.append("Client Id: OVATYW56 - MI Softech Inc \n");
-    	sb.append("Pay Group: Monthly\n");
-    	sb.append("Check Date: 2018-01-01\n");
-    	sb.append("Run Date: 2018-01-01       Run Number: 10");
     	PdfPCell cell0 = new PdfPCell();
-    	cell0.addElement(new Paragraph(sb.toString()));
-//    	cell0.addElement(new Paragraph("Emp #: 25"));
+    	Font boldFont = new Font(Font.FontFamily.HELVETICA, 10, Font.BOLD);
+    	cell0.addElement(new Paragraph("Client ID: OVATYW56 - MI Softech Inc",boldFont));
+    	cell0.addElement(new Paragraph("Pay Group: Monthly",boldFont));
+    	cell0.addElement(new Paragraph("Check Date: 4/5/2018",boldFont));
+    	cell0.addElement(new Paragraph("Run Date: 4/5/2018",boldFont));
+    	cell0.addElement(new Paragraph(" Run Number : "+10,boldFont));
     	cell0.setBorder(Rectangle.NO_BORDER);
-    	cell0.setBackgroundColor(BaseColor.WHITE);
-//    	cell0.setColspan(5);
+    	cell0.setPaddingLeft(20f);
+    	cell0.setColspan(5);
     	table.addCell(cell0);
-    	PdfPCell cell1 = new PdfPCell();
-    	cell1.addElement(new Paragraph(""));
-    	cell1.addElement(new Paragraph("XXX-XX-5607"));
-    	cell1.setBorder(Rectangle.NO_BORDER);
-    	cell1.setBackgroundColor(BaseColor.WHITE);
-//    	cell1.setColspan(5);
-    	table.addCell(cell1);
+
+
     	PdfPCell cell2 = new PdfPCell();
-    	cell2.addElement(new Paragraph("2000 Walnut Ave FREMONT, CA 94538"));
+    	Font greyFont = new Font(Font.FontFamily.HELVETICA, 12, Font.BOLD);
+    	Chunk chunk = new Chunk("DIRECT DEPOSIT REGISTER(clientId)", greyFont);
+    	chunk.setBackground(new BaseColor(220,220,220));
+    	cell2.addElement(new Paragraph(chunk));
+    	cell2.addElement(new Paragraph("MI Softech Inc",boldFont));
+    	cell2.addElement(new Paragraph("DBA: MI Softech Inc",boldFont));
     	cell2.addElement(new Paragraph(""));
     	cell2.setBorder(Rectangle.NO_BORDER);
-    	cell2.setBackgroundColor(BaseColor.WHITE);
-//    	cell2.setColspan(5);
+    	cell2.setColspan(6);
     	table.addCell(cell2);
+    	PdfPCell cell3 = new PdfPCell();
+    	cell3.addElement(new Paragraph("Period Begin Date: 2/1/2018",boldFont));
+    	cell3.addElement(new Paragraph("Period End Date: 2/28/2018",boldFont));
+    	cell3.addElement(new Paragraph("Pay Period: 6",boldFont));
+    	cell3.addElement(new Paragraph("Payroll Type: Regular",boldFont));
+    	cell3.setBorder(Rectangle.NO_BORDER);
+    	cell3.setColspan(4);
+    	table.addCell(cell3);
 
-    	PdfPCell mCell1 = new PdfPCell();
-    	mCell1.setBorderWidth(4f);
-    	mCell1.addElement(table);
-    	maintable.addCell(mCell1);
+    	PdfPCell mCell0 = new PdfPCell();
+    	mCell0.addElement(table);
+    	mCell0.setBorderWidth(1);
+    	maintable.addCell(mCell0);
     	document.add(maintable);
+    	
+    	
     	document.add(Chunk.NEWLINE);
     	document.add(Chunk.NEWLINE);
     	document.add(Chunk.NEWLINE);
@@ -102,94 +107,110 @@ public class Test {
     	empTable.addCell("");
     	empTable.addCell(new Phrase("Check Number", boldFont));
     	empTable.addCell(new Phrase("Amount", boldFont));
-//    	empTable.addCell(new Phrase("Cleared", boldFont));
     	document.add(empTable);
     	
     	
-    	PdfPTable empDataTable = new PdfPTable(7);
-    	empDataTable.setTotalWidth(document.getPageSize().getWidth() - 80);
-    	empDataTable.setLockedWidth(true);
+    	PdfPTable empDataTable = getPdfTable(7,document);
     	empDataTable.setSpacingBefore(2);  
     	
-    	PdfPCell dataCell = new PdfPCell(new Phrase("100", normalFont));
-    	dataCell.setBorder(Rectangle.NO_BORDER);
-    	dataCell.setFixedHeight(5);
-    	empDataTable.addCell(dataCell);
-    	
-    	PdfPCell empIdCell = new PdfPCell(new Phrase("2", normalFont));
-    	empIdCell.setBorder(Rectangle.NO_BORDER);
-    	empDataTable.addCell(empIdCell);
-    	
-    	PdfPCell empNameCell = new PdfPCell(new Phrase("Kakula Varam, Kunila", normalFont));
-    	empNameCell.setBorder(Rectangle.NO_BORDER);
-    	empDataTable.addCell(empNameCell);
-    	
-    	PdfPCell empDateCell = new PdfPCell(new Phrase("4/5/2018", normalFont));
-    	empDateCell.setBorder(Rectangle.NO_BORDER);
-    	empDataTable.addCell(empDateCell);
-    	
-    	PdfPCell empEmptyCell = new PdfPCell(new Phrase("", normalFont));
-    	empEmptyCell.setBorder(Rectangle.NO_BORDER);
-    	empDataTable.addCell(empEmptyCell);
-    	
-    	PdfPCell empCheckCell = new PdfPCell(new Phrase("15221458", normalFont));
-    	empCheckCell.setBorder(Rectangle.NO_BORDER);
-    	empDataTable.addCell(empCheckCell);
-    	
-    	PdfPCell empAmountCell = new PdfPCell(new Phrase("$ 930.00", normalFont));
-    	empAmountCell.setBorder(Rectangle.NO_BORDER);
-    	empDataTable.addCell(empAmountCell);
-    	
-//     	PdfPCell empBoxCell = new PdfPCell(new Paragraph(Rectangle.BOX));
-//     	empBoxCell.setBorder(Rectangle.NO_BORDER);
-//    	empDataTable.addCell(empBoxCell);
+    	empDataTable.addCell(getPdfCell("Total Number of Checks: 1",normalFont,5));
+    	empDataTable.addCell(getPdfCell("2",normalFont,0));
+    	empDataTable.addCell(getPdfCell("Kakula Varam, Kunila",normalFont,0));
+    	empDataTable.addCell(getPdfCell("4/5/2018",normalFont,0));
+    	empDataTable.addCell(getPdfCell("",normalFont,0));
+    	empDataTable.addCell(getPdfCell("15221458",normalFont,0));
+    	empDataTable.addCell(getPdfCell("$ 930.00",normalFont,0));
     	empDataTable.setSpacingAfter(8);
     	document.add(empDataTable);
     	
+    	PdfPTable lineTable = getPdfTable(1,document);
     	
-    	PdfPTable lineTable = new PdfPTable(1);
-    	lineTable.setTotalWidth(document.getPageSize().getWidth() - 80);
-    	lineTable.setLockedWidth(true);
     	
     	PdfPTable lineChildTable = new PdfPTable(4);
-//    	lineChildTable.setTotalWidth(document.getPageSize().getWidth() - 80);
-//    	lineChildTable.setLockedWidth(true);
+    	lineChildTable.addCell(getPdfCell("",boldFont,0));
+    	lineChildTable.addCell(getPdfCell("",boldFont,0));
+    	lineChildTable.addCell(getPdfCell("Total Number of Checks: 1",boldFont,0));
+    	lineChildTable.addCell(getPdfCell("930.80",boldFont,0));
     	
-    	PdfPCell leneCell1 = new PdfPCell(new Paragraph(""));
-    	leneCell1.setBorder(Rectangle.NO_BORDER);
-    	lineChildTable.addCell(leneCell1);
-    	
-    	PdfPCell leneCell2 = new PdfPCell(new Paragraph(""));
-    	leneCell2.setBorder(Rectangle.NO_BORDER);
-//    	leneCell2.setBorder(Rectangle.BOTTOM);
-    	lineChildTable.addCell(leneCell2);
-    	
-    	PdfPCell leneCell3 = new PdfPCell(new Paragraph("Total Number of Checks: 1",boldFont));
-    	leneCell3.setBorder(Rectangle.NO_BORDER);
-//    	leneCell3.setBorder(Rectangle.BOTTOM);
-    	lineChildTable.addCell(leneCell3);
-    	
-    	PdfPCell leneCell4 = new PdfPCell(new Paragraph("930.80",boldFont));
-    	leneCell4.setBorder(Rectangle.NO_BORDER);
-//    	leneCell4.setBorder(Rectangle.BOTTOM);
-    	lineChildTable.addCell(leneCell4);
-//    	LineSeparator ls = new LineSeparator();
-//    	ls.setLineWidth(2f);
-//    	document.add(new Chunk(ls));
-//    	Chunk chunk = new Chunk("Total Number of Checks:", boldFont);
-//    	chunk.setBackground(BaseColor.LIGHT_GRAY);
-//    	Paragraph p = new Paragraph(chunk);
-//    	document.add(p);
-    	
-    	PdfPCell p = new PdfPCell(lineChildTable);
-    	p.setFixedHeight(30);
-    	p.setBorderWidth(1f);
-    	p.setBorder(Rectangle.TOP | Rectangle.BOTTOM);
-    	lineTable.addCell(p);
+    	PdfPCell lineTableCell = new PdfPCell(lineChildTable);
+    	lineTableCell.setFixedHeight(30);
+    	lineTableCell.setBorderWidth(1f);
+    	lineTableCell.setBackgroundColor(new BaseColor(211,211,211));
+    	lineTableCell.setBorder(Rectangle.TOP | Rectangle.BOTTOM);
+    	lineTable.addCell(lineTableCell);
     	document.add(lineTable);
+    	
+    	PdfPTable checksTable = getPdfTable(1,document);
+    	checksTable.setTotalWidth(document.getPageSize().getWidth() - 80);
+    	checksTable.setLockedWidth(true);
+    	
+    	PdfPTable checksChildTable = new PdfPTable(4);
+    	
+    	checksChildTable.addCell(getPdfCell("",boldFont,0));
+    	checksChildTable.addCell(getPdfCell("",boldFont,0));
+    	checksChildTable.addCell(getPdfCell("Total Employee Live Checks: 1",boldFont,0));
+    	checksChildTable.addCell(getPdfCell("930.83",boldFont,0));
+    	
+    	checksChildTable.addCell(getPdfCell("",boldFont,0));
+    	checksChildTable.addCell(getPdfCell("",boldFont,0));
+    	checksChildTable.addCell(getPdfCell("Total Manual Checks: 0",boldFont,0));
+    	checksChildTable.addCell(getPdfCell("0.00",boldFont,0));
+    	
+    	checksChildTable.addCell(getPdfCell("",boldFont,0));
+    	checksChildTable.addCell(getPdfCell("",boldFont,0));
+    	checksChildTable.addCell(getPdfCell("Total Void Checks: 0",boldFont,0));
+    	checksChildTable.addCell(getPdfCell("0.00",boldFont,0));
+    	
+    	checksChildTable.addCell(getPdfCell("",boldFont,0));
+    	checksChildTable.addCell(getPdfCell("",boldFont,0));
+    	checksChildTable.addCell(getPdfCell("Total Third Party Checks: 0",boldFont,0));
+    	checksChildTable.addCell(getPdfCell("0.00",boldFont,0));
+    	
+    	checksChildTable.addCell(getPdfCell("",boldFont,0));
+    	checksChildTable.addCell(getPdfCell("",boldFont,0));
+    	checksChildTable.addCell(getPdfCell("Total Third Party Void Checks: 0",boldFont,0));
+    	checksChildTable.addCell(getPdfCell("0.00",boldFont,0));
+    	
+    	checksChildTable.setSpacingAfter(10);
+    	
+    	PdfPCell checksCell = new PdfPCell(checksChildTable);
+    	checksCell.setBorder(Rectangle.BOTTOM);
+    	checksTable.addCell(checksCell);
+    	
+    	document.add(checksTable);
     	
     	document.close();
         System.out.println("Done.!!");
     }
+    
+    
+    /**
+     * Get PdfTabele  
+     * @param coulmns
+     * @param document
+     * @return PdfPTable
+     */
+	private PdfPTable getPdfTable(int coulmns, Document document)
+	{
+		PdfPTable table = new PdfPTable(coulmns);
+		table.setTotalWidth(document.getPageSize().getWidth() - 80);
+		table.setLockedWidth(true);
+		return table;
+	}
+	
+	/**
+	 * Get Cell for PdfTable 
+	 * @param str
+	 * @param boldFont
+	 * @param fixedHieght
+	 * @return PdfPCell
+	 */
+	private PdfPCell getPdfCell(String str, Font boldFont, int fixedHieght)
+	{
+		PdfPCell cell = new PdfPCell(new Paragraph(str,boldFont));
+		cell.setFixedHeight(fixedHieght);
+    	cell.setBorder(Rectangle.NO_BORDER);
+		return cell;
+	}
  
 }
