@@ -33,8 +33,6 @@ public class PaysheetFrequencyDTO  extends SearchDTO{
 
 	private List<USPayrollDTO> payrollDTO;
 	
-	private List<INDPayrollDTO> indPayrollDTO;
-	
 	private String payrollFrequencyUUID;
 	
 	public String getGroupId()
@@ -154,12 +152,6 @@ public class PaysheetFrequencyDTO  extends SearchDTO{
 	}
 	public void setPaySheetFrequency(PaysheetFrequency paySheetFrequency) {
 		this.paySheetFrequency = paySheetFrequency;
-	}
-	public List<INDPayrollDTO> getIndPayrollDTO() {
-		return indPayrollDTO;
-	}
-	public void setIndPayrollDTO(List<INDPayrollDTO> indPayrollDTO) {
-		this.indPayrollDTO = indPayrollDTO;
 	}
 	
 }
