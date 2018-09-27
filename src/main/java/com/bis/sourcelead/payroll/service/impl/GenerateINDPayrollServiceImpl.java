@@ -14,10 +14,9 @@ import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.payroll.dao.GenerateINDPayrollDao;
 import com.bis.sourcelead.payroll.dto.GenerateINDPayrollDTO;
+import com.bis.sourcelead.payroll.dto.INDPayrollDTO;
 import com.bis.sourcelead.payroll.dto.IndPaysheetFrequencyDTO;
-import com.bis.sourcelead.payroll.dto.PaysheetFrequencyDTO;
-import com.bis.sourcelead.payroll.dto.USPayrollDTO;
-import com.bis.sourcelead.payroll.entity.EmployeePayroll;
+import com.bis.sourcelead.payroll.entity.IndEmployeePayroll;
 import com.bis.sourcelead.payroll.entity.IndPaysheetFrequency;
 import com.bis.sourcelead.payroll.service.GenerateINDPayrollService;
 
@@ -35,15 +34,15 @@ public class GenerateINDPayrollServiceImpl implements GenerateINDPayrollService{
 			
 		IndPaysheetFrequency paysheetFrequency = generateINDPayrollDao.getPayrollData(generateINDPayrollDTO, orgLocation, loginUser);
 		IndPaysheetFrequencyDTO indPaysheetFrequencyDTO = null;
-		List<USPayrollDTO> list = null;
-		/*try {
-			if (paysheetFrequency != null && paysheetFrequency.getEmployeepayroll() != null) {
-				paysheetFrequencyDTO = new PaysheetFrequencyDTO();
-				paysheetFrequencyDTO.setPayrollFrequencyUUID(paysheetFrequency.getPaySheetFrequencyUUID());
-				paysheetFrequencyDTO.setPaySheetFrequencyId(paysheetFrequency.getId());
+		List<INDPayrollDTO> list = null;
+		try {
+			if (paysheetFrequency != null && paysheetFrequency.getIndEmployeepayroll() != null) {
+				indPaysheetFrequencyDTO = new IndPaysheetFrequencyDTO();
+				indPaysheetFrequencyDTO.setPayrollFrequencyUUID(paysheetFrequency.getPaySheetFrequencyUUID());
+				indPaysheetFrequencyDTO.setPaySheetFrequencyId(paysheetFrequency.getId());
 				list = new ArrayList<>();
-				for(EmployeePayroll pay : paysheetFrequency.getEmployeepayroll()) {
-					USPayrollDTO payrollDTO = new USPayrollDTO();
+				for(IndEmployeePayroll pay : paysheetFrequency.getIndEmployeepayroll()) {
+					INDPayrollDTO payrollDTO = new INDPayrollDTO();
 					payrollDTO.setEmpId(pay.getEmployee().getEmployeeId());
 					StringBuilder sb = new StringBuilder();
 					if (StringUtils.isNoneBlank(pay.getCandidate().getLastName())) {
@@ -56,42 +55,35 @@ public class GenerateINDPayrollServiceImpl implements GenerateINDPayrollService{
 					payrollDTO.setEmployeeDesignationType(pay.getCandidate().getDesignationType());
 					payrollDTO.setEmpName(sb.toString());
 					payrollDTO.setEmpPayrollId(pay.getId());
-					payrollDTO.setEmpPayrollUUID(pay.getUsEmpPayrollUUID());
+					payrollDTO.setEmpPayrollUUID(pay.getIndEmpPayrollUUID());
+					
 					payrollDTO.setGrossPay(pay.getGrossPay());
 					payrollDTO.setNetPay(pay.getNetPay());
 					payrollDTO.setRegularHrsTotalAmt(pay.getRegularHoursAmount());
 					payrollDTO.setPayRate(pay.getEmpPayRate());
-					payrollDTO.setPostTaxDeduction(pay.getPostTaxDeduction());
-					payrollDTO.setPreTaxDeduction(pay.getPreTaxDeduction());
 					float regHrs = 0;
 					if(StringUtils.isNotBlank(pay.getRegularHours())) {
 						regHrs = Float.parseFloat(pay.getRegularHours());
 					}
 					payrollDTO.setRegularHours(regHrs);
-					payrollDTO.setTaxes(pay.getTaxes());
 					payrollDTO.setOtHoursTotalAmt(pay.getOverTimeAmount());
 					payrollDTO.setCandidateId(pay.getCandidate().getId());
-					payrollDTO.setPaySheetFrequencyId(pay.getPaysheetFrequency().getId());
+					payrollDTO.setPaySheetFrequencyId(pay.getIndPaysheetFrequency().getId());
 					double overTimeHours = 0;
 					if(StringUtils.isNoneBlank(pay.getOverTimeHours())) {
 						overTimeHours = Double.parseDouble(pay.getOverTimeHours());
 					}
 					payrollDTO.setOvertimeHours(overTimeHours);
-					if(pay.getPayType() != null) {
-						payrollDTO.setPayType(pay.getPayType());
-					}
 					payrollDTO.setApproverStatus(pay.getSubmitForAproverStatus());
-//					if(PayrollConstant.DRAFT.equalsIgnoreCase(pay.getSubmitForAproverStatus())) {
-						list.add(payrollDTO);	
-//					}
+					list.add(payrollDTO);	
 					
 				}
-				paysheetFrequencyDTO.setPayrollDTO(list);
+				indPaysheetFrequencyDTO.setIndPayrollDTO(list);
 			}
 			
 		} catch (Exception e) {
 			e.printStackTrace();
-		}*/
+		}
 		return indPaysheetFrequencyDTO;
 	}
 	

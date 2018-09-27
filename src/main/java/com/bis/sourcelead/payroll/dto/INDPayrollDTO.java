@@ -37,6 +37,8 @@ public class INDPayrollDTO {
 	private Long candidateId;
 	
 	private String approverStatus;
+	
+	private String employeeDesignationType;
 
 	public Long getEmpPayrollId() {
 		return empPayrollId;
@@ -172,6 +174,14 @@ public class INDPayrollDTO {
 
 	public void setApproverStatus(String approverStatus) {
 		this.approverStatus = approverStatus;
+	}
+
+	public String getEmployeeDesignationType() {
+		return employeeDesignationType;
+	}
+
+	public void setEmployeeDesignationType(String employeeDesignationType) {
+		this.employeeDesignationType = employeeDesignationType;
 	}
 	
 	
