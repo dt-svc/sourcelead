@@ -63,7 +63,7 @@
 		<!--hidden id for edit -->
 		<input type="hidden" name="lcaId" id="currlcaId" value="${immigrationDTO.lcaId}">
 		<div class="popupHead">
-			<h2>Add LCA</h2><a href="javascript:void(0)" class="fa fa-close popCan" onclick="closeLcapopup();"></a>
+			<h2>Assign LCA</h2><a href="javascript:void(0)" class="fa fa-close popCan" onclick="closeLcapopup();"></a>
 		</div>
 		
 		<div class="popupMid clearfix">
