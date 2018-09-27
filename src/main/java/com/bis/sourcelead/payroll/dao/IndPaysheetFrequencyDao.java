@@ -4,9 +4,11 @@ import com.bis.sourcelead.dto.ResponseList;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.payroll.dto.IndPaysheetFrequencyDTO;
 import com.bis.sourcelead.payroll.entity.IndPaysheetFrequency;
+import com.bis.sourcelead.payroll.entity.PaysheetFrequency;
 
 public interface IndPaysheetFrequencyDao {
 
 	ResponseList<IndPaysheetFrequency> getIndPaysheetFrequencyListByOrgLocationId(OrgLocations orgLocation, IndPaysheetFrequencyDTO indPaysheetFrequencyDTO) throws Exception;
 
+	IndPaysheetFrequency addIndPaysheetFrequency(IndPaysheetFrequency paySheetFreq);
 }

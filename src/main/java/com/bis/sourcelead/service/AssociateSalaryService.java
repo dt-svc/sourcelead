@@ -24,6 +24,8 @@ public interface AssociateSalaryService {
 	AssociatePayItem saveUpdatedPayItem(AssociatePayItem associatePayItem);
 
 	List<AssociateSalary> getAssociateSalaryListByGroupId(OrgLocations orgLocation, long groupId, String payType);
+	
+	List<AssociateSalaryInd> getIndAssociateSalaryListByGroupId(OrgLocations orgLocation, long groupId, String payType);
 
 	List<AssociatePayItemDTO> findAssociatePayItemByPayrollId(Long payrollId);
 

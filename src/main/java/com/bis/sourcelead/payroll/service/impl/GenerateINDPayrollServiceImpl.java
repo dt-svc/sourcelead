@@ -1,8 +1,12 @@
 package com.bis.sourcelead.payroll.service.impl;
 
+import java.math.BigDecimal;
+import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -14,7 +18,8 @@ import org.springframework.stereotype.Service;
 
 import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.dao.UserGroupDao;
-import com.bis.sourcelead.entity.AssociateSalary;
+import com.bis.sourcelead.entity.AssociatePayrollPayheadHistory;
+import com.bis.sourcelead.entity.AssociateSalaryInd;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.entity.UserGroup;
@@ -23,14 +28,14 @@ import com.bis.sourcelead.payroll.dto.GenerateINDPayrollDTO;
 import com.bis.sourcelead.payroll.dto.INDPayrollDTO;
 import com.bis.sourcelead.payroll.dto.IndPaysheetFrequencyDTO;
 import com.bis.sourcelead.payroll.dto.PayrollConstant;
-import com.bis.sourcelead.payroll.dto.USPayrollDTO;
-import com.bis.sourcelead.payroll.entity.EmployeePayroll;
+import com.bis.sourcelead.payroll.dto.TotalHoursDTO;
 import com.bis.sourcelead.payroll.entity.IndEmployeePayroll;
 import com.bis.sourcelead.payroll.entity.IndPaysheetFrequency;
-import com.bis.sourcelead.payroll.entity.PaysheetFrequency;
 import com.bis.sourcelead.payroll.service.GenerateINDPayrollService;
+import com.bis.sourcelead.payroll.service.IndPaysheetFrequencyService;
 import com.bis.sourcelead.service.AssociateSalaryService;
 import com.bis.sourcelead.util.CommonUtil;
+import com.bis.sourcelead.util.INDPayrollCommonUtil;
 import com.bis.sourcelead.util.SourceLeadRandomCodeHelper;
 
 @Service
@@ -43,10 +48,16 @@ public class GenerateINDPayrollServiceImpl implements GenerateINDPayrollService{
 	CommonUtil commonUtil;
 	
 	@Autowired
+	INDPayrollCommonUtil iNDPayrollCommonUtil;
+	
+	@Autowired
 	AssociateSalaryService associateSalaryService;
 	
 	@Autowired
 	UserGroupDao userGroupDao;
+	
+	@Autowired
+	IndPaysheetFrequencyService indPaysheetFrequencyService;
 
 	private static final Logger logger = LoggerFactory.getLogger(GenerateINDPayrollServiceImpl.class);
 
@@ -119,17 +130,17 @@ public class GenerateINDPayrollServiceImpl implements GenerateINDPayrollService{
 		
 		
 		String[] groupId = generateINDPayrollDTO.getGroupId().split(",");
-		List<AssociateSalary> assSallist = associateSalaryService.getAssociateSalaryListByGroupId(orgLocation,Long.parseLong(groupId[1]),generateINDPayrollDTO.getPaytype());
+		List<AssociateSalaryInd> assSallist = associateSalaryService.getIndAssociateSalaryListByGroupId(orgLocation,Long.parseLong(groupId[1]),generateINDPayrollDTO.getPaytype());
 		
 		UserGroup userGroup = userGroupDao.findUserGroupById(groupId[0]);
 		
 		if (assSallist != null && assSallist.size() >0) {
-			PaysheetFrequency paySheetFreq = null;
+			IndPaysheetFrequency paySheetFreq = null;
 			if(existedData != null) {
-				 paySheetFreq = new PaysheetFrequency();
+				 paySheetFreq = new IndPaysheetFrequency();
 				 paySheetFreq.setId(existedData.getPaySheetFrequencyId());
 			}else {
-				 paySheetFreq = new PaysheetFrequency();
+				 paySheetFreq = new IndPaysheetFrequency();
 			}
 			
 			paySheetFreq.setUserGroup(userGroup);
@@ -145,14 +156,13 @@ public class GenerateINDPayrollServiceImpl implements GenerateINDPayrollService{
 			paySheetFreq.setCreatedBy(loginUser.getId());
 			paySheetFreq.setUpdatedBy(loginUser.getId());
 			paySheetFreq.setStatus(1);
-			paySheetFreq.setType(PayrollConstant.PAYROLL);
 			paySheetFreq.setApproverStatus(PayrollConstant.DRAFT);
 			paySheetFreq.setPaySheetFrequencyUUID(SourceLeadRandomCodeHelper.generateRandomUUID());
-			/*Set<EmployeePayroll> payrollList = calculatePayroll(existedData,paySheetFreq, loginUser, orgLocation,assSallist,freqStartDate, freqEndDate,userGroup);
+			Set<IndEmployeePayroll> payrollList = calculatePayroll(existedData,paySheetFreq, loginUser, orgLocation,assSallist,freqStartDate, freqEndDate,userGroup);
 			if(payrollList !=null && payrollList.size() > 0) {
-				paySheetFreq.setEmployeepayroll(payrollList);
-				uSPaysheetService.addPaysheetFrequency(paySheetFreq);
-			}*/
+				paySheetFreq.setIndEmployeepayroll(payrollList);
+				indPaysheetFrequencyService.addIndPaysheetFrequency(paySheetFreq);
+			}
 			indPaysheetFrequencyDTO = getPayrollData(generateINDPayrollDTO,orgLocation,loginUser);
 				if(indPaysheetFrequencyDTO != null && indPaysheetFrequencyDTO.getIndPayrollDTO() != null) {
 					List<INDPayrollDTO> draftPayroll = null;
@@ -173,5 +183,130 @@ public class GenerateINDPayrollServiceImpl implements GenerateINDPayrollService{
 		return indPaysheetFrequencyDTO;
 	}
 	
+	@SuppressWarnings("static-access")
+	private Set<IndEmployeePayroll> calculatePayroll(IndPaysheetFrequencyDTO existedData,IndPaysheetFrequency paySheetFreq, User loginUser, OrgLocations orgLocation, List<AssociateSalaryInd> assoSalList, Date freqStartDate, Date freqEndDate, UserGroup userGroup)
+	{
+		Set<IndEmployeePayroll> set = new HashSet<>();
+		try {
+			for (AssociateSalaryInd assoSal : assoSalList) {
+				
+				if(assoSal.getCandidate().getDesignationType() != null && !PayrollConstant.C2C.equalsIgnoreCase(assoSal.getCandidate().getDesignationType())){
+					
+					boolean isExisted = isPayrollRunForSameFrequency(existedData,assoSal);
+					if(!isExisted) {
+						    IndEmployeePayroll employeePayroll = new IndEmployeePayroll();
+						    employeePayroll.setIndPaysheetFrequency(paySheetFreq);
+							double totalHours = 0;
+							BigDecimal payRate = BigDecimal.ZERO;
+							BigDecimal amount = BigDecimal.ZERO;
+							BigDecimal regularHoursAmount = BigDecimal.ZERO;
+							
+							if(PayrollConstant.HOURLY_RATE.equalsIgnoreCase(assoSal.getPayType())) {
+								 List<TotalHoursDTO> totalHoursDto = userGroupDao.getTotalHoursByCandidateId(assoSal.getCandidate().getId(),freqStartDate,freqEndDate);
+								 Map<BigInteger, List<TotalHoursDTO>> map = totalHoursDto.stream().collect(Collectors.groupingBy(TotalHoursDTO::getProjectId));
+								
+								for (Map.Entry<BigInteger, List<TotalHoursDTO>> entry : map.entrySet()) {
+									BigDecimal projectGross = BigDecimal.ZERO;
+									double projectTotalHours = 0;
+									BigDecimal projectPayRate = BigDecimal.ZERO;
+									if(entry.getValue() !=null ) {
+										for(TotalHoursDTO totalHoursDTO : entry.getValue()) {
+											projectPayRate = new BigDecimal(totalHoursDTO.getPayRate());
+											if(StringUtils.isNotBlank(totalHoursDTO.getBillableHours())) {
+												projectTotalHours  = commonUtil.getTotalRegularOverTimeHours(Double.parseDouble(totalHoursDTO.getBillableHours()),projectTotalHours);
+											}
+										}
+									}
+									projectGross = getTotalAmount(projectTotalHours,projectPayRate);
+									amount = amount.add(projectGross);
+									payRate = payRate.add(projectPayRate);
+									totalHours = totalHours + projectTotalHours;
+								} 
+								regularHoursAmount = amount;
+							}
+							
+							 else if(PayrollConstant.SALARY.equalsIgnoreCase(assoSal.getPayType())) {
+								amount = assoSal.getGrossSalary();
+							}
+							/*if(associateTaxView.getAccountType() != null) {
+								employeePayroll.setDepositType(associateTaxView.getAccountType());
+							}*/
+							employeePayroll.setPayType(assoSal.getPayType());
+							employeePayroll.setPayPerSalary(amount);
+							employeePayroll.setRegularHours(String.valueOf(totalHours));
+							employeePayroll.setEmpPayRate(payRate);
+							employeePayroll.setCandidate(assoSal.getCandidate());
+							employeePayroll.setPayCheckDate(paySheetFreq.getPayCheckDate());
+							employeePayroll.setRegularHoursAmount(regularHoursAmount);
+							employeePayroll.setType(Constants.REGULAR);
+							
+							//employeePayroll.setAssociatePayrollPayheadHistory(associatePayrollPayheadHistory);
+							 
+							
+							HashSet<AssociatePayrollPayheadHistory> payHeadHistoryList = iNDPayrollCommonUtil.getAssociatePayrollPayHeadHistoryFromAssociateSalaryPayHeads(assoSal.getAssociateSalaryPayheadIndList(), employeePayroll.getId(), loginUser);
+							employeePayroll.setAssociatePayrollPayheadHistory(payHeadHistoryList);
+							
+							employeePayroll.setGrossPay(BigDecimal.ZERO);
+							employeePayroll.setNetPay(BigDecimal.ZERO);
+							employeePayroll.setProfessionalTax(BigDecimal.ZERO);
+						    employeePayroll.setTds(BigDecimal.ZERO);
+						    
+							
+							employeePayroll.setIndEmpPayrollUUID(SourceLeadRandomCodeHelper.generateRandomUUID());
+							employeePayroll.setStatus(1);
+							employeePayroll.setCreatedBy(loginUser.getId());
+							employeePayroll.setUpdatedBy(loginUser.getId());
+							employeePayroll.setCreatedDate(new Date());
+							employeePayroll.setUpdatedDate(new Date());
+							set.add(employeePayroll);
+					}
+					
+				}
+				
+				
+			}
+		}catch (Exception e) {
+			e.printStackTrace();
+		}
+		return set;
+		
+	}
+	
+	  /**
+	     * check same frequency or not 
+	    * @param existedData
+	    * @param assoSal
+	    * @return boolean
+	    */
+		private boolean isPayrollRunForSameFrequency(IndPaysheetFrequencyDTO existedData, AssociateSalaryInd assoSal) {
+			
+			boolean isExisted = false;
+			if(existedData != null) {
+			for (INDPayrollDTO indPayrollDTO : existedData.getIndPayrollDTO()) {
+				if((indPayrollDTO.getCandidateId().longValue() == assoSal.getCandidate().getId().longValue()) && (existedData.getPaySheetFrequencyId().longValue() == indPayrollDTO.getPaySheetFrequencyId().longValue())) {
+					return true;
+				}
+			}
+			}
+			return isExisted;
+		}
+		/***
+		 * calculating total amount by multipltying hours with rate
+		 * @param totalHours
+		 * @param payRate
+		 * @return double
+		 */
+		private BigDecimal getTotalAmount(double totalHours, BigDecimal payRate)
+		{
+			String pRate = String.valueOf(totalHours);
+			String[] rate = pRate.split("\\.");
+			double hr = Double.parseDouble(rate[0]);
+			double min = Double.parseDouble(rate[1]);
+			double hrsToMin = hr * 60;
+			double totalMin = hrsToMin + min;
+			double perMinRate = payRate.doubleValue() / 60;
+			double totatAmount = totalMin * perMinRate;
+			return BigDecimal.valueOf(totatAmount);
+		}
 	
 }

@@ -34,4 +34,7 @@ public interface AssociateSalaryDao {
 	ResponseList<AssociateSalary> getAssociateSalaryListByLocationIdAndGroupId(OrgLocations orgLocation, Long groupId, CandidateDTO dto);
 
 	List<AssociateSalaryInd> getIndAssociateSalaryListByGroupId(OrgLocations orgLocation, long groupId);
+	
+	List<AssociateSalaryInd> getIndAssociateSalaryListByGroupId(OrgLocations orgLocation, long groupId,String payType);
+			
 }

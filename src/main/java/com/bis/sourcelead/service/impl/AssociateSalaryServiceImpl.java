@@ -338,4 +338,10 @@ public class AssociateSalaryServiceImpl implements AssociateSalaryService{
 		List<AssociateSalaryInd> list = associateSalaryDao.getIndAssociateSalaryListByGroupId(orgLocation, groupId);
 		return list;
 	}
+
+	@Override
+	public List<AssociateSalaryInd> getIndAssociateSalaryListByGroupId(OrgLocations orgLocation, long groupId,
+			String payType) {
+		return associateSalaryDao.getIndAssociateSalaryListByGroupId(orgLocation,groupId,payType);
+	}
 }

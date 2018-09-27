@@ -1,9 +1,9 @@
 package com.bis.sourcelead.util;
 
 import java.util.ArrayList;
-import java.util.HashMap;
+import java.util.Date;
+import java.util.HashSet;
 import java.util.List;
-import java.util.Map;
 import java.util.Set;
 
 import org.slf4j.Logger;
@@ -12,17 +12,14 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
-import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.dao.PayrollPayheadDao;
 import com.bis.sourcelead.dto.PayrollPayheadDTO;
-import com.bis.sourcelead.entity.EmailAttachment;
-import com.bis.sourcelead.entity.EmailMessage;
-import com.bis.sourcelead.entity.EmailScenario;
-import com.bis.sourcelead.entity.Expenses;
-import com.bis.sourcelead.entity.ExpensesEntries;
+import com.bis.sourcelead.entity.AssociatePayrollPayheadHistory;
+import com.bis.sourcelead.entity.AssociateSalaryPayheadInd;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.PayrollPayhead;
 import com.bis.sourcelead.entity.User;
+import com.bis.sourcelead.payroll.entity.IndEmployeePayroll;
 
 /**
  * This is the commonutil for the certain common methods used throughout the application
@@ -183,7 +180,29 @@ public void sendMailToUserFromndIanPayrolApprover(User loginUser,  OrgLocations 
 
 	*/
 	
-	
+	public HashSet<AssociatePayrollPayheadHistory> getAssociatePayrollPayHeadHistoryFromAssociateSalaryPayHeads(Set<AssociateSalaryPayheadInd> payheadList,Long employeePayrollId,User loginUser) throws Exception {
+		HashSet<AssociatePayrollPayheadHistory> payHeadHistoryList = new HashSet<>();
+		if(payheadList != null && !payheadList.isEmpty()) {
+			for(AssociateSalaryPayheadInd payHead : payheadList) {
+				AssociatePayrollPayheadHistory payHeadHistory = new AssociatePayrollPayheadHistory();
+				IndEmployeePayroll empPayroll = new IndEmployeePayroll();
+				empPayroll.setId(employeePayrollId);
+				payHeadHistory.setIndEmployeePayrollId(empPayroll);
+				payHeadHistory.setPayrollPayhead(payHead.getPayrollPayhead());
+				payHeadHistory.setMonthly(payHead.getMonthly());
+				payHeadHistory.setAnnualy(payHead.getAnnualy());
+				payHeadHistory.setStatus(payHead.getStatus());
+
+				payHeadHistory.setCreatedBy(loginUser);
+				payHeadHistory.setUpdatedBy(loginUser);
+				
+				payHeadHistory.setCreatedDate(new Date());
+				payHeadHistory.setUpdatedDate(new Date());
+				payHeadHistoryList.add(payHeadHistory);
+			}
+		}
+		return payHeadHistoryList;
+	}
 	
 	
 	
