@@ -1515,12 +1515,11 @@ function cancel(candidateId){
 	 	});
 	 	$.ajax({
 	    	type: "GET",
-	        url: sourceleadUrl+"/addToMarketPlace?"+tokenParamName+"="+tokenValue+"&candidateIds="+candidateIds, 
-	        success: function(json) {
-	        	
+	        url: sourceleadUrl+"/addToMarketPlace?candidateIds="+candidateIds, 
+	        success: function(data) {
+	        	window.location.href = sourceleadUrl+"/marketPlaceList";
 	        }
 	 	});
-	 	alert(candidateIds);
    }
    
    

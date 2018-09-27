@@ -38,6 +38,10 @@ public class CandidateMarketPlace implements Serializable {
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	@Column(name = "ID", nullable = false)
 	private Long id;
+	
+	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name = "CANDIDATE_ID", nullable = false)
+	private Candidate candidateId;
 
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "MASTER_CANDIDATE_ID", nullable = false)
@@ -107,7 +111,7 @@ public class CandidateMarketPlace implements Serializable {
 	private String marketPrice;
 
 	@Column(name = "MARKET_RATE_CURRENCY")
-	private String maretRateCurrencey;
+	private String marketRateCurrencey;
 	
 	@Column(name = "STATUS")
 	private Integer status;
@@ -140,6 +144,9 @@ public class CandidateMarketPlace implements Serializable {
 
 	@Column(name = "MARITAL_STATUS")
 	private String maritalStatus;
+	
+	@Column(name = "CAN_MARKET_STATUS")
+	private String candidateMarketStatus;
 
 	public Long getId() {
 		return id;
@@ -147,6 +154,14 @@ public class CandidateMarketPlace implements Serializable {
 
 	public void setId(Long id) {
 		this.id = id;
+	}
+
+	public Candidate getCandidateId() {
+		return candidateId;
+	}
+
+	public void setCandidateId(Candidate candidateId) {
+		this.candidateId = candidateId;
 	}
 
 	public MasterCandidate getMasterCandidateId() {
@@ -320,12 +335,12 @@ public class CandidateMarketPlace implements Serializable {
 		this.marketPrice = marketPrice;
 	}
 
-	public String getMaretRateCurrencey() {
-		return maretRateCurrencey;
+	public String getMarketRateCurrencey() {
+		return marketRateCurrencey;
 	}
 
-	public void setMaretRateCurrencey(String maretRateCurrencey) {
-		this.maretRateCurrencey = maretRateCurrencey;
+	public void setMarketRateCurrencey(String marketRateCurrencey) {
+		this.marketRateCurrencey = marketRateCurrencey;
 	}
 
 	public Integer getStatus() {
@@ -409,5 +424,14 @@ public class CandidateMarketPlace implements Serializable {
 		this.updatedBy = updatedBy;
 	}
 
+	public String getCandidateMarketStatus() {
+		return candidateMarketStatus;
+	}
+
+	public void setCandidateMarketStatus(String candidateMarketStatus) {
+		this.candidateMarketStatus = candidateMarketStatus;
+	}
+
+	
 
 }

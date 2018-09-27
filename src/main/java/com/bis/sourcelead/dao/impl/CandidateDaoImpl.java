@@ -2134,5 +2134,22 @@ public class CandidateDaoImpl implements CandidateDao {
 	
 	}
 
+	@Override
+	@Transactional(rollbackFor = { Exception.class })
+	public void saveMarketPlace(CandidateMarketPlace marketPlace) throws Exception{
+
+		logger.debug("Storing MarketPlace");
+		Session session = this.sessionFactory.getCurrentSession();
+		try {
+			if (marketPlace != null) {
+				session.save(marketPlace);
+			}
+			logger.debug("Marketplace Stored Successfully");
+		} catch (Exception exception) {
+			    StringBuilder message= new StringBuilder(MessageFormat.format(duplicateValue,"CandidateMarketPlace"));
+				throw new SourceLeadConstraintViolationException(message.toString() +exception.getCause().toString());
+		}
+	}
+
 }
 

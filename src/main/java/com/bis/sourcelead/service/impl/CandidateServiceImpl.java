@@ -35,6 +35,7 @@ import org.elasticsearch.index.query.QueryBuilders;
 import org.elasticsearch.search.SearchHit;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Lazy;
@@ -66,6 +67,7 @@ import com.bis.sourcelead.entity.CandidateDocuments;
 import com.bis.sourcelead.entity.CandidateEducation;
 import com.bis.sourcelead.entity.CandidateEmployers;
 import com.bis.sourcelead.entity.CandidateImportLog;
+import com.bis.sourcelead.entity.CandidateMarketPlace;
 import com.bis.sourcelead.entity.CandidateResumes;
 import com.bis.sourcelead.entity.Countries;
 import com.bis.sourcelead.entity.EmailAttachment;
@@ -2545,6 +2547,53 @@ private Sheet createXlsSheet(Sheet createExcelsheet, Row writeRow,Candidate cand
 	}
 	public List<Candidate> getAllCandidatesList() throws Exception {
 		return candidateDao.getAllCandidatesList();
+	}
+
+	@Override
+	public void copyCandidateToMarketplace(String candidateIdsStr, User user) throws NumberFormatException, Exception {
+		String[] candidateIds = candidateIdsStr.split(",");
+		for(String candidateId : candidateIds){
+			Candidate candidate = candidateDao.getCandidateByCandidateId(Long.parseLong(candidateId));
+			CandidateMarketPlace marketPlace = new CandidateMarketPlace();
+			//BeanUtils.copyProperties(candidate, marketPlace);
+			marketPlace.setCandidateId(candidate);
+			marketPlace.setMasterCandidateId(candidate.getMasterCandidateId());
+			marketPlace.setCandidateUUID(candidate.getCandidateUUID());
+			marketPlace.setOrgLocationId(candidate.getOrgLocationId());
+			marketPlace.setFullName(candidate.getFullName());
+			marketPlace.setGender(candidate.getGender());
+			marketPlace.setEmail(candidate.getEmail());
+			marketPlace.setAlternateEmail(candidate.getAlternateEmail());
+			marketPlace.setMobilePhone(candidate.getMobilePhone());
+			marketPlace.setAlternateMobilePhone(candidate.getAlternateMobilePhone());
+			marketPlace.setDesignation(candidate.getDesignation());
+			marketPlace.setEmploymentType(null);
+			marketPlace.setLocation(candidate.getLocation());
+			marketPlace.setScore(candidate.getCandidateScore());
+			marketPlace.setSkillsName(candidate.getSkillsName());
+			marketPlace.setExperienceYears(candidate.getExperienceYears());
+			marketPlace.setExperienceMonths(candidate.getExperienceMonths());
+			marketPlace.setCurrentRate(candidate.getCurrentRate());
+			marketPlace.setCurrentRateType(candidate.getCurrentRateType());
+			marketPlace.setCurrentRateCurrency(candidate.getCurrentRateCurrency());
+			marketPlace.setExpectedRate(candidate.getExpectedRate());
+			marketPlace.setExpectedRateType(null);
+			marketPlace.setExpectedRateCurrencey(candidate.getExpectedRateCurrencey());
+			marketPlace.setNoticePeriod(candidate.getNoticePeriod());
+			marketPlace.setMarketPrice(null);
+			marketPlace.setMarketRateCurrencey(null);
+			marketPlace.setCandidateMarketStatus(Constants.DRAFT);
+			marketPlace.setNationality(candidate.getNationality());
+			marketPlace.setMaritalStatus(candidate.getMaritalStatus());
+			marketPlace.setStatus(1);
+			marketPlace.setCreatedDate(new Date());
+			marketPlace.setCreatedBy(user);
+			marketPlace.setUpdatedDate(new Date());
+			marketPlace.setUpdatedBy(user);
+			candidateDao.saveMarketPlace(marketPlace);
+			
+		}
+		
 	}
 
 }

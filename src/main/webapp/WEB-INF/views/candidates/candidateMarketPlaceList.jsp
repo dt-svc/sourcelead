@@ -61,7 +61,7 @@
         </div>
         <div class="clearfix mt"></div>
          <div class="styleTables">
-          <table>
+          <!-- <table>
             <thead>
               <tr>
                 <th>All</th>
@@ -124,9 +124,9 @@
 
               </tr>
             </tbody>
-          </table>
+          </table> -->
         </div>
-        <div class="clearfix">
+        <!-- <div class="clearfix">
          <nav class="pull-right mr">
           <ul id="paging" class="pagination mb0 mt">
             <li><a href="#">Previous</a></li>
@@ -139,7 +139,7 @@
           </ul>
           <div class="clearfix"></div>
         </nav>
-        </div>
+        </div> -->
         <div class="footerstyelsNew mt clearfix">
         <div class="col-lg-12">
         <div class="pull-right">
@@ -158,6 +158,34 @@
 	$(".selectPrice").text(price);
 	
 }*/
+
+$(document).ready(function() {
+	
+});
+
+function loadMarketPlaceDraftData(){
+	var value = "";
+	value = value + "<table><thead>";
+	value = value + "<tr><th>All</th>";
+	value = value + "<th>Id</th>";
+	value = value + "<th>Name</th>";
+	value = value + "<th>Email</th>";
+	value = value + "<th>Primary Skills</th>";
+	value = value + "<th>Experience</th>";
+	value = value + "<th>Current Rate</th>";
+	value = value + "<th>Expected Rate</th>";
+	value = value + "<th>Price</th>";
+	value = value + "</tr>";
+	value = value + "</thead>";
+	$.ajax({
+		type : "GET",
+		url : sourceleadUrl + "/getMarketPlaceDraftList",
+		success : function(result) {
+			
+		}
+	});
+}
+
 $(".funPrice").on("click", "li", function(){
 	var x = $(this).text();
 	$(this).parents(".selectPriceli").find(".selectPrice").text(x);

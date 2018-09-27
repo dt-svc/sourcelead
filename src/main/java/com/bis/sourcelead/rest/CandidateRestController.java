@@ -37,10 +37,12 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.multipart.MultipartHttpServletRequest;
 import org.springframework.web.multipart.commons.CommonsMultipartFile;
+import org.springframework.web.servlet.ModelAndView;
 
 import com.bis.sourcelead.annotations.Validator;
 import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.dto.CandidateDTO;
+import com.bis.sourcelead.dto.CandidateMarketPlaceDTO;
 import com.bis.sourcelead.dto.Response;
 import com.bis.sourcelead.dto.ResponseList;
 import com.bis.sourcelead.elk.index.CandidateIndex;
@@ -966,5 +968,33 @@ public class CandidateRestController {
 			}
 		});
 		return xstream.toXML(obj);
+	}
+	
+
+	//@PreAuthorize("hasAnyRole('ROLE_CREATE_CANDIDATE','ROLE_CROWDSOURCING_CANDIDATES')")
+	@RequestMapping(value = "/app/addToMarketPlace")
+	public String goToMarketplace(@RequestParam(value = "candidateIds", required = false) String candidateIdsStr, HttpServletRequest request) throws Exception {
+		logger.debug("Display the candiade page");
+		User user = (User) SourceLeadSessionManager.getSessionAttribute(request,"user");
+		candidateService.copyCandidateToMarketplace(candidateIdsStr, user);
+		//ModelAndView model = new ModelAndView();
+		//model.setViewName("candidates/candidateMarketPlaceList");
+		//model.addObject("sourceleadUrl", sourceleadUrl);
+		return "success";
+	}
+
+	@RequestMapping(value = "/app/marketPlaceList")
+	public ModelAndView marketPlaceList() throws Exception {
+		ModelAndView model = new ModelAndView();
+		model.setViewName("candidates/candidateMarketPlaceList");
+		model.addObject("sourceleadUrl", sourceleadUrl);
+		return model;
+	}
+
+	
+	@RequestMapping(value = "/app/getMarketPlaceDraftList")
+	public List<CandidateMarketPlaceDTO> getMarketPlaceDraftList() {
+		candidateService.getMarketPlaceDraftList()
+		return null;
 	}
 }

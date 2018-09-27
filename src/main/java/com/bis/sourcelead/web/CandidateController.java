@@ -129,19 +129,7 @@ public class CandidateController {
 	 * @return ModelAndView
 	 * @throws Exception
 	 */
-	
-	// Note this method is marketplace Candidate method
-
-	@PreAuthorize("hasAnyRole('ROLE_CREATE_CANDIDATE','ROLE_CROWDSOURCING_CANDIDATES')")
-	@RequestMapping(value = "/addToMarketPlace")
-	public ModelAndView goToMarketplace(@RequestParam(value = "candidateIds", required = false) String candidateIdsStr, HttpServletRequest request) throws Exception {
-		logger.debug("Display the candiade page");
-		ModelAndView model = new ModelAndView();
-		model.setViewName("candidates/candidateMarketPlaceList");
-		model.addObject("sourceleadUrl", sourceleadUrl);
-		return model;
-	}
-
+		
 	// Note this method is Global marketplace Candidate method
 	@PreAuthorize("hasAnyRole('ROLE_CREATE_CANDIDATE','ROLE_CROWDSOURCING_CANDIDATES')")
 	@RequestMapping(value = "/globalMarketplace")
