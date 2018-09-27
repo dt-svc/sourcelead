@@ -911,7 +911,7 @@ public class PayrollConfigurationRestController {
 			User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
 			ResponseList<PayrollPayheadDTO> response = payrollPayheadService.getPayrollPayheadList(orgLocations);
 			model.addObject("payrollPayheadList", response.getData());
-			
+			model.addObject("loginUser", user);
 			
 			
 			AssociateSalaryInd associateSalaryInd = payrollPayheadService.getAssociateSalaryIndByCandidateId(payrollPayheadDTO.getCandidateId());
