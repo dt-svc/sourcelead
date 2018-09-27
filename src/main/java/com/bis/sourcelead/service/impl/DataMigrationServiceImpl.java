@@ -21,6 +21,7 @@ import org.apache.poi.hssf.usermodel.HSSFFormulaEvaluator;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.apache.poi.hssf.util.CellReference;
 import org.apache.poi.hssf.util.HSSFColor;
+import org.apache.poi.openxml4j.opc.OPCPackage;
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.CellStyle;
 import org.apache.poi.ss.usermodel.DataFormatter;
@@ -31,6 +32,7 @@ import org.apache.poi.ss.usermodel.IndexedColors;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
+import org.apache.poi.ss.usermodel.WorkbookFactory;
 import org.apache.poi.xssf.usermodel.XSSFFormulaEvaluator;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.json.JSONArray;
@@ -220,17 +222,16 @@ public class DataMigrationServiceImpl implements DataMigrationService {
 		String finalImportStatus = null;
 		String jsonString = null;
 		String ac = StringUtils.removeEnd(staticPath, "/slead-static");
-		FileInputStream inputStream = new FileInputStream(
-				new File(ac + dataMigrationDTO.getExportFilePath().replace("/dataMigration/", "/temp/")));
 		
 		Workbook workbook = null;
 		DataFormatter objDefaultFormat = new DataFormatter();
 		FormulaEvaluator objFormulaEvaluator;
 		if (dataMigrationDTO.getExportFilePath().endsWith(".xls")) {
-			workbook = new HSSFWorkbook(inputStream);
+			workbook = WorkbookFactory.create(new File(ac + dataMigrationDTO.getExportFilePath().replace("/dataMigration/", "/temp/")));
 			objFormulaEvaluator = new HSSFFormulaEvaluator((HSSFWorkbook) workbook);
 		} else {
-			workbook = new XSSFWorkbook(inputStream);
+			OPCPackage pkg = OPCPackage.open(new File(ac + dataMigrationDTO.getExportFilePath().replace("/dataMigration/", "/temp/")));
+			workbook = new XSSFWorkbook(pkg);
 			objFormulaEvaluator = new XSSFFormulaEvaluator((XSSFWorkbook) workbook);
 		}
 		Sheet firstSheet = workbook.getSheetAt(0);
@@ -384,7 +385,7 @@ public class DataMigrationServiceImpl implements DataMigrationService {
 				case "timesheetUpload":
 					String timeFrequency = dataMigrationDTOJson.get("timeFrequencyType").toString();
 					dataMigrationCommonUtil.dataValidationForTimesheets(errorSet, dataMigrationDTOJsonCopy,
-							objFormulaEvaluator, objDefaultFormat, user, orgLocation, timeFrequency);
+							 objDefaultFormat, user, orgLocation, timeFrequency);
 					break;
 				case "assetUpload":
 					dataMigrationCommonUtil.dataValidationForAssets(errorSet, dataMigrationDTOJsonCopy, user,
@@ -459,7 +460,6 @@ public class DataMigrationServiceImpl implements DataMigrationService {
 					history.setFileUrl(dataMigrationDTO.getExportFilePath());
 					uploadXlsHistoryService.storeUploadXlsHistory(history);
 				}
-				
 			}
 			
 		}
@@ -469,14 +469,11 @@ public class DataMigrationServiceImpl implements DataMigrationService {
 		
 		
 		if(dataMigrationDTO.getUploadType().equalsIgnoreCase("candidatesUpload")) {
-			System.out.println(System.currentTimeMillis());
 			candidateService.saveBulkCandidates(uploadedCandidatesList);
-			System.out.println(System.currentTimeMillis());
 		}
 		
 		
 		workbook.close();
-		inputStream.close();
 		if (isEmptyExcel) {
 			return "fail";
 		} else if (finalImportStatus != null) {

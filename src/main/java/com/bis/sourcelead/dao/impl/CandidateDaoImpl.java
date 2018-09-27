@@ -2104,7 +2104,7 @@ public class CandidateDaoImpl implements CandidateDao {
 		    if ( i % 20 == 0 ) { //20, same as the JDBC batch size
 		        //flush a batch of inserts and release memory:
 		        session.flush();
-		        session.clear();
+		        session.clear();                                          
 		    }
 		    i = i+1;
 		}
