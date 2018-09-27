@@ -215,11 +215,15 @@ public interface CandidateService {
 	 
 	 public List<CandidateDTO> getCandidateListForAddApplicant(OrgLocations orgLcoations,Long requirementId,String skills,String candidateDetails,Integer profilePercentage) throws Exception;
 	 
-	 public void saveCandidateBulkImports(CandidateDTO candidateDTO, OrgLocations orgLocations,User user) throws Exception;
+	 public Candidate saveCandidateBulkImports(CandidateDTO candidateDTO, OrgLocations orgLocations,User user) throws Exception;
 
 	public List<Map<String, BigInteger>> getAllActiveCandidatesByLocationName(Long locationId, String name);
 	
 	public List<CandidateDTO> getAllActiveCandidatesListByOrglocationId(Long orgLocationId, String employeementType) throws Exception;
 	
 	public List<Candidate> getAllCandidatesList() throws Exception;
+	
+	public Candidate getCandidateDetails(Candidate candidate, CandidateDTO candidateDto, User user,OrgLocations orgLocations,StringBuffer activitySummary) throws Exception;
+	
+	public void saveBulkCandidates(List<Candidate> candidatesList) throws Exception;
 }
