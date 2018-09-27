@@ -95,16 +95,6 @@ public class PayrollRestController {
 			 return resultJson;
 	    
 	}
-		
-	@RequestMapping(value = { "/generateINDPayroll", "/rest/generateINDPayroll" }, method = RequestMethod.POST)
-	public PaysheetFrequencyDTO generateUSPayroll(GenerateINDPayrollDTO generateINDPayrollDTO, HttpServletRequest request,
-			HttpServletResponse response) throws Exception {
-		OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
-		User loginUser = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
-		PaysheetFrequencyDTO existedData = payrollService.getPayrollData(generateINDPayrollDTO, orgLocation, loginUser);
-		return payrollService.generateINDPayroll(existedData,orgLocation,generateINDPayrollDTO,loginUser);
-	}
-	
 	
 	@RequestMapping(value = { "/reviewPayrollInd","/rest/reviewPayrollInd" })
 	public ModelAndView reviewPayrollInd(HttpServletRequest request) throws Exception
