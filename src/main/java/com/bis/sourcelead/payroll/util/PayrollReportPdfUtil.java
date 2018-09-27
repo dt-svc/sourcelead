@@ -2,6 +2,7 @@ package com.bis.sourcelead.payroll.util;
 
 import java.io.File;
 import java.io.FileOutputStream;
+import java.io.IOException;
 import java.util.Date;
 import java.math.BigDecimal;
 import java.util.List;
@@ -37,18 +38,28 @@ public class PayrollReportPdfUtil {
 	
 	Font boldFont = new Font(Font.FontFamily.TIMES_ROMAN, 10, Font.BOLD);
 	Font normalFont = new Font(Font.FontFamily.TIMES_ROMAN, 11, Font.NORMAL);
-	
-	public static final String DEST = "/home/rajasekhar/Desktop/PDF/simple_table.pdf";
+	Font detailFont = new Font(Font.FontFamily.HELVETICA, 8, Font.NORMAL);
+	Font greyFont = new Font(Font.FontFamily.HELVETICA, 12, Font.BOLD);
 	
 	@Autowired
 	CommonUtil commonUtil;
 
-	public File getCheckRegisterReportPdf(List<CheckRegisterReportDTO> checkRegData, OrgLocations orgLocation)
+	public File getCheckRegisterReportPdf(List<CheckRegisterReportDTO> checkRegData, OrgLocations orgLocation) throws Exception
 	{
+		
+		StringBuilder sbReq = new StringBuilder();
+		sbReq.append(orgLocation.getOrgLocationName()).append(Constants.PAYROLL).append(commonUtil.dateStrFromOrgDateFormatter(orgLocation.getDateFormat(),new Date()));
+
+		StringBuilder fileSB = new StringBuilder();
+		File file = File.createTempFile(fileSB.append(orgLocation.getOrgLocationName()).append(Constants.PAYROLL).append(commonUtil.dateStrFromOrgDateFormatter(orgLocation.getDateFormat(),new Date())).toString(),
+				".pdf");
+
+		file.setReadable(true);
+		
 		try {
 			if(checkRegData != null && checkRegData.size() >0) {
 				Document document = new Document(PageSize.A4.rotate());
-		    	PdfWriter.getInstance(document, new FileOutputStream(DEST));
+		    	PdfWriter.getInstance(document, new FileOutputStream(file));
 		    	document.open();
 		    	
 		    	CheckRegisterReportDTO registerDTO = checkRegData.get(0);
@@ -187,7 +198,7 @@ public class PayrollReportPdfUtil {
 			e.printStackTrace();
 		}
 		
-		return null;
+		return file;
 	}
 	
 	/**
@@ -203,7 +214,6 @@ public class PayrollReportPdfUtil {
 		try {
 			PdfPTable table = getPdfTable(14, document);
 			PdfPCell cell0 = new PdfPCell();
-			Font boldFont = new Font(Font.FontFamily.HELVETICA, 10, Font.BOLD);
 //			cell0.addElement(new Paragraph("Client ID: OVATYW56 - MI Softech Inc", boldFont));
 			cell0.addElement(new Paragraph("Pay Group: "+headerData.getGroupName(), boldFont));
 			cell0.addElement(new Paragraph("Check Date: "+commonUtil.dateStrFromOrgDateFormatter(orgLocation.getDateFormat(), headerData.getCheckDate()), boldFont));
@@ -214,7 +224,6 @@ public class PayrollReportPdfUtil {
 			cell0.setColspan(5);
 			table.addCell(cell0);
 			PdfPCell cell2 = new PdfPCell();
-			Font greyFont = new Font(Font.FontFamily.HELVETICA, 12, Font.BOLD);
 			Chunk chunk = new Chunk(headerData.getReportType(), greyFont);
 			chunk.setBackground(new BaseColor(220, 220, 220));
 			cell2.addElement(new Paragraph(chunk));
@@ -228,7 +237,10 @@ public class PayrollReportPdfUtil {
 			cell3.addElement(new Paragraph("Period Begin Date: "+commonUtil.dateStrFromOrgDateFormatter(orgLocation.getDateFormat(), headerData.getPeriodBeginDate()), boldFont));
 			cell3.addElement(new Paragraph("Period End Date: "+commonUtil.dateStrFromOrgDateFormatter(orgLocation.getDateFormat(), headerData.getPeriodEndDate()), boldFont));
 			cell3.addElement(new Paragraph("Pay Period: "+headerData.getPayPeriod(), boldFont));
-			cell3.addElement(new Paragraph("Payroll Type: "+headerData.getPayrollType(), boldFont));
+			if(headerData.getPayrollType() != null)
+				cell3.addElement(new Paragraph("Payroll Type: "+headerData.getPayrollType(), boldFont));
+			else
+				cell3.addElement(new Paragraph("Payroll Type: --", boldFont));
 			cell3.setBorder(Rectangle.NO_BORDER);
 			cell3.setColspan(4);
 			table.addCell(cell3);
@@ -360,7 +372,6 @@ public class PayrollReportPdfUtil {
 		PdfPTable detailTable = new PdfPTable(7);
 		detailTable.setTotalWidth(document.getPageSize().getWidth() - 80);
 		detailTable.setLockedWidth(true);
-		Font detailFont = new Font(Font.FontFamily.HELVETICA, 8, Font.NORMAL);
 		BigDecimal totalDeposit = BigDecimal.ZERO;
 		for (CheckRegisterReportDTO checkRegisterReportDTO : checkRegData) {
 			PdfPCell detailCell0 = new PdfPCell();
