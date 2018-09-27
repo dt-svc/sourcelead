@@ -40,12 +40,12 @@ function newResourceRequestList(requestType){
 	  $('#newResourceRequestTabDiv').show();
 	  $('#assocaiteRequestsTabDiv').hide();
 	  $("#budgetTabDiv").hide();
-	  $("#associateDiv").removeClass("current");
-	  $("#newResourceDiv").addClass("current");
-	  $("#budgetDiv").removeClass("current");
+	  $("#associateDiv").removeClass("active");
+	  $("#newResourceDiv").addClass("active");
+	  $("#budgetDiv").removeClass("active");
 	    var result = "";
 	 	result = result +" <div class='remove_search'>";
-	 	result = result +" <input type='text' placeholder='New Resource search' id='newRequestAssociatesTableSearch'/>";
+	 	result = result +" <input type='text' class='repSearchBar' placeholder='New Resource search' id='newRequestAssociatesTableSearch'/>";
 	 	result = result +"</div>";
 	 	
 	    result = result +'<div class="clearfix popupFilter mt5">';
