@@ -23,6 +23,23 @@ public class PdfHeaderDTO {
 	private String payPeriod;
 	
 	private String payrollType;
+	
+	private String locationAddress;
+	
+	private int liveChecks;
+	
+	private int manualChecks;
+	
+
+	public String getLocationAddress()
+	{
+		return locationAddress;
+	}
+
+	public void setLocationAddress(String locationAddress)
+	{
+		this.locationAddress = locationAddress;
+	}
 
 	public String getGroupName()
 	{
@@ -122,6 +139,26 @@ public class PdfHeaderDTO {
 	public void setPayrollType(String payrollType)
 	{
 		this.payrollType = payrollType;
+	}
+
+	public int getLiveChecks()
+	{
+		return liveChecks;
+	}
+
+	public int getManualChecks()
+	{
+		return manualChecks;
+	}
+
+	public void setLiveChecks(int liveChecks)
+	{
+		this.liveChecks = liveChecks;
+	}
+
+	public void setManualChecks(int manualChecks)
+	{
+		this.manualChecks = manualChecks;
 	}
 	
 	
