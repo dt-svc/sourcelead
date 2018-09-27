@@ -26,7 +26,7 @@
    </div>
    <div class="clearfix"></div>
    <div class='data_loading' id="loadTime"></div>
-   <div id="runPayRollTabsContent"></div>
+   <div id="runPayRollTabsContent" class="datatable_filter"	></div>
 </section>
 
 <div class="comMask"></div>
@@ -106,16 +106,6 @@ function payrollDiv(){
 		var url = sourceleadUrl+ "/getPaySheetFrequencyDataInd?searchValue="+searchValue;
 		
 		payFrequencyPagination(url);
-		
-		/* $("#overViewDiv").hide();
-		$("#draftFrequencyDiv").hide();
-		$("#approveDiv").hide();
-		$("#userGroupDiv").hide();
-		$("#searchDivForEmployee").hide();
-		$("#historySearchIndDiv").show();
-		$("#historyDataTableSearch").show();
-		$("#payrollFrequencyDiv").show(); */
-
 	}
   
   function payFrequencyPagination(url) {
@@ -155,9 +145,9 @@ function payrollDiv(){
 										"render" : function(data, type, opt,meta) {
 											var result = "";
 											if(opt.payPeriodNum != null && opt.payPeriodNum != '' && opt.payPeriodNum !='undefined'){
-						                		  result = result +'<div class="tblminwidth-100"><a href="'+sourceleadUrl+'/viewPaySheetFrequencyData?approverStatus='+opt.approverStatus+'&paySheetFrequencyUUID='+opt.paySheetFrequencyuuid+'&payPeriodNum='+opt.payPeriodNum+'">'+opt.payPeriodNum+'</a></div>';
+						                		  result = result +'<div class="tblminwidth-100" onClick="netPay();"><a href="'+sourceleadUrl+'/viewPaySheetFrequencyData?approverStatus='+opt.approverStatus+'&paySheetFrequencyUUID='+opt.paySheetFrequencyuuid+'&payPeriodNum='+opt.payPeriodNum+'">'+opt.payPeriodNum+'</a></div>';
 											}else{
-						              		  result = result +'<div class="tblminwidth-100">--</div>';
+						              		  result = result +'<div class="tblminwidth-100" onClick="netPay();">--</div>';
 						              		}
 											return result;
 										}
@@ -219,9 +209,9 @@ function payrollDiv(){
 										"render" : function(data, type, opt,meta) {
 											var result = "";
 											if(opt.total != null && opt.total != '' && opt.total !='undefined'){
-						                		  result = result +'<div class="tbldata-dotdot-vsm">$ '+opt.total.toFixed(2)+'</div>';
+						                		  result = result +'<div class="tbldata-dotdot-vsm">'+opt.total.toFixed(2)+'</div>';
 						              		}else{
-						              		  result = result +'<div class="tbldata-dotdot-vsm">$ 0.0</div>';
+						              		  result = result +'<div class="tbldata-dotdot-vsm">0.0</div>';
 						              		}
 											return result;
 										}
@@ -254,15 +244,13 @@ function payrollDiv(){
 						});
 		$("#payFrequency").wrap("<div style='overflow-x: auto; overflow-y: hidden;'></div>");
 		$("input[type=search]").hide();
-		$("#historyDataTableSearch").keyup(function(e) {
+		$("#historyDataTableSearchInd").keyup(function(e) {
 			if (e.which === 13) {
 				payrollDiv();
 			}
 		});
-		
 	}
-  
-  </script>
+</script>
 
 
 
