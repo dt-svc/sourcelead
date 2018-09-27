@@ -8,9 +8,11 @@ import java.util.Date;
 import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 
 import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.PropertySource;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -28,6 +30,7 @@ import com.bis.sourcelead.dto.Response;
 import com.bis.sourcelead.dto.UserDTO;
 import com.bis.sourcelead.entity.AssociateLoanAndAdvances;
 import com.bis.sourcelead.entity.Candidate;
+import com.bis.sourcelead.entity.Department;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.PaymentAccount;
 import com.bis.sourcelead.entity.PayrollLoanAndAdvances;
@@ -39,6 +42,7 @@ import com.bis.sourcelead.payroll.dto.AssociatePfEsiDetailsDTO;
 import com.bis.sourcelead.payroll.service.AssociatePfEsiService;
 import com.bis.sourcelead.service.AssociateLoanAndAdvancesService;
 import com.bis.sourcelead.service.CandidateService;
+import com.bis.sourcelead.service.DepartmentService;
 import com.bis.sourcelead.service.PaymentAccountService;
 import com.bis.sourcelead.service.PayrollLoanAndAdvancesService;
 import com.bis.sourcelead.service.UserGroupService;
@@ -52,6 +56,8 @@ public class IndianPayrollRestController {
 
 	@Autowired
 	PaymentAccountService paymentAccountService;
+	@Value("${sourceleadUrl}")
+	private String sourceleadUrl;
 	
 	@Autowired
 	CandidateService candidateService;
@@ -70,6 +76,9 @@ public class IndianPayrollRestController {
 	
 	@Autowired
 	UserGroupService userGroupService;
+	
+	@Autowired
+	DepartmentService departmentService;
 	
 	@Autowired
 	AssociateLoanAndAdvancesService associateLoanAndAdvancesService;
@@ -382,5 +391,21 @@ public class IndianPayrollRestController {
    		}
    		 return modelAndView;
       } 
+    
+	@RequestMapping(value = "/app/indianPayrolluserGroupList")
+	public ModelAndView userBatchList(HttpServletRequest request) throws Exception {
+		   OrgLocations loginOrgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+		   ModelAndView model = new ModelAndView();
+		   try {
+		   List<Department> departmentList = departmentService.getDepartmentByOrgLocationId(loginOrgLocation.getId());
+		   model.addObject("departmentList", departmentList);
+		   model.addObject("sourceleadUrl", sourceleadUrl);
+		   model.setViewName("payroll_india/payroll/indianPayrollGroups");
+	   		 }catch (Exception e) {
+	   			 e.printStackTrace();
+	   		}
+	   		 return model;
+	      } 
+    
     
 }
