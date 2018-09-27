@@ -5,6 +5,7 @@ import java.math.BigInteger;
 import java.util.Date;
 
 
+
 public class CheckRegisterReportDTO {
 	
 	private BigInteger empPayrollId;
@@ -32,6 +33,12 @@ public class CheckRegisterReportDTO {
 	private Date freqEndDate;
 	
 	private Date payCheckDate;
+	
+	private String bankName;
+	
+	private String accountNum;
+	
+	private String routingNum;
 	
 	public String getType()
 	{
@@ -222,6 +229,36 @@ public class CheckRegisterReportDTO {
 	public void setTotalChecks(int totalChecks)
 	{
 		this.totalChecks = totalChecks;
+	}
+
+	public String getBankName()
+	{
+		return bankName;
+	}
+
+	public String getAccountNum()
+	{
+		return accountNum;
+	}
+
+	public String getRoutingNum()
+	{
+		return routingNum;
+	}
+
+	public void setBankName(String bankName)
+	{
+		this.bankName = bankName;
+	}
+
+	public void setAccountNum(String accountNum)
+	{
+		this.accountNum = accountNum;
+	}
+
+	public void setRoutingNum(String routingNum)
+	{
+		this.routingNum = routingNum;
 	}
 	
 	
