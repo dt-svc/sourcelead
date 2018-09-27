@@ -1710,14 +1710,6 @@ public class ImmigrationRestController {
 		logger.debug(" inisde getLcaDetails controller test -->");
 		if(immigrationId != null) {
 			 List<LcaDTO> lcaList = immigrationCommonService.getLcaHistoryDetailsInfo(Long.parseLong(immigrationId));
-			 /*   for(LcaDTO lh: lcaList) {
-			    	
-			    	if(lh.getLcaId() != null ) {
-			    	lh.setLcaId(lh.getLcaId());
-			    	}
-			    	model.addObject("currlcaId",lh.getId());
-			    }
-				*/
 			    model.addObject("lcaList", lcaList);
 		}
 		model.setViewName("/immigration/lcaDetailsTab");
