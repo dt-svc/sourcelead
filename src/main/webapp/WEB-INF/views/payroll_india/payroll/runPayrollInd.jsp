@@ -4,7 +4,7 @@
 <%@taglib uri="http://www.springframework.org/tags/form" prefix="form"%>
 
 <!-- Content Area -->
-<section class="content-wraper">
+<section class="content-wraper contentWraper">
 <section class="content-header clearfix">
 <div class="pull-left">
 <h2>Run Payroll</h2>
@@ -16,20 +16,17 @@
        </div>
   <div class="project_wrap">
    <div id="tabs-menu" class="clearfix project-tabs-menu">
-	<ul class="nav nav-tabs">
+	<ul class="nav nav-tabs newTabs">
 		<li id="initiatePayrollLi" class=""><a onclick="initiatePayrollDiv();highlight('initiatePayrollLi');" title="Initiate Payroll">Initiate Payroll</a></li>
 		<li id="payrollLi"  class=""><a onclick="payrollDiv(); highlight('payrollLi');" title="Payroll">Payroll</a></li>
 		<li id="groupsLi"  class=""><a onclick="groupsDiv(); highlight('groupsLi');" title="Groups">Groups</a></li>
 		<li id="formsLi"  class=""><a onclick="formsDiv(); highlight('formsLi');" title="Forms">Forms</a></li>
 	</ul>
    </div>
-   </div>	
+   </div>
    <div class="clearfix"></div>
    <div class='data_loading' id="loadTime"></div>
-   <div id="runPayRollTabsContent"></div>
-   <div id="payrollTabsContent"></div>
-   <div id="groupsTabsContent"></div>
-   <div id="formsTabsContent"></div>
+   <div id="runPayRollTabsContent" class="datatable_filter"></div>
 </section>
 
 <div class="comMask"></div>
@@ -64,12 +61,9 @@
 		      	          type : "POST",
 	        	      	  url: sourceleadUrl+"/initiateIndPayroll",		
 	        		      success :function(data) {
-	        		    	  $("#runPayRollTabsContent").show();
 	        		    	  $("#runPayRollTabsContent").empty();
-	        		    	  $("#runPayRollTabsContent").append(data);
+	        		  		  $("#runPayRollTabsContent").append(data);
 	        		    	  $("#loadTime").removeAttr('style');
-	        		    	  $("#groupsTabsContent").hide();
-	        		    	  $("#formsTabsContent").hide();
 	        		    	  prepareChosenScripts();
 	        		      }
 	        	    }); 
@@ -112,16 +106,6 @@ function payrollDiv(){
 		var url = sourceleadUrl+ "/getPaySheetFrequencyDataInd?searchValue="+searchValue;
 		
 		payFrequencyPagination(url);
-		
-		/* $("#overViewDiv").hide();
-		$("#draftFrequencyDiv").hide();
-		$("#approveDiv").hide();
-		$("#userGroupDiv").hide();
-		$("#searchDivForEmployee").hide();
-		$("#historySearchIndDiv").show();
-		$("#historyDataTableSearch").show();
-		$("#payrollFrequencyDiv").show(); */
-
 	}
   
   function payFrequencyPagination(url) {
@@ -161,9 +145,9 @@ function payrollDiv(){
 										"render" : function(data, type, opt,meta) {
 											var result = "";
 											if(opt.payPeriodNum != null && opt.payPeriodNum != '' && opt.payPeriodNum !='undefined'){
-						                		  result = result +'<div class="tblminwidth-100"><a href="'+sourceleadUrl+'/viewPaySheetFrequencyData?approverStatus='+opt.approverStatus+'&paySheetFrequencyUUID='+opt.paySheetFrequencyuuid+'&payPeriodNum='+opt.payPeriodNum+'">'+opt.payPeriodNum+'</a></div>';
+						                		  result = result +'<div class="tblminwidth-100" onClick="netPay();"><a href="'+sourceleadUrl+'/viewPaySheetFrequencyData?approverStatus='+opt.approverStatus+'&paySheetFrequencyUUID='+opt.paySheetFrequencyuuid+'&payPeriodNum='+opt.payPeriodNum+'">'+opt.payPeriodNum+'</a></div>';
 											}else{
-						              		  result = result +'<div class="tblminwidth-100">--</div>';
+						              		  result = result +'<div class="tblminwidth-100" onClick="netPay();">--</div>';
 						              		}
 											return result;
 										}
@@ -225,9 +209,9 @@ function payrollDiv(){
 										"render" : function(data, type, opt,meta) {
 											var result = "";
 											if(opt.total != null && opt.total != '' && opt.total !='undefined'){
-						                		  result = result +'<div class="tbldata-dotdot-vsm">$ '+opt.total.toFixed(2)+'</div>';
+						                		  result = result +'<div class="tbldata-dotdot-vsm">'+opt.total.toFixed(2)+'</div>';
 						              		}else{
-						              		  result = result +'<div class="tbldata-dotdot-vsm">$ 0.0</div>';
+						              		  result = result +'<div class="tbldata-dotdot-vsm">0.0</div>';
 						              		}
 											return result;
 										}
@@ -260,15 +244,13 @@ function payrollDiv(){
 						});
 		$("#payFrequency").wrap("<div style='overflow-x: auto; overflow-y: hidden;'></div>");
 		$("input[type=search]").hide();
-		$("#historyDataTableSearch").keyup(function(e) {
+		$("#historyDataTableSearchInd").keyup(function(e) {
 			if (e.which === 13) {
 				payrollDiv();
 			}
 		});
-		
 	}
-  
-  </script>
+</script>
 
 
 
@@ -282,13 +264,8 @@ function payrollDiv(){
 	                   type : "POST",
 	         	      	  url: sourceleadUrl+"/indianPayrolluserGroupList",		
 	         		      success :function(data) {
-	         		    	  $("#runPayRollTabsContent").hide();
-	         		    	  $("#payrollTabsContent").hide();
-	         		    	  $("#formsTabsContent").hide();
-	         		    	  $("#groupsTabsContent").show();
-	         		    	  
-	         		    	  $("#groupsTabsContent").empty();
-	         		    	  $("#groupsTabsContent").append(data);
+	         		    	 $("#runPayRollTabsContent").empty();
+	         				$("#runPayRollTabsContent").append(data);
 	         		      }
 	         		});
 	         	}
@@ -303,13 +280,8 @@ function payrollDiv(){
           type : "POST",
 	      	  url: sourceleadUrl+"/forms/list",		
 		      success :function(data) {
-		    	  $("#runPayRollTabsContent").hide();
-		    	  $("#payrollTabsContent").hide();
-		    	  $("#groupsTabsContent").hide();
-		    	  $("#formsTabsContent").show();
-		    	  
-		    	  $("#formsTabsContent").empty();
-		    	  $("#formsTabsContent").append(data);
+		    	$("#runPayRollTabsContent").empty();
+		  		$("#runPayRollTabsContent").append(data);
 		      }
 		});
 	}
