@@ -17,6 +17,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.servlet.ModelAndView;
 
 import com.bis.sourcelead.annotations.Validator;
 import com.bis.sourcelead.constants.Constants;
@@ -31,6 +32,7 @@ import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.PaymentAccount;
 import com.bis.sourcelead.entity.PayrollLoanAndAdvances;
 import com.bis.sourcelead.entity.User;
+import com.bis.sourcelead.entity.UserGroup;
 import com.bis.sourcelead.entity.UserRole;
 import com.bis.sourcelead.enums.Result;
 import com.bis.sourcelead.payroll.dto.AssociatePfEsiDetailsDTO;
@@ -39,10 +41,10 @@ import com.bis.sourcelead.service.AssociateLoanAndAdvancesService;
 import com.bis.sourcelead.service.CandidateService;
 import com.bis.sourcelead.service.PaymentAccountService;
 import com.bis.sourcelead.service.PayrollLoanAndAdvancesService;
+import com.bis.sourcelead.service.UserGroupService;
 import com.bis.sourcelead.service.UserRoleService;
 import com.bis.sourcelead.service.UserService;
 import com.bis.sourcelead.util.SourceLeadSessionManager;
-import com.rometools.rome.io.SyndFeedOutput;
 
 @RestController
 @PropertySource("${propertyLocation:app.properties}")
@@ -65,6 +67,9 @@ public class IndianPayrollRestController {
 	
 	@Autowired
 	UserRoleService userRoleService;
+	
+	@Autowired
+	UserGroupService userGroupService;
 	
 	@Autowired
 	AssociateLoanAndAdvancesService associateLoanAndAdvancesService;
@@ -95,7 +100,7 @@ public class IndianPayrollRestController {
 			 resObj.setResponseMessage(Result.AWKWARD.getValue());
 		}
 		 return resObj;
-}
+   }
     
     
     @RequestMapping(value = "/app/getIndAssociatePaymentAccountDetails", method = RequestMethod.POST)
@@ -363,5 +368,19 @@ public class IndianPayrollRestController {
 		 return "success";
     } 
     
+    
+    @RequestMapping(value = "/app/initiateIndPayroll", method = RequestMethod.POST)
+   	public ModelAndView initiateIndPayroll(HttpServletRequest request){
+    	ModelAndView modelAndView = new ModelAndView();
+   		 try {
+   			OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+			List<UserGroup> userGroupList = userGroupService.getAllUserGroupsByLocationId(orgLocations);
+			modelAndView.addObject("userGroupList",userGroupList);
+			modelAndView.setViewName("payroll_india/payroll/initiatePayrollInd");
+   		 }catch (Exception e) {
+   			 e.printStackTrace();
+   		}
+   		 return modelAndView;
+      } 
     
 }
