@@ -44,7 +44,12 @@ public class IndEmployeePayroll implements Serializable {
 	@ManyToOne
 	@JoinColumn(name = "IND_PAY_SHEET_FREQUENCY_ID", nullable = false)
 	private IndPaysheetFrequency indPaysheetFrequency;
+	
+	@Column(name = "IND_EMP_PAYROLL_UUID")
+	private String indEmpPayrollUUID;
 
+	@Column(name = "REGULAR_HOURS_AMOUNT")
+	private BigDecimal regularHoursAmount;
 
 	@Column(name = "REGULAR_HOURS")
 	private String regularHours;
@@ -213,6 +218,22 @@ public class IndEmployeePayroll implements Serializable {
 
 	public void setAssociatePayrollPayheadHistory(Set<AssociatePayrollPayheadHistory> associatePayrollPayheadHistory) {
 		this.associatePayrollPayheadHistory = associatePayrollPayheadHistory;
+	}
+
+	public BigDecimal getRegularHoursAmount() {
+		return regularHoursAmount;
+	}
+
+	public void setRegularHoursAmount(BigDecimal regularHoursAmount) {
+		this.regularHoursAmount = regularHoursAmount;
+	}
+
+	public String getIndEmpPayrollUUID() {
+		return indEmpPayrollUUID;
+	}
+
+	public void setIndEmpPayrollUUID(String indEmpPayrollUUID) {
+		this.indEmpPayrollUUID = indEmpPayrollUUID;
 	}
 
 	

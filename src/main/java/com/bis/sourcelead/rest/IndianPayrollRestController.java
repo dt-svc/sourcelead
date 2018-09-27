@@ -39,7 +39,11 @@ import com.bis.sourcelead.entity.UserGroup;
 import com.bis.sourcelead.entity.UserRole;
 import com.bis.sourcelead.enums.Result;
 import com.bis.sourcelead.payroll.dto.AssociatePfEsiDetailsDTO;
+import com.bis.sourcelead.payroll.dto.GenerateINDPayrollDTO;
+import com.bis.sourcelead.payroll.dto.IndPaysheetFrequencyDTO;
+import com.bis.sourcelead.payroll.dto.PaysheetFrequencyDTO;
 import com.bis.sourcelead.payroll.service.AssociatePfEsiService;
+import com.bis.sourcelead.payroll.service.GenerateINDPayrollService;
 import com.bis.sourcelead.service.AssociateLoanAndAdvancesService;
 import com.bis.sourcelead.service.CandidateService;
 import com.bis.sourcelead.service.DepartmentService;
@@ -79,6 +83,10 @@ public class IndianPayrollRestController {
 	
 	@Autowired
 	DepartmentService departmentService;
+	
+    @Autowired
+	GenerateINDPayrollService generateINDPayrollService;
+
 	
 	@Autowired
 	AssociateLoanAndAdvancesService associateLoanAndAdvancesService;
@@ -392,6 +400,7 @@ public class IndianPayrollRestController {
    		 return modelAndView;
       } 
     
+
 	@RequestMapping(value = "/app/indianPayrolluserGroupList")
 	public ModelAndView userBatchList(HttpServletRequest request) throws Exception {
 		   OrgLocations loginOrgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
@@ -407,5 +416,15 @@ public class IndianPayrollRestController {
 	   		 return model;
 	      } 
     
+
+    @RequestMapping(value = { "/generateINDPayroll","/rest/generateINDPayroll" }, method = RequestMethod.POST)
+	public IndPaysheetFrequencyDTO generateUSPayroll(GenerateINDPayrollDTO generateUSPayrollDTO,HttpServletRequest request, HttpServletResponse response) throws Exception
+	{
+		OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+		User loginUser = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+		IndPaysheetFrequencyDTO existedData = generateINDPayrollService.getPayrollData(generateUSPayrollDTO,orgLocation,loginUser);
+		return null;
+	}
+
     
 }
