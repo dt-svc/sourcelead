@@ -106,7 +106,7 @@ public class ImmigrationTemplateServiceImpl implements ImmigrationTemplateServic
             if(tempObj.getId() != null){
             	immigrationTemplateDocs = new ImmigrationTemplateDocs();
             	immigrationTemplateDocs.setId(tempObj.getId());
-            	immigrationTemplateDocs.setDocumentCategory(tempObj.getDocumentCategory());
+            //	immigrationTemplateDocs.setDocumentCategory(tempObj.getDocumentCategory());
             }else{
             	immigrationTemplateDocs = new ImmigrationTemplateDocs();
             	 immigrationTemplateDocs.setCreatedDate(latestDate);

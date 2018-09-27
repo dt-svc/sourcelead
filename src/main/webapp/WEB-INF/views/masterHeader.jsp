@@ -613,7 +613,7 @@ function preventTabkey(e){
 						  		<li><a href="<c:url value="/app/payrollConfiguration" />"><i class="fa fa-usd" aria-hidden="true"></i>Payroll Configuration</a></li>
 						  	</c:if>
 						  	<c:if test="${SourceLeadWeb_orgLocations.country == 'India'}">
-						  		<li><a href="<c:url value='${sourceleadUrl}/indPayrollConfiguration'/>" ><i class="fa fa-key" aria-hidden="true"></i>Payroll Configuration</a></li>
+						  		<li><a href="<c:url value='${appPath}/indPayrollConfiguration'/>" ><i class="fa fa-key" aria-hidden="true"></i>Payroll Configuration</a></li>
 						  	</c:if>
                       </sec:authorize>
                          

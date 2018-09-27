@@ -686,8 +686,8 @@ public class DataMigrationCommonUtil {
 				
 				if(!dataMigrationDTOJsonCopy.getString("email").equals("null") && StringUtils.isNotEmpty(dataMigrationDTOJsonCopy.getString("email"))) {
 					
-					Candidate candidate = candidateDao.findByCandidateEmail(dataMigrationDTOJsonCopy.getString("email").toString().trim(),orgLocation.getId());
-					if (candidate != null) {
+					Long candidateId = candidateDao.getCandidateIdByEmailAndOrgLocationId(dataMigrationDTOJsonCopy.getString("email").toString().trim(),orgLocation.getId());
+					if (candidateId != null) {
 						errorSet.put("email", "Candidate already exist.!");
 					}else {
 						
@@ -807,7 +807,7 @@ public class DataMigrationCommonUtil {
 			
 			
 			
-			public void dataValidationForTimesheets(HashMap< String, String> errorSet, JSONObject dataMigrationDTOJsonCopy, FormulaEvaluator objFormulaEvaluator, DataFormatter objDefaultFormat, User user, OrgLocations orgLocation, String timeFrequency) throws Exception
+			public void dataValidationForTimesheets(HashMap< String, String> errorSet, JSONObject dataMigrationDTOJsonCopy, DataFormatter objDefaultFormat, User user, OrgLocations orgLocation, String timeFrequency) throws Exception
 			{
 				logger.debug("In dataValidationForTimesheets method...");
 				Projects project = null;

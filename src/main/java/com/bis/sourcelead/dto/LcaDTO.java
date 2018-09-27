@@ -142,6 +142,8 @@ public class LcaDTO extends SearchDTO {
 	private List<FileInfo> fileInfo;
 	
 	private String editMode;
+	
+	private String visaClsfId;
 
 	public Long getId() {
 		return id;
@@ -600,6 +602,13 @@ public class LcaDTO extends SearchDTO {
 	public void setLcaDocumentListIds(Long[] lcaDocumentListIds) {
 		this.lcaDocumentListIds = lcaDocumentListIds;
 	}
-	
+
+	public String getVisaClsfId() {
+		return visaClsfId;
+	}
+
+	public void setVisaClsfId(String visaClsfId) {
+		this.visaClsfId = visaClsfId;
+	}
 	
 }
