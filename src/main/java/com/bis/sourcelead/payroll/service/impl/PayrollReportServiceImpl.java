@@ -349,8 +349,8 @@ public class PayrollReportServiceImpl implements PayrollReportService{
 					}
 					dto.setDedAmount(dedAmount);
 					dto.setSchedule(dedHis.getDeductionId().getDeductionTypeId().getPayrollScheduled().toLowerCase());
-					BigDecimal deductionYTD = payrollUtil.getDeductionYTD(dedHis.getPayroll(), dedHis.getDeductionId().getId(), orgLocation);
-					dto.setDeductionYTD(deductionYTD);
+					YTDPayrollDTO deductionYTD = payrollUtil.getDeductionYTD(dedHis.getPayroll(), dedHis.getDeductionId().getId(), orgLocation);
+					dto.setDeductionYTD(deductionYTD.getDeductionYTD());
 					list.add(dto);
 				}
 			}
@@ -468,8 +468,10 @@ public class PayrollReportServiceImpl implements PayrollReportService{
 					dto.setFreqStartDate(commonUtil.dateStrFromOrgDateFormatter(orgLocation.getDateFormat(), dedHis.getPayroll().getPaysheetFrequency().getFrequencyStartDate()));
 					dto.setFreqEndDate(commonUtil.dateStrFromOrgDateFormatter(orgLocation.getDateFormat(), dedHis.getPayroll().getPaysheetFrequency().getFrequencyEndDate()));
 					dto.setSchedule(dedHis.getDeductionId().getDeductionTypeId().getPayrollScheduled().toLowerCase());
-					BigDecimal deductionYTD = payrollUtil.getDeductionYTD(dedHis.getPayroll(), dedHis.getDeductionId().getId(), orgLocation);
-					dto.setDeductionYTD(deductionYTD);
+					YTDPayrollDTO deductionYTD = payrollUtil.getDeductionYTD(dedHis.getPayroll(), dedHis.getDeductionId().getId(), orgLocation);
+					dto.setDeductionYTD(deductionYTD.getDeductionYTD());
+					dto.setDeductionMTD(deductionYTD.getDeductionMTD());
+					dto.setDeductionQTD(deductionYTD.getDeductionQTD());
 					
 					dto.setCheckDate(dedHis.getPayroll().getPaysheetFrequency().getPayCheckDate());
 					dto.setGroupName(dedHis.getPayroll().getPaysheetFrequency().getUserGroup().getGroupName());
