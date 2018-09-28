@@ -23,7 +23,7 @@
 </script>
  
  
-      <div class="mb clearfix col-md-12"> 
+      <div class="mb clearfix col-md-12 noPad"> 
       	  <div class="dashNewWrap mb10">
       	  
       	  

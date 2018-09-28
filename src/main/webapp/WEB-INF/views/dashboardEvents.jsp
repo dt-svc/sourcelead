@@ -14,7 +14,7 @@ width: 75px; padding: 0 !important;
 }
 </style>
  <!-- Applicant Authorization -->
-      <div class="mb eventAlert clearfix col-md-12">
+      <div class="mb eventAlert clearfix col-md-12 noPad">
         <div class="dashNewWrap clearfix mb10">
         <div class="dashNewWrapHead event_calendar">
             <h4 class="pull-left">Events</h4>
