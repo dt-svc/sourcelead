@@ -389,7 +389,7 @@ public class USPayrollReportRestController {
 	
 	
 	/**
-	 * Get Check Register Payroll Reports 
+	 * Get Check Register & Deposit Reports Payroll Reports 
 	 * @param groupId
 	 * @param request
 	 * @param response
@@ -427,23 +427,20 @@ public class USPayrollReportRestController {
 		}
 	}
 	
-	
+	/**
+	 * Export Pdf for Contribution
+	 * 
+	 * @param payrollReportDTO
+	 * @param request
+	 * @param response
+	 * @throws Exception
+	 */
 	@RequestMapping(value = "/exportToPdfContributionReport")
 	public void exportToPdfContributionReport(PayrollReportDTO payrollReportDTO,HttpServletRequest request, HttpServletResponse response) throws Exception
 	{
 		OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 		List<PayrollReportDTO>  deductionHisList = payrollReportService.exportToPdfContributionReport(orgLocation,payrollReportDTO);
-		
 		File file = payrollReportPdfUtil.getontributionReportPdf(orgLocation,deductionHisList);
-		
-		/*List<CheckRegisterReportDTO> checkRegData = payrollReportService.getexportToPdfCheckRegisterReport(orgLocation,payrollReportDTO);
-		File file = null;
-		if("Cheque".equalsIgnoreCase(payrollReportDTO.getDepositType())) {
-			file = payrollReportPdfUtil.getCheckRegisterReportPdf(checkRegData,orgLocation);
-		}else {
-			file = payrollReportPdfUtil.getDirectDepositExportFile(checkRegData,orgLocation,payrollReportDTO);
-		}
-		
 		String mimeType = URLConnection.guessContentTypeFromName(file.getName());
 		if (mimeType == null) {
 			mimeType = "application/octet-stream";
@@ -460,7 +457,7 @@ public class USPayrollReportRestController {
 		if (file != null) {
 			file.delete();
 		}
-		/**/
+		
 	}
 	
 }
