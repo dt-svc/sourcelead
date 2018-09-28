@@ -165,6 +165,14 @@ public class GenerateINDPayrollServiceImpl implements GenerateINDPayrollService{
 			paySheetFreq.setApproverStatus(PayrollConstant.DRAFT);
 			paySheetFreq.setActionPerformedBy(""+loginUser.getFullName());
 			paySheetFreq.setPaySheetFrequencyUUID(SourceLeadRandomCodeHelper.generateRandomUUID());
+			
+			Long payRunId = generateINDPayrollDao.getMaxPayRunIdByOrgLocationId(orgLocation.getId());
+			if(payRunId == null) {
+				payRunId = 1l;
+			}else {
+				payRunId = payRunId+1;
+			}
+			paySheetFreq.setPayRunId(payRunId);
 			Set<IndEmployeePayroll> payrollList = calculatePayroll(existedData,paySheetFreq, loginUser, orgLocation,assSallist,freqStartDate, freqEndDate,userGroup);
 			if(payrollList !=null && payrollList.size() > 0) {
 				paySheetFreq.setIndEmployeepayroll(payrollList);
@@ -319,6 +327,11 @@ public class GenerateINDPayrollServiceImpl implements GenerateINDPayrollService{
 			double perMinRate = payRate.doubleValue() / 60;
 			double totatAmount = totalMin * perMinRate;
 			return BigDecimal.valueOf(totatAmount);
+		}
+
+		@Override
+		public Long getMaxPayRunIdByOrgLocationId(Long orgLocationId) {
+			return generateINDPayrollDao.getMaxPayRunIdByOrgLocationId(orgLocationId);
 		}
 	
 }

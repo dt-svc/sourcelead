@@ -3,6 +3,7 @@ package com.bis.sourcelead.payroll.dao.impl;
 import java.util.Date;
 import java.util.List;
 
+import org.hibernate.Query;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.slf4j.Logger;
@@ -62,6 +63,16 @@ public class GenerateINDPayrollDaoImpl implements GenerateINDPayrollDao{
 			paysheetFrequency = list.get(0);
 		}
 		return paysheetFrequency;
+	}
+
+	@Override
+	@Transactional
+	public Long getMaxPayRunIdByOrgLocationId(Long orgLocationId) {
+		Session session = this.sessionFactory.getCurrentSession();
+		String query = "select MAX(payRunId) from IndPaysheetFrequency  pf  where pf.orgLocation.id = :orgLocationId ";
+		Query indPaysheetFrequency = session.createQuery(query).setLong("orgLocationId", orgLocationId);
+		Long count = (Long) indPaysheetFrequency.uniqueResult();
+		return count;
 	}
 
 	

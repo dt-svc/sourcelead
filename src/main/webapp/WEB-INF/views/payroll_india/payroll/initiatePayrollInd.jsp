@@ -102,7 +102,6 @@ function runINDPayroll(){
 		var payPeriod = $("#payPeriod").val();
 		var payType = $("#payType").val();
 		var payrollPayDate = $("#payrollPayDate").val();
-		alert(payType);
 		 $.ajax({
 		    	   type: "POST",
 		           url: sourceleadUrl+"/generateINDPayroll?groupId="+groupId+"&payPeriod="+payPeriod+"&payrollPayDate="+payrollPayDate+"&paytype="+payType,                 

@@ -8,6 +8,8 @@ import com.bis.sourcelead.payroll.entity.IndPaysheetFrequency;
 public interface GenerateINDPayrollDao {
 
 	IndPaysheetFrequency getPayrollData(GenerateINDPayrollDTO generateINDPayrollDTO, OrgLocations orgLocation, User loginUser);
+	
+	Long getMaxPayRunIdByOrgLocationId(Long orgLocationId);
 
 
 }
