@@ -84,7 +84,29 @@ public class PayrollReportDTO extends SearchDTO{
 	
 	private BigDecimal deductionYTD;
 	
+	private String ssnNumber;
 	
+	private String candidateWorkAddress;
+	
+	private String fedMaritalStat;
+	
+	private String stateMaritalStat;
+	
+	private String fedExempt;
+	
+	private String stateExempt;
+	
+	private String fedAddTax;
+	
+	private String stateAddTax;
+	
+	private String resState;
+	
+	private String workState;
+	
+	private String dateOfJoin;
+	
+	private String empStatus;
 	
 	public BigDecimal getContributionAmount()
 	{
@@ -481,20 +503,136 @@ public class PayrollReportDTO extends SearchDTO{
 		return deductionType;
 	}
 
-
 	public void setDeductionType(String deductionType) {
 		this.deductionType = deductionType;
 	}
-
 
 	public BigDecimal getDeductionYTD() {
 		return deductionYTD;
 	}
 
-
 	public void setDeductionYTD(BigDecimal deductionYTD) {
 		this.deductionYTD = deductionYTD;
-	}	
-	
-	
+	}
+
+	public String getSsnNumber()
+	{
+		return ssnNumber;
+	}
+
+	public void setSsnNumber(String ssnNumber)
+	{
+		this.ssnNumber = ssnNumber;
+	}
+
+	public String getCandidateWorkAddress()
+	{
+		return candidateWorkAddress;
+	}
+
+	public void setCandidateWorkAddress(String candidateWorkAddress)
+	{
+		this.candidateWorkAddress = candidateWorkAddress;
+	}
+
+	public String getFedMaritalStat()
+	{
+		return fedMaritalStat;
+	}
+
+	public void setFedMaritalStat(String fedMaritalStat)
+	{
+		this.fedMaritalStat = fedMaritalStat;
+	}
+
+	public String getStateMaritalStat()
+	{
+		return stateMaritalStat;
+	}
+
+	public void setStateMaritalStat(String stateMaritalStat)
+	{
+		this.stateMaritalStat = stateMaritalStat;
+	}
+
+	public String getFedExempt()
+	{
+		return fedExempt;
+	}
+
+	public void setFedExempt(String fedExempt)
+	{
+		this.fedExempt = fedExempt;
+	}
+
+	public String getStateExempt()
+	{
+		return stateExempt;
+	}
+
+	public void setStateExempt(String stateExempt)
+	{
+		this.stateExempt = stateExempt;
+	}
+
+	public String getFedAddTax()
+	{
+		return fedAddTax;
+	}
+
+	public void setFedAddTax(String fedAddTax)
+	{
+		this.fedAddTax = fedAddTax;
+	}
+
+	public String getStateAddTax()
+	{
+		return stateAddTax;
+	}
+
+	public void setStateAddTax(String stateAddTax)
+	{
+		this.stateAddTax = stateAddTax;
+	}
+
+	public String getDateOfJoin()
+	{
+		return dateOfJoin;
+	}
+
+	public void setDateOfJoin(String dateOfJoin)
+	{
+		this.dateOfJoin = dateOfJoin;
+	}
+
+	public String getEmpStatus()
+	{
+		return empStatus;
+	}
+
+	public void setEmpStatus(String empStatus)
+	{
+		this.empStatus = empStatus;
+	}
+
+	public String getResState()
+	{
+		return resState;
+	}
+
+	public void setResState(String resState)
+	{
+		this.resState = resState;
+	}
+
+	public String getWorkState()
+	{
+		return workState;
+	}
+
+	public void setWorkState(String workState)
+	{
+		this.workState = workState;
+	}
+
 }
