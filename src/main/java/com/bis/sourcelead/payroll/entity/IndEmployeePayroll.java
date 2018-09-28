@@ -24,9 +24,6 @@ import com.bis.sourcelead.entity.Employees;
 @Table(name = "IND_EMPLOYEE_PAYROLL")
 public class IndEmployeePayroll implements Serializable {
 
-	/**
-	 * @author Mahaveer Manoj
-	 */
 	private static final long serialVersionUID = 1L;
 
 	@Id

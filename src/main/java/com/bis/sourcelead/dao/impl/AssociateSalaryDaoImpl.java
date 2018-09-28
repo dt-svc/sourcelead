@@ -277,6 +277,7 @@ private static final Logger logger = LoggerFactory.getLogger(AssociateBankDataDa
 
 
 	@Override
+	@Transactional
 	public List<AssociateSalaryInd> getIndAssociateSalaryListByGroupId(OrgLocations orgLocation, long groupId,
 			String payType) {
 		String qry = "";

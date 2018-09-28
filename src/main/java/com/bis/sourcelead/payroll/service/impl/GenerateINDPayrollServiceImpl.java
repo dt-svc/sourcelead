@@ -20,6 +20,7 @@ import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.dao.UserGroupDao;
 import com.bis.sourcelead.entity.AssociatePayrollPayheadHistory;
 import com.bis.sourcelead.entity.AssociateSalaryInd;
+import com.bis.sourcelead.entity.Employees;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.entity.UserGroup;
@@ -34,6 +35,7 @@ import com.bis.sourcelead.payroll.entity.IndPaysheetFrequency;
 import com.bis.sourcelead.payroll.service.GenerateINDPayrollService;
 import com.bis.sourcelead.payroll.service.IndPaysheetFrequencyService;
 import com.bis.sourcelead.service.AssociateSalaryService;
+import com.bis.sourcelead.service.EmployeesService;
 import com.bis.sourcelead.util.CommonUtil;
 import com.bis.sourcelead.util.INDPayrollCommonUtil;
 import com.bis.sourcelead.util.SourceLeadRandomCodeHelper;
@@ -58,6 +60,9 @@ public class GenerateINDPayrollServiceImpl implements GenerateINDPayrollService{
 	
 	@Autowired
 	IndPaysheetFrequencyService indPaysheetFrequencyService;
+	
+	@Autowired
+	EmployeesService employeesService;
 
 	private static final Logger logger = LoggerFactory.getLogger(GenerateINDPayrollServiceImpl.class);
 
@@ -88,6 +93,7 @@ public class GenerateINDPayrollServiceImpl implements GenerateINDPayrollService{
 					payrollDTO.setEmpName(sb.toString());
 					payrollDTO.setEmpPayrollId(pay.getId());
 					payrollDTO.setEmpPayrollUUID(pay.getIndEmpPayrollUUID());
+					payrollDTO.setPayType(pay.getPayType());
 					
 					payrollDTO.setGrossPay(pay.getGrossPay());
 					payrollDTO.setNetPay(pay.getNetPay());
@@ -157,6 +163,7 @@ public class GenerateINDPayrollServiceImpl implements GenerateINDPayrollService{
 			paySheetFreq.setUpdatedBy(loginUser.getId());
 			paySheetFreq.setStatus(1);
 			paySheetFreq.setApproverStatus(PayrollConstant.DRAFT);
+			paySheetFreq.setActionPerformedBy(""+loginUser.getFullName());
 			paySheetFreq.setPaySheetFrequencyUUID(SourceLeadRandomCodeHelper.generateRandomUUID());
 			Set<IndEmployeePayroll> payrollList = calculatePayroll(existedData,paySheetFreq, loginUser, orgLocation,assSallist,freqStartDate, freqEndDate,userGroup);
 			if(payrollList !=null && payrollList.size() > 0) {
@@ -240,17 +247,22 @@ public class GenerateINDPayrollServiceImpl implements GenerateINDPayrollService{
 							employeePayroll.setRegularHoursAmount(regularHoursAmount);
 							employeePayroll.setType(Constants.REGULAR);
 							
+							Employees employee = employeesService.getEmployeeByUserAndOrgLocationId(assoSal.getCandidate().getConsultantUser().getId(),orgLocation.getId());
+							if (employee != null) {
+								employeePayroll.setEmployee(employee);
+							}
+							
 							//employeePayroll.setAssociatePayrollPayheadHistory(associatePayrollPayheadHistory);
 							 
 							
-							HashSet<AssociatePayrollPayheadHistory> payHeadHistoryList = iNDPayrollCommonUtil.getAssociatePayrollPayHeadHistoryFromAssociateSalaryPayHeads(assoSal.getAssociateSalaryPayheadIndList(), employeePayroll.getId(), loginUser);
+							HashSet<AssociatePayrollPayheadHistory> payHeadHistoryList = iNDPayrollCommonUtil.getAssociatePayrollPayHeadHistoryFromAssociateSalaryPayHeads(assoSal.getAssociateSalaryPayheadIndList(), employeePayroll, loginUser);
 							employeePayroll.setAssociatePayrollPayheadHistory(payHeadHistoryList);
 							
 							employeePayroll.setGrossPay(BigDecimal.ZERO);
 							employeePayroll.setNetPay(BigDecimal.ZERO);
 							employeePayroll.setProfessionalTax(BigDecimal.ZERO);
 						    employeePayroll.setTds(BigDecimal.ZERO);
-						    
+						    employeePayroll.setSubmitForAproverStatus(PayrollConstant.DRAFT);
 							
 							employeePayroll.setIndEmpPayrollUUID(SourceLeadRandomCodeHelper.generateRandomUUID());
 							employeePayroll.setStatus(1);

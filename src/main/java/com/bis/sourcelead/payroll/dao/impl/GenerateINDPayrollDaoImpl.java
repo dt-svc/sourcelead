@@ -28,7 +28,7 @@ public class GenerateINDPayrollDaoImpl implements GenerateINDPayrollDao{
 	private static final Logger logger = LoggerFactory.getLogger(AccountDeductionsDaoImpl.class);
 
 	@Autowired
-	SessionFactory sessionFactory;
+	private SessionFactory sessionFactory;
 	
 	@Autowired
 	CommonUtil commonUtil;
