@@ -1669,6 +1669,8 @@ public class InvoiceServiceImpl implements InvoiceService {
   	  						invoice.setConvertCurrencyCode(vendorCurrencyCode);
   	  						invoice.setCurrencyCode(loginOrgCurrencyCode);
   	  						invoice.setContactUser(contactUser);
+  	  						invoice.setContactUsers(contactUser.getId().toString());
+  	  						invoice.setOwnerUsers(user.getId().toString());
   	  						invoice.setCreatedBy(user.getUserCode());
   	  						invoice.setStatus(Constants.RECORD_ACTIVE.toString());
   	  						invoice.setInvoiceStatus(Constants.DRAFT);
@@ -2923,14 +2925,18 @@ public class InvoiceServiceImpl implements InvoiceService {
 		if (StringUtils.isNotBlank(invoiceDTO.getInvoiceforexpenses())) {
 			invoice.setExpensesInvoices(invoiceDTO.getInvoiceforexpenses());
 		}
+		
 
 		invoiceDao.saveInvoce(invoice);
-		saveInvoiceTimelineHistory(invoice, user, null, savedInvoiceId, null, null);
+		Map<String, String> returnMap = new HashMap<>();
 		if (Constants.SENT.equalsIgnoreCase(saveType)) {
-			saveParentInvoice(invoice, loginOrgCurrencyCode, vendorOrgLocation, user);
-			sendInvoiceMail(user, orgLocation, invoice, invoiceType, docusList);
+			Invoice parentInvoice = saveParentInvoice(invoice, loginOrgCurrencyCode, vendorOrgLocation, user);
+			returnMap = sendInvoiceMail(user, orgLocation, invoice, invoiceType, docusList);
+			if (parentInvoice.getId() != null) {
+				saveInvoiceTimelineHistory(parentInvoice, user, null, null, null, returnMap);
+			}
 		}
-
+		saveInvoiceTimelineHistory(invoice, user, null, savedInvoiceId, null,returnMap);
 		if (null != invoiceLineItemsIdsList && invoiceLineItemsIdsList.size() > 0) {
 			for (Long lineItemsId : invoiceLineItemsIdsList) {
 				InvoiceLineItems lineItems = invoiceLineItemDao.getInvoiceLineItemsById(lineItemsId);

@@ -1,6 +1,7 @@
 package com.bis.sourcelead.payroll.dto;
 
 import java.math.BigDecimal;
+import java.util.Date;
 
 import com.bis.sourcelead.dto.SearchDTO;
 
@@ -74,8 +75,51 @@ public class PayrollReportDTO extends SearchDTO{
 	
 	private BigDecimal dedAmount;
 	
+	private BigDecimal contributionYTD;
+
+	private String deductionId;
+	
+	private String deductionType;
+		
+	private BigDecimal contributionAmount;
+	
+	private BigDecimal deductionYTD;
+	
+	private Date checkDate;
+	
+	private String groupName;
+	
+	private String groupFrequency;
+	
+	private String type;
+	
+	private Date runDate;
 	
 	
+	public BigDecimal getContributionAmount()
+	{
+		return contributionAmount;
+	}
+
+
+	public void setContributionAmount(BigDecimal contributionAmount)
+	{
+		this.contributionAmount = contributionAmount;
+	}
+
+
+	public BigDecimal getContributionYTD()
+	{
+		return contributionYTD;
+	}
+
+
+	public void setContributionYTD(BigDecimal contributionYTD)
+	{
+		this.contributionYTD = contributionYTD;
+	}
+
+
 	public BigDecimal getDedAmount()
 	{
 		return dedAmount;
@@ -430,5 +474,97 @@ public class PayrollReportDTO extends SearchDTO{
 	public void setOrgLocationid(Long orgLocationid)
 	{
 		this.orgLocationid = orgLocationid;
+	}
+
+
+	public String getDeductionId() {
+		return deductionId;
+	}
+
+
+	public void setDeductionId(String deductionId) {
+		this.deductionId = deductionId;
+	}
+
+
+	public String getDeductionType() {
+		return deductionType;
+	}
+
+
+	public void setDeductionType(String deductionType) {
+		this.deductionType = deductionType;
+	}
+
+
+	public BigDecimal getDeductionYTD() {
+		return deductionYTD;
+	}
+
+
+	public void setDeductionYTD(BigDecimal deductionYTD) {
+		this.deductionYTD = deductionYTD;
+	}
+
+
+	public Date getCheckDate()
+	{
+		return checkDate;
+	}
+
+
+	public void setCheckDate(Date checkDate)
+	{
+		this.checkDate = checkDate;
+	}
+
+
+	public String getGroupName()
+	{
+		return groupName;
+	}
+
+
+	public void setGroupName(String groupName)
+	{
+		this.groupName = groupName;
+	}
+
+
+	public String getGroupFrequency()
+	{
+		return groupFrequency;
+	}
+
+
+	public void setGroupFrequency(String groupFrequency)
+	{
+		this.groupFrequency = groupFrequency;
+	}
+
+
+	public String getType()
+	{
+		return type;
+	}
+
+
+	public void setType(String type)
+	{
+		this.type = type;
+	}
+
+
+	public Date getRunDate()
+	{
+		return runDate;
+	}
+
+
+	public void setRunDate(Date runDate)
+	{
+		this.runDate = runDate;
 	}	
+	
+	
 }

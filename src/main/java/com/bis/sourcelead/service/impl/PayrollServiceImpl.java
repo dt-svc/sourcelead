@@ -100,7 +100,7 @@ public class PayrollServiceImpl implements PayrollService {
 				paysheetFrequencyDTO.setPayrollFrequencyUUID(paysheetFrequency.getPaySheetFrequencyUUID());
 				paysheetFrequencyDTO.setPaySheetFrequencyId(paysheetFrequency.getId());
 				list = new ArrayList<>();
-				for(IndEmployeePayroll pay : paysheetFrequency.getIndEmployeepayroll()) {
+			/*	for(IndEmployeePayroll pay : paysheetFrequency.getIndEmployeepayroll()) {
 					INDPayrollDTO payrollDTO = new INDPayrollDTO();
 					payrollDTO.setEmpId(pay.getEmployee().getEmployeeId());
 					StringBuilder sb = new StringBuilder();
@@ -120,7 +120,7 @@ public class PayrollServiceImpl implements PayrollService {
 //					payrollDTO.setTaxes(pay.getTaxes());
 					payrollDTO.setOtHoursTotalAmt(pay.getOverTimeAmount());
 					payrollDTO.setCandidateId(pay.getCandidate().getId());
-					payrollDTO.setPaySheetFrequencyId(pay.getPaysheetFrequency().getId());
+					//payrollDTO.setPaySheetFrequencyId(pay.getPaysheetFrequency().getId());
 					double overTimeHours = 0;
 					if(StringUtils.isNoneBlank(pay.getOverTimeHours())) {
 						overTimeHours = Double.parseDouble(pay.getOverTimeHours());
@@ -130,7 +130,7 @@ public class PayrollServiceImpl implements PayrollService {
 						list.add(payrollDTO);	
 					}
 					
-				}
+				}*/
 				paysheetFrequencyDTO.setIndPayrollDTO(list);
 			}
 			
@@ -185,7 +185,7 @@ public class PayrollServiceImpl implements PayrollService {
 				paySheetFreq.setPaySheetFrequencyUUID(SourceLeadRandomCodeHelper.generateRandomUUID());
 				Set<IndEmployeePayroll> payrollList = calculatePayroll(existedData, paySheetFreq, loginUser, orgLocation,
 						assSallist, freqStartDate, freqEndDate, userGroup);
-				paySheetFreq.setIndEmployeepayroll(payrollList);
+				//paySheetFreq.setIndEmployeepayroll(payrollList);
 				if (payrollList != null && payrollList.size() > 0) {
 					PaysheetFrequency savedPaysheetFrequency = uSPaysheetService.addPaysheetFrequency(paySheetFreq);
 				}
@@ -212,7 +212,7 @@ public class PayrollServiceImpl implements PayrollService {
 					if (employee != null) {
 						indEmployeePayroll.setEmployee(employee);
 					}
-					indEmployeePayroll.setPaysheetFrequency(paysheetFrequency);
+					//indEmployeePayroll.setPaysheetFrequency(paysheetFrequency);
 					
 					float totalHours = 0;
 					BigDecimal payRate = BigDecimal.ZERO;

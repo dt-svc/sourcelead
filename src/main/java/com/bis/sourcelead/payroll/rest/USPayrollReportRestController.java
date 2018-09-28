@@ -1,5 +1,10 @@
 package com.bis.sourcelead.payroll.rest;
 
+import java.io.BufferedInputStream;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.InputStream;
+import java.net.URLConnection;
 import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
@@ -9,6 +14,7 @@ import org.apache.commons.lang.exception.ExceptionUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.util.FileCopyUtils;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -25,9 +31,11 @@ import com.bis.sourcelead.payroll.dto.CheckRegisterReportDTO;
 import com.bis.sourcelead.payroll.dto.PayPeriodDTO;
 import com.bis.sourcelead.payroll.dto.PayrollComparisonDTO;
 import com.bis.sourcelead.payroll.dto.PayrollReportDTO;
+import com.bis.sourcelead.payroll.entity.DeductionHistory;
 import com.bis.sourcelead.payroll.service.PayrollReportService;
 import com.bis.sourcelead.payroll.service.PaysheetFrequencyService;
 import com.bis.sourcelead.payroll.service.USPayPeriodService;
+import com.bis.sourcelead.payroll.util.PayrollReportPdfUtil;
 import com.bis.sourcelead.payroll.util.PayrollUtil;
 import com.bis.sourcelead.service.UserGroupService;
 import com.bis.sourcelead.util.SourceLeadSessionManager;
@@ -52,6 +60,9 @@ public class USPayrollReportRestController {
 	
 	@Autowired
 	PayrollUtil payrollUtil;
+	
+	@Autowired
+	PayrollReportPdfUtil payrollReportPdfUtil;
 
 	/**
 	 * Returning Us Payroll Jsp
@@ -353,7 +364,100 @@ public class USPayrollReportRestController {
 		}
 		payrollReportDTO.setSortColumn(tableColumns[sortColumnIndex]);
 		payrollReportDTO.setSortOrder(sortColumnOrder);
-		ResponseList<PayrollReportDTO> res = payrollReportService.getDeductionAndContributionReports(orgLocation,payrollReportDTO);
+		ResponseList<PayrollReportDTO> res = payrollReportService.getContributionReports(orgLocation,payrollReportDTO);
 		return res;
 	}
+	
+	
+	@RequestMapping(value = { "/getDeductionReports","/rest/getDeductionReports" }, method = RequestMethod.POST)
+	@ResponseBody
+	public ResponseList<PayrollReportDTO> getDeductionReports(PayrollReportDTO payrollReportDTO,HttpServletRequest request, HttpServletResponse response) throws Exception
+	{
+		OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+		String[] tableColumns = {"payrollDeductionType",  "employeeId","firstName", "departmentName","schedule","dedAmount","ytdDeductions"};
+	    int sortColumnIndex = 1;		 //by default sorting using updated date
+		String sortColumnOrder = "asc";  //by default descending order
+		if(payrollReportDTO.getOrder() != null && !payrollReportDTO.getOrder().isEmpty()) {
+			sortColumnIndex = Integer.parseInt(payrollReportDTO.getOrder().get(0).get("column"));
+			sortColumnOrder = payrollReportDTO.getOrder().get(0).get("dir");
+		}
+		payrollReportDTO.setSortColumn(tableColumns[sortColumnIndex]);
+		payrollReportDTO.setSortOrder(sortColumnOrder);
+		ResponseList<PayrollReportDTO> res = payrollReportService.getDeductionReports(orgLocation,payrollReportDTO);
+		return res;
+	}
+	
+	
+	/**
+	 * Get Check Register & Deposit Reports Payroll Reports 
+	 * @param groupId
+	 * @param request
+	 * @param response
+	 * @return
+	 * @throws Exception
+	 */
+	@RequestMapping(value = "/exportToPdfCheckRegisterReport")
+	public void exportToPdfCheckRegisterReport(PayrollReportDTO payrollReportDTO,HttpServletRequest request, HttpServletResponse response) throws Exception
+	{
+		OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+		List<CheckRegisterReportDTO> checkRegData = payrollReportService.getexportToPdfCheckRegisterReport(orgLocation,payrollReportDTO);
+		
+		File file = null;
+		if("Cheque".equalsIgnoreCase(payrollReportDTO.getDepositType())) {
+			file = payrollReportPdfUtil.getCheckRegisterReportPdf(checkRegData,orgLocation);
+		}else {
+			file = payrollReportPdfUtil.getDirectDepositExportFile(checkRegData,orgLocation,payrollReportDTO);
+		}
+		
+		String mimeType = URLConnection.guessContentTypeFromName(file.getName());
+		if (mimeType == null) {
+			mimeType = "application/octet-stream";
+		}
+		response.setContentType(mimeType);
+		StringBuilder fileName = new StringBuilder();
+		response.setHeader("Content-Disposition", fileName.append("attachment; filename=\"").append(file.getName()).append("\"").toString());
+		response.setContentLength((int) file.length());
+		InputStream inputStream = new BufferedInputStream(new FileInputStream(file));
+		FileCopyUtils.copy(inputStream, response.getOutputStream());
+		inputStream.close();
+		response.getOutputStream().close();
+		response.getOutputStream().flush();
+		if (file != null) {
+			file.delete();
+		}
+	}
+	
+	/**
+	 * Export Pdf for Contribution
+	 * 
+	 * @param payrollReportDTO
+	 * @param request
+	 * @param response
+	 * @throws Exception
+	 */
+	@RequestMapping(value = "/exportToPdfContributionReport")
+	public void exportToPdfContributionReport(PayrollReportDTO payrollReportDTO,HttpServletRequest request, HttpServletResponse response) throws Exception
+	{
+		OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+		List<PayrollReportDTO>  deductionHisList = payrollReportService.exportToPdfContributionReport(orgLocation,payrollReportDTO);
+		File file = payrollReportPdfUtil.getontributionReportPdf(orgLocation,deductionHisList);
+		String mimeType = URLConnection.guessContentTypeFromName(file.getName());
+		if (mimeType == null) {
+			mimeType = "application/octet-stream";
+		}
+		response.setContentType(mimeType);
+		StringBuilder fileName = new StringBuilder();
+		response.setHeader("Content-Disposition", fileName.append("attachment; filename=\"").append(file.getName()).append("\"").toString());
+		response.setContentLength((int) file.length());
+		InputStream inputStream = new BufferedInputStream(new FileInputStream(file));
+		FileCopyUtils.copy(inputStream, response.getOutputStream());
+		inputStream.close();
+		response.getOutputStream().close();
+		response.getOutputStream().flush();
+		if (file != null) {
+			file.delete();
+		}
+		
+	}
+	
 }

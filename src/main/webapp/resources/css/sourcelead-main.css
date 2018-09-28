@@ -159,6 +159,7 @@ float: left; padding: 0 15px; /*transition: all 0.5s ease-in-out 0s;*/ line-heig
 .main-header .navbar .custom-navbar .dropdown .btn {
  padding: 5.8px 12px 5.8px 0;
 }
+
 .main-header .navbar .custom-navbar ul.custom-navbar-inner {
  margin-bottom: 0; margin-left: 0;
 }
@@ -429,6 +430,7 @@ position: relative; display: block; padding: 0 15px !important; transition: all 
 background-color: #375d81; left: 0; min-height: 100%; max-height: 100%; position: fixed; top: 55px; width: 190px; z-index: 810;
 padding-top: 0px; overflow-x:hidden; overflow-y:auto; /*transition: 0.3s ease-in-out; -moz-transition: 0.3s ease-in-out;
 -webkit-transition: 0.3s ease-in-out; padding-bottom: 125px; */
+	display: none;
 }
 /* hide time sheet */
 .timesheet-menu, .backoffice-menu, .associates-menu, .billing-menu {
@@ -1316,6 +1318,7 @@ border-left: 1px solid #ccc !important; height: 34px; position: absolute; right:
 .input-groupAddon .fa {
 position: relative; right: 5px; top: 2px;
 }
+
 /* For Addon styles */
 .div-checkbox {
 border: 1px solid #ddd; margin-bottom: 20px !important; border-radius: 5px; background: #ededed;
@@ -3672,6 +3675,7 @@ position: relative !important; top: 0 !important; z-index: 999;
 }
 .filter-position {
 position: relative; top:-30px;
+
 }
 .zindex {
 position: relative; z-index: 99;
@@ -4263,7 +4267,7 @@ border: 1px solid #ededed; border-top:none; padding: 10px;
     background-color:#fff !important; color:#EF6C00; border-top:3px solid #FFB74D;
 }
 .eventCalendr_content {
-    overflow-y: auto; min-height: 150px; height: 201px;
+    overflow-y: auto; min-height: 234px; height: 234px;
 }
 .feedbackInner {
 height:200px; overflow: auto;
@@ -6476,6 +6480,7 @@ box-shadow: 0px 0px 3px #999;  padding: 10px 15px; position: relative; box-sizin
 }
 .show-multiple .multiple-div {
     border: 1px solid #ddd; padding:5px 10px; min-width: 125px;
+
     position: fixed; z-index: 9; top: 50%; right: 20%; background: #eeeeee; box-shadow: 1px 1px 3px #505050;
     display: none; transition: all 0.3s ease-in-out;
 }
@@ -9149,7 +9154,13 @@ margin: 5px 0; font-size: 16px; color: #606060;
     bottom:-5px !important;
 }
 /*Comparision report table styels */
-
+.customInvoiceTemplate {
+	position: absolute; top: 0; left: 0; right: 0; z-index: 9999; width: 100%; background-color: #f1f1f1;
+	padding: 15px; max-height: 100%;
+}
+.customtemlate-inner {
+	height: 525px; padding: 15px 15px 0 15px; overflow-y: scroll;
+}
 @media (max-width: 320px) {
 .uasrch-selectpicker {
     width: 48% !important; float: left !important;
@@ -9368,6 +9379,7 @@ margin-top:0px; width: 79%;
 .side-bar .user-panel.user-panel-active .image img {
         width: auto;
 } 
+
 /* open class */
 .side-bar.side-bar-active .subMenu{
     display: block;

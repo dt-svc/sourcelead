@@ -469,6 +469,26 @@ public class UserServiceImpl implements UserService {
 				candidateService.saveOrUpdateCandidate(candidate);
 				candidateService.saveOrUpdateCandidateElkDocument(candidate);
 			}	
+			
+			else{
+				// existing candidate saving as a User
+				candidate = candidateService.findByCandidateEmail(candidateDTO.getEmail(),orgLocations.getId());
+				if(candidate == null){
+					MasterCandidate masterCandidate = null;
+					masterCandidate = masterCandidateService.getMasterCandidateByInteligenceCandidateDTO(candidateDTO);
+					if(null == masterCandidate){
+						masterCandidate = masterCandidateService.storeMasterCandidateByCandidateDTO(candidateDTO, loginuser);
+					}
+				 candidate = candidateService.storeCandidateForUsers(candidateDTO, addUserDTO,user, orgLocations, masterCandidate,loginuser);
+					
+				}else{
+					candidate.setConsultantUser(user);
+					candidate.setIsAssociate(Constants.YES);
+					candidateService.addCandidate(candidate);
+					candidateService.saveOrUpdateCandidateElkDocument(candidate);
+				}
+				
+			}
 		}else{
 			// existing candidate saving as a User
 			candidate = candidateService.findByCandidateEmail(candidateDTO.getEmail(),orgLocations.getId());

@@ -1974,10 +1974,10 @@ public class SubmissionApproverHierarchyDaoImpl implements SubmissionApproverHie
 					if (projectMemberId != 0) {
 						finalSahList.add(finalSah);
 						count = 0;
-						projectMemberId = sah.getSubmissionId().getProjectMembers().getId();
+						//projectMemberId = sah.getSubmissionId().getProjectMembers().getId();
 					}
 					finalSah = sah;
-					//projectMemberId = sah.getSubmissionId().getProjectMembers().getId(); moved to if condition
+					projectMemberId = sah.getSubmissionId().getProjectMembers().getId(); //moved to if condition
 					float weekTotalHours = 0f;
 					float weekBillableTotalHours = 0f;
 					float weekNonBillableTotalHours = 0f;

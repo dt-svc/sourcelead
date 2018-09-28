@@ -153,4 +153,8 @@ public interface CandidateDao {
 	public ResponseList<CandidateMarketPlaceDTO> getGlobalMarketCandidateList(CandidateMarketPlaceDTO candidateMarketPlaceDTO, String searchValue);
 	
 	public List<Candidate> getAllCandidatesList() throws Exception;
+	
+	Long getCandidateIdByEmailAndOrgLocationId(String email,Long orgLocationId) throws Exception;
+	
+	public void saveBulkCandidates(List<Candidate> candidatesList) throws Exception;
 }

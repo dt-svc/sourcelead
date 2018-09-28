@@ -364,6 +364,12 @@ public class Candidate implements Serializable {
 
 	@OneToMany(mappedBy = "candidateId", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
 	private Set<CandidateEmployers> candidateEmployers = new HashSet<CandidateEmployers>(0);
+	
+	@OneToMany(mappedBy = "candidateId", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+	private Set<CandidateHistory> candidateHistory = new HashSet<CandidateHistory>(0);
+	
+	@OneToMany(mappedBy = "candidate", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+	private Set<CandidateTimelineActivity> candidateTimeLineActivity = new HashSet<CandidateTimelineActivity>(0);
 
 	@Transient
 	@JsonProperty
@@ -1835,6 +1841,22 @@ public class Candidate implements Serializable {
 
 	public void setCandidateProfilePercentage(Integer candidateProfilePercentage) {
 		this.candidateProfilePercentage = candidateProfilePercentage;
+	}
+
+	public Set<CandidateHistory> getCandidateHistory() {
+		return candidateHistory;
+	}
+
+	public void setCandidateHistory(Set<CandidateHistory> candidateHistory) {
+		this.candidateHistory = candidateHistory;
+	}
+
+	public Set<CandidateTimelineActivity> getCandidateTimeLineActivity() {
+		return candidateTimeLineActivity;
+	}
+
+	public void setCandidateTimeLineActivity(Set<CandidateTimelineActivity> candidateTimeLineActivity) {
+		this.candidateTimeLineActivity = candidateTimeLineActivity;
 	}
 
 	

@@ -182,9 +182,11 @@ public class TeamDaoImpl  implements TeamDao{
 		UserRole role = userRoleDao.getUserDetailsByUserIdAndLocationId(userId, orgLocationId);
 		Session session = this.sessionFactory.getCurrentSession();
 		if(role.getRoles().getRoleName().equalsIgnoreCase("ROLE_SOURCELEAD_ADMIN") || role.getRoles().getRoleName().equalsIgnoreCase("ROLE_ADMIN")) {
-			String query = "from Team team "
+			/*String query = "from Team team "
 					+ "where (team.orgLocationsId.id = :orgLocationId and team.status = '1') OR "
-					+ " (team.id IN (select tm.teamId.id from TeamMembers tm where tm.teamId.orgLocationsId.id = :orgLocationId and tm.status = '1'))";
+					+ " (team.id IN (select tm.teamId.id from TeamMembers tm where tm.teamId.orgLocationsId.id = :orgLocationId and tm.status = '1'))";*/
+			String query = "from Team team "
+					+ "where (team.orgLocationsId.id = :orgLocationId and team.status = '1')";
 		return session.createQuery(query).setLong("orgLocationId", orgLocationId).list();
 		}else {
 			String query = "from Team team "

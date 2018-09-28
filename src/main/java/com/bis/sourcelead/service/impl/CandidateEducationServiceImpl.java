@@ -27,6 +27,7 @@ import com.bis.sourcelead.elk.index.CandidateIndex;
 import com.bis.sourcelead.elk.setup.SourceleadELKBaseIndexer;
 import com.bis.sourcelead.entity.Candidate;
 import com.bis.sourcelead.entity.CandidateEducation;
+import com.bis.sourcelead.entity.CandidateEducationHistory;
 import com.bis.sourcelead.entity.CandidateEmployers;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.User;
@@ -434,5 +435,37 @@ public class CandidateEducationServiceImpl implements CandidateEducationService 
 	@Override
 	public Integer getCandidateActiveEducationsCountByCandidateId(Long candidateId) throws Exception {
 		return candidateEducationDao.getCandidateActiveEducationsCountByCandidateId(candidateId);
+	}
+
+
+	@Override
+	public HashSet<CandidateEducation> getCandidateEducationDetailsList(CandidateDTO candidateDTO,
+			OrgLocations orgLocations, Candidate candidate, User user) throws Exception {
+		
+	    HashSet<CandidateEducation> candidateEducationList = new HashSet<CandidateEducation>(); 
+	    if(StringUtils.isNotBlank(candidateDTO.getCandidateEducation())){
+	  	      String[] educations = candidateDTO.getCandidateEducation().split(",");
+	  	      if(educations.length > 0) {
+	  	    	  for(int i=0; i<educations.length; i++) {
+	  	    		  CandidateEducation ce = new CandidateEducation();
+	  	    		  ce.setName(educations[i].trim());
+		    		  ce.setCandidateId(candidate);
+		    		  ce.setOrglocationId(orgLocations);
+		    		  ce.setStatus(Constants.CANDIDATE_ACTIVE);
+		    		  
+		    		HashSet<CandidateEducationHistory> candidateEducationHistorySet = new HashSet<CandidateEducationHistory>();
+		    		CandidateEducationHistory candidateEducationHistory = new CandidateEducationHistory();
+		  			candidateEducationHistory.setCandidateEducation(ce);
+		  			candidateEducationHistory.setName(educations[i].trim());
+		  			candidateEducationHistory.setCreatedUser(user);
+		  			candidateEducationHistory.setCreatedBy(user.getUserCode());
+		  			candidateEducationHistory.setCreatedDate(commonUtil.currentDate());
+		  			candidateEducationHistorySet.add(candidateEducationHistory);
+		  			ce.setCandidateEducationHistoryList(candidateEducationHistorySet);
+		  			candidateEducationList.add(ce);
+	  	    	  }
+	  	      }
+	    }
+		return  candidateEducationList;
 	}
 }
