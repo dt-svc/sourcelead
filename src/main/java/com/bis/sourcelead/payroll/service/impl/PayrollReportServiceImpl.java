@@ -376,7 +376,7 @@ public class PayrollReportServiceImpl implements PayrollReportService{
 	{
 		List<DeductionHistory> dedHisList =  payrollReportDao.exportToPdfContributionReport(orgLocation,payrollReportDTO);
 		
-		List<PayrollReportDTO> list = null;
+		List<PayrollReportDTO> list = new ArrayList<>();
 		try {
 			if(dedHisList != null) {
 				for(DeductionHistory dedHis : dedHisList) {
@@ -412,7 +412,12 @@ public class PayrollReportServiceImpl implements PayrollReportService{
 					dto.setFreqEndDate(commonUtil.dateStrFromOrgDateFormatter(orgLocation.getDateFormat(), dedHis.getPayroll().getPaysheetFrequency().getFrequencyEndDate()));
 					dto.setSchedule(dedHis.getContributionId().getContributionTypeId().getDeductionTypeId().getPayrollScheduled().toLowerCase());
 					BigDecimal contributionYTD = payrollUtil.getContributionYTD(dedHis.getPayroll(), dedHis.getContributionId().getId(), orgLocation);
+					dto.setCheckDate(dedHis.getPayroll().getPaysheetFrequency().getPayCheckDate());
+					dto.setGroupName(dedHis.getPayroll().getPaysheetFrequency().getUserGroup().getGroupName());
+					dto.setGroupFrequency(dedHis.getPayroll().getPaysheetFrequency().getUserGroup().getPayFrequency());
+					dto.setType(dedHis.getPayroll().getType());
 					dto.setContributionYTD(contributionYTD);
+					dto.setRunDate(dedHis.getPayroll().getCreatedDate());
 					list.add(dto);
 				}
 			}
