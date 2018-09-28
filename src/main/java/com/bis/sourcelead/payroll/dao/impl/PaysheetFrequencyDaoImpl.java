@@ -167,8 +167,8 @@ private static final Logger logger = LoggerFactory.getLogger(AssociateTaxDaoImpl
 			if (payrollReportDTO != null && payrollReportDTO.getLength() > 0) {
 				queryObj.setFirstResult(payrollReportDTO.getStart());
 				queryObj.setMaxResults(payrollReportDTO.getLength());
-				queryObj.setLong("orgLocationId", payrollReportDTO.getOrgLocationid()).setLong("groupId", payrollReportDTO.getPayGroup()).setDate("freqStartDate", freqStartDate).setDate("freqEndDate",freqEndDate);
 			}
+			queryObj.setLong("orgLocationId", payrollReportDTO.getOrgLocationid()).setLong("groupId", payrollReportDTO.getPayGroup()).setDate("freqStartDate", freqStartDate).setDate("freqEndDate",freqEndDate);
 			payrollList = queryObj.list();
 			int count = 0;
 			int filteredCount = 0;
