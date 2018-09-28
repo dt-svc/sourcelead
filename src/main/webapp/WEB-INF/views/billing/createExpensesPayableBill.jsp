@@ -995,7 +995,8 @@ function toDate(selector) {
 		           	 $("#vendorOrgRelationId").append(result); 
 		           	 $('#vendorOrgRelationId').trigger("chosen:updated");
 		           	$('#vendorCurrency').val(json['vendorCurrency']);
-		           	getVendorContacts(json['vendorContactId']);
+		           	//getVendorContacts(json['vendorContactId']);
+		           	getVendorContacts(json['contactUsers']);
 		           	if(json['expensesInvoices'] !=null && json['expensesInvoices'] =='Y'){
 		           		checkedvalue(json['expensesInvoices']);
 		           		getProjectsList(json['projectName']);
@@ -1360,14 +1361,18 @@ function getVendorContacts(vendorContactId){
 		var output = "";
 		for (var i=0; i<json.data.length; i++)
 		{
-		var opt = json.data[i];
-		
-		var selected = '';
-		if(vendorContactId != null && vendorContactId != "" && vendorContactId !="undefined" && vendorContactId == opt.spocUserId){
-			selected = 'selected';
-		}
-		output = output + "<option value='" +opt.spocUserId+ "' "+selected+">"+opt.ownerName+ "(" + opt.spocName+ ")</option>";
-		$("#vendorCurrency").val(opt.vendorCurrency);
+			var opt = json.data[i];
+			if(vendorContactId != null && vendorContactId != "" && vendorContactId !="undefined"){
+				var array = vendorContactId.split(",");
+				if(array.includes(opt.spocUserId.toString())){
+					output = output + "<option value='"+opt.spocUserId+"' selected >"+opt.ownerName+"("+opt.spocName+")</option>";
+				}else{
+					output = output + "<option value='"+opt.spocUserId+"' >"+opt.ownerName+"("+opt.spocName+")</option>";
+				}
+			}else{
+				output = output + "<option value='" +opt.spocUserId+ "'>"+opt.ownerName+"("+opt.spocName+")</option>";
+			}
+			$("#vendorCurrency").val(opt.vendorCurrency);
 		}
 		$("#vendorContact").empty();
 		$("#vendorContact").append(output);
