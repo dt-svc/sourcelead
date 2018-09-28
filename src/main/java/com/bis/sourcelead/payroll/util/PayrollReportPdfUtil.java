@@ -519,12 +519,16 @@ public class PayrollReportPdfUtil {
 		return file;
 	}
 
-	public File getontributionReportPdf(OrgLocations orgLocation, List<PayrollReportDTO> deductionHisList)
+	public File getontributionReportPdf(OrgLocations orgLocation, List<PayrollReportDTO> deductionHisList) throws IOException
 	{
+		StringBuilder fileSB = new StringBuilder();
+		File file = File.createTempFile(fileSB.append(orgLocation.getOrgLocationName()).append("_Contribution Report").append(commonUtil.dateStrFromOrgDateFormatter(orgLocation.getDateFormat(),new Date())).toString(),".pdf");
+		file.setReadable(true);
+		
 		try {
 			Document document = new Document(PageSize.A4.rotate());
-			String DEST = "/home/rajasekhar/Desktop/PDF/simple_deduction_table.pdf";
-	    	PdfWriter.getInstance(document, new FileOutputStream(DEST));
+			
+	    	PdfWriter.getInstance(document, new FileOutputStream(file));
 	    	document.open();
 	    	
 	    	PayrollReportDTO payrollReportDTO = deductionHisList.get(0);
@@ -537,58 +541,12 @@ public class PayrollReportPdfUtil {
 	    	headerDTO.setPayrollType(payrollReportDTO.getType());
 	    	headerDTO.setPeriodBeginDate(payrollReportDTO.getFreqStartDate());
 	    	headerDTO.setPeriodEndDate(payrollReportDTO.getFreqEndDate());
-	    	headerDTO.setReportType("DIRECT DEPOSIT REGISTER");
+	    	headerDTO.setReportType("DEDUCTION REPORTS");
 	    	headerDTO.setRunDate(payrollReportDTO.getRunDate());
 	    	headerDTO.setRunNumber(0);
 	    	createHeaderTable(document, headerDTO, orgLocation);
 	    	
-//	    	PdfPTable maintable = getPdfTable(1, document);
-//
-//	    	PdfPTable table = getPdfTable(14, document);
-//
-//	    	PdfPCell cell0 = new PdfPCell();
-//	    	Font boldFont = new Font(Font.FontFamily.HELVETICA, 10, Font.BOLD);
-//	    	cell0.addElement(new Paragraph("Client ID: OVATYW56 - MI Softech Inc",boldFont));
-//	    	cell0.addElement(new Paragraph("Pay Group: Monthly",boldFont));
-//	    	cell0.addElement(new Paragraph("Check Date: 4/5/2018",boldFont));
-//	    	cell0.addElement(new Paragraph("Run Date: 4/5/2018",boldFont));
-//	    	cell0.addElement(new Paragraph(" Run Number : "+10,boldFont));
-//	    	cell0.setBorder(Rectangle.NO_BORDER);
-//	    	cell0.setPaddingLeft(20f);
-//	    	cell0.setColspan(5);
-//	    	table.addCell(cell0);
-//
-//
-//	    	PdfPCell cell2 = new PdfPCell();
-//	    	Font greyFont = new Font(Font.FontFamily.HELVETICA, 12, Font.BOLD);
-//	    	Chunk chunk = new Chunk("CONTRIBUTION REPORT", greyFont);
-//	    	chunk.setBackground(new BaseColor(220,220,220));
-//	    	cell2.addElement(new Paragraph(chunk));
-//	    	cell2.addElement(new Paragraph("MI Softech Inc",boldFont));
-//	    	cell2.addElement(new Paragraph("DBA: MI Softech Inc",boldFont));
-//	    	cell2.addElement(new Paragraph(""));
-//	    	cell2.setBorder(Rectangle.NO_BORDER);
-//	    	cell2.setColspan(6);
-//	    	table.addCell(cell2);
-//	    	PdfPCell cell3 = new PdfPCell();
-//	    	cell3.addElement(new Paragraph("Period Begin Date: 2/1/2018",boldFont));
-//	    	cell3.addElement(new Paragraph("Period End Date: 2/28/2018",boldFont));
-//	    	cell3.addElement(new Paragraph("Pay Period: 6",boldFont));
-//	    	cell3.addElement(new Paragraph("Payroll Type: Regular",boldFont));
-//	    	cell3.setBorder(Rectangle.NO_BORDER);
-//	    	cell3.setColspan(4);
-//	    	table.addCell(cell3);
-//
-//	    	PdfPCell mCell0 = new PdfPCell();
-//	    	mCell0.addElement(table);
-//	    	mCell0.setBorderWidth(1);
-//	    	maintable.addCell(mCell0);
-//	    	document.add(maintable);
-//	    	
-//	    	
-//	    	document.add(Chunk.NEWLINE);
-//	    	document.add(Chunk.NEWLINE);
-//	    	document.add(Chunk.NEWLINE);
+
 	    	
 	    	
 	    	
@@ -661,19 +619,19 @@ public class PayrollReportPdfUtil {
 	    	ytdTable.addCell(getPdfCell("",boldFont,0));
 	    	ytdTable.addCell(getPdfCell("",boldFont,0));
 	    	ytdTable.addCell(getPdfCell("",boldFont,0));
-	    	ytdTable.addCell(getPdfCell("Misc (no goal):",boldFont,0));
+	    	ytdTable.addCell(getPdfCell("",boldFont,0));
 	    	ytdTable.addCell(getPdfCell("",boldFont,0));
 	    	ytdTable.addCell(getPdfCell("$ "+currentTotal,boldFont,0));
-	    	ytdTable.addCell(getPdfCell("$ xxxx",boldFont,0));
-	    	ytdTable.addCell(getPdfCell("$ xxxx",boldFont,0));
+	    	ytdTable.addCell(getPdfCell("$ 0.00",boldFont,0));
+	    	ytdTable.addCell(getPdfCell("$ 0.00",boldFont,0));
 	    	ytdTable.addCell(getPdfCell("$ "+YTDTotal,boldFont,0));
 //	    	
 	    	document.add(ytdTable);	
 	    	document.close();
 		}catch(Exception e) {
-			
+			e.printStackTrace();
 		}
-		return null;
+		return file;
 	}
 
 	public File getDeductionReportPdf(OrgLocations orgLocation, List<PayrollReportDTO> deductionHisList) throws Exception {
