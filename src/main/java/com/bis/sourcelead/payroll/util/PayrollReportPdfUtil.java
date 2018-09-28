@@ -575,6 +575,8 @@ public class PayrollReportPdfUtil {
 	    	
 	    	BigDecimal currentTotal = BigDecimal.ZERO;
 	    	BigDecimal YTDTotal = BigDecimal.ZERO;
+	    	BigDecimal mTDTotal = BigDecimal.ZERO;
+	    	BigDecimal qTDTotal = BigDecimal.ZERO;
 	    	for(PayrollReportDTO reportData : deductionHisList) {
 	    		empDataTable.addCell(getPdfCell(reportData.getDepartmentName(),normalFont,5));
 		    	empDataTable.addCell(getPdfCell(reportData.getEmpId(),normalFont,0));
@@ -582,11 +584,13 @@ public class PayrollReportPdfUtil {
 		    	empDataTable.addCell(getPdfCell(reportData.getContributionType(),normalFont,0));
 		    	empDataTable.addCell(getPdfCell(reportData.getSchedule(),normalFont,0));
 		    	empDataTable.addCell(getPdfCell("$ "+reportData.getContributionAmount(),normalFont,0));
-		    	empDataTable.addCell(getPdfCell("$ xxxxx",normalFont,0));
-		    	empDataTable.addCell(getPdfCell("$ xxxxx",normalFont,0));
+		    	empDataTable.addCell(getPdfCell("$ "+reportData.getContributionMTD(),normalFont,0));
+		    	empDataTable.addCell(getPdfCell("$ "+reportData.getContributionQTD(),normalFont,0));
 		    	empDataTable.addCell(getPdfCell("$ "+reportData.getContributionYTD(),normalFont,0));	
 		    	currentTotal = currentTotal.add(reportData.getContributionAmount());
 		    	YTDTotal = YTDTotal.add(reportData.getContributionYTD());
+		    	mTDTotal = mTDTotal.add(reportData.getContributionMTD());
+		    	qTDTotal = qTDTotal.add(reportData.getContributionMTD());
 	    	}
 	    
 	    	empDataTable.setSpacingAfter(8);
@@ -622,8 +626,8 @@ public class PayrollReportPdfUtil {
 	    	ytdTable.addCell(getPdfCell("",boldFont,0));
 	    	ytdTable.addCell(getPdfCell("",boldFont,0));
 	    	ytdTable.addCell(getPdfCell("$ "+currentTotal,boldFont,0));
-	    	ytdTable.addCell(getPdfCell("$ 0.00",boldFont,0));
-	    	ytdTable.addCell(getPdfCell("$ 0.00",boldFont,0));
+	    	ytdTable.addCell(getPdfCell("$ "+mTDTotal,boldFont,0));
+	    	ytdTable.addCell(getPdfCell("$ "+qTDTotal,boldFont,0));
 	    	ytdTable.addCell(getPdfCell("$ "+YTDTotal,boldFont,0));
 //	    	
 	    	document.add(ytdTable);	
