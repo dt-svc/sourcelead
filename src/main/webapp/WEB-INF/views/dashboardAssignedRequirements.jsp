@@ -8,7 +8,7 @@
  <%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %>
  <%@ taglib uri="http://java.sun.com/jsp/jstl/functions" prefix="fn"%>
 <jsp:include page="../views/requirement/requirementAssignedTo.jsp"/>
-<div class="mb clearfix col-md-12" >
+<div class="mb clearfix col-md-12 noPad" >
       <!-- Assigned Requirements -->
       <div class="dashNewWrap mb10" id="assignedRequirementsDiv">
       
