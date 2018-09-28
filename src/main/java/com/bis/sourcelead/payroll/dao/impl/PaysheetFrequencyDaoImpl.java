@@ -201,7 +201,9 @@ private static final Logger logger = LoggerFactory.getLogger(AssociateTaxDaoImpl
 		YTDPayrollDTO yTDPayrollDTO = new YTDPayrollDTO();
 		try {
 			Session session = this.sessionFactory.getCurrentSession();
-			
+			BigDecimal contributionYTD = BigDecimal.ZERO;
+			BigDecimal contributionMTD = BigDecimal.ZERO;
+			BigDecimal contributionQTD = BigDecimal.ZERO;
 			// YTD Dates
 			Date[] ytdDates = payrollUtil.getYTDDates(orgLocation);
 			java.sql.Date startDate = new java.sql.Date(ytdDates[0].getTime());
@@ -214,8 +216,8 @@ private static final Logger logger = LoggerFactory.getLogger(AssociateTaxDaoImpl
 					queryObj.setDate("endDate", endDate);
 					List<DeductionHistory> deductioHistory = queryObj.list();	
 					
-					BigDecimal contributionYTD = BigDecimal.ZERO;
-					yTDPayrollDTO.setContributionYTD(getTotalYTD(deductioHistory));
+					contributionYTD = getTotalYTD(deductioHistory);
+					yTDPayrollDTO.setContributionYTD(contributionYTD);
 			
 			if("report".equalsIgnoreCase(reportType)) {
 				// MTD
@@ -228,7 +230,8 @@ private static final Logger logger = LoggerFactory.getLogger(AssociateTaxDaoImpl
 				mtdQueryObj.setDate("startDate", mtdStartDate);
 				mtdQueryObj.setDate("endDate", mtdEndDate);
 				List<DeductionHistory> deductioHistoryMTD = mtdQueryObj.list();
-				yTDPayrollDTO.setContributionMTD(getTotalYTD(deductioHistoryMTD));
+				contributionMTD = getTotalYTD(deductioHistoryMTD);
+				
 				// QTD
 				LocalDate today = LocalDate.now();
 				LocalDate[] currentMonthQuarter  = conversionUtil.getThisMonthQuarterDates(today);
@@ -240,10 +243,10 @@ private static final Logger logger = LoggerFactory.getLogger(AssociateTaxDaoImpl
 				qtdQueryObj.setDate("startDate", qtdStartDate);
 				qtdQueryObj.setDate("endDate", qtdEndDate);
 				List<DeductionHistory> deductioHistoryQTD = qtdQueryObj.list();
-				yTDPayrollDTO.setContributionQTD(getTotalYTD(deductioHistoryQTD));
-				
+				contributionQTD = getTotalYTD(deductioHistoryQTD);
 			}
-			
+			yTDPayrollDTO.setContributionMTD(contributionMTD);
+			yTDPayrollDTO.setContributionQTD(contributionQTD);
 		}catch (Exception e) {
 			e.printStackTrace();
 		}
