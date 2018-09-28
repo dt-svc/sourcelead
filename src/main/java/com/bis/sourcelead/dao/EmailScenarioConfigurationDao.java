@@ -34,4 +34,9 @@ public interface EmailScenarioConfigurationDao {
 	EmailScenarioConfiguration getParserEmailsDetailsByUUID(String UUID);
 
 	String deleteParserEMail(Long emailId);
+	
+	EmailScenarioConfiguration validateParserByEmail(String parserEmailId, String emailUUID);
+
+	Boolean validateParser(String parserEmailId);
+
 }

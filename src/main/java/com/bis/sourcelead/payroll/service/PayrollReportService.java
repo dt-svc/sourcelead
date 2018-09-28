@@ -7,6 +7,7 @@ import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.payroll.dto.CheckRegisterReportDTO;
 import com.bis.sourcelead.payroll.dto.PayrollComparisonDTO;
 import com.bis.sourcelead.payroll.dto.PayrollReportDTO;
+import com.bis.sourcelead.payroll.entity.DeductionHistory;
 
 public interface PayrollReportService {
 
@@ -21,4 +22,6 @@ public interface PayrollReportService {
 	ResponseList<PayrollReportDTO> getDeductionReports(OrgLocations orgLocation, PayrollReportDTO payrollReportDTO);
 
 	List<CheckRegisterReportDTO> getexportToPdfCheckRegisterReport(OrgLocations orgLocation, PayrollReportDTO payrollReportDTO);
+
+	List<PayrollReportDTO>  exportToPdfContributionReport(OrgLocations orgLocation, PayrollReportDTO payrollReportDTO);
 }
