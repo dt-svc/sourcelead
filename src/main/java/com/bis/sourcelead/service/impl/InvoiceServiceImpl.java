@@ -1669,6 +1669,8 @@ public class InvoiceServiceImpl implements InvoiceService {
   	  						invoice.setConvertCurrencyCode(vendorCurrencyCode);
   	  						invoice.setCurrencyCode(loginOrgCurrencyCode);
   	  						invoice.setContactUser(contactUser);
+  	  						invoice.setContactUsers(contactUser.getId().toString());
+  	  						invoice.setOwnerUsers(user.getId().toString());
   	  						invoice.setCreatedBy(user.getUserCode());
   	  						invoice.setStatus(Constants.RECORD_ACTIVE.toString());
   	  						invoice.setInvoiceStatus(Constants.DRAFT);

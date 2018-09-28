@@ -599,7 +599,7 @@ public class InvoiceDaoImpl implements InvoiceDao {
 		}
 
 		Session session = this.sessionFactory.getCurrentSession();
-		String query = "from Invoice invoice  where invoice.orgRelationID.id = :orgRelationId and invoice.orgLocation.id = :orgLocationId and invoice.linkInvoiceReferenceId IS NULL and invoice.status = '1' and invoice.invoiceStatus <> 'Linked' and invoice.invoiceStatus <> 'DRAFT'"
+		String query = "from Invoice invoice  where invoice.orgRelationID.id = :orgRelationId and invoice.orgLocation.id = :orgLocationId and invoice.linkInvoiceReferenceId IS NULL and invoice.status = '1' and invoice.invoiceStatus <> 'Linked' and invoice.invoiceStatus <> 'DRAFT' and invoice.invoiceStatus <> 'Rejected'"
 				+ subQuery + "";
 		List<Invoice> clientInvoiceList = session.createQuery(query.toString()).setLong("orgLocationId", orgLocationId)
 				.setLong("orgRelationId", orgRelationId).list();
