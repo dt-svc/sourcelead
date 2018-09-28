@@ -3,19 +3,16 @@ package com.bis.sourcelead.payroll.util;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.text.DecimalFormat;
-import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
-import java.util.Locale;
 import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
 
 import org.apache.commons.lang3.StringUtils;
-import org.omg.CORBA.COMM_FAILURE;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,7 +22,6 @@ import com.bis.sourcelead.dto.AssociatePayItemDTO;
 import com.bis.sourcelead.entity.AssociatePayItem;
 import com.bis.sourcelead.entity.Candidate;
 import com.bis.sourcelead.entity.OrgLocations;
-import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.payroll.dto.ContributionDTO;
 import com.bis.sourcelead.payroll.dto.DeductionDTO;
 import com.bis.sourcelead.payroll.dto.PayrollConstant;
@@ -35,11 +31,9 @@ import com.bis.sourcelead.payroll.entity.DeductionHistory;
 import com.bis.sourcelead.payroll.entity.EmployeePayroll;
 import com.bis.sourcelead.payroll.entity.EmployeePayrollTax;
 import com.bis.sourcelead.payroll.entity.PayitemHistory;
-import com.bis.sourcelead.payroll.service.AssociateContributionService;
 import com.bis.sourcelead.payroll.service.AssociateDeductionService;
 import com.bis.sourcelead.payroll.service.PaysheetFrequencyService;
 import com.bis.sourcelead.util.CommonUtil;
-import com.ibm.icu.text.DateFormat;
 
 @Component
 public class PayrollUtil {
@@ -635,23 +629,15 @@ public class PayrollUtil {
 	
 	/**
 	 * Get YTD Deductions and Contributions
+	 * 
 	 * @param payrollId
 	 * @param candidateId
 	 * @return BigDecimal
 	 */
-	public BigDecimal getContributionYTD(EmployeePayroll payroll,Long contributionId,OrgLocations orglocation) {
-		List<DeductionHistory> dedHisList = paysheetFrequencyService.getContributionYTD(payroll,contributionId,orglocation);
-		BigDecimal contributionYTD = BigDecimal.ZERO;
-		for(DeductionHistory dedHis : dedHisList) {
-			if(dedHis.getPreContributionAmount() != null) {
-				contributionYTD = contributionYTD.add(dedHis.getPreContributionAmount());
-			}
-			if(dedHis.getPostContributionAmount() != null) {
-				contributionYTD = contributionYTD.add(dedHis.getPostContributionAmount());
-			}
-		}
-		return contributionYTD;
-		
+	public YTDPayrollDTO getContributionYTD(EmployeePayroll payroll, Long contributionId, OrgLocations orglocation)
+	{
+		YTDPayrollDTO yTDPayrollDTO = paysheetFrequencyService.getContributionYTD(payroll, contributionId, orglocation, "report");
+		return yTDPayrollDTO;
 	}
 	
 	/**
