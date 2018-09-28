@@ -302,9 +302,9 @@
 								</div>
 							</div> -->
 
-							<div onclick="alert('div');">
+							<div>
 								<b class="btn btn-primary"> <i class="fa fa-paperclip"></i>
-									<input name="attachfile" style="display: none;" id="attachfileBtn" class="upload" type="file">
+									<input name="attachfile" id="attachfileBtn" class="upload" type="file" multiple="multiple">
 								</b>
 							</div>
 							<!-- Attachment button-->
@@ -339,7 +339,7 @@
 		
 	
 		$("#attachfileBtn").change(function() {
-			uploadAttachment("attachfileBtn", "Email Documents", "email_form");
+			uploadAttachment("attachfileBtn", "Email Attachments", "email_form");
 			$(".clearUpload").show();
 		});
 		
@@ -1284,6 +1284,7 @@ function forwardEmailToHotMail(uuid){
 		$("#ccList").trigger("chosen:updated");
 		$("#sendSubject").val("");
 		nicEditors.findEditor('bodytext').setContent("");
+		$("#mailAttachmentsDiv").empty();
 	}
 	
 	/* function to show compose email popup with auto-filled values required for reply / replyAll */
@@ -1328,6 +1329,8 @@ function forwardEmailToHotMail(uuid){
 			$(".headerAdsrch span").html("Reply Email");
 			$("#sendEmail").hide();
 			$("#replyEmail").show();
+/* 			$("#replyEmail").data("messageId", messageId);
+			$("#replyEmail").data("folderName", folderName); */
 			$('.side_mask').show();
 			$('#dynamicmailcompose').show();
 			$("#loading").removeAttr("style");
@@ -1370,6 +1373,8 @@ function forwardEmailToHotMail(uuid){
 						$(".headerAdsrch span").html("Reply Email");
 						$("#sendEmail").hide();
 						$("#replyEmail").show();
+						/* $("#replyEmail").data("messageId", messageId);
+						$("#replyEmail").data("folderName", folderName); */
 						$('.side_mask').show();
 						$('#dynamicmailcompose').show();
 					} else {
@@ -1384,6 +1389,8 @@ function forwardEmailToHotMail(uuid){
 	/* function to send reply message */
 	function replyEmailFromMailBox(sendType) {
 		if ($('#email_form').validate(false, validationSettings)) {
+			var messageId = $("#replyEmail").data("messageId");
+			var folderName = $("#replyEmail").data("folderName");
 			var sourceleadUrl = '${sourceleadUrl}';
 			
 			nicEditors.findEditor('bodytext').saveContent();
@@ -1405,7 +1412,7 @@ function forwardEmailToHotMail(uuid){
 				  	enctype: 'multipart/form-data',
 				  	processData: false,
 				  	contentType:false, 
-				  	url : sourceleadUrl+"/sendEmailFromMailBox?${_csrf.parameterName}=${_csrf.token}&emailAccountId=" + emailAccountId + "&from=" + from + "&sendType=" + sendType,
+				  	url : sourceleadUrl+"/sendEmailFromMailBox?${_csrf.parameterName}=${_csrf.token}&emailAccountId=" + emailAccountId + "&from=" + from + "&sendType=" + sendType + "&messageId=" + messageId + "&folderName=" + folderName,
 				  	success : function(result) {
 				  		$("#mailLoading").removeAttr('style');
 				  	},
@@ -1441,6 +1448,21 @@ function forwardEmailToHotMail(uuid){
 			$("#fromEmail").val(activeEmail);
 			$("#fromEmail").trigger("chosen:updated");
 			nicEditors.findEditor('bodytext').setContent(text + "<br/> " + emailDetails.body);
+
+			if(emailDetails.filesList !== null) {
+				for(var e in emailDetails.filesList) {
+					var fileURL = emailDetails.filesList[e].url.replace("Email Attachments", "temp");
+					var text = "<p>" + emailDetails.filesList[e].fileName;
+					text += "<i onclick='removeAttachment(this);' class='fa fa-close' style='cursor: pointer;'></i>";						
+					var fileName = emailDetails.filesList[e].url.substring(emailDetails.filesList[e].url.lastIndexOf("/") + 1 , emailDetails.filesList[e].url.length);
+					text += "<input name='filesList[" + e + "].fileName' data-name='fileName' type='hidden' value='" + emailDetails.filesList[e].fileName + "'>";
+					text += "<input name='filesList[" + e + "].url' data-name='url' type='hidden' value='" + (emailDetails.filesList[e].url + "/" + emailDetails.filesList[e].fileName) + "'>";
+					text += "</p>";
+					$("#mailAttachmentsDiv").append(text);
+					
+					/* refreshAttachmentsIndex(); */						
+				}
+			}
 			
 			$(".headerAdsrch span").html("Forward Email");
 			$("#sendEmail").hide();
@@ -1527,55 +1549,61 @@ function forwardEmailToHotMail(uuid){
 	    	new nicEditor({fullPanel: true}).panelInstance(document.getElementById('bodytext'))
 	    );
 	});
-	
+
 	function uploadAttachment() {
-		$(".file_mask").show();
-		
-		var data = new FormData();
 		var files = document.getElementById("attachfileBtn").files;
-		var count = 0;
-		expr = /.zip/;
-		ecpr1=/.rar/;
-		for(var e in files) {
-			if(!$.isNumeric(e))
-				continue;
-			//if(files[e].name.toLowerCase().endsWith(".zip") || files[e].name.toLowerCase().endsWith(".rar"))
-			if(files[e].name.toLowerCase().match(expr) || files[e].name.toLowerCase().match(ecpr1))
-				continue;
-			data.append('file', files[e]);
-			count ++;
+		var filesSize = files.length;
+		/* $(ele).parent().parent().next().val(filesSize > 1 ? (filesSize + " files selected") : $(ele).val()); */
+	
+		var data = new FormData();
+		for(var i=0 ; i < filesSize; i++){
+			data.append("Email Attachments", files[i]);
 		}
-		if(count === 0) {
-			$("#email_form input[data-id*= 'attachfileBtn']").remove();
-			$(".file_mask").hide();
-			alert("Please select valid file (zip files and rar files are not allowed)");
-			return;
-		}
-		$.ajax({ 
-			url: sourceleadUrl + "/ws/upload/Email Documents", 
-			data: data, 
-			processData: false, 
-			type: 'POST', 
-			contentType: false, 
-			success: function (data) {
-				if(data && data.length > 0) {
-					for(var e in data) {						
-						var fileURL = data[e].fileURL.replace("Email Documents", "temp");
-						var text = "<p>" + data[e].fileName + "<i onclick='removeAttachment(this);' class='fa fa-close' style='cursor: pointer;'></i></p>";
+		data.append("type", "Email Attachments");
+		$.ajax({
+			url : sourceleadUrl + "/ws/uploadTaxDocs",
+			data : data,
+			processData : false,
+			type : 'POST',
+			contentType : false,
+			success : function(data) {
+				if (data && data.length > 0) {
+					/* var filesText = ""; */
+					for(var e in data) {
+						var fileURL = data[e].fileURL.replace("Email Attachments", "temp");
+						var text = "<p>" + data[e].fileName;
+						text += "<i onclick='removeAttachment(this);' class='fa fa-close' style='cursor: pointer;'></i>";						
+						var fileName = data[e].fileURL.substring(data[e].fileURL.lastIndexOf("/") + 1 , data[e].fileURL.length);
+						text += "<input name='filesList[" + e + "].fileName' data-name='fileName' type='hidden' value='" + fileName + "'>";
+						text += "<input name='filesList[" + e + "].url' data-name='url' type='hidden' value='" + data[e].fileURL + "'>";
+						text += "<input name='filesList[" + e + "].newUpload' data-name='newUpload' type='hidden' value='true'>";
+						text += "</p>";
 						$("#mailAttachmentsDiv").append(text);
+						
+						refreshAttachmentsIndex();							
 					}
-					/* applyData(data, "email_form", "fileInfo", "attachfileBtn"); */
-					$(".file_mask").hide();
 				}
-			}, 
-			error: function (err) { 
-				 $(".file_mask").hide();
+			},
+			error : function(err) {
+				alert(err);
 			}
 		});
 	}
 	
+	function refreshAttachmentsIndex() {
+		var index = 0;
+		$("#mailAttachmentsDiv p").each(function() {
+			$(this).find("input[data-name='fileName']").attr("name", "filesList[" + index + "].fileName");
+			$(this).find("input[data-name='url']").attr("name", "filesList[" + index + "].url");
+			if($(this).find("input[data-name='newUpload']").length > 0)
+				$(this).find("input[data-name='newUpload']").attr("name", "filesList[" + index + "].newUpload");
+			index++;
+		});
+	}
+
 	function removeAttachment(ele) {
 		$(ele).parent().remove();
+		refreshAttachmentsIndex();
 	}
 </script>		
  	

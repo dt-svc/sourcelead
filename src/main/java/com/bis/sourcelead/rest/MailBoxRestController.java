@@ -878,13 +878,18 @@ public class MailBoxRestController {
 	public @ResponseBody ResponseList<ReadMailDTO> emailFolderRead(Long id, @RequestParam(defaultValue = "") String folderName,
 			HttpServletRequest request, Paginator paginator) throws Exception {
 		ResponseList<ReadMailDTO> responseList = new ResponseList<>();
-		User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
-		OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
-		Long userId = user.getId();
-		folderName = folderName.replaceAll("-and-", "&");
-		List<ReadMailDTO> readMailList = emailAccountSettingsService.emailFolderRead(id, folderName, userId, orgLocation.getId(), paginator);
-		responseList.setData(readMailList);
-		responseList.setPaginator(paginator);
+		if(request.getSession().getAttribute("emailList") != null) {
+			responseList = (ResponseList<ReadMailDTO>) request.getSession().getAttribute("emailList");
+		} else {
+			User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+			OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+			Long userId = user.getId();
+			folderName = folderName.replaceAll("-and-", "&");
+			List<ReadMailDTO> readMailList = emailAccountSettingsService.emailFolderRead(id, folderName, userId, orgLocation.getId(), paginator);
+			responseList.setData(readMailList);
+			responseList.setPaginator(paginator);
+			request.getSession().setAttribute("emailList", responseList);
+		}
 		return responseList;
 	}
 	
@@ -927,10 +932,11 @@ public class MailBoxRestController {
 			long uid, @RequestParam(defaultValue = "") String folderName) throws Exception {
 		ReadMailDTO readMailDTO = null;
 		User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
-		if (user != null) {
-			OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+		Org org = (Org) SourceLeadSessionManager.getSessionAttribute(request, "org");
+		OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+		if (user != null && org != null && orgLocation != null) {
 			folderName = folderName.replaceAll("-and-", "&");
-			readMailDTO = emailAccountSettingsService.getEmailByUID(emailAccountId, user.getId(), orgLocation.getId(), uid, folderName);
+			readMailDTO = emailAccountSettingsService.getEmailByUID(emailAccountId, user.getId(), org.getId(), orgLocation.getId(), uid, folderName);
 		}
 		return readMailDTO;
 	}
@@ -939,14 +945,15 @@ public class MailBoxRestController {
 	@RequestMapping(value = "/sendEmailFromMailBox", method = RequestMethod.POST)
 	public boolean sendEmailFromMailBox(MultipartHttpServletRequest request, ReadMailDTO readMailDTO) throws Exception {
 		User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
-		if (user != null) {
-			OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
-			MultipartFile multiFile = null;
+		Org org = (Org) SourceLeadSessionManager.getSessionAttribute(request, "org");
+		OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+		if (user != null && org != null && orgLocation != null) {
+			/*MultipartFile multiFile = null;
 			Iterator<String> itrator = request.getFileNames();
 			if (itrator.hasNext()) {
 				multiFile = request.getFile(itrator.next());
-			}
-			return emailService.sendEmailFromMailBox(readMailDTO, user.getId(), orgLocation.getId(), multiFile);
+			}*/
+			return emailService.sendEmailFromMailBox(readMailDTO, user.getId(), org.getId(), orgLocation.getId(), staticPath);
 		}
 		return false;
 	}

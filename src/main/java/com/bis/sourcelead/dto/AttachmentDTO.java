@@ -9,6 +9,7 @@ public class AttachmentDTO {
 	private float fileSize;
 	private String sizeUnit;
 	private byte[] docFile;
+	private boolean newUpload;
 
 	public String getFileName() {
 		return fileName;
@@ -64,6 +65,14 @@ public class AttachmentDTO {
 
 	public void setDocFile(byte[] docFile) {
 		this.docFile = docFile;
+	}
+
+	public boolean isNewUpload() {
+		return newUpload;
+	}
+
+	public void setNewUpload(boolean newUpload) {
+		this.newUpload = newUpload;
 	}
 
 }

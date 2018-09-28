@@ -117,13 +117,13 @@ public class EmailAccountSettingsServiceImpl implements EmailAccountSettingsServ
 	}
 	
 	@Override
-	public ReadMailDTO getEmailByUID(long emailAccountId, long userId, long orgLocationId, long uid, String folderName) {
+	public ReadMailDTO getEmailByUID(long emailAccountId, long userId, long orgId, long orgLocationId, long uid, String folderName) {
 		EmailAccountSettings emailAccountSettings = emailAccountSettingsDao.getEmailAccount(emailAccountId, userId);
 		String email = emailAccountSettings.getEmail();
 		String password = emailAccountSettings.getPassword();
 		String host = emailAccountSettings.getRecieveServerName();
 		String storeType = "imaps";
-		return MailBox.getMailDTOByUID(host, storeType, email, password, folderName, userId, orgLocationId, uid);
+		return MailBox.getMailDTOByUID(host, storeType, email, password, folderName, orgId, orgLocationId, uid);
 	}
 	
 	@Override

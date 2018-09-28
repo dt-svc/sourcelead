@@ -2,6 +2,7 @@ package com.bis.sourcelead.util;
 
 import java.io.File;
 import java.io.IOException;
+import java.nio.file.Files;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Date;
@@ -9,6 +10,9 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Properties;
 
+import javax.activation.DataHandler;
+import javax.activation.DataSource;
+import javax.activation.FileDataSource;
 import javax.mail.Address;
 import javax.mail.AuthenticationFailedException;
 import javax.mail.Authenticator;
@@ -30,12 +34,15 @@ import javax.mail.internet.MimeBodyPart;
 import javax.mail.internet.MimeMessage;
 import javax.mail.internet.MimeMultipart;
 
+import org.apache.commons.io.FileUtils;
+
 import com.bis.sourcelead.dto.AttachmentDTO;
 import com.bis.sourcelead.dto.ReadMailDTO;
 import com.bis.sourcelead.dto.Response;
 import com.bis.sourcelead.dto.ResponseList;
 import com.bis.sourcelead.dto.helper.Paginator;
 import com.bis.sourcelead.enums.Result;
+import com.itextpdf.tool.xml.html.Body;
 
 public class MailBox {
 
@@ -194,8 +201,7 @@ public class MailBox {
 		return readMailDTOList;
 	}
 
-	public static Message getMailByUID(String host, String port, String storeType, String user, String password, String folderName, long userId,
-			long orgLocationId, long uid) {
+	public static Message getMailByUID(String host, String port, String storeType, String user, String password, String folderName, long uid) {
 		try {
 			Properties properties = new Properties();
 
@@ -217,7 +223,7 @@ public class MailBox {
 		return null;
 	}
 	
-	public static ReadMailDTO getMailDTOByUID(String host, String storeType, String user, String password, String folderName, long userId,
+	public static ReadMailDTO getMailDTOByUID(String host, String storeType, String user, String password, String folderName, long orgId,
 			long orgLocationId, long uid) {
 		ReadMailDTO readMailDTO = new ReadMailDTO();
 		try {
@@ -290,9 +296,9 @@ public class MailBox {
 							String fileName = part.getFileName();
 							String fileType = part.getContentType();
 							// attachFiles += fileName + ", ";
-							String filePath = "C:\\Manoj\\E\\slead-static" + System.getProperty("file.separator") + orgLocationId
-									+ System.getProperty("file.separator") + userId + System.getProperty("file.separator")
-									+ "EmailAttachments" + System.getProperty("file.separator") + user
+							String filePath = "C:\\Manoj\\E\\slead-static" + System.getProperty("file.separator") + orgId
+									+ System.getProperty("file.separator") + orgLocationId + System.getProperty("file.separator")
+									+ "Email Attachments" + System.getProperty("file.separator") + user
 									+ System.getProperty("file.separator") + folderName + System.getProperty("file.separator") + uid;
 							// System.out.println("File Name : " + fileName);
 							File attachmentFolderPath = new File(filePath);
@@ -301,7 +307,7 @@ public class MailBox {
 							File attachmentFile = new File(filePath + System.getProperty("file.separator") + fileName);
 							if (!attachmentFile.exists())
 								part.saveFile(attachmentFile);
-							String fileUrl = "/slead-static/" + orgLocationId + "/" + userId + "/EmailAttachments/" + user + "/"
+							String fileUrl = "/slead-static/" + orgId + "/" + orgLocationId + "/Email Attachments/" + user + "/"
 									+ folderName + "/" + uid;
 
 							attachment.setFileName(fileName);
@@ -381,7 +387,7 @@ public class MailBox {
 	
 	@SuppressWarnings("static-access")
 	public static boolean composeEmail(String outgoingHost, String outgoingPort, String incomingHost, String incomingPort,
-			String transportType, String email, String password, long userId, long orgLocationId, ReadMailDTO readMailDTO) {
+			String transportType, String email, String password, long orgId, long orgLocationId, String staticPath, ReadMailDTO readMailDTO) {
 		try {
 			Properties properties = new Properties();
 			properties.put("mail.transport.protocol", transportType);
@@ -402,16 +408,15 @@ public class MailBox {
 				}
 			});
 
-			Message message = null;
+			/*Message message = null;
 			
-			String sendType = "";
-			if(sendType.equalsIgnoreCase("reply")) {
-				message = getMailByUID(incomingHost, incomingPort, transportType, email, password, readMailDTO.getFolderName(), userId, orgLocationId, readMailDTO.getMessageId());
+			if(readMailDTO.getSendType().equalsIgnoreCase("reply")) {
+				message = getMailByUID(incomingHost, incomingPort, transportType, email, password, readMailDTO.getFolderName(), readMailDTO.getMessageId());
 				message.setReplyTo(message.getReplyTo());
 			} else {
 				message = new MimeMessage(session);
-			}
-			
+			}*/
+			Message message = new MimeMessage(session);
 			message.setFrom(new InternetAddress(email));
 			message.setRecipients(Message.RecipientType.TO, InternetAddress.parse(readMailDTO.getTo()));
 			
@@ -420,7 +425,38 @@ public class MailBox {
 			
 			message.setSubject(readMailDTO.getSubject());
 			/*message.setText(body);*/
-			message.setContent(readMailDTO.getBody(), "text/html");
+//			message.setContent(readMailDTO.getBody(), "text/html");
+			
+			String filePath = staticPath + System.getProperty("file.separator") + orgId + System.getProperty("file.separator")
+					+ orgLocationId;
+			Multipart multipart = new MimeMultipart();
+			if (readMailDTO.getFilesList() != null && !readMailDTO.getFilesList().isEmpty()) {
+				for (AttachmentDTO attachmentDTO : readMailDTO.getFilesList()) {
+					BodyPart bodyPart = new MimeBodyPart();
+					String attachmentFolder = (readMailDTO.getSendType() != null && readMailDTO.getSendType().equalsIgnoreCase("forward")
+							&& !attachmentDTO.isNewUpload()) ? "Email Attachments" : "temp";
+					
+					String subFolder = (readMailDTO.getSendType() != null && readMailDTO.getSendType().equalsIgnoreCase("forward")
+							&& !attachmentDTO.isNewUpload())
+									? attachmentDTO.getUrl().substring(
+											attachmentDTO.getUrl().indexOf(attachmentFolder) + attachmentFolder.length(),
+											attachmentDTO.getUrl().lastIndexOf("/") + 1)
+									: "";
+											
+					File file = new File(filePath + System.getProperty("file.separator") + attachmentFolder + subFolder,
+							attachmentDTO.getFileName());
+					DataSource dataSource = new FileDataSource(file);
+					bodyPart.setDataHandler(new DataHandler(dataSource));
+					bodyPart.setFileName(file.getName());
+					multipart.addBodyPart(bodyPart);
+				}
+			}
+			
+			BodyPart htmlBodyPart = new MimeBodyPart();
+			htmlBodyPart.setContent(readMailDTO.getBody(), "text/html");
+			multipart.addBodyPart(htmlBodyPart);
+			
+			message.setContent(multipart);
 			
 			Transport transport = session.getTransport();
 			transport.connect(outgoingHost, email, password);
@@ -450,6 +486,14 @@ public class MailBox {
 				folder.appendMessages(new Message[] { message });
 			}
 			transport.close();
+			
+			if (readMailDTO.getSendType() == null || (!readMailDTO.getSendType().equalsIgnoreCase("forward")
+					&& readMailDTO.getFilesList() != null && !readMailDTO.getFilesList().isEmpty())) {
+				for (AttachmentDTO attachmentDTO : readMailDTO.getFilesList()) {
+					File file = new File(filePath + System.getProperty("file.separator") + "temp", attachmentDTO.getFileName());
+					file.delete();
+				}
+			}
 			System.out.println("------------------ Email Sent ------------------");
 		} catch (Exception e) {
 			e.printStackTrace();
