@@ -13,6 +13,8 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -99,6 +101,8 @@ import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
+import com.ibm.icu.util.Calendar;
+
 
 @Service
 public class DataMigrationServiceImpl implements DataMigrationService {
@@ -166,6 +170,8 @@ public class DataMigrationServiceImpl implements DataMigrationService {
 	@Autowired
 	UploadXlsHistoryService uploadXlsHistoryService;
 	
+	int candidateIndexKey = 0;
+	List<Candidate> uploadedCandidatesList = null;
 	
 	@Override
 	public Map<String, String> getfileData(String filePath, String headerPosition) throws Exception {
@@ -240,10 +246,10 @@ public class DataMigrationServiceImpl implements DataMigrationService {
 		UploadXlsHistory history = null;
 		history = saveUploadXlsHistory(rowCount, fileName[5], null, dataMigrationDTO, user, orgLocation);
 		uploadXlsHistoryService.storeUploadXlsHistory(history);
-		List<Candidate> uploadedCandidatesList = new ArrayList<>();
 		Iterator<Row> rowIterator = firstSheet.iterator();
 		int colCount = 0;
 		Boolean isEmptyExcel = true;
+		logger.debug("Upload Start Time>>>"+Calendar.getInstance().getTime());
 		while (rowIterator.hasNext()) {
 			Row nextRow = rowIterator.next();
 			if (nextRow.getRowNum() + 1 == Integer.parseInt(dataMigrationDTO.getHeaderPosition())) {
@@ -255,6 +261,7 @@ public class DataMigrationServiceImpl implements DataMigrationService {
 				}
 			}
 			if (nextRow.getRowNum() + 1 > Integer.parseInt(dataMigrationDTO.getHeaderPosition())) {
+				
 				isEmptyExcel = false;
 				HashMap<String, String> errorSet = new HashMap<String, String>();
 				Gson gson = new Gson();
@@ -420,7 +427,7 @@ public class DataMigrationServiceImpl implements DataMigrationService {
 				}
 
 				if (errorSet.isEmpty()) {
-					mapToEntities(dataMigrationDTOJsonCopy, user, orgLocation, dataMigrationDTO.getUploadType(),jsonString,dataMigrationDTO.getUploadid(),uploadedCandidatesList);
+					mapToEntities(dataMigrationDTOJsonCopy, user, orgLocation, dataMigrationDTO.getUploadType(),jsonString,dataMigrationDTO.getUploadid());
 					importStatus = "success";
 					FileOutputStream outputStream = new FileOutputStream(
 							new File(ac + dataMigrationDTO.getExportFilePath()));
@@ -463,13 +470,21 @@ public class DataMigrationServiceImpl implements DataMigrationService {
 			}
 			
 		}
+		logger.debug("Upload End Time>>>"+Calendar.getInstance().getTime());
 		
 		history.setUploadProcessingStatus("Completed");
 		uploadXlsHistoryService.storeUploadXlsHistory(history);
 		
 		
 		if(dataMigrationDTO.getUploadType().equalsIgnoreCase("candidatesUpload")) {
-			candidateService.saveBulkCandidates(uploadedCandidatesList);
+			ExecutorService executorService  = null;
+			if(executorService == null) {
+				executorService = Executors.newSingleThreadExecutor();
+			}
+			
+			executorService.execute(new UploadCandidateThread(uploadedCandidatesList,"Thread "+candidateIndexKey));
+			uploadedCandidatesList = null;
+			candidateIndexKey = 0;
 		}
 		
 		
@@ -549,7 +564,7 @@ public class DataMigrationServiceImpl implements DataMigrationService {
 
 	@SuppressWarnings("unused")
 	private void mapToEntities(JSONObject dataMigrationDTOJsonCopy, User user, OrgLocations orgLocation,
-			String uploadType,String jsonString,String uploadId,List<Candidate> uploadedCandidatesList) throws Exception {
+			String uploadType,String jsonString,String uploadId) throws Exception {
 		Gson gson = new Gson();
 		switch (uploadType) {
 		case "jobUpload":
@@ -638,7 +653,21 @@ public class DataMigrationServiceImpl implements DataMigrationService {
 			}
 			try {
 				Candidate candidate = candidateService.saveCandidateBulkImports(candidateDTO, orgLocation, user);
-				uploadedCandidatesList.add(candidate);
+				if(uploadedCandidatesList == null)uploadedCandidatesList= new ArrayList<>();
+				if(uploadedCandidatesList.size() <= 50) {
+					uploadedCandidatesList.add(candidate);
+				}else {
+					List<Candidate> executedCandidatesList = null;
+					executedCandidatesList = new ArrayList<>();
+					executedCandidatesList.addAll(uploadedCandidatesList);
+					uploadedCandidatesList = null;
+					ExecutorService executorService  = null;
+					if(executorService == null) {
+						executorService = Executors.newSingleThreadExecutor();
+					}
+					executorService.execute(new UploadCandidateThread(executedCandidatesList,"Thread "+candidateIndexKey));
+				}
+				
 			}catch (Exception e) {
 				UploadXlsHistory history = uploadXlsHistoryService.getUploadXlsHistoryDetailsByUploadId(uploadId);
 				history.setUploadProcessingStatus("Completed");
@@ -1155,4 +1184,37 @@ public class DataMigrationServiceImpl implements DataMigrationService {
 		 }
 		return formFieldsList;
 	}
+	
+	
+	class UploadCandidateThread implements Runnable{
+
+		List<Candidate> uploadCandidateList = new ArrayList<>();
+		String threadName = null;
+		
+		public UploadCandidateThread() {
+			
+		}
+
+		public UploadCandidateThread(List<Candidate> candidateList,String threadName) {
+			uploadCandidateList.addAll(candidateList);
+			this.threadName = threadName;
+		}
+		
+		@Override
+		public void run() {
+			logger.debug("Thread Start Time>>>>"+Calendar.getInstance().getTime()+">>> Theread "+threadName);
+			try {
+				candidateService.saveBulkCandidates(uploadCandidateList);
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+			logger.debug("Thread End Time>>>>"+Calendar.getInstance().getTime()+">>> Theread "+threadName);
+		}
+
+		
+	}
 }
+
+
+
+
