@@ -274,27 +274,90 @@ private static final Logger logger = LoggerFactory.getLogger(AssociateTaxDaoImpl
 		}
 		return total;
 	}
+	
+	
+	/**
+	 * Summing total
+	 * 
+	 * @param deductioHistory
+	 * @return BigDecimal
+	 */
+	private BigDecimal getTotalDeducationYTD(List<DeductionHistory> deductioHistory)
+	{
+		BigDecimal total = BigDecimal.ZERO;
+		if (deductioHistory != null) {
+			for (DeductionHistory dedHis : deductioHistory) {
+				if (dedHis.getPreDeductionAmount() != null) {
+					total = total.add(dedHis.getPreDeductionAmount());
+				}
+				if (dedHis.getPostDeductionAmount() != null) {
+					total = total.add(dedHis.getPostDeductionAmount());
+				}
+			}
+		}
+		return total;
+	}
 
 	@SuppressWarnings("unchecked")
 	@Override
 	@Transactional
-	public List<DeductionHistory> getDeductionYTD(EmployeePayroll payroll, Long deductionId, OrgLocations orgLocation) {
-		List<DeductionHistory> dedHistory = null;
+	public YTDPayrollDTO getDeductionYTD(EmployeePayroll payroll, Long deductionId, OrgLocations orgLocation,String reportType) {
+		
+		YTDPayrollDTO yTDPayrollDTO = new YTDPayrollDTO();
 		try {
 			Session session = this.sessionFactory.getCurrentSession();
 			Date[] ytdDates = payrollUtil.getYTDDates(orgLocation);
 			java.sql.Date startDate = new java.sql.Date(ytdDates[0].getTime());
 			java.sql.Date endDate = new java.sql.Date(ytdDates[1].getTime());
-			dedHistory = session.createQuery("from DeductionHistory dedHis where dedHis.payroll.candidate.id= :candidateId and dedHis.deductionId.id = :deductionId and dedHis.deductionDate >= :startDate and dedHis.deductionDate <= :endDate ")
-					   .setLong("candidateId", payroll.getCandidate().getId())
-					   .setLong("deductionId", deductionId)
-					   .setDate("startDate", startDate)
-					   .setDate("endDate", endDate)
-					   .list();	
+			String qry = "from DeductionHistory dedHis where dedHis.payroll.candidate.id= :candidateId and dedHis.deductionId.id = :deductionId and dedHis.deductionDate >= :startDate and dedHis.deductionDate <= :endDate";
+			Query queryObj = session.createQuery(qry);
+			queryObj.setLong("candidateId", payroll.getCandidate().getId());
+			queryObj.setLong("deductionId", deductionId);
+			queryObj.setDate("startDate", startDate);
+			queryObj .setDate("endDate", endDate);
+			
+			List<DeductionHistory> deductioHistory = queryObj.list();
+			yTDPayrollDTO.setDeductionYTD(getTotalDeducationYTD(deductioHistory));
+			
+			
+			
+			BigDecimal QTDTotal = BigDecimal.ZERO;
+			BigDecimal MTDTotal = BigDecimal.ZERO;
+			
+			if("report".equalsIgnoreCase(reportType)) {
+				// MTD
+				Date[] mtdDates = conversionUtil.getMonthStartDateEndDate();;
+				Query mtdQueryObj = session.createQuery(qry);
+				java.sql.Date mtdStartDate = new java.sql.Date(mtdDates[0].getTime());
+				java.sql.Date mtdEndDate = new java.sql.Date(mtdDates[1].getTime());
+				mtdQueryObj.setLong("candidateId", payroll.getCandidate().getId());
+				mtdQueryObj.setLong("deductionId", deductionId);
+				mtdQueryObj.setDate("startDate", mtdStartDate);
+				mtdQueryObj.setDate("endDate", mtdEndDate);
+				List<DeductionHistory> deductioHistoryMTD = mtdQueryObj.list();
+				MTDTotal = getTotalDeducationYTD(deductioHistoryMTD);
+				
+				// QTD
+				LocalDate today = LocalDate.now();
+				LocalDate[] currentMonthQuarter  = conversionUtil.getThisMonthQuarterDates(today);
+				Query qtdQueryObj = session.createQuery(qry);
+				java.sql.Date qtdStartDate = new java.sql.Date(currentMonthQuarter[0].toDate().getTime());
+				java.sql.Date qtdEndDate = new java.sql.Date(currentMonthQuarter[1].toDate().getTime());
+				qtdQueryObj.setLong("candidateId", payroll.getCandidate().getId());
+				qtdQueryObj.setLong("deductionId", deductionId);
+				qtdQueryObj.setDate("startDate", qtdStartDate);
+				qtdQueryObj.setDate("endDate", qtdEndDate);
+				List<DeductionHistory> deductioHistoryQTD = qtdQueryObj.list();
+				QTDTotal = getTotalDeducationYTD(deductioHistoryQTD);
+				
+			}
+			
+			yTDPayrollDTO.setDeductionMTD(MTDTotal);
+			yTDPayrollDTO.setDeductionQTD(QTDTotal);
 			
 		}catch (Exception e) {
 			e.printStackTrace();
 		}
-		return dedHistory;
+		return yTDPayrollDTO;
 	}
 }
