@@ -441,5 +441,77 @@ public class PayrollReportDaoImpl implements PayrollReportDao{
 		}
 		return payrollList;
 	}
+
+	@Override
+	@Transactional
+	public List<DeductionHistory> exportToPdfContributionReport(OrgLocations orgLocation, PayrollReportDTO payrollReportDTO)
+	{
+		List<DeductionHistory> payrollList = null;
+		
+		try {
+			Date sDate =  new SimpleDateFormat("yyyy-MM-dd").parse(payrollReportDTO.getFreqStartDate());  
+			Date eDate =new SimpleDateFormat("yyyy-MM-dd").parse(payrollReportDTO.getFreqEndDate());
+			java.sql.Date freqStartDate = new java.sql.Date(sDate.getTime());
+			java.sql.Date freqEndDate = new java.sql.Date(eDate.getTime());
+			Session session = this.sessionFactory.getCurrentSession();
+			
+			List<Long> contributionIds = Stream.of(payrollReportDTO.getContributionId().split(",")).map(Long::parseLong).collect(Collectors.toList());
+			
+			String query =      "from DeductionHistory ded where ded.payroll.paysheetFrequency.userGroup.id = :groupId and ded.payroll.paysheetFrequency.orgLocation.id = :orgLocationId and ded.payroll.paysheetFrequency.frequencyStartDate = :freqStartDate and ded.payroll.paysheetFrequency.frequencyEndDate = :freqEndDate and ded.payroll.submitForAproverStatus = 'APPROVED' and ded.contributionId.contributionTypeId.id IN (:contributionList)";
+			StringBuilder searchQuery = new StringBuilder("");
+			if(payrollReportDTO.getSearchValue() !=null && !"".equalsIgnoreCase(payrollReportDTO.getSearchValue())) {
+					searchQuery.append(" and ( ded.payroll.candidate.firstName like '%" + payrollReportDTO.getSearchValue() + "%' ")
+						.append("OR  ded.payroll.candidate.lastName like '%" + payrollReportDTO.getSearchValue() + "%' ")
+						.append("OR  ded.contributionId.contributionTypeId.deductionTypeId.payrollScheduled like '%" + payrollReportDTO.getSearchValue() + "%' ")
+						.append("OR  ded.contributionId.contributionTypeId.deductionTypeId.payrollDeductionType like '%" + payrollReportDTO.getSearchValue() + "%' ")
+						.append("OR  ded.payroll.employee.departmentId.departmentName like '%" + payrollReportDTO.getSearchValue() + "%' ")
+					    .append("OR  ded.payroll.employee.employeeId like '%" + payrollReportDTO.getSearchValue() + "%') ");
+			}
+			Query queryObj = session.createQuery(query + searchQuery.toString());
+				queryObj.setLong("orgLocationId", orgLocation.getId()).setLong("groupId", Long.parseLong(payrollReportDTO.getGroupId())).setDate("freqStartDate", freqStartDate).setDate("freqEndDate",freqEndDate).setParameterList("contributionList", contributionIds);
+			payrollList = queryObj.list();
+		}catch (Exception e) {
+			e.printStackTrace();
+		}
+
+		return payrollList;
+	}
+	
+	@Override
+	@Transactional
+	public List<DeductionHistory> exportToPdfDeductionReport(OrgLocations orgLocation,
+			PayrollReportDTO payrollReportDTO) {
+			List<DeductionHistory> payrollList = null;
+		
+		try {
+			Date sDate =  new SimpleDateFormat("yyyy-MM-dd").parse(payrollReportDTO.getFreqStartDate());  
+			Date eDate =new SimpleDateFormat("yyyy-MM-dd").parse(payrollReportDTO.getFreqEndDate());
+			java.sql.Date freqStartDate = new java.sql.Date(sDate.getTime());
+			java.sql.Date freqEndDate = new java.sql.Date(eDate.getTime());
+			Session session = this.sessionFactory.getCurrentSession();
+			
+			List<Long> deductionIds = Stream.of(payrollReportDTO.getDeductionId().split(",")).map(Long::parseLong).collect(Collectors.toList());
+			
+			String query =      "from DeductionHistory ded where ded.payroll.paysheetFrequency.userGroup.id = :groupId and ded.payroll.paysheetFrequency.orgLocation.id = :orgLocationId and ded.payroll.paysheetFrequency.frequencyStartDate = :freqStartDate and ded.payroll.paysheetFrequency.frequencyEndDate = :freqEndDate and ded.payroll.submitForAproverStatus = 'APPROVED' and ded.deductionId.deductionTypeId.id IN (:deductionList)";
+			StringBuilder searchQuery = new StringBuilder("");
+			if(payrollReportDTO.getSearchValue() !=null && !"".equalsIgnoreCase(payrollReportDTO.getSearchValue())) {
+					searchQuery.append(" and ( ded.payroll.candidate.firstName like '%" + payrollReportDTO.getSearchValue() + "%' ")
+						.append("OR  ded.payroll.candidate.lastName like '%" + payrollReportDTO.getSearchValue() + "%' ")
+						.append("OR  ded.deductionId.deductionTypeId.payrollScheduled like '%" + payrollReportDTO.getSearchValue() + "%' ")
+						.append("OR  ded.deductionId.deductionTypeId.payrollDeductionType like '%" + payrollReportDTO.getSearchValue() + "%' ")
+						.append("OR  ded.payroll.employee.departmentId.departmentName like '%" + payrollReportDTO.getSearchValue() + "%' ")
+					    .append("OR  ded.payroll.employee.employeeId like '%" + payrollReportDTO.getSearchValue() + "%') ");
+			}
+			Query queryObj = session.createQuery(query + searchQuery.toString());
+				queryObj.setLong("orgLocationId", orgLocation.getId()).setLong("groupId", Long.parseLong(payrollReportDTO.getGroupId())).setDate("freqStartDate", freqStartDate).setDate("freqEndDate",freqEndDate).setParameterList("deductionList", deductionIds);
+			payrollList = queryObj.list();
+			
+		}catch (Exception e) {
+			e.printStackTrace();
+		}
+
+		return payrollList;
+	}
+
 	
 }

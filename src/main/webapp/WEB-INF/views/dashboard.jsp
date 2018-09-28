@@ -123,17 +123,17 @@ function logoutForConfigure() {
 	    		<c:forEach var="userTabs" items="${SourceLeadWeb_tabsList}">
 	    		<c:if test="${userTabs.tabName == 'Jobs'}">
 	    			<sec:authorize access="hasAnyRole('ROLE_VIEW_REQUIREMENT')">
-					<jsp:include page="dashboardAssignedRequirements.jsp"></jsp:include> 
+					<div class="col-md-12"><jsp:include page="dashboardAssignedRequirements.jsp"></jsp:include> </div>
 					</sec:authorize>
 				</c:if>	
 				</c:forEach>
 					<sec:authorize access="hasAnyRole('ROLE_CREATE_ON_BOARD_USER','ROLE_VIEW_EDIT_ON_BOARD_USER')">
-					<jsp:include page="onboardingCandidatesList.jsp"></jsp:include> 
+					<div class="col-md-12"><jsp:include page="onboardingCandidatesList.jsp"></jsp:include></div> 
 					</sec:authorize>
 					
 					<sec:authorize access="hasRole('ROLE_RESOURCE_REQUEST_APPROVER')">
 					   <%-- <jsp:include page="resourceRequest.jsp"></jsp:include>  --%>
-					    <jsp:include page="projectResourceRequest.jsp"></jsp:include>  
+					    <div class="col-md-12"><jsp:include page="projectResourceRequest.jsp"></jsp:include></div>  
 					    <jsp:include page="projectNewResourceRequest.jsp"></jsp:include>  
 					 </sec:authorize>
 					
@@ -170,10 +170,10 @@ function logoutForConfigure() {
 		</sec:authorize> 
 	    
 	    <div class="clearfix"> 
-	     	<jsp:include page="dashboardEvents.jsp"></jsp:include>	   
+	     	<div class="col-md-12"><jsp:include page="dashboardEvents.jsp"></jsp:include></div>   
 	   </div>  	
 	     	<sec:authorize access="hasAnyRole('ROLE_VIEW_CONTRACT')">
-				<jsp:include page="dashboardContracts.jsp"></jsp:include> 
+				<div class="col-md-12"><jsp:include page="dashboardContracts.jsp"></jsp:include> </div>
 			</sec:authorize>
 
 		<jsp:include page="dashboard_configure_popup.jsp"></jsp:include>

@@ -16,9 +16,9 @@ public class PdfHeaderDTO {
 	
 	private String orgName;
 	
-	private Date periodBeginDate;
+	private String periodBeginDate;
 	
-	private Date periodEndDate;
+	private String periodEndDate;
 	
 	private String payPeriod;
 	
@@ -71,12 +71,12 @@ public class PdfHeaderDTO {
 		return orgName;
 	}
 
-	public Date getPeriodBeginDate()
+	public String getPeriodBeginDate()
 	{
 		return periodBeginDate;
 	}
 
-	public Date getPeriodEndDate()
+	public String getPeriodEndDate()
 	{
 		return periodEndDate;
 	}
@@ -121,12 +121,12 @@ public class PdfHeaderDTO {
 		this.orgName = orgName;
 	}
 
-	public void setPeriodBeginDate(Date periodBeginDate)
+	public void setPeriodBeginDate(String periodBeginDate)
 	{
 		this.periodBeginDate = periodBeginDate;
 	}
 
-	public void setPeriodEndDate(Date periodEndDate)
+	public void setPeriodEndDate(String periodEndDate)
 	{
 		this.periodEndDate = periodEndDate;
 	}

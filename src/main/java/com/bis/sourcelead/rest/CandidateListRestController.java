@@ -725,7 +725,9 @@ public class CandidateListRestController {
 					}
 					candidateIndex.setCreatedBy(candidateIndex.getCreatedBy());
 					Candidate can = candidateService.getCandidateByCandidateId(candidateIndex.getCandidateId());
-					candidateIndex.setProfilePercentage(can.getCandidateProfilePercentage());
+					if(can.getCandidateProfilePercentage() != null) {
+						candidateIndex.setProfilePercentage(can.getCandidateProfilePercentage());
+					}
 					Integer submittedJobCount = requirementSubmissionService.getRequirementSubmissionCountByCandiateIdAndOrgLocationId(candidateIndex.getCandidateId(), loginOrgLocation.getId());
 					candidateIndex.setSubmittedJobsCount(submittedJobCount);
 					candidatesList.add(candidateIndex);

@@ -54,7 +54,7 @@
                <select class="form-control sel" name="lcaStatus" id="lcaStatus" field-name="LCA Status" data-validation="required">
                 <option value=""> --Select--</option>
                 <option ${lcaDTO.lcaStatus == 'Initiated' ? 'selected': ''} value='Initiated'>Initiated</option>
-                <option ${lcaDTO.lcaStatus == 'In-progress' ? 'selected': ''} value='In progress'>In progress</option>
+                <option ${lcaDTO.lcaStatus == 'In progress' ? 'selected': ''} value='In progress'>In progress</option>
                 <option ${lcaDTO.lcaStatus == 'Certified' ? 'selected': ''} value='Certified'>Certified</option>
                 <option ${lcaDTO.lcaStatus == 'Denied' ? 'selected': ''}  value='Denied'>Denied</option>
                 <option ${lcaDTO.lcaStatus == 'Withdrawn' ? 'selected': ''} value='Withdrawn'>Withdrawn</option>
@@ -111,7 +111,7 @@
           <div class="clearfix col-xs-12 col-sm-6 col-md-4 mb">
           	<div class="col-md-7">
           		<div class="pull-left">
-					<input id="newEmployment" class="checkbox-custom fmcheckbox" name="newEmployment" value="0" type="checkbox" ${lcaDTO.newEmployment == '1' ? 'checked' : '' }>
+					<input id="newEmployment" class="checkbox-custom fmcheckbox" name="newEmployment" value="${lcaDTO.newEmployment}" type="checkbox" ${lcaDTO.newEmployment == 1 ? 'checked' : '' }>
 					<label for="newEmployment" class="checkbox-custom-label fmcheckbox-lable" onclick="newEmployment();"></label>
 					<span class="ml5 mt2 pull-left">New Employment</span>
 				</div>
@@ -126,7 +126,7 @@
           <div class="clearfix col-xs-12 col-sm-6 col-md-4 mb">
           	<div class="col-md-8">
           		<div class="pull-left">
-					<input id="concurrentEmployment" class="checkbox-custom fmcheckbox" name="concurrentEmployment" value="0" type="checkbox" ${lcaDTO.concurrentEmployment == '1' ? 'checked' : '' }>
+					<input id="concurrentEmployment" class="checkbox-custom fmcheckbox" name="concurrentEmployment" value="${lcaDTO.concurrentEmployment}" type="checkbox" ${lcaDTO.concurrentEmployment == 1 ? 'checked' : '' }>
 					<label for="concurrentEmployment" class="checkbox-custom-label fmcheckbox-lable" onclick="concurrentEmployment()"></label>
 					<span class="ml5 mt2 pull-left">Concurrent Employment</span>
 				</div>
@@ -140,7 +140,7 @@
           <div class="clearfix col-xs-12 col-sm-6 col-md-4 mb">
           	<div class="col-md-7">
           		<div class="pull-left">
-					<input id="extention" class="checkbox-custom fmcheckbox" name="extention"  value="0" type="checkbox" ${lcaDTO.extention == '1' ? 'checked' : '' }>
+					<input id="extention" class="checkbox-custom fmcheckbox" name="extention"  value="${lcaDTO.extention}" type="checkbox" ${lcaDTO.extention == 1 ? 'checked' : '' }>
 					<label for="extention" class="checkbox-custom-label fmcheckbox-lable" onclick="extention();"></label>
 					<span class="ml5 mt2 pull-left">Extension</span>
 				</div>
@@ -155,7 +155,7 @@
           <div class="clearfix col-xs-12 col-sm-6 col-md-4 mb">
           	<div class="col-md-7">
           		<div class="pull-left">
-					<input id="changeEmployer" class="checkbox-custom fmcheckbox" name="changeInEmployer" value="0" type="checkbox" ${lcaDTO.changeInEmployer == '1' ? 'checked' : '' }>
+					<input id="changeEmployer" class="checkbox-custom fmcheckbox" name="changeInEmployer" value="${lcaDTO.changeInEmployer}" type="checkbox" ${lcaDTO.changeInEmployer == 1 ? 'checked' : '' }>
 					<label for="changeEmployer" class="checkbox-custom-label fmcheckbox-lable" onclick="changEmployer()"></label>
 					<span class="ml5 mt2 pull-left">Change in Employer</span>
 				</div>
@@ -168,7 +168,7 @@
           <div class="clearfix col-xs-12 col-sm-6 col-md-4 mb">
           	<div class="col-md-8">
           		<div class="pull-left">
-					<input id="changeEmployerPrevious" class="checkbox-custom fmcheckbox" name="changeInPreApproEmployment" value="0" type="checkbox" ${lcaDTO.changeInPreApproEmployment == '1' ? 'checked' : '' }>
+					<input id="changeEmployerPrevious" class="checkbox-custom fmcheckbox" name="changeInPreApproEmployment" value="${lcaDTO.changeInPreApproEmployment}" type="checkbox" ${lcaDTO.changeInPreApproEmployment == 1 ? 'checked' : '' }>
 					<label for="changeEmployerPrevious" class="checkbox-custom-label fmcheckbox-lable" onclick="approvedEmployment();"></label>
 					<span class="ml5 pull-left">Change in Previous<br> Approved Employment</span>
 				</div>
@@ -181,7 +181,7 @@
           <div class="clearfix col-xs-12 col-sm-6 col-md-4 mb">
           	<div class="col-md-7">
           		<div class="pull-left">
-					<input id="amendment" class="checkbox-custom fmcheckbox" name="amendment" value="${lcaDTO.amendment}" type="checkbox" ${lcaDTO.amendment == '1' ? 'checked' : '' }>
+					<input id="amendment" class="checkbox-custom fmcheckbox" name="amendment" value="${lcaDTO.amendment}" type="checkbox" ${lcaDTO.amendment == 1 ? 'checked' : '' }>
 					<label for="amendment" class="checkbox-custom-label fmcheckbox-lable" onclick="amendment()"></label>
 					<span class="ml5 mt2 pull-left">Amendment</span>
 				</div>
@@ -569,7 +569,7 @@
         	<div class="col-md-4 mb">
         		<label class="col-md-12">Comment</label>
         		<div class="col-md-12">
-					<textarea class="form-control" name="lcaDocumentList[${rows.count-1}].description"  id="description${rows.count-1}" placeholder="Comment" rows="2" data-validation="validate_Space validate_length length1-500">${lcaDTO.lcaDocumentList[rows.count-1].description}</textarea>
+					<textarea class="form-control" name="lcaDocumentList[${rows.count-1}].description"  id="description${rows.count-1}" placeholder="Comment" rows="2" data-validation="validate_Space validate_length length1-500" data-validation-optional="true">${lcaDTO.lcaDocumentList[rows.count-1].description}</textarea>
         		</div>
         	</div>
         	
