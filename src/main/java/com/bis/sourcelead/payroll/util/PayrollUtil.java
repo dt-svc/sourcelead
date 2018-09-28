@@ -775,18 +775,17 @@ public class PayrollUtil {
 			
 		}
 
-		public BigDecimal getDeductionYTD(EmployeePayroll payroll, Long deductionId, OrgLocations orgLocation) {
-			List<DeductionHistory> dedHisList = paysheetFrequencyService.getDeductionYTD(payroll,deductionId,orgLocation);
-			BigDecimal deductionYTD = BigDecimal.ZERO;
-			for(DeductionHistory dedHis : dedHisList) {
+		public YTDPayrollDTO getDeductionYTD(EmployeePayroll payroll, Long deductionId, OrgLocations orgLocation) {
+			return paysheetFrequencyService.getDeductionYTD(payroll,deductionId,orgLocation,"report");
+			/*BigDecimal deductionYTD = BigDecimal.ZERO;
+			for(DeductionHistory dedHis : dedHisLis) {
 				if(dedHis.getPreDeductionAmount() != null) {
 					deductionYTD = deductionYTD.add(dedHis.getPreDeductionAmount());
 				}
 				if(dedHis.getPostDeductionAmount() != null) {
 					deductionYTD = deductionYTD.add(dedHis.getPostDeductionAmount());
 				}
-			}
-			return deductionYTD;
+			}*/
 		}
 	
 

@@ -33,6 +33,12 @@ public class YTDPayrollDTO {
 	
 	private BigDecimal contributionQTD;
 	
+	private BigDecimal deductionYTD;
+	
+	private BigDecimal deductionMTD;
+	
+	private BigDecimal deductionQTD;
+	
 
 	public BigDecimal getContributionYTD()
 	{
@@ -173,6 +179,29 @@ public class YTDPayrollDTO {
 	{
 		this.ytdDedTypeMap = ytdDedTypeMap;
 	}
-	
+
+	public BigDecimal getDeductionYTD() {
+		return deductionYTD;
+	}
+
+	public void setDeductionYTD(BigDecimal deductionYTD) {
+		this.deductionYTD = deductionYTD;
+	}
+
+	public BigDecimal getDeductionMTD() {
+		return deductionMTD;
+	}
+
+	public void setDeductionMTD(BigDecimal deductionMTD) {
+		this.deductionMTD = deductionMTD;
+	}
+
+	public BigDecimal getDeductionQTD() {
+		return deductionQTD;
+	}
+
+	public void setDeductionQTD(BigDecimal deductionQTD) {
+		this.deductionQTD = deductionQTD;
+	}
 	
 }

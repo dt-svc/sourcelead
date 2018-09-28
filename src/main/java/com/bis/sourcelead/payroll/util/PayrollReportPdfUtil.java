@@ -695,21 +695,24 @@ public class PayrollReportPdfUtil {
 
 		BigDecimal currentTotal = BigDecimal.ZERO;
     	BigDecimal YTDTotal = BigDecimal.ZERO;
+    	BigDecimal MTDTotal = BigDecimal.ZERO;
+    	BigDecimal QTDTotal = BigDecimal.ZERO;
 		for (PayrollReportDTO report : deductionHisList) {
 			empDataTable.addCell(getPdfCell(report.getEmpId(),normalFont,5));
 			empDataTable.addCell(getPdfCell(report.getEmpName(),normalFont,0));
 			empDataTable.addCell(getPdfCell(report.getDepartmentName(),normalFont,0));
 			empDataTable.addCell(getPdfCell(report.getDeductionType(),normalFont,0));
 			empDataTable.addCell(getPdfCell("$ xxxx",normalFont,0));
-			empDataTable.addCell(getPdfCell("$ xxxx",normalFont,0));
-			empDataTable.addCell(getPdfCell("$ xxxx",normalFont,0));
+			empDataTable.addCell(getPdfCell("$ "+report.getDeductionMTD(),normalFont,0));
+			empDataTable.addCell(getPdfCell("$ "+report.getDeductionQTD(),normalFont,0));
 			empDataTable.addCell(getPdfCell("$ "+report.getDeductionYTD(),normalFont,0));
-			empDataTable.setSpacingAfter(8);
-			document.add(empDataTable);
 			currentTotal = currentTotal.add(report.getDedAmount());
 	    	YTDTotal = YTDTotal.add(report.getDeductionYTD());
+	    	MTDTotal = MTDTotal.add(report.getDeductionMTD());
+	    	QTDTotal = QTDTotal.add(report.getDeductionQTD());
 		}
-
+		empDataTable.setSpacingAfter(8);
+		document.add(empDataTable);
 		PdfPTable lineTable = getPdfTable(1,document);
 
 
@@ -738,8 +741,8 @@ public class PayrollReportPdfUtil {
 		ytdTable.addCell(getPdfCell("",boldFont,0));
 		ytdTable.addCell(getPdfCell("",boldFont,0));
 		ytdTable.addCell(getPdfCell("$ "+currentTotal,boldFont,0));
-		ytdTable.addCell(getPdfCell("$ xxxx",boldFont,0));
-		ytdTable.addCell(getPdfCell("$ xxxx",boldFont,0));
+		ytdTable.addCell(getPdfCell("$ "+MTDTotal,boldFont,0));
+		ytdTable.addCell(getPdfCell("$ "+QTDTotal,boldFont,0));
 		ytdTable.addCell(getPdfCell("$ "+YTDTotal,boldFont,0));
 		// 
 		document.add(ytdTable);
