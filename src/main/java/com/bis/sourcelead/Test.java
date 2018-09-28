@@ -20,13 +20,16 @@ import com.itextpdf.text.pdf.PdfPTable;
 import com.itextpdf.text.pdf.PdfWriter;
 import com.itextpdf.text.pdf.collection.PdfTargetDictionary;
 import com.itextpdf.text.pdf.draw.LineSeparator;
+import com.mysql.fabric.xmlrpc.base.Data;
 
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 
 public class Test {
-    public static final String DEST = "/home/rajasekhar/Desktop/PDF/simple_table.pdf";
+    public static final String DEST = "/home/rajasekhar/Desktop/PDF/simple_deduction_table.pdf";
  
     Font boldFont = new Font(Font.FontFamily.TIMES_ROMAN, 10, Font.BOLD);
 	Font normalFont = new Font(Font.FontFamily.TIMES_ROMAN, 11, Font.NORMAL);
@@ -93,92 +96,136 @@ public class Test {
     	
     	
     	
-    	PdfPTable empTable = new PdfPTable(7);
+    	PdfPTable empTable = new PdfPTable(9);
     	empTable.setTotalWidth(document.getPageSize().getWidth() - 80);
     	empTable.setLockedWidth(true);
     	empTable.setSpacingBefore(20);  
     	
     	PdfPCell cell = new PdfPCell(new Phrase("Department", boldFont));
     	cell.setFixedHeight(20);
+//    	cell.setBackgroundColor(new BaseColor(209,210,211));
     	empTable.addCell(cell);
     	empTable.addCell(new Phrase("Emp Id #", boldFont));
     	empTable.addCell(new Phrase("Employee/Payee", boldFont));
-    	empTable.addCell(new Phrase("Date", boldFont));
-    	empTable.addCell("");
-    	empTable.addCell(new Phrase("Check Number", boldFont));
-    	empTable.addCell(new Phrase("Amount", boldFont));
+    	empTable.addCell(new Phrase("Type", boldFont));
+    	empTable.addCell(new Phrase("Schedule", boldFont));
+    	empTable.addCell(new Phrase("Current", boldFont));
+    	empTable.addCell(new Phrase("MTD", boldFont));
+    	empTable.addCell(new Phrase("QTD", boldFont));
+    	empTable.addCell(new Phrase("YTD", boldFont));
     	document.add(empTable);
     	
     	
-    	PdfPTable empDataTable = getPdfTable(7,document);
+    	PdfPTable empDataTable = getPdfTable(9,document);
     	empDataTable.setSpacingBefore(2);  
     	
-    	empDataTable.addCell(getPdfCell("Total Number of Checks: 1",normalFont,5));
+    	empDataTable.addCell(getPdfCell("100",normalFont,5));
     	empDataTable.addCell(getPdfCell("2",normalFont,0));
     	empDataTable.addCell(getPdfCell("Kakula Varam, Kunila",normalFont,0));
-    	empDataTable.addCell(getPdfCell("4/5/2018",normalFont,0));
-    	empDataTable.addCell(getPdfCell("",normalFont,0));
-    	empDataTable.addCell(getPdfCell("15221458",normalFont,0));
+    	empDataTable.addCell(getPdfCell("selection 21k",normalFont,0));
+    	empDataTable.addCell(getPdfCell("Every Pay",normalFont,0));
+    	empDataTable.addCell(getPdfCell("$ xxxx",normalFont,0));
+    	empDataTable.addCell(getPdfCell("$ 930.00",normalFont,0));
+    	empDataTable.addCell(getPdfCell("$ 930.00",normalFont,0));
     	empDataTable.addCell(getPdfCell("$ 930.00",normalFont,0));
     	empDataTable.setSpacingAfter(8);
     	document.add(empDataTable);
     	
-    	PdfPTable lineTable = getPdfTable(1,document);
+     	PdfPTable lineTable = getPdfTable(1,document);
     	
     	
-    	PdfPTable lineChildTable = new PdfPTable(4);
+    	PdfPTable lineChildTable = new PdfPTable(9);
     	lineChildTable.addCell(getPdfCell("",boldFont,0));
     	lineChildTable.addCell(getPdfCell("",boldFont,0));
-    	lineChildTable.addCell(getPdfCell("Total Number of Checks: 1",boldFont,0));
-    	lineChildTable.addCell(getPdfCell("930.80",boldFont,0));
-    	
+    	lineChildTable.addCell(getPdfCell("",boldFont,0));
+    	lineChildTable.addCell(getPdfCell("REPORT TOTALS:",boldFont,0));
+    	lineChildTable.addCell(getPdfCell("",boldFont,0));
+    	lineChildTable.addCell(getPdfCell("Current",boldFont,0));
+    	lineChildTable.addCell(getPdfCell("MTD",boldFont,0));
+    	lineChildTable.addCell(getPdfCell("QTD",boldFont,0));
+    	lineChildTable.addCell(getPdfCell("YTD",boldFont,0));
+//    	
     	PdfPCell lineTableCell = new PdfPCell(lineChildTable);
     	lineTableCell.setFixedHeight(30);
     	lineTableCell.setBorderWidth(1f);
-    	lineTableCell.setBackgroundColor(new BaseColor(211,211,211));
-    	lineTableCell.setBorder(Rectangle.TOP | Rectangle.BOTTOM);
+    	lineTableCell.setBackgroundColor(new BaseColor(209,210,211));
+    	lineTableCell.setBorder(Rectangle.BOTTOM);
     	lineTable.addCell(lineTableCell);
     	document.add(lineTable);
     	
-    	PdfPTable checksTable = getPdfTable(1,document);
-    	checksTable.setTotalWidth(document.getPageSize().getWidth() - 80);
-    	checksTable.setLockedWidth(true);
     	
-    	PdfPTable checksChildTable = new PdfPTable(4);
-    	
-    	checksChildTable.addCell(getPdfCell("",boldFont,0));
-    	checksChildTable.addCell(getPdfCell("",boldFont,0));
-    	checksChildTable.addCell(getPdfCell("Total Employee Live Checks: 1",boldFont,0));
-    	checksChildTable.addCell(getPdfCell("930.83",boldFont,0));
-    	
-    	checksChildTable.addCell(getPdfCell("",boldFont,0));
-    	checksChildTable.addCell(getPdfCell("",boldFont,0));
-    	checksChildTable.addCell(getPdfCell("Total Manual Checks: 0",boldFont,0));
-    	checksChildTable.addCell(getPdfCell("0.00",boldFont,0));
-    	
-    	checksChildTable.addCell(getPdfCell("",boldFont,0));
-    	checksChildTable.addCell(getPdfCell("",boldFont,0));
-    	checksChildTable.addCell(getPdfCell("Total Void Checks: 0",boldFont,0));
-    	checksChildTable.addCell(getPdfCell("0.00",boldFont,0));
-    	
-    	checksChildTable.addCell(getPdfCell("",boldFont,0));
-    	checksChildTable.addCell(getPdfCell("",boldFont,0));
-    	checksChildTable.addCell(getPdfCell("Total Third Party Checks: 0",boldFont,0));
-    	checksChildTable.addCell(getPdfCell("0.00",boldFont,0));
-    	
-    	checksChildTable.addCell(getPdfCell("",boldFont,0));
-    	checksChildTable.addCell(getPdfCell("",boldFont,0));
-    	checksChildTable.addCell(getPdfCell("Total Third Party Void Checks: 0",boldFont,0));
-    	checksChildTable.addCell(getPdfCell("0.00",boldFont,0));
-    	
-    	checksChildTable.setSpacingAfter(10);
-    	
-    	PdfPCell checksCell = new PdfPCell(checksChildTable);
-    	checksCell.setBorder(Rectangle.BOTTOM);
-    	checksTable.addCell(checksCell);
-    	
-    	document.add(checksTable);
-    	
+    	PdfPTable ytdTable = new PdfPTable(9);
+    	ytdTable.addCell(getPdfCell("",boldFont,0));
+    	ytdTable.addCell(getPdfCell("",boldFont,0));
+    	ytdTable.addCell(getPdfCell("",boldFont,0));
+    	ytdTable.addCell(getPdfCell("Misc (no goal):",boldFont,0));
+    	ytdTable.addCell(getPdfCell("",boldFont,0));
+    	ytdTable.addCell(getPdfCell("$ xxxx",boldFont,0));
+    	ytdTable.addCell(getPdfCell("$ xxxx",boldFont,0));
+    	ytdTable.addCell(getPdfCell("$ xxxx",boldFont,0));
+    	ytdTable.addCell(getPdfCell("$ xxxx",boldFont,0));
+//    	
+    	document.add(ytdTable);
+//    	PdfPTable checksTable = getPdfTable(1,document);
+//    	checksTable.setTotalWidth(document.getPageSize().getWidth() - 80);
+//    	checksTable.setLockedWidth(true);
+//    	
+//    	PdfPTable checksChildTable = new PdfPTable(4);
+//    	
+//    	checksChildTable.addCell(getPdfCell("",boldFont,0));
+//    	checksChildTable.addCell(getPdfCell("",boldFont,0));
+//    	checksChildTable.addCell(getPdfCell("Total Employee Live Checks: 1",boldFont,0));
+//    	checksChildTable.addCell(getPdfCell("930.83",boldFont,0));
+//    	
+//    	checksChildTable.addCell(getPdfCell("",boldFont,0));
+//    	checksChildTable.addCell(getPdfCell("",boldFont,0));
+//    	checksChildTable.addCell(getPdfCell("Total Manual Checks: 0",boldFont,0));
+//    	checksChildTable.addCell(getPdfCell("0.00",boldFont,0));
+//    	
+//    	checksChildTable.addCell(getPdfCell("",boldFont,0));
+//    	checksChildTable.addCell(getPdfCell("",boldFont,0));
+//    	checksChildTable.addCell(getPdfCell("Total Void Checks: 0",boldFont,0));
+//    	checksChildTable.addCell(getPdfCell("0.00",boldFont,0));
+//    	
+//    	checksChildTable.addCell(getPdfCell("",boldFont,0));
+//    	checksChildTable.addCell(getPdfCell("",boldFont,0));
+//    	checksChildTable.addCell(getPdfCell("Total Third Party Checks: 0",boldFont,0));
+//    	checksChildTable.addCell(getPdfCell("0.00",boldFont,0));
+//    	
+//    	checksChildTable.addCell(getPdfCell("",boldFont,0));
+//    	checksChildTable.addCell(getPdfCell("",boldFont,0));
+//    	checksChildTable.addCell(getPdfCell("Total Third Party Void Checks: 0",boldFont,0));
+//    	checksChildTable.addCell(getPdfCell("0.00",boldFont,0));
+//    	
+//    	checksChildTable.setSpacingAfter(10);
+//    	
+//    	PdfPCell checksCell = new PdfPCell(checksChildTable);
+//    	checksCell.setBorder(Rectangle.BOTTOM);
+//    	checksTable.addCell(checksCell);
+//    	
+//    	document.add(checksTable);
+//    	
+//    	PdfPTable footerTable = getPdfTable(1, document);
+//    	footerTable.setWidthPercentage(10f);
+//    	footerTable.setSpacingBefore(20);
+//    	PdfPTable footerChildTable = getPdfTable(3, document);
+//    	Font colorFont = new Font(Font.FontFamily.TIMES_ROMAN, 10, Font.BOLD);
+//    	PdfPCell footCell = new PdfPCell(new Paragraph(16,"Comapany Name ",colorFont));
+//    	footCell.setFixedHeight(40);
+////    	footCell.setHorizontalAlignment(Element.ALIGN_CENTER);
+//    	footCell.setVerticalAlignment(Element.ALIGN_BOTTOM);
+//    	footCell.setFollowingIndent(14);
+//    	footCell.setBorder(Rectangle.NO_BORDER);
+//    	footerChildTable.addCell(footCell);
+//    	colorFont.setColor(BaseColor.RED);
+//    	footerChildTable.addCell(getPdfCell("CHECK REGISTER", boldFont, 0));
+//    	SimpleDateFormat sdf = new SimpleDateFormat("dd-MM-yyyy HH:mm:ss");
+//    	footerChildTable.addCell(getPdfCell("Created on "+sdf.format(new Date()), boldFont, 0));
+//    	
+//    	footerTable.addCell(footerChildTable);
+//    	
+//    	
+//    	document.add(footerTable);
     	document.close();
         System.out.println("Done.!!");
     }
