@@ -515,8 +515,11 @@ public class PayrollReportPdfUtil {
 		document.add(detailTable3);
 		document.close();
 		return file;
-		
-		
+	}
+
+	public File getontributionReportPdf(OrgLocations orgLocation, List<PayrollReportDTO> deductionHisList)
+	{
+		return null;
 	}
 	
 }
