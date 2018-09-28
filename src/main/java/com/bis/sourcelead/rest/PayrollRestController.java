@@ -18,8 +18,9 @@ import com.bis.sourcelead.dto.ResponseList;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.Payroll;
 import com.bis.sourcelead.entity.User;
+import com.bis.sourcelead.payroll.dto.AssociatePayrollPayheadHistoryDTO;
 import com.bis.sourcelead.payroll.dto.IndPaysheetFrequencyDTO;
-import com.bis.sourcelead.payroll.dto.PaysheetFrequencyDTO;
+import com.bis.sourcelead.payroll.service.AssociatePayrollPayheadHistoryService;
 import com.bis.sourcelead.payroll.service.IndPayrollService;
 import com.bis.sourcelead.service.PayrollService;
 import com.bis.sourcelead.util.CommonUtil;
@@ -49,6 +50,9 @@ public class PayrollRestController {
 	
 	@Autowired
 	IndPayrollService indPayrollService;
+	
+	@Autowired
+	AssociatePayrollPayheadHistoryService associatePayrollPayheadHistoryService;
 	
 	/**
 	 * @author sarath kumar punnana and Ajith Matta
@@ -115,11 +119,13 @@ public class PayrollRestController {
 	
 	
 	@RequestMapping(value = { "/calculateAssociateSalaryInd","/rest/calculateAssociateSalaryInd" })
-	public ModelAndView calculateAssociateSalaryInd(HttpServletRequest request) throws Exception
+	public ModelAndView calculateAssociateSalaryInd(AssociatePayrollPayheadHistoryDTO associatePayrollPayheadHistoryDTO, HttpServletRequest request) throws Exception
 	{
 	 	ModelAndView model = new ModelAndView();
 		OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,"orgLocations");
 		User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+		ResponseList<AssociatePayrollPayheadHistoryDTO> associatePayrollPayhead = associatePayrollPayheadHistoryService.getUpdatedAssociatePayrollPayheadByEmpPayrollId(associatePayrollPayheadHistoryDTO.getIndEmployeePayrollId());
+		model.addObject("associatePayrollPayhead", associatePayrollPayhead.getData());
 		
 		model.setViewName("payroll_india/payroll/associatePayrollSummaryInd");
 		model.addObject("sourceleadUrl", sourceleadUrl);

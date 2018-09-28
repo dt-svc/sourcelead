@@ -26,7 +26,7 @@
    </div>
    <div class="clearfix"></div>
    <div class='data_loading' id="loadTime"></div>
-   <div id="runPayRollTabsContent" class="datatable_filter"></div>
+   <div id="runPayRollTabsContent" class="require_wrap_table datatable_filter"></div>
 </section>
 
 <div class="comMask"></div>
@@ -144,10 +144,10 @@ function payrollDiv(){
 										"data" : "Pay run id",
 										"render" : function(data, type, opt,meta) {
 											var result = "";
-											if(opt.payPeriodNum != null && opt.payPeriodNum != '' && opt.payPeriodNum !='undefined'){
-						                		  result = result +'<div class="tblminwidth-100" onClick="netPay();"><a href="'+sourceleadUrl+'/viewPaySheetFrequencyData?approverStatus='+opt.approverStatus+'&paySheetFrequencyUUID='+opt.paySheetFrequencyuuid+'&payPeriodNum='+opt.payPeriodNum+'">'+opt.payPeriodNum+'</a></div>';
+											if(opt.payRunId != null && opt.payRunId != '' && opt.payRunId !='undefined'){
+						                		  result = result +'<div class="tblminwidth-100" onClick="netPay();"><a href="#">'+opt.payRunId+'</a></div>';
 											}else{
-						              		  result = result +'<div class="tblminwidth-100" onClick="netPay();">--</div>';
+						              		  result = result +'<div class="tblminwidth-100">--</div>';
 						              		}
 											return result;
 										}
@@ -309,10 +309,10 @@ $(document).ready(function() {
 function netPay(){
 	$("#netPay").fadeIn();
 	$(".comMask").fadeIn();
-	var candidateId = "";
+	var indEmployeePayrollId = 1;
 	$.ajax({
         type : "GET",
-        url: sourceleadUrl+"/calculateAssociateSalaryInd?"+tokenParamName+"="+tokenValue+"&candidateId="+candidateId,    
+        url: sourceleadUrl+"/calculateAssociateSalaryInd?"+tokenParamName+"="+tokenValue+"&indEmployeePayrollId="+indEmployeePayrollId,    
          success :function(result) { 
         	 
         	 $("#associateSalaryIndDiv").empty(); 
