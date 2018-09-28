@@ -212,5 +212,20 @@ private static final Logger logger = LoggerFactory.getLogger(EmailScenarioConfig
 		// TODO Auto-generated method stub
 		return emailScenarioConfigurationDao.deleteParserEMail(emailId);
 	}
+	
+	@Override
+	public EmailScenarioConfiguration validateParserByEmail(String parserEmailId, String emailUUID) {
+		// TODO Auto-generated method stub
+        return emailScenarioConfigurationDao.validateParserByEmail(parserEmailId, emailUUID);
+
+	}
+
+	@Override
+	public Boolean validateParser(String parserEmailId) {
+		// TODO Auto-generated method stub
+        return emailScenarioConfigurationDao.validateParser(parserEmailId);
+
+	}
+
 
 }
