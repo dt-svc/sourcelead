@@ -902,9 +902,9 @@ public class InvoiceServiceImpl implements InvoiceService {
 				globalVarsMap.put("clientName", contactUser.getFirstName());
 			}
 		}
-		globalVarsMap.put("totalAmouprojectMembersListnt", invoice.getTotal());
+		globalVarsMap.put("grandTotal", invoice.getTotal());
 		globalVarsMap.put("dueDate", date);
-		globalVarsMap.put("date", invoiceDate);
+		globalVarsMap.put("invoiceDate", invoiceDate);
 		globalVarsMap.put("orgName", orglocations.getOrgLocationName());
 		// globalVarsMap.put("address",invoice.getBillingAddress());
 
@@ -2608,6 +2608,7 @@ public class InvoiceServiceImpl implements InvoiceService {
 			
 					EmailScenario notificationScenario = null;
 					if (invoiceType.equalsIgnoreCase("payables")) {
+						
 						returnMap = commonUtil.sendTemplateEmail(emailMessage, globalVarsMap, orgLocation.getOrg(), orgLocation,
 								Constants.INVOICE_CLIENT_PAYABLE_REMINDER_MAIL, attachmentList1);
 						notificationScenario = emailScenarioService.getEmailScenarioByUniqueName(
