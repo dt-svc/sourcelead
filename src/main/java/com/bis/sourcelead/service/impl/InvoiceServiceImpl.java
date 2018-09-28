@@ -3864,6 +3864,9 @@ public class InvoiceServiceImpl implements InvoiceService {
 			creditDebitNoteListDTO.setApproverCheckBox(creditDebitNote.getApproverCheckBox());
 			creditDebitNoteListDTO.setApprovers(creditDebitNote.getApprovers());
 			creditDebitNoteListDTO.setStatus(creditDebitNote.getStatus());
+			if(creditDebitNote.getRejectReason() !=null){
+				creditDebitNoteListDTO.setRejectReason(creditDebitNote.getRejectReason());	
+			}
 			if(StringUtils.isNotBlank(creditDebitNote.getApprovers())){
 			List<String> appUserList = Arrays.asList(creditDebitNoteListDTO.getApprovers().split(","));
 				creditDebitNoteListDTO.setApproverUserSplitId(appUserList);
