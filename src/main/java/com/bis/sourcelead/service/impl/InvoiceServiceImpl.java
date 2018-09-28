@@ -3298,22 +3298,16 @@ public class InvoiceServiceImpl implements InvoiceService {
 						List<User> usersList = userDao.getUsersListUsingMultipleStringIds(timelineHistory.getInvoice().getOwnerUsers());
 						 
 						for(User ownerUser: usersList){
-						if(ownerUser.getUserCode().equals(timelineHistory.getInvoice().getUpdatedBy())){
 							statusValue = ownerUser.getFullName();	
 						}
-						}
-//						statusValue = timelineHistory.getInvoice().getOwnerUserId().getFullName();
 					} else if (status.equalsIgnoreCase("Sent")) {
 						statusVal = "Sent";
 						statusBy = " by ";
 						List<User> usersList = userDao.getUsersListUsingMultipleStringIds(timelineHistory.getInvoice().getOwnerUsers());
 						 
 						for(User ownerUser: usersList){
-//						if(ownerUser.getUserCode().equals(timelineHistory.getInvoice().getUpdatedBy())){
 							statusValue = ownerUser.getFullName();	
-//						}
 						}
-//						statusValue = timelineHistory.getInvoice().getOwnerUserId().getFullName();
 						timelineDTO.setInvoiceReminderEmailBody(timelineHistory.getInvoicePaymentReminderEmailBody());
 						timelineDTO.setInvoiceReminderEmailTo(timelineHistory.getInvoicePaymentReminderEmailTo());
 						timelineDTO.setInvoiceReminderEmailFrom(timelineHistory.getInvoicePaymentReminderEmailFrom());
