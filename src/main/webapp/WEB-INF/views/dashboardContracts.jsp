@@ -1,14 +1,19 @@
 
 
 
-<div class="mb clearfix" id="contractListDiv" style="display: none;"> 
-      <div class="dashboard-widget col-md-12" >
-        <h4 class="clearfix">Contracts</h4>
-        <div class="clearfix require_wrap_table dashboard-data filter_position"> 
-        		 <div id="contractList"></div>
-        </div>
-        
+<div class="col-md-12 mb clearfix" id="contractListDiv" style="display: none;"> 
+
+      <div class="dashNewWrap mb10" >
+        	<div class="dashNewWrapHead noBor clearfix">
+				<h4 class="pull-left">Contracts</h4>
+        	</div>   
+        	<div class="newDashPad">     
+	        	<div class="clearfix project_tabs_inn_table dashboard-data filter_position"> 
+	        		 <div id="contractList"></div>
+	       	 	</div>
+       	 	</div>
       </div>
+      
     </div>
     
 <script> 
