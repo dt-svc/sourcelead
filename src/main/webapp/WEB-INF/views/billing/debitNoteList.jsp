@@ -254,7 +254,7 @@ function creditNotePagination(url){
     	  		if((report.approverCheckBox == 'Y') && (report.approverUserSplitId.length >0)){
     	  			result = result +'<div class="tbldata-dotdot-vsm">';
     	  			for(var i=0; i<report.approverUserSplitId.length; i++) {
-    	  				if((report.approverUserSplitId[i] == '${SourceLeadWeb_user.id}') && (report.creditDebitNoteStatus != "Send") && (report.status !="0")){
+    	  				if((report.approverUserSplitId[i] == '${SourceLeadWeb_user.id}') && (report.creditDebitNoteStatus != "Send") && (report.creditDebitNoteStatus != "Rejected") && (report.status !="0")){
 						result = result +'           <span class="clearfix" ><a onclick="acceptCreditDebitNote(\''+report.creditDebitUUID+'\');" title="Accept"><i class="fa fa-check text-success paddingRight"></i></a><a onclick="rejectCreditDebitNote(\''+report.creditDebitUUID+'\');" title="Reject"><i class="paddingLeft fa fa-times text-danger"></i></a></span>';
     	  				}
     	  				}
