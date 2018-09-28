@@ -95,6 +95,10 @@ public class PayrollReportDTO extends SearchDTO{
 	
 	private Date runDate;
 	
+	private BigDecimal contributionMTD;
+	
+	private BigDecimal contributionQTD;
+	
 	
 	public BigDecimal getContributionAmount()
 	{

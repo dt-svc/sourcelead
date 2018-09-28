@@ -1,5 +1,6 @@
 package com.bis.sourcelead.payroll.dao.impl;
 
+import java.math.BigDecimal;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
@@ -8,7 +9,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.hibernate.Query;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
-import org.hibernate.transform.Transformers;
+import org.joda.time.LocalDate;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,16 +20,14 @@ import com.bis.sourcelead.dto.ResponseList;
 import com.bis.sourcelead.entity.Candidate;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.payroll.dao.PaysheetFrequencyDao;
-import com.bis.sourcelead.payroll.dto.MyPayrollSummaryDTO;
-import com.bis.sourcelead.payroll.dto.PayrollComparisonDTO;
-import com.bis.sourcelead.payroll.dto.PayPeriodDTO;
 import com.bis.sourcelead.payroll.dto.PayrollReportDTO;
-import com.bis.sourcelead.payroll.dto.USPayrollDTO;
+import com.bis.sourcelead.payroll.dto.YTDPayrollDTO;
 import com.bis.sourcelead.payroll.entity.DeductionHistory;
 import com.bis.sourcelead.payroll.entity.EmployeePayroll;
 import com.bis.sourcelead.payroll.entity.PaysheetFrequency;
 import com.bis.sourcelead.payroll.util.PayrollUtil;
 import com.bis.sourcelead.util.CommonUtil;
+import com.bis.sourcelead.util.ConversionUtil;
 
 @Repository
 public class PaysheetFrequencyDaoImpl implements PaysheetFrequencyDao{
@@ -43,6 +42,9 @@ private static final Logger logger = LoggerFactory.getLogger(AssociateTaxDaoImpl
 	
 	@Autowired
 	CommonUtil commonUtil;
+	
+	@Autowired
+	ConversionUtil conversionUtil;
 	
 	@SuppressWarnings("unchecked")
 	@Override
@@ -194,25 +196,80 @@ private static final Logger logger = LoggerFactory.getLogger(AssociateTaxDaoImpl
 	@SuppressWarnings("unchecked")
 	@Override
 	@Transactional
-	public List<DeductionHistory> getContributionYTD(EmployeePayroll payroll,Long contributionId,OrgLocations orgLocation)
+	public YTDPayrollDTO getContributionYTD(EmployeePayroll payroll,Long contributionId,OrgLocations orgLocation, String reportType)
 	{
-		List<DeductionHistory> deductioHistory = null;
+		YTDPayrollDTO yTDPayrollDTO = new YTDPayrollDTO();
 		try {
 			Session session = this.sessionFactory.getCurrentSession();
+			
+			// YTD Dates
 			Date[] ytdDates = payrollUtil.getYTDDates(orgLocation);
 			java.sql.Date startDate = new java.sql.Date(ytdDates[0].getTime());
 			java.sql.Date endDate = new java.sql.Date(ytdDates[1].getTime());
-			deductioHistory = session.createQuery("from DeductionHistory dedHis where dedHis.payroll.candidate.id= :candidateId and dedHis.contributionId.id = :contributionId and dedHis.deductionDate >= :startDate and dedHis.deductionDate <= :endDate ")
-					   .setLong("candidateId", payroll.getCandidate().getId())
-					   .setLong("contributionId", contributionId)
-					   .setDate("startDate", startDate)
-					   .setDate("endDate", endDate)
-					   .list();	
+			String qry = "from DeductionHistory dedHis where dedHis.payroll.candidate.id= :candidateId and dedHis.contributionId.id = :contributionId and dedHis.deductionDate >= :startDate and dedHis.deductionDate <= :endDate ";
+			Query queryObj = session.createQuery(qry);
+					queryObj.setLong("candidateId", payroll.getCandidate().getId());
+					queryObj.setLong("contributionId", contributionId);
+					queryObj.setDate("startDate", startDate);
+					queryObj.setDate("endDate", endDate);
+					List<DeductionHistory> deductioHistory = queryObj.list();	
+					
+					BigDecimal contributionYTD = BigDecimal.ZERO;
+					yTDPayrollDTO.setContributionYTD(getTotalYTD(deductioHistory));
+			
+			if("report".equalsIgnoreCase(reportType)) {
+				// MTD
+				Date[] mtdDates = conversionUtil.getMonthStartDateEndDate();;
+				Query mtdQueryObj = session.createQuery(qry);
+				java.sql.Date mtdStartDate = new java.sql.Date(mtdDates[0].getTime());
+				java.sql.Date mtdEndDate = new java.sql.Date(mtdDates[1].getTime());
+				mtdQueryObj.setLong("candidateId", payroll.getCandidate().getId());
+				mtdQueryObj.setLong("contributionId", contributionId);
+				mtdQueryObj.setDate("startDate", mtdStartDate);
+				mtdQueryObj.setDate("endDate", mtdEndDate);
+				List<DeductionHistory> deductioHistoryMTD = mtdQueryObj.list();
+				yTDPayrollDTO.setContributionMTD(getTotalYTD(deductioHistoryMTD));
+				// QTD
+				LocalDate today = LocalDate.now();
+				LocalDate[] currentMonthQuarter  = conversionUtil.getThisMonthQuarterDates(today);
+				Query qtdQueryObj = session.createQuery(qry);
+				java.sql.Date qtdStartDate = new java.sql.Date(currentMonthQuarter[0].toDate().getTime());
+				java.sql.Date qtdEndDate = new java.sql.Date(currentMonthQuarter[1].toDate().getTime());
+				qtdQueryObj.setLong("candidateId", payroll.getCandidate().getId());
+				qtdQueryObj.setLong("contributionId", contributionId);
+				qtdQueryObj.setDate("startDate", qtdStartDate);
+				qtdQueryObj.setDate("endDate", qtdEndDate);
+				List<DeductionHistory> deductioHistoryQTD = qtdQueryObj.list();
+				yTDPayrollDTO.setContributionQTD(getTotalYTD(deductioHistoryQTD));
+				
+			}
 			
 		}catch (Exception e) {
 			e.printStackTrace();
 		}
-		return deductioHistory;
+		return yTDPayrollDTO;
+	}
+
+	/**
+	 * Summing total
+	 * 
+	 * @param deductioHistory
+	 * @return BigDecimal
+	 */
+	private BigDecimal getTotalYTD(List<DeductionHistory> deductioHistory)
+	{
+		BigDecimal total = BigDecimal.ZERO;
+		if (deductioHistory != null) {
+			for (DeductionHistory dedHis : deductioHistory) {
+				if (dedHis.getPreContributionAmount() != null) {
+					total = total.add(dedHis.getPreContributionAmount());
+				}
+				if (dedHis.getPostContributionAmount() != null) {
+					total = total.add(dedHis.getPostContributionAmount());
+				}
+			}
+		}
+		return total;
 	}
 
 	@SuppressWarnings("unchecked")
