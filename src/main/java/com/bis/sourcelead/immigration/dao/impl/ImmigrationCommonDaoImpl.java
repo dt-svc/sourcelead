@@ -1780,7 +1780,7 @@ public class ImmigrationCommonDaoImpl implements ImmigrationCommonDao {
             String sortingQry = "";
     		if (StringUtils.isNotBlank(lcaListViewDTO.getSortColumn())) {
     			String sortColumnName = lcaListViewDTO.getSortColumn();
-    			sortingQry = " order by lcaView." + sortColumnName + " " + lcaListViewDTO.getSortOrder();
+    			sortingQry = "order by lcaView." + sortColumnName + " " + lcaListViewDTO.getSortOrder();
     		} 
     		
 			if(status != null && !status.isEmpty()){
@@ -1855,10 +1855,11 @@ public class ImmigrationCommonDaoImpl implements ImmigrationCommonDao {
 			
 			}
 			
-			String query = "from LcaListView lcaView  where  lcaView.orgLocationId =:orgLocationId  "+query1+" "+sortingQry+"  "+subQuery1+"  "+subQuery2+"  "+subQuery3+"";
+			String query = "from LcaListView lcaView  where  lcaView.orgLocationId =:orgLocationId"+query1+"  "+subQuery1+"  "+subQuery2+"  "+subQuery3+" "+sortingQry+"";
 			
-			String listQueryCount = "select count(*) from LcaListView lcaView  where  lcaView.orgLocationId =:orgLocationId "+query1+" "+sortingQry+"  "+subQuery1+"  "+subQuery2+"  "+subQuery3+"";;
+			String listQueryCount = "select count(*) from LcaListView lcaView  where  lcaView.orgLocationId =:orgLocationId"+query1+"  "+subQuery1+"  "+subQuery2+"  "+subQuery3+" "+sortingQry+"";
 			
+			System.out.println(listQueryCount);
 			Query hqlQuery1 = session.createQuery(listQueryCount);
 			hqlQuery1 = hqlQuery1.setLong("orgLocationId", orgLocations.getId());
 			
@@ -2178,15 +2179,21 @@ public class ImmigrationCommonDaoImpl implements ImmigrationCommonDao {
 					" lpe.LOCATION as location, " + 
 					" l.PREVAILING_WAGE as prevailingWage, " + 
 					" l.LCA_STATUS as lcaStatus, " + 
+					" CAST(l.NO_OF_POSITIONS AS CHAR(5))as noOfPositions, " + 
 					" CAST(l.STATUS AS CHAR(1))as status, " + 
 					" DATE_FORMAT(l.START_DATE, '%Y-%m-%d') as startDate, " + 
-					" DATE_FORMAT(l.END_DATE, '%Y-%m-%d') as endDate " + 
+					" DATE_FORMAT(l.END_DATE, '%Y-%m-%d') as endDate, " + 
+					
+					" lvc.NEW_EMPLOYMENT as newEmployment, " + 
+                    " CAST(lvc.NEW_EMPLOYMENT_COUNT AS CHAR(5))as newEmploymentCount " + 
+					
 					" FROM " + 
 					" LCA l, " + 
 					" LCA_HISTORY lh, " + 
-					" LCA_PLACE_OF_EMPLOYMENT lpe " + 
+					" LCA_PLACE_OF_EMPLOYMENT lpe, " + 
+					" LCA_VISA_CLARIFICATIONS lvc" +
 					" WHERE " + 
-					"    l.id = lh.LCA_ID AND l.id = lpe.LCA_ID " + 
+					" l.id = lh.LCA_ID AND l.id = lpe.LCA_ID AND l.id = lvc.LCA_ID" + 
 					" AND lh.IMMIGRATION_ID = :immigrationId";
 			lcaList = session.createSQLQuery(queryString).setParameter("immigrationId", immigrationId).setResultTransformer(Transformers.aliasToBean(LcaDTO.class)).list();
 		    return lcaList;

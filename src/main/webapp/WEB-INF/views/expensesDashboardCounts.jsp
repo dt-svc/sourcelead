@@ -13,66 +13,56 @@ $(document).ready(function(){
 </script>
 <sec:authorize access="hasAnyRole('ROLE_ADD_MY_EXPENSES','ROLE_VIEW_EDIT_MY_EXPENSES','ROLE_EXPORT_MY_EXPENSES', 'ROLE_ADD_EMPLOYEE_EXPENSES','ROLE_VIEW_EDIT_EMPLOYEE_EXPENSES','ROLE_EXPORT_EMPLOYEE_EXPENSES')">
 <div class="col-md-6 mb">
-        <div class="dashboardWidget-new">
-          <h4 class="clearfix"><a id="expensesLink" href="<c:url value="/app/expenses"/>">Expenses &nbsp;&nbsp;</a></h4>
-          <div class="clearfix dashboard-data">
-            <ul class="nav nav-tabs">
+
+        <div class="dashboardWidget-new dashNewWrap">
             
-            <%-- <sec:authorize access="hasAnyRole('ROLE_ADD_MY_EXPENSES','ROLE_VIEW_EDIT_MY_EXPENSES','ROLE_EXPORT_MY_EXPENSES')"> --%>
-              <li class="active"><a data-toggle="tab" onclick="expensesCount('myExpenses');" >Self</a></li>
-            <%--   </sec:authorize>  --%>
-             
-             <sec:authorize access="hasAnyRole('ROLE_ADD_EMPLOYEE_EXPENSES','ROLE_VIEW_EDIT_EMPLOYEE_EXPENSES','ROLE_EXPORT_EMPLOYEE_EXPENSES')">
-              <li><a data-toggle="tab" onclick="expensesCount('employeeExpenses');" >Employees</a></li>
-             </sec:authorize>
-              
-            </ul>
-            <div class="tab-content clearfix">
+        	<div class="dashNewWrapHead clearfix">
+				<a class="pull-left" id="expensesLink" href="<c:url value="/app/expenses"/>">Expenses &nbsp;&nbsp;</a>
+	            <ul class="nav nav-tabs pull-right">
+	              <li class="active"><a data-toggle="tab" onclick="expensesCount('myExpenses');" >Self</a></li>
+	             <sec:authorize access="hasAnyRole('ROLE_ADD_EMPLOYEE_EXPENSES','ROLE_VIEW_EDIT_EMPLOYEE_EXPENSES','ROLE_EXPORT_EMPLOYEE_EXPENSES')">
+	              <li><a data-toggle="tab" onclick="expensesCount('employeeExpenses');" >Employees</a></li>
+	             </sec:authorize>
+	              
+	            </ul>
+        	</div> 
+            
               <div id="today-req" class="tab-pane fade in active">
-                <div class="db-widget-sm row">
+                <div class="db-widget-sm">
+                
                 <div class="col-xs-12 col-sm-3">
-                    <div class="clearfix">
-                     <!-- <span class="info-box-icon bg-orange"> <i class="fa fa-floppy-o" aria-hidden="true"></i></span> -->
-                      <div class="info-box-content text-center">
-                        <p class="info-box-number"><span id="expensesDraftCount"></span></p>
-                        <p class="info-box-text text-muted mt2 mb0"id="dial1txt">Draft</p>
-                      </div>
+                    <div class="dashNewCount">
+                    	 <p id="dial1txt">Draft</p>
+                        <p class="NewCount"><span id="expensesDraftCount"></span></p>
                     </div>
                   </div>
+                  
                   <div class="col-xs-12 col-sm-3" id="submittedId">
-                    <div class="clearfix">
-                     <!-- <span class="info-box-icon bg-blue"> <i class="fa fa-clock-o" aria-hidden="true"></i></span> -->
-                      <div class="info-box-content text-center">
-                        <p class="info-box-number"><span id="expensesSubmittedForApprovalCount"></span></p>
-                        <p class="info-box-text text-muted mt2 mb0"id="dial2txt"> Submitted</p>
-                      </div>
+                    <div class="dashNewCount">
+                    	<p id="dial2txt"> Submitted</p>
+                        <p class="NewCount suColor"><span id="expensesSubmittedForApprovalCount"></span></p>
                     </div>
                   </div>
+                  
                   <div class="col-xs-12 col-sm-3">
-                    <div class="clearfix">
-                     <!-- <span class="info-box-icon bg-green"> <i class="fa fa-check-circle-o" aria-hidden="true"></i> </span> -->
-                      <div class="info-box-content text-center">
-                        <p class="info-box-number"><span id="expensesApprovedCount"></span></p>
-                        <p class="info-box-text text-muted mt2 mb0" id="dial3txt">Approved </p>
-                      </div>
+                    <div class="dashNewCount">
+                    	<p id="dial3txt">Approved </p>
+                        <p class="NewCount apColor"><span id="expensesApprovedCount"></span></p>
                     </div>
                   </div>
+                  
                   <div class="col-xs-12 col-sm-3" id="dial4txtDial">
-                    <div class="clearfix">
-                    <!-- <span class="info-box-icon bg-red"> <i class="fa fa-ban" aria-hidden="true"></i> </span> -->
-                      <div class="info-box-content text-center">
-                        <p class="info-box-number"><span id="expensesRejectCount"></span></p>
-                        <p class="info-box-text text-muted mt2 mb0" id="dial4txt">Rejected </p>
-                      </div>
+                    <div class="dashNewCount">
+                    	<p id="dial4txt">Rejected </p>
+                        <p class="NewCount reColor"><span id="expensesRejectCount"></span></p>
                     </div>
                   </div>
+                  
                 </div>
               </div>
               
             </div>
           </div>
-        </div>
-      </div>
     </sec:authorize>
 <script type="text/javascript">
 function expensesCount(expenseType){
