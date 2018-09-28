@@ -180,13 +180,11 @@ public void sendMailToUserFromndIanPayrolApprover(User loginUser,  OrgLocations 
 
 	*/
 	
-	public HashSet<AssociatePayrollPayheadHistory> getAssociatePayrollPayHeadHistoryFromAssociateSalaryPayHeads(Set<AssociateSalaryPayheadInd> payheadList,Long employeePayrollId,User loginUser) throws Exception {
+	public HashSet<AssociatePayrollPayheadHistory> getAssociatePayrollPayHeadHistoryFromAssociateSalaryPayHeads(Set<AssociateSalaryPayheadInd> payheadList,IndEmployeePayroll empPayroll,User loginUser) throws Exception {
 		HashSet<AssociatePayrollPayheadHistory> payHeadHistoryList = new HashSet<>();
 		if(payheadList != null && !payheadList.isEmpty()) {
 			for(AssociateSalaryPayheadInd payHead : payheadList) {
 				AssociatePayrollPayheadHistory payHeadHistory = new AssociatePayrollPayheadHistory();
-				IndEmployeePayroll empPayroll = new IndEmployeePayroll();
-				empPayroll.setId(employeePayrollId);
 				payHeadHistory.setIndEmployeePayrollId(empPayroll);
 				payHeadHistory.setPayrollPayhead(payHead.getPayrollPayhead());
 				payHeadHistory.setMonthly(payHead.getMonthly());

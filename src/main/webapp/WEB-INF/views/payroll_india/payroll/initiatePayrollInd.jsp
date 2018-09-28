@@ -96,14 +96,16 @@ function getGroupFrequency(){
 <script>
 function runINDPayroll(){
 	if ($('#generate_payroll_form').validate(false, validationSettings)){  
+		
 		//$("#initiateLoading").attr('style','position:absolute; width:100%; height:140%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
 		var groupId = $("#groupId").val();
 		var payPeriod = $("#payPeriod").val();
 		var payType = $("#payType").val();
 		var payrollPayDate = $("#payrollPayDate").val();
+		alert(payType);
 		 $.ajax({
 		    	   type: "POST",
-		           url: sourceleadUrl+"/generateUSPayroll?searchValue="+searchValue+"&groupId="+groupId+"&payPeriod="+payPeriod+"&payrollPayDate="+payrollPayDate+"&payType="+payType,                 
+		           url: sourceleadUrl+"/generateINDPayroll?groupId="+groupId+"&payPeriod="+payPeriod+"&payrollPayDate="+payrollPayDate+"&paytype="+payType,                 
 		           success: function(data) {
 		        	  
 		        	    
