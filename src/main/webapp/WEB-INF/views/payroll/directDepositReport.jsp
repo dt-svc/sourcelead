@@ -415,6 +415,7 @@ function directDepositData(url) {
  function exportdirectDepositPdf(){
 	 var groupId = $('#payGroup').val();
 	 var searchValue = $("#directDataTableSearch").val();
+	 searchValue = searchValue ? searchValue : "";
      getFreqdates("freqStartDate", "freqEndDate");
      var  freqStartDate = $("#freqStartDate").val();
      var freqEndDate = $("#freqEndDate").val();
