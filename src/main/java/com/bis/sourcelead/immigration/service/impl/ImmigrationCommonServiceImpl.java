@@ -1331,6 +1331,7 @@ public class ImmigrationCommonServiceImpl implements ImmigrationCommonService {
 		immigrationCandidateDocuments.setDocumentType(documentTypeId);
 		immigrationCandidateDocuments.setDocUUID(SourceLeadRandomCodeHelper.generateRandomUUID());
 		immigrationCandidateDocuments.setDescription(immigrationTemplateDocDTO.getDescription());
+		immigrationCandidateDocuments.setDocCategory(Constants.DOCUMENT_TYPE);
 		if (immigrationTemplateDocDTO.getOtherType() != null) {
 			immigrationCandidateDocuments.setDocumentOtherType(immigrationTemplateDocDTO.getOtherType());
 		}
@@ -2345,11 +2346,9 @@ private List<LcaDocumentHistory> saveLcaDocumentHistoryList(LcaDTO lcaDTO, Lca l
 		}
 		lcaDocumentHistoryEntity.setDocumentUUID(lcaDocumentDTO.getDocumentUUID());
 		
-		if(lcaDocumentDTO.getDescription() != null && !lcaDocumentDTO.getDescription().isEmpty()) {
-			
-		lcaDocumentHistoryEntity.setDescription(lcaDocumentDTO.getDescription());
 		
-		}
+		lcaDocumentHistoryEntity.setDescription(lcaDocumentDTO.getDescription());
+	
 		lcaDocumentDTO.setStaticPath(staticPath);
 		if (lcaDocumentDTO.getFileInfo() != null) {
 		FileInfo fileInfo = lcaDocumentDTO.getFileInfo().get(0);
@@ -2400,31 +2399,49 @@ private List<LcaDocumentHistory> saveLcaDocumentHistoryList(LcaDTO lcaDTO, Lca l
 		    if(lcaDTO.getNewEmployment() != null && !lcaDTO.getNewEmployment().isEmpty()) {
 		    lcaVisaClfsObj.setNewEmployment(lcaDTO.getNewEmployment());
 		    lcaVisaClfsObj.setNewEmploymentCount(Integer.parseInt(lcaDTO.getNewEmploymentCount()));
+		    }else {
+		    lcaVisaClfsObj.setNewEmployment(null);
+			lcaVisaClfsObj.setNewEmploymentCount(null);	
 		    }
 		    
 		    if(lcaDTO.getChangeInEmployer() != null && !lcaDTO.getChangeInEmployer().isEmpty()) {
 		    lcaVisaClfsObj.setChangeInEmployer(lcaDTO.getChangeInEmployer());
 		    lcaVisaClfsObj.setChangeInEmployerCount(Integer.parseInt(lcaDTO.getChangeInEmployerCount()));
+		    }else {
+		    lcaVisaClfsObj.setChangeInEmployer(null);
+			lcaVisaClfsObj.setChangeInEmployerCount(null);	
 		    }
 		    
 		    if(lcaDTO.getConcurrentEmployment() != null && !lcaDTO.getConcurrentEmployment().isEmpty()) {
 		    lcaVisaClfsObj.setConcurrentEmployment(lcaDTO.getConcurrentEmployment());
 		    lcaVisaClfsObj.setConcurrentEmploymentCount(Integer.parseInt(lcaDTO.getConcurrentEmploymentCount()));
+		    }else {
+		    lcaVisaClfsObj.setConcurrentEmployment(null);
+		    lcaVisaClfsObj.setConcurrentEmploymentCount(null);
 		    }
 		    
 		    if(lcaDTO.getChangeInPreApproEmployment() != null && !lcaDTO.getChangeInPreApproEmployment().isEmpty()) {
 		    lcaVisaClfsObj.setChangeInPreApproEmployment(lcaDTO.getChangeInPreApproEmployment());
 		    lcaVisaClfsObj.setChangeInPreApproEmplmtCount(Integer.parseInt(lcaDTO.getChangeInPreApproEmplmtCount()));
+		    }else {
+		    lcaVisaClfsObj.setChangeInPreApproEmployment(null);
+			lcaVisaClfsObj.setChangeInPreApproEmplmtCount(null);
 		    }
 		    
 		    if(lcaDTO.getAmendment() != null && !lcaDTO.getAmendment().isEmpty()) {
 		    lcaVisaClfsObj.setAmendment(lcaDTO.getAmendment());
 		    lcaVisaClfsObj.setAmendmentCount(Integer.parseInt(lcaDTO.getAmendmentCount()));
+		    }else {
+		    lcaVisaClfsObj.setAmendment(null);
+			lcaVisaClfsObj.setAmendmentCount(null);
 		    }
 		    
 		    if(lcaDTO.getExtention() != null && !lcaDTO.getExtention().isEmpty()) {
 		    lcaVisaClfsObj.setExtention(lcaDTO.getExtention());
 		    lcaVisaClfsObj.setExtentionCount(Integer.parseInt(lcaDTO.getExtentionCount()));
+		    }else {
+		    	lcaVisaClfsObj.setExtention(null);
+			    lcaVisaClfsObj.setExtentionCount(null);
 		    }
 		   
 		    
@@ -2608,7 +2625,7 @@ private List<LcaDocumentHistory> saveLcaDocumentHistoryList(LcaDTO lcaDTO, Lca l
 				if(lcaVisaClfs.getAmendment() != null){
 				lcaDTO.setAmendment(lcaVisaClfs.getAmendment());
 				}
-				if(lcaVisaClfs.getAmendment() != null){
+				if(lcaVisaClfs.getAmendmentCount() != null){
 				lcaDTO.setAmendmentCount(lcaVisaClfs.getAmendmentCount().toString());
 				}
 				
@@ -2655,8 +2672,9 @@ private List<LcaDocumentHistory> saveLcaDocumentHistoryList(LcaDTO lcaDTO, Lca l
 		        	lcaDocDTO.setFileName(lcaAttachments.getFileName());
 		        	lcaDocDTO.setFileContentType(lcaAttachments.getFileContentType());
 		        	lcaDocDTO.setFileUrl(lcaAttachments.getFileUrl());
+		        	if(lcaAttachments.getDescription() != null && !lcaAttachments.getDescription().isEmpty()) {
 		        	lcaDocDTO.setDescription(lcaAttachments.getDescription());
-		        	
+		        	}
 		        	lcaDocsDTOList.add(lcaDocDTO);
 		        }
 		        lcaDTO.setLcaDocumentList(lcaDocsDTOList);
