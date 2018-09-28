@@ -12,9 +12,9 @@ $(document).ready(function(){
 });
 </script>
 <sec:authorize access="hasAnyRole('ROLE_ADD_MY_EXPENSES','ROLE_VIEW_EDIT_MY_EXPENSES','ROLE_EXPORT_MY_EXPENSES', 'ROLE_ADD_EMPLOYEE_EXPENSES','ROLE_VIEW_EDIT_EMPLOYEE_EXPENSES','ROLE_EXPORT_EMPLOYEE_EXPENSES')">
-<div class="col-md-6 mb">
+<div class="col-md-6 mb10">
 
-        <div class="dashboardWidget-new dashNewWrap">
+        <div class="dashboardWidget-new dashNewWrap mb">
             
         	<div class="dashNewWrapHead clearfix">
 				<a class="pull-left" id="expensesLink" href="<c:url value="/app/expenses"/>">Expenses &nbsp;&nbsp;</a>

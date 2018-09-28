@@ -256,7 +256,7 @@ function getPariodDates(){
 <script>
 function getDirectDepositReport(){
 	if ($('#direct_deposit_report_form').validate(false, validationSettings)){ 
-		$("#payrollRegister").toggle();
+		$("#payrollRegister").show();
 		checkDirectDepositReports();
 			return true;
 	}else{ 
@@ -392,7 +392,7 @@ function directDepositData(url) {
 	$("input[type=search]").hide();
 	$("#directDataTableSearch").keyup(function(e) {
 		if (e.which === 13) {
-			getDirectDepositReport();
+			checkDirectDepositReports();
 		}
 	});
 	
@@ -414,10 +414,12 @@ function directDepositData(url) {
  <script>
  function exportdirectDepositPdf(){
 	 var groupId = $('#payGroup').val();
+	 var searchValue = $("#directDataTableSearch").val();
+	 searchValue = searchValue ? searchValue : "";
      getFreqdates("freqStartDate", "freqEndDate");
      var  freqStartDate = $("#freqStartDate").val();
      var freqEndDate = $("#freqEndDate").val();
-	 window.location.href = sourceleadUrl+"/exportToPdfCheckRegisterReport?"+tokenParamName+"="+tokenValue+"&groupId="+groupId+"&freqStartDate="+freqStartDate+"&freqEndDate="+freqEndDate+"&depositType=Direct Deposit";
+	 window.location.href = sourceleadUrl+"/exportToPdfCheckRegisterReport?"+tokenParamName+"="+tokenValue+"&groupId="+groupId+"&freqStartDate="+freqStartDate+"&freqEndDate="+freqEndDate+"&searchValue="+searchValue+"&depositType=Direct Deposit";
  }
  
  </script>

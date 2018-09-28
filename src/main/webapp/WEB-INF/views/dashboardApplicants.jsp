@@ -1,28 +1,33 @@
 <meta http-equiv="Pragma" content="private">
 <meta http-equiv="Cache-Control" content="private">
 <meta http-equiv="Expires" content="0">
+
+
  <!-- Applicant Authorization -->
-        <div class="dashboardWidget-new">
-          <h4 class="clearfix">Applicant Permission
-          </h4>
+ <div class="col-md-6 mb"> 
+        <div class="dashNewWrap mb10">
+        
+        	<div class="dashNewWrapHead clearfix">
+				<h4 class="pull-left">Applicant Permission</h4>
+	            <ul class="nav nav-tabs pull-right">
+	              <li class="active" id="acceptedTab"><a data-toggle="tab" href="javascript:void(0)" onclick="ApplicantAuthorization('requestSent')">Sent</a></li>
+	              <li id="requestSentTab"><a data-toggle="tab" href="javascript:void(0)" onclick="ApplicantAuthorization('accepted')">Accepted</a></li>
+	              <li id="rejectedTab"><a data-toggle="tab" onclick="ApplicantAuthorization('REJECTED');">Rejected</a></li>
+	            </ul>			
+        	</div>         
           <!-- <a href="javascript:void(0)" class="collpase-div pull-right" title="SlideUp/SlideDown"><i aria-hidden="true" class="fa fa-angle-down"></i></a> -->
-          <div class="clearfix require_wrap_table dashboard-data">
-         <div class="success_pop" id="selector4" style="display: none;">
-  		<i class="fa fa-check-circle"></i><span id="eduMsgDiv"></span>
-   		 </div>
-            <ul class="nav nav-tabs pull-left mb10">
-              <li class="active" id="acceptedTab"><a data-toggle="tab" href="javascript:void(0)" onclick="ApplicantAuthorization('requestSent')">Sent</a></li>
-              <li id="requestSentTab"><a data-toggle="tab" href="javascript:void(0)" onclick="ApplicantAuthorization('accepted')">Accepted</a></li>
-                 <li id="rejectedTab"><a data-toggle="tab" onclick="ApplicantAuthorization('REJECTED');">Rejected</a></li>
-            </ul>
-            
-            <div class="tab-content clearfix mt">
+          <div class="clearfix project_tabs_inn_table dashboard-data newDashPadSearch dataSeaNew">
+         <div class="success_pop" id="selector4" style="display: none;"><i class="fa fa-check-circle"></i><span id="eduMsgDiv"></span></div>
+            <div class="tab-content clearfix">
               <div id="accepted" class="tab-pane fade in active"></div>
               <div id="requestSent" class="tab-pane fade"></div>
             </div> 
           </div>
       </div>
+</div>
 <!-- Applicant Authorization Ends --> 
+
+
 <script>
 
 $(document).ready(function(){

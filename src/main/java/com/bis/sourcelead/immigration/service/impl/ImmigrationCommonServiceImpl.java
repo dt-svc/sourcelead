@@ -2564,6 +2564,9 @@ private List<LcaDocumentHistory> saveLcaDocumentHistoryList(LcaDTO lcaDTO, Lca l
 		    lcaDTO.setSocOccupationTitle(lca.getSocOccupationTitle());
 		    }
 		    
+		    /* ============================from lca Table End================= */
+		    
+		    /* ============================from LcaVisaClarifications Table Start================= */
 		    LcaVisaClarifications lcaVisaClfs = null;
 		    lcaVisaClfs = immigrationCommonDao.getLcaVisaClarificationsByIDAndLcaId(lca.getId());
 			if(lcaVisaClfs != null) {
@@ -2609,7 +2612,8 @@ private List<LcaDocumentHistory> saveLcaDocumentHistoryList(LcaDTO lcaDTO, Lca l
 				lcaDTO.setAmendmentCount(lcaVisaClfs.getAmendmentCount().toString());
 				}
 				
-				/* ============================from lca Table End================= */
+				 /* ============================from LcaVisaClarifications Table End================= */
+				
 				
 				/* ============================from LcaPlaceOfEployment Table Start================= */
 				
