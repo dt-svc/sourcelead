@@ -18,8 +18,8 @@ $(document).ready(function(){
 	 }
 });
 </script>
-<div class="col-md-6 mb">
-        <div class="dashboardWidget-new dashNewWrap">
+<div class="col-md-6 mb10">
+        <div class="dashboardWidget-new dashNewWrap mb">
             
         	<div class="dashNewWrapHead clearfix">
         		<a class="pull-left" id="jobsLink" href="<c:url value="/app/jobs"/>">Jobs
