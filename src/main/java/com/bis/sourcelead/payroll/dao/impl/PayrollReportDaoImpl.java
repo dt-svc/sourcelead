@@ -159,13 +159,15 @@ public class PayrollReportDaoImpl implements PayrollReportDao{
 			.append("sheet.PAY_CHECK_DATE as payCheckDate ")
 			.append(" from US_EMP_PAYROLL payroll,")
 			.append(" ASSOCIATE_BANK_DATA bank, ")
+			.append(" BANK_DATA_HIS bankHis, ")  
 			.append(" PAY_SHEET_FREQUENCY sheet,")
 			.append(" CANDIDATE can,USER_GROUP grp ")
 			.append(" where sheet.ID = payroll.PAY_SHEET_FREQUENCY_ID ")
 			.append(" and payroll.CANDIDATE_ID = bank.CANDIDATE_ID ")
+			.append(" and bankHis.ASSOCIATE_BANK_ID = bank.ID ")
 			.append(" and payroll.CANDIDATE_ID = can.ID ")
 			.append(" and sheet.GROUP_ID = grp.ID ")
-			.append(" and bank.ACCOUNT_TYPE = :depositType")
+			.append(" and bankHis.ACCOUNT_TYPE = :depositType")
 			.append(" and payroll.SUBMIT_FOR_APROVER_STATUS = 'APPROVED' ")
 			.append(" and sheet.ORG_LOCATION_ID = :orgLocationId and sheet.GROUP_ID = :groupId and sheet.FREQUENCY_START_DATE = :freqStartDate ")
 			.append(" and sheet.FREQUENCY_END_DATE = :freqEndDate ");
@@ -397,27 +399,30 @@ public class PayrollReportDaoImpl implements PayrollReportDao{
 			.append("sheet.FREQUENCY_START_DATE as freqStartDate,")
 			.append("sheet.FREQUENCY_END_DATE as freqEndDate,")
 			.append("grp.GROUP_NAME as payGroupName,")
+			.append("bankHis.BANK_NAME as bankName,")
+			.append("bankHis.ACCOUNT_NUMBER as accountNum,")
+			.append("bankHis.ROUTING_NUMBER as routingNum,")
 			.append("grp.PAY_FREQUENCY as payFrequency,")
 			.append("sheet.PAY_CHECK_DATE as payCheckDate ")
 			.append(" from US_EMP_PAYROLL payroll,")
 			.append(" ASSOCIATE_BANK_DATA bank, ")  
+			.append(" BANK_DATA_HIS bankHis, ")  
 			.append(" PAY_SHEET_FREQUENCY sheet,")
 			.append(" CANDIDATE can,USER_GROUP grp ")
 			.append(" where sheet.ID = payroll.PAY_SHEET_FREQUENCY_ID ")
+			.append(" and bankHis.ASSOCIATE_BANK_ID = bank.ID ")
 			.append(" and payroll.CANDIDATE_ID = bank.CANDIDATE_ID ")
 			.append(" and payroll.CANDIDATE_ID = can.ID ")
 			.append(" and sheet.GROUP_ID = grp.ID ")
-			.append(" and bank.ACCOUNT_TYPE = :depositType")
+			.append(" and bankHis.ACCOUNT_TYPE = :depositType")
 			.append(" and payroll.SUBMIT_FOR_APROVER_STATUS = 'APPROVED' ")
 			.append(" and sheet.ORG_LOCATION_ID = :orgLocationId and sheet.GROUP_ID = :groupId and sheet.FREQUENCY_START_DATE = :freqStartDate ").append(" and sheet.FREQUENCY_END_DATE = :freqEndDate ");
 			if (payrollReportDTO.getSearchValue() != null
 					&& !"".equalsIgnoreCase(payrollReportDTO.getSearchValue())) {
-				searchQuery.append(" and ( can.FIRST_NAME like '%"
-						+ payrollReportDTO.getSearchValue()
-						+ "%' ").append("OR  can.LAST_NAME like '%"
-								+ payrollReportDTO.getSearchValue() + "%')");
+				searchQuery.append(" and ( can.FIRST_NAME like '%"+ payrollReportDTO.getSearchValue()+ "%' ")
+						   .append("OR  can.LAST_NAME like '%"+ payrollReportDTO.getSearchValue() + "%')");
 			}
-			Query queryObj = session.createSQLQuery(query.toString());
+			Query queryObj = session.createSQLQuery(query.toString()+searchQuery.toString());
 			queryObj.setLong("orgLocationId", orgLocation.getId()).setLong("groupId", Long.parseLong(payrollReportDTO.getGroupId())).setDate("freqStartDate", freqStartDate).setDate("freqEndDate", freqEndDate).setParameter("depositType", payrollReportDTO.getDepositType());
 			queryObj.setResultTransformer(Transformers.aliasToBean(CheckRegisterReportDTO.class));
 			payrollList = queryObj.list();
