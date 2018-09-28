@@ -152,6 +152,12 @@ public class EmployeePayroll {
 	@OneToMany(cascade = CascadeType.ALL, mappedBy = "payrollId")
 	private Set<PayitemHistory> payitemHistory;
 	
+	@OneToMany(cascade = CascadeType.ALL, mappedBy = "payroll")
+	private Set<BankDataHistory> bankDataHistory;
+	
+	@OneToMany(cascade = CascadeType.ALL, mappedBy = "employeePayroll")
+	private Set<AssociateTaxHistory> associateTaxHistory;
+	
 	public String getSubmitForAproverStatus()
 	{
 		return submitForAproverStatus;
@@ -573,6 +579,20 @@ public class EmployeePayroll {
 	{
 		this.expensesAmount = expensesAmount;
 	}
-	
-	
+
+	public Set<BankDataHistory> getBankDataHistory() {
+		return bankDataHistory;
+	}
+
+	public void setBankDataHistory(Set<BankDataHistory> bankDataHistory) {
+		this.bankDataHistory = bankDataHistory;
+	}
+
+	public Set<AssociateTaxHistory> getAssociateTaxHistory() {
+		return associateTaxHistory;
+	}
+
+	public void setAssociateTaxHistory(Set<AssociateTaxHistory> associateTaxHistory) {
+		this.associateTaxHistory = associateTaxHistory;
+	}
 }

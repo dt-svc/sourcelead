@@ -421,6 +421,26 @@ function getcontributionList(){
 
 </script>
 
+<script>
+function exportToPdf(){
+	
+	var groupId = $('#payGroup').val();
+    getFreqdates("freqStartDate", "freqEndDate");
+    var  freqStartDate = $("#freqStartDate").val();
+    var freqEndDate = $("#freqEndDate").val();
+	var searchValue = $("#dataTableSearch").val();
+	searchValue = searchValue ? searchValue : "";
+	var contributionId = $("#contributionId").val();
+	/* alert("groupId = "+groupId);
+	alert("freqStartDate = "+freqStartDate);
+	alert("freqEndDate = "+freqEndDate);
+	alert("contributionId = "+freqEndDate);
+	alert("searchValue = "+searchValue); */
+	
+	window.location.href = sourceleadUrl+"/exportToPdfContributionReport?searchValue="+searchValue+"&groupId="+groupId+"&freqStartDate="+freqStartDate+"&freqEndDate="+freqEndDate+"&contributionId="+contributionId;
+}
+</script>
+
 
 
 <jsp:include page="../masterFooter.jsp" />
