@@ -1,5 +1,7 @@
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
 <%@taglib uri="http://www.springframework.org/tags/form" prefix="form"%>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/functions" prefix="fn" %>
+<%@taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
 
 	<div class="row">
 		<div class="col-md-6">
@@ -56,6 +58,9 @@
 				<tbody>
 	
 					<tr>
+					<%-- <c:forEach var="ref" items="${associatePayrollPayhead}">
+						${ref.payrollPayheadName}
+					</c:forEach> --%>
 						<th>Basic Salary</th>
 						<td><input type="text" value="124,783.00" class="formControl"
 							readOnly></td>

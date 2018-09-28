@@ -15,6 +15,8 @@ public class IndPaysheetFrequencyDTO  extends SearchDTO{
 
 	private String id;
 	
+	private String payRunId;
+	
 	private String groupId;
 	
 	private String payPeriod;
@@ -43,6 +45,14 @@ public class IndPaysheetFrequencyDTO  extends SearchDTO{
 
 	public void setId(String id) {
 		this.id = id;
+	}
+
+	public String getPayRunId() {
+		return payRunId;
+	}
+
+	public void setPayRunId(String payRunId) {
+		this.payRunId = payRunId;
 	}
 
 	public String getGroupId() {

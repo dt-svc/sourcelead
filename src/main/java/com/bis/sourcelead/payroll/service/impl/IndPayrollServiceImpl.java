@@ -47,7 +47,7 @@ public class IndPayrollServiceImpl  implements IndPayrollService{
 		frequencyList.getData().forEach(pay -> {
 			IndPaysheetFrequencyDTO pfd = new IndPaysheetFrequencyDTO();
 			
-			//pfd.setPayPeriodNum(pay.getPayRunId());
+			pfd.setPayRunId(String.valueOf(pay.getPayRunId()));
 			pfd.setGroupId(String.valueOf(pay.getUserGroup().getId()));
 			pfd.setGroupName(pay.getUserGroup().getGroupName());
 			StringBuilder sbDate = new StringBuilder();
