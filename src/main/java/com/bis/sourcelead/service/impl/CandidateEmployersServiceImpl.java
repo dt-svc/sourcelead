@@ -27,6 +27,7 @@ import com.bis.sourcelead.elk.index.CandidateIndex;
 import com.bis.sourcelead.elk.setup.SourceleadELKBaseIndexer;
 import com.bis.sourcelead.entity.Candidate;
 import com.bis.sourcelead.entity.CandidateEmployers;
+import com.bis.sourcelead.entity.CandidateEmployersHistory;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.service.CandidateEmployersService;
@@ -388,6 +389,42 @@ public class CandidateEmployersServiceImpl implements CandidateEmployersService 
 	@Override
 	public Integer getCandidateActiveEmployersCountByCandidateId(Long candidateId) {
 		return candidateEmployersDao.getCandidateActiveEmployersCountByCandidateId(candidateId);
+	}
+
+	@Override
+	public HashSet<CandidateEmployers> getCandidateEmployersDetailsList(CandidateDTO candidateDTO,
+			OrgLocations orgLocations, Candidate candidate, User user) throws Exception {
+		
+          HashSet<CandidateEmployers> candidateEmployersList = new HashSet<CandidateEmployers>();
+		  
+		  if(StringUtils.isNotBlank(candidateDTO.getCandidateEmployers())){
+	    	  String employers = candidateDTO.getCandidateEmployers();
+	    	  if(employers != null && !employers.isEmpty() ){
+		    	  employers = employers.replaceAll("\\[", "").replaceAll("\\]","");
+		  	      String[] candidateEmployers = employers.split(",");
+		    	  for (String emps : candidateEmployers) {
+		    		  CandidateEmployers cemp = new  CandidateEmployers();
+		    		  emps = emps.replace("\"", "");
+		    		  cemp.setName(emps);
+		    		  cemp.setCandidateId(candidate);
+		    		  cemp.setOrgLocationId(orgLocations);
+		    		  cemp.setStatus(Constants.CANDIDATE_ACTIVE);
+		    		  
+    		        HashSet<CandidateEmployersHistory> candidateEmployersHistorySet = new HashSet<CandidateEmployersHistory>();
+    				CandidateEmployersHistory candidateEmployersHistory = new CandidateEmployersHistory();
+    				candidateEmployersHistory.setCandidateEmployers(cemp);
+    				candidateEmployersHistory.setName(emps);
+    				candidateEmployersHistory.setCreatedUser(user);
+    				candidateEmployersHistory.setCreatedBy(user.getUserCode());
+    				candidateEmployersHistory.setCreatedDate(commonUtil.currentDate());
+    				candidateEmployersHistorySet.add(candidateEmployersHistory);
+    				cemp.setCandidateEmployersHistoryList(candidateEmployersHistorySet);	
+	    		    candidateEmployersList.add(cemp);
+		    	  }
+	    	  }  
+	    }
+		 
+		return candidateEmployersList;
 	}
 
 }

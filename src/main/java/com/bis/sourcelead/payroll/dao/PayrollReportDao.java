@@ -1,5 +1,7 @@
 package com.bis.sourcelead.payroll.dao;
 
+import java.util.List;
+
 import com.bis.sourcelead.dto.ResponseList;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.payroll.dto.CheckRegisterReportDTO;
@@ -16,5 +18,9 @@ public interface PayrollReportDao {
 	ResponseList<DeductionHistory> getContributionReports(OrgLocations orgLocation, PayrollReportDTO payrollReportDTO);
 
 	ResponseList<DeductionHistory> getDeductionReports(OrgLocations orgLocation, PayrollReportDTO payrollReportDTO);
+
+	List<CheckRegisterReportDTO> getexportToPdfCheckRegisterReport(OrgLocations orgLocation, PayrollReportDTO payrollReportDTO);
+
+	List<DeductionHistory> exportToPdfContributionReport(OrgLocations orgLocation, PayrollReportDTO payrollReportDTO);
 
 }

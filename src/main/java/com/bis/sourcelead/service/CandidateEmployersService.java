@@ -79,4 +79,6 @@ public interface CandidateEmployersService {
 	
 	public Integer getCandidateActiveEmployersCountByCandidateId(Long candidateId);
 	
+	public  HashSet<CandidateEmployers> getCandidateEmployersDetailsList(CandidateDTO candidateDTO,OrgLocations orgLocations,Candidate candidate,User user) throws Exception;
+	
 }

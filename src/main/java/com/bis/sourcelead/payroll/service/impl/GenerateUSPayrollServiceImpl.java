@@ -39,6 +39,7 @@ import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.entity.UserGroup;
 import com.bis.sourcelead.enums.Result;
+import com.bis.sourcelead.payroll.dao.AssociateBankDataDao;
 import com.bis.sourcelead.payroll.dao.AssociateContributionDao;
 import com.bis.sourcelead.payroll.dao.AssociateDeductionDao;
 import com.bis.sourcelead.payroll.dao.GenerateUSPayrollDao;
@@ -53,8 +54,11 @@ import com.bis.sourcelead.payroll.dto.PaysheetFrequencyDTO;
 import com.bis.sourcelead.payroll.dto.TotalHoursDTO;
 import com.bis.sourcelead.payroll.dto.USPayrollDTO;
 import com.bis.sourcelead.payroll.dto.YTDPayrollDTO;
+import com.bis.sourcelead.payroll.entity.AssociateBankData;
 import com.bis.sourcelead.payroll.entity.AssociateContribution;
 import com.bis.sourcelead.payroll.entity.AssociateDeduction;
+import com.bis.sourcelead.payroll.entity.AssociateTaxHistory;
+import com.bis.sourcelead.payroll.entity.BankDataHistory;
 import com.bis.sourcelead.payroll.entity.DeductionHistory;
 import com.bis.sourcelead.payroll.entity.EmployeePayroll;
 import com.bis.sourcelead.payroll.entity.EmployeePayrollTax;
@@ -64,6 +68,7 @@ import com.bis.sourcelead.payroll.entity.PayAdjustmentHistory;
 import com.bis.sourcelead.payroll.entity.PayAdjustmentPayItemHistory;
 import com.bis.sourcelead.payroll.entity.PayitemHistory;
 import com.bis.sourcelead.payroll.entity.PaysheetFrequency;
+import com.bis.sourcelead.payroll.service.AssociateBankDataService;
 import com.bis.sourcelead.payroll.service.AssociateContributionService;
 import com.bis.sourcelead.payroll.service.AssociateDeductionService;
 import com.bis.sourcelead.payroll.service.AssociateTaxService;
@@ -168,6 +173,9 @@ public class GenerateUSPayrollServiceImpl implements GenerateUSPayrollService{
 	
 	@Autowired
 	ExpensesDaoImpl expensesDaoImpl;
+	
+	@Autowired
+	private AssociateBankDataDao associateBankDataDao;
 	 
 	@Override
 	public PaysheetFrequencyDTO generateUSPayroll(PaysheetFrequencyDTO existedData,OrgLocations orgLocation, GenerateUSPayrollDTO generateUSPayrollDTO,User loginUser) throws Exception
@@ -352,6 +360,13 @@ public class GenerateUSPayrollServiceImpl implements GenerateUSPayrollService{
 							}else {
 								employeePayroll.setSubmitForAproverStatus(PayrollConstant.PAYROLL_MISSED);	
 							}
+							
+							Set<BankDataHistory> bankDataHistory = getBankDataHistory(associateTaxView,employeePayroll,loginUser);
+							employeePayroll.setBankDataHistory(bankDataHistory);
+							
+							Set<AssociateTaxHistory> associateTaxHistory = getAssociateTaxHistory(associateTaxView,employeePayroll,loginUser);
+							employeePayroll.setAssociateTaxHistory(associateTaxHistory);
+							
 							employeePayroll.setDeductionHistory(dedDTO.getDedHis());
 							employeePayroll.setPayitemHistory(payItemDTO.getPayitemHistory());
 							employeePayroll.setUsEmpPayrollUUID(SourceLeadRandomCodeHelper.generateRandomUUID());
@@ -377,7 +392,75 @@ public class GenerateUSPayrollServiceImpl implements GenerateUSPayrollService{
 	}
 	
 	
-   /**
+   private Set<AssociateTaxHistory> getAssociateTaxHistory(AssociateTaxDedContriView associateTaxView,
+			EmployeePayroll employeePayroll, User loginUser) {
+	   Set<AssociateTaxHistory> taxHis = new HashSet<>();
+	   try {
+		   AssociateTaxHistory assTaxHis = null;
+		   if(associateTaxView.getAssociateTaxId() != null) {
+			   assTaxHis = new AssociateTaxHistory();
+			   assTaxHis.setAssociateTaxId(associateTaxView.getAssociateTaxId());
+			   assTaxHis.setEmployeePayroll(employeePayroll);
+			   
+			   assTaxHis.setFederalTaxFilliingStatus(associateTaxView.getFederalTaxFilliingStatus());
+			   assTaxHis.setFederalTaxAllowances(associateTaxView.getFederalTaxAllowances());
+			   assTaxHis.setFederalTaxAdditionnalWithHolding(associateTaxView.getFederalTaxAdditionnalWithHolding());
+			   
+			   assTaxHis.setResidenceTaxFilliingStatus(associateTaxView.getResidenceTaxFilliingStatus());
+			   assTaxHis.setResidenceTaxAllowances(associateTaxView.getResidenceTaxAllowances());
+			   assTaxHis.setResidenceTaxAdditionnalWithHolding(associateTaxView.getResidenceTaxAdditionnalWithHolding());
+			   
+			   assTaxHis.setLocalTax(associateTaxView.getLocalTax());
+			   assTaxHis.setLocalTaxState(associateTaxView.getLocalTaxState());
+			   
+			   assTaxHis.setFederalExempt(associateTaxView.getFederalExempt());
+			   assTaxHis.setFutaExempt(associateTaxView.getFutaExempt());
+			   assTaxHis.setMediacareExempt(associateTaxView.getMediacareExempt());
+			   assTaxHis.setSocialSecurityExempt(associateTaxView.getSocialSecurityExempt());
+			   assTaxHis.setSutaExempt(associateTaxView.getSutaExempt());
+			   
+			   assTaxHis.setSupplementType(associateTaxView.getSupplementType());
+			   assTaxHis.setStatus(1);
+			   assTaxHis.setAssociateTaxHisUuid(SourceLeadRandomCodeHelper.generateRandomUUID());
+			   assTaxHis.setCreatedDate(new Date());
+			   assTaxHis.setCreatedBy(loginUser.getId());
+		   }
+		   
+		   taxHis.add(assTaxHis);
+	} catch (Exception e) {
+		e.printStackTrace();
+	}
+	   
+		return taxHis;
+	}
+
+private Set<BankDataHistory> getBankDataHistory(AssociateTaxDedContriView associateTaxView, EmployeePayroll employeePayroll, User loginUser) {
+	   
+	   Set<BankDataHistory> his = new HashSet<>();
+	   try {
+		   BankDataHistory bankHis = null;
+		   if(associateTaxView.getAssociateBankId() != null) {
+			   bankHis = new BankDataHistory();
+			   bankHis.setAssociateBankId(associateTaxView.getAssociateBankId());
+			   bankHis.setPayroll(employeePayroll);
+			   bankHis.setAccountNumber(associateTaxView.getAccountNumber());
+			   bankHis.setAccountType(associateTaxView.getAccountType());
+			   bankHis.setBankName(associateTaxView.getBankName());
+			   bankHis.setRoutingNumber(associateTaxView.getRoutingNumber());
+			   bankHis.setBankDataHisuuid(SourceLeadRandomCodeHelper.generateRandomUUID());
+			   bankHis.setStatus(1);
+			   bankHis.setCreatedDate(new Date());
+			   bankHis.setCreatedBy(loginUser.getId());
+		   }
+		   his.add(bankHis);
+	} catch (Exception e) {
+		e.printStackTrace();
+	}
+	   
+		return his;
+	}
+
+/**
     * check same frequency or not 
     * @param existedData
     * @param assoSal

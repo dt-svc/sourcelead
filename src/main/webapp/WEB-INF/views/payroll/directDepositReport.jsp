@@ -94,10 +94,17 @@ $(document).ready(function(){
            <div class="styleTables clearfix mt">
         <div class='reportHead'>
 		<ul class='pull-right'>
+		  <li><a href="javascript:void(0)" class="overIcon" title="Actions" onclick="newActions();"></a>
+      <div class="newActPop" style="">
+       <span><a href="javascript:void(0)" onclick="exportdirectDepositPdf();" title="PDF">Export PDF</a> <a href="javascript:void(0)" onclick="exportUserData();" title="Excel">Export Excel</a> </span> </div>
+    </li>
 		<li><input type='text' placeholder='Search' class='repSearchBar' id='directDataTableSearch'/><span class='repSearchIcon' onClick='checkDirectDepositReports();'></span></li>
 		</ul>
 		</div>
-          <div id="directDepositReportDIV" class="datatable_filter"></div>
+		
+		<div class="candidate_wrap_table datatable_filter">
+	                 <div id="directDepositReportDIV"></div>
+         </div>
        
        </div>
        </div>
@@ -249,7 +256,7 @@ function getPariodDates(){
 <script>
 function getDirectDepositReport(){
 	if ($('#direct_deposit_report_form').validate(false, validationSettings)){ 
-		$("#payrollRegister").toggle();
+		$("#payrollRegister").show();
 		checkDirectDepositReports();
 			return true;
 	}else{ 
@@ -385,7 +392,7 @@ function directDepositData(url) {
 	$("input[type=search]").hide();
 	$("#directDataTableSearch").keyup(function(e) {
 		if (e.which === 13) {
-			getDirectDepositReport();
+			checkDirectDepositReports();
 		}
 	});
 	
@@ -403,4 +410,18 @@ function directDepositData(url) {
 	 $("#payPeriod").trigger("chosen:updated"); 
  }
  </script>
+ 
+ <script>
+ function exportdirectDepositPdf(){
+	 var groupId = $('#payGroup').val();
+	 var searchValue = $("#directDataTableSearch").val();
+     getFreqdates("freqStartDate", "freqEndDate");
+     var  freqStartDate = $("#freqStartDate").val();
+     var freqEndDate = $("#freqEndDate").val();
+	 window.location.href = sourceleadUrl+"/exportToPdfCheckRegisterReport?"+tokenParamName+"="+tokenValue+"&groupId="+groupId+"&freqStartDate="+freqStartDate+"&freqEndDate="+freqEndDate+"&searchValue="+searchValue+"&depositType=Direct Deposit";
+ }
+ 
+ </script>
+ 
+ 
 <jsp:include page="../masterFooter.jsp" />

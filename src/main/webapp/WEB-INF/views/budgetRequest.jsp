@@ -47,9 +47,9 @@ function getBudgetRequestList(requestType){
 	  $('#newResourceRequestTabDiv').hide();
 	  $('#assocaiteRequestsTabDiv').hide();
 	  $("#budgetTabDiv").show();
-	  $("#associateDiv").removeClass("current");
-	  $("#newResourceDiv").removeClass("current");
- 	  $("#budgetDiv").addClass("current");
+	  $("#associateDiv").removeClass("active");
+	  $("#newResourceDiv").removeClass("active");
+ 	  $("#budgetDiv").addClass("active");
 	  
 	 var sourceleadUrl ='${sourceleadUrl}';
 	 var approverUserId = '${SourceLeadWeb_user.id}';
@@ -72,7 +72,7 @@ function getBudgetRequestList(requestType){
 	        	var result = "";
 	        	
 	      		
-	    		result = result + '		<div class="project_tabs_inn_table vendor_wrap_inn_table datatable_filter overflow_inherint mrgTp">';
+	    		result = result + '		<div class="project_tabs_inn_table datatable_filter overflow_inherint mrgTp dataSeaNew">';
 	    		result = result + '		<table id="budgetRequestsPaginationList" cellspacing="0" width="100%">';
 	    		result = result + '	    <thead>';
 	    		result = result + '	     	<tr>';

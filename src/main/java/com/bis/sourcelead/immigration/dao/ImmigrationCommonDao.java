@@ -195,6 +195,8 @@ public interface ImmigrationCommonDao {
 	
 	LcaVisaClarifications getLcaVisaClarificationsByIDAndLcaId(Long lcaId);
 	
+	LcaVisaClarifications getLcaVisaClarificationsDetailsById(Long id,Long lcaId);
+	
 	List<LcaPlaceOfEployment> getLcaPlaceOfEploymentListByIdAndLcaID(Long lcaId);
 	
 	String reActiveLcaById(Long lcaId);
@@ -229,12 +231,9 @@ public interface ImmigrationCommonDao {
 	
 	void deleteLcaDocumentsDetails(Long remaininglcaDocIds[]); 
 	
-	
 	CandidateLcaJobDetails saveCandidateLcaJobDetails(CandidateLcaJobDetails candidateLcaJobDetails);
 
 	LcaHistory getLcaHistoryByStatus(Long immigrationId,Long candidateId,  String isCurrent);
-	
-	String deletetLcaHistoryDetails(Long id);
 	
 	int updateLcaHistoryStatusByLcaNumber(Long lhId,Long immigrationId,Long candidateId);
 	
