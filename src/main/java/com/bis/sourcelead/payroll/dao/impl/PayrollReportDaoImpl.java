@@ -457,20 +457,7 @@ public class PayrollReportDaoImpl implements PayrollReportDao{
 			
 			List<Long> contributionIds = Stream.of(payrollReportDTO.getContributionId().split(",")).map(Long::parseLong).collect(Collectors.toList());
 			
-//			String qry = "";
-//			if(StringUtils.isNotBlank(payrollReportDTO.getSortColumn())) {
-//				if("departmentName".equalsIgnoreCase(payrollReportDTO.getSortColumn())) {
-//					qry = " order by ded.payroll.employee.departmentId."+ payrollReportDTO.getSortColumn() +" "+payrollReportDTO.getSortOrder();
-//				}else if("payrollDeductionType".equalsIgnoreCase(payrollReportDTO.getSortColumn())) {
-//					qry = " order by ded.contributionId.contributionTypeId.deductionTypeId.payrollDeductionType."+ payrollReportDTO.getSortColumn() +" "+payrollReportDTO.getSortOrder();
-//				}else if("employeeId".equalsIgnoreCase(payrollReportDTO.getSortColumn())) {
-//					qry = " order by ded.payroll.employee.employeeId."+payrollReportDTO.getSortColumn() + " "+payrollReportDTO.getSortOrder();
-//				}else if("firstName".equalsIgnoreCase(payrollReportDTO.getSortColumn())) {
-//					qry = " order by ded.payroll.candidate.firstName."+payrollReportDTO.getSortColumn() + " "+payrollReportDTO.getSortOrder();
-//				}
-//			}
 			String query =      "from DeductionHistory ded where ded.payroll.paysheetFrequency.userGroup.id = :groupId and ded.payroll.paysheetFrequency.orgLocation.id = :orgLocationId and ded.payroll.paysheetFrequency.frequencyStartDate = :freqStartDate and ded.payroll.paysheetFrequency.frequencyEndDate = :freqEndDate and ded.payroll.submitForAproverStatus = 'APPROVED' and ded.contributionId.contributionTypeId.id IN (:contributionList)";
-//			String countQuery = "from DeductionHistory ded where ded.payroll.paysheetFrequency.userGroup.id = :groupId and ded.payroll.paysheetFrequency.orgLocation.id = :orgLocationId and ded.payroll.paysheetFrequency.frequencyStartDate = :freqStartDate and ded.payroll.paysheetFrequency.frequencyEndDate = :freqEndDate and ded.payroll.submitForAproverStatus = 'APPROVED' and ded.contributionId.contributionTypeId.id IN (:contributionList)";
 			StringBuilder searchQuery = new StringBuilder("");
 			if(payrollReportDTO.getSearchValue() !=null && !"".equalsIgnoreCase(payrollReportDTO.getSearchValue())) {
 					searchQuery.append(" and ( ded.payroll.candidate.firstName like '%" + payrollReportDTO.getSearchValue() + "%' ")
@@ -481,27 +468,8 @@ public class PayrollReportDaoImpl implements PayrollReportDao{
 					    .append("OR  ded.payroll.employee.employeeId like '%" + payrollReportDTO.getSearchValue() + "%') ");
 			}
 			Query queryObj = session.createQuery(query + searchQuery.toString());
-//			if (payrollReportDTO != null && payrollReportDTO.getLength() > 0) {
-//				queryObj.setFirstResult(payrollReportDTO.getStart());
-//				queryObj.setMaxResults(payrollReportDTO.getLength());
 				queryObj.setLong("orgLocationId", orgLocation.getId()).setLong("groupId", Long.parseLong(payrollReportDTO.getGroupId())).setDate("freqStartDate", freqStartDate).setDate("freqEndDate",freqEndDate).setParameterList("contributionList", contributionIds);
-//			}
 			payrollList = queryObj.list();
-//			int count = 0;
-//			int filteredCount = 0;
-//			List<Long> countlist = session.createQuery("select count(*) " + countQuery).setLong("orgLocationId", orgLocation.getId()).setLong("groupId", Long.parseLong(payrollReportDTO.getGroupId())).setDate("freqStartDate", freqStartDate).setDate("freqEndDate",freqEndDate).setParameterList("contributionList", contributionIds).list();
-//			if(countlist != null && !countlist.isEmpty()) {
-//				count = countlist.iterator().next().intValue();
-//			}
-//			response.setRecordsTotal(count);
-//			if (payrollReportDTO != null) {
-//				List<Long> filteredCountlist  = session.createQuery("select count(*) " + countQuery + searchQuery.toString()).setLong("orgLocationId", orgLocation.getId()).setLong("groupId", Long.parseLong(payrollReportDTO.getGroupId())).setDate("freqStartDate", freqStartDate).setDate("freqEndDate",freqEndDate).setParameterList("contributionList", contributionIds).list();
-//				if(filteredCountlist != null && !filteredCountlist.isEmpty()) {
-//					filteredCount = filteredCountlist.iterator().next().intValue();
-//				}
-//				response.setRecordsFiltered(filteredCount);
-//			} 
-//				response.setData(payrollList);
 		}catch (Exception e) {
 			e.printStackTrace();
 		}
