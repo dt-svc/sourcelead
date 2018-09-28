@@ -1334,9 +1334,6 @@ private Set<BankDataHistory> getBankDataHistory(AssociateTaxDedContriView associ
 					updatedDedHis = getUpdatedContribution(updatedDedHis,postContribution,PayrollConstant.POST_TAX);
 				}
 			}
-//			List<ContributionDTO> postContribution = null;
-			
-			
 			
 			EmployeePayroll updatedPayroll = payrollAdjustmentService.updateEmployeePayroll(payroll);
 			if (updatedPayroll != null) {
