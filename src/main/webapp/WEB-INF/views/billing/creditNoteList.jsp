@@ -291,6 +291,8 @@ function creditNotePagination(url){
     				result = result +' <span class="clearfix"><a onClick="deleteCreditDebitNote(\''+report.creditDebitUUID+'\');"><i class="fa fa-trash paddingRight paddingLeft" title="Remove"></i></a></span>';
     				}else if(report.status =="0") {
 	 	    			result = result +' <span class="clearfix"><a onClick="reactiveCreditDebitNote(\''+report.creditDebitUUID+'\');"><i class="fa fa-rotate-left ml10" title="Reactive"></i></a></span>';
+    	  			}else{
+        			result = result +' <span class="clearfix"><a onClick="deleteCreditDebitNote(\''+report.creditDebitUUID+'\');"><i class="fa fa-trash paddingRight paddingLeft" title="Remove"></i></a></span>';
     	  			}
     				
 			    	result = result +' </div>';	
