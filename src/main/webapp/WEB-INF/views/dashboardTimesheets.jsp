@@ -23,8 +23,8 @@ $(document).ready(function(){
 </script>
 
  <!-- Timesheets -->
-      <div class="col-md-6 mb">
-        <div class="dashboardWidget-new dashNewWrap">
+      <div class="col-md-6 mb10">
+        <div class="dashboardWidget-new dashNewWrap mb">
         	
         	<div class="dashNewWrapHead clearfix">
         		<a id="timeSheetLink" href="<c:url value="/app/timesheet"/>" class="pull-left"> ${bothTimesheets ? 'Timesheets' : onlyTimesheets ? 'Timesheets' : onlyApprovalTimesheets ? 'Approval' : ''} &nbsp;&nbsp;</a>

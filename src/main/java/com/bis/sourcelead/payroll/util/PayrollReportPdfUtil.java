@@ -395,24 +395,33 @@ public class PayrollReportPdfUtil {
 			detailTable.addCell(detailCell1);
 			
 			PdfPCell detailCell2 = new PdfPCell();
-			detailCell2.addElement(new Paragraph(checkRegisterReportDTO.getDepartmentId(),detailFont));
+			if(checkRegisterReportDTO.getDepartmentId() != null)
+				detailCell2.addElement(new Paragraph(checkRegisterReportDTO.getDepartmentId(),detailFont));
+			else
+				detailCell2.addElement(new Paragraph("--",detailFont));
 			detailCell2.setBorder(Rectangle.NO_BORDER);
 			detailCell2.setColspan(1);
-			detailCell2.setPaddingLeft(25f);
+			detailCell2.setPaddingLeft(35f);
 			detailTable.addCell(detailCell2);
 			
 			PdfPCell detailCell3 = new PdfPCell();
-			detailCell3.addElement(new Paragraph("Routing Number",detailFont));
+			if(checkRegisterReportDTO.getRoutingNum() != null)
+				detailCell3.addElement(new Paragraph(checkRegisterReportDTO.getRoutingNum(),detailFont));
+			else
+				detailCell3.addElement(new Paragraph("--",detailFont));
 			detailCell3.setBorder(Rectangle.NO_BORDER);
 			detailCell3.setColspan(1);
-			detailCell3.setPaddingLeft(25f);
+			detailCell3.setPaddingLeft(35f);
 			detailTable.addCell(detailCell3);
 			
 			PdfPCell detailCell4 = new PdfPCell();
-			detailCell4.addElement(new Paragraph("Account Number",detailFont));
+			if(checkRegisterReportDTO.getAccountNum() != null)
+				detailCell4.addElement(new Paragraph(checkRegisterReportDTO.getAccountNum(),detailFont));
+			else
+				detailCell4.addElement(new Paragraph("--",detailFont));
 			detailCell4.setBorder(Rectangle.NO_BORDER);
 			detailCell4.setColspan(1);
-			detailCell4.setPaddingLeft(25f);
+			detailCell4.setPaddingLeft(35f);
 			detailTable.addCell(detailCell4);
 			
 			PdfPCell detailCell5 = new PdfPCell();
@@ -423,10 +432,10 @@ public class PayrollReportPdfUtil {
 			detailTable.addCell(detailCell5);
 			
 			PdfPCell detailCell6 = new PdfPCell();
-			detailCell6.addElement(new Paragraph("",detailFont));
+			detailCell6.addElement(new Paragraph("--",detailFont));
 			detailCell6.setBorder(Rectangle.NO_BORDER);
 			detailCell6.setColspan(1);
-			detailCell6.setPaddingLeft(25f);
+			detailCell6.setPaddingLeft(40f);
 			detailTable.addCell(detailCell6);
 			totalDeposit = totalDeposit.add(checkRegisterReportDTO.getNetPay());
 		}
@@ -506,8 +515,11 @@ public class PayrollReportPdfUtil {
 		document.add(detailTable3);
 		document.close();
 		return file;
-		
-		
+	}
+
+	public File getontributionReportPdf(OrgLocations orgLocation, List<PayrollReportDTO> deductionHisList)
+	{
+		return null;
 	}
 	
 }

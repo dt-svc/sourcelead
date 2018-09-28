@@ -36,6 +36,7 @@ import com.bis.sourcelead.payroll.service.PaysheetFrequencyService;
 import com.bis.sourcelead.payroll.util.PayrollUtil;
 import com.bis.sourcelead.service.DepartmentService;
 import com.bis.sourcelead.service.EmployeesService;
+import com.bis.sourcelead.util.CommonUtil;
 
 @Service
 public class PayrollReportServiceImpl implements PayrollReportService{
@@ -54,6 +55,9 @@ public class PayrollReportServiceImpl implements PayrollReportService{
 	
 	@Autowired
 	DepartmentService departmentService;
+	
+	@Autowired
+	CommonUtil commonUtil;
 	
 	@Override
 	public ResponseList<PayrollReportDTO> getPayrollSummaryByPayPeriodAndPayCheckDate(OrgLocations orgLocation, PayrollReportDTO payrollReportDTO)
@@ -365,6 +369,57 @@ public class PayrollReportServiceImpl implements PayrollReportService{
 	{
 		List<CheckRegisterReportDTO>  checkRegisterList = payrollReportDao.getexportToPdfCheckRegisterReport(orgLocation,payrollReportDTO);
 		return checkRegisterList;
+	}
+
+	@Override
+	public List<PayrollReportDTO>  exportToPdfContributionReport(OrgLocations orgLocation, PayrollReportDTO payrollReportDTO)
+	{
+		List<DeductionHistory> dedHisList =  payrollReportDao.exportToPdfContributionReport(orgLocation,payrollReportDTO);
+		
+		List<PayrollReportDTO> list = null;
+		try {
+			if(dedHisList != null) {
+				for(DeductionHistory dedHis : dedHisList) {
+					PayrollReportDTO dto = new PayrollReportDTO();
+					StringBuilder sb = new StringBuilder();
+					if(StringUtils.isNotBlank(dedHis.getPayroll().getCandidate().getLastName())) {
+						sb.append(dedHis.getPayroll().getCandidate().getFirstName()).append(" ").append(dedHis.getPayroll().getCandidate().getLastName());
+					}else {
+						sb.append(dedHis.getPayroll().getCandidate().getFirstName());
+					}
+					dto.setEmpName(sb.toString());
+					if(dedHis.getPayroll().getEmployee() != null) {
+						dto.setEmpId(dedHis.getPayroll().getEmployee().getEmployeeId());
+					}
+					if(StringUtils.isNotBlank(dedHis.getPayroll().getPaysheetFrequency().getUserGroup().getDepartmentId())) {
+						Department dept = departmentService.getDepartmentById(Long.parseLong(dedHis.getPayroll().getPaysheetFrequency().getUserGroup().getDepartmentId()));
+						dto.setDepartmentName(dept.getDepartmentName());
+					}
+					dto.setContributionType(dedHis.getContributionId().getContributionTypeId().getDeductionTypeId().getPayrollDeductionType());
+					BigDecimal contributionAmount = BigDecimal.ZERO;
+					if (dedHis.getPreContributionAmount() != null) {
+						if (dedHis.getPreContributionAmount().compareTo(BigDecimal.ZERO) !=  0) {
+							contributionAmount = dedHis.getPreContributionAmount();
+						}
+					}
+					if (dedHis.getPostContributionAmount() != null) {
+						if (dedHis.getPostContributionAmount().compareTo(BigDecimal.ZERO) !=  0 ) {
+							contributionAmount = dedHis.getPostContributionAmount();
+						}
+					}
+					dto.setContributionAmount(contributionAmount);
+					dto.setFreqStartDate(commonUtil.dateStrFromOrgDateFormatter(orgLocation.getDateFormat(), dedHis.getPayroll().getPaysheetFrequency().getFrequencyStartDate()));
+					dto.setFreqEndDate(commonUtil.dateStrFromOrgDateFormatter(orgLocation.getDateFormat(), dedHis.getPayroll().getPaysheetFrequency().getFrequencyEndDate()));
+					dto.setSchedule(dedHis.getContributionId().getContributionTypeId().getDeductionTypeId().getPayrollScheduled().toLowerCase());
+					BigDecimal contributionYTD = payrollUtil.getContributionYTD(dedHis.getPayroll(), dedHis.getContributionId().getId(), orgLocation);
+					dto.setContributionYTD(contributionYTD);
+					list.add(dto);
+				}
+			}
+		}catch (Exception e) {
+			e.printStackTrace();
+		}
+		return list;
 	}
 
 }
