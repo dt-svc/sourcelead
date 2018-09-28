@@ -23,9 +23,9 @@ $(document).ready(function(){
 });
 </script>
   
-    <div class="col-md-6 mb">
+    <div class="col-md-6 mb10">
       
-        <div class="dashboardWidget-new dashNewWrap">
+        <div class="dashboardWidget-new dashNewWrap mb">
             
         	<div class="dashNewWrapHead clearfix">
 				<a class="pull-left" href="<c:url value='${appPath}/leaveManagementReports'/>" title="Leave Management">Leaves</a>
