@@ -3,6 +3,7 @@ package com.bis.sourcelead.util;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Date;
@@ -45,7 +46,9 @@ import com.bis.sourcelead.enums.Result;
 import com.itextpdf.tool.xml.html.Body;
 
 public class MailBox {
-
+	
+	private static SimpleDateFormat dateFormat = new SimpleDateFormat("MMM dd/yy");
+	
 	public static ResponseList<String> readMail(String host, String storeType, String user, String password) {
 		ResponseList<String> responseList = new ResponseList<>();
 		List<String> folderList = new LinkedList<>();
@@ -172,7 +175,7 @@ public class MailBox {
 					readMailDTO.setFrom("");
 				}
 				readMailDTO.setTo(message.getAllRecipients() != null ? message.getAllRecipients()[0].toString() : "");
-				readMailDTO.setSentDate(message.getSentDate() != null ? message.getSentDate().toString() : "");
+				readMailDTO.setSentDate(message.getSentDate() != null ? dateFormat.format(message.getSentDate()) : "");
 				readMailDTO.setSubject(message.getSubject());
 				readMailDTO.setFolderName(folderName);
 

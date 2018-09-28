@@ -136,64 +136,41 @@
 
 
         </div>
-			<!-- mail side-bar ends -->
-			<div class="col-md-9" id="inbox">
-			<div id="mailLoading"></div>
-			 <div class="mail-box mail-content">
+		<div class="col-md-9" id="inbox">
 			
-			 <div class="mail-box-header">
-			 	<input type="checkbox" onclick="selectOrDeselectAllEmails(this)">
-              <h3 class="box-title" id="mailboxLabel"></h3>
-              <div class="mail-widget" id="mailControlsMaster" style="display: none;">
-	              <i aria-hidden="true" class="fa fa-trash-o moveToTrash" onclick="moveEmailsToTrash();" style="display: none;"></i>
-	              <i class="deleteForever" onclick="deleteEmailsForEver();" style="display: none;">Delete forever</i>
-              </div>
-              <!-- <div class="box-tools pull-right">
-                <div class="has-feedback">
-                  <input type="text" placeholder="Search Mail" class="form-control input-sm">
-                  <span class="glyphicon glyphicon-search form-control-feedback"></span>
-                </div>
-              </div> -->
-              <!-- /.box-tools -->
-            </div>
-            
-			<%-- commented by Manoj, TODO controls functionaliy
-			<!-- /.box-tools -->
-			<div class="mailbox-controls">
-			<div>
-			<input id="checkAllEmails" class="checkbox-custom" onclick="toggleEmails(this);deleteMail();" name="checkAllEmails" type="checkbox">
-			<label for="checkAllEmails" id="checkAllBtn" class="checkbox-custom-label"></label>
-			</div>
-				<button class="btn btn-danger mailbtn-custom" type="button" onclick="getMailBoxIds();" id="trashBtn"><i class="fa fa-trash-o" id="trashtype"></i></button>
-                <button class="btn btn-default mailbtn-custom" type="button" id="refreshBtn" onclick="refreshList();"><i class="fa fa-refresh"></i></button>
-               
-               <!--  <div class="pull-right">
-                  1-50/200
-                  <div class="btn-group">
-                    <button class="btn btn-default btn-sm" type="button"><i class="fa fa-chevron-left"></i></button>
-                    <button class="btn btn-default btn-sm" type="button"><i class="fa fa-chevron-right"></i></button>
-                  </div>
-                  /.btn-group
-                </div> -->
-                <!-- /.pull-right -->
-              </div>
-			  <!-- /.box-tools -->
-			 --%>
-			 
-	<!-- mail box table -->
-			<div class="mailbox-messages datatable_filter mailbox-table">
-                 <div id="mailBoxList"></div>
-              </div>
-	<!-- mail box table ends -->   
-
-			</div>
-			</div>
-
-			<div class="col-md-9" id="details">
-				<div id="mailContentLoading"></div>
-				<div class="mail-box mail-content clearfix" id="body-details">
+			<div class="dashNewWrap mail-box mail-content dashNewWrapMinHe">
+				<div id="mailLoading"></div>
+				<div class="mail-box-header clearfix">
+					<div class="pull-left mr">
+						<input type="checkbox" id="a" class="checkbox-custom" onclick="selectOrDeselectAllEmails(this)">
+						<label for="a" class="checkbox-custom-label"></label>
+					</div>
+					<h3 class="box-title pull-left mr" id="mailboxLabel"></h3>
+					<span class="pull-left mr"><i class="mailIcon trashIcon"></i></span>
+					<span class="pull-left deleTrash">Delete Forever</span>
+					
+<!-- 					<div class="mail-widget" id="mailControlsMaster"
+						style="display: none;">
+						<i aria-hidden="true" class="fa fa-trash-o moveToTrash"
+							onclick="moveEmailsToTrash();" style="display: none;"></i> <i
+							class="deleteForever" onclick="deleteEmailsForEver();"
+							style="display: none;">Delete forever</i>
+					</div> -->
 				</div>
+
+				<div class="mailbox-messages datatable_filter mailbox-table">
+					<div id="mailBoxList"></div>
+				</div>
+				<!-- mail box table ends -->
+
 			</div>
+		</div>
+
+		<div class="col-md-9" id="details">
+			<div id="mailContentLoading"></div>
+			<div class="mail-box mail-content clearfix" id="body-details">
+			</div>
+		</div>
 
 
 
@@ -371,7 +348,7 @@
 	  setActiveTab(type)
 	  var mailType = '${mailType}';
 	  
-	  $("#mailLoading").attr('style','position:absolute; width:97%; height:99%; background-color:rgba(255,255,255,0.8); top:-1px; left:14px; z-index:100;background-image:url("/resources/images/linear-loader.gif"); background-position:center; background-repeat:no-repeat; background-size:100px;');
+	  $("#mailLoading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/linear-loader.gif"); background-position:center; background-repeat:no-repeat; background-size:100px;');
 	  
 	  $.ajax({
           type : "POST",
@@ -418,7 +395,7 @@
 	                    		 }
 		                    	 
 		                    	result = result +' <tr id="checkbox'+opt.mailBoxId+'">';
-		              			result = result +'<td style="width : 20px;">';
+		              			result = result +'<td style="width : 25px;">';
 		              			result = result +'<div class="mrleft8">';
 		              			result = result +'<input id="check'+opt.mailBoxId+'" value="'+opt.mailBoxId+'" class="checkbox-custom" onclick="deleteMail();" name="mailIds[]" type="checkbox">';
 		              			result = result +'<label for="check'+opt.mailBoxId+'" class="checkbox-custom-label"></label>';
@@ -857,7 +834,7 @@ function deleteReadMail(uuid,nextMailUUID,type){
 </script>
 <script>
 function activeEmail(id, ele){
-	$("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:70px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:50px;');
+	$("#mailLoading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/linear-loader.gif"); background-position:center; background-repeat:no-repeat; background-size:100px;');
 	$(".compose-mail").hide();
 	$(".userMailList").find("li").removeClass("Act");
 	$(ele).parent().addClass("Act");
@@ -896,7 +873,7 @@ function activeEmail(id, ele){
 					 result = result + "</ul>";
 					 result = result + "</div>";
 				 }
-				 $("#loading").removeAttr("style");
+				 $("#mailLoading").removeAttr("style");
 				 $("#dynamicEmailFolder").empty();
 				 $("#dynamicEmailFolder").append(result);
 				 autoSelectFirstEmailFolder();
@@ -941,8 +918,8 @@ function readFolder(name, fullName, id, pageNo, pageSize, index){
 		    		var emailList = data.data;
 		    		if(emailList.length > 0) {
 			    		for(var e in emailList) {
-						 	result = result +' <tr id="checkbox' + emailList[e].messageId + '" data-id=' + emailList[e].messageId + '>';
-						 
+						 	result = result +' <tr id="checkbox' + emailList[e].messageId + '" data-id=' + emailList[e].messageId + ' >';
+						 	
 			       			result = result +'<td style="width : 20px;">';
 			       			result = result +'<div class="mrleft8">';
 			       			result = result +'<input id="check' + emailList[e].messageId + '" value=" " class="checkbox-custom"  name="mailIds[]" type="checkbox" onclick="showOrHideMailControls();">';
@@ -951,19 +928,26 @@ function readFolder(name, fullName, id, pageNo, pageSize, index){
 			       			result = result +'</td>';
 			       			
 			       			result = result +'<td style="text-align: left !important;" class="mailbox-subject" onclick="getEmailBodyForMailBox(' + id + ',' + emailList[e].messageId + ',\''+fullName+'\')" data-id="' + emailList[e].messageId + '">';
-			       			result = result +'<div>';
-			       			result = result +'	<div>' + (fullName.indexOf("Sent") !== -1 ? (emailList[e].to != null ? emailList[e].to.replace(/</g, "&lt;").replace(/>/g,"&gt;") : "") : (emailList[e].from != null ? emailList[e].from.replace(/</g, "&lt;").replace(/>/g,"&gt;") : "")) + '</div>';
-			       			result = result +'	<div style="font-size: 12px;color: #666;">' + emailList[e].subject + '</div>';
-			       			result = result +'</div>';
+			       			result = result +'	<div class="mailFrom">' + (fullName.indexOf("Sent") !== -1 ? (emailList[e].to != null ? emailList[e].to.replace(/</g, "&lt;").replace(/>/g,"&gt;") : "") : (emailList[e].from != null ? emailList[e].from.replace(/</g, "&lt;").replace(/>/g,"&gt;") : "")) + '</div>';
 			       			result = result +'</td>';
-			       			/* result = result +'<td class="mailbox-subject" onclick="getEmailBody(' + i + ')" data-id="' + i + '">' + opt.subject + '</td>'; */
-			       			result = result +'<td class="mailbox-date" data-id="' + emailList[e].messageId + '">' + emailList[e].sentDate + '</td>';
+			       			
+			       			result = result +'<td style="text-align: left !important;" class="mailbox-subject" onclick="getEmailBodyForMailBox(' + id + ',' + emailList[e].messageId + ',\''+fullName+'\')" data-id="' + emailList[e].messageId + '">';
+			       			result = result +'	<div class="mailSub">' + emailList[e].subject + '</div>';
+			       			result = result +'</td>';			       			
+			       			
 			       			if(emailList[e].attachmentsCount > 0)
-			       				result = result + '<td><i class="fa fa-paperclip"></i></td>';
+			       				result = result + '<td><i class="mailIcon attaIcon"></i></td>';
 			       			else 
 			       				result = result + '<td></td>';
+			       				
+			       			result = result +'<td class="mailbox-date" data-id="' + emailList[e].messageId + '">' + emailList[e].sentDate + '</td>';
+			       			result = result + '<td class="mailOver"><div class="mailActions">';
+			       			result = result + '<i class="mailIcon repIcon" title="Replay"></i><i class="mailIcon repallIcon" title="Replay All"></i><i class="mailIcon forIcon" title="Forward"></i><i class="mailIcon trashIcon" title="Delete"></i>';
+			       			result = result + '</td>';
+			       				
 			       			result = result +'</tr>';
 			    		}
+			    		
 			    		result = result +'</tbody>';
 			    		result = result +"</table>";
 			    		$("#mailBoxList").empty();
@@ -1061,8 +1045,8 @@ function backToEmailList(){
 	function getEmailBodyForMailBox(emailAccountId, uid, folderName){
 	    /* $("#mailDetails").html($("#mailBody"+id).html()); */
 	    $("#body-details").empty();
-	    $("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:70px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:50px;');
-		$.ajax({
+	    $("#mailLoading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/linear-loader.gif"); background-position:center; background-repeat:no-repeat; background-size:100px;');
+	    $.ajax({
 			type : "POST",
 			url : sourceleadUrl+"/getEmailByUID?${_csrf.parameterName}=${_csrf.token}&emailAccountId=" + emailAccountId + "&uid="+uid + "&folderName=" + folderName,
 			success : function(data) {
@@ -1148,7 +1132,7 @@ function backToEmailList(){
 				} else {
 					alert("error while reading email");
 				}
-				$("#loading").removeAttr("style");
+				$("#mailLoading").removeAttr("style");
 			}
 		});
 	}
