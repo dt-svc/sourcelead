@@ -27,6 +27,43 @@ public class YTDPayrollDTO {
 	
 	private Map<String, Double> ytdContributionTypeMap;
 	
+	private BigDecimal contributionYTD;
+	
+	private BigDecimal contributionMTD;
+	
+	private BigDecimal contributionQTD;
+	
+
+	public BigDecimal getContributionYTD()
+	{
+		return contributionYTD;
+	}
+
+	public BigDecimal getContributionMTD()
+	{
+		return contributionMTD;
+	}
+
+	public BigDecimal getContributionQTD()
+	{
+		return contributionQTD;
+	}
+
+	public void setContributionYTD(BigDecimal contributionYTD)
+	{
+		this.contributionYTD = contributionYTD;
+	}
+
+	public void setContributionMTD(BigDecimal contributionMTD)
+	{
+		this.contributionMTD = contributionMTD;
+	}
+
+	public void setContributionQTD(BigDecimal contributionQTD)
+	{
+		this.contributionQTD = contributionQTD;
+	}
+
 	public Map<String, Double> getYtdContributionTypeMap()
 	{
 		return ytdContributionTypeMap;
