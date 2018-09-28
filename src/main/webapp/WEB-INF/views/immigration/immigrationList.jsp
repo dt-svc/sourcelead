@@ -17,16 +17,19 @@
     <section class="content-wraper">
    
     <section class="content-header clearfix">
-      <div class="pull-left"><h2>Immigrations list</h2></div>
-      <div class="pull-right brud-crum"><a href="<c:url value='${appPath}/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a> &raquo; Immigrations List</div>
+      <div class="pull-left"><h2>Immigration List</h2></div>
+      <div class="pull-right brud-crum"><a href="<c:url value='${appPath}/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a> &raquo; Immigration List</div>
 	<div class="clearfix"></div>
     </section>    
     
     <div class="project_side_wrap_inn_tabs clearfix">
 	    <ul class="project-tabs-menu">
 		    <li class="current"><a href="/app/immigration/viewImmigrationList">Immigration List</a></li>
+		  
+		   <sec:authorize access="hasAnyRole(\'ROLE_ADD_LCA\',\'ROLE_VIEW_LCA\',\'ROLE_VIEW_EDIT_LCA\',\'ROLE_VIEW_DELETE_LCA\',\'ROLE_IMPORT_LCA\',\'ROLE_EXPORT_LCA\')">
 		    <li class=""><a href="${appPath}/immigration/viewLCAList">LCA List</a></li>
-		    
+		   </sec:authorize> 
+		   
 	    </ul>
     </div>
     

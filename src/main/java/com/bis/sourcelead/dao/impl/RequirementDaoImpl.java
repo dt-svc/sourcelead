@@ -2672,6 +2672,7 @@ public class RequirementDaoImpl implements RequirementDao {
 			if(requirementDTO.getSearchValue() != null && !"".equalsIgnoreCase(requirementDTO.getSearchValue())) {
 				 query1.append(" Q1.generatedId like '%" + requirementDTO.getSearchValue() + "%' ")
 					.append("OR Q1.jobTitle like '%" + requirementDTO.getSearchValue() + "%' ")
+					.append("OR Q1.profilePercentage like '%" + requirementDTO.getSearchValue() + "%' ")
 					.append("OR Q1.clientName like '%" + requirementDTO.getSearchValue() + "%' ")
 					.append("OR Q1.createdDate like '%" + requirementDTO.getSearchValue() + "%' ")
 					.append("OR Q1.location like '%" + requirementDTO.getSearchValue() + "%' ");
@@ -2785,7 +2786,8 @@ public class RequirementDaoImpl implements RequirementDao {
 					"REQ.GENERATED_ID AS generatedId," + 
 					"REQ.JOB_TITLE AS jobTitle, " + 
 					"DATE_FORMAT(REQ.CREATED_DATE ,\"%Y-%m-%d\") AS createdDate, " + 
-					"REQ.REQUIREMENT_SUBMISSION_STATUS AS status, " + 
+					"REQ.REQUIREMENT_SUBMISSION_STATUS AS status, " +
+					"REQ.PROFILE_PERCENTAGE AS profilePercentage, " + 
 					"REQ.SKILLS AS skills, " + 
 					"REQ.NOTICEPERIOD AS noticePeriod, " + 
 					"REQ.ORG_RELATION_ID AS orgRelationId, " + 

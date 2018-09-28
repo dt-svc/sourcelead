@@ -6,7 +6,7 @@
 
 <script>
 $(document).ready(function(){
-	getPayGroupList("payPeriod");
+	getPayGroupList("payGroup");
 });
 </script>
 
@@ -26,7 +26,7 @@ $(document).ready(function(){
             <div class="row">
               <div class="col-md-3">
                 <div class="dropdown-select">
-                  <select class="chosen-select" id="payPeriod" name="payPeriod" onchange="clearDropDown();">
+                  <select class="chosen-select" id="payGroup" name="payGroup" onchange="clearDropDown();">
                    <!--  <option selected>Pay Period</option>
                     <option>Group-1</option>
                     <option>Group-2</option>
@@ -146,7 +146,7 @@ $(document).ready(function(){
 <script>
 	function getPayCheckDateReports() {
 		var payCheckDate = $('#payCheckDate').val();
-		var groupId = $('#payPeriod').val();
+		var groupId = $('#payGroup').val();
 		if(groupId != '' && groupId != 'undefined'){
 			var searchValue = $("#dataTableSearch").val();
 			searchValue = searchValue ? searchValue : "";
@@ -342,7 +342,7 @@ $(document).ready(function(){
 											var result = "";
 											result = result + '<td>';
 											result = result + '<div class="tblminwidth-30 text-center">';
-											result = result + '<a href="javascript:void(0)" class="anchorBlack"><i class="fa fa-eye"></i></a>';
+											result = result + '<a href="javascript:void(0)" class="anchorBlack" onclick="payAdjustment(\''+opt.payrollUUID+'\',\'APPROVED\');"><i class="fa fa-eye"></i></a>';
 											result = result + '</div>';
 											result = result + '</td>';
 											return result;
@@ -377,5 +377,6 @@ $(document).ready(function(){
 	
 
 </script>
+<jsp:include page="./viewPayRollSummary.jsp" /> 
  
 <jsp:include page="../masterFooter.jsp" />

@@ -15,8 +15,10 @@ import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.bis.sourcelead.dao.TeamDao;
+import com.bis.sourcelead.dao.UserRoleDao;
 import com.bis.sourcelead.entity.Team;
 import com.bis.sourcelead.entity.User;
+import com.bis.sourcelead.entity.UserRole;
 import com.bis.sourcelead.exception.SourceLeadConstraintViolationException;
 import com.bis.sourcelead.util.CommonUtil;
 
@@ -49,7 +51,8 @@ public class TeamDaoImpl  implements TeamDao{
 	@Autowired
 	private CommonUtil commonUtil;
 	
-	
+	@Autowired
+	private UserRoleDao userRoleDao;
 	
 	private static final Logger logger = LoggerFactory.getLogger(TeamDaoImpl.class);
 
@@ -176,13 +179,21 @@ public class TeamDaoImpl  implements TeamDao{
 	@Override
 	@Transactional
 	public List<Team> getUserAssignedTeamListByOrgLocationId(Long userId, Long orgLocationId) throws Exception {
-		
+		UserRole role = userRoleDao.getUserDetailsByUserIdAndLocationId(userId, orgLocationId);
 		Session session = this.sessionFactory.getCurrentSession();
-		String query = "from Team team "
+		if(role.getRoles().getRoleName().equalsIgnoreCase("ROLE_SOURCELEAD_ADMIN") || role.getRoles().getRoleName().equalsIgnoreCase("ROLE_ADMIN")) {
+			/*String query = "from Team team "
+					+ "where (team.orgLocationsId.id = :orgLocationId and team.status = '1') OR "
+					+ " (team.id IN (select tm.teamId.id from TeamMembers tm where tm.teamId.orgLocationsId.id = :orgLocationId and tm.status = '1'))";*/
+			String query = "from Team team "
+					+ "where (team.orgLocationsId.id = :orgLocationId and team.status = '1')";
+		return session.createQuery(query).setLong("orgLocationId", orgLocationId).list();
+		}else {
+			String query = "from Team team "
 					+ "where (team.ownerUserId.id = :userId and team.orgLocationsId.id = :orgLocationId and team.status = '1') OR "
 					+ " (team.id IN (select tm.teamId.id from TeamMembers tm where tm.teamId.orgLocationsId.id = :orgLocationId and tm.memberUserId.id = :userId and tm.status = '1'))";
 		return session.createQuery(query).setLong("userId", userId).setLong("orgLocationId", orgLocationId).list();
-		
+		}
 	}
 
 	@Override

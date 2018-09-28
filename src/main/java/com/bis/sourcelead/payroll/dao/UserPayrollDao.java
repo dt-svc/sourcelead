@@ -27,4 +27,6 @@ public interface UserPayrollDao {
 
 	Object getPayrollEntitiesByUUIDAndEntityType(String uuid, String entityType);
 
+	ResponseList<Checks> getChecksListByEmployeeId(OrgLocations orgLocations, ChecksDTO checksDTO);
+
 }

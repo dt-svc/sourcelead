@@ -1,5 +1,6 @@
 package com.bis.sourcelead.dao.impl;
 
+import java.math.BigInteger;
 import java.text.MessageFormat;
 import java.util.List;
 
@@ -301,5 +302,58 @@ public CandidateResumesDTO getCandidateResumesDTOByCandidateId(Long candidateId)
 		return candidateResumesDTO;
 
 }
+
+
+@Override
+@Transactional(rollbackFor = { Exception.class })
+public Integer getCandidateActiveResumeCountByCandidateId(Long candidateId) throws Exception {
+	Session session = this.sessionFactory.getCurrentSession();
+	Integer educationsCount = 0;
+	
+	String countQuery ="SELECT"
+			+ " COUNT(CR.ID) AS RESUMES_COUNT"
+			+ " FROM "
+			    + " CANDIDATE_RESUMES CR "
+				+ " WHERE CR.CANDIDATE_ID = :candidateId AND CR.STATUS = '1' ";
+	
+	
+	Query countqueryString = session.createSQLQuery(countQuery);
+	countqueryString.setParameter("candidateId", candidateId);
+	BigInteger filterCount =  (BigInteger) countqueryString.uniqueResult();
+	educationsCount = filterCount.intValue();
+	return educationsCount;
+}
+
+
+@Override
+@Transactional(rollbackFor = { Exception.class })
+public CandidateResumesDTO getCandidateLatesResumeDetails(Long candidateId) throws Exception {
+	
+	List<CandidateResumesDTO> candidateResumesDTOList = null;
+	CandidateResumesDTO candidateResumesDTO = null;
+	Session session = this.sessionFactory.getCurrentSession();
+	String query = null;
+			query ="SELECT "
+			+" CR.ID AS resumeId, "
+			+" CR.FILE_NAME AS resumeName, "
+			+" CR.FILE_CONTENT_TYPE AS fileContentType, "
+			+" CR.FILE_URL AS fileUrl "
+			+" FROM CANDIDATE_RESUMES CR "
+			+" WHERE "
+			+" CR.CANDIDATE_ID = :candidateId AND CR.STATUS = '1' "
+			+" ORDER BY CR.CREATED_DATE DESC ";
+			
+        Query queryObj = session.createSQLQuery(query);
+		queryObj.setLong("candidateId", candidateId);
+		queryObj.setResultTransformer(Transformers.aliasToBean(CandidateResumesDTO.class));
+		candidateResumesDTOList = queryObj.list();
+		if(candidateResumesDTOList != null && !candidateResumesDTOList.isEmpty()) {
+			candidateResumesDTO = candidateResumesDTOList.get(0);
+		}
+		
+		return candidateResumesDTO;
+
+}
+
 
 }

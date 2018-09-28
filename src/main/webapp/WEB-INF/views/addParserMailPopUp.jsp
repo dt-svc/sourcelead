@@ -8,21 +8,21 @@
 <div class="clearfix">
 		<div class="popupHead">Email Parsing<i class="closePop pull-right popClose" onclick="closeEmailNotifications();"></i></div>
 			<div class="popupContent">		
-			<div class="clearfix mb">
+			<div class="clearfix mb" id="emailNotify">
                 <label class="noPad">Email <b class="valStar">*</b></label>
-                <input class="form-control" value="" name="emailId" id="parserEmailId"  field-name="Email Id" data-validation="required validate_Space validate_length length2-100 validate_email" placeholder="Enter email" type="text">
+                <input class="form-control" value="" name="emailId" id="parserEmailId"  field-name="Email Id" data-validation="required validate_Space validate_length length2-100 validate_email" placeholder="Enter email" type="text" onkeyup = "validateParserEmail();" onblur = "validateParserEmail();">
             </div>
-          <div class="clearfix mb">
+          <div class="clearfix mb" id="passwordsnotify">
              <label class="noPad">Password <b class="valStar">*</b></label>
          <input class="form-control" value="" name="EmailPassword" id="parserPasswordId"   field-name="Password" data-validation="required validate_Space" placeholder="Enter password" type="password">
           </div>
           
-          <div class="clearfix mb">
-             <label class="noPad">POP3 Mail Server name <b class="valStar">*</b></label>
+          <div class="clearfix mb" id="popnotify">
+             <label class="noPad">IMAP Mail Server name <b class="valStar">*</b></label>
             <input class="form-control" value="" id="parserServerName" name="serverName" data-validation="required validate_Space"  field-name="Receive Server" placeholder="e.g.secure.emailsrvr.com" type="text">
           </div>
           
-          <div class="clearfix mb">
+          <div class="clearfix mb" id="portnotify">
              <label class="noPad">Port <b class="valStar">*</b></label>
            <input class="form-control" value="" id="parserPortId" name="portNumber" data-validation="required validate_Space" field-name="Receive Port" placeholder="123" type="text">
           </div>
@@ -45,7 +45,7 @@
           </div>
           
            <div class="clearfix bg-info">
-           <label class="modal-body"><strong class="text-danger paddingRight">Note:</strong>To configure the Gmail account, enable the access here : <a href="https://www.google.com/settings/security/lesssecureapps" target="_blank">Click here</a></label>
+             <label class="modal-body"><strong class="text-danger paddingRight">Note:</strong>To configure the Gmail account, enable the  <a href="https://mail.google.com/mail/u/0/#settings/fwdandpop" target="_blank">IMAP</a> and <a href="https://www.google.com/settings/security/lesssecureapps" target="_blank">Allow less secure</a></label>
            </div>
           
 			</div>
@@ -212,4 +212,31 @@ function deleteParserEmail(emailId){
 		}
 	});
 }
+
+function validateParserEmail(){
+	
+	var emailId = $("#parserEmailId").val();
+	var emailUUID = $("#parserEmailUUID").val();
+	$.ajax({
+	            type: "POST",
+	            url: sourceleadUrl + "/validateParserEmail?"+ tokenParamName + "=" + tokenValue +"&parserEmailId=" + emailId+"&emailUUID="+emailUUID,
+	            success: function (data) {
+	            	if (data && data === true) {
+			        		
+	            		if ($('#emailNotify').find('p.jquery_form_error_message').length === 0)
+	            			$("#parserEmailId").after("<p class='jquery_form_error_message'>" + emailId + " Already Exists</span>");
+	            		$(".colorBtn").addClass("disableBtn");
+	            		
+			        	}else{
+			        		
+			        	$('#emailNotify').find('p.jquery_form_error_message').remove();
+	            		 $(".colorBtn").removeClass("disableBtn");	            		
+	            	}     
+	                }
+	 	        });
+	 	   
+	 	
+}
 </script>
+
+

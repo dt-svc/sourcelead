@@ -877,14 +877,38 @@ public class ImmigrationRestController {
 
 				fileIdNameMap.put(historyObj.getId(), historyObj.getUpldedFileName());
 			}
-			logger.debug("Doc id ===========" + docs.getId());
+			 System.out.println("Doc id ===========" + docs.getId());
 			docs.setDocsHistoryList(jsonArray.put(fileIdNameMap));
 			logger.debug("jsonArray to String  ===========" + jsonArray.toString());
+			
+	   Candidate candidate = candidateService.getCandidateByCandidateId(candidateId);
+		   System.out.println("docs.getDocumentType()................."+docs.getDocumentType().getId());
+		   System.out.println("docs.getDocCategory()................."+docs.getDocCategory());
+		   System.out.println("docs.getDocumentType().getName()................."+docs.getDocumentType().getName());
+		   
+		if(docs.getDocCategory().equalsIgnoreCase("Document Type")){
+			if(candidate.getConsultantUser().getId().equals(user.getId())) {
+			model.addObject("beneficiaryDocs", docs.getDocCategory());
+			}
+		}else {
+			model.addObject("beneficiaryDocs", docs.getDocCategory());
+			if(docs.getDocCategory().equalsIgnoreCase("PetitionerCategory")){
+				model.addObject("petitionerDocs", docs.getDocCategory());
+			}
+			
+		if(docs.getDocCategory().equalsIgnoreCase("AttorneyCategory")){
+				model.addObject("attorneyDocs", docs.getDocCategory());
+			}
+			
 		}
+			
+		}
+		
 		model.setViewName("/immigration/documentDetailsTab");
 		List<LookUpData> documentsList = lookUpDataService.getLookUpDataByCategory(Constants.DOCUMENT_TYPE);
 		model.addObject("documentsList", documentsList);
 		model.addObject("immigrationCanDocList", immigrationCanDocList);
+		
 		return model;
 	}
 
@@ -1686,14 +1710,6 @@ public class ImmigrationRestController {
 		logger.debug(" inisde getLcaDetails controller test -->");
 		if(immigrationId != null) {
 			 List<LcaDTO> lcaList = immigrationCommonService.getLcaHistoryDetailsInfo(Long.parseLong(immigrationId));
-			 /*   for(LcaDTO lh: lcaList) {
-			    	
-			    	if(lh.getLcaId() != null ) {
-			    	lh.setLcaId(lh.getLcaId());
-			    	}
-			    	model.addObject("currlcaId",lh.getId());
-			    }
-				*/
 			    model.addObject("lcaList", lcaList);
 		}
 		model.setViewName("/immigration/lcaDetailsTab");
@@ -2354,6 +2370,7 @@ public class ImmigrationRestController {
 		return model;
 	}
 	
+	@PreAuthorize("hasAnyRole('ROLE_ADD_LCA','ROLE_VIEW_LCA','ROLE_VIEW_EDIT_LCA','ROLE_VIEW_DELETE_LCA','ROLE_IMPORT_LCA','ROLE_EXPORT_LCA')")
 	@RequestMapping(value = { "/viewLCAList" })
 	public ModelAndView loadLCAList(HttpServletRequest request) {
 		
@@ -2532,6 +2549,7 @@ public class ImmigrationRestController {
 		return model;
 	}
 	
+	@PreAuthorize("hasRole('ROLE_EXPORT_LCA')")
 	@RequestMapping(value = { "/getLcaListExport" })
 	public void getLCAListExport(@RequestParam(value = "exportType", required = false) String exportType,
 			HttpServletRequest request, HttpServletResponse response) throws Exception {

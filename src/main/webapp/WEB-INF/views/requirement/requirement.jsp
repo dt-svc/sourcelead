@@ -351,6 +351,17 @@ $(document).ready(function () {
             </div>
           </div>
           </c:if>
+          
+          <div class="form-group">
+            <label class="col-md-3">Profile Percentage<span class="text-danger paddingLeft">*</span></label>
+            <div class="col-md-9">
+               <input type="text" class="form-control" id="profilePercentage" name="profilePercentage" onblur="validateProfilePercentage()"  value="${!empty requirement.profilePercentage  ? requirement.profilePercentage : SourceLeadWeb_orgLocations.profilePercentage}"  field-name="Profile Percentage" data-validation="required validate_Space validate_int" >
+            </div>
+                <div class="row mxrateerror" id="profilePercentageValidateId">
+            				  <input type="hidden" name="profilePercentageValidation" id="profilePercentageValidation">
+ 			    </div>
+          </div>
+          
                  <div class="form-group">
               <label class="col-md-3">Project</label>
               <div class="col-md-9 select-field">
@@ -1770,6 +1781,33 @@ $(document).ready(function () {
 <div id="divLocTd2" style="display: none; float: left;">
    <i class="fa fa-times" onclick="removeLocationRow(REPLACEROWID);"></i> 
 </div> 
+
+<script>
+function validateProfilePercentage(){
+	var profilePercentage = $('#profilePercentage').val();
+	
+	 if(profilePercentage > 100 || profilePercentage < 0){
+		 if(profilePercentage < 0){
+			    $('#profilePercentageValidateId').find('p.jquery_form_error_message').remove(); 
+				$('input#profilePercentageValidation').attr('class','error signin_fild');
+				$("input#profilePercentageValidation").after("<p class='jquery_form_error_message'>Profile percentage should not in negitive</p>");
+				$('input#profilePercentageValidation').attr('record-exist','yes');
+				$('input#profilePercentageValidation').attr('record-exist-errorMsg','Profile percentage should not in negitive'); 
+		 }else{
+			 $('#profilePercentageValidateId').find('p.jquery_form_error_message').remove(); 
+				$('input#profilePercentageValidation').attr('class','error signin_fild');
+				$("input#profilePercentageValidation").after("<p class='jquery_form_error_message'>Profile percentage should not more than 100</p>");
+				$('input#profilePercentageValidation').attr('record-exist','yes');
+				$('input#profilePercentageValidation').attr('record-exist-errorMsg','Profile percentage should not more than 100'); 
+		 }
+	 }else{
+		 
+	     $('#profilePercentageValidateId').find('p.jquery_form_error_message').remove(); 
+    	 $('input#profilePercentageValidation').removeAttr( "class record-exist record-exist-errormsg");
+		 $('#profilePercentageValidateId').find('p.jquery_form_error_message').remove();
+	 }
+}
+</script>
 
 <script>
 	var orgLocationDateFormat = "${orgLocationDateFormat}";

@@ -100,7 +100,7 @@ height: 100%;
 	content: " "; display: table;
 }
 .main-header {
-background-size: 15%; min-height: 52px;
+background-size: 15%; min-height: 52px; box-shadow: 0px 1px 2px rgba(0,0,0,0.1);
 background-position: 30px; background-color: #368ee0; z-index: 9999; position: fixed; max-height: 55px; width: 100%; 
 }
 .main-header span.logo {
@@ -159,6 +159,7 @@ float: left; padding: 0 15px; /*transition: all 0.5s ease-in-out 0s;*/ line-heig
 .main-header .navbar .custom-navbar .dropdown .btn {
  padding: 5.8px 12px 5.8px 0;
 }
+
 .main-header .navbar .custom-navbar ul.custom-navbar-inner {
  margin-bottom: 0; margin-left: 0;
 }
@@ -429,6 +430,7 @@ position: relative; display: block; padding: 0 15px !important; transition: all 
 background-color: #375d81; left: 0; min-height: 100%; max-height: 100%; position: fixed; top: 55px; width: 190px; z-index: 810;
 padding-top: 0px; overflow-x:hidden; overflow-y:auto; /*transition: 0.3s ease-in-out; -moz-transition: 0.3s ease-in-out;
 -webkit-transition: 0.3s ease-in-out; padding-bottom: 125px; */
+	display: none;
 }
 /* hide time sheet */
 .timesheet-menu, .backoffice-menu, .associates-menu, .billing-menu {
@@ -641,12 +643,12 @@ line-height: 35px; border-bottom: 1px solid #325475; transition: all 0.5s ease-i
 /*sidebar menu styles ends */
 /* content Area Styels */
 .content-wraper {
-background: #f2f2f2; margin-left: 190px; padding: 0 20px 30px; padding-top: 53px;
+background: #f2f2f2; margin-left: 60px; padding: 0 20px 30px; padding-top: 53px;
 -moz-transition: all ease-in-out 0s; -ms-transition: all ease-in-out 0s; -webkit-transition: all ease-in-out 0s;
 transition: all ease-in-out 0s;
 }
 .content-wraper.content-wraper-active {
-	margin-left: 50px;
+	margin-left: 192px;
 }
 .content-area {
 background: #f2f2f2; border-radius: 5px; min-height: 250px;
@@ -804,11 +806,11 @@ position: absolute; top: 40%; width: 100%;
 
 /* Footer Styles */
 .footer-area {
-background: #fff; clear: both; padding: 10px 215px 10px 25px; margin-left: 190px; transition: all ease-in-out 0.2s;
-bottom: 0; height: 45px; right: 0; position: relative; width: 100%; line-height: 25px;
+background: #fff; clear: both; padding: 10px 25px; margin-left: 55px; transition: all ease-in-out 0.2s;
+bottom: 0; height: 45px; right: 0; position: relative; width: 100%; line-height: 25px; text-align: center;
 }
 .footer-area.footer-area-active {
- margin-left: 50px;
+ margin-left: 192px;
 }
 .copyright {
 	display: block; text-align: center;
@@ -1316,6 +1318,7 @@ border-left: 1px solid #ccc !important; height: 34px; position: absolute; right:
 .input-groupAddon .fa {
 position: relative; right: 5px; top: 2px;
 }
+
 /* For Addon styles */
 .div-checkbox {
 border: 1px solid #ddd; margin-bottom: 20px !important; border-radius: 5px; background: #ededed;
@@ -3672,6 +3675,7 @@ position: relative !important; top: 0 !important; z-index: 999;
 }
 .filter-position {
 position: relative; top:-30px;
+
 }
 .zindex {
 position: relative; z-index: 99;
@@ -4263,7 +4267,7 @@ border: 1px solid #ededed; border-top:none; padding: 10px;
     background-color:#fff !important; color:#EF6C00; border-top:3px solid #FFB74D;
 }
 .eventCalendr_content {
-    overflow-y: auto; min-height: 150px; height: 201px;
+    overflow-y: auto; min-height: 234px; height: 234px;
 }
 .feedbackInner {
 height:200px; overflow: auto;
@@ -6476,6 +6480,7 @@ box-shadow: 0px 0px 3px #999;  padding: 10px 15px; position: relative; box-sizin
 }
 .show-multiple .multiple-div {
     border: 1px solid #ddd; padding:5px 10px; min-width: 125px;
+
     position: fixed; z-index: 9; top: 50%; right: 20%; background: #eeeeee; box-shadow: 1px 1px 3px #505050;
     display: none; transition: all 0.3s ease-in-out;
 }
@@ -8899,7 +8904,7 @@ background-color: transparent !important; width:96%; margin-left: 15px;
 /* Dashboard navar bar ui */
 .dashboardWidget-new {
     background: #fff; box-shadow: 0 1px 1px rgba(0,0,0,0.1); border-radius: 5px;
-    min-height: 150px; padding: 15px 15px 10px 15px;    
+    min-height: 155px; padding: 15px 15px 10px 15px;    
 }
 .dashboardWidget-new .nav>li>a {
     padding: 5px 15px; color: #909090;
@@ -9149,7 +9154,13 @@ margin: 5px 0; font-size: 16px; color: #606060;
     bottom:-5px !important;
 }
 /*Comparision report table styels */
-
+.customInvoiceTemplate {
+	position: absolute; top: 0; left: 0; right: 0; z-index: 9999; width: 100%; background-color: #f1f1f1;
+	padding: 15px; max-height: 100%;
+}
+.customtemlate-inner {
+	height: 525px; padding: 15px 15px 0 15px; overflow-y: scroll;
+}
 @media (max-width: 320px) {
 .uasrch-selectpicker {
     width: 48% !important; float: left !important;
@@ -9368,6 +9379,7 @@ margin-top:0px; width: 79%;
 .side-bar .user-panel.user-panel-active .image img {
         width: auto;
 } 
+
 /* open class */
 .side-bar.side-bar-active .subMenu{
     display: block;
@@ -9578,6 +9590,8 @@ transition: all ease-in-out 0.5s; display: none;
 display: block;
 }
 
+
+
 .browseProgress {
         position: absolute; width: 100%; height: 100%; z-index: 100;
         border-radius: 3px; display:none;
@@ -9592,4 +9606,3 @@ display: block;
  .progressCount {
  font-size: 12px; font-weight: 500; color: #368ee0; display: block; padding: 2px 0px 0px 0px;
  }
- 

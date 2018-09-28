@@ -378,6 +378,7 @@ public class ClientServiceImpl implements ClientService {
 			clientOrgLocations.setIsCompanyOnboarded(Constants.NO);
 			clientOrgLocations.setCoolingOffPeriod("3 Months");
 			clientOrgLocations.setRegistrationStatus("Registered");
+			clientOrgLocations.setProfilePercentage(Constants.PROFILE_PERCENTAGE);
 			orgLocationsList.add(clientOrgLocations);
 			org.setOrgLocationsList(orgLocationsList);
 			Org savedClient = orgService.addOrganization(org);
@@ -1181,6 +1182,8 @@ public class ClientServiceImpl implements ClientService {
 				orgLocations = orgRelation.getResponderLocationId();
 				if (StringUtils.isNotBlank(clientDTO.getLevel())) {
 					orgRelation.setInitiatorLevel(clientDTO.getLevel());
+				}if(StringUtils.isNotBlank(clientDTO.getGenerateInvoice())){
+				orgRelation.setGenerateInvoice(clientDTO.getGenerateInvoice());
 				}
 			}
 			if (orgRelation.getResponderLocationId().getId().longValue() == loginLocationId.longValue()) {
@@ -1332,6 +1335,9 @@ public class ClientServiceImpl implements ClientService {
 				orgLocations = orgRelation.getResponderLocationId();
 				if (StringUtils.isNotBlank(clientDTO.getLevel())) {
 					orgRelation.setInitiatorLevel(clientDTO.getLevel());
+				}
+				if(StringUtils.isNotBlank(clientDTO.getGenerateBill())){
+				orgRelation.setGenerateBill(clientDTO.getGenerateBill());
 				}
 			}
 			if (orgRelation.getResponderLocationId().getId().longValue() == loginOrgId.longValue()) {
@@ -1606,6 +1612,7 @@ public class ClientServiceImpl implements ClientService {
 					}
 					
 					Candidate savedCandidate = candidateService.addCandidate(candidate);
+					candidateService.getCandidatePercentage(savedCandidate, orgLocation);
 					candidateService.saveOrUpdateCandidateElkDocument(savedCandidate);
 				}
 				

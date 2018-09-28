@@ -131,7 +131,7 @@
 				<div class="row">
 				<label class="col-md-4">Designation</label>
               	<div class="col-md-8">
-              		<input type="text" placeholder="Designation" id ="designation" name="designation" data-validation="required validate_Space validate_length length2-100" data-validation-optional="true" field-name="Designation"  class="form-control" />
+              		<input type="text" placeholder="Designation" id ="designation" name="designation" data-validation="required validate_AlphaNumber validate_Space validate_length length2-100" data-validation-optional="true" field-name="Designation"  class="form-control" />
 				</div>
 				</div>
 			</div>				          
@@ -336,6 +336,50 @@ function removeImmiEmpDocFile(){
 	else {
         $('#employersfilled').hide()
 	}
-  
- 
+</script>
+<script type="text/javascript">
+function monthIfYearRequired(){
+	var startMonth= document.getElementById("startMonth").value;
+	if(startMonth != null && startMonth != "" && startMonth != "undefined"){
+		
+		 $('#startYear').removeAttr('data-validation-optional');
+	    $('#startYear').attr("data-validation","required validate_Space validate_extno validate_length length4-4"); 
+	   
+	}else{
+		 $('#startYear').removeAttr('data-validation');
+		 $('#startYear').attr("data-validation-optional","true"); 
+	}
+	
+	var endMonth= document.getElementById("endMonth").value;
+	
+	if(endMonth != null && endMonth != "" && endMonth != "undefined"){
+		
+			 $('#endYear').removeAttr('data-validation-optional');
+		     $('#endYear').attr("data-validation","required validate_Space validate_extno validate_length length4-4"); 
+		}else{
+			 $('#endYear').removeAttr('data-validation');
+			 $('#endYear').attr("data-validation-optional","true"); 
+		}
+	
+	var startYear= document.getElementById("startYear").value;
+	var SMdata = startMonth.split('&');
+	var sMonthNumber = SMdata[0];
+	
+	var endYear= document.getElementById("endYear").value;
+	var EMdata = endMonth.split('&');
+	var eMonthNumber = EMdata[0];
+	if((startYear != " " && startYear != null && startYear != "undefined" ) && (endYear != " " && endYear != null && endYear != "undefined")){
+		
+	if(( parseInt(sMonthNumber) > parseInt(eMonthNumber)) && (startYear == endYear) ){
+		 $("#err").empty();
+		 $("#startYear").parent().after("<p class='jquery_form_error_message' id='err'><span>Start Month Should be less than end Month</span></p>");
+		}
+	if(parseInt(sMonthNumber) < parseInt(eMonthNumber))
+		 {
+		 $('#startYearDiv').parent().find('p.jquery_form_error_message').remove(); 
+		 }
+	
+	}
+
+}
 </script>

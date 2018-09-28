@@ -52,8 +52,36 @@
 			  </tr>
 			  <c:forEach var="canDocList" items="${immigrationCanDocList}" varStatus="rows">			  			  
 			<tr docid="${canDocList.id}" allowMultpleDocs= "${canDocList.allowMultiple}" docsHistoryList = "${fn:escapeXml(canDocList.docsHistoryList)}">
-				<td title="${canDocList.documentTypeName}"><div class="tbldata-dotdot-vsm">${canDocList.documentTypeName}</div></td>
-				<td title = "${canDocList.description}"><div class="tbldata-dotdot-me">${canDocList.description}</div></td>
+				  
+				<c:choose>
+				  <c:when test="${myImmigrationPage == 'Y'}">
+					<td title="${canDocList.documentTypeName}"><div class="tbldata-dotdot-vsm">${canDocList.documentTypeName}</div></td>
+					<td title = "${canDocList.description}"><div class="tbldata-dotdot-me">${canDocList.description}</div></td>
+				</c:when>
+				
+				<c:otherwise>
+				        <c:choose>
+						    <c:when test="${petitionerDocs == 'PetitionerCategory' || attorneyDocs == 'AttorneyCategory' || beneficiaryDocs =='Document Type'}">
+						       <td title="${canDocList.documentTypeName}"><div class="tbldata-dotdot-vsm">${canDocList.documentTypeName}</div></td>
+					            <td title = "${canDocList.description}"><div class="tbldata-dotdot-me">${canDocList.description}</div></td>
+						    </c:when>
+						    <c:otherwise>
+						        
+						    </c:otherwise>
+						</c:choose>
+				    </c:otherwise>
+				</c:choose>
+				
+				<%-- <c:if test = "${petitionerDocs == 'PetitionerCategory'}">      
+					<td title="${canDocList.documentTypeName}"><div class="tbldata-dotdot-vsm">${canDocList.documentTypeName}</div></td>
+					<td title = "${canDocList.description}"><div class="tbldata-dotdot-me">${canDocList.description}</div></td>
+				</c:if>
+				
+				<c:if test = "${attorneyDocs == 'AttorneyCategory'}">      
+					<td title="${canDocList.documentTypeName}"><div class="tbldata-dotdot-vsm">${canDocList.documentTypeName}</div></td>
+					<td title = "${canDocList.description}"><div class="tbldata-dotdot-me">${canDocList.description}</div></td>
+				</c:if> --%>
+				
 				<td title = "${canDocList.isRequired == 'Y' ? 'YES':'NO'}"><div class="tblminwidth-50">${canDocList.isRequired == 'Y' ? "YES":"NO"}</div></td>
 				<c:if test="${!empty canDocList.upldedFileName}">
 				<td>
@@ -271,7 +299,7 @@
 		</div>
 		
 		<div class="immiPopFoot">
-            <input value="Save" id="uploadDocSave_Button" class="" type="button" onclick="uploadRequestDoc();">
+            <input value="Save" id="uploadDocSave_Button" class="" type="button" onclick="immigration.uploadRequestDoc();">
             <input value="Cancel" class="popCan"  onclick="removeDocPopUp12();" type="button">
           </div>		
 	</div>	<!--  popup code end  -->

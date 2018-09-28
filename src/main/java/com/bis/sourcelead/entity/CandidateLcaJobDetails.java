@@ -47,7 +47,7 @@ public class CandidateLcaJobDetails {
 	@Column(name = "EMPLOYER_NAME")
 	private String employerName;
 	
-	@Column(name = "EMPLOYER_LOCATION")
+	@Column(name = "EMPLOYER_LOCATION", columnDefinition = "LONGTEXT default NULL")
 	private String employerLocation;
 	
 	@Column(name = "CURR_STATUS")

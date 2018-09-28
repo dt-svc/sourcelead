@@ -567,7 +567,7 @@ input.inline_field::-moz-placeholder { color: #333; }-->*/
     /*    Project Css    */
        
 .project_wrap {
-    background-color: #fff; padding: 0px 0px; box-shadow: 0px 0px 3px rgba(0,0,0,0.3); border-radius: 3px;
+    background-color: #fff; padding: 0px 0px; box-shadow: 0px 2px 2px rgba(0,0,0,0.15); border-radius: 3px;
     }
 .project_wrap .timesheet_head ul li {
     float:left; margin: 5px 0px 5px 5px;
@@ -832,7 +832,7 @@ input.inline_field::-moz-placeholder { color: #333; }-->*/
     padding:10px; margin:0px; float:right;
 }      
 ::-webkit-scrollbar {
-    width: 8px; height: 8px; border-radius:2px;
+    width: 10px; height: 10px; border-radius:2px;
 }
 ::-webkit-scrollbar-button {
     background: #ccc;
@@ -847,7 +847,7 @@ input.inline_field::-moz-placeholder { color: #333; }-->*/
     /*    Clients Css    */
        
 .clients_wrap {
-    background-color: #fff; padding: 0px 0px; box-shadow: 0px 0px 3px rgba(0,0,0,0.3); border-radius: 3px;
+    background-color: #fff; padding: 0px 0px; box-shadow: 0px 2px 2px rgba(0,0,0,0.15); border-radius: 3px;
     }
 .clients_wrap .timesheet_head ul li {
     float:left;
@@ -1311,7 +1311,7 @@ right:0px;
     /*    Vendors Css    */
        
 .vendor_wrap {
-    background-color: #fff; padding: 0px 0px; box-shadow: 0px 0px 3px rgba(0,0,0,0.3); border-radius: 3px;
+    background-color: #fff; padding: 0px 0px; box-shadow: 0px 2px 2px rgba(0,0,0,0.15); border-radius: 3px;
     }
 .vendor_wrap .timesheet_head ul li {
     float:left; cursor: pointer;
@@ -8235,7 +8235,7 @@ float: left; width: 33.3333%; background-color: #f9f9f9; padding: 5px 15px; marg
 .tagsWrap {}
 .tagsWrap .chosen-choices {
 	border:none !important; padding: 0px 0px !important; box-shadow: 0px 0px 0px rgba(0,0,0,0); background-image: none !important;
-	margin-bottom: 0px !important; min-height: 100px;
+	margin-bottom: 0px !important;
 }
 .tagsWrap .search-choice {
 	height: 28px; margin: 0px 6px 6px 0px !important; padding: 6px 25px 5px 7px !important;
@@ -8789,7 +8789,7 @@ max-width: 100% !important;
 	box-sizing: border-box; margin: 0px 0px;
 }
 .dataSeaNew .dataTables_filter input:focus, .dataSeaTop .dataTables_filter input:focus {
-	padding: 0px 36px 0px 10px !important;
+	padding: 0px 36px 0px 10px !important; border: 1px solid #74B4F0;
 
 }
 .dataSeaTop .dataTables_filter {
@@ -9107,7 +9107,15 @@ background: url("../images/sort2.png"); background-repeat: no-repeat; background
 	border: 1px solid #ededed; box-shadow: none; background-color: #fff;
 	font-style: normal !important; font-family:'Roboto', sans-serif !important; border-radius: 0; z-index: 100000000;
 }
-
+.browseProgress {
+	position: absolute; width: 100%; height: 100%; background:rgba(0,0,0,0.3); z-index: 100; border-radius: 3px; display:none;
+}
+.browseProgressInn {
+	width: 50%; position: relative; margin: 0px auto; background-color: #fff; padding: 8px 12px 14px 12px; border-radius: 2px; top: 17%;
+}
+.browseProgressInn .progress {
+	margin: 0px 0px; position: relative;
+}
 
 .mailAttaWrap {
     padding: 15px 15px; margin: 0px 0px;
@@ -9161,54 +9169,183 @@ background: url("../images/sort2.png"); background-repeat: no-repeat; background
 
 
 
-/* .proj_show span {
-  color: #2b7ecc;
-} */
-
-.userMailList {
-  padding: 0px 0px; margin: 0px 0px;
-}
-.userMailList li {
-  position: relative; list-style-type: none; padding: 6px 0px 6px 46px; height: 38px; cursor: pointer;
-  margin-bottom: 1px;
-}
-.userMailList li span {
-  position: absolute; left: 9px; width: 26px; height: 26px; background-color: #aeaeae; text-align: center;
-  display: block; border-radius: 50%;line-height: 25px; color: #fff; font-size: 15px; top:5px; text-transform: uppercase;
-}
-.userMailList li span.colorg {background-color: #ff6363;}
-.userMailList li span.colory {background-color: #ab5cff;}
-.userMailList li span.colors, .userMailList li span.colorh {background-color: #69b2f6;}
-.userMailList li .glyphicon-trash {
-  position: absolute; left: 9px; width: 26px; height: 26px; background-color: #f85555; text-align: center;
-  display: block; border-radius: 50%;line-height: 25px; color: #fff !important; font-size: 12px; top:5px;
-  opacity: 0; visibility: hidden;
-}
-.userMailList li p {
-  display: block; width: 100%; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
-  padding: 3px 0px 0px 0px; margin: 0px;
-}
-.userMailList li:hover .glyphicon-trash {
-  opacity: 1; visibility: visible;
-}
-.userMailList li:hover span {
-  display: none;
-}
-.userMailList li:first-child:hover span {
-  display: block;
-}
-.userMailList li:hover {
-  background-color: #f1f1f1;
-}
-.userMailList li.Act {
-  background-color: #f1f1f1; border-right:5px solid #368ee0;
-}
-
-#sourceleadEmailFolder li.active, #dynamicEmailFolder li.active {
-  background-color: #f1f1f1; border-right: 5px solid #368ee0;
-}
-
-.mail-widget i { padding: 5px; cursor: pointer; font-size: 20px; color: #817c7c;}
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+aside {
+	width: 56px; overflow: hidden; overflow-y: hidden; position: fixed; left: 0px; top: 0px; min-height: 100%; max-height: 100%;
+	z-index: 1000; box-shadow: 0px 5px 5px rgba(0,0,0,0.2);
+}
+aside:hover {
+	overflow: hidden; overflow-y: auto; width: 200px; box-shadow: 0px 0px 0px rgba(0,0,0,0.2);
+}
+aside.asideAct {
+	width: 200px; box-shadow: 0px 0px 0px rgba(0,0,0,0);
+}
+.newMenu {
+	width: 190px; box-shadow: 0px 5px 5px rgba(0,0,0,0.2); padding: 55px 0px 0px 0px; background-color: #fff;
+	position: absolute; max-height: auto; min-height: 100%;
+}
+.newMenu ul {
+ 	margin: 0px 0px; padding: 0px 0px 30px 0px; color: #fff;
+}
+.newMenu ul li span {
+	width: 61px; text-align: center; display: inline-block; height: 50px; float: left;
+}
+.navIcons {
+	width: 34px !important; text-align: center; display: inline-block; height: 30px !important; float: left; margin: 9px 11px 4px 7px;
+	background: url("../images/dashboard.svg"); background-repeat: no-repeat; background-position: -2px -3px;
+	background-size: 38px; -webkit-transition: 0.15s all; -moz-transition: 0.15s all; transition: 0.15s all;
+}
+.navIcons.proIcon { background: url("../images/profile.svg"); background-size: 38px; background-position: -2px -2px;}
+.navIcons.cliIcon { background: url("../images/clients.svg"); background-size: 38px; background-position: -2px -2px;}
+.navIcons.jobIcon { background: url("../images/jobs.svg"); background-size: 38px; background-position: -2px -2px;}
+.navIcons.venIcon { background: url("../images/vendors.svg"); background-size: 38px; background-position: -2px -2px;}
+.navIcons.canIcon { background: url("../images/candidates.svg"); background-size: 38px; background-position: -2px -2px;}
+.navIcons.assIcon { background: url("../images/associates.svg"); background-size: 38px; background-position: -2px -2px;}
+.navIcons.timIcon { background: url("../images/time.svg"); background-size: 38px; background-position: -2px -3px;}
+.navIcons.expIcon { background: url("../images/expenses.svg"); background-size: 38px; background-position: -2px -2px;}
+.navIcons.onoffIcon { background: url("../images/on-off.svg"); background-size: 38px; background-position: -2px -2px;}
+.navIcons.projIcon { background: url("../images/project.svg"); background-size: 38px; background-position: -2px -2px;}
+.navIcons.asstIcon { background: url("../images/asset.svg"); background-size: 36px; background-position: -2px -2px;}
+.navIcons.contIcon { background: url("../images/contract.svg"); background-size: 36px; background-position: -2px -2px;}
+.navIcons.finIcon { background: url("../images/finance.svg"); background-size: 38px; background-position: -2px -2px;}
+.navIcons.campIcon { background: url("../images/campaign.svg"); background-size: 38px; background-position: -2px -2px;}
+.navIcons.payIcon { background: url("../images/payroll.svg"); background-size: 38px; background-position: -2px -2px;}
+.navIcons.immIcon { background: url("../images/immi.svg"); background-size: 38px; background-position: -2px -2px;}
+.navIcons.leaveIcon { background: url("../images/leaves.svg"); background-size: 36px; background-position: -2px -2px;}
+.navIcons.orgIcon { background: url("../images/org.svg"); background-size: 38px; background-position: -2px -2px;}
+.navIcons.supIcon { background: url("../images/supp.svg"); background-size: 38px; background-position: -2px -2px;}
+.navIcons.resIcon { background: url("../images/resources.svg"); background-size: 38px; background-position: -2px -2px;}
+
+.navIcons.backofIcon { background: url("../images/backoff.svg"); background-size: 38px; background-position: -2px -2px;}
+.navIcons.invoIcon { background: url("../images/invoice.svg"); background-size: 38px; background-position: -2px -2px;}
+.navIcons.billIcon { background: url("../images/bill.svg"); background-size: 38px; background-position: -2px -2px;}
+.navIcons.blogIcon { background: url("../images/blog.svg"); background-size: 38px; background-position: -2px -2px;}
+.navIcons.usermanuIcon { background: url("../images/usermanu.svg"); background-size: 38px; background-position: -2px -2px;}
+
+.newMenu ul li {
+	border-bottom: 1px solid #f1f1f1; position: relative; font-size: 14px; font-weight: 500;
+	border-left: 4px solid #f1f1f1;
+}
+.newMenu ul li a:hover {
+	color: #0084bf;
+}
+.newMenu ul li:hover .navIcons, nav ul li.navActive .navIcons {
+	background-position: -2px -33px; 
+	}
+
+.newMenu ul li.navActive { color: #0084bf; border-left: 4px solid #0084bf;}
+.newMenu ul li.navActive a {color: #0084bf;}
+.newMenu ul li a:hover {
+	text-decoration: none;
+}
+.newMenu ul li a {
+	color: #4C586B; display: table; width: 100%; height: 44px; line-height: 44px;
+}
+.newMenu b {
+	font-weight: 500;
+}
+.newMenu ul ul {
+	margin: 0px 0px; padding: 0px 0px; background-color: #f1f1f1;
+}
+.newMenu ul ul li {
+	border-left: 0px solid #f1f1f1;
+}
+.newMenu ul ul li a {
+	height: 35px; line-height: 35px; font-weight: 400; padding: 0px 0px 0px 0px;
+}
+.newMenu ul ul li a i {
+	display: inline-block; width: 48px; text-align: center; font-size: 12px;
+}
+.newMenu .fa-caret-up, .newMenu .fa-caret-down {
+	position: absolute; right: 8px; top: 14px;
+}
+
+.main-header {box-shadow: 0px 1px 2px rgba(0,0,0,0.1);}
+
+
+
+.dashNewWrap {
+	padding: 0px 0px; box-shadow: 0px 3px 4px rgba(0,0,0,0.06); border-radius: 3px; min-height: 145px;
+	background-color: #fff;
+}
+.dashNewWrapHead {
+	border-bottom: 1px solid #ededed; padding: 0px 10px; height: 44px;
+}
+.dashNewWrapHead a, .dashNewWrapHead h4 {
+	display: block; font-size: 16px; font-weight: 500; padding: 0px 0px 0px 5px; line-height: 44px; margin: 0px;
+}
+.dashNewWrapHead .nav > li > a {
+	font-size: 14px; line-height: 42px; padding: 0px 16px; line-height: 44px; border:none; color:#787878;
+}
+.dashNewWrapHead .nav > li > a:hover {
+	background-color: #fff; box-shadow: inset 0 -3px 0px 0px #ccc; border:none;
+}
+.dashNewWrapHead .nav-tabs>li.active>a, .dashNewWrapHead .nav-tabs>li.active>a:focus, .dashNewWrapHead .nav-tabs>li.active>a:hover {
+	 box-shadow: inset 0 -3px 0px 0px #0084bf; color: #454545; border:none;
+}
+.dashNewCount {
+	position: relative; text-align: left; padding: 25px;
+}
+#subDiv {
+	padding: 25px 15px;
+}
+.dashNewCount p {
+	padding: 0px 0px; margin: 0px 0px; font-size: 13px; font-weight: 400; color:#787878; overflow: hidden;
+	white-space: nowrap; text-overflow: ellipsis;
+}
+.NewCount {
+	font-size: 20px !important; font-weight: 500 !important; padding: 8px 0px 0px 2px !important; color: #666 !important;
+	}
+.suColor { color: #d58a41 !important;}	
+.apColor { color: #52b334 !important;}	
+.reColor { color: #d54a4a !important;}	
+.caColor { color: #c10000 !important;}	
+.deColor { color: #368ee0 !important;}	
+.moreLink {
+	float: left; font-size: 13px !important; color: #666; font-weight: 400 !important; padding: 0px 0px 0px 12px !important; 
+	text-decoration: underline;
+}
+.moreLink:hover {
+	color: #368ee0;
+}
+
+.dashNewCount a {
+	color: inherit !important;
+}
+.dashNewCount a:hover {
+	text-decoration: underline;
+}	
+.balLeaves {
+	font-size: 13px; padding: 14px 0px 0px 20px; font-weight: 500; color: #666;
+}
+.balLeaves span {
+	display: inline-block; margin: 0px 0px 0px 10px; font-size: 13px; padding: .2em .6em .2em;
+}	
+.newDashPad {padding: 0px 15px 15px 15px;}
+.newDashPadSearch {padding: 45px 15px 15px 15px;}	
+
+.dashNewWrap .dataSeaNew .dataTables_filter {
+	margin-top: 0px !important; right: -15px !important; top: -38px !important;
+}
+.dashNewWrap .remove_search {
+	right: 0px; top: 4px;
+}
+.mt7 {
+	margin-top: 7px;
+}
 

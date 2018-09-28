@@ -75,80 +75,36 @@ $(document).ready(function(){
         <div class="col-lg-12">
           <div class="pull-right">
             <input value="Run" class="btn btn-success btnSuccess" type="button" onclick="runPayrollregisterReport();">
-            <input value="Reset" class="btn btn-defualt ml10" type="button">
+            <input value="Reset" class="btn btn-defualt ml10" type="button" onclick="resetForm();">
           </div>
         </div>
       </div>      
 	</div>
     </form:form>
      <div class="clearfix"></div>
-    		
-    		
-    		
-    		
-  <div class="timesheet_out" id="payrollRegister" style="display: none;">
+    	<div id="popUp"></div>	
+  	<div class="timesheet_out" id="payrollRegister" style="display: none;">
       <div class="clearfix">
-        
         <div class="positionRelative reportHead clearfix"> <span class="pull-left refreIcon"><a href="javascript:void(0)" class="refeIcon" title="Refresh" onclick="resetFilter();"></a></span>
-  <ul class="pull-right list-unstyled list-inline">
-    <li><a class="newAdBtn mr5 hidden" href="/app/userCreation">+  Associate</a></li>
-    <li><a href="javascript:void(0)" class="filtIcon" title="Filters" onclick="openPop();"></a></li>
-    <li><a href="javascript:void(0)" class="overIcon" title="Actions" onclick="newActions();"></a>
-      <div class="newActPop" style="">
-       <span><a href="javascript:void(0)" onclick="exportToPdf();" title="PDF">Export PDF</a> <a href="javascript:void(0)" onclick="exportUserData();" title="Excel">Export Excel</a> </span> </div>
-    </li>
-    <li class="">
-      <input class="repSearchBar" placeholder="Search" id="dynamicUserDataTableSearch" type="text">
-      <span class="repSearchIcon" onclick="getDynamciUserList();"></span></li>
-  </ul>
-</div>
-        <div class="require_wrap_table tableFirstSecond clearfix">
-          <table>
-            <thead>
-              <tr>
-                <th>Employee ID</th>
-                <th>Employee Name</th>
-                <th>Department</th>
-                <th>Current Hours</th>
-                <th>Gross Pay</th>
-                <th>Taxes</th>
-                <th>YTD Taxes</th>
-                <th>Deductions</th>
-                <th>YTD Deductions</th>
-                <th>Net</th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr>
-                <td><div class="tblminwidth-75">MIS00414</div></td>
-                <td><div class="tbldata-dotdot-vsm">Karan Kumar Sahoo</div></td>
-                <td><div class="tbldata-dotdot-vsm">Depatment</div></td>
-                <td><div class="tblminwidth-75">22.00 hrs</div></td>
-                <td><div class="tblminwidth-50">45,0000.00</div></td>
-                <td><div class="tbldata-dotdot">230000</div></td>
-                <td><div class="tbldata-dotdot-100">230000</div></td>
-                <td><div class="tblminwidth-50">230000</div></td>
-                <td><div class="tblminwidth-50">230000</div></td>
-                <td><div class="tblminwidth-50">230000</div></td>
-              </tr>
-            </tbody>
-          </table>
+  			<ul class="pull-right list-unstyled list-inline">
+<!-- 			    <li><a class="newAdBtn mr5 hidden" href="/app/userCreation">+  Associate</a></li> -->
+<!-- 			    <li><a href="javascript:void(0)" class="filtIcon" title="Filters" onclick="openPop();"></a></li> -->
+<!-- 			    <li><a href="javascript:void(0)" class="overIcon" title="Actions" onclick="newActions();"></a> -->
+				<li>
+      				<div class="newActPop" style="">
+       					<span><a href="javascript:void(0)" onclick="exportToPdf();" title="PDF">Export PDF</a> <a href="javascript:void(0)" onclick="exportUserData();" title="Excel">Export Excel</a> </span> </div>
+   				</li>
+			    <li class="">
+			      <input class="repSearchBar" placeholder="Search" id="payrollRegisterSearch" type="text">
+			      <span class="repSearchIcon" onclick="runPayrollregisterReport();"></span>
+			    </li>
+  			</ul>
+		</div>
+        <div class="require_wrap_table datatable_filter">
+        	<div id="payrollRegisterTableDiv"></div>
         </div>
-        <nav>
-          <ul id="paging" class="pagination">
-            <li><a href="#">Previous</a></li>
-            <li><a href="#">2</a></li>
-            <li><a href="#">3</a></li>
-            <li><a href="#">4</a></li>
-            <li><a href="#">5</a></li>
-            <li class="disabled"><a href="#">6</a></li>
-            <li data-page="last"><a href="#">Next</a></li>
-          </ul>
-          <div class="clearfix"></div>
-        </nav>
       </div>
     </div>
-    		
      		
       <!-- Content Area Ends--> 
     </div>
@@ -202,41 +158,234 @@ $(document).ready(function(){
 
 	});
 </script>
-
+<script>
+function resetForm(){
+	
+}
+</script>
 <script type="text/javascript">
 function runPayrollregisterReport(){
-	if ($('#payrollregister_form').validate(false, validationSettings)) {
-		$("#payrollRegister").toggle();
-		var formData = getFormData('payrollregister_form');
+	var formData = getFormData('payrollregister_form');
+	var searchValue = $("#payrollRegisterSearch").val();
+	var payGroup = $('#payGroup').val();
+	var department = $('#payrollDepartment').val();
+	var payRollType = $('#payRollType').val();
+	var freqStartDate = $('#freqStartDate').val();
+	var freqEndDate = $('#freqEndDate').val();
+	if(payGroup != null && payGroup != '' && payGroup != 'undefined' && freqStartDate != null && freqStartDate != '' && freqStartDate != 'undefined' && freqEndDate != null && freqEndDate != '' && freqEndDate != 'undefined'){
 		$("#payrollReportLoading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
-		var payGroup = $('#payGroup').val();
-		var department = $('#payrollDepartment').val();
-		var payRollType = $('#payRollType').val();
-		var freqStartDate = $('#freqStartDate').val();
-		var freqEndDate = $('#freqEndDate').val();
-		$.ajax({
-			type : "POST",
-			data: formData,
-		    processData: false, 
-	 		contentType: false,
-			url : sourceleadUrl+ "/runPayrollregister?${_csrf.parameterName}=${_csrf.token}&payGroup="+payGroup+"&department="+department+"&payRollType="+payRollType+"&freqStartDate="+freqStartDate+"&freqEndDate="+freqEndDate,
-			success : function(result) {
-				alert("lkjkj")
-				/* if (result && result.response === "INVALID_DATA") {
-				    showError(result.responseMessage);
-				} else if (result.response === "AWKWARD") {
-				    location.href = "/errorPage";
-				} else if (result.response === "SUCCESS") {
-					location.replace(sourceleadUrl+ "/leaveManagementReports");
-				} else if (result.indexOf('Sign In') !== -1) {
-					location.replace(sourceleadUrl);
-				} else {
-				    showError("Operation failed, please try again");
-				} */
-			}
-		
-		});
+		var url = sourceleadUrl+ "/runPayrollregister?${_csrf.parameterName}=${_csrf.token}&payGroup="+payGroup+"&department="+department+"&payRollType="+payRollType+"&freqStartDate="+freqStartDate+"&freqEndDate="+freqEndDate+"&searchValue="+searchValue;
+		$("#payrollRegister").show();
+		preparePayRollRegisterList(url);
+	}else{
+		var result = "";
+		result = result +"	<div class='project_inn_mask'></div>";
+		result = result +"	   <div id='remove_user_pop' class='remove_user_pop remove_user_pop_a'>";
+		result = result +"		<p>Please select PayGroup and PayPeriod</p>";
+		result = result +"		<div>&nbsp;&nbsp;&nbsp;</div>";
+		result = result +"		<b href='javascript:void(0)'><input type='button' value='Ok' onclick='removePopUp();'></b>";
+		result = result +"	</div>";
+		$("#popUp").append(result);
+		$("#remove_user_pop").slideDown(200);
+		$(".project_inn_mask").fadeIn(200);
 	}
+}
+function removePopUp(){
+	$("#popUp").empty();
+	$(".project_inn_mask").fadeOut(200);
+}
+</script>
+
+<script type="text/javascript">
+function preparePayRollRegisterList(url){
+	 $("#payrollReportLoading").removeAttr("style");
+	 $("#payrollRegisterTableDiv").empty();
+	 var result = "";
+		result = result +" <div class='remove_search'>";
+		result = result +"</div>";
+		result = result + '<table id="payrollRegisterTable" class="display" cellspacing="0" width="100%" >';
+		result = result + '<thead>';
+		result = result + '<tr>';
+		result = result + '<th>Employee ID</th>';
+        result = result + '<th>Employee Name</th>';
+        result = result + '<th>Department</th>';
+        result = result + '<th>Regular Hours</th>';
+        result = result + '<th>Gross Pay</th>';
+        result = result + '<th>Taxes</th>';
+        result = result + '<th>YTD Taxes</th>';
+        result = result + '<th>Deductions</th>';
+        result = result + '<th>Net Pay</th>';
+        result = result + '<th>YTD Net PAy</th>';
+		result = result + '</tr>';
+		result = result + '</thead>	';
+        result = result +"</table>";
+     $("#payrollRegisterTableDiv").append(result);
+     payrollRegisterPagination(url); 
+}
+
+function payrollRegisterPagination(url){
+	var colIndex = 0;
+    $('#payrollRegisterTable').DataTable( { 
+    	"processing": true,
+        "serverSide": true,
+        "searching": false,
+        "ajax": $.fn.dataTable.pipeline( {
+            url: url,
+            method: 'POST',
+            pages: 10
+        }),
+        "columns": [
+            { "data": "empId" },
+            { "data": "empName"},
+            { "data": "department"},
+            { "data": "regularHours" },
+            { "data": "grossPay" },
+            { "data": "taxes" },
+            { "data": "ytdTaxes"},
+            { "data": "deductions" },
+            { "data": "netPay" },
+            { "data": "ytdNetPay" },
+        ],
+        "columnDefs": [ {
+	    	  	"targets": colIndex++,
+	    	  	"data": "empId",
+	    	  	"render": function(data, type, opt, meta) {
+	    	  		 var result = "";
+		    	  		if(opt.empId !=null && opt.empId != '' && opt.empId !='undefined'){
+		    	  			result = result + '     <div class="tblminwidth-75" title="'+opt.empId+'" >'+opt.empId+'</div>';
+		        		}else{
+		        			result = result + '     <div class="tblminwidth-75">---</div>';
+		        		}
+		              return result; 
+	    	  	}
+	      },{
+	    	  "targets": colIndex++,
+              "data": "empName",
+              "render": function ( data, type, opt, meta ) {
+            	  var result = "";
+            	  if(opt.empName !=null && opt.empName != '' && opt.empName !='undefined'){
+	    	  			result = result + '     <div class="tbldata-dotdot-vsm" title="'+opt.empName+'" >'+opt.empName+'</div>';
+	        		}else{
+	        			result = result + '     <div class="tbldata-dotdot-vsm" title="" >---</div>';
+	        		}
+            	  return result; 
+              }
+	          },{
+            "targets": colIndex++,
+            "data": "department",
+            "render": function ( data, type, opt, meta ) {
+            	 var result = "";
+            	 if(opt.departmentName !=null && opt.departmentName != '' && opt.departmentName !='undefined'){
+	    	  			result = result + '     <div class="tbldata-dotdot-vsm" title="'+opt.departmentName+'" >'+opt.departmentName+'</div>';
+	        		}else{
+	        			result = result + '     <div class="tbldata-dotdot-vsm" title="" >---</div>';
+	        		}
+            	return result; 
+            }
+          }, {
+              "targets": colIndex++,
+              "data": "regularHours",
+              "render": function ( data, type, opt, meta ) {
+            	   var result = "";
+            	   if(opt.regularHours !=null && opt.regularHours != '' && opt.regularHours !='undefined'){
+	    	  			result = result + '     <div class="tbldata-dotdot-vsm" title="'+opt.regularHours+'" >'+opt.regularHours+'</div>';
+	        		}else{
+	        			result = result + '     <div class="tbldata-dotdot-vsm" title="" >---</div>';
+	        		}
+            	    return result; 
+              }
+            },{
+	    	  	"targets": colIndex++,
+	    	  	"data": "grossPay",
+	    	  	"render": function(data, type, opt, meta) {
+	    	  		var result = "";
+	    	  		if(opt.grossPay !=null && opt.grossPay != '' && opt.grossPay !='undefined'){
+	    	  			result = result + '     <div class="tbldata-dotdot-vsm" title="'+opt.grossPay+'" >'+opt.grossPay+'</div>';
+	        		}else{
+	        			result = result + '     <div class="tbldata-dotdot-vsm" title="" >---</div>';
+	        		}
+  	                return result; 
+	    	  	}
+	    	  },{
+	    	  	"targets": colIndex++,
+	    	  	"data": "taxes",
+	    	  	"render": function(data, type, opt, meta) {
+	    	  		var result = "";
+	    	  		if(opt.taxes !=null && opt.taxes != '' && opt.taxes !='undefined'){
+	    	  			result = result + '     <div class="tbldata-dotdot-vsm" title="'+opt.taxes+'" >'+opt.taxes+'</div>';
+	        		}else{
+	        			result = result + '     <div class="tbldata-dotdot-vsm" title="" >---</div>';
+	        		}
+	    	  		return result; 
+	    	  	}
+	    	  }, {
+                  "targets": colIndex++,
+                  "data": "ytdTaxes",
+                  "render": function ( data, type, opt, meta ) {
+                	var result = "";
+  	    	  		if(opt.ytdTaxes !=null && opt.ytdTaxes != '' && opt.ytdTaxes !='undefined'){
+  	    	  			result = result + '     <div class="tbldata-dotdot-vsm" title="'+opt.ytdTaxes+'" >'+opt.ytdTaxes+'</div>';
+  	        		}else{
+  	        			result = result + '     <div class="tbldata-dotdot-vsm" title="" >---</div>';
+  	        		}
+  	    	  		return result; 
+                  }
+               }, {
+                    "targets": colIndex++,
+                    "data": "deductions",
+                    "render": function ( data, type, opt, meta ) {
+                  		var result = "";
+    	    	  		if(opt.deductions !=null && opt.deductions != '' && opt.deductions !='undefined'){
+    	    	  			result = result + '     <div class="tbldata-dotdot-vsm" title="'+opt.deductions+'" >'+opt.deductions+'</div>';
+    	        		}else{
+    	        			result = result + '     <div class="tbldata-dotdot-vsm" title="" >---</div>';
+    	        		}
+    	    	  		return result; 
+                    }
+                }, {
+                      "targets": colIndex++,
+                      "data": "netPay",
+                      "render": function ( data, type, opt, meta ) {
+                   		var result = "";
+      	    	  		if(opt.netPay !=null && opt.netPay != '' && opt.netPay !='undefined'){
+      	    	  			result = result + '     <div class="tbldata-dotdot-vsm" title="'+opt.netPay+'" >'+opt.netPay+'</div>';
+      	        		}else{
+      	        			result = result + '     <div class="tbldata-dotdot-vsm" title="" >---</div>';
+      	        		}
+      	    	  		return result; 
+                      }
+                }, {
+                    "targets": colIndex++,
+                    "data": "ytdNetPay",
+                    "render": function ( data, type, opt, meta ) {
+                 		var result = "";
+    	    	  		if(opt.ytdNet !=null && opt.ytdNet != '' && opt.ytdNet !='undefined'){
+    	    	  			result = result + '     <div class="tbldata-dotdot-vsm" title="'+opt.ytdNet+'" >'+opt.ytdNet+'</div>';
+    	        		}else{
+    	        			result = result + '     <div class="tbldata-dotdot-vsm" title="" >---</div>';
+    	        		}
+    	    	  		return result; 
+                    }
+                }],
+                "scrollCollapse": false,
+    	    	"lengthMenu": [[10, 15, 20], [10, 15, 20]],
+//     	    	"aaSorting": [[1,'desc']],
+    	    	"bLengthChange": true,
+    	    	"bDestroy": true,
+    	    	"ordering": true,
+    	    	"oLanguage": {
+    	     		"sSearch": "",
+    	     		 "sZeroRecords": "", "sEmptyTable": "", 
+    	     		 "sProcessing": "<img src='/resources/images/loading.gif' style='width: 75px; height: 75px;'/>"
+    	     }
+                });
+       $("#payrollRegisterTable").wrap("<div class='overflow_Auto width100percnt'></div>")
+//        $("input[type=search]").hide();
+//        $("#requestedEmployeesTableSearch").keyup(function(e) {
+//        	   if(e.which === 13) {
+//        		getRequestedEmployeesList();
+//        	   }
+//        	});
 }
 </script>
 

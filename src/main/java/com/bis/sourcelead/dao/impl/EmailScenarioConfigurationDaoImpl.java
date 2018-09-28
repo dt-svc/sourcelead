@@ -277,4 +277,34 @@ public class EmailScenarioConfigurationDaoImpl implements EmailScenarioConfigura
 		return "success";
 	}
 	
+	@Override
+	@Transactional(rollbackFor = { Exception.class })
+	public EmailScenarioConfiguration validateParserByEmail(String parserEmailId, String emailUUID) { 
+		
+		Session session =  this.sessionFactory.getCurrentSession();
+		String query = "from EmailScenarioConfiguration esc where esc.emailId = :parserEmailId and esc.email_UUID = :emailUUID";
+		List<EmailScenarioConfiguration> escList =  session.createQuery(query) .setString("parserEmailId", parserEmailId).setString("emailUUID", emailUUID).list();
+		EmailScenarioConfiguration emailScenarioConfiguration = null;
+		if(escList != null && !escList.isEmpty())
+		{
+			emailScenarioConfiguration = (EmailScenarioConfiguration) escList.iterator().next();
+		}
+		return emailScenarioConfiguration;
+		
+		
+	  }
+
+	@Override
+	@Transactional(rollbackFor = { Exception.class })
+	public Boolean validateParser(String parserEmailId) { 
+		Session  session = this.sessionFactory.getCurrentSession();
+		boolean flag=false;
+		String query = " from EmailScenarioConfiguration esc where esc.emailId = :parserEmailId";
+		List<EmailScenarioConfiguration> parserEmailList = session.createQuery(query).setString("parserEmailId", parserEmailId).list();
+		if(parserEmailList != null && parserEmailList.size()>0){
+			flag =true;
+		}
+		return flag;
+		}	
+	
 }

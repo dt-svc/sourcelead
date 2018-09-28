@@ -46,11 +46,13 @@ import com.bis.sourcelead.payroll.dto.MyPayrollSummaryDTO;
 import com.bis.sourcelead.payroll.dto.PayItemDTO;
 import com.bis.sourcelead.payroll.dto.PayPeriodDTO;
 import com.bis.sourcelead.payroll.dto.PayrollApproverDTO;
+import com.bis.sourcelead.payroll.dto.PayrollComparisonDTO;
 import com.bis.sourcelead.payroll.dto.PayrollConstant;
 import com.bis.sourcelead.payroll.dto.PayrollDeductionDTO;
 import com.bis.sourcelead.payroll.dto.PayrollReportDTO;
 import com.bis.sourcelead.payroll.dto.PaysheetFrequencyDTO;
 import com.bis.sourcelead.payroll.dto.USPayrollDTO;
+import com.bis.sourcelead.payroll.dto.YTDPayrollDTO;
 import com.bis.sourcelead.payroll.entity.ConfigurePayrollApprover;
 import com.bis.sourcelead.payroll.entity.DeductionHistory;
 import com.bis.sourcelead.payroll.entity.EmployeePayroll;
@@ -549,26 +551,56 @@ public class PaysheetFrequencyServiceImpl implements PaysheetFrequencyService{
 	}
 
 	@Override
-	public List<USPayrollDTO> getPayrollRegisterReports(PayrollReportDTO payPeriodDTO)
+	public PaysheetFrequency getPaySheetFrequencyByGroupIdAndFrequencyStartEnddate(String date, OrgLocations orgLocation,Long groupId) {
+		return paysheetFrequencyDao.getPaySheetFrequencyByGroupIdAndFrequencyStartEnddate(date,orgLocation,groupId);
+	}
+	
+	@Override
+	public ResponseList<PayrollReportDTO> getPayrollRegisterReports(PayrollReportDTO payPeriodDTO,OrgLocations orgLocations)
 	{
-		List<PayrollReportDTO> dtoList = new ArrayList<>();
-		List<PaysheetFrequency> list = paysheetFrequencyDao.getPayrollRegisterReports(payPeriodDTO);
-		for(PaysheetFrequency freq : list) {
-			for(EmployeePayroll emp : freq.getEmployeepayroll()) {
-				PayrollReportDTO dto = new PayrollReportDTO();
-				dto.setEmpId(emp.getEmployee().getEmployeeId());
-				StringBuilder sb = new StringBuilder();
-				sb.append(emp.getCandidate().getFirstName());
-				if(StringUtils.isNotBlank(emp.getCandidate().getLastName())) {
-					sb.append(emp.getCandidate().getLastName());
-				}
-				dto.setEmpName(sb.toString());
-				dto.setDepartmentName(emp.getEmployee().getDepartmentId().getDepartmentName());
-				dto.setRegularHours(emp.getRegularHours());
-//				dto.setg
+		ResponseList<PayrollReportDTO> dtoList = new ResponseList<>();
+		List<PayrollReportDTO> payrollList = new ArrayList<>();
+		payPeriodDTO.setOrgLocationid(orgLocations.getId());
+		ResponseList<EmployeePayroll> list = paysheetFrequencyDao.getPayrollRegisterReports(payPeriodDTO);
+		for(EmployeePayroll emp : list.getData()) {
+//			for(EmployeePayroll emp : freq.getEmployeepayroll()) {
+			PayrollReportDTO dto = new PayrollReportDTO();
+			dto.setEmpId(emp.getEmployee().getEmployeeId());
+			StringBuilder sb = new StringBuilder();
+			sb.append(emp.getCandidate().getFirstName());
+			if(StringUtils.isNotBlank(emp.getCandidate().getLastName())) {
+				sb.append(emp.getCandidate().getLastName());
 			}
+			dto.setEmpName(sb.toString());
+			dto.setDepartmentName(emp.getEmployee().getDepartmentId().getDepartmentName());
+			dto.setRegularHours(emp.getRegularHours());
+			dto.setGrossPay(emp.getGrossPay());
+			dto.setTaxes(emp.getTaxes());
+			YTDPayrollDTO ytdDTO = payrollUtil.getEmployeeYTDPayroll(emp.getCandidate(), orgLocations, Constants.APPROVED);
+			dto.setYtdTaxes(ytdDTO.getYtdTaxes());
+			dto.setDeductions(emp.getPreTaxDeduction().add(emp.getPostTaxDeduction()));
+			dto.setYtdDeductions(ytdDTO.getYtdDeduction());
+			dto.setNetPay(emp.getNetPay());
+			dto.setYtdNet(ytdDTO.getYtdNet());
+			payrollList.add(dto);
+//			}
 		}
-		return null;
+		dtoList.setData(payrollList);
+		dtoList.setRecordsTotal(list.getRecordsTotal());
+		dtoList.setRecordsFiltered(list.getRecordsTotal());
+		return dtoList;
+	}
+
+	@Override
+	public List<DeductionHistory> getContributionYTD(EmployeePayroll payroll,Long contributionId,OrgLocations orgLocations)
+	{
+		return paysheetFrequencyDao.getContributionYTD(payroll,contributionId,orgLocations);
+	}
+
+	@Override
+	public List<DeductionHistory> getDeductionYTD(EmployeePayroll payroll, Long deductionId, OrgLocations orgLocation) {
+		
+		return paysheetFrequencyDao.getDeductionYTD(payroll,deductionId,orgLocation);
 	}
 
 }

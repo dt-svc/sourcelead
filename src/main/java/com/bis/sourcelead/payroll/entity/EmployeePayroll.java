@@ -90,6 +90,8 @@ public class EmployeePayroll {
 	@Column (name="SUBMIT_FOR_APROVER_STATUS")
 	private String submitForAproverStatus;
 	
+	@Column (name="TYPE")
+	private String type;
 	
 	@Column (name = "FREQUENCY")
 	private Integer frequency;
@@ -133,6 +135,10 @@ public class EmployeePayroll {
 	
 	@Column(name = "TAXES")
 	private BigDecimal taxes;
+	
+	
+	@Column(name = "EXPENSES_AMOUNT")
+	private BigDecimal expensesAmount;
 
 	@OneToMany(cascade = CascadeType.ALL, mappedBy = "employeePayroll")
 	private Set<EmployeePayrollTax> usPayrollTax;
@@ -145,6 +151,12 @@ public class EmployeePayroll {
 	
 	@OneToMany(cascade = CascadeType.ALL, mappedBy = "payrollId")
 	private Set<PayitemHistory> payitemHistory;
+	
+	@OneToMany(cascade = CascadeType.ALL, mappedBy = "payroll")
+	private Set<BankDataHistory> bankDataHistory;
+	
+	@OneToMany(cascade = CascadeType.ALL, mappedBy = "employeePayroll")
+	private Set<AssociateTaxHistory> associateTaxHistory;
 	
 	public String getSubmitForAproverStatus()
 	{
@@ -549,8 +561,38 @@ public class EmployeePayroll {
 	{
 		this.paySlipFileURL = paySlipFileURL;
 	}
-	
-	
-	
-	
+
+	public String getType() {
+		return type;
+	}
+
+	public void setType(String type) {
+		this.type = type;
+	}
+
+	public BigDecimal getExpensesAmount()
+	{
+		return expensesAmount;
+	}
+
+	public void setExpensesAmount(BigDecimal expensesAmount)
+	{
+		this.expensesAmount = expensesAmount;
+	}
+
+	public Set<BankDataHistory> getBankDataHistory() {
+		return bankDataHistory;
+	}
+
+	public void setBankDataHistory(Set<BankDataHistory> bankDataHistory) {
+		this.bankDataHistory = bankDataHistory;
+	}
+
+	public Set<AssociateTaxHistory> getAssociateTaxHistory() {
+		return associateTaxHistory;
+	}
+
+	public void setAssociateTaxHistory(Set<AssociateTaxHistory> associateTaxHistory) {
+		this.associateTaxHistory = associateTaxHistory;
+	}
 }

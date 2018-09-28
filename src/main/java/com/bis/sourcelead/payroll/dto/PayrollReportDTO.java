@@ -57,7 +57,107 @@ public class PayrollReportDTO extends SearchDTO{
 	private BigDecimal ytdTaxes;
 	
 	private BigDecimal ytdDeductions;
+
+	private String depositType;
+
+	private String searchValue;
 	
+	private Long orgLocationid;
+
+	private String payrollUUID;
+	
+	private String contributionId;
+	
+	private String contributionType;
+	
+	private String schedule;
+	
+	private BigDecimal dedAmount;
+	
+	private BigDecimal contributionYTD;
+
+	private String deductionId;
+	
+	private String deductionType;
+		
+	private BigDecimal contributionAmount;
+	
+	private BigDecimal deductionYTD;
+	
+	
+	
+	public BigDecimal getContributionAmount()
+	{
+		return contributionAmount;
+	}
+
+
+	public void setContributionAmount(BigDecimal contributionAmount)
+	{
+		this.contributionAmount = contributionAmount;
+	}
+
+
+	public BigDecimal getContributionYTD()
+	{
+		return contributionYTD;
+	}
+
+
+	public void setContributionYTD(BigDecimal contributionYTD)
+	{
+		this.contributionYTD = contributionYTD;
+	}
+
+
+	public BigDecimal getDedAmount()
+	{
+		return dedAmount;
+	}
+
+
+	public void setDedAmount(BigDecimal dedAmount)
+	{
+		this.dedAmount = dedAmount;
+	}
+
+
+	public String getSchedule()
+	{
+		return schedule;
+	}
+
+
+	public void setSchedule(String schedule)
+	{
+		this.schedule = schedule;
+	}
+
+
+	public String getContributionId()
+	{
+		return contributionId;
+	}
+
+
+	public void setContributionId(String contributionId)
+	{
+		this.contributionId = contributionId;
+	}
+
+
+	public String getPayrollUUID()
+	{
+		return payrollUUID;
+	}
+
+
+	public void setPayrollUUID(String payrollUUID)
+	{
+		this.payrollUUID = payrollUUID;
+	}
+
+
 	public String getEmpName()
 	{
 		return empName;
@@ -324,5 +424,77 @@ public class PayrollReportDTO extends SearchDTO{
 	{
 		this.ytdNet = ytdNet;
 	}
+
+
+	public String getDepositType() {
+		return depositType;
+	}
+
+
+	public void setDepositType(String depositType) {
+		this.depositType = depositType;
+	}
+	
+
+	public String getContributionType()
+	{
+		return contributionType;
+	}
+
+	public void setContributionType(String contributionType)
+	{
+		this.contributionType = contributionType;
+	}
+
+	public String getSearchValue()
+	{
+		return searchValue;
+	}
+
+	public void setSearchValue(String searchValue)
+	{
+		this.searchValue = searchValue;
+	}
+
+	public Long getOrgLocationid()
+	{
+		return orgLocationid;
+	}
+
+	public void setOrgLocationid(Long orgLocationid)
+	{
+		this.orgLocationid = orgLocationid;
+	}
+
+
+	public String getDeductionId() {
+		return deductionId;
+	}
+
+
+	public void setDeductionId(String deductionId) {
+		this.deductionId = deductionId;
+	}
+
+
+	public String getDeductionType() {
+		return deductionType;
+	}
+
+
+	public void setDeductionType(String deductionType) {
+		this.deductionType = deductionType;
+	}
+
+
+	public BigDecimal getDeductionYTD() {
+		return deductionYTD;
+	}
+
+
+	public void setDeductionYTD(BigDecimal deductionYTD) {
+		this.deductionYTD = deductionYTD;
+	}	
+	
 	
 }

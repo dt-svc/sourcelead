@@ -40,4 +40,8 @@ public interface CandidateResumesDao {
 	public CandidateResumes getCandidateResumeByCandidateId(Long candidateId) throws Exception;
 	
 	CandidateResumesDTO getCandidateResumesDTOByCandidateId(Long candidateId) throws Exception;
+	
+	Integer getCandidateActiveResumeCountByCandidateId(Long candidateId) throws Exception;
+	
+	public CandidateResumesDTO  getCandidateLatesResumeDetails(Long candidateId) throws Exception;
 }

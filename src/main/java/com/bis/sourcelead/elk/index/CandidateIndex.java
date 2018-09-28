@@ -206,6 +206,8 @@ public class CandidateIndex implements Serializable {
 	
 	private String tags;
 	
+	private Integer submittedJobsCount;
+	
 	
 	public String getSearchType() {
 		return searchType;
@@ -1029,6 +1031,16 @@ public class CandidateIndex implements Serializable {
 	public void setTags(String tags) {
 		this.tags = tags;
 	}
+
+	public Integer getSubmittedJobsCount() {
+		return submittedJobsCount;
+	}
+
+	public void setSubmittedJobsCount(Integer submittedJobsCount) {
+		this.submittedJobsCount = submittedJobsCount;
+	}
+
+	
 	
 }
 

@@ -143,9 +143,15 @@ public interface CandidateDao {
 	
 	public CandidateDTO getCandidateDTOByCandidateId(Long candidateId) throws Exception;
 	
-	public List<CandidateDTO> getCandidateListForAddApplicant(OrgLocations orgLcoations,Long requirementId,String skills,String candidateDetails) throws Exception;
+	public List<CandidateDTO> getCandidateListForAddApplicant(OrgLocations orgLcoations,Long requirementId,String skills,String candidateDetails,Integer profilePercentage) throws Exception;
 
 	List<Map<String, BigInteger>> getAllActiveCandidatesByLocationName(Long orgLocationId, String name);
 	
 	public List<CandidateDTO> getAllActiveCandidatesListByOrglocationId(Long orgLocationId, String employeementType) throws Exception;
+	
+	public List<Candidate> getAllCandidatesList() throws Exception;
+	
+	Long getCandidateIdByEmailAndOrgLocationId(String email,Long orgLocationId) throws Exception;
+	
+	public void saveBulkCandidates(List<Candidate> candidatesList) throws Exception;
 }

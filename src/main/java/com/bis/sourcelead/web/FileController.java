@@ -103,6 +103,7 @@ public class FileController {
 					orgId = org.getId();
 				}
 				if (loginOrgLocation != null) {
+					orgId = loginOrgLocation.getOrg().getId();
 					orgLocationId = loginOrgLocation.getId();
 				}
 
