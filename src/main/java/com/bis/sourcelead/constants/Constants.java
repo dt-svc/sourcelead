@@ -1252,6 +1252,23 @@ public class Constants {
 	public static final String JOB_PARSING = "job_parsing";
 	
 	public static final String REGULAR = "Regular";
-
-
+	
+	//Indian_Payroll
+	public static final String IND_PAYROLL_PAYHEAD_DEDUCTION = "Deduction";
+	public static final String IND_PAYROLL_PAYHEAD_EARNINGS = "Earnings";
+	
+	public static final String IND_PAYROLL_PAYFREQUENCY_MONTHLY = "Monthly";
+	public static final String IND_PAYROLL_PAYFREQUENCY_WEEKLY = "Bi-Weekly";
+	public static final String IND_PAYROLL_PAYFREQUENCY_BI_WEEKLY = "Weekly";
+	public static final String IND_PAYROLL_PAYFREQUENCY_ANUALLY = "Annually";
+	
+	public static final String IND_PAYROLL_PAYHEAD_TDS = "TDS";
+	public static final String IND_PAYROLL_PROFESSIONAL_TAX = "PT";
+	
+	
+	
+	
+	
+	
+	
 }
