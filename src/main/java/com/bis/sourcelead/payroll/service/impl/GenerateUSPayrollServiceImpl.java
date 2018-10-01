@@ -269,7 +269,8 @@ public class GenerateUSPayrollServiceImpl implements GenerateUSPayrollService{
 									BigDecimal projectPayRate = BigDecimal.ZERO;
 									if(entry.getValue() !=null ) {
 										for(TotalHoursDTO totalHoursDTO : entry.getValue()) {
-											projectPayRate = new BigDecimal(totalHoursDTO.getPayRate());
+//											projectPayRate = new BigDecimal(totalHoursDTO.getPayRate());
+											projectPayRate = payrollUtil.getHourlyRate(new BigDecimal(totalHoursDTO.getPayRate()), totalHoursDTO.getPayRateType());
 											if(StringUtils.isNotBlank(totalHoursDTO.getBillableHours())) {
 												projectTotalHours  = commonUtil.getTotalRegularOverTimeHours(Double.parseDouble(totalHoursDTO.getBillableHours()),projectTotalHours);
 											}
