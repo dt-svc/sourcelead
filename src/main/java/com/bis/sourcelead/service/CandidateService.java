@@ -216,7 +216,7 @@ public interface CandidateService {
 	 
 	 public List<CandidateDTO> getCandidateListForAddApplicant(OrgLocations orgLcoations,Long requirementId,String skills,String candidateDetails,Integer profilePercentage) throws Exception;
 	 
-	 public void saveCandidateBulkImports(CandidateDTO candidateDTO, OrgLocations orgLocations,User user) throws Exception;
+	 public Candidate saveCandidateBulkImports(CandidateDTO candidateDTO, OrgLocations orgLocations,User user) throws Exception;
 
 	public List<Map<String, BigInteger>> getAllActiveCandidatesByLocationName(Long locationId, String name);
 	
@@ -229,4 +229,9 @@ public interface CandidateService {
 	public void copyCandidateToMarketplace(String candidateIdsStr, User user) throws NumberFormatException, Exception;
 
 	public ResponseList<CandidateDTO> getCandidatesByCandidateIds(List<String> candidateUUIds);
+	
+	public Candidate getCandidateDetails(Candidate candidate, CandidateDTO candidateDto, User user,OrgLocations orgLocations,StringBuffer activitySummary) throws Exception;
+	
+	public void saveBulkCandidates(List<Candidate> candidatesList) throws Exception;
+
 }

@@ -248,6 +248,8 @@ public class CandidateDTO extends SearchDTO{
 	 private String candidateTags;
 	 
 	 private String generatedId;
+
+	 private String uploadId;
 	
 	public String getCandidateId() {
 		return candidateId;
@@ -1187,6 +1189,14 @@ public class CandidateDTO extends SearchDTO{
 
 	public void setGeneratedId(String generatedId) {
 		this.generatedId = generatedId;
+	}
+	
+	public String getUploadId() {
+		return uploadId;
+	}
+
+	public void setUploadId(String uploadId) {
+		this.uploadId = uploadId;
 	}
 
 	

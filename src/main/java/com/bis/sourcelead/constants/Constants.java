@@ -1245,6 +1245,7 @@ public class Constants {
 	public static final String JOB_PARSING = "job_parsing";
 	
 	public static final String REGULAR = "Regular";
-
+	
+	public static final String[] DIRECT_DEPOSIT_HEADER = { "Employee\nNumber", "Employee Name", "Department", "Transit\nNumber", "Account\nNumber", "Deposit\nAmount", "Description" };
 
 }
