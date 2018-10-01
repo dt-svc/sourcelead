@@ -9280,8 +9280,8 @@ aside.asideAct {
 
 
 .dashNewWrap {
-	padding: 0px 0px; box-shadow: 0px 3px 4px rgba(0,0,0,0.06); border-radius: 3px; min-height: 145px;
-	background-color: #fff;
+	padding: 0px 0px !important; box-shadow: 0px 3px 4px rgba(0,0,0,0.06) !important; border-radius: 3px; min-height: 145px;
+	background-color: #fff; position: relative;
 }
 .dashNewWrapHead {
 	border-bottom: 1px solid #ededed; padding: 0px 10px; height: 44px;
@@ -9348,4 +9348,110 @@ aside.asideAct {
 .mt7 {
 	margin-top: 7px;
 }
+.dashNewWrapMinHe {
+	min-height: 400px; padding-bottom: 18px !important;
+}
+.dashNewWrapMinHe table {
+	border-bottom: 1px solid #f2f2f2;
+}
+.dashNewWrapMinHe .datatable_filter .dataTables_length { bottom: 7px;}
 
+
+
+
+.userMailList {
+  padding: 0px 0px; margin: 0px 0px;
+}
+.userMailList li {
+  position: relative; list-style-type: none; padding: 6px 0px 6px 46px; height: 38px; cursor: pointer;
+  margin-bottom: 1px;
+}
+.userMailList li span {
+  position: absolute; left: 9px; width: 26px; height: 26px; background-color: #aeaeae; text-align: center;
+  display: block; border-radius: 50%;line-height: 25px; color: #fff; font-size: 15px; top:5px; text-transform: uppercase;
+}
+.userMailList li span.colorg {background-color: #ff6363;}
+.userMailList li span.colory {background-color: #ab5cff;}
+.userMailList li span.colors, .userMailList li span.colorh {background-color: #69b2f6;}
+.userMailList li .glyphicon-trash {
+  position: absolute; left: 9px; width: 26px; height: 26px; background-color: #f85555; text-align: center;
+  display: block; border-radius: 50%;line-height: 25px; color: #fff !important; font-size: 12px; top:5px;
+  opacity: 0; visibility: hidden;
+}
+.userMailList li p {
+  display: block; width: 100%; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
+  padding: 3px 0px 0px 0px; margin: 0px;
+}
+.userMailList li:hover .glyphicon-trash {
+  opacity: 1; visibility: visible;
+}
+.userMailList li:hover span {
+  display: none;
+}
+.userMailList li:first-child:hover span {
+  display: block;
+}
+.userMailList li:hover {
+  background-color: #f1f1f1;
+}
+.userMailList li.Act {
+  background-color: #f1f1f1; border-right:5px solid #368ee0;
+}
+
+#sourceleadEmailFolder li.active, #dynamicEmailFolder li.active {
+  background-color: #f1f1f1; border-right: 5px solid #368ee0;
+}
+
+.mail-widget i { padding: 5px; cursor: pointer; font-size: 20px; color: #817c7c;}
+
+.mailIcon {
+	width: 30px; height: 30px; display: block; background-repeat: no-repeat;  cursor: pointer; float:left;
+	position: relative; top: -3px; -webkit-transition:0.1s all; -moz-transition:0.1s all; transition:0.1s all;
+}
+.mailIcon.trashIcon {
+	background: url("../images/trash.svg"); background-size: 30px; background-position: center 0px;
+}
+.mailIcon.trashIcon:hover {
+	background-position: center -25px;
+}
+.mailIcon.attaIcon {
+	background: url("../images/attach.svg"); background-size: 22px; background-position: center; background-repeat: no-repeat;
+	height: 20px; top: 0px;
+}
+.mail-box-header {
+	padding: 10px 15px 0px !important; height: 44px; border: none !important;
+}
+.mail-box-header h3 {
+	font-size: 16px !important; padding: 3px 0px 0px 0px; text-transform: capitalize; color: #666;
+}
+.deleTrash {
+	font-size: 13px; font-weight: 500; color: #e65c5c; padding: 3px; cursor: pointer;
+}
+.mailFrom {
+	width: 230px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; color: #454545; cursor: pointer;
+}
+.mailSub {
+	width: 410px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; color: #666; cursor: pointer;
+}
+
+.mailOver {
+	position: relative; padding: 0px 0px !important;
+}
+.mailActions {
+	position: absolute; right: 2px; top: auto; height: 42px; width: 160px; background-color: #f9f9f9; padding: 5px;
+	opacity: 0; visibility: hidden;
+}
+.mailActions .mailIcon.trashIcon {
+	width: 35px; top: 0px;
+}
+.dashNewWrapMinHe table tr:hover .mailActions {
+	opacity: 1; visibility: visible;
+}
+.mailIcon.repIcon {background: url("../images/replay.svg"); background-size: 30px; background-position: center 0px; width: 35px; top: 0px;}
+.mailIcon.repIcon:hover {background-position: center -25px;}
+.mailIcon.repallIcon {background: url("../images/replayall.svg"); background-size: 30px; background-position: center 0px; width: 35px; top: 0px;}
+.mailIcon.repallIcon:hover {background-position: center -25px;}
+.mailIcon.forIcon {background: url("../images/forward.svg"); background-size: 30px; background-position: center 0px; width: 35px; top: 0px;}
+.mailIcon.forIcon:hover {background-position: center -25px;}
+#attachfileBtn {opacity: 0;}
+.remove_user_pop.remove_user_pop_a  { z-index: 100000;}

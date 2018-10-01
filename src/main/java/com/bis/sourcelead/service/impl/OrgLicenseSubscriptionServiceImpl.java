@@ -301,6 +301,7 @@ public class OrgLicenseSubscriptionServiceImpl implements OrgLicenseSubscription
 			Candidate candidate = getCandidateDetails(user,orgLocations,masterCandidate);
 			try {
 				Candidate savedCandidate = candidateService.addCandidate(candidate);
+				candidateService.getCandidatePercentage(savedCandidate, orgLocations);
 				candidateService.saveOrUpdateCandidateElkDocument(savedCandidate);
 			} catch (Exception e) {
 				e.printStackTrace();
