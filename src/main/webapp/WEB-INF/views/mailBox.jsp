@@ -897,7 +897,7 @@ function autoSelectFirstEmailFolder() {
 </script>
 <script type="text/javascript">
 /* var emailMap = new Map(); */
-var activeAccountId, activeFolder;
+var activeAccountId, activeFolder, activeFolderShortName;
 function readFolder(name, fullName, id, pageNo, pageSize, index){
 	$('#mailboxLabel').html(name);
 	$("#mailBoxList").empty();
@@ -928,11 +928,11 @@ function readFolder(name, fullName, id, pageNo, pageSize, index){
 			       			result = result +'</div>';
 			       			result = result +'</td>';
 			       			
-			       			result = result +'<td style="text-align: left !important;" class="mailbox-subject" onclick="getEmailBodyForMailBox(' + id + ',' + emailList[e].messageId + ',\''+fullName+'\')" data-id="' + emailList[e].messageId + '">';
+			       			result = result +'<td style="text-align: left !important;" class="mailbox-subject" onclick="getEmailBodyForMailBox(' + id + ',' + emailList[e].messageId + ',\'' + fullName + '\',\'' + name + '\')" data-id="' + emailList[e].messageId + '">';
 			       			result = result +'	<div class="mailFrom">' + (fullName.indexOf("Sent") !== -1 ? (emailList[e].to != null ? emailList[e].to.replace(/</g, "&lt;").replace(/>/g,"&gt;") : "") : (emailList[e].from != null ? emailList[e].from.replace(/</g, "&lt;").replace(/>/g,"&gt;") : "")) + '</div>';
 			       			result = result +'</td>';
 			       			
-			       			result = result +'<td style="text-align: left !important;" class="mailbox-subject" onclick="getEmailBodyForMailBox(' + id + ',' + emailList[e].messageId + ',\''+fullName+'\')" data-id="' + emailList[e].messageId + '">';
+			       			result = result +'<td style="text-align: left !important;" class="mailbox-subject" onclick="getEmailBodyForMailBox(' + id + ',' + emailList[e].messageId + ',\'' + fullName + '\',\'' + name + '\')" data-id="' + emailList[e].messageId + '">';
 			       			result = result +'	<div class="mailSub">' + emailList[e].subject + '</div>';
 			       			result = result +'</td>';			       			
 			       			
@@ -950,7 +950,7 @@ function readFolder(name, fullName, id, pageNo, pageSize, index){
 			       				result = result + '	<i class="mailIcon trashIcon" title="Delete Forever" ></i>';
 			       				/* <span class="pull-left deleTrash deleteForever" onclick="deleteEmailsForEver();" style="display: none;">Delete Forever</span> */
 			       			else
-			       				result = result + '	<i class="mailIcon trashIcon" title="Delete" onclick="moveEmailToTrash(' + id + ', ' + emailList[e].messageId + ', \'' + fullName + '\', false);"></i>';
+			       				result = result + '	<i class="mailIcon trashIcon" title="Delete" onclick="moveEmailToTrash(' + id + ', ' + emailList[e].messageId + ', \'' + fullName + '\', \'' + name + '\', false);"></i>';
 			       			result = result + '</td>';
 			       				
 			       			result = result +'</tr>';
@@ -970,6 +970,7 @@ function readFolder(name, fullName, id, pageNo, pageSize, index){
 				    $("#inbox").show();
 				    activeAccountId = id;
 				    activeFolder = fullName;
+				    activeFolderShortName = name;
 		},
 	});
 }
@@ -994,13 +995,13 @@ function prepareDynamicPagination(name, fullName, id, paginator, index) {
 	var nextFlag = resultsTo !== paginator.totalRows;
 	
 	text += "<div class='dataTables_paginate paging_simple_numbers pull-right' id='emailMailDetailsPagination_paginate' style='position: relative; top: 11px; right: 10px;'>";
-	text += "	<a class='fa fa-angle-left paginate_button previous'";
+	text += "	<a class='fa fa-angle-left paginate_button previous' title='Previous'";
 	if(prevFlag)
 		text += " onclick='readFolder(\"" + name + "\", \"" + fullName + "\", " + id + ", " + (paginator.pageNo - 1) + ", " + paginator.pageSize + ", " + index + ");'>";
 	else
 		text += " style='cursor: no-drop;' >";
 		text += "	</a>";
-	text += "	<a class='fa fa-angle-right paginate_button next'";
+	text += "	<a class='fa fa-angle-right paginate_button next' title='Next'";
 	if(nextFlag)
 		text += " onclick='readFolder(\"" + name + "\", \"" + fullName + "\", " + id + ", " + (paginator.pageNo + 1) + ", " + paginator.pageSize + ", " + index + ");'>";
 	else
@@ -1053,7 +1054,7 @@ function backToEmailList(){
 
 <script type="text/javascript">
 	var emailDetails = null;
-	function getEmailBodyForMailBox(emailAccountId, uid, folderName){
+	function getEmailBodyForMailBox(emailAccountId, uid, folderName, folderShortName){
 	    /* $("#mailDetails").html($("#mailBody"+id).html()); */
 	    $("#body-details").empty();
 	    $("#mailLoading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/linear-loader.gif"); background-position:center; background-repeat:no-repeat; background-size:100px;');
@@ -1070,9 +1071,9 @@ function backToEmailList(){
 					body += "		<i aria-hidden='true' class='mailIcon repallIcon' title='Reply to all senders/recipients' onclick='showReplyEmailPopup(" + emailAccountId + ", " + data.messageId + ", \"" + folderName + "\", true);'></i>";
 					body += "		<i aria-hidden='true' class='mailIcon forIcon' title='Forward selected message' onclick='showForwardEmailPopup(" + emailAccountId + ", " + data.messageId + ", \"" + folderName + "\");'></i>";
 					if($("#mailboxLabel").html().toLowerCase() === "trash") 
-						body += "		<i title='delete' onclick='moveEmailToTrash(" + emailAccountId + ", " + data.messageId + ", \"" + folderName + "\", true);'>Delete forever</i>";
+						body += "		<i title='delete' onclick='moveEmailToTrash(" + emailAccountId + ", " + data.messageId + ", \"" + folderName + "\", \"" + folderShortName + "\", true);'>Delete forever</i>";
 					else
-						body += "		<i aria-hidden='true' class='mailIcon trashIcon' title='Move to Trash' onclick='moveEmailToTrash(" + emailAccountId + ", " + data.messageId + ", \"" + folderName + "\");'></i>";
+						body += "		<i aria-hidden='true' class='mailIcon trashIcon' title='Move to Trash' onclick='moveEmailToTrash(" + emailAccountId + ", " + data.messageId + ", \"" + folderName + "\", \"" + folderShortName + "\", false);'></i>";
 					
 					body += "	</div>";
 					body += "</div>";
@@ -1230,10 +1231,10 @@ function forwardEmailToHotMail(uuid){
 				messageIds.push($(this).data("id"));
 			}
 		});
-		moveEmailToTrash(activeAccountId, messageIds, activeFolder, deleteForever);
+		moveEmailToTrash(activeAccountId, messageIds, activeFolder, activeFolderShortName, deleteForever);
 	}
 	
-	function moveEmailToTrash(emailAccountId, messageIds, folderName, deleteForever) {
+	function moveEmailToTrash(emailAccountId, messageIds, folderName, folderShortName, deleteForever) {
 		/* alert("EmailAccountId : " + emailAccountId + " Delete Mail : " + messageIds + " in folder : '" + folderName + "'"); */
 		 $("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:70px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:50px;');
 			$.ajax({
@@ -1241,6 +1242,7 @@ function forwardEmailToHotMail(uuid){
 				url : sourceleadUrl+"/deleteEmailsByUID?${_csrf.parameterName}=${_csrf.token}&emailAccountId=" + emailAccountId + "&messageIds=" + messageIds + "&folderName=" + folderName + "&deleteForever=" + deleteForever,
 				success : function(data) {
 					if(data && data != null && data.response === "SUCCESS") {
+						readFolder(folderShortName, folderName, emailAccountId, 0, 10, 0);
 						showEmailResponse((messageIds.length > 1 ? "Emails" : "Email") + (deleteForever ? " Deleted Permanently" : " moved to Trash"));
 					} else {
 						showEmailResponse(data.responseMessage)
@@ -1620,22 +1622,25 @@ function forwardEmailToHotMail(uuid){
 		refreshAttachmentsIndex();
 	}
 	
-	function showEmailResponse(msgText){
+	function showEmailResponse(message){
 		var result = "";
 		/* result = result +"<div class='project_inn_mask'></div>"; */
 		result = result +"<div id='textBoxmailerPopup' class='remove_user_pop remove_user_pop_a'>";
-		result = result +"<p><strong>"+msgText+"</strong></p>";
+		result = result +"<p><strong>" + message + "</strong></p>";
 		result = result +"<div>&nbsp;&nbsp;&nbsp;</div>";
 		result = result +"<b href='javascript:void(0)'><input type='button'  value='Ok' onclick='textBoxCancel();' style='background-color:#1ab394;width:100%'/></b>";
 		result = result +"</div>";
 		$("#textBoxPopUp").append(result);
 		$("#textBoxmailerPopup").slideDown(200);
 		$(".project_inn_mask").fadeIn(200);
+		$(".side_mask").fadeIn(200);
 	}
 	
 	function textBoxCancel(){
 		$("#textBoxmailerPopup").slideUp(200);
 		$(".project_inn_mask").hide();
+		if($("#dynamicmailcompose").css("display") === "none")
+			$(".side_mask").hide();
 	}
 </script>		
  	
