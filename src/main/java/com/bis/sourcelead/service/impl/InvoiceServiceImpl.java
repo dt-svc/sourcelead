@@ -902,9 +902,9 @@ public class InvoiceServiceImpl implements InvoiceService {
 				globalVarsMap.put("clientName", contactUser.getFirstName());
 			}
 		}
-		globalVarsMap.put("totalAmouprojectMembersListnt", invoice.getTotal());
+		globalVarsMap.put("grandTotal", invoice.getTotal());
 		globalVarsMap.put("dueDate", date);
-		globalVarsMap.put("date", invoiceDate);
+		globalVarsMap.put("invoiceDate", invoiceDate);
 		globalVarsMap.put("orgName", orglocations.getOrgLocationName());
 		// globalVarsMap.put("address",invoice.getBillingAddress());
 
@@ -1669,6 +1669,8 @@ public class InvoiceServiceImpl implements InvoiceService {
   	  						invoice.setConvertCurrencyCode(vendorCurrencyCode);
   	  						invoice.setCurrencyCode(loginOrgCurrencyCode);
   	  						invoice.setContactUser(contactUser);
+  	  						invoice.setContactUsers(contactUser.getId().toString());
+  	  						invoice.setOwnerUsers(user.getId().toString());
   	  						invoice.setCreatedBy(user.getUserCode());
   	  						invoice.setStatus(Constants.RECORD_ACTIVE.toString());
   	  						invoice.setInvoiceStatus(Constants.DRAFT);
@@ -2606,6 +2608,7 @@ public class InvoiceServiceImpl implements InvoiceService {
 			
 					EmailScenario notificationScenario = null;
 					if (invoiceType.equalsIgnoreCase("payables")) {
+						
 						returnMap = commonUtil.sendTemplateEmail(emailMessage, globalVarsMap, orgLocation.getOrg(), orgLocation,
 								Constants.INVOICE_CLIENT_PAYABLE_REMINDER_MAIL, attachmentList1);
 						notificationScenario = emailScenarioService.getEmailScenarioByUniqueName(
@@ -3296,22 +3299,16 @@ public class InvoiceServiceImpl implements InvoiceService {
 						List<User> usersList = userDao.getUsersListUsingMultipleStringIds(timelineHistory.getInvoice().getOwnerUsers());
 						 
 						for(User ownerUser: usersList){
-						if(ownerUser.getUserCode().equals(timelineHistory.getInvoice().getUpdatedBy())){
 							statusValue = ownerUser.getFullName();	
 						}
-						}
-//						statusValue = timelineHistory.getInvoice().getOwnerUserId().getFullName();
 					} else if (status.equalsIgnoreCase("Sent")) {
 						statusVal = "Sent";
 						statusBy = " by ";
 						List<User> usersList = userDao.getUsersListUsingMultipleStringIds(timelineHistory.getInvoice().getOwnerUsers());
 						 
 						for(User ownerUser: usersList){
-//						if(ownerUser.getUserCode().equals(timelineHistory.getInvoice().getUpdatedBy())){
 							statusValue = ownerUser.getFullName();	
-//						}
 						}
-//						statusValue = timelineHistory.getInvoice().getOwnerUserId().getFullName();
 						timelineDTO.setInvoiceReminderEmailBody(timelineHistory.getInvoicePaymentReminderEmailBody());
 						timelineDTO.setInvoiceReminderEmailTo(timelineHistory.getInvoicePaymentReminderEmailTo());
 						timelineDTO.setInvoiceReminderEmailFrom(timelineHistory.getInvoicePaymentReminderEmailFrom());
@@ -3862,6 +3859,9 @@ public class InvoiceServiceImpl implements InvoiceService {
 			creditDebitNoteListDTO.setApproverCheckBox(creditDebitNote.getApproverCheckBox());
 			creditDebitNoteListDTO.setApprovers(creditDebitNote.getApprovers());
 			creditDebitNoteListDTO.setStatus(creditDebitNote.getStatus());
+			if(creditDebitNote.getRejectReason() !=null){
+				creditDebitNoteListDTO.setRejectReason(creditDebitNote.getRejectReason());	
+			}
 			if(StringUtils.isNotBlank(creditDebitNote.getApprovers())){
 			List<String> appUserList = Arrays.asList(creditDebitNoteListDTO.getApprovers().split(","));
 				creditDebitNoteListDTO.setApproverUserSplitId(appUserList);

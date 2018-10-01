@@ -1,6 +1,7 @@
 package com.bis.sourcelead.payroll.util;
 
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.Date;
@@ -23,6 +24,7 @@ import java.math.BigDecimal;
 import com.itextpdf.text.BaseColor;
 import com.itextpdf.text.Chunk;
 import com.itextpdf.text.Document;
+import com.itextpdf.text.DocumentException;
 import com.itextpdf.text.Font;
 import com.itextpdf.text.PageSize;
 import com.itextpdf.text.Paragraph;
@@ -72,8 +74,8 @@ public class PayrollReportPdfUtil {
 		    	headerDTO.setLocationAddress(orgLocation.getLocation());
 		    	headerDTO.setPayPeriod(registerDTO.getPayFrequency());
 		    	headerDTO.setPayrollType(registerDTO.getType());
-		    	headerDTO.setPeriodBeginDate(registerDTO.getFreqStartDate());
-		    	headerDTO.setPeriodEndDate(registerDTO.getFreqEndDate());
+		    	headerDTO.setPeriodBeginDate(commonUtil.dateStrFromOrgDateFormatter(orgLocation.getDateFormat(), registerDTO.getFreqStartDate()));
+		    	headerDTO.setPeriodEndDate(commonUtil.dateStrFromOrgDateFormatter(orgLocation.getDateFormat(), registerDTO.getFreqEndDate()));
 		    	headerDTO.setReportType("CHECK REGISTER");
 		    	headerDTO.setRunDate(registerDTO.getRunDate());
 //		    	headerDTO.setLiveChecks(checkRegData.size());
@@ -234,8 +236,8 @@ public class PayrollReportPdfUtil {
 			cell2.setColspan(6);
 			table.addCell(cell2);
 			PdfPCell cell3 = new PdfPCell();
-			cell3.addElement(new Paragraph("Period Begin Date: "+commonUtil.dateStrFromOrgDateFormatter(orgLocation.getDateFormat(), headerData.getPeriodBeginDate()), boldFont));
-			cell3.addElement(new Paragraph("Period End Date: "+commonUtil.dateStrFromOrgDateFormatter(orgLocation.getDateFormat(), headerData.getPeriodEndDate()), boldFont));
+			cell3.addElement(new Paragraph("Period Begin Date: "+headerData.getPeriodBeginDate(), boldFont));
+			cell3.addElement(new Paragraph("Period End Date: "+headerData.getPeriodEndDate(), boldFont));
 			cell3.addElement(new Paragraph("Pay Period: "+headerData.getPayPeriod(), boldFont));
 			if(headerData.getPayrollType() != null)
 				cell3.addElement(new Paragraph("Payroll Type: "+headerData.getPayrollType(), boldFont));
@@ -315,8 +317,8 @@ public class PayrollReportPdfUtil {
     	headerDTO.setOrgName(orgLocation.getOrgLocationName());
     	headerDTO.setPayPeriod(registerDTO.getPayFrequency());
     	headerDTO.setPayrollType(registerDTO.getType());
-    	headerDTO.setPeriodBeginDate(registerDTO.getFreqStartDate());
-    	headerDTO.setPeriodEndDate(registerDTO.getFreqEndDate());
+    	headerDTO.setPeriodBeginDate(commonUtil.dateStrFromOrgDateFormatter(orgLocation.getDateFormat(), registerDTO.getFreqStartDate()));
+    	headerDTO.setPeriodEndDate(commonUtil.dateStrFromOrgDateFormatter(orgLocation.getDateFormat(), registerDTO.getFreqEndDate()));
     	headerDTO.setReportType("DIRECT DEPOSIT REGISTER");
     	headerDTO.setRunDate(registerDTO.getRunDate());
     	headerDTO.setRunNumber(0);
@@ -517,9 +519,240 @@ public class PayrollReportPdfUtil {
 		return file;
 	}
 
-	public File getontributionReportPdf(OrgLocations orgLocation, List<PayrollReportDTO> deductionHisList)
+	public File getontributionReportPdf(OrgLocations orgLocation, List<PayrollReportDTO> deductionHisList) throws IOException
 	{
-		return null;
+		StringBuilder fileSB = new StringBuilder();
+		File file = File.createTempFile(fileSB.append(orgLocation.getOrgLocationName()).append("_Contribution Report").append(commonUtil.dateStrFromOrgDateFormatter(orgLocation.getDateFormat(),new Date())).toString(),".pdf");
+		file.setReadable(true);
+		
+		try {
+			Document document = new Document(PageSize.A4.rotate());
+			
+	    	PdfWriter.getInstance(document, new FileOutputStream(file));
+	    	document.open();
+	    	
+	    	PayrollReportDTO payrollReportDTO = deductionHisList.get(0);
+	    	PdfHeaderDTO headerDTO = new PdfHeaderDTO();
+	    	
+	    	headerDTO.setCheckDate(payrollReportDTO.getCheckDate());
+	    	headerDTO.setGroupName(payrollReportDTO.getGroupName());
+	    	headerDTO.setOrgName(orgLocation.getOrgLocationName());
+	    	headerDTO.setPayPeriod(payrollReportDTO.getGroupFrequency());
+	    	headerDTO.setPayrollType(payrollReportDTO.getType());
+	    	headerDTO.setPeriodBeginDate(payrollReportDTO.getFreqStartDate());
+	    	headerDTO.setPeriodEndDate(payrollReportDTO.getFreqEndDate());
+	    	headerDTO.setReportType("DEDUCTION REPORTS");
+	    	headerDTO.setRunDate(payrollReportDTO.getRunDate());
+	    	headerDTO.setRunNumber(0);
+	    	createHeaderTable(document, headerDTO, orgLocation);
+	    	
+
+	    	
+	    	
+	    	
+	    	PdfPTable empTable = new PdfPTable(9);
+	    	empTable.setTotalWidth(document.getPageSize().getWidth() - 80);
+	    	empTable.setLockedWidth(true);
+	    	empTable.setSpacingBefore(20);  
+	    	
+	    	PdfPCell cell = new PdfPCell(new Phrase("Department", boldFont));
+	    	cell.setFixedHeight(20);
+//	    	cell.setBackgroundColor(new BaseColor(209,210,211));
+	    	empTable.addCell(cell);
+	    	empTable.addCell(new Phrase("Emp Id #", boldFont));
+	    	empTable.addCell(new Phrase("Employee/Payee", boldFont));
+	    	empTable.addCell(new Phrase("Type", boldFont));
+	    	empTable.addCell(new Phrase("Schedule", boldFont));
+	    	empTable.addCell(new Phrase("Current", boldFont));
+	    	empTable.addCell(new Phrase("MTD", boldFont));
+	    	empTable.addCell(new Phrase("QTD", boldFont));
+	    	empTable.addCell(new Phrase("YTD", boldFont));
+	    	document.add(empTable);
+	    	
+	    	
+	    	PdfPTable empDataTable = getPdfTable(9,document);
+	    	empDataTable.setSpacingBefore(2);  
+	    	
+	    	BigDecimal currentTotal = BigDecimal.ZERO;
+	    	BigDecimal YTDTotal = BigDecimal.ZERO;
+	    	BigDecimal mTDTotal = BigDecimal.ZERO;
+	    	BigDecimal qTDTotal = BigDecimal.ZERO;
+	    	for(PayrollReportDTO reportData : deductionHisList) {
+	    		empDataTable.addCell(getPdfCell(reportData.getDepartmentName(),normalFont,5));
+		    	empDataTable.addCell(getPdfCell(reportData.getEmpId(),normalFont,0));
+		    	empDataTable.addCell(getPdfCell(reportData.getEmpName(),normalFont,0));
+		    	empDataTable.addCell(getPdfCell(reportData.getContributionType(),normalFont,0));
+		    	empDataTable.addCell(getPdfCell(reportData.getSchedule(),normalFont,0));
+		    	empDataTable.addCell(getPdfCell("$ "+reportData.getContributionAmount(),normalFont,0));
+		    	empDataTable.addCell(getPdfCell("$ "+reportData.getContributionMTD(),normalFont,0));
+		    	empDataTable.addCell(getPdfCell("$ "+reportData.getContributionQTD(),normalFont,0));
+		    	empDataTable.addCell(getPdfCell("$ "+reportData.getContributionYTD(),normalFont,0));	
+		    	currentTotal = currentTotal.add(reportData.getContributionAmount());
+		    	YTDTotal = YTDTotal.add(reportData.getContributionYTD());
+		    	mTDTotal = mTDTotal.add(reportData.getContributionMTD());
+		    	qTDTotal = qTDTotal.add(reportData.getContributionMTD());
+	    	}
+	    
+	    	empDataTable.setSpacingAfter(8);
+	    	document.add(empDataTable);
+	    	
+	     	PdfPTable lineTable = getPdfTable(1,document);
+	    	
+	    	
+	    	PdfPTable lineChildTable = new PdfPTable(9);
+	    	lineChildTable.addCell(getPdfCell("",boldFont,0));
+	    	lineChildTable.addCell(getPdfCell("",boldFont,0));
+	    	lineChildTable.addCell(getPdfCell("",boldFont,0));
+	    	lineChildTable.addCell(getPdfCell("REPORT TOTALS:",boldFont,0));
+	    	lineChildTable.addCell(getPdfCell("",boldFont,0));
+	    	lineChildTable.addCell(getPdfCell("Current",boldFont,0));
+	    	lineChildTable.addCell(getPdfCell("MTD",boldFont,0));
+	    	lineChildTable.addCell(getPdfCell("QTD",boldFont,0));
+	    	lineChildTable.addCell(getPdfCell("YTD",boldFont,0));
+//	    	
+	    	PdfPCell lineTableCell = new PdfPCell(lineChildTable);
+	    	lineTableCell.setFixedHeight(30);
+	    	lineTableCell.setBorderWidth(1f);
+	    	lineTableCell.setBackgroundColor(new BaseColor(209,210,211));
+	    	lineTableCell.setBorder(Rectangle.BOTTOM);
+	    	lineTable.addCell(lineTableCell);
+	    	document.add(lineTable);
+	    	
+	    	
+	    	PdfPTable ytdTable = new PdfPTable(9);
+	    	ytdTable.addCell(getPdfCell("",boldFont,0));
+	    	ytdTable.addCell(getPdfCell("",boldFont,0));
+	    	ytdTable.addCell(getPdfCell("",boldFont,0));
+	    	ytdTable.addCell(getPdfCell("",boldFont,0));
+	    	ytdTable.addCell(getPdfCell("",boldFont,0));
+	    	ytdTable.addCell(getPdfCell("$ "+currentTotal,boldFont,0));
+	    	ytdTable.addCell(getPdfCell("$ "+mTDTotal,boldFont,0));
+	    	ytdTable.addCell(getPdfCell("$ "+qTDTotal,boldFont,0));
+	    	ytdTable.addCell(getPdfCell("$ "+YTDTotal,boldFont,0));
+//	    	
+	    	document.add(ytdTable);	
+	    	document.close();
+		}catch(Exception e) {
+			e.printStackTrace();
+		}
+		return file;
 	}
+
+	public File getDeductionReportPdf(OrgLocations orgLocation, List<PayrollReportDTO> deductionHisList) throws Exception {
+	
+		StringBuilder sbReq = new StringBuilder();
+		sbReq.append(orgLocation.getOrgLocationName()).append(Constants.PAYROLL).append(commonUtil.dateStrFromOrgDateFormatter(orgLocation.getDateFormat(),new Date()));
+
+		StringBuilder fileSB = new StringBuilder();
+		File file = File.createTempFile(fileSB.append(orgLocation.getOrgLocationName()).append("Deduction Report").append(commonUtil.dateStrFromOrgDateFormatter(orgLocation.getDateFormat(),new Date())).toString(),
+				".pdf");
+
+		file.setReadable(true);
+		
+		Document document = new Document(PageSize.A4.rotate());
+		PdfWriter.getInstance(document, new FileOutputStream(file));
+		document.open();
+		
+		
+		PayrollReportDTO payrollReportDTO = deductionHisList.get(0);
+    	PdfHeaderDTO headerDTO = new PdfHeaderDTO();
+    	
+    	headerDTO.setCheckDate(payrollReportDTO.getCheckDate());
+    	headerDTO.setGroupName(payrollReportDTO.getGroupName());
+    	headerDTO.setOrgName(orgLocation.getOrgLocationName());
+    	headerDTO.setPayPeriod(payrollReportDTO.getGroupFrequency());
+    	headerDTO.setPayrollType(payrollReportDTO.getType());
+    	headerDTO.setPeriodBeginDate(payrollReportDTO.getFreqStartDate());
+    	headerDTO.setPeriodEndDate(payrollReportDTO.getFreqEndDate());
+    	headerDTO.setReportType("DEDUCTION REGISTER");
+    	headerDTO.setRunDate(payrollReportDTO.getRunDate());
+    	headerDTO.setRunNumber(0);
+    	createHeaderTable(document, headerDTO, orgLocation);
+
+		document.add(Chunk.NEWLINE);
+		document.add(Chunk.NEWLINE);
+		document.add(Chunk.NEWLINE);
+
+
+
+		PdfPTable empTable = new PdfPTable(8);
+		empTable.setTotalWidth(document.getPageSize().getWidth() - 80);
+		empTable.setLockedWidth(true);
+		empTable.setSpacingBefore(20); 
+
+		PdfPCell cell = new PdfPCell(new Phrase("Emp Id #", boldFont));
+		cell.setFixedHeight(20);
+		// cell.setBackgroundColor(new BaseColor(209,210,211));
+		empTable.addCell(cell);
+		empTable.addCell(new Phrase("Employee Name", boldFont));
+		empTable.addCell(new Phrase("Department", boldFont));
+		empTable.addCell(new Phrase("Type", boldFont));
+		empTable.addCell(new Phrase("Current", boldFont));
+		empTable.addCell(new Phrase("MTD", boldFont));
+		empTable.addCell(new Phrase("QTD", boldFont));
+		empTable.addCell(new Phrase("YTD", boldFont));
+		document.add(empTable);
+
+
+		PdfPTable empDataTable = getPdfTable(8,document);
+		empDataTable.setSpacingBefore(2); 
+
+		BigDecimal currentTotal = BigDecimal.ZERO;
+    	BigDecimal YTDTotal = BigDecimal.ZERO;
+    	BigDecimal MTDTotal = BigDecimal.ZERO;
+    	BigDecimal QTDTotal = BigDecimal.ZERO;
+		for (PayrollReportDTO report : deductionHisList) {
+			empDataTable.addCell(getPdfCell(report.getEmpId(),normalFont,5));
+			empDataTable.addCell(getPdfCell(report.getEmpName(),normalFont,0));
+			empDataTable.addCell(getPdfCell(report.getDepartmentName(),normalFont,0));
+			empDataTable.addCell(getPdfCell(report.getDeductionType(),normalFont,0));
+			empDataTable.addCell(getPdfCell("$ xxxx",normalFont,0));
+			empDataTable.addCell(getPdfCell("$ "+report.getDeductionMTD(),normalFont,0));
+			empDataTable.addCell(getPdfCell("$ "+report.getDeductionQTD(),normalFont,0));
+			empDataTable.addCell(getPdfCell("$ "+report.getDeductionYTD(),normalFont,0));
+			currentTotal = currentTotal.add(report.getDedAmount());
+	    	YTDTotal = YTDTotal.add(report.getDeductionYTD());
+	    	MTDTotal = MTDTotal.add(report.getDeductionMTD());
+	    	QTDTotal = QTDTotal.add(report.getDeductionQTD());
+		}
+		empDataTable.setSpacingAfter(8);
+		document.add(empDataTable);
+		PdfPTable lineTable = getPdfTable(1,document);
+
+
+		PdfPTable lineChildTable = new PdfPTable(8);
+		lineChildTable.addCell(getPdfCell("",boldFont,0));
+		lineChildTable.addCell(getPdfCell("",boldFont,0));
+		lineChildTable.addCell(getPdfCell("REPORT TOTALS:",boldFont,0));
+		lineChildTable.addCell(getPdfCell("",boldFont,0));
+		lineChildTable.addCell(getPdfCell("Current",boldFont,0));
+		lineChildTable.addCell(getPdfCell("MTD",boldFont,0));
+		lineChildTable.addCell(getPdfCell("QTD",boldFont,0));
+		lineChildTable.addCell(getPdfCell("YTD",boldFont,0));
+		// 
+		PdfPCell lineTableCell = new PdfPCell(lineChildTable);
+		lineTableCell.setFixedHeight(30);
+		lineTableCell.setBorderWidth(1f);
+		lineTableCell.setBackgroundColor(new BaseColor(209,210,211));
+		lineTableCell.setBorder(Rectangle.BOTTOM);
+		lineTable.addCell(lineTableCell);
+		document.add(lineTable);
+
+
+		PdfPTable ytdTable = new PdfPTable(8);
+		ytdTable.addCell(getPdfCell("",boldFont,0));
+		ytdTable.addCell(getPdfCell("",boldFont,0));
+		ytdTable.addCell(getPdfCell("",boldFont,0));
+		ytdTable.addCell(getPdfCell("",boldFont,0));
+		ytdTable.addCell(getPdfCell("$ "+currentTotal,boldFont,0));
+		ytdTable.addCell(getPdfCell("$ "+MTDTotal,boldFont,0));
+		ytdTable.addCell(getPdfCell("$ "+QTDTotal,boldFont,0));
+		ytdTable.addCell(getPdfCell("$ "+YTDTotal,boldFont,0));
+		// 
+		document.add(ytdTable);
+		document.close();
+		System.out.println("Done.!!");
+		return file;
+		}
 	
 }

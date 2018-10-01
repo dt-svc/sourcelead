@@ -458,7 +458,7 @@
             <div class="form-group">
               <label class="col-md-4">Previous LCA Number</label>
               <div class="col-md-8">
-                <input type="text" class="form-control" name="prevLcaNumber" id="prevLcaNumber" value="${immigrationDTO.prevLcaNumber}" placeholder="I-XXX-XXXXX-XXXXXX" data-validation="required validate_Space validate_length length2-100" data-validation-optional="true" >
+                <input type="text" class="form-control" name="prevLcaNumber" id="prevLcaNumber" value="${immigrationDTO.prevLcaNumber}" placeholder="Previous LCA Number" data-validation="required validate_Space validate_length length2-100" data-validation-optional="true" >
               </div>
             </div>
             </c:if>
@@ -741,7 +741,6 @@
             </div>
             </c:if>
             
-            <c:if test="${empty immigrationDTO}">
              <c:if test="${empty immigrationDTO.lcaCurrLocation}">
             <div class="form-group">
               <label class="col-md-4">LCA Current Location</label>
@@ -757,9 +756,7 @@
               </div>
             </div>
             </c:if>
-            </c:if>
             
-             <c:if test="${!empty immigrationDTO}">
              <c:if test="${!empty immigrationDTO.lcaCurrLocation}">
             <div class="form-group">
               <label class="col-md-4">LCA Current Location</label>
@@ -774,7 +771,6 @@
 					</div>
               </div>
             </div>
-            </c:if>
             </c:if>
 
            <div class="clearfix"></div>

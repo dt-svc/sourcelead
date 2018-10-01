@@ -968,9 +968,9 @@ return responseList;
 							for(String ownerUserId : ownerUsers){
 								User ownerUser = userService.getUserById(Long.parseLong(ownerUserId.trim()));
 								if(ownerUser.getLastName() != null){
-									ownerUserName = ownerUserName.append(ownerUser.getFirstName()).append(" ").append(ownerUser.getLastName()).append(", ");
+									ownerUserName = ownerUserName.append(ownerUser.getFirstName()).append(" ").append(ownerUser.getLastName()).append("- ").append(ownerUser.getEmail()).append(", ").append("\n");
 								}else{
-									ownerUserName = ownerUserName.append(ownerUser.getFirstName()).append(", ");
+									ownerUserName = ownerUserName.append(ownerUser.getFirstName()).append("- ").append(ownerUser.getEmail()).append(", ").append("\n");
 								}
 								if(ownerUser.getEmail() != null){
 									ownerUserEmail = ownerUserEmail.append(ownerUser.getEmail()).append(", ");
