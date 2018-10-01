@@ -681,7 +681,9 @@ function closeEmailNotifications() {
 	 $("#parserEmailId").val("");
 	 $("#parserEmailUUID").val("");
 	 $('#popnotify').find('p.jquery_form_error_message').remove();	
-	 $('#portnotify').find('p.jquery_form_error_message').remove();	
+	 $('#portnotify').find('p.jquery_form_error_message').remove();
+	 $('#parserEncryptId').val("");	
+	 $('#usageType').val("");
 			
 }
 </script>		
