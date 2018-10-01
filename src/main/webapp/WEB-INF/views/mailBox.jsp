@@ -63,11 +63,15 @@
 					<c:if test="${SourceLeadWeb_loginUserRole != 'ROLE_CROWDSOURCING_PROFESSIONAL' && SourceLeadWeb_loginUserRole != 'ROLE_CROWDSOURCING_RECRUITER'}">
 					
 					<c:if test="${mailType == 'mails'}">
-						<button id="composeSourceleadMail" class="btn-block btn btn-primary dropdown-toggle display-block" type="button" onClick="javascript:window.location.href = '<c:url value='${sourceleadUrl}/composeMail'/>'"> <i class="fa fa-pencil-square-o" aria-hidden="true"></i>
-							Compose
+						<button id="composeSourceleadMail" class="btn-block btn btn-primary dropdown-toggle display-block" type="button"
+							onClick="javascript:window.location.href = '<c:url value='${sourceleadUrl}/composeMail'/>'">
+							<i class="fa fa-pencil-square-o" aria-hidden="true"></i>
+							Compose Sourcelead Mail
 						</button>
-						<button id="composeDynamicMail" class="btn-block btn btn-primary dropdown-toggle" type="button" onClick="showComposeEmailPopup();"> <i class="fa fa-pencil-square-o" aria-hidden="true"></i>
-							Compose Dynamic EMail
+						<button id="composeDynamicMail" class="btn-block btn btn-primary dropdown-toggle" 
+							type="button" onClick="showComposeEmailPopup();">
+							<i class="fa fa-pencil-square-o" aria-hidden="true"></i>
+							Compose from Other Domains
 						</button>
 					</c:if>
 					
@@ -146,19 +150,21 @@
 						<label for="a" class="checkbox-custom-label"></label>
 					</div>
 					<h3 class="box-title pull-left mr" id="mailboxLabel"></h3>
-					<span class="pull-left mr"><i class="mailIcon trashIcon"></i></span>
-					<span class="pull-left deleTrash">Delete Forever</span>
-					
-<!-- 					<div class="mail-widget" id="mailControlsMaster"
-						style="display: none;">
-						<i aria-hidden="true" class="fa fa-trash-o moveToTrash"
-							onclick="moveEmailsToTrash();" style="display: none;"></i> <i
-							class="deleteForever" onclick="deleteEmailsForEver();"
+						<div class="mail-widget" id="mailControlsMaster" style="display: none; margin-left: 20px;">
+							<span class="pull-left mr moveToTrash" style="display: none;">
+								<i class="mailIcon trashIcon" onclick="moveEmailsToTrash(false);"></i>
+							</span>
+							<span class="pull-left deleTrash deleteForever" onclick="moveEmailsToTrash(true);" style="display: none;">Delete Forever</span>
+						</div>
+							<!-- <div class="mail-widget" id="mailControlsMaster" style="display: none;">
+						<i aria-hidden="true" class="fa fa-trash-o "
+							onclick="moveEmailsToTrash();" style="display: none;"></i> 
+						<i class="" onclick="deleteEmailsForEver();"
 							style="display: none;">Delete forever</i>
 					</div> -->
 				</div>
 
-				<div class="mailbox-messages datatable_filter mailbox-table">
+				<div class="mailbox-messages mailbox-table">
 					<div id="mailBoxList"></div>
 				</div>
 				<!-- mail box table ends -->
@@ -203,6 +209,7 @@
 </div>
 
 <div class="cand-advsrch-popup advancedsearch-popup filterDynamic-Search-small" id="dynamicmailcompose" style="display: none;">
+	<div class="project_inn_mask"></div>
 	<h5 class="headerAdsrch">
 		<span>Compose Mail</span>
 		<a href="javascript:void(0)" class="close-div" onclick="closeComposeEmailPopup();"><i class="fa fa-close"></i></a>
@@ -305,7 +312,7 @@
 		</div>
 	</div>
 </div>
-
+<div id ="textBoxPopUp"></div>
 <script src="/resources/js/nicEdit-latest.js"></script>
 <script src="/resources/js/nicEdit.js"></script>
 
@@ -314,20 +321,10 @@
 		tagIt("emailsList", 'Enter Emails And Press Enter-Key Or Comma(,) Or Space To Add New Email', 'tagItBykeyForEmails','emails');
 		tagIt("ccList", 'Enter Emails And Press Enter-Key Or Comma(,) Or Space To Add New Email', 'tagItBykeyForEmails','emails');
 		
-	
 		$("#attachfileBtn").change(function() {
 			uploadAttachment("attachfileBtn", "Email Attachments", "email_form");
 			$(".clearUpload").show();
 		});
-		
-		$(".clearUpload").click(function(){
-			alert("Remove Attachment");
-			/* $("#attachfile-mail").val("");
-			$("#attachfileBtn").val("");
-		    $("#email_form input[data-id*=attachfileBtn]").remove();
-		    $(".clearUpload").hide(); */
-		});
-		
 	});
 
   function getMails(type) {
@@ -348,8 +345,8 @@
 	  setActiveTab(type)
 	  var mailType = '${mailType}';
 	  
-	  $("#mailLoading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/linear-loader.gif"); background-position:center; background-repeat:no-repeat; background-size:100px;');
-	  
+	  /* $("#mailLoading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/linear-loader.gif"); background-position:center; background-repeat:no-repeat; background-size:100px;'); */
+	  $("#mailLoading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:70px; z-index:100000; background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
 	  $.ajax({
           type : "POST",
           url: sourceleadUrl+"/getUserMailsFromELK?${_csrf.parameterName}=${_csrf.token}&type="+type+"&mailType="+mailType,    
@@ -634,7 +631,7 @@ function getMailBoxIds(){
 	}
 	 
 	
-	 $("#mailLoading").attr('style','position:absolute; width:97%; height:99%; background-color:rgba(255,255,255,0.8); top:-1px; left:14px; z-index:100;background-image:url("/resources/images/linear-loader.gif"); background-position:center; background-repeat:no-repeat; background-size:100px;');
+	 $("#mailLoading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:70px; z-index:100000; background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
 		 $.ajax({
 			type : "POST",
 			url : sourceleadUrl+"/sendMailsToTrash?${_csrf.parameterName}=${_csrf.token}&mailIds="+mailIds,
@@ -840,14 +837,14 @@ function activeEmail(id, ele){
 	$(ele).parent().addClass("Act");
 	if(id === 0) {
 		getMails('Inbox');
-		$("#composeSourceleadMail").show();
-		$("#composeDynamicMail").hide();
+		/* $("#composeSourceleadMail").show();
+		$("#composeDynamicMail").hide(); */
 		$("#sourceleadEmailFolder").show();
 		$("#dynamicEmailFolder").hide();
 		$("#loading").removeAttr("style");
 	} else {
-		$("#composeSourceleadMail").hide();
-		$("#composeDynamicMail").show();
+		/* $("#composeSourceleadMail").hide();
+		$("#composeDynamicMail").show(); */
 		$("#sourceleadEmailFolder").hide();
 		$("#dynamicEmailFolder").show();
 	
@@ -879,7 +876,7 @@ function activeEmail(id, ele){
 				 autoSelectFirstEmailFolder();
 				} else {
 					/* alert("Configured credentials were wrong,Please configure with right credentials") */
-					alert(response.responseMessage);
+					showEmailResponse(response.responseMessage);
 					window.setTimeout(function() {
 						location.replace(sourceleadUrl+"/mailBox/mails");
 			        }, 1000);
@@ -897,6 +894,8 @@ function autoSelectFirstEmailFolder() {
 }
 </script>
 <script type="text/javascript">
+/* var emailMap = new Map(); */
+var activeAccountId, activeFolder;
 function readFolder(name, fullName, id, pageNo, pageSize, index){
 	$('#mailboxLabel').html(name);
 	$("#mailBoxList").empty();
@@ -942,10 +941,19 @@ function readFolder(name, fullName, id, pageNo, pageSize, index){
 			       				
 			       			result = result +'<td class="mailbox-date" data-id="' + emailList[e].messageId + '">' + emailList[e].sentDate + '</td>';
 			       			result = result + '<td class="mailOver"><div class="mailActions">';
-			       			result = result + '<i class="mailIcon repIcon" title="Replay"></i><i class="mailIcon repallIcon" title="Replay All"></i><i class="mailIcon forIcon" title="Forward"></i><i class="mailIcon trashIcon" title="Delete"></i>';
+			       			/* result = result + '	<i class="mailIcon repIcon" title="Reply" onclick="showReplyEmailPopup(' + id + ', ' + emailList[e].messageId + ', \'' + fullName + '\', false);"></i>';
+			       			result = result + '	<i class="mailIcon repallIcon" title="Reply All" onclick="showReplyEmailPopup(' + id + ', ' + emailList[e].messageId + ', \'' + fullName + '\', true);"></i>';
+			       			result = result + '	<i class="mailIcon forIcon" title="Forward" onclick="showForwardEmailPopup(' + id + ', ' + emailList[e].messageId + ', \'' + fullName + '\');"></i>'; */
+			       			if($("#mailboxLabel").html().toLowerCase() === "trash")
+			       				result = result + '	<i class="mailIcon trashIcon" title="Delete Forever" ></i>';
+			       				/* <span class="pull-left deleTrash deleteForever" onclick="deleteEmailsForEver();" style="display: none;">Delete Forever</span> */
+			       			else
+			       				result = result + '	<i class="mailIcon trashIcon" title="Delete" onclick="moveEmailToTrash(' + id + ', ' + emailList[e].messageId + ', \'' + fullName + '\', false);"></i>';
 			       			result = result + '</td>';
 			       				
 			       			result = result +'</tr>';
+			       			
+			       			/* emailMap.set(emailList[e].messageId, emailList[e]); */
 			    		}
 			    		
 			    		result = result +'</tbody>';
@@ -958,20 +966,22 @@ function readFolder(name, fullName, id, pageNo, pageSize, index){
 		    		}
 				    $("#loading").removeAttr("style"); 
 				    $("#inbox").show();
+				    activeAccountId = id;
+				    activeFolder = fullName;
 		},
 	});
 }
 function prepareDynamicPagination(name, fullName, id, paginator, index) {
 	var text = "<div class='clearfix'>";
 	text += "<div class='dataTables_length pull-left' id='emailMailDetailsPagination_length'>";
-	text += "	<label>Show ";
+/* 	text += "	<label>Show ";
 	text += "		<select name='emailMailDetailsPagination_length' aria-controls='emailMailDetailsPagination' class=''>";
 	text += "			<option value='10'>10</option>";
 	text += "			<option value='15'>15</option>";
 	text += "			<option value='20'>20</option>";
 	text += "			<option value='-1'>All</option>";
 	text += "		</select>";
-	text += "	entries</label>";
+	text += "	entries</label>"; */
 	text += "</div>";
 
 	var resultsFrom = (paginator.pageNo * paginator.pageSize) + 1;
@@ -1055,13 +1065,14 @@ function backToEmailList(){
 					var body ="<div class='mail-widget'>";
 					body += "	<i onclick='backToEmailList();' aria-hidden='true' class='fa fa-arrow-left' title='back'></i>";
 					body += "	<div class='pull-right'>";
+					body += "		<i aria-hidden='true' class='mailIcon repIcon' title='Reply to sender' onclick='showReplyEmailPopup(" + emailAccountId + ", " + data.messageId + ", \"" + folderName + "\", false);'></i>";
+					body += "		<i aria-hidden='true' class='mailIcon repallIcon' title='Reply to all senders/recipients' onclick='showReplyEmailPopup(" + emailAccountId + ", " + data.messageId + ", \"" + folderName + "\", true);'></i>";
+					body += "		<i aria-hidden='true' class='mailIcon forIcon' title='Forward selected message' onclick='showForwardEmailPopup(" + emailAccountId + ", " + data.messageId + ", \"" + folderName + "\");'></i>";
 					if($("#mailboxLabel").html().toLowerCase() === "trash") 
-						body += "		<i title='delete' onclick='deleteEmailForEver(" + emailAccountId + ", " + data.messageId + ", \"" + folderName + "\");'>Delete forever</i>";
+						body += "		<i title='delete' onclick='moveEmailToTrash(" + emailAccountId + ", " + data.messageId + ", \"" + folderName + "\", true);'>Delete forever</i>";
 					else
-						body += "		<i aria-hidden='true' class='fa fa-trash-o' title='Move to Trash' onclick='moveEmailToTrash(" + emailAccountId + ", " + data.messageId + ", \"" + folderName + "\");'></i>";
-					body += "		<i aria-hidden='true' class='fa fa-reply' title='Reply to sender' onclick='showReplyEmailPopup(" + emailAccountId + ", " + data.messageId + ", \"" + folderName + "\", false);'></i>";
-					body += "		<i aria-hidden='true' class='fa fa-reply-all' title='Reply to all senders/recipients' onclick='showReplyEmailPopup(" + emailAccountId + ", " + data.messageId + ", \"" + folderName + "\", true);'></i>";
-					body += "		<i aria-hidden='true' class='fa fa-arrow-right' title='Forward selected message' onclick='showForwardEmailPopup(" + emailAccountId + ", " + data.messageId + ", \"" + folderName + "\");'></i>";
+						body += "		<i aria-hidden='true' class='mailIcon trashIcon' title='Move to Trash' onclick='moveEmailToTrash(" + emailAccountId + ", " + data.messageId + ", \"" + folderName + "\");'></i>";
+					
 					body += "	</div>";
 					body += "</div>";
 					body+="<div class='mailbox-read-info' id='mailBody" + data.messageId + "'>"; 
@@ -1069,8 +1080,8 @@ function backToEmailList(){
 	
 					body+="<div class='row'>";
 					/* body+="<p class='clearfix mb10 col-md-8'><i class='text-muted fa fa-user paddingRight'></i>" + (folderName.indexOf("Sent") !== -1 ? data.to : data.from) + "</p>"; */
-					body+="<p class='clearfix mb10 col-md-8'> From : " + data.from.replace(/</g, "&lt;").replace(/>/g,"&gt;") + "</p>";
-					body+="<p class='clearfix mb10 col-md-8'> To : " + data.to.replace(/</g, "&lt;").replace(/>/g,"&gt;") + "</p>";
+					body+="<p class='clearfix mb10 col-md-8'> From : " + (data.from !== null ? data.from.replace(/</g, "&lt;").replace(/>/g,"&gt;") : "") + "</p>";
+					body+="<p class='clearfix mb10 col-md-8'> To : " + (data.to !== null ? data.to.replace(/</g, "&lt;").replace(/>/g,"&gt;") : "") + "</p>";
 					/* body+="<p class='clearfix mb10 col-md-8'>" + (folderName.indexOf("Sent") !== -1 ? "To" : "From") +" : " + (folderName.indexOf("Sent") !== -1 ? data.to.replace(/</g, "&lt;").replace(/>/g,"&gt;") : data.from.replace(/</g, "&lt;").replace(/>/g,"&gt;")) + "</p>";
 					body+="<p class='clearfix mb10 col-md-8'>" + (folderName.indexOf("Sent") !== -1 ? "From" : "To") +" : " + (folderName.indexOf("Sent") !== -1 ? data.from.replace(/</g, "&lt;").replace(/>/g,"&gt;") : data.to.replace(/</g, "&lt;").replace(/>/g,"&gt;")) + "</p>"; */						
 					if(data.cc != null && data.cc !== "") {
@@ -1113,7 +1124,7 @@ function backToEmailList(){
 							text += "               <div class='AttaCtaAct'>";
 							text += "                   <i class='fa fa-paperclip' aria-hidden='true'></i>";
 							text += "                   <p>" + attachment.fileName + "</p>";
-							text += "                   <a href='" + (attachment.url + "/" + attachment.fileName) + "'><span class='fa fa-arrow-down' aria-hidden='true'></span></a>";
+							text += "                   <a href='/app/downloadFile.html?file=" + (attachment.url + "/" + attachment.fileName) + "'><span class='fa fa-arrow-down' aria-hidden='true'></span></a>";
 							text += "               </div>";
 							text += "           </div>";
 							
@@ -1130,7 +1141,7 @@ function backToEmailList(){
 					$("#inbox").hide();
 				    $("#details").show();
 				} else {
-					alert("error while reading email");
+					showEmailResponse("error while reading email");
 				}
 				$("#mailLoading").removeAttr("style");
 			}
@@ -1185,7 +1196,7 @@ function forwardEmailToHotMail(uuid){
 		$("#emailMailDetailsPagination tr").each(function () {
 			$(this).find("input[type='checkbox']").prop("checked", flag);
 		});
-		/* $(ele).prop("checked", !flag); */
+		showOrHideMailControls();
 	}
 	
 	function showOrHideMailControls() {
@@ -1210,40 +1221,40 @@ function forwardEmailToHotMail(uuid){
 		}	
 	}
 	
-	function moveEmailsToTrash() {
-		var emailIds = [];
+	function moveEmailsToTrash(deleteForever) {
+		var messageIds = [];
 		$("#emailMailDetailsPagination tr").each(function () {
 			var cb = $(this).find("input[type='checkbox']").is(":checked");
 			if($(this).find("input[type='checkbox']").is(":checked")) {
-				emailIds.push($(this).data("id"));
+				messageIds.push($(this).data("id"));
 			}
 		});
-		alert(emailIds);
+		moveEmailToTrash(activeAccountId, messageIds, activeFolder, deleteForever);
 	}
 	
-	function moveEmailToTrash(emailAccountId, messageId, folderName) {
-		alert("EmailAccountId : " + emailAccountId + " Delete Mail : " + messageId + " in folder : '" + folderName + "'");
+	function moveEmailToTrash(emailAccountId, messageIds, folderName, deleteForever) {
+		/* alert("EmailAccountId : " + emailAccountId + " Delete Mail : " + messageIds + " in folder : '" + folderName + "'"); */
 		 $("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:70px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:50px;');
 			$.ajax({
 				type : "POST",
-				url : sourceleadUrl+"/deleteEmailsByUID?${_csrf.parameterName}=${_csrf.token}&emailAccountId=" + emailAccountId + "&messageIds=" + messageId + "&folderName=" + folderName,
+				url : sourceleadUrl+"/deleteEmailsByUID?${_csrf.parameterName}=${_csrf.token}&emailAccountId=" + emailAccountId + "&messageIds=" + messageIds + "&folderName=" + folderName + "&deleteForever=" + deleteForever,
 				success : function(data) {
 					if(data && data != null && data.response === "SUCCESS") {
-						alert("Emails moved to Trash");
+						showEmailResponse((messageIds.length > 1 ? "Emails" : "Email") + (deleteForever ? " Deleted Permanently" : " moved to Trash"));
 					} else {
-						alert(data.responseMessage)
+						showEmailResponse(data.responseMessage)
 					}
 					$("#loading").removeAttr("style");
 				}
 			});
 	}
 	
-	function deleteEmailsForEver() {
+/* 	function deleteEmailsForEver() {
 		alert("Delete multiple mail forever")
 	}
 	function deleteEmailForEver(emailAccountId, messageId, folderName) {
 		alert("Delete mail forever")
-	}
+	} */
 	function showComposeEmailPopup() {
 		refreshComposeMailFields();
 		$('.side_mask').show();
@@ -1278,21 +1289,25 @@ function forwardEmailToHotMail(uuid){
 		var activeEmail = $("li[class='Act']").find("p").html();
 		$("#fromEmail").prop("disabled",true);
 		$("#fromEmail").trigger("chosen:updated");
-		
+/* 		var emailDetails = emailMap.get(messageId);
+		if(emailDetails !== undefined && emailDetails !== null) { */
 		if(emailDetails !== null) {
 			$("#fromEmail").val(activeEmail);
 			$("#fromEmail").trigger("chosen:updated");
 			$("#emailsList").append("<option selected value='" + emailDetails.from.replace(/</g, "&lt;").replace(/>/g,"&gt;") + "'>" + emailDetails.from.replace(/</g, "&lt;").replace(/>/g,"&gt;") + "</option>");
 			$("#emailsList").trigger("chosen:updated");
 			if(replyToAllFlag) {
-				if(emailDetails.cc !== null && emailDetails.cc !== "" && emailDetails.to.replace(/</g, "&lt;").replace(/>/g,"&gt;").indexOf(activeEmail) === -1)
-					$("#ccList").append("<option selected value='" + emailDetails.to.replace(/</g, "&lt;").replace(/>/g,"&gt;") + "'>" + emailDetails.to.replace(/</g, "&lt;").replace(/>/g,"&gt;") + "</option>");
-				for(var e in emailDetails.cc.split(";")) {
-					var ccMail = emailDetails.cc.split(";")[e].trim().replace(/</g, "&lt;").replace(/>/g,"&gt;");
-					if(ccMail.indexOf(activeEmail) === -1)
-						$("#ccList").append("<option selected value='" + ccMail + "'>" + ccMail + "</option>");
+				if(emailDetails.cc !== null && emailDetails.cc !== "") {
+					if(emailDetails.to.replace(/</g, "&lt;").replace(/>/g,"&gt;").indexOf(activeEmail) === -1)
+						$("#ccList").append("<option selected value='" + emailDetails.to.replace(/</g, "&lt;").replace(/>/g,"&gt;") + "'>" + emailDetails.to.replace(/</g, "&lt;").replace(/>/g,"&gt;") + "</option>");
+					
+					for(var e in emailDetails.cc.split(";")) {
+						var ccMail = emailDetails.cc.split(";")[e].trim().replace(/</g, "&lt;").replace(/>/g,"&gt;");
+						if(ccMail.indexOf(activeEmail) === -1)
+							$("#ccList").append("<option selected value='" + ccMail + "'>" + ccMail + "</option>");
+					}
+					$("#ccList").trigger("chosen:updated");
 				}
-				$("#ccList").trigger("chosen:updated");
 			}
 			$("#sendSubject").val("RE: " + emailDetails.subject);
 			
@@ -1313,8 +1328,8 @@ function forwardEmailToHotMail(uuid){
 			$(".headerAdsrch span").html("Reply Email");
 			$("#sendEmail").hide();
 			$("#replyEmail").show();
-/* 			$("#replyEmail").data("messageId", messageId);
-			$("#replyEmail").data("folderName", folderName); */
+ 			$("#replyEmail").data("messageId", messageId);
+			$("#replyEmail").data("folderName", folderName);
 			$('.side_mask').show();
 			$('#dynamicmailcompose').show();
 			$("#loading").removeAttr("style");
@@ -1329,12 +1344,14 @@ function forwardEmailToHotMail(uuid){
 						$("#emailsList").append("<option selected value='" + data.from.replace(/</g, "&lt;").replace(/>/g,"&gt;") + "'>" + data.from.replace(/</g, "&lt;").replace(/>/g,"&gt;") + "</option>");
 						$("#emailsList").trigger("chosen:updated");
 						if(replyToAllFlag) {
-							if(emailDetails.cc !== null && emailDetails.cc !== "")
-								$("#ccList").append("<option selected value='" + data.to.replace(/</g, "&lt;").replace(/>/g,"&gt;") + "'>" + data.to.replace(/</g, "&lt;").replace(/>/g,"&gt;") + "</option>");
-							for(var e in data.cc.split(";")) {
-								var ccMail = data.cc.split(";")[e].trim().replace(/</g, "&lt;").replace(/>/g,"&gt;");
-								if(ccMail.indexOf(activeEmail) === -1)
-									$("#ccList").append("<option selected value='" + ccMail + "'>" + ccMail + "</option>");
+							if(data.cc !== null && data.cc !== "") {
+								if(emailDetails.to.replace(/</g, "&lt;").replace(/>/g,"&gt;").indexOf(activeEmail) === -1)								
+									$("#ccList").append("<option selected value='" + data.to.replace(/</g, "&lt;").replace(/>/g,"&gt;") + "'>" + data.to.replace(/</g, "&lt;").replace(/>/g,"&gt;") + "</option>");
+								for(var e in data.cc.split(";")) {
+									var ccMail = data.cc.split(";")[e].trim().replace(/</g, "&lt;").replace(/>/g,"&gt;");
+									if(ccMail.indexOf(activeEmail) === -1)
+										$("#ccList").append("<option selected value='" + ccMail + "'>" + ccMail + "</option>");
+								}
 							}
 							$("#ccList").trigger("chosen:updated");
 						}
@@ -1357,12 +1374,12 @@ function forwardEmailToHotMail(uuid){
 						$(".headerAdsrch span").html("Reply Email");
 						$("#sendEmail").hide();
 						$("#replyEmail").show();
-						/* $("#replyEmail").data("messageId", messageId);
-						$("#replyEmail").data("folderName", folderName); */
+						$("#replyEmail").data("messageId", messageId);
+						$("#replyEmail").data("folderName", folderName);
 						$('.side_mask').show();
 						$('#dynamicmailcompose').show();
 					} else {
-						alert("error while reading email");
+						showEmailResponse("error while reading email");
 					}
 					$("#loading").removeAttr("style");
 				}
@@ -1385,7 +1402,7 @@ function forwardEmailToHotMail(uuid){
 		  	var toEmails =  $('#emailsList').val();
 		  		 
 		  	if(toEmails == null) {
-		   		alert("Provide atleast one email id");
+		  		showEmailResponse("Provide atleast one email id");
 		   	} else {
 		   		var emailAccountId = $("#fromEmail option:selected").data("id");
 		   		var from = $("#fromEmail option:selected").val();
@@ -1398,7 +1415,11 @@ function forwardEmailToHotMail(uuid){
 				  	contentType:false, 
 				  	url : sourceleadUrl+"/sendEmailFromMailBox?${_csrf.parameterName}=${_csrf.token}&emailAccountId=" + emailAccountId + "&from=" + from + "&sendType=" + sendType + "&messageId=" + messageId + "&folderName=" + folderName,
 				  	success : function(result) {
-				  		$("#mailLoading").removeAttr('style');
+				  		if(result && result.response === "SUCCESS") {				  			
+					  		closeComposeEmailPopup();
+				  		}
+				  		showEmailResponse(result.responseMessage);
+					  	$("#mailLoading").removeAttr('style');
 				  	},
 				});
 			}
@@ -1415,6 +1436,8 @@ function forwardEmailToHotMail(uuid){
 		var activeEmail = $("li[class='Act']").find("p").html();
 		$("#fromEmail").prop("disabled",true);
 		$("#fromEmail").trigger("chosen:updated");
+/* 		var emailDetails = emailMap.get(messageId);
+		if(emailDetails !== undefined && emailDetails !== null) { */
 		if(emailDetails !== null) {
 			$("#sendSubject").val("FW: " + emailDetails.subject);
 			var text = "<p style=\"margin:0;padding:0;font-family: 'times new roman'; font-size: 10pt; word-wrap: break-word;\">";
@@ -1483,7 +1506,7 @@ function forwardEmailToHotMail(uuid){
 						$('.side_mask').show();
 						$('#dynamicmailcompose').show();
 					} else {
-						alert("error while reading email");
+						showEmailResponse("error while reading email");
 					}
 					$("#loading").removeAttr("style");
 				}
@@ -1504,11 +1527,11 @@ function forwardEmailToHotMail(uuid){
 		  	var toEmails =  $('#emailsList').val();
 		  		 
 		  	if(toEmails == null) {
-		   		alert("Provide atleast one email id");
+		  		showEmailResponse("Provide atleast one email id");
 		   	} else {
 		   		var emailAccountId = $("#fromEmail option:selected").data("id");
 		   		var from = $("#fromEmail option:selected").val();
-				$("#mailLoading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:70px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
+				$("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:70px; z-index:100000; background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
 				$.ajax({
 					type : "POST",
 				  	data: formData,
@@ -1517,7 +1540,13 @@ function forwardEmailToHotMail(uuid){
 				  	contentType:false, 
 				  	url : sourceleadUrl+"/sendEmailFromMailBox?${_csrf.parameterName}=${_csrf.token}&emailAccountId=" + emailAccountId + "&from=" + from + "&sendType=" + sendType,
 				  	success : function(result) {
-				  		$("#mailLoading").removeAttr('style');
+				  		if(result && result.response === "SUCCESS") {			  			
+				  			setTimeout(function() {
+				  				closeComposeEmailPopup();
+					 		}, 1000);
+				  		}
+				  		showEmailResponse(result.responseMessage);
+					  	$("#loading").removeAttr('style');
 				  	},
 				});
 			}
@@ -1569,7 +1598,7 @@ function forwardEmailToHotMail(uuid){
 				}
 			},
 			error : function(err) {
-				alert(err);
+				showEmailResponse(err);
 			}
 		});
 	}
@@ -1588,6 +1617,24 @@ function forwardEmailToHotMail(uuid){
 	function removeAttachment(ele) {
 		$(ele).parent().remove();
 		refreshAttachmentsIndex();
+	}
+	
+	function showEmailResponse(msgText){
+		var result = "";
+		/* result = result +"<div class='project_inn_mask'></div>"; */
+		result = result +"<div id='textBoxmailerPopup' class='remove_user_pop remove_user_pop_a'>";
+		result = result +"<p><strong>"+msgText+"</strong></p>";
+		result = result +"<div>&nbsp;&nbsp;&nbsp;</div>";
+		result = result +"<b href='javascript:void(0)'><input type='button'  value='Ok' onclick='textBoxCancel();' style='background-color:#1ab394;width:100%'/></b>";
+		result = result +"</div>";
+		$("#textBoxPopUp").append(result);
+		$("#textBoxmailerPopup").slideDown(200);
+		$(".project_inn_mask").fadeIn(200);
+	}
+	
+	function textBoxCancel(){
+		$("#textBoxmailerPopup").slideUp(200);
+		$(".project_inn_mask").hide();
 	}
 </script>		
  	

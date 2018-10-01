@@ -70,6 +70,7 @@ import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.entity.UserMailBox;
 import com.bis.sourcelead.entity.UserRole;
 import com.bis.sourcelead.entity.UserSignature;
+import com.bis.sourcelead.enums.Result;
 import com.bis.sourcelead.service.CampaignService;
 import com.bis.sourcelead.service.CandidateService;
 import com.bis.sourcelead.service.EmailAccountSettingsService;
@@ -865,45 +866,6 @@ public class MailBoxRestController {
 			
 		}
 
-	@RequestMapping(value = "/emailAccountRead", method = RequestMethod.POST)
-	public @ResponseBody ResponseList<String> emailAccountRead(Long id, HttpServletRequest request) throws Exception {
-		ResponseList<String> responseList = new ResponseList<>();
-		User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
-		Long userId = user.getId();
-		responseList = emailAccountSettingsService.emailAccountRead(id, userId);
-		return responseList;
-	}
-
-	@RequestMapping(value = "/emailFolderRead", method = RequestMethod.POST)
-	public @ResponseBody ResponseList<ReadMailDTO> emailFolderRead(Long id, @RequestParam(defaultValue = "") String folderName,
-			HttpServletRequest request, Paginator paginator) throws Exception {
-		ResponseList<ReadMailDTO> responseList = new ResponseList<>();
-		if(request.getSession().getAttribute("emailList") != null) {
-			responseList = (ResponseList<ReadMailDTO>) request.getSession().getAttribute("emailList");
-		} else {
-			User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
-			OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
-			Long userId = user.getId();
-			folderName = folderName.replaceAll("-and-", "&");
-			List<ReadMailDTO> readMailList = emailAccountSettingsService.emailFolderRead(id, folderName, userId, orgLocation.getId(), paginator);
-			responseList.setData(readMailList);
-			responseList.setPaginator(paginator);
-			request.getSession().setAttribute("emailList", responseList);
-		}
-		return responseList;
-	}
-	
-	@RequestMapping(value = "/deleteEmailsByUID", method = RequestMethod.POST)
-	public @ResponseBody Response<Boolean> deleteEmailsByUID(HttpServletRequest request,
-			@RequestParam(defaultValue = "0") long emailAccountId, @RequestParam(defaultValue = "") long[] messageIds,
-			@RequestParam(defaultValue = "") String folderName) throws Exception {
-		Response<Boolean> response = new Response<>();
-		User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
-		folderName = folderName.replaceAll("-and-", "&");
-		response = emailAccountSettingsService.deleteEmailsByUID(emailAccountId, user.getId(), messageIds, folderName);
-		return response;
-	}
-	
 	 @RequestMapping(value = "/deleteEmailAccount" , method = RequestMethod.POST)
 		public @ResponseBody String deleteEmailAccount(Long id, HttpServletRequest request)
 				throws Exception {
@@ -926,6 +888,50 @@ public class MailBoxRestController {
 			
 		}
 	 
+	@RequestMapping(value = "/emailAccountRead", method = RequestMethod.POST)
+	public @ResponseBody ResponseList<String> emailAccountRead(Long id, HttpServletRequest request) throws Exception {
+		ResponseList<String> responseList = new ResponseList<>();
+		User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+		Long userId = user.getId();
+		responseList = emailAccountSettingsService.emailAccountRead(id, userId);
+		return responseList;
+	}
+
+	@RequestMapping(value = "/emailFolderRead", method = RequestMethod.POST)
+	public @ResponseBody ResponseList<ReadMailDTO> emailFolderRead(Long id, @RequestParam(defaultValue = "") String folderName,
+			HttpServletRequest request, Paginator paginator) throws Exception {
+		ResponseList<ReadMailDTO> responseList = new ResponseList<>();
+		/*
+		 * if(request.getSession().getAttribute("emailList") != null) { responseList =
+		 * (ResponseList<ReadMailDTO>) request.getSession().getAttribute("emailList"); }
+		 * else {
+		 */
+		User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+		OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+		Long userId = user.getId();
+		folderName = folderName.replaceAll("-and-", "&");
+		List<ReadMailDTO> readMailList = emailAccountSettingsService.emailFolderRead(id, folderName, userId, orgLocation.getId(),
+				paginator);
+		responseList.setData(readMailList);
+		responseList.setPaginator(paginator);
+		/*
+		 * request.getSession().setAttribute("emailList", responseList); }
+		 */
+		return responseList;
+	}
+
+	@RequestMapping(value = "/deleteEmailsByUID", method = RequestMethod.POST)
+	public @ResponseBody Response<Boolean> deleteEmailsByUID(HttpServletRequest request,
+			@RequestParam(defaultValue = "0") long emailAccountId, @RequestParam(defaultValue = "") long[] messageIds,
+			@RequestParam(defaultValue = "") String folderName, @RequestParam(defaultValue = "false") boolean deleteForever)
+			throws Exception {
+		Response<Boolean> response = new Response<>();
+		User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+		folderName = folderName.replaceAll("-and-", "&");
+		// response = emailAccountSettingsService.deleteEmailsByUID(emailAccountId,
+		// user.getId(), messageIds, folderName, deleteForever);
+		return response;
+	}
 	 
 	@RequestMapping(value = "/getEmailByUID", method = RequestMethod.POST)
 	public @ResponseBody ReadMailDTO getEmailByUID(HttpServletRequest request, @RequestParam(defaultValue = "0") long emailAccountId,
@@ -936,14 +942,15 @@ public class MailBoxRestController {
 		OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 		if (user != null && org != null && orgLocation != null) {
 			folderName = folderName.replaceAll("-and-", "&");
-			readMailDTO = emailAccountSettingsService.getEmailByUID(emailAccountId, user.getId(), org.getId(), orgLocation.getId(), uid, folderName);
+			readMailDTO = emailAccountSettingsService.getEmailByUID(emailAccountId, user.getId(), org.getId(), orgLocation.getId(), uid, folderName, staticPath);
 		}
 		return readMailDTO;
 	}
 
 	@PreAuthorize("hasRole('ROLE_MAIL_BOX')")
 	@RequestMapping(value = "/sendEmailFromMailBox", method = RequestMethod.POST)
-	public boolean sendEmailFromMailBox(MultipartHttpServletRequest request, ReadMailDTO readMailDTO) throws Exception {
+	public Response<Boolean> sendEmailFromMailBox(MultipartHttpServletRequest request, ReadMailDTO readMailDTO) throws Exception {
+		Response<Boolean> response = new Response<>();
 		User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
 		Org org = (Org) SourceLeadSessionManager.getSessionAttribute(request, "org");
 		OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
@@ -953,9 +960,11 @@ public class MailBoxRestController {
 			if (itrator.hasNext()) {
 				multiFile = request.getFile(itrator.next());
 			}*/
-			return emailService.sendEmailFromMailBox(readMailDTO, user.getId(), org.getId(), orgLocation.getId(), staticPath);
+//			return emailService.sendEmailFromMailBox(readMailDTO, user.getId(), org.getId(), orgLocation.getId(), staticPath);
 		}
-		return false;
+		response.setResponse(Result.SUCCESS.name());
+		response.setResponseMessage("test");
+		return response;
 	}
 	
 /*	@PreAuthorize("hasRole('ROLE_MAIL_BOX')")

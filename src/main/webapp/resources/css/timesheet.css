@@ -9453,3 +9453,5 @@ aside.asideAct {
 .mailIcon.repallIcon:hover {background-position: center -25px;}
 .mailIcon.forIcon {background: url("../images/forward.svg"); background-size: 30px; background-position: center 0px; width: 35px; top: 0px;}
 .mailIcon.forIcon:hover {background-position: center -25px;}
+#attachfileBtn {opacity: 0;}
+.remove_user_pop.remove_user_pop_a  { z-index: 100000;}

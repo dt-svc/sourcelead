@@ -117,17 +117,17 @@ public class EmailAccountSettingsServiceImpl implements EmailAccountSettingsServ
 	}
 	
 	@Override
-	public ReadMailDTO getEmailByUID(long emailAccountId, long userId, long orgId, long orgLocationId, long uid, String folderName) {
+	public ReadMailDTO getEmailByUID(long emailAccountId, long userId, long orgId, long orgLocationId, long uid, String folderName, String staticPath) {
 		EmailAccountSettings emailAccountSettings = emailAccountSettingsDao.getEmailAccount(emailAccountId, userId);
 		String email = emailAccountSettings.getEmail();
 		String password = emailAccountSettings.getPassword();
 		String host = emailAccountSettings.getRecieveServerName();
 		String storeType = "imaps";
-		return MailBox.getMailDTOByUID(host, storeType, email, password, folderName, orgId, orgLocationId, uid);
+		return MailBox.getMailDTOByUID(host, storeType, email, password, folderName, orgId, orgLocationId, uid, staticPath);
 	}
 	
 	@Override
-	public Response<Boolean> deleteEmailsByUID(long emailAccountId, long userId, long[] messageIds, String folderName) {
+	public Response<Boolean> deleteEmailsByUID(long emailAccountId, long userId, long[] messageIds, String folderName, boolean deleteForever) {
 		Response<Boolean> response = new Response<>();
 		try {
 			EmailAccountSettings emailAccountSettings = emailAccountSettingsDao.getEmailAccount(emailAccountId, userId);
@@ -135,7 +135,7 @@ public class EmailAccountSettingsServiceImpl implements EmailAccountSettingsServ
 			String password = emailAccountSettings.getPassword();
 			String host = emailAccountSettings.getRecieveServerName();
 			String storeType = "imaps";
-			boolean flag = MailBox.deleteEmailsByUid(host, storeType, email, password, messageIds, folderName);
+			boolean flag = MailBox.deleteEmailsByUid(host, storeType, email, password, messageIds, folderName, deleteForever);
 			response.setObject(flag);
 			response.setResponse(flag ? Result.SUCCESS.name() : Result.FAILED.name());
 			response.setResponseMessage(flag ? Result.SUCCESS.getValue() : Result.FAILED.getValue());

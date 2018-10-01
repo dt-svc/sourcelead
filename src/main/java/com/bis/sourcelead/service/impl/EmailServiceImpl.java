@@ -23,6 +23,7 @@ import com.bis.sourcelead.dto.AttachmentDTO;
 import com.bis.sourcelead.dto.FileInfo;
 import com.bis.sourcelead.dto.HotListEmailCampaignDTO;
 import com.bis.sourcelead.dto.ReadMailDTO;
+import com.bis.sourcelead.dto.Response;
 import com.bis.sourcelead.entity.EmailAccountSettings;
 import com.bis.sourcelead.entity.EmailAttachment;
 import com.bis.sourcelead.entity.EmailMessage;
@@ -278,7 +279,8 @@ public class EmailServiceImpl implements EmailService {
   	}
 
 	@Override
-	public boolean sendEmailFromMailBox(ReadMailDTO readMailDTO, long userId, long orgId, long orgLocationId, String staticPath) {
+	public Response<Boolean> sendEmailFromMailBox(ReadMailDTO readMailDTO, long userId, long orgId, long orgLocationId, String staticPath) {
+		Response<Boolean> response = new Response<>();
 		try {
 			EmailAccountSettings emailAccountSettings = emailAccountSettingsDao.getEmailAccount(readMailDTO.getEmailAccountId(), userId);
 			String email = emailAccountSettings.getEmail();
@@ -298,12 +300,12 @@ public class EmailServiceImpl implements EmailService {
 				attachmentList.add(attachment);
 			}*/
 
-			boolean result = MailBox.composeEmail(outgoingHost, outgoingPort, incomingHost, incomingPort, storeType, email, password,
+			response = MailBox.composeEmail(outgoingHost, outgoingPort, incomingHost, incomingPort, storeType, email, password,
 					orgId, orgLocationId, staticPath, readMailDTO);
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
-		return false;
+		return response;
 	}
 
 	/*@Override

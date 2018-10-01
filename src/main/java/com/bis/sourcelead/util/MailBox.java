@@ -169,8 +169,8 @@ public class MailBox {
 				/*readMailDTO.setFrom(message.getFrom() != null ? message.getFrom()[0].toString() : "");*/
 				if(message.getFrom() != null) {
 					InternetAddress internetAddress =  (InternetAddress)((Address)message.getFrom()[0]);
-					/*readMailDTO.setFrom(internetAddress.getPersonal() + " <" + internetAddress.getAddress() + ">");*/
-					readMailDTO.setFrom(internetAddress.getPersonal());
+					readMailDTO.setFrom(internetAddress.getAddress());
+					/*readMailDTO.setFrom(internetAddress.getPersonal() != null ? internetAddress.getPersonal() : internetAddress.getAddress());*/
 				} else {
 					readMailDTO.setFrom("");
 				}
@@ -227,7 +227,7 @@ public class MailBox {
 	}
 	
 	public static ReadMailDTO getMailDTOByUID(String host, String storeType, String user, String password, String folderName, long orgId,
-			long orgLocationId, long uid) {
+			long orgLocationId, long uid, String staticPath) {
 		ReadMailDTO readMailDTO = new ReadMailDTO();
 		try {
 			Properties properties = new Properties();
@@ -247,13 +247,13 @@ public class MailBox {
 			Message message = uf.getMessageByUID(uid);
 			if (message != null) {
 				readMailDTO.setMessageId(uf.getUID(message));
-				readMailDTO.setFrom(message.getFrom() != null ? message.getFrom()[0].toString() : "");
-				/*if(message.getFrom() != null) {
+				/*readMailDTO.setFrom(message.getFrom() != null ? message.getFrom()[0].toString() : "");*/
+				if(message.getFrom() != null) {
 					InternetAddress internetAddress =  (InternetAddress)((Address)message.getFrom()[0]);
-					readMailDTO.setFrom(internetAddress.getPersonal() + " <" + internetAddress.getAddress() + ">");
+					readMailDTO.setFrom(internetAddress.getAddress());
 				} else {
 					readMailDTO.setFrom("");
-				}*/
+				}
 				String cc = "";
 				boolean ccFlag = false;
 				Address[] ccList = message.getAllRecipients();
@@ -265,7 +265,7 @@ public class MailBox {
 									: ((InternetAddress) address).getAddress();*/
 							cc += (cc.isEmpty() ? "" : "; ") + ((InternetAddress) address).getAddress();
 						} else
-							readMailDTO.setTo(address.toString());
+							readMailDTO.setTo(((InternetAddress) address).getAddress());
 						ccFlag = true;
 					}
 				}
@@ -299,7 +299,7 @@ public class MailBox {
 							String fileName = part.getFileName();
 							String fileType = part.getContentType();
 							// attachFiles += fileName + ", ";
-							String filePath = "C:\\Manoj\\E\\slead-static" + System.getProperty("file.separator") + orgId
+							String filePath = staticPath + System.getProperty("file.separator") + orgId
 									+ System.getProperty("file.separator") + orgLocationId + System.getProperty("file.separator")
 									+ "Email Attachments" + System.getProperty("file.separator") + user
 									+ System.getProperty("file.separator") + folderName + System.getProperty("file.separator") + uid;
@@ -347,7 +347,7 @@ public class MailBox {
 	}
 
 	public static boolean deleteEmailsByUid(String host, String storeType, String email, String password, long[] messageIds,
-			String folderName) {
+			String folderName, boolean deleteForever) {
 		try {
 			Properties properties = new Properties();
 			properties.put("mail.imap.host", host);
@@ -365,18 +365,21 @@ public class MailBox {
 			for (long uid : messageIds) {
 				Message message = uf.getMessageByUID(uid);
 				if (message != null) {
-					Folder trashFolder = null;
-					Folder[] allFolders = store.getDefaultFolder().list("*");
-					for(Folder folder : allFolders) {
-						if(folder.getName().contains("Trash")) {
-							trashFolder = folder;
+					if(deleteForever) {
+//						emailFolder.setFlags(messageIds, new Flags(Flags.Flag.DELETED), true);
+						message.setFlag(Flags.Flag.DELETED, true);
+					} else {
+						Folder trashFolder = null;
+						Folder[] allFolders = store.getDefaultFolder().list("*");
+						for (Folder folder : allFolders) {
+							if (folder.getName().contains("Trash")) {
+								trashFolder = folder;
+							}
 						}
+						if (trashFolder == null || !trashFolder.exists())
+							trashFolder.create(Folder.HOLDS_MESSAGES);
+						emailFolder.copyMessages(new Message[] { message }, trashFolder);
 					}
-					if(trashFolder == null || !trashFolder.exists())
-						trashFolder.create(Folder.HOLDS_MESSAGES);
-					emailFolder.copyMessages(new Message[] { message }, trashFolder);	
-//					emailFolder.setFlags(msgs, new Flags(Flags.Flag.DELETED), true);
-//					message.setFlag(Flags.Flag.DELETED, true);
 				}
 			}
 			emailFolder.close(true);
@@ -389,8 +392,9 @@ public class MailBox {
 	}
 	
 	@SuppressWarnings("static-access")
-	public static boolean composeEmail(String outgoingHost, String outgoingPort, String incomingHost, String incomingPort,
+	public static Response<Boolean> composeEmail(String outgoingHost, String outgoingPort, String incomingHost, String incomingPort,
 			String transportType, String email, String password, long orgId, long orgLocationId, String staticPath, ReadMailDTO readMailDTO) {
+		Response<Boolean> response = new Response<>();
 		try {
 			Properties properties = new Properties();
 			properties.put("mail.transport.protocol", transportType);
@@ -498,10 +502,14 @@ public class MailBox {
 				}
 			}
 			System.out.println("------------------ Email Sent ------------------");
+			response.setResponse(Result.SUCCESS.name());
+			response.setResponseMessage("Email Sent Successfully....");
 		} catch (Exception e) {
 			e.printStackTrace();
+			response.setResponse(Result.FAILED.name());
+			response.setResponseMessage(Result.FAILED.getValue());
 		}
-		return false;
+		return response;
 	}
 	
 	/*@SuppressWarnings("static-access")

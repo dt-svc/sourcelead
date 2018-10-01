@@ -170,22 +170,30 @@ public class MailBoxController {
 	public ModelAndView emailSettings(HttpServletRequest request, @RequestParam(defaultValue = "others") String source) {
 //		User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
 		ModelAndView model = new ModelAndView();
-		String server = "secure.emailsrvr.com";
-		String port = "993";
+		String incomingServer = "secure.emailsrvr.com";
+		String incomingPort = "993";
+		String outgoingServer = "secure.emailsrvr.com";
+		String outgoingPort = "465";
 		switch (source) {
 		case "gmail":
-			server = "imap.gmail.com";
-			port = "993";
+			incomingServer = "imap.gmail.com";
+			incomingPort = "993";
+			outgoingServer = "smtp.gmail.com";
+			outgoingPort = "465";
 			break;
 		case "yahoo":
-			server = "imap.mail.yahoo.com";
-			port = "993";
+			incomingServer = "imap.mail.yahoo.com";
+			incomingPort = "993";
+			outgoingServer = "smtp.mail.yahoo.com";
+			outgoingPort = "465";
 			break;
 		default:
 			break;
 		}
-		model.addObject("server", server);
-		model.addObject("port", port);
+		model.addObject("incomingServer", incomingServer);
+		model.addObject("incomingPort", incomingPort);
+		model.addObject("outgoingServer", outgoingServer);
+		model.addObject("outgoingPort", outgoingPort);
 //		model.addObject("username", user.getFullName());
 		model.addObject("sourceleadUrl", sourceleadUrl);
 		model.setViewName("emailSettings");

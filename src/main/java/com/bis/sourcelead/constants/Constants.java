@@ -696,6 +696,7 @@ public class Constants {
 	public static final String ELK_USER_TYPE = "user";
 	public static final String ELK_REQUIREMENT_INDEX = "requirement";
 	public static final String ELK_REQUIREMENT_TYPE = "requirement";
+	public static final String ELK_EMAIL_INDEX = "email";
 	public static final String ELK_CANDIDATE_ID_PREFIX = "CND";
 	public static final String ELK_CLIENTVENDOR_INDEX = "clientvendor";
 	public static final String ELK_CLIENTVENDOR_TYPE = "clientvendors";

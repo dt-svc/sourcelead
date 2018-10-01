@@ -51,29 +51,27 @@ display: none;
             
             <div class="col-md-6 mb">
                 <h4>Receiving emails</h4>
-                <p>Sever Type</p>
-                <p>IMPA Mail Server</p>
+                <p>Sever Type (IMAP Mail Server)</p>
                 <div class="col-md-8 noPad minHeight">
-                    <label>Server name<span class="text-danger">&nbsp;*</span></label>
-                    <input class="form-control" value="${server}" name="recieveServerName" data-validation="required validate_Space" field-name="RecieveServerName" placeholder="example ${server}" type="text">                 
+                    <label>Incoming/Receiving Server<span class="text-danger">&nbsp;*</span></label>
+                    <input class="form-control" value="${incomingServer}" name="recieveServerName" data-validation="required validate_Space" field-name="RecieveServerName" placeholder="example ${server}" type="text">                 
                 </div>
                 <div class="col-md-4 padding_right minHeight">
                     <label>Port<span class="text-danger">&nbsp;*</span></label>
-                    <input class="form-control" value="${port}" name="recievePort" data-validation="required validate_Space"  field-name="recievePort" placeholder="123" type="text">                
+                    <input class="form-control" value="${incomingPort}" name="recievePort" data-validation="required validate_Space"  field-name="recievePort" placeholder="123" type="text">                
                 </div>                
             </div>
                             
             <div class="col-md-6 minHeight mb">
                 <h4>Sending emails</h4>
-                <p>Sever Type</p>
-                <p>SMTP Mail Server</p>
+                <p>Sever Type (SMTP Mail Server)</p>
                 <div class="col-md-8 noPad minHeight">
-                    <label>Server name<span class="text-danger">&nbsp;*</span></label>
-                    <input class="form-control" value="${server}" name="SendServerName" data-validation="required validate_Space" field-name="SendServer" placeholder="example ${server}" type="text">                 
+                    <label>Outgoing/Sending Server<span class="text-danger">&nbsp;*</span></label>
+                    <input class="form-control" value="${outgoingServer}" name="SendServerName" data-validation="required validate_Space" field-name="SendServer" placeholder="example ${server}" type="text">                 
                 </div>
                 <div class="col-md-4 padding_right minHeight">
                     <label>Port<span class="text-danger">&nbsp;*</span></label>
-                    <input class="form-control" value="${port}" name="sendPort" data-validation="required validate_Space" field-name="SendPort" placeholder="123" type="text">                
+                    <input class="form-control" value="${outgoingPort}" name="sendPort" data-validation="required validate_Space" field-name="SendPort" placeholder="123" type="text">                
                 </div>                
             </div> 
 

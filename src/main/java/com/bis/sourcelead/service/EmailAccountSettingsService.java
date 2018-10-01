@@ -26,8 +26,8 @@ public interface EmailAccountSettingsService {
 	
 	public EmailAccountSettingsDTO getEmailAccount(Long id,Long userId)throws Exception;
 
-	ReadMailDTO getEmailByUID(long emailAccountId, long userId, long orgId, long orgLocationId, long uid, String folderName);
+	ReadMailDTO getEmailByUID(long emailAccountId, long userId, long orgId, long orgLocationId, long uid, String folderName, String staticPath);
 
-	public Response<Boolean> deleteEmailsByUID(long emailAccountId, long userId, long[] messageIds, String folderName);
+	public Response<Boolean> deleteEmailsByUID(long emailAccountId, long userId, long[] messageIds, String folderName, boolean deleteForever);
 
 }
