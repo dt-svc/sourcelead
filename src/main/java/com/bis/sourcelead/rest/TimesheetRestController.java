@@ -1944,8 +1944,8 @@ public class TimesheetRestController {
 						ticketNumber = teDTO.getTimesheetTaskDTO().getTicketNumber();
 					}
 					int count = 0;
-					if(weekCountMap.get(teDTO.getDate()) != null){
-						count = weekCountMap.get(teDTO.getDate())+1;
+					if(weekCountMap.get(taskId+"##"+ticketNumber+"##"+teDTO.getDate()) != null){
+						count = weekCountMap.get(taskId+"##"+ticketNumber+"##"+teDTO.getDate())+1;
 					}
 					weekCountMap.put(teDTO.getDate(),count);
 					taskIdWithRef = taskId+"##"+ticketNumber+"##"+count;
