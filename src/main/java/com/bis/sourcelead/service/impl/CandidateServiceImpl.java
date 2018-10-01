@@ -53,11 +53,8 @@ import com.bis.sourcelead.dto.CandidateDTO;
 import com.bis.sourcelead.dto.CandidateMarketPlaceDTO;
 import com.bis.sourcelead.dto.CustomFormFieldDTO;
 import com.bis.sourcelead.dto.FileInfo;
-<<<<<<< HEAD
 import com.bis.sourcelead.dto.ImmigrationCandidateDTO;
 import com.bis.sourcelead.dto.ImmigrationTemplateListDTO;
-=======
->>>>>>> 1b423963abd42ee1893d61492f95103229e90278
 import com.bis.sourcelead.dto.ResponseList;
 import com.bis.sourcelead.elk.index.CandidateIndex;
 import com.bis.sourcelead.elk.index.helper.CandidateIndexHelper;
@@ -2638,10 +2635,7 @@ private Sheet createXlsSheet(Sheet createExcelsheet, Row writeRow,Candidate cand
 	public ResponseList<CandidateMarketPlaceDTO> getGlobalMarketCandidateList(CandidateMarketPlaceDTO candidateMarketPlaceDTO, String searchValue) {
 		return candidateDao.getGlobalMarketCandidateList(candidateMarketPlaceDTO, searchValue);
 	}
-	@Override
-	public List<Candidate> getAllCandidatesList() throws Exception {
-		return candidateDao.getAllCandidatesList();
-	}
+
 	@Override
 	public void saveBulkCandidates(List<Candidate> candidatesList) throws Exception {
 		candidateDao.saveBulkCandidates(candidatesList);
