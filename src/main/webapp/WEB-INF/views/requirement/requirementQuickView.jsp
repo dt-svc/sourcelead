@@ -173,6 +173,10 @@
 			            <div class="clearfix"></div>
 			            <h2 class="RPadT"> Job Details:</h2> 
 			            <div class="require_one">
+			                <div class="require_wrap_details_cta"> <b>Profile %:</b><span>${requirement.profilePercentage} %</span>
+				            	<div class="clearfix"></div> 
+				            </div> 
+				            
 				            <div class="require_wrap_details_cta"> <b>No. of positions:</b><span>${!empty requirement.positions ? requirement.positions : ' -- '}</span>
 				            	<div class="clearfix"></div> 
 				            </div> 
