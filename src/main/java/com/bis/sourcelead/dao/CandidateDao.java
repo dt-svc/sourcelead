@@ -156,4 +156,6 @@ public interface CandidateDao {
 	public List<Candidate> getAllCandidatesList() throws Exception;
 
 	public void saveMarketPlace(CandidateMarketPlace marketPlace) throws Exception;
+
+	public ResponseList<CandidateDTO> getCandidatesByCandidateIds(List<String> candidateIdsStr);
 }

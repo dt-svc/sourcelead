@@ -1407,7 +1407,7 @@ function cancel(candidateId){
 	  	<a class="shareIcon mr5" title="Share" href="javascript:void(0)" onclick="shareJob();"></a>
 	  	<a class="sendIcon mr5" title="Submit" href="javascript:void(0)" onclick="submitCandidatesToJob();"></a>
 	  </li>        
-      
+ 
            <sec:authorize access="hasAnyRole('ROLE_CREATE_CANDIDATE','ROLE_CROWDSOURCING_CANDIDATES')">
           <!-- <li><b id="addmore"><a onClick="addCandidate();" title="Add Candidate" class="newAdBtn mr5" href="javascript:void(0)">+  Candidate</a></b>
           		<div id="addmorepop" class="approved_pop"></div>
@@ -1513,13 +1513,18 @@ function cancel(candidateId){
 	 	$('input:checkbox[name=sharedcheckbox]:checked').each(function(){
 	 		candidateIds.push($(this).attr("id"));
 	 	});
+	 	//$("#marketPlaceIdsHidden").val(candidateIds)
+	 	alert(candidateIds);
 	 	$.ajax({
-	    	type: "GET",
-	        url: sourceleadUrl+"/addToMarketPlace?candidateIds="+candidateIds, 
-	        success: function(data) {
-	        	window.location.href = sourceleadUrl+"/marketPlaceList";
-	        }
+		    	type: "POST",
+		        url: sourceleadUrl+"/navigateMarketPlaceAjax",
+		        data : {candidateIdsVal : candidateIds},
+		        success: function(json) {
+		        	alert("success");
+		        	location.href = sourceleadUrl+"/navigateMarketPlaceList";
+		        }
 	 	});
+	 	//location.href = sourceleadUrl+"/navigateMarketPlaceList?candidateIds="+candidateIds
    }
    
    

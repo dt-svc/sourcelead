@@ -227,4 +227,6 @@ public interface CandidateService {
 	public List<Candidate> getAllCandidatesList() throws Exception;
 
 	public void copyCandidateToMarketplace(String candidateIdsStr, User user) throws NumberFormatException, Exception;
+
+	public ResponseList<CandidateDTO> getCandidatesByCandidateIds(List<String> candidateUUIds);
 }

@@ -57,6 +57,7 @@ import com.bis.sourcelead.dto.CandidateMarketPlaceDTO;
 import com.bis.sourcelead.dto.CustomFormFieldDTO;
 import com.bis.sourcelead.dto.FileInfo;
 import com.bis.sourcelead.dto.ImmigrationCandidateDTO;
+import com.bis.sourcelead.dto.ImmigrationTemplateListDTO;
 import com.bis.sourcelead.dto.ResponseList;
 import com.bis.sourcelead.elk.index.CandidateIndex;
 import com.bis.sourcelead.elk.index.helper.CandidateIndexHelper;
@@ -2567,7 +2568,7 @@ private Sheet createXlsSheet(Sheet createExcelsheet, Row writeRow,Candidate cand
 			marketPlace.setMobilePhone(candidate.getMobilePhone());
 			marketPlace.setAlternateMobilePhone(candidate.getAlternateMobilePhone());
 			marketPlace.setDesignation(candidate.getDesignation());
-			marketPlace.setEmploymentType(null);
+			marketPlace.setEmploymentType(candidate.getDesignationType());
 			marketPlace.setLocation(candidate.getLocation());
 			marketPlace.setScore(candidate.getCandidateScore());
 			marketPlace.setSkillsName(candidate.getSkillsName());
@@ -2577,7 +2578,7 @@ private Sheet createXlsSheet(Sheet createExcelsheet, Row writeRow,Candidate cand
 			marketPlace.setCurrentRateType(candidate.getCurrentRateType());
 			marketPlace.setCurrentRateCurrency(candidate.getCurrentRateCurrency());
 			marketPlace.setExpectedRate(candidate.getExpectedRate());
-			marketPlace.setExpectedRateType(null);
+			marketPlace.setExpectedRateType(candidate.getRateType());
 			marketPlace.setExpectedRateCurrencey(candidate.getExpectedRateCurrencey());
 			marketPlace.setNoticePeriod(candidate.getNoticePeriod());
 			marketPlace.setMarketPrice(null);
@@ -2594,6 +2595,12 @@ private Sheet createXlsSheet(Sheet createExcelsheet, Row writeRow,Candidate cand
 			
 		}
 		
+	}
+
+	@Override
+	public ResponseList<CandidateDTO> getCandidatesByCandidateIds(List<String> candidateIdsStr) {
+		ResponseList<CandidateDTO> candidates = candidateDao.getCandidatesByCandidateIds(candidateIdsStr);
+		return candidates;
 	}
 
 }

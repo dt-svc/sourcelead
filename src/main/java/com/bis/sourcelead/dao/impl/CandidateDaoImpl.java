@@ -2151,5 +2151,22 @@ public class CandidateDaoImpl implements CandidateDao {
 		}
 	}
 
+	@Override
+	@Transactional(rollbackFor = { Exception.class })
+	public ResponseList<CandidateDTO> getCandidatesByCandidateIds(List<String> candidateIds) {
+		Session session = this.sessionFactory.getCurrentSession();
+		String query = "from Candidate candidate where candidate.id IN ( :candidateIds )";
+		List<Candidate> candidates = session.createQuery(query).setParameterList("candidateIds", candidateIds).list();
+		List<CandidateDTO> candidateDTOList = new ArrayList<>();
+		for(Candidate candidate : candidates){
+			CandidateDTO dto = new CandidateDTO();
+			BeanUtils.copyProperties(candidate, dto);
+			candidateDTOList.add(dto);
+		}
+		ResponseList<CandidateDTO> responseList = new ResponseList<>();
+		responseList.setData(candidateDTOList);
+		return responseList;
+	}
+
 }
 
