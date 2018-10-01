@@ -298,15 +298,15 @@ public void storeAddExpensesData(ExpensesDTO expensesDTO, User loginUser, OrgLoc
 	   }
 	
 	if (StringUtils.isEmpty(expenses.getExpenseId())){
-	    OrgLocations orgLocations = null;
+	    /*OrgLocations orgLocations = null;
 	    Projects projects =projMembers.getProjects();
 		if(projects != null && projects.getOrgLocationsId() != null && projects.getOrgLocationsId().getOrg() != null && StringUtils.isNotEmpty(projects.getOrgLocationsId().getOrg().getOrgType()) && !projects.getOrgLocationsId().getOrg().getOrgType().equalsIgnoreCase(Constants.GUEST)) {
 			orgLocations = projects.getOrgLocationsId();
 		}else {
 			orgLocations = orgLoc;
-		}
+		}*/
 		 synchronized (this) {
-			   String expenseId = getExpenseId(orgLocations);
+			   String expenseId = getExpenseId(orgLoc);
 			   expenses.setExpenseId(expenseId);
 			   expenses = addExpensesDao.storeAddExpensesData(expenses);
 			   storeExpenseApprovers(status, expenses, managers, loginUser, orgLoc,currencyCode);
