@@ -444,6 +444,7 @@ public class Constants {
 	public static final int TAB_MY_TIMESHEET = 5;
 	public static final int TAB_TIMESHEET_APPROVAL = 6;
 	public static final int TAB_REQUIREMENT = 8;
+	public static final int TAB_CANDIATE = 10;
 	public static final int TAB_USER = 2;
 	public static final int TAB_PROJECTS = 3;
 	public static final int TAB_CONTRACTS = 16;
@@ -696,6 +697,7 @@ public class Constants {
 	public static final String ELK_USER_TYPE = "user";
 	public static final String ELK_REQUIREMENT_INDEX = "requirement";
 	public static final String ELK_REQUIREMENT_TYPE = "requirement";
+	public static final String ELK_EMAIL_INDEX = "email";
 	public static final String ELK_CANDIDATE_ID_PREFIX = "CND";
 	public static final String ELK_CLIENTVENDOR_INDEX = "clientvendor";
 	public static final String ELK_CLIENTVENDOR_TYPE = "clientvendors";

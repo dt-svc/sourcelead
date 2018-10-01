@@ -27,6 +27,49 @@ public class YTDPayrollDTO {
 	
 	private Map<String, Double> ytdContributionTypeMap;
 	
+	private BigDecimal contributionYTD;
+	
+	private BigDecimal contributionMTD;
+	
+	private BigDecimal contributionQTD;
+	
+	private BigDecimal deductionYTD;
+	
+	private BigDecimal deductionMTD;
+	
+	private BigDecimal deductionQTD;
+	
+
+	public BigDecimal getContributionYTD()
+	{
+		return contributionYTD;
+	}
+
+	public BigDecimal getContributionMTD()
+	{
+		return contributionMTD;
+	}
+
+	public BigDecimal getContributionQTD()
+	{
+		return contributionQTD;
+	}
+
+	public void setContributionYTD(BigDecimal contributionYTD)
+	{
+		this.contributionYTD = contributionYTD;
+	}
+
+	public void setContributionMTD(BigDecimal contributionMTD)
+	{
+		this.contributionMTD = contributionMTD;
+	}
+
+	public void setContributionQTD(BigDecimal contributionQTD)
+	{
+		this.contributionQTD = contributionQTD;
+	}
+
 	public Map<String, Double> getYtdContributionTypeMap()
 	{
 		return ytdContributionTypeMap;
@@ -136,6 +179,29 @@ public class YTDPayrollDTO {
 	{
 		this.ytdDedTypeMap = ytdDedTypeMap;
 	}
-	
+
+	public BigDecimal getDeductionYTD() {
+		return deductionYTD;
+	}
+
+	public void setDeductionYTD(BigDecimal deductionYTD) {
+		this.deductionYTD = deductionYTD;
+	}
+
+	public BigDecimal getDeductionMTD() {
+		return deductionMTD;
+	}
+
+	public void setDeductionMTD(BigDecimal deductionMTD) {
+		this.deductionMTD = deductionMTD;
+	}
+
+	public BigDecimal getDeductionQTD() {
+		return deductionQTD;
+	}
+
+	public void setDeductionQTD(BigDecimal deductionQTD) {
+		this.deductionQTD = deductionQTD;
+	}
 	
 }

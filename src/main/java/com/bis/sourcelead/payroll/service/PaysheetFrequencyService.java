@@ -14,6 +14,7 @@ import com.bis.sourcelead.payroll.dto.PayrollComparisonDTO;
 import com.bis.sourcelead.payroll.dto.PayrollReportDTO;
 import com.bis.sourcelead.payroll.dto.PaysheetFrequencyDTO;
 import com.bis.sourcelead.payroll.dto.USPayrollDTO;
+import com.bis.sourcelead.payroll.dto.YTDPayrollDTO;
 import com.bis.sourcelead.payroll.entity.DeductionHistory;
 import com.bis.sourcelead.payroll.entity.EmployeePayroll;
 import com.bis.sourcelead.payroll.entity.PaysheetFrequency;
@@ -33,8 +34,8 @@ public interface PaysheetFrequencyService {
 	PaysheetFrequency getPaySheetFrequencyByGroupIdAndFrequencyStartEnddate(String dates,
 			OrgLocations orgLocation, Long groupId);
 
-	List<DeductionHistory> getContributionYTD(EmployeePayroll payroll,Long contributionId,OrgLocations ogLocations);
+	YTDPayrollDTO getContributionYTD(EmployeePayroll payroll,Long contributionId,OrgLocations ogLocations, String reportType);
 
-	List<DeductionHistory> getDeductionYTD(EmployeePayroll payroll, Long deductionId, OrgLocations orgLocation);
+	YTDPayrollDTO getDeductionYTD(EmployeePayroll payroll, Long deductionId, OrgLocations orgLocation, String reportType);
 	
 }

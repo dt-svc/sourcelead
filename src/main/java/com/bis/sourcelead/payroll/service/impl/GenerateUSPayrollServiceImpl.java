@@ -269,7 +269,8 @@ public class GenerateUSPayrollServiceImpl implements GenerateUSPayrollService{
 									BigDecimal projectPayRate = BigDecimal.ZERO;
 									if(entry.getValue() !=null ) {
 										for(TotalHoursDTO totalHoursDTO : entry.getValue()) {
-											projectPayRate = new BigDecimal(totalHoursDTO.getPayRate());
+//											projectPayRate = new BigDecimal(totalHoursDTO.getPayRate());
+											projectPayRate = payrollUtil.getHourlyRate(new BigDecimal(totalHoursDTO.getPayRate()), totalHoursDTO.getPayRateType());
 											if(StringUtils.isNotBlank(totalHoursDTO.getBillableHours())) {
 												projectTotalHours  = commonUtil.getTotalRegularOverTimeHours(Double.parseDouble(totalHoursDTO.getBillableHours()),projectTotalHours);
 											}
@@ -1152,17 +1153,17 @@ private Set<BankDataHistory> getBankDataHistory(AssociateTaxDedContriView associ
 				map.put("FLI", tax.getFLI());
 				map.put("HCSF", tax.getHCSF());
 				map.put("WC", tax.getWC());
-//				payrollDTO.setFederal(tax.getFederalWithholding());
-//				payrollDTO.setFica(tax.getFicaWithholding());
-//				payrollDTO.setAeic(tax.getEarnedIncCredit());
-//				payrollDTO.setMedicare(tax.getMedicareWithholding());
-//				payrollDTO.setStateWithHolding(tax.getStateWithholding());
-//				payrollDTO.setLocalTax(tax.getLocalTax());
+				payrollDTO.setFederal(tax.getFederalWithholding());
+				payrollDTO.setFica(tax.getFicaWithholding());
+				payrollDTO.setAeic(tax.getEarnedIncCredit());
+				payrollDTO.setMedicare(tax.getMedicareWithholding());
+				payrollDTO.setStateWithHolding(tax.getStateWithholding());
+				payrollDTO.setLocalTax(tax.getLocalTax());
 			}
-			for (Map.Entry<String, BigDecimal> entry : map.entrySet())
-			{
-			    logger.info(entry.getKey() + "/" + entry.getValue());
-			}
+//			for (Map.Entry<String, BigDecimal> entry : map.entrySet())
+//			{
+//			    logger.info(entry.getKey() + "/" + entry.getValue());
+//			}
 			payrollDTO.setTax(map);
 			payrollDTO.setTaxes(payroll.getTaxes());
 			
@@ -1334,9 +1335,6 @@ private Set<BankDataHistory> getBankDataHistory(AssociateTaxDedContriView associ
 					updatedDedHis = getUpdatedContribution(updatedDedHis,postContribution,PayrollConstant.POST_TAX);
 				}
 			}
-//			List<ContributionDTO> postContribution = null;
-			
-			
 			
 			EmployeePayroll updatedPayroll = payrollAdjustmentService.updateEmployeePayroll(payroll);
 			if (updatedPayroll != null) {

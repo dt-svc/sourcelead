@@ -111,7 +111,7 @@ public class ImmigrationCommonDaoImpl implements ImmigrationCommonDao {
 		try {
 			Session session = this.sessionFactory.getCurrentSession();
 			logger.debug(" before query execute templateLst size -->" + templateLst.size());
-			String queryString = "from ImmigrationTemplate it where it.status = 1 and it.orgLocations.id =:orgLocationId";
+			String queryString = "from ImmigrationTemplate it where it.orgLocations.id =:orgLocationId";
 			templateLst = session.createQuery(queryString).setLong("orgLocationId", orgLocations.getId()).list();
 			logger.debug("tempalte Details loaded Successfully templateLst size -->" + templateLst.size());
 
@@ -860,8 +860,8 @@ public class ImmigrationCommonDaoImpl implements ImmigrationCommonDao {
 		Query hqlQuery1 = null;
 		Query hqlQuery = null;
 		if (filterVal.size() != 0) {
-			resultCountQuery = listQueryCount + query1 + query2;
-			resultQuery = listQuery + query1 + query2 + sortingQry;
+			resultCountQuery = listQueryCount + query1 + query2+sortingQry;
+			resultQuery = listQuery + query1 + query2;
 			hqlQuery = session.createQuery(resultQuery);
 			hqlQuery1 = session.createQuery(resultCountQuery);
 			if (filterVal.get("type") != null) {
@@ -893,15 +893,14 @@ public class ImmigrationCommonDaoImpl implements ImmigrationCommonDao {
 			hqlQuery = hqlQuery.setLong("orgLocationId", orgLocations.getId());
 			hqlQuery1 = hqlQuery1.setLong("orgLocationId", orgLocations.getId());
 		} else {
-			resultQuery = listQuery + query1 + sortingQry;
-			resultCountQuery = listQueryCount + query1;
+			resultQuery = listQuery + query1;
+			resultCountQuery = listQueryCount + query1+ sortingQry;
 			hqlQuery = session.createQuery(resultQuery).setLong("orgLocationId", orgLocations.getId());
 			hqlQuery1 = session.createQuery(resultCountQuery).setLong("orgLocationId", orgLocations.getId());
 		}
-		ImmigrationViewLst = hqlQuery.list();
+		ImmigrationViewLst = hqlQuery.setFirstResult(immigrationListDTO.getStart()).setMaxResults(immigrationListDTO.getLength()).list();
 
-		countlist = hqlQuery1.setFirstResult(immigrationListDTO.getStart())
-				.setMaxResults(immigrationListDTO.getLength()).list();
+		countlist = hqlQuery1.list();
 		int totalCount = 0;
 		if (immigrationListDTO != null) {
 			if (countlist != null && !countlist.isEmpty()) {
