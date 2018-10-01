@@ -1013,18 +1013,17 @@ function prepareDynamicPagination(name, fullName, id, paginator, index) {
 </script>
 <script type="text/javascript">
 function deleteConMail1(id){
-	alert("Delete Id : " + id);
-	/* $.ajax({
-		type : "POST",
-		url : sourceleadUrl+"/deleteEmailAccount?${_csrf.parameterName}=${_csrf.token}&id="+id,
-		success : function(data) {
-				location.replace(sourceleadUrl+"/mailBox/mails");
-		},
-	});  */
+	if (confirm('Are you sure, you want to delete mail configuration?')) {
+		$.ajax({
+			type : "POST",
+			url : sourceleadUrl+"/deleteEmailAccount?${_csrf.parameterName}=${_csrf.token}&id="+id,
+			success : function(data) {
+					location.replace(sourceleadUrl+"/mailBox/mails");
+			},
+		});
+	}
 }
 </script>
-
-
 
 <!-- <script src="resources/js/jquery.dataTables.min.js" type="text/javascript" charset="utf-8"></script> -->
 

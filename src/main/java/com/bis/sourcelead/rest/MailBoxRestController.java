@@ -901,22 +901,19 @@ public class MailBoxRestController {
 	public @ResponseBody ResponseList<ReadMailDTO> emailFolderRead(Long id, @RequestParam(defaultValue = "") String folderName,
 			HttpServletRequest request, Paginator paginator) throws Exception {
 		ResponseList<ReadMailDTO> responseList = new ResponseList<>();
-		/*
-		 * if(request.getSession().getAttribute("emailList") != null) { responseList =
-		 * (ResponseList<ReadMailDTO>) request.getSession().getAttribute("emailList"); }
-		 * else {
-		 */
-		User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
-		OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
-		Long userId = user.getId();
-		folderName = folderName.replaceAll("-and-", "&");
-		List<ReadMailDTO> readMailList = emailAccountSettingsService.emailFolderRead(id, folderName, userId, orgLocation.getId(),
-				paginator);
-		responseList.setData(readMailList);
-		responseList.setPaginator(paginator);
-		/*
-		 * request.getSession().setAttribute("emailList", responseList); }
-		 */
+		/*if (request.getSession().getAttribute("emailList") != null) {
+			responseList = (ResponseList<ReadMailDTO>) request.getSession().getAttribute("emailList");
+		} else {*/
+			User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+			OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+			Long userId = user.getId();
+			folderName = folderName.replaceAll("-and-", "&");
+			List<ReadMailDTO> readMailList = emailAccountSettingsService.emailFolderRead(id, folderName, userId, orgLocation.getId(),
+					paginator);
+			responseList.setData(readMailList);
+			responseList.setPaginator(paginator);
+			/*request.getSession().setAttribute("emailList", responseList);
+		}*/
 		return responseList;
 	}
 
@@ -928,8 +925,7 @@ public class MailBoxRestController {
 		Response<Boolean> response = new Response<>();
 		User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
 		folderName = folderName.replaceAll("-and-", "&");
-		// response = emailAccountSettingsService.deleteEmailsByUID(emailAccountId,
-		// user.getId(), messageIds, folderName, deleteForever);
+		response = emailAccountSettingsService.deleteEmailsByUID(emailAccountId, user.getId(), messageIds, folderName, deleteForever);
 		return response;
 	}
 	 
@@ -955,15 +951,8 @@ public class MailBoxRestController {
 		Org org = (Org) SourceLeadSessionManager.getSessionAttribute(request, "org");
 		OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 		if (user != null && org != null && orgLocation != null) {
-			/*MultipartFile multiFile = null;
-			Iterator<String> itrator = request.getFileNames();
-			if (itrator.hasNext()) {
-				multiFile = request.getFile(itrator.next());
-			}*/
-//			return emailService.sendEmailFromMailBox(readMailDTO, user.getId(), org.getId(), orgLocation.getId(), staticPath);
+			return emailService.sendEmailFromMailBox(readMailDTO, user.getId(), org.getId(), orgLocation.getId(), staticPath);
 		}
-		response.setResponse(Result.SUCCESS.name());
-		response.setResponseMessage("test");
 		return response;
 	}
 	
