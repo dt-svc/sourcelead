@@ -19,7 +19,7 @@
 }
 </style>
 
-<div class="mb clearfix col-md-12"> 
+<div class="mb clearfix col-md-12 noPad"> 
       <div class=" dashNewWrap hdrPosition minHeight_225 mb10">
       
         	<div class="dashNewWrapHead noBor clearfix">

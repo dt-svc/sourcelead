@@ -31,6 +31,7 @@ import com.bis.sourcelead.payroll.dto.CheckRegisterReportDTO;
 import com.bis.sourcelead.payroll.dto.PayPeriodDTO;
 import com.bis.sourcelead.payroll.dto.PayrollComparisonDTO;
 import com.bis.sourcelead.payroll.dto.PayrollReportDTO;
+import com.bis.sourcelead.payroll.entity.DeductionHistory;
 import com.bis.sourcelead.payroll.service.PayrollReportService;
 import com.bis.sourcelead.payroll.service.PaysheetFrequencyService;
 import com.bis.sourcelead.payroll.service.USPayPeriodService;
@@ -388,7 +389,7 @@ public class USPayrollReportRestController {
 	
 	
 	/**
-	 * Get Check Register Payroll Reports 
+	 * Get Check Register & Deposit Reports Payroll Reports 
 	 * @param groupId
 	 * @param request
 	 * @param response
@@ -424,6 +425,67 @@ public class USPayrollReportRestController {
 		if (file != null) {
 			file.delete();
 		}
+	}
+	
+	/**
+	 * Export Pdf for Contribution
+	 * 
+	 * @param payrollReportDTO
+	 * @param request
+	 * @param response
+	 * @throws Exception
+	 */
+	@RequestMapping(value = "/exportToPdfContributionReport")
+	public void exportToPdfContributionReport(PayrollReportDTO payrollReportDTO,HttpServletRequest request, HttpServletResponse response) throws Exception
+	{
+		OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+		List<PayrollReportDTO>  deductionHisList = payrollReportService.exportToPdfContributionReport(orgLocation,payrollReportDTO);
+		File file = payrollReportPdfUtil.getontributionReportPdf(orgLocation,deductionHisList);
+		String mimeType = URLConnection.guessContentTypeFromName(file.getName());
+		if (mimeType == null) {
+			mimeType = "application/octet-stream";
+		}
+		response.setContentType(mimeType);
+		StringBuilder fileName = new StringBuilder();
+		response.setHeader("Content-Disposition", fileName.append("attachment; filename=\"").append(file.getName()).append("\"").toString());
+		response.setContentLength((int) file.length());
+		InputStream inputStream = new BufferedInputStream(new FileInputStream(file));
+		FileCopyUtils.copy(inputStream, response.getOutputStream());
+		inputStream.close();
+		response.getOutputStream().close();
+		response.getOutputStream().flush();
+		if (file != null) {
+			file.delete();
+		}
 		
 	}
+	
+	
+
+	@RequestMapping(value = "/exportToPdfDeductionReport")
+	public void exportToPdfDeductionReport(PayrollReportDTO payrollReportDTO,HttpServletRequest request, HttpServletResponse response) throws Exception
+	{
+		OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+		List<PayrollReportDTO>  deductionHisList = payrollReportService.exportToPdfDeductionReport(orgLocation,payrollReportDTO);
+		
+		File file = payrollReportPdfUtil.getDeductionReportPdf(orgLocation,deductionHisList);
+		
+		String mimeType = URLConnection.guessContentTypeFromName(file.getName());
+		if (mimeType == null) {
+			mimeType = "application/octet-stream";
+		}
+		response.setContentType(mimeType);
+		StringBuilder fileName = new StringBuilder();
+		response.setHeader("Content-Disposition", fileName.append("attachment; filename=\"").append(file.getName()).append("\"").toString());
+		response.setContentLength((int) file.length());
+		InputStream inputStream = new BufferedInputStream(new FileInputStream(file));
+		FileCopyUtils.copy(inputStream, response.getOutputStream());
+		inputStream.close();
+		response.getOutputStream().close();
+		response.getOutputStream().flush();
+		if (file != null) {
+			file.delete();
+		}
+	}
+	
 }

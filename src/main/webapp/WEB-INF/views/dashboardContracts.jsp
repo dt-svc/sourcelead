@@ -1,7 +1,7 @@
 
 
 
-<div class="col-md-12 mb clearfix" id="contractListDiv" style="display: none;"> 
+<div class="col-md-12 mb clearfix noPad" id="contractListDiv" style="display: none;"> 
 
       <div class="dashNewWrap mb10" >
         	<div class="dashNewWrapHead noBor clearfix">

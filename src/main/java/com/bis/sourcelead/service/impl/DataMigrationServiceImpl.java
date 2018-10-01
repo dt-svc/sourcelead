@@ -484,6 +484,7 @@ public class DataMigrationServiceImpl implements DataMigrationService {
 			
 			executorService.execute(new UploadCandidateThread(uploadedCandidatesList,"Thread "+candidateIndexKey));
 			uploadedCandidatesList = null;
+			candidateIndexKey = 0;
 		}
 		
 		
@@ -656,7 +657,8 @@ public class DataMigrationServiceImpl implements DataMigrationService {
 				if(uploadedCandidatesList.size() <= 50) {
 					uploadedCandidatesList.add(candidate);
 				}else {
-					List<Candidate> executedCandidatesList = new ArrayList<>();
+					List<Candidate> executedCandidatesList = null;
+					executedCandidatesList = new ArrayList<>();
 					executedCandidatesList.addAll(uploadedCandidatesList);
 					uploadedCandidatesList = null;
 					ExecutorService executorService  = null;
