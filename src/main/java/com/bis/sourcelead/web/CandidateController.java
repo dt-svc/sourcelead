@@ -252,7 +252,7 @@ public class CandidateController {
 		}
 		
 		//approver list
-		List<User> requirementApproverList = userService.getTabAccessOwnersByOrgLocationIdAndTabId(orgLocations.getId(),Long.valueOf(Constants.TAB_REQUIREMENT));
+		List<User> requirementApproverList = userService.getTabAccessOwnersByOrgLocationIdAndTabId(orgLocations.getId(),Long.valueOf(Constants.TAB_CANDIATE));
 		model.addObject("requirementApproverList", requirementApproverList);
 				
 		

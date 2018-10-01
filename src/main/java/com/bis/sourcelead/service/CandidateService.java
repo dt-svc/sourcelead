@@ -225,5 +225,9 @@ public interface CandidateService {
 	
 	public Candidate getCandidateDetails(Candidate candidate, CandidateDTO candidateDto, User user,OrgLocations orgLocations,StringBuffer activitySummary) throws Exception;
 	
-	public void saveBulkCandidates(List<Candidate> candidatesList) throws Exception;
+	public void saveBulkCandidates(List<Candidate> candidatesList,Long orgLocationId) throws Exception;
+	
+	Long getCandidateIdByEmailAndOrgLocationId(String email,Long orgLocationId) throws Exception;
+	
+	List<String> getCandidateEmailsByOrgLocationId(Long orgLocationId) throws Exception;
 }
