@@ -68,11 +68,13 @@
 							<i class="fa fa-pencil-square-o" aria-hidden="true"></i>
 							Compose Sourcelead Mail
 						</button>
-						<button id="composeDynamicMail" class="btn-block btn btn-primary dropdown-toggle" 
-							type="button" onClick="showComposeEmailPopup();">
-							<i class="fa fa-pencil-square-o" aria-hidden="true"></i>
-							Compose from Other Domains
-						</button>
+						<c:if test="${emailAccountSettingsServiceList.size() > 0}">
+							<button id="composeDynamicMail" class="btn-block btn btn-primary dropdown-toggle" 
+								type="button" onClick="showComposeEmailPopup();">
+								<i class="fa fa-pencil-square-o" aria-hidden="true"></i>
+								Compose from Other Domains
+							</button>
+						</c:if>
 					</c:if>
 					
 					<c:if test="${mailType == 'hotcampaigns'}">
