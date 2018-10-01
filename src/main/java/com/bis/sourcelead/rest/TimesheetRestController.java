@@ -1947,7 +1947,7 @@ public class TimesheetRestController {
 					if(weekCountMap.get(taskId+"##"+ticketNumber+"##"+teDTO.getDate()) != null){
 						count = weekCountMap.get(taskId+"##"+ticketNumber+"##"+teDTO.getDate())+1;
 					}
-					weekCountMap.put(teDTO.getDate(),count);
+					weekCountMap.put(taskId+"##"+ticketNumber+"##"+teDTO.getDate(),count);
 					taskIdWithRef = taskId+"##"+ticketNumber+"##"+count;
 				}
 				LinkedList<TimesheetEntriesDTO> tsDTOList = entriesMap.get(taskIdWithRef);
