@@ -249,6 +249,7 @@ public class DataMigrationServiceImpl implements DataMigrationService {
 		Iterator<Row> rowIterator = firstSheet.iterator();
 		int colCount = 0;
 		Boolean isEmptyExcel = true;
+		List<String> candidateEmailsList = null;
 		logger.debug("Upload Start Time>>>"+Calendar.getInstance().getTime());
 		while (rowIterator.hasNext()) {
 			Row nextRow = rowIterator.next();
@@ -260,6 +261,11 @@ public class DataMigrationServiceImpl implements DataMigrationService {
 					continue;
 				}
 			}
+			
+			/*if(dataMigrationDTO.getUploadType().equalsIgnoreCase("candidatesUpload")) {
+				candidateEmailsList = candidateService.getCandidateEmailsByOrgLocationId(orgLocation.getId());
+			}*/
+			
 			if (nextRow.getRowNum() + 1 > Integer.parseInt(dataMigrationDTO.getHeaderPosition())) {
 				
 				isEmptyExcel = false;
@@ -386,7 +392,7 @@ public class DataMigrationServiceImpl implements DataMigrationService {
 				case "candidatesUpload":
 					dataMigrationDTOJsonCopy.put("inviteEmail", dataMigrationDTO.getInviteEmail());
 					dataMigrationCommonUtil.dataValidationForCandidates(errorSet, dataMigrationDTOJsonCopy, user,
-							orgLocation);
+							orgLocation,candidateEmailsList);
 					break;
 					
 				case "timesheetUpload":
@@ -476,16 +482,16 @@ public class DataMigrationServiceImpl implements DataMigrationService {
 		uploadXlsHistoryService.storeUploadXlsHistory(history);
 		
 		
-		if(dataMigrationDTO.getUploadType().equalsIgnoreCase("candidatesUpload")) {
+	/*	if(dataMigrationDTO.getUploadType().equalsIgnoreCase("candidatesUpload")) {
 			ExecutorService executorService  = null;
 			if(executorService == null) {
 				executorService = Executors.newSingleThreadExecutor();
 			}
 			
-			executorService.execute(new UploadCandidateThread(uploadedCandidatesList,"Thread "+candidateIndexKey));
+			executorService.execute(new UploadCandidateThread(uploadedCandidatesList,"Thread "+candidateIndexKey,orgLocation.getId()));
 			uploadedCandidatesList = null;
 			candidateIndexKey = 0;
-		}
+		}*/
 		
 		
 		workbook.close();
@@ -653,7 +659,11 @@ public class DataMigrationServiceImpl implements DataMigrationService {
 			}
 			try {
 				Candidate candidate = candidateService.saveCandidateBulkImports(candidateDTO, orgLocation, user);
-				if(uploadedCandidatesList == null)uploadedCandidatesList= new ArrayList<>();
+			/*	if(uploadedCandidatesList == null)
+				{
+					System.out.println("Processing Start Time>>>"+Calendar.getInstance().getTime()+candidateIndexKey);
+					uploadedCandidatesList= new ArrayList<>();
+			    }
 				if(uploadedCandidatesList.size() <= 50) {
 					uploadedCandidatesList.add(candidate);
 				}else {
@@ -665,8 +675,12 @@ public class DataMigrationServiceImpl implements DataMigrationService {
 					if(executorService == null) {
 						executorService = Executors.newSingleThreadExecutor();
 					}
-					executorService.execute(new UploadCandidateThread(executedCandidatesList,"Thread "+candidateIndexKey));
-				}
+					System.out.println("Processing End Time>>>"+Calendar.getInstance().getTime()+candidateIndexKey);
+					
+					System.out.println("Thread Start Time>>>"+Calendar.getInstance().getTime()+">>> Thread"+candidateIndexKey);
+					executorService.execute(new UploadCandidateThread(executedCandidatesList,"Thread "+candidateIndexKey,orgLocation.getId()));
+					System.out.println("Thread End Time>>>"+Calendar.getInstance().getTime()+">>> Thread"+candidateIndexKey);
+				}*/
 				
 			}catch (Exception e) {
 				UploadXlsHistory history = uploadXlsHistoryService.getUploadXlsHistoryDetailsByUploadId(uploadId);
@@ -1190,21 +1204,23 @@ public class DataMigrationServiceImpl implements DataMigrationService {
 
 		List<Candidate> uploadCandidateList = new ArrayList<>();
 		String threadName = null;
+		Long orgLocationId = null;
 		
 		public UploadCandidateThread() {
 			
 		}
 
-		public UploadCandidateThread(List<Candidate> candidateList,String threadName) {
+		public UploadCandidateThread(List<Candidate> candidateList,String threadName,Long orgLocationId) {
 			uploadCandidateList.addAll(candidateList);
 			this.threadName = threadName;
+			this.orgLocationId = orgLocationId;
 		}
 		
 		@Override
 		public void run() {
 			logger.debug("Thread Start Time>>>>"+Calendar.getInstance().getTime()+">>> Theread "+threadName);
 			try {
-				candidateService.saveBulkCandidates(uploadCandidateList);
+				candidateService.saveBulkCandidates(uploadCandidateList,orgLocationId);
 			} catch (Exception e) {
 				e.printStackTrace();
 			}
