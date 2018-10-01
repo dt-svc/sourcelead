@@ -95,7 +95,39 @@ public class PayrollReportDTO extends SearchDTO{
 	
 	private Date runDate;
 	
+	private BigDecimal contributionMTD;
 	
+	private BigDecimal contributionQTD;
+	
+	private BigDecimal deductionMTD;
+	
+	private BigDecimal deductionQTD;
+	
+	
+	public BigDecimal getContributionMTD()
+	{
+		return contributionMTD;
+	}
+
+
+	public BigDecimal getContributionQTD()
+	{
+		return contributionQTD;
+	}
+
+
+	public void setContributionMTD(BigDecimal contributionMTD)
+	{
+		this.contributionMTD = contributionMTD;
+	}
+
+
+	public void setContributionQTD(BigDecimal contributionQTD)
+	{
+		this.contributionQTD = contributionQTD;
+	}
+
+
 	public BigDecimal getContributionAmount()
 	{
 		return contributionAmount;
@@ -564,6 +596,46 @@ public class PayrollReportDTO extends SearchDTO{
 	public void setRunDate(Date runDate)
 	{
 		this.runDate = runDate;
+	}
+
+
+	public BigDecimal getContributionMTD() {
+		return contributionMTD;
+	}
+
+
+	public void setContributionMTD(BigDecimal contributionMTD) {
+		this.contributionMTD = contributionMTD;
+	}
+
+
+	public BigDecimal getContributionQTD() {
+		return contributionQTD;
+	}
+
+
+	public void setContributionQTD(BigDecimal contributionQTD) {
+		this.contributionQTD = contributionQTD;
+	}
+
+
+	public BigDecimal getDeductionMTD() {
+		return deductionMTD;
+	}
+
+
+	public void setDeductionMTD(BigDecimal deductionMTD) {
+		this.deductionMTD = deductionMTD;
+	}
+
+
+	public BigDecimal getDeductionQTD() {
+		return deductionQTD;
+	}
+
+
+	public void setDeductionQTD(BigDecimal deductionQTD) {
+		this.deductionQTD = deductionQTD;
 	}	
 	
 	
