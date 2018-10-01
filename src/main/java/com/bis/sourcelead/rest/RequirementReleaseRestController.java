@@ -481,6 +481,7 @@ public class RequirementReleaseRestController {
 		requirement.setReqCoolingOffPeriod(parentRequirement.getReqCoolingOffPeriod());
 		
 //		requirement.setJobId(parentRequirement.getJobId());
+		requirement.setProfilePercentage(parentRequirement.getProfilePercentage());
 		requirement.setPositions(parentRequirement.getPositions());
 		requirement.setEducation(parentRequirement.getEducation());
 		requirement.setMinExp(parentRequirement.getMinExp());
