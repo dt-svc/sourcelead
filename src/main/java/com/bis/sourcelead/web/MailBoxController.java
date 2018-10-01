@@ -165,13 +165,40 @@ public class MailBoxController {
  			
  			return model;
  	}
+
 	@RequestMapping(value = "/app/emailSettings")
- 	public ModelAndView emailSettings(HttpServletRequest request) {
-		    ModelAndView model = new ModelAndView();
- 			model.setViewName("emailSettings");
- 			model.addObject("sourceleadUrl", sourceleadUrl);
- 			return model;
- 	}
+	public ModelAndView emailSettings(HttpServletRequest request, @RequestParam(defaultValue = "others") String source) {
+//		User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+		ModelAndView model = new ModelAndView();
+		String incomingServer = "secure.emailsrvr.com";
+		String incomingPort = "993";
+		String outgoingServer = "secure.emailsrvr.com";
+		String outgoingPort = "465";
+		switch (source) {
+		case "gmail":
+			incomingServer = "imap.gmail.com";
+			incomingPort = "993";
+			outgoingServer = "smtp.gmail.com";
+			outgoingPort = "465";
+			break;
+		case "yahoo":
+			incomingServer = "imap.mail.yahoo.com";
+			incomingPort = "993";
+			outgoingServer = "smtp.mail.yahoo.com";
+			outgoingPort = "465";
+			break;
+		default:
+			break;
+		}
+		model.addObject("incomingServer", incomingServer);
+		model.addObject("incomingPort", incomingPort);
+		model.addObject("outgoingServer", outgoingServer);
+		model.addObject("outgoingPort", outgoingPort);
+//		model.addObject("username", user.getFullName());
+		model.addObject("sourceleadUrl", sourceleadUrl);
+		model.setViewName("emailSettings");
+		return model;
+	}
 	
 	
 	@PreAuthorize("hasRole('ROLE_MAIL_BOX')")

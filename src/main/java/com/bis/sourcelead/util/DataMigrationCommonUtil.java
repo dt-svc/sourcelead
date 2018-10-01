@@ -681,19 +681,15 @@ public class DataMigrationCommonUtil {
 			}
 	
 			@SuppressWarnings("unchecked")
-			public void dataValidationForCandidates(HashMap< String, String> errorSet, JSONObject dataMigrationDTOJsonCopy, User user, OrgLocations orgLocation) throws Exception
+			public void dataValidationForCandidates(HashMap< String, String> errorSet, JSONObject dataMigrationDTOJsonCopy, User user, OrgLocations orgLocation,List<String> candidateEmailsList) throws Exception
 			{
 				
 				if(!dataMigrationDTOJsonCopy.getString("email").equals("null") && StringUtils.isNotEmpty(dataMigrationDTOJsonCopy.getString("email"))) {
-					
-					Long candidateId = candidateDao.getCandidateIdByEmailAndOrgLocationId(dataMigrationDTOJsonCopy.getString("email").toString().trim(),orgLocation.getId());
+					Long candidateId = candidateService.getCandidateIdByEmailAndOrgLocationId(dataMigrationDTOJsonCopy.getString("email"), orgLocation.getId());
+					/*if (candidateEmailsList.contains(dataMigrationDTOJsonCopy.getString("email"))) {*/
 					if (candidateId != null) {
 						errorSet.put("email", "Candidate already exist.!");
 					}else {
-						
-						if(dataMigrationDTOJsonCopy.getString("firstName").equals("null") || StringUtils.isEmpty(dataMigrationDTOJsonCopy.getString("firstName"))) {
-							errorSet.put("firstName", "First Name field is missing");
-						}
 						
 						
 						Pattern pattern = Pattern.compile("^[_A-Za-z0-9-\\+]+(\\.[_A-Za-z0-9-]+)*@"
@@ -703,13 +699,22 @@ public class DataMigrationCommonUtil {
 							Matcher matcher = pattern.matcher(dataMigrationDTOJsonCopy.get("email").toString().trim());
 							if(matcher.matches() == false) {
 								errorSet.put("email", "Invalid Email");
+								return;
 							}
 						}
+						
+						if(dataMigrationDTOJsonCopy.getString("firstName").equals("null") || StringUtils.isEmpty(dataMigrationDTOJsonCopy.getString("firstName"))) {
+							errorSet.put("firstName", "First Name field is missing");
+							    return;
+						}
+						
+						
 						
 						if (!dataMigrationDTOJsonCopy.get("vendorcontact").toString().equalsIgnoreCase("") && !dataMigrationDTOJsonCopy.get("vendorcontact").toString().equalsIgnoreCase("null") && !dataMigrationDTOJsonCopy.get("vendorcontact").toString().equalsIgnoreCase("undefined")) {
 							Matcher matcher = pattern.matcher(dataMigrationDTOJsonCopy.get("vendorcontact").toString().trim());
 							if(matcher.matches() == false) {
 								errorSet.put("vendorcontact", "Invalid Vendor Contact Email");
+								return;
 							}
 							
 							if (!dataMigrationDTOJsonCopy.get("vendor").toString().equalsIgnoreCase("") && !dataMigrationDTOJsonCopy.get("vendor").toString().equalsIgnoreCase("null") && !dataMigrationDTOJsonCopy.get("vendor").toString().equalsIgnoreCase("undefined")) {
@@ -729,11 +734,13 @@ public class DataMigrationCommonUtil {
 								for(OrgSpoc vendorContacts : vendorContactsList) {
 									if(!dataMigrationDTOJsonCopy.get("vendorcontact").toString().equalsIgnoreCase(vendorContacts.getVendorUser().getEmail())) {
 										errorSet.put("vendorcontact", "No contact exists with entered email");
+										return;
 									}
 								}
 								
 								if(vendorContactsList == null || vendorContactsList.size() == 0) {
 									errorSet.put("vendorcontact","No Active contacts exists with this vendor");
+									return;
 								}
 							
 								
@@ -741,6 +748,7 @@ public class DataMigrationCommonUtil {
 							
 							if(dataMigrationDTOJsonCopy.getString("vendor").equals("null") || StringUtils.isEmpty(dataMigrationDTOJsonCopy.getString("vendor"))) {
 								errorSet.put("vendor", "Vendor field is missing for Vendor");
+								return;
 							}
 						}
 					
@@ -753,6 +761,7 @@ public class DataMigrationCommonUtil {
 							}
 							if(flag == false) {
 								errorSet.put("mobilePhone", "Invalid Mobile Phone");
+								return;
 							}
 							
 						}
@@ -765,6 +774,7 @@ public class DataMigrationCommonUtil {
 							}
 							if(flag == false) {
 								errorSet.put("alternateMobilePhone", "Invalid Alternate Mobile Phone");
+								return;
 							}
 							
 						}
@@ -778,6 +788,7 @@ public class DataMigrationCommonUtil {
 							}
 							if(flag == false) {
 								errorSet.put("expectedRate", "Expected Rate Allow Only Integers and length 0-8");
+								return;
 							}
 							
 						}
@@ -790,6 +801,7 @@ public class DataMigrationCommonUtil {
 							}
 							if(flag == false) {
 								errorSet.put("currentRate", "Current Rate Allow Only Integers and length 0-8");
+								return;
 							}
 							
 						}
