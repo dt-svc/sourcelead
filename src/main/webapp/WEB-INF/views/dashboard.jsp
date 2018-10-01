@@ -160,14 +160,14 @@ function logoutForConfigure() {
 		     
 		     <div class="clearfix"></div>
 	     
-       <sec:authorize access="!hasAnyRole('ROLE_FILL_MY_TIMESHEETS','ROLE_EXPORT_MY_TIMESHEETS','ROLE_MODIFY_MY_TIMESHEETS','ROLE_FILL_MEMBER_TIMESHEETS','ROLE_VIEW_MEMBER_TIMESHEETS','ROLE_EXPORT_MEMBER_TIMESHEETS','ROLE_VIEW_REQUIREMENT','ROLE_VIEW_INTERVIEW')">
-			<div class='col-lg-12 dashNewWrap'> 
-				<div class='blank-pages'>
+<%--        <sec:authorize access="!hasAnyRole('ROLE_FILL_MY_TIMESHEETS','ROLE_EXPORT_MY_TIMESHEETS','ROLE_MODIFY_MY_TIMESHEETS','ROLE_FILL_MEMBER_TIMESHEETS','ROLE_VIEW_MEMBER_TIMESHEETS','ROLE_EXPORT_MEMBER_TIMESHEETS','ROLE_VIEW_REQUIREMENT','ROLE_VIEW_INTERVIEW')">
+			<div class='dashNewWrap mb'> 
+				<div class='blank-pages col-md-12'>
 			        <p><i class='fa fa-5x fa-bar-chart'></i></p>
 		        	<p>No Records Found</p>
 				 </div>
 			</div>
-		</sec:authorize> 
+		</sec:authorize>  --%>
 	    
 	    <div class="clearfix"> 
 	     	<div class="col-md-12"><jsp:include page="dashboardEvents.jsp"></jsp:include></div>   
