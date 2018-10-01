@@ -167,7 +167,7 @@ public class MailBox {
 				long messageId = uf.getUID(message);
 				readMailDTO.setMessageId(messageId);
 				/*readMailDTO.setFrom(message.getFrom() != null ? message.getFrom()[0].toString() : "");*/
-				if(message.getFrom() != null) {
+				if(message.getFrom() != null && message.getFrom().length > 0) {
 					InternetAddress internetAddress =  (InternetAddress)((Address)message.getFrom()[0]);
 					readMailDTO.setFrom(internetAddress.getAddress());
 					/*readMailDTO.setFrom(internetAddress.getPersonal() != null ? internetAddress.getPersonal() : internetAddress.getAddress());*/

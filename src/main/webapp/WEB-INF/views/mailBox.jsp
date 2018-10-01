@@ -947,7 +947,7 @@ function readFolder(name, fullName, id, pageNo, pageSize, index){
 			       			result = result + '	<i class="mailIcon repallIcon" title="Reply All" onclick="showReplyEmailPopup(' + id + ', ' + emailList[e].messageId + ', \'' + fullName + '\', true);"></i>';
 			       			result = result + '	<i class="mailIcon forIcon" title="Forward" onclick="showForwardEmailPopup(' + id + ', ' + emailList[e].messageId + ', \'' + fullName + '\');"></i>'; */
 			       			if($("#mailboxLabel").html().toLowerCase() === "trash")
-			       				result = result + '	<i class="mailIcon trashIcon" title="Delete Forever" ></i>';
+			       				result = result + '	<i class="mailIcon trashIcon" title="Delete Forever" onclick="moveEmailToTrash(' + id + ', ' + emailList[e].messageId + ', \'' + fullName + '\', \'' + name + '\', true);"></i>';
 			       				/* <span class="pull-left deleTrash deleteForever" onclick="deleteEmailsForEver();" style="display: none;">Delete Forever</span> */
 			       			else
 			       				result = result + '	<i class="mailIcon trashIcon" title="Delete" onclick="moveEmailToTrash(' + id + ', ' + emailList[e].messageId + ', \'' + fullName + '\', \'' + name + '\', false);"></i>';
@@ -968,6 +968,7 @@ function readFolder(name, fullName, id, pageNo, pageSize, index){
 		    		}
 				    $("#loading").removeAttr("style"); 
 				    $("#inbox").show();
+				    $("#details").hide();
 				    activeAccountId = id;
 				    activeFolder = fullName;
 				    activeFolderShortName = name;
