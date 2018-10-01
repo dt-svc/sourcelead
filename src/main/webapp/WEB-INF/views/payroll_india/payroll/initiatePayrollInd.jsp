@@ -23,8 +23,8 @@
 		<div class="col-md-2 paddingLeft paddingRight" id="payTypeIdDiv">
 			<select id="payType" name="payType" data-validation="required" data-placeholder="Select Pay type" field-name="Pay Type" class="chosen-select" onchange="errPayType();">
 				 <option value=""></option>
-				 <option value="All">All</option>
-				 <option value="HourlyRate">Hourly Rate</option>
+				<!--  <option value="All">All</option>
+				 <option value="HourlyRate">Hourly Rate</option> -->
                  <option value = "Salary">Salary</option>
 			</select>
 		</div>
@@ -102,7 +102,6 @@ function runINDPayroll(){
 		var payPeriod = $("#payPeriod").val();
 		var payType = $("#payType").val();
 		var payrollPayDate = $("#payrollPayDate").val();
-		alert(payType);
 		 $.ajax({
 		    	   type: "POST",
 		           url: sourceleadUrl+"/generateINDPayroll?groupId="+groupId+"&payPeriod="+payPeriod+"&payrollPayDate="+payrollPayDate+"&paytype="+payType,                 

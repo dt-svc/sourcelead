@@ -18,7 +18,7 @@ import org.springframework.stereotype.Service;
 
 import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.dao.UserGroupDao;
-import com.bis.sourcelead.entity.AssociatePayrollPayheadHistory;
+import com.bis.sourcelead.dto.IndPayrollPayheadUtilDTO;
 import com.bis.sourcelead.entity.AssociateSalaryInd;
 import com.bis.sourcelead.entity.Employees;
 import com.bis.sourcelead.entity.OrgLocations;
@@ -165,6 +165,14 @@ public class GenerateINDPayrollServiceImpl implements GenerateINDPayrollService{
 			paySheetFreq.setApproverStatus(PayrollConstant.DRAFT);
 			paySheetFreq.setActionPerformedBy(""+loginUser.getFullName());
 			paySheetFreq.setPaySheetFrequencyUUID(SourceLeadRandomCodeHelper.generateRandomUUID());
+			
+			Long payRunId = generateINDPayrollDao.getMaxPayRunIdByOrgLocationId(orgLocation.getId());
+			if(payRunId == null) {
+				payRunId = 1l;
+			}else {
+				payRunId = payRunId+1;
+			}
+			paySheetFreq.setPayRunId(payRunId);
 			Set<IndEmployeePayroll> payrollList = calculatePayroll(existedData,paySheetFreq, loginUser, orgLocation,assSallist,freqStartDate, freqEndDate,userGroup);
 			if(payrollList !=null && payrollList.size() > 0) {
 				paySheetFreq.setIndEmployeepayroll(payrollList);
@@ -207,37 +215,29 @@ public class GenerateINDPayrollServiceImpl implements GenerateINDPayrollService{
 							BigDecimal payRate = BigDecimal.ZERO;
 							BigDecimal amount = BigDecimal.ZERO;
 							BigDecimal regularHoursAmount = BigDecimal.ZERO;
-							
-							if(PayrollConstant.HOURLY_RATE.equalsIgnoreCase(assoSal.getPayType())) {
-								 List<TotalHoursDTO> totalHoursDto = userGroupDao.getTotalHoursByCandidateId(assoSal.getCandidate().getId(),freqStartDate,freqEndDate);
-								 Map<BigInteger, List<TotalHoursDTO>> map = totalHoursDto.stream().collect(Collectors.groupingBy(TotalHoursDTO::getProjectId));
-								
-								for (Map.Entry<BigInteger, List<TotalHoursDTO>> entry : map.entrySet()) {
-									BigDecimal projectGross = BigDecimal.ZERO;
-									double projectTotalHours = 0;
-									BigDecimal projectPayRate = BigDecimal.ZERO;
-									if(entry.getValue() !=null ) {
-										for(TotalHoursDTO totalHoursDTO : entry.getValue()) {
-											projectPayRate = new BigDecimal(totalHoursDTO.getPayRate());
-											if(StringUtils.isNotBlank(totalHoursDTO.getBillableHours())) {
-												projectTotalHours  = commonUtil.getTotalRegularOverTimeHours(Double.parseDouble(totalHoursDTO.getBillableHours()),projectTotalHours);
-											}
+							 List<TotalHoursDTO> totalHoursDto = userGroupDao.getTotalHoursByCandidateId(assoSal.getCandidate().getId(),freqStartDate,freqEndDate);
+							 Map<BigInteger, List<TotalHoursDTO>> map = totalHoursDto.stream().collect(Collectors.groupingBy(TotalHoursDTO::getProjectId));
+							for (Map.Entry<BigInteger, List<TotalHoursDTO>> entry : map.entrySet()) {
+								BigDecimal projectGross = BigDecimal.ZERO;
+								double projectTotalHours = 0;
+								BigDecimal projectPayRate = BigDecimal.ZERO;
+								if(entry.getValue() !=null ) {
+									for(TotalHoursDTO totalHoursDTO : entry.getValue()) {
+										projectPayRate = new BigDecimal(totalHoursDTO.getPayRate());
+										if(StringUtils.isNotBlank(totalHoursDTO.getBillableHours())) {
+											projectTotalHours  = commonUtil.getTotalRegularOverTimeHours(Double.parseDouble(totalHoursDTO.getBillableHours()),projectTotalHours);
 										}
 									}
-									projectGross = getTotalAmount(projectTotalHours,projectPayRate);
-									amount = amount.add(projectGross);
-									payRate = payRate.add(projectPayRate);
-									totalHours = totalHours + projectTotalHours;
-								} 
-								regularHoursAmount = amount;
+								}
+								projectGross = getTotalAmount(projectTotalHours,projectPayRate);
+								amount = amount.add(projectGross);
+								payRate = payRate.add(projectPayRate);
+								totalHours = totalHours + projectTotalHours;
+							} 
+							regularHoursAmount = amount;
+						    if(PayrollConstant.SALARY.equalsIgnoreCase(assoSal.getPayType())) {
+								 amount = assoSal.getGrossSalary();
 							}
-							
-							 else if(PayrollConstant.SALARY.equalsIgnoreCase(assoSal.getPayType())) {
-								amount = assoSal.getGrossSalary();
-							}
-							/*if(associateTaxView.getAccountType() != null) {
-								employeePayroll.setDepositType(associateTaxView.getAccountType());
-							}*/
 							employeePayroll.setPayType(assoSal.getPayType());
 							employeePayroll.setPayPerSalary(amount);
 							employeePayroll.setRegularHours(String.valueOf(totalHours));
@@ -251,17 +251,12 @@ public class GenerateINDPayrollServiceImpl implements GenerateINDPayrollService{
 							if (employee != null) {
 								employeePayroll.setEmployee(employee);
 							}
-							
-							//employeePayroll.setAssociatePayrollPayheadHistory(associatePayrollPayheadHistory);
-							 
-							
-							HashSet<AssociatePayrollPayheadHistory> payHeadHistoryList = iNDPayrollCommonUtil.getAssociatePayrollPayHeadHistoryFromAssociateSalaryPayHeads(assoSal.getAssociateSalaryPayheadIndList(), employeePayroll, loginUser);
-							employeePayroll.setAssociatePayrollPayheadHistory(payHeadHistoryList);
-							
-							employeePayroll.setGrossPay(BigDecimal.ZERO);
-							employeePayroll.setNetPay(BigDecimal.ZERO);
-							employeePayroll.setProfessionalTax(BigDecimal.ZERO);
-						    employeePayroll.setTds(BigDecimal.ZERO);
+							IndPayrollPayheadUtilDTO utilDTO = iNDPayrollCommonUtil.getAssociatePayrollPayHeadHistoryFromAssociateSalaryPayHeads(assoSal.getAssociateSalaryPayheadIndList(), employeePayroll, loginUser,userGroup.getPayFrequency());
+							employeePayroll.setAssociatePayrollPayheadHistory(utilDTO.getAssociatePayrollPayheadHistory());
+							employeePayroll.setGrossPay(utilDTO.getGrossPay());
+							employeePayroll.setNetPay(utilDTO.getNetPay());
+							employeePayroll.setProfessionalTax(utilDTO.getProfessionalTax());
+						    employeePayroll.setTds(utilDTO.getTds());
 						    employeePayroll.setSubmitForAproverStatus(PayrollConstant.DRAFT);
 							
 							employeePayroll.setIndEmpPayrollUUID(SourceLeadRandomCodeHelper.generateRandomUUID());
@@ -274,8 +269,6 @@ public class GenerateINDPayrollServiceImpl implements GenerateINDPayrollService{
 					}
 					
 				}
-				
-				
 			}
 		}catch (Exception e) {
 			e.printStackTrace();
@@ -319,6 +312,11 @@ public class GenerateINDPayrollServiceImpl implements GenerateINDPayrollService{
 			double perMinRate = payRate.doubleValue() / 60;
 			double totatAmount = totalMin * perMinRate;
 			return BigDecimal.valueOf(totatAmount);
+		}
+
+		@Override
+		public Long getMaxPayRunIdByOrgLocationId(Long orgLocationId) {
+			return generateINDPayrollDao.getMaxPayRunIdByOrgLocationId(orgLocationId);
 		}
 	
 }

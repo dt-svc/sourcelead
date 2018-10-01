@@ -1,18 +1,22 @@
 package com.bis.sourcelead.util;
 
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
+import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.dao.PayrollPayheadDao;
+import com.bis.sourcelead.dto.IndPayrollPayheadUtilDTO;
 import com.bis.sourcelead.dto.PayrollPayheadDTO;
 import com.bis.sourcelead.entity.AssociatePayrollPayheadHistory;
 import com.bis.sourcelead.entity.AssociateSalaryPayheadInd;
@@ -180,13 +184,73 @@ public void sendMailToUserFromndIanPayrolApprover(User loginUser,  OrgLocations 
 
 	*/
 	
-	public HashSet<AssociatePayrollPayheadHistory> getAssociatePayrollPayHeadHistoryFromAssociateSalaryPayHeads(Set<AssociateSalaryPayheadInd> payheadList,IndEmployeePayroll empPayroll,User loginUser) throws Exception {
-		HashSet<AssociatePayrollPayheadHistory> payHeadHistoryList = new HashSet<>();
+	public IndPayrollPayheadUtilDTO getAssociatePayrollPayHeadHistoryFromAssociateSalaryPayHeads(Set<AssociateSalaryPayheadInd> payheadList,IndEmployeePayroll empPayroll,User loginUser,String payFrequency) throws Exception {
+		IndPayrollPayheadUtilDTO utilDTO = new IndPayrollPayheadUtilDTO();
+		BigDecimal grossPay = BigDecimal.ZERO;
+		BigDecimal allDeductions = BigDecimal.ZERO;
+		BigDecimal tds = BigDecimal.ZERO;
+		BigDecimal pt = BigDecimal.ZERO;
+		BigDecimal netPay = BigDecimal.ZERO;
+		if(StringUtils.isEmpty(payFrequency)) {
+			payFrequency = Constants.IND_PAYROLL_PAYFREQUENCY_MONTHLY;
+		}
 		if(payheadList != null && !payheadList.isEmpty()) {
+			HashSet<AssociatePayrollPayheadHistory> payHeadHistoryList = new HashSet<>();
 			for(AssociateSalaryPayheadInd payHead : payheadList) {
 				AssociatePayrollPayheadHistory payHeadHistory = new AssociatePayrollPayheadHistory();
 				payHeadHistory.setIndEmployeePayrollId(empPayroll);
 				payHeadHistory.setPayrollPayhead(payHead.getPayrollPayhead());
+				
+				if(payHead.getPayrollPayhead() != null 
+					&& StringUtils.isNotEmpty(payHead.getPayrollPayhead().getShortCode())
+					&& payHead.getPayrollPayhead().getShortCode().equalsIgnoreCase(Constants.IND_PAYROLL_PAYHEAD_TDS)) {
+					
+					if(payFrequency.equalsIgnoreCase(Constants.IND_PAYROLL_PAYFREQUENCY_ANUALLY)) {
+						tds = payHead.getAnnualy();
+					}else if(payFrequency.equalsIgnoreCase(Constants.IND_PAYROLL_PAYFREQUENCY_MONTHLY)) {
+						tds = payHead.getMonthly();
+					}else  {
+						tds = payHead.getAnnualy().divide(getProjectInvoiceFrequency(payFrequency));
+					}
+					   
+				}else if(payHead.getPayrollPayhead() != null 
+						&& StringUtils.isNotEmpty(payHead.getPayrollPayhead().getShortCode())
+						&& payHead.getPayrollPayhead().getShortCode().equalsIgnoreCase(Constants.IND_PAYROLL_PROFESSIONAL_TAX)) {
+						if(payFrequency.equalsIgnoreCase(Constants.IND_PAYROLL_PAYFREQUENCY_ANUALLY)) {
+							pt = payHead.getAnnualy();
+						}else if(payFrequency.equalsIgnoreCase(Constants.IND_PAYROLL_PAYFREQUENCY_MONTHLY)) {
+							pt = payHead.getMonthly();
+						}else  {
+							pt = payHead.getAnnualy().divide(getProjectInvoiceFrequency(payFrequency));
+						}
+						
+				}
+				
+				if(payHead.getPayrollPayhead() != null 
+						&& StringUtils.isNotEmpty(payHead.getPayrollPayhead().getType())
+						&& payHead.getPayrollPayhead().getType().equalsIgnoreCase(Constants.IND_PAYROLL_PAYHEAD_EARNINGS)) {
+					
+					if(payFrequency.equalsIgnoreCase(Constants.IND_PAYROLL_PAYFREQUENCY_ANUALLY)) {
+						grossPay = grossPay.add(payHead.getAnnualy());
+					}else if(payFrequency.equalsIgnoreCase(Constants.IND_PAYROLL_PAYFREQUENCY_MONTHLY)) {
+						grossPay = grossPay.add(payHead.getMonthly());
+					}else  {
+						grossPay = grossPay.add(payHead.getAnnualy().divide(getProjectInvoiceFrequency(payFrequency)));
+					}
+				}
+				
+				if(payHead.getPayrollPayhead() != null 
+						&& StringUtils.isNotEmpty(payHead.getPayrollPayhead().getType())
+						&& payHead.getPayrollPayhead().getType().equalsIgnoreCase(Constants.IND_PAYROLL_PAYHEAD_DEDUCTION)) {
+					if(payFrequency.equalsIgnoreCase(Constants.IND_PAYROLL_PAYFREQUENCY_ANUALLY)) {
+						allDeductions = allDeductions.add(payHead.getAnnualy());
+					}else if(payFrequency.equalsIgnoreCase(Constants.IND_PAYROLL_PAYFREQUENCY_MONTHLY)) {
+						allDeductions = allDeductions.add(payHead.getMonthly());
+					}else  {
+						allDeductions = allDeductions.add(payHead.getAnnualy().divide(getProjectInvoiceFrequency(payFrequency)));
+					}
+				}
+				
 				payHeadHistory.setMonthly(payHead.getMonthly());
 				payHeadHistory.setAnnualy(payHead.getAnnualy());
 				payHeadHistory.setStatus(payHead.getStatus());
@@ -198,11 +262,27 @@ public void sendMailToUserFromndIanPayrolApprover(User loginUser,  OrgLocations 
 				payHeadHistory.setUpdatedDate(new Date());
 				payHeadHistoryList.add(payHeadHistory);
 			}
+			utilDTO.setAssociatePayrollPayheadHistory(payHeadHistoryList);
+			utilDTO.setTds(tds);
+			utilDTO.setProfessionalTax(pt);
+			utilDTO.setGrossPay(grossPay);
+		    netPay = grossPay.subtract(allDeductions);
+			utilDTO.setNetPay(netPay);
 		}
-		return payHeadHistoryList;
+		return utilDTO;
 	}
 	
-	
+	private BigDecimal getProjectInvoiceFrequency(String invoiceFrequency)
+	{
+		BigDecimal payPeriod = BigDecimal.ZERO;
+		if ("Weekly".equalsIgnoreCase(invoiceFrequency)) {
+			payPeriod = BigDecimal.valueOf(52);
+		}
+		else if ("Bi-Weekly".equalsIgnoreCase(invoiceFrequency)) {
+			payPeriod =  BigDecimal.valueOf(26);
+		}
+		return payPeriod;
+	}
 	
 }
 
