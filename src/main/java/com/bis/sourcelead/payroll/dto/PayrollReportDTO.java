@@ -1,6 +1,7 @@
 package com.bis.sourcelead.payroll.dto;
 
 import java.math.BigDecimal;
+import java.util.Date;
 
 import com.bis.sourcelead.dto.SearchDTO;
 
@@ -84,8 +85,49 @@ public class PayrollReportDTO extends SearchDTO{
 	
 	private BigDecimal deductionYTD;
 	
+	private Date checkDate;
+	
+	private String groupName;
+	
+	private String groupFrequency;
+	
+	private String type;
+	
+	private Date runDate;
+	
+	private BigDecimal contributionMTD;
+	
+	private BigDecimal contributionQTD;
+	
+	private BigDecimal deductionMTD;
+	
+	private BigDecimal deductionQTD;
 	
 	
+	public BigDecimal getContributionMTD()
+	{
+		return contributionMTD;
+	}
+
+
+	public BigDecimal getContributionQTD()
+	{
+		return contributionQTD;
+	}
+
+
+	public void setContributionMTD(BigDecimal contributionMTD)
+	{
+		this.contributionMTD = contributionMTD;
+	}
+
+
+	public void setContributionQTD(BigDecimal contributionQTD)
+	{
+		this.contributionQTD = contributionQTD;
+	}
+
+
 	public BigDecimal getContributionAmount()
 	{
 		return contributionAmount;
@@ -494,6 +536,106 @@ public class PayrollReportDTO extends SearchDTO{
 
 	public void setDeductionYTD(BigDecimal deductionYTD) {
 		this.deductionYTD = deductionYTD;
+	}
+
+
+	public Date getCheckDate()
+	{
+		return checkDate;
+	}
+
+
+	public void setCheckDate(Date checkDate)
+	{
+		this.checkDate = checkDate;
+	}
+
+
+	public String getGroupName()
+	{
+		return groupName;
+	}
+
+
+	public void setGroupName(String groupName)
+	{
+		this.groupName = groupName;
+	}
+
+
+	public String getGroupFrequency()
+	{
+		return groupFrequency;
+	}
+
+
+	public void setGroupFrequency(String groupFrequency)
+	{
+		this.groupFrequency = groupFrequency;
+	}
+
+
+	public String getType()
+	{
+		return type;
+	}
+
+
+	public void setType(String type)
+	{
+		this.type = type;
+	}
+
+
+	public Date getRunDate()
+	{
+		return runDate;
+	}
+
+
+	public void setRunDate(Date runDate)
+	{
+		this.runDate = runDate;
+	}
+
+
+	public BigDecimal getContributionMTD() {
+		return contributionMTD;
+	}
+
+
+	public void setContributionMTD(BigDecimal contributionMTD) {
+		this.contributionMTD = contributionMTD;
+	}
+
+
+	public BigDecimal getContributionQTD() {
+		return contributionQTD;
+	}
+
+
+	public void setContributionQTD(BigDecimal contributionQTD) {
+		this.contributionQTD = contributionQTD;
+	}
+
+
+	public BigDecimal getDeductionMTD() {
+		return deductionMTD;
+	}
+
+
+	public void setDeductionMTD(BigDecimal deductionMTD) {
+		this.deductionMTD = deductionMTD;
+	}
+
+
+	public BigDecimal getDeductionQTD() {
+		return deductionQTD;
+	}
+
+
+	public void setDeductionQTD(BigDecimal deductionQTD) {
+		this.deductionQTD = deductionQTD;
 	}	
 	
 	
