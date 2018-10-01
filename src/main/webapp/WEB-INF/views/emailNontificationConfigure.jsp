@@ -116,10 +116,10 @@ function addEmail() {
 	$(".mask").show();
 	$(".emailfromMail").fadeIn(100);
 }
-function closeEmailNotifications(){
+/* function closeEmailNotifications(){
 	$(".mask").hide();
 	$(".emailfromMail").fadeOut(100);
-}
+} */
 </script>
 
 <script>
@@ -442,12 +442,15 @@ function changeDefaultemailConfig(ele, id) {
  function addEmailparsingPopUp(){
 	 $(".mask").show();
 	 $("#emailparsingPopUp").show();
+	 $('#emailNotify').find('p.jquery_form_error_message').remove();
+	 $('#passwordsnotify').find('p.jquery_form_error_message').remove();	
+	 $(".colorBtn").removeClass("disableBtn");	  
  }
  
- function closeEmailNotifications() {
+ /* function closeEmailNotifications() {
 	 $(".mask").hide();
 	 $("#emailparsingPopUp").hide();
- }
+ } */
  
  </script>
  <script type="text/javascript">
@@ -668,4 +671,18 @@ function updateEmailNotification(){
 }
 
 </script>
+		
+		
+<script type="text/javascript">
+function closeEmailNotifications() {
+	 $(".mask").hide();
+	 $("#emailparsingPopUp").hide();
+	 $("#email_parser_form")[0].reset();
+	 $("#parserEmailId").val("");
+	 $("#parserEmailUUID").val("");
+	 $('#popnotify').find('p.jquery_form_error_message').remove();	
+	 $('#portnotify').find('p.jquery_form_error_message').remove();	
+			
+}
+</script>		
 		

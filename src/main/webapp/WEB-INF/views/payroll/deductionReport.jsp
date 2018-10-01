@@ -96,7 +96,7 @@ $(document).ready(function(){
     <!-- <li><a href="javascript:void(0)" class="filtIcon" title="Filters" onclick="openPop();"></a></li> -->
     <li><a href="javascript:void(0)" class="overIcon" title="Actions" onclick="newActions();"></a>
       <div class="newActPop" style="">
-       <span><a href="javascript:void(0)" onclick="exportToPdf();" title="PDF">Export PDF</a> <a href="javascript:void(0)" onclick="exportUserData();" title="Excel">Export Excel</a> </span> </div>
+       <span><a href="javascript:void(0)" onclick="deductionReportExportToPdf();" title="PDF">Export PDF</a> <a href="javascript:void(0)" onclick="exportUserData();" title="Excel">Export Excel</a> </span> </div>
     </li>
     <li class="">
       <input class="repSearchBar" placeholder="Search" id="dataTableSearch" type="text">
@@ -427,6 +427,21 @@ function getDeductionReports(){
 		});
  }
  </script>
+ 
+ <script>
+function deductionReportExportToPdf(){
+	
+	var groupId = $('#payGroup').val();
+    getFreqdates("freqStartDate", "freqEndDate");
+    var  freqStartDate = $("#freqStartDate").val();
+    var freqEndDate = $("#freqEndDate").val();
+	var searchValue = $("#dataTableSearch").val();
+	searchValue = searchValue ? searchValue : "";
+	var deductionId = $("#deductionId").val();
+	
+	window.location.href = sourceleadUrl+"/exportToPdfDeductionReport?searchValue="+searchValue+"&groupId="+groupId+"&freqStartDate="+freqStartDate+"&freqEndDate="+freqEndDate+"&deductionId="+deductionId;
+}
+</script>
 
 
 <jsp:include page="../masterFooter.jsp" />
