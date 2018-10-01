@@ -1652,10 +1652,20 @@ public class InvoiceServiceImpl implements InvoiceService {
   	  				for(String frequency :frequencyDates){
   	  				   Invoice invoice = new Invoice();
   	  					List<ProjectMembers> projectMembersList = null;
-  	  					if(Constants.RECEIVABLE.equalsIgnoreCase(invoiceType)){
-  	  						 projectMembersList = getClientProjectAssinedMembersAutoInvoice(frequency,orgLocation,project.getId(),client.getId(),contractType,invoice);
+  	  				if(Constants.RECEIVABLE.equalsIgnoreCase(invoiceType)){
+  	  					projectMembersList = getClientProjectAssinedMembersAutoInvoice(frequency,orgLocation,project.getId(),client.getId(),contractType,invoice);
+  	  					if(orgRelation.getGenerateInvoice().equalsIgnoreCase(Constants.FINANCE_TYPE_INDIVIDUAL) && projectMembersList!=null && projectMembersList.size() >0){
+  	  					List<ProjectMembers> projectMem = null;
+  	  				    projectMem.add(projectMembersList.get(0));
+  	  				    projectMembersList = projectMem;
+  	  					}
   	  					}else{
-  	  						 projectMembersList = getVendorProjectAssinedMembersAutoInvoice(frequency,orgLocation,project.getId(),client.getId(),contractType,invoice,globalUser);
+  						 projectMembersList = getVendorProjectAssinedMembersAutoInvoice(frequency,orgLocation,project.getId(),client.getId(),contractType,invoice,globalUser);
+  						if(orgRelation.getGenerateBill().equalsIgnoreCase(Constants.FINANCE_TYPE_INDIVIDUAL) && projectMembersList!=null && projectMembersList.size() >0){
+    	  					List<ProjectMembers> projectMem = null;
+    	  				    projectMem.add(projectMembersList.get(0));
+    	  				    projectMembersList = projectMem;
+    	  					}
   	  					}
   	  					if(null != projectMembersList && projectMembersList.size() >0){
   	  						populateClientDetails(vendorOrgLocation,invoice,orgRelation);

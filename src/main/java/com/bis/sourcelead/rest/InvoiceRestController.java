@@ -1232,7 +1232,7 @@ return responseList;
 				}
 			}
 			if (projectMembersList.size() > 0) {
-				if(orgRelations.getGenerateInvoice() !=null && orgRelations.getGenerateInvoice().equalsIgnoreCase("Individual")){
+				if(orgRelations.getGenerateInvoice() !=null && orgRelations.getGenerateInvoice().equalsIgnoreCase(Constants.FINANCE_TYPE_INDIVIDUAL)){
 					List<ProjectMembers> projectMembersList1 = new ArrayList<>();
 					projectMembersList1.add(projectMembersList.get(0));
 					responseList.setData(projectMembersList1);	
@@ -1349,7 +1349,7 @@ return responseList;
 		if (filteredMembersList.size() > 0) {
 //			resultJson = commonUtil.toJSON(filteredMembersList);
 			
-			if(orgRelations.getGenerateBill() !=null && orgRelations.getGenerateBill().equalsIgnoreCase("Individual")){
+			if(orgRelations.getGenerateBill() !=null && orgRelations.getGenerateBill().equalsIgnoreCase(Constants.FINANCE_TYPE_INDIVIDUAL)){
 				List<ProjectMembers> projectMembersList1 = new ArrayList<>();
 				projectMembersList1.add(filteredMembersList.get(0));
 				responseList.setData(projectMembersList1);	

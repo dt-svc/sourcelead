@@ -417,6 +417,12 @@ function errRemoveVendorContact(){
                    result = result +'  </div>';
                    $("#lineItemAddRows").empty();
                    $("#lineItemAddRows").append(result);
+                   var invoiceUUID = '${invoiceUUID}';
+                   if($("#vendorOrgRelationId").find(':selected').attr("data-Bill") == 'Individual' && invoiceUUID != null && invoiceUUID != "" && invoiceUUID !="undefined"){
+              			$("#addAssociateBtn").prop("disabled", true);
+              		}else{
+              			$("#addAssociateBtn").prop('disabled', false);
+              		}
 		
 	}
 	
@@ -450,11 +456,6 @@ function remove(){
 // 		           	getVendorContacts(json['vendorContactId']);
 		           	$("#invoiceId").val(json['invoiceId']);
 		           	getVendorContacts(json['contactUsers']);
-		           	if($("#vendorOrgRelationId").find(':selected').attr("data-Bill") == 'Individual'){
-		      			$("#addAssociateBtn").prop("disabled", true);
-		      		}else{
-		      			$("#addAssociateBtn").prop('disabled', false);
-		      		}
 
 		           	if(json['paymentFrequency'] != null && json['paymentFrequency'] != '' && json['paymentFrequency'] != 'undefined'){
 		           		$("#paymentFrequency").val(json['paymentFrequency']);
