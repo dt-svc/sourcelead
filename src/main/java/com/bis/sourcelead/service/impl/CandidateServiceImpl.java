@@ -2103,7 +2103,7 @@ private Sheet createXlsSheet(Sheet createExcelsheet, Row writeRow,Candidate cand
 		Candidate candidate = new Candidate();
 		candidate.setCreatedDate(commonUtil.orgLocationCommonDate(new Date(), orgLocations));
 		candidate.setCreatedBy(user.getUserCode());
-		
+		candidate.setWorkLocation(orgLocations);
 		candidate.setCandidateType("Candidate");
 		candidate.setCandidateUUID(SourceLeadRandomCodeHelper.generateRandomUUID());
 		candidate.setIsFavourite(0);
