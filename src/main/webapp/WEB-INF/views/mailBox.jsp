@@ -112,11 +112,11 @@
 					<c:when test="${emailAccountSettingsServiceList.size() > 0}">
 						<c:forEach var="emailAccountList" items="${emailAccountSettingsServiceList}">
 							<li>
-								<span class="color${emailAccountList.email.split("@")[1].charAt(0)}">${emailAccountList.email.split("@")[1].charAt(0)}</span><i onclick="deleteConMail1(${emailAccountList.id});" class="glyphicon glyphicon-trash"></i>
+								<span class="color${emailAccountList.email.split("@")[1].charAt(0)}" onclick="activeEmail(${emailAccountList.id}, this);">${emailAccountList.email.split("@")[1].charAt(0)}</span>
 								<p onclick="activeEmail(${emailAccountList.id}, this);">${emailAccountList.email}</p>
 								<div class="mActions">
-									<i class="mailIcon trashIcon"></i>
-									<i class="mailIcon editIcon"></i>
+									<i class="mailIcon trashIcon" onclick="deleteConMail1(${emailAccountList.id});"></i>
+									<i class="mailIcon editIcon" onclick="getConfiguredEmail(${emailAccountList.id});"></i>
 								</div>								
 							</li>
 						</c:forEach>
@@ -149,7 +149,8 @@
         <div class="mail-box" id="dynamicEmailFolderDiv" style="display: none;">
  			<h5>Folders</h5>
 			<div class="mailSrl">
-				<div id="dynamicEmailFolderList"></div><div class="mailLoad"></div>
+				<div id="dynamicEmailFolderList"></div>
+				<div id="dynamicEmailFolderLoading" class="mailLoad"></div>
 			</div>
 		</div>
 
@@ -909,6 +910,7 @@ function activeEmail(id, ele){
 		$("#composeDynamicMail").show(); */
 		$("#sourceleadEmailFolderDiv").hide();
 		$("#dynamicEmailFolderDiv").show();
+		$("#dynamicEmailFolderLoading").show();
 		$("#dynamicEmailFolderList").empty();
 		$("#SourceleadMailControlsMaster").hide();
 		$("#DynamicMailControlsMaster").show();
@@ -940,7 +942,9 @@ function activeEmail(id, ele){
 				} else {
 					/* alert("Configured credentials were wrong,Please configure with right credentials") */
 					showEmailResponse(response.responseMessage);
+					$("#mailLoading").removeAttr("style");
 				}
+				$("#dynamicEmailFolderLoading").hide();
 				/* $("#mailLoading").removeAttr("style"); */
 			},
 		}); 
@@ -1080,22 +1084,7 @@ function prepareDynamicPagination(name, fullName, id, paginator, index) {
 	$("#mailBoxList").append(text);
 }
 </script>
-<script type="text/javascript">
-function deleteConMail1(id){
-	if (confirm('Are you sure, you want to delete mail configuration?')) {
-		$.ajax({
-			type : "POST",
-			url : sourceleadUrl+"/deleteEmailAccount?${_csrf.parameterName}=${_csrf.token}&id="+id,
-			success : function(data) {
-					location.replace(sourceleadUrl+"/mailBox/mails");
-			},
-		});
-	}
-}
-</script>
-
 <!-- <script src="resources/js/jquery.dataTables.min.js" type="text/javascript" charset="utf-8"></script> -->
-
 <script>
 function emailMailDetailsPagination(){ 
     $('#emailMailDetailsPagination').DataTable( { 
@@ -1720,6 +1709,26 @@ function forwardEmailToHotMail(uuid){
 	function getEmailSettings(settingsType) {
 		$("#emailConfigurationPopup").empty();
 		$.post(sourceleadUrl + "/emailSettings",{source : settingsType}, function(data) {
+			$("#configureEmailDiv").hide();
+			$("#emailConfigurationPopup").append(data);
+		});
+	}
+	
+	function deleteConMail1(id){
+		if (confirm('Are you sure, you want to delete mail configuration?')) {
+			$.ajax({
+				type : "POST",
+				url : sourceleadUrl+"/deleteEmailAccount?${_csrf.parameterName}=${_csrf.token}&id="+id,
+				success : function(data) {
+						location.replace(sourceleadUrl+"/mailBox/mails");
+				},
+			});
+		}
+	}
+	
+	function getConfiguredEmail(id) {
+		$("#emailConfigurationPopup").empty();
+		$.post(sourceleadUrl + "/emailSettings",{source : "gmail"}, function(data) {
 			$("#configureEmailDiv").hide();
 			$("#emailConfigurationPopup").append(data);
 		});

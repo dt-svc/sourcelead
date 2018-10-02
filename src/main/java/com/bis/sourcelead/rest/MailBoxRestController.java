@@ -106,6 +106,9 @@ public class MailBoxRestController {
 	@Value("${static.path}")
 	private String staticPath;
 	
+	@Value("${sourceleadUrl}")
+	private String sourceleadUrl;
+	
 	@Autowired
 	OrgSpocService orgSpocService;
 	
@@ -159,7 +162,6 @@ public class MailBoxRestController {
 	
 	@Autowired
 	EmailScenarioService emailScenarioService;
-	
 	
 	protected static boolean isNullOrEmpty(String str) {
 		return (str == null || "".equals(str.trim()));
@@ -960,6 +962,7 @@ public class MailBoxRestController {
 		return response;
 	}
 	
+	
 /*	@PreAuthorize("hasRole('ROLE_MAIL_BOX')")
 	@RequestMapping(value = "/replyEmailFromMailBox", method = RequestMethod.POST)
 	public boolean replyEmailFromMailBox(MultipartHttpServletRequest request, ReadMailDTO readMailDTO) throws Exception {
@@ -974,4 +977,17 @@ public class MailBoxRestController {
 		return emailService.replyEmailFromMailBox(readMailDTO, user.getId(), orgLocation.getId(), multiFile);
 	}*/
 	
+	@RequestMapping(value = "/app/getEmailConfiguration")
+	@ResponseBody
+	public ModelAndView getEmailConfiguration(HttpServletRequest request, @RequestParam(defaultValue = "others") String source) {
+		ModelAndView modelAndView = new ModelAndView();
+		try {
+			
+			modelAndView.addObject("sourceleadUrl", sourceleadUrl);
+			modelAndView.setViewName("emailConfiguration");
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return modelAndView;
+	}
 }

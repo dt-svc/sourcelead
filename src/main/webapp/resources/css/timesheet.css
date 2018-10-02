@@ -9381,9 +9381,9 @@ aside.asideAct {
 .userMailList li:hover .glyphicon-trash {
   opacity: 1; visibility: visible;
 }
-.userMailList li:hover span {
+/* .userMailList li:hover span {
   display: none;
-}
+} */
 .userMailList li:first-child:hover span {
   display: block;
 }
