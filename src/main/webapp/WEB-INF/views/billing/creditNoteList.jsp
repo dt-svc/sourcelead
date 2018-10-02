@@ -512,7 +512,6 @@ function acceptCreditDebitNote(creditDebitUUID){
 	var result = "";
 	result = result +"	<div class='project_inn_mask'></div>"; 
 	result = result +"	   <div id='remove_user_pop' class='remove_user_pop remove_user_pop_a'>";
-
 	result = result +"<div class='modal-body'><p>Are you sure you want to Accept ?</p></div>";
 	result = result + ' <div id="reasonForInvoiceDiv"/>';
 	result = result +'		<b href="javascript:void(0)"><input class="bg-green" id="confirm-id" type="button" value="Accept" onclick="acceptCreditDebitNoteSave(\''+creditDebitUUID+'\');"><input class="u_can_color" type="button"  value="Cancel" onClick="cancelTermination();"></b>';

@@ -1840,6 +1840,16 @@ public class LeaveManagementRestController {
 		ResponseList<LeaveDTO> responseList = new ResponseList<>();
 		try {
 			OrgLocations loginOrgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+			String[] tableColumns = {"empName",  "leaveType","duration", "noOfDays","approvedBy","updatedDate"};
+		    int sortColumnIndex = 1;		 //by default sorting using updated date
+			String sortColumnOrder = "asc";  //by default descending order
+			if(leaveDTO.getOrder() != null && !leaveDTO.getOrder().isEmpty()) {
+				sortColumnIndex = Integer.parseInt(leaveDTO.getOrder().get(0).get("column"));
+				sortColumnOrder = leaveDTO.getOrder().get(0).get("dir");
+			}
+			leaveDTO.setSortColumn(tableColumns[sortColumnIndex]);
+			leaveDTO.setSortOrder(sortColumnOrder);
+			
 			String loginUserRole = (String) SourceLeadSessionManager.getSessionAttribute(request, "loginUserRole");
 			leaveDTO.setLoginUserRole(loginUserRole);
 			if (loginOrgLocation != null) {
