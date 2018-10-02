@@ -37,7 +37,9 @@
     <section class="content-header clearfix">
       <div class="pull-left">
        <div id="loading"></div>
-        <h2>Mailbox</h2>
+        <h2>Mailbox
+			<a href="javascript:void(0)" onclick="getEmialSettings();"><i class="fa fa-cog ml"></i></a>        
+        </h2>
       </div>
       <div class="pull-right brud-crum"><a href="<c:url value='${appPath}/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a> &raquo; Mailbox</div>
     </section>
@@ -58,23 +60,25 @@
 		  <i class="fa fa-pencil-square-o" aria-hidden="true"></i>
 			Compose
 		  </a>  --%>
-		  
-		      <div class="dropdown mb10 mailBtn">
+		   
+
+		<div class="mail-box" id="loading">
+		
+
+		      <div class="mailBtn">
 					<c:if test="${SourceLeadWeb_loginUserRole != 'ROLE_CROWDSOURCING_PROFESSIONAL' && SourceLeadWeb_loginUserRole != 'ROLE_CROWDSOURCING_RECRUITER'}">
 					<c:if test="${mailType == 'mails'}">
 						<c:choose>
 							<c:when test="${emailAccountSettingsServiceList.size() > 0}">
-								<button id="composeDynamicMail" class="btn-block btn btn-primary dropdown-toggle" 
+								<button id="composeDynamicMail" class="newAdBtn" 
 									type="button" onClick="showComposeEmailPopup();">
-									<i class="fa fa-pencil-square-o" aria-hidden="true"></i>
-									Compose
+									<i class="fa fa-envelope-o" aria-hidden="true"></i>Compose
 								</button>
 							</c:when>
 							<c:otherwise>
-								<button id="composeSourceleadMail" class="btn-block btn btn-primary dropdown-toggle display-block" type="button"
+								<button id="composeSourceleadMail" class="newAdBtn" type="button"
 									onClick="javascript:window.location.href = '<c:url value='${sourceleadUrl}/composeMail'/>'">
-									<i class="fa fa-pencil-square-o" aria-hidden="true"></i>
-									Compose
+									<i class="fa fa-envelope-o" aria-hidden="true"></i>Compose
 								</button>
 							</c:otherwise>
 						</c:choose>
@@ -101,9 +105,8 @@
 						Compose
 						</button>
 					</c:if>
-			  </div> 
-
-		<div class="mail-box" id="loading">
+			  </div>		
+		
 			<ul class="userMailList">
 				<c:choose>
 					<c:when test="${emailAccountSettingsServiceList.size() > 0}">
@@ -111,6 +114,10 @@
 							<li>
 								<span class="color${emailAccountList.email.split("@")[1].charAt(0)}">${emailAccountList.email.split("@")[1].charAt(0)}</span><i onclick="deleteConMail1(${emailAccountList.id});" class="glyphicon glyphicon-trash"></i>
 								<p onclick="activeEmail(${emailAccountList.id}, this);">${emailAccountList.email}</p>
+								<div class="mActions">
+									<i class="mailIcon trashIcon"></i>
+									<i class="mailIcon editIcon"></i>
+								</div>								
 							</li>
 						</c:forEach>
 					</c:when>
@@ -125,10 +132,8 @@
         </div>
 
           <div class="mail-box" id="sourceleadEmailFolderDiv" style="display:block">
-            <div class="mail-box-header">
-              <h3>Folders</h3>
-            </div>
-            <div>
+              <h5>Folders</h5>
+            <div class="mailSrl">
               <ul class="nav nav-pills nav-stacked">
                 <li id="inboxActive" class=""><a href="#inbox" onclick="getMails('Inbox');"><i class="fa fa-inbox"></i> Inbox <c:if test="${inboxUnreadMailsCount > 0}"><span class="label label-primary pull-right" id="inboxUnread">${inboxUnreadMailsCount}</span></c:if>
                 <li id="sentActive" class=""><a href="#sent" onclick="getMails('Sent');"><i class="fa fa-envelope-o"></i> Sent</a></li>
@@ -137,19 +142,15 @@
                 <li id="requestedActive" class=""><a href="#requested" onclick="getMails('Requested');"><i class="fa fa-file-text-o"></i> Requested <c:if test="${requestedUnreadMailsCount > 0}"><span class="label label-info pull-right" id="requestedUnread">${requestedUnreadMailsCount}</span></c:if></a></li> 
                 </c:if>
                 <li id="trashActive" class=""><a href="#trash" onclick="getMails('Trash');"><i class="fa fa-trash-o"></i> Trash</a></li>
-                <c:if test="${mailType == 'mails'}">
-                <li id="settingsActive" class=""><a href="#settings" onclick="getEmialSettings();"><i class="fa fa-cog"></i> Settings</a></li>
-                </c:if>
-                
               </ul>
             </div>
             <!-- /.box-body -->
           </div>
         <div class="mail-box" id="dynamicEmailFolderDiv" style="display: none;">
-			<div class="mail-box-header">
-				<h3>Folders</h3>
+ 			<h5>Folders</h5>
+			<div class="mailSrl">
+				<div id="dynamicEmailFolderList"></div><div class="mailLoad"></div>
 			</div>
-			<div id="dynamicEmailFolderList"></div>
 		</div>
 
 
@@ -182,7 +183,9 @@
 						</button>
 					</div>
 
-					<div class="mail-widget" id="DynamicMailControlsMaster" style="display: none; margin-left: 20px;">
+					<div class="pull-left mr5" title="Refresh"><i class="mailIcon refreshIcon"></i></div>
+	
+					<div class="pull-left" id="DynamicMailControlsMaster" style="display: none;">
 						<span class="pull-left mr moveToTrash" style="display: none;">
 							<i class="mailIcon trashIcon" onclick="moveEmailsToTrash(false);"></i>
 						</span>
@@ -199,18 +202,27 @@
 		</div>
 
 		<div class="col-md-9" id="details">
-			<div id="mailContentLoading"></div>
-			<div class="mail-box mail-content clearfix" id="body-details">
+			<div class="dashNewWrap mail-box mail-content dashNewWrapMinHe">
+				<div id="body-details" style="display: none;"></div>
+				<div id="mailContentLoading"></div>
 			</div>
 		</div>
-		<div class="col-md-9" id="configureEmailDiv">
-			<div class="mail-box mail-content">
-				<!-- <div class="mail-box-header">
-					<h3 class="box-title">Mail account setting</h3>
-				</div> -->
+		
+				<!-- Mail view area -->
+			</div>
+		   </div>
+		</div>
+  </section>
+  
+  <div class="newPopOut newPopOutTop" id="configureEmailDiv" style="display: none;">
+	<div class="newPopWrap">
+  
+  			<div class="popupHead">
+				<span>Please select your provider</span>
+				<i class="closePop pull-right popClose" onclick="$('#configureEmailDiv').hide();"></i>
+			</div>
+  
 				<div class="newMailCon">
-					<!-- <h4>Setup email account for sending</h4> -->
-					<p>Please select your provider</p>
 					<ul>
 						<li>
 							<a onclick="getEmailSettings('gmail');">
@@ -230,13 +242,12 @@
 					</ul>
 					<div class="clear"></div>
 				</div>
+			<div class="popupFoot text-right">
+				<button type="button" class="slBtn md popClose" onclick="$('#configureEmailDiv').hide();">Cancel</button>
 			</div>
 		</div>
-				<!-- Mail view area -->
-			</div>
-		   </div>
 		</div>
-  </section>
+  
 
 <!-- Dynamic Mail Compose popup-->
 <div class="side_mask"></div>
@@ -491,6 +502,7 @@
 	                 	 $("#mailBoxList").empty(); 
 	                 	 /* $("#mailDetails").empty(); */
 	                 	 $("#body-details").empty();
+	                 	 $("#body-details").hide();
 	                     $("#mailBoxList").append(result); 
 	                     pagination(); 
 	                     $("#mailLoading").removeAttr("style"); 
@@ -512,6 +524,7 @@
 					$("#mailBoxList").empty();
 					/* $("#mailDetails").empty(); */ 
 					$("#body-details").empty();
+					$("#body-details").hide();
 				    $("#mailBoxList").append(result); 
 				    $("#mailLoading").removeAttr("style"); 
                }
@@ -551,9 +564,9 @@ function setActiveTab(type){
 			  document.getElementById("requestedActive").removeAttribute("class")
 		  }
 		  document.getElementById("trashActive").removeAttribute("class")
-		  if(mailType == 'mails'){
+/* 		  if(mailType == 'mails'){
 		  	document.getElementById("settingsActive").removeAttribute("class")
-		   }
+		   } */
 		  document.getElementById('inboxActive').className = 'active'
 	}
 	
@@ -564,9 +577,9 @@ function setActiveTab(type){
 			  document.getElementById("requestedActive").removeAttribute("class") 
 		  }
 		  document.getElementById("trashActive").removeAttribute("class")
-		  if(mailType == 'mails'){
+/* 		  if(mailType == 'mails'){
 			  document.getElementById("settingsActive").removeAttribute("class")
-		  }
+		  } */
 		  
 		  document.getElementById('inboxActive').removeAttribute("class")
 	}
@@ -578,9 +591,9 @@ function setActiveTab(type){
 			  document.getElementById("requestedActive").removeAttribute("class")  
 		  }
 		  document.getElementById("trashActive").removeAttribute("class")
-		  if(mailType == 'mails'){
+/* 		  if(mailType == 'mails'){
 			  document.getElementById("settingsActive").removeAttribute("class")
-		  }
+		  } */
 		  
 		  document.getElementById('inboxActive').removeAttribute("class")
 	}
@@ -593,9 +606,9 @@ function setActiveTab(type){
 		  document.getElementById("starredActive").removeAttribute("class")
 		  document.getElementById("trashActive").removeAttribute("class")
 		  document.getElementById('inboxActive').removeAttribute("class")
-		  if(mailType == 'mails'){
+/* 		  if(mailType == 'mails'){
 			  document.getElementById("settingsActive").removeAttribute("class")
-		  }
+		  } */
 		   
 	}
 	
@@ -607,12 +620,12 @@ function setActiveTab(type){
 			  document.getElementById("requestedActive").removeAttribute("class")
 		  }
 		  document.getElementById('inboxActive').removeAttribute("class")
-		   if(mailType == 'mails'){
+/* 		   if(mailType == 'mails'){
 			   document.getElementById("settingsActive").removeAttribute("class")
 		   }
-		  
+		   */
 	}
-	else if(type == 'Settings'){
+/* 	else if(type == 'Settings'){
 		  document.getElementById("settingsActive").className = 'active'
 		  document.getElementById("trashActive").removeAttribute("class")
 		  document.getElementById("sentActive").removeAttribute("class")
@@ -621,7 +634,7 @@ function setActiveTab(type){
 			  document.getElementById("requestedActive").removeAttribute("class")
 		  }
 		  document.getElementById('inboxActive').removeAttribute("class")
-	}
+	} */
 	 
 }
 </script>
@@ -841,6 +854,7 @@ function getEmailDetails(uuid,type) {
             $("#mailDetails").append(result); */
             $("#body-details").empty();
             $("#body-details").append(result);
+            $("#body-details").show();
             $("#mailContentLoading").removeAttr("style"); 
              }
 		},
@@ -854,7 +868,6 @@ function getEmailDetails(uuid,type) {
 function getEmialSettings() {
 	setActiveTab('Settings');
 	$("#configureEmailDiv").show();
-	$("#inbox").hide();
 }
 </script>
 
@@ -906,6 +919,7 @@ function activeEmail(id, ele){
 		$("#mailBoxList").empty();
 		$("#mailBoxList").append("<p class='text-center text-muted'><i class='noMailImg'></i></p>");
 		$("#body-details").empty();
+		$("#body-details").hide();
 	
 		$.ajax({
 			type : "POST",
@@ -916,12 +930,10 @@ function activeEmail(id, ele){
 				 for(var e in response.data) {
 					 var report = response.data[e];
 					 var margin = report.split("<<>>")[1].split(".").length > 1 ? (report.split("<<>>")[1].split(".").length - (report.split("<<>>")[0] === "INBOX" ? 1 : 2)) : 0;
-					 result = result + "<div style='margin-left : " + (margin * 20) + "px;'>";
-					 result = result + "<ul class='Cursor nav nav-pills nav-stacked  inBox-list'>";
+					 result = result + "<ul class='nav nav-pills nav-stacked dynMailList' style='margin-left : " + (margin * 20) + "px;'>";
 					 result = result + "<li name='mailFolder' data-index='" + e + "' onClick='readFolder(\"" + report.split("<<>>")[0] + "\",\"" + report.split("<<>>")[1] + "\"," + id + ", 0, 10, " + e + ");'>" + report.split("<<>>")[0] + "</li>";
 					 /* result = result + "<li onClick='readFolder(\"" + report + "\"," + id + ");'>" + report + "</li>"; */
 					 result = result + "</ul>";
-					 result = result + "</div>";
 				 }
 				 $("#dynamicEmailFolderList").append(result);
 				 autoSelectFirstEmailFolder();
@@ -952,6 +964,7 @@ function readFolder(name, fullName, id, pageNo, pageSize, index){
 	/* $("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:70px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:50px;'); */
 	$("#mailLoading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/linear-loader.gif"); background-position:center; background-repeat:no-repeat; background-size:100px;');
 	$("#body-details").empty();
+	$("#body-details").hide();
 	
 	$("#dynamicEmailFolderList li").removeClass("active");
 	$("#dynamicEmailFolderList li[data-index=" + index + "]").addClass("active");
@@ -962,6 +975,7 @@ function readFolder(name, fullName, id, pageNo, pageSize, index){
 		success : function(data) {
 			
 					var result = '';
+					result = result +'<div class="mailTabWrap">';
 		  			result = result +'<table id="emailMailDetailsPagination" class="table table-hover table-striped">';
 		    		result = result +'<tbody>';
 		    		var emailList = data.data;
@@ -1008,9 +1022,11 @@ function readFolder(name, fullName, id, pageNo, pageSize, index){
 			    		
 			    		result = result +'</tbody>';
 			    		result = result +"</table>";
+			    		result = result +'</div>';
 			    		$("#mailBoxList").empty();
 			    		/* $("#mailDetails").empty(); */
 			    		$("#body-details").empty();
+			    		$("#body-details").hide();
 					    $("#mailBoxList").append(result); 
 					    /* emailMailDetailsPagination(); */
 					    prepareDynamicPagination(name, fullName, id, data.paginator, index);
@@ -1116,9 +1132,10 @@ function backToEmailList(){
 			success : function(data) {
 				if(data && data != null) {
 					emailDetails = data;
-					var body ="<div class='mail-widget'>";
-					body += "	<i onclick='backToEmailList();' aria-hidden='true' class='fa fa-arrow-left' title='back'></i>";
-					body += "	<div class='pull-right'>";
+					
+					var body ="<div class='mailDetailsHeader clearfix'>";
+					body += "	<div class='mailBack' title='back' onclick='backToEmailList();'></div>";
+					body += "	<span class='pull-left'>";
 					body += "		<i aria-hidden='true' class='mailIcon repIcon' title='Reply to sender' onclick='showReplyEmailPopup(" + emailAccountId + ", " + data.messageId + ", \"" + folderName + "\", false);'></i>";
 					body += "		<i aria-hidden='true' class='mailIcon repallIcon' title='Reply to all senders/recipients' onclick='showReplyEmailPopup(" + emailAccountId + ", " + data.messageId + ", \"" + folderName + "\", true);'></i>";
 					body += "		<i aria-hidden='true' class='mailIcon forIcon' title='Forward selected message' onclick='showForwardEmailPopup(" + emailAccountId + ", " + data.messageId + ", \"" + folderName + "\");'></i>";
@@ -1127,23 +1144,27 @@ function backToEmailList(){
 					else
 						body += "		<i aria-hidden='true' class='mailIcon trashIcon' title='Move to Trash' onclick='moveEmailToTrash(" + emailAccountId + ", " + data.messageId + ", \"" + folderName + "\", \"" + folderShortName + "\", false);'></i>";
 					
-					body += "	</div>";
+					body += "	</span>";
+					body += "<div class='mailSentDate'>" + data.sentDate + "</div>";
 					body += "</div>";
-					body+="<div class='mailbox-read-info' id='mailBody" + data.messageId + "'>"; 
-					body+="<h4 class='clearfix' style='border-bottom:1px solid #ddd; padding-bottom:10px;'>" + data.subject + "</h4>";
+					
+					
+					body+="<div class='mailDetailsWrap' id='mailBody" + data.messageId + "'>"; 
+					body+="<h4>" + data.subject + "</h4>";
 	
-					body+="<div class='row'>";
+					body+="<div class='mailCcFrom'>";
 					/* body+="<p class='clearfix mb10 col-md-8'><i class='text-muted fa fa-user paddingRight'></i>" + (folderName.indexOf("Sent") !== -1 ? data.to : data.from) + "</p>"; */
-					body+="<p class='clearfix mb10 col-md-8'> From : " + (data.from !== null ? data.from.replace(/</g, "&lt;").replace(/>/g,"&gt;") : "") + "</p>";
-					body+="<p class='clearfix mb10 col-md-8'> To : " + (data.to !== null ? data.to.replace(/</g, "&lt;").replace(/>/g,"&gt;") : "") + "</p>";
+					body+="<p><span>From</span> " + (data.from !== null ? data.from.replace(/</g, "&lt;").replace(/>/g,"&gt;") : "") + "</p>";
+					body+="<p><span>To</span> " + (data.to !== null ? data.to.replace(/</g, "&lt;").replace(/>/g,"&gt;") : "") + "</p>";
 					/* body+="<p class='clearfix mb10 col-md-8'>" + (folderName.indexOf("Sent") !== -1 ? "To" : "From") +" : " + (folderName.indexOf("Sent") !== -1 ? data.to.replace(/</g, "&lt;").replace(/>/g,"&gt;") : data.from.replace(/</g, "&lt;").replace(/>/g,"&gt;")) + "</p>";
 					body+="<p class='clearfix mb10 col-md-8'>" + (folderName.indexOf("Sent") !== -1 ? "From" : "To") +" : " + (folderName.indexOf("Sent") !== -1 ? data.from.replace(/</g, "&lt;").replace(/>/g,"&gt;") : data.to.replace(/</g, "&lt;").replace(/>/g,"&gt;")) + "</p>"; */						
 					if(data.cc != null && data.cc !== "") {
-						body+="<p class='clearfix mb10 col-md-8'>Cc : " + data.cc.replace(/</g, "&lt;").replace(/>/g,"&gt;") + "</p>";
+						body+="<p><span>Cc</span> " + data.cc.replace(/</g, "&lt;").replace(/>/g,"&gt;") + "</p>";
 					}
-					body+="<p class='clearfix mb10 col-md-4 text-right'>" + data.sentDate + "</p>";
 					body+="</div>";
-					body+="<p class='col-md-12 clearfix'>" + data.body + "</p>";
+					body+="<div class='mailContent'>" + data.body + "</div>";
+					
+					
 					if(data.filesList != null && data.filesList.length > 0) {
 						var text = "<div class='mailAttaWrap clearfix'>";
 						text += "       <h2>Attachments</h2>";
@@ -1192,6 +1213,7 @@ function backToEmailList(){
 					body+="</div>";
 					
 					$("#body-details").append(body);
+					$("#body-details").show();
 					$("#inbox").hide();
 				    $("#details").show();
 				} else {
@@ -1241,7 +1263,11 @@ function forwardEmailToHotMail(uuid){
 
 <script type="text/javascript">
 	$(document).ready(function() {
-		getMails('Inbox');
+		if("${emailAccountSettingsServiceList.size()}" === 0) {
+			getMails('Inbox');
+		} else {
+			$($(".userMailList li")[0]).find("p").click();
+		}
 		/* $($(".newMailSet").find("li")[0]).find("a").click(); */
 	});
 	
@@ -1693,10 +1719,12 @@ function forwardEmailToHotMail(uuid){
 	
 	function getEmailSettings(settingsType) {
 		$("#emailConfigurationPopup").empty();
-		$.post(sourceleadUrl + "/emailSettings",{source : settingsType}, function(data) {  
+		$.post(sourceleadUrl + "/emailSettings",{source : settingsType}, function(data) {
+			$("#configureEmailDiv").hide();
 			$("#emailConfigurationPopup").append(data);
 		});
 	}
-</script>		
+</script>	
+
  	
 <jsp:include page="masterFooter.jsp" />

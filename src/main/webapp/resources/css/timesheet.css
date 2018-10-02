@@ -6078,7 +6078,7 @@ background: #f1f6ff none repeat scroll 0 0; color: #444; border-radius: 5px;
 	color: #006bbb;
 }
 .newMailCon {
-	padding: 15px;
+	padding: 25px; min-height: 200px
 }
 .newMailCon h4 {
 	padding: 0px 0px; margin: 0px 0px; font-size: 16px; font-weight: 500; color: #323232;
@@ -6090,10 +6090,10 @@ background: #f1f6ff none repeat scroll 0 0; color: #444; border-radius: 5px;
 	padding: 0px 0px; margin: 0px 0px;
 }
 .newMailCon ul li {
-	list-style-type: none; float: left; width: 23%; margin: 0px 2% 0px 0px;
+	list-style-type: none; float: left; width: 31%; margin: 0px 2% 0px 0px;
 }
 .newMailCon ul li a {
-	display: block; width: 100%; border: 1px solid #dedede; border-radius: 4px; padding: 20px 0px 15px; color: #454545;
+	display: block; width: 100%; border: 1px solid #dedede; border-radius: 4px; padding: 25px 0px 20px; color: #454545;
 	text-align: center;
 }
 .newMailCon ul li a img {
@@ -9345,18 +9345,14 @@ aside.asideAct {
 .dashNewWrap .remove_search {
 	right: 0px; top: 4px;
 }
-.mt7 {
-	margin-top: 7px;
-}
+.mt7 {margin-top: 7px;}
 .dashNewWrapMinHe {
-	min-height: 400px; padding-bottom: 18px !important;
+	min-height: 510px; padding-bottom: 18px !important;
 }
 .dashNewWrapMinHe table {
 	border-bottom: 1px solid #f2f2f2;
 }
 .dashNewWrapMinHe .datatable_filter .dataTables_length { bottom: 7px;}
-
-
 
 
 .userMailList {
@@ -9408,7 +9404,10 @@ aside.asideAct {
 #sourceleadEmailFolderDiv li.active, #dynamicEmailFolderDiv li.active {
   background-color: #f1f1f1; border-left: 4px solid #368ee0;
 }
-
+.dynMailList li {
+	padding: 7px 15px;
+}
+.dynMailList li:hover { background-color: #f5f5f5;}
 .mail-widget i { padding: 5px; cursor: pointer; font-size: 20px; color: #817c7c;}
 
 .mailIcon {
@@ -9420,6 +9419,10 @@ aside.asideAct {
 }
 .mailIcon.trashIcon:hover {
 	background-position: center -25px;
+}
+.mailIcon.refreshIcon {
+	background: url("../images/refresh.svg"); background-size: 23px; background-position: center center;
+	background-repeat: no-repeat;
 }
 .mailIcon.attaIcon {
 	background: url("../images/attach.svg"); background-size: 22px; background-position: center; background-repeat: no-repeat;
@@ -9466,8 +9469,11 @@ aside.asideAct {
 .remove_user_pop.remove_user_pop_a  { z-index: 100000;}
 
 .newPopOut {
-	position: fixed; z-index: 100010; display: none; padding: 20px 0px; overflow: auto;
+	position: fixed; z-index: 100010; padding: 20px 0px; overflow: auto;
 	background-color: rgba(0,0,0,0.6); top: 0px; left: 0px; width: 100%; height: 100%;
+}
+.newPopOut.newPopOutTop {
+	padding: 8% 0px 0px;
 }
 .newPopWrap {
 	width: 92%; max-width: 600px; margin: 0px auto 20px; border-radius: 4px;
@@ -9490,10 +9496,10 @@ aside.asideAct {
 	padding: 8px;
 }
 .mailBtn .newAdBtn {
-	width: 49%; display: inline-block;
+	width: 100%; display: inline-block;
 }
 .mailBtn .newAdBtn i {
-	display: inline-block; padding: 0px 5px 0px 0px;
+	display: inline-block; padding: 0px 10px 0px 0px;
 }
 .mail-box h5 {
 	padding: 10px 15px; margin: 0px 0px; font-size: 15px; color: #505050; font-weight: 500;
@@ -9504,5 +9510,60 @@ aside.asideAct {
 	border: none; background-color: #f5f5f5;}
 .mail-box .nav > li > a:hover, .mail-box .nav > li > a:active, .mail-box .nav > li > a:focus { background-color: #f5f5f5;}	
 .mailSrl {
-	min-height: 100px; max-height: 300px; overflow: auto;
+	min-height: 200px; max-height: 300px; overflow: auto; position: relative;
 }
+.mailLoad {
+	position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100000;
+	background-image:url(../images/linear-loader.gif); background-position:center; background-repeat:no-repeat; background-size:80px;
+}
+.dashNewWrap .mailIcon {top:-4px;}
+.mailTabWrap {
+	min-height: 420px; border-bottom: 1px solid #f2f2f2;
+}
+.mailDetailsHeader {
+	padding: 10px 15px; border-bottom: 1px solid #f5f5f5;
+}
+.mailBack {
+	float: left; width: 40px; height: 40px; display: block; background-repeat: no-repeat; cursor: pointer;
+	background-image: url(../images/mailback.svg); background-size: 26px; background-position: center center;
+	background-color: #f9f9f9; border-radius: 50%;
+}
+.mailBack:hover { background-color: #f1f1f1;}
+.mailDetailsHeader span { padding: 9px 0px 0px 20px; }
+.mailDetailsHeader .mailIcon { float: left; margin: 0px 8px 0px 0px;}
+.mailSentDate {float: right; padding: 11px 5px 0px 0px; font-size: 14px; font-weight: 400; color: #454545;}
+.mailDetailsWrap { padding: 15px;}
+.mailDetailsWrap h4 {
+	padding: 2px 0px 15px 0px; margin: 0px 0px; font-size: 16px; font-weight: 500; color: #1b5e9e;
+	}
+.mailCcFrom {
+	background-color: #f5f5f5; padding: 10px 15px; border-radius: 2px;
+}
+.mailCcFrom p {
+	position: relative; margin: 0px 0px; padding: 3px 0px 3px 50px; color: #454545; line-height: 20px;
+}
+.mailCcFrom p span {
+	position: absolute; left: 0px; top: auto; font-weight: 500; color: #454545; display: block; width: 40px;
+}
+.mailCcFrom p span:after {
+	content: ':'; position: absolute; right: 0px;
+}
+.mailContent {
+	padding: 15px;
+}
+.mailContent p {
+	font-size: 14px !important; color: #454545; line-height: 20px; font-family: 'Roboto', Arial, Helvetica, sans-serif !important; 
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
