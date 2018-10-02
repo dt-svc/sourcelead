@@ -2164,22 +2164,34 @@ public class CandidateDaoImpl implements CandidateDao {
 
 	@Override
 	@Transactional
-	public void saveBulkCandidates(List<Candidate> candidatesList) throws Exception {
-		Session session = sessionFactory.openSession();
-		Transaction tx = session.beginTransaction();
-		int i = 0;
+	public void saveBulkCandidates(List<Candidate> candidatesList,Long orgLocationId) throws Exception {
+		Session session = sessionFactory.getCurrentSession();
 		for (Candidate candidate : candidatesList) {
-		    session.save(candidate);
-		    candidateService.saveOrUpdateCandidateElkDocument(candidate);
-		    if ( i % 20 == 0 ) { //20, same as the JDBC batch size
-		        //flush a batch of inserts and release memory:
-		        session.flush();
-		        session.clear();                                          
-		    }
-		    i = i+1;
+			Long candidateId = getCandidateIdByEmailAndOrgLocationId(candidate.getEmail().trim(),orgLocationId);
+			if(candidateId == null) {
+				    session.save(candidate);
+				    candidateService.saveOrUpdateCandidateElkDocument(candidate);
+			}
+		    
 		}
-		tx.commit();
-		session.close();
+	}
+
+	@Override
+	@Transactional
+	public List<String> getCandidateEmailsByOrgLocationId(Long orgLocationId) throws Exception {
+		
+		Session session = this.sessionFactory.getCurrentSession();
+		String query = null;
+		query ="SELECT "
+				+" CAND.EMAIL "
+				+" FROM CANDIDATE CAND "
+				+" WHERE "
+				+" CAND.ORG_LOCATION_ID = :orgLocationId";
+		Query queryObj = session.createSQLQuery(query);
+		queryObj.setLong("orgLocationId", orgLocationId);	
+		List<String> emailsList = (List<String>)queryObj.list();
+		
+		return emailsList;
 	}
 
 }

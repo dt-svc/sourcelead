@@ -460,4 +460,32 @@ public class USPayrollReportRestController {
 		
 	}
 	
+	
+
+	@RequestMapping(value = "/exportToPdfDeductionReport")
+	public void exportToPdfDeductionReport(PayrollReportDTO payrollReportDTO,HttpServletRequest request, HttpServletResponse response) throws Exception
+	{
+		OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+		List<PayrollReportDTO>  deductionHisList = payrollReportService.exportToPdfDeductionReport(orgLocation,payrollReportDTO);
+		
+		File file = payrollReportPdfUtil.getDeductionReportPdf(orgLocation,deductionHisList);
+		
+		String mimeType = URLConnection.guessContentTypeFromName(file.getName());
+		if (mimeType == null) {
+			mimeType = "application/octet-stream";
+		}
+		response.setContentType(mimeType);
+		StringBuilder fileName = new StringBuilder();
+		response.setHeader("Content-Disposition", fileName.append("attachment; filename=\"").append(file.getName()).append("\"").toString());
+		response.setContentLength((int) file.length());
+		InputStream inputStream = new BufferedInputStream(new FileInputStream(file));
+		FileCopyUtils.copy(inputStream, response.getOutputStream());
+		inputStream.close();
+		response.getOutputStream().close();
+		response.getOutputStream().flush();
+		if (file != null) {
+			file.delete();
+		}
+	}
+	
 }
