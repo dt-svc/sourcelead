@@ -17,7 +17,6 @@
 		</div>
 	</section>
 	<div class="tabsMenu clearfix">
-		runIndianPayRoll
 		<ul class="list-unstyled">
 			<li class="current"><a>Review Payroll</a></li>
 			<li><a>Approve Payroll</a></li>
