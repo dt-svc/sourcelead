@@ -105,14 +105,19 @@ public class ImmigrationCommonDaoImpl implements ImmigrationCommonDao {
 
 	@Override
 	@Transactional(rollbackFor = { Exception.class })
-	public List<ImmigrationTemplate> getImmigrationTemplateList(OrgLocations orgLocations) {
+	public List<ImmigrationTemplate> getImmigrationTemplateList(OrgLocations orgLocations, Long status) {
 		logger.debug("Saving Template Details-->");
 		List<ImmigrationTemplate> templateLst = new ArrayList<ImmigrationTemplate>();
 		try {
 			Session session = this.sessionFactory.getCurrentSession();
 			logger.debug(" before query execute templateLst size -->" + templateLst.size());
-			String queryString = "from ImmigrationTemplate it where it.status = 1 and it.orgLocations.id =:orgLocationId";
+			if(status == null) {
+			String queryString = "from ImmigrationTemplate it where it.orgLocations.id =:orgLocationId";
 			templateLst = session.createQuery(queryString).setLong("orgLocationId", orgLocations.getId()).list();
+			}else {
+				String queryString = "from ImmigrationTemplate it where it.status =:status and it.orgLocations.id =:orgLocationId";
+				templateLst = session.createQuery(queryString).setLong("orgLocationId", orgLocations.getId()).setLong("status", status).list();
+			}
 			logger.debug("tempalte Details loaded Successfully templateLst size -->" + templateLst.size());
 
 			logger.debug("tempalte Details loaded Successfully-->");

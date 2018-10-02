@@ -15,4 +15,6 @@ public interface ShiftDao {
 	public Shift deleteShift(Shift deleteShift);
 	
 	public Shift getShiftListByShiftNameAndOrglocationId(String ShiftName,Long orgLocationId);
+	
+	public List<String> getAssociatesShiftListByOrgLocationId(Long orgLocationId);
 }

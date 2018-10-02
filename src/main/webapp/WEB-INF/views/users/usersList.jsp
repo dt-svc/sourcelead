@@ -342,13 +342,26 @@ function getUsersSearchResult(searchValue){
 							</li>
 				</c:if>
 				
-				<%-- <c:if test="${SourceLeadWeb_currencyCode == 'USD'}">
-				<li><a class="newAdBtn mr5" href="<c:url value='${appPath}/userGroupList'/>"><i class="fa fa-plus"></i>&nbsp;Create Batch</a></li>
-				</c:if> --%>
-				
 				<c:if test="${orgLocationsCount == 1}">
-				<li><a class="newAdBtn mr5" href="<c:url value='${appPath}/userCreation'/>">+  Associate</a></li>
-				</c:if>		
+				           <sec:authorize access="hasRole('ROLE_USER_BULK_IMPORTS')"> 
+				           <li>
+								<a class="action newAdBtn mr5" onclick="getActions();" href="javascript:void(0)">+ Add <i class="fa fa-caret-down"></i></a>
+								<div class="action-pop">
+									<span> 
+									<a href="<c:url value='${appPath}/userCreation'/>">Add Associate</a>
+									<sec:authorize access="hasAnyRole('ROLE_USER_BULK_IMPORTS')"> 
+										<a href="<c:url value='${appPath}/uploadForm'/>">Import</a>
+									</sec:authorize>									
+									</span>
+								</div>
+							</li>
+							</sec:authorize>
+							
+				<sec:authorize access="!hasRole('ROLE_USER_BULK_IMPORTS')"> 
+						<li><a class="newAdBtn mr5" href="<c:url value='${appPath}/userCreation'/>">+  Associate</a></li>
+				</sec:authorize>
+							
+				</c:if>	
 	           
 						
 	       </sec:authorize>
