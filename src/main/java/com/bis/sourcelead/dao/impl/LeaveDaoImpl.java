@@ -133,39 +133,56 @@ public class LeaveDaoImpl implements LeaveDao{
 				countQuery ="from Leave leave where (leave.orgLocations.id = :orgLocationId or leave.orgLocations.org.id =:orgId) and (laph.approverUserId.id= :userId or user.id in (select urole.user.id from UserRole urole where urole.reportingManager.id = :userId)) and leave.status = '"+leaveDTO.getLeaveStatus()+"'";
 			}
 			
+			String qry = "";
+			if(StringUtils.isNotBlank(leaveDTO.getSortColumn())) {
+				if("empName".equalsIgnoreCase(leaveDTO.getSortColumn())) {
+					qry = " order by concat(laph.leaveid.user.firstName,laph.leaveid.user.lastName) "+leaveDTO.getSortOrder();
+				}else if("leaveType".equalsIgnoreCase(leaveDTO.getSortColumn())) {
+					qry = " order by laph.leaveid.leaveType.name "+leaveDTO.getSortOrder();
+				}else if("leaveType".equalsIgnoreCase(leaveDTO.getSortColumn())) {
+					qry = " order by laph.leaveid.leaveType.name "+leaveDTO.getSortOrder();
+				}else if("noOfDays".equalsIgnoreCase(leaveDTO.getSortColumn())) {
+					qry = " order by laph.leaveid.leaveType.noOfDays."+leaveDTO.getSortColumn() + " "+leaveDTO.getSortOrder();
+				}else if("approvedBy".equalsIgnoreCase(leaveDTO.getSortColumn())) {
+					qry = " order by concat(laph.approverUserId.firstName,laph.approverUserId.lastName) "+leaveDTO.getSortOrder();
+				}else if("updatedDate".equalsIgnoreCase(leaveDTO.getSortColumn())) {
+					qry = " order by laph.leaveid.updatedDate."+leaveDTO.getSortColumn() + " "+leaveDTO.getSortOrder();
+				}
+			}
+			
 			if(StringUtils.isNotBlank(leaveDTO.getSearchValue())){
 				searchQuery.append(" and (laph.leaveid.user.firstName like '%" + leaveDTO.getSearchValue() + "%' ")
 				.append("OR laph.leaveid.user.lastName like '%" + leaveDTO.getSearchValue() + "%' ")
 				.append("OR laph.leaveid.numberOfDays like '%" + leaveDTO.getSearchValue() + "%' ");
 				if(Constants.LEAVE_APPROVED.equalsIgnoreCase(leaveDTO.getLeaveStatus())) {
-					searchQuery.append("OR laph.leaveid.approvedBy.firstName like '%" + leaveDTO.getSearchValue() + "%' ")
+					searchQuery.append("OR  (concat(laph.leaveid.approvedBy.firstName,laph.leaveid.approvedBy.lastName) like '%\" + payrollReportDTO.getSearchValue() + \"%' ) ")
 					.append("OR laph.leaveid.approvedBy.lastName like '%" + leaveDTO.getSearchValue() + "%' ");
 				}else if(Constants.LEAVE_REJECTED.equalsIgnoreCase(leaveDTO.getLeaveStatus())) {
-					searchQuery.append("OR laph.leaveid.rejectedBy.firstName like '%" + leaveDTO.getSearchValue() + "%' ")
-					.append("OR laph.leaveid.rejectedBy.firstName like '%" + leaveDTO.getSearchValue() + "%' ");
+					searchQuery.append("OR (concat(laph.leaveid.rejectedBy.firstName,laph.leaveid.rejectedBy.lastName) like '%" + leaveDTO.getSearchValue() + "%' ) ")
+					.append("OR laph.leaveid.rejectedBy.lastName like '%" + leaveDTO.getSearchValue() + "%' ");
 				} else if(Constants.LEAVE_CANCELLED.equalsIgnoreCase(leaveDTO.getLeaveStatus())) {
-					searchQuery.append("OR laph.leaveid.cancelledBy.firstName like '%" + leaveDTO.getSearchValue() + "%' ")
-					.append("OR laph.leaveid.cancelledBy.firstName like '%" + leaveDTO.getSearchValue() + "%' ");
+					searchQuery.append("OR (concat(laph.leaveid.cancelledBy.firstName,laph.leaveid.cancelledBy.lastName) like '%" + leaveDTO.getSearchValue() + "%' ) ")
+					.append("OR laph.leaveid.cancelledBy.lastName like '%" + leaveDTO.getSearchValue() + "%' ");
 				}
 				searchQuery.append("OR laph.leaveid.leaveType.name like '%" + leaveDTO.getSearchValue() + "%' )");
 				
-				leavesearchQuery.append(" and (leave.user.firstName like '%" + leaveDTO.getSearchValue() + "%' ")
+				leavesearchQuery.append(" and ((concat(leave.user.firstName,leave.user.lastName) like '%" + leaveDTO.getSearchValue() + "%' ) ")
 				.append("OR leave.user.lastName like '%" + leaveDTO.getSearchValue() + "%' ")
 				.append("OR leave.numberOfDays like '%" + leaveDTO.getSearchValue() + "%' ");
 				if(Constants.LEAVE_APPROVED.equalsIgnoreCase(leaveDTO.getLeaveStatus())) {
-					leavesearchQuery.append("OR leave.approvedBy.firstName like '%" + leaveDTO.getSearchValue() + "%' ")
+					leavesearchQuery.append("OR (concat(leave.approvedBy.firstName,leave.approvedBy.lastName) like '%" + leaveDTO.getSearchValue() + "%' ) ")
 					.append("OR leave.approvedBy.lastName like '%" + leaveDTO.getSearchValue() + "%' ");
 				}else if(Constants.LEAVE_REJECTED.equalsIgnoreCase(leaveDTO.getLeaveStatus())) {
-					leavesearchQuery.append("OR leave.rejectedBy.firstName like '%" + leaveDTO.getSearchValue() + "%' ")
-					.append("OR leave.rejectedBy.firstName like '%" + leaveDTO.getSearchValue() + "%' ");
+					leavesearchQuery.append("OR (concat(leave.rejectedBy.firstName,leave.rejectedBy.lastName) like '%" + leaveDTO.getSearchValue() + "%' ) ")
+					.append("OR leave.rejectedBy.lastName like '%" + leaveDTO.getSearchValue() + "%' ");
 				}else {
-					leavesearchQuery.append("OR leave.cancelledBy.firstName like '%" + leaveDTO.getSearchValue() + "%' ")
-					.append("OR leave.cancelledBy.firstName like '%" + leaveDTO.getSearchValue() + "%' ");
+					leavesearchQuery.append("OR (concat(leave.cancelledBy.firstName,leave.cancelledBy.lastName) like '%" + leaveDTO.getSearchValue() + "%' ) ")
+					.append("OR leave.cancelledBy.lastName like '%" + leaveDTO.getSearchValue() + "%' ");
 				}
 				leavesearchQuery.append("OR leave.leaveType.name like '%" + leaveDTO.getSearchValue() + "%' )");
 			}
 			
-			Query queryObj = session.createQuery(query+searchQuery);
+			Query queryObj = session.createQuery(query+searchQuery+qry);
 			if (leaveDTO != null && leaveDTO.getLength() > 0) {
 				queryObj.setFirstResult(leaveDTO.getStart());
 				queryObj.setMaxResults(leaveDTO.getLength());

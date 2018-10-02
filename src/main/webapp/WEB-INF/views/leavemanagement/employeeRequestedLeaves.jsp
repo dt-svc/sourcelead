@@ -172,6 +172,7 @@ function requestedEmployeesPagination(url){
 	          },{
             "targets": colIndex++,
             "data": "duration",
+            "sorting":false,
             "render": function ( data, type, opt, meta ) {
             	 var result = "";
             	result = result + '   <div title="'+opt.duration+'" class="">'+opt.duration+'</div>';
@@ -204,6 +205,7 @@ function requestedEmployeesPagination(url){
           }, */{
 	    	  	"targets": colIndex++,
 	    	  	"data": "thisMonthLeaves",
+	    	  	"sorting":false,
 	    	  	"render": function(data, type, opt, meta) {
 	    	  		 var result = "";
 	    	  		result = result + '     <div class="tblminwidth-75">'+opt.thisMonthLeavesTaken+'</div>';
@@ -212,6 +214,7 @@ function requestedEmployeesPagination(url){
 	    	  },{
 	    	  	"targets": colIndex++,
 	    	  	"data": "balanceleaves",
+	    	  	"sorting":false,
 	    	  	"render": function(data, type, opt, meta) {
 	    	  		 var result = "";
 	    	  		result = result + ' <div class="tblminwidth-75">'+opt.totalBalLeaves+'</div>';
@@ -220,6 +223,7 @@ function requestedEmployeesPagination(url){
 	    	  }, {
                   "targets": colIndex++,
                   "data": "action",
+                  "sorting":false,
                   "render": function ( data, type, opt, meta ) {
                 	   var result = "";
                 	  if(opt.status == 'APPROVED'){
