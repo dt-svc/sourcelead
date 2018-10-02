@@ -113,7 +113,7 @@ function runINDPayroll(){
 		           url: sourceleadUrl+"/generateINDPayroll?groupId="+groupId+"&payPeriod="+payPeriod+"&payrollPayDate="+payrollPayDate+"&paytype="+payType,                 
 		           success: function(data) {
 		        	  if(data != null && data != 'undefined' && data != '' && data.payrollFrequencyUUID != null){
-		        		  $(location).attr('href', 'employeePayrollList?paySheetFrequencyuuid='+data.payrollFrequencyUUID+'');
+		        		  $(location).attr('href', 'employeePayrollList?payrollFrequencyUUID='+data.payrollFrequencyUUID+'');
 		        	  }else{
 		        		  $('#initiatePayrollEmptyDiv').show();
 		        	  }
