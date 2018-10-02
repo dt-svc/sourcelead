@@ -528,6 +528,7 @@ public class EMailJobScheduler {
 		 emailMessage.setToEmail(toUserObj.getEmail());
 		 emailMessage.setFromEmail(fromEmail);
 		
+		 
 		 StringBuilder sb = new StringBuilder();
 		 
 		 sb.append("<table width='900' align='center' style='border-collapse: collapse; margin: 0 auto;border: 1px solid #375d81; text-align: center;' cellpadding='2px' cellspacing='0' border='0'>");
@@ -561,7 +562,7 @@ public class EMailJobScheduler {
 	        });
 	  		
 	  		sb.append("</tbody>");   
-		    sb.append("/<table>"); 
+		    sb.append("</table>"); 
 
 		Map<String, String> globalVarsMap = new HashMap<String, String>();
 		 globalVarsMap.put("currLcaStatus", currLcaStatus);
