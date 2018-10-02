@@ -8143,12 +8143,12 @@ float: left; width: 33.3333%; background-color: #f9f9f9; padding: 5px 15px; marg
 	width: 1000px; 
 }
 .popupHead {
-	background-color: #E6E6E6; height: 47px; line-height: 47px; font-size: 15px; font-weight: 500; color: #353535;
-	padding: 0px 10px 0px 15px;
+	background-color: #f0f0f0; height: 47px; line-height: 47px; font-size: 15px; font-weight: 500; color: #353535;
+	padding: 0px 10px 0px 15px; border-radius: 3px 3px 0px 0px;
 }
 .closePop {
 	width: 30px; height: 30px; display: block; background: url("../images/cross-out.svg"); background-repeat: no-repeat;
-	background-position: center; background-size: 20px; cursor: pointer; margin: 10px 0px 0px 0px; opacity: 0.7;
+	background-position: center; background-size: 17px; cursor: pointer; margin: 8px 0px 0px 0px; opacity: 0.7;
 	float: right; position: relative !important;
 	}
 .popupContent {
@@ -9398,7 +9398,7 @@ aside.asideAct {
   background-color: #f1f1f1; border-right:5px solid #368ee0;
 }
 
-#sourceleadEmailFolder li.active, #dynamicEmailFolder li.active {
+#sourceleadEmailFolderDiv li.active, #dynamicEmailFolderDiv li.active {
   background-color: #f1f1f1; border-right: 5px solid #368ee0;
 }
 
@@ -9455,3 +9455,23 @@ aside.asideAct {
 .mailIcon.forIcon:hover {background-position: center -25px;}
 #attachfileBtn {opacity: 0;}
 .remove_user_pop.remove_user_pop_a  { z-index: 100000;}
+
+.newPopOut {
+	position: fixed; z-index: 100010; padding: 20px 0px; overflow: auto;
+	background-color: rgba(0,0,0,0.6); top: 0px; left: 0px; width: 100%; height: 100%;
+}
+.newPopWrap {
+	width: 92%; max-width: 600px; margin: 0px auto 20px; border-radius: 4px;
+	background-color: #fff; box-shadow: 0px 8px 10px 0px rgba(46,51,51,0.4);
+}
+.newPopWrap h3 {
+	padding: 0px 0px; margin: 6px 0px 12px 15px; font-size: 15px; font-weight: 500; color: #454545;
+}
+.newPopWrap h3 span {
+	font-size: 13px; font-weight: 400;
+}
+.newPopWrap label span {
+	display: inline-block; padding: 0px 0px 0px 10px;
+}
+
+#configureEmailDiv {display: none;}

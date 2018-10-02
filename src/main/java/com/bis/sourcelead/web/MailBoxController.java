@@ -167,6 +167,7 @@ public class MailBoxController {
  	}
 
 	@RequestMapping(value = "/app/emailSettings")
+	@ResponseBody
 	public ModelAndView emailSettings(HttpServletRequest request, @RequestParam(defaultValue = "others") String source) {
 //		User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
 		ModelAndView model = new ModelAndView();
@@ -196,7 +197,7 @@ public class MailBoxController {
 		model.addObject("outgoingPort", outgoingPort);
 //		model.addObject("username", user.getFullName());
 		model.addObject("sourceleadUrl", sourceleadUrl);
-		model.setViewName("emailSettings");
+		model.setViewName("emailConfiguration");
 		return model;
 	}
 	

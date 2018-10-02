@@ -283,13 +283,15 @@ public class EmailServiceImpl implements EmailService {
 		Response<Boolean> response = new Response<>();
 		try {
 			EmailAccountSettings emailAccountSettings = emailAccountSettingsDao.getEmailAccount(readMailDTO.getEmailAccountId(), userId);
-			String email = emailAccountSettings.getEmail();
+/*			String email = emailAccountSettings.getEmail();
 			String password = emailAccountSettings.getPassword();
-			String outgoingHost = emailAccountSettings.getSendServerName();
-			String outgoingPort = emailAccountSettings.getSendPort();
-			String incomingHost = emailAccountSettings.getRecieveServerName();
-			String incomingPort = emailAccountSettings.getRecievePort();
-			String storeType = "smtp";
+			String outgoingHost = emailAccountSettings.getOutgoingServer();
+			String outgoingPort = emailAccountSettings.getOutgoingPort();
+			boolean outgoingSSL = emailAccountSettings.isOutgoingSSL();
+			String incomingHost = emailAccountSettings.getIncomingServer();
+			String incomingPort = emailAccountSettings.getIncomingPort();
+			boolean incomingSSL = emailAccountSettings.isIncomingSSL();
+			String storeType = "smtp";*/
 
 			/*List<AttachmentDTO> attachmentList = new LinkedList<>();
 			if (multiFile.getSize() > 0) {
@@ -300,8 +302,7 @@ public class EmailServiceImpl implements EmailService {
 				attachmentList.add(attachment);
 			}*/
 
-			response = MailBox.composeEmail(outgoingHost, outgoingPort, incomingHost, incomingPort, storeType, email, password,
-					orgId, orgLocationId, staticPath, readMailDTO);
+			response = MailBox.composeEmail(orgId, orgLocationId, staticPath, emailAccountSettings, readMailDTO);
 		} catch (Exception e) {
 			e.printStackTrace();
 		}

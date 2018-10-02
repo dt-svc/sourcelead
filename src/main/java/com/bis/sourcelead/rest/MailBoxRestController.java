@@ -36,6 +36,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.multipart.MultipartHttpServletRequest;
+import org.springframework.web.servlet.ModelAndView;
 
 import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.dto.AddUserDTO;
@@ -855,38 +856,41 @@ public class MailBoxRestController {
 	        });
 	        return xstream.toXML(obj);
 	    }
-	 @RequestMapping(value = "/addEmailAccount" , method = RequestMethod.POST)
-		public String addEmailAccount(EmailAccountSettingsDTO emailAccountSettingsDTO, HttpServletRequest request)
-				throws Exception {
-		 
-		  User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
-		  OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
-		  emailAccountSettingsService.StoreEmailAccountSettings(emailAccountSettingsDTO,user,orgLocations);
-		  return "success";
-			
+	 	 
+	@RequestMapping(value = "/addEmailAccount", method = RequestMethod.POST)
+	public Response<Boolean> addEmailAccount(EmailAccountSettingsDTO emailAccountSettingsDTO, HttpServletRequest request) throws Exception {
+		Response<Boolean> response = new Response<>();
+		try {
+			User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+			OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+			response = emailAccountSettingsService.StoreEmailAccountSettings(emailAccountSettingsDTO, user, orgLocations);
+		} catch (Exception e) {
+			e.printStackTrace();
 		}
+		return response;
+	}
 
-	 @RequestMapping(value = "/deleteEmailAccount" , method = RequestMethod.POST)
-		public @ResponseBody String deleteEmailAccount(Long id, HttpServletRequest request)
-				throws Exception {
-		 
-		  User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
-		  Long userId=user.getId();
-		    emailAccountSettingsService.deleteEmailAccount(id, userId);
-		  return "success";
-			
-		}
+	@RequestMapping(value = "/deleteEmailAccount", method = RequestMethod.POST)
+	public @ResponseBody String deleteEmailAccount(Long id, HttpServletRequest request) throws Exception {
+
+		User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+		Long userId = user.getId();
+		emailAccountSettingsService.deleteEmailAccount(id, userId);
+		return "success";
+
+	}
 	 
-	 @RequestMapping(value = "/editEmailAccount" , method = RequestMethod.POST)
-		public @ResponseBody EmailAccountSettingsDTO editEmailAccount(Long id, HttpServletRequest request)
-				throws Exception {
-		 User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
-		  Long userId=user.getId();
-		 
-		  EmailAccountSettingsDTO emailAccountSettingsDTO= emailAccountSettingsService.getEmailAccount(id,userId);
-		  return emailAccountSettingsDTO;
-			
+	@RequestMapping(value = "/getEmailAccount", method = RequestMethod.POST)
+	@ResponseBody
+	public EmailAccountSettingsDTO getEmailAccount(Long id, HttpServletRequest request) throws Exception {
+		EmailAccountSettingsDTO emailAccountSettingsDTO = new EmailAccountSettingsDTO();
+		User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+		if (user != null) {
+			Long userId = user.getId();
+			emailAccountSettingsDTO = emailAccountSettingsService.getEmailAccount(id, userId);
 		}
+		return emailAccountSettingsDTO;
+	}
 	 
 	@RequestMapping(value = "/emailAccountRead", method = RequestMethod.POST)
 	public @ResponseBody ResponseList<String> emailAccountRead(Long id, HttpServletRequest request) throws Exception {

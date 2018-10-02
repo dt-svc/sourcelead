@@ -116,7 +116,7 @@
         </div>
 
 
-          <div class="mail-box" id="sourceleadEmailFolder" style="display:block">
+          <div class="mail-box" id="sourceleadEmailFolderDiv" style="display:block">
             <div class="mail-box-header">
               <h3>Folders</h3>
             </div>
@@ -137,40 +137,56 @@
             </div>
             <!-- /.box-body -->
           </div>
-          <div class="mail-box" id="dynamicEmailFolder" style="display: none;"></div>
+        <div class="mail-box" id="dynamicEmailFolderDiv" style="display: none;">
+			<div class="mail-box-header">
+				<h3>Folders</h3>
+			</div>
+			<div id="dynamicEmailFolderList"></div>
+		</div>
 
 
 
         </div>
 		<div class="col-md-9" id="inbox">
-			
 			<div class="dashNewWrap mail-box mail-content dashNewWrapMinHe">
 				<div id="mailLoading"></div>
 				<div class="mail-box-header clearfix">
-					<div class="pull-left mr">
+					<div class="pull-left mr" id="sourceleadMailCheckAll">
+						<input id="checkAllEmails" class="checkbox-custom" onclick="toggleEmails(this);deleteMail();"
+							name="checkAllEmails" type="checkbox">
+						<label for="checkAllEmails" id="checkAllBtn"
+							class="checkbox-custom-label" style="display: none;"></label>
+					</div>
+					<div class="pull-left mr" id="dynamicMailCheckAll" style="display: none;">
 						<input type="checkbox" id="a" class="checkbox-custom" onclick="selectOrDeselectAllEmails(this)">
 						<label for="a" class="checkbox-custom-label"></label>
 					</div>
 					<h3 class="box-title pull-left mr" id="mailboxLabel"></h3>
-						<div class="mail-widget" id="mailControlsMaster" style="display: none; margin-left: 20px;">
-							<span class="pull-left mr moveToTrash" style="display: none;">
-								<i class="mailIcon trashIcon" onclick="moveEmailsToTrash(false);"></i>
-							</span>
-							<span class="pull-left deleTrash deleteForever" onclick="moveEmailsToTrash(true);" style="display: none;">Delete Forever</span>
-						</div>
-							<!-- <div class="mail-widget" id="mailControlsMaster" style="display: none;">
-						<i aria-hidden="true" class="fa fa-trash-o "
-							onclick="moveEmailsToTrash();" style="display: none;"></i> 
-						<i class="" onclick="deleteEmailsForEver();"
-							style="display: none;">Delete forever</i>
-					</div> -->
-				</div>
+					
+					<div class="mailbox-controls" id="SourceleadMailControlsMaster">
+						<button class="btn btn-danger mailbtn-custom" type="button"
+							onclick="getMailBoxIds();" id="trashBtn" style="display: none;">
+							<i class="fa fa-trash-o" id="trashtype"></i>
+						</button>
+						<button class="btn btn-default mailbtn-custom" type="button" id="refreshBtn"
+							 style="display: none;" onclick="refreshList();">
+							<i class="fa fa-refresh"></i>
+						</button>
+					</div>
 
+					<div class="mail-widget" id="DynamicMailControlsMaster" style="display: none; margin-left: 20px;">
+						<span class="pull-left mr moveToTrash" style="display: none;">
+							<i class="mailIcon trashIcon" onclick="moveEmailsToTrash(false);"></i>
+						</span>
+						<span class="pull-left deleTrash deleteForever" onclick="moveEmailsToTrash(true);" style="display: none;">Delete Forever</span>
+					</div>
+
+
+						</div>
 				<div class="mailbox-messages mailbox-table">
 					<div id="mailBoxList"></div>
 				</div>
 				<!-- mail box table ends -->
-
 			</div>
 		</div>
 
@@ -179,13 +195,36 @@
 			<div class="mail-box mail-content clearfix" id="body-details">
 			</div>
 		</div>
-
-
-
+		<div class="col-md-9" id="configureEmailDiv">
+			<div class="mail-box mail-content">
+				<!-- <div class="mail-box-header">
+					<h3 class="box-title">Mail account setting</h3>
+				</div> -->
+				<div class="newMailCon">
+					<!-- <h4>Setup email account for sending</h4> -->
+					<p>Please select your provider</p>
+					<ul>
+						<li>
+							<a onclick="getEmailSettings('gmail');">
+							<img src="/resources/images/gmail-logo.jpg" alt="" />Gmail
+							</a>
+						</li>
+						<li>
+							<a onclick="getEmailSettings('yahoo');">
+							<img src="/resources/images/yahoo-logo.jpg" alt="" />Yahoo
+							</a>
+						</li>
+						<li>
+							<a onclick="getEmailSettings('others');">
+							<img src="/resources/images/mail-icon.jpg" alt="" />Other
+							</a>
+						</li>
+					</ul>
+					<div class="clear"></div>
+				</div>
+			</div>
+		</div>
 				<!-- Mail view area -->
-
-			
-
 			</div>
 		   </div>
 		</div>
@@ -209,6 +248,8 @@
 		</div>
 	</div>
 </div>
+
+<div id="emailConfigurationPopup"></div>
 
 <div class="cand-advsrch-popup advancedsearch-popup filterDynamic-Search-small" id="dynamicmailcompose" style="display: none;">
 	<div class="project_inn_mask"></div>
@@ -314,7 +355,13 @@
 		</div>
 	</div>
 </div>
-<div id ="textBoxPopUp"></div>
+
+<div id='textBoxmailerPopup' class='remove_user_pop remove_user_pop_a'>
+	<p><strong id='emailResponseText'></strong></p>
+	<div>&nbsp;&nbsp;&nbsp;</div>
+	<b href='javascript:void(0)'><input type='button'  value='Ok' onclick='textBoxCancel();' style='background-color:#1ab394;width:100%'/></b>
+</div>
+
 <script src="/resources/js/nicEdit-latest.js"></script>
 <script src="/resources/js/nicEdit.js"></script>
 
@@ -332,9 +379,14 @@
   function getMails(type) {
 	  var sourceleadUrl ='${sourceleadUrl}';
 	  
+	  
+	  $("#inbox").show();
+	  $("#details").hide();
+	  $("#configureEmailDiv").hide();
+	  
 	  document.getElementById("inbox").style.display="";
 	  document.getElementById("details").style.display="none";
-	  /* document.getElementById("trashBtn").style.display="none"; */
+	  document.getElementById("trashBtn").style.display="none";
 	  $('#checkAllEmails').removeAttr('checked');
 	  $('#mailboxLabel').html(type);
 	  
@@ -356,9 +408,12 @@
            	
                 if(data != null && data != 'undefined' && data != "" && data != '[]'){
               		
-                	 document.getElementById("checkAllBtn").style.display="";
-                	 document.getElementById("refreshBtn").style.display="";
-              			 
+                	 /* document.getElementById("checkAllBtn").style.display="";
+                	 document.getElementById("refreshBtn").style.display=""; */
+                	 $("#sourceleadMailCheckAll").show();
+                	 $("#checkAllBtn").show();
+                	 $("#refreshBtn").show();
+                	 
               			var result = '';
               			result = result +'<input type="hidden" id="emailListType" value='+type+'>';
               			result = result +'<table id="mails" class="table table-hover table-striped">';
@@ -426,12 +481,14 @@
 		                     result = result +'</div>'; 
               			
 	                 	 $("#mailBoxList").empty(); 
-	                 	 $("#mailDetails").empty(); 
+	                 	 /* $("#mailDetails").empty(); */
+	                 	 $("#body-details").empty();
 	                     $("#mailBoxList").append(result); 
 	                     pagination(); 
 	                     $("#mailLoading").removeAttr("style"); 
                 }else{
- 	    	         
+                	$("#checkAllBtn").hide();
+               	 	$("#refreshBtn").hide();
                	var result ="";
                	    result = result +'<input type="hidden" id="emailListType" value='+type+'>';
 	    	        result = result +'<div class="modal-body clearfix">';
@@ -445,7 +502,8 @@
 	        		result = result +'     </div>';
 	        		result = result +'     </div>';
 					$("#mailBoxList").empty();
-					$("#mailDetails").empty(); 
+					/* $("#mailDetails").empty(); */ 
+					$("#body-details").empty();
 				    $("#mailBoxList").append(result); 
 				    $("#mailLoading").removeAttr("style"); 
                }
@@ -613,6 +671,11 @@ function deleteMail(){
 	 $("input[name='mailIds[]']:checked").each( function (i) {
 		 mailIds[i] = $(this).val();
 	});
+	 if(mailIds.length > 0){
+		 document.getElementById("trashBtn").style.display="";
+	 }else{
+		 document.getElementById("trashBtn").style.display="none";
+	 }
 	
 }
 </script>
@@ -766,8 +829,10 @@ function getEmailDetails(uuid,type) {
 	   		}	
             
             $("#mailBoxList").empty(); 
-            $("#mailDetails").empty(); 
-            $("#mailDetails").append(result);
+            /* $("#mailDetails").empty(); 
+            $("#mailDetails").append(result); */
+            $("#body-details").empty();
+            $("#body-details").append(result);
             $("#mailContentLoading").removeAttr("style"); 
              }
 		},
@@ -778,41 +843,10 @@ function getEmailDetails(uuid,type) {
 
 
 <script>
-function getEmialSettings(){
+function getEmialSettings() {
 	setActiveTab('Settings');
-	
-	 var result ="";
-	 
-	 result = result +'<div class="mail-box mail-content">';
-	 result = result +'<div class="mail-box-header"><h3 class="box-title">Mail account setting</h3></div>';
-	 result = result +'<div class="newMailCon">';
-	 result = result +'<h4>Setup email account for sending</h4>';
-	 result = result +'<p>Please select your provider</p>';
-	 result = result +'<ul>';
-	 result = result +'  <li>';
-	 result = result +'<a href="<c:url value="/app/emailSettings?source=gmail"/>">';
-	 result = result +'  <img src="/resources/images/gmail-logo.jpg" alt=""/>Gmail</a>';
-	 result = result +'  </li>';
-	 result = result +' <li>';
-	 result = result +'	  <a href="<c:url value="/app/emailSettings?source=yahoo"/>">';
-	 result = result +' <img src="/resources/images/yahoo-logo.jpg" alt=""/>Yahoo</a>';
-	 result = result +' </li>';
-	 result = result +' <li>';
-	 result = result +' <a href="<c:url value="/app/emailSettings?source=others"/>">';
-	 result = result +' <img src="/resources/images/mail-icon.jpg" alt="" />Other</a>';
-	 result = result +'</li>	';				  					  
-	 result = result +' <div class="clear"></div>';
-	 result = result +'</ul>';
-	 result = result +'</div>';
-	 result = result +'</div>';
-	 
-	 
-	$("#mailboxLabel").html('Settings');
-	$("#mailBoxList").empty(); 
-	$("#mailDetails").empty(); 
-	$("#mailBoxList").append(result);
-	
-	
+	$("#configureEmailDiv").show();
+	$("#inbox").hide();
 }
 </script>
 
@@ -835,21 +869,30 @@ function deleteReadMail(uuid,nextMailUUID,type){
 function activeEmail(id, ele){
 	$("#mailLoading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/linear-loader.gif"); background-position:center; background-repeat:no-repeat; background-size:100px;');
 	$(".compose-mail").hide();
+	$("#sourceleadMailCheckAll").hide();
+	$("#dynamicMailCheckAll").hide();
 	$(".userMailList").find("li").removeClass("Act");
 	$(ele).parent().addClass("Act");
 	if(id === 0) {
 		getMails('Inbox');
 		/* $("#composeSourceleadMail").show();
 		$("#composeDynamicMail").hide(); */
-		$("#sourceleadEmailFolder").show();
-		$("#dynamicEmailFolder").hide();
-		$("#loading").removeAttr("style");
+		$("#sourceleadEmailFolderDiv").show();
+		$("#dynamicEmailFolderDiv").hide();
+		$("#SourceleadMailControlsMaster").show();
+		$("#DynamicMailControlsMaster").hide();
+		
+		$("#mailLoading").removeAttr("style");
 	} else {
 		/* $("#composeSourceleadMail").hide();
 		$("#composeDynamicMail").show(); */
-		$("#sourceleadEmailFolder").hide();
-		$("#dynamicEmailFolder").show();
-	
+		$("#sourceleadEmailFolderDiv").hide();
+		$("#dynamicEmailFolderDiv").show();
+		$("#dynamicEmailFolderList").empty();
+		$("#SourceleadMailControlsMaster").hide();
+		$("#DynamicMailControlsMaster").show();
+		
+		
 		$("#activeClass"+id).removeClass("Active");
 		$("#activeClass"+id).addClass("Active");
 		$("#mailBoxList").empty();
@@ -860,7 +903,7 @@ function activeEmail(id, ele){
 			type : "POST",
 			url : sourceleadUrl+"/emailAccountRead?${_csrf.parameterName}=${_csrf.token}&id="+id,
 			success : function(response) {
-				if(response && response.data != null && response.data.length > 0){
+				if(response && response.data != null && response.data.length > 0) {
 				 var result = "";
 				 for(var e in response.data) {
 					 var report = response.data[e];
@@ -872,25 +915,21 @@ function activeEmail(id, ele){
 					 result = result + "</ul>";
 					 result = result + "</div>";
 				 }
-				 $("#mailLoading").removeAttr("style");
-				 $("#dynamicEmailFolder").empty();
-				 $("#dynamicEmailFolder").append(result);
+				 $("#dynamicEmailFolderList").append(result);
 				 autoSelectFirstEmailFolder();
 				} else {
 					/* alert("Configured credentials were wrong,Please configure with right credentials") */
 					showEmailResponse(response.responseMessage);
-					window.setTimeout(function() {
-						location.replace(sourceleadUrl+"/mailBox/mails");
-			        }, 1000);
 				}
+				/* $("#mailLoading").removeAttr("style"); */
 			},
 		}); 
 	}
 }
 
 function autoSelectFirstEmailFolder() {
-	/* $("#dynamicEmailFolder").children(0).find("li").click(); */
-	/* console.log($("#dynamicEmailFolder").children(0).find("li").html()); */
+	/* $("#dynamicEmailFolderList").children(0).find("li").click(); */
+	/* console.log($("#dynamicEmailFolderList").children(0).find("li").html()); */
 	if($("li[name='mailFolder']").length > 0)
 		$("li[name='mailFolder']")[0].click();
 }
@@ -902,11 +941,12 @@ function readFolder(name, fullName, id, pageNo, pageSize, index){
 	$('#mailboxLabel').html(name);
 	$("#mailBoxList").empty();
 	$("#mailBoxList").append("<p class='text-center text-muted'><i class='noMailImg'></i></p>");
-	$("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:70px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:50px;');
+	/* $("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:70px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:50px;'); */
+	$("#mailLoading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/linear-loader.gif"); background-position:center; background-repeat:no-repeat; background-size:100px;');
 	$("#body-details").empty();
 	
-	$("#dynamicEmailFolder li").removeClass("active");
-	$("#dynamicEmailFolder li[data-index=" + index + "]").addClass("active");
+	$("#dynamicEmailFolderList li").removeClass("active");
+	$("#dynamicEmailFolderList li[data-index=" + index + "]").addClass("active");
 	
 	$.ajax({
 		type : "POST",
@@ -933,7 +973,7 @@ function readFolder(name, fullName, id, pageNo, pageSize, index){
 			       			result = result +'</td>';
 			       			
 			       			result = result +'<td style="text-align: left !important;" class="mailbox-subject" onclick="getEmailBodyForMailBox(' + id + ',' + emailList[e].messageId + ',\'' + fullName + '\',\'' + name + '\')" data-id="' + emailList[e].messageId + '">';
-			       			result = result +'	<div class="mailSub">' + emailList[e].subject + '</div>';
+			       			result = result +'	<div class="mailSub">' + (emailList[e].subject !== null && emailList[e].subject !=="" ? emailList[e].subject : "(no subject)") + '</div>';
 			       			result = result +'</td>';			       			
 			       			
 			       			if(emailList[e].attachmentsCount > 0)
@@ -961,12 +1001,15 @@ function readFolder(name, fullName, id, pageNo, pageSize, index){
 			    		result = result +'</tbody>';
 			    		result = result +"</table>";
 			    		$("#mailBoxList").empty();
-			    		$("#mailDetails").empty(); 
+			    		/* $("#mailDetails").empty(); */
+			    		$("#body-details").empty();
 					    $("#mailBoxList").append(result); 
 					    /* emailMailDetailsPagination(); */
 					    prepareDynamicPagination(name, fullName, id, data.paginator, index);
-		    		}
-				    $("#loading").removeAttr("style"); 
+					    $("#dynamicMailCheckAll").show();
+		    		} else
+		    			$("#dynamicMailCheckAll").hide();
+				    $("#mailLoading").removeAttr("style"); 
 				    $("#inbox").show();
 				    $("#details").hide();
 				    activeAccountId = id;
@@ -1218,9 +1261,9 @@ function forwardEmailToHotMail(uuid){
 				$(".moveToTrash").show();
 				$(".deleteForever").hide();			
 			}
-			$("#mailControlsMaster").show();
+			$("#DynamicMailControlsMaster").show();
 		} else {
-			$("#mailControlsMaster").hide();
+			$("#DynamicMailControlsMaster").hide();
 		}	
 	}
 	
@@ -1301,17 +1344,17 @@ function forwardEmailToHotMail(uuid){
 			$("#emailsList").append("<option selected value='" + emailDetails.from.replace(/</g, "&lt;").replace(/>/g,"&gt;") + "'>" + emailDetails.from.replace(/</g, "&lt;").replace(/>/g,"&gt;") + "</option>");
 			$("#emailsList").trigger("chosen:updated");
 			if(replyToAllFlag) {
+				if(emailDetails.to.replace(/</g, "&lt;").replace(/>/g,"&gt;").indexOf(activeEmail) === -1)
+					$("#ccList").append("<option selected value='" + emailDetails.to.replace(/</g, "&lt;").replace(/>/g,"&gt;") + "'>" + emailDetails.to.replace(/</g, "&lt;").replace(/>/g,"&gt;") + "</option>");
+				
 				if(emailDetails.cc !== null && emailDetails.cc !== "") {
-					if(emailDetails.to.replace(/</g, "&lt;").replace(/>/g,"&gt;").indexOf(activeEmail) === -1)
-						$("#ccList").append("<option selected value='" + emailDetails.to.replace(/</g, "&lt;").replace(/>/g,"&gt;") + "'>" + emailDetails.to.replace(/</g, "&lt;").replace(/>/g,"&gt;") + "</option>");
-					
 					for(var e in emailDetails.cc.split(";")) {
 						var ccMail = emailDetails.cc.split(";")[e].trim().replace(/</g, "&lt;").replace(/>/g,"&gt;");
 						if(ccMail.indexOf(activeEmail) === -1)
 							$("#ccList").append("<option selected value='" + ccMail + "'>" + ccMail + "</option>");
 					}
-					$("#ccList").trigger("chosen:updated");
 				}
+				$("#ccList").trigger("chosen:updated");
 			}
 			$("#sendSubject").val("RE: " + emailDetails.subject);
 			
@@ -1624,14 +1667,7 @@ function forwardEmailToHotMail(uuid){
 	}
 	
 	function showEmailResponse(message){
-		var result = "";
-		/* result = result +"<div class='project_inn_mask'></div>"; */
-		result = result +"<div id='textBoxmailerPopup' class='remove_user_pop remove_user_pop_a'>";
-		result = result +"<p><strong>" + message + "</strong></p>";
-		result = result +"<div>&nbsp;&nbsp;&nbsp;</div>";
-		result = result +"<b href='javascript:void(0)'><input type='button'  value='Ok' onclick='textBoxCancel();' style='background-color:#1ab394;width:100%'/></b>";
-		result = result +"</div>";
-		$("#textBoxPopUp").append(result);
+		$("#emailResponseText").html(message);
 		$("#textBoxmailerPopup").slideDown(200);
 		$(".project_inn_mask").fadeIn(200);
 		$(".side_mask").fadeIn(200);
@@ -1642,6 +1678,13 @@ function forwardEmailToHotMail(uuid){
 		$(".project_inn_mask").hide();
 		if($("#dynamicmailcompose").css("display") === "none")
 			$(".side_mask").hide();
+	}
+	
+	function getEmailSettings(settingsType) {
+		$("#emailConfigurationPopup").empty();
+		$.post(sourceleadUrl + "/emailSettings",{source : settingsType}, function(data) {  
+			$("#emailConfigurationPopup").append(data);
+		});
 	}
 </script>		
  	

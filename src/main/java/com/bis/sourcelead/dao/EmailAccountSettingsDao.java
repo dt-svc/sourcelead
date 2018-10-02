@@ -13,6 +13,8 @@ public interface EmailAccountSettingsDao {
 	
 	EmailAccountSettings getEmailAccount(Long id,Long userId);
 	
+	EmailAccountSettings getEmailAccount(String email, String password, long userId);
+	
 	public void deleteEmailAccount(Long id, Long userId)throws Exception;
 
 }
