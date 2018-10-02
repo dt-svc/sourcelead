@@ -27,7 +27,6 @@ public class IndPaysheetFrequencyDTO  extends SearchDTO{
 	private String payDate;
 	private String paySheetFrequencyType;
 	private BigDecimal total;
-	private String paySheetFrequencyuuid;
 	private String approverStatus;
 	private Integer payPeriodNum;
 	private String groupName;
@@ -109,14 +108,6 @@ public class IndPaysheetFrequencyDTO  extends SearchDTO{
 
 	public void setTotal(BigDecimal total) {
 		this.total = total;
-	}
-
-	public String getPaySheetFrequencyuuid() {
-		return paySheetFrequencyuuid;
-	}
-
-	public void setPaySheetFrequencyuuid(String paySheetFrequencyuuid) {
-		this.paySheetFrequencyuuid = paySheetFrequencyuuid;
 	}
 
 	public String getApproverStatus() {

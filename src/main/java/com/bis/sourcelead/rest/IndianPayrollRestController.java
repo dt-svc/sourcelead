@@ -41,7 +41,6 @@ import com.bis.sourcelead.enums.Result;
 import com.bis.sourcelead.payroll.dto.AssociatePfEsiDetailsDTO;
 import com.bis.sourcelead.payroll.dto.GenerateINDPayrollDTO;
 import com.bis.sourcelead.payroll.dto.IndPaysheetFrequencyDTO;
-import com.bis.sourcelead.payroll.dto.PaysheetFrequencyDTO;
 import com.bis.sourcelead.payroll.service.AssociatePfEsiService;
 import com.bis.sourcelead.payroll.service.GenerateINDPayrollService;
 import com.bis.sourcelead.service.AssociateLoanAndAdvancesService;

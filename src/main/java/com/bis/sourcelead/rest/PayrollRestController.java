@@ -103,10 +103,7 @@ public class PayrollRestController {
 	public ModelAndView reviewPayrollInd(IndPaysheetFrequencyDTO indPaysheetFrequencyDTO, HttpServletRequest request) throws Exception
 	{
 	 	ModelAndView model = new ModelAndView();
-		OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,"orgLocations");
-		User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
-		
-		ResponseList<IndEmployeePayroll> indEmployeePayrollResponse = indPaysheetFrequencyService.getIndEmployeePayrollListByPaysheetFrequencyUuid(indPaysheetFrequencyDTO.getPaySheetFrequencyuuid());
+		ResponseList<IndEmployeePayroll> indEmployeePayrollResponse = indPaysheetFrequencyService.getIndEmployeePayrollListByPaysheetFrequencyUuid(indPaysheetFrequencyDTO.getPayrollFrequencyUUID());
 		
 		model.addObject("employeePayrollList", indEmployeePayrollResponse.getData());
 		model.setViewName("payroll_india/payroll/employeePayrollList");
@@ -119,9 +116,6 @@ public class PayrollRestController {
 	public ModelAndView runPayrollInd(HttpServletRequest request) throws Exception
 	{
 	 	ModelAndView model = new ModelAndView();
-		OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,"orgLocations");
-		User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
-		
 		model.setViewName("payroll_india/payroll/runPayrollInd");
 		model.addObject("sourceleadUrl", sourceleadUrl);
 		return model;
@@ -132,9 +126,6 @@ public class PayrollRestController {
 	public ModelAndView calculateAssociateSalaryInd(AssociatePayrollPayheadHistoryDTO associatePayrollPayheadHistoryDTO, HttpServletRequest request) throws Exception
 	{
 	 	ModelAndView model = new ModelAndView();
-		//OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,"orgLocations");
-		//User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
-		//ResponseList<AssociatePayrollPayheadHistoryDTO> associatePayrollPayhead = associatePayrollPayheadHistoryService.getUpdatedAssociatePayrollPayheadByEmpPayrollId(associatePayrollPayheadHistoryDTO.getIndEmployeePayrollId());
 		ResponseList<AssociatePayrollPayheadHistoryDTO> associatePayrollPayhead = associatePayrollPayheadHistoryService.getUpdatedAssociatePayrollPayheadByEmpPayrollUUID(associatePayrollPayheadHistoryDTO.getIndEmpPayrollUUID());
 		
 		List<AssociatePayrollPayheadHistoryDTO> earningList = associatePayrollPayhead.getData().stream().filter(app -> app.getPayrollPayheadType().equals("Earnings")).collect(Collectors.toList());
@@ -147,6 +138,8 @@ public class PayrollRestController {
 		
 		ResponseList<IndEmployeePayroll> indEmployeePayrollResponse = indPaysheetFrequencyService.getIndEmployeePayrollListByPaysheetFrequencyUuid(associatePayrollPayheadHistoryDTO.getPaySheetFrequencyUUID());
 		model.addObject("indEmployeePayrollList", indEmployeePayrollResponse.getData());
+		
+		model.addObject("empPayrollUUID", associatePayrollPayheadHistoryDTO.getIndEmpPayrollUUID());
 		
 		model.setViewName("payroll_india/payroll/associatePayrollSummaryInd");
 		model.addObject("sourceleadUrl", sourceleadUrl);
