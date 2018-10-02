@@ -9480,7 +9480,7 @@ aside.asideAct {
 	font-size: 13px; font-weight: 400;
 }
 .newPopWrap label span {
-	display: inline-block; padding: 0px 0px 0px 10px;
+	display: inline-block; padding: 0px 0px 0px 10px; margin: 0px;
 }
 
 .mail-box {
