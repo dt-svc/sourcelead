@@ -523,6 +523,7 @@ public class Constants {
 	public static final String[] ROLE_LIST = { "Admin", "Employee", "Project Manager", "Team Lead" };
 	public static final String[] INVOICE_FREQUENCY_LIST = { "Weekly", "Bi-Weekly", "Semi-Monthly",
 			"Monthly" };
+	public static final String[] YES_NO = { "Y", "N" };
 	/** For LookUpData (Eductions,Skills) **/
 	public static final String EDUCATIONS = "Educations";
 	public static final String SKILLS = "Skills";
@@ -666,7 +667,7 @@ public class Constants {
 	
 	
 	public static final String[] DATA_MIGRATION_ASSOCIATE_EXCEL_HEADERS = { "Employee ID" , "First Name*","Last Name", "Email id*", "Phone Number", "Extension Number",
-			"Rate","Rate Per", "Gender*","Martial Status","Date of Join","Date of Birth","Role*","Day Hours(HH:MM)","Manager*(Email)", "Employment Type*","Vendor(Email)","Vendor Contact(Email)","Grade","Designation*","Shift*","Send Mail to User(Y/N)","Is Global Manage(Y/N)"};
+			"Rate","Rate Per", "Gender*","Martial Status","Date of Join","Date of Birth","Role*","Day Hours(HH:MM)","Manager*(Email)", "Employment Type*","Vendor(Email)","Vendor Contact(Email)","Grade","Designation*","Shift*","Send Mail to User","Is Global Manager"};
 
 
 	public static final String[] REQIREMENT_APPLICANT_HEADERS = { "Applicant Name", "Email","Job", "Client", "Phone Number",  "Job Location",   "Source", "Status","Job Rating" ,"Incentivized"};
@@ -697,6 +698,7 @@ public class Constants {
 	public static final String ELK_USER_TYPE = "user";
 	public static final String ELK_REQUIREMENT_INDEX = "requirement";
 	public static final String ELK_REQUIREMENT_TYPE = "requirement";
+	public static final String ELK_EMAIL_INDEX = "email";
 	public static final String ELK_CANDIDATE_ID_PREFIX = "CND";
 	public static final String ELK_CLIENTVENDOR_INDEX = "clientvendor";
 	public static final String ELK_CLIENTVENDOR_TYPE = "clientvendors";
@@ -1210,11 +1212,11 @@ public class Constants {
     public static final String LOCAL_TAX_NO = "NO";
 
     
-
+    public static final String[] GENDER = { "Male", "Female", "Transgender"};
 
     public static final String[] EMPLOYMENT_TYPES = { "C2C", "C2C-1099", "W-2", "C2H", "C2H-1099", "Part Time", "Full Time", "Other" };
 
-
+    public static final String[] MARITAL_STATUS = { "Single", "Married", "Divorsed", "Separated"};
 
 	public static final String EMAIL_SUCCESS = "success";
 	public static final String UPDATE = "UPD";

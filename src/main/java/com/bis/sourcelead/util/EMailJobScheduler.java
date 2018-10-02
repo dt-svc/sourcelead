@@ -50,6 +50,7 @@ import com.bis.sourcelead.dao.ContractsTemplateDao;
 import com.bis.sourcelead.dao.LeaveDao;
 import com.bis.sourcelead.dao.TimeZoneDao;
 import com.bis.sourcelead.dto.FileInfo;
+import com.bis.sourcelead.dto.LcaPlaceOfEmploymentDTO;
 import com.bis.sourcelead.elk.index.CandidateIndex;
 import com.bis.sourcelead.elk.index.RequirementIndex;
 import com.bis.sourcelead.elk.index.helper.CandidateIndexHelper;
@@ -74,6 +75,8 @@ import com.bis.sourcelead.entity.ImmigrationTemplateTasks;
 import com.bis.sourcelead.entity.Invoice;
 import com.bis.sourcelead.entity.JobAlert;
 import com.bis.sourcelead.entity.Lca;
+import com.bis.sourcelead.entity.LcaListView;
+import com.bis.sourcelead.entity.LcaPlaceOfEployment;
 import com.bis.sourcelead.entity.Leave;
 import com.bis.sourcelead.entity.LeaveApproveHierarchy;
 import com.bis.sourcelead.entity.LeaveType;
@@ -128,7 +131,6 @@ import com.bis.sourcelead.service.TimeZoneService;
 import com.bis.sourcelead.service.TimesheetSubmissionsService;
 import com.bis.sourcelead.service.UserRoleService;
 import com.bis.sourcelead.service.UserService;
-import com.bis.sourcelead.web.FileController;
 import com.docusign.esign.api.AuthenticationApi;
 import com.docusign.esign.api.EnvelopesApi;
 import com.docusign.esign.client.ApiClient;
@@ -440,7 +442,7 @@ public class EMailJobScheduler {
 		}
 	}
 	
-	  @Scheduled(cron = "0 0 9 1/1 * ?") // Scheduled for every day at @ 9.a.m on united states time.
+	@Scheduled(cron = "0 0 9 1/1 * ?") // Scheduled for every day at @ 9.a.m on united states time.
    // @Scheduled(cron = "0/30 * * * * *") // used for dev testing run for every 30 seconds..
 	@Async
 	public void runJobSchedulerDailyUpdateLCA() { // check if LCA is expired on not on daily basis, if expired updating
@@ -529,7 +531,7 @@ public class EMailJobScheduler {
 		 emailMessage.setFromEmail(fromEmail);
 		
 		 StringBuilder sb = new StringBuilder();
-			
+		 
 		 sb.append("<table width='900' align='center' style='border-collapse: collapse; margin: 0 auto;border: 1px solid #375d81; text-align: center;' cellpadding='2px' cellspacing='0' border='0'>");
 		        sb.append("<thead style='background-color:#375d81; color: #fff;'>");
 		        sb.append("<tr style='min-height: 30px; line-height: 30px; vertical-align: middle;'>");            
@@ -544,12 +546,16 @@ public class EMailJobScheduler {
 		        sb.append("<tbody>");
 	        lcaList.forEach(lca->{
 	        	
-	        	String strStartDate = commonUtil.dateStrFromOrgDateFormatter(ol.getDateFormat(), lca.getStartDate());
+ 	        	String strStartDate = commonUtil.dateStrFromOrgDateFormatter(ol.getDateFormat(), lca.getStartDate());
 	  			String strEndDate = commonUtil.dateStrFromOrgDateFormatter(ol.getDateFormat(), lca.getEndDate());
 		        sb.append("<tr style='min-height: 30px; line-height: 30px; vertical-align: middle;'>");
 		        sb.append("<td style='border: 1px solid #375d81;' width='300'>"+lca.getLcaNo()+"</td>");                      
-		        sb.append("<td style='border: 1px solid #375d81;' width='225'>"+lca.getLcaTitle()+"</td>");                  
-		        sb.append("<td style='border: 1px solid #375d81;' width='225'>----</td>"); 
+		        sb.append("<td style='border: 1px solid #375d81;' width='225'>"+lca.getLcaTitle()+"</td>"); 
+		        StringBuilder locSb = new StringBuilder();
+		        for (LcaPlaceOfEployment source : lca.getLcaPlaceOfEployment()) {
+		        	locSb.append(source.getLocation()).append(" &").toString();	
+		        }
+		        sb.append("<td style='border: 1px solid #375d81;' width='225'>"+locSb.deleteCharAt(locSb.length() - 1)+"</td>"); 
 		        sb.append("<td style='border: 1px solid #375d81;' width='225'>-----</td>"); 
 		        sb.append("<td style='border: 1px solid #375d81;' width='225'>"+strStartDate+"</td>"); 
 		        sb.append("<td style='border: 1px solid #375d81;' width='225'>"+strEndDate+"</td>"); 
@@ -636,7 +642,11 @@ public class EMailJobScheduler {
 		        sb.append("<tr style='min-height: 30px; line-height: 30px; vertical-align: middle;'>");
 		        sb.append("<td style='border: 1px solid #375d81;' width='300'>"+lca.getLcaNo()+"</td>");                      
 		        sb.append("<td style='border: 1px solid #375d81;' width='225'>"+lca.getLcaTitle()+"</td>");                  
-		        sb.append("<td style='border: 1px solid #375d81;' width='225'>----</td>"); 
+		        StringBuilder locSb = new StringBuilder();
+		        for (LcaPlaceOfEployment source : lca.getLcaPlaceOfEployment()) {
+		        	locSb.append(source.getLocation()).append(" &").toString();	
+		        }
+		        sb.append("<td style='border: 1px solid #375d81;' width='225'>"+locSb.deleteCharAt(locSb.length() - 1)+"</td>"); 
 		        sb.append("<td style='border: 1px solid #375d81;' width='225'>-----</td>"); 
 		        sb.append("<td style='border: 1px solid #375d81;' width='225'>"+strStartDate+"</td>"); 
 		        sb.append("<td style='border: 1px solid #375d81;' width='225'>"+strEndDate+"</td>"); 

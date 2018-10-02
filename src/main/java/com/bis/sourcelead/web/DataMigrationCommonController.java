@@ -6,12 +6,19 @@ import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.InputStream;
 import java.net.URLConnection;
+import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.apache.poi.hssf.usermodel.DVConstraint;
+import org.apache.poi.hssf.usermodel.HSSFDataValidation;
+import org.apache.poi.hssf.usermodel.HSSFSheet;
+import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.apache.poi.ss.usermodel.Cell;
+import org.apache.poi.ss.usermodel.DataValidation;
 import org.apache.poi.ss.usermodel.Row;
+import org.apache.poi.ss.util.CellRangeAddressList;
 import org.apache.poi.xssf.usermodel.XSSFSheet;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.slf4j.Logger;
@@ -27,13 +34,15 @@ import org.springframework.web.servlet.ModelAndView;
 
 import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.constants.ImmigrationConstants;
+import com.bis.sourcelead.entity.OrgLocations;
+import com.bis.sourcelead.service.AssociateGradesService;
 import com.bis.sourcelead.service.CountriesService;
-import com.bis.sourcelead.service.LookUpDataService;
 import com.bis.sourcelead.service.OrgRelationsService;
-import com.bis.sourcelead.service.RequirementService;
-import com.bis.sourcelead.service.StatesService;
+import com.bis.sourcelead.service.RolesService;
+import com.bis.sourcelead.service.ShiftService;
 import com.bis.sourcelead.util.CommonUtil;
 import com.bis.sourcelead.util.SessionMaintainanceData;
+import com.bis.sourcelead.util.SourceLeadSessionManager;
 
 @Controller
 @RequestMapping("/app")
@@ -52,6 +61,15 @@ public class DataMigrationCommonController {
 	
 	@Autowired
 	CountriesService countriesService;
+	
+	@Autowired
+	RolesService rolesService;
+	
+	@Autowired
+	ShiftService shiftService;
+	
+	@Autowired
+	AssociateGradesService associateGradesService;
 	
 	 /*
 	  * author Venkat Kesav
@@ -375,8 +393,9 @@ public class DataMigrationCommonController {
 	 @RequestMapping(value = "/downloadDataImportTemplateForAssociate", method = RequestMethod.GET)
 		public void downloadDataImportTemplateForAssociate(HttpServletRequest request,HttpServletResponse response) throws Exception{
 	        @SuppressWarnings("resource")
-			XSSFWorkbook workbook = new XSSFWorkbook();
-	        XSSFSheet sheet = workbook.createSheet("AssociateTemplate");
+	        OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+	        HSSFWorkbook workbook = new HSSFWorkbook();
+	        HSSFSheet sheet = workbook.createSheet("AssociateTemplate");
 	        String[] tableColumns = Constants.DATA_MIGRATION_ASSOCIATE_EXCEL_HEADERS;
 	 
 	        Row row = sheet.createRow(0);
@@ -384,9 +403,39 @@ public class DataMigrationCommonController {
 	        for (String key : tableColumns) {
 	            Cell cell = row.createCell(cellnum++);
 	            cell.setCellValue((String)key);
+	            if(key.equalsIgnoreCase("Employment Type*")) {
+	            	sheet.addValidationData(getDropDownListForCell(Constants.EMPLOYMENT_TYPES, cellnum-1, "xls"));
+	            }else if(key.equalsIgnoreCase("Gender*")) {
+	            	sheet.addValidationData(getDropDownListForCell(Constants.GENDER, cellnum-1, "xls"));
+	            }else if(key.equalsIgnoreCase("Martial Status")) {
+	            	sheet.addValidationData(getDropDownListForCell(Constants.MARITAL_STATUS, cellnum-1, "xls"));
+	            }else if(key.startsWith("Role")) {
+	            	List<String> rolesList = rolesService.getRolesListByOrgLocationId(orgLocation.getId());
+	            	String [] associatesRoles = rolesList.toArray(new String[rolesList.size()]);
+	            	sheet.addValidationData(getDropDownListForCell(associatesRoles, cellnum-1, "xls"));
+	            }else if(key.startsWith("Shift")) {
+	            	List<String> shiftList = shiftService.getAssociatesShiftListByOrgLocationId(orgLocation.getId());
+	            	if(shiftList != null && !shiftList.isEmpty()) {
+	            		String [] associateshiftS = shiftList.toArray(new String[shiftList.size()]);
+		            	sheet.addValidationData(getDropDownListForCell(associateshiftS, cellnum-1, "xls"));
+	            	}
+	            }else if(key.startsWith("Grade")) {
+	            	List<String> gradesList = associateGradesService.getGradesListByOrgLocationId(orgLocation.getId());
+	            	if(gradesList != null && !gradesList.isEmpty()) {
+	            		String [] associateGrades = gradesList.toArray(new String[gradesList.size()]);
+		            	sheet.addValidationData(getDropDownListForCell(associateGrades, cellnum-1, "xls"));
+	            	}
+	            }else if(key.equalsIgnoreCase("Rate Per")) {
+	            	sheet.addValidationData(getDropDownListForCell(Constants.RATEPER_LIST, cellnum-1, "xls"));
+	            }else if(key.equalsIgnoreCase("Send Mail to User")) {
+	            	sheet.addValidationData(getDropDownListForCell(Constants.YES_NO, cellnum-1, "xls"));
+	            }else if(key.equalsIgnoreCase("Is Global Manager")) {
+	            	sheet.addValidationData(getDropDownListForCell(Constants.YES_NO, cellnum-1, "xls"));
+	            }
+	            
 	        }
 	        try {
-	            File file = new File("Associate_Import_Template.xlsx");
+	            File file = new File("Associate_Import_Template.xls");
 	    		FileOutputStream out = new FileOutputStream(file);
 	    		workbook.write(out);
 	            
@@ -414,5 +463,13 @@ public class DataMigrationCommonController {
 			
 		}
 	 
-	 
+		private DataValidation getDropDownListForCell(String[] ratePerList, int column, String fileName)
+		{
+			@SuppressWarnings("deprecation")
+			CellRangeAddressList addressList = new CellRangeAddressList(1, 500, column, column);
+			DVConstraint dvConstraint = DVConstraint.createExplicitListConstraint(ratePerList);
+			DataValidation dataValidation = new HSSFDataValidation(addressList, dvConstraint);
+			dataValidation.setSuppressDropDownArrow(false);
+			return dataValidation;
+		}
 }

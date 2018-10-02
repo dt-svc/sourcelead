@@ -93,8 +93,6 @@ import com.bis.sourcelead.enums.Submission_Status;
 import com.bis.sourcelead.service.AppliedLeaveDateService;
 import com.bis.sourcelead.service.CandidateService;
 import com.bis.sourcelead.service.ExportTimesheetEntries;
-import com.bis.sourcelead.service.HolidayService;
-import com.bis.sourcelead.service.LeaveTypeService;
 import com.bis.sourcelead.service.OrgLocationService;
 import com.bis.sourcelead.service.OrgRelationsService;
 import com.bis.sourcelead.service.ProjectApproverHierarchyService;
@@ -850,6 +848,8 @@ public class TimesheetRestController {
 		Map<Long,EmployeeTimeSheetSubmissionStatusDTO> ettsDTOMap = new LinkedHashMap<>();
 		List<EmployeeTimesheetFileInfoDTO> timesheetAttachments = new ArrayList<>();
 		int editableCount = 1;
+		String previousStatus = "";
+		Long previousPMId = 0l;
 		if(projectMembersList != null && !projectMembersList.isEmpty()) {
 			if (projectMembersList != null && !projectMembersList.isEmpty()) {
 				for (ProjectMembers pm : projectMembersList) {
@@ -868,7 +868,7 @@ public class TimesheetRestController {
 						entryAvailableCheck = key;
 					}
 					EmployeeTimeSheetSubmissionStatusDTO etssDTO = getEmployeeTimesheetSubmissionStatus(pm.getId(), currentTimeFrequency, currentTimeSubFrequency, orgLocations, loginUser,editableCount);
-					if(etssDTO != null && StringUtils.isNotEmpty(etssDTO.getTimesheetStatus()) && !etssDTO.getTimesheetStatus().equalsIgnoreCase("NEW")) {
+					if(etssDTO != null && StringUtils.isNotEmpty(etssDTO.getTimesheetStatus()) && ts != null &&  !etssDTO.getTimesheetStatus().equalsIgnoreCase("NEW")) {
 						entryAvailableCheck = "available";
 					}
 					if(editableCount == 1) {
@@ -880,7 +880,13 @@ public class TimesheetRestController {
 						etd.setSatEditable(etssDTO.getEditableMap().get("Sat"));
 						etd.setSunEditable(etssDTO.getEditableMap().get("Sun"));
 					}
+					
+					if(StringUtils.isNotEmpty(previousStatus) && previousStatus.equalsIgnoreCase("NEW") && editableCount >2) {
+						ettsDTOMap.remove(previousPMId);
+					}
 					editableCount++;
+					previousStatus = etssDTO.getTimesheetStatus();
+					previousPMId = pm.getId();
 					ettsDTOMap.put(pm.getId(), etssDTO);
 					if(StringUtils.isEmpty(entryAvailableCheck))
 						continue;
@@ -1944,10 +1950,10 @@ public class TimesheetRestController {
 						ticketNumber = teDTO.getTimesheetTaskDTO().getTicketNumber();
 					}
 					int count = 0;
-					if(weekCountMap.get(teDTO.getDate()) != null){
-						count = weekCountMap.get(teDTO.getDate())+1;
+					if(weekCountMap.get(taskId+"##"+ticketNumber+"##"+teDTO.getDate()) != null){
+						count = weekCountMap.get(taskId+"##"+ticketNumber+"##"+teDTO.getDate())+1;
 					}
-					weekCountMap.put(teDTO.getDate(),count);
+					weekCountMap.put(taskId+"##"+ticketNumber+"##"+teDTO.getDate(),count);
 					taskIdWithRef = taskId+"##"+ticketNumber+"##"+count;
 				}
 				LinkedList<TimesheetEntriesDTO> tsDTOList = entriesMap.get(taskIdWithRef);
@@ -2606,10 +2612,10 @@ public class TimesheetRestController {
 									}
 								}
 
-							} else {
+							}/* else {
 								insertNewTimesheetRecordByProjectMemberAndDates(projectMember, actualStartDate,
 										actualEndDate, frequencyStartDate, frequencyEndDate, loginUser, candidate);
-							}
+							}*/
 
 						}
 					}

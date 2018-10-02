@@ -119,7 +119,6 @@
 									                     <c:set var="isTicketNumberRequired" value="${statusEntry.value.ticketNumberRequired == true ? 'Y' : 'N'}"/>
 									               </c:if>
 									            </c:forEach>
-									            
 									            <c:if test="${empty entry.projectMemberId}">
 									                     <c:set var="timeSheetSubmissionStatus" value="New"/>
 									                     <c:set var="modifyButtonVisible" value="N"/>
@@ -136,7 +135,7 @@
 											    <tr id="timesheetRow${leaveIndex+entryCount.index+1}">
 											        <td id="${leaveIndex+entryCount.index+1}projectTd">
 														<div class="timeAdd" style="position: relative;">
-														    <c:if test="${timeSheetSubmissionStatus != 'APPROVED' && timeSheetSubmissionStatus != 'SUBMITTED'}">
+														    <c:if test="${timeSheetSubmissionStatus != 'APPROVED' && timeSheetSubmissionStatus != 'SUBMITTED' && employeeTimesheetEntryDetailsDTO.saveButtonVisible}">
 														        <select  id="${leaveIndex+entryCount.index+1}projectMember1Id" title="--select project--" data-live-search="true" data-dropup-auto="false" data-size="8" class='selectpicker smfield existedProjectMembers' name="${leaveIndex+entryCount.index+1}projectMember1Id" onchange="enableOrDisableHours('${entryIndex}','${leaveIndex+entryCount.index+1}projectMember1Id','${leaveIndex+entryCount.index+1}ticketNumber1Id');flushtasks('${leaveIndex+entryCount.index+1}task1Id','${leaveIndex+entryCount.index+1}'); addOrRemoveTimeSheetCommentRow('${leaveIndex+entryCount.index+1}projectMember1Id');getProjectTasks('${leaveIndex+entryCount.index+1}task1Id','${leaveIndex+entryCount.index+1}projectMember1Id');" data-validation="required" field-name="Project">
 																	<!-- <option value=''>--select project--</option>  -->
 															        <c:forEach var="pm" items="${employeeTimesheetEntryDetailsDTO.projectMembersList}">
@@ -152,7 +151,7 @@
 															       <input value="" onclick="removeTimeSheetRow('${leaveIndex+entryCount.index+1}');" class="timeRemoveBtn" type="button">
 															      </c:if>
 															 </c:if>
-															 <c:if test="${timeSheetSubmissionStatus == 'APPROVED' || timeSheetSubmissionStatus == 'SUBMITTED'}">
+															 <c:if test="${timeSheetSubmissionStatus == 'APPROVED' || timeSheetSubmissionStatus == 'SUBMITTED' ||  !employeeTimesheetEntryDetailsDTO.saveButtonVisible}">
 															         <c:set var="projectCheck"/>
 															         <c:forEach var="pm" items="${employeeTimesheetEntryDetailsDTO.submittedProjectMembersList}">
 															               <c:if test="${!empty entry.projectMemberId && entry.projectMemberId == pm.id}">
@@ -172,7 +171,7 @@
 														  <c:set var="taskType" value=""/>
 														  <c:set var="taskId" value=""/>
 														  <c:set var="taskName" value=""/>
-														  <c:if test="${timeSheetSubmissionStatus != 'APPROVED' && timeSheetSubmissionStatus != 'SUBMITTED'}">
+														  <c:if test="${timeSheetSubmissionStatus != 'APPROVED' && timeSheetSubmissionStatus != 'SUBMITTED' && employeeTimesheetEntryDetailsDTO.saveButtonVisible}">
 															   <select id="${leaveIndex+entryCount.index+1}task1Id" title="--select task--"  data-dropup-auto="false" data-size="8" data-live-search="true" name="${leaveIndex+entryCount.index+1}task1Id"  class="selectpicker smfield existedProjectTaskId${entry.projectMemberId}"   onchange='prepareProjectTaskDetails("${entryIndex}","${leaveIndex+entryCount.index+1}task1Id","${leaveIndex+entryCount.index+1}projectMember1Id");' data-validation="required" field-name="Task">
 																	 <c:if test="${!empty entry.projectTaskList}">
 																	   <c:forEach var="pt" items="${entry.projectTaskList}">
@@ -199,7 +198,7 @@
 																	</c:if>
 																</select>
 														  </c:if>
-														   <c:if test="${timeSheetSubmissionStatus == 'APPROVED' || timeSheetSubmissionStatus == 'SUBMITTED'}">
+														   <c:if test="${timeSheetSubmissionStatus == 'APPROVED' || timeSheetSubmissionStatus == 'SUBMITTED' ||  !employeeTimesheetEntryDetailsDTO.saveButtonVisible}">
 														            <c:if test="${!empty entry.projectTaskList}">
 																	   <c:forEach var="pt" items="${entry.projectTaskList}">
 																	        <c:if test="${pt.id == entry.projectTaskId}">
@@ -228,10 +227,10 @@
 												        </div>
 												      </td>
 										              <td>
-										                  <c:if test="${timeSheetSubmissionStatus != 'APPROVED' && timeSheetSubmissionStatus != 'SUBMITTED'}">
+										                  <c:if test="${timeSheetSubmissionStatus != 'APPROVED' && timeSheetSubmissionStatus != 'SUBMITTED' &&  employeeTimesheetEntryDetailsDTO.saveButtonVisible}">
 													         <div><input type="text" ${!empty isTicketNumberRequired && isTicketNumberRequired == 'Y' ? 'data-validation="required"' : ''}  id="${leaveIndex+entryCount.index+1}ticketNumber1Id" name="${leaveIndex+entryCount.index+1}ticketNumber1Id"  value="${entry.ticketNumber}" field-name=" " onblur='setTicketNumber("${entryIndex}","${leaveIndex+entryCount.index+1}ticketNumber1Id");' class="timeTick"></div>
 													      </c:if>
-													      <c:if test="${timeSheetSubmissionStatus == 'APPROVED' || timeSheetSubmissionStatus == 'SUBMITTED'}">
+													      <c:if test="${timeSheetSubmissionStatus == 'APPROVED' || timeSheetSubmissionStatus == 'SUBMITTED' ||  !employeeTimesheetEntryDetailsDTO.saveButtonVisible}">
 													         <c:if test="${!empty entry.ticketNumber}">
 													             <div>${entry.ticketNumber}</div>
 													         </c:if>
@@ -254,30 +253,32 @@
 													               <input type="hidden" name="timesheetSubmission.timesheetEntries[${entryIndex}].date" value="${te.date}"/>
 													               <input type="hidden" name="timesheetSubmission.timesheetEntries[${entryIndex}].timesheetStatus" value="${timeSheetSubmissionStatus}"/> 
 													               
-													                 <c:set var="isEditable" value="Y"/>
-													                  <c:if test="${te.dayOfTheDate == 'Mon' && !empty isMonEditable && isMonEditable == 'N'}">
-													                      <c:set var="isEditable" value="N"/>
-													                  </c:if>
-													                  <c:if test="${te.dayOfTheDate == 'Tue' && !empty isTueEditable && isTueEditable == 'N'}">
-													                      <c:set var="isEditable" value="N"/>
-													                  </c:if>
-													                  <c:if test="${te.dayOfTheDate == 'Wed' && !empty isWedEditable && isWedEditable == 'N'}">
-													                      <c:set var="isEditable" value="N"/>
-													                  </c:if>
-													                  <c:if test="${te.dayOfTheDate == 'Thu' && !empty isThuEditable && isThuEditable == 'N'}">
-													                      <c:set var="isEditable" value="N"/>
-													                  </c:if>
-													                  <c:if test="${te.dayOfTheDate == 'Fri' && !empty isFriEditable && isFriEditable == 'N'}">
-													                      <c:set var="isEditable" value="N"/>
-													                  </c:if>
-													                  <c:if test="${te.dayOfTheDate == 'Sat' && !empty isSatEditable && isSatEditable == 'N'}">
-													                      <c:set var="isEditable" value="N"/>
-													                  </c:if>
-													                  <c:if test="${te.dayOfTheDate == 'Sun' && !empty isSunEditable && isSunEditable == 'N'}">
-													                      <c:set var="isEditable" value="N"/>
-													                  </c:if>
-						                                             
-													               <input onblur="editMe(this);" ${(!empty isEditable && isEditable == 'Y') ? '' : 'disabled="disabled"'}  ${isTaskCommentsRequired == 'Y' ? 'data-validation-comment="required"':''}
+														                 <c:set var="isEditable" value="Y"/>
+														                  <c:if test="${te.dayOfTheDate == 'Mon' && !empty isMonEditable && isMonEditable == 'N'}">
+														                      <c:set var="isEditable" value="N"/>
+														                  </c:if>
+														                  <c:if test="${te.dayOfTheDate == 'Tue' && !empty isTueEditable && isTueEditable == 'N'}">
+														                      <c:set var="isEditable" value="N"/>
+														                  </c:if>
+														                  <c:if test="${te.dayOfTheDate == 'Wed' && !empty isWedEditable && isWedEditable == 'N'}">
+														                      <c:set var="isEditable" value="N"/>
+														                  </c:if>
+														                  <c:if test="${te.dayOfTheDate == 'Thu' && !empty isThuEditable && isThuEditable == 'N'}">
+														                      <c:set var="isEditable" value="N"/>
+														                  </c:if>
+														                  <c:if test="${te.dayOfTheDate == 'Fri' && !empty isFriEditable && isFriEditable == 'N'}">
+														                      <c:set var="isEditable" value="N"/>
+														                  </c:if>
+														                  <c:if test="${te.dayOfTheDate == 'Sat' && !empty isSatEditable && isSatEditable == 'N'}">
+														                      <c:set var="isEditable" value="N"/>
+														                  </c:if>
+														                  <c:if test="${te.dayOfTheDate == 'Sun' && !empty isSunEditable && isSunEditable == 'N'}">
+														                      <c:set var="isEditable" value="N"/>
+														                  </c:if>
+													                   <c:if test="${empty entry.projectMemberId && !employeeTimesheetEntryDetailsDTO.saveButtonVisible}">
+													                       <c:set var="isEditable" value="N"/>
+													                   </c:if>
+													                <input onblur="editMe(this);" ${(!empty isEditable && isEditable == 'Y') ? '' : 'disabled="disabled"'}  ${isTaskCommentsRequired == 'Y' ? 'data-validation-comment="required"':''}
 													                id="${leaveIndex+entryCount.index+1}timeSheetDay${teStatus.index+1}Id" name="timesheetSubmission.timesheetEntries[${entryIndex}].hours" class="inline_field" value="${te.hours}" placeholder="HH:MM" type="text">
 													                   <%-- <c:if test="${!empty te.comments || (empty te.comments && (!empty isEditable && isEditable == 'Y'))}"> --%>
                                                                          <div class="timesheet_comm" id="commentDiv${entryIndex}">                
@@ -317,8 +318,11 @@
 													              </c:if>
 												             </div>
 												        </c:if>
-												        <c:if test="${empty entry.projectMemberId}">
+												         <c:if test="${empty entry.projectMemberId && employeeTimesheetEntryDetailsDTO.saveButtonVisible}">
 												            <div><b>New</b></div> 
+												        </c:if> 
+												        <c:if test="${empty entry.projectMemberId && !employeeTimesheetEntryDetailsDTO.saveButtonVisible}">
+												            <div>--</div> 
 												        </c:if> 
 						                  		    </td> 
 										        </tr>
