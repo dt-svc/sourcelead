@@ -50,7 +50,6 @@ import com.bis.sourcelead.dao.ContractsTemplateDao;
 import com.bis.sourcelead.dao.LeaveDao;
 import com.bis.sourcelead.dao.TimeZoneDao;
 import com.bis.sourcelead.dto.FileInfo;
-import com.bis.sourcelead.dto.LcaPlaceOfEmploymentDTO;
 import com.bis.sourcelead.elk.index.CandidateIndex;
 import com.bis.sourcelead.elk.index.RequirementIndex;
 import com.bis.sourcelead.elk.index.helper.CandidateIndexHelper;
@@ -75,7 +74,6 @@ import com.bis.sourcelead.entity.ImmigrationTemplateTasks;
 import com.bis.sourcelead.entity.Invoice;
 import com.bis.sourcelead.entity.JobAlert;
 import com.bis.sourcelead.entity.Lca;
-import com.bis.sourcelead.entity.LcaListView;
 import com.bis.sourcelead.entity.LcaPlaceOfEployment;
 import com.bis.sourcelead.entity.Leave;
 import com.bis.sourcelead.entity.LeaveApproveHierarchy;
@@ -3692,6 +3690,7 @@ public class EMailJobScheduler {
 	
 	
 	@Scheduled(cron = "0 3 0 1 1/1 ?")
+//	@Scheduled(cron = "0 0/3 * 1/1 * ?")
 	@Async
 	public void calculateMonthlyLeaves() throws Exception
 	{
