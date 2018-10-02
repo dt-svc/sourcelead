@@ -9,10 +9,9 @@
 			<div class="row">
 				<label class="col-md-4"><strong>Name</strong></label>
 				<div class="clearfix dropdown-select col-md-8">
-					<select>
-						<option value="">Select Name</option>
+					<select disabled>
 						<c:forEach var="emp" items="${indEmployeePayrollList}">
-							<option>${emp.candidate.fullName}</option>
+							<option  ${empPayrollUUID == emp.indEmpPayrollUUID ? 'selected' : ''} >${emp.employee.user.fullName}</option>
 						</c:forEach>
 					</select>
 				</div>

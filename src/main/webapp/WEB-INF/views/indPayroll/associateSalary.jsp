@@ -264,7 +264,8 @@ $('#editAssociateBtn').click(function() {
 });
 
 $('#cancelAssociateSalaryIndBtn').click(function() {
-	var status = $("#status").val();
+	location.replace(sourceleadUrl+"/usersList");
+	/* var status = $("#status").val();
 	if(status == 'NEW'){
 		location.replace(sourceleadUrl+"/usersList");
 	}else{
@@ -273,7 +274,7 @@ $('#cancelAssociateSalaryIndBtn').click(function() {
 		$('#associateSalary_form select').prop('disabled', true);
 		$('#saveAssociateBtnDiv').css('display','none');
 		$('#editSectionDiv').css('display','none');
-	}
+	} */
 });
 
 

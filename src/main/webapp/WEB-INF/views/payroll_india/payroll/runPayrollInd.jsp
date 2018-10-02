@@ -292,7 +292,7 @@ function employeePayrollList(uuid){
 	    }); */
 	   
 	   
-	   $(location).attr('href', 'employeePayrollList?paySheetFrequencyuuid='+uuid+'');
+	   $(location).attr('href', 'employeePayrollList?payrollFrequencyUUID='+uuid+'');
 }
 </script>
 

@@ -39,6 +39,12 @@
 </div>
 <div class="clearfix"></div>
 </form:form>
+
+
+<div class="clearfix" id="initiatePayrollEmptyDiv" style="display:none;">
+	<div class="dataTables_empty"></div>
+</div>
+
 </div>
 </div>
 </div>
@@ -106,8 +112,11 @@ function runINDPayroll(){
 		    	   type: "POST",
 		           url: sourceleadUrl+"/generateINDPayroll?groupId="+groupId+"&payPeriod="+payPeriod+"&payrollPayDate="+payrollPayDate+"&paytype="+payType,                 
 		           success: function(data) {
-		        	  
-		        	    
+		        	  if(data != null && data != 'undefined' && data != '' && data.payrollFrequencyUUID != null){
+		        		  $(location).attr('href', 'employeePayrollList?paySheetFrequencyuuid='+data.payrollFrequencyUUID+'');
+		        	  }else{
+		        		  $('#initiatePayrollEmptyDiv').show();
+		        	  }
 		        	},
 		    });
 		 
