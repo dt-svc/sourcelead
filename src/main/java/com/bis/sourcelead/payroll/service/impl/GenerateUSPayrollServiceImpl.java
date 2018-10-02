@@ -29,6 +29,7 @@ import com.bis.sourcelead.dto.AssociateLoanAndAdvancesDTO;
 import com.bis.sourcelead.dto.AssociatePayItemDTO;
 import com.bis.sourcelead.dto.Response;
 import com.bis.sourcelead.dto.ResponseList;
+import com.bis.sourcelead.dto.SalaryDTO;
 import com.bis.sourcelead.entity.AssociateLoanAndAdvanceHistory;
 import com.bis.sourcelead.entity.AssociateLoanAndAdvances;
 import com.bis.sourcelead.entity.AssociatePayItem;
@@ -188,6 +189,7 @@ public class GenerateUSPayrollServiceImpl implements GenerateUSPayrollService{
 		
 		String[] groupId = generateUSPayrollDTO.getGroupId().split(",");
 		List<AssociateSalary> assSallist = associateSalaryService.getAssociateSalaryListByGroupId(orgLocation,Long.parseLong(groupId[1]),generateUSPayrollDTO.getPayType());
+//		List<SalaryDTO> assSallist = associateSalaryService.getSalaryByGroupId(orgLocation,Long.parseLong(groupId[1]),generateUSPayrollDTO.getPayType());
 		
 		UserGroup userGroup = userGroupDao.findUserGroupById(groupId[0]);
 		
@@ -1209,14 +1211,14 @@ private Set<BankDataHistory> getBankDataHistory(AssociateTaxDedContriView associ
 			payrollDTO.setPayItemTotal(piTotal);
 			
 			//Loan and advances
-			BigDecimal lATotal = BigDecimal.ZERO;
+		/*	BigDecimal lATotal = BigDecimal.ZERO;
 			List<AssociateLoanAndAdvancesDTO> loanAdvance = payrollUtil.getLoanAndAdvancesData(payroll);
 			if(loanAdvance != null && loanAdvance.size() >0) {
 				payrollDTO.setLoanAdvance(loanAdvance);
 				loanAmountTotal = loanAdvance.stream().mapToDouble(lAmt->Double.valueOf(lAmt.getLoanAmount())).sum();
 			}
 			lATotal = BigDecimal.valueOf(loanAmountTotal);
-			payrollDTO.setLoanAmountTotal(lATotal);
+			payrollDTO.setLoanAmountTotal(lATotal);*/
 			
 			// Calculating YTD
 			YTDPayrollDTO ytdDTO = payrollUtil.getEmployeeYTDPayroll(payroll.getCandidate(),orgLocation,approverStatus);
@@ -1449,7 +1451,14 @@ private Set<BankDataHistory> getBankDataHistory(AssociateTaxDedContriView associ
 		}
 		return dedHis;
 	}
-
+	
+	/**
+	 * Updated Payment History
+	 * @param payAdjHistory
+	 * @param updatedPayroll
+	 * @param payAdjustmentDTO
+	 * @param loginUser
+	 */
 	private void updatePayAdjustmentHistory(PayAdjustmentHistory payAdjHistory, EmployeePayroll updatedPayroll, PayAdjustmentDTO payAdjustmentDTO, User loginUser)
 	{
 		float preRegHrs = 0;
