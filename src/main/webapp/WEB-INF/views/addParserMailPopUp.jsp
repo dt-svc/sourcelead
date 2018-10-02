@@ -159,7 +159,7 @@ function editEmailParsing(emailUUID){
 		success : function(data) {
 			addEmailparsingPopUp();
 			$('#parserEmailId').val(data.emailId);
-			$('#parserEmailPassword').val(data.emailPassword);
+			$('#parserPasswordId').val(data.emailPassword);
 			$('#parserServerName').val(data.serverName);
 			$('#parserPortId').val(data.portNumber);
 			
