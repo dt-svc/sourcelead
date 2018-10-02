@@ -86,13 +86,12 @@ public class EmailAccountSettingsServiceImpl implements EmailAccountSettingsServ
 	public ResponseList<String> emailAccountRead(Long id, Long userId) throws Exception {
 		ResponseList<String> responseList = new ResponseList<>();
 		EmailAccountSettings emailAccountSettings = emailAccountSettingsDao.getEmailAccount(id, userId);
-//		List<String> foldersList = new LinkedList<>();
 		String email = emailAccountSettings.getEmail();
 		String password = emailAccountSettings.getPassword();
 		// String host = "imap.gmail.com";
 		String host = emailAccountSettings.getIncomingServer();
 		String storeType = "imaps";
-		responseList = MailBox.readMail(host, storeType, email, password);
+		responseList = MailBox.readMail(emailAccountSettings.getIncomingServer(), emailAccountSettings.getIncomingPort(), storeType, email, password);
 		return responseList;
 
 	}
@@ -103,10 +102,9 @@ public class EmailAccountSettingsServiceImpl implements EmailAccountSettingsServ
 		String email=emailAccountSettings.getEmail();
 		String password=emailAccountSettings.getPassword();
 //		String host = "imap.gmail.com";
-		String host = emailAccountSettings.getIncomingServer();
 		String storeType = "imaps";
 		List<ReadMailDTO> mailsList=new ArrayList<>();
-		mailsList=MailBox.readMailFromFolder(host, storeType, email, password,folderName,userId, orgLocationId, paginator);
+		mailsList=MailBox.readMailFromFolder(emailAccountSettings.getIncomingServer(), emailAccountSettings.getIncomingPort(), storeType, email, password,folderName,userId, orgLocationId, paginator);
 		return mailsList;
 	}
 	
@@ -115,9 +113,8 @@ public class EmailAccountSettingsServiceImpl implements EmailAccountSettingsServ
 		EmailAccountSettings emailAccountSettings = emailAccountSettingsDao.getEmailAccount(emailAccountId, userId);
 		String email = emailAccountSettings.getEmail();
 		String password = emailAccountSettings.getPassword();
-		String host = emailAccountSettings.getIncomingServer();
 		String storeType = "imaps";
-		return MailBox.getMailDTOByUID(host, storeType, email, password, folderName, orgId, orgLocationId, uid, staticPath);
+		return MailBox.getMailDTOByUID(emailAccountSettings.getIncomingServer(), emailAccountSettings.getIncomingPort(), storeType, email, password, folderName, orgId, orgLocationId, uid, staticPath);
 	}
 	
 	@Override
@@ -127,9 +124,8 @@ public class EmailAccountSettingsServiceImpl implements EmailAccountSettingsServ
 			EmailAccountSettings emailAccountSettings = emailAccountSettingsDao.getEmailAccount(emailAccountId, userId);
 			String email = emailAccountSettings.getEmail();
 			String password = emailAccountSettings.getPassword();
-			String host = emailAccountSettings.getIncomingServer();
 			String storeType = "imaps";
-			boolean flag = MailBox.deleteEmailsByUid(host, storeType, email, password, messageIds, folderName, deleteForever);
+			boolean flag = MailBox.deleteEmailsByUid(emailAccountSettings.getIncomingServer(), emailAccountSettings.getIncomingPort(), storeType, email, password, messageIds, folderName, deleteForever);
 			response.setObject(flag);
 			response.setResponse(flag ? Result.SUCCESS.name() : Result.FAILED.name());
 			response.setResponseMessage(flag ? Result.SUCCESS.getValue() : Result.FAILED.getValue());

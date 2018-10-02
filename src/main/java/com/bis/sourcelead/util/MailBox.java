@@ -50,32 +50,23 @@ public class MailBox {
 	
 	private static SimpleDateFormat dateFormat = new SimpleDateFormat("MMM dd/yy");
 	
-	public static ResponseList<String> readMail(String host, String storeType, String user, String password) {
+	public static ResponseList<String> readMail(String host, String port, String storeType, String user, String password) {
 		ResponseList<String> responseList = new ResponseList<>();
 		List<String> folderList = new LinkedList<>();
-		/*
-		 * Map<String, List<String>> folderMap = new HashMap<>(); Set<String> folderSet
-		 * = new LinkedHashSet<>();
-		 */
 		try {
 			// create properties field
 			Properties properties = new Properties();
 
 			properties.put("mail.imap.host", host);
-			properties.put("mail.imap.port", "993");
+			properties.put("mail.imap.port", port);
 			properties.put("mail.imap.starttls.enable", "true");
 			Session emailSession = Session.getInstance(properties);
 
 			// create the POP3 store object and connect with the pop server
-			Store store = emailSession.getStore("imaps");
+			Store store = emailSession.getStore(storeType);
 
 			store.connect(host, user, password);
-			/*
-			 * javax.mail.Folder[] folders = store.getDefaultFolder().list("*"); for
-			 * (javax.mail.Folder folder : folders) { if ((folder.getType() &
-			 * javax.mail.Folder.HOLDS_MESSAGES) != 0) {
-			 * System.out.println(folder.getFullName() + ": " + folder.getMessageCount()); }
-			 */
+
 			Folder[] f = store.getDefaultFolder().list("*");
 			// Folder[] f = store.getDefaultFolder().listSubscribed();
 			for (Folder fd : f) {
@@ -85,14 +76,6 @@ public class MailBox {
 					// : fd.getName());
 				}
 			}
-			/*
-			 * for (String header : folderSet) { List<String> childs = new LinkedList<>();
-			 * for (Folder fd : f) { if (fd.getFullName().split(".").length > 1 ?
-			 * fd.getFullName().split(".")[1].contains(header) :
-			 * fd.getName().contains(header)) { childs.add(fd.getName() + "<<>>" +
-			 * fd.getFullName().replaceAll("&", "-and-")); } } folderMap.put(header,
-			 * childs); }
-			 */
 			// close the store and folder objects
 			store.close();
 			responseList.setResponse(Result.SUCCESS.name());
@@ -109,7 +92,7 @@ public class MailBox {
 		return responseList;
 	}
 
-	public static List<ReadMailDTO> readMailFromFolder(String host, String storeType, String user, String password, String folderName,
+	public static List<ReadMailDTO> readMailFromFolder(String host, String port, String storeType, String user, String password, String folderName,
 			long userId, long orgLocationId, Paginator paginator) {
 		List<ReadMailDTO> readMailDTOList = new ArrayList<>();
 		try {
@@ -117,12 +100,12 @@ public class MailBox {
 			Properties properties = new Properties();
 
 			properties.put("mail.imap.host", host);
-			properties.put("mail.imap.port", "993");
+			properties.put("mail.imap.port", port);
 			properties.put("mail.imap.starttls.enable", "true");
 			Session emailSession = Session.getDefaultInstance(properties);
 
 			// create the POP3 store object and connect with the pop server
-			Store store = emailSession.getStore("imaps");
+			Store store = emailSession.getStore(storeType);
 
 			store.connect(host, user, password);
 			Folder emailFolder = store.getFolder(folderName);
@@ -146,11 +129,7 @@ public class MailBox {
 			}
 			from = from > 1 ? from : 1;
 			to = to > messagesCount ? messagesCount : to;
-			/*
-			 * System.out.println("From : " + from + "    To : " + to +
-			 * "    Messages Count : " + messagesCount + "	No.of Pages : " + noOfPages +
-			 * "		Remainder : " + remainder);
-			 */
+			
 			// Message[] messages = emailFolder.getMessages();
 			Message[] messages = emailFolder.getMessages(from, to);
 			// Arrays.sort(messages, Collections.reverseOrder());
@@ -213,7 +192,7 @@ public class MailBox {
 			properties.put("mail.imap.port", port);
 			properties.put("mail.imap.starttls.enable", "true");
 			Session emailSession = Session.getDefaultInstance(properties);
-			Store store = emailSession.getStore("imaps");
+			Store store = emailSession.getStore(storeType);
 
 			store.connect(host, user, password);
 			Folder emailFolder = store.getFolder(folderName);
@@ -227,19 +206,19 @@ public class MailBox {
 		return null;
 	}
 	
-	public static ReadMailDTO getMailDTOByUID(String host, String storeType, String user, String password, String folderName, long orgId,
+	public static ReadMailDTO getMailDTOByUID(String host, String port, String storeType, String user, String password, String folderName, long orgId,
 			long orgLocationId, long uid, String staticPath) {
 		ReadMailDTO readMailDTO = new ReadMailDTO();
 		try {
 			Properties properties = new Properties();
 
 			properties.put("mail.imap.host", host);
-			properties.put("mail.imap.port", "993");
+			properties.put("mail.imap.port", port);
 			properties.put("mail.imap.starttls.enable", "true");
 			Session emailSession = Session.getDefaultInstance(properties);
 
 			// create the POP3 store object and connect with the pop server
-			Store store = emailSession.getStore("imaps");
+			Store store = emailSession.getStore(storeType);
 
 			store.connect(host, user, password);
 			Folder emailFolder = store.getFolder(folderName);
@@ -299,12 +278,10 @@ public class MailBox {
 							AttachmentDTO attachment = new AttachmentDTO();
 							String fileName = part.getFileName();
 							String fileType = part.getContentType();
-							// attachFiles += fileName + ", ";
 							String filePath = staticPath + System.getProperty("file.separator") + orgId
 									+ System.getProperty("file.separator") + orgLocationId + System.getProperty("file.separator")
 									+ "Email Attachments" + System.getProperty("file.separator") + user
 									+ System.getProperty("file.separator") + folderName + System.getProperty("file.separator") + uid;
-							// System.out.println("File Name : " + fileName);
 							File attachmentFolderPath = new File(filePath);
 							if (!attachmentFolderPath.exists())
 								attachmentFolderPath.mkdirs();
@@ -317,10 +294,6 @@ public class MailBox {
 							attachment.setFileName(fileName);
 							attachment.setUrl(fileUrl);
 							attachment.setFileType(fileType);
-							/*
-							 * attachment.setFileExtension(fileName.split("\\.").length > 0 ?
-							 * fileName.split("\\.")[1] : fileType);
-							 */
 							attachment.setFileExtension(fileName.substring(fileName.lastIndexOf("."), fileName.length()));
 							float fileSize = attachmentFile.length() / 1024;
 							attachment.setSizeUnit("KB");
@@ -334,8 +307,6 @@ public class MailBox {
 						}
 					}
 				}
-				// readMailDTO.setBody(body!= null && body instanceof String ? (String) body :
-				// "" );
 				readMailDTO.setBody(bodyContent);
 				readMailDTO.setFilesList(filesList);
 			}
@@ -347,17 +318,17 @@ public class MailBox {
 		return readMailDTO;
 	}
 
-	public static boolean deleteEmailsByUid(String host, String storeType, String email, String password, long[] messageIds,
+	public static boolean deleteEmailsByUid(String host, String port, String storeType, String email, String password, long[] messageIds,
 			String folderName, boolean deleteForever) {
 		try {
 			Properties properties = new Properties();
 			properties.put("mail.imap.host", host);
-			properties.put("mail.imap.port", "993");
+			properties.put("mail.imap.port", port);
 			properties.put("mail.imap.starttls.enable", "true");
 			Session emailSession = Session.getDefaultInstance(properties);
 
 			// create the POP3 store object and connect with the pop server
-			Store store = emailSession.getStore("imaps");
+			Store store = emailSession.getStore(storeType);
 
 			store.connect(host, email, password);
 			Folder emailFolder = store.getFolder(folderName);
@@ -396,7 +367,7 @@ public class MailBox {
 	}
 	
 	@SuppressWarnings("static-access")
-	public static Response<Boolean> composeEmail(long orgId, long orgLocationId, String staticPath, EmailAccountSettings emailAccountSettings, ReadMailDTO readMailDTO) {
+	public static Response<Boolean> composeEmail(long orgId, long orgLocationId, String storeType, String staticPath, EmailAccountSettings emailAccountSettings, ReadMailDTO readMailDTO) {
 		Response<Boolean> response = new Response<>();
 		try {
 			Properties properties = new Properties();
@@ -434,8 +405,6 @@ public class MailBox {
 				message.addRecipients(Message.RecipientType.CC, InternetAddress.parse(readMailDTO.getCc()));
 			
 			message.setSubject(readMailDTO.getSubject());
-			/*message.setText(body);*/
-//			message.setContent(readMailDTO.getBody(), "text/html");
 			
 			String filePath = staticPath + System.getProperty("file.separator") + orgId + System.getProperty("file.separator")
 					+ orgLocationId;
@@ -480,7 +449,7 @@ public class MailBox {
 				Session emailSession = Session.getDefaultInstance(properties1);
 
 				// create the POP3 store object and connect with the pop server
-				Store store = emailSession.getStore("imaps");
+				Store store = emailSession.getStore(storeType);
 
 				store.connect(emailAccountSettings.getIncomingServer(), emailAccountSettings.getEmail(), emailAccountSettings.getPassword());
 

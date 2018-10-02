@@ -55,7 +55,7 @@
 					</div>
 
 					<div class="col-md-12 clearfix mb10">
-						<label class="noPad"><input type="checkbox" name="incomingSSL"/>
+						<label class="noPad"><input type="checkbox" name="incomingSSL" checked="checked"/>
 						<span>This server requires a secure connection (SSL)</span></label>
 					</div>
 				</div>
@@ -84,7 +84,7 @@
 					</div>
 
 					<div class="col-md-12 clearfix mb10">
-						<label class="noPad"><input type="checkbox" name="outgoingSSL"/>
+						<label class="noPad"><input type="checkbox" name="outgoingSSL" checked="checked"/>
 						<span>This server requires a secure connection (SSL)</span></label>
 					</div>
 				</div>

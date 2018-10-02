@@ -301,8 +301,8 @@ public class EmailServiceImpl implements EmailService {
 				attachment.setFileType(multiFile.getContentType());
 				attachmentList.add(attachment);
 			}*/
-
-			response = MailBox.composeEmail(orgId, orgLocationId, staticPath, emailAccountSettings, readMailDTO);
+			String storeType = "imaps";
+			response = MailBox.composeEmail(orgId, orgLocationId, storeType, staticPath, emailAccountSettings, readMailDTO);
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
