@@ -163,6 +163,7 @@ function approvedEmployeesPagination(url){
 	          },{
             "targets": colIndex++,
             "data": "duration",
+            "sorting":false,
             "render": function ( data, type, opt, meta ) {
             	 var result = "";
             	 result = result + '   <div title="'+opt.duration+'" class="tbldata-dotdot-100">'+opt.duration+'</div>';
@@ -215,6 +216,7 @@ function approvedEmployeesPagination(url){
 	    	  }, {
                   "targets": colIndex++,
                   "data": "action",
+                  "sorting":false,
                   "render": function ( data, type, opt, meta ) {
                 	   var result = "";
                 	   '<sec:authorize access="hasAnyRole(\'ROLE_CANCEL_LEAVE\')">';

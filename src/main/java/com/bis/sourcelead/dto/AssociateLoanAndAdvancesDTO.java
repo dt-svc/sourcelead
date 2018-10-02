@@ -2,8 +2,10 @@ package com.bis.sourcelead.dto;
 
 import java.io.Serializable;
 import java.math.BigDecimal;
+import java.util.Set;
 
 import com.bis.sourcelead.annotations.Required;
+import com.bis.sourcelead.entity.AssociateLoanAndAdvanceHistory;
 
 public class AssociateLoanAndAdvancesDTO implements Serializable{
 	
@@ -71,6 +73,23 @@ public class AssociateLoanAndAdvancesDTO implements Serializable{
 	 private int status;
 	 
      private String lastPaidOnMaxDate;
+     
+     Set<AssociateLoanAndAdvanceHistory> loanHis;
+     
+     
+     
+	public Set<AssociateLoanAndAdvanceHistory> getLoanHis() {
+		return loanHis;
+	}
+
+	public void setLoanHis(Set<AssociateLoanAndAdvanceHistory> loanHis) {
+		this.loanHis = loanHis;
+	}
+
+	public static long getSerialversionuid() {
+		return serialVersionUID;
+	}
+
 	public String getLoanAndAdvType() {
 		return loanAndAdvType;
 	}

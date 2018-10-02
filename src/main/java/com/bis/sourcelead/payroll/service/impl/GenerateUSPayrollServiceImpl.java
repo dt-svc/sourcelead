@@ -314,8 +314,7 @@ public class GenerateUSPayrollServiceImpl implements GenerateUSPayrollService{
 							PayItemDTO payItemDTO = getPayItemSum(orgLocation,assoSal.getAssociatePayItem(),paySheetFreq,employeePayroll,loginUser);
 							
 							//for loan and advances
-							AssociateLoanAndAdvancesDTO assLoanAndAdvDTO = getAssLoanAndAdvanceDedAmount(orgLocation,paySheetFreq,loginUser,assoSal.getCandidate());
-							
+							AssociateLoanAndAdvancesDTO assLoanAndAdvDTO = getAssLoanAndAdvanceDedAmount(orgLocation,paySheetFreq,loginUser,assoSal.getCandidate(),employeePayroll);
 							
 							BigDecimal payItemSum = payItemDTO.getPayItemSum();
 							employeePayroll.setPayitemSum(payItemSum);
@@ -368,6 +367,9 @@ public class GenerateUSPayrollServiceImpl implements GenerateUSPayrollService{
 							Set<AssociateTaxHistory> associateTaxHistory = getAssociateTaxHistory(associateTaxView,employeePayroll,loginUser);
 							employeePayroll.setAssociateTaxHistory(associateTaxHistory);
 							
+							if(assLoanAndAdvDTO.getLoanHis() != null && assLoanAndAdvDTO.getLoanHis().size() >0) {
+								employeePayroll.setLoanHistory(assLoanAndAdvDTO.getLoanHis());
+							}
 							employeePayroll.setDeductionHistory(dedDTO.getDedHis());
 							employeePayroll.setPayitemHistory(payItemDTO.getPayitemHistory());
 							employeePayroll.setUsEmpPayrollUUID(SourceLeadRandomCodeHelper.generateRandomUUID());
@@ -480,12 +482,13 @@ private Set<BankDataHistory> getBankDataHistory(AssociateTaxDedContriView associ
 		return isExisted;
 	}
 	
-	private AssociateLoanAndAdvancesDTO getAssLoanAndAdvanceDedAmount(OrgLocations orgLocation, PaysheetFrequency paySheetFreq, User loginUser, Candidate candidate)
+	private AssociateLoanAndAdvancesDTO getAssLoanAndAdvanceDedAmount(OrgLocations orgLocation, PaysheetFrequency paySheetFreq, User loginUser, Candidate candidate, EmployeePayroll employeePayroll)
 	{
 		AssociateLoanAndAdvancesDTO assLoanAdvDto = new AssociateLoanAndAdvancesDTO();
 		try {
 			List<AssociateLoanAndAdvances> loanAndAdvList = associateLoanAndAdvancesService.getAssociateLoanAndAdvancesListByCandidateId(candidate.getId(), orgLocation.getId());
 			BigDecimal totalLoanAmount = BigDecimal.ZERO, totalAdvanceAmount = BigDecimal.ZERO; 
+			Set<AssociateLoanAndAdvanceHistory> his = new HashSet<>();
 			for(AssociateLoanAndAdvances assLoanAndAdv : loanAndAdvList) {
 				boolean thisPayCheck = false;
 				if(assLoanAndAdv.getDeductStartDate() == null) {
@@ -530,15 +533,19 @@ private Set<BankDataHistory> getBankDataHistory(AssociateTaxDedContriView associ
 						assLoanHistory.setScheduleStartDate(assLoan.getDeductStartDate());
 						assLoanHistory.setScheduleEndDate(assLoan.getDeductEndDate());
 						assLoanHistory.setCreatedDate(new Date());
+						assLoanHistory.setPayroll(employeePayroll);
 						assLoanHistory.setCreatedBy(loginUser.getUserCode());
 						assLoanHistory.setUpdatedBy(loginUser.getUserCode());
 						assLoanHistory.setUpdatedDate(new Date());
-						assLoanHistory = associateLoanAndAdvancesHistoryService.saveAssociateLoanAndAdvancesHistory(assLoanHistory);
+						his.add(assLoanHistory);
+//						assLoanHistory = associateLoanAndAdvancesHistoryService.saveAssociateLoanAndAdvancesHistory(assLoanHistory);
+						
 					}
  				}
 			}
 			assLoanAdvDto.setTotalAdvanceAmount(totalAdvanceAmount);
 			assLoanAdvDto.setTotalLoanAmount(totalLoanAmount);
+			assLoanAdvDto.setLoanHis(his);
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
@@ -1185,6 +1192,7 @@ private Set<BankDataHistory> getBankDataHistory(AssociateTaxDedContriView associ
 			
 			double contributionTotal =0;
 			double payItemTotal = 0;
+			double loanAmountTotal = 0;
 			if(clist != null && clist.size() >0) {
 				payrollDTO.setContribution(clist);
 				contributionTotal = clist.stream().mapToDouble(con->con.getContributionAmt()).sum();
@@ -1200,9 +1208,20 @@ private Set<BankDataHistory> getBankDataHistory(AssociateTaxDedContriView associ
 			piTotal = BigDecimal.valueOf(payItemTotal);
 			payrollDTO.setPayItemTotal(piTotal);
 			
+			//Loan and advances
+			BigDecimal lATotal = BigDecimal.ZERO;
+			List<AssociateLoanAndAdvancesDTO> loanAdvance = payrollUtil.getLoanAndAdvancesData(payroll);
+			if(loanAdvance != null && loanAdvance.size() >0) {
+				payrollDTO.setLoanAdvance(loanAdvance);
+				loanAmountTotal = loanAdvance.stream().mapToDouble(lAmt->Double.valueOf(lAmt.getLoanAmount())).sum();
+			}
+			lATotal = BigDecimal.valueOf(loanAmountTotal);
+			payrollDTO.setLoanAmountTotal(lATotal);
+			
 			// Calculating YTD
 			YTDPayrollDTO ytdDTO = payrollUtil.getEmployeeYTDPayroll(payroll.getCandidate(),orgLocation,approverStatus);
 			payrollDTO.setYtdDTO(ytdDTO);
+			
 			res.setObject(payrollDTO);
 			
 			

@@ -156,6 +156,7 @@ function redirectlocation(location){
 		          },{
 	            "targets": colIndex++,
 	            "data": "duration",
+	            "sorting":false,
 	            "render": function ( data, type, opt, meta ) {
 	            	 var result = "";
 	            	 result = result + '   <div title="'+opt.duration+'" class="tbldata-dotdot-100">'+opt.duration+'</div>';
@@ -200,6 +201,7 @@ function redirectlocation(location){
 		    	  },{
 		    	  	"targets": colIndex++,
 		    	  	"data": "reason",
+		    	  	"sorting":false,
 		    	  	"render": function(data, type, opt, meta) {
 		    	  		 var result = "";
 		    	  		if(opt.rejectedReason != null && opt.rejectedReason != '' && opt.rejectedReason != 'undefined'){
