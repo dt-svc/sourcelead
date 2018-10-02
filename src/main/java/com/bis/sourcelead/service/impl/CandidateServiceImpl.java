@@ -1462,6 +1462,13 @@ private Sheet createXlsSheet(Sheet createExcelsheet, Row writeRow,Candidate cand
 			candidate.setMaritalStatus(candidateUser.getMaritalStatus());
 		}
 		
+	    if(StringUtils.isNotBlank(addUserDTO.getWorkLocation())){
+		    OrgLocations workLocation = orgLocationService.getOrgLocations(Long.parseLong(addUserDTO.getWorkLocation()));
+			candidate.setWorkLocation(workLocation);
+	    }else {
+	    	candidate.setWorkLocation(orgLocations);
+	    }
+		
 		  
 	    if(StringUtils.isNotBlank(addUserDTO.getResidenceAddress())){
 	    	candidate.setResidenceAddress(addUserDTO.getResidenceAddress());
@@ -1472,8 +1479,6 @@ private Sheet createXlsSheet(Sheet createExcelsheet, Row writeRow,Candidate cand
 	    	candidate.setResidenceLongitude(addUserDTO.getResidenceLongitude());
 	    	candidate.setResidenceZipCode(addUserDTO.getResidenceZipCode());
 	    	candidate.setResidenceStreetAddress(addUserDTO.getResidenceAddress());
-	    	OrgLocations workLocation = orgLocationService.getOrgLocations(Long.parseLong(addUserDTO.getWorkLocation()));
-			candidate.setWorkLocation(workLocation);
 	    	
 	    	
 	    	Countries country = countriesService.getCountriesByCountryName(addUserDTO.getResidenceCountry());
