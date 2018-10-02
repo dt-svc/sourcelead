@@ -41,7 +41,7 @@ import com.bis.sourcelead.entity.User;
  */
 public interface ImmigrationCommonDao {
 
-	List<ImmigrationTemplate> getImmigrationTemplateList(OrgLocations orgLocations);
+	List<ImmigrationTemplate> getImmigrationTemplateList(OrgLocations orgLocations, Long status);
 	
 	Immigration savePetitionDetails(Immigration immigration, Candidate candidate, CandidateIdendities candidateIdendities,
 			CandidateResumes candidateResume, CandidateLcaJobDetails candidateLcaJobDetails, List<CandidateResidence> residenceEntityLst) throws Exception;
