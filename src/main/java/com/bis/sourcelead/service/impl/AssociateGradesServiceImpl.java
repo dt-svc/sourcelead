@@ -50,4 +50,9 @@ public class AssociateGradesServiceImpl implements AssociateGradesService{
 		return associateGradesDao.getAssociateGradeById(id);
 	}
 
+	@Override
+	public List<String> getGradesListByOrgLocationId(Long orgLocationId) throws Exception {
+		return associateGradesDao.getGradesListByOrgLocationId(orgLocationId);
+	}
+
 }
