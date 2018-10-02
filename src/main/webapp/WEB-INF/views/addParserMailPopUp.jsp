@@ -159,13 +159,19 @@ function editEmailParsing(emailUUID){
 		success : function(data) {
 			addEmailparsingPopUp();
 			$('#parserEmailId').val(data.emailId);
-			$('#parserEmailPassword').val(data.emailPassword);
+			$('#parserPasswordId').val(data.emailPassword);
 			$('#parserServerName').val(data.serverName);
 			$('#parserPortId').val(data.portNumber);
+			
 			$('#parserEncryptId').removeAttr("selected");
+			$('#parserEncryptId').val(data.encryptionType);
+			$('#usageType').removeAttr("selected");
+			$('#usageType').val(data.usageType);
+			
+			/* $('#parserEncryptId').removeAttr("selected");
 			$('#parserEncryptId option[value='+data.encryptionType+']').attr("selected", "selected");
 			$('#usageType').removeAttr("selected");
-			$('#usageType option[value='+data.usageType+']').attr("selected", "selected");
+			$('#usageType option[value='+data.usageType+']').attr("selected", "selected"); */
 			$('#parserEmailUUID').val(data.email_UUID); // using for upate the record. email
 		}
 	 }); 

@@ -111,7 +111,7 @@ public class ImmigrationCommonDaoImpl implements ImmigrationCommonDao {
 		try {
 			Session session = this.sessionFactory.getCurrentSession();
 			logger.debug(" before query execute templateLst size -->" + templateLst.size());
-			String queryString = "from ImmigrationTemplate it where it.status = 1 and it.orgLocations.id =:orgLocationId";
+			String queryString = "from ImmigrationTemplate it where it.orgLocations.id =:orgLocationId";
 			templateLst = session.createQuery(queryString).setLong("orgLocationId", orgLocations.getId()).list();
 			logger.debug("tempalte Details loaded Successfully templateLst size -->" + templateLst.size());
 
