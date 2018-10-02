@@ -224,7 +224,7 @@ public class UserGroupDaoImpl implements UserGroupDao{
 			.append (" AND   sah.SUBMISSION_ID = ts.ID")
 			.append(" AND can.ID = :candidateId and sah.FREQUENCY_START_DATE = :startDate AND sah.FREQUENCY_END_DATE = :endDate ")
 			.append(" AND sah.SUBMISSION_APPROVALSTATUS = 'APPROVED' ");
-//				 System.out.println(qry.toString());
+				 System.out.println(qry.toString());
 			        
 					Query queryString = session.createSQLQuery(qry.toString());
 					queryString.setParameter("candidateId", candidateId).setDate("startDate", startDate).setDate("endDate",endDate);
