@@ -36,7 +36,13 @@ public class IndPaysheetFrequencyDTO  extends SearchDTO{
 	
 	private List<INDPayrollDTO> indPayrollDTO;
 	
-	private String payrollFrequencyUUID;
+	private String paySheetFrequencyUUID;
+	
+	private String frequencyStartDateStr;
+	
+	private String frequencyEndDateStr;
+	
+	private String payCheckDateStr;
 
 	public String getId() {
 		return id;
@@ -158,14 +164,35 @@ public class IndPaysheetFrequencyDTO  extends SearchDTO{
 		this.indPayrollDTO = indPayrollDTO;
 	}
 
-	public String getPayrollFrequencyUUID() {
-		return payrollFrequencyUUID;
+	public String getPaySheetFrequencyUUID() {
+		return paySheetFrequencyUUID;
 	}
 
-	public void setPayrollFrequencyUUID(String payrollFrequencyUUID) {
-		this.payrollFrequencyUUID = payrollFrequencyUUID;
+	public void setPaySheetFrequencyUUID(String paySheetFrequencyUUID) {
+		this.paySheetFrequencyUUID = paySheetFrequencyUUID;
 	}
-	
-	
-	
+
+	public String getFrequencyStartDateStr() {
+		return frequencyStartDateStr;
+	}
+
+	public void setFrequencyStartDateStr(String frequencyStartDateStr) {
+		this.frequencyStartDateStr = frequencyStartDateStr;
+	}
+
+	public String getFrequencyEndDateStr() {
+		return frequencyEndDateStr;
+	}
+
+	public void setFrequencyEndDateStr(String frequencyEndDateStr) {
+		this.frequencyEndDateStr = frequencyEndDateStr;
+	}
+
+	public String getPayCheckDateStr() {
+		return payCheckDateStr;
+	}
+
+	public void setPayCheckDateStr(String payCheckDateStr) {
+		this.payCheckDateStr = payCheckDateStr;
+	}
 }

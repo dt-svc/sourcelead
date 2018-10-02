@@ -75,7 +75,7 @@ public class GenerateINDPayrollServiceImpl implements GenerateINDPayrollService{
 		try {
 			if (paysheetFrequency != null && paysheetFrequency.getIndEmployeepayroll() != null) {
 				indPaysheetFrequencyDTO = new IndPaysheetFrequencyDTO();
-				indPaysheetFrequencyDTO.setPayrollFrequencyUUID(paysheetFrequency.getPaySheetFrequencyUUID());
+				indPaysheetFrequencyDTO.setPaySheetFrequencyUUID(paysheetFrequency.getPaySheetFrequencyUUID());
 				indPaysheetFrequencyDTO.setPaySheetFrequencyId(paysheetFrequency.getId());
 				indPaysheetFrequencyDTO.setPayRunId(paysheetFrequency.getPayRunId().toString());
 				list = new ArrayList<>();

@@ -13,6 +13,7 @@ import com.bis.sourcelead.payroll.dto.IndPaysheetFrequencyDTO;
 import com.bis.sourcelead.payroll.entity.IndEmployeePayroll;
 import com.bis.sourcelead.payroll.entity.IndPaysheetFrequency;
 import com.bis.sourcelead.payroll.service.IndPaysheetFrequencyService;
+import com.bis.sourcelead.util.CommonUtil;
 
 @Service
 public class IndPaysheetFrequencyServiceImpl implements IndPaysheetFrequencyService{
@@ -21,6 +22,9 @@ public class IndPaysheetFrequencyServiceImpl implements IndPaysheetFrequencyServ
 
 	@Autowired
 	IndPaysheetFrequencyDao indPaysheetFrequencyDao;
+	
+	@Autowired
+	CommonUtil commonUtil;
 	
 	@Override
 	public ResponseList<IndPaysheetFrequency> getIndPaysheetFrequencyListByOrgLocationId(OrgLocations orgLocation,
@@ -41,5 +45,24 @@ public class IndPaysheetFrequencyServiceImpl implements IndPaysheetFrequencyServ
 	@Override
 	public Response<IndEmployeePayroll> getIndEmployeePayrollByEmpPayrollUUID(String empPayrollUUID) throws Exception {
 		return indPaysheetFrequencyDao.getIndEmployeePayrollByEmpPayrollUUID(empPayrollUUID);
+	}
+
+	@Override
+	public Response<IndPaysheetFrequencyDTO> getIndPaysheetFrequencyByEmpPayrollUUID(String payrollFrequencyUUID, OrgLocations orgLocation)
+			throws Exception {
+		Response<IndPaysheetFrequencyDTO> response = new Response<>();
+		IndPaysheetFrequency freq = indPaysheetFrequencyDao.getIndPaysheetFrequencyByEmpPayrollUUID(payrollFrequencyUUID);
+		if(freq != null) {
+			IndPaysheetFrequencyDTO freqDTO = new IndPaysheetFrequencyDTO();
+			freqDTO.setId(freq.getId().toString());
+			freqDTO.setGroupId(freq.getUserGroup().getId().toString());
+			freqDTO.setGroupName(freq.getUserGroup().getGroupName());
+			freqDTO.setFrequencyStartDateStr(commonUtil.dateStrFromOrgDateFormatter(orgLocation.getDateFormat(),freq.getFrequencyStartDate()));
+			freqDTO.setFrequencyEndDateStr(commonUtil.dateStrFromOrgDateFormatter(orgLocation.getDateFormat(),freq.getFrequencyEndDate()));
+			freqDTO.setPayCheckDateStr(commonUtil.dateStrFromOrgDateFormatter(orgLocation.getDateFormat(),freq.getPayCheckDate()));
+			freqDTO.setPaySheetFrequencyUUID(freq.getPaySheetFrequencyUUID());
+			response.setObject(freqDTO);
+		}
+		return response;
 	}
 }
