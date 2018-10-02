@@ -267,7 +267,7 @@ $(function() {
 		  		 var toEmails =  $('#emailsList').val();
 		  		 
 		  		if(toEmails == null){
-		   	    	alertMailerMsg("Provide at least one To mail");
+		   	    	alertMailerMsg("Provide atleast one email id");
 		   	    }
 		  		else{
 		  			
