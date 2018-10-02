@@ -14,7 +14,7 @@ import com.bis.sourcelead.entity.User;
 
 public interface EmailAccountSettingsService {
 	
-	public EmailAccountSettings StoreEmailAccountSettings(EmailAccountSettingsDTO emailAccountSettingsDTO,User user,OrgLocations orgLocations) throws Exception;
+	public Response<Boolean> StoreEmailAccountSettings(EmailAccountSettingsDTO emailAccountSettingsDTO,User user,OrgLocations orgLocations) throws Exception;
 
 	List<EmailAccountSettings> emailAccountSettingsList(Long loginUserId)throws Exception;
 	

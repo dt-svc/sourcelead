@@ -39,15 +39,6 @@ display: none;
           <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12 myForm mb">
             <div class="col-md-12"><h3> Setup email account for sending</h3></div>
             
-            <div class="col-md-6 minHeight">
-                <label>Email<span class="text-danger">&nbsp;*</span></label>
-                <input class="form-control" value="" name="email" id="email" field-name="Email Id" data-validation="required validate_Space validate_length length2-100 validate_email" placeholder="Enter email" type="text"> 
-                 
-            </div>
-            <div class="col-md-6 minHeight">
-                <label>Password<span class="text-danger">&nbsp;*</span></label>
-                <input class="form-control" value="" name="password"  field-name="Password" data-validation="required validate_Space" placeholder="Enter password" type="password"> 
-            </div>
             
             <div class="col-md-6 mb">
                 <h4>Receiving emails</h4>
@@ -58,7 +49,7 @@ display: none;
                 </div>
                 <div class="col-md-4 padding_right minHeight">
                     <label>Port<span class="text-danger">&nbsp;*</span></label>
-                    <input class="form-control" value="${incomingPort}" name="recievePort" data-validation="required validate_Space"  field-name="recievePort" placeholder="123" type="text">                
+                    <input class="form-control" value="${incomingPort}" name="recievePort" data-validation="required validate_Space" field-name="recievePort" placeholder="123" type="text">                
                 </div>                
             </div>
                             
@@ -129,38 +120,6 @@ display: none;
     </div>
   </section>
 
-<script type="text/javascript">
-	$("#email").change(function() {
-		if(jQueryFormUtils.validateEmail($("#email").val())) {
-			$("#recieveEmail").val($("#email").val());
-			$("#sendEmail").val($("#email").val());
-		} else {
-			$("#recieveEmail").val("");
-			$("#sendEmail").val("");
-		}
-	});
-	function addEmailAccount() {
-		if ($('#email_settings_form').validate(false, validationSettings)){ 
-			
-		    var formData = getFormData("email_settings_form");
-			$("#email_settings_form").attr("disabled", "disabled");
-			$("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
-            $( "#email_settings_form" ).addClass('button').val('Processing..');
-			$.post(sourceleadUrl+"/addEmailAccount?${_csrf.parameterName}=${_csrf.token}", formData, function(data) {
-				location.replace(sourceleadUrl+"/mailBox/mails");
-			});
-			
-	        return true;
-		
-	  }else{
-		return false;
-	  }
-    }
- 
-   $('body').on('blur', '#email_settings_form', function() {
-		$("#email_settings_form").showHelpOnFocus();
-		$("#email_settings_form").validateOnBlur(false, validationSettings);  
-   });
-</script>
+
   
 <jsp:include page="masterFooter.jsp" />

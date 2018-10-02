@@ -42,6 +42,7 @@ import com.bis.sourcelead.dto.ReadMailDTO;
 import com.bis.sourcelead.dto.Response;
 import com.bis.sourcelead.dto.ResponseList;
 import com.bis.sourcelead.dto.helper.Paginator;
+import com.bis.sourcelead.entity.EmailAccountSettings;
 import com.bis.sourcelead.enums.Result;
 import com.itextpdf.tool.xml.html.Body;
 
@@ -167,8 +168,8 @@ public class MailBox {
 				long messageId = uf.getUID(message);
 				readMailDTO.setMessageId(messageId);
 				/*readMailDTO.setFrom(message.getFrom() != null ? message.getFrom()[0].toString() : "");*/
-				if(message.getFrom() != null) {
-					InternetAddress internetAddress =  (InternetAddress)((Address)message.getFrom()[0]);
+				if(message.getFrom() != null && message.getFrom().length > 0) {
+					InternetAddress internetAddress = (InternetAddress) ((Address) message.getFrom()[0]);
 					readMailDTO.setFrom(internetAddress.getAddress());
 					/*readMailDTO.setFrom(internetAddress.getPersonal() != null ? internetAddress.getPersonal() : internetAddress.getAddress());*/
 				} else {
@@ -369,6 +370,7 @@ public class MailBox {
 //						emailFolder.setFlags(messageIds, new Flags(Flags.Flag.DELETED), true);
 						message.setFlag(Flags.Flag.DELETED, true);
 					} else {
+						//copy message to trash folder
 						Folder trashFolder = null;
 						Folder[] allFolders = store.getDefaultFolder().list("*");
 						for (Folder folder : allFolders) {
@@ -379,6 +381,8 @@ public class MailBox {
 						if (trashFolder == null || !trashFolder.exists())
 							trashFolder.create(Folder.HOLDS_MESSAGES);
 						emailFolder.copyMessages(new Message[] { message }, trashFolder);
+						//delete original message
+						message.setFlag(Flags.Flag.DELETED, true);
 					}
 				}
 			}
@@ -392,17 +396,16 @@ public class MailBox {
 	}
 	
 	@SuppressWarnings("static-access")
-	public static Response<Boolean> composeEmail(String outgoingHost, String outgoingPort, String incomingHost, String incomingPort,
-			String transportType, String email, String password, long orgId, long orgLocationId, String staticPath, ReadMailDTO readMailDTO) {
+	public static Response<Boolean> composeEmail(long orgId, long orgLocationId, String staticPath, EmailAccountSettings emailAccountSettings, ReadMailDTO readMailDTO) {
 		Response<Boolean> response = new Response<>();
 		try {
 			Properties properties = new Properties();
-			properties.put("mail.transport.protocol", transportType);
-			properties.put("mail.host", outgoingHost);
-			properties.put("mail.smtp.auth", "true"); 
-			properties.put("mail.smtp.port", outgoingPort);
+			properties.put("mail.transport.protocol", "ssl");
+			properties.put("mail.host", emailAccountSettings.getOutgoingServer());
+			properties.put("mail.smtp.auth", emailAccountSettings.isOutgoingSSL()); 
+			properties.put("mail.smtp.port", emailAccountSettings.getOutgoingPort());
 			properties.put("mail.debug", "true");  
-			properties.put("mail.smtp.socketFactory.port", outgoingPort);
+			properties.put("mail.smtp.socketFactory.port", emailAccountSettings.getOutgoingPort());
 			properties.put("mail.smtp.socketFactory.class","javax.net.ssl.SSLSocketFactory");  
 			properties.put("mail.smtp.socketFactory.fallback", "false");
 			properties.put("mail.smtp.starttls.enable", "true");
@@ -411,7 +414,7 @@ public class MailBox {
 			Session session = Session.getInstance(properties, new javax.mail.Authenticator() {
 				@Override
 				protected PasswordAuthentication getPasswordAuthentication() {
-					return new PasswordAuthentication(email, password);
+					return new PasswordAuthentication(emailAccountSettings.getEmail(), emailAccountSettings.getPassword());
 				}
 			});
 
@@ -424,7 +427,7 @@ public class MailBox {
 				message = new MimeMessage(session);
 			}*/
 			Message message = new MimeMessage(session);
-			message.setFrom(new InternetAddress(email));
+			message.setFrom(new InternetAddress(emailAccountSettings.getEmail()));
 			message.setRecipients(Message.RecipientType.TO, InternetAddress.parse(readMailDTO.getTo()));
 			
 			if(readMailDTO.getCc() != null && !readMailDTO.getCc().isEmpty())
@@ -466,20 +469,20 @@ public class MailBox {
 			message.setContent(multipart);
 			
 			Transport transport = session.getTransport();
-			transport.connect(outgoingHost, email, password);
+			transport.connect(emailAccountSettings.getOutgoingServer(), emailAccountSettings.getEmail(), emailAccountSettings.getPassword());
 			transport.send(message, message.getAllRecipients());
 			
-			if (!outgoingHost.equalsIgnoreCase("smtp.gmail.com")) {
+			if (!emailAccountSettings.getOutgoingServer().equalsIgnoreCase("smtp.gmail.com")) {
 				Properties properties1 = new Properties();
-				properties1.put("mail.imap.host", incomingHost);
-				properties1.put("mail.imap.port", incomingPort);
+				properties1.put("mail.imap.host", emailAccountSettings.getIncomingServer());
+				properties1.put("mail.imap.port", emailAccountSettings.getIncomingPort());
 				properties1.put("mail.imap.starttls.enable", "true");
 				Session emailSession = Session.getDefaultInstance(properties1);
 
 				// create the POP3 store object and connect with the pop server
 				Store store = emailSession.getStore("imaps");
 
-				store.connect(outgoingHost, email, password);
+				store.connect(emailAccountSettings.getIncomingServer(), emailAccountSettings.getEmail(), emailAccountSettings.getPassword());
 
 				Folder folder = (Folder) store.getFolder("Sent Items");
 				if (folder.exists() == false) {

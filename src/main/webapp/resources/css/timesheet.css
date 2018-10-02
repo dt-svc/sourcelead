@@ -9405,7 +9405,7 @@ aside.asideAct {
   background-color: #f5f5f5; border-left:4px solid #368ee0;
 }
 
-#sourceleadEmailFolder li.active, #dynamicEmailFolder li.active {
+#sourceleadEmailFolderDiv li.active, #dynamicEmailFolderDiv li.active {
   background-color: #f1f1f1; border-left: 4px solid #368ee0;
 }
 
