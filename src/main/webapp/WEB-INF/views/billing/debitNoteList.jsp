@@ -254,15 +254,17 @@ function creditNotePagination(url){
     	  		if((report.approverCheckBox == 'Y') && (report.approverUserSplitId.length >0)){
     	  			result = result +'<div class="tbldata-dotdot-vsm">';
     	  			for(var i=0; i<report.approverUserSplitId.length; i++) {
-    	  				if((report.approverUserSplitId[i] == '${SourceLeadWeb_user.id}') && (report.creditDebitNoteStatus != "Send") && (report.status !="0")){
+    	  				if((report.approverUserSplitId[i] == '${SourceLeadWeb_user.id}') && (report.creditDebitNoteStatus != "Send") && (report.creditDebitNoteStatus != "Rejected") && (report.status !="0")){
 						result = result +'           <span class="clearfix" ><a onclick="acceptCreditDebitNote(\''+report.creditDebitUUID+'\');" title="Accept"><i class="fa fa-check text-success paddingRight"></i></a><a onclick="rejectCreditDebitNote(\''+report.creditDebitUUID+'\');" title="Reject"><i class="paddingLeft fa fa-times text-danger"></i></a></span>';
     	  				}
     	  				}
     	  			if(((report.creditDebitNoteStatus != "Send" ) || (report.creditDebitNoteStatus == "Rejected")) && (report.status !="0")){
-    	  			result = result +' <span class="clearfix"><a href="<c:url value="/app/addCreditNote?creditDebitUUID='+report.creditDebitUUID+'&noteType=Credit"/>" <i class="fa fa-edit paddingRight paddingLeft" title="Edit"></i></a></span>';
+    	  			result = result +' <span class="clearfix"><a href="<c:url value="/app/addDebitNote?creditDebitUUID='+report.creditDebitUUID+'&noteType=Debit"/>" <i class="fa fa-edit paddingRight paddingLeft" title="Edit"></i></a></span>';
     				result = result +' <span class="clearfix"><a onClick="deleteCreditDebitNote(\''+report.creditDebitUUID+'\');"><i class="fa fa-trash paddingRight paddingLeft" title="Remove"></i></a></span>';
     				}else if(report.status =="0") {
 	 	    			result = result +' <span class="clearfix"><a onClick="reactiveCreditDebitNote(\''+report.creditDebitUUID+'\');"><i class="fa fa-rotate-left ml10" title="Reactive"></i></a></span>';
+    	  			}else{
+        				result = result +' <span class="clearfix"><a onClick="deleteCreditDebitNote(\''+report.creditDebitUUID+'\');"><i class="fa fa-trash paddingRight paddingLeft" title="Remove"></i></a></span>';
     	  			}
     				
 			    	result = result +' </div>';	
@@ -400,7 +402,9 @@ function creditNotePagination(url){
                     
                			result = result +'         <td> ';
                     	result = result +'           <div class="tbldata-dotdot-100" title="'+report.creditDebitNoteStatus+'">'+report.creditDebitNoteStatus+'</div>';
-                    	
+                    	if(report.creditDebitNoteStatus == "Rejected"){
+            			 	result = result + '    <i class="glyphicon glyphicon-comment ml10 edit-reason"><div class="edit-status"><p>'+report.rejectReason+'</p></div></i>';
+                        	}
                     	result = result +'         </td> ';
                     	 return result;
                     }
@@ -478,8 +482,7 @@ function acceptCreditDebitNote(creditDebitUUID){
 	var result = "";
 	result = result +"	<div class='project_inn_mask'></div>"; 
 	result = result +"	   <div id='remove_user_pop' class='remove_user_pop remove_user_pop_a'>";
-
-	result = result +"		<p>Are you sure you want to Accept ?</p></div>";
+	result = result +"	<div class='modal-body'><p>Are you sure you want to Accept ?</p></div>";
 	result = result + ' <div id="reasonForInvoiceDiv"/>';
 	result = result +'		<b href="javascript:void(0)"><input id="confirm-id" type="button" class="bg-green" value="Accept" onclick="acceptCreditDebitNoteSave(\''+creditDebitUUID+'\');"><input class="u_can_color" type="button"  value="Cancel" onClick="cancelTermination();"></b>';
 	result = result +"	</div>";
