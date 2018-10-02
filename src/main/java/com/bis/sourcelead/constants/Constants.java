@@ -444,6 +444,7 @@ public class Constants {
 	public static final int TAB_MY_TIMESHEET = 5;
 	public static final int TAB_TIMESHEET_APPROVAL = 6;
 	public static final int TAB_REQUIREMENT = 8;
+	public static final int TAB_CANDIATE = 10;
 	public static final int TAB_USER = 2;
 	public static final int TAB_PROJECTS = 3;
 	public static final int TAB_CONTRACTS = 16;

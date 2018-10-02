@@ -143,10 +143,10 @@ private static final Logger logger = LoggerFactory.getLogger(AssociateBankDataDa
 		List<AssociateSalary> assList = null;
 		Session session = this.sessionFactory.getCurrentSession();
 		if(Constants.ALL_RECORDS.equalsIgnoreCase(payType)) {
-			qry = "from AssociateSalary ass where ass.orgLocations.id = :orgLocationId and ass.groupId = :groupId and ass.status = '1'";
+			qry = "from AssociateSalary ass where ass.orgLocations.id = :orgLocationId and ass.groupId = :groupId and ass.status = '1' and ass.candidate.isAssociate = 'Y'";
 			 assList = session.createQuery(qry).setLong("orgLocationId", orgLocation.getId()).setLong("groupId", groupId).list();
 		}else {
-			qry = "from AssociateSalary ass where ass.orgLocations.id = :orgLocationId and ass.groupId = :groupId and ass.payType = :payType and ass.status = '1'";
+			qry = "from AssociateSalary ass where ass.orgLocations.id = :orgLocationId and ass.groupId = :groupId and ass.payType = :payType and ass.status = '1' and ass.candidate.isAssociate = 'Y'";
 			 assList = session.createQuery(qry).setLong("orgLocationId", orgLocation.getId()).setLong("groupId", groupId).setParameter("payType", payType).list();
 		}
 		 
