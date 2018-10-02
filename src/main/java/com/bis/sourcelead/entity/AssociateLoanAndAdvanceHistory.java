@@ -11,6 +11,8 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
+import com.bis.sourcelead.payroll.entity.EmployeePayroll;
+
 @Entity
 @Table(name = "ASSOCIATE_LOAN_AND_ADVANCES_HISTORY")
 public class AssociateLoanAndAdvanceHistory {
@@ -25,6 +27,10 @@ public class AssociateLoanAndAdvanceHistory {
 	@ManyToOne
 	@JoinColumn(name = "ASSOCIATE_LOAN_ADVANCE_ID")
 	private AssociateLoanAndAdvances associateLoanAndAdvances;
+	
+	@ManyToOne
+	@JoinColumn(name = "PAYROLL_ID")
+	private EmployeePayroll payroll;
 	
 	@Column(name = "DED_AMOUNT")
 	private Double deductAmount;
@@ -149,4 +155,18 @@ public class AssociateLoanAndAdvanceHistory {
 	{
 		this.updatedBy = updatedBy;
 	}
+
+	public EmployeePayroll getPayroll() {
+		return payroll;
+	}
+
+	public void setPayroll(EmployeePayroll payroll) {
+		this.payroll = payroll;
+	}
+
+	public static long getSerialversionuid() {
+		return serialVersionUID;
+	}
+	
+	
 }
