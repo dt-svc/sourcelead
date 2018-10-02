@@ -340,16 +340,13 @@ function cpagination(url){
 		    	  	"render": function(data, type, full, meta) {
 		    	  		var profilePercentage = "";
 		    	  		var color = "";
-		    	  		if(full.profilePercentage != null && full.profilePercentage != 'undefined' && full.profilePercentage != ""){
 		    	  			profilePercentage = full.profilePercentage + "%";
 		    	  			if(full.profilePercentage >= 50){
 		    	  				color = "text-green";
 		    	  			}else{
 		    	  				color = "colorRed";
 		    	  			}
-			            	}else{
-			            		profilePercentage = "--";
-			            	}
+			            	
 		    	  		return "<div class='tbldata-dotdot-vsm "+color+"'>"+profilePercentage+"</div>";
 		    	  		
 		    	  		
@@ -413,7 +410,7 @@ function cpagination(url){
                   } ],
 	    	"scrollCollapse": false,
 	    	"lengthMenu": [[10, 15, 20], [10, 15, 20]],
-	    	"aaSorting": [[9,'desc']],
+	    	"aaSorting": [[11,'desc']],
 	    	"bLengthChange": true,
 	    	"bDestroy": true,
 	    	"ordering": true,

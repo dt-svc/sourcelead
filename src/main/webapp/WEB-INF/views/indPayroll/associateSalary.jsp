@@ -141,6 +141,7 @@
                 <input type="text" style="display:none" name="candidateId" id="assocandidateId" value="${candidate.id}">
                 <input type="text" style="display:none" name="uuid" value="${uuid}">
                 <input type="text" style="display:none" id="status" value="${status}">
+                <input type="text" style="display:none" id="userId" name="userId" value="${loginUser.id}">
                   
                 <div class="clearfix footerstyelsNew">
                  <div class="col-md-6">
@@ -285,9 +286,10 @@ $('.selectall').click(function() {
 <script>
 function getPayGroups(){
 	var payFrequency = $("#payFrequency").val();
+	var userId = $("#userId").val();
 		 $.ajax({
 				type : "GET",
-				url : sourceleadUrl+"/getPayGroupsByPayFrequency?"+tokenParamName+"="+tokenValue+"&payFrequency="+payFrequency,
+				url : sourceleadUrl+"/getPayGroupsByPayFrequency?"+tokenParamName+"="+tokenValue+"&payFrequency="+payFrequency+"&userId="+userId,
 				success : function(result) {
 				var output = "";
 				output = output + "<option value=''>Select Group</option>";
@@ -327,40 +329,50 @@ function getPayFreqHours(){
 function calculateSal(){
 	var payFrequency = $("#payFrequency").val();
 	var annualSal = $("#annualSal").val();
+	if(!annualSal){
+		annualSal = 0;
+	}
 	var hours = $("#standardHours").val();
+	if(!hours){
+		hours = 0;
+	}
 	if(annualSal != null && annualSal != '' && annualSal != 'undefined' && hours != null && hours != '' && hours != 'undefined'){
-		
+		var rate = 0;
 		if(payFrequency === 'Annual'){
-			var rate = parseFloat(annualSal) / 1;
+			rate = parseFloat(annualSal) / 1;
 			$("#perPaySal").val(rate.toFixed(2));
-			$("#hourlyRate").val(hourRate.toFixed(2)); 
 		}
 		if(payFrequency === 'Monthly'){
-			var rate = parseFloat(annualSal) / 12;
+			rate = parseFloat(annualSal) / 12;
 			$("#perPaySal").val(rate.toFixed(2));
-			$("#hourlyRate").val(hourRate.toFixed(2)); 
 		}
 		if(payFrequency === 'Bi-Weekly'){
-			var rate = parseFloat(annualSal) / 26;
+			rate = parseFloat(annualSal) / 26;
 			$("#perPaySal").val(rate.toFixed(2));
-			$("#hourlyRate").val(hourRate.toFixed(2)); 
 		}
 		if(payFrequency === 'Weekly'){
-			var rate = parseFloat(annualSal) / 52;
+			rate = parseFloat(annualSal) / 52;
 			$("#perPaySal").val(rate.toFixed(2));
-			$("#hourlyRate").val(hourRate.toFixed(2)); 
 		}
 		var hourRate = rate/hours;
 		$("#hourlyRate").val(hourRate.toFixed(2));
 	}
 }
 
-
 function calculatePayPerSal(){
 	var payFrequency = $("#payFrequency").val();
 	var perPaySal = $("#perPaySal").val();
+	if(!perPaySal){
+		perPaySal = 0;
+	}
 	var hourlyRate = $("#hourlyRate").val();
+	if(!hourlyRate){
+		hourlyRate = 0;
+	}
 	var standardHours = $("#standardHours").val();
+	if(!standardHours){
+		standardHours = 0;
+	}
 	if(perPaySal !='' && perPaySal != 'undefined'){
 		if(payFrequency === 'Annual'){
 			var annualRate = parseFloat(perPaySal) * 1;
@@ -378,18 +390,19 @@ function calculatePayPerSal(){
 			var annualRate = parseFloat(perPaySal) * 52;
 			$("#annualSal").val(annualRate.toFixed(2));
 		}
-		
-		if(hourlyRate != null && hourlyRate != '' && hourlyRate != 'undefined'){
+		if(hourlyRate != null && hourlyRate != '' && hourlyRate != 'undefined' && standardHours != 0){
 			var hourlyrate = parseFloat(perPaySal) / standardHours;
 			$("#hourlyRate").val(hourlyrate.toFixed(2));
 		}
 	}
 }
 
-
 function calculateHourlyRateSal(){
 	var payFrequency = $("#payFrequency").val();
 	var perPaySal = $("#perPaySal").val();
+	if(!perPaySal){
+		perPaySal = 0;
+	}
 	var hourlyRate = $("#hourlyRate").val();
 	var standardHours = $("#standardHours").val();
 	var annualSal = $("#annualSal").val();
@@ -402,7 +415,13 @@ function calculateHourlyRateSal(){
 
 function calculatePercentSal(){
 	var percent = $("#increasePer").val();
+	if(!percent){
+		percent = 0;
+	}
 	var annualSal = ${associateSalaryInd.annualSalary};
+	if(!annualSal){
+		annualSal = 0;
+	}
 	var annualByPercentage = eval((annualSal * percent)/100);
 	$("#annualSal").val( eval(annualSal + annualByPercentage).toFixed(2));
 	calculateSal();

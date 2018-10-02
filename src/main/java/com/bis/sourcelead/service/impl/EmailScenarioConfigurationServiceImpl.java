@@ -158,9 +158,9 @@ private static final Logger logger = LoggerFactory.getLogger(EmailScenarioConfig
 				final String host = confMail.getServerName();
 				final String portNumber = confMail.getPortNumber().toString();
 
-				properties.put("mail.pop3.host", host);
-				properties.put("mail.pop3.port", portNumber);
-				properties.put("mail.pop3.starttls.enable", "true");
+				properties.put("mail.imap.host", host);
+				properties.put("mail.imap.port", portNumber);
+				properties.put("mail.imap.starttls.enable", "true");
 			 //	System.out.println(" before properties");
 				Session session = Session.getInstance(properties, new Authenticator() {
 					@Override
@@ -170,11 +170,11 @@ private static final Logger logger = LoggerFactory.getLogger(EmailScenarioConfig
 				});
 				//Session emailSession = Session.getDefaultInstance(properties);
 
-				Store store = session.getStore("pop3s");
+				Store store = session.getStore("imaps");
 
-				System.out.println("connect before pop3s ==============>");
-				logger.debug("***********************trying to connect mail with details****************");
-				// emailSession.setDebug(true);    //Enable flag for debug.
+				//System.out.println(" trying to connect mail with IMAP Deatils ==============>");
+				logger.debug("***********************trying to connect mail with IMAP Deatils ****************");
+				// session.setDebug(true);    //Enable flag for debug.
 				store.connect(host, user, password);
 				
 				Folder emailFolder = store.getFolder("INBOX"); // Reading inbox folder.
@@ -183,7 +183,7 @@ private static final Logger logger = LoggerFactory.getLogger(EmailScenarioConfig
 			    emailFolder.close(true);
 			    store.close();
 			      
-				//System.out.println(" POP3 connected successfully ==============>");
+				//System.out.println(" IMAP connected successfully ==============>");
 				logger.debug("***********************Mail ID Verified Successfully****************");
 				return "success";
 				
@@ -212,5 +212,20 @@ private static final Logger logger = LoggerFactory.getLogger(EmailScenarioConfig
 		// TODO Auto-generated method stub
 		return emailScenarioConfigurationDao.deleteParserEMail(emailId);
 	}
+	
+	@Override
+	public EmailScenarioConfiguration validateParserByEmail(String parserEmailId, String emailUUID) {
+		// TODO Auto-generated method stub
+        return emailScenarioConfigurationDao.validateParserByEmail(parserEmailId, emailUUID);
+
+	}
+
+	@Override
+	public Boolean validateParser(String parserEmailId) {
+		// TODO Auto-generated method stub
+        return emailScenarioConfigurationDao.validateParser(parserEmailId);
+
+	}
+
 
 }

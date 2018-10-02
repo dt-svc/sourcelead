@@ -29,7 +29,7 @@ function closeRequestLoanPop() {
 	$(".requestPop, .sideMask").fadeOut();
 }
 function getFormSubmissionMasterList() {
-	$.post(sourceleadUrl + "/myPayroll/forms/all", {financialYear: $("#financialYear").val()}, function(response) {
+	$.post(sourceleadUrl + "/forms/all", {financialYear: $("#financialYear").val()}, function(response) {
 		if (response && response.response === "INVALID_DATA") {
 			showError(response.responseMessage);
 		} else if (response.response === "AWKWARD") {

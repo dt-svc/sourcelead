@@ -2,7 +2,10 @@ package com.bis.sourcelead.entity;
 
 import java.io.Serializable;
 import java.util.Date;
+import java.util.HashSet;
+import java.util.Set;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
@@ -11,13 +14,9 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.persistence.Transient;
-
-import org.hibernate.annotations.Cache;
-import org.hibernate.annotations.CacheConcurrencyStrategy;
-import org.hibernate.annotations.NotFound;
-import org.hibernate.annotations.NotFoundAction;
 
 /**
  * @author Ajith Matta
@@ -119,6 +118,9 @@ public class CandidateEmployers implements Serializable{
 	
 	@Column(name = " UPDATED_BY")
 	private String updatedBy;
+	
+	@OneToMany(mappedBy = "candidateEmployers", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+	private Set<CandidateEmployersHistory> candidateEmployersHistoryList = new HashSet<CandidateEmployersHistory>(0);
 
 	@Transient
 	private Long candidateEmployeeId;
@@ -336,6 +338,14 @@ public class CandidateEmployers implements Serializable{
 
 	public void setEmployerFileName(String employerFileName) {
 		this.employerFileName = employerFileName;
+	}
+
+	public Set<CandidateEmployersHistory> getCandidateEmployersHistoryList() {
+		return candidateEmployersHistoryList;
+	}
+
+	public void setCandidateEmployersHistoryList(Set<CandidateEmployersHistory> candidateEmployersHistoryList) {
+		this.candidateEmployersHistoryList = candidateEmployersHistoryList;
 	}
 	
 }
