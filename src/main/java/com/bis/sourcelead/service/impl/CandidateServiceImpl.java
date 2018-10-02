@@ -2632,10 +2632,6 @@ private Sheet createXlsSheet(Sheet createExcelsheet, Row writeRow,Candidate cand
 		return candidateDao.getGlobalMarketCandidateList(candidateMarketPlaceDTO, searchValue);
 	}
 	@Override
-	public List<Candidate> getAllCandidatesList() throws Exception {
-		return candidateDao.getAllCandidatesList();
-	}
-	@Override
 	public void saveBulkCandidates(List<Candidate> candidatesList) throws Exception {
 		candidateDao.saveBulkCandidates(candidatesList);
 
