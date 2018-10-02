@@ -77,6 +77,7 @@ public class GenerateINDPayrollServiceImpl implements GenerateINDPayrollService{
 				indPaysheetFrequencyDTO = new IndPaysheetFrequencyDTO();
 				indPaysheetFrequencyDTO.setPayrollFrequencyUUID(paysheetFrequency.getPaySheetFrequencyUUID());
 				indPaysheetFrequencyDTO.setPaySheetFrequencyId(paysheetFrequency.getId());
+				indPaysheetFrequencyDTO.setPayRunId(paysheetFrequency.getPayRunId().toString());
 				list = new ArrayList<>();
 				for(IndEmployeePayroll pay : paysheetFrequency.getIndEmployeepayroll()) {
 					INDPayrollDTO payrollDTO = new INDPayrollDTO();
@@ -145,8 +146,16 @@ public class GenerateINDPayrollServiceImpl implements GenerateINDPayrollService{
 			if(existedData != null) {
 				 paySheetFreq = new IndPaysheetFrequency();
 				 paySheetFreq.setId(existedData.getPaySheetFrequencyId());
+				 paySheetFreq.setPayRunId(Long.parseLong(existedData.getPayRunId()));
 			}else {
 				 paySheetFreq = new IndPaysheetFrequency();
+				 Long payRunId = generateINDPayrollDao.getMaxPayRunIdByOrgLocationId(orgLocation.getId());
+				 if(payRunId == null) {
+					payRunId = 1l;
+				 }else {
+					payRunId = payRunId+1;
+				 }
+				 paySheetFreq.setPayRunId(payRunId);
 			}
 			
 			paySheetFreq.setUserGroup(userGroup);
@@ -166,13 +175,7 @@ public class GenerateINDPayrollServiceImpl implements GenerateINDPayrollService{
 			paySheetFreq.setActionPerformedBy(""+loginUser.getFullName());
 			paySheetFreq.setPaySheetFrequencyUUID(SourceLeadRandomCodeHelper.generateRandomUUID());
 			
-			Long payRunId = generateINDPayrollDao.getMaxPayRunIdByOrgLocationId(orgLocation.getId());
-			if(payRunId == null) {
-				payRunId = 1l;
-			}else {
-				payRunId = payRunId+1;
-			}
-			paySheetFreq.setPayRunId(payRunId);
+			
 			Set<IndEmployeePayroll> payrollList = calculatePayroll(existedData,paySheetFreq, loginUser, orgLocation,assSallist,freqStartDate, freqEndDate,userGroup);
 			if(payrollList !=null && payrollList.size() > 0) {
 				paySheetFreq.setIndEmployeepayroll(payrollList);
