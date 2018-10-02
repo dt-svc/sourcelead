@@ -11,6 +11,8 @@ public class AssociatePayrollPayheadHistoryDTO  extends SearchDTO{
     private Long indEmployeePayrollId;
     private Long payrollPayhead;
     private String payrollPayheadName;
+    private String payrollPayheadShortCode;
+    private String payrollPayheadType;
 	private BigDecimal monthly;
 	private BigDecimal annualy;
 	private Integer status;
@@ -19,6 +21,8 @@ public class AssociatePayrollPayheadHistoryDTO  extends SearchDTO{
   	private String createdDate;
   	private Long updatedBy;
   	private String updatedDate;
+  	private String indEmpPayrollUUID;
+  	private String paySheetFrequencyUUID;
   	
 	public Long getId() {
 		return id;
@@ -43,6 +47,18 @@ public class AssociatePayrollPayheadHistoryDTO  extends SearchDTO{
 	}
 	public void setPayrollPayheadName(String payrollPayheadName) {
 		this.payrollPayheadName = payrollPayheadName;
+	}
+	public String getPayrollPayheadShortCode() {
+		return payrollPayheadShortCode;
+	}
+	public void setPayrollPayheadShortCode(String payrollPayheadShortCode) {
+		this.payrollPayheadShortCode = payrollPayheadShortCode;
+	}
+	public String getPayrollPayheadType() {
+		return payrollPayheadType;
+	}
+	public void setPayrollPayheadType(String payrollPayheadType) {
+		this.payrollPayheadType = payrollPayheadType;
 	}
 	public BigDecimal getMonthly() {
 		return monthly;
@@ -91,6 +107,18 @@ public class AssociatePayrollPayheadHistoryDTO  extends SearchDTO{
 	}
 	public void setUpdatedDate(String updatedDate) {
 		this.updatedDate = updatedDate;
+	}
+	public String getIndEmpPayrollUUID() {
+		return indEmpPayrollUUID;
+	}
+	public void setIndEmpPayrollUUID(String indEmpPayrollUUID) {
+		this.indEmpPayrollUUID = indEmpPayrollUUID;
+	}
+	public String getPaySheetFrequencyUUID() {
+		return paySheetFrequencyUUID;
+	}
+	public void setPaySheetFrequencyUUID(String paySheetFrequencyUUID) {
+		this.paySheetFrequencyUUID = paySheetFrequencyUUID;
 	}
 	
 }

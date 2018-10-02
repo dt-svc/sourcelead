@@ -5,10 +5,12 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.bis.sourcelead.dto.Response;
 import com.bis.sourcelead.dto.ResponseList;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.payroll.dao.IndPaysheetFrequencyDao;
 import com.bis.sourcelead.payroll.dto.IndPaysheetFrequencyDTO;
+import com.bis.sourcelead.payroll.entity.IndEmployeePayroll;
 import com.bis.sourcelead.payroll.entity.IndPaysheetFrequency;
 import com.bis.sourcelead.payroll.service.IndPaysheetFrequencyService;
 
@@ -30,5 +32,14 @@ public class IndPaysheetFrequencyServiceImpl implements IndPaysheetFrequencyServ
 	public IndPaysheetFrequency addIndPaysheetFrequency(IndPaysheetFrequency paySheetFreq) {
 		return indPaysheetFrequencyDao.addIndPaysheetFrequency(paySheetFreq);
 	}
-
+	
+	@Override
+	public ResponseList<IndEmployeePayroll> getIndEmployeePayrollListByPaysheetFrequencyUuid(String paysheetFrequencyUuid) throws Exception {
+		return indPaysheetFrequencyDao.getIndEmployeePayrollListByPaysheetFrequencyUuid(paysheetFrequencyUuid);
+	}
+	
+	@Override
+	public Response<IndEmployeePayroll> getIndEmployeePayrollByEmpPayrollUUID(String empPayrollUUID) throws Exception {
+		return indPaysheetFrequencyDao.getIndEmployeePayrollByEmpPayrollUUID(empPayrollUUID);
+	}
 }

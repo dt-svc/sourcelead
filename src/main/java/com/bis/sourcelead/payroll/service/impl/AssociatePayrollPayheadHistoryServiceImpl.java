@@ -46,8 +46,8 @@ public class AssociatePayrollPayheadHistoryServiceImpl  implements AssociatePayr
 			AssociatePayrollPayheadHistoryDTO apd = new AssociatePayrollPayheadHistoryDTO();
 			apd.setPayrollPayheadName(pay.getPayrollPayhead().getName());
 			apd.setMonthly(pay.getMonthly());
-			
-
+			apd.setPayrollPayheadShortCode(pay.getPayrollPayhead().getShortCode());
+			apd.setPayrollPayheadType(pay.getPayrollPayhead().getType());
 			totalList.add(apd);
 		});
 		res.setData(totalList);
@@ -55,6 +55,23 @@ public class AssociatePayrollPayheadHistoryServiceImpl  implements AssociatePayr
 		return res;
 	}
 	
+	@Override
+	public ResponseList<AssociatePayrollPayheadHistoryDTO> getUpdatedAssociatePayrollPayheadByEmpPayrollUUID(String empPayrollUUID) throws Exception {
+		List<AssociatePayrollPayheadHistory> associatePayrollList = associatePayrollPayheadHistoryDao.getUpdatedAssociatePayrollPayheadByEmpPayrollUUID(empPayrollUUID);
+		ResponseList<AssociatePayrollPayheadHistoryDTO> res = new ResponseList<>();
+		List<AssociatePayrollPayheadHistoryDTO> totalList = new ArrayList<>();
+		associatePayrollList.forEach(pay -> {
+			AssociatePayrollPayheadHistoryDTO apd = new AssociatePayrollPayheadHistoryDTO();
+			apd.setPayrollPayheadName(pay.getPayrollPayhead().getName());
+			apd.setMonthly(pay.getMonthly());
+			apd.setPayrollPayheadShortCode(pay.getPayrollPayhead().getShortCode());
+			apd.setPayrollPayheadType(pay.getPayrollPayhead().getType());
+			totalList.add(apd);
+		});
+		res.setData(totalList);
+		
+		return res;
+	}
 	
 }
 

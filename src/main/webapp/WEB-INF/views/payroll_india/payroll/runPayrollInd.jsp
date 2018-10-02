@@ -5,11 +5,11 @@
 
 <!-- Content Area -->
 <section class="content-wraper contentWraper">
-<section class="content-header clearfix">
-<div class="pull-left">
-<h2>Run Payroll</h2>
-</div>
-   <div class="pull-right brud-crum"><a href="<c:url value='${appPath}/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a> &raquo;Run Payroll</div>
+  <section class="content-header clearfix">
+	<div class="pull-left">
+	<h2>Run Payroll</h2>
+	</div>
+	   <div class="pull-right brud-crum"><a href="<c:url value='${appPath}/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a> &raquo;Run Payroll</div>
   </section>
 		<div class="success_pop" id="selector1" style="display: none;">
  			<i class="fa fa-check-circle"></i><span id="msgDiv"></span>
@@ -29,24 +29,6 @@
    <div id="runPayRollTabsContent" class="require_wrap_table datatable_filter"></div>
 </section>
 
-<div class="comMask"></div>
-<div class="modal netPay" style="display: none;" id="netPay">
-	<div class="modal-dialog modal-lg">
-		<div class="modal-content">
-	<div class="modal-header">
-		<button type="button" class="close" data-dismiss="modal"  onclick="closeNetPay();">&times;</button>
-	     <h4 class="modal-title">Employee Net Pay</h4>
-	 </div>
-	<div class="modal-body" style="min-height: 150px; max-height: 470px; overflow-y: auto;" id="associateSalaryIndDiv">
-		<!--  container  -->
-	</div>
-			<div class="modal-footer">
-        <button type="button" class="btn btn-default" onclick="closeNetPay();">Close</button>
-      </div></div>
-	 </div>
-</div>
-
- 
 <script>
 	$(document).ready(function() {
 		initiatePayrollDiv();
@@ -145,7 +127,8 @@ function payrollDiv(){
 										"render" : function(data, type, opt,meta) {
 											var result = "";
 											if(opt.payRunId != null && opt.payRunId != '' && opt.payRunId !='undefined'){
-						                		  result = result +'<div class="tblminwidth-100" onClick="netPay();"><a href="#">'+opt.payRunId+'</a></div>';
+						                		  /* result = result +'<div class="tblminwidth-100" onClick="netPay();"><a>'+opt.payRunId+'</a></div>'; */
+												result = result +'<div class="tblminwidth-100" onClick="employeePayrollList(\''+opt.paySheetFrequencyuuid+'\');"><a>'+opt.payRunId+'</a></div>';
 											}else{
 						              		  result = result +'<div class="tblminwidth-100">--</div>';
 						              		}
@@ -295,68 +278,25 @@ function highlight(id) {
 </script>
 
 <script>
-$(document).ready(function() {
-	$("#runPay").click(function(){
-		$(".popMask").fadeIn(200);
-		$("#popPassView").fadeIn(100);
-	});		
-	$(".popCan").click(function(){
-		$(".popMask").fadeOut(200);
-		$("#popPassView").fadeOut(100);
-	});
-});
-	
-function netPay(){
-	$("#netPay").fadeIn();
-	$(".comMask").fadeIn();
-	var indEmployeePayrollId = 1;
-	$.ajax({
-        type : "GET",
-        url: sourceleadUrl+"/calculateAssociateSalaryInd?"+tokenParamName+"="+tokenValue+"&indEmployeePayrollId="+indEmployeePayrollId,    
-         success :function(result) { 
-        	 
-        	 $("#associateSalaryIndDiv").empty(); 
-             $("#associateSalaryIndDiv").append(result);
-         },
-    }); 
-};
-
-function closeNetPay(){
-	$("#netPay").fadeOut();
-	$(".comMask").fadeOut();
-};
-//Net payedit
-function editNetpay(){
-	$("#tableNetpay").find(".formControl").toggleClass("activeEdit");
-	var x = document.getElementsByClassName("formControl"), i;
-	for (i=0; i<x.length; i++) {
-		if(x[i].readOnly) {
-			x[i].readOnly = false;
-		}else {
-			x[i].readOnly = true;
-		}
-	}
-	$(".editNetpay").hide();
-	$(".saveNetpay").show();
-}
-function saveNetpay(){
-	$("#tableNetpay").find(".formControl").toggleClass("activeEdit");
-	var x = document.getElementsByClassName("formControl"), i;
-	for (i=0; i<x.length; i++) {
-		if(x[i].readOnly) {
-			x[i].readOnly = false;
-		}else {
-			x[i].readOnly = true;
-		}
-	}
-	$(".editNetpay").show();
-	$(".saveNetpay").hide();
-}
-function confirmPayroll() {
-	$(".confirmPayroll, .comMask").fadeIn();
-}
-function closeCPR() {
-	$(".confirmPayroll, .comMask").fadeOut();
+function employeePayrollList(uuid){
+	var sourceleadUrl ='${SourceLeadWeb_sourceleadUrl}';
+    /* $("#loadTime").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:60% center; background-repeat:no-repeat; background-size:75px;');
+	   $.ajax({
+	          type : "POST",
+	      	  url: sourceleadUrl+"/employeePayrollList",		
+		      success :function(data) {
+		    	  $("#runPayRollTabsContent").empty();
+		  		  $("#runPayRollTabsContent").append(data);
+		    	  $("#loadTime").removeAttr('style');
+		      }
+	    }); */
+	   
+	   
+	   $(location).attr('href', 'employeePayrollList?paySheetFrequencyuuid='+uuid+'');
 }
 </script>
+
+
+
+
 <jsp:include page="../../masterFooter.jsp" />
