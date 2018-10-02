@@ -61,20 +61,23 @@
 		  
 		      <div class="dropdown mb10 mailBtn">
 					<c:if test="${SourceLeadWeb_loginUserRole != 'ROLE_CROWDSOURCING_PROFESSIONAL' && SourceLeadWeb_loginUserRole != 'ROLE_CROWDSOURCING_RECRUITER'}">
-					
 					<c:if test="${mailType == 'mails'}">
-						<button id="composeSourceleadMail" class="btn-block btn btn-primary dropdown-toggle display-block" type="button"
-							onClick="javascript:window.location.href = '<c:url value='${sourceleadUrl}/composeMail'/>'">
-							<i class="fa fa-pencil-square-o" aria-hidden="true"></i>
-							Compose Sourcelead Mail
-						</button>
-						<c:if test="${emailAccountSettingsServiceList.size() > 0}">
-							<button id="composeDynamicMail" class="btn-block btn btn-primary dropdown-toggle" 
-								type="button" onClick="showComposeEmailPopup();">
-								<i class="fa fa-pencil-square-o" aria-hidden="true"></i>
-								Compose from Other Domains
-							</button>
-						</c:if>
+						<c:choose>
+							<c:when test="${emailAccountSettingsServiceList.size() > 0}">
+								<button id="composeDynamicMail" class="btn-block btn btn-primary dropdown-toggle" 
+									type="button" onClick="showComposeEmailPopup();">
+									<i class="fa fa-pencil-square-o" aria-hidden="true"></i>
+									Compose
+								</button>
+							</c:when>
+							<c:otherwise>
+								<button id="composeSourceleadMail" class="btn-block btn btn-primary dropdown-toggle display-block" type="button"
+									onClick="javascript:window.location.href = '<c:url value='${sourceleadUrl}/composeMail'/>'">
+									<i class="fa fa-pencil-square-o" aria-hidden="true"></i>
+									Compose
+								</button>
+							</c:otherwise>
+						</c:choose>
 					</c:if>
 					
 					<c:if test="${mailType == 'hotcampaigns'}">
@@ -102,19 +105,24 @@
 
 		<div class="mail-box" id="loading">
 			<ul class="userMailList">
-				<li class="Act">
-					<span class="colors">S</span>
-					<p onclick="activeEmail(0, this);">${SourceLeadWeb_user.email}</p>
-				</li>
-				<c:forEach var="emailAccountList" items="${emailAccountSettingsServiceList}">
-					<li>
-						<span class="color${emailAccountList.email.split("@")[1].charAt(0)}">${emailAccountList.email.split("@")[1].charAt(0)}</span><i onclick="deleteConMail1(${emailAccountList.id});" class="glyphicon glyphicon-trash"></i>
-						<p onclick="activeEmail(${emailAccountList.id}, this);">${emailAccountList.email}</p>
-					</li>
-				</c:forEach>				
+				<c:choose>
+					<c:when test="${emailAccountSettingsServiceList.size() > 0}">
+						<c:forEach var="emailAccountList" items="${emailAccountSettingsServiceList}">
+							<li>
+								<span class="color${emailAccountList.email.split("@")[1].charAt(0)}">${emailAccountList.email.split("@")[1].charAt(0)}</span><i onclick="deleteConMail1(${emailAccountList.id});" class="glyphicon glyphicon-trash"></i>
+								<p onclick="activeEmail(${emailAccountList.id}, this);">${emailAccountList.email}</p>
+							</li>
+						</c:forEach>
+					</c:when>
+					<c:otherwise>
+						<li class="Act">
+							<span class="colors">S</span>
+							<p onclick="activeEmail(0, this);">${SourceLeadWeb_user.email}</p>
+						</li>
+					</c:otherwise>
+				</c:choose>
 			</ul>
         </div>
-
 
           <div class="mail-box" id="sourceleadEmailFolderDiv" style="display:block">
             <div class="mail-box-header">
@@ -1304,6 +1312,9 @@ function forwardEmailToHotMail(uuid){
 	} */
 	function showComposeEmailPopup() {
 		refreshComposeMailFields();
+		var fromEmail = $(".userMailList li[class='Act']").find("p").html();
+		$("#fromEmail").val(fromEmail);
+		$("#fromEmail").trigger("chosen:updated");
 		$('.side_mask').show();
 		$('#dynamicmailcompose').show();
 	}
