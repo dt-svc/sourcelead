@@ -28,5 +28,15 @@ private static final Logger logger = LoggerFactory.getLogger(AssociateTaxDaoImpl
 		List<AssociatePayrollPayheadHistory> associatePayrollPayheadList =  session.createQuery(query).setLong("empPayrollId", empPayrollId).list();
 	return associatePayrollPayheadList;
 	}
+	
+	
+	@Override
+	@Transactional
+	public List<AssociatePayrollPayheadHistory> getUpdatedAssociatePayrollPayheadByEmpPayrollUUID(String empPayrollUUID) throws Exception {
+		Session session = this.sessionFactory.getCurrentSession();
+		String query = "from AssociatePayrollPayheadHistory apph where apph.indEmployeePayrollId.indEmpPayrollUUID = :empPayrollUUID and apph.status = '1' ";  
+		List<AssociatePayrollPayheadHistory> associatePayrollPayheadList =  session.createQuery(query).setString("empPayrollUUID", empPayrollUUID).list();
+	return associatePayrollPayheadList;
+	}
 
 }

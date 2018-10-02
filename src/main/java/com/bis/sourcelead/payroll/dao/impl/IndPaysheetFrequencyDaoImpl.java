@@ -18,10 +18,13 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.bis.sourcelead.dto.Response;
 import com.bis.sourcelead.dto.ResponseList;
 import com.bis.sourcelead.entity.OrgLocations;
+import com.bis.sourcelead.entity.Requirement;
 import com.bis.sourcelead.payroll.dao.IndPaysheetFrequencyDao;
 import com.bis.sourcelead.payroll.dto.IndPaysheetFrequencyDTO;
+import com.bis.sourcelead.payroll.entity.IndEmployeePayroll;
 import com.bis.sourcelead.payroll.entity.IndPaysheetFrequency;
 
 @Repository
@@ -92,5 +95,40 @@ private static final Logger logger = LoggerFactory.getLogger(AssociateTaxDaoImpl
 		}
 		return paySheetFreq;
 	}
-
+	
+	
+	@Override
+	@Transactional
+	public ResponseList<IndEmployeePayroll> getIndEmployeePayrollListByPaysheetFrequencyUuid(String paysheetFrequencyUuid) throws Exception {
+		
+		Session session = this.sessionFactory.getCurrentSession();
+		String qry = "from IndEmployeePayroll iep where iep.indPaysheetFrequency.paySheetFrequencyUUID =:paysheetFrequencyUuid and iep.status = '1'";
+		List<IndEmployeePayroll> empList = null;
+		ResponseList<IndEmployeePayroll> response = new ResponseList<>();
+		Query queryObj = session.createQuery(qry);
+		empList = queryObj.setString("paysheetFrequencyUuid", paysheetFrequencyUuid).list();
+		response.setData(empList);
+		return response;
+	}
+	
+	
+	@Override
+	@Transactional
+	public Response<IndEmployeePayroll> getIndEmployeePayrollByEmpPayrollUUID(String empPayrollUUID) throws Exception {
+		
+		Session session = this.sessionFactory.getCurrentSession();
+		String qry = "from IndEmployeePayroll iep where iep.indEmpPayrollUUID =:empPayrollUUID and iep.status = '1'";
+		List<IndEmployeePayroll> empList = null;
+		Response<IndEmployeePayroll> response = new Response<>();
+		Query queryObj = session.createQuery(qry);
+		empList = queryObj.setString("empPayrollUUID", empPayrollUUID).list();
+		
+		IndEmployeePayroll empPay = null;
+		if (empList != null && !empList.isEmpty()) {
+			empPay = (IndEmployeePayroll) empList.iterator().next();
+		}
+		
+		response.setObject(empPay);
+		return response;
+	}
 }
