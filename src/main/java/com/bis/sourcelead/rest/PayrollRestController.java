@@ -19,10 +19,10 @@ import com.bis.sourcelead.dto.Response;
 import com.bis.sourcelead.dto.ResponseList;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.Payroll;
-import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.payroll.dto.AssociatePayrollPayheadHistoryDTO;
 import com.bis.sourcelead.payroll.dto.IndPaysheetFrequencyDTO;
 import com.bis.sourcelead.payroll.entity.IndEmployeePayroll;
+import com.bis.sourcelead.payroll.entity.IndPaysheetFrequency;
 import com.bis.sourcelead.payroll.service.AssociatePayrollPayheadHistoryService;
 import com.bis.sourcelead.payroll.service.IndPayrollService;
 import com.bis.sourcelead.payroll.service.IndPaysheetFrequencyService;
@@ -103,9 +103,13 @@ public class PayrollRestController {
 	public ModelAndView reviewPayrollInd(IndPaysheetFrequencyDTO indPaysheetFrequencyDTO, HttpServletRequest request) throws Exception
 	{
 	 	ModelAndView model = new ModelAndView();
-		ResponseList<IndEmployeePayroll> indEmployeePayrollResponse = indPaysheetFrequencyService.getIndEmployeePayrollListByPaysheetFrequencyUuid(indPaysheetFrequencyDTO.getPayrollFrequencyUUID());
-		
+	 	OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+		ResponseList<IndEmployeePayroll> indEmployeePayrollResponse = indPaysheetFrequencyService.getIndEmployeePayrollListByPaysheetFrequencyUuid(indPaysheetFrequencyDTO.getPaySheetFrequencyUUID());
 		model.addObject("employeePayrollList", indEmployeePayrollResponse.getData());
+		
+		Response<IndPaysheetFrequencyDTO> freqResponse = indPaysheetFrequencyService.getIndPaysheetFrequencyByEmpPayrollUUID(indPaysheetFrequencyDTO.getPaySheetFrequencyUUID(), orgLocation);
+		model.addObject("freqResponse", freqResponse.getObject());
+		
 		model.setViewName("payroll_india/payroll/employeePayrollList");
 		model.addObject("sourceleadUrl", sourceleadUrl);
 		return model;

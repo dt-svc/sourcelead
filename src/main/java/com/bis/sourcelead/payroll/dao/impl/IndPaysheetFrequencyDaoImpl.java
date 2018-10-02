@@ -21,7 +21,6 @@ import org.springframework.transaction.annotation.Transactional;
 import com.bis.sourcelead.dto.Response;
 import com.bis.sourcelead.dto.ResponseList;
 import com.bis.sourcelead.entity.OrgLocations;
-import com.bis.sourcelead.entity.Requirement;
 import com.bis.sourcelead.payroll.dao.IndPaysheetFrequencyDao;
 import com.bis.sourcelead.payroll.dto.IndPaysheetFrequencyDTO;
 import com.bis.sourcelead.payroll.entity.IndEmployeePayroll;
@@ -81,6 +80,7 @@ private static final Logger logger = LoggerFactory.getLogger(AssociateTaxDaoImpl
 		response.setData(frequencyList);
 		return response;
 	}
+	
 
 	@Override
 	@Transactional
@@ -94,6 +94,23 @@ private static final Logger logger = LoggerFactory.getLogger(AssociateTaxDaoImpl
 			logger.error(ExceptionUtils.getFullStackTrace(e));
 		}
 		return paySheetFreq;
+	}
+	
+	
+	@Override
+	@Transactional
+	public IndPaysheetFrequency getIndPaysheetFrequencyByEmpPayrollUUID(String payrollFrequencyUUID)
+			throws Exception {
+		Session session = this.sessionFactory.getCurrentSession();
+		String qry = "from IndPaysheetFrequency ipf where ipf.paySheetFrequencyUUID =:payrollFrequencyUUID and ipf.status = '1'";
+		List<IndPaysheetFrequency> freqList = null;
+		Query queryObj = session.createQuery(qry);
+		freqList = queryObj.setString("payrollFrequencyUUID", payrollFrequencyUUID).list();
+		IndPaysheetFrequency freq = null;
+		if (freqList != null && !freqList.isEmpty()) {
+			freq = (IndPaysheetFrequency) freqList.iterator().next();
+		}
+		return freq;
 	}
 	
 	
@@ -131,4 +148,5 @@ private static final Logger logger = LoggerFactory.getLogger(AssociateTaxDaoImpl
 		response.setObject(empPay);
 		return response;
 	}
+
 }

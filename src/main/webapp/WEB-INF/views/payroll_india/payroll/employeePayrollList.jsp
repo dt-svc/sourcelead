@@ -33,44 +33,34 @@
 					<div class="row">
 						<div class="col-md-2">
 							<select class="sel selheight30">
-								<option selected>Group</option>
-								<option>Group-1</option>
-								<option>Group-2</option>
-								<option>Group-3</option>
+								<option selected>${freqResponse.groupName}</option>
 							</select>
 						</div>
 						<div class="col-md-2">
 							<select class="sel selheight30">
-								<option selected>Pay Period</option>
-								<option>01/02/2018</option>
-								<option>01/02/2018</option>
-								<option title="09/02/2018 - 15/01/2018"
-									value="09/02/2018 - 15/01/2018">09/02/2018 - 15/01/2018</option>
+								<option selected>${freqResponse.frequencyStartDateStr} - ${freqResponse.frequencyEndDateStr}</option>
 							</select>
 						</div>
 						<div class="col-md-2">
-							<input name="" class="form-control calendar input-sm"
-								placeholder="Check Date" type="text">
+							<input name="" class="form-control calendar input-sm" placeholder="Check Date" type="text" readonly="readonly" value="${freqResponse.payCheckDateStr}">
 						</div>
-						<div class="col-md-2">
+						<!-- <div class="col-md-2">
 							<select class="sel selheight30">
 								<option selected>Rate</option>
 								<option>LCA Wages</option>
 								<option>Salary</option>
 								<option>Project</option>
 							</select>
-						</div>
+						</div> -->
 						<div class="col-md-2">
 							<select class="sel selheight30">
-								<option selected>Payroll Type</option>
-								<option>Worksheet</option>
-								<option>General</option>
+								<option selected>Salary</option>
 							</select>
 						</div>
-						<div class="col-md-2">
+						<!-- <div class="col-md-2">
 							<a class="btn btn-success btnSuccess btn-sm anchorWhite"
 								onclick="runIndPayroll();">Run Payroll</a>
-						</div>
+						</div> -->
 					</div>
 				</div>
 				<div class="clearfix"></div>
