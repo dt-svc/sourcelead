@@ -2,8 +2,12 @@ package com.bis.sourcelead.payroll.dto;
 
 import java.math.BigDecimal;
 import java.util.Date;
+import java.util.List;
+import java.util.Set;
 
 import com.bis.sourcelead.dto.SearchDTO;
+import com.bis.sourcelead.payroll.entity.DeductionHistory;
+import com.bis.sourcelead.payroll.entity.EmployeePayrollTax;
 
 public class PayrollReportDTO extends SearchDTO{
 	
@@ -127,31 +131,15 @@ public class PayrollReportDTO extends SearchDTO{
 	
 	private BigDecimal deductionQTD;
 	
+	private String ytdHours;
 	
-	public BigDecimal getContributionMTD()
-	{
-		return contributionMTD;
-	}
-
-
-	public BigDecimal getContributionQTD()
-	{
-		return contributionQTD;
-	}
-
-
-	public void setContributionMTD(BigDecimal contributionMTD)
-	{
-		this.contributionMTD = contributionMTD;
-	}
-
-
-	public void setContributionQTD(BigDecimal contributionQTD)
-	{
-		this.contributionQTD = contributionQTD;
-	}
-
-
+	private BigDecimal empRegularAmount;
+	
+	private List<PayrollReportDTO> deductionsList;
+	
+	private Set<EmployeePayrollTax> taxHistory;
+	
+	
 	public BigDecimal getContributionAmount()
 	{
 		return contributionAmount;
@@ -684,7 +672,6 @@ public class PayrollReportDTO extends SearchDTO{
 		return checkDate;
 	}
 
-
 	public void setCheckDate(Date checkDate)
 	{
 		this.checkDate = checkDate;
@@ -696,48 +683,40 @@ public class PayrollReportDTO extends SearchDTO{
 		return groupName;
 	}
 
-
 	public void setGroupName(String groupName)
 	{
 		this.groupName = groupName;
 	}
-
 
 	public String getGroupFrequency()
 	{
 		return groupFrequency;
 	}
 
-
 	public void setGroupFrequency(String groupFrequency)
 	{
 		this.groupFrequency = groupFrequency;
 	}
-
 
 	public String getType()
 	{
 		return type;
 	}
 
-
 	public void setType(String type)
 	{
 		this.type = type;
 	}
-
 
 	public Date getRunDate()
 	{
 		return runDate;
 	}
 
-
 	public void setRunDate(Date runDate)
 	{
 		this.runDate = runDate;
 	}
-
 
 	public BigDecimal getContributionMTD() {
 		return contributionMTD;
@@ -748,34 +727,68 @@ public class PayrollReportDTO extends SearchDTO{
 		this.contributionMTD = contributionMTD;
 	}
 
-
 	public BigDecimal getContributionQTD() {
 		return contributionQTD;
 	}
-
 
 	public void setContributionQTD(BigDecimal contributionQTD) {
 		this.contributionQTD = contributionQTD;
 	}
 
-
 	public BigDecimal getDeductionMTD() {
 		return deductionMTD;
 	}
-
 
 	public void setDeductionMTD(BigDecimal deductionMTD) {
 		this.deductionMTD = deductionMTD;
 	}
 
-
 	public BigDecimal getDeductionQTD() {
 		return deductionQTD;
 	}
 
-
 	public void setDeductionQTD(BigDecimal deductionQTD) {
 		this.deductionQTD = deductionQTD;
-	}	
+	}
+
+	public String getYtdHours()
+	{
+		return ytdHours;
+	}
+
+	public void setYtdHours(String ytdHours)
+	{
+		this.ytdHours = ytdHours;
+	}
+
+	public BigDecimal getEmpRegularAmount()
+	{
+		return empRegularAmount;
+	}
+
+	public void setEmpRegularAmount(BigDecimal empRegularAmount)
+	{
+		this.empRegularAmount = empRegularAmount;
+	}
+
+	public List<PayrollReportDTO> getDeductionsList()
+	{
+		return deductionsList;
+	}
+
+	public void setDeductionsList(List<PayrollReportDTO> deductionsList)
+	{
+		this.deductionsList = deductionsList;
+	}
+
+	public Set<EmployeePayrollTax> getTaxHistory()
+	{
+		return taxHistory;
+	}
+
+	public void setTaxHistory(Set<EmployeePayrollTax> taxHistory)
+	{
+		this.taxHistory = taxHistory;
+	}
 	
 }

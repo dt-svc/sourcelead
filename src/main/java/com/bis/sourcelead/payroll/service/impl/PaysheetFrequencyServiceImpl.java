@@ -55,6 +55,7 @@ import com.bis.sourcelead.payroll.dto.PaysheetFrequencyDTO;
 import com.bis.sourcelead.payroll.dto.USPayrollDTO;
 import com.bis.sourcelead.payroll.dto.YTDPayrollDTO;
 import com.bis.sourcelead.payroll.entity.AssociateTaxHistory;
+import com.bis.sourcelead.payroll.entity.BankDataHistory;
 import com.bis.sourcelead.payroll.entity.ConfigurePayrollApprover;
 import com.bis.sourcelead.payroll.entity.DeductionHistory;
 import com.bis.sourcelead.payroll.entity.EmployeePayroll;
@@ -591,6 +592,13 @@ public class PaysheetFrequencyServiceImpl implements PaysheetFrequencyService{
 			dto.setYtdDeductions(ytdDTO.getYtdDeduction());
 			dto.setNetPay(emp.getNetPay());
 			dto.setYtdNet(ytdDTO.getYtdNet());
+			dto.setYtdHours("NA");
+			dto.setType(emp.getType());
+			dto.setEmpPayRate(emp.getEmpPayRate());
+			dto.setEmpRegularAmount(emp.getRegularHoursAmount());			
+			for(BankDataHistory bank : emp.getBankDataHistory()) {
+				dto.setDepositType(bank.getAccountType());
+			}
 			
 			dto.setResState(emp.getCandidate().getResidenceStateCode());
 			if(emp.getEmployee().getHireDate() != null)
@@ -614,6 +622,20 @@ public class PaysheetFrequencyServiceImpl implements PaysheetFrequencyService{
 				dto.setFedAddTax(tax.getFederalTaxAdditionnalWithHolding());
 				dto.setStateAddTax(tax.getResidenceTaxAdditionnalWithHolding());
 			}
+			
+			List<PayrollReportDTO> dedList = new ArrayList<>();
+			for(DeductionHistory ded : emp.getDeductionHistory()) {
+				PayrollReportDTO repoDto = new PayrollReportDTO();
+				BigDecimal totalDed = ded.getPreDeductionAmount().add(ded.getPostDeductionAmount());
+				repoDto.setDeductions(totalDed);
+				YTDPayrollDTO ytd = payrollUtil.getDeductionYTD(emp, ded.getId(), orgLocations);
+				repoDto.setYtdDeductions(ytd.getDeductionYTD());
+				dedList.add(repoDto);
+			}
+			
+			dto.setTaxHistory(emp.getUsPayrollTax());
+			
+			dto.setDeductionsList(dedList);	
 			payrollList.add(dto);
 //			}
 		}

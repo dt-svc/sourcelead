@@ -178,19 +178,25 @@ public class LeaveDaoImpl implements LeaveDao{
 			leaveApproveHierarchyList = queryObj.list();
 			int count = 0;
 			int filteredCount = 0;
-//			List<Long> countlist = session.createQuery("select count(*) " + countQuery+leavesearchQuery).setLong("orgLocationId", orgLocations.getId()).list();
-			
-			if(leaveApproveHierarchyList != null && !leaveApproveHierarchyList.isEmpty()) {
-				count = leaveApproveHierarchyList.stream().filter(c->c.getLeaveid().getStatus().equalsIgnoreCase(leaveDTO.getLeaveStatus())).collect(Collectors.toList()).size();
+			if("ROLE_ADMIN".equalsIgnoreCase(leaveDTO.getLoginUserRole())) {
+				List<Long> countlist = session.createQuery("select count(*) " + countQuery+leavesearchQuery).setLong("orgLocationId", orgLocations.getId()).setLong("orgId", orgLocations.getOrg().getId()).list();
+				count = countlist.get(0).intValue();
+			}else {
+				List<Long> countlist = session.createQuery("select count(*) " + countQuery+leavesearchQuery).setLong("orgLocationId", orgLocations.getId()).setLong("orgId", orgLocations.getOrg().getId()).setLong("userId", usrId).list();
+				count = countlist.get(0).intValue();
 			}
+			 
+//			if(leaveApproveHierarchyList != null && !leaveApproveHierarchyList.isEmpty()) {
+//				count = leaveApproveHierarchyList.stream().filter(c->c.getLeaveid().getStatus().equalsIgnoreCase(leaveDTO.getLeaveStatus())).collect(Collectors.toList()).size();
+//			}
 			response.setRecordsTotal(count);
-			if (leaveDTO != null) {
-//				List<Long> filteredCountlist  = session.createQuery("select count(*) " + countQuery+leavesearchQuery).setLong("orgLocationId", orgLocations.getId()).list();
-				if(leaveApproveHierarchyList != null && !leaveApproveHierarchyList.isEmpty()) {
-					filteredCount = leaveApproveHierarchyList.stream().filter(c->c.getLeaveid().getStatus().equalsIgnoreCase(leaveDTO.getLeaveStatus())).collect(Collectors.toList()).size();
-				}
-				response.setRecordsFiltered(filteredCount);
-			}
+//			if (leaveDTO != null) {
+//				List<Long> filteredCountlist  = session.createQuery("select count(*) " + countQuery+leavesearchQuery).setLong("orgLocationId", orgLocations.getId()).setLong("orgId", orgLocations.getOrg().getId()).list();
+//				if(leaveApproveHierarchyList != null && !leaveApproveHierarchyList.isEmpty()) {
+//					filteredCount = leaveApproveHierarchyList.stream().filter(c->c.getLeaveid().getStatus().equalsIgnoreCase(leaveDTO.getLeaveStatus())).collect(Collectors.toList()).size();
+//				}
+				response.setRecordsFiltered(count);
+//			}
 			response.setData(leaveApproveHierarchyList);
 			}
 		else {
@@ -258,18 +264,25 @@ public class LeaveDaoImpl implements LeaveDao{
 			leaveApproveHierarchyList = queryObj.list();
 			int count = 0;
 			int filteredCount = 0;
-//			List<Long> countlist = session.createQuery("select count(*) " + countQuery+leavesearchQuery).setLong("orgLocationId", orgLocations.getId()).list();
-			if(leaveApproveHierarchyList != null && !leaveApproveHierarchyList.isEmpty()) {
-				count = leaveApproveHierarchyList.stream().filter(c->c.getLeaveid().getStatus().equalsIgnoreCase(leaveDTO.getLeaveStatus())).collect(Collectors.toList()).size();
+			if("ROLE_ADMIN".equalsIgnoreCase(leaveDTO.getLoginUserRole())) {
+				List<Long> countlist = session.createQuery("select count(*) " + countQuery+leavesearchQuery).setLong("orgLocationId", orgLocations.getId()).setLong("orgId", orgLocations.getOrg().getId()).setLong("userId", usrId).list();
+				count = countlist.get(0).intValue();
+			}else {
+				List<Long> countlist = session.createQuery("select count(*) " + countQuery+leavesearchQuery).setLong("orgLocationId", orgLocations.getId()).setLong("orgId", orgLocations.getOrg().getId()).setLong("userId", usrId).list();
+				count = countlist.get(0).intValue();
 			}
+			
+			/*if(leaveApproveHierarchyList != null && !leaveApproveHierarchyList.isEmpty()) {
+				count = leaveApproveHierarchyList.stream().filter(c->c.getLeaveid().getStatus().equalsIgnoreCase(leaveDTO.getLeaveStatus())).collect(Collectors.toList()).size();
+			}*/
 			response.setRecordsTotal(count);
-			if (leaveDTO != null) {
-//				List<Long> filteredCountlist  = session.createQuery("select count(*) " + countQuery+leavesearchQuery).setLong("orgLocationId", orgLocations.getId()).list();
-				if(leaveApproveHierarchyList != null && !leaveApproveHierarchyList.isEmpty()) {
-					filteredCount = leaveApproveHierarchyList.stream().filter(c->c.getLeaveid().getStatus().equalsIgnoreCase(leaveDTO.getLeaveStatus())).collect(Collectors.toList()).size();
-				}
-				response.setRecordsFiltered(filteredCount);
-			} 
+//			if (leaveDTO != null) {
+//				List<Long> filteredCountlist  = session.createQuery("select count(*) " + countQuery+leavesearchQuery).setLong("orgLocationId", orgLocations.getId()).setLong("orgId", orgLocations.getOrg().getId()).setLong("userId", usrId).list();
+//				if(leaveApproveHierarchyList != null && !leaveApproveHierarchyList.isEmpty()) {
+//					filteredCount = leaveApproveHierarchyList.stream().filter(c->c.getLeaveid().getStatus().equalsIgnoreCase(leaveDTO.getLeaveStatus())).collect(Collectors.toList()).size();
+//				}
+				response.setRecordsFiltered(count);
+//			} 
 				response.setData(leaveApproveHierarchyList);
 		}
 		return response;
