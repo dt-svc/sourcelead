@@ -128,7 +128,7 @@ function payrollDiv(){
 											var result = "";
 											if(opt.payRunId != null && opt.payRunId != '' && opt.payRunId !='undefined'){
 						                		  /* result = result +'<div class="tblminwidth-100" onClick="netPay();"><a>'+opt.payRunId+'</a></div>'; */
-												result = result +'<div class="tblminwidth-100" onClick="employeePayrollList(\''+opt.paySheetFrequencyuuid+'\');"><a>'+opt.payRunId+'</a></div>';
+												result = result +'<div class="tblminwidth-100" onClick="employeePayrollList(\''+opt.payrollFrequencyUUID+'\');"><a>'+opt.payRunId+'</a></div>';
 											}else{
 						              		  result = result +'<div class="tblminwidth-100">--</div>';
 						              		}

@@ -254,6 +254,8 @@ public void sendMailToUserFromndIanPayrolApprover(User loginUser,  OrgLocations 
 				payHeadHistory.setMonthly(payHead.getMonthly());
 				payHeadHistory.setAnnualy(payHead.getAnnualy());
 				payHeadHistory.setStatus(payHead.getStatus());
+				
+				payHeadHistory.setUuid(SourceLeadRandomCodeHelper.generateRandomUUID());
 
 				payHeadHistory.setCreatedBy(loginUser);
 				payHeadHistory.setUpdatedBy(loginUser);
