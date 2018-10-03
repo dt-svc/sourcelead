@@ -69,10 +69,11 @@ public class UserDroppedHolidaysDaoImpl implements UserDroppedHolidaysDao {
 	}
 
 	@Override
+	@Transactional(rollbackFor = { Exception.class })
 	public UserDroppedHolidays getUserDroppedHolidaysFromUserIdlocationIdAndHolidayId(Long userId, Long locationId,
 			Long holidayId) throws Exception {
 		   Session session = this.sessionFactory.getCurrentSession();
-		   String actionsQuery = "select * from UserDroppedHolidays udh where udh.user.id = :userId and udh.orgLocations.id = :locationId and udh.holiday.id = :holidayId";
+		   String actionsQuery = "from UserDroppedHolidays udh where udh.user.id = :userId and udh.orgLocations.id = :locationId and udh.holiday.id = :holidayId";
 	       @SuppressWarnings("unchecked")
 		   List<UserDroppedHolidays> userDropHolidaysList = session.createQuery(actionsQuery.toString()).setLong("userId", userId).setLong("holidayId", holidayId).setLong("locationId", locationId).list();
 	       UserDroppedHolidays udh = null;
