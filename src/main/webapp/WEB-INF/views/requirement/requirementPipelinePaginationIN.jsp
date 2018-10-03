@@ -278,7 +278,7 @@
 														result = result + "<option value='SelectedOnInterview'>Selected on Interview</option>";
 													} */
 													if (opt.submissionStatus != 'ONHOLD' && opt.submissionStatus != 'JOINED'){	
-														result = result + "<option value='ON-Hold'>ON-Hold</option>";
+														result = result + "<option value='On Hold'>On Hold</option>";
 														}
 													if (opt.submissionStatus != 'NORESPONSE' && opt.submissionStatus != 'JOINED'){	
 														result = result + "<option value='NoResponse'>NoResponse</option>";

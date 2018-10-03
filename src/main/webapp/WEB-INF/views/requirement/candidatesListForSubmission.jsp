@@ -181,6 +181,7 @@ function clearCandAdvSearch(){
 			
 <script>
 	function candidateAdvSearch(){
+		 getcites('apiLocation','city','recommendation');
 	     $("#candidateFilterPopup").toggle();
 		 $(".advancedsearch-mask").fadeIn();
  
@@ -619,7 +620,6 @@ function submitApplicantsToJob(){
 
 <script>
 $(document).ready(function() {
-	getcites('apiLocation','city','recommendation');
 	$(".proMask").hide();
 	
 });
