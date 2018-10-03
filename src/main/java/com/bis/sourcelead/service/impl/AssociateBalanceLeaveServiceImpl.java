@@ -490,7 +490,7 @@ public class AssociateBalanceLeaveServiceImpl implements AssociateBalanceLeaveSe
 					if (Constants.MONTHLY.equalsIgnoreCase(leaveType.getPeriod()) && Constants.YES.equalsIgnoreCase(leaveType.getVisibleInBalanceLeaves())) {
 						Date[] monthDates = getMonthStartDateEndDate();
 						appliedLeaves = appliedLeaveDateService.getAppliedLeaveDatesByLeaveTypeIdAndOrgLocationIdAndUserId(orgLocations.getId(), leaveType.getId(), startDate, endDate, user.getId(),orgLocations.getOrg().getId());
-						appliedNoofLeaves = (float) getExcludeHolidayLeaveCount(appliedLeaves,orgLocations,ablv,monthDates[0],monthDates[1],leaveType);
+						appliedNoofLeaves = (float) getExcludeHolidayLeaveCount(appliedLeaves,orgLocations,ablv,startDate,endDate,leaveType);
 					}
 					else if (Constants.QUARTERLY.equalsIgnoreCase(leaveType.getPeriod()) && Constants.YES.equalsIgnoreCase(leaveType.getVisibleInBalanceLeaves())) {
 						LocalDate[] currentMonthQuarter = conversionUtil.getThisMonthQuarterDates(todayDate.minusDays(1));

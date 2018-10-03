@@ -137,6 +137,7 @@ function redirectlocation(location){
 	        "columnDefs": [ {
 		    	  	"targets": colIndex++,
 		    	  	"data": "empName",
+		    	  	"sortable":false,
 		    	  	"render": function(data, type, opt, meta) {
 		    	  		  var result = "";
 		    	  		   result = result + '     <div class="proj_show divmax-width">';
@@ -147,6 +148,7 @@ function redirectlocation(location){
 		      },{
 		    	  "targets": colIndex++,
 	              "data": "leaveType",
+	              "sortable":false,
 	              "render": function ( data, type, opt, meta ) {
 	            	   var result = "";
 	            	   result = result + '   <div title="'+opt.leaveType+'" class="tblminwidth-75">'+opt.leaveType+'</div>';
@@ -156,7 +158,7 @@ function redirectlocation(location){
 		          },{
 	            "targets": colIndex++,
 	            "data": "duration",
-	            "sorting":false,
+	            "sortable":false,
 	            "render": function ( data, type, opt, meta ) {
 	            	 var result = "";
 	            	 result = result + '   <div title="'+opt.duration+'" class="tbldata-dotdot-100">'+opt.duration+'</div>';
@@ -165,6 +167,7 @@ function redirectlocation(location){
 	          }, {
 	              "targets": colIndex++,
 	              "data": "noOfDays",
+	              "sortable":false,
 	              "render": function ( data, type, opt, meta ) {
 	            	   var result = "";
 	            	   result = result + '     <div title="'+opt.appliedNoOfDays+'" class="tblminwidth-75">'+opt.appliedNoOfDays+'</div>';		 
@@ -189,6 +192,7 @@ function redirectlocation(location){
 	          }, */{
 		    	  	"targets": colIndex++,
 		    	  	"data": "rejectedBy",
+		    	  	"sortable":false,
 		    	  	"render": function(data, type, opt, meta) {
 		    	  		 var result = "";
 		    	  		 if(opt.rejectedBy != null && opt.rejectedBy != '' && opt.rejectedBy != 'undefined'){
@@ -201,7 +205,7 @@ function redirectlocation(location){
 		    	  },{
 		    	  	"targets": colIndex++,
 		    	  	"data": "reason",
-		    	  	"sorting":false,
+		    	  	"sortable":false,
 		    	  	"render": function(data, type, opt, meta) {
 		    	  		 var result = "";
 		    	  		if(opt.rejectedReason != null && opt.rejectedReason != '' && opt.rejectedReason != 'undefined'){

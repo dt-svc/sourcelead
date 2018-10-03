@@ -2209,6 +2209,7 @@ private void saveImportedTimeSheetRecords(Projects project,String projectTaskUUI
 				Candidate candidateByEmail = candidateDao.getAllActiveCandidatesByLocationEmail(email, orgLocation.getId());
 				if (candidateByEmail == null) {
 				errorSet.put("beneficiaryEmail", "Beneficiary Email is not found");
+				dataMigrationDTOJsonCopy.put("candidateId", "null");
 				} else {
 				dataMigrationDTOJsonCopy.put("candidateId", candidateByEmail.getId());
 				// System.out.println("candidateId
@@ -2272,9 +2273,8 @@ private void saveImportedTimeSheetRecords(Projects project,String projectTaskUUI
 				}
 
 				}
-
 				if (StringUtils.isNotBlank(dataMigrationDTOJsonCopy.getString("passportNo"))
-				&& !dataMigrationDTOJsonCopy.getString("passportNo").equals("null")) {
+				&& !dataMigrationDTOJsonCopy.getString("passportNo").equals("null") && !dataMigrationDTOJsonCopy.getString("candidateId").equals("null")) {
 				boolean flag = immigrationCommonService.validateCandidatePassportVisa(Long.parseLong(dataMigrationDTOJsonCopy.getString("candidateId")),
 				Constants.ID_TYPE_PASSPORT,dataMigrationDTOJsonCopy.getString("passportNo") );
 				if(!flag) {
@@ -2301,7 +2301,7 @@ private void saveImportedTimeSheetRecords(Projects project,String projectTaskUUI
 
 
 				if (StringUtils.isNotBlank(dataMigrationDTOJsonCopy.getString("visaNo"))
-				&& !dataMigrationDTOJsonCopy.getString("visaNo").equals("null")) {
+				&& !dataMigrationDTOJsonCopy.getString("visaNo").equals("null") && !dataMigrationDTOJsonCopy.getString("candidateId").equals("null")) {
 				boolean flag = immigrationCommonService.validateCandidatePassportVisa(Long.parseLong(dataMigrationDTOJsonCopy.getString("candidateId")),
 				Constants.ID_TYPE_VISA,dataMigrationDTOJsonCopy.getString("visaNo") );
 				if(!flag) {
