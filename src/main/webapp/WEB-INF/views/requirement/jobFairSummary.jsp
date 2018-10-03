@@ -119,10 +119,6 @@
 			<input id="cancelStatusPopup" class="u_can_color" value="Close" onclick="closeFairDatesPop();" type="button">
 		</b>
 	</div>
-	<div class="emailvalues emailvaluesNew">
-	  <p><i class="fa fa-check-square-o"></i>Associates</p>
-	  <p><i class="fa fa-check-square-o"></i>Projects</p>
-	</div>
 	<div class="side_mask">
 	  <div class="proj_close" onClick="activeTab();"></div>
 	</div>
