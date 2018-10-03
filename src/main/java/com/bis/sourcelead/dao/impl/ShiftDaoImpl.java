@@ -4,6 +4,7 @@ package com.bis.sourcelead.dao.impl;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.hibernate.Query;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.slf4j.Logger;
@@ -89,6 +90,24 @@ public class ShiftDaoImpl implements ShiftDao {
 		} else {
 			return null;
 		}
+	}
+
+	@Override
+	public List<String> getAssociatesShiftListByOrgLocationId(Long orgLocationId) {
+		
+		Session session = this.sessionFactory.getCurrentSession();
+		String query = null;
+		query ="SELECT "
+				+" S.SHIFT_NAME "
+				+" FROM SHIFT S "
+				+" WHERE "
+				+" S.ORGLOCATION_ID = :orgLocationId AND S.STATUS = '1' ";
+		Query queryObj = session.createSQLQuery(query);
+		queryObj.setLong("orgLocationId", orgLocationId);	
+		List<String> shiftsList = (List<String>)queryObj.list();
+		
+		return shiftsList;
+	
 	}
 	
 	

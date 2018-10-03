@@ -15,6 +15,7 @@ import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
+import com.bis.sourcelead.entity.AssociateLoanAndAdvanceHistory;
 import com.bis.sourcelead.entity.Candidate;
 import com.bis.sourcelead.entity.Employees;
 
@@ -158,6 +159,19 @@ public class EmployeePayroll {
 	@OneToMany(cascade = CascadeType.ALL, mappedBy = "employeePayroll")
 	private Set<AssociateTaxHistory> associateTaxHistory;
 	
+	
+	@OneToMany(cascade = CascadeType.ALL, mappedBy = "payroll")
+	private Set<AssociateLoanAndAdvanceHistory> loanHistory;
+	
+	
+	public Set<AssociateLoanAndAdvanceHistory> getLoanHistory() {
+		return loanHistory;
+	}
+
+	public void setLoanHistory(Set<AssociateLoanAndAdvanceHistory> loanHistory) {
+		this.loanHistory = loanHistory;
+	}
+
 	public String getSubmitForAproverStatus()
 	{
 		return submitForAproverStatus;

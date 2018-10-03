@@ -109,7 +109,7 @@ private static final Logger logger = LoggerFactory.getLogger(AssociateTaxDaoImpl
 	@Transactional
 	public PaysheetFrequency getPaySheetFrequencyByGroupIdAndFrequencyStartEnddate(String dates, OrgLocations orgLocation,Long groupId) {
 		
-		List<PaysheetFrequency> frequencyList = null;
+		PaysheetFrequency paysheetFrequency = null;
 		try {
 			String[] dts = dates.split(" - ");
 			
@@ -117,16 +117,21 @@ private static final Logger logger = LoggerFactory.getLogger(AssociateTaxDaoImpl
 			Date endDate = new SimpleDateFormat("yyyy-MM-dd").parse(dts[1]);
 			
 			Session session = this.sessionFactory.getCurrentSession();
-			frequencyList = session.createQuery("from PaysheetFrequency paysheet where paysheet.userGroup.id=:groupId and paysheet.orgLocation.id=:orgLocationId and paysheet.frequencyStartDate = :startDate and paysheet.frequencyEndDate = :endDate")
+			List<PaysheetFrequency> frequencyList = session.createQuery("from PaysheetFrequency paysheet where paysheet.userGroup.id=:groupId and paysheet.orgLocation.id=:orgLocationId and paysheet.frequencyStartDate = :startDate and paysheet.frequencyEndDate = :endDate")
 											   .setLong("orgLocationId", orgLocation.getId())
 											   .setLong("groupId", groupId)
 											   .setParameter("startDate",startDate)
 											   .setParameter("endDate", endDate)
 											   .list();
+			
+			if(frequencyList != null && frequencyList.size() >0) {
+				paysheetFrequency = frequencyList.get(0);
+			}
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
-		return frequencyList.get(0);
+	
+		return paysheetFrequency;
 	}
 	
 	@SuppressWarnings("unchecked")
@@ -169,8 +174,8 @@ private static final Logger logger = LoggerFactory.getLogger(AssociateTaxDaoImpl
 			if (payrollReportDTO != null && payrollReportDTO.getLength() > 0) {
 				queryObj.setFirstResult(payrollReportDTO.getStart());
 				queryObj.setMaxResults(payrollReportDTO.getLength());
-				queryObj.setLong("orgLocationId", payrollReportDTO.getOrgLocationid()).setLong("groupId", payrollReportDTO.getPayGroup()).setDate("freqStartDate", freqStartDate).setDate("freqEndDate",freqEndDate);
 			}
+			queryObj.setLong("orgLocationId", payrollReportDTO.getOrgLocationid()).setLong("groupId", payrollReportDTO.getPayGroup()).setDate("freqStartDate", freqStartDate).setDate("freqEndDate",freqEndDate);
 			payrollList = queryObj.list();
 			int count = 0;
 			int filteredCount = 0;

@@ -215,18 +215,20 @@ public class ImmigrationRestController {
 		model.addObject("sourceleadUrl", sourceleadUrl);
 		if (forward.equalsIgnoreCase("petitionDetails")) {
 			model.setViewName("/immigration/petitionDetails");
+			OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,
+					"orgLocations");
 			if (!StringUtils.isEmpty(immigrationUUID)) {
-				OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,
-						"orgLocations");
 				Long immigrationId = immigrationCommonService.getImmigrationIdByUUID(immigrationUUID);
 				ImmigrationDTO immigrationDTO = immigrationCommonService.editImmigrationDetails(immigrationId,
 						orgLocations);
 				model.addObject("immigrationDTO", immigrationDTO);
+				List<ImmigrationTemplate> templateList = immigrationCommonService.getImmigrationTemplateList(orgLocations,null);
+				model.addObject("templateList", templateList);
+			}else {
+				List<ImmigrationTemplate> templateList = immigrationCommonService.getImmigrationTemplateList(orgLocations, 1L);
+				model.addObject("templateList", templateList);
 			}
-			OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,
-					"orgLocations");
-			List<ImmigrationTemplate> templateList = immigrationCommonService.getImmigrationTemplateList(orgLocations);
-			model.addObject("templateList", templateList);
+			
 		} else if (forward.equalsIgnoreCase("two")) {
 			model.setViewName("/immigration/newPetitionPage2");
 		} else if (forward.equalsIgnoreCase("three")) {
