@@ -1035,13 +1035,13 @@ public class OrgLocations implements Serializable{
 			return registeredLocation;
 		else{
 			if(StringUtils.isNotEmpty(country) && StringUtils.isEmpty(state) && StringUtils.isEmpty(city)){
-				registeredLocation = country;
+				registeredLocation = orgLocationName+"-"+country;
 			}else if(StringUtils.isNotEmpty(country) && StringUtils.isNotEmpty(state) && StringUtils.isEmpty(city)){
-				registeredLocation = country +" "+state;
+				registeredLocation = orgLocationName+"-"+country +" "+state;
 			}else if(StringUtils.isNotEmpty(country) && StringUtils.isEmpty(state) && StringUtils.isNotEmpty(city)){
-				registeredLocation = country +" "+city;
+				registeredLocation = orgLocationName+"-"+country +" "+city;
 			}else if(StringUtils.isNotEmpty(country) && StringUtils.isNotEmpty(state) && StringUtils.isNotEmpty(city)){
-				registeredLocation = country+" "+state+" "+city;
+				registeredLocation = orgLocationName+"-"+country+" "+state+" "+city;
 			}
 			return registeredLocation;
 		}

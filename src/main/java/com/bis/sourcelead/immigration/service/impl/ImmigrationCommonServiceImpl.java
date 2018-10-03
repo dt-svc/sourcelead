@@ -153,9 +153,9 @@ public class ImmigrationCommonServiceImpl implements ImmigrationCommonService {
 	EmailScenarioService emailScenarioService;
 
 	@Override
-	public List<ImmigrationTemplate> getImmigrationTemplateList(OrgLocations orgLocations) {
+	public List<ImmigrationTemplate> getImmigrationTemplateList(OrgLocations orgLocations, Long status) {
 
-		return immigrationCommonDao.getImmigrationTemplateList(orgLocations);
+		return immigrationCommonDao.getImmigrationTemplateList(orgLocations, status);
 	}
 
 	@Override
@@ -1512,7 +1512,9 @@ public class ImmigrationCommonServiceImpl implements ImmigrationCommonService {
 				immigrationDTO.setIsOwnTemplateId("Y");
 
 			immigrationDTO.setTemplateId(immigration.getImmigrationTemplateId().getId().toString());
+			
 			immigrationDTO.setTemplateName(immigration.getImmigrationTemplateId().getName());
+			
 			immigrationDTO.setPetitionType(immigration.getPetitionType().getId().toString());
 			immigrationDTO.setOpenDate(
 					commonUtil.dateStrFromOrgDateFormatter(orgLocations.getDateFormat(), immigration.getOpenDate()));

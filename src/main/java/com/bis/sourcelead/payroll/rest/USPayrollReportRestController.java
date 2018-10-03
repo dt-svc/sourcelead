@@ -254,6 +254,16 @@ public class USPayrollReportRestController {
 
 	}
 
+	/**
+	 * @author pavan jampana
+	 * 
+	 * this method is used to run the payroll register report
+	 * @param payrollReportDTO
+	 * @param request
+	 * @param response
+	 * @return
+	 * @throws Exception
+	 */
 	@RequestMapping(value = { "/runPayrollregister","/rest/runPayrollregister" }, method = RequestMethod.POST)
 	@ResponseBody
 	public ResponseList<PayrollReportDTO> runPayrollregister(PayrollReportDTO payrollReportDTO,HttpServletRequest request, HttpServletResponse response) throws Exception
@@ -461,6 +471,41 @@ public class USPayrollReportRestController {
 	}
 	
 	
+	@RequestMapping(value = { "/exportPayrollRegisterReportPdf"})
+	public void exportPayrollRegisterReportPdf(PayrollReportDTO payrollReportDTO,HttpServletRequest request, HttpServletResponse response) throws Exception
+	{
+		ResponseList<PayrollReportDTO> responseList = new ResponseList<>();
+		try {
+			OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+			if (orgLocations != null) { 
+				responseList = paysheetFrequencyService.getPayrollRegisterReports(payrollReportDTO,orgLocations);
+				
+				
+				File file =  payrollReportPdfUtil.getPayrollRegisterReportsPdf(responseList,orgLocations);
+				
+				String mimeType = URLConnection.guessContentTypeFromName(file.getName());
+				if (mimeType == null) {
+					mimeType = "application/octet-stream";
+				}
+				response.setContentType(mimeType);
+				StringBuilder fileName = new StringBuilder();
+				response.setHeader("Content-Disposition", fileName.append("attachment; filename=\"").append(file.getName()).append("\"").toString());
+				response.setContentLength((int) file.length());
+				InputStream inputStream = new BufferedInputStream(new FileInputStream(file));
+				FileCopyUtils.copy(inputStream, response.getOutputStream());
+				inputStream.close();
+				response.getOutputStream().close();
+				response.getOutputStream().flush();
+				if (file != null) {
+					file.delete();
+				}
+			}
+		} catch (Exception e) {
+			responseList.setResponse(Result.AWKWARD.name());
+			responseList.setResponseMessage(Result.AWKWARD.getValue());
+			logger.error(ExceptionUtils.getFullStackTrace(e));
+		}
+	}
 
 	@RequestMapping(value = "/exportToPdfDeductionReport")
 	public void exportToPdfDeductionReport(PayrollReportDTO payrollReportDTO,HttpServletRequest request, HttpServletResponse response) throws Exception
