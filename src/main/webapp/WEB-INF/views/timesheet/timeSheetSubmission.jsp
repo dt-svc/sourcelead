@@ -2179,8 +2179,8 @@ function timesheetDivAfterSaving(){
 		    	  $("#timesheetDivByFrequency").empty();
 		    	  $("#timesheetDivByFrequency").append(data);
 		    	  if(currentTimeSubFrequency != null && currentTimeSubFrequency != '' && currentTimeSubFrequency != 'undefined'){
-		    		  $("#currentTimeSubFrequency").val(currentTimeSubFrequency)
-            	      $("#timeSubFrequency").val(currentTimeSubFrequency)
+		    		  $("#currentTimeSubFrequency").val(currentTimeSubFrequency);
+            	      $("#timeSubFrequency").val(currentTimeSubFrequency);
 		    	  }
 		    	  $("#loadTime").removeAttr('style');
 		      }
