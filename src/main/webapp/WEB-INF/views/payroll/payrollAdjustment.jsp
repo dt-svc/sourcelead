@@ -119,22 +119,22 @@
                     </td>
                 </tr>
                 <tr>
-                  <td colspan="2">
+                  <td colspan="2" id="payItemCol">
                   <div id="payItemDiv"></div>
                     </td>
                 </tr>
                 
                   <tr>
-                  <td colspan="2">
+                  <td colspan="2" id="loanAdvanceCol">
                   <div id="loanAdvancesDiv"></div>
                     </td>
                 </tr>
                  
                  <tr>
-                  <td>
+                  <td id="postDedCol">
                   <div id="postdedDiv"></div>
                     </td>
-                  <td>
+                  <td id="preDedCol">
                   <div id="prededDiv"></div>
                     </td>
                 </tr>
@@ -185,7 +185,7 @@
                       </tfoot>
                     </table>
                     </td>
-                  <td>
+                  <td id="contributionCol">
                   <div id="employerPaidBenefitDiv"></div>
                     </td>
                 </tr>
@@ -399,9 +399,12 @@
 		                      postDed = postDed + '</tr>';
 		                      postDed = postDed + '</tfoot>';
 		                      postDed = postDed + '</table>';
+		                      $("#postDedCol").show(); 
 		                      $("#postdedDiv").empty(); 
 		                      $("#postdedDiv").append(postDed);
 			            	  
+			            }else{
+			            	$("#postDedCol").hide(); 
 			            }
 	                     
 	                        var preDed = "";
@@ -438,8 +441,11 @@
 				            preDed = preDed + '</tr>';
 				            preDed = preDed + '</tfoot>';
 				            preDed = preDed + '</table>';
+				              $("#preDedCol").show();
 		                      $("#prededDiv").empty();
 		                      $("#prededDiv").append(preDed);
+	                        }else{
+	                        	 $("#preDedCol").hide();
 	                        }
 		                      
 		                      
@@ -479,8 +485,11 @@
 		                        output = output + '  </tr>';
 		                        output = output + '  </tfoot>';
 		                        output = output + '  </table>';
+		                        $("#contributionCol").show();
 		                        $("#employerPaidBenefitDiv").empty();
 		                        $("#employerPaidBenefitDiv").append(output);
+		                  }else{
+		                	  $("#contributionCol").hide();
 		                  }
 	                        
 	                        
@@ -544,9 +553,12 @@
 		                          payItem = payItem +' </tr>';
 		                          payItem = payItem +' </tfoot>';
 		                          payItem = payItem +' </table>';
+		                          $("#payItemCol").show();
 		                          $("#payItemDiv").empty();
 		                          $("#payItemDiv").append(payItem)
 		                          $(".tablePayslip").find(".fa-dollar, .fa-clock-o").next(".formControl").css({"width":"94.5%"});
+			                  }else{
+			                	  $("#payItemCol").hide();
 			                  }
 	                        
 	                        
@@ -583,9 +595,12 @@
 		                          loanAdvance = loanAdvance +' </tr>';
 		                          loanAdvance = loanAdvance +' </tfoot>';
 		                          loanAdvance = loanAdvance +' </table>';
+		                          $("#loanAdvanceCol").show();
 		                          $("#loanAdvancesDiv").empty();
 		                          $("#loanAdvancesDiv").append(loanAdvance)
 		                          $(".tablePayslip").find(".fa-dollar, .fa-clock-o").next(".formControl").css({"width":"94.5%"});
+			                  }else{
+			                	  $("#loanAdvanceCol").hide();
 			                  }
 	                          
 		        },
