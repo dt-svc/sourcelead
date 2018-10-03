@@ -5,6 +5,7 @@ import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 import org.apache.commons.lang.exception.ExceptionUtils;
 import org.apache.commons.lang3.StringUtils;
@@ -163,7 +164,7 @@ public class AppliedLeaveDateDaoImpl implements AppliedLeaveDateDao {
     		java.sql.Date startDate = new java.sql.Date(sDate.getTime());
     		java.sql.Date endDate = new java.sql.Date(eDate.getTime());
     	   Session session = this.sessionFactory.getCurrentSession();
-           String query = "from AppliedLeaveDateView alView where alView.leaveTypeId =:leaveTypeId and (alView.orglocationId = :orgLocationid or alView.orgId = :orgId) and alView.userId = :userId and (alView.applyLeaveDate >= :startDate and alView.applyLeaveDate <= :endDate) and (alView.leaveStatus = 'APPROVED' or alView.leaveStatus = 'PENDING')";
+           String query = "from AppliedLeaveDateView alView where alView.leaveTypeId =:leaveTypeId AND alView.userId =:userId AND (alView.orglocationId = :orgLocationid OR alView.orgId = :orgId) AND date(alView.applyLeaveDate) BETWEEN :startDate and :endDate AND (alView.leaveStatus = 'APPROVED' OR alView.leaveStatus = 'PENDING')";
            List<AppliedLeaveDateView> appliedLeaveList = session.createQuery(query).setLong("leaveTypeId", leaveTypeId).setLong("orgLocationid", orgLocationId).setLong("userId", userId).setLong("orgId", orgId).setParameter("startDate", startDate).setParameter("endDate", endDate).list();
            return appliedLeaveList;
        }catch (Exception e) {
