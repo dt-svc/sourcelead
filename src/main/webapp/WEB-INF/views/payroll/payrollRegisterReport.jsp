@@ -89,10 +89,10 @@ $(document).ready(function(){
   			<ul class="pull-right list-unstyled list-inline">
 <!-- 			    <li><a class="newAdBtn mr5 hidden" href="/app/userCreation">+  Associate</a></li> -->
 <!-- 			    <li><a href="javascript:void(0)" class="filtIcon" title="Filters" onclick="openPop();"></a></li> -->
-<!-- 			    <li><a href="javascript:void(0)" class="overIcon" title="Actions" onclick="newActions();"></a> -->
 				<li>
-      				<div class="newActPop" style="">
-       					<span><a href="javascript:void(0)" onclick="exportToPdf();" title="PDF">Export PDF</a> <a href="javascript:void(0)" onclick="exportUserData();" title="Excel">Export Excel</a> </span> </div>
+				<a class="overIcon" title="Actions" onclick="newActions();"></a>
+      				<div class="newActPop" style="display: block;">
+       					<span><a onclick="exportPayrollRegisterReportPdf();" title="PDF">Export PDF</a> <a title="Excel">Export Excel</a> </span> </div>
    				</li>
 			    <li class="">
 			      <input class="repSearchBar" placeholder="Search" id="payrollRegisterSearch" type="text">
@@ -161,6 +161,18 @@ $(document).ready(function(){
 <script>
 function resetForm(){
 	
+}
+</script>
+
+<script>
+function exportPayrollRegisterReportPdf(){
+	var searchValue = $("#payrollRegisterSearch").val();
+	var payGroup = $('#payGroup').val();
+	var department = $('#payrollDepartment').val();
+	var payRollType = $('#payRollType').val();
+	var freqStartDate = $('#freqStartDate').val();
+	var freqEndDate = $('#freqEndDate').val();
+    window.location.href = sourceleadUrl+"/exportPayrollRegisterReportPdf?&payGroup="+payGroup+"&department="+department+"&payRollType="+payRollType+"&freqStartDate="+freqStartDate+"&freqEndDate="+freqEndDate+"&searchValue="+searchValue;
 }
 </script>
 <script type="text/javascript">

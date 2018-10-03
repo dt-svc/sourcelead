@@ -444,6 +444,7 @@ public class Constants {
 	public static final int TAB_MY_TIMESHEET = 5;
 	public static final int TAB_TIMESHEET_APPROVAL = 6;
 	public static final int TAB_REQUIREMENT = 8;
+	public static final int TAB_CANDIATE = 10;
 	public static final int TAB_USER = 2;
 	public static final int TAB_PROJECTS = 3;
 	public static final int TAB_CONTRACTS = 16;
@@ -522,6 +523,7 @@ public class Constants {
 	public static final String[] ROLE_LIST = { "Admin", "Employee", "Project Manager", "Team Lead" };
 	public static final String[] INVOICE_FREQUENCY_LIST = { "Weekly", "Bi-Weekly", "Semi-Monthly",
 			"Monthly" };
+	public static final String[] YES_NO = { "Y", "N" };
 	/** For LookUpData (Eductions,Skills) **/
 	public static final String EDUCATIONS = "Educations";
 	public static final String SKILLS = "Skills";
@@ -566,6 +568,8 @@ public class Constants {
 	public static final String SEMI_MONTHLY = "Semi-Monthly";
 	public static final String MONTHLY = "Monthly";
 	public static final String YEARLY = "Yearly";
+	
+	public static final int MIN_PROFILE_PERCENETAGE = 30;
 	
 	public static final String[] IMPORT_JOB_EXCEL_HEADERS = { "Jobs id", "Jobs Title",
 			"Min Experience", "Max Experience", "Min/Max Rate", "Location", "City",	"State", "Country", "Zip Code",	
@@ -665,12 +669,14 @@ public class Constants {
 	
 	
 	public static final String[] DATA_MIGRATION_ASSOCIATE_EXCEL_HEADERS = { "Employee ID" , "First Name*","Last Name", "Email id*", "Phone Number", "Extension Number",
-			"Rate","Rate Per", "Gender*","Martial Status","Date of Join","Date of Birth","Role*","Day Hours(HH:MM)","Manager*(Email)", "Employment Type*","Vendor(Email)","Vendor Contact(Email)","Grade","Designation*","Shift*","Send Mail to User(Y/N)","Is Global Manage(Y/N)"};
+			"Rate","Rate Per", "Gender*","Martial Status","Date of Join","Date of Birth","Role*","Day Hours(HH:MM)","Manager*(Email)", "Employment Type*","Vendor(Email)","Vendor Contact(Email)","Grade","Designation*","Shift*","Send Mail to User","Is Global Manager"};
 
 
 	public static final String[] REQIREMENT_APPLICANT_HEADERS = { "Applicant Name", "Email","Job", "Client", "Phone Number",  "Job Location",   "Source", "Status","Job Rating" ,"Incentivized"};
 
 	public static final String[] REQIREMENT_SUBMISSION_HEADERS = { "Applicant Name","Email", "Job", "Client", "Applied On", "Submitted On","Sub rate", "Submitted by", "Source", "Status","Job Rating" ,"Incentivized"};
+
+	public static final String[] REQIREMENT_SHORTLIST_HEADERS = { "Applicant Name","Email", "Job", "Client",  "Shortlisted On", "Source", "Status","Job Rating" ,"Incentivized"};
 
 	public static final String[] REQIREMENT_INTERVIEW_HEADERS = { "Applicant Name","Email", "Job", "Client",  "Applied On", "No Of Interviews",  "Source", "Status","Job Rating" ,"Incentivized"};
 
@@ -682,7 +688,8 @@ public class Constants {
 
 	public static final String[] REQIREMENT_BACKOUT_HEADERS = { "Applicant Name", "Email", "Job", "Client", "Backout Type", "Backout Reason",  "Source", "Status","Job Rating" ,"Incentivized"};
 
-	
+	public static final String[] APPLICANTS_JOINED_HEADERS = { "Applicant Name", "Email Id","Contact Number","Job Title", "process","Client", "Date Of Interview", "Offer Rate","Source","Submitted On","Date Of Join", "Payment Term","Generate Invoice"};
+
 	public static final String SHORTLIST_CANDIDATE_COUNT = "shortlist_candidate :";
 	public static final String VENDOR = "Vendor";
 	public static final String CLIENT = "Client";
@@ -696,6 +703,7 @@ public class Constants {
 	public static final String ELK_USER_TYPE = "user";
 	public static final String ELK_REQUIREMENT_INDEX = "requirement";
 	public static final String ELK_REQUIREMENT_TYPE = "requirement";
+	public static final String ELK_EMAIL_INDEX = "email";
 	public static final String ELK_CANDIDATE_ID_PREFIX = "CND";
 	public static final String ELK_CLIENTVENDOR_INDEX = "clientvendor";
 	public static final String ELK_CLIENTVENDOR_TYPE = "clientvendors";
@@ -1209,11 +1217,11 @@ public class Constants {
     public static final String LOCAL_TAX_NO = "NO";
 
     
-
+    public static final String[] GENDER = { "Male", "Female", "Transgender"};
 
     public static final String[] EMPLOYMENT_TYPES = { "C2C", "C2C-1099", "W-2", "C2H", "C2H-1099", "Part Time", "Full Time", "Other" };
 
-
+    public static final String[] MARITAL_STATUS = { "Single", "Married", "Divorsed", "Separated"};
 
 	public static final String EMAIL_SUCCESS = "success";
 	public static final String UPDATE = "UPD";
@@ -1247,5 +1255,20 @@ public class Constants {
 	public static final String REGULAR = "Regular";
 	
 	public static final String[] DIRECT_DEPOSIT_HEADER = { "Employee\nNumber", "Employee Name", "Department", "Transit\nNumber", "Account\nNumber", "Deposit\nAmount", "Description" };
+	
+	//Indian_Payroll
+	public static final String IND_PAYROLL_PAYHEAD_DEDUCTION = "Deduction";
+	public static final String IND_PAYROLL_PAYHEAD_EARNINGS = "Earnings";
+	
+	public static final String IND_PAYROLL_PAYFREQUENCY_MONTHLY = "Monthly";
+	public static final String IND_PAYROLL_PAYFREQUENCY_WEEKLY = "Bi-Weekly";
+	public static final String IND_PAYROLL_PAYFREQUENCY_BI_WEEKLY = "Weekly";
+	public static final String IND_PAYROLL_PAYFREQUENCY_ANUALLY = "Annually";
+	
+	public static final String IND_PAYROLL_PAYHEAD_TDS = "TDS";
+	public static final String IND_PAYROLL_PROFESSIONAL_TAX = "PT";
+	
+	public static final String[] CONSTANT_PAYHEAD_SHORTCODES = { "PT", "TDS", "PF", "ESI", "L&D", "BO", "ARR", "RMB" };
+	
 
 }

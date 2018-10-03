@@ -902,9 +902,9 @@ public class InvoiceServiceImpl implements InvoiceService {
 				globalVarsMap.put("clientName", contactUser.getFirstName());
 			}
 		}
-		globalVarsMap.put("totalAmouprojectMembersListnt", invoice.getTotal());
+		globalVarsMap.put("grandTotal", invoice.getTotal());
 		globalVarsMap.put("dueDate", date);
-		globalVarsMap.put("date", invoiceDate);
+		globalVarsMap.put("invoiceDate", invoiceDate);
 		globalVarsMap.put("orgName", orglocations.getOrgLocationName());
 		// globalVarsMap.put("address",invoice.getBillingAddress());
 
@@ -1439,30 +1439,48 @@ public class InvoiceServiceImpl implements InvoiceService {
 		if (null != orgLocations) {
 			writeRow.createCell(1).setCellValue(orgLocations.getOrgLocationName());
 		}
-
-		if (null != invoice.getContactUser()) {
-			if (null != invoice.getContactUser().getLastName()
-					&& !"".equalsIgnoreCase(invoice.getContactUser().getLastName())) {
-				StringBuilder contactName = new StringBuilder();
-				writeRow.createCell(2).setCellValue(contactName.append(invoice.getContactUser().getFirstName())
-						.append(" ").append(invoice.getContactUser().getLastName()).toString());
-			} else if (null != invoice.getContactUser().getFirstName()) {
-				writeRow.createCell(2).setCellValue(invoice.getContactUser().getFirstName());
+		List<User> contactUsersList = null;
+		try {
+			contactUsersList = userDao.getUsersListUsingMultipleStringIds(invoice.getContactUsers());
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		if (null != invoice.getContactUsers()) {
+			StringBuilder sbName = new StringBuilder();
+			for(User contactUser : contactUsersList){
+				if(null != contactUser.getFullName() && !"".equalsIgnoreCase(contactUser.getFullName())) {
+					sbName.append(contactUser.getFullName()).append(",").toString();
+				}
 			}
+			writeRow.createCell(2).setCellValue(sbName.deleteCharAt(sbName.length()-1).toString());
+			
+	}
+
+		if (null != invoice.getContactUsers()) {
+			StringBuilder sbEmail = new StringBuilder();
+			for(User contactUser : contactUsersList){
+				if(null != contactUser.getEmail() && !"".equalsIgnoreCase(contactUser.getEmail())) {
+					sbEmail.append(contactUser.getEmail()).append(",").toString();
+				}
+			}
+			writeRow.createCell(3).setCellValue(sbEmail.deleteCharAt(sbEmail.length()-1).toString());
 		}
 
-		if (null != invoice.getContactUser()) {
-			if (null != invoice.getContactUser().getEmail()
-					&& !"".equalsIgnoreCase(invoice.getContactUser().getEmail())) {
-				writeRow.createCell(3).setCellValue(invoice.getContactUser().getEmail());
+		if (null != invoice.getContactUsers()) {
+			StringBuilder sbPhone = new StringBuilder();
+			int count = contactUsersList.size();
+			String contactMobile = "";
+			for(User contactUser : contactUsersList){
+				if(null != contactUser.getMobilePhone() && !"".equalsIgnoreCase(contactUser.getMobilePhone())) {
+					contactMobile = contactMobile + contactUser.getMobilePhone();
+				}
+				count--;
+				if(count != 0 && null != contactUser.getMobilePhone() && !"".equalsIgnoreCase(contactUser.getMobilePhone())){
+					contactMobile = contactMobile + ",";
+				}
 			}
-		}
-
-		if (null != invoice.getContactUser()) {
-			if (null != invoice.getContactUser().getMobilePhone()
-					&& !"".equalsIgnoreCase(invoice.getContactUser().getMobilePhone())) {
-				writeRow.createCell(4).setCellValue(invoice.getContactUser().getMobilePhone());
-			}
+			writeRow.createCell(4).setCellValue(contactMobile.toString());
 		}
 
 		if (null != invoice.getInvoiceDate()) {
@@ -2608,6 +2626,7 @@ public class InvoiceServiceImpl implements InvoiceService {
 			
 					EmailScenario notificationScenario = null;
 					if (invoiceType.equalsIgnoreCase("payables")) {
+						
 						returnMap = commonUtil.sendTemplateEmail(emailMessage, globalVarsMap, orgLocation.getOrg(), orgLocation,
 								Constants.INVOICE_CLIENT_PAYABLE_REMINDER_MAIL, attachmentList1);
 						notificationScenario = emailScenarioService.getEmailScenarioByUniqueName(
@@ -3298,22 +3317,16 @@ public class InvoiceServiceImpl implements InvoiceService {
 						List<User> usersList = userDao.getUsersListUsingMultipleStringIds(timelineHistory.getInvoice().getOwnerUsers());
 						 
 						for(User ownerUser: usersList){
-						if(ownerUser.getUserCode().equals(timelineHistory.getInvoice().getUpdatedBy())){
 							statusValue = ownerUser.getFullName();	
 						}
-						}
-//						statusValue = timelineHistory.getInvoice().getOwnerUserId().getFullName();
 					} else if (status.equalsIgnoreCase("Sent")) {
 						statusVal = "Sent";
 						statusBy = " by ";
 						List<User> usersList = userDao.getUsersListUsingMultipleStringIds(timelineHistory.getInvoice().getOwnerUsers());
 						 
 						for(User ownerUser: usersList){
-//						if(ownerUser.getUserCode().equals(timelineHistory.getInvoice().getUpdatedBy())){
 							statusValue = ownerUser.getFullName();	
-//						}
 						}
-//						statusValue = timelineHistory.getInvoice().getOwnerUserId().getFullName();
 						timelineDTO.setInvoiceReminderEmailBody(timelineHistory.getInvoicePaymentReminderEmailBody());
 						timelineDTO.setInvoiceReminderEmailTo(timelineHistory.getInvoicePaymentReminderEmailTo());
 						timelineDTO.setInvoiceReminderEmailFrom(timelineHistory.getInvoicePaymentReminderEmailFrom());
@@ -3864,6 +3877,9 @@ public class InvoiceServiceImpl implements InvoiceService {
 			creditDebitNoteListDTO.setApproverCheckBox(creditDebitNote.getApproverCheckBox());
 			creditDebitNoteListDTO.setApprovers(creditDebitNote.getApprovers());
 			creditDebitNoteListDTO.setStatus(creditDebitNote.getStatus());
+			if(creditDebitNote.getRejectReason() !=null){
+				creditDebitNoteListDTO.setRejectReason(creditDebitNote.getRejectReason());	
+			}
 			if(StringUtils.isNotBlank(creditDebitNote.getApprovers())){
 			List<String> appUserList = Arrays.asList(creditDebitNoteListDTO.getApprovers().split(","));
 				creditDebitNoteListDTO.setApproverUserSplitId(appUserList);

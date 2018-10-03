@@ -1,16 +1,4 @@
-<jsp:include page="../../masterHeader.jsp" />
-<jsp:include page="../../masterSideNav.jsp" />
 <%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
-<section class="content-wraper contentWraper">
-	<section class="content-header clearfix">
-		<div class="pull-left">
-			<h2>Forms list</h2>
-		</div>
-		<div class="pull-right brud-crum">Home &raquo; Forms list</div>
-	</section>
-
-	<!-- Timesheet -->
-
 	<div class="timesheet_out">
 
 		<div class="tablelist-wrap">
@@ -34,7 +22,7 @@
 									class="fa fa-search"></i>
 							</div>
 						</li>
-						<li><a href="create" class="addBtn">+ Add Form</a></li>
+						<li><a href="forms/create" class="addBtn">+ Add Form</a></li>
 					</ul>
 				</div>
 			</div>
@@ -53,7 +41,7 @@
 							<tr>
 								<td><div class="tblminwidth proj_show">
 										<span>${form.name}</span> <i class="fa fa-binoculars"
-											onclick="location.href='list?uuid=${form.uuid}&financialYear=${selectedYear}'"></i>
+											onclick="location.href='forms/list?uuid=${form.uuid}&financialYear=${selectedYear}'"></i>
 									</div></td>
 								<td><div class="tbldata-dotdot-verybig">${form.financialYear}</div></td>
 								<td><div class="tbldata-dotdot-verybig">${form.totalFormsCount}</div></td>
@@ -75,7 +63,6 @@
 			</div>
 		</div>
 	</div>
-</section>
 <script type="text/javascript">
 	$("#yearList").change(function() {
 		location.href = 'list?financialYear='+$(this).val();

@@ -239,9 +239,24 @@ $("#loading").attr('style','position:absolute; width:100%; height:100%; backgrou
 								for(j=0; j < opt.users.length; j++){
 									var report = opt.users[j];
 									result += "<tr>";
-									
-									result += "<td> "+report.empName+" </td>";
-									result += "<td> "+report.empType+" </td>";
+						        	  if(report.empName !=null && report.empName !='' && report.empName !='undefined'){
+											result += "<td> "+report.empName+" </td>";
+ 
+						        	  }
+						        	  else{
+											result += "<td>--</td>";
+
+						        	  }
+						        	  
+						        	  if(report.empType !=null && report.empType !='' && report.empType !='undefined'){
+						        		  result += "<td> "+report.empType+" </td>";
+
+						        	  }
+						        	  else{
+											result += "<td>--</td>";
+
+						        	  }
+
 									var lo=0;
 									for (i = 0; i < opt.leaveTypeNames.length; i++) {
 										for(var k in opt.map){
@@ -294,7 +309,7 @@ $("#loading").attr('style','position:absolute; width:100%; height:100%; backgrou
 			"searching": false, 
 		    "paging": true,
 			"scrollCollapse" : false,
-			"lengthMenu" : [ [ 10, 15, 20, -1 ], [ 10, 15, 20, "All" ] ],
+			"lengthMenu" : [ [ 10, 15, 20, -1 ], [ 10, 15, 20] ],
 			"bLengthChange" : true,
 			"bDestroy" : true,
 			"ordering" : true,

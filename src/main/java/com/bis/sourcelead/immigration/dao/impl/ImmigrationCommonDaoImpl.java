@@ -105,14 +105,19 @@ public class ImmigrationCommonDaoImpl implements ImmigrationCommonDao {
 
 	@Override
 	@Transactional(rollbackFor = { Exception.class })
-	public List<ImmigrationTemplate> getImmigrationTemplateList(OrgLocations orgLocations) {
+	public List<ImmigrationTemplate> getImmigrationTemplateList(OrgLocations orgLocations, Long status) {
 		logger.debug("Saving Template Details-->");
 		List<ImmigrationTemplate> templateLst = new ArrayList<ImmigrationTemplate>();
 		try {
 			Session session = this.sessionFactory.getCurrentSession();
 			logger.debug(" before query execute templateLst size -->" + templateLst.size());
-			String queryString = "from ImmigrationTemplate it where it.status = 1 and it.orgLocations.id =:orgLocationId";
+			if(status == null) {
+			String queryString = "from ImmigrationTemplate it where it.orgLocations.id =:orgLocationId";
 			templateLst = session.createQuery(queryString).setLong("orgLocationId", orgLocations.getId()).list();
+			}else {
+				String queryString = "from ImmigrationTemplate it where it.status =:status and it.orgLocations.id =:orgLocationId";
+				templateLst = session.createQuery(queryString).setLong("orgLocationId", orgLocations.getId()).setLong("status", status).list();
+			}
 			logger.debug("tempalte Details loaded Successfully templateLst size -->" + templateLst.size());
 
 			logger.debug("tempalte Details loaded Successfully-->");
@@ -1100,20 +1105,17 @@ public class ImmigrationCommonDaoImpl implements ImmigrationCommonDao {
 	@Transactional(rollbackFor = { Exception.class })
 	public String deleteImmigrationDetailsById(Long immigrationId) {
 		try {
-			Session session = this.sessionFactory.getCurrentSession();
-			String lcaNumberStatus = "Y";
-			LcaHistory lh = getLcaHistoryDetails(immigrationId, Constants.YES);
-			if(lh != null && lcaNumberStatus.equals("Y")) {
-				 
-				   session.delete(lh);
-				   session.flush(); 
-			}
 			
+		   Session session = this.sessionFactory.getCurrentSession();
+			
+           deleteLcaHistoryDetailsByImmigrationId(immigrationId);
 		   CandidateLcaJobDetails candLcaJobDetails = getCandidateLcaJobDetails(immigrationId);
-			   if(candLcaJobDetails != null) {
+		   
+			 if(candLcaJobDetails != null) {
 			   session.delete(candLcaJobDetails);
 			   session.flush(); 
-			   }
+			  }
+			   
 			Immigration immigration = session.get(Immigration.class, immigrationId);
 			session.delete(immigration);
 			session.flush(); 
@@ -2365,6 +2367,22 @@ public class ImmigrationCommonDaoImpl implements ImmigrationCommonDao {
 			visaClarifications = (LcaVisaClarifications) visaClarificatinsList.iterator().next();
 		}
 		return visaClarifications;
+	}
+
+	@Override
+	@Transactional(rollbackFor = { Exception.class })
+	public int deleteLcaHistoryDetailsByImmigrationId(Long immigrationId) {
+		int count =0;
+		try {
+			Session session = this.sessionFactory.getCurrentSession();
+			String query = "delete from LcaHistory lh  where lh.immigrationId =:immigrationId";
+			 count= session.createQuery(query.toString()).setLong("immigrationId", immigrationId).executeUpdate();
+			return count;
+		} catch (HibernateException e) {
+			logger.error("SQL Exception occured while doing delete -->" + e.getMessage());
+			e.printStackTrace();
+		}
+		return count;
 	}
 	
 }

@@ -2,11 +2,21 @@ var xlsupload = new Xlsupload();
 
 function Xlsupload(){
 	
-		this.getUploadInprogressProgressBar = function(entityType){
+		this.getUploadInprogressProgressBar = function(entityType,dateFormat){
 		$.ajax({
 	    	type: "POST",
 	        url: sourceleadUrl+"/getXlsProcessingHistroyListByEntityType?"+tokenParamName+"="+tokenValue+"&entityType="+entityType, 
 	        success: function(json) {
+	        	
+	   		  if(dateFormat.match("yyyy-MM-dd")){
+	   			  uploadedDateStr = 'YYYY-MM-DD';
+	   		  }if(dateFormat.match("dd-MM-yyyy")){
+	   			uploadedDateStr = 'DD-MM-YYYY'; 
+	   		  }if(dateFormat.match("MM-dd-yyyy")){
+	   			uploadedDateStr = 'MM-DD-YYYY'; 
+	   		  }if(dateFormat.match("yyyy-dd-MM")){
+	   			uploadedDateStr = 'YYYY-DD-MM'; 
+	   		  }
 	        	
 	        	   var result = "";
 	        	   result = result + '     <div class="clearfix"></div>';
@@ -19,7 +29,7 @@ function Xlsupload(){
 		           result = result + '           <th>Uploaded</th>';
 		           result = result + '           <th>Success</th>';
 		           result = result + '           <th>Failed</th>';
-		           result = result + '           <th>Date / Time</th>';
+		           result = result + '           <th>Date / Time<br>(<small class="custom-small">'+uploadedDateStr+'</small>)</th>';
 		           result = result + '           <th>Status</th>';
 		           result = result + '         </tr>';
 		           result = result + '       </thead>';

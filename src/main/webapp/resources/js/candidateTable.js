@@ -133,10 +133,10 @@ function candidateListCheck(searchValue,universalCanddateSearchList,candidateKey
           result = result +"    <th>Employment Type</th>"; 
           result = result +"    <th>Email</th>"; 
           result = result +"    <th>Mobile Number</th>";
-          result = result +"    <th>Profile %</th>"
-          result = result +"    <th>No Of Jobs</th>"; 
           result = result +"    <th>Location</th>";
           result = result +"    <th>Last Update</th>"; 
+          result = result +"    <th>Profile %</th>"
+          result = result +"    <th>No Of Jobs</th>"; 
           result = result +"    <th>Created By</th>"; 
           result = result +"  </tr>"; 
           result = result +"</thead>";
@@ -189,10 +189,10 @@ function cpagination(url){
             { "data": "designationType"},
             { "data": "email" },
             { "data": "mobilePhone" },
-            { "data": "profilePercentage" },
-            { "data": "noOfJobs"},
             { "data": "country"},
             { "data": "updatedDate" },
+            { "data": "profilePercentage" },
+            { "data": "noOfJobs"},
             { "data": "createdBy" }
         ],
         "columnDefs": [ {
@@ -333,36 +333,6 @@ function cpagination(url){
 	    	  		return "<div class='tbldata-dotdot-vsm'>"+mobilePhone+"</div>";
 	    	  	}
 	    	  },{
-		    	  	"targets": colIndex++,
-		    	  	"data": "profilePercentage",
-		    	  	"sortable": false,
-		    	  	"render": function(data, type, full, meta) {
-		    	  		var profilePercentage = "";
-		    	  		var color = "";
-		    	  			profilePercentage = full.profilePercentage + "%";
-		    	  			if(full.profilePercentage >= 50){
-		    	  				color = "text-green";
-		    	  			}else{
-		    	  				color = "colorRed";
-		    	  			}
-			            	
-		    	  		return "<div class='tbldata-dotdot-vsm "+color+"'>"+profilePercentage+"</div>";
-		    	  		
-		    	  		
-		    	  	}
-		    	  }, {
-	    	    	  	"targets": colIndex++,
-	    	    	  	"data": "noOfJobs",
-	    	    		"sortable": false,
-	    	    	  	"render": function(data, type, opt, meta) {
-	    	    	  		if(opt.submittedJobsCount == 0){
-	    	    	  			return "<div class='tbldata-dotdot-vsm'>"+opt.submittedJobsCount+"</div>";
-	    	    	  		}else{
-	    	    	  			return "<div class='tbldata-dotdot-vsm'><a href='#' onclick='getSubmittedJobsList("+opt.candidateId+")'>"+opt.submittedJobsCount+"</div></a></div>";
-	    	    	  		}
-	    	    	  		
-	    	    	  	}
-    	    	  },{
                   "targets": colIndex++,
                   "data": "country",
                   "render": function ( data, type, opt, meta ) {
@@ -393,7 +363,37 @@ function cpagination(url){
 			            	}
       	              return result;
                   }
-                } , {
+                },{
+		    	  	"targets": colIndex++,
+		    	  	"data": "profilePercentage",
+		    	  	"sortable": false,
+		    	  	"render": function(data, type, full, meta) {
+		    	  		var profilePercentage = "";
+		    	  		var color = "";
+		    	  			profilePercentage = full.profilePercentage + "%";
+		    	  			if(full.profilePercentage >= 50){
+		    	  				color = "text-green";
+		    	  			}else{
+		    	  				color = "colorRed";
+		    	  			}
+			            	
+		    	  		return "<div class='tbldata-dotdot-vsm "+color+"'>"+profilePercentage+"</div>";
+		    	  		
+		    	  		
+		    	  	}
+		    	  }, {
+	    	    	  	"targets": colIndex++,
+	    	    	  	"data": "noOfJobs",
+	    	    		"sortable": false,
+	    	    	  	"render": function(data, type, opt, meta) {
+	    	    	  		if(opt.submittedJobsCount == 0){
+	    	    	  			return "<div class='tbldata-dotdot-vsm'>"+opt.submittedJobsCount+"</div>";
+	    	    	  		}else{
+	    	    	  			return "<div class='tbldata-dotdot-vsm'><a href='#' onclick='getSubmittedJobsList("+opt.candidateId+")'>"+opt.submittedJobsCount+"</div></a></div>";
+	    	    	  		}
+	    	    	  		
+	    	    	  	}
+    	    	  },{
                     "targets": colIndex++,
                     "data": "createdBy",
                     "className": "tblminwidth-75",

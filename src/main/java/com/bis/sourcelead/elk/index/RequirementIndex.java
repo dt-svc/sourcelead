@@ -209,6 +209,7 @@ public class RequirementIndex implements Serializable {
 	
 	private String tags;
 	
+	private String process;
 	
 	public String getPrimaryRecruiterUserId() {
 		return primaryRecruiterUserId;
@@ -1059,6 +1060,16 @@ public class RequirementIndex implements Serializable {
 
 	public void setTags(String tags) {
 		this.tags = tags;
+	}
+
+	public String getProcess()
+	{
+		return process;
+	}
+
+	public void setProcess(String process)
+	{
+		this.process = process;
 	}
 
 }

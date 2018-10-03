@@ -234,4 +234,10 @@ public interface CandidateService {
 	
 	public void saveBulkCandidates(List<Candidate> candidatesList) throws Exception;
 
+	public void saveBulkCandidates(List<Candidate> candidatesList,Long orgLocationId) throws Exception;
+	
+	Long getCandidateIdByEmailAndOrgLocationId(String email,Long orgLocationId) throws Exception;
+	
+	List<String> getCandidateEmailsByOrgLocationId(Long orgLocationId) throws Exception;
+
 }

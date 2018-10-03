@@ -1467,6 +1467,13 @@ private Sheet createXlsSheet(Sheet createExcelsheet, Row writeRow,Candidate cand
 			candidate.setMaritalStatus(candidateUser.getMaritalStatus());
 		}
 		
+	    if(StringUtils.isNotBlank(addUserDTO.getWorkLocation())){
+		    OrgLocations workLocation = orgLocationService.getOrgLocations(Long.parseLong(addUserDTO.getWorkLocation()));
+			candidate.setWorkLocation(workLocation);
+	    }else {
+	    	candidate.setWorkLocation(orgLocations);
+	    }
+		
 		  
 	    if(StringUtils.isNotBlank(addUserDTO.getResidenceAddress())){
 	    	candidate.setResidenceAddress(addUserDTO.getResidenceAddress());
@@ -1477,8 +1484,6 @@ private Sheet createXlsSheet(Sheet createExcelsheet, Row writeRow,Candidate cand
 	    	candidate.setResidenceLongitude(addUserDTO.getResidenceLongitude());
 	    	candidate.setResidenceZipCode(addUserDTO.getResidenceZipCode());
 	    	candidate.setResidenceStreetAddress(addUserDTO.getResidenceAddress());
-	    	OrgLocations workLocation = orgLocationService.getOrgLocations(Long.parseLong(addUserDTO.getWorkLocation()));
-			candidate.setWorkLocation(workLocation);
 	    	
 	    	
 	    	Countries country = countriesService.getCountriesByCountryName(addUserDTO.getResidenceCountry());
@@ -2103,7 +2108,7 @@ private Sheet createXlsSheet(Sheet createExcelsheet, Row writeRow,Candidate cand
 		Candidate candidate = new Candidate();
 		candidate.setCreatedDate(commonUtil.orgLocationCommonDate(new Date(), orgLocations));
 		candidate.setCreatedBy(user.getUserCode());
-		
+		candidate.setWorkLocation(orgLocations);
 		candidate.setCandidateType("Candidate");
 		candidate.setCandidateUUID(SourceLeadRandomCodeHelper.generateRandomUUID());
 		candidate.setIsFavourite(0);
@@ -2213,12 +2218,12 @@ private Sheet createXlsSheet(Sheet createExcelsheet, Row writeRow,Candidate cand
 		 
 		candidate.setCandidateProfilePercentage(percentage);
 		
-		/*Candidate savedCandidate = candidateDao.storeCandidate(candidate);
+		Candidate savedCandidate = candidateDao.storeCandidate(candidate);
 		saveOrUpdateCandidateElkDocument(savedCandidate);
 		
 	    if(StringUtils.isNotBlank(candidateDTO.getInviteEmail()) && Constants.YES.equalsIgnoreCase(candidateDTO.getInviteEmail())){
 			inviteCandidateToSourceLead(user,savedCandidate,orgLocations);
-	    }*/
+	    }
 		
 	    return candidate;
 		
@@ -2631,15 +2636,23 @@ private Sheet createXlsSheet(Sheet createExcelsheet, Row writeRow,Candidate cand
 	}
 
 	@Override
-
-	public ResponseList<CandidateMarketPlaceDTO> getGlobalMarketCandidateList(CandidateMarketPlaceDTO candidateMarketPlaceDTO, String searchValue) {
-		return candidateDao.getGlobalMarketCandidateList(candidateMarketPlaceDTO, searchValue);
+	public void saveBulkCandidates(List<Candidate> candidatesList,Long orgLocationId) throws Exception {
+		candidateDao.saveBulkCandidates(candidatesList,orgLocationId);
 	}
 
 	@Override
-	public void saveBulkCandidates(List<Candidate> candidatesList) throws Exception {
-		candidateDao.saveBulkCandidates(candidatesList);
+	public List<String> getCandidateEmailsByOrgLocationId(Long orgLocationId) throws Exception {
+		return candidateDao.getCandidateEmailsByOrgLocationId(orgLocationId);
+	}
 
+	@Override
+	public Long getCandidateIdByEmailAndOrgLocationId(String email, Long orgLocationId) throws Exception {
+		return candidateDao.getCandidateIdByEmailAndOrgLocationId(email, orgLocationId);
+	}
+
+	@Override
+	public ResponseList<CandidateMarketPlaceDTO> getGlobalMarketCandidateList(CandidateMarketPlaceDTO candidateMarketPlaceDTO, String searchValue) {
+		return candidateDao.getGlobalMarketCandidateList(candidateMarketPlaceDTO, searchValue);
 	}
 
 	@Override
