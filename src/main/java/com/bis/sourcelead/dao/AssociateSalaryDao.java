@@ -5,6 +5,7 @@ import java.util.List;
 import com.bis.sourcelead.dto.AssociatePayItemDTO;
 import com.bis.sourcelead.dto.CandidateDTO;
 import com.bis.sourcelead.dto.ResponseList;
+import com.bis.sourcelead.dto.SalaryDTO;
 import com.bis.sourcelead.entity.AssociatePayItem;
 import com.bis.sourcelead.entity.AssociateSalary;
 import com.bis.sourcelead.entity.AssociateSalaryHistory;
@@ -34,7 +35,8 @@ public interface AssociateSalaryDao {
 	ResponseList<AssociateSalary> getAssociateSalaryListByLocationIdAndGroupId(OrgLocations orgLocation, Long groupId, CandidateDTO dto);
 
 	List<AssociateSalaryInd> getIndAssociateSalaryListByGroupId(OrgLocations orgLocation, long groupId);
+
+	List<SalaryDTO> getSalaryByGroupId(OrgLocations orgLocation, Long groupId, String payType);
 	
 	List<AssociateSalaryInd> getIndAssociateSalaryListByGroupId(OrgLocations orgLocation, long groupId,String payType);
-			
 }
