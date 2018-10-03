@@ -18,7 +18,7 @@
           </div>
           
           <div class="clearfix mb" id="popnotify">
-             <label class="noPad">POP Mail Server name <b class="valStar">*</b></label>
+             <label class="noPad">IMAP Mail Server name <b class="valStar">*</b></label>
             <input class="form-control" value="" id="parserServerName" name="serverName" data-validation="required validate_Space"  field-name="Receive Server" placeholder="e.g.secure.emailsrvr.com" type="text">
           </div>
           
@@ -45,7 +45,7 @@
           </div>
           
            <div class="clearfix bg-info">
-             <label class="modal-body"><strong class="text-danger paddingRight">Note:</strong>To configure the Gmail account, enable the  <a href="https://mail.google.com/mail/u/0/#settings/fwdandpop" target="_blank">POP</a> and <a href="https://www.google.com/settings/security/lesssecureapps" target="_blank">Allow less secure</a></label>
+             <label class="modal-body"><strong class="text-danger paddingRight">Note:</strong>To configure the Gmail account, enable the  <a href="https://mail.google.com/mail/u/0/#settings/fwdandpop" target="_blank">IMAP</a> and <a href="https://www.google.com/settings/security/lesssecureapps" target="_blank">Allow less secure</a></label>
            </div>
           
 			</div>
