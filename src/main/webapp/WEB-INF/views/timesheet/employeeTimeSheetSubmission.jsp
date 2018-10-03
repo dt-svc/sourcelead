@@ -57,19 +57,27 @@
 						                     <c:if test="${!empty employeeTimesheetEntryDetailsDTO.empLeaveMap}">
 						                      <c:forEach var="empLeaveMap" items="${employeeTimesheetEntryDetailsDTO.empLeaveMap}" varStatus="empLeaveMapCount">
 						                      <c:set var="leaveIndex" value="${leaveIndex+1}"/>
-							                      <tr>
+							                      <tr id="timesheetRow${leaveIndex}">
 							                          <td>
-								                         <p>--</p>
+								                         <div style="position: relative;">--
+								                          <c:if test="${empty timeSheetSubmissionStatus || timeSheetSubmissionStatus == 'NEW' || timeSheetSubmissionStatus == 'DRAFT'}">
+									                          <c:forEach var="empL" items="${empLeaveMap.value}">
+									                              <c:if test="${empL.holiday eq true}">
+									                                 <input type="button" value="" onClick="removeHolidayRow('${leaveIndex}','${empL.holidayId}','${empL.holidayUserId}','${empL.holidayUserLocationId}')" class="timeRemoveBtn"/>
+									                              </c:if>
+									                          </c:forEach>
+									                       </c:if>
+								                         </div>
 								                      </td>
 								                      <c:set var="leaveMapArr" value="${fn:split(empLeaveMap.key,'##')}"/>
 							                          <td>
-								                            <p>${leaveMapArr[0]}</p>   
+								                            <div>${leaveMapArr[0]}</div>  
 								                      </td>
 								                       <td>
-								                         <span id="${leaveIndex}task1IdBillableTypeId">${leaveMapArr[1]}</span>
+								                         <div><span id="${leaveIndex}task1IdBillableTypeId">${leaveMapArr[1]}</span></div>
 								                      </td>
 								                      <td>
-								                         <p>--</p>
+								                         <div>--</div>
 								                      </td>
 								                      <c:forEach var="empLeave" items="${empLeaveMap.value}" varStatus="empLeaveCount">
 								                        <td>
@@ -1538,6 +1546,33 @@ function removeTimeSheetRow(rowId) {
 		}
 		
 </script>	
+
+
+<script type="text/javascript">	
+function removeHolidayRow(rowId,holidayId,holidayUserId,holidayUserLocationId) { 
+	         var sourceleadUrl ='${SourceLeadWeb_sourceleadUrl}';
+			 document.getElementById("timesheetRow"+rowId).style.display = 'none';
+			 document.getElementById("timesheetRow"+rowId).value= '';
+			 var  rId = "timesheetRow"+rowId;
+			  var r = document.getElementById("timesheet").rows[rId];
+	          var count = (r.cells.length);
+		      for(i=0;i<count;i++){
+		        r.deleteCell(0);
+		      } 
+		      addOrRemoveTimeSheetCommentRow('');
+		      setTotals(); 
+		 	  $("#loadTime").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:60% center; background-repeat:no-repeat; background-size:75px;');
+		  	  $.ajax({
+		 	      type : "POST",
+		      	  url: sourceleadUrl+"/dropHoliday?${_csrf.parameterName}=${_csrf.token}&holidayId="+holidayId+"&holidayUserId="+holidayUserId+"&holidayUserLocationId="+holidayUserLocationId,		
+		 	      success :function(result) {
+		 	    	  $("#loadTime").removeAttr("style"); 
+		 	      }
+		    }); 
+		 	
+		}
+		
+</script>
 
 <!-- this script is for clear timesheet -->
 <script>

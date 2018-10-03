@@ -1249,14 +1249,14 @@ private Set<BankDataHistory> getBankDataHistory(AssociateTaxDedContriView associ
 			payrollDTO.setPayItemTotal(piTotal);
 			
 			//Loan and advances
-		/*	BigDecimal lATotal = BigDecimal.ZERO;
+			BigDecimal lATotal = BigDecimal.ZERO;
 			List<AssociateLoanAndAdvancesDTO> loanAdvance = payrollUtil.getLoanAndAdvancesData(payroll);
 			if(loanAdvance != null && loanAdvance.size() >0) {
 				payrollDTO.setLoanAdvance(loanAdvance);
 				loanAmountTotal = loanAdvance.stream().mapToDouble(lAmt->Double.valueOf(lAmt.getLoanAmount())).sum();
 			}
 			lATotal = BigDecimal.valueOf(loanAmountTotal);
-			payrollDTO.setLoanAmountTotal(lATotal);*/
+			payrollDTO.setLoanAmountTotal(lATotal);
 			
 			// Calculating YTD
 			YTDPayrollDTO ytdDTO = payrollUtil.getEmployeeYTDPayroll(payroll.getCandidate(),orgLocation,approverStatus);
@@ -1368,6 +1368,14 @@ private Set<BankDataHistory> getBankDataHistory(AssociateTaxDedContriView associ
 			   Set<PayitemHistory> payItemHis = getUpdatedPayItemData(payroll,payAdjustmentDTO.getPayItem());
 			   payroll.setPayitemHistory(payItemHis);
 			}
+			
+			
+			// Loan And Advances
+		/*	double loanAmountSum = 0;
+			if(payAdjustmentDTO.getLoanAdvance() != null) {
+				loanAmountSum = payAdjustmentDTO.getLoanAdvance().stream().mapToDouble(p->Double.parseDouble(p.getLoanAmount())).sum();
+			}*/
+			
 			BigDecimal netPay = (totPay.add(new BigDecimal(payItemSum))).subtract(payroll.getAdvanceAmount().add(payroll.getLoanAmount()));
 			payroll.setNetPay(netPay);
 			Set<EmployeePayrollTax> payrollTaxSet = getPayrollTaxes(payroll,orgLocation,payrollCalculator,loginUser);
