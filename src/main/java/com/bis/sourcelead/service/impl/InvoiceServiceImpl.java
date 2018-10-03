@@ -1439,30 +1439,48 @@ public class InvoiceServiceImpl implements InvoiceService {
 		if (null != orgLocations) {
 			writeRow.createCell(1).setCellValue(orgLocations.getOrgLocationName());
 		}
-
-		if (null != invoice.getContactUser()) {
-			if (null != invoice.getContactUser().getLastName()
-					&& !"".equalsIgnoreCase(invoice.getContactUser().getLastName())) {
-				StringBuilder contactName = new StringBuilder();
-				writeRow.createCell(2).setCellValue(contactName.append(invoice.getContactUser().getFirstName())
-						.append(" ").append(invoice.getContactUser().getLastName()).toString());
-			} else if (null != invoice.getContactUser().getFirstName()) {
-				writeRow.createCell(2).setCellValue(invoice.getContactUser().getFirstName());
+		List<User> contactUsersList = null;
+		try {
+			contactUsersList = userDao.getUsersListUsingMultipleStringIds(invoice.getContactUsers());
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		if (null != invoice.getContactUsers()) {
+			StringBuilder sbName = new StringBuilder();
+			for(User contactUser : contactUsersList){
+				if(null != contactUser.getFullName() && !"".equalsIgnoreCase(contactUser.getFullName())) {
+					sbName.append(contactUser.getFullName()).append(",").toString();
+				}
 			}
+			writeRow.createCell(2).setCellValue(sbName.deleteCharAt(sbName.length()-1).toString());
+			
+	}
+
+		if (null != invoice.getContactUsers()) {
+			StringBuilder sbEmail = new StringBuilder();
+			for(User contactUser : contactUsersList){
+				if(null != contactUser.getEmail() && !"".equalsIgnoreCase(contactUser.getEmail())) {
+					sbEmail.append(contactUser.getEmail()).append(",").toString();
+				}
+			}
+			writeRow.createCell(3).setCellValue(sbEmail.deleteCharAt(sbEmail.length()-1).toString());
 		}
 
-		if (null != invoice.getContactUser()) {
-			if (null != invoice.getContactUser().getEmail()
-					&& !"".equalsIgnoreCase(invoice.getContactUser().getEmail())) {
-				writeRow.createCell(3).setCellValue(invoice.getContactUser().getEmail());
+		if (null != invoice.getContactUsers()) {
+			StringBuilder sbPhone = new StringBuilder();
+			int count = contactUsersList.size();
+			String contactMobile = "";
+			for(User contactUser : contactUsersList){
+				if(null != contactUser.getMobilePhone() && !"".equalsIgnoreCase(contactUser.getMobilePhone())) {
+					contactMobile = contactMobile + contactUser.getMobilePhone();
+				}
+				count--;
+				if(count != 0 && null != contactUser.getMobilePhone() && !"".equalsIgnoreCase(contactUser.getMobilePhone())){
+					contactMobile = contactMobile + ",";
+				}
 			}
-		}
-
-		if (null != invoice.getContactUser()) {
-			if (null != invoice.getContactUser().getMobilePhone()
-					&& !"".equalsIgnoreCase(invoice.getContactUser().getMobilePhone())) {
-				writeRow.createCell(4).setCellValue(invoice.getContactUser().getMobilePhone());
-			}
+			writeRow.createCell(4).setCellValue(contactMobile.toString());
 		}
 
 		if (null != invoice.getInvoiceDate()) {

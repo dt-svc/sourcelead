@@ -686,7 +686,8 @@ public class Constants {
 
 	public static final String[] REQIREMENT_BACKOUT_HEADERS = { "Applicant Name", "Email", "Job", "Client", "Backout Type", "Backout Reason",  "Source", "Status","Job Rating" ,"Incentivized"};
 
-	
+	public static final String[] APPLICANTS_JOINED_HEADERS = { "Applicant Name", "Email Id","Contact Number","Job Title", "process","Client", "Date Of Interview", "Offer Rate","Source","Submitted On","Date Of Join", "Payment Term","Generate Invoice"};
+
 	public static final String SHORTLIST_CANDIDATE_COUNT = "shortlist_candidate :";
 	public static final String VENDOR = "Vendor";
 	public static final String CLIENT = "Client";
@@ -1252,5 +1253,20 @@ public class Constants {
 	public static final String REGULAR = "Regular";
 	
 	public static final String[] DIRECT_DEPOSIT_HEADER = { "Employee\nNumber", "Employee Name", "Department", "Transit\nNumber", "Account\nNumber", "Deposit\nAmount", "Description" };
+	
+	//Indian_Payroll
+	public static final String IND_PAYROLL_PAYHEAD_DEDUCTION = "Deduction";
+	public static final String IND_PAYROLL_PAYHEAD_EARNINGS = "Earnings";
+	
+	public static final String IND_PAYROLL_PAYFREQUENCY_MONTHLY = "Monthly";
+	public static final String IND_PAYROLL_PAYFREQUENCY_WEEKLY = "Bi-Weekly";
+	public static final String IND_PAYROLL_PAYFREQUENCY_BI_WEEKLY = "Weekly";
+	public static final String IND_PAYROLL_PAYFREQUENCY_ANUALLY = "Annually";
+	
+	public static final String IND_PAYROLL_PAYHEAD_TDS = "TDS";
+	public static final String IND_PAYROLL_PROFESSIONAL_TAX = "PT";
+	
+	public static final String[] CONSTANT_PAYHEAD_SHORTCODES = { "PT", "TDS", "PF", "ESI", "L&D", "BO", "ARR", "RMB" };
+	
 
 }

@@ -56,10 +56,10 @@ border:none; background: none; font-size:14px; font-weight:600; box-shadow: none
                 <select class="chosen-select form-control" multiple="multiple" id="clientContact" name="clientContact" data-validation="required" field-name="Client Contact">
                 </select>
               </div>
-               <span class="col-md-3 noPad clearfix" onclick="selectedClient();">
+               <span class="col-md-3 noPad clearfix">
                   <span class="btn btn-primary btn-sm" onclick="getClientContacts();"><i class="fa fa-refresh "></i></span>
 			       <sec:authorize access="hasAnyRole('ROLE_CREATE_CLIENT_CONTACT')"> 
-			         <a href="javascript:void(0)"><i class="fa fa-plus btn btn-default pull-right minHeBtn"></i></a>
+			         <a href="javascript:void(0)" onclick="selectedClient();"><i class="fa fa-plus btn btn-default pull-right minHeBtn"></i></a>
 			       </sec:authorize>
 		        </span>
             </div>
