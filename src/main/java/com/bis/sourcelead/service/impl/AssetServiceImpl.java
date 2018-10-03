@@ -31,6 +31,7 @@ import com.bis.sourcelead.entity.Shift;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.entity.UserCustomFieldData;
 import com.bis.sourcelead.entity.UserRole;
+import com.bis.sourcelead.reportsDTO.AssetGrowthDTO;
 import com.bis.sourcelead.service.AssetCategoryService;
 import com.bis.sourcelead.service.AssetCustomFieldService;
 import com.bis.sourcelead.service.AssetService;
@@ -464,5 +465,11 @@ public class AssetServiceImpl implements AssetService{
 	@Override
 	public List<AssetServices> getAssetServicesListByAssetId(Long assetId) throws Exception {
 		return assetDao.getAssetServicesListByAssetId(assetId);
+	}
+
+
+	@Override
+	public List<AssetGrowthDTO> getAssetGrowthListByOrgloationIdAndAssetGrowthDTO(Long orgLocationId, AssetGrowthDTO assetGrowthDTO,Date[] searchDates) throws Exception {
+		return assetDao.getAssetGrowthListByOrgloationIdAndAssetGrowthDTO(orgLocationId, assetGrowthDTO,searchDates);
 	}
 }

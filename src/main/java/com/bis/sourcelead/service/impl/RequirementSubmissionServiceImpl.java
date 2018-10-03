@@ -296,7 +296,7 @@ public class RequirementSubmissionServiceImpl implements RequirementSubmissionSe
 		 OrgLocations guestOrglocation=null;
 		 String submissionstatus=null;
 		 Countries countries = null;
-		 if(StringUtils.isNotBlank(orgLocations.getCountry())) {
+		 if(orgLocations != null && StringUtils.isNotBlank(orgLocations.getCountry())) {
 			 countries = countiresService.getCountriesByCountryName(orgLocations.getCountry());
 		 }
 		 
@@ -5187,6 +5187,8 @@ private void createXlsSheet(Sheet createExcelsheet,Row writeRow,int column,Strin
         	  headers = Constants.REQIREMENT_APPLICANT_HEADERS;
          }else if(submissionStatus.equalsIgnoreCase("SUBMIT_TO_CLIENT")) {
         	 headers = Constants.REQIREMENT_SUBMISSION_HEADERS;
+         }else if(submissionStatus.equalsIgnoreCase("SHORTLIST")) {
+        	 headers = Constants.REQIREMENT_SHORTLIST_HEADERS;
          }else if(submissionStatus.equalsIgnoreCase("INTERVIEW")) {
         	 headers = Constants.REQIREMENT_INTERVIEW_HEADERS;
          }else if(submissionStatus.equalsIgnoreCase("OFFERMADE")) {
@@ -5478,6 +5480,30 @@ private void createXlsSheet(Sheet createExcelsheet,Row writeRow,int column,Strin
 			 }else {
 				 writeRow.createCell(9).setCellValue("--");
 			 }
+		 }else if(submissionStatus.equalsIgnoreCase("SHORTLIST")) {
+			 //Applied On
+			 writeRow.createCell(4).setCellValue(commonUtil.dateStrFromOrgDateFormatter(orgLocations.getDateFormat(),rsh.getCreatedDate())); 
+			 
+			//Sourece Name
+			 writeRow.createCell(5).setCellValue(rsh.getSubmissionId().getCreatedUser());
+				
+			//Aplicant Status
+			 writeRow.createCell(6).setCellValue(rsh.getSubmissionId().getSubmissionStatus().toString());
+			
+			//Job Rating
+			 if(rsh.getSubmissionId().getRequirement().getJobRate() != null) {
+				 writeRow.createCell(7).setCellValue(rsh.getSubmissionId().getRequirement().getJobRate());
+			 }else {
+				 writeRow.createCell(7).setCellValue("--");
+
+			 }
+
+			//Incentivize
+			 if(rsh.getSubmissionId().getRequirement().getIncentivized() != null) {
+				 writeRow.createCell(8).setCellValue(rsh.getSubmissionId().getRequirement().getIncentivized());
+			 }else {
+				 writeRow.createCell(8).setCellValue("--");
+			 }
 		 }
 		
 		return createExcelsheet;
@@ -5496,8 +5522,8 @@ private void createXlsSheet(Sheet createExcelsheet,Row writeRow,int column,Strin
 
 	@Override
 	public List<RequirementSubmissionsDTO> getCandidateSubmittedRequirementsListByCandidateId(Long candidateId,
-			Long orgLocationId) throws Exception {
-		return requirementSubmissionDao.getCandidateSubmittedRequirementsListByCandidateId(candidateId, orgLocationId);
+			Long orgLocationId,String dateFormat) throws Exception {
+		return requirementSubmissionDao.getCandidateSubmittedRequirementsListByCandidateId(candidateId, orgLocationId,dateFormat);
 	}
 
 	@Override
@@ -5559,8 +5585,13 @@ private void createXlsSheet(Sheet createExcelsheet,Row writeRow,int column,Strin
 				writeRow.createCell(3).setCellValue(rsh.getSubmissionId().getRequirement().getJobTitle());
 			}
 		}
-		writeRow.createCell(4).setCellValue("--");
-				
+		 if(rsh.getSubmissionId().getRequirement().getProcess() != null){
+				writeRow.createCell(4).setCellValue(rsh.getSubmissionId().getRequirement().getProcess());
+ 
+		 }
+		 else{
+			 writeRow.createCell(4).setCellValue("--"); 
+		 }
 		//Clinet Name
 		if(rsh.getSubmissionId().getRequirement().getClientId() != null) {
 			if (rsh.getSubmissionId().getRequirement().getClientId().getResponderType().equalsIgnoreCase("Client")) {

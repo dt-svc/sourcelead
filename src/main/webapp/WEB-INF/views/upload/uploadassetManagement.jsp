@@ -23,13 +23,14 @@
 var uploadflag= true;
 		window.onload = function () {
 			var refreshId = setInterval(function(){
+				var dateFormat ='${SourceLeadWeb_orgLocations.dateFormat}';	
 				if(uploadflag == true){
-					xlsupload.getUploadInprogressProgressBar("Assets");
+					xlsupload.getUploadInprogressProgressBar("Assets",dateFormat);
 				  }else{
 					     clearInterval(refreshId);
 						 $(".browseProgress").hide();
 						 $("#upload_button").removeAttr("disabled");
-						 xlsupload.getUploadInprogressProgressBar("Assets");
+						 xlsupload.getUploadInprogressProgressBar("Assets",dateFormat);
 				  }
 			},1000);
 		 };

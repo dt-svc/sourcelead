@@ -3,6 +3,7 @@ package com.bis.sourcelead.payroll.dto;
 import java.math.BigDecimal;
 import java.util.List;
 
+import com.bis.sourcelead.dto.AssociateLoanAndAdvancesDTO;
 import com.bis.sourcelead.dto.AssociatePayItemDTO;
 
 public class PayAdjustmentDTO {
@@ -43,6 +44,8 @@ public class PayAdjustmentDTO {
     private BigDecimal assSalary;
     
     private BigDecimal assSalaryAmount;
+    
+    private List<AssociateLoanAndAdvancesDTO> loanAdvance;
 	
 
 	public BigDecimal getAssSalaryAmount()
@@ -224,4 +227,13 @@ public class PayAdjustmentDTO {
 	{
 		this.assSalary = assSalary;
 	}
+
+	public List<AssociateLoanAndAdvancesDTO> getLoanAdvance() {
+		return loanAdvance;
+	}
+
+	public void setLoanAdvance(List<AssociateLoanAndAdvancesDTO> loanAdvance) {
+		this.loanAdvance = loanAdvance;
+	}
+	
 }

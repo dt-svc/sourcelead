@@ -81,6 +81,9 @@ public class RequirementHelper {
 			if(requirement.getIsClientJob() !=null){
 				requirementIndex.setIsClientJob(requirement.getIsClientJob());
 			}
+			if(requirement.getProcess() !=null){
+				requirementIndex.setProcess(requirement.getProcess());
+			}
 			if(requirement.getMedicalClearence() != null){
 			requirementIndex.setMedicalClearence(requirement.getMedicalClearence());
 			}

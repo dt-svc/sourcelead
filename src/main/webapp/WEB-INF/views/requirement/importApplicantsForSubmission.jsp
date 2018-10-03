@@ -22,13 +22,14 @@
 var uploadflag= true;
 		function getSubmissionsUploadedHistory() {
 			var refreshId = setInterval(function(){
+				var dateFormat ='${SourceLeadWeb_orgLocations.dateFormat}';
 				if(uploadflag == true){
-					xlsupload.getUploadInprogressProgressBar("Submissions");
+					xlsupload.getUploadInprogressProgressBar("Submissions",dateFormat);
 				  }else{
 					     clearInterval(refreshId);
 						 $(".browseProgress").hide();
 						 $("#upload_button").removeAttr("disabled");
-						 xlsupload.getUploadInprogressProgressBar("Submissions");
+						 xlsupload.getUploadInprogressProgressBar("Submissions",dateFormat);
 				  }
 			},1000);
 		 }

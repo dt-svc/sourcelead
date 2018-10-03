@@ -1,5 +1,6 @@
 package com.bis.sourcelead.dao;
 
+import java.util.Date;
 import java.util.List;
 
 import com.bis.sourcelead.dto.AssetDTO;
@@ -7,6 +8,7 @@ import com.bis.sourcelead.dto.ResponseList;
 import com.bis.sourcelead.entity.Asset;
 import com.bis.sourcelead.entity.AssetAssign;
 import com.bis.sourcelead.entity.AssetServices;
+import com.bis.sourcelead.reportsDTO.AssetGrowthDTO;
 import com.bis.sourcelead.service.AssetService;
 
 public interface AssetDao {
@@ -58,5 +60,7 @@ public interface AssetDao {
 	List<AssetServices> getAssetServicesListByAssetId(Long assetId)throws Exception; 
 
 	AssetServices saveAssetService(AssetServices assetServices) throws Exception;
+
+	List<AssetGrowthDTO> getAssetGrowthListByOrgloationIdAndAssetGrowthDTO(Long orgLocationId,AssetGrowthDTO assetGrowthDTO,Date[] searchDates)throws Exception;
 
 }

@@ -30,6 +30,9 @@ public class IndPaysheetFrequency {
 	@Column(name = "ID", nullable = false)
 	private Long id;
 
+	@Column (name="PAY_RUN_ID")
+	private Long payRunId;
+	
 	@ManyToOne
 	@JoinColumn(name = "ORG_LOCATION_ID", nullable = false)
 	private OrgLocations orgLocation;
@@ -198,5 +201,14 @@ public class IndPaysheetFrequency {
 	public void setActionPerformedBy(String actionPerformedBy) {
 		this.actionPerformedBy = actionPerformedBy;
 	}
+
+	public Long getPayRunId() {
+		return payRunId;
+	}
+
+	public void setPayRunId(Long payRunId) {
+		this.payRunId = payRunId;
+	}
+	
 
 }
