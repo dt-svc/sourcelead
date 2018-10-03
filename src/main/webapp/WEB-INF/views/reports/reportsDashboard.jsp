@@ -137,6 +137,8 @@
 				    </c:if>
 				</sec:authorize>
 				
+			   <li><a href='${appPath}/assetmanagementGrowth'>Asset Growth</a></li>
+				
 				
 			    
 				<!-- <li><a href="#">Profit &amp; Loss</a></li>
