@@ -331,7 +331,6 @@ function getUploadProgressBar(){
 	        		    result = result + '<td><div class="tbldata-dotdot-me">'+report.date+'&nbsp;&nbsp;'+report.time+'</div></td>';
 	        		    if(report.uploadProcessingStatus == 'Completed'){
 	        		    	result = result+'<td><div class="tblicons_4"> <a download class="glyphicon glyphicon-download-alt" target="_blank" href=\"'+report.fileUrl+'\" download title="Download"></a>';
-			           		result = result+'&nbsp;&nbsp;&nbsp;&nbsp;<a class="fa fa-eye" href="javascript:void(0)" onClick="viewFile(\''+report.fileUrl+'\',\''+report.fileName+'\',\''+report.fileContentType+'\');"title="preview"></a>';
 	        		    }else{
 	        		    
 	        		    	  result = result + '<td>';
