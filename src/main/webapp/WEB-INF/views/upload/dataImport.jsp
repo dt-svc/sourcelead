@@ -295,6 +295,18 @@ function getUploadProgressBar(){
         url: sourceleadUrl+"/getXlsProcessingHistroyListByEntityType?"+tokenParamName+"="+tokenValue+"&entityType="+uploadType, 
         success: function(json) {
         	
+        	  var locationList ='${SourceLeadWeb_orgLocations.dateFormat}';	
+ 	   		  if(locationList.match("yyyy-MM-dd")){
+ 	   			  uploadedDateStr = 'YYYY-MM-DD';
+ 	   		  }if(locationList.match("dd-MM-yyyy")){
+ 	   			uploadedDateStr = 'DD-MM-YYYY'; 
+ 	   		  }if(locationList.match("MM-dd-yyyy")){
+ 	   			uploadedDateStr = 'MM-DD-YYYY'; 
+ 	   		  }if(locationList.match("yyyy-dd-MM")){
+ 	   			uploadedDateStr = 'YYYY-DD-MM'; 
+ 	   		  }
+ 	   		  
+        	
         	   var result = "";
         	   result = result + '     <div class="clearfix"></div>';
 	           result = result + '   </div>';
@@ -306,7 +318,7 @@ function getUploadProgressBar(){
 	           result = result + '           <th>Uploaded</th>';
 	           result = result + '           <th>Success</th>';
 	           result = result + '           <th>Failed</th>';
-	           result = result + '           <th>Date / Time</th>';
+	           result = result + '           <th>Date / Time<br>(<small class="custom-small">'+uploadedDateStr+'</small>)</th>';
 	           result = result + '           <th>Status</th>';
 	           result = result + '         </tr>';
 	           result = result + '       </thead>';

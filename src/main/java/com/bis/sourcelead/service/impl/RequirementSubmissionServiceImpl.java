@@ -5496,8 +5496,8 @@ private void createXlsSheet(Sheet createExcelsheet,Row writeRow,int column,Strin
 
 	@Override
 	public List<RequirementSubmissionsDTO> getCandidateSubmittedRequirementsListByCandidateId(Long candidateId,
-			Long orgLocationId) throws Exception {
-		return requirementSubmissionDao.getCandidateSubmittedRequirementsListByCandidateId(candidateId, orgLocationId);
+			Long orgLocationId,String dateFormat) throws Exception {
+		return requirementSubmissionDao.getCandidateSubmittedRequirementsListByCandidateId(candidateId, orgLocationId,dateFormat);
 	}
 
 	@Override
