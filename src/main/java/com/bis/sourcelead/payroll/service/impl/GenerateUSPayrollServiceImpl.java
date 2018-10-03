@@ -288,14 +288,18 @@ public class GenerateUSPayrollServiceImpl implements GenerateUSPayrollService{
 									regularHoursAmount = amount;
 								}else if(PayrollConstant.SALARY.equalsIgnoreCase(assoSal.getPayType())) {
 									if(sal.getNoOfDays() >0) {
-										amount = payrollUtil.calculateSalaryUptoTerminationDate(assoSal.getGroupId().getPayFrequency(),sal.getNoOfDays(),assoSal.getGrossSalary());
+										amount = payrollUtil.calculateSalaryUptoTerminationDate(assoSal.getGroupId().getPayFrequency(),sal.getNoOfDays(),assoSal.getGrossSalary(),"salary");
 									}else {
 										amount = assoSal.getGrossSalary();
 									}
 								}else if(PayrollConstant.LCA_WAGE.equalsIgnoreCase(assoSal.getPayType())) {
 									LCAWageDTO lcaWageDTO  = generateUSPayrollDao.getLcaWageByCandidateIdLcationId(assoSal.getCandidate(),orgLocation);
 									if(lcaWageDTO != null) {
-										amount  = payrollUtil.getActualRateByPayFrequency(new BigDecimal(lcaWageDTO.getLcaWage()),lcaWageDTO.getLcaWageType(),assoSal.getGroupId().getPayFrequency());
+										if(sal.getNoOfDays() >0) {
+											amount = payrollUtil.calculateSalaryUptoTerminationDate(lcaWageDTO.getLcaWageType(),sal.getNoOfDays(),assoSal.getGrossSalary(),"lca");
+										}else {
+											amount  = payrollUtil.getActualRateByPayFrequency(new BigDecimal(lcaWageDTO.getLcaWage()),lcaWageDTO.getLcaWageType(),assoSal.getGroupId().getPayFrequency());
+										}
 									}
 								}
 								if(associateTaxView.getAccountType() != null) {

@@ -585,29 +585,54 @@ public class PayrollUtil {
 	 * @param payFrequency
 	 * @param noOfDays
 	 * @param amount
+	 * @param salType 
 	 * @return BigDecimal
 	 */
-	public BigDecimal calculateSalaryUptoTerminationDate(String payFrequency, int noOfDays, BigDecimal amount)
+	public BigDecimal calculateSalaryUptoTerminationDate(String payFrequency, int noOfDays, BigDecimal amount, String salType)
 	{
 		BigDecimal perDaySalary = BigDecimal.ZERO;
+		BigDecimal houryRate = BigDecimal.ZERO;
 		BigDecimal salary = BigDecimal.ZERO;
 		try {
-			if (PayrollConstant.PAY_YEARLY.equalsIgnoreCase(payFrequency.trim())) {
-				perDaySalary = amount.divide(new BigDecimal(365), 3, RoundingMode.CEILING);
+			if("salary".equalsIgnoreCase(salType)) {
+				if (PayrollConstant.PAY_YEARLY.equalsIgnoreCase(payFrequency.trim())) {
+					perDaySalary = amount.divide(new BigDecimal(365), 3, RoundingMode.CEILING);
+				}
+				else if (PayrollConstant.PAY_MONTHLY.equalsIgnoreCase(payFrequency.trim())) {
+					perDaySalary = amount.divide(new BigDecimal(30), 3, RoundingMode.CEILING);
+				}
+				else if (PayrollConstant.PAY_BI_WEEKLY.equalsIgnoreCase(payFrequency.trim())) {
+					perDaySalary = amount.divide(new BigDecimal(14), 3, RoundingMode.CEILING);
+				}
+				else if (PayrollConstant.PAY_WEEKLY.equalsIgnoreCase(payFrequency.trim())) {
+					perDaySalary = amount.divide(new BigDecimal(7), 3, RoundingMode.CEILING);
+				}
+				else if (PayrollConstant.PAY_BI_MONTHLY.equalsIgnoreCase(payFrequency.trim())) {
+					perDaySalary = amount.divide(new BigDecimal(15), 3, RoundingMode.CEILING);
+				}
+				salary = perDaySalary.multiply(new BigDecimal(noOfDays));	
+			}else {
+				if (PayrollConstant.PAY_YEARLY.equalsIgnoreCase(payFrequency.trim())) {
+					houryRate = amount.divide(new BigDecimal(2088), 3, RoundingMode.CEILING);
+				}
+				else if (PayrollConstant.PAY_MONTHLY.equalsIgnoreCase(payFrequency.trim())) {
+					houryRate = amount.divide(new BigDecimal(176), 3, RoundingMode.CEILING);
+				}
+				else if (PayrollConstant.PAY_BI_WEEKLY.equalsIgnoreCase(payFrequency.trim())) {
+					houryRate = amount.divide(new BigDecimal(80), 3, RoundingMode.CEILING);
+				}
+				else if (PayrollConstant.PAY_WEEKLY.equalsIgnoreCase(payFrequency.trim())) {
+					houryRate = amount.divide(new BigDecimal(40), 3, RoundingMode.CEILING);
+				}
+				else if (PayrollConstant.PAY_BI_MONTHLY.equalsIgnoreCase(payFrequency.trim())) {
+					houryRate = amount.divide(new BigDecimal(88), 3, RoundingMode.CEILING);
+				}
+				else if (PayrollConstant.HOURLY.equalsIgnoreCase(payFrequency.trim())) {
+					houryRate = amount;
+				}
+				salary = houryRate.multiply(new BigDecimal(noOfDays));	
 			}
-			else if (PayrollConstant.PAY_MONTHLY.equalsIgnoreCase(payFrequency.trim())) {
-				perDaySalary = amount.divide(new BigDecimal(30), 3, RoundingMode.CEILING);
-			}
-			else if (PayrollConstant.PAY_BI_WEEKLY.equalsIgnoreCase(payFrequency.trim())) {
-				perDaySalary = amount.divide(new BigDecimal(14), 3, RoundingMode.CEILING);
-			}
-			else if (PayrollConstant.PAY_WEEKLY.equalsIgnoreCase(payFrequency.trim())) {
-				perDaySalary = amount.divide(new BigDecimal(7), 3, RoundingMode.CEILING);
-			}
-			else if (PayrollConstant.PAY_BI_MONTHLY.equalsIgnoreCase(payFrequency.trim())) {
-				perDaySalary = amount.divide(new BigDecimal(15), 3, RoundingMode.CEILING);
-			}
-			salary = perDaySalary.multiply(new BigDecimal(noOfDays));
+			
 		}catch (Exception e) {
 			e.printStackTrace();
 		}
