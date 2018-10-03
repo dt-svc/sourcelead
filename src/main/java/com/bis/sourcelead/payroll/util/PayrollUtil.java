@@ -37,6 +37,8 @@ import com.bis.sourcelead.payroll.service.AssociateDeductionService;
 import com.bis.sourcelead.payroll.service.PaysheetFrequencyService;
 import com.bis.sourcelead.util.CommonUtil;
 
+import javassist.compiler.NoFieldException;
+
 @Component
 public class PayrollUtil {
 	
@@ -585,6 +587,7 @@ public class PayrollUtil {
 	 * @param payFrequency
 	 * @param noOfDays
 	 * @param amount
+	 * @param salType 
 	 * @return BigDecimal
 	 */
 	public BigDecimal calculateSalaryUptoTerminationDate(String payFrequency, int noOfDays, BigDecimal amount)
@@ -612,6 +615,39 @@ public class PayrollUtil {
 			e.printStackTrace();
 		}
 		return salary;
+	}
+	
+	
+	public BigDecimal calculateSalaryUptoTerminationDateLcaWage(BigDecimal amount,String lcaWageType, int noOfDays, OrgLocations orgLocation)
+	{
+		BigDecimal houryRate = BigDecimal.ZERO;
+		BigDecimal payAmount = BigDecimal.ZERO;
+		BigDecimal hours = BigDecimal.ZERO;
+		if (PayrollConstant.PAY_YEARLY.equalsIgnoreCase(lcaWageType.trim())) {
+			houryRate = amount.divide(new BigDecimal(2088), 3, RoundingMode.CEILING);
+		}
+		else if (PayrollConstant.PAY_MONTHLY.equalsIgnoreCase(lcaWageType.trim())) {
+			houryRate = amount.divide(new BigDecimal(176), 3, RoundingMode.CEILING);
+		}
+		else if (PayrollConstant.PAY_BI_WEEKLY.equalsIgnoreCase(lcaWageType.trim())) {
+			houryRate = amount.divide(new BigDecimal(80), 3, RoundingMode.CEILING);
+		}
+		else if (PayrollConstant.PAY_WEEKLY.equalsIgnoreCase(lcaWageType.trim())) {
+			houryRate = amount.divide(new BigDecimal(40), 3, RoundingMode.CEILING);
+		}
+		else if (PayrollConstant.PAY_BI_MONTHLY.equalsIgnoreCase(lcaWageType.trim())) {
+			houryRate = amount.divide(new BigDecimal(88), 3, RoundingMode.CEILING);
+		}
+		else if (PayrollConstant.HOURLY.equalsIgnoreCase(lcaWageType.trim())) {
+			houryRate = amount;
+		}
+		
+		// amount calculation
+		int averageWorkingHours = orgLocation.getAverageWorkingHours();
+		int totalHours = averageWorkingHours * noOfDays;
+		
+		payAmount = houryRate.multiply(new BigDecimal(totalHours));
+		return payAmount;
 	}
 	
 	/**
@@ -840,26 +876,24 @@ public class PayrollUtil {
 				}
 			}*/
 		}
+
 		
 		
-		//commented by Rakshith
+		
 		//this is for loan and advances in edit payroll
-	/*	public List<AssociateLoanAndAdvancesDTO> getLoanAndAdvancesData(EmployeePayroll payroll) {
+		public List<AssociateLoanAndAdvancesDTO> getLoanAndAdvancesData(EmployeePayroll payroll) {
 			List<AssociateLoanAndAdvancesDTO> list = new ArrayList<>();
 			if (payroll.getPayitemHistory() != null) {
 				for (AssociateLoanAndAdvanceHistory his : payroll.getLoanHistory()) {
 					AssociateLoanAndAdvancesDTO loanDto = new AssociateLoanAndAdvancesDTO();
 					loanDto.setId(his.getId());
 					loanDto.setLoanAndAdvName(his.getAssociateLoanAndAdvances().getPayrollLoanAndAdvanceId().getName());
-					loanDto.setLoanAmount(his.getAssociateLoanAndAdvances().getAmount().toString());
-					if(StringUtils.isNotBlank(his.getIsBlocked())) {
-						loanDto.setIsBlocked(his.getIsBlocked());	
-					}
+					loanDto.setLoanAmount(his.getDeductAmount().toString());
 					list.add(loanDto);
 				}
 			}
 			return list;
-		}*/
+		}
 	
 
 	

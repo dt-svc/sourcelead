@@ -4,6 +4,7 @@ import java.math.BigDecimal;
 import java.util.List;
 import java.util.Map;
 
+import com.bis.sourcelead.dto.AssociateLoanAndAdvancesDTO;
 import com.bis.sourcelead.dto.AssociatePayItemDTO;
 
 public class USPayrollDTO {
@@ -107,6 +108,10 @@ public class USPayrollDTO {
     private String departmentName;
     
     private Map<String, BigDecimal> tax;
+    
+    private List<AssociateLoanAndAdvancesDTO> loanAdvance;
+    
+    private BigDecimal loanAmountTotal;
     
 	
 	public Map<String, BigDecimal> getTax()
@@ -511,4 +516,17 @@ public class USPayrollDTO {
 	{
 		this.departmentName = departmentName;
 	}
+	public List<AssociateLoanAndAdvancesDTO> getLoanAdvance() {
+		return loanAdvance;
+	}
+	public void setLoanAdvance(List<AssociateLoanAndAdvancesDTO> loanAdvance) {
+		this.loanAdvance = loanAdvance;
+	}
+	public BigDecimal getLoanAmountTotal() {
+		return loanAmountTotal;
+	}
+	public void setLoanAmountTotal(BigDecimal loanAmountTotal) {
+		this.loanAmountTotal = loanAmountTotal;
+	}
+	
 }

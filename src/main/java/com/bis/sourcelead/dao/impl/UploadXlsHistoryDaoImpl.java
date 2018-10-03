@@ -15,7 +15,6 @@ import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.bis.sourcelead.dao.UploadXlsHistoryDao;
-import com.bis.sourcelead.dto.CandidateDTO;
 import com.bis.sourcelead.dto.UploadXlsHistoryDTO;
 import com.bis.sourcelead.entity.UploadXlsHistory;
 import com.bis.sourcelead.exception.SourceLeadConstraintViolationException;

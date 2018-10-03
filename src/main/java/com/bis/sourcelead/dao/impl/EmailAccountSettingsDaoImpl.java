@@ -48,7 +48,7 @@ public class EmailAccountSettingsDaoImpl implements EmailAccountSettingsDao{
 
 	@Override
 	@Transactional(rollbackFor = { Exception.class })
-	public EmailAccountSettings storeEmailAccountSettings(EmailAccountSettings emailAccountSettings) throws Exception {
+	public long storeEmailAccountSettings(EmailAccountSettings emailAccountSettings) throws Exception {
 		logger.debug("Storing EmailAccountSettings");
 		Session session = this.sessionFactory.getCurrentSession();
 		try {
@@ -56,12 +56,11 @@ public class EmailAccountSettingsDaoImpl implements EmailAccountSettingsDao{
 				session.saveOrUpdate(emailAccountSettings);
 			}
 			logger.debug("emailAccountSettings Stored Successfully");
+			return emailAccountSettings.getId();
 		} catch (Exception exception) {
-			    StringBuilder message= new StringBuilder(MessageFormat.format(duplicateValue,"EmailAccountSettings"));
-				throw new SourceLeadConstraintViolationException(message.toString() +exception.getCause().toString());
+			StringBuilder message = new StringBuilder(MessageFormat.format(duplicateValue, "EmailAccountSettings"));
+			throw new SourceLeadConstraintViolationException(message.toString() + exception.getCause().toString());
 		}
-		return emailAccountSettings;
-		
 	}
 
 	@Override

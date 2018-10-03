@@ -125,6 +125,7 @@ var uploadflag= true;
 							  <label><i class="fa fa-check"></i>&nbsp;&nbsp;Shift</label>
 							  <label><i class="fa fa-check"></i>&nbsp;&nbsp;Manager(Email)</label>
 							  <label><i class="fa fa-check"></i>&nbsp;&nbsp;Employment Type</label>
+							  <label><i class="fa fa-check"></i>&nbsp;&nbsp;Designation</label>
 							  
 							  </p>
 						</span>
