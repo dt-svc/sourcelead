@@ -5,10 +5,10 @@
 
 <script>
 $(document).ready(function(){
-   var empType = '${payItem.allowEmployeementType}';
+ /*   var empType = '${payItem.allowEmployeementType}';
    if(empType != null && empType != '' && empType != 'undefined'){
 	   $("#allowEmployeementType").val(empType);
-   }
+   } */
 });
 </script>
 <!-- Content Area -->

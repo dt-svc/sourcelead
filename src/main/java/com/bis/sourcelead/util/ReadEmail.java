@@ -30,7 +30,7 @@ public class ReadEmail {
 		try {
 			Properties properties = new Properties();
 			final String user = confMail.getEmailId();
-			final String password = confMail.getEmailPassword();
+			final String password = new PasswordSecurity().decrypt(confMail.getEmailPassword());
 			final String host = confMail.getServerName();
 			final String portNumber = confMail.getPortNumber().toString();
 			/*

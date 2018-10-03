@@ -3691,6 +3691,7 @@ public class EMailJobScheduler {
 	
 	
 	@Scheduled(cron = "0 3 0 1 1/1 ?")
+//	@Scheduled(cron = "0 0/3 * 1/1 * ?")
 	@Async
 	public void calculateMonthlyLeaves() throws Exception
 	{
@@ -3754,7 +3755,7 @@ public class EMailJobScheduler {
 			List<LeaveType> leaveTypeList = leaveTypeService.getLeaveTypeListByLocationIdAndStatus(String.valueOf(orgLocation.getId()));
 			for(LeaveType leaveType : leaveTypeList){
 				if(Constants.YEARLY.equalsIgnoreCase(leaveType.getPeriod())){
-					Date[] dates = conversionUtil.getPreviousYearStartAndEndDate();
+					Date[] dates = ConversionUtil.getPreviousYearStartAndEndDate();
 					int status = associateBalanceLeaveService.calculateAndUpdateAssociateBalanceLeaves(orgLocation,leaveType,dates[0],dates[1]);
 				}
 			}

@@ -29,6 +29,7 @@ import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
+import org.joda.time.DateTime;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -76,6 +77,7 @@ import com.bis.sourcelead.entity.OrgRelations;
 import com.bis.sourcelead.entity.OrgSpoc;
 import com.bis.sourcelead.entity.RecommendedCustomizeScore;
 import com.bis.sourcelead.entity.Requirement;
+import com.bis.sourcelead.entity.RequirementInterview;
 import com.bis.sourcelead.entity.RequirementLocations;
 import com.bis.sourcelead.entity.RequirementOffers;
 import com.bis.sourcelead.entity.RequirementRateSubmissionNegotiation;
@@ -99,6 +101,7 @@ import com.bis.sourcelead.service.OrgRelationsService;
 import com.bis.sourcelead.service.OrgSpocService;
 import com.bis.sourcelead.service.RecommendationsService;
 import com.bis.sourcelead.service.RecommendedCustomizeScoreService;
+import com.bis.sourcelead.service.RequirementInterviewService;
 import com.bis.sourcelead.service.RequirementLocationsService;
 import com.bis.sourcelead.service.RequirementOffersService;
 import com.bis.sourcelead.service.RequirementRateSubmissionNegotiationService;
@@ -109,10 +112,12 @@ import com.bis.sourcelead.service.RequirementSubmissionTemplateFieldsService;
 import com.bis.sourcelead.service.SubmissionXlsService;
 import com.bis.sourcelead.service.TimeZoneService;
 import com.bis.sourcelead.service.UserService;
+import com.bis.sourcelead.util.CalendarUtil;
 import com.bis.sourcelead.util.CandidateActivityCommonUtil;
 import com.bis.sourcelead.util.CommonUtil;
 import com.bis.sourcelead.util.EmailScenerioUtil;
 import com.bis.sourcelead.util.FileUploadUtil;
+import com.bis.sourcelead.util.PdfUtil;
 import com.bis.sourcelead.util.SourceLeadRandomCodeHelper;
 
 /**
@@ -241,7 +246,11 @@ public class RequirementSubmissionServiceImpl implements RequirementSubmissionSe
     @Autowired
 	RequirementOffersService requirementOffersService;
 
-	
+    @Autowired
+    RequirementInterviewService requirementInterviewService;
+    
+    @Autowired
+    PdfUtil pdfUtil;
 	@Override
 	public RequirementSubmission getRequirementSubmissionById(Long submissionId) throws Exception {
 		return requirementSubmissionDao.getRequirementSubmissionById(submissionId);
@@ -287,7 +296,7 @@ public class RequirementSubmissionServiceImpl implements RequirementSubmissionSe
 		 OrgLocations guestOrglocation=null;
 		 String submissionstatus=null;
 		 Countries countries = null;
-		 if(StringUtils.isNotBlank(orgLocations.getCountry())) {
+		 if(orgLocations != null && StringUtils.isNotBlank(orgLocations.getCountry())) {
 			 countries = countiresService.getCountriesByCountryName(orgLocations.getCountry());
 		 }
 		 
@@ -5487,8 +5496,148 @@ private void createXlsSheet(Sheet createExcelsheet,Row writeRow,int column,Strin
 
 	@Override
 	public List<RequirementSubmissionsDTO> getCandidateSubmittedRequirementsListByCandidateId(Long candidateId,
-			Long orgLocationId) throws Exception {
-		return requirementSubmissionDao.getCandidateSubmittedRequirementsListByCandidateId(candidateId, orgLocationId);
+			Long orgLocationId,String dateFormat) throws Exception {
+		return requirementSubmissionDao.getCandidateSubmittedRequirementsListByCandidateId(candidateId, orgLocationId,dateFormat);
+	}
+
+	@Override
+	public Sheet getApplicaantJoinedListExcelFile(Sheet createExcelsheet, Workbook createExcelworkbook, ResponseList<RequirementSubmissionHistory> dashboardJobsCountlist, OrgLocations loginOrgLocations, String submissionStatus) throws Exception
+	{
+		Row writeRow = null;
+        createExcelsheet = getApplicantJoinedListExcelSheetWithHeader(createExcelsheet,writeRow,createExcelworkbook,dashboardJobsCountlist,loginOrgLocations,submissionStatus);
+        List<RequirementSubmissionHistory> list =  dashboardJobsCountlist.getData();
+        int column=0;
+        for(RequirementSubmissionHistory rsh : list){
+       	 writeRow = createExcelsheet.createRow(column+1);
+       	 createExcelsheet = createApplicantJoinedXlsSheet(createExcelsheet,writeRow,column,rsh,loginOrgLocations,submissionStatus);
+       	 column++;
+        }
+		return createExcelsheet;
+	}
+	
+	
+	private Sheet getApplicantJoinedListExcelSheetWithHeader(Sheet createExcelsheet, Row writeRow, Workbook createExcelworkbook, ResponseList<RequirementSubmissionHistory> dashboardJobsCountlist, OrgLocations orgLocations,String submissionStatus) {
+		 CellStyle style = createExcelworkbook.createCellStyle();
+	     style.setFillForegroundColor(IndexedColors.GREY_25_PERCENT.getIndex());
+	     style.setFillPattern(CellStyle.SOLID_FOREGROUND);
+	     Font font = createExcelworkbook.createFont();
+        font.setColor(IndexedColors.BLACK.getIndex());
+        style.setFont(font);
+        String[] headers = null;
+       	 headers = Constants.APPLICANTS_JOINED_HEADERS;
+		return createExcelsheet = commonUtil.setExcelHeaders(createExcelsheet,style,headers,0);
+	}
+	
+	
+	
+	
+	private Sheet createApplicantJoinedXlsSheet(Sheet createExcelsheet, Row writeRow, int column, RequirementSubmissionHistory rsh, OrgLocations orgLocations,String submissionStatus) throws Exception {
+		StringBuilder candidateName = new StringBuilder();
+		
+		//Candidate Name
+		if(rsh.getSubmissionId().getCandidate().getLastName() != null) {
+			writeRow.createCell(0).setCellValue(candidateName.append(rsh.getSubmissionId().getCandidate().getFirstName()).append(" ").append(rsh.getSubmissionId().getCandidate().getLastName()).toString()); 
+		}else {
+			writeRow.createCell(0).setCellValue(candidateName.append(rsh.getSubmissionId().getCandidate().getFirstName()).toString()); 
+		}
+		
+		//Candidate Email
+		writeRow.createCell(1).setCellValue(rsh.getSubmissionId().getCandidate().getEmail());
+		
+		
+		if(rsh.getSubmissionId().getCandidate().getMobilePhone() != null) {
+			writeRow.createCell(2).setCellValue(rsh.getSubmissionId().getCandidate().getMobilePhone());	
+		}
+		else{
+			writeRow.createCell(2).setCellValue("--");
+		}
+		//Requirement Name
+		if(rsh.getSubmissionId().getRequirement() != null) {
+			if(rsh.getSubmissionId().getRequirement().getGeneratedId() != null) {
+				writeRow.createCell(3).setCellValue(rsh.getSubmissionId().getRequirement().getGeneratedId() +" - "+rsh.getSubmissionId().getRequirement().getJobTitle());
+			}else {
+				writeRow.createCell(3).setCellValue(rsh.getSubmissionId().getRequirement().getJobTitle());
+			}
+		}
+		 if(rsh.getSubmissionId().getRequirement().getProcess() != null){
+				writeRow.createCell(4).setCellValue(rsh.getSubmissionId().getRequirement().getProcess());
+ 
+		 }
+		 else{
+			 writeRow.createCell(4).setCellValue("--"); 
+		 }
+		//Clinet Name
+		if(rsh.getSubmissionId().getRequirement().getClientId() != null) {
+			if (rsh.getSubmissionId().getRequirement().getClientId().getResponderType().equalsIgnoreCase("Client")) {
+				if (rsh.getSubmissionId().getRequirement().getClientId().getResponderLocationId() != null) {
+					writeRow.createCell(5).setCellValue(rsh.getSubmissionId().getRequirement().getClientId().getResponderLocationId().getOrgLocationName());
+				}else {
+					writeRow.createCell(5).setCellValue("--");
+				}
+			}
+			if (rsh.getSubmissionId().getRequirement().getClientId().getResponderType().equalsIgnoreCase("Vendor")) {
+				if (rsh.getSubmissionId().getRequirement().getClientId().getLocationId() != null) {
+					writeRow.createCell(5).setCellValue(rsh.getSubmissionId().getRequirement().getClientId().getLocationId().getOrgLocationName());
+				}else {
+					writeRow.createCell(5).setCellValue("--");
+				}
+			}
+		}else {
+			writeRow.createCell(5).setCellValue("--");
+		}
+		 
+		RequirementInterview reqInterview=requirementInterviewService.getinterviewBySubmissionId(rsh.getSubmissionId().getId());
+		if(reqInterview != null && reqInterview.getDateOfInterview() !=  null){
+			writeRow.createCell(6).setCellValue(commonUtil.dateStrFromOrgDateFormatter(orgLocations.getDateFormat(),reqInterview.getDateOfInterview()));
+		}
+		else{
+			writeRow.createCell(6).setCellValue("--");
+		}
+		
+		RequirementOffers reqOffers=requirementOffersService.getRequirementOfferSubmissionById(rsh.getSubmissionId().getId());
+			
+		if(reqOffers != null && reqOffers.getAmount() !=  null && reqOffers.getPaymentType() !=null && reqOffers.getPaymentMode() != null){
+			writeRow.createCell(7).setCellValue(reqOffers.getAmount()+"-"+reqOffers.getPaymentType()+"/"+reqOffers.getPaymentMode());
+		}
+		else{
+			writeRow.createCell(7).setCellValue("--");
+		}
+		//Sourece Name
+		 writeRow.createCell(8).setCellValue(rsh.getSubmissionId().getCreatedUser());
+		 //Submitted On
+		 writeRow.createCell(9).setCellValue(commonUtil.dateStrFromOrgDateFormatter(orgLocations.getDateFormat(),rsh.getCreatedDate())); 
+
+			if(rsh.getSubmissionId().getJoinedDate()  != null){
+				 writeRow.createCell(10).setCellValue(commonUtil.dateStrFromOrgDateFormatter(orgLocations.getDateFormat(),rsh.getSubmissionId().getJoinedDate()));
+			}
+			else{
+				writeRow.createCell(10).setCellValue("--");
+			}
+			if(rsh.getSubmissionId().getRequirement().getPayOutPeriod() != null){
+				 writeRow.createCell(11).setCellValue(rsh.getSubmissionId().getRequirement().getPayOutPeriod().toString());
+			}
+			else{
+				writeRow.createCell(11).setCellValue("--");
+			}
+			if(rsh.getSubmissionId().getRequirement().getPayOutPeriod() != null &&  rsh.getSubmissionId().getJoinedDate()  != null){
+				int result = Integer.parseInt(rsh.getSubmissionId().getRequirement().getPayOutPeriod());
+				Date generatedInvoiceDate=CalendarUtil.addDays(rsh.getSubmissionId().getJoinedDate(), result);
+				DateTime dtOrg = new DateTime(generatedInvoiceDate);
+				DateTime generatedInvoiceDatePlusOne = dtOrg.plusDays(1);
+				 writeRow.createCell(12).setCellValue(commonUtil.dateStrFromOrgDateFormatter(orgLocations.getDateFormat(),generatedInvoiceDatePlusOne.toDate()));
+
+			}
+			else{
+				writeRow.createCell(12).setCellValue("--");
+			}
+
+		return createExcelsheet;
+	}
+
+	@Override
+	public File getApplicantsJoinedListPdfFile(ResponseList<RequirementSubmissionHistory> dashboardJobsCountlist, OrgLocations loginOrgLocations)throws Exception
+	{
+		return pdfUtil.ApplicantsJoinedListPdfTable(dashboardJobsCountlist,loginOrgLocations);
 	}
 
 }

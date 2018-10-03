@@ -31,6 +31,9 @@
 			<div class="dropdown pull-right report-dropdown">
 				<span class="dropdown-toggle btn btn-sm btn-default repDropBtn" type="button" id="menu1" data-toggle="dropdown"><span class="caret cursorPointer"></span></span>
 				<ul class="dropdown-menu" role="menu" aria-labelledby="menu1">
+				<sec:authorize access="hasRole('ROLE_RECRUITERS_REPORT')">
+				<li><a href='${appPath}/applicantsjoinedlist'>Applicants Joined Report</a></li>
+				</sec:authorize>
 				 <sec:authorize access="hasRole('ROLE_RECRUITERS_REPORT')">
 				 <li><a href='${appPath}/recruitersReports'>Recruiter(s) Report</a></li>
 				 </sec:authorize>
@@ -135,6 +138,8 @@
 				    <li><a href='${appPath}/paidBillReport'>Paid Bill(s)</a></li>
 				    </c:if>
 				</sec:authorize>
+				
+			   <li><a href='${appPath}/assetmanagementGrowth'>Asset Growth</a></li>
 				
 				
 			    

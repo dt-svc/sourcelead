@@ -23,13 +23,14 @@
 var uploadflag= true;
 		window.onload = function () {
 			var refreshId = setInterval(function(){
+				var dateFormat ='${SourceLeadWeb_orgLocations.dateFormat}';
 				if(uploadflag == true){
-					xlsupload.getUploadInprogressProgressBar("Associates");
+					xlsupload.getUploadInprogressProgressBar("Associates",dateFormat);
 				  }else{
 					     clearInterval(refreshId);
 						 $(".browseProgress").hide();
 						 $("#upload_button").removeAttr("disabled");
-						 xlsupload.getUploadInprogressProgressBar("Associates");
+						 xlsupload.getUploadInprogressProgressBar("Associates",dateFormat);
 				  }
 			},1000);
 		 };
@@ -124,6 +125,7 @@ var uploadflag= true;
 							  <label><i class="fa fa-check"></i>&nbsp;&nbsp;Shift</label>
 							  <label><i class="fa fa-check"></i>&nbsp;&nbsp;Manager(Email)</label>
 							  <label><i class="fa fa-check"></i>&nbsp;&nbsp;Employment Type</label>
+							  <label><i class="fa fa-check"></i>&nbsp;&nbsp;Designation</label>
 							  
 							  </p>
 						</span>

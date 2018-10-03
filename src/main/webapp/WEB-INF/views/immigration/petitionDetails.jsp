@@ -1284,7 +1284,7 @@ $("#experienceValue").change(function () {
 	 	if('${SourceLeadWeb_orgLocations.isLawFirm}' == 'Y'){
 			type = "Client";
 			orgLocationId = reponsderLocId;
-			
+
 			if(attorneySelId  == '' ||  typeof attorneySelId == 'undefined' ){
 		 		<c:if test="${empty immigrationDTO}">
 			 		$("#candidateNameEmail").attr("readonly",true);
@@ -1294,12 +1294,10 @@ $("#experienceValue").change(function () {
 				  $("#candidateNameEmail").attr("readonly",false);
 				  $("#candidateNameEmail").val("");
 			  }
-			
 		}else{
 			type = "Vendor";
 			orgLocationId = '${SourceLeadWeb_orgLocations.id}';
 		}
-	 	
 	 	
 			 $.ajax({
 				    type: "POST",

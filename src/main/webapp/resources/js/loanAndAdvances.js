@@ -150,6 +150,7 @@ this.getDetuctAmountDetails = function(){
 	var noOfSchedules = $("#noOfSchedules").val();
 	var effectiveDate = $("#effectiveDate").val();
 	var scheduler = $("#scheduler").val();
+	
 	if(requestedAmount && noOfSchedules && effectiveDate && scheduler){
 		
 		var loanAndAdvInterstRate = $("#loanAndAdvInterstRate").val();

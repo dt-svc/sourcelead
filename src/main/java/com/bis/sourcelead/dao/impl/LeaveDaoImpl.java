@@ -123,14 +123,33 @@ public class LeaveDaoImpl implements LeaveDao{
 				query = "from LeaveApproveHierarchy laph left join fetch laph.leaveid leave "
 						      + " left join fetch leave.leaveType  leaveType"
 						      + " left join fetch leave.user user"
-						      + " where (leave.orgLocations.id = :orgLocationId or leave.orgLocations.org.id =:orgId) and leave.status =  '"+leaveDTO.getLeaveStatus()+"'";
+						      + " where (leave.orgLocations.id = :orgLocationId or leave.orgLocations.org.id =:orgId) and leave.status =  '"+leaveDTO.getLeaveStatus()+"'  group by leave.id";
 				countQuery ="from Leave leave where (leave.orgLocations.id = :orgLocationId or leave.orgLocations.org.id =:orgId) and leave.status = '"+leaveDTO.getLeaveStatus()+"'";
 			}else {
 				query = "from LeaveApproveHierarchy laph left join fetch laph.leaveid leave "
 					      + " left join fetch leave.leaveType  leaveType"
 					      + " left join fetch leave.user user"
-					      + " where (leave.orgLocations.id = :orgLocationId or leave.orgLocations.org.id =:orgId) and (laph.approverUserId.id= :userId or user.id in (select urole.user.id from UserRole urole where urole.reportingManager.id = :userId)) and leave.status =  '"+leaveDTO.getLeaveStatus()+"'";
-				countQuery ="from Leave leave where (leave.orgLocations.id = :orgLocationId or leave.orgLocations.org.id =:orgId) and (laph.approverUserId.id= :userId or user.id in (select urole.user.id from UserRole urole where urole.reportingManager.id = :userId)) and leave.status = '"+leaveDTO.getLeaveStatus()+"'";
+					      + " where (leave.orgLocations.id = :orgLocationId or leave.orgLocations.org.id =:orgId) and (laph.approverUserId.id= :userId or user.id in (select urole.user.id from UserRole urole where urole.reportingManager.id = :userId)) and leave.status =  '"+leaveDTO.getLeaveStatus()+"' group by leave.id";
+				countQuery ="from LeaveApproveHierarchy laph where (laph.leaveid.orgLocations.id = :orgLocationId or laph.leaveid.orgLocations.org.id =:orgId) and (laph.approverUserId.id= :userId or laph.leaveid.user.id in (select urole.user.id from UserRole urole where urole.reportingManager.id = :userId)) and laph.leaveid.status = '"+leaveDTO.getLeaveStatus()+"'";
+			}
+			
+			String qry = "";
+			if(StringUtils.isNotBlank(leaveDTO.getSortColumn())) {
+				if("id".equalsIgnoreCase(leaveDTO.getSortColumn())) {
+					qry = " order by laph.leaveid.id "+leaveDTO.getSortOrder();
+				}else if("empName".equalsIgnoreCase(leaveDTO.getSortColumn())) {
+					qry = " order by concat(laph.leaveid.user.firstName,laph.leaveid.user.lastName) "+leaveDTO.getSortOrder();
+				}else if("leaveType".equalsIgnoreCase(leaveDTO.getSortColumn())) {
+					qry = " order by laph.leaveid.leaveType.name "+leaveDTO.getSortOrder();
+				}else if("leaveType".equalsIgnoreCase(leaveDTO.getSortColumn())) {
+					qry = " order by laph.leaveid.leaveType.name "+leaveDTO.getSortOrder();
+				}else if("noOfDays".equalsIgnoreCase(leaveDTO.getSortColumn())) {
+					qry = " order by laph.leaveid.leaveType.noOfDays."+leaveDTO.getSortColumn() + " "+leaveDTO.getSortOrder();
+				}else if("approvedBy".equalsIgnoreCase(leaveDTO.getSortColumn())) {
+					qry = " order by concat(laph.approverUserId.firstName,laph.approverUserId.lastName) "+leaveDTO.getSortOrder();
+				}else if("updatedDate".equalsIgnoreCase(leaveDTO.getSortColumn())) {
+					qry = " order by laph.leaveid.updatedDate."+leaveDTO.getSortColumn() + " "+leaveDTO.getSortOrder();
+				}
 			}
 			
 			if(StringUtils.isNotBlank(leaveDTO.getSearchValue())){
@@ -138,59 +157,65 @@ public class LeaveDaoImpl implements LeaveDao{
 				.append("OR laph.leaveid.user.lastName like '%" + leaveDTO.getSearchValue() + "%' ")
 				.append("OR laph.leaveid.numberOfDays like '%" + leaveDTO.getSearchValue() + "%' ");
 				if(Constants.LEAVE_APPROVED.equalsIgnoreCase(leaveDTO.getLeaveStatus())) {
-					searchQuery.append("OR laph.leaveid.approvedBy.firstName like '%" + leaveDTO.getSearchValue() + "%' ")
+					searchQuery.append("OR  (concat(laph.leaveid.approvedBy.firstName,laph.leaveid.approvedBy.lastName) like '%\" + payrollReportDTO.getSearchValue() + \"%' ) ")
 					.append("OR laph.leaveid.approvedBy.lastName like '%" + leaveDTO.getSearchValue() + "%' ");
 				}else if(Constants.LEAVE_REJECTED.equalsIgnoreCase(leaveDTO.getLeaveStatus())) {
-					searchQuery.append("OR laph.leaveid.rejectedBy.firstName like '%" + leaveDTO.getSearchValue() + "%' ")
-					.append("OR laph.leaveid.rejectedBy.firstName like '%" + leaveDTO.getSearchValue() + "%' ");
+					searchQuery.append("OR (concat(laph.leaveid.rejectedBy.firstName,laph.leaveid.rejectedBy.lastName) like '%" + leaveDTO.getSearchValue() + "%' ) ")
+					.append("OR laph.leaveid.rejectedBy.lastName like '%" + leaveDTO.getSearchValue() + "%' ");
 				} else if(Constants.LEAVE_CANCELLED.equalsIgnoreCase(leaveDTO.getLeaveStatus())) {
-					searchQuery.append("OR laph.leaveid.cancelledBy.firstName like '%" + leaveDTO.getSearchValue() + "%' ")
-					.append("OR laph.leaveid.cancelledBy.firstName like '%" + leaveDTO.getSearchValue() + "%' ");
+					searchQuery.append("OR (concat(laph.leaveid.cancelledBy.firstName,laph.leaveid.cancelledBy.lastName) like '%" + leaveDTO.getSearchValue() + "%' ) ")
+					.append("OR laph.leaveid.cancelledBy.lastName like '%" + leaveDTO.getSearchValue() + "%' ");
 				}
 				searchQuery.append("OR laph.leaveid.leaveType.name like '%" + leaveDTO.getSearchValue() + "%' )");
 				
-				leavesearchQuery.append(" and (leave.user.firstName like '%" + leaveDTO.getSearchValue() + "%' ")
+				leavesearchQuery.append(" and ((concat(leave.user.firstName,leave.user.lastName) like '%" + leaveDTO.getSearchValue() + "%' ) ")
 				.append("OR leave.user.lastName like '%" + leaveDTO.getSearchValue() + "%' ")
 				.append("OR leave.numberOfDays like '%" + leaveDTO.getSearchValue() + "%' ");
 				if(Constants.LEAVE_APPROVED.equalsIgnoreCase(leaveDTO.getLeaveStatus())) {
-					leavesearchQuery.append("OR leave.approvedBy.firstName like '%" + leaveDTO.getSearchValue() + "%' ")
+					leavesearchQuery.append("OR (concat(leave.approvedBy.firstName,leave.approvedBy.lastName) like '%" + leaveDTO.getSearchValue() + "%' ) ")
 					.append("OR leave.approvedBy.lastName like '%" + leaveDTO.getSearchValue() + "%' ");
 				}else if(Constants.LEAVE_REJECTED.equalsIgnoreCase(leaveDTO.getLeaveStatus())) {
-					leavesearchQuery.append("OR leave.rejectedBy.firstName like '%" + leaveDTO.getSearchValue() + "%' ")
-					.append("OR leave.rejectedBy.firstName like '%" + leaveDTO.getSearchValue() + "%' ");
+					leavesearchQuery.append("OR (concat(leave.rejectedBy.firstName,leave.rejectedBy.lastName) like '%" + leaveDTO.getSearchValue() + "%' ) ")
+					.append("OR leave.rejectedBy.lastName like '%" + leaveDTO.getSearchValue() + "%' ");
 				}else {
-					leavesearchQuery.append("OR leave.cancelledBy.firstName like '%" + leaveDTO.getSearchValue() + "%' ")
-					.append("OR leave.cancelledBy.firstName like '%" + leaveDTO.getSearchValue() + "%' ");
+					leavesearchQuery.append("OR (concat(leave.cancelledBy.firstName,leave.cancelledBy.lastName) like '%" + leaveDTO.getSearchValue() + "%' ) ")
+					.append("OR leave.cancelledBy.lastName like '%" + leaveDTO.getSearchValue() + "%' ");
 				}
 				leavesearchQuery.append("OR leave.leaveType.name like '%" + leaveDTO.getSearchValue() + "%' )");
 			}
 			
-			Query queryObj = session.createQuery(query+searchQuery);
+			Query queryObj = session.createQuery(query+searchQuery+qry);
 			if (leaveDTO != null && leaveDTO.getLength() > 0) {
 				queryObj.setFirstResult(leaveDTO.getStart());
 				queryObj.setMaxResults(leaveDTO.getLength());
-				if("ROLE_ADMIN".equalsIgnoreCase(leaveDTO.getLoginUserRole())) {
-				    queryObj.setLong("orgLocationId", orgLocations.getId()).setLong("orgId", orgLocations.getOrg().getId()).list();
-				}else {
-					queryObj.setLong("orgLocationId", orgLocations.getId()).setLong("orgId", orgLocations.getOrg().getId()).setLong("userId", usrId).list();
-				}
+			}
+			if("ROLE_ADMIN".equalsIgnoreCase(leaveDTO.getLoginUserRole())) {
+			    queryObj.setLong("orgLocationId", orgLocations.getId()).setLong("orgId", orgLocations.getOrg().getId()).list();
+			}else {
+				queryObj.setLong("orgLocationId", orgLocations.getId()).setLong("orgId", orgLocations.getOrg().getId()).setLong("userId", usrId).list();
 			}
 			leaveApproveHierarchyList = queryObj.list();
 			int count = 0;
 			int filteredCount = 0;
-//			List<Long> countlist = session.createQuery("select count(*) " + countQuery+leavesearchQuery).setLong("orgLocationId", orgLocations.getId()).list();
-			
-			if(leaveApproveHierarchyList != null && !leaveApproveHierarchyList.isEmpty()) {
-				count = leaveApproveHierarchyList.stream().filter(c->c.getLeaveid().getStatus().equalsIgnoreCase(leaveDTO.getLeaveStatus())).collect(Collectors.toList()).size();
+			if("ROLE_ADMIN".equalsIgnoreCase(leaveDTO.getLoginUserRole())) {
+				List<Long> countlist = session.createQuery("select count(*) " + countQuery+leavesearchQuery).setLong("orgLocationId", orgLocations.getId()).setLong("orgId", orgLocations.getOrg().getId()).list();
+				count = countlist.get(0).intValue();
+			}else {
+				List<Long> countlist = session.createQuery("select count(*) " + countQuery+leavesearchQuery).setLong("orgLocationId", orgLocations.getId()).setLong("orgId", orgLocations.getOrg().getId()).setLong("userId", usrId).list();
+				count = countlist.get(0).intValue();
 			}
+			 
+//			if(leaveApproveHierarchyList != null && !leaveApproveHierarchyList.isEmpty()) {
+//				count = leaveApproveHierarchyList.stream().filter(c->c.getLeaveid().getStatus().equalsIgnoreCase(leaveDTO.getLeaveStatus())).collect(Collectors.toList()).size();
+//			}
 			response.setRecordsTotal(count);
-			if (leaveDTO != null) {
-//				List<Long> filteredCountlist  = session.createQuery("select count(*) " + countQuery+leavesearchQuery).setLong("orgLocationId", orgLocations.getId()).list();
-				if(leaveApproveHierarchyList != null && !leaveApproveHierarchyList.isEmpty()) {
-					filteredCount = leaveApproveHierarchyList.stream().filter(c->c.getLeaveid().getStatus().equalsIgnoreCase(leaveDTO.getLeaveStatus())).collect(Collectors.toList()).size();
-				}
-				response.setRecordsFiltered(filteredCount);
-			}
+//			if (leaveDTO != null) {
+//				List<Long> filteredCountlist  = session.createQuery("select count(*) " + countQuery+leavesearchQuery).setLong("orgLocationId", orgLocations.getId()).setLong("orgId", orgLocations.getOrg().getId()).list();
+//				if(leaveApproveHierarchyList != null && !leaveApproveHierarchyList.isEmpty()) {
+//					filteredCount = leaveApproveHierarchyList.stream().filter(c->c.getLeaveid().getStatus().equalsIgnoreCase(leaveDTO.getLeaveStatus())).collect(Collectors.toList()).size();
+//				}
+				response.setRecordsFiltered(count);
+//			}
 			response.setData(leaveApproveHierarchyList);
 			}
 		else {
@@ -249,27 +274,35 @@ public class LeaveDaoImpl implements LeaveDao{
 			if (leaveDTO != null && leaveDTO.getLength() > 0) {
 				queryObj.setFirstResult(leaveDTO.getStart());
 				queryObj.setMaxResults(leaveDTO.getLength());
-				if("ROLE_ADMIN".equalsIgnoreCase(leaveDTO.getLoginUserRole())) {
-				  queryObj.setLong("orgLocationId", orgLocations.getId()).setLong("orgId", orgLocations.getOrg().getId()).setCacheable(false).list();
-				}else {
-			      queryObj.setLong("orgLocationId", orgLocations.getId()).setLong("orgId", orgLocations.getOrg().getId()).setLong("userId", usrId).setCacheable(false).list();
-				}
+				
+			}
+			if("ROLE_ADMIN".equalsIgnoreCase(leaveDTO.getLoginUserRole())) {
+				queryObj.setLong("orgLocationId", orgLocations.getId()).setLong("orgId", orgLocations.getOrg().getId()).setCacheable(false).list();
+			}else {
+				queryObj.setLong("orgLocationId", orgLocations.getId()).setLong("orgId", orgLocations.getOrg().getId()).setLong("userId", usrId).setCacheable(false).list();
 			}
 			leaveApproveHierarchyList = queryObj.list();
 			int count = 0;
 			int filteredCount = 0;
-//			List<Long> countlist = session.createQuery("select count(*) " + countQuery+leavesearchQuery).setLong("orgLocationId", orgLocations.getId()).list();
-			if(leaveApproveHierarchyList != null && !leaveApproveHierarchyList.isEmpty()) {
-				count = leaveApproveHierarchyList.stream().filter(c->c.getLeaveid().getStatus().equalsIgnoreCase(leaveDTO.getLeaveStatus())).collect(Collectors.toList()).size();
+			if("ROLE_ADMIN".equalsIgnoreCase(leaveDTO.getLoginUserRole())) {
+				List<Long> countlist = session.createQuery("select count(*) " + countQuery+leavesearchQuery).setLong("orgLocationId", orgLocations.getId()).setLong("orgId", orgLocations.getOrg().getId()).setLong("userId", usrId).list();
+				count = countlist.get(0).intValue();
+			}else {
+				List<Long> countlist = session.createQuery("select count(*) " + countQuery+leavesearchQuery).setLong("orgLocationId", orgLocations.getId()).setLong("orgId", orgLocations.getOrg().getId()).setLong("userId", usrId).list();
+				count = countlist.get(0).intValue();
 			}
+			
+			/*if(leaveApproveHierarchyList != null && !leaveApproveHierarchyList.isEmpty()) {
+				count = leaveApproveHierarchyList.stream().filter(c->c.getLeaveid().getStatus().equalsIgnoreCase(leaveDTO.getLeaveStatus())).collect(Collectors.toList()).size();
+			}*/
 			response.setRecordsTotal(count);
-			if (leaveDTO != null) {
-//				List<Long> filteredCountlist  = session.createQuery("select count(*) " + countQuery+leavesearchQuery).setLong("orgLocationId", orgLocations.getId()).list();
-				if(leaveApproveHierarchyList != null && !leaveApproveHierarchyList.isEmpty()) {
-					filteredCount = leaveApproveHierarchyList.stream().filter(c->c.getLeaveid().getStatus().equalsIgnoreCase(leaveDTO.getLeaveStatus())).collect(Collectors.toList()).size();
-				}
-				response.setRecordsFiltered(filteredCount);
-			} 
+//			if (leaveDTO != null) {
+//				List<Long> filteredCountlist  = session.createQuery("select count(*) " + countQuery+leavesearchQuery).setLong("orgLocationId", orgLocations.getId()).setLong("orgId", orgLocations.getOrg().getId()).setLong("userId", usrId).list();
+//				if(leaveApproveHierarchyList != null && !leaveApproveHierarchyList.isEmpty()) {
+//					filteredCount = leaveApproveHierarchyList.stream().filter(c->c.getLeaveid().getStatus().equalsIgnoreCase(leaveDTO.getLeaveStatus())).collect(Collectors.toList()).size();
+//				}
+				response.setRecordsFiltered(count);
+//			} 
 				response.setData(leaveApproveHierarchyList);
 		}
 		return response;
@@ -341,15 +374,15 @@ public class LeaveDaoImpl implements LeaveDao{
 		
 //		if(StringUtils.isNotBlank(status)) {
 //			subQuery = "and leave.status = :leaveStatus";
-		if(!"Admin".equalsIgnoreCase(role.getUserType())){
+		if(!"Admin".equalsIgnoreCase(role.getRoles().getDisplayName())){
 			if(currentWeekStarDate != null && currentWeekEndDate != null){
-				String query = "from LeaveApproveHierarchy laph left join fetch laph.leaveid leave left join fetch leave.leaveType left join fetch leave.user ltype where leave.orgLocations.id = :orgLocationId and laph.approverUserId.id= :userId and leave.status = :leaveStatus or leave.status = 'PENDING' "+subQuery1+" "+subQuery2+" "+subQuery3+"";
+				String query = "from LeaveApproveHierarchy laph left join fetch laph.leaveid leave left join fetch leave.leaveType left join fetch leave.user ltype where leave.orgLocations.id = :orgLocationId and laph.approverUserId.id= :userId and (leave.status = :leaveStatus or leave.status = 'PENDING') "+subQuery1+" "+subQuery2+" "+subQuery3+"";
 				if(deptList.size() >0)
 					return session.createQuery(query).setParameter("leaveStatus",status).setLong("orgLocationId", locationId).setLong("userId", usrId).setParameter("weekStartDate", currentWeekStarDate).setParameter("weekEnddate", currentWeekEndDate).setParameterList("deptList", deptList).list();
 				else 
 					return session.createQuery(query).setParameter("leaveStatus",status).setLong("orgLocationId", locationId).setLong("userId", usrId).setParameter("weekStartDate", currentWeekStarDate).setParameter("weekEnddate", currentWeekEndDate).list();
 			}else{
-				String query = "from LeaveApproveHierarchy laph left join fetch laph.leaveid leave left join fetch leave.leaveType left join fetch leave.user ltype where leave.orgLocations.id = :orgLocationId and laph.approverUserId.id= :userId and leave.status = :leaveStatus "+subQuery2+" "+subQuery3+"";
+				String query = "from LeaveApproveHierarchy laph left join fetch laph.leaveid leave left join fetch leave.leaveType left join fetch leave.user ltype where leave.orgLocations.id = :orgLocationId and laph.approverUserId.id= :userId and (leave.status = :leaveStatus or leave.status = 'PENDING') "+subQuery2+" "+subQuery3+"";
 				if(deptList.size() >0)
 					return session.createQuery(query).setParameter("leaveStatus",status).setLong("orgLocationId", locationId).setLong("userId", usrId).setParameter("leaveDate", leaveDate).setParameterList("deptList", deptList).list();
 				else 
@@ -357,13 +390,13 @@ public class LeaveDaoImpl implements LeaveDao{
 			}
 		}else{
 			if(currentWeekStarDate != null && currentWeekEndDate != null){
-				String query = "from LeaveApproveHierarchy laph left join fetch laph.leaveid leave left join fetch leave.leaveType left join fetch leave.user ltype where leave.orgLocations.id = :orgLocationId and leave.status = :leaveStatus "+subQuery1+" "+subQuery2+" "+subQuery3+"";
+				String query = "from LeaveApproveHierarchy laph left join fetch laph.leaveid leave left join fetch leave.leaveType left join fetch leave.user ltype where leave.orgLocations.id = :orgLocationId and (leave.status = :leaveStatus or leave.status = 'PENDING') "+subQuery1+" "+subQuery2+" "+subQuery3+"";
 				if(deptList.size() >0)
 					return session.createQuery(query).setParameter("leaveStatus",status).setLong("orgLocationId", locationId).setParameter("weekStartDate", currentWeekStarDate).setParameter("weekEnddate", currentWeekEndDate).setParameterList("deptList", deptList).list();
 				else 
 					return session.createQuery(query).setParameter("leaveStatus",status).setLong("orgLocationId", locationId).setParameter("weekStartDate", currentWeekStarDate).setParameter("weekEnddate", currentWeekEndDate).list();
 			}else{
-				String query = "from LeaveApproveHierarchy laph left join fetch laph.leaveid leave left join fetch leave.leaveType left join fetch leave.user ltype where leave.orgLocations.id = :orgLocationId and leave.status = :leaveStatus "+subQuery2+" "+subQuery3+"";
+				String query = "from LeaveApproveHierarchy laph left join fetch laph.leaveid leave left join fetch leave.leaveType left join fetch leave.user ltype where leave.orgLocations.id = :orgLocationId and (leave.status = :leaveStatus or leave.status = 'PENDING') "+subQuery2+" "+subQuery3+"";
 				if(deptList.size() >0)
 					return session.createQuery(query).setParameter("leaveStatus",status).setLong("orgLocationId", locationId).setParameter("leaveDate", leaveDate).setParameterList("deptList", deptList).list();
 				else 
@@ -551,10 +584,10 @@ public class LeaveDaoImpl implements LeaveDao{
 		String query = "";
 		List<LeaveApproveHierarchy> leavesList = null;
 		if("ROLE_ADMIN".equalsIgnoreCase(loginUserRole)) {
-			query = "from LeaveApproveHierarchy lah left join fetch lah.leaveid leave left join fetch lah.approverUserId where leave.orgLocations.id = :orgLocationId";
-			leavesList = session.createQuery(query).setLong("orgLocationId", orgLocationId).list();
+			query = "from LeaveApproveHierarchy lah left join fetch lah.leaveid leave left join fetch lah.approverUserId where (leave.orgLocations.id = :orgLocationId or leave.orgLocations.org.id =:orgId)  group by leave.id";
+			leavesList = session.createQuery(query).setLong("orgLocationId", orgLocationId).setLong("orgId", orgId).list();
 		}else {
-			query = "from LeaveApproveHierarchy lah left join fetch lah.leaveid leave left join fetch lah.approverUserId where lah.approverUserId.id =:userId and (leave.orgLocations.id = :orgLocationId or leave.orgLocations.org.id =:orgId)";
+			query = "from LeaveApproveHierarchy lah left join fetch lah.leaveid leave left join fetch lah.approverUserId where lah.approverUserId.id =:userId and (leave.orgLocations.id = :orgLocationId or leave.orgLocations.org.id =:orgId)  group by leave.id";
 			leavesList = session.createQuery(query).setLong("orgLocationId", orgLocationId).setLong("userId", userId).setLong("orgId", orgId).list();
 		}
 		return leavesList;

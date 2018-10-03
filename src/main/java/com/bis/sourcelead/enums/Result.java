@@ -18,7 +18,8 @@ public enum Result {
 	DATA_NOT_FOUND("Data not found"),
     UNABLE_SET_PAYMENT_ACCOUNT("Payment account is created, but unable create WePay account."),
 	DUPLICATE_NAME("Name already exists"),
-	DUPLICATE_TAX_RECORD("Tax Record already exists for the selected user");
+	DUPLICATE_TAX_RECORD("Tax Record already exists for the selected user"),
+	DUPLICATE_EMAIL_CONFIGURATION_RECORD("Email account with same Email/Password already exists");
 
     private String value;
 

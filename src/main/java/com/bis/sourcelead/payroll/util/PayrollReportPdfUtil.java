@@ -15,16 +15,19 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import com.bis.sourcelead.constants.Constants;
+import com.bis.sourcelead.dto.ResponseList;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.payroll.dto.CheckRegisterReportDTO;
 import com.bis.sourcelead.payroll.dto.PayrollReportDTO;
 import com.bis.sourcelead.payroll.dto.PdfHeaderDTO;
+import com.bis.sourcelead.payroll.entity.EmployeePayrollTax;
 import com.bis.sourcelead.util.CommonUtil;
 import java.math.BigDecimal;
 import com.itextpdf.text.BaseColor;
 import com.itextpdf.text.Chunk;
 import com.itextpdf.text.Document;
 import com.itextpdf.text.DocumentException;
+import com.itextpdf.text.Element;
 import com.itextpdf.text.Font;
 import com.itextpdf.text.PageSize;
 import com.itextpdf.text.Paragraph;
@@ -755,4 +758,485 @@ public class PayrollReportPdfUtil {
 		return file;
 		}
 	
+	
+	public File getPayrollRegisterReportsPdf(ResponseList<PayrollReportDTO> responseList, OrgLocations orgLocation) throws Exception
+	{
+		StringBuilder sbReq = new StringBuilder();
+		sbReq.append(orgLocation.getOrgLocationName()).append(Constants.PAYROLL).append(commonUtil.dateStrFromOrgDateFormatter(orgLocation.getDateFormat(), new Date()));
+		StringBuilder fileSB = new StringBuilder();
+		File file = File.createTempFile(fileSB.append(orgLocation.getOrgLocationName()).append(Constants.PAYROLL).append(commonUtil.dateStrFromOrgDateFormatter(orgLocation.getDateFormat(), new Date())).toString(), ".pdf");
+		file.setReadable(true);
+		
+		
+		Document document = new Document(PageSize.A4.rotate());
+		Font boldFont = new Font(Font.FontFamily.TIMES_ROMAN, 9, Font.BOLD);
+		Font normalFont = new Font(Font.FontFamily.TIMES_ROMAN, 9, Font.NORMAL);
+		Font ctNormalFont = new Font(Font.FontFamily.TIMES_ROMAN, 7, Font.NORMAL);
+		PdfWriter.getInstance(document, new FileOutputStream(file));
+		document.open();
+		
+		
+		for(PayrollReportDTO payrollReportDto : responseList.getData()) {
+			PdfPTable maintable = new PdfPTable(1);
+			maintable.setTotalWidth(document.getPageSize().getWidth() - 50);
+			maintable.setLockedWidth(true);
+			
+			PdfPTable childTable1 = new PdfPTable(9);
+			childTable1.setTotalWidth(document.getPageSize().getWidth() - 50);
+			childTable1.setLockedWidth(true);
+			PdfPCell cell0 = new PdfPCell();
+			cell0.addElement(new Paragraph(payrollReportDto.getEmpName(), normalFont));
+			StringBuilder sb = new StringBuilder();
+			sb.append("Emp #: ");
+			if(StringUtils.isNotBlank(payrollReportDto.getEmpId()))
+				sb.append(payrollReportDto.getEmpId());
+			cell0.addElement(new Paragraph(sb.toString(), normalFont));
+			cell0.setBorder(Rectangle.NO_BORDER);
+			cell0.setBackgroundColor(new BaseColor(209, 210, 211));
+			// cell0.setColspan(5);
+			childTable1.addCell(cell0);
+			PdfPCell cell1 = new PdfPCell();
+			cell1.addElement(new Paragraph(""));
+			String ssn = "";
+			if(StringUtils.isNotBlank(payrollReportDto.getSsnNumber())){
+				StringBuilder sb1 = new StringBuilder();
+				sb1.append("xxx-xx-");
+				String[] ssnNum = payrollReportDto.getSsnNumber().split("-");
+				sb1.append(ssnNum[2]);
+				ssn = sb1.toString();
+			}else {
+				ssn = "NA";
+			}
+			cell1.addElement(new Paragraph(ssn, normalFont));
+			cell1.setBorder(Rectangle.NO_BORDER);
+			cell1.setBackgroundColor(new BaseColor(209, 210, 211));
+			// cell1.setColspan(5);
+			childTable1.addCell(cell1);
+			PdfPCell cell2 = new PdfPCell();
+			if(StringUtils.isNotBlank(payrollReportDto.getCandidateWorkAddress()))
+				cell2.addElement(new Paragraph(payrollReportDto.getCandidateWorkAddress(), normalFont));
+			else
+				cell2.addElement(new Paragraph("NA", normalFont));
+			cell2.addElement(new Paragraph(""));
+			cell2.setBorder(Rectangle.NO_BORDER);
+			cell2.setBackgroundColor(new BaseColor(209, 210, 211));
+			// cell2.setColspan(5);
+			childTable1.addCell(cell2);
+			PdfPCell cell3 = new PdfPCell();
+			StringBuilder fedSbMar = new StringBuilder();
+			if(StringUtils.isNotBlank(payrollReportDto.getFedMaritalStat())) 
+				fedSbMar.append("Fed Marital: ").append(payrollReportDto.getFedMaritalStat());
+			else
+				fedSbMar.append("Fed Marital: ").append("NA");
+			StringBuilder stateSbMar = new StringBuilder();
+			if(StringUtils.isNotBlank(payrollReportDto.getStateMaritalStat())) 
+				stateSbMar.append("State Marital: ").append(payrollReportDto.getStateMaritalStat());
+			else
+				stateSbMar.append("State Marital: ").append("NA");
+			cell3.addElement(new Paragraph(fedSbMar.toString(), normalFont));
+			cell3.addElement(new Paragraph(stateSbMar.toString(), normalFont));
+			cell3.setBorder(Rectangle.NO_BORDER);
+			cell3.setBackgroundColor(new BaseColor(209, 210, 211));
+			// cell3.setColspan(10);
+			childTable1.addCell(cell3);
+			PdfPCell cell4 = new PdfPCell();
+			if(StringUtils.isNotBlank(payrollReportDto.getFedExempt())) 
+				cell4.addElement(new Paragraph("Exempts: "+payrollReportDto.getFedExempt()+"", normalFont));
+			else
+				cell4.addElement(new Paragraph("Exempts: NA", normalFont));
+			
+			cell4.addElement(new Paragraph("", normalFont));
+			cell4.setBorder(Rectangle.NO_BORDER);
+			cell4.setBackgroundColor(new BaseColor(209, 210, 211));
+			// cell4.setColspan(5);
+			childTable1.addCell(cell4);
+			PdfPCell cell5 = new PdfPCell();
+			StringBuilder fedAddTax = new StringBuilder();
+			StringBuilder stateAddTax = new StringBuilder();
+			if(StringUtils.isNotBlank(payrollReportDto.getFedAddTax())) 
+				fedAddTax.append("Addl Tax: ").append(payrollReportDto.getFedAddTax());
+			else
+				fedAddTax.append("Addl Tax: ").append("NA");
+				
+			if(StringUtils.isNotBlank(payrollReportDto.getStateAddTax())) 
+				stateAddTax.append("Addl Tax: ").append(payrollReportDto.getStateAddTax());
+			else
+				stateAddTax.append("Addl Tax: ").append("NA");
+				
+			cell5.addElement(new Paragraph(fedAddTax.toString(), normalFont));
+			cell5.addElement(new Paragraph(stateAddTax.toString(), normalFont));
+			cell5.setBorder(Rectangle.NO_BORDER);
+			cell5.setBackgroundColor(new BaseColor(209, 210, 211));
+			// cell5.setColspan(5);
+			childTable1.addCell(cell5);
+			PdfPCell cell6 = new PdfPCell();
+			cell6.addElement(new Paragraph("Res State:  "+payrollReportDto.getResState()+"", normalFont));
+			cell6.addElement(new Paragraph("", normalFont));
+			cell6.setBorder(Rectangle.NO_BORDER);
+			cell6.setBackgroundColor(new BaseColor(209, 210, 211));
+			// cell6.setColspan(5);
+			childTable1.addCell(cell6);
+			PdfPCell cell7 = new PdfPCell();
+//			cell7.addElement(new Paragraph("Per Pay Salary: 0.00", normalFont));
+			cell7.addElement(new Paragraph("Status:			"+payrollReportDto.getEmpStatus()+"", normalFont));
+			cell7.setBorder(Rectangle.NO_BORDER);
+			cell7.setBackgroundColor(new BaseColor(209, 210, 211));
+			// cell7.setColspan(5);
+			childTable1.addCell(cell7);
+			PdfPCell cell8 = new PdfPCell();
+			cell8.addElement(new Paragraph("Hire Date:  "+payrollReportDto.getDateOfJoin()+"", normalFont));
+//			cell8.addElement(new Paragraph("Birth Date: 12/1/XXXX", normalFont));
+			cell8.setBorder(Rectangle.NO_BORDER);
+			cell8.setBackgroundColor(new BaseColor(209, 210, 211));
+			// cell8.setColspan(5);
+			childTable1.addCell(cell8);
+			PdfPCell mCell0 = new PdfPCell();
+			mCell0.addElement(childTable1);
+			mCell0.setBorderWidth(1f);
+			maintable.addCell(mCell0);
+			
+			
+			PdfPTable childTable2 = new PdfPTable(7);
+			childTable2.setTotalWidth(document.getPageSize().getWidth() - 50);
+			childTable2.setLockedWidth(true);
+			PdfPCell ct2Cell0 = new PdfPCell();
+			ct2Cell0.addElement(new Paragraph(payrollReportDto.getType(), ctNormalFont));
+			ct2Cell0.setBorder(Rectangle.NO_BORDER);
+			// ct2Cell0.setBackgroundColor(new BaseColor(227,228,229));
+			// ct2Cell0.setColspan(5);
+			childTable2.addCell(ct2Cell0);
+			PdfPCell ct2Cell1 = new PdfPCell();
+			StringBuilder grossSb = new StringBuilder();
+			grossSb.append("Gross Pay: ").append(payrollReportDto.getGrossPay());
+			ct2Cell1.addElement(new Paragraph(grossSb.toString(), ctNormalFont));
+			ct2Cell1.setBorder(Rectangle.NO_BORDER);
+			// ct2Cell1.setBackgroundColor(new BaseColor(255,255,45));
+			// ct2Cell1.setColspan(5);
+			childTable2.addCell(ct2Cell1);
+			PdfPCell ct2Cell2 = new PdfPCell();
+			ct2Cell2.addElement(new Paragraph("", ctNormalFont));
+			ct2Cell2.setBorder(Rectangle.NO_BORDER);
+			// ct2Cell2.setBackgroundColor(new BaseColor(255,255,45));
+			// ct2Cell2.setColspan(5);
+			childTable2.addCell(ct2Cell2);
+			PdfPCell ct2Cell3 = new PdfPCell();
+			StringBuilder netSb = new StringBuilder();
+			netSb.append("Net Pay: ").append(payrollReportDto.getNetPay());
+			ct2Cell3.addElement(new Paragraph(netSb.toString(), ctNormalFont));
+			ct2Cell3.setBorder(Rectangle.NO_BORDER);
+			// ct2Cell3.setBackgroundColor(new BaseColor(255,255,45));
+			// ct2Cell3.setColspan(5);
+			childTable2.addCell(ct2Cell3);
+			PdfPCell ct2Cell4 = new PdfPCell();
+			String amount1 = "", amount2 = "";
+			if("Direct Deposit".equalsIgnoreCase(payrollReportDto.getDepositType())) {
+				amount1 = payrollReportDto.getNetPay().toString();
+				amount2 = "0.00";
+			}else {
+				amount2 = payrollReportDto.getNetPay().toString();
+				amount1 = "0.00";
+			}
+			ct2Cell4.addElement(new Paragraph("Direct Deposit: "+amount1+"", ctNormalFont));
+			ct2Cell4.setBorder(Rectangle.NO_BORDER);
+			// ct2Cell4.setBackgroundColor(new BaseColor(255,255,45));
+			// ct2Cell4.setColspan(5);
+			childTable2.addCell(ct2Cell4);
+			PdfPCell ct2Cell5 = new PdfPCell();
+			ct2Cell5.addElement(new Paragraph("Check Amount: "+amount2+"", ctNormalFont));
+			ct2Cell5.setBorder(Rectangle.NO_BORDER);
+			// ct2Cell5.setBackgroundColor(new BaseColor(255,255,45));
+			// ct2Cell5.setColspan(5);
+			childTable2.addCell(ct2Cell5);
+			PdfPCell ct2Cell6 = new PdfPCell();
+			ct2Cell6.addElement(new Paragraph("", ctNormalFont));
+			ct2Cell6.setBorder(Rectangle.NO_BORDER);
+			// ct2Cell6.setBackgroundColor(new BaseColor(255,255,45));
+			// ct2Cell6.setColspan(5);
+			childTable2.addCell(ct2Cell6);
+			PdfPCell mCell1 = new PdfPCell();
+			mCell1.addElement(childTable2);
+			mCell1.setBorderWidth(1f);
+			maintable.addCell(mCell1);
+			
+			
+			PdfPTable childTable3 = new PdfPTable(3);
+			childTable3.setTotalWidth(document.getPageSize().getWidth() - 50);
+			childTable3.setLockedWidth(true);
+			
+			
+			// for earnings /salary table
+			PdfPTable tbl1 = new PdfPTable(6);
+			PdfPCell tbl1cl0 = new PdfPCell();
+			tbl1cl0.setHorizontalAlignment(Element.ALIGN_RIGHT);
+			tbl1cl0.addElement(new Paragraph("Earnings", ctNormalFont));
+			tbl1cl0.setBorder(Rectangle.BOTTOM);
+			tbl1cl0.setBackgroundColor(new BaseColor(227, 228, 229));
+			tbl1.addCell(tbl1cl0);
+			PdfPCell tbl1cl1 = new PdfPCell();
+			tbl1cl1.setHorizontalAlignment(Element.ALIGN_RIGHT);
+			tbl1cl1.addElement(new Paragraph("Rate", ctNormalFont));
+			tbl1cl1.setBorder(Rectangle.BOTTOM);
+			tbl1cl1.setBackgroundColor(new BaseColor(227, 228, 229));
+			tbl1.addCell(tbl1cl1);
+			PdfPCell tbl1cl2 = new PdfPCell();
+			tbl1cl2.setHorizontalAlignment(Element.ALIGN_RIGHT);
+			tbl1cl2.addElement(new Paragraph("Hours", ctNormalFont));
+			tbl1cl2.setBorder(Rectangle.BOTTOM);
+			tbl1cl2.setBackgroundColor(new BaseColor(227, 228, 229));
+			tbl1.addCell(tbl1cl2);
+			PdfPCell tbl1cl3 = new PdfPCell();
+			tbl1cl3.setHorizontalAlignment(Element.ALIGN_RIGHT);
+			tbl1cl3.addElement(new Paragraph("Dollars", ctNormalFont));
+			tbl1cl3.setBorder(Rectangle.BOTTOM);
+			tbl1cl3.setBackgroundColor(new BaseColor(227, 228, 229));
+			tbl1.addCell(tbl1cl3);
+			PdfPCell tbl1cl4 = new PdfPCell();
+			tbl1cl4.setHorizontalAlignment(Element.ALIGN_RIGHT);
+			tbl1cl4.addElement(new Paragraph("YTD Hours", ctNormalFont));
+			tbl1cl4.setBorder(Rectangle.BOTTOM);
+			tbl1cl4.setBackgroundColor(new BaseColor(227, 228, 229));
+			tbl1.addCell(tbl1cl4);
+			PdfPCell tbl1cl5 = new PdfPCell();
+			tbl1cl5.setHorizontalAlignment(Element.ALIGN_RIGHT);
+			tbl1cl5.addElement(new Paragraph("YTD Dollars", ctNormalFont));
+			tbl1cl5.setBorder(Rectangle.BOTTOM);
+			tbl1cl5.setBackgroundColor(new BaseColor(227, 228, 229));
+			tbl1.addCell(tbl1cl5);
+			
+			tbl1.addCell(getPdfCell("Salary", ctNormalFont, 0, ""));
+			tbl1.addCell(getPdfCell(payrollReportDto.getEmpPayRate().toString(), ctNormalFont, 0, ""));
+			tbl1.addCell(getPdfCell(payrollReportDto.getRegularHours(), ctNormalFont, 0, "grey"));
+			tbl1.addCell(getPdfCell(payrollReportDto.getEmpRegularAmount().toString(), ctNormalFont, 0, ""));
+			tbl1.addCell(getPdfCell(payrollReportDto.getYtdHours(), ctNormalFont, 0, "grey"));
+			tbl1.addCell(getPdfCell(payrollReportDto.getYtdNet().toString(), ctNormalFont, 0, ""));
+			
+			
+			tbl1.addCell(getBottomAlignedPdfCell("", ctNormalFont, 0, ""));
+			PdfPCell c1 = getBottomAlignedPdfCell("Totals:", boldFont, 0, "");
+			c1.setHorizontalAlignment(Element.ALIGN_RIGHT);
+			tbl1.addCell(c1);
+			PdfPCell c2 = getBottomAlignedPdfCell(payrollReportDto.getRegularHours(), ctNormalFont, 0, "grey");
+			ct2Cell0.setBackgroundColor(new BaseColor(227, 228, 229));
+			tbl1.addCell(c2);
+			PdfPCell c3 = getBottomAlignedPdfCell(payrollReportDto.getEmpRegularAmount().toString(), ctNormalFont, 0, "");
+			tbl1.addCell(c3);
+			PdfPCell c4 = getBottomAlignedPdfCell(payrollReportDto.getYtdHours(), ctNormalFont, 0, "grey");
+			tbl1.addCell(c4);
+			PdfPCell c5 = getBottomAlignedPdfCell(payrollReportDto.getYtdNet().toString(), ctNormalFont, 0, "");
+			tbl1.addCell(c5);
+			
+			
+			// for deductions table
+			PdfPTable tbl2 = new PdfPTable(3);
+			PdfPCell tbl2cl0 = new PdfPCell();
+			tbl2cl0.setHorizontalAlignment(Element.ALIGN_RIGHT);
+			tbl2cl0.addElement(new Paragraph("Deductions", ctNormalFont));
+			tbl2cl0.setBorder(Rectangle.BOTTOM);
+			tbl2cl0.setBackgroundColor(new BaseColor(227, 228, 229));
+			tbl2.addCell(tbl2cl0);
+			PdfPCell tbl2cl1 = new PdfPCell();
+			tbl2cl1.setHorizontalAlignment(Element.ALIGN_RIGHT);
+			tbl2cl1.addElement(new Paragraph("Current", ctNormalFont));
+			tbl2cl1.setBorder(Rectangle.BOTTOM);
+			tbl2cl1.setBackgroundColor(new BaseColor(227, 228, 229));
+			tbl2.addCell(tbl2cl1);
+			PdfPCell tbl2cl2 = new PdfPCell();
+			tbl2cl2.setHorizontalAlignment(Element.ALIGN_RIGHT);
+			tbl2cl2.addElement(new Paragraph("YTD", ctNormalFont));
+			tbl2cl2.setBorder(Rectangle.BOTTOM);
+			tbl2cl2.setBackgroundColor(new BaseColor(227, 228, 229));
+			tbl2.addCell(tbl2cl2);
+			
+			BigDecimal dedTotal = BigDecimal.ZERO, ytdDedTotal = BigDecimal.ZERO;
+			for(PayrollReportDTO payDto : payrollReportDto.getDeductionsList()) {
+				tbl2.addCell(getPdfCell("", ctNormalFont, 0, ""));
+				PdfPCell tb2c2 = getBottomAlignedPdfCell(payDto.getDeductions().toString(), ctNormalFont, 0, "grey");
+				dedTotal = dedTotal.add(payDto.getDeductions());
+				tbl2.addCell(tb2c2);
+				PdfPCell tb2c3 = getBottomAlignedPdfCell(payDto.getYtdDeductions().toString(), ctNormalFont, 0, "");
+				ytdDedTotal = ytdDedTotal.add(payDto.getYtdDeductions());
+				tbl2.addCell(tb2c3);
+			}
+			
+			PdfPCell tb2c1 = getBottomAlignedPdfCell("Totals:", boldFont, 0, "");
+			tb2c1.setHorizontalAlignment(Element.ALIGN_RIGHT);
+			tbl2.addCell(tb2c1);
+			PdfPCell tb2c2 = getBottomAlignedPdfCell(dedTotal.toString(), ctNormalFont, 0, "grey");
+			tbl2.addCell(tb2c2);
+			PdfPCell tb2c3 = getBottomAlignedPdfCell(ytdDedTotal.toString(), ctNormalFont, 0, "");
+			tbl2.addCell(tb2c3);
+			
+			
+			// for taxes table
+			PdfPTable tbl3 = new PdfPTable(3);
+			PdfPCell tbl3cl0 = new PdfPCell();
+			tbl3cl0.setHorizontalAlignment(Element.ALIGN_RIGHT);
+			tbl3cl0.addElement(new Paragraph("Taxes", ctNormalFont));
+			tbl3cl0.setBorder(Rectangle.BOTTOM);
+			tbl3cl0.setBackgroundColor(new BaseColor(227, 228, 229));
+			tbl3.addCell(tbl3cl0);
+			/*PdfPCell tbl3cl1 = new PdfPCell();
+			tbl3cl1.setHorizontalAlignment(Element.ALIGN_RIGHT);
+			tbl3cl1.addElement(new Paragraph("Wage", ctNormalFont));
+			tbl3cl1.setBorder(Rectangle.BOTTOM);
+			tbl3cl1.setBackgroundColor(new BaseColor(227, 228, 229));
+			tbl3.addCell(tbl3cl1);*/
+			PdfPCell tbl3cl2 = new PdfPCell();
+			tbl3cl2.setHorizontalAlignment(Element.ALIGN_RIGHT);
+			tbl3cl2.addElement(new Paragraph("Tax", ctNormalFont));
+			tbl3cl2.setBorder(Rectangle.BOTTOM);
+			tbl3cl2.setBackgroundColor(new BaseColor(227, 228, 229));
+			tbl3.addCell(tbl3cl2);
+			/*PdfPCell tbl3cl3 = new PdfPCell();
+			tbl3cl3.setHorizontalAlignment(Element.ALIGN_RIGHT);
+			tbl3cl3.addElement(new Paragraph("YTD Wage", ctNormalFont));
+			tbl3cl3.setBorder(Rectangle.BOTTOM);
+			tbl3cl3.setBackgroundColor(new BaseColor(227, 228, 229));
+			tbl3.addCell(tbl3cl3);*/
+			PdfPCell tbl3cl4 = new PdfPCell();
+			tbl3cl4.setHorizontalAlignment(Element.ALIGN_RIGHT);
+			tbl3cl4.addElement(new Paragraph("YTD Tax", ctNormalFont));
+			tbl3cl4.setBorder(Rectangle.BOTTOM);
+			tbl3cl4.setBackgroundColor(new BaseColor(227, 228, 229));
+			tbl3.addCell(tbl3cl4);
+			
+			BigDecimal totalTax = BigDecimal.ZERO, totalYtdTax = BigDecimal.ZERO;
+			
+			for(EmployeePayrollTax empTax : payrollReportDto.getTaxHistory()) {
+				
+				if(empTax.getFicaWithholding() != null && !(BigDecimal.ZERO.compareTo(empTax.getFicaWithholding()) == 0)) {
+					tbl3.addCell(getBottomAlignedPdfCell("FICA:", boldFont, 0, ""));
+					tbl3.addCell(getBottomAlignedPdfCell(empTax.getFicaWithholding().toString(), ctNormalFont, 0, "grey"));
+					totalTax = totalTax.add(empTax.getFicaWithholding());
+					tbl3.addCell(getBottomAlignedPdfCell("x.xx", ctNormalFont, 0, ""));
+				}
+				
+				if(empTax.getMedicareWithholding() != null && !(BigDecimal.ZERO.compareTo(empTax.getMedicareWithholding()) == 0)) {
+					tbl3.addCell(getBottomAlignedPdfCell("MEDICARE:", boldFont, 0, ""));
+					tbl3.addCell(getBottomAlignedPdfCell(empTax.getMedicareWithholding().toString(), ctNormalFont, 0, "grey"));
+					totalTax = totalTax.add(empTax.getMedicareWithholding());
+					tbl3.addCell(getBottomAlignedPdfCell("x.xx", ctNormalFont, 0, ""));
+				}
+				
+				if(empTax.getFederalWithholding() != null && !(BigDecimal.ZERO.compareTo(empTax.getFederalWithholding()) == 0)) {
+					tbl3.addCell(getBottomAlignedPdfCell("FEDERAL:", boldFont, 0, ""));
+					tbl3.addCell(getBottomAlignedPdfCell(empTax.getFederalWithholding().toString(), ctNormalFont, 0, "grey"));
+					totalTax = totalTax.add(empTax.getFederalWithholding());
+					tbl3.addCell(getBottomAlignedPdfCell("x.xx", ctNormalFont, 0, ""));
+				}
+				
+				if(empTax.getEarnedIncCredit() != null && !(BigDecimal.ZERO.compareTo(empTax.getEarnedIncCredit()) == 0)) {
+					tbl3.addCell(getBottomAlignedPdfCell("EARNED_INC:", boldFont, 0, ""));
+					tbl3.addCell(getBottomAlignedPdfCell(empTax.getEarnedIncCredit().toString(), ctNormalFont, 0, "grey"));
+					totalTax = totalTax.add(empTax.getEarnedIncCredit());
+					tbl3.addCell(getBottomAlignedPdfCell("x.xx", ctNormalFont, 0, ""));
+				}
+				
+				if(empTax.getStateWithholding() != null && !(BigDecimal.ZERO.compareTo(empTax.getStateWithholding()) == 0)) {
+					tbl3.addCell(getBottomAlignedPdfCell("STATE:", boldFont, 0, ""));
+					tbl3.addCell(getBottomAlignedPdfCell(empTax.getStateWithholding().toString(), ctNormalFont, 0, "grey"));
+					totalTax = totalTax.add(empTax.getStateWithholding());
+					tbl3.addCell(getBottomAlignedPdfCell("x.xx", ctNormalFont, 0, ""));
+				}
+				
+				if(empTax.getCountyWithholding() != null && !(BigDecimal.ZERO.compareTo(empTax.getCountyWithholding()) == 0)) {
+					tbl3.addCell(getBottomAlignedPdfCell("COUNTY:", boldFont, 0, ""));
+					tbl3.addCell(getBottomAlignedPdfCell(empTax.getCountyWithholding().toString(), ctNormalFont, 0, "grey"));
+					totalTax = totalTax.add(empTax.getCountyWithholding());
+					tbl3.addCell(getBottomAlignedPdfCell("x.xx", ctNormalFont, 0, ""));
+				}
+				
+				if(empTax.getSUI() != null && !(BigDecimal.ZERO.compareTo(empTax.getSUI()) == 0)) {
+					tbl3.addCell(getBottomAlignedPdfCell("SUI:", boldFont, 0, ""));
+					tbl3.addCell(getBottomAlignedPdfCell(empTax.getSUI().toString(), ctNormalFont, 0, "grey"));
+					totalTax = totalTax.add(empTax.getSUI());
+					tbl3.addCell(getBottomAlignedPdfCell("x.xx", ctNormalFont, 0, ""));
+				}
+				
+				if(empTax.getSDI() != null && !(BigDecimal.ZERO.compareTo(empTax.getSDI()) == 0)) {
+					tbl3.addCell(getBottomAlignedPdfCell("SDI:", boldFont, 0, ""));
+					tbl3.addCell(getBottomAlignedPdfCell(empTax.getSDI().toString(), ctNormalFont, 0, "grey"));
+					totalTax = totalTax.add(empTax.getSDI());
+					tbl3.addCell(getBottomAlignedPdfCell("x.xx", ctNormalFont, 0, ""));
+				}
+				
+				if(empTax.getFLI() != null && !(BigDecimal.ZERO.compareTo(empTax.getFLI()) == 0)) {
+					tbl3.addCell(getBottomAlignedPdfCell("FLI:", boldFont, 0, ""));
+					tbl3.addCell(getBottomAlignedPdfCell(empTax.getFLI().toString(), ctNormalFont, 0, "grey"));
+					totalTax = totalTax.add(empTax.getFLI());
+					tbl3.addCell(getBottomAlignedPdfCell("x.xx", ctNormalFont, 0, ""));
+				}
+				
+				if(empTax.getHCSF() != null && !(BigDecimal.ZERO.compareTo(empTax.getHCSF()) == 0)) {
+					tbl3.addCell(getBottomAlignedPdfCell("HCSF:", boldFont, 0, ""));
+					tbl3.addCell(getBottomAlignedPdfCell(empTax.getHCSF().toString(), ctNormalFont, 0, "grey"));
+					totalTax = totalTax.add(empTax.getHCSF());
+					tbl3.addCell(getBottomAlignedPdfCell("x.xx", ctNormalFont, 0, ""));
+				}
+				
+				if(empTax.getWC() != null && !(BigDecimal.ZERO.compareTo(empTax.getWC()) == 0)) {
+					tbl3.addCell(getBottomAlignedPdfCell("WC:", boldFont, 0, ""));
+					tbl3.addCell(getBottomAlignedPdfCell(empTax.getWC().toString(), ctNormalFont, 0, "grey"));
+					totalTax = totalTax.add(empTax.getWC());
+					tbl3.addCell(getBottomAlignedPdfCell("x.xx", ctNormalFont, 0, ""));
+				}
+				
+				if(empTax.getLocalTax() != null && !(BigDecimal.ZERO.compareTo(empTax.getLocalTax()) == 0)) {
+					tbl3.addCell(getBottomAlignedPdfCell("LOCAL_TAX:", boldFont, 0, ""));
+					tbl3.addCell(getBottomAlignedPdfCell(empTax.getLocalTax().toString(), ctNormalFont, 0, "grey"));
+					totalTax = totalTax.add(empTax.getLocalTax());
+					tbl3.addCell(getBottomAlignedPdfCell("x.xx", ctNormalFont, 0, ""));
+				}
+			}
+			
+			
+			PdfPCell tb3c1 = getBottomAlignedPdfCell("Totals:", boldFont, 0, "");
+			tb3c1.setHorizontalAlignment(Element.ALIGN_RIGHT);
+			tbl3.addCell(tb3c1);
+			PdfPCell tb3c2 = getBottomAlignedPdfCell("0.00", ctNormalFont, 0, "grey");
+			tbl3.addCell(tb3c2);
+			PdfPCell tb3c3 = getBottomAlignedPdfCell("0.00", ctNormalFont, 0, "");
+			tbl3.addCell(tb3c3);
+			PdfPCell tb4c3 = getBottomAlignedPdfCell("0.00", ctNormalFont, 0, "grey");
+			tbl3.addCell(tb4c3);
+			PdfPCell tb5c3 = getBottomAlignedPdfCell("0.00", ctNormalFont, 0, "");
+			tbl3.addCell(tb5c3);
+			
+			childTable3.addCell(tbl1);
+			childTable3.addCell(tbl2);
+			childTable3.addCell(tbl3);
+			
+			PdfPCell mCell2 = new PdfPCell();
+			mCell2.addElement(childTable3);
+			mCell2.setBorderWidth(1f);
+			maintable.addCell(mCell2);
+			
+			document.add(maintable);
+		}
+		
+		document.close();
+		
+		return file;
+	}
+	
+	private PdfPCell getPdfCell(String str, Font boldFont, int fixedHieght, String color)
+	{
+		PdfPCell cell = new PdfPCell(new Paragraph(str, boldFont));
+		if ("grey".equalsIgnoreCase(color))
+			cell.setBackgroundColor(new BaseColor(227, 228, 229));
+		cell.setFixedHeight(fixedHieght);
+		cell.setBorder(Rectangle.NO_BORDER);
+		return cell;
+	}
+	
+	private PdfPCell getBottomAlignedPdfCell(String str, Font boldFont, int fixedHieght, String color)
+	{
+		PdfPCell cell = new PdfPCell(new Paragraph(40, str, boldFont));
+		// cell.setFixedHeight(fixedHieght);
+		if ("grey".equalsIgnoreCase(color))
+			cell.setBackgroundColor(new BaseColor(227, 228, 229));
+		cell.setVerticalAlignment(Element.ALIGN_BOTTOM);
+		cell.setBorder(Rectangle.NO_BORDER);
+		return cell;
+	}
 }
