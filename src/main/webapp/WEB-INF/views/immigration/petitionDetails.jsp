@@ -1274,6 +1274,7 @@ $("#experienceValue").change(function () {
 	 var orgRelationID = null;
 	 var reponsderLocId = $('option:selected', '#attorneyId').attr('attrval');
 	 responderLocationId = reponsderLocId;
+	 var attorneySelId = $('option:selected', '#attorneyId').val();
 	 	if(attorneyId != null){
 	 		orgRelationID = attorneyId;
 	 	}else{
@@ -1283,18 +1284,20 @@ $("#experienceValue").change(function () {
 	 	if('${SourceLeadWeb_orgLocations.isLawFirm}' == 'Y'){
 			type = "Client";
 			orgLocationId = reponsderLocId;
+			if(attorneySelId  == '' ||  typeof attorneySelId == 'undefined' ){
+		 		<c:if test="${empty immigrationDTO}">
+			 		$("#candidateNameEmail").attr("readonly",true);
+			 		$("#candidateNameEmail").val("");
+		 		</c:if>
+			  }else{
+				  $("#candidateNameEmail").attr("readonly",false);
+				  $("#candidateNameEmail").val("");
+			  }
 		}else{
 			type = "Vendor";
 			orgLocationId = '${SourceLeadWeb_orgLocations.id}';
 		}
-	 	var attorneySelId = $('option:selected', '#attorneyId').val();
-	 	if(attorneySelId  == '' ||  typeof attorneySelId == 'undefined' ){
-			  $("#candidateNameEmail").attr("readonly",true);
-			  $("#candidateNameEmail").val("");
-		  }else{
-			  $("#candidateNameEmail").attr("readonly",false);
-			  $("#candidateNameEmail").val("");
-		  }
+	 	
 			 $.ajax({
 				    type: "POST",
 			        url: sourceleadUrl+"/getOrgSpocsList?"+tokenParamName+"="+tokenValue+"&orgRelationId="+orgRelationID+"&type="+type,  
