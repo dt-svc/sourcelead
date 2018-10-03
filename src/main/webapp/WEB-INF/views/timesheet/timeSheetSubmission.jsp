@@ -263,7 +263,7 @@
 								                          <c:if test="${empty timeSheetSubmissionStatus || timeSheetSubmissionStatus == 'NEW' || timeSheetSubmissionStatus == 'DRAFT'}">
 									                          <c:forEach var="empL" items="${empLeaveMap.value}">
 									                              <c:if test="${empL.holiday eq true}">
-									                                 <input type="button" value="" onClick="removeHolidayRow('${leaveIndex}','${empL.holidayId}','${empL.holidayUserId}','${empL.holidayUserLocationId}')" class="timeRemoveBtn"/>
+									                                 <input type="button" value="" onClick="alertHolidayDropMessage('${leaveIndex}','${empL.holidayId}','${empL.holidayUserId}','${empL.holidayUserLocationId}')" class="timeRemoveBtn"/>
 									                              </c:if>
 									                          </c:forEach>
 									                       </c:if>
@@ -1447,7 +1447,24 @@ function removeTimeSheetRow(rowId) {
 		}
 		
 </script>	
-
+<script type="text/javascript">	
+   	    function alertHolidayDropMessage(rowId,holidayId,holidayUserId,holidayUserLocationId){
+   		    var message = "<b>Are you sure to remove the holiday<b>";
+   		    $("#timesheetDivByFrequency").append("<div id='choicepopUp'></div>");
+   			var result = "";
+   			result = result +"	<div class='project_inn_mask'></div>";
+   			result = result +"	  <div id='remove_user_pop' class='remove_user_pop remove_user_pop_a'>";
+   			result = result +"		<p>"+message+"</p>";
+   			result = result +"		<div>&nbsp;&nbsp;&nbsp;</div>";
+   			result = result +"		<b href='javascript:void(0)'><input id='confirm-id' type='button' value='Ok' onclick='removeHolidayRow("+rowId+","+holidayId+","+holidayUserId+","+holidayUserLocationId+");'><input class='u_can_color' type='button'  value='Cancel' onClick='cancel();'></b>";
+   			result = result +"	</div>";
+   			$("#choicepopUp").append(result);
+   			$("#remove_user_pop").slideDown(200);
+   			$(".project_inn_mask").fadeIn(200);
+   		 }
+</script>	    	 
+		    
+ 
 <script type="text/javascript">	
 function removeHolidayRow(rowId,holidayId,holidayUserId,holidayUserLocationId) { 
 	         var sourceleadUrl ='${SourceLeadWeb_sourceleadUrl}';
@@ -1469,6 +1486,8 @@ function removeHolidayRow(rowId,holidayId,holidayUserId,holidayUserLocationId) {
 		 	      type : "POST",
 		      	  url: sourceleadUrl+"/dropHoliday?${_csrf.parameterName}=${_csrf.token}&holidayId="+holidayId+"&holidayUserId="+holidayUserId+"&holidayUserLocationId="+holidayUserLocationId,		
 		 	      success :function(result) {
+		 	    	   $("#choicepopUp").empty();
+		 	    	  $(".project_inn_mask").fadeOut(200);
 		 	    	  $("#loadTime").removeAttr("style"); 
 		 	      }
 		    }); 
@@ -2030,7 +2049,7 @@ function timesheetApprovalTableRowByProjectMemberId(timesheetFrequency,projectMe
 				    	  if(currentTimeSubFrequency != null && currentTimeSubFrequency != '' && currentTimeSubFrequency != 'undefined'){
 				    		  $("#currentTimeSubFrequency").val('');
 				    		  $("#timeSubFrequency").val('');
-				    		  $("#currentTimeSubFrequency").val(currentTimeSubFrequency)
+				    		  $("#currentTimeSubFrequency").val(currentTimeSubFrequency);
 			            	  $("#timeSubFrequency").val(currentTimeSubFrequency)
 				    	  }
 				    	  $("#loadTime").removeAttr('style');
@@ -2043,8 +2062,8 @@ function timesheetApprovalTableRowByProjectMemberId(timesheetFrequency,projectMe
 			    	  if(currentTimeSubFrequency != null && currentTimeSubFrequency != '' && currentTimeSubFrequency != 'undefined'){
 			    		  $("#currentTimeSubFrequency").val('');
 			    		  $("#timeSubFrequency").val('');
-			    		  $("#currentTimeSubFrequency").val(currentTimeSubFrequency)
-		            	  $("#timeSubFrequency").val(currentTimeSubFrequency)
+			    		  $("#currentTimeSubFrequency").val(currentTimeSubFrequency);
+		            	  $("#timeSubFrequency").val(currentTimeSubFrequency);
 			    	  }
 			    	  $("#loadTime").removeAttr('style');
 		    	  }
