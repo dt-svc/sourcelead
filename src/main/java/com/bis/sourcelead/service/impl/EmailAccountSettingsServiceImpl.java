@@ -98,15 +98,24 @@ public class EmailAccountSettingsServiceImpl implements EmailAccountSettingsServ
 	}
 
 	@Override
-	public List<ReadMailDTO> emailFolderRead(Long id,String folderName, Long userId, Long orgLocationId, Paginator paginator) {
-		EmailAccountSettings emailAccountSettings=emailAccountSettingsDao.getEmailAccount(id, userId);
-		String email=emailAccountSettings.getEmail();
-		String password=emailAccountSettings.getPassword();
-//		String host = "imap.gmail.com";
-		String storeType = "imaps";
-		List<ReadMailDTO> mailsList=new ArrayList<>();
-		mailsList=MailBox.readMailFromFolder(emailAccountSettings.getIncomingServer(), emailAccountSettings.getIncomingPort(), storeType, email, password,folderName,userId, orgLocationId, paginator);
-		return mailsList;
+	public ResponseList<ReadMailDTO> emailFolderRead(Long id, String folderName, Long userId, Long orgLocationId, Paginator paginator) {
+		ResponseList<ReadMailDTO> responseList = new ResponseList<>();
+		try {
+			EmailAccountSettings emailAccountSettings = emailAccountSettingsDao.getEmailAccount(id, userId);
+			String email = emailAccountSettings.getEmail();
+			String password = emailAccountSettings.getPassword();
+			// String host = "imap.gmail.com";
+			String storeType = "imaps";
+			List<ReadMailDTO> mailsList = MailBox.readMailFromFolder(emailAccountSettings.getIncomingServer(),
+					emailAccountSettings.getIncomingPort(), storeType, email, password, folderName, userId, orgLocationId, paginator);
+			responseList.setData(mailsList);
+			responseList.setPaginator(paginator);
+			responseList.setResponse(Result.SUCCESS.name());
+			responseList.setResponseMessage(Result.SUCCESS.getValue());
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return responseList;
 	}
 	
 	@Override

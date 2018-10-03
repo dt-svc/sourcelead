@@ -2877,6 +2877,7 @@ padding: 2px 10px !important;
     margin:0px 0px; padding: 0px 0px;
 }
 .reportsCount ul li {
+
     width:16.66666%; float: left; background-color:#fff; list-style-type: none; text-align: center; padding: 14px 0px;
 }
 .reportsCount5 ul li {
@@ -4783,6 +4784,7 @@ display:none;
 }
 .addResClo:hover {
     color:#F94447;
+
 }
 .prTasSta {
     padding:15px; background-color: #f5f5f5; border: 1px solid #dedede; border-radius: 3px;
@@ -8329,8 +8331,8 @@ max-width: 100% !important;
 	background-color: #fff; box-shadow: 0px 0px 2px rgba(0,0,0,0.2); border-radius: 2px; padding: 10px 6px 10px 10px; min-height: 450px;
 }
 .perReport {
-	width: 100px; text-align: center; display: block; height: 55px; margin: 8px auto 2px;
-	background: url(../images/dashboard.svg); background-repeat: no-repeat; background-size: 60px; background-position: center;
+	width: 100px; text-align: center; display: block; height: 55px; margin: 8px auto 2px; opacity:0.9;
+	background: url(../images/dashboard.svg); background-repeat: no-repeat; background-size: 70px; background-position: center 0px;
 }
 .finReport {
 	width: 100px; text-align: center; display: block; height: 55px; margin: 8px auto 2px;
@@ -9290,7 +9292,7 @@ aside.asideAct {
 	display: block; font-size: 16px; font-weight: 500; padding: 0px 0px 0px 5px; line-height: 44px; margin: 0px;
 }
 .dashNewWrapHead .nav > li > a {
-	font-size: 14px; line-height: 42px; padding: 0px 16px; line-height: 44px; border:none; color:#787878;
+	font-size: 14px; padding: 0px 16px; line-height: 44px; border:none; color:#787878;
 }
 .dashNewWrapHead .nav > li > a:hover {
 	background-color: #fff; box-shadow: inset 0 -3px 0px 0px #ccc; border:none;
@@ -9465,7 +9467,6 @@ aside.asideAct {
 .mailIcon.repallIcon:hover {background-position: center -25px;}
 .mailIcon.forIcon {background: url("../images/forward.svg"); background-size: 30px; background-position: center 0px; width: 35px; top: 0px;}
 .mailIcon.forIcon:hover {background-position: center -25px;}
-#attachfileBtn {opacity: 0;}
 .remove_user_pop.remove_user_pop_a  { z-index: 100000;}
 
 .newPopOut {
@@ -9479,6 +9480,7 @@ aside.asideAct {
 	width: 92%; max-width: 600px; margin: 0px auto 20px; border-radius: 4px;
 	background-color: #fff; box-shadow: 0px 8px 10px 0px rgba(46,51,51,0.4);
 }
+
 .newPopWrap h3 {
 	padding: 0px 0px; margin: 6px 0px 12px 15px; font-size: 15px; font-weight: 500; color: #454545;
 }
@@ -9512,8 +9514,9 @@ aside.asideAct {
 .mailSrl {
 	min-height: 200px; max-height: 300px; overflow: auto; position: relative;
 }
+.mailSrl ul li {cursor: pointer;}
 .mailLoad {
-	position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100000;
+	position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:1000;
 	background-image:url(../images/linear-loader.gif); background-position:center; background-repeat:no-repeat; background-size:80px;
 }
 .dashNewWrap .mailIcon {top:-4px;}
@@ -9548,20 +9551,29 @@ aside.asideAct {
 .mailCcFrom p span:after {
 	content: ':'; position: absolute; right: 0px;
 }
-.mailContent {
-	padding: 15px;
-}
+.mailContent {padding: 15px;}
 .mailContent p {
 	font-size: 14px !important; color: #454545; line-height: 20px; font-family: 'Roboto', Arial, Helvetica, sans-serif !important; 
 }
-
-
-
-
-
-
-
-
+.dashNewWrap .attaIcon { top: 0px;}
+.jobMoreBtn { position: absolute; right: 15px; top: -35px;}
+.sentAttach {
+	position: relative; padding: 0px 0px 0px 140px; min-height: 42px;
+}
+.sentAttachFild {opacity: 0; position: absolute; left: 15px; width: 120px; z-index: 100; height: 42px; cursor: pointer;}
+.sentAttach .newAdBtn {position: absolute; left: 15px; width: 120px; z-index: 50;}
+.mailAttachments p {
+	float: left; position: relative; margin: 0px 10px 10px 0px;  padding: 5px 25px 5px 10px; background: #fff;
+	border-radius: 2px; box-shadow: 0px 0px 2px rgba(0,0,0,0.2); color: #454545; font-size: 13px;
+}
+.mailAttachments p i { position: absolute; right: 6px; top: 6px;}
+.mailAttachments p i:hover { color: #d54747;}
+.sentMailPop {
+	max-width: 750px;
+}
+.sentMailWrap {
+	padding:15px 25px;
+}
 
 
 

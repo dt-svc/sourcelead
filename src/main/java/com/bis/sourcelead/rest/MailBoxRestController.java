@@ -907,19 +907,11 @@ public class MailBoxRestController {
 	public @ResponseBody ResponseList<ReadMailDTO> emailFolderRead(Long id, @RequestParam(defaultValue = "") String folderName,
 			HttpServletRequest request, Paginator paginator) throws Exception {
 		ResponseList<ReadMailDTO> responseList = new ResponseList<>();
-		/*if (request.getSession().getAttribute("emailList") != null) {
-			responseList = (ResponseList<ReadMailDTO>) request.getSession().getAttribute("emailList");
-		} else {*/
 			User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
 			OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 			Long userId = user.getId();
 			folderName = folderName.replaceAll("-and-", "&");
-			List<ReadMailDTO> readMailList = emailAccountSettingsService.emailFolderRead(id, folderName, userId, orgLocation.getId(),
-					paginator);
-			responseList.setData(readMailList);
-			responseList.setPaginator(paginator);
-			/*request.getSession().setAttribute("emailList", responseList);
-		}*/
+			responseList = emailAccountSettingsService.emailFolderRead(id, folderName, userId, orgLocation.getId(), paginator);
 		return responseList;
 	}
 
