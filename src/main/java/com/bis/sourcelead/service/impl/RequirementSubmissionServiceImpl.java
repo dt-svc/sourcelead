@@ -5496,8 +5496,8 @@ private void createXlsSheet(Sheet createExcelsheet,Row writeRow,int column,Strin
 
 	@Override
 	public List<RequirementSubmissionsDTO> getCandidateSubmittedRequirementsListByCandidateId(Long candidateId,
-			Long orgLocationId) throws Exception {
-		return requirementSubmissionDao.getCandidateSubmittedRequirementsListByCandidateId(candidateId, orgLocationId);
+			Long orgLocationId,String dateFormat) throws Exception {
+		return requirementSubmissionDao.getCandidateSubmittedRequirementsListByCandidateId(candidateId, orgLocationId,dateFormat);
 	}
 
 	@Override
@@ -5559,8 +5559,13 @@ private void createXlsSheet(Sheet createExcelsheet,Row writeRow,int column,Strin
 				writeRow.createCell(3).setCellValue(rsh.getSubmissionId().getRequirement().getJobTitle());
 			}
 		}
-		writeRow.createCell(4).setCellValue("--");
-				
+		 if(rsh.getSubmissionId().getRequirement().getProcess() != null){
+				writeRow.createCell(4).setCellValue(rsh.getSubmissionId().getRequirement().getProcess());
+ 
+		 }
+		 else{
+			 writeRow.createCell(4).setCellValue("--"); 
+		 }
 		//Clinet Name
 		if(rsh.getSubmissionId().getRequirement().getClientId() != null) {
 			if (rsh.getSubmissionId().getRequirement().getClientId().getResponderType().equalsIgnoreCase("Client")) {

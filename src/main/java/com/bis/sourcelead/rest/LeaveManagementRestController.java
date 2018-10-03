@@ -1847,8 +1847,14 @@ public class LeaveManagementRestController {
 				sortColumnIndex = Integer.parseInt(leaveDTO.getOrder().get(0).get("column"));
 				sortColumnOrder = leaveDTO.getOrder().get(0).get("dir");
 			}
-			leaveDTO.setSortColumn(tableColumns[sortColumnIndex]);
-			leaveDTO.setSortOrder(sortColumnOrder);
+			if("id".equalsIgnoreCase(leaveDTO.getSortColumn())) {
+				leaveDTO.setSortColumn("id");
+				leaveDTO.setSortOrder("desc");
+			}else {
+				leaveDTO.setSortColumn(tableColumns[sortColumnIndex]);
+				leaveDTO.setSortOrder(sortColumnOrder);
+			}
+			
 			
 			String loginUserRole = (String) SourceLeadSessionManager.getSessionAttribute(request, "loginUserRole");
 			leaveDTO.setLoginUserRole(loginUserRole);

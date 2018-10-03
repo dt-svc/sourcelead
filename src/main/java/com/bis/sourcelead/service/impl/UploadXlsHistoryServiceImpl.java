@@ -39,8 +39,8 @@ public class UploadXlsHistoryServiceImpl implements UploadXlsHistoryService{
 
 	@Override
 	public List<UploadXlsHistoryDTO> getUploadXlsHistoryListByUserId(Long userId, Long orgLocationId,
-			String entityType) throws Exception {
-		return uploadXlsHistoryDao.getUploadXlsHistoryListByUserId(userId, orgLocationId, entityType);
+			String entityType,String dateFormat) throws Exception {
+		return uploadXlsHistoryDao.getUploadXlsHistoryListByUserId(userId, orgLocationId, entityType,dateFormat);
 	}
 
 }

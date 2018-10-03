@@ -3755,7 +3755,7 @@ public class EMailJobScheduler {
 			List<LeaveType> leaveTypeList = leaveTypeService.getLeaveTypeListByLocationIdAndStatus(String.valueOf(orgLocation.getId()));
 			for(LeaveType leaveType : leaveTypeList){
 				if(Constants.YEARLY.equalsIgnoreCase(leaveType.getPeriod())){
-					Date[] dates = conversionUtil.getPreviousYearStartAndEndDate();
+					Date[] dates = ConversionUtil.getPreviousYearStartAndEndDate();
 					int status = associateBalanceLeaveService.calculateAndUpdateAssociateBalanceLeaves(orgLocation,leaveType,dates[0],dates[1]);
 				}
 			}
