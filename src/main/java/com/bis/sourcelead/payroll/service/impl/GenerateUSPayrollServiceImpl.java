@@ -288,7 +288,7 @@ public class GenerateUSPayrollServiceImpl implements GenerateUSPayrollService{
 									regularHoursAmount = amount;
 								}else if(PayrollConstant.SALARY.equalsIgnoreCase(assoSal.getPayType())) {
 									if(sal.getNoOfDays() >0) {
-										amount = payrollUtil.calculateSalaryUptoTerminationDate(assoSal.getGroupId().getPayFrequency(),sal.getNoOfDays(),assoSal.getGrossSalary(),"salary");
+										amount = payrollUtil.calculateSalaryUptoTerminationDate(assoSal.getGroupId().getPayFrequency(),sal.getNoOfDays(),assoSal.getGrossSalary());
 									}else {
 										amount = assoSal.getGrossSalary();
 									}
@@ -296,7 +296,7 @@ public class GenerateUSPayrollServiceImpl implements GenerateUSPayrollService{
 									LCAWageDTO lcaWageDTO  = generateUSPayrollDao.getLcaWageByCandidateIdLcationId(assoSal.getCandidate(),orgLocation);
 									if(lcaWageDTO != null) {
 										if(sal.getNoOfDays() >0) {
-											amount = payrollUtil.calculateSalaryUptoTerminationDate(lcaWageDTO.getLcaWageType(),sal.getNoOfDays(),assoSal.getGrossSalary(),"lca");
+											amount = payrollUtil.calculateSalaryUptoTerminationDateLcaWage(new BigDecimal(lcaWageDTO.getLcaWage()),lcaWageDTO.getLcaWageType(),sal.getNoOfDays(),orgLocation);
 										}else {
 											amount  = payrollUtil.getActualRateByPayFrequency(new BigDecimal(lcaWageDTO.getLcaWage()),lcaWageDTO.getLcaWageType(),assoSal.getGroupId().getPayFrequency());
 										}
