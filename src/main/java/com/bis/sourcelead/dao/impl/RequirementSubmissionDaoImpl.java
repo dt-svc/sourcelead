@@ -11,6 +11,7 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
@@ -545,7 +546,7 @@ public class RequirementSubmissionDaoImpl implements RequirementSubmissionDao{
 		 String subQuery = "";
 		 Boolean teamFlag = teamDao.getTeamOwnersListByUserIdAndRequirementId(user,loginOrgLocation.getId(),requirement.getId());
 		 if (!loginUserRole.equalsIgnoreCase("ROLE_ADMIN") && requirement.getManagerUserId().getId().longValue() != user.getId().longValue() && teamFlag == false ) {
-			 subQuery = " and ((rs.createdBy = '"+user.getUserCode()+"') OR (rs.vendorLocationId IS NOT NULL) OR (rs.candidate.candidateType = 'Professional') OR (rs.recruiterUserId IS NOT NULL)) ";
+			 subQuery = " and ((rs.requirement.primaryRecruiterUserId.id = '"+user.getId()+"') OR (rs.createdBy = '"+user.getUserCode()+"') OR (rs.vendorLocationId IS NOT NULL) OR (rs.candidate.candidateType = 'Professional') OR (rs.recruiterUserId IS NOT NULL)) ";
 		 }
 		 
 		 
@@ -3444,18 +3445,29 @@ public class RequirementSubmissionDaoImpl implements RequirementSubmissionDao{
 				@Override
 				@Transactional
 				public List<RequirementSubmissionsDTO> getCandidateSubmittedRequirementsListByCandidateId(
-						Long candidateId, Long orgLocationId) throws Exception {
+						Long candidateId, Long orgLocationId,String dateFormat) throws Exception {
 					
 				    List<RequirementSubmissionsDTO> requirementSubmissionsDTOList = null;
 					Session session = this.sessionFactory.getCurrentSession();
 					String query = null;
 					
+				    String locationDateFormat = null;
+					 if(dateFormat.equalsIgnoreCase("yyyy-MM-dd")){
+						 locationDateFormat = "%Y-%m-%d";
+					  }if(dateFormat.equalsIgnoreCase("dd-MM-yyyy")){
+						  locationDateFormat = "%d-%m-%Y";
+					  }if(dateFormat.equalsIgnoreCase("MM-dd-yyyy")){
+						  locationDateFormat = "%m-%d-%Y";
+					  }if(dateFormat.equalsIgnoreCase("yyyy-dd-MM")){
+						  locationDateFormat = "%Y-%d-%m";
+					  }
+					  
 					query =  "SELECT "
 							+" REQ.ID AS reqId, "
 							+" REQ.GENERATED_ID AS generatedId,"  
 							+" REQ.JOB_TITLE AS requirementName, "
 							+" SUBMISSION.SUBMISSION_STATUS AS submissionStatus, "
-							+" DATE_FORMAT(SUBMISSION.CREATED_DATE, '%Y-%m-%d') AS submissionDate, "
+							+" DATE_FORMAT(SUBMISSION.CREATED_DATE, '"+locationDateFormat+"') AS submissionDate, "
 							+" DATE_FORMAT(SUBMISSION.CREATED_DATE, '%h:%i:%s %p') AS submissionTime, "
 							+ " (SELECT " + 
 							  " CONCAT (U.FIRST_NAME,' ',IFNULL(U.LAST_NAME,'')) " + 
@@ -3474,6 +3486,7 @@ public class RequirementSubmissionDaoImpl implements RequirementSubmissionDao{
 					queryObj.setLong("orgLocationId", orgLocationId);
 					queryObj.setResultTransformer(Transformers.aliasToBean(RequirementSubmissionsDTO.class));
 					requirementSubmissionsDTOList = queryObj.list();
+					
 					return requirementSubmissionsDTOList;
 				}
 
