@@ -40,7 +40,7 @@ import com.bis.sourcelead.entity.User;
  */
 public interface ImmigrationCommonService {
 	
-	List<ImmigrationTemplate> getImmigrationTemplateList(OrgLocations orgLocations);
+	List<ImmigrationTemplate> getImmigrationTemplateList(OrgLocations orgLocations, Long status);
 
 	Immigration savePetitionDetails(ImmigrationDTO immigrationDTO, User user, OrgLocations orgLocations, String[] ids) throws Exception;
 

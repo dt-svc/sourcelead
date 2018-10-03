@@ -421,7 +421,6 @@ function getcontributionList(){
 
 </script>
 
-
 <script>
 function exportToPdf(){
 	
@@ -429,17 +428,19 @@ function exportToPdf(){
     getFreqdates("freqStartDate", "freqEndDate");
     var  freqStartDate = $("#freqStartDate").val();
     var freqEndDate = $("#freqEndDate").val();
-    var contributionId = $("#contributionId").val();
 	var searchValue = $("#dataTableSearch").val();
 	searchValue = searchValue ? searchValue : "";
-	var depositType = 'Cheque';
+	var contributionId = $("#contributionId").val();
 	/* alert("groupId = "+groupId);
 	alert("freqStartDate = "+freqStartDate);
 	alert("freqEndDate = "+freqEndDate);
 	alert("contributionId = "+freqEndDate);
 	alert("searchValue = "+searchValue); */
 	
-	window.location.href = sourceleadUrl+"/exportToPdfCheckRegisterReport?searchValue="+searchValue+"&groupId="+groupId+"&freqStartDate="+freqStartDate+"&freqEndDate="+freqEndDate+"&contributionId="+contributionId+"&depositType="+depositType;
+	window.location.href = sourceleadUrl+"/exportToPdfContributionReport?searchValue="+searchValue+"&groupId="+groupId+"&freqStartDate="+freqStartDate+"&freqEndDate="+freqEndDate+"&contributionId="+contributionId;
 }
 </script>
+
+
+
 <jsp:include page="../masterFooter.jsp" />

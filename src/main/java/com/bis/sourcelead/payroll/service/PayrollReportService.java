@@ -21,4 +21,8 @@ public interface PayrollReportService {
 	ResponseList<PayrollReportDTO> getDeductionReports(OrgLocations orgLocation, PayrollReportDTO payrollReportDTO);
 
 	List<CheckRegisterReportDTO> getexportToPdfCheckRegisterReport(OrgLocations orgLocation, PayrollReportDTO payrollReportDTO);
+
+	List<PayrollReportDTO>  exportToPdfContributionReport(OrgLocations orgLocation, PayrollReportDTO payrollReportDTO);
+	
+	List<PayrollReportDTO> exportToPdfDeductionReport(OrgLocations orgLocation, PayrollReportDTO payrollReportDTO);
 }

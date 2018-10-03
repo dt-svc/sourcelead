@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+import org.hibernate.Query;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.slf4j.Logger;
@@ -433,6 +434,24 @@ public class RolesDaoImpl implements RolesDao{
 		} else {
 			return null;
 		}
+	}
+
+	@Override
+	@Transactional
+	public List<String> getRolesListByOrgLocationId(Long orgLocationId) throws Exception {
+		
+		Session session = this.sessionFactory.getCurrentSession();
+		String query = null;
+		query ="SELECT "
+				+" R.DISPLAY_NAME "
+				+" FROM ROLES R "
+				+" WHERE "
+				+" R.ORG_LOCATION_ID = :orgLocationId";
+		Query queryObj = session.createSQLQuery(query);
+		queryObj.setLong("orgLocationId", orgLocationId);	
+		List<String> rolesList = (List<String>)queryObj.list();
+		
+		return rolesList;
 	}
 
 

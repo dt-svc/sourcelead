@@ -626,7 +626,7 @@ input.inline_field::-moz-placeholder { color: #333; }-->*/
 .project_wrap_table table tr td div b a {
 	color: #fff !important;
 }
-.proj_show { cursor: pointer; color:#333;}                 
+.proj_show { cursor: pointer; color:#368ee0;}                 
 .proj_show i {
     font-size:12px; color:#375d81; float:right; padding:4px 0px 0px 0px; visibility:hidden; opacity:0;
     }
@@ -6078,7 +6078,7 @@ background: #f1f6ff none repeat scroll 0 0; color: #444; border-radius: 5px;
 	color: #006bbb;
 }
 .newMailCon {
-	padding: 15px;
+	padding: 25px; min-height: 200px
 }
 .newMailCon h4 {
 	padding: 0px 0px; margin: 0px 0px; font-size: 16px; font-weight: 500; color: #323232;
@@ -6090,10 +6090,10 @@ background: #f1f6ff none repeat scroll 0 0; color: #444; border-radius: 5px;
 	padding: 0px 0px; margin: 0px 0px;
 }
 .newMailCon ul li {
-	list-style-type: none; float: left; width: 23%; margin: 0px 2% 0px 0px;
+	list-style-type: none; float: left; width: 31%; margin: 0px 2% 0px 0px;
 }
 .newMailCon ul li a {
-	display: block; width: 100%; border: 1px solid #dedede; border-radius: 4px; padding: 20px 0px 15px; color: #454545;
+	display: block; width: 100%; border: 1px solid #dedede; border-radius: 4px; padding: 25px 0px 20px; color: #454545;
 	text-align: center;
 }
 .newMailCon ul li a img {
@@ -8143,12 +8143,12 @@ float: left; width: 33.3333%; background-color: #f9f9f9; padding: 5px 15px; marg
 	width: 1000px; 
 }
 .popupHead {
-	background-color: #E6E6E6; height: 47px; line-height: 47px; font-size: 15px; font-weight: 500; color: #353535;
-	padding: 0px 10px 0px 15px;
+	background-color: #f0f0f0; height: 47px; line-height: 47px; font-size: 15px; font-weight: 500; color: #353535;
+	padding: 0px 10px 0px 15px; border-radius: 3px 3px 0px 0px;
 }
 .closePop {
 	width: 30px; height: 30px; display: block; background: url("../images/cross-out.svg"); background-repeat: no-repeat;
-	background-position: center; background-size: 20px; cursor: pointer; margin: 10px 0px 0px 0px; opacity: 0.7;
+	background-position: center; background-size: 17px; cursor: pointer; margin: 8px 0px 0px 0px; opacity: 0.7;
 	float: right; position: relative !important;
 	}
 .popupContent {
@@ -8235,7 +8235,7 @@ float: left; width: 33.3333%; background-color: #f9f9f9; padding: 5px 15px; marg
 .tagsWrap {}
 .tagsWrap .chosen-choices {
 	border:none !important; padding: 0px 0px !important; box-shadow: 0px 0px 0px rgba(0,0,0,0); background-image: none !important;
-	margin-bottom: 0px !important; min-height: 100px;
+	margin-bottom: 0px !important;
 }
 .tagsWrap .search-choice {
 	height: 28px; margin: 0px 6px 6px 0px !important; padding: 6px 25px 5px 7px !important;
@@ -8329,8 +8329,8 @@ max-width: 100% !important;
 	background-color: #fff; box-shadow: 0px 0px 2px rgba(0,0,0,0.2); border-radius: 2px; padding: 10px 6px 10px 10px; min-height: 450px;
 }
 .perReport {
-	width: 100px; text-align: center; display: block; height: 55px; margin: 8px auto 2px;
-	background: url(../images/dashboard.svg); background-repeat: no-repeat; background-size: 60px; background-position: center;
+	width: 100px; text-align: center; display: block; height: 55px; margin: 8px auto 2px; opacity:0.9;
+	background: url(../images/dashboard.svg); background-repeat: no-repeat; background-size: 70px; background-position: center 0px;
 }
 .finReport {
 	width: 100px; text-align: center; display: block; height: 55px; margin: 8px auto 2px;
@@ -8789,7 +8789,7 @@ max-width: 100% !important;
 	box-sizing: border-box; margin: 0px 0px;
 }
 .dataSeaNew .dataTables_filter input:focus, .dataSeaTop .dataTables_filter input:focus {
-	padding: 0px 36px 0px 10px !important;
+	padding: 0px 36px 0px 10px !important; border: 1px solid #74B4F0;
 
 }
 .dataSeaTop .dataTables_filter {
@@ -9276,3 +9276,292 @@ aside.asideAct {
 }
 
 .main-header {box-shadow: 0px 1px 2px rgba(0,0,0,0.1);}
+
+
+
+.dashNewWrap {
+	padding: 0px 0px !important; box-shadow: 0px 3px 4px rgba(0,0,0,0.06) !important; border-radius: 3px; min-height: 145px;
+	background-color: #fff; position: relative;
+}
+.dashNewWrapHead {
+	border-bottom: 1px solid #ededed; padding: 0px 10px; height: 44px;
+}
+.dashNewWrapHead a, .dashNewWrapHead h4 {
+	display: block; font-size: 16px; font-weight: 500; padding: 0px 0px 0px 5px; line-height: 44px; margin: 0px;
+}
+.dashNewWrapHead .nav > li > a {
+	font-size: 14px; line-height: 42px; padding: 0px 16px; line-height: 44px; border:none; color:#787878;
+}
+.dashNewWrapHead .nav > li > a:hover {
+	background-color: #fff; box-shadow: inset 0 -3px 0px 0px #ccc; border:none;
+}
+.dashNewWrapHead .nav-tabs>li.active>a, .dashNewWrapHead .nav-tabs>li.active>a:focus, .dashNewWrapHead .nav-tabs>li.active>a:hover {
+	 box-shadow: inset 0 -3px 0px 0px #0084bf; color: #454545; border:none;
+}
+.dashNewCount {
+	position: relative; text-align: left; padding: 25px;
+}
+#subDiv {
+	padding: 25px 15px;
+}
+.dashNewCount p {
+	padding: 0px 0px; margin: 0px 0px; font-size: 13px; font-weight: 400; color:#787878; overflow: hidden;
+	white-space: nowrap; text-overflow: ellipsis;
+}
+.NewCount {
+	font-size: 20px !important; font-weight: 500 !important; padding: 8px 0px 0px 2px !important; color: #666 !important;
+	}
+.suColor { color: #d58a41 !important;}	
+.apColor { color: #52b334 !important;}	
+.reColor { color: #d54a4a !important;}	
+.caColor { color: #c10000 !important;}	
+.deColor { color: #368ee0 !important;}	
+.moreLink {
+	float: left; font-size: 13px !important; color: #666; font-weight: 400 !important; padding: 0px 0px 0px 12px !important; 
+	text-decoration: underline;
+}
+.moreLink:hover {
+	color: #368ee0;
+}
+
+.dashNewCount a {
+	color: inherit !important;
+}
+.dashNewCount a:hover {
+	text-decoration: underline;
+}	
+.balLeaves {
+	font-size: 13px; padding: 14px 0px 0px 20px; font-weight: 500; color: #666;
+}
+.balLeaves span {
+	display: inline-block; margin: 0px 0px 0px 10px; font-size: 13px; padding: .2em .6em .2em;
+}	
+.newDashPad {padding: 0px 15px 15px 15px;}
+.newDashPadSearch {padding: 45px 15px 15px 15px;}	
+
+.dashNewWrap .dataSeaNew .dataTables_filter {
+	margin-top: 0px !important; right: -15px !important; top: -38px !important;
+}
+.dashNewWrap .remove_search {
+	right: 0px; top: 4px;
+}
+.mt7 {margin-top: 7px;}
+.dashNewWrapMinHe {
+	min-height: 510px; padding-bottom: 18px !important;
+}
+.dashNewWrapMinHe table {
+	border-bottom: 1px solid #f2f2f2;
+}
+.dashNewWrapMinHe .datatable_filter .dataTables_length { bottom: 7px;}
+
+
+.userMailList {
+  padding: 0px 0px; margin: 0px 0px; max-height: 157px; overflow: auto; border-top: 1px solid #f5f5f5;
+}
+.userMailList li {
+  position: relative; list-style-type: none; padding: 7px 10px 7px 42px; height: 38px; cursor: pointer;
+  margin-bottom: 1px; border-left:4px solid #ffffff;
+}
+.userMailList li span {
+  position: absolute; left: 7px; width: 26px; height: 26px; background-color: #aeaeae; text-align: center;
+  display: block; border-radius: 50%;line-height: 26px; color: #fff; font-size: 15px; top:6px; text-transform: uppercase;
+}
+.userMailList li span.colorg {background-color: #ff6363;}
+.userMailList li span.colory {background-color: #ab5cff;}
+.userMailList li span.colors, .userMailList li span.colorh {background-color: #69b2f6;}
+.userMailList li .glyphicon-trash {
+  position: absolute; left: 7px; width: 26px; height: 26px; background-color: #f85555; text-align: center;
+  display: block; border-radius: 50%;line-height: 25px; color: #fff !important; font-size: 12px; top:7px;
+  opacity: 0; visibility: hidden;
+}
+.userMailList li p {
+  display: block; width: 100%; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
+  padding: 4px 0px 0px 0px; margin: 0px;
+}
+.userMailList li:hover .glyphicon-trash {
+  opacity: 1; visibility: visible;
+}
+/* .userMailList li:hover span {
+  display: none;
+} */
+.userMailList li:first-child:hover span {
+  display: block;
+}
+.mActions {
+	position: absolute; right: 0px; top: 0px; background-color: #f5f5f5; z-index: 100; padding: 6px 5px 0px;
+	opacity: 0; visibility: hidden;
+}
+.userMailList li:hover {
+  background-color: #f5f5f5; border-left:4px solid #f5f5f5; padding: 7px 68px 7px 42px;
+}
+.userMailList li:hover .mActions{
+	opacity: 1; visibility: visible;
+}
+.userMailList li.Act {
+  background-color: #f5f5f5; border-left:4px solid #368ee0;
+}
+
+#sourceleadEmailFolderDiv li.active, #dynamicEmailFolderDiv li.active {
+  background-color: #f1f1f1; border-left: 4px solid #368ee0;
+}
+.dynMailList li {
+	padding: 7px 15px;
+}
+.dynMailList li:hover { background-color: #f5f5f5;}
+.mail-widget i { padding: 5px; cursor: pointer; font-size: 20px; color: #817c7c;}
+
+.mailIcon {
+	width: 30px; height: 30px; display: block; background-repeat: no-repeat;  cursor: pointer; float:right;
+	position: relative; top: -3px; -webkit-transition:0.1s all; -moz-transition:0.1s all; transition:0.1s all;
+}
+.mailIcon.trashIcon {
+	background: url("../images/trash.svg"); background-size: 30px; background-position: center 0px;
+}
+.mailIcon.trashIcon:hover {
+	background-position: center -25px;
+}
+.mailIcon.refreshIcon {
+	background: url("../images/refresh.svg"); background-size: 23px; background-position: center center;
+	background-repeat: no-repeat;
+}
+.mailIcon.attaIcon {
+	background: url("../images/attach.svg"); background-size: 22px; background-position: center; background-repeat: no-repeat;
+	height: 20px; top: 0px;
+}
+.mail-box-header {
+	padding: 10px 15px 0px !important; height: 44px; border: none !important;
+}
+.mail-box-header h3 {
+	font-size: 16px !important; padding: 3px 0px 0px 0px; text-transform: capitalize; color: #666;
+}
+.deleTrash {
+	font-size: 13px; font-weight: 500; color: #e65c5c; padding: 3px; cursor: pointer;
+}
+.mailFrom {
+	width: 230px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; color: #454545; cursor: pointer;
+}
+.mailSub {
+	width: 410px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; color: #666; cursor: pointer;
+}
+
+.mailOver {
+	position: relative; padding: 0px 0px !important;
+}
+.mailActions {
+	position: absolute; right: 2px; top: auto; height: 42px; width: 160px; background-color: #f9f9f9; padding: 5px;
+	opacity: 0; visibility: hidden;
+}
+.mailActions .mailIcon.trashIcon {
+	width: 35px; top: 0px;
+}
+.dashNewWrapMinHe table tr:hover .mailActions {
+	opacity: 1; visibility: visible;
+}
+.mailIcon.repIcon {background: url("../images/replay.svg"); background-size: 30px; background-position: center 0px; width: 35px; top: 0px;}
+.mailIcon.repIcon:hover {background-position: center -25px;}
+.mailIcon.editIcon {background: url("../images/edit.svg"); background-size: 30px; background-position: center 0px;}
+.mailIcon.editIcon:hover {background-position: center -25px;}
+.mailIcon.repallIcon {background: url("../images/replayall.svg"); background-size: 30px; background-position: center 0px; width: 35px; top: 0px;}
+.mailIcon.repallIcon:hover {background-position: center -25px;}
+.mailIcon.forIcon {background: url("../images/forward.svg"); background-size: 30px; background-position: center 0px; width: 35px; top: 0px;}
+.mailIcon.forIcon:hover {background-position: center -25px;}
+#attachfileBtn {opacity: 0;}
+.remove_user_pop.remove_user_pop_a  { z-index: 100000;}
+
+.newPopOut {
+	position: fixed; z-index: 100010; padding: 20px 0px; overflow: auto;
+	background-color: rgba(0,0,0,0.6); top: 0px; left: 0px; width: 100%; height: 100%;
+}
+.newPopOut.newPopOutTop {
+	padding: 8% 0px 0px;
+}
+.newPopWrap {
+	width: 92%; max-width: 600px; margin: 0px auto 20px; border-radius: 4px;
+	background-color: #fff; box-shadow: 0px 8px 10px 0px rgba(46,51,51,0.4);
+}
+.newPopWrap h3 {
+	padding: 0px 0px; margin: 6px 0px 12px 15px; font-size: 15px; font-weight: 500; color: #454545;
+}
+.newPopWrap h3 span {
+	font-size: 13px; font-weight: 400;
+}
+.newPopWrap label span {
+	display: inline-block; padding: 0px 0px 0px 10px; margin: 0px;
+}
+
+.mail-box {
+	box-shadow: 0px 3px 4px rgba(0,0,0,0.07) !important; border-radius: 3px; margin-bottom: 20px; padding-bottom: 6px;
+}
+.mailBtn {
+	padding: 8px;
+}
+.mailBtn .newAdBtn {
+	width: 100%; display: inline-block;
+}
+.mailBtn .newAdBtn i {
+	display: inline-block; padding: 0px 10px 0px 0px;
+}
+.mail-box h5 {
+	padding: 10px 15px; margin: 0px 0px; font-size: 15px; color: #505050; font-weight: 500;
+}
+.mail-box .nav-stacked li { border-top: 1px solid #f4f4f4; border-bottom: none; border-left: 4px solid #fff; margin-bottom:1px;}
+.mail-box .nav-stacked > li > a {padding: 9px 15px; color: #545454;}
+.mail-box .nav-stacked > li.active > a, .mail-box .nav-stacked > li.active > a, .mail-box .nav-stacked > li.active > a:hover {
+	border: none; background-color: #f5f5f5;}
+.mail-box .nav > li > a:hover, .mail-box .nav > li > a:active, .mail-box .nav > li > a:focus { background-color: #f5f5f5;}	
+.mailSrl {
+	min-height: 200px; max-height: 300px; overflow: auto; position: relative;
+}
+.mailLoad {
+	position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:1000;
+	background-image:url(../images/linear-loader.gif); background-position:center; background-repeat:no-repeat; background-size:80px;
+}
+.dashNewWrap .mailIcon {top:-4px;}
+.mailTabWrap {
+	min-height: 420px; border-bottom: 1px solid #f2f2f2;
+}
+.mailDetailsHeader {
+	padding: 10px 15px; border-bottom: 1px solid #f5f5f5;
+}
+.mailBack {
+	float: left; width: 40px; height: 40px; display: block; background-repeat: no-repeat; cursor: pointer;
+	background-image: url(../images/mailback.svg); background-size: 26px; background-position: center center;
+	background-color: #f9f9f9; border-radius: 50%;
+}
+.mailBack:hover { background-color: #f1f1f1;}
+.mailDetailsHeader span { padding: 9px 0px 0px 20px; }
+.mailDetailsHeader .mailIcon { float: left; margin: 0px 8px 0px 0px;}
+.mailSentDate {float: right; padding: 11px 5px 0px 0px; font-size: 14px; font-weight: 400; color: #454545;}
+.mailDetailsWrap { padding: 15px;}
+.mailDetailsWrap h4 {
+	padding: 2px 0px 15px 0px; margin: 0px 0px; font-size: 16px; font-weight: 500; color: #1b5e9e;
+	}
+.mailCcFrom {
+	background-color: #f5f5f5; padding: 10px 15px; border-radius: 2px;
+}
+.mailCcFrom p {
+	position: relative; margin: 0px 0px; padding: 3px 0px 3px 50px; color: #454545; line-height: 20px;
+}
+.mailCcFrom p span {
+	position: absolute; left: 0px; top: auto; font-weight: 500; color: #454545; display: block; width: 40px;
+}
+.mailCcFrom p span:after {
+	content: ':'; position: absolute; right: 0px;
+}
+.mailContent {padding: 15px;}
+.mailContent p {
+	font-size: 14px !important; color: #454545; line-height: 20px; font-family: 'Roboto', Arial, Helvetica, sans-serif !important; 
+}
+.dashNewWrap .attaIcon { top: 0px;}
+.jobMoreBtn { position: absolute; right: 15px; top: -35px;}
+
+
+
+
+
+
+
+
+
+
+
