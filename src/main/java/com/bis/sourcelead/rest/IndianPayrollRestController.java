@@ -8,15 +8,18 @@ import java.util.Date;
 import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 
 import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.PropertySource;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.servlet.ModelAndView;
 
 import com.bis.sourcelead.annotations.Validator;
 import com.bis.sourcelead.constants.Constants;
@@ -27,22 +30,29 @@ import com.bis.sourcelead.dto.Response;
 import com.bis.sourcelead.dto.UserDTO;
 import com.bis.sourcelead.entity.AssociateLoanAndAdvances;
 import com.bis.sourcelead.entity.Candidate;
+import com.bis.sourcelead.entity.Department;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.PaymentAccount;
 import com.bis.sourcelead.entity.PayrollLoanAndAdvances;
 import com.bis.sourcelead.entity.User;
+import com.bis.sourcelead.entity.UserGroup;
 import com.bis.sourcelead.entity.UserRole;
 import com.bis.sourcelead.enums.Result;
 import com.bis.sourcelead.payroll.dto.AssociatePfEsiDetailsDTO;
+import com.bis.sourcelead.payroll.dto.GenerateINDPayrollDTO;
+import com.bis.sourcelead.payroll.dto.IndApprovePayrollDTO;
+import com.bis.sourcelead.payroll.dto.IndPaysheetFrequencyDTO;
 import com.bis.sourcelead.payroll.service.AssociatePfEsiService;
+import com.bis.sourcelead.payroll.service.GenerateINDPayrollService;
 import com.bis.sourcelead.service.AssociateLoanAndAdvancesService;
 import com.bis.sourcelead.service.CandidateService;
+import com.bis.sourcelead.service.DepartmentService;
 import com.bis.sourcelead.service.PaymentAccountService;
 import com.bis.sourcelead.service.PayrollLoanAndAdvancesService;
+import com.bis.sourcelead.service.UserGroupService;
 import com.bis.sourcelead.service.UserRoleService;
 import com.bis.sourcelead.service.UserService;
 import com.bis.sourcelead.util.SourceLeadSessionManager;
-import com.rometools.rome.io.SyndFeedOutput;
 
 @RestController
 @PropertySource("${propertyLocation:app.properties}")
@@ -50,6 +60,8 @@ public class IndianPayrollRestController {
 
 	@Autowired
 	PaymentAccountService paymentAccountService;
+	@Value("${sourceleadUrl}")
+	private String sourceleadUrl;
 	
 	@Autowired
 	CandidateService candidateService;
@@ -65,6 +77,16 @@ public class IndianPayrollRestController {
 	
 	@Autowired
 	UserRoleService userRoleService;
+	
+	@Autowired
+	UserGroupService userGroupService;
+	
+	@Autowired
+	DepartmentService departmentService;
+	
+    @Autowired
+	GenerateINDPayrollService generateINDPayrollService;
+
 	
 	@Autowired
 	AssociateLoanAndAdvancesService associateLoanAndAdvancesService;
@@ -95,7 +117,7 @@ public class IndianPayrollRestController {
 			 resObj.setResponseMessage(Result.AWKWARD.getValue());
 		}
 		 return resObj;
-}
+   }
     
     
     @RequestMapping(value = "/app/getIndAssociatePaymentAccountDetails", method = RequestMethod.POST)
@@ -363,5 +385,56 @@ public class IndianPayrollRestController {
 		 return "success";
     } 
     
+    
+    @RequestMapping(value = "/app/initiateIndPayroll", method = RequestMethod.POST)
+   	public ModelAndView initiateIndPayroll(HttpServletRequest request){
+    	ModelAndView modelAndView = new ModelAndView();
+   		 try {
+   			OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+			List<UserGroup> userGroupList = userGroupService.getAllUserGroupsByLocationId(orgLocations);
+			modelAndView.addObject("userGroupList",userGroupList);
+			modelAndView.setViewName("payroll_india/payroll/initiatePayrollInd");
+   		 }catch (Exception e) {
+   			 e.printStackTrace();
+   		}
+   		 return modelAndView;
+      } 
+    
+
+	@RequestMapping(value = "/app/indianPayrolluserGroupList")
+	public ModelAndView userBatchList(HttpServletRequest request) throws Exception {
+		   OrgLocations loginOrgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+		   ModelAndView model = new ModelAndView();
+		   try {
+		   List<Department> departmentList = departmentService.getDepartmentByOrgLocationId(loginOrgLocation.getId());
+		   model.addObject("departmentList", departmentList);
+		   model.addObject("sourceleadUrl", sourceleadUrl);
+		   model.setViewName("payroll_india/payroll/indianPayrollGroups");
+	   		 }catch (Exception e) {
+	   			 e.printStackTrace();
+	   		}
+	   		 return model;
+	      } 
+    
+
+    @RequestMapping(value = { "/app/generateINDPayroll","/app/rest/generateINDPayroll" }, method = RequestMethod.POST)
+	public IndPaysheetFrequencyDTO generateINDPayroll(GenerateINDPayrollDTO generateINDPayrollDTO,HttpServletRequest request, HttpServletResponse response) throws Exception
+	{
+		OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+		User loginUser = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+		IndPaysheetFrequencyDTO existedData = generateINDPayrollService.getPayrollData(generateINDPayrollDTO,orgLocation,loginUser);
+		return generateINDPayrollService.generateINDPayroll(existedData, orgLocation, generateINDPayrollDTO, loginUser);
+	}
+    
+    
+    @RequestMapping(value = { "/app/sentForApproveIndPayroll","/app/rest/sentForApproveIndPayroll" }, method = RequestMethod.POST)
+   	public IndApprovePayrollDTO sentForApproveIndPayroll(IndApprovePayrollDTO indApprovePayrollDTO, HttpServletRequest request, HttpServletResponse response) throws Exception
+   	{
+   		OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+   		User loginUser = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+   		
+   		return null;
+   	}
+
     
 }

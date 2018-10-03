@@ -316,8 +316,12 @@ public class LeaveServiceImpl implements LeaveService{
 					leave.setApproverHierarchyList(getApproverList(leaveDTO,leave,user));
 					leave.setStatus(Constants.LEAVE_APPROVED);
 				}else{
-					leave.setApproverHierarchyList(getApproverList(leaveDTO,leave,user));
-					leave.setStatus(Constants.LEAVE_PENDING);
+					if(!leaveDTO.getIsSuperUser()){
+						leave.setApproverHierarchyList(getApproverList(leaveDTO,leave,user));
+						leave.setStatus(Constants.LEAVE_PENDING);
+					}else {
+						leave.setStatus(Constants.LEAVE_APPROVED);
+					}
 				}
 			}else {
 				leave.setApproverHierarchyList(getApproverList(leaveDTO,leave,user));

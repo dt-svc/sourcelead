@@ -569,6 +569,8 @@ public class Constants {
 	public static final String MONTHLY = "Monthly";
 	public static final String YEARLY = "Yearly";
 	
+	public static final int MIN_PROFILE_PERCENETAGE = 30;
+	
 	public static final String[] IMPORT_JOB_EXCEL_HEADERS = { "Jobs id", "Jobs Title",
 			"Min Experience", "Max Experience", "Min/Max Rate", "Location", "City",	"State", "Country", "Zip Code",	
 			"Education", "Skills", "Immigration Status", "Cooling-off Period", "Travel Allowance", "Closed Date",
@@ -1251,5 +1253,20 @@ public class Constants {
 	public static final String REGULAR = "Regular";
 	
 	public static final String[] DIRECT_DEPOSIT_HEADER = { "Employee\nNumber", "Employee Name", "Department", "Transit\nNumber", "Account\nNumber", "Deposit\nAmount", "Description" };
+	
+	//Indian_Payroll
+	public static final String IND_PAYROLL_PAYHEAD_DEDUCTION = "Deduction";
+	public static final String IND_PAYROLL_PAYHEAD_EARNINGS = "Earnings";
+	
+	public static final String IND_PAYROLL_PAYFREQUENCY_MONTHLY = "Monthly";
+	public static final String IND_PAYROLL_PAYFREQUENCY_WEEKLY = "Bi-Weekly";
+	public static final String IND_PAYROLL_PAYFREQUENCY_BI_WEEKLY = "Weekly";
+	public static final String IND_PAYROLL_PAYFREQUENCY_ANUALLY = "Annually";
+	
+	public static final String IND_PAYROLL_PAYHEAD_TDS = "TDS";
+	public static final String IND_PAYROLL_PROFESSIONAL_TAX = "PT";
+	
+	public static final String[] CONSTANT_PAYHEAD_SHORTCODES = { "PT", "TDS", "PF", "ESI", "L&D", "BO", "ARR", "RMB" };
+	
 
 }
