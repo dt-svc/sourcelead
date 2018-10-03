@@ -18,7 +18,7 @@
           </div>
           
           <div class="clearfix mb" id="popnotify">
-             <label class="noPad">IMAP Mail Server name <b class="valStar">*</b></label>
+             <label class="noPad">POP Mail Server name <b class="valStar">*</b></label>
             <input class="form-control" value="" id="parserServerName" name="serverName" data-validation="required validate_Space"  field-name="Receive Server" placeholder="e.g.secure.emailsrvr.com" type="text">
           </div>
           
