@@ -306,7 +306,7 @@ public class InvoiceServiceImpl implements InvoiceService {
 	        if(null != vendorCurrencyCode){
 	      	float convertedAmount = conversionUtil.convert(loginOrgCurrencyCode, vendorCurrencyCode, Float.parseFloat(invoiceDTO.getGrandTotal()));
 	      	float exchangeAmoiunt = conversionUtil.convert(loginOrgCurrencyCode, vendorCurrencyCode,1);
-	      	float convertedAmount1 = 	(float) (Math.round(convertedAmount * 100.0) / 100.0);
+	      	float convertedAmount1 = 	Float.parseFloat((new DecimalFormat(".###").format(((convertedAmount * 100.0) / 100.0))));
 	      	invoice.setConvertCurrencyCode(vendorCurrencyCode);
 	      	invoice.setConvertAmount(String.valueOf(convertedAmount1));
 	      	invoice.setExchangeRate(String.valueOf(exchangeAmoiunt));
@@ -523,7 +523,7 @@ public class InvoiceServiceImpl implements InvoiceService {
 			if (null != vendorCurrencyCode) {
 				float convertedAmount = conversionUtil.convert(loginOrgCurrencyCode, vendorCurrencyCode,
 						Float.parseFloat(invoice.getTotal()));
-				float convertedAmount1 = (float) (Math.round(convertedAmount * 100.0) / 100.0);
+				float convertedAmount1 = Float.parseFloat((new DecimalFormat(".###").format(((convertedAmount * 100.0) / 100.0))));
 				convertedAmount1 = convertedAmount1 * Float.valueOf(invoice.getTotal());
 				parentInvoice.setCurrencyCode(vendorCurrencyCode);
 				parentInvoice.setTotal(String.valueOf(convertedAmount1));
@@ -1375,7 +1375,7 @@ public class InvoiceServiceImpl implements InvoiceService {
 				float convertedAmount = conversionUtil.convert(loginOrgCurrencyCode, vendorCurrencyCode,
 						Float.parseFloat(grandTotal));
 				float exchangeRate = conversionUtil.convert(loginOrgCurrencyCode, vendorCurrencyCode, 1);
-				float exchangeCurrency = (float) (Math.round(convertedAmount * 100.0) / 100.0);
+				float exchangeCurrency = Float.parseFloat((new DecimalFormat(".###").format(((convertedAmount * 100.0) / 100.0))));
 				exchangeRate = exchangeCurrency * Float.valueOf(grandTotal);
 				currencyConversionResponse.setExchangeRate(exchangeRate);
 				currencyConversionResponse.setExchangeCurrency(exchangeCurrency);
