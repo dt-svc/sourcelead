@@ -159,6 +159,7 @@ function redirectlocation(location){
 		          },{
 	            "targets": colIndex++,
 	            "data": "duration",
+	            "sorting":false,
 	            "render": function ( data, type, opt, meta ) {
 	            	 var result = "";
 	            	 result = result + '   <div title="'+opt.duration+'" class="tbldata-dotdot-100">'+opt.duration+'</div>';
@@ -211,6 +212,7 @@ function redirectlocation(location){
 		    	  },{
 			    	  	"targets": colIndex++,
 			    	  	"data": "cancelReason",
+			    	  	"sorting":false,
 			    	  	"render": function(data, type, opt, meta) {
 			    	  		var result = "";
 			    	  		 result = result + ' <div title="'+opt.cancelReason+'" class="tblminwidth-75">'+opt.cancelReason+'</div>';	
@@ -218,7 +220,7 @@ function redirectlocation(location){
 			    	  	}
 		    	  }], 
 	                "scrollCollapse": false,
-	            	"lengthMenu": [[10, 15, 20, -1], [10, 15, 20, "All"]],
+	            	"lengthMenu": [[10, 15, 20], [10, 15, 20]],
 	            	"bLengthChange": true,
 	            	"bDestroy": true,
 	            	"ordering": true,

@@ -8,28 +8,24 @@
  <%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %>
  <%@ taglib uri="http://java.sun.com/jsp/jstl/functions" prefix="fn"%>
 <jsp:include page="../views/requirement/requirementAssignedTo.jsp"/>
-<div class="mb clearfix" >
+<div class="mb clearfix col-md-12 noPad" >
       <!-- Assigned Requirements -->
-      <div class=" dashboard-widget col-md-12" id="assignedRequirementsDiv">
-        <h4 class="pull-left">Jobs</h4>
-        <!-- <span title="Calendar"><i aria-hidden="true" class="fa fa-calendar" id="datepicker"></i>
-        </span> -->
+      <div class="dashNewWrap mb10" id="assignedRequirementsDiv">
+      
+        	<div class="dashNewWrapHead noBor clearfix">
+				<h4 class="pull-left">Jobs</h4>
+        	</div>       
         
-        <div class="project_side_wrap_inn_tabs">
+        <div class="project_side_wrap_inn_tabs newDashPad">
       	    <div id="resourceRequestsDivLoading"></div>
-		    <ul class="project-tabs-menu tabnewStyles">
-		        <!-- <li class="current" id="assigned"><a data-toggle="tab" href="javascript:void(0)" onclick="requirementList(false, -1);">Assigned</a></li> -->
-		        <!-- <li id="drive"><a data-toggle="tab" href="javascript:void(0)"  onclick="requirementList(true, -1);">Daily Drives</a></li> -->
-		    </ul>
 			<div id="requirementListTabHead">
 				<div id="requirementListActions">
-					<div class="pull-right" id="viewmoresDiv" style="display: none;">
+					<div class="pull-right jobMoreBtn" id="viewmoresDiv" style="display: none;">
 						<a href="/app/jobs" class="btn btn-sm btn-primary pull-right"
 							title="View more"> View More</a>
 					</div>
 				</div>
 
-				<!-- <a href="#" class="collpase-div pull-right" title="SlideUp/SlideDown"><i aria-hidden="true" class="fa fa-angle-down"></i></a> -->
 				<div class="clearfix require_wrap_table dashboard-data filter_position positionRelative" style="min-height: 200px;">
 					<div id="requirementLoading" style="display: none;"></div>
 					<div id="requirementList">
@@ -90,7 +86,7 @@ function requirementList(isWalkIn, walkInDay){
                  if(json != null && json != 'undefined' && json != "" && json != '[]'){
                 	 $("#requirementList").empty();
 	                	 var result = "";
-	                	 result = result +"<table id='requirementPagination' class='display mt10' cellspacing='0' width='99.9%' >"; 
+	                	 result = result +"<table id='requirementPagination' class='display' cellspacing='0' width='99.9%' >"; 
 	                     result = result +"<thead>"; 
 	                     result = result +"  <tr>"; 
 	                     result = result +"    <th>Actions</th>";

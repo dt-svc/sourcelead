@@ -346,6 +346,11 @@ public class RequirementServiceImpl implements RequirementService {
 				requirement.setJobTitle(requirementDTO.getJobTitle());
 			}
 		}
+		if (StringUtils.isNotBlank(requirementDTO.getProcess())) {
+			if (!"".equalsIgnoreCase(requirementDTO.getProcess())) {
+				requirement.setProcess(requirementDTO.getProcess());
+			}
+		}
 		if (StringUtils.isNotBlank(requirementDTO.getJobType())) {
 			requirement.setJobType(requirementDTO.getJobType());
 		}

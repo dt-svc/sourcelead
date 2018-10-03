@@ -14,33 +14,30 @@ width: 75px; padding: 0 !important;
 }
 </style>
  <!-- Applicant Authorization -->
-      <div class=" mb eventAlert ">
-        <div class="dashboard-widget  clearfix">
-        <div class="col-xs-12 col-md-12 event_calendar">
-            <h4 class="pull-left mb10">Events</h4>
+      <div class="mb eventAlert clearfix col-md-12 noPad">
+        <div class="dashNewWrap clearfix mb10">
+        <div class="dashNewWrapHead event_calendar">
+            <h4 class="pull-left">Events</h4>
             <sec:authorize access="hasAnyRole(\'ROLE_ADD_INTERVIEW\')">
-            <button class="btn btn-primary pull-right btn-sm mb10" onclick="dashboardAddInterview();" type="button">Schedule Interview</button>
+            <button class="btn btn-primary pull-left btn-sm ml mt7" onclick="dashboardAddInterview();" type="button">Schedule Interview</button>
             </sec:authorize>
+
+		<ul class="nav nav-tabs pull-right">
+			<li id="interviewsTab" class="active"><a href="javascript:void(0)" onclick="getInterviewsandTasks()">Interviews & Tasks</a></li>
+			<li id="jobFairsTab"><a href="javascript:void(0)" onclick="getJobFairs()">Job Fairs</a></li>
+			<div class="clearfix"></div>
+		</ul>            
         </div>
+        
       <!-- show Calendar -->
-        <div class="col-xs-12 col-md-5 mb">
+        <div class="col-xs-12 col-md-5 mb mt">
             <div id="eventCalendar"></div>
             <div id="jobFairCalendar" style="display: none;"></div>
         </div>
 
 
-		<ul class="project-tabs-menu projecttabs-custom events-tabs">
-			<li id="interviewsTab" class="current">
-				<a href="javascript:void(0)" onclick="getInterviewsandTasks()">Interviews & Tasks</a>
-			</li>
-			<li id="jobFairsTab">
-				<a href="javascript:void(0)" onclick="getJobFairs()">Job Fairs</a>
-			</li>
-			<div class="clearfix"></div>
-		</ul>
-
 		<!-- show Calendar -->
-            <div class="col-xs-12 col-md-7 mb alert alert-dismissable positionRelative" id ="dashboardEventsDiv">
+            <div class="col-xs-12 col-md-7 mb mt alert alert-dismissable positionRelative" id ="dashboardEventsDiv">
                   
                   <div class="eventHeader">                                               
 				        <div class="media">                                               
@@ -60,7 +57,7 @@ width: 75px; padding: 0 !important;
            	 	</div>
 	     </div>
 
-		<div class="col-xs-12 col-md-7 mb alert alert-dismissable positionRelative" id="dashboardJobFairsDiv" style="display: none;">
+		<div class="col-xs-12 col-md-7 mb mt alert alert-dismissable positionRelative" id="dashboardJobFairsDiv" style="display: none;">
 			<div class="eventHeader">
 				<div class="media">
 					<div class="media-left bg-success paddingRight">
@@ -161,20 +158,20 @@ width: 75px; padding: 0 !important;
 
 <script type="text/javascript">
 function getJobFairs() {
-	$("#interviewsTab").removeClass("current");
+	$("#interviewsTab").removeClass("active");
 	$("#dashboardEventsDiv").hide();
 	
-	$("#jobFairsTab").addClass("current");
+	$("#jobFairsTab").addClass("active");
 	$("#dashboardJobFairsDiv").show();
 	getJobFairDates();
 	getJobsForSelectedFairDate();
 }
 
 function getInterviewsandTasks() {
-	$("#interviewsTab").addClass("current");
+	$("#interviewsTab").addClass("active");
 	$("#dashboardEventsDiv").show();
 	
-	$("#jobFairsTab").removeClass("current");
+	$("#jobFairsTab").removeClass("active");
 	$("#dashboardJobFairsDiv").hide();
 	
 	getInterviewsDates();

@@ -15,7 +15,7 @@
 			          <button type="button" class="close" data-dismiss="modal" onClick="closeassetManagementPopup();">&times;</button>
 			          <h4 class="modal-title">Asset Management</h4>
 		        </div>
-		        <div class="modal-body">
+		        <div class="modal-body overflow_Auto" style="height:500px">
 		          <form:form id="addAsset_form"  name="addAsset_form"> 
 		           <!-- <i class="fa fa-close close-div"></i> -->
 					 
@@ -24,7 +24,7 @@
 		            <div class="clearfix assetaddpop-ul col-md-5" id="categoryDiv">
 		            <label class="clearfix">Category<span class="text-danger paddingLeft">*</span></label>
 		            <div class="clearfix">
-						<select class="chosen-select" id="category" name="category" onChange="assetCategory(this);" data-validation="required" field-name="Asset Category">
+						<select class="chosen-select" id="category" name="category" onChange="assetCategory();" data-validation="required" field-name="Asset Category">
 						<option selected value="">-Select Category-</option>
 							<c:forEach var="option" items="${assetCategoriesList}">
 									<option value="${option.id}" ${option.id eq assetAssignData.assetCategory.id ? 'selected' : ''}>${option.categoryName}</option>
@@ -549,10 +549,18 @@ function removeValidation(id){
 	if(shiftName != null && shiftName != "" && shiftName != "undefined"){
 		$('#uploadFile-dskADiv'+id).find('p.jquery_form_error_message').remove();
 		$("#shiftAEmp"+id).removeAttr("data-validation");
+		$("#returnedOn"+id).val("").datepicker( "option" , {
+	        minDate: null,
+	        maxDate: null} );
+		$("#assignedOn"+id).val("").datepicker( "option" , {
+	        minDate: null,
+	        maxDate: null} );
+		$("#shiftFile"+id).val("");
 	}else{
 		document.getElementById("shiftStart"+id+"").style.display="inline-block";
 		$("#shiftAEmp"+id).attr("data-validation","required");
 	}
+	 
 }
 function assignOnDateValidation(id){
 	 var assignedOn = $("#assignedOn"+id).val();
@@ -562,10 +570,22 @@ function assignOnDateValidation(id){
 	
 }
 function refrshAssignData(id){
-	$("#returnedOn"+id).val("");
-	$("#assignedOn"+id).val("");
 	$("#shiftFile"+id).val("");
-	$("#shiftAEmp"+id).val("").selectpicker('refresh');
+	$("#shiftAEmp"+id).val('').selectpicker('refresh');
+	$("#returnedOn"+id).val('').datepicker( "option" , {
+        minDate: null,
+        maxDate: null} );
+	$("#assignedOn"+id).val('').datepicker( "option" , {
+        minDate: null,
+        maxDate: null} );
+	
+	document.getElementById("shiftStart"+id+"").style.display="none";
+	 document.getElementById("assignOnDate"+id+"").style.display="none";
+	 $("#shiftAEmp"+id).removeAttr("data-validation","required");
+	 $("#assignedOn"+id).removeAttr("data-validation","required");
+	 $('#errAssignDate'+id).find('p.jquery_form_error_message').remove();
+	 $('#uploadFile-dskADiv'+id).find('p.jquery_form_error_message').remove();
+	
 }
 
 </script> 

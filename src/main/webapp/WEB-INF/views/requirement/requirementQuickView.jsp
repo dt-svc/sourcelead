@@ -173,6 +173,10 @@
 			            <div class="clearfix"></div>
 			            <h2 class="RPadT"> Job Details:</h2> 
 			            <div class="require_one">
+			                <div class="require_wrap_details_cta"> <b>Profile %:</b><span>${requirement.profilePercentage} %</span>
+				            	<div class="clearfix"></div> 
+				            </div> 
+				            
 				            <div class="require_wrap_details_cta"> <b>No. of positions:</b><span>${!empty requirement.positions ? requirement.positions : ' -- '}</span>
 				            	<div class="clearfix"></div> 
 				            </div> 
@@ -273,7 +277,9 @@
 				              <div class="require_wrap_details_cta"> <b>Experience Level:</b><span>${!empty requirement.experienceLevel.name ? requirement.experienceLevel.name : ' -- '}</span>
 				            	<div class="clearfix"></div> 
 				            </div>
-				            
+				             <div class="require_wrap_details_cta"> <b>Process:</b><span>${!empty requirement.process ? requirement.process : ' -- '}</span>
+				            	<div class="clearfix"></div> 
+				            </div>
 				            <c:if test="${!empty sourceleadSectionList}">
 						            <c:forEach var="section" items="${sourceleadSectionList}" varStatus="sectionOrder">
 						               <c:if test="${sectionOrder.index == 0}">

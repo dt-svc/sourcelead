@@ -16,8 +16,12 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.bis.sourcelead.constants.Constants;
+import com.bis.sourcelead.dao.EmailAccountSettingsDao;
 import com.bis.sourcelead.dto.FileInfo;
 import com.bis.sourcelead.dto.HotListEmailCampaignDTO;
+import com.bis.sourcelead.dto.ReadMailDTO;
+import com.bis.sourcelead.dto.Response;
+import com.bis.sourcelead.entity.EmailAccountSettings;
 import com.bis.sourcelead.entity.EmailAttachment;
 import com.bis.sourcelead.entity.EmailMessage;
 import com.bis.sourcelead.entity.EmailScenario;
@@ -33,6 +37,7 @@ import com.bis.sourcelead.service.UserRoleService;
 import com.bis.sourcelead.service.UserSignatureService;
 import com.bis.sourcelead.util.EmailScenerioUtil;
 import com.bis.sourcelead.util.FileUploadUtil;
+import com.bis.sourcelead.util.MailBox;
 import com.bis.sourcelead.util.SourceLeadRandomCodeHelper;
 
 @Service
@@ -58,6 +63,9 @@ public class EmailServiceImpl implements EmailService {
 	
 	@Autowired
 	SourceleadSignatureService sourceleadSignatureService;
+	
+	@Autowired
+	private EmailAccountSettingsDao emailAccountSettingsDao;
 	
 	
 	protected static boolean isNullOrEmpty(String str) {
@@ -266,4 +274,27 @@ public class EmailServiceImpl implements EmailService {
   		Matcher matcher = pattern.matcher(email);
   		return matcher.matches();
   	}
+
+	@Override
+	public Response<Boolean> sendEmailFromMailBox(ReadMailDTO readMailDTO, long userId, long orgId, long orgLocationId, String staticPath) {
+		Response<Boolean> response = new Response<>();
+		try {
+			EmailAccountSettings emailAccountSettings = emailAccountSettingsDao.getEmailAccount(readMailDTO.getEmailAccountId(), userId);
+			String email = emailAccountSettings.getEmail();
+			String password = emailAccountSettings.getPassword();
+			String outgoingHost = emailAccountSettings.getOutgoingServer();
+			String outgoingPort = emailAccountSettings.getOutgoingPort();
+			boolean outgoingSSL = emailAccountSettings.isOutgoingSSL();
+			String incomingHost = emailAccountSettings.getIncomingServer();
+			String incomingPort = emailAccountSettings.getIncomingPort();
+			boolean incomingSSL = emailAccountSettings.isIncomingSSL();
+			String storeType = "smtp";
+			response = MailBox.composeEmail(outgoingHost, outgoingPort, outgoingSSL, incomingHost, incomingPort, incomingSSL, storeType, email, password,
+					orgId, orgLocationId, staticPath, readMailDTO);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return response;
+	}
+
 }

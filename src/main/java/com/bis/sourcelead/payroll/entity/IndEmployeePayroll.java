@@ -2,7 +2,10 @@ package com.bis.sourcelead.payroll.entity;
 
 import java.io.Serializable;
 import java.math.BigDecimal;
+import java.util.Date;
+import java.util.Set;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -10,8 +13,10 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
+import com.bis.sourcelead.entity.AssociatePayrollPayheadHistory;
 import com.bis.sourcelead.entity.Candidate;
 import com.bis.sourcelead.entity.Employees;
 
@@ -19,9 +24,6 @@ import com.bis.sourcelead.entity.Employees;
 @Table(name = "IND_EMPLOYEE_PAYROLL")
 public class IndEmployeePayroll implements Serializable {
 
-	/**
-	 * @author Mahaveer Manoj
-	 */
 	private static final long serialVersionUID = 1L;
 
 	@Id
@@ -38,11 +40,14 @@ public class IndEmployeePayroll implements Serializable {
 	private Candidate candidate;
 
 	@ManyToOne
-	@JoinColumn(name = "PAY_SHEET_FREQUENCY_ID", nullable = false)
-	private PaysheetFrequency paysheetFrequency;
+	@JoinColumn(name = "IND_PAY_SHEET_FREQUENCY_ID", nullable = false)
+	private IndPaysheetFrequency indPaysheetFrequency;
+	
+	@Column(name = "IND_EMP_PAYROLL_UUID")
+	private String indEmpPayrollUUID;
 
-	@Column(name = "EMP_PAY_RATE")
-	private BigDecimal empPayRate;
+	@Column(name = "REGULAR_HOURS_AMOUNT")
+	private BigDecimal regularHoursAmount;
 
 	@Column(name = "REGULAR_HOURS")
 	private String regularHours;
@@ -55,7 +60,22 @@ public class IndEmployeePayroll implements Serializable {
 
 	@Column(name = "NO_OF_LEAVES")
 	private BigDecimal noOfLeaves;
-
+	
+	@Column(name = "NO_OF_DAYS")
+	private BigDecimal noOfDays;
+	
+	@Column (name = "PAY_CHECK_DATE")
+	private Date payCheckDate;
+	
+	@Column(name = "EMP_PAY_RATE")
+	private BigDecimal empPayRate;
+	
+	@Column(name = "PAY_TYPE")
+	private String payType; 
+	 
+	@Column(name = "PAY_PER_SALARY")
+    private BigDecimal payPerSalary;
+	
 	@Column(name = "GROSS_PAY")
 	private BigDecimal grossPay;
 
@@ -64,13 +84,35 @@ public class IndEmployeePayroll implements Serializable {
 
 	@Column(name = "PROFESSIONAL_TAX")
 	private BigDecimal professionalTax;
+	
 
 	@Column(name = "TDS")
 	private BigDecimal tds;
 
 	@Column(name = "SUBMIT_FOR_APROVER_STATUS")
 	private String submitForAproverStatus;
+	
+	@OneToMany(cascade = CascadeType.ALL, mappedBy = "indEmployeePayrollId")
+	private Set<AssociatePayrollPayheadHistory> associatePayrollPayheadHistory;
 
+	@Column(name = "STATUS")
+	private Integer status;
+	
+	@Column (name="TYPE")
+	private String type;
+	
+	@Column(name = "CREATED_DATE")
+	private Date createdDate;
+	
+	@Column(name = "CREATED_BY")
+	private Long createdBy;
+	
+	@Column(name = "UPDATED_DATE")
+	private Date updatedDate;
+	
+	@Column(name = "UPDATED_BY")
+	private Long updatedBy;
+	
 	public Long getId() {
 		return id;
 	}
@@ -95,12 +137,12 @@ public class IndEmployeePayroll implements Serializable {
 		this.candidate = candidate;
 	}
 
-	public PaysheetFrequency getPaysheetFrequency() {
-		return paysheetFrequency;
+	public IndPaysheetFrequency getIndPaysheetFrequency() {
+		return indPaysheetFrequency;
 	}
 
-	public void setPaysheetFrequency(PaysheetFrequency paysheetFrequency) {
-		this.paysheetFrequency = paysheetFrequency;
+	public void setIndPaysheetFrequency(IndPaysheetFrequency indPaysheetFrequency) {
+		this.indPaysheetFrequency = indPaysheetFrequency;
 	}
 
 	public BigDecimal getEmpPayRate() {
@@ -143,6 +185,14 @@ public class IndEmployeePayroll implements Serializable {
 		this.noOfLeaves = noOfLeaves;
 	}
 
+	public BigDecimal getNoOfDays() {
+		return noOfDays;
+	}
+
+	public void setNoOfDays(BigDecimal noOfDays) {
+		this.noOfDays = noOfDays;
+	}
+
 	public BigDecimal getGrossPay() {
 		return grossPay;
 	}
@@ -175,10 +225,6 @@ public class IndEmployeePayroll implements Serializable {
 		this.tds = tds;
 	}
 
-	public static long getSerialversionuid() {
-		return serialVersionUID;
-	}
-
 	public String getSubmitForAproverStatus() {
 		return submitForAproverStatus;
 	}
@@ -187,18 +233,106 @@ public class IndEmployeePayroll implements Serializable {
 		this.submitForAproverStatus = submitForAproverStatus;
 	}
 
-	/*
-	 * @OneToMany(cascade = CascadeType.ALL, mappedBy = "employeePayroll") private
-	 * Set<EmployeePayrollTax> usPayrollTax;
-	 * 
-	 * @OneToMany(cascade = CascadeType.ALL, mappedBy = "employeePayroll") private
-	 * Set<EmployerPayrollTax> employerpayrolltax;
-	 * 
-	 * @OneToMany(cascade = CascadeType.ALL, mappedBy = "payroll") private
-	 * Set<DeductionHistory> deductionHistory;
-	 * 
-	 * @OneToMany(cascade = CascadeType.ALL, mappedBy = "payrollId") private
-	 * Set<PayitemHistory> payitemHistory;
-	 */
+	public static long getSerialversionuid() {
+		return serialVersionUID;
+	}
 
+	public Set<AssociatePayrollPayheadHistory> getAssociatePayrollPayheadHistory() {
+		return associatePayrollPayheadHistory;
+	}
+
+	public void setAssociatePayrollPayheadHistory(Set<AssociatePayrollPayheadHistory> associatePayrollPayheadHistory) {
+		this.associatePayrollPayheadHistory = associatePayrollPayheadHistory;
+	}
+
+	public BigDecimal getRegularHoursAmount() {
+		return regularHoursAmount;
+	}
+
+	public void setRegularHoursAmount(BigDecimal regularHoursAmount) {
+		this.regularHoursAmount = regularHoursAmount;
+	}
+
+	public String getIndEmpPayrollUUID() {
+		return indEmpPayrollUUID;
+	}
+
+	public void setIndEmpPayrollUUID(String indEmpPayrollUUID) {
+		this.indEmpPayrollUUID = indEmpPayrollUUID;
+	}
+
+	public Integer getStatus() {
+		return status;
+	}
+
+	public void setStatus(Integer status) {
+		this.status = status;
+	}
+
+	public Date getCreatedDate() {
+		return createdDate;
+	}
+
+	public void setCreatedDate(Date createdDate) {
+		this.createdDate = createdDate;
+	}
+
+	public Long getCreatedBy() {
+		return createdBy;
+	}
+
+	public void setCreatedBy(Long createdBy) {
+		this.createdBy = createdBy;
+	}
+
+	public Date getUpdatedDate() {
+		return updatedDate;
+	}
+
+	public void setUpdatedDate(Date updatedDate) {
+		this.updatedDate = updatedDate;
+	}
+
+	public Long getUpdatedBy() {
+		return updatedBy;
+	}
+
+	public void setUpdatedBy(Long updatedBy) {
+		this.updatedBy = updatedBy;
+	}
+
+	public String getPayType() {
+		return payType;
+	}
+
+	public void setPayType(String payType) {
+		this.payType = payType;
+	}
+
+	public BigDecimal getPayPerSalary() {
+		return payPerSalary;
+	}
+
+	public void setPayPerSalary(BigDecimal payPerSalary) {
+		this.payPerSalary = payPerSalary;
+	}
+
+
+	public Date getPayCheckDate() {
+		return payCheckDate;
+	}
+
+	public void setPayCheckDate(Date payCheckDate) {
+		this.payCheckDate = payCheckDate;
+	}
+
+	public String getType() {
+		return type;
+	}
+
+	public void setType(String type) {
+		this.type = type;
+	}
+
+	
 }

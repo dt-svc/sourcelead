@@ -807,7 +807,6 @@ function getCandidateSelectionType(){
 			    	} else if (data.response === "SUCCESS") {
 				        	if(json!=null){
 				        	var output = "";
-				        	output = output + "<option value=''>-- Select Resume --</option>"; 
 				        	if(json.length == 1){
 				        		var opt = json[0];
 				        		if(opt.title != null && opt.title != 'undefined' && opt.title != ""){

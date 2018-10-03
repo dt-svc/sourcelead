@@ -465,7 +465,7 @@ function preventTabkey(e){
             
             
             <sec:authorize access="hasAnyRole('ROLE_MAIL_BOX','ROLE_HOTLIST_CAMPAIGN')">
-            	<li><a href="<c:url value='${sourceleadUrl}/mailBox/mails'/>" title="Mailbox" id="mailbox"><i class="fa fa-envelope"></i>  <span class="label label-success" id="unreadMailsCount">${SourceLeadWeb_unReadMailsCount > 0 ?SourceLeadWeb_unReadMailsCount : ''}</span> </a></li>
+            	<li><a href="<c:url value='${sourceleadUrl}/mailBox/mails'/>" title="Mailbox" id="mailbox"><i class="fa fa-envelope"></i>  <span style="display: none;" class="label label-success" id="unreadMailsCount">${SourceLeadWeb_unReadMailsCount > 0 ?SourceLeadWeb_unReadMailsCount : ''}</span> </a></li>
             </sec:authorize>
             <c:if test="${!empty SourceLeadWeb_userSpocRolesList}">
             <li> <a href="javascript:void(0)" title="Locations" id="spoclinks" onclick="JavaScript: navtoggle(this);"> <i class="fa fa-globe"></i> </a>
@@ -613,7 +613,7 @@ function preventTabkey(e){
 						  		<li><a href="<c:url value="/app/payrollConfiguration" />"><i class="fa fa-usd" aria-hidden="true"></i>Payroll Configuration</a></li>
 						  	</c:if>
 						  	<c:if test="${SourceLeadWeb_orgLocations.country == 'India'}">
-						  		<li><a href="<c:url value='${sourceleadUrl}/indPayrollConfiguration'/>" ><i class="fa fa-key" aria-hidden="true"></i>Payroll Configuration</a></li>
+						  		<li><a href="<c:url value='${appPath}/indPayrollConfiguration'/>" ><i class="fa fa-key" aria-hidden="true"></i>Payroll Configuration</a></li>
 						  	</c:if>
                       </sec:authorize>
                          

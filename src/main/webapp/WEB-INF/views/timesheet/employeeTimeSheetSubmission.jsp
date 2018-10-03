@@ -57,19 +57,27 @@
 						                     <c:if test="${!empty employeeTimesheetEntryDetailsDTO.empLeaveMap}">
 						                      <c:forEach var="empLeaveMap" items="${employeeTimesheetEntryDetailsDTO.empLeaveMap}" varStatus="empLeaveMapCount">
 						                      <c:set var="leaveIndex" value="${leaveIndex+1}"/>
-							                      <tr>
+							                      <tr id="timesheetRow${leaveIndex}">
 							                          <td>
-								                         <p>--</p>
+								                         <div style="position: relative;">--
+								                          <c:if test="${empty timeSheetSubmissionStatus || timeSheetSubmissionStatus == 'NEW' || timeSheetSubmissionStatus == 'DRAFT'}">
+									                          <c:forEach var="empL" items="${empLeaveMap.value}">
+									                              <c:if test="${empL.holiday eq true}">
+									                                 <input type="button" value="" onClick="removeHolidayRow('${leaveIndex}','${empL.holidayId}','${empL.holidayUserId}','${empL.holidayUserLocationId}')" class="timeRemoveBtn"/>
+									                              </c:if>
+									                          </c:forEach>
+									                       </c:if>
+								                         </div>
 								                      </td>
 								                      <c:set var="leaveMapArr" value="${fn:split(empLeaveMap.key,'##')}"/>
 							                          <td>
-								                            <p>${leaveMapArr[0]}</p>   
+								                            <div>${leaveMapArr[0]}</div>  
 								                      </td>
 								                       <td>
-								                         <span id="${leaveIndex}task1IdBillableTypeId">${leaveMapArr[1]}</span>
+								                         <div><span id="${leaveIndex}task1IdBillableTypeId">${leaveMapArr[1]}</span></div>
 								                      </td>
 								                      <td>
-								                         <p>--</p>
+								                         <div>--</div>
 								                      </td>
 								                      <c:forEach var="empLeave" items="${empLeaveMap.value}" varStatus="empLeaveCount">
 								                        <td>
@@ -119,7 +127,6 @@
 									                     <c:set var="isTicketNumberRequired" value="${statusEntry.value.ticketNumberRequired == true ? 'Y' : 'N'}"/>
 									               </c:if>
 									            </c:forEach>
-									            
 									            <c:if test="${empty entry.projectMemberId}">
 									                     <c:set var="timeSheetSubmissionStatus" value="New"/>
 									                     <c:set var="modifyButtonVisible" value="N"/>
@@ -136,7 +143,7 @@
 											    <tr id="timesheetRow${leaveIndex+entryCount.index+1}">
 											        <td id="${leaveIndex+entryCount.index+1}projectTd">
 														<div class="timeAdd" style="position: relative;">
-														    <c:if test="${timeSheetSubmissionStatus != 'APPROVED' && timeSheetSubmissionStatus != 'SUBMITTED'}">
+														    <c:if test="${timeSheetSubmissionStatus != 'APPROVED' && timeSheetSubmissionStatus != 'SUBMITTED' && employeeTimesheetEntryDetailsDTO.saveButtonVisible}">
 														        <select  id="${leaveIndex+entryCount.index+1}projectMember1Id" title="--select project--" data-live-search="true" data-dropup-auto="false" data-size="8" class='selectpicker smfield existedProjectMembers' name="${leaveIndex+entryCount.index+1}projectMember1Id" onchange="enableOrDisableHours('${entryIndex}','${leaveIndex+entryCount.index+1}projectMember1Id','${leaveIndex+entryCount.index+1}ticketNumber1Id');flushtasks('${leaveIndex+entryCount.index+1}task1Id','${leaveIndex+entryCount.index+1}'); addOrRemoveTimeSheetCommentRow('${leaveIndex+entryCount.index+1}projectMember1Id');getProjectTasks('${leaveIndex+entryCount.index+1}task1Id','${leaveIndex+entryCount.index+1}projectMember1Id');" data-validation="required" field-name="Project">
 																	<!-- <option value=''>--select project--</option>  -->
 															        <c:forEach var="pm" items="${employeeTimesheetEntryDetailsDTO.projectMembersList}">
@@ -152,7 +159,7 @@
 															       <input value="" onclick="removeTimeSheetRow('${leaveIndex+entryCount.index+1}');" class="timeRemoveBtn" type="button">
 															      </c:if>
 															 </c:if>
-															 <c:if test="${timeSheetSubmissionStatus == 'APPROVED' || timeSheetSubmissionStatus == 'SUBMITTED'}">
+															 <c:if test="${timeSheetSubmissionStatus == 'APPROVED' || timeSheetSubmissionStatus == 'SUBMITTED' ||  !employeeTimesheetEntryDetailsDTO.saveButtonVisible}">
 															         <c:set var="projectCheck"/>
 															         <c:forEach var="pm" items="${employeeTimesheetEntryDetailsDTO.submittedProjectMembersList}">
 															               <c:if test="${!empty entry.projectMemberId && entry.projectMemberId == pm.id}">
@@ -172,7 +179,7 @@
 														  <c:set var="taskType" value=""/>
 														  <c:set var="taskId" value=""/>
 														  <c:set var="taskName" value=""/>
-														  <c:if test="${timeSheetSubmissionStatus != 'APPROVED' && timeSheetSubmissionStatus != 'SUBMITTED'}">
+														  <c:if test="${timeSheetSubmissionStatus != 'APPROVED' && timeSheetSubmissionStatus != 'SUBMITTED' && employeeTimesheetEntryDetailsDTO.saveButtonVisible}">
 															   <select id="${leaveIndex+entryCount.index+1}task1Id" title="--select task--"  data-dropup-auto="false" data-size="8" data-live-search="true" name="${leaveIndex+entryCount.index+1}task1Id"  class="selectpicker smfield existedProjectTaskId${entry.projectMemberId}"   onchange='prepareProjectTaskDetails("${entryIndex}","${leaveIndex+entryCount.index+1}task1Id","${leaveIndex+entryCount.index+1}projectMember1Id");' data-validation="required" field-name="Task">
 																	 <c:if test="${!empty entry.projectTaskList}">
 																	   <c:forEach var="pt" items="${entry.projectTaskList}">
@@ -199,7 +206,7 @@
 																	</c:if>
 																</select>
 														  </c:if>
-														   <c:if test="${timeSheetSubmissionStatus == 'APPROVED' || timeSheetSubmissionStatus == 'SUBMITTED'}">
+														   <c:if test="${timeSheetSubmissionStatus == 'APPROVED' || timeSheetSubmissionStatus == 'SUBMITTED' ||  !employeeTimesheetEntryDetailsDTO.saveButtonVisible}">
 														            <c:if test="${!empty entry.projectTaskList}">
 																	   <c:forEach var="pt" items="${entry.projectTaskList}">
 																	        <c:if test="${pt.id == entry.projectTaskId}">
@@ -228,10 +235,10 @@
 												        </div>
 												      </td>
 										              <td>
-										                  <c:if test="${timeSheetSubmissionStatus != 'APPROVED' && timeSheetSubmissionStatus != 'SUBMITTED'}">
+										                  <c:if test="${timeSheetSubmissionStatus != 'APPROVED' && timeSheetSubmissionStatus != 'SUBMITTED' &&  employeeTimesheetEntryDetailsDTO.saveButtonVisible}">
 													         <div><input type="text" ${!empty isTicketNumberRequired && isTicketNumberRequired == 'Y' ? 'data-validation="required"' : ''}  id="${leaveIndex+entryCount.index+1}ticketNumber1Id" name="${leaveIndex+entryCount.index+1}ticketNumber1Id"  value="${entry.ticketNumber}" field-name=" " onblur='setTicketNumber("${entryIndex}","${leaveIndex+entryCount.index+1}ticketNumber1Id");' class="timeTick"></div>
 													      </c:if>
-													      <c:if test="${timeSheetSubmissionStatus == 'APPROVED' || timeSheetSubmissionStatus == 'SUBMITTED'}">
+													      <c:if test="${timeSheetSubmissionStatus == 'APPROVED' || timeSheetSubmissionStatus == 'SUBMITTED' ||  !employeeTimesheetEntryDetailsDTO.saveButtonVisible}">
 													         <c:if test="${!empty entry.ticketNumber}">
 													             <div>${entry.ticketNumber}</div>
 													         </c:if>
@@ -254,30 +261,32 @@
 													               <input type="hidden" name="timesheetSubmission.timesheetEntries[${entryIndex}].date" value="${te.date}"/>
 													               <input type="hidden" name="timesheetSubmission.timesheetEntries[${entryIndex}].timesheetStatus" value="${timeSheetSubmissionStatus}"/> 
 													               
-													                 <c:set var="isEditable" value="Y"/>
-													                  <c:if test="${te.dayOfTheDate == 'Mon' && !empty isMonEditable && isMonEditable == 'N'}">
-													                      <c:set var="isEditable" value="N"/>
-													                  </c:if>
-													                  <c:if test="${te.dayOfTheDate == 'Tue' && !empty isTueEditable && isTueEditable == 'N'}">
-													                      <c:set var="isEditable" value="N"/>
-													                  </c:if>
-													                  <c:if test="${te.dayOfTheDate == 'Wed' && !empty isWedEditable && isWedEditable == 'N'}">
-													                      <c:set var="isEditable" value="N"/>
-													                  </c:if>
-													                  <c:if test="${te.dayOfTheDate == 'Thu' && !empty isThuEditable && isThuEditable == 'N'}">
-													                      <c:set var="isEditable" value="N"/>
-													                  </c:if>
-													                  <c:if test="${te.dayOfTheDate == 'Fri' && !empty isFriEditable && isFriEditable == 'N'}">
-													                      <c:set var="isEditable" value="N"/>
-													                  </c:if>
-													                  <c:if test="${te.dayOfTheDate == 'Sat' && !empty isSatEditable && isSatEditable == 'N'}">
-													                      <c:set var="isEditable" value="N"/>
-													                  </c:if>
-													                  <c:if test="${te.dayOfTheDate == 'Sun' && !empty isSunEditable && isSunEditable == 'N'}">
-													                      <c:set var="isEditable" value="N"/>
-													                  </c:if>
-						                                             
-													               <input onblur="editMe(this);" ${(!empty isEditable && isEditable == 'Y') ? '' : 'disabled="disabled"'}  ${isTaskCommentsRequired == 'Y' ? 'data-validation-comment="required"':''}
+														                 <c:set var="isEditable" value="Y"/>
+														                  <c:if test="${te.dayOfTheDate == 'Mon' && !empty isMonEditable && isMonEditable == 'N'}">
+														                      <c:set var="isEditable" value="N"/>
+														                  </c:if>
+														                  <c:if test="${te.dayOfTheDate == 'Tue' && !empty isTueEditable && isTueEditable == 'N'}">
+														                      <c:set var="isEditable" value="N"/>
+														                  </c:if>
+														                  <c:if test="${te.dayOfTheDate == 'Wed' && !empty isWedEditable && isWedEditable == 'N'}">
+														                      <c:set var="isEditable" value="N"/>
+														                  </c:if>
+														                  <c:if test="${te.dayOfTheDate == 'Thu' && !empty isThuEditable && isThuEditable == 'N'}">
+														                      <c:set var="isEditable" value="N"/>
+														                  </c:if>
+														                  <c:if test="${te.dayOfTheDate == 'Fri' && !empty isFriEditable && isFriEditable == 'N'}">
+														                      <c:set var="isEditable" value="N"/>
+														                  </c:if>
+														                  <c:if test="${te.dayOfTheDate == 'Sat' && !empty isSatEditable && isSatEditable == 'N'}">
+														                      <c:set var="isEditable" value="N"/>
+														                  </c:if>
+														                  <c:if test="${te.dayOfTheDate == 'Sun' && !empty isSunEditable && isSunEditable == 'N'}">
+														                      <c:set var="isEditable" value="N"/>
+														                  </c:if>
+													                   <c:if test="${empty entry.projectMemberId && !employeeTimesheetEntryDetailsDTO.saveButtonVisible}">
+													                       <c:set var="isEditable" value="N"/>
+													                   </c:if>
+													                <input onblur="editMe(this);" ${(!empty isEditable && isEditable == 'Y') ? '' : 'disabled="disabled"'}  ${isTaskCommentsRequired == 'Y' ? 'data-validation-comment="required"':''}
 													                id="${leaveIndex+entryCount.index+1}timeSheetDay${teStatus.index+1}Id" name="timesheetSubmission.timesheetEntries[${entryIndex}].hours" class="inline_field" value="${te.hours}" placeholder="HH:MM" type="text">
 													                   <%-- <c:if test="${!empty te.comments || (empty te.comments && (!empty isEditable && isEditable == 'Y'))}"> --%>
                                                                          <div class="timesheet_comm" id="commentDiv${entryIndex}">                
@@ -317,8 +326,11 @@
 													              </c:if>
 												             </div>
 												        </c:if>
-												        <c:if test="${empty entry.projectMemberId}">
+												         <c:if test="${empty entry.projectMemberId && employeeTimesheetEntryDetailsDTO.saveButtonVisible}">
 												            <div><b>New</b></div> 
+												        </c:if> 
+												        <c:if test="${empty entry.projectMemberId && !employeeTimesheetEntryDetailsDTO.saveButtonVisible}">
+												            <div>--</div> 
 												        </c:if> 
 						                  		    </td> 
 										        </tr>
@@ -1534,6 +1546,33 @@ function removeTimeSheetRow(rowId) {
 		}
 		
 </script>	
+
+
+<script type="text/javascript">	
+function removeHolidayRow(rowId,holidayId,holidayUserId,holidayUserLocationId) { 
+	         var sourceleadUrl ='${SourceLeadWeb_sourceleadUrl}';
+			 document.getElementById("timesheetRow"+rowId).style.display = 'none';
+			 document.getElementById("timesheetRow"+rowId).value= '';
+			 var  rId = "timesheetRow"+rowId;
+			  var r = document.getElementById("timesheet").rows[rId];
+	          var count = (r.cells.length);
+		      for(i=0;i<count;i++){
+		        r.deleteCell(0);
+		      } 
+		      addOrRemoveTimeSheetCommentRow('');
+		      setTotals(); 
+		 	  $("#loadTime").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:60% center; background-repeat:no-repeat; background-size:75px;');
+		  	  $.ajax({
+		 	      type : "POST",
+		      	  url: sourceleadUrl+"/dropHoliday?${_csrf.parameterName}=${_csrf.token}&holidayId="+holidayId+"&holidayUserId="+holidayUserId+"&holidayUserLocationId="+holidayUserLocationId,		
+		 	      success :function(result) {
+		 	    	  $("#loadTime").removeAttr("style"); 
+		 	      }
+		    }); 
+		 	
+		}
+		
+</script>
 
 <!-- this script is for clear timesheet -->
 <script>

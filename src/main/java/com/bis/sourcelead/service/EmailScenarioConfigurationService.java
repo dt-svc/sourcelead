@@ -39,4 +39,9 @@ public interface EmailScenarioConfigurationService {
 	EmailScenarioConfiguration getParserEmailsDetailsByUUID(String UUID)throws Exception;
 	
 	String deleteParserEMail(Long emailId) throws Exception;
+	
+    EmailScenarioConfiguration validateParserByEmail(String parserEmailId,String emailUUID);
+	
+	Boolean validateParser(String parserEmailId);
+
 }

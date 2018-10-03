@@ -13,6 +13,7 @@ import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.dao.AssetDao;
 import com.bis.sourcelead.dto.AssetAssignDTO;
 import com.bis.sourcelead.dto.AssetDTO;
+import com.bis.sourcelead.dto.AssetServiceDTO;
 import com.bis.sourcelead.dto.CustomFormFieldDTO;
 import com.bis.sourcelead.dto.FileInfo;
 import com.bis.sourcelead.dto.ResponseList;
@@ -20,6 +21,7 @@ import com.bis.sourcelead.entity.Asset;
 import com.bis.sourcelead.entity.AssetAssign;
 import com.bis.sourcelead.entity.AssetCategory;
 import com.bis.sourcelead.entity.AssetCustomFieldData;
+import com.bis.sourcelead.entity.AssetServices;
 import com.bis.sourcelead.entity.Employees;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.OrglocationFormFields;
@@ -29,6 +31,7 @@ import com.bis.sourcelead.entity.Shift;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.entity.UserCustomFieldData;
 import com.bis.sourcelead.entity.UserRole;
+import com.bis.sourcelead.reportsDTO.AssetGrowthDTO;
 import com.bis.sourcelead.service.AssetCategoryService;
 import com.bis.sourcelead.service.AssetCustomFieldService;
 import com.bis.sourcelead.service.AssetService;
@@ -102,7 +105,85 @@ public class AssetServiceImpl implements AssetService{
 	public List<Asset> getAssetListByLocationId(Long orgLocationId) throws Exception {
 		return assetDao.getAssetListByLocationId(orgLocationId);
 	}
+	@Override
+	public Asset getAssetByAssetSnoAndId(String assetSno, Long assetId, Long orgLocationsId) throws Exception {
+		
+		return assetDao.getAssetByAssetSnoAndId(assetSno,assetId,orgLocationsId);
+	}
 	
+
+
+	@Override
+	public Asset validateAssetSno(String assetSno, Long orgLocationsId) throws Exception {
+		return assetDao.validateAssetSno(assetSno,orgLocationsId);
+	}
+	
+	@Override
+	public Boolean validateAssetId(String assetSno, Long orgLocationsId) throws Exception {
+		return assetDao.validateAssetId(assetSno,orgLocationsId);
+	}
+
+
+	@Override
+	public ResponseList<Asset> getDynamicAssetFilterListByLocationId(Long orgLocationId, AssetDTO assetDTO) throws Exception {
+		return assetDao.getDynamicAssetFilterListByLocationId(orgLocationId, assetDTO);
+	}
+
+
+	@Override
+	public List<AssetAssign> getUserBasedAssetManagementListandOrgLocation(Long orgLocationId, Long UserId) throws Exception {
+		return assetDao.getUserBasedAssetManagementListandOrgLocation(orgLocationId, UserId);
+	}
+
+
+	@Override
+	public List<AssetAssign> getAssignAssetListByAssetId(Long assetId) {
+		return assetDao.getAssignAssetListByAssetId(assetId);
+	}
+
+
+	@Override
+	public AssetAssign getAssignAssetByAssetId(Long assetId) throws Exception {
+		return assetDao.getAssignAssetByAssetId(assetId);
+	}
+
+
+	@Override
+	public AssetAssign saveAssetAssign(AssetAssign assetAssign) throws Exception {
+		return assetDao.saveAssetAssign(assetAssign);
+	}
+
+
+	@Override
+	public List<AssetAssign> getAssignAssetListByShiftId(Long shiftId) throws Exception {
+		return assetDao.getAssignAssetListByShiftId(shiftId);
+	}
+
+
+	@Override
+	public void deleteAssignAssetByAssignId(AssetAssign assetAssign) throws Exception {
+		assetDao.deleteAssignAssetByAssignId(assetAssign);
+	}
+
+
+	@Override
+	public List<AssetAssign> getReturnedOnAssignAssetListByAssetId(Long assetId) {
+		return assetDao.getReturnedOnAssignAssetListByAssetId(assetId);
+	}
+
+
+	@Override
+	public List<AssetAssign> getAllAssignAssetListByAssetId(Long assetId) {
+		return assetDao.getAllAssignAssetListByAssetId(assetId);
+	}
+
+
+	@Override
+	public AssetServices saveAssetService(AssetServices assetServices) throws Exception {
+		return assetDao.saveAssetService(assetServices);
+	}
+
+
 	
 	@Override
 	public Asset saveAssetDetails(AssetDTO assetDTO, User user, OrgLocations orgLocations) throws Exception {
@@ -364,75 +445,31 @@ public class AssetServiceImpl implements AssetService{
 	}
 
 
-	@Override
-	public Asset getAssetByAssetSnoAndId(String assetSno, Long assetId, Long orgLocationsId) throws Exception {
-		
-		return assetDao.getAssetByAssetSnoAndId(assetSno,assetId,orgLocationsId);
-	}
-	
-
-
-	@Override
-	public Asset validateAssetSno(String assetSno, Long orgLocationsId) throws Exception {
-		return assetDao.validateAssetSno(assetSno,orgLocationsId);
-	}
 	
 	@Override
-	public Boolean validateAssetId(String assetSno, Long orgLocationsId) throws Exception {
-		return assetDao.validateAssetId(assetSno,orgLocationsId);
+	public AssetServices saveAssetServiceDetails(AssetServiceDTO assetServiceDTO,OrgLocations orgLocations) throws Exception {
+		AssetServices assetService = new AssetServices();
+		Asset asset = new Asset();
+		asset.setId(assetServiceDTO.getAssetId());
+		assetService.setAsset(asset);
+		assetService.setServiceDate(commonUtil.orgLocationDateFormat(orgLocations.getDateFormat(), assetServiceDTO.getServiceDate()));
+		assetService.setRecivedDate(commonUtil.orgLocationDateFormat(orgLocations.getDateFormat(), assetServiceDTO.getReceivedDate()));
+		assetService.setCost(assetServiceDTO.getCost());
+		assetService.setDescription(assetServiceDTO.getDescription());
+		assetService.setStatus(Constants.RECORD_ACTIVE);
+		assetDao.saveAssetService(assetService);
+		return assetService;
 	}
 
 
 	@Override
-	public ResponseList<Asset> getDynamicAssetFilterListByLocationId(Long orgLocationId, AssetDTO assetDTO) throws Exception {
-		return assetDao.getDynamicAssetFilterListByLocationId(orgLocationId, assetDTO);
+	public List<AssetServices> getAssetServicesListByAssetId(Long assetId) throws Exception {
+		return assetDao.getAssetServicesListByAssetId(assetId);
 	}
 
 
 	@Override
-	public List<AssetAssign> getUserBasedAssetManagementListandOrgLocation(Long orgLocationId, Long UserId) throws Exception {
-		return assetDao.getUserBasedAssetManagementListandOrgLocation(orgLocationId, UserId);
-	}
-
-
-	@Override
-	public List<AssetAssign> getAssignAssetListByAssetId(Long assetId) {
-		return assetDao.getAssignAssetListByAssetId(assetId);
-	}
-
-
-	@Override
-	public AssetAssign getAssignAssetByAssetId(Long assetId) throws Exception {
-		return assetDao.getAssignAssetByAssetId(assetId);
-	}
-
-
-	@Override
-	public AssetAssign saveAssetAssign(AssetAssign assetAssign) throws Exception {
-		return assetDao.saveAssetAssign(assetAssign);
-	}
-
-
-	@Override
-	public List<AssetAssign> getAssignAssetListByShiftId(Long shiftId) throws Exception {
-		return assetDao.getAssignAssetListByShiftId(shiftId);
-	}
-
-
-	@Override
-	public void deleteAssignAssetByAssignId(AssetAssign assetAssign) throws Exception {
-		assetDao.deleteAssignAssetByAssignId(assetAssign);
-	}
-
-
-	@Override
-	public List<AssetAssign> getReturnedOnAssignAssetListByAssetId(Long assetId) {
-		return assetDao.getReturnedOnAssignAssetListByAssetId(assetId);
-	}
-
-
-	@Override
-	public List<AssetAssign> getAllAssignAssetListByAssetId(Long assetId) {
-		return assetDao.getAllAssignAssetListByAssetId(assetId);
+	public List<AssetGrowthDTO> getAssetGrowthListByOrgloationIdAndAssetGrowthDTO(Long orgLocationId, AssetGrowthDTO assetGrowthDTO,Date[] searchDates) throws Exception {
+		return assetDao.getAssetGrowthListByOrgloationIdAndAssetGrowthDTO(orgLocationId, assetGrowthDTO,searchDates);
 	}
 }

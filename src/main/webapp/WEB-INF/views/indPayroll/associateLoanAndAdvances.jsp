@@ -332,7 +332,15 @@ function editLoanAndAdvance(loanAdvId){
         		 
         		 $("input[name=effectiveDate]").val(json.effectiveDate);
         		 loanAdv.getLoanAndAdvApprovers(json.loanAndAdvApprover);
-        		 loanAdv.getLoanAndAdvDetails();
+        		    setTimeout(function () {
+	               		 loanAdv.getLoanAndAdvDetails();
+        	 			}, 1000);
+        		  
+        		    setTimeout(function () {
+        		    	loanAdv.getDetuctAmountDetails();
+       	 			}, 2000);
+        		    
+        		    
         		 
         		 
         	}else{
