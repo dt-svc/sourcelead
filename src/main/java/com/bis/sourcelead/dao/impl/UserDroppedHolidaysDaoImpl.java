@@ -69,6 +69,7 @@ public class UserDroppedHolidaysDaoImpl implements UserDroppedHolidaysDao {
 	}
 
 	@Override
+	@Transactional(rollbackFor = { Exception.class })
 	public UserDroppedHolidays getUserDroppedHolidaysFromUserIdlocationIdAndHolidayId(Long userId, Long locationId,
 			Long holidayId) throws Exception {
 		   Session session = this.sessionFactory.getCurrentSession();
