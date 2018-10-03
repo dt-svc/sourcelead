@@ -1289,8 +1289,10 @@ $("#experienceValue").change(function () {
 		}
 	 	var attorneySelId = $('option:selected', '#attorneyId').val();
 	 	if(attorneySelId  == '' ||  typeof attorneySelId == 'undefined' ){
-			  $("#candidateNameEmail").attr("readonly",true);
-			  $("#candidateNameEmail").val("");
+	 		<c:if test="${empty immigrationDTO}">
+		 		$("#candidateNameEmail").attr("readonly",true);
+		 		$("#candidateNameEmail").val("");
+	 		</c:if>
 		  }else{
 			  $("#candidateNameEmail").attr("readonly",false);
 			  $("#candidateNameEmail").val("");
