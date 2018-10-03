@@ -10,20 +10,18 @@
 
 <%-- <link rel="stylesheet" href="/resources/css/bootstrap3-wysihtml5.min.css?staticTime=${staticTime}" type="text/css"> --%>
 
-
 <style>
-	.modal-backdrop{ display: none;	}
-	.nicEdit-main { overflow: auto !important; }
-	.mt40 { margin-top: 50px !important; }
-	.compose-mail .chosen-container-multi .chosen-choices li.search-field input[type="text"] {
-	    height: 30px;
-	    line-height: 35px;
-	    width: 500px !important;
-	}
-	.txt-area > div, .nicEdit-main { width: 100% !important; max-height: 170px !important;}
-	.chosen-container-multi .chosen-choices { margin-bottom: 0px; }
-	.nicEdit-pane { z-index: 9999999; top: 100px;}
-	#dynamicmailcompose {top: 3% !important;}
+    .modal-backdrop{ display: none;    }
+    .nicEdit-main { width: 100% !important; overflow: auto !important; max-height: 220px !important; min-height: 220px !important; padding: 10px; margin: 0px !important;}
+    .mt40 { margin-top: 50px !important; }
+    .compose-mail .chosen-container-multi .chosen-choices li.search-field input[type="text"] {
+        height: 30px;
+        line-height: 35px;
+        width: 500px !important;
+    }
+    .txt-area > div { width: 100% !important; max-height: 220px !important;}
+    .chosen-container-multi .chosen-choices { margin-bottom: 0px; }
+    .nicEdit-pane { z-index: 9999999; top: 100px;}
 </style>
 
 <!-- <script>
@@ -253,95 +251,81 @@
 <!-- Dynamic Mail Compose popup-->
 <div class="side_mask"></div>
 <div id="emailConfigurationPopup"></div>
-<div class="cand-advsrch-popup advancedsearch-popup filterDynamic-Search-small" id="dynamicmailcompose" style="display: none;">
-	<div class="project_inn_mask"></div>
-	<h5 class="headerAdsrch">
-		<span>Compose Mail</span>
-		<a href="javascript:void(0)" class="close-div" onclick="closeComposeEmailPopup();"><i class="fa fa-close"></i></a>
-	</h5>
-	<div class="addInner">
-		<div class="row">
-			<div class="col-md-12">
-				<div class="form-horizontal margin-top0 noPad">
-					<form:form id="email_form" name="email_form">
-						<div class="col-md-12 clearfix">
-							<label class="col-md-1 control-label text-muted small">From</label>
-							<div class="col-md-11">
-								<select id="fromEmail" name="from" data-placeholder="Choose an Email to send ...." class="chosen-select form-control">
-									<option value=""></option>
-									<c:forEach var="emailAccountList" items="${emailAccountSettingsServiceList}">
-										<option data-id="${emailAccountList.id}" value="${emailAccountList.email}">${emailAccountList.email}</option>
-									</c:forEach>
-								</select>
-							</div>
-						</div>
-						<div class="col-md-12 clearfix mt10">
-							<label class="col-md-1 control-label text-primary small">To</label>
-							<div class="col-md-11 positionRelative disable-choosen-dropdown">
 
-								<select class="form-control chosen-select" field-name="To List" multiple
-									data-placeholder="Enter Emails And Press Enter-Key Or Comma(,) Or Space To Add New Email"
-									id="emailsList" name="to" data-validation-optional="true"
-									data-validation="validate_email" field-name="Toemails">
-								</select>
-							</div>
-						</div>
-						<div class="col-md-12 clearfix mt10">
-							<label class="col-md-1 control-label text-primary small">Cc</label>
-							<div class="col-md-11 positionRelative disable-choosen-dropdown">
-
-								<select class="form-control chosen-select" field-name="Cc List" multiple
-									data-placeholder="Enter Emails And Press Enter-Key Or Comma(,) Or Space To Add New Email"
-									id="ccList" name="cc" data-validation-optional="true"
-									data-validation="validate_email" field-name="Toemails">
-								</select>
-							</div>
-						</div>
-						<div class="col-md-12 clearfix mt10">
-							<label class="col-md-1 control-label text-danger small">Subject</label>
-							<div class="col-md-11">
-								<input type="text" name="subject" data-validation="required" field-name="Subject" id="sendSubject" value="" class="form-control input-sm">
-							</div>
-						</div>
-						
-							<!-- Text Area -->
-							<div class="col-md-12 clearfix mb10 mt10">
-								<div class="col-md-12">
-									<div class="clearfix txt-area">
-									  <textarea id="bodytext" name="body" class="form-control" rows="5" placeholder="Message" style="height: 170px; max-height: 170px !important; width:100%;"></textarea>
-									</div>
-								</div>
-							</div>
-
-						<div class="col-md-12 clearfix mb10 mt10">
-							<div class="sentAttach">
-								<input name="attachfile" id="attachfileBtn" class="sentAttachFild" type="file" multiple="multiple">
-								<a class="newAdBtn"><i class="fa fa-paperclip"></i> Attach File</a>
-								<!-- Attachments preview-->
-								<div class="col-md-12 clearfix mb10 mailAttachments" id="mailAttachmentsDiv"></div>
-								<!-- Attachments preview-->
-							</div>
-						</div>
-
-					</form:form>
-				</div>
-			</div>
-		</div>
-	</div>
-	<div class="clearfix advancedsearch-footer">
-		<div class="pull-right mr">
-			<input value="Send" id="sendEmail" onclick="sendEmailFromMailBox('compose');" class="btn btn-sm btn-success" type="button">
-			<input value="Reply" id="replyEmail" onclick="replyEmailFromMailBox('reply');" class="btn btn-sm btn-success" type="button" style="display: none;">
-			<input value="Forward" id="forwardEmail" onclick="sendEmailFromMailBox('forward');" class="btn btn-sm btn-success" type="button" style="display: none;">
-			<input value="Cancel" id="clear_search" onclick="closeComposeEmailPopup();" class="btn btn-sm btn-primary" type="button">
-		</div>
-	</div>
+<div class="newPopOut" id="dynamicmailcompose" style="display: none;">
+	<div id="composeLoading"></div>
+    <div class="newPopWrap sentMailPop">
+        <div class="popupHead">
+            <span>Compose Mail</span>
+            <i class="closePop pull-right popClose" onclick="closeComposeEmailPopup();"></i>
+        </div>
+        <div class="sentMailWrap clearfix">
+                <form:form id="email_form" name="email_form">
+                
+                    <div class="sentMailCta">
+                        <label>From</label>
+                        <select id="fromEmail" name="from" data-placeholder="Choose an Email to send ...." class="chosen-select form-control">
+                            <option value=""></option>
+                            <c:forEach var="emailAccountList" items="${emailAccountSettingsServiceList}">
+                                <option data-id="${emailAccountList.id}" value="${emailAccountList.email}">${emailAccountList.email}</option>
+                            </c:forEach>
+                        </select>                        
+                    </div>
+                    
+                    <div class="sentMailCta sentMailCtaCC">
+                        <label>To</label>
+                        <select class="form-control chosen-select" field-name="To List" multiple
+                            data-placeholder="Enter Emails And Press Enter-Key Or Comma(,) Or Space To Add New Email"
+                            id="emailsList" name="to" data-validation-optional="true"
+                            data-validation="validate_email" field-name="Toemails">
+                        </select>
+                        <a class="mailCC" href="javascript:void(0)" onclick="$('#sentMailCC').slideToggle(0);">CC</a>                    
+                    </div>
+                    
+                    <div class="sentMailCta sentMailCtaCC" style="display: none;" id="sentMailCC">
+                        <label>CC</label>
+                        <select class="form-control chosen-select" field-name="Cc List" multiple
+                            data-placeholder="Enter Emails And Press Enter-Key Or Comma(,) Or Space To Add New Email"
+                            id="ccList" name="cc" data-validation-optional="true"
+                            data-validation="validate_email" field-name="Toemails">
+                        </select>                    
+                    </div>
+                    
+                    <div class="sentMailCta">
+                        <label>Subject</label>
+                        <input type="text" name="subject" data-validation="required" field-name="Subject" id="sendSubject" value="" class="mailSubfild">                    
+                    </div>
+                    
+                        <div class="sentAttach">
+                            <input name="attachfile" id="attachfileBtn" class="sentAttachFild" type="file" multiple="multiple">
+                            <a class="attBtn">Attach File <i class="fa fa-paperclip"></i> </a>
+                            <!-- Attachments preview-->
+                            <div class="mailAttachments clearfix" id="mailAttachmentsDiv"></div>
+                            <!-- Attachments preview-->                                
+                        </div>
+                    
+                    
+                    <div class="clearfix">
+                        <div class="clearfix txt-area">
+                          <textarea id="bodytext" name="body" class="form-control" rows="5" placeholder="Message" style="height: 170px; max-height: 170px !important; width:100%;"></textarea>
+                        </div>
+                    </div>    
+                        
+                        <!-- Attachment button -->
+                    </form:form>
+        </div>
+        <div class="popupFoot">
+            <input value="Send" id="sendEmail" onclick="sendEmailFromMailBox('compose');" class="slBtn md colorBtn" type="button">
+            <input value="Reply" id="replyEmail" onclick="replyEmailFromMailBox('reply');" class="slBtn md colorBtn" type="button" style="display: none;">
+            <input value="Forward" id="forwardEmail" onclick="sendEmailFromMailBox('forward');" class="slBtn md colorBtn" type="button" style="display: none;">
+            <input value="Cancel" id="clear_search" onclick="closeComposeEmailPopup();" class="slBtn md popClose" type="button">
+        </div>            
+            
+    </div>
 </div>
 
-<div id='textBoxmailerPopup' class='remove_user_pop remove_user_pop_a'>
-	<p><strong id='emailResponseText'></strong></p>
-	<div>&nbsp;&nbsp;&nbsp;</div>
-	<b href='javascript:void(0)'><input type='button'  value='Ok' onclick='textBoxCancel();' style='background-color:#1ab394;width:100%'/></b>
+<div class="newSusMes" id='textBoxmailerPopup'>
+	<p><span id='emailResponseText'></span><i class="fa fa-close" onclick='textBoxCancel();'></i></p>
 </div>
 
 <script src="/resources/js/nicEdit-latest.js"></script>
@@ -999,7 +983,7 @@ function readFolder(name, fullName, id, pageNo, pageSize, index){
 			    		}
 					} else {
 						$("#dynamicMailCheckAll").hide();
-						showEmailResponse(data.resposeMessage);
+						showEmailResponse(true, data.resposeMessage);
 		    			/* $(".refreshIcon").hide(); */		
 					}
 				    $("#mailLoading").removeAttr("style"); 
@@ -1171,7 +1155,7 @@ function backToEmailList(){
 					$("#inbox").hide();
 				    $("#details").show();
 				} else {
-					showEmailResponse("error while reading email");
+					showEmailResponse(true, "error while reading email");
 				}
 				$("#mailLoading").removeAttr("style");
 			}
@@ -1217,6 +1201,8 @@ function forwardEmailToHotMail(uuid){
 
 <script type="text/javascript">
 	$(document).ready(function() {
+		$(".chosen-drop").hide();
+		
 		if("${emailAccountSettingsServiceList.size()}" === 0 || mailType === "hotcampaigns") {
 			getMails('Inbox');
 		} else {
@@ -1268,18 +1254,18 @@ function forwardEmailToHotMail(uuid){
 	
 	function moveEmailToTrash(emailAccountId, messageIds, folderName, folderShortName, deleteForever) {
 		/* alert("EmailAccountId : " + emailAccountId + " Delete Mail : " + messageIds + " in folder : '" + folderName + "'"); */
-		 $("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:70px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:50px;');
+		 $("#composeLoading").show();
 			$.ajax({
 				type : "POST",
 				url : sourceleadUrl+"/deleteEmailsByUID?${_csrf.parameterName}=${_csrf.token}&emailAccountId=" + emailAccountId + "&messageIds=" + messageIds + "&folderName=" + folderName + "&deleteForever=" + deleteForever,
 				success : function(data) {
 					if(data && data != null && data.response === "SUCCESS") {
 						readFolder(folderShortName, folderName, emailAccountId, 0, 10, 0);
-						showEmailResponse((messageIds.length > 1 ? "Emails" : "Email") + (deleteForever ? " Deleted Permanently" : " moved to Trash"));
+						showEmailResponse(false, (messageIds.length > 1 ? "Emails" : "Email") + (deleteForever ? " Deleted Permanently" : " moved to Trash"));
 					} else {
-						showEmailResponse(data.responseMessage)
+						showEmailResponse(true, data.responseMessage)
 					}
-					$("#loading").removeAttr("style");
+					$("#composeLoading").hide();
 				}
 			});
 	}
@@ -1295,8 +1281,9 @@ function forwardEmailToHotMail(uuid){
 		var fromEmail = $(".userMailList li[class='Act']").find("p").html();
 		$("#fromEmail").val(fromEmail);
 		$("#fromEmail").trigger("chosen:updated");
-		$('.side_mask').show();
+		/* $('.side_mask').show(); */
 		$('#dynamicmailcompose').show();
+		$("body").css("overflow-y","hidden");
 	}
 	function closeComposeEmailPopup() {
 		refreshComposeMailFields();
@@ -1306,6 +1293,7 @@ function forwardEmailToHotMail(uuid){
 		$("#replyEmail").hide();
 		$("#forwardEmail").hide();
 		$(".headerAdsrch span").html("Send Email");
+		$("body").css("overflow-y","auto");
 	}
 	function refreshComposeMailFields() {
 		$("#fromEmail").val("");
@@ -1322,7 +1310,8 @@ function forwardEmailToHotMail(uuid){
 	
 	/* function to show compose email popup with auto-filled values required for reply / replyAll */
 	function showReplyEmailPopup(emailAccountId, messageId, folderName, replyToAllFlag) {
-		$("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:70px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:50px;');
+		$("body").css("overflow-y","hidden");
+		$("#composeLoading").show();
 		refreshComposeMailFields();
 		var activeEmail = $("li[class='Act']").find("p").html();
 		$("#fromEmail").prop("disabled",true);
@@ -1368,9 +1357,9 @@ function forwardEmailToHotMail(uuid){
 			$("#replyEmail").show();
  			$("#replyEmail").data("messageId", messageId);
 			$("#replyEmail").data("folderName", folderName);
-			$('.side_mask').show();
+			/* $('.side_mask').show(); */
 			$('#dynamicmailcompose').show();
-			$("#loading").removeAttr("style");
+			$("#composeLoading").hide();
 		} else {
 			$.ajax({
 				type : "POST",
@@ -1414,12 +1403,12 @@ function forwardEmailToHotMail(uuid){
 						$("#replyEmail").show();
 						$("#replyEmail").data("messageId", messageId);
 						$("#replyEmail").data("folderName", folderName);
-						$('.side_mask').show();
+						/* $('.side_mask').show(); */
 						$('#dynamicmailcompose').show();
 					} else {
-						showEmailResponse("error while reading email");
+						showEmailResponse(true, "error while reading email");
 					}
-					$("#loading").removeAttr("style");
+					$("#composeLoading").hide();
 				}
 			});
 		}
@@ -1440,11 +1429,11 @@ function forwardEmailToHotMail(uuid){
 		  	var toEmails =  $('#emailsList').val();
 		  		 
 		  	if(toEmails == null) {
-		  		showEmailResponse("Provide atleast one email id");
+		  		showEmailResponse(false, "Provide atleast one email id");
 		   	} else {
 		   		var emailAccountId = $("#fromEmail option:selected").data("id");
 		   		var from = $("#fromEmail option:selected").val();
-				$("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:70px; z-index:100000; background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
+				$("#composeLoading").show();
 				$.ajax({
 					type : "POST",
 				  	data: formData,
@@ -1455,9 +1444,10 @@ function forwardEmailToHotMail(uuid){
 				  	success : function(result) {
 				  		if(result && result.response === "SUCCESS") {				  			
 					  		closeComposeEmailPopup();
-				  		}
-				  		showEmailResponse(result.responseMessage);
-					  	$("#loading").removeAttr('style');
+				  			showEmailResponse(false, result.responseMessage);
+				  		} else 
+				  			showEmailResponse(true, result.responseMessage);
+					  	$("#composeLoading").hide();
 				  	},
 				});
 			}
@@ -1469,7 +1459,8 @@ function forwardEmailToHotMail(uuid){
 
 	/* function to show compose email popup with auto-filled values required for forwarding */
 	function showForwardEmailPopup(emailAccountId, messageId, folderName) {
-		$("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:70px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:50px;');
+		$("body").css("overflow-y","hidden");
+		$("#composeLoading").show();
 		refreshComposeMailFields();
 		var activeEmail = $("li[class='Act']").find("p").html();
 		$("#fromEmail").prop("disabled",true);
@@ -1513,9 +1504,9 @@ function forwardEmailToHotMail(uuid){
 			$("#sendEmail").hide();
 			$("#replyEmail").hide();
 			$("#forwardEmail").show();
-			$(".side_mask").show();
+			/* $(".side_mask").show(); */
 			$("#dynamicmailcompose").show();
-			$("#loading").removeAttr("style");
+			$("#composeLoading").hide();
 		} else {
 			$.ajax({
 				type : "POST",
@@ -1541,12 +1532,12 @@ function forwardEmailToHotMail(uuid){
 						$("#sendEmail").hide();
 						$("#replyEmail").hide();
 						$("#forwardEmail").show();
-						$('.side_mask').show();
+						/* $('.side_mask').show(); */
 						$('#dynamicmailcompose').show();
 					} else {
-						showEmailResponse("error while reading email");
+						showEmailResponse(true, "error while reading email");
 					}
-					$("#loading").removeAttr("style");
+					$("#composeLoading").hide();
 				}
 			});
 		}
@@ -1563,13 +1554,16 @@ function forwardEmailToHotMail(uuid){
 		  	var formData = new FormData(form)
 		  		
 		  	var toEmails =  $('#emailsList').val();
-		  		 
+		  	var emailBody = nicEditors.findEditor('bodytext').getContent();	 
 		  	if(toEmails == null) {
-		  		showEmailResponse("Provide atleast one email id");
+		  		/* showEmailResponse("Provide atleast one email id"); */
+		  		showEmailResponse(false, "Provide atleast one email id");
+		   	} else if(emailBody === "" || emailBody === "<br>") {
+		   		showEmailResponse(false, "Enter Email Body");
 		   	} else {
 		   		var emailAccountId = $("#fromEmail option:selected").data("id");
 		   		var from = $("#fromEmail option:selected").val();
-				$("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:70px; z-index:100000; background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
+				$("#composeLoading").show();
 				$.ajax({
 					type : "POST",
 				  	data: formData,
@@ -1582,9 +1576,10 @@ function forwardEmailToHotMail(uuid){
 				  			setTimeout(function() {
 				  				closeComposeEmailPopup();
 					 		}, 1000);
-				  		}
-				  		showEmailResponse(result.responseMessage);
-					  	$("#loading").removeAttr('style');
+				  			showEmailResponse(false, result.responseMessage);
+				  		} else
+				  			showEmailResponse(true, result.responseMessage);
+					  	$("#composeLoading").hide();
 				  	},
 				});
 			}
@@ -1636,7 +1631,7 @@ function forwardEmailToHotMail(uuid){
 				}
 			},
 			error : function(err) {
-				showEmailResponse(err);
+				showEmailResponse(true, err);
 			}
 		});
 	}
@@ -1657,18 +1652,22 @@ function forwardEmailToHotMail(uuid){
 		refreshAttachmentsIndex();
 	}
 	
-	function showEmailResponse(message){
+	function showEmailResponse(failedFlag, message){
 		$("#emailResponseText").html(message);
 		$("#textBoxmailerPopup").slideDown(200);
 		$(".project_inn_mask").fadeIn(200);
-		$(".side_mask").fadeIn(200);
+		setTimeout(function() {
+			$("#textBoxmailerPopup").slideUp(200);
+			$(".project_inn_mask").fadeOut(200);
+ 		}, (failedFlag ? 3000 : 1500));
+		/* $(".side_mask").fadeIn(200); */
 	}
 	
 	function textBoxCancel(){
 		$("#textBoxmailerPopup").slideUp(200);
 		$(".project_inn_mask").hide();
-		if($("#dynamicmailcompose").css("display") === "none")
-			$(".side_mask").hide();
+		/* if($("#dynamicmailcompose").css("display") === "none")
+			$(".side_mask").hide(); */
 	}
 	
 	function getEmailSettings(settingsType) {
