@@ -1033,7 +1033,7 @@ function getLeaveDetails(finalDateFormatEndDate){
 		});
 	}
 	calcaulateDuraton();
-	setTimeout(function(){ validateDate(); }, 800);
+	setTimeout(function(){ validateDate(); checkToDate();}, 800);
 		
 	
 }
@@ -1045,11 +1045,14 @@ function validateOverDrawLeaves(leaveTypeName){
 	var from = $("#fromDate").val();
 	var to = $("#toDate").val();
   	var one_day=1000*60*60*24;
-	var parts = from.split('-');
-	var date1 = new Date(parts[2], parts[1] - 1, parts[0]); 
+	
+	var date1 = new Date(from);
+	var date2 = new Date(to);
+	
+	
+// 	var date1 = new Date(parts[2], parts[1] - 1, parts[0]); 
 	console.log(date1.getTime());
-	var parts1 = to.split('-');
-	var date2 = new Date(parts1[2], parts1[1] - 1, parts1[0]); 
+// 	var date2 = new Date(parts1[2], parts1[1] - 1, parts1[0]); 
 	console.log(date2.getTime());
 	
 	// Convert both dates to milliseconds

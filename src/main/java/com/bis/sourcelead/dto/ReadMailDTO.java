@@ -14,6 +14,7 @@ public class ReadMailDTO {
 	private Long messageId;
 	private String folderName;
 	private int attachmentsCount;
+	private int unreadCount;
 
 	private long emailAccountId;
 	private String sendType; // compose, reply, forward
@@ -120,6 +121,14 @@ public class ReadMailDTO {
 
 	public void setSendType(String sendingType) {
 		this.sendType = sendingType;
+	}
+
+	public int getUnreadCount() {
+		return unreadCount;
+	}
+
+	public void setUnreadCount(int unreadCount) {
+		this.unreadCount = unreadCount;
 	}
 
 }
