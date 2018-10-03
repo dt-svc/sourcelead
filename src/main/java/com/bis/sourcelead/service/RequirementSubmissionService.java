@@ -303,7 +303,7 @@ public interface RequirementSubmissionService {
 	
 	Integer getRequirementSubmissionCountByCandiateIdAndOrgLocationId(Long candidateId,Long orgLocationId) throws Exception;
 	
-	List<RequirementSubmissionsDTO> getCandidateSubmittedRequirementsListByCandidateId(Long candidateId,Long orgLocationId) throws Exception;
+	List<RequirementSubmissionsDTO> getCandidateSubmittedRequirementsListByCandidateId(Long candidateId,Long orgLocationId,String dateFormat) throws Exception;
 	
 	Sheet getApplicaantJoinedListExcelFile(Sheet createExcelsheet, Workbook createExcelworkbook, ResponseList<RequirementSubmissionHistory> dashboardJobsCountlist, OrgLocations loginOrgLocations, String submissionStatus) throws Exception;
 

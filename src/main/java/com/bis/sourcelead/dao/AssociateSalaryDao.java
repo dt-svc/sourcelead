@@ -1,5 +1,6 @@
 package com.bis.sourcelead.dao;
 
+import java.util.Date;
 import java.util.List;
 
 import com.bis.sourcelead.dto.AssociatePayItemDTO;
@@ -36,7 +37,10 @@ public interface AssociateSalaryDao {
 
 	List<AssociateSalaryInd> getIndAssociateSalaryListByGroupId(OrgLocations orgLocation, long groupId);
 
-	List<SalaryDTO> getSalaryByGroupId(OrgLocations orgLocation, Long groupId, String payType);
+
+	List<SalaryDTO> getSalaryByGroupId(OrgLocations orgLocation, Long candidateId, Date freqStartDate, Date freqEndDate);
+
 	
 	List<AssociateSalaryInd> getIndAssociateSalaryListByGroupId(OrgLocations orgLocation, long groupId,String payType);
+
 }

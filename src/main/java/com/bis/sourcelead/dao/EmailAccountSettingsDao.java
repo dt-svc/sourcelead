@@ -7,7 +7,7 @@ import com.bis.sourcelead.entity.User;
 
 public interface EmailAccountSettingsDao {
 	
-	public EmailAccountSettings storeEmailAccountSettings(EmailAccountSettings emailAccountSettings) throws Exception;
+	public long storeEmailAccountSettings(EmailAccountSettings emailAccountSettings) throws Exception;
 	
 	List<EmailAccountSettings> emailAccountSettingsList(Long loginUserId)throws Exception;
 	
