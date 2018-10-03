@@ -230,6 +230,8 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 	@Column(name="STATUS")
 	private String status;
 	
+	@Column(name = "Process")
+	private String process;
 
 	@Column(name = "REQUIREMENT_SUBMISSION_STATUS")
 	@Enumerated(EnumType.STRING)
@@ -2094,4 +2096,16 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 	public void setProfilePercentage(Integer profilePercentage) {
 		this.profilePercentage = profilePercentage;
 	}
+
+	public String getProcess()
+	{
+		return process;
+	}
+
+	public void setProcess(String process)
+	{
+		this.process = process;
+	}
+	
+	
 }
