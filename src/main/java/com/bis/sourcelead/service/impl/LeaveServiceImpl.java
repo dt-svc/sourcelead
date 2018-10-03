@@ -18,6 +18,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 import javax.mail.internet.InternetAddress;
 
@@ -719,7 +720,7 @@ public class LeaveServiceImpl implements LeaveService{
 					}
 				}
 				}
-				leaveDto.setUpdatedDate(ConversionUtil.getDateAsString(leave.getUpdatedDate()));
+				leaveDto.setUpdatedDate(commonUtil.dateStrFromOrgDateFormatter(orgLocations.getDateFormat(), leave.getUpdatedDate()));
 				leavelistr.add(leaveDto);
 			}
 		}
@@ -1312,6 +1313,17 @@ public class LeaveServiceImpl implements LeaveService{
 		int cancelledCounts = 0;
 		LeaveDTO leaveDto = new LeaveDTO();
 		List<LeaveApproveHierarchy> leavesList = leaveDao.getAllEmployeesLeavesCounts(orgLocationId,userId,loginUserRole,orgId);
+		
+		List<LeaveApproveHierarchy> pendingleavesList = leavesList.stream().filter(l -> Constants.PENDING.equalsIgnoreCase(l.getLeaveid().getStatus())).collect(Collectors.toList());
+		requestedCounts = pendingleavesList.size();
+		List<LeaveApproveHierarchy> appleavesList = leavesList.stream().filter(l -> Constants.APPROVED.equalsIgnoreCase(l.getLeaveid().getStatus())).collect(Collectors.toList());
+		approvedCounts = appleavesList.size();
+		List<LeaveApproveHierarchy> rejleavesList = leavesList.stream().filter(l -> Constants.REJECTED.equalsIgnoreCase(l.getLeaveid().getStatus())).collect(Collectors.toList());
+		rejectedCounts = rejleavesList.size();
+		List<LeaveApproveHierarchy> canceledleavesList = leavesList.stream().filter(l -> Constants.LEAVE_CANCELLED.equalsIgnoreCase(l.getLeaveid().getStatus())).collect(Collectors.toList());
+		cancelledCounts = canceledleavesList.size();
+		
+	/*	
 		for (LeaveApproveHierarchy lah : leavesList) {
 			if(Constants.PENDING.equalsIgnoreCase(lah.getLeaveid().getStatus())) {
 				requestedCounts = requestedCounts + 1;
@@ -1325,7 +1337,7 @@ public class LeaveServiceImpl implements LeaveService{
 			if(Constants.LEAVE_CANCELLED.equalsIgnoreCase(lah.getLeaveid().getStatus())) {
 				cancelledCounts = cancelledCounts + 1;
 			}
-		}
+		}*/
 		leaveDto.setEmployeeRequestedCounts(String.valueOf(requestedCounts));
 		leaveDto.setEmployeeApprovedCounts(String.valueOf(approvedCounts));
 		leaveDto.setEmployeeRejectedCounts(String.valueOf(rejectedCounts));
