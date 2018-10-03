@@ -241,6 +241,9 @@ public class AssetDaoImpl implements AssetDao{
 			if (Arrays.asList(status).contains("Out Of Service")) {
 				subquery2 = subquery2 + "asset.workingStatus = 'Out Of Service' OR ";
 			}
+			if (Arrays.asList(status).contains("Service")) {
+				subquery2 = subquery2 + "asset.workingStatus = 'Service' OR ";
+			}
 		}
 		
 		
