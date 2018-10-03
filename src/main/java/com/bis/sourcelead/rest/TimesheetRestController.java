@@ -5627,7 +5627,12 @@ public class TimesheetRestController {
 		   String output = "";
 		   User loginUser = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
 		try {
-			UserDroppedHolidays userDroppedHolidays = new UserDroppedHolidays();
+			UserDroppedHolidays userDroppedHolidays = userDroppedHolidaysService.getUserDroppedHolidaysFromUserIdlocationIdAndHolidayId(holidayUserId, holidayUserLocationId, holidayId); 
+			
+			if(userDroppedHolidays == null) {
+				userDroppedHolidays = new UserDroppedHolidays();
+			}
+			
 			Holiday holiday = new Holiday();
 			holiday.setId(holidayId);
 			userDroppedHolidays.setHoliday(holiday);

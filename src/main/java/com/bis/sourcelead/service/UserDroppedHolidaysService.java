@@ -8,6 +8,8 @@ public interface UserDroppedHolidaysService  {
 	
 	public UserDroppedHolidays addUserDroppedHolidays(UserDroppedHolidays userDroppedHolidays) throws Exception;
 	
+	public UserDroppedHolidays getUserDroppedHolidaysFromUserIdlocationIdAndHolidayId(Long userId,Long locationId,Long holidayId) throws Exception;
+	
 	public List<Long> getDroppedHolidayIdsListByUserIdAndLocationId(Long userId,Long locationId) throws Exception;
 	
 }	

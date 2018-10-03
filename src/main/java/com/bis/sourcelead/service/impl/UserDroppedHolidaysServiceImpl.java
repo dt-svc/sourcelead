@@ -29,6 +29,12 @@ public class UserDroppedHolidaysServiceImpl implements UserDroppedHolidaysServic
 	public List<Long> getDroppedHolidayIdsListByUserIdAndLocationId(Long userId, Long locationId) throws Exception {
 		return userDroppedHolidaysDao.getDroppedHolidayIdsListByUserIdAndLocationId(userId, locationId);
 	}
+
+	@Override
+	public UserDroppedHolidays getUserDroppedHolidaysFromUserIdlocationIdAndHolidayId(Long userId, Long locationId, Long holidayId)
+			throws Exception {
+		return userDroppedHolidaysDao.getUserDroppedHolidaysFromUserIdlocationIdAndHolidayId(userId, locationId, holidayId);
+	}
 	
 	
 }
