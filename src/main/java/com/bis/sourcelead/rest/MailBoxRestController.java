@@ -977,14 +977,18 @@ public class MailBoxRestController {
 		return emailService.replyEmailFromMailBox(readMailDTO, user.getId(), orgLocation.getId(), multiFile);
 	}*/
 	
-	@RequestMapping(value = "/app/getEmailConfiguration")
+	@RequestMapping(value = "/getEmailConfiguration")
 	@ResponseBody
-	public ModelAndView getEmailConfiguration(HttpServletRequest request, @RequestParam(defaultValue = "others") String source) {
+	public ModelAndView getEmailConfiguration(HttpServletRequest request, @RequestParam(defaultValue = "0") long id) {
 		ModelAndView modelAndView = new ModelAndView();
 		try {
-			
-			modelAndView.addObject("sourceleadUrl", sourceleadUrl);
-			modelAndView.setViewName("emailConfiguration");
+			User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+			if(user != null) {
+				EmailAccountSettingsDTO emailAccountSettingsDTO = emailAccountSettingsService.getEmailAccount(id, user.getId());
+				modelAndView.addObject("emailAccount", emailAccountSettingsDTO);
+				modelAndView.addObject("sourceleadUrl", sourceleadUrl);
+				modelAndView.setViewName("emailConfiguration");
+			}
 		} catch (Exception e) {
 			e.printStackTrace();
 		}

@@ -184,7 +184,7 @@
 						</button>
 					</div>
 
-					<div class="pull-left mr5" title="Refresh"><i class="mailIcon refreshIcon"></i></div>
+					<div class="pull-left mr5" title="Refresh"><i class="mailIcon refreshIcon" style="display: none;"></i></div>
 	
 					<div class="pull-left" id="DynamicMailControlsMaster" style="display: none;">
 						<span class="pull-left mr moveToTrash" style="display: none;">
@@ -202,7 +202,7 @@
 			</div>
 		</div>
 
-		<div class="col-md-9" id="details">
+		<div class="col-md-9" id="details" style="display: none;">
 			<div class="dashNewWrap mail-box mail-content dashNewWrapMinHe">
 				<div id="body-details" style="display: none;"></div>
 				<div id="mailContentLoading"></div>
@@ -386,6 +386,7 @@
 <script src="/resources/js/nicEdit.js"></script>
 
 <script type="text/javascript">
+	var mailType = '${mailType}';
 	$(function() { 
 		tagIt("emailsList", 'Enter Emails And Press Enter-Key Or Comma(,) Or Space To Add New Email', 'tagItBykeyForEmails','emails');
 		tagIt("ccList", 'Enter Emails And Press Enter-Key Or Comma(,) Or Space To Add New Email', 'tagItBykeyForEmails','emails');
@@ -403,10 +404,8 @@
 	  $("#inbox").show();
 	  $("#details").hide();
 	  $("#configureEmailDiv").hide();
+	  $("#trashBtn").hide();
 	  
-	  document.getElementById("inbox").style.display="";
-	  document.getElementById("details").style.display="none";
-	  document.getElementById("trashBtn").style.display="none";
 	  $('#checkAllEmails').removeAttr('checked');
 	  $('#mailboxLabel').html(type);
 	  
@@ -417,7 +416,7 @@
 	  }
 	  
 	  setActiveTab(type)
-	  var mailType = '${mailType}';
+	  
 	  
 	  /* $("#mailLoading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/linear-loader.gif"); background-position:center; background-repeat:no-repeat; background-size:100px;'); */
 	  $("#mailLoading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:70px; z-index:100000; background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
@@ -756,9 +755,8 @@ function refreshList(){
 <script>
 function getEmailDetails(uuid,type) {
 	var sourceleadUrl = '${sourceleadUrl}';
-	
-	 document.getElementById("details").style.display="";
-	 document.getElementById("inbox").style.display="none";
+	$("#details").show();
+	$("#inbox").hide();
 	 
 	 $("#mailContentLoading").attr('style','position:absolute; width:97%; height:99%; background-color:rgba(255,255,255,0.8); top:-1px; left:14px; z-index:100;background-image:url("/resources/images/linear-loader.gif"); background-position:center; background-repeat:no-repeat; background-size:100px;');
 	 var mailType = '${mailType}';
@@ -1035,8 +1033,11 @@ function readFolder(name, fullName, id, pageNo, pageSize, index){
 					    /* emailMailDetailsPagination(); */
 					    prepareDynamicPagination(name, fullName, id, data.paginator, index);
 					    $("#dynamicMailCheckAll").show();
-		    		} else
+					    /* $(".refreshIcon").show(); */
+		    		} else {
 		    			$("#dynamicMailCheckAll").hide();
+		    			/* $(".refreshIcon").hide(); */		    			
+		    		}
 				    $("#mailLoading").removeAttr("style"); 
 				    $("#inbox").show();
 				    $("#details").hide();
@@ -1252,7 +1253,7 @@ function forwardEmailToHotMail(uuid){
 
 <script type="text/javascript">
 	$(document).ready(function() {
-		if("${emailAccountSettingsServiceList.size()}" === 0) {
+		if("${emailAccountSettingsServiceList.size()}" === 0 || mailType === "hotcampaigns") {
 			getMails('Inbox');
 		} else {
 			$($(".userMailList li")[0]).find("p").click();
@@ -1728,7 +1729,7 @@ function forwardEmailToHotMail(uuid){
 	
 	function getConfiguredEmail(id) {
 		$("#emailConfigurationPopup").empty();
-		$.post(sourceleadUrl + "/emailSettings",{source : "gmail"}, function(data) {
+		$.post(sourceleadUrl + "/getEmailConfiguration",{id : id}, function(data) {
 			$("#configureEmailDiv").hide();
 			$("#emailConfigurationPopup").append(data);
 		});

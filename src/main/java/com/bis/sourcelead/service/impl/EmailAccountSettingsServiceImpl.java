@@ -42,10 +42,16 @@ public class EmailAccountSettingsServiceImpl implements EmailAccountSettingsServ
 			response.setResponseMessage(Result.DUPLICATE_EMAIL_CONFIGURATION_RECORD.getValue());
 		} else {
 			EmailAccountSettings emailAccountSettings;
-			if (emailAccountSettingsDTO.getId() == 0)
+			Date currentDate = commonUtil.orgLocationCommonDate(new Date(), orgLocations);
+			if (emailAccountSettingsDTO.getId() == 0) {
 				emailAccountSettings = new EmailAccountSettings();
-			else
+				emailAccountSettings.setCreatedBy(user.getUserCode());
+				emailAccountSettings.setCreatedDate(currentDate);
+			} else {
 				emailAccountSettings = emailAccountSettingsDao.getEmailAccount(emailAccountSettingsDTO.getId(), user.getId());
+				emailAccountSettings.setUpdatedBy(user.getUserCode());
+				emailAccountSettings.setUpdatedDate(currentDate);				
+			}
 			
 			emailAccountSettings.setEmail(emailAccountSettingsDTO.getEmail());
 			emailAccountSettings.setPassword(emailAccountSettingsDTO.getPassword());
@@ -64,11 +70,6 @@ public class EmailAccountSettingsServiceImpl implements EmailAccountSettingsServ
 				emailAccountSettings.setEmailType("other");
 			}
 			emailAccountSettings.setUser(user);
-			emailAccountSettings.setCreatedBy(user.getUserCode());
-			emailAccountSettings.setUpdatedBy(user.getUserCode());
-			Date currentDate = commonUtil.orgLocationCommonDate(new Date(), orgLocations);
-			emailAccountSettings.setCreatedDate(currentDate);
-			emailAccountSettings.setUpdatedDate(currentDate);
 
 			EmailAccountSettings storedEmailAccount = emailAccountSettingsDao.storeEmailAccountSettings(emailAccountSettings);
 			response.setResponse(Result.SUCCESS.name());

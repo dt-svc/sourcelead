@@ -28,6 +28,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.ModelAndView;
 
 import com.bis.sourcelead.constants.Constants;
+import com.bis.sourcelead.dto.EmailAccountSettingsDTO;
 import com.bis.sourcelead.elk.index.CampaignIndex;
 import com.bis.sourcelead.elk.index.CandidateIndex;
 import com.bis.sourcelead.elk.setup.SourceleadELKBaseIndexer;
@@ -191,11 +192,18 @@ public class MailBoxController {
 		default:
 			break;
 		}
-		model.addObject("incomingServer", incomingServer);
+		EmailAccountSettingsDTO emailAccountSettingsDTO = new EmailAccountSettingsDTO();
+		emailAccountSettingsDTO.setIncomingServer(incomingServer);
+		emailAccountSettingsDTO.setIncomingPort(incomingPort);
+		emailAccountSettingsDTO.setIncomingSSL(true);
+		emailAccountSettingsDTO.setOutgoingServer(outgoingServer);
+		emailAccountSettingsDTO.setOutgoingPort(outgoingPort);
+		emailAccountSettingsDTO.setOutgoingSSL(true);
+		model.addObject("emailAccount", emailAccountSettingsDTO);
+		/*model.addObject("incomingServer", incomingServer);
 		model.addObject("incomingPort", incomingPort);
 		model.addObject("outgoingServer", outgoingServer);
-		model.addObject("outgoingPort", outgoingPort);
-//		model.addObject("username", user.getFullName());
+		model.addObject("outgoingPort", outgoingPort);*/
 		model.addObject("sourceleadUrl", sourceleadUrl);
 		model.setViewName("emailConfiguration");
 		return model;
