@@ -15,7 +15,6 @@ import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.bis.sourcelead.dao.UploadXlsHistoryDao;
-import com.bis.sourcelead.dto.CandidateDTO;
 import com.bis.sourcelead.dto.UploadXlsHistoryDTO;
 import com.bis.sourcelead.entity.UploadXlsHistory;
 import com.bis.sourcelead.exception.SourceLeadConstraintViolationException;
@@ -144,11 +143,22 @@ public class UploadXlsHistoryDaoImpl implements UploadXlsHistoryDao{
 
 	@Override
 	@Transactional
-	public List<UploadXlsHistoryDTO> getUploadXlsHistoryListByUserId(Long userId, Long orgLocationId, String entityType)
+	public List<UploadXlsHistoryDTO> getUploadXlsHistoryListByUserId(Long userId, Long orgLocationId, String entityType,String dateFormat)
 			throws Exception {
 		List<UploadXlsHistoryDTO> uploadXlsHistoryDTOList = null;
 		Session session = this.sessionFactory.getCurrentSession();
 		String query = null;
+		
+		 String locationDateFormat = null;
+		 if(dateFormat.equalsIgnoreCase("yyyy-MM-dd")){
+			 locationDateFormat = "%Y-%m-%d";
+		  }if(dateFormat.equalsIgnoreCase("dd-MM-yyyy")){
+			  locationDateFormat = "%d-%m-%Y";
+		  }if(dateFormat.equalsIgnoreCase("MM-dd-yyyy")){
+			  locationDateFormat = "%m-%d-%Y";
+		  }if(dateFormat.equalsIgnoreCase("yyyy-dd-MM")){
+			  locationDateFormat = "%Y-%d-%m";
+		  }
 		
 		query =  "SELECT "
 				+" HISTORY.ID AS uploadHistoryId, "
@@ -159,7 +169,7 @@ public class UploadXlsHistoryDaoImpl implements UploadXlsHistoryDao{
 				+" HISTORY.FILE_URL AS fileUrl, "
 				+" HISTORY.FILE_CONTENT_TYPE AS fileContentType, "
 				+" HISTORY.UUID AS uuid, "
-				+" DATE_FORMAT(HISTORY.CREATED_DATE, '%Y-%m-%d') AS date, "
+				+" DATE_FORMAT(HISTORY.CREATED_DATE, '"+locationDateFormat+"') AS date, "
 				+" DATE_FORMAT(HISTORY.CREATED_DATE, '%h:%i:%s %p') AS time, "
 				+" HISTORY.UPLOAD_PROCESSING_STATUS AS uploadProcessingStatus "
 				+" FROM UPLOAD_XLS_HISTORY HISTORY "

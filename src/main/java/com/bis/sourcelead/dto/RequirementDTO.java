@@ -218,6 +218,7 @@ public class RequirementDTO extends CommonDTO {
 	
 	private String orgTeams;
 	
+	private String process;
 	/*
 	 * private List<Map<String, String>> assinedToTeam;
 	 * 
@@ -1559,6 +1560,16 @@ public class RequirementDTO extends CommonDTO {
 
 	public void setProfilePercentage(String profilePercentage) {
 		this.profilePercentage = profilePercentage;
+	}
+
+	public String getProcess()
+	{
+		return process;
+	}
+
+	public void setProcess(String process)
+	{
+		this.process = process;
 	}
 	
 	

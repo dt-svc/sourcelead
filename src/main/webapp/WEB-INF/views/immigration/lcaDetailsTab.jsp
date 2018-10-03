@@ -2,7 +2,7 @@
 <%@ taglib uri="http://java.sun.com/jsp/jstl/functions" prefix="fn"%>
 
  <div class="immigraTabsHead">
-	<a href="javascript:void(0)" id="addLca"><i class="glyphicon glyphicon-plus"></i> Assign LCA</a>
+	<a href="javascript:void(0)" id="assignLca"><i class="glyphicon glyphicon-plus"></i> Assign LCA</a>
 </div>
 		
 	  	<div class="immigraTable overflow_Auto">
@@ -103,7 +103,7 @@
 				<label class="col-md-4 padding_left">Location<span class="text-danger">&nbsp;*</span></label>  
               	<div class="col-md-8 padding_right">
               		<input type="text" name= "location" id= "locationlca" field-name= "location" placeholder="Location" onclick="initLocationAuto('location','country','state','city','zipcode','','','','streetAddress');" data-validation="required validate_Space validate_length length2-100" class="form-control" disabled="disabled"/> 
-              		   <i class="fa fa-refresh btn btn-primary refresh-icon" title="Refresh" onClick="refreshGoogleApiLocation('locationlca','country','state','city','zipcode','streetAddress');"></i>         		
+              		   <i class="fa fa-refresh btn btn-primary refresh-icon" title="Refresh" onClick="refreshGoogleApiLocation('locationlca','country','state','city','zipcode','streetAddress');" ></i>         		
 				</div>
 			</div>	
 			
@@ -113,7 +113,7 @@
             <div class="col-md-8 padding_right">
             <div class="input-group er ratetype">
                 <div class="input-group-btn">
-                   <select class="form-control tblminwidth-75 sel" id="privilingWageCurrency" name="privilingWageCurrency" data-style="btn-primary">
+                   <select class="form-control tblminwidth-75 sel" id="privilingWageCurrency" name="privilingWageCurrency" data-style="btn-primary" >
 						<option value="INR" ${privilingWageCurrency == 'INR' ? 'selected' : ''}>INR</option>
 						<option value="AUD" ${privilingWageCurrency == 'AUD' ? 'selected' : ''}>AUD</option>
 						<option value="USD" ${privilingWageCurrency == 'USD' ? 'selected' : ''}>USD</option>
@@ -124,9 +124,9 @@
                 </div>
                 <input type="text" name="prevailingWage" id="prevailingWage" value="${lcaDTO.prevailingWage}" class="form-control" value="" field-name="Prevailing Wage"
 								data-validation="required validate_Space validate_float validate_length length1-8" 
-							    placeholder="Wage Or Rate">
+							    placeholder="Wage Or Rate" >
                 <div class="input-group-btn ratetype">
-                 <select class="form-control tblminwidth-75 sel" id="privilingWageRateType" name="privilingWageRateType" field-name="Rate Per" data-style="btn-primary">
+                 <select class="form-control tblminwidth-75 sel" id="privilingWageRateType" name="privilingWageRateType" field-name="Rate Per" data-style="btn-primary" >
 						 <option  value="">Rate Per</option>
 						<option ${lcaDTO.privilingWageRateType == 'Hourly' ? 'selected' : ''} value="Hourly">Hourly</option>
 						<option ${lcaDTO.privilingWageRateType == 'Weekly' ? 'selected' : ''} value="Weekly">Weekly</option>
@@ -178,7 +178,7 @@
 
 		});
 			
-	      $("#addLca").click(function(){
+	      $("#assignLca").click(function(){
 				$(".popMask").fadeIn(200);
 				$("#popLcaView").fadeIn(100);
 			});
@@ -310,13 +310,16 @@ var finalDateFormatOrg = getOrgDateFormat(locationDate);
 			    		
 			    		if(data.privilingWageCurrency != null && typeof data.privilingWageCurrency != 'undefined' && data.privilingWageCurrency !=''){
 			    			 $("#privilingWageCurrency").val(data.privilingWageCurrency);
+			    			 $("#privilingWageCurrency" ).prop( "disabled", true);
 			    		}
 			    		if(data.prevailingWage != null && typeof data.prevailingWage != 'undefined' && data.prevailingWage !=''){
 			    			 $("#prevailingWage").val(data.prevailingWage);
+			    			 $("#prevailingWage" ).prop( "disabled", true);
 			    		}
 			    		
 			    		if(data.privilingWageRateType != null && typeof data.privilingWageRateType != 'undefined' && data.privilingWageRateType !=''){
 			    			 $("#privilingWageRateType").val(data.privilingWageRateType);
+			    			 $("#privilingWageRateType" ).prop( "disabled", true);
 			    		}
 			    		
 			        }

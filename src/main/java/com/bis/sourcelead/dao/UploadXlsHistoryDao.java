@@ -15,5 +15,5 @@ public interface UploadXlsHistoryDao {
     
     UploadXlsHistoryDTO getUploadXlsHistoryDTOBySessionId(String sessionId,Long userId,Long orgLocationId,String entityType) throws Exception;
     
-    List<UploadXlsHistoryDTO> getUploadXlsHistoryListByUserId(Long userId,Long orgLocationId,String entityType) throws Exception;
+    List<UploadXlsHistoryDTO> getUploadXlsHistoryListByUserId(Long userId,Long orgLocationId,String entityType,String dateFormat) throws Exception;
 }
