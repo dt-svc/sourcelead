@@ -1,20 +1,29 @@
 package com.bis.sourcelead.rest.reportsRestController;
 
+import java.text.Format;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.TreeMap;
+import java.util.stream.Collectors;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import org.aspectj.apache.bcel.classfile.Constant;
+import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang.exception.ExceptionUtils;
+import org.hibernate.mapping.Collection;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -23,19 +32,29 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.ModelAndView;
 
 import com.bis.sourcelead.constants.Constants;
-import com.bis.sourcelead.dto.LeaveDTO;
+import com.bis.sourcelead.dto.Response;
 import com.bis.sourcelead.dto.ResponseList;
-import com.bis.sourcelead.entity.Invoice;
+import com.bis.sourcelead.entity.AssetCategory;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.OrgRelations;
+import com.bis.sourcelead.entity.Timezone;
+import com.bis.sourcelead.entity.User;
+import com.bis.sourcelead.enums.Result;
 import com.bis.sourcelead.reports.service.FinanceService;
 import com.bis.sourcelead.reportsDTO.APAgingDTO;
 import com.bis.sourcelead.reportsDTO.AparagingDate;
+import com.bis.sourcelead.reportsDTO.AssetGrowthDTO;
 import com.bis.sourcelead.reportsDTO.MissingInvoiceDTO;
 import com.bis.sourcelead.reportsDTO.PaidBillDTO;
+import com.bis.sourcelead.service.AssetCategoryService;
+import com.bis.sourcelead.service.AssetService;
 import com.bis.sourcelead.service.OrgRelationsService;
+import com.bis.sourcelead.service.TimeZoneService;
 import com.bis.sourcelead.util.CommonUtil;
+import com.bis.sourcelead.util.ReportsUtil;
 import com.bis.sourcelead.util.SourceLeadSessionManager;
+import com.ibm.icu.text.DateFormat;
+import com.ibm.icu.text.SimpleDateFormat;
 
 @Controller
 @RequestMapping("/app")
@@ -53,6 +72,18 @@ public class FinanceReportRestController {
 	
 	@Autowired
 	CommonUtil commonUtil;
+	
+	@Autowired
+	AssetCategoryService assetCategoryService;
+	
+	@Autowired
+	ReportsUtil reportsUtil;
+	
+	@Autowired
+	TimeZoneService timeZoneService;
+	
+	@Autowired
+	AssetService assetService;
 	
 	/**
 	 * Returns A/P Aging list JSP
@@ -635,5 +666,146 @@ public class FinanceReportRestController {
 		model.addObject("sourceleadUrl", sourceleadUrl);
 		return model;
 	}
+	
+	
+	/**
+	 * @author Laxman
+	 * returns paid Bill report jsp
+	 * @param request
+	 * @return ModelAndView
+	 * @throws Exception
+	 */
+	@RequestMapping(value = "/assetmanagementGrowth")
+	public ModelAndView assetmanagementGrowth(HttpServletRequest request) throws Exception
+	{
+		OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+		ModelAndView model = new ModelAndView();
+		List<AssetCategory> categoryList = assetCategoryService.getAssetCategoryListByLocationId(orgLocations.getId()); 
+		model.addObject("categoryList", categoryList);
+		model.setViewName("reports/assetGrowthReport");
+		model.addObject("sourceleadUrl", sourceleadUrl);
+		return model;
+	}
+	
+	
+	
+	@SuppressWarnings("unused")
+	@Async
+	@RequestMapping(value = "/getAssetGrowthReportList", method = RequestMethod.POST)
+	@ResponseBody
+	ResponseList<AssetGrowthDTO> getAssetGrowthReportList(AssetGrowthDTO assetGrowthDTO, HttpServletRequest request) throws Exception
+	{
+		ResponseList<AssetGrowthDTO> response = new ResponseList<>();
+		List<AssetGrowthDTO> list = new ArrayList<>();
+		try{
+			User loginUser = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+				OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+				Date[] searchDates = null;
+				Date fromDate = null, toDate = null;
+				if(StringUtils.isNotBlank(assetGrowthDTO.getDateSelection())) {
+					if(!assetGrowthDTO.getDateSelection().equalsIgnoreCase("custom")) {
+						searchDates = reportsUtil.getJobFilterDate(assetGrowthDTO.getDateSelection(),orgLocation);
+					}else {
+						Timezone timezone = timeZoneService.getTimezone(orgLocation.getTimezone().getId());
+						DateFormat TZ_DF_TS = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+						DateFormat TZ_DF_CSD = new SimpleDateFormat("yyyy-MM-dd'T'00:00:00");
+						DateFormat TZ_DF_CED = new SimpleDateFormat("yyyy-MM-dd'T'23:59:59");
+						fromDate =  commonUtil.orgLocationDateFormat(orgLocation.getDateFormat(), assetGrowthDTO.getFromDate());
+			    	    toDate =  commonUtil.orgLocationDateFormat(orgLocation.getDateFormat(), assetGrowthDTO.getToDate());
+						String customStartTimeStr = TZ_DF_CSD.format(fromDate);
+						String customEndTimeStr = TZ_DF_CED.format(toDate);
+						String startDateString = CommonUtil.convertTimeZones(timezone.getTimeZoneId(), Constants.UTC_TIMEZONE, customStartTimeStr);
+						String endDateString = CommonUtil.convertTimeZones(timezone.getTimeZoneId(), Constants.UTC_TIMEZONE, customEndTimeStr);
+						fromDate = TZ_DF_TS.parse(startDateString);
+						toDate = TZ_DF_TS.parse(endDateString);
+						
+			    	    searchDates = new Date[2];
+			    	    searchDates[0] = fromDate;
+			    	    searchDates[1] = toDate;
+					}
+				}
+		    List<AssetGrowthDTO> assetGrowthList = assetService.getAssetGrowthListByOrgloationIdAndAssetGrowthDTO(orgLocation.getId(), assetGrowthDTO,searchDates);
+			if(assetGrowthDTO.getGridType() != null && assetGrowthDTO.getGridType().equalsIgnoreCase("ListView")) {
+				list = getDaysData(assetGrowthList);
+				response.setResponseMessage("days");
+			}else {
+			    if (assetGrowthDTO.getDateSelection().equalsIgnoreCase("custom")) {
+					int noDyas = commonUtil.getNumberOfDaysBetweenTwoDates(fromDate, toDate);
+					if(noDyas <= 31) {
+						list = getDaysData(assetGrowthList);
+						response.setResponseMessage("days");	
+					}else {
+						list = getMonthsData(assetGrowthList);
+						response.setResponseMessage("months");
+					}
+				 
+				} else if (assetGrowthDTO.getDateSelection().equalsIgnoreCase("3_months")
+						|| assetGrowthDTO.getDateSelection().equalsIgnoreCase("YTD")
+						|| assetGrowthDTO.getDateSelection().equalsIgnoreCase("Last_Year")) {
+	
+					list = getMonthsData(assetGrowthList);
+					response.setResponseMessage("months");
+				} else {
+					list = getDaysData(assetGrowthList);
+					response.setResponseMessage("days");
+				}
+			}
+			response.setData(list);
+			response.setResponse(Result.SUCCESS.name());
+		}catch (Exception e) {
+			logger.error(ExceptionUtils.getFullStackTrace(e));
+		}
+		return response;
+		 
+	}
+	
+	@SuppressWarnings({ "unchecked", "rawtypes" })
+	private List<AssetGrowthDTO> getDaysData(List<AssetGrowthDTO> assetGrowthList) {
+		List<AssetGrowthDTO> list = new ArrayList<>();
+		TreeMap<Date, List<AssetGrowthDTO>> map = new TreeMap(assetGrowthList.stream().collect(Collectors.groupingBy(AssetGrowthDTO::getPurchaseDate)));
+         for (Map.Entry<Date, List<AssetGrowthDTO>> entry : map.entrySet()) {
+        	 AssetGrowthDTO dto = new AssetGrowthDTO();
+        	 Map<String,Long> inmap = entry.getValue().stream().collect(Collectors.groupingBy(AssetGrowthDTO::getCatgoryName,Collectors.counting()));
+        	 dto.setFromDate(new SimpleDateFormat("yyyy-MM-dd").format(entry.getKey()));
+        	 dto.setCategoryNameMap(inmap);
+        	 dto.setCategoryCount(entry.getValue().size());
+        	 dto.setAssetCount(entry.getValue().size());
+        	 double totalCategorySum = entry.getValue().stream().collect(Collectors.summingDouble(AssetGrowthDTO::getCostDoble));
+        	 dto.setCostDoble(totalCategorySum);
+        	 list.add(dto);
+         }
+		return list;
+	}
+
+
+	private List<AssetGrowthDTO> getMonthsData(List<AssetGrowthDTO> assetGrowthList) {
+		Map<Integer, List<AssetGrowthDTO>> monthMap = new TreeMap<Integer, List<AssetGrowthDTO>>(
+				assetGrowthList.stream().collect(Collectors.groupingBy(AssetGrowthDTO::getMonthNumber)));
+		List<AssetGrowthDTO> list = new ArrayList<>();
+		for (Map.Entry<Integer, List<AssetGrowthDTO>> entry : monthMap.entrySet()) {
+			AssetGrowthDTO dto = new AssetGrowthDTO();
+			Map<String, Long> inmap = entry.getValue().stream()
+					.collect(Collectors.groupingBy(AssetGrowthDTO::getCatgoryName, Collectors.counting()));
+			dto.setMonthNames(entry.getValue().get(0).getMonthNames());
+			dto.setCategoryNameMap(inmap);
+			dto.setCategoryCount(entry.getValue().size());
+			dto.setAssetCount(entry.getValue().size());
+			list.add(dto);
+		}
+		return list;
+	}
+	
+	@RequestMapping(value = "/noOfDaysAssetGrowth", method = RequestMethod.GET)
+	public @ResponseBody AssetGrowthDTO noOfDaysAssetGrowth(AssetGrowthDTO assetGrowthDTO,HttpServletRequest request) throws Exception
+	{
+		OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+		Date fDate  = commonUtil.orgLocationDateFormat(orgLocation.getDateFormat(), assetGrowthDTO.getFromDate());
+		Date tDate  = commonUtil.orgLocationDateFormat(orgLocation.getDateFormat(), assetGrowthDTO.getToDate());
+		AssetGrowthDTO assetDto = new AssetGrowthDTO();
+		int   noDays = commonUtil.getNumberOfDaysBetweenTwoDates(fDate, tDate);
+		assetDto.setNoOfDays(noDays);
+		return assetDto;
+	}
+	
 	
 }

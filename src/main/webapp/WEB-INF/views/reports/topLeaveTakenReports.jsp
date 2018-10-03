@@ -299,9 +299,19 @@ $("#loading").attr('style','position:absolute; width:100%; height:100%; backgrou
 								for(var j=0; j < opt.users.length; j++){
 									var report = opt.users[j];
 									result += "<tr>";
-									
-									result += "<td> "+report.empName+" </td>";
-									result += "<td> "+report.empType+" </td>";
+						        	  if(report.empName !=null && report.empName !='' && report.empName !='undefined'){
+						        		  result += "<td> "+report.empName+" </td>";	
+									}
+						        	  else{
+						        		  result += "<td>--</td>";
+						        	  }
+						        	  if(report.empType !=null && report.empType !='' && report.empType !='undefined'){
+											result += "<td> "+report.empType+" </td>";
+									}
+						        	  else{
+											result += "<td>--</td>";
+						        	  }
+						        	  
 									if(opt.depart.length=!null){
 										   for(var m in opt.depart){
 												var ltv = m;

@@ -81,6 +81,8 @@ public class PayrollPayheadDTO implements Serializable{
 		private List<PayrollPayheadSalarySetupDTO> salarySetup;
 		
 		private Long candidateId;
+		
+		private String isFormulaEditable;
 
 		public Long getId() {
 			return id;
@@ -344,6 +346,14 @@ public class PayrollPayheadDTO implements Serializable{
 
 		public void setCandidateId(Long candidateId) {
 			this.candidateId = candidateId;
+		}
+
+		public String getIsFormulaEditable() {
+			return isFormulaEditable;
+		}
+
+		public void setIsFormulaEditable(String isFormulaEditable) {
+			this.isFormulaEditable = isFormulaEditable;
 		}
 		
 }
