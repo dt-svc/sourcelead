@@ -1,5 +1,6 @@
 package com.bis.sourcelead.service;
 
+import java.util.Date;
 import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
@@ -13,6 +14,7 @@ import com.bis.sourcelead.entity.AssetServices;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.Requirement;
 import com.bis.sourcelead.entity.User;
+import com.bis.sourcelead.reportsDTO.AssetGrowthDTO;
 
 public interface AssetService {
 
@@ -76,5 +78,7 @@ public interface AssetService {
 	List<AssetServices> getAssetServicesListByAssetId(Long assetId)throws Exception; 
 	
 	public AssetServices saveAssetServiceDetails(AssetServiceDTO assetServiceDTO,OrgLocations orgLocations) throws Exception;
+	
+	List<AssetGrowthDTO> getAssetGrowthListByOrgloationIdAndAssetGrowthDTO(Long orgLocationId,AssetGrowthDTO assetGrowthDTO,Date[] searchDates)throws Exception;
 
 }
