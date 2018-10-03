@@ -1,6 +1,5 @@
 package com.bis.sourcelead.service.impl;
 
-import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -71,9 +70,14 @@ public class EmailAccountSettingsServiceImpl implements EmailAccountSettingsServ
 			}
 			emailAccountSettings.setUser(user);
 
-			EmailAccountSettings storedEmailAccount = emailAccountSettingsDao.storeEmailAccountSettings(emailAccountSettings);
-			response.setResponse(Result.SUCCESS.name());
-			response.setResponseMessage(Result.SUCCESS.getValue());
+			long storedEmailAccountId = emailAccountSettingsDao.storeEmailAccountSettings(emailAccountSettings);
+			if (storedEmailAccountId > 0) {
+				response.setResponse(Result.SUCCESS.name());
+				response.setResponseMessage(Result.SUCCESS.getValue());
+			} else {
+				response.setResponse(Result.FAILED.name());
+				response.setResponseMessage(Result.FAILED.getValue());
+			}
 		}
 		return response;
 	}
@@ -90,7 +94,6 @@ public class EmailAccountSettingsServiceImpl implements EmailAccountSettingsServ
 		String email = emailAccountSettings.getEmail();
 		String password = emailAccountSettings.getPassword();
 		// String host = "imap.gmail.com";
-		String host = emailAccountSettings.getIncomingServer();
 		String storeType = "imaps";
 		responseList = MailBox.readMail(emailAccountSettings.getIncomingServer(), emailAccountSettings.getIncomingPort(), storeType, email, password);
 		return responseList;
