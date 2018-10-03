@@ -137,16 +137,12 @@ public class LeaveDaoImpl implements LeaveDao{
 			if(StringUtils.isNotBlank(leaveDTO.getSortColumn())) {
 				if("id".equalsIgnoreCase(leaveDTO.getSortColumn())) {
 					qry = " order by laph.leaveid.id "+leaveDTO.getSortOrder();
-				}else if("empName".equalsIgnoreCase(leaveDTO.getSortColumn())) {
-					qry = " order by concat(laph.leaveid.user.firstName,laph.leaveid.user.lastName) "+leaveDTO.getSortOrder();
-				}else if("leaveType".equalsIgnoreCase(leaveDTO.getSortColumn())) {
+				}else if("firstName".equalsIgnoreCase(leaveDTO.getSortColumn())) {
+					qry = " order by laph.leaveid.user.firstName "+leaveDTO.getSortOrder();
+				}else if("name".equalsIgnoreCase(leaveDTO.getSortColumn())) {
 					qry = " order by laph.leaveid.leaveType.name "+leaveDTO.getSortOrder();
-				}else if("leaveType".equalsIgnoreCase(leaveDTO.getSortColumn())) {
-					qry = " order by laph.leaveid.leaveType.name "+leaveDTO.getSortOrder();
-				}else if("noOfDays".equalsIgnoreCase(leaveDTO.getSortColumn())) {
-					qry = " order by laph.leaveid.leaveType.noOfDays."+leaveDTO.getSortColumn() + " "+leaveDTO.getSortOrder();
 				}else if("approvedBy".equalsIgnoreCase(leaveDTO.getSortColumn())) {
-					qry = " order by concat(laph.approverUserId.firstName,laph.approverUserId.lastName) "+leaveDTO.getSortOrder();
+					qry = " order by laph.approverUserId.firstName "+leaveDTO.getSortOrder();
 				}else if("updatedDate".equalsIgnoreCase(leaveDTO.getSortColumn())) {
 					qry = " order by laph.leaveid.updatedDate."+leaveDTO.getSortColumn() + " "+leaveDTO.getSortOrder();
 				}

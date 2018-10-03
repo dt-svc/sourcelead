@@ -14,8 +14,16 @@
     <div class="timesheet_out">
       <div class="clients_wrap">
 	      <div class="positionRelative reportHead clearfix">
-	      <div class="dropdown-select positionRelative repSelWrap pull-left mt10 ml">
-          <select class="form-control repSelFiled" id="reportTypeId" onChange="showCustomFields(this);">
+	      
+	      
+	      
+	      <span class="pull-left refreIcon" id="advanceSearchDiv">
+<!-- 	      		<a href="javascript:void(0)" class="refeIcon" id="resetVendor" title="Refresh" onclick="resetApplicantFilter();"></a> -->
+	      </span>
+	      <ul class="pull-right list-unstyled list-inline">
+	      	  <li>
+	      	  <div class="dropdown-select positionRelative repSelWrap pull-left ml">
+          <select class="form-control repSelFiled" id="reportTypeId" onChange="showCustomFields(this); flushCustom()">
 			  <!-- <option value="today">Today</option>
 			  <option value="yesterday">Yesterday</option> -->
 			  <option selected="selected" value="today">Today</option>
@@ -25,6 +33,7 @@
 			  <option value="3_months">Last 3 months</option>
 			  <option value='YTD' >YTD</option>
 	          <option value='Last_Year'>Last Year</option>
+	          <option value="custom">Custom</option> 
 			</select>
 		<div id="runButtonDiv" class="repSelBtn"><button type="button" class="btn btn-primary btn-sm" id="customize_btn" onclick="requirementJoinedList();">Run</button></div> 
           
@@ -43,14 +52,6 @@
           </div>
           
         </div>
-	      
-	      
-	      <span class="pull-left refreIcon" id="advanceSearchDiv">
-<!-- 	      		<a href="javascript:void(0)" class="refeIcon" id="resetVendor" title="Refresh" onclick="resetApplicantFilter();"></a> -->
-	      </span>
-	      <ul class="pull-right list-unstyled list-inline">
-	      	  <li>
-<%-- 	      	  <jsp:include page="JobCountFilter.jsp"></jsp:include> --%>
 	      	  </li>
 					<li id="vendorFiletPopup"><a href="javascript:void(0)" class="filtIcon" title="Filters" onclick="openFilterPop();"></a></li>
 					
@@ -95,10 +96,9 @@
 
     	   var sourceleadUrl ='${sourceleadUrl}';
    		   var tab = '${tab}';
-//     	   var frequency = $('input[name=customDates]:checked').val(); 
     	   var frequency=$("#reportTypeId").val();
-    	    var fromDate = $("#custFromDate").val();
-    	    var toDate = $("#custToDate").val();
+    	    var fromDate='';
+    	    var toDate='';
     		var searchValue = $("#dataTableSearch").val();
     		var orgLocationId = '${SourceLeadWeb_orgLocationId}';
     		searchValue = searchValue ? searchValue : "";
@@ -123,31 +123,24 @@
     			 incentivizedType.push($(this).val());
     		 });
     		 var searchType = $('input[name=searchType]:checked').val();
-    	    if(frequency == "Custom"){
-    	        if(fromDate == ''){
-    	        	$("#invoiceFilterId").show();
-    	        	$(".advancedsearch-mask").fadeIn();
-    	            $('#custFromDateDiv').find('p.jquery_form_error_message').remove();
-    	            $("input#custFromDate").after( "<p class='jquery_form_error_message'>FromDate is required.</span>");
+    	    if(frequency == "custom"){
+    	        var fromDate = $("#ReportStartDate").val();
+    	  		  var toDate = $("#ReportEndDate").val();
+    	    	if(fromDate == ''){
+    	    		  document.getElementById("reportsStartDate").style.display="block";
+    				  $("#reportsStartDate").empty().append("Start Date is Required") ; 
     	        }
     	        if(toDate == ''){
-    	        	$("#invoiceFilterId").show();
-    	        	$(".advancedsearch-mask").fadeIn();
-    	            $('#custToDateDiv').find('p.jquery_form_error_message').remove();
-    	            $("input#custToDate").after( "<p class='jquery_form_error_message'>ToDate is required.</span>");
+    	        	 document.getElementById("reportsEndDate").style.display="block";
+   				  $("#reportsEndDate").empty().append("End Date is Required") ; 
     	        }
     	        if((fromDate != '' && fromDate != 'undefined' && fromDate != null) && (toDate != '' && toDate != 'undefined' && toDate != null)){
-    	        	$("#invoiceFilterId").hide();
-    	        	$(".advancedsearch-mask").fadeOut();
-    	        	$('#custFromDateDiv').find('p.jquery_form_error_message').remove();
-    	            $('#custToDateDiv').find('p.jquery_form_error_message').remove();
-    	            $("#custom-selects").hide();
         	        var url = sourceleadUrl+"/applicantList?searchValue="+searchValue+"&orgLocationId="+orgLocationId+"&tabType="+tab+"&submissionStatus=JOINED&frequency="+frequency+"&fromDate="+fromDate+"&toDate="+toDate+"&employmentType="+employmentType+"&clientId="+clientNameById+"&teamId="+teamNameById+"&incentivizedType="+incentivizedType+"&searchType="+searchType;
-        			prepareSubmissionList(url);
+        		    prepareOfferList(url);
     	        }
     	    }else{
-    	        $('#custFromDateDiv').find('p.jquery_form_error_message').remove();
-    	        $('#custToDateDiv').find('p.jquery_form_error_message').remove();
+    	    	 document.getElementById("reportsStartDate").style.display="none";
+    			 document.getElementById("reportsEndDate").style.display="none";
     	        var url = sourceleadUrl+"/applicantList?searchValue="+searchValue+"&orgLocationId="+orgLocationId+"&tabType="+tab+"&submissionStatus=JOINED&frequency="+frequency+"&fromDate="+fromDate+"&toDate="+toDate+"&employmentType="+employmentType+"&clientId="+clientNameById+"&teamId="+teamNameById+"&incentivizedType="+incentivizedType+"&searchType="+searchType;
     		    prepareOfferList(url);
     	    } 
@@ -357,17 +350,16 @@ function viewOffersListAttachment(offerId,title){
 <script>
 function showCustomFields(e){
     var frequency = e.value;
-    if(frequency == "Custom"){
-        $("#custom-selects").show();
-         $('#custFromDate').attr('data-validation',"required");
-         $('#custToDate').attr('data-validation',"required");
-    }else{
-        $("#custom-selects").hide();
-        $('#custFromDate').removeAttr('data-validation');
-        $('#custToDate').attr('data-validation',"required");
-        $('#custFromDate').val("");
-        $('#custToDate').val("");
-    }
+    if(frequency=="custom"){
+    	document.getElementById("customSearch").style.display="block";
+		 document.getElementById("runButtonDiv").style.display="none";
+	}
+	if(frequency != "custom"){
+		document.getElementById("customSearch").style.display="none";
+	    document.getElementById("reportsStartDate").style.display="none";
+		document.getElementById("reportsEndDate").style.display="none";
+		document.getElementById("runButtonDiv").style.display="block";
+	}
     
     var locationDate ='${SourceLeadWeb_orgLocations.dateFormat}'; 
       var finalDateFormatEndDate = '';
@@ -415,7 +407,14 @@ function removeEndValid(){
 }
 
 </script>
-
+<script type="text/javascript">
+	function flushCustom() {
+		$('#ReportStartDate').val('');
+		$('#ReportEndDate').val('');
+		$.datepicker._clearDate('#ReportStartDate');
+		$.datepicker._clearDate('#ReportEndDate'); 
+	}
+</script>
 
  
    <!-- ========================== Filter popup Written By Laxman ===============================  -->
@@ -661,9 +660,8 @@ function projectExport(type){
 	 var sourceleadUrl ='${sourceleadUrl}';
 	 var frequency=$("#reportTypeId").val();
 	   var tab = '${tab}';
-// 	   var frequency = $('input[name=customDates]:checked').val(); 
-	    var fromDate = $("#custFromDate").val();
-	    var toDate = $("#custToDate").val();
+    	    var fromDate='';
+    	    var toDate='';
 		var searchValue = $("#dataTableSearch").val();
 		var orgLocationId = '${SourceLeadWeb_orgLocationId}';
 		searchValue = searchValue ? searchValue : "";
@@ -689,32 +687,81 @@ function projectExport(type){
 		 });
 		 var searchType = $('input[name=searchType]:checked').val();
 
-		    if(frequency == "Custom"){
-		    	        if(fromDate == ''){
-		    	        	$("#invoiceFilterId").show();
-		    	        	$(".advancedsearch-mask").fadeIn();
-		    	            $('#custFromDateDiv').find('p.jquery_form_error_message').remove();
-		    	            $("input#custFromDate").after( "<p class='jquery_form_error_message'>FromDate is required.</span>");
-		    	        }
-		    	        if(toDate == ''){
-		    	        	$("#invoiceFilterId").show();
-		    	        	$(".advancedsearch-mask").fadeIn();
-		    	            $('#custToDateDiv').find('p.jquery_form_error_message').remove();
-		    	            $("input#custToDate").after( "<p class='jquery_form_error_message'>ToDate is required.</span>");
-		    	        }
-		    	        if((fromDate != '' && fromDate != 'undefined' && fromDate != null) && (toDate != '' && toDate != 'undefined' && toDate != null)){
-		    	        	$("#invoiceFilterId").hide();
-		    	        	$(".advancedsearch-mask").fadeOut();
-		    	        	$('#custFromDateDiv').find('p.jquery_form_error_message').remove();
-		    	            $('#custToDateDiv').find('p.jquery_form_error_message').remove();
-		    	            $("#custom-selects").hide();
-		        	        var url = sourceleadUrl+"/applicantList?searchValue="+searchValue+"&orgLocationId="+orgLocationId+"&tabType="+tab+"&submissionStatus=JOINED&frequency="+frequency+"&fromDate="+fromDate+"&toDate="+toDate+"&employmentType="+employmentType+"&clientId="+clientNameById+"&teamId="+teamNameById+"&incentivizedType="+incentivizedType+"&searchType="+searchType+"&exportType="+exportType;
-		        			prepareSubmissionList(url);
-		    	        }
-		    	    }
-		 window.location.href = sourceleadUrl+"/applicantsJoinedListExport?searchValue="+searchValue+"&orgLocationId="+orgLocationId+"&tabType="+tab+"&submissionStatus=JOINED&frequency="+frequency+"&fromDate="+fromDate+"&toDate="+toDate+"&employmentType="+employmentType+"&clientId="+clientNameById+"&teamId="+teamNameById+"&incentivizedType="+incentivizedType+"&searchType="+searchType+"&exportType="+exportType;
+		    if(frequency == "custom"){
+    	        var fromDate = $("#ReportStartDate").val();
+    	  		  var toDate = $("#ReportEndDate").val();
+    	    	if(fromDate == ''){
+    	    		  document.getElementById("reportsStartDate").style.display="block";
+    				  $("#reportsStartDate").empty().append("Start Date is Required") ; 
+    	        }
+    	        if(toDate == ''){
+    	        	 document.getElementById("reportsEndDate").style.display="block";
+   				  $("#reportsEndDate").empty().append("End Date is Required") ; 
+    	        }
+    	        if((fromDate != '' && fromDate != 'undefined' && fromDate != null) && (toDate != '' && toDate != 'undefined' && toDate != null)){
+   	    		 window.location.href = sourceleadUrl+"/applicantsJoinedListExport?searchValue="+searchValue+"&orgLocationId="+orgLocationId+"&tabType="+tab+"&submissionStatus=JOINED&frequency="+frequency+"&fromDate="+fromDate+"&toDate="+toDate+"&employmentType="+employmentType+"&clientId="+clientNameById+"&teamId="+teamNameById+"&incentivizedType="+incentivizedType+"&searchType="+searchType+"&exportType="+exportType;
+    	        }
+    	    }else{
+    	    	 document.getElementById("reportsStartDate").style.display="none";
+    			 document.getElementById("reportsEndDate").style.display="none";
+   	 		 window.location.href = sourceleadUrl+"/applicantsJoinedListExport?searchValue="+searchValue+"&orgLocationId="+orgLocationId+"&tabType="+tab+"&submissionStatus=JOINED&frequency="+frequency+"&fromDate="+fromDate+"&toDate="+toDate+"&employmentType="+employmentType+"&clientId="+clientNameById+"&teamId="+teamNameById+"&incentivizedType="+incentivizedType+"&searchType="+searchType+"&exportType="+exportType;
+    	    } 
+// 		 window.location.href = sourceleadUrl+"/applicantsJoinedListExport?searchValue="+searchValue+"&orgLocationId="+orgLocationId+"&tabType="+tab+"&submissionStatus=JOINED&frequency="+frequency+"&fromDate="+fromDate+"&toDate="+toDate+"&employmentType="+employmentType+"&clientId="+clientNameById+"&teamId="+teamNameById+"&incentivizedType="+incentivizedType+"&searchType="+searchType+"&exportType="+exportType;
 	     
 }
 </script>
-
+<script>
+function addValidClass(){
+	 var StartDate = document.getElementById("ReportStartDate").value;
+	 if(StartDate){
+		 document.getElementById("reportsStartDate").style.display="block";
+	 }
+	 
+	 var EndDate = document.getElementById("ReportEndDate").value;
+	
+	 if(EndDate){
+		 document.getElementById("reportsEndDate").style.display="block";
+	 }
+}
+</script>
+<script>
+	$(function() {
+		var locationDate ='${SourceLeadWeb_orgLocations.dateFormat}'; 
+		  var finalDateFormatRepo = getJSDateFormat(locationDate);
+		  
+		$('#ReportStartDate').datepicker({
+			changeMonth: true,
+			changeYear: true, 
+			dateFormat : finalDateFormatRepo,
+			onSelect : function(selected) {
+				/* var dt = new Date(selected);
+				//var dt = toDate("#ReportStartDate");
+				dt.setDate(dt.getDate() + 1);
+				$("#ReportEndDate").datepicker("option", "minDate", dt); */
+				$("#ReportEndDate").datepicker("option", "minDate", selected);
+				addValidClass();
+			}
+		
+		});
+		
+		$('#ReportEndDate').datepicker({
+			changeMonth: true,
+			changeYear: true, 
+			dateFormat : finalDateFormatRepo,
+			beforeShow: function(){
+		           this.value='';
+		     },
+			onSelect : function(selected) {
+				var dt = new Date(selected);
+				/* //var dt = toDate("#ReportEndDate");
+				dt.setDate(dt.getDate() - 1);
+				$("#ReportStartDate").datepicker("option", "maxDate", dt);
+				 $( "#ReportStartDate" ).datepicker({  maxDate: new Date() }); */
+				 $("#ReportStartDate").datepicker("option", "maxDate", selected);
+				addValidClass();
+			}
+		});
+		
+	});
+</script>	
 <jsp:include page="../masterFooter.jsp" />

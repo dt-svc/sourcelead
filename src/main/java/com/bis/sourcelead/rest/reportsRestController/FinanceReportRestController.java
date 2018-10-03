@@ -726,13 +726,13 @@ public class FinanceReportRestController {
 				}
 		    List<AssetGrowthDTO> assetGrowthList = assetService.getAssetGrowthListByOrgloationIdAndAssetGrowthDTO(orgLocation.getId(), assetGrowthDTO,searchDates);
 			if(assetGrowthDTO.getGridType() != null && assetGrowthDTO.getGridType().equalsIgnoreCase("ListView")) {
-				list = getDaysData(assetGrowthList);
-				response.setResponseMessage("days");
+				list = getDaysData(assetGrowthList,orgLocation);
+				response.setResponseMessage("ListView");
 			}else {
 			    if (assetGrowthDTO.getDateSelection().equalsIgnoreCase("custom")) {
 					int noDyas = commonUtil.getNumberOfDaysBetweenTwoDates(fromDate, toDate);
 					if(noDyas <= 31) {
-						list = getDaysData(assetGrowthList);
+						list = getDaysData(assetGrowthList,orgLocation);
 						response.setResponseMessage("days");	
 					}else {
 						list = getMonthsData(assetGrowthList);
@@ -746,7 +746,7 @@ public class FinanceReportRestController {
 					list = getMonthsData(assetGrowthList);
 					response.setResponseMessage("months");
 				} else {
-					list = getDaysData(assetGrowthList);
+					list = getDaysData(assetGrowthList,orgLocation);
 					response.setResponseMessage("days");
 				}
 			}
@@ -760,12 +760,13 @@ public class FinanceReportRestController {
 	}
 	
 	@SuppressWarnings({ "unchecked", "rawtypes" })
-	private List<AssetGrowthDTO> getDaysData(List<AssetGrowthDTO> assetGrowthList) {
+	private List<AssetGrowthDTO> getDaysData(List<AssetGrowthDTO> assetGrowthList,OrgLocations orgLocation) {
 		List<AssetGrowthDTO> list = new ArrayList<>();
 		TreeMap<Date, List<AssetGrowthDTO>> map = new TreeMap(assetGrowthList.stream().collect(Collectors.groupingBy(AssetGrowthDTO::getPurchaseDate)));
          for (Map.Entry<Date, List<AssetGrowthDTO>> entry : map.entrySet()) {
         	 AssetGrowthDTO dto = new AssetGrowthDTO();
         	 Map<String,Long> inmap = entry.getValue().stream().collect(Collectors.groupingBy(AssetGrowthDTO::getCatgoryName,Collectors.counting()));
+        	 dto.setListFromDate(commonUtil.dateStrFromOrgDateFormatter(orgLocation.getDateFormat(), entry.getKey()));
         	 dto.setFromDate(new SimpleDateFormat("yyyy-MM-dd").format(entry.getKey()));
         	 dto.setCategoryNameMap(inmap);
         	 dto.setCategoryCount(entry.getValue().size());
