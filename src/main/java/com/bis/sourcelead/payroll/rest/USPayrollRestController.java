@@ -1546,10 +1546,12 @@ public class USPayrollRestController {
 	 */
 	@RequestMapping(value = {"/getMyPayrollList","/rest/getMyPayrollList"}, method = RequestMethod.GET)
 	@ResponseBody
-	public MyPayrollSummaryDTO getMyPayrollList(HttpServletRequest request, HttpServletResponse response) throws Exception
+	public MyPayrollSummaryDTO getMyPayrollList(@RequestParam(value = "candidateId",required = false)Long candidateId,HttpServletRequest request, HttpServletResponse response) throws Exception
 	{
 		OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
-		Long candidateId = (Long) SourceLeadSessionManager.getSessionAttribute(request, "candidateId");
+		if(candidateId == null) {
+			candidateId = (Long) SourceLeadSessionManager.getSessionAttribute(request, "candidateId");
+		}
 		return paysheetFrequencyService.getMyPayrollListByCandidateId(candidateId,orgLocation);
 	}
 	
