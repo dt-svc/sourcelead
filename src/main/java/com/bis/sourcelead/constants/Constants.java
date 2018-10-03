@@ -569,6 +569,8 @@ public class Constants {
 	public static final String MONTHLY = "Monthly";
 	public static final String YEARLY = "Yearly";
 	
+	public static final int MIN_PROFILE_PERCENETAGE = 30;
+	
 	public static final String[] IMPORT_JOB_EXCEL_HEADERS = { "Jobs id", "Jobs Title",
 			"Min Experience", "Max Experience", "Min/Max Rate", "Location", "City",	"State", "Country", "Zip Code",	
 			"Education", "Skills", "Immigration Status", "Cooling-off Period", "Travel Allowance", "Closed Date",
@@ -684,7 +686,8 @@ public class Constants {
 
 	public static final String[] REQIREMENT_BACKOUT_HEADERS = { "Applicant Name", "Email", "Job", "Client", "Backout Type", "Backout Reason",  "Source", "Status","Job Rating" ,"Incentivized"};
 
-	
+	public static final String[] APPLICANTS_JOINED_HEADERS = { "Applicant Name", "Email Id","Contact Number","Job Title", "process","Client", "Date Of Interview", "Offer Rate","Source","Submitted On","Date Of Join", "Payment Term","Generate Invoice"};
+
 	public static final String SHORTLIST_CANDIDATE_COUNT = "shortlist_candidate :";
 	public static final String VENDOR = "Vendor";
 	public static final String CLIENT = "Client";
