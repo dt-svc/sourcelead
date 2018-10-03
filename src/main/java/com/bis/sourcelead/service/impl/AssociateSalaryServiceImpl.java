@@ -24,7 +24,6 @@ import com.bis.sourcelead.dto.CandidateDTO;
 import com.bis.sourcelead.dto.Response;
 import com.bis.sourcelead.dto.ResponseList;
 import com.bis.sourcelead.dto.SalaryDTO;
-import com.bis.sourcelead.dto.UserGroupDTO;
 import com.bis.sourcelead.entity.AssociatePayItem;
 import com.bis.sourcelead.entity.AssociateSalary;
 import com.bis.sourcelead.entity.AssociateSalaryHistory;
@@ -35,7 +34,6 @@ import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.entity.UserGroup;
 import com.bis.sourcelead.enums.Result;
 import com.bis.sourcelead.service.AssociateSalaryService;
-import com.bis.sourcelead.service.UserGroupService;
 import com.bis.sourcelead.service.UserService;
 import com.bis.sourcelead.util.CommonUtil;
 import com.bis.sourcelead.util.SourceLeadRandomCodeHelper;
@@ -344,5 +342,11 @@ public class AssociateSalaryServiceImpl implements AssociateSalaryService{
 	public List<SalaryDTO> getSalaryByGroupId(OrgLocations orgLocation, Long groupId, String payType)
 	{
 		return associateSalaryDao.getSalaryByGroupId(orgLocation, groupId, payType);
+	}
+	
+	@Override
+	public List<AssociateSalaryInd> getIndAssociateSalaryListByGroupId(OrgLocations orgLocation, long groupId,
+			String payType) {
+		return associateSalaryDao.getIndAssociateSalaryListByGroupId(orgLocation,groupId,payType);
 	}
 }

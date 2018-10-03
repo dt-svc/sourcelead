@@ -27,7 +27,7 @@
                    <div class="col-md-5">
                     <label>Pay Frequency<span class="text-danger paddingLeft">*</span></label>
                     <div>
-                      <select class="sel" id="payFrequency" name="payFrequency" onchange="getPayFreqHours();getPayGroups();" data-validation="required" field-name="Pay Frequency">
+                      <select class="sel" id="payFrequency" name="payFrequency" onchange="getPayGroups();" data-validation="required" field-name="Pay Frequency">
                         <option value="">--Select--</option>
                         <option ${associateSalaryInd.payFrequency == "Annual" ? "selected" : ""} value="Annual">Annually</option>
                         <option ${associateSalaryInd.payFrequency == "Monthly" ? "selected" : ""} value="Monthly">Monthly</option>
@@ -141,7 +141,7 @@
                 <input type="text" style="display:none" name="candidateId" id="assocandidateId" value="${candidate.id}">
                 <input type="text" style="display:none" name="uuid" value="${uuid}">
                 <input type="text" style="display:none" id="status" value="${status}">
-                <input type="text" style="display:none" id="userId" name="userId" value="${loginUser.id}">
+                <input type="text" style="display:none" id="userId" name="userId" value="${candidate.consultantUser.id}">
                   
                 <div class="clearfix footerstyelsNew">
                  <div class="col-md-6">
@@ -254,6 +254,9 @@ $('body').on('blur', '#associateSalary_form', function() {
 	$("#associateSalary_form").showHelpOnFocus();
 	$("#associateSalary_form").validateOnBlur(false, validationSettings);
 });
+</script>
+
+<script>
 
 $('#editAssociateBtn').click(function() {
 	$('#editAssociateBtn').css('display','none');
@@ -262,9 +265,12 @@ $('#editAssociateBtn').click(function() {
 	$('#associateSalary_form select').removeAttr('disabled');
 	$('#editSectionDiv').css('display','block');
 });
+</script>
 
+<script>
 $('#cancelAssociateSalaryIndBtn').click(function() {
-	var status = $("#status").val();
+	location.replace(sourceleadUrl+"/usersList");
+	/* var status = $("#status").val();
 	if(status == 'NEW'){
 		location.replace(sourceleadUrl+"/usersList");
 	}else{
@@ -273,9 +279,11 @@ $('#cancelAssociateSalaryIndBtn').click(function() {
 		$('#associateSalary_form select').prop('disabled', true);
 		$('#saveAssociateBtnDiv').css('display','none');
 		$('#editSectionDiv').css('display','none');
-	}
+	} */
 });
+</script>
 
+<script>
 
 $('.selectall').click(function() {
     $(this.form.elements).filter(':checkbox').prop('checked', this.checked).trigger("onclick");
@@ -304,6 +312,7 @@ function getPayGroups(){
 					
 				}
 		 });
+		 getPayFreqHours();
 }
 </script>
 
@@ -324,7 +333,9 @@ function getPayFreqHours(){
 	}
 	calculateSal();
 }
+</script>
 
+<script>
 
 function calculateSal(){
 	var payFrequency = $("#payFrequency").val();
@@ -358,7 +369,9 @@ function calculateSal(){
 		$("#hourlyRate").val(hourRate.toFixed(2));
 	}
 }
+</script>
 
+<script>
 function calculatePayPerSal(){
 	var payFrequency = $("#payFrequency").val();
 	var perPaySal = $("#perPaySal").val();
@@ -396,7 +409,9 @@ function calculatePayPerSal(){
 		}
 	}
 }
+</script>
 
+<script>
 function calculateHourlyRateSal(){
 	var payFrequency = $("#payFrequency").val();
 	var perPaySal = $("#perPaySal").val();
@@ -412,7 +427,9 @@ function calculateHourlyRateSal(){
 		calculatePayPerSal();
 	}
 }
+</script>
 
+<script>
 function calculatePercentSal(){
 	var percent = $("#increasePer").val();
 	if(!percent){

@@ -15,10 +15,5 @@ public interface PayrollService {
 	
 	List<Payroll> getAllPayroll();
 
-	PaysheetFrequencyDTO getPayrollData(GenerateINDPayrollDTO generateINDPayrollDTO, OrgLocations orgLocation,
-			User loginUser);
-
-	PaysheetFrequencyDTO generateINDPayroll(PaysheetFrequencyDTO existedData, OrgLocations orgLocation,
-			GenerateINDPayrollDTO generateINDPayrollDTO, User loginUser);
 	
 }
