@@ -4,6 +4,8 @@ import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.util.Date;
 
+
+
 public class CheckRegisterReportDTO {
 	
 	private BigInteger empPayrollId;
@@ -32,8 +34,61 @@ public class CheckRegisterReportDTO {
 	
 	private Date payCheckDate;
 	
+	private String bankName;
+	
+	private String accountNum;
+	
+	private String routingNum;
+	
+	public String getType()
+	{
+		return type;
+	}
+
+	public Date getRunDate()
+	{
+		return runDate;
+	}
+
+	public String getPayGroupName()
+	{
+		return payGroupName;
+	}
+
+	public String getPayFrequency()
+	{
+		return payFrequency;
+	}
+
+	public void setType(String type)
+	{
+		this.type = type;
+	}
+
+	public void setRunDate(Date runDate)
+	{
+		this.runDate = runDate;
+	}
+
+	public void setPayGroupName(String payGroupName)
+	{
+		this.payGroupName = payGroupName;
+	}
+
+	public void setPayFrequency(String payFrequency)
+	{
+		this.payFrequency = payFrequency;
+	}
+
 	private int totalChecks;
 	
+	private String type;
+	
+	private Date runDate;
+	
+	private String payGroupName;
+	
+	private String payFrequency;
 	
 
 	public String getEmployeeId()
@@ -174,6 +229,36 @@ public class CheckRegisterReportDTO {
 	public void setTotalChecks(int totalChecks)
 	{
 		this.totalChecks = totalChecks;
+	}
+
+	public String getBankName()
+	{
+		return bankName;
+	}
+
+	public String getAccountNum()
+	{
+		return accountNum;
+	}
+
+	public String getRoutingNum()
+	{
+		return routingNum;
+	}
+
+	public void setBankName(String bankName)
+	{
+		this.bankName = bankName;
+	}
+
+	public void setAccountNum(String accountNum)
+	{
+		this.accountNum = accountNum;
+	}
+
+	public void setRoutingNum(String routingNum)
+	{
+		this.routingNum = routingNum;
 	}
 	
 	

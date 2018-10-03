@@ -150,4 +150,10 @@ public interface CandidateDao {
 	public List<CandidateDTO> getAllActiveCandidatesListByOrglocationId(Long orgLocationId, String employeementType) throws Exception;
 	
 	public List<Candidate> getAllCandidatesList() throws Exception;
+	
+	Long getCandidateIdByEmailAndOrgLocationId(String email,Long orgLocationId) throws Exception;
+	
+	public void saveBulkCandidates(List<Candidate> candidatesList,Long orgLocationId) throws Exception;
+	
+	List<String> getCandidateEmailsByOrgLocationId(Long orgLocationId) throws Exception;
 }

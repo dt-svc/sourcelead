@@ -1,5 +1,7 @@
 package com.bis.sourcelead.payroll.service;
 
+import java.util.List;
+
 import com.bis.sourcelead.dto.ResponseList;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.payroll.dto.CheckRegisterReportDTO;
@@ -17,4 +19,10 @@ public interface PayrollReportService {
 	ResponseList<PayrollReportDTO> getContributionReports(OrgLocations orgLocation, PayrollReportDTO payrollReportDTO);
 
 	ResponseList<PayrollReportDTO> getDeductionReports(OrgLocations orgLocation, PayrollReportDTO payrollReportDTO);
+
+	List<CheckRegisterReportDTO> getexportToPdfCheckRegisterReport(OrgLocations orgLocation, PayrollReportDTO payrollReportDTO);
+
+	List<PayrollReportDTO>  exportToPdfContributionReport(OrgLocations orgLocation, PayrollReportDTO payrollReportDTO);
+	
+	List<PayrollReportDTO> exportToPdfDeductionReport(OrgLocations orgLocation, PayrollReportDTO payrollReportDTO);
 }

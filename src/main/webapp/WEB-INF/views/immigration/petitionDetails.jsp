@@ -458,7 +458,7 @@
             <div class="form-group">
               <label class="col-md-4">Previous LCA Number</label>
               <div class="col-md-8">
-                <input type="text" class="form-control" name="prevLcaNumber" id="prevLcaNumber" value="${immigrationDTO.prevLcaNumber}" placeholder="I-XXX-XXXXX-XXXXXX" data-validation="required validate_Space validate_length length2-100" data-validation-optional="true" >
+                <input type="text" class="form-control" name="prevLcaNumber" id="prevLcaNumber" value="${immigrationDTO.prevLcaNumber}" placeholder="Previous LCA Number" data-validation="required validate_Space validate_length length2-100" data-validation-optional="true" >
               </div>
             </div>
             </c:if>
@@ -741,7 +741,6 @@
             </div>
             </c:if>
             
-            <c:if test="${empty immigrationDTO}">
              <c:if test="${empty immigrationDTO.lcaCurrLocation}">
             <div class="form-group">
               <label class="col-md-4">LCA Current Location</label>
@@ -757,9 +756,7 @@
               </div>
             </div>
             </c:if>
-            </c:if>
             
-             <c:if test="${!empty immigrationDTO}">
              <c:if test="${!empty immigrationDTO.lcaCurrLocation}">
             <div class="form-group">
               <label class="col-md-4">LCA Current Location</label>
@@ -774,7 +771,6 @@
 					</div>
               </div>
             </div>
-            </c:if>
             </c:if>
 
            <div class="clearfix"></div>
@@ -991,6 +987,7 @@
  */
  var locationDate ='${SourceLeadWeb_orgLocations.dateFormat}'; 
  var finalDateFormatOrg = getOrgDateFormat(locationDate);
+ var orgLocationId = "";
  
 $("input[id='candidateNameEmail']").focusout(function(){
 	 var seletedVal= $("#candidateNameEmail").attr("selecedVal")
@@ -1030,7 +1027,7 @@ function resetBeneficiaryDetails(){
 					type : "GET",
 					data : {
 						name : request.term,
-						locationIdVal : "${SourceLeadWeb_orgLocation.isLawFirm == 'Y' ? "+responderLocationId+" : ''}"
+						locationIdVal : orgLocationId
 					},
 					dataType : "json",
 					success : function(data) {
@@ -1285,9 +1282,21 @@ $("#experienceValue").change(function () {
 	 	
 	 	if('${SourceLeadWeb_orgLocations.isLawFirm}' == 'Y'){
 			type = "Client";
+			orgLocationId = reponsderLocId;
 		}else{
 			type = "Vendor";
+			orgLocationId = '${SourceLeadWeb_orgLocations.id}';
 		}
+	 	var attorneySelId = $('option:selected', '#attorneyId').val();
+	 	if(attorneySelId  == '' ||  typeof attorneySelId == 'undefined' ){
+	 		<c:if test="${empty immigrationDTO}">
+		 		$("#candidateNameEmail").attr("readonly",true);
+		 		$("#candidateNameEmail").val("");
+	 		</c:if>
+		  }else{
+			  $("#candidateNameEmail").attr("readonly",false);
+			  $("#candidateNameEmail").val("");
+		  }
 			 $.ajax({
 				    type: "POST",
 			        url: sourceleadUrl+"/getOrgSpocsList?"+tokenParamName+"="+tokenValue+"&orgRelationId="+orgRelationID+"&type="+type,  
@@ -1307,7 +1316,13 @@ $("#experienceValue").change(function () {
 			            	 }
 			            } 
 			            $('#attorneyContact').trigger("chosen:updated");
+			            if(attorneySelId  == '' ||  typeof attorneySelId == 'undefined' ){ // reset the job dropdown chosen select.
+			            	$('#jobId').empty();
+				        	$('#jobId').append('<option value="">--Select Type --</option>'); 
+				        	$('#jobId').trigger("chosen:updated");
+			            }else{
 			            jobTitleDropDown("${immigrationDTO.jobId}");
+			            }
 			        }
 			 }); 
 	 }

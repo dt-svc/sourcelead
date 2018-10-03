@@ -34,6 +34,7 @@ import com.bis.sourcelead.entity.EmailMessage;
 import com.bis.sourcelead.entity.EmailScenario;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.User;
+import com.bis.sourcelead.entity.UserRole;
 import com.bis.sourcelead.enums.Result;
 import com.bis.sourcelead.payroll.dao.PaysheetFrequencyDao;
 import com.bis.sourcelead.payroll.dao.USPaysheetDao;
@@ -53,6 +54,8 @@ import com.bis.sourcelead.payroll.dto.PayrollReportDTO;
 import com.bis.sourcelead.payroll.dto.PaysheetFrequencyDTO;
 import com.bis.sourcelead.payroll.dto.USPayrollDTO;
 import com.bis.sourcelead.payroll.dto.YTDPayrollDTO;
+import com.bis.sourcelead.payroll.entity.AssociateTaxHistory;
+import com.bis.sourcelead.payroll.entity.BankDataHistory;
 import com.bis.sourcelead.payroll.entity.ConfigurePayrollApprover;
 import com.bis.sourcelead.payroll.entity.DeductionHistory;
 import com.bis.sourcelead.payroll.entity.EmployeePayroll;
@@ -68,6 +71,7 @@ import com.bis.sourcelead.payroll.service.USPayPeriodService;
 import com.bis.sourcelead.payroll.service.USPaysheetService;
 import com.bis.sourcelead.payroll.util.PayrollUtil;
 import com.bis.sourcelead.service.EmailScenarioService;
+import com.bis.sourcelead.service.UserRoleService;
 import com.bis.sourcelead.util.CommonUtil;
 import com.bis.sourcelead.util.EmailScenerioUtil;
 
@@ -105,6 +109,9 @@ public class PaysheetFrequencyServiceImpl implements PaysheetFrequencyService{
 	
 	@Autowired
 	PayrollUtil payrollUtil;
+	
+	@Autowired
+	UserRoleService userRoleService;
 	
 	@Override
 	public Response<PayrollApproverDTO> sendPayrollForApprover(PayrollApproverDTO payrollApproverDTO, OrgLocations orgLocation,User loginUser)
@@ -572,6 +579,9 @@ public class PaysheetFrequencyServiceImpl implements PaysheetFrequencyService{
 				sb.append(emp.getCandidate().getLastName());
 			}
 			dto.setEmpName(sb.toString());
+			if(emp.getCandidate().getWorkLocation() != null)
+				dto.setCandidateWorkAddress(emp.getCandidate().getWorkLocation().getOrgLocationAddress());
+			dto.setSsnNumber(emp.getCandidate().getConsultantUser().getSsn());
 			dto.setDepartmentName(emp.getEmployee().getDepartmentId().getDepartmentName());
 			dto.setRegularHours(emp.getRegularHours());
 			dto.setGrossPay(emp.getGrossPay());
@@ -582,6 +592,50 @@ public class PaysheetFrequencyServiceImpl implements PaysheetFrequencyService{
 			dto.setYtdDeductions(ytdDTO.getYtdDeduction());
 			dto.setNetPay(emp.getNetPay());
 			dto.setYtdNet(ytdDTO.getYtdNet());
+			dto.setYtdHours("NA");
+			dto.setType(emp.getType());
+			dto.setEmpPayRate(emp.getEmpPayRate());
+			dto.setEmpRegularAmount(emp.getRegularHoursAmount());			
+			for(BankDataHistory bank : emp.getBankDataHistory()) {
+				dto.setDepositType(bank.getAccountType());
+			}
+			
+			dto.setResState(emp.getCandidate().getResidenceStateCode());
+			if(emp.getEmployee().getHireDate() != null)
+				dto.setDateOfJoin(commonUtil.dateStrFromDate(emp.getEmployee().getHireDate()));
+			else 
+				dto.setDateOfJoin("NA");
+			
+			UserRole uRole = null;
+			try {
+				uRole = userRoleService.getUserRoleByUserIdAndLocationId(emp.getEmployee().getUser().getId(), emp.getEmployee().getOrgLocations().getId());
+			} catch (Exception e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+			
+			dto.setEmpStatus(uRole.getUserState().toString());
+			for(AssociateTaxHistory tax : emp.getAssociateTaxHistory()) {
+				dto.setFedMaritalStat(tax.getFederalTaxFilliingStatus());
+				dto.setStateMaritalStat(tax.getResidenceTaxFilliingStatus());
+				dto.setFedExempt(tax.getFederalExempt().toString());
+				dto.setFedAddTax(tax.getFederalTaxAdditionnalWithHolding());
+				dto.setStateAddTax(tax.getResidenceTaxAdditionnalWithHolding());
+			}
+			
+			List<PayrollReportDTO> dedList = new ArrayList<>();
+			for(DeductionHistory ded : emp.getDeductionHistory()) {
+				PayrollReportDTO repoDto = new PayrollReportDTO();
+				BigDecimal totalDed = ded.getPreDeductionAmount().add(ded.getPostDeductionAmount());
+				repoDto.setDeductions(totalDed);
+				YTDPayrollDTO ytd = payrollUtil.getDeductionYTD(emp, ded.getId(), orgLocations);
+				repoDto.setYtdDeductions(ytd.getDeductionYTD());
+				dedList.add(repoDto);
+			}
+			
+			dto.setTaxHistory(emp.getUsPayrollTax());
+			
+			dto.setDeductionsList(dedList);	
 			payrollList.add(dto);
 //			}
 		}
@@ -592,9 +646,15 @@ public class PaysheetFrequencyServiceImpl implements PaysheetFrequencyService{
 	}
 
 	@Override
-	public List<DeductionHistory> getContributionYTD(EmployeePayroll payroll,Long contributionId,OrgLocations orgLocations)
+	public YTDPayrollDTO getContributionYTD(EmployeePayroll payroll,Long contributionId,OrgLocations orgLocations,String reportType)
 	{
-		return paysheetFrequencyDao.getContributionYTD(payroll,contributionId,orgLocations);
+		return paysheetFrequencyDao.getContributionYTD(payroll,contributionId,orgLocations,reportType);
+	}
+
+	@Override
+	public YTDPayrollDTO getDeductionYTD(EmployeePayroll payroll, Long deductionId, OrgLocations orgLocation,String reportType) {
+		
+		return paysheetFrequencyDao.getDeductionYTD(payroll,deductionId,orgLocation,reportType);
 	}
 
 }

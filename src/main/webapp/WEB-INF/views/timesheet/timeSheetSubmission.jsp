@@ -540,10 +540,16 @@
 										<div class="clearfix"></div>
 									</ul>
 								</div>
-								  <c:if 	test="${timesheetSubmissionDTO.timesheetStatus == 'NEW' || timesheetSubmissionDTO.timesheetStatus == 'DRAFT'}">
-								        <input onclick="newSaveTimesheet('Draft');" value="Save" class="time_btn time_dra" type="button">
+								 <c:if test="${!timesheetSubmissionDTO.submitButtonVisible}">
+								   <c:if 	test="${timesheetSubmissionDTO.timesheetStatus == 'NEW' || timesheetSubmissionDTO.timesheetStatus == 'DRAFT' || timesheetSubmissionDTO.timesheetStatus == 'SUBMITTED'}">
+								        <input onclick="newSaveTimesheet('Submitted');" value="Save" class="time_btn time_dra" type="button">
+								   </c:if>
 								 </c:if>
+								
 								 <c:if test="${timesheetSubmissionDTO.submitButtonVisible}">
+								    <c:if 	test="${timesheetSubmissionDTO.timesheetStatus == 'NEW' || timesheetSubmissionDTO.timesheetStatus == 'DRAFT'}">
+								        <input onclick="newSaveTimesheet('Draft');" value="Save" class="time_btn time_dra" type="button">
+								     </c:if>
 								     <input onclick="newSaveTimesheet('Submitted');" value="Submit" class="time_btn" type="button">
 								     <c:if 	test="${timesheetSubmissionDTO.timesheetStatus == 'SUBMITTED'}">
 								          <input onclick="approveTimesheet('approve');" value="Approve" class="time_btn time_appr" type="button">
@@ -1976,7 +1982,7 @@ function timesheetApprovalTableRowByProjectMemberId(timesheetFrequency,projectMe
 		  		   }
 		    	   
 		    	  if(savingType != null && savingType != '' && savingType != 'undefined'&& savingType == 'approver'){
-		    		  if(status != null && status != 'undefined' && status != '' && status != 'Draft' ){
+		    		  if(status != null && status != 'undefined' && status != '' && status != 'Draft' && status != 'Submitted' ){
 			    		  timesheetApprovalTableRowByProjectMemberId(currentTimeFrequency,projectMemberId,tableFor);
 			    	  }
 			    	  else{

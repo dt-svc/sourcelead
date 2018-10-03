@@ -1,8 +1,14 @@
 package com.bis.sourcelead.payroll.dto;
 
 import java.math.BigDecimal;
+import java.util.Date;
+import java.util.List;
+import java.util.Set;
 
 import com.bis.sourcelead.dto.SearchDTO;
+import com.bis.sourcelead.payroll.entity.DeductionHistory;
+import com.bis.sourcelead.payroll.entity.EmployeePayrollTax;
+
 
 public class PayrollReportDTO extends SearchDTO{
 	
@@ -82,122 +88,71 @@ public class PayrollReportDTO extends SearchDTO{
 		
 	private BigDecimal contributionAmount;
 	
+	private BigDecimal deductionYTD;
 	
+	private String ssnNumber;
 	
-	public BigDecimal getContributionAmount()
+	private String candidateWorkAddress;
+	
+	private String fedMaritalStat;
+	
+	private String stateMaritalStat;
+	
+	private String fedExempt;
+	
+	private String stateExempt;
+	
+	private String fedAddTax;
+	
+	private String stateAddTax;
+	
+	private String resState;
+	
+	private String workState;
+	
+	private String dateOfJoin;
+	
+	private String empStatus;
+
+	private Date checkDate;
+	
+	private String groupName;
+	
+	private String groupFrequency;
+	
+	private String type;
+	
+	private Date runDate;
+	
+	private BigDecimal contributionMTD;
+	
+	private BigDecimal contributionQTD;
+	
+	private BigDecimal deductionMTD;
+	
+	private BigDecimal deductionQTD;
+	
+	private String ytdHours;
+	
+	private BigDecimal empRegularAmount;
+	
+	private List<PayrollReportDTO> deductionsList;
+	
+	private Set<EmployeePayrollTax> taxHistory;
+
+	public String getEmpId()
 	{
-		return contributionAmount;
+		return empId;
 	}
 
-
-	public void setContributionAmount(BigDecimal contributionAmount)
+	public void setEmpId(String empId)
 	{
-		this.contributionAmount = contributionAmount;
+		this.empId = empId;
 	}
-
-
-	public BigDecimal getContributionYTD()
-	{
-		return contributionYTD;
-	}
-
-
-	public void setContributionYTD(BigDecimal contributionYTD)
-	{
-		this.contributionYTD = contributionYTD;
-	}
-
-
-	public BigDecimal getDedAmount()
-	{
-		return dedAmount;
-	}
-
-
-	public void setDedAmount(BigDecimal dedAmount)
-	{
-		this.dedAmount = dedAmount;
-	}
-
-
-	public String getSchedule()
-	{
-		return schedule;
-	}
-
-
-	public void setSchedule(String schedule)
-	{
-		this.schedule = schedule;
-	}
-
-
-	public String getContributionId()
-	{
-		return contributionId;
-	}
-
-
-	public void setContributionId(String contributionId)
-	{
-		this.contributionId = contributionId;
-	}
-
-
-	public String getPayrollUUID()
-	{
-		return payrollUUID;
-	}
-
-
-	public void setPayrollUUID(String payrollUUID)
-	{
-		this.payrollUUID = payrollUUID;
-	}
-
 
 	public String getEmpName()
 	{
 		return empName;
-	}
-
-	
-	public String getRegularHours()
-	{
-		return regularHours;
-	}
-
-	
-
-	public BigDecimal getPreTaxDeduction()
-	{
-		return preTaxDeduction;
-	}
-
-	public BigDecimal getPostTaxDeduction()
-	{
-		return postTaxDeduction;
-	}
-
-	public BigDecimal getTaxes()
-	{
-		return taxes;
-	}
-
-	public BigDecimal getNetPay()
-	{
-		return netPay;
-	}
-
-	public BigDecimal getLastPay()
-	{
-		return lastPay;
-	}
-
-
-	public String getAction()
-	{
-		return action;
 	}
 
 	public void setEmpName(String empName)
@@ -205,16 +160,49 @@ public class PayrollReportDTO extends SearchDTO{
 		this.empName = empName;
 	}
 
+	public BigDecimal getEmpPayRate()
+	{
+		return empPayRate;
+	}
+
+	public void setEmpPayRate(BigDecimal empPayRate)
+	{
+		this.empPayRate = empPayRate;
+	}
+
+	public String getRegularHours()
+	{
+		return regularHours;
+	}
 
 	public void setRegularHours(String regularHours)
 	{
 		this.regularHours = regularHours;
 	}
 
+	public String getOverTimeHours()
+	{
+		return overTimeHours;
+	}
+
+	public void setOverTimeHours(String overTimeHours)
+	{
+		this.overTimeHours = overTimeHours;
+	}
+
+	public BigDecimal getPreTaxDeduction()
+	{
+		return preTaxDeduction;
+	}
 
 	public void setPreTaxDeduction(BigDecimal preTaxDeduction)
 	{
 		this.preTaxDeduction = preTaxDeduction;
+	}
+
+	public BigDecimal getPostTaxDeduction()
+	{
+		return postTaxDeduction;
 	}
 
 	public void setPostTaxDeduction(BigDecimal postTaxDeduction)
@@ -222,9 +210,19 @@ public class PayrollReportDTO extends SearchDTO{
 		this.postTaxDeduction = postTaxDeduction;
 	}
 
+	public BigDecimal getTaxes()
+	{
+		return taxes;
+	}
+
 	public void setTaxes(BigDecimal taxes)
 	{
 		this.taxes = taxes;
+	}
+
+	public BigDecimal getNetPay()
+	{
+		return netPay;
 	}
 
 	public void setNetPay(BigDecimal netPay)
@@ -232,9 +230,39 @@ public class PayrollReportDTO extends SearchDTO{
 		this.netPay = netPay;
 	}
 
+	public BigDecimal getGrossPay()
+	{
+		return grossPay;
+	}
+
+	public void setGrossPay(BigDecimal grossPay)
+	{
+		this.grossPay = grossPay;
+	}
+
+	public BigDecimal getLastPay()
+	{
+		return lastPay;
+	}
+
 	public void setLastPay(BigDecimal lastPay)
 	{
 		this.lastPay = lastPay;
+	}
+
+	public BigDecimal getYtdNet()
+	{
+		return ytdNet;
+	}
+
+	public void setYtdNet(BigDecimal ytdNet)
+	{
+		this.ytdNet = ytdNet;
+	}
+
+	public String getAction()
+	{
+		return action;
 	}
 
 	public void setAction(String action)
@@ -261,7 +289,6 @@ public class PayrollReportDTO extends SearchDTO{
 	{
 		this.freqEndDate = freqEndDate;
 	}
-
 
 	public String getPayPeriod()
 	{
@@ -313,16 +340,6 @@ public class PayrollReportDTO extends SearchDTO{
 		this.payRollType = payRollType;
 	}
 
-	public String getEmpId()
-	{
-		return empId;
-	}
-
-	public void setEmpId(String empId)
-	{
-		this.empId = empId;
-	}
-
 	public String getDepartmentName()
 	{
 		return departmentName;
@@ -338,29 +355,19 @@ public class PayrollReportDTO extends SearchDTO{
 		return groupId;
 	}
 
-	public String getPayCheckDate()
-	{
-		return payCheckDate;
-	}
-
 	public void setGroupId(String groupId)
 	{
 		this.groupId = groupId;
 	}
 
+	public String getPayCheckDate()
+	{
+		return payCheckDate;
+	}
+
 	public void setPayCheckDate(String payCheckDate)
 	{
 		this.payCheckDate = payCheckDate;
-	}
-
-	public BigDecimal getGrossPay()
-	{
-		return grossPay;
-	}
-
-	public void setGrossPay(BigDecimal grossPay)
-	{
-		this.grossPay = grossPay;
 	}
 
 	public BigDecimal getDeductions()
@@ -393,55 +400,14 @@ public class PayrollReportDTO extends SearchDTO{
 		this.ytdDeductions = ytdDeductions;
 	}
 
-	public BigDecimal getEmpPayRate()
+	public String getDepositType()
 	{
-		return empPayRate;
-	}
-
-	public String getOverTimeHours()
-	{
-		return overTimeHours;
-	}
-
-	public void setOverTimeHours(String overTimeHours)
-	{
-		this.overTimeHours = overTimeHours;
-	}
-
-	public void setEmpPayRate(BigDecimal empPayRate)
-	{
-		this.empPayRate = empPayRate;
-	}
-
-	public BigDecimal getYtdNet()
-	{
-		return ytdNet;
-	}
-
-	public void setYtdNet(BigDecimal ytdNet)
-	{
-		this.ytdNet = ytdNet;
-	}
-
-
-	public String getDepositType() {
 		return depositType;
 	}
 
-
-	public void setDepositType(String depositType) {
+	public void setDepositType(String depositType)
+	{
 		this.depositType = depositType;
-	}
-	
-
-	public String getContributionType()
-	{
-		return contributionType;
-	}
-
-	public void setContributionType(String contributionType)
-	{
-		this.contributionType = contributionType;
 	}
 
 	public String getSearchValue()
@@ -464,25 +430,354 @@ public class PayrollReportDTO extends SearchDTO{
 		this.orgLocationid = orgLocationid;
 	}
 
+	public String getPayrollUUID()
+	{
+		return payrollUUID;
+	}
 
-	public String getDeductionId() {
+	public void setPayrollUUID(String payrollUUID)
+	{
+		this.payrollUUID = payrollUUID;
+	}
+
+	public String getContributionId()
+	{
+		return contributionId;
+	}
+
+	public void setContributionId(String contributionId)
+	{
+		this.contributionId = contributionId;
+	}
+
+	public String getContributionType()
+	{
+		return contributionType;
+	}
+
+	public void setContributionType(String contributionType)
+	{
+		this.contributionType = contributionType;
+	}
+
+	public String getSchedule()
+	{
+		return schedule;
+	}
+
+	public void setSchedule(String schedule)
+	{
+		this.schedule = schedule;
+	}
+
+	public BigDecimal getDedAmount()
+	{
+		return dedAmount;
+	}
+
+	public void setDedAmount(BigDecimal dedAmount)
+	{
+		this.dedAmount = dedAmount;
+	}
+
+	public BigDecimal getContributionYTD()
+	{
+		return contributionYTD;
+	}
+
+	public void setContributionYTD(BigDecimal contributionYTD)
+	{
+		this.contributionYTD = contributionYTD;
+	}
+
+	public String getDeductionId()
+	{
 		return deductionId;
 	}
 
-
-	public void setDeductionId(String deductionId) {
+	public void setDeductionId(String deductionId)
+	{
 		this.deductionId = deductionId;
 	}
 
-
-	public String getDeductionType() {
+	public String getDeductionType()
+	{
 		return deductionType;
 	}
 
-
-	public void setDeductionType(String deductionType) {
+	public void setDeductionType(String deductionType)
+	{
 		this.deductionType = deductionType;
-	}	
-	
-	
+	}
+
+	public BigDecimal getContributionAmount()
+	{
+		return contributionAmount;
+	}
+
+	public void setContributionAmount(BigDecimal contributionAmount)
+	{
+		this.contributionAmount = contributionAmount;
+	}
+
+	public BigDecimal getDeductionYTD()
+	{
+		return deductionYTD;
+	}
+
+	public void setDeductionYTD(BigDecimal deductionYTD)
+	{
+		this.deductionYTD = deductionYTD;
+	}
+
+	public String getSsnNumber()
+	{
+		return ssnNumber;
+	}
+
+	public void setSsnNumber(String ssnNumber)
+	{
+		this.ssnNumber = ssnNumber;
+	}
+
+	public String getCandidateWorkAddress()
+	{
+		return candidateWorkAddress;
+	}
+
+	public void setCandidateWorkAddress(String candidateWorkAddress)
+	{
+		this.candidateWorkAddress = candidateWorkAddress;
+	}
+
+	public String getFedMaritalStat()
+	{
+		return fedMaritalStat;
+	}
+
+	public void setFedMaritalStat(String fedMaritalStat)
+	{
+		this.fedMaritalStat = fedMaritalStat;
+	}
+
+	public String getStateMaritalStat()
+	{
+		return stateMaritalStat;
+	}
+
+	public void setStateMaritalStat(String stateMaritalStat)
+	{
+		this.stateMaritalStat = stateMaritalStat;
+	}
+
+	public String getFedExempt()
+	{
+		return fedExempt;
+	}
+
+	public void setFedExempt(String fedExempt)
+	{
+		this.fedExempt = fedExempt;
+	}
+
+	public String getStateExempt()
+	{
+		return stateExempt;
+	}
+
+	public void setStateExempt(String stateExempt)
+	{
+		this.stateExempt = stateExempt;
+	}
+
+	public String getFedAddTax()
+	{
+		return fedAddTax;
+	}
+
+	public void setFedAddTax(String fedAddTax)
+	{
+		this.fedAddTax = fedAddTax;
+	}
+
+	public String getStateAddTax()
+	{
+		return stateAddTax;
+	}
+
+	public void setStateAddTax(String stateAddTax)
+	{
+		this.stateAddTax = stateAddTax;
+	}
+
+	public String getResState()
+	{
+		return resState;
+	}
+
+	public void setResState(String resState)
+	{
+		this.resState = resState;
+	}
+
+	public String getWorkState()
+	{
+		return workState;
+	}
+
+	public void setWorkState(String workState)
+	{
+		this.workState = workState;
+	}
+
+	public String getDateOfJoin()
+	{
+		return dateOfJoin;
+	}
+
+	public void setDateOfJoin(String dateOfJoin)
+	{
+		this.dateOfJoin = dateOfJoin;
+	}
+
+	public String getEmpStatus()
+	{
+		return empStatus;
+	}
+
+	public void setEmpStatus(String empStatus)
+	{
+		this.empStatus = empStatus;
+	}
+
+	public Date getCheckDate()
+	{
+		return checkDate;
+	}
+
+	public void setCheckDate(Date checkDate)
+	{
+		this.checkDate = checkDate;
+	}
+
+	public String getGroupName()
+	{
+		return groupName;
+	}
+
+	public void setGroupName(String groupName)
+	{
+		this.groupName = groupName;
+	}
+
+	public String getGroupFrequency()
+	{
+		return groupFrequency;
+	}
+
+	public void setGroupFrequency(String groupFrequency)
+	{
+		this.groupFrequency = groupFrequency;
+	}
+
+	public String getType()
+	{
+		return type;
+	}
+
+	public void setType(String type)
+	{
+		this.type = type;
+	}
+
+	public Date getRunDate()
+	{
+		return runDate;
+	}
+
+	public void setRunDate(Date runDate)
+	{
+		this.runDate = runDate;
+	}
+
+	public BigDecimal getContributionMTD()
+	{
+		return contributionMTD;
+	}
+
+	public void setContributionMTD(BigDecimal contributionMTD)
+	{
+		this.contributionMTD = contributionMTD;
+	}
+
+	public BigDecimal getContributionQTD()
+	{
+		return contributionQTD;
+	}
+
+	public void setContributionQTD(BigDecimal contributionQTD)
+	{
+		this.contributionQTD = contributionQTD;
+	}
+
+	public BigDecimal getDeductionMTD()
+	{
+		return deductionMTD;
+	}
+
+	public void setDeductionMTD(BigDecimal deductionMTD)
+	{
+		this.deductionMTD = deductionMTD;
+	}
+
+	public BigDecimal getDeductionQTD()
+	{
+		return deductionQTD;
+	}
+
+	public void setDeductionQTD(BigDecimal deductionQTD)
+	{
+		this.deductionQTD = deductionQTD;
+	}
+
+	public String getYtdHours()
+	{
+		return ytdHours;
+	}
+
+	public void setYtdHours(String ytdHours)
+	{
+		this.ytdHours = ytdHours;
+	}
+
+	public BigDecimal getEmpRegularAmount()
+	{
+		return empRegularAmount;
+	}
+
+	public void setEmpRegularAmount(BigDecimal empRegularAmount)
+	{
+		this.empRegularAmount = empRegularAmount;
+	}
+
+	public List<PayrollReportDTO> getDeductionsList()
+	{
+		return deductionsList;
+	}
+
+	public void setDeductionsList(List<PayrollReportDTO> deductionsList)
+	{
+		this.deductionsList = deductionsList;
+	}
+
+	public Set<EmployeePayrollTax> getTaxHistory()
+	{
+		return taxHistory;
+	}
+
+	public void setTaxHistory(Set<EmployeePayrollTax> taxHistory)
+	{
+		this.taxHistory = taxHistory;
+	}
+
 }

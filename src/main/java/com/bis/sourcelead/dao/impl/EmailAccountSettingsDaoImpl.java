@@ -3,6 +3,7 @@ package com.bis.sourcelead.dao.impl;
 import java.text.MessageFormat;
 import java.util.List;
 
+import org.hibernate.Query;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.slf4j.Logger;
@@ -67,7 +68,7 @@ public class EmailAccountSettingsDaoImpl implements EmailAccountSettingsDao{
 	@Transactional(rollbackFor = { Exception.class })
 	public List<EmailAccountSettings> emailAccountSettingsList(Long loginUserId) throws Exception {
 		Session session = this.sessionFactory.getCurrentSession();
-		String query = "from EmailAccountSettings emailAccount  where emailAccount.userId.id =:loginUserId "; 
+		String query = "from EmailAccountSettings emailAccount  where emailAccount.user.id =:loginUserId "; 
 		List<EmailAccountSettings> emailAccountsList =session.createQuery(query).setLong("loginUserId", loginUserId).list();
 		return emailAccountsList;
 	}
@@ -76,7 +77,7 @@ public class EmailAccountSettingsDaoImpl implements EmailAccountSettingsDao{
 	@Transactional(rollbackFor = { Exception.class })
 	public EmailAccountSettings getEmailAccount(Long id, Long userId) {
 		Session session = this.sessionFactory.getCurrentSession();
-		String query = "from EmailAccountSettings emailAccount  where emailAccount.id =:id and emailAccount.userId.id = :userId"; 
+		String query = "from EmailAccountSettings emailAccount  where emailAccount.id =:id and emailAccount.user.id = :userId"; 
 		List<EmailAccountSettings> emailAccountList =  session.createQuery(query) .setLong("id", id).setLong("userId", userId).list();
 		EmailAccountSettings emailAccount = null;
 		if(emailAccountList != null && !emailAccountList.isEmpty())
@@ -84,6 +85,25 @@ public class EmailAccountSettingsDaoImpl implements EmailAccountSettingsDao{
 			emailAccount = (EmailAccountSettings) emailAccountList.iterator().next();
 		}
 		return emailAccount;
+	}
+
+	@Override
+	@Transactional
+	public EmailAccountSettings getEmailAccount(String email, String password, long userId) {
+		try {
+			Session session = this.sessionFactory.getCurrentSession();
+			String query = "from EmailAccountSettings eas where eas.user.id = :userId and eas.email = :email and eas.password = :password";
+			Query queryObj = session.createQuery(query);
+			queryObj.setLong("userId", userId);
+			queryObj.setString("email", email);
+			queryObj.setString("password", password);
+			List<EmailAccountSettings> emailAccountSettingsList = queryObj.list();
+			if (emailAccountSettingsList != null && !emailAccountSettingsList.isEmpty())
+				return emailAccountSettingsList.get(0);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return null;
 	}
 
 	@Override

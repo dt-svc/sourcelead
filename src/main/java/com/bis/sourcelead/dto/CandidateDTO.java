@@ -246,6 +246,8 @@ public class CandidateDTO extends SearchDTO{
 	 private Set<String> candidateTagsList;
 	 
 	 private String candidateTags;
+	 
+	 private String uploadId;
 	
 	public String getCandidateId() {
 		return candidateId;
@@ -1177,6 +1179,14 @@ public class CandidateDTO extends SearchDTO{
 
 	public void setCandidateTags(String candidateTags) {
 		this.candidateTags = candidateTags;
+	}
+
+	public String getUploadId() {
+		return uploadId;
+	}
+
+	public void setUploadId(String uploadId) {
+		this.uploadId = uploadId;
 	}
 
 	
