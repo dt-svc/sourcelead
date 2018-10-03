@@ -20,7 +20,7 @@
       	    <div id="resourceRequestsDivLoading"></div>
 			<div id="requirementListTabHead">
 				<div id="requirementListActions">
-					<div class="pull-right" id="viewmoresDiv" style="display: none;">
+					<div class="pull-right jobMoreBtn" id="viewmoresDiv" style="display: none;">
 						<a href="/app/jobs" class="btn btn-sm btn-primary pull-right"
 							title="View more"> View More</a>
 					</div>
