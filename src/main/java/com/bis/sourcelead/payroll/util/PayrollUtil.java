@@ -842,24 +842,20 @@ public class PayrollUtil {
 		}
 		
 		
-		//commented by Rakshith
 		//this is for loan and advances in edit payroll
-	/*	public List<AssociateLoanAndAdvancesDTO> getLoanAndAdvancesData(EmployeePayroll payroll) {
+		public List<AssociateLoanAndAdvancesDTO> getLoanAndAdvancesData(EmployeePayroll payroll) {
 			List<AssociateLoanAndAdvancesDTO> list = new ArrayList<>();
 			if (payroll.getPayitemHistory() != null) {
 				for (AssociateLoanAndAdvanceHistory his : payroll.getLoanHistory()) {
 					AssociateLoanAndAdvancesDTO loanDto = new AssociateLoanAndAdvancesDTO();
 					loanDto.setId(his.getId());
 					loanDto.setLoanAndAdvName(his.getAssociateLoanAndAdvances().getPayrollLoanAndAdvanceId().getName());
-					loanDto.setLoanAmount(his.getAssociateLoanAndAdvances().getAmount().toString());
-					if(StringUtils.isNotBlank(his.getIsBlocked())) {
-						loanDto.setIsBlocked(his.getIsBlocked());	
-					}
+					loanDto.setLoanAmount(his.getDeductAmount().toString());
 					list.add(loanDto);
 				}
 			}
 			return list;
-		}*/
+		}
 	
 
 	
