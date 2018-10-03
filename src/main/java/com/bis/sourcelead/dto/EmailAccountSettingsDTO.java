@@ -1,114 +1,158 @@
 package com.bis.sourcelead.dto;
 
+import java.util.Date;
+
 public class EmailAccountSettingsDTO {
-	
-	private String id;
-	private String orglocationId;
-	private String userId;
+
+	private long id;
+	private long orglocationId;
+	private long userId;
 	private String email;
-	private String recieveServerType;
-	private String recieveServerName;
-	private String recievePort;
-	private String recieveEmail;
-	private String recieveSSL;
-	private String sendServerType;
-	private String sendServerName;
-	private String sendPort;
-	private String sendEmail;
-	private String sendSSL;
 	private String password;
+	private String incomingServer;
+	private String incomingPort;
+	private boolean incomingSSL;
+	private String outgoingServer;
+	private String outgoingPort;
+	private boolean outgoingSSL;
+	private String emailType;
+	private Date createdDate;
+	private String createdBy;
+	private Date updatedDate;
+	private String updatedBy;
 	
-	public String getPassword() {
-		return password;
-	}
-	public void setPassword(String password) {
-		this.password = password;
-	}
-	public String getId() {
+	/*
+	 * private String recieveServerType;
+	 * 
+	 * private String sendServerType;
+	 */
+
+	public long getId() {
 		return id;
 	}
-	public void setId(String id) {
+
+	public void setId(long id) {
 		this.id = id;
 	}
-	public String getOrglocationId() {
+
+	public long getOrglocationId() {
 		return orglocationId;
 	}
-	public void setOrglocationId(String orglocationId) {
+
+	public void setOrglocationId(long orglocationId) {
 		this.orglocationId = orglocationId;
 	}
-	public String getUserId() {
+
+	public long getUserId() {
 		return userId;
 	}
-	public void setUserId(String userId) {
+
+	public void setUserId(long userId) {
 		this.userId = userId;
 	}
+
 	public String getEmail() {
 		return email;
 	}
+
 	public void setEmail(String email) {
 		this.email = email;
 	}
-	public String getRecieveServerType() {
-		return recieveServerType;
+
+	public String getPassword() {
+		return password;
 	}
-	public void setRecieveServerType(String recieveServerType) {
-		this.recieveServerType = recieveServerType;
+
+	public void setPassword(String password) {
+		this.password = password;
 	}
-	public String getRecieveServerName() {
-		return recieveServerName;
+
+	public String getIncomingServer() {
+		return incomingServer;
 	}
-	public void setRecieveServerName(String recieveServerName) {
-		this.recieveServerName = recieveServerName;
+
+	public void setIncomingServer(String incomingServer) {
+		this.incomingServer = incomingServer;
 	}
-	public String getRecievePort() {
-		return recievePort;
+
+	public String getIncomingPort() {
+		return incomingPort;
 	}
-	public void setRecievePort(String recievePort) {
-		this.recievePort = recievePort;
+
+	public void setIncomingPort(String incomingPort) {
+		this.incomingPort = incomingPort;
 	}
-	public String getRecieveEmail() {
-		return recieveEmail;
+
+	public boolean isIncomingSSL() {
+		return incomingSSL;
 	}
-	public void setRecieveEmail(String recieveEmail) {
-		this.recieveEmail = recieveEmail;
+
+	public void setIncomingSSL(boolean incomingSSL) {
+		this.incomingSSL = incomingSSL;
 	}
-	public String getRecieveSSL() {
-		return recieveSSL;
+
+	public String getOutgoingServer() {
+		return outgoingServer;
 	}
-	public void setRecieveSSL(String recieveSSL) {
-		this.recieveSSL = recieveSSL;
+
+	public void setOutgoingServer(String outgoingServer) {
+		this.outgoingServer = outgoingServer;
 	}
-	public String getSendServerType() {
-		return sendServerType;
+
+	public String getOutgoingPort() {
+		return outgoingPort;
 	}
-	public void setSendServerType(String sendServerType) {
-		this.sendServerType = sendServerType;
+
+	public void setOutgoingPort(String outgoingPort) {
+		this.outgoingPort = outgoingPort;
 	}
-	public String getSendServerName() {
-		return sendServerName;
+
+	public boolean isOutgoingSSL() {
+		return outgoingSSL;
 	}
-	public void setSendServerName(String sendServerName) {
-		this.sendServerName = sendServerName;
+
+	public void setOutgoingSSL(boolean outgoingSSL) {
+		this.outgoingSSL = outgoingSSL;
 	}
-	public String getSendPort() {
-		return sendPort;
+
+	public String getEmailType() {
+		return emailType;
 	}
-	public void setSendPort(String sendPort) {
-		this.sendPort = sendPort;
+
+	public void setEmailType(String emailType) {
+		this.emailType = emailType;
 	}
-	public String getSendEmail() {
-		return sendEmail;
+
+	public Date getCreatedDate() {
+		return createdDate;
 	}
-	public void setSendEmail(String sendEmail) {
-		this.sendEmail = sendEmail;
+
+	public void setCreatedDate(Date createdDate) {
+		this.createdDate = createdDate;
 	}
-	public String getSendSSL() {
-		return sendSSL;
+
+	public String getCreatedBy() {
+		return createdBy;
 	}
-	public void setSendSSL(String sendSSL) {
-		this.sendSSL = sendSSL;
+
+	public void setCreatedBy(String createdBy) {
+		this.createdBy = createdBy;
 	}
-	
-	
+
+	public Date getUpdatedDate() {
+		return updatedDate;
+	}
+
+	public void setUpdatedDate(Date updatedDate) {
+		this.updatedDate = updatedDate;
+	}
+
+	public String getUpdatedBy() {
+		return updatedBy;
+	}
+
+	public void setUpdatedBy(String updatedBy) {
+		this.updatedBy = updatedBy;
+	}
 
 }
