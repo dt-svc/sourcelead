@@ -239,4 +239,24 @@ public class AssociateGradesDaoImpl implements AssociateGradesDao{
 		}
 		return associateGrades;
 	}
+
+
+	@Override
+	@Transactional
+	public List<String> getGradesListByOrgLocationId(Long orgLocationId) throws Exception {
+		
+		Session session = this.sessionFactory.getCurrentSession();
+		String query = null;
+		query ="SELECT "
+				+" GRADE.GRADE_NAME "
+				+" FROM ASSOCIATE_GRADES GRADE "
+				+" WHERE "
+				+" GRADE.ORGLOCATION_ID = :orgLocationId AND GRADE.STATUS = '1' ";
+		Query queryObj = session.createSQLQuery(query);
+		queryObj.setLong("orgLocationId", orgLocationId);	
+		List<String> gradesList = (List<String>)queryObj.list();
+		
+		return gradesList;
+	
+	}
 }

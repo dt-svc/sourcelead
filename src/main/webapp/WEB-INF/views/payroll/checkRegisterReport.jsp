@@ -90,7 +90,18 @@ $(document).ready(function(){
         <div class="styleTables clearfix mt">
         <div class='reportHead'>
 		<ul class='pull-right'>
-		<li><input type='text' placeholder='Search' class='repSearchBar' id='dataTableSearch'/><span class='repSearchIcon' onClick='payCheckDateSearch();'></span></li>
+		<li><a class="newAdBtn mr5 hidden" href="/app/userCreation">+  Associate</a></li>
+    <!-- <li><a href="javascript:void(0)" class="filtIcon" title="Filters" onclick="openPop();"></a></li> -->
+    <li><a href="javascript:void(0)" class="overIcon" title="Actions" onclick="newActions();"></a>
+      <div class="newActPop" style="">
+          <span>
+          <a href="javascript:void(0)" onclick="exportToPdf();" title="PDF">Export PDF</a>
+           <a href="javascript:void(0)" onclick="exportExcel();" title="Excel">Export Excel</a>
+            </span>
+      </div>
+    </li>
+		<li><input type='text' placeholder='Search' class='repSearchBar' id='dataTableSearch'/>
+		<span class='repSearchIcon' onClick='payCheckDateSearch();'></span></li>
 		</ul>
 		</div>
           <div id="checkRegisterReportDIV" class="datatable_filter"></div>
@@ -363,5 +374,25 @@ function checkRegisterReports(){
 	
 </script>
 
+
+<script>
+function exportToPdf(){
+	
+	var groupId = $('#payGroup').val();
+    getFreqdates("freqStartDate", "freqEndDate");
+    var  freqStartDate = $("#freqStartDate").val();
+    var freqEndDate = $("#freqEndDate").val();
+	var searchValue = $("#dataTableSearch").val();
+	searchValue = searchValue ? searchValue : "";
+	var depositType = 'Cheque';
+	/* alert("groupId = "+groupId);
+	alert("freqStartDate = "+freqStartDate);
+	alert("freqEndDate = "+freqEndDate);
+	alert("contributionId = "+freqEndDate);
+	alert("searchValue = "+searchValue); */
+	
+	window.location.href = sourceleadUrl+"/exportToPdfCheckRegisterReport?searchValue="+searchValue+"&groupId="+groupId+"&freqStartDate="+freqStartDate+"&freqEndDate="+freqEndDate+"&depositType="+depositType;
+}
+</script>
 
 <jsp:include page="../masterFooter.jsp" />

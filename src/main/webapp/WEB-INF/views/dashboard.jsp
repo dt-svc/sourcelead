@@ -8,51 +8,27 @@
      <script src="/resources/js/sourcelead.common.js"></script> 
 
 <style>
-.dashboard-widget {
-/* min-height: 400px !important; */
-}
+
 .dashboard-widget.dashboard-widget-icons{
 min-height: 125px !important;
 }
 .dashboard-widget .blank-pages{
-padding: 0;
-min-height: 100px;
+padding: 0; min-height: 100px;
 }
-/* .side-bar .side-nav ul li span {
-display: inline-block !important;
-float: none !important;
-} */
+
 .custom-datatble table{
- margin-top: 20px !important;
+  margin-top: 20px !important;
  }
- #requirementList {
-	border-bottom: 1px solid #eae6e6;
-}
  .custom-datatble .dataTables_filter{
-   top: -35px !important;
-    padding: 0 !important;
+   top: -35px !important; padding: 0 !important;
  }
  .dashboard-datepkr{
        position:relative;
 }
-/* .main-header span.logo i{
-position: relative;
-top:10px;
-} */
 .ui-timepicker-wrapper {
 z-index: 999999;
 width: 11.5%;
 }
-/* .dashboard-datepkr input[type="text"]{
-       width:115px;
-       border:1px solid #ccc;
-       margin-right:5px;
-}
-.dashboard-datepkr .fa{
-   position: absolute;
-   right: 10px;
-   top: 4px;
-} */
 .pdleft{
 padding-left:0;
 }
@@ -118,7 +94,7 @@ function logoutForConfigure() {
 	    </section>
 	    
 	    
-	    <div class="clearfix row mb">
+	    <div class="clearfix row">
 	    	
 	      <sec:authorize access="hasAnyRole('ROLE_FILL_MY_TIMESHEETS','ROLE_EXPORT_MY_TIMESHEETS','ROLE_MODIFY_MY_TIMESHEETS','ROLE_FILL_MEMBER_TIMESHEETS','ROLE_VIEW_MEMBER_TIMESHEETS','ROLE_EXPORT_MEMBER_TIMESHEETS')"> 
 			 <c:if test = "${SourceLeadWeb_timesheet == 'Y'}">       
@@ -134,8 +110,6 @@ function logoutForConfigure() {
 			     </sec:authorize>
 		     </c:if>
 		   </c:forEach>
-	    </div>
-	    <div class="clearfix row mb">
 			 <sec:authorize access="hasAnyRole('ROLE_ADD_MY_EXPENSES','ROLE_VIEW_EDIT_MY_EXPENSES','ROLE_EXPORT_MY_EXPENSES','ROLE_ADD_EMPLOYEE_EXPENSES','ROLE_VIEW_EDIT_EMPLOYEE_EXPENSES','ROLE_EXPORT_EMPLOYEE_EXPENSES')">   
 				     <jsp:include page="expensesDashboardCounts.jsp"></jsp:include>
 			 </sec:authorize>  	
@@ -144,22 +118,22 @@ function logoutForConfigure() {
 				<jsp:include page="leaveManagement.jsp"></jsp:include>
 			</sec:authorize>
 			 
-		 </div>
+		 
 	    	<c:if test = "${SourceLeadWeb_ats == 'Y' || SourceLeadWeb_vms == 'Y'}">
 	    		<c:forEach var="userTabs" items="${SourceLeadWeb_tabsList}">
 	    		<c:if test="${userTabs.tabName == 'Jobs'}">
 	    			<sec:authorize access="hasAnyRole('ROLE_VIEW_REQUIREMENT')">
-					<jsp:include page="dashboardAssignedRequirements.jsp"></jsp:include> 
+					<div class="col-md-12"><jsp:include page="dashboardAssignedRequirements.jsp"></jsp:include> </div>
 					</sec:authorize>
 				</c:if>	
 				</c:forEach>
 					<sec:authorize access="hasAnyRole('ROLE_CREATE_ON_BOARD_USER','ROLE_VIEW_EDIT_ON_BOARD_USER')">
-					<jsp:include page="onboardingCandidatesList.jsp"></jsp:include> 
+					<div class="col-md-12"><jsp:include page="onboardingCandidatesList.jsp"></jsp:include></div> 
 					</sec:authorize>
 					
 					<sec:authorize access="hasRole('ROLE_RESOURCE_REQUEST_APPROVER')">
 					   <%-- <jsp:include page="resourceRequest.jsp"></jsp:include>  --%>
-					    <jsp:include page="projectResourceRequest.jsp"></jsp:include>  
+					    <div class="col-md-12"><jsp:include page="projectResourceRequest.jsp"></jsp:include></div>  
 					    <jsp:include page="projectNewResourceRequest.jsp"></jsp:include>  
 					 </sec:authorize>
 					
@@ -167,7 +141,7 @@ function logoutForConfigure() {
 					   <jsp:include page="budgetRequest.jsp"></jsp:include>
 					</sec:authorize>
 					
-			    <div class="col-md-6 mb pdleft"> 
+			    
 			    <c:forEach var="userTabs" items="${SourceLeadWeb_tabsList}">
 			    	<c:if test="${userTabs.tabName == 'Jobs'}">
 				    	 <sec:authorize access="hasAnyRole('ROLE_VIEW_REQUIREMENT')">
@@ -175,12 +149,7 @@ function logoutForConfigure() {
 				   	 	 </sec:authorize>
 			   	 	 </c:if>	
 			   	 </c:forEach>
-			   	 	 <%--  <sec:authorize access="hasAnyRole('ROLE_VIEW_INTERVIEW')">
-			    	 <jsp:include page="dashboardInterviews.jsp"></jsp:include>
-			    	 </sec:authorize> --%>
-			    </div>
 		    </c:if>
-		     <div class="col-md-6 mb pdRight"> 
 		     	<c:forEach var="userTabs" items="${SourceLeadWeb_tabsList}">
 			     	<c:if test="${userTabs.tabName == 'Jobs'}">
 			     		<sec:authorize access="hasAnyRole('ROLE_VIEW_REQUIREMENT')">
@@ -188,32 +157,27 @@ function logoutForConfigure() {
 			     		</sec:authorize>
 			     	</c:if>
 		     	</c:forEach>
-		     </div>
 		     
 		     <div class="clearfix"></div>
 	     
-       <sec:authorize access="!hasAnyRole('ROLE_FILL_MY_TIMESHEETS','ROLE_EXPORT_MY_TIMESHEETS','ROLE_MODIFY_MY_TIMESHEETS','ROLE_FILL_MEMBER_TIMESHEETS','ROLE_VIEW_MEMBER_TIMESHEETS','ROLE_EXPORT_MEMBER_TIMESHEETS','ROLE_VIEW_REQUIREMENT','ROLE_VIEW_INTERVIEW')">
-	   				  <div class='row'>
-						<div class='col-lg-12'> 
-						<div class='content-area clearfix'>
-							<div class='blank-pages'>
-							        <p><i class='fa fa-5x fa-bar-chart'></i></p>
-						        	<p>No Records Found</p>
-							 </div>
-						</div>
-						</div>
-					  </div> 
-		</sec:authorize> 
+<%--        <sec:authorize access="!hasAnyRole('ROLE_FILL_MY_TIMESHEETS','ROLE_EXPORT_MY_TIMESHEETS','ROLE_MODIFY_MY_TIMESHEETS','ROLE_FILL_MEMBER_TIMESHEETS','ROLE_VIEW_MEMBER_TIMESHEETS','ROLE_EXPORT_MEMBER_TIMESHEETS','ROLE_VIEW_REQUIREMENT','ROLE_VIEW_INTERVIEW')">
+			<div class='dashNewWrap mb'> 
+				<div class='blank-pages col-md-12'>
+			        <p><i class='fa fa-5x fa-bar-chart'></i></p>
+		        	<p>No Records Found</p>
+				 </div>
+			</div>
+		</sec:authorize>  --%>
 	    
-	    <div class="clearfix"></div> 
-	    
-	     	<jsp:include page="dashboardEvents.jsp"></jsp:include>	   
-	     	
+	    <div class="clearfix"> 
+	     	<div class="col-md-12"><jsp:include page="dashboardEvents.jsp"></jsp:include></div>   
+	   </div>  	
 	     	<sec:authorize access="hasAnyRole('ROLE_VIEW_CONTRACT')">
-				<jsp:include page="dashboardContracts.jsp"></jsp:include> 
+				<div class="col-md-12"><jsp:include page="dashboardContracts.jsp"></jsp:include> </div>
 			</sec:authorize>
 
 		<jsp:include page="dashboard_configure_popup.jsp"></jsp:include>
+		</div>
 </section>
 
 <jsp:include page="masterFooter.jsp" />

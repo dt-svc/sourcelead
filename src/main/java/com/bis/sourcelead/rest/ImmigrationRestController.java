@@ -215,18 +215,20 @@ public class ImmigrationRestController {
 		model.addObject("sourceleadUrl", sourceleadUrl);
 		if (forward.equalsIgnoreCase("petitionDetails")) {
 			model.setViewName("/immigration/petitionDetails");
+			OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,
+					"orgLocations");
 			if (!StringUtils.isEmpty(immigrationUUID)) {
-				OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,
-						"orgLocations");
 				Long immigrationId = immigrationCommonService.getImmigrationIdByUUID(immigrationUUID);
 				ImmigrationDTO immigrationDTO = immigrationCommonService.editImmigrationDetails(immigrationId,
 						orgLocations);
 				model.addObject("immigrationDTO", immigrationDTO);
+				List<ImmigrationTemplate> templateList = immigrationCommonService.getImmigrationTemplateList(orgLocations,null);
+				model.addObject("templateList", templateList);
+			}else {
+				List<ImmigrationTemplate> templateList = immigrationCommonService.getImmigrationTemplateList(orgLocations, 1L);
+				model.addObject("templateList", templateList);
 			}
-			OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,
-					"orgLocations");
-			List<ImmigrationTemplate> templateList = immigrationCommonService.getImmigrationTemplateList(orgLocations);
-			model.addObject("templateList", templateList);
+			
 		} else if (forward.equalsIgnoreCase("two")) {
 			model.setViewName("/immigration/newPetitionPage2");
 		} else if (forward.equalsIgnoreCase("three")) {
@@ -877,14 +879,38 @@ public class ImmigrationRestController {
 
 				fileIdNameMap.put(historyObj.getId(), historyObj.getUpldedFileName());
 			}
-			logger.debug("Doc id ===========" + docs.getId());
+			 System.out.println("Doc id ===========" + docs.getId());
 			docs.setDocsHistoryList(jsonArray.put(fileIdNameMap));
 			logger.debug("jsonArray to String  ===========" + jsonArray.toString());
+			
+	   Candidate candidate = candidateService.getCandidateByCandidateId(candidateId);
+		   System.out.println("docs.getDocumentType()................."+docs.getDocumentType().getId());
+		   System.out.println("docs.getDocCategory()................."+docs.getDocCategory());
+		   System.out.println("docs.getDocumentType().getName()................."+docs.getDocumentType().getName());
+		   
+		if(docs.getDocCategory().equalsIgnoreCase("Document Type")){
+			if(candidate.getConsultantUser().getId().equals(user.getId())) {
+			model.addObject("beneficiaryDocs", docs.getDocCategory());
+			}
+		}else {
+			model.addObject("beneficiaryDocs", docs.getDocCategory());
+			if(docs.getDocCategory().equalsIgnoreCase("PetitionerCategory")){
+				model.addObject("petitionerDocs", docs.getDocCategory());
+			}
+			
+		if(docs.getDocCategory().equalsIgnoreCase("AttorneyCategory")){
+				model.addObject("attorneyDocs", docs.getDocCategory());
+			}
+			
 		}
+			
+		}
+		
 		model.setViewName("/immigration/documentDetailsTab");
 		List<LookUpData> documentsList = lookUpDataService.getLookUpDataByCategory(Constants.DOCUMENT_TYPE);
 		model.addObject("documentsList", documentsList);
 		model.addObject("immigrationCanDocList", immigrationCanDocList);
+		
 		return model;
 	}
 
@@ -1686,14 +1712,6 @@ public class ImmigrationRestController {
 		logger.debug(" inisde getLcaDetails controller test -->");
 		if(immigrationId != null) {
 			 List<LcaDTO> lcaList = immigrationCommonService.getLcaHistoryDetailsInfo(Long.parseLong(immigrationId));
-			 /*   for(LcaDTO lh: lcaList) {
-			    	
-			    	if(lh.getLcaId() != null ) {
-			    	lh.setLcaId(lh.getLcaId());
-			    	}
-			    	model.addObject("currlcaId",lh.getId());
-			    }
-				*/
 			    model.addObject("lcaList", lcaList);
 		}
 		model.setViewName("/immigration/lcaDetailsTab");

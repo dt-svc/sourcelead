@@ -479,4 +479,21 @@ public class EmailScenarioConfigurationRestController {
 			 int flag=emailScenarioconService.changeDefaultEmailFromMail(id, orgLocation.getId(), defaultAccount);
 			return flag;
 		}
+			
+				
+		@RequestMapping(value = "/validateParserEmail" , method = RequestMethod.POST)		
+		public Boolean validateParserEmail (@RequestParam(value = "parserEmailId", required = true) String parserEmailId,
+											@RequestParam(value = "emailUUID", required = true) String emailUUID)throws Exception {
+			
+			EmailScenarioConfiguration emailconf = null;
+			if(emailUUID != null && parserEmailId !=null){	
+				emailconf = emailScenarioconService.validateParserByEmail(parserEmailId,emailUUID);
+			}
+			Boolean flag = false;
+			if(emailconf == null){
+			flag = emailScenarioconService.validateParser(parserEmailId);
+			}
+			return flag;
+		}
+			
 }

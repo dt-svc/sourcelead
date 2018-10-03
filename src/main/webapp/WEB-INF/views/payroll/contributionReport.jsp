@@ -31,9 +31,6 @@ $(document).ready(function(){
               <label class="col-md-12 paddingRight">Pay Group</label>
 				<div class="col-md-12">
 					<select class="form-control chosen-select" id="payGroup" name="payGroup" onchange="getPayPeriod();" field-name="Pay Group" data-validation="required">
-				<!-- 	<option>Select Group</option>
-						<option>Monthly</option>
-						<option>Weekly</option> -->
 					</select>
 				</div>
             </div>
@@ -41,9 +38,6 @@ $(document).ready(function(){
               <label class="col-md-12">Contribution Type</label>
               <div class="col-md-12">
                 <select class="form-control chosen-select" multiple data-placeholder="Contribution Type" id="contributionId" name="contributionId" field-name="Pay Group" data-validation="required">
-					 <!--    <option value="">Select Type</option>
-						<option value="Regular">Regular</option>
-						<option value="Additional">Additional</option> -->
 					</select>
               </div>
             </div>
@@ -62,10 +56,6 @@ $(document).ready(function(){
               <label class="col-md-12">Department</label>
               <div class="col-md-12">
                 <select class="form-control chosen-select" id="departmentId" name="departmentId">
-					 <!--    <option>Select Department</option>
-						<option>Department-1</option>
-						<option>Department-2</option>
-						<option>Department-3</option> -->
 					</select>
               </div>
             </div>
@@ -96,7 +86,11 @@ $(document).ready(function(){
     <!-- <li><a href="javascript:void(0)" class="filtIcon" title="Filters" onclick="openPop();"></a></li> -->
     <li><a href="javascript:void(0)" class="overIcon" title="Actions" onclick="newActions();"></a>
       <div class="newActPop" style="">
-       <span><a href="javascript:void(0)" onclick="exportToPdf();" title="PDF">Export PDF</a> <a href="javascript:void(0)" onclick="exportUserData();" title="Excel">Export Excel</a> </span> </div>
+          <span>
+          <a href="javascript:void(0)" onclick="exportToPdf();" title="PDF">Export PDF</a>
+           <a href="javascript:void(0)" onclick="exportExcel();" title="Excel">Export Excel</a>
+            </span>
+      </div>
     </li>
     <li class="">
       <input class="repSearchBar" placeholder="Search" id="dataTableSearch" type="text">
@@ -426,4 +420,27 @@ function getcontributionList(){
 }
 
 </script>
+
+<script>
+function exportToPdf(){
+	
+	var groupId = $('#payGroup').val();
+    getFreqdates("freqStartDate", "freqEndDate");
+    var  freqStartDate = $("#freqStartDate").val();
+    var freqEndDate = $("#freqEndDate").val();
+	var searchValue = $("#dataTableSearch").val();
+	searchValue = searchValue ? searchValue : "";
+	var contributionId = $("#contributionId").val();
+	/* alert("groupId = "+groupId);
+	alert("freqStartDate = "+freqStartDate);
+	alert("freqEndDate = "+freqEndDate);
+	alert("contributionId = "+freqEndDate);
+	alert("searchValue = "+searchValue); */
+	
+	window.location.href = sourceleadUrl+"/exportToPdfContributionReport?searchValue="+searchValue+"&groupId="+groupId+"&freqStartDate="+freqStartDate+"&freqEndDate="+freqEndDate+"&contributionId="+contributionId;
+}
+</script>
+
+
+
 <jsp:include page="../masterFooter.jsp" />

@@ -25,12 +25,14 @@ import com.bis.sourcelead.dto.AssetDTO;
 import com.bis.sourcelead.dto.ResponseList;
 import com.bis.sourcelead.entity.Asset;
 import com.bis.sourcelead.entity.AssetAssign;
+import com.bis.sourcelead.entity.AssetServices;
 import com.bis.sourcelead.entity.Department;
 import com.bis.sourcelead.entity.InvoiceTax;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.ProjectTasks;
 import com.bis.sourcelead.entity.Requirement;
 import com.bis.sourcelead.exception.SourceLeadConstraintViolationException;
+import com.bis.sourcelead.service.AssetService;
 import com.bis.sourcelead.service.OrgLocationService;
 import com.bis.sourcelead.util.CommonUtil;
 
@@ -40,12 +42,6 @@ public class AssetDaoImpl implements AssetDao{
 	
 	@Autowired
 	private SessionFactory sessionFactory;
-	
-	@Autowired
-	private CommonUtil commonUtil;
-	
-	@Autowired
-	private UserRoleDao userRoleDao;
 	
 	@Autowired
     OrgLocationService orgLocationService;
@@ -425,6 +421,30 @@ public class AssetDaoImpl implements AssetDao{
 		String query = "from AssetAssign assetAssign left join fetch assetAssign.shift left join fetch assetAssign.userRole where assetAssign.asset.id = :assetId";
 		List<AssetAssign> assignAssetList = session.createQuery(query).setLong("assetId", assetId).list();
 		return assignAssetList;
+	}
+
+	@Override
+	@Transactional
+	public AssetServices saveAssetService(AssetServices assetServices) throws Exception {
+		Session session = this.sessionFactory.getCurrentSession();
+		try {
+			if (assetServices != null) {
+				session.saveOrUpdate(assetServices);
+			}
+		} catch (Exception exception) {
+			 StringBuilder message= new StringBuilder(MessageFormat.format(duplicateValue,"ASSET_SERVICE"));
+				throw new SourceLeadConstraintViolationException(message.toString() +exception.getCause().toString());
+		}
+		return assetServices;
+	}
+
+	@Override
+	@Transactional
+	public List<AssetServices> getAssetServicesListByAssetId(Long assetId) throws Exception {
+		Session session =  this.sessionFactory.getCurrentSession();
+		String query = "from AssetServices assetServices where assetServices.asset.id = :assetId and assetServices.status ='1'";
+		List<AssetServices> assetServicestList = session.createQuery(query).setLong("assetId", assetId).list();
+		return assetServicestList;
 	}
 	
 }

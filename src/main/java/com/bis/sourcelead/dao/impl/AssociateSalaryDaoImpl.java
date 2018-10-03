@@ -18,6 +18,7 @@ import com.bis.sourcelead.dao.AssociateSalaryDao;
 import com.bis.sourcelead.dto.AssociatePayItemDTO;
 import com.bis.sourcelead.dto.CandidateDTO;
 import com.bis.sourcelead.dto.ResponseList;
+import com.bis.sourcelead.dto.SalaryDTO;
 import com.bis.sourcelead.entity.AssociatePayItem;
 import com.bis.sourcelead.entity.AssociateSalary;
 import com.bis.sourcelead.entity.AssociateSalaryHistory;
@@ -143,10 +144,10 @@ private static final Logger logger = LoggerFactory.getLogger(AssociateBankDataDa
 		List<AssociateSalary> assList = null;
 		Session session = this.sessionFactory.getCurrentSession();
 		if(Constants.ALL_RECORDS.equalsIgnoreCase(payType)) {
-			qry = "from AssociateSalary ass where ass.orgLocations.id = :orgLocationId and ass.groupId = :groupId and ass.status = '1'";
+			qry = "from AssociateSalary ass where ass.orgLocations.id = :orgLocationId and ass.groupId = :groupId and ass.status = '1' and ass.candidate.isAssociate = 'Y'";
 			 assList = session.createQuery(qry).setLong("orgLocationId", orgLocation.getId()).setLong("groupId", groupId).list();
 		}else {
-			qry = "from AssociateSalary ass where ass.orgLocations.id = :orgLocationId and ass.groupId = :groupId and ass.payType = :payType and ass.status = '1'";
+			qry = "from AssociateSalary ass where ass.orgLocations.id = :orgLocationId and ass.groupId = :groupId and ass.payType = :payType and ass.status = '1' and ass.candidate.isAssociate = 'Y'";
 			 assList = session.createQuery(qry).setLong("orgLocationId", orgLocation.getId()).setLong("groupId", groupId).setParameter("payType", payType).list();
 		}
 		 
@@ -276,6 +277,58 @@ private static final Logger logger = LoggerFactory.getLogger(AssociateBankDataDa
 	}
 
 
+	@Override
+	public List<SalaryDTO> getSalaryByGroupId(OrgLocations orgLocation, Long groupId, String payType)
+	{
+		List<SalaryDTO> salarylist = null;
+		try {
+			Session session = this.sessionFactory.getCurrentSession();
+			StringBuilder sb = new StringBuilder();
+			sb.append("SELECT")
+			.append("sal.ID as salaryId,")
+			.append("sal.ORG_LOCATION_ID as locationId,") 
+			.append("sal.CANDIDATE_ID as candidateId,")
+			.append("sal.GROUP_ID as groupId,")
+			.append("sal.PAY_TYPE as payType, ")
+			.append("sal.PAY_FREQUENCY as payFrequency,") 
+			.append("sal.STANDARD_HOURS as standardHours,") 
+			.append("sal.ANNUAL_SALARY as annualSalary,")
+			.append("sal.GROSS_SALARY as grossSalary,")
+			.append("sal.HOURLY_RATE as hourlyRate,") 
+			.append("sal.ALLOW_OVER_TIME_PAY as allowOverTimePay,") 
+			.append("sal.INCREMENT_PERCENTAGE as incrementPercentage,") 
+			.append("sal.EFFECTIVE_DATE as effectiveDate,")
+			.append("sal.CHANGE_REASON as changeReason,")
+			.append("sal.SALARY_TYPE as slaryType,") 
+			.append("sal.ASSOCIATE_SALARY_UUID as associateSalaryUUID,") 
+			.append(" sal.STATUS as status,")
+			.append("can.WORK_LOCATION as workLocation,")
+			.append("can.RESIDENCE_ADDRESS as resideneceAddress,")
+			.append(" can.RESIDENCE_CITY as residenceCity,")
+			.append("can.RESIDENCE_STATE as residenceState,")
+			.append("can.RESIDENCE_COUNTRY as residenceCountry,")
+			.append("can.RESIDENCE_STATE_CODE as residenceStateCode,")
+			.append("can.RESIDENCE_STREET_ADDRESS as residenceStreetAddress,")
+			.append("can.RESIDENCE_ZIP_CODE as residenceZipCode,")
+			.append("can.RESIDENCE_LATITUDE as residenceLattitude,")
+			.append("can.RESIDENCE_LONGITUDE as residenceLongitude,")
+			.append("role.TERMINATE_DATE as terminatedDate ")
+			.append(" FROM sourcelead.USER_ROLE role,USER usr,CANDIDATE can,ASSOCIATE_SALARY sal ")
+			.append(" where usr.ID = role.USER_ID")
+			.append(" AND  can.CONSULTANT_USER_ID = usr.ID")
+			.append(" AND sal.CANDIDATE_ID = can.ID")
+			.append(" AND sal.GROUP_ID =:groupId AND sal.ORG_LOCATION_ID = :locationId ")
+			.append(" AND ((role.TERMINATE_DATE >= frequencyStartDate AND role.TERMINATE_DATE <= :frequencyEndDate) OR (role.TERMINATE_DATE IS NULL OR role.TERMINATE_DATE IS NULL))");
+			Query queryObj = session.createSQLQuery(sb.toString());
+//			queryObj.setLong("payrollId", payrollId);
+			queryObj.setResultTransformer(Transformers.aliasToBean(AssociatePayItemDTO.class));
+			salarylist = queryObj.list();
+		}catch (Exception e) {
+			e.printStackTrace();
+		}
+		return null;
+	}
+	
 	@Override
 	@Transactional
 	public List<AssociateSalaryInd> getIndAssociateSalaryListByGroupId(OrgLocations orgLocation, long groupId,

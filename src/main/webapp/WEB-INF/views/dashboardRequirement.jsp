@@ -18,65 +18,54 @@ $(document).ready(function(){
 	 }
 });
 </script>
-<div class="col-md-6 mb">
-        <div class="dashboardWidget-new">
-          <h4 class="clearfix mb0"><a id="jobsLink" href="<c:url value="/app/jobs"/>"> Jobs</a>
-          <div class="pull-right" id="viewmoresDiv"><a href="${sourceleadUrl}/requirementApplicantsList?&tab=previous&orgLocationId=${SourceLeadWeb_orgLocationId}" class="btn btn-sm btn-primary pull-right" style="font-size: 11px;" title="View more"> View More</a></div>
-          </h4>
-          <div class="clearfix dashboard-data">
-            <ul class="nav nav-tabs">
-              <li class="active"><a data-toggle="tab" onclick="requirementSubmissionsCount('today');">Today</a></li>
-              <li><a data-toggle="tab" onclick="requirementSubmissionsCount('previous');">1 Month</a></li>
-                   <input type="hidden" name="dateActiveTab" id="dateActiveTab" value="today"/>
-            </ul>
-            <div class="tab-content clearfix">
-                <div class="db-widget-sm row">
+<div class="col-md-6 mb10">
+        <div class="dashboardWidget-new dashNewWrap mb">
+            
+        	<div class="dashNewWrapHead clearfix">
+        		<a class="pull-left" id="jobsLink" href="<c:url value="/app/jobs"/>">Jobs
+        			<a class="moreLink" href="${sourceleadUrl}/requirementApplicantsList?&tab=previous&orgLocationId=${SourceLeadWeb_orgLocationId}" title="View more"  id="viewmoresDiv"> View More..</a>
+        		</a>
+	            <ul class="nav nav-tabs pull-right">
+	              	<li class="active"><a data-toggle="tab" onclick="requirementSubmissionsCount('today');">Today</a></li>
+	              	<li><a data-toggle="tab" onclick="requirementSubmissionsCount('previous');">1 Month</a></li>
+	              	<input type="hidden" name="dateActiveTab" id="dateActiveTab" value="today"/>
+	            </ul>
+        	</div>            
+            
+            <div class="db-widget-sm">
                 <div class="col-xs-12 col-sm-3">
-                    <div class="clearfix">
-                     <!-- <span class="info-box-icon bg-green"> <i class="fa fa-black-tie" aria-hidden="true"></i> </span> -->
-                      <div class="info-box-content text-center" style='cursor:pointer' title="Applicants" id="appDiv">
-                        <p class="info-box-number"><span id="applicantsCount" onclick="loadRequirementApplicants();"></span></p>
-                        <p class="info-box-text mb0 text-muted mt2">Applicants</p>
-                      </div>
-                      <div id ="applicantsCountLoading"></div>
+                    <div class="dashNewCount" title="Applicants" id="appDiv">
+                        <p>Applicants</p>
+                        <p class="NewCount"><span id="applicantsCount" onclick="loadRequirementApplicants();"></span></p>
+                      	<div id ="applicantsCountLoading"></div>
                     </div>
                   </div>
+                  
                   <div class="col-xs-12 col-sm-3">
-                    <div class="clearfix">
-                     <!-- <span class="info-box-icon bg-red"> <i class="fa fa-check-square" aria-hidden="true"></i></span> -->
-                      <div class="info-box-content text-center" style='cursor:pointer' title="Submissions" id="subDiv">
-                        <p class="info-box-number"><span id="submissionsCount" onclick="loadRequirementSubmissions();">${submissionsCount}</span></p>
-                        <p class="info-box-text mb0 text-muted mt2">Client Submissions</p>
-                      </div>
+                    <div class="dashNewCount" title="Client Submissions" id="subDiv">
+                        <p>Client Submissions</p>
+                        <p class="NewCount suColor"><span id="submissionsCount" onclick="loadRequirementSubmissions();">${submissionsCount}</span></p>
                       <div id ="submissionsCountLoading"></div>
                     </div>
                   </div>
+                  
                   <div class="col-xs-12 col-sm-3">
-                    <div class="clearfix">
-                    <!-- <span class="info-box-icon bg-blue"> <i class="fa fa-graduation-cap" aria-hidden="true"></i></span> -->
-                      <div class="info-box-content text-center" style='cursor:pointer' title="Interviews" id="intDiv">
-                        <p class="info-box-number"><span id="interviewsCount" onclick="loadRequirementInterviews();"></span></p>
-                        <p class="info-box-text mb0 text-muted mt2">Interviews</p>
-                      </div>
-                      <div id ="interviewsCountLoading"></div>
+                    <div class="dashNewCount" title="Interviews" id="intDiv">
+                        <p>Interviews</p>
+                        <p class="NewCount deColor"><span id="interviewsCount" onclick="loadRequirementInterviews();"></span></p>
+                      	<div id ="interviewsCountLoading"></div>
                     </div>
                   </div>
                   <div class="col-xs-12 col-sm-3">
-                    <div class="clearfix">
-                    <!-- <span class="info-box-icon bg-orange" > <i class="fa fa-tags" aria-hidden="true"></i></span> -->
-                      <div class="info-box-content text-center" style='cursor:pointer' title="Offers" id="offDiv">
-                        <p class="info-box-number"><span id="offersCount" onclick="loadRequirementOffers();"></span></p>
-                        <p class="info-box-text mb0 text-muted mt2">Offers</p>
-                      </div>
+                    <div class="dashNewCount" title="Offers" id="offDiv">
+                    	<p>Offers</p>
+                        <p class="NewCount apColor"><span id="offersCount" onclick="loadRequirementOffers();"></span></p>
                       <div id ="offersCountLoading"></div>
                     </div>
                   </div>
                 </div>
               
-            </div>
-          </div>
         </div>
-        <!-- Requirement ends --> 
       </div>
       
 <script type="text/javascript">

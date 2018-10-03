@@ -3,29 +3,27 @@ package com.bis.sourcelead.payroll.util;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.text.DecimalFormat;
-import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
-import java.util.Locale;
 import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
 
 import org.apache.commons.lang3.StringUtils;
-import org.omg.CORBA.COMM_FAILURE;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import com.bis.sourcelead.dto.AssociateLoanAndAdvancesDTO;
 import com.bis.sourcelead.dto.AssociatePayItemDTO;
+import com.bis.sourcelead.entity.AssociateLoanAndAdvanceHistory;
 import com.bis.sourcelead.entity.AssociatePayItem;
 import com.bis.sourcelead.entity.Candidate;
 import com.bis.sourcelead.entity.OrgLocations;
-import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.payroll.dto.ContributionDTO;
 import com.bis.sourcelead.payroll.dto.DeductionDTO;
 import com.bis.sourcelead.payroll.dto.PayrollConstant;
@@ -35,11 +33,9 @@ import com.bis.sourcelead.payroll.entity.DeductionHistory;
 import com.bis.sourcelead.payroll.entity.EmployeePayroll;
 import com.bis.sourcelead.payroll.entity.EmployeePayrollTax;
 import com.bis.sourcelead.payroll.entity.PayitemHistory;
-import com.bis.sourcelead.payroll.service.AssociateContributionService;
 import com.bis.sourcelead.payroll.service.AssociateDeductionService;
 import com.bis.sourcelead.payroll.service.PaysheetFrequencyService;
 import com.bis.sourcelead.util.CommonUtil;
-import com.ibm.icu.text.DateFormat;
 
 @Component
 public class PayrollUtil {
@@ -635,23 +631,15 @@ public class PayrollUtil {
 	
 	/**
 	 * Get YTD Deductions and Contributions
+	 * 
 	 * @param payrollId
 	 * @param candidateId
 	 * @return BigDecimal
 	 */
-	public BigDecimal getContributionYTD(EmployeePayroll payroll,Long contributionId,OrgLocations orglocation) {
-		List<DeductionHistory> dedHisList = paysheetFrequencyService.getContributionYTD(payroll,contributionId,orglocation);
-		BigDecimal contributionYTD = BigDecimal.ZERO;
-		for(DeductionHistory dedHis : dedHisList) {
-			if(dedHis.getPreContributionAmount() != null) {
-				contributionYTD = contributionYTD.add(dedHis.getPreContributionAmount());
-			}
-			if(dedHis.getPostContributionAmount() != null) {
-				contributionYTD = contributionYTD.add(dedHis.getPostContributionAmount());
-			}
-		}
-		return contributionYTD;
-		
+	public YTDPayrollDTO getContributionYTD(EmployeePayroll payroll, Long contributionId, OrgLocations orglocation)
+	{
+		YTDPayrollDTO yTDPayrollDTO = paysheetFrequencyService.getContributionYTD(payroll, contributionId, orglocation, "report");
+		return yTDPayrollDTO;
 	}
 	
 	/**
@@ -788,6 +776,39 @@ public class PayrollUtil {
 			return frequency;
 			
 		}
+
+		public YTDPayrollDTO getDeductionYTD(EmployeePayroll payroll, Long deductionId, OrgLocations orgLocation) {
+			return paysheetFrequencyService.getDeductionYTD(payroll,deductionId,orgLocation,"report");
+			/*BigDecimal deductionYTD = BigDecimal.ZERO;
+			for(DeductionHistory dedHis : dedHisLis) {
+				if(dedHis.getPreDeductionAmount() != null) {
+					deductionYTD = deductionYTD.add(dedHis.getPreDeductionAmount());
+				}
+				if(dedHis.getPostDeductionAmount() != null) {
+					deductionYTD = deductionYTD.add(dedHis.getPostDeductionAmount());
+				}
+			}*/
+		}
+		
+		
+		//commented by Rakshith
+		//this is for loan and advances in edit payroll
+	/*	public List<AssociateLoanAndAdvancesDTO> getLoanAndAdvancesData(EmployeePayroll payroll) {
+			List<AssociateLoanAndAdvancesDTO> list = new ArrayList<>();
+			if (payroll.getPayitemHistory() != null) {
+				for (AssociateLoanAndAdvanceHistory his : payroll.getLoanHistory()) {
+					AssociateLoanAndAdvancesDTO loanDto = new AssociateLoanAndAdvancesDTO();
+					loanDto.setId(his.getId());
+					loanDto.setLoanAndAdvName(his.getAssociateLoanAndAdvances().getPayrollLoanAndAdvanceId().getName());
+					loanDto.setLoanAmount(his.getAssociateLoanAndAdvances().getAmount().toString());
+					if(StringUtils.isNotBlank(his.getIsBlocked())) {
+						loanDto.setIsBlocked(his.getIsBlocked());	
+					}
+					list.add(loanDto);
+				}
+			}
+			return list;
+		}*/
 	
 
 	
