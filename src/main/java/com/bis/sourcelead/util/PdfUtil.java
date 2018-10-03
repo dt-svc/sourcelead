@@ -1913,7 +1913,7 @@ public File ApplicantsJoinedListPdfTable(ResponseList<RequirementSubmissionHisto
             }
             table.completeRow();
         }
-        document.addTitle("DayWiseLeaveReport Table");
+        document.addTitle("Applicants Joined Table");
         table.setSpacingBefore(15f);
         document.add(table);
         logger.info("Pdf table created !!");
