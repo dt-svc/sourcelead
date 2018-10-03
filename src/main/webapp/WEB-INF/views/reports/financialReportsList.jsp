@@ -109,7 +109,15 @@
 </a>				    
  </c:if>
 </sec:authorize>
-				
+			
+	<a href='${appPath}/assetmanagementGrowth'>						
+		<div class="repDashCta">
+			<span class="navIcons asstIcon"></span>
+			<div class="repDashCtaWrap">
+					    <h2>Asset Growth</h2><b>View</b>
+			</div>
+		</div>	
+	</a>	
 				
 	<div class="clearfix"></div>	
 </div>

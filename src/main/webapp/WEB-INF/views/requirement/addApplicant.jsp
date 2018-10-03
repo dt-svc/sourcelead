@@ -1422,7 +1422,6 @@ function getCandidateSelectionType(){
 				        		}else{
 				        			updatedDate  = "";
 				        		}
-				        		output = output + "<option value=''>-- Select Resume --</option>";
 				        		if(opt.title != null && opt.title != 'undefined' && opt.title != ""){
 				        			output = output + "<option value='" +opt.id+ "'>"+opt.title+" "+updatedDate+"</option>";
 				            	}else{

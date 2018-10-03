@@ -22,7 +22,7 @@ $(document).ready(function(){
        </div>
     <section class="content-header clearfix">
       <div class="pull-left">
-        <h2>Requested Leaves sadasd</h2>
+        <h2>Requested Leaves</h2>
       </div>
 		<div class="pull-right brud-crum"><a href="<c:url value='${appPath}/dashboard/${SourceLeadWeb_orgLocationId}'/>"> Home</a> &raquo; Requested Leaves</div>
     </section>

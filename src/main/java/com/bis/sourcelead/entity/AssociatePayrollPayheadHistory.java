@@ -37,6 +37,7 @@ public class AssociatePayrollPayheadHistory {
 	@Column(name = "ANNUALY")
 	private BigDecimal annualy;
 	
+	
 	@Column(name = "STATUS")
 	private Integer status;
 	
@@ -61,86 +62,89 @@ public class AssociatePayrollPayheadHistory {
 		return id;
 	}
 
-	public void setId(Long id) {
-		this.id = id;
-	}
 	public IndEmployeePayroll getIndEmployeePayrollId() {
 		return indEmployeePayrollId;
-	}
-
-	public void setIndEmployeePayrollId(IndEmployeePayroll indEmployeePayrollId) {
-		this.indEmployeePayrollId = indEmployeePayrollId;
 	}
 
 	public PayrollPayhead getPayrollPayhead() {
 		return payrollPayhead;
 	}
 
-	public void setPayrollPayhead(PayrollPayhead payrollPayhead) {
-		this.payrollPayhead = payrollPayhead;
-	}
-
 	public BigDecimal getMonthly() {
 		return monthly;
-	}
-
-	public void setMonthly(BigDecimal monthly) {
-		this.monthly = monthly;
 	}
 
 	public BigDecimal getAnnualy() {
 		return annualy;
 	}
 
-	public void setAnnualy(BigDecimal annualy) {
-		this.annualy = annualy;
-	}
-
 	public Integer getStatus() {
 		return status;
-	}
-
-	public void setStatus(Integer status) {
-		this.status = status;
 	}
 
 	public String getUuid() {
 		return uuid;
 	}
 
-	public void setUuid(String uuid) {
-		this.uuid = uuid;
-	}
-
 	public User getCreatedBy() {
 		return createdBy;
-	}
-
-	public void setCreatedBy(User createdBy) {
-		this.createdBy = createdBy;
 	}
 
 	public Date getCreatedDate() {
 		return createdDate;
 	}
 
-	public void setCreatedDate(Date createdDate) {
-		this.createdDate = createdDate;
-	}
-
 	public User getUpdatedBy() {
 		return updatedBy;
-	}
-
-	public void setUpdatedBy(User updatedBy) {
-		this.updatedBy = updatedBy;
 	}
 
 	public Date getUpdatedDate() {
 		return updatedDate;
 	}
 
+	public void setId(Long id) {
+		this.id = id;
+	}
+
+	public void setIndEmployeePayrollId(IndEmployeePayroll indEmployeePayrollId) {
+		this.indEmployeePayrollId = indEmployeePayrollId;
+	}
+
+	public void setPayrollPayhead(PayrollPayhead payrollPayhead) {
+		this.payrollPayhead = payrollPayhead;
+	}
+
+	public void setMonthly(BigDecimal monthly) {
+		this.monthly = monthly;
+	}
+
+	public void setAnnualy(BigDecimal annualy) {
+		this.annualy = annualy;
+	}
+
+	public void setStatus(Integer status) {
+		this.status = status;
+	}
+
+	public void setUuid(String uuid) {
+		this.uuid = uuid;
+	}
+
+	public void setCreatedBy(User createdBy) {
+		this.createdBy = createdBy;
+	}
+
+	public void setCreatedDate(Date createdDate) {
+		this.createdDate = createdDate;
+	}
+
+	public void setUpdatedBy(User updatedBy) {
+		this.updatedBy = updatedBy;
+	}
+
 	public void setUpdatedDate(Date updatedDate) {
 		this.updatedDate = updatedDate;
 	}
+
+	
 }

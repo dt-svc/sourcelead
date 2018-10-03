@@ -1,5 +1,6 @@
 package com.bis.sourcelead.service;
 
+import java.util.Date;
 import java.util.List;
 
 import com.bis.sourcelead.dto.AssociatePayItemDTO;
@@ -25,6 +26,8 @@ public interface AssociateSalaryService {
 	AssociatePayItem saveUpdatedPayItem(AssociatePayItem associatePayItem);
 
 	List<AssociateSalary> getAssociateSalaryListByGroupId(OrgLocations orgLocation, long groupId, String payType);
+	
+	List<AssociateSalaryInd> getIndAssociateSalaryListByGroupId(OrgLocations orgLocation, long groupId, String payType);
 
 	List<AssociatePayItemDTO> findAssociatePayItemByPayrollId(Long payrollId);
 
@@ -34,5 +37,5 @@ public interface AssociateSalaryService {
 	
 	List<AssociateSalaryInd> getIndAssociateSalaryListByGroupId(OrgLocations orgLocation, long parseLong);
 
-	List<SalaryDTO> getSalaryByGroupId(OrgLocations orgLocation, Long groupId, String payType);
+	List<SalaryDTO> getSalaryByGroupId(OrgLocations orgLocation, Long candidateId, Date freqStartDate, Date freqEndDate);
 }

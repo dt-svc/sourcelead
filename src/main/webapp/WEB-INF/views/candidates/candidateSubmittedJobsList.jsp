@@ -21,7 +21,7 @@
 			  <th>Generated ID</th>   
 			  <th>Title</th>   
 			  <th>Status</th>         
-			  <th>Submitted On</th> 
+			  <th>Submitted On<br>(<small class="custom-small">${orglocationDateFormat}</small>)</th> 
 			  <th>Submitted By</th>    
 			</tr>
 		</thead>
@@ -29,7 +29,7 @@
 		<tbody>
 			 <c:forEach var="job" items="${jobsList}">
 				 <tr>
-				    <td><div class="tbldata-dotdot_100" title="${job.generatedId}">${job.generatedId}</div></td>
+				   <td><div class="tbldata-dotdot_100" title="${job.generatedId}">${job.generatedId}</div></td>
 				   <td><div class="tbldata-dotdot-big text-center" title="${job.requirementName}">${job.requirementName}</div></td>
 				   <td><div class="tbldata-dotdot_100" title="${job.submissionStatus}">${job.submissionStatus}</div></td>
 				   <td><div class="tbldata-dotdot-me">${job.submissionDate} / ${job.submissionTime}</div></td>
