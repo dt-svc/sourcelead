@@ -119,8 +119,7 @@ function getAssetReportCustomDates(){
 	<div class="reportHead clearfix">
 		<div class="listGridWrap reqListBtn">
 			<button type="button" title="Reports View" id="GraphView"  value="grid" class="btn btn-primary rAct" onclick="getAssetGrowthReports('grid')"><i class="fa fa-pie-chart"></i></button>
-        	<button type="button" title="List View" id="ListView" value="list" class="btn btn-default" onclick="getAssetGrowthReports('ListView
-        			')"><i class="fa fa-list"></i></button>
+        	<button type="button" title="List View" id="ListView" value="list" class="btn btn-default" onclick="getAssetGrowthReports('ListView')"><i class="fa fa-list"></i></button>
 		</div>
 	
     	<ul class="clearfix pull-right">
@@ -197,7 +196,7 @@ document.getElementById("GraphView").addEventListener("click", function(){
 document.getElementById("ListView").addEventListener("click", function(){
 	$("#assetGridRunBtn").hide();
 	$("#assetListRunBtn").show();
-	$("#customeSearcListhButton").side();
+	$("#customeSearcListhButton").show();
     $("#customeSearchButton").hide();
 });
 function getAssetGrowthReports(type){
@@ -419,7 +418,8 @@ function monthsReport(response){
 				{
 					"category": report.monthNames,
 					"column-1": report.categoryCount,
-					"categoryName" :catName
+					"categoryName" :catName,
+					"noOffAssets" : "No. of Assets: "+report.assetCount
 				});
     }
 	
@@ -450,7 +450,7 @@ function monthsReport(response){
 			"trendLines": [],
 			"graphs": [
 				{
-					"balloonText": "No. of Assets:  [[value]] <br/> Category:  [[value]] <br> [[categoryName]] ",
+					"balloonText": " [[noOffAssets]] <br/> Category:  [[value]] <br> [[categoryName]] ",
 					"fillAlphas": 1,
 					"fillColors": "#74B9FF",
 					"fixedColumnWidth": 50,
@@ -484,17 +484,22 @@ function monthsReport(response){
 <script>
 function assetGrowthReportList(response){
   var result = "";
+  var country = '${SourceLeadWeb_orgLocations.country}';
   result = result+'<div class="candidate_wrap_table recruiterReports_table">';
   result = result+'   <table id="assetGrowthPagination">';
   result = result+'     <thead>';
   result = result+'       <tr>';
-  result = result+'         <th> <i class="fa fa-clock-o fa-2x"></i>';
-  result = result+'           <div class="small">Time Period</div>';
+  result = result+'         <th> <i class="fa fa-calendar-check-o fa-2x"></i>';
+  result = result+'           <div class="small">Purchase Date</div>';
   result = result+'         </th>';
   result = result+'         <th> <i class="fa fa fa-cubes fa-2x"></i>';
   result = result+'           <div class="small">No. of Assets</div>';
   result = result+'         </th>';
-  result = result+'         <th> <i class="fa fa-inr fa-2x"></i>';
+  if(country == "India"){
+	  result = result+'         <th> <i class="fa fa-inr fa-2x"></i>';
+  }else{
+	  result = result+'         <th> <i class="fa fa-dollar fa-2x"></i>';
+  }
   result = result+'           <div class="small">Cost of Assests</div></th>';
   result = result+'       </tr>';
   result = result+'     </thead>';
