@@ -23,6 +23,7 @@ import com.bis.sourcelead.dto.AssociateSalaryDTO;
 import com.bis.sourcelead.dto.CandidateDTO;
 import com.bis.sourcelead.dto.Response;
 import com.bis.sourcelead.dto.ResponseList;
+import com.bis.sourcelead.dto.SalaryDTO;
 import com.bis.sourcelead.dto.UserGroupDTO;
 import com.bis.sourcelead.entity.AssociatePayItem;
 import com.bis.sourcelead.entity.AssociateSalary;
@@ -340,8 +341,8 @@ public class AssociateSalaryServiceImpl implements AssociateSalaryService{
 	}
 
 	@Override
-	public List<AssociateSalaryInd> getIndAssociateSalaryListByGroupId(OrgLocations orgLocation, long groupId,
-			String payType) {
-		return associateSalaryDao.getIndAssociateSalaryListByGroupId(orgLocation,groupId,payType);
+	public List<SalaryDTO> getSalaryByGroupId(OrgLocations orgLocation, Long groupId, String payType)
+	{
+		return associateSalaryDao.getSalaryByGroupId(orgLocation, groupId, payType);
 	}
 }
