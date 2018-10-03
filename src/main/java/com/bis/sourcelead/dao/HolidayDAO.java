@@ -42,7 +42,8 @@ public interface HolidayDAO {
 	void deleteHolidayByHolidayId(Long holidayId)throws Exception;
 
 	List<HolidayAndRestrictday> getHolidayByFromToDate(Date startDate, Date endDate, OrgLocations orgLocations);
-
+	
+	List<Holiday> getHolidaybyLocationIdAndFromdateForTimesheets(Date fromDate,  Date endDate,Long orgLocationId,List<Long> excludeIds)throws Exception;
 
 	
 }
