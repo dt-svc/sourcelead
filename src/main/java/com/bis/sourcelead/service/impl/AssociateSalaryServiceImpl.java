@@ -341,8 +341,8 @@ public class AssociateSalaryServiceImpl implements AssociateSalaryService{
 	}
 
 	@Override
-	public List<SalaryDTO> getSalaryByGroupId(OrgLocations orgLocation, Long groupId, String payType)
+	public List<SalaryDTO> getSalaryByGroupId(OrgLocations orgLocation, Long candidateId,Date freqStartDate, Date freqEndDate)
 	{
-		return associateSalaryDao.getSalaryByGroupId(orgLocation, groupId, payType);
+		return associateSalaryDao.getSalaryByGroupId(orgLocation, candidateId,freqStartDate,freqEndDate);
 	}
 }

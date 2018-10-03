@@ -1,5 +1,6 @@
 package com.bis.sourcelead.dao.impl;
 
+import java.util.Date;
 import java.util.List;
 
 import org.apache.commons.lang.StringUtils;
@@ -144,10 +145,10 @@ private static final Logger logger = LoggerFactory.getLogger(AssociateBankDataDa
 		List<AssociateSalary> assList = null;
 		Session session = this.sessionFactory.getCurrentSession();
 		if(Constants.ALL_RECORDS.equalsIgnoreCase(payType)) {
-			qry = "from AssociateSalary ass where ass.orgLocations.id = :orgLocationId and ass.groupId = :groupId and ass.status = '1' and ass.candidate.isAssociate = 'Y'";
+			qry = "from AssociateSalary ass where ass.orgLocations.id = :orgLocationId and ass.groupId = :groupId and ass.status = '1'";// and ass.candidate.isAssociate = 'Y'";
 			 assList = session.createQuery(qry).setLong("orgLocationId", orgLocation.getId()).setLong("groupId", groupId).list();
 		}else {
-			qry = "from AssociateSalary ass where ass.orgLocations.id = :orgLocationId and ass.groupId = :groupId and ass.payType = :payType and ass.status = '1' and ass.candidate.isAssociate = 'Y'";
+			qry = "from AssociateSalary ass where ass.orgLocations.id = :orgLocationId and ass.groupId = :groupId and ass.payType = :payType and ass.status = '1'";// and ass.candidate.isAssociate = 'Y'";
 			 assList = session.createQuery(qry).setLong("orgLocationId", orgLocation.getId()).setLong("groupId", groupId).setParameter("payType", payType).list();
 		}
 		 
@@ -277,55 +278,39 @@ private static final Logger logger = LoggerFactory.getLogger(AssociateBankDataDa
 	}
 
 
+	@SuppressWarnings("unchecked")
 	@Override
-	public List<SalaryDTO> getSalaryByGroupId(OrgLocations orgLocation, Long groupId, String payType)
+	@Transactional
+	public List<SalaryDTO> getSalaryByGroupId(OrgLocations orgLocation, Long candidateId,Date freqStartDate, Date freqEndDate)
 	{
 		List<SalaryDTO> salarylist = null;
 		try {
 			Session session = this.sessionFactory.getCurrentSession();
+			java.sql.Date startDate = new java.sql.Date(freqStartDate.getTime());
+			java.sql.Date endDate = new java.sql.Date(freqEndDate.getTime());
 			StringBuilder sb = new StringBuilder();
-			sb.append("SELECT")
-			.append("sal.ID as salaryId,")
-			.append("sal.ORG_LOCATION_ID as locationId,") 
+			sb.append("SELECT ")
 			.append("sal.CANDIDATE_ID as candidateId,")
-			.append("sal.GROUP_ID as groupId,")
-			.append("sal.PAY_TYPE as payType, ")
-			.append("sal.PAY_FREQUENCY as payFrequency,") 
-			.append("sal.STANDARD_HOURS as standardHours,") 
-			.append("sal.ANNUAL_SALARY as annualSalary,")
-			.append("sal.GROSS_SALARY as grossSalary,")
-			.append("sal.HOURLY_RATE as hourlyRate,") 
-			.append("sal.ALLOW_OVER_TIME_PAY as allowOverTimePay,") 
-			.append("sal.INCREMENT_PERCENTAGE as incrementPercentage,") 
-			.append("sal.EFFECTIVE_DATE as effectiveDate,")
-			.append("sal.CHANGE_REASON as changeReason,")
-			.append("sal.SALARY_TYPE as slaryType,") 
-			.append("sal.ASSOCIATE_SALARY_UUID as associateSalaryUUID,") 
-			.append(" sal.STATUS as status,")
-			.append("can.WORK_LOCATION as workLocation,")
-			.append("can.RESIDENCE_ADDRESS as resideneceAddress,")
-			.append(" can.RESIDENCE_CITY as residenceCity,")
-			.append("can.RESIDENCE_STATE as residenceState,")
-			.append("can.RESIDENCE_COUNTRY as residenceCountry,")
-			.append("can.RESIDENCE_STATE_CODE as residenceStateCode,")
-			.append("can.RESIDENCE_STREET_ADDRESS as residenceStreetAddress,")
-			.append("can.RESIDENCE_ZIP_CODE as residenceZipCode,")
-			.append("can.RESIDENCE_LATITUDE as residenceLattitude,")
-			.append("can.RESIDENCE_LONGITUDE as residenceLongitude,")
+			.append("can.FIRST_NAME as firstName,")
+			.append("can.LAST_NAME as lastName,")
+			.append("can.IS_ASSOCIATE as isTerminated,") 
 			.append("role.TERMINATE_DATE as terminatedDate ")
 			.append(" FROM sourcelead.USER_ROLE role,USER usr,CANDIDATE can,ASSOCIATE_SALARY sal ")
 			.append(" where usr.ID = role.USER_ID")
 			.append(" AND  can.CONSULTANT_USER_ID = usr.ID")
 			.append(" AND sal.CANDIDATE_ID = can.ID")
-			.append(" AND sal.GROUP_ID =:groupId AND sal.ORG_LOCATION_ID = :locationId ")
-			.append(" AND ((role.TERMINATE_DATE >= frequencyStartDate AND role.TERMINATE_DATE <= :frequencyEndDate) OR (role.TERMINATE_DATE IS NULL OR role.TERMINATE_DATE IS NULL))");
+			.append(" AND can.ID =:candidateId AND sal.ORG_LOCATION_ID = :locationId ")
+			.append(" AND role.TERMINATE_DATE >= :startDate AND role.TERMINATE_DATE <= :endDate");// OR (role.TERMINATE_DATE IS NULL OR role.TERMINATE_DATE IS NULL))");
 			Query queryObj = session.createSQLQuery(sb.toString());
-//			queryObj.setLong("payrollId", payrollId);
-			queryObj.setResultTransformer(Transformers.aliasToBean(AssociatePayItemDTO.class));
+			queryObj.setLong("candidateId", candidateId)
+			.setLong("locationId", orgLocation.getId())
+			.setDate("startDate", startDate)
+			.setDate("endDate", endDate);
+			queryObj.setResultTransformer(Transformers.aliasToBean(SalaryDTO.class));
 			salarylist = queryObj.list();
 		}catch (Exception e) {
 			e.printStackTrace();
 		}
-		return null;
+		return salarylist;
 	}
 }
