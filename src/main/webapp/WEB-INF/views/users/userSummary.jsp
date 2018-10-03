@@ -1846,15 +1846,16 @@ $("#editRoleDetailsList").empty();
 					
 					result = result + ' <div class="user_summary_edit_cta">';
 					result = result + ' <label>Work Location<span class="text-danger">&nbsp;*</span></label>';
-					result = result + ' <select name="workLocation" field-name="Work Location" data-validation="required validate_Space">';
+					result = result + ' <select name="workLocation" field-name="Work Location" data-validation="required">';
+					
 					if(json.locationList != null){
 						result = result + ' <option> -- Select Location -- </option>';
 						for(var i = 0; i < json.locationList.length ; i++){
 							var report = json.locationList[i];
 							if(json.workLocationId == report.id){
-								result = result + ' <option value= '+report.id+' selected> '+report.orgLocationAddress+' </option>';
+								result = result + ' <option value= '+report.id+' selected> '+report.registeredLocation+' </option>';
 							}else{
-								result = result + ' <option value= '+report.id+'> '+report.orgLocationAddress+' </option>';
+								result = result + ' <option value= '+report.id+'> '+report.registeredLocation+' </option>';
 							}
 						}
 					}
