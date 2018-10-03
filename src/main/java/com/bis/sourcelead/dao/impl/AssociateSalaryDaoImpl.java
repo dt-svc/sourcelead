@@ -328,4 +328,25 @@ private static final Logger logger = LoggerFactory.getLogger(AssociateBankDataDa
 		}
 		return null;
 	}
+	
+	@Override
+	@Transactional
+	public List<AssociateSalaryInd> getIndAssociateSalaryListByGroupId(OrgLocations orgLocation, long groupId,
+			String payType) {
+		String qry = "";
+		List<AssociateSalaryInd> assList = null;
+		Session session = this.sessionFactory.getCurrentSession();
+		if(Constants.ALL_RECORDS.equalsIgnoreCase(payType)) {
+			qry = "from AssociateSalaryInd ass where ass.orgLocations.id = :orgLocationId and ass.groupId = :groupId and ass.status = '1'";
+			 assList = session.createQuery(qry).setLong("orgLocationId", orgLocation.getId()).setLong("groupId", groupId).list();
+		}else {
+			qry = "from AssociateSalaryInd ass where ass.orgLocations.id = :orgLocationId and ass.groupId = :groupId and ass.payType = :payType and ass.status = '1'";
+			 assList = session.createQuery(qry).setLong("orgLocationId", orgLocation.getId()).setLong("groupId", groupId).setParameter("payType", payType).list();
+		}
+		 
+		if(assList != null)
+			return assList;
+		else
+			return null;
+	}
 }

@@ -37,8 +37,8 @@
 							</select>
 						</div>
 						<div class="col-md-2">
-							<select class="sel selheight30">
-								<option selected>${freqResponse.frequencyStartDateStr} - ${freqResponse.frequencyEndDateStr}</option>
+							<select class="sel selheight30" id="paySheetFrequency">
+								<option selected value="${freqResponse.paySheetFrequencyUUID}">${freqResponse.frequencyStartDateStr} - ${freqResponse.frequencyEndDateStr}</option>
 							</select>
 						</div>
 						<div class="col-md-2">
@@ -90,8 +90,8 @@
 								<tr>
 									<td>
 										<div class="checkbox-new pull-left ml">
-											<input id="emp1" class="checkbox-custom" name="paidComponent"
-												type="checkbox"> <label for="emp1"
+											<input id="${empPayroll.indEmpPayrollUUID}" class="checkbox-custom" name="empPayroll"
+												value="${empPayroll.indEmpPayrollUUID}" type="checkbox"> <label for="${empPayroll.indEmpPayrollUUID}"
 												class="checkbox-custom-label"></label>
 										</div>
 									</td>
@@ -126,7 +126,7 @@
 			<div class="clearfix mt"></div>
 			<nav class="clearfix">
 				<ul class="pull-right mr list-unstyled list-inline">
-					<li><a href="#" class="btn btn-primary btnSuccess">Sent for Approve</a></li>
+					<li><a class="btn btn-primary btnSuccess" onclick="sentForApprove();">Sent for Approve</a></li>
 					<li><a href="#" class="btn btn-default ml mr">Confirm</a></li>
 					<li><a href="#" class="btn btn-default">Cancel</a></li>
 				</ul>
@@ -217,6 +217,26 @@ function confirmPayroll() {
 function closeCPR() {
 	$(".confirmPayroll, .comMask").fadeOut();
 }
+</script>
+
+<script>
+function sentForApprove(){
+	var feqUUID = $("#paySheetFrequency").value();
+	var excludeEmpArr = [];
+	$("input:checkbox[name=empPayroll]:checked").each(function(){
+		excludeEmpArr.push($(this).val());
+	});
+	
+	$.ajax({
+        type : "POST",
+        url: sourceleadUrl+"/sentForApproveIndPayroll?"+tokenParamName+"="+tokenValue+"&paySheetFrequencyUUID="+feqUUID+"&empPayrollUUID="+excludeEmpArr,    
+         success :function(result) { 
+        	 
+        	 
+         },
+    });
+}
+
 </script>
   
 <jsp:include page="../../masterFooter.jsp" />

@@ -40,6 +40,7 @@ import com.bis.sourcelead.entity.UserRole;
 import com.bis.sourcelead.enums.Result;
 import com.bis.sourcelead.payroll.dto.AssociatePfEsiDetailsDTO;
 import com.bis.sourcelead.payroll.dto.GenerateINDPayrollDTO;
+import com.bis.sourcelead.payroll.dto.IndApprovePayrollDTO;
 import com.bis.sourcelead.payroll.dto.IndPaysheetFrequencyDTO;
 import com.bis.sourcelead.payroll.service.AssociatePfEsiService;
 import com.bis.sourcelead.payroll.service.GenerateINDPayrollService;
@@ -424,6 +425,16 @@ public class IndianPayrollRestController {
 		IndPaysheetFrequencyDTO existedData = generateINDPayrollService.getPayrollData(generateINDPayrollDTO,orgLocation,loginUser);
 		return generateINDPayrollService.generateINDPayroll(existedData, orgLocation, generateINDPayrollDTO, loginUser);
 	}
+    
+    
+    @RequestMapping(value = { "/app/sentForApproveIndPayroll","/app/rest/sentForApproveIndPayroll" }, method = RequestMethod.POST)
+   	public IndApprovePayrollDTO sentForApproveIndPayroll(IndApprovePayrollDTO indApprovePayrollDTO, HttpServletRequest request, HttpServletResponse response) throws Exception
+   	{
+   		OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+   		User loginUser = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+   		
+   		return null;
+   	}
 
     
 }
