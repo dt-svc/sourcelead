@@ -7,7 +7,7 @@
   <!-- Header Area -->
   <section class="content-wraper">
     <section class="content-header clearfix">
-       <div class="pull-right brud-crum"><a href="<c:url value='${appPath}/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a> &raquo; Joined List</div>
+       <div class="pull-right brud-crum"><a href="<c:url value='${appPath}/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a> &raquo; <a href="<c:url value='${appPath}/reportsDashboard'/>">Reports Dashboard</a> &raquo; <a href="<c:url value='${appPath}/performanceReportList'/>">Performance Reports</a> &raquo; Applicants Joined Report  </div>
     </section>
        
     <!-- Project -->
@@ -169,7 +169,7 @@ function prepareOfferList(url){
 		result = result + '<th>Source</th>';
 		result = result + '<th>Date Of Join</th>';
 		result = result + '<th>Payment Term</th>';
-		result = result + '<th>generate Invoice</th>';
+		result = result + '<th>Generate Invoice</th>';
 		result = result + '</tr>';
         result = result +'</thead>';
         result = result +'<tbody>'; 
@@ -462,7 +462,7 @@ $(".overIcon, .newActPop").click(function(e){
 				</h5>
 				<div class="addInner">
 					<div class="row">
-					  <div class="col-md-3">
+					  <div class="col-md-3 hidden">
 						<div class="row">
 						<!-- <div class="col-md-12 mb">
 								<label><strong>Search for</strong></label>
@@ -512,7 +512,7 @@ $(".overIcon, .newActPop").click(function(e){
 						</div>
 						
 						 
-						<div class="col-md-3">
+						<div class="col-md-3 hidden">
 						<div class="row">
 						  <!--   <div class="col-md-12 mb">
 								<label><strong>Employment Type</strong></label>
