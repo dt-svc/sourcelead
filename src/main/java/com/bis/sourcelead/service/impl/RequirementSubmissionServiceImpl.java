@@ -296,7 +296,7 @@ public class RequirementSubmissionServiceImpl implements RequirementSubmissionSe
 		 OrgLocations guestOrglocation=null;
 		 String submissionstatus=null;
 		 Countries countries = null;
-		 if(StringUtils.isNotBlank(orgLocations.getCountry())) {
+		 if(orgLocations != null && StringUtils.isNotBlank(orgLocations.getCountry())) {
 			 countries = countiresService.getCountriesByCountryName(orgLocations.getCountry());
 		 }
 		 

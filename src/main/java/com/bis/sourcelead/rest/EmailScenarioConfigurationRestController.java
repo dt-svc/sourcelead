@@ -32,6 +32,7 @@ import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.enums.Result;
 import com.bis.sourcelead.service.EmailScenarioConfigurationService;
 import com.bis.sourcelead.service.TabsService;
+import com.bis.sourcelead.util.PasswordSecurity;
 import com.bis.sourcelead.util.SourceLeadRandomCodeHelper;
 import com.bis.sourcelead.util.SourceLeadSessionManager;
 
@@ -162,6 +163,7 @@ public class EmailScenarioConfigurationRestController {
 			 String fromMail=emailScenarioconService.verifyConfgParserMail(orgLocation.getId(),emailConfig);
 			 if(Constants.EMAIL_SUCCESS.equalsIgnoreCase(fromMail)){
 				 emailConfig.setStatus("Y");
+				 emailConfig.setEmailPassword(new PasswordSecurity().encrypt(emailConfig.getEmailPassword()));
 				 emailConfig.setUsageType(emailConfigurationDTO.getUsageType());
 				 emailScenarioconService.save(emailConfig); // Saving record when successfully validated.
 				 returnValue= "success";
