@@ -103,6 +103,7 @@ public class PdfUtil {
 	@Autowired
 	CommonUtil commonUtil;
 	
+	@Autowired
 	RequirementInterviewService requirementInterviewService;
 	
 	@Autowired
@@ -1770,8 +1771,13 @@ private String[] prepareApplicantJoinedListStringArray(RequirementSubmissionHist
 					 userArray[3] = rsh.getSubmissionId().getRequirement().getJobTitle();
 				}
 			}
+			
+			if(rsh.getSubmissionId().getRequirement().getProcess() != null){
+				userArray[4] = rsh.getSubmissionId().getRequirement().getProcess();
+			}else{
+				userArray[4] = "--";
+			}
 		
-			 userArray[4] = "--";
 				//Clinet Name
 				if(rsh.getSubmissionId().getRequirement().getClientId() != null) {
 					if (rsh.getSubmissionId().getRequirement().getClientId().getResponderType().equalsIgnoreCase("Client")) {
@@ -1792,7 +1798,8 @@ private String[] prepareApplicantJoinedListStringArray(RequirementSubmissionHist
 					userArray[5] = "--";
 				}
 				RequirementInterview reqInterview=requirementInterviewService.getinterviewBySubmissionId(rsh.getSubmissionId().getId());
-				if(reqInterview.getDateOfInterview() !=  null){
+				
+				if(reqInterview != null && reqInterview.getDateOfInterview() !=  null){
 					 userArray[6] = commonUtil.dateStrFromOrgDateFormatter(loginOrgLocations.getDateFormat(),reqInterview.getDateOfInterview());
 				}
 				else{
@@ -1811,22 +1818,28 @@ private String[] prepareApplicantJoinedListStringArray(RequirementSubmissionHist
 			   userArray[8] = rsh.getSubmissionId().getCreatedUser();
 			 //Submitted On
 		   userArray[9] = commonUtil.dateStrFromOrgDateFormatter(loginOrgLocations.getDateFormat(),rsh.getCreatedDate());
-			if(rsh.getSubmissionId().getRequirement().getPayOutPeriod() != null){
-				userArray[10] = rsh.getSubmissionId().getRequirement().getPayOutPeriod().toString();
+		   if(rsh.getSubmissionId().getJoinedDate()  != null){
+			   userArray[10] = commonUtil.dateStrFromOrgDateFormatter(loginOrgLocations.getDateFormat(),rsh.getSubmissionId().getJoinedDate());
 			}
 			else{
-				 userArray[10] = "--";
+				userArray[10] = "--";
+				}
+			if(rsh.getSubmissionId().getRequirement().getPayOutPeriod() != null){
+				userArray[11] = rsh.getSubmissionId().getRequirement().getPayOutPeriod().toString();
+			}
+			else{
+				 userArray[11] = "--";
 			}
 			if(rsh.getSubmissionId().getRequirement().getPayOutPeriod() != null &&  rsh.getSubmissionId().getJoinedDate()  != null){
 				int result = Integer.parseInt(rsh.getSubmissionId().getRequirement().getPayOutPeriod());
 				Date generatedInvoiceDate=CalendarUtil.addDays(rsh.getSubmissionId().getJoinedDate(), result);
 				DateTime dtOrg = new DateTime(generatedInvoiceDate);
 				DateTime generatedInvoiceDatePlusOne = dtOrg.plusDays(1);
-				   userArray[11] = commonUtil.dateStrFromOrgDateFormatter(loginOrgLocations.getDateFormat(),generatedInvoiceDatePlusOne.toDate());
+				   userArray[12] = commonUtil.dateStrFromOrgDateFormatter(loginOrgLocations.getDateFormat(),generatedInvoiceDatePlusOne.toDate());
 
 			}
 			else{
-				userArray[11] = "--";	
+				userArray[12] = "--";	
 			}
 	   
 	return userArray;
