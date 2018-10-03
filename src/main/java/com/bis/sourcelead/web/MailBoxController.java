@@ -170,7 +170,6 @@ public class MailBoxController {
 	@RequestMapping(value = "/app/emailSettings")
 	@ResponseBody
 	public ModelAndView emailSettings(HttpServletRequest request, @RequestParam(defaultValue = "others") String source) {
-//		User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
 		ModelAndView model = new ModelAndView();
 		String incomingServer = "secure.emailsrvr.com";
 		String incomingPort = "993";
@@ -200,10 +199,6 @@ public class MailBoxController {
 		emailAccountSettingsDTO.setOutgoingPort(outgoingPort);
 		emailAccountSettingsDTO.setOutgoingSSL(true);
 		model.addObject("emailAccount", emailAccountSettingsDTO);
-		/*model.addObject("incomingServer", incomingServer);
-		model.addObject("incomingPort", incomingPort);
-		model.addObject("outgoingServer", outgoingServer);
-		model.addObject("outgoingPort", outgoingPort);*/
 		model.addObject("sourceleadUrl", sourceleadUrl);
 		model.setViewName("emailConfiguration");
 		return model;
@@ -468,6 +463,7 @@ public class MailBoxController {
 	
 	
 	
+	@SuppressWarnings("static-access")
 	public void calculateDays(List<CampaignIndex> mailBoxList, Timezone timezone) throws ParseException {
 		for (CampaignIndex userMailBox : mailBoxList) {
 			long diff = commonUtil.currentDate().getTime() - userMailBox.getCreatedDate().getTime();
