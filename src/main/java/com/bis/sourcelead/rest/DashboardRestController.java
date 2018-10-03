@@ -1630,7 +1630,17 @@ public class DashboardRestController {
 					if(rsh.getSubmissionId().getRequirement().getGeneratedId() != null) {
 						rshDTO.setJobGeneratedId(rsh.getSubmissionId().getRequirement().getGeneratedId());
 					}
+					if(rsh.getSubmissionId().getRequirement().getPayOutPeriod() != null){
+						rshDTO.setPayOutPeriod(rsh.getSubmissionId().getRequirement().getPayOutPeriod());
+					}
 					
+					if(rsh.getSubmissionId().getRequirement().getPayOutPeriod() != null &&  rsh.getSubmissionId().getJoinedDate()  != null){
+						int result = Integer.parseInt(rsh.getSubmissionId().getRequirement().getPayOutPeriod());
+						Date generatedInvoiceDate=CalendarUtil.addDays(rsh.getSubmissionId().getJoinedDate(), result);
+						DateTime dtOrg = new DateTime(generatedInvoiceDate);
+						DateTime generatedInvoiceDatePlusOne = dtOrg.plusDays(1);
+						rshDTO.setGenerateInvoice(commonUtil.dateStrFromOrgDateFormatter(loginOrgLocations.getDateFormat(),generatedInvoiceDatePlusOne.toDate()));
+					}
 					
 					if(rsh.getSubmissionId().getRequirement().getParentRequirement() != null){
 						rshDTO.setOrgLocationName(rsh.getSubmissionId().getRequirement().getParentRequirement().getOrgLocationId().getOrgLocationName());
@@ -1813,6 +1823,7 @@ public class DashboardRestController {
 	 * @param response
 	 * @throws Exception
 	 */
+	
 	@RequestMapping(value = "/applicantListExport")
 	public void applicantListExport(RequirementSubmissionHistoryDTO requirementSubmissionHistoryDTO, HttpServletRequest request,HttpServletResponse response)throws Exception
    {
@@ -1926,4 +1937,86 @@ public class DashboardRestController {
 			file.delete();
 		}
    }
+	@RequestMapping(value = "/applicantsJoinedListExport")
+	public void applicantsJoinedListExport(RequirementSubmissionHistoryDTO requirementSubmissionHistoryDTO, HttpServletRequest request,HttpServletResponse response)throws Exception
+   {
+		OrgLocations loginOrgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+		Timezone timezone = null;
+		String userRole = (String) SourceLeadSessionManager.getSessionAttribute(request, "loginUserRole");
+		User  user = (User)SourceLeadSessionManager.getSessionAttribute(request, "user");
+		if(loginOrgLocations.getTimezone() != null){
+			timezone = timeZoneService.getTimezone(loginOrgLocations.getTimezone().getId());
+		}
+		Date[] freqDates = new Date[2];
+		String userType = null;
+		Date startUTCDate = null;
+		Date endUTCDate = null;
+		DateFormat TZ_DF_TS = new SimpleDateFormat ("yyyy-MM-dd HH:mm:ss");
+		DateFormat TZ_DF_CSD = new SimpleDateFormat ("yyyy-MM-dd 00:00:00");
+		DateFormat TZ_DF_CED = new SimpleDateFormat ("yyyy-MM-dd 23:59:59");
+		if("Custom".equalsIgnoreCase(requirementSubmissionHistoryDTO.getFrequency())){
+			Date startTime =  commonUtil.orgLocationDateFormat(loginOrgLocations.getDateFormat(),requirementSubmissionHistoryDTO.getFromDate());
+			Date endTime =  commonUtil.orgLocationDateFormat(loginOrgLocations.getDateFormat(),requirementSubmissionHistoryDTO.getToDate());
+			String customStartTimeStr = TZ_DF_CSD.format(startTime);  
+			String customEndTimeStr = TZ_DF_CED.format(endTime);  
+			startUTCDate = TZ_DF_TS.parse(customStartTimeStr);
+			endUTCDate = TZ_DF_TS.parse(customEndTimeStr);
+		}else{
+			freqDates = reportsUtil.getJobFilterDate(requirementSubmissionHistoryDTO.getFrequency(),loginOrgLocations);
+			String customStartTimeStr = TZ_DF_CSD.format(freqDates[0]);  
+			String customEndTimeStr = TZ_DF_CED.format(freqDates[1]);  
+			startUTCDate = TZ_DF_TS.parse(customStartTimeStr);
+			endUTCDate = TZ_DF_TS.parse(customEndTimeStr);
+		}
+		  
+		
+		if(Constants.ROLE_ADMIN.equalsIgnoreCase(userRole) || Constants.SOURCELEAD_ADMIN.equalsIgnoreCase(userRole)){
+			userType = Constants.ADMIN;
+		} 
+		
+		
+	   ResponseList<RequirementSubmissionHistory> dashboardJobsCountlist =requirementSubmissionDao.getRequirementSubmissionsListWithDTOByOrgLocationsIdAndSubmissionStatus(requirementSubmissionHistoryDTO, loginOrgLocations.getId(),requirementSubmissionHistoryDTO.getSubmissionStatus(),requirementSubmissionHistoryDTO.getTabType(),userType,user,startUTCDate,endUTCDate);
+
+	   
+		 Workbook createExcelworkbook =  new XSSFWorkbook();
+		 StringBuilder excelSB = new StringBuilder();
+		 Sheet createExcelsheet = null;
+	 	createExcelsheet = createExcelworkbook.createSheet(excelSB.append("joined").append(commonUtil.dateStrFromOrgDateFormatter(loginOrgLocations.getDateFormat(),new Date())).toString());
+
+ 		File file = null;
+ 		if(!"pdf".equalsIgnoreCase(requirementSubmissionHistoryDTO.getExportType())){
+ 			createExcelsheet = requirementSubmissionService.getApplicaantJoinedListExcelFile(createExcelsheet,createExcelworkbook,dashboardJobsCountlist,loginOrgLocations,requirementSubmissionHistoryDTO.getSubmissionStatus());
+ 			 StringBuilder templateSB = new StringBuilder();
+		 		  file = File.createTempFile(templateSB.append("joind_").append(commonUtil.dateStrFromOrgDateFormatter(loginOrgLocations.getDateFormat(),new Date())).toString(),".xls");
+	 		  file.setReadable(true);
+	 		  
+			 FileOutputStream fos = new FileOutputStream(file);
+			 try {
+				createExcelworkbook.write(fos);
+				fos.close();
+			} catch (IOException e) {
+				e.printStackTrace();
+			}	 	
+ 		}else {
+ 			file = requirementSubmissionService.getApplicantsJoinedListPdfFile(dashboardJobsCountlist,loginOrgLocations);
+ 			
+ 		}
+ 		String mimeType = URLConnection.guessContentTypeFromName(file.getName());
+		if (mimeType == null) {
+			mimeType = "application/octet-stream";
+		}
+		response.setContentType(mimeType);
+		StringBuilder fileNameSB = new StringBuilder();
+		response.setHeader("Content-Disposition", fileNameSB.append("attachment; filename=\"").append(file.getName()).append("\"").toString());
+		response.setContentLength((int) file.length());
+		InputStream inputStream = new BufferedInputStream(new FileInputStream(file));
+		FileCopyUtils.copy(inputStream, response.getOutputStream());
+		inputStream.close();
+		response.getOutputStream().close();
+		response.getOutputStream().flush();	
+		if(file!= null){
+			file.delete();
+		}
+   }
+	
 }
