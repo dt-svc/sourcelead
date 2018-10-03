@@ -45,7 +45,7 @@
           </div>
           
            <div class="clearfix bg-info">
-             <label class="modal-body"><strong class="text-danger paddingRight">Note:</strong>To configure the Gmail account, enable the  <a href="https://mail.google.com/mail/u/0/#settings/fwdandpop" target="_blank">IMAP</a> and <a href="https://www.google.com/settings/security/lesssecureapps" target="_blank">Allow less secure</a></label>
+             <label class="modal-body"><strong class="text-danger paddingRight">Note:</strong>To configure the Gmail account, enable the  <a href="https://mail.google.com/mail/u/0/#settings/fwdandpop" target="_blank">POP</a> and <a href="https://www.google.com/settings/security/lesssecureapps" target="_blank">Allow less secure</a></label>
            </div>
           
 			</div>
