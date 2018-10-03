@@ -2160,15 +2160,31 @@ public class CandidateDaoImpl implements CandidateDao {
 	@Transactional(rollbackFor = { Exception.class })
 	public ResponseList<CandidateDTO> getCandidatesByCandidateIds(List<String> candidateIds) {
 		Session session = this.sessionFactory.getCurrentSession();
+		ResponseList<CandidateDTO> responseList = new ResponseList<>();
+		List<Long> countlist = null;
+		Integer filterCount = 0;
 		String query = "from Candidate candidate where candidate.id IN ( :candidateIds )";
 		List<Candidate> candidates = session.createQuery(query).setParameterList("candidateIds", candidateIds).list();
+		 String listQueryCount = "select count(candidate) from Candidate candidate where candidate.id IN ( :candidateIds )";
+	        countlist = session.createQuery(query).setParameterList("candidateIds", candidateIds).list();
+	        int totalCount = 0;
+	            if (countlist != null && !countlist.isEmpty()) {
+	                totalCount = countlist.size()	;
+	                filterCount = totalCount;
+	            }
+	        responseList.setRecordsTotal(totalCount);
+	        //if (query1.toString() != null && !query1.toString().isEmpty()) {
+	            responseList.setRecordsFiltered(filterCount);
+	        //} else {
+	          //  responseList.setRecordsFiltered(totalCount);
+	        //}
 		List<CandidateDTO> candidateDTOList = new ArrayList<>();
 		for(Candidate candidate : candidates){
 			CandidateDTO dto = new CandidateDTO();
 			BeanUtils.copyProperties(candidate, dto);
 			candidateDTOList.add(dto);
 		}
-		ResponseList<CandidateDTO> responseList = new ResponseList<>();
+		
 		responseList.setData(candidateDTOList);
 		return responseList;
 	}

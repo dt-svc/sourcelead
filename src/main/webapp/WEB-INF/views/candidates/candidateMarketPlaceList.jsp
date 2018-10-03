@@ -12,6 +12,7 @@
 <!-- <script type="text/javascript" src="/resources/js/colResizable-1.6.min.js"></script> -->
 <%-- <c:set var ="myImmigrationPage" value = "Y" scope="session"/> --%>
 <title>Welcome to Source Lead :: Marketplace List</title>
+<div id="popUp"></div>
     <section class="content-wraper contentWraper">
     <section class="content-header clearfix">
       <div class="pull-left">
@@ -35,11 +36,12 @@
           		<div class="col-md-9 customSetprice">
           				<div class="form-inline">
           					<div class="form-group">
-          						<input type="text" class="form-control" value="" placeholder="Enter">
+          						<input type="text" class="form-control" id="amountForAll" placeholder="Enter">
           					</div>
           					<div class="form-group dropdown-select bgPosition">
-          						<select>
-								<option selected>INR</option>
+          						<select id="priceTypeVal">
+          						<option value="" selected>--Select--</option>
+								<option>INR</option>
 								<option>AUD</option>
 								<option>USD</option>
 								<option>GBP</option>
@@ -48,7 +50,7 @@
 								</select>
           					</div>
           					<div class="form-group">
-          						<button type="button" class="btn btn-primary">Set</button>
+          						<button type="button" onclick="setValuesForAllMCandidates();" class="btn btn-primary">Set</button>
           					</div>
           				</div>			
           		</div>
@@ -60,7 +62,7 @@
           </div>
         </div>
         <div class="clearfix mt"></div>
-         <div class="styleTables" id="marketPlaceTableDiv">
+         <div class="styleTables datatable_filter" id="marketPlaceTableDiv">
           <!-- <table>
             <thead>
               <tr>
@@ -143,7 +145,7 @@
         <div class="footerstyelsNew mt clearfix">
         <div class="col-lg-12">
         <div class="pull-right">
-        <input type="button" class="btn btn-success btnSuccess ml" value="Share">
+        <input type="button" onclick="callValidatePriceAmount();" class="btn btn-success btnSuccess ml" value="Share">
         <input type="button" class="btn btn-default ml" value="Cancel">
         </div>
         </div>
@@ -159,6 +161,128 @@
 	
 }*/
 
+function setValuesForAllMCandidates(){
+	var amount = $("#amountForAll").val();
+	var amountType = $("#priceTypeVal").val();
+	if(amount != '' && amountType != ''){
+		$("input[id='priceVal']").each(function() {
+			$(this).val(amount);
+		});
+		$("select[id='amountTypeEach']").each(function(){
+			$(this).val(amountType);
+		});
+		if($("#amountForAll").val() != ''){
+			$('input[id="sharedcheckbox"]').prop('checked', 'checked');
+			$('input[id="sharedcheckboxAll"]').prop('checked', 'checked');
+		}
+	}else {
+		popupDisplay("Please enter amount and type");
+	}
+	
+	
+}
+
+function callValidatePriceAmount(){
+	var flagAtleastOneCheck = false;
+	var flagRowForEnteredPrice = false;
+	var flagPriceForSelectedRow = false;
+	var flagPriceTypeForEnteredPrice = false;
+	var flagPriceForEnteredPriceType = false;
+	if(!$('input[id="sharedcheckbox"]').is(":checked")){
+		flagAtleastOneCheck = true;
+	}
+	$("input[id='priceVal']").each(function() {
+		if($(this).val() != ""){
+			flagAtleastOneCheck = false;
+		}
+	});
+	
+	$("#sharedcheckbox:checked").each(function() {
+		if($(this).closest('tr').find("input[id='priceVal']").val() == ''){
+			flagPriceForSelectedRow = true;
+		}
+    });
+
+	$("input[id='priceVal']").each(function() {
+		if($(this).closest('tr').find("input[id='priceVal']").val() == ''){
+			if($(this).closest('tr').find("select[id='amountTypeEach']").val() != ''){
+				flagPriceForEnteredPriceType = true;
+			}
+		}
+    });
+	
+	$("input[id='priceVal']").each(function() {
+		if($(this).val() != ""){
+			if(!$(this).closest('tr').find("input[type='checkbox']").is(":checked")){
+				flagRowForEnteredPrice = true;
+			}
+		}
+	});
+	
+	$("input[id='priceVal']").each(function() {
+		if($(this).val() != ""){
+			if($(this).closest('tr').find("select[id='amountTypeEach']").val() == ''){
+				flagPriceTypeForEnteredPrice = true;
+			}
+		}
+	});
+	
+	if(flagRowForEnteredPrice){
+		popupDisplay("Please select checkbox for entered price");
+	}
+	
+	if(flagPriceForSelectedRow){
+		popupDisplay("Please enter price for selected row");
+	}
+	
+	if(flagAtleastOneCheck){
+		popupDisplay("Please select atleast one checkbox");
+	}
+	
+	if(flagPriceTypeForEnteredPrice){
+		popupDisplay("Please select amount type");
+	}
+	
+	if(flagPriceForEnteredPriceType){
+		popupDisplay("Please enter amount for amount type");
+	}
+}
+function popupDisplay(message){
+	$(".project_inn_mask").remove();
+		
+	var result = "";
+	result = result +"	<div class='project_inn_mask'></div>";
+	result = result +"	   <div id='remove_immigration_pop' class='remove_user_pop remove_user_pop_a'>";
+	/* result = result +"		<  id='reasonForTemplate' name='reasonForSpoc' data-validation='required validate_Space validate_Description validate_length length2-250' placeholder='Reason' onkeypress=';' ></textarea>"; */
+	result = result +"<div class='modal-body'><p id='popupMsg'></p></div>";
+	result = result + ' <div id="reasonForTemplateDiv"/>';
+	result = result +"<div class='clearfix'><input class='u_can_color width100percnt' type='button'  value='Ok' onClick='cancelMarketplacePopup();'></div>";
+	result = result +"	</div>";
+	$("#popUp").append(result);
+	$("#popupMsg").empty().append(message);
+	$("#remove_immigration_pop").slideDown(200);
+	$(".project_inn_mask").fadeIn(200);
+}
+
+function cancelMarketplacePopup(){
+	$("#remove_immigration_pop").fadeOut(200);
+	$(".project_inn_mask").fadeOut(200);
+}
+
+function toggleMarketPlaceAllCheck(source){
+	if($(source).is(":checked")){
+		  $('input[id="sharedcheckbox"]').prop('checked', 'checked');
+	}else{ 
+		  $('input[id="sharedcheckbox"]').removeProp('checked');
+	}
+}
+
+/* $("").keyup(function(){
+    $(this).closest('tr').find("input").each(function() {
+        alert(this.value)
+    });
+}); */
+
 $(document).ready(function() {
 	loadMarketPlaceDraftData();
 });
@@ -167,8 +291,8 @@ function loadMarketPlaceDraftData(){
 	
 	$("#marketPlaceTableDiv").empty();
 	var result = "";
-	result = result + "<table id='marketPlaceTable'><thead>";
-	result = result + "<tr><th>All</th>";
+	result = result + "<table id='marketPlaceTable' class='display' cellspacing='0' width='100%'><thead>";
+	result = result + '<tr><th class="text-center"><input type="checkbox" onclick="toggleMarketPlaceAllCheck(this);" id="sharedcheckboxAll" onclick=""/></th>';
 	result = result + "<th>Id</th>";
 	result = result + "<th>Name</th>";
 	result = result + "<th>Email</th>";
@@ -194,8 +318,8 @@ function loadMarketPlaceDraftData(){
 }
 
 function marketPlacePagination(){
-	alert("${movedCandidateIds}");
 	var colIndex = 0;
+	//var countIndex = 0;
 	/*$.fn.dataTable.moment( 'DD-MM-YYYY' );*/
     $('#marketPlaceTable').DataTable( { 
     		"processing": true,
@@ -224,9 +348,11 @@ function marketPlacePagination(){
     	  	"sortable": false,
     	  	"data": "id",
     	  	"render": function(data, type, full, meta) {
-    	  		alert("full.id :"+full.id);
-    	  		 var result = "";
-	        		result = "<input type='hidden' id='candidateId' value='"+full.id+"'/>";
+    	  		//countIndex++;
+    	  		//alert(countIndex);
+				var result = "";
+    	  		 result = result + '<input type="checkbox" id="sharedcheckbox" />';
+	        		result = result + "<input type='hidden' id='candidateId' value='"+full.id+"'/>";
     	  		 return result; 
     	  	}
         	},  {
@@ -288,16 +414,15 @@ function marketPlacePagination(){
                 		var result = "";
                 		var experienceYears='';
                 		if(opt.experienceYears == null || opt.experienceYears == "null" || opt.experienceYears == '' || opt.experienceYears == "undefined" || opt.experienceYears == 0){
-                			experienceYears = 0
+                			experienceYears = 0;
    	             	 	}else{
-   	             	 		experienceYears = opt.experienceYears
+   	             	 		experienceYears = opt.experienceYears;
    	             	 	}
                 		var experienceMonths='';
-                		alert(opt.experienceYears+" : "+opt.experienceMonths);
                 		if(opt.experienceMonths == null || opt.experienceMonths == "null" || opt.experienceMonths == '' || opt.experienceMonths == "undefined" || opt.experienceMonths == 0){
-                			experienceMonths = 0
+                			experienceMonths = 0;
    	             	 	}else{
-   	             	 		experienceMonths = opt.experienceMonths
+   	             	 		experienceMonths = opt.experienceMonths;
    	             	 	}
                 		var experience = experienceYears+" Years, "+experienceMonths+" Months";
                 		result = result + "<td><div class='tblminwidth-50' onclick='#'><span title='"+experience+"'>"+experience+"</span></div></td>";
@@ -338,8 +463,8 @@ function marketPlacePagination(){
 	    	    		"sortable": false,
 	    	    	  	"render": function(data, type, opt, meta) {
 	    	    	  		var result = "";
-	    	    	  		result = result + '<td><div class="tblminwidth-75 clearfix"><div class="dropdown-inputbox"><input type="text" value="" placeholder="Enter" class="form-control input-sm"><select class="form-control input-sm sel">';
-	    	    	  		result = result + '<option selected>INR</option><option>AUD</option><option>USD</option><option>GBP</option><option>SGD</option><option>EUR</option></select></div></div></td>';
+	    	    	  		result = result + '<td><div class="tblminwidth-75 clearfix"><div class="dropdown-inputbox"><input type="text" id="priceVal" value="" placeholder="Enter" class="form-control input-sm"><select id="amountTypeEach" class="form-control input-sm sel">';
+	    	    	  		result = result + '<option value="" selected>--Select--</option><option>INR</option><option>AUD</option><option>USD</option><option>GBP</option><option>SGD</option><option>EUR</option></select></div></div></td>';
 	    	    	  		return result;
 	    	    	  	}
     	    	  } ],
@@ -375,6 +500,22 @@ $(".funPrice").on("click", "li", function(){
 	$(this).parents(".selectPriceli").find(".selectPrice").text(x);
 });
 function setPrice(){
-	$(".customSetprice").toggle();
+	$(".customSetprice").toggle(function(){
+		/* if($(this).is(":visible")){
+			
+		} */
+		if($(this).is(":hidden")){
+			$("input[id='priceVal']").each(function() {
+				$(this).val('');
+			});
+			$("select[id='amountTypeEach']").each(function(){
+				$(this).val('');
+			});
+			$('input[id="sharedcheckbox"]').removeProp('checked');
+			$('input[id="sharedcheckboxAll"]').removeProp('checked');
+			$("#amountForAll").val('');
+			$("#priceTypeVal").val('');
+		}
+	});
 }
 </script>	

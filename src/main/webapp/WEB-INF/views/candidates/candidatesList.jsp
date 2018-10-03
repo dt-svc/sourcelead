@@ -1514,13 +1514,11 @@ function cancel(candidateId){
 	 		candidateIds.push($(this).attr("id"));
 	 	});
 	 	//$("#marketPlaceIdsHidden").val(candidateIds)
-	 	alert(candidateIds);
 	 	$.ajax({
 		    	type: "POST",
 		        url: sourceleadUrl+"/navigateMarketPlaceAjax",
 		        data : {candidateIdsVal : candidateIds},
 		        success: function(json) {
-		        	alert("success");
 		        	location.href = sourceleadUrl+"/navigateMarketPlaceList";
 		        }
 	 	});
