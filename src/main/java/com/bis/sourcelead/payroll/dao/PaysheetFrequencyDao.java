@@ -29,5 +29,7 @@ public interface PaysheetFrequencyDao {
 	YTDPayrollDTO getContributionYTD(EmployeePayroll payroll,Long contributionId,OrgLocations orgLocations, String reportType);
 
 	YTDPayrollDTO getDeductionYTD(EmployeePayroll payroll, Long deductionId, OrgLocations orgLocation, String reportType);
+
+	List<EmployeePayroll> getPayrollTaxesYTD(EmployeePayroll payroll, OrgLocations orgLocation);
 			
 }

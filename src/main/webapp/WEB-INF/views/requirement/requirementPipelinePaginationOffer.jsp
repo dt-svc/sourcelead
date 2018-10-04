@@ -304,6 +304,12 @@
 															+ submissionType
 															+ '\')";>';
 													result = result + "<option value='Status'>" + opt.submissionDisplayStatus + "</option>";
+													if (opt.submissionStatus == 'OFFERMADE'){	
+														result = result + "<option value='On Hold'>On Hold</option>";
+														}
+													if (opt.submissionStatus == 'OFFERMADE'){	
+														result = result + "<option value='NoResponse'>No Response</option>";
+														}
 													if (opt.submissionStatus == 'OFFERMADE' || opt.submissionStatus == 'OFFERACCEPTED'){
 														result = result + "<option value='Joined'>Joined</option>";
 													}
