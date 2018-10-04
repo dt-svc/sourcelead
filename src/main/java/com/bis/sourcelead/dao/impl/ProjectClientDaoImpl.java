@@ -293,5 +293,14 @@ public class ProjectClientDaoImpl implements ProjectClientDao{
 		}
 		return pc;
 	}
+
+	@Override
+	@Transactional
+	public List<Long> getProjectClientsByRelationId(Long orgRelationId) throws Exception {
+		Session session = this.sessionFactory.getCurrentSession();
+		String query = "select pc.id from ProjectClients pc where pc.status = '1' and pc.orgRelationId = :orgRelationId "; 
+		List<Long> projectsList =  session.createQuery(query.toString()).setLong("orgRelationId", orgRelationId).list();
+		return projectsList;
+	}
 	
 }
