@@ -1691,7 +1691,6 @@ public class InvoiceServiceImpl implements InvoiceService {
   	  						invoice.setInvoiceId(SourceLeadRandomCodeHelper.generateSubmissionXlsRandomCode());
   	  						Set<InvoiceLineItems> invoiceLineItemSet = populateInvoiceInlineItems(projectMembersList,orgLocation,client.getId(),loginOrgCurrencyCode,invoice,user);
   	  						invoice.setInvoiceLineItems(invoiceLineItemSet);
-  	  						invoice.setConvertCurrencyCode(vendorCurrencyCode);
   	  						invoice.setCurrencyCode(loginOrgCurrencyCode);
   	  						invoice.setContactUser(contactUser);
   	  						invoice.setContactUsers(contactUser.getId().toString());

@@ -334,12 +334,14 @@ function getClientContacts(clientContactId){
 					}
 					$("#clientContact").append(output);
 					$('#clientContact').trigger("chosen:updated");
-			$('#clientContact').trigger("chosen:updated");
+					if(clientContactId == null || clientContactId == '' || clientContactId == 'undefined'){
+						addConversionDiv();
+						getProjectsList(); 	
+					}
 		},
 
 	});
-	addConversionDiv();
-	getProjectsList(); 
+	
 }
 </script>
 
@@ -881,13 +883,14 @@ function populateInlineItemsGrid(){
 function addConversionDiv(){
 	var clientCurrency = $("#clientCurrency").val();
 	var currencyCode = '${SourceLeadWeb_currencyCode}';
+	alert("kkk")
 	if(clientCurrency != currencyCode){
 		var result = "";
 		result = result +' <div class="row">';
 		result = result +' <div class="clearfix mt col-md-offset-2 col-md-10" style="padding-right:0;">';
-		result = result +' <div class="clearfix"><label class="col-md-6 text-right"><strong>Conversion From</strong></label><div class="paddingLeft col-md-6"><span class="pull-left" id="currencyCode"></span><div class="pull-right"><input type="text" id="conversionFrom" placeholder="00:00" class="ReadTextFli" readonly="" type="text"></div></div></div>';
-		result = result +'  <div class="clearfix"><label class="col-md-6 text-right"><strong>Conversion To</strong></label><div  class="paddingLeft col-md-6"><span id="vendorCurrencyCode"></span><div id="exchangeCurrency" class="pull-right"><input  class="ReadTextFli" readonly="" type="text"></div></div></div>';
-		result = result +' <div class="clearfix"><label class="col-md-6 text-right"><strong>Exchange Rate</strong></label><div  class="paddingLeft col-md-6"><span id="convertedCurrencyCode"></span><div id="exchangeRate" class="pull-right"><input class="ReadTextFli ReadTextFli90" readonly="" type="text"></div></div></div>';
+		result = result +' <div class="clearfix"><label class="col-md-6 text-right"><strong>Conversion From</strong></label><div class="paddingLeft col-md-6"><span class="pull-left" id="currencyCode">'+currencyCode+'</span><div class="pull-right"><input type="text" id="conversionFrom" placeholder="00:00" class="ReadTextFli" readonly="" type="text"></div></div></div>';
+		result = result +'  <div class="clearfix"><label class="col-md-6 text-right"><strong>Conversion To</strong></label><div  class="paddingLeft col-md-6"><span id="vendorCurrencyCode">'+clientCurrency+'</span><div id="exchangeCurrency" class="pull-right"><input  class="ReadTextFli" readonly="" type="text"></div></div></div>';
+		result = result +' <div class="clearfix"><label class="col-md-6 text-right"><strong>Exchange Rate</strong></label><div  class="paddingLeft col-md-6"><span id="convertedCurrencyCode">'+currencyCode+' to '+clientCurrency+'</span><div id="exchangeRate" class="pull-right"><input class="ReadTextFli ReadTextFli90" readonly="" type="text"></div></div></div>';
 		result = result +'  </div>';
 		result = result +'  </div>';
 		document.getElementById("conversionId").style.display="block";
