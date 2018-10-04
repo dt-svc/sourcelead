@@ -73,6 +73,7 @@ import com.bis.sourcelead.payroll.util.PayrollUtil;
 import com.bis.sourcelead.service.EmailScenarioService;
 import com.bis.sourcelead.service.UserRoleService;
 import com.bis.sourcelead.util.CommonUtil;
+import com.bis.sourcelead.util.ConversionUtil;
 import com.bis.sourcelead.util.EmailScenerioUtil;
 
 @Service
@@ -595,14 +596,22 @@ public class PaysheetFrequencyServiceImpl implements PaysheetFrequencyService{
 			dto.setYtdHours("NA");
 			dto.setType(emp.getType());
 			dto.setEmpPayRate(emp.getEmpPayRate());
-			dto.setEmpRegularAmount(emp.getRegularHoursAmount());			
+			dto.setEmpRegularAmount(emp.getRegularHoursAmount());	
+			
+			dto.setCheckDate(commonUtil.orgLocationCommonDate(emp.getPayCheckDate(), orgLocations));
+			dto.setGroupName(emp.getPaysheetFrequency().getUserGroup().getGroupName());
+			dto.setGroupFrequency(emp.getPaysheetFrequency().getUserGroup().getPayFrequency());
+			dto.setFreqStartDate(commonUtil.dateStrFromOrgDateFormatter(orgLocations.getDateFormat(), emp.getPaysheetFrequency().getFrequencyStartDate()));
+			dto.setFreqEndDate(commonUtil.dateStrFromOrgDateFormatter(orgLocations.getDateFormat(), emp.getPaysheetFrequency().getFrequencyEndDate()));
+			dto.setRunDate(commonUtil.orgLocationCommonDate(emp.getCreatedDate(), orgLocations));
+			
 			for(BankDataHistory bank : emp.getBankDataHistory()) {
 				dto.setDepositType(bank.getAccountType());
 			}
 			
 			dto.setResState(emp.getCandidate().getResidenceStateCode());
 			if(emp.getEmployee().getHireDate() != null)
-				dto.setDateOfJoin(commonUtil.dateStrFromDate(emp.getEmployee().getHireDate()));
+				dto.setDateOfJoin(commonUtil.dateStrFromOrgDateFormatter(orgLocations.getDateFormat(),emp.getEmployee().getHireDate()));
 			else 
 				dto.setDateOfJoin("NA");
 			

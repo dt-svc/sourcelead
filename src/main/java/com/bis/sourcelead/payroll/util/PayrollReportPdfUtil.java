@@ -775,6 +775,20 @@ public class PayrollReportPdfUtil {
 		PdfWriter.getInstance(document, new FileOutputStream(file));
 		document.open();
 		
+		PayrollReportDTO payrollReportDTO = responseList.getData().get(0);
+    	PdfHeaderDTO headerDTO = new PdfHeaderDTO();
+    	
+    	headerDTO.setCheckDate(payrollReportDTO.getCheckDate());
+    	headerDTO.setGroupName(payrollReportDTO.getGroupName());
+    	headerDTO.setOrgName(orgLocation.getOrgLocationName());
+    	headerDTO.setPayPeriod(payrollReportDTO.getGroupFrequency());
+    	headerDTO.setPayrollType(payrollReportDTO.getType());
+    	headerDTO.setPeriodBeginDate(payrollReportDTO.getFreqStartDate());
+    	headerDTO.setPeriodEndDate(payrollReportDTO.getFreqEndDate());
+    	headerDTO.setReportType("PAYROLL REGISTER");
+    	headerDTO.setRunDate(payrollReportDTO.getRunDate());
+    	headerDTO.setRunNumber(0);
+    	createHeaderTable(document, headerDTO, orgLocation);
 		
 		for(PayrollReportDTO payrollReportDto : responseList.getData()) {
 			PdfPTable maintable = new PdfPTable(1);
