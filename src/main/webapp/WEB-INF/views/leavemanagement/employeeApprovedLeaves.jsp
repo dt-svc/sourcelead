@@ -231,6 +231,7 @@ function approvedEmployeesPagination(url){
                 }],
                 "scrollCollapse": false,
             	"lengthMenu": [[10, 15, 20], [10, 15, 20]],
+            	"aaSorting" : [ [5, 'desc' ] ],
             	"bLengthChange": true,
             	"bDestroy": true,
             	"ordering": true,

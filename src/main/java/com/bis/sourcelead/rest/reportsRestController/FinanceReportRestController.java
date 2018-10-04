@@ -769,7 +769,7 @@ public class FinanceReportRestController {
         	 dto.setListFromDate(commonUtil.dateStrFromOrgDateFormatter(orgLocation.getDateFormat(), entry.getKey()));
         	 dto.setFromDate(new SimpleDateFormat("yyyy-MM-dd").format(entry.getKey()));
         	 dto.setCategoryNameMap(inmap);
-        	 dto.setCategoryCount(entry.getValue().size());
+        	 dto.setCategoryCount(inmap.size());
         	 dto.setAssetCount(entry.getValue().size());
         	 double totalCategorySum = entry.getValue().stream().collect(Collectors.summingDouble(AssetGrowthDTO::getCostDoble));
         	 dto.setCostDoble(totalCategorySum);
@@ -789,8 +789,9 @@ public class FinanceReportRestController {
 					.collect(Collectors.groupingBy(AssetGrowthDTO::getCatgoryName, Collectors.counting()));
 			dto.setMonthNames(entry.getValue().get(0).getMonthNames());
 			dto.setCategoryNameMap(inmap);
-			dto.setCategoryCount(entry.getValue().size());
+			dto.setCategoryCount(inmap.size());
 			dto.setAssetCount(entry.getValue().size());
+			System.out.println(entry.getValue().size());
 			list.add(dto);
 		}
 		return list;
