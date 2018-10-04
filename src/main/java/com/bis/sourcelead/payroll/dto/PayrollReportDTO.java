@@ -139,6 +139,8 @@ public class PayrollReportDTO extends SearchDTO{
 	private List<PayrollReportDTO> deductionsList;
 	
 	private Set<EmployeePayrollTax> taxHistory;
+	
+	private YTDPayrollDTO ytdPayrollDTO;
 
 	public String getEmpId()
 	{
@@ -778,6 +780,16 @@ public class PayrollReportDTO extends SearchDTO{
 	public void setTaxHistory(Set<EmployeePayrollTax> taxHistory)
 	{
 		this.taxHistory = taxHistory;
+	}
+
+	public YTDPayrollDTO getYtdPayrollDTO()
+	{
+		return ytdPayrollDTO;
+	}
+
+	public void setYtdPayrollDTO(YTDPayrollDTO ytdPayrollDTO)
+	{
+		this.ytdPayrollDTO = ytdPayrollDTO;
 	}
 
 }
