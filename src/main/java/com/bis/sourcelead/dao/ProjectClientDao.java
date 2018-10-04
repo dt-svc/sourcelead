@@ -34,5 +34,7 @@ public interface ProjectClientDao {
 	ProjectClients getProjectClientsById(Long id) throws Exception;
 	
 	ProjectClients getProjectClientsByProjectIdAndLevel(Long projectid,Integer level) throws Exception;
+	
+	List<Long> getProjectClientsByRelationId(Long orgRelationId) throws Exception;
 
 }

@@ -147,6 +147,7 @@ function requestedEmployeesPagination(url){
         "columnDefs": [ {
 	    	  	"targets": colIndex++,
 	    	  	"data": "empName",
+// 	    	  	"sortable":false,
 	    	  	"render": function(data, type, opt, meta) {
 	    	  		 var result = "";
 		    	  		if(opt.empType !=null && opt.empType != '' && opt.empType !='undefined'){
@@ -163,6 +164,7 @@ function requestedEmployeesPagination(url){
 	      },{
 	    	  "targets": colIndex++,
               "data": "leaveType",
+//               "sortable":false,
               "render": function ( data, type, opt, meta ) {
             	   var result = "";
             	  result = result + '   <div title="'+opt.leaveType+'" class="tblminwidth-75">'+opt.leaveType+'</div>';
@@ -172,7 +174,7 @@ function requestedEmployeesPagination(url){
 	          },{
             "targets": colIndex++,
             "data": "duration",
-            "sorting":false,
+            "sortable":false,
             "render": function ( data, type, opt, meta ) {
             	 var result = "";
             	result = result + '   <div title="'+opt.duration+'" class="">'+opt.duration+'</div>';
@@ -181,6 +183,7 @@ function requestedEmployeesPagination(url){
           }, {
               "targets": colIndex++,
               "data": "noOfDays",
+              "sortable":false,
               "render": function ( data, type, opt, meta ) {
             	   var result = "";
             	      result = result + '     <div class="tblminwidth-75">'+opt.appliedNoOfDays+' day(s)</div>';	 
@@ -205,7 +208,7 @@ function requestedEmployeesPagination(url){
           }, */{
 	    	  	"targets": colIndex++,
 	    	  	"data": "thisMonthLeaves",
-	    	  	"sorting":false,
+	    	  	"sortable":false,
 	    	  	"render": function(data, type, opt, meta) {
 	    	  		 var result = "";
 	    	  		result = result + '     <div class="tblminwidth-75">'+opt.thisMonthLeavesTaken+'</div>';
@@ -214,7 +217,7 @@ function requestedEmployeesPagination(url){
 	    	  },{
 	    	  	"targets": colIndex++,
 	    	  	"data": "balanceleaves",
-	    	  	"sorting":false,
+	    	  	"sortable":false,
 	    	  	"render": function(data, type, opt, meta) {
 	    	  		 var result = "";
 	    	  		result = result + ' <div class="tblminwidth-75">'+opt.totalBalLeaves+'</div>';
@@ -223,7 +226,7 @@ function requestedEmployeesPagination(url){
 	    	  }, {
                   "targets": colIndex++,
                   "data": "action",
-                  "sorting":false,
+                  "sortable":false,
                   "render": function ( data, type, opt, meta ) {
                 	   var result = "";
                 	  if(opt.status == 'APPROVED'){

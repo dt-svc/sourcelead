@@ -23,6 +23,7 @@ import com.bis.sourcelead.dto.AssociatePayItemDTO;
 import com.bis.sourcelead.entity.AssociateLoanAndAdvanceHistory;
 import com.bis.sourcelead.entity.AssociatePayItem;
 import com.bis.sourcelead.entity.Candidate;
+import com.bis.sourcelead.entity.Org;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.payroll.dto.ContributionDTO;
 import com.bis.sourcelead.payroll.dto.DeductionDTO;
@@ -864,37 +865,44 @@ public class PayrollUtil {
 			
 		}
 
+		/**
+		 * YTD Deductions
+		 * 
+		 * @param payroll
+		 * @param deductionId
+		 * @param orgLocation
+		 * @return YTDPayrollDTO
+		 */
 		public YTDPayrollDTO getDeductionYTD(EmployeePayroll payroll, Long deductionId, OrgLocations orgLocation) {
 			return paysheetFrequencyService.getDeductionYTD(payroll,deductionId,orgLocation,"report");
-			/*BigDecimal deductionYTD = BigDecimal.ZERO;
-			for(DeductionHistory dedHis : dedHisLis) {
-				if(dedHis.getPreDeductionAmount() != null) {
-					deductionYTD = deductionYTD.add(dedHis.getPreDeductionAmount());
-				}
-				if(dedHis.getPostDeductionAmount() != null) {
-					deductionYTD = deductionYTD.add(dedHis.getPostDeductionAmount());
-				}
-			}*/
+		}
+		
+		
+		public YTDPayrollDTO getPayrollTaxesYTD(EmployeePayroll payroll,OrgLocations orgLocation) {
+			return paysheetFrequencyService.getPayrollTaxesYTD(payroll,orgLocation);
 		}
 
 		
-		
-		
-		//this is for loan and advances in edit payroll
-		public List<AssociateLoanAndAdvancesDTO> getLoanAndAdvancesData(EmployeePayroll payroll) {
-			List<AssociateLoanAndAdvancesDTO> list = new ArrayList<>();
-			if (payroll.getPayitemHistory() != null) {
-				for (AssociateLoanAndAdvanceHistory his : payroll.getLoanHistory()) {
-					AssociateLoanAndAdvancesDTO loanDto = new AssociateLoanAndAdvancesDTO();
-					loanDto.setId(his.getId());
-					loanDto.setLoanAndAdvName(his.getAssociateLoanAndAdvances().getPayrollLoanAndAdvanceId().getName());
-					loanDto.setLoanAmount(his.getDeductAmount().toString());
-					list.add(loanDto);
-				}
+	/**
+	 * Ths is for loan and advances in edit payroll
+	 * 
+	 * @param payroll
+	 * @return
+	 */
+	public List<AssociateLoanAndAdvancesDTO> getLoanAndAdvancesData(EmployeePayroll payroll)
+	{
+		List<AssociateLoanAndAdvancesDTO> list = new ArrayList<>();
+		if (payroll.getPayitemHistory() != null) {
+			for (AssociateLoanAndAdvanceHistory his : payroll.getLoanHistory()) {
+				AssociateLoanAndAdvancesDTO loanDto = new AssociateLoanAndAdvancesDTO();
+				loanDto.setId(his.getId());
+				loanDto.setLoanAndAdvName(his.getAssociateLoanAndAdvances().getPayrollLoanAndAdvanceId().getName());
+				loanDto.setLoanAmount(his.getDeductAmount().toString());
+				list.add(loanDto);
 			}
-			return list;
 		}
-	
+		return list;
+	}
 
 	
 

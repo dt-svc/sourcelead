@@ -43,6 +43,7 @@ import com.bis.sourcelead.enums.Result;
 public class MailBox {
 
 	private static SimpleDateFormat dateFormat = new SimpleDateFormat("MMM dd/yy");
+	private static SimpleDateFormat detailedDateFormat = new SimpleDateFormat("MMM d, yyyy, hh:mm a");
 
 	public static ResponseList<String> readMail(String host, String port, String storeType, String user, String password) {
 		ResponseList<String> responseList = new ResponseList<>();
@@ -103,6 +104,7 @@ public class MailBox {
 			emailFolder.open(Folder.READ_WRITE);
 			// retrieve the messages from the folder in an array and print it
 			int messagesCount = emailFolder.getMessageCount();
+			int unreadCount = emailFolder.getUnreadMessageCount();
 			int tempCount = messagesCount;
 			int remainder = messagesCount % paginator.getPageSize();
 			int noOfPages = 1;
@@ -124,6 +126,7 @@ public class MailBox {
 			Message[] messages = emailFolder.getMessages(from, to);
 
 			paginator.setTotalRows(messagesCount);
+			paginator.setSortType(unreadCount);
 			FetchProfile fetchProfile = new FetchProfile();
 			fetchProfile.add(FetchProfile.Item.ENVELOPE);
 			fetchProfile.add("X-mailer");
@@ -247,7 +250,7 @@ public class MailBox {
 					}
 				}
 				readMailDTO.setCc(cc);
-				readMailDTO.setSentDate(message.getSentDate() != null ? message.getSentDate().toString() : "");
+				readMailDTO.setSentDate(message.getSentDate() != null ? detailedDateFormat.format(message.getSentDate()) : "");
 				readMailDTO.setSubject(message.getSubject());
 				readMailDTO.setFolderName(folderName);
 				String bodyContent = "";

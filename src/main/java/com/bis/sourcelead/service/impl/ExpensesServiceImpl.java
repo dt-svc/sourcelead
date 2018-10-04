@@ -393,7 +393,7 @@ public class ExpensesServiceImpl implements ExpensesService{
 	}
 
 	private String[] prepareMyExpensesStringArray(ExpensesEntries expEntries, String[] myExpensesHeaders, OrgLocations orgLoc, User loginUser,String approverType,String isGlobalUser) throws Exception {
-		String userArray[] = new String[myExpensesHeaders.length];
+		String userArray[] = new String[myExpensesHeaders.length+2];
 		SimpleDateFormat dateFormat=orgLoc.getLocFullFormDateFormatter();
 				if(null != expEntries.getExpensesCategoryId()){
 					if(expEntries.getExpensesCategoryId().getExpensesName() != null && !"".equalsIgnoreCase(expEntries.getExpensesCategoryId().getExpensesName())){	
@@ -459,18 +459,19 @@ public class ExpensesServiceImpl implements ExpensesService{
 				   }else{
 					   userArray[7] = "--";
 				 } 
-			 }
-			 if(expEntries.getBillable() != null){	
-				 if(expEntries.getBillable().equals(true)){
-					 userArray[8] = "YES";
+				 if(expEntries.getBillable() != null){	
+					 if(expEntries.getBillable().equals(true)){
+						 userArray[8] = "YES";
+					 }
+					 else{
+						   userArray[8] = "NO";
+	 
+					 }
+				   }else{
+					   userArray[8] = "--";
 				 }
-				 else{
-					   userArray[8] = "NO";
- 
-				 }
-			   }else{
-				   userArray[8] = "--";
 			 }
+			
 	return userArray;
 	}
 
@@ -563,21 +564,22 @@ public class ExpensesServiceImpl implements ExpensesService{
 		 createExcelsheet.autoSizeColumn(6);
 	   }
 	 if(approverType.equalsIgnoreCase("APPROVER")){
-	 if(expEntries.getExpensesId().getExpenseStatus()!= null && !"".equalsIgnoreCase(expEntries.getExpensesId().getExpenseStatus().getValue())){	
-		 writeRow.createCell(7).setCellValue( expEntries.getExpensesId().getExpenseStatus().getValue());
-		 createExcelsheet.autoSizeColumn(7);
-	   }
-	 }
-	 if(expEntries.getBillable() != null){	
-		 if(expEntries.getBillable().equals(true)){
-			 writeRow.createCell(8).setCellValue("YES");
-			 createExcelsheet.autoSizeColumn(8);
-		 }
-		 else{
-			   writeRow.createCell(8).setCellValue("NO");
+		 if(expEntries.getExpensesId().getExpenseStatus()!= null && !"".equalsIgnoreCase(expEntries.getExpensesId().getExpenseStatus().getValue())){	
+			 writeRow.createCell(7).setCellValue( expEntries.getExpensesId().getExpenseStatus().getValue());
+			 createExcelsheet.autoSizeColumn(7);
+		   }
+		 if(expEntries.getBillable() != null){	
+			 if(expEntries.getBillable().equals(true)){
+				 writeRow.createCell(8).setCellValue("YES");
 				 createExcelsheet.autoSizeColumn(8);
-		 }
-	   }
+			 }
+			 else{
+				   writeRow.createCell(8).setCellValue("NO");
+					 createExcelsheet.autoSizeColumn(8);
+			 }
+		   }
+	 }
+	
 		return createExcelsheet;
 	}
 	
