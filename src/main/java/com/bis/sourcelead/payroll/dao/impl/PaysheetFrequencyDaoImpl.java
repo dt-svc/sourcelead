@@ -377,7 +377,7 @@ private static final Logger logger = LoggerFactory.getLogger(AssociateTaxDaoImpl
 		java.sql.Date endDate = new java.sql.Date(ytdDates[1].getTime());
 		String qry = "from EmployeePayroll payroll where payroll.id = :payrollId and payroll.payCheckDate >= :startDate and payroll.payCheckDate <= :endDate";
 		Query queryObj = session.createQuery(qry);
-		queryObj.setLong("candidateId", payroll.getCandidate().getId());
+//		queryObj.setLong("candidateId", payroll.getCandidate().getId());
 		queryObj.setLong("payrollId", payroll.getId());
 		queryObj.setDate("startDate", startDate);
 		queryObj.setDate("endDate", endDate);
