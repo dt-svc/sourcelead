@@ -295,7 +295,11 @@ public class GenerateUSPayrollServiceImpl implements GenerateUSPayrollService{
 								}else if(PayrollConstant.LCA_WAGE.equalsIgnoreCase(assoSal.getPayType())) {
 									LCAWageDTO lcaWageDTO  = generateUSPayrollDao.getLcaWageByCandidateIdLcationId(assoSal.getCandidate(),orgLocation);
 									if(lcaWageDTO != null) {
-										amount  = payrollUtil.getActualRateByPayFrequency(new BigDecimal(lcaWageDTO.getLcaWage()),lcaWageDTO.getLcaWageType(),assoSal.getGroupId().getPayFrequency());
+										if(sal.getNoOfDays() >0) {
+											amount = payrollUtil.calculateSalaryUptoTerminationDateLcaWage(new BigDecimal(lcaWageDTO.getLcaWage()),lcaWageDTO.getLcaWageType(),sal.getNoOfDays(),orgLocation);
+										}else {
+											amount  = payrollUtil.getActualRateByPayFrequency(new BigDecimal(lcaWageDTO.getLcaWage()),lcaWageDTO.getLcaWageType(),assoSal.getGroupId().getPayFrequency());
+										}
 									}
 								}
 								if(associateTaxView.getAccountType() != null) {
