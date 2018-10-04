@@ -18,15 +18,14 @@
 	</section>
 	<div class="tabsMenu clearfix">
 		<ul class="list-unstyled">
-			<li class="current"><a>Review Payroll</a></li>
-			<li><a>Approve Payroll</a></li>
+			<li class="current" id="reviewTab"><a>Review Payroll</a></li>
+			<li id="approveTab" onclick="getApproveInfo();"><a>Approve Payroll</a></li>
 		</ul>
 	</div>
 
 
 	<div class="clearfix"></div>
-	<div class="clearfix"></div>
-	<div class="timesheet_out">
+	<div class="timesheet_out" id="reviewDiv">
 		<div class="tablelist-wrap">
 			<div class="timesheet_head minHeight">
 				<div class="col-md-12 mt">
@@ -221,22 +220,33 @@ function closeCPR() {
 
 <script>
 function sentForApprove(){
-	var feqUUID = $("#paySheetFrequency").value();
+	var feqUUID = $("#paySheetFrequency").val();
 	var excludeEmpArr = [];
 	$("input:checkbox[name=empPayroll]:checked").each(function(){
 		excludeEmpArr.push($(this).val());
 	});
-	
 	$.ajax({
         type : "POST",
-        url: sourceleadUrl+"/sentForApproveIndPayroll?"+tokenParamName+"="+tokenValue+"&paySheetFrequencyUUID="+feqUUID+"&empPayrollUUID="+excludeEmpArr,    
+        url: sourceleadUrl+"/sentForApproveIndPayroll?"+tokenParamName+"="+tokenValue+"&paySheetFrequencyUUID="+feqUUID+"&excludeEmpPayrollUUID="+excludeEmpArr,    
          success :function(result) { 
         	 
         	 
          },
     });
 }
+</script>
 
+<script>
+function getApproveInfo(){
+	$.ajax({
+        type : "GET",
+        url: sourceleadUrl+"/getApproveInfoIndPayroll?"+tokenParamName+"="+tokenValue+"&paySheetFrequencyUUID="+feqUUID,    
+         success :function(result) { 
+        	 
+        	 
+         },
+    });
+}
 </script>
   
 <jsp:include page="../../masterFooter.jsp" />
