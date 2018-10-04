@@ -856,7 +856,12 @@ $(document).ready(function () {
             <div class="clearfix"></div>
             <!-- upload file html need to add bottom JavaScript otherwise it will not work --> 
           </div>
-           
+            <div class="form-group pras req-title" id="jobTitleDiv">
+	         <label class="col-md-3">Process</label>
+	        <div class="col-md-9 validLabel">
+	             <input type="text" id="process" name="process" value="${requirement.process}"  field-name="Job Process"  data-validation="validate_Space validate_length length1-250"  data-validation-optional="true" value="" class="form-control">
+	         </div>
+	       </div>
           <div class="clearfix"></div>
           <div class="clearfix mb">
           <label class="col-md-3">Description</label>

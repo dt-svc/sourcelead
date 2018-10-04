@@ -16,6 +16,8 @@ public class AssetGrowthDTO {
 	
 	private String fromDate;
 	
+	private String listFromDate;
+	
 	private String toDate;
 
 	private String fromtype;
@@ -221,5 +223,12 @@ public class AssetGrowthDTO {
 	public void setCostDoble(double costDoble) {
 		this.costDoble = costDoble;
 	}
-	
+
+	public String getListFromDate() {
+		return listFromDate;
+	}
+
+	public void setListFromDate(String listFromDate) {
+		this.listFromDate = listFromDate;
+	}
 }

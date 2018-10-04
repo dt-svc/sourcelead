@@ -104,9 +104,9 @@ function approvePayrollDiv(){
 
   
  
-<div class="tableScroll">
+<div class="clearfix">
 <form:form id="submit_for_approver"  name="submit_for_approver" method="post">
- <div class="styleTables clearfix mt">
+ <div class="tableScroll styleTables clearfix mt">
  <!-- <div id="USPayrollDiv"></div> -->
  <div id="payrollDataDiv"></div>
  <div id="initiateLoading"></div>

@@ -51,25 +51,19 @@
 				</c:choose>
 			  </tr>
 			  <c:forEach var="canDocList" items="${immigrationCanDocList}" varStatus="rows">			  			  
-			<tr docid="${canDocList.id}" allowMultpleDocs= "${canDocList.allowMultiple}" docsHistoryList = "${fn:escapeXml(canDocList.docsHistoryList)}">
-				  
+		    	<tr docid="${canDocList.id}" allowMultpleDocs= "${canDocList.allowMultiple}" docsHistoryList = "${fn:escapeXml(canDocList.docsHistoryList)}">
+					
 				<c:choose>
 				  <c:when test="${myImmigrationPage == 'Y'}">
 					<td title="${canDocList.documentTypeName}"><div class="tbldata-dotdot-vsm">${canDocList.documentTypeName}</div></td>
 					<td title = "${canDocList.description}"><div class="tbldata-dotdot-me">${canDocList.description}</div></td>
 				</c:when>
 				
-				<c:otherwise>
-				        <c:choose>
-						    <c:when test="${petitionerDocs == 'PetitionerCategory' || attorneyDocs == 'AttorneyCategory' || beneficiaryDocs =='Document Type'}">
-						       <td title="${canDocList.documentTypeName}"><div class="tbldata-dotdot-vsm">${canDocList.documentTypeName}</div></td>
-					            <td title = "${canDocList.description}"><div class="tbldata-dotdot-me">${canDocList.description}</div></td>
-						    </c:when>
-						    <c:otherwise>
-						        
-						    </c:otherwise>
-						</c:choose>
-				    </c:otherwise>
+				 <c:otherwise>
+					<td title="${canDocList.documentTypeName}"><div class="tbldata-dotdot-vsm">${canDocList.documentTypeName}</div></td>
+					<td title = "${canDocList.description}"><div class="tbldata-dotdot-me">${canDocList.description}</div></td>
+				</c:otherwise>
+				
 				</c:choose>
 				
 				<%-- <c:if test = "${petitionerDocs == 'PetitionerCategory'}">      

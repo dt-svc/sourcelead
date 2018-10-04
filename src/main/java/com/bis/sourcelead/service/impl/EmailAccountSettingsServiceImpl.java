@@ -1,6 +1,5 @@
 package com.bis.sourcelead.service.impl;
 
-import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -71,9 +70,14 @@ public class EmailAccountSettingsServiceImpl implements EmailAccountSettingsServ
 			}
 			emailAccountSettings.setUser(user);
 
-			EmailAccountSettings storedEmailAccount = emailAccountSettingsDao.storeEmailAccountSettings(emailAccountSettings);
-			response.setResponse(Result.SUCCESS.name());
-			response.setResponseMessage(Result.SUCCESS.getValue());
+			long storedEmailAccountId = emailAccountSettingsDao.storeEmailAccountSettings(emailAccountSettings);
+			if (storedEmailAccountId > 0) {
+				response.setResponse(Result.SUCCESS.name());
+				response.setResponseMessage(Result.SUCCESS.getValue());
+			} else {
+				response.setResponse(Result.FAILED.name());
+				response.setResponseMessage(Result.FAILED.getValue());
+			}
 		}
 		return response;
 	}
@@ -90,7 +94,6 @@ public class EmailAccountSettingsServiceImpl implements EmailAccountSettingsServ
 		String email = emailAccountSettings.getEmail();
 		String password = emailAccountSettings.getPassword();
 		// String host = "imap.gmail.com";
-		String host = emailAccountSettings.getIncomingServer();
 		String storeType = "imaps";
 		responseList = MailBox.readMail(emailAccountSettings.getIncomingServer(), emailAccountSettings.getIncomingPort(), storeType, email, password);
 		return responseList;
@@ -98,15 +101,24 @@ public class EmailAccountSettingsServiceImpl implements EmailAccountSettingsServ
 	}
 
 	@Override
-	public List<ReadMailDTO> emailFolderRead(Long id,String folderName, Long userId, Long orgLocationId, Paginator paginator) {
-		EmailAccountSettings emailAccountSettings=emailAccountSettingsDao.getEmailAccount(id, userId);
-		String email=emailAccountSettings.getEmail();
-		String password=emailAccountSettings.getPassword();
-//		String host = "imap.gmail.com";
-		String storeType = "imaps";
-		List<ReadMailDTO> mailsList=new ArrayList<>();
-		mailsList=MailBox.readMailFromFolder(emailAccountSettings.getIncomingServer(), emailAccountSettings.getIncomingPort(), storeType, email, password,folderName,userId, orgLocationId, paginator);
-		return mailsList;
+	public ResponseList<ReadMailDTO> emailFolderRead(Long id, String folderName, Long userId, Long orgLocationId, Paginator paginator) {
+		ResponseList<ReadMailDTO> responseList = new ResponseList<>();
+		try {
+			EmailAccountSettings emailAccountSettings = emailAccountSettingsDao.getEmailAccount(id, userId);
+			String email = emailAccountSettings.getEmail();
+			String password = emailAccountSettings.getPassword();
+			// String host = "imap.gmail.com";
+			String storeType = "imaps";
+			List<ReadMailDTO> mailsList = MailBox.readMailFromFolder(emailAccountSettings.getIncomingServer(),
+					emailAccountSettings.getIncomingPort(), storeType, email, password, folderName, userId, orgLocationId, paginator);
+			responseList.setData(mailsList);
+			responseList.setPaginator(paginator);
+			responseList.setResponse(Result.SUCCESS.name());
+			responseList.setResponseMessage(Result.SUCCESS.getValue());
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return responseList;
 	}
 	
 	@Override
