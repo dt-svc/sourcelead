@@ -645,7 +645,7 @@ public class PaysheetFrequencyServiceImpl implements PaysheetFrequencyService{
 			}
 			
 			dto.setTaxHistory(emp.getUsPayrollTax());
-			
+			dto.setYtdPayrollDTO(getPayrollTaxesYTD(emp, orgLocations));
 			dto.setDeductionsList(dedList);	
 			payrollList.add(dto);
 //			}
@@ -701,7 +701,7 @@ public class PaysheetFrequencyServiceImpl implements PaysheetFrequencyService{
 				wcYTD = wcYTD.add(tax.getWC());
 				localTaxYTD = localTaxYTD.add(tax.getLocalTax());
 			}
-			yTDPayrollDTO.setFicaYTDg(ficaYTD);
+			yTDPayrollDTO.setFicaYTD(ficaYTD);
 			yTDPayrollDTO.setMedicareYTD(medicareYTD);
 			yTDPayrollDTO.setFederalYTD(federalYTD);
 			yTDPayrollDTO.setEarnedIncCreditYTD(earnedIncCreditYTD);
