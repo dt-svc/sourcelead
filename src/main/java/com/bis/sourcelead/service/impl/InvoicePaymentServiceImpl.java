@@ -118,7 +118,7 @@ public class InvoicePaymentServiceImpl implements InvoicePaymentService {
 					}else{
 						invoice.setPaymentStatus(Constants.INVOICE_STATUS_PARTIAL_PAID);
 					}
-					invoice.setDueAmount(String.valueOf(dueAmount.setScale(2, BigDecimal.ROUND_HALF_EVEN)));
+					invoice.setDueAmount(String.valueOf(dueAmount.setScale(3, BigDecimal.ROUND_HALF_EVEN)));
 
 				}
 			}
@@ -188,7 +188,7 @@ public class InvoicePaymentServiceImpl implements InvoicePaymentService {
 
 							if (receivedAmount != null) {
 								parentInvoice.setDueAmount(
-										String.valueOf(receivedAmount.setScale(2, BigDecimal.ROUND_HALF_EVEN)));
+										String.valueOf(receivedAmount.setScale(3, BigDecimal.ROUND_HALF_EVEN)));
 							} else {
 								parentInvoice.setDueAmount("0.0");
 							}
@@ -255,9 +255,6 @@ public class InvoicePaymentServiceImpl implements InvoicePaymentService {
 			Invoice parentInvoice = null;
 		/*String pattern = "dd-MM-yyyy";
 		SimpleDateFormat format = new SimpleDateFormat(pattern);*/
-			 System.out.println(" inovice id : "+invoice.getId());
-            System.out.println(" amount value "+invoiceIdsMap.get(invoice.getId()));
-            
 		if (StringUtils.isNotBlank(invoicePaymentDTO.getPaymentDate())) {
 			Date paymentDate = commonUtil.orgLocationDateFormat(orgLocation.getDateFormat(),invoicePaymentDTO.getPaymentDate());
 			invoicePayment.setPaymentDate(paymentDate);

@@ -305,11 +305,16 @@ public class InvoiceServiceImpl implements InvoiceService {
 		if(!loginOrgCurrencyCode.equalsIgnoreCase(vendorCurrencyCode)){
 	        if(null != vendorCurrencyCode){
 	      	float convertedAmount = conversionUtil.convert(loginOrgCurrencyCode, vendorCurrencyCode, Float.parseFloat(invoiceDTO.getGrandTotal()));
-	      	float exchangeAmoiunt = conversionUtil.convert(loginOrgCurrencyCode, vendorCurrencyCode,1);
+			float exchangeRate = conversionUtil.convert(loginOrgCurrencyCode, vendorCurrencyCode, 1);
+			//Accept three decimal points
 	      	float convertedAmount1 = 	Float.parseFloat((new DecimalFormat(".###").format(((convertedAmount * 100.0) / 100.0))));
 	      	invoice.setConvertCurrencyCode(vendorCurrencyCode);
 	      	invoice.setConvertAmount(String.valueOf(convertedAmount1));
-	      	invoice.setExchangeRate(String.valueOf(exchangeAmoiunt));
+	      	exchangeRate = convertedAmount1 * Float.valueOf(invoiceDTO.getGrandTotal());
+	      //Accept three decimal points
+	      	DecimalFormat decimalFormat = new DecimalFormat("#.000");
+	        String afterConvert = decimalFormat.format(exchangeRate);
+	      	invoice.setExchangeRate(String.valueOf(afterConvert));
 	        }	
 	    }
 		invoice.setOwnerUsers(user.getId().toString());
@@ -526,8 +531,10 @@ public class InvoiceServiceImpl implements InvoiceService {
 				float convertedAmount1 = Float.parseFloat((new DecimalFormat(".###").format(((convertedAmount * 100.0) / 100.0))));
 				convertedAmount1 = convertedAmount1 * Float.valueOf(invoice.getTotal());
 				parentInvoice.setCurrencyCode(vendorCurrencyCode);
-				parentInvoice.setTotal(String.valueOf(convertedAmount1));
-				parentInvoice.setDueAmount(String.valueOf(convertedAmount1));
+				DecimalFormat decimalFormat = new DecimalFormat("#.000");
+		        String afterConvert = decimalFormat.format(convertedAmount1);
+				parentInvoice.setTotal(afterConvert);
+				parentInvoice.setDueAmount(afterConvert);
 			}
 		} else {
 			parentInvoice.setCurrencyCode(invoice.getCurrencyCode());
@@ -1701,7 +1708,7 @@ public class InvoiceServiceImpl implements InvoiceService {
   	  						invoice.setIsAutomaticGenerateInvoice(Constants.YES);
   	  						float convertedAmount = conversionUtil.convert(loginOrgCurrencyCode, vendorCurrencyCode, Float.valueOf(invoice.getTotal()));
   	  						float exchangeRate = conversionUtil.convert(loginOrgCurrencyCode,vendorCurrencyCode,1f);
-  	  		  		      	float roundAmount = 	(float) (Math.round(convertedAmount * 100.0) / 100.0);
+  	  		  		      	float roundAmount = Float.parseFloat((new DecimalFormat(".###").format(((convertedAmount * 100.0) / 100.0))));
   	  		  		      	exchangeRate = roundAmount *Float.valueOf(invoice.getTotal());
   	  		  		      	invoice.setConvertCurrencyCode(vendorCurrencyCode);
   	  		  		      	invoice.setConvertAmount(String.valueOf(roundAmount));
@@ -2781,11 +2788,12 @@ public class InvoiceServiceImpl implements InvoiceService {
 			if (null != vendorCurrencyCode) {
 				float convertedAmount = conversionUtil.convert(loginOrgCurrencyCode, vendorCurrencyCode,
 						Float.parseFloat(invoiceDTO.getGrandTotal()));
-				float exchangeAmoiunt = conversionUtil.convert(loginOrgCurrencyCode, vendorCurrencyCode, 1);
-				float convertedAmount1 = (float) (Math.round(convertedAmount * 100.0) / 100.0);
+				float exchangeRate = conversionUtil.convert(loginOrgCurrencyCode, vendorCurrencyCode, 1);
+				float convertedAmount1 = Float.parseFloat((new DecimalFormat(".###").format(((convertedAmount * 100.0) / 100.0))));
 				invoice.setConvertCurrencyCode(vendorCurrencyCode);
 				invoice.setConvertAmount(String.valueOf(convertedAmount1));
-				invoice.setExchangeRate(String.valueOf(exchangeAmoiunt));
+				exchangeRate = convertedAmount1 * Float.valueOf(invoiceDTO.getGrandTotal());
+				invoice.setExchangeRate(String.valueOf(exchangeRate));
 			}
 		}
 
