@@ -2902,7 +2902,7 @@ private void saveImportedTimeSheetRecords(Projects project,String projectTaskUUI
 			//Department
 			if(!dataMigrationDTOJsonCopy.getString("department").equals("null") &&  !StringUtils.isEmpty(dataMigrationDTOJsonCopy.getString("department"))) {
 	    		Boolean   flag = departmentService.validateDepartmentnameByOrgLocationIdAndDepartmentName(orgLocation.getId(), dataMigrationDTOJsonCopy.getString("department"));
-	    		if(flag == true) {
+	    		if(flag == false) {
 					errorSet.put("department", "Deparment is not existed");
 	    		}
 			}

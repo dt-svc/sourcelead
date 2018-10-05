@@ -19,7 +19,7 @@
   <section class="content-header clearfix">
       <div class="pull-left positionRelative"><h2>Add LCA</h2>
     </div>
-    <div class="pull-right brud-crum"><a href="<c:url value='${appPath}/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a> &raquo; &raquo; <a href="/app/immigration/viewImmigrationList">Immigration List</a>&raquo;  <a href="/app/immigration/viewLCAList">LCA List</a>&raquo; Add LCA</div>
+    <div class="pull-right brud-crum"><a href="<c:url value='${appPath}/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a> &raquo; &raquo; <a href="/app/immigration/viewImmigrationList">Petition List</a>&raquo;  <a href="/app/immigration/viewLCAList">LCA List</a>&raquo; Add LCA</div>
   </section>
   <div class="content-area content-new clearfix">
   
@@ -98,7 +98,7 @@
           <div class="col-xs-12 col-sm-6 col-md-6 minHeight50 mb">
             <label class="col-md-4 paddingRight">No.of Positions<span class="text-danger paddingLeft">*</span></label>
             <div class="col-md-8">
-				<input type="text" name="noOfPositions" id="noOfPositions" value="${lcaDTO.noOfPositions}" class="form-control" placeholder="No Of Positions" field-name="No.of Positions" data-validation="required validate_int validate_length length1-3">
+				<input type="text" name="noOfPositions" id="noOfPositions" value="${lcaDTO.noOfPositions}" class="form-control" placeholder="No Of Positions" field-name="No.of Positions" data-validation="required validate_intFromOne validate_length length1-3">
           	</div>
           </div>
           

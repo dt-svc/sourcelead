@@ -216,7 +216,15 @@ public class PayrollReportPdfUtil {
 	 */
 	 private PdfPTable createHeaderTable(Document document, PdfHeaderDTO headerData, OrgLocations orgLocation)
 	{
-		PdfPTable headerTable = getPdfTable(1, document);
+		 PdfPTable headerTable = null;
+		 if("PAYROLL REGISTER".equalsIgnoreCase(headerData.getReportType())) {
+			  headerTable = new PdfPTable(1);
+			 headerTable.setTotalWidth(document.getPageSize().getWidth() - 50);
+			 headerTable.setLockedWidth(true);
+		 }else {
+			  headerTable = getPdfTable(1, document);
+		 }
+		
 		try {
 			PdfPTable table = getPdfTable(14, document);
 			PdfPCell cell0 = new PdfPCell();
