@@ -308,7 +308,7 @@ function getViewCreditDebitNote(){
                 result = result +'<div class="col-md-7 col-md-offset-5">                                                                              ';
                 result = result +'  <div class="form-horizontal billsubTotal">                                                                        ';
                 result = result +'    <div class="form-group">                                                                                        ';
-                result = result +'      <label class="control-label col-md-7"><strong>Subtotal</strong></label>   ';
+                result = result +'      <label class="control-label col-md-7"><strong>Sub Total</strong></label>   ';
                 result = result +'      <div class="col-md-5 text-right">'+response.object.subTotal+'</div>                                                 ';
                 result = result +'    </div>                                                                                                          ';
                 result = result +'    <!-- Discount UI -->                                                                                            ';

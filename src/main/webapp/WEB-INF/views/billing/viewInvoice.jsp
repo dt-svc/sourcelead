@@ -1035,7 +1035,7 @@ function getViewInvoice(){
 				result = result +'	        <div class="col-md-7">                                                                            ';
 				result = result +'	            <div class="form-horizontal billsubTotal">                                                    ';
 				result = result +'	              <div class="form-group">                                                                    ';
-				result = result +'	                <label class="col-md-7 text-right"><strong>Subtotal</strong></label>                   ';
+				result = result +'	                <label class="col-md-7 text-right"><strong>Sub Total</strong></label>                   ';
 				result = result +'	                <div class="col-md-5 text-right"><span class="pull-left">'+currencyCode+'</span><span><strong>'+report.subTotal+'</strong></span></div>                             ';
 				result = result +'	              </div>                                                                                      ';
 				result = result +'	              <!-- Discount UI -->                                                                        ';
