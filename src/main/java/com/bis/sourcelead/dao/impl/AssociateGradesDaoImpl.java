@@ -1,5 +1,6 @@
 package com.bis.sourcelead.dao.impl;
 
+import java.math.BigInteger;
 import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.List;
@@ -258,5 +259,29 @@ public class AssociateGradesDaoImpl implements AssociateGradesDao{
 		
 		return gradesList;
 	
+	}
+
+
+	@Override
+	@Transactional
+	public boolean isGradeExistsByGradeNameAndOrgLocationId(String gradeName, Long orgLocationId) throws Exception {
+		
+		boolean flag = false;
+		Session session = this.sessionFactory.getCurrentSession();
+		String query = null;
+		query ="SELECT "
+				+" GRADE.ID "
+				+" FROM ASSOCIATE_GRADES GRADE "
+				+" WHERE "
+				+" GRADE.ORGLOCATION_ID = :orgLocationId and GRADE.GRADE_NAME = :gradeName AND GRADE.STATUS = '1' ";
+		Query queryObj = session.createSQLQuery(query);
+		queryObj.setString("gradeName", gradeName);	
+		queryObj.setLong("orgLocationId", orgLocationId);	
+		BigInteger id = (BigInteger) queryObj.uniqueResult();
+		if(id != null) {
+			flag = true;
+		}
+		
+		return flag;
 	}
 }
