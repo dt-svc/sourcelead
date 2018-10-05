@@ -151,7 +151,6 @@ public class ImmigrationDTO extends SearchDTO {
 
 	private String lcaEndDate;
 
-	@Required(desc = "country")
 	private String country;
 
 	private String state;

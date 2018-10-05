@@ -13,6 +13,7 @@ import java.util.Set;
 
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.exception.ExceptionUtils;
+import org.joda.time.DateTime;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -37,6 +38,9 @@ import com.bis.sourcelead.entity.ProjectMembers;
 import com.bis.sourcelead.entity.ProjectTasks;
 import com.bis.sourcelead.entity.Projects;
 import com.bis.sourcelead.entity.Requirement;
+import com.bis.sourcelead.entity.RequirementInterview;
+import com.bis.sourcelead.entity.RequirementOffers;
+import com.bis.sourcelead.entity.RequirementSubmissionHistory;
 import com.bis.sourcelead.entity.TimeSheetSubmissionCount;
 import com.bis.sourcelead.entity.UserRole;
 import com.bis.sourcelead.reportsDTO.LeaveBalanceReportDTO;
@@ -44,6 +48,8 @@ import com.bis.sourcelead.service.EmployeesService;
 import com.bis.sourcelead.service.OrgLocationService;
 import com.bis.sourcelead.service.ProjectBudgetService;
 import com.bis.sourcelead.service.ProjectClientService;
+import com.bis.sourcelead.service.RequirementInterviewService;
+import com.bis.sourcelead.service.RequirementOffersService;
 import com.bis.sourcelead.service.SubmissionApproverHierarchyService;
 import com.bis.sourcelead.service.UserRoleService;
 import com.itextpdf.text.BaseColor;
@@ -62,7 +68,6 @@ import com.itextpdf.text.html.WebColors;
 import com.itextpdf.text.pdf.PdfPCell;
 import com.itextpdf.text.pdf.PdfPTable;
 import com.itextpdf.text.pdf.PdfWriter;
-import com.bis.sourcelead.dto.Response;
 
 
 /**
@@ -97,6 +102,12 @@ public class PdfUtil {
 	
 	@Autowired
 	CommonUtil commonUtil;
+	
+	@Autowired
+	RequirementInterviewService requirementInterviewService;
+	
+	@Autowired
+	RequirementOffersService requirementOffersService;
 	
 	private static final Logger logger = LoggerFactory.getLogger(PdfUtil.class);
 	public File createPdfTable(java.util.List<UserRole> activeList,
@@ -1730,6 +1741,194 @@ public File createDayWiseLeaveReportPdfTable(ResponseList<LeaveReportView> leave
 	return file;
 	
 }
+private String[] prepareApplicantJoinedListStringArray(RequirementSubmissionHistory rsh, String[] headers, OrgLocations loginOrgLocations) throws Exception {
+	String userArray[] = new String[headers.length];
+		
+	StringBuilder candidateName = new StringBuilder();
+	
+	//Candidate Name
+	if(rsh.getSubmissionId().getCandidate().getLastName() != null) {
+		userArray[0] = candidateName.append(rsh.getSubmissionId().getCandidate().getFirstName()).append(" ").append(rsh.getSubmissionId().getCandidate().getLastName()).toString();
+	}else {
+		userArray[0] = candidateName.append(rsh.getSubmissionId().getCandidate().getFirstName()).toString();
+	}
+	
+	//Candidate Email
+	 userArray[1] = rsh.getSubmissionId().getCandidate().getEmail();
+			
+			
+			if(rsh.getSubmissionId().getCandidate().getMobilePhone() != null) {
+				userArray[2] = rsh.getSubmissionId().getCandidate().getMobilePhone();
+			}
+			else{
+				 userArray[2] = "--";
+			}
+			//Requirement Name
+			if(rsh.getSubmissionId().getRequirement() != null) {
+				if(rsh.getSubmissionId().getRequirement().getGeneratedId() != null) {
+					 userArray[3] = rsh.getSubmissionId().getRequirement().getGeneratedId() +" - "+rsh.getSubmissionId().getRequirement().getJobTitle();
+				}else {
+					 userArray[3] = rsh.getSubmissionId().getRequirement().getJobTitle();
+				}
+			}
+			
+			if(rsh.getSubmissionId().getRequirement().getProcess() != null){
+				userArray[4] = rsh.getSubmissionId().getRequirement().getProcess();
+			}else{
+				userArray[4] = "--";
+			}
+		
+				//Clinet Name
+				if(rsh.getSubmissionId().getRequirement().getClientId() != null) {
+					if (rsh.getSubmissionId().getRequirement().getClientId().getResponderType().equalsIgnoreCase("Client")) {
+						if (rsh.getSubmissionId().getRequirement().getClientId().getResponderLocationId() != null) {
+							 userArray[5] = rsh.getSubmissionId().getRequirement().getClientId().getResponderLocationId().getOrgLocationName();
+						}else {
+							userArray[5] = "--";
+						}
+					}
+					if (rsh.getSubmissionId().getRequirement().getClientId().getResponderType().equalsIgnoreCase("Vendor")) {
+						if (rsh.getSubmissionId().getRequirement().getClientId().getLocationId() != null) {
+							 userArray[5] = rsh.getSubmissionId().getRequirement().getClientId().getLocationId().getOrgLocationName();
+						}else {
+							userArray[5] = "--";
+						}
+					}
+				}else {
+					userArray[5] = "--";
+				}
+				RequirementInterview reqInterview=requirementInterviewService.getinterviewBySubmissionId(rsh.getSubmissionId().getId());
+				
+				if(reqInterview != null && reqInterview.getDateOfInterview() !=  null){
+					 userArray[6] = commonUtil.dateStrFromOrgDateFormatter(loginOrgLocations.getDateFormat(),reqInterview.getDateOfInterview());
+				}
+				else{
+					userArray[6] = "--";
+				}
+		
+				RequirementOffers reqOffers=requirementOffersService.getRequirementOfferSubmissionById(rsh.getSubmissionId().getId());
+				
+				if(reqOffers != null && reqOffers.getAmount() !=  null && reqOffers.getPaymentType() !=null && reqOffers.getPaymentMode() != null){
+					 userArray[7] = reqOffers.getAmount()+"-"+reqOffers.getPaymentType()+"/"+reqOffers.getPaymentMode();
+				}
+				else{
+					 userArray[7] = "--";
+				}
+				//Sourece Name
+			   userArray[8] = rsh.getSubmissionId().getCreatedUser();
+			 //Submitted On
+		   userArray[9] = commonUtil.dateStrFromOrgDateFormatter(loginOrgLocations.getDateFormat(),rsh.getCreatedDate());
+		   if(rsh.getSubmissionId().getJoinedDate()  != null){
+			   userArray[10] = commonUtil.dateStrFromOrgDateFormatter(loginOrgLocations.getDateFormat(),rsh.getSubmissionId().getJoinedDate());
+			}
+			else{
+				userArray[10] = "--";
+				}
+			if(rsh.getSubmissionId().getRequirement().getPayOutPeriod() != null){
+				userArray[11] = rsh.getSubmissionId().getRequirement().getPayOutPeriod().toString();
+			}
+			else{
+				 userArray[11] = "--";
+			}
+			if(rsh.getSubmissionId().getRequirement().getPayOutPeriod() != null &&  rsh.getSubmissionId().getJoinedDate()  != null){
+				int result = Integer.parseInt(rsh.getSubmissionId().getRequirement().getPayOutPeriod());
+				Date generatedInvoiceDate=CalendarUtil.addDays(rsh.getSubmissionId().getJoinedDate(), result);
+				DateTime dtOrg = new DateTime(generatedInvoiceDate);
+				DateTime generatedInvoiceDatePlusOne = dtOrg.plusDays(1);
+				   userArray[12] = commonUtil.dateStrFromOrgDateFormatter(loginOrgLocations.getDateFormat(),generatedInvoiceDatePlusOne.toDate());
+
+			}
+			else{
+				userArray[12] = "--";	
+			}
+	   
+	return userArray;
+	
+
+}
+
+
+public File ApplicantsJoinedListPdfTable(ResponseList<RequirementSubmissionHistory> rsh, OrgLocations loginOrgLocations) throws Exception{
+
+	
+	
+	
+	String[] headers = Constants.APPLICANTS_JOINED_HEADERS;
+    Document document = new Document(PageSize.LETTER.rotate());
+    StringBuilder sbUser =  new StringBuilder();
+    sbUser.append("Applicants_Joined_List_").append(commonUtil.dateStrFromOrgDateFormatter(loginOrgLocations.getDateFormat(),new Date()));
+
+    StringBuilder fileSB = new StringBuilder();
+    File file = File.createTempFile(fileSB.append("Applicants_Joined_List_").append(commonUtil.dateStrFromOrgDateFormatter(loginOrgLocations.getDateFormat(),new Date())).toString(),".pdf");
+    System.out.println("***************************************"+file.getAbsolutePath());
+    file.setReadable(true);
+    
+    try {
+        // Get an instance of PdfWriter and create a Table.pdf file as an output.
+        PdfWriter.getInstance(document, new FileOutputStream(file));
+        document.open();
+
+        Font boldFont = new Font(Font.FontFamily.TIMES_ROMAN, 18, Font.BOLD);
+        BaseColor myColor = WebColors.getRGBColor("#000000");
+        boldFont.setColor(myColor);
+        StringBuilder userStyle = new StringBuilder();
+        userStyle.append(loginOrgLocations.getOrgLocationName()).append(" ").append("Applicants_Joined_Report");
+      
+
+        StringBuilder orgNameSB = new StringBuilder();
+        Paragraph para = new Paragraph(orgNameSB.append("Organization : ").append(loginOrgLocations.getOrgLocationName()).toString());
+        para.setAlignment(Element.ALIGN_CENTER);
+        document.add(para);
+      
+        // Create an instance of PdfPTable. After that we transform the header and
+        PdfPTable table = new PdfPTable(headers.length);
+        Font font = new Font(FontFamily.HELVETICA, 14, Font.BOLD, BaseColor.WHITE);
+        PdfPCell cell1 = new PdfPCell(new Phrase(userStyle.toString(),font));
+        cell1.setColspan(13);
+        headerCellStyle(cell1);
+        table.setWidthPercentage(100);
+        table.setWidths(new int[]{5, 5, 5,5, 5, 4, 4, 5, 5, 6, 3, 4,5});
+        table.addCell(cell1);
+        for (int i = 0; i < headers.length; i++) {
+            String header = headers[i];
+            PdfPCell cell = new PdfPCell();
+            cell.setGrayFill(0.9f);
+            cell.setPhrase(new Phrase(header.toUpperCase(), new Font(FontFamily.HELVETICA, 10, Font.BOLD)));
+            BaseColor myBorderColor = WebColors.getRGBColor("#808080");
+            cell.setBackgroundColor(myBorderColor);
+            table.addCell(cell);
+        }
+        table.completeRow();
+        java.util.List<String[]> lrvList = new ArrayList<>();
+        java.util.List<RequirementSubmissionHistory> list = rsh.getData();
+        for(RequirementSubmissionHistory lrv : list){
+        	lrvList.add(prepareApplicantJoinedListStringArray(lrv,headers,loginOrgLocations));
+        }
+        for (String[] userArray: lrvList) {
+            for (int i = 0; i < userArray.length; i++) {
+                String datum = userArray[i];
+                PdfPCell cell = new PdfPCell();
+                cell.setPhrase(new Phrase(datum, new Font(FontFamily.HELVETICA, 10, Font.NORMAL)));
+                table.addCell(cell);
+            }
+            table.completeRow();
+        }
+        document.addTitle("Applicants Joined Table");
+        table.setSpacingBefore(15f);
+        document.add(table);
+        logger.info("Pdf table created !!");
+    } catch (DocumentException e) {
+    	logger.error("Exception cause is : "+ExceptionUtils.getFullStackTrace(e));
+    } catch (FileNotFoundException e) {
+    	logger.error("Exception cause is : "+ExceptionUtils.getFullStackTrace(e));
+    } finally {
+        document.close();
+    }
+	return file;
+	
+}
+
+
 private String[] prepareDailyWiseLeaveReportStringArray(LeaveReportView lrv, String[] headers) throws Exception {
 	String userArray[] = new String[headers.length];
 		 if(lrv.getName() !=null){

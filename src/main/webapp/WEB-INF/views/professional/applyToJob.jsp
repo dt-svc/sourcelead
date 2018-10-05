@@ -1188,16 +1188,27 @@ function ApplicantNotifyRequiremnentProRecruter(){
 			    	} else if (data.response === "SUCCESS") {
 			        	if(json!=null){
 				        	var output = "";
-				        	output = output + "<option value=''>-- Select Resume --</option>"; 
-				        	for (var i=0; i<json.length; i++)
-							{
-					        		var opt = json[i];
-					        		if(opt.title != null && opt.title != 'undefined' && opt.title != ""){
-					        			output = output + "<option value='" +opt.id+ "'>"+opt.title+"</option>";
-					            	}else{
-					            		output = output + "<option value='" +opt.id+ "'>"+opt.fileName+"</option>";
-					            	}
-							}
+				        	
+				        	if(json.length == 1){
+				        		var opt = json[0];
+				        		if(opt.title != null && opt.title != 'undefined' && opt.title != ""){
+				        			output = output + "<option value='" +opt.id+ "'>"+opt.title+"</option>";
+				            	}else{
+				            		output = output + "<option value='" +opt.id+ "'>"+opt.fileName+"</option>";
+				            	}
+				        	}else{
+				        		output = output + "<option value=''>-- Select Resume --</option>"; 
+					        	for (var i=0; i<json.length; i++)
+								{
+						        		var opt = json[i];
+						        		if(opt.title != null && opt.title != 'undefined' && opt.title != ""){
+						        			output = output + "<option value='" +opt.id+ "'>"+opt.title+"</option>";
+						            	}else{
+						            		output = output + "<option value='" +opt.id+ "'>"+opt.fileName+"</option>";
+						            	}
+								}
+				        	}
+				        	
 				        	$("#candidateResumesList").empty();
 					        $("#candidateResumesList").append(output);
 					        

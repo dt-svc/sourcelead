@@ -20,6 +20,7 @@ import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.payroll.dto.CheckRegisterReportDTO;
 import com.bis.sourcelead.payroll.dto.PayrollReportDTO;
 import com.bis.sourcelead.payroll.dto.PdfHeaderDTO;
+import com.bis.sourcelead.payroll.dto.YTDPayrollDTO;
 import com.bis.sourcelead.payroll.entity.EmployeePayrollTax;
 import com.bis.sourcelead.util.CommonUtil;
 import java.math.BigDecimal;
@@ -775,6 +776,20 @@ public class PayrollReportPdfUtil {
 		PdfWriter.getInstance(document, new FileOutputStream(file));
 		document.open();
 		
+		PayrollReportDTO payrollReportDTO = responseList.getData().get(0);
+    	PdfHeaderDTO headerDTO = new PdfHeaderDTO();
+    	
+    	headerDTO.setCheckDate(payrollReportDTO.getCheckDate());
+    	headerDTO.setGroupName(payrollReportDTO.getGroupName());
+    	headerDTO.setOrgName(orgLocation.getOrgLocationName());
+    	headerDTO.setPayPeriod(payrollReportDTO.getGroupFrequency());
+    	headerDTO.setPayrollType(payrollReportDTO.getType());
+    	headerDTO.setPeriodBeginDate(payrollReportDTO.getFreqStartDate());
+    	headerDTO.setPeriodEndDate(payrollReportDTO.getFreqEndDate());
+    	headerDTO.setReportType("PAYROLL REGISTER");
+    	headerDTO.setRunDate(payrollReportDTO.getRunDate());
+    	headerDTO.setRunNumber(0);
+    	createHeaderTable(document, headerDTO, orgLocation);
 		
 		for(PayrollReportDTO payrollReportDto : responseList.getData()) {
 			PdfPTable maintable = new PdfPTable(1);
@@ -824,9 +839,15 @@ public class PayrollReportPdfUtil {
 			childTable1.addCell(cell2);
 			PdfPCell cell3 = new PdfPCell();
 			StringBuilder fedSbMar = new StringBuilder();
-			fedSbMar.append("Fed Marital: ").append(payrollReportDto.getFedMaritalStat());
+			if(StringUtils.isNotBlank(payrollReportDto.getFedMaritalStat())) 
+				fedSbMar.append("Fed Marital: ").append(payrollReportDto.getFedMaritalStat());
+			else
+				fedSbMar.append("Fed Marital: ").append("NA");
 			StringBuilder stateSbMar = new StringBuilder();
-			stateSbMar.append("State Marital: ").append(payrollReportDto.getStateMaritalStat());
+			if(StringUtils.isNotBlank(payrollReportDto.getStateMaritalStat())) 
+				stateSbMar.append("State Marital: ").append(payrollReportDto.getStateMaritalStat());
+			else
+				stateSbMar.append("State Marital: ").append("NA");
 			cell3.addElement(new Paragraph(fedSbMar.toString(), normalFont));
 			cell3.addElement(new Paragraph(stateSbMar.toString(), normalFont));
 			cell3.setBorder(Rectangle.NO_BORDER);
@@ -834,7 +855,11 @@ public class PayrollReportPdfUtil {
 			// cell3.setColspan(10);
 			childTable1.addCell(cell3);
 			PdfPCell cell4 = new PdfPCell();
-			cell4.addElement(new Paragraph("Exempts: "+payrollReportDto.getFedExempt()+"", normalFont));
+			if(StringUtils.isNotBlank(payrollReportDto.getFedExempt())) 
+				cell4.addElement(new Paragraph("Exempts: "+payrollReportDto.getFedExempt()+"", normalFont));
+			else
+				cell4.addElement(new Paragraph("Exempts: NA", normalFont));
+			
 			cell4.addElement(new Paragraph("", normalFont));
 			cell4.setBorder(Rectangle.NO_BORDER);
 			cell4.setBackgroundColor(new BaseColor(209, 210, 211));
@@ -843,8 +868,16 @@ public class PayrollReportPdfUtil {
 			PdfPCell cell5 = new PdfPCell();
 			StringBuilder fedAddTax = new StringBuilder();
 			StringBuilder stateAddTax = new StringBuilder();
-			fedAddTax.append("Addl Tax: ").append(payrollReportDto.getFedAddTax());
-			stateAddTax.append("Addl Tax: ").append(payrollReportDto.getStateAddTax());
+			if(StringUtils.isNotBlank(payrollReportDto.getFedAddTax())) 
+				fedAddTax.append("Addl Tax: ").append(payrollReportDto.getFedAddTax());
+			else
+				fedAddTax.append("Addl Tax: ").append("NA");
+				
+			if(StringUtils.isNotBlank(payrollReportDto.getStateAddTax())) 
+				stateAddTax.append("Addl Tax: ").append(payrollReportDto.getStateAddTax());
+			else
+				stateAddTax.append("Addl Tax: ").append("NA");
+				
 			cell5.addElement(new Paragraph(fedAddTax.toString(), normalFont));
 			cell5.addElement(new Paragraph(stateAddTax.toString(), normalFont));
 			cell5.setBorder(Rectangle.NO_BORDER);
@@ -1029,7 +1062,7 @@ public class PayrollReportPdfUtil {
 			tbl2cl2.setBackgroundColor(new BaseColor(227, 228, 229));
 			tbl2.addCell(tbl2cl2);
 			
-			BigDecimal dedTotal = null, ytdDedTotal = null;
+			BigDecimal dedTotal = BigDecimal.ZERO, ytdDedTotal = BigDecimal.ZERO;
 			for(PayrollReportDTO payDto : payrollReportDto.getDeductionsList()) {
 				tbl2.addCell(getPdfCell("", ctNormalFont, 0, ""));
 				PdfPCell tb2c2 = getBottomAlignedPdfCell(payDto.getDeductions().toString(), ctNormalFont, 0, "grey");
@@ -1083,91 +1116,103 @@ public class PayrollReportPdfUtil {
 			tbl3.addCell(tbl3cl4);
 			
 			BigDecimal totalTax = BigDecimal.ZERO, totalYtdTax = BigDecimal.ZERO;
-			
+			YTDPayrollDTO ytdTax = payrollReportDto.getYtdPayrollDTO();
 			for(EmployeePayrollTax empTax : payrollReportDto.getTaxHistory()) {
 				
-				if(!empTax.getFicaWithholding().equals(BigDecimal.ZERO)) {
+				if(empTax.getFicaWithholding() != null && !(BigDecimal.ZERO.compareTo(empTax.getFicaWithholding()) == 0)) {
 					tbl3.addCell(getBottomAlignedPdfCell("FICA:", boldFont, 0, ""));
 					tbl3.addCell(getBottomAlignedPdfCell(empTax.getFicaWithholding().toString(), ctNormalFont, 0, "grey"));
 					totalTax = totalTax.add(empTax.getFicaWithholding());
-					tbl3.addCell(getBottomAlignedPdfCell("x.xx", ctNormalFont, 0, ""));
+					tbl3.addCell(getBottomAlignedPdfCell(ytdTax.getFicaYTD().toString(), ctNormalFont, 0, ""));
+					totalYtdTax = totalYtdTax.add(ytdTax.getFicaYTD());
 				}
 				
-				if(!empTax.getMedicareWithholding().equals(BigDecimal.ZERO)) {
+				if(empTax.getMedicareWithholding() != null && !(BigDecimal.ZERO.compareTo(empTax.getMedicareWithholding()) == 0)) {
 					tbl3.addCell(getBottomAlignedPdfCell("MEDICARE:", boldFont, 0, ""));
 					tbl3.addCell(getBottomAlignedPdfCell(empTax.getMedicareWithholding().toString(), ctNormalFont, 0, "grey"));
 					totalTax = totalTax.add(empTax.getMedicareWithholding());
-					tbl3.addCell(getBottomAlignedPdfCell("x.xx", ctNormalFont, 0, ""));
+					tbl3.addCell(getBottomAlignedPdfCell(ytdTax.getMedicareYTD().toString(), ctNormalFont, 0, ""));
+					totalYtdTax = totalYtdTax.add(ytdTax.getMedicareYTD());
 				}
 				
-				if(!empTax.getFederalWithholding().equals(BigDecimal.ZERO)) {
+				if(empTax.getFederalWithholding() != null && !(BigDecimal.ZERO.compareTo(empTax.getFederalWithholding()) == 0)) {
 					tbl3.addCell(getBottomAlignedPdfCell("FEDERAL:", boldFont, 0, ""));
 					tbl3.addCell(getBottomAlignedPdfCell(empTax.getFederalWithholding().toString(), ctNormalFont, 0, "grey"));
 					totalTax = totalTax.add(empTax.getFederalWithholding());
-					tbl3.addCell(getBottomAlignedPdfCell("x.xx", ctNormalFont, 0, ""));
+					tbl3.addCell(getBottomAlignedPdfCell(ytdTax.getFederalYTD().toString(), ctNormalFont, 0, ""));
+					totalYtdTax = totalYtdTax.add(ytdTax.getFederalYTD());
 				}
 				
-				if(!empTax.getEarnedIncCredit().equals(BigDecimal.ZERO)) {
+				if(empTax.getEarnedIncCredit() != null && !(BigDecimal.ZERO.compareTo(empTax.getEarnedIncCredit()) == 0)) {
 					tbl3.addCell(getBottomAlignedPdfCell("EARNED_INC:", boldFont, 0, ""));
 					tbl3.addCell(getBottomAlignedPdfCell(empTax.getEarnedIncCredit().toString(), ctNormalFont, 0, "grey"));
 					totalTax = totalTax.add(empTax.getEarnedIncCredit());
-					tbl3.addCell(getBottomAlignedPdfCell("x.xx", ctNormalFont, 0, ""));
+					tbl3.addCell(getBottomAlignedPdfCell(ytdTax.getEarnedIncCreditYTD().toString(), ctNormalFont, 0, ""));
+					totalYtdTax = totalYtdTax.add(ytdTax.getEarnedIncCreditYTD());
 				}
 				
-				if(!empTax.getStateWithholding().equals(BigDecimal.ZERO)) {
+				if(empTax.getStateWithholding() != null && !(BigDecimal.ZERO.compareTo(empTax.getStateWithholding()) == 0)) {
 					tbl3.addCell(getBottomAlignedPdfCell("STATE:", boldFont, 0, ""));
 					tbl3.addCell(getBottomAlignedPdfCell(empTax.getStateWithholding().toString(), ctNormalFont, 0, "grey"));
 					totalTax = totalTax.add(empTax.getStateWithholding());
-					tbl3.addCell(getBottomAlignedPdfCell("x.xx", ctNormalFont, 0, ""));
+					tbl3.addCell(getBottomAlignedPdfCell(ytdTax.getStateWithholdingYTD().toString(), ctNormalFont, 0, ""));
+					totalYtdTax = totalYtdTax.add(ytdTax.getStateWithholdingYTD());
 				}
 				
-				if(!empTax.getCountyWithholding().equals(BigDecimal.ZERO)) {
+				if(empTax.getCountyWithholding() != null && !(BigDecimal.ZERO.compareTo(empTax.getCountyWithholding()) == 0)) {
 					tbl3.addCell(getBottomAlignedPdfCell("COUNTY:", boldFont, 0, ""));
 					tbl3.addCell(getBottomAlignedPdfCell(empTax.getCountyWithholding().toString(), ctNormalFont, 0, "grey"));
 					totalTax = totalTax.add(empTax.getCountyWithholding());
-					tbl3.addCell(getBottomAlignedPdfCell("x.xx", ctNormalFont, 0, ""));
+					tbl3.addCell(getBottomAlignedPdfCell(ytdTax.getCountyWithholdingYTD().toString(), ctNormalFont, 0, ""));
+					totalYtdTax = totalYtdTax.add(ytdTax.getCountyWithholdingYTD());
 				}
 				
-				if(!empTax.getSUI().equals(BigDecimal.ZERO)) {
+				if(empTax.getSUI() != null && !(BigDecimal.ZERO.compareTo(empTax.getSUI()) == 0)) {
 					tbl3.addCell(getBottomAlignedPdfCell("SUI:", boldFont, 0, ""));
 					tbl3.addCell(getBottomAlignedPdfCell(empTax.getSUI().toString(), ctNormalFont, 0, "grey"));
 					totalTax = totalTax.add(empTax.getSUI());
-					tbl3.addCell(getBottomAlignedPdfCell("x.xx", ctNormalFont, 0, ""));
+					tbl3.addCell(getBottomAlignedPdfCell(ytdTax.getSuiYTD().toString(), ctNormalFont, 0, ""));
+					totalYtdTax = totalYtdTax.add(ytdTax.getSuiYTD());
 				}
 				
-				if(!empTax.getSDI().equals(BigDecimal.ZERO)) {
+				if(empTax.getSDI() != null && !(BigDecimal.ZERO.compareTo(empTax.getSDI()) == 0)) {
 					tbl3.addCell(getBottomAlignedPdfCell("SDI:", boldFont, 0, ""));
 					tbl3.addCell(getBottomAlignedPdfCell(empTax.getSDI().toString(), ctNormalFont, 0, "grey"));
 					totalTax = totalTax.add(empTax.getSDI());
-					tbl3.addCell(getBottomAlignedPdfCell("x.xx", ctNormalFont, 0, ""));
+					tbl3.addCell(getBottomAlignedPdfCell(ytdTax.getSdiYTD().toString(), ctNormalFont, 0, ""));
+					totalYtdTax = totalYtdTax.add(ytdTax.getSdiYTD());
 				}
 				
-				if(!empTax.getFLI().equals(BigDecimal.ZERO)) {
+				if(empTax.getFLI() != null && !(BigDecimal.ZERO.compareTo(empTax.getFLI()) == 0)) {
 					tbl3.addCell(getBottomAlignedPdfCell("FLI:", boldFont, 0, ""));
 					tbl3.addCell(getBottomAlignedPdfCell(empTax.getFLI().toString(), ctNormalFont, 0, "grey"));
 					totalTax = totalTax.add(empTax.getFLI());
-					tbl3.addCell(getBottomAlignedPdfCell("x.xx", ctNormalFont, 0, ""));
+					tbl3.addCell(getBottomAlignedPdfCell(ytdTax.getFliYTD().toString(), ctNormalFont, 0, ""));
+					totalYtdTax = totalYtdTax.add(ytdTax.getFliYTD());
 				}
 				
-				if(!empTax.getHCSF().equals(BigDecimal.ZERO)) {
+				if(empTax.getHCSF() != null && !(BigDecimal.ZERO.compareTo(empTax.getHCSF()) == 0)) {
 					tbl3.addCell(getBottomAlignedPdfCell("HCSF:", boldFont, 0, ""));
 					tbl3.addCell(getBottomAlignedPdfCell(empTax.getHCSF().toString(), ctNormalFont, 0, "grey"));
 					totalTax = totalTax.add(empTax.getHCSF());
-					tbl3.addCell(getBottomAlignedPdfCell("x.xx", ctNormalFont, 0, ""));
+					tbl3.addCell(getBottomAlignedPdfCell(ytdTax.getHcsfYTD().toString(), ctNormalFont, 0, ""));
+					totalYtdTax = totalYtdTax.add(ytdTax.getHcsfYTD());
 				}
 				
-				if(!empTax.getWC().equals(BigDecimal.ZERO)) {
+				if(empTax.getWC() != null && !(BigDecimal.ZERO.compareTo(empTax.getWC()) == 0)) {
 					tbl3.addCell(getBottomAlignedPdfCell("WC:", boldFont, 0, ""));
 					tbl3.addCell(getBottomAlignedPdfCell(empTax.getWC().toString(), ctNormalFont, 0, "grey"));
 					totalTax = totalTax.add(empTax.getWC());
-					tbl3.addCell(getBottomAlignedPdfCell("x.xx", ctNormalFont, 0, ""));
+					tbl3.addCell(getBottomAlignedPdfCell(ytdTax.getWcYTD().toString(), ctNormalFont, 0, ""));
+					totalYtdTax = totalYtdTax.add(ytdTax.getWcYTD());
 				}
 				
-				if(!empTax.getLocalTax().equals(BigDecimal.ZERO)) {
+				if(empTax.getLocalTax() != null && !(BigDecimal.ZERO.compareTo(empTax.getLocalTax()) == 0)) {
 					tbl3.addCell(getBottomAlignedPdfCell("LOCAL_TAX:", boldFont, 0, ""));
 					tbl3.addCell(getBottomAlignedPdfCell(empTax.getLocalTax().toString(), ctNormalFont, 0, "grey"));
 					totalTax = totalTax.add(empTax.getLocalTax());
-					tbl3.addCell(getBottomAlignedPdfCell("x.xx", ctNormalFont, 0, ""));
+					tbl3.addCell(getBottomAlignedPdfCell(ytdTax.getLocalTaxYTD().toString(), ctNormalFont, 0, ""));
+					totalYtdTax = totalYtdTax.add(ytdTax.getLocalTaxYTD());
 				}
 			}
 			
@@ -1175,14 +1220,10 @@ public class PayrollReportPdfUtil {
 			PdfPCell tb3c1 = getBottomAlignedPdfCell("Totals:", boldFont, 0, "");
 			tb3c1.setHorizontalAlignment(Element.ALIGN_RIGHT);
 			tbl3.addCell(tb3c1);
-			PdfPCell tb3c2 = getBottomAlignedPdfCell("0.00", ctNormalFont, 0, "grey");
+			PdfPCell tb3c2 = getBottomAlignedPdfCell(totalTax.toString(), ctNormalFont, 0, "grey");
 			tbl3.addCell(tb3c2);
-			PdfPCell tb3c3 = getBottomAlignedPdfCell("0.00", ctNormalFont, 0, "");
+			PdfPCell tb3c3 = getBottomAlignedPdfCell(totalYtdTax.toString(), ctNormalFont, 0, "");
 			tbl3.addCell(tb3c3);
-			PdfPCell tb4c3 = getBottomAlignedPdfCell("0.00", ctNormalFont, 0, "grey");
-			tbl3.addCell(tb4c3);
-			PdfPCell tb5c3 = getBottomAlignedPdfCell("0.00", ctNormalFont, 0, "");
-			tbl3.addCell(tb5c3);
 			
 			childTable3.addCell(tbl1);
 			childTable3.addCell(tbl2);

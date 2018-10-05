@@ -4,6 +4,7 @@ import java.text.MessageFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Date;
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -12,6 +13,7 @@ import org.apache.commons.lang.StringUtils;
 import org.hibernate.Query;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
+import org.hibernate.transform.Transformers;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -32,6 +34,7 @@ import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.ProjectTasks;
 import com.bis.sourcelead.entity.Requirement;
 import com.bis.sourcelead.exception.SourceLeadConstraintViolationException;
+import com.bis.sourcelead.reportsDTO.AssetGrowthDTO;
 import com.bis.sourcelead.service.AssetService;
 import com.bis.sourcelead.service.OrgLocationService;
 import com.bis.sourcelead.util.CommonUtil;
@@ -45,6 +48,9 @@ public class AssetDaoImpl implements AssetDao{
 	
 	@Autowired
     OrgLocationService orgLocationService;
+	
+	@Autowired
+	CommonUtil commonUtil;
 	
 	@Value("${SourceLead.100}")
 	private String notFound;
@@ -234,6 +240,9 @@ public class AssetDaoImpl implements AssetDao{
 			}
 			if (Arrays.asList(status).contains("Out Of Service")) {
 				subquery2 = subquery2 + "asset.workingStatus = 'Out Of Service' OR ";
+			}
+			if (Arrays.asList(status).contains("Service")) {
+				subquery2 = subquery2 + "asset.workingStatus = 'Service' OR ";
 			}
 		}
 		
@@ -445,6 +454,52 @@ public class AssetDaoImpl implements AssetDao{
 		String query = "from AssetServices assetServices where assetServices.asset.id = :assetId and assetServices.status ='1'";
 		List<AssetServices> assetServicestList = session.createQuery(query).setLong("assetId", assetId).list();
 		return assetServicestList;
+	}
+
+	@SuppressWarnings("unchecked")
+	@Override
+	@Transactional
+	public List<AssetGrowthDTO> getAssetGrowthListByOrgloationIdAndAssetGrowthDTO(Long orgLocationId, AssetGrowthDTO assetGrowthDTO,Date[] searchDates) throws Exception {
+		Session session =  this.sessionFactory.getCurrentSession();
+		List<Long> categoryIdList = new ArrayList<>();
+		if(StringUtils.isNotBlank(assetGrowthDTO.getCategoryIds())) {
+			String[] catIds = assetGrowthDTO.getCategoryIds().split(",");
+			for(int i=0; i<catIds.length; i++) {
+				categoryIdList.add(Long.valueOf(catIds[i]));
+			}
+		}
+		String catQury = " ";
+		List<AssetGrowthDTO> assetGrowthList;
+		if(categoryIdList.size() > 0) {
+		 catQury = "and cat.ID IN (:categoryIdList)";
+		}
+		
+		String dateQury;
+		String  startDate =commonUtil.elkDateFormatter(searchDates[0]);
+		String  endDate  = commonUtil.elkDateFormatter(searchDates[1]);
+		
+		dateQury = " and DATE_FORMAT(ass.PURCHASE_DATE,'%Y-%m-%d') BETWEEN  '"+startDate +"' and '"+endDate+"'";
+		
+		String query = "SELECT ass.ID as assestId, " + 
+						"	ass.SL_NO as slNo, " + 
+						"   ass.ASSET_CATEGORY_ID as categoryId, " + 
+						"   ass.PURCHASE_DATE as purchaseDate, " + 
+						"   ass.COST as cost," +
+						"   cat.CATEGORY_NAME as catgoryName " + 
+						" FROM ASSET ass,ASSET_CATEGORY cat " + 
+						"where ass.ASSET_CATEGORY_ID = cat.ID and ass.STATUS = '1' and ass.ORG_LOCATION_ID = "+orgLocationId+" "+catQury+" "+dateQury+" order by ass.PURCHASE_DATE desc";
+		if(categoryIdList.size() > 0) {
+			assetGrowthList = session.createSQLQuery(query).setParameterList("categoryIdList", categoryIdList).setResultTransformer(Transformers.aliasToBean(AssetGrowthDTO.class)).list();
+		}else {
+			assetGrowthList = session.createSQLQuery(query).setResultTransformer(Transformers.aliasToBean(AssetGrowthDTO.class)).list();
+		}
+		for(AssetGrowthDTO asset : assetGrowthList) {
+			asset.setMonthNames(new SimpleDateFormat("MMMM").format(asset.getPurchaseDate()));
+			asset.setMonthNumber(asset.getPurchaseDate().getMonth());
+			if (asset.getCost() != null) 
+			asset.setCostDoble(asset.getCost().doubleValue());
+		}
+		return assetGrowthList;
 	}
 	
 }

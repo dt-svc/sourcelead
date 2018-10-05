@@ -204,6 +204,13 @@ public class RequirementSubmissionHistory implements Serializable{
 	@JsonProperty
 	private String candidateUUID;
 	
+   @Transient
+   @JsonProperty
+   private String payOutPeriod;
+   @Transient
+   @JsonProperty
+   private String generateInvoice;
+	
 	public Long getId() {
 		return id;
 	}
@@ -595,6 +602,25 @@ public class RequirementSubmissionHistory implements Serializable{
 		this.candidateUUID = candidateUUID;
 	}
 
+	public String getPayOutPeriod()
+	{
+		return payOutPeriod;
+	}
 
+	public void setPayOutPeriod(String payOutPeriod)
+	{
+		this.payOutPeriod = payOutPeriod;
+	}
+
+	public String getGenerateInvoice()
+	{
+		return generateInvoice;
+	}
+
+	public void setGenerateInvoice(String generateInvoice)
+	{
+		this.generateInvoice = generateInvoice;
+	}
 	
+
 }

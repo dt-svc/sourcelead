@@ -28,6 +28,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.ModelAndView;
 
 import com.bis.sourcelead.constants.Constants;
+import com.bis.sourcelead.dto.EmailAccountSettingsDTO;
 import com.bis.sourcelead.elk.index.CampaignIndex;
 import com.bis.sourcelead.elk.index.CandidateIndex;
 import com.bis.sourcelead.elk.setup.SourceleadELKBaseIndexer;
@@ -167,8 +168,8 @@ public class MailBoxController {
  	}
 
 	@RequestMapping(value = "/app/emailSettings")
+	@ResponseBody
 	public ModelAndView emailSettings(HttpServletRequest request, @RequestParam(defaultValue = "others") String source) {
-//		User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
 		ModelAndView model = new ModelAndView();
 		String incomingServer = "secure.emailsrvr.com";
 		String incomingPort = "993";
@@ -190,13 +191,16 @@ public class MailBoxController {
 		default:
 			break;
 		}
-		model.addObject("incomingServer", incomingServer);
-		model.addObject("incomingPort", incomingPort);
-		model.addObject("outgoingServer", outgoingServer);
-		model.addObject("outgoingPort", outgoingPort);
-//		model.addObject("username", user.getFullName());
+		EmailAccountSettingsDTO emailAccountSettingsDTO = new EmailAccountSettingsDTO();
+		emailAccountSettingsDTO.setIncomingServer(incomingServer);
+		emailAccountSettingsDTO.setIncomingPort(incomingPort);
+		emailAccountSettingsDTO.setIncomingSSL(true);
+		emailAccountSettingsDTO.setOutgoingServer(outgoingServer);
+		emailAccountSettingsDTO.setOutgoingPort(outgoingPort);
+		emailAccountSettingsDTO.setOutgoingSSL(true);
+		model.addObject("emailAccount", emailAccountSettingsDTO);
 		model.addObject("sourceleadUrl", sourceleadUrl);
-		model.setViewName("emailSettings");
+		model.setViewName("emailConfiguration");
 		return model;
 	}
 	
@@ -459,6 +463,7 @@ public class MailBoxController {
 	
 	
 	
+	@SuppressWarnings("static-access")
 	public void calculateDays(List<CampaignIndex> mailBoxList, Timezone timezone) throws ParseException {
 		for (CampaignIndex userMailBox : mailBoxList) {
 			long diff = commonUtil.currentDate().getTime() - userMailBox.getCreatedDate().getTime();

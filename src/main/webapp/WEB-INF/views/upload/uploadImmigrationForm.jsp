@@ -23,13 +23,14 @@
 var uploadflag= true;
 		window.onload = function () {
 			var refreshId = setInterval(function(){
+				var dateFormat ='${SourceLeadWeb_orgLocations.dateFormat}';
 				if(uploadflag == true){
-					xlsupload.getUploadInprogressProgressBar("Immigration");
+					xlsupload.getUploadInprogressProgressBar("Immigration",dateFormat);
 				  }else{
 					     clearInterval(refreshId);
 						 $(".browseProgress").hide();
 						 $("#upload_button").removeAttr("disabled");
-						 xlsupload.getUploadInprogressProgressBar("Immigration");
+						 xlsupload.getUploadInprogressProgressBar("Immigration",dateFormat);
 				  }
 			},1000);
 		 };

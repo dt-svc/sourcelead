@@ -23,6 +23,7 @@ import com.bis.sourcelead.dto.AssociatePayItemDTO;
 import com.bis.sourcelead.entity.AssociateLoanAndAdvanceHistory;
 import com.bis.sourcelead.entity.AssociatePayItem;
 import com.bis.sourcelead.entity.Candidate;
+import com.bis.sourcelead.entity.Org;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.payroll.dto.ContributionDTO;
 import com.bis.sourcelead.payroll.dto.DeductionDTO;
@@ -36,6 +37,8 @@ import com.bis.sourcelead.payroll.entity.PayitemHistory;
 import com.bis.sourcelead.payroll.service.AssociateDeductionService;
 import com.bis.sourcelead.payroll.service.PaysheetFrequencyService;
 import com.bis.sourcelead.util.CommonUtil;
+
+import javassist.compiler.NoFieldException;
 
 @Component
 public class PayrollUtil {
@@ -497,9 +500,10 @@ public class PayrollUtil {
 
 	/**
 	 * Get Houry rate by lca wage type
+	 * 
 	 * @param amount
 	 * @param lcaWageType
-	 * @param payFrequency 
+	 * @param payFrequency
 	 * @return BigDecimal
 	 */
 	public BigDecimal getActualRateByPayFrequency(BigDecimal amount, String lcaWageType, String payFrequency)
@@ -507,60 +511,144 @@ public class PayrollUtil {
 		BigDecimal houryRate = BigDecimal.ZERO;
 		BigDecimal payAmount = BigDecimal.ZERO;
 		BigDecimal hours = BigDecimal.ZERO;
-			if(PayrollConstant.PAY_YEARLY.equalsIgnoreCase(lcaWageType.trim())){
-				houryRate =  amount.divide(new BigDecimal(2088),3, RoundingMode.CEILING);
-			}else if(PayrollConstant.PAY_MONTHLY.equalsIgnoreCase(lcaWageType.trim())){
-				houryRate = amount.divide(new BigDecimal(176),3, RoundingMode.CEILING);
-			}else if(PayrollConstant.PAY_BI_WEEKLY.equalsIgnoreCase(lcaWageType.trim())){
-				houryRate = amount.divide(new BigDecimal(80),3, RoundingMode.CEILING);
-			}else if(PayrollConstant.PAY_WEEKLY.equalsIgnoreCase(lcaWageType.trim())){
-				houryRate = amount.divide(new BigDecimal(40),3, RoundingMode.CEILING);
-			}else if(PayrollConstant.PAY_BI_MONTHLY.equalsIgnoreCase(lcaWageType.trim())){
-				houryRate = amount.divide(new BigDecimal(88),3, RoundingMode.CEILING);
-			}else if(PayrollConstant.HOURLY.equalsIgnoreCase(lcaWageType.trim())){
-				houryRate = amount;
-			}
-			
-			if(PayrollConstant.PAY_ANNUAL.equalsIgnoreCase(payFrequency)){
-				hours = new BigDecimal(2088);
-			}else if(PayrollConstant.PAY_MONTHLY.equalsIgnoreCase(payFrequency)){
-				hours = new BigDecimal(176);
-			}else if(PayrollConstant.PAY_BI_WEEKLY.equalsIgnoreCase(payFrequency)){
-				hours = new BigDecimal(80);
-			}else if(PayrollConstant.PAY_WEEKLY.equalsIgnoreCase(payFrequency)){
-				hours = new BigDecimal(40);
-			}
-			payAmount = houryRate.multiply(hours);
-			return payAmount;
-			
+		if (PayrollConstant.PAY_YEARLY.equalsIgnoreCase(lcaWageType.trim())) {
+			houryRate = amount.divide(new BigDecimal(2088), 3, RoundingMode.CEILING);
+		}
+		else if (PayrollConstant.PAY_MONTHLY.equalsIgnoreCase(lcaWageType.trim())) {
+			houryRate = amount.divide(new BigDecimal(176), 3, RoundingMode.CEILING);
+		}
+		else if (PayrollConstant.PAY_BI_WEEKLY.equalsIgnoreCase(lcaWageType.trim())) {
+			houryRate = amount.divide(new BigDecimal(80), 3, RoundingMode.CEILING);
+		}
+		else if (PayrollConstant.PAY_WEEKLY.equalsIgnoreCase(lcaWageType.trim())) {
+			houryRate = amount.divide(new BigDecimal(40), 3, RoundingMode.CEILING);
+		}
+		else if (PayrollConstant.PAY_BI_MONTHLY.equalsIgnoreCase(lcaWageType.trim())) {
+			houryRate = amount.divide(new BigDecimal(88), 3, RoundingMode.CEILING);
+		}
+		else if (PayrollConstant.HOURLY.equalsIgnoreCase(lcaWageType.trim())) {
+			houryRate = amount;
+		}
+		
+		
+		// amount calculation
+		if (PayrollConstant.PAY_ANNUAL.equalsIgnoreCase(payFrequency)) {
+			hours = new BigDecimal(2088);
+		}
+		else if (PayrollConstant.PAY_MONTHLY.equalsIgnoreCase(payFrequency)) {
+			hours = new BigDecimal(176);
+		}
+		else if (PayrollConstant.PAY_BI_WEEKLY.equalsIgnoreCase(payFrequency)) {
+			hours = new BigDecimal(80);
+		}
+		else if (PayrollConstant.PAY_WEEKLY.equalsIgnoreCase(payFrequency)) {
+			hours = new BigDecimal(40);
+		}
+		payAmount = houryRate.multiply(hours);
+		return payAmount;
 	}
 	
 	
 	/**
 	 * Get Houry rate by lca wage type
+	 * 
 	 * @param amount
 	 * @param lcaWageType
-	 * @param payFrequency 
+	 * @param payFrequency
 	 * @return BigDecimal
 	 */
 	public BigDecimal getHourlyRate(BigDecimal amount, String lcaWageType)
 	{
 		BigDecimal houryRate = BigDecimal.ZERO;
-			if(PayrollConstant.PAY_YEARLY.equalsIgnoreCase(lcaWageType.trim())){
-				houryRate =  amount.divide(new BigDecimal(2088),3, RoundingMode.CEILING);
-			}else if(PayrollConstant.PAY_MONTHLY.equalsIgnoreCase(lcaWageType.trim())){
-				houryRate = amount.divide(new BigDecimal(176),3, RoundingMode.CEILING);
-			}else if(PayrollConstant.PAY_BI_WEEKLY.equalsIgnoreCase(lcaWageType.trim())){
-				houryRate = amount.divide(new BigDecimal(80),3, RoundingMode.CEILING);
-			}else if(PayrollConstant.PAY_WEEKLY.equalsIgnoreCase(lcaWageType.trim())){
-				houryRate = amount.divide(new BigDecimal(40),3, RoundingMode.CEILING);
-			}else if(PayrollConstant.PAY_BI_MONTHLY.equalsIgnoreCase(lcaWageType.trim())){
-				houryRate = amount.divide(new BigDecimal(88),3, RoundingMode.CEILING);
-			}else if(PayrollConstant.HOURLY.equalsIgnoreCase(lcaWageType.trim())){
-				houryRate = amount;
+		if (PayrollConstant.PAY_YEARLY.equalsIgnoreCase(lcaWageType.trim())) {
+			houryRate = amount.divide(new BigDecimal(2088), 3, RoundingMode.CEILING);
+		}
+		else if (PayrollConstant.PAY_MONTHLY.equalsIgnoreCase(lcaWageType.trim())) {
+			houryRate = amount.divide(new BigDecimal(176), 3, RoundingMode.CEILING);
+		}
+		else if (PayrollConstant.PAY_BI_WEEKLY.equalsIgnoreCase(lcaWageType.trim())) {
+			houryRate = amount.divide(new BigDecimal(80), 3, RoundingMode.CEILING);
+		}
+		else if (PayrollConstant.PAY_WEEKLY.equalsIgnoreCase(lcaWageType.trim())) {
+			houryRate = amount.divide(new BigDecimal(40), 3, RoundingMode.CEILING);
+		}
+		else if (PayrollConstant.PAY_BI_MONTHLY.equalsIgnoreCase(lcaWageType.trim())) {
+			houryRate = amount.divide(new BigDecimal(88), 3, RoundingMode.CEILING);
+		}
+		else if (PayrollConstant.HOURLY.equalsIgnoreCase(lcaWageType.trim())) {
+			houryRate = amount;
+		}
+		return houryRate;
+	}
+	
+	
+	/**
+	 * Calaculation slary up to termination date
+	 * 
+	 * @param payFrequency
+	 * @param noOfDays
+	 * @param amount
+	 * @param salType 
+	 * @return BigDecimal
+	 */
+	public BigDecimal calculateSalaryUptoTerminationDate(String payFrequency, int noOfDays, BigDecimal amount)
+	{
+		BigDecimal perDaySalary = BigDecimal.ZERO;
+		BigDecimal salary = BigDecimal.ZERO;
+		try {
+			if (PayrollConstant.PAY_YEARLY.equalsIgnoreCase(payFrequency.trim())) {
+				perDaySalary = amount.divide(new BigDecimal(365), 3, RoundingMode.CEILING);
 			}
-			return houryRate;
-			
+			else if (PayrollConstant.PAY_MONTHLY.equalsIgnoreCase(payFrequency.trim())) {
+				perDaySalary = amount.divide(new BigDecimal(30), 3, RoundingMode.CEILING);
+			}
+			else if (PayrollConstant.PAY_BI_WEEKLY.equalsIgnoreCase(payFrequency.trim())) {
+				perDaySalary = amount.divide(new BigDecimal(14), 3, RoundingMode.CEILING);
+			}
+			else if (PayrollConstant.PAY_WEEKLY.equalsIgnoreCase(payFrequency.trim())) {
+				perDaySalary = amount.divide(new BigDecimal(7), 3, RoundingMode.CEILING);
+			}
+			else if (PayrollConstant.PAY_BI_MONTHLY.equalsIgnoreCase(payFrequency.trim())) {
+				perDaySalary = amount.divide(new BigDecimal(15), 3, RoundingMode.CEILING);
+			}
+			salary = perDaySalary.multiply(new BigDecimal(noOfDays));
+		}catch (Exception e) {
+			e.printStackTrace();
+		}
+		return salary;
+	}
+	
+	
+	public BigDecimal calculateSalaryUptoTerminationDateLcaWage(BigDecimal amount,String lcaWageType, int noOfDays, OrgLocations orgLocation)
+	{
+		BigDecimal houryRate = BigDecimal.ZERO;
+		BigDecimal payAmount = BigDecimal.ZERO;
+		BigDecimal hours = BigDecimal.ZERO;
+		if (PayrollConstant.PAY_YEARLY.equalsIgnoreCase(lcaWageType.trim())) {
+			houryRate = amount.divide(new BigDecimal(2088), 3, RoundingMode.CEILING);
+		}
+		else if (PayrollConstant.PAY_MONTHLY.equalsIgnoreCase(lcaWageType.trim())) {
+			houryRate = amount.divide(new BigDecimal(176), 3, RoundingMode.CEILING);
+		}
+		else if (PayrollConstant.PAY_BI_WEEKLY.equalsIgnoreCase(lcaWageType.trim())) {
+			houryRate = amount.divide(new BigDecimal(80), 3, RoundingMode.CEILING);
+		}
+		else if (PayrollConstant.PAY_WEEKLY.equalsIgnoreCase(lcaWageType.trim())) {
+			houryRate = amount.divide(new BigDecimal(40), 3, RoundingMode.CEILING);
+		}
+		else if (PayrollConstant.PAY_BI_MONTHLY.equalsIgnoreCase(lcaWageType.trim())) {
+			houryRate = amount.divide(new BigDecimal(88), 3, RoundingMode.CEILING);
+		}
+		else if (PayrollConstant.HOURLY.equalsIgnoreCase(lcaWageType.trim())) {
+			houryRate = amount;
+		}
+		
+		// amount calculation
+		int averageWorkingHours = orgLocation.getAverageWorkingHours();
+		int totalHours = averageWorkingHours * noOfDays;
+		
+		payAmount = houryRate.multiply(new BigDecimal(totalHours));
+		return payAmount;
 	}
 	
 	/**
@@ -777,39 +865,44 @@ public class PayrollUtil {
 			
 		}
 
+		/**
+		 * YTD Deductions
+		 * 
+		 * @param payroll
+		 * @param deductionId
+		 * @param orgLocation
+		 * @return YTDPayrollDTO
+		 */
 		public YTDPayrollDTO getDeductionYTD(EmployeePayroll payroll, Long deductionId, OrgLocations orgLocation) {
 			return paysheetFrequencyService.getDeductionYTD(payroll,deductionId,orgLocation,"report");
-			/*BigDecimal deductionYTD = BigDecimal.ZERO;
-			for(DeductionHistory dedHis : dedHisLis) {
-				if(dedHis.getPreDeductionAmount() != null) {
-					deductionYTD = deductionYTD.add(dedHis.getPreDeductionAmount());
-				}
-				if(dedHis.getPostDeductionAmount() != null) {
-					deductionYTD = deductionYTD.add(dedHis.getPostDeductionAmount());
-				}
-			}*/
 		}
 		
 		
-		//commented by Rakshith
-		//this is for loan and advances in edit payroll
-	/*	public List<AssociateLoanAndAdvancesDTO> getLoanAndAdvancesData(EmployeePayroll payroll) {
-			List<AssociateLoanAndAdvancesDTO> list = new ArrayList<>();
-			if (payroll.getPayitemHistory() != null) {
-				for (AssociateLoanAndAdvanceHistory his : payroll.getLoanHistory()) {
-					AssociateLoanAndAdvancesDTO loanDto = new AssociateLoanAndAdvancesDTO();
-					loanDto.setId(his.getId());
-					loanDto.setLoanAndAdvName(his.getAssociateLoanAndAdvances().getPayrollLoanAndAdvanceId().getName());
-					loanDto.setLoanAmount(his.getAssociateLoanAndAdvances().getAmount().toString());
-					if(StringUtils.isNotBlank(his.getIsBlocked())) {
-						loanDto.setIsBlocked(his.getIsBlocked());	
-					}
-					list.add(loanDto);
-				}
+		public YTDPayrollDTO getPayrollTaxesYTD(EmployeePayroll payroll,OrgLocations orgLocation) {
+			return paysheetFrequencyService.getPayrollTaxesYTD(payroll,orgLocation);
+		}
+
+		
+	/**
+	 * Ths is for loan and advances in edit payroll
+	 * 
+	 * @param payroll
+	 * @return
+	 */
+	public List<AssociateLoanAndAdvancesDTO> getLoanAndAdvancesData(EmployeePayroll payroll)
+	{
+		List<AssociateLoanAndAdvancesDTO> list = new ArrayList<>();
+		if (payroll.getPayitemHistory() != null) {
+			for (AssociateLoanAndAdvanceHistory his : payroll.getLoanHistory()) {
+				AssociateLoanAndAdvancesDTO loanDto = new AssociateLoanAndAdvancesDTO();
+				loanDto.setId(his.getId());
+				loanDto.setLoanAndAdvName(his.getAssociateLoanAndAdvances().getPayrollLoanAndAdvanceId().getName());
+				loanDto.setLoanAmount(his.getDeductAmount().toString());
+				list.add(loanDto);
 			}
-			return list;
-		}*/
-	
+		}
+		return list;
+	}
 
 	
 

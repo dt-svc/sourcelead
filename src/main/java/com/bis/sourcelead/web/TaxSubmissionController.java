@@ -67,6 +67,7 @@ public class TaxSubmissionController {
 	// forms tab org/user
 
 	@RequestMapping(value = "/forms/list")
+	@ResponseBody
 	public ModelAndView getForms(HttpServletRequest request, @RequestParam(defaultValue = "") String financialYear,
 			@RequestParam(defaultValue = "") String uuid, Paginator paginator) {
 		ModelAndView modelAndView = new ModelAndView();
@@ -74,8 +75,7 @@ public class TaxSubmissionController {
 		try {
 			commonUtil.highLightMenu(Constants.FORMS, request);
 			User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
-			OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,
-					"orgLocations");
+			OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,"orgLocations");
 			if (user != null) {
 				if (!uuid.isEmpty()) {
 					modelAndView.addObject("uuid", uuid);
