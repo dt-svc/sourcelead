@@ -29,7 +29,6 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.constants.ImmigrationConstants;
 import com.bis.sourcelead.dao.CandidateDao;
 import com.bis.sourcelead.dto.ImmigrationListViewDTO;
@@ -2199,6 +2198,23 @@ public class ImmigrationCommonDaoImpl implements ImmigrationCommonDao {
 			lcaList = session.createSQLQuery(queryString).setParameter("immigrationId", immigrationId).setResultTransformer(Transformers.aliasToBean(LcaDTO.class)).list();
 		    return lcaList;
 	}
+	
+	
+	@Override
+	@Transactional(rollbackFor = { Exception.class })
+	public List<String> getAllExpiredCandidatesFromLcaHistoryByLcaId(Long lcaId) {
+		Session session = this.sessionFactory.getCurrentSession();
+		List<String> employeeList = new ArrayList<String>();
+		String queryString ="SELECT DISTINCT CONCAT(CAN.FIRST_NAME, IFNULL(CAN.LAST_NAME,''))  AS FULLNAME " + 
+				" FROM CANDIDATE CAN, " + 
+				" LCA_HISTORY LH " + 
+				" WHERE LH.CANDIDATE_ID = CAN.ID AND LH.LCA_ID=:lcaId";
+		employeeList = session.createSQLQuery(queryString).setParameter("lcaId", lcaId).list();
+		employeeList.size();
+	
+	//	System.out.println("employeeList.size() :: ========"+employeeList.size());
+	    return employeeList;
+	}
 
 	@Override
 	@Transactional(rollbackFor = { Exception.class })
@@ -2384,5 +2400,7 @@ public class ImmigrationCommonDaoImpl implements ImmigrationCommonDao {
 		}
 		return count;
 	}
+
+	
 	
 }

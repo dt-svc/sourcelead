@@ -5,6 +5,7 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
 
+import org.hibernate.Query;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.slf4j.Logger;
@@ -120,6 +121,43 @@ public class DepartmentDaoImpl implements DepartmentDao{
 		String query = "from Department department  where department.orgLocationId.id =:orgLocationId and department.status =:status "; 
 		List<Department> departmentList = session.createQuery(query).setLong("orgLocationId", orgLocationId).setString("status", status).list();
 		return departmentList;
+	}
+
+	@Override
+	@Transactional(rollbackFor = { Exception.class })
+	public List<String> getDepartmentList(Long orgLocationId) throws Exception {
+		
+		Session session = this.sessionFactory.getCurrentSession();
+		String query = null;
+		query ="SELECT "
+				+" DEPT.DEPARTMENT_NAME "
+				+" FROM DEPARTMENT DEPT "
+				+" WHERE "
+				+" DEPT.ORG_LOCATION_ID = :orgLocationId AND DEPT.STATUS = '1' ";
+		Query queryObj = session.createSQLQuery(query);
+		queryObj.setLong("orgLocationId", orgLocationId);	
+		List<String> deptList = (List<String>)queryObj.list();
+		
+		return deptList;
+	
+	
+	}
+
+	@Override
+	@Transactional(rollbackFor = { Exception.class })
+	public Department getDepartmentByOrgLocationIdAndDepartmentName(Long orgLocationId, String departmentName)
+			throws Exception {
+
+		Session session = this.sessionFactory.getCurrentSession();
+		String query = "from Department department  where department.orgLocationId.id = :orgLocationId and department.departmentName = :departmentName and department.status = '1' ";
+		List<Department> departmentList =session.createQuery(query) .setString("departmentName", departmentName).setLong("orgLocationId", orgLocationId).list();
+		Department department = null;
+		if(departmentList != null && !departmentList.isEmpty())
+		{
+			department = (Department) departmentList.iterator().next();
+		}
+		return department;
+	
 	}
 
 }
