@@ -416,6 +416,8 @@ public class PaysheetFrequencyServiceImpl implements PaysheetFrequencyService{
 				hourDTO.setRegularTimeAmount(regTotalAmount);
 				hourDTO.setOtHours(otTotalHours);
 				hourDTO.setOverTimeAmount(otTotalAmount);
+				double totalHours = otTotalHours  = commonUtil.getTotalRegularOverTimeHours(regularTotalHrs,otTotalHours);
+				hourDTO.setTotalHours(new BigDecimal(totalHours));
 				response.setHours(hourDTO);
 //				paySum.setNetPay(BigDecimal.valueOf(netPay));
 				
