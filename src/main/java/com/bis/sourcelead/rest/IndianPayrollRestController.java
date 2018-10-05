@@ -29,6 +29,7 @@ import com.bis.sourcelead.dto.PayrollLoanAndAdvancesDTO;
 import com.bis.sourcelead.dto.Response;
 import com.bis.sourcelead.dto.UserDTO;
 import com.bis.sourcelead.entity.AssociateLoanAndAdvances;
+import com.bis.sourcelead.entity.AssociatePayrollPayheadHistory;
 import com.bis.sourcelead.entity.Candidate;
 import com.bis.sourcelead.entity.Department;
 import com.bis.sourcelead.entity.OrgLocations;
@@ -42,7 +43,7 @@ import com.bis.sourcelead.payroll.dto.AssociatePfEsiDetailsDTO;
 import com.bis.sourcelead.payroll.dto.GenerateINDPayrollDTO;
 import com.bis.sourcelead.payroll.dto.IndApprovePayrollDTO;
 import com.bis.sourcelead.payroll.dto.IndPaysheetFrequencyDTO;
-import com.bis.sourcelead.payroll.dto.PayrollApproverDTO;
+import com.bis.sourcelead.payroll.service.AssociatePayrollPayheadHistoryService;
 import com.bis.sourcelead.payroll.service.AssociatePfEsiService;
 import com.bis.sourcelead.payroll.service.GenerateINDPayrollService;
 import com.bis.sourcelead.payroll.service.IndPaysheetFrequencyService;
@@ -94,6 +95,9 @@ public class IndianPayrollRestController {
 	
 	@Autowired
 	AssociateLoanAndAdvancesService associateLoanAndAdvancesService;
+	
+	@Autowired
+	AssociatePayrollPayheadHistoryService associatePayrollPayheadHistoryService;
 	
     @RequestMapping(value = "/app/save-ind-associate-payment-account", method = RequestMethod.POST)
 	public Response<IndAssociatePaymentAccountDTO> savePaymentAccount(HttpServletRequest request, IndAssociatePaymentAccountDTO account,
@@ -444,15 +448,40 @@ public class IndianPayrollRestController {
     
     
     @RequestMapping(value = { "/app/getApproveInfoIndPayroll","/app/rest/getApproveInfoIndPayroll" }, method = RequestMethod.GET)
-   	public IndApprovePayrollDTO getApproveInfoIndPayroll(IndApprovePayrollDTO indApprovePayrollDTO, HttpServletRequest request, HttpServletResponse response) throws Exception
+   	public ModelAndView getApproveInfoIndPayroll(IndApprovePayrollDTO indApprovePayrollDTO, HttpServletRequest request, HttpServletResponse response) throws Exception
    	{
+    	ModelAndView model = new ModelAndView();
    		OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
    		User loginUser = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
    		
-   		Response<IndApprovePayrollDTO> res = indPaysheetFrequencyService.getApproveInfoIndPayroll(indApprovePayrollDTO, orgLocation,loginUser);
-		return res.getObject();
+   		Response<IndPaysheetFrequencyDTO> freqResponse = indPaysheetFrequencyService.getIndPaysheetFrequencyByEmpPayrollUUID(indApprovePayrollDTO.getPaySheetFrequencyUUID(), orgLocation);
+		model.addObject("freqResponse", freqResponse.getObject());
    		
+   		Response<IndApprovePayrollDTO> approveResponse = indPaysheetFrequencyService.getApproveInfoIndPayroll(indApprovePayrollDTO, orgLocation,loginUser);
+   		
+   		
+   		//List<AssociatePayrollPayheadHistory> allAssociatesPayrollPayheadList = associatePayrollPayheadHistoryService.getAllUpdatedAssociatePayrollPayheadByPaySheetFrequencyUUID(indApprovePayrollDTO.getPaySheetFrequencyUUID());
+   				
+		
+   		
+   		model.addObject("approveResponse", approveResponse.getObject());
+		model.addObject("sourceleadUrl", sourceleadUrl);
+		model.setViewName("payroll_india/payroll/approveIndiaPayroll");
+   		return model;
    	}
+    
+    
+    @RequestMapping(value = { "app/approveIndPayroll","app/rest/approveIndPayroll" }, method = RequestMethod.POST)
+	public Response<IndApprovePayrollDTO> approveIndPayroll(IndApprovePayrollDTO indApprovePayrollDTO ,HttpServletRequest request, HttpServletResponse response) throws Exception
+	{
+		OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+		User loginUser = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+		
+		
+		Response<IndApprovePayrollDTO> res = indPaysheetFrequencyService.approveIndPayroll(indApprovePayrollDTO,orgLocation,loginUser);
+		return res;
+
+	}
 
     
 }

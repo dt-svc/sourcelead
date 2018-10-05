@@ -19,11 +19,13 @@ import com.bis.sourcelead.dto.Response;
 import com.bis.sourcelead.dto.ResponseList;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.Payroll;
+import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.payroll.dto.AssociatePayrollPayheadHistoryDTO;
 import com.bis.sourcelead.payroll.dto.IndPaysheetFrequencyDTO;
+import com.bis.sourcelead.payroll.entity.ConfigurePayrollApprover;
 import com.bis.sourcelead.payroll.entity.IndEmployeePayroll;
-import com.bis.sourcelead.payroll.entity.IndPaysheetFrequency;
 import com.bis.sourcelead.payroll.service.AssociatePayrollPayheadHistoryService;
+import com.bis.sourcelead.payroll.service.ConfigurePayrollApproverService;
 import com.bis.sourcelead.payroll.service.IndPayrollService;
 import com.bis.sourcelead.payroll.service.IndPaysheetFrequencyService;
 import com.bis.sourcelead.service.PayrollService;
@@ -60,6 +62,9 @@ public class PayrollRestController {
 	
 	@Autowired
 	IndPaysheetFrequencyService indPaysheetFrequencyService;
+	
+	@Autowired
+	ConfigurePayrollApproverService configurePayrollApproverService;
 	
 	/**
 	 * @author sarath kumar punnana and Ajith Matta
@@ -104,11 +109,15 @@ public class PayrollRestController {
 	{
 	 	ModelAndView model = new ModelAndView();
 	 	OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+	 	User loginUser = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
 		ResponseList<IndEmployeePayroll> indEmployeePayrollResponse = indPaysheetFrequencyService.getIndEmployeePayrollListByPaysheetFrequencyUuid(indPaysheetFrequencyDTO.getPaySheetFrequencyUUID());
 		model.addObject("employeePayrollList", indEmployeePayrollResponse.getData());
 		
 		Response<IndPaysheetFrequencyDTO> freqResponse = indPaysheetFrequencyService.getIndPaysheetFrequencyByEmpPayrollUUID(indPaysheetFrequencyDTO.getPaySheetFrequencyUUID(), orgLocation);
 		model.addObject("freqResponse", freqResponse.getObject());
+		
+		Boolean isPayrollApprover = configurePayrollApproverService.isLoginUserIsPayRollApprover(loginUser.getId(), orgLocation.getId());
+		model.addObject("isPayrollApprover", isPayrollApprover);
 		
 		model.setViewName("payroll_india/payroll/employeePayrollList");
 		model.addObject("sourceleadUrl", sourceleadUrl);

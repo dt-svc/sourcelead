@@ -81,6 +81,7 @@ public class IndPaysheetFrequencyServiceImpl implements IndPaysheetFrequencyServ
 			freqDTO.setFrequencyEndDateStr(commonUtil.dateStrFromOrgDateFormatter(orgLocation.getDateFormat(),freq.getFrequencyEndDate()));
 			freqDTO.setPayCheckDateStr(commonUtil.dateStrFromOrgDateFormatter(orgLocation.getDateFormat(),freq.getPayCheckDate()));
 			freqDTO.setPaySheetFrequencyUUID(freq.getPaySheetFrequencyUUID());
+			freqDTO.setApproverStatus(freq.getApproverStatus());
 			response.setObject(freqDTO);
 		}
 		return response;
@@ -89,7 +90,7 @@ public class IndPaysheetFrequencyServiceImpl implements IndPaysheetFrequencyServ
 
 	@Override
 	public Response<IndApprovePayrollDTO> sentForApproveIndPayroll(IndApprovePayrollDTO indApprovePayrollDTO,
-			OrgLocations orgLocation, User loginUser) {
+			OrgLocations orgLocation, User loginUser) throws Exception {
 		Response<IndApprovePayrollDTO> res = new Response<>();
 		try {
 				IndPaysheetFrequency indPaysheetFrequency = indPaysheetFrequencyDao.getIndPaysheetFrequencyByEmpPayrollUUID(indApprovePayrollDTO.getPaySheetFrequencyUUID());
@@ -112,6 +113,7 @@ public class IndPaysheetFrequencyServiceImpl implements IndPaysheetFrequencyServ
 					res.setResponse(Result.SUCCESS.name());
 					res.setResponseMessage(Result.SUCCESS.getValue());
 					res.setObject(indApprovePayrollDTO);
+					
 					ConfigurePayrollApprover cpa = configurePayrollApproverService.getConfigurePayrollApproverByLoc(orgLocation);
 					if(cpa != null) {
 						List<PayrollApprover> pa = configurePayrollApproverService.getPayrollApproversByCPAID(cpa.getId());
@@ -125,18 +127,15 @@ public class IndPaysheetFrequencyServiceImpl implements IndPaysheetFrequencyServ
 				res.setResponseMessage(Result.AWKWARD.getValue());
 				logger.error(ExceptionUtils.getFullStackTrace(e));
 			}
-			
 			return res;
 	}
 	
 	
 	@Override
 	public Response<IndApprovePayrollDTO> getApproveInfoIndPayroll(IndApprovePayrollDTO indApprovePayrollDTO,
-			OrgLocations orgLocation, User loginUser) {
+			OrgLocations orgLocation, User loginUser) throws Exception {
 		Response<IndApprovePayrollDTO> res = new Response<>();
 		try {
-				//IndPaysheetFrequency indPaysheetFrequency = indPaysheetFrequencyDao.getIndPaysheetFrequencyByEmpPayrollUUID(indApprovePayrollDTO.getPaySheetFrequencyUUID());
-				
 				ResponseList<IndEmployeePayroll> empPayrollResponse = indPaysheetFrequencyDao.getIndPayrollApprovedEmployeeListByPaysheetFrequencyUuidAndEmpApproveStatus(indApprovePayrollDTO.getPaySheetFrequencyUUID(), PayrollConstant.SENT);
 				
 				
@@ -150,6 +149,40 @@ public class IndPaysheetFrequencyServiceImpl implements IndPaysheetFrequencyServ
 				logger.error(ExceptionUtils.getFullStackTrace(e));
 			}
 			
+			return res;
+	}
+	
+	
+	@Override
+	public Response<IndApprovePayrollDTO> approveIndPayroll(IndApprovePayrollDTO indApprovePayrollDTO, OrgLocations orgLocation, User loginUser) throws Exception {
+			Response<IndApprovePayrollDTO> res = new Response<>();
+			try {
+				IndPaysheetFrequency indPaysheetFrequency = indPaysheetFrequencyDao.getIndPaysheetFrequencyByEmpPayrollUUID(indApprovePayrollDTO.getPaySheetFrequencyUUID());
+				indPaysheetFrequency.setApproverStatus(PayrollConstant.APPROVE);
+				indPaysheetFrequency.setUpdatedBy(loginUser.getId());
+				indPaysheetFrequency.setUpdatedDate(new Date());
+			    
+				Set<IndEmployeePayroll> payrollList = indPaysheetFrequency.getIndEmployeepayroll();
+				for (IndEmployeePayroll payroll : payrollList) {
+						payroll.setSubmitForAproverStatus(PayrollConstant.APPROVE);
+						payroll.setUpdatedBy(loginUser.getId());
+						payroll.setUpdatedDate(new Date());
+				}
+				indPaysheetFrequency.setIndEmployeepayroll(payrollList);
+				IndPaysheetFrequency savedPF = indPaysheetFrequencyDao.addIndPaysheetFrequency(indPaysheetFrequency);
+				if (savedPF != null) {
+					res.setResponse(Result.SUCCESS.name());
+					res.setResponseMessage(Result.SUCCESS.getValue());
+					res.setObject(indApprovePayrollDTO);
+					
+					indPayrollCommonUtil.generatePdfForEmployeeInd(payrollList, orgLocation);
+					indPayrollCommonUtil.sendApprovedMailToRequestedUserInd(orgLocation,savedPF,loginUser);
+				}
+			}catch (Exception e) {
+				res.setResponse(Result.AWKWARD.name());
+				res.setResponseMessage(Result.AWKWARD.getValue());
+				logger.error(ExceptionUtils.getFullStackTrace(e));
+			}
 			return res;
 	}
 }
