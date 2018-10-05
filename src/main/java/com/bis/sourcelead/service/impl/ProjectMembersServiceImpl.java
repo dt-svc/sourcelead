@@ -934,7 +934,7 @@ public class ProjectMembersServiceImpl implements ProjectMembersService{
 							clientCandidate.setEmail(candidate.getEmail());
 							clientCandidate.setCountry(candidate.getCountry());
 							clientCandidate.setStatus(1);
-							clientCandidate.setIsAssociate(Constants.YES);
+							clientCandidate.setIsAssociate(Constants.NO);
 							clientCandidate.setCandidateUUID(SourceLeadRandomCodeHelper.generateRandomUUID());
 							
 							clientCandidate.setOrgRelationId(orgRelations);
@@ -2116,6 +2116,24 @@ private ProjectMembers saveSharedProjectMembers(ProjectMembersDTO projectMembers
 	public List<ProjectMembers> getAllProjectMembersListByMasterCandidateId(Long masterCandidateId, Long projectId)
 			throws Exception {
 		return projectMembersDao.getAllProjectMembersListByMasterCandidateId(masterCandidateId, projectId);
+	}
+
+	@Override
+	public List<ProjectMembers> getAllActiveProjectsByUserIdAndOrgLocationId(Long userId, Long orgLocationId)
+			throws Exception {
+		return projectMembersDao.getAllActiveProjectsByUserIdAndOrgLocationId(userId, orgLocationId);
+	}
+
+	@Override
+	public ProjectMembers getProjectMemberByCandidateIdAndProjectIdAndOrgLocationId(Long candidateId, Long projectId,
+			Long orgLocationId) throws Exception {
+		return projectMembersDao.getProjectMemberByCandidateIdAndProjectIdAndOrgLocationId(candidateId, projectId, orgLocationId);
+	}
+
+	@Override
+	public List<ProjectMembers> getProjectMembersListByCandidateIdAndProjectClientId(Long candidateId,
+			List<Long> projectClientsId) throws Exception {
+		return projectMembersDao.getProjectMembersListByCandidateIdAndProjectClientId(candidateId, projectClientsId);
 	}
 
 }

@@ -135,16 +135,18 @@ public class LeaveDaoImpl implements LeaveDao{
 			
 			String qry = "";
 			if(StringUtils.isNotBlank(leaveDTO.getSortColumn())) {
-				if("id".equalsIgnoreCase(leaveDTO.getSortColumn())) {
-					qry = " order by laph.leaveid.id "+leaveDTO.getSortOrder();
-				}else if("firstName".equalsIgnoreCase(leaveDTO.getSortColumn())) {
+				if("firstName".equalsIgnoreCase(leaveDTO.getSortColumn())) {
 					qry = " order by laph.leaveid.user.firstName "+leaveDTO.getSortOrder();
 				}else if("name".equalsIgnoreCase(leaveDTO.getSortColumn())) {
 					qry = " order by laph.leaveid.leaveType.name "+leaveDTO.getSortOrder();
 				}else if("approvedBy".equalsIgnoreCase(leaveDTO.getSortColumn())) {
 					qry = " order by laph.approverUserId.firstName "+leaveDTO.getSortOrder();
 				}else if("updatedDate".equalsIgnoreCase(leaveDTO.getSortColumn())) {
-					qry = " order by laph.leaveid.updatedDate."+leaveDTO.getSortColumn() + " "+leaveDTO.getSortOrder();
+					qry = " order by laph.leaveid.updatedDate "+leaveDTO.getSortOrder();
+				}else if("rejectedBy".equalsIgnoreCase(leaveDTO.getSortColumn())) {
+					qry = " order by laph.leaveid.rejectedBy.firstName "+leaveDTO.getSortOrder();
+				}else if("cancelledBy".equalsIgnoreCase(leaveDTO.getSortColumn())) {
+					qry = " order by laph.leaveid.cancelledBy.firstName "+leaveDTO.getSortOrder();
 				}
 			}
 			

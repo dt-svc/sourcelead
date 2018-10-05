@@ -1817,6 +1817,37 @@ public class ProjectMembersDaoImpl implements ProjectMembersDao{
 		}
 		return flag;
 	}
+
+
+	@Override
+	@Transactional
+	public List<ProjectMembers> getAllActiveProjectsByUserIdAndOrgLocationId(Long userId, Long orgLocationId)
+			throws Exception {
+		
+		Session session = this.sessionFactory.getCurrentSession();
+
+		String query = "from ProjectMembers pm left join fetch pm.projects left join fetch pm.projectClientsId left join fetch pm.employee emp left join fetch pm.projectMemberCandidteId "
+				+ " where pm.projectMemberCandidteId.id IN(select cand.id from Candidate cand where cand.consultantUser.id = :userId and cand.orgLocationId.id = :orgLocationId ) and pm.status <> '0' " ;
+		
+		List<ProjectMembers> allProjectsList =session.createQuery(query).setLong("userId", userId).setLong("orgLocationId",orgLocationId) 
+			    .list();
+		return allProjectsList;
+	}
+
+
+	@Override
+	@Transactional
+	public List<ProjectMembers> getProjectMembersListByCandidateIdAndProjectClientId(Long candidateId,
+			List<Long> projectClientsId) throws Exception {
+		Session session = this.sessionFactory.getCurrentSession();
+
+		String query = " from ProjectMembers pm left join fetch pm.projectMemberCandidteId left join fetch pm.projects where  "
+				+ "pm.projectClientsId.id IN (:projectClientsId) and pm.projectMemberCandidteId.id = :candidateId and pm.status = '1' " ;
+		
+		List<ProjectMembers> allProjectsList =session.createQuery(query).setParameterList("projectClientsId", projectClientsId).setLong("candidateId",candidateId) 
+			    .list();
+		return allProjectsList;
+	}
 	
 }
 

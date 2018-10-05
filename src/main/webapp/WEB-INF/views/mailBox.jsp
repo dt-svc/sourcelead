@@ -171,18 +171,18 @@
 					</div>
 					<h3 class="box-title pull-left mr" id="mailboxLabel"></h3>
 					
-					<div class="mailbox-controls" id="SourceleadMailControlsMaster">
-						<button class="btn btn-danger mailbtn-custom" type="button"
-							onclick="getMailBoxIds();" id="trashBtn" style="display: none;">
-							<i class="fa fa-trash-o" id="trashtype"></i>
-						</button>
-						<button class="btn btn-default mailbtn-custom" type="button" id="refreshBtn"
-							 style="display: none;" onclick="refreshList();">
-							<i class="fa fa-refresh"></i>
-						</button>
+					<div class="pull-left" id="SourceleadMailControlsMaster">
+						<span class="pull-left mr" id="refreshBtn" style="display: none;" onclick="refreshList();">
+							<i class="mailIcon refreshIcon"></i>
+						</span>						
+						<span class="pull-left" onclick="getMailBoxIds();" id="trashBtn" style="display: none;">
+							<i class="mailIcon trashIcon" id="trashtype"></i>
+						</span>
 					</div>
 
 					<div class="pull-left mr5" title="Refresh"><i class="mailIcon refreshIcon" style="display: none;"></i></div>
+	
+	
 	
 					<div class="pull-left" id="DynamicMailControlsMaster" style="display: none;">
 						<span class="pull-left mr moveToTrash" style="display: none;">
@@ -190,6 +190,8 @@
 						</span>
 						<span class="pull-left deleTrash deleteForever" onclick="moveEmailsToTrash(true);" style="display: none;">Delete Forever</span>
 					</div>
+
+
 
 
 						</div>
@@ -381,7 +383,7 @@
                 	 
               			var result = '';
               			result = result +'<input type="hidden" id="emailListType" value='+type+'>';
-              			result = result +'<table id="mails" class="table table-hover table-striped">';
+              			result = result +'<table id="mails" class="table table-hover table-striped ">';
               			
                 		result = result +'<thead>';
                 		result = result +'<tr>';
@@ -721,8 +723,22 @@ function getEmailDetails(uuid,type) {
             	     
                  var result =""; 
                  
-              	result = result +'<div class="box-tools pull-right">';
-              	result = result +'<div class="btn-group">';
+                 
+                 result = result +'<div class="mailDetailsHeader clearfix">';
+                 result = result +'<div class="mailBack" title="back" onclick="backToEmailList();"></div>';
+                 
+                 result = result +'<span class="pull-left">';
+                 result = result +'<i class="mailIcon repIcon" title="Reply to sender" onclick="replayToMail(\''+uuid+'\');"></i>';
+	   		   	 if(type == 'Sent' && opt.candidateId != null){
+                 	result = result +'<i class="mailIcon forIcon" title="Forward selected message" onclick="forwardEmailToHotMail(\''+uuid+'\');"></i>';
+	   		    	}else{
+	                 result = result +'<i class="mailIcon forIcon" title="Forward selected message" onclick="forwardEmail(\''+uuid+'\');"></i>';
+	   		    	}
+	   				result = result +'<i class="mailIcon trashIcon" title="Move to Trash" onclick="deleteReadMail(\''+uuid+'\',\''+opt.nextMailUUID+'\',\''+type+'\');"></i>';
+                 result = result +'</span>';
+                 
+                 
+              	result = result +'<div class="btn-group pull-right mt5">';
               	if(opt.previousMailUUID != null && opt.previousMailUUID != '' && opt.previousMailUUID != 'undefined'){
               		result = result +'<button class="btn btn-default btn-sm" type="button" onclick="getEmailDetails(\''+opt.previousMailUUID+'\',\''+type+'\')"><i class="fa fa-chevron-left"></i></button>';
               	}else{
@@ -734,36 +750,25 @@ function getEmailDetails(uuid,type) {
               	}else{
               		result = result +'<button class="btn btn-default btn-sm" type="button" ><i class="fa fa-chevron-right mail-next-previous-muted"></i></button>';
               	}
-              	
-              	
-              	result = result +'</div>'; 
                 result = result +'</div>';
-                result = result +'</div>';
-			    result = result +'<div class="mailbox-read-info">';
-			    result = result +'<h3 class="col-md-4 padding_left">'+opt.subject+'</h3>';
-// 			    result = result +' <a href="<c:url value='/campaignStats'/>" class="pull-left btn btn-sm btn-primary">Stats</a>';
-			    result = result +'<div class="clearfix"></div>';
-			    result = result +'<h5>From: '+opt.fromMail+'' 
-			    result = result +'<h5 class="mail-height">To: '+opt.toMail+'' 
-			    result = result +'<span class="mailbox-read-time pull-right">'+opt.calDays+'</span></h5>';
-			    result = result +'</div>	';
+                
+                result = result +'<div class="mailSentDate mr">'+opt.calDays+'</div>';
+                
+                result = result +'</div>';  
+                
+                
+                
+			    result = result +'<div class="mailDetailsWrap">';
+			    result = result +'<h4>'+opt.subject+'</h4>';
+			    result = result +'<div class="mailCcFrom">';
+			    result = result +'<p><span>From</span> '+opt.fromMail+'</p>';
+			    result = result +'<p><span>To</span> '+opt.toMail+'</p>'; 
+			    result = result +'</div>';
+			    
+			    
 
-	   			result = result +'<div class="mailbox-controls clearfix">';
-	   			result = result +'<div class="pull-left">';
-	   			result = result +'<div class="btn-group">';
-	   			result = result +'<button class="btn btn-danger" type="button" title="Delete" onclick="deleteReadMail(\''+uuid+'\',\''+opt.nextMailUUID+'\',\''+type+'\');"><i class="fa fa-trash-o"></i></button>';
-	   		    result = result +'<button class="btn btn-warning" type="button" title="Reply" onclick="replayToMail(\''+uuid+'\');"><i class="fa fa-reply"></i></button>';
-	   		    if(type == 'Sent' && opt.candidateId != null){
-	   		    	result = result +'<button class="btn btn-info" type="button" title="Forward" onclick="forwardEmailToHotMail(\''+uuid+'\');"><i class="fa fa-share"></i></button>';
-	   		    }else{
-	   		    	result = result +'<button class="btn btn-info" type="button" title="Forward" onclick="forwardEmail(\''+uuid+'\');"><i class="fa fa-share"></i></button>';
-	   		    }
-	   		     
-	   			result = result +'</div>';
-	   			result = result +'</div>';
-	   			result = result +'</div>'; 
 	   			  
-	   			result = result +'<div class="mailbox-read-message clearfix borderbottm-none wordWrap-breakword">';
+	   			result = result +'<div class="mailContent">';
 	   			
 	   		 if(opt.salutation != null && opt.salutation != 'undefined' && opt.salutation != ""){
 	   			result = result +'<p>'+opt.salutation+',</p>';
@@ -794,7 +799,9 @@ function getEmailDetails(uuid,type) {
 	              } 
 	   		}	
             
-            $("#mailBoxList").empty(); 
+	   		result = result +'</div></div>';
+	   		
+            /* $("#mailBoxList").empty(); */ 
             /* $("#mailDetails").empty(); 
             $("#mailDetails").append(result); */
             $("#body-details").empty();
