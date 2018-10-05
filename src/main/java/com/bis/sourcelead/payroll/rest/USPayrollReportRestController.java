@@ -479,25 +479,24 @@ public class USPayrollReportRestController {
 			OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 			if (orgLocations != null) { 
 				responseList = paysheetFrequencyService.getPayrollRegisterReports(payrollReportDTO,orgLocations);
-				
-				
-				File file =  payrollReportPdfUtil.getPayrollRegisterReportsPdf(responseList,orgLocations);
-				
-				String mimeType = URLConnection.guessContentTypeFromName(file.getName());
-				if (mimeType == null) {
-					mimeType = "application/octet-stream";
-				}
-				response.setContentType(mimeType);
-				StringBuilder fileName = new StringBuilder();
-				response.setHeader("Content-Disposition", fileName.append("attachment; filename=\"").append(file.getName()).append("\"").toString());
-				response.setContentLength((int) file.length());
-				InputStream inputStream = new BufferedInputStream(new FileInputStream(file));
-				FileCopyUtils.copy(inputStream, response.getOutputStream());
-				inputStream.close();
-				response.getOutputStream().close();
-				response.getOutputStream().flush();
-				if (file != null) {
-					file.delete();
+				if(responseList.getData().size() > 0) {
+					File file =  payrollReportPdfUtil.getPayrollRegisterReportsPdf(responseList,orgLocations);
+					String mimeType = URLConnection.guessContentTypeFromName(file.getName());
+					if (mimeType == null) {
+						mimeType = "application/octet-stream";
+					}
+					response.setContentType(mimeType);
+					StringBuilder fileName = new StringBuilder();
+					response.setHeader("Content-Disposition", fileName.append("attachment; filename=\"").append(file.getName()).append("\"").toString());
+					response.setContentLength((int) file.length());
+					InputStream inputStream = new BufferedInputStream(new FileInputStream(file));
+					FileCopyUtils.copy(inputStream, response.getOutputStream());
+					inputStream.close();
+					response.getOutputStream().close();
+					response.getOutputStream().flush();
+					if (file != null) {
+						file.delete();
+					}
 				}
 			}
 		} catch (Exception e) {

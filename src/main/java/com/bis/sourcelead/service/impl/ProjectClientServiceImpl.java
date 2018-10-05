@@ -71,5 +71,10 @@ public class ProjectClientServiceImpl implements ProjectClientService {
 	public ProjectClients getProjectClientsByProjectIdAndOrgId(Long projectId, Long orgId) throws Exception {
 		return projectClientDao.getProjectClientsByProjectIdAndOrgId(projectId, orgId);
 	}
+
+	@Override
+	public List<Long> getProjectClientsByRelationId(Long orgRelationId) throws Exception {
+		return projectClientDao.getProjectClientsByRelationId(orgRelationId);
+	}
 	
 }
