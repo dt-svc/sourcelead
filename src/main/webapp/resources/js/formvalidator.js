@@ -710,6 +710,17 @@ jQueryFormUtils.validateInteger = function(val) {
     return val !== '' && val.replace(/[0-9]/g, '') === '';
 };
 
+
+
+/**
+ * Validate that given value is a number starts from 1
+ *
+ * @param {String} val
+ * @return {Boolean}
+ */
+jQueryFormUtils.validateIntegerStartfrom = function(val) {
+    return val !== '' && val.replace(/[1-9]/g, '') === '';
+};
 /**
  * Has month only 30 days?
  *
@@ -1189,6 +1200,10 @@ jQueryFormUtils.validateName = function(val) {
             return validationErrorMsg || language.badInt;
         }
         
+        else if (validationRules.indexOf('validate_intFromOne') > -1 && !jQueryFormUtils.validateIntegerStartfrom(value)) {
+            return validationErrorMsg || language.badIntFromOne;
+        }
+        
         // LCA Number
         else if (validationRules.indexOf('validate_LcaNum') > -1 && !jQueryFormUtils.validateLcaNum(value)) {
             return validationErrorMsg || language.badLCA;
@@ -1438,6 +1453,7 @@ jQueryFormUtils.LANG =  {
     badFloat : 'Incorrect float value',
     badCustomVal : 'This is Custom Validation',
     badInt : 'Incorrect integer value',
+    badIntFromOne :'Please Enter Greater than Zero',
     badLCA : 'Incorrect LCA Number',
     badSecurityNumber : 'Your social security number was incorrect',
     badUKVatAnswer : 'Incorrect UK VAT Number',
