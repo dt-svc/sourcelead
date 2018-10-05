@@ -1,20 +1,12 @@
 package com.bis.sourcelead.util;
 
-import java.io.UnsupportedEncodingException;
 import java.math.BigDecimal;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
-import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
-import java.util.Map;
 import java.util.Set;
 
-import javax.mail.MessagingException;
-import javax.mail.internet.InternetAddress;
-
-import org.apache.commons.lang.exception.ExceptionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -28,17 +20,13 @@ import com.bis.sourcelead.dto.IndPayrollPayheadUtilDTO;
 import com.bis.sourcelead.dto.PayrollPayheadDTO;
 import com.bis.sourcelead.entity.AssociatePayrollPayheadHistory;
 import com.bis.sourcelead.entity.AssociateSalaryPayheadInd;
-import com.bis.sourcelead.entity.EmailAttachment;
-import com.bis.sourcelead.entity.EmailMessage;
-import com.bis.sourcelead.entity.EmailScenario;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.PayrollPayhead;
 import com.bis.sourcelead.entity.User;
-import com.bis.sourcelead.payroll.entity.EmployeePayroll;
 import com.bis.sourcelead.payroll.entity.IndEmployeePayroll;
 import com.bis.sourcelead.payroll.entity.IndPaysheetFrequency;
 import com.bis.sourcelead.payroll.entity.PayrollApprover;
-import com.bis.sourcelead.payroll.entity.USPayPeriod;
+import com.bis.sourcelead.payroll.entity.PaysheetFrequency;
 
 /**
  * This is the commonutil for the certain common methods used throughout the application
@@ -303,6 +291,23 @@ public void sendMailToUserFromndIanPayrolApprover(User loginUser,  OrgLocations 
 	
 	
 	public void sendMailToIndPayrollApprover(OrgLocations orgLocation, User loginUser, PayrollApprover payrollApprover, IndPaysheetFrequency savedPF) throws Exception {
+		
+		
+	}
+	
+	
+	public void generatePdfForEmployeeInd(Set<IndEmployeePayroll> approvedPayrollList, OrgLocations orgLocation) {
+		for (IndEmployeePayroll payroll : approvedPayrollList) {
+			try {
+				
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+		}
+	}
+	
+	
+	public void sendApprovedMailToRequestedUserInd(OrgLocations orgLocation, IndPaysheetFrequency savedPF, User loginUser){
 		
 		
 	}

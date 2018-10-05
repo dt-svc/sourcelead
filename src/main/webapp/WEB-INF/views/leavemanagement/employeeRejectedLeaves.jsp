@@ -137,7 +137,7 @@ function redirectlocation(location){
 	        "columnDefs": [ {
 		    	  	"targets": colIndex++,
 		    	  	"data": "empName",
-		    	  	"sortable":false,
+// 		    	  	"sortable":false,
 		    	  	"render": function(data, type, opt, meta) {
 		    	  		  var result = "";
 		    	  		   result = result + '     <div class="proj_show divmax-width">';
@@ -148,7 +148,7 @@ function redirectlocation(location){
 		      },{
 		    	  "targets": colIndex++,
 	              "data": "leaveType",
-	              "sortable":false,
+// 	              "sortable":false,
 	              "render": function ( data, type, opt, meta ) {
 	            	   var result = "";
 	            	   result = result + '   <div title="'+opt.leaveType+'" class="tblminwidth-75">'+opt.leaveType+'</div>';
@@ -192,7 +192,7 @@ function redirectlocation(location){
 	          }, */{
 		    	  	"targets": colIndex++,
 		    	  	"data": "rejectedBy",
-		    	  	"sortable":false,
+// 		    	  	"sortable":false,
 		    	  	"render": function(data, type, opt, meta) {
 		    	  		 var result = "";
 		    	  		 if(opt.rejectedBy != null && opt.rejectedBy != '' && opt.rejectedBy != 'undefined'){
@@ -219,6 +219,7 @@ function redirectlocation(location){
 	                "scrollCollapse": false,
 	            	"lengthMenu": [[10, 15, 20], [10, 15, 20]],
 	            	"bLengthChange": true,
+	            	"aaSorting": [[1,'desc']],
 	            	"bDestroy": true,
 	            	"ordering": true,
 	            	"oLanguage": {

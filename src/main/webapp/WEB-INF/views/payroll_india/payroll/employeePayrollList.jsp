@@ -19,14 +19,16 @@
 	<div class="tabsMenu clearfix">
 		<ul class="list-unstyled">
 			<li class="current" id="reviewTab"><a>Review Payroll</a></li>
-			<li id="approveTab" onclick="getApproveInfo();"><a>Approve Payroll</a></li>
+			<c:if test="${SourceLeadWeb_loginUserRole == 'ROLE_SOURCELEAD_ADMIN' || SourceLeadWeb_loginUserRole == 'ROLE_ADMIN' || isPayrollApprover}">
+				<li id="approveTab"><a>Approve Payroll</a></li>
+			</c:if>
 		</ul>
 	</div>
 
 
 	<div class="clearfix"></div>
-	<div class="timesheet_out" id="reviewDiv">
-		<div class="tablelist-wrap">
+	<div class="timesheet_out" id="reviewAndApproveDiv">
+		<div class="tablelist-wrap" id="reviewDiv">
 			<div class="timesheet_head minHeight">
 				<div class="col-md-12 mt">
 					<div class="row">
@@ -64,8 +66,6 @@
 				</div>
 				<div class="clearfix"></div>
 			</div>
-
-
 
 			<div class="tableScroll styleTables">
 				<div class="clearfix mt">
@@ -125,9 +125,15 @@
 			<div class="clearfix mt"></div>
 			<nav class="clearfix">
 				<ul class="pull-right mr list-unstyled list-inline">
-					<li><a class="btn btn-primary btnSuccess" onclick="sentForApprove();">Sent for Approve</a></li>
-					<li><a href="#" class="btn btn-default ml mr">Confirm</a></li>
-					<li><a href="#" class="btn btn-default">Cancel</a></li>
+					<c:if test="${freqResponse.approverStatus != 'SENT' && freqResponse.approverStatus != 'APPROVED'}">
+						<li><a class="btn btn-primary btnSuccess" onclick="sentForApprove();">Submit for Approval</a></li>
+					</c:if>
+					<c:if test="${SourceLeadWeb_loginUserRole == 'ROLE_SOURCELEAD_ADMIN' || SourceLeadWeb_loginUserRole == 'ROLE_ADMIN' || isPayrollApprover}">
+						<c:if test="${freqResponse.approverStatus != 'APPROVED'}">
+							<li id="cnfmPayrollBtn"><a class="btn btn-default ml mr">Confirm</a></li>
+						</c:if>
+					</c:if>
+					<li><a href="<c:url value='${appPath}/runIndianPayRoll?stab=payroll'/>" class="btn btn-default">Cancel</a></li>
 				</ul>
 				<div class="clearfix"></div>
 			</nav>
@@ -230,23 +236,37 @@ function sentForApprove(){
         url: sourceleadUrl+"/sentForApproveIndPayroll?"+tokenParamName+"="+tokenValue+"&paySheetFrequencyUUID="+feqUUID+"&excludeEmpPayrollUUID="+excludeEmpArr,    
          success :function(result) { 
         	 
-        	 
+        	 $(location).attr('href', 'runIndianPayRoll?stab=payroll');
          },
     });
 }
 </script>
 
 <script>
-function getApproveInfo(){
+$('#approveTab , #cnfmPayrollBtn').click(function(){
+	var feqUUID = $("#paySheetFrequency").val();
 	$.ajax({
         type : "GET",
         url: sourceleadUrl+"/getApproveInfoIndPayroll?"+tokenParamName+"="+tokenValue+"&paySheetFrequencyUUID="+feqUUID,    
-         success :function(result) { 
-        	 
+         success :function(result) {
+        	 $("#reviewTab").removeClass("current");
+        	 $("#approveTab").addClass("current");
+        	 $("#reviewDiv").hide();
+        	 $("#approveDiv").remove();
+             $("#reviewAndApproveDiv").append(result);
         	 
          },
     });
-}
+});
+
+
+$('#reviewTab').click(function(){
+	 $("#reviewTab").addClass("current");
+	 $("#approveTab").removeClass("current");
+	 $("#reviewDiv").show();
+	 $("#approveDiv").remove();
+	 
+});
 </script>
   
 <jsp:include page="../../masterFooter.jsp" />

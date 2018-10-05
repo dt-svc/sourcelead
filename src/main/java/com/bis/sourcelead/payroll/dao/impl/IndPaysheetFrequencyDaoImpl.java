@@ -155,7 +155,7 @@ private static final Logger logger = LoggerFactory.getLogger(AssociateTaxDaoImpl
 	public ResponseList<IndEmployeePayroll> getIndPayrollApprovedEmployeeListByPaysheetFrequencyUuidAndEmpApproveStatus(String paysheetFrequencyUuid, String empApproveStatus) throws Exception {
 		
 		Session session = this.sessionFactory.getCurrentSession();
-		String qry = "from IndEmployeePayroll iep where iep.indPaysheetFrequency.paySheetFrequencyUUID =:paysheetFrequencyUuid and iep.submitForAproverStatus =:empApproveStatus iep.status = '1'";
+		String qry = "from IndEmployeePayroll iep where iep.indPaysheetFrequency.paySheetFrequencyUUID =:paysheetFrequencyUuid and iep.submitForAproverStatus =:empApproveStatus and iep.status = '1'";
 		List<IndEmployeePayroll> empList = null;
 		ResponseList<IndEmployeePayroll> response = new ResponseList<>();
 		Query queryObj = session.createQuery(qry);
