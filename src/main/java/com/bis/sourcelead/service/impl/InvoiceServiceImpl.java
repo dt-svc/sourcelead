@@ -2788,11 +2788,15 @@ public class InvoiceServiceImpl implements InvoiceService {
 				float convertedAmount = conversionUtil.convert(loginOrgCurrencyCode, vendorCurrencyCode,
 						Float.parseFloat(invoiceDTO.getGrandTotal()));
 				float exchangeRate = conversionUtil.convert(loginOrgCurrencyCode, vendorCurrencyCode, 1);
+				 //Accept three decimal points
 				float convertedAmount1 = Float.parseFloat((new DecimalFormat(".###").format(((convertedAmount * 100.0) / 100.0))));
 				invoice.setConvertCurrencyCode(vendorCurrencyCode);
 				invoice.setConvertAmount(String.valueOf(convertedAmount1));
 				exchangeRate = convertedAmount1 * Float.valueOf(invoiceDTO.getGrandTotal());
-				invoice.setExchangeRate(String.valueOf(exchangeRate));
+				 //Accept three decimal points
+		      	DecimalFormat decimalFormat = new DecimalFormat("#.000");
+		        String afterConvert = decimalFormat.format(exchangeRate);
+				invoice.setExchangeRate(afterConvert);
 			}
 		}
 
