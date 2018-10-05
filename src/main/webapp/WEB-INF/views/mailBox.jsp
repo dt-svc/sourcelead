@@ -892,7 +892,7 @@ function activeEmail(id, ele){
 				 autoSelectFirstEmailFolder();
 				} else {
 					/* alert("Configured credentials were wrong,Please configure with right credentials") */
-					showEmailResponse(response.responseMessage);
+					showEmailResponse(true, response.responseMessage);
 					$("#mailLoading").removeAttr("style");
 				}
 				$("#dynamicEmailFolderLoading").hide();

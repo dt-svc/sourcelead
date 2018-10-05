@@ -10,6 +10,7 @@ public class AttachmentDTO {
 	private String sizeUnit;
 	private byte[] docFile;
 	private boolean newUpload;
+	private boolean attachmentNotFoundOrCorrupted;
 
 	public String getFileName() {
 		return fileName;
@@ -73,6 +74,14 @@ public class AttachmentDTO {
 
 	public void setNewUpload(boolean newUpload) {
 		this.newUpload = newUpload;
+	}
+
+	public boolean isAttachmentNotFoundOrCorrupted() {
+		return attachmentNotFoundOrCorrupted;
+	}
+
+	public void setAttachmentNotFoundOrCorrupted(boolean attachmentNotFoundOrCorrupted) {
+		this.attachmentNotFoundOrCorrupted = attachmentNotFoundOrCorrupted;
 	}
 
 }
