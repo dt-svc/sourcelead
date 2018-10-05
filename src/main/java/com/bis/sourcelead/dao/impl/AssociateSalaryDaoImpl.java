@@ -300,7 +300,7 @@ private static final Logger logger = LoggerFactory.getLogger(AssociateBankDataDa
 			.append(" AND  can.CONSULTANT_USER_ID = usr.ID")
 			.append(" AND sal.CANDIDATE_ID = can.ID")
 			.append(" AND can.ID =:candidateId AND sal.ORG_LOCATION_ID = :locationId ")
-			.append(" AND role.TERMINATE_DATE >= :startDate AND role.TERMINATE_DATE <= :endDate");// OR (role.TERMINATE_DATE IS NULL OR role.TERMINATE_DATE IS NULL))");
+			.append(" AND role.TERMINATE_DATE >= :startDate OR role.TERMINATE_DATE <= :endDate");// OR (role.TERMINATE_DATE IS NULL OR role.TERMINATE_DATE IS NULL))");
 			Query queryObj = session.createSQLQuery(sb.toString());
 			queryObj.setLong("candidateId", candidateId)
 			.setLong("locationId", orgLocation.getId())
