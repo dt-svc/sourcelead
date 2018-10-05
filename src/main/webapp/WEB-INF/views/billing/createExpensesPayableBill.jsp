@@ -986,7 +986,7 @@ function toDate(selector) {
 		        	 }
 		        	 
 		        	 var selected = 'selected';
-		        	 result = result +'<option disabled selected>--Select Client--</option>';
+		        	 result = result +'<option disabled selected>--Select Vendor--</option>';
 		        	 result = result +'<option value='+json['vendorOrgRelationId']+' '+selected+' >'+json['orgName']+'</option>';
 		        	 $("#vendorOrgRelationId").empty();
 		           	 $("#vendorOrgRelationId").append(result); 
