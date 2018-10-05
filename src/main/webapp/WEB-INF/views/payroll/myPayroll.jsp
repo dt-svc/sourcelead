@@ -68,7 +68,7 @@ function loansAdvances(){
                   	<div class="col-md-3">
                   		<div class="row">
                   			<label class="col-md-5"><strong>No. of Hours:</strong></label>
-                  			<span class="col-md-7"><strong>200 Hrs</strong></span>
+                  			<span class="col-md-7" id="totalHors"><strong>0.0</strong></span>
                   		</div>
                   	</div>
                   </div>
@@ -453,6 +453,7 @@ function getMyPayrollList(){
 		     $("#overTimeHours").text(result.hours.otHours);
 		     $("#regularAmount").text(result.hours.regularTimeAmount);
 		     $("#overTimeHoursAmount").text(result.hours.overTimeAmount);
+		     $("#totalHors").text(result.hours.totalHours+" Hrs");
 	        
 	        // Pre Deductions
 	        var preDed = "";
@@ -590,7 +591,7 @@ function getMyPayrollList(){
 	 	        result = result +'</tr>';
 	 	        
 	        	}
-	        	$("#totalNet").text('$ '+totalNetPay);
+	        	$("#totalNet").text('$ '+totalNetPay.toFixed(2));
 	        }
 	       
 	        result = result +'</tbody>';
