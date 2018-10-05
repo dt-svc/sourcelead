@@ -4,6 +4,7 @@ public class AttachmentDTO {
 
 	private String fileName;
 	private String url;
+	private String path;
 	private String fileType;
 	private String fileExtension;
 	private float fileSize;
@@ -26,6 +27,14 @@ public class AttachmentDTO {
 
 	public void setUrl(String url) {
 		this.url = url;
+	}
+
+	public String getPath() {
+		return path;
+	}
+
+	public void setPath(String path) {
+		this.path = path;
 	}
 
 	public String getFileType() {

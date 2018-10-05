@@ -292,6 +292,7 @@ public class MailBox {
 										+ folderName + "/" + uid;
 
 								attachment.setUrl(fileUrl);
+								attachment.setPath(attachmentFolderPath.getAbsolutePath());
 								attachment.setFileExtension(fileName.substring(fileName.lastIndexOf("."), fileName.length()));
 								/*float fileSize = attachmentFile.length() / 1024;
 								attachment.setSizeUnit("KB");
@@ -302,7 +303,7 @@ public class MailBox {
 								attachment.setFileSize(fileSize);*/
 							} catch (Exception e) {
 								attachment.setAttachmentNotFoundOrCorrupted(true);
-								e.printStackTrace();
+								/*e.printStackTrace();*/
 							}
 							attachment.setFileName(fileName);
 							attachment.setFileType(fileType);
