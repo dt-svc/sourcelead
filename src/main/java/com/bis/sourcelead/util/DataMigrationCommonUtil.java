@@ -2869,18 +2869,15 @@ private void saveImportedTimeSheetRecords(Projects project,String projectTaskUUI
 		
 			//Grade
 			if(!dataMigrationDTOJsonCopy.getString("grade").equals("null") &&  !StringUtils.isEmpty(dataMigrationDTOJsonCopy.getString("grade"))) {
-				boolean flag = true;
-				List<AssociateGrades> gradesList = associateGradesService.getAssociateGradesListByOrgLocationId(orgLocation.getId());
-				if(gradesList != null) {
-					for(AssociateGrades grades : gradesList) {
-						if(grades.getGradeName().equalsIgnoreCase(dataMigrationDTOJsonCopy.getString("grade"))) {
-							 flag = false;
-						}
-					}
+				
+				boolean flag = associateGradesService.isGradeExistsByGradeNameAndOrgLocationId(dataMigrationDTOJsonCopy.getString("grade"), orgLocation.getId());
+				
+				if(flag == true) {
+					dataMigrationDTOJsonCopy.put("grade", dataMigrationDTOJsonCopy.getString("grade"));
+				}else {
+					errorSet.put("grade", "Invalid Grade");
 				}
-	    		if(flag == true) {
-					errorSet.put("grade", "Grade is not existed");
-	    		}
+				
 			}
 			
 
