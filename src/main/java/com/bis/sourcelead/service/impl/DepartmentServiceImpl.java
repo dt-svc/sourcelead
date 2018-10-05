@@ -84,5 +84,16 @@ public class DepartmentServiceImpl implements DepartmentService{
 	public List<Department> getDepartmentByOrgLocationIdAndStatus(Long orgLocationId, String status) throws Exception {
 		return departmentDao.getDepartmentByOrgLocationIdAndStatus(orgLocationId, status);
 	}
+
+	@Override
+	public List<String> getDepartmentList(Long orgLocationId) throws Exception {
+		return departmentDao.getDepartmentList(orgLocationId);
+	}
+
+	@Override
+	public Department getDepartmentByOrgLocationIdAndDepartmentName(Long orgLocationId, String departmentName)
+			throws Exception {
+		return departmentDao.getDepartmentByOrgLocationIdAndDepartmentName(orgLocationId, departmentName);
+	}
 	
 }
