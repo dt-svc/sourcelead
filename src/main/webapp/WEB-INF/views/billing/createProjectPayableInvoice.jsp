@@ -500,6 +500,25 @@ function addConversionDiv(){
 </script>
 
 <script type="text/javascript">
+function addConversionDivEditMode(){
+	var result = "";
+	var vendorCurrency = $("#vendorCurrency").val();
+	var currencyCode = '${SourceLeadWeb_currencyCode}';
+	if(vendorCurrency != currencyCode){
+		result = result +'<div class="row">';
+		result = result +'<div class="clearfix mt col-md-offset-2 col-md-10" style="padding-right:0;">';
+		result = result +'<div class="clearfix"><label class="col-md-6 text-right"><strong>Conversion From</strong></label><div class="paddingLeft col-md-6"><span class="pull-left" id="currencyCode">'+currencyCode+'</span><div class="pull-right"><input type="text" id="conversionFrom" placeholder="00:00" class="ReadTextFli" readonly="" type="text"></div></div></div>';
+		result = result +' <div class="clearfix"><label class="col-md-6 text-right"><strong>Conversion To</strong></label><div  class="paddingLeft col-md-6"><span id="vendorCurrencyCode">'+vendorCurrency+'</span><div id="exchangeCurrency" class="pull-right"><input  class="ReadTextFli" readonly="" type="text"></div></div></div>';
+		result = result +'  <div class="clearfix"><label class="col-md-6 text-right"><strong>Exchange Rate</strong></label><div  class="paddingLeft col-md-6"><span id="convertedCurrencyCode">'+currencyCode+' to '+vendorCurrency+'</span><div id="exchangeRate" class="pull-right"><input class="ReadTextFli ReadTextFli90" readonly="" type="text"></div></div></div>';
+		result = result +'</div>';
+		result = result +'</div>';
+		$("#conversionId").empty();
+		$("#conversionId").append(result);
+	}
+}
+</script>
+
+<script type="text/javascript">
 function alertMessageInPayable(){
 	var result = "";
 	result = result +"	<div class='project_inn_mask'></div>";
@@ -627,6 +646,7 @@ function populateInlineItemsGrid1(data){
 	document.getElementById("lineItemAddRows").style.display="block";
 	document.getElementById("tableBody").style.display="block";
     addTaxDivs();
+    addConversionDivEditMode();
 }
 </script>
 
