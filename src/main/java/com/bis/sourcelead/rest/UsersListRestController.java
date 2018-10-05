@@ -78,6 +78,8 @@ import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.OrgRelations;
 import com.bis.sourcelead.entity.OrgSpoc;
 import com.bis.sourcelead.entity.OrglocationFormFields;
+import com.bis.sourcelead.entity.ProjectApproverHierarchy;
+import com.bis.sourcelead.entity.ProjectClients;
 import com.bis.sourcelead.entity.ProjectMembers;
 import com.bis.sourcelead.entity.ProjectMembersHistory;
 import com.bis.sourcelead.entity.Projects;
@@ -92,6 +94,7 @@ import com.bis.sourcelead.entity.TeamMembers;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.entity.UserCustomFieldData;
 import com.bis.sourcelead.entity.UserRole;
+import com.bis.sourcelead.enums.Primary;
 import com.bis.sourcelead.enums.Result;
 import com.bis.sourcelead.enums.Status;
 import com.bis.sourcelead.enums.TagEntites;
@@ -2225,7 +2228,13 @@ public class UsersListRestController {
 		
 		Candidate candidate = candidateService.getCandidateByConsultantUserId(user.getId(), orgLocations.getId());
 		if(candidate != null) {
-
+			OrgRelations orgRelation = null;
+			Candidate vendorCandidate = null;
+			OrgSpoc orgspoc = null;
+			OrgRelations currentVendorOrgRelation = null;
+			if(candidate.getOrgRelationId() != null) {
+				currentVendorOrgRelation = candidate.getOrgRelationId();
+			}
 			if(StringUtils.isNotBlank(addUserDTO.getDesignationType())){
 				candidate.setDesignationType(addUserDTO.getDesignationType());
 			}
@@ -2234,13 +2243,13 @@ public class UsersListRestController {
 			}
 			
 			if(StringUtils.isNotBlank(addUserDTO.getVendors())){
-				OrgRelations orgRelation = orgRelationsService.getOrRelationsById(Long.parseLong(addUserDTO.getVendors()));
+				orgRelation = orgRelationsService.getOrRelationsById(Long.parseLong(addUserDTO.getVendors()));
 				CandidateDTO candidateDTO = new CandidateDTO();
 				candidateDTO.setEmail(candidate.getEmail());
 				candidateDTO.setFirstName(candidate.getFirstName());
 				candidateDTO.setLastName(candidate.getLastName());
 				candidateDTO.setCountry(candidate.getCountry());
-				Candidate vendorCandidate =  commonUtil.getVendorCandidateForCandidateCreation(candidateDTO, orgRelation, orgLocations, user);
+				vendorCandidate =  commonUtil.getVendorCandidateForCandidateCreation(candidateDTO, orgRelation, orgLocations, user);
 				candidate.setParentCandidateId(vendorCandidate);
 				candidate.setOrgRelationId(orgRelation);
 			}else{
@@ -2249,7 +2258,7 @@ public class UsersListRestController {
 			}
 			
 			if(StringUtils.isNotBlank(addUserDTO.getVendorcontact())){
-				OrgSpoc orgspoc = orgSpocService.getOrgSpocById(Long.parseLong(addUserDTO.getVendorcontact()));
+				orgspoc = orgSpocService.getOrgSpocById(Long.parseLong(addUserDTO.getVendorcontact()));
 				candidate.setSpocId(orgspoc);
 			}else{
 				candidate.setSpocId(null);
@@ -2271,16 +2280,49 @@ public class UsersListRestController {
 			   candidate.setResidenceLongitude(addUserDTO.getResidenceLongitude());
 			   candidate.setResidenceZipCode(addUserDTO.getResidenceZipCode());
 			   candidate.setResidenceStreetAddress(addUserDTO.getResidenceAddress());
-			   OrgLocations workLocation = orgLocationService.getOrgLocations(Long.parseLong(addUserDTO.getWorkLocation()));
-			   candidate.setWorkLocation(workLocation);
-		    	
 		    	Countries country = countriesService.getCountriesByCountryName(addUserDTO.getResidenceCountry());
-		    	String stateCode = statesService.getStateCodeByCountryCodeAndState(country.getCode2(),addUserDTO.getResidenceState());
-		    	candidate.setResidenceStateCode(stateCode);
+		    	if(country != null) {
+		    		String stateCode = statesService.getStateCodeByCountryCodeAndState(country.getCode2(),addUserDTO.getResidenceState());
+			    	candidate.setResidenceStateCode(stateCode);
+		    	}
+		    	
 		    }
 			
+			if(StringUtils.isNotBlank(addUserDTO.getWorkLocation())){
+				 OrgLocations workLocation = orgLocationService.getOrgLocations(Long.parseLong(addUserDTO.getWorkLocation()));
+				   candidate.setWorkLocation(workLocation);
+			}
+			  
+			   
 			candidateService.saveOrUpdateCandidate(candidate);
 			candidateService.saveOrUpdateCandidateElkDocument(candidate);
+			
+			if(StringUtils.isNotBlank(addUserDTO.getVendors())){
+				if(currentVendorOrgRelation == null || (currentVendorOrgRelation != null && !currentVendorOrgRelation.getId().equals(orgRelation.getId()))) {
+					List<ProjectMembers> projectMembersList = projectMembersService.getAllActiveProjectsByUserIdAndOrgLocationId(user.getId(), orgLocations.getId());
+					if(projectMembersList != null && !projectMembersList.isEmpty()) {
+						
+						  OrgLocations vendorOrgLocation = null;
+						  if(orgRelation.getLocationId().getId().equals(orgLocations.getId())){
+							  vendorOrgLocation = orgRelation.getResponderLocationId();
+						  }else if(orgRelation.getResponderLocationId().getId().equals(orgLocations.getId())){
+							  vendorOrgLocation = orgRelation.getLocationId();
+						  }
+						
+						for(ProjectMembers projectMembers : projectMembersList) {
+							saveVendorProjects(projectMembers,vendorOrgLocation,vendorCandidate,orgRelation,user,orgspoc,orgLocations);
+						}
+					}
+					
+					if(currentVendorOrgRelation != null) {
+						 removeVendorProject(currentVendorOrgRelation,user,orgLocations,candidate);
+					}
+				}
+			}else{
+				if(currentVendorOrgRelation != null) {
+					 removeVendorProject(currentVendorOrgRelation,user,orgLocations,candidate);
+				}
+			}
 		}
 		
 		
@@ -2306,7 +2348,128 @@ public class UsersListRestController {
 			return "DataMissing";
 		}
 	}
+	
+	
+	public void saveVendorProjects(ProjectMembers projectMembers,OrgLocations vendorOrgLocation,Candidate vendorCandidate,OrgRelations orgRelation,User user,OrgSpoc orgspoc,OrgLocations orgLocations) {
+		
+		try {
+		ProjectClients pclients = projectClientService.getProjectClientsByProjectIdAndOrgLocationId(projectMembers.getProjects().getId(), vendorOrgLocation.getId());
+		if(pclients == null) {
+			
+			pclients = new ProjectClients();
+			pclients.setProjectId(projectMembers.getProjects());
+			pclients.setOrgRelationId(orgRelation);
+			pclients.setOrgLocationsId(vendorCandidate.getOrgLocationId());
+			pclients.setUuid(SourceLeadRandomCodeHelper.generateRandomUUID());
+			pclients.setStatus(1);
+			
+		
+			ProjectClients pc = projectClientService.getProjectClientsByProjectIdAndOrgLocationId(projectMembers.getProjects().getId(), orgLocations.getId());
+			if(pc != null && pc.getLevel() != null){
+				pclients.setLevel(pc.getLevel()+1);
+			}
+			
+			pclients.setCreatedDate(new Date());
+			pclients.setCreatedBy(user);
+			pclients.setUpdatedDate(new Date());
+			pclients.setUpdatedBy(user);
+			
+			//prepare ProjectApproverHierarchy
+			Set<ProjectApproverHierarchy> projectApproverHierarchyList = new HashSet<ProjectApproverHierarchy>();
+			ProjectApproverHierarchy pah = new ProjectApproverHierarchy();
+			pah.setProjectId(projectMembers.getProjects());
+			pah.setProjectClientsId(pclients);
+			
+			if(vendorOrgLocation.getUser() != null) {
+				pah.setApproverUserId(vendorOrgLocation.getUser());
+			}else {
+				pah.setApproverUserId(orgspoc.getVendorUser());
+			}
+			
+			
+			pah.setLevel(1);
+			pah.setStatus("1");
+			projectApproverHierarchyList.add(pah);
+			pclients.setProjectApproverHierarchyList(projectApproverHierarchyList);
+			
+			projectClientService.storeProjectClients(pclients);
+		}
+		
+		ProjectMembers pm = null;
+		pm = projectMembersService.getProjectMemberByCandidateIdAndProjectIdAndOrgLocationId(vendorCandidate.getId(), projectMembers.getProjects().getId(), vendorOrgLocation.getId());
+		if(pm == null) {
+			pm = new ProjectMembers();
+			pm.setProjects(projectMembers.getProjects());
+			pm.setProjectMemberCandidteId(vendorCandidate);
+			pm.setMasterCandidateId(vendorCandidate.getMasterCandidateId());
+			if(vendorCandidate.getConsultantUser() != null){
+				Employees emp = employeesService.getEmployeeByUserIdAndOrgLocationsId(vendorCandidate.getConsultantUser().getId(), vendorOrgLocation.getId());
+				projectMembers.setEmployee(emp);
+			}
+			
+			pm.setProjectAssignedDate(new Date());
+			pm.setProjects(projectMembers.getProjects());
+			pm.setStatus("1");
+			pm.setCreatedBy(user.getUserCode());
+			pm.setUpdatedBy(user.getUserCode());
+			pm.setCreatedDate(new Date());
+			pm.setUpdatedDate(new Date());
+			pm.setProjectClientsId(pclients);
+			projectMembersService.saveProjectMember(pm);
+			
+			ProjectMembersHistory projectMembersHistory = new ProjectMembersHistory();
+			projectMembersHistory.setProjectMemberId(pm);
+			projectMembersHistory.setProjectAssignedDate(new Date());
+			projectMembersHistory.setStatus("OPEN");
+			projectMembersHistory.setCreatedBy(user.getUserCode());
+			projectMembersHistory.setUpdatedBy(user.getUserCode());
+			projectMembersHistory.setCreatedDate(new Date());
+			projectMembersHistory.setUpdatedDate(new Date());
+			projectMembersHistoryService.updateProjectMembersHistory(projectMembersHistory);
+		}
+		}catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
 
+	
+	public void removeVendorProject(OrgRelations currentVendorOrgRelation,User user,OrgLocations orgLocations,Candidate candidate) {
+		
+		try {
+		 List<Long> pclientsList = projectClientService.getProjectClientsByRelationId(currentVendorOrgRelation.getId());
+		 if(pclientsList != null && pclientsList.size() > 0) {
+			 OrgRelations orel = orgRelationsService.getOrRelationsById(currentVendorOrgRelation.getId());
+			 Candidate vendorCand  = null;
+			 if(orel.getLocationId().getId().equals(orgLocations.getId())){
+				  vendorCand = candidateService.findByCandidateEmail(candidate.getEmail(), orel.getResponderLocationId().getId());
+			  }else if(orel.getResponderLocationId().getId().equals(orgLocations.getId())){
+				  vendorCand = candidateService.findByCandidateEmail(candidate.getEmail(), orel.getLocationId().getId());
+			  }
+			 
+			 List<ProjectMembers> projectMembersList = projectMembersService.getProjectMembersListByCandidateIdAndProjectClientId(vendorCand.getId(), pclientsList);
+			 if(projectMembersList != null && !projectMembersList.isEmpty()) {
+				 for(ProjectMembers pm : projectMembersList) {
+					 pm.setStatus("0");
+					 pm.setIsManuallyTerminated(Primary.Yes);
+					 pm.setUpdatedDate(new Date());
+					 pm.setUpdatedBy(user.getUserCode());
+					 projectMembersService.saveProjectMember(pm);
+					 
+					 ProjectMembersHistory pmh = projectMembersHistoryService.getProjectMembersAllHistoryByProjectMemberId(pm.getId());
+					 if(pmh != null) {
+						 pmh.setStatus("CLOSED");
+						 pmh.setProjectTerminationDate(new Date());
+						 pmh.setUpdatedDate(new Date());
+						 pmh.setUpdatedBy(user.getUserCode());
+						 projectMembersHistoryService.updateProjectMembersHistory(pmh);
+					 }
+				 }
+			 }
+		 }
+		}catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
 	
 	/**
 	 * to get the start date and end date of the particular project by projectId

@@ -87,7 +87,7 @@ background-color: #fcfcfc;
 						        					
 						        					<div class="col-md-12">
 						        					<div class="uploadTempalte" id="validation">
-						        					<input type="file" class="margin-top0" id="leaveInputFileId" name="file" data-validation="required validate_importFile" field-name="File">
+						        					<input type="file" class="margin-top0" id="leaveInputFileId" name="file" data-validation="required validate_xls_importFile" field-name="File">
 						        					</div>
 						        					</div>
 						        				</div>

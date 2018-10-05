@@ -11,14 +11,16 @@
    
     <section class="content-header clearfix">
       <div class="pull-left"><h2>LCA</h2></div>
-      <div class="pull-right brud-crum"><a href="<c:url value='${appPath}/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a> &raquo; <a href="/app/immigration/viewImmigrationList">Immigration List</a> &raquo; LCA List</div>
+      <div class="pull-right brud-crum"><a href="<c:url value='${appPath}/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a> &raquo; <a href="/app/immigration/viewImmigrationList">Petition List</a> &raquo; LCA List</div>
 	<div class="clearfix"></div>
     </section>
     
      <div class="project_side_wrap_inn_tabs clearfix">
 	    <ul class="project-tabs-menu">
-		    <li><a href="${appPath}/immigration/viewImmigrationList" >Immigration List</a></li>
+		   
 		    <li class="current"><a href="${appPath}/immigration/viewLCAList" >LCA List</a></li>
+		    
+		     <li><a href="${appPath}/immigration/viewImmigrationList" >Petition List</a></li>
 	    </ul>
     </div>
         

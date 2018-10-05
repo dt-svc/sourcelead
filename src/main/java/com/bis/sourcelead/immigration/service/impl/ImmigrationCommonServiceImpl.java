@@ -2868,6 +2868,11 @@ private List<LcaDocumentHistory> saveLcaDocumentHistoryList(LcaDTO lcaDTO, Lca l
 		return immigrationCommonDao.deleteLcaHistoryDetailsByImmigrationId(immigrationId);
 	}
 
+	@Override
+	public List<String> getAllExpiredCandidatesFromLcaHistoryByLcaId(Long lcaId) {
+		return immigrationCommonDao.getAllExpiredCandidatesFromLcaHistoryByLcaId(lcaId);
+	}
+
 	/*
 	 * LCA Code Ends Here
 	 */

@@ -147,7 +147,7 @@ function requestedEmployeesPagination(url){
         "columnDefs": [ {
 	    	  	"targets": colIndex++,
 	    	  	"data": "empName",
-	    	  	"sortable":false,
+// 	    	  	"sortable":false,
 	    	  	"render": function(data, type, opt, meta) {
 	    	  		 var result = "";
 		    	  		if(opt.empType !=null && opt.empType != '' && opt.empType !='undefined'){
@@ -164,7 +164,7 @@ function requestedEmployeesPagination(url){
 	      },{
 	    	  "targets": colIndex++,
               "data": "leaveType",
-              "sortable":false,
+//               "sortable":false,
               "render": function ( data, type, opt, meta ) {
             	   var result = "";
             	  result = result + '   <div title="'+opt.leaveType+'" class="tblminwidth-75">'+opt.leaveType+'</div>';

@@ -39,7 +39,7 @@ public class YTDPayrollDTO {
 	
 	private BigDecimal deductionQTD;
 	
-	private BigDecimal ficaYTDg;
+	private BigDecimal ficaYTD;
 	
 	private BigDecimal medicareYTD;
 	
@@ -228,9 +228,9 @@ public class YTDPayrollDTO {
 		this.deductionQTD = deductionQTD;
 	}
 
-	public BigDecimal getFicaYTDg()
+	public BigDecimal getFicaYTD()
 	{
-		return ficaYTDg;
+		return ficaYTD;
 	}
 
 	public BigDecimal getMedicareYTD()
@@ -288,9 +288,9 @@ public class YTDPayrollDTO {
 		return localTaxYTD;
 	}
 
-	public void setFicaYTDg(BigDecimal ficaYTDg)
+	public void setFicaYTD(BigDecimal ficaYTD)
 	{
-		this.ficaYTDg = ficaYTDg;
+		this.ficaYTD = ficaYTD;
 	}
 
 	public void setMedicareYTD(BigDecimal medicareYTD)
