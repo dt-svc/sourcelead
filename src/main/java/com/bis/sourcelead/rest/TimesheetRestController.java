@@ -863,8 +863,6 @@ public class TimesheetRestController {
 		Map<Long,EmployeeTimeSheetSubmissionStatusDTO> ettsDTOMap = new LinkedHashMap<>();
 		List<EmployeeTimesheetFileInfoDTO> timesheetAttachments = new ArrayList<>();
 		int editableCount = 1;
-		String previousStatus = "";
-		Long previousPMId = 0l;
 		if(projectMembersList != null && !projectMembersList.isEmpty()) {
 			if (projectMembersList != null && !projectMembersList.isEmpty()) {
 				for (ProjectMembers pm : projectMembersList) {
@@ -896,12 +894,7 @@ public class TimesheetRestController {
 						etd.setSunEditable(etssDTO.getEditableMap().get("Sun"));
 					}
 					
-					if(StringUtils.isNotEmpty(previousStatus) && previousStatus.equalsIgnoreCase("NEW") && editableCount >2) {
-						ettsDTOMap.remove(previousPMId);
-					}
 					editableCount++;
-					previousStatus = etssDTO.getTimesheetStatus();
-					previousPMId = pm.getId();
 					ettsDTOMap.put(pm.getId(), etssDTO);
 					if(StringUtils.isEmpty(entryAvailableCheck))
 						continue;
@@ -957,6 +950,8 @@ public class TimesheetRestController {
 							if(taskSplitter != null && taskSplitter.length >= 0 && StringUtils.isNotEmpty(taskSplitter[0])) {
 								taskId = Long.parseLong(taskSplitter[0]);
 							}
+							if(taskId == 0)
+								continue;
 							etsDTO.setProjectTaskId(taskId);
 							etsDTO.setTicketNumber(ticketNumber);
 							etsDTO.setProjectTaskType(taskType);
