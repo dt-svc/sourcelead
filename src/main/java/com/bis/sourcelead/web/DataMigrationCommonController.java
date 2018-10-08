@@ -441,6 +441,8 @@ public class DataMigrationCommonController {
 	            	sheet.addValidationData(getDropDownListForCell(Constants.YES_NO, cellnum-1, "xls"));
 	            }else if(key.equalsIgnoreCase("Is Global Manager")) {
 	            	sheet.addValidationData(getDropDownListForCell(Constants.YES_NO, cellnum-1, "xls"));
+	            }else if(key.equalsIgnoreCase("Rate Currency")) {
+	            	sheet.addValidationData(getDropDownListForCell(Constants.RATE_CURRENCY, cellnum-1, "xls"));
 	            }
 	            
 	        }
