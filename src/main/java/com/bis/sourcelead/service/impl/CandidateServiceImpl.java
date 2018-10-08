@@ -2708,4 +2708,33 @@ private Sheet createXlsSheet(Sheet createExcelsheet, Row writeRow,Candidate cand
 		return candidates;
 	}
 
+	@Override
+	public void saveBulkCandidates(List<Candidate> candidatesList) throws Exception {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void saveCandidateMarketPlaceList(List<CandidateMarketPlaceDTO> marketPlaceList, User user) throws NumberFormatException, Exception {
+
+		for(CandidateMarketPlaceDTO dto : marketPlaceList){
+			Candidate candidate = candidateDao.getCandidateById(Long.parseLong(dto.getCandidateId()));
+			CandidateMarketPlace marketPlace = new CandidateMarketPlace();
+			BeanUtils.copyProperties(candidate, marketPlace);
+			marketPlace.setCandidateId(candidate);
+			marketPlace.setEmploymentType(candidate.getDesignationType());
+			marketPlace.setScore(candidate.getCandidateScore());
+			marketPlace.setExpectedRateType(candidate.getRateType());
+			marketPlace.setCandidateMarketStatus(Constants.DRAFT);
+			marketPlace.setMarketPrice(dto.getMarketPrice());
+			marketPlace.setMarketRateCurrencey(dto.getMarketRateCurrencey());
+			marketPlace.setStatus(Constants.CANDIDATE_ACTIVE);
+			marketPlace.setCreatedDate(new Date());
+			marketPlace.setCreatedBy(user);
+			marketPlace.setUpdatedDate(new Date());
+			marketPlace.setUpdatedBy(user);
+			candidateDao.saveMarketPlace(marketPlace);
+		}
+	}
+
 }

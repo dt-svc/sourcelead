@@ -213,7 +213,7 @@ function cpagination(url){
    	        		 }
 	        		 if(!shareflag)
    	        			$("#sharedcheckbox").removeAttr('checked');
-	        			result = result +'  <td><input'+(shareflag ? " checked='checked'" : "")+' class="contactscheckbox" name="sharedcheckbox"  type="checkbox" id="'+report.candidateId+'" data-id="'+report.candidateId+'" value="'+report.candidateId+'" data-uuid="'+report.candidateUUID+'" onchange="checkShareCandidates(this)"/></td>';
+	        			result = result +'  <td><input'+(shareflag ? " checked='checked'" : "")+' class="contactscheckbox" name="sharedcheckbox"  type="checkbox" id="'+report.candidateId+'" data-id="'+report.candidateId+'" value="'+report.candidateId+'" onclick="appendIdsToMarketPlace(this);" data-uuid="'+report.candidateUUID+'" onchange="checkShareCandidates(this)"/></td>';
     	  		 return result; 
     	  	}
         	},{

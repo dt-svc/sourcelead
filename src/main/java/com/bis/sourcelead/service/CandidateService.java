@@ -240,4 +240,6 @@ public interface CandidateService {
 	
 	List<String> getCandidateEmailsByOrgLocationId(Long orgLocationId) throws Exception;
 
+	public void saveCandidateMarketPlaceList(List<CandidateMarketPlaceDTO> marketPlaceList, User user) throws NumberFormatException, Exception;
+
 }

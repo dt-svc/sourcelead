@@ -29,6 +29,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -1018,4 +1019,17 @@ public class CandidateRestController {
 		ResponseList<CandidateDTO> marketCandidates = candidateService.getCandidatesByCandidateIds(candidateIds);
 		return marketCandidates;
 	}
+	
+	@PreAuthorize("hasAnyRole('ROLE_CREATE_CANDIDATE','ROLE_CROWDSOURCING_CANDIDATES')")
+	@RequestMapping(value = "/app/saveMarketPlaceData", method = RequestMethod.POST)
+	public ModelAndView saveMarketPlaceData(@RequestBody List<CandidateMarketPlaceDTO> marketPlaceList, HttpServletRequest  request) throws NumberFormatException, Exception {
+		//System.out.println(marketPlaceList.size());
+		User user = (User) SourceLeadSessionManager.getSessionAttribute(request,"user");
+		candidateService.saveCandidateMarketPlaceList(marketPlaceList, user);
+		ModelAndView model = new ModelAndView();
+		model.setViewName("candidates/candidateGlobalMarketPlaceList");
+		model.addObject("sourceleadUrl", sourceleadUrl);
+		return model;
+	}
+	
 }

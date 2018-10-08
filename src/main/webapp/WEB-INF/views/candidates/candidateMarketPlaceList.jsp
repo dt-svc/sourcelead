@@ -246,6 +246,37 @@ function callValidatePriceAmount(){
 	if(flagPriceForEnteredPriceType){
 		popupDisplay("Please enter amount for amount type");
 	}
+	var marketCandidateObj = [];
+	$("input:checkbox[id='sharedcheckbox']:checked").each(function(){
+		var objectValue = {};
+		objectValue = {
+				"candidateId" : $(this).closest('tr').find("input[id='candidateId']").val(),
+				"marketPrice" : $(this).closest('tr').find("input[id='priceVal']").val(),
+				"marketRateCurrencey" : $(this).closest('tr').find("select[id='amountTypeEach']").val()
+		}
+		marketCandidateObj.push(objectValue);
+ 	});
+	//console.log("List of object :"+marketCandidateObj);
+	
+	$.ajax({
+		url : sourceleadUrl + "/saveMarketPlaceData",		
+		type : "POST",
+	    headers: { 
+	        'Accept': 'application/json',
+	        'Content-Type': 'application/json' 
+	    },
+	    'dataType': 'json',
+		data : JSON.stringify(marketCandidateObj),	
+		success : function(result) {
+			//location.href = "/app/candidatesList";
+			$('#candidatesInfoDiv').html(result);
+			$('#brudCrumLbl').html("Global Marketplace");
+			$('#headerLbl').html("Global Marketplace List");
+		}
+	});
+	
+	
+	
 }
 function popupDisplay(message){
 	$(".project_inn_mask").remove();

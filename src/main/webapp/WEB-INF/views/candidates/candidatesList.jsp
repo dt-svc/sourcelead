@@ -1508,20 +1508,34 @@ function cancel(candidateId){
 
    
    <script>
+   var candidateIdsMark = [];
+   function appendIdsToMarketPlace(obj){
+	   if($(obj).is(":checked")){
+		   candidateIdsMark.push($(obj).attr("id"));
+	   }else if($(obj).not(":checked")){
+		   candidateIdsMark = jQuery.grep(candidateIdsMark, function(value) {
+			   return value != $(obj).attr("id");
+			});
+	   }
+   }
+   
    function callAddToMarket(){
-	   var candidateIds = [];
+	   
+	   
+	   /* var candidateIdsMark = [];
+	   
 	 	$('input:checkbox[name=sharedcheckbox]:checked').each(function(){
-	 		candidateIds.push($(this).attr("id"));
-	 	});
-	 	//$("#marketPlaceIdsHidden").val(candidateIds)
-	 	$.ajax({
+	 		candidateIdsMark.push($(this).attr("id"));
+	 	});  */
+	 	 $.ajax({
 		    	type: "POST",
 		        url: sourceleadUrl+"/navigateMarketPlaceAjax",
-		        data : {candidateIdsVal : candidateIds},
+		        data : {candidateIdsVal : candidateIdsMark},
 		        success: function(json) {
 		        	location.href = sourceleadUrl+"/navigateMarketPlaceList";
+		        	candidateIdsMark = [];
 		        }
-	 	});
+	 	}); 
 	 	//location.href = sourceleadUrl+"/navigateMarketPlaceList?candidateIds="+candidateIds
    }
    
@@ -2546,10 +2560,19 @@ function toggleShareCandidates(source){
 	  if($(source).is(":checked")){
 		  $('input[class="contactscheckbox"]').prop('checked', 'checked');
 	  	  $(".tableShare").show();
+	  	$('input:checkbox[name=sharedcheckbox]:checked').each(function(){
+	  		candidateIdsMark.push($(this).attr("id"));
+	 	}); 
 	  }
 	  else{ 
 		  $('input[class="contactscheckbox"]').removeProp('checked');
 	      $(".tableShare").hide();
+	      $('input:checkbox[name=sharedcheckbox]not(:checked)').each(function(){
+	    	  candidateIdsMark = jQuery.grep(candidateIdsMark, function(value) {
+				   return value != $(this).attr("id");
+				});
+		 	});
+	      
 	  }
 	  $('input[class="contactscheckbox"]').each(function(i) {
 		  if($(this).is(":checked")) {
