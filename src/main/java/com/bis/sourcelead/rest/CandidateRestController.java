@@ -1020,16 +1020,16 @@ public class CandidateRestController {
 		return marketCandidates;
 	}
 	
-	@PreAuthorize("hasAnyRole('ROLE_CREATE_CANDIDATE','ROLE_CROWDSOURCING_CANDIDATES')")
+	//@PreAuthorize("hasAnyRole('ROLE_CREATE_CANDIDATE','ROLE_CROWDSOURCING_CANDIDATES')")
 	@RequestMapping(value = "/app/saveMarketPlaceData", method = RequestMethod.POST)
-	public ModelAndView saveMarketPlaceData(@RequestBody List<CandidateMarketPlaceDTO> marketPlaceList, HttpServletRequest  request) throws NumberFormatException, Exception {
+	public void saveMarketPlaceData(@RequestBody List<CandidateMarketPlaceDTO> marketPlaceList, HttpServletRequest  request) throws NumberFormatException, Exception {
 		//System.out.println(marketPlaceList.size());
 		User user = (User) SourceLeadSessionManager.getSessionAttribute(request,"user");
 		candidateService.saveCandidateMarketPlaceList(marketPlaceList, user);
-		ModelAndView model = new ModelAndView();
-		model.setViewName("candidates/candidateGlobalMarketPlaceList");
-		model.addObject("sourceleadUrl", sourceleadUrl);
-		return model;
+		//ModelAndView model = new ModelAndView();
+		//model.setViewName("candidates/candidateGlobalMarketPlaceList");
+		//model.addObject("sourceleadUrl", sourceleadUrl);
+		//return model;
 	}
 	
 }

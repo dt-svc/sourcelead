@@ -268,10 +268,11 @@ function callValidatePriceAmount(){
 	    'dataType': 'json',
 		data : JSON.stringify(marketCandidateObj),	
 		success : function(result) {
-			//location.href = "/app/candidatesList";
-			$('#candidatesInfoDiv').html(result);
-			$('#brudCrumLbl').html("Global Marketplace");
-			$('#headerLbl').html("Global Marketplace List");
+			alert("hi");
+			location.href = "/app/candidatesList";
+			//$('#candidatesInfoDiv').html(result);
+			//$('#brudCrumLbl').html("Global Marketplace");
+			//$('#headerLbl').html("Global Marketplace List");
 		}
 	});
 	

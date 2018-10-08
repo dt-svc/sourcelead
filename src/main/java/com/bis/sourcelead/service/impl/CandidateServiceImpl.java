@@ -2725,7 +2725,7 @@ private Sheet createXlsSheet(Sheet createExcelsheet, Row writeRow,Candidate cand
 			marketPlace.setEmploymentType(candidate.getDesignationType());
 			marketPlace.setScore(candidate.getCandidateScore());
 			marketPlace.setExpectedRateType(candidate.getRateType());
-			marketPlace.setCandidateMarketStatus(Constants.DRAFT);
+			marketPlace.setCandidateMarketStatus(Constants.MEMBER_ACTIVE);
 			marketPlace.setMarketPrice(dto.getMarketPrice());
 			marketPlace.setMarketRateCurrencey(dto.getMarketRateCurrencey());
 			marketPlace.setStatus(Constants.CANDIDATE_ACTIVE);
