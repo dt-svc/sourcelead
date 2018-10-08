@@ -1,6 +1,11 @@
 package com.bis.sourcelead.rest;
 
+import java.io.BufferedInputStream;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.InputStream;
 import java.io.Writer;
+import java.net.URLConnection;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -8,6 +13,7 @@ import java.util.Date;
 import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 
 import org.apache.commons.lang.exception.ExceptionUtils;
 import org.json.JSONObject;
@@ -15,6 +21,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.util.FileCopyUtils;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -54,6 +61,7 @@ import com.bis.sourcelead.service.SourceleadFormSectionsService;
 import com.bis.sourcelead.service.UserService;
 import com.bis.sourcelead.util.CommonUtil;
 import com.bis.sourcelead.util.SourceLeadSessionManager;
+import com.bis.sourcelead.util.dynamicReport.DynamicReport;
 import com.thoughtworks.xstream.XStream;
 import com.thoughtworks.xstream.io.HierarchicalStreamWriter;
 import com.thoughtworks.xstream.io.json.JsonHierarchicalStreamDriver;
@@ -110,6 +118,8 @@ public class BackOfficeRestController {
 	@Autowired
 	private AssetCustomFieldService assetCustomFieldService;
 	
+	@Autowired
+	DynamicReport dynamicReport;
 	
 	@RequestMapping(value = "/getAccountsList")
 	@ResponseBody
@@ -852,6 +862,36 @@ public class BackOfficeRestController {
 			}
 		 return assetServicesList;
 	 }
+	 
+	 @RequestMapping(value = "/getAssetmanagementExport")
+		@ResponseBody
+		public void getAssetmanagementExport(AssetDTO assetDTO,HttpServletRequest request,HttpServletResponse response) throws Exception {
+			OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+			    ResponseList<Asset>  responseList = assetService.getDynamicAssetFilterListByLocationId(orgLocations.getId(), assetDTO);
+			    File file = null;
+			    if(assetDTO.getExportType().equalsIgnoreCase("pdf")) {
+			    	 file=  dynamicReport.assetmanagementPdfExport(responseList,orgLocations);
+			    }else {
+			    	 file=  dynamicReport.assetmanagementExcelExport(responseList,orgLocations);
+			    }
+			    
+				String mimeType = URLConnection.guessContentTypeFromName(file.getName());
+				if (mimeType == null) {
+					mimeType = "application/octet-stream";
+				}
+				response.setContentType(mimeType);
+				StringBuilder fileNameSB = new StringBuilder();
+				response.setHeader("Content-Disposition", fileNameSB.append("attachment; filename=\"").append(file.getName()).append("\"").toString());
+				response.setContentLength((int) file.length());
+				InputStream inputStream = new BufferedInputStream(new FileInputStream(file));
+				FileCopyUtils.copy(inputStream, response.getOutputStream());
+				inputStream.close();
+				response.getOutputStream().close();
+				response.getOutputStream().flush();	
+				if(file!= null){
+					file.delete();
+				}
+		}
 	 
 	private String toJSON(Object obj){
         XStream xstream = new XStream(new JsonHierarchicalStreamDriver() {

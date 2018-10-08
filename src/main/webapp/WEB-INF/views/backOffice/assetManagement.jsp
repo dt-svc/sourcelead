@@ -61,13 +61,14 @@ $(document).ready(function(){
 			</li>
 				<li id="vendorFiletPopup"><a href="javascript:void(0)" class="filtIcon" title="Filters" onclick="openAssetFilterPop();"></a></li>
 				
-				<%-- <li><a href="javascript:void(0)" class="overIcon" title="Actions" onclick="newActions();"></a>
+				<li><a href="javascript:void(0)" class="overIcon" title="Actions" onclick="newActions();"></a>
 					<div class="newActPop">
 						<span>
-		           	   		<a href="<c:url value='${appPath}/uploadassetManagement'/>">Import</a>
+		           	   		<a href="javascript:void(0)" onclick="assetExport('Pdf');" title="PDF">Export PDF</a>
+							<a href="javascript:void(0)" onclick="assetExport('Excel');" title="Excel">Export Excel</a>  
 						</span>
 					</div>
-				</li> --%>
+				</li> 
 		    
 		  <li class=""><input type="text" class="repSearchBar" placeholder='Search' id='assetDataTableSearch'/><span class="repSearchIcon" onClick="getDynamicAssetList();"></span></li>
         </ul>
@@ -470,7 +471,7 @@ function prepareDynamicAssetList(url){
 	result = result +'	<th>Serial Number</th>';
    	result = result +'  <th>Category</th>';
    	result = result +'  <th>Model</th>';
-	result = result +'  <th>issue Date</th>';
+	result = result +'  <th>Manufactured Date</th>';
 	result = result +'  <th>MAC Address</th>';
    	result = result +' <th>Status</th>';
    	result = result +' <th>Action</th>';
@@ -1279,6 +1280,50 @@ $(".overIcon, .newActPop").click(function(e){
 
 
 </script>
+
+<!-- ==================================  Asset Export script Written By Laxman Start ==============================  -->
+<script>
+function assetExport(type){
+	if(type == "Pdf"){
+		exportType = "pdf";
+	}else{
+		exportType = "xls";
+	}
+	var categoryIds = [];
+	$('input:checkbox[name=categoryId]:checked').each(function() 
+    {
+		categoryIds.push($(this).val());
+    });
+	
+	var shiftIds = [];
+	$('input:checkbox[name=shiftId]:checked').each(function() 
+    {
+		shiftIds.push($(this).val());
+    });
+	
+	var workingStatus = [];
+	$('input:checkbox[name=workingStatus]:checked').each(function() 
+    {
+		workingStatus.push($(this).val());
+    });
+	
+	var tags = [];
+	$('input:checkbox[name=tags]:checked').each(function() 
+    {
+		tags.push($(this).val());
+    });
+	
+	var searchValue = $("#assetDataTableSearch").val();
+	 searchValue = searchValue ? searchValue : "";
+	 window.location.href = sourceleadUrl	+"/getAssetmanagementExport?searchValue="+searchValue+"&categoryIds="+categoryIds+"&workingStatus="+workingStatus+"&shiftIds="+shiftIds+"&tags="+tags+"&exportType="+exportType;
+}
+</script>
+
+
+
+
+
+<!-- ==================================  Asset Export script Written By Laxman Ends==============================  -->
 
 
 <%-- <jsp:include page="assetManagementDetails.jsp" />
