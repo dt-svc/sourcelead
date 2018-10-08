@@ -164,6 +164,7 @@ public class PayrollReportDaoImpl implements PayrollReportDao{
 			.append(" CANDIDATE can,USER_GROUP grp ")
 			.append(" where sheet.ID = payroll.PAY_SHEET_FREQUENCY_ID ")
 			.append(" and payroll.CANDIDATE_ID = bank.CANDIDATE_ID ")
+			.append(" and payroll.ID = bankHis.PAYROLL_ID ")
 			.append(" and bankHis.ASSOCIATE_BANK_ID = bank.ID ")
 			.append(" and payroll.CANDIDATE_ID = can.ID ")
 			.append(" and sheet.GROUP_ID = grp.ID ")

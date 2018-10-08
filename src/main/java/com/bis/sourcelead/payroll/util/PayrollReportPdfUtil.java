@@ -553,7 +553,7 @@ public class PayrollReportPdfUtil {
 	    	headerDTO.setPayrollType(payrollReportDTO.getType());
 	    	headerDTO.setPeriodBeginDate(payrollReportDTO.getFreqStartDate());
 	    	headerDTO.setPeriodEndDate(payrollReportDTO.getFreqEndDate());
-	    	headerDTO.setReportType("DEDUCTION REPORTS");
+	    	headerDTO.setReportType("CONTRIBUTION REPORTS");
 	    	headerDTO.setRunDate(payrollReportDTO.getRunDate());
 	    	headerDTO.setRunNumber(0);
 	    	createHeaderTable(document, headerDTO, orgLocation);
