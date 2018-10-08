@@ -43,7 +43,7 @@ background-color: #ddd; color: #333; border: 1px solid #ddd !important;
 	   			<div class="pull-right brud-crum"><a href="<c:url value='${appPath}/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a> &raquo; <a href="/app/immigration/myImmigration">My Immigration List</a> &raquo; My Immigration Summary</div>
 			</c:when>
 			<c:otherwise>
-				<div class="pull-right brud-crum"><a href="<c:url value='${appPath}/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a> &raquo; <a href="/app/immigration/viewImmigrationList">Immigration List</a> &raquo; Immigration Summary</div>
+				<div class="pull-right brud-crum"><a href="<c:url value='${appPath}/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a> &raquo; <a href="/app/immigration/viewImmigrationList">Petition List</a> &raquo; Petition Summary</div>
 			</c:otherwise>
 		</c:choose>
       

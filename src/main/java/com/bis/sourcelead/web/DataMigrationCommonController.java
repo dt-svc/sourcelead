@@ -37,6 +37,7 @@ import com.bis.sourcelead.constants.ImmigrationConstants;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.service.AssociateGradesService;
 import com.bis.sourcelead.service.CountriesService;
+import com.bis.sourcelead.service.DepartmentService;
 import com.bis.sourcelead.service.OrgRelationsService;
 import com.bis.sourcelead.service.RolesService;
 import com.bis.sourcelead.service.ShiftService;
@@ -70,6 +71,9 @@ public class DataMigrationCommonController {
 	
 	@Autowired
 	AssociateGradesService associateGradesService;
+	
+	@Autowired
+	DepartmentService departmentService;
 	
 	 /*
 	  * author Venkat Kesav
@@ -425,12 +429,20 @@ public class DataMigrationCommonController {
 	            		String [] associateGrades = gradesList.toArray(new String[gradesList.size()]);
 		            	sheet.addValidationData(getDropDownListForCell(associateGrades, cellnum-1, "xls"));
 	            	}
+	            }else if(key.equalsIgnoreCase("Department*")) {
+	            	List<String> deptList = departmentService.getDepartmentList(orgLocation.getId());
+	            	if(deptList != null && !deptList.isEmpty()) {
+	            		String [] departments = deptList.toArray(new String[deptList.size()]);
+		            	sheet.addValidationData(getDropDownListForCell(departments, cellnum-1, "xls"));
+	            	}
 	            }else if(key.equalsIgnoreCase("Rate Per")) {
 	            	sheet.addValidationData(getDropDownListForCell(Constants.RATEPER_LIST, cellnum-1, "xls"));
 	            }else if(key.equalsIgnoreCase("Send Mail to User")) {
 	            	sheet.addValidationData(getDropDownListForCell(Constants.YES_NO, cellnum-1, "xls"));
 	            }else if(key.equalsIgnoreCase("Is Global Manager")) {
 	            	sheet.addValidationData(getDropDownListForCell(Constants.YES_NO, cellnum-1, "xls"));
+	            }else if(key.equalsIgnoreCase("Rate Currency")) {
+	            	sheet.addValidationData(getDropDownListForCell(Constants.RATE_CURRENCY, cellnum-1, "xls"));
 	            }
 	            
 	        }

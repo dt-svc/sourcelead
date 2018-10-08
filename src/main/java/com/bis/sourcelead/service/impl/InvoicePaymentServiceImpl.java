@@ -1,6 +1,7 @@
 package com.bis.sourcelead.service.impl;
 
 import java.math.BigDecimal;
+import java.text.DecimalFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
@@ -117,7 +118,7 @@ public class InvoicePaymentServiceImpl implements InvoicePaymentService {
 					}else{
 						invoice.setPaymentStatus(Constants.INVOICE_STATUS_PARTIAL_PAID);
 					}
-					invoice.setDueAmount(String.valueOf(dueAmount.setScale(2, BigDecimal.ROUND_HALF_EVEN)));
+					invoice.setDueAmount(String.valueOf(dueAmount.setScale(3, BigDecimal.ROUND_HALF_EVEN)));
 
 				}
 			}
@@ -187,7 +188,7 @@ public class InvoicePaymentServiceImpl implements InvoicePaymentService {
 
 							if (receivedAmount != null) {
 								parentInvoice.setDueAmount(
-										String.valueOf(receivedAmount.setScale(2, BigDecimal.ROUND_HALF_EVEN)));
+										String.valueOf(receivedAmount.setScale(3, BigDecimal.ROUND_HALF_EVEN)));
 							} else {
 								parentInvoice.setDueAmount("0.0");
 							}
@@ -254,9 +255,6 @@ public class InvoicePaymentServiceImpl implements InvoicePaymentService {
 			Invoice parentInvoice = null;
 		/*String pattern = "dd-MM-yyyy";
 		SimpleDateFormat format = new SimpleDateFormat(pattern);*/
-			 System.out.println(" inovice id : "+invoice.getId());
-            System.out.println(" amount value "+invoiceIdsMap.get(invoice.getId()));
-            
 		if (StringUtils.isNotBlank(invoicePaymentDTO.getPaymentDate())) {
 			Date paymentDate = commonUtil.orgLocationDateFormat(orgLocation.getDateFormat(),invoicePaymentDTO.getPaymentDate());
 			invoicePayment.setPaymentDate(paymentDate);
@@ -281,6 +279,7 @@ public class InvoicePaymentServiceImpl implements InvoicePaymentService {
 						String received = invoiceIdsMap.get(invoice.getId());
 						BigDecimal receivedDecimal = (new BigDecimal(received));
 						remainAmount = dueDecimal.subtract(receivedDecimal);
+						remainAmount = remainAmount.setScale(3, BigDecimal.ROUND_UP);
 						invoice.setPaymentStatus(Constants.INVOICE_STATUS_PARTIAL_PAID);
 						invoicePayment.setPaymentAmount(invoiceIdsMap.get(invoice.getId()));
 						invoice.setDueAmount(remainAmount.toString());
@@ -319,6 +318,7 @@ public class InvoicePaymentServiceImpl implements InvoicePaymentService {
 								String received = invoiceIdsMap.get(invoice.getId());
 								BigDecimal receivedDecimal = (new BigDecimal(received));
 								remainAmount = dueDecimal.subtract(receivedDecimal);
+								remainAmount = remainAmount.setScale(3, BigDecimal.ROUND_UP);
 								parentInvoice.setPaymentStatus(Constants.INVOICE_STATUS_PARTIAL_PAID);
 								invoicePayment.setPaymentAmount(invoiceIdsMap.get(invoice.getId()));
 								parentInvoice.setDueAmount(remainAmount.toString());
@@ -327,7 +327,7 @@ public class InvoicePaymentServiceImpl implements InvoicePaymentService {
 					}else{
 						// currency conversion code start
 						float conAmount = conversionUtil.convert(childCurrencyCode, parentCurrencyCode,1);
-						float convertedAmount1 = (float) (Math.round(conAmount * 100.0) / 100.0);
+						float convertedAmount1 = Float.parseFloat((new DecimalFormat(".###").format(((conAmount * 100.0) / 100.0))));
 						// currency conversion code ends
 						float amountPaid = convertedAmount1 *Float.valueOf((invoiceIdsMap.get(invoice.getId())));
 						if(parentInvoice.getDueAmount().equals(String.valueOf(amountPaid))){
@@ -343,6 +343,7 @@ public class InvoicePaymentServiceImpl implements InvoicePaymentService {
 							float amountreceived = convertedAmount1 *Float.valueOf(received);
 							BigDecimal receivedDecimal = (new BigDecimal(amountreceived));
 							remainAmount = dueDecimal.subtract(receivedDecimal);
+							remainAmount = remainAmount.setScale(3, BigDecimal.ROUND_UP);
 							parentInvoice.setPaymentStatus(Constants.INVOICE_STATUS_PARTIAL_PAID);
 							invoicePayment.setPaymentAmount(String.valueOf(amountreceived));
 							parentInvoice.setDueAmount(remainAmount.toString());

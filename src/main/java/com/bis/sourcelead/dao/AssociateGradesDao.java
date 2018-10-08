@@ -21,5 +21,7 @@ public interface AssociateGradesDao {
 	AssociateGrades getAssociateGradeById(Long id);
 	
 	List<String> getGradesListByOrgLocationId(Long orgLocationId) throws Exception;
+	
+	boolean isGradeExistsByGradeNameAndOrgLocationId(String gradeName,Long orgLocationId) throws Exception;
 
 }
