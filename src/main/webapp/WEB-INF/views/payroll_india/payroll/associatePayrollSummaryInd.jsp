@@ -59,14 +59,14 @@
 						<tbody>
 						<c:forEach var="earning" items="${earningPayhead}">
 							<tr>
-								<th>${earning.payrollPayheadName}</th>
+								<th><div class="tbldata-dotdot inlineBlock">${earning.payrollPayheadName}</div></th>
 								<td><input type="text" value="${earning.monthly}" class="formControl" readOnly></td>
 								<c:set var="earningTotal" value="${earningTotal + earning.monthly}"/>
 							</tr>
 						</c:forEach>
 						</tbody>
 						<tfoot>
-							<tr><th>Total</th><td>${earningTotal}</td></tr>
+							<tr><th><strong>Total</strong></th><td>${earningTotal}</td></tr>
 						</tfoot>
 				</table>
 			</td>
@@ -82,27 +82,40 @@
 						<tbody>
 						<c:forEach var="decuction" items="${decuctionPayhead}">
 							<tr>
-								<th>${decuction.payrollPayheadName}</th>
+								<th><div class="tbldata-dotdot inlineBlock">${decuction.payrollPayheadName}</div></th>
 								<td><input type="text" value="${decuction.monthly}" class="formControl" readOnly></td>
 								<c:set var="decuctionTotal" value="${decuctionTotal + decuction.monthly}"/>
 							</tr>
 						</c:forEach>
 						</tbody>
 						<tfoot>
-						<tr><th>Total</th><td>${decuctionTotal}</td></tr>
+						<tr><th><strong>Total</strong></th><td>${decuctionTotal}</td></tr>
 					</tfoot>
 				</table>
 			</td></tr>
 				</tbody>
 			</table>
-			<table class="table table-bordered" style="width: 98.3%; margin-left:8px;">
+			
+			<table class="table" style="width:100%">
 				<tbody>
-					<tr>
+				<tr>
+				<td class="padding_right">
+					<table class="table table-bordered tableNetpay mb0">
+					<tbody>
 						<th>Gross Salary</th>
 						<td>${indEmployeePayroll.grossPay}</td>
+					</tbody>
+					</table>
+				</td>
+				<td class="padding_right">
+					<table class="table table-bordered tableNetpay mb0">
+					<tbody>
 						<th>Net Salary</th>
 						<td>${indEmployeePayroll.netPay}</td>
-					</tr>
+					</tbody>
+					</table>
+				</td>
+				</tr>
 				</tbody>
 			</table>
 			

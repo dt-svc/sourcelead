@@ -6,7 +6,7 @@
 					  <div class="row">
 					  <label class="col-md-2 text-muted">Total Earnings</label>
 					  <div class="col-md-4 clearfix">
-					  <input type="text" class="form-control input-sm" placeholder="Earnings">
+					  <input type="text" class="form-control input-sm" placeholder="Earnings" value="${earningTotal}" readonly>
 					  </div>
 				  </div>
 		  		</div>
@@ -16,20 +16,26 @@
 					<h5>Earnings</h5>
 					<div class="clearfix approveTabelesStyles-inner">
 						<table class="table">
-							<tbody>
+							<thead>
 								<tr>
-									<td>Basic Pay</td>
-									<td><span class="paddingRight">&#8377;</span>2,700.00</td>
-									</tr>
-									<tr>
-									<td>House Rent</td>
-										<td><span class="paddingRight">&#8377;</span>2,700.00</td>
-									</tr>
+								<th>&nbsp;</th>
+								<th>Amount</th>
+								</tr>
+							</thead>
+							<tbody>
+								<c:forEach var="payheadErn" items="${orgLevelPayheads}">
+									<c:if test="${payheadErn.type == 'Earnings' && payheadErn.totalForfrequencyLevel != '0' && payheadErn.totalForfrequencyLevel != '0.0' && payheadErn.totalForfrequencyLevel != '0.00' && payheadErn.totalForfrequencyLevel != '00.00'}">
+										<tr>
+											<td>${payheadErn.name}</td>
+											<td><span class="paddingRight">&#8377;</span>${payheadErn.totalForfrequencyLevel}</td>
+										</tr>
+									</c:if>
+								</c:forEach>
 							</tbody>
 							<tfoot>
 								<tr>
 									<th>Total</th>
-									<td><span class="paddingRight">&#8377;</span>2,700.00</td>
+									<td><span class="paddingRight">&#8377;</span>${earningTotal}</td>
 								</tr>
 							</tfoot>
 						</table>
@@ -46,21 +52,17 @@
 								</tr>
 							</thead>
 							<tbody>
-								<tr>
-									<td>Medical</td>
-									<td><span class="paddingRight">&#8377;</span>150</td>
-								</tr>
-								<tr>
-									<td>401(K)</td>
-									<td><span class="paddingRight">&#8377;</span>108</td>
-								</tr>
-								<tr>
-									<td>401(K) Loan Repay</td>
-									<td><span class="paddingRight">&#8377;</span>50</td>
-								</tr>
+								<c:forEach var="payheadDed" items="${orgLevelPayheads}">
+									<c:if test="${payheadDed.type == 'Deduction' && payheadDed.totalForfrequencyLevel != '0' && payheadDed.totalForfrequencyLevel != '0.0' && payheadDed.totalForfrequencyLevel != '0.00' && payheadDed.totalForfrequencyLevel != '00.00'}">
+										<tr>
+											<td>${payheadDed.name}</td>
+											<td><span class="paddingRight">&#8377;</span>${payheadDed.totalForfrequencyLevel}</td>
+										</tr>
+									</c:if>
+								</c:forEach>
 								<tr>
 									<td><strong>Total Deductions</strong></td>
-									<td><span class="paddingRight">&#8377;</span>308</td>
+									<td><span class="paddingRight">&#8377;</span>${deductionTotal}</td>
 								</tr>
 							</tbody>
 						</table>
