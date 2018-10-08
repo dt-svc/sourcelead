@@ -3018,9 +3018,7 @@ public class RequirementDaoImpl implements RequirementDao {
 			queryObj1.setLong("orgLocationId", orgLocationId);
 			List<Long> jobFairIdList = queryObj1.list();
 			if(jobFairIdList != null && !jobFairIdList.isEmpty()) {
-				System.out.println("New JobFairIds : ");
 				for (Long jobFairId : jobFairIdList) {
-					System.out.println("JobFairId : " + jobFairId);
 					JobFair jobFair = getJobFair(jobFairId);
 					if (jobFair != null) {
 						Calendar startDate = Calendar.getInstance();
@@ -3238,7 +3236,6 @@ public class RequirementDaoImpl implements RequirementDao {
 			queryObj.setLong("orgLocationId", orgLocationId);
 			List<Long> idList = queryObj.list();
 			for (Long id : idList) {
-				System.out.println("JobFairRequirement Id : " + id);
 				JobFairRequirements jobFairRequirements = getJobFairRequirementsById(id);
 				if (jobFairRequirements != null) {
 					boolean addFlag = true;

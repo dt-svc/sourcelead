@@ -4329,7 +4329,6 @@ public class RequirementServiceImpl implements RequirementService {
 				for (String fairDate : jobFairDates) {
 					for (String date : fairDate.split(",")) {
 						if(!date.isEmpty()) {
-							System.out.println(date);
 							String formattedDate = convertToFormatSDF.format(dateFormatSDF.parse(date));
 							jobFairDatesSet.add(date);
 							
