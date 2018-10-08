@@ -60,6 +60,7 @@ import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.dao.MasterCandidateDao;
 import com.bis.sourcelead.entity.AssociateGrades;
 import com.bis.sourcelead.entity.Candidate;
+import com.bis.sourcelead.entity.Department;
 import com.bis.sourcelead.entity.Employees;
 import com.bis.sourcelead.entity.MasterCandidate;
 import com.bis.sourcelead.entity.Org;
@@ -75,6 +76,7 @@ import com.bis.sourcelead.enums.Status;
 import com.bis.sourcelead.service.AssociateBalanceLeaveService;
 import com.bis.sourcelead.service.AssociateGradesService;
 import com.bis.sourcelead.service.CandidateService;
+import com.bis.sourcelead.service.DepartmentService;
 import com.bis.sourcelead.service.EmployeesService;
 import com.bis.sourcelead.service.OrgLocationService;
 import com.bis.sourcelead.service.OrgRelationsService;
@@ -143,6 +145,9 @@ public class UploadFileServiceImpl implements UploadFileService {
 	
 	@Autowired
 	AssociateBalanceLeaveService associateBalanceLeaveService;
+	
+	@Autowired
+	DepartmentService departmentService;
 	
 	protected boolean isNullOrEmpty(String str) {
 		return (str == null || "".equals(str.trim()));
@@ -1952,8 +1957,14 @@ private String getCellValueAsString(Cell cell, String fileName) {
 		employee.setRatePer(userImport.getRatePer());
 		employee.setDailyHours(userImport.getDayHours());
 		employee.setOrgLocations(orgLocations);
-		
 		employee.setUserEmploymentType(userImport.getDesignationType());
+		
+		if(StringUtils.isNotBlank(userImport.getDepartment())) {
+			Department department = departmentService.getDepartmentByOrgLocationIdAndDepartmentName(orgLocations.getId(), userImport.getDepartment());
+			if(department != null) {
+				employee.setDepartmentId(department);
+			}
+		}
 		
 		if("C2C".equalsIgnoreCase(userImport.getEmploymentType())) {
 			Map<String,Long> vendors = getVendorAndVendorContacts(userImport.getEmploymentType(), userImport.getVendor(), userImport.getVendorContact(), orgLocations.getId());

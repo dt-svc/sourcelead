@@ -67,6 +67,8 @@ public class Constants {
 	public static final String PAYMENT_TERMS = "PaymentTerms";
 	public static final String INVOICE_RECEIVABLE = "Receivable";
 	public static final String INVOICE_PAYABLES = "Payables";
+	public static final String FINANCE_TYPE_INDIVIDUAL = "Individual";
+	public static final String FINANCE_TYPE_BULK = "Bulk";
 
 	public static final String country = "Country";
 	public static final String TASK_BILLABLE = "Billable";
@@ -668,8 +670,8 @@ public class Constants {
 	
 	
 	
-	public static final String[] DATA_MIGRATION_ASSOCIATE_EXCEL_HEADERS = { "Employee ID" , "First Name*","Last Name", "Email id*", "Phone Number", "Extension Number",
-			"Rate","Rate Per", "Gender*","Martial Status","Date of Join","Date of Birth","Role*","Day Hours(HH:MM)","Manager*(Email)", "Employment Type*","Vendor(Email)","Vendor Contact(Email)","Grade","Designation*","Shift*","Send Mail to User","Is Global Manager"};
+	public static final String[] DATA_MIGRATION_ASSOCIATE_EXCEL_HEADERS = { "Employee Id" , "First Name*", "Last Name", "Middle Name", "Email Id*", "Phone Number", "Extension",
+			"Rate", "Rate Currency", "Rate Per", "Gender*","Marital Status","Date of Join","Date of Birth","Role*","Day hours(HH:MM)","Manager*(Email)", "Employment type*","Vendor(Email)","Vendor Contact(Email)","Grade","Designation*","Shift*","Department*","Send Mail to User","Is Global Manager"};
 
 
 	public static final String[] REQIREMENT_APPLICANT_HEADERS = { "Applicant Name", "Email","Job", "Client", "Phone Number",  "Job Location",   "Source", "Status","Job Rating" ,"Incentivized"};
@@ -1222,6 +1224,8 @@ public class Constants {
     public static final String[] EMPLOYMENT_TYPES = { "C2C", "C2C-1099", "W-2", "C2H", "C2H-1099", "Part Time", "Full Time", "Other" };
 
     public static final String[] MARITAL_STATUS = { "Single", "Married", "Divorsed", "Separated"};
+    
+    public static final String[] RATE_CURRENCY = { "INR", "AUD", "USD", "GBP", "SGD", "EUR" };
 
 	public static final String EMAIL_SUCCESS = "success";
 	public static final String UPDATE = "UPD";

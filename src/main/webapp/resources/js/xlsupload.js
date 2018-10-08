@@ -53,20 +53,26 @@ function Xlsupload(){
 		        		    result = result + '<td><div class="tbldata-dotdot-100">'+report.successCount+'</div></td>';
 		        		    result = result + '<td><div class="tbldata-dotdot-100">'+report.failureCount+'</div></td>';
 		        		    result = result + '<td><div class="tbldata-dotdot-me">'+report.date+'&nbsp;&nbsp;'+report.time+'</div></td>';
-		        		    if(report.uploadProcessingStatus == 'Completed'){
-		        		    	result = result+'<td><div class="tbldata-dotdot-50 1538051356458tblicons_4"> <a download class="glyphicon glyphicon-download-alt" target="_blank" href=\"'+report.fileUrl+'\" download title="Download"></a>';
-		        		    }else{
 		        		    
-		        		    	  result = result + '<td>';
-		         		    	  result = result + '<div class="browseProgress">';
-		         		    	  result = result + '<div class="progress progress-striped active">';
-		         		    	  result = result + '<div class="progress-bar progress-bar-success" id="progressBar">0%</div>';
-		         		    	  result = result + '</div>';
-		         		    	  result = result + '<div class="progressCount">Uploading <span id="currentUploadedCount"></span> of <span id="totalUploadedCount"></span></div>';
-		         		    	  result = result + '</div>';
-		                          result = result + '</td>';
-	                        
-		        		    } 
+		        		    if(report.fileUrl != null && report.fileUrl != '' && report.fileUrl != 'undefined'){
+		        		    	 if(report.uploadProcessingStatus == 'Completed'){
+				        		    	result = result+'<td><div class="tbldata-dotdot-50 1538051356458tblicons_4"> <a download class="glyphicon glyphicon-download-alt" target="_blank" href=\"'+report.fileUrl+'\" download title="Download"></a>';
+				        		    }else{
+				        		    
+				        		    	  result = result + '<td>';
+				         		    	  result = result + '<div class="browseProgress">';
+				         		    	  result = result + '<div class="progress progress-striped active">';
+				         		    	  result = result + '<div class="progress-bar progress-bar-success" id="progressBar">0%</div>';
+				         		    	  result = result + '</div>';
+				         		    	  result = result + '<div class="progressCount">Uploading <span id="currentUploadedCount"></span> of <span id="totalUploadedCount"></span></div>';
+				         		    	  result = result + '</div>';
+				                          result = result + '</td>';
+			                        
+				        		    } 
+		        		    }else{
+		        		    	 result = result + '<td><div class="tbldata-dotdot_100"><span class="text-danger">Uploaded Empty file</span></div></td>';
+		        		    }
+		        		   
 		        		 
 			    		}
 				           result = result + '       </tbody>';

@@ -75,7 +75,7 @@ function checkBox(){
               <label class="col-md-3">Vendor<span class="text-danger">&nbsp;*</span></label>
               <div class="col-md-9 chooRadius">
               <div class="input-group col-md-10 pull-left">
-			<select class="chosen-select form-control" id="vendorOrgRelationId" name="vendorOrgRelationId" onchange="getVendorContacts();flushValues();getPaymentTerms();getPaymentAccountList();"
+			<select class="chosen-select form-control" data-Bill id="vendorOrgRelationId" name="vendorOrgRelationId" onchange="getVendorContacts();flushValues();getPaymentTerms();getPaymentAccountList();"
 		         	data-validation="required" field-name="Vendor">
 		      </select>
 		       <span class="input-group-addon cursorPointer bg-blue" onclick="getVendors();creatExpPayBilsEmptyVendorContact();"><i class="fa fa-refresh "></i></span>
@@ -208,7 +208,7 @@ function checkBox(){
             
             <div class="clearfix"></div>
             <div class="clearfix" id="addbutton">
-              <button type="button" class="btn btn-sm btn-primary mr" onClick="addExpenseInvoiceRow()"><i class="fa fa-plus paddingRight"></i>Add</button>
+              <button type="button" class="btn btn-sm btn-primary mr" id="addExpense_Button" style="display: none;" onClick="addExpenseInvoiceRow()"><i class="fa fa-plus paddingRight"></i>Add</button>
             </div>
         </div>
         <!-- Table Ends here-->
@@ -280,7 +280,7 @@ function checkBox(){
                     <div class="col-md-5 text-right"><span class="pull-left">${SourceLeadWeb_currencyCode}</span><input type="text" value = "00:00" id="grandTotal" name="grandTotal" class="ReadTextFli" readonly></span></div>
               </div>
               
-               <div id="conversionId"  style="display: none"></div>
+               <div id="conversionId"></div>
               
               </div>
           </div>
@@ -411,19 +411,17 @@ function addConversionDiv(){
 	var result = "";
 	var vendorCurrency = $("#vendorCurrency").val();
 	var currencyCode = '${SourceLeadWeb_currencyCode}';
+	$("#conversionId").empty();
 	if(vendorCurrency != currencyCode){
 		result = result +'<div class="row">';
 		result = result +'<div class="clearfix mt col-md-offset-2 col-md-10" style="padding-right:0;">';
-		result = result +'<div class="clearfix"><label class="col-md-6 text-right"><strong>Conversion From</strong></label><div class="paddingLeft col-md-6"><span class="pull-left" id="currencyCode"></span><div class="pull-right"><input type="text" id="conversionFrom" placeholder="00:00" class="ReadTextFli" readonly="" type="text"></div></div></div>';
-		result = result +' <div class="clearfix"><label class="col-md-6 text-right"><strong>Conversion To</strong></label><div  class="paddingLeft col-md-6"><span id="vendorCurrencyCode"></span><div id="exchangeCurrency" class="pull-right"><input  class="ReadTextFli" readonly="" type="text"></div></div></div>';
-		result = result +'  <div class="clearfix"><label class="col-md-6 text-right"><strong>Exchange Rate</strong></label><div  class="paddingLeft col-md-6"><span id="convertedCurrencyCode"></span><div id="exchangeRate" class="pull-right"><input class="ReadTextFli ReadTextFli90" readonly="" type="text"></div></div></div>';
+		result = result +'<div class="clearfix"><label class="col-md-6 text-right"><strong>Conversion From</strong></label><div class="paddingLeft col-md-6"><span class="pull-left" id="currencyCode">'+currencyCode+'</span><div class="pull-right"><input type="text" id="conversionFrom" placeholder="00:00" class="ReadTextFli" readonly="" type="text"></div></div></div>';
+		result = result +' <div class="clearfix"><label class="col-md-6 text-right"><strong>Conversion To</strong></label><div  class="paddingLeft col-md-6"><span id="vendorCurrencyCode">'+vendorCurrency+'</span><div id="exchangeCurrency" class="pull-right"><input  class="ReadTextFli" readonly="" type="text"></div></div></div>';
+		result = result +'  <div class="clearfix"><label class="col-md-6 text-right"><strong>Exchange Rate</strong></label><div  class="paddingLeft col-md-6"><span id="convertedCurrencyCode">'+currencyCode+' to '+vendorCurrency+'</span><div id="exchangeRate" class="pull-right"><input class="ReadTextFli ReadTextFli90" readonly="" type="text"></div></div></div>';
 		result = result +'</div>';
 		result = result +'</div>';
-		 document.getElementById("conversionId").style.display="block";
 		$("#conversionId").empty();
 		$("#conversionId").append(result);
-	}else{
-		 document.getElementById("conversionId").style.display="none";
 	}
 }
 </script>
@@ -977,7 +975,6 @@ function toDate(selector) {
 <!-- To Get the Existed invoice details to Edit -->
 <script>
 	function loadInvoiceDetails(invoiceUUID){
-		 
 		 $.ajax({
 		    	type: "POST",
 		    	 url: sourceleadUrl+"/getInvoiceDetailsByInvoiceUUID?"+tokenParamName+"="+tokenValue+"&invoiceUUID="+invoiceUUID, 
@@ -989,12 +986,18 @@ function toDate(selector) {
 		        	 }
 		        	 
 		        	 var selected = 'selected';
-		        	 result = result +'<option disabled selected>--Select Client--</option>';
-		        	 result = result +'<option value='+json['vendorOrgRelationId']+' '+selected+' >'+json['orgName']+'</option>';
+		        	 result = result +'<option disabled selected>--Select Vendor--</option>';
+		        	 result = result +'<option value='+json['vendorOrgRelationId']+' '+selected+' data-Bill='+json['generateBill']+'>'+json['orgName']+'</option>';
 		        	 $("#vendorOrgRelationId").empty();
 		           	 $("#vendorOrgRelationId").append(result); 
 		           	 $('#vendorOrgRelationId').trigger("chosen:updated");
 		           	$('#vendorCurrency').val(json['vendorCurrency']);
+		           	var invoiceCreateType = $("#vendorOrgRelationId").find(':selected').attr("data-Bill");
+					 if(invoiceCreateType == "Individual"){
+						  $("#addExpense_Button").prop("disabled",true);
+					  }else{
+						  $("#addExpense_Button").prop("disabled",false); 
+					  }
 		           	//getVendorContacts(json['vendorContactId']);
 		           	getVendorContacts(json['contactUsers']);
 		           	if(json['expensesInvoices'] !=null && json['expensesInvoices'] =='Y'){
@@ -1096,11 +1099,10 @@ function getVendors(){
 		var opt = json[i];
 		if(orgRelationId == opt.id){
 			var selected = 'selected';
-			output = output + "<option value='" +opt.id+ "'"+selected+">"+opt.orgName+"</option>";
+			output = output + "<option value='" +opt.id+ "'"+selected+" data-Bill = '"+opt.generateBill+"'>"+opt.orgName+"</option>";
 		}else{
-			output = output + "<option value='" +opt.id+ "'>"+opt.orgName+"</option>";
+			output = output + "<option value='" +opt.id+ "' data-Bill = '"+opt.generateBill+"'>"+opt.orgName+"</option>";
 		}
-		$("#vendorCurrency").val(opt.clientCurrency);
 		}
 		$("#vendorOrgRelationId").empty();
 		$("#vendorOrgRelationId").append(output);
@@ -1377,10 +1379,17 @@ function getVendorContacts(vendorContactId){
 		$("#vendorContact").empty();
 		$("#vendorContact").append(output);
 		$('#vendorContact').trigger("chosen:updated");
+		if(vendorContactId == null || vendorContactId == '' || vendorContactId == 'undefined'){
+		addConversionDiv();
+		getProjectsList();
+		}
 	},
 	});
-	addConversionDiv();
-	getProjectsList();
+	if(orgRelationId !=null && orgRelationId !='' && orgRelationId !='undefined'){
+		$("#addExpense_Button").show();
+		}else{
+		$("#addExpense_Button").hide();	
+		}
 	}
 </script>
 
@@ -1418,6 +1427,7 @@ function getVendorContacts(vendorContactId){
 	function addExpenseInvoiceRow(){  
 				var checkMaxTsRowNum = $("#invoiceExpMaxRowNumber").val();
 				var tbl = document.getElementById("invoiceExpTbl");
+				var invoiceCreateType = $("#vendorOrgRelationId").find(':selected').attr("data-Bill");
 				var maxRowNum = parseInt($("input[name = 'invoiceExpMaxRowNumber']").val());
 				$("input[name = 'invoiceExpMaxRowNumber']").val(maxRowNum + 1);
 				
@@ -1477,6 +1487,11 @@ function getVendorContacts(vendorContactId){
 						    e.preventDefault(); //disable cut,copy,paste
 						});
 					    });
+				if(invoiceCreateType == "Individual"){
+					  $("#addExpense_Button").prop("disabled",true);
+				  }else{
+					  $("#addExpense_Button").prop("disabled",false); 
+				  }
 	}			
 </script>
 
@@ -1510,7 +1525,7 @@ function populateInlineItemsGrid(){
         result = result +' <tr>';
         result = result +' <td colspan="4"></td>';
         result = result +'<td><strong>Sub Total</strong></td>';
-        result = result +' <td><div class="tblminwidth-150"><span class="pull-left paddingRight">INR</span> <input type="text" value = "00.00" id="inoviceTotal" name="inoviceTotal" class="ReadTextFli"></div></td>';
+        result = result +' <td><div class="tblminwidth-150"><span class="pull-left paddingRight">'+currencyCode+'</span> <input type="text" value = "00.00" id="inoviceTotal" name="inoviceTotal" class="ReadTextFli"></div></td>';
         result = result +'  <input type="hidden" value = "" id="hiddenTotal">';
         result = result +' </tr>';
         result = result +' </tfoot> ';
@@ -1524,8 +1539,7 @@ function populateInlineItemsGrid(){
          document.getElementById("bottomGrid").style.display="block";
          document.getElementById("lineItemAddRows").style.display="block";
          document.getElementById("tableBody").style.display="block";
-         addTaxDivs();    
-         addConversionDiv();
+         addTaxDivs();  
 }
 </script>
 
@@ -1580,6 +1594,7 @@ function populateInlineItemsGrid(){
           var count = 2*(r.cells.length);
 		    for(i=0;i<=count;i++){
 		        r.deleteCell(0);
+		        $("#addExpense_Button").prop('disabled', false);
 		    } 
 	}
 </script>
@@ -1706,7 +1721,7 @@ function populateExpensesEntriesGrid(data){
         result = result +' <tr>';
         result = result +' <td colspan="3"></td>';
         result = result +'<td><strong>Sub Total</strong></td>';
-        result = result +' <td><div class="tblminwidth-150"><span class="pull-left paddingRight">INR</span> <input type="text" value = '+subTotal+' id="inoviceTotal" name="inoviceTotal" class="ReadTextFli" readonly="readonly"></div></td>';
+        result = result +' <td><div class="tblminwidth-150"><span class="pull-left paddingRight">'+currencyCode+'</span> <input type="text" value = '+subTotal+' id="inoviceTotal" name="inoviceTotal" class="ReadTextFli" readonly="readonly"></div></td>';
         result = result +'  <input type="hidden" value = "" id="hiddenTotal">';
         result = result +' </tr>';
         result = result +' </tfoot> ';
@@ -1850,7 +1865,7 @@ function editExpensesInlineItems(invoiceLineItemsList){
 			
 	 }
 
-	
+	 addConversionDiv();
 }
 </script>
 
@@ -1922,7 +1937,7 @@ function editExpensesDetailsEdit(data){
         result = result +' <tr>';
         result = result +' <td colspan="3"></td>';
         result = result +'<td><strong>Sub Total</strong></td>';
-        result = result +' <td><div class="tblminwidth-150"><span class="pull-left paddingRight">INR</span> <input type="text" id="inoviceTotal" name="inoviceTotal" class="ReadTextFli"></div></td>';
+        result = result +' <td><div class="tblminwidth-150"><span class="pull-left paddingRight">'+currencyCode+'</span> <input type="text" id="inoviceTotal" name="inoviceTotal" class="ReadTextFli"></div></td>';
         result = result +'  <input type="hidden" value = "" id="hiddenTotal">';
         result = result +' </tr>';
         result = result +' </tfoot> ';
@@ -1934,7 +1949,7 @@ function editExpensesDetailsEdit(data){
         $("#currencyCode").html(currencyCode);
          $("#addbutton").hide();
         document.getElementById("tableBody").style.display="block";
-        addTaxDivs();   
+        addTaxDivs(); 
         addConversionDiv();
 }
 </script>

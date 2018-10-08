@@ -239,4 +239,6 @@ public interface ImmigrationCommonDao {
 	
 	int deleteLcaHistoryDetailsByImmigrationId(Long immigrationId);
 	
+	List<String> getAllExpiredCandidatesFromLcaHistoryByLcaId(Long lcaId);
+	
 }

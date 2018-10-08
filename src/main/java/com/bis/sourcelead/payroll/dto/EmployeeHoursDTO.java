@@ -11,6 +11,8 @@ public class EmployeeHoursDTO {
 	private BigDecimal regularTimeAmount;
 	
 	private BigDecimal overTimeAmount;
+	
+	private BigDecimal totalHours;
 
 	public double getRegularHours()
 	{
@@ -50,6 +52,16 @@ public class EmployeeHoursDTO {
 	public void setOverTimeAmount(BigDecimal overTimeAmount)
 	{
 		this.overTimeAmount = overTimeAmount;
+	}
+
+	public BigDecimal getTotalHours()
+	{
+		return totalHours;
+	}
+
+	public void setTotalHours(BigDecimal totalHours)
+	{
+		this.totalHours = totalHours;
 	}
 	
 	
