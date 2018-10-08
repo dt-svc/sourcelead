@@ -2200,6 +2200,18 @@ private void saveImportedTimeSheetRecords(Projects project,String projectTaskUUI
 				User user, OrgLocations orgLocation) throws Exception {
 			
 			    boolean orgFound = false;
+			    
+			    if(dataMigrationDTOJsonCopy.getString("beneficiaryFirstName").equals("null") || StringUtils.isEmpty(dataMigrationDTOJsonCopy.getString("beneficiaryFirstName"))) {
+					errorSet.put("beneficiaryFirstName", "Beneficiary First Name is missing");
+				}
+			    
+			    if(dataMigrationDTOJsonCopy.getString("beneficiaryLastName").equals("null") || StringUtils.isEmpty(dataMigrationDTOJsonCopy.getString("beneficiaryLastName"))) {
+					errorSet.put("beneficiaryLastName", "Beneficiary Last Nam is missing");
+				}
+			    
+			    if(dataMigrationDTOJsonCopy.getString("beneficiaryFirstName").equals("null") || StringUtils.isEmpty(dataMigrationDTOJsonCopy.getString("beneficiaryFirstName"))) {
+					errorSet.put("beneficiaryFirstName", "Beneficiary First Name is missing");
+				}
 			
 				if (StringUtils.isBlank(dataMigrationDTOJsonCopy.getString("beneficiaryEmail")) || dataMigrationDTOJsonCopy.getString("beneficiaryEmail").equals("null")) {
 				errorSet.put("beneficiaryEmail", "Beneficiary Email is missing"); // need to validate email address.
