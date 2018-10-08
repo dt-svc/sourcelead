@@ -280,7 +280,7 @@ function checkBox(){
                     <div class="col-md-5 text-right"><span class="pull-left">${SourceLeadWeb_currencyCode}</span><input type="text" value = "00:00" id="grandTotal" name="grandTotal" class="ReadTextFli" readonly></span></div>
               </div>
               
-               <div id="conversionId"  style="display: none"></div>
+               <div id="conversionId"></div>
               
               </div>
           </div>
@@ -411,19 +411,17 @@ function addConversionDiv(){
 	var result = "";
 	var vendorCurrency = $("#vendorCurrency").val();
 	var currencyCode = '${SourceLeadWeb_currencyCode}';
+	$("#conversionId").empty();
 	if(vendorCurrency != currencyCode){
 		result = result +'<div class="row">';
 		result = result +'<div class="clearfix mt col-md-offset-2 col-md-10" style="padding-right:0;">';
-		result = result +'<div class="clearfix"><label class="col-md-6 text-right"><strong>Conversion From</strong></label><div class="paddingLeft col-md-6"><span class="pull-left" id="currencyCode"></span><div class="pull-right"><input type="text" id="conversionFrom" placeholder="00:00" class="ReadTextFli" readonly="" type="text"></div></div></div>';
-		result = result +' <div class="clearfix"><label class="col-md-6 text-right"><strong>Conversion To</strong></label><div  class="paddingLeft col-md-6"><span id="vendorCurrencyCode"></span><div id="exchangeCurrency" class="pull-right"><input  class="ReadTextFli" readonly="" type="text"></div></div></div>';
-		result = result +'  <div class="clearfix"><label class="col-md-6 text-right"><strong>Exchange Rate</strong></label><div  class="paddingLeft col-md-6"><span id="convertedCurrencyCode"></span><div id="exchangeRate" class="pull-right"><input class="ReadTextFli ReadTextFli90" readonly="" type="text"></div></div></div>';
+		result = result +'<div class="clearfix"><label class="col-md-6 text-right"><strong>Conversion From</strong></label><div class="paddingLeft col-md-6"><span class="pull-left" id="currencyCode">'+currencyCode+'</span><div class="pull-right"><input type="text" id="conversionFrom" placeholder="00:00" class="ReadTextFli" readonly="" type="text"></div></div></div>';
+		result = result +' <div class="clearfix"><label class="col-md-6 text-right"><strong>Conversion To</strong></label><div  class="paddingLeft col-md-6"><span id="vendorCurrencyCode">'+vendorCurrency+'</span><div id="exchangeCurrency" class="pull-right"><input  class="ReadTextFli" readonly="" type="text"></div></div></div>';
+		result = result +'  <div class="clearfix"><label class="col-md-6 text-right"><strong>Exchange Rate</strong></label><div  class="paddingLeft col-md-6"><span id="convertedCurrencyCode">'+currencyCode+' to '+vendorCurrency+'</span><div id="exchangeRate" class="pull-right"><input class="ReadTextFli ReadTextFli90" readonly="" type="text"></div></div></div>';
 		result = result +'</div>';
 		result = result +'</div>';
-		 document.getElementById("conversionId").style.display="block";
 		$("#conversionId").empty();
 		$("#conversionId").append(result);
-	}else{
-		 document.getElementById("conversionId").style.display="none";
 	}
 }
 </script>
@@ -977,7 +975,6 @@ function toDate(selector) {
 <!-- To Get the Existed invoice details to Edit -->
 <script>
 	function loadInvoiceDetails(invoiceUUID){
-		 
 		 $.ajax({
 		    	type: "POST",
 		    	 url: sourceleadUrl+"/getInvoiceDetailsByInvoiceUUID?"+tokenParamName+"="+tokenValue+"&invoiceUUID="+invoiceUUID, 
@@ -1100,7 +1097,6 @@ function getVendors(){
 		}else{
 			output = output + "<option value='" +opt.id+ "'>"+opt.orgName+"</option>";
 		}
-		$("#vendorCurrency").val(opt.clientCurrency);
 		}
 		$("#vendorOrgRelationId").empty();
 		$("#vendorOrgRelationId").append(output);
@@ -1377,10 +1373,12 @@ function getVendorContacts(vendorContactId){
 		$("#vendorContact").empty();
 		$("#vendorContact").append(output);
 		$('#vendorContact').trigger("chosen:updated");
+		if(vendorContactId == null || vendorContactId == '' || vendorContactId == 'undefined'){
+		addConversionDiv();
+		getProjectsList();
+		}
 	},
 	});
-	addConversionDiv();
-	getProjectsList();
 	}
 </script>
 
@@ -1510,7 +1508,7 @@ function populateInlineItemsGrid(){
         result = result +' <tr>';
         result = result +' <td colspan="4"></td>';
         result = result +'<td><strong>Sub Total</strong></td>';
-        result = result +' <td><div class="tblminwidth-150"><span class="pull-left paddingRight">INR</span> <input type="text" value = "00.00" id="inoviceTotal" name="inoviceTotal" class="ReadTextFli"></div></td>';
+        result = result +' <td><div class="tblminwidth-150"><span class="pull-left paddingRight">'+currencyCode+'</span> <input type="text" value = "00.00" id="inoviceTotal" name="inoviceTotal" class="ReadTextFli"></div></td>';
         result = result +'  <input type="hidden" value = "" id="hiddenTotal">';
         result = result +' </tr>';
         result = result +' </tfoot> ';
@@ -1524,8 +1522,7 @@ function populateInlineItemsGrid(){
          document.getElementById("bottomGrid").style.display="block";
          document.getElementById("lineItemAddRows").style.display="block";
          document.getElementById("tableBody").style.display="block";
-         addTaxDivs();    
-         addConversionDiv();
+         addTaxDivs();  
 }
 </script>
 
@@ -1706,7 +1703,7 @@ function populateExpensesEntriesGrid(data){
         result = result +' <tr>';
         result = result +' <td colspan="3"></td>';
         result = result +'<td><strong>Sub Total</strong></td>';
-        result = result +' <td><div class="tblminwidth-150"><span class="pull-left paddingRight">INR</span> <input type="text" value = '+subTotal+' id="inoviceTotal" name="inoviceTotal" class="ReadTextFli" readonly="readonly"></div></td>';
+        result = result +' <td><div class="tblminwidth-150"><span class="pull-left paddingRight">'+currencyCode+'</span> <input type="text" value = '+subTotal+' id="inoviceTotal" name="inoviceTotal" class="ReadTextFli" readonly="readonly"></div></td>';
         result = result +'  <input type="hidden" value = "" id="hiddenTotal">';
         result = result +' </tr>';
         result = result +' </tfoot> ';
@@ -1850,7 +1847,7 @@ function editExpensesInlineItems(invoiceLineItemsList){
 			
 	 }
 
-	
+	 addConversionDiv();
 }
 </script>
 
@@ -1922,7 +1919,7 @@ function editExpensesDetailsEdit(data){
         result = result +' <tr>';
         result = result +' <td colspan="3"></td>';
         result = result +'<td><strong>Sub Total</strong></td>';
-        result = result +' <td><div class="tblminwidth-150"><span class="pull-left paddingRight">INR</span> <input type="text" id="inoviceTotal" name="inoviceTotal" class="ReadTextFli"></div></td>';
+        result = result +' <td><div class="tblminwidth-150"><span class="pull-left paddingRight">'+currencyCode+'</span> <input type="text" id="inoviceTotal" name="inoviceTotal" class="ReadTextFli"></div></td>';
         result = result +'  <input type="hidden" value = "" id="hiddenTotal">';
         result = result +' </tr>';
         result = result +' </tfoot> ';
@@ -1934,7 +1931,7 @@ function editExpensesDetailsEdit(data){
         $("#currencyCode").html(currencyCode);
          $("#addbutton").hide();
         document.getElementById("tableBody").style.display="block";
-        addTaxDivs();   
+        addTaxDivs(); 
         addConversionDiv();
 }
 </script>

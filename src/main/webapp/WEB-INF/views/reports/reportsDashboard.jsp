@@ -288,6 +288,7 @@
               
               
              <%--  <sec:authorize access="hasAnyRole('ROLE_USAGE_REPORT')">    --%>
+      <c:if test="${SourceLeadWeb_loginCountryName == 'United States'}">
        <div class="col-md-4 reportNewCta">
                   <!-- DropDown payReport -->
 			<div class="dropdown pull-right report-dropdown">
@@ -312,8 +313,10 @@
                  <!-- Dropdown -->
                   <a href="${appPath}/usPayrollReport" class="block">
                   <div class="clearfix text-center mb10"><i class="payReport"></i></div>
-                  <div class="clearfix text-center"><h4>Us Payroll Reports</h4></div> </a>
+                  <div class="clearfix text-center"><h4>US Payroll Reports</h4></div> </a>
                   </div> 
+                  
+      </c:if>
                      
           <%--     </sec:authorize>  --%>
               
