@@ -4087,7 +4087,7 @@ public class RequirementServiceImpl implements RequirementService {
 		Response<String> response = new Response<>();
 		try {
 			JobFair jobFair = null;
-			JobFair savedJobFair = requirementDao.getJobFairByName(jobFairDTO.getName());
+			JobFair savedJobFair = requirementDao.getJobFairByName(jobFairDTO.getName(), user.getId(), orgLocations.getId());
 			if (savedJobFair != null && savedJobFair.getId() != jobFairDTO.getId()) {
 				response.setResponse(Result.DUPLICATE_NAME.name());
 				response.setResponseMessage(Result.DUPLICATE_NAME.getValue());
