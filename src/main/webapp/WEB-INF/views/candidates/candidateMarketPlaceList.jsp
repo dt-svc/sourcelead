@@ -229,22 +229,27 @@ function callValidatePriceAmount(){
 	
 	if(flagRowForEnteredPrice){
 		popupDisplay("Please select checkbox for entered price");
+		return false;
 	}
 	
 	if(flagPriceForSelectedRow){
 		popupDisplay("Please enter price for selected row");
+		return false;
 	}
 	
 	if(flagAtleastOneCheck){
 		popupDisplay("Please select atleast one checkbox");
+		return false;
 	}
 	
 	if(flagPriceTypeForEnteredPrice){
 		popupDisplay("Please select amount type");
+		return false;
 	}
 	
 	if(flagPriceForEnteredPriceType){
 		popupDisplay("Please enter amount for amount type");
+		return false;
 	}
 	var marketCandidateObj = [];
 	$("input:checkbox[id='sharedcheckbox']:checked").each(function(){
@@ -268,8 +273,7 @@ function callValidatePriceAmount(){
 	    'dataType': 'json',
 		data : JSON.stringify(marketCandidateObj),	
 		success : function(result) {
-			alert("hi");
-			location.href = "/app/candidatesList";
+			location.href = "/app/candidatesList?marketPlaceFlag=true";
 			//$('#candidatesInfoDiv').html(result);
 			//$('#brudCrumLbl').html("Global Marketplace");
 			//$('#headerLbl').html("Global Marketplace List");
