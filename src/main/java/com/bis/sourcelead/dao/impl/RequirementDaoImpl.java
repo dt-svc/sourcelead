@@ -1453,12 +1453,12 @@ public class RequirementDaoImpl implements RequirementDao {
 		Date todayDate = c.getTime();
 		SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 
-		/*String startTimeTS = Constants.TZ_DF.format(todayDate);
+		String startTimeTS = Constants.TZ_DF.format(todayDate);
 		String startDateString = CommonUtil.convertTimeUTC(Constants.UTC_TIMEZONE, startTimeTS);
-		Date startUTCDate = dateFormat.parse(startDateString);*/
+		Date startUTCDate = dateFormat.parse(startDateString);
 		
-		//@Mahaveer Manoj commented above code for testing jobFairs, uncomment this in commit
-		Date startUTCDate = todayDate;
+/*		//@Mahaveer Manoj commented above code for testing jobFairs, uncomment this in commit
+		Date startUTCDate = todayDate;*/
 
 		int hrs;
 		switch (numberOfDays) {
@@ -1575,15 +1575,14 @@ public class RequirementDaoImpl implements RequirementDao {
 			Date todayDate = c.getTime();
 			SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 
-			/*
-			 * String startTimeTS = Constants.TZ_DF.format(todayDate); String
-			 * startDateString = CommonUtil.convertTimeUTC(Constants.UTC_TIMEZONE, startTimeTS);
-			 * Date startUTCDate = dateFormat.parse(startDateString);
-			 */
+			
+			String startTimeTS = Constants.TZ_DF.format(todayDate);
+			String startDateString = CommonUtil.convertTimeUTC(Constants.UTC_TIMEZONE, startTimeTS);
+			Date startUTCDate = dateFormat.parse(startDateString);
+			 
 
-			// @Mahaveer Manoj commented above code for testing jobFairs, uncomment this in
-			// commit
-			Date startUTCDate = todayDate;
+/*			// @Mahaveer Manoj commented above code for testing jobFairs, uncomment this in commit
+			Date startUTCDate = todayDate;*/
 
 			int hrs = numberOfDays * 24;
 
@@ -2884,12 +2883,14 @@ public class RequirementDaoImpl implements RequirementDao {
 	@SuppressWarnings("unchecked")
 	@Transactional
 	@Override
-	public JobFair getJobFairByName(String jobFairName) {
+	public JobFair getJobFairByName(String jobFairName, long userId, long orgLocationId) {
 		try {
 			Session session = this.sessionFactory.getCurrentSession();
-			String query = "from JobFair jobFair where jobFair.name=:jobFairName";
+			String query = "from JobFair jobFair where jobFair.name=:jobFairName and jobFair.user.id = :userId and jobFair.orgLocations.id = :orgLocationId";
 			Query queryObj = session.createQuery(query);
 			queryObj.setString("jobFairName", jobFairName);
+			queryObj.setLong("userId", userId);
+			queryObj.setLong("orgLocationId", orgLocationId);
 			List<JobFair> jobFairList = queryObj.list();
 			if (jobFairList != null && !jobFairList.isEmpty())
 				return jobFairList.get(0);
@@ -3009,7 +3010,7 @@ public class RequirementDaoImpl implements RequirementDao {
 			
 			// Checking for jobFairRequirements with no date selected, set all dates in between startDate and endDate
 			String query1 = "select jobFairRequirements.jobFair.id from JobFair jobFair join jobFair.jobFairRequirementList jobFairRequirements"
-					+ " where (jobFair.user.id=:userId or jobFairRequirements.requirement.id in (select rat.requirementId.id from RequirementAssignTo rat where rat.assignUserId.id = :userId and rat.requirementId.orgLocationId = :orgLocationId and rat.status in (1)))"
+					+ " where ((jobFair.user.id=:userId and jobFair.orgLocations.id = :orgLocationId) or jobFairRequirements.requirement.id in (select rat.requirementId.id from RequirementAssignTo rat where rat.assignUserId.id = :userId and rat.requirementId.orgLocationId = :orgLocationId and rat.status in (1)))"
 					+ " and (jobFairRequirements.fairDates = null or jobFairRequirements.fairDates = '')"
 					+ " and jobFair.status in (1)";
 			Query queryObj1 = session.createQuery(query1);
@@ -3039,7 +3040,7 @@ public class RequirementDaoImpl implements RequirementDao {
 			
 			// Checking jobFairRequirements with dates selected
 			String query2 = "select jobFairRequirementList.fairDates from JobFair jobFair join jobFair.jobFairRequirementList jobFairRequirementList"
-					+ " where (jobFair.user.id=:userId or jobFairRequirementList.requirement.id in (select rat.requirementId.id from RequirementAssignTo rat where rat.assignUserId.id = :userId and rat.requirementId.orgLocationId = :orgLocationId and rat.status in (1)))"
+					+ " where ((jobFair.user.id=:userId and jobFair.orgLocations.id = :orgLocationId) or jobFairRequirementList.requirement.id in (select rat.requirementId.id from RequirementAssignTo rat where rat.assignUserId.id = :userId and rat.requirementId.orgLocationId = :orgLocationId and rat.status in (1)))"
 					+ " and jobFair.status in (1)";
 			Query queryObj2 = session.createQuery(query2);
 			queryObj2.setLong("userId", userId);
@@ -3190,7 +3191,7 @@ public class RequirementDaoImpl implements RequirementDao {
 			
 			// getting the jobFairRequirements with no dates selected
 			String newQuery1 = "select jobFairRequirements.id from JobFair jobFair join jobFair.jobFairRequirementList jobFairRequirements"
-					+ " where (jobFair.user.id=:userId or jobFairRequirements.requirement.id in (select rat.requirementId.id from RequirementAssignTo rat where rat.assignUserId.id = :userId and rat.requirementId.orgLocationId = :orgLocationId and rat.status in (1)))"
+					+ " where ((jobFair.user.id=:userId and jobFair.orgLocations.id = :orgLocationId) or jobFairRequirements.requirement.id in (select rat.requirementId.id from RequirementAssignTo rat where rat.assignUserId.id = :userId and rat.requirementId.orgLocationId = :orgLocationId and rat.status in (1)))"
 					+ " and jobFair.startDate <= '" + finalDate + "' and jobFair.endDate >= '" + finalDate + "' and (jobFairRequirements.fairDates = null or jobFairRequirements.fairDates = '')"
 					+ " and jobFair.status = 1";
 			
@@ -3201,7 +3202,7 @@ public class RequirementDaoImpl implements RequirementDao {
 
 			// getting the jobFairRequirements with selected date
 			String newQuery2 = "select jobFairRequirements.id from JobFair jobFair join jobFair.jobFairRequirementList jobFairRequirements"
-					+ " where (jobFair.user.id=:userId or jobFairRequirements.requirement.id in (select rat.requirementId.id from RequirementAssignTo rat where rat.assignUserId.id = :userId and rat.requirementId.orgLocationId = :orgLocationId and rat.status in (1)))"
+					+ " where ((jobFair.user.id=:userId and jobFair.orgLocations.id = :orgLocationId) or jobFairRequirements.requirement.id in (select rat.requirementId.id from RequirementAssignTo rat where rat.assignUserId.id = :userId and rat.requirementId.orgLocationId = :orgLocationId and rat.status in (1)))"
 					+ " and jobFairRequirements.fairDates like '%" + selectedDate + "%'"
 					+ " and jobFair.status = 1";
 			
