@@ -9,6 +9,7 @@ import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Collection;
 import java.util.Date;
@@ -2739,54 +2740,29 @@ private void saveImportedTimeSheetRecords(Projects project,String projectTaskUUI
 				
 			}
 			
-			//Marital Status
-			if(!dataMigrationDTOJsonCopy.getString("maritalStatus").equals("null") &&  !StringUtils.isEmpty(dataMigrationDTOJsonCopy.getString("maritalStatus"))) {
-				String maritalStatus = dataMigrationDTOJsonCopy.getString("maritalStatus").trim().toLowerCase();
-				if(maritalStatus.equalsIgnoreCase("Single")) {
-					dataMigrationDTOJsonCopy.put("maritalStatus", "Single");
-				}else if(maritalStatus.equalsIgnoreCase("Married")) {
-					dataMigrationDTOJsonCopy.put("maritalStatus", "Married");
-				}else if(maritalStatus.equalsIgnoreCase("Divorsed")) {
-					dataMigrationDTOJsonCopy.put("maritalStatus", "Divorsed");
-				}else if(maritalStatus.equalsIgnoreCase("Separated")) {
-					dataMigrationDTOJsonCopy.put("maritalStatus", "Separated");
-				}else {
-					errorSet.put("maritalStatus", dataMigrationDTOJsonCopy.getString("maritalStatus").trim()+" Invalid Marital Status Type");
-				}
-			}
-			
+						
 			//Gender
 			if(!dataMigrationDTOJsonCopy.getString("genderValue").equals("null") &&  !StringUtils.isEmpty(dataMigrationDTOJsonCopy.getString("genderValue"))) {
-				String gender = dataMigrationDTOJsonCopy.getString("genderValue").trim().toLowerCase();
-				if(gender.equalsIgnoreCase("Male")) {
-					dataMigrationDTOJsonCopy.put("genderValue", "Male");
-				}else if(gender.equalsIgnoreCase("Female")) {
-					dataMigrationDTOJsonCopy.put("genderValue", "Female");
-				}else if(gender.equalsIgnoreCase("Transgender")) {
-					dataMigrationDTOJsonCopy.put("genderValue", "Transgender");
+				String gender = dataMigrationDTOJsonCopy.getString("genderValue").trim();
+				
+				if(Arrays.asList(Constants.GENDER).contains(gender)) {
+					dataMigrationDTOJsonCopy.put("genderValue", gender);
 				}else {
 					errorSet.put("genderValue", dataMigrationDTOJsonCopy.getString("gender").trim()+" Invalid Gender Type");
 				}
+				
 			}
 			
 			//currency 
 			if(!dataMigrationDTOJsonCopy.getString("currentCurrency").equals("null") &&  !StringUtils.isEmpty(dataMigrationDTOJsonCopy.getString("currentCurrency"))) {
-				String currency = dataMigrationDTOJsonCopy.getString("currencyType").trim().toLowerCase();
-				if(currency.equalsIgnoreCase("INR")) {
-					dataMigrationDTOJsonCopy.put("currentCurrency", "INR");
-				}else if(currency.equalsIgnoreCase("AUD")) {
-					dataMigrationDTOJsonCopy.put("currentCurrency", "AUD");
-				}else if(currency.equalsIgnoreCase("USD")) {
-					dataMigrationDTOJsonCopy.put("currentCurrency", "USD");
-				}else if(currency.equalsIgnoreCase("GBP")) {
-					dataMigrationDTOJsonCopy.put("currentCurrency", "GBP");
-				}else if(currency.equalsIgnoreCase("SGD")) {
-					dataMigrationDTOJsonCopy.put("currentCurrency", "SGD");
-				}else if(currency.equalsIgnoreCase("EUR")) {
-					dataMigrationDTOJsonCopy.put("currentCurrency", "EUR");
+				String currency = dataMigrationDTOJsonCopy.getString("currencyType").trim();
+				
+				if(Arrays.asList(Constants.RATE_CURRENCY).contains(currency)) {
+					dataMigrationDTOJsonCopy.put("currentCurrency", currency);
 				}else {
 					errorSet.put("currentCurrency", dataMigrationDTOJsonCopy.getString("currentCurrency").trim()+" Invalid currency Type");
 				}
+				
 			}
 			
 			//Rate value
@@ -2804,26 +2780,13 @@ private void saveImportedTimeSheetRecords(Projects project,String projectTaskUUI
 			}
 			//RatePer
 			if(!dataMigrationDTOJsonCopy.getString("ratePer").equals("null") &&  !StringUtils.isEmpty(dataMigrationDTOJsonCopy.getString("ratePer"))) {
-				String ratePer = dataMigrationDTOJsonCopy.getString("RatePer").trim().toLowerCase();
-				if(ratePer.equalsIgnoreCase("Hourly")) {
-					dataMigrationDTOJsonCopy.put("ratePer", "Hourly");
-				}else if(ratePer.equalsIgnoreCase("Daily")) {
-					dataMigrationDTOJsonCopy.put("ratePer", "Daily");
-				}else if(ratePer.equalsIgnoreCase("Weekly")) {
-					dataMigrationDTOJsonCopy.put("ratePer", "Weekly");
-				}else if(ratePer.equalsIgnoreCase("Bi-Weekly")) {
-					dataMigrationDTOJsonCopy.put("ratePer", "Bi-Weekly");
-				}else if(ratePer.equalsIgnoreCase("Semi-Monthly")) {
-					dataMigrationDTOJsonCopy.put("ratePer", "Semi-Monthly");
-				}else if(ratePer.equalsIgnoreCase("Bi-Monthly")) {
-					dataMigrationDTOJsonCopy.put("ratePer", "Bi-Monthly");
-				}else if(ratePer.equalsIgnoreCase("Monthly")) {
-					dataMigrationDTOJsonCopy.put("ratePer", "Monthly");
-				}else if(ratePer.equalsIgnoreCase("Yearly")) {
-					dataMigrationDTOJsonCopy.put("ratePer", "Yearly");
+				String ratePer = dataMigrationDTOJsonCopy.getString("RatePer").trim();
+				if(Arrays.asList(Constants.RATEPER_LIST).contains(ratePer)) {
+					dataMigrationDTOJsonCopy.put("ratePer", ratePer);
 				}else {
 					errorSet.put("ratePer", dataMigrationDTOJsonCopy.getString("RatePer").trim()+" Invalid RatePer Type");
 				}
+				
 			}
 			
 			//DateOfJoin
@@ -2856,23 +2819,10 @@ private void saveImportedTimeSheetRecords(Projects project,String projectTaskUUI
 				errorSet.put("designationType", "Designation Type field is missing");
 			}else {
 				   if(!dataMigrationDTOJsonCopy.getString("designationType").equals("null") &&  !StringUtils.isEmpty(dataMigrationDTOJsonCopy.getString("designationType"))) {
-					String designationType = dataMigrationDTOJsonCopy.getString("designationType").trim().toLowerCase();
-					if(designationType.equalsIgnoreCase("C2C")) {
-						dataMigrationDTOJsonCopy.put("designationType", "C2C");
-					}else if(designationType.equalsIgnoreCase("C2C-1099")) {
-						dataMigrationDTOJsonCopy.put("designationType", "C2C-1099");
-					}else if(designationType.equalsIgnoreCase("W-2")) {
-						dataMigrationDTOJsonCopy.put("designationType", "W-2");
-					}else if(designationType.equalsIgnoreCase("C2H")) {
-						dataMigrationDTOJsonCopy.put("designationType", "C2H");
-					}else if(designationType.equalsIgnoreCase("C2H -1099")) {
-						dataMigrationDTOJsonCopy.put("designationType", "C2H -1099");
-					}else if(designationType.equalsIgnoreCase("Part Time")) {
-						dataMigrationDTOJsonCopy.put("designationType", "Part Time");
-					}else if(designationType.equalsIgnoreCase("Full Time")) {
-						dataMigrationDTOJsonCopy.put("designationType", "Full Time");
-					}else if(designationType.equalsIgnoreCase("Other")) {
-						dataMigrationDTOJsonCopy.put("designationType", "Other");
+					String designationType = dataMigrationDTOJsonCopy.getString("designationType");
+					
+					if(Arrays.asList(Constants.EMPLOYMENT_TYPES).contains(designationType)) {
+						dataMigrationDTOJsonCopy.put("designationType", designationType);
 					}else {
 						errorSet.put("designationType", dataMigrationDTOJsonCopy.getString("designationType").trim()+" Invalid DesignationType Type");
 					}
@@ -2919,18 +2869,15 @@ private void saveImportedTimeSheetRecords(Projects project,String projectTaskUUI
 		
 			//Grade
 			if(!dataMigrationDTOJsonCopy.getString("grade").equals("null") &&  !StringUtils.isEmpty(dataMigrationDTOJsonCopy.getString("grade"))) {
-				boolean flag = true;
-				List<AssociateGrades> gradesList = associateGradesService.getAssociateGradesListByOrgLocationId(orgLocation.getId());
-				if(gradesList != null) {
-					for(AssociateGrades grades : gradesList) {
-						if(grades.getGradeName().equalsIgnoreCase(dataMigrationDTOJsonCopy.getString("grade"))) {
-							 flag = false;
-						}
-					}
+				
+				boolean flag = associateGradesService.isGradeExistsByGradeNameAndOrgLocationId(dataMigrationDTOJsonCopy.getString("grade"), orgLocation.getId());
+				
+				if(flag == true) {
+					dataMigrationDTOJsonCopy.put("grade", dataMigrationDTOJsonCopy.getString("grade"));
+				}else {
+					errorSet.put("grade", "Invalid Grade");
 				}
-	    		if(flag == true) {
-					errorSet.put("grade", "Grade is not existed");
-	    		}
+				
 			}
 			
 
@@ -2975,26 +2922,39 @@ private void saveImportedTimeSheetRecords(Projects project,String projectTaskUUI
 			
 			// Send Mail to Associate
 			if(!dataMigrationDTOJsonCopy.getString("isMailSent").equals("null") &&  !StringUtils.isEmpty(dataMigrationDTOJsonCopy.getString("isMailSent"))) {
-				String sendEmailtype = dataMigrationDTOJsonCopy.getString("isMailSent").trim().toLowerCase();
-				if(sendEmailtype.equalsIgnoreCase("Y")) {
-					dataMigrationDTOJsonCopy.put("isMailSent", "Y");
-				}else if(sendEmailtype.equalsIgnoreCase("N")) {
-					dataMigrationDTOJsonCopy.put("isMailSent", "N");
+				String sendEmailtype = dataMigrationDTOJsonCopy.getString("isMailSent").trim();
+				
+				if(Arrays.asList(Constants.YES_NO).contains(sendEmailtype)) {
+					dataMigrationDTOJsonCopy.put("isMailSent", sendEmailtype);
 				}else {
-					errorSet.put("isMailSent"," Invalid isMailSent Type");
+					errorSet.put("isMailSent"," Invalid Is Mail Sent Type");
 				}
+				
 			}
 			
 			//Is Global Manager
 			if(!dataMigrationDTOJsonCopy.getString("isGlobalAccess").equals("null") &&  !StringUtils.isEmpty(dataMigrationDTOJsonCopy.getString("isGlobalAccess"))) {
-				String globleType = dataMigrationDTOJsonCopy.getString("isGlobalAccess").trim().toLowerCase();
-				if(globleType.equalsIgnoreCase("Y")) {
-					dataMigrationDTOJsonCopy.put("isGlobalAccess", "Y");
-				}else if(globleType.equalsIgnoreCase("N")) {
-					dataMigrationDTOJsonCopy.put("isGlobalAccess", "N");
+				String globleType = dataMigrationDTOJsonCopy.getString("isGlobalAccess").trim();
+				
+				if(Arrays.asList(Constants.YES_NO).contains(globleType)) {
+					dataMigrationDTOJsonCopy.put("isGlobalAccess", globleType);
 				}else {
-					errorSet.put("isGlobalAccess"," Invalid isMailSent Type");
+					errorSet.put("isGlobalAccess"," Invalid Is Global Access Type");
 				}
+				
+			}
+			
+			
+			//Marital Status
+			if(!dataMigrationDTOJsonCopy.getString("maritalStatus").equals("null") &&  !StringUtils.isEmpty(dataMigrationDTOJsonCopy.getString("maritalStatus"))) {
+				String maritalStatus = dataMigrationDTOJsonCopy.getString("maritalStatus").trim();
+				
+				if(Arrays.asList(Constants.MARITAL_STATUS).contains(maritalStatus)) {
+					dataMigrationDTOJsonCopy.put("maritalStatus", maritalStatus);
+				}else {
+					errorSet.put("maritalStatus"," Invalid Marital Status");
+				}
+				
 			}
 			
 			

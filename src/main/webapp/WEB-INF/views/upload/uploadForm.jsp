@@ -126,7 +126,7 @@ var uploadflag= true;
 							  <label><i class="fa fa-check"></i>&nbsp;&nbsp;Manager(Email)</label>
 							  <label><i class="fa fa-check"></i>&nbsp;&nbsp;Employment Type</label>
 							  <label><i class="fa fa-check"></i>&nbsp;&nbsp;Designation</label>
-							  
+							  <label><i class="fa fa-check"></i>&nbsp;&nbsp;Department</label>
 							  </p>
 						</span>
 					</div>
