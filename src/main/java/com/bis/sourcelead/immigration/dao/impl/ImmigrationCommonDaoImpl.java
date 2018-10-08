@@ -2176,7 +2176,8 @@ public class ImmigrationCommonDaoImpl implements ImmigrationCommonDao {
 			String queryString = "SELECT " + 
 					" l.LCA_NO as lcaNo, " + 
 					" l.LCA_TITLE as lcaTitle, " + 
-					" lpe.LOCATION as location, " + 
+					/*" lpe.LOCATION as location, " + */
+					" GROUP_CONCAT(lpe.LOCATION SEPARATOR ' & ') AS location, "+
 					" l.PREVAILING_WAGE as prevailingWage, " + 
 					" l.LCA_STATUS as lcaStatus, " + 
 					" CAST(l.NO_OF_POSITIONS AS CHAR(5))as noOfPositions, " + 
@@ -2193,8 +2194,10 @@ public class ImmigrationCommonDaoImpl implements ImmigrationCommonDao {
 					" LCA_PLACE_OF_EMPLOYMENT lpe, " + 
 					" LCA_VISA_CLARIFICATIONS lvc" +
 					" WHERE " + 
-					" l.id = lh.LCA_ID AND l.id = lpe.LCA_ID AND l.id = lvc.LCA_ID" + 
-					" AND lh.IMMIGRATION_ID = :immigrationId";
+					
+					" l.id = lh.LCA_ID AND l.id = lpe.LCA_ID AND l.id = lvc.LCA_ID " + 
+					" AND lh.IMMIGRATION_ID = :immigrationId "+
+					" GROUP BY l.ID";
 			lcaList = session.createSQLQuery(queryString).setParameter("immigrationId", immigrationId).setResultTransformer(Transformers.aliasToBean(LcaDTO.class)).list();
 		    return lcaList;
 	}

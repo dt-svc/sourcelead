@@ -485,17 +485,20 @@ public class EmailScenarioConfigurationRestController {
 				
 		@RequestMapping(value = "/validateParserEmail" , method = RequestMethod.POST)		
 		public Boolean validateParserEmail (@RequestParam(value = "parserEmailId", required = true) String parserEmailId,
-											@RequestParam(value = "emailUUID", required = true) String emailUUID)throws Exception {
+											@RequestParam(value = "emailUUID", required = true) String emailUUID,HttpServletRequest request)throws Exception {
 			
 			EmailScenarioConfiguration emailconf = null;
+			User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+			 OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 			if(emailUUID != null && parserEmailId !=null){	
-				emailconf = emailScenarioconService.validateParserByEmail(parserEmailId,emailUUID);
+				emailconf = emailScenarioconService.validateParserByEmail(parserEmailId,emailUUID,orgLocation.getId());
 			}
 			Boolean flag = false;
 			if(emailconf == null){
-			flag = emailScenarioconService.validateParser(parserEmailId);
+			flag = emailScenarioconService.validateParser(parserEmailId,orgLocation.getId());
 			}
 			return flag;
 		}
+
 			
 }

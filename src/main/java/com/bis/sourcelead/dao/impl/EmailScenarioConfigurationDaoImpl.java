@@ -279,28 +279,26 @@ public class EmailScenarioConfigurationDaoImpl implements EmailScenarioConfigura
 	
 	@Override
 	@Transactional(rollbackFor = { Exception.class })
-	public EmailScenarioConfiguration validateParserByEmail(String parserEmailId, String emailUUID) { 
+	public EmailScenarioConfiguration validateParserByEmail(String parserEmailId, String emailUUID, Long orgLocId) { 
 		
 		Session session =  this.sessionFactory.getCurrentSession();
-		String query = "from EmailScenarioConfiguration esc where esc.emailId = :parserEmailId and esc.email_UUID = :emailUUID";
-		List<EmailScenarioConfiguration> escList =  session.createQuery(query) .setString("parserEmailId", parserEmailId).setString("emailUUID", emailUUID).list();
+		String query = "from EmailScenarioConfiguration esc where esc.emailId = :parserEmailId and esc.email_UUID = :emailUUID and esc.orgLocationId = :orgLocId ";
+		List<EmailScenarioConfiguration> escList =  session.createQuery(query) .setString("parserEmailId", parserEmailId).setString("emailUUID", emailUUID).setLong("orgLocId", orgLocId).list();
 		EmailScenarioConfiguration emailScenarioConfiguration = null;
 		if(escList != null && !escList.isEmpty())
 		{
 			emailScenarioConfiguration = (EmailScenarioConfiguration) escList.iterator().next();
 		}
 		return emailScenarioConfiguration;
-		
-		
 	  }
 
 	@Override
 	@Transactional(rollbackFor = { Exception.class })
-	public Boolean validateParser(String parserEmailId) { 
+	public Boolean validateParser(String parserEmailId, Long orgLocId) { 
 		Session  session = this.sessionFactory.getCurrentSession();
 		boolean flag=false;
-		String query = " from EmailScenarioConfiguration esc where esc.emailId = :parserEmailId";
-		List<EmailScenarioConfiguration> parserEmailList = session.createQuery(query).setString("parserEmailId", parserEmailId).list();
+		String query = " from EmailScenarioConfiguration esc where esc.emailId = :parserEmailId and esc.orgLocationId = :orgLocId ";
+		List<EmailScenarioConfiguration> parserEmailList = session.createQuery(query).setString("parserEmailId", parserEmailId).setLong("orgLocId", orgLocId).list();
 		if(parserEmailList != null && parserEmailList.size()>0){
 			flag =true;
 		}

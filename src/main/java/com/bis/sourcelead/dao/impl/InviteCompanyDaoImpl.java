@@ -98,7 +98,7 @@ public class InviteCompanyDaoImpl implements InviteCompanyDao{
 		ScheduleMaintenance scheduleMaintenance = null;   //Time difference for 5 days in seconds 432000
 		scheduleMaintenance = (ScheduleMaintenance) session.createQuery("from ScheduleMaintenance sm "+
                 "WHERE ((TIMESTAMPDIFF(SECOND, :currentDate, sm.startDate)) >= :seconds1 and (TIMESTAMPDIFF(SECOND, :currentDate, sm.startDate)) <= :seconds2)) or (TIMESTAMPDIFF(SECOND, :currentDate, sm.endDate)) >= :seconds1) " +
-                "ORDER BY sm.createdDate desc").setParameter("currentDate", currentDate).setParameter("seconds1", 0).setParameter("seconds2", 432000).setFirstResult(0).setMaxResults(1).uniqueResult();
+                "ORDER BY sm.createdDate desc").setParameter("currentDate", currentDate).setParameter("seconds1", 0).setParameter("seconds2", 172800).setFirstResult(0).setMaxResults(1).uniqueResult();
 		return  scheduleMaintenance;
 	}
 

@@ -111,7 +111,7 @@ private static final Logger logger = LoggerFactory.getLogger(AssociateTaxDaoImpl
 		
 		PaysheetFrequency paysheetFrequency = null;
 		try {
-			String[] dts = dates.split(" - ");
+			String[] dts = dates.split(" ");
 			
 			Date startDate = new SimpleDateFormat("yyyy-MM-dd").parse(dts[0]);
 			Date endDate = new SimpleDateFormat("yyyy-MM-dd").parse(dts[1]);
