@@ -65,7 +65,7 @@ $(document).ready(function(){
     <!--  Popups -->
     <div id="addUserGroupFormDiv"> </div>
 
-<script>
+<!-- <script>
 function validateGroupId(){
 	var groupId = $("#groupId").val();
 	$.get(sourceleadUrl+"/validateUserGroupIdOrGroupName?"+tokenParamName+"="+tokenValue+"&groupId="+groupId,  function(result) {
@@ -95,7 +95,7 @@ function validateGroupName(){
 			
 		});
 }
-</script>
+</script> -->
 
 <script type="text/javascript">
 var config = {

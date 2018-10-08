@@ -75,6 +75,7 @@ private String designationType;
 
 private String phoneNumber;
 
+private String department;
 
 public String getReason() {
 	return reason;
@@ -308,5 +309,13 @@ public String getPhoneNumber() {
 
 public void setPhoneNumber(String phoneNumber) {
 	this.phoneNumber = phoneNumber;
+}
+
+public String getDepartment() {
+	return department;
+}
+
+public void setDepartment(String department) {
+	this.department = department;
 }
 }
