@@ -73,7 +73,9 @@
 						style="width: 100%">
 						<thead>
 							<tr>
-								<th>Exclude</th>
+								<c:if test="${freqResponse.approverStatus != 'SENT' && freqResponse.approverStatus != 'APPROVED'}">
+									<th>Exclude</th>
+								</c:if>
 								<th>Emp ID</th>
 								<th>Emp Name</th>
 								<th>Regular Hours</th>
@@ -87,13 +89,15 @@
 						<tbody>
 							<c:forEach var="empPayroll" items="${employeePayrollList}">
 								<tr>
-									<td>
-										<div class="checkbox-new pull-left ml">
-											<input id="${empPayroll.indEmpPayrollUUID}" class="checkbox-custom" name="empPayroll"
-												value="${empPayroll.indEmpPayrollUUID}" type="checkbox"> <label for="${empPayroll.indEmpPayrollUUID}"
-												class="checkbox-custom-label"></label>
-										</div>
-									</td>
+									<c:if test="${freqResponse.approverStatus != 'SENT' && freqResponse.approverStatus != 'APPROVED'}">
+										<td>
+											<div class="checkbox-new pull-left ml">
+												<input id="${empPayroll.indEmpPayrollUUID}" class="checkbox-custom" name="empPayroll"
+													value="${empPayroll.indEmpPayrollUUID}" type="checkbox"> <label for="${empPayroll.indEmpPayrollUUID}"
+													class="checkbox-custom-label"></label>
+											</div>
+										</td>
+									</c:if>
 									<td><div class="tblminwidth-50">${empPayroll.employee.employeeId}</div></td>
 									<td><div class="tbldata-dotdot-vsm">${empPayroll.employee.user.fullName}</div></td>
 									<td><div class="tblminwidth-50">${empPayroll.regularHours}</div>
