@@ -1403,11 +1403,11 @@ function cancel(candidateId){
       <ul class="pull-right list-unstyled list-inline">
       
 	  <li class="tableShare" style="display: none;">
-	  	<a class="marketplaceIcon mr5" title="Market Place"	href="<c:url value='${appPath}/addToMarketPlace'/>"></a>
+	  	<a class="marketplaceIcon mr5" title="Market Place" onclick="callAddToMarket()"></a>
 	  	<a class="shareIcon mr5" title="Share" href="javascript:void(0)" onclick="shareJob();"></a>
 	  	<a class="sendIcon mr5" title="Submit" href="javascript:void(0)" onclick="submitCandidatesToJob();"></a>
 	  </li>        
-      
+ 
            <sec:authorize access="hasAnyRole('ROLE_CREATE_CANDIDATE','ROLE_CROWDSOURCING_CANDIDATES')">
           <!-- <li><b id="addmore"><a onClick="addCandidate();" title="Add Candidate" class="newAdBtn mr5" href="javascript:void(0)">+  Candidate</a></b>
           		<div id="addmorepop" class="approved_pop"></div>
@@ -1508,6 +1508,38 @@ function cancel(candidateId){
 
    
    <script>
+   var candidateIdsMark = [];
+   function appendIdsToMarketPlace(obj){
+	   if($(obj).is(":checked")){
+		   candidateIdsMark.push($(obj).attr("id"));
+	   }else if($(obj).not(":checked")){
+		   candidateIdsMark = jQuery.grep(candidateIdsMark, function(value) {
+			   return value != $(obj).attr("id");
+			});
+	   }
+   }
+   
+   function callAddToMarket(){
+	   
+	   
+	   /* var candidateIdsMark = [];
+	   
+	 	$('input:checkbox[name=sharedcheckbox]:checked').each(function(){
+	 		candidateIdsMark.push($(this).attr("id"));
+	 	});  */
+	 	 $.ajax({
+		    	type: "POST",
+		        url: sourceleadUrl+"/navigateMarketPlaceAjax",
+		        data : {candidateIdsVal : candidateIdsMark},
+		        success: function(json) {
+		        	location.href = sourceleadUrl+"/navigateMarketPlaceList";
+		        	candidateIdsMark = [];
+		        }
+	 	}); 
+	 	//location.href = sourceleadUrl+"/navigateMarketPlaceList?candidateIds="+candidateIds
+   }
+   
+   
    function getSourceleadTags(){
  		 $.ajax({
 		    	type: "GET",
@@ -2528,10 +2560,19 @@ function toggleShareCandidates(source){
 	  if($(source).is(":checked")){
 		  $('input[class="contactscheckbox"]').prop('checked', 'checked');
 	  	  $(".tableShare").show();
+	  	$('input:checkbox[name=sharedcheckbox]:checked').each(function(){
+	  		candidateIdsMark.push($(this).attr("id"));
+	 	}); 
 	  }
 	  else{ 
 		  $('input[class="contactscheckbox"]').removeProp('checked');
 	      $(".tableShare").hide();
+	      $('input:checkbox[name=sharedcheckbox]not(:checked)').each(function(){
+	    	  candidateIdsMark = jQuery.grep(candidateIdsMark, function(value) {
+				   return value != $(this).attr("id");
+				});
+		 	});
+	      
 	  }
 	  $('input[class="contactscheckbox"]').each(function(i) {
 		  if($(this).is(":checked")) {

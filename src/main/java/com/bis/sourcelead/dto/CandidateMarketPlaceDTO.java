@@ -12,11 +12,13 @@ public class CandidateMarketPlaceDTO extends SearchDTO implements Serializable  
 
 	private Long id;
 
+	private String candidateId;
+	
 	private String masterCandidateId;
 
 	private String orgLocationId;
 
-	private String  fullName;
+	private String fullName;
 
 	private String email;
 
@@ -54,7 +56,7 @@ public class CandidateMarketPlaceDTO extends SearchDTO implements Serializable  
 	
 	private String marketPrice;
 
-	private String maretRateCurrencey;
+	private String marketRateCurrencey;
 	
 	private String status;
 
@@ -252,12 +254,12 @@ public class CandidateMarketPlaceDTO extends SearchDTO implements Serializable  
 		this.marketPrice = marketPrice;
 	}
 
-	public String getMaretRateCurrencey() {
-		return maretRateCurrencey;
+	public String getMarketRateCurrencey() {
+		return marketRateCurrencey;
 	}
 
-	public void setMaretRateCurrencey(String maretRateCurrencey) {
-		this.maretRateCurrencey = maretRateCurrencey;
+	public void setMarketRateCurrencey(String marketRateCurrencey) {
+		this.marketRateCurrencey = marketRateCurrencey;
 	}
 
 	public String getStatus() {
@@ -340,6 +342,12 @@ public class CandidateMarketPlaceDTO extends SearchDTO implements Serializable  
 		this.maritalStatus = maritalStatus;
 	}
 
-	
+	public String getCandidateId() {
+		return candidateId;
+	}
+
+	public void setCandidateId(String candidateId) {
+		this.candidateId = candidateId;
+	}
 
 }

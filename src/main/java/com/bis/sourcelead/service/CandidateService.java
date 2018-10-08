@@ -225,12 +225,21 @@ public interface CandidateService {
 	public ResponseList<CandidateMarketPlaceDTO> getGlobalMarketCandidateList(CandidateMarketPlaceDTO candidateMarketPlaceDTO, String searchValue);
 	
 	public List<Candidate> getAllCandidatesList() throws Exception;
+
+	public void copyCandidateToMarketplace(String candidateIdsStr, User user) throws NumberFormatException, Exception;
+
+	public ResponseList<CandidateDTO> getCandidatesByCandidateIds(List<String> candidateUUIds);
 	
 	public Candidate getCandidateDetails(Candidate candidate, CandidateDTO candidateDto, User user,OrgLocations orgLocations,StringBuffer activitySummary) throws Exception;
 	
+	public void saveBulkCandidates(List<Candidate> candidatesList) throws Exception;
+
 	public void saveBulkCandidates(List<Candidate> candidatesList,Long orgLocationId) throws Exception;
 	
 	Long getCandidateIdByEmailAndOrgLocationId(String email,Long orgLocationId) throws Exception;
 	
 	List<String> getCandidateEmailsByOrgLocationId(Long orgLocationId) throws Exception;
+
+	public void saveCandidateMarketPlaceList(List<CandidateMarketPlaceDTO> marketPlaceList, User user) throws NumberFormatException, Exception;
+
 }

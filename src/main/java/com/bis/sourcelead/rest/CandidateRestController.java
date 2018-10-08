@@ -29,6 +29,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -37,10 +38,13 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.multipart.MultipartHttpServletRequest;
 import org.springframework.web.multipart.commons.CommonsMultipartFile;
+import org.springframework.web.servlet.ModelAndView;
 
 import com.bis.sourcelead.annotations.Validator;
 import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.dto.CandidateDTO;
+import com.bis.sourcelead.dto.CandidateMarketPlaceDTO;
+import com.bis.sourcelead.dto.ImmigrationTemplateListDTO;
 import com.bis.sourcelead.dto.Response;
 import com.bis.sourcelead.dto.ResponseList;
 import com.bis.sourcelead.elk.index.CandidateIndex;
@@ -967,4 +971,65 @@ public class CandidateRestController {
 		});
 		return xstream.toXML(obj);
 	}
+	
+	@RequestMapping(value = "/app/navigateMarketPlaceAjax", method = RequestMethod.POST)
+	public String goToMarketplace(@RequestParam(value = "candidateIdsVal[]", required = false) List<Long> candidateIdsVal, HttpServletRequest request) throws Exception {
+		request.getSession().setAttribute("candidateIds", candidateIdsVal);
+		return "success";
+	}
+
+	
+	
+	//@PreAuthorize("hasAnyRole('ROLE_CREATE_CANDIDATE','ROLE_CROWDSOURCING_CANDIDATES')")
+	@RequestMapping(value = "/app/navigateMarketPlaceList")
+	public ModelAndView goToMarketplace(HttpServletRequest request) throws Exception {
+		ModelAndView model = new ModelAndView();
+		model.setViewName("candidates/candidateMarketPlaceList");
+		model.addObject("sourceleadUrl", sourceleadUrl);
+		return model;
+	}
+
+	@RequestMapping(value = "/app/getMarketPlaceCandidateMovedList", method = RequestMethod.POST)
+	public @ResponseBody ResponseList<CandidateDTO> getMarketPlaceDraftList( HttpServletRequest request) {
+		List<String> candidateIds = (List<String>) request.getSession().getAttribute("candidateIds");
+		//User user = (User) SourceLeadSessionManager.getSessionAttribute(request,"user");
+		/*try {
+			String[] tableColumns = { "name", "country", "petitionType", "description", "docsCount", "formsCount",
+					"tasksCount", "status", "id" };// should be
+			// entity names
+			int sortColumnIndex = -1; // by default sorting using updated date
+			String sortColumnOrder = "desc"; // by default ascending order
+			if (templateListDTO.getOrder() != null && !templateListDTO.getOrder().isEmpty()) {
+				sortColumnIndex = Integer.parseInt(templateListDTO.getOrder().get(0).get("column"));
+				sortColumnOrder = templateListDTO.getOrder().get(0).get("dir"); // sorting order 'dir' means direction
+				templateListDTO.setSortOrder(sortColumnOrder);
+				// of the sorting.
+			}
+			if (sortColumnIndex != -1) {
+				templateListDTO.setSortColumn(tableColumns[sortColumnIndex]);
+			}
+			OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,
+					"orgLocations");
+
+			templateListDTOList = immigrationTemplateService.getAllTemplateDetails(templateListDTO, searchValue,
+					orgLocations.getId(), countriesList);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}*/
+		ResponseList<CandidateDTO> marketCandidates = candidateService.getCandidatesByCandidateIds(candidateIds);
+		return marketCandidates;
+	}
+	
+	//@PreAuthorize("hasAnyRole('ROLE_CREATE_CANDIDATE','ROLE_CROWDSOURCING_CANDIDATES')")
+	@RequestMapping(value = "/app/saveMarketPlaceData", method = RequestMethod.POST)
+	public void saveMarketPlaceData(@RequestBody List<CandidateMarketPlaceDTO> marketPlaceList, HttpServletRequest  request) throws NumberFormatException, Exception {
+		//System.out.println(marketPlaceList.size());
+		User user = (User) SourceLeadSessionManager.getSessionAttribute(request,"user");
+		candidateService.saveCandidateMarketPlaceList(marketPlaceList, user);
+		//ModelAndView model = new ModelAndView();
+		//model.setViewName("candidates/candidateGlobalMarketPlaceList");
+		//model.addObject("sourceleadUrl", sourceleadUrl);
+		//return model;
+	}
+	
 }

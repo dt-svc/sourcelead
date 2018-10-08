@@ -33,6 +33,7 @@ import org.elasticsearch.index.query.QueryBuilders;
 import org.elasticsearch.search.SearchHit;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Lazy;
@@ -52,6 +53,8 @@ import com.bis.sourcelead.dto.CandidateDTO;
 import com.bis.sourcelead.dto.CandidateMarketPlaceDTO;
 import com.bis.sourcelead.dto.CustomFormFieldDTO;
 import com.bis.sourcelead.dto.FileInfo;
+import com.bis.sourcelead.dto.ImmigrationCandidateDTO;
+import com.bis.sourcelead.dto.ImmigrationTemplateListDTO;
 import com.bis.sourcelead.dto.ResponseList;
 import com.bis.sourcelead.elk.index.CandidateIndex;
 import com.bis.sourcelead.elk.index.helper.CandidateIndexHelper;
@@ -62,6 +65,7 @@ import com.bis.sourcelead.entity.CandidateEducation;
 import com.bis.sourcelead.entity.CandidateEmployers;
 import com.bis.sourcelead.entity.CandidateHistory;
 import com.bis.sourcelead.entity.CandidateImportLog;
+import com.bis.sourcelead.entity.CandidateMarketPlace;
 import com.bis.sourcelead.entity.CandidateResumes;
 import com.bis.sourcelead.entity.CandidateTimelineActivity;
 import com.bis.sourcelead.entity.Countries;
@@ -2645,9 +2649,92 @@ private Sheet createXlsSheet(Sheet createExcelsheet, Row writeRow,Candidate cand
 	public Long getCandidateIdByEmailAndOrgLocationId(String email, Long orgLocationId) throws Exception {
 		return candidateDao.getCandidateIdByEmailAndOrgLocationId(email, orgLocationId);
 	}
-	@Override
 
+	@Override
 	public ResponseList<CandidateMarketPlaceDTO> getGlobalMarketCandidateList(CandidateMarketPlaceDTO candidateMarketPlaceDTO, String searchValue) {
 		return candidateDao.getGlobalMarketCandidateList(candidateMarketPlaceDTO, searchValue);
 	}
+
+	@Override
+	public void copyCandidateToMarketplace(String candidateIdsStr, User user) throws NumberFormatException, Exception {
+		String[] candidateIds = candidateIdsStr.split(",");
+		for(String candidateId : candidateIds){
+			Candidate candidate = candidateDao.getCandidateByCandidateId(Long.parseLong(candidateId));
+			CandidateMarketPlace marketPlace = new CandidateMarketPlace();
+			//BeanUtils.copyProperties(candidate, marketPlace);
+			marketPlace.setCandidateId(candidate);
+			marketPlace.setMasterCandidateId(candidate.getMasterCandidateId());
+			marketPlace.setCandidateUUID(candidate.getCandidateUUID());
+			marketPlace.setOrgLocationId(candidate.getOrgLocationId());
+			marketPlace.setFullName(candidate.getFullName());
+			marketPlace.setGender(candidate.getGender());
+			marketPlace.setEmail(candidate.getEmail());
+			marketPlace.setAlternateEmail(candidate.getAlternateEmail());
+			marketPlace.setMobilePhone(candidate.getMobilePhone());
+			marketPlace.setAlternateMobilePhone(candidate.getAlternateMobilePhone());
+			marketPlace.setDesignation(candidate.getDesignation());
+			marketPlace.setEmploymentType(candidate.getDesignationType());
+			marketPlace.setLocation(candidate.getLocation());
+			marketPlace.setScore(candidate.getCandidateScore());
+			marketPlace.setSkillsName(candidate.getSkillsName());
+			marketPlace.setExperienceYears(candidate.getExperienceYears());
+			marketPlace.setExperienceMonths(candidate.getExperienceMonths());
+			marketPlace.setCurrentRate(candidate.getCurrentRate());
+			marketPlace.setCurrentRateType(candidate.getCurrentRateType());
+			marketPlace.setCurrentRateCurrency(candidate.getCurrentRateCurrency());
+			marketPlace.setExpectedRate(candidate.getExpectedRate());
+			marketPlace.setExpectedRateType(candidate.getRateType());
+			marketPlace.setExpectedRateCurrencey(candidate.getExpectedRateCurrencey());
+			marketPlace.setNoticePeriod(candidate.getNoticePeriod());
+			marketPlace.setMarketPrice(null);
+			marketPlace.setMarketRateCurrencey(null);
+			marketPlace.setCandidateMarketStatus(Constants.DRAFT);
+			marketPlace.setNationality(candidate.getNationality());
+			marketPlace.setMaritalStatus(candidate.getMaritalStatus());
+			marketPlace.setStatus(1);
+			marketPlace.setCreatedDate(new Date());
+			marketPlace.setCreatedBy(user);
+			marketPlace.setUpdatedDate(new Date());
+			marketPlace.setUpdatedBy(user);
+			candidateDao.saveMarketPlace(marketPlace);
+			
+		}
+		
+	}
+
+	@Override
+	public ResponseList<CandidateDTO> getCandidatesByCandidateIds(List<String> candidateIdsStr) {
+		ResponseList<CandidateDTO> candidates = candidateDao.getCandidatesByCandidateIds(candidateIdsStr);
+		return candidates;
+	}
+
+	@Override
+	public void saveBulkCandidates(List<Candidate> candidatesList) throws Exception {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void saveCandidateMarketPlaceList(List<CandidateMarketPlaceDTO> marketPlaceList, User user) throws NumberFormatException, Exception {
+
+		for(CandidateMarketPlaceDTO dto : marketPlaceList){
+			Candidate candidate = candidateDao.getCandidateById(Long.parseLong(dto.getCandidateId()));
+			CandidateMarketPlace marketPlace = new CandidateMarketPlace();
+			BeanUtils.copyProperties(candidate, marketPlace);
+			marketPlace.setCandidateId(candidate);
+			marketPlace.setEmploymentType(candidate.getDesignationType());
+			marketPlace.setScore(candidate.getCandidateScore());
+			marketPlace.setExpectedRateType(candidate.getRateType());
+			marketPlace.setCandidateMarketStatus(Constants.MEMBER_ACTIVE);
+			marketPlace.setMarketPrice(dto.getMarketPrice());
+			marketPlace.setMarketRateCurrencey(dto.getMarketRateCurrencey());
+			marketPlace.setStatus(Constants.CANDIDATE_ACTIVE);
+			marketPlace.setCreatedDate(new Date());
+			marketPlace.setCreatedBy(user);
+			marketPlace.setUpdatedDate(new Date());
+			marketPlace.setUpdatedBy(user);
+			candidateDao.saveMarketPlace(marketPlace);
+		}
+	}
+
 }

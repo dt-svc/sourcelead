@@ -2140,6 +2140,56 @@ public class CandidateDaoImpl implements CandidateDao {
 	}
 
 	@Override
+	@Transactional(rollbackFor = { Exception.class })
+	public void saveMarketPlace(CandidateMarketPlace marketPlace) throws Exception{
+
+		logger.debug("Storing MarketPlace");
+		Session session = this.sessionFactory.getCurrentSession();
+		try {
+			if (marketPlace != null) {
+				session.save(marketPlace);
+			}
+			logger.debug("Marketplace Stored Successfully");
+		} catch (Exception exception) {
+			    StringBuilder message= new StringBuilder(MessageFormat.format(duplicateValue,"CandidateMarketPlace"));
+				throw new SourceLeadConstraintViolationException(message.toString() +exception.getCause().toString());
+		}
+	}
+
+	@Override
+	@Transactional(rollbackFor = { Exception.class })
+	public ResponseList<CandidateDTO> getCandidatesByCandidateIds(List<String> candidateIds) {
+		Session session = this.sessionFactory.getCurrentSession();
+		ResponseList<CandidateDTO> responseList = new ResponseList<>();
+		List<Long> countlist = null;
+		Integer filterCount = 0;
+		String query = "from Candidate candidate where candidate.id IN ( :candidateIds )";
+		List<Candidate> candidates = session.createQuery(query).setParameterList("candidateIds", candidateIds).list();
+		 String listQueryCount = "select count(candidate) from Candidate candidate where candidate.id IN ( :candidateIds )";
+	        countlist = session.createQuery(query).setParameterList("candidateIds", candidateIds).list();
+	        int totalCount = 0;
+	            if (countlist != null && !countlist.isEmpty()) {
+	                totalCount = countlist.size()	;
+	                filterCount = totalCount;
+	            }
+	        responseList.setRecordsTotal(totalCount);
+	        //if (query1.toString() != null && !query1.toString().isEmpty()) {
+	            responseList.setRecordsFiltered(filterCount);
+	        //} else {
+	          //  responseList.setRecordsFiltered(totalCount);
+	        //}
+		List<CandidateDTO> candidateDTOList = new ArrayList<>();
+		for(Candidate candidate : candidates){
+			CandidateDTO dto = new CandidateDTO();
+			BeanUtils.copyProperties(candidate, dto);
+			candidateDTOList.add(dto);
+		}
+		
+		responseList.setData(candidateDTOList);
+		return responseList;
+	}
+	
+	@Override
 	@Transactional
 	public Long getCandidateIdByEmailAndOrgLocationId(String email, Long orgLocationId) throws Exception {
 		
