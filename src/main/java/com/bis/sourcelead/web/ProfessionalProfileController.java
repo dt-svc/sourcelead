@@ -194,9 +194,9 @@ public class ProfessionalProfileController {
 		        }
 		        int percentage = candidateService.getCandidatePercentage(candidate,orgLocations);
 		        candidate.setProfilePercentage(percentage);
-		        if(candidate.getConsultantUser() != null) {
+		       /* if(candidate.getConsultantUser() != null) {
 		        	 candidate.getConsultantUser().setPassword(null);
-		        }
+		        }*/
 		        List<CandidateComments> candidateCommentsList = candidateCommentsService.getAllCommentsOnCandidateByCandidateIdAndOrgLocation(candidate.getId(), orgLocations);
 		        candidate.setCommentsCount(String.valueOf(candidateCommentsList.size()));
 		        candidate.setDateofBirthString(commonUtil.dateStrFromOrgDateFormatter(loginOrgLocation.getDateFormat(), candidate.getDateOfBirth()));
