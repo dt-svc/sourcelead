@@ -906,7 +906,6 @@ function getViewInvoice(){
 						}else{
 							rate = "--";
 						}
-						
 						if(items.totalHours != null && items.totalHours != '' && items.totalHours != 'undefined'){
 							totalHours = items.totalHours;
 						}else{
@@ -934,7 +933,6 @@ function getViewInvoice(){
                         }else{
                             quantity = "--";
                         }
-                        
                         result = result +'                 <tr>                                                          ';
                         
                         if(report.invoiceCategory != null && report.invoiceCategory != '' && report.invoiceCategory != 'undefined' && report.invoiceCategory == "expenses"){
@@ -962,8 +960,16 @@ function getViewInvoice(){
 //                         result = result +'                     </td>                                                     ';
                         
                         if(report.invoiceCategory != null && report.invoiceCategory != '' && report.invoiceCategory != 'undefined' && report.invoiceCategory == "expenses"){
-                            result = result +'                     <td>                                                      ';
+                        	 result = result +'                     <td>                                                      ';
+                             result = result +'                         <div class="tbldata-dotdot_50" title="'+quantity+'">'+quantity+'</div>       ';
+                             result = result +'                     </td>                                                     ';
+                             
+                        	result = result +'                     <td>                                                      ';
                             result = result +'                         <div class="tbldata-dotdot_50" title="'+rate+'">'+rate+'</div>       ';
+                            result = result +'                     </td>                                                     ';
+                            
+                            result = result +'                     <td>                                                      ';
+                            result = result +'                         <div class="tbldata-dotdot_80" title="'+amount+'">'+amount+'</div>       ';
                             result = result +'                     </td>                                                     ';
                         }else{
                             result = result +'                     <td>                                                      ';

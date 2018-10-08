@@ -519,7 +519,7 @@ if(selectedTextInvoice =='percentage'){
 		        	 }
 		        	 
 		        	 var selected = 'selected';
-		        	 result = result +'<option disabled selected>--Select Vendor--</option>';
+		        	 result = result +'<option disabled selected>--Select Client--</option>';
 		        	 result = result +'<option value='+json['vendorOrgRelationId']+' '+selected+' data-Invoice ='+json['generateInvoice']+'>'+json['orgName']+'</option>';
 		        	 $("#clientOrgRelationId").empty();
 		           	 $("#clientOrgRelationId").append(result); 
