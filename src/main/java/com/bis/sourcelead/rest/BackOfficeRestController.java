@@ -438,6 +438,68 @@ public class BackOfficeRestController {
 	}
 	
 	/**
+	 * @author Laxman
+	 * @param assetDTO
+	 * @param request
+	 * @return responseList
+	 * @throws Exception
+	 */
+	@RequestMapping(value = "/getAssignAssetDynamicList")
+	@ResponseBody
+	public ResponseList<AssetAssign> getAssignAssetDynamicList(AssetDTO assetDTO,HttpServletRequest request) throws Exception {
+		OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+  		User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+		ResponseList<AssetAssign> responseList = new ResponseList<>();
+		try {
+			
+			if (user != null && orgLocations != null) {
+				
+				String[] tableColumns = {"id","slno", "assetCategory", "model", "issueDate","macAddress","workingStatus"};
+		    int sortColumnIndex = 1; //by default sorting using updated date
+			String sortColumnOrder = "asc"; //by default referContactsDTO order
+			if(assetDTO.getOrder() != null && !assetDTO.getOrder().isEmpty()) {
+				sortColumnIndex = Integer.parseInt(assetDTO.getOrder().get(0).get("column"));
+				sortColumnOrder = assetDTO.getOrder().get(0).get("dir");
+			}
+			assetDTO.setSortColumn(tableColumns[sortColumnIndex]);
+			assetDTO.setSortOrder(sortColumnOrder);
+			responseList = assetService.getDynamicAssignAssetFilterListByLocationId(orgLocations.getId(), assetDTO);
+			for(AssetAssign aa:responseList.getData()) {
+				if(aa.getUserRole().getEmployeeId() != null) {
+					aa.setEmployeeId(aa.getUserRole().getEmployeeId());
+				}
+				aa.setEmployeeName(aa.getUserRole().getUser().getFullName());
+				if(aa.getAsset().getName() != null) {
+					aa.setAssetName(aa.getAsset().getName());
+				}
+				aa.setSerialNumber(aa.getAsset().getSlno());
+				if(aa.getAssignedOn() != null) {
+					aa.setAssignedOnStr(commonUtil.dateStrFromOrgDateFormatter(orgLocations.getDateFormat(), aa.getAssignedOn()));
+				}
+				if(aa.getReturnedOn() != null) {
+					aa.setReturnedOnStr(commonUtil.dateStrFromOrgDateFormatter(orgLocations.getDateFormat(), aa.getReturnedOn()));
+				}
+				aa.setCategoryName(aa.getAsset().getAssetCategory().getCategoryName());
+				aa.setShiftName(aa.getShift().getShiftName());
+			 }
+			responseList.setResponse(Result.SUCCESS.name());
+			responseList.setResponseMessage(Result.SUCCESS.getValue());
+			}else {
+				
+			responseList.setResponse(Result.SESSION_TIMEDOUT.name());
+			responseList.setResponseMessage(Result.SESSION_TIMEDOUT.getValue());
+			
+			}
+		} catch (Exception e) {
+			responseList.setResponse(Result.AWKWARD.name());
+			responseList.setResponseMessage(Result.AWKWARD.getValue());
+			logger.error(ExceptionUtils.getFullStackTrace(e));
+		}
+		return responseList;
+	}
+	
+	
+	/**
 	 * @author Prasad Salina
 	 * @param assetId
 	 * @param workingStatus
@@ -863,36 +925,68 @@ public class BackOfficeRestController {
 		 return assetServicesList;
 	 }
 	 
-	 @RequestMapping(value = "/getAssetmanagementExport")
-		@ResponseBody
-		public void getAssetmanagementExport(AssetDTO assetDTO,HttpServletRequest request,HttpServletResponse response) throws Exception {
-			OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
-			    ResponseList<Asset>  responseList = assetService.getDynamicAssetFilterListByLocationId(orgLocations.getId(), assetDTO);
-			    File file = null;
-			    if(assetDTO.getExportType().equalsIgnoreCase("pdf")) {
-			    	 file=  dynamicReport.assetmanagementPdfExport(responseList,orgLocations);
-			    }else {
-			    	 file=  dynamicReport.assetmanagementExcelExport(responseList,orgLocations);
-			    }
-			    
-				String mimeType = URLConnection.guessContentTypeFromName(file.getName());
-				if (mimeType == null) {
-					mimeType = "application/octet-stream";
-				}
-				response.setContentType(mimeType);
-				StringBuilder fileNameSB = new StringBuilder();
-				response.setHeader("Content-Disposition", fileNameSB.append("attachment; filename=\"").append(file.getName()).append("\"").toString());
-				response.setContentLength((int) file.length());
-				InputStream inputStream = new BufferedInputStream(new FileInputStream(file));
-				FileCopyUtils.copy(inputStream, response.getOutputStream());
-				inputStream.close();
-				response.getOutputStream().close();
-				response.getOutputStream().flush();	
-				if(file!= null){
-					file.delete();
-				}
+	@RequestMapping(value = "/getAssetmanagementExport")
+	@ResponseBody
+	public void getAssetmanagementExport(AssetDTO assetDTO,HttpServletRequest request,HttpServletResponse response) throws Exception {
+		OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+		    ResponseList<Asset>  responseList = assetService.getDynamicAssetFilterListByLocationId(orgLocations.getId(), assetDTO);
+		    File file = null;
+		    if(assetDTO.getExportType().equalsIgnoreCase("pdf")) {
+		    	 file=  dynamicReport.assetmanagementPdfExport(responseList,orgLocations);
+		    }else {
+		    	 file=  dynamicReport.assetmanagementExcelExport(responseList,orgLocations);
+		    }
+		    
+			String mimeType = URLConnection.guessContentTypeFromName(file.getName());
+			if (mimeType == null) {
+				mimeType = "application/octet-stream";
+			}
+			response.setContentType(mimeType);
+			StringBuilder fileNameSB = new StringBuilder();
+			response.setHeader("Content-Disposition", fileNameSB.append("attachment; filename=\"").append(file.getName()).append("\"").toString());
+			response.setContentLength((int) file.length());
+			InputStream inputStream = new BufferedInputStream(new FileInputStream(file));
+			FileCopyUtils.copy(inputStream, response.getOutputStream());
+			inputStream.close();
+			response.getOutputStream().close();
+			response.getOutputStream().flush();	
+			if(file!= null){
+				file.delete();
+			}
 		}
 	 
+	
+	@RequestMapping(value = "/getAssignAssetmanagementExport")
+	@ResponseBody
+	public void getAssignAssetmanagementExport(AssetDTO assetDTO,HttpServletRequest request,HttpServletResponse response) throws Exception {
+		OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+		    ResponseList<AssetAssign>  responseList = assetService.getDynamicAssignAssetFilterListByLocationId(orgLocations.getId(), assetDTO);
+		    File file = null;
+		    if(assetDTO.getExportType().equalsIgnoreCase("pdf")) {
+		    	 file=  dynamicReport.assignAssetmanagementPdfExport(responseList,orgLocations);
+		    }else {
+		    	 file=  dynamicReport.assignAssetmanagementExcelExport(responseList,orgLocations);
+		    }
+		    
+			String mimeType = URLConnection.guessContentTypeFromName(file.getName());
+			if (mimeType == null) {
+				mimeType = "application/octet-stream";
+			}
+			response.setContentType(mimeType);
+			StringBuilder fileNameSB = new StringBuilder();
+			response.setHeader("Content-Disposition", fileNameSB.append("attachment; filename=\"").append(file.getName()).append("\"").toString());
+			response.setContentLength((int) file.length());
+			InputStream inputStream = new BufferedInputStream(new FileInputStream(file));
+			FileCopyUtils.copy(inputStream, response.getOutputStream());
+			inputStream.close();
+			response.getOutputStream().close();
+			response.getOutputStream().flush();	
+			if(file!= null){
+				file.delete();
+			}
+		}
+	 
+	
 	private String toJSON(Object obj){
         XStream xstream = new XStream(new JsonHierarchicalStreamDriver() {
             public HierarchicalStreamWriter createWriter(Writer writer) {
