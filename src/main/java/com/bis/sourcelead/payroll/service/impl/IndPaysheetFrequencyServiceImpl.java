@@ -1,5 +1,6 @@
 package com.bis.sourcelead.payroll.service.impl;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
@@ -18,8 +19,8 @@ import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.enums.Result;
 import com.bis.sourcelead.payroll.dao.IndPaysheetFrequencyDao;
-import com.bis.sourcelead.payroll.dto.INDPayrollDTO;
 import com.bis.sourcelead.payroll.dto.IndApprovePayrollDTO;
+import com.bis.sourcelead.payroll.dto.IndEmployeePayrollDTO;
 import com.bis.sourcelead.payroll.dto.IndPaysheetFrequencyDTO;
 import com.bis.sourcelead.payroll.dto.PayrollConstant;
 import com.bis.sourcelead.payroll.entity.ConfigurePayrollApprover;
@@ -30,7 +31,6 @@ import com.bis.sourcelead.payroll.service.ConfigurePayrollApproverService;
 import com.bis.sourcelead.payroll.service.IndPaysheetFrequencyService;
 import com.bis.sourcelead.util.CommonUtil;
 import com.bis.sourcelead.util.INDPayrollCommonUtil;
-import com.bis.sourcelead.util.SourceLeadSessionManager;
 
 @Service
 public class IndPaysheetFrequencyServiceImpl implements IndPaysheetFrequencyService{
@@ -197,5 +197,32 @@ public class IndPaysheetFrequencyServiceImpl implements IndPaysheetFrequencyServ
 				logger.error(ExceptionUtils.getFullStackTrace(e));
 			}
 			return res;
+	}
+	
+	
+	@Override
+	public ResponseList<IndEmployeePayrollDTO> getEmployeePaysByOrgLocationIdAndUserId(OrgLocations orgLocation, User user, IndEmployeePayrollDTO indEmployeePayrollDTO) throws Exception {
+		ResponseList<IndEmployeePayrollDTO> responseList = new ResponseList<IndEmployeePayrollDTO>();
+		
+		ResponseList<IndEmployeePayroll> response = indPaysheetFrequencyDao.getEmployeePaysByOrgLocationIdAndUserId(orgLocation, user, indEmployeePayrollDTO);
+		
+		List<IndEmployeePayrollDTO> list = new ArrayList<>();
+		for(IndEmployeePayroll imp : response.getData()) {
+			IndEmployeePayrollDTO impDTO = new IndEmployeePayrollDTO();
+			impDTO.setId(imp.getId());
+			
+			impDTO.setPayPeriod(commonUtil.dateStrFromOrgDateFormatter(orgLocation.getDateFormat(),imp.getIndPaysheetFrequency().getFrequencyStartDate())+" - "+commonUtil.dateStrFromOrgDateFormatter(orgLocation.getDateFormat(),imp.getIndPaysheetFrequency().getFrequencyEndDate()));
+			impDTO.setPayCheckDateStr(commonUtil.dateStrFromOrgDateFormatter(orgLocation.getDateFormat(),imp.getPayCheckDate()));
+			impDTO.setNoOfDays(imp.getNoOfDays());
+			impDTO.setNoOfLeaves(imp.getNoOfLeaves());
+			impDTO.setGrossPay(imp.getGrossPay());
+			impDTO.setNetPay(imp.getNetPay());
+			impDTO.setTds(imp.getTds());
+			impDTO.setSubmitForApproverStatus(imp.getSubmitForAproverStatus());
+			
+			list.add(impDTO);
+		}
+		responseList.setData(list);
+		return responseList;
 	}
 }

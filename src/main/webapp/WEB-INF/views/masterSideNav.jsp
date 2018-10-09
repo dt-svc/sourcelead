@@ -278,7 +278,7 @@
 							</c:if>
 							
 							<c:if test="${SourceLeadWeb_orgLocations.country == 'India'}">
-								<li class="${sessionData.nav == 'MyPayroll' ? 'treview-active' : ''}"><a href="<c:url value='${appPath}/myPayRoll'/>" title="My Pays"><i class="fa fa-chevron-right"></i> My Pays</a></li>
+								<li class="${sessionData.nav == 'MyPayroll' ? 'treview-active' : ''}"><a href="<c:url value='${appPath}/myPayrollInd'/>" title="My Pays"><i class="fa fa-chevron-right"></i> My Pays</a></li>
 								<li class="${sessionData.nav == 'RunPayroll' ? 'treview-active' : ''}"><a href="<c:url value='${appPath}/runIndianPayRoll'/>" title="Payroll"><i class="fa fa-chevron-right"></i> Payroll</a></li>
 							</c:if>
 							</ul>
@@ -293,7 +293,7 @@
 							</c:if>
 							
 							<c:if test="${SourceLeadWeb_orgLocations.country == 'India'}">
-								<li class="${sessionData.nav == 'MyPayroll' ? 'treview-active' : ''}"><a href="<c:url value='${appPath}/myPayRoll'/>" title="My Pays"><i class="fa fa-chevron-right"></i>My Payroll</a></li>
+								<li class="${sessionData.nav == 'MyPayroll' ? 'treview-active' : ''}"><a href="<c:url value='${appPath}/myPayrollInd'/>" title="My Pays"><i class="fa fa-chevron-right"></i>My Payroll</a></li>
 								<li class="${sessionData.nav == 'RunPayroll' ? 'treview-active' : ''}"><a href="<c:url value='${appPath}/runIndianPayRoll'/>" title="Payroll"><i class="fa fa-chevron-right"></i>Run Payroll</a></li>
 							</c:if>
 							</ul>
@@ -319,7 +319,7 @@
 							</c:if>
 							
 							<c:if test="${SourceLeadWeb_orgLocations.country == 'India'}">
-								<li class="${sessionData.nav == 'MyPayroll' ? 'navActive' : ''}"><a href="<c:url value='${appPath}/myPayRoll'/>" title="My Pays"><span class="navIcons payIcon"></span><b>My Payroll</b></a></li>
+								<li class="${sessionData.nav == 'MyPayroll' ? 'navActive' : ''}"><a href="<c:url value='${appPath}/myPayrollInd'/>" title="My Pays"><span class="navIcons payIcon"></span><b>My Payroll</b></a></li>
 							</c:if>
 					</c:if>
 
