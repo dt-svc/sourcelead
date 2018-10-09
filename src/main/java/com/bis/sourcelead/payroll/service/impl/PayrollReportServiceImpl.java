@@ -18,6 +18,7 @@ import com.bis.sourcelead.entity.Department;
 import com.bis.sourcelead.entity.Employees;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.payroll.dao.PayrollReportDao;
+import com.bis.sourcelead.payroll.dto.AssociateWithHoldingDTO;
 import com.bis.sourcelead.payroll.dto.CheckRegisterReportDTO;
 import com.bis.sourcelead.payroll.dto.CompareDataDTO;
 import com.bis.sourcelead.payroll.dto.ContributionDTO;
@@ -486,6 +487,13 @@ public class PayrollReportServiceImpl implements PayrollReportService{
 			e.printStackTrace();
 		}
 		return list;
+	}
+
+	@Override
+	public ResponseList<AssociateWithHoldingDTO> getAssociateWithHoldingReports(OrgLocations orgLocation, AssociateWithHoldingDTO associateWithHoldingDTO)
+	{
+		ResponseList<AssociateWithHoldingDTO> response = payrollReportDao.getAssociateWithHoldingReport(orgLocation,associateWithHoldingDTO);
+		return response;
 	}
 
 
