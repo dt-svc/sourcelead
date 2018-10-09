@@ -8,6 +8,8 @@ public class INDPayrollDTO {
 	private Long empPayrollId;
 	
 	private String empId;
+	
+	private Long employee;
 
 	private String empName;
 	
@@ -273,6 +275,14 @@ public class INDPayrollDTO {
 
 	public void setPayHeadHistoryDTOList(List<AssociatePayrollPayheadHistoryDTO> payHeadHistoryDTOList) {
 		this.payHeadHistoryDTOList = payHeadHistoryDTOList;
+	}
+
+	public Long getEmployee() {
+		return employee;
+	}
+
+	public void setEmployee(Long employee) {
+		this.employee = employee;
 	}
 	
 	

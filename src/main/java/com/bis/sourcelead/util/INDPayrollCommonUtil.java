@@ -286,6 +286,11 @@ public void sendMailToUserFromndIanPayrolApprover(User loginUser,  OrgLocations 
 				}else {
 					payrollDTO.setEmpId("");
 				}
+				
+				if(employeePayroll != null && employeePayroll.getEmployee() != null) {
+					payrollDTO.setEmployee(employeePayroll.getEmployee().getId());
+				}
+				
 				if(employeePayroll != null && employeePayroll.getEmployee() != null && employeePayroll.getEmployee().getUser() != null) {
 					payrollDTO.setEmpName(employeePayroll.getEmployee().getUser().getFullName());
 				}else {
@@ -295,12 +300,6 @@ public void sendMailToUserFromndIanPayrolApprover(User loginUser,  OrgLocations 
 				if(employeePayroll != null && employeePayroll.getCandidate() != null) {
 					payrollDTO.setEmployeeDesignationType(employeePayroll.getCandidate().getDesignationType());
 					payrollDTO.setCandidateId(employeePayroll.getCandidate().getId());
-				}
-				
-				if(employeePayroll != null && employeePayroll.getEmployee() != null) {
-					payrollDTO.setEmpId(employeePayroll.getEmployee().getEmployeeId());
-				}else {
-					payrollDTO.setEmpId("");
 				}
 				
 				List<AssociatePayrollPayheadHistoryDTO> payHeadHistoryDTOList = getAssociatePayrollPayheadHistoryDTOListFromAssociatePayrollPayheadHistoryList(employeePayroll, employeePayroll.getAssociatePayrollPayheadHistory(), orgLocations);
@@ -333,9 +332,9 @@ public void sendMailToUserFromndIanPayrolApprover(User loginUser,  OrgLocations 
 				employeePayroll.setIndEmpPayrollUUID(payrollDTO.getIndEmpPayrollUUID());
 				employeePayroll.setIndPaysheetFrequency(indPaysheetFrequency);
 				
-				if(StringUtils.isNotEmpty(payrollDTO.getEmpId())) {
+				if(payrollDTO.getEmployee() != null) {
 					Employees employee = new Employees();
-					employee.setId(Long.parseLong(payrollDTO.getEmpId()));
+					employee.setId(payrollDTO.getEmployee());
 					employeePayroll.setEmployee(employee);
 				}
 				if(payrollDTO.getCandidateId() != null) {
