@@ -281,9 +281,9 @@ private static final Logger logger = LoggerFactory.getLogger(AssociateBankDataDa
 	@SuppressWarnings("unchecked")
 	@Override
 	@Transactional
-	public List<SalaryDTO> getSalaryByGroupId(OrgLocations orgLocation, Long candidateId,Date freqStartDate, Date freqEndDate)
+	public SalaryDTO getSalaryByGroupId(OrgLocations orgLocation, Long candidateId,Date freqStartDate, Date freqEndDate)
 	{
-		List<SalaryDTO> salarylist = null;
+		SalaryDTO salarylist = null;
 		try {
 			Session session = this.sessionFactory.getCurrentSession();
 			java.sql.Date startDate = new java.sql.Date(freqStartDate.getTime());
@@ -294,20 +294,22 @@ private static final Logger logger = LoggerFactory.getLogger(AssociateBankDataDa
 			.append("can.FIRST_NAME as firstName,")
 			.append("can.LAST_NAME as lastName,")
 			.append("can.IS_ASSOCIATE as isTerminated,") 
-			.append("role.TERMINATE_DATE as terminatedDate ")
-			.append(" FROM sourcelead.USER_ROLE role,USER usr,CANDIDATE can,ASSOCIATE_SALARY sal ")
+			.append("role.TERMINATE_DATE as terminatedDate, ")
+			.append("emp.HIRE_DATE as joiningDate ")
+			.append(" FROM sourcelead.USER_ROLE role,USER usr,CANDIDATE can,ASSOCIATE_SALARY sal,EMPLOYEE emp ")
 			.append(" where usr.ID = role.USER_ID")
 			.append(" AND  can.CONSULTANT_USER_ID = usr.ID")
+			.append(" AND emp.USER_ID = can.CONSULTANT_USER_ID")
 			.append(" AND sal.CANDIDATE_ID = can.ID")
-			.append(" AND can.ID =:candidateId AND sal.ORG_LOCATION_ID = :locationId ")
-			.append(" AND role.TERMINATE_DATE >= :startDate AND role.TERMINATE_DATE <= :endDate");// OR (role.TERMINATE_DATE IS NULL OR role.TERMINATE_DATE IS NULL))");
+			.append(" AND can.ID =:candidateId AND sal.ORG_LOCATION_ID = :locationId ");
+			//.append(" AND role.TERMINATE_DATE >= :startDate AND role.TERMINATE_DATE <= :endDate");// OR (role.TERMINATE_DATE IS NULL OR role.TERMINATE_DATE IS NULL))");
 			Query queryObj = session.createSQLQuery(sb.toString());
 			queryObj.setLong("candidateId", candidateId)
-			.setLong("locationId", orgLocation.getId())
-			.setDate("startDate", startDate)
-			.setDate("endDate", endDate);
+			.setLong("locationId", orgLocation.getId());
+//			.setDate("startDate", startDate)
+//			.setDate("endDate", endDate);
 			queryObj.setResultTransformer(Transformers.aliasToBean(SalaryDTO.class));
-			salarylist = queryObj.list();
+			salarylist = (SalaryDTO) queryObj.uniqueResult();
 		}catch (Exception e) {
 			e.printStackTrace();
 		}

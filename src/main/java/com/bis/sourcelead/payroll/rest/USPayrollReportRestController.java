@@ -27,11 +27,11 @@ import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.entity.UserGroup;
 import com.bis.sourcelead.enums.Result;
+import com.bis.sourcelead.payroll.dto.AssociateWithHoldingDTO;
 import com.bis.sourcelead.payroll.dto.CheckRegisterReportDTO;
 import com.bis.sourcelead.payroll.dto.PayPeriodDTO;
 import com.bis.sourcelead.payroll.dto.PayrollComparisonDTO;
 import com.bis.sourcelead.payroll.dto.PayrollReportDTO;
-import com.bis.sourcelead.payroll.entity.DeductionHistory;
 import com.bis.sourcelead.payroll.service.PayrollReportService;
 import com.bis.sourcelead.payroll.service.PaysheetFrequencyService;
 import com.bis.sourcelead.payroll.service.USPayPeriodService;
@@ -206,6 +206,21 @@ public class USPayrollReportRestController {
 		return model;
 	}
 	
+	/**
+	 * Returning Us Associate Withholding JSP
+	 * 
+	 * @param request
+	 * @param response
+	 * @return
+	 * @throws Exception
+	 */
+	@RequestMapping(value = "/associateWithholding")
+	public ModelAndView associateWithholding(HttpServletRequest request, HttpServletResponse response) throws Exception
+	{
+		ModelAndView model = new ModelAndView();
+		model.setViewName("payroll/associateWithHolding");
+		return model;
+	}
 	/**
 	 * Pay Groups by org location Id
 	 * @param request
@@ -531,5 +546,25 @@ public class USPayrollReportRestController {
 			file.delete();
 		}
 	}
+	
+	
+	@RequestMapping(value = { "/getAssociateWithHoldingReports","/rest/getAssociateWithHoldingReports" }, method = RequestMethod.POST)
+	@ResponseBody
+	public ResponseList<AssociateWithHoldingDTO> getAssociateWithHoldingReports(AssociateWithHoldingDTO associateWithHoldingDTO,HttpServletRequest request, HttpServletResponse response) throws Exception
+	{
+		OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+		String[] tableColumns = {"payrollDeductionType",  "employeeId","firstName", "departmentName","schedule","dedAmount","ytdDeductions"};
+	    int sortColumnIndex = 1;		 //by default sorting using updated date
+		String sortColumnOrder = "asc";  //by default descending order
+		if(associateWithHoldingDTO.getOrder() != null && !associateWithHoldingDTO.getOrder().isEmpty()) {
+			sortColumnIndex = Integer.parseInt(associateWithHoldingDTO.getOrder().get(0).get("column"));
+			sortColumnOrder = associateWithHoldingDTO.getOrder().get(0).get("dir");
+		}
+		associateWithHoldingDTO.setSortColumn(tableColumns[sortColumnIndex]);
+		associateWithHoldingDTO.setSortOrder(sortColumnOrder);
+		ResponseList<AssociateWithHoldingDTO> res = payrollReportService.getAssociateWithHoldingReports(orgLocation,associateWithHoldingDTO);
+		return res;
+	}
+	
 	
 }

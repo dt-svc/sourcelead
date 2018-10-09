@@ -4,6 +4,7 @@ import java.util.List;
 
 import com.bis.sourcelead.dto.ResponseList;
 import com.bis.sourcelead.entity.OrgLocations;
+import com.bis.sourcelead.payroll.dto.AssociateWithHoldingDTO;
 import com.bis.sourcelead.payroll.dto.CheckRegisterReportDTO;
 import com.bis.sourcelead.payroll.dto.PayrollComparisonDTO;
 import com.bis.sourcelead.payroll.dto.PayrollReportDTO;
@@ -25,4 +26,6 @@ public interface PayrollReportService {
 	List<PayrollReportDTO>  exportToPdfContributionReport(OrgLocations orgLocation, PayrollReportDTO payrollReportDTO);
 	
 	List<PayrollReportDTO> exportToPdfDeductionReport(OrgLocations orgLocation, PayrollReportDTO payrollReportDTO);
+
+	ResponseList<AssociateWithHoldingDTO> getAssociateWithHoldingReports(OrgLocations orgLocation, AssociateWithHoldingDTO associateWithHoldingDTO);
 }
