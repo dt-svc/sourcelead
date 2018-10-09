@@ -123,7 +123,7 @@ public class GenerateINDPayrollServiceImpl implements GenerateINDPayrollService{
 			paySheetFreq.setCreatedBy(loginUser.getId());
 			paySheetFreq.setUpdatedBy(loginUser.getId());
 			paySheetFreq.setStatus(1);
-			paySheetFreq.setApproverStatus(PayrollConstant.DRAFT);
+			paySheetFreq.setApproverStatus(PayrollConstant.NEW);
 			paySheetFreq.setActionPerformedBy(""+loginUser.getFullName());
 			paySheetFreq.setPaySheetFrequencyUUID(SourceLeadRandomCodeHelper.generateRandomUUID());
 			
@@ -138,12 +138,12 @@ public class GenerateINDPayrollServiceImpl implements GenerateINDPayrollService{
 					if(Constants.ALL_RECORDS.equalsIgnoreCase(generateINDPayrollDTO.getPaytype())) {
 						draftPayroll = indPaysheetFrequencyDTO.getIndPayrollDTO()
 								.stream()
-								.filter(p->p.getEmployeeDesignationType() != null && PayrollConstant.DRAFT.equalsIgnoreCase(p.getApproverStatus()) && !PayrollConstant.C2C.equalsIgnoreCase(p.getEmployeeDesignationType()))
+								.filter(p->p.getEmployeeDesignationType() != null && (PayrollConstant.NEW.equalsIgnoreCase(p.getApproverStatus()) || PayrollConstant.DRAFT.equalsIgnoreCase(p.getApproverStatus()))&& !PayrollConstant.C2C.equalsIgnoreCase(p.getEmployeeDesignationType()))
 								.collect(Collectors.toList());
 					}else {
 						draftPayroll = indPaysheetFrequencyDTO.getIndPayrollDTO()
 								.stream()
-								.filter(p->p.getEmployeeDesignationType() != null && PayrollConstant.DRAFT.equalsIgnoreCase(p.getApproverStatus()) && p.getPayType().equalsIgnoreCase(generateINDPayrollDTO.getPaytype()) && !PayrollConstant.C2C.equalsIgnoreCase(p.getEmployeeDesignationType()))
+								.filter(p->p.getEmployeeDesignationType() != null && (PayrollConstant.NEW.equalsIgnoreCase(p.getApproverStatus()) || PayrollConstant.DRAFT.equalsIgnoreCase(p.getApproverStatus()))&& p.getPayType().equalsIgnoreCase(generateINDPayrollDTO.getPaytype()) && !PayrollConstant.C2C.equalsIgnoreCase(p.getEmployeeDesignationType()))
 								.collect(Collectors.toList());
 					}
 					indPaysheetFrequencyDTO.setIndPayrollDTO(draftPayroll);
@@ -211,7 +211,7 @@ public class GenerateINDPayrollServiceImpl implements GenerateINDPayrollService{
 							employeePayroll.setNetPay(utilDTO.getNetPay());
 							employeePayroll.setProfessionalTax(utilDTO.getProfessionalTax());
 						    employeePayroll.setTds(utilDTO.getTds());
-						    employeePayroll.setSubmitForAproverStatus(PayrollConstant.DRAFT);
+						    employeePayroll.setSubmitForAproverStatus(PayrollConstant.NEW);
 							
 							employeePayroll.setIndEmpPayrollUUID(SourceLeadRandomCodeHelper.generateRandomUUID());
 							employeePayroll.setStatus(1);

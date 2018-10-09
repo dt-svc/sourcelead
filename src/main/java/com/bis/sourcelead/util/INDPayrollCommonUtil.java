@@ -280,6 +280,9 @@ public void sendMailToUserFromndIanPayrolApprover(User loginUser,  OrgLocations 
 		if(payrollList != null && !payrollList.isEmpty()) {
 			for(IndEmployeePayroll employeePayroll :payrollList) {
 				INDPayrollDTO payrollDTO = new INDPayrollDTO();
+				if(employeePayroll.getId() != null) {
+					payrollDTO.setId(employeePayroll.getId());
+				}
 				payrollDTO.setIndEmpPayrollUUID(employeePayroll.getIndEmpPayrollUUID());
 				if(employeePayroll != null && employeePayroll.getEmployee() != null) {
 					payrollDTO.setEmpId(employeePayroll.getEmployee().getEmployeeId());
@@ -317,6 +320,11 @@ public void sendMailToUserFromndIanPayrolApprover(User loginUser,  OrgLocations 
 				payrollDTO.setApproverStatus(employeePayroll.getIndPaysheetFrequency().getApproverStatus());
 				payrollDTO.setPayType(employeePayroll.getPayType());
 				payrollDTO.setPaySheetFrequencyUUID(employeePayroll.getIndPaysheetFrequency().getPaySheetFrequencyUUID());
+				payrollDTO.setPayCheckDate(employeePayroll.getPayCheckDate());
+				payrollDTO.setCreatedBy(employeePayroll.getCreatedBy());
+				payrollDTO.setCreatedDate(employeePayroll.getCreatedDate());
+				payrollDTO.setUpdatedBy(employeePayroll.getUpdatedBy());
+				payrollDTO.setUpdatedDate(employeePayroll.getUpdatedDate());
 				payrollDTOList.add(payrollDTO);
 			}
 		}
@@ -329,6 +337,9 @@ public void sendMailToUserFromndIanPayrolApprover(User loginUser,  OrgLocations 
 		if(payrollDTOList != null && !payrollDTOList.isEmpty()) {
 			for(INDPayrollDTO payrollDTO :payrollDTOList) {
 				IndEmployeePayroll employeePayroll = new IndEmployeePayroll();
+				if(payrollDTO.getId() != null) {
+					employeePayroll.setId(payrollDTO.getId());
+				}
 				employeePayroll.setIndEmpPayrollUUID(payrollDTO.getIndEmpPayrollUUID());
 				employeePayroll.setIndPaysheetFrequency(indPaysheetFrequency);
 				
@@ -352,11 +363,12 @@ public void sendMailToUserFromndIanPayrolApprover(User loginUser,  OrgLocations 
 				employeePayroll.setNetPay(payrollDTO.getNetPay());
 				employeePayroll.setTds(payrollDTO.getTds());
 				employeePayroll.setProfessionalTax(payrollDTO.getProfessionalTax());
-				employeePayroll.setCreatedBy(indPaysheetFrequency.getCreatedBy());
-				employeePayroll.setCreatedDate(indPaysheetFrequency.getCreatedDate());
-				employeePayroll.setUpdatedBy(indPaysheetFrequency.getUpdatedBy());
-				employeePayroll.setUpdatedDate(indPaysheetFrequency.getUpdatedDate());
-				employeePayroll.setSubmitForAproverStatus(indPaysheetFrequency.getApproverStatus());
+				employeePayroll.setPayCheckDate(payrollDTO.getPayCheckDate());
+				employeePayroll.setCreatedBy(payrollDTO.getCreatedBy());
+				employeePayroll.setCreatedDate(payrollDTO.getCreatedDate());
+				employeePayroll.setUpdatedBy(payrollDTO.getUpdatedBy());
+				employeePayroll.setUpdatedDate(payrollDTO.getUpdatedDate());
+				employeePayroll.setSubmitForAproverStatus(payrollDTO.getApproverStatus());
 				employeePayroll.setStatus(indPaysheetFrequency.getStatus());
 				List<AssociatePayrollPayheadHistory> payHeadHistoryList = getAssociatePayrollPayheadHistoryListFromAssociatePayrollPayheadHistoryDTOList(employeePayroll,payrollDTO.getPayHeadHistoryDTOList(), orgLocations);
 			    if(payHeadHistoryList != null && !payHeadHistoryList.isEmpty()) {
@@ -463,7 +475,6 @@ public void sendMailToUserFromndIanPayrolApprover(User loginUser,  OrgLocations 
 		if(payHeadHistoryList != null && !payHeadHistoryList.isEmpty()) {
 			for(AssociatePayrollPayheadHistory payHeadHistory : payHeadHistoryList) {
 				AssociatePayrollPayheadHistoryDTO  payHeadHistoryDTO = new AssociatePayrollPayheadHistoryDTO();
-				payHeadHistoryDTO.setId(payHeadHistory.getId());
 				payHeadHistoryDTO.setIndEmployeePayrollId(indEmployeePayroll.getId());
 				payHeadHistoryDTO.setIndEmpPayrollUUID(indEmployeePayroll.getIndEmpPayrollUUID());
 				if(payHeadHistory.getPayrollPayhead() !=null) {
@@ -499,9 +510,6 @@ public void sendMailToUserFromndIanPayrolApprover(User loginUser,  OrgLocations 
 		if(payHeadHistoryDTOList != null && !payHeadHistoryDTOList.isEmpty()) {
 			for(AssociatePayrollPayheadHistoryDTO payHeadHistoryDTO : payHeadHistoryDTOList) {
 				AssociatePayrollPayheadHistory  payHeadHistory = new AssociatePayrollPayheadHistory();
-			    if(payHeadHistoryDTO.getId() != null) {
-			    	payHeadHistory.setId(payHeadHistoryDTO.getId());
-			    }
 			    payHeadHistory.setIndEmployeePayrollId(indEmployeePayroll);
 				if(payHeadHistoryDTO.getPayrollPayhead() !=null) {
 					PayrollPayhead payrollPayhead = new PayrollPayhead();
@@ -520,7 +528,7 @@ public void sendMailToUserFromndIanPayrolApprover(User loginUser,  OrgLocations 
 				if(payHeadHistoryDTO.getUpdatedBy() != null) {
 					User user = new User();
 					user.setId(payHeadHistoryDTO.getUpdatedBy());
-					payHeadHistory.setCreatedBy(user);
+					payHeadHistory.setUpdatedBy(user);
 				}
 				
 				if(StringUtils.isNotEmpty(payHeadHistoryDTO.getCreatedDate())) {

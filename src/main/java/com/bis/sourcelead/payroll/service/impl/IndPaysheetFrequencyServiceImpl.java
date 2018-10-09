@@ -30,6 +30,7 @@ import com.bis.sourcelead.payroll.service.ConfigurePayrollApproverService;
 import com.bis.sourcelead.payroll.service.IndPaysheetFrequencyService;
 import com.bis.sourcelead.util.CommonUtil;
 import com.bis.sourcelead.util.INDPayrollCommonUtil;
+import com.bis.sourcelead.util.SourceLeadSessionManager;
 
 @Service
 public class IndPaysheetFrequencyServiceImpl implements IndPaysheetFrequencyService{
@@ -75,15 +76,7 @@ public class IndPaysheetFrequencyServiceImpl implements IndPaysheetFrequencyServ
 		Response<IndPaysheetFrequencyDTO> response = new Response<>();
 		IndPaysheetFrequency freq = indPaysheetFrequencyDao.getIndPaysheetFrequencyByEmpPayrollUUID(payrollFrequencyUUID);
 		if(freq != null) {
-			IndPaysheetFrequencyDTO freqDTO = new IndPaysheetFrequencyDTO();
-			freqDTO.setId(freq.getId());
-			freqDTO.setGroupId(freq.getUserGroup().getId().toString());
-			freqDTO.setGroupName(freq.getUserGroup().getGroupName());
-			freqDTO.setFrequencyStartDateStr(commonUtil.dateStrFromOrgDateFormatter(orgLocation.getDateFormat(),freq.getFrequencyStartDate()));
-			freqDTO.setFrequencyEndDateStr(commonUtil.dateStrFromOrgDateFormatter(orgLocation.getDateFormat(),freq.getFrequencyEndDate()));
-			freqDTO.setPayCheckDateStr(commonUtil.dateStrFromOrgDateFormatter(orgLocation.getDateFormat(),freq.getPayCheckDate()));
-			freqDTO.setPaySheetFrequencyUUID(freq.getPaySheetFrequencyUUID());
-			freqDTO.setApproverStatus(freq.getApproverStatus());
+			IndPaysheetFrequencyDTO freqDTO =indPayrollCommonUtil.getIndPaysheetFrequencyDTOFromIndPaysheetFrequency(freq, orgLocation);
 			response.setObject(freqDTO);
 		}
 		return response;

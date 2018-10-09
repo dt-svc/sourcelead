@@ -10,10 +10,7 @@
 			<h2>Run Payroll</h2>
 		</div>
 		<div class="pull-right brud-crum">
-			<a
-				href="<c:url value='${appPath}/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a>
-			&raquo; <a href="<c:url value='${appPath}/runIndianPayRoll'/>">Run
-				Payroll</a> &raquo; Review Payroll
+			<a href="<c:url value='${appPath}/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a>  &raquo; <a href="<c:url value='${appPath}/runIndianPayRoll'/>">Run Payroll</a> &raquo; Review Payroll
 		</div>
 	</section>
 	<div class="tabsMenu clearfix">
@@ -89,8 +86,7 @@
 						<tbody>
 							<c:forEach var="empPayroll" items="${employeePayrollList}">
 								<tr>
-
-									<%-- <c:if test="${freqResponse.approverStatus != 'SENT' && freqResponse.approverStatus != 'APPROVED'}"> --%>
+									<c:if test="${freqResponse.approverStatus != 'SENT' && freqResponse.approverStatus != 'APPROVED'}"> 
 										 <td>
 												<div class="checkbox-new pull-left ml">
 													<input id="${empPayroll.indEmpPayrollUUID}" class="checkbox-custom" name="empPayroll"
@@ -98,7 +94,7 @@
 														class="checkbox-custom-label"></label>
 												</div>
 									     </td>
-								<%-- 	</c:if> --%>
+								   </c:if> 
 									<td><div class="tblminwidth-50">${empPayroll.empId}</div></td>
 									<td><div class="tbldata-dotdot-vsm">${empPayroll.empName}</div></td>
 
@@ -131,7 +127,9 @@
 			<div class="clearfix mt"></div>
 			<nav class="clearfix">
 				<ul class="pull-right mr list-unstyled list-inline">
+				    <c:if test="${freqResponse.approverStatus == 'NEW'}">
 						<li><a class="btn btn-primary btnSuccess" onclick="sentForApprove('draft');">Save As Draft</a></li>
+					</c:if>
 					<c:if test="${freqResponse.approverStatus != 'SENT' && freqResponse.approverStatus != 'APPROVED'}">
 						<li><a class="btn btn-primary btnSuccess" onclick="sentForApprove('submitted');">Submit for Approval</a></li>
 					</c:if>
@@ -238,9 +236,6 @@ function sentForApprove(approverStatus){
 	$("input:checkbox[name=empPayroll]:checked").each(function(){
 		excludeEmpArr.push($(this).val());
 	});
-	alert(approverStatus);
-	alert(feqUUID);
-	alert(excludeEmpArr);
 	$.ajax({
         type : "POST",
         url: sourceleadUrl+"/sentForApproveIndPayroll?approverStatus="+approverStatus+"&paySheetFrequencyUUID="+feqUUID+"&excludeEmpPayrollUUID="+excludeEmpArr,    
