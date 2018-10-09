@@ -230,9 +230,9 @@ public class ImmigrationCommonServiceImpl implements ImmigrationCommonService {
 			
 			StringBuilder actionDesc = new StringBuilder();
 			if (StringUtils.isNotBlank(immigrationDTO.getImmigrationId())) {
-				actionDesc.append("Immigration Details Edited").toString();
+				actionDesc.append("Petition Details Edited").toString();
 			} else {
-				actionDesc.append("New Immigration Added").toString();
+				actionDesc.append("New Petition Added").toString();
 			}
 			immigrationActivityCommonUtil.saveImmigrationActivities(user, orgLocations, immigration, null,
 					actionDesc.toString());
