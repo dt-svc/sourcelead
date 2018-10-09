@@ -28,6 +28,8 @@ public class PayrollPayheadDTO implements Serializable{
 		private String type;
 		
 	    private String payType;
+	    
+	    private Long payTypeId;
 		
 		private String form16;
 		
@@ -357,6 +359,15 @@ public class PayrollPayheadDTO implements Serializable{
 
 		public void setIsFormulaEditable(String isFormulaEditable) {
 			this.isFormulaEditable = isFormulaEditable;
+		}
+
+
+		public Long getPayTypeId() {
+			return payTypeId;
+		}
+
+		public void setPayTypeId(Long payTypeId) {
+			this.payTypeId = payTypeId;
 		}
 
 		public BigDecimal getTotalForfrequencyLevel() {

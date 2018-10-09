@@ -1,5 +1,6 @@
 package com.bis.sourcelead.rest;
 
+import java.util.HashSet;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -21,8 +22,8 @@ import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.Payroll;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.payroll.dto.AssociatePayrollPayheadHistoryDTO;
+import com.bis.sourcelead.payroll.dto.INDPayrollDTO;
 import com.bis.sourcelead.payroll.dto.IndPaysheetFrequencyDTO;
-import com.bis.sourcelead.payroll.entity.ConfigurePayrollApprover;
 import com.bis.sourcelead.payroll.entity.IndEmployeePayroll;
 import com.bis.sourcelead.payroll.service.AssociatePayrollPayheadHistoryService;
 import com.bis.sourcelead.payroll.service.ConfigurePayrollApproverService;
@@ -30,6 +31,7 @@ import com.bis.sourcelead.payroll.service.IndPayrollService;
 import com.bis.sourcelead.payroll.service.IndPaysheetFrequencyService;
 import com.bis.sourcelead.service.PayrollService;
 import com.bis.sourcelead.util.CommonUtil;
+import com.bis.sourcelead.util.INDPayrollCommonUtil;
 import com.bis.sourcelead.util.SourceLeadSessionManager;
 
 /**
@@ -53,6 +55,9 @@ public class PayrollRestController {
 	
 	@Autowired
 	CommonUtil commonUtil;
+	
+	@Autowired
+	INDPayrollCommonUtil iNDPayrollCommonUtil;
 	
 	@Autowired
 	IndPayrollService indPayrollService;
@@ -110,15 +115,23 @@ public class PayrollRestController {
 	 	ModelAndView model = new ModelAndView();
 	 	OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 	 	User loginUser = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
-		ResponseList<IndEmployeePayroll> indEmployeePayrollResponse = indPaysheetFrequencyService.getIndEmployeePayrollListByPaysheetFrequencyUuid(indPaysheetFrequencyDTO.getPaySheetFrequencyUUID());
-		model.addObject("employeePayrollList", indEmployeePayrollResponse.getData());
-		
-		Response<IndPaysheetFrequencyDTO> freqResponse = indPaysheetFrequencyService.getIndPaysheetFrequencyByEmpPayrollUUID(indPaysheetFrequencyDTO.getPaySheetFrequencyUUID(), orgLocation);
-		model.addObject("freqResponse", freqResponse.getObject());
-		
+	 	
+	    Object sessionObj = SourceLeadSessionManager.getSessionAttribute(request, indPaysheetFrequencyDTO.getPaySheetFrequencyUUID());
+	    List<INDPayrollDTO> employeePayrollDTOList = null;
+	    if(sessionObj != null) {
+	    	indPaysheetFrequencyDTO = (IndPaysheetFrequencyDTO) sessionObj;
+	    	employeePayrollDTOList = indPaysheetFrequencyDTO.getIndPayrollDTO();
+	    }else {
+	    	Response<IndPaysheetFrequencyDTO> freqResponse = indPaysheetFrequencyService.getIndPaysheetFrequencyByEmpPayrollUUID(indPaysheetFrequencyDTO.getPaySheetFrequencyUUID(), orgLocation);
+	    	if(freqResponse != null) {
+	    		indPaysheetFrequencyDTO = freqResponse.getObject();
+	    		employeePayrollDTOList = indPaysheetFrequencyDTO.getIndPayrollDTO();
+	    	}
+	    }
+	    model.addObject("freqResponse", indPaysheetFrequencyDTO);
+		model.addObject("employeePayrollList", employeePayrollDTOList);
 		Boolean isPayrollApprover = configurePayrollApproverService.isLoginUserIsPayRollApprover(loginUser.getId(), orgLocation.getId());
 		model.addObject("isPayrollApprover", isPayrollApprover);
-		
 		model.setViewName("payroll_india/payroll/employeePayrollList");
 		model.addObject("sourceleadUrl", sourceleadUrl);
 		return model;

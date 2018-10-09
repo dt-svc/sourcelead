@@ -6,6 +6,7 @@ import java.util.List;
 import java.util.Set;
 
 import org.apache.commons.lang.exception.ExceptionUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,6 +18,7 @@ import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.enums.Result;
 import com.bis.sourcelead.payroll.dao.IndPaysheetFrequencyDao;
+import com.bis.sourcelead.payroll.dto.INDPayrollDTO;
 import com.bis.sourcelead.payroll.dto.IndApprovePayrollDTO;
 import com.bis.sourcelead.payroll.dto.IndPaysheetFrequencyDTO;
 import com.bis.sourcelead.payroll.dto.PayrollConstant;
@@ -74,7 +76,7 @@ public class IndPaysheetFrequencyServiceImpl implements IndPaysheetFrequencyServ
 		IndPaysheetFrequency freq = indPaysheetFrequencyDao.getIndPaysheetFrequencyByEmpPayrollUUID(payrollFrequencyUUID);
 		if(freq != null) {
 			IndPaysheetFrequencyDTO freqDTO = new IndPaysheetFrequencyDTO();
-			freqDTO.setId(freq.getId().toString());
+			freqDTO.setId(freq.getId());
 			freqDTO.setGroupId(freq.getUserGroup().getId().toString());
 			freqDTO.setGroupName(freq.getUserGroup().getGroupName());
 			freqDTO.setFrequencyStartDateStr(commonUtil.dateStrFromOrgDateFormatter(orgLocation.getDateFormat(),freq.getFrequencyStartDate()));
@@ -89,27 +91,45 @@ public class IndPaysheetFrequencyServiceImpl implements IndPaysheetFrequencyServ
 	
 
 	@Override
-	public Response<IndApprovePayrollDTO> sentForApproveIndPayroll(IndApprovePayrollDTO indApprovePayrollDTO,
+	public Response<IndApprovePayrollDTO> sentForApproveIndPayroll(IndApprovePayrollDTO indApprovePayrollDTO,IndPaysheetFrequencyDTO indPaysheetFrequencyDTO ,
 			OrgLocations orgLocation, User loginUser) throws Exception {
 		Response<IndApprovePayrollDTO> res = new Response<>();
 		try {
-				IndPaysheetFrequency indPaysheetFrequency = indPaysheetFrequencyDao.getIndPaysheetFrequencyByEmpPayrollUUID(indApprovePayrollDTO.getPaySheetFrequencyUUID());
-				indPaysheetFrequency.setApproverStatus(PayrollConstant.SENT);
+			    IndPaysheetFrequency indPaysheetFrequency = null;
+				if(indPaysheetFrequencyDTO != null) {
+					 indPaysheetFrequency = indPayrollCommonUtil.getIndPaysheetFrequencyFromIndPaysheetFrequencyDTO(indPaysheetFrequencyDTO, orgLocation);
+				}else {
+					indPaysheetFrequency = indPaysheetFrequencyDao.getIndPaysheetFrequencyByEmpPayrollUUID(indApprovePayrollDTO.getPaySheetFrequencyUUID());
+				}
+				
+				if(StringUtils.isNotEmpty(indApprovePayrollDTO.getApproverStatus()) && indApprovePayrollDTO.getApproverStatus().equalsIgnoreCase(PayrollConstant.DRAFT)) {
+					indPaysheetFrequency.setApproverStatus(PayrollConstant.DRAFT); 
+				}else {
+					indPaysheetFrequency.setApproverStatus(PayrollConstant.SENT); 
+				}
+				
+				
 				indPaysheetFrequency.setUpdatedBy(loginUser.getId());
 				indPaysheetFrequency.setUpdatedDate(new Date());
-			    
 				Set<IndEmployeePayroll> payrollList = indPaysheetFrequency.getIndEmployeepayroll();
 				for (IndEmployeePayroll payroll : payrollList) {
-					
 					if(!Arrays.asList(indApprovePayrollDTO.getExcludeEmpPayrollUUID()).contains(payroll.getIndEmpPayrollUUID())) {
-						payroll.setSubmitForAproverStatus(PayrollConstant.SENT);
+						if(StringUtils.isNotEmpty(indApprovePayrollDTO.getApproverStatus()) && indApprovePayrollDTO.getApproverStatus().equalsIgnoreCase(PayrollConstant.DRAFT)) {
+							payroll.setSubmitForAproverStatus(PayrollConstant.DRAFT);
+						}else {
+							indPaysheetFrequency.setApproverStatus(PayrollConstant.SENT); 
+						}
 						payroll.setUpdatedBy(loginUser.getId());
 						payroll.setUpdatedDate(new Date());
+					}else {
+						if(StringUtils.isNotEmpty(indApprovePayrollDTO.getApproverStatus()) && indApprovePayrollDTO.getApproverStatus().equalsIgnoreCase(PayrollConstant.DRAFT)) {
+							payrollList.remove(payroll);
+						}
 					}
 				}
 				indPaysheetFrequency.setIndEmployeepayroll(payrollList);
 				IndPaysheetFrequency savedPF = indPaysheetFrequencyDao.addIndPaysheetFrequency(indPaysheetFrequency);
-				if (savedPF != null) {
+				if (savedPF != null && StringUtils.isNotEmpty(savedPF.getApproverStatus()) && savedPF.getApproverStatus().equalsIgnoreCase(PayrollConstant.SENT)) {
 					res.setResponse(Result.SUCCESS.name());
 					res.setResponseMessage(Result.SUCCESS.getValue());
 					res.setObject(indApprovePayrollDTO);
@@ -118,7 +138,7 @@ public class IndPaysheetFrequencyServiceImpl implements IndPaysheetFrequencyServ
 					if(cpa != null) {
 						List<PayrollApprover> pa = configurePayrollApproverService.getPayrollApproversByCPAID(cpa.getId());
 						for (PayrollApprover payrollApprover : pa) {
-							indPayrollCommonUtil.sendMailToIndPayrollApprover(orgLocation,loginUser,payrollApprover,savedPF);
+							indPayrollCommonUtil.sendMailToIndPayrollApprover(orgLocation,loginUser,payrollApprover,indPaysheetFrequency);
 						}
 					}
 				}

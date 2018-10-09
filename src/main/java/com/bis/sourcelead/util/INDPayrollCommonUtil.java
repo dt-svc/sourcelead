@@ -20,13 +20,19 @@ import com.bis.sourcelead.dto.IndPayrollPayheadUtilDTO;
 import com.bis.sourcelead.dto.PayrollPayheadDTO;
 import com.bis.sourcelead.entity.AssociatePayrollPayheadHistory;
 import com.bis.sourcelead.entity.AssociateSalaryPayheadInd;
+import com.bis.sourcelead.entity.Candidate;
+import com.bis.sourcelead.entity.Employees;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.PayrollPayhead;
 import com.bis.sourcelead.entity.User;
+import com.bis.sourcelead.entity.UserGroup;
+import com.bis.sourcelead.payroll.dto.AssociatePayrollPayheadHistoryDTO;
+import com.bis.sourcelead.payroll.dto.INDPayrollDTO;
+import com.bis.sourcelead.payroll.dto.IndPaysheetFrequencyDTO;
+import com.bis.sourcelead.payroll.entity.EmployeePayroll;
 import com.bis.sourcelead.payroll.entity.IndEmployeePayroll;
 import com.bis.sourcelead.payroll.entity.IndPaysheetFrequency;
 import com.bis.sourcelead.payroll.entity.PayrollApprover;
-import com.bis.sourcelead.payroll.entity.PaysheetFrequency;
 
 /**
  * This is the commonutil for the certain common methods used throughout the application
@@ -80,6 +86,8 @@ public class INDPayrollCommonUtil {
 		}
 		return payrollPayheadDTOList;
 	}
+	
+	
 	
 /*	// Below method is the sending mail when user request for approe the ayroll (mail to approver)
 
@@ -187,6 +195,179 @@ public void sendMailToUserFromndIanPayrolApprover(User loginUser,  OrgLocations 
 
 	*/
 	
+	
+	public IndPaysheetFrequency getIndPaysheetFrequencyFromIndPaysheetFrequencyDTO(IndPaysheetFrequencyDTO paysheetFrequencyDTO,OrgLocations orgLocation) throws Exception {
+		IndPaysheetFrequency indPaysheetFrequency = null;
+		if(paysheetFrequencyDTO != null) {
+			indPaysheetFrequency = new IndPaysheetFrequency();
+			if(paysheetFrequencyDTO.getId() != null) {
+				indPaysheetFrequency.setId(paysheetFrequencyDTO.getId());
+			}
+			
+			indPaysheetFrequency.setPaySheetFrequencyUUID(paysheetFrequencyDTO.getPaySheetFrequencyUUID());
+			if(paysheetFrequencyDTO.getOrgLocationId() != null) {
+				OrgLocations orgLocations = new OrgLocations();
+				orgLocations.setId(paysheetFrequencyDTO.getOrgLocationId());
+				indPaysheetFrequency.setOrgLocation(orgLocations);
+			}
+			if(StringUtils.isNotEmpty(paysheetFrequencyDTO.getPayRunId())) {
+				indPaysheetFrequency.setPayRunId(Long.parseLong(paysheetFrequencyDTO.getPayRunId()));
+			}
+			
+			if(StringUtils.isNotEmpty(paysheetFrequencyDTO.getGroupId())) {
+				UserGroup userGroup = new UserGroup();
+				userGroup.setId(Long.parseLong(paysheetFrequencyDTO.getGroupId()));
+				indPaysheetFrequency.setUserGroup(userGroup);
+			}
+			if(StringUtils.isNotEmpty(paysheetFrequencyDTO.getFrequencyStartDateStr())) {
+				indPaysheetFrequency.setFrequencyStartDate(commonUtil.orgLocationDateFormat(orgLocation.getDateFormat(),paysheetFrequencyDTO.getFrequencyStartDateStr()));
+			}
+			
+			if(StringUtils.isNotEmpty(paysheetFrequencyDTO.getFrequencyEndDateStr())) {
+				indPaysheetFrequency.setFrequencyEndDate(commonUtil.orgLocationDateFormat(orgLocation.getDateFormat(),paysheetFrequencyDTO.getFrequencyEndDateStr()));
+			}
+			
+			if(StringUtils.isNotEmpty(paysheetFrequencyDTO.getPayCheckDateStr())) {
+				indPaysheetFrequency.setPayCheckDate(commonUtil.orgLocationDateFormat(orgLocation.getDateFormat(),paysheetFrequencyDTO.getPayCheckDateStr()));
+			}
+			
+			indPaysheetFrequency.setApproverStatus(paysheetFrequencyDTO.getApproverStatus());
+			indPaysheetFrequency.setStatus(paysheetFrequencyDTO.getStatus());
+		    
+			List<IndEmployeePayroll> payrollList = getIndEmployeePayrollFromINDPayrollDTO(indPaysheetFrequency,paysheetFrequencyDTO.getIndPayrollDTO(),orgLocation);
+			if(payrollList != null && !payrollList.isEmpty()) {
+				indPaysheetFrequency.setIndEmployeepayroll(new HashSet<IndEmployeePayroll>(payrollList));
+			}
+			indPaysheetFrequency.setCreatedBy(paysheetFrequencyDTO.getCreatedBy());
+		    indPaysheetFrequency.setUpdatedBy(paysheetFrequencyDTO.getUpdatedBy());
+		    indPaysheetFrequency.setUpdatedDate(commonUtil.orgLocationDateFormat(orgLocation.getDateFormat(),paysheetFrequencyDTO.getUpdatedDate()));
+		    indPaysheetFrequency.setCreatedDate(commonUtil.orgLocationDateFormat(orgLocation.getDateFormat(),paysheetFrequencyDTO.getCreatedDate()));
+		    indPaysheetFrequency.setActionPerformedBy(paysheetFrequencyDTO.getActionPerformedBy());
+		}
+		 return indPaysheetFrequency;
+	}
+	
+	public IndPaysheetFrequencyDTO getIndPaysheetFrequencyDTOFromIndPaysheetFrequency(IndPaysheetFrequency paysheetFrequency,OrgLocations orgLocation) throws Exception {
+		IndPaysheetFrequencyDTO	indPaysheetFrequencyDTO = null;
+		if(paysheetFrequency != null) {
+			indPaysheetFrequencyDTO = new IndPaysheetFrequencyDTO();
+			indPaysheetFrequencyDTO.setId(paysheetFrequency.getId());
+			indPaysheetFrequencyDTO.setPaySheetFrequencyUUID(paysheetFrequency.getPaySheetFrequencyUUID());
+			indPaysheetFrequencyDTO.setOrgLocationId(paysheetFrequency.getOrgLocation().getId());
+			indPaysheetFrequencyDTO.setPaySheetFrequencyId(paysheetFrequency.getId());
+			indPaysheetFrequencyDTO.setPayRunId(paysheetFrequency.getPayRunId().toString());
+			indPaysheetFrequencyDTO.setGroupId(paysheetFrequency.getUserGroup().getId().toString());
+		    indPaysheetFrequencyDTO.setGroupName(paysheetFrequency.getUserGroup().getGroupName());
+		    indPaysheetFrequencyDTO.setFrequencyStartDateStr(commonUtil.dateStrFromOrgDateFormatter(orgLocation.getDateFormat(),paysheetFrequency.getFrequencyStartDate()));
+		    indPaysheetFrequencyDTO.setFrequencyEndDateStr(commonUtil.dateStrFromOrgDateFormatter(orgLocation.getDateFormat(),paysheetFrequency.getFrequencyEndDate()));
+		    indPaysheetFrequencyDTO.setPayCheckDateStr(commonUtil.dateStrFromOrgDateFormatter(orgLocation.getDateFormat(),paysheetFrequency.getPayCheckDate()));
+		    indPaysheetFrequencyDTO.setApproverStatus(paysheetFrequency.getApproverStatus());
+		    indPaysheetFrequencyDTO.setStatus(paysheetFrequency.getStatus());
+		    
+		    indPaysheetFrequencyDTO.setIndPayrollDTO(getINDPayrollDTOFromIndEmployeePayroll(paysheetFrequency.getIndEmployeepayroll(),paysheetFrequency.getOrgLocation()));
+		    
+		    indPaysheetFrequencyDTO.setCreatedBy(paysheetFrequency.getCreatedBy());
+		    indPaysheetFrequencyDTO.setUpdatedBy(paysheetFrequency.getUpdatedBy());
+		    indPaysheetFrequencyDTO.setUpdatedDate(commonUtil.dateStrFromOrgDateFormatter(orgLocation.getDateFormat(),paysheetFrequency.getUpdatedDate()));
+		    indPaysheetFrequencyDTO.setCreatedDate(commonUtil.dateStrFromOrgDateFormatter(orgLocation.getDateFormat(),paysheetFrequency.getCreatedDate()));
+		    indPaysheetFrequencyDTO.setActionPerformedBy(paysheetFrequency.getActionPerformedBy());
+		}
+		 return indPaysheetFrequencyDTO;
+	}
+	
+	public List<INDPayrollDTO> getINDPayrollDTOFromIndEmployeePayroll(Set<IndEmployeePayroll> payrollList,OrgLocations orgLocations) throws Exception {
+		List<INDPayrollDTO> payrollDTOList = new ArrayList<>();
+		if(payrollList != null && !payrollList.isEmpty()) {
+			for(IndEmployeePayroll employeePayroll :payrollList) {
+				INDPayrollDTO payrollDTO = new INDPayrollDTO();
+				payrollDTO.setIndEmpPayrollUUID(employeePayroll.getIndEmpPayrollUUID());
+				if(employeePayroll != null && employeePayroll.getEmployee() != null) {
+					payrollDTO.setEmpId(employeePayroll.getEmployee().getEmployeeId());
+				}else {
+					payrollDTO.setEmpId("");
+				}
+				
+				if(employeePayroll != null && employeePayroll.getEmployee() != null) {
+					payrollDTO.setEmployee(employeePayroll.getEmployee().getId());
+				}
+				
+				if(employeePayroll != null && employeePayroll.getEmployee() != null && employeePayroll.getEmployee().getUser() != null) {
+					payrollDTO.setEmpName(employeePayroll.getEmployee().getUser().getFullName());
+				}else {
+					payrollDTO.setEmpName("");
+				}
+				
+				if(employeePayroll != null && employeePayroll.getCandidate() != null) {
+					payrollDTO.setEmployeeDesignationType(employeePayroll.getCandidate().getDesignationType());
+					payrollDTO.setCandidateId(employeePayroll.getCandidate().getId());
+				}
+				
+				List<AssociatePayrollPayheadHistoryDTO> payHeadHistoryDTOList = getAssociatePayrollPayheadHistoryDTOListFromAssociatePayrollPayheadHistoryList(employeePayroll, employeePayroll.getAssociatePayrollPayheadHistory(), orgLocations);
+				payrollDTO.setPayHeadHistoryDTOList(payHeadHistoryDTOList);
+				payrollDTO.setRegularHours(employeePayroll.getRegularHours());
+				payrollDTO.setRegularHrsAmt(employeePayroll.getRegularHoursAmount());
+				payrollDTO.setOvertimeHours(employeePayroll.getOverTimeHours());
+				payrollDTO.setOtHoursAmt(employeePayroll.getOverTimeAmount());
+				payrollDTO.setNoOfLeaves(employeePayroll.getNoOfLeaves());
+				payrollDTO.setNoOfDays(employeePayroll.getNoOfDays());
+				payrollDTO.setGrossPay(employeePayroll.getGrossPay());
+				payrollDTO.setNetPay(employeePayroll.getNetPay());
+				payrollDTO.setTds(employeePayroll.getTds());
+				payrollDTO.setProfessionalTax(employeePayroll.getProfessionalTax());
+				payrollDTO.setApproverStatus(employeePayroll.getIndPaysheetFrequency().getApproverStatus());
+				payrollDTO.setPayType(employeePayroll.getPayType());
+				payrollDTO.setPaySheetFrequencyUUID(employeePayroll.getIndPaysheetFrequency().getPaySheetFrequencyUUID());
+				payrollDTOList.add(payrollDTO);
+			}
+		}
+		 return payrollDTOList;
+	}
+	
+ public List<IndEmployeePayroll> getIndEmployeePayrollFromINDPayrollDTO(IndPaysheetFrequency indPaysheetFrequency,List<INDPayrollDTO> payrollDTOList,OrgLocations orgLocations) throws Exception {
+		
+		List<IndEmployeePayroll> payrollList = new ArrayList<>();
+		if(payrollDTOList != null && !payrollDTOList.isEmpty()) {
+			for(INDPayrollDTO payrollDTO :payrollDTOList) {
+				IndEmployeePayroll employeePayroll = new IndEmployeePayroll();
+				employeePayroll.setIndEmpPayrollUUID(payrollDTO.getIndEmpPayrollUUID());
+				employeePayroll.setIndPaysheetFrequency(indPaysheetFrequency);
+				
+				if(payrollDTO.getEmployee() != null) {
+					Employees employee = new Employees();
+					employee.setId(payrollDTO.getEmployee());
+					employeePayroll.setEmployee(employee);
+				}
+				if(payrollDTO.getCandidateId() != null) {
+					Candidate candidate = new Candidate();
+					candidate.setId(payrollDTO.getCandidateId());
+					employeePayroll.setCandidate(candidate);
+				}
+				employeePayroll.setRegularHours(payrollDTO.getRegularHours());
+				employeePayroll.setRegularHoursAmount(payrollDTO.getRegularHrsAmt());
+				employeePayroll.setOverTimeHours(payrollDTO.getOvertimeHours());
+				employeePayroll.setOverTimeAmount(payrollDTO.getOtHoursAmt());
+				employeePayroll.setNoOfLeaves(payrollDTO.getNoOfLeaves());
+				employeePayroll.setNoOfDays(payrollDTO.getNoOfDays());
+				employeePayroll.setGrossPay(payrollDTO.getGrossPay());
+				employeePayroll.setNetPay(payrollDTO.getNetPay());
+				employeePayroll.setTds(payrollDTO.getTds());
+				employeePayroll.setProfessionalTax(payrollDTO.getProfessionalTax());
+				employeePayroll.setCreatedBy(indPaysheetFrequency.getCreatedBy());
+				employeePayroll.setCreatedDate(indPaysheetFrequency.getCreatedDate());
+				employeePayroll.setUpdatedBy(indPaysheetFrequency.getUpdatedBy());
+				employeePayroll.setUpdatedDate(indPaysheetFrequency.getUpdatedDate());
+				employeePayroll.setSubmitForAproverStatus(indPaysheetFrequency.getApproverStatus());
+				employeePayroll.setStatus(indPaysheetFrequency.getStatus());
+				List<AssociatePayrollPayheadHistory> payHeadHistoryList = getAssociatePayrollPayheadHistoryListFromAssociatePayrollPayheadHistoryDTOList(employeePayroll,payrollDTO.getPayHeadHistoryDTOList(), orgLocations);
+			    if(payHeadHistoryList != null && !payHeadHistoryList.isEmpty()) {
+			    	employeePayroll.setAssociatePayrollPayheadHistory(new HashSet<AssociatePayrollPayheadHistory>(payHeadHistoryList));
+			    }
+				
+				payrollList.add(employeePayroll);
+			}
+		}
+		 return payrollList;
+	}
 	public IndPayrollPayheadUtilDTO getAssociatePayrollPayHeadHistoryFromAssociateSalaryPayHeads(Set<AssociateSalaryPayheadInd> payheadList,IndEmployeePayroll empPayroll,User loginUser,String payFrequency) throws Exception {
 		IndPayrollPayheadUtilDTO utilDTO = new IndPayrollPayheadUtilDTO();
 		BigDecimal grossPay = BigDecimal.ZERO;
@@ -276,6 +457,84 @@ public void sendMailToUserFromndIanPayrolApprover(User loginUser,  OrgLocations 
 		}
 		return utilDTO;
 	}
+	
+	public List<AssociatePayrollPayheadHistoryDTO> getAssociatePayrollPayheadHistoryDTOListFromAssociatePayrollPayheadHistoryList(IndEmployeePayroll indEmployeePayroll,Set<AssociatePayrollPayheadHistory> payHeadHistoryList,OrgLocations orgLocations) throws Exception {
+		List<AssociatePayrollPayheadHistoryDTO> payHeadHistoryDTOList = new ArrayList<>();
+		if(payHeadHistoryList != null && !payHeadHistoryList.isEmpty()) {
+			for(AssociatePayrollPayheadHistory payHeadHistory : payHeadHistoryList) {
+				AssociatePayrollPayheadHistoryDTO  payHeadHistoryDTO = new AssociatePayrollPayheadHistoryDTO();
+				payHeadHistoryDTO.setId(payHeadHistory.getId());
+				payHeadHistoryDTO.setIndEmployeePayrollId(indEmployeePayroll.getId());
+				payHeadHistoryDTO.setIndEmpPayrollUUID(indEmployeePayroll.getIndEmpPayrollUUID());
+				if(payHeadHistory.getPayrollPayhead() !=null) {
+					payHeadHistoryDTO.setPayrollPayhead(payHeadHistory.getPayrollPayhead().getId());
+				}
+				payHeadHistoryDTO.setMonthly(payHeadHistory.getMonthly());
+				payHeadHistoryDTO.setAnnualy(payHeadHistory.getAnnualy());
+				payHeadHistoryDTO.setUuid(payHeadHistory.getUuid());
+				payHeadHistoryDTO.setStatus(payHeadHistory.getStatus());
+				if(payHeadHistory.getCreatedBy() != null) {
+					payHeadHistoryDTO.setCreatedBy(payHeadHistory.getCreatedBy().getId());
+				}
+				if(payHeadHistory.getUpdatedBy() != null) {
+					payHeadHistoryDTO.setUpdatedBy(payHeadHistory.getUpdatedBy().getId());
+				}
+				
+				if(payHeadHistory.getCreatedDate() != null) {
+					payHeadHistoryDTO.setCreatedDate(commonUtil.dateStrFromOrgDateFormatter(orgLocations.getDateFormat(),payHeadHistory.getCreatedDate()));
+				}
+				if(payHeadHistory.getUpdatedDate() != null) {
+					payHeadHistoryDTO.setUpdatedDate(commonUtil.dateStrFromOrgDateFormatter(orgLocations.getDateFormat(),payHeadHistory.getUpdatedDate()));
+				}
+				payHeadHistoryDTOList.add(payHeadHistoryDTO);
+			}
+		}
+		return payHeadHistoryDTOList;
+	}
+	
+	
+	
+	public List<AssociatePayrollPayheadHistory> getAssociatePayrollPayheadHistoryListFromAssociatePayrollPayheadHistoryDTOList(IndEmployeePayroll indEmployeePayroll,List<AssociatePayrollPayheadHistoryDTO> payHeadHistoryDTOList,OrgLocations orgLocations) throws Exception {
+		List<AssociatePayrollPayheadHistory> payHeadHistoryList = new ArrayList<>();
+		if(payHeadHistoryDTOList != null && !payHeadHistoryDTOList.isEmpty()) {
+			for(AssociatePayrollPayheadHistoryDTO payHeadHistoryDTO : payHeadHistoryDTOList) {
+				AssociatePayrollPayheadHistory  payHeadHistory = new AssociatePayrollPayheadHistory();
+			    if(payHeadHistoryDTO.getId() != null) {
+			    	payHeadHistory.setId(payHeadHistoryDTO.getId());
+			    }
+			    payHeadHistory.setIndEmployeePayrollId(indEmployeePayroll);
+				if(payHeadHistoryDTO.getPayrollPayhead() !=null) {
+					PayrollPayhead payrollPayhead = new PayrollPayhead();
+					payrollPayhead.setId(payHeadHistoryDTO.getPayrollPayhead());
+					payHeadHistory.setPayrollPayhead(payrollPayhead);
+				}
+				payHeadHistory.setMonthly(payHeadHistoryDTO.getMonthly());
+				payHeadHistory.setAnnualy(payHeadHistoryDTO.getAnnualy());
+				payHeadHistory.setUuid(payHeadHistoryDTO.getUuid());
+				payHeadHistory.setStatus(payHeadHistoryDTO.getStatus());
+				if(payHeadHistoryDTO.getCreatedBy() != null) {
+					User user = new User();
+					user.setId(payHeadHistoryDTO.getCreatedBy());
+					payHeadHistory.setCreatedBy(user);
+				}
+				if(payHeadHistoryDTO.getUpdatedBy() != null) {
+					User user = new User();
+					user.setId(payHeadHistoryDTO.getUpdatedBy());
+					payHeadHistory.setCreatedBy(user);
+				}
+				
+				if(StringUtils.isNotEmpty(payHeadHistoryDTO.getCreatedDate())) {
+					payHeadHistory.setCreatedDate(commonUtil.orgLocationDateFormat(orgLocations.getDateFormat(),payHeadHistoryDTO.getCreatedDate()));
+				}
+				if(StringUtils.isNotEmpty(payHeadHistoryDTO.getUpdatedDate())) {
+					payHeadHistory.setUpdatedDate(commonUtil.orgLocationDateFormat(orgLocations.getDateFormat(),payHeadHistoryDTO.getUpdatedDate()));
+				}
+				payHeadHistoryList.add(payHeadHistory);
+			}
+		}
+		return payHeadHistoryList;
+	}
+	
 	
 	private BigDecimal getProjectInvoiceFrequency(String invoiceFrequency)
 	{

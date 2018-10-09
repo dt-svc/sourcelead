@@ -89,22 +89,24 @@
 						<tbody>
 							<c:forEach var="empPayroll" items="${employeePayrollList}">
 								<tr>
-									<c:if test="${freqResponse.approverStatus != 'SENT' && freqResponse.approverStatus != 'APPROVED'}">
-										<td>
-											<div class="checkbox-new pull-left ml">
-												<input id="${empPayroll.indEmpPayrollUUID}" class="checkbox-custom" name="empPayroll"
-													value="${empPayroll.indEmpPayrollUUID}" type="checkbox"> <label for="${empPayroll.indEmpPayrollUUID}"
-													class="checkbox-custom-label"></label>
-											</div>
-										</td>
-									</c:if>
-									<td><div class="tblminwidth-50">${empPayroll.employee.employeeId}</div></td>
-									<td><div class="tbldata-dotdot-vsm">${empPayroll.employee.user.fullName}</div></td>
+
+									<%-- <c:if test="${freqResponse.approverStatus != 'SENT' && freqResponse.approverStatus != 'APPROVED'}"> --%>
+										 <td>
+												<div class="checkbox-new pull-left ml">
+													<input id="${empPayroll.indEmpPayrollUUID}" class="checkbox-custom" name="empPayroll"
+														value="${empPayroll.indEmpPayrollUUID}" type="checkbox"> <label for="${empPayroll.indEmpPayrollUUID}"
+														class="checkbox-custom-label"></label>
+												</div>
+									     </td>
+								<%-- 	</c:if> --%>
+									<td><div class="tblminwidth-50">${empPayroll.empId}</div></td>
+									<td><div class="tbldata-dotdot-vsm">${empPayroll.empName}</div></td>
+
 									<td><div class="tblminwidth-50">${empPayroll.regularHours}</div>
-										<div class="tblminwidth-50 clearfix text-danger">${empPayroll.regularHoursAmount}<span class="paddingLeft">&#8377;</span>
+										<div class="tblminwidth-50 clearfix text-danger">${empPayroll.regularHrsAmt}<span class="paddingLeft">&#8377;</span>
 										</div></td>
-									<td><div class="tblminwidth-50">${empPayroll.overTimeHours}</div>
-										<div class="tblminwidth-50 clearfix text-danger">${empPayroll.overTimeAmount}<span class="paddingLeft">&#8377;</span>
+									<td><div class="tblminwidth-50">${empPayroll.overtimeHours}</div>
+										<div class="tblminwidth-50 clearfix text-danger">${empPayroll.otHoursAmt}<span class="paddingLeft">&#8377;</span>
 										</div></td>
 									<td><div class="tblminwidth-50 clearfix">
 											${empPayroll.noOfLeaves}<span class="paddingLeft"></span>
@@ -117,7 +119,7 @@
 										</div></td>
 									<td>
 										<div class="tblminwidth-50 clearfix">
-											<a onClick="netPay('${empPayroll.indEmpPayrollUUID}', '${empPayroll.indPaysheetFrequency.paySheetFrequencyUUID}');"> ${empPayroll.netPay}<span class="paddingLeft">&#8377;</span> </a>
+											<a onClick="netPay('${empPayroll.indEmpPayrollUUID}', '${empPayroll.paySheetFrequencyUUID}');"> ${empPayroll.netPay}<span class="paddingLeft">&#8377;</span> </a>
 										</div>
 									</td>
 								</tr>
@@ -129,8 +131,9 @@
 			<div class="clearfix mt"></div>
 			<nav class="clearfix">
 				<ul class="pull-right mr list-unstyled list-inline">
+						<li><a class="btn btn-primary btnSuccess" onclick="sentForApprove('draft');">Save As Draft</a></li>
 					<c:if test="${freqResponse.approverStatus != 'SENT' && freqResponse.approverStatus != 'APPROVED'}">
-						<li><a class="btn btn-primary btnSuccess" onclick="sentForApprove();">Submit for Approval</a></li>
+						<li><a class="btn btn-primary btnSuccess" onclick="sentForApprove('submitted');">Submit for Approval</a></li>
 					</c:if>
 					<c:if test="${SourceLeadWeb_loginUserRole == 'ROLE_SOURCELEAD_ADMIN' || SourceLeadWeb_loginUserRole == 'ROLE_ADMIN' || isPayrollApprover}">
 						<c:if test="${freqResponse.approverStatus != 'APPROVED'}">
@@ -229,15 +232,18 @@ function closeCPR() {
 </script>
 
 <script>
-function sentForApprove(){
+function sentForApprove(approverStatus){
 	var feqUUID = $("#paySheetFrequency").val();
 	var excludeEmpArr = [];
 	$("input:checkbox[name=empPayroll]:checked").each(function(){
 		excludeEmpArr.push($(this).val());
 	});
+	alert(approverStatus);
+	alert(feqUUID);
+	alert(excludeEmpArr);
 	$.ajax({
         type : "POST",
-        url: sourceleadUrl+"/sentForApproveIndPayroll?"+tokenParamName+"="+tokenValue+"&paySheetFrequencyUUID="+feqUUID+"&excludeEmpPayrollUUID="+excludeEmpArr,    
+        url: sourceleadUrl+"/sentForApproveIndPayroll?approverStatus="+approverStatus+"&paySheetFrequencyUUID="+feqUUID+"&excludeEmpPayrollUUID="+excludeEmpArr,    
          success :function(result) { 
         	 
         	 $(location).attr('href', 'runIndianPayRoll?stab=payroll');
