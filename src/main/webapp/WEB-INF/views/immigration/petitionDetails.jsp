@@ -372,7 +372,7 @@
           <div class="form-group">
               <label class="col-md-4">Email<span class="text-danger paddingLeft">*</span></label>
               <div class="col-md-8">
-					<input type="text" class="form-control" name="email" value="${immigrationDTO.email}" id="email" field-name="Email" data-validation="required">
+					<input type="text" class="form-control" name="email" value="${immigrationDTO.email}" id="email" field-name="Email" data-validation="required validate_email">
               </div>
           </div>
                       	

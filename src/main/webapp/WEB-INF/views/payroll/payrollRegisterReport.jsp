@@ -4,11 +4,24 @@
 <%@taglib uri="http://www.springframework.org/tags/form" prefix="form"%>
 
 <script src="/resources/js/payrollReports.js"></script>
+<script src="//cdnjs.cloudflare.com/ajax/libs/moment.js/2.14.1/moment.min.js"></script>
 
 <script>
 $(document).ready(function(){
    getPayGroupList("payGroup");
    getDepartments("payrollDepartment");
+   
+	 loc ="${SourceLeadWeb_orgLocations.dateFormat}";
+	 
+	  if(loc.match("yyyy-MM-dd")){
+		  locDateFormat = 'YYYY-MM-DD';
+	  }if(loc.match("dd-MM-yyyy")){
+		  locDateFormat = 'DD-MM-YYYY'; 
+	  }if(loc.match("MM-dd-yyyy")){
+		  locDateFormat = 'MM-DD-YYYY'; 
+	  }if(loc.match("yyyy-dd-MM")){
+		  locDateFormat = 'YYYY-DD-MM'; 
+	  } 
 });
 </script>
 <!-- Content Area -->
@@ -29,7 +42,7 @@ $(document).ready(function(){
             <div class="form-group">
               <label class="col-md-12 paddingRight">Pay Group</label>
 				<div class="col-md-12">
-					<select class="form-control sel" id="payGroup" name="payGroup" onchange="getPayPeriodByGroupId('payGroup','payPeriod');">
+					<select class="form-control sel" id="payGroup" name="payGroup" onchange="getPayPeriodByGroupId('payGroup','payPeriod')">
 					</select>
 				</div>
             </div>
