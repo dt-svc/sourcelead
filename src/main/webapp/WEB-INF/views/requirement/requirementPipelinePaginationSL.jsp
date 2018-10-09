@@ -587,6 +587,12 @@
 															+ submissionType
 															+ '\')";>';
 													result = result + "<option value='Status'>" + opt.submissionDisplayStatus + "</option>";
+													if (opt.submissionStatus != 'ONHOLD' && opt.submissionStatus != 'JOINED'){	
+														result = result + "<option value='On Hold'>On Hold</option>";
+														}
+													if (opt.submissionStatus != 'NORESPONSE' && opt.submissionStatus != 'JOINED'){	
+														result = result + "<option value='NoResponse'>NoResponse</option>";
+														}
 													result = result + "<option value='Reject'>Reject</option>";
 													if (opt.submissionStatus == 'OFFERMADE' || opt.submissionStatus == 'OFFERACCEPTED' || opt.submissionStatus == 'JOINED'
 														 || opt.submissionStatus == 'CLIENT_OFFERMADE' || opt.submissionStatus == 'CLIENT_OFFERACCEPTED') {

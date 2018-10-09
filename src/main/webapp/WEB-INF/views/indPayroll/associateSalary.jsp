@@ -27,7 +27,7 @@
                    <div class="col-md-5">
                     <label>Pay Frequency<span class="text-danger paddingLeft">*</span></label>
                     <div>
-                      <select class="sel" id="payFrequency" name="payFrequency" onchange="getPayFreqHours();getPayGroups();" data-validation="required" field-name="Pay Frequency">
+                      <select class="sel" id="payFrequency" name="payFrequency" onchange="getPayGroups();" data-validation="required" field-name="Pay Frequency">
                         <option value="">--Select--</option>
                         <option ${associateSalaryInd.payFrequency == "Annual" ? "selected" : ""} value="Annual">Annually</option>
                         <option ${associateSalaryInd.payFrequency == "Monthly" ? "selected" : ""} value="Monthly">Monthly</option>
@@ -141,6 +141,7 @@
                 <input type="text" style="display:none" name="candidateId" id="assocandidateId" value="${candidate.id}">
                 <input type="text" style="display:none" name="uuid" value="${uuid}">
                 <input type="text" style="display:none" id="status" value="${status}">
+                <input type="text" style="display:none" id="userId" name="userId" value="${candidate.consultantUser.id}">
                   
                 <div class="clearfix footerstyelsNew">
                  <div class="col-md-6">
@@ -253,6 +254,9 @@ $('body').on('blur', '#associateSalary_form', function() {
 	$("#associateSalary_form").showHelpOnFocus();
 	$("#associateSalary_form").validateOnBlur(false, validationSettings);
 });
+</script>
+
+<script>
 
 $('#editAssociateBtn').click(function() {
 	$('#editAssociateBtn').css('display','none');
@@ -261,9 +265,12 @@ $('#editAssociateBtn').click(function() {
 	$('#associateSalary_form select').removeAttr('disabled');
 	$('#editSectionDiv').css('display','block');
 });
+</script>
 
+<script>
 $('#cancelAssociateSalaryIndBtn').click(function() {
-	var status = $("#status").val();
+	location.replace(sourceleadUrl+"/usersList");
+	/* var status = $("#status").val();
 	if(status == 'NEW'){
 		location.replace(sourceleadUrl+"/usersList");
 	}else{
@@ -272,9 +279,11 @@ $('#cancelAssociateSalaryIndBtn').click(function() {
 		$('#associateSalary_form select').prop('disabled', true);
 		$('#saveAssociateBtnDiv').css('display','none');
 		$('#editSectionDiv').css('display','none');
-	}
+	} */
 });
+</script>
 
+<script>
 
 $('.selectall').click(function() {
     $(this.form.elements).filter(':checkbox').prop('checked', this.checked).trigger("onclick");
@@ -285,9 +294,10 @@ $('.selectall').click(function() {
 <script>
 function getPayGroups(){
 	var payFrequency = $("#payFrequency").val();
+	var userId = $("#userId").val();
 		 $.ajax({
 				type : "GET",
-				url : sourceleadUrl+"/getPayGroupsByPayFrequency?"+tokenParamName+"="+tokenValue+"&payFrequency="+payFrequency,
+				url : sourceleadUrl+"/getPayGroupsByPayFrequency?"+tokenParamName+"="+tokenValue+"&payFrequency="+payFrequency+"&userId="+userId,
 				success : function(result) {
 				var output = "";
 				output = output + "<option value=''>Select Group</option>";
@@ -302,6 +312,7 @@ function getPayGroups(){
 					
 				}
 		 });
+		 getPayFreqHours();
 }
 </script>
 
@@ -322,45 +333,59 @@ function getPayFreqHours(){
 	}
 	calculateSal();
 }
+</script>
 
+<script>
 
 function calculateSal(){
 	var payFrequency = $("#payFrequency").val();
 	var annualSal = $("#annualSal").val();
+	if(!annualSal){
+		annualSal = 0;
+	}
 	var hours = $("#standardHours").val();
+	if(!hours){
+		hours = 0;
+	}
 	if(annualSal != null && annualSal != '' && annualSal != 'undefined' && hours != null && hours != '' && hours != 'undefined'){
-		
+		var rate = 0;
 		if(payFrequency === 'Annual'){
-			var rate = parseFloat(annualSal) / 1;
+			rate = parseFloat(annualSal) / 1;
 			$("#perPaySal").val(rate.toFixed(2));
-			$("#hourlyRate").val(hourRate.toFixed(2)); 
 		}
 		if(payFrequency === 'Monthly'){
-			var rate = parseFloat(annualSal) / 12;
+			rate = parseFloat(annualSal) / 12;
 			$("#perPaySal").val(rate.toFixed(2));
-			$("#hourlyRate").val(hourRate.toFixed(2)); 
 		}
 		if(payFrequency === 'Bi-Weekly'){
-			var rate = parseFloat(annualSal) / 26;
+			rate = parseFloat(annualSal) / 26;
 			$("#perPaySal").val(rate.toFixed(2));
-			$("#hourlyRate").val(hourRate.toFixed(2)); 
 		}
 		if(payFrequency === 'Weekly'){
-			var rate = parseFloat(annualSal) / 52;
+			rate = parseFloat(annualSal) / 52;
 			$("#perPaySal").val(rate.toFixed(2));
-			$("#hourlyRate").val(hourRate.toFixed(2)); 
 		}
 		var hourRate = rate/hours;
 		$("#hourlyRate").val(hourRate.toFixed(2));
 	}
 }
+</script>
 
-
+<script>
 function calculatePayPerSal(){
 	var payFrequency = $("#payFrequency").val();
 	var perPaySal = $("#perPaySal").val();
+	if(!perPaySal){
+		perPaySal = 0;
+	}
 	var hourlyRate = $("#hourlyRate").val();
+	if(!hourlyRate){
+		hourlyRate = 0;
+	}
 	var standardHours = $("#standardHours").val();
+	if(!standardHours){
+		standardHours = 0;
+	}
 	if(perPaySal !='' && perPaySal != 'undefined'){
 		if(payFrequency === 'Annual'){
 			var annualRate = parseFloat(perPaySal) * 1;
@@ -378,18 +403,21 @@ function calculatePayPerSal(){
 			var annualRate = parseFloat(perPaySal) * 52;
 			$("#annualSal").val(annualRate.toFixed(2));
 		}
-		
-		if(hourlyRate != null && hourlyRate != '' && hourlyRate != 'undefined'){
+		if(hourlyRate != null && hourlyRate != '' && hourlyRate != 'undefined' && standardHours != 0){
 			var hourlyrate = parseFloat(perPaySal) / standardHours;
 			$("#hourlyRate").val(hourlyrate.toFixed(2));
 		}
 	}
 }
+</script>
 
-
+<script>
 function calculateHourlyRateSal(){
 	var payFrequency = $("#payFrequency").val();
 	var perPaySal = $("#perPaySal").val();
+	if(!perPaySal){
+		perPaySal = 0;
+	}
 	var hourlyRate = $("#hourlyRate").val();
 	var standardHours = $("#standardHours").val();
 	var annualSal = $("#annualSal").val();
@@ -399,10 +427,18 @@ function calculateHourlyRateSal(){
 		calculatePayPerSal();
 	}
 }
+</script>
 
+<script>
 function calculatePercentSal(){
 	var percent = $("#increasePer").val();
+	if(!percent){
+		percent = 0;
+	}
 	var annualSal = ${associateSalaryInd.annualSalary};
+	if(!annualSal){
+		annualSal = 0;
+	}
 	var annualByPercentage = eval((annualSal * percent)/100);
 	$("#annualSal").val( eval(annualSal + annualByPercentage).toFixed(2));
 	calculateSal();

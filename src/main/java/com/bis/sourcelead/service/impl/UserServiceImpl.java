@@ -244,7 +244,7 @@ public class UserServiceImpl implements UserService {
 	   String password = null;
 	   UserRole userRole = null;
 	   boolean isUserActive = false;
-	   boolean associateBalance = true;
+	   boolean associateBalance = false;
 	   user = userDao.findByUserName(addUserDTO.getEmail());
 	   if(null != user){
 		  isUserActive = userRoleService.isUserActive(user.getId());
@@ -304,7 +304,7 @@ public class UserServiceImpl implements UserService {
  		  user.setVerificationUUID(RandomStringUtils.randomAlphanumeric(16));
  		  user.setUrlSentTime(new Date());
  		  user.setIsVerified(Constants.NO);
-// 		 associateBalance  = true;
+ 		 associateBalance  = true;
 		}else if(isUserActive == false){
 			password = SourceLeadRandomCodeHelper.generateRandomPassword();
 			user.setPassword(sourceleadPasswordEncoder.encode(password));
@@ -469,6 +469,26 @@ public class UserServiceImpl implements UserService {
 				candidateService.saveOrUpdateCandidate(candidate);
 				candidateService.saveOrUpdateCandidateElkDocument(candidate);
 			}	
+			
+			else{
+				// existing candidate saving as a User
+				candidate = candidateService.findByCandidateEmail(candidateDTO.getEmail(),orgLocations.getId());
+				if(candidate == null){
+					MasterCandidate masterCandidate = null;
+					masterCandidate = masterCandidateService.getMasterCandidateByInteligenceCandidateDTO(candidateDTO);
+					if(null == masterCandidate){
+						masterCandidate = masterCandidateService.storeMasterCandidateByCandidateDTO(candidateDTO, loginuser);
+					}
+				 candidate = candidateService.storeCandidateForUsers(candidateDTO, addUserDTO,user, orgLocations, masterCandidate,loginuser);
+					
+				}else{
+					candidate.setConsultantUser(user);
+					candidate.setIsAssociate(Constants.YES);
+					candidateService.addCandidate(candidate);
+					candidateService.saveOrUpdateCandidateElkDocument(candidate);
+				}
+				
+			}
 		}else{
 			// existing candidate saving as a User
 			candidate = candidateService.findByCandidateEmail(candidateDTO.getEmail(),orgLocations.getId());

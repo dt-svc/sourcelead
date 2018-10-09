@@ -86,6 +86,7 @@ import com.bis.sourcelead.entity.TimesheetSubmissions;
 import com.bis.sourcelead.entity.TimesheetSubmissionsDocuments;
 import com.bis.sourcelead.entity.TimesheetSubmissionsDocumentsHistory;
 import com.bis.sourcelead.entity.User;
+import com.bis.sourcelead.entity.UserDroppedHolidays;
 import com.bis.sourcelead.entity.UserRole;
 import com.bis.sourcelead.enums.Result;
 import com.bis.sourcelead.enums.Submission_ApprovalStatus;
@@ -93,8 +94,6 @@ import com.bis.sourcelead.enums.Submission_Status;
 import com.bis.sourcelead.service.AppliedLeaveDateService;
 import com.bis.sourcelead.service.CandidateService;
 import com.bis.sourcelead.service.ExportTimesheetEntries;
-import com.bis.sourcelead.service.HolidayService;
-import com.bis.sourcelead.service.LeaveTypeService;
 import com.bis.sourcelead.service.OrgLocationService;
 import com.bis.sourcelead.service.OrgRelationsService;
 import com.bis.sourcelead.service.ProjectApproverHierarchyService;
@@ -107,6 +106,7 @@ import com.bis.sourcelead.service.TimeSheetDayEntriesService;
 import com.bis.sourcelead.service.TimesheetActivityService;
 import com.bis.sourcelead.service.TimesheetSubmissionsDocumentsService;
 import com.bis.sourcelead.service.TimesheetSubmissionsService;
+import com.bis.sourcelead.service.UserDroppedHolidaysService;
 import com.bis.sourcelead.service.UserRoleService;
 import com.bis.sourcelead.service.UserService;
 import com.bis.sourcelead.util.CalendarUtil;
@@ -161,6 +161,9 @@ public class TimesheetRestController {
 
 	@Autowired
 	private ProjectMembersService projectMembersService;
+	
+	@Autowired
+	private UserDroppedHolidaysService userDroppedHolidaysService;
 
 	@Autowired
 	private UserService userService;
@@ -466,7 +469,8 @@ public class TimesheetRestController {
 			List<Holiday>  holidays = null;
 			UserRole userRole = userRoleService.getLoginUserPrimaryRole(user.getId());
 			if(userRole != null) {
-				 holidays = holidayDAO.getHolidaybyLocationIdAndFromdate(startDate, endDate,userRole.getOrgLocations().getId());
+				 List<Long> droppedHolidayIds = userDroppedHolidaysService.getDroppedHolidayIdsListByUserIdAndLocationId(userRole.getUser().getId(), userRole.getOrgLocations().getId());
+				 holidays = holidayDAO.getHolidaybyLocationIdAndFromdateForTimesheets(startDate, endDate,userRole.getOrgLocations().getId(),droppedHolidayIds);
 			}
 			
 			if((leaveDateList != null && !leaveDateList.isEmpty()) || (holidays != null && !holidays.isEmpty())) {
@@ -482,6 +486,7 @@ public class TimesheetRestController {
 					SimpleDateFormat sf = new SimpleDateFormat("E");
 					leaveDTO.setLeaveDate(commonUtil.dateStrFromOrgDateFormatter(loc.getDateFormat(),leaveDate.getApplyLeaveDate()));
 					leaveDTO.setDayOfTheDate(sf.format(leaveDate.getApplyLeaveDate()));
+					leaveDTO.setHoliday(false);
 					leaveDTO.setLeaveReason(leaveDate.getLeave().getReason());
 					List<EmployeeLeaveDTO>  leaveDTOList = empLeaveMap.get(leaveTypeArr);
 					if(leaveDTOList != null && !leaveDTOList.isEmpty()) {
@@ -512,6 +517,14 @@ public class TimesheetRestController {
 							leaveDTO.setLeaveDate(commonUtil.dateStrFromOrgDateFormatter(loc.getDateFormat(),holidayDate));
 							leaveDTO.setDayOfTheDate(sf.format(holidayDate));
 							leaveDTO.setLeaveReason(holiday.getDescription());
+							leaveDTO.setHoliday(true);
+							leaveDTO.setHolidayId(holiday.getId());
+							leaveDTO.setHolidayUserId(user.getId());
+							if(holiday.getOrgLocations() != null){
+								leaveDTO.setHolidayUserLocationId(holiday.getOrgLocations().getId());
+							}else {
+								leaveDTO.setHolidayUserLocationId(loc.getId());
+							}
 							List<EmployeeLeaveDTO>  leaveDTOList = empLeaveMap.get(leaveTypeArr);
 							if(leaveDTOList != null && !leaveDTOList.isEmpty()) {
 								leaveDTOList.add(leaveDTO);
@@ -868,7 +881,7 @@ public class TimesheetRestController {
 						entryAvailableCheck = key;
 					}
 					EmployeeTimeSheetSubmissionStatusDTO etssDTO = getEmployeeTimesheetSubmissionStatus(pm.getId(), currentTimeFrequency, currentTimeSubFrequency, orgLocations, loginUser,editableCount);
-					if(etssDTO != null && StringUtils.isNotEmpty(etssDTO.getTimesheetStatus()) && !etssDTO.getTimesheetStatus().equalsIgnoreCase("NEW")) {
+					if(etssDTO != null && StringUtils.isNotEmpty(etssDTO.getTimesheetStatus()) && ts != null &&  !etssDTO.getTimesheetStatus().equalsIgnoreCase("NEW")) {
 						entryAvailableCheck = "available";
 					}
 					if(editableCount == 1) {
@@ -880,6 +893,7 @@ public class TimesheetRestController {
 						etd.setSatEditable(etssDTO.getEditableMap().get("Sat"));
 						etd.setSunEditable(etssDTO.getEditableMap().get("Sun"));
 					}
+					
 					editableCount++;
 					ettsDTOMap.put(pm.getId(), etssDTO);
 					if(StringUtils.isEmpty(entryAvailableCheck))
@@ -936,6 +950,8 @@ public class TimesheetRestController {
 							if(taskSplitter != null && taskSplitter.length >= 0 && StringUtils.isNotEmpty(taskSplitter[0])) {
 								taskId = Long.parseLong(taskSplitter[0]);
 							}
+							if(taskId == 0)
+								continue;
 							etsDTO.setProjectTaskId(taskId);
 							etsDTO.setTicketNumber(ticketNumber);
 							etsDTO.setProjectTaskType(taskType);
@@ -1944,10 +1960,10 @@ public class TimesheetRestController {
 						ticketNumber = teDTO.getTimesheetTaskDTO().getTicketNumber();
 					}
 					int count = 0;
-					if(weekCountMap.get(teDTO.getDate()) != null){
-						count = weekCountMap.get(teDTO.getDate())+1;
+					if(weekCountMap.get(taskId+"##"+ticketNumber+"##"+teDTO.getDate()) != null){
+						count = weekCountMap.get(taskId+"##"+ticketNumber+"##"+teDTO.getDate())+1;
 					}
-					weekCountMap.put(teDTO.getDate(),count);
+					weekCountMap.put(taskId+"##"+ticketNumber+"##"+teDTO.getDate(),count);
 					taskIdWithRef = taskId+"##"+ticketNumber+"##"+count;
 				}
 				LinkedList<TimesheetEntriesDTO> tsDTOList = entriesMap.get(taskIdWithRef);
@@ -2606,10 +2622,10 @@ public class TimesheetRestController {
 									}
 								}
 
-							} else {
+							}/* else {
 								insertNewTimesheetRecordByProjectMemberAndDates(projectMember, actualStartDate,
 										actualEndDate, frequencyStartDate, frequencyEndDate, loginUser, candidate);
-							}
+							}*/
 
 						}
 					}
@@ -5594,6 +5610,46 @@ public class TimesheetRestController {
 			e.printStackTrace();
 		}
 
+	}
+	
+	@PreAuthorize("hasRole('ROLE_MODIFY_MY_TIMESHEETS')")
+	@RequestMapping(value = "/dropHoliday", method = RequestMethod.POST)
+	public @ResponseBody String dropHoliday(
+			@RequestParam(value = "holidayId", required = true) Long holidayId,
+			@RequestParam(value = "holidayUserId", required = true) Long holidayUserId,
+			@RequestParam(value = "holidayUserLocationId", required = true) Long holidayUserLocationId, HttpServletRequest request)
+			throws Exception {
+		   String output = "";
+		   User loginUser = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+		try {
+			UserDroppedHolidays userDroppedHolidays = userDroppedHolidaysService.getUserDroppedHolidaysFromUserIdlocationIdAndHolidayId(holidayUserId, holidayUserLocationId, holidayId); 
+			
+			if(userDroppedHolidays == null) {
+				userDroppedHolidays = new UserDroppedHolidays();
+			}
+			
+			Holiday holiday = new Holiday();
+			holiday.setId(holidayId);
+			userDroppedHolidays.setHoliday(holiday);
+			User user = new User();
+			user.setId(holidayUserId);
+			userDroppedHolidays.setUser(user);
+			
+			OrgLocations orgLocations = new OrgLocations();
+			orgLocations.setId(holidayUserLocationId);
+			userDroppedHolidays.setOrgLocations(orgLocations);
+			userDroppedHolidays.setStatus(Constants.RECORD_ACTIVE);
+			
+			userDroppedHolidays.setCreatedBy(loginUser.getId());
+			userDroppedHolidays.setCreatedDate(CommonUtil.currentDate());
+			userDroppedHolidays.setUpdatedDate(CommonUtil.currentDate());
+			userDroppedHolidays.setUpdatedBy(loginUser.getId());
+			userDroppedHolidaysService.addUserDroppedHolidays(userDroppedHolidays);
+			output ="success";
+		} catch (Exception e) {
+			output ="failure";
+		}
+		return output;
 	}
 	
 	

@@ -1,5 +1,6 @@
 package com.bis.sourcelead.dao.impl;
 
+import java.math.BigInteger;
 import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.List;
@@ -238,5 +239,49 @@ public class AssociateGradesDaoImpl implements AssociateGradesDao{
 			associateGrades = (AssociateGrades) associateGradesList.iterator().next();
 		}
 		return associateGrades;
+	}
+
+
+	@Override
+	@Transactional
+	public List<String> getGradesListByOrgLocationId(Long orgLocationId) throws Exception {
+		
+		Session session = this.sessionFactory.getCurrentSession();
+		String query = null;
+		query ="SELECT "
+				+" GRADE.GRADE_NAME "
+				+" FROM ASSOCIATE_GRADES GRADE "
+				+" WHERE "
+				+" GRADE.ORGLOCATION_ID = :orgLocationId AND GRADE.STATUS = '1' ";
+		Query queryObj = session.createSQLQuery(query);
+		queryObj.setLong("orgLocationId", orgLocationId);	
+		List<String> gradesList = (List<String>)queryObj.list();
+		
+		return gradesList;
+	
+	}
+
+
+	@Override
+	@Transactional
+	public boolean isGradeExistsByGradeNameAndOrgLocationId(String gradeName, Long orgLocationId) throws Exception {
+		
+		boolean flag = false;
+		Session session = this.sessionFactory.getCurrentSession();
+		String query = null;
+		query ="SELECT "
+				+" GRADE.ID "
+				+" FROM ASSOCIATE_GRADES GRADE "
+				+" WHERE "
+				+" GRADE.ORGLOCATION_ID = :orgLocationId and GRADE.GRADE_NAME = :gradeName AND GRADE.STATUS = '1' ";
+		Query queryObj = session.createSQLQuery(query);
+		queryObj.setString("gradeName", gradeName);	
+		queryObj.setLong("orgLocationId", orgLocationId);	
+		BigInteger id = (BigInteger) queryObj.uniqueResult();
+		if(id != null) {
+			flag = true;
+		}
+		
+		return flag;
 	}
 }

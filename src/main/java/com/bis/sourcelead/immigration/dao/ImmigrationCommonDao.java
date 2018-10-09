@@ -41,7 +41,7 @@ import com.bis.sourcelead.entity.User;
  */
 public interface ImmigrationCommonDao {
 
-	List<ImmigrationTemplate> getImmigrationTemplateList(OrgLocations orgLocations);
+	List<ImmigrationTemplate> getImmigrationTemplateList(OrgLocations orgLocations, Long status);
 	
 	Immigration savePetitionDetails(Immigration immigration, Candidate candidate, CandidateIdendities candidateIdendities,
 			CandidateResumes candidateResume, CandidateLcaJobDetails candidateLcaJobDetails, List<CandidateResidence> residenceEntityLst) throws Exception;
@@ -195,6 +195,8 @@ public interface ImmigrationCommonDao {
 	
 	LcaVisaClarifications getLcaVisaClarificationsByIDAndLcaId(Long lcaId);
 	
+	LcaVisaClarifications getLcaVisaClarificationsDetailsById(Long id,Long lcaId);
+	
 	List<LcaPlaceOfEployment> getLcaPlaceOfEploymentListByIdAndLcaID(Long lcaId);
 	
 	String reActiveLcaById(Long lcaId);
@@ -229,13 +231,14 @@ public interface ImmigrationCommonDao {
 	
 	void deleteLcaDocumentsDetails(Long remaininglcaDocIds[]); 
 	
-	
 	CandidateLcaJobDetails saveCandidateLcaJobDetails(CandidateLcaJobDetails candidateLcaJobDetails);
 
 	LcaHistory getLcaHistoryByStatus(Long immigrationId,Long candidateId,  String isCurrent);
 	
-	String deletetLcaHistoryDetails(Long id);
-	
 	int updateLcaHistoryStatusByLcaNumber(Long lhId,Long immigrationId,Long candidateId);
+	
+	int deleteLcaHistoryDetailsByImmigrationId(Long immigrationId);
+	
+	List<String> getAllExpiredCandidatesFromLcaHistoryByLcaId(Long lcaId);
 	
 }

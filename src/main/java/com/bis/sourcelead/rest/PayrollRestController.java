@@ -1,8 +1,10 @@
 package com.bis.sourcelead.rest;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -11,10 +13,19 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.servlet.ModelAndView;
 
-import com.bis.sourcelead.entity.BulkClientDetails;
+import com.bis.sourcelead.dto.Response;
+import com.bis.sourcelead.dto.ResponseList;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.Payroll;
+import com.bis.sourcelead.payroll.dto.AssociatePayrollPayheadHistoryDTO;
+import com.bis.sourcelead.payroll.dto.IndPaysheetFrequencyDTO;
+import com.bis.sourcelead.payroll.entity.IndEmployeePayroll;
+import com.bis.sourcelead.payroll.entity.IndPaysheetFrequency;
+import com.bis.sourcelead.payroll.service.AssociatePayrollPayheadHistoryService;
+import com.bis.sourcelead.payroll.service.IndPayrollService;
+import com.bis.sourcelead.payroll.service.IndPaysheetFrequencyService;
 import com.bis.sourcelead.service.PayrollService;
 import com.bis.sourcelead.util.CommonUtil;
 import com.bis.sourcelead.util.SourceLeadSessionManager;
@@ -41,7 +52,14 @@ public class PayrollRestController {
 	@Autowired
 	CommonUtil commonUtil;
 	
+	@Autowired
+	IndPayrollService indPayrollService;
 	
+	@Autowired
+	AssociatePayrollPayheadHistoryService associatePayrollPayheadHistoryService;
+	
+	@Autowired
+	IndPaysheetFrequencyService indPaysheetFrequencyService;
 	
 	/**
 	 * @author sarath kumar punnana and Ajith Matta
@@ -80,8 +98,64 @@ public class PayrollRestController {
 			 return resultJson;
 	    
 	}
+	
+	@RequestMapping(value = { "/employeePayrollList","/rest/employeePayrollList" })
+	public ModelAndView reviewPayrollInd(IndPaysheetFrequencyDTO indPaysheetFrequencyDTO, HttpServletRequest request) throws Exception
+	{
+	 	ModelAndView model = new ModelAndView();
+	 	OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+		ResponseList<IndEmployeePayroll> indEmployeePayrollResponse = indPaysheetFrequencyService.getIndEmployeePayrollListByPaysheetFrequencyUuid(indPaysheetFrequencyDTO.getPaySheetFrequencyUUID());
+		model.addObject("employeePayrollList", indEmployeePayrollResponse.getData());
 		
+		Response<IndPaysheetFrequencyDTO> freqResponse = indPaysheetFrequencyService.getIndPaysheetFrequencyByEmpPayrollUUID(indPaysheetFrequencyDTO.getPaySheetFrequencyUUID(), orgLocation);
+		model.addObject("freqResponse", freqResponse.getObject());
+		
+		model.setViewName("payroll_india/payroll/employeePayrollList");
+		model.addObject("sourceleadUrl", sourceleadUrl);
+		return model;
+	}
+	
 
+	@RequestMapping(value = { "/runPayrollInd","/rest/runPayrollInd" })
+	public ModelAndView runPayrollInd(HttpServletRequest request) throws Exception
+	{
+	 	ModelAndView model = new ModelAndView();
+		model.setViewName("payroll_india/payroll/runPayrollInd");
+		model.addObject("sourceleadUrl", sourceleadUrl);
+		return model;
+	}
+	
+	
+	@RequestMapping(value = { "/calculateAssociateSalaryInd","/rest/calculateAssociateSalaryInd" })
+	public ModelAndView calculateAssociateSalaryInd(AssociatePayrollPayheadHistoryDTO associatePayrollPayheadHistoryDTO, HttpServletRequest request) throws Exception
+	{
+	 	ModelAndView model = new ModelAndView();
+		ResponseList<AssociatePayrollPayheadHistoryDTO> associatePayrollPayhead = associatePayrollPayheadHistoryService.getUpdatedAssociatePayrollPayheadByEmpPayrollUUID(associatePayrollPayheadHistoryDTO.getIndEmpPayrollUUID());
+		
+		List<AssociatePayrollPayheadHistoryDTO> earningList = associatePayrollPayhead.getData().stream().filter(app -> app.getPayrollPayheadType().equals("Earnings")).collect(Collectors.toList());
+		model.addObject("earningPayhead", earningList);
+		List<AssociatePayrollPayheadHistoryDTO> decuctionList =  associatePayrollPayhead.getData().stream().filter(app -> app.getPayrollPayheadType().equals("Deduction")).collect(Collectors.toList());
+		model.addObject("decuctionPayhead", decuctionList);
+		
+		Response<IndEmployeePayroll> indEmployeePayroll = indPaysheetFrequencyService.getIndEmployeePayrollByEmpPayrollUUID(associatePayrollPayheadHistoryDTO.getIndEmpPayrollUUID());
+		model.addObject("indEmployeePayroll", indEmployeePayroll.getObject());
+		
+		ResponseList<IndEmployeePayroll> indEmployeePayrollResponse = indPaysheetFrequencyService.getIndEmployeePayrollListByPaysheetFrequencyUuid(associatePayrollPayheadHistoryDTO.getPaySheetFrequencyUUID());
+		model.addObject("indEmployeePayrollList", indEmployeePayrollResponse.getData());
+		
+		model.addObject("empPayrollUUID", associatePayrollPayheadHistoryDTO.getIndEmpPayrollUUID());
+		
+		model.setViewName("payroll_india/payroll/associatePayrollSummaryInd");
+		model.addObject("sourceleadUrl", sourceleadUrl);
+		return model;
+	}
+	
+	@RequestMapping(value = { "/getPaySheetFrequencyDataInd", "/rest/getPaySheetFrequencyDataInd" })
+	@ResponseBody
+	public ResponseList<IndPaysheetFrequencyDTO> getPaySheetFrequencyList(IndPaysheetFrequencyDTO indpaysheetFrequencyDTO, @RequestParam(value = "paySheetFrequencyUUID", required = false) String searchValue, HttpServletRequest request, HttpServletResponse response) throws Exception
+	{
+		OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+		return indPayrollService.getPayPeriodListByOrgLocationId(orgLocation, indpaysheetFrequencyDTO);
+	}
 
-	 
 }

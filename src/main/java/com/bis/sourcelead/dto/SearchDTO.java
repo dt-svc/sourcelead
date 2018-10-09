@@ -19,8 +19,8 @@ public class SearchDTO extends CommonDTO implements Serializable {
 	private String searchValue;
 	private Map<String, String> search;
 	private List<Map<String, String>> order;
-	private String sortColumn;
-	private String sortOrder;
+	private String sortColumn = "id";
+	private String sortOrder = "desc";
 	private String searchCountry;
 	private String searchState;
 	private String searchCity;

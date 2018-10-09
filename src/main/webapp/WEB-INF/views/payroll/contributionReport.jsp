@@ -31,9 +31,6 @@ $(document).ready(function(){
               <label class="col-md-12 paddingRight">Pay Group</label>
 				<div class="col-md-12">
 					<select class="form-control chosen-select" id="payGroup" name="payGroup" onchange="getPayPeriod();" field-name="Pay Group" data-validation="required">
-				<!-- 	<option>Select Group</option>
-						<option>Monthly</option>
-						<option>Weekly</option> -->
 					</select>
 				</div>
             </div>
@@ -41,9 +38,6 @@ $(document).ready(function(){
               <label class="col-md-12">Contribution Type</label>
               <div class="col-md-12">
                 <select class="form-control chosen-select" multiple data-placeholder="Contribution Type" id="contributionId" name="contributionId" field-name="Pay Group" data-validation="required">
-					 <!--    <option value="">Select Type</option>
-						<option value="Regular">Regular</option>
-						<option value="Additional">Additional</option> -->
 					</select>
               </div>
             </div>
@@ -62,10 +56,6 @@ $(document).ready(function(){
               <label class="col-md-12">Department</label>
               <div class="col-md-12">
                 <select class="form-control chosen-select" id="departmentId" name="departmentId">
-					 <!--    <option>Select Department</option>
-						<option>Department-1</option>
-						<option>Department-2</option>
-						<option>Department-3</option> -->
 					</select>
               </div>
             </div>
@@ -75,7 +65,7 @@ $(document).ready(function(){
         <div class="col-lg-12">
           <div class="pull-right">
             <input value="Run" class="btn btn-success btnSuccess" type="button" onClick="contributionReport();"> <!-- runPayrollregister -->
-            <input value="Reset" class="btn btn-defualt ml10" type="button">
+            <input value="Reset" class="btn btn-defualt ml10" type="button" onclick="resetContributionReport();">
           </div>
         </div>
       </div>     
@@ -87,16 +77,20 @@ $(document).ready(function(){
     		
     		
     		
-  <div class="timesheet_out" id="payrollRegister">
+  <div class="timesheet_out" id="payrollRegister" style="display: none;">
       <div class="clearfix">
         
-        <div class="positionRelative reportHead clearfix"> <span class="pull-left refreIcon"><a href="javascript:void(0)" class="refeIcon" title="Refresh" onclick="resetFilter();"></a></span>
+        <div class="positionRelative reportHead clearfix">
   <ul class="pull-right list-unstyled list-inline">
     <li><a class="newAdBtn mr5 hidden" href="/app/userCreation">+  Associate</a></li>
     <!-- <li><a href="javascript:void(0)" class="filtIcon" title="Filters" onclick="openPop();"></a></li> -->
     <li><a href="javascript:void(0)" class="overIcon" title="Actions" onclick="newActions();"></a>
       <div class="newActPop" style="">
-       <span><a href="javascript:void(0)" onclick="exportToPdf();" title="PDF">Export PDF</a> <a href="javascript:void(0)" onclick="exportUserData();" title="Excel">Export Excel</a> </span> </div>
+          <span>
+          <a href="javascript:void(0)" onclick="exportToPdf();" title="PDF">Export PDF</a>
+           <a href="javascript:void(0)" onclick="exportExcel();" title="Excel">Export Excel</a>
+            </span>
+      </div>
     </li>
     <li class="">
       <input class="repSearchBar" placeholder="Search" id="dataTableSearch" type="text">
@@ -107,41 +101,6 @@ $(document).ready(function(){
            <div class="styleTables clearfix mt">
           <div id="contributionReportDIV" class="datatable_filter"></div>
       </div>
-         <!--  <table>
-            <thead>
-              <tr>
-                <th>Employee ID</th>
-                <th>Employee Name</th>
-                <th>Department</th>
-                <th>Type</th>
-				<th>QTD</th>
-                <th>YTD</th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr>
-                <td><div class="tblminwidth-75">MIS00414</div></td>
-                <td><div class="tbldata-dotdot">Karan Kumar Sahoo</div></td>
-                <td><div class="tbldata-dotdot-vsm">Depatment</div></td>
-                <td><div class="tbldata-dotdot-vsm">Department Type</div></td>
-                <td><div class="tblminwidth-50">QTD</div></td>
-                <td><div class="tblminwidth-50">YTD</div></td>
-              </tr>
-            </tbody>
-          </table>
-        </div>
-        <nav>
-          <ul id="paging" class="pagination">
-            <li><a href="#">Previous</a></li>
-            <li><a href="#">2</a></li>
-            <li><a href="#">3</a></li>
-            <li><a href="#">4</a></li>
-            <li><a href="#">5</a></li>
-            <li class="disabled"><a href="#">6</a></li>
-            <li data-page="last"><a href="#">Next</a></li>
-          </ul>
-          <div class="clearfix"></div>
-        </nav> -->
       </div>
     </div>
     		
@@ -154,6 +113,18 @@ $(document).ready(function(){
  <script>
  function getPayPeriod(){
 	 getPayPeriodByGroupId("payGroup","payPeriod");
+ }
+ 
+ function resetContributionReport(){
+	 $("#payrollRegister").hide();
+	 $("#payGroup").val('');
+	 $("#payGroup").trigger("chosen:updated"); 
+	 $("#payPeriod").val('');
+	 $("#payPeriod").trigger("chosen:updated"); 
+	 $("#contributionId").val('');
+	 $("#contributionId").trigger("chosen:updated"); 
+	 $("#departmentId").val('');
+	 $("#departmentId").trigger("chosen:updated"); 
  }
  </script>
   
@@ -270,6 +241,7 @@ function getContributionReports(){
 
 <script>
 	function contributionReportURL(url) {
+		$("#payrollRegister").show();
 		$("#contributionReportDIV").empty();
 		var result = "";
 		result = result + '<table id="contributionReportTabble" class="display" cellspacing="0" width="100%" >';
@@ -388,7 +360,7 @@ function getContributionReports(){
 										"sortable": false,
 										"render" : function(data, type, opt,meta) {
 											var result = "";
-											result = result+ '<td><div class="tbldata-dotdot-vsm" title="">'+opt.dedAmount+'</div></td>';
+											result = result+ '<td><div class="tbldata-dotdot-vsm" title="">$ '+opt.contributionAmount+'</div></td>';
 											return result;
 										}
 									},{
@@ -396,7 +368,7 @@ function getContributionReports(){
 										"data" : "ytdDeductions",
 										"render" : function(data, type, opt,meta) {
 											var result = "";
-											result = result+ '<td><div class="tbldata-dotdot-vsm" title="">XXXXX</div></td>';
+											result = result+ '<td><div class="tbldata-dotdot-vsm" title="">$ '+opt.contributionYTD+'</div></td>';
 											return result;
 										}
 									}],
@@ -448,4 +420,27 @@ function getcontributionList(){
 }
 
 </script>
+
+<script>
+function exportToPdf(){
+	
+	var groupId = $('#payGroup').val();
+    getFreqdates("freqStartDate", "freqEndDate");
+    var  freqStartDate = $("#freqStartDate").val();
+    var freqEndDate = $("#freqEndDate").val();
+	var searchValue = $("#dataTableSearch").val();
+	searchValue = searchValue ? searchValue : "";
+	var contributionId = $("#contributionId").val();
+	/* alert("groupId = "+groupId);
+	alert("freqStartDate = "+freqStartDate);
+	alert("freqEndDate = "+freqEndDate);
+	alert("contributionId = "+freqEndDate);
+	alert("searchValue = "+searchValue); */
+	
+	window.location.href = sourceleadUrl+"/exportToPdfContributionReport?searchValue="+searchValue+"&groupId="+groupId+"&freqStartDate="+freqStartDate+"&freqEndDate="+freqEndDate+"&contributionId="+contributionId;
+}
+</script>
+
+
+
 <jsp:include page="../masterFooter.jsp" />

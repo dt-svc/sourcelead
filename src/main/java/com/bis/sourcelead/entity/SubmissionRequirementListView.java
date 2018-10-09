@@ -26,6 +26,8 @@ public class SubmissionRequirementListView {
 		
 	private BigInteger userId;
 	
+	private Integer profilePercentage;
+	
 	private String location;
 	
 	private String city;
@@ -154,6 +156,14 @@ public class SubmissionRequirementListView {
 
 	public void setClientName(String clientName) {
 		this.clientName = clientName;
+	}
+
+	public Integer getProfilePercentage() {
+		return profilePercentage;
+	}
+
+	public void setProfilePercentage(Integer profilePercentage) {
+		this.profilePercentage = profilePercentage;
 	}
 	
 	

@@ -163,6 +163,7 @@ function approvedEmployeesPagination(url){
 	          },{
             "targets": colIndex++,
             "data": "duration",
+            "sorting":false,
             "render": function ( data, type, opt, meta ) {
             	 var result = "";
             	 result = result + '   <div title="'+opt.duration+'" class="tbldata-dotdot-100">'+opt.duration+'</div>';
@@ -215,6 +216,7 @@ function approvedEmployeesPagination(url){
 	    	  }, {
                   "targets": colIndex++,
                   "data": "action",
+                  "sorting":false,
                   "render": function ( data, type, opt, meta ) {
                 	   var result = "";
                 	   '<sec:authorize access="hasAnyRole(\'ROLE_CANCEL_LEAVE\')">';
@@ -228,7 +230,8 @@ function approvedEmployeesPagination(url){
                   }
                 }],
                 "scrollCollapse": false,
-            	"lengthMenu": [[10, 15, 20, -1], [10, 15, 20, "All"]],
+            	"lengthMenu": [[10, 15, 20], [10, 15, 20]],
+            	"aaSorting" : [ [5, 'desc' ] ],
             	"bLengthChange": true,
             	"bDestroy": true,
             	"ordering": true,

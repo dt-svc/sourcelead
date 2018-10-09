@@ -57,19 +57,27 @@
 						                     <c:if test="${!empty employeeTimesheetEntryDetailsDTO.empLeaveMap}">
 						                      <c:forEach var="empLeaveMap" items="${employeeTimesheetEntryDetailsDTO.empLeaveMap}" varStatus="empLeaveMapCount">
 						                      <c:set var="leaveIndex" value="${leaveIndex+1}"/>
-							                      <tr>
+							                      <tr id="timesheetRow${leaveIndex}">
 							                          <td>
-								                         <p>--</p>
+								                         <div style="position: relative;">--
+								                          <c:if test="${(empty timeSheetSubmissionStatus || timeSheetSubmissionStatus == 'NEW' || timeSheetSubmissionStatus == 'DRAFT') && employeeTimesheetEntryDetailsDTO.saveButtonVisible}">
+									                          <c:forEach var="empL" items="${empLeaveMap.value}">
+									                              <c:if test="${empL.holiday eq true}">
+									                                 <input type="button" value="" onClick="alertHolidayDropMessage('${leaveIndex}','${empL.holidayId}','${empL.holidayUserId}','${empL.holidayUserLocationId}')" class="timeRemoveBtn"/>
+									                              </c:if>
+									                          </c:forEach>
+									                       </c:if>
+								                         </div>
 								                      </td>
 								                      <c:set var="leaveMapArr" value="${fn:split(empLeaveMap.key,'##')}"/>
 							                          <td>
-								                            <p>${leaveMapArr[0]}</p>   
+								                            <div>${leaveMapArr[0]}</div>  
 								                      </td>
 								                       <td>
-								                         <span id="${leaveIndex}task1IdBillableTypeId">${leaveMapArr[1]}</span>
+								                         <div><span id="${leaveIndex}task1IdBillableTypeId">${leaveMapArr[1]}</span></div>
 								                      </td>
 								                      <td>
-								                         <p>--</p>
+								                         <div>--</div>
 								                      </td>
 								                      <c:forEach var="empLeave" items="${empLeaveMap.value}" varStatus="empLeaveCount">
 								                        <td>
@@ -119,7 +127,6 @@
 									                     <c:set var="isTicketNumberRequired" value="${statusEntry.value.ticketNumberRequired == true ? 'Y' : 'N'}"/>
 									               </c:if>
 									            </c:forEach>
-									            
 									            <c:if test="${empty entry.projectMemberId}">
 									                     <c:set var="timeSheetSubmissionStatus" value="New"/>
 									                     <c:set var="modifyButtonVisible" value="N"/>
@@ -136,7 +143,7 @@
 											    <tr id="timesheetRow${leaveIndex+entryCount.index+1}">
 											        <td id="${leaveIndex+entryCount.index+1}projectTd">
 														<div class="timeAdd" style="position: relative;">
-														    <c:if test="${timeSheetSubmissionStatus != 'APPROVED' && timeSheetSubmissionStatus != 'SUBMITTED'}">
+														    <c:if test="${timeSheetSubmissionStatus != 'APPROVED' && timeSheetSubmissionStatus != 'SUBMITTED' && employeeTimesheetEntryDetailsDTO.saveButtonVisible}">
 														        <select  id="${leaveIndex+entryCount.index+1}projectMember1Id" title="--select project--" data-live-search="true" data-dropup-auto="false" data-size="8" class='selectpicker smfield existedProjectMembers' name="${leaveIndex+entryCount.index+1}projectMember1Id" onchange="enableOrDisableHours('${entryIndex}','${leaveIndex+entryCount.index+1}projectMember1Id','${leaveIndex+entryCount.index+1}ticketNumber1Id');flushtasks('${leaveIndex+entryCount.index+1}task1Id','${leaveIndex+entryCount.index+1}'); addOrRemoveTimeSheetCommentRow('${leaveIndex+entryCount.index+1}projectMember1Id');getProjectTasks('${leaveIndex+entryCount.index+1}task1Id','${leaveIndex+entryCount.index+1}projectMember1Id');" data-validation="required" field-name="Project">
 																	<!-- <option value=''>--select project--</option>  -->
 															        <c:forEach var="pm" items="${employeeTimesheetEntryDetailsDTO.projectMembersList}">
@@ -152,7 +159,7 @@
 															       <input value="" onclick="removeTimeSheetRow('${leaveIndex+entryCount.index+1}');" class="timeRemoveBtn" type="button">
 															      </c:if>
 															 </c:if>
-															 <c:if test="${timeSheetSubmissionStatus == 'APPROVED' || timeSheetSubmissionStatus == 'SUBMITTED'}">
+															 <c:if test="${timeSheetSubmissionStatus == 'APPROVED' || timeSheetSubmissionStatus == 'SUBMITTED' ||  !employeeTimesheetEntryDetailsDTO.saveButtonVisible}">
 															         <c:set var="projectCheck"/>
 															         <c:forEach var="pm" items="${employeeTimesheetEntryDetailsDTO.submittedProjectMembersList}">
 															               <c:if test="${!empty entry.projectMemberId && entry.projectMemberId == pm.id}">
@@ -172,7 +179,7 @@
 														  <c:set var="taskType" value=""/>
 														  <c:set var="taskId" value=""/>
 														  <c:set var="taskName" value=""/>
-														  <c:if test="${timeSheetSubmissionStatus != 'APPROVED' && timeSheetSubmissionStatus != 'SUBMITTED'}">
+														  <c:if test="${timeSheetSubmissionStatus != 'APPROVED' && timeSheetSubmissionStatus != 'SUBMITTED' && employeeTimesheetEntryDetailsDTO.saveButtonVisible}">
 															   <select id="${leaveIndex+entryCount.index+1}task1Id" title="--select task--"  data-dropup-auto="false" data-size="8" data-live-search="true" name="${leaveIndex+entryCount.index+1}task1Id"  class="selectpicker smfield existedProjectTaskId${entry.projectMemberId}"   onchange='prepareProjectTaskDetails("${entryIndex}","${leaveIndex+entryCount.index+1}task1Id","${leaveIndex+entryCount.index+1}projectMember1Id");' data-validation="required" field-name="Task">
 																	 <c:if test="${!empty entry.projectTaskList}">
 																	   <c:forEach var="pt" items="${entry.projectTaskList}">
@@ -199,7 +206,7 @@
 																	</c:if>
 																</select>
 														  </c:if>
-														   <c:if test="${timeSheetSubmissionStatus == 'APPROVED' || timeSheetSubmissionStatus == 'SUBMITTED'}">
+														   <c:if test="${timeSheetSubmissionStatus == 'APPROVED' || timeSheetSubmissionStatus == 'SUBMITTED' ||  !employeeTimesheetEntryDetailsDTO.saveButtonVisible}">
 														            <c:if test="${!empty entry.projectTaskList}">
 																	   <c:forEach var="pt" items="${entry.projectTaskList}">
 																	        <c:if test="${pt.id == entry.projectTaskId}">
@@ -228,10 +235,10 @@
 												        </div>
 												      </td>
 										              <td>
-										                  <c:if test="${timeSheetSubmissionStatus != 'APPROVED' && timeSheetSubmissionStatus != 'SUBMITTED'}">
+										                  <c:if test="${timeSheetSubmissionStatus != 'APPROVED' && timeSheetSubmissionStatus != 'SUBMITTED' &&  employeeTimesheetEntryDetailsDTO.saveButtonVisible}">
 													         <div><input type="text" ${!empty isTicketNumberRequired && isTicketNumberRequired == 'Y' ? 'data-validation="required"' : ''}  id="${leaveIndex+entryCount.index+1}ticketNumber1Id" name="${leaveIndex+entryCount.index+1}ticketNumber1Id"  value="${entry.ticketNumber}" field-name=" " onblur='setTicketNumber("${entryIndex}","${leaveIndex+entryCount.index+1}ticketNumber1Id");' class="timeTick"></div>
 													      </c:if>
-													      <c:if test="${timeSheetSubmissionStatus == 'APPROVED' || timeSheetSubmissionStatus == 'SUBMITTED'}">
+													      <c:if test="${timeSheetSubmissionStatus == 'APPROVED' || timeSheetSubmissionStatus == 'SUBMITTED' ||  !employeeTimesheetEntryDetailsDTO.saveButtonVisible}">
 													         <c:if test="${!empty entry.ticketNumber}">
 													             <div>${entry.ticketNumber}</div>
 													         </c:if>
@@ -254,30 +261,32 @@
 													               <input type="hidden" name="timesheetSubmission.timesheetEntries[${entryIndex}].date" value="${te.date}"/>
 													               <input type="hidden" name="timesheetSubmission.timesheetEntries[${entryIndex}].timesheetStatus" value="${timeSheetSubmissionStatus}"/> 
 													               
-													                 <c:set var="isEditable" value="Y"/>
-													                  <c:if test="${te.dayOfTheDate == 'Mon' && !empty isMonEditable && isMonEditable == 'N'}">
-													                      <c:set var="isEditable" value="N"/>
-													                  </c:if>
-													                  <c:if test="${te.dayOfTheDate == 'Tue' && !empty isTueEditable && isTueEditable == 'N'}">
-													                      <c:set var="isEditable" value="N"/>
-													                  </c:if>
-													                  <c:if test="${te.dayOfTheDate == 'Wed' && !empty isWedEditable && isWedEditable == 'N'}">
-													                      <c:set var="isEditable" value="N"/>
-													                  </c:if>
-													                  <c:if test="${te.dayOfTheDate == 'Thu' && !empty isThuEditable && isThuEditable == 'N'}">
-													                      <c:set var="isEditable" value="N"/>
-													                  </c:if>
-													                  <c:if test="${te.dayOfTheDate == 'Fri' && !empty isFriEditable && isFriEditable == 'N'}">
-													                      <c:set var="isEditable" value="N"/>
-													                  </c:if>
-													                  <c:if test="${te.dayOfTheDate == 'Sat' && !empty isSatEditable && isSatEditable == 'N'}">
-													                      <c:set var="isEditable" value="N"/>
-													                  </c:if>
-													                  <c:if test="${te.dayOfTheDate == 'Sun' && !empty isSunEditable && isSunEditable == 'N'}">
-													                      <c:set var="isEditable" value="N"/>
-													                  </c:if>
-						                                             
-													               <input onblur="editMe(this);" ${(!empty isEditable && isEditable == 'Y') ? '' : 'disabled="disabled"'}  ${isTaskCommentsRequired == 'Y' ? 'data-validation-comment="required"':''}
+														                 <c:set var="isEditable" value="Y"/>
+														                  <c:if test="${te.dayOfTheDate == 'Mon' && !empty isMonEditable && isMonEditable == 'N'}">
+														                      <c:set var="isEditable" value="N"/>
+														                  </c:if>
+														                  <c:if test="${te.dayOfTheDate == 'Tue' && !empty isTueEditable && isTueEditable == 'N'}">
+														                      <c:set var="isEditable" value="N"/>
+														                  </c:if>
+														                  <c:if test="${te.dayOfTheDate == 'Wed' && !empty isWedEditable && isWedEditable == 'N'}">
+														                      <c:set var="isEditable" value="N"/>
+														                  </c:if>
+														                  <c:if test="${te.dayOfTheDate == 'Thu' && !empty isThuEditable && isThuEditable == 'N'}">
+														                      <c:set var="isEditable" value="N"/>
+														                  </c:if>
+														                  <c:if test="${te.dayOfTheDate == 'Fri' && !empty isFriEditable && isFriEditable == 'N'}">
+														                      <c:set var="isEditable" value="N"/>
+														                  </c:if>
+														                  <c:if test="${te.dayOfTheDate == 'Sat' && !empty isSatEditable && isSatEditable == 'N'}">
+														                      <c:set var="isEditable" value="N"/>
+														                  </c:if>
+														                  <c:if test="${te.dayOfTheDate == 'Sun' && !empty isSunEditable && isSunEditable == 'N'}">
+														                      <c:set var="isEditable" value="N"/>
+														                  </c:if>
+													                   <c:if test="${empty entry.projectMemberId && !employeeTimesheetEntryDetailsDTO.saveButtonVisible}">
+													                       <c:set var="isEditable" value="N"/>
+													                   </c:if>
+													                <input onblur="editMe(this);" ${(!empty isEditable && isEditable == 'Y') ? '' : 'disabled="disabled"'}  ${isTaskCommentsRequired == 'Y' ? 'data-validation-comment="required"':''}
 													                id="${leaveIndex+entryCount.index+1}timeSheetDay${teStatus.index+1}Id" name="timesheetSubmission.timesheetEntries[${entryIndex}].hours" class="inline_field" value="${te.hours}" placeholder="HH:MM" type="text">
 													                   <%-- <c:if test="${!empty te.comments || (empty te.comments && (!empty isEditable && isEditable == 'Y'))}"> --%>
                                                                          <div class="timesheet_comm" id="commentDiv${entryIndex}">                
@@ -317,8 +326,11 @@
 													              </c:if>
 												             </div>
 												        </c:if>
-												        <c:if test="${empty entry.projectMemberId}">
+												         <c:if test="${empty entry.projectMemberId && employeeTimesheetEntryDetailsDTO.saveButtonVisible}">
 												            <div><b>New</b></div> 
+												        </c:if> 
+												        <c:if test="${empty entry.projectMemberId && !employeeTimesheetEntryDetailsDTO.saveButtonVisible}">
+												            <div>--</div> 
 												        </c:if> 
 						                  		    </td> 
 										        </tr>
@@ -1534,12 +1546,50 @@ function removeTimeSheetRow(rowId) {
 		}
 		
 </script>	
+<script type="text/javascript">	
+   	    function alertHolidayDropMessage(rowId,holidayId,holidayUserId,holidayUserLocationId){
+   		    var message = "<b>Are you sure to remove the holiday<b>";
+   		    $("#timesheetDivByWeekFrequency").append("<div id='choicepopUp'></div>");
+   			var result = "";
+   			result = result +"	<div class='project_inn_mask'></div>";
+   			result = result +"	  <div id='remove_user_pop' class='remove_user_pop remove_user_pop_a'>";
+   			result = result +"		<p>"+message+"</p>";
+   			result = result +"		<div>&nbsp;&nbsp;&nbsp;</div>";
+   			result = result +"		<b href='javascript:void(0)'><input id='confirm-id' type='button' value='Ok' onclick='removeHolidayRow("+rowId+","+holidayId+","+holidayUserId+","+holidayUserLocationId+");'><input class='u_can_color' type='button'  value='Cancel' onClick='cancel();'></b>";
+   			result = result +"	</div>";
+   			$("#choicepopUp").append(result);
+   			$("#remove_user_pop").slideDown(200);
+   			$(".project_inn_mask").fadeIn(200);
+   		 }
+</script>	    	 
+		    
 
-<!-- this script is for clear timesheet -->
-<script>
-function clearTimesheet(){ 
-		  timesheetDivByFrequency('${timesheetSubmissionDTO.timeSubFrequency}');
-}
+<script type="text/javascript">	
+function removeHolidayRow(rowId,holidayId,holidayUserId,holidayUserLocationId) { 
+	         var sourceleadUrl ='${SourceLeadWeb_sourceleadUrl}';
+			 document.getElementById("timesheetRow"+rowId).style.display = 'none';
+			 document.getElementById("timesheetRow"+rowId).value= '';
+			 var  rId = "timesheetRow"+rowId;
+			  var r = document.getElementById("timesheet").rows[rId];
+	          var count = (r.cells.length);
+		      for(i=0;i<count;i++){
+		        r.deleteCell(0);
+		      } 
+		      addOrRemoveTimeSheetCommentRow('');
+		      setTotals(); 
+		 	  $("#loadTime").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:60% center; background-repeat:no-repeat; background-size:75px;');
+		  	  $.ajax({
+		 	      type : "POST",
+		      	  url: sourceleadUrl+"/dropHoliday?${_csrf.parameterName}=${_csrf.token}&holidayId="+holidayId+"&holidayUserId="+holidayUserId+"&holidayUserLocationId="+holidayUserLocationId,		
+		 	      success :function(result) {
+		 	    	  $("#choicepopUp").empty();
+		 	    	  $(".project_inn_mask").fadeOut(200);
+		 	    	  $("#loadTime").removeAttr("style"); 
+		 	      }
+		    }); 
+		 	
+		}
+		
 </script>
 <script>
 function editMe(local){
@@ -1840,7 +1890,7 @@ function validateUploadFile(rowId,attNumber,item)
 </script>
 <script type="text/javascript">
    function alertMessage(message,status,savingType){
-   $("#timesheetDivByFrequency").append("<div id='choicepopUp'></div>");
+   $("#timesheetDivByWeekFrequency").append("<div id='choicepopUp'></div>");
 	var result = "";
 	result = result +"	<div class='project_inn_mask'></div>";
 	result = result +"	  <div id='remove_user_pop' class='remove_user_pop remove_user_pop_a'>";
@@ -2067,182 +2117,8 @@ function timesheetApprovalTableRowByProjectMemberId(timesheetFrequency,projectMe
 	    });
  }
 </script>
-<!-- Re-Open Timesheet Scripts Start -->
-<script type="text/javascript">
-function reOpenMyTimesheet(){
-	var projectMemberId = $("#projectMemberId").val();
-	var timesheetFrequency= $("#currentTimeFrequency").val();
-	var totalHours = $("#totalHours").val();
-	var result = "";
-	result = result +"	<div class='project_inn_mask'></div>";
-	result = result +"	   <div id='remove_user_pop' class='remove_user_pop remove_user_pop_a'>";
-	result = result +"		<p>Re-open message here</p>";
-	result = result +"		<textarea  id='reOpenReason' name='reOpenReason'  placeholder='Comments here'></textarea>";
-	result = result + ' <div id="reOpenReasonDiv"/>';
-	result = result +"		<b href='javascript:void(0)'><input id='confirm-id' type='button' value='Submit' onclick='removeEmptyLines($(\"#reOpenReason\"));notifyReopenTimeSheet("+projectMemberId+",\""+timesheetFrequency+"\","+totalHours+");'><input class='u_can_color' type='button'  value='Cancel' onClick='cancelReOpen();'></b>";
-	result = result +"	</div>";
-	$("#reOpenPopup").append(result);
-	$("#remove_user_pop").slideDown(200);
-	$(".project_inn_mask").fadeIn(200);
-}
-</script>
-
-<script>
-function notifyReopenTimeSheet(projectMemberId,timesheetFrequency,totalHours){
-    var sourceleadUrl ='${SourceLeadWeb_sourceleadUrl}';
-	var reason = document.getElementById("reOpenReason").value;
-	if(reason !== ""){
-		$("#reOpenReasonDiv").empty();
-		$.ajax({
-		   	type: "POST",
-		    url: sourceleadUrl+"/notifyReopenTimeSheet?${_csrf.parameterName}=${_csrf.token}&projectMemberId="+projectMemberId+"&timesheetFrequency="+timesheetFrequency+"&reason="+(reason.replace(/\n/g,'<br/>').replace(/\r/g,'<br/>'))+"&totalHours="+totalHours,	    	   
-		    success: function(data) {
-		    	if(data.response === "SESSION_TIMEDOUT") {
-		    		location.replace(sourceleadUrl);
-		    	 } else if (data.response === "AWKWARD") {
-                        location.href = "/errorPage";
-		    	 } else if (data.response === "SUCCESS") {
-			    		cancelReOpen();
-	   			    	timesheetDivAfterSaving();
-		    	 }else if (result.indexOf('Sign In') !== -1) {
-	  					location.replace(sourceleadUrl);
-				 }
-		    }
-	   });
-	}else{
-		$("#reOpenReasonDiv").empty().append("<font color='red' style='padding: 5px 10px; '>Reason is required</font>") ; 
-	}
-	  
-}
-</script>
-<script>
-function timesheetDivAfterSaving(){
-	var currentTimeFrequency = ''; 
-	var projectMemberId = '';
-	var currentTimeSubFrequency='';
-	var notificationCurrentFrequency ='${notificationCurrentFrequency}';
-	var notificationProMemberId ='${notificationProMemberId}';
-	var notificationCurrentSubTimeFrequency ='${notificationCurrentSubTimeFrequency}';
-	var sourceleadUrl ='${SourceLeadWeb_sourceleadUrl}';
-	
-	if(notificationCurrentFrequency != null && notificationCurrentFrequency !='' && notificationCurrentFrequency !='undefined'){
-		currentTimeFrequency = notificationCurrentFrequency;
-	}else{
-		currentTimeFrequency = $("#currentTimeFrequency").val();
-	}
-	if(notificationProMemberId != null && notificationProMemberId !='' && notificationProMemberId !='undefined'){
-		projectMemberId = notificationProMemberId;
-	}else{
-		projectMemberId = $("#projectMemberId").val();
-	}
-	if(notificationCurrentSubTimeFrequency != null && notificationCurrentSubTimeFrequency !='' && notificationCurrentSubTimeFrequency !='undefined'){
-		currentTimeSubFrequency = notificationCurrentSubTimeFrequency;
-	}else{
-		currentTimeSubFrequency= $("#currentTimeSubFrequency").val();
-	}
-	
-	
-	var timeSheetsFor = $("#timesheetFor").val();
-    if(currentTimeSubFrequency != null && currentTimeSubFrequency != '' && currentTimeSubFrequency != 'undefined'){
- 	   subFrParam = "&currentTimeSubFrequency="+currentTimeSubFrequency;
-    }
-    $("#loadTime").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:60% center; background-repeat:no-repeat; background-size:75px;');
-    $.ajax({
-	          type : "POST",
-	      	  url: sourceleadUrl+"/getTimesheetSubmissionDetails?projectMembersId="+projectMemberId+"&currentTimeFrequency="+currentTimeFrequency+"&timeSheetsFor="+timeSheetsFor+subFrParam,		
-		      success :function(data) {
-		    	  $("#timesheetDivByFrequency").empty();
-		    	  $("#timesheetDivByFrequency").append(data);
-		    	  if(currentTimeSubFrequency != null && currentTimeSubFrequency != '' && currentTimeSubFrequency != 'undefined'){
-		    		  $("#currentTimeSubFrequency").val(currentTimeSubFrequency);
-            	      $("#timeSubFrequency").val(currentTimeSubFrequency);
-		    	  }
-		    	  $("#loadTime").removeAttr('style');
-		      }
-	    }); 
-}
-</script>
-<script>
-function cancelReOpen(){
-$("#reOpenPopup").empty();
-$(".project_inn_mask").fadeOut(200);
-}
-</script>
 
 
-<script>
-function rejectReopenTimeSheetBySuperUser(projectMemberId,reOpenedUserId){
-	var timesheetFrequency = $("#currentTimeFrequency").val(); 
-	var result = "";
-	result = result +"	<div class='project_inn_mask'></div>";
-	result = result +"	   <div id='remove_user_pop' class='remove_user_pop remove_user_pop_a'>";
-	result = result +"		<p>Re-open message here</p>";
-	result = result +"		<textarea  id='reOpenRejectedReason' name='reOpenRejectedReason'  placeholder='Comments here'></textarea>";
-	result = result + ' <div id="reOpenRejectedReasonDiv"/>';
-	result = result +"		<b href='javascript:void(0)'><input id='confirm-id' type='button' value='Submit' onclick='removeEmptyLines($(\"#reOpenRejectedReason\"));storeReopenRejectedReason("+projectMemberId+","+reOpenedUserId+",\""+timesheetFrequency+"\");'><input class='u_can_color' type='button'  value='Cancel' onClick='cancelReOpenRejected();'></b>";
-	result = result +"	</div>";
-	$("#reOpenRejectedPopup").append(result);
-	$("#remove_user_pop").slideDown(200);
-	$(".project_inn_mask").fadeIn(200);
-}
-</script>
-
-<script>
-function storeReopenRejectedReason(projectMemberId,reOpenedUserId,timesheetFrequency){
-	var sourceleadUrl = '${SourceLeadWeb_sourceleadUrl}';
-	var superUserId = '${SourceLeadWeb_superUserId}';
-	var reason = document.getElementById("reOpenRejectedReason").value;
-	if(reason != ""){
-		$("#reOpenRejectedReasonDiv").empty();
-		$.ajax({
-		   	type: "POST",
-		   	url : sourceleadUrl+"/ws/acceptOrRejectReopenTimeSheetBySuperUser?${_csrf.parameterName}=${_csrf.token}&projectMemberId="+projectMemberId+"&reOpenedUserId="+reOpenedUserId+"&timesheetFrequency="+timesheetFrequency+"&type=reject"+"&reason="+(reason.replace(/\n/g,'<br/>').replace(/\r/g,'<br/>')),	    	   
-		    success: function(data) {
-		    	$("#reOpenRejectedPopup").empty();
-   			 	$(".project_inn_mask").fadeOut(200);
-   			    timesheetDivAfterSaving();
-	    	    $("html").trigger('click');
-	    	    maskme();
-		    }
-	   });
-	}else{
-			$("#reOpenRejectedReasonDiv").empty().append("<font color='red' style='padding: 5px 10px; '>Reason is required</font>") ; 
-		}
-	}
-	  
-
-</script>
-
-<script>
-function cancelReOpenRejected(){
-$("#reOpenRejectedPopup").empty();
-$(".project_inn_mask").fadeOut(200);
-}
-</script>
-
-<script>
-function acceptReopenTimeSheetBySuperUser(projectMemberId,reOpenedUserId){
-	
-	var sourceleadUrl = '${SourceLeadWeb_sourceleadUrl}';
-	var timesheetFrequency = '';
-		var notificationCurrentFrequency =  $("#notificationCurrentFrequency").val();
-		if(notificationCurrentFrequency != null && notificationCurrentFrequency !='' && notificationCurrentFrequency !='undefined'){
-		 	 timesheetFrequency = notificationCurrentFrequency;
-		 }else{
-			 timesheetFrequency = $("#currentTimeFrequency").val();			 
-		 }
-	
-	
-	 
-	$.ajax({
-		type : "POST",
-		url : sourceleadUrl+"/ws/acceptOrRejectReopenTimeSheetBySuperUser?${_csrf.parameterName}=${_csrf.token}&projectMemberId="+projectMemberId+"&reOpenedUserId="+reOpenedUserId+"&timesheetFrequency="+timesheetFrequency+"&type=accept",
-		success : function(data) {
-			timesheetDivAfterSaving();
-		},
-	});
-}
-</script>
 <!-- Re-Open Timesheet Script End -->
 <!-- Tab Switching -->
  <script>

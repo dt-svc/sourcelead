@@ -15,6 +15,7 @@ import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
+import com.bis.sourcelead.entity.AssociateLoanAndAdvanceHistory;
 import com.bis.sourcelead.entity.Candidate;
 import com.bis.sourcelead.entity.Employees;
 
@@ -135,6 +136,10 @@ public class EmployeePayroll {
 	
 	@Column(name = "TAXES")
 	private BigDecimal taxes;
+	
+	
+	@Column(name = "EXPENSES_AMOUNT")
+	private BigDecimal expensesAmount;
 
 	@OneToMany(cascade = CascadeType.ALL, mappedBy = "employeePayroll")
 	private Set<EmployeePayrollTax> usPayrollTax;
@@ -148,6 +153,25 @@ public class EmployeePayroll {
 	@OneToMany(cascade = CascadeType.ALL, mappedBy = "payrollId")
 	private Set<PayitemHistory> payitemHistory;
 	
+	@OneToMany(cascade = CascadeType.ALL, mappedBy = "payroll")
+	private Set<BankDataHistory> bankDataHistory;
+	
+	@OneToMany(cascade = CascadeType.ALL, mappedBy = "employeePayroll")
+	private Set<AssociateTaxHistory> associateTaxHistory;
+	
+	
+	@OneToMany(cascade = CascadeType.ALL, mappedBy = "payroll")
+	private Set<AssociateLoanAndAdvanceHistory> loanHistory;
+	
+	
+	public Set<AssociateLoanAndAdvanceHistory> getLoanHistory() {
+		return loanHistory;
+	}
+
+	public void setLoanHistory(Set<AssociateLoanAndAdvanceHistory> loanHistory) {
+		this.loanHistory = loanHistory;
+	}
+
 	public String getSubmitForAproverStatus()
 	{
 		return submitForAproverStatus;
@@ -559,5 +583,30 @@ public class EmployeePayroll {
 	public void setType(String type) {
 		this.type = type;
 	}
-	
+
+	public BigDecimal getExpensesAmount()
+	{
+		return expensesAmount;
+	}
+
+	public void setExpensesAmount(BigDecimal expensesAmount)
+	{
+		this.expensesAmount = expensesAmount;
+	}
+
+	public Set<BankDataHistory> getBankDataHistory() {
+		return bankDataHistory;
+	}
+
+	public void setBankDataHistory(Set<BankDataHistory> bankDataHistory) {
+		this.bankDataHistory = bankDataHistory;
+	}
+
+	public Set<AssociateTaxHistory> getAssociateTaxHistory() {
+		return associateTaxHistory;
+	}
+
+	public void setAssociateTaxHistory(Set<AssociateTaxHistory> associateTaxHistory) {
+		this.associateTaxHistory = associateTaxHistory;
+	}
 }

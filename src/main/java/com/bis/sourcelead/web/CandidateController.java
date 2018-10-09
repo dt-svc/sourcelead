@@ -252,7 +252,7 @@ public class CandidateController {
 		}
 		
 		//approver list
-		List<User> requirementApproverList = userService.getTabAccessOwnersByOrgLocationIdAndTabId(orgLocations.getId(),Long.valueOf(Constants.TAB_REQUIREMENT));
+		List<User> requirementApproverList = userService.getTabAccessOwnersByOrgLocationIdAndTabId(orgLocations.getId(),Long.valueOf(Constants.TAB_CANDIATE));
 		model.addObject("requirementApproverList", requirementApproverList);
 				
 		
@@ -595,15 +595,29 @@ public class CandidateController {
 	 @RequestMapping(value = "/getCandidateSubmittedJobsList", method = RequestMethod.GET)
 		public ModelAndView getCandidateSubmittedJobsList(@RequestParam(value = "candidateId", required = true) Long candidateId,HttpServletRequest request) throws Exception {
 			ModelAndView model = new ModelAndView();
-			List<RequirementSubmissionsDTO> responseList = null;;
+			List<RequirementSubmissionsDTO> responseList = null;
+			OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 			try {
-				OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
-				responseList = requirementSubmissionService.getCandidateSubmittedRequirementsListByCandidateId(candidateId, orgLocations.getId());
+				responseList = requirementSubmissionService.getCandidateSubmittedRequirementsListByCandidateId(candidateId, orgLocations.getId(),orgLocations.getDateFormat());
 			} catch (Exception e) {
 				e.printStackTrace();
 			}
+			
+			String locationList = orgLocations.getDateFormat();	
+			String orglocationDateFormat = null;
+			if(locationList.equalsIgnoreCase("yyyy-MM-dd")){
+				  orglocationDateFormat = "YYYY-MM-DD";
+			}if(locationList.equalsIgnoreCase("dd-MM-yyyy")){
+				orglocationDateFormat = "DD-MM-YYYY"; 
+			}if(locationList.equalsIgnoreCase("MM-dd-yyyy")){
+				orglocationDateFormat = "MM-DD-YYYY"; 
+			}if(locationList.equalsIgnoreCase("yyyy-dd-MM")){
+				orglocationDateFormat = "YYYY-DD-MM"; 
+			}
+			
 			 model.addObject("jobsList", responseList);
 			 model.addObject("jobsListSize", responseList.size());
+			 model.addObject("orglocationDateFormat", orglocationDateFormat);
 			 model.setViewName("candidates/candidateSubmittedJobsList");
 			 model.addObject("sourceleadUrl", sourceleadUrl);
 			 return model;

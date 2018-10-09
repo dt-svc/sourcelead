@@ -4,11 +4,24 @@
 <%@taglib uri="http://www.springframework.org/tags/form" prefix="form"%>
 
 <script src="/resources/js/payrollReports.js"></script>
+<script src="//cdnjs.cloudflare.com/ajax/libs/moment.js/2.14.1/moment.min.js"></script>
 
 <script>
 $(document).ready(function(){
    getPayGroupList("payGroup");
    getDepartments("payrollDepartment");
+   
+	 loc ="${SourceLeadWeb_orgLocations.dateFormat}";
+	 
+	  if(loc.match("yyyy-MM-dd")){
+		  locDateFormat = 'YYYY-MM-DD';
+	  }if(loc.match("dd-MM-yyyy")){
+		  locDateFormat = 'DD-MM-YYYY'; 
+	  }if(loc.match("MM-dd-yyyy")){
+		  locDateFormat = 'MM-DD-YYYY'; 
+	  }if(loc.match("yyyy-dd-MM")){
+		  locDateFormat = 'YYYY-DD-MM'; 
+	  } 
 });
 </script>
 <!-- Content Area -->
@@ -29,7 +42,7 @@ $(document).ready(function(){
             <div class="form-group">
               <label class="col-md-12 paddingRight">Pay Group</label>
 				<div class="col-md-12">
-					<select class="form-control sel" id="payGroup" name="payGroup" onchange="getPayPeriodByGroupId('payGroup','payPeriod');">
+					<select class="form-control sel" id="payGroup" name="payGroup" onchange="getPayPeriodByGroupId('payGroup','payPeriod')">
 					</select>
 				</div>
             </div>
@@ -89,10 +102,10 @@ $(document).ready(function(){
   			<ul class="pull-right list-unstyled list-inline">
 <!-- 			    <li><a class="newAdBtn mr5 hidden" href="/app/userCreation">+  Associate</a></li> -->
 <!-- 			    <li><a href="javascript:void(0)" class="filtIcon" title="Filters" onclick="openPop();"></a></li> -->
-<!-- 			    <li><a href="javascript:void(0)" class="overIcon" title="Actions" onclick="newActions();"></a> -->
 				<li>
-      				<div class="newActPop" style="">
-       					<span><a href="javascript:void(0)" onclick="exportToPdf();" title="PDF">Export PDF</a> <a href="javascript:void(0)" onclick="exportUserData();" title="Excel">Export Excel</a> </span> </div>
+				<a class="overIcon" title="Actions" onclick="newActions();"></a>
+      				<div class="newActPop" style="display: block;">
+       					<span><a onclick="exportPayrollRegisterReportPdf();" title="PDF">Export PDF</a> <a title="Excel">Export Excel</a> </span> </div>
    				</li>
 			    <li class="">
 			      <input class="repSearchBar" placeholder="Search" id="payrollRegisterSearch" type="text">
@@ -160,7 +173,26 @@ $(document).ready(function(){
 </script>
 <script>
 function resetForm(){
-	
+	 $("#payrollRegister").hide();
+	 $("#payGroup").val('');
+// 	 $("#payGroup").trigger("chosen:updated"); 
+	 $("#payPeriod").val('');
+// 	 $("#payPeriod").trigger("chosen:updated"); 
+	 $("#payRollType").val('');
+	 $("#payrollDepartment").val('');
+	 $("#payrollDepartment").trigger("chosen:updated"); 
+}
+</script>
+
+<script>
+function exportPayrollRegisterReportPdf(){
+	var searchValue = $("#payrollRegisterSearch").val();
+	var payGroup = $('#payGroup').val();
+	var department = $('#payrollDepartment').val();
+	var payRollType = $('#payRollType').val();
+	var freqStartDate = $('#freqStartDate').val();
+	var freqEndDate = $('#freqEndDate').val();
+    window.location.href = sourceleadUrl+"/exportPayrollRegisterReportPdf?&payGroup="+payGroup+"&department="+department+"&payRollType="+payRollType+"&freqStartDate="+freqStartDate+"&freqEndDate="+freqEndDate+"&searchValue="+searchValue;
 }
 </script>
 <script type="text/javascript">
@@ -183,7 +215,7 @@ function runPayrollregisterReport(){
 		result = result +"	   <div id='remove_user_pop' class='remove_user_pop remove_user_pop_a'>";
 		result = result +"		<p>Please select PayGroup and PayPeriod</p>";
 		result = result +"		<div>&nbsp;&nbsp;&nbsp;</div>";
-		result = result +"		<b href='javascript:void(0)'><input type='button' value='Ok' onclick='removePopUp();'></b>";
+		result = result +"		<b href='javascript:void(0)'><input type='button' value='Ok' onclick='removePopUp();' style='background-color: #FF0000; width : 100%'></b>";
 		result = result +"	</div>";
 		$("#popUp").append(result);
 		$("#remove_user_pop").slideDown(200);
@@ -372,7 +404,7 @@ function payrollRegisterPagination(url){
 //     	    	"aaSorting": [[1,'desc']],
     	    	"bLengthChange": true,
     	    	"bDestroy": true,
-    	    	"ordering": false,
+    	    	"ordering": true,
     	    	"oLanguage": {
     	     		"sSearch": "",
     	     		 "sZeroRecords": "", "sEmptyTable": "", 

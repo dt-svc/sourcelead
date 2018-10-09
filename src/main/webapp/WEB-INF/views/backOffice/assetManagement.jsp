@@ -120,6 +120,7 @@ $(document).ready(function(){
 	        	$('#assetManagementPopup').empty();
 	        	$('#assetManagementPopup').append(result);
 // 	        	issueDateScript();
+				assetCategory();
 	        	populateDropdownValues();
 	        	<c:forEach var="section" items="${sourceleadSectionList}" varStatus="sectionOrder">
 	  		 	 var sectionId = '${section.id}';
@@ -303,6 +304,7 @@ function openAssetFilterPop(){
 								<ul class="list-unstyled" id="workStatusFilter">
 				                    <li class="checkBox positionRelative"><input id="c1" type="checkbox"  name="workingStatus"  value ="Working" ><label>Working</label></li>
                                     <li class="checkBox positionRelative"><input id="c2" type="checkbox"  name="workingStatus"  value ="Out Of Service" ><label>Out Of Service</label></li>
+                                    <li class="checkBox positionRelative"><input id="c3" type="checkbox"  name="workingStatus"  value ="Service" ><label>Service</label></li>
 		                        </ul>
 							 </div>
 						</div> 
@@ -464,6 +466,7 @@ function prepareDynamicAssetList(url){
 	result = result + '<table id="assetPagination" class="display" cellspacing="0" width="100%">';
 	result = result + '<thead>';
 	result = result + '<tr">';
+	result = result +'	<th>ID</th>';
 	result = result +'	<th>Serial Number</th>';
    	result = result +'  <th>Category</th>';
    	result = result +'  <th>Model</th>';
@@ -492,6 +495,16 @@ function projectAssetPaginations(url){
         }),
         
         "columnDefs": [{
+	  	  	"targets": colIndex++,
+		  	"data": "",
+		  	"display": "none",
+		  	"render": function(data, type, report) {
+		  		var result = "";
+			   	result = result+'<td><div class="tbldata-dotdot" title="'+report.id+'">'+report.id+'</div></td>';
+
+	             return result;
+	  	      }
+	  		},{
     	  	"targets": colIndex++,
     	  	"data": "",
     	  	"render": function(data, type, report) {
@@ -560,18 +573,23 @@ function projectAssetPaginations(url){
 			  		var result = "";
 			  		 var selected1 = '';
 	   				 var selected2 = '';
+	   				 var selected3 = '';
 			  		 if(report.workingStatus == 'Working'){
 						selected1 = 'selected';
 					 } 
 				
 					 if(report.workingStatus == 'Out Of Service'){
 						selected2 = 'selected';
-					 } 
+					 }
+					 if(report.workingStatus == 'Service'){
+						selected3 = 'selected';
+					 }
 					
 			  	 	result = result + ' <td><div class="tblminwidth-150">';
-					result = result + ' <select id="workingStatus'+report.id+'" name="workingStatus" onChange="updateWorkingStatus(\''+report.id+'\');">';
+					result = result + ' <select id="workingStatus'+report.id+'" name="workingStatus" onChange="updateWorkingStatus(\''+report.assetUUID+'\',\''+report.id+'\');">';
 					result = result + ' <option '+selected1+'>Working</option>';
 					result = result + ' <option '+selected2+'>Out Of Service</option>';
+					result = result + ' <option '+selected3+'>Service</option>';
 					result = result + ' </select>';
 					result = result + ' </div></td>';
 		           return result;
@@ -598,6 +616,7 @@ function projectAssetPaginations(url){
 	  		} ],
 	    	"scrollCollapse": false,
 	    	"lengthMenu": [[10, 15, 20], [10, 15, 20]],
+	    	"aaSorting":[[0,'desc']],
 	    	"bLengthChange": true,
 	    	"bDestroy": true,
 	    	"ordering": true,
@@ -608,10 +627,12 @@ function projectAssetPaginations(url){
 	     }
     } );
     $("assetPagination").wrap("<div style='overflow-x: auto; overflow-y: hidden;'></div>"); 
+    $('#assetPagination').DataTable().column(0).visible(false);
     $("input[type=search]").hide();
     $("#assetDataTableSearch").keyup(function(e) {
     	   if(e.which === 13) {
     		   getDynamicAssetList();
+    		   
     	   }
     	});
 }
@@ -619,32 +640,176 @@ function projectAssetPaginations(url){
 </script>
 
 
-
-
-
-
+<div id="assetServicePopUp" class="popupWrap"/>
 
 <!-- ===================================================Dynamic pageLoading End ================================== -->
 
 <script>
-function updateWorkingStatus(assetId){
-    var workingStatus = $('#workingStatus'+assetId).val();
+function updateWorkingStatus(assetUUID,assetId){
+	var workingStatus = $('#workingStatus'+assetId).val();
 	var rowHtmlContent =  $("#asset"+assetId).html();
-	
 	 $("#asset"+assetId).empty();
 	 $("#asset"+assetId).html("<td colspan='7'  id='loading"+assetId+"'></td>");
 	 $("#loading"+assetId).attr('style',' height:40px; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/linear-loader.gif"); background-position:center; background-repeat:no-repeat;');
-	$.ajax({
-	   	type: "POST",
-	    url: sourceleadUrl+"/updateAssetWorkingStatus?"+tokenParamName+"="+tokenValue+"&assetId="+assetId+"&workingStatus="+workingStatus,	    	   
-	    success: function(data) {
-	    	$("#asset"+assetId).empty();
-	    	$("#asset"+assetId).html(rowHtmlContent);
-	        $("#workingStatus"+assetId).val(workingStatus);
-	    	
-	    }
-   });
+	if(workingStatus == "Service"){
+		assetmanagemetServicePopUp(assetId,workingStatus,assetUUID);
+	}else{
+		$.ajax({
+		   	type: "POST",
+		    url: sourceleadUrl+"/updateAssetWorkingStatus?"+tokenParamName+"="+tokenValue+"&assetId="+assetId+"&workingStatus="+workingStatus,	    	   
+		    success: function(data) {
+		    	$("#asset"+assetId).empty();
+		    	$("#asset"+assetId).html(rowHtmlContent);
+		        $("#workingStatus"+assetId).val(workingStatus);
+		    	
+		    }
+	   });
+	}
+	 
 }
+
+function assetmanagemetServicePopUp(assetId,workingStatus,assetUUID){
+	$("#assetServicePopUp, .mask").fadeIn();
+	 var result = "";
+	 result = result + '<form id="assetService_form" name="assetService_form" method="post">';
+	 result = result + '	<input type="hidden" name="assetId" id="assetId" value='+assetId+'>';
+	 result = result + '	<input type="hidden" name="assetUUID" id="assetUUID" value='+assetUUID+'>';
+	 result = result + '	<input type="hidden" name="workingStatus" id="workingState" value='+workingStatus+'>';
+	 result = result + '	<div class="clearfix">';
+		result = result + '	<div class="popupHead">Asset Management Sevice<i class="closePop pull-right popClose" onclick="closePopup(\''+assetUUID+'\',\''+assetId+'\');"></i></div>';
+			result = result + '	<div class="popupContent">';
+				result = result + '	<div class="row form-group">';
+					result = result + '<div class="col-md-4">';
+					result = result + '    	<label class="clearfix">Service Date<span class="colorRed paddingLeft">*</span></label>';
+					result = result + '    	<div class="clearfix validation_p" id="errServiceDateDiv">';
+					result = result + '    		<input type="text" class="form-control calendar"  placeholder="Service Date" name="serviceDate" id="serviceDate" data-validation="required" field-name="Service Date" readonly="readonly">';
+					result = result + '    	</div>';
+					result = result + '</div>';
+					
+					result = result + '			<div class="col-md-4">';
+					result = result + '				<label class="clearfix">Received Date<span class="colorRed paddingLeft">*</span></label>';
+					result = result + '				<div class="clearfix validation_p" id="errRecivedDateDiv">';
+					result = result + '					<input type="text" class="form-control calendar" placeholder="Received Date" name="receivedDate" id="receivedDate" data-validation="required" field-name="Received  Date" readonly="readonly">';
+					result = result + '				</div>';
+					result = result + '			</div>';
+					
+					result = result + '			<div class="col-md-4">';
+					result = result + '				<label class="clearfix">Cost<span class="colorRed paddingLeft">*</span></label>';
+					result = result + '				<div class="clearfix validation_p">';
+					result = result + '					<input type="text" class="form-control" placeholder="Cost" name="cost" id="cost" data-validation="required validate_float validate_length length1-50" field-name="Cost">';
+					result = result + '				</div>';
+					result = result + '			</div>';
+					result = result + '	</div>';
+					result = result + '	<div class="row form-group">';
+						result = result + '			<div class="col-md-12">';
+						result = result + '				<label class="clearfix">Description<span class="colorRed paddingLeft">*</span></label>';
+						result = result + '				<div class="clearfix validation_p">';
+						result = result + '					<textarea class="form-control" rows="3" name="description" id="description" placeholder="Description" data-validation="required" field-name="Description"></textarea>';
+						result = result + '				</div>';
+						result = result + '			</div>';
+					result = result + '	</div>';
+				
+			result = result + '	</div>';
+			
+			result = result + '	<div class="popupFoot text-right">';
+			result = result + '		<input type="button" value="Save" name="btnAddExpCat" id="save_button" class="slBtn md colorBtn" onclick="saveAssetService('+assetId+');">';
+			result = result + '		<input type="button" value="Cancel" class="slBtn md popClose" onclick="closePopup(\''+assetUUID+'\',\''+assetId+'\');">';
+			result = result + '	</div>';
+	 result = result + '</div>';
+	 result = result + '</form>';
+	$("#assetServicePopUp").empty();
+	$("#assetServicePopUp").append(result)
+	
+	var locationDate ='${SourceLeadWeb_orgLocations.dateFormat}'; 
+	var finalDateFormat = getJSDateFormat(locationDate);
+	$('#serviceDate').datepicker({
+	    dateFormat: finalDateFormat,
+	    changeMonth: true,
+		changeYear: true, 
+		onSelect : function(selected) {
+			var dt = $(this).datepicker('getDate', '+1d');
+			dt.setDate(dt.getDate() + 1);
+			$('#receivedDate').datepicker("option", "minDate", dt);
+			errServiceDate();
+		}
+	});
+	$('#receivedDate').datepicker({
+	    dateFormat: finalDateFormat,
+	    changeMonth: true,
+		changeYear: true, 
+		onSelect : function(selected) {
+			var dt = $(this).datepicker('getDate', '-1d');
+			dt.setDate(dt.getDate() - 1);
+			$('#serviceDate').datepicker("option", "maxDate", dt);
+			errReceiveDate();
+		}
+	});
+}
+
+function errServiceDate(){
+	$('#errServiceDateDiv').find('p.jquery_form_error_message').remove(); 
+}
+function errReceiveDate(){
+	$('#errRecivedDateDiv').find('p.jquery_form_error_message').remove(); 
+}
+//close Popup
+function closePopup(assetUUID,assetId) {
+	var rowHtmlContent =  $("#asset"+assetId).html();
+	$("#assetServicePopUp, .mask").fadeOut();
+	 $.ajax({
+		   	type: "POST",
+		    url: sourceleadUrl+"/cancelAssetManagementService?"+tokenParamName+"="+tokenValue+"&assetUUID="+assetUUID,	    	   
+		    success: function(json) {
+		    	$("#asset"+assetId).empty();
+		    	$("#workingStatus"+assetId).val(json.workingStatus);
+		    	$("#asset"+assetId).html(rowHtmlContent);
+		    }
+	 });
+	
+}
+</script>
+<script>
+function saveAssetService(assetId){
+	if ($('#assetService_form').validate(false, validationSettings)) {
+		var rowHtmlContent =  $("#asset"+assetId).html();
+		var workingState = $("#workingState").val();
+		 $("#asset"+assetId).empty();
+		 $("#asset"+assetId).html("<td colspan='7'  id='loading"+assetId+"'></td>");
+		 $("#loading"+assetId).attr('style',' height:40px; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/linear-loader.gif"); background-position:center; background-repeat:no-repeat;');
+		 var sourceleadUrl = '${sourceleadUrl}';
+		var formData = getFormData("assetService_form");
+	 	$.ajax({
+			type: "POST",
+			data: formData,
+			url : sourceleadUrl+ "/saveAssetService?${_csrf.parameterName}=${_csrf.token}",
+			success : function(data) {
+					if (data && (data.response === "INVALID_DATA" || data.response === "INVALID_USER")) {
+			        		showError(data.responseMessage);
+	  	    		}else if (data.response === "AWKWARD") {
+	            			location.href = "/errorPage";
+	  	    		}else if(data.response === "SUCCESS"){
+	  	    			 closePopup();
+	  	    			$("#asset"+assetId).empty();
+	  			    	$("#asset"+assetId).html(rowHtmlContent);
+	  			        $("#workingStatus"+assetId).val(workingState);
+			        }else if (data.indexOf('Sign In') !== -1) {
+            			location.replace(sourceleadUrl);
+	  				} else {
+	  					showError("Operation failed, please try again");
+	  				}
+			},
+		}); 
+		return true;
+	}else {
+		return false;
+	}
+}
+$('body').on('blur', '#assetService_form', function() {
+	$("#assetService_form").showHelpOnFocus();
+	$("#assetService_form").validateOnBlur(false, validationSettings);
+});
+ 
+
 </script>
 
 <script type="text/javascript">
@@ -713,8 +878,8 @@ function removeAssetManagement(assetUUID){
   
   
    <script>
-  function assetCategory(category){
-	  var selectedCategory = category.value;
+  function assetCategory(){
+	  var selectedCategory = $("#category option:selected").val();
 	    if(selectedCategory == '2'){
 			  document.getElementById("monitorDiv").style.display="";
 			  document.getElementById("name").style.display="";

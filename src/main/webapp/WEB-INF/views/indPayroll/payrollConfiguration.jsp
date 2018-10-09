@@ -5,102 +5,109 @@
 <%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <%@taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
 
-<section class="content-wraper">
+<section class="content-wraper contentWraper">
     <section class="content-header clearfix">
-          <div class="pull-left">
-      <!-- <h2>Submission Templates</h2> -->
-      <h2 class="pull-left">Payroll Configure</h2>
-				
-    </div>
-          <div class="pull-right brud-crum"><a href="<c:url value='${appPath}/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a> &raquo; Payroll Configure</div>
- <div class="clearfix"></div>
+	    <div class="pull-left">
+	      <!-- <h2>Submission Templates</h2> -->
+	      <h2 class="pull-left">Payroll Configure</h2>
+	    </div>
+	    <div class="pull-right brud-crum"><a href="<c:url value='${appPath}/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a> &raquo; Payroll Configure</div>
+	 	<div class="clearfix"></div>
     </section>
     
-    
- 
-<section class="landTemp">
-	<div class="landTempCta">
-		<div class="pull-left mr10">
-           <i class="fa fa-inr fa-2x text-muted"></i>
-        </div>
-		<div class="pull-left">
-		<h2 class="text-primary">Pay Heads</h2>
-		<p>Manage your pay heads</p>
-		<span>
-			<a class="btn btn-info btn-sm mr10" href="<c:url value='${appPath}/payrollPayhead'/>">Add</a>
-			<a class="btn btn-primary btn-sm" href="<c:url value='${appPath}/payheadList'/>">View</a>
-		</span>
-		</div>
-	</div>
-	<div class="landTempCta">
-	<div class="pull-left mr10">
-           <i class="fa fa-file-pdf-o fa-2x text-muted"></i>
-        </div>
-		<div class="pull-left">
-		<h2 class="text-info">Pay Slips</h2>
-		<p>Manage your pay slips</p>
-		<span>
-			<a class="btn btn-info btn-sm mr10" href="#">Add</a> 
-			<a class="btn btn-primary btn-sm" href="#">View</a>
-		</span>
-	</div>
-	</div>
-	<div class="landTempCta">
-	<div class="pull-left mr10">
-           <i class="fa fa-gift fa-2x text-muted"></i>
-        </div>
-		<div class="pull-left">
-		<h2 class="text-success">Bonus</h2>
-		<p>Manage your bonus</p>
-		<span>
-			<a class="btn btn-info btn-sm mr10" href="<c:url value='${appPath}/payrollBonus'/>">Add</a> 
-			<a class="btn btn-primary btn-sm" href="<c:url value='${appPath}/payrollBonusList'/>">View</a>
-		</span>
-		</div>
-	</div>
-	<div class="landTempCta">
-	<div class="pull-left mr10">
-           <i class="fa fa-suitcase fa-2x text-muted"></i>
-        </div>
-		<div class="pull-left">
-		<h2 class="text-danger">Loan & Advances</h2>
-		<p>Manage your loan & advances</p>
-		<span>
-			<a class="btn btn-info btn-sm mr10" href="<c:url value='${appPath}/payrollLoanAndAdvances'/>">Add</a> 
-			<a class="btn btn-primary btn-sm" href="<c:url value='${appPath}/payrollLoanAndAdvancesList'/>">View</a>
-		</span>
-		</div>
-	</div>
-	<div class="landTempCta">
-	<div class="pull-left mr10">
-           <i class="fa fa-inr fa-2x text-muted"></i>
-        </div>
-		<div class="pull-left">
-		<h2 class="text-warning">Taxes</h2>
-		<p>Manage your taxes</p>
-		<span>
-			<a  class="btn btn-info btn-sm mr10" href="${appPath}/payrollTaxConfiguration">Configure</a> 
-		</span>
-		</div>
-	</div>
-	
-	    <div class="col-md-3 mb">
-        <div class="pull-left mr10"> <i class="fa fa-plus-circle fa-2x text-muted"></i> </div>
+<div class="clearfix"></div>
+   <div class="leaveConfigure clerfix">
+	<div class="col-md-3 mb">
+        <div class="pull-left mr10"> <i class="fa fa-inr fa-2x text-muted"></i> </div>
         <div class="pull-left">
-          <h4 class="text-muted">Create Batch</h4>
-          <small class="text-muted">Configure Batch</small>
-          <div class="mt10">
-          <a href="<c:url value='${appPath}/userGroupList'/>"class="btn btn-primary btn-sm" title="View">View</a> </div>
+          <h4 class="text-muted">Pay Heads</h4>
+          <small class="text-muted">Manage your pay heads</small>
+          <div class="clearfix mt10"> 
+          	<a href="<c:url value='${appPath}/payrollPayhead'/>" class="btn btn-info btn-sm mr10" title="Add">Add</a>
+          	<a href="<c:url value='${appPath}/payheadList'/>" class="btn btn-primary btn-sm" title="View">View</a>
+          </div>
+        </div>
+        <div class="clearfix"></div>
+      </div>
+      
+      
+	<div class="col-md-3 mb">
+        <div class="pull-left mr10"> <i class="fa fa-file-pdf-o fa-2x text-muted"></i> </div>
+        <div class="pull-left">
+          <h4 class="text-muted">Pay Slips</h4>
+          <small class="text-muted">Manage your pay slips</small>
+          <div class="clearfix mt10"> 
+          	<a href="<c:url value='#'/>" class="btn btn-info btn-sm mr10" title="Add">Add</a>
+          	<a href="<c:url value='#'/>" class="btn btn-primary btn-sm" title="View">View</a>
+          </div>
+        </div>
+        <div class="clearfix"></div>
+      </div>
+	
+	<div class="col-md-3 mb">
+        <div class="pull-left mr10"> <i class="fa fa-gift fa-2x text-muted"></i> </div>
+        <div class="pull-left">
+          <h4 class="text-muted">Bonus</h4>
+          <small class="text-muted">Manage your bonus</small>
+          <div class="clearfix mt10"> 
+          	<a href="<c:url value='${appPath}/payrollBonus'/>" class="btn btn-info btn-sm mr10" title="Add">Add</a>
+          	<a href="<c:url value='${appPath}/payrollBonusList'/>" class="btn btn-primary btn-sm" title="View">View</a>
+          </div>
         </div>
         <div class="clearfix"></div>
       </div>
 	
 	
+	<div class="col-md-3 mb">
+        <div class="pull-left mr10"> <i class="fa fa-suitcase fa-2x text-muted"></i> </div>
+        <div class="pull-left">
+          <h4 class="text-muted">Loan & Advances</h4>
+          <small class="text-muted">Manage your loan & advances</small>
+          <div class="clearfix mt10"> 
+          	<a href="<c:url value='${appPath}/payrollLoanAndAdvances'/>" class="btn btn-info btn-sm mr10" title="Add">Add</a>
+          	<a href="<c:url value='${appPath}/payrollLoanAndAdvancesList'/>" class="btn btn-primary btn-sm" title="View">View</a>
+          </div>
+        </div>
+        <div class="clearfix"></div>
+     </div>
+      
 	
+	<div class="col-md-3 mb">
+        <div class="pull-left mr10"> <i class="fa fa-inr fa-2x text-muted"></i> </div>
+        <div class="pull-left">
+          <h4 class="text-muted">Taxes</h4>
+          <small class="text-muted">Manage your taxes</small>
+          <div class="clearfix mt10"> <a href="<c:url value='${appPath}/payrollTaxConfiguration'/>" class="btn btn-info btn-sm mr10" title="Configure">Configure</a>
+           </div>
+        </div>
+        <div class="clearfix"></div>
+     </div>
+     
+     
+	<div class="col-md-3 mb">
+        <div class="pull-left mr10"> <i class="fa fa-plus-circle fa-2x text-muted"></i> </div>
+        <div class="pull-left">
+          <h4 class="text-muted">Create Batch</h4>
+          <small class="text-muted">Configure Batch</small>
+          <div class="clearfix mt10"> <a href="<c:url value='${appPath}/userGroupList'/>" class="btn btn-info btn-sm mr10" title="View">View</a>
+           </div>
+        </div>
+        <div class="clearfix"></div>
+     </div>
+	
+	<div class="col-md-3 mb">
+        <div class="pull-left mr10"> <i class="fa fa-gears fa-2x text-muted"></i> </div>
+        <div class="pull-left">
+          <h4 class="text-muted">Payroll Configure</h4>
+          <small class="text-muted">Configure Payroll</small>
+          <div class="clearfix mt10"> <a href="<c:url value='${appPath}/payrollApprover'/>" class="btn btn-info btn-sm mr10" title="Add">Configure</a>
+           </div>
+        </div>
+        <div class="clearfix"></div>
+      </div>
 	
 	<div class="clearfix"></div>
-</section>
-    
+</div>
         
 </section>
 

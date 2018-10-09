@@ -26,6 +26,14 @@ public class EmployeeLeaveDTO implements Serializable{
 	private String hours;
 	
 	private String leaveReason;
+	
+	private boolean holiday;
+	
+	private Long holidayId;
+	
+	private Long holidayUserId;
+	
+	private Long holidayUserLocationId;
 
 	public Long getLeaveId() {
 		return leaveId;
@@ -98,6 +106,38 @@ public class EmployeeLeaveDTO implements Serializable{
 
 	public void setLeaveReason(String leaveReason) {
 		this.leaveReason = leaveReason;
+	}
+
+	public boolean getHoliday() {
+		return holiday;
+	}
+
+	public void setHoliday(boolean holiday) {
+		this.holiday = holiday;
+	}
+
+	public Long getHolidayId() {
+		return holidayId;
+	}
+
+	public void setHolidayId(Long holidayId) {
+		this.holidayId = holidayId;
+	}
+
+	public Long getHolidayUserId() {
+		return holidayUserId;
+	}
+
+	public void setHolidayUserId(Long holidayUserId) {
+		this.holidayUserId = holidayUserId;
+	}
+
+	public Long getHolidayUserLocationId() {
+		return holidayUserLocationId;
+	}
+
+	public void setHolidayUserLocationId(Long holidayUserLocationId) {
+		this.holidayUserLocationId = holidayUserLocationId;
 	}
 	
 	

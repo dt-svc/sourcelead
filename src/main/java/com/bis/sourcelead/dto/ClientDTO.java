@@ -114,6 +114,10 @@ public class ClientDTO {
 	
 	private String isAccountingFirm;
 	
+	private String generateBill;
+	
+	private String generateInvoice;
+	
 	public String getClientSaveFromType()
 	{
 		return clientSaveFromType;
@@ -446,6 +450,18 @@ public class ClientDTO {
 	}
 	public void setApOrArSent(String apOrArSent) {
 		this.apOrArSent = apOrArSent;
+	}
+	public String getGenerateBill() {
+		return generateBill;
+	}
+	public void setGenerateBill(String generateBill) {
+		this.generateBill = generateBill;
+	}
+	public String getGenerateInvoice() {
+		return generateInvoice;
+	}
+	public void setGenerateInvoice(String generateInvoice) {
+		this.generateInvoice = generateInvoice;
 	}
 	
 	

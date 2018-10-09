@@ -199,6 +199,7 @@ public class UserGroupDaoImpl implements UserGroupDao{
 			StringBuilder qry = new StringBuilder(); 
 			qry.append("select distinct can.ID as candidateID,")
 			.append(" projmem.ID as projectMemId,")
+			.append(" projmem.PROJECT_ID as projectId,")
 			.append(" projmem.PAY_RATE as payRate,")
 			.append(" projmem.PAY_RATE_CURRENCY as payRateCurrency,")
 			.append(" projmem.CURRENT_BILL_RATE as currentBillRate,")
@@ -221,8 +222,9 @@ public class UserGroupDaoImpl implements UserGroupDao{
 			.append(" AND   projmem.MASTER_CANDIDATE_ID = ts.MASTER_CANDIDATE_ID")
 			.append (" AND   projmem.PROJECT_ID = ts.PROJECT_ID")
 			.append (" AND   sah.SUBMISSION_ID = ts.ID")
-			.append(" AND can.ID = :candidateId and sah.FREQUENCY_START_DATE = :startDate and sah.FREQUENCY_END_DATE = :endDate ");
-//				 System.out.println(qry.toString());
+			.append(" AND can.ID = :candidateId and sah.FREQUENCY_START_DATE = :startDate AND sah.FREQUENCY_END_DATE = :endDate ")
+			.append(" AND sah.SUBMISSION_APPROVALSTATUS = 'APPROVED' ");
+				 System.out.println(qry.toString());
 			        
 					Query queryString = session.createSQLQuery(qry.toString());
 					queryString.setParameter("candidateId", candidateId).setDate("startDate", startDate).setDate("endDate",endDate);
@@ -255,6 +257,22 @@ public class UserGroupDaoImpl implements UserGroupDao{
 			e.printStackTrace();
 		}
 		return payPeriodDTOList;
+	}
+
+	@Override
+	@Transactional
+	public List<UserGroup> getAllUserGroupsByLocationIdAndDepartmentId(OrgLocations orgLocation, String userId)
+	{
+		List<UserGroup> userGroupList = null;
+		try {
+			Session session = this.sessionFactory.getCurrentSession();
+			String query = "from UserGroup userGroup where userGroup.orgLocationId.id = :orgLocationId and userGroup.departmentId IN (select departmentId.id from Employees emp where emp.user.id = :userId and emp.orgLocations.id = :orgLocationId)";
+			userGroupList = session.createQuery(query.toString()).setLong("orgLocationId", orgLocation.getId()).setLong("userId", Long.parseLong(userId)).list();
+		} catch (Exception e) {
+			logger.error(ExceptionUtils.getFullStackTrace(e));
+		}
+		
+		return userGroupList;
 	}
 	
 	

@@ -383,7 +383,7 @@ public class InvoiceDaoImpl implements InvoiceDao {
 		
 		StringBuilder query1 = new StringBuilder("");
 		if (StringUtils.isNotBlank(creditDebitNoteDTO.getSearchValue())) {
-			if (creditDebitNoteDTO.getSearchValue().contains("/") || creditDebitNoteDTO.getSearchValue().contains("-")) {
+			if ((creditDebitNoteDTO.getSearchValue().contains("/") || creditDebitNoteDTO.getSearchValue().contains("-")) && (creditDebitNoteDTO.getSearchValue().matches("^[0-9 \\-]+$"))) {
 				String convertedDate = creditDebitNoteDTO.getSearchValue();
 				if (creditDebitNoteDTO.getSearchValue().contains("/")) {
 					convertedDate = creditDebitNoteDTO.getSearchValue().replaceAll("/", "-");
@@ -599,7 +599,7 @@ public class InvoiceDaoImpl implements InvoiceDao {
 		}
 
 		Session session = this.sessionFactory.getCurrentSession();
-		String query = "from Invoice invoice  where invoice.orgRelationID.id = :orgRelationId and invoice.orgLocation.id = :orgLocationId and invoice.linkInvoiceReferenceId IS NULL and invoice.status = '1' and invoice.invoiceStatus <> 'Linked' and invoice.invoiceStatus <> 'DRAFT'"
+		String query = "from Invoice invoice  where invoice.orgRelationID.id = :orgRelationId and invoice.orgLocation.id = :orgLocationId and invoice.linkInvoiceReferenceId IS NULL and invoice.status = '1' and invoice.invoiceStatus <> 'Linked' and invoice.invoiceStatus <> 'DRAFT' and invoice.invoiceStatus <> 'Rejected'"
 				+ subQuery + "";
 		List<Invoice> clientInvoiceList = session.createQuery(query.toString()).setLong("orgLocationId", orgLocationId)
 				.setLong("orgRelationId", orgRelationId).list();

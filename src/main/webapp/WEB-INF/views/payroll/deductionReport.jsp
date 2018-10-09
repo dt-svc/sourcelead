@@ -2,62 +2,70 @@
 <jsp:include page="../masterSideNav.jsp" />
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
 <%@taglib uri="http://www.springframework.org/tags/form" prefix="form"%>
+<script src="/resources/js/payrollReports.js"></script>
 
-         <!-- Content Area -->
+<script>
+$(document).ready(function(){
+	getPayGroupList("payGroup");
+	getDepartments("departmentId");
+	getDeductionType();
+});
+</script>
+
+  <!-- Content Area -->
   <section class="content-wraper contentWraper">
     <section class="content-header clearfix">
       <div class="pull-left">
-        <h2>Contribution</h2>
+        <h2>Deduction</h2>
       </div>
-      <div class="pull-right brud-crum">Home &raquo; Contribution</div>
+      <div class="pull-right brud-crum">Home &raquo; Deduction</div>
     </section>
     
     <div class="contentareaInner-styles clearfix">
     
     <div class="clearfix minHeight">
+     <form:form id="deduction_report_form" name="deduction_report_form" method="post">
         <div class="clearfix row">
           <div class="col-md-5">
             <div class="form-group">
-              <label class="col-md-12 paddingRight">Pay Group</label>
+              <label class="col-md-12 paddingRight">Pay Group<span class="text-danger">&nbsp;*</span></label>
 				<div class="col-md-12">
-					<select class="form-control sel">
-					<option>Select Group</option>
+					<select class="form-control chosen-select" id="payGroup" name="payGroup" onchange="getPayPeriod();" field-name="Pay Group" data-validation="required">
+				<!-- 	<option>Select Group</option>
 						<option>Monthly</option>
-						<option>Weekly</option>
+						<option>Weekly</option> -->
 					</select>
 				</div>
             </div>
             <div class="form-group">
-              <label class="col-md-12">Deduction Type</label>
+              <label class="col-md-12">Deduction Type<span class="text-danger">&nbsp;*</span></label>
               <div class="col-md-12">
-                <select class="form-control chosen-select" data-placeholder="Deduction Type">
-					    <option>Select Type</option>
-						<option>Regular</option>
-						<option>Additional</option>
+                <select class="form-control chosen-select" multiple data-placeholder="Deduction Type" id="deductionId" name="deductionId" field-name="Deduction Type" data-validation="required">
+					 <!--    <option value="">Select Type</option>
+						<option value="Regular">Regular</option>
+						<option value="Additional">Additional</option> -->
 					</select>
               </div>
             </div>
 			</div>
             <div class="col-md-5">
              <div class="form-group">
-              <label class="col-md-12">Pay Period</label>
+              <label class="col-md-12">Pay Period<span class="text-danger">&nbsp;*</span></label>
               <div class="col-md-12">
-                <select class="form-control sel">
-					    <option>Select Period</option>
-						<option>01-02-2018 28-02-2018</option>
-						<option>01-03-2018 28-03-2018</option>
-						<option>01-02-2018 28-02-2018</option>
+                <select class="form-control chosen-select" id="payPeriod" name="payPeriod" field-name="Pay Period" data-validation="required">
 					</select>
+					<input type="hidden" id="freqStartDate" name="freqStartDate"/>
+                    <input type="hidden" id="freqEndDate" name="freqEndDate"/>
               </div>
             </div>
              <div class="form-group">
               <label class="col-md-12">Department</label>
               <div class="col-md-12">
-                <select class="form-control chosen-select">
-					    <option>Select Department</option>
+                <select class="form-control chosen-select" id="departmentId" name="departmentId">
+					 <!--    <option>Select Department</option>
 						<option>Department-1</option>
 						<option>Department-2</option>
-						<option>Department-3</option>
+						<option>Department-3</option> -->
 					</select>
               </div>
             </div>
@@ -66,11 +74,12 @@
 	<div class="clearfix footerstyelsNew">
         <div class="col-lg-12">
           <div class="pull-right">
-            <input value="Run" class="btn btn-success btnSuccess" type="button" onClick="runPayrollregister();">
-            <input value="Reset" class="btn btn-defualt ml10" type="button">
+            <input value="Run" class="btn btn-success btnSuccess" type="button" onClick="deductionReport();"> <!-- runPayrollregister -->
+            <input value="Reset" class="btn btn-defualt ml10" type="button" onclick="resetDeductionReport();">
           </div>
         </div>
-      </div>      
+      </div>     
+       </form:form> 
 	</div>
     
      <div class="clearfix"></div>
@@ -81,57 +90,23 @@
   <div class="timesheet_out" id="payrollRegister" style="display: none;">
       <div class="clearfix">
         
-        <div class="positionRelative reportHead clearfix"> <span class="pull-left refreIcon"><a href="javascript:void(0)" class="refeIcon" title="Refresh" onclick="resetFilter();"></a></span>
+        <div class="positionRelative reportHead clearfix">
   <ul class="pull-right list-unstyled list-inline">
     <li><a class="newAdBtn mr5 hidden" href="/app/userCreation">+  Associate</a></li>
-    <li><a href="javascript:void(0)" class="filtIcon" title="Filters" onclick="openPop();"></a></li>
+    <!-- <li><a href="javascript:void(0)" class="filtIcon" title="Filters" onclick="openPop();"></a></li> -->
     <li><a href="javascript:void(0)" class="overIcon" title="Actions" onclick="newActions();"></a>
       <div class="newActPop" style="">
-       <span><a href="javascript:void(0)" onclick="exportToPdf();" title="PDF">Export PDF</a> <a href="javascript:void(0)" onclick="exportUserData();" title="Excel">Export Excel</a> </span> </div>
+       <span><a href="javascript:void(0)" onclick="deductionReportExportToPdf();" title="PDF">Export PDF</a> <a href="javascript:void(0)" onclick="exportUserData();" title="Excel">Export Excel</a> </span> </div>
     </li>
     <li class="">
-      <input class="repSearchBar" placeholder="Search" id="dynamicUserDataTableSearch" type="text">
-      <span class="repSearchIcon" onclick="getDynamciUserList();"></span></li>
+      <input class="repSearchBar" placeholder="Search" id="dataTableSearch" type="text">
+      <span class="repSearchIcon" onclick="deductionReportSearch();"></span></li>
   </ul>
 </div>
         <div class="require_wrap_table tableFirstSecond clearfix">
-          <table>
-            <thead>
-              <tr>
-                <th>Employee ID</th>
-                <th>Employee Name</th>
-                <th>Department</th>
-                <th>Type</th>
-                <th>Amount</th>
-				<th>QTD</th>
-                <th>YTD</th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr>
-                <td><div class="tblminwidth-75">MIS00414</div></td>
-                <td><div class="tbldata-dotdot">Karan Kumar Sahoo</div></td>
-                <td><div class="tbldata-dotdot-vsm">Depatment</div></td>
-                <td><div class="tbldata-dotdot-vsm">Department Type</div></td>
-                <td><div class="tblminwidth-50">Amount</div></td>
-                <td><div class="tblminwidth-50">QTD</div></td>
-                <td><div class="tblminwidth-50">YTD</div></td>
-              </tr>
-            </tbody>
-          </table>
-        </div>
-        <nav>
-          <ul id="paging" class="pagination">
-            <li><a href="#">Previous</a></li>
-            <li><a href="#">2</a></li>
-            <li><a href="#">3</a></li>
-            <li><a href="#">4</a></li>
-            <li><a href="#">5</a></li>
-            <li class="disabled"><a href="#">6</a></li>
-            <li data-page="last"><a href="#">Next</a></li>
-          </ul>
-          <div class="clearfix"></div>
-        </nav>
+           <div class="styleTables clearfix mt">
+          <div id="deductionReportDIV" class="datatable_filter"></div>
+      </div>
       </div>
     </div>
     		
@@ -139,7 +114,28 @@
       <!-- Content Area Ends--> 
     </div>
     
-    <script type="text/javascript">
+  </section>
+  
+ <script>
+ function getPayPeriod(){
+	 getPayPeriodByGroupId("payGroup","payPeriod");
+ }
+ 
+ function resetDeductionReport(){
+	 $("#payrollRegister").hide();
+	 $("#payGroup").val('');
+	 $("#payGroup").trigger("chosen:updated"); 
+	 $("#payPeriod").val('');
+	 $("#payPeriod").trigger("chosen:updated"); 
+	 $("#deductionId").val('');
+	 $("#deductionId").trigger("chosen:updated"); 
+	 $("#departmentId").val('');
+	 $("#departmentId").trigger("chosen:updated"); 
+ }
+ </script>
+  
+  
+  <script type="text/javascript">
             $(function () {
                 $('#datetimepicker3').datetimepicker({
                     format: 'LT'
@@ -207,8 +203,245 @@ $("html").click(function(){
 $(".overIcon, .newActPop").click(function(e){
  	e.stopPropagation();
 });
-function runPayrollregister() {
+/* function runPayrollregister() {
 	$("#payrollRegister").toggle();
+} */
+</script>    
+
+
+
+
+<script type="text/javascript">
+function deductionReport(){
+	 if ($('#deduction_report_form').validate(false, validationSettings)){ 
+		 /* runPayrollregister();    */
+		 getDeductionReports(); 
+			return true;
+	 }else{ 
+			return false;
+	 }   
+		
 }
-</script>      			
+$('body').on('blur', '#deduction_report_form', function() {
+	$("#deduction_report_form").showHelpOnFocus();
+	$("#deduction_report_form").validateOnBlur(false, validationSettings);
+});
+</script>
+
+
+<script>
+function getDeductionReports(){
+	    var groupId = $('#payGroup').val();
+	    getFreqdates("freqStartDate", "freqEndDate");
+	    var  freqStartDate = $("#freqStartDate").val();
+	    var freqEndDate = $("#freqEndDate").val();
+	    var deductionId = $("#deductionId").val();
+		var searchValue = $("#dataTableSearch").val();
+		searchValue = searchValue ? searchValue : "";
+		var url = sourceleadUrl+"/getDeductionReports?searchValue="+searchValue+"&groupId="+groupId+"&freqStartDate="+freqStartDate+"&freqEndDate="+freqEndDate+"&deductionId="+deductionId;
+		deductionReportURL(url);	
+}
+
+</script>
+
+
+<script>
+	function deductionReportURL(url) {
+		$("#payrollRegister").show();
+		$("#deductionReportDIV").empty();
+		var result = "";
+		result = result + '<table id="deductionReportTabble" class="display" cellspacing="0" width="100%" >';
+		result = result + '<thead>';
+		result = result + '<tr>';
+		result = result + '<th>Type</th>';
+		result = result + '<th>Employee Id</th>';
+		result = result + '<th>Employee Name</th>';
+		result = result + '<th>Department</th>';
+		result = result + '<th>Schedule</th>';
+		result = result + '<th>Amount</th>';
+		result = result + '<th>YTD</th>';
+		result = result + '</tr>';
+		result = result + '</thead>	';
+		result = result + "</table>";
+		$("#deductionReportDIV").append(result);
+		payCheckDateData(url);
+
+	}
+</script>
+
+<script>
+	function payCheckDateData(url) {
+		var colIndex = 0;
+		$('#deductionReportTabble')
+				.DataTable(
+						{
+							"processing" : true,
+							"serverSide" : true,
+							"searching" : false,
+							"ajax" : $.fn.dataTable.pipeline({
+								url : url,
+								method : 'POST',
+								pages : 10
+							}),
+							"columns" : [ {
+								"data" : "type"
+							}, {
+								"data" : "empId"
+							}, {
+								"data" : "empName"
+							}, {
+								"data" : "departmentName"
+							}, {
+								"data" : "schedule"
+							}, {
+								"data" : "dedAmount"
+							}, {
+								"data" : "ytdDeductions"
+							}],
+							"columnDefs" : [
+								{
+									"targets" : colIndex++,
+									"data" : "type",
+									"sortable": true,
+									"render" : function(data, type, opt,meta) {
+										
+										     var result = "";
+											result = result+ ' <td><div class="tblminwidth-75">'+opt.deductionType+'</div></td>';
+										
+										return result;
+									}
+								},
+									{
+										"targets" : colIndex++,
+										"data" : "empId",
+										"sortable": false,
+										"render" : function(data, type, opt,meta) {
+											
+											var result = "";
+											if(opt.empId != null && opt.empId != '' && opt.empId != 'undefined'){
+												result = result+ ' <td><div class="tblminwidth-75">'+opt.empId+'</div></td>';
+											}else{
+												result = result+ ' <td><div class="tblminwidth-75">--</div></td>';
+											}
+											return result;
+										}
+									},
+									{
+										"targets" : colIndex++,
+										"data" : "empName",
+										"sortable": true,
+										"render" : function(data, type, opt,meta) {
+											var result = "";
+												result = result+ '<td><div class="tblminwidth-75">'+opt.empName+'</div></td>';
+											return result;
+
+										}
+									},
+									{
+										"targets" : colIndex++,
+										"data" : "departmentName",
+										"sortable": true,
+										"render" : function(data, type, opt,meta) {
+											var result = "";
+											if(opt.departmentName != null && opt.departmentName != '' && opt.departmentName != 'undefined'){
+												result = result + '<td class="tblminwidth-75"><div>'+opt.departmentName+'</div></td>';
+											}else{
+												result = result + '<td class="tblminwidth-75"><div>--</div></td>';
+											}
+											return result;
+										}
+									},
+									{
+										"targets" : colIndex++,
+										"data" : "schedule",
+										"sortable": false,
+										"render" : function(data, type, opt,meta) {
+											var result = "";
+											result = result+ '<td><div class="tbldata-dotdot-vsm" title="">'+opt.schedule+'</div></td>';
+											return result;
+										}
+									},{
+										"targets" : colIndex++,
+										"data" : "dedAmount",
+										"sortable": false,
+										"render" : function(data, type, opt,meta) {
+											var result = "";
+											result = result+ '<td><div class="tbldata-dotdot-vsm" title="">$ '+opt.dedAmount+'</div></td>';
+											return result;
+										}
+									},{
+										"targets" : colIndex++,
+										"data" : "ytdDeductions",
+										"render" : function(data, type, opt,meta) {
+											var result = "";
+											result = result+ '<td><div class="tbldata-dotdot-vsm" title="">$ '+opt.deductionYTD+'</div></td>';
+											return result;
+										}
+									}],
+							"scrollCollapse" : false,
+							"lengthMenu" : [ [ 10, 15, 20 ], [ 10, 15, 20 ] ],
+							"aaSorting" : [ [ 3, 'desc' ] ],
+							"bLengthChange" : true,
+							"bDestroy" : true,
+							"ordering" : true,
+							"oLanguage" : {
+								"sSearch" : "",
+								"sZeroRecords" : "",
+								"sEmptyTable" : "",
+								"sProcessing" : "<img src='/resources/images/loading.gif' style='width: 75px; height: 75px;'/>"
+							}
+						});
+		$("#deductionReportTabble").wrap(
+				"<div style='overflow-x: auto; overflow-y: hidden;'></div>");
+		$("input[type=search]").hide();
+		$("#dataTableSearch").keyup(function(e) {
+			if (e.which === 13) {
+				getDeductionReports()();
+			}
+		});
+		
+	}
+	function deductionReportSearch(){
+		getDeductionReports();
+	}
+</script>			
+
+<script>
+ function getDeductionType(){
+	 $.ajax({
+			type : "POST",
+			url: sourceleadUrl+"/getAllDeductionType?"+tokenParamName+"="+tokenValue+"",
+			success :function(data) {
+			var json = data.data;
+			var output = "";
+			for (var i=0; i<json.length; i++)
+			{
+			var opt = json[i];
+				output = output + "<option value="+opt.id+">"+opt.payrollDeductionType+"</option>";
+			}
+			$("#deductionId").empty();
+			$("#deductionId").append(output);
+			$('#deductionId').trigger("chosen:updated");
+			
+		},
+		});
+ }
+ </script>
+ 
+ <script>
+function deductionReportExportToPdf(){
+	
+	var groupId = $('#payGroup').val();
+    getFreqdates("freqStartDate", "freqEndDate");
+    var  freqStartDate = $("#freqStartDate").val();
+    var freqEndDate = $("#freqEndDate").val();
+	var searchValue = $("#dataTableSearch").val();
+	searchValue = searchValue ? searchValue : "";
+	var deductionId = $("#deductionId").val();
+	
+	window.location.href = sourceleadUrl+"/exportToPdfDeductionReport?searchValue="+searchValue+"&groupId="+groupId+"&freqStartDate="+freqStartDate+"&freqEndDate="+freqEndDate+"&deductionId="+deductionId;
+}
+</script>
+
+
 <jsp:include page="../masterFooter.jsp" />

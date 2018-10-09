@@ -1,5 +1,6 @@
 	package com.bis.sourcelead.dao.impl;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -221,6 +222,23 @@ public class HolidayDaoImpl  implements HolidayDAO{
 		String query = "from HolidayAndRestrictday day where day.holiday.orgLocations.id = :orgLocationId and day.restrictDay.id IS NULL and ((day.day > :fromDate and day.day <:toDate) or (day.day = :fromDate or day.day = :toDate)) and day.status = '1'";
 		List<HolidayAndRestrictday> list = session.createQuery(query).setParameter("fromDate", startDate).setParameter("toDate", endDate).setLong("orgLocationId", orgLocations.getId()).list();
 		return list;
+	}
+
+	@Override
+	public List<Holiday> getHolidaybyLocationIdAndFromdateForTimesheets(Date fromDate, Date endDate, Long orgLocationId,
+			List<Long> excludeIds) throws Exception {
+		if(excludeIds == null || excludeIds.isEmpty()) {
+			excludeIds.add(0l);
+		}
+		Session session = this.sessionFactory.getCurrentSession();
+		String query = "from Holiday hday where (hday.fromDate >= :fromDate and hday.fromDate <= :endDate) and hday.id NOT IN(:excludeIds) and hday.orgLocations.id = :orgLocationId and hday.status != '0'";
+		List<Holiday> holiday = session.createQuery(query).setParameterList("excludeIds",excludeIds).setParameter("fromDate", fromDate).setParameter("endDate", endDate).setLong("orgLocationId", orgLocationId).list();
+		if (holiday.size() > 0) {
+			return holiday;
+		}
+		else {
+			return null;
+		}
 	}
 
 	

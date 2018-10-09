@@ -182,7 +182,9 @@ function salarySetupListPagination(url,sourceleadUrl){
 	            	    var result = "";
 	            	    result = result +"<td>";
 	            	    result = result +"<div class='tbldata-dotdot_50'>";
-	            	    result = result +"<a href='javascript:void(0)' title='Set' id="+opt.uuid+" onClick='salarySetup(this); '>Set</a>";
+	            	    if(opt.isFormulaEditable != 'N'){
+	            	    	result = result +"<a href='javascript:void(0)' title='Set' id="+opt.uuid+" onClick='salarySetup(this); '>Set</a>";
+	            	    }
 	            	    result = result +"</div>";
 	            	    result = result +"</td>";
 	            		return result;

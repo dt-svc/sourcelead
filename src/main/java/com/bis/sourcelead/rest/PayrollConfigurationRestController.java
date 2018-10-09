@@ -1,6 +1,7 @@
 package com.bis.sourcelead.rest;
 
 import java.math.BigDecimal;
+import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
@@ -569,6 +570,14 @@ public class PayrollConfigurationRestController {
 					payrollPayheadDTO.setSortColumn(tableColumns[sortColumnIndex]);
 					payrollPayheadDTO.setSortOrder(sortColumnOrder);
 					ResponseList<PayrollPayheadDTO> payrollPayheadList = payrollPayheadService.getPayrollPayheadListWithPagination(payrollPayheadDTO, loginOrgLocation);
+					payrollPayheadList.getData().forEach(payHead -> {
+						if(Arrays.asList(Constants.CONSTANT_PAYHEAD_SHORTCODES).contains(payHead.getShortCode())) {
+							payHead.setIsFormulaEditable("N");
+						}else {
+							payHead.setIsFormulaEditable("Y");
+						}
+					});
+					
 					return payrollPayheadList;
 				}
 			 
@@ -912,8 +921,6 @@ public class PayrollConfigurationRestController {
 			ResponseList<PayrollPayheadDTO> response = payrollPayheadService.getPayrollPayheadList(orgLocations);
 			model.addObject("payrollPayheadList", response.getData());
 			
-			
-			
 			AssociateSalaryInd associateSalaryInd = payrollPayheadService.getAssociateSalaryIndByCandidateId(payrollPayheadDTO.getCandidateId());
 			if(associateSalaryInd != null) {
 				if(associateSalaryInd.getEffectiveDate() != null) {
@@ -973,8 +980,8 @@ public class PayrollConfigurationRestController {
 					model.addObject("candidateCTCPerYear", new BigDecimal(amount));
 			        
 			        model.addObject("candidateCTCPerYear", candidateCTCPerYear);
-					model.addObject("candidate", candidate);
 				}
+				model.addObject("candidate", candidate);
 				model.addObject("status", "NODATA");
 			}
 			model.setViewName("indPayroll/associateSalary");
