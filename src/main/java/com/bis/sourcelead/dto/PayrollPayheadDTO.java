@@ -1,6 +1,7 @@
 package com.bis.sourcelead.dto;
 
 import java.io.Serializable;
+import java.math.BigDecimal;
 import java.util.List;
 import java.util.Map;
 
@@ -85,6 +86,8 @@ public class PayrollPayheadDTO implements Serializable{
 		private Long candidateId;
 		
 		private String isFormulaEditable;
+		
+		private BigDecimal totalForfrequencyLevel;
 
 		public Long getId() {
 			return id;
@@ -358,12 +361,21 @@ public class PayrollPayheadDTO implements Serializable{
 			this.isFormulaEditable = isFormulaEditable;
 		}
 
+<<<<<<< HEAD
 		public Long getPayTypeId() {
 			return payTypeId;
 		}
 
 		public void setPayTypeId(Long payTypeId) {
 			this.payTypeId = payTypeId;
+=======
+		public BigDecimal getTotalForfrequencyLevel() {
+			return totalForfrequencyLevel;
+		}
+
+		public void setTotalForfrequencyLevel(BigDecimal totalForfrequencyLevel) {
+			this.totalForfrequencyLevel = totalForfrequencyLevel;
+>>>>>>> 1e8f5b7e7ad38bc475b44d7e353f0cdcb0e95978
 		}
 		
 }

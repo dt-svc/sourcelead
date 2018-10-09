@@ -214,16 +214,16 @@ private static final Logger logger = LoggerFactory.getLogger(EmailScenarioConfig
 	}
 	
 	@Override
-	public EmailScenarioConfiguration validateParserByEmail(String parserEmailId, String emailUUID) {
+	public EmailScenarioConfiguration validateParserByEmail(String parserEmailId, String emailUUID,Long orgLocId) {
 		// TODO Auto-generated method stub
-        return emailScenarioConfigurationDao.validateParserByEmail(parserEmailId, emailUUID);
+        return emailScenarioConfigurationDao.validateParserByEmail(parserEmailId, emailUUID, orgLocId);
 
 	}
 
 	@Override
-	public Boolean validateParser(String parserEmailId) {
+	public Boolean validateParser(String parserEmailId,Long orgLocId) {
 		// TODO Auto-generated method stub
-        return emailScenarioConfigurationDao.validateParser(parserEmailId);
+        return emailScenarioConfigurationDao.validateParser(parserEmailId,orgLocId);
 
 	}
 

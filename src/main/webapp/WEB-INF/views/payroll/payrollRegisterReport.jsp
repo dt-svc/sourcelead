@@ -160,7 +160,14 @@ $(document).ready(function(){
 </script>
 <script>
 function resetForm(){
-	
+	 $("#payrollRegister").hide();
+	 $("#payGroup").val('');
+// 	 $("#payGroup").trigger("chosen:updated"); 
+	 $("#payPeriod").val('');
+// 	 $("#payPeriod").trigger("chosen:updated"); 
+	 $("#payRollType").val('');
+	 $("#payrollDepartment").val('');
+	 $("#payrollDepartment").trigger("chosen:updated"); 
 }
 </script>
 
@@ -195,7 +202,7 @@ function runPayrollregisterReport(){
 		result = result +"	   <div id='remove_user_pop' class='remove_user_pop remove_user_pop_a'>";
 		result = result +"		<p>Please select PayGroup and PayPeriod</p>";
 		result = result +"		<div>&nbsp;&nbsp;&nbsp;</div>";
-		result = result +"		<b href='javascript:void(0)'><input type='button' value='Ok' onclick='removePopUp();'></b>";
+		result = result +"		<b href='javascript:void(0)'><input type='button' value='Ok' onclick='removePopUp();' style='background-color: #FF0000; width : 100%'></b>";
 		result = result +"	</div>";
 		$("#popUp").append(result);
 		$("#remove_user_pop").slideDown(200);

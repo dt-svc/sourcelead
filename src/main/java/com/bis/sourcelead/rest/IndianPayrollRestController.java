@@ -1,5 +1,6 @@
 package com.bis.sourcelead.rest;
 
+import java.math.BigDecimal;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -26,7 +27,9 @@ import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.dto.AssociateLoanAndAdvancesDTO;
 import com.bis.sourcelead.dto.IndAssociatePaymentAccountDTO;
 import com.bis.sourcelead.dto.PayrollLoanAndAdvancesDTO;
+import com.bis.sourcelead.dto.PayrollPayheadDTO;
 import com.bis.sourcelead.dto.Response;
+import com.bis.sourcelead.dto.ResponseList;
 import com.bis.sourcelead.dto.UserDTO;
 import com.bis.sourcelead.entity.AssociateLoanAndAdvances;
 import com.bis.sourcelead.entity.Candidate;
@@ -54,6 +57,7 @@ import com.bis.sourcelead.service.CandidateService;
 import com.bis.sourcelead.service.DepartmentService;
 import com.bis.sourcelead.service.PaymentAccountService;
 import com.bis.sourcelead.service.PayrollLoanAndAdvancesService;
+import com.bis.sourcelead.service.PayrollPayheadService;
 import com.bis.sourcelead.service.UserGroupService;
 import com.bis.sourcelead.service.UserRoleService;
 import com.bis.sourcelead.service.UserService;
@@ -103,6 +107,9 @@ public class IndianPayrollRestController {
 	
 	@Autowired
 	AssociatePayrollPayheadHistoryService associatePayrollPayheadHistoryService;
+	
+	@Autowired
+	PayrollPayheadService payrollPayheadService;
 	
     @RequestMapping(value = "/app/save-ind-associate-payment-account", method = RequestMethod.POST)
 	public Response<IndAssociatePaymentAccountDTO> savePaymentAccount(HttpServletRequest request, IndAssociatePaymentAccountDTO account,
@@ -470,13 +477,26 @@ public class IndianPayrollRestController {
 		model.addObject("freqResponse", freqResponse.getObject());
    		
    		Response<IndApprovePayrollDTO> approveResponse = indPaysheetFrequencyService.getApproveInfoIndPayroll(indApprovePayrollDTO, orgLocation,loginUser);
-   		
-   		
-   		//List<AssociatePayrollPayheadHistory> allAssociatesPayrollPayheadList = associatePayrollPayheadHistoryService.getAllUpdatedAssociatePayrollPayheadByPaySheetFrequencyUUID(indApprovePayrollDTO.getPaySheetFrequencyUUID());
-   				
-		
-   		
    		model.addObject("approveResponse", approveResponse.getObject());
+   		
+   		ResponseList<PayrollPayheadDTO> orgLevelPayheads = payrollPayheadService.getPayrollPayheadList(orgLocation);
+   		List<AssociatePayrollPayheadHistory> allAssociatesPayrollPayheadList = associatePayrollPayheadHistoryService.getAllUpdatedAssociatePayrollPayheadByPaySheetFrequencyUUID(indApprovePayrollDTO.getPaySheetFrequencyUUID());
+   		for(PayrollPayheadDTO payheadDto : orgLevelPayheads.getData()) {
+   			
+   			if(payheadDto.getType().equalsIgnoreCase(Constants.IND_PAYROLL_PAYHEAD_EARNINGS)) {
+   				payheadDto.setTotalForfrequencyLevel(BigDecimal.valueOf(allAssociatesPayrollPayheadList.stream().filter(ap->ap.getPayrollPayhead().getType().equals(Constants.IND_PAYROLL_PAYHEAD_EARNINGS)).filter(ap->ap.getPayrollPayhead().getShortCode().equalsIgnoreCase(payheadDto.getShortCode())).mapToDouble(ap->ap.getMonthly().doubleValue()).sum()));
+   			}
+   			if(payheadDto.getType().equalsIgnoreCase(Constants.IND_PAYROLL_PAYHEAD_DEDUCTION)) {
+   				payheadDto.setTotalForfrequencyLevel(BigDecimal.valueOf(allAssociatesPayrollPayheadList.stream().filter(ap->ap.getPayrollPayhead().getType().equals(Constants.IND_PAYROLL_PAYHEAD_DEDUCTION)).filter(ap->ap.getPayrollPayhead().getShortCode().equalsIgnoreCase(payheadDto.getShortCode())).mapToDouble(ap->ap.getMonthly().doubleValue()).sum()));
+   			}
+   		}
+   		model.addObject("orgLevelPayheads", orgLevelPayheads.getData());
+   		
+   		
+   		model.addObject("earningTotal", BigDecimal.valueOf(allAssociatesPayrollPayheadList.stream().filter(ap->ap.getPayrollPayhead().getType().equals(Constants.IND_PAYROLL_PAYHEAD_EARNINGS)).mapToDouble(ap->ap.getMonthly().doubleValue()).sum()));
+   		model.addObject("deductionTotal", BigDecimal.valueOf(allAssociatesPayrollPayheadList.stream().filter(ap->ap.getPayrollPayhead().getType().equals(Constants.IND_PAYROLL_PAYHEAD_DEDUCTION)).mapToDouble(ap->ap.getMonthly().doubleValue()).sum()));
+   		
+   		
 		model.addObject("sourceleadUrl", sourceleadUrl);
 		model.setViewName("payroll_india/payroll/approveIndiaPayroll");
    		return model;
