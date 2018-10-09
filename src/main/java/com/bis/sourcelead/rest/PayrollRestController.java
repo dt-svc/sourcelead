@@ -1,12 +1,13 @@
 package com.bis.sourcelead.rest;
 
-import java.util.HashSet;
 import java.util.List;
 import java.util.stream.Collectors;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -16,13 +17,16 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.ModelAndView;
 
+import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.dto.Response;
 import com.bis.sourcelead.dto.ResponseList;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.Payroll;
 import com.bis.sourcelead.entity.User;
+import com.bis.sourcelead.enums.Result;
 import com.bis.sourcelead.payroll.dto.AssociatePayrollPayheadHistoryDTO;
 import com.bis.sourcelead.payroll.dto.INDPayrollDTO;
+import com.bis.sourcelead.payroll.dto.IndEmployeePayrollDTO;
 import com.bis.sourcelead.payroll.dto.IndPaysheetFrequencyDTO;
 import com.bis.sourcelead.payroll.entity.IndEmployeePayroll;
 import com.bis.sourcelead.payroll.service.AssociatePayrollPayheadHistoryService;
@@ -33,6 +37,7 @@ import com.bis.sourcelead.service.PayrollService;
 import com.bis.sourcelead.util.CommonUtil;
 import com.bis.sourcelead.util.INDPayrollCommonUtil;
 import com.bis.sourcelead.util.SourceLeadSessionManager;
+import com.bis.sourcelead.web.IndianPayrollController;
 
 /**
  * 
@@ -80,6 +85,7 @@ public class PayrollRestController {
 	 *  
 	 * @throws Exception
 	 */
+	private static final Logger logger = LoggerFactory.getLogger(IndianPayrollController.class);
 	
 	@RequestMapping(value = "/getPayrollById", method = RequestMethod.POST)
 	public @ResponseBody String getPayrollById(Long payrollId) throws Exception {
@@ -178,6 +184,76 @@ public class PayrollRestController {
 	{
 		OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 		return indPayrollService.getPayPeriodListByOrgLocationId(orgLocation, indpaysheetFrequencyDTO);
+	}
+	
+	
+	
+	@RequestMapping(value = { "/getMyPays", "/rest/getMyPays" })
+	@ResponseBody
+	public ModelAndView getMyPays(HttpServletRequest request) {
+		ModelAndView modelAndView = new ModelAndView();
+		try {
+			commonUtil.highLightMenu(Constants.MYPAYROLL, request);
+			modelAndView.addObject("activeTaxTab", "myPayrollInd");
+			modelAndView.setViewName("payroll_india/payroll/myPaysInd");
+		} catch (Exception e) {
+			e.printStackTrace();
+			logger.error(e.getMessage());
+		}
+		return modelAndView;
+	}
+	
+	
+	@RequestMapping(value = { "/getMyPaysListInd", "/rest/getMyPaysListInd" })
+	@ResponseBody
+	public ResponseList<IndEmployeePayrollDTO> getMyPaysListInd(IndEmployeePayrollDTO indEmployeePayrollDTO, @RequestParam(value = "searchValue", required = false) String searchValue, HttpServletRequest request, HttpServletResponse response) throws Exception{
+		ResponseList<IndEmployeePayrollDTO> responseList = new ResponseList<IndEmployeePayrollDTO>();
+		try {
+			OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+			User loginUser = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+			responseList =  indPaysheetFrequencyService.getEmployeePaysByOrgLocationIdAndUserId(orgLocation, loginUser, indEmployeePayrollDTO);
+			
+			responseList.setResponse(Result.SUCCESS.name());
+			responseList.setResponseMessage(Result.SUCCESS.getValue());
+		} catch (Exception e) {
+			e.printStackTrace();
+			logger.error(e.getMessage());
+			responseList.setResponse(Result.AWKWARD.name());
+			responseList.setResponseMessage(Result.AWKWARD.getValue());
+		}
+		return responseList;
+	}
+	
+	
+	@RequestMapping(value = { "/getMyForms", "/rest/getMyForms" })
+	@ResponseBody
+	public ModelAndView getMyForms(HttpServletRequest request) {
+		ModelAndView modelAndView = new ModelAndView();
+		try {
+			commonUtil.highLightMenu(Constants.MYPAYROLL, request);
+			modelAndView.addObject("activeTaxTab", "myPayrollInd");
+			modelAndView.setViewName("payroll_india/payroll/myFormsInd");
+		} catch (Exception e) {
+			e.printStackTrace();
+			logger.error(e.getMessage());
+		}
+		return modelAndView;
+	}
+	
+	
+	@RequestMapping(value = { "/getMyLoansAdv", "/rest/getMyLoansAdv" })
+	@ResponseBody
+	public ModelAndView getMyLoansAdv(HttpServletRequest request) {
+		ModelAndView modelAndView = new ModelAndView();
+		try {
+			commonUtil.highLightMenu(Constants.MYPAYROLL, request);
+			modelAndView.addObject("activeTaxTab", "myPayrollInd");
+			modelAndView.setViewName("payroll_india/payroll/myLoansAndAdvances");
+		} catch (Exception e) {
+			e.printStackTrace();
+			logger.error(e.getMessage());
+		}
+		return modelAndView;
 	}
 
 }

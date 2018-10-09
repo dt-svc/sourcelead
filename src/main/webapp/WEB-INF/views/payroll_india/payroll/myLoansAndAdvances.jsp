@@ -1,15 +1,6 @@
-<jsp:include page="../../masterHeader.jsp" />
-<jsp:include page="../../masterSideNav.jsp" />
-<section class="content-wraper">
-	<section class="content-header clearfix">
-		<div class="pull-left">
-			<h2>My ${activeTaxTab == 'pays' ? 'Pays' : activeTaxTab =='forms' ? 'Forms' : 'Loans & Advances'}</h2>
-		</div>
-		<div class="pull-right brud-crum">Home &raquo; My Forms</div>
-	</section>
-	<div class="clearfix"></div>
-	<div class="project_wrap">
-		<jsp:include page="../payroll/myPayrollHeader.jsp"></jsp:include>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
+<%@taglib uri="http://www.springframework.org/tags/form" prefix="form"%>
+
 		
 		<div class="tablelist-wrap">
 			<div class="col-md-12">
@@ -131,8 +122,6 @@
 				</table>
 			</div>
 		</div>
-	</div>
-</section>
 
 <div class="sideMask"></div>
 <div class="modal requestPop">

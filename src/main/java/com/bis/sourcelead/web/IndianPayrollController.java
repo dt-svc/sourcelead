@@ -46,13 +46,13 @@ public class IndianPayrollController {
 	@Autowired
 	private CommonUtil commonUtil;
 
-	@RequestMapping(value = "/myPayRoll")
+	@RequestMapping(value = "/myPayrollInd")
 	public ModelAndView paySlips(HttpServletRequest request) {
 		ModelAndView modelAndView = new ModelAndView();
 		try {
 			commonUtil.highLightMenu(Constants.MYPAYROLL, request);
-			modelAndView.addObject("activeTaxTab", "pays");
-			modelAndView.setViewName("payroll_india/payroll/pays");
+			modelAndView.addObject("activeTaxTab", "myPayrollInd");
+			modelAndView.setViewName("payroll_india/payroll/myPayrollInd");
 		} catch (Exception e) {
 			e.printStackTrace();
 			logger.error(e.getMessage());
@@ -61,7 +61,7 @@ public class IndianPayrollController {
 	}
 
 	
-	@RequestMapping(value = "/forms")
+	/*@RequestMapping(value = "/forms")
 	public ModelAndView forms(HttpServletRequest request) {
 		ModelAndView modelAndView = new ModelAndView();
 		try {
@@ -86,7 +86,7 @@ public class IndianPayrollController {
 			logger.error(e.getMessage());
 		}
 		return modelAndView;
-	}
+	}*/
 
 	@RequestMapping(value = "/forms/all", method = RequestMethod.POST)
 	@ResponseBody

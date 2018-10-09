@@ -1,13 +1,11 @@
 package com.bis.sourcelead.payroll.service;
 
-import java.util.List;
-
 import com.bis.sourcelead.dto.Response;
 import com.bis.sourcelead.dto.ResponseList;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.User;
-import com.bis.sourcelead.payroll.dto.INDPayrollDTO;
 import com.bis.sourcelead.payroll.dto.IndApprovePayrollDTO;
+import com.bis.sourcelead.payroll.dto.IndEmployeePayrollDTO;
 import com.bis.sourcelead.payroll.dto.IndPaysheetFrequencyDTO;
 import com.bis.sourcelead.payroll.entity.IndEmployeePayroll;
 import com.bis.sourcelead.payroll.entity.IndPaysheetFrequency;
@@ -29,4 +27,6 @@ public interface IndPaysheetFrequencyService {
 	Response<IndApprovePayrollDTO> getApproveInfoIndPayroll(IndApprovePayrollDTO indApprovePayrollDTO, OrgLocations orgLocation, User loginUser) throws Exception;;
 	
 	Response<IndApprovePayrollDTO> approveIndPayroll(IndApprovePayrollDTO indApprovePayrollDTO, OrgLocations orgLocation, User loginUser) throws Exception;
+	
+	ResponseList<IndEmployeePayrollDTO> getEmployeePaysByOrgLocationIdAndUserId(OrgLocations orgLocation, User user, IndEmployeePayrollDTO indEmployeePayrollDTO) throws Exception;
 }
