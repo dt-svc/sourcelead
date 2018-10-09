@@ -63,6 +63,8 @@ public class DatabaseConfig {
 	@Value("${elk.host}")
 	private String host;
 	
+	
+	
 	@Bean
 	public PlatformTransactionManager txManager() {
 		HibernateTransactionManager hibernateTransactionManager = new HibernateTransactionManager();
