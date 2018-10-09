@@ -203,7 +203,12 @@ public class RequirementRestController {
 			OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,
 					"orgLocations");
 			if (user != null) {
-				response = requirementService.saveJobFair(jobFairDTO, user, orgLocation);
+				if(Validator.validate(jobFairDTO)) {
+					response = requirementService.saveJobFair(jobFairDTO, user, orgLocation);
+				} else {
+					response.setResponse(Result.INVALID_DATA.name());
+					response.setResponseMessage(Result.INVALID_DATA.getValue());
+				}
 			} else {
 				response.setResponse(Result.SESSION_TIMEDOUT.name());
 				response.setResponseMessage(Result.SESSION_TIMEDOUT.getValue());

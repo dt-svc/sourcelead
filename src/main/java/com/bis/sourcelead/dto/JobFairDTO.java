@@ -4,6 +4,8 @@ import java.io.Serializable;
 import java.util.Date;
 import java.util.List;
 
+import com.bis.sourcelead.annotations.Type;
+
 public class JobFairDTO extends SearchDTO implements Serializable {
 
 	/**
@@ -15,6 +17,7 @@ public class JobFairDTO extends SearchDTO implements Serializable {
 	private long id;
 	private String uuid;
 	private String generatedId;
+	@Type(desc = "name", maxLength = 100)
 	private String name;
 	private String budget;
 	private String description;
@@ -25,7 +28,9 @@ public class JobFairDTO extends SearchDTO implements Serializable {
 	private String postedFrom;
 	private long requirementId;
 	// private List<String> requirementsList;
+	@Type(desc = "venue", maxLength = 200)
 	private String venue;
+	@Type(desc = "notifyTo", maxLength = 500)
 	private String notifyTo;
 	private long userId;
 	private long orgLocationId;
