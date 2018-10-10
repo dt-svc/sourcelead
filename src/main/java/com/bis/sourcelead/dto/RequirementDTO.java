@@ -223,6 +223,10 @@ public class RequirementDTO extends CommonDTO {
 	private String jobCreatedDateRange;
 	
 	private String clientIds;
+	
+	private String startDateStr;
+	
+	private String endDateStr;
 	/*
 	 * private List<Map<String, String>> assinedToTeam;
 	 * 
@@ -1590,6 +1594,22 @@ public class RequirementDTO extends CommonDTO {
 
 	public void setClientIds(String clientIds) {
 		this.clientIds = clientIds;
+	}
+
+	public String getStartDateStr() {
+		return startDateStr;
+	}
+
+	public void setStartDateStr(String startDateStr) {
+		this.startDateStr = startDateStr;
+	}
+
+	public String getEndDateStr() {
+		return endDateStr;
+	}
+
+	public void setEndDateStr(String endDateStr) {
+		this.endDateStr = endDateStr;
 	}
 	
 	
