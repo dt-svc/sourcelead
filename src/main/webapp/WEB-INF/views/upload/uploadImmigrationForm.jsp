@@ -40,14 +40,14 @@ var uploadflag= true;
 <section class="content-wraper">
 	<section class="content-header clearfix">
 		<div class="pull-left">
-			<h2>Import Immigration</h2>
+			<h2>Import Petition</h2>
 		</div>
 		<div class="remove_pop" id="selector" style="display: none;">
 			<i class="fa fa-check-circle"></i><span id="msgDiv"></span>
 		</div>
 		<div class="pull-right brud-crum">
-			<a href="<c:url value='${appPath}/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a>&raquo; <a href="${appPath}/immigration/viewImmigrationList">Immigration List</a>
-			&raquo; Import Immigration
+			<a href="<c:url value='${appPath}/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a>&raquo; <a href="${appPath}/immigration/viewImmigrationList">Petition List</a>
+			&raquo; Import Petition
 		</div>
 	</section>
 	<div id="loading"></div>
@@ -64,7 +64,7 @@ var uploadflag= true;
 					
 						<div class="col-xs-5 col-md-5">
 							<a href="<c:url value='${appPath}/downloadImmigrationTemplate'/>"
-								class="btn btn-success btn-block" title="Download Job Template"> <i class="fa fa-download"></i>&nbsp;&nbsp; Immigration Template
+								class="btn btn-success btn-block" title="Download Job Template"> <i class="fa fa-download"></i>&nbsp;&nbsp; Petition Template
 							</a>
 						</div>
 						<div class="col-xs-4 col-md-4">
