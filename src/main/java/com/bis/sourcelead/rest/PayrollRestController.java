@@ -18,8 +18,11 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.ModelAndView;
 
 import com.bis.sourcelead.constants.Constants;
+import com.bis.sourcelead.dto.PaymentAccountDTO;
 import com.bis.sourcelead.dto.Response;
 import com.bis.sourcelead.dto.ResponseList;
+import com.bis.sourcelead.entity.AssociateLoanAndAdvances;
+import com.bis.sourcelead.entity.Candidate;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.Payroll;
 import com.bis.sourcelead.entity.User;
@@ -33,6 +36,8 @@ import com.bis.sourcelead.payroll.service.AssociatePayrollPayheadHistoryService;
 import com.bis.sourcelead.payroll.service.ConfigurePayrollApproverService;
 import com.bis.sourcelead.payroll.service.IndPayrollService;
 import com.bis.sourcelead.payroll.service.IndPaysheetFrequencyService;
+import com.bis.sourcelead.service.AssociateLoanAndAdvancesService;
+import com.bis.sourcelead.service.CandidateService;
 import com.bis.sourcelead.service.PayrollService;
 import com.bis.sourcelead.util.CommonUtil;
 import com.bis.sourcelead.util.INDPayrollCommonUtil;
@@ -75,6 +80,9 @@ public class PayrollRestController {
 	
 	@Autowired
 	ConfigurePayrollApproverService configurePayrollApproverService;
+	
+	@Autowired
+	AssociateLoanAndAdvancesService associateLoanAndAdvancesService;
 	
 	/**
 	 * @author sarath kumar punnana and Ajith Matta
@@ -243,12 +251,19 @@ public class PayrollRestController {
 	
 	@RequestMapping(value = { "/getMyLoansAdv", "/rest/getMyLoansAdv" })
 	@ResponseBody
-	public ModelAndView getMyLoansAdv(HttpServletRequest request) {
+	public ModelAndView getMyLoansAdv(@RequestParam(value = "loanStatus", required = false) String loanStatus, HttpServletRequest request) {
 		ModelAndView modelAndView = new ModelAndView();
+		OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+		User loginUser = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
 		try {
 			commonUtil.highLightMenu(Constants.MYPAYROLL, request);
+			List<AssociateLoanAndAdvances> loanAdvList = associateLoanAndAdvancesService.getAssociateLoanAndAdvancesListByUserIdAndLocationId(loginUser, orgLocation, loanStatus);
+			modelAndView.addObject("loanAdvList", loanAdvList);
+			modelAndView.addObject("loanAdvListSize", loanAdvList.size());
+			modelAndView.addObject("loanStatus", loanStatus);
+			
 			modelAndView.addObject("activeTaxTab", "myPayrollInd");
-			modelAndView.setViewName("payroll_india/payroll/myLoansAndAdvances");
+			modelAndView.setViewName("payroll_india/payroll/myLoansAndAdvancesInd");
 		} catch (Exception e) {
 			e.printStackTrace();
 			logger.error(e.getMessage());

@@ -9600,6 +9600,8 @@ aside.asideAct {
 .mailbox-table table td {
 	text-align: left;
 }
-
+.textError {
+	background-color: #e36363; color:#fff; position: absolute; top: 66px; text-align: center; width: 100%; left: 0px;
+}
 
 

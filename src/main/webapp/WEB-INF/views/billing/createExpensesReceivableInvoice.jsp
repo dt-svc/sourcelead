@@ -73,7 +73,7 @@ function checkBox(){
               <label class="col-md-3">Client<span class="text-danger">&nbsp;*</span></label>
               <div class="col-md-9 chooRadius">
                 <div class="input-group col-md-10 pull-left">
-                <select class="chosen-select form-control" id="clientOrgRelationId" name="clientOrgRelationId" onchange="getClientContacts();getPaymentTerms();flushValues();" data-validation="required" field-name="Client">
+                <select class="chosen-select form-control" id="clientOrgRelationId" name="clientOrgRelationId" data-Invoice onchange="getClientContacts();getPaymentTerms();flushValues();" data-validation="required" field-name="Client">
                 </select>
                   <span class="input-group-addon cursorPointer bg-blue" onclick="getClients();createExpenseRecInvoiceEmptyClientContact()"><i class="fa fa-refresh "></i></span>
                     </div>
@@ -206,7 +206,7 @@ function checkBox(){
             
             <div class="clearfix"></div>
             <div class="clearfix" id="addbutton">
-              <button type="button" class="btn btn-sm btn-primary mr" onClick="addExpenseInvoiceRow()"><i class="fa fa-plus paddingRight"></i>Add</button>
+              <button type="button" class="btn btn-sm btn-primary mr" id="addExpense_Button" style="display: none;" onClick="addExpenseInvoiceRow()"><i class="fa fa-plus paddingRight"></i>Add</button>
             </div>
         </div>
           
@@ -341,6 +341,11 @@ function getClientContacts(clientContactId){
 		},
 
 	});
+	if(orgRelationId !=null && orgRelationId !='' && orgRelationId !='undefined'){
+	$("#addExpense_Button").show();
+	}else{
+	$("#addExpense_Button").hide();	
+	}
 	
 }
 </script>
@@ -720,7 +725,7 @@ function populateInlineItemsGrid(){
         $("#currencyCode").html(currencyCode);
          $("#addbutton").show();
         document.getElementById("tableBody").style.display="block";
-        addTaxDivs();   
+        addTaxDivs(); 
 }
 </script>
 
@@ -758,6 +763,7 @@ function populateInlineItemsGrid(){
 <script>
 	function addExpenseInvoiceRow(){  
 				var checkMaxTsRowNum = $("#invoiceExpMaxRowNumber").val();
+				var invoiceCreateType = $("#clientOrgRelationId").find(':selected').attr("data-Invoice");
 				var tbl = document.getElementById("invoiceExpTbl");
 				var maxRowNum = parseInt($("input[name = 'invoiceExpMaxRowNumber']").val());
 				$("input[name = 'invoiceExpMaxRowNumber']").val(maxRowNum + 1);
@@ -816,6 +822,12 @@ function populateInlineItemsGrid(){
 						    e.preventDefault(); //disable cut,copy,paste
 						});
 					    });
+				 if(invoiceCreateType == "Individual"){
+					  $("#addExpense_Button").prop("disabled",true);
+				  }else{
+					  $("#addExpense_Button").prop("disabled",false); 
+				  }
+				 
 	}			
 </script>
 
@@ -871,11 +883,12 @@ function populateInlineItemsGrid(){
 		 document.getElementById("divInvoiceExpTsRow"+rowId).value= '';
 		 var  rId = "divInvoiceExpTsRow"+rowId;
 		  var r = document.getElementById("invoiceExpTbl").rows[rId];
-          var count = 2*(r.cells.length);
-		    for(i=0;i<=count;i++){
+          var count = r.cells.length;
+		    for(var i=0;i<=count;i++){
 		        r.deleteCell(0);
+					$("#addExpense_Button").prop('disabled', false);
 		    } 
-		 
+	
 	}
 </script>
 
@@ -1441,10 +1454,16 @@ function toDate(selector) {
 		        		 $("#paymentAccountId").val(json.paymentAccountId);
 		        	 }
 		        	 result = result +'<option disabled selected>--Select Client--</option>';
-		        	 result = result +'<option value='+json['vendorOrgRelationId']+' '+selected+' >'+json['orgName']+'</option>';
+		        	 result = result +'<option value='+json['vendorOrgRelationId']+' '+selected+' data-Invoice ='+json['generateInvoice']+'>'+json['orgName']+'</option>';
 		        	 $("#clientOrgRelationId").empty();
 		           	 $("#clientOrgRelationId").append(result); 
 		           	 $('#clientOrgRelationId').trigger("chosen:updated");
+		           	var invoiceCreateType = $("#clientOrgRelationId").find(':selected').attr("data-Invoice");
+					 if(invoiceCreateType == "Individual"){
+						  $("#addExpense_Button").prop("disabled",true);
+					  }else{
+						  $("#addExpense_Button").prop("disabled",false); 
+					  }
 		           	$("#clientCurrency").val(json['clientCurrency']);
 		           	getClientContactsExisted(json['vendorContactId']);
 		           	if(json['expensesInvoices'] !=null && json['expensesInvoices'] =='Y'){
@@ -1505,6 +1524,7 @@ function toDate(selector) {
 		        	
 		        } 
     		});
+		 
 	}
 	</script>
 
@@ -1572,9 +1592,9 @@ function getClients(){
 			var opt = json.data[i];
 		if(orgRelationId == opt.id){
 			var selected = 'selected';
-			output = output + "<option value='" +opt.id+ "'"+selected+">"+opt.orgName+"</option>";
+			output = output + "<option value='" +opt.id+ "'"+selected+" data-Invoice = '"+opt.generateInvoice+"'>"+opt.orgName+"</option>";
 		}else{
-			output = output + "<option value='" +opt.id+ "'>"+opt.orgName+"</option>";
+			output = output + "<option value='" +opt.id+ "' data-Invoice = '"+opt.generateInvoice+"'>"+opt.orgName+"</option>";
 		}
 		$("#clientCurrency").val(opt.clientCurrency);
 		}

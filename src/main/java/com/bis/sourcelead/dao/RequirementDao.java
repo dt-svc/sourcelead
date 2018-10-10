@@ -203,7 +203,7 @@ public interface RequirementDao {
 
 	public JobFair getJobFair(long jobFairId);
 	
-	public JobFair getJobFairByName(String jobFairName);
+	public JobFair getJobFairByName(String jobFairName, long userId, long orgLocationId);
 	
 	public JobFair getJobFairByUUID(String uuid);
 

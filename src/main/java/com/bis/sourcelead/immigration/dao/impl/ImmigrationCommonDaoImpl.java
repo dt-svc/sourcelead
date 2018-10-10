@@ -2156,13 +2156,25 @@ public class ImmigrationCommonDaoImpl implements ImmigrationCommonDao {
 		return lca;
 	}
 
-	@Override
+	/*@Override
 	@Transactional(rollbackFor = { Exception.class })
 	public LcaHistory getLcaHistoryDetails(Long immigrationId, String yes) {
 		Session session = this.sessionFactory.getCurrentSession();
 		String query = "from LcaHistory lh  left join fetch lh.lcaId where lh.immigrationId.id = :immigrationId and lh.isCurrent = :yes";
 		LcaHistory lh = (LcaHistory) session.createQuery(query).setLong("immigrationId", immigrationId).setString("yes", yes).uniqueResult();
 		return lh;
+	}*/
+	
+	@Override
+	@Transactional(rollbackFor = { Exception.class })
+	public List<LcaHistory> getLcaHistoryDetails(Long immigrationId, String yes) {
+		Session session = this.sessionFactory.getCurrentSession();
+		String query = "from LcaHistory lh  left join fetch lh.lcaId where lh.immigrationId.id = :immigrationId and lh.isCurrent = :yes ORDER BY lh.id DESC";
+		List<LcaHistory> lhList = session.createQuery(query).setLong("immigrationId", immigrationId).setString("yes", yes).setMaxResults(0).list();
+		if (lhList != null && lhList.size() > 0) {
+			lhList.get(0);
+		}
+		return lhList;
 	}
 
 	@Override
