@@ -488,3 +488,4 @@ function setPrice(){
 	});
 }
 </script>	
+<jsp:include page="../masterFooter.jsp" /> 	
