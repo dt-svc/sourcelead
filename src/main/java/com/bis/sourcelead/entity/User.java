@@ -26,6 +26,7 @@ import org.hibernate.annotations.FetchMode;
 import org.hibernate.annotations.Type;
 
 import com.bis.sourcelead.enums.Status;
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 @Entity
@@ -88,6 +89,7 @@ public class User implements Serializable{
 	
 	
 	@ManyToOne(fetch = FetchType.LAZY)
+	@JsonBackReference
 	@JoinColumn(name = "REPORTING_MANAGER_ID")
 	private User reportingManager;
 	
@@ -160,21 +162,25 @@ public class User implements Serializable{
 	
 	
 	@OneToMany(mappedBy = "user",cascade = CascadeType.ALL,fetch = FetchType.LAZY)
+	@JsonBackReference
 	@Fetch(FetchMode.SELECT)
 	private Set<UserRole> userRole = new HashSet<UserRole>(0);
 	
 	
 	@OneToMany(mappedBy = "user",cascade = CascadeType.ALL,fetch = FetchType.LAZY)
+	@JsonBackReference
 	@Fetch(FetchMode.SELECT)
 	private Set<Employees> employee = new HashSet<Employees>(0);
 	
 	
 	@OneToMany(mappedBy="user",cascade = CascadeType.ALL)
+	@JsonBackReference
     @Fetch(FetchMode.SELECT)
     private Set<PasswordResets> passwordResets;
 	
 	
 	@OneToMany(cascade = CascadeType.ALL, mappedBy = "consultantUser")
+	@JsonBackReference
 	private Set<Candidate> candidateSet;
 	
 	public Set<Candidate> getCandidateSet() {

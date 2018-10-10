@@ -1,14 +1,12 @@
 package com.bis.sourcelead.util;
 
+import java.lang.reflect.Type;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.HashMap;
-import java.util.List;
 
 import com.bis.sourcelead.entity.Tabs;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
-import java.lang.reflect.Type;
 
 /**
  * LEAST PREFERRED : ULTIMATELY GET RID OF JAVA OBJECTS/CLASSES/ENTITIES FRM THE SESSION
@@ -36,6 +34,28 @@ public class SessionTransformUtil {
 	 * @param sessionValue
 	 */
 	public static String keyValueToSession(String sessionKey, Object sessionValueObject){
+		
+		
+	/*	switch(sessionKey) {
+		case "candidate":
+			try {
+				CandidateSessionDTO candiate = mapper.map((Candidate)sessionValueObject, CandidateSessionDTO.class);
+				jse = gson.toJson(candiate);
+			}catch (Exception e) {
+				e.printStackTrace();
+			}
+			break;
+			
+		case "orgLocations":
+			try {
+				OrgLocationsSessionDTO orgLocations = mapper.map((OrgLocations)sessionValueObject, OrgLocationsSessionDTO.class);
+				jse = gson.toJson(orgLocations);
+			}catch (Exception e) {
+				e.printStackTrace();
+			}
+			
+	}*/
+		
 		String jse = gson.toJson(sessionValueObject);
 		return jse;
 	}

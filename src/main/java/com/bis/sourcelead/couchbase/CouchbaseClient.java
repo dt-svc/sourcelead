@@ -27,21 +27,17 @@ public class CouchbaseClient {
 	}
 
 	public Object get(String key){
-		return bucket.get(key).content().toString();
+		
+		if(bucket.get(key) != null) {
+			return bucket.get(key).content().toString();
+		}else {
+			return null;
+		}
+		
 	}
 	
 	public void set(String id, String key, String value) throws Exception{
 		
-			System.out.println("okk ...... set().");
-
-			
-//		org.json.simple.JSONObject simplejson = (org.json.simple.JSONObject) new JSONParser().parse(value);
-//			System.out.println("okk1 ...... set().");
-//		JsonObject content = fromSimple(simplejson);
-//			System.out.println("okk2 ...... set().");
-//		JsonDocument doc = JsonDocument.create(key,content);
-//			System.out.println("okk3 ...... set().");
-//		JsonDocument response = bucket.upsert(doc);
 			
 			JsonObject arthur = JsonObject.create()
 		            .put(key, value);
@@ -50,8 +46,6 @@ public class CouchbaseClient {
 	        bucket.upsert(JsonDocument.create(id, arthur));			
 			
 			
-			System.out.println("thankYou ...... set().");
-		
 		
 	}
 	

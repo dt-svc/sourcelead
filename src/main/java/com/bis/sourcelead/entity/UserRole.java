@@ -19,13 +19,10 @@ import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import javax.persistence.Transient;
 
-import org.hibernate.annotations.Cache;
-import org.hibernate.annotations.CacheConcurrencyStrategy;
-import org.hibernate.annotations.NotFound;
-import org.hibernate.annotations.NotFoundAction;
 import org.hibernate.annotations.Type;
 
 import com.bis.sourcelead.enums.Status;
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 /**
@@ -45,37 +42,45 @@ public class UserRole implements Serializable {
 
 	
 	@ManyToOne
+	@JsonBackReference
 	@JoinColumn(name = "USER_ID", nullable = false)
 	private User user;
 
 	@ManyToOne(fetch = FetchType.LAZY)
+	@JsonBackReference
 	@JoinColumn(name = "EMPLOYEE_ID", nullable = false)
 	private Employees employee;
 	
 	@ManyToOne(fetch = FetchType.LAZY)
+	@JsonBackReference
 	@JoinColumn(name = "REPORTING_MANAGER_ID")
 	private User reportingManager;
 	
 	
 	@ManyToOne(fetch = FetchType.LAZY)
+	@JsonBackReference
 	@JoinColumn(name = "RESOURCE_MANAGER_ID")
 	private User resourceManager;
 
 	
 	@ManyToOne(fetch = FetchType.LAZY)
+	@JsonBackReference
 	@JoinColumn(name = "ROLE_ID", nullable = false)
 	private Roles roles;
 
 	
 	@ManyToOne(fetch = FetchType.LAZY)
+	@JsonBackReference
 	@JoinColumn(name = "ORG_LOCATIONS_ID", nullable = false)
 	private OrgLocations orgLocations;
 
 	@ManyToOne(fetch = FetchType.EAGER)
+	@JsonBackReference
 	@JoinColumn(name = "SHIFT_ID")
 	private Shift shift;
 	
 	@ManyToOne(fetch = FetchType.LAZY)
+	@JsonBackReference
 	@JoinColumn(name = "ORG_ID", nullable = false)
 	private Org orgId;
 
@@ -142,6 +147,7 @@ public class UserRole implements Serializable {
     
     
     @ManyToOne(fetch = FetchType.LAZY)
+    @JsonBackReference
 	@JoinColumn(name = "GRADE_ID")
 	private AssociateGrades gradeId;
 

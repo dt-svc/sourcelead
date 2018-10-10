@@ -34,6 +34,7 @@ import org.springframework.web.servlet.ModelAndView;
 
 import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.dto.DashboardItemsDTO;
+import com.bis.sourcelead.dto.OrgLocationsSessionDTO;
 import com.bis.sourcelead.entity.Candidate;
 import com.bis.sourcelead.entity.CandidateOffBoarding;
 import com.bis.sourcelead.entity.CandidateOnBoarding;
@@ -83,6 +84,7 @@ import com.bis.sourcelead.service.UserService;
 import com.bis.sourcelead.util.CommonUtil;
 import com.bis.sourcelead.util.SourceLeadSessionManager;
 import com.bis.sourcelead.util.UserLoginHelper;
+import com.fasterxml.jackson.databind.ObjectMapper;
 
 @Controller
 @PropertySource("${propertyLocation:app.properties}")
@@ -301,6 +303,12 @@ public class LoginSessionController {
 			}
 			
 			SourceLeadSessionManager.setSessionAttribute(request, "orgLocations", orgLocations);
+			
+			ObjectMapper mapperObj = new ObjectMapper();
+			OrgLocationsSessionDTO orgLocDTO = mapperObj.convertValue(orgLocations, OrgLocationsSessionDTO.class);
+			String orgLocationJsonStr = mapperObj.writeValueAsString(orgLocDTO);
+			SourceLeadSessionManager.setJsonStringSessionAttribute(request, "orgLocations", orgLocationJsonStr);
+			
 			List<String> weekOffDaysList = new ArrayList<>();
 			if(orgLocations.getWeekOffDays() != null && !orgLocations.getWeekOffDays().isEmpty()) {
 				String[] weekOffDays = orgLocations.getWeekOffDays().split(",");

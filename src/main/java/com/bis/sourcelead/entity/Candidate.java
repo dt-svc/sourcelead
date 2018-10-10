@@ -39,29 +39,34 @@ public class Candidate implements Serializable {
 	@Column(name = "ID", nullable = false)
 	private Long id;
 
+	@JsonBackReference 
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "MASTER_CANDIDATE_ID", nullable = false)
 	private MasterCandidate masterCandidateId;
 
+	@JsonBackReference 
 	@NotFound(action = NotFoundAction.IGNORE)
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "PARENT_CANDIDATE_ID")
 	private Candidate parentCandidateId;
 
 
+	@JsonBackReference 
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "ORG_LOCATION_ID", nullable = false)
 	private OrgLocations orgLocationId;
 
+	@JsonBackReference 
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "CONSULTANT_USER_ID")
 	private User consultantUser;
 	
+	@JsonBackReference 
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "SHIFT_ID")
 	private Shift shift;
 	
- 
+	@JsonBackReference 
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "WORK_LOCATION")
 	private OrgLocations workLocation;
@@ -93,11 +98,12 @@ public class Candidate implements Serializable {
 	@Column(name = "RESIDENCE_LONGITUDE")
 	private String residenceLongitude;
 	
-	
+	@JsonBackReference 
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "ORG_ID", nullable = false)
 	private Org orgId;
 
+	@JsonBackReference 
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "RECRUITER_USER_ID")
 	private User recruiterUserId;
@@ -205,6 +211,7 @@ public class Candidate implements Serializable {
 	@Column(name = "FILE_URL")
 	private String fileUrl;
 
+	@JsonBackReference 
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "TEAM_ID")
 	private Team teamId;
@@ -239,12 +246,13 @@ public class Candidate implements Serializable {
 	@Column(name = "IS_ASSOCIATE")
 	private String isAssociate;
 
+	@JsonBackReference 
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "ORG_RELATION_ID")
 	private OrgRelations orgRelationId;
 
-	@ManyToOne(fetch = FetchType.LAZY)
 	@JsonBackReference
+	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "SPOC_ID")
 	private OrgSpoc spocId;
 
@@ -348,6 +356,7 @@ public class Candidate implements Serializable {
 	@Transient
 	private String fullName;
 
+	@JsonBackReference 
 	@OneToMany(mappedBy = "candidateId", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
 	private Set<CandidateEducation> candidateEducation = new HashSet<CandidateEducation>(0);
 
@@ -359,15 +368,19 @@ public class Candidate implements Serializable {
 	 * HashSet<CandidateSkills>(0);
 	 */
 
+	@JsonBackReference 
 	@OneToMany(mappedBy = "candidateId", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
 	private Set<CandidateResumes> candidateResumes = new HashSet<CandidateResumes>(0);
 
+	@JsonBackReference 
 	@OneToMany(mappedBy = "candidateId", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
 	private Set<CandidateEmployers> candidateEmployers = new HashSet<CandidateEmployers>(0);
 	
+	@JsonBackReference 
 	@OneToMany(mappedBy = "candidateId", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
 	private Set<CandidateHistory> candidateHistory = new HashSet<CandidateHistory>(0);
 	
+	@JsonBackReference 
 	@OneToMany(mappedBy = "candidate", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
 	private Set<CandidateTimelineActivity> candidateTimeLineActivity = new HashSet<CandidateTimelineActivity>(0);
 

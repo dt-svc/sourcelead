@@ -4,17 +4,13 @@ import java.io.Writer;
 
 import javax.servlet.http.HttpServletRequest;
 
-import org.modelmapper.ModelMapper;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.context.annotation.PropertySource;
+import org.json.simple.JSONObject;
+import org.json.simple.parser.JSONParser;
+import org.json.simple.parser.ParseException;
 
 import com.bis.sourcelead.BeanUtil;
 import com.bis.sourcelead.couchbase.ConnectionManager;
 import com.bis.sourcelead.couchbase.CouchbaseClient;
-import com.bis.sourcelead.dto.UserDTO;
-import com.bis.sourcelead.entity.User;
-import com.bis.sourcelead.form.OrgSettings;
-import com.google.gson.Gson;
 import com.thoughtworks.xstream.XStream;
 import com.thoughtworks.xstream.io.HierarchicalStreamWriter;
 import com.thoughtworks.xstream.io.json.JsonHierarchicalStreamDriver;
@@ -33,32 +29,43 @@ public class SourceLeadSessionManager {
 	
 	public static void setSessionAttribute(HttpServletRequest request, String attribute, Object obj) {
 		request.getSession().setAttribute("SourceLeadWeb_" + attribute, obj);
+	}
+	
+	public static void setJsonStringSessionAttribute(HttpServletRequest request, String attribute, String jsonString) {
 		String id = request.getSession().getId();
 		String jsonKey = "" + id + "_SourceLeadWeb_" + attribute;
-		String jsonValue = null;
-		// If it is a string
-		if(obj instanceof String){
-			
-		} else {
-			try {
-				if (id != null && attribute != null) {
-						if (obj != null) {
-							
-							jsonValue = SessionTransformUtil.keyValueToSession(attribute, obj);
-							
-							System.out.println("Value of jsonKey :" + jsonKey);
-							System.out.println("Value of jsonValue : " + jsonValue);
-	
-							c.set(id + "_" + attribute, jsonKey, jsonValue);
-							System.out.println("okkk ......... c.set() done");
-						} else
-							System.out.println("obj is NuLL : " + obj);
-				} else
-					System.out.println("Id is NuLL : " + id);
-			} catch (Exception e) {
-				e.printStackTrace();
-			}
+		try {
+			if (id != null && attribute != null) {
+					if (jsonString != null) {
+						c.set(id + "_" + attribute, jsonKey, jsonString);
+					} else
+						System.out.println("Json String is NuLL : " + attribute);
+			} else
+				System.out.println("Id is NuLL : " + id);
+		} catch (Exception e) {
+			e.printStackTrace();
 		}
+	}
+	
+	
+	public static JSONObject getSessionJsonObject(HttpServletRequest request, String attribute) {
+		
+		JSONObject jsonObject = null;
+		String id = request.getSession().getId();
+		Object sv = null;
+		sv = c.get(id  + "_" + attribute);
+		if(sv != null) {
+		  
+		  JSONParser parser = new JSONParser(); 
+		  try {
+			  jsonObject = (JSONObject) parser.parse(sv.toString());
+		} catch (ParseException e) {
+			e.printStackTrace();
+		}
+
+			  
+		}
+		return jsonObject;
 	}
 	
 	public static Object getSessionAttributeProxy(HttpServletRequest request, String attribute) {
@@ -67,16 +74,20 @@ public class SourceLeadSessionManager {
 	
 	public static Object getSessionAttributeSS(HttpServletRequest request, String attribute) {
 		String id = request.getSession().getId();
-		Object sv = c.get(id + "_" + attribute);
-		SessionTransformUtil.objectValueFromSession(attribute, sv.toString());
+		Object sv = null;
+		sv = c.get(id  + attribute);
+		if(sv != null) {
+			SessionTransformUtil.objectValueFromSession(attribute, sv.toString());
+		}
+		
 		return sv;
 	}
 
 	public static Object getSessionAttribute(HttpServletRequest request, String attribute) {
-		if(USE_SESSION_STORE){
+		if(!USE_SESSION_STORE){
 			return getSessionAttributeSS(request, "SourceLeadWeb_"+attribute);
 		} else
-		return getSessionAttributeProxy(request, "SourceLeadWeb_"+attribute);
+		return getSessionAttributeProxy(request, attribute);
 	}
 	
 	public static void removeSessionAttribute(HttpServletRequest request, String attribute) {
@@ -92,7 +103,7 @@ public class SourceLeadSessionManager {
         return xstream.toXML(obj);
     }
 	
-	public static void main(String[] a){
+	/*public static void main(String[] a){
 		
 		String tmc = "{\"id\":5,\"masterCandidateId\":{\"handler\":{\"interfaces\":[{}],\"constructed\":true,\"persistentClass\":{},\"overridesEquals\":false,\"entityName\":\"com.bis.sourcelead.entity.MasterCandidate\",\"id\":3,\"initialized\":false,\"readOnly\":false,\"unwrap\":false,\"sessionFactoryUuid\":\"d122e26c-352a-4f18-9731-7583d01d8c62\",\"allowLoadOutsideTransaction\":true}},\"orgLocationId\":{\"handler\":{\"interfaces\":[{}],\"constructed\":true,\"persistentClass\":{},\"overridesEquals\":false,\"entityName\":\"com.bis.sourcelead.entity.OrgLocations\",\"id\":5,\"initialized\":false,\"readOnly\":false,\"unwrap\":false,\"sessionFactoryUuid\":\"d122e26c-352a-4f18-9731-7583d01d8c62\",\"allowLoadOutsideTransaction\":true}},\"consultantUser\":{\"handler\":{\"interfaces\":[{}],\"constructed\":true,\"persistentClass\":{},\"overridesEquals\":false,\"entityName\":\"com.bis.sourcelead.entity.User\",\"id\":5,\"initialized\":false,\"readOnly\":false,\"unwrap\":false,\"sessionFactoryUuid\":\"d122e26c-352a-4f18-9731-7583d01d8c62\",\"allowLoadOutsideTransaction\":true},\"userRole\":[],\"employee\":[],\"assignJobCount\":0,\"userRequirementsCount\":0,\"userApplicantsCount\":0,\"userCandidatesCount\":0,\"userShortlisteApplicantsCount\":0,\"userSubmittedApplicantsCount\":0,\"userInterviewedApplicantsCount\":0,\"userOfferedApplicantsCount\":0,\"userRejectedApplicantsCount\":0,\"userApplicantsBackOutCount\":0},\"candidateType\":\"Candidate\",\"firstName\":\"Credas\",\"lastName\":\"\",\"email\":\"credas@gmail.com\",\"country\":\"India\",\"status\":1,\"createdDate\":\"Sep 18, 2018 2:00:13 PM\",\"createdBy\":\"Ws3Ixrqi\",\"candidateUUID\":\"62ahCMyX\",\"isAssociate\":\"Y\",\"candidateEducation\":[],\"candidateResumes\":[],\"candidateEmployers\":[],\"noOfReq\":0,\"isCandidateAdedd\":false,\"skillPercentage\":0.0,\"expPercentage\":0.0,\"locationPercentage\":0.0,\"ratePercentage\":0.0,\"noticePeriodPercentage\":0.0,\"totalKeyWordPerPercentage\":0.0,\"generatedId\":\"XFHCD1\",\"profilePercentage\":0}";
 
@@ -102,6 +113,6 @@ public class SourceLeadSessionManager {
 		System.out.println(o);
 		
 
-	}
+	}*/
 	
 }

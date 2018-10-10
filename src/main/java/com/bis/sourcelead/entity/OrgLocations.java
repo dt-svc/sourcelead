@@ -28,6 +28,7 @@ import org.hibernate.annotations.Type;
 
 import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.enums.Status;
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
@@ -44,22 +45,26 @@ public class OrgLocations implements Serializable{
 	
 	
 	@ManyToOne(fetch = FetchType.LAZY)
+	@JsonBackReference
 	@JoinColumn(name = "ORG_ID")
 	@JsonProperty
     private Org org;
 	
 	
 	@ManyToOne
+	@JsonBackReference
 	@JoinColumn(name = "TIMEZONE_ID")
     private Timezone timezone;
 	
 	
 	@ManyToOne(fetch = FetchType.LAZY)
+	@JsonBackReference
 	@JoinColumn(name = "PRIMARY_CONTACT_USER_ID")
     private User user;
 	
 	
 	@OneToMany(mappedBy="responderLocationId",cascade = CascadeType.ALL,fetch=FetchType.LAZY)
+	@JsonBackReference
     @Fetch(FetchMode.SELECT)
     private Set<OrgRelations> orgRelationsList;
 	
@@ -126,6 +131,7 @@ public class OrgLocations implements Serializable{
 	
 	
 	@ManyToOne(fetch = FetchType.LAZY)
+	@JsonBackReference
 	@JoinColumn(name="BUSINESS_TYPE", nullable=false )	
 	private LookUpData businessType;
 	

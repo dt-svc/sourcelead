@@ -3,6 +3,7 @@ package com.bis.sourcelead.web;
 import java.io.FileNotFoundException;
 import java.io.OutputStream;
 import java.util.Collection;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 
@@ -12,6 +13,8 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.exception.ExceptionUtils;
+import org.json.simple.JSONObject;
+import org.json.simple.parser.JSONParser;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -202,6 +205,22 @@ public class CandidateController {
 		
 		OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 		Org   org = (Org)SourceLeadSessionManager.getSessionAttribute(request, "org");
+		Long orgLocationId = null;
+		String country = null;
+		
+		JSONObject orgLocJsonObject = SourceLeadSessionManager.getSessionJsonObject(request,  "orgLocations");
+		System.out.println(orgLocJsonObject);
+	
+		for(Iterator iterator = orgLocJsonObject.keySet().iterator(); iterator.hasNext();) {
+		    String key = (String) iterator.next();
+		    System.out.println(orgLocJsonObject.get(key));
+		     Object jsonValue= orgLocJsonObject.get(key);
+		     JSONParser parser = new JSONParser(); 
+		     JSONObject jsonObj = (JSONObject) parser.parse(jsonValue.toString());
+		     System.out.println(jsonObj.get("id"));
+		     orgLocationId = Long.valueOf(jsonObj.get("id").toString());
+		     country = jsonObj.get("country").toString();
+		}
 		
 		User user = (User) SourceLeadSessionManager.getSessionAttribute(request,"user");
 	    String userRole = (String) SourceLeadSessionManager.getSessionAttribute(request, "loginUserRole");
@@ -229,9 +248,9 @@ public class CandidateController {
 		
 		
 		 if(!isNullOrEmpty(userRole) && userRole.equalsIgnoreCase("ROLE_CROWDSOURCING_RECRUITER")){
-			 candidateCount = candidateService.getCandidatesCountByCandidateTypeOrgLocationIDAndUserId(orgLocations.getId(), user.getId(), "Candidate");
+			 candidateCount = candidateService.getCandidatesCountByCandidateTypeOrgLocationIDAndUserId(orgLocationId, user.getId(), "Candidate");
 		 }else{
-			 candidateCount = candidateService.getCandidatesCountByCandidateTypeOrgLocationID(user.getId(),orgLocations.getId(), "Candidate");
+			 candidateCount = candidateService.getCandidatesCountByCandidateTypeOrgLocationID(user.getId(),orgLocationId, "Candidate");
 		 }
 	  
 	   model.addObject("candidateCount", candidateCount);
@@ -239,9 +258,9 @@ public class CandidateController {
 		List<Countries> countryList = countriesService.getAllCountries();
 		model.addObject("countryList", countryList);
 		
-		if(null != orgLocations && StringUtils.isNotEmpty(orgLocations.getCountry())){
+		if(null != orgLocations && StringUtils.isNotEmpty(country)){
 		
-			Countries countries = countriesService.getCountriesByCountryName(orgLocations.getCountry());
+			Countries countries = countriesService.getCountriesByCountryName(country);
 			if(null != countries){
 			   model.addObject("loginCountryName", countries.getName());
 			   model.addObject("currency", countries.getCurrency());
@@ -252,7 +271,7 @@ public class CandidateController {
 		}
 		
 		//approver list
-		List<User> requirementApproverList = userService.getTabAccessOwnersByOrgLocationIdAndTabId(orgLocations.getId(),Long.valueOf(Constants.TAB_CANDIATE));
+		List<User> requirementApproverList = userService.getTabAccessOwnersByOrgLocationIdAndTabId(orgLocationId,Long.valueOf(Constants.TAB_CANDIATE));
 		model.addObject("requirementApproverList", requirementApproverList);
 				
 		
@@ -266,7 +285,7 @@ public class CandidateController {
 		model.addObject("visaList", visaList);
 		
 		
-		Set<String> tagsList = sourceleadTagsService.getSourceleadTagsByOrgLocationId(orgLocations.getId());
+		Set<String> tagsList = sourceleadTagsService.getSourceleadTagsByOrgLocationId(orgLocationId);
 		SourceLeadSessionManager.setSessionAttribute(request, "tagsList", tagsList);
 		
 		List<LookUpData> educationsList = lookUpDataService.getLookUpDataByCategory(Constants.EDUCATIONS);
@@ -275,7 +294,7 @@ public class CandidateController {
 		List<LookUpData> documentsList = lookUpDataService.getLookUpDataByCategory(Constants.DOCUMENT_TYPE);
 		model.addObject("documentsList", documentsList);
 		
-		List<OrgRelationDTO> orgClientList = orgRelationsService.getAllClientsListOrgLocationId(orgLocations.getId());
+		List<OrgRelationDTO> orgClientList = orgRelationsService.getAllClientsListOrgLocationId(orgLocationId);
 	    model.addObject("clientsList", orgClientList);
 		  
 		SessionMaintainanceData sessionData = (SessionMaintainanceData)request.getSession().getAttribute("sessionData");
