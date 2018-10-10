@@ -23,5 +23,9 @@ public interface DepartmentDao {
 	 Department validateDepartmentnameByDepartmentIdAndDepartmentName(Long departmentId,String departmentName) throws Exception;
 		
 	 Boolean validateDepartmentnameByOrgLocationIdAndDepartmentName(Long orgLocationId,String departmentName) throws Exception;
+	 
+	 List<String> getDepartmentList(Long orgLocationId) throws Exception;
+	 
+	 Department getDepartmentByOrgLocationIdAndDepartmentName(Long orgLocationId,String departmentName) throws Exception;
 	
 }

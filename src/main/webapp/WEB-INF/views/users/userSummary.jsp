@@ -2173,7 +2173,7 @@ $("#editRoleDetailsList").empty();
 				$('#editUserDiv').find('p.jquery_form_error_message').remove();
 			    $("#editUserDiv").empty(); 
 			    $("#editUserDiv").append(result);
-			    
+			    getShiftList(json.shiftId);
 			    initLocationAuto('residenceLocation','residenceCountry','residenceState','residenceCity','residenceZipCode','residenceLatitude','residenceLongitude','editAssociate','','address');
 
 			    $("#vendorcontact").chosen();
@@ -2202,9 +2202,7 @@ $("#editRoleDetailsList").empty();
 			    getVendorsByOrgLocationId();
 			    getDepartmentsList();
 			    maskme(); 
-				
-
-			    getShiftList(json.shiftId);
+			   
 	        },
 		});
 }
@@ -2312,7 +2310,7 @@ function getEmployeementType(){
 	var preval = document.getElementById("hiddenId").value;
 	
 		if(employementType == 'C2C' || employementType == 'C2C-1099' ||  employementType == 'Offshore C2C'){
-			if(employementType == preval){
+			/* if(employementType == preval){
 				document.getElementById("hideVendor").style.display="block";
 				 $('#vendors').attr("data-validation","required"); 
 				 $('#vendorcontact').attr("data-validation","required");
@@ -2325,9 +2323,21 @@ function getEmployeementType(){
 			 
 	            $('#vendors').trigger("chosen:updated");
 	            $('#vendorcontact').empty();
-		//	 $('#vendorcontact').val(''); 
 	           $('#vendorcontact').trigger("chosen:updated");
-			} 
+	           getVendorsByOrgLocationId();
+			}  */
+			
+			
+			 document.getElementById("hideVendor").style.display="block";
+			 $('#vendors').attr("data-validation","required"); 
+			 $('#vendorcontact').attr("data-validation","required"); 
+			  $('#vendors').val(''); 
+			 
+	            $('#vendors').trigger("chosen:updated");
+	            $('#vendorcontact').empty();
+	           $('#vendorcontact').trigger("chosen:updated");
+	           getVendorsByOrgLocationId();
+	           
 		}else{
 			 document.getElementById("hideVendor").style.display="none";
 			 $('#vendors').removeAttr("data-validation","required"); 

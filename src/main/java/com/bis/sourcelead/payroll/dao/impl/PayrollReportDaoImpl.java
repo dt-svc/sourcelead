@@ -28,6 +28,7 @@ import com.bis.sourcelead.entity.Department;
 import com.bis.sourcelead.entity.Employees;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.payroll.dao.PayrollReportDao;
+import com.bis.sourcelead.payroll.dto.AssociateWithHoldingDTO;
 import com.bis.sourcelead.payroll.dto.CheckRegisterReportDTO;
 import com.bis.sourcelead.payroll.dto.PayrollReportDTO;
 import com.bis.sourcelead.payroll.entity.DeductionHistory;
@@ -164,6 +165,7 @@ public class PayrollReportDaoImpl implements PayrollReportDao{
 			.append(" CANDIDATE can,USER_GROUP grp ")
 			.append(" where sheet.ID = payroll.PAY_SHEET_FREQUENCY_ID ")
 			.append(" and payroll.CANDIDATE_ID = bank.CANDIDATE_ID ")
+			.append(" and payroll.ID = bankHis.PAYROLL_ID ")
 			.append(" and bankHis.ASSOCIATE_BANK_ID = bank.ID ")
 			.append(" and payroll.CANDIDATE_ID = can.ID ")
 			.append(" and sheet.GROUP_ID = grp.ID ")
@@ -511,6 +513,101 @@ public class PayrollReportDaoImpl implements PayrollReportDao{
 		}
 
 		return payrollList;
+	}
+
+	@SuppressWarnings("unchecked")
+	@Override
+	@Transactional
+	public ResponseList<AssociateWithHoldingDTO> getAssociateWithHoldingReport(OrgLocations orgLocation, AssociateWithHoldingDTO associateWithHoldingDTO)
+	{
+;		ResponseList<AssociateWithHoldingDTO>  response = new ResponseList<>();
+		try {
+//			Date sDate =  new SimpleDateFormat("yyyy-MM-dd").parse(payrollReportDTO.getFreqStartDate());  
+//			Date eDate =new SimpleDateFormat("yyyy-MM-dd").parse(payrollReportDTO.getFreqEndDate());
+//			java.sql.Date freqStartDate = new java.sql.Date(sDate.getTime());
+//			java.sql.Date freqEndDate = new java.sql.Date(eDate.getTime());
+			Session session = this.sessionFactory.getCurrentSession();
+			List<AssociateWithHoldingDTO> assoWithHoldingList = null;
+			StringBuilder searchQuery = new StringBuilder("");
+			/*String qry = "";
+			if (StringUtils.isNotBlank(payrollReportDTO.getSortColumn())) {
+				qry = " order by payroll." + payrollReportDTO.getSortColumn() + " "
+						+ payrollReportDTO.getSortOrder();
+			}*/
+			StringBuilder query = new StringBuilder();
+			query.append("SELECT can.ID as candidateId,")
+			.append("can.FIRST_NAME as firstName,")
+			.append("can.LAST_NAME as lastName,")
+			.append("emp.EMPLOYEE_ID as employeeId,")
+			.append("emp.DEPARTMENT_ID as departmentId,")
+			.append("loc.LOCATION as workLocation,")
+			.append("usr.SSN as ssnNumber,")
+			.append("can.RESIDENCE_STATE_CODE residenceStateCode,")
+			.append("withHolding.FEDERAL_TAX_FILLIING_STATUS as federalFillingStatus,")
+			.append("withHolding.FEDERAL_TAX_ALLOWANCES as federalTaxAllowances,")
+			.append("withHolding.FEDERAL_TAX_ADDITIONNAL_WITH_HOLDING as federalAdditinalWithHolding,")
+			.append("withHolding.STATE_TAX_FILLIING_STATUS as stateFillingStatus,")
+			.append("withHolding.STATE_TAX_ALLOWANCES stateTaxAllowances,")
+			.append("withHolding.STATE_TAX_ADDITIONNAL_WITH_HOLDING as stateAdditionalWithHolding")
+			.append(" FROM sourcelead.CANDIDATE can")
+			.append(" left join  ASSOCIATE_TAX withHolding ON withHolding.CANDIDATE_ID = can.ID") 
+			.append(" left join EMPLOYEE emp ON emp.USER_ID = can.CONSULTANT_USER_ID")
+			.append(" left join ORG_LOCATIONS loc ON loc.ID = can.WORK_LOCATION")
+			.append(" left join USER usr ON usr.ID = can.CONSULTANT_USER_ID")
+			.append(" where  can.IS_ASSOCIATE = 'Y' AND can.ORG_LOCATION_ID = :orgLocationId");
+//			String query = "from EmployeePayroll payroll where payroll.paysheetFrequency.userGroup.id = :groupId and payroll.paysheetFrequency.orgLocation.id = :orgLocationId and payroll.payCheckDate = :payCheckDatde and payroll.submitForAproverStatus = 'APPROVED'";
+			StringBuilder countQuery = new StringBuilder();
+			countQuery.append("select count(*) FROM sourcelead.CANDIDATE where IS_ASSOCIATE = 'Y' and ORG_LOCATION_ID = :orgLocationId");
+			//			String countQuery = "from EmployeePayroll payroll where payroll.paysheetFrequency.userGroup.id = :groupId and payroll.paysheetFrequency.orgLocation.id = :orgLocationId and payroll.payCheckDate = :payCheckDatde and payroll.submitForAproverStatus = 'APPROVED'";
+			if (associateWithHoldingDTO.getSearchValue() != null && !"".equalsIgnoreCase(associateWithHoldingDTO.getSearchValue())) {
+					searchQuery.append(" and ( can.FIRST_NAME like '%"+ associateWithHoldingDTO.getSearchValue()+ "%' ")
+							  .append("OR  can.LAST_NAME like '%" + associateWithHoldingDTO.getSearchValue() + "%')");
+			}
+//			else {
+
+				Query queryObj = session.createSQLQuery(query.toString() + searchQuery.toString());
+				if (associateWithHoldingDTO != null && associateWithHoldingDTO.getLength() > 0) {
+					queryObj.setFirstResult(associateWithHoldingDTO.getStart());
+					queryObj.setMaxResults(associateWithHoldingDTO.getLength());
+					queryObj.setLong("orgLocationId", orgLocation.getId());
+					queryObj.setResultTransformer(Transformers.aliasToBean(AssociateWithHoldingDTO.class));
+				}
+				assoWithHoldingList = queryObj.list();
+				int count = 0;
+				int filteredCount = 0;
+//				Query queryObj = session.createSQLQuery(query.toString() + searchQuery.toString());
+				Query  countQry = session.createSQLQuery(countQuery.toString()).setLong("orgLocationId", orgLocation.getId());
+//				countQry.setResultTransformer(Transformers.aliasToBean(AssociateWithHoldingDTO.class));
+				List<BigInteger> countlist = countQry.list();
+				if (countlist != null && !countlist.isEmpty()) {
+					count = countlist.iterator().next().intValue();
+				}
+				response.setRecordsTotal(count);
+				if (associateWithHoldingDTO != null) {
+					Query  filteredCountQry= session.createSQLQuery(countQuery.toString()).setLong("orgLocationId", orgLocation.getId());
+//					filteredCountQry.setResultTransformer(Transformers.aliasToBean(CheckRegisterReportDTO.class));
+					List<BigInteger> filteredCountlist = filteredCountQry.list();
+					if (filteredCountlist != null && !filteredCountlist.isEmpty()) {
+						filteredCount = filteredCountlist.iterator().next().intValue();
+					}
+					response.setRecordsFiltered(filteredCount);
+				}
+				
+				for(AssociateWithHoldingDTO withHolding : assoWithHoldingList) {
+					StringBuilder sb = new StringBuilder();
+					if(withHolding.getSsnNumber() != null) {
+						String ssn = withHolding.getSsnNumber();
+						String[] arr = ssn.split("-");
+						sb.append("xxx").append("-").append("xx").append("-").append(arr[0]);
+						withHolding.setSsnNumber(sb.toString());
+					}
+					
+				}
+				response.setData(assoWithHoldingList);
+		}catch (Exception e) {
+				e.printStackTrace();
+		}
+		return response;
 	}
 
 	

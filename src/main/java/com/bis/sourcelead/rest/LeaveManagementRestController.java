@@ -1839,8 +1839,22 @@ public class LeaveManagementRestController {
 		OrgLocations orgLocations = orgLocationService.getOrgLocations(Long.valueOf(leaveDTO.getOrgLocationId()));
 		ResponseList<LeaveDTO> responseList = new ResponseList<>();
 		try {
+			String[] tableColumns1 = null;
 			OrgLocations loginOrgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
-			String[] tableColumns = {"firstName",  "name","duration", "noOfDays","approvedBy","updatedDate",""};
+			if(Constants.LEAVE_APPROVED.equalsIgnoreCase(leaveDTO.getLeaveStatus())) {
+				String[] tableColumns = {"firstName",  "name","", "","approvedBy","updatedDate",""};
+				tableColumns1 = tableColumns;
+			}else if(Constants.LEAVE_PENDING.equalsIgnoreCase(leaveDTO.getLeaveStatus())) {
+				String[] tableColumns = {"firstName",  "name","", "","","",""};
+				tableColumns1 = tableColumns;
+			}else if(Constants.LEAVE_REJECTED.equalsIgnoreCase(leaveDTO.getLeaveStatus())) {
+				String[] tableColumns = {"firstName",  "name","", "","rejectedBy","",""};
+				tableColumns1 = tableColumns;
+			}else if(Constants.LEAVE_CANCELLED.equalsIgnoreCase(leaveDTO.getLeaveStatus())) {
+				String[] tableColumns = {"firstName",  "name","", "","approvedBy","cancelledBy",""};
+				tableColumns1 = tableColumns;
+			}
+			
 		    int sortColumnIndex = 1;		 //by default sorting using updated date
 			String sortColumnOrder = "asc";  //by default descending order
 			if(leaveDTO.getOrder() != null && !leaveDTO.getOrder().isEmpty()) {
@@ -1848,7 +1862,7 @@ public class LeaveManagementRestController {
 				sortColumnOrder = leaveDTO.getOrder().get(0).get("dir");
 			}
 
-				leaveDTO.setSortColumn(tableColumns[sortColumnIndex]);
+				leaveDTO.setSortColumn(tableColumns1[sortColumnIndex]);
 				leaveDTO.setSortOrder(sortColumnOrder);
 
 			

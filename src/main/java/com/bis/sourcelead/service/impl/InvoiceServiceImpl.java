@@ -305,11 +305,16 @@ public class InvoiceServiceImpl implements InvoiceService {
 		if(!loginOrgCurrencyCode.equalsIgnoreCase(vendorCurrencyCode)){
 	        if(null != vendorCurrencyCode){
 	      	float convertedAmount = conversionUtil.convert(loginOrgCurrencyCode, vendorCurrencyCode, Float.parseFloat(invoiceDTO.getGrandTotal()));
-	      	float exchangeAmoiunt = conversionUtil.convert(loginOrgCurrencyCode, vendorCurrencyCode,1);
-	      	float convertedAmount1 = 	(float) (Math.round(convertedAmount * 100.0) / 100.0);
+			float exchangeRate = conversionUtil.convert(loginOrgCurrencyCode, vendorCurrencyCode, 1);
+			//Accept three decimal points
+	      	float convertedAmount1 = 	Float.parseFloat((new DecimalFormat(".###").format(((convertedAmount * 100.0) / 100.0))));
 	      	invoice.setConvertCurrencyCode(vendorCurrencyCode);
 	      	invoice.setConvertAmount(String.valueOf(convertedAmount1));
-	      	invoice.setExchangeRate(String.valueOf(exchangeAmoiunt));
+	      	exchangeRate = convertedAmount1 * Float.valueOf(invoiceDTO.getGrandTotal());
+	      //Accept three decimal points
+	      	DecimalFormat decimalFormat = new DecimalFormat("#.000");
+	        String afterConvert = decimalFormat.format(exchangeRate);
+	      	invoice.setExchangeRate(String.valueOf(afterConvert));
 	        }	
 	    }
 		invoice.setOwnerUsers(user.getId().toString());
@@ -523,11 +528,13 @@ public class InvoiceServiceImpl implements InvoiceService {
 			if (null != vendorCurrencyCode) {
 				float convertedAmount = conversionUtil.convert(loginOrgCurrencyCode, vendorCurrencyCode,
 						Float.parseFloat(invoice.getTotal()));
-				float convertedAmount1 = (float) (Math.round(convertedAmount * 100.0) / 100.0);
+				float convertedAmount1 = Float.parseFloat((new DecimalFormat(".###").format(((convertedAmount * 100.0) / 100.0))));
 				convertedAmount1 = convertedAmount1 * Float.valueOf(invoice.getTotal());
 				parentInvoice.setCurrencyCode(vendorCurrencyCode);
-				parentInvoice.setTotal(String.valueOf(convertedAmount1));
-				parentInvoice.setDueAmount(String.valueOf(convertedAmount1));
+				DecimalFormat decimalFormat = new DecimalFormat("#.000");
+		        String afterConvert = decimalFormat.format(convertedAmount1);
+				parentInvoice.setTotal(afterConvert);
+				parentInvoice.setDueAmount(afterConvert);
 			}
 		} else {
 			parentInvoice.setCurrencyCode(invoice.getCurrencyCode());
@@ -1375,7 +1382,7 @@ public class InvoiceServiceImpl implements InvoiceService {
 				float convertedAmount = conversionUtil.convert(loginOrgCurrencyCode, vendorCurrencyCode,
 						Float.parseFloat(grandTotal));
 				float exchangeRate = conversionUtil.convert(loginOrgCurrencyCode, vendorCurrencyCode, 1);
-				float exchangeCurrency = (float) (Math.round(convertedAmount * 100.0) / 100.0);
+				float exchangeCurrency = Float.parseFloat((new DecimalFormat(".###").format(((convertedAmount * 100.0) / 100.0))));
 				exchangeRate = exchangeCurrency * Float.valueOf(grandTotal);
 				currencyConversionResponse.setExchangeRate(exchangeRate);
 				currencyConversionResponse.setExchangeCurrency(exchangeCurrency);
@@ -1666,14 +1673,24 @@ public class InvoiceServiceImpl implements InvoiceService {
 			String vendorCurrencyCode =  conversionUtil.getVendorOrgCurrencyCode(vendorOrgLocation.getCountry());
   			if(null != projectsList && projectsList.size() >0){
   				for(Projects project : projectsList){
-  	  				List<String> frequencyDates = getProjectsFrequency(project);
+  	  				List<String> frequencyDates = getProjectsFrequency(project,orgLocation);
   	  				for(String frequency :frequencyDates){
   	  				   Invoice invoice = new Invoice();
   	  					List<ProjectMembers> projectMembersList = null;
-  	  					if(Constants.RECEIVABLE.equalsIgnoreCase(invoiceType)){
-  	  						 projectMembersList = getClientProjectAssinedMembersAutoInvoice(frequency,orgLocation,project.getId(),client.getId(),contractType,invoice);
+  	  				if(Constants.RECEIVABLE.equalsIgnoreCase(invoiceType)){
+  	  					projectMembersList = getClientProjectAssinedMembersAutoInvoice(frequency,orgLocation,project.getId(),client.getId(),contractType,invoice);
+  	  					if(orgRelation.getGenerateInvoice().equalsIgnoreCase(Constants.FINANCE_TYPE_INDIVIDUAL) && projectMembersList!=null && projectMembersList.size() >0){
+  	  					List<ProjectMembers> projectMem = null;
+  	  				    projectMem.add(projectMembersList.get(0));
+  	  				    projectMembersList = projectMem;
+  	  					}
   	  					}else{
-  	  						 projectMembersList = getVendorProjectAssinedMembersAutoInvoice(frequency,orgLocation,project.getId(),client.getId(),contractType,invoice,globalUser);
+  						 projectMembersList = getVendorProjectAssinedMembersAutoInvoice(frequency,orgLocation,project.getId(),client.getId(),contractType,invoice,globalUser);
+  						if(orgRelation.getGenerateBill().equalsIgnoreCase(Constants.FINANCE_TYPE_INDIVIDUAL) && projectMembersList!=null && projectMembersList.size() >0){
+    	  					List<ProjectMembers> projectMem = null;
+    	  				    projectMem.add(projectMembersList.get(0));
+    	  				    projectMembersList = projectMem;
+    	  					}
   	  					}
   	  					if(null != projectMembersList && projectMembersList.size() >0){
   	  						populateClientDetails(vendorOrgLocation,invoice,orgRelation);
@@ -1684,7 +1701,6 @@ public class InvoiceServiceImpl implements InvoiceService {
   	  						invoice.setInvoiceId(SourceLeadRandomCodeHelper.generateSubmissionXlsRandomCode());
   	  						Set<InvoiceLineItems> invoiceLineItemSet = populateInvoiceInlineItems(projectMembersList,orgLocation,client.getId(),loginOrgCurrencyCode,invoice,user);
   	  						invoice.setInvoiceLineItems(invoiceLineItemSet);
-  	  						invoice.setConvertCurrencyCode(vendorCurrencyCode);
   	  						invoice.setCurrencyCode(loginOrgCurrencyCode);
   	  						invoice.setContactUser(contactUser);
   	  						invoice.setContactUsers(contactUser.getId().toString());
@@ -1701,7 +1717,7 @@ public class InvoiceServiceImpl implements InvoiceService {
   	  						invoice.setIsAutomaticGenerateInvoice(Constants.YES);
   	  						float convertedAmount = conversionUtil.convert(loginOrgCurrencyCode, vendorCurrencyCode, Float.valueOf(invoice.getTotal()));
   	  						float exchangeRate = conversionUtil.convert(loginOrgCurrencyCode,vendorCurrencyCode,1f);
-  	  		  		      	float roundAmount = 	(float) (Math.round(convertedAmount * 100.0) / 100.0);
+  	  		  		      	float roundAmount = Float.parseFloat((new DecimalFormat(".###").format(((convertedAmount * 100.0) / 100.0))));
   	  		  		      	exchangeRate = roundAmount *Float.valueOf(invoice.getTotal());
   	  		  		      	invoice.setConvertCurrencyCode(vendorCurrencyCode);
   	  		  		      	invoice.setConvertAmount(String.valueOf(roundAmount));
@@ -2079,11 +2095,11 @@ public class InvoiceServiceImpl implements InvoiceService {
 	 * @return List<String>
 	 * @throws Exception
 	 */
-	private List<String> getProjectsFrequency(Projects projects) throws Exception {
+	private List<String> getProjectsFrequency(Projects projects,OrgLocations orgLocations) throws Exception {
 		// Projects projects = projectsService.getProjectById(projectId);
 		List<String> frequencyDates = new ArrayList<>();
 		Map<String, String> map = timesheetFrequencyGeneratorUtil
-				.getTimesheetFrequencyListFromProjectInvoiceFrequency(projects);
+				.getTimesheetFrequencyListFromProjectInvoiceFrequency(projects,orgLocations);
 		for (Map.Entry<String, String> entry : map.entrySet()) {
 			StringBuffer sb = new StringBuffer();
 			sb.append(entry.getKey().replaceAll("/", "-")).append("/").append(entry.getValue().replaceAll("/", "-"));
@@ -2781,11 +2797,16 @@ public class InvoiceServiceImpl implements InvoiceService {
 			if (null != vendorCurrencyCode) {
 				float convertedAmount = conversionUtil.convert(loginOrgCurrencyCode, vendorCurrencyCode,
 						Float.parseFloat(invoiceDTO.getGrandTotal()));
-				float exchangeAmoiunt = conversionUtil.convert(loginOrgCurrencyCode, vendorCurrencyCode, 1);
-				float convertedAmount1 = (float) (Math.round(convertedAmount * 100.0) / 100.0);
+				float exchangeRate = conversionUtil.convert(loginOrgCurrencyCode, vendorCurrencyCode, 1);
+				 //Accept three decimal points
+				float convertedAmount1 = Float.parseFloat((new DecimalFormat(".###").format(((convertedAmount * 100.0) / 100.0))));
 				invoice.setConvertCurrencyCode(vendorCurrencyCode);
 				invoice.setConvertAmount(String.valueOf(convertedAmount1));
-				invoice.setExchangeRate(String.valueOf(exchangeAmoiunt));
+				exchangeRate = convertedAmount1 * Float.valueOf(invoiceDTO.getGrandTotal());
+				 //Accept three decimal points
+		      	DecimalFormat decimalFormat = new DecimalFormat("#.000");
+		        String afterConvert = decimalFormat.format(exchangeRate);
+				invoice.setExchangeRate(afterConvert);
 			}
 		}
 
@@ -3981,7 +4002,7 @@ public class InvoiceServiceImpl implements InvoiceService {
 			newLocationId = orgLocationId;
 		}
 		
-		CreditDebitNote creditDebitNote = invoiceDao.getCreditDebitNoteByIdAndOrglocationId(id, orgLocationId);
+		CreditDebitNote creditDebitNote = invoiceDao.getCreditDebitNoteByIdAndOrglocationId(newId, newLocationId);
 		// get CreditDebit Line Items 
 		List<CreditDebitLineItems> lineItemsList = invoiceDao.getCreditDebitLineItemsListByNoteIdAndLocationId(newId, newLocationId);
 		lineItemsList.forEach(lineItem->{
@@ -4023,7 +4044,7 @@ public class InvoiceServiceImpl implements InvoiceService {
 		
 		if(creditDebitNote.getOrgRelations().getResponderLocationId().getId().equals(orgLocationId)){
 			creditDebitNote.setClientOrVendorName(creditDebitNote.getOrgRelations().getLocationId().getOrgLocationName());
-			List<User> contactsUserList = userDao.getUsersListUsingMultipleStringIdsWithLocationId(creditDebitNote.getContactUser(),creditDebitNote.getOrgRelations().getLocationId().getId());
+			List<User> contactsUserList = userDao.getUsersListUsingMultipleStringIdsWithLocationId(creditDebitNote.getOwnerUser(),creditDebitNote.getOrgRelations().getLocationId().getId());
 			contactsUserList.forEach(contactUser->{
 				contactName.append(contactUser.getFullName()).append(" , ").toString();	
 				contactEmails.append(contactUser.getEmail()).append(" , ").toString();

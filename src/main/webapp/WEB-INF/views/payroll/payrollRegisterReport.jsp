@@ -4,11 +4,24 @@
 <%@taglib uri="http://www.springframework.org/tags/form" prefix="form"%>
 
 <script src="/resources/js/payrollReports.js"></script>
+<script src="//cdnjs.cloudflare.com/ajax/libs/moment.js/2.14.1/moment.min.js"></script>
 
 <script>
 $(document).ready(function(){
    getPayGroupList("payGroup");
    getDepartments("payrollDepartment");
+   
+	 loc ="${SourceLeadWeb_orgLocations.dateFormat}";
+	 
+	  if(loc.match("yyyy-MM-dd")){
+		  locDateFormat = 'YYYY-MM-DD';
+	  }if(loc.match("dd-MM-yyyy")){
+		  locDateFormat = 'DD-MM-YYYY'; 
+	  }if(loc.match("MM-dd-yyyy")){
+		  locDateFormat = 'MM-DD-YYYY'; 
+	  }if(loc.match("yyyy-dd-MM")){
+		  locDateFormat = 'YYYY-DD-MM'; 
+	  } 
 });
 </script>
 <!-- Content Area -->
@@ -29,7 +42,7 @@ $(document).ready(function(){
             <div class="form-group">
               <label class="col-md-12 paddingRight">Pay Group</label>
 				<div class="col-md-12">
-					<select class="form-control sel" id="payGroup" name="payGroup" onchange="getPayPeriodByGroupId('payGroup','payPeriod');">
+					<select class="form-control sel" id="payGroup" name="payGroup" onchange="getPayPeriodByGroupId('payGroup','payPeriod')">
 					</select>
 				</div>
             </div>
@@ -160,7 +173,14 @@ $(document).ready(function(){
 </script>
 <script>
 function resetForm(){
-	
+	 $("#payrollRegister").hide();
+	 $("#payGroup").val('');
+// 	 $("#payGroup").trigger("chosen:updated"); 
+	 $("#payPeriod").val('');
+// 	 $("#payPeriod").trigger("chosen:updated"); 
+	 $("#payRollType").val('');
+	 $("#payrollDepartment").val('');
+	 $("#payrollDepartment").trigger("chosen:updated"); 
 }
 </script>
 
@@ -195,7 +215,7 @@ function runPayrollregisterReport(){
 		result = result +"	   <div id='remove_user_pop' class='remove_user_pop remove_user_pop_a'>";
 		result = result +"		<p>Please select PayGroup and PayPeriod</p>";
 		result = result +"		<div>&nbsp;&nbsp;&nbsp;</div>";
-		result = result +"		<b href='javascript:void(0)'><input type='button' value='Ok' onclick='removePopUp();'></b>";
+		result = result +"		<b href='javascript:void(0)'><input type='button' value='Ok' onclick='removePopUp();' style='background-color: #FF0000; width : 100%'></b>";
 		result = result +"	</div>";
 		$("#popUp").append(result);
 		$("#remove_user_pop").slideDown(200);
