@@ -16,7 +16,9 @@ $(document).ready(function(){
       <div class="pull-left">
         <h2>Direct Deposit</h2>
       </div>
-      <div class="pull-right brud-crum">Home &raquo; Direct Deposit</div>
+      <div class="pull-right brud-crum"><a href="<c:url value='${appPath}/dashboard'/>" title="Home">Home</a>&raquo;<a
+				href="<c:url value='${appPath}/usPayrollReport'/>"> USPayroll Reports List</a>&raquo;Direct Deposit
+		</div>
     </section>
     
     <div class="contentareaInner-styles clearfix">
@@ -370,7 +372,7 @@ function directDepositData(url) {
 									"data" : "netPay",
 									"render" : function(data, type, opt,meta) {
 										var result = "";
-										result = result+ '<td><div class="tbldata-dotdot-vsm" title="">'+opt.netPay+'</div></td>';
+										result = result+ '<td><div class="tbldata-dotdot-vsm" title=""><i class="fa fa-dollar"style="color:#454545;"></i> '+opt.netPay+'</div></td>';
 										return result;
 									}
 								}],
