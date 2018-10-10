@@ -719,7 +719,7 @@ jQueryFormUtils.validateInteger = function(val) {
  * @return {Boolean}
  */
 jQueryFormUtils.validateIntegerStartfrom = function(val) {
-    return val !== '' && val.replace(/[1-9]/g, '') === '';
+	return val !== '' && val.replace(/^[1-9][0-9]*/g,'') === '';
 };
 /**
  * Has month only 30 days?
@@ -1453,7 +1453,7 @@ jQueryFormUtils.LANG =  {
     badFloat : 'Incorrect float value',
     badCustomVal : 'This is Custom Validation',
     badInt : 'Incorrect integer value',
-    badIntFromOne :'Please Enter Greater than Zero',
+    badIntFromOne :'Must not Start With Zero',
     badLCA : 'Incorrect LCA Number',
     badSecurityNumber : 'Your social security number was incorrect',
     badUKVatAnswer : 'Incorrect UK VAT Number',

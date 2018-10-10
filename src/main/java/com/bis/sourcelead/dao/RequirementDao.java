@@ -238,5 +238,7 @@ public interface RequirementDao {
 	public List<RequirementIncentive> getRequirementIncentiveListByRequirementId(long requirementId) throws Exception;
 	
 	void deleteRequirementIncentiveByRequirementIdOrIds(long requirementId, String ids) throws Exception;
+	
+	public List<Requirement> getJobsListByOrgRelationAndLocation(Long orglocationId,String orgRelationIds,Date startDateUTC,Date endDateUTC) throws Exception;
 
 }
