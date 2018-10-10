@@ -251,7 +251,7 @@ function loadMarketPlaceDraftData(){
 	var result = "";
 	result = result + "<table id='marketPlaceTable' class='display' cellspacing='0' width='100%'><thead>";
 	result = result + '<tr><th class="text-center"><input type="checkbox" onclick="toggleMarketPlaceAllCheck(this);" id="sharedcheckboxAll" onclick=""/></th>';
-	result = result + "<th>Id</th>";
+	result = result + "<th>Generated ID</th>";
 	result = result + "<th>Name</th>";
 	result = result + "<th>Email</th>";
 	result = result + "<th>Primary Skills</th>";
