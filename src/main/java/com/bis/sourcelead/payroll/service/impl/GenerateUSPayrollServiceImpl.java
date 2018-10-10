@@ -541,19 +541,27 @@ private Set<BankDataHistory> getBankDataHistory(AssociateTaxDedContriView associ
 				if(paySheetFreq.getFrequencyStartDate().after(assLoanAndAdv.getEffectiveDate()) || paySheetFreq.getFrequencyStartDate().equals(assLoanAndAdv.getEffectiveDate())) {
 					thisPayCheck = true;
 				}
-				if(assLoanAndAdv.getDeductStartDate() != null) {
+				/*if(assLoanAndAdv.getDeductStartDate() != null) {
 					thisPayCheck = payrollUtil.isDateBetweenEffectiveDate(assLoanAndAdv.getDeductStartDate(), assLoanAndAdv.getDeductEndDate(), paySheetFreq.getFrequencyStartDate(), paySheetFreq.getFrequencyEndDate());
-				}
-				if(thisPayCheck) {
-					AssociateLoanAndAdvances assLoan = assLoanAndAdv;
-					AssociateLoanAndAdvanceHistory assLoanAndAdvHis = associateLoanAndAdvancesHistoryService.getLoanAndAdvanceHistoryByCandidateIdAndLocationIdAndAdvanceId(assLoan.getId());
-					if(assLoanAndAdvHis == null || assLoanAndAdvHis.getSchedule() < assLoan.getNoOfSchedules()) {
-						int scheduleCount = 0;
+				}*/
+				
+				AssociateLoanAndAdvances assLoan = assLoanAndAdv;
+				int scheduleCount = 0;
+				AssociateLoanAndAdvanceHistory assLoanAndAdvHis = associateLoanAndAdvancesHistoryService.getLoanAndAdvanceHistoryByCandidateIdAndLocationIdAndAdvanceId(assLoan.getId());
+				if(assLoanAndAdvHis == null || assLoanAndAdvHis.getSchedule() < assLoan.getNoOfSchedules()) {
+					if(thisPayCheck) {
+						scheduleCount = 0;
 						if(assLoanAndAdvHis != null && assLoanAndAdvHis.getSchedule() != null) {
 							scheduleCount = assLoanAndAdvHis.getSchedule() + 1;
 						}else {
 							scheduleCount += 1;
 						}
+					}
+				}else {
+					thisPayCheck = false;
+				}
+				
+				if(thisPayCheck) {
 						
 						Date[] dedFreqDates = payrollUtil.getLoanAndAdvancesScheduleDates(paySheetFreq.getFrequencyStartDate(), assLoanAndAdv.getScheduler());
 						if("Loan".equalsIgnoreCase(assLoanAndAdv.getLoanAdvanceType())){
@@ -584,7 +592,7 @@ private Set<BankDataHistory> getBankDataHistory(AssociateTaxDedContriView associ
 						his.add(assLoanHistory);
 //						assLoanHistory = associateLoanAndAdvancesHistoryService.saveAssociateLoanAndAdvancesHistory(assLoanHistory);
 						
-					}
+//					}
  				}
 			}
 			assLoanAdvDto.setTotalAdvanceAmount(totalAdvanceAmount);

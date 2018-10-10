@@ -101,20 +101,16 @@ $(document).ready(function(){
     		
     		
     		
-  <div class="timesheet_out" id="payrollRegister" style="display: none;">
+<div class="timesheet_out" id="payrollRegister" style="display: none;">
       <div class="clearfix">
-        
-        <div class="positionRelative reportHead clearfix">
+<div class="positionRelative reportHead clearfix">
   <ul class="pull-right list-unstyled list-inline">
     <li><a class="newAdBtn mr5 hidden" href="/app/userCreation">+  Associate</a></li>
 <!--     <li><a href="javascript:void(0)" class="filtIcon" title="Filters" onclick="openPop();"></a></li> -->
-    <li><a href="javascript:void(0)" class="overIcon" title="Actions" onclick="newActions();"></a>
+  <!--   <li><a href="javascript:void(0)" class="overIcon" title="Actions" onclick="newActions();"></a>
       <div class="newActPop" style="">
        <span><a href="javascript:void(0)" onclick="exportToPdf();" title="PDF">Export PDF</a> <a href="javascript:void(0)" onclick="exportUserData();" title="Excel">Export Excel</a> </span> </div>
-    </li>
-<!--     <li class="">
-      <input class="repSearchBar" placeholder="Search" id="dynamicUserDataTableSearch" type="text">
-      <span class="repSearchIcon" onclick="getDynamciUserList();"></span></li> -->
+    </li> -->
   </ul>
 </div>
         <div class="clearfix tableNtable">
@@ -334,7 +330,7 @@ $(".overIcon, .newActPop").click(function(e){
  	e.stopPropagation();
 });
 function resetData() {
-	 $("#payrollRegister").toggle();
+	 $("#payrollRegister").hide();
 	 $("#payGroup").val('');
 	 $("#payrollType").val('');
 	 $("#payPeriod").val('');
@@ -357,7 +353,7 @@ function runPayrollregister(){
 	var groupId = $("#groupId").val();
 	
 	 if ($('#payroll_comparison_form').validate(false, validationSettings)){
-		 $("#payrollRegister").toggle();
+		 $("#payrollRegister").show();
 		 var formData = getFormData("payroll_comparison_form");
          $.ajax({
 				type : "POST",

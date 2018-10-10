@@ -1393,6 +1393,7 @@ private Sheet createXlsSheet(Sheet createExcelsheet, Row writeRow,Candidate cand
 			candidate.setEmail(candidateUser.getEmail());
 			candidate.setStatus(Constants.RECORD_ACTIVE);
 			candidate.setCreatedBy(loginUser.getUserCode());
+			candidate.setProfilePercentage(Constants.MIN_PROFILE_PERCENETAGE);
 			
 			if(StringUtils.isNotBlank(addUserDTO.getRate())){
 				candidate.setCurrentRate(addUserDTO.getRate());

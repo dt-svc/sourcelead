@@ -1317,7 +1317,7 @@ function cancel(candidateId){
 						  <div class="col-md-4">
 							  <label>City</label>
 							  <div class="clearfix">
-								  <select  class="chosen-select" name="city" id="city" field-name="City"  >
+								  <select  class="chosen-select" name="city" id="citySearch" field-name="City"  >
 								      <option value="">---select city---</option>
                                   </select>
 							  </div>
@@ -2034,9 +2034,9 @@ function getStates(){
 	            }
 	            $('#state').trigger("chosen:updated");
 	            
-	            $('#city').empty();
-	            $('#city').append('<option value="">---select city---</option>');
-	            $('#city').trigger("chosen:updated");
+	            $('#citySearch').empty();
+	            $('#citySearch').append('<option value="">---select city---</option>');
+	            $('#citySearch').trigger("chosen:updated");
 	        },
 	        error: function(e){
 	        }
@@ -2045,9 +2045,9 @@ function getStates(){
 		$('#state').empty();
     	$('#state').append('<option value="">---select state---</option>');
     	$('#state').trigger("chosen:updated");
-    	$('#city').empty();
-    	$('#city').append('<option value="">---select city---</option>');
-        $('#city').trigger("chosen:updated");
+    	$('#citySearch').empty();
+    	$('#citySearch').append('<option value="">---select city---</option>');
+        $('#citySearch').trigger("chosen:updated");
 	}
 }
 </script> 
@@ -2057,7 +2057,6 @@ function getStates(){
 function getCities(){
 	var countryName = $("#country").val();
 	var stateName = $("#state").val();
-	
 	if(countryName != null && countryName != "" && countryName !="undefined" && stateName != null && stateName != "" && stateName !="undefined" ){
 		$.ajax({
 	    	type: "POST",
@@ -2065,20 +2064,20 @@ function getCities(){
 	    	 url: '${sourceleadUrl}'+"/getCitiesByStateAndCountry?"+tokenParamName+"="+tokenValue+"&countryName="+countryName+"&stateName="+stateName, 
 	        success: function(data) {
 	        	var json = JSON.parse(data);
-	        	$('#city').empty();
-	        	$('#city').append('<option value="">---select city---</option>');
+	        	$('#citySearch').empty();
+	        	$('#citySearch').append('<option value="">---select city---</option>');
 	            for(var i=0;i<json.length;i++){
-	            	$('#city').append('<option value="'+json[i]+'">'+json[i]+'</option>');
+	            	$('#citySearch').append('<option value="'+json[i]+'">'+json[i]+'</option>');
 	            }
-	            $('#city').trigger("chosen:updated");
+	            $('#citySearch').trigger("chosen:updated");
 	        },
 	        error: function(e){
 	        }
 	    });
 	}else{
-		$('#city').empty();
-    	$('#city').append('<option value="">---select city---</option>');
-    	$('#city').trigger("chosen:updated");
+		$('#citySearch').empty();
+    	$('#citySearch').append('<option value="">---select city---</option>');
+    	$('#citySearch').trigger("chosen:updated");
 	}
 }
 </script>
@@ -2097,8 +2096,8 @@ function getCities(){
 	    $("#country").val('').trigger("chosen:updated"); */
 	    /* $("#state").empty();
 	    $("#state").val('').trigger("chosen:updated"); */
-	    $("#city").empty();
-	    $("#city").val('').trigger("chosen:updated");
+	    $("#citySearch").empty();
+	    $("#citySearch").val('').trigger("chosen:updated");
 	    $('#rateType').val(''); 
 
 	    $('#emailDiv').find('p.jquery_form_error_message').remove();
@@ -2527,7 +2526,7 @@ function minMaxExperience(){
 	    $("#maxExpYears").val('').trigger("chosen:updated");
 	 /*    $("#country").val('').trigger("chosen:updated"); */
 	    $("#state").val('').trigger("chosen:updated");
-	    $("#city").val('').trigger("chosen:updated");
+	    $("#citySearch").val('').trigger("chosen:updated");
 	    $("#education").val('').trigger("chosen:updated");
 	    $("#excludeEducation").val('').trigger("chosen:updated");
 	    $("#certification").val('').trigger("chosen:updated");
@@ -2566,7 +2565,7 @@ function minMaxExperience(){
 	     
 	     $("#country").val(''); 
 	     $("#state").val(''); 
-	     $("#city").val(''); 
+	     $("#citySearch").val(''); 
 	     
 	     $("#designationType").val(''); 
 	     
