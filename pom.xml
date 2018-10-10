@@ -695,6 +695,13 @@
 		   <artifactId>ehcache</artifactId>
 		   <version>1.5.0</version>
 		</dependency>
+		
+		<!-- https://mvnrepository.com/artifact/net.sourceforge.dynamicreports/dynamicreports-core -->
+	 <dependency>
+		<groupId>net.sourceforge.dynamicreports</groupId>
+		<artifactId>dynamicreports-core</artifactId>
+		<version>4.0.0</version>
+		</dependency>
 
     </dependencies>
 
