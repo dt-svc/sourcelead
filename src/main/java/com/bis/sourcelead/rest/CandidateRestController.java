@@ -993,30 +993,6 @@ public class CandidateRestController {
 	@RequestMapping(value = "/app/getMarketPlaceCandidateMovedList", method = RequestMethod.POST)
 	public @ResponseBody ResponseList<CandidateDTO> getMarketPlaceDraftList( HttpServletRequest request) {
 		List<String> candidateIds = (List<String>) request.getSession().getAttribute("candidateIds");
-		//User user = (User) SourceLeadSessionManager.getSessionAttribute(request,"user");
-		/*try {
-			String[] tableColumns = { "name", "country", "petitionType", "description", "docsCount", "formsCount",
-					"tasksCount", "status", "id" };// should be
-			// entity names
-			int sortColumnIndex = -1; // by default sorting using updated date
-			String sortColumnOrder = "desc"; // by default ascending order
-			if (templateListDTO.getOrder() != null && !templateListDTO.getOrder().isEmpty()) {
-				sortColumnIndex = Integer.parseInt(templateListDTO.getOrder().get(0).get("column"));
-				sortColumnOrder = templateListDTO.getOrder().get(0).get("dir"); // sorting order 'dir' means direction
-				templateListDTO.setSortOrder(sortColumnOrder);
-				// of the sorting.
-			}
-			if (sortColumnIndex != -1) {
-				templateListDTO.setSortColumn(tableColumns[sortColumnIndex]);
-			}
-			OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,
-					"orgLocations");
-
-			templateListDTOList = immigrationTemplateService.getAllTemplateDetails(templateListDTO, searchValue,
-					orgLocations.getId(), countriesList);
-		} catch (Exception e) {
-			e.printStackTrace();
-		}*/
 		ResponseList<CandidateDTO> marketCandidates = candidateService.getCandidatesByCandidateIds(candidateIds);
 		return marketCandidates;
 	}

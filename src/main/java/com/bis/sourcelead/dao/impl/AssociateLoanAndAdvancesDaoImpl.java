@@ -19,6 +19,7 @@ import org.springframework.transaction.annotation.Transactional;
 import com.bis.sourcelead.dao.AssociateLoanAndAdvancesDao;
 import com.bis.sourcelead.dto.ResponseList;
 import com.bis.sourcelead.entity.AssociateLoanAndAdvances;
+import com.bis.sourcelead.entity.Candidate;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.PayrollLoanAndAdvances;
 import com.bis.sourcelead.entity.User;
@@ -162,6 +163,30 @@ public class AssociateLoanAndAdvancesDaoImpl implements AssociateLoanAndAdvances
 			countMap.put("Requested", reqcount);
 	     
 		return countMap;
+	}
+
+	@Override
+	@Transactional
+	public List<AssociateLoanAndAdvances> getAssociateLoanAndAdvancesListByUserIdAndLocationId(User user,
+			OrgLocations orgLocation, String loanStatus) throws Exception {
+		Session session = this.sessionFactory.getCurrentSession();
+		  List<AssociateLoanAndAdvances> loanAndAdvList = null;
+		  try {
+			  String subQuery = "";
+		         if(loanStatus.equalsIgnoreCase("outstanding")) {
+		        	 subQuery = " and lad.loanAndAdvanceStatus = 'Outstanding'";
+		         }else if(loanStatus.equalsIgnoreCase("Completed")) {
+		        	 subQuery = " and lad.loanAndAdvanceStatus = 'Completed'";
+		         }else if(loanStatus.equalsIgnoreCase("Requested")) {
+		        	 subQuery = " and lad.loanAndAdvanceStatus = 'Requested'";
+		         }
+				 String query = "from AssociateLoanAndAdvances lad left join fetch lad.payrollLoanAndAdvanceId left join fetch lad.approverUser left join fetch lad.candidateId left join fetch lad.candidateId.consultantUser where "
+				 		+ " lad.candidateId.consultantUser.id = :userId and lad.orgLocationId.id = :orgLocationId and lad.status = '1'  ";  
+			     loanAndAdvList = session.createQuery(query.toString()+subQuery).setLong("userId", user.getId()).setLong("orgLocationId", orgLocation.getId()).list();
+		} catch (Exception e) {
+			logger.error(ExceptionUtils.getFullStackTrace(e));
+		}
+	     return loanAndAdvList;
 	}
 
 }

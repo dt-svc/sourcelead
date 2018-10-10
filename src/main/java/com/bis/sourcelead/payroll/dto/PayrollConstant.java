@@ -28,6 +28,7 @@ public class PayrollConstant {
 	public static final String NEW_MEXICO = "New Mexico";
 	public static final String YES = "YES";
 	public static final String NO = "NO";
+	public static final String NEW = "NEW";
 	public static final String DRAFT = "DRAFT";
 	public static final String PAYROLL = "PAYROLL";
 	public static final String SENT = "SENT";

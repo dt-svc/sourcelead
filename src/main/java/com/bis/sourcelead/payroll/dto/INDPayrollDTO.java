@@ -1,26 +1,35 @@
 package com.bis.sourcelead.payroll.dto;
 
 import java.math.BigDecimal;
+import java.util.Date;
+import java.util.List;
 
 public class INDPayrollDTO {
+	private Long id;
 	
 	private Long empPayrollId;
 	
 	private String empId;
 	
+	private Long employee;
+
 	private String empName;
 	
-	private double regularHours;	
+	private String regularHours;	
 	
-	private double overtimeHours;
+	private String overtimeHours;
 	
 	private BigDecimal grossPay;
 	
 	private BigDecimal netPay;
 	
-	private BigDecimal regularHrsTotalAmt;	
+	private BigDecimal regularHrsAmt;
 	
-	private BigDecimal otHoursTotalAmt;
+	private BigDecimal otHoursAmt;
+	
+	private BigDecimal noOfLeaves;
+	
+	private BigDecimal noOfDays;
 	
 	private BigDecimal payRate;
 	
@@ -40,7 +49,37 @@ public class INDPayrollDTO {
 	
 	private String employeeDesignationType;
 	
-    private String payType;
+	private BigDecimal tds;
+	
+	private BigDecimal professionalTax;
+	
+	private String payType; 
+	
+	 private BigDecimal payPerSalary;
+	 
+	 private String indEmpPayrollUUID;
+	 
+	 private String paySheetFrequencyUUID;
+
+	 private Date payCheckDate;
+		
+	 private Date createdDate;
+	
+	 private Long createdBy;
+	
+	 private Date updatedDate;
+	
+ 	 private Long updatedBy;
+	 
+	 List<AssociatePayrollPayheadHistoryDTO> payHeadHistoryDTOList;
+	 
+	public Long getId() {
+		return id;
+	}
+
+	public void setId(Long id) {
+		this.id = id;
+	}
 
 	public Long getEmpPayrollId() {
 		return empPayrollId;
@@ -66,19 +105,19 @@ public class INDPayrollDTO {
 		this.empName = empName;
 	}
 
-	public double getRegularHours() {
+	public String getRegularHours() {
 		return regularHours;
 	}
 
-	public void setRegularHours(double regularHours) {
+	public void setRegularHours(String regularHours) {
 		this.regularHours = regularHours;
 	}
 
-	public double getOvertimeHours() {
+	public String getOvertimeHours() {
 		return overtimeHours;
 	}
 
-	public void setOvertimeHours(double overtimeHours) {
+	public void setOvertimeHours(String overtimeHours) {
 		this.overtimeHours = overtimeHours;
 	}
 
@@ -98,20 +137,20 @@ public class INDPayrollDTO {
 		this.netPay = netPay;
 	}
 
-	public BigDecimal getRegularHrsTotalAmt() {
-		return regularHrsTotalAmt;
+	public BigDecimal getNoOfLeaves() {
+		return noOfLeaves;
 	}
 
-	public void setRegularHrsTotalAmt(BigDecimal regularHrsTotalAmt) {
-		this.regularHrsTotalAmt = regularHrsTotalAmt;
+	public void setNoOfLeaves(BigDecimal noOfLeaves) {
+		this.noOfLeaves = noOfLeaves;
 	}
 
-	public BigDecimal getOtHoursTotalAmt() {
-		return otHoursTotalAmt;
+	public BigDecimal getNoOfDays() {
+		return noOfDays;
 	}
 
-	public void setOtHoursTotalAmt(BigDecimal otHoursTotalAmt) {
-		this.otHoursTotalAmt = otHoursTotalAmt;
+	public void setNoOfDays(BigDecimal noOfDays) {
+		this.noOfDays = noOfDays;
 	}
 
 	public BigDecimal getPayRate() {
@@ -193,8 +232,119 @@ public class INDPayrollDTO {
 	public void setPayType(String payType) {
 		this.payType = payType;
 	}
+
+	public BigDecimal getRegularHrsAmt() {
+		return regularHrsAmt;
+	}
+
+	public void setRegularHrsAmt(BigDecimal regularHrsAmt) {
+		this.regularHrsAmt = regularHrsAmt;
+	}
+
+	public BigDecimal getOtHoursAmt() {
+		return otHoursAmt;
+	}
+
+	public void setOtHoursAmt(BigDecimal otHoursAmt) {
+		this.otHoursAmt = otHoursAmt;
+	}
+
+	public BigDecimal getTds() {
+		return tds;
+	}
+
+	public void setTds(BigDecimal tds) {
+		this.tds = tds;
+	}
+
+	public BigDecimal getProfessionalTax() {
+		return professionalTax;
+	}
+
+	public void setProfessionalTax(BigDecimal professionalTax) {
+		this.professionalTax = professionalTax;
+	}
+
+	public BigDecimal getPayPerSalary() {
+		return payPerSalary;
+	}
+
+	public void setPayPerSalary(BigDecimal payPerSalary) {
+		this.payPerSalary = payPerSalary;
+	}
+
+	public String getIndEmpPayrollUUID() {
+		return indEmpPayrollUUID;
+	}
+
+	public void setIndEmpPayrollUUID(String indEmpPayrollUUID) {
+		this.indEmpPayrollUUID = indEmpPayrollUUID;
+	}
+
+	public String getPaySheetFrequencyUUID() {
+		return paySheetFrequencyUUID;
+	}
+
+	public void setPaySheetFrequencyUUID(String paySheetFrequencyUUID) {
+		this.paySheetFrequencyUUID = paySheetFrequencyUUID;
+	}
+
+	public List<AssociatePayrollPayheadHistoryDTO> getPayHeadHistoryDTOList() {
+		return payHeadHistoryDTOList;
+	}
+
+	public void setPayHeadHistoryDTOList(List<AssociatePayrollPayheadHistoryDTO> payHeadHistoryDTOList) {
+		this.payHeadHistoryDTOList = payHeadHistoryDTOList;
+	}
+
+	public Long getEmployee() {
+		return employee;
+	}
+
+	public void setEmployee(Long employee) {
+		this.employee = employee;
+	}
+
 	
-	
+	public Date getPayCheckDate() {
+		return payCheckDate;
+	}
+
+	public void setPayCheckDate(Date payCheckDate) {
+		this.payCheckDate = payCheckDate;
+	}
+
+	public Date getCreatedDate() {
+		return createdDate;
+	}
+
+	public void setCreatedDate(Date createdDate) {
+		this.createdDate = createdDate;
+	}
+
+	public Long getCreatedBy() {
+		return createdBy;
+	}
+
+	public void setCreatedBy(Long createdBy) {
+		this.createdBy = createdBy;
+	}
+
+	public Date getUpdatedDate() {
+		return updatedDate;
+	}
+
+	public void setUpdatedDate(Date updatedDate) {
+		this.updatedDate = updatedDate;
+	}
+
+	public Long getUpdatedBy() {
+		return updatedBy;
+	}
+
+	public void setUpdatedBy(Long updatedBy) {
+		this.updatedBy = updatedBy;
+	}
 	
 	
 }
