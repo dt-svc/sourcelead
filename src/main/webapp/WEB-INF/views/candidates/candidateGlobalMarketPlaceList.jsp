@@ -1,24 +1,44 @@
-	
+<jsp:include page="../masterHeader.jsp" />
+<jsp:include page="../masterSideNav.jsp" />
+<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <%@taglib uri="http://www.springframework.org/tags/form" prefix="form"%>
-<%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <%@taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
-<%@ page language="java" contentType="text/html; charset=ISO-8859-1"
-    pageEncoding="ISO-8859-1"%>
-<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
-<meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
-<title>Welcome to Source Lead :: Global Marketplace</title>
+<section class="content-wraper">
+  <section class="content-header clearfix">
+  
+   <div class="success_pop" id="candSelector" style="display: none;"> 
+     <i class="fa fa-check-circle"></i><span id="candMsgDiv"></span> 
+   </div>
+   
+   <c:if test="${!empty msg}">
+	        <div class="success_pop" id="sucesspop"  style="display: block;">
+		         <i class="fa fa-check-circle"></i><span>${msg}</span>
+			</div>
+	     </c:if>
+    <div class="pull-left">
+      <h2 id="headerLbl">Marketplace List</h2>
+    </div>
+    
+    <c:if test="${SourceLeadWeb_loginUserRole != 'ROLE_CROWDSOURCING_RECRUITER'}">
+    <div class="pull-right brud-crum"><a href="<c:url value='${appPath}/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home </a> &raquo; <label id="brudCrumLbl">Marketplace List </label> </div>
+    </c:if> 
+  </section>
+  <div class="clearfix">
+	<ul class="project-tabs-menu projecttabs-custom clearfix">
+         <li id="" ><a href="${appPath}/candidatesList">Candidate List</a></li>
+         <li id="" class="current"><a href="javascript:void(0)" >Marketplace</a></li>
+         <div class="clearfix"></div>
+     </ul>
+</div>
     <!-- Content Area -->
       <div class="tablelist-wrap">
-        
         <div class="timesheet_head minHeight40">
           <div class="pull-left headerItems">
 			  <ul>
 				  <li><a title="Card Model"  href="javascript:void(0)"  onClick="cardModel();"><i class="fa fa-th text-muted"></i></a></li>
-				  				<li><a title="List Model" href="javascript:void(0)" onClick="listModel();"><i class="fa fa-th-list text-muted"></i></a></li>
-
+				  <li><a title="List Model" href="javascript:void(0)" onClick="listModel();"><i class="fa fa-th-list text-muted"></i></a></li>
 			  </ul>
           </div>
-          
         </div>
          <div class="immigrationWrap noPad clearfix mt5">
 		<div class="immigraInnWrap">
@@ -34,6 +54,7 @@
     </div>
     </div>
     </div>
+    </section>
   <script>
   function goToCandidateList(){
 		location.href = "${appPath}/candidatesList";
@@ -229,4 +250,5 @@ function cardModel() {
 	$("#tableDesign").hide();
 	$("#cardDesign").show();
 }
-</script>	
+</script>
+<jsp:include page="../masterFooter.jsp" /> 	

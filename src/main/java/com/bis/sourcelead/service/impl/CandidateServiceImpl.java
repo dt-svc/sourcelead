@@ -2718,14 +2718,40 @@ private Sheet createXlsSheet(Sheet createExcelsheet, Row writeRow,Candidate cand
 	public void saveCandidateMarketPlaceList(List<CandidateMarketPlaceDTO> marketPlaceList, User user) throws NumberFormatException, Exception {
 
 		for(CandidateMarketPlaceDTO dto : marketPlaceList){
+			CandidateMarketPlace marketPlace = null;
+			marketPlace = candidateDao.getCandidateMarketPlaceByCandidateId(Long.parseLong(dto.getCandidateId()));
+			if(marketPlace == null){
+				marketPlace = new CandidateMarketPlace();
+			}
 			Candidate candidate = candidateDao.getCandidateById(Long.parseLong(dto.getCandidateId()));
-			CandidateMarketPlace marketPlace = new CandidateMarketPlace();
-			BeanUtils.copyProperties(candidate, marketPlace);
+			//BeanUtils.copyProperties(candidate, marketPlace);
 			marketPlace.setCandidateId(candidate);
+			marketPlace.setMasterCandidateId(candidate.getMasterCandidateId());
+			marketPlace.setCandidateUUID(candidate.getCandidateUUID());
+			marketPlace.setOrgLocationId(candidate.getOrgLocationId());
+			marketPlace.setFullName(candidate.getFullName());
+			marketPlace.setGender(candidate.getGender());
+			marketPlace.setEmail(candidate.getEmail());
+			marketPlace.setAlternateEmail(candidate.getAlternateEmail());
+			marketPlace.setMobilePhone(candidate.getMobilePhone());
+			marketPlace.setAlternateMobilePhone(candidate.getAlternateMobilePhone());
+			marketPlace.setDesignation(candidate.getDesignation());
 			marketPlace.setEmploymentType(candidate.getDesignationType());
+			marketPlace.setLocation(candidate.getLocation());
 			marketPlace.setScore(candidate.getCandidateScore());
+			marketPlace.setSkillsName(candidate.getSkillsName());
+			marketPlace.setExperienceYears(candidate.getExperienceYears());
+			marketPlace.setExperienceMonths(candidate.getExperienceMonths());
+			marketPlace.setCurrentRate(candidate.getCurrentRate());
+			marketPlace.setCurrentRateType(candidate.getCurrentRateType());
+			marketPlace.setCurrentRateCurrency(candidate.getCurrentRateCurrency());
+			marketPlace.setExpectedRate(candidate.getExpectedRate());
 			marketPlace.setExpectedRateType(candidate.getRateType());
-			marketPlace.setCandidateMarketStatus(Constants.MEMBER_ACTIVE);
+			marketPlace.setExpectedRateCurrencey(candidate.getExpectedRateCurrencey());
+			marketPlace.setNoticePeriod(candidate.getNoticePeriod());
+			marketPlace.setNationality(candidate.getNationality());
+			marketPlace.setMaritalStatus(candidate.getMaritalStatus());
+			marketPlace.setCandidateMarketStatus(Constants.ACTIVE);
 			marketPlace.setMarketPrice(dto.getMarketPrice());
 			marketPlace.setMarketRateCurrencey(dto.getMarketRateCurrencey());
 			marketPlace.setStatus(Constants.CANDIDATE_ACTIVE);
@@ -2735,6 +2761,16 @@ private Sheet createXlsSheet(Sheet createExcelsheet, Row writeRow,Candidate cand
 			marketPlace.setUpdatedBy(user);
 			candidateDao.saveMarketPlace(marketPlace);
 		}
+	}
+
+	@Override
+	public Map<String, Object[]> getAddedMarketplaceCandidates(List<Long> candidateIdsVal) {
+		List<Long> marketplaceCandidates = candidateDao.getAddedMarketplaceCandidates(candidateIdsVal);
+		candidateIdsVal.removeAll(marketplaceCandidates);
+		Map<String, Object[]> candidatesIds = new HashMap<>();
+		candidatesIds.put("candidatesInMarketplace", marketplaceCandidates.toArray());
+		candidatesIds.put("candidatesNotInMarketplace", candidateIdsVal.toArray());
+		return candidatesIds;
 	}
 
 }

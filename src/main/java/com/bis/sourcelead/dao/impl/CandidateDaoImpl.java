@@ -2147,7 +2147,11 @@ public class CandidateDaoImpl implements CandidateDao {
 		Session session = this.sessionFactory.getCurrentSession();
 		try {
 			if (marketPlace != null) {
-				session.save(marketPlace);
+				if(marketPlace.getId() != null){
+					session.update(marketPlace);
+				}else{
+					session.save(marketPlace);
+				}
 			}
 			logger.debug("Marketplace Stored Successfully");
 		} catch (Exception exception) {
@@ -2242,6 +2246,24 @@ public class CandidateDaoImpl implements CandidateDao {
 		List<String> emailsList = (List<String>)queryObj.list();
 		
 		return emailsList;
+	}
+
+	@Override
+	@Transactional
+	public List<Long> getAddedMarketplaceCandidates(List<Long> candidateIdsVal) {
+		Session session = this.sessionFactory.getCurrentSession();
+		String query = "select marketplace.candidateId.id from CandidateMarketPlace marketplace where marketplace.candidateId.id IN ( :candidateIds ) and marketplace.candidateMarketStatus = :marketplaceStatus and marketplace.status = :status";
+		List<Long> marketplaceCandidates = session.createQuery(query).setParameterList("candidateIds", candidateIdsVal).setString("marketplaceStatus", Constants.ACTIVE).setString("status", Constants.MEMBER_ACTIVE).list();
+		return marketplaceCandidates;
+	}
+	
+	@Override
+	@Transactional
+	public CandidateMarketPlace getCandidateMarketPlaceByCandidateId(Long candidateId) {
+		Session session = this.sessionFactory.getCurrentSession();
+		String query = "from CandidateMarketPlace marketplace where marketplace.candidateId.id = :candidateId";
+		CandidateMarketPlace marketplaceCandidates = (CandidateMarketPlace) session.createQuery(query).setParameter("candidateId", candidateId).uniqueResult();
+		return marketplaceCandidates;
 	}
 
 }

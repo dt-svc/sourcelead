@@ -129,18 +129,6 @@ public class CandidateController {
 	 * @return ModelAndView
 	 * @throws Exception
 	 */
-		
-	// Note this method is Global marketplace Candidate method
-	@PreAuthorize("hasAnyRole('ROLE_CREATE_CANDIDATE','ROLE_CROWDSOURCING_CANDIDATES')")
-	@RequestMapping(value = "/globalMarketplace")
-	public ModelAndView goToGlobalMarketplace(HttpServletRequest request) throws Exception {
-		logger.debug("inisde goToGlobalMarketplace  conroller =========>");
-		System.out.println("inisde goToGlobalMarketplace  conroller =========>");
-		ModelAndView model = new ModelAndView();
-		model.setViewName("candidates/candidateGlobalMarketPlaceList");
-		model.addObject("sourceleadUrl", sourceleadUrl);
-		return model;
-	}
 	
 	//Note this method is Global Maarketplace to get all the all the candidate list.
 	@PreAuthorize("hasAnyRole('ROLE_CREATE_CANDIDATE','ROLE_CROWDSOURCING_CANDIDATES')")
@@ -265,103 +253,99 @@ public class CandidateController {
 		 
 		ModelAndView model = new ModelAndView();
 		model.addObject("sourceleadUrl", sourceleadUrl);
-		model.setViewName("candidates/candidatesList");
-		
-		if(candidateKeyword != null && !candidateKeyword.equalsIgnoreCase("undefined") && candidateKeyword.equalsIgnoreCase("candidateSearch")){
-		    model.addObject("candidateKeyword", candidateKeyword);
-		    model.addObject("candidateIdSearchId",candidateIdSearchId);
-		}
-		
-		if(candidateKeyword != null && !candidateKeyword.equalsIgnoreCase("undefined") && candidateKeyword.equalsIgnoreCase("requestedDocumentNotification")){
-		    model.addObject("candidateKeyword", candidateKeyword);
-		    model.addObject("candidateIdSearchId",candidateIdSearchId);
-		}
-		
-		if(searchResult != null && !searchResult.equalsIgnoreCase("undefined") && searchResult.equalsIgnoreCase("universalCanddateList")){
-		    model.addObject("universalCanddateList", "universalCanddateList");
-		    model.addObject("serachValue",searchValue);
-		    model.addObject("searchType", "Candidate");
-		}
-		
-		
-		 if(!isNullOrEmpty(userRole) && userRole.equalsIgnoreCase("ROLE_CROWDSOURCING_RECRUITER")){
-			 candidateCount = candidateService.getCandidatesCountByCandidateTypeOrgLocationIDAndUserId(orgLocations.getId(), user.getId(), "Candidate");
-		 }else{
-			 candidateCount = candidateService.getCandidatesCountByCandidateTypeOrgLocationID(user.getId(),orgLocations.getId(), "Candidate");
-		 }
-	  
-	   model.addObject("candidateCount", candidateCount);
-	   
-		List<Countries> countryList = countriesService.getAllCountries();
-		model.addObject("countryList", countryList);
-		
-		if(null != orgLocations && StringUtils.isNotEmpty(orgLocations.getCountry())){
-		
-			Countries countries = countriesService.getCountriesByCountryName(orgLocations.getCountry());
-			if(null != countries){
-			   model.addObject("loginCountryName", countries.getName());
-			   model.addObject("currency", countries.getCurrency());
-			   
+		model.setViewName("candidates/candidatesList");	
+			if(candidateKeyword != null && !candidateKeyword.equalsIgnoreCase("undefined") && candidateKeyword.equalsIgnoreCase("candidateSearch")){
+			    model.addObject("candidateKeyword", candidateKeyword);
+			    model.addObject("candidateIdSearchId",candidateIdSearchId);
 			}
-	        List<States> statesList = statesService.getAllStatesByCountry(countries.getName());
-	        model.addObject("statesList", statesList);
-		}
-		
-		//approver list
-		List<User> requirementApproverList = userService.getTabAccessOwnersByOrgLocationIdAndTabId(orgLocations.getId(),Long.valueOf(Constants.TAB_CANDIATE));
-		model.addObject("requirementApproverList", requirementApproverList);
-				
-		
-	/*	List<Candidate>   candidatesList = candidateService.getCandidatesListByOrgLocationID(orgLocations.getId(),org.getId(),Constants.CANDIDATE_ACTIVE,"");
-		model.addObject("candidatesList", candidatesList);*/
-		
-		List<LookUpData> skillsList = lookUpDataService.getLookUpDataByCategory(Constants.SKILLS);
-		model.addObject("skillsList", skillsList);
-		
-		List<LookUpData> visaList = lookUpDataService.getLookUpDataByCategory(Constants.VISA);
-		model.addObject("visaList", visaList);
-		
-		
-		Set<String> tagsList = sourceleadTagsService.getSourceleadTagsByOrgLocationId(orgLocations.getId());
-		SourceLeadSessionManager.setSessionAttribute(request, "tagsList", tagsList);
-		
-		List<LookUpData> educationsList = lookUpDataService.getLookUpDataByCategory(Constants.EDUCATIONS);
-		model.addObject("educationsList", educationsList);
-		
-		List<LookUpData> documentsList = lookUpDataService.getLookUpDataByCategory(Constants.DOCUMENT_TYPE);
-		model.addObject("documentsList", documentsList);
-		
-		List<OrgRelationDTO> orgClientList = orgRelationsService.getAllClientsListOrgLocationId(orgLocations.getId());
-	    model.addObject("clientsList", orgClientList);
+			
+			if(candidateKeyword != null && !candidateKeyword.equalsIgnoreCase("undefined") && candidateKeyword.equalsIgnoreCase("requestedDocumentNotification")){
+			    model.addObject("candidateKeyword", candidateKeyword);
+			    model.addObject("candidateIdSearchId",candidateIdSearchId);
+			}
+			
+			if(searchResult != null && !searchResult.equalsIgnoreCase("undefined") && searchResult.equalsIgnoreCase("universalCanddateList")){
+			    model.addObject("universalCanddateList", "universalCanddateList");
+			    model.addObject("serachValue",searchValue);
+			    model.addObject("searchType", "Candidate");
+			}
+			
+			
+			 if(!isNullOrEmpty(userRole) && userRole.equalsIgnoreCase("ROLE_CROWDSOURCING_RECRUITER")){
+				 candidateCount = candidateService.getCandidatesCountByCandidateTypeOrgLocationIDAndUserId(orgLocations.getId(), user.getId(), "Candidate");
+			 }else{
+				 candidateCount = candidateService.getCandidatesCountByCandidateTypeOrgLocationID(user.getId(),orgLocations.getId(), "Candidate");
+			 }
 		  
-		SessionMaintainanceData sessionData = (SessionMaintainanceData)request.getSession().getAttribute("sessionData");
-		if(null == sessionData)
-		{
-			sessionData = new SessionMaintainanceData();
-		}
-		sessionData.setNav(Constants.Candidates);
-		model.addObject("candidateType", "Candidates");
-		request.getSession().setAttribute("sessionData",sessionData);
-		
-		//this block is for success messages --@Yashoda
-				String msg = (String) SourceLeadSessionManager.getSessionAttribute(request, "candidateCreateMsg");
-				if(null != msg && !"".equals(msg)){
-					model.addObject("msg", msg);
-					SourceLeadSessionManager.removeSessionAttribute(request, "candidateCreateMsg");
+		   model.addObject("candidateCount", candidateCount);
+		   
+			List<Countries> countryList = countriesService.getAllCountries();
+			model.addObject("countryList", countryList);
+			
+			if(null != orgLocations && StringUtils.isNotEmpty(orgLocations.getCountry())){
+			
+				Countries countries = countriesService.getCountriesByCountryName(orgLocations.getCountry());
+				if(null != countries){
+				   model.addObject("loginCountryName", countries.getName());
+				   model.addObject("currency", countries.getCurrency());
+				   
 				}
-				else{
-					msg = (String) SourceLeadSessionManager.getSessionAttribute(request, "consultantCreateMsg");
-					model.addObject("msg", msg);
-					SourceLeadSessionManager.removeSessionAttribute(request, "consultantCreateMsg");
-				}	
-				
+		        List<States> statesList = statesService.getAllStatesByCountry(countries.getName());
+		        model.addObject("statesList", statesList);
+			}
+			
+			//approver list
+			List<User> requirementApproverList = userService.getTabAccessOwnersByOrgLocationIdAndTabId(orgLocations.getId(),Long.valueOf(Constants.TAB_CANDIATE));
+			model.addObject("requirementApproverList", requirementApproverList);
+					
+			
+		/*	List<Candidate>   candidatesList = candidateService.getCandidatesListByOrgLocationID(orgLocations.getId(),org.getId(),Constants.CANDIDATE_ACTIVE,"");
+			model.addObject("candidatesList", candidatesList);*/
+			
+			List<LookUpData> skillsList = lookUpDataService.getLookUpDataByCategory(Constants.SKILLS);
+			model.addObject("skillsList", skillsList);
+			
+			List<LookUpData> visaList = lookUpDataService.getLookUpDataByCategory(Constants.VISA);
+			model.addObject("visaList", visaList);
+			
+			
+			Set<String> tagsList = sourceleadTagsService.getSourceleadTagsByOrgLocationId(orgLocations.getId());
+			SourceLeadSessionManager.setSessionAttribute(request, "tagsList", tagsList);
+			
+			List<LookUpData> educationsList = lookUpDataService.getLookUpDataByCategory(Constants.EDUCATIONS);
+			model.addObject("educationsList", educationsList);
+			
+			List<LookUpData> documentsList = lookUpDataService.getLookUpDataByCategory(Constants.DOCUMENT_TYPE);
+			model.addObject("documentsList", documentsList);
+			
+			List<OrgRelationDTO> orgClientList = orgRelationsService.getAllClientsListOrgLocationId(orgLocations.getId());
+		    model.addObject("clientsList", orgClientList);
+			  
+			SessionMaintainanceData sessionData = (SessionMaintainanceData)request.getSession().getAttribute("sessionData");
+			if(null == sessionData)
+			{
+				sessionData = new SessionMaintainanceData();
+			}
+			sessionData.setNav(Constants.Candidates);
+			model.addObject("candidateType", "Candidates");
+			request.getSession().setAttribute("sessionData",sessionData);
+			
+			//this block is for success messages --@Yashoda
+					String msg = (String) SourceLeadSessionManager.getSessionAttribute(request, "candidateCreateMsg");
+					if(null != msg && !"".equals(msg)){
+						model.addObject("msg", msg);
+						SourceLeadSessionManager.removeSessionAttribute(request, "candidateCreateMsg");
+					}
+					else{
+						msg = (String) SourceLeadSessionManager.getSessionAttribute(request, "consultantCreateMsg");
+						model.addObject("msg", msg);
+						SourceLeadSessionManager.removeSessionAttribute(request, "consultantCreateMsg");
+					}	
 		if(StringUtils.isNotBlank(candidateUUID)) {
 			Candidate candidate = candidateService.getCandidateByUUID(candidateUUID);	
 			model.addObject("candidateId", candidate.getId());
 			model.addObject("candidateUUID", candidateUUID);
 		}
-		
-		
 		return model;
 
 	}

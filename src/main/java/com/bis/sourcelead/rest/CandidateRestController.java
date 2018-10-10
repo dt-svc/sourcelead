@@ -12,6 +12,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 import java.util.TimeZone;
 
 import javax.servlet.http.HttpServletRequest;
@@ -1030,6 +1031,26 @@ public class CandidateRestController {
 		//model.setViewName("candidates/candidateGlobalMarketPlaceList");
 		//model.addObject("sourceleadUrl", sourceleadUrl);
 		//return model;
+	}
+	
+	
+	// Note this method is Global marketplace Candidate method
+	//@PreAuthorize("hasAnyRole('ROLE_CREATE_CANDIDATE','ROLE_CROWDSOURCING_CANDIDATES')")
+	@RequestMapping(value = "/app/globalMarketplacePage")
+	public ModelAndView goToGlobalMarketplace(HttpServletRequest request) throws Exception {
+		logger.debug("inisde goToGlobalMarketplace  conroller =========>");
+		System.out.println("inisde goToGlobalMarketplace  conroller =========>");
+		ModelAndView model = new ModelAndView();
+		model.setViewName("candidates/candidateGlobalMarketPlaceList");
+		model.addObject("sourceleadUrl", sourceleadUrl);
+		return model;
+	}
+	
+	
+	@RequestMapping(value = "/app/getAddedMarketplaceCandidates", method = RequestMethod.POST)
+	public Map<String, Object[]> getAddedMarketplaceCandidates(@RequestParam(value = "candidateIdsVal[]", required = false) List<Long> candidateIdsVal, HttpServletRequest request) throws Exception {
+		Map<String, Object[]> candidateIds = candidateService.getAddedMarketplaceCandidates(candidateIdsVal);
+		return candidateIds;
 	}
 	
 }
