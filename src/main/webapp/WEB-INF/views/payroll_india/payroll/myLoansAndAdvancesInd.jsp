@@ -1,40 +1,31 @@
-<jsp:include page="../../masterHeader.jsp" />
-<jsp:include page="../../masterSideNav.jsp" />
-<section class="content-wraper">
-	<section class="content-header clearfix">
-		<div class="pull-left">
-			<h2>My ${activeTaxTab == 'pays' ? 'Pays' : activeTaxTab =='forms' ? 'Forms' : 'Loans & Advances'}</h2>
-		</div>
-		<div class="pull-right brud-crum">Home &raquo; My Forms</div>
-	</section>
-	<div class="clearfix"></div>
-	<div class="project_wrap">
-		<jsp:include page="../payroll/myPayrollHeader.jsp"></jsp:include>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
+<%@taglib uri="http://www.springframework.org/tags/form" prefix="form"%>
+
 		
 		<div class="tablelist-wrap">
 			<div class="col-md-12">
 				<ul class="list-unstyled mt row">
-					<li class="col-md-3" title="Outstanding" onClick="getOutstandingLoans()">
-						<div class="cardModel-widget text-center cursorPointer currentActive" id="outstandingWidget">
+					<li class="col-md-3" title="Outstanding" onclick="getMyLoansAdv('Outstanding');">
+						<div class="cardModel-widget text-center cursorPointer ${loanStatus == 'Outstanding' ? 'currentActive' : ''}" id="outstandingWidget">
 							<h5 class="margin-top0">Outstanding</h5>
 							<p class="text-muted mb0">
-								<i class="fa fa-rupee paddingRight"></i><span>1000</span>
+								<!-- <i class="fa fa-rupee paddingRight"></i><span>1000</span> -->
 							</p>
 						</div>
 					</li>
-					<li class="col-md-3" title="Completed" onClick="getCompletedLoans()">
-						<div class="cardModel-widget text-center cursorPointer" id="completedWidget">
+					<li class="col-md-3" title="Completed" onclick="getMyLoansAdv('Completed');">
+						<div class="cardModel-widget text-center cursorPointer ${loanStatus == 'Completed' ? 'currentActive' : ''}" id="completedWidget">
 							<h5 class="margin-top0">Completed</h5>
 							<p class="text-muted mb0">
-								<i class="fa fa-rupee paddingRight"></i><span>1000</span>
+								<!-- <i class="fa fa-rupee paddingRight"></i><span>1000</span> -->
 							</p>
 						</div>
 					</li>
-					<li class="col-md-3" title="Request" onClick="getRequestedLoans()">
-						<div class="cardModel-widget text-center cursorPointer" id="requestWidget">
+					<li class="col-md-3" title="Request" onclick="getMyLoansAdv('Requested');">
+						<div class="cardModel-widget text-center cursorPointer ${loanStatus == 'Requested' ? 'currentActive' : ''}" id="requestWidget">
 							<h5 class="margin-top0">Requested</h5>
 							<p class="text-muted mb0">
-								<i class="fa fa-rupee paddingRight"></i><span>1000</span>
+								<!-- <i class="fa fa-rupee paddingRight"></i><span>1000</span> -->
 							</p>
 						</div>
 					</li>
@@ -43,8 +34,56 @@
 				</ul>
 			</div>
 			<div class="clearfix"></div>
+			
+			<div class="clearfix project_tabs_inn_table overflow_Auto">
+				<table width="100%">
+					<thead>
+						<tr>
+						  <th>Type</th>   
+						  <th>Name</th>        
+						  <th>Status</th>         
+						  <th>Amount</th>     
+						  <th>Scheduler</th>     
+						  <th>No Of Schedules</th> 
+						  <th>Effective Date</th>
+						  <th>Deduct Amount</th>         
+						  <th>Approver</th>         
+						  <th>Action</th>                  
+						</tr>
+					</thead>
+					
+					<tbody>
+						<c:if test="${loanAdvListSize > 0}">
+						 <c:forEach var="loanAdv" items="${loanAdvList}">
+							 <tr>
+							   <td><div class="tblminwidth-50" title="${loanAdv.loanAdvanceType}">${loanAdv.loanAdvanceType}</div></td>
+							   <td><div class="tblminwidth-50" title="${loanAdv.payrollLoanAndAdvanceId.name}">${loanAdv.payrollLoanAndAdvanceId.name}</div></td>
+							   <td><div class="tblminwidth-50" title="${loanAdv.loanAndAdvanceStatus}">${loanAdv.loanAndAdvanceStatus}</div></td>
+							   <td><div class="tblminwidth-50" title="${loanAdv.amount}">${SourceLeadWeb_orgLocations.country == 'United States' ? '$' : ''}   ${loanAdv.amount}</div></td>
+							   <td><div class="tblminwidth-50" title="${loanAdv.scheduler}">${loanAdv.scheduler}</div></td>
+							   <td><div class="tblminwidth-30" title="${loanAdv.noOfSchedules}">${loanAdv.noOfSchedules}</div></td>
+							   <td><div class="tblminwidth-50" title="${loanAdv.effectiveDateStr}">${loanAdv.effectiveDateStr}</div></td>
+							   <td><div class="tblminwidth-50" title="${loanAdv.deductAmount}">${loanAdv.deductAmount}</div></td>
+							   <td><div class="tblminwidth-50" title="${loanAdv.approverName}">${loanAdv.approverName}</div></td>
+							   <td><div class="tblminwidth-50"><a href="javascript:void(0)" onclick="editLoanAndAdvance('${loanAdv.id}')">Edit</a>
+							     |&nbsp;<a href="javascript:void(0)" onclick="deleteLoanAndAdvance('${loanAdv.id}')">Delete</a>
+							   </div></td>
+							 </tr>
+						 </c:forEach>
+						</c:if>
+					</tbody>
+				</table>
+				<c:if test="${loanAdvListSize == 0}">
+					 <div class='row'> 
+						 <div class='col-lg-12'> 
+							 <div class='dataTables_empty'>
+							 </div>
+						 </div>
+					 </div>
+				</c:if>
+			</div>
 
-			<div class="loan_and_advance_table project_tabs_inn_table clearfix" id="outStadingTable">
+			<!-- <div class="loan_and_advance_table project_tabs_inn_table clearfix" id="outStadingTable">
 				<table id="outstandingList">
 					<thead>
 						<tr>
@@ -75,8 +114,8 @@
 						</tr>
 					</tbody>
 				</table>
-			</div>
-			<div class="loan_and_advance_table project_tabs_inn_table clearfix" id="completedTable" style="display: none">
+			</div> -->
+			<!-- <div class="loan_and_advance_table project_tabs_inn_table clearfix" id="completedTable" style="display: none">
 				<table id="completedList">
 					<thead>
 						<tr>
@@ -129,10 +168,8 @@
 						</tr>
 					</tbody>
 				</table>
-			</div>
+			</div> -->
 		</div>
-	</div>
-</section>
 
 <div class="sideMask"></div>
 <div class="modal requestPop">
