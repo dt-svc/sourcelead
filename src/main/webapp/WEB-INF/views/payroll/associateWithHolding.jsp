@@ -16,7 +16,9 @@ $(document).ready(function(){
       <div class="pull-left">
         <h2>Associate with Holding</h2>
       </div>
-      <div class="pull-right brud-crum">Home &raquo; Payhead List &raquo; Associate with Holding</div>
+      <div class="pull-right brud-crum"><a href="<c:url value='${appPath}/dashboard'/>" title="Home">Home</a>&raquo;<a
+				href="<c:url value='${appPath}/usPayrollReport'/>"> USPayroll Reports List</a>&raquo;Associate with Holding
+		</div>
     </section>
     <div class="contentareaInner-styles clearfix">
   <div class="timesheet_out" id="payrollRegister" style="display: block;">
