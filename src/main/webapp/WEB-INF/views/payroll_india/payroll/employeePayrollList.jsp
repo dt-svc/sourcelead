@@ -138,7 +138,7 @@
 							<li id="cnfmPayrollBtn"><a class="btn btn-default ml mr">Confirm</a></li>
 						</c:if>
 					</c:if>
-					<li><a href="<c:url value='${appPath}/runIndianPayRoll?stab=payroll'/>" class="btn btn-default">Cancel</a></li>
+					<li><a  class="btn btn-default"  onclick="cancelIndPayroll();">Cancel</a></li>
 				</ul>
 				<div class="clearfix"></div>
 			</nav>
@@ -220,7 +220,7 @@ function saveNetpay(){
 	}
 	$(".editNetpay").show();
 	$(".saveNetpay").hide();
-}
+}employeePayrollList
 function confirmPayroll() {
 	$(".confirmPayroll, .comMask").fadeIn();
 }
@@ -240,12 +240,24 @@ function sentForApprove(approverStatus){
         type : "POST",
         url: sourceleadUrl+"/sentForApproveIndPayroll?approverStatus="+approverStatus+"&paySheetFrequencyUUID="+feqUUID+"&excludeEmpPayrollUUID="+excludeEmpArr,    
          success :function(result) { 
-        	 
         	 $(location).attr('href', 'runIndianPayRoll?stab=payroll');
          },
     });
 }
 </script>
+<script>
+function cancelIndPayroll(){
+	var feqUUID = $("#paySheetFrequency").val();
+	$.ajax({
+        type : "POST",
+        url: sourceleadUrl+"/removePaysheetFrequencyFromSession?paySheetFrequencyUUID="+feqUUID,    
+         success :function(result) { 
+        	 $(location).attr('href', 'runIndianPayRoll?stab=payroll');
+         },
+    });
+}
+</script>
+
 
 <script>
 $('#approveTab , #cnfmPayrollBtn').click(function(){
