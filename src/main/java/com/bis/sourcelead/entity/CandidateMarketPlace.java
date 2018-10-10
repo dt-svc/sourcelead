@@ -71,8 +71,8 @@ public class CandidateMarketPlace implements Serializable {
 	@Column(name = "LOCATION", columnDefinition = "LONGTEXT default NULL")
 	private String location;
 	
-	@Column(name = "SCORE")
-	private String score;
+	@Column(name = "PROFILE_PERCENTAGE")
+	private Integer profilePercentage;
 	
 	@Column(name = "EXPERIENCE_YEARS")
 	private String experienceYears;
@@ -231,12 +231,13 @@ public class CandidateMarketPlace implements Serializable {
 		this.location = location;
 	}
 
-	public String getScore() {
-		return score;
+
+	public Integer getProfilePercentage() {
+		return profilePercentage;
 	}
 
-	public void setScore(String score) {
-		this.score = score;
+	public void setProfilePercentage(Integer profilePercentage) {
+		this.profilePercentage = profilePercentage;
 	}
 
 	public String getExperienceYears() {

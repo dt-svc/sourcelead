@@ -2676,7 +2676,7 @@ private Sheet createXlsSheet(Sheet createExcelsheet, Row writeRow,Candidate cand
 			marketPlace.setDesignation(candidate.getDesignation());
 			marketPlace.setEmploymentType(candidate.getDesignationType());
 			marketPlace.setLocation(candidate.getLocation());
-			marketPlace.setScore(candidate.getCandidateScore());
+			marketPlace.setProfilePercentage(candidate.getCandidateProfilePercentage());
 			marketPlace.setSkillsName(candidate.getSkillsName());
 			marketPlace.setExperienceYears(candidate.getExperienceYears());
 			marketPlace.setExperienceMonths(candidate.getExperienceMonths());
@@ -2739,7 +2739,7 @@ private Sheet createXlsSheet(Sheet createExcelsheet, Row writeRow,Candidate cand
 			marketPlace.setDesignation(candidate.getDesignation());
 			marketPlace.setEmploymentType(candidate.getDesignationType());
 			marketPlace.setLocation(candidate.getLocation());
-			marketPlace.setScore(candidate.getCandidateScore());
+			marketPlace.setProfilePercentage(candidate.getCandidateProfilePercentage());
 			marketPlace.setSkillsName(candidate.getSkillsName());
 			marketPlace.setExperienceYears(candidate.getExperienceYears());
 			marketPlace.setExperienceMonths(candidate.getExperienceMonths());
