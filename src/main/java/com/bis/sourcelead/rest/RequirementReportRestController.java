@@ -153,17 +153,16 @@ public class RequirementReportRestController {
 	 }
 	
 	@RequestMapping(value = "/getJobsForPipelineReoport",method = RequestMethod.POST)
-	public String getJobsForPipelineReoport(RequirementDTO requirementDTO,@RequestParam(value = "fromDate", required = false) String fromDate, 
-			@RequestParam(value = "toDate", required = false) String toDate, HttpServletRequest request, HttpServletResponse response) throws Exception
+	public String getJobsForPipelineReoport(RequirementDTO requirementDTO, HttpServletRequest request, HttpServletResponse response) throws Exception
 	{
 		
 		String reportsList = null;
 		OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 		Timezone timezone = timeZoneService.getTimezone(orgLocation.getTimezone().getId());
 		DateTime zoned = new DateTime(commonUtil.orgLocationCommonDate(new Date(), orgLocation)); //get date and time based on orglocation
-		DateTimeFormatter outputFormatter = DateTimeFormat.forPattern("yyyy-MM-dd HH:mm:ss");
-		DateTimeFormatter outputFormatter1 = DateTimeFormat.forPattern("yyyy-MM-dd HH:mm:ss");
-		DateFormat TZ_DF_TS = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+		DateTimeFormatter outputFormatter = DateTimeFormat.forPattern("yyyy-MM-dd");
+		DateTimeFormatter outputFormatter1 = DateTimeFormat.forPattern("yyyy-MM-dd");
+		DateFormat TZ_DF_TS = new SimpleDateFormat("yyyy-MM-dd");
 		Date endDateUTC = null;
 		Date startDateUTC = null;
 		if (!Constants.CUSTOM_REPORTS.equalsIgnoreCase(requirementDTO.getJobCreatedDateRange())	&& !"".equals(requirementDTO.getJobCreatedDateRange())) {
@@ -173,9 +172,7 @@ public class RequirementReportRestController {
 		if (null != requirementDTO.getJobCreatedDateRange() && !"".equals(requirementDTO.getJobCreatedDateRange())) {
 			if (!Constants.CUSTOM_REPORTS.equalsIgnoreCase(requirementDTO.getJobCreatedDateRange())) {
 				String startDate = outputFormatter.print(zoned);
-				// String startDateString =
-				// CommonUtil.convertTimeZones(timezone.getTimeZoneId(),
-				// Constants.UTC_TIMEZONE, startDate);
+				
 				startDateUTC = TZ_DF_TS.parse(startDate);
 				if (Constants.ONE_MONTH.equals(requirementDTO.getJobCreatedDateRange())) {
 					startDateUTC = getPreviousDate(zoned, outputFormatter, TZ_DF_TS, timezone, 30);
@@ -192,27 +189,26 @@ public class RequirementReportRestController {
 				else if (Constants.ONE_YEAR.equals(requirementDTO.getJobCreatedDateRange())) {
 					startDateUTC = getPreviousDate(zoned, outputFormatter, TZ_DF_TS, timezone, 365);
 				}
-			}/*else {
-				if (StringUtils.isNotBlank(creditDebitNoteDTO.getStartDate())
-						&& StringUtils.isNotBlank(creditDebitNoteDTO.getEndDate())
-						&& !"undefined".equalsIgnoreCase(creditDebitNoteDTO.getStartDate())
-						&& !"undefined".equalsIgnoreCase(creditDebitNoteDTO.getEndDate())) {
+			}else {
+				if (StringUtils.isNotBlank(requirementDTO.getStartDateStr())
+						&& StringUtils.isNotBlank(requirementDTO.getEndDateStr())
+						&& !"undefined".equalsIgnoreCase(requirementDTO.getStartDateStr())
+						&& !"undefined".equalsIgnoreCase(requirementDTO.getEndDateStr())) {
 					DateFormat TZ_DF_CSD = new SimpleDateFormat("yyyy-MM-dd");
 					DateFormat TZ_DF_CED = new SimpleDateFormat("yyyy-MM-dd");
-					Date startTime = commonUtil.orgLocationDateFormat(orgLocations.getDateFormat(), creditDebitNoteDTO.getStartDate());
-					Date endTime = commonUtil.orgLocationDateFormat(orgLocations.getDateFormat(), creditDebitNoteDTO.getEndDate());
-					DateTime zoned1 = new DateTime(commonUtil.orgLocationCommonDate(startTime, orgLocations)); //get date and time based on orglocation
-					DateTime zoned2 = new DateTime(commonUtil.orgLocationCommonDate(endTime, orgLocations)); //get date and time based on orglocation
+					Date startTime = commonUtil.orgLocationDateFormat(orgLocation.getDateFormat(), requirementDTO.getStartDateStr());
+					Date endTime = commonUtil.orgLocationDateFormat(orgLocation.getDateFormat(), requirementDTO.getEndDateStr());
 					
-					String customStartTimeStr = outputFormatter.print(zoned1);
-					String customEndTimeStr = outputFormatter1.print(zoned2);
+					String customStartTimeStr = TZ_DF_CSD.format(startTime);
+					String customEndTimeStr = TZ_DF_CED.format(endTime);
+					
 					startDateUTC = TZ_DF_TS.parse(customStartTimeStr);
 					endDateUTC = TZ_DF_TS.parse(customEndTimeStr);
 				}
 				else {
 					startDateUTC = getPreviousDate(zoned, outputFormatter, TZ_DF_TS, timezone, 30);
 				}
-			}*/
+			}
 			
 		}
 		List<Requirement> reqList = requirementReportService.getAllJobsBylocationIdAndRelationId(orgLocation.getId(),requirementDTO.getClientIds(),startDateUTC,endDateUTC);

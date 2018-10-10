@@ -11,6 +11,7 @@
 <script>
 $(document).ready(function() {
 	getJobPipelineReports();
+	getJobsList();
 });	
 </script>
 
@@ -430,6 +431,60 @@ function getJobsReportCustomDates(){
   
   <!-- ========================== Filter popup ===============================  -->
 <script>
+function showStartDate(){
+    
+    var locationDate ='${SourceLeadWeb_orgLocations.dateFormat}'; 
+    var finalDateFormat = getJSDateFormat(locationDate);
+	
+	$('#startDate').datepicker({
+		changeMonth: true,
+		changeYear: true, 
+		dateFormat : finalDateFormat,
+		onSelect : function(selected) {
+			 var dt = $(this).datepicker('getDate', '+1d');
+	            dt.setDate(dt.getDate() + 1);
+			$("#endDate").datepicker("option", "minDate", dt);
+		}
+	}).datepicker('show');;
+}
+	
+function showEndDate(){
+   var locationDate ='${SourceLeadWeb_orgLocations.dateFormat}'; 
+   var finalDateFormat = getJSDateFormat(locationDate);
+   
+	$('#endDate').datepicker({
+		changeMonth: true,
+		changeYear: true, 
+		dateFormat : finalDateFormat,
+		beforeShow: function(){
+	           this.value='';
+	     },
+		onSelect : function(selected) {
+			   var dt = $(this).datepicker('getDate', '-1d');
+	            dt.setDate(dt.getDate() - 1);
+			$("#startDate").datepicker("option", "maxDate", dt);
+		}
+	}).datepicker('show');;
+}
+
+
+function customJobsList() {
+    var selectVal = $('input[name=jobCustomDays]:checked').val();
+    if (selectVal == "custom") {
+    	var result = '';
+    	result  = result + '<div class="col-md-6 paddingLeft" id="errStartDate">';                                                                       
+    	result = result +'     <input type="text" class="form-control input-sm calendar" onclick="showStartDate();" id="startDate" placeholder="Start Date"> ';
+    	result = result +'   </div> ';
+    	result = result +'   <div class="col-md-6 noPad" id="errEndDate">';
+    	result = result +'     <input type="text" class="form-control input-sm calendar" onclick="showEndDate();" id="endDate" placeholder="End Date">';
+    	result = result +'   </div>';
+        $(".custom_search").empty().append(result);
+        $(".custom_search").show();
+    }else {
+        $(".custom_search").empty().hide();
+    }
+}
+
 function closeFilterPop(){
 	$("#jobPipelineFilterId").hide();
 	$(".advancedsearch-mask").fadeOut();
@@ -466,18 +521,33 @@ function myClientFunction() {
 <script type="text/javascript">
 function getJobsList(){
 var jobCreatedDateRange = null;
+var startDateStr = null;
+var endDateStr = null;
 var clientIds =[];
 	$('input:radio[name=jobCustomDays]:checked').each(function() {
 		jobCreatedDateRange = $(this).val();
+		if(jobCreatedDateRange == 'custom'){
+			startDateStr = $("#startDate").val();
+			endDateStr = $("#endDate").val();
+			$("#errStartDate").find('p.jquery_form_error_message').remove();
+			$("#errEndDate").find('p.jquery_form_error_message').remove();
+			if(startDateStr == null || startDateStr == '' || startDateStr == 'undefined'){
+				$("input#startDate") .after( "<p class='jquery_form_error_message'>Start Date is Required</span>");
+				returnStat =  false;
+			}
+			if(endDateStr == null || endDateStr == '' || endDateStr == 'undefined'){
+				$("input#endDate") .after( "<p class='jquery_form_error_message'>End Date is Required</span>");
+				returnStat =  false;
+			}
+		}
 	});
 	$('input:checkbox[name=clientNameById]:checked').each(function() 
 		    {
 		clientIds.push($(this).val());
 		    });
-	
 	$.ajax({ 
 	   	type: "POST",
-	   	url: sourceleadUrl+"/getJobsForPipelineReoport?${_csrf.parameterName}=${_csrf.token}&jobCreatedDateRange="+jobCreatedDateRange+"&clientIds="+clientIds,
+	   	url: sourceleadUrl+"/getJobsForPipelineReoport?${_csrf.parameterName}=${_csrf.token}&jobCreatedDateRange="+jobCreatedDateRange+"&startDateStr="+startDateStr+"&endDateStr="+endDateStr+"&clientIds="+clientIds,
 	    success: function(data) {
 	    	var json = JSON.parse(data);
         	$('#jobIds').empty();
