@@ -1100,7 +1100,8 @@ function cancel(candidateId){
   <div class="clearfix">
 	<ul class="project-tabs-menu projecttabs-custom clearfix">
          <li id="" class="current"><a href="javascript:void(0)" onclick="javascript:goToCandidateList();">Candidate List</a></li>
-         <li id=""><a href="javascript:void(0)" onclick="javascript:goToGlobalMarketPlaceList();">Marketplace</a></li>
+         <li id=""><a href="javascript:void(0)" onclick="javascript:goToOrgMarketPlaceList();">Marketplace</a></li>
+          <li id=""><a href="javascript:void(0)" onclick="javascript:goToGlobalMarketPlaceList();">Global Marketplace</a></li>
          <div class="clearfix"></div>
      </ul>
 </div>	
@@ -3163,6 +3164,10 @@ function goToCandidateList(){
 	
 function goToGlobalMarketPlaceList(){
 	location.href = "${appPath}/globalMarketplacePage";
+}
+
+function goToOrgMarketPlaceList(){
+	location.href = "${appPath}/OrgMarketplace";
 }
 </script> 
 <jsp:include page="../masterFooter.jsp" /> 

@@ -30,7 +30,7 @@ public class CandidateMarketPlaceDTO extends SearchDTO implements Serializable  
 
 	private String location;
 	
-	private String score;
+	private Integer profilePercentage;
 	
 	private String experienceYears;
 
@@ -150,12 +150,12 @@ public class CandidateMarketPlaceDTO extends SearchDTO implements Serializable  
 		this.location = location;
 	}
 
-	public String getScore() {
-		return score;
+	public Integer getProfilePercentage() {
+		return profilePercentage;
 	}
 
-	public void setScore(String score) {
-		this.score = score;
+	public void setProfilePercentage(Integer profilePercentage) {
+		this.profilePercentage = profilePercentage;
 	}
 
 	public String getExperienceYears() {

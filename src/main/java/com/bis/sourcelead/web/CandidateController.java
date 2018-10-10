@@ -140,7 +140,7 @@ public class CandidateController {
 		logger.debug("inisde getGlobalMarketplaceCandList  conroller =========> --> ");
 		System.out.println("inisde getGlobalMarketplaceCandList  conroller =========>");
 		try {
-			String[] tableColumns = { "fullName", "location", "skillsName", "currentRate", "expectedRate", "score" };// should
+			String[] tableColumns = { "fullName", "location", "skillsName", "currentRate", "expectedRate", "profilePercentage" };// should
 																														// be
 			// entity names
 			int sortColumnIndex = -1; // by default sorting using updated date
@@ -163,6 +163,44 @@ public class CandidateController {
 		logger.debug(
 				"after controller  getGlobalMarketplaceCandList  --> " + candidateMarketPlaceDTOList.getRecordsTotal());
 		System.out.println("inisde getGlobalMarketplaceCandList  conroller =========>"
+				+ candidateMarketPlaceDTOList.getRecordsTotal());
+		return candidateMarketPlaceDTOList;
+	}
+	@PreAuthorize("hasAnyRole('ROLE_CREATE_CANDIDATE','ROLE_CROWDSOURCING_CANDIDATES')")
+	@RequestMapping(value = "/getOrgMarketplaceList")
+	public @ResponseBody ResponseList<CandidateMarketPlaceDTO> getOrgMarketplaceCandList(
+			CandidateMarketPlaceDTO candidateMarketPlaceDTO,
+			@RequestParam(value = "searchValue", required = false) String searchValue, 
+			HttpServletRequest request) {
+		ResponseList<CandidateMarketPlaceDTO> candidateMarketPlaceDTOList = null;
+		logger.debug("inisde getOrgMarketplaceList  conroller =========> --> ");
+		System.out.println("inisde getOrgMarketplaceList  conroller =========>");
+		OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+		candidateMarketPlaceDTO.setOrgLocationId(orgLocations.getId().toString());
+		try {
+			String[] tableColumns = { "fullName", "location", "skillsName", "currentRate", "expectedRate", "profilePercentage" };// should
+																														// be
+			// entity names
+			int sortColumnIndex = -1; // by default sorting using updated date
+			String sortColumnOrder = "desc"; // by default ascending order
+			if (candidateMarketPlaceDTO.getOrder() != null && !candidateMarketPlaceDTO.getOrder().isEmpty()) {
+				sortColumnIndex = Integer.parseInt(candidateMarketPlaceDTO.getOrder().get(0).get("column"));
+				sortColumnOrder = candidateMarketPlaceDTO.getOrder().get(0).get("dir"); // sorting order 'dir' means
+				candidateMarketPlaceDTO.setSortOrder(sortColumnOrder); // direction
+				// of the sorting.candidateMarketPlaceDTO
+			}
+
+			if (sortColumnIndex != -1)
+				candidateMarketPlaceDTO.setSortColumn(tableColumns[sortColumnIndex]);
+
+			candidateMarketPlaceDTOList = candidateService.getGlobalMarketCandidateList(candidateMarketPlaceDTO,
+					searchValue);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		logger.debug(
+				"after controller  getOrgMarketplaceList  --> " + candidateMarketPlaceDTOList.getRecordsTotal());
+		System.out.println("inisde getOrgMarketplaceList  conroller =========>"
 				+ candidateMarketPlaceDTOList.getRecordsTotal());
 		return candidateMarketPlaceDTOList;
 	}
