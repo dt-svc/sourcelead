@@ -19,7 +19,9 @@ import org.springframework.stereotype.Component;
 import com.bis.sourcelead.dto.ResponseList;
 import com.bis.sourcelead.entity.Asset;
 import com.bis.sourcelead.entity.AssetAssign;
+import com.bis.sourcelead.entity.Employees;
 import com.bis.sourcelead.entity.OrgLocations;
+import com.bis.sourcelead.service.EmployeesService;
 import com.bis.sourcelead.util.CommonUtil;
 
 import net.sf.dynamicreports.jasper.builder.export.JasperPdfExporterBuilder;
@@ -39,6 +41,8 @@ public class DynamicReport {
 	@Autowired
 	CommonUtil commonUtil;
 	
+	@Autowired
+	EmployeesService employeesService;
 	
 	/**
 	 * @author Laxman
@@ -156,7 +160,7 @@ public class DynamicReport {
 	}
 
 
-	public File assignAssetmanagementPdfExport(ResponseList<AssetAssign> responseList, OrgLocations orgLocations) throws IOException { 
+	public File assignAssetmanagementPdfExport(ResponseList<AssetAssign> responseList, OrgLocations orgLocations) throws Exception { 
 		File file = null;
 	try {
 	    StringBuilder fileSB = new StringBuilder();
@@ -186,7 +190,7 @@ public class DynamicReport {
 	
 
 
-	public File assignAssetmanagementExcelExport(ResponseList<AssetAssign> responseList, OrgLocations orgLocations) throws IOException {
+	public File assignAssetmanagementExcelExport(ResponseList<AssetAssign> responseList, OrgLocations orgLocations) throws Exception {
 		File file = null;
 		try {
 		    StringBuilder fileSB = new StringBuilder();
@@ -218,15 +222,16 @@ public class DynamicReport {
 	return file;
 	}
 	
-	private DRDataSource createAssignAssetPdfDataSource(ResponseList<AssetAssign> responseList) {
+	private DRDataSource createAssignAssetPdfDataSource(ResponseList<AssetAssign> responseList) throws Exception {
 		DRDataSource dataSource = new DRDataSource("empId","empName", "assetName", "serialNumber", "assignedOn", "returnedOn", "shiftName", "category");
 		for(AssetAssign aa:responseList.getData()) {
 			String  employeeId= "--";
 			String assetName = "--";
 			String assignedOn = "--";
 			String returnedOn = "--";
-			if(aa.getUserRole().getEmployeeId() != null) {
-				employeeId = aa.getUserRole().getEmployeeId();
+			Employees emp = employeesService.getEmployeeByUserId(aa.getUserRole().getUser().getId());
+			if(emp != null && emp.getEmployeeId() != null) {
+				employeeId = emp.getEmployeeId();
 			}
 			if(aa.getAsset().getName() != null) {
 				assetName = aa.getAsset().getName();

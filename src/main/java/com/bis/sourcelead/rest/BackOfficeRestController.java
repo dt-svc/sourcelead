@@ -466,7 +466,7 @@ public class BackOfficeRestController {
 			responseList = assetService.getDynamicAssignAssetFilterListByLocationId(orgLocations.getId(), assetDTO);
 			for(AssetAssign aa:responseList.getData()) {
 				Employees emp = employeesService.getEmployeeByUserId(aa.getUserRole().getUser().getId());
-				if(emp != null) {
+				if(emp != null && emp.getEmployeeId() != null) {
 					aa.setEmployeeId(emp.getEmployeeId());
 				}
 				aa.setEmployeeName(aa.getUserRole().getUser().getFullName());
