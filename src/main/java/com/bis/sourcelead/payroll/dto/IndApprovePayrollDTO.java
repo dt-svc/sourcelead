@@ -6,6 +6,8 @@ public class IndApprovePayrollDTO {
 	
 	private String[] empPayrollUUID;
 	
+	private String[] excludeEmpPayrollUUID;
+	
 	private Long paySheetFrequencyId;
 	
 	private String paySheetFrequencyUUID;
@@ -28,6 +30,14 @@ public class IndApprovePayrollDTO {
 
 	public void setEmpPayrollUUID(String[] empPayrollUUID) {
 		this.empPayrollUUID = empPayrollUUID;
+	}
+
+	public String[] getExcludeEmpPayrollUUID() {
+		return excludeEmpPayrollUUID;
+	}
+
+	public void setExcludeEmpPayrollUUID(String[] excludeEmpPayrollUUID) {
+		this.excludeEmpPayrollUUID = excludeEmpPayrollUUID;
 	}
 
 	public Long getPaySheetFrequencyId() {

@@ -421,22 +421,57 @@ public class GenerateUSPayrollServiceImpl implements GenerateUSPayrollService{
 	   String isTerminated = "NO";
 	   int noOfDays = 0;
 	   try {
+		   SalaryDTO salaryDto = associateSalaryService.getSalaryByGroupId(orgLocation,candidate.getId(),freqStartDate,freqEndDate);
 		   if(PayrollConstant.N.equalsIgnoreCase(candidate.getIsAssociate())) {
-				List<SalaryDTO> terminatedEmpData = associateSalaryService.getSalaryByGroupId(orgLocation,candidate.getId(),freqStartDate,freqEndDate);
-				if(terminatedEmpData != null && terminatedEmpData.size() >0) {
-					SalaryDTO sal = terminatedEmpData.get(0);
-					noOfDays = commonUtil.getNumberOfDaysBetweenTwoDates(freqStartDate,sal.getTerminatedDate());
-				}else {
-					isTerminated = "YES";
-					
+				if(salaryDto != null) {
+					if(salaryDto.getTerminatedDate() !=null) {
+						boolean terminated = isEmployeeTerminated(salaryDto.getTerminatedDate(),freqStartDate,freqEndDate);
+						if(terminated) {
+							noOfDays = commonUtil.getNumberOfDaysBetweenTwoDates(freqStartDate,salaryDto.getTerminatedDate());
+						}else {
+							isTerminated = "YES";	
+						}
+					}
 				}
-			}   
+			} else {
+					if(salaryDto.getJoiningDate() != null) {
+					    	boolean terminated = isEmployeeTerminated(salaryDto.getJoiningDate(),freqStartDate,freqEndDate);
+					    	if(terminated) {
+								noOfDays = commonUtil.getNumberOfDaysBetweenTwoDates(salaryDto.getJoiningDate(),freqEndDate);
+					    	}else {
+					    		if(salaryDto.getJoiningDate().before(freqStartDate)) {
+					    			isTerminated = "NO";
+					    		}else{
+					    			if(salaryDto.getJoiningDate().after(freqStartDate)) {
+					    				isTerminated = "YES";
+					    			}
+					    		}
+					    	}
+					}
+			}
 		   salary.setIsTerminated(isTerminated);
 		   salary.setNoOfDays(noOfDays);
 	   }catch (Exception e) {
 		   e.printStackTrace();
 	    }
 	return salary;
+	}
+
+   
+   /**
+    * Check employee terminated or not 
+    * @param slaryDto
+    * @param freqStartDate
+    * @param freqEndDate
+    * @return boolean
+    */
+   private boolean isEmployeeTerminated(Date date, Date freqStartDate, Date freqEndDate)
+	{
+	   boolean isTerminated = false;
+	   if((date.equals(freqStartDate) ||date.after(freqStartDate)) && (date.equals(freqEndDate) || date.before(freqEndDate))) {
+		   isTerminated = true;
+		}
+		return isTerminated;
 	}
 
 private Set<AssociateTaxHistory> getAssociateTaxHistory(AssociateTaxDedContriView associateTaxView,
