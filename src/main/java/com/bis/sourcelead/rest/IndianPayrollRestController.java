@@ -513,6 +513,15 @@ public class IndianPayrollRestController {
    		return model;
    	}
     
+    @RequestMapping(value = { "/app/removePaysheetFrequencyFromSession","/app/rest/removePaysheetFrequencyFromSession" }, method = RequestMethod.POST)
+   	public String getApproveInfoIndPayroll(@RequestParam(value="paySheetFrequencyUUID", required=false) String paySheetFrequencyUUID , HttpServletRequest request, HttpServletResponse response) throws Exception
+   	{
+    	if(StringUtils.isNotEmpty(paySheetFrequencyUUID)) {
+    		SourceLeadSessionManager.removeSessionAttribute(request,paySheetFrequencyUUID);
+    	}
+    	return "success";
+   	}
+    
     
     @RequestMapping(value = { "app/approveIndPayroll","app/rest/approveIndPayroll" }, method = RequestMethod.POST)
 	public Response<IndApprovePayrollDTO> approveIndPayroll(IndApprovePayrollDTO indApprovePayrollDTO ,HttpServletRequest request, HttpServletResponse response) throws Exception
