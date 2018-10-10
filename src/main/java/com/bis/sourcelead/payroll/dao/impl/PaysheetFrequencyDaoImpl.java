@@ -111,7 +111,7 @@ private static final Logger logger = LoggerFactory.getLogger(AssociateTaxDaoImpl
 		
 		PaysheetFrequency paysheetFrequency = null;
 		try {
-			String[] dts = dates.split(" - ");
+			String[] dts = dates.split(" ");
 			
 			Date startDate = new SimpleDateFormat("yyyy-MM-dd").parse(dts[0]);
 			Date endDate = new SimpleDateFormat("yyyy-MM-dd").parse(dts[1]);
@@ -364,5 +364,23 @@ private static final Logger logger = LoggerFactory.getLogger(AssociateTaxDaoImpl
 			e.printStackTrace();
 		}
 		return yTDPayrollDTO;
+	}
+
+	@SuppressWarnings("unchecked")
+	@Override
+	@Transactional
+	public List<EmployeePayroll> getPayrollTaxesYTD(EmployeePayroll payroll, OrgLocations orgLocation)
+	{
+		Session session = this.sessionFactory.getCurrentSession();
+		Date[] ytdDates = payrollUtil.getYTDDates(orgLocation);
+		java.sql.Date startDate = new java.sql.Date(ytdDates[0].getTime());
+		java.sql.Date endDate = new java.sql.Date(ytdDates[1].getTime());
+		String qry = "from EmployeePayroll payroll where payroll.id = :payrollId and payroll.payCheckDate >= :startDate and payroll.payCheckDate <= :endDate";
+		Query queryObj = session.createQuery(qry);
+//		queryObj.setLong("candidateId", payroll.getCandidate().getId());
+		queryObj.setLong("payrollId", payroll.getId());
+		queryObj.setDate("startDate", startDate);
+		queryObj.setDate("endDate", endDate);
+		return queryObj.list();
 	}
 }

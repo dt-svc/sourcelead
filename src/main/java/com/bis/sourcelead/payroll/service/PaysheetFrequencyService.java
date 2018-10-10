@@ -37,5 +37,7 @@ public interface PaysheetFrequencyService {
 	YTDPayrollDTO getContributionYTD(EmployeePayroll payroll,Long contributionId,OrgLocations ogLocations, String reportType);
 
 	YTDPayrollDTO getDeductionYTD(EmployeePayroll payroll, Long deductionId, OrgLocations orgLocation, String reportType);
+
+	YTDPayrollDTO getPayrollTaxesYTD(EmployeePayroll payroll, OrgLocations orgLocation);
 	
 }

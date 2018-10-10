@@ -29,7 +29,6 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.constants.ImmigrationConstants;
 import com.bis.sourcelead.dao.CandidateDao;
 import com.bis.sourcelead.dto.ImmigrationListViewDTO;
@@ -1105,20 +1104,17 @@ public class ImmigrationCommonDaoImpl implements ImmigrationCommonDao {
 	@Transactional(rollbackFor = { Exception.class })
 	public String deleteImmigrationDetailsById(Long immigrationId) {
 		try {
-			Session session = this.sessionFactory.getCurrentSession();
-			String lcaNumberStatus = "Y";
-			LcaHistory lh = getLcaHistoryDetails(immigrationId, Constants.YES);
-			if(lh != null && lcaNumberStatus.equals("Y")) {
-				 
-				   session.delete(lh);
-				   session.flush(); 
-			}
 			
+		   Session session = this.sessionFactory.getCurrentSession();
+			
+           deleteLcaHistoryDetailsByImmigrationId(immigrationId);
 		   CandidateLcaJobDetails candLcaJobDetails = getCandidateLcaJobDetails(immigrationId);
-			   if(candLcaJobDetails != null) {
+		   
+			 if(candLcaJobDetails != null) {
 			   session.delete(candLcaJobDetails);
 			   session.flush(); 
-			   }
+			  }
+			   
 			Immigration immigration = session.get(Immigration.class, immigrationId);
 			session.delete(immigration);
 			session.flush(); 
@@ -2160,13 +2156,25 @@ public class ImmigrationCommonDaoImpl implements ImmigrationCommonDao {
 		return lca;
 	}
 
-	@Override
+	/*@Override
 	@Transactional(rollbackFor = { Exception.class })
 	public LcaHistory getLcaHistoryDetails(Long immigrationId, String yes) {
 		Session session = this.sessionFactory.getCurrentSession();
 		String query = "from LcaHistory lh  left join fetch lh.lcaId where lh.immigrationId.id = :immigrationId and lh.isCurrent = :yes";
 		LcaHistory lh = (LcaHistory) session.createQuery(query).setLong("immigrationId", immigrationId).setString("yes", yes).uniqueResult();
 		return lh;
+	}*/
+	
+	@Override
+	@Transactional(rollbackFor = { Exception.class })
+	public List<LcaHistory> getLcaHistoryDetails(Long immigrationId, String yes) {
+		Session session = this.sessionFactory.getCurrentSession();
+		String query = "from LcaHistory lh  left join fetch lh.lcaId where lh.immigrationId.id = :immigrationId and lh.isCurrent = :yes ORDER BY lh.id DESC";
+		List<LcaHistory> lhList = session.createQuery(query).setLong("immigrationId", immigrationId).setString("yes", yes).setMaxResults(0).list();
+		if (lhList != null && lhList.size() > 0) {
+			lhList.get(0);
+		}
+		return lhList;
 	}
 
 	@Override
@@ -2180,7 +2188,8 @@ public class ImmigrationCommonDaoImpl implements ImmigrationCommonDao {
 			String queryString = "SELECT " + 
 					" l.LCA_NO as lcaNo, " + 
 					" l.LCA_TITLE as lcaTitle, " + 
-					" lpe.LOCATION as location, " + 
+					/*" lpe.LOCATION as location, " + */
+					" GROUP_CONCAT(lpe.LOCATION SEPARATOR ' & ') AS location, "+
 					" l.PREVAILING_WAGE as prevailingWage, " + 
 					" l.LCA_STATUS as lcaStatus, " + 
 					" CAST(l.NO_OF_POSITIONS AS CHAR(5))as noOfPositions, " + 
@@ -2197,10 +2206,29 @@ public class ImmigrationCommonDaoImpl implements ImmigrationCommonDao {
 					" LCA_PLACE_OF_EMPLOYMENT lpe, " + 
 					" LCA_VISA_CLARIFICATIONS lvc" +
 					" WHERE " + 
-					" l.id = lh.LCA_ID AND l.id = lpe.LCA_ID AND l.id = lvc.LCA_ID" + 
-					" AND lh.IMMIGRATION_ID = :immigrationId";
+					
+					" l.id = lh.LCA_ID AND l.id = lpe.LCA_ID AND l.id = lvc.LCA_ID " + 
+					" AND lh.IMMIGRATION_ID = :immigrationId "+
+					" GROUP BY l.ID";
 			lcaList = session.createSQLQuery(queryString).setParameter("immigrationId", immigrationId).setResultTransformer(Transformers.aliasToBean(LcaDTO.class)).list();
 		    return lcaList;
+	}
+	
+	
+	@Override
+	@Transactional(rollbackFor = { Exception.class })
+	public List<String> getAllExpiredCandidatesFromLcaHistoryByLcaId(Long lcaId) {
+		Session session = this.sessionFactory.getCurrentSession();
+		List<String> employeeList = new ArrayList<String>();
+		String queryString ="SELECT DISTINCT CONCAT(CAN.FIRST_NAME, IFNULL(CAN.LAST_NAME,''))  AS FULLNAME " + 
+				" FROM CANDIDATE CAN, " + 
+				" LCA_HISTORY LH " + 
+				" WHERE LH.CANDIDATE_ID = CAN.ID AND LH.LCA_ID=:lcaId";
+		employeeList = session.createSQLQuery(queryString).setParameter("lcaId", lcaId).list();
+		employeeList.size();
+	
+	//	System.out.println("employeeList.size() :: ========"+employeeList.size());
+	    return employeeList;
 	}
 
 	@Override
@@ -2371,5 +2399,23 @@ public class ImmigrationCommonDaoImpl implements ImmigrationCommonDao {
 		}
 		return visaClarifications;
 	}
+
+	@Override
+	@Transactional(rollbackFor = { Exception.class })
+	public int deleteLcaHistoryDetailsByImmigrationId(Long immigrationId) {
+		int count =0;
+		try {
+			Session session = this.sessionFactory.getCurrentSession();
+			String query = "delete from LcaHistory lh  where lh.immigrationId =:immigrationId";
+			 count= session.createQuery(query.toString()).setLong("immigrationId", immigrationId).executeUpdate();
+			return count;
+		} catch (HibernateException e) {
+			logger.error("SQL Exception occured while doing delete -->" + e.getMessage());
+			e.printStackTrace();
+		}
+		return count;
+	}
+
+	
 	
 }

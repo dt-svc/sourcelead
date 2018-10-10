@@ -228,6 +228,6 @@ public interface RequirementSubmissionDao {
 	
 	Integer getRequirementSubmissionCountByCandiateIdAndOrgLocationId(Long candidateId,Long orgLocationId) throws Exception;
 	
-	List<RequirementSubmissionsDTO> getCandidateSubmittedRequirementsListByCandidateId(Long candidateId,Long orgLocationId) throws Exception;
+	List<RequirementSubmissionsDTO> getCandidateSubmittedRequirementsListByCandidateId(Long candidateId,Long orgLocationId,String dateFormat) throws Exception;
 
 }

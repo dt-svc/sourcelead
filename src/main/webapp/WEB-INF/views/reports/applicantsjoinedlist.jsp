@@ -7,15 +7,23 @@
   <!-- Header Area -->
   <section class="content-wraper">
     <section class="content-header clearfix">
-       <div class="pull-right brud-crum"><a href="<c:url value='${appPath}/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a> &raquo; Joined List</div>
+       <div class="pull-right brud-crum"><a href="<c:url value='${appPath}/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a> &raquo; <a href="<c:url value='${appPath}/reportsDashboard'/>">Reports Dashboard</a> &raquo; <a href="<c:url value='${appPath}/performanceReportList'/>">Performance Reports</a> &raquo; Applicants Joined Report  </div>
     </section>
        
     <!-- Project -->
     <div class="timesheet_out">
       <div class="clients_wrap">
 	      <div class="positionRelative reportHead clearfix">
-	      <div class="dropdown-select positionRelative repSelWrap pull-left mt10 ml">
-          <select class="form-control repSelFiled" id="reportTypeId" onChange="showCustomFields(this);">
+	      
+	      
+	      
+	      <span class="pull-left refreIcon" id="advanceSearchDiv">
+<!-- 	      		<a href="javascript:void(0)" class="refeIcon" id="resetVendor" title="Refresh" onclick="resetApplicantFilter();"></a> -->
+	      </span>
+	      <ul class="pull-right list-unstyled list-inline">
+	      	  <li>
+	      	  <div class="dropdown-select positionRelative repSelWrap pull-left ml">
+          <select class="form-control repSelFiled" id="reportTypeId" onChange="showCustomFields(this); flushCustom()">
 			  <!-- <option value="today">Today</option>
 			  <option value="yesterday">Yesterday</option> -->
 			  <option selected="selected" value="today">Today</option>
@@ -25,6 +33,7 @@
 			  <option value="3_months">Last 3 months</option>
 			  <option value='YTD' >YTD</option>
 	          <option value='Last_Year'>Last Year</option>
+	          <option value="custom">Custom</option> 
 			</select>
 		<div id="runButtonDiv" class="repSelBtn"><button type="button" class="btn btn-primary btn-sm" id="customize_btn" onclick="requirementJoinedList();">Run</button></div> 
           
@@ -43,21 +52,13 @@
           </div>
           
         </div>
-	      
-	      
-	      <span class="pull-left refreIcon" id="advanceSearchDiv">
-<!-- 	      		<a href="javascript:void(0)" class="refeIcon" id="resetVendor" title="Refresh" onclick="resetApplicantFilter();"></a> -->
-	      </span>
-	      <ul class="pull-right list-unstyled list-inline">
-	      	  <li>
-<%-- 	      	  <jsp:include page="JobCountFilter.jsp"></jsp:include> --%>
 	      	  </li>
 					<li id="vendorFiletPopup"><a href="javascript:void(0)" class="filtIcon" title="Filters" onclick="openFilterPop();"></a></li>
 					
 					<li><a href="javascript:void(0)" class="overIcon" title="Actions" onclick="newActions();"></a>
 						<div class="newActPop" style="display: none;">
 							<span>
-<!-- 			           	   		<a href="javascript:void(0)" onclick="projectExport('Pdf');" title="PDF">Export PDF</a> -->
+			           	   		<a href="javascript:void(0)" onclick="projectExport('Pdf');" title="PDF">Export PDF</a>
 								<a href="javascript:void(0)" onclick="projectExport('Excel');" title="Excel">Export Excel</a>            
 							</span>
 						</div>
@@ -95,10 +96,9 @@
 
     	   var sourceleadUrl ='${sourceleadUrl}';
    		   var tab = '${tab}';
-//     	   var frequency = $('input[name=customDates]:checked').val(); 
     	   var frequency=$("#reportTypeId").val();
-    	    var fromDate = $("#custFromDate").val();
-    	    var toDate = $("#custToDate").val();
+    	    var fromDate='';
+    	    var toDate='';
     		var searchValue = $("#dataTableSearch").val();
     		var orgLocationId = '${SourceLeadWeb_orgLocationId}';
     		searchValue = searchValue ? searchValue : "";
@@ -123,31 +123,24 @@
     			 incentivizedType.push($(this).val());
     		 });
     		 var searchType = $('input[name=searchType]:checked').val();
-    	    if(frequency == "Custom"){
-    	        if(fromDate == ''){
-    	        	$("#invoiceFilterId").show();
-    	        	$(".advancedsearch-mask").fadeIn();
-    	            $('#custFromDateDiv').find('p.jquery_form_error_message').remove();
-    	            $("input#custFromDate").after( "<p class='jquery_form_error_message'>FromDate is required.</span>");
+    	    if(frequency == "custom"){
+    	        var fromDate = $("#ReportStartDate").val();
+    	  		  var toDate = $("#ReportEndDate").val();
+    	    	if(fromDate == ''){
+    	    		  document.getElementById("reportsStartDate").style.display="block";
+    				  $("#reportsStartDate").empty().append("Start Date is Required") ; 
     	        }
     	        if(toDate == ''){
-    	        	$("#invoiceFilterId").show();
-    	        	$(".advancedsearch-mask").fadeIn();
-    	            $('#custToDateDiv').find('p.jquery_form_error_message').remove();
-    	            $("input#custToDate").after( "<p class='jquery_form_error_message'>ToDate is required.</span>");
+    	        	 document.getElementById("reportsEndDate").style.display="block";
+   				  $("#reportsEndDate").empty().append("End Date is Required") ; 
     	        }
     	        if((fromDate != '' && fromDate != 'undefined' && fromDate != null) && (toDate != '' && toDate != 'undefined' && toDate != null)){
-    	        	$("#invoiceFilterId").hide();
-    	        	$(".advancedsearch-mask").fadeOut();
-    	        	$('#custFromDateDiv').find('p.jquery_form_error_message').remove();
-    	            $('#custToDateDiv').find('p.jquery_form_error_message').remove();
-    	            $("#custom-selects").hide();
         	        var url = sourceleadUrl+"/applicantList?searchValue="+searchValue+"&orgLocationId="+orgLocationId+"&tabType="+tab+"&submissionStatus=JOINED&frequency="+frequency+"&fromDate="+fromDate+"&toDate="+toDate+"&employmentType="+employmentType+"&clientId="+clientNameById+"&teamId="+teamNameById+"&incentivizedType="+incentivizedType+"&searchType="+searchType;
-        			prepareSubmissionList(url);
+        		    prepareOfferList(url);
     	        }
     	    }else{
-    	        $('#custFromDateDiv').find('p.jquery_form_error_message').remove();
-    	        $('#custToDateDiv').find('p.jquery_form_error_message').remove();
+    	    	 document.getElementById("reportsStartDate").style.display="none";
+    			 document.getElementById("reportsEndDate").style.display="none";
     	        var url = sourceleadUrl+"/applicantList?searchValue="+searchValue+"&orgLocationId="+orgLocationId+"&tabType="+tab+"&submissionStatus=JOINED&frequency="+frequency+"&fromDate="+fromDate+"&toDate="+toDate+"&employmentType="+employmentType+"&clientId="+clientNameById+"&teamId="+teamNameById+"&incentivizedType="+incentivizedType+"&searchType="+searchType;
     		    prepareOfferList(url);
     	    } 
@@ -169,7 +162,7 @@ function prepareOfferList(url){
 		result = result + '<th>Source</th>';
 		result = result + '<th>Date Of Join</th>';
 		result = result + '<th>Payment Term</th>';
-		result = result + '<th>generate Invoice</th>';
+		result = result + '<th>Generate Invoice</th>';
 		result = result + '</tr>';
         result = result +'</thead>';
         result = result +'<tbody>'; 
@@ -357,17 +350,16 @@ function viewOffersListAttachment(offerId,title){
 <script>
 function showCustomFields(e){
     var frequency = e.value;
-    if(frequency == "Custom"){
-        $("#custom-selects").show();
-         $('#custFromDate').attr('data-validation',"required");
-         $('#custToDate').attr('data-validation',"required");
-    }else{
-        $("#custom-selects").hide();
-        $('#custFromDate').removeAttr('data-validation');
-        $('#custToDate').attr('data-validation',"required");
-        $('#custFromDate').val("");
-        $('#custToDate').val("");
-    }
+    if(frequency=="custom"){
+    	document.getElementById("customSearch").style.display="block";
+		 document.getElementById("runButtonDiv").style.display="none";
+	}
+	if(frequency != "custom"){
+		document.getElementById("customSearch").style.display="none";
+	    document.getElementById("reportsStartDate").style.display="none";
+		document.getElementById("reportsEndDate").style.display="none";
+		document.getElementById("runButtonDiv").style.display="block";
+	}
     
     var locationDate ='${SourceLeadWeb_orgLocations.dateFormat}'; 
       var finalDateFormatEndDate = '';
@@ -415,7 +407,14 @@ function removeEndValid(){
 }
 
 </script>
-
+<script type="text/javascript">
+	function flushCustom() {
+		$('#ReportStartDate').val('');
+		$('#ReportEndDate').val('');
+		$.datepicker._clearDate('#ReportStartDate');
+		$.datepicker._clearDate('#ReportEndDate'); 
+	}
+</script>
 
  
    <!-- ========================== Filter popup Written By Laxman ===============================  -->
@@ -462,7 +461,7 @@ $(".overIcon, .newActPop").click(function(e){
 				</h5>
 				<div class="addInner">
 					<div class="row">
-					  <div class="col-md-3">
+					  <div class="col-md-3 hidden">
 						<div class="row">
 						<!-- <div class="col-md-12 mb">
 								<label><strong>Search for</strong></label>
@@ -512,7 +511,7 @@ $(".overIcon, .newActPop").click(function(e){
 						</div>
 						
 						 
-						<div class="col-md-3">
+						<div class="col-md-3 hidden">
 						<div class="row">
 						  <!--   <div class="col-md-12 mb">
 								<label><strong>Employment Type</strong></label>
@@ -661,9 +660,8 @@ function projectExport(type){
 	 var sourceleadUrl ='${sourceleadUrl}';
 	 var frequency=$("#reportTypeId").val();
 	   var tab = '${tab}';
-// 	   var frequency = $('input[name=customDates]:checked').val(); 
-	    var fromDate = $("#custFromDate").val();
-	    var toDate = $("#custToDate").val();
+    	    var fromDate='';
+    	    var toDate='';
 		var searchValue = $("#dataTableSearch").val();
 		var orgLocationId = '${SourceLeadWeb_orgLocationId}';
 		searchValue = searchValue ? searchValue : "";
@@ -689,32 +687,81 @@ function projectExport(type){
 		 });
 		 var searchType = $('input[name=searchType]:checked').val();
 
-		    if(frequency == "Custom"){
-		    	        if(fromDate == ''){
-		    	        	$("#invoiceFilterId").show();
-		    	        	$(".advancedsearch-mask").fadeIn();
-		    	            $('#custFromDateDiv').find('p.jquery_form_error_message').remove();
-		    	            $("input#custFromDate").after( "<p class='jquery_form_error_message'>FromDate is required.</span>");
-		    	        }
-		    	        if(toDate == ''){
-		    	        	$("#invoiceFilterId").show();
-		    	        	$(".advancedsearch-mask").fadeIn();
-		    	            $('#custToDateDiv').find('p.jquery_form_error_message').remove();
-		    	            $("input#custToDate").after( "<p class='jquery_form_error_message'>ToDate is required.</span>");
-		    	        }
-		    	        if((fromDate != '' && fromDate != 'undefined' && fromDate != null) && (toDate != '' && toDate != 'undefined' && toDate != null)){
-		    	        	$("#invoiceFilterId").hide();
-		    	        	$(".advancedsearch-mask").fadeOut();
-		    	        	$('#custFromDateDiv').find('p.jquery_form_error_message').remove();
-		    	            $('#custToDateDiv').find('p.jquery_form_error_message').remove();
-		    	            $("#custom-selects").hide();
-		        	        var url = sourceleadUrl+"/applicantList?searchValue="+searchValue+"&orgLocationId="+orgLocationId+"&tabType="+tab+"&submissionStatus=JOINED&frequency="+frequency+"&fromDate="+fromDate+"&toDate="+toDate+"&employmentType="+employmentType+"&clientId="+clientNameById+"&teamId="+teamNameById+"&incentivizedType="+incentivizedType+"&searchType="+searchType;
-		        			prepareSubmissionList(url);
-		    	        }
-		    	    }
-		 window.location.href = sourceleadUrl+"/applicantsJoinedListExport?searchValue="+searchValue+"&orgLocationId="+orgLocationId+"&tabType="+tab+"&submissionStatus=JOINED&frequency="+frequency+"&fromDate="+fromDate+"&toDate="+toDate+"&employmentType="+employmentType+"&clientId="+clientNameById+"&teamId="+teamNameById+"&incentivizedType="+incentivizedType+"&searchType="+searchType;
+		    if(frequency == "custom"){
+    	        var fromDate = $("#ReportStartDate").val();
+    	  		  var toDate = $("#ReportEndDate").val();
+    	    	if(fromDate == ''){
+    	    		  document.getElementById("reportsStartDate").style.display="block";
+    				  $("#reportsStartDate").empty().append("Start Date is Required") ; 
+    	        }
+    	        if(toDate == ''){
+    	        	 document.getElementById("reportsEndDate").style.display="block";
+   				  $("#reportsEndDate").empty().append("End Date is Required") ; 
+    	        }
+    	        if((fromDate != '' && fromDate != 'undefined' && fromDate != null) && (toDate != '' && toDate != 'undefined' && toDate != null)){
+   	    		 window.location.href = sourceleadUrl+"/applicantsJoinedListExport?searchValue="+searchValue+"&orgLocationId="+orgLocationId+"&tabType="+tab+"&submissionStatus=JOINED&frequency="+frequency+"&fromDate="+fromDate+"&toDate="+toDate+"&employmentType="+employmentType+"&clientId="+clientNameById+"&teamId="+teamNameById+"&incentivizedType="+incentivizedType+"&searchType="+searchType+"&exportType="+exportType;
+    	        }
+    	    }else{
+    	    	 document.getElementById("reportsStartDate").style.display="none";
+    			 document.getElementById("reportsEndDate").style.display="none";
+   	 		 window.location.href = sourceleadUrl+"/applicantsJoinedListExport?searchValue="+searchValue+"&orgLocationId="+orgLocationId+"&tabType="+tab+"&submissionStatus=JOINED&frequency="+frequency+"&fromDate="+fromDate+"&toDate="+toDate+"&employmentType="+employmentType+"&clientId="+clientNameById+"&teamId="+teamNameById+"&incentivizedType="+incentivizedType+"&searchType="+searchType+"&exportType="+exportType;
+    	    } 
+// 		 window.location.href = sourceleadUrl+"/applicantsJoinedListExport?searchValue="+searchValue+"&orgLocationId="+orgLocationId+"&tabType="+tab+"&submissionStatus=JOINED&frequency="+frequency+"&fromDate="+fromDate+"&toDate="+toDate+"&employmentType="+employmentType+"&clientId="+clientNameById+"&teamId="+teamNameById+"&incentivizedType="+incentivizedType+"&searchType="+searchType+"&exportType="+exportType;
 	     
 }
 </script>
-
+<script>
+function addValidClass(){
+	 var StartDate = document.getElementById("ReportStartDate").value;
+	 if(StartDate){
+		 document.getElementById("reportsStartDate").style.display="block";
+	 }
+	 
+	 var EndDate = document.getElementById("ReportEndDate").value;
+	
+	 if(EndDate){
+		 document.getElementById("reportsEndDate").style.display="block";
+	 }
+}
+</script>
+<script>
+	$(function() {
+		var locationDate ='${SourceLeadWeb_orgLocations.dateFormat}'; 
+		  var finalDateFormatRepo = getJSDateFormat(locationDate);
+		  
+		$('#ReportStartDate').datepicker({
+			changeMonth: true,
+			changeYear: true, 
+			dateFormat : finalDateFormatRepo,
+			onSelect : function(selected) {
+				/* var dt = new Date(selected);
+				//var dt = toDate("#ReportStartDate");
+				dt.setDate(dt.getDate() + 1);
+				$("#ReportEndDate").datepicker("option", "minDate", dt); */
+				$("#ReportEndDate").datepicker("option", "minDate", selected);
+				addValidClass();
+			}
+		
+		});
+		
+		$('#ReportEndDate').datepicker({
+			changeMonth: true,
+			changeYear: true, 
+			dateFormat : finalDateFormatRepo,
+			beforeShow: function(){
+		           this.value='';
+		     },
+			onSelect : function(selected) {
+				var dt = new Date(selected);
+				/* //var dt = toDate("#ReportEndDate");
+				dt.setDate(dt.getDate() - 1);
+				$("#ReportStartDate").datepicker("option", "maxDate", dt);
+				 $( "#ReportStartDate" ).datepicker({  maxDate: new Date() }); */
+				 $("#ReportStartDate").datepicker("option", "maxDate", selected);
+				addValidClass();
+			}
+		});
+		
+	});
+</script>	
 <jsp:include page="../masterFooter.jsp" />

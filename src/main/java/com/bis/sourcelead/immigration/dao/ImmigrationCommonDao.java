@@ -59,7 +59,7 @@ public interface ImmigrationCommonDao {
 	
 	CandidateLcaJobDetails getCandidateLcaJobDetails(Long id);
 	
-	LcaHistory getLcaHistoryDetails(Long id, String yes);
+	List<LcaHistory> getLcaHistoryDetails(Long id, String yes);
 
 	String saveCandidateFamilyMemberDetails(CandidateFamilyDetails familyDetails) throws Exception;
 
@@ -236,5 +236,9 @@ public interface ImmigrationCommonDao {
 	LcaHistory getLcaHistoryByStatus(Long immigrationId,Long candidateId,  String isCurrent);
 	
 	int updateLcaHistoryStatusByLcaNumber(Long lhId,Long immigrationId,Long candidateId);
+	
+	int deleteLcaHistoryDetailsByImmigrationId(Long immigrationId);
+	
+	List<String> getAllExpiredCandidatesFromLcaHistoryByLcaId(Long lcaId);
 	
 }

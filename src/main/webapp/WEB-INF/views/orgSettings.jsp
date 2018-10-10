@@ -568,7 +568,7 @@ function cancelOrgImg(){
                             </div>
                 			<form id="profilePercentage_form"  name="profilePercentage_form" method="post">
                 			<div class="form-group">
-                			<label class="col-md-3">Profile Percentage&nbsp;&nbsp;<i class="fa fa-info-circle" title="A Profile Percentage is the time during which an applicant is eligibale for job submission or not"></i></label>  
+                			<label class="col-md-3">Profile Percentage&nbsp;&nbsp;<i class="fa fa-info-circle" title="A Profile Percentage is for an applicant is eligible for job submission or not."></i></label>  
                 			<div class="col-md-4"><input type="text" name="profilePercentage" value="${orgLocations.profilePercentage}" id="profilePercentage" onblur="validateProfilePercentage()" class="form-control input-sm" data-validation="required validate_space validate_int" field-name="Profile Percentage">
                 			<div class="row mxrateerror" id="profilePercentageValidateId">
                 				  <input type="hidden" name="profilePercentageValidation" id="profilePercentageValidation">

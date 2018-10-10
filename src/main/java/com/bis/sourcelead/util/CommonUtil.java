@@ -1794,9 +1794,9 @@ public class CommonUtil {
 		public Candidate getVendorCandidateForCandidateCreation(CandidateDTO candidateDTO,OrgRelations orgRelation,OrgLocations orgLocations,User loginUser) throws Exception{
 			  Candidate candidate = null;
 			  OrgLocations vendorOrgLocation = null;
-			  if(orgRelation.getInitiatorType().equalsIgnoreCase("Client") && orgRelation.getLocationId().getId().equals(orgLocations.getId())){
+			  if(orgRelation.getLocationId().getId().equals(orgLocations.getId())){
 				  vendorOrgLocation = orgRelation.getResponderLocationId();
-			  }else if(orgRelation.getInitiatorType().equalsIgnoreCase("Vendor") && orgRelation.getResponderLocationId().getId().equals(orgLocations.getId())){
+			  }else if(orgRelation.getResponderLocationId().getId().equals(orgLocations.getId())){
 				  vendorOrgLocation = orgRelation.getLocationId();
 			  }
 			  
@@ -1837,6 +1837,7 @@ public class CommonUtil {
 					}
 				
 				candidate.setIsAssociate(Constants.NO);
+				candidate.setDesignationType("W-2");
 				
 				candidate.setStatus(1);
 	  			Candidate savedCandidate = candidateService.saveOrUpdateCandidate(candidate);

@@ -74,6 +74,7 @@ import com.bis.sourcelead.entity.ImmigrationTemplateTasks;
 import com.bis.sourcelead.entity.Invoice;
 import com.bis.sourcelead.entity.JobAlert;
 import com.bis.sourcelead.entity.Lca;
+import com.bis.sourcelead.entity.LcaHistory;
 import com.bis.sourcelead.entity.LcaPlaceOfEployment;
 import com.bis.sourcelead.entity.Leave;
 import com.bis.sourcelead.entity.LeaveApproveHierarchy;
@@ -388,8 +389,8 @@ public class EMailJobScheduler {
 			logger.error("ERROR in " + e.getMessage());
 		}
     }
-	 @Scheduled(cron = "0 0 0/1 1/1 * ?") // Scheduled for every one hour 
-	// @Scheduled(cron = "0 0/30 * 1/1 * ?") // Scheduled for every 30 Minutes.
+	// @Scheduled(cron = "0 0 0/1 1/1 * ?") // Scheduled for every one hour 
+    @Scheduled(cron = "0 0/30 * 1/1 * ?") // Scheduled for every 30 Minutes.
 	//@Scheduled(cron = "0/30 * * * * *") // used for dev testing run for every 30 seconds..
 	@Async
 	public void runJobSchedulerEmailJobParsingAtOrgLevel() { // reads the email configured at org level and parse the
@@ -516,6 +517,7 @@ public class EMailJobScheduler {
 			
 		} catch (Exception e) {
 			logger.error("ERROR in " + e.getMessage());
+			e.printStackTrace();
 			// System.out.println("ERROR in " + e.getMessage());
 		}
 	}
@@ -528,7 +530,7 @@ public class EMailJobScheduler {
 		 emailMessage.setToEmail(toUserObj.getEmail());
 		 emailMessage.setFromEmail(fromEmail);
 		
-		 
+	//	List<String> employeeList = immigrationCommonService.getAllExpiredCandidatesFromLcaHistoryByLcaId(lcaId);
 		 StringBuilder sb = new StringBuilder();
 		 
 		 sb.append("<table width='900' align='center' style='border-collapse: collapse; margin: 0 auto;border: 1px solid #375d81; text-align: center;' cellpadding='2px' cellspacing='0' border='0'>");
@@ -555,7 +557,10 @@ public class EMailJobScheduler {
 		        	locSb.append(source.getLocation()).append(" &").toString();	
 		        }
 		        sb.append("<td style='border: 1px solid #375d81;' width='225'>"+locSb.deleteCharAt(locSb.length() - 1)+"</td>"); 
-		        sb.append("<td style='border: 1px solid #375d81;' width='225'>-----</td>"); 
+		       
+		        List<String> employeeList = immigrationCommonService.getAllExpiredCandidatesFromLcaHistoryByLcaId(lca.getId());
+		       // System.out.println("sendEmailReminderToLcaManagerExpired lcaid>>>>>>"+lca.getId());
+		        sb.append("<td style='border: 1px solid #375d81;' width='225'>"+( employeeList.size() > 0 ? StringUtils.join(employeeList,',') : " " ) +"</td>"); 
 		        sb.append("<td style='border: 1px solid #375d81;' width='225'>"+strStartDate+"</td>"); 
 		        sb.append("<td style='border: 1px solid #375d81;' width='225'>"+strEndDate+"</td>"); 
 		        sb.append("</tr>");
@@ -646,13 +651,15 @@ public class EMailJobScheduler {
 		        	locSb.append(source.getLocation()).append(" &").toString();	
 		        }
 		        sb.append("<td style='border: 1px solid #375d81;' width='225'>"+locSb.deleteCharAt(locSb.length() - 1)+"</td>"); 
-		        sb.append("<td style='border: 1px solid #375d81;' width='225'>-----</td>"); 
+		        List<String> employeeList = immigrationCommonService.getAllExpiredCandidatesFromLcaHistoryByLcaId(lca.getId());
+		       // System.out.println("sendEmailReminderToLcaManagerExpiredInDays lcaid>>>>>>>>>>>"+lca.getId());
+		        sb.append("<td style='border: 1px solid #375d81;' width='225'>"+(employeeList.size() > 0 ? StringUtils.join(employeeList,',') : " ") +"</td>"); 
 		        sb.append("<td style='border: 1px solid #375d81;' width='225'>"+strStartDate+"</td>"); 
 		        sb.append("<td style='border: 1px solid #375d81;' width='225'>"+strEndDate+"</td>"); 
 		        sb.append("</tr>");	
 		       }
 	  		sb.append("</tbody>");   
-		    sb.append("/<table>"); 
+		    sb.append("</table>"); 
        
 			Map<String, String> globalVarsMap = new HashMap<String, String>();
 			 globalVarsMap.put("currLcaStatus", currLcaDaysStatus);
@@ -3755,7 +3762,7 @@ public class EMailJobScheduler {
 			List<LeaveType> leaveTypeList = leaveTypeService.getLeaveTypeListByLocationIdAndStatus(String.valueOf(orgLocation.getId()));
 			for(LeaveType leaveType : leaveTypeList){
 				if(Constants.YEARLY.equalsIgnoreCase(leaveType.getPeriod())){
-					Date[] dates = conversionUtil.getPreviousYearStartAndEndDate();
+					Date[] dates = ConversionUtil.getPreviousYearStartAndEndDate();
 					int status = associateBalanceLeaveService.calculateAndUpdateAssociateBalanceLeaves(orgLocation,leaveType,dates[0],dates[1]);
 				}
 			}

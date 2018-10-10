@@ -2,7 +2,6 @@ package com.bis.sourcelead.util;
 
 import java.io.File;
 import java.io.IOException;
-import java.nio.file.Files;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -16,7 +15,6 @@ import javax.activation.DataSource;
 import javax.activation.FileDataSource;
 import javax.mail.Address;
 import javax.mail.AuthenticationFailedException;
-import javax.mail.Authenticator;
 import javax.mail.BodyPart;
 import javax.mail.FetchProfile;
 import javax.mail.Flags;
@@ -35,21 +33,18 @@ import javax.mail.internet.MimeBodyPart;
 import javax.mail.internet.MimeMessage;
 import javax.mail.internet.MimeMultipart;
 
-import org.apache.commons.io.FileUtils;
-
 import com.bis.sourcelead.dto.AttachmentDTO;
 import com.bis.sourcelead.dto.ReadMailDTO;
 import com.bis.sourcelead.dto.Response;
 import com.bis.sourcelead.dto.ResponseList;
 import com.bis.sourcelead.dto.helper.Paginator;
-import com.bis.sourcelead.entity.EmailAccountSettings;
 import com.bis.sourcelead.enums.Result;
-import com.itextpdf.tool.xml.html.Body;
 
 public class MailBox {
-	
+
 	private static SimpleDateFormat dateFormat = new SimpleDateFormat("MMM dd/yy");
-	
+	private static SimpleDateFormat detailedDateFormat = new SimpleDateFormat("MMM d, yyyy, hh:mm a");
+
 	public static ResponseList<String> readMail(String host, String port, String storeType, String user, String password) {
 		ResponseList<String> responseList = new ResponseList<>();
 		List<String> folderList = new LinkedList<>();
@@ -66,14 +61,13 @@ public class MailBox {
 			Store store = emailSession.getStore(storeType);
 
 			store.connect(host, user, password);
-
 			Folder[] f = store.getDefaultFolder().list("*");
 			// Folder[] f = store.getDefaultFolder().listSubscribed();
+			/*int temp = 1;*/
 			for (Folder fd : f) {
+				/*System.out.println((temp++) + " " + fd.getName());*/
 				if (fd.getName().equalsIgnoreCase("INBOX") || fd.isSubscribed()) {
 					folderList.add(fd.getName() + "<<>>" + fd.getFullName().replaceAll("&", "-and-"));
-					// folderSet.add(fd.getName().split(".").length > 1 ? fd.getName().split(".")[1]
-					// : fd.getName());
 				}
 			}
 			// close the store and folder objects
@@ -92,8 +86,8 @@ public class MailBox {
 		return responseList;
 	}
 
-	public static List<ReadMailDTO> readMailFromFolder(String host, String port, String storeType, String user, String password, String folderName,
-			long userId, long orgLocationId, Paginator paginator) {
+	public static List<ReadMailDTO> readMailFromFolder(String host, String port, String storeType, String user, String password,
+			String folderName, long userId, long orgLocationId, Paginator paginator) {
 		List<ReadMailDTO> readMailDTOList = new ArrayList<>();
 		try {
 			// create properties field
@@ -102,9 +96,9 @@ public class MailBox {
 			properties.put("mail.imap.host", host);
 			properties.put("mail.imap.port", port);
 			properties.put("mail.imap.starttls.enable", "true");
-			Session emailSession = Session.getDefaultInstance(properties);
+			Session emailSession = Session.getInstance(properties);
 
-			// create the POP3 store object and connect with the pop server
+			// create the store object and connect with the pop server
 			Store store = emailSession.getStore(storeType);
 
 			store.connect(host, user, password);
@@ -112,6 +106,7 @@ public class MailBox {
 			emailFolder.open(Folder.READ_WRITE);
 			// retrieve the messages from the folder in an array and print it
 			int messagesCount = emailFolder.getMessageCount();
+			int unreadCount = emailFolder.getUnreadMessageCount();
 			int tempCount = messagesCount;
 			int remainder = messagesCount % paginator.getPageSize();
 			int noOfPages = 1;
@@ -129,14 +124,12 @@ public class MailBox {
 			}
 			from = from > 1 ? from : 1;
 			to = to > messagesCount ? messagesCount : to;
-			
 			// Message[] messages = emailFolder.getMessages();
 			Message[] messages = emailFolder.getMessages(from, to);
-			// Arrays.sort(messages, Collections.reverseOrder());
 
 			paginator.setTotalRows(messagesCount);
+			paginator.setSortType(unreadCount);
 			FetchProfile fetchProfile = new FetchProfile();
-			// fetchProfile.add(UIDFolder.FetchProfileItem.UID);
 			fetchProfile.add(FetchProfile.Item.ENVELOPE);
 			fetchProfile.add("X-mailer");
 			emailFolder.fetch(messages, fetchProfile);
@@ -146,11 +139,14 @@ public class MailBox {
 				UIDFolder uf = (UIDFolder) emailFolder;
 				long messageId = uf.getUID(message);
 				readMailDTO.setMessageId(messageId);
-				/*readMailDTO.setFrom(message.getFrom() != null ? message.getFrom()[0].toString() : "");*/
-				if(message.getFrom() != null && message.getFrom().length > 0) {
+				
+				if (message.getFrom() != null && message.getFrom().length > 0) {
 					InternetAddress internetAddress = (InternetAddress) ((Address) message.getFrom()[0]);
 					readMailDTO.setFrom(internetAddress.getAddress());
-					/*readMailDTO.setFrom(internetAddress.getPersonal() != null ? internetAddress.getPersonal() : internetAddress.getAddress());*/
+					/*
+					 * readMailDTO.setFrom(internetAddress.getPersonal() != null ?
+					 * internetAddress.getPersonal() : internetAddress.getAddress());
+					 */
 				} else {
 					readMailDTO.setFrom("");
 				}
@@ -184,14 +180,15 @@ public class MailBox {
 		return readMailDTOList;
 	}
 
-	public static Message getMailByUID(String host, String port, String storeType, String user, String password, String folderName, long uid) {
+	public static Message getMailByUID(String host, String port, String storeType, String user, String password, String folderName,
+			long uid) {
 		try {
 			Properties properties = new Properties();
 
 			properties.put("mail.imap.host", host);
 			properties.put("mail.imap.port", port);
 			properties.put("mail.imap.starttls.enable", "true");
-			Session emailSession = Session.getDefaultInstance(properties);
+			Session emailSession = Session.getInstance(properties);
 			Store store = emailSession.getStore(storeType);
 
 			store.connect(host, user, password);
@@ -205,9 +202,9 @@ public class MailBox {
 		}
 		return null;
 	}
-	
-	public static ReadMailDTO getMailDTOByUID(String host, String port, String storeType, String user, String password, String folderName, long orgId,
-			long orgLocationId, long uid, String staticPath) {
+
+	public static ReadMailDTO getMailDTOByUID(String host, String port, String storeType, String user, String password, String folderName,
+			long orgId, long orgLocationId, long uid, String staticPath) {
 		ReadMailDTO readMailDTO = new ReadMailDTO();
 		try {
 			Properties properties = new Properties();
@@ -215,9 +212,9 @@ public class MailBox {
 			properties.put("mail.imap.host", host);
 			properties.put("mail.imap.port", port);
 			properties.put("mail.imap.starttls.enable", "true");
-			Session emailSession = Session.getDefaultInstance(properties);
+			Session emailSession = Session.getInstance(properties);
 
-			// create the POP3 store object and connect with the pop server
+			// create the store object and connect with the pop server
 			Store store = emailSession.getStore(storeType);
 
 			store.connect(host, user, password);
@@ -227,9 +224,12 @@ public class MailBox {
 			Message message = uf.getMessageByUID(uid);
 			if (message != null) {
 				readMailDTO.setMessageId(uf.getUID(message));
-				/*readMailDTO.setFrom(message.getFrom() != null ? message.getFrom()[0].toString() : "");*/
-				if(message.getFrom() != null) {
-					InternetAddress internetAddress =  (InternetAddress)((Address)message.getFrom()[0]);
+				/*
+				 * readMailDTO.setFrom(message.getFrom() != null ?
+				 * message.getFrom()[0].toString() : "");
+				 */
+				if (message.getFrom() != null) {
+					InternetAddress internetAddress = (InternetAddress) ((Address) message.getFrom()[0]);
 					readMailDTO.setFrom(internetAddress.getAddress());
 				} else {
 					readMailDTO.setFrom("");
@@ -237,12 +237,14 @@ public class MailBox {
 				String cc = "";
 				boolean ccFlag = false;
 				Address[] ccList = message.getAllRecipients();
-				if(ccList != null) {
+				if (ccList != null) {
 					for (Address address : ccList) {
 						if (ccFlag) {
-/*							cc += (cc.isEmpty() ? "" : "; ") + ((InternetAddress) address).getPersonal() != null
-									? ((InternetAddress) address).getPersonal()
-									: ((InternetAddress) address).getAddress();*/
+							/*
+							 * cc += (cc.isEmpty() ? "" : "; ") + ((InternetAddress) address).getPersonal()
+							 * != null ? ((InternetAddress) address).getPersonal() : ((InternetAddress)
+							 * address).getAddress();
+							 */
 							cc += (cc.isEmpty() ? "" : "; ") + ((InternetAddress) address).getAddress();
 						} else
 							readMailDTO.setTo(((InternetAddress) address).getAddress());
@@ -250,7 +252,7 @@ public class MailBox {
 					}
 				}
 				readMailDTO.setCc(cc);
-				readMailDTO.setSentDate(message.getSentDate() != null ? message.getSentDate().toString() : "");
+				readMailDTO.setSentDate(message.getSentDate() != null ? detailedDateFormat.format(message.getSentDate()) : "");
 				readMailDTO.setSubject(message.getSubject());
 				readMailDTO.setFolderName(folderName);
 				String bodyContent = "";
@@ -262,7 +264,6 @@ public class MailBox {
 
 				String contentType = message.getContentType();
 				List<AttachmentDTO> filesList = new LinkedList<>();
-				// JSONArray attachments = new JSONArray();
 				if (contentType.contains("multipart")) {
 					// content may contain attachments
 					Multipart multiPart = (Multipart) message.getContent();
@@ -272,9 +273,7 @@ public class MailBox {
 
 					for (int partCount = 0; partCount < numberOfParts; partCount++) {
 						MimeBodyPart part = (MimeBodyPart) multiPart.getBodyPart(partCount);
-						// if (Part.ATTACHMENT.equalsIgnoreCase(part.getDisposition())) {
 						if (part.getDisposition() != null) {
-							// this part is attachment
 							AttachmentDTO attachment = new AttachmentDTO();
 							String fileName = part.getFileName();
 							String fileType = part.getContentType();
@@ -282,27 +281,32 @@ public class MailBox {
 									+ System.getProperty("file.separator") + orgLocationId + System.getProperty("file.separator")
 									+ "Email Attachments" + System.getProperty("file.separator") + user
 									+ System.getProperty("file.separator") + folderName + System.getProperty("file.separator") + uid;
-							File attachmentFolderPath = new File(filePath);
-							if (!attachmentFolderPath.exists())
-								attachmentFolderPath.mkdirs();
-							File attachmentFile = new File(filePath + System.getProperty("file.separator") + fileName);
-							if (!attachmentFile.exists())
-								part.saveFile(attachmentFile);
-							String fileUrl = "/slead-static/" + orgId + "/" + orgLocationId + "/Email Attachments/" + user + "/"
-									+ folderName + "/" + uid;
+							try {
+								File attachmentFolderPath = new File(filePath);
+								if (!attachmentFolderPath.exists())
+									attachmentFolderPath.mkdirs();
+								File attachmentFile = new File(filePath + System.getProperty("file.separator") + fileName);
+								if (!attachmentFile.exists())
+									part.saveFile(attachmentFile);
+								String fileUrl = "/slead-static/" + orgId + "/" + orgLocationId + "/Email Attachments/" + user + "/"
+										+ folderName + "/" + uid;
 
-							attachment.setFileName(fileName);
-							attachment.setUrl(fileUrl);
-							attachment.setFileType(fileType);
-							attachment.setFileExtension(fileName.substring(fileName.lastIndexOf("."), fileName.length()));
-							float fileSize = attachmentFile.length() / 1024;
-							attachment.setSizeUnit("KB");
-							if (fileSize > 1024) {
-								fileSize = fileSize / 1024;
-								attachment.setSizeUnit("MB");
+								attachment.setUrl(fileUrl);
+								attachment.setPath(attachmentFolderPath.getAbsolutePath());
+								attachment.setFileExtension(fileName.substring(fileName.lastIndexOf("."), fileName.length()));
+								/*float fileSize = attachmentFile.length() / 1024;
+								attachment.setSizeUnit("KB");
+								if (fileSize > 1024) {
+									fileSize = fileSize / 1024;
+									attachment.setSizeUnit("MB");
+								}
+								attachment.setFileSize(fileSize);*/
+							} catch (Exception e) {
+								attachment.setAttachmentNotFoundOrCorrupted(true);
+								/*e.printStackTrace();*/
 							}
-							attachment.setFileSize(fileSize);
-							/* filesList.add(fileName + "<<>>" + fileUrl); */
+							attachment.setFileName(fileName);
+							attachment.setFileType(fileType);
 							filesList.add(attachment);
 						}
 					}
@@ -325,9 +329,9 @@ public class MailBox {
 			properties.put("mail.imap.host", host);
 			properties.put("mail.imap.port", port);
 			properties.put("mail.imap.starttls.enable", "true");
-			Session emailSession = Session.getDefaultInstance(properties);
+			Session emailSession = Session.getInstance(properties);
 
-			// create the POP3 store object and connect with the pop server
+			// create the store object and connect with the pop server
 			Store store = emailSession.getStore(storeType);
 
 			store.connect(host, email, password);
@@ -337,11 +341,11 @@ public class MailBox {
 			for (long uid : messageIds) {
 				Message message = uf.getMessageByUID(uid);
 				if (message != null) {
-					if(deleteForever) {
-//						emailFolder.setFlags(messageIds, new Flags(Flags.Flag.DELETED), true);
+					if (deleteForever) {
+						// emailFolder.setFlags(messageIds, new Flags(Flags.Flag.DELETED), true);
 						message.setFlag(Flags.Flag.DELETED, true);
 					} else {
-						//copy message to trash folder
+						// copy message to trash folder
 						Folder trashFolder = null;
 						Folder[] allFolders = store.getDefaultFolder().list("*");
 						for (Folder folder : allFolders) {
@@ -352,7 +356,7 @@ public class MailBox {
 						if (trashFolder == null || !trashFolder.exists())
 							trashFolder.create(Folder.HOLDS_MESSAGES);
 						emailFolder.copyMessages(new Message[] { message }, trashFolder);
-						//delete original message
+						// delete original message
 						message.setFlag(Flags.Flag.DELETED, true);
 					}
 				}
@@ -365,196 +369,16 @@ public class MailBox {
 		}
 		return false;
 	}
-	
+
 	@SuppressWarnings("static-access")
-	public static Response<Boolean> composeEmail(long orgId, long orgLocationId, String storeType, String staticPath, EmailAccountSettings emailAccountSettings, ReadMailDTO readMailDTO) {
+	public static Response<Boolean> composeEmail(String outgoingHost, String outgoingPort, boolean outgoingSSL, String incomingHost,
+			String incomingPort, boolean incomingSSL, String transportType, String email, String password, long orgId, long orgLocationId,
+			String staticPath, ReadMailDTO readMailDTO) {
 		Response<Boolean> response = new Response<>();
 		try {
 			Properties properties = new Properties();
-			properties.put("mail.transport.protocol", "ssl");
-			properties.put("mail.host", emailAccountSettings.getOutgoingServer());
-			properties.put("mail.smtp.auth", emailAccountSettings.isOutgoingSSL()); 
-			properties.put("mail.smtp.port", emailAccountSettings.getOutgoingPort());
-			properties.put("mail.debug", "true");  
-			properties.put("mail.smtp.socketFactory.port", emailAccountSettings.getOutgoingPort());
-			properties.put("mail.smtp.socketFactory.class","javax.net.ssl.SSLSocketFactory");  
-			properties.put("mail.smtp.socketFactory.fallback", "false");
-			properties.put("mail.smtp.starttls.enable", "true");
-			
-			/*Session session = Session.getDefaultInstance(properties, new javax.mail.Authenticator() {*/
-			Session session = Session.getInstance(properties, new javax.mail.Authenticator() {
-				@Override
-				protected PasswordAuthentication getPasswordAuthentication() {
-					return new PasswordAuthentication(emailAccountSettings.getEmail(), emailAccountSettings.getPassword());
-				}
-			});
-
-			/*Message message = null;
-			
-			if(readMailDTO.getSendType().equalsIgnoreCase("reply")) {
-				message = getMailByUID(incomingHost, incomingPort, transportType, email, password, readMailDTO.getFolderName(), readMailDTO.getMessageId());
-				message.setReplyTo(message.getReplyTo());
-			} else {
-				message = new MimeMessage(session);
-			}*/
-			Message message = new MimeMessage(session);
-			message.setFrom(new InternetAddress(emailAccountSettings.getEmail()));
-			message.setRecipients(Message.RecipientType.TO, InternetAddress.parse(readMailDTO.getTo()));
-			
-			if(readMailDTO.getCc() != null && !readMailDTO.getCc().isEmpty())
-				message.addRecipients(Message.RecipientType.CC, InternetAddress.parse(readMailDTO.getCc()));
-			
-			message.setSubject(readMailDTO.getSubject());
-			
-			String filePath = staticPath + System.getProperty("file.separator") + orgId + System.getProperty("file.separator")
-					+ orgLocationId;
-			Multipart multipart = new MimeMultipart();
-			if (readMailDTO.getFilesList() != null && !readMailDTO.getFilesList().isEmpty()) {
-				for (AttachmentDTO attachmentDTO : readMailDTO.getFilesList()) {
-					BodyPart bodyPart = new MimeBodyPart();
-					String attachmentFolder = (readMailDTO.getSendType() != null && readMailDTO.getSendType().equalsIgnoreCase("forward")
-							&& !attachmentDTO.isNewUpload()) ? "Email Attachments" : "temp";
-					
-					String subFolder = (readMailDTO.getSendType() != null && readMailDTO.getSendType().equalsIgnoreCase("forward")
-							&& !attachmentDTO.isNewUpload())
-									? attachmentDTO.getUrl().substring(
-											attachmentDTO.getUrl().indexOf(attachmentFolder) + attachmentFolder.length(),
-											attachmentDTO.getUrl().lastIndexOf("/") + 1)
-									: "";
-											
-					File file = new File(filePath + System.getProperty("file.separator") + attachmentFolder + subFolder,
-							attachmentDTO.getFileName());
-					DataSource dataSource = new FileDataSource(file);
-					bodyPart.setDataHandler(new DataHandler(dataSource));
-					bodyPart.setFileName(file.getName());
-					multipart.addBodyPart(bodyPart);
-				}
-			}
-			
-			BodyPart htmlBodyPart = new MimeBodyPart();
-			htmlBodyPart.setContent(readMailDTO.getBody(), "text/html");
-			multipart.addBodyPart(htmlBodyPart);
-			
-			message.setContent(multipart);
-			
-			Transport transport = session.getTransport();
-			transport.connect(emailAccountSettings.getOutgoingServer(), emailAccountSettings.getEmail(), emailAccountSettings.getPassword());
-			transport.send(message, message.getAllRecipients());
-			
-			if (!emailAccountSettings.getOutgoingServer().equalsIgnoreCase("smtp.gmail.com")) {
-				Properties properties1 = new Properties();
-				properties1.put("mail.imap.host", emailAccountSettings.getIncomingServer());
-				properties1.put("mail.imap.port", emailAccountSettings.getIncomingPort());
-				properties1.put("mail.imap.starttls.enable", "true");
-				Session emailSession = Session.getDefaultInstance(properties1);
-
-				// create the POP3 store object and connect with the pop server
-				Store store = emailSession.getStore(storeType);
-
-				store.connect(emailAccountSettings.getIncomingServer(), emailAccountSettings.getEmail(), emailAccountSettings.getPassword());
-
-				Folder folder = (Folder) store.getFolder("Sent Items");
-				if (folder.exists() == false) {
-					folder = (Folder) store.getFolder("Sent");
-					if (folder.exists() == false) {
-						folder.create(Folder.HOLDS_MESSAGES);
-					}
-				}
-				folder.open(Folder.READ_WRITE);
-				message.setSentDate(new Date());
-				folder.appendMessages(new Message[] { message });
-			}
-			transport.close();
-			
-			if (readMailDTO.getSendType() == null || (!readMailDTO.getSendType().equalsIgnoreCase("forward")
-					&& readMailDTO.getFilesList() != null && !readMailDTO.getFilesList().isEmpty())) {
-				for (AttachmentDTO attachmentDTO : readMailDTO.getFilesList()) {
-					File file = new File(filePath + System.getProperty("file.separator") + "temp", attachmentDTO.getFileName());
-					file.delete();
-				}
-			}
-			System.out.println("------------------ Email Sent ------------------");
-			response.setResponse(Result.SUCCESS.name());
-			response.setResponseMessage("Email Sent Successfully....");
-		} catch (Exception e) {
-			e.printStackTrace();
-			response.setResponse(Result.FAILED.name());
-			response.setResponseMessage(Result.FAILED.getValue());
-		}
-		return response;
-	}
-	
-	/*@SuppressWarnings("static-access")
-	public static boolean replyEmail(String outgoingHost, String outgoingPort, String incomingHost, String incomingPort,
-			String transportType, String email, String password, String to, String subject, String body, String folderName,
-			long userId, long orgLocationId, long uid) {
-		try {
-			Properties properties = new Properties();
 			properties.put("mail.transport.protocol", transportType);
-			properties.put("mail.host", outgoingHost);
-			properties.put("mail.smtp.auth", "true"); 
-			properties.put("mail.smtp.port", outgoingPort);
-			properties.put("mail.debug", "true");  
-			properties.put("mail.smtp.socketFactory.port", outgoingPort);
-			properties.put("mail.smtp.socketFactory.class","javax.net.ssl.SSLSocketFactory");  
-			properties.put("mail.smtp.socketFactory.fallback", "false");
-			properties.put("mail.smtp.starttls.enable", "true");
-			
-			Session session = Session.getInstance(properties, new javax.mail.Authenticator() {
-				@Override
-				protected PasswordAuthentication getPasswordAuthentication() {
-					return new PasswordAuthentication(email, password);
-				}
-			});
-
-			Message message = getMailByUID(incomingHost, incomingPort, transportType, email, password, folderName, userId, orgLocationId, uid);
-			message.setFrom(new InternetAddress(email));
-			message.setRecipients(Message.RecipientType.TO, InternetAddress.parse(to));
-			message.setSubject(subject);
-			message.setContent(body, "text/html");
-			message.setReplyTo(message.getReplyTo());
-			Transport transport = session.getTransport();
-			transport.connect(outgoingHost, email, password);
-			transport.send(message, message.getAllRecipients());
-			
-			if (!outgoingHost.equalsIgnoreCase("smtp.gmail.com")) {
-				Properties properties1 = new Properties();
-				properties1.put("mail.imap.host", incomingHost);
-				properties1.put("mail.imap.port", incomingPort);
-				properties1.put("mail.imap.starttls.enable", "true");
-				Session emailSession = Session.getDefaultInstance(properties1);
-
-				// create the POP3 store object and connect with the pop server
-				Store store = emailSession.getStore("imaps");
-
-				store.connect(outgoingHost, email, password);
-
-				Folder folder = (Folder) store.getFolder("Sent Items");
-				if (folder.exists() == false) {
-					folder = (Folder) store.getFolder("Sent");
-					if (folder.exists() == false) {
-						folder.create(Folder.HOLDS_MESSAGES);
-					}
-				}
-				folder.open(Folder.READ_WRITE);
-				message.setSentDate(new Date());
-				folder.appendMessages(new Message[] { message });
-			}
-			transport.close();
-			System.out.println("------------------ Reply Email Sent ------------------");
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-		return false;
-	}*/
-	
-/*	@SuppressWarnings("static-access")
-	public static boolean forwardEmail(String outgoingHost, String outgoingPort, String incomingHost, String incomingPort,
-			String transportType, String email, String password, String to, String cc, String subject, String body) {
-		try {
-			Properties properties = new Properties();
-			properties.put("mail.transport.protocol", transportType);
-			properties.put("mail.host", outgoingHost);
+			properties.put("mail.smtp.host", outgoingHost);
 			properties.put("mail.smtp.auth", "true");
 			properties.put("mail.smtp.port", outgoingPort);
 			properties.put("mail.debug", "true");
@@ -572,13 +396,43 @@ public class MailBox {
 
 			Message message = new MimeMessage(session);
 			message.setFrom(new InternetAddress(email));
-			message.setRecipients(Message.RecipientType.TO, InternetAddress.parse(to));
+			message.setRecipients(Message.RecipientType.TO, InternetAddress.parse(readMailDTO.getTo()));
 
-			if (cc != null && !cc.isEmpty())
-				message.addRecipients(Message.RecipientType.CC, InternetAddress.parse(cc));
+			if (readMailDTO.getCc() != null && !readMailDTO.getCc().isEmpty())
+				message.addRecipients(Message.RecipientType.CC, InternetAddress.parse(readMailDTO.getCc()));
 
-			message.setSubject(subject);
-			message.setContent(body, "text/html");
+			message.setSubject(readMailDTO.getSubject());
+			String filePath = staticPath + System.getProperty("file.separator") + orgId + System.getProperty("file.separator")
+					+ orgLocationId;
+			Multipart multipart = new MimeMultipart();
+			if (readMailDTO.getFilesList() != null && !readMailDTO.getFilesList().isEmpty()) {
+				for (AttachmentDTO attachmentDTO : readMailDTO.getFilesList()) {
+					BodyPart bodyPart = new MimeBodyPart();
+					String attachmentFolder = (readMailDTO.getSendType() != null && readMailDTO.getSendType().equalsIgnoreCase("forward")
+							&& !attachmentDTO.isNewUpload()) ? "Email Attachments" : "temp";
+
+					String subFolder = (readMailDTO.getSendType() != null && readMailDTO.getSendType().equalsIgnoreCase("forward")
+							&& !attachmentDTO.isNewUpload())
+									? attachmentDTO.getUrl().substring(
+											attachmentDTO.getUrl().indexOf(attachmentFolder) + attachmentFolder.length(),
+											attachmentDTO.getUrl().lastIndexOf("/") + 1)
+									: "";
+
+					File file = new File(filePath + System.getProperty("file.separator") + attachmentFolder + subFolder,
+							attachmentDTO.getFileName());
+					DataSource dataSource = new FileDataSource(file);
+					bodyPart.setDataHandler(new DataHandler(dataSource));
+					bodyPart.setFileName(file.getName());
+					multipart.addBodyPart(bodyPart);
+				}
+			}
+
+			BodyPart htmlBodyPart = new MimeBodyPart();
+			htmlBodyPart.setContent(readMailDTO.getBody(), "text/html");
+			multipart.addBodyPart(htmlBodyPart);
+
+			message.setContent(multipart);
+
 			Transport transport = session.getTransport();
 			transport.connect(outgoingHost, email, password);
 			transport.send(message, message.getAllRecipients());
@@ -588,9 +442,9 @@ public class MailBox {
 				properties1.put("mail.imap.host", incomingHost);
 				properties1.put("mail.imap.port", incomingPort);
 				properties1.put("mail.imap.starttls.enable", "true");
-				Session emailSession = Session.getDefaultInstance(properties1);
+				Session emailSession = Session.getInstance(properties1);
 
-				// create the POP3 store object and connect with the pop server
+				// create the IMAP store object and connect with the pop server
 				Store store = emailSession.getStore("imaps");
 
 				store.connect(outgoingHost, email, password);
@@ -607,12 +461,24 @@ public class MailBox {
 				folder.appendMessages(new Message[] { message });
 			}
 			transport.close();
-			System.out.println("------------------ Forward Email Sent ------------------");
+
+			if (readMailDTO.getSendType() == null || (!readMailDTO.getSendType().equalsIgnoreCase("forward")
+					&& readMailDTO.getFilesList() != null && !readMailDTO.getFilesList().isEmpty())) {
+				for (AttachmentDTO attachmentDTO : readMailDTO.getFilesList()) {
+					File file = new File(filePath + System.getProperty("file.separator") + "temp", attachmentDTO.getFileName());
+					file.delete();
+				}
+			}
+			System.out.println("------------------ Email Sent ------------------");
+			response.setResponse(Result.SUCCESS.name());
+			response.setResponseMessage("Email Sent Successfully....");
 		} catch (Exception e) {
 			e.printStackTrace();
+			response.setResponse(Result.FAILED.name());
+			response.setResponseMessage(Result.FAILED.getValue());
 		}
-		return false;
-	}*/
+		return response;
+	}
 
 	private static String getTextFromMimeMultipart(MimeMultipart mimeMultipart) throws IOException, MessagingException {
 		int count = mimeMultipart.getCount();

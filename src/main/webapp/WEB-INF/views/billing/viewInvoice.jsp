@@ -906,7 +906,6 @@ function getViewInvoice(){
 						}else{
 							rate = "--";
 						}
-						
 						if(items.totalHours != null && items.totalHours != '' && items.totalHours != 'undefined'){
 							totalHours = items.totalHours;
 						}else{
@@ -934,7 +933,6 @@ function getViewInvoice(){
                         }else{
                             quantity = "--";
                         }
-                        
                         result = result +'                 <tr>                                                          ';
                         
                         if(report.invoiceCategory != null && report.invoiceCategory != '' && report.invoiceCategory != 'undefined' && report.invoiceCategory == "expenses"){
@@ -962,8 +960,16 @@ function getViewInvoice(){
 //                         result = result +'                     </td>                                                     ';
                         
                         if(report.invoiceCategory != null && report.invoiceCategory != '' && report.invoiceCategory != 'undefined' && report.invoiceCategory == "expenses"){
-                            result = result +'                     <td>                                                      ';
+                        	 result = result +'                     <td>                                                      ';
+                             result = result +'                         <div class="tbldata-dotdot_50" title="'+quantity+'">'+quantity+'</div>       ';
+                             result = result +'                     </td>                                                     ';
+                             
+                        	result = result +'                     <td>                                                      ';
                             result = result +'                         <div class="tbldata-dotdot_50" title="'+rate+'">'+rate+'</div>       ';
+                            result = result +'                     </td>                                                     ';
+                            
+                            result = result +'                     <td>                                                      ';
+                            result = result +'                         <div class="tbldata-dotdot_80" title="'+amount+'">'+amount+'</div>       ';
                             result = result +'                     </td>                                                     ';
                         }else{
                             result = result +'                     <td>                                                      ';
@@ -1035,7 +1041,7 @@ function getViewInvoice(){
 				result = result +'	        <div class="col-md-7">                                                                            ';
 				result = result +'	            <div class="form-horizontal billsubTotal">                                                    ';
 				result = result +'	              <div class="form-group">                                                                    ';
-				result = result +'	                <label class="col-md-7 text-right"><strong>Subtotal</strong></label>                   ';
+				result = result +'	                <label class="col-md-7 text-right"><strong>Sub Total</strong></label>                   ';
 				result = result +'	                <div class="col-md-5 text-right"><span class="pull-left">'+currencyCode+'</span><span><strong>'+report.subTotal+'</strong></span></div>                             ';
 				result = result +'	              </div>                                                                                      ';
 				result = result +'	              <!-- Discount UI -->                                                                        ';
@@ -1145,7 +1151,7 @@ function getViewInvoice(){
 	                  
 	                  result = result +'  <div class="clearfix"><label class="col-md-6 text-right"><strong>Conversion From</strong></label><div class="paddingLeft col-md-6"><span>'+currencyCode+'</span><div class="pull-right"><input class="ReadTextFli" readonly="" type="text">'+report.total+'</div></div></div>';
 	                  result = result +'  <div class="clearfix"><label class="col-md-6 text-right"><strong>Conversion To</strong></label><div class="paddingLeft col-md-6"><span>'+convertCurrencyCode+'</span><div class="pull-right"><input  class="ReadTextFli" readonly="" type="text">'+convertAmount+'</div></div></div>';
-	                  result = result +'  <div class="clearfix"><label class="col-md-6 text-right"><strong>Exchange Rate</strong></label><div class="paddingLeft col-md-6"><span>'+currencyCode+' 1 = '+convertCurrencyCode+' </span><div class="pull-right"><input  class="ReadTextFli ReadTextFli90" readonly="" type="text">'+exchangeRate+'</div></div></div>';
+	                  result = result +'  <div class="clearfix"><label class="col-md-6 text-right"><strong>Exchange Rate</strong></label><div class="paddingLeft col-md-6"><span>'+currencyCode+' to '+convertCurrencyCode+' </span><div class="pull-right"><input  class="ReadTextFli ReadTextFli90" readonly="" type="text">'+exchangeRate+'</div></div></div>';
 	                  
 	                  result = result +'  </div>';
 	                  result = result +'  </div>'; 	

@@ -195,5 +195,9 @@ public interface ImmigrationCommonService {
     LcaHistory saveLcaHistory(LcaHistory lcaHistory);
     
     int updateLcaHistoryStatusByLcaNumber(Long lhId,Long immigrationId,Long candidateId);
+    
+    int deleteLcaHistoryDetailsByImmigrationId(Long immigrationId);
+    
+    List<String> getAllExpiredCandidatesFromLcaHistoryByLcaId(Long lcaId);
  //   void deleteLcaPlaceOfEmpmntDetails(Long remaininglpoeIds[]);
 }

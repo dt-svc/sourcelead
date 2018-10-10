@@ -230,9 +230,9 @@ public class ImmigrationCommonServiceImpl implements ImmigrationCommonService {
 			
 			StringBuilder actionDesc = new StringBuilder();
 			if (StringUtils.isNotBlank(immigrationDTO.getImmigrationId())) {
-				actionDesc.append("Immigration Details Edited").toString();
+				actionDesc.append("Petition Details Edited").toString();
 			} else {
-				actionDesc.append("New Immigration Added").toString();
+				actionDesc.append("New Petition Added").toString();
 			}
 			immigrationActivityCommonUtil.saveImmigrationActivities(user, orgLocations, immigration, null,
 					actionDesc.toString());
@@ -1632,7 +1632,11 @@ public class ImmigrationCommonServiceImpl implements ImmigrationCommonService {
 			/*
 			 * LCA Details from LCA History Table
 			 */
-			LcaHistory lhcurr=immigrationCommonDao.getLcaHistoryDetails(immigration.getId(),Constants.YES);
+			List<LcaHistory> lhcurrList=immigrationCommonDao.getLcaHistoryDetails(immigration.getId(),Constants.YES);
+			LcaHistory lhcurr  = null;
+			if(lhcurrList != null && lhcurrList.size()>0) {
+				lhcurr = lhcurrList.get(0);
+			}
 			
 			if(lhcurr != null) {
 				//currentLca info
@@ -1647,7 +1651,12 @@ public class ImmigrationCommonServiceImpl implements ImmigrationCommonService {
 				
 			}
 			
-			LcaHistory lhPre=immigrationCommonDao.getLcaHistoryDetails(immigration.getId(),Constants.NO);
+			List<LcaHistory> lhPreList=immigrationCommonDao.getLcaHistoryDetails(immigration.getId(),Constants.NO);
+			
+			LcaHistory lhPre = null;
+			if(lhPreList != null && lhPreList.size()>0) {
+				lhPre = lhPreList.get(0);
+			}
 			if(lhPre != null) {
 				//preLca info
 				immigrationDTO.setPrevLcaStartDate(commonUtil.dateStrFromOrgDateFormatter(orgLocations.getDateFormat(),lhPre.getLcaId().getStartDate()));
@@ -2861,6 +2870,16 @@ private List<LcaDocumentHistory> saveLcaDocumentHistoryList(LcaDTO lcaDTO, Lca l
 	@Override
 	public int updateLcaHistoryStatusByLcaNumber(Long lhId, Long immigrationId, Long candidateId) {
 		return immigrationCommonDao.updateLcaHistoryStatusByLcaNumber(lhId, immigrationId, candidateId);
+	}
+
+	@Override
+	public int deleteLcaHistoryDetailsByImmigrationId(Long immigrationId) {
+		return immigrationCommonDao.deleteLcaHistoryDetailsByImmigrationId(immigrationId);
+	}
+
+	@Override
+	public List<String> getAllExpiredCandidatesFromLcaHistoryByLcaId(Long lcaId) {
+		return immigrationCommonDao.getAllExpiredCandidatesFromLcaHistoryByLcaId(lcaId);
 	}
 
 	/*

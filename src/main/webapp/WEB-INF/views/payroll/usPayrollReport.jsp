@@ -51,6 +51,15 @@
             </div>
           </div>
           
+           <div class="col-md-3">
+            <div class="pull-left mr10"> <i class="fa fa-check fa-2x text-primary"></i> </div>
+            <div class="pull-left">
+              <h4 class="text-primary"><a href="araging-graph.html" class="anchorBlue">Associate Withholding</a></h4>
+              <small class="text-muted">Associate Withholding Report</small>
+              <div class="clearfix mt10"><a href="${appPath}/associateWithholding" class="btn btn-primary btn-sm" title="View">View</a> </div>
+            </div>
+          </div>
+          
           <!-- <div class="col-md-3">
             <div class="pull-left mr10"> <i class="fa fa-line-chart fa-2x text-primary"></i> </div>
             <div class="pull-left">

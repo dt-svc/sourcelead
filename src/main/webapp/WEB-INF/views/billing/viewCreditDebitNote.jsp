@@ -211,7 +211,9 @@ function getViewCreditDebitNote(){
 	                result = result +'<th>Associate</th>														';
 	                result = result +'<th>Quantity</th>																';
 	                result = result +'<th>Price</th>															';
-	                result = result +'<th>Amount</th>															';
+	                result = result +'<th>Tax Type</th>															';
+	                result = result +'<th>Tax Amount</th>															';
+	                result = result +'<th>Total Amount</th>															';
 					result = result +'                 </tr>                                                         ';
 					if(response.object.listOfCreditDebitLineItems.length > 0){
 						for (var i=0; i<response.object.listOfCreditDebitLineItems.length; i++)
@@ -247,9 +249,25 @@ function getViewCreditDebitNote(){
                             result = result +'<div title="'+items.quantity+'">'+items.quantity+'</div>'							;
                             result = result +'</td>																			';
                             
-                            result = result +'<td>'																			;
-                            result = result +'<div title="'+items.price+'">'+items.price+'</div>'							;
-                            result = result +'</td>																			';
+                            result = result +'<td>';
+                            result = result +'<div title="'+items.price+'">'+items.price+'</div>';
+                            result = result +'</td>';
+                            
+                            result = result +'<td>';
+                            if(items.taxAmount !=null && items.taxAmount !='' && items.taxAmount !='undefined'){
+                            result = result +'<div title="'+items.taxType+'">'+items.taxType+'</div>';
+                            }else{
+                            result = result +'<div>---</div>';	
+                            }
+                            result = result +'</td>';
+                            
+                            result = result +'<td>';
+                            if(items.taxAmount !=null && items.taxAmount !=''  && items.taxAmount !='undefined'){
+                            result = result +'<div title="'+items.taxAmount+'">'+items.taxAmount+'</div>';
+                            }else{
+                            result = result +'<div>---</div>';		
+                            }
+                            result = result +'</td>';
                             
                             result = result +'<td>'																			;
                             result = result +'<div title="'+items.totalAmount+'">'+items.totalAmount+'</div>'							;
@@ -290,7 +308,7 @@ function getViewCreditDebitNote(){
                 result = result +'<div class="col-md-7 col-md-offset-5">                                                                              ';
                 result = result +'  <div class="form-horizontal billsubTotal">                                                                        ';
                 result = result +'    <div class="form-group">                                                                                        ';
-                result = result +'      <label class="control-label col-md-7"><strong>Subtotal</strong></label>   ';
+                result = result +'      <label class="control-label col-md-7"><strong>Sub Total</strong></label>   ';
                 result = result +'      <div class="col-md-5 text-right">'+response.object.subTotal+'</div>                                                 ';
                 result = result +'    </div>                                                                                                          ';
                 result = result +'    <!-- Discount UI -->                                                                                            ';
@@ -307,10 +325,12 @@ function getViewCreditDebitNote(){
                 result = result +'      </div>                                                                                                        ';
                 
                 result = result +'      <div class="col-md-5 text-right">                                                                             ';
+                result = result +'        <div class="row">';
                 result = result +'      <label class="control-label col-md-7"><strong>Discount Total</strong></label>                                       ';
                 result = result +'      <div class="col-md-5 text-right">'+discountTotal+'</div>                                                 ';
                 result = result +'      </div>                                                                                                        ';
                 result = result +'    </div>                                                                                                          ';
+                result = result +'    </div>';
                 result = result +'    <div class="addtax_table">                                                                                      ';
                 result = result +'      <table class="table-bordered table-striped table-responsive" width="100%" cellspacing="0" cellpadding="0">    ';
                 result = result +'        <tbody>                                                                                                     ';
@@ -319,8 +339,23 @@ function getViewCreditDebitNote(){
                 result = result +'      </table>                                                                                                      ';
                 result = result +'    </div>                                                                                                          ';
                 result = result +'    <div class="form-group mt">                                                                                     ';
-                result = result +'      <label class="col-md-7 text-right"><strong>Total</strong> '+response.object.loginCurrencyCode+'</label>                                             ';
-                result = result +'      <div class="col-md-5 text-right">'+response.object.total+'</div>                                ';
+                
+                result = result +'  <div class="clearfix mt col-md-offset-2 col-md-10" style="padding-right:0;">';
+                result = result +'      <label class="col-md-6 text-right"><strong>Total</strong></label> ';
+                result = result +'      <div class="col-md-6 text-right paddingLeft"><span class="pull-left">'+response.object.loginCurrencyCode+'</span><div class="pull-right">'+response.object.total+'</div></div>';
+                if(response.object.vendorCurrencyCode != null && response.object.vendorCurrencyCode != '' && response.object.vendorCurrencyCode != 'undefined'){
+                result = result +'  </div>';
+                
+                result = result +'  <div class="clearfix">';
+                result = result +'  <div class="clearfix mt col-md-offset-2 col-md-10" style="padding-right:0;">';
+                
+                result = result +'  <div class="clearfix"><label class="col-md-6 text-right"><strong>Conversion From</strong></label><div class="paddingLeft col-md-6"><span>'+currencyCode+'</span><div class="pull-right"><input class="ReadTextFli" readonly="" type="text">'+response.object.total+'</div></div></div>';
+                result = result +'  <div class="clearfix"><label class="col-md-6 text-right"><strong>Conversion To</strong></label><div class="paddingLeft col-md-6"><span>'+response.object.vendorCurrencyCode+'</span><div class="pull-right"><input  class="ReadTextFli" readonly="" type="text">'+response.object.exchangeCurrencyRate+'</div></div></div>';
+                result = result +'  <div class="clearfix"><label class="col-md-6 text-right"><strong>Exchange Rate</strong></label><div class="paddingLeft col-md-6"><span>'+currencyCode+' to '+response.object.vendorCurrencyCode+' </span><div class="pull-right"><input  class="ReadTextFli ReadTextFli90" readonly="" type="text">'+response.object.afterExchangeGrandTotal+'</div></div></div>';
+                
+                result = result +'  </div>';
+                result = result +'  </div>'; 	
+				}
                 result = result +'    </div>                                                                                                          ';
                 result = result +'  </div>                                                                                                            ';
                 result = result +'</div>                                                                                                              ';

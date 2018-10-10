@@ -346,6 +346,11 @@ public class RequirementServiceImpl implements RequirementService {
 				requirement.setJobTitle(requirementDTO.getJobTitle());
 			}
 		}
+		if (StringUtils.isNotBlank(requirementDTO.getProcess())) {
+			if (!"".equalsIgnoreCase(requirementDTO.getProcess())) {
+				requirement.setProcess(requirementDTO.getProcess());
+			}
+		}
 		if (StringUtils.isNotBlank(requirementDTO.getJobType())) {
 			requirement.setJobType(requirementDTO.getJobType());
 		}
@@ -4082,7 +4087,7 @@ public class RequirementServiceImpl implements RequirementService {
 		Response<String> response = new Response<>();
 		try {
 			JobFair jobFair = null;
-			JobFair savedJobFair = requirementDao.getJobFairByName(jobFairDTO.getName());
+			JobFair savedJobFair = requirementDao.getJobFairByName(jobFairDTO.getName(), user.getId(), orgLocations.getId());
 			if (savedJobFair != null && savedJobFair.getId() != jobFairDTO.getId()) {
 				response.setResponse(Result.DUPLICATE_NAME.name());
 				response.setResponseMessage(Result.DUPLICATE_NAME.getValue());

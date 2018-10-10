@@ -72,6 +72,8 @@ function getAssetReportCustomDates(){
 		 document.getElementById("noOfDaysDiv").style.display="none";
 	 	 document.getElementById("dateperiodDiv").style.display="none";
 	 	 $("#customeSearchButton").prop("disabled",false);
+	 	 $("#customeSearcListhButton").prop("disabled",false);
+	 	
 	 }
 }
  
@@ -87,9 +89,11 @@ function getAssetReportCustomDates(){
 			    	$("#durationCount").text(report.noOfDays);
 			    	if(report.noOfDays <= 365){
 			    		$("#customeSearchButton").prop("disabled",false);
+			   	 	    $("#customeSearcListhButton").prop("disabled",false);
 			    		document.getElementById("dateperiodDiv").style.display="none";
 			    	}else{
 			    		$("#customeSearchButton").prop("disabled",true);
+			   	 	    $("#customeSearcListhButton").prop("disabled",true);
 			    		document.getElementById("noOfDaysDiv").style.display="none";
 			    		document.getElementById("dateperiodDiv").style.display="inline-block";
 			    	}
@@ -114,8 +118,8 @@ function getAssetReportCustomDates(){
     
 	<div class="reportHead clearfix">
 		<div class="listGridWrap reqListBtn">
-			<button type="button" title="Reports View" id="GraphView"  value="grid" class="btn btn-primary rAct"><i class="fa fa-pie-chart"></i></button>
-        	<button type="button" title="List View" id="ListView" value="list" class="btn btn-default"><i class="fa fa-list"></i></button>
+			<button type="button" title="Reports View" id="GraphView"  value="grid" class="btn btn-primary rAct" onclick="getAssetGrowthReports('grid')"><i class="fa fa-pie-chart"></i></button>
+        	<button type="button" title="List View" id="ListView" value="list" class="btn btn-default" ><i class="fa fa-list"></i></button>
 		</div>
 	
     	<ul class="clearfix pull-right">
@@ -157,7 +161,9 @@ function getAssetReportCustomDates(){
 		                <p id="toDateDiv" style="display: none">To Date Required</p>
 		              </div>
 		              
-		              <div class="repCustomDateBtn"><button type="button" class="btn btn-primary btn-sm" id="customeSearchButton" onclick="getAssetGrowthReports();"><i class="fa fa-search"></i></button></div>
+		              <div class="repCustomDateBtn"><button type="button" class="btn btn-primary btn-sm" id="customeSearchButton" onclick="getAssetGrowthReports('grid');" style="display: block"><i class="fa fa-search"></i></button>
+		              <button type="button" class="btn btn-primary btn-sm" id="customeSearcListhButton" onclick="getAssetGrowthReports('ListView');" style="display: none"><i class="fa fa-search"></i></button>
+		              </div>
 		           <div class="clearfix"></div>
 		          <div class="clearfix mt5">
 		          <span><i class="fa fa-info-circle small text-primary" title="Days period not more than 365 days"></i></span>
@@ -172,8 +178,6 @@ function getAssetReportCustomDates(){
     </div>     
     
     <div id="assetGrowthCahrt" style="width: 100%; height: 375px; display: block;" ></div>
-<!--     <div id="agWeekdays" style="width: 100%; height: 375px; display: block;" ></div> -->
-<!--     <div id="agYear" style="width: 100%; height: 375px; display: none;" ></div> -->
 		<div class="clearfix timesheet_head timeHd_minHeight"></div>
 		<div id="assetGrowthReportList"  class="datatable_filter" style="width: 100%; min-height: 75px; display: none;" ></div>
     </div>
@@ -182,14 +186,18 @@ function getAssetReportCustomDates(){
 <script>
 
 document.getElementById("GraphView").addEventListener("click", function(){
-    alert($(this).val());
     $("#assetListRunBtn").hide();
     $("#assetGridRunBtn").show();
+    $("#customeSearcListhButton").hide();
+    $("#customeSearchButton").show();
+    
     
 });
 document.getElementById("ListView").addEventListener("click", function(){
 	$("#assetGridRunBtn").hide();
 	$("#assetListRunBtn").show();
+	$("#customeSearcListhButton").show();
+    $("#customeSearchButton").hide();
 });
 function getAssetGrowthReports(type){
 	var flag = true;
@@ -230,8 +238,10 @@ function getAssetGrowthReports(type){
 		    		if(response.data != ""){
 		    			if(response.responseMessage === "months") {
 		    				monthsReport(response.data);
-		    			}else{
-		    				last7daysReport(response.data);
+		    			}else if(response.responseMessage === "days"){
+		    				daywiseReport(response.data);
+		    			}else if(response.responseMessage === "ListView"){
+		    				assetGrowthReportList(response.data);
 		    			}
 		    		}else{
 		    			var result = '';
@@ -239,6 +249,7 @@ function getAssetGrowthReports(type){
 		 	   			result = result+"</div> ";
 		 	   	        $("#assetGrowthCahrt").empty();
 		                $("#assetGrowthCahrt").append(result);
+		                assetGrowthReportList(response.data);
 		    		}
 		    		
 		    		var listView = document.getElementById("GraphView");
@@ -255,7 +266,7 @@ function getAssetGrowthReports(type){
 						    	element.classList.add("btn-default");
 						    	
 		    				}else{
-		    					last7daysReport(response.data);
+		    					daywiseReport(response.data);
 		    					var element = document.getElementById("ListView");
 						    	var grid = document.getElementById("GraphView");
 						    	grid.classList.add("btn-primary");
@@ -276,22 +287,20 @@ function getAssetGrowthReports(type){
 		        	 listView.addEventListener("click", function() {
 		        		  $("#assetGrowthCahrt").hide();
 		        		  $("#assetGrowthReportList").show();  
-		        		  
-		        		  
-		        		 $.ajax({ 
+		        		  $("#assetGrowthReportList").empty();
+		        		  $.ajax({ 
 		        			   	type: "POST",
 		        			   	url: sourceleadUrl+"/getAssetGrowthReportList?${_csrf.parameterName}=${_csrf.token}&categoryIds="+catIds+"&dateSelection="+dateSelection+"&fromDate="+fromDate+"&toDate="+toDate+"&gridType=ListView",
 		        			    success: function(response) {
-		        			    	assetGrowthReportList(response.data);
-		        			    	var element = document.getElementById("ListView");
-							    	var grid = document.getElementById("GraphView");
-							    	element.classList.add("btn-primary");
-							    	grid.classList.remove("btn-primary");
-							    	grid.classList.remove("btn-default");
-							    	 
+		        			      assetGrowthReportList(response.data);
+		   	      			      var element = document.getElementById("ListView");
+		   				    	  var grid = document.getElementById("GraphView");
+		   				    	  element.classList.add("btn-primary");
+		   				    	  grid.classList.remove("btn-primary");
+		   				    	  grid.classList.remove("btn-default");
 		        			    }
-		        		 });
-		        		 
+		        		  });
+	      			     
 		        	 });
 					
 		       }
@@ -310,7 +319,8 @@ function getAssetGrowthReports(type){
   }
   </script>
 <script>
-function last7daysReport(response){
+
+function daywiseReport(response){
 	/*  // total offsets reserved for margins
 	 var offsets = 100;
     
@@ -332,8 +342,9 @@ function last7daysReport(response){
 		}
 		mainChar.push({
 				"category": report.fromDate,
-				"column-1": report.categoryCount,
-				"categoryName" :catName
+				"column-1": report.assetCount,
+				"categoryName" :catName,
+				"categoryCount" :report.categoryCount
 				});
     }
 	  
@@ -364,7 +375,7 @@ function last7daysReport(response){
 	"trendLines": [],
 	"graphs": [
 		{
-			"balloonText": "No. of Assets [[value]]  <br/> Category [[value]] <br> [[categoryName]] ",
+			"balloonText": "No. of Assets [[value]]  <br/> Category [[categoryCount]] <br> [[categoryName]] ",
 			"fillAlphas": 1,
 			"fillColors": "#74B9FF",
 			"id": "assetGrowth",
@@ -381,8 +392,7 @@ function last7daysReport(response){
 			"id": "Quanity",
 			"axisColor": "#636E72",
 			"firstDayOfWeek": 0,
-			"gridThickness": 0,
-			"title": "Quantity"
+			"gridThickness": 0
 		}
 	],
 	"allLabels": [],
@@ -415,8 +425,9 @@ function monthsReport(response){
 		monthChar.push(
 				{
 					"category": report.monthNames,
-					"column-1": report.categoryCount,
-					"categoryName" :catName
+					"column-1": report.assetCount,
+					"categoryName" :catName,
+					"categoryCount" :report.categoryCount
 				});
     }
 	
@@ -447,7 +458,7 @@ function monthsReport(response){
 			"trendLines": [],
 			"graphs": [
 				{
-					"balloonText": "No. of Assets:  [[value]] <br/> Category:  [[value]] <br> [[categoryName]] ",
+					"balloonText": "No. of Assets:  [[value]] <br/> Category:  [[categoryCount]] <br> [[categoryName]] ",
 					"fillAlphas": 1,
 					"fillColors": "#74B9FF",
 					"fixedColumnWidth": 50,
@@ -464,8 +475,7 @@ function monthsReport(response){
 				{
 					"id": "Quanity",
 					"axisColor": "#636E72",
-					"gridThickness": 0,
-					"title": "Quantity"
+					"gridThickness": 0
 				}
 			],
 			"allLabels": [],
@@ -481,17 +491,22 @@ function monthsReport(response){
 <script>
 function assetGrowthReportList(response){
   var result = "";
+  var country = '${SourceLeadWeb_orgLocations.country}';
   result = result+'<div class="candidate_wrap_table recruiterReports_table">';
   result = result+'   <table id="assetGrowthPagination">';
   result = result+'     <thead>';
   result = result+'       <tr>';
-  result = result+'         <th> <i class="fa fa-clock-o fa-2x"></i>';
-  result = result+'           <div class="small">Time Period</div>';
+  result = result+'         <th> <i class="fa fa-calendar-check-o fa-2x"></i>';
+  result = result+'           <div class="small">Purchase Date</div>';
   result = result+'         </th>';
   result = result+'         <th> <i class="fa fa fa-cubes fa-2x"></i>';
   result = result+'           <div class="small">No. of Assets</div>';
   result = result+'         </th>';
-  result = result+'         <th> <i class="fa fa-inr fa-2x"></i>';
+  if(country == "India"){
+	  result = result+'         <th> <i class="fa fa-inr fa-2x"></i>';
+  }else{
+	  result = result+'         <th> <i class="fa fa-dollar fa-2x"></i>';
+  }
   result = result+'           <div class="small">Cost of Assests</div></th>';
   result = result+'       </tr>';
   result = result+'     </thead>';
@@ -499,8 +514,8 @@ function assetGrowthReportList(response){
 	for (var i=0; i<response.length; i++){
 		var report = response[i];
 		  result = result+'       <tr>';
-		  result = result+'         <td><div class="width215px"><div class="">'+report.fromDate+'</div></div></td>';
-		  result = result+'         <td><div class="">'+report.categoryCount+'</div></td>';
+		  result = result+'         <td><div class="width215px"><div class="">'+report.listFromDate+'</div></div></td>';
+		  result = result+'         <td><div class="">'+report.assetCount+'</div></td>';
 		  result = result+'         <td><div class="width215px"><div class="">'+report.costDoble+'</div></div></td>';
 		  result = result+'       </tr>';
     }
@@ -518,6 +533,7 @@ function assetGrowthReportListPagination(){
 	    	"scrollCollapse": false,
 	    	"lengthMenu": [[10, 15, 20, -1], [10, 15, 20, "All"]],
 	    	"bLengthChange": true,
+	    	"order": [[ 0, "desc" ]],
 	    	"bDestroy": true,
 	    	"ordering": true,
 	    	"oLanguage": {

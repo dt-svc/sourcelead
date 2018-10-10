@@ -315,7 +315,7 @@
 					  <label class="col-md-4"><span class="pull-left">Associate (Beneficiary)</span><span
 									class="text-danger pull-left" id="man1">*</span></label>
 									<div class="col-md-8">
-									<input class="form-control" type="text" readonly name="candidateNameEmail" id="candidateNameEmail" value="${immigrationDTO.candidateNameEmail}"/>
+									<input class="form-control" type="text" disabled="disabled" name="candidateNameEmail" id="candidateNameEmail" value="${immigrationDTO.candidateNameEmail}"/>
 									<input type="hidden" id="candidateId" name="candidateId" value="${immigrationDTO.candidateId}"/>
 						
 						</div>	
@@ -372,7 +372,7 @@
           <div class="form-group">
               <label class="col-md-4">Email<span class="text-danger paddingLeft">*</span></label>
               <div class="col-md-8">
-					<input type="text" class="form-control" name="email" value="${immigrationDTO.email}" id="email" field-name="Email" data-validation="required">
+					<input type="text" class="form-control" name="email" value="${immigrationDTO.email}" id="email" field-name="Email" data-validation="required validate_email">
               </div>
           </div>
                       	
@@ -1284,6 +1284,7 @@ $("#experienceValue").change(function () {
 	 	if('${SourceLeadWeb_orgLocations.isLawFirm}' == 'Y'){
 			type = "Client";
 			orgLocationId = reponsderLocId;
+
 			if(attorneySelId  == '' ||  typeof attorneySelId == 'undefined' ){
 		 		<c:if test="${empty immigrationDTO}">
 			 		$("#candidateNameEmail").attr("readonly",true);
