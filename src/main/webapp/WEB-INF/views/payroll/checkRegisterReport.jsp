@@ -363,13 +363,13 @@ function checkRegisterReports(){
 		$("input[type=search]").hide();
 		$("#dataTableSearch").keyup(function(e) {
 			if (e.which === 13) {
-				checkRegisterReports()();
+				checkRegisterReports();
 			}
 		});
 		
 	}
 	function payCheckDateSearch(){
-		checkRegisterReports()();
+		checkRegisterReports();
 	}
 	
 </script>

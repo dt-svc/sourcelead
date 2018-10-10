@@ -21,13 +21,13 @@
 					<div class="col-md-5">
 						<label class="clearfix">Name<span class="text-danger">&nbsp;*</span></label>
 						<div class="clearfix">
-							<input type="text" id="fairName" value="${jobFair.name}" class="form-control" name="name" field-name="Name" data-validation="required">
+							<input type="text" id="fairName" value="${jobFair.name}" class="form-control" name="name" field-name="Name" data-validation="required validate_length length1-100">
 						</div>
 					</div>
 					<div class="col-md-5">
 						<label class="clearfix">Venue</label>
 						<div class="clearfix positionRelative">
-							<input type="text" id="venue" value="${jobFair.venue}" name="venue" class="form-control">
+							<input type="text" id="venue" value="${jobFair.venue}" name="venue" class="form-control" data-validation="validate_length length0-200">
 							<div class="fa fa-refresh btn btn-primary refresh-icon" title="Clear" onclick="refreshLocation();"></div>
 						</div>
 					</div>
@@ -69,7 +69,7 @@
 					<div class="col-md-5">
 						<label class="clearfix">Notify to</label>
 						<div class="clearfix positionRelative">
-							<textarea class="form-control" rows="4" id="notifyTo" placeholder="Enter multiple Email Id's separated by commas(,)">${jobFair.notifyTo}</textarea>
+							<textarea class="form-control" rows="4" id="notifyTo" placeholder="Enter multiple Email Id's separated by commas(,)" data-validation="validate_length length0-500">${jobFair.notifyTo}</textarea>
 						</div>
 					</div>
 					
@@ -487,7 +487,7 @@
 						location.replace(sourceleadUrl);
 					} else if (result.response === "AWKWARD") {
 						location.href = "/errorPage";
-					} else if (result.response === "DUPLICATE_NAME") {
+					} else if (result.response === "DUPLICATE_NAME" || result.response === "INVALID_DATA") {
 						showError(result.responseMessage);
 					}  else if (result.response === "SUCCESS") {
 						$(".success_pop span").html("JobFair " + (id > 0 ? "updated":"created") + " successfully...");

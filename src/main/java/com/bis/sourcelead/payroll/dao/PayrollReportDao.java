@@ -4,6 +4,7 @@ import java.util.List;
 
 import com.bis.sourcelead.dto.ResponseList;
 import com.bis.sourcelead.entity.OrgLocations;
+import com.bis.sourcelead.payroll.dto.AssociateWithHoldingDTO;
 import com.bis.sourcelead.payroll.dto.CheckRegisterReportDTO;
 import com.bis.sourcelead.payroll.dto.PayrollReportDTO;
 import com.bis.sourcelead.payroll.entity.DeductionHistory;
@@ -24,5 +25,7 @@ public interface PayrollReportDao {
 	List<DeductionHistory> exportToPdfContributionReport(OrgLocations orgLocation, PayrollReportDTO payrollReportDTO);
 	
 	List<DeductionHistory> exportToPdfDeductionReport(OrgLocations orgLocation, PayrollReportDTO payrollReportDTO);
+
+	ResponseList<AssociateWithHoldingDTO> getAssociateWithHoldingReport(OrgLocations orgLocation, AssociateWithHoldingDTO associateWithHoldingDTO);
 
 }
