@@ -57,12 +57,12 @@
           </div>
           
           </div>
-          <div class="remove_search">
+         <!--  <div class="remove_search">
             <input type="text" placeholder="Search"/>
-          </div>
+          </div> -->
         </div>
         <div class="clearfix mt"></div>
-         <div class="styleTables datatable_filter" id="marketPlaceTableDiv">
+        	<div id="marketPlaceTableDiv" class="project_wrap_table datatable_filter"></div>
         </div>
         <div class="footerstyelsNew mt clearfix">
         <div class="col-lg-12">
@@ -160,7 +160,7 @@ function callValidatePriceAmount(){
 	}
 	
 	if(flagAtleastOneCheck){
-		popupDisplay("Please select atleast one checkbox");
+		popupDisplay("Please select at least one Candidate");
 		return false;
 	}
 	
@@ -458,6 +458,10 @@ function marketPlacePagination(){
 		//candidateSearchHighlight();
     	 //  }
     	//}); 
+    // Removing pagination for market place list 
+     $('#marketPlaceTable_length').remove(); // removes the pagination values.
+    $('#marketPlaceTable_info').remove(); // removes the pagination information.
+    $('#marketPlaceTable_paginate').remove(); // removes the pagination numbers.
 }
 
 $(".funPrice").on("click", "li", function(){
