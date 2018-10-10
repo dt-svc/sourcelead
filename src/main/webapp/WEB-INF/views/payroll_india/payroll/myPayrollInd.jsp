@@ -1,5 +1,6 @@
 <jsp:include page="../../masterHeader.jsp" />
 <jsp:include page="../../masterSideNav.jsp" />
+<script src="/resources/js/tax/my_payroll.js" type="text/javascript"></script>
 
 <section class="content-wraper contentWraper">
   <section class="content-header clearfix">
@@ -13,7 +14,7 @@
 			<ul class="nav nav-tabs newTabs">
 				<li id="myPaysLi" class=""><a onclick="getMyPays();" title="Pays">Pays</a></li>
 				<li id="myFormsLi"  class=""><a onclick="getMyForms();" title="Forms">Forms</a></li>
-				<li id="myLoansAdvancesLi"  class=""><a onclick="getMyLoansAdv();" title="Loans & Advances">Loans & Advances</a></li>
+				<li id="myLoansAdvancesLi"  class=""><a onclick="getMyLoansAdv('Outstanding');" title="Loans & Advances">Loans & Advances</a></li>
 			</ul>
 	   </div>
    </div>
@@ -67,12 +68,12 @@
 </script>
 
 <script>
-	function getMyLoansAdv(){ 
+	function getMyLoansAdv(loanStatus){ 
              var sourceleadUrl ='${SourceLeadWeb_sourceleadUrl}';
              $("#loadTime").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:60% center; background-repeat:no-repeat; background-size:75px;');
       	   $.ajax({
      	          type : "GET",
-      	      	  url: sourceleadUrl+"/getMyLoansAdv",		
+      	      	  url: sourceleadUrl+"/getMyLoansAdv?loanStatus="+loanStatus,		
       		      success :function(data) {
       		    	  
       		    	  
