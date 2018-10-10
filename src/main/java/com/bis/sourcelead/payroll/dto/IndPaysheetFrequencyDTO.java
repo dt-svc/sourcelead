@@ -4,16 +4,12 @@ import java.math.BigDecimal;
 import java.util.List;
 
 import com.bis.sourcelead.dto.SearchDTO;
-import com.bis.sourcelead.payroll.entity.IndPaysheetFrequency;
 
 public class IndPaysheetFrequencyDTO  extends SearchDTO{
 	
-	/**
-	 * 
-	 */
 	private static final long serialVersionUID = 1L;
 
-	private String id;
+	private Long id;
 	
 	private String payRunId;
 	
@@ -21,7 +17,7 @@ public class IndPaysheetFrequencyDTO  extends SearchDTO{
 	
 	private String payPeriod;
 	
-	private String orgLocationId;
+	private Long orgLocationId;
 	
 	private String payFrequency;
 	private String payDate;
@@ -32,7 +28,7 @@ public class IndPaysheetFrequencyDTO  extends SearchDTO{
 	private String groupName;
 	private Long paySheetFrequencyId;
 	
-	private IndPaysheetFrequency indPaySheetFrequency;
+	private String actionPerformedBy;
 	
 	private List<INDPayrollDTO> indPayrollDTO;
 	
@@ -43,12 +39,22 @@ public class IndPaysheetFrequencyDTO  extends SearchDTO{
 	private String frequencyEndDateStr;
 	
 	private String payCheckDateStr;
+	
+	private Integer status;
+	
+	private Long createdBy;
+	
+	private Long updatedBy;
+	
+	private String updatedDate;
+	
+	private String createdDate;
 
-	public String getId() {
+	public Long getId() {
 		return id;
 	}
 
-	public void setId(String id) {
+	public void setId(Long id) {
 		this.id = id;
 	}
 
@@ -76,11 +82,11 @@ public class IndPaysheetFrequencyDTO  extends SearchDTO{
 		this.payPeriod = payPeriod;
 	}
 
-	public String getOrgLocationId() {
+	public Long getOrgLocationId() {
 		return orgLocationId;
 	}
 
-	public void setOrgLocationId(String orgLocationId) {
+	public void setOrgLocationId(Long orgLocationId) {
 		this.orgLocationId = orgLocationId;
 	}
 
@@ -148,14 +154,6 @@ public class IndPaysheetFrequencyDTO  extends SearchDTO{
 		this.paySheetFrequencyId = paySheetFrequencyId;
 	}
 
-	public IndPaysheetFrequency getIndPaySheetFrequency() {
-		return indPaySheetFrequency;
-	}
-
-	public void setIndPaySheetFrequency(IndPaysheetFrequency indPaySheetFrequency) {
-		this.indPaySheetFrequency = indPaySheetFrequency;
-	}
-
 	public List<INDPayrollDTO> getIndPayrollDTO() {
 		return indPayrollDTO;
 	}
@@ -195,4 +193,53 @@ public class IndPaysheetFrequencyDTO  extends SearchDTO{
 	public void setPayCheckDateStr(String payCheckDateStr) {
 		this.payCheckDateStr = payCheckDateStr;
 	}
+
+	public Integer getStatus() {
+		return status;
+	}
+
+	public void setStatus(Integer status) {
+		this.status = status;
+	}
+
+	public Long getCreatedBy() {
+		return createdBy;
+	}
+
+	public void setCreatedBy(Long createdBy) {
+		this.createdBy = createdBy;
+	}
+
+	public Long getUpdatedBy() {
+		return updatedBy;
+	}
+
+	public void setUpdatedBy(Long updatedBy) {
+		this.updatedBy = updatedBy;
+	}
+
+	public String getUpdatedDate() {
+		return updatedDate;
+	}
+
+	public void setUpdatedDate(String updatedDate) {
+		this.updatedDate = updatedDate;
+	}
+
+	public String getCreatedDate() {
+		return createdDate;
+	}
+
+	public void setCreatedDate(String createdDate) {
+		this.createdDate = createdDate;
+	}
+
+	public String getActionPerformedBy() {
+		return actionPerformedBy;
+	}
+
+	public void setActionPerformedBy(String actionPerformedBy) {
+		this.actionPerformedBy = actionPerformedBy;
+	}
+	
 }
