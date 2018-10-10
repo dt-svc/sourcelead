@@ -92,6 +92,8 @@ public class AssetDTO extends SearchDTO implements Serializable {
 		
 		private String vendorDetails;
 		
+		private String exportType;
+		
 		public List<CustomFormFieldDTO> getCustomFormData() {
 			return customFormData;
 		}
@@ -405,5 +407,13 @@ public class AssetDTO extends SearchDTO implements Serializable {
 
 		public void setVendorDetails(String vendorDetails) {
 			this.vendorDetails = vendorDetails;
+		}
+
+		public String getExportType() {
+			return exportType;
+		}
+
+		public void setExportType(String exportType) {
+			this.exportType = exportType;
 		}
 }
