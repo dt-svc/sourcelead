@@ -3473,4 +3473,27 @@ public class RequirementDaoImpl implements RequirementDao {
 		}
 	}
 
+	@Override
+	@Transactional(rollbackFor = { Exception.class })	
+	public List<Requirement> getJobsListByOrgRelationAndLocation(Long orglocationId, String orgRelationIds,	Date startDateUTC, Date endDateUTC) throws Exception {
+		Session session = this.sessionFactory.getCurrentSession();
+		String query = null;
+		List<Requirement> reqList = null;
+		if(StringUtils.isNotBlank(orgRelationIds)){
+		String[] idsValues = orgRelationIds.split(",");
+		// convert string array to long array
+		Long[] data = new Long[idsValues.length];
+		for (int i = 0; i < idsValues.length; i++) {
+		  data[i] = Long.valueOf(idsValues[i]);
+		}
+		query = "from Requirement req where req.orgLocationId.id =:orglocationId and req.clientId.id IN (:orgRelationIds) and req.createdDate BETWEEN :startDateUTC and :endDateUTC ";
+		 reqList = session.createQuery(query).setParameterList("orgRelationIds", data).setParameter("startDateUTC", startDateUTC).setParameter("endDateUTC", endDateUTC).setParameter("orglocationId", orglocationId).list();
+		}else{
+		query = "from Requirement req where req.orgLocationId.id =:orglocationId and req.createdDate BETWEEN :startDateUTC and :endDateUTC ";
+		 reqList = session.createQuery(query).setParameter("startDateUTC", startDateUTC).setParameter("endDateUTC", endDateUTC).setParameter("orglocationId", orglocationId).list();
+			
+		}
+		 return reqList;
+	}
+
 }

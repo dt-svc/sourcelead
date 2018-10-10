@@ -95,12 +95,13 @@ function getJobsReportCustomDates(){
 		</div>
 	
     	<ul class="clearfix pull-right">
+    	<li id="vendorFiletPopup"><a href="javascript:void(0)" class="filtIcon" title="Filters" onclick="openFilterPop();"></a></li>
     		<li>
 				<div class="ReqRepHead-chosen repChosen">
 					<select class="chosen-select form-control" multiple data-placeholder="Select Job" name="jobIds" id="jobIds">
-			            <c:forEach var="option" items="${requirementsList}">
+			            <%-- <c:forEach var="option" items="${requirementsList}">
 							<option value="${option.requirementId}">${option.generatedId} - ${option.jobTitle}</option>
-						</c:forEach>
+						</c:forEach> --%>
 			          </select>
 		        </div>    		
     		</li>
@@ -355,6 +356,142 @@ function getJobsReportCustomDates(){
 </div>      
     
   </section>
+  <div class="advancedsearch-mask"></div>
+  <div class="cand-advsrch-popup advancedsearch-popup filterDynamic-Search-small" id="jobPipelineFilterId">
+				<h5 class="headerAdsrch">Filter
+					<a href="javascript:void(0)" class="close-div" onClick="closeFilterPop()"><i
+						class="fa fa-close"></i></a>
+				</h5>
+				<div class="addInner">
+					  <div class="col-md-4">
+							<div class="clearfix dynamic_search filterDynamicsearch">
+								<input type="text" id="myClientInput" onkeyup="myClientFunction()" placeholder="Clients" title="Type in a teams">
+								<span class="cursorPointer" title="Search"><i class="fa fa-search"></i></span>
+							</div>
+							 <div class="clearfix filterSearch-ul">
+								<ul class="list-unstyled positionRelative filterSearch mt5" id="myClientUL">
+									<c:forEach var="clientsList" items="${orgClientList}">
+									
+									<li class="checkBox positionRelative"><input  type="checkbox" name="clientNameById" value ="${clientsList.responderLocationId.org.id}" ><label>${clientsList.responderLocationId.org.orgName}</label></li>
+									
+									</c:forEach>
+								</ul>
+							 </div> 
+						</div>
+						
+						<div class="col-md-4">
+						<div class="row">
+						    <div class="col-md-12 mb">
+								<label><strong>Status</strong></label>
+								 <div class="clearfix">
+									<ul class="list-unstyled" id="statusFilter">
+									<li class="checkBox positionRelative" ><input type="checkbox" value="DRAFT" name="invoiceStatus"><label for="onboard1">Draft</label></li>
+                                    <li class="checkBox positionRelative" ><input type="checkbox" value="SENT" name="invoiceStatus"><label for="onboard2">Sent</label></li>
+                                    <li class="checkBox positionRelative" ><input type="checkbox" value="RECEIVED" name="invoiceStatus"><label for="onboard1">Received</label></li>
+	                                <li class="checkBox positionRelative" ><input type="checkbox"  value="ACCEPTED" name="invoiceStatus"><label for="onboard2">Accepted</label></li>
+	                                <li class="checkBox positionRelative" ><input type="checkbox" value="REJECTED" name="invoiceStatus"><label for="onboard2">Rejected</label></li>
+	                                <li class="checkBox positionRelative" ><input type="checkbox" value="LINKED" name="invoiceStatus"><label for="onboard2">Linked</label></li>
+	                                <li class="checkBox positionRelative" ><input type="checkbox" value="VOID" name="invoiceStatus"><label for="onboard2">Void</label></li>
+			                        </ul>
+							      </div>
+						     </div> 
+						  </div>
+						</div>
+						
+						
+						<div class="col-md-4">
+						<div class="row">
+						    <div class="col-md-12 mb">
+								<label><strong>Job Posted From</strong></label>
+								 <div class="clearfix positionRelative">
+									<ul class="list-unstyled" id="postedDateFilter">
+                                    <li class="checkBox positionRelative" ><input type="radio" onclick="customJobsList();" checked="checked" id="jobDateRadio" value="month" name="jobCustomDays"><label for="onboard2">Last 30 days</label></li>
+	                                <li class="checkBox positionRelative" ><input type="radio" onclick="customJobsList();" value="twomonths" name="jobCustomDays"><label for="onboard2">Last 60 Days</label></li>
+	                                <li class="checkBox positionRelative" ><input type="radio" onclick="customJobsList();" value="threemonths" name="jobCustomDays"><label for="onboard2">Last 90 days</label></li>
+	                                <li class="checkBox positionRelative" ><input type="radio" onclick="customJobsList();" value="sixmonths" name="jobCustomDays"><label for="onboard2">Last 180 days</label></li>
+	                                <li class="checkBox positionRelative" ><input type="radio" onclick="customJobsList();" value="oneyear" name="jobCustomDays"><label for="onboard2">Last 365 days</label></li>
+	                                <li class="checkBox positionRelative" ><input type="radio" onclick="customJobsList();" value="custom" name="jobCustomDays"><label for="onboard2">Custom</label></li>
+			                        </ul>
+						              <div class="custom_search popCusDate">
+						            </div>
+							      </div>
+						     </div> 
+						  </div>
+						</div>
+					  
+					</div>
+					<div class="clearfix advancedsearch-footer">
+						<div class="pull-right mr">
+							<input type="button" value="Apply" id="search_requiremet" onclick="getJobsList();" class="btn btn-sm btn-success" />
+							<input type="button" value="Reset" id="clear_search" onclick="resetFilterPopup();" class="btn btn-sm btn-primary" />
+						</div>
+					</div>
+				</div>
+  
+  <!-- ========================== Filter popup ===============================  -->
+<script>
+function closeFilterPop(){
+	$("#jobPipelineFilterId").hide();
+	$(".advancedsearch-mask").fadeOut();
+}
+function openFilterPop(){
+	 $("#jobPipelineFilterId").toggle();
+	 $(".advancedsearch-mask").fadeIn();
+}
+function resetFilterPopup(){
+	$("ul#myClientUL > li input:checkbox").prop("checked",false);
+	document.getElementById("jobDateRadio").checked = true;
+	$(".custom_search").empty().hide();
+	//getInvoiceList();
+	
+}
+
+function myClientFunction() {
+    var input, filter, ul, li, a, i;
+    input = document.getElementById("myClientInput");
+    filter = input.value.toUpperCase();
+    ul = document.getElementById("myClientUL");
+    li = ul.getElementsByTagName("li");
+    for (i = 0; i < li.length; i++) {
+        a = li[i].getElementsByTagName("label")[0];
+        if (a.innerHTML.toUpperCase().indexOf(filter) > -1) {
+            li[i].style.display = "";
+        } else {
+            li[i].style.display = "none";
+
+        }
+    }
+}
+</script>
+<script type="text/javascript">
+function getJobsList(){
+var jobCreatedDateRange = null;
+var clientIds =[];
+	$('input:radio[name=jobCustomDays]:checked').each(function() {
+		jobCreatedDateRange = $(this).val();
+	});
+	$('input:checkbox[name=clientNameById]:checked').each(function() 
+		    {
+		clientIds.push($(this).val());
+		    });
+	
+	$.ajax({ 
+	   	type: "POST",
+	   	url: sourceleadUrl+"/getJobsForPipelineReoport?${_csrf.parameterName}=${_csrf.token}&jobCreatedDateRange="+jobCreatedDateRange+"&clientIds="+clientIds,
+	    success: function(data) {
+	    	var json = JSON.parse(data);
+        	$('#jobIds').empty();
+            for(var i=0;i<json.length;i++){
+            	  var opt = json[i];
+            		$('#jobIds').append('<option value='+opt.id+' >'+opt.generatedId+' - '+opt.jobTitle+'</option>');
+            }
+            $('#jobIds').trigger("chosen:updated");
+            closeFilterPop();
+        }
+	 });
+}
+
+</script>
 <script>
 function reload(){
 	location.reload();
@@ -398,9 +535,9 @@ function getJobPipelineReports(){
 		   	type: "POST",
 		   	url: sourceleadUrl+"/getAllJobsPipelineReoportsList?${_csrf.parameterName}=${_csrf.token}&jobIds="+jobIds+"&dateSelection="+dateSelection+"&fromDate="+fromDate+"&toDate="+toDate,
 		    success: function(response) {
+		    	getJobsPipelineAmcahrt(response);
+	    		getJobPipelineReportsList(response);
 		    	if(response.object.applicantsCount>0){
-		    		getJobsPipelineAmcahrt(response);
-		    		getJobPipelineReportsList(response);
 		    		var listView = document.getElementById("ListView");
 		        	 listView.addEventListener("click", function() {
 		        		 getJobPipelineReportsList(response);
