@@ -454,7 +454,7 @@ public class BackOfficeRestController {
 			
 			if (user != null && orgLocations != null) {
 				
-				String[] tableColumns = {"id","slno", "assetCategory", "model", "issueDate","macAddress","workingStatus"};
+			String[] tableColumns = {"employeeId","firstName", "name", "slno", "assignedOn", "returnedOn", "shift", "assetCategory"};
 		    int sortColumnIndex = 1; //by default sorting using updated date
 			String sortColumnOrder = "asc"; //by default referContactsDTO order
 			if(assetDTO.getOrder() != null && !assetDTO.getOrder().isEmpty()) {
@@ -465,13 +465,15 @@ public class BackOfficeRestController {
 			assetDTO.setSortOrder(sortColumnOrder);
 			responseList = assetService.getDynamicAssignAssetFilterListByLocationId(orgLocations.getId(), assetDTO);
 			for(AssetAssign aa:responseList.getData()) {
-				if(aa.getUserRole().getEmployeeId() != null) {
-					aa.setEmployeeId(aa.getUserRole().getEmployeeId());
+				Employees emp = employeesService.getEmployeeByUserId(aa.getUserRole().getUser().getId());
+				if(emp != null) {
+					aa.setEmployeeId(emp.getEmployeeId());
 				}
 				aa.setEmployeeName(aa.getUserRole().getUser().getFullName());
 				if(aa.getAsset().getName() != null) {
 					aa.setAssetName(aa.getAsset().getName());
 				}
+				aa.setAssetUUID(aa.getAsset().getAssetUUID());
 				aa.setSerialNumber(aa.getAsset().getSlno());
 				if(aa.getAssignedOn() != null) {
 					aa.setAssignedOnStr(commonUtil.dateStrFromOrgDateFormatter(orgLocations.getDateFormat(), aa.getAssignedOn()));

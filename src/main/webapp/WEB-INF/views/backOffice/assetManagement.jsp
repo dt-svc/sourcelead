@@ -766,6 +766,7 @@ function assignAssetPagination(url){
         "columnDefs": [{
 	  	  	"targets": colIndex++,
 		  	"data": "",
+		  	"sortable": false,
 		  	"display": "none",
 		  	"render": function(data, type, report) {
 		  		var result = "";
@@ -809,7 +810,8 @@ function assignAssetPagination(url){
 				  	"render": function(data, type, report) {
 				  		var result = "";
 					  		if(report.serialNumber != null && report.serialNumber != "" && report.serialNumber !="undefined"){
-							   	result = result+'<td><div class="tbldata-dotdot-vsm" title="'+report.serialNumber+'">'+report.serialNumber+'</div></td>';
+							   	result = result+"<td><a href='<c:url value='/app/assetManagementSummary?assetUUID="+report.assetUUID+"'/>'><div class='proj_show tbldata-dotdot-vsm'><span class='pull-left' title='"+report.serialNumber+"'>"+report.serialNumber+"</span><i class='fa fa-binoculars'></i></div></a></div></td>";
+							   	
 					  		}else{
 							   	result = result+'<td><div class="tbldata-dotdot-vsm">--</div></td>';
 					  		}
@@ -871,7 +873,7 @@ function assignAssetPagination(url){
         ],
 	    	"scrollCollapse": false,
 	    	"lengthMenu": [[10, 15, 20], [10, 15, 20]],
-	    	"aaSorting":[[0,'desc']],
+	    	"aaSorting":[[3,'desc']],
 	    	"bLengthChange": true,
 	    	"bDestroy": true,
 	    	"ordering": true,

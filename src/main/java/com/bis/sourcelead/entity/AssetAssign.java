@@ -93,6 +93,10 @@ public class AssetAssign {
     @JsonProperty
     private String serialNumber;
 	
+	@Transient
+    @JsonProperty
+    private String assetUUID;
+	
 	public Long getId() {
 		return id;
 	}
@@ -235,5 +239,13 @@ public class AssetAssign {
 
 	public void setSerialNumber(String serialNumber) {
 		this.serialNumber = serialNumber;
+	}
+
+	public String getAssetUUID() {
+		return assetUUID;
+	}
+
+	public void setAssetUUID(String assetUUID) {
+		this.assetUUID = assetUUID;
 	}
 }

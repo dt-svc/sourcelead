@@ -547,7 +547,14 @@ public class AssetDaoImpl implements AssetDao{
 		//usertList sorting order
 		String sortingQry = "";
 		if(StringUtils.isNotBlank(assetDTO.getSortColumn())) {
+			if(assetDTO.getSortColumn().equalsIgnoreCase("name") || assetDTO.getSortColumn().equalsIgnoreCase("slno") || assetDTO.getSortColumn().equalsIgnoreCase("assetCategory")) {
 				sortingQry = " order by assetAssign.asset."+ assetDTO.getSortColumn() +" "+assetDTO.getSortOrder();
+			}else if(assetDTO.getSortColumn().equalsIgnoreCase("firstName")) {
+				sortingQry = " order by assetAssign.userRole.user."+ assetDTO.getSortColumn() +" "+assetDTO.getSortOrder();
+			}else {
+				sortingQry = " order by assetAssign."+ assetDTO.getSortColumn() +" "+assetDTO.getSortOrder();
+			}
+				
 		}
 		
 		if(!subquery2.equalsIgnoreCase("")){
