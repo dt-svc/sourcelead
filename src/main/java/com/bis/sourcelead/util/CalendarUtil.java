@@ -1169,7 +1169,7 @@ public  class CalendarUtil {
      cal.set(Calendar.MILLISECOND, 0);  
      return cal.getTime(); 
  }
- 
+  
  
  public static int numberOfDayOccurancesBetweenTwoDates(Date d1,Date d2,String day_Of_Week) {
 	 Calendar c1 = Calendar.getInstance();
@@ -1179,22 +1179,23 @@ public  class CalendarUtil {
 	 c2.setTime(d2);
 	 int count = 0;
 	  
-	 while(c1.after(c2)) {
-	          if(day_Of_Week.equalsIgnoreCase("Sun") && c2.get(Calendar.DAY_OF_WEEK)==Calendar.SUNDAY)
+	 while(c1.before(c2)|| c1.equals(c2)) {
+	     if(day_Of_Week.equalsIgnoreCase("Sun") && c1.get(Calendar.DAY_OF_WEEK)==Calendar.SUNDAY)
 	    	    count++;
-	     else if(day_Of_Week.equalsIgnoreCase("Mon") && c2.get(Calendar.DAY_OF_WEEK)==Calendar.MONDAY)
+	     else if(day_Of_Week.equalsIgnoreCase("Mon") && c1.get(Calendar.DAY_OF_WEEK)==Calendar.MONDAY)
 	    	    count++;
-	     else if(day_Of_Week.equalsIgnoreCase("Tue") && c2.get(Calendar.DAY_OF_WEEK)==Calendar.TUESDAY)
+	     else if(day_Of_Week.equalsIgnoreCase("Tue") && c1.get(Calendar.DAY_OF_WEEK)==Calendar.TUESDAY)
 	    	    count++;
-	     else if(day_Of_Week.equalsIgnoreCase("Wed") && c2.get(Calendar.DAY_OF_WEEK)==Calendar.WEDNESDAY)
+	     else if(day_Of_Week.equalsIgnoreCase("Wed") && c1.get(Calendar.DAY_OF_WEEK)==Calendar.WEDNESDAY)
 	    	    count++;
-	     else if(day_Of_Week.equalsIgnoreCase("Thu") && c2.get(Calendar.DAY_OF_WEEK)==Calendar.THURSDAY)
+	     else if(day_Of_Week.equalsIgnoreCase("Thu") && c1.get(Calendar.DAY_OF_WEEK)==Calendar.THURSDAY)
 	    	    count++;
-	     else if(day_Of_Week.equalsIgnoreCase("Fri") && c2.get(Calendar.DAY_OF_WEEK)==Calendar.FRIDAY)
+	     else if(day_Of_Week.equalsIgnoreCase("Fri") && c1.get(Calendar.DAY_OF_WEEK)==Calendar.FRIDAY)
 	    	    count++;
-	     else if(day_Of_Week.equalsIgnoreCase("Sat") && c2.get(Calendar.DAY_OF_WEEK)==Calendar.SATURDAY)
+	     else if(day_Of_Week.equalsIgnoreCase("Sat") && c1.get(Calendar.DAY_OF_WEEK)==Calendar.SATURDAY)
 	    	    count++;
-	     c2.add(Calendar.DATE,1);
+	     c1.add(Calendar.DATE,1);
+	     
 	 }
 	 return count;
  }
