@@ -33,6 +33,7 @@ import com.bis.sourcelead.payroll.service.ConfigurePayrollApproverService;
 import com.bis.sourcelead.payroll.service.IndPaysheetFrequencyService;
 import com.bis.sourcelead.util.CommonUtil;
 import com.bis.sourcelead.util.INDPayrollCommonUtil;
+import com.bis.sourcelead.util.SourceLeadSessionManager;
 
 @Service
 public class IndPaysheetFrequencyServiceImpl implements IndPaysheetFrequencyService{
@@ -169,10 +170,10 @@ public class IndPaysheetFrequencyServiceImpl implements IndPaysheetFrequencyServ
 	
 	
 	@Override
-	public Response<IndApprovePayrollDTO> approveIndPayroll(IndApprovePayrollDTO indApprovePayrollDTO, OrgLocations orgLocation, User loginUser) throws Exception {
+	public Response<IndApprovePayrollDTO> approveIndPayroll(IndApprovePayrollDTO indApprovePayrollDTO,IndPaysheetFrequency indPaysheetFrequency,OrgLocations orgLocation, User loginUser) throws Exception {
 			Response<IndApprovePayrollDTO> res = new Response<>();
+	   	    
 			try {
-				IndPaysheetFrequency indPaysheetFrequency = indPaysheetFrequencyDao.getIndPaysheetFrequencyByEmpPayrollUUID(indApprovePayrollDTO.getPaySheetFrequencyUUID());
 				indPaysheetFrequency.setApproverStatus(PayrollConstant.APPROVE);
 				indPaysheetFrequency.setUpdatedBy(loginUser.getId());
 				indPaysheetFrequency.setUpdatedDate(new Date());
@@ -226,5 +227,10 @@ public class IndPaysheetFrequencyServiceImpl implements IndPaysheetFrequencyServ
 		}
 		responseList.setData(list);
 		return responseList;
+	}
+
+	@Override
+	public IndPaysheetFrequency getIndPaysheetFrequencyByEmpPayrollUUID(String payrollFrequencyUUID) throws Exception {
+		return indPaysheetFrequencyDao.getIndPaysheetFrequencyByEmpPayrollUUID(payrollFrequencyUUID);
 	}
 }
