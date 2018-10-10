@@ -1,5 +1,6 @@
 package com.bis.sourcelead.rest;
 
+import java.math.BigDecimal;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -26,9 +27,12 @@ import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.dto.AssociateLoanAndAdvancesDTO;
 import com.bis.sourcelead.dto.IndAssociatePaymentAccountDTO;
 import com.bis.sourcelead.dto.PayrollLoanAndAdvancesDTO;
+import com.bis.sourcelead.dto.PayrollPayheadDTO;
 import com.bis.sourcelead.dto.Response;
+import com.bis.sourcelead.dto.ResponseList;
 import com.bis.sourcelead.dto.UserDTO;
 import com.bis.sourcelead.entity.AssociateLoanAndAdvances;
+import com.bis.sourcelead.entity.AssociatePayrollPayheadHistory;
 import com.bis.sourcelead.entity.Candidate;
 import com.bis.sourcelead.entity.Department;
 import com.bis.sourcelead.entity.OrgLocations;
@@ -38,17 +42,22 @@ import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.entity.UserGroup;
 import com.bis.sourcelead.entity.UserRole;
 import com.bis.sourcelead.enums.Result;
+import com.bis.sourcelead.payroll.dao.GenerateINDPayrollDao;
 import com.bis.sourcelead.payroll.dto.AssociatePfEsiDetailsDTO;
 import com.bis.sourcelead.payroll.dto.GenerateINDPayrollDTO;
 import com.bis.sourcelead.payroll.dto.IndApprovePayrollDTO;
 import com.bis.sourcelead.payroll.dto.IndPaysheetFrequencyDTO;
+import com.bis.sourcelead.payroll.entity.IndPaysheetFrequency;
+import com.bis.sourcelead.payroll.service.AssociatePayrollPayheadHistoryService;
 import com.bis.sourcelead.payroll.service.AssociatePfEsiService;
 import com.bis.sourcelead.payroll.service.GenerateINDPayrollService;
+import com.bis.sourcelead.payroll.service.IndPaysheetFrequencyService;
 import com.bis.sourcelead.service.AssociateLoanAndAdvancesService;
 import com.bis.sourcelead.service.CandidateService;
 import com.bis.sourcelead.service.DepartmentService;
 import com.bis.sourcelead.service.PaymentAccountService;
 import com.bis.sourcelead.service.PayrollLoanAndAdvancesService;
+import com.bis.sourcelead.service.PayrollPayheadService;
 import com.bis.sourcelead.service.UserGroupService;
 import com.bis.sourcelead.service.UserRoleService;
 import com.bis.sourcelead.service.UserService;
@@ -86,10 +95,21 @@ public class IndianPayrollRestController {
 	
     @Autowired
 	GenerateINDPayrollService generateINDPayrollService;
+    
+    @Autowired
+    GenerateINDPayrollDao generateINDPayrollDao;
 
+    @Autowired
+    IndPaysheetFrequencyService indPaysheetFrequencyService;
 	
 	@Autowired
 	AssociateLoanAndAdvancesService associateLoanAndAdvancesService;
+	
+	@Autowired
+	AssociatePayrollPayheadHistoryService associatePayrollPayheadHistoryService;
+	
+	@Autowired
+	PayrollPayheadService payrollPayheadService;
 	
     @RequestMapping(value = "/app/save-ind-associate-payment-account", method = RequestMethod.POST)
 	public Response<IndAssociatePaymentAccountDTO> savePaymentAccount(HttpServletRequest request, IndAssociatePaymentAccountDTO account,
@@ -422,8 +442,11 @@ public class IndianPayrollRestController {
 	{
 		OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 		User loginUser = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
-		IndPaysheetFrequencyDTO existedData = generateINDPayrollService.getPayrollData(generateINDPayrollDTO,orgLocation,loginUser);
-		return generateINDPayrollService.generateINDPayroll(existedData, orgLocation, generateINDPayrollDTO, loginUser);
+		IndPaysheetFrequency paysheetFrequency = generateINDPayrollDao.getPayrollData(generateINDPayrollDTO, orgLocation, loginUser);
+		IndPaysheetFrequencyDTO existedData = generateINDPayrollService.getPayrollData(generateINDPayrollDTO,paysheetFrequency,orgLocation,loginUser);
+		IndPaysheetFrequencyDTO indPaysheetFrequencyDTO =  generateINDPayrollService.generateINDPayroll(existedData, orgLocation, generateINDPayrollDTO, loginUser);
+		SourceLeadSessionManager.setSessionAttribute(request, indPaysheetFrequencyDTO.getPaySheetFrequencyUUID(), indPaysheetFrequencyDTO);
+		return indPaysheetFrequencyDTO;
 	}
     
     
@@ -432,9 +455,76 @@ public class IndianPayrollRestController {
    	{
    		OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
    		User loginUser = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+   	    Object sessionObj = SourceLeadSessionManager.getSessionAttribute(request, indApprovePayrollDTO.getPaySheetFrequencyUUID());
+   	    if(sessionObj != null) {
+   	    	try {
+   	    		IndPaysheetFrequencyDTO indPaysheetFrequencyDTO = (IndPaysheetFrequencyDTO) sessionObj;
+   	   	        Response<IndApprovePayrollDTO> res = indPaysheetFrequencyService.sentForApproveIndPayroll(indApprovePayrollDTO,indPaysheetFrequencyDTO, orgLocation,loginUser);
+   	   	        SourceLeadSessionManager.removeSessionAttribute(request, indApprovePayrollDTO.getPaySheetFrequencyUUID());
+   	   	        return res.getObject();
+   	    	}catch(Exception e) {
+   	    	     SourceLeadSessionManager.removeSessionAttribute(request, indApprovePayrollDTO.getPaySheetFrequencyUUID());
+   	    	}
+	    }else {
+	    	 Response<IndPaysheetFrequencyDTO> resp = indPaysheetFrequencyService.getIndPaysheetFrequencyByEmpPayrollUUID(indApprovePayrollDTO.getPaySheetFrequencyUUID(),orgLocation);
+	    	 IndPaysheetFrequencyDTO indPaysheetFrequencyDTO = resp.getObject();
+	    	 Response<IndApprovePayrollDTO> res = indPaysheetFrequencyService.sentForApproveIndPayroll(indApprovePayrollDTO,indPaysheetFrequencyDTO, orgLocation,loginUser);
+   	         SourceLeadSessionManager.removeSessionAttribute(request, indApprovePayrollDTO.getPaySheetFrequencyUUID());
+   	         return res.getObject();
+	    }
+		return indApprovePayrollDTO;
    		
-   		return null;
    	}
+    
+    
+    @RequestMapping(value = { "/app/getApproveInfoIndPayroll","/app/rest/getApproveInfoIndPayroll" }, method = RequestMethod.GET)
+   	public ModelAndView getApproveInfoIndPayroll(IndApprovePayrollDTO indApprovePayrollDTO, HttpServletRequest request, HttpServletResponse response) throws Exception
+   	{
+    	ModelAndView model = new ModelAndView();
+   		OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+   		User loginUser = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+   		
+   		Response<IndPaysheetFrequencyDTO> freqResponse = indPaysheetFrequencyService.getIndPaysheetFrequencyByEmpPayrollUUID(indApprovePayrollDTO.getPaySheetFrequencyUUID(), orgLocation);
+		model.addObject("freqResponse", freqResponse.getObject());
+   		
+   		Response<IndApprovePayrollDTO> approveResponse = indPaysheetFrequencyService.getApproveInfoIndPayroll(indApprovePayrollDTO, orgLocation,loginUser);
+   		model.addObject("approveResponse", approveResponse.getObject());
+   		
+   		ResponseList<PayrollPayheadDTO> orgLevelPayheads = payrollPayheadService.getPayrollPayheadList(orgLocation);
+   		List<AssociatePayrollPayheadHistory> allAssociatesPayrollPayheadList = associatePayrollPayheadHistoryService.getAllUpdatedAssociatePayrollPayheadByPaySheetFrequencyUUID(indApprovePayrollDTO.getPaySheetFrequencyUUID());
+   		for(PayrollPayheadDTO payheadDto : orgLevelPayheads.getData()) {
+   			
+   			if(payheadDto.getType().equalsIgnoreCase(Constants.IND_PAYROLL_PAYHEAD_EARNINGS)) {
+   				payheadDto.setTotalForfrequencyLevel(BigDecimal.valueOf(allAssociatesPayrollPayheadList.stream().filter(ap->ap.getPayrollPayhead().getType().equals(Constants.IND_PAYROLL_PAYHEAD_EARNINGS)).filter(ap->ap.getPayrollPayhead().getShortCode().equalsIgnoreCase(payheadDto.getShortCode())).mapToDouble(ap->ap.getMonthly().doubleValue()).sum()));
+   			}
+   			if(payheadDto.getType().equalsIgnoreCase(Constants.IND_PAYROLL_PAYHEAD_DEDUCTION)) {
+   				payheadDto.setTotalForfrequencyLevel(BigDecimal.valueOf(allAssociatesPayrollPayheadList.stream().filter(ap->ap.getPayrollPayhead().getType().equals(Constants.IND_PAYROLL_PAYHEAD_DEDUCTION)).filter(ap->ap.getPayrollPayhead().getShortCode().equalsIgnoreCase(payheadDto.getShortCode())).mapToDouble(ap->ap.getMonthly().doubleValue()).sum()));
+   			}
+   		}
+   		model.addObject("orgLevelPayheads", orgLevelPayheads.getData());
+   		
+   		
+   		model.addObject("earningTotal", BigDecimal.valueOf(allAssociatesPayrollPayheadList.stream().filter(ap->ap.getPayrollPayhead().getType().equals(Constants.IND_PAYROLL_PAYHEAD_EARNINGS)).mapToDouble(ap->ap.getMonthly().doubleValue()).sum()));
+   		model.addObject("deductionTotal", BigDecimal.valueOf(allAssociatesPayrollPayheadList.stream().filter(ap->ap.getPayrollPayhead().getType().equals(Constants.IND_PAYROLL_PAYHEAD_DEDUCTION)).mapToDouble(ap->ap.getMonthly().doubleValue()).sum()));
+   		
+   		
+		model.addObject("sourceleadUrl", sourceleadUrl);
+		model.setViewName("payroll_india/payroll/approveIndiaPayroll");
+   		return model;
+   	}
+    
+    
+    @RequestMapping(value = { "app/approveIndPayroll","app/rest/approveIndPayroll" }, method = RequestMethod.POST)
+	public Response<IndApprovePayrollDTO> approveIndPayroll(IndApprovePayrollDTO indApprovePayrollDTO ,HttpServletRequest request, HttpServletResponse response) throws Exception
+	{
+		OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+		User loginUser = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+		
+		
+		Response<IndApprovePayrollDTO> res = indPaysheetFrequencyService.approveIndPayroll(indApprovePayrollDTO,orgLocation,loginUser);
+		return res;
+
+	}
 
     
 }
