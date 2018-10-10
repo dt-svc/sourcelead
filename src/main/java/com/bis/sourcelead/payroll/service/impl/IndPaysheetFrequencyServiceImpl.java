@@ -5,7 +5,9 @@ import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 import java.util.Set;
+import java.util.concurrent.CopyOnWriteArraySet;
 
+import org.apache.commons.collections.map.HashedMap;
 import org.apache.commons.lang.exception.ExceptionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
@@ -104,18 +106,18 @@ public class IndPaysheetFrequencyServiceImpl implements IndPaysheetFrequencyServ
 				
 				indPaysheetFrequency.setUpdatedBy(loginUser.getId());
 				indPaysheetFrequency.setUpdatedDate(new Date());
-				Set<IndEmployeePayroll> payrollList = indPaysheetFrequency.getIndEmployeepayroll();
+				CopyOnWriteArraySet<IndEmployeePayroll> payrollList = new CopyOnWriteArraySet<IndEmployeePayroll>(indPaysheetFrequency.getIndEmployeepayroll());
 				for (IndEmployeePayroll payroll : payrollList) {
 					if(!Arrays.asList(indApprovePayrollDTO.getExcludeEmpPayrollUUID()).contains(payroll.getIndEmpPayrollUUID())) {
 						if(StringUtils.isNotEmpty(indApprovePayrollDTO.getApproverStatus()) && indApprovePayrollDTO.getApproverStatus().equalsIgnoreCase(PayrollConstant.DRAFT)) {
 							payroll.setSubmitForAproverStatus(PayrollConstant.DRAFT);
 						}else {
-							indPaysheetFrequency.setApproverStatus(PayrollConstant.SENT); 
+							payroll.setSubmitForAproverStatus(PayrollConstant.SENT); 
 						}
 						payroll.setUpdatedBy(loginUser.getId());
 						payroll.setUpdatedDate(new Date());
 					}else {
-						if(StringUtils.isNotEmpty(indApprovePayrollDTO.getApproverStatus()) && indApprovePayrollDTO.getApproverStatus().equalsIgnoreCase(PayrollConstant.DRAFT)) {
+						if((StringUtils.isNotEmpty(payroll.getSubmitForAproverStatus()) && payroll.getSubmitForAproverStatus().equalsIgnoreCase(PayrollConstant.NEW)) || (StringUtils.isNotEmpty(indApprovePayrollDTO.getApproverStatus()) && indApprovePayrollDTO.getApproverStatus().equalsIgnoreCase(PayrollConstant.DRAFT))) {
 							payrollList.remove(payroll);
 						}
 					}
