@@ -1100,7 +1100,7 @@ function cancel(candidateId){
   <div class="clearfix">
 	<ul class="project-tabs-menu projecttabs-custom clearfix">
          <li id="" class="current"><a href="javascript:void(0)" onclick="javascript:goToCandidateList();">Candidate List</a></li>
-         <li id=""><a href="javascript:void(0)" onclick="javascript:goToGlaobalMarketList();" >Marketplace</a></li>
+         <li id=""><a href="javascript:void(0)" onclick="javascript:goToGlobalMarketPlaceList();">Marketplace</a></li>
          <div class="clearfix"></div>
      </ul>
 </div>	
@@ -1519,14 +1519,7 @@ function cancel(candidateId){
 	   }
    }
    
-   function callAddToMarket(){
-	   
-	   
-	   /* var candidateIdsMark = [];
-	   
-	 	$('input:checkbox[name=sharedcheckbox]:checked').each(function(){
-	 		candidateIdsMark.push($(this).attr("id"));
-	 	});  */
+   /* function callAddToMarket(){
 	 	 $.ajax({
 		    	type: "POST",
 		        url: sourceleadUrl+"/navigateMarketPlaceAjax",
@@ -1536,10 +1529,24 @@ function cancel(candidateId){
 		        	candidateIdsMark = [];
 		        }
 	 	}); 
-	 	//location.href = sourceleadUrl+"/navigateMarketPlaceList?candidateIds="+candidateIds
-   }
+   } */
    
-   
+   function callAddToMarket(){
+	 	 $.ajax({
+		    	type: "POST",
+		        url: sourceleadUrl+"/getAddedMarketplaceCandidates",
+		        data : {candidateIdsVal : candidateIdsMark},
+		        success: function(json) {
+		        	//console.log(json);
+		        	//alert(json['candidatesInMarketplace'].length);
+		        	//alert(json['candidatesNotInMarketplace'].length);  
+		        	//location.href = sourceleadUrl+"/navigateMarketPlaceList";
+		        	candidateIdsMark = [];
+		        	popupDisplay("message", json['candidatesInMarketplace'].length, json['candidatesNotInMarketplace']);
+		        }
+	 	}); 
+ }
+  
    function getSourceleadTags(){
  		 $.ajax({
 		    	type: "GET",
@@ -1770,6 +1777,37 @@ function exportToPdf(){
 	  }
 }
 
+function popupDisplay(message, candidatesInMarketplace, ...candidatesNotInMarketplace){
+	$(".project_inn_mask").remove();
+		
+	var result = "";
+	result = result +"	<div class='project_inn_mask'></div>";
+	result = result +"	   <div id='remove_immigration_pop' class='remove_user_pop remove_user_pop_a'>";
+	/* result = result +"		<  id='reasonForTemplate' name='reasonForSpoc' data-validation='required validate_Space validate_Description validate_length length2-250' placeholder='Reason' onkeypress=';' ></textarea>"; */
+	result = result +"<div class='modal-body'><p id='popupMsg'></p></div>";
+	result = result + ' <div id="reasonForTemplateDiv"/>';
+	result = result +"<div class='clearfix'><input class='u_can_color width100percnt' type='button'  value='Ok' onClick='cancelMarketplacePopup("+candidatesNotInMarketplace+");'></div>";
+	result = result +"	</div>";
+	$("#emptyPopup").append(result);
+	$("#popupMsg").empty().append(message);
+	$("#remove_immigration_pop").slideDown(200);
+	$(".project_inn_mask").fadeIn(200);
+}
+function cancelMarketplacePopup(...candidatesNotInMarketplace){
+	$("#remove_immigration_pop").fadeOut(200);
+	$(".project_inn_mask").fadeOut(200);
+	if(candidatesNotInMarketplace.length != 0){
+		$.ajax({
+	    	type: "POST",
+	        url: sourceleadUrl+"/navigateMarketPlaceAjax",
+	        data : {candidateIdsVal : candidatesNotInMarketplace},
+	        success: function(json) {
+	        	location.href = sourceleadUrl+"/navigateMarketPlaceList";
+	        	candidatesNotInMarketplace = [];
+	        }
+ 	});
+	}
+}
 </script>
 <script type="text/javascript">
 function candidtaeCancel(){
@@ -3107,7 +3145,8 @@ $(".overIcon, .newActPop").click(function(e){
 
 </script>
  <script type="text/javascript">
-	function goToGlaobalMarketList() {
+	/* function goToGlaobalMarketList() {
+		alert("in global function");
 		 $.ajax({
 			type : "GET",
 			url : sourceleadUrl + "/globalMarketplace?" + tokenParamName + "=" + tokenValue,
@@ -3117,9 +3156,13 @@ $(".overIcon, .newActPop").click(function(e){
 				$('#headerLbl').html("Global Marketplace List");
 			},
 		}); 
-	}
+	}  */
 function goToCandidateList(){
 	location.href = "${appPath}/candidatesList";
 }
-</script>
+	
+function goToGlobalMarketPlaceList(){
+	location.href = "${appPath}/globalMarketplacePage";
+}
+</script> 
 <jsp:include page="../masterFooter.jsp" /> 

@@ -242,4 +242,6 @@ public interface CandidateService {
 
 	public void saveCandidateMarketPlaceList(List<CandidateMarketPlaceDTO> marketPlaceList, User user) throws NumberFormatException, Exception;
 
+	public Map<String, Object[]> getAddedMarketplaceCandidates(List<Long> candidateIdsVal);
+
 }

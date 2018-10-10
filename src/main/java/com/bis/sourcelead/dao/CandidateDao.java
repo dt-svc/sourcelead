@@ -164,4 +164,8 @@ public interface CandidateDao {
 	public void saveBulkCandidates(List<Candidate> candidatesList,Long orgLocationId) throws Exception;
 	
 	List<String> getCandidateEmailsByOrgLocationId(Long orgLocationId) throws Exception;
+
+	public List<Long> getAddedMarketplaceCandidates(List<Long> candidateIdsVal);
+
+	public CandidateMarketPlace getCandidateMarketPlaceByCandidateId(Long candidateId);
 }

@@ -63,85 +63,7 @@
         </div>
         <div class="clearfix mt"></div>
          <div class="styleTables datatable_filter" id="marketPlaceTableDiv">
-          <!-- <table>
-            <thead>
-              <tr>
-                <th>All</th>
-                <th>Id</th>
-                <th>Name</th>
-                <th>Email</th>
-                <th>Primary Skills</th>
-                <th>Experience</th>
-                <th>Current Rate</th>
-                <th>Expected Rate</th>
-                <th>Price</th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr>
-                <td>
-                  <div class="tblminwidth-30">
-                  	<div class="checkbox-new pull-left ml">
-                      <input id="price" class="checkbox-custom" name="price" type="checkbox">
-                      <label for="price" class="checkbox-custom-label"></label>
-                    </div>
-                  </div>
-                </td>
-                <td>
-                  <div class="tblminwidth-30">0013005</div>
-                </td>
-                <td>
-                  <div class="tbldata-dotdot-100">Rajakumar Santoshi</div>
-                </td>
-                <td>
-                  <div class="tbldata-dotdot-100">vannam@domain.com</div>
-                </td>
-                <td>
-                  <div class="tbldata-dotdot-100">Java</div>
-                </td>
-                <td>
-                  <div class="tblminwidth-50">3 years</div>
-                </td>
-                <td>
-                 <div class="tblminwidth-30">100</div>
-                </td>
-                <td>
-                 <div class="tblminwidth-30">200</div>
-                </td>
-                <td>
-                 <div class="tblminwidth-75 clearfix">
-                 	<div class="dropdown-inputbox">
-                 			<input type="text" value="" placeholder="Enter" class="form-control input-sm">
-                 		<select class="form-control input-sm sel">
-							<option selected>INR</option>
-							<option>AUD</option>
-							<option>USD</option>
-							<option>GBP</option>
-							<option>SGD</option>
-							<option>EUR</option>
-						</select>
-                 	</div>
-                 </div>
-                </td>
-
-              </tr>
-            </tbody>
-          </table> -->
         </div>
-        <!-- <div class="clearfix">
-         <nav class="pull-right mr">
-          <ul id="paging" class="pagination mb0 mt">
-            <li><a href="#">Previous</a></li>
-            <li><a href="#">2</a></li>
-            <li><a href="#">3</a></li>
-            <li><a href="#">4</a></li>
-            <li><a href="#">5</a></li>
-            <li class="disabled"><a href="#">6</a></li>
-            <li data-page="last"><a href="#">Next</a></li>
-          </ul>
-          <div class="clearfix"></div>
-        </nav>
-        </div> -->
         <div class="footerstyelsNew mt clearfix">
         <div class="col-lg-12">
         <div class="pull-right">
@@ -273,7 +195,7 @@ function callValidatePriceAmount(){
 	    'dataType': 'json',
 		data : JSON.stringify(marketCandidateObj),	
 		success : function(result) {
-			location.href = "/app/candidatesList?marketPlaceFlag=true";
+			location.href = "/app/globalMarketplacePage";
 			//$('#candidatesInfoDiv').html(result);
 			//$('#brudCrumLbl').html("Global Marketplace");
 			//$('#headerLbl').html("Global Marketplace List");
@@ -499,8 +421,15 @@ function marketPlacePagination(){
 	    	    		"sortable": false,
 	    	    	  	"render": function(data, type, opt, meta) {
 	    	    	  		var result = "";
-	    	    	  		result = result + '<td><div class="tblminwidth-75 clearfix"><div class="dropdown-inputbox"><input type="text" id="priceVal" value="" placeholder="Enter" class="form-control input-sm"><select id="amountTypeEach" class="form-control input-sm sel">';
-	    	    	  		result = result + '<option value="" selected>--Select--</option><option>INR</option><option>AUD</option><option>USD</option><option>GBP</option><option>SGD</option><option>EUR</option></select></div></div></td>';
+	    	    	  		result = result + '<td><div class="tblminwidth-75 clearfix"><div class="dropdown-inputbox"><input type="text" id="priceVal" value="" placeholder="Enter" class="form-control input-sm"><select id="amountTypeEach" value="${SourceLeadWeb_currencyCode}" class="form-control input-sm sel">';
+	    	    	  		result = result + ' <option  ${SourceLeadWeb_currencyCode  == "" ? "selected" : ""} value="">--Select--</option>';
+	    	    	  		result = result + ' <option  ${SourceLeadWeb_currencyCode  == "INR" ? "selected" : ""} value="INR">INR</option> ';
+	    	    	  		result = result + ' <option  ${SourceLeadWeb_currencyCode  == "AUD" ? "selected" : ""} value="AUD">AUD</option>';
+	    	    	  		result = result + ' <option  ${SourceLeadWeb_currencyCode  == "USD" ? "selected" : ""} value="USD">USD</option>';
+	    	    	  		result = result + ' <option  ${SourceLeadWeb_currencyCode  == "GBP" ? "selected" : ""} value="GBP">GBP</option> ';
+	    	    	  		result = result + ' <option  ${SourceLeadWeb_currencyCode  == "SGD" ? "selected" : ""} value="SGD">SGD</option>';
+	    	    	  		result = result + ' <option  ${SourceLeadWeb_currencyCode  == "EUR" ? "selected" : ""} value="EUR">EUR</option>';
+	    	    	  		result = result + '</select></div></div></td>';
 	    	    	  		return result;
 	    	    	  	}
     	    	  } ],
