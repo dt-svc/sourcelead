@@ -524,6 +524,7 @@ var jobCreatedDateRange = null;
 var startDateStr = null;
 var endDateStr = null;
 var clientIds =[];
+var returnStat = true;
 	$('input:radio[name=jobCustomDays]:checked').each(function() {
 		jobCreatedDateRange = $(this).val();
 		if(jobCreatedDateRange == 'custom'){
@@ -545,6 +546,7 @@ var clientIds =[];
 		    {
 		clientIds.push($(this).val());
 		    });
+	if(returnStat){
 	$.ajax({ 
 	   	type: "POST",
 	   	url: sourceleadUrl+"/getJobsForPipelineReoport?${_csrf.parameterName}=${_csrf.token}&jobCreatedDateRange="+jobCreatedDateRange+"&startDateStr="+startDateStr+"&endDateStr="+endDateStr+"&clientIds="+clientIds,
@@ -559,6 +561,8 @@ var clientIds =[];
             closeFilterPop();
         }
 	 });
+	}
+	return returnStat;
 }
 
 </script>
