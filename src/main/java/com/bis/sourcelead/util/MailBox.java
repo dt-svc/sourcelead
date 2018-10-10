@@ -63,7 +63,9 @@ public class MailBox {
 			store.connect(host, user, password);
 			Folder[] f = store.getDefaultFolder().list("*");
 			// Folder[] f = store.getDefaultFolder().listSubscribed();
+			/*int temp = 1;*/
 			for (Folder fd : f) {
+				/*System.out.println((temp++) + " " + fd.getName());*/
 				if (fd.getName().equalsIgnoreCase("INBOX") || fd.isSubscribed()) {
 					folderList.add(fd.getName() + "<<>>" + fd.getFullName().replaceAll("&", "-and-"));
 				}
@@ -279,26 +281,32 @@ public class MailBox {
 									+ System.getProperty("file.separator") + orgLocationId + System.getProperty("file.separator")
 									+ "Email Attachments" + System.getProperty("file.separator") + user
 									+ System.getProperty("file.separator") + folderName + System.getProperty("file.separator") + uid;
-							File attachmentFolderPath = new File(filePath);
-							if (!attachmentFolderPath.exists())
-								attachmentFolderPath.mkdirs();
-							File attachmentFile = new File(filePath + System.getProperty("file.separator") + fileName);
-							if (!attachmentFile.exists())
-								part.saveFile(attachmentFile);
-							String fileUrl = "/slead-static/" + orgId + "/" + orgLocationId + "/Email Attachments/" + user + "/"
-									+ folderName + "/" + uid;
+							try {
+								File attachmentFolderPath = new File(filePath);
+								if (!attachmentFolderPath.exists())
+									attachmentFolderPath.mkdirs();
+								File attachmentFile = new File(filePath + System.getProperty("file.separator") + fileName);
+								if (!attachmentFile.exists())
+									part.saveFile(attachmentFile);
+								String fileUrl = "/slead-static/" + orgId + "/" + orgLocationId + "/Email Attachments/" + user + "/"
+										+ folderName + "/" + uid;
 
-							attachment.setFileName(fileName);
-							attachment.setUrl(fileUrl);
-							attachment.setFileType(fileType);
-							attachment.setFileExtension(fileName.substring(fileName.lastIndexOf("."), fileName.length()));
-							float fileSize = attachmentFile.length() / 1024;
-							attachment.setSizeUnit("KB");
-							if (fileSize > 1024) {
-								fileSize = fileSize / 1024;
-								attachment.setSizeUnit("MB");
+								attachment.setUrl(fileUrl);
+								attachment.setPath(attachmentFolderPath.getAbsolutePath());
+								attachment.setFileExtension(fileName.substring(fileName.lastIndexOf("."), fileName.length()));
+								/*float fileSize = attachmentFile.length() / 1024;
+								attachment.setSizeUnit("KB");
+								if (fileSize > 1024) {
+									fileSize = fileSize / 1024;
+									attachment.setSizeUnit("MB");
+								}
+								attachment.setFileSize(fileSize);*/
+							} catch (Exception e) {
+								attachment.setAttachmentNotFoundOrCorrupted(true);
+								/*e.printStackTrace();*/
 							}
-							attachment.setFileSize(fileSize);
+							attachment.setFileName(fileName);
+							attachment.setFileType(fileType);
 							filesList.add(attachment);
 						}
 					}

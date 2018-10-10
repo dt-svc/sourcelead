@@ -1673,14 +1673,24 @@ public class InvoiceServiceImpl implements InvoiceService {
 			String vendorCurrencyCode =  conversionUtil.getVendorOrgCurrencyCode(vendorOrgLocation.getCountry());
   			if(null != projectsList && projectsList.size() >0){
   				for(Projects project : projectsList){
-  	  				List<String> frequencyDates = getProjectsFrequency(project);
+  	  				List<String> frequencyDates = getProjectsFrequency(project,orgLocation);
   	  				for(String frequency :frequencyDates){
   	  				   Invoice invoice = new Invoice();
   	  					List<ProjectMembers> projectMembersList = null;
-  	  					if(Constants.RECEIVABLE.equalsIgnoreCase(invoiceType)){
-  	  						 projectMembersList = getClientProjectAssinedMembersAutoInvoice(frequency,orgLocation,project.getId(),client.getId(),contractType,invoice);
+  	  				if(Constants.RECEIVABLE.equalsIgnoreCase(invoiceType)){
+  	  					projectMembersList = getClientProjectAssinedMembersAutoInvoice(frequency,orgLocation,project.getId(),client.getId(),contractType,invoice);
+  	  					if(orgRelation.getGenerateInvoice().equalsIgnoreCase(Constants.FINANCE_TYPE_INDIVIDUAL) && projectMembersList!=null && projectMembersList.size() >0){
+  	  					List<ProjectMembers> projectMem = null;
+  	  				    projectMem.add(projectMembersList.get(0));
+  	  				    projectMembersList = projectMem;
+  	  					}
   	  					}else{
-  	  						 projectMembersList = getVendorProjectAssinedMembersAutoInvoice(frequency,orgLocation,project.getId(),client.getId(),contractType,invoice,globalUser);
+  						 projectMembersList = getVendorProjectAssinedMembersAutoInvoice(frequency,orgLocation,project.getId(),client.getId(),contractType,invoice,globalUser);
+  						if(orgRelation.getGenerateBill().equalsIgnoreCase(Constants.FINANCE_TYPE_INDIVIDUAL) && projectMembersList!=null && projectMembersList.size() >0){
+    	  					List<ProjectMembers> projectMem = null;
+    	  				    projectMem.add(projectMembersList.get(0));
+    	  				    projectMembersList = projectMem;
+    	  					}
   	  					}
   	  					if(null != projectMembersList && projectMembersList.size() >0){
   	  						populateClientDetails(vendorOrgLocation,invoice,orgRelation);
@@ -2085,11 +2095,11 @@ public class InvoiceServiceImpl implements InvoiceService {
 	 * @return List<String>
 	 * @throws Exception
 	 */
-	private List<String> getProjectsFrequency(Projects projects) throws Exception {
+	private List<String> getProjectsFrequency(Projects projects,OrgLocations orgLocations) throws Exception {
 		// Projects projects = projectsService.getProjectById(projectId);
 		List<String> frequencyDates = new ArrayList<>();
 		Map<String, String> map = timesheetFrequencyGeneratorUtil
-				.getTimesheetFrequencyListFromProjectInvoiceFrequency(projects);
+				.getTimesheetFrequencyListFromProjectInvoiceFrequency(projects,orgLocations);
 		for (Map.Entry<String, String> entry : map.entrySet()) {
 			StringBuffer sb = new StringBuffer();
 			sb.append(entry.getKey().replaceAll("/", "-")).append("/").append(entry.getValue().replaceAll("/", "-"));
@@ -3992,7 +4002,7 @@ public class InvoiceServiceImpl implements InvoiceService {
 			newLocationId = orgLocationId;
 		}
 		
-		CreditDebitNote creditDebitNote = invoiceDao.getCreditDebitNoteByIdAndOrglocationId(id, orgLocationId);
+		CreditDebitNote creditDebitNote = invoiceDao.getCreditDebitNoteByIdAndOrglocationId(newId, newLocationId);
 		// get CreditDebit Line Items 
 		List<CreditDebitLineItems> lineItemsList = invoiceDao.getCreditDebitLineItemsListByNoteIdAndLocationId(newId, newLocationId);
 		lineItemsList.forEach(lineItem->{
@@ -4034,7 +4044,7 @@ public class InvoiceServiceImpl implements InvoiceService {
 		
 		if(creditDebitNote.getOrgRelations().getResponderLocationId().getId().equals(orgLocationId)){
 			creditDebitNote.setClientOrVendorName(creditDebitNote.getOrgRelations().getLocationId().getOrgLocationName());
-			List<User> contactsUserList = userDao.getUsersListUsingMultipleStringIdsWithLocationId(creditDebitNote.getContactUser(),creditDebitNote.getOrgRelations().getLocationId().getId());
+			List<User> contactsUserList = userDao.getUsersListUsingMultipleStringIdsWithLocationId(creditDebitNote.getOwnerUser(),creditDebitNote.getOrgRelations().getLocationId().getId());
 			contactsUserList.forEach(contactUser->{
 				contactName.append(contactUser.getFullName()).append(" , ").toString();	
 				contactEmails.append(contactUser.getEmail()).append(" , ").toString();

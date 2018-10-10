@@ -37,5 +37,5 @@ public interface AssociateSalaryService {
 	
 	List<AssociateSalaryInd> getIndAssociateSalaryListByGroupId(OrgLocations orgLocation, long parseLong);
 
-	List<SalaryDTO> getSalaryByGroupId(OrgLocations orgLocation, Long candidateId, Date freqStartDate, Date freqEndDate);
+	SalaryDTO getSalaryByGroupId(OrgLocations orgLocation, Long candidateId, Date freqStartDate, Date freqEndDate);
 }

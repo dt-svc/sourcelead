@@ -4,12 +4,14 @@ public class AttachmentDTO {
 
 	private String fileName;
 	private String url;
+	private String path;
 	private String fileType;
 	private String fileExtension;
 	private float fileSize;
 	private String sizeUnit;
 	private byte[] docFile;
 	private boolean newUpload;
+	private boolean attachmentNotFoundOrCorrupted;
 
 	public String getFileName() {
 		return fileName;
@@ -25,6 +27,14 @@ public class AttachmentDTO {
 
 	public void setUrl(String url) {
 		this.url = url;
+	}
+
+	public String getPath() {
+		return path;
+	}
+
+	public void setPath(String path) {
+		this.path = path;
 	}
 
 	public String getFileType() {
@@ -73,6 +83,14 @@ public class AttachmentDTO {
 
 	public void setNewUpload(boolean newUpload) {
 		this.newUpload = newUpload;
+	}
+
+	public boolean isAttachmentNotFoundOrCorrupted() {
+		return attachmentNotFoundOrCorrupted;
+	}
+
+	public void setAttachmentNotFoundOrCorrupted(boolean attachmentNotFoundOrCorrupted) {
+		this.attachmentNotFoundOrCorrupted = attachmentNotFoundOrCorrupted;
 	}
 
 }

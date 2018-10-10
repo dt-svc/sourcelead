@@ -1408,7 +1408,8 @@ function toDate(selector) {
 		        		 getPaymentAccountList(json.vendorOrgRelationId,json.paymentAccountId)
 		        	 }
 		        	 var selected = 'selected';
-		        	 result = result +'<option value='+json.vendorOrgRelationId+' '+selected+' >'+json.orgName+'</option>';
+		        	 result = result +'<option disabled selected>--Select Vendor--</option>';
+		        	 result = result +'<option value='+json['vendorOrgRelationId']+' '+selected+' >'+json['orgName']+'</option>';
 		        	 $("#vendorOrgRelationId").empty();
 		           	 $("#vendorOrgRelationId").append(result); 
 		           	 $('#vendorOrgRelationId').trigger("chosen:updated");
