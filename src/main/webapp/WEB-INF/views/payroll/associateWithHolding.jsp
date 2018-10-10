@@ -36,57 +36,98 @@ $(document).ready(function(){
 </div>
         <div class="require_wrap_table tableFirstSecond clearfix">
         <div id="associateWithHoldingDIV" class="datatable_filter"></div>
-         <!--  <table>
-            <thead>
-              <tr>
-                <th>Associate ID</th>
-                <th>Name</th>
-                <th>SSN</th>
-                <th>Work Location</th>
-                <th>Federal Allowances</th>
-                <th>State</th>
-                <th>State Filling Status</th>
-                <th>State Allowances</th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr>
-                <td><div class="tblminwidth-100">001543245</div></td>
-                <td><div class="tbldata-dotdot">Bharath Kumar Sahoo</div></td>
-                <td><div class="tblminwidth-100">SSN</div></td>
-                <td><div class="tbldata-dotdot">Dalls, United States of America</div></td>
-                <td><div class="tblminwidth-100">$ 30000</div></td>
-                <td><div class="tblminwidth-100">Dallas</div></td>
-                <td><div class="tbldata-dotdot">State Filling Status</div></td>
-                <td><div class="tblminwidth-100">$ 20000</div></td>
-              </tr>
-            </tbody>
-          </table> -->
         </div>
-       <!--  <nav>
-          <ul id="paging" class="pagination">
-            <li><a href="#">Previous</a></li>
-            <li><a href="#">2</a></li>
-            <li><a href="#">3</a></li>
-            <li><a href="#">4</a></li>
-            <li><a href="#">5</a></li>
-            <li class="disabled"><a href="#">6</a></li>
-            <li data-page="last"><a href="#">Next</a></li>
-          </ul>
-          <div class="clearfix"></div>
-        </nav> -->
       </div>
     </div>
       <!-- Content Area Ends--> 
     </div>
   </section>
   
+  <div class="cand-advsrch-popup advancedsearch-popup filterDynamic-Search">
+    <h5 class="headerAdsrch">Filters <a href="javascript:void(0)" class="close-div" onclick="closePop()"><i class="fa fa-close"></i></a> </h5>
+    <div class="addInner">
+      <div class="row">
+        <div class="col-md-3 mb positionRelative">
+          <div class="clearfix dynamic_search filterDynamicsearch">
+            <input id="deptSearch" onkeyup="deptSearchFunction()" placeholder="Department" title="" type="text">
+            <span class="cursorPointer" title="Search"><i class="fa fa-search"></i></span> </div>
+          <div class="clearfix filterSearch-ul">
+            <ul class="list-unstyled positionRelative filterSearch mt5" id="department">
+
+            </ul>
+          </div>
+        </div>
+        <div class="col-md-3 positionRelative">
+          <div class="clearfix dynamic_search filterDynamicsearch">
+            <input id="employeeType" onkeyup="employeeTypeFunction()" placeholder="Employee Type" title="Type in a roles" type="text">
+            <span class="cursorPointer" title="Search"><i class="fa fa-search"></i></span> </div>
+          <div class="clearfix filterSearch-ul">
+            <ul class="list-unstyled positionRelative filterSearch mt5" id="employeeTypeUL">
+              <li class="checkBox positionRelative">
+                <input name="empType" value="C2C-1099" type="checkbox">
+                <label>C2C-1099</label>
+              </li>
+              <li class="checkBox positionRelative">
+                <input name="empType" value="W-2" type="checkbox">
+                <label>W-2</label>
+              </li>
+              <li class="checkBox positionRelative">
+                <input name="empType" value="C2H" type="checkbox">
+                <label>C2H</label>
+              </li>
+               <li class="checkBox positionRelative">
+                <input name="empType" value="C2H -1099" type="checkbox">
+                <label>C2H -1099</label>
+              </li>
+               <li class="checkBox positionRelative">
+                <input name="empType" value="Part Time" type="checkbox">
+                <label>Part Time</label>
+              </li>
+               <li class="checkBox positionRelative">
+                <input name="empType" value="Full Time" type="checkbox">
+                <label>Full Time</label>
+              </li>
+               <li class="checkBox positionRelative">
+                <input name="empType" value="Other" type="checkbox">
+                <label>Other</label>
+              </li>
+            </ul>
+          </div>
+        </div>
+        <div class="clearfix"></div>
+      </div>
+    </div>
+<div class="clearfix"></div>
+    <div class="clearfix advancedsearch-footer">
+      <div class="pull-right mr">
+        <input value="Apply" id="search_requiremet" onclick="closePop();associateWithHolding();" class="btn btn-sm btn-success" type="button">
+        <input value="Reset" id="clear_search" onclick="resetFilter();" class="btn btn-sm btn-primary" type="button">
+      </div>
+    </div>
+  </div>
+  
   
   <script>
 function associateWithHolding(){
-		var searchValue = $("#dataTableSearch").val();
+	
+	var dept = [];
+	var empType = [];
+	 
+         $('input:checkbox[name=deptName]:checked').each(function() 
+          {
+    	  dept.push($(this).val());
+          });
+    
+    
+        $('input:checkbox[name=empType]:checked').each(function() 
+    	    {
+    	       empType.push($(this).val());
+    	    });
+    
+   
+        var searchValue = $("#dataTableSearch").val();
 		searchValue = searchValue ? searchValue : "";
-		var url = sourceleadUrl+"/getAssociateWithHoldingReports?searchValue="+searchValue;
+		var url = sourceleadUrl+"/getAssociateWithHoldingReports?searchValue="+searchValue+"&dept="+dept+"&empType="+empType;
 		associateWithHoldingList(url);	
 }
 
@@ -157,7 +198,6 @@ function associateWithHolding(){
 									{
 										"targets" : colIndex++,
 										"data" : "employeeId",
-										"sortable": false,
 										"render" : function(data, type, opt,meta) {
 											var result = "";
 										 	if(opt.employeeId != null && opt.employeeId != '' && opt.employeeId != 'undefined'){
@@ -171,7 +211,6 @@ function associateWithHolding(){
 									{
 										"targets" : colIndex++,
 										"data" : "empName",
-										"sortable": false,
 										"render" : function(data, type, opt,meta) {
 											var result = "";
 											 if(opt.lastName != null && opt.lastName != '' && opt.lastName != 'undefined'){
@@ -213,6 +252,7 @@ function associateWithHolding(){
 									},{
 										"targets" : colIndex++,
 										"data" : "federalFillingStatus",
+										"sortable": false,
 										"render" : function(data, type, opt,meta) {
 											var result = "";
 											if(opt.federalFillingStatus != null && opt.federalFillingStatus != ''){
@@ -225,6 +265,7 @@ function associateWithHolding(){
 									},{
 										"targets" : colIndex++,
 										"data" : "federalTaxAllowances",
+										"sortable": false,
 										"render" : function(data, type, opt,meta) {
 											var result = "";
 											if(opt.federalTaxAllowances != null && opt.federalTaxAllowances != ''){
@@ -250,6 +291,7 @@ function associateWithHolding(){
 									},{
 										"targets" : colIndex++,
 										"data" : "stateFillingStatus",
+										"sortable": false,
 										"render" : function(data, type, opt,meta) {
 											var result = "";
 											if(opt.stateFillingStatus != null && opt.stateFillingStatus != ''){
@@ -263,6 +305,7 @@ function associateWithHolding(){
 									},{
 										"targets" : colIndex++,
 										"data" : "stateTaxAllowances",
+										"sortable": false,
 										"render" : function(data, type, opt,meta) {
 											var result = "";
 											if(opt.stateTaxAllowances != null && opt.stateTaxAllowances != ''){
@@ -289,18 +332,126 @@ function associateWithHolding(){
 						});
 		$("#aasociatewithHoldingTabble").wrap("<div style='overflow-x: auto; overflow-y: hidden;'></div>");
 		$("input[type=search]").hide();
-		$("#dataTableSearch").keyup(function(e) {
-			if (e.which === 13) {
-				associateWithHolding();
-			}
-		});
-		
-	}
-	function associateWithHoldingSearch(){
-		associateWithHolding();
 	}
 	
+	$("#dataTableSearch").keyup(function(e) {
+		if (e.which === 13) {
+			associateWithHolding();
+		}
+	});
+</script>
+
+
+
+
+<script>
+function associateWithHoldingSearch(){
+	associateWithHolding();
+}
+</script>
+
+
+
+
+<script>	
+function getActions(){
+	$(".action-pop").slideToggle(200);
+	$(".newActPop").slideUp(200);
+}	
+$("html").click(function(){
+	$(".action-pop").slideUp(200);
+});
+$(".action, .action-pop").click(function(e){
+ 	e.stopPropagation();
+});	
+function newActions(){
+	$(".newActPop").slideToggle(200);
+	$(".action-pop").slideUp(200);
+}
+$("html").click(function(){
+	$(".newActPop").slideUp(200);
+});
+$(".overIcon, .newActPop").click(function(e){
+ 	e.stopPropagation();
+});
+	// Close Advanced Search
+	function closePop(){
+	$("div.cand-advsrch-popup").hide();
+	$(".mask").hide();
+	}
+//Date Picker
+$( function(){
+	$("#frmDate").datepicker();
+	$("#toDate").datepicker();
+ });
+</script>
+
+<script>
+function openPop(){
+	   $(".mask").show();
+	   $("div.cand-advsrch-popup").toggle();
+	   
+	  /*  function getPayGroupList(id){ */
+			$.ajax({
+			    	type: "GET",
+			        url: sourceleadUrl+"/findAllDepartments?"+tokenParamName+"="+tokenValue                 , 
+			        success: function(json) {
+			        	 var result = "";
+			        	 for(var i = 0;i<json.length;i++){
+			        		 var opt = json[i];
+			        		 result = result + '<li class="checkBox positionRelative">';
+				        	 result = result + '<input name="deptName" value='+opt.id+' type="checkbox">';
+				        	 result = result + '<label>'+opt.departmentName+'</label>';
+				        	 result = result + '</li>';	 
+			        	 }
+			        	 $("#department").empty();
+			        	 $("#department").append(result);
+			        },
+			    });
+		/* } */
+	}
 </script>
   
+  
+  
+<script>
+function deptSearchFunction() {
+    var input, filter, ul, li, a, i;
+    input = document.getElementById("deptSearch");
+    filter = input.value.toUpperCase();
+    ul = document.getElementById("department");
+    li = ul.getElementsByTagName("li");
+    for (i = 0; i < li.length; i++) {
+        a = li[i].getElementsByTagName("label")[0];
+        if (a.innerHTML.toUpperCase().indexOf(filter) > -1) {
+            li[i].style.display = "";
+        } else {
+            li[i].style.display = "none";
+
+        }
+    }
+}
+</script>
+
+
+<script>
+function employeeTypeFunction() {
+    var input, filter, ul, li, a, i;
+    input = document.getElementById("employeeType");
+    filter = input.value.toUpperCase();
+    ul = document.getElementById("employeeTypeUL");
+    li = ul.getElementsByTagName("li");
+    for (i = 0; i < li.length; i++) {
+        a = li[i].getElementsByTagName("label")[0];
+        if (a.innerHTML.toUpperCase().indexOf(filter) > -1) {
+            li[i].style.display = "";
+        } else {
+            li[i].style.display = "none";
+
+        }
+    }
+}
+</script>
+
 
 <jsp:include page="../masterFooter.jsp" />

@@ -23,6 +23,7 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.ModelAndView;
 
 import com.bis.sourcelead.dto.ResponseList;
+import com.bis.sourcelead.entity.Department;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.entity.UserGroup;
@@ -37,6 +38,7 @@ import com.bis.sourcelead.payroll.service.PaysheetFrequencyService;
 import com.bis.sourcelead.payroll.service.USPayPeriodService;
 import com.bis.sourcelead.payroll.util.PayrollReportPdfUtil;
 import com.bis.sourcelead.payroll.util.PayrollUtil;
+import com.bis.sourcelead.service.DepartmentService;
 import com.bis.sourcelead.service.UserGroupService;
 import com.bis.sourcelead.util.SourceLeadSessionManager;
 
@@ -63,6 +65,9 @@ public class USPayrollReportRestController {
 	
 	@Autowired
 	PayrollReportPdfUtil payrollReportPdfUtil;
+	
+	@Autowired
+	DepartmentService departmentService;
 
 	/**
 	 * Returning Us Payroll Jsp
@@ -553,7 +558,8 @@ public class USPayrollReportRestController {
 	public ResponseList<AssociateWithHoldingDTO> getAssociateWithHoldingReports(AssociateWithHoldingDTO associateWithHoldingDTO,HttpServletRequest request, HttpServletResponse response) throws Exception
 	{
 		OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
-		String[] tableColumns = {"payrollDeductionType",  "employeeId","firstName", "departmentName","schedule","dedAmount","ytdDeductions"};
+		String[] tableColumns = {"employeeId","empName","ssnNumber","workLocation","federalFillingStatus","federalTaxAllowances",
+				"residenceStateCode","stateFillingStatus","stateTaxAllowances"};
 	    int sortColumnIndex = 1;		 //by default sorting using updated date
 		String sortColumnOrder = "asc";  //by default descending order
 		if(associateWithHoldingDTO.getOrder() != null && !associateWithHoldingDTO.getOrder().isEmpty()) {
@@ -567,4 +573,14 @@ public class USPayrollReportRestController {
 	}
 	
 	
+	
+	@RequestMapping(value = { "/findAllDepartments","/rest/findAllDepartments" }, method = RequestMethod.GET)
+	@ResponseBody
+	public List<Department> getDepartmentList(HttpServletRequest request, HttpServletResponse response) throws Exception
+	{
+		OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+		
+		return departmentService.getDepartmentByOrgLocationId(orgLocation.getId());
+		
+	}
 }
