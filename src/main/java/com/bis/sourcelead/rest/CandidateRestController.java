@@ -1021,7 +1021,17 @@ public class CandidateRestController {
 		model.addObject("sourceleadUrl", sourceleadUrl);
 		return model;
 	}
-	
+	// Note this method is Global marketplace Candidate method
+		//@PreAuthorize("hasAnyRole('ROLE_CREATE_CANDIDATE','ROLE_CROWDSOURCING_CANDIDATES')")
+		@RequestMapping(value = "/app/OrgMarketplace")
+		public ModelAndView goToOrgMarketplace(HttpServletRequest request) throws Exception {
+			logger.debug("inisde OrgMarketplace  conroller =========>");
+			System.out.println("inisde OrgMarketplace  conroller =========>");
+			ModelAndView model = new ModelAndView();
+			model.setViewName("candidates/candidateMarketPlaceView");
+			model.addObject("sourceleadUrl", sourceleadUrl);
+			return model;
+		}
 	
 	@RequestMapping(value = "/app/getAddedMarketplaceCandidates", method = RequestMethod.POST)
 	public Map<String, Object[]> getAddedMarketplaceCandidates(@RequestParam(value = "candidateIdsVal[]", required = false) List<Long> candidateIdsVal, HttpServletRequest request) throws Exception {

@@ -36,6 +36,42 @@ public class AssociateWithHoldingDTO  extends SearchDTO{
 	
 	private String residenceStateCode;
 	
+	private String dept;
+	
+	private String empType;
+	
+	private String employeeMentType;
+	
+
+	public String getEmployeeMentType()
+	{
+		return employeeMentType;
+	}
+
+	public void setEmployeeMentType(String employeeMentType)
+	{
+		this.employeeMentType = employeeMentType;
+	}
+
+	public String getDept()
+	{
+		return dept;
+	}
+
+	public String getEmpType()
+	{
+		return empType;
+	}
+
+	public void setDept(String dept)
+	{
+		this.dept = dept;
+	}
+
+	public void setEmpType(String empType)
+	{
+		this.empType = empType;
+	}
 
 	public BigInteger getCandidateId()
 	{

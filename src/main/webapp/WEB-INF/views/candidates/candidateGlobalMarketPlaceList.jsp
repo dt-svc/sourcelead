@@ -26,7 +26,8 @@
   <div class="clearfix">
 	<ul class="project-tabs-menu projecttabs-custom clearfix">
          <li id="" ><a href="${appPath}/candidatesList">Candidate List</a></li>
-         <li id="" class="current"><a href="javascript:void(0)" >Marketplace</a></li>
+         <li id=""><a href="javascript:void(0)" onclick="javascript:goToOrgMarketPlaceList();">Marketplace</a></li>
+         <li id="" class="current"><a href="javascript:void(0)">Global Marketplace</a></li>
          <div class="clearfix"></div>
      </ul>
 </div>
@@ -76,7 +77,7 @@
 	     result = result + '<th>Primary Skills</th>';
 	     result = result + '<th>Current CTC</th>';
 	     result = result + '<th>Expected CTC</th>';
-	     result = result + '<th>Score</th>';
+	     result = result + '<th>Profile %</th>';
 	     result = result + '<th>Action</th>';
 	     result = result + '</tr>';
 	     result = result + '</thead>';
@@ -184,11 +185,11 @@
 	             },
 	             {
 	                 "targets": colIndex++,
-	                 "data": "score",
+	                 "data": "profilePercentage",
 	                 "render": function (data, type, opt, meta) {
 	                     var result = "";
-	                     if (opt.score !== null && opt.score !== '' && opt.score !== 'undefined') {
-	                    	 result = result + "<td><div class='tbldata-dotdot-sm' title = '"+opt.score+"'>" + opt.score + "</div></td>";
+	                     if (opt.profilePercentage !== null && opt.profilePercentage !== '' && opt.profilePercentage !== 'undefined') {
+	                    	 result = result + "<td><div class='tbldata-dotdot-sm' title = '"+opt.profilePercentage+"%'>" + opt.profilePercentage + "%</div></td>";
 	                     } else {
 	                         result = result + "<td><div class='tbldata-dotdot-sm'>---</div></td>";
 	                     } 
@@ -249,6 +250,9 @@ function listModel() {
 function cardModel() {
 	$("#tableDesign").hide();
 	$("#cardDesign").show();
+}
+function goToOrgMarketPlaceList(){
+	location.href = "${appPath}/OrgMarketplace";
 }
 </script>
 <jsp:include page="../masterFooter.jsp" /> 	

@@ -39,8 +39,8 @@
 				<table width="100%">
 					<thead>
 						<tr>
+						  <th>Name</th>
 						  <th>Type</th>   
-						  <th>Name</th>        
 						  <th>Status</th>         
 						  <th>Amount</th>     
 						  <th>Scheduler</th>     
@@ -56,8 +56,8 @@
 						<c:if test="${loanAdvListSize > 0}">
 						 <c:forEach var="loanAdv" items="${loanAdvList}">
 							 <tr>
-							   <td><div class="tblminwidth-50" title="${loanAdv.loanAdvanceType}">${loanAdv.loanAdvanceType}</div></td>
 							   <td><div class="tblminwidth-50" title="${loanAdv.payrollLoanAndAdvanceId.name}">${loanAdv.payrollLoanAndAdvanceId.name}</div></td>
+							   <td><div class="tblminwidth-50" title="${loanAdv.loanAdvanceType}">${loanAdv.loanAdvanceType}</div></td>
 							   <td><div class="tblminwidth-50" title="${loanAdv.loanAndAdvanceStatus}">${loanAdv.loanAndAdvanceStatus}</div></td>
 							   <td><div class="tblminwidth-50" title="${loanAdv.amount}">${SourceLeadWeb_orgLocations.country == 'United States' ? '$' : ''}   ${loanAdv.amount}</div></td>
 							   <td><div class="tblminwidth-50" title="${loanAdv.scheduler}">${loanAdv.scheduler}</div></td>

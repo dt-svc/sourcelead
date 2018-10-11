@@ -472,4 +472,10 @@ public class AssetServiceImpl implements AssetService{
 	public List<AssetGrowthDTO> getAssetGrowthListByOrgloationIdAndAssetGrowthDTO(Long orgLocationId, AssetGrowthDTO assetGrowthDTO,Date[] searchDates) throws Exception {
 		return assetDao.getAssetGrowthListByOrgloationIdAndAssetGrowthDTO(orgLocationId, assetGrowthDTO,searchDates);
 	}
+
+
+	@Override
+	public ResponseList<AssetAssign> getDynamicAssignAssetFilterListByLocationId(Long orgLocationId, AssetDTO assetDTO) throws Exception {
+		return assetDao.getDynamicAssignAssetFilterListByLocationId(orgLocationId, assetDTO);
+	}
 }

@@ -5,7 +5,9 @@ import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 import java.util.Set;
+import java.util.concurrent.CopyOnWriteArraySet;
 
+import org.apache.commons.collections.map.HashedMap;
 import org.apache.commons.lang.exception.ExceptionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
@@ -31,6 +33,7 @@ import com.bis.sourcelead.payroll.service.ConfigurePayrollApproverService;
 import com.bis.sourcelead.payroll.service.IndPaysheetFrequencyService;
 import com.bis.sourcelead.util.CommonUtil;
 import com.bis.sourcelead.util.INDPayrollCommonUtil;
+import com.bis.sourcelead.util.SourceLeadSessionManager;
 
 @Service
 public class IndPaysheetFrequencyServiceImpl implements IndPaysheetFrequencyService{
@@ -104,18 +107,18 @@ public class IndPaysheetFrequencyServiceImpl implements IndPaysheetFrequencyServ
 				
 				indPaysheetFrequency.setUpdatedBy(loginUser.getId());
 				indPaysheetFrequency.setUpdatedDate(new Date());
-				Set<IndEmployeePayroll> payrollList = indPaysheetFrequency.getIndEmployeepayroll();
+				CopyOnWriteArraySet<IndEmployeePayroll> payrollList = new CopyOnWriteArraySet<IndEmployeePayroll>(indPaysheetFrequency.getIndEmployeepayroll());
 				for (IndEmployeePayroll payroll : payrollList) {
 					if(!Arrays.asList(indApprovePayrollDTO.getExcludeEmpPayrollUUID()).contains(payroll.getIndEmpPayrollUUID())) {
 						if(StringUtils.isNotEmpty(indApprovePayrollDTO.getApproverStatus()) && indApprovePayrollDTO.getApproverStatus().equalsIgnoreCase(PayrollConstant.DRAFT)) {
 							payroll.setSubmitForAproverStatus(PayrollConstant.DRAFT);
 						}else {
-							indPaysheetFrequency.setApproverStatus(PayrollConstant.SENT); 
+							payroll.setSubmitForAproverStatus(PayrollConstant.SENT); 
 						}
 						payroll.setUpdatedBy(loginUser.getId());
 						payroll.setUpdatedDate(new Date());
 					}else {
-						if(StringUtils.isNotEmpty(indApprovePayrollDTO.getApproverStatus()) && indApprovePayrollDTO.getApproverStatus().equalsIgnoreCase(PayrollConstant.DRAFT)) {
+						if((StringUtils.isNotEmpty(payroll.getSubmitForAproverStatus()) && payroll.getSubmitForAproverStatus().equalsIgnoreCase(PayrollConstant.NEW)) || (StringUtils.isNotEmpty(indApprovePayrollDTO.getApproverStatus()) && indApprovePayrollDTO.getApproverStatus().equalsIgnoreCase(PayrollConstant.DRAFT))) {
 							payrollList.remove(payroll);
 						}
 					}
@@ -167,10 +170,10 @@ public class IndPaysheetFrequencyServiceImpl implements IndPaysheetFrequencyServ
 	
 	
 	@Override
-	public Response<IndApprovePayrollDTO> approveIndPayroll(IndApprovePayrollDTO indApprovePayrollDTO, OrgLocations orgLocation, User loginUser) throws Exception {
+	public Response<IndApprovePayrollDTO> approveIndPayroll(IndApprovePayrollDTO indApprovePayrollDTO,IndPaysheetFrequency indPaysheetFrequency,OrgLocations orgLocation, User loginUser) throws Exception {
 			Response<IndApprovePayrollDTO> res = new Response<>();
+	   	    
 			try {
-				IndPaysheetFrequency indPaysheetFrequency = indPaysheetFrequencyDao.getIndPaysheetFrequencyByEmpPayrollUUID(indApprovePayrollDTO.getPaySheetFrequencyUUID());
 				indPaysheetFrequency.setApproverStatus(PayrollConstant.APPROVE);
 				indPaysheetFrequency.setUpdatedBy(loginUser.getId());
 				indPaysheetFrequency.setUpdatedDate(new Date());
@@ -224,5 +227,10 @@ public class IndPaysheetFrequencyServiceImpl implements IndPaysheetFrequencyServ
 		}
 		responseList.setData(list);
 		return responseList;
+	}
+
+	@Override
+	public IndPaysheetFrequency getIndPaysheetFrequencyByEmpPayrollUUID(String payrollFrequencyUUID) throws Exception {
+		return indPaysheetFrequencyDao.getIndPaysheetFrequencyByEmpPayrollUUID(payrollFrequencyUUID);
 	}
 }

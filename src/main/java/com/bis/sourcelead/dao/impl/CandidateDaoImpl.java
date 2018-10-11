@@ -2085,7 +2085,7 @@ public class CandidateDaoImpl implements CandidateDao {
 				query1.append(" or (marketplace.skillsName like '%" + searchValue + "%' )");
 				query1.append(" or (marketplace.currentRate like '%" + searchValue + "%' )");
 				query1.append(" or (marketplace.expectedRate like '%" + searchValue + "%' )");
-				query1.append(" or (marketplace.score like '%" + searchValue + "%' ))");
+				query1.append(" or (marketplace.profilePercentage like '%" + searchValue + "%' ))");
 			}
 			StringBuilder query2 = new StringBuilder("");
 			 String sortingQry = "";
@@ -2093,11 +2093,18 @@ public class CandidateDaoImpl implements CandidateDao {
 	    			String sortColumnName = candidateMarketPlaceDTO.getSortColumn();
 	    			sortingQry = " order by marketplace." + sortColumnName + " " + candidateMarketPlaceDTO.getSortOrder();
 	    		} 
-	    		String listQuery = "from CandidateMarketPlace marketplace  where  marketplace.status = 1 "+query1+" "+sortingQry ;
+	    		String listQuery = "";
+	    		String listQueryCount = "";
+	    		if(StringUtils.isNotBlank(candidateMarketPlaceDTO.getOrgLocationId())){
+	    			listQuery = "from CandidateMarketPlace marketplace  where  marketplace.status = 1 and marketplace.orgLocationId = "+candidateMarketPlaceDTO.getOrgLocationId()+" and marketplace.candidateMarketStatus = '"+Constants.ACTIVE+"'"+query1+" "+sortingQry ;
+	    			listQueryCount = "select count(*) from CandidateMarketPlace marketplace  where  marketplace.status = 1  and marketplace.orgLocationId = "+candidateMarketPlaceDTO.getOrgLocationId()+" and marketplace.candidateMarketStatus ='"+Constants.ACTIVE+"'"+query1+" "+sortingQry;
+	    		}else {
+	    		listQuery = "from CandidateMarketPlace marketplace  where  marketplace.status = 1 and marketplace.candidateMarketStatus = '"+Constants.ACTIVE+"'"+query1+" "+sortingQry ;
+	    		listQueryCount = "select count(*) from CandidateMarketPlace marketplace  where  marketplace.status = 1  and marketplace.candidateMarketStatus = '"+Constants.ACTIVE+"'"+query1+" "+sortingQry;
+	    		}
 	    		Query hqlQuery = session.createQuery(listQuery);
 	    		globalMarketCandList = hqlQuery.setFirstResult(candidateMarketPlaceDTO.getStart()).setMaxResults(candidateMarketPlaceDTO.getLength()).list();
 	    		//System.out.println(" after executing query result  list size is :::>>"+globalMarketCandList.size());
-				String listQueryCount = "select count(*) from CandidateMarketPlace marketplace  where  marketplace.status = 1  "+query1+" "+sortingQry;
 				Query hqlQuery1 = session.createQuery(listQueryCount);
 				countlist = hqlQuery1.list();
 				//System.out.println(" after executing query countlist   :::>>"+countlist);

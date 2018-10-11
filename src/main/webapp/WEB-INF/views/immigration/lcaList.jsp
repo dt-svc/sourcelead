@@ -54,9 +54,9 @@
 				<li><a href="javascript:void(0)" class="overIcon" title="Actions" onclick="newActions();"></a>
 					<div class="newActPop">
 						<span>
-						<%--  <sec:authorize access="hasAnyRole(\'ROLE_IMPORT_LCA\')"> --%>
+						<sec:authorize access="hasAnyRole(\'ROLE_IMPORT_LCA\')">
 							<a href="/app/uploadLcaForm">Import LCA</a>
-						 <%--  </sec:authorize>	 --%>
+						 </sec:authorize>
 						  
 						  <sec:authorize access="hasAnyRole(\'ROLE_EXPORT_LCA\')">
 							<a href="javascript:void(0)" onclick="exportToLCAExcel();" title="Excel">Export Excel</a>

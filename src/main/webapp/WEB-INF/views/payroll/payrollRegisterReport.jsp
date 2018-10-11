@@ -30,7 +30,9 @@ $(document).ready(function(){
       <div class="pull-left">
         <h2>Payroll Register</h2>
       </div>
-      <div class="pull-right brud-crum">Home &raquo; Payhead List &raquo; Payroll Register</div>
+      <div class="pull-right brud-crum"><a href="<c:url value='${appPath}/dashboard'/>" title="Home">Home</a>&raquo;<a
+				href="<c:url value='${appPath}/usPayrollReport'/>"> USPayroll Reports List</a>&raquo;Payroll Register
+		</div>
     </section>
     
     <div class="contentareaInner-styles clearfix">
@@ -332,7 +334,7 @@ function payrollRegisterPagination(url){
 	    	  	"render": function(data, type, opt, meta) {
 	    	  		var result = "";
 	    	  		if(opt.grossPay !=null && opt.grossPay != '' && opt.grossPay !='undefined'){
-	    	  			result = result + '     <div class="tbldata-dotdot-vsm" title="'+opt.grossPay+'" >'+opt.grossPay+'</div>';
+	    	  			result = result + '     <div class="tbldata-dotdot-vsm" title="'+opt.grossPay+'" ><i class="fa fa-dollar"style="color:#454545;"></i> '+opt.grossPay+'</div>';
 	        		}else{
 	        			result = result + '     <div class="tbldata-dotdot-vsm" title="" >---</div>';
 	        		}
@@ -344,7 +346,7 @@ function payrollRegisterPagination(url){
 	    	  	"render": function(data, type, opt, meta) {
 	    	  		var result = "";
 	    	  		if(opt.taxes !=null && opt.taxes != '' && opt.taxes !='undefined'){
-	    	  			result = result + '     <div class="tbldata-dotdot-vsm" title="'+opt.taxes+'" >'+opt.taxes+'</div>';
+	    	  			result = result + '     <div class="tbldata-dotdot-vsm" title="'+opt.taxes+'" ><i class="fa fa-dollar"style="color:#454545;"></i> '+opt.taxes+'</div>';
 	        		}else{
 	        			result = result + '     <div class="tbldata-dotdot-vsm" title="" >---</div>';
 	        		}
@@ -356,7 +358,7 @@ function payrollRegisterPagination(url){
                   "render": function ( data, type, opt, meta ) {
                 	var result = "";
   	    	  		if(opt.ytdTaxes !=null && opt.ytdTaxes != '' && opt.ytdTaxes !='undefined'){
-  	    	  			result = result + '     <div class="tbldata-dotdot-vsm" title="'+opt.ytdTaxes+'" >'+opt.ytdTaxes+'</div>';
+  	    	  			result = result + '     <div class="tbldata-dotdot-vsm" title="'+opt.ytdTaxes+'" ><i class="fa fa-dollar"style="color:#454545;"></i> '+opt.ytdTaxes+'</div>';
   	        		}else{
   	        			result = result + '     <div class="tbldata-dotdot-vsm" title="" >---</div>';
   	        		}
@@ -368,7 +370,7 @@ function payrollRegisterPagination(url){
                     "render": function ( data, type, opt, meta ) {
                   		var result = "";
     	    	  		if(opt.deductions !=null && opt.deductions != '' && opt.deductions !='undefined'){
-    	    	  			result = result + '     <div class="tbldata-dotdot-vsm" title="'+opt.deductions+'" >'+opt.deductions+'</div>';
+    	    	  			result = result + '     <div class="tbldata-dotdot-vsm" title="'+opt.deductions+'" ><i class="fa fa-dollar"style="color:#454545;"></i> '+opt.deductions+'</div>';
     	        		}else{
     	        			result = result + '     <div class="tbldata-dotdot-vsm" title="" >---</div>';
     	        		}
@@ -380,7 +382,7 @@ function payrollRegisterPagination(url){
                       "render": function ( data, type, opt, meta ) {
                    		var result = "";
       	    	  		if(opt.netPay !=null && opt.netPay != '' && opt.netPay !='undefined'){
-      	    	  			result = result + '     <div class="tbldata-dotdot-vsm" title="'+opt.netPay+'" >'+opt.netPay+'</div>';
+      	    	  			result = result + '     <div class="tbldata-dotdot-vsm" title="'+opt.netPay+'" ><i class="fa fa-dollar"style="color:#454545;"></i> '+opt.netPay+'</div>';
       	        		}else{
       	        			result = result + '     <div class="tbldata-dotdot-vsm" title="" >---</div>';
       	        		}
@@ -392,7 +394,7 @@ function payrollRegisterPagination(url){
                     "render": function ( data, type, opt, meta ) {
                  		var result = "";
     	    	  		if(opt.ytdNet !=null && opt.ytdNet != '' && opt.ytdNet !='undefined'){
-    	    	  			result = result + '     <div class="tbldata-dotdot-vsm" title="'+opt.ytdNet+'" >'+opt.ytdNet+'</div>';
+    	    	  			result = result + '     <div class="tbldata-dotdot-vsm" title="'+opt.ytdNet+'" ><i class="fa fa-dollar"style="color:#454545;"></i> '+opt.ytdNet+'</div>';
     	        		}else{
     	        			result = result + '     <div class="tbldata-dotdot-vsm" title="" >---</div>';
     	        		}
