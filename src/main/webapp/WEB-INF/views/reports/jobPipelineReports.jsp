@@ -380,7 +380,7 @@ function getJobsReportCustomDates(){
 							 </div> 
 						</div>
 						
-						<div class="col-md-4">
+						<%-- <div class="col-md-4">
 							<div class="clearfix dynamic_search filterDynamicsearch">
 								<input type="text" id="myTeamInput" onkeyup="myTeamInputFunction()" placeholder="Teams" title="Type in a team">
 								<span class="cursorPointer" title="Search"><i class="fa fa-search"></i></span>
@@ -394,7 +394,7 @@ function getJobsReportCustomDates(){
 									</c:forEach>
 								</ul>
 							 </div> 
-						</div>
+						</div> --%>
 						
 						
 						<div class="col-md-4">
