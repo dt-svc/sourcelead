@@ -149,6 +149,8 @@ public class PayrollReportDTO extends SearchDTO{
 	private String employees;
 	
 	private String payrollDepartment;
+	
+	private String exportType;
 
 	public String getEmpId()
 	{
@@ -832,5 +834,12 @@ public class PayrollReportDTO extends SearchDTO{
 		this.payrollDepartment = payrollDepartment;
 	}
 
+	public String getExportType() {
+		return exportType;
+	}
+
+	public void setExportType(String exportType) {
+		this.exportType = exportType;
+	}
 
 }

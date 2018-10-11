@@ -17,7 +17,7 @@ $(document).ready(function(){
       <div class="pull-left">
         <h2>Employee Payroll</h2>
       </div>
-      <div class="pull-right brud-crum">Home &raquo; Employee Payroll</div>
+       <div class="pull-right brud-crum"><a href="<c:url value='${appPath}/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a> &raquo; <a href="<c:url value='${appPath}/usPayrollReport'/>">USPayroll Reports List</a> &raquo; Employee Payroll</div>
     </section>
     
     <div class="contentareaInner-styles clearfix">
@@ -100,7 +100,9 @@ $(document).ready(function(){
   <ul class="pull-right list-unstyled list-inline">
     <li><a href="javascript:void(0)" class="overIcon" title="Actions" onclick="newActions();"></a>
       <div class="newActPop" style="">
-       <span><a href="javascript:void(0)" onclick="exportToPdf();" title="PDF">Export PDF</a> <a href="javascript:void(0)" onclick="exportUserData();" title="Excel">Export Excel</a> </span> </div>
+       <span><a href="javascript:void(0)" onclick="exportEmployeePayrollPdf();" title="PDF">Export PDF</a> 
+       		<a href="javascript:void(0)" onclick="exportEmployeePayrollExcel();" title="Excel">Export Excel</a> 
+       	</span> </div>
     </li>
     <li class="">
       <input class="repSearchBar" placeholder="Search" id="dynamicUserPayrollTableSearch" type="text">
@@ -464,7 +466,7 @@ function runAssociatePayrollReport(){
 									
 									"scrollCollapse" : false,
 									"lengthMenu" : [ [ 10, 15, 20 ], [ 10, 15, 20 ] ],
-									"aaSorting" : [ [ 3, 'desc' ] ],
+// 									"aaSorting" : [ [ 3, 'desc' ] ],
 									"bLengthChange" : true,
 									"bDestroy" : true,
 									"ordering" : true,
@@ -498,6 +500,34 @@ function resetAllData(){
 	 $("#employees").trigger("chosen:updated"); 
 	 $("#payrollDepartment").val('');
 	 $("#payrollDepartment").trigger("chosen:updated"); 
+}
+</script>
+
+<script>
+function exportEmployeePayrollPdf(){
+	
+	var fromDate = $('#fromDate').val();
+	var toDate = $('#toDate').val();
+	var department = $('#payrollDepartment').val();
+	var employees = $('#employees').val();
+	var searchValue = $("#dynamicUserPayrollTableSearch").val();
+	searchValue = searchValue ? searchValue : "";
+
+    window.location.href = sourceleadUrl+"/exportEmployeePayroll?"+tokenParamName+"="+tokenValue+"&fromDate="+fromDate+"&toDate="+toDate+"&department="+department+"&employees="+employees+"&searchValue="+searchValue+"&exportType=pdf";
+}
+</script>
+
+<script>
+function exportEmployeePayrollExcel(){
+	
+	var fromDate = $('#fromDate').val();
+	var toDate = $('#toDate').val();
+	var department = $('#payrollDepartment').val();
+	var employees = $('#employees').val();
+	var searchValue = $("#dynamicUserPayrollTableSearch").val();
+	searchValue = searchValue ? searchValue : "";
+
+    window.location.href = sourceleadUrl+"/exportEmployeePayroll?"+tokenParamName+"="+tokenValue+"&fromDate="+fromDate+"&toDate="+toDate+"&department="+department+"&employees="+employees+"&searchValue="+searchValue+"&exportType=xls";
 }
 </script>
 

@@ -25,6 +25,7 @@ import org.springframework.web.servlet.ModelAndView;
 import com.bis.sourcelead.dto.ResponseList;
 import com.bis.sourcelead.dto.UserDTO;
 import com.bis.sourcelead.entity.Employees;
+import com.bis.sourcelead.entity.AssetAssign;
 import com.bis.sourcelead.entity.Department;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.User;
@@ -47,6 +48,7 @@ import com.bis.sourcelead.service.EmployeesService;
 import com.bis.sourcelead.service.DepartmentService;
 import com.bis.sourcelead.service.UserGroupService;
 import com.bis.sourcelead.util.SourceLeadSessionManager;
+import com.bis.sourcelead.util.dynamicReport.DynamicReport;
 
 @RestController
 @RequestMapping("/app")
@@ -77,6 +79,7 @@ public class USPayrollReportRestController {
 	
     @Autowired
 	DepartmentService departmentService;
+    
 
 	/**
 	 * Returning Us Payroll Jsp
@@ -621,5 +624,42 @@ public class USPayrollReportRestController {
 		
 		return departmentService.getDepartmentByOrgLocationId(orgLocation.getId());
 		
+	}
+	
+	/**
+	 * employee payroll export
+	 * @param payrollReportDTO
+	 * @param request
+	 * @param response
+	 * @throws Exception
+	 */
+	@RequestMapping(value = { "/exportEmployeePayroll","/rest/exportEmployeePayroll" }, method = RequestMethod.GET)
+	public void exportEmployeePayroll(PayrollReportDTO payrollReportDTO,HttpServletRequest request, HttpServletResponse response) throws Exception
+	{
+		OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+		ResponseList<AssociateReportDTO>  responseList =  paysheetFrequencyService.getEmployeePayrollListByPayCheckDate(payrollReportDTO,orgLocation);
+		File file = null;
+	    if(payrollReportDTO.getExportType().equalsIgnoreCase("pdf")) {
+	    	 file=  payrollReportPdfUtil.employeePayrollPdfExport(responseList,orgLocation);
+	    }else {
+	    	 file=  payrollReportPdfUtil.employeePayrollExcelExport(responseList,orgLocation);
+	    }
+	    
+		String mimeType = URLConnection.guessContentTypeFromName(file.getName());
+		if (mimeType == null) {
+			mimeType = "application/octet-stream";
+		}
+		response.setContentType(mimeType);
+		StringBuilder fileNameSB = new StringBuilder();
+		response.setHeader("Content-Disposition", fileNameSB.append("attachment; filename=\"").append(file.getName()).append("\"").toString());
+		response.setContentLength((int) file.length());
+		InputStream inputStream = new BufferedInputStream(new FileInputStream(file));
+		FileCopyUtils.copy(inputStream, response.getOutputStream());
+		inputStream.close();
+		response.getOutputStream().close();
+		response.getOutputStream().flush();	
+		if(file!= null){
+			file.delete();
+		}
 	}
 }
