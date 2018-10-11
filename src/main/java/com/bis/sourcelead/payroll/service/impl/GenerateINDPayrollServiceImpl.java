@@ -79,7 +79,7 @@ public class GenerateINDPayrollServiceImpl implements GenerateINDPayrollService{
 	}
 
 	@Override
-	public IndPaysheetFrequencyDTO generateINDPayroll(IndPaysheetFrequencyDTO existedData, OrgLocations orgLocation,
+	public IndPaysheetFrequencyDTO generateINDPayroll(OrgLocations orgLocation,
 			GenerateINDPayrollDTO generateINDPayrollDTO, User loginUser) throws Exception {
 
 		String dates[] = generateINDPayrollDTO.getPayPeriod().split(",");
@@ -89,27 +89,17 @@ public class GenerateINDPayrollServiceImpl implements GenerateINDPayrollService{
 		
 		
 		String[] groupId = generateINDPayrollDTO.getGroupId().split(",");
-		List<AssociateSalaryInd> assSallist = associateSalaryService.getIndAssociateSalaryListByGroupId(orgLocation,Long.parseLong(groupId[1]),generateINDPayrollDTO.getPaytype());
-		
+		List<AssociateSalaryInd> assSallist = associateSalaryService.getIndAssociateSalaryListByGroupIdForInitiatePayRoll(orgLocation,Long.parseLong(groupId[1]),generateINDPayrollDTO.getPaytype(),freqStartDate,freqEndDate);
 		UserGroup userGroup = userGroupDao.findUserGroupById(groupId[0]);
-		
 		if (assSallist != null && assSallist.size() >0) {
-			IndPaysheetFrequency paySheetFreq = null;
-			if(existedData != null) {
-				 paySheetFreq = new IndPaysheetFrequency();
-				 paySheetFreq.setId(existedData.getPaySheetFrequencyId());
-				 paySheetFreq.setPayRunId(Long.parseLong(existedData.getPayRunId()));
-			}else {
-				 paySheetFreq = new IndPaysheetFrequency();
-				 Long payRunId = generateINDPayrollDao.getMaxPayRunIdByOrgLocationId(orgLocation.getId());
-				 if(payRunId == null) {
-					payRunId = 1l;
-				 }else {
-					payRunId = payRunId+1;
-				 }
-				 paySheetFreq.setPayRunId(payRunId);
-			}
-			
+		     IndPaysheetFrequency paySheetFreq = new IndPaysheetFrequency();
+			 Long payRunId = generateINDPayrollDao.getMaxPayRunIdByOrgLocationId(orgLocation.getId());
+			 if(payRunId == null) {
+				payRunId = 1l;
+			 }else {
+				payRunId = payRunId+1;
+			 }
+			 paySheetFreq.setPayRunId(payRunId);
 			paySheetFreq.setUserGroup(userGroup);
 			paySheetFreq.setOrgLocation(orgLocation);
 			String[] payPeriod = generateINDPayrollDTO.getPayPeriod().split(",");
@@ -128,7 +118,7 @@ public class GenerateINDPayrollServiceImpl implements GenerateINDPayrollService{
 			paySheetFreq.setPaySheetFrequencyUUID(SourceLeadRandomCodeHelper.generateRandomUUID());
 			
 			
-			Set<IndEmployeePayroll> payrollList = calculatePayroll(existedData,paySheetFreq, loginUser, orgLocation,assSallist,freqStartDate, freqEndDate,userGroup);
+			Set<IndEmployeePayroll> payrollList = calculatePayroll(paySheetFreq, loginUser, orgLocation,assSallist,freqStartDate, freqEndDate,userGroup);
 			if(payrollList !=null && payrollList.size() > 0) {
 				paySheetFreq.setIndEmployeepayroll(payrollList);
 			}
@@ -153,76 +143,68 @@ public class GenerateINDPayrollServiceImpl implements GenerateINDPayrollService{
 	}
 	
 	@SuppressWarnings("static-access")
-	private Set<IndEmployeePayroll> calculatePayroll(IndPaysheetFrequencyDTO existedData,IndPaysheetFrequency paySheetFreq, User loginUser, OrgLocations orgLocation, List<AssociateSalaryInd> assoSalList, Date freqStartDate, Date freqEndDate, UserGroup userGroup)
+	private Set<IndEmployeePayroll> calculatePayroll(IndPaysheetFrequency paySheetFreq, User loginUser, OrgLocations orgLocation, List<AssociateSalaryInd> assoSalList, Date freqStartDate, Date freqEndDate, UserGroup userGroup)
 	{
 		Set<IndEmployeePayroll> set = new HashSet<>();
 		try {
 			for (AssociateSalaryInd assoSal : assoSalList) {
-				
-				if(assoSal.getCandidate().getDesignationType() != null && !PayrollConstant.C2C.equalsIgnoreCase(assoSal.getCandidate().getDesignationType())){
-					
-					boolean isExisted = isPayrollRunForSameFrequency(existedData,assoSal);
-					if(!isExisted) {
-						    IndEmployeePayroll employeePayroll = new IndEmployeePayroll();
-						    employeePayroll.setIndPaysheetFrequency(paySheetFreq);
-							double totalHours = 0;
-							BigDecimal payRate = BigDecimal.ZERO;
-							BigDecimal amount = BigDecimal.ZERO;
-							BigDecimal regularHoursAmount = BigDecimal.ZERO;
-							 List<TotalHoursDTO> totalHoursDto = userGroupDao.getTotalHoursByCandidateId(assoSal.getCandidate().getId(),freqStartDate,freqEndDate);
-							 Map<BigInteger, List<TotalHoursDTO>> map = totalHoursDto.stream().collect(Collectors.groupingBy(TotalHoursDTO::getProjectId));
-							for (Map.Entry<BigInteger, List<TotalHoursDTO>> entry : map.entrySet()) {
-								BigDecimal projectGross = BigDecimal.ZERO;
-								double projectTotalHours = 0;
-								BigDecimal projectPayRate = BigDecimal.ZERO;
-								if(entry.getValue() !=null ) {
-									for(TotalHoursDTO totalHoursDTO : entry.getValue()) {
-										projectPayRate = new BigDecimal(totalHoursDTO.getPayRate());
-										if(StringUtils.isNotBlank(totalHoursDTO.getBillableHours())) {
-											projectTotalHours  = commonUtil.getTotalRegularOverTimeHours(Double.parseDouble(totalHoursDTO.getBillableHours()),projectTotalHours);
-										}
-									}
+				    IndEmployeePayroll employeePayroll = new IndEmployeePayroll();
+				    employeePayroll.setIndPaysheetFrequency(paySheetFreq);
+					double totalHours = 0;
+					BigDecimal payRate = BigDecimal.ZERO;
+					BigDecimal amount = BigDecimal.ZERO;
+					BigDecimal regularHoursAmount = BigDecimal.ZERO;
+					 List<TotalHoursDTO> totalHoursDto = userGroupDao.getTotalHoursByCandidateId(assoSal.getCandidate().getId(),freqStartDate,freqEndDate);
+					 Map<BigInteger, List<TotalHoursDTO>> map = totalHoursDto.stream().collect(Collectors.groupingBy(TotalHoursDTO::getProjectId));
+					for (Map.Entry<BigInteger, List<TotalHoursDTO>> entry : map.entrySet()) {
+						BigDecimal projectGross = BigDecimal.ZERO;
+						double projectTotalHours = 0;
+						BigDecimal projectPayRate = BigDecimal.ZERO;
+						if(entry.getValue() !=null ) {
+							for(TotalHoursDTO totalHoursDTO : entry.getValue()) {
+								projectPayRate = new BigDecimal(totalHoursDTO.getPayRate());
+								if(StringUtils.isNotBlank(totalHoursDTO.getBillableHours())) {
+									projectTotalHours  = commonUtil.getTotalRegularOverTimeHours(Double.parseDouble(totalHoursDTO.getBillableHours()),projectTotalHours);
 								}
-								projectGross = getTotalAmount(projectTotalHours,projectPayRate);
-								amount = amount.add(projectGross);
-								payRate = payRate.add(projectPayRate);
-								totalHours = totalHours + projectTotalHours;
-							} 
-							regularHoursAmount = amount;
-						    if(PayrollConstant.SALARY.equalsIgnoreCase(assoSal.getPayType())) {
-								 amount = assoSal.getGrossSalary();
 							}
-							employeePayroll.setPayType(assoSal.getPayType());
-							employeePayroll.setPayPerSalary(amount);
-							employeePayroll.setRegularHours(String.valueOf(totalHours));
-							employeePayroll.setEmpPayRate(payRate);
-							employeePayroll.setCandidate(assoSal.getCandidate());
-							employeePayroll.setPayCheckDate(paySheetFreq.getPayCheckDate());
-							employeePayroll.setRegularHoursAmount(regularHoursAmount);
-							employeePayroll.setType(Constants.REGULAR);
-							
-							Employees employee = employeesService.getEmployeeByUserAndOrgLocationId(assoSal.getCandidate().getConsultantUser().getId(),orgLocation.getId());
-							if (employee != null) {
-								employeePayroll.setEmployee(employee);
-							}
-							IndPayrollPayheadUtilDTO utilDTO = iNDPayrollCommonUtil.getAssociatePayrollPayHeadHistoryFromAssociateSalaryPayHeads(assoSal.getAssociateSalaryPayheadIndList(), employeePayroll, loginUser,userGroup.getPayFrequency());
-							employeePayroll.setAssociatePayrollPayheadHistory(utilDTO.getAssociatePayrollPayheadHistory());
-							employeePayroll.setGrossPay(utilDTO.getGrossPay());
-							employeePayroll.setNetPay(utilDTO.getNetPay());
-							employeePayroll.setProfessionalTax(utilDTO.getProfessionalTax());
-						    employeePayroll.setTds(utilDTO.getTds());
-						    employeePayroll.setSubmitForAproverStatus(PayrollConstant.NEW);
-							
-							employeePayroll.setIndEmpPayrollUUID(SourceLeadRandomCodeHelper.generateRandomUUID());
-							employeePayroll.setStatus(1);
-							employeePayroll.setCreatedBy(loginUser.getId());
-							employeePayroll.setUpdatedBy(loginUser.getId());
-							employeePayroll.setCreatedDate(new Date());
-							employeePayroll.setUpdatedDate(new Date());
-							set.add(employeePayroll);
+						}
+						projectGross = getTotalAmount(projectTotalHours,projectPayRate);
+						amount = amount.add(projectGross);
+						payRate = payRate.add(projectPayRate);
+						totalHours = totalHours + projectTotalHours;
+					} 
+					regularHoursAmount = amount;
+				    if(PayrollConstant.SALARY.equalsIgnoreCase(assoSal.getPayType())) {
+						 amount = assoSal.getGrossSalary();
 					}
+					employeePayroll.setPayType(assoSal.getPayType());
+					employeePayroll.setPayPerSalary(amount);
+					employeePayroll.setRegularHours(String.valueOf(totalHours));
+					employeePayroll.setEmpPayRate(payRate);
+					employeePayroll.setCandidate(assoSal.getCandidate());
+					employeePayroll.setPayCheckDate(paySheetFreq.getPayCheckDate());
+					employeePayroll.setRegularHoursAmount(regularHoursAmount);
+					employeePayroll.setType(Constants.REGULAR);
 					
-				}
+					Employees employee = employeesService.getEmployeeByUserAndOrgLocationId(assoSal.getCandidate().getConsultantUser().getId(),orgLocation.getId());
+					if (employee != null) {
+						employeePayroll.setEmployee(employee);
+					}
+					IndPayrollPayheadUtilDTO utilDTO = iNDPayrollCommonUtil.getAssociatePayrollPayHeadHistoryFromAssociateSalaryPayHeads(assoSal.getAssociateSalaryPayheadIndList(), employeePayroll, loginUser,userGroup.getPayFrequency());
+					employeePayroll.setAssociatePayrollPayheadHistory(utilDTO.getAssociatePayrollPayheadHistory());
+					employeePayroll.setGrossPay(utilDTO.getGrossPay());
+					employeePayroll.setNetPay(utilDTO.getNetPay());
+					employeePayroll.setProfessionalTax(utilDTO.getProfessionalTax());
+				    employeePayroll.setTds(utilDTO.getTds());
+				    employeePayroll.setSubmitForAproverStatus(PayrollConstant.NEW);
+					
+					employeePayroll.setIndEmpPayrollUUID(SourceLeadRandomCodeHelper.generateRandomUUID());
+					employeePayroll.setStatus(1);
+					employeePayroll.setCreatedBy(loginUser.getId());
+					employeePayroll.setUpdatedBy(loginUser.getId());
+					employeePayroll.setCreatedDate(new Date());
+					employeePayroll.setUpdatedDate(new Date());
+					set.add(employeePayroll);
 			}
 		}catch (Exception e) {
 			e.printStackTrace();
@@ -231,24 +213,6 @@ public class GenerateINDPayrollServiceImpl implements GenerateINDPayrollService{
 		
 	}
 	
-	  /**
-	     * check same frequency or not 
-	    * @param existedData
-	    * @param assoSal
-	    * @return boolean
-	    */
-		private boolean isPayrollRunForSameFrequency(IndPaysheetFrequencyDTO existedData, AssociateSalaryInd assoSal) {
-			
-			boolean isExisted = false;
-			if(existedData != null) {
-			for (INDPayrollDTO indPayrollDTO : existedData.getIndPayrollDTO()) {
-				if((indPayrollDTO.getCandidateId().longValue() == assoSal.getCandidate().getId().longValue()) && (existedData.getPaySheetFrequencyId().longValue() == indPayrollDTO.getPaySheetFrequencyId().longValue())) {
-					return true;
-				}
-			}
-			}
-			return isExisted;
-		}
 		/***
 		 * calculating total amount by multipltying hours with rate
 		 * @param totalHours
