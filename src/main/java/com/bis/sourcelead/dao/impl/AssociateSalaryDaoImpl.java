@@ -351,7 +351,7 @@ private static final Logger logger = LoggerFactory.getLogger(AssociateBankDataDa
 		java.sql.Date sqlEndDate = new java.sql.Date(fqEndDate.getTime());
 		String subqry = " and ass.candidate.designationType <> '"+PayrollConstant.C2C+"' and ass.candidate.id NOT IN( select empPayroll.candidate.id from IndEmployeePayroll empPayroll where "
 				          + " empPayroll.indPaysheetFrequency.userGroup.id =:groupId and empPayroll.indPaysheetFrequency.orgLocation.id = :orgLocationId and "
-			  	          + " empPayroll.indPaysheetFrequency.frequencyStartDate = :startDate and empPayroll.indPaysheetFrequency.frequencyEndDate = :endDate and (empPayroll.submitForAproverStatus = "+PayrollConstant.SENT+" OR empPayroll.submitForAproverStatus = "+PayrollConstant.APPROVE+"))";
+			  	          + " empPayroll.indPaysheetFrequency.frequencyStartDate = :startDate and empPayroll.indPaysheetFrequency.frequencyEndDate = :endDate and empPayroll.status = '1' )";
 		if(Constants.ALL_RECORDS.equalsIgnoreCase(payType)) {
 			qry = "from AssociateSalaryInd ass where ass.orgLocations.id = :orgLocationId and ass.groupId = :groupId and ass.status = '1' "
 					+subqry;
