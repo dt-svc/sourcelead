@@ -15,6 +15,14 @@ public class JobFilterDTO {
 	private String year;
 	
 	private String searchValue;
+	
+	private String jobCreatedDateRange;
+	
+	private String clientIds;
+	
+	private String startDateStr;
+	
+	private String endDateStr;
 
 
 	public String getJobIds() {
@@ -71,6 +79,38 @@ public class JobFilterDTO {
 
 	public void setSearchValue(String searchValue) {
 		this.searchValue = searchValue;
+	}
+
+	public String getJobCreatedDateRange() {
+		return jobCreatedDateRange;
+	}
+
+	public void setJobCreatedDateRange(String jobCreatedDateRange) {
+		this.jobCreatedDateRange = jobCreatedDateRange;
+	}
+
+	public String getClientIds() {
+		return clientIds;
+	}
+
+	public void setClientIds(String clientIds) {
+		this.clientIds = clientIds;
+	}
+
+	public String getStartDateStr() {
+		return startDateStr;
+	}
+
+	public void setStartDateStr(String startDateStr) {
+		this.startDateStr = startDateStr;
+	}
+
+	public String getEndDateStr() {
+		return endDateStr;
+	}
+
+	public void setEndDateStr(String endDateStr) {
+		this.endDateStr = endDateStr;
 	}
 	
 	
