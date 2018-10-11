@@ -146,6 +146,7 @@ private static final Logger logger = LoggerFactory.getLogger(AssociateTaxDaoImpl
 		try {
 			java.sql.Date freqStartDate = new java.sql.Date(commonUtil.dateFromElk(payrollReportDTO.getFreqStartDate()).getTime());
 			java.sql.Date freqEndDate = new java.sql.Date(commonUtil.dateFromElk(payrollReportDTO.getFreqEndDate()).getTime());
+			
 			Session session = this.sessionFactory.getCurrentSession();
 			List<EmployeePayroll> payrollList = null;
 			
@@ -158,11 +159,17 @@ private static final Logger logger = LoggerFactory.getLogger(AssociateTaxDaoImpl
 				}else if("department".equalsIgnoreCase(payrollReportDTO.getSortColumn())) {
 					qry = " order by payroll.employee.departmentId.departmentName "+payrollReportDTO.getSortOrder();
 				}
-				
 			}
 			
-			String query = "from EmployeePayroll payroll where payroll.paysheetFrequency.userGroup.id = :groupId and payroll.paysheetFrequency.orgLocation.id = :orgLocationId and payroll.paysheetFrequency.frequencyStartDate = :freqStartDate and payroll.paysheetFrequency.frequencyEndDate = :freqEndDate and payroll.submitForAproverStatus = 'APPROVED'";
-			String countQuery = "from EmployeePayroll payroll where payroll.paysheetFrequency.userGroup.id = :groupId and payroll.paysheetFrequency.orgLocation.id = :orgLocationId and payroll.paysheetFrequency.frequencyStartDate = :freqStartDate and payroll.paysheetFrequency.frequencyEndDate = :freqEndDate and payroll.submitForAproverStatus = 'APPROVED'";
+			String query = "" , countQuery = "";
+			if(payrollReportDTO.getPayGroup() != 0l) {
+				query = "from EmployeePayroll payroll where payroll.paysheetFrequency.orgLocation.id = :orgLocationId and date(payroll.payCheckDate) BETWEEN :freqStartDate and :freqEndDate and payroll.submitForAproverStatus = 'APPROVED'";
+				countQuery = "from EmployeePayroll payroll where payroll.paysheetFrequency.orgLocation.id = :orgLocationId and date(payroll.payCheckDate) BETWEEN :freqStartDate and :freqEndDate and payroll.submitForAproverStatus = 'APPROVED'";
+			}else {
+				query = "from EmployeePayroll payroll where payroll.paysheetFrequency.orgLocation.id = :orgLocationId and payroll.paysheetFrequency.frequencyStartDate = :freqStartDate and payroll.paysheetFrequency.frequencyEndDate = :freqEndDate and payroll.submitForAproverStatus = 'APPROVED'";
+				countQuery = "from EmployeePayroll payroll where payroll.paysheetFrequency.userGroup.id = :groupId and payroll.paysheetFrequency.orgLocation.id = :orgLocationId and payroll.paysheetFrequency.frequencyStartDate = :freqStartDate and payroll.paysheetFrequency.frequencyEndDate = :freqEndDate and payroll.submitForAproverStatus = 'APPROVED'";
+			}
+			
 			StringBuilder searchQuery = new StringBuilder("");
 			if(payrollReportDTO.getSearchValue() !=null && !"".equalsIgnoreCase(payrollReportDTO.getSearchValue())) {
 					searchQuery.append(" and ((concat(payroll.candidate.firstName,payroll.candidate.lastName) like '%" + payrollReportDTO.getSearchValue() + "%' )")
@@ -170,10 +177,23 @@ private static final Logger logger = LoggerFactory.getLogger(AssociateTaxDaoImpl
 						.append("OR  payroll.employee.departmentId.departmentName like '%" + payrollReportDTO.getSearchValue() + "%' ")
 						.append("OR  payroll.employee.employeeId like '%" + payrollReportDTO.getSearchValue() + "%' )");
 			}
-			Query queryObj = session.createQuery(query + searchQuery.toString() + qry);
+			
+			java.sql.Date fromDate = null, toDate = null;
+			String subQuery = "";
+			if(StringUtils.isNotBlank(payrollReportDTO.getFromDate()) && StringUtils.isNotBlank(payrollReportDTO.getToDate())) {
+				fromDate = new java.sql.Date(commonUtil.dateFromElk(payrollReportDTO.getFromDate()).getTime());
+				toDate = new java.sql.Date(commonUtil.dateFromElk(payrollReportDTO.getToDate()).getTime());
+				subQuery = "and date(payroll.payCheckDate) between :fromDate and :toDate ";
+			}
+			
+			Query queryObj = session.createQuery(query + searchQuery.toString() + qry+subQuery);
 			if (payrollReportDTO != null && payrollReportDTO.getLength() > 0) {
 				queryObj.setFirstResult(payrollReportDTO.getStart());
 				queryObj.setMaxResults(payrollReportDTO.getLength());
+			}
+			if(StringUtils.isNotBlank(payrollReportDTO.getFromDate()) && StringUtils.isNotBlank(payrollReportDTO.getToDate())) {
+				queryObj.setParameter("fromDate", fromDate);
+				queryObj.setParameter("toDate", toDate);
 			}
 			queryObj.setLong("orgLocationId", payrollReportDTO.getOrgLocationid()).setLong("groupId", payrollReportDTO.getPayGroup()).setDate("freqStartDate", freqStartDate).setDate("freqEndDate",freqEndDate);
 			payrollList = queryObj.list();

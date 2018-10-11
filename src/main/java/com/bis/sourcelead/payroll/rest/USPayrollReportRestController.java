@@ -113,7 +113,23 @@ public class USPayrollReportRestController {
 	}
 	
 	/**
-	 * Returning US Payroll Register Report Jsp
+	 * Returning US Payroll Taxes And Wages Report Jsp
+	 * @author pavan jampana
+	 * 
+	 * @param request
+	 * @param response
+	 * @return
+	 * @throws Exception
+	 */
+	@RequestMapping(value = "/payrollTaxesAndWagesReport")
+	public ModelAndView payrollTaxesAndWagesReport(HttpServletRequest request, HttpServletResponse response) throws Exception
+	{
+		ModelAndView model = new ModelAndView();
+		model.setViewName("payroll/payrollTaxesAndWagesReport");
+		return model;
+	}
+	
+	/**
 	 * 
 	 * @param request
 	 * @param response
@@ -530,6 +546,51 @@ public class USPayrollReportRestController {
 		if (file != null) {
 			file.delete();
 		}
+	}
+	
+	/**
+	 * @author pavan jampana
+	 * 
+	 * this method is to get payroll Tax and Wages Report
+	 * 
+	 * @param payrollReportDTO
+	 * @param request
+	 * @param response
+	 * @return
+	 * @throws Exception
+	 */
+	@RequestMapping(value = { "/getpayrollTaxAndWagesReport","/rest/getpayrollTaxAndWagesReport" }, method = RequestMethod.POST)
+	@ResponseBody
+	public ResponseList<PayrollReportDTO> getpayrollTaxAndWagesReport(PayrollReportDTO payrollReportDTO,HttpServletRequest request, HttpServletResponse response) throws Exception
+	{
+		ResponseList<PayrollReportDTO> responseList = new ResponseList<>();
+		try {
+			OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+			if (orgLocations != null) { 
+				
+				/*String[] tableColumns = {"empId", "empName", "department", "", "", "", "", "", "", ""};
+			    int sortColumnIndex = 1;		 //by default sorting using updated date
+				String sortColumnOrder = "asc";  //by default descending order
+				if(payrollReportDTO.getOrder() != null && !payrollReportDTO.getOrder().isEmpty()) {
+					sortColumnIndex = Integer.parseInt(payrollReportDTO.getOrder().get(0).get("column"));
+					sortColumnOrder = payrollReportDTO.getOrder().get(0).get("dir");
+				}
+				payrollReportDTO.setSortColumn(tableColumns[sortColumnIndex]);
+				payrollReportDTO.setSortOrder(sortColumnOrder);*/
+				
+				responseList = paysheetFrequencyService.getpayrollTaxAndWagesReport(payrollReportDTO,orgLocations);
+				responseList.setResponse(Result.SUCCESS.name());
+				responseList.setResponseMessage(Result.SUCCESS.getValue());
+			}else{
+				responseList.setResponse(Result.SESSION_TIMEDOUT.name());
+				responseList.setResponseMessage(Result.SESSION_TIMEDOUT.getValue());
+			}
+		} catch (Exception e) {
+			responseList.setResponse(Result.AWKWARD.name());
+			responseList.setResponseMessage(Result.AWKWARD.getValue());
+			logger.error(ExceptionUtils.getFullStackTrace(e));
+		}
+		return responseList;
 	}
 	
 }

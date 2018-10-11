@@ -66,15 +66,15 @@
               <small class="text-muted">Loremipsum Loremipsum</small>
               <div class="clearfix mt10"> <a href="billing-report.html" class="btn btn-primary btn-sm" title="View">View</a> </div>
             </div>
-          </div>
+          </div>-->
           <div class="col-md-3">
             <div class="pull-left mr10"> <i class="fa fa-usd fa-2x text-muted"></i> </div>
             <div class="pull-left">
               <h4 class="text-muted">Taxable Wages Report</h4>
-              <small class="text-muted">Loremipsum Loremipsum</small>
-              <div class="clearfix mt10"><a href="javascript:void(0)" class="btn btn-primary btn-sm" title="View">View</a> </div>
+              <small class="text-muted">Payroll Taxable Wages Reports</small>
+              <div class="clearfix mt10"><a href="${appPath}/payrollTaxesAndWagesReport" class="btn btn-primary btn-sm" title="View">View</a> </div>
             </div>
-          </div> -->
+          </div> 
           <div class="col-md-3">
             <div class="pull-left mr10"> <i class="fa fa-scissors fa-2x text-muted"></i> </div>
             <div class="pull-left">

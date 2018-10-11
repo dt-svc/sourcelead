@@ -721,4 +721,68 @@ public class PaysheetFrequencyServiceImpl implements PaysheetFrequencyService{
 		return yTDPayrollDTO;
 	}
 
+	@Override
+	public ResponseList<PayrollReportDTO> getpayrollTaxAndWagesReport(PayrollReportDTO payrollReportDTO, OrgLocations orgLocations)
+	{
+		ResponseList<PayrollReportDTO> dtoList = new ResponseList<>();
+		List<PayrollReportDTO> payrollList = new ArrayList<>();
+		payrollReportDTO.setOrgLocationid(orgLocations.getId());
+		ResponseList<EmployeePayroll> list = paysheetFrequencyDao.getPayrollRegisterReports(payrollReportDTO);
+		for(EmployeePayroll emp : list.getData()) {
+//			for(EmployeePayroll emp : freq.getEmployeepayroll()) {
+			PayrollReportDTO dto = new PayrollReportDTO();
+			dto.setEmpId(emp.getEmployee().getEmployeeId());
+			StringBuilder sb = new StringBuilder();
+			sb.append(emp.getCandidate().getFirstName());
+			if(StringUtils.isNotBlank(emp.getCandidate().getLastName())) {
+				sb.append(emp.getCandidate().getLastName());
+			}
+			dto.setEmpName(sb.toString());
+			if(emp.getCandidate().getWorkLocation() != null)
+				dto.setCandidateWorkAddress(emp.getCandidate().getWorkLocation().getOrgLocationAddress());
+			StringBuilder sb1 = new StringBuilder();
+			sb1.append("xxx-xx-");
+			String[] ssnNum = emp.getCandidate().getConsultantUser().getSsn().split("-");
+			sb1.append(ssnNum[2]);
+			dto.setSsnNumber(sb1.toString());
+			dto.setDepartmentName(emp.getEmployee().getDepartmentId().getDepartmentName());
+			dto.setGrossPay(emp.getGrossPay());
+			YTDPayrollDTO ytdDTO = payrollUtil.getEmployeeYTDPayroll(emp.getCandidate(), orgLocations, Constants.APPROVED);
+			dto.setYtdTaxes(ytdDTO.getYtdTaxes());
+			dto.setType(emp.getType());
+			dto.setEmpPayRate(emp.getEmpPayRate());
+			
+			dto.setCheckDate(commonUtil.orgLocationCommonDate(emp.getPayCheckDate(), orgLocations));
+			dto.setFreqStartDate(commonUtil.dateStrFromOrgDateFormatter(orgLocations.getDateFormat(), emp.getPaysheetFrequency().getFrequencyStartDate()));
+			dto.setFreqEndDate(commonUtil.dateStrFromOrgDateFormatter(orgLocations.getDateFormat(), emp.getPaysheetFrequency().getFrequencyEndDate()));
+			dto.setRunDate(commonUtil.orgLocationCommonDate(emp.getCreatedDate(), orgLocations));
+			
+			dto.setResState(emp.getCandidate().getResidenceStateCode());
+			if(emp.getEmployee().getHireDate() != null)
+				dto.setDateOfJoin(commonUtil.dateStrFromOrgDateFormatter(orgLocations.getDateFormat(),emp.getEmployee().getHireDate()));
+			else 
+				dto.setDateOfJoin("NA");
+			
+//			dto.setTaxHistory(emp.getUsPayrollTax());
+			for(EmployeePayrollTax tax : emp.getUsPayrollTax()) {
+				dto.setFederalTax(tax.getFederalWithholding());
+				dto.setMedicare(tax.getMedicareWithholding());
+				dto.setSocialSecTax(tax.getFicaWithholding());
+				dto.setStateTax(tax.getStateWithholding());
+				dto.setLocalTax(tax.getLocalTax());
+			}
+			
+			for(EmployerPayrollTax tax : emp.getEmployerpayrolltax()) {
+				dto.setFuta(tax.getEmployerFUTA());
+				dto.setSuta(tax.getEmployerSUTA());
+			}
+			payrollList.add(dto);
+//			}
+		}
+		dtoList.setData(payrollList);
+		dtoList.setRecordsTotal(list.getRecordsTotal());
+		dtoList.setRecordsFiltered(list.getRecordsTotal());
+		return dtoList;
+	}
+
 }
