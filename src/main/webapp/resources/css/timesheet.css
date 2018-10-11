@@ -9600,6 +9600,55 @@ aside.asideAct {
 .mailbox-table table td {
 	text-align: left;
 }
+.customInvoiceItems {
+    margin: 0px 0px; padding: 0px 0px; clear: both;
+}
+.customInvoiceItems li {
+    list-style-type: none; float: left; margin: 1%; border: 1px solid #e0e0e0; background-color: #fff; padding: 5px 10px;
+    font-size: 14px; color: #545454; cursor: pointer; border-radius: 2px;
+}
+.customInvoiceItems li span {
+	display: block; font-size: 16px; font-weight: 500; color: #6e6e6e; padding: 2px 0px 10px 0px;
+}
+.customInvoiceItems li.unCheck {
+    border: 1px solid #ffd2be; background-color: #fff7f7;
+}
+.customInvoiceItems .checkbox-custom {
+    position: relative; width: 18px; height: 18px; display: inline-block; -webkit-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; -o-user-select: none; user-select: none; -webkit-appearance: none; -moz-appearance: none;
+    appearance: none;  margin: 1px 10px 0px 0px !important; outline: 0; opacity: 1;
+}
+.customInvoiceItems .checkbox-custom:after {
+    content: ''; position: absolute; display: block; z-index: 1; width: 18px; height: 18px; border: 1px solid #d7d7d7; border-radius: 2px;
+}
+.customInvoiceItems .checkbox-custom[type=checkbox]:before {
+    background: #368ee099 url(../images/tick.png); background-size: 10px 7px; background-repeat: no-repeat; background-position: 3px 5px;
+    position: absolute; left: 2px; z-index: 2; opacity: 0; width: 100%; height: 100%; color: #82e482;
+}
+.customInvoiceItems .checkbox-custom[type=checkbox]:checked:before {
+    content: ''; position: absolute; top: 0px; opacity: 1; left: 0px; border: 1px solid #2a78c0; border-radius: 2px;
+}
+.customInvoiceGrid {
+	width:48%; height: 150px; overflow: auto;
+}
+.customInvoiceGrid img {
+	width: 60%; margin: 0px auto; display: block;
+}
+.customInvoiceGrid table {
+	 width: 100%;
+}
+.customInvoiceGrid table th, .customInvoiceGrid table td {
+	border: 1px solid; font-weight: normal; text-align: center; width: 31%; height: 35px;
+}
+.sortable-hidden {
+	position: relative; opacity: 0; width: 48%; height: 150px;
+}
+.sortable-hidden-show {
+	opacity: 0.3;
+}
+.cusInList label {
+	display: inline-block; width: 90%; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; margin-bottom: 2px;
+}
 .textError {
 	background-color: #e36363; color:#fff; position: absolute; top: 66px; text-align: center; width: 100%; left: 0px;
 }

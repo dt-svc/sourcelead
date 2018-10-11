@@ -35,7 +35,7 @@ import com.ibm.icu.util.Calendar;
 
 @Repository
 public class TimeSheetDayEntriesDaoImpl implements TimeSheetDayEntriesDao{
-
+ 
 	@Autowired
 	private SessionFactory sessionFactory;
 	
@@ -401,7 +401,7 @@ public class TimeSheetDayEntriesDaoImpl implements TimeSheetDayEntriesDao{
 				avgWorkingHoursPerDay = 8; 
 		 }
          double estimatedHours = avgWorkingHoursPerDay*workingDays;
- 		String query = "from TimeSheetDayEntries tde left join fetch tde.projectTask pt  left join fetch tde.projectMembers pm left join fetch pm.orgLocationId loc where pm.masterCandidateId.id =:masterCandidateId and loc.id =:locationId and  and tde.timesheetDate between :startDate and :endDate and tde.status = '1' ";
+ 		String query = "from TimeSheetDayEntries tde left join fetch tde.projectTask pt  left join fetch tde.timesheetSubmissions ts left join fetch ts.projectMembers pm left join fetch pm.orgLocationId loc where pm.masterCandidateId.id =:masterCandidateId and loc.id =:locationId and tde.timesheetDate between :startDate and :endDate and tde.status = '1' ";
  		List<TimeSheetDayEntries> tdeList = session.createQuery(query).setLong("masterCandidateId", masterCandidateId).setLong("locationId", orgLocations.getId()).setParameter("startDate", sqlStartDate).setParameter("endDate", sqlEndDate).list();	
  		double overTimeHours = 0;
  		if (tdeList != null && !tdeList.isEmpty()) {
@@ -419,6 +419,57 @@ public class TimeSheetDayEntriesDaoImpl implements TimeSheetDayEntriesDao{
  			overTimeHours = 0;
  		}
  		return overTimeHours;
+	}
+	
+	
+	@Override
+	@Transactional(rollbackFor = { Exception.class })
+	public Boolean isMissingTimesheetByMasterCandidateIdAndOrgLocationWithStartEndDates(Long masterCandidateId,Date startDate,Date endDate,OrgLocations orgLocations) throws Exception {
+		Session session = this.sessionFactory.getCurrentSession();
+		java.sql.Date sqlStartDate = new java.sql.Date(startDate.getTime());
+		java.sql.Date sqlEndDate = new java.sql.Date(endDate.getTime());
+		long weekOffCount = 0;
+		if(StringUtils.isNotEmpty(orgLocations.getWeekOffDays())) {
+			 String[] strArray = orgLocations.getWeekOffDays().split(",");
+		     List<String> weekOffs = new ArrayList<String>(Arrays.asList(strArray));
+		     if(weekOffs != null && !weekOffs.isEmpty()) {
+		    	 for(String day_Of_Week : weekOffs) {
+		    		 weekOffCount = weekOffCount+CalendarUtil.numberOfDayOccurancesBetweenTwoDates(startDate, endDate, day_Of_Week);
+		    	 }
+		     }
+		    
+		}else {
+			 ArrayList<String> weekOffs = new ArrayList<String>();
+			 weekOffs.add("Sat");
+			 weekOffs.add("Sun");
+	    	 for(String day_Of_Week : weekOffs) {
+	    		 weekOffCount = weekOffCount+CalendarUtil.numberOfDayOccurancesBetweenTwoDates(startDate, endDate, day_Of_Week);
+	    	 }
+		}
+		 long noOfDays =  CalendarUtil.getNumberOfDaysCount(startDate, endDate);
+		 long workingDays = noOfDays-weekOffCount;
+		 Integer avgWorkingHoursPerDay = orgLocations.getAverageWorkingHours();
+         if(avgWorkingHoursPerDay == null || avgWorkingHoursPerDay == 0) {
+				avgWorkingHoursPerDay = 8; 
+		 }
+         double estimatedHours = avgWorkingHoursPerDay*workingDays;
+         String query = "from TimeSheetDayEntries tde left join fetch tde.projectTask pt  left join fetch tde.timesheetSubmissions ts left join fetch ts.projectMembers pm left join fetch pm.projectMemberCandidteId can left join fetch can.orgLocationId loc where pm.masterCandidateId.id =:masterCandidateId and loc.id =:locationId and tde.timesheetDate between :startDate and :endDate and tde.status = '1' ";
+ 		List<TimeSheetDayEntries> tdeList = session.createQuery(query).setLong("masterCandidateId", masterCandidateId).setLong("locationId", orgLocations.getId()).setParameter("startDate", sqlStartDate).setParameter("endDate", sqlEndDate).list();	
+ 		boolean flag = true;
+ 		if (tdeList != null && !tdeList.isEmpty()) {
+ 			float weekTotalHours = 0f;
+			for (TimeSheetDayEntries tde : tdeList) {
+				float totalHours = 0f;
+				if (StringUtils.isNotEmpty(tde.getTotalHours())) {
+					totalHours = CommonUtil.getCombinedHours(Float.parseFloat(tde.getTotalHours().replaceAll(":", ".")), totalHours);
+				}
+				weekTotalHours = CommonUtil.getCombinedHours(weekTotalHours, totalHours);
+			}
+			if(weekTotalHours >= estimatedHours) {
+				flag = false;
+			}
+		}
+ 		return flag;
 	}
 	
 
