@@ -75,7 +75,7 @@
           <c:if test="${freqResponse.approverStatus != 'APPROVED'}">
           	<li><a href="javascript:void(0)" class="btn btn-primary btnSuccess" onClick="sentForApprove();">Approve</a></li>
           </c:if>
-            <li><a href="javascript:void(0)" class="btn btn-default" onclick="window.location='/app/runIndianPayRoll?stab=payroll'">Cancel</a></li>
+           <li><a  class="btn btn-default"  onclick="cancelIndPayroll();">Cancel</a></li>
           </ul>
           <div class="clearfix"></div>
         </nav>
@@ -96,5 +96,16 @@ function sentForApprove(){
     });
 }
 </script>
-
+<script>
+function cancelIndPayroll(){
+	var feqUUID = $("#paySheetFrequency").val();
+	$.ajax({
+        type : "POST",
+        url: sourceleadUrl+"/removePaysheetFrequencyFromSession?paySheetFrequencyUUID="+feqUUID,    
+         success :function(result) { 
+        	 $(location).attr('href', 'runIndianPayRoll?stab=payroll');
+         },
+    });
+}
+</script>
 
