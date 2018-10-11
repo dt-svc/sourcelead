@@ -23,20 +23,25 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.ModelAndView;
 
 import com.bis.sourcelead.dto.ResponseList;
+import com.bis.sourcelead.dto.UserDTO;
+import com.bis.sourcelead.entity.Employees;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.entity.UserGroup;
 import com.bis.sourcelead.enums.Result;
+import com.bis.sourcelead.payroll.dto.AssociateReportDTO;
 import com.bis.sourcelead.payroll.dto.CheckRegisterReportDTO;
 import com.bis.sourcelead.payroll.dto.PayPeriodDTO;
 import com.bis.sourcelead.payroll.dto.PayrollComparisonDTO;
 import com.bis.sourcelead.payroll.dto.PayrollReportDTO;
 import com.bis.sourcelead.payroll.entity.DeductionHistory;
+import com.bis.sourcelead.payroll.entity.EmployeePayroll;
 import com.bis.sourcelead.payroll.service.PayrollReportService;
 import com.bis.sourcelead.payroll.service.PaysheetFrequencyService;
 import com.bis.sourcelead.payroll.service.USPayPeriodService;
 import com.bis.sourcelead.payroll.util.PayrollReportPdfUtil;
 import com.bis.sourcelead.payroll.util.PayrollUtil;
+import com.bis.sourcelead.service.EmployeesService;
 import com.bis.sourcelead.service.UserGroupService;
 import com.bis.sourcelead.util.SourceLeadSessionManager;
 
@@ -63,6 +68,9 @@ public class USPayrollReportRestController {
 	
 	@Autowired
 	PayrollReportPdfUtil payrollReportPdfUtil;
+	
+	@Autowired
+	private EmployeesService employeesService;
 
 	/**
 	 * Returning Us Payroll Jsp
@@ -182,11 +190,11 @@ public class USPayrollReportRestController {
 	 * @return
 	 * @throws Exception
 	 */
-	@RequestMapping(value = "/employeePayrollReport")
+	@RequestMapping(value = "/usEmployeePayrollReport")
 	public ModelAndView employeePayrollReportJsp(HttpServletRequest request, HttpServletResponse response) throws Exception
 	{
 		ModelAndView model = new ModelAndView();
-		model.setViewName("payroll/employeePayrollReport");
+		model.setViewName("payroll/usEmployeePayrollReport");
 		return model;
 	}
 	
@@ -530,6 +538,37 @@ public class USPayrollReportRestController {
 		if (file != null) {
 			file.delete();
 		}
+	}
+	
+	
+	/**get Employee payroll reports
+	 * 
+	 * @param payrollReportDTO
+	 * @param request
+	 * @param response
+	 * @return
+	 * @throws Exception
+	 */
+	@RequestMapping(value = { "/runEmployeePayroll","/rest/runEmployeePayroll" }, method = RequestMethod.GET)
+	public ResponseList<AssociateReportDTO> runEmployeePayroll(PayrollReportDTO payrollReportDTO,HttpServletRequest request, HttpServletResponse response) throws Exception
+	{
+		OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+		return paysheetFrequencyService.getEmployeePayrollListByPayCheckDate(payrollReportDTO,orgLocation);
+	}
+	
+	/**
+	 * get All Employees based on department
+	 * @param departmentId
+	 * @param request
+	 * @param response
+	 * @return
+	 * @throws Exception
+	 */
+	@RequestMapping(value = { "/getEmployeesBasedOnDepartment","/rest/getEmployeesBasedOnDepartment" }, method = RequestMethod.GET)
+	public List<UserDTO> getEmployeesBasedOnDepartment(@RequestParam(value="departmentId", required=true) String departmentId,HttpServletRequest request, HttpServletResponse response) throws Exception
+	{
+		OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+		return employeesService.getEmployeesBasedOnDepartment(departmentId,orgLocation);
 	}
 	
 }

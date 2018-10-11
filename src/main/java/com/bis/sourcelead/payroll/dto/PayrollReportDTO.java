@@ -141,6 +141,14 @@ public class PayrollReportDTO extends SearchDTO{
 	private Set<EmployeePayrollTax> taxHistory;
 	
 	private YTDPayrollDTO ytdPayrollDTO;
+	
+	private String fromDate;
+	
+	private String toDate;
+	
+	private String employees;
+	
+	private String payrollDepartment;
 
 	public String getEmpId()
 	{
@@ -791,5 +799,38 @@ public class PayrollReportDTO extends SearchDTO{
 	{
 		this.ytdPayrollDTO = ytdPayrollDTO;
 	}
+
+	public String getFromDate() {
+		return fromDate;
+	}
+
+	public void setFromDate(String fromDate) {
+		this.fromDate = fromDate;
+	}
+
+	public String getToDate() {
+		return toDate;
+	}
+
+	public void setToDate(String toDate) {
+		this.toDate = toDate;
+	}
+
+	public String getEmployees() {
+		return employees;
+	}
+
+	public void setEmployees(String employees) {
+		this.employees = employees;
+	}
+
+	public String getPayrollDepartment() {
+		return payrollDepartment;
+	}
+
+	public void setPayrollDepartment(String payrollDepartment) {
+		this.payrollDepartment = payrollDepartment;
+	}
+
 
 }

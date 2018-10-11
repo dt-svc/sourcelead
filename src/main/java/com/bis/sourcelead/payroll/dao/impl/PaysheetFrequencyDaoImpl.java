@@ -2,6 +2,8 @@ package com.bis.sourcelead.payroll.dao.impl;
 
 import java.math.BigDecimal;
 import java.text.SimpleDateFormat;
+import java.time.format.DateTimeFormatter;
+import java.time.format.DateTimeFormatterBuilder;
 import java.util.Date;
 import java.util.List;
 
@@ -18,6 +20,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.bis.sourcelead.dto.ResponseList;
 import com.bis.sourcelead.entity.Candidate;
+import com.bis.sourcelead.entity.Invoice;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.payroll.dao.PaysheetFrequencyDao;
 import com.bis.sourcelead.payroll.dto.PayrollReportDTO;
@@ -382,5 +385,85 @@ private static final Logger logger = LoggerFactory.getLogger(AssociateTaxDaoImpl
 		queryObj.setDate("startDate", startDate);
 		queryObj.setDate("endDate", endDate);
 		return queryObj.list();
+	}
+
+	@SuppressWarnings("unchecked")
+	@Override
+	@Transactional
+	public List<EmployeePayroll> getEmployeePayrollListByPayCheckDate(PayrollReportDTO payrollReportDTO,OrgLocations orgLocation) {
+		List<EmployeePayroll> payrollList = null;
+		
+		try {
+			
+			//department Ids
+			Long[] data = null;
+			if(payrollReportDTO.getDepartment() != null && !"null".equalsIgnoreCase(payrollReportDTO.getDepartment()) ) {
+				
+				String[] idsValues = payrollReportDTO.getDepartment().split(",");
+				// convert string array to long array
+				 data = new Long[idsValues.length];
+				for (int i = 0; i < idsValues.length; i++) {
+				  data[i] = Long.valueOf(idsValues[i]);
+				}
+			}
+			
+			//employee Ids
+			Long[] employeeIds = null;
+			if(payrollReportDTO.getEmployees() != null && !"null".equalsIgnoreCase(payrollReportDTO.getEmployees())) {
+				String[] employeeIdsValues = payrollReportDTO.getEmployees().split(",");
+				// convert string array to long array
+					employeeIds = new Long[employeeIdsValues.length];
+				for (int i = 0; i < employeeIdsValues.length; i++) {
+					employeeIds[i] = Long.valueOf(employeeIdsValues[i]);
+				}
+			}
+			
+			Date fDate = commonUtil.orgLocationDateFormat(orgLocation.getDateFormat(), payrollReportDTO.getFromDate());
+			Date tDate = commonUtil.orgLocationDateFormat(orgLocation.getDateFormat(), payrollReportDTO.getToDate());
+			java.sql.Date startDate = new java.sql.Date(fDate.getTime());
+			java.sql.Date endDate = new java.sql.Date(tDate.getTime());
+			
+			
+			String qry = "from EmployeePayroll payroll where payroll.paysheetFrequency.orgLocation.id =:orgLocationId and payroll.payCheckDate >= :startDate and payroll.payCheckDate <= :endDate  and payroll.submitForAproverStatus = :status";
+			String subQuery1 = "";
+			String subQuery2 = "";
+			
+			Session session = this.sessionFactory.getCurrentSession();
+			
+			StringBuilder searchQuery = new StringBuilder("");
+			if (StringUtils.isNotBlank(payrollReportDTO.getSearchValue())) {
+					if (payrollReportDTO.getSearchValue() != null && !"".equalsIgnoreCase(payrollReportDTO.getSearchValue())) {
+						searchQuery.append(" and (payroll.employee.user.firstName like '%" + payrollReportDTO.getSearchValue() + "%' ")
+						.append("OR payroll.employee.user.lastName like '%" + payrollReportDTO.getSearchValue() + "%' )");
+					}
+			}
+			
+			if(data != null && employeeIds != null) {
+				subQuery1 = " and payroll.employee.departmentId.id IN ( :ids )";
+				subQuery2 = " and payroll.employee.id IN ( :employeeIds )";
+				payrollList = session.createQuery(qry + subQuery1 + subQuery2+searchQuery).setString("status", "APPROVED")
+						   .setLong("orgLocationId", orgLocation.getId())
+						   .setDate("startDate", startDate)
+						   .setDate("endDate", endDate)
+						   .setParameterList("ids", data)
+						   .setParameterList("employeeIds", employeeIds).list();
+			}else if(data != null){
+				subQuery1 = " and payroll.employee.departmentId.id IN ( :ids )";
+				payrollList = session.createQuery(qry + subQuery1+searchQuery).setString("status", "APPROVED")
+						   .setLong("orgLocationId", orgLocation.getId())
+						   .setDate("startDate", startDate)
+						   .setDate("endDate", endDate)
+						   .setParameterList("ids", data).list();
+			} else {
+				payrollList = session.createQuery(qry + subQuery1+searchQuery).setString("status", "APPROVED")
+						   .setLong("orgLocationId", orgLocation.getId())
+						   .setDate("startDate", startDate)
+						   .setDate("endDate", endDate).list();
+			}
+		
+		}catch (Exception e) {
+			e.printStackTrace();
+		}
+		return payrollList;
 	}
 }

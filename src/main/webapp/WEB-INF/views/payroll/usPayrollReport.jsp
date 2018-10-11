@@ -116,6 +116,17 @@
               <div class="clearfix mt10"><a href="${appPath}/directDepositReport" class="btn btn-primary btn-sm" title="View">View</a> </div>
             </div>
           </div>
+          
+          
+            <div class="col-md-3">
+            <div class="pull-left mr10"> <i class="fa fa-arrow-circle-right fa-2x text-muted"></i> </div>
+            <div class="pull-left">
+              <h4 class="text-muted">Employee Payroll</h4>
+              <small class="text-muted">Employee Payroll Report</small>
+              <div class="clearfix mt10"><a href="${appPath}/usEmployeePayrollReport" class="btn btn-primary btn-sm" title="View">View</a> </div>
+            </div>
+          </div>
+          
         </div>
       </div>
       <!-- Content Area Ends--> 
