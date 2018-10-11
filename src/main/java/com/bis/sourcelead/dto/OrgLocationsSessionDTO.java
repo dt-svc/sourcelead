@@ -1,9 +1,11 @@
 package com.bis.sourcelead.dto;
 
 import com.bis.sourcelead.enums.Status;
+import com.fasterxml.jackson.annotation.JsonAutoDetect;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 @JsonIgnoreProperties(ignoreUnknown = true)
+@JsonAutoDetect
 public class OrgLocationsSessionDTO {
 
     private Long id;
@@ -121,7 +123,6 @@ public class OrgLocationsSessionDTO {
     private String isTimesheetAvgHoursRequired;
 	
 	private Integer profilePercentage;
-	
 	
 
 	public Long getId() {
@@ -587,4 +588,7 @@ public class OrgLocationsSessionDTO {
 	public void setProfilePercentage(Integer profilePercentage) {
 		this.profilePercentage = profilePercentage;
 	}
+
+	
+	
 }

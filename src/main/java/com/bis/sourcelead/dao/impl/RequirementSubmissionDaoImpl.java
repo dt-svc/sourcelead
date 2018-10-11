@@ -122,7 +122,7 @@ public class RequirementSubmissionDaoImpl implements RequirementSubmissionDao{
 	@SuppressWarnings("unchecked")
 	@Override
 	@Transactional(rollbackFor = { Exception.class })
-	public List<RequirementSubmission> getAllShortListCandidatesByOrgLocationsIdAndRequirementId(OrgLocations orgLocations, Long requirementId, List<Long> existingApplicantsIds, String isClientInterview,User user,String loginUserRole) throws Exception {
+	public List<RequirementSubmission> getAllShortListCandidatesByOrgLocationsIdAndRequirementId(Long orgLocationId, Long requirementId, List<Long> existingApplicantsIds, String isClientInterview,Long userId,String loginUserRole,String loginUserCode) throws Exception {
 		 Session session = this.sessionFactory.getCurrentSession();
 		 String subQuery = "";
 		 if(isClientInterview != null && "Y".equalsIgnoreCase(isClientInterview)){
@@ -134,19 +134,19 @@ public class RequirementSubmissionDaoImpl implements RequirementSubmissionDao{
 		 String subQuery2 = "";
 		 
 		 Requirement requirement  = requirementDao.getRequirementByRequirementId(requirementId);
-		 Boolean teamFlag = teamDao.getTeamOwnersListByUserIdAndRequirementId(user,orgLocations.getId(),requirement.getId());
-		 if (!loginUserRole.equalsIgnoreCase("ROLE_ADMIN") && requirement.getManagerUserId().getId().longValue() != user.getId().longValue() && teamFlag == false ) {
-			 subQuery2 = " and ((rs.createdBy = '"+user.getUserCode()+"')  OR (rs.vendorLocationId IS NOT NULL AND rs.requirement.releasedBy = '"+user.getId().toString()+"') OR (rs.candidate.candidateType = 'Professional') OR (rs.recruiterUserId IS NOT NULL) OR ('"+user.getId()+"' IN (SELECT rah.approverUserId.id FROM RequirementApproverHierarchy rah WHERE rah.requirementId.id = :requirementId))) ";
+		 Boolean teamFlag = teamDao.getTeamOwnersListByUserIdAndRequirementId(userId,orgLocationId,requirement.getId());
+		 if (!loginUserRole.equalsIgnoreCase("ROLE_ADMIN") && requirement.getManagerUserId().getId().longValue() != userId.longValue() && teamFlag == false ) {
+			 subQuery2 = " and ((rs.createdBy = '"+loginUserCode+"')  OR (rs.vendorLocationId IS NOT NULL AND rs.requirement.releasedBy = '"+userId.toString()+"') OR (rs.candidate.candidateType = 'Professional') OR (rs.recruiterUserId IS NOT NULL) OR ('"+userId+"' IN (SELECT rah.approverUserId.id FROM RequirementApproverHierarchy rah WHERE rah.requirementId.id = :requirementId))) ";
 		 }
 		 
 		 
 		 List<RequirementSubmission> shortListCandidatesList;
 		 if(existingApplicantsIds != null && !existingApplicantsIds.isEmpty()){
 			 String query = "from RequirementSubmission rs left join fetch rs.requirement left join fetch rs.candidate left join fetch rs.sourceSubmission left join fetch rs.candidateResumes where rs.orgLocations.id = :orgLocationsId and rs.requirement.id = :requirementId and rs.id NOT IN (:existingApplicantsIds) "+subQuery+" "+subQuery2+" ";
-			 shortListCandidatesList = session.createQuery(query).setLong( "orgLocationsId", orgLocations.getId()).setLong( "requirementId", requirementId).setParameterList("existingApplicantsIds", existingApplicantsIds).list();
+			 shortListCandidatesList = session.createQuery(query).setLong( "orgLocationsId", orgLocationId).setLong( "requirementId", requirementId).setParameterList("existingApplicantsIds", existingApplicantsIds).list();
 		 }else{
 			 String query = "from RequirementSubmission rs left join fetch rs.requirement left join fetch rs.candidate left join fetch rs.sourceSubmission left join fetch rs.candidateResumes where rs.orgLocations.id = :orgLocationsId and rs.requirement.id = :requirementId "+subQuery+" "+subQuery2+" ";
-			 shortListCandidatesList = session.createQuery(query).setLong( "orgLocationsId", orgLocations.getId()).setLong( "requirementId", requirementId).list();
+			 shortListCandidatesList = session.createQuery(query).setLong( "orgLocationsId", orgLocationId).setLong( "requirementId", requirementId).list();
 		 }
 	     return shortListCandidatesList;
 	}
@@ -175,7 +175,7 @@ public class RequirementSubmissionDaoImpl implements RequirementSubmissionDao{
 		 String subQuery2 = "";
 		 
 		 Requirement requirement  = requirementDao.getRequirementByRequirementId(requirementId);
-		 Boolean teamFlag = teamDao.getTeamOwnersListByUserIdAndRequirementId(user,orgLocations.getId(),requirement.getId());
+		 Boolean teamFlag = teamDao.getTeamOwnersListByUserIdAndRequirementId(user.getId(),orgLocations.getId(),requirement.getId());
 		 if (!loginUserRole.equalsIgnoreCase("ROLE_ADMIN") && requirement.getManagerUserId().getId().longValue() != user.getId().longValue() && teamFlag == false ) {
 			 subQuery2 = " and ((rs.createdBy = '"+user.getUserCode()+"') OR (rs.candidate.candidateType = 'Professional') OR (rs.recruiterUserId IS NOT NULL) OR ('"+user.getId()+"' IN (SELECT rah.approverUserId.id FROM RequirementApproverHierarchy rah WHERE rah.requirementId.id = :requirementId)))";
 		 }
@@ -396,7 +396,7 @@ public class RequirementSubmissionDaoImpl implements RequirementSubmissionDao{
 		 String subQuery = "";
 		 
 		 Requirement requirement  = requirementDao.getRequirementByRequirementId(requirementId);
-		 Boolean teamFlag = teamDao.getTeamOwnersListByUserIdAndRequirementId(user,loginOrgLocation.getId(),requirement.getId());
+		 Boolean teamFlag = teamDao.getTeamOwnersListByUserIdAndRequirementId(user.getId(),loginOrgLocation.getId(),requirement.getId());
 		 if (!loginUserRole.equalsIgnoreCase("ROLE_ADMIN") && requirement.getManagerUserId().getId().longValue() != user.getId().longValue() && teamFlag == false ) {
 			 subQuery = " and ((rs.createdBy = '"+user.getUserCode()+"') OR (rs.vendorLocationId IS NOT NULL) OR (rs.candidate.candidateType = 'Professional') OR (rs.recruiterUserId IS NOT NULL) OR ('"+user.getId()+"' IN (SELECT rah.approverUserId.id FROM RequirementApproverHierarchy rah WHERE rah.requirementId.id = :requirementId))) ";
 		 }
@@ -517,7 +517,7 @@ public class RequirementSubmissionDaoImpl implements RequirementSubmissionDao{
         String subQuery = "";
 		 
 		 Requirement requirement  = requirementDao.getRequirementByRequirementId(requirementId);
-		 Boolean teamFlag = teamDao.getTeamOwnersListByUserIdAndRequirementId(user,orgLocations.getId(),requirement.getId());
+		 Boolean teamFlag = teamDao.getTeamOwnersListByUserIdAndRequirementId(user.getId(),orgLocations.getId(),requirement.getId());
 		 if (!loginUserRole.equalsIgnoreCase("ROLE_ADMIN") && requirement.getManagerUserId().getId().longValue() != user.getId().longValue() && teamFlag == false ) {
 			 subQuery = " and rs.createdBy = '"+user.getUserCode()+"' ";
 		 }
@@ -542,7 +542,7 @@ public class RequirementSubmissionDaoImpl implements RequirementSubmissionDao{
 		 Session session = this.sessionFactory.getCurrentSession();
 		 
 		 String subQuery = "";
-		 Boolean teamFlag = teamDao.getTeamOwnersListByUserIdAndRequirementId(user,loginOrgLocation.getId(),requirement.getId());
+		 Boolean teamFlag = teamDao.getTeamOwnersListByUserIdAndRequirementId(user.getId(),loginOrgLocation.getId(),requirement.getId());
 		 if (!loginUserRole.equalsIgnoreCase("ROLE_ADMIN") && requirement.getManagerUserId().getId().longValue() != user.getId().longValue() && teamFlag == false ) {
 			 subQuery = " and ((rs.requirement.primaryRecruiterUserId.id = '"+user.getId()+"') OR (rs.createdBy = '"+user.getUserCode()+"') OR (rs.vendorLocationId IS NOT NULL) OR (rs.candidate.candidateType = 'Professional') OR (rs.recruiterUserId IS NOT NULL)) ";
 		 }
@@ -1472,13 +1472,13 @@ public class RequirementSubmissionDaoImpl implements RequirementSubmissionDao{
 
 		@Override
 		@Transactional(rollbackFor = { Exception.class })
-		public List<RequirementSubmission> getApplicantsByStatus(Long orgLocationsId, User user,String status) {
+		public List<RequirementSubmission> getApplicantsByStatus(Long orgLocationsId, Long userId, String userName,String status) {
 
 			Session session = this.sessionFactory.getCurrentSession();
 			String subQuery = "";
 			String statusQuery ="";
 			String from = "from RequirementSubmission reqSub left join fetch reqSub.requirement req   left join fetch reqSub.candidate left join fetch reqSub.sourceSubmission left join fetch reqSub.candidateResumes "; 
-			Boolean isadmin = userRoleDao.isUserAdminByOrgLocationId(user.getId(),orgLocationsId);
+			Boolean isadmin = userRoleDao.isUserAdminByOrgLocationId(userId,orgLocationsId);
 			List<RequirementSubmission> requirementSubmissionList = null;
 			 Map<String, Object> params = new HashMap<String,Object>();
 			
@@ -1486,7 +1486,7 @@ public class RequirementSubmissionDaoImpl implements RequirementSubmissionDao{
 			 String	 statusQuery1  ="";
 		//This is for Requirement Manger 
 			   String subManagerQuery1 = "reqSub.requirement.managerUserId.id  =:userId ";
-				params.put("userId",user.getId());
+				params.put("userId",userId);
 				
 			if(isadmin){
 				 if("accepted".equalsIgnoreCase(status)){
@@ -1513,12 +1513,8 @@ public class RequirementSubmissionDaoImpl implements RequirementSubmissionDao{
 				}
 				subQuery = " where reqSub.orgLocations.id =:loginOrgLocation  and  (reqSub.requirement.managerUserId.id  =:userId or reqSub.createdUser =:userCreatedBy) and "   +statusQuery;
 				params.put("loginOrgLocation",orgLocationsId);
-				params.put("userId",user.getId());
-				if(user.getLastName() != null && user.getLastName() !=""){
-				params.put("userCreatedBy",user.getFirstName() +" "+user.getLastName());
-				}else{
-				params.put("userCreatedBy",user.getFirstName());	
-				}
+				params.put("userId",userId);
+				params.put("userCreatedBy",userName);	
 			}
 			String whereCondition = subQuery;
 			

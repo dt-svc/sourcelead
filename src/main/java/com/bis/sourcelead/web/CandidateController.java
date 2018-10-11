@@ -203,25 +203,9 @@ public class CandidateController {
 		
 		logger.debug("--------candidatesList------");
 		
-		OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+		//OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 		Org   org = (Org)SourceLeadSessionManager.getSessionAttribute(request, "org");
-		Long orgLocationId = null;
-		String country = null;
-		
 		JSONObject orgLocJsonObject = SourceLeadSessionManager.getSessionJsonObject(request,  "orgLocations");
-		System.out.println(orgLocJsonObject);
-	
-		for(Iterator iterator = orgLocJsonObject.keySet().iterator(); iterator.hasNext();) {
-		    String key = (String) iterator.next();
-		    System.out.println(orgLocJsonObject.get(key));
-		     Object jsonValue= orgLocJsonObject.get(key);
-		     JSONParser parser = new JSONParser(); 
-		     JSONObject jsonObj = (JSONObject) parser.parse(jsonValue.toString());
-		     System.out.println(jsonObj.get("id"));
-		     orgLocationId = Long.valueOf(jsonObj.get("id").toString());
-		     country = jsonObj.get("country").toString();
-		}
-		
 		User user = (User) SourceLeadSessionManager.getSessionAttribute(request,"user");
 	    String userRole = (String) SourceLeadSessionManager.getSessionAttribute(request, "loginUserRole");
 	    Long candidateCount = 0L;
@@ -248,9 +232,9 @@ public class CandidateController {
 		
 		
 		 if(!isNullOrEmpty(userRole) && userRole.equalsIgnoreCase("ROLE_CROWDSOURCING_RECRUITER")){
-			 candidateCount = candidateService.getCandidatesCountByCandidateTypeOrgLocationIDAndUserId(orgLocationId, user.getId(), "Candidate");
+			 candidateCount = candidateService.getCandidatesCountByCandidateTypeOrgLocationIDAndUserId(Long.valueOf(orgLocJsonObject.get("id").toString()), user.getId(), "Candidate");
 		 }else{
-			 candidateCount = candidateService.getCandidatesCountByCandidateTypeOrgLocationID(user.getId(),orgLocationId, "Candidate");
+			 candidateCount = candidateService.getCandidatesCountByCandidateTypeOrgLocationID(user.getId(),Long.valueOf(orgLocJsonObject.get("id").toString()), "Candidate");
 		 }
 	  
 	   model.addObject("candidateCount", candidateCount);
@@ -258,9 +242,9 @@ public class CandidateController {
 		List<Countries> countryList = countriesService.getAllCountries();
 		model.addObject("countryList", countryList);
 		
-		if(null != orgLocations && StringUtils.isNotEmpty(country)){
+		if(null != orgLocJsonObject.get("country") && StringUtils.isNotEmpty(orgLocJsonObject.get("country").toString())){
 		
-			Countries countries = countriesService.getCountriesByCountryName(country);
+			Countries countries = countriesService.getCountriesByCountryName(orgLocJsonObject.get("country").toString());
 			if(null != countries){
 			   model.addObject("loginCountryName", countries.getName());
 			   model.addObject("currency", countries.getCurrency());
@@ -271,7 +255,7 @@ public class CandidateController {
 		}
 		
 		//approver list
-		List<User> requirementApproverList = userService.getTabAccessOwnersByOrgLocationIdAndTabId(orgLocationId,Long.valueOf(Constants.TAB_CANDIATE));
+		List<User> requirementApproverList = userService.getTabAccessOwnersByOrgLocationIdAndTabId(Long.valueOf(orgLocJsonObject.get("id").toString()),Long.valueOf(Constants.TAB_CANDIATE));
 		model.addObject("requirementApproverList", requirementApproverList);
 				
 		
@@ -285,7 +269,7 @@ public class CandidateController {
 		model.addObject("visaList", visaList);
 		
 		
-		Set<String> tagsList = sourceleadTagsService.getSourceleadTagsByOrgLocationId(orgLocationId);
+		Set<String> tagsList = sourceleadTagsService.getSourceleadTagsByOrgLocationId(Long.valueOf(orgLocJsonObject.get("id").toString()));
 		SourceLeadSessionManager.setSessionAttribute(request, "tagsList", tagsList);
 		
 		List<LookUpData> educationsList = lookUpDataService.getLookUpDataByCategory(Constants.EDUCATIONS);
@@ -294,7 +278,7 @@ public class CandidateController {
 		List<LookUpData> documentsList = lookUpDataService.getLookUpDataByCategory(Constants.DOCUMENT_TYPE);
 		model.addObject("documentsList", documentsList);
 		
-		List<OrgRelationDTO> orgClientList = orgRelationsService.getAllClientsListOrgLocationId(orgLocationId);
+		List<OrgRelationDTO> orgClientList = orgRelationsService.getAllClientsListOrgLocationId(Long.valueOf(orgLocJsonObject.get("id").toString()));
 	    model.addObject("clientsList", orgClientList);
 		  
 		SessionMaintainanceData sessionData = (SessionMaintainanceData)request.getSession().getAttribute("sessionData");

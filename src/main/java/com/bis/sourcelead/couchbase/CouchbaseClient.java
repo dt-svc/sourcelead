@@ -4,20 +4,22 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
-import org.json.simple.parser.JSONParser;
-import org.json.simple.parser.ParseException;
-
 import com.couchbase.client.java.Bucket;
 import com.couchbase.client.java.Cluster;
 import com.couchbase.client.java.CouchbaseCluster;
 import com.couchbase.client.java.document.JsonDocument;
 import com.couchbase.client.java.document.json.JsonObject;
+import com.couchbase.client.java.env.CouchbaseEnvironment;
+import com.couchbase.client.java.env.DefaultCouchbaseEnvironment;
 
 
 public class CouchbaseClient {
 	Cluster cluster;
 	Bucket bucket;
+	
+	private static final CouchbaseEnvironment ENV = DefaultCouchbaseEnvironment.builder().connectTimeout(8000).keepAliveInterval(3600 * 1000).build();
 	public CouchbaseClient(List<String> urls, String couchBucket, String password) {
+		
 		cluster = CouchbaseCluster.create(urls);
 		bucket = cluster.openBucket(couchBucket, password);
 	}

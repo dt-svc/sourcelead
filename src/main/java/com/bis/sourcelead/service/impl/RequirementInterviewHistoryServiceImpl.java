@@ -262,10 +262,10 @@ public class RequirementInterviewHistoryServiceImpl implements RequirementInterv
 	
 
 	@Override
-	public List<RequirementInterviewHistory> getAllInterviewAssignedToLoginUser(OrgLocations loginOrgLocations, String dateRange, String currentTime, String userType, Long userId, String userCode, Date startUTCDate, Date endUTCDate,Timezone timezone,User user)
+	public List<RequirementInterviewHistory> getAllInterviewAssignedToLoginUser(Long orgLocationId, String dateRange, String currentTime, String userType, Long userId, String userCode, Date startUTCDate, Date endUTCDate,Timezone timezone,String dateFormat)
 			throws Exception {
 		
-		List<RequirementInterviewHistory> requirementInterviewList = requirementInterviewHistoryDao.getAllInterviewAssignedToLoginUser(loginOrgLocations.getId(), dateRange, currentTime, userType, userId, userCode,startUTCDate,endUTCDate);
+		List<RequirementInterviewHistory> requirementInterviewList = requirementInterviewHistoryDao.getAllInterviewAssignedToLoginUser(orgLocationId, dateRange, currentTime, userType, userId, userCode,startUTCDate,endUTCDate);
 		DateFormat TZ_DF_TS = new SimpleDateFormat ("yyyy-MM-dd HH:mm:ss");
 		//SimpleDateFormat simpleDateFormat = loginOrgLocations.getLocFullFormDateFormatter();
 		for(RequirementInterviewHistory interviewHistory : requirementInterviewList){
@@ -314,7 +314,7 @@ public class RequirementInterviewHistoryServiceImpl implements RequirementInterv
 				}
 				interviewHistory.setRequirementInterviewerList(intrlist);
 			}else{*/
-				RequirementInterviewer requirementInterviewer =  requirementInterviewerService.getInterviwerByInterviewIdAndUserId(interviewHistory.getInterviewId().getId(), user.getId());
+				RequirementInterviewer requirementInterviewer =  requirementInterviewerService.getInterviwerByInterviewIdAndUserId(interviewHistory.getInterviewId().getId(), userId);
 				if(null != requirementInterviewer){
 					interviewHistory.setInterviewerUUID(requirementInterviewer.getUuid());
 				} 
@@ -338,7 +338,7 @@ public class RequirementInterviewHistoryServiceImpl implements RequirementInterv
 				for(RequirementInterviewer interviewer:interviewers){
 					InterviewFeedbackTemplate feedbackTemplate = interviewFeedbackTemplateService.getInterviewFeedbackTemplateById(interviewer.getId()) ;
 					if(null != feedbackTemplate){
-						interviewHistory.setFeedbackDate(commonUtil.dateStrFromOrgDateFormatter(loginOrgLocations.getDateFormat(),feedbackTemplate.getCreatedDate()));	
+						interviewHistory.setFeedbackDate(commonUtil.dateStrFromOrgDateFormatter(dateFormat,feedbackTemplate.getCreatedDate()));	
 					}
 				}
 			}
@@ -377,11 +377,11 @@ public class RequirementInterviewHistoryServiceImpl implements RequirementInterv
 						interviewHistory.setClientName(interviewHistory.getSubmissionId().getRequirement().getClientId().getLocationId().getOrgLocationName());
 					}
 				}else{
-					RequirementSubmission requirementSubmission = requirementSubmissionService.getSubmissionsBySourceSubmissionId(interviewHistory.getSubmissionId().getId(),loginOrgLocations.getId());
+					RequirementSubmission requirementSubmission = requirementSubmissionService.getSubmissionsBySourceSubmissionId(interviewHistory.getSubmissionId().getId(),orgLocationId);
 				    if(requirementSubmission != null){
 				    	interviewHistory.setClientName(requirementSubmission.getOrgLocations().getOrgLocationName());
 				    }else if(interviewHistory.getSubmissionId().getSourceSubmission() != null && interviewHistory.getSubmissionId().getSourceSubmission().getId() != null){
-				    	RequirementSubmission parentRequirementSubmission = requirementSubmissionService.getSubmissionsBySourceSubmissionId(interviewHistory.getSubmissionId().getSourceSubmission().getId(),loginOrgLocations.getId());
+				    	RequirementSubmission parentRequirementSubmission = requirementSubmissionService.getSubmissionsBySourceSubmissionId(interviewHistory.getSubmissionId().getSourceSubmission().getId(),orgLocationId);
 				    	 if(parentRequirementSubmission != null){
 						     interviewHistory.setClientName(parentRequirementSubmission.getOrgLocations().getOrgLocationName());
 				    	 }

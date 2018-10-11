@@ -7,7 +7,6 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
 import java.util.HashSet;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.Set;
 
@@ -16,6 +15,7 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.exception.ExceptionUtils;
+import org.modelmapper.ModelMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -35,11 +35,12 @@ import org.springframework.web.servlet.ModelAndView;
 import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.dto.DashboardItemsDTO;
 import com.bis.sourcelead.dto.OrgLocationsSessionDTO;
+import com.bis.sourcelead.dto.OrgSessionDTO;
+import com.bis.sourcelead.dto.UserSessionDTO;
 import com.bis.sourcelead.entity.Candidate;
 import com.bis.sourcelead.entity.CandidateOffBoarding;
 import com.bis.sourcelead.entity.CandidateOnBoarding;
 import com.bis.sourcelead.entity.Countries;
-import com.bis.sourcelead.entity.DashboardItems;
 import com.bis.sourcelead.entity.LookUpData;
 import com.bis.sourcelead.entity.Notifications;
 import com.bis.sourcelead.entity.OnBoardingTemplateDocuments;
@@ -84,6 +85,7 @@ import com.bis.sourcelead.service.UserService;
 import com.bis.sourcelead.util.CommonUtil;
 import com.bis.sourcelead.util.SourceLeadSessionManager;
 import com.bis.sourcelead.util.UserLoginHelper;
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 @Controller
@@ -304,8 +306,9 @@ public class LoginSessionController {
 			
 			SourceLeadSessionManager.setSessionAttribute(request, "orgLocations", orgLocations);
 			
+			ModelMapper modelMapper = new ModelMapper();
+			OrgLocationsSessionDTO orgLocDTO = modelMapper.map(orgLocations, OrgLocationsSessionDTO.class);
 			ObjectMapper mapperObj = new ObjectMapper();
-			OrgLocationsSessionDTO orgLocDTO = mapperObj.convertValue(orgLocations, OrgLocationsSessionDTO.class);
 			String orgLocationJsonStr = mapperObj.writeValueAsString(orgLocDTO);
 			SourceLeadSessionManager.setJsonStringSessionAttribute(request, "orgLocations", orgLocationJsonStr);
 			
@@ -521,6 +524,13 @@ public class LoginSessionController {
 			SourceLeadSessionManager.setSessionAttribute(request, "tabsList", tabsList);
 			
 			SourceLeadSessionManager.setSessionAttribute(request, "loginUserRole", userRole.getRoles().getRoleName());
+			
+			/**
+			 * This is for couch
+			 */
+			
+			SourceLeadSessionManager.setJsonStringSessionAttribute(request, "loginUserRole", userRole.getRoles().getRoleName());
+			
 			SourceLeadSessionManager.setSessionAttribute(request, "userRoleId", userRole.getId());
 			SourceLeadSessionManager.setSessionAttribute(request, "loginUserRoleId", userRole.getRoles().getId());
 			SourceLeadSessionManager.setSessionAttribute(request, "prodSupportLoginUserRole", null);
@@ -698,6 +708,14 @@ public class LoginSessionController {
 			}
 			
 			SourceLeadSessionManager.setSessionAttribute(request, "loginUserRole", userRole.getRoles().getRoleName());
+			
+			/**
+			 * This is for couch
+			 */
+			
+			SourceLeadSessionManager.setJsonStringSessionAttribute(request, "loginUserRole", userRole.getRoles().getRoleName());
+			
+			
 			SourceLeadSessionManager.setSessionAttribute(request, "loginUserRoleId", userRole.getRoles().getId());
 
 			SourceLeadSessionManager.setSessionAttribute(request, "roleHierarchyId", userRole.getRoles().getRoleHierarchy().getId());
@@ -834,6 +852,19 @@ public class LoginSessionController {
 		
 		SourceLeadSessionManager.setSessionAttribute(request, "sourceleadUrl", sourceleadUrl);
 		SourceLeadSessionManager.setSessionAttribute(request, "user", user);
+		
+		ModelMapper modelMapper = new ModelMapper();
+		UserSessionDTO userDTO = modelMapper.map(user, UserSessionDTO.class);
+		String userJsonStr = null;
+		try {
+			ObjectMapper mapperObj = new ObjectMapper();
+			userJsonStr = mapperObj.writeValueAsString(userDTO);
+		} catch (JsonProcessingException e) {
+			e.printStackTrace();
+		}
+		SourceLeadSessionManager.setJsonStringSessionAttribute(request, "user", userJsonStr);
+		
+		
 		SourceLeadSessionManager.setSessionAttribute(request, "userType", user.getUserType());
 		SourceLeadSessionManager.setSessionAttribute(request, "userCode", user.getUserCode());
 		SourceLeadSessionManager.setSessionAttribute(request, "userId", user.getId());
@@ -881,6 +912,18 @@ public class LoginSessionController {
 	private void setSessionOrgAttributes(Org org,OrgLocations orgLocations, HttpServletRequest request)
 	{
 		SourceLeadSessionManager.setSessionAttribute(request, "org", org);
+
+		ModelMapper modelMapper = new ModelMapper();
+		OrgSessionDTO orgDTO = modelMapper.map(org, OrgSessionDTO.class);
+		String orgJsonStr = null;
+		try {
+			ObjectMapper mapperObj = new ObjectMapper();
+			orgJsonStr = mapperObj.writeValueAsString(orgDTO);
+		} catch (JsonProcessingException e) {
+			e.printStackTrace();
+		}
+		SourceLeadSessionManager.setJsonStringSessionAttribute(request, "org", orgJsonStr);
+		
 		SourceLeadSessionManager.setSessionAttribute(request, "orgCode", org.getOrgCode());
 		SourceLeadSessionManager.setSessionAttribute(request, "website", orgLocations.getWebsite());
 		SourceLeadSessionManager.setSessionAttribute(request, "orgName", orgLocations.getOrgLocationName());

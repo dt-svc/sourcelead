@@ -1931,14 +1931,16 @@ public class CandidateOnBoardRestController {
 		Response<String> response = new Response<>();
 		try {
 			String resultJson;
-			OrgLocations loginOrgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
-			List<RequirementSubmissionsView> submissionList = requirementSubmissionService.getOfferAcceptedCandidatesListByOrgLocationId(loginOrgLocation.getId());
+			
+			//OrgLocations loginOrgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+			org.json.simple.JSONObject orgLocJsonObject = SourceLeadSessionManager.getSessionJsonObject(request,  "orgLocations");
+			List<RequirementSubmissionsView> submissionList = requirementSubmissionService.getOfferAcceptedCandidatesListByOrgLocationId(Long.valueOf(orgLocJsonObject.get("id").toString()));
 			List<RequirementSubmissionsView> requirementSubmissionList = new ArrayList<RequirementSubmissionsView>();
 			
 			if (null != submissionList && submissionList.size() > 0) {
 				for (RequirementSubmissionsView submission : submissionList) {
 					Date date1=new SimpleDateFormat("dd MM yyyy").parse(submission.getOfferJoinDate());  
-					submission.setOfferJoinDate(commonUtil.dateStrFromOrgDateFormatter(loginOrgLocation.getDateFormat(), date1));
+					submission.setOfferJoinDate(commonUtil.dateStrFromOrgDateFormatter(orgLocJsonObject.get("dateFormat").toString(), date1));
 					requirementSubmissionList.add(submission);
 					CandidateOnBoarding candidateOnBoarding = candidateOnBoardingService.getCandidateOnBoardingByCandidateIdAndOfferId(submission.getCandidateId(), submission.getOfferId());
 					if (null != candidateOnBoarding) {

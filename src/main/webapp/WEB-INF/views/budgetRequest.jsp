@@ -24,11 +24,9 @@
  <script>
  function getBudgetRequestListCount(){
 	 var sourceleadUrl ='${sourceleadUrl}';
-	 var approverUserId = '${SourceLeadWeb_user.id}';
-	 var orgLocationId = '${SourceLeadWeb_orgLocations.id}';
 	 $.ajax({
 	    	type: "GET",
-	        url: sourceleadUrl+"/getBudgetRequestListCount?${_csrf.parameterName}=${_csrf.token}&approverUserId="+approverUserId+"&orgLocationId="+orgLocationId, 
+	        url: sourceleadUrl+"/getBudgetRequestListCount?${_csrf.parameterName}=${_csrf.token}", 
 	        success: function(json) {
 	        	$("#budgetWaitingCount").html(json.waitingCount);
 	        	$("#budgetApprovedCount").html(json.approvedCount);
@@ -52,8 +50,6 @@ function getBudgetRequestList(requestType){
  	  $("#budgetDiv").addClass("active");
 	  
 	 var sourceleadUrl ='${sourceleadUrl}';
-	 var approverUserId = '${SourceLeadWeb_user.id}';
-	 var orgLocationId = '${SourceLeadWeb_orgLocations.id}';
 	
 	 var locationList ='${SourceLeadWeb_orgLocations.dateFormat}';	
 	  if(locationList.match("yyyy-MM-dd")){
@@ -67,7 +63,7 @@ function getBudgetRequestList(requestType){
 	  }  
 	 $.ajax({
 	    	type: "GET",
-	        url: sourceleadUrl+"/getBudgetRequsetListByBudgetStatusAndOrgLocationId?${_csrf.parameterName}=${_csrf.token}&approverUserId="+approverUserId+"&orgLocationId="+orgLocationId+"&requestType="+requestType, 
+	        url: sourceleadUrl+"/getBudgetRequsetListByBudgetStatusAndOrgLocationId?${_csrf.parameterName}=${_csrf.token}&requestType="+requestType, 
 	        success: function(json) {
 	        	var result = "";
 	        	

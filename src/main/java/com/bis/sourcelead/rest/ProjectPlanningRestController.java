@@ -1383,10 +1383,13 @@ public class ProjectPlanningRestController {
 	         * @throws Exception
 	         */
 	        @RequestMapping(value = "/getBudgetRequsetListByBudgetStatusAndOrgLocationId", method = RequestMethod.GET)
-			public @ResponseBody List<ProjectBudget> getBudgetRequsetListByBudgetStatusAndOrgLocationId(@RequestParam(value="approverUserId", required=true) Long approverUserId,@RequestParam(value="orgLocationId", required=true) Long orgLocationId,
-					@RequestParam(value="requestType", required=true) String requestType,HttpServletRequest request) throws Exception {
-	        	String userRoleName = (String) SourceLeadSessionManager.getSessionAttribute(request, "loginUserRole");
-	        	List<ProjectBudget> projectBudgetList= projectBudgetService.getProjectBudgetListByOrgLocationIdAndBudgetStatus(approverUserId,orgLocationId, requestType,userRoleName);
+			public @ResponseBody List<ProjectBudget> getBudgetRequsetListByBudgetStatusAndOrgLocationId(@RequestParam(value="requestType", required=true) String requestType,HttpServletRequest request) throws Exception {
+	        	//String userRoleName = (String) SourceLeadSessionManager.getSessionAttribute(request, "loginUserRole");
+	        	String userRole = SourceLeadSessionManager.getSessionJsonString(request, "loginUserRole");
+	        	org.json.simple.JSONObject orgLocJsonObject = SourceLeadSessionManager.getSessionJsonObject(request,  "orgLocations");
+				org.json.simple.JSONObject userJsonObject = SourceLeadSessionManager.getSessionJsonObject(request,  "user");
+				
+	        	List<ProjectBudget> projectBudgetList= projectBudgetService.getProjectBudgetListByOrgLocationIdAndBudgetStatus(Long.valueOf(userJsonObject.get("id").toString()),Long.valueOf(orgLocJsonObject.get("id").toString()), requestType,userRole);
 			  return projectBudgetList;
 			  
 		    }
@@ -1399,10 +1402,13 @@ public class ProjectPlanningRestController {
 	         * @throws Exception
 	         */
 	        @RequestMapping(value = "/getBudgetRequestListCount", method = RequestMethod.GET)
-			public @ResponseBody ProjectBudget getBudgetRequestListCount(@RequestParam(value="approverUserId", required=true) Long approverUserId,
-					@RequestParam(value="orgLocationId", required=true) Long orgLocationId,HttpServletRequest request) throws Exception {
-	        	String userRoleName = (String) SourceLeadSessionManager.getSessionAttribute(request, "loginUserRole");
-	        	List<ProjectBudget> projectBudgetList= projectBudgetService.getProjectBudgetListByOrgLocationId(approverUserId,orgLocationId, userRoleName);
+			public @ResponseBody ProjectBudget getBudgetRequestListCount(HttpServletRequest request) throws Exception {
+	        	//String userRoleName = (String) SourceLeadSessionManager.getSessionAttribute(request, "loginUserRole");
+	        	String userRole = SourceLeadSessionManager.getSessionJsonString(request, "loginUserRole");
+	        	org.json.simple.JSONObject orgLocJsonObject = SourceLeadSessionManager.getSessionJsonObject(request,  "orgLocations");
+				org.json.simple.JSONObject userJsonObject = SourceLeadSessionManager.getSessionJsonObject(request,  "user");
+				
+	        	List<ProjectBudget> projectBudgetList= projectBudgetService.getProjectBudgetListByOrgLocationId(Long.valueOf(userJsonObject.get("id").toString()),Long.valueOf(orgLocJsonObject.get("id").toString()), userRole);
 	        	  ProjectBudget projectBudget = new ProjectBudget();
 				  Integer waitingCount = 0;
 				  Integer approvedCount = 0;
@@ -1437,9 +1443,13 @@ public class ProjectPlanningRestController {
 	        @RequestMapping(value = "/getProjectPlanningResourceRequestList", method = RequestMethod.GET)
 	      	public ResponseList<ProjectPlanningResourceRequestDTO> getProjectPlanningResourceRequestList(ProjectPlanningResourceRequestDTO resourceRequestDTO,HttpServletRequest request) throws Exception {
 
-	      		OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+	      		/*OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 	      		User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
-	      		 String userRoleName = (String) SourceLeadSessionManager.getSessionAttribute(request, "loginUserRole");
+	      		String userRoleName = (String) SourceLeadSessionManager.getSessionAttribute(request, "loginUserRole");*/
+	        	
+	        	String userRole = SourceLeadSessionManager.getSessionJsonString(request, "loginUserRole");
+				org.json.simple.JSONObject orgLocJsonObject = SourceLeadSessionManager.getSessionJsonObject(request,  "orgLocations");
+				org.json.simple.JSONObject userJsonObject = SourceLeadSessionManager.getSessionJsonObject(request,  "user");
 	      		 
 	      		String[] tableColumns = {"projectPlanningRequestId","projectName", "candidateName", "requestedUser", "approverName", "consultingType"};
 			    int sortColumnIndex = 1; //by default sorting using updated date
@@ -1451,7 +1461,7 @@ public class ProjectPlanningRestController {
 				resourceRequestDTO.setSortColumn(tableColumns[sortColumnIndex]);
 				resourceRequestDTO.setSortOrder(sortColumnOrder);
 	      		
-				ResponseList<ProjectPlanningResourceRequestDTO> requestDTOList = projectPlanningResourceRequestService.getResourceRequestListByApproverIdAndOrgLocationId(resourceRequestDTO,user.getId(), orgLocation.getId(),userRoleName);
+				ResponseList<ProjectPlanningResourceRequestDTO> requestDTOList = projectPlanningResourceRequestService.getResourceRequestListByApproverIdAndOrgLocationId(resourceRequestDTO,Long.valueOf(userJsonObject.get("id").toString()), Long.valueOf(orgLocJsonObject.get("id").toString()),userRole);
 	      		
 	      		return requestDTOList;
 	    	}
@@ -1461,10 +1471,15 @@ public class ProjectPlanningRestController {
 	        @RequestMapping(value = "/getProjectResourceRequestsCounts", method = RequestMethod.GET)
 			public @ResponseBody ProjectPlanningResourceRequestDTO getProjectResourceRequestsCounts(HttpServletRequest request) throws Exception {
 			   
-        	  OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
-      		  User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
-			  String userRoleName = (String) SourceLeadSessionManager.getSessionAttribute(request, "loginUserRole");
-			  List<ProjectPlanningResourceRequest> projectPlanningRequestList = projectPlanningResourceRequestService.getResourceRequestListByApproverIdAndOrgLocationIdAndStatus(user.getId(), orgLocation.getId(), userRoleName);
+        	 // OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+      		 // User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+			 // String userRoleName = (String) SourceLeadSessionManager.getSessionAttribute(request, "loginUserRole");
+	        	
+	        	String userRole = SourceLeadSessionManager.getSessionJsonString(request, "loginUserRole");
+				org.json.simple.JSONObject orgLocJsonObject = SourceLeadSessionManager.getSessionJsonObject(request,  "orgLocations");
+				org.json.simple.JSONObject userJsonObject = SourceLeadSessionManager.getSessionJsonObject(request,  "user");
+	        	
+			  List<ProjectPlanningResourceRequest> projectPlanningRequestList = projectPlanningResourceRequestService.getResourceRequestListByApproverIdAndOrgLocationIdAndStatus(Long.valueOf(userJsonObject.get("id").toString()), Long.valueOf(orgLocJsonObject.get("id").toString()), userRole);
 			 
 			  ProjectPlanningResourceRequestDTO projectPlanningResourceRequestDTO = new ProjectPlanningResourceRequestDTO();
 			  
@@ -1504,10 +1519,15 @@ public class ProjectPlanningRestController {
 	        @RequestMapping(value = "/getProjectPlanningNewResourceRequestList", method = RequestMethod.GET)
 	      	public ResponseList<ProjectPlanningNewResourceRequestDTO> getProjectPlanningNewResourceRequestList(ProjectPlanningNewResourceRequestDTO resourceRequestDTO,HttpServletRequest request) throws Exception {
 
-	      		OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+	      		/*OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 	      		User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
 	      		 String userRoleName = (String) SourceLeadSessionManager.getSessionAttribute(request, "loginUserRole");
-	      		 
+	      		 */
+	        	
+	        	String userRole = SourceLeadSessionManager.getSessionJsonString(request, "loginUserRole");
+				org.json.simple.JSONObject orgLocJsonObject = SourceLeadSessionManager.getSessionJsonObject(request,  "orgLocations");
+				org.json.simple.JSONObject userJsonObject = SourceLeadSessionManager.getSessionJsonObject(request,  "user");
+	        	
 	      		String[] tableColumns = {"projectPlanningRequestId","projectName", "roleName", "requestedUser", "approverName","consultingType", "noOfResource"};
 			    int sortColumnIndex = 1; //by default sorting using updated date
 				String sortColumnOrder = "desc"; //by default referContactsDTO order
@@ -1518,7 +1538,7 @@ public class ProjectPlanningRestController {
 				resourceRequestDTO.setSortColumn(tableColumns[sortColumnIndex]);
 				resourceRequestDTO.setSortOrder(sortColumnOrder);
 	      		
-				ResponseList<ProjectPlanningNewResourceRequestDTO> requestDTOList = projectPlanningNewResourceRequestService.getNewResourceRequestListByApproverIdAndOrgLocationId(resourceRequestDTO,user.getId(), orgLocation.getId(),userRoleName);
+				ResponseList<ProjectPlanningNewResourceRequestDTO> requestDTOList = projectPlanningNewResourceRequestService.getNewResourceRequestListByApproverIdAndOrgLocationId(resourceRequestDTO,Long.valueOf(userJsonObject.get("id").toString()), Long.valueOf(orgLocJsonObject.get("id").toString()),userRole);
 	      		
 	      		return requestDTOList;
 	    	}
@@ -1528,10 +1548,16 @@ public class ProjectPlanningRestController {
 	        @RequestMapping(value = "/getProjectNewResourceRequestsCounts", method = RequestMethod.GET)
 			public @ResponseBody ProjectPlanningNewResourceRequestDTO getProjectNewResourceRequestsCounts(HttpServletRequest request) throws Exception {
 			   
-        	  OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+        	  /*OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
       		  User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
 			  String userRoleName = (String) SourceLeadSessionManager.getSessionAttribute(request, "loginUserRole");
-			  List<ProjectPlanningNewResourceRequest> projectPlanningRequestList = projectPlanningNewResourceRequestService.getNewResourceRequestListByApproverIdAndOrgLocationIdAndStatus(user.getId(), orgLocation.getId(), userRoleName);
+			  */
+			  
+	        	String userRole = SourceLeadSessionManager.getSessionJsonString(request, "loginUserRole");
+				org.json.simple.JSONObject orgLocJsonObject = SourceLeadSessionManager.getSessionJsonObject(request,  "orgLocations");
+				org.json.simple.JSONObject userJsonObject = SourceLeadSessionManager.getSessionJsonObject(request,  "user");
+			  
+			  List<ProjectPlanningNewResourceRequest> projectPlanningRequestList = projectPlanningNewResourceRequestService.getNewResourceRequestListByApproverIdAndOrgLocationIdAndStatus(Long.valueOf(userJsonObject.get("id").toString()), Long.valueOf(orgLocJsonObject.get("id").toString()), userRole);
 			 
 			  ProjectPlanningNewResourceRequestDTO projectPlanningNewResourceRequestDTO = new ProjectPlanningNewResourceRequestDTO();
 			  

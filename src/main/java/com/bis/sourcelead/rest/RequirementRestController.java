@@ -245,16 +245,17 @@ public class RequirementRestController {
 	public ResponseList<String> getJobFairDatesForCalendar(HttpServletRequest request){
 		ResponseList<String> responseList = new ResponseList<>();
 		try {
-			User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
-			if(user !=null) {
-				OrgLocations loginOrgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
-				
+			//User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+			org.json.simple.JSONObject userJsonObject = SourceLeadSessionManager.getSessionJsonObject(request,  "user");
+			if(userJsonObject !=null) {
+				//OrgLocations loginOrgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+				org.json.simple.JSONObject orgLocJsonObject = SourceLeadSessionManager.getSessionJsonObject(request,  "orgLocations");
 				/*Timezone timezone = null;
 				if(loginOrgLocations.getTimezone() != null){
 					timezone = timeZoneService.getTimezone(loginOrgLocations.getTimezone().getId());
 				}*/
 				
-				responseList.setData(requirementService.getJobFairDatesForCalendar(user.getId(), loginOrgLocations.getId(), loginOrgLocations.getDateFormat()));
+				responseList.setData(requirementService.getJobFairDatesForCalendar(Long.valueOf(userJsonObject.get("id").toString()), Long.valueOf(orgLocJsonObject.get("id").toString()), orgLocJsonObject.get("dateFormat").toString()));
 				responseList.setResponse(Result.SUCCESS.name());
 				responseList.setResponseMessage(Result.SUCCESS.getValue());
 			} else {
@@ -273,16 +274,19 @@ public class RequirementRestController {
 	public ResponseList<Requirement> getJobFairRequirements(HttpServletRequest request, @RequestParam(defaultValue="") String date) {
 		ResponseList<Requirement> responseList = new ResponseList<>();
 		try {
-			User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
-			OrgLocations loginOrgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
-			if (user != null) {
-				Date startTime =  commonUtil.orgLocationDateFormat(loginOrgLocations.getDateFormat(), date);
+			/*User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+			OrgLocations loginOrgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");*/
+			
+			org.json.simple.JSONObject userJsonObject = SourceLeadSessionManager.getSessionJsonObject(request,  "user");
+			org.json.simple.JSONObject orgLocJsonObject = SourceLeadSessionManager.getSessionJsonObject(request,  "orgLocations");
+			if (userJsonObject != null) {
+				Date startTime =  commonUtil.orgLocationDateFormat(orgLocJsonObject.get("dateFormat").toString(), date);
 				DateFormat week_Day = new SimpleDateFormat ("EEEE");
 				String dayOfweek = week_Day.format(startTime);
 				SimpleDateFormat formatter = new SimpleDateFormat("MMM dd yyyy");
 				String selectedDate  = formatter.format(startTime);
 				
-				responseList.setData(requirementService.getJobFairRequirementsByDate(user.getId(), loginOrgLocations.getId(), loginOrgLocations.getDateFormat(), date));
+				responseList.setData(requirementService.getJobFairRequirementsByDate(Long.valueOf(userJsonObject.get("id").toString()), Long.valueOf(orgLocJsonObject.get("id").toString()), orgLocJsonObject.get("dateFormat").toString(), date));
 				responseList.setResponse(Result.SUCCESS.name());
 				responseList.setResponseMessage(dayOfweek + "<>" + selectedDate);
 			} else {

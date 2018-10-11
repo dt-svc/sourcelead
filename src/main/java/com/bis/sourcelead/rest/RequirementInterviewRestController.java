@@ -139,16 +139,29 @@ public class RequirementInterviewRestController {
 			                                              @RequestParam(value="isClientInterview", required=false) String isClientInterview,
 			                                              HttpServletRequest request) throws Exception {
 		ResponseList<RequirementSubmission> response = new ResponseList<>();
-		User user = (User) SourceLeadSessionManager.getSessionAttribute(request,"user");
+		//User user = (User) SourceLeadSessionManager.getSessionAttribute(request,"user");
+		
+		org.json.simple.JSONObject userJsonObject = SourceLeadSessionManager.getSessionJsonObject(request,  "user");
+		
+		Long userId = null;
+		String userCode = null;
 		Requirement requirement = requirementService.getRequirementByRequirementId(requirementId);
 		if (requirement != null && requirement.getPrimaryRecruiterUserId() != null) {
-			user = requirement.getManagerUserId();
+			userId = requirement.getManagerUserId().getId();
+			userCode = requirement.getManagerUserId().getUserCode();
+		}else {
+			userId = Long.valueOf(userJsonObject.get("id").toString());
+			userCode = userJsonObject.get("userCode").toString();
 		}
-		if(user != null) {
+		if(userJsonObject != null) {
 			try {
-				OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
-				String loginUserRole = (String) SourceLeadSessionManager.getSessionAttribute(request, "loginUserRole");
-				List<RequirementSubmission> shortListCandidatesList = requirementSubmissionService.getAllShortListCandidatesByOrgLocationsIdAndRequirementId(orgLocations, requirementId,existingApplicantsIds,isClientInterview,user,loginUserRole);
+				/*OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+				String loginUserRole = (String) SourceLeadSessionManager.getSessionAttribute(request, "loginUserRole");*/
+				
+				org.json.simple.JSONObject orgLocJsonObject = SourceLeadSessionManager.getSessionJsonObject(request,  "orgLocations");
+				String loginUserRole = SourceLeadSessionManager.getSessionJsonString(request, "loginUserRole");
+				
+				List<RequirementSubmission> shortListCandidatesList = requirementSubmissionService.getAllShortListCandidatesByOrgLocationsIdAndRequirementId(Long.valueOf(orgLocJsonObject.get("id").toString()), requirementId,existingApplicantsIds,isClientInterview,userId,loginUserRole,userCode);
 				for (RequirementSubmission sub : shortListCandidatesList) {
 					 StringBuilder nameBuilder = new StringBuilder();
 					RequirementSubmissionTemplateFields requirementSubmissionTemplateFields = requirementSubmissionTemplateFieldsService.getSubmissionsTemplateFieldsByRequirementSubmissionsId(sub.getId());
@@ -228,8 +241,12 @@ public class RequirementInterviewRestController {
 	@RequestMapping(value = "/app/getScheduledInterviewsListForSelectedApplicants" , method = RequestMethod.POST)
 	 public @ResponseBody  String getScheduledInterviewsListForSelectedApplicants(@RequestParam(value="selectedReqId", required=false) String selectedReqId, @RequestParam(value="selectedSubmissions", required=false) String selectedSubmissions, HttpServletRequest request) throws Exception {
 		
-	     OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+	    // OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+	     
+			org.json.simple.JSONObject orgLocJsonObject = SourceLeadSessionManager.getSessionJsonObject(request,  "orgLocations");
+			
 	     Timezone timezone = null;
+	     OrgLocations orgLocations = orgLocationService.getOrgLocations(Long.valueOf(orgLocJsonObject.get("id").toString()));
 			if(orgLocations.getTimezone() != null){
 				timezone = timeZoneService.getTimezone(orgLocations.getTimezone().getId());
 			}

@@ -42,7 +42,7 @@ public interface RequirementSubmissionService {
 	
 	RequirementSubmission getClientRequierementSubmission(Long submissionId)throws Exception;
 	
-	List<RequirementSubmission> getAllShortListCandidatesByOrgLocationsIdAndRequirementId(OrgLocations orgLocations, Long requirementId, List<Long> existingApplicantsIds, String isClientInterview,User user,String loginUserRole) throws Exception;
+	List<RequirementSubmission> getAllShortListCandidatesByOrgLocationsIdAndRequirementId(Long orgLocationId, Long requirementId, List<Long> existingApplicantsIds, String isClientInterview,Long userId,String loginUserRole,String loginUserCode) throws Exception;
 	
 	List<RequirementSubmission> getAllSubmittedAndShortListAndInterviewededCandidates(OrgLocations orgLocations, Long requirementId, List<Long> existingApplicantsIds, String isClientOffer,User user,String loginUserRole,String isClientRequirement) throws Exception;
 	
@@ -158,7 +158,7 @@ public interface RequirementSubmissionService {
 			OrgLocations loginOrgLocation)throws Exception;
 
 	
-	List<RequirementSubmission> getApplicantsByStatus(Long orgLocationsId, User user,String status) throws Exception;
+	List<RequirementSubmission> getApplicantsByStatus(Long orgLocationsId, Long userId, String userName,String status) throws Exception;
 	
 	public void sendEmailtoRequirementManager(Org loginOrg, User users,RequirementSubmission requirementSubmission,
 			 OrgLocations loginOrgLocation) throws Exception;

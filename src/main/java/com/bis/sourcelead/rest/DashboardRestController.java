@@ -523,8 +523,9 @@ public class DashboardRestController {
 		User  user = (User)SourceLeadSessionManager.getSessionAttribute(request, "user");
 		if(user != null) {
 			try {
-				OrgLocations loginOrgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,"orgLocations");
-				String userRole = (String) SourceLeadSessionManager.getSessionAttribute(request, "loginUserRole");
+				//OrgLocations loginOrgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,"orgLocations");
+				String userRole = SourceLeadSessionManager.getSessionJsonString(request, "loginUserRole");
+				org.json.simple.JSONObject orgLocJsonObject = SourceLeadSessionManager.getSessionJsonObject(request,  "orgLocations");
 				
 				String userCode = user.getUserCode();
 				String userType = null;
@@ -546,9 +547,9 @@ public class DashboardRestController {
 			
 				if(Constants.ROLE_ADMIN.equalsIgnoreCase(userRole) || Constants.SOURCELEAD_ADMIN.equalsIgnoreCase(userRole)){
 					userType = Constants.ADMIN;
-					requirementList = requirementService.getAssignedRequirementListByOrgLocationIDAndUserIdSubStatusApprovedOpenNew(loginOrgLocation.getId(), userType, user.getId(), userCode, isWalkIn, dayString);
+					requirementList = requirementService.getAssignedRequirementListByOrgLocationIDAndUserIdSubStatusApprovedOpenNew(Long.valueOf(orgLocJsonObject.get("id").toString()), userType, user.getId(), userCode, isWalkIn, dayString);
 				}else{
-					requirementList = requirementService.getAssignedRequirementListByOrgLocationIDAndUserIdSubStatusApprovedOpenNew(loginOrgLocation.getId(), userType, user.getId(), userCode, isWalkIn, dayString);
+					requirementList = requirementService.getAssignedRequirementListByOrgLocationIDAndUserIdSubStatusApprovedOpenNew(Long.valueOf(orgLocJsonObject.get("id").toString()), userType, user.getId(), userCode, isWalkIn, dayString);
 				}
 				// your code here...
 				 
@@ -749,28 +750,32 @@ public class DashboardRestController {
 	 @RequestMapping(value = "/getApproverRequirementApproverListByOrgLocationIDAndUserId",  method = RequestMethod.GET)
 	 public ResponseList<Requirement> getApproverRequirementApproverListByOrgLocationIDAndUserId(@RequestParam(value="statusType", required=false) String statusType,HttpServletRequest request) throws Exception {
 		 ResponseList<Requirement> response = new ResponseList<>();
-		User  user = (User)SourceLeadSessionManager.getSessionAttribute(request, "user");
-		if(user != null) {
+		//User  user = (User)SourceLeadSessionManager.getSessionAttribute(request, "user");
+		org.json.simple.JSONObject userJsonObject = SourceLeadSessionManager.getSessionJsonObject(request,  "user");
+		if(userJsonObject != null) {
 			try {
-				OrgLocations loginOrgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,"orgLocations");
-				String userRole = (String) SourceLeadSessionManager.getSessionAttribute(request, "loginUserRole");
+			/*	OrgLocations loginOrgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,"orgLocations");
+				String userRole = (String) SourceLeadSessionManager.getSessionAttribute(request, "loginUserRole");*/
 				
-				String userCode = user.getUserCode();
+				String userRole = SourceLeadSessionManager.getSessionJsonString(request, "loginUserRole");
+	        	org.json.simple.JSONObject orgLocJsonObject = SourceLeadSessionManager.getSessionJsonObject(request,  "orgLocations");
+				
+				String userCode = userJsonObject.get("userCode").toString();
 				String userType = null;
 				List<Requirement>   requirementList = null;
 				ArrayList<Requirement>   newList = new ArrayList<Requirement>();
 				
 				if(Constants.ROLE_ADMIN.equalsIgnoreCase(userRole) || Constants.SOURCELEAD_ADMIN.equalsIgnoreCase(userRole)){
 					userType = Constants.ADMIN;
-					requirementList = requirementService.getApproverRequirementApproverListByOrgLocationIDAndUserId(loginOrgLocation.getId(), userType, user.getId(), userCode,statusType);
+					requirementList = requirementService.getApproverRequirementApproverListByOrgLocationIDAndUserId(Long.valueOf(orgLocJsonObject.get("id").toString()), userType, Long.valueOf(userJsonObject.get("id").toString()), userCode,statusType);
 				}else{
-					requirementList = requirementService.getApproverRequirementApproverListByOrgLocationIDAndUserId(loginOrgLocation.getId(), userType, user.getId(), userCode,statusType);
+					requirementList = requirementService.getApproverRequirementApproverListByOrgLocationIDAndUserId(Long.valueOf(orgLocJsonObject.get("id").toString()), userType, Long.valueOf(userJsonObject.get("id").toString()), userCode,statusType);
 				}
 				
 				//List<Requirement>   requirementList = requirementService.getAssignedRequirementListByOrgLocationIDAndUserId(loginOrgLocation.getId(),user.getId());
 				for(Requirement requirement : requirementList){
 					// to get the RequirementApproverHierarchy to set the Status
-					RequirementApproverHierarchy requirementApproverHierarchy = requirementApproverHierarchyService.getRequirementApproverHierarchyByRequirementId(requirement.getId(), user.getId());
+					RequirementApproverHierarchy requirementApproverHierarchy = requirementApproverHierarchyService.getRequirementApproverHierarchyByRequirementId(requirement.getId(), Long.valueOf(userJsonObject.get("id").toString()));
 					if(null != requirementApproverHierarchy ){
 						       requirement.setRequirementApproverHierarchyStatus(requirementApproverHierarchy.getRequirementApproverStatus().toString());
 						       // to set the approved/rejected by user
@@ -826,18 +831,21 @@ public class DashboardRestController {
 			
 
 			String resultJson;
-			String userRole = (String) SourceLeadSessionManager.getSessionAttribute(request, "loginUserRole");
-
+		/*	String userRole = (String) SourceLeadSessionManager.getSessionAttribute(request, "loginUserRole");
 		    OrgLocations loginOrgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
-			User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+			User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");*/
+			
+			org.json.simple.JSONObject userJsonObject = SourceLeadSessionManager.getSessionJsonObject(request,  "user");
+			org.json.simple.JSONObject orgLocJsonObject = SourceLeadSessionManager.getSessionJsonObject(request,  "orgLocations");
+			String userRole = SourceLeadSessionManager.getSessionJsonString(request, "loginUserRole");
 			
 			List<RequirementInterviewHistory> requirementInterviewList = null;
 			//SimpleDateFormat simpleDateFormat = loginOrgLocations.getLocFullFormDateFormatter();
 			String currentTime = null;
 			String userType = null;
 			Timezone timezone = null;
-			String userCode = user.getUserCode();
-			Long userId = user.getId();
+			String userCode = userJsonObject.get("userCode").toString();
+			OrgLocations loginOrgLocations = orgLocationService.getOrgLocations(Long.valueOf(orgLocJsonObject.get("id").toString()));
 			if(loginOrgLocations.getTimezone() != null){
 				timezone = timeZoneService.getTimezone(loginOrgLocations.getTimezone().getId());
 			}
@@ -847,7 +855,7 @@ public class DashboardRestController {
 			DateFormat TZ_DF_TS = new SimpleDateFormat ("yyyy-MM-dd HH:mm:ss");
 			if(dateRange != null && !"today".equals(dateRange) && !"previous".equals(dateRange) && !"upcoming".equals(dateRange)){
 				DateFormat END_TZ_DF = new SimpleDateFormat ("yyyy-MM-dd'T'23:59:59");
-				Date startTime =  commonUtil.orgLocationDateFormat(loginOrgLocations.getDateFormat(),dateRange);
+				Date startTime =  commonUtil.orgLocationDateFormat(orgLocJsonObject.get("dateFormat").toString(),dateRange);
 				String startTimeTS = Constants.TZ_DF.format(startTime); 
 				String endTimeTS = END_TZ_DF.format(startTime);
 				String startDateString = CommonUtil.convertTimeZones(timezone.getTimeZoneId(),"UTC", startTimeTS);
@@ -875,9 +883,9 @@ public class DashboardRestController {
 			}
 			if(Constants.ROLE_ADMIN.equalsIgnoreCase(userRole) || Constants.SOURCELEAD_ADMIN.equalsIgnoreCase(userRole)){
 				userType = Constants.ADMIN;
-				requirementInterviewList = requirementInterviewHistoryService.getAllInterviewAssignedToLoginUser(loginOrgLocations, dateRange, currentTime, userType, userId, userCode,startUTCDate,endUTCDate,timezone,user);
+				requirementInterviewList = requirementInterviewHistoryService.getAllInterviewAssignedToLoginUser(Long.valueOf(orgLocJsonObject.get("id").toString()), dateRange, currentTime, userType, Long.valueOf(userJsonObject.get("id").toString()), userCode,startUTCDate,endUTCDate,timezone,orgLocJsonObject.get("dateFormat").toString());
 				}else{
-				requirementInterviewList = requirementInterviewHistoryService.getAllInterviewAssignedToLoginUser(loginOrgLocations, dateRange, currentTime, userType, userId, userCode,startUTCDate,endUTCDate,timezone,user);
+				requirementInterviewList = requirementInterviewHistoryService.getAllInterviewAssignedToLoginUser(Long.valueOf(orgLocJsonObject.get("id").toString()), dateRange, currentTime, userType, Long.valueOf(userJsonObject.get("id").toString()), userCode,startUTCDate,endUTCDate,timezone,orgLocJsonObject.get("dateFormat").toString());
 			}
 			
 			
@@ -1033,11 +1041,20 @@ public class DashboardRestController {
 		@RequestMapping(value = "/getApplicantsByStatus", method = RequestMethod.POST)
 		public ResponseList<RequirementSubmission> getApplicantsByStatus(@RequestParam(value = "status", required = false) String status, HttpServletRequest request) throws Exception {
 			ResponseList<RequirementSubmission> response = new ResponseList<>();
-			User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
-			if(user != null) {
+			//User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+			org.json.simple.JSONObject userJsonObject = SourceLeadSessionManager.getSessionJsonObject(request,  "user");
+			if(userJsonObject != null) {
 				try {
-					OrgLocations loginOrgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
-					List<RequirementSubmission> requirementSubmissionList = requirementSubmissionService.getApplicantsByStatus(loginOrgLocations.getId(), user,status);
+					//OrgLocations loginOrgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+					org.json.simple.JSONObject orgLocJsonObject = SourceLeadSessionManager.getSessionJsonObject(request,  "orgLocations");
+					StringBuilder userName = new StringBuilder();
+					if(StringUtils.isNotBlank(userJsonObject.get("lastName").toString())) {
+						userName = userName.append(userJsonObject.get("firstName").toString()).append(" ").append(userJsonObject.get("lastName").toString());
+					}else {
+						userName = userName.append(userJsonObject.get("firstName").toString());
+					}
+					
+					List<RequirementSubmission> requirementSubmissionList = requirementSubmissionService.getApplicantsByStatus(Long.valueOf(orgLocJsonObject.get("id").toString()), Long.valueOf(userJsonObject.get("id").toString()),userName.toString(),status);
 				 	response.setData(requirementSubmissionList);
 				    response.setResponse(Result.SUCCESS.name());
 					response.setResponseMessage(Result.SUCCESS.getValue());
@@ -1084,14 +1101,17 @@ public class DashboardRestController {
 		@RequestMapping(value = "/getInterviewsTaskDates")
 		public ResponseList<String> getInterviewsTaskDates(String dateRange, HttpServletRequest request) throws Exception {
 			ResponseList<String> response = new ResponseList<>();
-			User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
-			if(user != null) {
+			org.json.simple.JSONObject userJsonObject = SourceLeadSessionManager.getSessionJsonObject(request,  "user");
+			//User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+			if(userJsonObject != null) {
 				try {
-					OrgLocations loginOrgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+					//OrgLocations loginOrgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+					org.json.simple.JSONObject orgLocJsonObject = SourceLeadSessionManager.getSessionJsonObject(request,  "orgLocations");
 					List<Date> datesList = new ArrayList<>();
 					List<String> interviewDatesList = new ArrayList<>();
-					datesList = requirementInterviewService.getInterviewDatesForCalendarEvent(user.getId(), loginOrgLocations.getId());
+					datesList = requirementInterviewService.getInterviewDatesForCalendarEvent(Long.valueOf(userJsonObject.get("id").toString()), Long.valueOf(orgLocJsonObject.get("id").toString()));
 					Timezone timezone = null;
+					OrgLocations loginOrgLocations = orgLocationService.getOrgLocations(Long.valueOf(orgLocJsonObject.get("id").toString()));
 					if(loginOrgLocations.getTimezone() != null){
 						timezone = timeZoneService.getTimezone(loginOrgLocations.getTimezone().getId());
 					}
@@ -1130,17 +1150,21 @@ public class DashboardRestController {
 		   */
 		@RequestMapping(value = "/rest/getInterviewsAndTasksList", method = RequestMethod.POST )
 		public EventsDTO getInterviewsAndTasksList(EventsDTO eventsDTO, HttpServletRequest request) throws Exception {
-			String userRole = (String) SourceLeadSessionManager.getSessionAttribute(request, "loginUserRole");
+			/*String userRole = (String) SourceLeadSessionManager.getSessionAttribute(request, "loginUserRole");
 		    OrgLocations loginOrgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
-			User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+			User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");*/
+			
+			org.json.simple.JSONObject userJsonObject = SourceLeadSessionManager.getSessionJsonObject(request,  "user");
+			org.json.simple.JSONObject orgLocJsonObject = SourceLeadSessionManager.getSessionJsonObject(request,  "orgLocations");
+			String userRole = SourceLeadSessionManager.getSessionJsonString(request, "loginUserRole");
 			
 			List<RequirementInterviewHistory> requirementInterviewList = new ArrayList<RequirementInterviewHistory>();
 			List<Tasks> taklist = new ArrayList<Tasks>();
 			String currentTime = null;
 			String userType = null;
 			Timezone timezone = null;
-			String userCode = user.getUserCode();
-			Long userId = user.getId();
+			String userCode = userJsonObject.get("userCode").toString();
+			OrgLocations loginOrgLocations = orgLocationService.getOrgLocations(Long.valueOf(orgLocJsonObject.get("id").toString()));
 			if(loginOrgLocations.getTimezone() != null){
 				timezone = timeZoneService.getTimezone(loginOrgLocations.getTimezone().getId());
 			}
@@ -1160,14 +1184,14 @@ public class DashboardRestController {
 					endUTCDate = TZ_DF_TS.parse(endDateString);
 				}*/
 			}else if(StringUtils.isNotBlank(eventsDTO.getStartDate())) {
-				Date startTime =  commonUtil.orgLocationDateFormat(loginOrgLocations.getDateFormat(),eventsDTO.getStartDate());
+				Date startTime =  commonUtil.orgLocationDateFormat(orgLocJsonObject.get("dateFormat").toString(),eventsDTO.getStartDate());
 				String startTimeTS = Constants.TZ_DF.format(startTime);
 				String startDateString = CommonUtil.convertTimeZones(timezone.getTimeZoneId(),Constants.UTC_TIMEZONE, startTimeTS);
 				startUTCDate = TZ_DF_TS.parse(startDateString);
 			}
 			
 			if(StringUtils.isNotBlank(eventsDTO.getEndDate())) {
-				Date endTime =  commonUtil.orgLocationDateFormat(loginOrgLocations.getDateFormat(),eventsDTO.getEndDate());
+				Date endTime =  commonUtil.orgLocationDateFormat(orgLocJsonObject.get("dateFormat").toString(),eventsDTO.getEndDate());
 				String endTimeTS = Constants.TZ_DF.format(endTime);
 				String endDateString = CommonUtil.convertTimeZones(timezone.getTimeZoneId(),Constants.UTC_TIMEZONE, endTimeTS);
 				endUTCDate = TZ_DF_TS.parse(endDateString);
@@ -1176,14 +1200,14 @@ public class DashboardRestController {
 			if(eventsDTO.getEventType().equalsIgnoreCase("interviews")) {
 				if(Constants.ROLE_ADMIN.equalsIgnoreCase(userRole) || Constants.SOURCELEAD_ADMIN.equalsIgnoreCase(userRole)){
 					userType = Constants.ADMIN;
-						requirementInterviewList = requirementInterviewHistoryService.getAllInterviewAssignedToLoginUser(loginOrgLocations, eventsDTO.getDateRange(), currentTime, userType, userId, userCode,startUTCDate,endUTCDate,timezone,user);
+						requirementInterviewList = requirementInterviewHistoryService.getAllInterviewAssignedToLoginUser(Long.valueOf(orgLocJsonObject.get("id").toString()), eventsDTO.getDateRange(), currentTime, userType, Long.valueOf(userJsonObject.get("id").toString()), userCode,startUTCDate,endUTCDate,timezone,orgLocJsonObject.get("dateFormat").toString());
 					}else{
-						requirementInterviewList = requirementInterviewHistoryService.getAllInterviewAssignedToLoginUser(loginOrgLocations, eventsDTO.getDateRange(), currentTime, userType, userId, userCode,startUTCDate,endUTCDate,timezone,user);
+						requirementInterviewList = requirementInterviewHistoryService.getAllInterviewAssignedToLoginUser(Long.valueOf(orgLocJsonObject.get("id").toString()), eventsDTO.getDateRange(), currentTime, userType, Long.valueOf(userJsonObject.get("id").toString()), userCode,startUTCDate,endUTCDate,timezone,orgLocJsonObject.get("dateFormat").toString());
 				}
 			}else if(eventsDTO.getEventType().equalsIgnoreCase("tasks")) {
 				String status =  "myTask";
 				Date converteDate = null;
-				taklist = taskService.tasksListByIdAndOrgLocationIdAssignedUserId(loginOrgLocations.getId(),user.getId(),status,eventsDTO.getDateRange(),converteDate,timezone);
+				taklist = taskService.tasksListByIdAndOrgLocationIdAssignedUserId(Long.valueOf(orgLocJsonObject.get("id").toString()),Long.valueOf(userJsonObject.get("id").toString()),status,eventsDTO.getDateRange(),converteDate,timezone);
 			}
 			
 			eventsDTO.setInterviewerList(requirementInterviewList);
@@ -1246,18 +1270,22 @@ public class DashboardRestController {
 		@RequestMapping(value = "/getInterviewsandTasks")
 		public Response<RequirementInterviewHistory> getInterviewsandTasks(String dateRange, HttpServletRequest request) throws Exception {
 			Response<RequirementInterviewHistory> response = new Response<>();
-			User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
-			if(user != null) {
+			//User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+			org.json.simple.JSONObject userJsonObject = SourceLeadSessionManager.getSessionJsonObject(request,  "user");
+			if(userJsonObject != null) {
 				try {
-					String userRole = (String) SourceLeadSessionManager.getSessionAttribute(request, "loginUserRole");
-				    OrgLocations loginOrgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+					/*String userRole = (String) SourceLeadSessionManager.getSessionAttribute(request, "loginUserRole");
+				    OrgLocations loginOrgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");*/
+					String userRole = SourceLeadSessionManager.getSessionJsonString(request, "loginUserRole");
+					org.json.simple.JSONObject orgLocJsonObject = SourceLeadSessionManager.getSessionJsonObject(request,  "orgLocations");
 					List<RequirementInterviewHistory> requirementInterviewList = null;
+					
 					//SimpleDateFormat simpleDateFormat = loginOrgLocations.getLocFullFormDateFormatter();
 					String currentTime = null;
 					String userType = null;
 					Timezone timezone = null;
-					String userCode = user.getUserCode();
-					Long userId = user.getId();
+					String userCode = userJsonObject.get("userCode").toString();
+					OrgLocations loginOrgLocations = orgLocationService.getOrgLocations(Long.valueOf(orgLocJsonObject.get("id").toString()));
 					if(loginOrgLocations.getTimezone() != null){
 						timezone = timeZoneService.getTimezone(loginOrgLocations.getTimezone().getId());
 					}
@@ -1267,7 +1295,7 @@ public class DashboardRestController {
 					DateFormat TZ_DF_TS = new SimpleDateFormat ("yyyy-MM-dd HH:mm:ss");
 					DateFormat END_TZ_DF = new SimpleDateFormat ("yyyy-MM-dd'T'23:59:59");
 					if(StringUtils.isNotBlank(dateRange)) {
-						Date startTime =  commonUtil.orgLocationDateFormat(loginOrgLocations.getDateFormat(),dateRange);
+						Date startTime =  commonUtil.orgLocationDateFormat(orgLocJsonObject.get("dateFormat").toString(),dateRange);
 						
 						String startTimeTS = Constants.TZ_DF.format(startTime); 
 						String endTimeTS = END_TZ_DF.format(startTime);
@@ -1277,9 +1305,9 @@ public class DashboardRestController {
 							 endUTCDate = TZ_DF_TS.parse(endDateString);
 						if(Constants.ROLE_ADMIN.equalsIgnoreCase(userRole) || Constants.SOURCELEAD_ADMIN.equalsIgnoreCase(userRole)){
 							userType = Constants.ADMIN;
-								requirementInterviewList = requirementInterviewHistoryService.getAllInterviewAssignedToLoginUser(loginOrgLocations, dateRange, currentTime, userType, userId, userCode,startUTCDate,endUTCDate,timezone,user);
+								requirementInterviewList = requirementInterviewHistoryService.getAllInterviewAssignedToLoginUser(Long.valueOf(orgLocJsonObject.get("id").toString()), dateRange, currentTime, userType, Long.valueOf(userJsonObject.get("id").toString()), userCode,startUTCDate,endUTCDate,timezone,orgLocJsonObject.get("dateFormat").toString());
 							}else{
-								requirementInterviewList = requirementInterviewHistoryService.getAllInterviewAssignedToLoginUser(loginOrgLocations, dateRange, currentTime, userType, userId, userCode,startUTCDate,endUTCDate,timezone,user);
+								requirementInterviewList = requirementInterviewHistoryService.getAllInterviewAssignedToLoginUser(Long.valueOf(orgLocJsonObject.get("id").toString()), dateRange, currentTime, userType, Long.valueOf(userJsonObject.get("id").toString()), userCode,startUTCDate,endUTCDate,timezone,orgLocJsonObject.get("dateFormat").toString());
 						}
 						
 						// tasks
@@ -1289,14 +1317,14 @@ public class DashboardRestController {
 						
 						String status =  "myTask";
 						if(!"".equalsIgnoreCase(dateRange)){
-							Date date1 = commonUtil.orgLocationDateFormat(loginOrgLocations.getDateFormat(),dateRange);
+							Date date1 = commonUtil.orgLocationDateFormat(orgLocJsonObject.get("dateFormat").toString(),dateRange);
 							taskCurrentTimeStr = Constants.TZ_DF.format(date1);
 							taskCurrentDateInTimezone= CommonUtil.convertTimeZones(timezone.getTimeZoneId(), Constants.UTC_TIMEZONE, taskCurrentTimeStr);
 							converteDate = TZ_DF_TS.parse(taskCurrentDateInTimezone);
-							taskCurrentDateInTimezone = commonUtil.dateStrFromOrgDateFormatter(loginOrgLocations.getDateFormat(),converteDate);
+							taskCurrentDateInTimezone = commonUtil.dateStrFromOrgDateFormatter(orgLocJsonObject.get("dateFormat").toString(),converteDate);
 						}
 						
-						List<Tasks> taklist = taskService.tasksListByIdAndOrgLocationIdAssignedUserId(loginOrgLocations.getId(),user.getId(),status,dateRange,converteDate,timezone);
+						List<Tasks> taklist = taskService.tasksListByIdAndOrgLocationIdAssignedUserId(Long.valueOf(orgLocJsonObject.get("id").toString()),Long.valueOf(userJsonObject.get("id").toString()),status,dateRange,converteDate,timezone);
 						
 						DateFormat week_Day = new SimpleDateFormat ("EEEE");
 						
@@ -1359,17 +1387,24 @@ public class DashboardRestController {
 			 }
 			 
 			String resultJson;
-			User  user = (User)SourceLeadSessionManager.getSessionAttribute(request, "user");
+			
+			/*User  user = (User)SourceLeadSessionManager.getSessionAttribute(request, "user");
 			OrgLocations loginOrgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,"orgLocations");
 			String userRole = (String) SourceLeadSessionManager.getSessionAttribute(request, "loginUserRole");
-			String userCode = user.getUserCode();
+			*/
+			
+			org.json.simple.JSONObject userJsonObject = SourceLeadSessionManager.getSessionJsonObject(request,  "user");
+			org.json.simple.JSONObject orgLocJsonObject = SourceLeadSessionManager.getSessionJsonObject(request,  "orgLocations");
+			String userRole = SourceLeadSessionManager.getSessionJsonString(request, "loginUserRole");
+			
+			String userCode = orgLocJsonObject.get("userCode").toString();
 			String userType = null;
 			List<Requirement>   requirementList = null;
 			if(Constants.ROLE_ADMIN.equalsIgnoreCase(userRole) || Constants.SOURCELEAD_ADMIN.equalsIgnoreCase(userRole)){
 				userType = Constants.ADMIN;
-				requirementList = requirementService.getAssignedRequirementListByOrgLocationIdAndUserIdAndPostedDate(loginOrgLocation.getId(), userType, user.getId(), userCode, numberOfDays);
+				requirementList = requirementService.getAssignedRequirementListByOrgLocationIdAndUserIdAndPostedDate(Long.valueOf(orgLocJsonObject.get("id").toString()), userType, Long.valueOf(userJsonObject.get("id").toString()), userCode, numberOfDays);
 			}else{
-				requirementList = requirementService.getAssignedRequirementListByOrgLocationIdAndUserIdAndPostedDate(loginOrgLocation.getId(), userType, user.getId(), userCode, numberOfDays);
+				requirementList = requirementService.getAssignedRequirementListByOrgLocationIdAndUserIdAndPostedDate(Long.valueOf(orgLocJsonObject.get("id").toString()), userType, Long.valueOf(userJsonObject.get("id").toString()), userCode, numberOfDays);
 			}
 			resultJson = commonUtil.toJSON(requirementList);
 			return resultJson;
@@ -1409,9 +1444,10 @@ public class DashboardRestController {
 		  * @throws Exception
 		  */
 	@RequestMapping(value = "/getDashboardContracts", method = RequestMethod.POST)
-	public List<RequirementOffers> getDashboardContracts(@RequestParam(value = "locationId", required = false) Long locationId) throws Exception
+	public List<RequirementOffers> getDashboardContracts(HttpServletRequest request) throws Exception
 	{
-		List<RequirementOffers> offerList = requirementOffersService.getOfferAcceptedVendorCandidatesByOrgLocationId(locationId);
+		org.json.simple.JSONObject orgLocJsonObject = SourceLeadSessionManager.getSessionJsonObject(request,  "orgLocations");
+		List<RequirementOffers> offerList = requirementOffersService.getOfferAcceptedVendorCandidatesByOrgLocationId(Long.valueOf(orgLocJsonObject.get("id").toString()));
 		return offerList;
 	}
 	

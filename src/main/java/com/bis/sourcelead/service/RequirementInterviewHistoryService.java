@@ -41,7 +41,7 @@ public interface RequirementInterviewHistoryService {
 	 * @throws Exception
 	 * To get dashboard interviews
 	 */
-	List<RequirementInterviewHistory> getAllInterviewAssignedToLoginUser(OrgLocations loginOrgLocations, String dateRange, String currentTime, String userType, Long userId, String userCode, Date startUTCDate, Date endUTCDate,Timezone timezone, User user)throws Exception;
+	List<RequirementInterviewHistory> getAllInterviewAssignedToLoginUser(Long orgLocationId, String dateRange, String currentTime, String userType, Long userId, String userCode, Date startUTCDate, Date endUTCDate,Timezone timezone,String dateFormat)throws Exception;
 	
 	List<RequirementInterviewHistory> getAllProfessinalInterviews(String dateRange,Long candidateId,String currentTime,Date startUTCDate, Date endUTCDate,Timezone timezone)throws Exception;
 	

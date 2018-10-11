@@ -1,6 +1,7 @@
 package com.bis.sourcelead.util;
 
 import java.io.Writer;
+import java.util.Iterator;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -50,7 +51,7 @@ public class SourceLeadSessionManager {
 	
 	public static JSONObject getSessionJsonObject(HttpServletRequest request, String attribute) {
 		
-		JSONObject jsonObject = null;
+		JSONObject jsonObjVal = null;
 		String id = request.getSession().getId();
 		Object sv = null;
 		sv = c.get(id  + "_" + attribute);
@@ -58,14 +59,44 @@ public class SourceLeadSessionManager {
 		  
 		  JSONParser parser = new JSONParser(); 
 		  try {
-			  jsonObject = (JSONObject) parser.parse(sv.toString());
+			  JSONObject jsonObject = (JSONObject) parser.parse(sv.toString());
+			  for(Iterator iterator = jsonObject.keySet().iterator(); iterator.hasNext();) {
+				    String key = (String) iterator.next();
+				     Object jsonValue = jsonObject.get(key);
+				     jsonObjVal = (JSONObject) parser.parse(jsonValue.toString());
+				}
+			  
 		} catch (ParseException e) {
 			e.printStackTrace();
 		}
-
-			  
+	  }
+		return jsonObjVal;
+	}
+	
+	
+	public static String getSessionJsonString(HttpServletRequest request, String attribute) {
+		
+		String strValue = null;
+		String id = request.getSession().getId();
+		Object sv = null;
+		sv = c.get(id  + "_" + attribute);
+		if(sv != null) {
+			
+			 JSONParser parser = new JSONParser(); 
+			  try {
+				  JSONObject jsonObject = (JSONObject) parser.parse(sv.toString());
+				  for(Iterator iterator = jsonObject.keySet().iterator(); iterator.hasNext();) {
+					    String key = (String) iterator.next();
+					     Object jsonValue = jsonObject.get(key);
+					     strValue = jsonValue.toString();
+					}
+				  
+			} catch (ParseException e) {
+				e.printStackTrace();
+			}
+						
 		}
-		return jsonObject;
+		return strValue;
 	}
 	
 	public static Object getSessionAttributeProxy(HttpServletRequest request, String attribute) {

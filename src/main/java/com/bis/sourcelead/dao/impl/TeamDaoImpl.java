@@ -198,13 +198,13 @@ public class TeamDaoImpl  implements TeamDao{
 
 	@Override
 	@Transactional
-	public Boolean getTeamOwnersListByUserIdAndRequirementId(User user, Long orgLocationId, Long requirement) {
+	public Boolean getTeamOwnersListByUserIdAndRequirementId(Long userId, Long orgLocationId, Long requirement) {
 		// TODO Auto-generated method stub
 
 		Session session = this.sessionFactory.getCurrentSession();
 		List<Team> teamList = new ArrayList<>();
 		teamList = session.createQuery("from Team team where team.ownerUserId.id =:userId and team.orgLocationsId =:orgLocationId and team.status <> 0 and team.id IN (select rato.teamId.id from RequirementAssignTo  rato   where rato.requirementId.id = :requirement )")
-						   .setLong("userId", user.getId())
+						   .setLong("userId", userId)
 						   .setLong("orgLocationId", orgLocationId)
 						   .setLong("requirement", requirement)
 						   

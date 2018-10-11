@@ -262,8 +262,8 @@ public class RequirementSubmissionServiceImpl implements RequirementSubmissionSe
 	}
 	
 	@Override
-	public List<RequirementSubmission> getAllShortListCandidatesByOrgLocationsIdAndRequirementId(OrgLocations orgLocations,Long requirementId, List<Long> existingApplicantsIds, String isClientInterview,User user,String loginUserRole) throws Exception {
-		return requirementSubmissionDao.getAllShortListCandidatesByOrgLocationsIdAndRequirementId(orgLocations,requirementId,existingApplicantsIds,isClientInterview,user,loginUserRole);
+	public List<RequirementSubmission> getAllShortListCandidatesByOrgLocationsIdAndRequirementId(Long orgLocationId,Long requirementId, List<Long> existingApplicantsIds, String isClientInterview,Long userId,String loginUserRole,String loginUserCode) throws Exception {
+		return requirementSubmissionDao.getAllShortListCandidatesByOrgLocationsIdAndRequirementId(orgLocationId,requirementId,existingApplicantsIds,isClientInterview,userId,loginUserRole,loginUserCode);
 	}
 	
 	@Override
@@ -3359,10 +3359,10 @@ private void createXlsSheet(Sheet createExcelsheet,Row writeRow,int column,Strin
 	}
 
 	@Override
-	public List<RequirementSubmission> getApplicantsByStatus(Long orgLocationsId, User user,String status) throws Exception {
+	public List<RequirementSubmission> getApplicantsByStatus(Long orgLocationsId, Long userId, String userName,String status) throws Exception {
 		
         
-        List<RequirementSubmission> submittedApplicantsList =  requirementSubmissionDao.getApplicantsByStatus(orgLocationsId, user, status);
+        List<RequirementSubmission> submittedApplicantsList =  requirementSubmissionDao.getApplicantsByStatus(orgLocationsId, userId, userName, status);
         OrgLocations orgLoc = orgLocationService.getOrgLocations(orgLocationsId);
         Timezone timezone = null;
 		if(null != orgLoc.getTimezone()){

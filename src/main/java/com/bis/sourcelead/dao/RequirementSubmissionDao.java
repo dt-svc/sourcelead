@@ -31,7 +31,7 @@ public interface RequirementSubmissionDao {
 	
 	RequirementSubmission getClientRequierementSubmission(Long submissionId)throws Exception;
 	
-	List<RequirementSubmission> getAllShortListCandidatesByOrgLocationsIdAndRequirementId(OrgLocations orgLocations, Long requirementId, List<Long> existingApplicantsIds, String isClientInterview,User user,String loginUserRole) throws Exception;
+	List<RequirementSubmission> getAllShortListCandidatesByOrgLocationsIdAndRequirementId(Long orgLocationId, Long requirementId, List<Long> existingApplicantsIds, String isClientInterview,Long userId,String loginUserRole,String loginUserCode) throws Exception;
 	
 	List<RequirementSubmission>  getAllSubmittedAndShortListAndInterviewededCandidates(OrgLocations orgLocations, Long requirementId, List<Long> existingApplicantsIds, String isClientOffer,User user,String loginUserRole,String isClientRequirement) throws Exception;
 	
@@ -115,7 +115,7 @@ public interface RequirementSubmissionDao {
 
 	List<RequirementSubmission> duplicateCandidateCountList(Long requirementId, User user, OrgLocations loginOrgLocation) throws Exception;
 	
-	List<RequirementSubmission> getApplicantsByStatus(Long orgLocationsId, User user,String status);
+	List<RequirementSubmission> getApplicantsByStatus(Long orgLocationsId, Long userId, String userName,String status);
 	
 	List<Long> getSubmittedCandidateIdsByRequirementId(Long requirementId) throws Exception;
 
