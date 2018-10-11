@@ -203,7 +203,7 @@ public interface RequirementDao {
 
 	public JobFair getJobFair(long jobFairId);
 	
-	public JobFair getJobFairByName(String jobFairName);
+	public JobFair getJobFairByName(String jobFairName, long userId, long orgLocationId);
 	
 	public JobFair getJobFairByUUID(String uuid);
 
@@ -238,5 +238,7 @@ public interface RequirementDao {
 	public List<RequirementIncentive> getRequirementIncentiveListByRequirementId(long requirementId) throws Exception;
 	
 	void deleteRequirementIncentiveByRequirementIdOrIds(long requirementId, String ids) throws Exception;
+	
+	public List<Requirement> getJobsListByOrgRelationAndLocation(Long orglocationId,String orgRelationIds,Date startDateUTC,Date endDateUTC) throws Exception;
 
 }

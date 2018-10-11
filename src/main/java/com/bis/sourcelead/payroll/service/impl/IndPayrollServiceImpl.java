@@ -49,7 +49,7 @@ public class IndPayrollServiceImpl  implements IndPayrollService{
 			List<IndPaysheetFrequencyDTO> totalList = new ArrayList<>();
 			frequencyList.getData().forEach(pay -> {
 				IndPaysheetFrequencyDTO pfd = new IndPaysheetFrequencyDTO();
-				pfd.setId(String.valueOf(pay.getId()));
+				pfd.setId(pay.getId());
 				pfd.setPaySheetFrequencyUUID(pay.getPaySheetFrequencyUUID());
 				pfd.setPayRunId(String.valueOf(pay.getPayRunId()));
 				pfd.setGroupId(String.valueOf(pay.getUserGroup().getId()));

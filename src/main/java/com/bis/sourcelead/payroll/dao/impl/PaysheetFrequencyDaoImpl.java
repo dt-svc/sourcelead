@@ -74,8 +74,8 @@ private static final Logger logger = LoggerFactory.getLogger(AssociateTaxDaoImpl
 		List<PaysheetFrequency> paySheetFreqList = null;
 		try {
 			Session session = this.sessionFactory.getCurrentSession();
-			paySheetFreqList = session.createQuery("from PaysheetFrequency pay where pay.orgLocation.id=:orgLocationId")
-					   .setLong("orgLocationId", orgLocationId)
+			paySheetFreqList = session.createQuery("from PaysheetFrequency pay where pay.orgLocation.id=:orgLocationId order by pay.id desc") 
+					   .setLong("orgLocationId", orgLocationId) 
 					   .list();	
 		}catch (Exception e) {
 			e.printStackTrace();

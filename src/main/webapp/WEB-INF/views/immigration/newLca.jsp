@@ -34,18 +34,20 @@
   	<input type="hidden" id="lcaId" name="lcaId" value="${lcaDTO.lcaId}">
   	<input type="hidden" id="visaClsfId" name="visaClsfId" value="${lcaDTO.visaClsfId}">
     <div class="row clearfix mt" >
+         
          <div class="col-xs-12 col-sm-6 col-md-6 minHeight50 mb" id="errLcaNoDiv">
             <label class="col-md-4">LCA No<span class="text-danger paddingLeft">*</span></label>
             <div class="col-md-8">
                 <input type="text" name="lcaNo"  id="lcaNo" class="form-control" value="${lcaDTO.lcaNo}" placeholder="LCA Number" field-name="LCA NO"
-								data-validation="required validate_LcaNum validate_length length1-30" onkeyup="validateLcaNumber();">
+								data-validation="required validate_LcaNum validate_length length1-30" onkeyup="validateLcaNumber();" onblur="validateLcaNumber();">
           	</div>
-          </div>
+        </div>
+          
            <div class="col-xs-12 col-sm-6 col-md-6 minHeight50 mb" id="errLcaTitleDiv">
             <label class="col-md-4">LCA Title<span class="text-danger paddingLeft">*</span></label>
             <div class="col-md-8">
                 <input type="text" name="lcaTitle" id="lcaTitle" class="form-control" value="${lcaDTO.lcaTitle}" placeholder="LCA Title" field-name="LCA Title"
-								data-validation="required validate_AlphaNumber validate_length length1-250" onkeyup="validateLcaTitle();">
+								data-validation="required validate_AlphaNumber validate_length length1-250" onkeyup="validateLcaTitle();" onblur="validateLcaTitle();">
           	</div>
           </div>
            <div class="col-xs-12 col-sm-6 col-md-6 minHeight50 mb">
@@ -314,7 +316,7 @@
 				<div class="col-xs-12 col-sm-6 col-md-6 minHeight50 mb">
 					<label class="col-md-4">Country</label>
 					<div class="col-md-8">
-					<input type="text" name="lcaPlaceOfEmploymentList[0].country" id="country" value="${lcaDTO.lcaPlaceOfEmploymentList[0].country == null ? loginCountryName  : lcaDTO.lcaPlaceOfEmploymentList[0].country}"  class="form-control" placeholder="Country" field-name="Country"
+					<input type="text" name="lcaPlaceOfEmploymentList[0].country" id="country" value="${lcaDTO.lcaPlaceOfEmploymentList[0].country == null ? ''  : lcaDTO.lcaPlaceOfEmploymentList[0].country}"  class="form-control" placeholder="Country" field-name="Country"
 								data-validation="required validate_length length2-100">
 					</div>
 				</div>

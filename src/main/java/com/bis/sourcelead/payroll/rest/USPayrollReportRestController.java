@@ -25,11 +25,13 @@ import org.springframework.web.servlet.ModelAndView;
 import com.bis.sourcelead.dto.ResponseList;
 import com.bis.sourcelead.dto.UserDTO;
 import com.bis.sourcelead.entity.Employees;
+import com.bis.sourcelead.entity.Department;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.entity.UserGroup;
 import com.bis.sourcelead.enums.Result;
 import com.bis.sourcelead.payroll.dto.AssociateReportDTO;
+import com.bis.sourcelead.payroll.dto.AssociateWithHoldingDTO;
 import com.bis.sourcelead.payroll.dto.CheckRegisterReportDTO;
 import com.bis.sourcelead.payroll.dto.PayPeriodDTO;
 import com.bis.sourcelead.payroll.dto.PayrollComparisonDTO;
@@ -42,6 +44,7 @@ import com.bis.sourcelead.payroll.service.USPayPeriodService;
 import com.bis.sourcelead.payroll.util.PayrollReportPdfUtil;
 import com.bis.sourcelead.payroll.util.PayrollUtil;
 import com.bis.sourcelead.service.EmployeesService;
+import com.bis.sourcelead.service.DepartmentService;
 import com.bis.sourcelead.service.UserGroupService;
 import com.bis.sourcelead.util.SourceLeadSessionManager;
 
@@ -71,6 +74,9 @@ public class USPayrollReportRestController {
 	
 	@Autowired
 	private EmployeesService employeesService;
+	
+    @Autowired
+	DepartmentService departmentService;
 
 	/**
 	 * Returning Us Payroll Jsp
@@ -214,6 +220,21 @@ public class USPayrollReportRestController {
 		return model;
 	}
 	
+	/**
+	 * Returning Us Associate Withholding JSP
+	 * 
+	 * @param request
+	 * @param response
+	 * @return
+	 * @throws Exception
+	 */
+	@RequestMapping(value = "/associateWithholding")
+	public ModelAndView associateWithholding(HttpServletRequest request, HttpServletResponse response) throws Exception
+	{
+		ModelAndView model = new ModelAndView();
+		model.setViewName("payroll/associateWithHolding");
+		return model;
+	}
 	/**
 	 * Pay Groups by org location Id
 	 * @param request
@@ -570,5 +591,35 @@ public class USPayrollReportRestController {
 		OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 		return employeesService.getEmployeesBasedOnDepartment(departmentId,orgLocation);
 	}
+
+	@RequestMapping(value = { "/getAssociateWithHoldingReports","/rest/getAssociateWithHoldingReports" }, method = RequestMethod.POST)
+	@ResponseBody
+	public ResponseList<AssociateWithHoldingDTO> getAssociateWithHoldingReports(AssociateWithHoldingDTO associateWithHoldingDTO,HttpServletRequest request, HttpServletResponse response) throws Exception
+	{
+		OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+		String[] tableColumns = {"employeeId","empName","ssnNumber","workLocation","federalFillingStatus","federalTaxAllowances",
+				"residenceStateCode","stateFillingStatus","stateTaxAllowances"};
+	    int sortColumnIndex = 1;		 //by default sorting using updated date
+		String sortColumnOrder = "asc";  //by default descending order
+		if(associateWithHoldingDTO.getOrder() != null && !associateWithHoldingDTO.getOrder().isEmpty()) {
+			sortColumnIndex = Integer.parseInt(associateWithHoldingDTO.getOrder().get(0).get("column"));
+			sortColumnOrder = associateWithHoldingDTO.getOrder().get(0).get("dir");
+		}
+		associateWithHoldingDTO.setSortColumn(tableColumns[sortColumnIndex]);
+		associateWithHoldingDTO.setSortOrder(sortColumnOrder);
+		ResponseList<AssociateWithHoldingDTO> res = payrollReportService.getAssociateWithHoldingReports(orgLocation,associateWithHoldingDTO);
+		return res;
+	}
 	
+	
+	
+	@RequestMapping(value = { "/findAllDepartments","/rest/findAllDepartments" }, method = RequestMethod.GET)
+	@ResponseBody
+	public List<Department> getDepartmentList(HttpServletRequest request, HttpServletResponse response) throws Exception
+	{
+		OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+		
+		return departmentService.getDepartmentByOrgLocationId(orgLocation.getId());
+		
+	}
 }

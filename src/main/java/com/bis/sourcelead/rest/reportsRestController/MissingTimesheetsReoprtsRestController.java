@@ -31,6 +31,7 @@ import com.bis.sourcelead.reportsDTO.MissingTimesheetResultRepotDTO;
 import com.bis.sourcelead.service.ProjectApproverHierarchyService;
 import com.bis.sourcelead.service.ProjectsService;
 import com.bis.sourcelead.service.SubmissionApproverHierarchyService;
+import com.bis.sourcelead.service.TimeSheetDayEntriesService;
 import com.bis.sourcelead.service.TimeZoneService;
 import com.bis.sourcelead.service.UserRoleService;
 import com.bis.sourcelead.util.CalendarUtil;
@@ -64,12 +65,15 @@ public class MissingTimesheetsReoprtsRestController {
 	ProjectApproverHierarchyService projectApproverHierarchyService;
 	
 	@Autowired
+	TimeSheetDayEntriesService timeSheetDayEntriesService;
+	
+	@Autowired
 	TimeZoneService timeZoneService;
 	
 	@Autowired
 	ReportsUtil reportsUtil;
 	
-	
+
 	@RequestMapping(value = "/getMissingTimesheetReoportsList", method = RequestMethod.POST)
 	public  @ResponseBody List<MissingTimesheetResultRepotDTO> getMissingTimesheetReoportsList(MissingTimesheetRepotDTO missingTimesheetRepotDTO,HttpServletRequest request) throws Exception {
 		OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
@@ -98,7 +102,7 @@ public class MissingTimesheetsReoprtsRestController {
          	    searchDates[1] = toDate;
      		}
          }
-		
+		 
 		List<Projects> projectList = projectsService.getProjectByOrgLocationsId(orgLocations.getId());
 		ArrayList<Long> projectIds = new ArrayList<>();
 		if(StringUtils.isNotBlank(missingTimesheetRepotDTO.getProjectIds())) {
@@ -113,8 +117,8 @@ public class MissingTimesheetsReoprtsRestController {
 					projectIds.add(pr.getId());
 				}
 			}
-		}
-		List<MissingTimesheetResultRepotDTO> missingTimesheetResultRepotList = new ArrayList<>();
+		} 
+		List<MissingTimesheetResultRepotDTO> missingTimesheetResultRepotList = new ArrayList<>(); 
 		if(projectIds != null && !projectIds.isEmpty()) {
 			for(Long projectId :projectIds) {
 				HashSet<ProjectMembers> prjectMembers =  userRoleService.getAllProjectMembersByProjectIdForMissingTSReports(projectId, orgLocations.getId(),user.getId());
@@ -138,8 +142,16 @@ public class MissingTimesheetsReoprtsRestController {
 					             if(CalendarUtil.getNumberOfDays(frequencyEndDate,currentCal.getTime()) <-2 && frequency.equalsIgnoreCase(Constants.BI_WEEKLY)){
 					            	 flag = false;
 					             }
-								
-					             if(submissionApproverHierarchyService.getCronRemainderForEmployeeByProjectMemberId(frequencyStartDate, frequencyEndDate, pm.getMasterCandidateId().getId(),pm.getProjects().getId()) && (flag) && frequencyEndDate.before(currentCal.getTime())){
+					             Boolean isMTSPerMasterCandidate = timeSheetDayEntriesService.isMissingTimesheetByMasterCandidateIdAndOrgLocationWithStartEndDates(pm.getMasterCandidateId().getId(), frequencyStartDate, frequencyEndDate, orgLocations);
+					             Boolean showEntry = false;
+					             if(isMTSPerMasterCandidate) {
+					            	 Boolean isMTSPerProject = submissionApproverHierarchyService.isMissingTimesheetPerProjectByMasterCandidateIdAndProjectId(frequencyStartDate, frequencyEndDate, pm.getMasterCandidateId().getId(),pm.getProjects().getId());
+					                 if(isMTSPerProject) {
+					                	 showEntry = true;
+					                 }
+					             } 
+					             
+					             if( showEntry && flag && frequencyEndDate.before(currentCal.getTime())){
 					            	String unfilledFrequency =  key.replaceAll("/", "-")+" To "+value.replaceAll("/", "-");
 					            	MissingTimesheetResultRepotDTO mtr = new MissingTimesheetResultRepotDTO();
 					            	mtr.setProjectName(pm.getProjects().getProjectName());
