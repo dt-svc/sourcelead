@@ -9,7 +9,7 @@ import com.bis.sourcelead.payroll.entity.IndPaysheetFrequency;
 
 public interface GenerateINDPayrollService {
 	
-	IndPaysheetFrequencyDTO generateINDPayroll(IndPaysheetFrequencyDTO existedData, OrgLocations orgLocation, GenerateINDPayrollDTO generateINDPayrollDTO, User loginUser) throws Exception;
+	IndPaysheetFrequencyDTO generateINDPayroll(OrgLocations orgLocation, GenerateINDPayrollDTO generateINDPayrollDTO, User loginUser) throws Exception;
 
 	IndPaysheetFrequencyDTO getPayrollData(GenerateINDPayrollDTO generateINDPayrollDTO,IndPaysheetFrequency paysheetFrequency, OrgLocations orgLocation, User loginUser);
 	
