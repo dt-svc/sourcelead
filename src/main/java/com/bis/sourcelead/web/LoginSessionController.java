@@ -341,6 +341,12 @@ public class LoginSessionController {
 			SourceLeadSessionManager.setSessionAttribute(request, "candidate", candidate);
 			SourceLeadSessionManager.setSessionAttribute(request, "candidateId", candidate.getId());
 			
+			/**
+			 * This is for couch
+			 */
+			
+			SourceLeadSessionManager.setJsonStringSessionAttribute(request, "candidateId", candidate.getId().toString());
+			
 			SourceLeadSessionManager.setSessionAttribute(request, "loginUserFirstName", user.getFirstName());
 			SourceLeadSessionManager.setSessionAttribute(request, "loginUserLastName", user.getLastName());
 			SourceLeadSessionManager.setSessionAttribute(request, "loginUserEmail", user.getEmail());
@@ -428,6 +434,10 @@ public class LoginSessionController {
 			SourceLeadSessionManager.setSessionAttribute(request, "displayName", userRole.getRoles().getDisplayName());
 			SourceLeadSessionManager.setSessionAttribute(request, "userRoleId", userRole.getId());
 			SourceLeadSessionManager.setSessionAttribute(request, "isGlobalAccess", userRole.getIsGlobal());
+			/**
+			 * IsGlobalAssess in couch
+			 */
+			SourceLeadSessionManager.setJsonStringSessionAttribute(request, "isGlobalAccess", userRole.getIsGlobal());
 			SourceLeadSessionManager.setSessionAttribute(request, "designation", userRole.getDesignation());
 			
 			
@@ -655,6 +665,8 @@ public class LoginSessionController {
 			
 			SourceLeadSessionManager.setSessionAttribute(request, "candidate", candidate);
 			SourceLeadSessionManager.setSessionAttribute(request, "candidateId", candidate.getId());
+			SourceLeadSessionManager.setJsonStringSessionAttribute(request, "candidateId", candidate.getId().toString());
+			
 			model.addObject("sourceleadUrl", sourceleadUrl);
 			
 			setTimeZone(request,orgLocations, model);

@@ -55,7 +55,7 @@ public interface RequirementSubmissionDao {
 	
 	List<RequirementSubmission>   getRequirementHistoryListByCandidateIdAndOrgLocationIdAndRequirementId(Long candidateId, Long orgLocationId,Long requirementId) throws Exception;
 
-	public Integer [] getRequirementSubmissionsListsByOrgLocationsIdAndSubmissionStatus(Long orgLocationsId,String dateRange,String userType,User user, Date startUTCDate, Date endUTCDate) throws Exception;
+	public Integer [] getRequirementSubmissionsListsByOrgLocationsIdAndSubmissionStatus(Long orgLocationsId,String dateRange,String userType,Long userId, Date startUTCDate, Date endUTCDate,String userCode) throws Exception;
 
 	
 	/**

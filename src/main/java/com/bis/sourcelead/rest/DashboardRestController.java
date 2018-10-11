@@ -619,16 +619,20 @@ public class DashboardRestController {
 	  */
 	
 	 @RequestMapping(value = "/getRequirementSubmissionsCount" , method = RequestMethod.GET)
-	 public Response<DashboardCounts>  getRequirementSubmissionsCount(@RequestParam(value="daterange", required=false) String daterange,@RequestParam(value="orgLocationId", required=false) Long orgLocationId,@RequestParam(value="userId", required=false) Long userId,HttpServletRequest request) throws Exception {
+	 public Response<DashboardCounts>  getRequirementSubmissionsCount(@RequestParam(value="daterange", required=false) String daterange,HttpServletRequest request) throws Exception {
 		 Response<DashboardCounts> response = new Response<>();
-		 OrgLocations loginOrgLocations = orgLocationService.getOrgLocations(orgLocationId);
+		 
+		    org.json.simple.JSONObject userJsonObject = SourceLeadSessionManager.getSessionJsonObject(request,  "user");
+			org.json.simple.JSONObject orgLocJsonObject = SourceLeadSessionManager.getSessionJsonObject(request,  "orgLocations");
+			String loginUserRole = SourceLeadSessionManager.getSessionJsonString(request, "loginUserRole");
+			
 			DashboardCounts dc= new DashboardCounts();
 			Timezone timezone = null;
+			
 
-			UserRole userRole = userRoleService.getUserByUserId(userId);
-
-		if(userRole != null) {
+		if(userJsonObject != null) {
 			try {
+				OrgLocations loginOrgLocations = orgLocationService.getOrgLocations(Long.valueOf(orgLocJsonObject.get("id").toString()));
 				if(loginOrgLocations.getTimezone() != null){
 					timezone = timeZoneService.getTimezone(loginOrgLocations.getTimezone().getId());
 				}
@@ -665,11 +669,11 @@ public class DashboardRestController {
 					 
 				}
 				
-				if(Constants.ROLE_ADMIN.equalsIgnoreCase(userRole.getUserType()) || Constants.SOURCELEAD_ADMIN.equalsIgnoreCase(userRole.getUserType())){
+				if(Constants.ROLE_ADMIN.equalsIgnoreCase(loginUserRole) || Constants.SOURCELEAD_ADMIN.equalsIgnoreCase(loginUserRole)){
 					userType = Constants.ADMIN;
 				} 
 				
-				Integer[] requirementSubmissionHistoryCounts = requirementSubmissionService.getRequirementSubmissionsListsByOrgLocationsIdAndSubmissionStatus(loginOrgLocations.getId(),daterange, userRole.getUserType(), userRole.getUser(), startUTCDate, endUTCDate);
+				Integer[] requirementSubmissionHistoryCounts = requirementSubmissionService.getRequirementSubmissionsListsByOrgLocationsIdAndSubmissionStatus(loginOrgLocations.getId(),daterange, loginUserRole, Long.valueOf(userJsonObject.get("id").toString()), startUTCDate, endUTCDate,userJsonObject.get("userCode").toString());
 				
 			    dc.setApplicantsCount(requirementSubmissionHistoryCounts[0]); //0 index is applicant count as per QueryResult
 			    
@@ -1422,15 +1426,22 @@ public class DashboardRestController {
 		 @RequestMapping(value = "/getExpensesCount" , method = RequestMethod.GET)
 		 public ExpensesCount  getExpensesCount(@RequestParam(value="expenseType", required=false) String expenseType,HttpServletRequest request) throws Exception {
 			
-			    OrgLocations loginOrgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+			   /* OrgLocations loginOrgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 				User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
 				Candidate candidate  =  (Candidate) SourceLeadSessionManager.getSessionAttribute(request, "candidate");
-				String isGlobalAccess = (String) SourceLeadSessionManager.getSessionAttribute(request, "isGlobalAccess");
+				String isGlobalAccess = (String) SourceLeadSessionManager.getSessionAttribute(request, "isGlobalAccess");*/
+				
+				
+				org.json.simple.JSONObject userJsonObject = SourceLeadSessionManager.getSessionJsonObject(request,  "user");
+				org.json.simple.JSONObject orgLocJsonObject = SourceLeadSessionManager.getSessionJsonObject(request,  "orgLocations");
+				String candidateId = SourceLeadSessionManager.getSessionJsonString(request, "candidateId");
+				String isGlobalAccess = SourceLeadSessionManager.getSessionJsonString(request, "isGlobalAccess");
+				
 				ExpensesCount expensesCount = new ExpensesCount();
 				if("employeeExpenses".equalsIgnoreCase(expenseType)){
-					expensesCount = expensesApproverHierarchyService.getExpensesCountByUserIdAndOrgLocationIdForApprover(user.getId(), loginOrgLocations.getId(),isGlobalAccess);
+					expensesCount = expensesApproverHierarchyService.getExpensesCountByUserIdAndOrgLocationIdForApprover(Long.valueOf(userJsonObject.get("id").toString()), Long.valueOf(orgLocJsonObject.get("id").toString()),isGlobalAccess);
 				}else if("myExpenses".equalsIgnoreCase(expenseType)){
-					expensesCount = expensesApproverHierarchyService.getExpensesCountByMasterCandidateId(candidate.getMasterCandidateId().getId());
+					expensesCount = expensesApproverHierarchyService.getExpensesCountByMasterCandidateId(Long.valueOf(candidateId));
 				}
 				return expensesCount;
 		   }

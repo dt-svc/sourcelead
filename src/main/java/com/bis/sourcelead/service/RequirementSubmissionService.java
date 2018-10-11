@@ -58,7 +58,7 @@ public interface RequirementSubmissionService {
 	
 	public Integer getRequirementSubmissionsCountByOrgLocationsIdAndSubmissionStatus(Long orgLocationsId,String submissionStatus,String dateRange,String userType,User user, Date startUTCDate, Date endUTCDate);
 	
-	public Integer [] getRequirementSubmissionsListsByOrgLocationsIdAndSubmissionStatus(Long orgLocationsId,String dateRange,String userType,User user, Date startUTCDate, Date endUTCDate) throws Exception;
+	public Integer [] getRequirementSubmissionsListsByOrgLocationsIdAndSubmissionStatus(Long orgLocationsId,String dateRange,String userType,Long userId, Date startUTCDate, Date endUTCDate,String userCode) throws Exception;
 	
 
 	//to get candidates for submit to client

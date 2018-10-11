@@ -3290,14 +3290,14 @@ public class RequirementSubmissionDaoImpl implements RequirementSubmissionDao{
 				@Override
 				@Transactional
 				public Integer []  getRequirementSubmissionsListsByOrgLocationsIdAndSubmissionStatus(
-				Long orgLocationsId, String dateRange, String userType, User user, Date startUTCDate, Date endUTCDate) throws Exception {
+				Long orgLocationsId, String dateRange, String userType, Long userId, Date startUTCDate, Date endUTCDate,String userCode) throws Exception {
 				Object []  counts = null;
 				Integer [] countArr = new Integer[4];
 				String dateQury;
 				String  startDate =commonUtil.elkDateFormatter(startUTCDate);
 				String  endDate  = commonUtil.elkDateFormatter(endUTCDate);
 				
-				List<String> userList = userDao.getUserHierarchyUserCodeList(user.getId());
+				List<String> userList = userDao.getUserHierarchyUserCodeList(userId);
 					  
 				if(dateRange != null && "today".equals(dateRange)){
 				dateQury = " and DATE_FORMAT(rsh.UPDATED_DATE,'%Y-%m-%d') BETWEEN  '"+startDate +"' and '"+endDate+"'";
@@ -3342,17 +3342,17 @@ public class RequirementSubmissionDaoImpl implements RequirementSubmissionDao{
 					   " and rs.REQUIREMENT_ID = req.ID "+
 					   " and rs.REQUIREMENT_ID IS not NULL "+ dateQury +
 					   //login user as created by
-					   " and ((req.ID IN(select ID from REQUIREMENT  where CREATED_BY ="+user.getId()+")" + 
+					   " and ((req.ID IN(select ID from REQUIREMENT  where CREATED_BY ="+userId+")" + 
 					   
 					   //login user as a approver for this requirement  or  assigned to.
-					   " OR (req.ID IN(select rah. REQUIREMENT_ID from REQUIREMENT_APPROVER_HIERARCHY rah where      rah.APPROVER_USER_ID = "+user.getId()+") " + 
-					   "OR (req.ID IN(select rah.REQUIREMENT_ID from REQUIREMENT_ASSIGN_TO rah where rah.TEAM_ID IN(select team.ID from TEAM team where team.OWNER_USER_ID = "+user.getId()+"))) " + 
-					   "OR (req.ID IN(select REQUIREMENT_ID from REQUIREMENT_ASSIGN_TO rat where rat.ASSIGN_USER_ID ="+user.getId()+") and rs.CREATED_BY = '"+user.getUserCode()+"'))" + 
+					   " OR (req.ID IN(select rah. REQUIREMENT_ID from REQUIREMENT_APPROVER_HIERARCHY rah where      rah.APPROVER_USER_ID = "+userId+") " + 
+					   "OR (req.ID IN(select rah.REQUIREMENT_ID from REQUIREMENT_ASSIGN_TO rah where rah.TEAM_ID IN(select team.ID from TEAM team where team.OWNER_USER_ID = "+userId+"))) " + 
+					   "OR (req.ID IN(select REQUIREMENT_ID from REQUIREMENT_ASSIGN_TO rat where rat.ASSIGN_USER_ID ="+userId+") and rs.CREATED_BY = '"+userCode+"'))" + 
 					   
 				 //login user as a  manager for this job.
-					   "OR (req.ID IN(select ID from REQUIREMENT requirement where  requirement.MANAGER_USER_ID = "+user.getId()+"))" + 
+					   "OR (req.ID IN(select ID from REQUIREMENT requirement where  requirement.MANAGER_USER_ID = "+userId+"))" + 
 					   
-					   "OR(req.RELEASE_JOB_TO_ALL_USERS = 'Y' and rs.CREATED_BY = '"+user.getUserCode()+"') )";
+					   "OR(req.RELEASE_JOB_TO_ALL_USERS = 'Y' and rs.CREATED_BY = '"+userCode+"') )";
 					   
 					   if(userList.size() > 0) {
 						   query1 = query1 + " OR (rsh.CREATED_BY IN (:userList) )";

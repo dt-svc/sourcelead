@@ -181,11 +181,9 @@ $(document).ready(function(){
 		
 <script>
 function getEmployeeTotalCounts(){
-	var orgLocationId = '${SourceLeadWeb_orgLocationId}';
-	var userId = '${SourceLeadWeb_userId}';
 	 $.ajax({
 	      type : "GET",
-	      url: sourceleadUrl+"/totalCountsForEmployeeLeaves?"+tokenParamName+"="+tokenValue+"&orgLocationId="+orgLocationId+"&userId="+userId,  
+	      url: sourceleadUrl+"/totalCountsForEmployeeLeaves?",  
 	       success :function(report) { 
 	    	   if(report.employeeRequestedCounts != null && report.employeeRequestedCounts != '' && report.employeeRequestedCounts != 'undefined'){
 	    		   if(report.employeeRequestedCounts == 0){
@@ -284,11 +282,9 @@ function getEmployeeTotalCounts(){
 
 <script>
 function getSelfTotalCounts(){
-	var orgLocationId = '${SourceLeadWeb_orgLocationId}';
-	var userId = '${SourceLeadWeb_userId}';
 	 $.ajax({
 	      type : "GET",
-	      url: sourceleadUrl+"/totalCountsForSelfLeaves?"+tokenParamName+"="+tokenValue+"&orgLocationId="+orgLocationId+"&userId="+userId,  
+	      url: sourceleadUrl+"/totalCountsForSelfLeaves?",  
 	       success :function(report) { 
 	   	   if(report.selfPendingCounts != null && report.selfPendingCounts != '' && report.selfPendingCounts != 'undefined'){
 	   		if(report.selfPendingCounts == 0){

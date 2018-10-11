@@ -2438,20 +2438,23 @@ public class LeaveManagementRestController {
 	@RequestMapping(value = { "/totalCountsForEmployeeLeaves",
 			"/rest/totalCountsForEmployeeLeaves" }, method = RequestMethod.GET)
 	@ResponseBody
-	public LeaveDTO totalCountsForEmployeeLeaves(
-			@RequestParam(value = "orgLocationId", required = false) Long orgLocationId,
-			@RequestParam(value = "userId", required = false) Long userId, HttpServletRequest request) throws Exception {
-		String loginUserRole = (String) SourceLeadSessionManager.getSessionAttribute(request, "loginUserRole");
-		Org org = (Org) SourceLeadSessionManager.getSessionAttribute(request, "org");
-		return leaveService.getAllEmployeesLeavesCounts(orgLocationId, userId, loginUserRole,org.getId());
+	public LeaveDTO totalCountsForEmployeeLeaves(HttpServletRequest request) throws Exception {
+		
+		String loginUserRole = SourceLeadSessionManager.getSessionJsonString(request, "loginUserRole");
+		org.json.simple.JSONObject orgLocJsonObject = SourceLeadSessionManager.getSessionJsonObject(request,  "orgLocations");
+		org.json.simple.JSONObject userJsonObject = SourceLeadSessionManager.getSessionJsonObject(request,  "user");
+		org.json.simple.JSONObject orgJsonObject = SourceLeadSessionManager.getSessionJsonObject(request,  "org");
+		return leaveService.getAllEmployeesLeavesCounts(Long.valueOf(orgLocJsonObject.get("id").toString()), Long.valueOf(userJsonObject.get("id").toString()), loginUserRole,Long.valueOf(orgJsonObject.get("id").toString()));
 	}
 
 	@RequestMapping(value = { "/totalCountsForSelfLeaves","/rest/totalCountsForSelfLeaves" }, method = RequestMethod.GET)
 	@ResponseBody
-	public LeaveDTO totalCountsForSelfLeaves(
-			@RequestParam(value = "orgLocationId", required = false) Long orgLocationId,
-			@RequestParam(value = "userId", required = false) Long userId) throws Exception {
-		return leaveService.getAllSelfLeavesCounts(orgLocationId, userId);
+	public LeaveDTO totalCountsForSelfLeaves(HttpServletRequest request) throws Exception {
+		
+		org.json.simple.JSONObject orgLocJsonObject = SourceLeadSessionManager.getSessionJsonObject(request,  "orgLocations");
+		org.json.simple.JSONObject userJsonObject = SourceLeadSessionManager.getSessionJsonObject(request,  "user");
+		
+		return leaveService.getAllSelfLeavesCounts(Long.valueOf(orgLocJsonObject.get("id").toString()), Long.valueOf(userJsonObject.get("id").toString()));
 
 	}
 
