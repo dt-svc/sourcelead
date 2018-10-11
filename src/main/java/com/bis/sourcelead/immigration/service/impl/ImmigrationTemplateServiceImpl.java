@@ -81,6 +81,7 @@ public class ImmigrationTemplateServiceImpl implements ImmigrationTemplateServic
         lookUpData.setId(Long.parseLong(templateDTO.getPetitionType()));
         immigrationTemplate.setPetitionType(lookUpData);
         immigrationTemplate.setCountry(templateDTO.getCountry());
+        immigrationTemplate.setActiveStatus(Constants.CANDIDATE_SKILL_IN_ACTIVE);
         return immigrationTemplateDao.savePetitionTemplateDetails(immigrationTemplate, templateId);
 
     }
@@ -138,6 +139,7 @@ public class ImmigrationTemplateServiceImpl implements ImmigrationTemplateServic
                 immigrationTemplateDocs.setIsMultipleRequired(Constants.NO);
             }
             immigrationTemplateDocs.setStatus(Constants.RECORD_ACTIVE);// active
+            immiTemplate.setActiveStatus(Constants.CANDIDATE_SKILL_IN_ACTIVE);
             ImmigrationTemplateDocs docs = immigrationTemplateDao
                     .savePetitionTemplateDocDetails(immigrationTemplateDocs);
             tempObj.setId(docs.getId());
@@ -196,6 +198,7 @@ public class ImmigrationTemplateServiceImpl implements ImmigrationTemplateServic
         immigrationTemplateTask.setTaskNotification(Constants.YES);
         immigrationTemplateTask.setDescription(templateDTO.getTaskDescription());
         immigrationTemplateTask.setStatus(Constants.RECORD_ACTIVE);// 1 for active
+        immiTemplate.setActiveStatus(Constants.CANDIDATE_SKILL_IN_ACTIVE);
         
         immigrationTemplateTask.setCreatedDate(latestDate);
         immigrationTemplateTask.setCreatedBy(user);
@@ -252,6 +255,7 @@ public class ImmigrationTemplateServiceImpl implements ImmigrationTemplateServic
             immigrationTemplateForms.setUpdatedDate(latestDate);
             immigrationTemplateForms.setUpdatedBy(user);
             immigrationTemplateForms.setStatus(Constants.RECORD_ACTIVE);
+            immiTemplate.setActiveStatus(Constants.CANDIDATE_SKILL_IN_ACTIVE);
             immigrationTemplateForms.setFormUUID(SourceLeadRandomCodeHelper.generateRandomUUID());
             if (tempObj.getImmigrationFormFileInfo() != null && !tempObj.getImmigrationFormFileInfo().isEmpty()) {
                 FileInfo info = tempObj.getImmigrationFormFileInfo().get(0);
