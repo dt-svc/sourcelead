@@ -18,7 +18,7 @@
    <div id="tabs-menu" class="clearfix project-tabs-menu">
 	<ul class="nav nav-tabs newTabs">
 		<li id="initiatePayrollLi" class=""><a onclick="initiatePayrollDiv();highlight('initiatePayrollLi');" title="Initiate Payroll">Initiate Payroll</a></li>
-		<li id="payrollLi"  class=""><a onclick="payrollDiv(); highlight('payrollLi');" title="Payroll">Payroll</a></li>
+		<li id="payrollLi"  class=""><a onclick="payrollDiv();" title="Payroll">Payroll</a></li>
 		<li id="groupsLi"  class=""><a onclick="groupsDiv(); highlight('groupsLi');" title="Groups">Groups</a></li>
 		<li id="formsLi"  class=""><a onclick="formsDiv(); highlight('formsLi');" title="Forms">Forms</a></li>
 	</ul>
@@ -31,7 +31,12 @@
 
 <script>
 	$(document).ready(function() {
-		initiatePayrollDiv();
+		var stab = '${stab}';
+		if(stab != null && stab != '' && stab != 'undefined' && stab == 'payroll'){
+			payrollDiv();
+		}else{
+			initiatePayrollDiv();
+		}
 		highlight('initiatePayrollLi');
 	});
 </script> 
@@ -59,6 +64,7 @@ function payrollDiv(){
 	    $("#runPayRollTabsContent").empty();
 	    $("#loadTime").removeAttr('style');
 		preparePaySheetFrequencyInd();
+		highlight('payrollLi');
   }
   
   function preparePaySheetFrequencyInd() {
@@ -297,6 +303,14 @@ function employeePayrollList(uuid){
 </script>
 
 
-
+<script>
+function tabPick(){
+	var stab = '${param.stab}';
+	if(stab == 'payroll'){
+		payrollDiv();
+	}
+}
+window.onload=tabPick;
+</script>
 
 <jsp:include page="../../masterFooter.jsp" />

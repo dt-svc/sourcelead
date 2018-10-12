@@ -4,11 +4,24 @@
 <%@taglib uri="http://www.springframework.org/tags/form" prefix="form"%>
 
 <script src="/resources/js/payrollReports.js"></script>
+<script src="//cdnjs.cloudflare.com/ajax/libs/moment.js/2.14.1/moment.min.js"></script>
 
 <script>
 $(document).ready(function(){
    getPayGroupList("payGroup");
    getDepartments("payrollDepartment");
+   
+	 loc ="${SourceLeadWeb_orgLocations.dateFormat}";
+	 
+	  if(loc.match("yyyy-MM-dd")){
+		  locDateFormat = 'YYYY-MM-DD';
+	  }if(loc.match("dd-MM-yyyy")){
+		  locDateFormat = 'DD-MM-YYYY'; 
+	  }if(loc.match("MM-dd-yyyy")){
+		  locDateFormat = 'MM-DD-YYYY'; 
+	  }if(loc.match("yyyy-dd-MM")){
+		  locDateFormat = 'YYYY-DD-MM'; 
+	  } 
 });
 </script>
 <!-- Content Area -->
@@ -29,7 +42,7 @@ $(document).ready(function(){
             <div class="form-group">
               <label class="col-md-12 paddingRight">Pay Group</label>
 				<div class="col-md-12">
-					<select class="form-control sel" id="payGroup" name="payGroup" onchange="getPayPeriodByGroupId('payGroup','payPeriod');">
+					<select class="form-control sel" id="payGroup" name="payGroup" onchange="getPayPeriodByGroupId('payGroup','payPeriod')">
 					</select>
 				</div>
             </div>
@@ -319,7 +332,7 @@ function payrollRegisterPagination(url){
 	    	  	"render": function(data, type, opt, meta) {
 	    	  		var result = "";
 	    	  		if(opt.grossPay !=null && opt.grossPay != '' && opt.grossPay !='undefined'){
-	    	  			result = result + '     <div class="tbldata-dotdot-vsm" title="'+opt.grossPay+'" >'+opt.grossPay+'</div>';
+	    	  			result = result + '     <div class="tbldata-dotdot-vsm" title="'+opt.grossPay+'" ><i class="fa fa-dollar"style="color:#454545;"></i> '+opt.grossPay+'</div>';
 	        		}else{
 	        			result = result + '     <div class="tbldata-dotdot-vsm" title="" >---</div>';
 	        		}
@@ -331,7 +344,7 @@ function payrollRegisterPagination(url){
 	    	  	"render": function(data, type, opt, meta) {
 	    	  		var result = "";
 	    	  		if(opt.taxes !=null && opt.taxes != '' && opt.taxes !='undefined'){
-	    	  			result = result + '     <div class="tbldata-dotdot-vsm" title="'+opt.taxes+'" >'+opt.taxes+'</div>';
+	    	  			result = result + '     <div class="tbldata-dotdot-vsm" title="'+opt.taxes+'" ><i class="fa fa-dollar"style="color:#454545;"></i> '+opt.taxes+'</div>';
 	        		}else{
 	        			result = result + '     <div class="tbldata-dotdot-vsm" title="" >---</div>';
 	        		}
@@ -343,7 +356,7 @@ function payrollRegisterPagination(url){
                   "render": function ( data, type, opt, meta ) {
                 	var result = "";
   	    	  		if(opt.ytdTaxes !=null && opt.ytdTaxes != '' && opt.ytdTaxes !='undefined'){
-  	    	  			result = result + '     <div class="tbldata-dotdot-vsm" title="'+opt.ytdTaxes+'" >'+opt.ytdTaxes+'</div>';
+  	    	  			result = result + '     <div class="tbldata-dotdot-vsm" title="'+opt.ytdTaxes+'" ><i class="fa fa-dollar"style="color:#454545;"></i> '+opt.ytdTaxes+'</div>';
   	        		}else{
   	        			result = result + '     <div class="tbldata-dotdot-vsm" title="" >---</div>';
   	        		}
@@ -355,7 +368,7 @@ function payrollRegisterPagination(url){
                     "render": function ( data, type, opt, meta ) {
                   		var result = "";
     	    	  		if(opt.deductions !=null && opt.deductions != '' && opt.deductions !='undefined'){
-    	    	  			result = result + '     <div class="tbldata-dotdot-vsm" title="'+opt.deductions+'" >'+opt.deductions+'</div>';
+    	    	  			result = result + '     <div class="tbldata-dotdot-vsm" title="'+opt.deductions+'" ><i class="fa fa-dollar"style="color:#454545;"></i> '+opt.deductions+'</div>';
     	        		}else{
     	        			result = result + '     <div class="tbldata-dotdot-vsm" title="" >---</div>';
     	        		}
@@ -367,7 +380,7 @@ function payrollRegisterPagination(url){
                       "render": function ( data, type, opt, meta ) {
                    		var result = "";
       	    	  		if(opt.netPay !=null && opt.netPay != '' && opt.netPay !='undefined'){
-      	    	  			result = result + '     <div class="tbldata-dotdot-vsm" title="'+opt.netPay+'" >'+opt.netPay+'</div>';
+      	    	  			result = result + '     <div class="tbldata-dotdot-vsm" title="'+opt.netPay+'" ><i class="fa fa-dollar"style="color:#454545;"></i> '+opt.netPay+'</div>';
       	        		}else{
       	        			result = result + '     <div class="tbldata-dotdot-vsm" title="" >---</div>';
       	        		}
@@ -379,7 +392,7 @@ function payrollRegisterPagination(url){
                     "render": function ( data, type, opt, meta ) {
                  		var result = "";
     	    	  		if(opt.ytdNet !=null && opt.ytdNet != '' && opt.ytdNet !='undefined'){
-    	    	  			result = result + '     <div class="tbldata-dotdot-vsm" title="'+opt.ytdNet+'" >'+opt.ytdNet+'</div>';
+    	    	  			result = result + '     <div class="tbldata-dotdot-vsm" title="'+opt.ytdNet+'" ><i class="fa fa-dollar"style="color:#454545;"></i> '+opt.ytdNet+'</div>';
     	        		}else{
     	        			result = result + '     <div class="tbldata-dotdot-vsm" title="" >---</div>';
     	        		}

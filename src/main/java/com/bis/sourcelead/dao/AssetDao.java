@@ -33,6 +33,8 @@ public interface AssetDao {
 	
 	ResponseList<Asset> getDynamicAssetFilterListByLocationId(Long orgLocationId,AssetDTO assetDTO) throws Exception;
 	
+	ResponseList<AssetAssign> getDynamicAssignAssetFilterListByLocationId(Long orgLocationId,AssetDTO assetDTO) throws Exception;
+
 	List<AssetAssign> getUserBasedAssetManagementListandOrgLocation(Long orgLocationId, Long UserId) throws Exception;
 	
 	public Asset getAssetByAssetSnoAndId(String assetSno, Long assetId, Long orgLocationsId) throws Exception;

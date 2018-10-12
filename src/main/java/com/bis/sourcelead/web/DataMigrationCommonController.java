@@ -226,10 +226,10 @@ public class DataMigrationCommonController {
 		}
 	 @RequestMapping(value = "/downloadImmigrationTemplate", method = RequestMethod.GET)
 		public void downloadImmigrationTemplate(HttpServletRequest request,HttpServletResponse response) throws Exception{
-			logger.debug("download Immigration template is for Import downloadImmigrationTemplate method");
+			logger.debug("download Petition template is for Import downloadImmigrationTemplate method");
 	        @SuppressWarnings("resource")
 			XSSFWorkbook workbook = new XSSFWorkbook();
-	        XSSFSheet sheet = workbook.createSheet("Immigration Template");
+	        XSSFSheet sheet = workbook.createSheet("Petition Template");
 	        String[] tableColumns = ImmigrationConstants.IMPORT_DOWNLOAD_IMMIGRATION_EXCEL_HEADERS;
 	 
 	        Row row = sheet.createRow(0);
@@ -239,7 +239,7 @@ public class DataMigrationCommonController {
 	            cell.setCellValue((String)key);
 	        }
 	        try {
-	            File file = new File("Immigration_Import_Template.xlsx");
+	            File file = new File("Petition_Import_Template.xlsx");
 	    		FileOutputStream out = new FileOutputStream(file);
 	    		workbook.write(out);
 	            

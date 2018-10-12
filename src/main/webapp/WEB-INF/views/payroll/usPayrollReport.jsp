@@ -10,7 +10,7 @@
       <div class="pull-left">
         <h2>Payroll US Reports</h2>
       </div>
-      <div class="pull-right brud-crum">Home &raquo; Payroll US Reports</div>
+      <div class="pull-right brud-crum"><a href="<c:url value='${appPath}/dashboard'/>" title="Home">Home</a> &raquo; Payroll US Reports</div>
     </section>
     <div class="content-area content-new clearfix">
       <div class="clearfix form-horizontal inner-content mt mb col-md-12">
@@ -48,6 +48,15 @@
               <h4 class="text-primary"><a href="araging-graph.html" class="anchorBlue">Check Register</a></h4>
               <small class="text-muted">Check Register Report</small>
               <div class="clearfix mt10"><a href="${appPath}/checkRegisterReport" class="btn btn-primary btn-sm" title="View">View</a> </div>
+            </div>
+          </div>
+          
+           <div class="col-md-3">
+            <div class="pull-left mr10"> <i class="fa fa-check fa-2x text-primary"></i> </div>
+            <div class="pull-left">
+              <h4 class="text-primary"><a href="araging-graph.html" class="anchorBlue">Associate Withholding</a></h4>
+              <small class="text-muted">Associate Withholding Report</small>
+              <div class="clearfix mt10"><a href="${appPath}/associateWithholding" class="btn btn-primary btn-sm" title="View">View</a> </div>
             </div>
           </div>
           
@@ -116,6 +125,17 @@
               <div class="clearfix mt10"><a href="${appPath}/directDepositReport" class="btn btn-primary btn-sm" title="View">View</a> </div>
             </div>
           </div>
+          
+          
+            <div class="col-md-3">
+            <div class="pull-left mr10"> <i class="fa fa-arrow-circle-right fa-2x text-muted"></i> </div>
+            <div class="pull-left">
+              <h4 class="text-muted">Employee Payroll</h4>
+              <small class="text-muted">Employee Payroll Report</small>
+              <div class="clearfix mt10"><a href="${appPath}/usEmployeePayrollReport" class="btn btn-primary btn-sm" title="View">View</a> </div>
+            </div>
+          </div>
+          
         </div>
       </div>
       <!-- Content Area Ends--> 

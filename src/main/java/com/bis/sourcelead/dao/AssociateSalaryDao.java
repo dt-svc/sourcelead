@@ -37,9 +37,9 @@ public interface AssociateSalaryDao {
 
 	List<AssociateSalaryInd> getIndAssociateSalaryListByGroupId(OrgLocations orgLocation, long groupId);
 
-
-	List<SalaryDTO> getSalaryByGroupId(OrgLocations orgLocation, Long candidateId, Date freqStartDate, Date freqEndDate);
-
+	SalaryDTO getSalaryByGroupId(OrgLocations orgLocation, Long candidateId, Date freqStartDate, Date freqEndDate);
+	
+    List<AssociateSalaryInd> getIndAssociateSalaryListByGroupIdForInitiatePayRoll(OrgLocations orgLocation, long groupId,String payType,Date fqStartDate,Date fqEndDate);
 	
 	List<AssociateSalaryInd> getIndAssociateSalaryListByGroupId(OrgLocations orgLocation, long groupId,String payType);
 

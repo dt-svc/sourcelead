@@ -25,7 +25,10 @@ import com.bis.sourcelead.entity.AssociateSalary;
 import com.bis.sourcelead.entity.AssociateSalaryHistory;
 import com.bis.sourcelead.entity.AssociateSalaryInd;
 import com.bis.sourcelead.entity.OrgLocations;
+import com.bis.sourcelead.entity.UserGroup;
 import com.bis.sourcelead.payroll.dao.impl.AssociateBankDataDaoImpl;
+import com.bis.sourcelead.payroll.dto.PayrollConstant;
+import com.bis.sourcelead.payroll.entity.IndPaysheetFrequency;
 
 @Repository
 public class AssociateSalaryDaoImpl implements AssociateSalaryDao{
@@ -281,9 +284,9 @@ private static final Logger logger = LoggerFactory.getLogger(AssociateBankDataDa
 	@SuppressWarnings("unchecked")
 	@Override
 	@Transactional
-	public List<SalaryDTO> getSalaryByGroupId(OrgLocations orgLocation, Long candidateId,Date freqStartDate, Date freqEndDate)
+	public SalaryDTO getSalaryByGroupId(OrgLocations orgLocation, Long candidateId,Date freqStartDate, Date freqEndDate)
 	{
-		List<SalaryDTO> salarylist = null;
+		SalaryDTO salarylist = null;
 		try {
 			Session session = this.sessionFactory.getCurrentSession();
 			java.sql.Date startDate = new java.sql.Date(freqStartDate.getTime());
@@ -294,20 +297,22 @@ private static final Logger logger = LoggerFactory.getLogger(AssociateBankDataDa
 			.append("can.FIRST_NAME as firstName,")
 			.append("can.LAST_NAME as lastName,")
 			.append("can.IS_ASSOCIATE as isTerminated,") 
-			.append("role.TERMINATE_DATE as terminatedDate ")
-			.append(" FROM sourcelead.USER_ROLE role,USER usr,CANDIDATE can,ASSOCIATE_SALARY sal ")
+			.append("role.TERMINATE_DATE as terminatedDate, ")
+			.append("emp.HIRE_DATE as joiningDate ")
+			.append(" FROM sourcelead.USER_ROLE role,USER usr,CANDIDATE can,ASSOCIATE_SALARY sal,EMPLOYEE emp ")
 			.append(" where usr.ID = role.USER_ID")
 			.append(" AND  can.CONSULTANT_USER_ID = usr.ID")
+			.append(" AND emp.USER_ID = can.CONSULTANT_USER_ID")
 			.append(" AND sal.CANDIDATE_ID = can.ID")
-			.append(" AND can.ID =:candidateId AND sal.ORG_LOCATION_ID = :locationId ")
-			.append(" AND role.TERMINATE_DATE >= :startDate AND role.TERMINATE_DATE <= :endDate");// OR (role.TERMINATE_DATE IS NULL OR role.TERMINATE_DATE IS NULL))");
+			.append(" AND can.ID =:candidateId AND sal.ORG_LOCATION_ID = :locationId ");
+			//.append(" AND role.TERMINATE_DATE >= :startDate AND role.TERMINATE_DATE <= :endDate");// OR (role.TERMINATE_DATE IS NULL OR role.TERMINATE_DATE IS NULL))");
 			Query queryObj = session.createSQLQuery(sb.toString());
 			queryObj.setLong("candidateId", candidateId)
-			.setLong("locationId", orgLocation.getId())
-			.setDate("startDate", startDate)
-			.setDate("endDate", endDate);
+			.setLong("locationId", orgLocation.getId());
+//			.setDate("startDate", startDate)
+//			.setDate("endDate", endDate);
 			queryObj.setResultTransformer(Transformers.aliasToBean(SalaryDTO.class));
-			salarylist = queryObj.list();
+			salarylist = (SalaryDTO) queryObj.uniqueResult();
 		}catch (Exception e) {
 			e.printStackTrace();
 		}
@@ -327,6 +332,34 @@ private static final Logger logger = LoggerFactory.getLogger(AssociateBankDataDa
 		}else {
 			qry = "from AssociateSalaryInd ass where ass.orgLocations.id = :orgLocationId and ass.groupId = :groupId and ass.payType = :payType and ass.status = '1'";
 			 assList = session.createQuery(qry).setLong("orgLocationId", orgLocation.getId()).setLong("groupId", groupId).setParameter("payType", payType).list();
+		}
+		 
+		if(assList != null)
+			return assList;
+		else
+			return null;
+	}
+	
+	@Override
+	@SuppressWarnings("unchecked")
+	@Transactional
+	public List<AssociateSalaryInd> getIndAssociateSalaryListByGroupIdForInitiatePayRoll(OrgLocations orgLocation, long groupId,String payType,Date fqStartDate,Date fqEndDate) {
+		String qry = "";
+		List<AssociateSalaryInd> assList = null;
+		Session session = this.sessionFactory.getCurrentSession();
+		java.sql.Date sqlStartDate = new java.sql.Date(fqStartDate.getTime());
+		java.sql.Date sqlEndDate = new java.sql.Date(fqEndDate.getTime());
+		String subqry = " and ass.candidate.designationType <> '"+PayrollConstant.C2C+"' and ass.candidate.id NOT IN( select empPayroll.candidate.id from IndEmployeePayroll empPayroll where "
+				          + " empPayroll.indPaysheetFrequency.userGroup.id =:groupId and empPayroll.indPaysheetFrequency.orgLocation.id = :orgLocationId and "
+			  	          + " empPayroll.indPaysheetFrequency.frequencyStartDate = :startDate and empPayroll.indPaysheetFrequency.frequencyEndDate = :endDate and empPayroll.status = '1' )";
+		if(Constants.ALL_RECORDS.equalsIgnoreCase(payType)) {
+			qry = "from AssociateSalaryInd ass where ass.orgLocations.id = :orgLocationId and ass.groupId = :groupId and ass.status = '1' "
+					+subqry;
+			 assList = session.createQuery(qry).setLong("orgLocationId", orgLocation.getId()).setLong("groupId", groupId).setDate("startDate", sqlStartDate)
+						.setDate("endDate", sqlEndDate).list();
+		}else {
+			qry = "from AssociateSalaryInd ass where ass.orgLocations.id = :orgLocationId and ass.groupId = :groupId and ass.payType = :payType and ass.status = '1'"+subqry;;
+			 assList = session.createQuery(qry).setLong("orgLocationId", orgLocation.getId()).setDate("startDate", sqlStartDate).setDate("endDate", sqlEndDate).setLong("groupId", groupId).setParameter("payType", payType).list();
 		}
 		 
 		if(assList != null)

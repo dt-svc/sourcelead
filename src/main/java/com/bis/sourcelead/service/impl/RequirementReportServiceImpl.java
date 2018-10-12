@@ -26,6 +26,7 @@ import org.springframework.stereotype.Service;
 import com.bis.sourcelead.beans.ApplicantReport;
 import com.bis.sourcelead.beans.AssignedRequirementReports;
 import com.bis.sourcelead.constants.Constants;
+import com.bis.sourcelead.dao.RequirementDao;
 import com.bis.sourcelead.dao.RequirementReportDao;
 import com.bis.sourcelead.dto.ApplicantReceivedReportsDTO;
 import com.bis.sourcelead.entity.OrgLocations;
@@ -75,6 +76,9 @@ public class RequirementReportServiceImpl implements RequirementReportService {
 	
 	@Autowired
 	private RequirementLocationsService requirementLocationsService;
+	
+	@Autowired
+	private RequirementDao requirementDao;
 	
 	@Autowired
 	private ReportsUtil reportsUtil;
@@ -1190,6 +1194,12 @@ public class RequirementReportServiceImpl implements RequirementReportService {
 	public List<RequirementSubmissionHistory> getApplicantsCountsByDateRange(Long submissionId, Date startDateUTC,
 			Date endDateUTC) throws Exception {
 		return requirementReportDao.getApplicantsCountsByDateRange(submissionId, startDateUTC, endDateUTC);
+	}
+
+	@Override
+	public List<Requirement> getAllJobsBylocationIdAndRelationId(Long orglocationId, String orgRelationIds,
+			Date startDate, Date endDate)throws Exception {
+		return requirementDao.getJobsListByOrgRelationAndLocation(orglocationId, orgRelationIds, startDate, endDate);
 	}
 
 }
