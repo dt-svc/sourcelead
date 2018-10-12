@@ -21,6 +21,10 @@ public class PayPeriodDTO {
 	
 	private String payRollType;
 	
+	private String convertedFreqStartDate;
+	
+	private String convertedFreqEndDate;
+	
 	public BigInteger getGroupId()
 	{
 		return groupId;
@@ -85,5 +89,18 @@ public class PayPeriodDTO {
 	{
 		this.payRollType = payRollType;
 	}
+	public String getConvertedFreqStartDate() {
+		return convertedFreqStartDate;
+	}
+	public void setConvertedFreqStartDate(String convertedFreqStartDate) {
+		this.convertedFreqStartDate = convertedFreqStartDate;
+	}
+	public String getConvertedFreqEndDate() {
+		return convertedFreqEndDate;
+	}
+	public void setConvertedFreqEndDate(String convertedFreqEndDate) {
+		this.convertedFreqEndDate = convertedFreqEndDate;
+	}
+	
 	
 }
