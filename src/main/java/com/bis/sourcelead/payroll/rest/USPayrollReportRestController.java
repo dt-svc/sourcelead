@@ -81,6 +81,9 @@ public class USPayrollReportRestController {
 	DepartmentService departmentService;
     
 
+    @Autowired
+	DynamicReport dynamicReport;
+    
 	/**
 	 * Returning Us Payroll Jsp
 	 * 
@@ -130,7 +133,23 @@ public class USPayrollReportRestController {
 	}
 	
 	/**
-	 * Returning US Payroll Register Report Jsp
+	 * Returning US Payroll Taxes And Wages Report Jsp
+	 * @author pavan jampana
+	 * 
+	 * @param request
+	 * @param response
+	 * @return
+	 * @throws Exception
+	 */
+	@RequestMapping(value = "/payrollTaxesAndWagesReport")
+	public ModelAndView payrollTaxesAndWagesReport(HttpServletRequest request, HttpServletResponse response) throws Exception
+	{
+		ModelAndView model = new ModelAndView();
+		model.setViewName("payroll/payrollTaxesAndWagesReport");
+		return model;
+	}
+	
+	/**
 	 * 
 	 * @param request
 	 * @param response
@@ -564,7 +583,96 @@ public class USPayrollReportRestController {
 		}
 	}
 	
+
+	/**
+	 * @author pavan jampana
+	 * 
+	 * this method is to get payroll Tax and Wages Report
+	 * 
+	 * @param payrollReportDTO
+	 * @param request
+	 * @param response
+	 * @return
+	 * @throws Exception
+	 */
+
+	@RequestMapping(value = { "/getpayrollTaxAndWagesReport","/rest/getpayrollTaxAndWagesReport" }, method = RequestMethod.POST)
+	@ResponseBody
+	public ResponseList<PayrollReportDTO> getpayrollTaxAndWagesReport(PayrollReportDTO payrollReportDTO,HttpServletRequest request, HttpServletResponse response) throws Exception
+	{
+		ResponseList<PayrollReportDTO> responseList = new ResponseList<>();
+		try {
+			OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+			if (orgLocations != null) { 
+				
+				/*String[] tableColumns = {"empId", "empName", "department", "", "", "", "", "", "", ""};
+			    int sortColumnIndex = 1;		 //by default sorting using updated date
+				String sortColumnOrder = "asc";  //by default descending order
+				if(payrollReportDTO.getOrder() != null && !payrollReportDTO.getOrder().isEmpty()) {
+					sortColumnIndex = Integer.parseInt(payrollReportDTO.getOrder().get(0).get("column"));
+					sortColumnOrder = payrollReportDTO.getOrder().get(0).get("dir");
+				}
+				payrollReportDTO.setSortColumn(tableColumns[sortColumnIndex]);
+				payrollReportDTO.setSortOrder(sortColumnOrder);*/
+				
+				responseList = paysheetFrequencyService.getpayrollTaxAndWagesReport(payrollReportDTO,orgLocations);
+				responseList.setResponse(Result.SUCCESS.name());
+				responseList.setResponseMessage(Result.SUCCESS.getValue());
+			}else{
+				responseList.setResponse(Result.SESSION_TIMEDOUT.name());
+				responseList.setResponseMessage(Result.SESSION_TIMEDOUT.getValue());
+			}
+		} catch (Exception e) {
+			responseList.setResponse(Result.AWKWARD.name());
+			responseList.setResponseMessage(Result.AWKWARD.getValue());
+			logger.error(ExceptionUtils.getFullStackTrace(e));
+		}
+		return responseList;
+	}
 	
+	/**
+	 * @author pavan jampana
+	 * 
+	 * this method is to download payroll Tax And Wages Report Pdf
+	 * @param payrollReportDTO
+	 * @param request
+	 * @param response
+	 * @return
+	 * @throws Exception
+	 */
+	@RequestMapping(value = { "/getpayrollTaxAndWagesReportPdf","/rest/getpayrollTaxAndWagesReportPdf" }, method = RequestMethod.GET)
+	@ResponseBody
+	public void getpayrollTaxAndWagesReportPdf(PayrollReportDTO payrollReportDTO,HttpServletRequest request, HttpServletResponse response) throws Exception
+	{
+		OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+		ResponseList<PayrollReportDTO>  responseList = paysheetFrequencyService.getpayrollTaxAndWagesReport(payrollReportDTO,orgLocations);
+		
+		File file = null;
+	    if(payrollReportDTO.getExportType().equalsIgnoreCase("pdf")) {
+	    	 file=  dynamicReport.payrollTaxAndWagesReportPdfExport(responseList,orgLocations);
+	    }else {
+	    	 file=  dynamicReport.payrollTaxAndWagesReportExcelExport(responseList,orgLocations);
+	    }
+	    
+		String mimeType = URLConnection.guessContentTypeFromName(file.getName());
+		if (mimeType == null) {
+			mimeType = "application/octet-stream";
+		}
+		response.setContentType(mimeType);
+		StringBuilder fileNameSB = new StringBuilder();
+		response.setHeader("Content-Disposition", fileNameSB.append("attachment; filename=\"").append(file.getName()).append("\"").toString());
+		response.setContentLength((int) file.length());
+		InputStream inputStream = new BufferedInputStream(new FileInputStream(file));
+		FileCopyUtils.copy(inputStream, response.getOutputStream());
+		inputStream.close();
+		response.getOutputStream().close();
+		response.getOutputStream().flush();	
+		if(file!= null){
+			file.delete();
+		}
+		 
+	}
+
 	/**get Employee payroll reports
 	 * 
 	 * @param payrollReportDTO

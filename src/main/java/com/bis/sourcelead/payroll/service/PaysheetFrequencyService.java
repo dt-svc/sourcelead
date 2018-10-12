@@ -41,6 +41,8 @@ public interface PaysheetFrequencyService {
 
 	YTDPayrollDTO getPayrollTaxesYTD(EmployeePayroll payroll, OrgLocations orgLocation);
 
+	ResponseList<PayrollReportDTO> getpayrollTaxAndWagesReport(PayrollReportDTO payrollReportDTO, OrgLocations orgLocations);
+
 	ResponseList<AssociateReportDTO> getEmployeePayrollListByPayCheckDate(PayrollReportDTO payrollReportDTO, OrgLocations orgLocation);
 	
 }
