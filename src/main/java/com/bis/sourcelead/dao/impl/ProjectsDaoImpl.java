@@ -46,6 +46,7 @@ import com.bis.sourcelead.entity.SubmissionApproverHierarchy;
 import com.bis.sourcelead.enums.Project_Status;
 import com.bis.sourcelead.exception.SourceLeadConstraintViolationException;
 import com.bis.sourcelead.exception.SourceLeadObjectNotFoundException;
+import com.bis.sourcelead.reportsDTO.ProjectReportDTO;
 import com.bis.sourcelead.service.OrgLocationService;
 import com.bis.sourcelead.service.ProjectBudgetService;
 import com.bis.sourcelead.service.ProjectMembersHistoryService;
@@ -56,7 +57,7 @@ import com.bis.sourcelead.util.TimesheetApprovalFrequencyGeneratorUtil;
 
 @Repository
 public class ProjectsDaoImpl implements ProjectsDao{
-	
+	 
 	@Autowired
 	private SessionFactory sessionFactory;
 	
@@ -1430,6 +1431,7 @@ public HashSet<User> getAllUserTimeSheetSubmissionStatusCurrentWeek() {
 		String query = null;
 		String subQuery = "";
 		String projectTypesubQuery = "";
+		
 		String userRoleQuery = "";
 		
 		List<Long> userHierarchyIds =  userDao.getUserHierarchyIdList(userId);
@@ -1490,7 +1492,64 @@ public HashSet<User> getAllUserTimeSheetSubmissionStatusCurrentWeek() {
 			return projectsDTOList;
 		
 	}
-	
+
+	@Override
+	@Transactional
+	public List<Projects> getProjectReportList(ProjectReportDTO projectReportDTO, String clients,
+			String values, Long orgLocationId, String projects, String projectManagers) {
+
+		try {
+			Session session = this.sessionFactory.getCurrentSession();
+			String query = "from Projects p";
+			if(projectReportDTO.getProjectClients()!=null && !projectReportDTO.getProjectClients().isEmpty()) {
+				query+= " join p.projectClients pc";
+			}
+			if(projectReportDTO.getProjectManager()!=null && !projectReportDTO.getProjectManager().isEmpty()) {
+				query+= " join p.projectApprovers pa";
+			}
+			
+			
+			query += " where p.orgLocationsId.id= :orgLocationId";
+			if(projectReportDTO.getProjectStatus() != null && !projectReportDTO.getProjectStatus().isEmpty()) {
+				query+= " and p.projectStatus=:projectStatus";
+			}
+			if(projectReportDTO.getProjectClients()!=null && !projectReportDTO.getProjectClients().isEmpty()) {
+				query+= " and pc.id in (:projectClients)";
+			}
+			if(projectReportDTO.getProjectManager()!=null && !projectReportDTO.getProjectManager().isEmpty()) {
+				query+= " and pa.level in (1,2)";
+			}
+			if(projectReportDTO.getProjectIds()!=null && !projectReportDTO.getProjectIds().isEmpty()) {
+				query+= " and p.id in (:projectIds)";
+			}
+			
+			Query queryObj = session.createQuery(query);
+			System.out.println(query);
+			
+			queryObj.setParameter("orgLocationId", orgLocationId);
+			
+			if(projectReportDTO.getProjectStatus() != null && !projectReportDTO.getProjectStatus().isEmpty()) {
+				queryObj.setParameter("projectStatus", projectReportDTO.getProjectStatus());
+			}
+			if(projectReportDTO.getProjectClients()!=null && !projectReportDTO.getProjectClients().isEmpty()) {
+				queryObj.setParameter("projectClients", projectReportDTO.getProjectClients());
+			}
+			if(projectReportDTO.getProjectManager()!=null && !projectReportDTO.getProjectManager().isEmpty()) {
+			
+			}
+			if(projectReportDTO.getProjectIds()!=null && !projectReportDTO.getProjectIds().isEmpty()) {
+				queryObj.setParameter("projectIds", projectReportDTO.getProjectIds());
+			}
+			
+			List<Projects> projectList = queryObj.list();
+			if(projectList!=null && !projectList.isEmpty()) {
+				return projectList;
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return null;
+	}
 	
 }
 
