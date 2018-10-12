@@ -30,7 +30,6 @@ function getPayPeriodByGroupId(payGroupid,payPeriodId1,payPeriodId2){
 			for (var i=0; i<json.data.length; i++)
 			{
 				var opt = json.data[i];
-				alert(opt.convertedFreqStartDate)
 //				var startDate  = moment(opt.freqStartDate).format(locDateFormat);
 //				var endDate  = moment(opt.freqEndDate).format(locDateFormat);
 				output = output + "<option value='"+opt.convertedFreqStartDate+"#"+opt.convertedFreqEndDate+"'>"+opt.convertedFreqStartDate+" "+opt.convertedFreqEndDate+"</option>";
