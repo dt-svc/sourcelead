@@ -81,6 +81,9 @@ public class USPayrollReportRestController {
 	DepartmentService departmentService;
     
 
+    @Autowired
+	DynamicReport dynamicReport;
+    
 	/**
 	 * Returning Us Payroll Jsp
 	 * 
@@ -627,6 +630,48 @@ public class USPayrollReportRestController {
 		return responseList;
 	}
 	
+	/**
+	 * @author pavan jampana
+	 * 
+	 * this method is to download payroll Tax And Wages Report Pdf
+	 * @param payrollReportDTO
+	 * @param request
+	 * @param response
+	 * @return
+	 * @throws Exception
+	 */
+	@RequestMapping(value = { "/getpayrollTaxAndWagesReportPdf","/rest/getpayrollTaxAndWagesReportPdf" }, method = RequestMethod.GET)
+	@ResponseBody
+	public void getpayrollTaxAndWagesReportPdf(PayrollReportDTO payrollReportDTO,HttpServletRequest request, HttpServletResponse response) throws Exception
+	{
+		OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+		ResponseList<PayrollReportDTO>  responseList = paysheetFrequencyService.getpayrollTaxAndWagesReport(payrollReportDTO,orgLocations);
+		
+		File file = null;
+	    if(payrollReportDTO.getExportType().equalsIgnoreCase("pdf")) {
+	    	 file=  dynamicReport.payrollTaxAndWagesReportPdfExport(responseList,orgLocations);
+	    }else {
+	    	 file=  dynamicReport.payrollTaxAndWagesReportExcelExport(responseList,orgLocations);
+	    }
+	    
+		String mimeType = URLConnection.guessContentTypeFromName(file.getName());
+		if (mimeType == null) {
+			mimeType = "application/octet-stream";
+		}
+		response.setContentType(mimeType);
+		StringBuilder fileNameSB = new StringBuilder();
+		response.setHeader("Content-Disposition", fileNameSB.append("attachment; filename=\"").append(file.getName()).append("\"").toString());
+		response.setContentLength((int) file.length());
+		InputStream inputStream = new BufferedInputStream(new FileInputStream(file));
+		FileCopyUtils.copy(inputStream, response.getOutputStream());
+		inputStream.close();
+		response.getOutputStream().close();
+		response.getOutputStream().flush();	
+		if(file!= null){
+			file.delete();
+		}
+		 
+	}
 
 	/**get Employee payroll reports
 	 * 
