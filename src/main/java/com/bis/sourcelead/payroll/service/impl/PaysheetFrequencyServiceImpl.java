@@ -8,7 +8,9 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Set;
+import java.util.function.Function;
 import java.util.stream.Collectors;
 
 import javax.mail.MessagingException;
@@ -40,6 +42,7 @@ import com.bis.sourcelead.entity.UserRole;
 import com.bis.sourcelead.enums.Result;
 import com.bis.sourcelead.payroll.dao.PaysheetFrequencyDao;
 import com.bis.sourcelead.payroll.dao.USPaysheetDao;
+import com.bis.sourcelead.payroll.dto.AssociateReportDTO;
 import com.bis.sourcelead.payroll.dto.ConfirmPayTotalSumDTO;
 import com.bis.sourcelead.payroll.dto.ContributionDTO;
 import com.bis.sourcelead.payroll.dto.DeductionDTO;
@@ -719,6 +722,90 @@ public class PaysheetFrequencyServiceImpl implements PaysheetFrequencyService{
 			e.printStackTrace();
 		}
 		return yTDPayrollDTO;
+	}
+
+	@Override
+	public ResponseList<AssociateReportDTO> getEmployeePayrollListByPayCheckDate(PayrollReportDTO payrollReportDTO,OrgLocations orgLocation) {
+		
+		List<EmployeePayroll> emp = paysheetFrequencyDao.getEmployeePayrollListByPayCheckDate(payrollReportDTO,orgLocation);
+		
+		
+		 Map<Candidate, List<EmployeePayroll>> uniqueData = emp.stream().collect(Collectors.groupingBy(EmployeePayroll::getCandidate));
+		 
+		 BigDecimal totalFederalWithholding = BigDecimal.ZERO;
+		 BigDecimal totalStateWithholding = BigDecimal.ZERO;
+		 BigDecimal totalMedicareWithholding = BigDecimal.ZERO;
+		 BigDecimal totalSui = BigDecimal.ZERO;
+		 BigDecimal totalfica = BigDecimal.ZERO;
+		 
+		 ResponseList<AssociateReportDTO> resList = new ResponseList<>();
+		 
+		 List<AssociateReportDTO> ardList = new ArrayList<>();
+		 
+		 for (Entry<Candidate, List<EmployeePayroll>> entry : uniqueData.entrySet()) {
+			 
+			 	AssociateReportDTO ard = new AssociateReportDTO();
+			 
+				BigDecimal totalGrossPay = entry.getValue().stream().map(EmployeePayroll::getGrossPay).reduce(BigDecimal.ZERO, BigDecimal::add);
+				ard.setGrossPay(totalGrossPay);
+				
+				BigDecimal preTaxDeduction = entry.getValue().stream().map(EmployeePayroll::getPreTaxDeduction).reduce(BigDecimal.ZERO, BigDecimal::add);
+				ard.setPreTaxDeduction(preTaxDeduction);
+				
+				BigDecimal postTaxDeduction = entry.getValue().stream().map(EmployeePayroll::getPostTaxDeduction).reduce(BigDecimal.ZERO, BigDecimal::add);
+				ard.setPostTaxDeduction(postTaxDeduction);
+				
+				BigDecimal netPay = entry.getValue().stream().map(EmployeePayroll::getNetPay).reduce(BigDecimal.ZERO, BigDecimal::add);
+				ard.setNetPay(netPay);
+				
+				for (EmployeePayroll empPayroll : entry.getValue()) {
+					
+					if(StringUtils.isNotBlank(empPayroll.getEmployee().getEmployeeId())) {
+						ard.setEmpId(empPayroll.getEmployee().getEmployeeId());
+					}else {
+						ard.setEmpId("--");
+					}
+					
+					if(StringUtils.isNotBlank(empPayroll.getEmployee().getUser().getLastName())) {
+						StringBuilder sbName = new StringBuilder();
+						ard.setEmpName(sbName.append(empPayroll.getEmployee().getUser().getFirstName()).append(" ").append(empPayroll.getEmployee().getUser().getLastName()).toString());
+					}else {
+						ard.setEmpName(empPayroll.getEmployee().getUser().getFirstName());
+					}
+					
+						
+						BigDecimal federalWithholding = empPayroll.getUsPayrollTax().stream().map(EmployeePayrollTax::getFederalWithholding).reduce(BigDecimal.ZERO, BigDecimal::add);
+						totalFederalWithholding = totalFederalWithholding.add(federalWithholding);
+						
+						BigDecimal stateWithholding = empPayroll.getUsPayrollTax().stream().map(EmployeePayrollTax::getStateWithholding).reduce(BigDecimal.ZERO, BigDecimal::add);
+						totalStateWithholding = totalStateWithholding.add(stateWithholding);
+						
+						BigDecimal medicareWithholding = empPayroll.getUsPayrollTax().stream().map(EmployeePayrollTax::getMedicareWithholding).reduce(BigDecimal.ZERO, BigDecimal::add);
+						totalMedicareWithholding = totalMedicareWithholding.add(medicareWithholding);
+						
+						BigDecimal sui = empPayroll.getUsPayrollTax().stream().map(EmployeePayrollTax::getSUI).reduce(BigDecimal.ZERO, BigDecimal::add);
+						totalSui = totalSui.add(sui);
+						
+						BigDecimal fica = empPayroll.getUsPayrollTax().stream().map(EmployeePayrollTax::getFicaWithholding).reduce(BigDecimal.ZERO, BigDecimal::add);
+						totalfica = totalSui.add(fica);
+						
+					
+				}
+				
+				ard.setTotalFederalWithholding(totalFederalWithholding);
+				ard.setTotalMedicareWithholding(totalMedicareWithholding);
+				ard.setTotalStateWithholding(totalStateWithholding);
+				ard.setTotalSui(totalSui);
+				ard.setTotalfica(totalfica);
+				
+				ardList.add(ard);
+			}
+		 
+		 resList.setData(ardList);
+		 resList.setRecordsTotal(ardList.size());
+		 resList.setRecordsFiltered(uniqueData.size());
+
+		return resList;
 	}
 
 }
