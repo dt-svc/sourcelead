@@ -24,7 +24,7 @@ $(document).ready(function(){
   <div class="timesheet_out" id="payrollRegister" style="display: block;">
       <div class="clearfix">
         
-        <div class="positionRelative reportHead clearfix"> <span class="pull-left refreIcon"><a href="javascript:void(0)" class="refeIcon" title="Refresh" onclick="resetFilter();"></a></span>
+        <div class="positionRelative reportHead clearfix"> <span class="pull-left refreIcon"><a href="javascript:void(0)" class="refeIcon" title="Refresh" onclick="refreshPage();"></a></span>
   <ul class="pull-right list-unstyled list-inline">
     <li><a class="newAdBtn mr5 hidden" href="/app/userCreation">+  Associate</a></li>
     <li><a href="javascript:void(0)" class="filtIcon" title="Filters" onclick="openPop();"></a></li>
@@ -66,31 +66,31 @@ $(document).ready(function(){
           <div class="clearfix filterSearch-ul">
             <ul class="list-unstyled positionRelative filterSearch mt5" id="employeeTypeUL">
               <li class="checkBox positionRelative">
-                <input name="empType" value="C2C-1099" type="checkbox">
+                <input name="empType" value="C2C-1099" type="checkbox" id="c2c-1099">
                 <label>C2C-1099</label>
               </li>
               <li class="checkBox positionRelative">
-                <input name="empType" value="W-2" type="checkbox">
+                <input name="empType" value="W-2" type="checkbox" id="w-2">
                 <label>W-2</label>
               </li>
               <li class="checkBox positionRelative">
-                <input name="empType" value="C2H" type="checkbox">
+                <input name="empType" value="C2H" type="checkbox" id="c2h">
                 <label>C2H</label>
               </li>
                <li class="checkBox positionRelative">
-                <input name="empType" value="C2H -1099" type="checkbox">
+                <input name="empType" value="C2H -1099" type="checkbox" id="c2h-1099">
                 <label>C2H -1099</label>
               </li>
                <li class="checkBox positionRelative">
-                <input name="empType" value="Part Time" type="checkbox">
+                <input name="empType" value="Part Time" type="checkbox" id="partTime">
                 <label>Part Time</label>
               </li>
                <li class="checkBox positionRelative">
-                <input name="empType" value="Full Time" type="checkbox">
+                <input name="empType" value="Full Time" type="checkbox" id="fullTime">
                 <label>Full Time</label>
               </li>
                <li class="checkBox positionRelative">
-                <input name="empType" value="Other" type="checkbox">
+                <input name="empType" value="Other" type="checkbox" id="other">
                 <label>Other</label>
               </li>
             </ul>
@@ -402,7 +402,7 @@ function openPop(){
 			        	 for(var i = 0;i<json.length;i++){
 			        		 var opt = json[i];
 			        		 result = result + '<li class="checkBox positionRelative">';
-				        	 result = result + '<input name="deptName" value='+opt.id+' type="checkbox">';
+				        	 result = result + '<input name="deptName" value='+opt.id+' type="checkbox" id="depName">';
 				        	 result = result + '<label>'+opt.departmentName+'</label>';
 				        	 result = result + '</li>';	 
 			        	 }
@@ -453,6 +453,25 @@ function employeeTypeFunction() {
         }
     }
 }
+</script>
+
+<script>
+function resetFilter(){
+	document.getElementById("c2c-1099").checked=false;
+	document.getElementById("w-2").checked=false;
+	document.getElementById("c2h").checked=false;
+	document.getElementById("c2h-1099").checked=false;
+	document.getElementById("partTime").checked=false;
+	document.getElementById("fullTime").checked=false;
+	document.getElementById("other").checked=false;
+	document.getElementById("depName").checked=false;
+}
+</script>
+
+<script>
+function refreshPage(){
+    window.location.reload();
+} 
 </script>
 
 
