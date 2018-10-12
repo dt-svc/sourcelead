@@ -22,6 +22,7 @@ import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.dto.Response;
 import com.bis.sourcelead.dto.ResponseList;
 import com.bis.sourcelead.entity.AssociateLoanAndAdvances;
+import com.bis.sourcelead.entity.AssociatePayrollPayheadHistory;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.Payroll;
 import com.bis.sourcelead.entity.User;
@@ -187,17 +188,16 @@ public class PayrollRestController {
 	    		associatePayrollPayheadDTOList = indPayrollDTO.getPayHeadHistoryDTOList();
 	    	}
 	   	}else {
-	   		ResponseList<AssociatePayrollPayheadHistoryDTO> associatePayrollPayhead = associatePayrollPayheadHistoryService.getUpdatedAssociatePayrollPayheadByEmpPayrollUUID(associatePayrollPayheadHistoryDTO.getIndEmpPayrollUUID());
-	   		associatePayrollPayheadDTOList = associatePayrollPayhead.getData();
 	   		Response<IndEmployeePayroll> indEmployeePayrollResponse = indPaysheetFrequencyService.getIndEmployeePayrollByEmpPayrollUUID(associatePayrollPayheadHistoryDTO.getIndEmpPayrollUUID());
 	   		IndEmployeePayroll	indEmployeePayroll = indEmployeePayrollResponse.getObject();
 	   		HashSet<IndEmployeePayroll> payrollList = new HashSet<>();
 	   		payrollList.add(indEmployeePayroll);
 	   		indPayrollDTO = iNDPayrollCommonUtil.getINDPayrollDTOFromIndEmployeePayroll(payrollList, orgLocation).iterator().next();
+	   	    associatePayrollPayheadDTOList = indPayrollDTO.getPayHeadHistoryDTOList();
 	   	}
 		 
 		if(associatePayrollPayheadDTOList != null && !associatePayrollPayheadDTOList.isEmpty()) {
-			List<AssociatePayrollPayheadHistoryDTO> earningList = associatePayrollPayheadDTOList.stream().filter(app -> app.getPayrollPayheadType().equals("Earnings")).collect(Collectors.toList());
+			List<AssociatePayrollPayheadHistoryDTO> earningList = associatePayrollPayheadDTOList.stream().filter(app -> (app.getPayrollPayheadType().equals("Earnings"))).collect(Collectors.toList());
 			model.addObject("earningPayhead", earningList);
 			List<AssociatePayrollPayheadHistoryDTO> decuctionList =  associatePayrollPayheadDTOList.stream().filter(app -> app.getPayrollPayheadType().equals("Deduction")).collect(Collectors.toList());
 			model.addObject("decuctionPayhead", decuctionList);

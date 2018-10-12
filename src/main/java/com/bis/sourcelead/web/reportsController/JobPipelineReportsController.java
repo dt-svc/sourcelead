@@ -14,8 +14,10 @@ import org.springframework.web.servlet.ModelAndView;
 import com.bis.sourcelead.dto.RequirementDTO;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.OrgRelations;
+import com.bis.sourcelead.entity.Team;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.service.OrgRelationsService;
+import com.bis.sourcelead.service.TeamService;
 import com.bis.sourcelead.util.ReportsUtil;
 import com.bis.sourcelead.util.SourceLeadSessionManager;
 
@@ -32,6 +34,9 @@ public class JobPipelineReportsController {
 	@Autowired
 	private OrgRelationsService orgRelationsService;
 	
+	@Autowired
+	private TeamService teamService; 
+	
 	@RequestMapping(value = "/jobPipelineReports")
 	public ModelAndView jobPipelineReports(HttpServletRequest request) throws Exception
 	{
@@ -39,7 +44,6 @@ public class JobPipelineReportsController {
 		 OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 		 String userRole = (String) SourceLeadSessionManager.getSessionAttribute(request, "loginUserRole");
 		 ModelAndView model = new ModelAndView();
-		 
 		 List<RequirementDTO> requirementsDTOList = reportsUtil.getAllRequirementsByOrgLocationId(orgLocation.getId(), user, userRole,request);
 		 model.addObject("requirementsList", requirementsDTOList);
 		 
@@ -51,6 +55,9 @@ public class JobPipelineReportsController {
 				 }
 			    model.addObject("orgClientList", orgClientList);
 			}
+			
+		List<Team> teamsList = teamService.getTeamListByOrgLocationID(orgLocation.getId());
+		model.addObject("teamsList",teamsList);	
 		 
 		 model.setViewName("reports/jobPipelineReports");
 		 model.addObject("sourceleadUrl", sourceleadUrl);

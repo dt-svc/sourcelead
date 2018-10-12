@@ -1,9 +1,16 @@
 package com.bis.sourcelead.payroll.util;
 
+import static net.sf.dynamicreports.report.builder.DynamicReports.cmp;
+import static net.sf.dynamicreports.report.builder.DynamicReports.col;
+import static net.sf.dynamicreports.report.builder.DynamicReports.export;
+import static net.sf.dynamicreports.report.builder.DynamicReports.report;
+import static net.sf.dynamicreports.report.builder.DynamicReports.type;
+
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.util.Collection;
 import java.util.Date;
 import java.math.BigDecimal;
 import java.util.List;
@@ -16,13 +23,18 @@ import org.springframework.stereotype.Component;
 
 import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.dto.ResponseList;
+import com.bis.sourcelead.entity.AssetAssign;
+import com.bis.sourcelead.entity.Employees;
 import com.bis.sourcelead.entity.OrgLocations;
+import com.bis.sourcelead.payroll.dto.AssociateReportDTO;
 import com.bis.sourcelead.payroll.dto.CheckRegisterReportDTO;
 import com.bis.sourcelead.payroll.dto.PayrollReportDTO;
 import com.bis.sourcelead.payroll.dto.PdfHeaderDTO;
 import com.bis.sourcelead.payroll.dto.YTDPayrollDTO;
 import com.bis.sourcelead.payroll.entity.EmployeePayrollTax;
 import com.bis.sourcelead.util.CommonUtil;
+import com.bis.sourcelead.util.dynamicReport.Templates;
+
 import java.math.BigDecimal;
 import com.itextpdf.text.BaseColor;
 import com.itextpdf.text.Chunk;
@@ -38,6 +50,13 @@ import com.itextpdf.text.pdf.PdfPCell;
 import com.itextpdf.text.pdf.PdfPTable;
 import com.itextpdf.text.pdf.PdfWriter;
 import com.itextpdf.text.pdf.draw.VerticalPositionMark;
+
+import net.sf.dynamicreports.jasper.builder.export.JasperPdfExporterBuilder;
+import net.sf.dynamicreports.jasper.builder.export.JasperXlsExporterBuilder;
+import net.sf.dynamicreports.jasper.constant.JasperProperty;
+import net.sf.dynamicreports.report.constant.HorizontalAlignment;
+import net.sf.dynamicreports.report.datasource.DRDataSource;
+import net.sf.dynamicreports.report.exception.DRException;
 
 @Component
 public class PayrollReportPdfUtil {
@@ -1269,5 +1288,132 @@ public class PayrollReportPdfUtil {
 		cell.setVerticalAlignment(Element.ALIGN_BOTTOM);
 		cell.setBorder(Rectangle.NO_BORDER);
 		return cell;
+	}
+
+	public File employeePayrollPdfExport(ResponseList<AssociateReportDTO> responseList, OrgLocations orgLocation) throws Exception {
+		File file = null;
+	try {
+	    StringBuilder fileSB = new StringBuilder();
+		file = File.createTempFile(fileSB.append("employeePayroll_").append(commonUtil.dateStrFromOrgDateFormatter(orgLocation.getDateFormat(),new Date())).toString(),".pdf");
+		file.setReadable(true);
+		JasperPdfExporterBuilder pdfExporter = export.pdfExporter(file);
+		report().setTemplate(Templates.reportTemplate)
+				.title(cmp.text(orgLocation.getOrgLocationName()).setStyle(Templates.bold18CenteredStyle).setHorizontalAlignment(HorizontalAlignment.CENTER))
+				.columns(
+						col.column("Employee Id", "empId", type.stringType()),
+						col.column("Employee Name", "empName", type.stringType()),
+						col.column("Gross Pay", "grossPay", type.bigDecimalType()),
+						col.column("Pre Tax Deductions", "preTaxDed", type.bigDecimalType()),
+						col.column("Federal Tax", "federalTax", type.bigDecimalType()),
+						col.column("Social Security", "socialSec", type.bigDecimalType()),
+						col.column("Medicare Withholding", "medicare", type.bigDecimalType()),
+						col.column("State Withholding", "state", type.bigDecimalType()),
+						col.column("SUI/SDI", "sui", type.bigDecimalType()),
+						col.column("Post Tax Deductions", "postTaxDed", type.bigDecimalType()),
+						col.column("Net Pay", "netPay", type.bigDecimalType()))
+				.pageFooter(Templates.footerComponent)
+				.setDataSource(createEmployeePayrollPdfDataSource(responseList)).toPdf(pdfExporter);
+		} catch (DRException e) {
+			e.printStackTrace();
+		}
+	return file;
+	}
+
+	private DRDataSource createEmployeePayrollPdfDataSource(ResponseList<AssociateReportDTO> responseList) {
+		DRDataSource dataSource = new DRDataSource("empId","empName", "grossPay", "preTaxDed", "federalTax", "socialSec", "medicare", "state", "sui", "postTaxDed", "netPay");
+		for(AssociateReportDTO associate :responseList.getData()) {
+			String  employeeId= "--";
+			String employeeName = "--";
+			BigDecimal grossPay = BigDecimal.ZERO;
+			BigDecimal preTaxDed = BigDecimal.ZERO;
+			BigDecimal federalTax = BigDecimal.ZERO;
+			BigDecimal socialSec = BigDecimal.ZERO;
+			BigDecimal medicare = BigDecimal.ZERO;
+			BigDecimal state = BigDecimal.ZERO;
+			BigDecimal sui = BigDecimal.ZERO;
+			BigDecimal postTaxDed = BigDecimal.ZERO;
+			BigDecimal netPay = BigDecimal.ZERO;
+			if(associate != null && associate.getEmpId() != null) {
+				employeeId = associate.getEmpId();
+			}
+			if(associate.getEmpName() != null) {
+				employeeName = associate.getEmpName();
+			}
+			
+			if(associate.getGrossPay() != null) {                   // usefull for 0  amount condition && !(BigDecimal.ZERO.compareTo(associate.getGrossPay()) == 0)
+				grossPay = associate.getGrossPay();
+			}
+			
+			if(associate.getPreTaxDeduction() != null ) {
+				preTaxDed = associate.getPreTaxDeduction();
+			}
+			
+			if(associate.getTotalFederalWithholding() != null) {
+				federalTax = associate.getTotalFederalWithholding();
+			}
+			
+			if(associate.getTotalfica() != null) {
+				socialSec = associate.getTotalfica();
+			}
+			
+			if(associate.getTotalMedicareWithholding() != null) {
+				medicare = associate.getTotalMedicareWithholding();
+			}
+			
+			if(associate.getTotalStateWithholding() != null) {
+				state = associate.getTotalStateWithholding();
+			}
+			
+			if(associate.getTotalSui() != null) {
+				sui = associate.getTotalSui();
+			}
+			
+			if(associate.getPostTaxDeduction() != null) {
+				postTaxDed = associate.getPostTaxDeduction();
+			}
+			
+			if(associate.getNetPay() != null) {
+				netPay = associate.getNetPay();
+			}
+			
+
+			dataSource.add(employeeId,employeeName,grossPay,preTaxDed,federalTax,socialSec,medicare,state,sui,postTaxDed,netPay);
+		}
+		return dataSource;
+	}
+
+	public File employeePayrollExcelExport(ResponseList<AssociateReportDTO> responseList, OrgLocations orgLocation) throws Exception {
+		File file = null;
+		try {
+		    StringBuilder fileSB = new StringBuilder();
+			file = File.createTempFile(fileSB.append("employeePayroll_").append(commonUtil.dateStrFromOrgDateFormatter(orgLocation.getDateFormat(),new Date())).toString(),".xls");
+			file.setReadable(true);
+			JasperXlsExporterBuilder xlsExporter = export.xlsExporter(file) .setDetectCellType(true)
+                    .setIgnorePageMargins(true)
+                    .setWhitePageBackground(false)
+                    .setRemoveEmptySpaceBetweenColumns(true);
+
+			report().setTemplate(Templates.reportTemplate)
+					.setColumnTitleStyle(Templates.columnTitleStyle)
+					.addProperty(JasperProperty.EXPORT_XLS_FREEZE_ROW, "1")
+					.ignorePageWidth()
+					.ignorePagination()
+					.columns(
+							col.column("Employee Id", "empId", type.stringType()),
+							col.column("Employee Name", "empName", type.stringType()),
+							col.column("Gross Pay", "grossPay", type.bigDecimalType()),
+							col.column("Pre Tax Deductions", "preTaxDed", type.bigDecimalType()),
+							col.column("Federal Tax", "federalTax", type.bigDecimalType()),
+							col.column("Social Security", "socialSec", type.bigDecimalType()),
+							col.column("Medicare Withholding", "medicare", type.bigDecimalType()),
+							col.column("State Withholding", "state", type.bigDecimalType()),
+							col.column("SUI/SDI", "sui", type.bigDecimalType()),
+							col.column("Post Tax Deductions", "postTaxDed", type.bigDecimalType()),
+							col.column("Net Pay", "netPay", type.bigDecimalType()))
+					.setDataSource(createEmployeePayrollPdfDataSource(responseList)).toXls(xlsExporter);
+		} catch (DRException e) {
+			e.printStackTrace();
+		}
+	return file;
 	}
 }

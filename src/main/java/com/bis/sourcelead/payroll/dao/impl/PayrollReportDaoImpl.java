@@ -525,6 +525,8 @@ public class PayrollReportDaoImpl implements PayrollReportDao{
 		try {
 			Session session = this.sessionFactory.getCurrentSession();
 			List<AssociateWithHoldingDTO> assoWithHoldingList = null;
+			List<Long> countlist = null;
+			Integer filterCount = 0;
 			
 			String deptQry = "";
 			String empTypeQry = "";
@@ -605,21 +607,38 @@ public class PayrollReportDaoImpl implements PayrollReportDao{
 				queryObj.setResultTransformer(Transformers.aliasToBean(AssociateWithHoldingDTO.class));
 				assoWithHoldingList = queryObj.list();
 				
+			
 				
 				int count = 0;
-				int filteredCount = 0;
+				
 				Query  countQry = session.createSQLQuery(countQuery.toString()).setLong("orgLocationId", orgLocation.getId());
-				List<BigInteger> countlist = countQry.list();
-				if (countlist != null && !countlist.isEmpty()) {
+				countlist = queryObj.list();
+				/*if (countlist != null && !countlist.isEmpty()) {
 					if (assWithHoldingDTO.getSearchValue() != null && !"".equalsIgnoreCase(assWithHoldingDTO.getSearchValue())) {
 						count = assoWithHoldingList.size();
 					}else {
 						count = countlist.iterator().next().intValue();
 					}
 					
-				}
-				response.setRecordsTotal(count);
+				}*/
+				
+				 filterCount = countlist.size();
+				int totalCount = 0;
 				if (assWithHoldingDTO != null) {
+					if(countlist != null && !countlist.isEmpty()) {
+						totalCount = countlist.size();
+					}
+				} 
+				response.setRecordsTotal(totalCount);
+				if(searchQuery.toString() != null && !searchQuery.toString().isEmpty()){
+					response.setRecordsFiltered(filterCount);
+				}else {
+					response.setRecordsFiltered(totalCount);
+				}
+				
+				
+				response.setRecordsTotal(count);
+				/*if (assWithHoldingDTO != null) {
 					Query  filteredCountQry= session.createSQLQuery(countQuery.toString()).setLong("orgLocationId", orgLocation.getId());
 					List<BigInteger> filteredCountlist = filteredCountQry.list();
 					if (filteredCountlist != null && !filteredCountlist.isEmpty()) {
@@ -631,7 +650,7 @@ public class PayrollReportDaoImpl implements PayrollReportDao{
 						
 					}
 					response.setRecordsFiltered(filteredCount);
-				}
+				}*/
 				
 				for(AssociateWithHoldingDTO withHolding : assoWithHoldingList) {
 					StringBuilder sb = new StringBuilder();
