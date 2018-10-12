@@ -131,6 +131,11 @@ result = result  +'    <div class="billingArea"> ';
  result = result + '			                    </li>                                                                                                                                                                                          ';
  result = result + '			                                                                                                                                                                                                                   ';
  result = result + '			                                                                                                                                                                                                                   ';
+ 
+ 
+ result = result + '			                    <li><a href="' + sourceleadUrl + '/customizeInvoice"><i class="fa fa-cog ml"></i></a></li>';
+ 
+ 
  result = result + '			            <div class="pull-right mt40 select-field hidden">                                                                                                                                                      ';
  result = result + '			              <select class="form-control">                                                                                                                                                                        ';
  result = result + '			                <option class="disabled" selected="">--Select option--</option>                                                                                                                                    ';
