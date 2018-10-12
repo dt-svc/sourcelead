@@ -177,6 +177,7 @@ function associateTaxSummary(userId){
         	  result = result + '     <option value="">--Select--</option>';
         	  result = result + '    <option '+ (json.federaltaxFillingStatus == "Single" ? "selected" : '') +' value="Single">Single</option>';
         	  result = result + '    <option '+ (json.federaltaxFillingStatus == "Married" ? "selected" : '') +' value="Married">Married</option>';
+        	  result = result + '    <option '+ (json.federaltaxFillingStatus == "Married_Single_Income" ? "selected" : '') +' value="Married_Single_Income">Married Single Income</option>';
         	  result = result + '     <option '+ (json.federaltaxFillingStatus == "Married_Use_Single_Rate" ? "selected" : '') +' value="Married_Use_Single_Rate">Married Use Single Rate</option>';
         	  result = result + '     <option '+ (json.federaltaxFillingStatus == "NonResident_Alien" ? "selected" : '') +' value="NonResident_Alien">Non Resident Alien</option>';
         	  result = result + '    </select>';
@@ -300,14 +301,22 @@ function associateTaxSummary(userId){
               result = result + '    <label>Local tax</label>';
               result = result + '   <div>';
               result = result + '  <select class="sel" id="localTax" name="localTax" data-validation="required" field-name="State Tax" onchange="isLocalTaxYes();"> ';
-              result = result + '     <option value="">--Select--</option>';
-              if(json.localTax == 'NO'){
-            	  result = result + ' <option selected value="NO_TAX">No Tax</option>';
-              }else if(json.localTax != null && json.localTax != '' && json.localTax != 'undefined'){
-            	  result = result + '     <option selected value='+json.localTaxState+'>'+json.localTax+'</option>';
-              }else{
-            	  result = result + '     <option selected value='+json.location+'>'+json.location+'</option>';
-              }
+//               result = result + '     <option value="">--Select--</option>';
+//               var noSelected = "";
+//               var yesSelected = "";
+//               alert(json.location)
+//               if(json.localTaxState == 'NO_TAX'){
+//             	  noSelected = "selected";
+//               }else{
+//             	  yesSelected = "selected";
+//               }
+            	  
+//             	  result = result + ' <option value="NO_TAX" '+noSelected+'>No Tax</option>';
+//               }else if(json.localTax != null && json.localTax != '' && json.localTax != 'undefined'){
+//             	  result = result + '     <option selected value="'+json.localTaxState+'" '+yesSelected+'>'+json.localTaxState+'</option>';
+//               }else{
+//             	  result = result + '     <option selected value='+json.location+'>'+json.location+'</option>';
+//               }
               result = result + ' </select>';
               result = result + '  </div>';
               result = result + ' <p class="text-success form-control-static clearfix" id="localTaxMessageDiv"> </p>';
@@ -445,6 +454,9 @@ function associateTaxSummary(userId){
               result = result + '  </form>';
               result = result + ' </div>';
               
+//               var loc = json.localTax;
+         	 getResidenceLocation(userId,json.localTax);
+         	 
               $("#editButtonDiv").hide();
               $("#summaryBodyDiv").hide();
               $("#editBodyDiv").show();
@@ -453,11 +465,36 @@ function associateTaxSummary(userId){
           
      }); 
 	 
-	 
  }
  </script>
  
- 
+ <script>
+function getResidenceLocation(userId,localTax){
+// 	var localTax = $("#localTax").val();
+	$.ajax({
+		type : "GET",
+		url : sourceleadUrl+"/getResidenceLocation?"+tokenParamName+"="+tokenValue+"&userId="+userId,
+		success : function(result) {
+			var output = "";
+			var noSelected = "";
+			var yesSelected = "";
+			if(localTax == 'NO'){
+          	  noSelected = "selected";
+            }else{
+          	  yesSelected = "selected";
+            }
+			if(result != null && result != '' && result != 'undefined'){
+				output += "<option "+yesSelected+" value='"+result+"'>"+result+"</option>";
+				selected = "";
+			}
+			output += "<option "+noSelected+" value='NO_TAX'>No Tax</option>";
+			$("#localTax").empty();
+			$("#localTax").append(output);
+			$('#localTax').trigger("chosen:updated");
+       }
+	});
+}
+</script>
  
  <script type="text/javascript">
  function saveAssociateTax(userId) {
