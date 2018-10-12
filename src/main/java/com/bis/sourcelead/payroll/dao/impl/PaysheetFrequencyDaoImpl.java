@@ -425,8 +425,8 @@ private static final Logger logger = LoggerFactory.getLogger(AssociateTaxDaoImpl
 			
 			
 			String qry = "from EmployeePayroll payroll where payroll.paysheetFrequency.orgLocation.id =:orgLocationId and payroll.payCheckDate >= :startDate and payroll.payCheckDate <= :endDate  and payroll.submitForAproverStatus = :status";
-			String subQuery1 = "";
-			String subQuery2 = "";
+			String subQuery1 = " and payroll.employee.departmentId.id IN ( :ids )";
+			String subQuery2 = " and payroll.employee.id IN ( :employeeIds )";
 			
 			Session session = this.sessionFactory.getCurrentSession();
 			
@@ -439,8 +439,6 @@ private static final Logger logger = LoggerFactory.getLogger(AssociateTaxDaoImpl
 			}
 			
 			if(data != null && employeeIds != null) {
-				subQuery1 = " and payroll.employee.departmentId.id IN ( :ids )";
-				subQuery2 = " and payroll.employee.id IN ( :employeeIds )";
 				payrollList = session.createQuery(qry + subQuery1 + subQuery2+searchQuery).setString("status", "APPROVED")
 						   .setLong("orgLocationId", orgLocation.getId())
 						   .setDate("startDate", startDate)
@@ -455,7 +453,7 @@ private static final Logger logger = LoggerFactory.getLogger(AssociateTaxDaoImpl
 						   .setDate("endDate", endDate)
 						   .setParameterList("ids", data).list();
 			} else {
-				payrollList = session.createQuery(qry + subQuery1+searchQuery).setString("status", "APPROVED")
+				payrollList = session.createQuery(qry+searchQuery).setString("status", "APPROVED")
 						   .setLong("orgLocationId", orgLocation.getId())
 						   .setDate("startDate", startDate)
 						   .setDate("endDate", endDate).list();
