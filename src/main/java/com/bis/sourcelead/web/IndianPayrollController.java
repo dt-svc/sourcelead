@@ -10,7 +10,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.RequestMapping;	
+import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
@@ -145,9 +145,10 @@ public class IndianPayrollController {
 	}
 
 	@RequestMapping (value = "/runIndianPayRoll")
-	public ModelAndView indianRunPayRoll(HttpServletRequest request) {
+	public ModelAndView indianRunPayRoll(@RequestParam(defaultValue = "") String stab,HttpServletRequest request) {
 		ModelAndView modelAndView = new ModelAndView();
 		commonUtil.highLightMenu(Constants.RUNPAYROLL, request);
+		modelAndView.addObject("stab",stab);
 		try {
 			modelAndView.setViewName("payroll_india/payroll/runPayrollInd");
 		}catch (Exception e) {

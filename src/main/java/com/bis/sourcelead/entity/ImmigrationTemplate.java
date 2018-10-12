@@ -66,6 +66,9 @@ public class ImmigrationTemplate implements Serializable {
 	
 	@Column(name = "COUNTRY")
 	private String country;
+	
+	@Column(name = "ACTIVE_STATUS")
+	private Integer activeStatus;
 
 	public Long getId() {
 		return id;
@@ -170,6 +173,14 @@ public class ImmigrationTemplate implements Serializable {
 
 	public void setRejectReason(String rejectReason) {
 		this.rejectReason = rejectReason;
+	}
+
+	public Integer getActiveStatus() {
+		return activeStatus;
+	}
+
+	public void setActiveStatus(Integer activeStatus) {
+		this.activeStatus = activeStatus;
 	}
 	
 	

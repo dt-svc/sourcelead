@@ -31,7 +31,12 @@
 
 <script>
 	$(document).ready(function() {
-		initiatePayrollDiv();
+		var stab = '${stab}';
+		if(stab != null && stab != '' && stab != 'undefined' && stab == 'payroll'){
+			payrollDiv();
+		}else{
+			initiatePayrollDiv();
+		}
 		highlight('initiatePayrollLi');
 	});
 </script> 
