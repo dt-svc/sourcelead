@@ -53,7 +53,7 @@ function getDepartments(id){
         url: sourceleadUrl+"/getDepartmentList?&departmentStatus=1", 
         success: function(json) {
         var output = "";
-        output = output + "<option value=''>select</option>";
+//        output = output + "<option value=''>select</option>";
 		for (var i=0; i<json.data.length; i++)
 		{
 			var opt = json.data[i];
@@ -72,4 +72,26 @@ function getFreqdates(freqSDId,fredEDId){
 	var dates = str.split("#");
 	$("#"+freqSDId).val(dates[0]);
 	$("#"+fredEDId).val(dates[1]);
+}
+
+
+function getEmployeesBasedOnDepartment(id){
+	
+	var departmentId = $("#payrollDepartment").val();
+	$.ajax({
+    	type: "GET",
+        url: sourceleadUrl+"/getEmployeesBasedOnDepartment?&departmentId="+departmentId, 
+        success: function(json) {
+        var output = "";
+		for (var i=0; i<json.length; i++)
+		{
+			var opt = json[i];
+			output = output + "<option value='" +opt.id+ "'>"+opt.fullName+"</option>";
+		}
+		$("#"+id).empty();
+		$("#"+id).append(output);
+		$('#'+id).trigger("chosen:updated"); 
+        },
+    });	
+	
 }
