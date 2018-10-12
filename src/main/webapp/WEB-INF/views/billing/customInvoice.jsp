@@ -154,7 +154,7 @@
 						style="background-color: #f8f7f7; position: absolute; bottom: 0; width: 100%; z-index: 99;">
 						<div class="pull-right">
 							<a class="btn btn-sm btn-default" href="javascript:void(0)" onclick="cancelImageSettings()">Cancel</a>
-							<a class="btn btn-sm btn-primary ml" href="javascript:void(0)" onclick="applyImageSettings()">Save</a>
+							<a class="btn btn-sm btn-primary ml" href="javascript:void(0)" onclick="applyImageSettings(true)">Save</a>
 						</div>
 					</div>
 					<div class="clearfix customtemlate-inner">
@@ -163,11 +163,12 @@
 								<label class="control-label text-muted">Background Image</label>
 								<div class="clearfix">
 									<div class="input-group positionRelative">
-										<label class="input-group-btn"> <span
-											class="btn btn-info">Upload Image <input
-												style="display: none;" multiple type="file">
+										<label class="input-group-btn">
+										<span class="btn btn-info">Upload Image 
+											<input style="display: none;" multiple type="file" id="logoImageSelector" onchange="uploadLogo()">
 										</span>
-										</label> <input class="form-control input-custom" readonly type="text">
+										</label>
+										<input class="form-control input-custom" readonly type="text" id="logoImage">
 										<i class="refreshinputfile"></i>
 									</div>
 								</div>
@@ -177,23 +178,21 @@
 							<div class="col-md-12 mb">
 								<label class="control-label text-muted">Image Position</label>
 								<div class="clearfix">
-									<select class="sel">
-										<option selected>--Select--</option>
-										<option>Left</option>
-										<option>Center</option>
-										<option>Right</option>
+									<select class="sel" id="imagePosition" onchange="applyImageSettings(false)">
+										<option value="left">Left</option>
+										<option value="none" selected>Center</option>
+										<option value="right">Right</option>
 									</select>
 								</div>
 							</div>
 							<div class="col-md-12 mb">
 								<label class="control-label text-muted">Image Size</label>
 								<div class="clearfix">
-									<select class="sel">
-										<option selected>--Select--</option>
-										<option>25%</option>
-										<option>50%</option>
-										<option>75%</option>
-										<option>100%</option>
+									<select class="sel" id="imageSize" onchange="applyImageSettings(false)">
+										<option value="25%">25%</option>
+										<option value="50%" selected>50%</option>
+										<option value="75%">75%</option>
+										<option value="100%">100%</option>
 									</select>
 								</div>
 							</div>
@@ -210,7 +209,7 @@
 						style="background-color: #f8f7f7; position: absolute; bottom: 0; width: 100%; z-index: 99;">
 						<div class="pull-right">
 							<a class="btn btn-sm btn-default" href="javascript:void(0)" onclick="cancelTableSettings()">Cancel</a>
-							<a class="btn btn-sm btn-primary ml" href="javascript:void(0)" onclick="applyTableSettings()">Save</a>
+							<a class="btn btn-sm btn-primary ml" href="javascript:void(0)" onclick="applyTableSettings(true)">Save</a>
 						</div>
 					</div>
 					<div class="clearfix customtemlate-inner">
@@ -222,18 +221,18 @@
 									<label class="col-md-5">Table Border</label>
 									<div class="col-md-1">
 										<div class="checkbox-new pull-left mt5">
-											<input id="bg-colorhdr" class="checkbox-custom"
-												name="bgColorhdr" type="checkbox"> <label
-												for="bg-colorhdr" class="checkbox-custom-label"> <span
-												class="ml10"></span></label>
+											<input id="tableBorderCB" class="checkbox-custom" name="bgColorhdr" type="checkbox" onclick="applyTableSettings(false)">
+											<label for="tableBorderCB" class="checkbox-custom-label">
+												<span class="ml10"></span>
+											</label>
 										</div>
 									</div>
 									<div class="col-md-6">
 										<div class="input-group">
-											<input id="tableBorderColor" class="form-control" name="tblBorder" placeholder="#fffff" type="text">
+											<input id="tableBorderColor" class="form-control" name="tblBorder" placeholder="#989898" type="text">
 											<span class="input-group-addon" style="padding: 2px 10px;">
-												<input id="tableBorderColorSelector" value="#fffff"
-												style="width: 20px; height: 20px;" onchange="colorPicker('tableBorderColorSelector', 'tableBorderColor');" type="color">
+												<input id="tableBorderColorSelector" value="#989898"
+												style="width: 20px; height: 20px;" onchange="colorPicker('tableBorderColorSelector', 'tableBorderColor'); applyTableSettings(false);" type="color">
 											</span>
 										</div>
 									</div>
@@ -245,8 +244,8 @@
 									<label class="col-md-5">Font Size </label>
 									<div class="col-md-7">
 										<div class="input-group">
-											<input class="form-control" type="text"> <span
-												class="input-group-addon">pt</span>
+											<input class="form-control" type="text" id="tableHeadFontSize" onclick="applyTableSettings(false)"> 
+											<span class="input-group-addon">px</span>
 										</div>
 									</div>
 								</div>
@@ -255,11 +254,10 @@
 									
 									<div class="col-md-7">
 										<div class="input-group">
-											<input id="tableHeadBGColor" class="form-control" name="tblBorder"
-												placeholder="#fffff" type="text">
+											<input id="tableHeadBGColor" class="form-control" name="tblBorder" placeholder="#6C7686" type="text">
 											<span class="input-group-addon" style="padding: 2px 10px;">
-												<input id="tableHeadBGColorSelector" value="#fffff"
-												style="width: 20px; height: 20px;" onchange="colorPicker('tableHeadBGColorSelector', 'tableHeadBGColor');" type="color">
+												<input id="tableHeadBGColorSelector" value="#6C7686" style="width: 20px; height: 20px;" 
+												onchange="colorPicker('tableHeadBGColorSelector', 'tableHeadBGColor'); applyTableSettings(false);" type="color">
 											</span>
 										</div>
 									</div>
@@ -269,24 +267,24 @@
 									<div class="col-md-7">
 										<div class="input-group">
 											<input id="tableHeadFontColor" class="form-control" name="tblBorder"
-												placeholder="#fffff" type="text">
+												placeholder="#FFFFFF" type="text">
 											<span class="input-group-addon" style="padding: 2px 10px;">
-												<input id="tableHeadFontColorSelector" value="#fffff"
-												style="width: 20px; height: 20px;" onchange="colorPicker('tableHeadFontColorSelector', 'tableHeadFontColor');"
+												<input id="tableHeadFontColorSelector" value="#FFFFFF"
+												style="width: 20px; height: 20px;" onchange="colorPicker('tableHeadFontColorSelector', 'tableHeadFontColor'); applyTableSettings(false);"
 												type="color">
 											</span>
 										</div>
 									</div>
 								</div>
 								<div class="clearfix mt">
-									<h5>Item Row</h5>
+									<h5>Table Row</h5>
 								</div>
 								<div class="form-group row mt">
 									<label class="col-md-5">Font Size</label>
 									<div class="col-md-7">
 										<div class="input-group">
-											<input class="form-control" type="text"> <span
-												class="input-group-addon">pt</span>
+											<input class="form-control" type="text" id="tableBodyFontSize" onclick="applyTableSettings(false)">
+											<span class="input-group-addon">px</span>
 										</div>
 									</div>
 								</div>
@@ -294,10 +292,10 @@
 									<label class="col-md-5">Background Color</label>
 									<div class="col-md-7">
 										<div class="input-group">
-											<input id="tableBodyBGColor" class="form-control" name="itemrowFontclor" placeholder="#fffff" type="text">
+											<input id="tableBodyBGColor" class="form-control" name="itemrowFontclor" placeholder="#EAE6E6" type="text">
 											<span class="input-group-addon" style="padding: 2px 10px;">
-												<input id="tableBodyBGColorSelector" value="#fffff"
-												style="width: 20px; height: 20px;" onchange="colorPicker('tableBodyBGColorSelector', 'tableBodyBGColor');" type="color">
+												<input id="tableBodyBGColorSelector" value="#EAE6E6"
+												style="width: 20px; height: 20px;" onchange="colorPicker('tableBodyBGColorSelector', 'tableBodyBGColor'); applyTableSettings(false);" type="color">
 											</span>
 										</div>
 									</div>
@@ -307,10 +305,10 @@
 									<label class="col-md-5">Font Color</label>
 									<div class="col-md-7">
 										<div class="input-group">
-											<input id="tableBodyFontColor" class="form-control" name="itemrowFontclor" placeholder="#fffff" type="text">
+											<input id="tableBodyFontColor" class="form-control" name="itemrowFontclor" placeholder="#333" type="text">
 											<span class="input-group-addon" style="padding: 2px 10px;">
-												<input id="tableBodyFontColorSelector" value="#fffff"
-												style="width: 20px; height: 20px;" onchange="colorPicker('tableBodyFontColorSelector', 'tableBodyFontColor');" type="color">
+												<input id="tableBodyFontColorSelector" value="#333" style="width: 20px; height: 20px;"
+												 onchange="colorPicker('tableBodyFontColorSelector', 'tableBodyFontColor'); applyTableSettings(false);" type="color">
 											</span>
 										</div>
 									</div>
@@ -334,7 +332,7 @@
 						<span class="">Logo</span>
 						<div>
 							<input class="checkbox-custom" id="cb1" checked="checked" type="checkbox">
-							<img src="/resources/images/logo-sourceld.png" alt="Logo" onclick="showImageSettingsTab(this)">
+							<img src="/resources/images/logo-sourceld.png" id="logoImagePreview" alt="Logo" onclick="showImageSettingsTab(this)">
 						</div>
 						<span class="movIcon"></span>
 					</li>
@@ -464,7 +462,7 @@
 					<li class="positionRelative ui-state-default ui-sortable-handle customInvoiceGrid" style="width: 98%;">
 						<span class="">Invoice Table</span>
 						<div class="project_tabs_inn_table">
-							<table onclick="showTableSettingsTab(this)">
+							<table onclick="showTableSettingsTab(this)" id="invoiceTable">
 								<thead>
 									<tr>
 										<th>Id</th>
@@ -612,10 +610,26 @@
 		} else {
 			flag = true;
 		}
-		
 		if(flag) {
-			applyTextStylesToElement(ele);
+			//getting pre-filled values of activeElement and auto-fill to edit elements
+			$("#textFontFamily").val($(ele).data("font_family") === undefined ? "arial" : $(ele).data("font_family"));
+			$("#textFontStyle").val($(ele).data("font_style") === undefined ? "font-weight:400;" : $(ele).data("font_style"));
+			$("#textFontSize").val($(ele).data("font_size"));
+			$("#textFontAlign").val($(ele).data("text_align") === undefined ? "left" : $(ele).data("text_align"));
+			$("#textTextColor").val($(ele).data("color") === undefined ? "#000000" : $(ele).data("color"));
+			$("#textTextColorSelector").val($(ele).data("color") === undefined ? "#000000" : $(ele).data("color"));
+			$("#textBGColor").val($(ele).data("background_color") === undefined ? "#000000" : $(ele).data("background_color"));
+			$("#textBGColorSelector").val($(ele).data("background_color") === undefined ? "#000000" : $(ele).data("background_color"));
+			$("#textMarginTop").val($(ele).data("margin_top"));
+			$("#textMarginRight").val($(ele).data("margin_right"));
+			$("#textMarginBottom").val($(ele).data("margin_bottom"));
+			$("#textMarginLeft").val($(ele).data("margin_left"));
+			$("#textPaddingTop").val($(ele).data("padding_top"));
+			$("#textPaddingRight").val($(ele).data("padding_right"));
+			$("#textPaddingBottom").val($(ele).data("padding_bottom"));
+			$("#textPaddingLeft").val($(ele).data("padding_left"));
 			
+			//hiding other tabs and showing text-settings tab
 			$("#textSettingsTab").fadeIn();
 			$("#imageSettingsTab").hide();
 			$("#tableSettingsTab").hide();
@@ -626,26 +640,6 @@
 			$(ele).addClass("activeElement");
 			activeElement = ele;
 		}
-	}
-	
-	function showImageSettingsTab(ele) {
-		$("#textSettingsTab").hide();
-		$("#imageSettingsTab").fadeIn();
-		$("#tableSettingsTab").hide();
-		$("#textSettingsTabHead").removeClass("current");
-		$("#imageSettingsTabHead").addClass("current");
-		$("#tableSettingsTabHead").removeClass("current");
-		activeElement = ele;
-	}
-	
-	function showTableSettingsTab(ele) {
-		$("#textSettingsTab").hide();
-		$("#imageSettingsTab").hide();
-		$("#tableSettingsTab").fadeIn();
-		$("#textSettingsTabHead").removeClass("current");
-		$("#imageSettingsTabHead").removeClass("current");
-		$("#tableSettingsTabHead").addClass("current");
-		activeElement = ele;
 	}
 	
 	function applyTextSettings(saveFlag) {
@@ -685,11 +679,11 @@
 				$(activeElement).data("padding_left", paddingLeft);
 			}
 		} else {
-			alert("please select an element");
+			alert("please select a text element");
 		}
 	}
 	
-	function applyTextStylesToElement(ele) {
+/* 	function applyPreFilledValuesToTextEditElements(ele) {
 		$("#textFontFamily").val($(ele).data("font_family") === undefined ? "arial" : $(ele).data("font_family"));
 		$("#textFontStyle").val($(ele).data("font_style") === undefined ? "font-weight:400;" : $(ele).data("font_style"));
 		$("#textFontSize").val($(ele).data("font_size"));
@@ -706,7 +700,7 @@
 		$("#textPaddingRight").val($(ele).data("padding_right"));
 		$("#textPaddingBottom").val($(ele).data("padding_bottom"));
 		$("#textPaddingLeft").val($(ele).data("padding_left"));
-	}
+	} */
 	
 	function refreshTextSettings() {
 		$("#textFontFamily").val("arial");
@@ -732,22 +726,176 @@
 		refreshTextSettings();
 	}
 	
-	function applyImageSettings() {
-		alert($(activeElement).html());
-		activeElement = null;
+	function showImageSettingsTab(ele) {
+		var flag = false;
+		if(activeElement !== null) {
+			if(confirm("cancel previous edit and continue?")) {
+				flag = true;
+				refreshTextSettings();
+			}
+		} else {
+			flag = true;
+		}
+		if(flag) {
+			
+			//hiding other tabs and showing image-settings tab
+			$("#textSettingsTab").hide();
+			$("#imageSettingsTab").fadeIn();
+			$("#tableSettingsTab").hide();
+			$("#textSettingsTabHead").removeClass("current");
+			$("#imageSettingsTabHead").addClass("current");
+			$("#tableSettingsTabHead").removeClass("current");
+			activeElement = ele;
+		}
+	}
+	
+	function uploadLogo() {
+		var files = document.getElementById("logoImageSelector").files;
+
+		var data = new FormData();
+		for(var e in files) {
+			data.append("customInvoice",files[e]);
+		}
+		data.append("type","customInvoice");
+		$.ajax({
+			url : sourceleadUrl + "/ws/uploadTaxDocs",
+			data : data,
+			processData : false,
+			type : 'POST',
+			contentType : false,
+			success : function(data) {
+				if (data && data.length > 0) {
+					$("#logoImage").val(data[0].fileName);
+					$("#logoImagePreview").attr("src", data[0].fileURL.replace("customInvoice","temp"));
+					applyImageSettings();
+				}
+			},
+			error : function(err) {
+				alert(err);
+			}
+		});
+	}
+	
+	function applyImageSettings(saveFlag) {
+		if(activeElement !== null) {
+			var name = $("#logoImage").val();
+			var src = $("#logoImagePreview").attr("src");
+			var imagePosition = $("#imagePosition").val();
+			var imageSize = $("#imageSize").val();
+			
+			$("#logoImagePreview").attr("src", src);
+			$("#logoImagePreview").attr("style", "float:" + imagePosition + ";width : " + imageSize);
+			
+			if(saveFlag) {
+				$(activeElement).data("name", name);
+				$(activeElement).data("src", src);
+				$(activeElement).data("image_position", imagePosition);
+				$(activeElement).data("image_size", imageSize);
+			}
+		} else 
+			alert("Please select target image");
 	}
 	
 	function cancelImageSettings() {
 		activeElement = null;
+		refreshImageSettings();
 	}
 	
-	function applyTableSettings() {
-		alert($(activeElement).html());
-		activeElement = null;
+	function refreshImageSettings() {
+		$("#logoImagePreview").attr("src", "/resources/images/logo-sourceld.png");
+		$("#logoImage").val("");
+		$("#imagePosition").val("center");
+		$("#imageSize").val("50%");
+	}
+	
+	function showTableSettingsTab(ele) {
+		var flag = false;
+		if(activeElement !== null) {
+			if(confirm("cancel previous edit and continue?")) {
+				flag = true;
+				refreshTextSettings();
+			}
+		} else {
+			flag = true;
+		}
+		if(flag) {
+			$("#textSettingsTab").hide();
+			$("#imageSettingsTab").hide();
+			$("#tableSettingsTab").fadeIn();
+			$("#textSettingsTabHead").removeClass("current");
+			$("#imageSettingsTabHead").removeClass("current");
+			$("#tableSettingsTabHead").addClass("current");
+			activeElement = ele;
+		}
+	}
+	
+	function applyTableSettings(saveFlag) {
+		if(activeElement !== null) {
+			var tableBorderCB = $("#tableBorderCB").is(":checked");
+			var tableBorderColor = $("#tableBorderColor").val();
+			var tableBorderColorSelector = $("#tableBorderColorSelector").val();
+			var tableHeadFontSize = $("#tableHeadFontSize").val();
+			var tableHeadBGColor = $("#tableHeadBGColor").val();
+			var tableHeadBGColorSelector = $("#tableHeadBGColorSelector").val();
+			var tableHeadFontColor = $("#tableHeadFontColor").val();
+			var tableHeadFontColorSelector = $("#tableHeadFontColorSelector").val();
+			var tableBodyFontSize = $("#tableBodyFontSize").val();
+			var tableBodyBGColor = $("#tableBodyBGColor").val();
+			var tableBodyBGColorSelector = $("#tableBodyBGColorSelector").val();
+			var tableBodyFontColor = $("#tableBodyFontColor").val();
+			var tableBodyFontColorSelector = $("#tableBodyFontColorSelector").val();
+			
+			if(tableBorderCB)
+				$("#invoiceTable tr th, #invoiceTable tr td").attr("style", "border:1px solid " + tableBorderColorSelector);
+			else {
+				$("#invoiceTable tr th, #invoiceTable tr td").attr("style", "border:none");
+			}
+			var thStyle = "";
+			thStyle += "font-size:" + tableHeadFontSize + "px;";
+			thStyle += "background-color:" + tableHeadBGColorSelector + "!important" + ";";
+			thStyle += "color:" + tableHeadFontColorSelector + ";";
+			$("#invoiceTable tr th").attr("style", thStyle);
+			var tdStyle = "";
+			tdStyle += "font-size:" + tableBodyFontSize + "px;";
+			tdStyle += "background-color:" + tableBodyBGColorSelector + "!important" + ";";
+			tdStyle += "color:" + tableBodyFontColorSelector + ";";
+			$("#invoiceTable tr td").attr("style", tdStyle);
+			if(saveFlag) {
+				$(activeElement).data("tableBorderCB", tableBorderCB);
+				$(activeElement).data("tableHeadFontSize", tableHeadFontSize);
+				$(activeElement).data("tableHeadBGColor", tableHeadBGColor);
+				$(activeElement).data("tableHeadBGColorSelector", tableHeadBGColorSelector);
+				$(activeElement).data("tableHeadFontColor", tableHeadFontColor);
+				$(activeElement).data("tableHeadFontColorSelector", tableHeadFontColorSelector);
+				$(activeElement).data("tableBodyFontSize", tableBodyFontSize);
+				$(activeElement).data("tableBodyBGColor", tableBodyBGColor);
+				$(activeElement).data("tableBodyBGColorSelector", tableBodyBGColorSelector);
+				$(activeElement).data("tableBodyFontColor", tableBodyFontColor);
+				$(activeElement).data("tableBodyFontColorSelector", tableBodyFontColorSelector);
+			}
+		} else 
+			alert("Please select target table");
 	}
 	
 	function cancelTableSettings() {
 		activeElement = null;
+		refreshTableSettings();
+	}
+	
+	function refreshTableSettings() {
+		$("#tableBorderCB").prop("checked", true);
+		$("#tableBorderColor").val("#989898");
+		$("#tableBorderColorSelector").val("#989898");
+		$("#tableHeadFontSize").val("14");
+		$("#tableHeadBGColor").val("#6c7686");
+		$("#tableHeadBGColorSelector").val("#6C7686");
+		$("#tableHeadFontColor").val("#FFFFFF");
+		$("#tableHeadFontColorSelector").val("#FFFFFF");
+		$("#tableBodyFontSize").val("14");
+		$("#tableBodyBGColor").val("#EAE6E6");
+		$("#tableBodyBGColorSelector").val("#EAE6E6");
+		$("#tableBodyFontColor").val("#333");
+		$("#tableBodyFontColorSelector").val("#333");
 	}
 </script>
 <!-- <script type="text/javascript" src="/resources/js/custom-invoice/drag.js"></script> -->
