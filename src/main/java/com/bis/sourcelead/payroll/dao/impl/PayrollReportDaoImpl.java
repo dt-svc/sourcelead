@@ -521,12 +521,11 @@ public class PayrollReportDaoImpl implements PayrollReportDao{
 	@Transactional
 	public ResponseList<AssociateWithHoldingDTO> getAssociateWithHoldingReport(OrgLocations orgLocation, AssociateWithHoldingDTO assWithHoldingDTO)
 	{
-;		ResponseList<AssociateWithHoldingDTO>  response = new ResponseList<>();
+		ResponseList<AssociateWithHoldingDTO>  response = new ResponseList<>();
 		try {
 			Session session = this.sessionFactory.getCurrentSession();
 			List<AssociateWithHoldingDTO> assoWithHoldingList = null;
 			List<Long> countlist = null;
-			Integer filterCount = 0;
 			
 			String deptQry = "";
 			String empTypeQry = "";
@@ -538,17 +537,19 @@ public class PayrollReportDaoImpl implements PayrollReportDao{
 				empTypeQry = " AND can.DESIGNATION_TYPE IN (:empTypeList)";
 			}
 			String qry = "";
-			if (StringUtils.isNotBlank(assWithHoldingDTO.getSortColumn())) {
-				if("employeeId".equalsIgnoreCase(assWithHoldingDTO.getSortColumn())) {
-					qry = " order by emp.EMPLOYEE_ID "+ assWithHoldingDTO.getSortOrder();
-				}else if("empName".equalsIgnoreCase(assWithHoldingDTO.getSortColumn())) {
-					qry = " order by can.FIRST_NAME "+ assWithHoldingDTO.getSortOrder();
-				}else if("workLocation".equalsIgnoreCase(assWithHoldingDTO.getSortColumn())) {
-					qry = " order by loc.LOCATION "+ assWithHoldingDTO.getSortOrder();
-				}else if("residenceStateCode".equalsIgnoreCase(assWithHoldingDTO.getSortColumn())) {
-					qry = " order by can.RESIDENCE_STATE_CODE "+ assWithHoldingDTO.getSortOrder();
+			if(!"pdf".equalsIgnoreCase(assWithHoldingDTO.getExportType())){
+				if (StringUtils.isNotBlank(assWithHoldingDTO.getSortColumn())) {
+					if("employeeId".equalsIgnoreCase(assWithHoldingDTO.getSortColumn())) {
+						qry = " order by emp.EMPLOYEE_ID "+ assWithHoldingDTO.getSortOrder();
+					}else if("empName".equalsIgnoreCase(assWithHoldingDTO.getSortColumn())) {
+						qry = " order by can.FIRST_NAME "+ assWithHoldingDTO.getSortOrder();
+					}else if("workLocation".equalsIgnoreCase(assWithHoldingDTO.getSortColumn())) {
+						qry = " order by loc.LOCATION "+ assWithHoldingDTO.getSortOrder();
+					}else if("residenceStateCode".equalsIgnoreCase(assWithHoldingDTO.getSortColumn())) {
+						qry = " order by can.RESIDENCE_STATE_CODE "+ assWithHoldingDTO.getSortOrder();
+					}
+					
 				}
-				
 			}
 			StringBuilder query = new StringBuilder();
 			query.append("SELECT can.ID as candidateId,")
@@ -563,9 +564,9 @@ public class PayrollReportDaoImpl implements PayrollReportDao{
 			.append("withHolding.FEDERAL_TAX_FILLIING_STATUS as federalFillingStatus,")
 			.append("withHolding.FEDERAL_TAX_ALLOWANCES as federalTaxAllowances,")
 			.append("withHolding.FEDERAL_TAX_ADDITIONNAL_WITH_HOLDING as federalAdditinalWithHolding,")
-			.append("withHolding.STATE_TAX_FILLIING_STATUS as stateFillingStatus,")
-			.append("withHolding.STATE_TAX_ALLOWANCES stateTaxAllowances,")
-			.append("withHolding.STATE_TAX_ADDITIONNAL_WITH_HOLDING as stateAdditionalWithHolding")
+			.append("withHolding.RESIDENCE_TAX_FILLIING_STATUS as stateFillingStatus,")
+			.append("withHolding.RESIDENCE_TAX_ALLOWANCES stateTaxAllowances,")
+			.append("withHolding.RESIDENCE_TAX_ADDITIONNAL_WITH_HOLDING as stateAdditionalWithHolding")
 			.append(" FROM sourcelead.CANDIDATE can")
 			.append(" left join  ASSOCIATE_TAX withHolding ON withHolding.CANDIDATE_ID = can.ID") 
 			.append(" left join EMPLOYEE emp ON emp.USER_ID = can.CONSULTANT_USER_ID")
@@ -574,7 +575,7 @@ public class PayrollReportDaoImpl implements PayrollReportDao{
 			.append(" where  can.IS_ASSOCIATE = 'Y' AND can.ORG_LOCATION_ID = :orgLocationId ");
 			StringBuilder countQuery = new StringBuilder();
 			
-			countQuery.append("select count(*) FROM sourcelead.CANDIDATE where IS_ASSOCIATE = 'Y' and ORG_LOCATION_ID = :orgLocationId ");
+			countQuery.append("select count(*) FROM Candidate can where can.isAssociate = 'Y' and can.orgLocationId.id = :orgLocationId ");
 			
 			StringBuilder searchQuery = new StringBuilder("");
 			if (assWithHoldingDTO.getSearchValue() != null && !"".equalsIgnoreCase(assWithHoldingDTO.getSearchValue())) {
@@ -582,7 +583,7 @@ public class PayrollReportDaoImpl implements PayrollReportDao{
 							  .append("OR  can.LAST_NAME like '%" + assWithHoldingDTO.getSearchValue() + "%'")
 							  .append("OR  loc.LOCATION like '%" + assWithHoldingDTO.getSearchValue() + "%'")
 							  .append("OR  withHolding.FEDERAL_TAX_FILLIING_STATUS like '%" + assWithHoldingDTO.getSearchValue() + "%'")
-							  .append("OR  withHolding.STATE_TAX_FILLIING_STATUS like '%" + assWithHoldingDTO.getSearchValue() + "%'")
+							  .append("OR  withHolding.RESIDENCE_TAX_FILLIING_STATUS like '%" + assWithHoldingDTO.getSearchValue() + "%'")
 							  .append("OR  can.RESIDENCE_STATE_CODE like '%" + assWithHoldingDTO.getSearchValue() + "%'")
 							  .append("OR  emp.EMPLOYEE_ID like '%" + assWithHoldingDTO.getSearchValue() + "%')");
 			}
@@ -591,8 +592,8 @@ public class PayrollReportDaoImpl implements PayrollReportDao{
 				if (assWithHoldingDTO != null && assWithHoldingDTO.getLength() > 0) {
 					queryObj.setFirstResult(assWithHoldingDTO.getStart());
 					queryObj.setMaxResults(assWithHoldingDTO.getLength());
-					queryObj.setLong("orgLocationId", orgLocation.getId());
 				}
+				queryObj.setLong("orgLocationId", orgLocation.getId());
 				
 				if(StringUtils.isNotBlank(assWithHoldingDTO.getDept())) {
 					
@@ -611,36 +612,36 @@ public class PayrollReportDaoImpl implements PayrollReportDao{
 				
 				int count = 0;
 				
-				Query  countQry = session.createSQLQuery(countQuery.toString()).setLong("orgLocationId", orgLocation.getId());
-				countlist = queryObj.list();
-				/*if (countlist != null && !countlist.isEmpty()) {
+				Query  countQry = session.createQuery(countQuery.toString()).setLong("orgLocationId", orgLocation.getId());
+				countlist = countQry.list();
+				if (countlist != null && !countlist.isEmpty()) {
 					if (assWithHoldingDTO.getSearchValue() != null && !"".equalsIgnoreCase(assWithHoldingDTO.getSearchValue())) {
 						count = assoWithHoldingList.size();
 					}else {
-						count = countlist.iterator().next().intValue();
+						count = (int) countlist.iterator().next().intValue();
 					}
 					
-				}*/
-				
-				 filterCount = countlist.size();
-				int totalCount = 0;
+				}
+				response.setRecordsTotal(count);
+//				 filterCount = countlist.size();
+				/*int totalCount = 0;
 				if (assWithHoldingDTO != null) {
 					if(countlist != null && !countlist.isEmpty()) {
 						totalCount = countlist.size();
 					}
 				} 
-				response.setRecordsTotal(totalCount);
+				
 				if(searchQuery.toString() != null && !searchQuery.toString().isEmpty()){
 					response.setRecordsFiltered(filterCount);
 				}else {
 					response.setRecordsFiltered(totalCount);
-				}
+				}*/
 				
+				int filteredCount = 0;
 				
-				response.setRecordsTotal(count);
-				/*if (assWithHoldingDTO != null) {
-					Query  filteredCountQry= session.createSQLQuery(countQuery.toString()).setLong("orgLocationId", orgLocation.getId());
-					List<BigInteger> filteredCountlist = filteredCountQry.list();
+				if (assWithHoldingDTO != null) {
+					Query  filteredCountQry= session.createQuery(countQuery.toString()).setLong("orgLocationId", orgLocation.getId());
+					List<Long> filteredCountlist = filteredCountQry.list();
 					if (filteredCountlist != null && !filteredCountlist.isEmpty()) {
 						if (assWithHoldingDTO.getSearchValue() != null && !"".equalsIgnoreCase(assWithHoldingDTO.getSearchValue())) {
 							filteredCount = assoWithHoldingList.size();
@@ -650,7 +651,7 @@ public class PayrollReportDaoImpl implements PayrollReportDao{
 						
 					}
 					response.setRecordsFiltered(filteredCount);
-				}*/
+				}
 				
 				for(AssociateWithHoldingDTO withHolding : assoWithHoldingList) {
 					StringBuilder sb = new StringBuilder();

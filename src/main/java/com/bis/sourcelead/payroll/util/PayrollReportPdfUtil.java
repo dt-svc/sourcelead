@@ -27,6 +27,7 @@ import com.bis.sourcelead.entity.AssetAssign;
 import com.bis.sourcelead.entity.Employees;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.payroll.dto.AssociateReportDTO;
+import com.bis.sourcelead.payroll.dto.AssociateWithHoldingDTO;
 import com.bis.sourcelead.payroll.dto.CheckRegisterReportDTO;
 import com.bis.sourcelead.payroll.dto.PayrollReportDTO;
 import com.bis.sourcelead.payroll.dto.PdfHeaderDTO;
@@ -1411,6 +1412,119 @@ public class PayrollReportPdfUtil {
 							col.column("Post Tax Deductions", "postTaxDed", type.bigDecimalType()),
 							col.column("Net Pay", "netPay", type.bigDecimalType()))
 					.setDataSource(createEmployeePayrollPdfDataSource(responseList)).toXls(xlsExporter);
+		} catch (DRException e) {
+			e.printStackTrace();
+		}
+	return file;
+	}
+
+	public File associateWithholdingPdfExport(ResponseList<AssociateWithHoldingDTO> res, OrgLocations orgLocation) throws Exception {
+		File file = null;
+		try {
+		    StringBuilder fileSB = new StringBuilder();
+			file = File.createTempFile(fileSB.append("associateWithholding_").append(commonUtil.dateStrFromOrgDateFormatter(orgLocation.getDateFormat(),new Date())).toString(),".pdf");
+			file.setReadable(true);
+			JasperPdfExporterBuilder pdfExporter = export.pdfExporter(file);
+			report().setTemplate(Templates.reportTemplate)
+					.title(cmp.text(orgLocation.getOrgLocationName()).setStyle(Templates.bold18CenteredStyle).setHorizontalAlignment(HorizontalAlignment.CENTER))
+					.columns(
+							col.column("Associate Id", "id", type.stringType()),
+							col.column("Associate Name", "name", type.stringType()),
+							col.column("SSN", "ssn", type.stringType()),
+							col.column("Work Location", "location", type.stringType()),
+							col.column("Federal Filling Status", "federalStatus", type.stringType()),
+							col.column("Federal Allowances", "federalAllowances", type.stringType()),
+							col.column("State", "state", type.stringType()),
+							col.column("State Filling Status", "stateStatus", type.stringType()),
+							col.column("State Allowances", "stateAllowances", type.stringType()))
+					.pageFooter(Templates.footerComponent)
+					.setDataSource(createAssociateWithholdingPdfDataSource(res)).toPdf(pdfExporter);
+			} catch (DRException e) {
+				e.printStackTrace();
+			}
+		return file;
+	}
+
+	private DRDataSource createAssociateWithholdingPdfDataSource(ResponseList<AssociateWithHoldingDTO> res) {
+		DRDataSource dataSource = new DRDataSource("id","name", "ssn", "location", "federalStatus", "federalAllowances", "state", "stateStatus", "stateAllowances");
+		for(AssociateWithHoldingDTO associate :res.getData()) {
+			String  employeeId= "--";
+			String employeeName = "--";
+			String ssn = "--";
+			String workLocation = "--";
+			String federalStatus = "--";
+			String federalAllowances = "--";
+			String state = "--";
+			String stateStatus = "--";
+			String stateAllowances = "--";
+			
+			if(associate != null && associate.getEmployeeId() != null) {
+				employeeId = associate.getEmployeeId();
+			}
+			if(associate.getLastName() != null) {
+				StringBuilder sb = new StringBuilder();
+				employeeName = sb.append(associate.getFirstName()).append(" ").append(associate.getLastName()).toString();
+			}else {
+				employeeName = associate.getFirstName();
+			}
+			
+			if(associate.getSsnNumber() != null) {
+				ssn = associate.getSsnNumber();
+			}
+			if(associate.getWorkLocation() != null) {
+				workLocation = associate.getWorkLocation();
+			}
+			if(associate.getFederalFillingStatus() != null) {
+				federalStatus = associate.getFederalFillingStatus();
+			}
+			if(associate.getFederalTaxAllowances() != null) {
+				federalAllowances = associate.getFederalTaxAllowances();
+			}
+			if(associate.getState() != null) {
+				state = associate.getState();
+			}
+			if(associate.getStateFillingStatus() != null) {
+				stateStatus = associate.getStateFillingStatus();
+			}
+			if(associate.getStateTaxAllowances() != null) {
+				stateAllowances = associate.getStateTaxAllowances();
+			}
+			
+
+			
+
+			dataSource.add(employeeId,employeeName,ssn,workLocation,federalStatus,federalAllowances,state,stateStatus,stateAllowances);
+		}
+		return dataSource;
+	}
+
+	public File associateWithholdingExcelExport(ResponseList<AssociateWithHoldingDTO> res, OrgLocations orgLocation) throws Exception {
+		File file = null;
+		try {
+		    StringBuilder fileSB = new StringBuilder();
+			file = File.createTempFile(fileSB.append("associateWithholding_").append(commonUtil.dateStrFromOrgDateFormatter(orgLocation.getDateFormat(),new Date())).toString(),".xls");
+			file.setReadable(true);
+			JasperXlsExporterBuilder xlsExporter = export.xlsExporter(file) .setDetectCellType(true)
+                    .setIgnorePageMargins(true)
+                    .setWhitePageBackground(false)
+                    .setRemoveEmptySpaceBetweenColumns(true);
+
+			report().setTemplate(Templates.reportTemplate)
+					.setColumnTitleStyle(Templates.columnTitleStyle)
+					.addProperty(JasperProperty.EXPORT_XLS_FREEZE_ROW, "1")
+					.ignorePageWidth()
+					.ignorePagination()
+					.columns(
+							col.column("Associate Id", "id", type.stringType()),
+							col.column("Associate Name", "name", type.stringType()),
+							col.column("SSN", "ssn", type.stringType()),
+							col.column("Work Location", "location", type.stringType()),
+							col.column("Federal Filling Status", "federalStatus", type.stringType()),
+							col.column("Federal Allowances", "federalAllowances", type.stringType()),
+							col.column("State", "state", type.stringType()),
+							col.column("State Filling Status", "stateStatus", type.stringType()),
+							col.column("State Allowances", "stateAllowances", type.stringType()))
+					.setDataSource(createAssociateWithholdingPdfDataSource(res)).toXls(xlsExporter);
 		} catch (DRException e) {
 			e.printStackTrace();
 		}

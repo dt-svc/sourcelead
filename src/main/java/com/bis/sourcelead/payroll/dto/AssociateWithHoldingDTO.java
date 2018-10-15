@@ -42,6 +42,8 @@ public class AssociateWithHoldingDTO  extends SearchDTO{
 	
 	private String employeeMentType;
 	
+	private String exportType;
+	
 
 	public String getEmployeeMentType()
 	{
@@ -222,6 +224,14 @@ public class AssociateWithHoldingDTO  extends SearchDTO{
 	public void setResidenceStateCode(String residenceStateCode)
 	{
 		this.residenceStateCode = residenceStateCode;
+	}
+
+	public String getExportType() {
+		return exportType;
+	}
+
+	public void setExportType(String exportType) {
+		this.exportType = exportType;
 	}
 	
 	
