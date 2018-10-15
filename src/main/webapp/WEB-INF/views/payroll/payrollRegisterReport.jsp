@@ -4,24 +4,11 @@
 <%@taglib uri="http://www.springframework.org/tags/form" prefix="form"%>
 
 <script src="/resources/js/payrollReports.js"></script>
-<script src="//cdnjs.cloudflare.com/ajax/libs/moment.js/2.14.1/moment.min.js"></script>
 
 <script>
 $(document).ready(function(){
    getPayGroupList("payGroup");
    getDepartments("payrollDepartment");
-   
-	 loc ="${SourceLeadWeb_orgLocations.dateFormat}";
-	 
-	  if(loc.match("yyyy-MM-dd")){
-		  locDateFormat = 'YYYY-MM-DD';
-	  }if(loc.match("dd-MM-yyyy")){
-		  locDateFormat = 'DD-MM-YYYY'; 
-	  }if(loc.match("MM-dd-yyyy")){
-		  locDateFormat = 'MM-DD-YYYY'; 
-	  }if(loc.match("yyyy-dd-MM")){
-		  locDateFormat = 'YYYY-DD-MM'; 
-	  } 
 });
 </script>
 <!-- Content Area -->
@@ -30,9 +17,7 @@ $(document).ready(function(){
       <div class="pull-left">
         <h2>Payroll Register</h2>
       </div>
-      <div class="pull-right brud-crum"><a href="<c:url value='${appPath}/dashboard'/>" title="Home">Home</a>&raquo;<a
-				href="<c:url value='${appPath}/usPayrollReport'/>"> USPayroll Reports List</a>&raquo;Payroll Register
-		</div>
+      <div class="pull-right brud-crum"><a href="<c:url value='${appPath}/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a> &raquo; <a href="<c:url value='${appPath}/usPayrollReport'/>">USPayroll Reports List</a> &raquo;  Payroll Register</div>
     </section>
     
     <div class="contentareaInner-styles clearfix">
