@@ -7,6 +7,7 @@
 <script>
 $(document).ready(function(){
 	associateWithHolding();
+	populateDepartment();
 });
 </script>
 
@@ -416,6 +417,27 @@ function openPop(){
 		/* } */
 	}
 </script>
+
+<script>
+function populateDepartment(){
+	$.ajax({
+    	type: "GET",
+        url: sourceleadUrl+"/findAllDepartments?"+tokenParamName+"="+tokenValue                 , 
+        success: function(json) {
+        	 var result = "";
+        	 for(var i = 0;i<json.length;i++){
+        		 var opt = json[i];
+        		 result = result + '<li class="checkBox positionRelative">';
+	        	 result = result + '<input name="deptName" value='+opt.id+' type="checkbox">';
+	        	 result = result + '<label>'+opt.departmentName+'</label>';
+	        	 result = result + '</li>';	 
+        	 }
+        	 $("#department").empty();
+        	 $("#department").append(result);
+        },
+    });
+}
+</script>
   
   
   
@@ -522,6 +544,16 @@ function exportToExcel(){
 		searchValue = searchValue ? searchValue : "";
 
     	window.location.href = sourceleadUrl+"/exportAssociateWithholding?searchValue="+searchValue+"&dept="+dept+"&empType="+empType+"&exportType=xls";
+}
+</script>
+
+
+<script> 
+function resetFilter(){
+	$("ul#department > li input:checkbox").prop("checked",false);
+	$("ul#employeeTypeUL > li input:checkbox").prop("checked",false);
+	$("#dataTableSearch").val('');
+	associateWithHolding();
 }
 </script>
 
