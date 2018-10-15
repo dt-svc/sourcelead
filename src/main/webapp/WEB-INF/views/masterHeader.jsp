@@ -459,7 +459,7 @@ function preventTabkey(e){
             
             <c:if test="${SourceLeadWeb_reportsTabConfigured == 'Y'}"> 
 	            <li class="reportsH">
-					<a title="Reports" href="<c:url value='${sourceleadUrl}/reportsDashboard'/>"><i class="fa fa-pie-chart"></i></a>
+					<a title="Reports" href="<c:url value='${appPath}/reportsDashboard'/>"><i class="fa fa-pie-chart"></i></a>
 	            </li>
              </c:if>
             
