@@ -29,6 +29,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import com.bis.sourcelead.constants.Constants;
+import com.bis.sourcelead.dto.AssociateLoanAndAdvancesDTO;
 import com.bis.sourcelead.dto.AssociatePayItemDTO;
 import com.bis.sourcelead.dto.Response;
 import com.bis.sourcelead.dto.ResponseList;
@@ -314,6 +315,7 @@ public class PaysheetFrequencyServiceImpl implements PaysheetFrequencyService{
 			BigDecimal emplrTotalTax = BigDecimal.ZERO;
 			double regularTotalHrs = 0;
 			double otTotalHours = 0;
+			double loanAmountTotal = 0;
 			BigDecimal regTotalAmount = BigDecimal.ZERO;
 			BigDecimal otTotalAmount = BigDecimal.ZERO;
 			ConfirmPayTotalSumDTO paySum = new ConfirmPayTotalSumDTO();
@@ -345,6 +347,19 @@ public class PaysheetFrequencyServiceImpl implements PaysheetFrequencyService{
 					
 					List<AssociatePayItemDTO> pList = payrollUtil.getPayItemData(payroll);
 					payItemList.addAll(pList);
+					
+					
+					//Loan and advances
+					BigDecimal lATotal = BigDecimal.ZERO;
+					List<AssociateLoanAndAdvancesDTO> loanAdvance = payrollUtil.getLoanAndAdvancesData(payroll);
+					if(loanAdvance != null && loanAdvance.size() >0) {
+						response.setLoanAdvance(loanAdvance);
+						loanAmountTotal = loanAdvance.stream().mapToDouble(lAmt->Double.valueOf(lAmt.getLoanAmount())).sum();
+					}
+					lATotal = BigDecimal.valueOf(loanAmountTotal);
+					response.setLoanAmountTotal(lATotal);
+					
+					
 					// Employee Taxes
 					Set<EmployeePayrollTax> payrollTax = payroll.getUsPayrollTax();
 					EmployeePayrollTax tax = payrollTax.iterator().next();
@@ -584,7 +599,7 @@ public class PaysheetFrequencyServiceImpl implements PaysheetFrequencyService{
 			StringBuilder sb = new StringBuilder();
 			sb.append(emp.getCandidate().getFirstName());
 			if(StringUtils.isNotBlank(emp.getCandidate().getLastName())) {
-				sb.append(emp.getCandidate().getLastName());
+				sb.append(" ").append(emp.getCandidate().getLastName());
 			}
 			dto.setEmpName(sb.toString());
 			if(emp.getCandidate().getWorkLocation() != null)
@@ -722,6 +737,98 @@ public class PaysheetFrequencyServiceImpl implements PaysheetFrequencyService{
 			e.printStackTrace();
 		}
 		return yTDPayrollDTO;
+	}
+
+	@Override
+	public ResponseList<PayrollReportDTO> getpayrollTaxAndWagesReport(PayrollReportDTO payrollReportDTO, OrgLocations orgLocations)
+	{
+		ResponseList<PayrollReportDTO> dtoList = new ResponseList<>();
+		List<PayrollReportDTO> payrollList = new ArrayList<>();
+		payrollReportDTO.setOrgLocationid(orgLocations.getId());
+		ResponseList<EmployeePayroll> list = paysheetFrequencyDao.getPayrollRegisterReports(payrollReportDTO);
+		Map<Long, PayrollReportDTO> userMap = new HashMap<>();
+		for(EmployeePayroll emp : list.getData()) {
+			PayrollReportDTO dto = null;
+			
+			BigDecimal grossPay = BigDecimal.ZERO;
+			BigDecimal ytdTaxes = BigDecimal.ZERO;
+			BigDecimal empPayRate = BigDecimal.ZERO;
+			BigDecimal federalTax = BigDecimal.ZERO;
+			BigDecimal mediCare = BigDecimal.ZERO;
+			BigDecimal socialSecTax = BigDecimal.ZERO;
+			BigDecimal stateTax = BigDecimal.ZERO;
+			BigDecimal localTax = BigDecimal.ZERO;
+			BigDecimal futa = BigDecimal.ZERO;
+			BigDecimal suta = BigDecimal.ZERO;
+			
+			if(userMap.containsKey(emp.getCandidate().getId())) {
+				dto = userMap.get(emp.getCandidate().getId());
+				grossPay = dto.getGrossPay();
+				ytdTaxes = dto.getYtdTaxes();
+				empPayRate = dto.getEmpPayRate();
+				federalTax = dto.getFederalTax();
+				mediCare = dto.getMedicare();
+				socialSecTax = dto.getSocialSecTax();
+				stateTax = dto.getStateTax();
+				localTax = dto.getLocalTax();
+				futa = dto.getFuta();
+				suta = dto.getSuta();
+			}else {
+				dto = new PayrollReportDTO();
+			}
+			dto.setEmpId(emp.getEmployee().getEmployeeId());
+			StringBuilder sb = new StringBuilder();
+			sb.append(emp.getCandidate().getFirstName());
+			if(StringUtils.isNotBlank(emp.getCandidate().getLastName())) {
+				sb.append(emp.getCandidate().getLastName());
+			}
+			dto.setEmpName(sb.toString());
+			if(emp.getCandidate().getWorkLocation() != null)
+				dto.setCandidateWorkAddress(emp.getCandidate().getWorkLocation().getOrgLocationAddress());
+			StringBuilder sb1 = new StringBuilder();
+			sb1.append("xxx-xx-");
+			String[] ssnNum = emp.getCandidate().getConsultantUser().getSsn().split("-");
+			sb1.append(ssnNum[2]);
+			dto.setSsnNumber(sb1.toString());
+			dto.setDepartmentName(emp.getEmployee().getDepartmentId().getDepartmentName());
+			dto.setGrossPay(grossPay.add(emp.getGrossPay()));
+			YTDPayrollDTO ytdDTO = payrollUtil.getEmployeeYTDPayroll(emp.getCandidate(), orgLocations, Constants.APPROVED);
+			dto.setYtdTaxes(ytdTaxes.add(ytdDTO.getYtdTaxes()));
+			dto.setType(emp.getType());
+			dto.setEmpPayRate(emp.getEmpPayRate());
+			
+			dto.setCheckDate(commonUtil.orgLocationCommonDate(emp.getPayCheckDate(), orgLocations));
+			dto.setFreqStartDate(commonUtil.dateStrFromOrgDateFormatter(orgLocations.getDateFormat(), emp.getPaysheetFrequency().getFrequencyStartDate()));
+			dto.setFreqEndDate(commonUtil.dateStrFromOrgDateFormatter(orgLocations.getDateFormat(), emp.getPaysheetFrequency().getFrequencyEndDate()));
+			dto.setRunDate(commonUtil.orgLocationCommonDate(emp.getCreatedDate(), orgLocations));
+			
+			dto.setResState(emp.getCandidate().getResidenceStateCode());
+			if(emp.getEmployee().getHireDate() != null)
+				dto.setDateOfJoin(commonUtil.dateStrFromOrgDateFormatter(orgLocations.getDateFormat(),emp.getEmployee().getHireDate()));
+			else 
+				dto.setDateOfJoin("NA");
+			
+//			dto.setTaxHistory(emp.getUsPayrollTax());
+			for(EmployeePayrollTax tax : emp.getUsPayrollTax()) {
+				dto.setFederalTax(federalTax.add(tax.getFederalWithholding()));
+				dto.setMedicare(mediCare.add(tax.getMedicareWithholding()));
+				dto.setSocialSecTax(socialSecTax.add(tax.getFicaWithholding()));
+				dto.setStateTax(stateTax.add(tax.getStateWithholding()));
+				dto.setLocalTax(localTax.add(tax.getLocalTax()));
+			}
+			
+			for(EmployerPayrollTax tax : emp.getEmployerpayrolltax()) {
+				dto.setFuta(futa.add(tax.getEmployerFUTA()));
+				dto.setSuta(suta.add(tax.getEmployerSUTA()));
+			}
+//			payrollList.add(dto);
+			userMap.put(emp.getCandidate().getId(), dto);
+		}
+		payrollList = new ArrayList<>(userMap.values());
+		dtoList.setData(payrollList);
+		dtoList.setRecordsTotal(list.getRecordsTotal());
+		dtoList.setRecordsFiltered(list.getRecordsTotal());
+		return dtoList;
 	}
 
 	@Override
