@@ -366,38 +366,35 @@ function getJobsReportCustomDates(){
 				<div class="addInner">
 					  <div class="col-md-4">
 							<div class="clearfix dynamic_search filterDynamicsearch">
-								<input type="text" id="myClientInput" onkeyup="myClientFunction()" placeholder="Clients" title="Type in a teams">
+								<input type="text" id="myClientInput" onkeyup="myClientFunction()" placeholder="Clients" title="Type in a Client">
 								<span class="cursorPointer" title="Search"><i class="fa fa-search"></i></span>
 							</div>
 							 <div class="clearfix filterSearch-ul">
 								<ul class="list-unstyled positionRelative filterSearch mt5" id="myClientUL">
 									<c:forEach var="clientsList" items="${orgClientList}">
 									
-									<li class="checkBox positionRelative"><input  type="checkbox" name="clientNameById" value ="${clientsList.responderLocationId.org.id}" ><label>${clientsList.responderLocationId.org.orgName}</label></li>
+									<li class="checkBox positionRelative"><input  type="checkbox" name="clientNameById" value ="${clientsList.id}" ><label>${clientsList.responderLocationId.org.orgName}</label></li>
 									
 									</c:forEach>
 								</ul>
 							 </div> 
 						</div>
 						
-						<!-- <div class="col-md-4">
-						<div class="row">
-						    <div class="col-md-12 mb">
-								<label><strong>Status</strong></label>
-								 <div class="clearfix">
-									<ul class="list-unstyled" id="statusFilter">
-									<li class="checkBox positionRelative" ><input type="checkbox" value="DRAFT" name="invoiceStatus"><label for="onboard1">Draft</label></li>
-                                    <li class="checkBox positionRelative" ><input type="checkbox" value="SENT" name="invoiceStatus"><label for="onboard2">Sent</label></li>
-                                    <li class="checkBox positionRelative" ><input type="checkbox" value="RECEIVED" name="invoiceStatus"><label for="onboard1">Received</label></li>
-	                                <li class="checkBox positionRelative" ><input type="checkbox"  value="ACCEPTED" name="invoiceStatus"><label for="onboard2">Accepted</label></li>
-	                                <li class="checkBox positionRelative" ><input type="checkbox" value="REJECTED" name="invoiceStatus"><label for="onboard2">Rejected</label></li>
-	                                <li class="checkBox positionRelative" ><input type="checkbox" value="LINKED" name="invoiceStatus"><label for="onboard2">Linked</label></li>
-	                                <li class="checkBox positionRelative" ><input type="checkbox" value="VOID" name="invoiceStatus"><label for="onboard2">Void</label></li>
-			                        </ul>
-							      </div>
-						     </div> 
-						  </div>
-						</div> -->
+						<%-- <div class="col-md-4">
+							<div class="clearfix dynamic_search filterDynamicsearch">
+								<input type="text" id="myTeamInput" onkeyup="myTeamInputFunction()" placeholder="Teams" title="Type in a team">
+								<span class="cursorPointer" title="Search"><i class="fa fa-search"></i></span>
+							</div>
+							 <div class="clearfix filterSearch-ul">
+								<ul class="list-unstyled positionRelative filterSearch mt5" id="myTeamUL">
+									<c:forEach var="teams" items="${teamsList}">
+									
+									<li class="checkBox positionRelative"><input  type="checkbox" name="teamNameById" value ="${teams.id}" ><label>${teams.name}</label></li>
+									
+									</c:forEach>
+								</ul>
+							 </div> 
+						</div> --%>
 						
 						
 						<div class="col-md-4">
@@ -517,6 +514,23 @@ function myClientFunction() {
         }
     }
 }
+
+function myTeamInputFunction() {
+    var input, filter, ul, li, a, i;
+    input = document.getElementById("myTeamInput");
+    filter = input.value.toUpperCase();
+    ul = document.getElementById("myTeamUL");
+    li = ul.getElementsByTagName("li");
+    for (i = 0; i < li.length; i++) {
+        a = li[i].getElementsByTagName("label")[0];
+        if (a.innerHTML.toUpperCase().indexOf(filter) > -1) {
+            li[i].style.display = "";
+        } else {
+            li[i].style.display = "none";
+
+        }
+    }
+}
 </script>
 <script type="text/javascript">
 function getJobsList(){
@@ -555,7 +569,7 @@ var returnStat = true;
         	$('#jobIds').empty();
             for(var i=0;i<json.length;i++){
             	  var opt = json[i];
-            		$('#jobIds').append('<option value='+opt.id+' >'+opt.generatedId+' - '+opt.jobTitle+'</option>');
+            		$('#jobIds').append('<option value='+opt.requirementId+' >'+opt.generatedId+' - '+opt.jobTitle+'</option>');
             }
             $('#jobIds').trigger("chosen:updated");
             closeFilterPop();

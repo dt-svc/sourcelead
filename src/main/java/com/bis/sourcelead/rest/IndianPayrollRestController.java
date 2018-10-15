@@ -448,9 +448,7 @@ public class IndianPayrollRestController {
 	{
 		OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 		User loginUser = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
-		IndPaysheetFrequency paysheetFrequency = generateINDPayrollDao.getPayrollData(generateINDPayrollDTO, orgLocation, loginUser);
-		IndPaysheetFrequencyDTO existedData = generateINDPayrollService.getPayrollData(generateINDPayrollDTO,paysheetFrequency,orgLocation,loginUser);
-		IndPaysheetFrequencyDTO indPaysheetFrequencyDTO =  generateINDPayrollService.generateINDPayroll(existedData, orgLocation, generateINDPayrollDTO, loginUser);
+		IndPaysheetFrequencyDTO indPaysheetFrequencyDTO =  generateINDPayrollService.generateINDPayroll(orgLocation, generateINDPayrollDTO, loginUser);
 		SourceLeadSessionManager.setSessionAttribute(request, indPaysheetFrequencyDTO.getPaySheetFrequencyUUID(), indPaysheetFrequencyDTO);
 		return indPaysheetFrequencyDTO;
 	}
