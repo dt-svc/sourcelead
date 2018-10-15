@@ -299,7 +299,7 @@ function loansAdvances(){
                		</div>
                		</div>
                		<div class="col-md-3 mb">
-               			<h5>Pay Times</h5>
+               			<h5>Pay Items</h5>
                			<div class="clearfix tableStyles">
                				<table class="table-bordered table">
                					<thead>
@@ -326,7 +326,7 @@ function loansAdvances(){
                		</div>
                		</div>
                		<div class="col-md-3 mb">
-               			<h5>Advances</h5>
+               			<h5>Loan and Advances</h5>
                			<div class="clearfix tableStyles">
                				<table class="table-bordered table">
                					<thead>
