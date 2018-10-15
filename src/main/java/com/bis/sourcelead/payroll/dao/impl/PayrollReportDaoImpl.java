@@ -537,7 +537,6 @@ public class PayrollReportDaoImpl implements PayrollReportDao{
 				empTypeQry = " AND can.DESIGNATION_TYPE IN (:empTypeList)";
 			}
 			String qry = "";
-			if(!"pdf".equalsIgnoreCase(assWithHoldingDTO.getExportType())){
 				if (StringUtils.isNotBlank(assWithHoldingDTO.getSortColumn())) {
 					if("employeeId".equalsIgnoreCase(assWithHoldingDTO.getSortColumn())) {
 						qry = " order by emp.EMPLOYEE_ID "+ assWithHoldingDTO.getSortOrder();
@@ -548,8 +547,6 @@ public class PayrollReportDaoImpl implements PayrollReportDao{
 					}else if("residenceStateCode".equalsIgnoreCase(assWithHoldingDTO.getSortColumn())) {
 						qry = " order by can.RESIDENCE_STATE_CODE "+ assWithHoldingDTO.getSortOrder();
 					}
-					
-				}
 			}
 			StringBuilder query = new StringBuilder();
 			query.append("SELECT can.ID as candidateId,")
