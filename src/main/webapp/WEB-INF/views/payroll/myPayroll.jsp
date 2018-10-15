@@ -335,8 +335,8 @@ function loansAdvances(){
                						<th>Amount</th>
                						</tr>
                					</thead>
-               					<tbody>
-               						<tr>
+               					<tbody id="loanAdvDiv">
+               						<!-- <tr>
                							<td>401(R)</td>
                							<td>999$</td>
                						</tr>
@@ -347,7 +347,7 @@ function loansAdvances(){
                						<tr>
                							<td><strong>Total</strong></td>
                							<td>999$</td>
-               						</tr>
+               						</tr> -->
                					</tbody>
                				</table>
                		</div>
@@ -413,6 +413,7 @@ function getMyPayrollList(){
 	var postDedTotal = 0;
 	var contrTotal = 0;
 	var payItemTotal = 0;
+	var loanAmountTotal = 0;
 	var hrsTotalAmount = 0;
 	$.ajax({
 	    	type: "GET",
@@ -519,6 +520,23 @@ function getMyPayrollList(){
 	         payItem = payItem + '</tr>';
 	         $("#payItemDIV").empty();
 	         $("#payItemDIV").append(payItem);
+	         
+	         
+	         //Loan and Advance
+	         var loan = "";
+	         for (var i=0; i< result.loanAdvance.length; i++){
+	             var ln = result.loanAdvance[i];
+	        	 loan = loan + '<tr>';
+	        	 loan = loan + '<td>'+ln.loanAndAdvName+'</td>';
+	        	 loan = loan + '<td>$ '+ln.loanAmount+'</td>';
+	        	 loan = loan + '</tr>';
+	         }
+	         loan = loan + '<tr>';
+	         loan = loan + '<td><strong>Total</strong></td>';
+	         loan = loan + '<td>$ '+result.loanAmountTotal+'</td>';
+	         loan = loan + '</tr>';
+	         $("#loanAdvDiv").empty();
+	         $("#loanAdvDiv").append(loan);
 	         
 	        
 	        var result = "";

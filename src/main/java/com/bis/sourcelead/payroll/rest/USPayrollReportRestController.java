@@ -23,22 +23,32 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.ModelAndView;
 
 import com.bis.sourcelead.dto.ResponseList;
+import com.bis.sourcelead.dto.UserDTO;
+import com.bis.sourcelead.entity.Employees;
+import com.bis.sourcelead.entity.AssetAssign;
+import com.bis.sourcelead.entity.Department;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.entity.UserGroup;
 import com.bis.sourcelead.enums.Result;
+import com.bis.sourcelead.payroll.dto.AssociateReportDTO;
+import com.bis.sourcelead.payroll.dto.AssociateWithHoldingDTO;
 import com.bis.sourcelead.payroll.dto.CheckRegisterReportDTO;
 import com.bis.sourcelead.payroll.dto.PayPeriodDTO;
 import com.bis.sourcelead.payroll.dto.PayrollComparisonDTO;
 import com.bis.sourcelead.payroll.dto.PayrollReportDTO;
 import com.bis.sourcelead.payroll.entity.DeductionHistory;
+import com.bis.sourcelead.payroll.entity.EmployeePayroll;
 import com.bis.sourcelead.payroll.service.PayrollReportService;
 import com.bis.sourcelead.payroll.service.PaysheetFrequencyService;
 import com.bis.sourcelead.payroll.service.USPayPeriodService;
 import com.bis.sourcelead.payroll.util.PayrollReportPdfUtil;
 import com.bis.sourcelead.payroll.util.PayrollUtil;
+import com.bis.sourcelead.service.EmployeesService;
+import com.bis.sourcelead.service.DepartmentService;
 import com.bis.sourcelead.service.UserGroupService;
 import com.bis.sourcelead.util.SourceLeadSessionManager;
+import com.bis.sourcelead.util.dynamicReport.DynamicReport;
 
 @RestController
 @RequestMapping("/app")
@@ -63,7 +73,17 @@ public class USPayrollReportRestController {
 	
 	@Autowired
 	PayrollReportPdfUtil payrollReportPdfUtil;
+	
+	@Autowired
+	private EmployeesService employeesService;
+	
+    @Autowired
+	DepartmentService departmentService;
+    
 
+    @Autowired
+	DynamicReport dynamicReport;
+    
 	/**
 	 * Returning Us Payroll Jsp
 	 * 
@@ -113,7 +133,23 @@ public class USPayrollReportRestController {
 	}
 	
 	/**
-	 * Returning US Payroll Register Report Jsp
+	 * Returning US Payroll Taxes And Wages Report Jsp
+	 * @author pavan jampana
+	 * 
+	 * @param request
+	 * @param response
+	 * @return
+	 * @throws Exception
+	 */
+	@RequestMapping(value = "/payrollTaxesAndWagesReport")
+	public ModelAndView payrollTaxesAndWagesReport(HttpServletRequest request, HttpServletResponse response) throws Exception
+	{
+		ModelAndView model = new ModelAndView();
+		model.setViewName("payroll/payrollTaxesAndWagesReport");
+		return model;
+	}
+	
+	/**
 	 * 
 	 * @param request
 	 * @param response
@@ -182,11 +218,11 @@ public class USPayrollReportRestController {
 	 * @return
 	 * @throws Exception
 	 */
-	@RequestMapping(value = "/employeePayrollReport")
+	@RequestMapping(value = "/usEmployeePayrollReport")
 	public ModelAndView employeePayrollReportJsp(HttpServletRequest request, HttpServletResponse response) throws Exception
 	{
 		ModelAndView model = new ModelAndView();
-		model.setViewName("payroll/employeePayrollReport");
+		model.setViewName("payroll/usEmployeePayrollReport");
 		return model;
 	}
 	
@@ -206,6 +242,21 @@ public class USPayrollReportRestController {
 		return model;
 	}
 	
+	/**
+	 * Returning Us Associate Withholding JSP
+	 * 
+	 * @param request
+	 * @param response
+	 * @return
+	 * @throws Exception
+	 */
+	@RequestMapping(value = "/associateWithholding")
+	public ModelAndView associateWithholding(HttpServletRequest request, HttpServletResponse response) throws Exception
+	{
+		ModelAndView model = new ModelAndView();
+		model.setViewName("payroll/associateWithHolding");
+		return model;
+	}
 	/**
 	 * Pay Groups by org location Id
 	 * @param request
@@ -228,8 +279,9 @@ public class USPayrollReportRestController {
 		ResponseList<PayPeriodDTO> responseList = new ResponseList<>();
 		try {
 			User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+			OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 			if (user != null) { 
-				List<PayPeriodDTO> PayPeriodDTOList = userGroupService.getPayPeriodsByGroupId(groupId);
+				List<PayPeriodDTO> PayPeriodDTOList = userGroupService.getPayPeriodsByGroupId(groupId,orgLocation);
 				responseList.setData(PayPeriodDTOList);
 				responseList.setResponse(Result.SUCCESS.name());
 				responseList.setResponseMessage(Result.SUCCESS.getValue());
@@ -532,4 +584,191 @@ public class USPayrollReportRestController {
 		}
 	}
 	
+
+	/**
+	 * @author pavan jampana
+	 * 
+	 * this method is to get payroll Tax and Wages Report
+	 * 
+	 * @param payrollReportDTO
+	 * @param request
+	 * @param response
+	 * @return
+	 * @throws Exception
+	 */
+
+	@RequestMapping(value = { "/getpayrollTaxAndWagesReport","/rest/getpayrollTaxAndWagesReport" }, method = RequestMethod.POST)
+	@ResponseBody
+	public ResponseList<PayrollReportDTO> getpayrollTaxAndWagesReport(PayrollReportDTO payrollReportDTO,HttpServletRequest request, HttpServletResponse response) throws Exception
+	{
+		ResponseList<PayrollReportDTO> responseList = new ResponseList<>();
+		try {
+			OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+			if (orgLocations != null) { 
+				
+				/*String[] tableColumns = {"empId", "empName", "department", "", "", "", "", "", "", ""};
+			    int sortColumnIndex = 1;		 //by default sorting using updated date
+				String sortColumnOrder = "asc";  //by default descending order
+				if(payrollReportDTO.getOrder() != null && !payrollReportDTO.getOrder().isEmpty()) {
+					sortColumnIndex = Integer.parseInt(payrollReportDTO.getOrder().get(0).get("column"));
+					sortColumnOrder = payrollReportDTO.getOrder().get(0).get("dir");
+				}
+				payrollReportDTO.setSortColumn(tableColumns[sortColumnIndex]);
+				payrollReportDTO.setSortOrder(sortColumnOrder);*/
+				
+				responseList = paysheetFrequencyService.getpayrollTaxAndWagesReport(payrollReportDTO,orgLocations);
+				responseList.setResponse(Result.SUCCESS.name());
+				responseList.setResponseMessage(Result.SUCCESS.getValue());
+			}else{
+				responseList.setResponse(Result.SESSION_TIMEDOUT.name());
+				responseList.setResponseMessage(Result.SESSION_TIMEDOUT.getValue());
+			}
+		} catch (Exception e) {
+			responseList.setResponse(Result.AWKWARD.name());
+			responseList.setResponseMessage(Result.AWKWARD.getValue());
+			logger.error(ExceptionUtils.getFullStackTrace(e));
+		}
+		return responseList;
+	}
+	
+	/**
+	 * @author pavan jampana
+	 * 
+	 * this method is to download payroll Tax And Wages Report Pdf
+	 * @param payrollReportDTO
+	 * @param request
+	 * @param response
+	 * @return
+	 * @throws Exception
+	 */
+	@RequestMapping(value = { "/getpayrollTaxAndWagesReportPdf","/rest/getpayrollTaxAndWagesReportPdf" }, method = RequestMethod.GET)
+	@ResponseBody
+	public void getpayrollTaxAndWagesReportPdf(PayrollReportDTO payrollReportDTO,HttpServletRequest request, HttpServletResponse response) throws Exception
+	{
+		OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+		ResponseList<PayrollReportDTO>  responseList = paysheetFrequencyService.getpayrollTaxAndWagesReport(payrollReportDTO,orgLocations);
+		
+		File file = null;
+	    if(payrollReportDTO.getExportType().equalsIgnoreCase("pdf")) {
+	    	 file=  dynamicReport.payrollTaxAndWagesReportPdfExport(responseList,orgLocations);
+	    }else {
+	    	 file=  dynamicReport.payrollTaxAndWagesReportExcelExport(responseList,orgLocations);
+	    }
+	    
+		String mimeType = URLConnection.guessContentTypeFromName(file.getName());
+		if (mimeType == null) {
+			mimeType = "application/octet-stream";
+		}
+		response.setContentType(mimeType);
+		StringBuilder fileNameSB = new StringBuilder();
+		response.setHeader("Content-Disposition", fileNameSB.append("attachment; filename=\"").append(file.getName()).append("\"").toString());
+		response.setContentLength((int) file.length());
+		InputStream inputStream = new BufferedInputStream(new FileInputStream(file));
+		FileCopyUtils.copy(inputStream, response.getOutputStream());
+		inputStream.close();
+		response.getOutputStream().close();
+		response.getOutputStream().flush();	
+		if(file!= null){
+			file.delete();
+		}
+		 
+	}
+
+	/**get Employee payroll reports
+	 * 
+	 * @param payrollReportDTO
+	 * @param request
+	 * @param response
+	 * @return
+	 * @throws Exception
+	 */
+	@RequestMapping(value = { "/runEmployeePayroll","/rest/runEmployeePayroll" }, method = RequestMethod.GET)
+	public ResponseList<AssociateReportDTO> runEmployeePayroll(PayrollReportDTO payrollReportDTO,HttpServletRequest request, HttpServletResponse response) throws Exception
+	{
+		OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+		return paysheetFrequencyService.getEmployeePayrollListByPayCheckDate(payrollReportDTO,orgLocation);
+	}
+	
+	/**
+	 * get All Employees based on department
+	 * @param departmentId
+	 * @param request
+	 * @param response
+	 * @return
+	 * @throws Exception
+	 */
+	@RequestMapping(value = { "/getEmployeesBasedOnDepartment","/rest/getEmployeesBasedOnDepartment" }, method = RequestMethod.GET)
+	public List<UserDTO> getEmployeesBasedOnDepartment(@RequestParam(value="departmentId", required=true) String departmentId,HttpServletRequest request, HttpServletResponse response) throws Exception
+	{
+		OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+		return employeesService.getEmployeesBasedOnDepartment(departmentId,orgLocation);
+	}
+
+	@RequestMapping(value = { "/getAssociateWithHoldingReports","/rest/getAssociateWithHoldingReports" }, method = RequestMethod.POST)
+	@ResponseBody
+	public ResponseList<AssociateWithHoldingDTO> getAssociateWithHoldingReports(AssociateWithHoldingDTO associateWithHoldingDTO,HttpServletRequest request, HttpServletResponse response) throws Exception
+	{
+		OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+		String[] tableColumns = {"employeeId","empName","ssnNumber","workLocation","federalFillingStatus","federalTaxAllowances",
+				"residenceStateCode","stateFillingStatus","stateTaxAllowances"};
+	    int sortColumnIndex = 1;		 //by default sorting using updated date
+		String sortColumnOrder = "asc";  //by default descending order
+		if(associateWithHoldingDTO.getOrder() != null && !associateWithHoldingDTO.getOrder().isEmpty()) {
+			sortColumnIndex = Integer.parseInt(associateWithHoldingDTO.getOrder().get(0).get("column"));
+			sortColumnOrder = associateWithHoldingDTO.getOrder().get(0).get("dir");
+		}
+		associateWithHoldingDTO.setSortColumn(tableColumns[sortColumnIndex]);
+		associateWithHoldingDTO.setSortOrder(sortColumnOrder);
+		ResponseList<AssociateWithHoldingDTO> res = payrollReportService.getAssociateWithHoldingReports(orgLocation,associateWithHoldingDTO);
+		return res;
+	}
+	
+	
+	
+	@RequestMapping(value = { "/findAllDepartments","/rest/findAllDepartments" }, method = RequestMethod.GET)
+	@ResponseBody
+	public List<Department> getDepartmentList(HttpServletRequest request, HttpServletResponse response) throws Exception
+	{
+		OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+		
+		return departmentService.getDepartmentByOrgLocationId(orgLocation.getId());
+		
+	}
+	
+	/**
+	 * employee payroll export
+	 * @param payrollReportDTO
+	 * @param request
+	 * @param response
+	 * @throws Exception
+	 */
+	@RequestMapping(value = { "/exportEmployeePayroll","/rest/exportEmployeePayroll" }, method = RequestMethod.GET)
+	public void exportEmployeePayroll(PayrollReportDTO payrollReportDTO,HttpServletRequest request, HttpServletResponse response) throws Exception
+	{
+		OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+		ResponseList<AssociateReportDTO>  responseList =  paysheetFrequencyService.getEmployeePayrollListByPayCheckDate(payrollReportDTO,orgLocation);
+		File file = null;
+	    if(payrollReportDTO.getExportType().equalsIgnoreCase("pdf")) {
+	    	 file=  payrollReportPdfUtil.employeePayrollPdfExport(responseList,orgLocation);
+	    }else {
+	    	 file=  payrollReportPdfUtil.employeePayrollExcelExport(responseList,orgLocation);
+	    }
+	    
+		String mimeType = URLConnection.guessContentTypeFromName(file.getName());
+		if (mimeType == null) {
+			mimeType = "application/octet-stream";
+		}
+		response.setContentType(mimeType);
+		StringBuilder fileNameSB = new StringBuilder();
+		response.setHeader("Content-Disposition", fileNameSB.append("attachment; filename=\"").append(file.getName()).append("\"").toString());
+		response.setContentLength((int) file.length());
+		InputStream inputStream = new BufferedInputStream(new FileInputStream(file));
+		FileCopyUtils.copy(inputStream, response.getOutputStream());
+		inputStream.close();
+		response.getOutputStream().close();
+		response.getOutputStream().flush();	
+		if(file!= null){
+			file.delete();
+		}
+	}
 }
