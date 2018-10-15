@@ -203,11 +203,9 @@ public class CandidateController {
 		
 		logger.debug("--------candidatesList------");
 		
-		//OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
-		Org   org = (Org)SourceLeadSessionManager.getSessionAttribute(request, "org");
 		JSONObject orgLocJsonObject = SourceLeadSessionManager.getSessionJsonObject(request,  "orgLocations");
-		User user = (User) SourceLeadSessionManager.getSessionAttribute(request,"user");
-	    String userRole = (String) SourceLeadSessionManager.getSessionAttribute(request, "loginUserRole");
+		JSONObject userLocJsonObject = SourceLeadSessionManager.getSessionJsonObject(request,  "user");
+	    String userRole =  SourceLeadSessionManager.getSessionJsonString(request, "loginUserRole");
 	    Long candidateCount = 0L;
 		 
 		ModelAndView model = new ModelAndView();
@@ -232,9 +230,9 @@ public class CandidateController {
 		
 		
 		 if(!isNullOrEmpty(userRole) && userRole.equalsIgnoreCase("ROLE_CROWDSOURCING_RECRUITER")){
-			 candidateCount = candidateService.getCandidatesCountByCandidateTypeOrgLocationIDAndUserId(Long.valueOf(orgLocJsonObject.get("id").toString()), user.getId(), "Candidate");
+			 candidateCount = candidateService.getCandidatesCountByCandidateTypeOrgLocationIDAndUserId(Long.valueOf(orgLocJsonObject.get("id").toString()), Long.valueOf(userLocJsonObject.get("id").toString()), "Candidate");
 		 }else{
-			 candidateCount = candidateService.getCandidatesCountByCandidateTypeOrgLocationID(user.getId(),Long.valueOf(orgLocJsonObject.get("id").toString()), "Candidate");
+			 candidateCount = candidateService.getCandidatesCountByCandidateTypeOrgLocationID(Long.valueOf(userLocJsonObject.get("id").toString()),Long.valueOf(orgLocJsonObject.get("id").toString()), "Candidate");
 		 }
 	  
 	   model.addObject("candidateCount", candidateCount);
@@ -280,6 +278,10 @@ public class CandidateController {
 		
 		List<OrgRelationDTO> orgClientList = orgRelationsService.getAllClientsListOrgLocationId(Long.valueOf(orgLocJsonObject.get("id").toString()));
 	    model.addObject("clientsList", orgClientList);
+	    
+	    model.addObject("SourceLeadWeb_userId", userLocJsonObject.get("id").toString());
+	    model.addObject("SourceLeadWeb_locationCode", orgLocJsonObject.get("locationCode").toString());
+	    
 		  
 		SessionMaintainanceData sessionData = (SessionMaintainanceData)request.getSession().getAttribute("sessionData");
 		if(null == sessionData)

@@ -121,6 +121,7 @@ function closeCandiatesSubmitedList() {
 <script>
 var candidateStatusGlobal ="";
 function candidateSideBar(candidateId){
+	
 	var loginUserId = '${SourceLeadWeb_userId}';
 	  var candidateType = "Candidates";
 	  var locationCode = '${SourceLeadWeb_locationCode}';
@@ -129,7 +130,6 @@ function candidateSideBar(candidateId){
 		    url: sourceleadUrl+"/getProfessionalInfo?candidateId="+candidateId+"&locationCode="+locationCode,
            success :function(json) {  
                 if(json != null && json != 'undefined' && json != ""){  
-                	// var json = JSON.parse(data);
               			 candidateStatusGlobal = json.status;
 	                	 $("#candidateSideDiv").empty();
 	                	 var skills = [];
