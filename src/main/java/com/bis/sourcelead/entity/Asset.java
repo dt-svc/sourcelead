@@ -174,6 +174,7 @@ public class Asset implements Serializable{
 	@JsonProperty
     private Set<String> tagsList;
 	
+	
 	public Long getId() {
 		return id;
 	}

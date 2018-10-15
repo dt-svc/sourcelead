@@ -1134,10 +1134,11 @@ return responseList;
 	@RequestMapping(value = "/getProjectFrequency", method = RequestMethod.GET)
 	public @ResponseBody ResponseList<String> getProjectFrequency(@RequestParam(value = "projectId", required = false) Long projectId, HttpServletRequest request) throws Exception
 	{
+		OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 		ResponseList<String> responseList = new ResponseList<>();
 		Projects projects = projectsService.getProjectById(projectId);
 		List<String> frequencyDates = new ArrayList<>();
-		Map<String, String> map = timesheetFrequencyGeneratorUtil.getTimesheetFrequencyListFromProjectInvoiceFrequency(projects);
+		Map<String, String> map = timesheetFrequencyGeneratorUtil.getTimesheetFrequencyListFromProjectInvoiceFrequency(projects,orgLocation);
 		for (Map.Entry<String, String> entry : map.entrySet()) {
 			StringBuffer sb = new StringBuffer();
 			sb.append(entry.getKey().replaceAll("/", "-")).append("/").append(entry.getValue().replaceAll("/", "-"));
@@ -1154,6 +1155,7 @@ return responseList;
 		ResponseList<ProjectMembers> responseList = new ResponseList<>();
 //		String resultJson = "";
 		OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+		OrgRelations orgRelations = orgRelationsService.getOrRelationsById(orgRelationId);
 		String frequencyArray[] = frequency.split("/");
 		String startDateStr = frequencyArray[0];
 		String endDateStr = frequencyArray[1];
@@ -1230,8 +1232,15 @@ return responseList;
 				}
 			}
 			if (projectMembersList.size() > 0) {
+				if(orgRelations.getGenerateInvoice() !=null && orgRelations.getGenerateInvoice().equalsIgnoreCase(Constants.FINANCE_TYPE_INDIVIDUAL)){
+					List<ProjectMembers> projectMembersList1 = new ArrayList<>();
+					projectMembersList1.add(projectMembersList.get(0));
+					responseList.setData(projectMembersList1);	
+				}else{
+					responseList.setData(projectMembersList);	
+				}
 //				resultJson = commonUtil.toJSON(projectMembersList);
-				responseList.setData(projectMembersList);
+				
 			}
 		}
 		return responseList;
@@ -1258,6 +1267,7 @@ return responseList;
 //		String resultJson = "";
 		OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 		String isGlobalAccess = (String) SourceLeadSessionManager.getSessionAttribute(request, "isGlobalAccess");
+		OrgRelations orgRelations = orgRelationsService.getOrRelationsById(orgRelationId);
 		String frequencyArray[] = frequency.split("/");
 		String startDateStr = frequencyArray[0];
 		String endDateStr = frequencyArray[1];
@@ -1338,7 +1348,15 @@ return responseList;
 		}
 		if (filteredMembersList.size() > 0) {
 //			resultJson = commonUtil.toJSON(filteredMembersList);
-			responseList.setData(filteredMembersList);
+			
+			if(orgRelations.getGenerateBill() !=null && orgRelations.getGenerateBill().equalsIgnoreCase(Constants.FINANCE_TYPE_INDIVIDUAL)){
+				List<ProjectMembers> projectMembersList1 = new ArrayList<>();
+				projectMembersList1.add(filteredMembersList.get(0));
+				responseList.setData(projectMembersList1);	
+			}else{
+				responseList.setData(filteredMembersList);	
+			}
+			
 		}
 		// }
 		return responseList;

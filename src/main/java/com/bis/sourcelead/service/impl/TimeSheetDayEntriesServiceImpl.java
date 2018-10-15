@@ -86,6 +86,12 @@ public class TimeSheetDayEntriesServiceImpl implements TimeSheetDayEntriesServic
 			Date startDate, Date endDate, OrgLocations orgLocations) throws Exception {
 		return timeSheetDayEntriesDao.getOverTimeHoursByMasterCandidateIdAndOrgLocationWithStartEndDates(masterCandidateId, startDate, endDate, orgLocations);
 	}
+
+	@Override
+	public Boolean isMissingTimesheetByMasterCandidateIdAndOrgLocationWithStartEndDates(Long masterCandidateId,
+			Date startDate, Date endDate, OrgLocations orgLocations) throws Exception {
+		return timeSheetDayEntriesDao.isMissingTimesheetByMasterCandidateIdAndOrgLocationWithStartEndDates(masterCandidateId, startDate, endDate, orgLocations);
+	}
 	
 	
 
