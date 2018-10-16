@@ -6,10 +6,10 @@ import java.util.List;
 import java.util.Set;
 
 import com.bis.sourcelead.dto.SearchDTO;
-import com.bis.sourcelead.payroll.entity.DeductionHistory;
 import com.bis.sourcelead.payroll.entity.EmployeePayrollTax;
 
 
+@SuppressWarnings("serial")
 public class PayrollReportDTO extends SearchDTO{
 	
 	private String empId;
@@ -141,6 +141,20 @@ public class PayrollReportDTO extends SearchDTO{
 	private Set<EmployeePayrollTax> taxHistory;
 	
 	private YTDPayrollDTO ytdPayrollDTO;
+	
+	private BigDecimal federalTax;
+	
+	private BigDecimal socialSecTax;
+	
+	private BigDecimal medicare;
+	
+	private BigDecimal futa;
+	
+	private BigDecimal stateTax;
+	
+	private BigDecimal localTax;
+	
+	private BigDecimal suta;
 	
 	private String fromDate;
 	
@@ -800,6 +814,76 @@ public class PayrollReportDTO extends SearchDTO{
 	public void setYtdPayrollDTO(YTDPayrollDTO ytdPayrollDTO)
 	{
 		this.ytdPayrollDTO = ytdPayrollDTO;
+	}
+
+	public BigDecimal getFederalTax()
+	{
+		return federalTax;
+	}
+
+	public void setFederalTax(BigDecimal federalTax)
+	{
+		this.federalTax = federalTax;
+	}
+
+	public BigDecimal getSocialSecTax()
+	{
+		return socialSecTax;
+	}
+
+	public void setSocialSecTax(BigDecimal socialSecTax)
+	{
+		this.socialSecTax = socialSecTax;
+	}
+
+	public BigDecimal getMedicare()
+	{
+		return medicare;
+	}
+
+	public void setMedicare(BigDecimal medicare)
+	{
+		this.medicare = medicare;
+	}
+
+	public BigDecimal getFuta()
+	{
+		return futa;
+	}
+
+	public void setFuta(BigDecimal futa)
+	{
+		this.futa = futa;
+	}
+
+	public BigDecimal getStateTax()
+	{
+		return stateTax;
+	}
+
+	public void setStateTax(BigDecimal stateTax)
+	{
+		this.stateTax = stateTax;
+	}
+
+	public BigDecimal getLocalTax()
+	{
+		return localTax;
+	}
+
+	public void setLocalTax(BigDecimal localTax)
+	{
+		this.localTax = localTax;
+	}
+
+	public BigDecimal getSuta()
+	{
+		return suta;
+	}
+
+	public void setSuta(BigDecimal suta)
+	{
+		this.suta = suta;
 	}
 
 	public String getFromDate() {
