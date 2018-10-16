@@ -23,8 +23,8 @@ width: 75px; padding: 0 !important;
             </sec:authorize>
 
 		<ul class="nav nav-tabs pull-right">
-			<li id="interviewsTab" class="active"><a href="javascript:void(0)" onclick="getInterviewsandTasks()">Interviews & Tasks</a></li>
 			<li id="jobFairsTab"><a href="javascript:void(0)" onclick="getJobFairs()">Job Fairs</a></li>
+			<li id="interviewsTab" class="active"><a href="javascript:void(0)" onclick="getInterviewsandTasks()">Interviews & Tasks</a></li>
 			<div class="clearfix"></div>
 		</ul>            
         </div>
@@ -81,8 +81,10 @@ width: 75px; padding: 0 !important;
     
 <script type="text/javascript">
 	window.onload = function() {
-		getInterviewsandTasks();
-		getInterviewsDates();
+		/* getInterviewsandTasks();
+		getInterviewsDates(); */
+		getJobFairDates();
+		getJobFairs();
 	}
 </script>
 

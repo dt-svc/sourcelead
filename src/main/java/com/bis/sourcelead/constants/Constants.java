@@ -67,6 +67,8 @@ public class Constants {
 	public static final String PAYMENT_TERMS = "PaymentTerms";
 	public static final String INVOICE_RECEIVABLE = "Receivable";
 	public static final String INVOICE_PAYABLES = "Payables";
+	public static final String FINANCE_TYPE_INDIVIDUAL = "Individual";
+	public static final String FINANCE_TYPE_BULK = "Bulk";
 
 	public static final String country = "Country";
 	public static final String TASK_BILLABLE = "Billable";

@@ -32,11 +32,11 @@ public class IndEmployeePayroll implements Serializable {
 	private Long id;
 
 	@ManyToOne
-	@JoinColumn(name = "EMPLOYEE_ID", nullable = false)
+	@JoinColumn(name = "EMPLOYEE_ID")
 	private Employees employee;
 
 	@ManyToOne
-	@JoinColumn(name = "CANDIDATE_ID", nullable = false)
+	@JoinColumn(name = "CANDIDATE_ID")
 	private Candidate candidate;
 
 	@ManyToOne
