@@ -4,8 +4,10 @@ import java.io.Writer;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.Locale;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -29,11 +31,13 @@ import com.bis.sourcelead.beans.ApplicantReport;
 import com.bis.sourcelead.beans.AssignedRequirementReports;
 import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.dto.RequirementDTO;
+import com.bis.sourcelead.dto.ResponseList;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.Requirement;
 import com.bis.sourcelead.entity.RequirementSubmission;
 import com.bis.sourcelead.entity.Timezone;
 import com.bis.sourcelead.entity.User;
+import com.bis.sourcelead.enums.Result;
 import com.bis.sourcelead.reportsDTO.JobFilterDTO;
 import com.bis.sourcelead.service.RequirementAssignToService;
 import com.bis.sourcelead.service.RequirementLocationsService;
@@ -47,6 +51,7 @@ import com.bis.sourcelead.service.TimeZoneService;
 import com.bis.sourcelead.util.CommonUtil;
 import com.bis.sourcelead.util.ReportsUtil;
 import com.bis.sourcelead.util.SourceLeadSessionManager;
+import com.ibm.icu.util.Calendar;
 import com.thoughtworks.xstream.XStream;
 import com.thoughtworks.xstream.io.HierarchicalStreamWriter;
 import com.thoughtworks.xstream.io.json.JsonHierarchicalStreamDriver;
@@ -436,5 +441,102 @@ public class RequirementReportRestController {
 		return reportsList;
 			 
 		}
+	
+	@RequestMapping(value = "/getJobsPerformancetListByOrgLocationIDAndUserId",method = RequestMethod.POST)
+	 public ResponseList<Requirement> getAssignedRequirementListByOrgLocationIDAndUserId(JobFilterDTO jobFilterDTO,HttpServletRequest request) throws Exception {
+		ResponseList<Requirement>   requirementList = null;
+		User  user = (User)SourceLeadSessionManager.getSessionAttribute(request, "user");
+		if(user != null) {
+			try {
+				
+				OrgLocations loginOrgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,"orgLocations");
+				String userRole = (String) SourceLeadSessionManager.getSessionAttribute(request, "loginUserRole");
+				
+				String userCode = user.getUserCode();
+				String userType = null;
+				
+				String[] tableColumns = { "jobId", "jobTitle", "client", "location", "priority", "applicants",
+						"shortlisted", "interview", "offered", "submitToClient", "backOut", "joined", "rejected" };// should be
+				// entity names
+				int sortColumnIndex = 1; // by default sorting using invoice date
+				String sortColumnOrder = "asc"; // by default descending order
+				if (jobFilterDTO.getOrder() != null && !jobFilterDTO.getOrder().isEmpty()) {
+					sortColumnIndex = Integer.parseInt(jobFilterDTO.getOrder().get(0).get("column"));
+					sortColumnOrder = jobFilterDTO.getOrder().get(0).get("dir");
+				}
+				jobFilterDTO.setSortColumn(tableColumns[sortColumnIndex]);
+				jobFilterDTO.setSortOrder(sortColumnOrder);
+				
+				Timezone timezone = timeZoneService.getTimezone(loginOrgLocation.getTimezone().getId());
+				DateTime zoned = new DateTime();
+				DateTimeFormatter outputFormatter = DateTimeFormat.forPattern("yyyy-MM-dd");
+				DateFormat TZ_DF_TS = new SimpleDateFormat("yyyy-MM-dd");
+				Date endDateUTC = null;
+				String filterDate = null;
+				Date startDateUTC = null;
+				if (!Constants.CUSTOM_REPORTS.equalsIgnoreCase(jobFilterDTO.getJobCreatedDateRange())	&& !"".equals(jobFilterDTO.getJobCreatedDateRange())) {
+					String endDate = outputFormatter.print(zoned);
+					endDateUTC = TZ_DF_TS.parse(endDate);
+				}
+				if (null != jobFilterDTO.getJobCreatedDateRange() && !"".equals(jobFilterDTO.getJobCreatedDateRange())) {
+					if (!Constants.CUSTOM_REPORTS.equalsIgnoreCase(jobFilterDTO.getJobCreatedDateRange())) {
+						String startDate = outputFormatter.print(zoned);
+						filterDate = CommonUtil.convertTimeZones(timezone.getTimeZoneId(), Constants.UTC_TIMEZONE, startDate);
+						startDateUTC = TZ_DF_TS.parse(startDate);
+						if (Constants.ONE_MONTH.equals(jobFilterDTO.getJobCreatedDateRange())) {
+							startDateUTC = getPreviousDate(zoned, outputFormatter, TZ_DF_TS, timezone, 30);
+						}
+						else if (Constants.TWO_MONTHS.equals(jobFilterDTO.getJobCreatedDateRange())) {
+							startDateUTC = getPreviousDate(zoned, outputFormatter, TZ_DF_TS, timezone, 60);
+						}
+						else if (Constants.THREE_MONTHS.equals(jobFilterDTO.getJobCreatedDateRange())) {
+							startDateUTC = getPreviousDate(zoned, outputFormatter, TZ_DF_TS, timezone, 90);
+						}
+						else if (Constants.SIX_MONTHS.equals(jobFilterDTO.getJobCreatedDateRange())) {
+							startDateUTC = getPreviousDate(zoned, outputFormatter, TZ_DF_TS, timezone, 180);
+						}
+						else if (Constants.ONE_YEAR.equals(jobFilterDTO.getJobCreatedDateRange())) {
+							startDateUTC = getPreviousDate(zoned, outputFormatter, TZ_DF_TS, timezone, 365);
+						}
+					}
+					else {
+						if (!"".equalsIgnoreCase(jobFilterDTO.getStartDateStr())
+								&& !"".equalsIgnoreCase(jobFilterDTO.getEndDateStr())
+								&& !"undefined".equalsIgnoreCase(jobFilterDTO.getStartDateStr())
+								&& !"undefined".equalsIgnoreCase(jobFilterDTO.getEndDateStr())) {
+							DateFormat TZ_DF_CSD = new SimpleDateFormat("yyyy-MM-dd");
+							DateFormat TZ_DF_CED = new SimpleDateFormat("yyyy-MM-dd");
+							Date startTime = commonUtil.orgLocationDateFormat(loginOrgLocation.getDateFormat(), jobFilterDTO.getStartDateStr());
+							Date endTime = commonUtil.orgLocationDateFormat(loginOrgLocation.getDateFormat(), jobFilterDTO.getEndDateStr());
+							String customStartTimeStr = TZ_DF_CSD.format(startTime);
+							String customEndTimeStr = TZ_DF_CED.format(endTime);
+							startDateUTC = TZ_DF_TS.parse(customStartTimeStr);
+							endDateUTC = TZ_DF_TS.parse(customEndTimeStr);
+						}
+						else {
+							startDateUTC = getPreviousDate(zoned, outputFormatter, TZ_DF_TS, timezone, 30);
+						}
+					}
+					
+				}
+			
+				if(Constants.ROLE_ADMIN.equalsIgnoreCase(userRole) || Constants.SOURCELEAD_ADMIN.equalsIgnoreCase(userRole)){
+					userType = Constants.ADMIN;
+					requirementList = requirementService.getAssignedJobsPerformanceList(loginOrgLocation.getId(), userType, user.getId(), userCode,startDateUTC,endDateUTC,jobFilterDTO);
+				}else{
+					requirementList = requirementService.getAssignedJobsPerformanceList(loginOrgLocation.getId(), userType, user.getId(), userCode,startDateUTC,endDateUTC,jobFilterDTO);
+				}
+				
+				requirementList.setResponse(Result.SUCCESS.name());
+			}catch (Exception e) {
+				requirementList.setResponse(Result.AWKWARD.name());
+				requirementList.setResponseMessage(Result.AWKWARD.getValue());
+			}
+		}else {
+			requirementList.setResponse(Result.SESSION_TIMEDOUT.name());
+			requirementList.setResponseMessage(Result.SESSION_TIMEDOUT.getValue());
+		}
+		return requirementList;
+	 }
 	
 }
