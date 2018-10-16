@@ -35,6 +35,9 @@ public class PaysheetFrequencyDTO  extends SearchDTO{
 	
 	private String payrollFrequencyUUID;
 	
+	private int noOfGeneratedPayroll;
+	private BigDecimal totalGeneratedAmount;
+	
 	public String getGroupId()
 	{
 		return groupId;
@@ -152,6 +155,18 @@ public class PaysheetFrequencyDTO  extends SearchDTO{
 	}
 	public void setPaySheetFrequency(PaysheetFrequency paySheetFrequency) {
 		this.paySheetFrequency = paySheetFrequency;
+	}
+	public int getNoOfGeneratedPayroll() {
+		return noOfGeneratedPayroll;
+	}
+	public void setNoOfGeneratedPayroll(int noOfGeneratedPayroll) {
+		this.noOfGeneratedPayroll = noOfGeneratedPayroll;
+	}
+	public BigDecimal getTotalGeneratedAmount() {
+		return totalGeneratedAmount;
+	}
+	public void setTotalGeneratedAmount(BigDecimal totalGeneratedAmount) {
+		this.totalGeneratedAmount = totalGeneratedAmount;
 	}
 	
 }

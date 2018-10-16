@@ -93,6 +93,8 @@ public class UserDTO extends SearchDTO implements Serializable {
     private BigInteger userId;
 
     private String tags;
+    
+    private String joinersAmount;
 	
 	public String getUnSubscribeTabIds()
 	{
@@ -637,4 +639,15 @@ public class UserDTO extends SearchDTO implements Serializable {
 		this.isPayRollApprover = isPayRollApprover;
 	}
 
+	public String getJoinersAmount()
+	{
+		return joinersAmount;
+	}
+
+	public void setJoinersAmount(String joinersAmount)
+	{
+		this.joinersAmount = joinersAmount;
+	}
+
+	
 }

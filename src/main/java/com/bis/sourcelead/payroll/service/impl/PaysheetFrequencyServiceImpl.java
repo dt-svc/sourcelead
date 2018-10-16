@@ -29,6 +29,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import com.bis.sourcelead.constants.Constants;
+import com.bis.sourcelead.dto.AssociateLoanAndAdvancesDTO;
 import com.bis.sourcelead.dto.AssociatePayItemDTO;
 import com.bis.sourcelead.dto.Response;
 import com.bis.sourcelead.dto.ResponseList;
@@ -314,6 +315,7 @@ public class PaysheetFrequencyServiceImpl implements PaysheetFrequencyService{
 			BigDecimal emplrTotalTax = BigDecimal.ZERO;
 			double regularTotalHrs = 0;
 			double otTotalHours = 0;
+			double loanAmountTotal = 0;
 			BigDecimal regTotalAmount = BigDecimal.ZERO;
 			BigDecimal otTotalAmount = BigDecimal.ZERO;
 			ConfirmPayTotalSumDTO paySum = new ConfirmPayTotalSumDTO();
@@ -345,6 +347,19 @@ public class PaysheetFrequencyServiceImpl implements PaysheetFrequencyService{
 					
 					List<AssociatePayItemDTO> pList = payrollUtil.getPayItemData(payroll);
 					payItemList.addAll(pList);
+					
+					
+					//Loan and advances
+					BigDecimal lATotal = BigDecimal.ZERO;
+					List<AssociateLoanAndAdvancesDTO> loanAdvance = payrollUtil.getLoanAndAdvancesData(payroll);
+					if(loanAdvance != null && loanAdvance.size() >0) {
+						response.setLoanAdvance(loanAdvance);
+						loanAmountTotal = loanAdvance.stream().mapToDouble(lAmt->Double.valueOf(lAmt.getLoanAmount())).sum();
+					}
+					lATotal = BigDecimal.valueOf(loanAmountTotal);
+					response.setLoanAmountTotal(lATotal);
+					
+					
 					// Employee Taxes
 					Set<EmployeePayrollTax> payrollTax = payroll.getUsPayrollTax();
 					EmployeePayrollTax tax = payrollTax.iterator().next();
@@ -584,7 +599,7 @@ public class PaysheetFrequencyServiceImpl implements PaysheetFrequencyService{
 			StringBuilder sb = new StringBuilder();
 			sb.append(emp.getCandidate().getFirstName());
 			if(StringUtils.isNotBlank(emp.getCandidate().getLastName())) {
-				sb.append(emp.getCandidate().getLastName());
+				sb.append(" ").append(emp.getCandidate().getLastName());
 			}
 			dto.setEmpName(sb.toString());
 			if(emp.getCandidate().getWorkLocation() != null)
