@@ -75,8 +75,8 @@
 							</span>
 						</div>
 					</li>
-			  <li class=""><input type="text" class="repSearchBar" placeholder="Search" id="dataTableSearch"><span class="repSearchIcon" onclick="filter();"></span></li>
-	     	 <li class=""><input type="text" class="repSearchBar" placeholder="Searchsss" id="daywiseReportDataTableSearch"><span class="repSearchIcon" onclick="getDaywiseLeaveReportList();"></span></li>
+			  <li class=""><input type="text" class="repSearchBar" placeholder="Search" id="dataTableSearch" style="display: none"><span class="repSearchIcon" onclick="filter();" style="display: none"></span></li>
+	     	 <li class=""><input type="text" class="repSearchBar" placeholder="Search" id="daywiseReportDataTableSearch"><span class="repSearchIcon" onclick="getDaywiseLeaveReportList();" style="display: block"></span></li>
 	        </ul>
 	      </div>
         <div class="timesheet_head">
@@ -980,6 +980,10 @@ $(function() {
         $('#araginglistSel').change(function(){
         	var optval = $(this).val();
 			if(optval === "byRecruiter") {
+// 				$("#previousOfferDiv").empty();
+
+				$("#dataTableSearch").hide();
+				$("#daywiseReportDataTableSearch").show();
 				$("#byRecruiter").show();
 				$("#byApplicant").hide();
 				$("#applicant").hide();
@@ -988,6 +992,9 @@ $(function() {
 				$("#previousOfferDiv").hide();
 				$("#byRecruiter").show();
 			}else if(optval === "byApplicant"){
+				$("#daywiseReportDataTableSearch").hide();
+				$("#dataTableSearch").show();
+// 				$("#byRecruiter").empty();
 				$("#byRecruiter").hide();
 				$("#byApplicant").show();
 				$("#customDatesDropdown").hide();

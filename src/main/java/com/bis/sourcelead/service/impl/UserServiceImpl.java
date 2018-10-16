@@ -6,7 +6,6 @@ import java.math.BigInteger;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collection;
 import java.util.Date;
 import java.util.HashMap;
@@ -61,6 +60,8 @@ import com.bis.sourcelead.dto.UserDTO;
 import com.bis.sourcelead.elk.index.UserIndex;
 import com.bis.sourcelead.elk.index.helper.UserIndexHelper;
 import com.bis.sourcelead.elk.setup.SourceleadELKBaseIndexer;
+import com.bis.sourcelead.entity.AppliedLeaveDateView;
+import com.bis.sourcelead.entity.AssociateBalanceLeaveView;
 import com.bis.sourcelead.entity.AssociateGrades;
 import com.bis.sourcelead.entity.Candidate;
 import com.bis.sourcelead.entity.Countries;
@@ -71,6 +72,7 @@ import com.bis.sourcelead.entity.EmailConfigurationFromMail;
 import com.bis.sourcelead.entity.EmailMessage;
 import com.bis.sourcelead.entity.EmailScenario;
 import com.bis.sourcelead.entity.Employees;
+import com.bis.sourcelead.entity.LeaveType;
 import com.bis.sourcelead.entity.MasterCandidate;
 import com.bis.sourcelead.entity.Org;
 import com.bis.sourcelead.entity.OrgLocations;
@@ -80,7 +82,6 @@ import com.bis.sourcelead.entity.OrglocationFormFields;
 import com.bis.sourcelead.entity.ProjectMembers;
 import com.bis.sourcelead.entity.ProjectMembersHistory;
 import com.bis.sourcelead.entity.Projects;
-import com.bis.sourcelead.entity.Requirement;
 import com.bis.sourcelead.entity.Roles;
 import com.bis.sourcelead.entity.Shift;
 import com.bis.sourcelead.entity.User;
@@ -89,6 +90,7 @@ import com.bis.sourcelead.entity.UserRole;
 import com.bis.sourcelead.enums.Result;
 import com.bis.sourcelead.enums.Status;
 import com.bis.sourcelead.reportsDTO.LeaveBalanceReportDTO;
+import com.bis.sourcelead.service.AppliedLeaveDateService;
 import com.bis.sourcelead.service.AssociateBalanceLeaveService;
 import com.bis.sourcelead.service.CandidateService;
 import com.bis.sourcelead.service.CountriesService;
@@ -96,6 +98,7 @@ import com.bis.sourcelead.service.DepartmentService;
 import com.bis.sourcelead.service.EmailScenarioConfigurationService;
 import com.bis.sourcelead.service.EmailScenarioService;
 import com.bis.sourcelead.service.EmployeesService;
+import com.bis.sourcelead.service.LeaveTypeService;
 import com.bis.sourcelead.service.MasterCandidateService;
 import com.bis.sourcelead.service.OrgLocationService;
 import com.bis.sourcelead.service.OrgRelationsService;
@@ -116,7 +119,6 @@ import com.bis.sourcelead.util.FileUploadUtil;
 import com.bis.sourcelead.util.PdfUtil;
 import com.bis.sourcelead.util.SourceLeadRandomCodeHelper;
 import com.bis.sourcelead.util.UniversalSearchHelper;
-import com.ibm.icu.math.BigDecimal;
 
 /**
  * This Service Class is used to get User Object
@@ -232,6 +234,12 @@ public class UserServiceImpl implements UserService {
 	
 	@Autowired
 	PdfUtil pdfUtil;
+	
+	@Autowired
+	LeaveTypeService leaveTypeService;
+	
+	@Autowired
+	AppliedLeaveDateService appliedLeaveDateService;
 	@Override
 	public User findByUserName(String username) {
 		logger.debug("In UserService class...");
@@ -1944,12 +1952,14 @@ public class UserServiceImpl implements UserService {
 	{
 
 			Row writeRow = null;
-	        createExcelsheet = getExcelSheetWithHeader(createExcelsheet,writeRow,createExcelworkbook,userDTOList.getData().get(0).getDatesList(),orgLocations);
+			if(!userDTOList.getData().isEmpty()){
+		        createExcelsheet = getExcelSheetWithHeader(createExcelsheet,writeRow,createExcelworkbook,userDTOList.getData().get(0).getDatesList(),orgLocations);
+			}
 	        ResponseList<ApplicantsJoinedReportDTO> list = userDTOList;
 	        int column=0;
 	        for(ApplicantsJoinedReportDTO lrv : list.getData()){
 	       	 writeRow = createExcelsheet.createRow(column+1);
-	       	 createExcelsheet = createXlsSheet(createExcelsheet,writeRow,column,lrv);
+	       	 createExcelsheet = createXlsSheet(createExcelsheet,writeRow,column,lrv,orgLocations);
 	       	 column++;
 	        }
 			return createExcelsheet;
@@ -1983,6 +1993,7 @@ private Sheet getExcelSheetWithHeader(Sheet createExcelsheet, Row writeRow, Work
 		 headerList.add("No Of Jobs");
 		 headerList.add("Total Offer");
 		 headerList.add("Total Joiners");
+		 headerList.add("Total Leaves");
 		 
 		 String headers[] = new String[headerList.size()];
 		 
@@ -1995,7 +2006,7 @@ private Sheet getExcelSheetWithHeader(Sheet createExcelsheet, Row writeRow, Work
 		 return createExcelsheet = commonUtil.setExcelHeaders(createExcelsheet,style,headers,0);
 	}
 
-private Sheet createXlsSheet(Sheet createExcelsheet, Row writeRow, int column,ApplicantsJoinedReportDTO userDTO) throws Exception {
+private Sheet createXlsSheet(Sheet createExcelsheet, Row writeRow, int column,ApplicantsJoinedReportDTO userDTO, OrgLocations orgLocations) throws Exception {
 	
 	int cellCount = 0;
 	if(userDTO.getName() !=null){
@@ -2034,6 +2045,21 @@ private Sheet createXlsSheet(Sheet createExcelsheet, Row writeRow, int column,Ap
 	   else{
 		   writeRow.createCell(cellCount++).setCellValue("--");   
 	   }
+	   
+	   List<LeaveType> leaveTypesList=leaveTypeService.getLeaveTypeListByLocationId(orgLocations.getId().toString());
+	 
+		List<AppliedLeaveDateView> appliedLeaves = null;
+		float appliedNoofLeaves = 0;
+		float appliedLeaveCount = 0;
+		float totalLeavesCount=0;
+	   for(LeaveType leaveType:leaveTypesList){
+		   AssociateBalanceLeaveView ablv = new AssociateBalanceLeaveView();
+			ablv.setIncludeWeekoff(leaveType.getIncludeWeekoff());
+			ablv.setIncludeHolidays(leaveType.getIncludeHolidays());
+		   appliedLeaves = appliedLeaveDateService.getAppliedLeaveDatesByLeaveTypeIdAndOrgLocationIdAndUserId(orgLocations.getId(), leaveType.getId(), userDTO.getFromDate(), userDTO.getToDate(), userDTO.getUserId().longValue(),orgLocations.getOrg().getId());
+			appliedNoofLeaves = (float)associateBalanceLeaveService.getExcludeHolidayLeaveCount(appliedLeaves,orgLocations,ablv,userDTO.getFromDate(),userDTO.getToDate(),leaveType);
+			totalLeavesCount=totalLeavesCount+appliedNoofLeaves;
+	   }
 	 
 	/*	 if(leaveReportDTO.getLeaveTypeBillable() !=null){
 			 writeRow.createCell(5).setCellValue(leaveReportDTO.getLeaveTypeBillable()); 
@@ -2042,7 +2068,13 @@ private Sheet createXlsSheet(Sheet createExcelsheet, Row writeRow, int column,Ap
 			   writeRow.createCell(5).setCellValue("--");   
 		   }*/
 //}
-
+	   if(totalLeavesCount !=0){
+		   writeRow.createCell(cellCount++).setCellValue(totalLeavesCount);
+	   }
+	   else{
+		   writeRow.createCell(cellCount++).setCellValue("0");   
+	   }
+	   
 return createExcelsheet;
 
 }

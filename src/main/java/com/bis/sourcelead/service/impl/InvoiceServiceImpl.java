@@ -1680,14 +1680,14 @@ public class InvoiceServiceImpl implements InvoiceService {
   	  				if(Constants.RECEIVABLE.equalsIgnoreCase(invoiceType)){
   	  					projectMembersList = getClientProjectAssinedMembersAutoInvoice(frequency,orgLocation,project.getId(),client.getId(),contractType,invoice);
   	  					if(orgRelation.getGenerateInvoice().equalsIgnoreCase(Constants.FINANCE_TYPE_INDIVIDUAL) && projectMembersList!=null && projectMembersList.size() >0){
-  	  					List<ProjectMembers> projectMem = null;
+  	  					List<ProjectMembers> projectMem = new ArrayList<ProjectMembers>();
   	  				    projectMem.add(projectMembersList.get(0));
   	  				    projectMembersList = projectMem;
   	  					}
   	  					}else{
   						 projectMembersList = getVendorProjectAssinedMembersAutoInvoice(frequency,orgLocation,project.getId(),client.getId(),contractType,invoice,globalUser);
   						if(orgRelation.getGenerateBill().equalsIgnoreCase(Constants.FINANCE_TYPE_INDIVIDUAL) && projectMembersList!=null && projectMembersList.size() >0){
-    	  					List<ProjectMembers> projectMem = null;
+  	  	  					List<ProjectMembers> projectMem = new ArrayList<ProjectMembers>();
     	  				    projectMem.add(projectMembersList.get(0));
     	  				    projectMembersList = projectMem;
     	  					}
