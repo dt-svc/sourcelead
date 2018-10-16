@@ -40,14 +40,20 @@ public class CouchbaseClient {
 		 for (N1qlQueryRow row : result) {
 	            
 			  try {
-				    String jsonKey = row.value().toString();
-				     System.out.println(jsonKey);
-			    	 String[] sessionId = jsonKey.split("_");
-			    	 if(sessionId[0].equalsIgnoreCase(key)) {
-			    		 bucket.remove(jsonKey.toString());
+				    JSONParser parser = new JSONParser(); 
+				    JSONObject jsonObject = (JSONObject) parser.parse(row.value().toString());
+					  for(Iterator iterator = jsonObject.keySet().iterator(); iterator.hasNext();) {
+						     String jsonKey = (String) iterator.next();
+						     Object jsonValue = jsonObject.get(jsonKey);
+						     System.out.println(jsonValue.toString());
+					    	 String[] sessionId = jsonValue.toString().split("_");
+					    	 if(sessionId[0].equalsIgnoreCase(key)) {
+					    		 bucket.remove(jsonValue.toString());
+					    	 }
+						}
+					  
 			    	 }
-				  
-			} catch (Exception e) {
+			 catch (ParseException e) {
 				e.printStackTrace();
 			}
         }
