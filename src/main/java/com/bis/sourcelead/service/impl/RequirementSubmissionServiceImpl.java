@@ -51,6 +51,7 @@ import com.bis.sourcelead.dao.RequirementSubmissionDao;
 import com.bis.sourcelead.dao.RequirementSubmissionTemplateFieldsDao;
 import com.bis.sourcelead.dao.UserDao;
 import com.bis.sourcelead.dto.ApplicantAuthorizationDTO;
+import com.bis.sourcelead.dto.ApplicantsJoinedReportDTO;
 import com.bis.sourcelead.dto.CandidateResumesDTO;
 import com.bis.sourcelead.dto.FileInfo;
 import com.bis.sourcelead.dto.RequirementDTO;
@@ -77,6 +78,7 @@ import com.bis.sourcelead.entity.OrgRelations;
 import com.bis.sourcelead.entity.OrgSpoc;
 import com.bis.sourcelead.entity.RecommendedCustomizeScore;
 import com.bis.sourcelead.entity.Requirement;
+import com.bis.sourcelead.entity.RequirementIncentive;
 import com.bis.sourcelead.entity.RequirementInterview;
 import com.bis.sourcelead.entity.RequirementLocations;
 import com.bis.sourcelead.entity.RequirementOffers;
@@ -5664,6 +5666,27 @@ private void createXlsSheet(Sheet createExcelsheet,Row writeRow,int column,Strin
 	public File getApplicantsJoinedListPdfFile(ResponseList<RequirementSubmissionHistory> dashboardJobsCountlist, OrgLocations loginOrgLocations)throws Exception
 	{
 		return pdfUtil.ApplicantsJoinedListPdfTable(dashboardJobsCountlist,loginOrgLocations);
+	}
+	
+	@Override
+	public Integer getRequirementCountBySubmissionStatusJoinedandAssignedUsercode(Long requirementId, String userCode,Date[] searchDates) throws Exception
+	{
+		return requirementSubmissionDao.getRequirementCountBySubmissionStatusJoinedandAssignedUsercode(requirementId, userCode,searchDates);
+
+	}
+	
+	@Override
+	public RequirementIncentive getRequirementIncentiveByRequirementId(Long requirementId) throws Exception
+	{
+		return requirementSubmissionDao.getRequirementIncentiveByRequirementId(requirementId);
+
+	}
+
+	@Override
+	public List<ApplicantsJoinedReportDTO> getRequirementIncentiveByRequirementIdAndLocation(Long requirementId, String usercode, Long orgLocationId) throws Exception
+	{
+		return requirementSubmissionDao.getRequirementIncentiveByRequirementIdAndLocation(requirementId,usercode,orgLocationId);
+
 	}
 
 }
