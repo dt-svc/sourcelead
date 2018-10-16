@@ -45,7 +45,6 @@ public class CouchbaseClient {
 					  for(Iterator iterator = jsonObject.keySet().iterator(); iterator.hasNext();) {
 						     String jsonKey = (String) iterator.next();
 						     Object jsonValue = jsonObject.get(jsonKey);
-						     System.out.println(jsonValue.toString());
 					    	 String[] sessionId = jsonValue.toString().split("_");
 					    	 if(sessionId[0].equalsIgnoreCase(key)) {
 					    		 bucket.remove(jsonValue.toString());
