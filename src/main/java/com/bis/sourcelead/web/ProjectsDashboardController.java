@@ -139,6 +139,7 @@ public class ProjectsDashboardController {
        
         List<String> prjectTagsList = sourceleadTagsService.sourceleadTagsListByEntitypeAndOrgloactionId(TagEntites.PROJECTS.toString(), loginOrgLocations.getId());
         model.addObject("prjectTagsList", prjectTagsList);
+        model.addObject("prjectTagsListSize", prjectTagsList.size());
 		String msg = (String) SourceLeadSessionManager.getSessionAttribute(request, "projectCreateMsg");
 		if(!isNullOrEmpty(msg)){
 			model.addObject("msg", msg);

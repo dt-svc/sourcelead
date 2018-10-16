@@ -1088,7 +1088,7 @@ public class LeaveServiceImpl implements LeaveService{
 				leaveDto.setToDateToHalfTime(leave.getToDateToHalfTime());
 			}
 			
-			leaveDto.setCreatedDate(ConversionUtil.getDateAsString(leave.getCreatedDate()));
+			leaveDto.setCreatedDate(commonUtil.dateStrFromOrgDateFormatter(orgLocations.getDateFormat(), leave.getCreatedDate()));
 			
 			if(StringUtils.isNotBlank(leave.getRejectedReason())){
 				leaveDto.setRejectedReason(leave.getRejectedReason());
@@ -1099,7 +1099,7 @@ public class LeaveServiceImpl implements LeaveService{
 			}
 			
 			if(leave.getUpdatedDate() != null)
-			leaveDto.setUpdatedDate(ConversionUtil.getDateAsString(leave.getUpdatedDate()));
+			leaveDto.setUpdatedDate(commonUtil.dateStrFromOrgDateFormatter(orgLocations.getDateFormat(), leave.getUpdatedDate()));
 			leaveDto.setLeaveUUID(leave.getLeaveUUID());
 			if(leave.getApprovedBy() != null){
 				StringBuilder sb = new StringBuilder();

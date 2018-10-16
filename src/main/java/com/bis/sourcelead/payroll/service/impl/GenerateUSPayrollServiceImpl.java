@@ -238,6 +238,8 @@ public class GenerateUSPayrollServiceImpl implements GenerateUSPayrollService{
 								.filter(p->p.getEmployeeDesignationType() != null && PayrollConstant.DRAFT.equalsIgnoreCase(p.getApproverStatus()) && p.getPayType().equalsIgnoreCase(generateUSPayrollDTO.getPayType()) && !PayrollConstant.C2C.equalsIgnoreCase(p.getEmployeeDesignationType()))
 								.collect(Collectors.toList());
 					}
+					paysheetFrequencyDTO.setNoOfGeneratedPayroll(draftPayroll.size());
+					paysheetFrequencyDTO.setTotalGeneratedAmount(draftPayroll.stream().map(USPayrollDTO::getNetPay).reduce(BigDecimal.ZERO, BigDecimal::add));
 					paysheetFrequencyDTO.setPayrollDTO(draftPayroll);
 				}
 		}
