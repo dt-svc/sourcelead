@@ -38,13 +38,16 @@ import org.xml.sax.InputSource;
 
 import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.dao.JobBoardConfigurationDAO;
+import com.bis.sourcelead.dao.OrgLocationsDao;
 import com.bis.sourcelead.dao.RequirementAssignToDao;
 import com.bis.sourcelead.dao.RequirementDao;
+import com.bis.sourcelead.dao.RequirementSubmissionDao;
 import com.bis.sourcelead.dao.UserDao;
 import com.bis.sourcelead.dao.UserRoleDao;
 import com.bis.sourcelead.dto.JobFairDTO;
 import com.bis.sourcelead.dto.RecruiterRrportDTO;
 import com.bis.sourcelead.dto.RequirementDTO;
+import com.bis.sourcelead.dto.RequirementSubmissionsCountDTO;
 import com.bis.sourcelead.dto.ResponseList;
 import com.bis.sourcelead.elk.setup.SourceleadELKBaseIndexer;
 import com.bis.sourcelead.entity.Candidate;
@@ -67,6 +70,7 @@ import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.enums.REQUIREMENT_SUBMISSION_STATUS;
 import com.bis.sourcelead.exception.SourceLeadConstraintViolationException;
 import com.bis.sourcelead.reportsDTO.JobFilterDTO;
+import com.bis.sourcelead.service.OrgLocationService;
 import com.bis.sourcelead.service.RequirementLocationsService;
 import com.bis.sourcelead.util.CommonUtil;
 import com.bis.sourcelead.util.FileUploadUtil;
@@ -111,6 +115,12 @@ public class RequirementDaoImpl implements RequirementDao {
         
     @Autowired
     SourceleadELKBaseIndexer sourceleadELKBaseIndexer;
+    
+    @Autowired
+    private RequirementSubmissionDao requirementSubmissionDao;
+    
+    @Autowired
+    private OrgLocationsDao orgLocationsDao;
         
     @Value("${static.path}")
 	private String staticPath;
@@ -724,6 +734,7 @@ public class RequirementDaoImpl implements RequirementDao {
 
 		Session session = this.sessionFactory.getCurrentSession();
 		User user = userDao.getUserById(userId);
+		OrgLocations orgLocation = orgLocationsDao.getOrgLocations(orgLocationId);
 
 		Map<String, Object> params = new HashMap<String, Object>();
 		List<Requirement> reqList = null;
@@ -821,7 +832,18 @@ public class RequirementDaoImpl implements RequirementDao {
 			}
 			Integer requirementAssignToListCount = requirementAssignToDao.getRequirementAssignToListCountByRequirementId(requirement.getId());
     		requirement.setAssignedMembersCount(requirementAssignToListCount.toString());
+    		
+    		RequirementSubmissionsCountDTO requirementSubmissionsCountDTO= requirementSubmissionDao.getAllPipeLineCountsByRequirementIdAndSubmissionStage(requirement.getId(),user,orgLocation,"All");
+    		requirement.setShortlistCount(requirementSubmissionsCountDTO.getShortlistCount().toString());
+    		requirement.setOffersCount(requirementSubmissionsCountDTO.getOffersCount().toString());
+    		requirement.setSubmitToClientCount(requirementSubmissionsCountDTO.getSubmitToClientCount().toString());
+    		requirement.setJoinedCount(requirementSubmissionsCountDTO.getJoinedCount().toString());
+    		requirement.setBackoutCount(requirementSubmissionsCountDTO.getBackoutCount().toString());
+    		requirement.setInterviewCount(requirementSubmissionsCountDTO.getInterviewCount().toString());
+    		requirement.setRejectedCount(requirementSubmissionsCountDTO.getRejectedCount().toString());
+    		
 		}
+		
 		
 		Query countQueryFinal = session.createQuery("select count(*) " + countQuery + " " +countQuerySub);
 		for (String str : countQueryFinal.getNamedParameters()) {
