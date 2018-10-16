@@ -13,9 +13,13 @@ import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Date;
+import java.util.HashMap;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -45,6 +49,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.dao.UserRoleDao;
+import com.bis.sourcelead.dto.ApplicantsJoinedReportDTO;
 import com.bis.sourcelead.dto.RequirementDTO;
 import com.bis.sourcelead.dto.RequirementSubmissionsCountDTO;
 import com.bis.sourcelead.dto.ResponseList;
@@ -1114,4 +1119,288 @@ public class ReportRestController {
 	    }
 
 		
+		/*@RequestMapping(value = "/getAllApplicantJoinedListByOrgLocationsId")
+		public @ResponseBody ResponseList<UserDTO> getAllApplicantJoinedListByOrgLocationsId(UserRoleDTO userRoleDto,@RequestParam(value="timePeriod", required=false) String timePeriod,@RequestParam(value="customStartDate", required=false) String customStartDate,@RequestParam(value="customEndDate", required=false) String customEndDate,
+				UserDTO userDTO,HttpServletRequest request) throws Exception {
+
+		      OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+		      Org org = (Org) SourceLeadSessionManager.getSessionAttribute(request, "org");
+		      User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+		      String isGlobalUser = (String) SourceLeadSessionManager.getSessionAttribute(request, "isGlobalAccess");
+		      String loginUserRole = (String) SourceLeadSessionManager.getSessionAttribute(request, "loginUserRole");
+		    
+				
+				Date[] searchDates = null;
+				
+					if(!"custom".equalsIgnoreCase(timePeriod)){
+						searchDates = reportsUtil.getJobFilterDate(timePeriod,orgLocations);
+					}else if("custom".equalsIgnoreCase(timePeriod) && !"".equalsIgnoreCase(customStartDate)&& !"".equalsIgnoreCase(customEndDate)){
+			    	    
+			    	    DateFormat TZ_DF_CSD = new SimpleDateFormat ("yyyy-MM-dd 00:00:00");
+						DateFormat TZ_DF_CED = new SimpleDateFormat ("yyyy-MM-dd 23:59:59");
+						DateFormat TZ_DF_TS = new SimpleDateFormat ("yyyy-MM-dd HH:mm:ss");
+						
+						Date startTime =  commonUtil.orgLocationDateFormat(orgLocations.getDateFormat(),customStartDate);
+						Date endTime =  commonUtil.orgLocationDateFormat(orgLocations.getDateFormat(),customEndDate);
+						String customStartTimeStr = TZ_DF_CSD.format(startTime);  
+						String customEndTimeStr = TZ_DF_CED.format(endTime);  
+						Date startDateUTC = TZ_DF_TS.parse(customStartTimeStr);
+						Date endDateUTC = TZ_DF_TS.parse(customEndTimeStr);
+			    	   
+			    	    searchDates = new Date[2];
+			    	    searchDates[0] = startDateUTC;
+			    	    searchDates[1] = endDateUTC;
+					}
+					List<Long> teamsList = new ArrayList<>();
+					if(userRoleDto.getOrgTeams() != null && !userRoleDto.getOrgTeams().isEmpty()) {
+						String[] orgTeams = userRoleDto.getOrgTeams().split(",");
+						for(int i=0; i < orgTeams.length; i++) {
+							teamsList.add(Long.parseLong(orgTeams[i]));
+						}
+					}
+					List<Long> clientIdsList = new ArrayList<>();
+					if(userRoleDto.getClients() != null && !userRoleDto.getClients().isEmpty()) {
+						String[] clients = userRoleDto.getClients().split(",");
+						for(int i=0; i < clients.length; i++) {
+							clientIdsList.add(Long.parseLong(clients[i]));
+						}
+					}
+					String type=null;
+				if(userRoleDto.getType() != null && !userRoleDto.getType().isEmpty()){
+					type=userRoleDto.getType();
+				}
+				String[] tableColumns = { "recruiterName", "noOfJobs", "totalOffers", "totalJoined", "incentives"};
+				int sortColumnIndex = 1; // by default sorting using updated date
+				String sortColumnOrder = "desc"; // by default descending order
+				if (userDTO.getOrder() != null && !userDTO.getOrder().isEmpty()) {
+					sortColumnIndex = Integer.parseInt(userDTO.getOrder().get(0).get("column"));
+					sortColumnOrder = userDTO.getOrder().get(0).get("dir");
+				}
+				userDTO.setSortColumn(tableColumns[sortColumnIndex]);
+				userDTO.setSortOrder(sortColumnOrder);
+				ResponseList<UserDTO> userDTOList = userService.getRecruitersReports(user.getId(), orgLocations.getId(), org.getId(), isGlobalUser,userDTO,loginUserRole,searchDates,teamsList,type,clientIdsList);
+				return userDTOList;
+			}*/
+		
+		
+		
+		@RequestMapping(value = "/getAllApplicantJoinedListByOrgLocationsId")
+		public @ResponseBody ResponseList<ApplicantsJoinedReportDTO> getAllApplicantJoinedListByOrgLocationsId(ApplicantsJoinedReportDTO userRoleDto,@RequestParam(value="timePeriod", required=false) String timePeriod,@RequestParam(value="customStartDate", required=false) String customStartDate,@RequestParam(value="customEndDate", required=false) String customEndDate,
+				UserDTO userDTO,HttpServletRequest request) throws Exception {
+				ResponseList<ApplicantsJoinedReportDTO> responseList = new ResponseList<>();
+		      OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+		      Org org = (Org) SourceLeadSessionManager.getSessionAttribute(request, "org");
+		      User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+		      String isGlobalUser = (String) SourceLeadSessionManager.getSessionAttribute(request, "isGlobalAccess");
+		      String loginUserRole = (String) SourceLeadSessionManager.getSessionAttribute(request, "loginUserRole");
+		    
+				
+				Date[] searchDates = null;
+				
+					if(!"custom".equalsIgnoreCase(timePeriod)){
+						searchDates = reportsUtil.getJobFilterDate(timePeriod,orgLocations);
+					}else if("custom".equalsIgnoreCase(timePeriod) && !"".equalsIgnoreCase(customStartDate)&& !"".equalsIgnoreCase(customEndDate)){
+			    	    
+			    	    DateFormat TZ_DF_CSD = new SimpleDateFormat ("yyyy-MM-dd 00:00:00");
+						DateFormat TZ_DF_CED = new SimpleDateFormat ("yyyy-MM-dd 23:59:59");
+						DateFormat TZ_DF_TS = new SimpleDateFormat ("yyyy-MM-dd HH:mm:ss");
+						
+						Date startTime =  commonUtil.orgLocationDateFormat(orgLocations.getDateFormat(),customStartDate);
+						Date endTime =  commonUtil.orgLocationDateFormat(orgLocations.getDateFormat(),customEndDate);
+						String customStartTimeStr = TZ_DF_CSD.format(startTime);  
+						String customEndTimeStr = TZ_DF_CED.format(endTime);  
+						Date startDateUTC = TZ_DF_TS.parse(customStartTimeStr);
+						Date endDateUTC = TZ_DF_TS.parse(customEndTimeStr);
+			    	   
+			    	    searchDates = new Date[2];
+			    	    searchDates[0] = startDateUTC;
+			    	    searchDates[1] = endDateUTC;
+					}
+					List<Long> teamsList = new ArrayList<>();
+					if(userRoleDto.getOrgTeams() != null && !userRoleDto.getOrgTeams().isEmpty()) {
+						String[] orgTeams = userRoleDto.getOrgTeams().split(",");
+						for(int i=0; i < orgTeams.length; i++) {
+							teamsList.add(Long.parseLong(orgTeams[i]));
+						}
+					}
+					List<Long> clientIdsList = new ArrayList<>();
+					if(userRoleDto.getClients() != null && !userRoleDto.getClients().isEmpty()) {
+						String[] clients = userRoleDto.getClients().split(",");
+						for(int i=0; i < clients.length; i++) {
+							clientIdsList.add(Long.parseLong(clients[i]));
+						}
+					}
+					String type=null;
+				if(userRoleDto.getType() != null && !userRoleDto.getType().isEmpty()){
+					type=userRoleDto.getType();
+				}
+				String[] tableColumns = { "recruiterName", "noOfJobs", "totalOffers", "totalJoined", "incentives"};
+				int sortColumnIndex = 1; // by default sorting using updated date
+				String sortColumnOrder = "desc"; // by default descending order
+				if (userDTO.getOrder() != null && !userDTO.getOrder().isEmpty()) {
+					sortColumnIndex = Integer.parseInt(userDTO.getOrder().get(0).get("column"));
+					sortColumnOrder = userDTO.getOrder().get(0).get("dir");
+				}
+				userDTO.setSortColumn(tableColumns[sortColumnIndex]);
+				userDTO.setSortOrder(sortColumnOrder);
+
+				ResponseList<ApplicantsJoinedReportDTO> userDTOList = userService.getApplicantsJoinedReport(userRoleDto,orgLocations.getId(),searchDates,teamsList,type,clientIdsList);
+
+//				ResponseList<ApplicantsJoinedReportDTO> userDTOList = userService.getRecruitersReports(user.getId(), orgLocations.getId(), org.getId(), isGlobalUser,userDTO,loginUserRole,searchDates,teamsList,type,clientIdsList);
+//				responseList.setData(userDTOList);
+				return userDTOList;
+			}
+		
+		
+		
+		@RequestMapping(value = "/exportAllApplicantJoinedList")
+		public void exportAllApplicantJoinedList(ApplicantsJoinedReportDTO userRoleDto,@RequestParam(value="timePeriod", required=false) String timePeriod,@RequestParam(value="customStartDate", required=false) String customStartDate,@RequestParam(value="customEndDate", required=false) String customEndDate,
+				@RequestParam(value="exportType", required=false) String exportType,
+				UserDTO userDTO,HttpServletRequest request, HttpServletResponse response) throws Exception {
+			
+		      OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+		      Org org = (Org) SourceLeadSessionManager.getSessionAttribute(request, "org");
+		      User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+		      String isGlobalUser = (String) SourceLeadSessionManager.getSessionAttribute(request, "isGlobalAccess");
+		      String loginUserRole = (String) SourceLeadSessionManager.getSessionAttribute(request, "loginUserRole");
+		      Workbook createExcelworkbook =  new XSSFWorkbook();
+		      StringBuilder excelSB = new StringBuilder();
+				
+				Date[] searchDates = null;
+				SimpleDateFormat sdf = new SimpleDateFormat(orgLocations.getDateFormat());
+				
+					if(!"custom".equalsIgnoreCase(timePeriod)){
+						searchDates = reportsUtil.getJobFilterDate(timePeriod,orgLocations);
+					}else if("custom".equalsIgnoreCase(timePeriod) && !"".equalsIgnoreCase(customStartDate)&& !"".equalsIgnoreCase(customEndDate)){
+			    	    
+			    	    DateFormat TZ_DF_CSD = new SimpleDateFormat ("yyyy-MM-dd 00:00:00");
+						DateFormat TZ_DF_CED = new SimpleDateFormat ("yyyy-MM-dd 23:59:59");
+						DateFormat TZ_DF_TS = new SimpleDateFormat ("yyyy-MM-dd HH:mm:ss");
+						
+						Date startTime =  commonUtil.orgLocationDateFormat(orgLocations.getDateFormat(),customStartDate);
+						Date endTime =  commonUtil.orgLocationDateFormat(orgLocations.getDateFormat(),customEndDate);
+						String customStartTimeStr = TZ_DF_CSD.format(startTime);  
+						String customEndTimeStr = TZ_DF_CED.format(endTime);  
+						Date startDateUTC = TZ_DF_TS.parse(customStartTimeStr);
+						Date endDateUTC = TZ_DF_TS.parse(customEndTimeStr);
+			    	   
+			    	    searchDates = new Date[2];
+			    	    searchDates[0] = startDateUTC;
+			    	    searchDates[1] = endDateUTC;
+					}
+					List<Long> teamsList = new ArrayList<>();
+					if(userRoleDto.getOrgTeams() != null && !userRoleDto.getOrgTeams().isEmpty()) {
+						String[] orgTeams = userRoleDto.getOrgTeams().split(",");
+						for(int i=0; i < orgTeams.length; i++) {
+							teamsList.add(Long.parseLong(orgTeams[i]));
+						}
+					}
+					List<Long> clientIdsList = new ArrayList<>();
+					if(userRoleDto.getClients() != null && !userRoleDto.getClients().isEmpty()) {
+						String[] clients = userRoleDto.getClients().split(",");
+						for(int i=0; i < clients.length; i++) {
+							clientIdsList.add(Long.parseLong(clients[i]));
+						}
+					}
+					String type=null;
+				if(userRoleDto.getType() != null && !userRoleDto.getType().isEmpty()){
+					type=userRoleDto.getType();
+				}
+		         Sheet createExcelsheet = createExcelworkbook.createSheet(excelSB.append("applicantsjoioinedList ").append(commonUtil.dateStrFromOrgDateFormatter(orgLocations.getDateFormat(),new Date())).toString());
+//				ResponseList<UserDTO> userDTOList = userService.getRecruitersReports(user.getId(), orgLocations.getId(), org.getId(), isGlobalUser,userDTO,loginUserRole,searchDates,teamsList,type,clientIdsList);
+				ResponseList<ApplicantsJoinedReportDTO> responseList = userService.getApplicantsJoinedReport(userRoleDto,orgLocations.getId(),searchDates,teamsList,type,clientIdsList);
+		
+		if (responseList.getData() != null && !responseList.getData().isEmpty()) {
+			for (ApplicantsJoinedReportDTO ajrDTO : responseList.getData()) {
+				Set<String> datesSet = new LinkedHashSet<>();
+				if (timePeriod.equalsIgnoreCase(Constants.REPORT_FILTER_TODAY)) {
+					datesSet.add("Date<<>>" + sdf.format(Calendar.getInstance().getTime()));
+				} else if (timePeriod.equalsIgnoreCase(Constants.REPORT_FILTER_LAST_7_DAYS)
+						|| timePeriod.equalsIgnoreCase(Constants.REPORT_FILTER_LAST_15_DAYS)
+						|| timePeriod.equalsIgnoreCase(Constants.REPORT_FILTER_1_MONTH)) {
+					Map<String, Long> datesMap = userService.getApplicantsJoinedCountByDates(ajrDTO.getCreatedBy(), searchDates[0], searchDates[1], orgLocations.getDateFormat());
+					Calendar c = Calendar.getInstance();
+					c.setTime(searchDates[0]);
+					while (c.getTime().before(searchDates[1])) {
+						String cDate = sdf.format(c.getTime());
+						datesSet.add(cDate + "<<>>" + (datesMap.containsKey(cDate) ? datesMap.get(cDate) : "0"));
+						c.add(Calendar.DATE, 1);
+					}
+				} else if (timePeriod.equalsIgnoreCase(Constants.REPORT_FILTER_3_MONTHS)
+						|| timePeriod.equalsIgnoreCase(Constants.REPORT_FILTER_LAST_YEAR)
+						|| timePeriod.equalsIgnoreCase(Constants.REPORT_FILTER_YTD)
+						|| "custom".equalsIgnoreCase(timePeriod)) {
+					Map<String, Long> datesMap = userService.getApplicantsJoinedCountByDates(ajrDTO.getCreatedBy(), searchDates[0], searchDates[1], orgLocations.getDateFormat());
+					Map<String, Long> datesMapNew = new HashMap<>();
+					SimpleDateFormat monthsSDF = new SimpleDateFormat("MMMM");
+					for(String date : datesMap.keySet()) {
+						String date1 = monthsSDF.format(new Date(sdf.parse(date).getTime()));
+						long value = 0;
+						if(datesMapNew.containsKey(date1)) {
+							value = datesMapNew.get(date1);
+						}
+						value += datesMap.get(date);
+						datesMapNew.put(date1, value);
+					}
+//					LinkedHashSet<String> months = CalendarUtil.getMonthStringsFromStartDateAndEndDate(searchDates[0], searchDates[1]);
+					Calendar fromC = Calendar.getInstance();
+		            fromC.setTime(searchDates[0]);
+		            Calendar toC = Calendar.getInstance();
+		            toC.setTime(searchDates[1]);
+		            Set<String> months = new LinkedHashSet<>();
+		            while (fromC.get(Calendar.MONTH) <= toC.get(Calendar.MONTH)) {
+		                System.out.println(fromC.get(Calendar.MONTH) + " " + monthsSDF.format(fromC.getTime()));
+		                months.add(monthsSDF.format(fromC.getTime()));
+		                fromC.roll(Calendar.MONTH, true);
+		            }
+					for(String month : months) {
+						if(datesMapNew.containsKey(month)) {
+							datesSet.add(month + "<<>>" + datesMapNew.get(month));
+						} else {
+							datesSet.add(month + "<<>>0");
+						}
+					}
+				} else {
+					// custom dates
+				}
+				ajrDTO.setDatesList(datesSet);
+			}
+		}
+				
+				
+				File file = null;
+	             if(!"pdf".equalsIgnoreCase(exportType)){
+	                 createExcelsheet = userService.exportAllApplicantJoinedList(createExcelsheet,createExcelworkbook,responseList,orgLocations);
+	                   StringBuilder templateSB = new StringBuilder();
+	                    file = File.createTempFile(templateSB.append("Applicants_Joioined_List").append(commonUtil.dateStrFromOrgDateFormatter(orgLocations.getDateFormat(),new Date())).toString(),".xls");
+	                    file.setReadable(true);
+	                    
+	                  FileOutputStream fos = new FileOutputStream(file);
+	                  try {
+	                     createExcelworkbook.write(fos);
+	                     fos.close();
+	                 } catch (IOException e) {
+	                     e.printStackTrace();
+	                 }         
+	             }
+	             else{
+	                 file = userService.exportAllApplicantJoinedListPdf(responseList,orgLocations,searchDates);
+	             
+	             }
+	             String mimeType = URLConnection.guessContentTypeFromName(file.getName());
+	                if (mimeType == null) {
+	                    mimeType = "application/octet-stream";
+	                }
+	                response.setContentType(mimeType);
+	                StringBuilder fileNameSB = new StringBuilder();
+	                response.setHeader("Content-Disposition", fileNameSB.append("attachment; filename=\"").append(file.getName()).append("\"").toString());
+	                response.setContentLength((int) file.length());
+	                InputStream inputStream = new BufferedInputStream(new FileInputStream(file));
+	                FileCopyUtils.copy(inputStream, response.getOutputStream());
+	                inputStream.close();
+	                response.getOutputStream().close();
+	                response.getOutputStream().flush();    
+	                if(file!= null){
+	                    file.delete();
+	                }			}
 }

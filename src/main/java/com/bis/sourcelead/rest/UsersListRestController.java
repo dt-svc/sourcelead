@@ -785,7 +785,7 @@ public class UsersListRestController {
 			userRole.setDailyHours(employee.getDailyHours());
 			userRole.setUserEmploymentType(employee.getUserEmploymentType());
 			userRole.setDesignationOtherType(employee.getDesignationOtherType());
-			userRole.setSsn(userRole.getSsn());
+			userRole.setSsn(userRole.getUser().getSsn());
 			if(userRole.getShift() != null) {
 				userRole.setShiftId(userRole.getShift().getId());
 				userRole.setShiftName(userRole.getShift().getShiftName());
@@ -2067,6 +2067,7 @@ public class UsersListRestController {
 			user.setMaritalStatus(addUserDTO.getMaritalStatus());
 			user.setMobilePhone(addUserDTO.getPhoneNumber());
 			user.setExtensionNumber(addUserDTO.getExtensionNumber());
+			user.setSsn(addUserDTO.getSsn());
 			
 			if (StringUtils.isNotBlank(addUserDTO.getReportingManager())) {
 				User reportingManager = new User();
