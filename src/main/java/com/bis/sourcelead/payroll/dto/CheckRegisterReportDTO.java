@@ -14,6 +14,8 @@ public class CheckRegisterReportDTO {
 	
 	private String employeeId;
 	
+	private BigInteger candidateId;
+	
 	private String departmentId;
 	
 	private String firstName;
@@ -39,6 +41,8 @@ public class CheckRegisterReportDTO {
 	private String accountNum;
 	
 	private String routingNum;
+	
+	private BigDecimal ytdNet;
 	
 	public String getType()
 	{
@@ -259,6 +263,22 @@ public class CheckRegisterReportDTO {
 	public void setRoutingNum(String routingNum)
 	{
 		this.routingNum = routingNum;
+	}
+
+	public BigInteger getCandidateId() {
+		return candidateId;
+	}
+
+	public void setCandidateId(BigInteger candidateId) {
+		this.candidateId = candidateId;
+	}
+
+	public BigDecimal getYtdNet() {
+		return ytdNet;
+	}
+
+	public void setYtdNet(BigDecimal ytdNet) {
+		this.ytdNet = ytdNet;
 	}
 	
 	
