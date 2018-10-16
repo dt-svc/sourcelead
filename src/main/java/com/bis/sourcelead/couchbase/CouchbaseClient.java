@@ -36,27 +36,18 @@ public class CouchbaseClient {
 	public void deleteSessionDocumentsFromBucket(String key) {
 		
 		bucket.bucketManager().createN1qlPrimaryIndex(true, false);
-		N1qlQueryResult result = bucket.query(N1qlQuery.simple("SELECT * FROM `test`"));
+		N1qlQueryResult result = bucket.query(N1qlQuery.simple("SELECT meta().id FROM `test`"));
 		 for (N1qlQueryRow row : result) {
 	            
-	      	  JSONParser parser = new JSONParser(); 
 			  try {
-				  JSONObject jsonObject = (JSONObject) parser.parse(row.value().toString());
-				  for(Iterator iterator = jsonObject.keySet().iterator(); iterator.hasNext();) {
-					     String key1 = (String) iterator.next();
-					     Object jsonValue = jsonObject.get(key1);
-					     JSONObject jsonObjVal = (JSONObject) parser.parse(jsonValue.toString());
-					     for(Iterator iterator1 = jsonObjVal.keySet().iterator(); iterator1.hasNext();) {
-					    	 String jsonKey = (String) iterator1.next();
-					    	 String[] sessionId = jsonKey.split("_");
-					    	 if(sessionId[0].equalsIgnoreCase(key)) {
-					    		 bucket.remove(jsonKey);
-					    	 }
-					     }
-					    
-					}
+				    String jsonKey = row.value().toString();
+				     System.out.println(jsonKey);
+			    	 String[] sessionId = jsonKey.split("_");
+			    	 if(sessionId[0].equalsIgnoreCase(key)) {
+			    		 bucket.remove(jsonKey.toString());
+			    	 }
 				  
-			} catch (ParseException e) {
+			} catch (Exception e) {
 				e.printStackTrace();
 			}
         }
