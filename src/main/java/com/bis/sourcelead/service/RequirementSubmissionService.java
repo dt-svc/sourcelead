@@ -8,25 +8,22 @@ import java.util.Map;
 import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
 import org.json.JSONObject;
-import org.springframework.web.multipart.MultipartFile;
 
 import com.bis.sourcelead.dto.ApplicantAuthorizationDTO;
-import com.bis.sourcelead.dto.EmployerPayrollCostDTO;
-import com.bis.sourcelead.dto.ProjectsDTO;
+import com.bis.sourcelead.dto.ApplicantsJoinedReportDTO;
 import com.bis.sourcelead.dto.RequirementSubmissionsCountDTO;
 import com.bis.sourcelead.dto.RequirementSubmissionsDTO;
-import com.bis.sourcelead.dto.Response;
 import com.bis.sourcelead.dto.ResponseList;
 import com.bis.sourcelead.entity.Candidate;
 import com.bis.sourcelead.entity.Org;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.Requirement;
+import com.bis.sourcelead.entity.RequirementIncentive;
 import com.bis.sourcelead.entity.RequirementRateSubmissionNegotiation;
 import com.bis.sourcelead.entity.RequirementSubmission;
 import com.bis.sourcelead.entity.RequirementSubmissionHistory;
 import com.bis.sourcelead.entity.RequirementSubmissionsView;
 import com.bis.sourcelead.entity.User;
-import com.bis.sourcelead.payroll.entity.EmployerPayrollCost;
 
 /**
  * 
@@ -308,5 +305,12 @@ public interface RequirementSubmissionService {
 	Sheet getApplicaantJoinedListExcelFile(Sheet createExcelsheet, Workbook createExcelworkbook, ResponseList<RequirementSubmissionHistory> dashboardJobsCountlist, OrgLocations loginOrgLocations, String submissionStatus) throws Exception;
 
 	File getApplicantsJoinedListPdfFile(ResponseList<RequirementSubmissionHistory> dashboardJobsCountlist, OrgLocations loginOrgLocations)throws Exception;
+
+	public Integer getRequirementCountBySubmissionStatusJoinedandAssignedUsercode(Long requirementId, String userCode,Date[] searchDates) throws Exception;
+	
+	RequirementIncentive getRequirementIncentiveByRequirementId(Long requirementId) throws Exception;
+	
+	List<ApplicantsJoinedReportDTO> getRequirementIncentiveByRequirementIdAndLocation(Long requirementId,String userCode,Long orgLocationId) throws Exception;
+
 
 }
