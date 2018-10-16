@@ -37,25 +37,26 @@ public class CouchbaseClient {
 		
 		bucket.bucketManager().createN1qlPrimaryIndex(true, false);
 		N1qlQueryResult result = bucket.query(N1qlQuery.simple("SELECT meta().id FROM `test`"));
-		 for (N1qlQueryRow row : result) {
-	            
-			  try {
-				    JSONParser parser = new JSONParser(); 
-				    JSONObject jsonObject = (JSONObject) parser.parse(row.value().toString());
-					  for(Iterator iterator = jsonObject.keySet().iterator(); iterator.hasNext();) {
-						     String jsonKey = (String) iterator.next();
-						     Object jsonValue = jsonObject.get(jsonKey);
-					    	 String[] sessionId = jsonValue.toString().split("_");
-					    	 if(sessionId[0].equalsIgnoreCase(key)) {
-					    		 bucket.remove(jsonValue.toString());
-					    	 }
-						}
-					  
-			    	 }
-			 catch (ParseException e) {
-				e.printStackTrace();
-			}
-        }
+		if(result != null) {
+			for (N1qlQueryRow row : result) {
+				  try {
+					    JSONParser parser = new JSONParser(); 
+					    JSONObject jsonObject = (JSONObject) parser.parse(row.value().toString());
+						  for(Iterator iterator = jsonObject.keySet().iterator(); iterator.hasNext();) {
+							     String jsonKey = (String) iterator.next();
+							     Object jsonValue = jsonObject.get(jsonKey);
+						    	 String[] sessionId = jsonValue.toString().split("_");
+						    	 if(sessionId[0].equalsIgnoreCase(key)) {
+						    		 bucket.remove(jsonValue.toString());
+						    	 }
+							}
+						  
+				    	 }
+				 catch (ParseException e) {
+					e.printStackTrace();
+				}
+	        }
+		}
 	}
 
 	public void shutdown() {
