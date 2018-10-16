@@ -209,6 +209,9 @@ public class LoginSessionController {
 		}
 		SourceLeadSessionManager.setSessionAttribute(request, "googleMapsLocationApiKey", googleMapsLocationApiKey);
 		SourceLeadSessionManager.setSessionAttribute(request, "sessionId", request.getSession().getId());
+		
+		SourceLeadSessionManager.setJsonStringSessionAttribute(request, "sessionId", request.getSession().getId());
+		
 		User user = userService.findByUserName(authentication.getName());
 		UserRole userRole = null;
 		OrgLocations orgLocations = null;

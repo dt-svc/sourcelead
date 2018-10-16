@@ -16,6 +16,7 @@ import org.springframework.web.context.support.WebApplicationContextUtils;
 import com.bis.sourcelead.entity.UserLoginLogoutSession;
 import com.bis.sourcelead.service.UserLoginLogoutSessionService;
 import com.bis.sourcelead.service.impl.UserLoginLogoutSessionServiceImpl;
+import com.bis.sourcelead.util.SourceLeadSessionManager;
 
 public class SourceleadSessionListener implements HttpSessionListener {
 
@@ -40,6 +41,9 @@ public class SourceleadSessionListener implements HttpSessionListener {
 		
 		HttpSession session = event.getSession();
 		ApplicationContext ctx = WebApplicationContextUtils.getWebApplicationContext(session.getServletContext());
+		SourceLeadSessionManager.deleteSessionDocumentsFromBucket(event.getSession().getId());
+		
+		
 		UserLoginLogoutSessionService userLoginLogoutSessionService = (UserLoginLogoutSessionService) ctx
 				.getBean("userLoginLogoutSessionService");
 

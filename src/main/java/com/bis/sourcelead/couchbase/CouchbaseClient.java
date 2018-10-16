@@ -4,6 +4,10 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
+import org.json.simple.JSONObject;
+import org.json.simple.parser.JSONParser;
+import org.json.simple.parser.ParseException;
+
 import com.couchbase.client.java.Bucket;
 import com.couchbase.client.java.Cluster;
 import com.couchbase.client.java.CouchbaseCluster;
@@ -11,6 +15,9 @@ import com.couchbase.client.java.document.JsonDocument;
 import com.couchbase.client.java.document.json.JsonObject;
 import com.couchbase.client.java.env.CouchbaseEnvironment;
 import com.couchbase.client.java.env.DefaultCouchbaseEnvironment;
+import com.couchbase.client.java.query.N1qlQuery;
+import com.couchbase.client.java.query.N1qlQueryResult;
+import com.couchbase.client.java.query.N1qlQueryRow;
 
 
 public class CouchbaseClient {
@@ -22,6 +29,37 @@ public class CouchbaseClient {
 		
 		cluster = CouchbaseCluster.create(urls);
 		bucket = cluster.openBucket(couchBucket, password);
+		
+	}
+	
+	
+	public void deleteSessionDocumentsFromBucket(String key) {
+		
+		bucket.bucketManager().createN1qlPrimaryIndex(true, false);
+		N1qlQueryResult result = bucket.query(N1qlQuery.simple("SELECT * FROM `test`"));
+		 for (N1qlQueryRow row : result) {
+	            
+	      	  JSONParser parser = new JSONParser(); 
+			  try {
+				  JSONObject jsonObject = (JSONObject) parser.parse(row.value().toString());
+				  for(Iterator iterator = jsonObject.keySet().iterator(); iterator.hasNext();) {
+					     String key1 = (String) iterator.next();
+					     Object jsonValue = jsonObject.get(key1);
+					     JSONObject jsonObjVal = (JSONObject) parser.parse(jsonValue.toString());
+					     for(Iterator iterator1 = jsonObjVal.keySet().iterator(); iterator1.hasNext();) {
+					    	 String jsonKey = (String) iterator1.next();
+					    	 String[] sessionId = jsonKey.split("_");
+					    	 if(sessionId[0].equalsIgnoreCase(key)) {
+					    		 bucket.remove(jsonKey);
+					    	 }
+					     }
+					    
+					}
+				  
+			} catch (ParseException e) {
+				e.printStackTrace();
+			}
+        }
 	}
 
 	public void shutdown() {

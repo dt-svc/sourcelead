@@ -30,6 +30,12 @@ public class SourceLeadSessionManager {
 	
 	public static void setSessionAttribute(HttpServletRequest request, String attribute, Object obj) {
 		request.getSession().setAttribute("SourceLeadWeb_" + attribute, obj);
+		
+		
+	}
+	
+	public static void deleteSessionDocumentsFromBucket(String sessionId) {
+		c.deleteSessionDocumentsFromBucket(sessionId);
 	}
 	
 	public static void setJsonStringSessionAttribute(HttpServletRequest request, String attribute, String jsonString) {
