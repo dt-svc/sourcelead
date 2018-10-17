@@ -147,17 +147,17 @@ public class AssociateLoanAndAdvancesDaoImpl implements AssociateLoanAndAdvances
 		Map<String, Double> countMap = new HashMap<>();
 		Session session = this.sessionFactory.getCurrentSession();
 		String query = "";
-			query = "from AssociateLoanAndAdvances loansAndAd where loansAndAd.candidateId =:candidateId and loansAndAd.loanAndAdvanceStatus = 'Outstanding'";
+			query = "from AssociateLoanAndAdvances loansAndAd where loansAndAd.candidateId =:candidateId and loansAndAd.loanAndAdvanceStatus = 'Outstanding' and loansAndAd.status = '1'";
 			List<AssociateLoanAndAdvances> outstandingList = session.createQuery(query.toString()).setLong("candidateId", candidateId).list();
 			Double outscount = outstandingList.stream().mapToDouble(l->l.getAmount()).sum();
 			countMap.put("Outstanding", outscount);
 			
-			query = "from AssociateLoanAndAdvances loansAndAd where loansAndAd.candidateId =:candidateId and loansAndAd.loanAndAdvanceStatus = 'Completed'";
+			query = "from AssociateLoanAndAdvances loansAndAd where loansAndAd.candidateId =:candidateId and loansAndAd.loanAndAdvanceStatus = 'Completed' and loansAndAd.status = '1'";
 			List<AssociateLoanAndAdvances> completedList = session.createQuery(query.toString()).setLong("candidateId", candidateId).list();
 			Double Complcount = completedList.stream().mapToDouble(l->l.getAmount()).sum();
 			countMap.put("Completed", Complcount);
 			
-			query = "from AssociateLoanAndAdvances loansAndAd where loansAndAd.candidateId =:candidateId and loansAndAd.loanAndAdvanceStatus = 'Requested'";
+			query = "from AssociateLoanAndAdvances loansAndAd where loansAndAd.candidateId =:candidateId and loansAndAd.loanAndAdvanceStatus = 'Requested' and loansAndAd.status = '1'";
 			List<AssociateLoanAndAdvances> requestedList = session.createQuery(query.toString()).setLong("candidateId", candidateId).list();
 			Double reqcount = requestedList.stream().mapToDouble(l->l.getAmount()).sum();
 			countMap.put("Requested", reqcount);
