@@ -5,6 +5,7 @@ import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
+import java.util.Set;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -34,6 +35,7 @@ import com.bis.sourcelead.dto.Response;
 import com.bis.sourcelead.dto.ResponseList;
 import com.bis.sourcelead.entity.AssociateLoanAndAdvances;
 import com.bis.sourcelead.entity.AssociateSalaryInd;
+import com.bis.sourcelead.entity.AssociateSalaryPayheadInd;
 import com.bis.sourcelead.entity.Candidate;
 import com.bis.sourcelead.entity.Countries;
 import com.bis.sourcelead.entity.Employees;
@@ -930,7 +932,12 @@ public class PayrollConfigurationRestController {
 				model.addObject("userGroupList", userGroupList);
 				model.addObject("associateSalaryInd", associateSalaryInd);
 				model.addObject("candidate", associateSalaryInd.getCandidate());
-				model.addObject("associateSalaryPayheadIndList", associateSalaryInd.getAssociateSalaryPayheadIndList());
+				Set<AssociateSalaryPayheadInd> aspList = null;
+				if(associateSalaryInd.getAssociateSalaryPayheadIndList().size() > 0) {
+					aspList = associateSalaryInd.getAssociateSalaryPayheadIndList();
+					aspList.removeIf(salPh -> salPh.getStatus().equals(0));
+				}
+				model.addObject("associateSalaryPayheadIndList", aspList);
 				model.addObject("uuid", associateSalaryInd.getUuid());
 				model.addObject("status", "");
 			}else {

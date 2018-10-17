@@ -1,4 +1,3 @@
-
 <%@taglib uri="http://java.sun.com/jsp/jstl/functions" prefix="fn"%>
 <%@taglib uri="http://www.springframework.org/tags/form" prefix="form"%>
 <%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
@@ -6,7 +5,6 @@
 <%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions"%>
 
 
-	<!-- <div id="tab-5" class="tabsMenu_tabs_inn clearfix" > -->
 			<form:form id="associateSalary_form" name="associateSalary_form">
                 <div class="clearfix minHeightcol5 mt">
                 <div class="clearfix mb">
@@ -111,7 +109,7 @@
                			<th>Annualy</th>
                		</tr>
                		</thead>
-	               		<tbody>
+	               		<tbody id="phTblBody">
 	               			<c:forEach var="payHead" items="${payrollPayheadList}" varStatus="loop">
 		               			<c:set var="checked" value="" />
 		               			<c:set var="monthlyValue" value="" />
@@ -127,8 +125,8 @@
 		               			</c:forEach>
 	               				<tr>
 									<td><input type="checkbox"  ${checked} id="${payHead.shortCode}" name="associateSalaryPayheadIndList[${loop.index}].checked" onclick="payHeadCalculation(${payHead.id}, '${payHead.shortCode}', '${payHead.method}', '${payHead.formula}')"></td>
-									<td>${payHead.name} <input type="text" style="display:none" name="associateSalaryPayheadIndList[${loop.index}].payrollPayheadId" value="${payHead.id}"></td>
-									<td>${payHead.type} <input type="text" style="display:none" name="associateSalaryPayheadIndList[${loop.index}].id" value="${assoSalPayHeadId}"></td>
+									<td title="${payHead.name} (${payHead.shortCode})">${payHead.name} (${payHead.shortCode})<input type="text" style="display:none" name="associateSalaryPayheadIndList[${loop.index}].payrollPayheadId" value="${payHead.id}"></td>
+									<td>${payHead.type} <input type="text" style="display:none" id="payheadSC[${payHead.shortCode}]" value="${payHead.type}"> <input type="text" style="display:none" name="associateSalaryPayheadIndList[${loop.index}].id" value="${assoSalPayHeadId}"></td>
 									<td>${payHead.method}</td>
 									<td>${payHead.formula}</td>
 									<td><input type="text" id="payHeadMonthly[${payHead.shortCode}]" name="associateSalaryPayheadIndList[${loop.index}].monthly" value="${monthlyValue}" onblur="calculateToPerYear('${payHead.shortCode}');" value="" class="form-control input-sm" field-name="${payHead.name}" data-validation="validate_Space validate_length length1-20 validate_float" data-validation-optional="true"></td>
@@ -155,7 +153,6 @@
                 </div>
             </div>
          </form:form>
-      <!-- </div> -->
 
 <script type="text/javascript">
         var validationSettings = {
@@ -207,12 +204,22 @@ function payHeadCalculation(id, shortCode, method, formula){
 			        break;
 			    case "Flat":
 				    	var result = eval(formula);
-						document.getElementById("payHeadMonthly["+shortCode+"]").value = (result/12).toFixed(2);
-						document.getElementById("payHeadYearly["+shortCode+"]").value = (result).toFixed(2);
+						document.getElementById("payHeadMonthly["+shortCode+"]").value = (result).toFixed(2);
+						document.getElementById("payHeadYearly["+shortCode+"]").value = (result*12).toFixed(2);
 			    	break;
 			    default:
-			    		document.getElementById("payHeadMonthly["+shortCode+"]").value = ("");
-						document.getElementById("payHeadYearly["+shortCode+"]").value = ("");
+			    		if(document.getElementById("payHeadMonthly["+shortCode+"]").value != ""){
+			    			var result = eval(document.getElementById("payHeadMonthly["+shortCode+"]").value);
+			    			document.getElementById("payHeadMonthly["+shortCode+"]").value = (result).toFixed(2);
+							document.getElementById("payHeadYearly["+shortCode+"]").value = (result*12).toFixed(2);
+			    		}else if(document.getElementById("payHeadYearly["+shortCode+"]").value != ""){
+			    			var result = eval(document.getElementById("payHeadYearly["+shortCode+"]").value);
+			    			document.getElementById("payHeadMonthly["+shortCode+"]").value = (result).toFixed(2);
+							document.getElementById("payHeadYearly["+shortCode+"]").value = (result*12).toFixed(2);
+			    		}else{
+			    			document.getElementById("payHeadMonthly["+shortCode+"]").value = ("");
+							document.getElementById("payHeadYearly["+shortCode+"]").value = ("");
+			    		}
 			}
 		}catch(err){
 			document.getElementById("payHeadMonthly["+shortCode+"]").value = (0).toFixed(2);
@@ -227,6 +234,22 @@ function payHeadCalculation(id, shortCode, method, formula){
 
 <script>
 function saveAssociateSalaryInd(){
+	var annualSalary = document.getElementById("annualSal").value;
+	var annualPayheadTotal = 0.00;
+	
+	$("#phTblBody input:checked").each(function(){
+		if(document.getElementById("payheadSC["+$(this).attr('id')+"]").value == 'Earnings'){
+			annualPayheadTotal += parseFloat(document.getElementById("payHeadYearly["+$(this).attr('id')+"]").value);
+		}
+	});
+	
+	if(parseFloat(annualSalary) == parseFloat(annualPayheadTotal)){
+		//alert(true);
+	}else{
+		//alert(false);
+	}
+	
+	
 	if ($('#associateSalary_form').validate(false, validationSettings)) {
 		var formData = getFormData1("associateSalary_form");
 		var status = $("#status").val();
@@ -257,7 +280,6 @@ $('body').on('blur', '#associateSalary_form', function() {
 </script>
 
 <script>
-
 $('#editAssociateBtn').click(function() {
 	$('#editAssociateBtn').css('display','none');
 	$('#saveAssociateBtnDiv').css('display','block');
@@ -270,16 +292,6 @@ $('#editAssociateBtn').click(function() {
 <script>
 $('#cancelAssociateSalaryIndBtn').click(function() {
 	location.replace(sourceleadUrl+"/usersList");
-	/* var status = $("#status").val();
-	if(status == 'NEW'){
-		location.replace(sourceleadUrl+"/usersList");
-	}else{
-		$('#editAssociateBtn').css('display','block');
-		$('#associateSalary_form input').attr('disabled','true');
-		$('#associateSalary_form select').prop('disabled', true);
-		$('#saveAssociateBtnDiv').css('display','none');
-		$('#editSectionDiv').css('display','none');
-	} */
 });
 </script>
 
@@ -336,7 +348,14 @@ function getPayFreqHours(){
 </script>
 
 <script>
+function updatePayheads(){
+	$("#phTblBody input:checked").each(function(){
+	    $(this).trigger('onclick');
+	});
+}
+</script>
 
+<script>
 function calculateSal(){
 	var payFrequency = $("#payFrequency").val();
 	var annualSal = $("#annualSal").val();
@@ -368,6 +387,7 @@ function calculateSal(){
 		var hourRate = rate/hours;
 		$("#hourlyRate").val(hourRate.toFixed(2));
 	}
+	updatePayheads();
 }
 </script>
 
@@ -408,6 +428,7 @@ function calculatePayPerSal(){
 			$("#hourlyRate").val(hourlyrate.toFixed(2));
 		}
 	}
+	updatePayheads();
 }
 </script>
 
@@ -426,6 +447,7 @@ function calculateHourlyRateSal(){
 		$("#perPaySal").val(perPaySal.toFixed(2));
 		calculatePayPerSal();
 	}
+	updatePayheads();
 }
 </script>
 
