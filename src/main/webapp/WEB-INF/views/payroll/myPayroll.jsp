@@ -524,6 +524,7 @@ function getMyPayrollList(){
 	         
 	         //Loan and Advance
 	         var loan = "";
+	         if(result.loanAdvance != null && result.loanAdvance != '' && result.loanAdvance != 'undefined'){
 	         for (var i=0; i< result.loanAdvance.length; i++){
 	             var ln = result.loanAdvance[i];
 	        	 loan = loan + '<tr>';
@@ -535,6 +536,7 @@ function getMyPayrollList(){
 	         loan = loan + '<td><strong>Total</strong></td>';
 	         loan = loan + '<td>$ '+result.loanAmountTotal+'</td>';
 	         loan = loan + '</tr>';
+	         }
 	         $("#loanAdvDiv").empty();
 	         $("#loanAdvDiv").append(loan);
 	         
