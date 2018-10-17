@@ -2712,8 +2712,14 @@ public class RequirementSubmissionDaoImpl implements RequirementSubmissionDao{
 	    			subQuery1 = " and (rsh.submissionId.createdBy =:userCode)";
 	    			params.put("userCode",user.getUserCode());
 	    		}
-	        	
-	     		String query =" from RequirementSubmissionHistory rsh left join fetch rsh.submissionId.candidate can left join fetch rsh.submissionId.requirement req left join fetch rsh.submissionId rs where rsh.submissionId.orgLocations = :orgLocationsId "+submissionStages+" "+empQuery+" "+clientSubQuery+" "+teamSubQuery+" "+incentivizedQuery+" "+subQuery1+" and rsh.submissionId.status = 1  and rsh.submissionId.requirement IS NOT NULL and rsh.updatedDate >= :startDate and rsh.updatedDate <= :endDate "+query1+"";
+	    		String query="";
+	        	if(requirementSubmissionHistoryDTO.getType() != null &&requirementSubmissionHistoryDTO.getType().equalsIgnoreCase("applicantReport")){
+		     		query =" from RequirementSubmissionHistory rsh left join fetch rsh.submissionId.candidate can left join fetch rsh.submissionId.requirement req left join fetch rsh.submissionId rs where rsh.submissionId.orgLocations = :orgLocationsId "+submissionStages+" "+empQuery+" "+clientSubQuery+" "+teamSubQuery+" "+incentivizedQuery+" "+subQuery1+" and rsh.submissionId.status = 1  and rsh.submissionId.requirement IS NOT NULL and rs.joinedDate >= :startDate and rs.joinedDate <= :endDate "+query1+"";
+	        	}
+	        	else{
+		     		query =" from RequirementSubmissionHistory rsh left join fetch rsh.submissionId.candidate can left join fetch rsh.submissionId.requirement req left join fetch rsh.submissionId rs where rsh.submissionId.orgLocations = :orgLocationsId "+submissionStages+" "+empQuery+" "+clientSubQuery+" "+teamSubQuery+" "+incentivizedQuery+" "+subQuery1+" and rsh.submissionId.status = 1  and rsh.submissionId.requirement IS NOT NULL and rsh.updatedDate >= :startDate and rsh.updatedDate <= :endDate "+query1+"";
+	        	}
+//	     		String query =" from RequirementSubmissionHistory rsh left join fetch rsh.submissionId.candidate can left join fetch rsh.submissionId.requirement req left join fetch rsh.submissionId rs where rsh.submissionId.orgLocations = :orgLocationsId "+submissionStages+" "+empQuery+" "+clientSubQuery+" "+teamSubQuery+" "+incentivizedQuery+" "+subQuery1+" and rsh.submissionId.status = 1  and rsh.submissionId.requirement IS NOT NULL and rsh.updatedDate >= :startDate and rsh.updatedDate <= :endDate "+query1+"";
      			String countQuery ="select count(*) from RequirementSubmissionHistory rsh  where rsh.submissionId.orgLocations = :orgLocationsId "+submissionStages+" "+empQuery+" "+clientSubQuery+" "+teamSubQuery+" "+incentivizedQuery+" "+subQuery1+" and rsh.submissionId.status = 1  and rsh.submissionId.requirement IS NOT NULL and rsh.updatedDate >= :startDate and rsh.updatedDate <= :endDate";
      			params.put("orgLocationsId",orgLocationsId);
      			if(clientIdsList != null) {
@@ -3557,18 +3563,15 @@ public class RequirementSubmissionDaoImpl implements RequirementSubmissionDao{
 					Session session = this.sessionFactory.getCurrentSession();
 					 Query queryString = null;
 					 List<ApplicantsJoinedReportDTO> applicantJoinedReportList = null;
-				     String query = " select reqinst.REQUIREMENT_ID as requirementID,"+
- " reqSub.ID as reqSubId,"+
-" reqinst.JOINERS_AMOUNT_TYPE as incentAmountType,"+
- "reqInst.JOINERS as incentJoiners,"+
-" reqSub.ORG_LOCATION_ID as orglocationId,"+
- "reqInst.JOINERS_AMOUNT as incentAmount,"+
- "reqSub.FINALIZED_RATE finalRate,"+
- "reqOff.AMOUNT as OfferAmount,"+
-" reqSub.CREATED_BY createdBy"+
-" from REQUIREMENT_SUBMISSION reqSub, REQUIREMENT_INCENTIVE reqInst, REQUIREMENT_OFFERS reqOff "+
-"where reqSub.REQUIREMENT_ID=reqInst.REQUIREMENT_ID and reqOff.SUBMISSION_ID = reqSub.ID and reqSub.ORG_LOCATION_ID='"+orgLocationId+"' and reqSub.CREATED_BY='"+usercode+"' group by reqSub.REQUIREMENT_ID";
-					
+		String query = " SELECT reqInst.REQUIREMENT_ID as requirementID,"
+				+ " reqSub.ID as reqSubId," + " reqInst.JOINERS_AMOUNT_TYPE as incentAmountType,"
+				+ "reqInst.JOINERS as incentJoiners," + " reqSub.ORG_LOCATION_ID as orglocationId,"
+				+ "reqInst.JOINERS_AMOUNT as incentAmount," + "reqSub.FINALIZED_RATE finalRate,"
+				+ "reqOff.AMOUNT as OfferAmount," + " reqSub.CREATED_BY createdBy"
+				+ " from REQUIREMENT_SUBMISSION reqSub, REQUIREMENT_INCENTIVE reqInst, REQUIREMENT_OFFERS reqOff "
+				+ "where reqSub.REQUIREMENT_ID=reqInst.REQUIREMENT_ID and reqOff.SUBMISSION_ID = reqSub.ID and reqSub.ORG_LOCATION_ID='"
+				+ orgLocationId + "' and reqSub.CREATED_BY='" + usercode
+				+ "' group by reqSub.REQUIREMENT_ID ";
 				     queryString =  session.createSQLQuery(query.toString());
 					ApplicantsJoinedReportDTO applicantsJoinedReportDTO = null;
 //					if (applicantsJoinedReportDTOList != null && applicantsJoinedReportDTOList.size() > 0) {
