@@ -31,7 +31,10 @@ $(document).ready(function(){
     <li><a href="javascript:void(0)" class="filtIcon" title="Filters" onclick="openPop();"></a></li>
     <li><a href="javascript:void(0)" class="overIcon" title="Actions" onclick="newActions();"></a>
       <div class="newActPop" style="">
-       <span><a href="javascript:void(0)" onclick="exportToPdf();" title="PDF">Export PDF</a> <a href="javascript:void(0)" onclick="exportUserData();" title="Excel">Export Excel</a> </span> </div>
+       <span><a href="javascript:void(0)" onclick="exportToPdf();" title="PDF">Export PDF</a> 
+       		<a href="javascript:void(0)" onclick="exportToExcel();" title="Excel">Export Excel</a>
+        </span> 
+      </div>
     </li>
     <li><input type='text' placeholder='Search' class='repSearchBar' id='dataTableSearch'/>
 		<span class='repSearchIcon' onClick='associateWithHoldingSearch();'></span></li>
@@ -494,6 +497,54 @@ function resetFilter(){
 function refreshPage(){
     window.location.reload();
 } 
+</script>
+
+<script>
+function exportToPdf(){
+	var dept = [];
+	var empType = [];
+	 
+         $('input:checkbox[name=deptName]:checked').each(function() 
+          {
+    	  dept.push($(this).val());
+          });
+    
+    
+        $('input:checkbox[name=empType]:checked').each(function() 
+    	    {
+    	       empType.push($(this).val());
+    	    });
+    
+   
+        var searchValue = $("#dataTableSearch").val();
+		searchValue = searchValue ? searchValue : "";
+
+    	window.location.href = sourceleadUrl+"/exportAssociateWithholding?searchValue="+searchValue+"&dept="+dept+"&empType="+empType+"&exportType=pdf";
+}
+</script>
+
+<script>
+function exportToExcel(){
+	var dept = [];
+	var empType = [];
+	 
+         $('input:checkbox[name=deptName]:checked').each(function() 
+          {
+    	  dept.push($(this).val());
+          });
+    
+    
+        $('input:checkbox[name=empType]:checked').each(function() 
+    	    {
+    	       empType.push($(this).val());
+    	    });
+    
+   
+        var searchValue = $("#dataTableSearch").val();
+		searchValue = searchValue ? searchValue : "";
+
+    	window.location.href = sourceleadUrl+"/exportAssociateWithholding?searchValue="+searchValue+"&dept="+dept+"&empType="+empType+"&exportType=xls";
+}
 </script>
 
 
