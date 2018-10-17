@@ -50,7 +50,7 @@
 		   <span><input class="immigraTabSerach" id ="globalMarketSearh" placeholder="Search" type="text"></span>
         </ul>
       </div>
-		
+	<div id="popUp"></div>
 	<div id="dynamicGlobalMarketCandidateViewDiv" class="project_wrap_table datatable_filter"></div>
     </div>
     </div>
@@ -78,6 +78,7 @@
 	     result = result + '<th>Current CTC</th>';
 	     result = result + '<th>Expected CTC</th>';
 	     result = result + '<th>Profile %</th>';
+	     result = result + '<th>Price</th>';
 	     result = result + '<th>Action</th>';
 	     result = result + '</tr>';
 	     result = result + '</thead>';
@@ -115,6 +116,7 @@
 	             {"data": "Current CTC"},
 	             {"data": "Expected CTC"},
 	             {"data": "Profile %"},
+	             {"data": "Price"},
 	             {"data": "Action"}
 	         ],
 	         "columnDefs": [
@@ -199,10 +201,24 @@
 	             },
 	             {
 	                 "targets": colIndex++,
+	                 "data": "price",
+	                 "render": function (data, type, opt, meta) {
+	                     var result = "";
+	                     if (opt.marketPrice !== null && opt.marketPrice !== '' && opt.marketPrice !== 'undefined') {
+	                    	 result = result + "<td><div id='marketPlacePriceDiv'><div id='marketPlacePriceValDiv' class='tbldata-dotdot-sm' title = '"+opt.marketPrice+" "+ opt.marketRateCurrencey+"'>" + opt.marketPrice + " "+ opt.marketRateCurrencey+"</div></div></td>";
+	                     } else {
+	                         result = result + "<td><div class='tbldata-dotdot-sm'>---</div></td>";
+	                     } 
+	                     return result;
+	                 }
+	             },
+	             
+	             {
+	                 "targets": colIndex++,
 	               /*   "data": "action", */
 	                 "render": function (data, type, opt, meta) {
 	                     var result = "";
-	                    	 result = result + "<td><div class='tbldata-dotdot-sm' title = 'Add To Marketplace'><a href='' >Actions</a></div></td>";
+	                    	 result = result + "<td><div class='tbldata-dotdot-sm' id='marketLinkDiv' ><a id='editMarketLink' onclick='editMarketPriceFun(\""+opt.id+"\",\""+opt.marketPrice+"\",\""+opt.marketRateCurrencey+"\", this);' title='Edit'>Edit</a> <a onclick = 'disableMarketPlace("+opt.id+")'>&nbsp;Withdraw</a></div></td>";
 	                     return result;
 	                 }
 	             }
@@ -239,6 +255,80 @@
 	$(".selectPrice").text(price);
 	
 }*/
+function editMarketPriceFun(id, marketPrice, marketPriceCurrency, obj){
+	//alert(marketPrice+" "+marketPriceCurrency);
+	$(obj).closest('tr').find("div[id='marketPlacePriceValDiv']").empty();
+	var result = "";
+		result = result + '<div class="tblminwidth-75 clearfix"><div class="dropdown-inputbox"><input type="text"  onkeypress="return isNumberKey(event)" id="priceVal" value="'+marketPrice+'" placeholder="Enter" class="form-control input-sm"><select id="amountTypeEach" value="" class="form-control input-sm sel">';
+		result = result + ' <option '+(marketPriceCurrency == "" ? "selected" : "")+' value="">--Select--</option>';
+		result = result + ' <option '+(marketPriceCurrency == "INR" ? "selected" : "")+' value="INR">INR</option> ';
+		result = result + ' <option '+(marketPriceCurrency == "AUD" ? "selected" : "")+' value="AUD">AUD</option>';
+		result = result + ' <option '+(marketPriceCurrency == "USD" ? "selected" : "")+' value="USD">USD</option>';
+		result = result + ' <option '+(marketPriceCurrency == "GBP" ? "selected" : "")+' value="GBP">GBP</option> ';
+		result = result + ' <option '+(marketPriceCurrency == "SGD" ? "selected" : "")+' value="SGD">SGD</option>';
+		result = result + ' <option '+(marketPriceCurrency == "EUR" ? "selected" : "")+' value="EUR">EUR</option>';
+		result = result + '</select></div></div>';
+	$(obj).closest('tr').find("div[id='marketPlacePriceDiv']").empty().append(result);
+	$(obj).closest('tr').find("div[id='marketLinkDiv']").empty().append("<a href='#' id='saveMarketLink' onclick='saveEditMarketPriceFun(\""+id+"\",this);' title='Save'>Save</a><a href='#' id='cancelMarketLink' onclick='cancelEditMarketPriceFun(\""+marketPrice+"\",\""+marketPriceCurrency+"\",\""+id+"\", this);' title='Cancel'>&nbsp;Cancel</a>");
+}
+
+function isNumberKey(evt)
+{
+   var charCode = (evt.which) ? evt.which : evt.keyCode;
+   if (charCode != 46 && charCode > 31 
+     && (charCode < 48 || charCode > 57))
+      return false;
+
+   return true;
+}
+function popupDisplay(message){
+	$(".project_inn_mask").remove();
+		
+	var result = "";
+	result = result +"	<div class='project_inn_mask'></div>";
+	result = result +"	   <div id='remove_immigration_pop' class='remove_user_pop remove_user_pop_a'>";
+	/* result = result +"		<  id='reasonForTemplate' name='reasonForSpoc' data-validation='required validate_Space validate_Description validate_length length2-250' placeholder='Reason' onkeypress=';' ></textarea>"; */
+	result = result +"<div class='modal-body'><p id='popupMsg'></p></div>";
+	result = result + ' <div id="reasonForTemplateDiv"/>';
+	result = result +"<div class='clearfix'><input class='u_can_color width100percnt' type='button'  value='Ok' onClick='cancelMarketplacePopup();'></div>";
+	result = result +"	</div>";
+	$("#popUp").append(result);
+	$("#popupMsg").empty().append(message);
+	$("#remove_immigration_pop").slideDown(200);
+	$(".project_inn_mask").fadeIn(200);
+}
+
+function cancelMarketplacePopup(){
+	$("#remove_immigration_pop").fadeOut(200);
+	$(".project_inn_mask").fadeOut(200);
+}
+
+function saveEditMarketPriceFun(id, obj){
+	var  marketPrice = $(obj).closest('tr').find("input[id='priceVal']").val();
+	var marketPriceCurrency = $(obj).closest('tr').find("select[id='amountTypeEach']").val();
+	//alert(textVal+" : "+optionVal+" : "+id);
+	if(marketPrice == ""){
+		popupDisplay("Please enter amount!");
+		return false;
+	}
+	$.ajax({
+   		type: "POST",
+	 	url : sourceleadUrl+"/updateMarketPlacePrice?marketPlaceId="+id+"&priceVal="+marketPrice+"&priceValType="+marketPriceCurrency,
+		success: function(json) {
+			if(json == "success"){
+				//$(obj).closest('tr').find("div[id='marketPlacePriceDiv']").empty().append("<div id='marketPlacePriceValDiv' class='tbldata-dotdot-sm' title = '"+marketPrice+" "+ marketPriceCurrency+"'>" + marketPrice + " "+ marketPriceCurrency+"</div>");
+				//$(obj).closest('tr').find("div[id='marketLinkDiv']").empty().append("<a href='#' id='editMarketLink' onclick='editMarketPriceFun(\""+id+"\",\""+marketPrice+"\",\""+marketPriceCurrency+"\", this);' title='Edit'>Edit</a>")				
+				//$(obj).closest('tr').find("div[id='marketPlacePriceDiv']").empty().append("<div id='marketPlacePriceValDiv' class='tbldata-dotdot-sm' title = '"+marketPrice+" "+ marketPriceCurrency+"'>" + marketPrice + " "+ marketPriceCurrency+"</div>");
+				//$(obj).closest('tr').find("div[id='marketLinkDiv']").empty().append("<a href='#' id='editMarketLink' onclick='editMarketPriceFun(\""+id+"\",\""+marketPrice+"\",\""+marketPriceCurrency+"\", this);' title='Edit'>Edit</a>")
+				getDynamicGlobalMarketCandidateList();
+			}
+		}
+	});
+}
+function cancelEditMarketPriceFun(marketPrice, marketPriceCurrency, id, obj){
+	$(obj).closest('tr').find("div[id='marketPlacePriceDiv']").empty().append("<div id='marketPlacePriceValDiv' class='tbldata-dotdot-sm' title = '"+marketPrice+" "+ marketPriceCurrency+"'>" + marketPrice + " "+ marketPriceCurrency+"</div>");
+	$(obj).closest('tr').find("div[id='marketLinkDiv']").empty().append("<a href='#' id='editMarketLink' onclick='editMarketPriceFun(\""+id+"\",\""+marketPrice+"\",\""+marketPriceCurrency+"\", this);' title='Edit'>Edit</a><a onclick = 'disableMarketPlace(\""+id+"\")'>&nbsp;Withdraw</a>")
+}
 $(".funPrice").on("click", "li", function(){
 	var x = $(this).text();
 	$(this).parents(".selectPriceli").find(".selectPrice").text(x);
@@ -255,5 +345,51 @@ function cardModel() {
 function goToGlobalMarketPlaceList(){
 	location.href = "${appPath}/globalMarketplacePage";
 }
+
+
+function cancelMarketPlace(){
+	$("#remove_marketPlace_pop, .project_inn_mask").fadeOut();
+	$("#reasonForMarketPlace").val('');
+	$("#reasonForMarketPlaceDiv").find("p.jquery_form_error_message").remove();
+	$("#reasonForMarketPlaceDiv").empty(); 
+}
+function disableMarketPlace(id){ 
+	$(".project_inn_mask").remove();
+	var result = "";
+	result = result +"	<div class='project_inn_mask'></div>";
+	result = result +"	   <div id='remove_marketPlace_pop' class='remove_user_pop remove_user_pop_a'>";
+	result = result +"		<textarea  id='reasonForMarketPlace' name='reasonForSpoc' data-validation='required validate_Space validate_Description validate_length length2-250' placeholder='Reason' onkeypress=';' ></textarea>";
+	result = result + ' <div id="reasonForMarketPlaceDiv"/>';
+	result = result +"		<b href='javascript:void(0)'><input id='confirm-id' type='button' value='Delete' onclick='deleteMarketPlace("+id+");'><input class='u_can_color' type='button'  value='Cancel' onClick='cancelMarketPlace();'></b>";
+	result = result +"	</div>";
+	$("#popUp").empty().append(result);
+	$("#remove_marketPlace_pop").slideDown(200);
+	$(".project_inn_mask").fadeIn(200);
+}
+function deleteMarketPlace (id) {
+    var reason = $("#reasonForMarketPlace").val();
+    if(reason.match(/^[^\s-](.*)*$/) != null && reason !="" && reason.length <= 250){
+    $("#reasonForMarketPlaceDiv").empty();
+   $.ajax({
+        url: sourceleadUrl + "/withdrawMarketplace?candidateId="+id+"&withdrawReason="+reason,
+        type: "GET",
+        data: id,
+        success: function (result) {
+              	$("#remove_marketPlace_pop").fadeOut(200);
+	    		$(".project_inn_mask").fadeOut(200);
+	    		dynamicGlobalMarketCandidateListPagination(sourceleadUrl + "/getOrgMarketplaceList?searchValue="+$("#globalMarketSearh").val());
+	    }
+    });
+    }else if (reason.length >= 251){
+    	$("#reasonForMarketPlaceDiv").find('p.jquery_form_error_message').remove();
+		$("#reasonForMarketPlaceDiv").empty().append("<font color='red' style='padding: 5px 10px; '>Reason Length 1-250 characters</font>") ; 
+    }else{
+    	$("#reasonForMarketPlaceDiv").find('p.jquery_form_error_message').remove();
+		$("#reasonForMarketPlaceDiv").empty().append("<font color='red' style='padding: 5px 10px; '>Reason is required</font>") ; 
+    }
+}
+
+
+
 </script>
 <jsp:include page="../masterFooter.jsp" /> 	

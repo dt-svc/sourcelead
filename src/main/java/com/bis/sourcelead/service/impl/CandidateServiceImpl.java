@@ -2774,4 +2774,25 @@ private Sheet createXlsSheet(Sheet createExcelsheet, Row writeRow,Candidate cand
 		return candidatesIds;
 	}
 
+	@Override
+	public void updateMarketPlacePrice(Long id, String priceVal, String priceValType) {
+		CandidateMarketPlace marketPlace= candidateDao.getCandidateMarketPlaceById(id);
+		marketPlace.setMarketPrice(priceVal);
+		marketPlace.setMarketRateCurrencey(priceValType);
+		candidateDao.updateMarketPlacePrice(marketPlace);
+	}
+	
+	@Override
+	public void withdrawMarketplace(CandidateMarketPlace marketplace, String withdrawReason) throws Exception {
+		marketplace.setCandidateMarketStatus(Constants.LEAVE_WITHDRAW);
+		marketplace.setWithdrawReason(withdrawReason);
+		 candidateDao.withdrawMarketplace( marketplace);
+		
+	}
+
+	@Override
+	public CandidateMarketPlace fetchMarketPlace(Long candidateId, Long orgLocationId) throws Exception{
+		return candidateDao.fetchMarketPlace(candidateId, orgLocationId);
+	}
+
 }

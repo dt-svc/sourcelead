@@ -178,7 +178,7 @@ public class CandidateController {
 		OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 		candidateMarketPlaceDTO.setOrgLocationId(orgLocations.getId().toString());
 		try {
-			String[] tableColumns = { "fullName", "location", "skillsName", "currentRate", "expectedRate", "profilePercentage" };// should
+			String[] tableColumns = { "fullName", "location", "skillsName", "currentRate", "expectedRate", "profilePercentage", "price" };// should
 																														// be
 			// entity names
 			int sortColumnIndex = -1; // by default sorting using updated date

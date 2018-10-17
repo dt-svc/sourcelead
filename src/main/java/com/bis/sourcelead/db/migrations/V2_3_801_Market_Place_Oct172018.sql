@@ -1,0 +1,2 @@
+ALTER TABLE `sourcelead`.`candidate_market_place` 
+ADD COLUMN `WITHDRAW_REASON` VARCHAR(255) NULL AFTER `CAN_MARKET_STATUS`;
