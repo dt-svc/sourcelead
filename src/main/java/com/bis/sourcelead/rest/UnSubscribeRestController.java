@@ -50,6 +50,9 @@ public class UnSubscribeRestController {
 	 
 	 @Autowired
 	 SourceleadPasswordEncoder sourceleadPasswordEncoder;
+	 
+	 @Value("${GoogleMaps_Location_API_KEY}")
+	 private String googleMapsLocationApiKey;
 	  
 	    
 	@RequestMapping(value = "/app/ws/unsubscribe", method = RequestMethod.GET)
@@ -72,6 +75,7 @@ public class UnSubscribeRestController {
 			model.addObject("userId",user.getId());
 			model.addObject("token",token);
 		}*/
+		model.addObject("googleMapsLocationApiKey", googleMapsLocationApiKey);
 		model.addObject("sourceleadUrl",sourceleadUrl);
 		model.setViewName("unSubscribe");
 		return model;
