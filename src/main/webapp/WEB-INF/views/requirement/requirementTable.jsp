@@ -642,7 +642,7 @@ function jpagination(url,sourceleadUrl){
 			         				'</sec:authorize>';
 			         			}else if(opt.requirementSubmissionStatus == "CLOSED"){
 			         				result = result +"<option disabled selected >CLOSED</option>";
-
+			         				result = result +"<option value='OPEN'>OPEN</option>";
 			         			}
 			         			else if(opt.requirementSubmissionStatus == "CANCEL"){
 			         				result = result +"<option disabled selected >"+opt.requirementSubmissionStatus+"</option>";
@@ -747,7 +747,7 @@ function jpagination(url,sourceleadUrl){
 			         				
 			         			}else if(opt.requirementSubmissionStatus == "FILLEDCLOSED"){
 			         				result = result +"<option disabled selected >"+opt.requirementSubmissionStatus+"</option>";
-			         				
+			         				result = result +"<option value='OPEN'>OPEN</option>";
 			         			}
 
 			         			result = result +" </select>";	
