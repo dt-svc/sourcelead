@@ -750,14 +750,16 @@ public class ProjectsDashboardRestController {
 			 ResponseList<ProjectTasks> response =  new  ResponseList<ProjectTasks>();
 			 try {
 				 String userRole = (String) SourceLeadSessionManager.getSessionAttribute(request, "loginUserRole");
+				 User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user"); 
 				 if(userRole != null) {
-					 String[] tableColumns = {"taskName", "taskType", "priority", "assignedTo","status"};
+					 String[] tableColumns = {"id","taskName", "taskType", "priority", "assignedTo","status"};
 					    int sortColumnIndex = 1; //by default sorting using updated date
 						String sortColumnOrder = "asc"; //by default descending order
 						if(projectTasksDTO.getOrder() != null && !projectTasksDTO.getOrder().isEmpty()) {
 							sortColumnIndex = Integer.parseInt(projectTasksDTO.getOrder().get(0).get("column"));
 							sortColumnOrder = projectTasksDTO.getOrder().get(0).get("dir");
 						}
+						projectTasksDTO.setUserCode(user.getUserCode());
 						projectTasksDTO.setSortColumn(tableColumns[sortColumnIndex]);
 						projectTasksDTO.setSortOrder(sortColumnOrder);
 						response = tasksService.getAllProjectTasksByProjectIdAndTaskTypeAndTaskStatus(projectTasksDTO,Long.parseLong(projectTasksDTO.getProjectId()),projectTasksDTO.getProjectTaskType(),projectTasksDTO.getProjectTaskStatus(),userRole,projectTasksDTO.getAssignedMembers());
