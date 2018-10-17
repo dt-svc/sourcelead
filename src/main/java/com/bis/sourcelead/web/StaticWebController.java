@@ -20,9 +20,13 @@ public class StaticWebController {
 	@Value("${sourceleadUrl}")
 	private String sourceleadUrl;
 	
+	@Value("${GoogleMaps_Location_API_KEY}")
+	private String googleMapsLocationApiKey;
+	
 	public ModelAndView setMetaProperties(String viewPage) throws MissingResourceException {
 		ModelAndView model = new ModelAndView();
 		model.addObject("sourceleadUrl", sourceleadUrl);
+		model.addObject("googleMapsLocationApiKey", googleMapsLocationApiKey);
 		try {
 			ResourceBundle bundle = ResourceBundle.getBundle("seo");
 			if (bundle != null && bundle.getString(viewPage + ".title") != null) {

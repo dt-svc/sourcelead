@@ -401,7 +401,7 @@ function validateUserEmail(){
 }
 </script>
 <script src="/resources/js/jquery-ui.js"></script>
-<script src="https://maps.google.com/maps/api/js?libraries=places&v=3&key=AIzaSyCIbxD8-aZ7Wgp6N-JeEJKVRIHGRpNMdRE" type="text/javascript"></script>
+<script src="https://maps.google.com/maps/api/js?libraries=places&v=3&key=${googleMapsLocationApiKey}" type="text/javascript"></script>
 <script src="/resources/js/formvalidator.js"></script>
 <script src="/resources/js/jquery.timepicker.js"></script>
 <script src="/resources/static-web/js/jquery-1.11.3.min.js"></script>

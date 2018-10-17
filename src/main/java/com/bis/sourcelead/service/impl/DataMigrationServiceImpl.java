@@ -479,6 +479,7 @@ public class DataMigrationServiceImpl implements DataMigrationService {
 		logger.debug("Upload End Time>>>"+Calendar.getInstance().getTime());
 		
 		history.setUploadProcessingStatus("Completed");
+		history.setEndDate(new Date());
 		uploadXlsHistoryService.storeUploadXlsHistory(history);
 		
 		
@@ -646,6 +647,7 @@ public class DataMigrationServiceImpl implements DataMigrationService {
 			}catch (Exception e) {
 				UploadXlsHistory history = uploadXlsHistoryService.getUploadXlsHistoryDetailsByUploadId(uploadId);
 				history.setUploadProcessingStatus("Completed");
+				history.setEndDate(new Date());
 				uploadXlsHistoryService.storeUploadXlsHistory(history);
 				e.printStackTrace();
 			}
@@ -694,6 +696,7 @@ public class DataMigrationServiceImpl implements DataMigrationService {
 			}catch (Exception e) {
 				UploadXlsHistory history = uploadXlsHistoryService.getUploadXlsHistoryDetailsByUploadId(uploadId);
 				history.setUploadProcessingStatus("Completed");
+				history.setEndDate(new Date());
 				uploadXlsHistoryService.storeUploadXlsHistory(history);
 				e.printStackTrace();
 			}
@@ -769,6 +772,7 @@ public class DataMigrationServiceImpl implements DataMigrationService {
 				}catch (Exception e) {
 					UploadXlsHistory history = uploadXlsHistoryService.getUploadXlsHistoryDetailsByUploadId(uploadId);
 					history.setUploadProcessingStatus("Completed");
+					history.setEndDate(new Date());
 					uploadXlsHistoryService.storeUploadXlsHistory(history);
 					e.printStackTrace();
 				}
@@ -823,6 +827,7 @@ public class DataMigrationServiceImpl implements DataMigrationService {
 			}catch (Exception e) {
 				UploadXlsHistory history = uploadXlsHistoryService.getUploadXlsHistoryDetailsByUploadId(uploadId);
 				history.setUploadProcessingStatus("Completed");
+				history.setEndDate(new Date());
 				uploadXlsHistoryService.storeUploadXlsHistory(history);
 				e.printStackTrace();
 			}
@@ -851,6 +856,7 @@ public class DataMigrationServiceImpl implements DataMigrationService {
 			}catch (Exception e) {
 				UploadXlsHistory history = uploadXlsHistoryService.getUploadXlsHistoryDetailsByUploadId(uploadId);
 				history.setUploadProcessingStatus("Completed");
+				history.setEndDate(new Date());
 				uploadXlsHistoryService.storeUploadXlsHistory(history);
 				e.printStackTrace();
 			}
@@ -871,6 +877,7 @@ public class DataMigrationServiceImpl implements DataMigrationService {
 			}catch (Exception e) {
 				UploadXlsHistory history = uploadXlsHistoryService.getUploadXlsHistoryDetailsByUploadId(uploadId);
 				history.setUploadProcessingStatus("Completed");
+				history.setEndDate(new Date());
 				uploadXlsHistoryService.storeUploadXlsHistory(history);
 				e.printStackTrace();
 			}
@@ -982,6 +989,7 @@ public class DataMigrationServiceImpl implements DataMigrationService {
 			}catch (Exception e) {
 				UploadXlsHistory history = uploadXlsHistoryService.getUploadXlsHistoryDetailsByUploadId(uploadId);
 				history.setUploadProcessingStatus("Completed");
+				history.setEndDate(new Date());
 				uploadXlsHistoryService.storeUploadXlsHistory(history);
 				e.printStackTrace();
 			}
@@ -1227,6 +1235,7 @@ public class DataMigrationServiceImpl implements DataMigrationService {
 			}catch (Exception e) {
 				UploadXlsHistory history = uploadXlsHistoryService.getUploadXlsHistoryDetailsByUploadId(uploadId);
 				history.setUploadProcessingStatus("Completed");
+				history.setEndDate(new Date());
 				uploadXlsHistoryService.storeUploadXlsHistory(history);
 				e.printStackTrace();
 			}
