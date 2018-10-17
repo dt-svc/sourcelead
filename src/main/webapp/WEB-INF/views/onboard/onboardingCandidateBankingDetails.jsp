@@ -28,7 +28,7 @@
 
 <script src="/resources/js/jquery-1.11.1.min.js?staticTime=${staticTime}"></script>
 <script src="/resources/js/formvalidator.js?staticTime=${staticTime}"></script>
-<script src="https://maps.google.com/maps/api/js?libraries=places&v=3&key=AIzaSyCIbxD8-aZ7Wgp6N-JeEJKVRIHGRpNMdRE" type="text/javascript"></script>
+<script src="https://maps.google.com/maps/api/js?libraries=places&v=3&key=${googleMapsLocationApiKey}" type="text/javascript"></script>
 
 
 <script type="text/javascript">
