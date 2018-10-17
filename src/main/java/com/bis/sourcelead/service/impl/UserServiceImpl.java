@@ -2031,19 +2031,19 @@ private Sheet createXlsSheet(Sheet createExcelsheet, Row writeRow, int column,Ap
 		   writeRow.createCell(cellCount++).setCellValue(userDTO.getRequirementCount().longValue());
 	   }
 	   else{
-		   writeRow.createCell(cellCount++).setCellValue("--");   
+		   writeRow.createCell(cellCount++).setCellValue("0");   
 	   }
 	   if(userDTO.getOfferCount() != null){
 		   writeRow.createCell(cellCount++).setCellValue(userDTO.getOfferCount().longValue());
 	   }
 	   else{
-		   writeRow.createCell(cellCount++).setCellValue("--");   
+		   writeRow.createCell(cellCount++).setCellValue("0");   
 	   }
 	   if(userDTO.getJoinedCount() !=null){
 		   writeRow.createCell(cellCount++).setCellValue(userDTO.getJoinedCount().longValue());
 	   }
 	   else{
-		   writeRow.createCell(cellCount++).setCellValue("--");   
+		   writeRow.createCell(cellCount++).setCellValue("0");   
 	   }
 	   
 	   List<LeaveType> leaveTypesList=leaveTypeService.getLeaveTypeListByLocationId(orgLocations.getId().toString());
