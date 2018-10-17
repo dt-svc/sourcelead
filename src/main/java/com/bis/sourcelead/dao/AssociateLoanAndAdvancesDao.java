@@ -4,6 +4,9 @@ import java.util.List;
 import java.util.Map;
 
 import com.bis.sourcelead.entity.AssociateLoanAndAdvances;
+import com.bis.sourcelead.entity.Candidate;
+import com.bis.sourcelead.entity.OrgLocations;
+import com.bis.sourcelead.entity.User;
 
 public interface AssociateLoanAndAdvancesDao {
 	
@@ -18,4 +21,6 @@ public interface AssociateLoanAndAdvancesDao {
 	List<AssociateLoanAndAdvances> getAssociateLoanAndAdvancesListByCandidateIdByOrgLocationId(Long candidateId,Long orgLocation);
 
 	Map<String, Double> getEmpLoansAndAdvancesCountListByOrgLocationId(Long candidateId);
+	
+	List<AssociateLoanAndAdvances> getAssociateLoanAndAdvancesListByUserIdAndLocationId(User user, OrgLocations orgLocation, String loanStatus) throws Exception;
 }

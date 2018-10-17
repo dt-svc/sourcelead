@@ -32,10 +32,32 @@ private static final Logger logger = LoggerFactory.getLogger(AssociateTaxDaoImpl
 	
 	@Override
 	@Transactional
+	public List<AssociatePayrollPayheadHistory> getLatestAssociatePayrollPayheadByEmpPayrollId(Long empPayrollId) throws Exception {
+		Session session = this.sessionFactory.getCurrentSession();
+		String query = "from AssociatePayrollPayheadHistory apph where apph.indEmployeePayrollId.id = :empPayrollId and apph.status = '1' and apph.id "
+				+ " IN(select Max(subapph.id) from AssociatePayrollPayheadHistory subapph where subapph.indEmployeePayrollId.id = :empPayrollId and subapph.payrollPayhead.id = apph.payrollPayhead.id and subapph.status = '1') ";  
+		List<AssociatePayrollPayheadHistory> associatePayrollPayheadList =  session.createQuery(query).setLong("empPayrollId", empPayrollId).list();
+	return associatePayrollPayheadList;
+	}
+	
+	
+	
+	@Override
+	@Transactional
 	public List<AssociatePayrollPayheadHistory> getUpdatedAssociatePayrollPayheadByEmpPayrollUUID(String empPayrollUUID) throws Exception {
 		Session session = this.sessionFactory.getCurrentSession();
 		String query = "from AssociatePayrollPayheadHistory apph where apph.indEmployeePayrollId.indEmpPayrollUUID = :empPayrollUUID and apph.status = '1' ";  
 		List<AssociatePayrollPayheadHistory> associatePayrollPayheadList =  session.createQuery(query).setString("empPayrollUUID", empPayrollUUID).list();
+	return associatePayrollPayheadList;
+	}
+	
+	
+	@Override
+	@Transactional
+	public List<AssociatePayrollPayheadHistory> getAllUpdatedAssociatePayrollPayheadByPaySheetFrequencyUUID(String paySheetFrequencyUUID)throws Exception {
+		Session session = this.sessionFactory.getCurrentSession();
+		String query = "from AssociatePayrollPayheadHistory apph where apph.indEmployeePayrollId.indPaysheetFrequency.paySheetFrequencyUUID = :paySheetFrequencyUUID and apph.status = '1' ";  
+		List<AssociatePayrollPayheadHistory> associatePayrollPayheadList =  session.createQuery(query).setString("paySheetFrequencyUUID", paySheetFrequencyUUID).list();
 	return associatePayrollPayheadList;
 	}
 

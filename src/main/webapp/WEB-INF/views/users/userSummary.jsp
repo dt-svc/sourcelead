@@ -1840,7 +1840,7 @@ $("#editRoleDetailsList").empty();
 					if("${SourceLeadWeb_orgLocations.country}" == 'United States'){
 					result = result + ' <div class="user_summary_edit_cta">';
 					result = result + ' <label>SSN<span class="text-danger">&nbsp;*</span></label>';
-					result = result + ' <input type="text" value="'+json.user.ssn+'" field-name="SSN" data-validation="required validate_Space"/>';
+					result = result + ' <input type="text" name="ssn" value="'+json.user.ssn+'" field-name="SSN" data-validation="required validate_Space"/>';
 					result = result + ' </div>';
 					}
 					

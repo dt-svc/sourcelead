@@ -16,6 +16,8 @@ public class SalaryDTO {
 	
 	private Date terminatedDate;
 	
+	private Date joiningDate;
+	
 	
 	private int noOfDays;
 
@@ -77,6 +79,16 @@ public class SalaryDTO {
 	public void setNoOfDays(int noOfDays)
 	{
 		this.noOfDays = noOfDays;
+	}
+
+	public Date getJoiningDate()
+	{
+		return joiningDate;
+	}
+
+	public void setJoiningDate(Date joiningDate)
+	{
+		this.joiningDate = joiningDate;
 	}
 	
 	
