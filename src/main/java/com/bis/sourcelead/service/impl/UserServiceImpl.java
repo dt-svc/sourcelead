@@ -273,7 +273,12 @@ public class UserServiceImpl implements UserService {
 	   UserRole userRole = null;
 	   boolean isUserActive = false;
 	   boolean associateBalance = false;
-	   user = userDao.findByUserName(addUserDTO.getEmail());
+	   if(StringUtils.isNotBlank(candidateDTO.getAssociateId())){
+		   user = userDao.getUserById(Long.valueOf(candidateDTO.getAssociateId()));
+	   }else {
+		   user = userDao.findByUserName(addUserDTO.getEmail());
+	   }
+	   
 	   if(null != user){
 		  isUserActive = userRoleService.isUserActive(user.getId());
 		 
@@ -288,6 +293,9 @@ public class UserServiceImpl implements UserService {
 		  if(StringUtils.isNotBlank(addUserDTO.getPhoneNumber())) {
 			  user.setMobilePhone(addUserDTO.getPhoneNumber());
 		  }
+		  
+		  user.setEmail(addUserDTO.getEmail());
+		  user.setUserName(addUserDTO.getEmail());
 		  
 			  if(StringUtils.isNotBlank(addUserDTO.getSsn())) {
 				  user.setSsn(addUserDTO.getSsn());
@@ -450,7 +458,9 @@ public class UserServiceImpl implements UserService {
 				candidate.setUpdatedBy(loginuser.getUserCode());
 				candidate.setUpdatedDate(commonUtil.currentDate());
 				candidate.setIsAssociate(Constants.YES);
-				
+				candidate.setEmail(addUserDTO.getEmail());
+				candidate.setFirstName(addUserDTO.getFirstName());
+				candidate.setLastName(addUserDTO.getLastName());
 				if(StringUtils.isNotBlank(addUserDTO.getVendors())){
 					OrgRelations orgRelation = orgRelationsService.getOrRelationsById(Long.parseLong(addUserDTO.getVendors()));
 					candidate.setOrgRelationId(orgRelation);
