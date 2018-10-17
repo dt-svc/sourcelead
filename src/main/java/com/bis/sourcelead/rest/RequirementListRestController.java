@@ -2276,7 +2276,7 @@ public class RequirementListRestController {
 		}
         
 		requirement.setLocationsList(requirementLocationsList);
-        
+        requirement.setProcess(requirementIndex.getProcess());
       	return requirement;
  	}
     private String getReqSkills(String[] skills) {
