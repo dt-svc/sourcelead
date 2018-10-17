@@ -55,6 +55,7 @@ import com.bis.sourcelead.entity.Candidate;
 import com.bis.sourcelead.entity.CandidateDocuments;
 import com.bis.sourcelead.entity.CandidateEducation;
 import com.bis.sourcelead.entity.CandidateEmployers;
+import com.bis.sourcelead.entity.CandidateMarketPlace;
 import com.bis.sourcelead.entity.CandidateResumes;
 import com.bis.sourcelead.entity.Org;
 import com.bis.sourcelead.entity.OrgLocations;
@@ -123,8 +124,8 @@ public class CandidateRestController {
 	private CandidateResumesService candidateResumesService;
 	/*
 	 * @Autowired private CandidateSkillsService candidateSkillsService;
-     */
-   
+	 */
+
 	@Autowired
 	private UserService userService;
 	@Autowired
@@ -155,16 +156,16 @@ public class CandidateRestController {
 	RequirementService requirementService;
 	@Autowired
 	OrgLocationService orgLocationService;
-	
+
 	@Autowired
 	CandidateEducationService candidateEducationService;
-	
+
 	@Autowired
 	CandidateEmployersService candidateEmployersService;
-	
+
 	@Autowired
 	CandidateDocumentsService candidateDocumentsService;
-	
+
 	@Autowired
 	RequirementLocationsService requirementLocationsService;
 
@@ -178,11 +179,12 @@ public class CandidateRestController {
 	 * @version 0.0.1
 	 *
 	 *          This method is used to store/save candidate in candidate table.
-	 *          1.internalley store/save in candidateEducation in candidateEducation
-	 *          table . 2.internalley store/save in candidateSkills in
-	 *          candidateSkills table . 3.internalley store/save in candidateResumes
-	 *          in candidateResumes table . 4.internalley store/save in
-	 *          candidateEmployers in candidateEmployers table .
+	 *          1.internalley store/save in candidateEducation in
+	 *          candidateEducation table . 2.internalley store/save in
+	 *          candidateSkills in candidateSkills table . 3.internalley
+	 *          store/save in candidateResumes in candidateResumes table .
+	 *          4.internalley store/save in candidateEmployers in
+	 *          candidateEmployers table .
 	 * @param candidateDto
 	 * @param request
 	 * @return Candidate
@@ -200,9 +202,11 @@ public class CandidateRestController {
 					candidateDto.setStaticPath(staticPath);
 					// FileUploadUtil.fillUploadedFileInfo(candidateDto,
 					// candidateDto.getFileInfo());
-					OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+					OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,
+							"orgLocations");
 					Candidate candidate = candidateService.storeCandidate(candidateDto, orgLocation, user);
-					SourceLeadSessionManager.setSessionAttribute(request, "candidateCreateMsg", "Success new candidate is created");
+					SourceLeadSessionManager.setSessionAttribute(request, "candidateCreateMsg",
+							"Success new candidate is created");
 					response.setResponse(Result.SUCCESS.name());
 					response.setResponseMessage(Result.SUCCESS.getValue());
 				} else {
@@ -223,9 +227,10 @@ public class CandidateRestController {
 	}
 
 	@RequestMapping(value = { "/parseResume", "/app/parseResume" }, method = RequestMethod.POST)
-	public @ResponseBody Response<ResumeParserJsonUtil> parseResume(@RequestParam(value = "json", required = false) String json,
-			MultipartHttpServletRequest request,
-			@RequestParam(value = "locationMapFile", required = false) CommonsMultipartFile locationMapFileData) throws Exception {
+	public @ResponseBody Response<ResumeParserJsonUtil> parseResume(
+			@RequestParam(value = "json", required = false) String json, MultipartHttpServletRequest request,
+			@RequestParam(value = "locationMapFile", required = false) CommonsMultipartFile locationMapFileData)
+			throws Exception {
 		Response<ResumeParserJsonUtil> response = new Response<>();
 		try {
 			MultipartFile multiFile = null;
@@ -257,11 +262,14 @@ public class CandidateRestController {
 	 * @throws Exception
 	 */
 	@RequestMapping(value = "/app/validateCandidateEmail", method = RequestMethod.POST)
-	public @ResponseBody Response<String> validateCandidateEmail(@RequestParam(value = "email", required = false) String email,
-			@RequestParam(value = "candidateType", required = false) String candidateType, HttpServletRequest request) throws Exception {
+	public @ResponseBody Response<String> validateCandidateEmail(
+			@RequestParam(value = "email", required = false) String email,
+			@RequestParam(value = "candidateType", required = false) String candidateType, HttpServletRequest request)
+			throws Exception {
 		Response<String> response = new Response<>();
 		try {
-			OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+			OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,
+					"orgLocations");
 			Candidate candidate = candidateService.findByCandidateEmail(email, orgLocation.getId());
 			if (null != candidate) {
 				response.setObject("true");
@@ -279,25 +287,28 @@ public class CandidateRestController {
 	}
 
 	/*
-	 * @RequestMapping(value = "/validateSkillName" , method = RequestMethod.POST)
-	 * public @ResponseBody Boolean
-
+	 * @RequestMapping(value = "/validateSkillName" , method =
+	 * RequestMethod.POST) public @ResponseBody Boolean
+	 * 
 	 * validateSkillName(@RequestParam(value="skillName", required=false) String
 	 * skillName, @RequestParam(value="candidateId", required=false) String
-	 * candidateId, HttpServletRequest request) throws Exception { Boolean flag =
-	 * false; CandidateSkills candidateSkills =
+	 * candidateId, HttpServletRequest request) throws Exception { Boolean flag
+	 * = false; CandidateSkills candidateSkills =
 	 * candidateSkillsService.getSkillsByCandidateIdSkillName(candidateId,
 	 * skillName); if(null != candidateSkills){ flag =
 	 * candidateSkillsService.validateSkillName(skillName); } return flag; }
 	 */
 	@RequestMapping(value = "/app/getCandidatesList", method = RequestMethod.POST)
 	public @ResponseBody ResponseList<CandidateDTO> getCandidatesList(
-			@RequestParam(value = "requirementId", required = false) Long requirementId,HttpServletRequest request) throws Exception {
+			@RequestParam(value = "requirementId", required = false) Long requirementId, HttpServletRequest request)
+			throws Exception {
 		ResponseList<CandidateDTO> responseList = new ResponseList<>();
 		try {
-			OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+			OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,
+					"orgLocations");
 			Requirement requirement = requirementService.getRequirementByRequirementId(requirementId);
-			List<CandidateDTO> candidateDTOList  = candidateService.getCandidateListForAddApplicant(orgLocations, requirementId,requirement.getSkills(),null,requirement.getProfilePercentage());
+			List<CandidateDTO> candidateDTOList = candidateService.getCandidateListForAddApplicant(orgLocations,
+					requirementId, requirement.getSkills(), null, requirement.getProfilePercentage());
 			responseList.setData(candidateDTOList);
 			responseList.setResponse(Result.SUCCESS.name());
 			responseList.setResponseMessage(Result.SUCCESS.getValue());
@@ -318,8 +329,9 @@ public class CandidateRestController {
 	 * @throws NullPointer
 	 */
 	@RequestMapping(value = "/app/checkCandidateState", method = RequestMethod.POST)
-	public @ResponseBody Response<Boolean> checkCandidateState(@RequestParam(value = "candidateId", required = false) Long candidateId,
-			HttpServletRequest request) throws Exception {
+	public @ResponseBody Response<Boolean> checkCandidateState(
+			@RequestParam(value = "candidateId", required = false) Long candidateId, HttpServletRequest request)
+			throws Exception {
 		Response<Boolean> response = new Response<>();
 		try {
 			Candidate candidate = candidateService.getCandidateByCandidateId(candidateId);
@@ -348,13 +360,14 @@ public class CandidateRestController {
 	 * @throws Exception
 	 */
 	@RequestMapping(value = "/app/downloadCandidateResume", method = RequestMethod.GET)
-	public @ResponseBody void downloadCandidateResume(@RequestParam(value = "candidateId", required = false) Long candidateId,
-			HttpServletRequest request, HttpServletResponse response) throws Exception {
+	public @ResponseBody void downloadCandidateResume(
+			@RequestParam(value = "candidateId", required = false) Long candidateId, HttpServletRequest request,
+			HttpServletResponse response) throws Exception {
 		CandidateResumes candidateResume = candidateResumesService.getCandidateLatesResumes(candidateId, 1);
 		response.setContentType("application/octet-stream");
 		StringBuilder fileName = new StringBuilder();
-		response.setHeader("Content-Disposition",
-				fileName.append("attachment; filename=\"").append(candidateResume.getFileName()).append("\"").toString());
+		response.setHeader("Content-Disposition", fileName.append("attachment; filename=\"")
+				.append(candidateResume.getFileName()).append("\"").toString());
 		if (candidateResume.getFileURL() != null) {
 			InputStream inputStream = new FileInputStream(new File(staticPath, candidateResume.getFileURL()));
 			try {
@@ -373,12 +386,15 @@ public class CandidateRestController {
 	}
 
 	@RequestMapping(value = "/app/getUserByRoleId", method = RequestMethod.POST)
-	public @ResponseBody ResponseList<User> getUserByRoleId(@RequestParam(value = "roleId", required = false) Long roleId,
-			HttpServletRequest request) throws Exception {
+	public @ResponseBody ResponseList<User> getUserByRoleId(
+			@RequestParam(value = "roleId", required = false) Long roleId, HttpServletRequest request)
+			throws Exception {
 		ResponseList<User> response = new ResponseList<>();
 		try {
-			OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
-			List<User> userList = userService.getUsersForConsultantsByUserRoleIdAndOrgLocationId(roleId, orgLocations.getId());
+			OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,
+					"orgLocations");
+			List<User> userList = userService.getUsersForConsultantsByUserRoleIdAndOrgLocationId(roleId,
+					orgLocations.getId());
 			response.setData(userList);
 			response.setResponse(Result.SUCCESS.name());
 			response.setResponseMessage(Result.SUCCESS.getValue());
@@ -394,11 +410,13 @@ public class CandidateRestController {
 	public @ResponseBody ResponseList<User> getAllRoleUsers(HttpServletRequest request) throws Exception {
 		ResponseList<User> response = new ResponseList<>();
 		try {
-			OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+			OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,
+					"orgLocations");
 			Org org = (Org) SourceLeadSessionManager.getSessionAttribute(request, "org");
 			List<User> userList = userService.getUsersForAddAsConsultant(org, orgLocations.getId());
 			for (User user : userList) {
-				UserRole userRole = userRoleService.getUserRoleByUserIdAndLocationId(user.getId(), orgLocations.getId());
+				UserRole userRole = userRoleService.getUserRoleByUserIdAndLocationId(user.getId(),
+						orgLocations.getId());
 				if (null != userRole) {
 					user.setUserType(userRole.getRoles().getDisplayName());
 				}
@@ -415,7 +433,8 @@ public class CandidateRestController {
 	}
 
 	@RequestMapping(value = "/app/getConsultantUserDetailsById", method = RequestMethod.POST)
-	public @ResponseBody ResponseList<String> getConsultantUserDetailsById(@RequestParam(value = "userId", required = false) Long userId) {
+	public @ResponseBody ResponseList<String> getConsultantUserDetailsById(
+			@RequestParam(value = "userId", required = false) Long userId) {
 		ResponseList<String> response = new ResponseList<>();
 		try {
 			ArrayList<String> userList = new ArrayList<String>();
@@ -449,20 +468,22 @@ public class CandidateRestController {
 	public @ResponseBody Response<String> getCandidatesListByCandidateType(
 			@RequestParam(value = "requirementId", required = false) Long requirementId,
 			@RequestParam(value = "candidateType", required = false) String candidateType,
-			@RequestParam(value = "applicantSearch", required = false) String applicantSearch, HttpServletRequest request)
-			throws Exception {
+			@RequestParam(value = "applicantSearch", required = false) String applicantSearch,
+			HttpServletRequest request) throws Exception {
 		Response<String> response = new Response<>();
 		try {
 			List<Candidate> candidatesList = null;
-			OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+			OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,
+					"orgLocations");
 			HashMap<String, Long> hm = new HashMap<String, Long>();
-			candidatesList = candidateService.getCandidatesByOrgLocationIDAndSearchText(orgLocations.getId(), requirementId, candidateType,
-					applicantSearch);
+			candidatesList = candidateService.getCandidatesByOrgLocationIDAndSearchText(orgLocations.getId(),
+					requirementId, candidateType, applicantSearch);
 			if (candidatesList != null) {
 				for (Candidate candidate : candidatesList) {
 					StringBuilder candidateName = new StringBuilder();
 					if (!isNullOrEmpty(candidate.getLastName())) {
-						candidateName = candidateName.append(candidate.getFirstName()).append(" ").append(candidate.getLastName());
+						candidateName = candidateName.append(candidate.getFirstName()).append(" ")
+								.append(candidate.getLastName());
 					} else {
 						candidateName = candidateName.append(candidate.getFirstName());
 					}
@@ -485,7 +506,8 @@ public class CandidateRestController {
 	public @ResponseBody ResponseList<Team> getTeams(HttpServletRequest request) throws Exception {
 		ResponseList<Team> responseList = new ResponseList<>();
 		try {
-			OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+			OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,
+					"orgLocations");
 			List<Team> teamList = teamService.getTeamListByOrgLocationID(orgLocations.getId());
 			responseList.setData(teamList);
 			responseList.setResponse(Result.SUCCESS.name());
@@ -506,10 +528,11 @@ public class CandidateRestController {
 	 * @throws Exception
 	 */
 	@RequestMapping(value = "/app/verifyCoolingOffPeriod")
-	public Response<Boolean> verifyCoolingOffPeriod(@RequestParam(value = "requirementId", required = false) Long requirementId,
+	public Response<Boolean> verifyCoolingOffPeriod(
+			@RequestParam(value = "requirementId", required = false) Long requirementId,
 			@RequestParam(value = "candidateEmail", required = false) String candidateEmail,
-			@RequestParam(value = "reqCoolingOffPeriod", required = false) String reqCoolingOffPeriod, Long orgLocationId)
-			throws Exception {
+			@RequestParam(value = "reqCoolingOffPeriod", required = false) String reqCoolingOffPeriod,
+			Long orgLocationId) throws Exception {
 		Response<Boolean> response = new Response<>();
 		try {
 			OrgLocations loginOrgLocation = orgLocationService.getOrgLocations(orgLocationId);
@@ -549,7 +572,8 @@ public class CandidateRestController {
 				reqCoolingOffPeriodDays = "0";
 			}
 			RequirementSubmissionHistory requirementSubmissionHistory = requirementSubmissionHistoryService
-					.isInCoolingOffPeriodByEmailAndLocationsId(candidateEmail, loginOrgLocation, reqCoolingOffPeriodDays, requirementId);
+					.isInCoolingOffPeriodByEmailAndLocationsId(candidateEmail, loginOrgLocation,
+							reqCoolingOffPeriodDays, requirementId);
 			if (null != requirementSubmissionHistory) {
 				if (requirementSubmissionHistory.getIsInCoolingOffPeriod()) {
 					response.setObject(requirementSubmissionHistory.getIsInCoolingOffPeriod());
@@ -578,47 +602,51 @@ public class CandidateRestController {
 	@RequestMapping(value = "/app/getRequirementHistoryListByCandidateId")
 
 	public ResponseList<RequirementSubmission> getRequirementHistoryListByCandidateId(
-			@RequestParam(value = "candidateId", required = false) Long candidateId, HttpServletRequest request) throws Exception {
+			@RequestParam(value = "candidateId", required = false) Long candidateId, HttpServletRequest request)
+			throws Exception {
 		ResponseList<RequirementSubmission> responseList = new ResponseList<>();
 		try {
-			OrgLocations loginOrgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
-			// SimpleDateFormat format = loginOrgLocation.getLocFullFormDateFormatter();
+			OrgLocations loginOrgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,
+					"orgLocations");
+			// SimpleDateFormat format =
+			// loginOrgLocation.getLocFullFormDateFormatter();
 			List<RequirementSubmission> requirementSubmission = requirementSubmissionService
 					.getRequirementHistoryListByCandidateIdAndOrgLocationID(candidateId, loginOrgLocation.getId());
 			for (RequirementSubmission req : requirementSubmission) {
-				if(req.getRequirement() != null) {
-				req.setPositionType(req.getRequirement().getJobTitle());
-				req.setCountry(req.getRequirement().getCountry());
-				req.setState(req.getRequirement().getState());
-				req.setCity(req.getRequirement().getCity());
-				req.setRate(req.getRequirement().getRate());
-				req.setCreatedDateStr(commonUtil.dateStrFromOrgDateFormatter(loginOrgLocation.getDateFormat(), req.getCreatedDate()));
-				if (req.getRequirement().getManagerUserId().getLastName() != null) {
-					req.setOwnerName(req.getRequirement().getManagerUserId().getFirstName() + " "
-							+ req.getRequirement().getManagerUserId().getLastName());
-				} else {
-					req.setOwnerName(req.getRequirement().getManagerUserId().getFirstName());
-				}
-				List<String> requirementLocationsList = new ArrayList<>();
-				List<RequirementLocations> locationsList = requirementLocationsService
-						.getRequirementLocationsListByRequirementId(req.getRequirement().getId());
-				if (locationsList != null && !locationsList.isEmpty()) {
-					for (RequirementLocations location : locationsList) {
-						requirementLocationsList.add(location.getLocation());
-					}
-				}
-				req.setLocationsList(requirementLocationsList);
-
-				if (null != req.getRequirement().getSpocId()) {
-					if (!"".equalsIgnoreCase(req.getRequirement().getSpocId().getClientUser().getLastName())
-							&& null != req.getRequirement().getSpocId().getClientUser().getLastName()) {
-						req.setClientName(req.getRequirement().getSpocId().getClientUser().getFirstName() + ""
-								+ req.getRequirement().getSpocId().getClientUser().getLastName());
+				if (req.getRequirement() != null) {
+					req.setPositionType(req.getRequirement().getJobTitle());
+					req.setCountry(req.getRequirement().getCountry());
+					req.setState(req.getRequirement().getState());
+					req.setCity(req.getRequirement().getCity());
+					req.setRate(req.getRequirement().getRate());
+					req.setCreatedDateStr(commonUtil.dateStrFromOrgDateFormatter(loginOrgLocation.getDateFormat(),
+							req.getCreatedDate()));
+					if (req.getRequirement().getManagerUserId().getLastName() != null) {
+						req.setOwnerName(req.getRequirement().getManagerUserId().getFirstName() + " "
+								+ req.getRequirement().getManagerUserId().getLastName());
 					} else {
-						req.setClientName(req.getRequirement().getSpocId().getClientUser().getFirstName());
+						req.setOwnerName(req.getRequirement().getManagerUserId().getFirstName());
+					}
+					List<String> requirementLocationsList = new ArrayList<>();
+					List<RequirementLocations> locationsList = requirementLocationsService
+							.getRequirementLocationsListByRequirementId(req.getRequirement().getId());
+					if (locationsList != null && !locationsList.isEmpty()) {
+						for (RequirementLocations location : locationsList) {
+							requirementLocationsList.add(location.getLocation());
+						}
+					}
+					req.setLocationsList(requirementLocationsList);
+
+					if (null != req.getRequirement().getSpocId()) {
+						if (!"".equalsIgnoreCase(req.getRequirement().getSpocId().getClientUser().getLastName())
+								&& null != req.getRequirement().getSpocId().getClientUser().getLastName()) {
+							req.setClientName(req.getRequirement().getSpocId().getClientUser().getFirstName() + ""
+									+ req.getRequirement().getSpocId().getClientUser().getLastName());
+						} else {
+							req.setClientName(req.getRequirement().getSpocId().getClientUser().getFirstName());
+						}
 					}
 				}
-			}
 			}
 			responseList.setData(requirementSubmission);
 			responseList.setResponse(Result.SUCCESS.name());
@@ -643,17 +671,20 @@ public class CandidateRestController {
 	public ResponseList<RequirementSubmissionHistory> getRequirementHistoryDetailsByCandidateId(
 			@RequestParam(value = "candidateId", required = false) Long candidateId,
 			@RequestParam(value = "requirementId", required = false) Long requirementId,
-			@RequestParam(value = "submissionId", required = false) Long submissionId, HttpServletRequest request) throws Exception {
+			@RequestParam(value = "submissionId", required = false) Long submissionId, HttpServletRequest request)
+			throws Exception {
 		ResponseList<RequirementSubmissionHistory> response = new ResponseList<>();
 		try {
-			OrgLocations loginOrgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+			OrgLocations loginOrgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,
+					"orgLocations");
 			List<RequirementSubmissionHistory> requirementSubmissionhistory = requirementSubmissionHistoryService
 					.getRequirementHistoryListByCandidateIdAndOrgLocationIdAndRequirementIdAndSubmissionId(candidateId,
 							loginOrgLocation.getId(), requirementId, submissionId);
 			// SimpleDateFormat simpleDateFormat =
 			// loginOrgLocation.getLocFullFormDateFormatter();
 			for (RequirementSubmissionHistory rsh : requirementSubmissionhistory) {
-				RequirementOffers ros = requirementOffersService.getRequirementOfferSubmissionById(rsh.getSubmissionId().getId());
+				RequirementOffers ros = requirementOffersService
+						.getRequirementOfferSubmissionById(rsh.getSubmissionId().getId());
 				if (null != ros) {
 					rsh.setOfferResumeid(ros.getId());
 				}
@@ -681,7 +712,8 @@ public class CandidateRestController {
 				User user = userService.getUserDetailsByUserCode(rsh.getCreatedBy());
 				StringBuilder loginUserName = new StringBuilder();
 				if (null != user.getLastName()) {
-					rsh.setLoginUserName(loginUserName.append(user.getFirstName()).append(" ").append(user.getLastName()).toString());
+					rsh.setLoginUserName(loginUserName.append(user.getFirstName()).append(" ")
+							.append(user.getLastName()).toString());
 				} else {
 					rsh.setLoginUserName(loginUserName.append(user.getFirstName()).toString());
 				}
@@ -692,11 +724,12 @@ public class CandidateRestController {
 					StringBuilder interviewerName = new StringBuilder();
 					if (!"".equalsIgnoreCase(requirementInterviewer.getInterviewerUser().getLastName())
 							&& requirementInterviewer.getInterviewerUser().getLastName() != null) {
-						rsh.setInterviewerName(interviewerName.append(requirementInterviewer.getInterviewerUser().getFirstName())
-								.append(requirementInterviewer.getInterviewerUser().getLastName()).toString());
-					} else {
 						rsh.setInterviewerName(
-								interviewerName.append(requirementInterviewer.getInterviewerUser().getFirstName()).toString());
+								interviewerName.append(requirementInterviewer.getInterviewerUser().getFirstName())
+										.append(requirementInterviewer.getInterviewerUser().getLastName()).toString());
+					} else {
+						rsh.setInterviewerName(interviewerName
+								.append(requirementInterviewer.getInterviewerUser().getFirstName()).toString());
 					}
 				}
 				// get the client side offer history
@@ -707,7 +740,8 @@ public class CandidateRestController {
 					StringBuilder offerClientName = new StringBuilder();
 					user = userService.getUserDetailsByUserCode(roh.getCreatedBy());
 					if (null != user.getLastName()) {
-						roh.setClientName(offerClientName.append(user.getFirstName()).append(" ").append(user.getLastName()).toString());
+						roh.setClientName(offerClientName.append(user.getFirstName()).append(" ")
+								.append(user.getLastName()).toString());
 					} else {
 						roh.setClientName(offerClientName.append(user.getFirstName()).toString());
 					}
@@ -726,13 +760,15 @@ public class CandidateRestController {
 				}
 				// get the client side interview interviewHistory
 				List<RequirementInterviewHistory> requirementInterviewHistory = requirementInterviewHistoryService
-						.getClientInterviewsHistoryBySubmissionIdAndOrgLocationsId(rsh.getSubmissionId().getId(), loginOrgLocation.getId());
+						.getClientInterviewsHistoryBySubmissionIdAndOrgLocationsId(rsh.getSubmissionId().getId(),
+								loginOrgLocation.getId());
 				for (RequirementInterviewHistory rh : requirementInterviewHistory) {
 					StringBuilder clientName = new StringBuilder();
 					rh.setInterviewSourceType(rh.getInterviewSourceType());
 					user = userService.getUserDetailsByUserCode(rh.getCreatedBy());
 					if (null != user.getLastName()) {
-						rh.setClientName(clientName.append(user.getFirstName()).append(" ").append(user.getLastName()).toString());
+						rh.setClientName(clientName.append(user.getFirstName()).append(" ").append(user.getLastName())
+								.toString());
 					} else {
 						rh.setClientName(clientName.append(user.getFirstName()).toString());
 					}
@@ -741,22 +777,22 @@ public class CandidateRestController {
 					rh = (RequirementInterviewHistory) object;
 					if (null != rh.getInterviewId()) {
 						if (null != rh.getInterviewId().getDateOfInterview()) {
-							rh.setDateOfInterviewStr(commonUtil.dateStrFromOrgDateFormatter(loginOrgLocation.getDateFormat(),
-									rh.getInterviewId().getDateOfInterview()));
+							rh.setDateOfInterviewStr(commonUtil.dateStrFromOrgDateFormatter(
+									loginOrgLocation.getDateFormat(), rh.getInterviewId().getDateOfInterview()));
 						}
 						if (null != rh.getInterviewId().getStartTime()) {
 							StringBuilder startTime = new StringBuilder();
 							String hours = Integer.toString(rh.getInterviewId().getStartTime().getHours());
 							String minutes = Integer.toString(rh.getInterviewId().getStartTime().getMinutes());
-							rh.setStartTimeStr(CalendarUtil
-									.get12FormatTimeFrom24FormatTime(startTime.append(hours).append(":").append(minutes).toString()));
+							rh.setStartTimeStr(CalendarUtil.get12FormatTimeFrom24FormatTime(
+									startTime.append(hours).append(":").append(minutes).toString()));
 						}
 						if (null != rh.getInterviewId().getEndTime()) {
 							StringBuilder endTime = new StringBuilder();
 							String hours = Integer.toString(rh.getInterviewId().getEndTime().getHours());
 							String minutes = Integer.toString(rh.getInterviewId().getEndTime().getMinutes());
-							rh.setEndTimeStr(CalendarUtil
-									.get12FormatTimeFrom24FormatTime(endTime.append(hours).append(":").append(minutes).toString()));
+							rh.setEndTimeStr(CalendarUtil.get12FormatTimeFrom24FormatTime(
+									endTime.append(hours).append(":").append(minutes).toString()));
 						}
 					}
 					rh.setInterviewType(rh.getInterviewId().getInterviewType());
@@ -767,7 +803,8 @@ public class CandidateRestController {
 				rsh = (RequirementSubmissionHistory) object;
 				// interview related data is getting
 				List<RequirementInterview> RequirementInterview = requirementInterviewService
-						.getRequirementInterviewsHistoryBySubmissionIdAndOrgLocationsId(submissionId, loginOrgLocation.getId());
+						.getRequirementInterviewsHistoryBySubmissionIdAndOrgLocationsId(submissionId,
+								loginOrgLocation.getId());
 				for (RequirementInterview requirementInterview : RequirementInterview) {
 					if (null != requirementInterview.getDateOfInterview()) {
 						rsh.setInterviewDateStr(commonUtil.dateStrFromOrgDateFormatter(loginOrgLocation.getDateFormat(),
@@ -777,15 +814,15 @@ public class CandidateRestController {
 						StringBuilder startTime = new StringBuilder();
 						String hours = Integer.toString(requirementInterview.getStartTime().getHours());
 						String minutes = Integer.toString(requirementInterview.getStartTime().getMinutes());
-						rsh.setInterviewStartTime(CalendarUtil
-								.get12FormatTimeFrom24FormatTime(startTime.append(hours).append(":").append(minutes).toString()));
+						rsh.setInterviewStartTime(CalendarUtil.get12FormatTimeFrom24FormatTime(
+								startTime.append(hours).append(":").append(minutes).toString()));
 					}
 					if (null != requirementInterview.getEndTime()) {
 						StringBuilder endTime = new StringBuilder();
 						String hours = Integer.toString(requirementInterview.getEndTime().getHours());
 						String minutes = Integer.toString(requirementInterview.getEndTime().getMinutes());
-						rsh.setInterviewEndTime(
-								CalendarUtil.get12FormatTimeFrom24FormatTime(endTime.append(hours).append(":").append(minutes).toString()));
+						rsh.setInterviewEndTime(CalendarUtil.get12FormatTimeFrom24FormatTime(
+								endTime.append(hours).append(":").append(minutes).toString()));
 					}
 					rsh.setInterviewType(requirementInterview.getInterviewType());
 				}
@@ -814,8 +851,8 @@ public class CandidateRestController {
 			} else if (diffDays == 0 && diffHours == 0) {
 				rih.setInterviewHistoryCreatedDate(time.append(diffMinutes).append(" minutes ago").toString());
 			} else if (diffDays == 0) {
-				rih.setInterviewHistoryCreatedDate(
-						time.append(diffHours).append(" hours ").append(diffMinutes).append(" minutes ago ").toString());
+				rih.setInterviewHistoryCreatedDate(time.append(diffHours).append(" hours ").append(diffMinutes)
+						.append(" minutes ago ").toString());
 			} else if (diffDays < 7) {
 				rih.setInterviewHistoryCreatedDate(
 						time.append(diffDays).append(" days ").append(diffHours).append(" hours ago ").toString());
@@ -833,9 +870,11 @@ public class CandidateRestController {
 			} else if (diffDays == 0 && diffHours == 0) {
 				rsh.setCreatedDateStr(time.append(diffMinutes).append(" minutes ago").toString());
 			} else if (diffDays == 0) {
-				rsh.setCreatedDateStr(time.append(diffHours).append(" hours ").append(diffMinutes).append(" minutes ago ").toString());
+				rsh.setCreatedDateStr(time.append(diffHours).append(" hours ").append(diffMinutes)
+						.append(" minutes ago ").toString());
 			} else if (diffDays < 7) {
-				rsh.setCreatedDateStr(time.append(diffDays).append(" days ").append(diffHours).append(" hours ago ").toString());
+				rsh.setCreatedDateStr(
+						time.append(diffDays).append(" days ").append(diffHours).append(" hours ago ").toString());
 			} else {
 				DateFormat standardFormat = new SimpleDateFormat("MMM dd, yyyy hh:mm:ss aa");
 				String commonDateFormat = standardFormat.format(rsh.getCreatedDate());
@@ -850,9 +889,11 @@ public class CandidateRestController {
 			} else if (diffDays == 0 && diffHours == 0) {
 				roh.setCreateDateStr(time.append(diffMinutes).append(" minutes ago").toString());
 			} else if (diffDays == 0) {
-				roh.setCreateDateStr(time.append(diffHours).append(" hours ").append(diffMinutes).append(" minutes ago ").toString());
+				roh.setCreateDateStr(time.append(diffHours).append(" hours ").append(diffMinutes)
+						.append(" minutes ago ").toString());
 			} else if (diffDays < 7) {
-				roh.setCreateDateStr(time.append(diffDays).append(" days ").append(diffHours).append(" hours ago ").toString());
+				roh.setCreateDateStr(
+						time.append(diffDays).append(" days ").append(diffHours).append(" hours ago ").toString());
 			} else {
 				DateFormat standardFormat = new SimpleDateFormat("MMM dd, yyyy hh:mm:ss aa");
 				String commonDateFormat = standardFormat.format(roh.getCreatedDate());
@@ -864,8 +905,9 @@ public class CandidateRestController {
 	}
 
 	@RequestMapping(value = { "/app/ws/profileBySkillSet", "/app/profileBySkillSet" }, method = RequestMethod.POST)
-	public @ResponseBody Response<String> profileBySkillSet(@RequestParam(value = "allSkills", required = false) String allSkills,
-			HttpServletRequest request) throws Exception {
+	public @ResponseBody Response<String> profileBySkillSet(
+			@RequestParam(value = "allSkills", required = false) String allSkills, HttpServletRequest request)
+			throws Exception {
 		Response<String> response = new Response<>();
 		try {
 			String[] mySkills = allSkills.split(",");
@@ -879,90 +921,94 @@ public class CandidateRestController {
 		}
 		return response;
 	}
-	
-	
+
 	@RequestMapping(value = "/app/ws/dumpCandidateProfilePercentage", method = RequestMethod.GET)
-    public void dumpCandidateProfilePercentage(HttpServletRequest request, HttpServletResponse response) throws Exception
-    {
+	public void dumpCandidateProfilePercentage(HttpServletRequest request, HttpServletResponse response)
+			throws Exception {
 		System.out.println("Dumping Profile percentage to candidates starts.....");
 		List<Candidate> candidatesList = candidateService.getAllCandidatesList();
-        for (Candidate can : candidatesList) {
-        
-        	 int percentage = 0;
-    			if(can != null){
-    				//Basic Details - 30 %
-    				if(can.getFirstName() != null  && can.getEmail() != null){
-    					percentage = 30;
-    				}
-    				//Resume  Details - 10 %
-    				Integer resumesCount = candidateResumesService.getCandidateActiveResumeCountByCandidateId(can.getId());
-    				if(resumesCount > 0){
-    					percentage = percentage +10;
-    				}
-    				//Education Details - 10 %
-    				 Integer educationsCount = candidateEducationService.getCandidateActiveEducationsCountByCandidateId(can.getId());
-    				 if(educationsCount > 0){
-    						percentage = percentage +10;
-    				 }
-    				//Employment  Details - 10 %
-    				 Integer employersCount = candidateEmployersService.getCandidateActiveEmployersCountByCandidateId(can.getId());
-    				 if(employersCount > 0){
-    						percentage = percentage +10;
-    				 }
-    				 
-    				 //Skills Details - 10 %
-    				 if(can.getSkillsName()!=null && !"".equalsIgnoreCase(can.getSkillsName()) ){
-    						percentage = percentage +10;
-    				 }
-    				 
-    				//PrimarySkill Details - 5 %
-    				 if(can.getPrimarySkill()!=null && !"".equalsIgnoreCase(can.getPrimarySkill())){
-    						percentage = percentage + 5;
-    				 }
-    				 
-    				 
-    				 int countOtherDetails = 0;
-    				 if(can.getSummary() != null && !"".equalsIgnoreCase(can.getSummary()) ){
-    					 countOtherDetails++;
-    				 }
-    				 if(can.getVisaType()!=null && !"".equalsIgnoreCase(can.getVisaType())){
-    					 countOtherDetails++;
-    				 }
-    				 if(can.getExpectedRate()!=null && !"".equalsIgnoreCase(can.getExpectedRate())){
-    					 countOtherDetails++;
-    				 }
-    				 if((can.getExperienceYears()!= null && !"".equalsIgnoreCase(can.getExperienceYears()) && Long.parseLong(can.getExperienceYears())>0) || (can.getExperienceMonths()!= null && !"".equalsIgnoreCase(can.getExperienceMonths())&& Long.parseLong(can.getExperienceMonths())>0)){
-    					 countOtherDetails++;
-    				 }
-    				//any two OtherDetails - 10 %
-    				 if(countOtherDetails>=2){
-    					 percentage = percentage + 10; 
-    				 }
-    				//if only one OtherDetails - 5 %
-    				 else if(countOtherDetails==1){
-    					 percentage = percentage + 5; 
-    				 }
-    				 
-    				//photo Details - 5 %
-    				 if(can.getFileUrl()!=null){
-    					 percentage = percentage + 5; 
-    				 }else if(can.getConsultantUser() != null && can.getConsultantUser().getFileUrl() != null){
-    					 percentage = percentage + 5; 
-    				 }
+		for (Candidate can : candidatesList) {
 
-    				//document Details - 10 %
-    				Integer documentsCount = candidateDocumentsService.getCandidateActiveDocumentsByCandidateId(can.getId());
-    				 if(documentsCount > 0){
-    						percentage = percentage +10;
-    				 }
-    				 
-    				 can.setCandidateProfilePercentage(percentage);
-    				 candidateService.addCandidate(can);
-        }
-    }
-        
-        System.out.println("Dumping Profile percentage to candidates ends.....");
-    }
+			int percentage = 0;
+			if (can != null) {
+				// Basic Details - 30 %
+				if (can.getFirstName() != null && can.getEmail() != null) {
+					percentage = 30;
+				}
+				// Resume Details - 10 %
+				Integer resumesCount = candidateResumesService.getCandidateActiveResumeCountByCandidateId(can.getId());
+				if (resumesCount > 0) {
+					percentage = percentage + 10;
+				}
+				// Education Details - 10 %
+				Integer educationsCount = candidateEducationService
+						.getCandidateActiveEducationsCountByCandidateId(can.getId());
+				if (educationsCount > 0) {
+					percentage = percentage + 10;
+				}
+				// Employment Details - 10 %
+				Integer employersCount = candidateEmployersService
+						.getCandidateActiveEmployersCountByCandidateId(can.getId());
+				if (employersCount > 0) {
+					percentage = percentage + 10;
+				}
+
+				// Skills Details - 10 %
+				if (can.getSkillsName() != null && !"".equalsIgnoreCase(can.getSkillsName())) {
+					percentage = percentage + 10;
+				}
+
+				// PrimarySkill Details - 5 %
+				if (can.getPrimarySkill() != null && !"".equalsIgnoreCase(can.getPrimarySkill())) {
+					percentage = percentage + 5;
+				}
+
+				int countOtherDetails = 0;
+				if (can.getSummary() != null && !"".equalsIgnoreCase(can.getSummary())) {
+					countOtherDetails++;
+				}
+				if (can.getVisaType() != null && !"".equalsIgnoreCase(can.getVisaType())) {
+					countOtherDetails++;
+				}
+				if (can.getExpectedRate() != null && !"".equalsIgnoreCase(can.getExpectedRate())) {
+					countOtherDetails++;
+				}
+				if ((can.getExperienceYears() != null && !"".equalsIgnoreCase(can.getExperienceYears())
+						&& Long.parseLong(can.getExperienceYears()) > 0)
+						|| (can.getExperienceMonths() != null && !"".equalsIgnoreCase(can.getExperienceMonths())
+								&& Long.parseLong(can.getExperienceMonths()) > 0)) {
+					countOtherDetails++;
+				}
+				// any two OtherDetails - 10 %
+				if (countOtherDetails >= 2) {
+					percentage = percentage + 10;
+				}
+				// if only one OtherDetails - 5 %
+				else if (countOtherDetails == 1) {
+					percentage = percentage + 5;
+				}
+
+				// photo Details - 5 %
+				if (can.getFileUrl() != null) {
+					percentage = percentage + 5;
+				} else if (can.getConsultantUser() != null && can.getConsultantUser().getFileUrl() != null) {
+					percentage = percentage + 5;
+				}
+
+				// document Details - 10 %
+				Integer documentsCount = candidateDocumentsService
+						.getCandidateActiveDocumentsByCandidateId(can.getId());
+				if (documentsCount > 0) {
+					percentage = percentage + 10;
+				}
+
+				can.setCandidateProfilePercentage(percentage);
+				candidateService.addCandidate(can);
+			}
+		}
+
+		System.out.println("Dumping Profile percentage to candidates ends.....");
+	}
 
 	public String toJSON(Object obj) {
 		XStream xstream = new XStream(new JsonHierarchicalStreamDriver() {
@@ -972,16 +1018,16 @@ public class CandidateRestController {
 		});
 		return xstream.toXML(obj);
 	}
-	
+
 	@RequestMapping(value = "/app/navigateMarketPlaceAjax", method = RequestMethod.POST)
-	public String goToMarketplace(@RequestParam(value = "candidateIdsVal[]", required = false) List<Long> candidateIdsVal, HttpServletRequest request) throws Exception {
+	public String goToMarketplace(
+			@RequestParam(value = "candidateIdsVal[]", required = false) List<Long> candidateIdsVal,
+			HttpServletRequest request) throws Exception {
 		request.getSession().setAttribute("candidateIds", candidateIdsVal);
 		return "success";
 	}
 
-	
-	
-	//@PreAuthorize("hasAnyRole('ROLE_CREATE_CANDIDATE','ROLE_CROWDSOURCING_CANDIDATES')")
+	// @PreAuthorize("hasAnyRole('ROLE_CREATE_CANDIDATE','ROLE_CROWDSOURCING_CANDIDATES')")
 	@RequestMapping(value = "/app/navigateMarketPlaceList")
 	public ModelAndView goToMarketplace(HttpServletRequest request) throws Exception {
 		ModelAndView model = new ModelAndView();
@@ -991,27 +1037,27 @@ public class CandidateRestController {
 	}
 
 	@RequestMapping(value = "/app/getMarketPlaceCandidateMovedList", method = RequestMethod.POST)
-	public @ResponseBody ResponseList<CandidateDTO> getMarketPlaceDraftList( HttpServletRequest request) {
+	public @ResponseBody ResponseList<CandidateDTO> getMarketPlaceDraftList(HttpServletRequest request) {
 		List<String> candidateIds = (List<String>) request.getSession().getAttribute("candidateIds");
 		ResponseList<CandidateDTO> marketCandidates = candidateService.getCandidatesByCandidateIds(candidateIds);
 		return marketCandidates;
 	}
-	
-	//@PreAuthorize("hasAnyRole('ROLE_CREATE_CANDIDATE','ROLE_CROWDSOURCING_CANDIDATES')")
+
+	// @PreAuthorize("hasAnyRole('ROLE_CREATE_CANDIDATE','ROLE_CROWDSOURCING_CANDIDATES')")
 	@RequestMapping(value = "/app/saveMarketPlaceData", method = RequestMethod.POST)
-	public void saveMarketPlaceData(@RequestBody List<CandidateMarketPlaceDTO> marketPlaceList, HttpServletRequest  request) throws NumberFormatException, Exception {
-		//System.out.println(marketPlaceList.size());
-		User user = (User) SourceLeadSessionManager.getSessionAttribute(request,"user");
+	public void saveMarketPlaceData(@RequestBody List<CandidateMarketPlaceDTO> marketPlaceList,
+			HttpServletRequest request) throws NumberFormatException, Exception {
+		// System.out.println(marketPlaceList.size());
+		User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
 		candidateService.saveCandidateMarketPlaceList(marketPlaceList, user);
-		//ModelAndView model = new ModelAndView();
-		//model.setViewName("candidates/candidateGlobalMarketPlaceList");
-		//model.addObject("sourceleadUrl", sourceleadUrl);
-		//return model;
+		// ModelAndView model = new ModelAndView();
+		// model.setViewName("candidates/candidateGlobalMarketPlaceList");
+		// model.addObject("sourceleadUrl", sourceleadUrl);
+		// return model;
 	}
-	
-	
+
 	// Note this method is Global marketplace Candidate method
-	//@PreAuthorize("hasAnyRole('ROLE_CREATE_CANDIDATE','ROLE_CROWDSOURCING_CANDIDATES')")
+	// @PreAuthorize("hasAnyRole('ROLE_CREATE_CANDIDATE','ROLE_CROWDSOURCING_CANDIDATES')")
 	@RequestMapping(value = "/app/globalMarketplacePage")
 	public ModelAndView goToGlobalMarketplace(HttpServletRequest request) throws Exception {
 		logger.debug("inisde goToGlobalMarketplace  conroller =========>");
@@ -1021,22 +1067,48 @@ public class CandidateRestController {
 		model.addObject("sourceleadUrl", sourceleadUrl);
 		return model;
 	}
+
 	// Note this method is Global marketplace Candidate method
-		//@PreAuthorize("hasAnyRole('ROLE_CREATE_CANDIDATE','ROLE_CROWDSOURCING_CANDIDATES')")
-		@RequestMapping(value = "/app/OrgMarketplace")
-		public ModelAndView goToOrgMarketplace(HttpServletRequest request) throws Exception {
-			logger.debug("inisde OrgMarketplace  conroller =========>");
-			System.out.println("inisde OrgMarketplace  conroller =========>");
-			ModelAndView model = new ModelAndView();
-			model.setViewName("candidates/candidateMarketPlaceView");
-			model.addObject("sourceleadUrl", sourceleadUrl);
-			return model;
-		}
-	
+	// @PreAuthorize("hasAnyRole('ROLE_CREATE_CANDIDATE','ROLE_CROWDSOURCING_CANDIDATES')")
+	@RequestMapping(value = "/app/OrgMarketplace")
+	public ModelAndView goToOrgMarketplace(HttpServletRequest request) throws Exception {
+		logger.debug("inisde OrgMarketplace  conroller =========>");
+		System.out.println("inisde OrgMarketplace  conroller =========>");
+		ModelAndView model = new ModelAndView();
+		model.setViewName("candidates/candidateMarketPlaceView");
+		model.addObject("sourceleadUrl", sourceleadUrl);
+		return model;
+	}
+
 	@RequestMapping(value = "/app/getAddedMarketplaceCandidates", method = RequestMethod.POST)
-	public Map<String, Object[]> getAddedMarketplaceCandidates(@RequestParam(value = "candidateIdsVal[]", required = false) List<Long> candidateIdsVal, HttpServletRequest request) throws Exception {
-		Map<String, Object[]> candidateIds = candidateService.getAddedMarketplaceCandidates(candidateIdsVal);
+	public Map<String, Object[]> getAddedMarketplaceCandidates(
+			@RequestParam(value = "candidateIdsVal[]", required = false) List<Long> candidateIdsVal,
+			HttpServletRequest request) throws Exception {
+		Map<String, Object[]> candidateIds = new HashMap<>();
+		if (candidateIdsVal != null) {
+			candidateIds = candidateService.getAddedMarketplaceCandidates(candidateIdsVal);
+		}
 		return candidateIds;
 	}
-	
+
+	@RequestMapping(value = "/app/updateMarketPlacePrice", method = RequestMethod.POST)
+	public String updateMarketPlacePrice(@RequestParam(value = "marketPlaceId", required = false) Long id,
+			@RequestParam(value = "priceValType", required = false) String priceValType,
+			@RequestParam(value = "priceVal", required = false) String priceVal, HttpServletRequest request)
+			throws Exception {
+		candidateService.updateMarketPlacePrice(id, priceVal, priceValType);
+		return "success";
+	}
+
+	@RequestMapping(value = "/app/withdrawMarketplace")
+	public void withdrawMarketplace(@RequestParam(value = "candidateId", required = true) Long candidateId,
+			@RequestParam(value = "withdrawReason", required = true) String withdrawReason, HttpServletRequest request)
+			throws Exception {
+		OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+		CandidateMarketPlace marketplace = candidateService.fetchMarketPlace(candidateId, orgLocation.getId());
+		if (null != marketplace && null != marketplace.getCandidateId()) {
+			candidateService.withdrawMarketplace(marketplace, withdrawReason);
+		}
+	}	
+
 }

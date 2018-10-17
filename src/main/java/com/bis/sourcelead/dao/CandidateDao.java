@@ -168,4 +168,12 @@ public interface CandidateDao {
 	public List<Long> getAddedMarketplaceCandidates(List<Long> candidateIdsVal);
 
 	public CandidateMarketPlace getCandidateMarketPlaceByCandidateId(Long candidateId);
+
+	public CandidateMarketPlace getCandidateMarketPlaceById(Long id);
+
+	public void updateMarketPlacePrice(CandidateMarketPlace marketPlace);
+	
+	public void withdrawMarketplace( CandidateMarketPlace marketplace)throws Exception;
+	
+	public CandidateMarketPlace fetchMarketPlace(Long candidateId, Long orgLocationId)throws Exception;
 }

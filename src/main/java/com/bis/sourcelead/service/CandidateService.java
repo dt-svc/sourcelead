@@ -14,6 +14,7 @@ import com.bis.sourcelead.dto.ImmigrationCandidateDTO;
 import com.bis.sourcelead.dto.ResponseList;
 import com.bis.sourcelead.entity.Candidate;
 import com.bis.sourcelead.entity.CandidateImportLog;
+import com.bis.sourcelead.entity.CandidateMarketPlace;
 import com.bis.sourcelead.entity.MasterCandidate;
 import com.bis.sourcelead.entity.Org;
 import com.bis.sourcelead.entity.OrgLocations;
@@ -243,5 +244,11 @@ public interface CandidateService {
 	public void saveCandidateMarketPlaceList(List<CandidateMarketPlaceDTO> marketPlaceList, User user) throws NumberFormatException, Exception;
 
 	public Map<String, Object[]> getAddedMarketplaceCandidates(List<Long> candidateIdsVal);
+
+	public void updateMarketPlacePrice(Long id, String priceVal, String priceValType);
+	
+	public void withdrawMarketplace(CandidateMarketPlace marketplace, String withdrawReason)throws Exception;
+
+	public CandidateMarketPlace fetchMarketPlace(Long candidateId, Long orgLocationId)throws Exception;
 
 }

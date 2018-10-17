@@ -147,6 +147,9 @@ public class CandidateMarketPlace implements Serializable {
 	
 	@Column(name = "CAN_MARKET_STATUS")
 	private String candidateMarketStatus;
+	
+	@Column(name = "WITHDRAW_REASON")
+	private String withdrawReason;
 
 	public Long getId() {
 		return id;
@@ -433,6 +436,13 @@ public class CandidateMarketPlace implements Serializable {
 		this.candidateMarketStatus = candidateMarketStatus;
 	}
 
+	public String getWithdrawReason() {
+		return withdrawReason;
+	}
+
+	public void setWithdrawReason(String withdrawReason) {
+		this.withdrawReason = withdrawReason;
+	}
 	
 
 }

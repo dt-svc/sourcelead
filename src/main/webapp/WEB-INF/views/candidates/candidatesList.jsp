@@ -66,6 +66,7 @@
 
 	<script>
 	var isAssociate = 'N';
+	var candidateIDsArr=[];
 	var _csrfParam = '${_csrf.parameterName}';
 	var _csrfToken = '${_csrf.token}';
 	var associateFlag = false;
@@ -1520,29 +1521,13 @@ function cancel(candidateId){
 	   }
    }
    
-   /* function callAddToMarket(){
-	 	 $.ajax({
-		    	type: "POST",
-		        url: sourceleadUrl+"/navigateMarketPlaceAjax",
-		        data : {candidateIdsVal : candidateIdsMark},
-		        success: function(json) {
-		        	location.href = sourceleadUrl+"/navigateMarketPlaceList";
-		        	candidateIdsMark = [];
-		        }
-	 	}); 
-   } */
-   
    function callAddToMarket(){
 	 	 $.ajax({
 		    	type: "POST",
 		        url: sourceleadUrl+"/getAddedMarketplaceCandidates",
 		        data : {candidateIdsVal : candidateIdsMark},
 		        success: function(json) {
-		        	//console.log(json);
-		        	//alert(json['candidatesInMarketplace'].length);
-		        	//alert(json['candidatesNotInMarketplace'].length);  
-		        	//location.href = sourceleadUrl+"/navigateMarketPlaceList";
-		        	candidateIdsMark = [];
+		        	candidateIDsArr = [];
 		        	popupDisplay("message", json['candidatesInMarketplace'].length, json['candidatesNotInMarketplace']);
 		        }
 	 	}); 
@@ -1780,16 +1765,14 @@ function exportToPdf(){
 
 function popupDisplay(message, candidatesInMarketplace, ...candidatesNotInMarketplace){
 	$(".project_inn_mask").remove();
-		
 	var result = "";
 	result = result +"	<div class='project_inn_mask'></div>";
 	result = result +"	   <div id='remove_immigration_pop' class='remove_user_pop remove_user_pop_a'>";
-	/* result = result +"		<  id='reasonForTemplate' name='reasonForSpoc' data-validation='required validate_Space validate_Description validate_length length2-250' placeholder='Reason' onkeypress=';' ></textarea>"; */
 	result = result +"<div class='modal-body'><p id='popupMsg'></p></div>";
-	result = result + ' <div id="reasonForTemplateDiv"/>';
+	result = result + ' <div id="reasonForTemplateDiv"></div>';
 	result = result +"<div class='clearfix'><input class='u_can_color width100percnt' type='button'  value='Ok' onClick='cancelMarketplacePopup("+candidatesNotInMarketplace+");'></div>";
 	result = result +"	</div>";
-	$("#emptyPopup").append(result);
+	$("#emptyPopup").empty().append(result);
 	$("#popupMsg").empty().append(message);
 	$("#remove_immigration_pop").slideDown(200);
 	$(".project_inn_mask").fadeIn(200);
@@ -1804,7 +1787,7 @@ function cancelMarketplacePopup(...candidatesNotInMarketplace){
 	        data : {candidateIdsVal : candidatesNotInMarketplace},
 	        success: function(json) {
 	        	location.href = sourceleadUrl+"/navigateMarketPlaceList";
-	        	candidatesNotInMarketplace = [];
+	        	//candidatesNotInMarketplace = [];
 	        }
  	});
 	}
