@@ -2504,7 +2504,7 @@ public class RequirementSubmissionDaoImpl implements RequirementSubmissionDao{
 		@SuppressWarnings({ "unchecked", "unused" })
 		@Override
 		@Transactional(rollbackFor = { Exception.class })
-		public ResponseList<RequirementSubmissionHistory> getRequirementSubmissionsListWithDTOByOrgLocationsIdAndSubmissionStatus(RequirementSubmissionHistoryDTO requirementSubmissionHistoryDTO,Long orgLocationsId, String submissionStatus, String dateRange, String userType, User user, Date startUTCDate, Date endUTCDate) throws Exception
+		public ResponseList<RequirementSubmissionHistory> getRequirementSubmissionsListWithDTOByOrgLocationsIdAndSubmissionStatus(RequirementSubmissionHistoryDTO requirementSubmissionHistoryDTO,Long orgLocationsId, String submissionStatus, String dateRange, String userType, User user, Date startUTCDate, Date endUTCDate,OrgLocations orgLocations) throws Exception
 		{
 			Session session = this.sessionFactory.getCurrentSession();
 			Integer filterCount = 0;
@@ -2571,6 +2571,29 @@ public class RequirementSubmissionDaoImpl implements RequirementSubmissionDao{
 	        StringBuilder query1 = new StringBuilder("");
 			if(requirementSubmissionHistoryDTO.getSearchValue() !=null && !"".equalsIgnoreCase(requirementSubmissionHistoryDTO.getSearchValue())) {
 			
+				 Pattern pattern = Pattern.compile("^(([0-9]{0,4})[-{1}]([0-9]{0,4})[-{1}]([0-9]{0,4}))$");
+				 Matcher matcher = pattern.matcher(requirementSubmissionHistoryDTO.getSearchValue());
+				 java.sql.Date sqlDate = null;
+				 Pattern p = Pattern.compile("(?:\\(\\d{3}\\)|\\d{3}[-]*)\\d{3}[-]*\\d{4}");
+				 Matcher mobileNumMacher=p.matcher(requirementSubmissionHistoryDTO.getSearchValue());
+					if (matcher.find() && !mobileNumMacher.find()) {
+						try {
+							String searchValue = requirementSubmissionHistoryDTO.getSearchValue();
+							DateTimeFormatter f = new DateTimeFormatterBuilder().appendPattern(orgLocations.getDateFormat()).toFormatter();
+							LocalDate parsedDate = LocalDate.parse(searchValue, f);
+							DateTimeFormatter f2 = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+							String newDate = parsedDate.format(f2);
+							Date searchDate = new SimpleDateFormat("yyyy-MM-dd").parse(newDate);
+							sqlDate = new java.sql.Date(searchDate.getTime()); 
+							query1.append("and (rs.joinedDate like '" + sqlDate + "%' )");
+						 }catch (Exception e) {
+							 query1.append("");
+						 }
+					}
+					else if(mobileNumMacher.find()){
+						query1.append("and (rsh.submissionId.candidate.mobilePhone like '%" + requirementSubmissionHistoryDTO.getSearchValue() + "%' )");
+					}
+					else{
 				query1.append("and( (rsh.submissionId.candidate.firstName like '%" + requirementSubmissionHistoryDTO.getSearchValue() + "%' OR rsh.submissionId.candidate.lastName like '%" + requirementSubmissionHistoryDTO.getSearchValue() + "%' )")
 				      .append("OR (concat(rsh.submissionId.candidate.firstName,rsh.submissionId.candidate.lastName) like '%" + requirementSubmissionHistoryDTO.getSearchValue().trim() + "%')" )
 				      .append("OR rsh.submissionId.candidate.email like '%" + requirementSubmissionHistoryDTO.getSearchValue() + "%' ")
@@ -2581,7 +2604,9 @@ public class RequirementSubmissionDaoImpl implements RequirementSubmissionDao{
 			          .append("OR rsh.submissionId.requirement.jobTitle like '%" + requirementSubmissionHistoryDTO.getSearchValue() + "%' ")
 				      .append("OR rsh.toStage like '%" + requirementSubmissionHistoryDTO.getSearchValue() + "%' ")
 				      .append("OR rsh.createdUser like '%" + requirementSubmissionHistoryDTO.getSearchValue() + "%') ");
-			}
+			
+					}
+					}
 			
 			if(!StringUtils.equalsIgnoreCase(userType, "ADMIN")){
 	        	Map<String, Object> params = new HashMap<String,Object>();

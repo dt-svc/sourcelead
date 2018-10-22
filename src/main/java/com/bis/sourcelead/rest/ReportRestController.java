@@ -1234,7 +1234,7 @@ public class ReportRestController {
 				if(userRoleDto.getType() != null && !userRoleDto.getType().isEmpty()){
 					type=userRoleDto.getType();
 				}
-				String[] tableColumns = { "recruiterName", "noOfJobs", "totalOffers", "totalJoined", "incentives"};
+				String[] tableColumns = { "name", "requirementCount", "offerCount", "joinedCount", "incentives"};
 				int sortColumnIndex = 1; // by default sorting using updated date
 				String sortColumnOrder = "desc"; // by default descending order
 				if (userDTO.getOrder() != null && !userDTO.getOrder().isEmpty()) {

@@ -2466,12 +2466,16 @@ public class UserDaoImpl implements UserDao {
 		                + "%' )");
 		}
 String groupSubQuery = "";
+
+String sortingQry ="";
 		
 		if (applicantsJoinedReportDTO.getOrgTeams() == null &&
 				applicantsJoinedReportDTO.getOrgTeams().isEmpty()) { 
 			groupSubQuery=" group by u.ID,req.ID";
 		}
-	
+		if(StringUtils.isNotBlank(applicantsJoinedReportDTO.getSortColumn())) {
+			sortingQry = " order by "+ applicantsJoinedReportDTO.getSortColumn() +" "+applicantsJoinedReportDTO.getSortOrder();
+		}
 		query = "SELECT" + " u.ID as userId," + "req.ID as requirementID,"
 				+ "req.ORG_LOCATION_ID as orglocationId,"
 				+ "reqSub.CREATED_DATE as reqSubCreatedDate," + "req.ORG_RELATION_ID as clientId,"
@@ -2514,7 +2518,7 @@ String groupSubQuery = "";
 				  
 				  }
 		
-		queryString = session.createSQLQuery(query + clientSubQuery + teamSubQuery);
+		queryString = session.createSQLQuery(query + clientSubQuery + teamSubQuery + sortingQry);
 		/*
 		 * queryString.setLong("orgLocationId", orgLocationId);
 		 * queryString.setParameter("fromDate", fromDate);
