@@ -121,7 +121,7 @@ margin:10px 220px 0;
             </div>
 		  </div>
         </div>
-        <div class="require_wrap_table filter-position mt25">
+        <div class="require_wrap_table filter-position mt25 datatable_filter">
         
         	<div id="excelimportData"></div>
         	

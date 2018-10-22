@@ -1128,12 +1128,12 @@ public class UserRoleDaoImpl implements UserRoleDao {
 		Map<String, Object> params = new HashMap<String,Object>();
 		StringBuilder query1 = new StringBuilder("");
 		if(userDTO.getSearchValue() !=null && !"".equalsIgnoreCase(userDTO.getSearchValue())) {
-		 query1.append("and( (userRole.user.firstName like '" + userDTO.getSearchValue() + "%' OR userRole.user.lastName like '%" + userDTO.getSearchValue() + "' )")
-			   .append("OR (concat(userRole.user.firstName,userRole.user.lastName) like '%" + userDTO.getSearchValue().replaceAll("[\\s]+", "").trim() + "%')" )
-		       .append("OR userRole.user.email like '%" + userDTO.getSearchValue() + "%' ")
-			   .append("OR userRole.user.mobilePhone like '%" + userDTO.getSearchValue() + "%' ")
-			   .append("OR userRole.roles.displayName like '%" + userDTO.getSearchValue() + "%' ")
-			   .append("OR userRole.user.id IN(Select emp.user.id from Employees emp where emp.userEmploymentType like '%" + userDTO.getSearchValue() + "%') ) ");
+		 query1.append("and( (userRole.user.firstName like '" + userDTO.getSearchValue().replace("'", "") + "%' OR userRole.user.lastName like '%" + userDTO.getSearchValue().replace("'", "") + "' )")
+			   .append("OR (concat(userRole.user.firstName,userRole.user.lastName) like '%" + userDTO.getSearchValue().replace("'", "").replaceAll("[\\s]+", "").trim() + "%')" )
+		       .append("OR userRole.user.email like '%" + userDTO.getSearchValue().replace("'", "") + "%' ")
+			   .append("OR userRole.user.mobilePhone like '%" + userDTO.getSearchValue().replace("'", "") + "%' ")
+			   .append("OR userRole.roles.displayName like '%" + userDTO.getSearchValue().replace("'", "") + "%' ")
+			   .append("OR userRole.user.id IN(Select emp.user.id from Employees emp where emp.userEmploymentType like '%" + userDTO.getSearchValue().replace("'", "") + "%') ) ");
 					
 		}
 		//usertList shorting order
@@ -1552,5 +1552,17 @@ public class UserRoleDaoImpl implements UserRoleDao {
 			flag = true;
 		} 
 		return flag;
+	}
+
+	@Override
+	@Transactional
+	public List<UserRole> getLoginUserAccountsList(Long userId) throws Exception {
+
+		Session session = this.sessionFactory.getCurrentSession();
+		String query = "from UserRole userRole left join fetch userRole.user user where user.id = :userId and userRole.userState = 'ACTIVE' ";
+		List<UserRole> userRoleList = session.createQuery(query.toString()).list();
+		return userRoleList;
+
+	
 	}
 }

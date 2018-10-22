@@ -1890,8 +1890,8 @@ public class UserServiceImpl implements UserService {
 		for(BigInteger userId : map.keySet()){
 			list.add(map.get(userId).get(0));
 		}
-		responseList.setRecordsFiltered(response.getRecordsFiltered()); 
-		responseList.setRecordsTotal(response.getRecordsTotal());
+		responseList.setRecordsFiltered(list.size()); 
+		responseList.setRecordsTotal(list.size());
 	/*	for(ApplicantsJoinedReportDTO applicantsJoinedReportDTO2:response.get){
 			
 			

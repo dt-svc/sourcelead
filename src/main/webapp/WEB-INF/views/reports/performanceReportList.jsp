@@ -138,7 +138,7 @@
 		<div class="repDashCta">
 			<span><i class="fa fa-bar-chart"></i></span>
 			<div class="repDashCtaWrap">
-				<h2>ApplicantsJoined Report</h2><b>View</b>
+				<h2>Applicants Joined Report</h2><b>View</b>
 			</div>
 		</div>
 	</a>

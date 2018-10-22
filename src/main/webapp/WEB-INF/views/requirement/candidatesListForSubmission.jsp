@@ -22,7 +22,7 @@
 
 <div class="advancedsearch-mask"></div>
 <div class="cand-advsrch-popup advancedsearch-popup" id="candidateFilterPopup">
-				<h5 class="headerAdsrch">Advanced Search
+				<h5 class="headerAdsrch">Advance Search
 					<a href="javascript:void(0)" class="close-div" onClick="closePop()"><i
 						class="fa fa-close"></i></a>
 				</h5>
@@ -122,7 +122,7 @@
 								<label>Selected Cities</label>
 								<div class="clearfix">
 								   <select class="chosen-select form-control input-sm" multiple
-										data-placeholder="sletected cites" id="city" name="city">
+										data-placeholder="selected cites" id="city" name="city">
 									</select>
 								</div>
 							</div>
@@ -151,7 +151,7 @@
 		 //Adding Customized Job Skills list this method is slead-common.js
 		   tagIt("candidateSkills", 'Press Enter-Key Or Comma(,) Or Space To Add New Skills:', 'tagItBykeyForSkills','skills','Skills');
 
-		   tagIt("city", 'Press Enter-Key Or Comma(,) Or Space To Add New Cites:', 'tagItBykeyForSkills','skills','sletected cites');
+		   tagIt("city", 'Press Enter-Key Or Comma(,) Or Space To Add New Cites:', 'tagItBykeyForSkills','skills','selected cites');
 
 		   
   });
