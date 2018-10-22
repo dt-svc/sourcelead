@@ -17,6 +17,7 @@ import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.ProjectMembers;
 import com.bis.sourcelead.entity.Projects;
 import com.bis.sourcelead.entity.User;
+import com.bis.sourcelead.reportsDTO.ProjectReportDTO;
 
 public interface ProjectsService {
 
@@ -145,6 +146,13 @@ public interface ProjectsService {
 		List<Projects> getAllClientProjectsByOrgLocationId(Long locationId) throws Exception;
 		
 		List<ProjectsDTO> getProjectListForDaywiseReports(Long orgLocationsId,Long orgId,String isGlobalManager,Long userId,String type,String userRole) throws Exception;
+
+		public ResponseList<ProjectReportDTO> getProjectReportList(ProjectReportDTO projectReportDTO,Long orgLocationId)throws Exception;
+		
+
+		//public File getProjectReportListOfExcel(ProjectReportDTO projectReportDTO, User user, OrgLocations orgLocation,String isGlobalAccess);
+
+		File getProjectReportListOfExcel(List<ProjectReportDTO> projectReportDTO, User user, OrgLocations orgLocation,String isGlobalAccess) throws Exception;
 		
 //		public String getProjectId(OrgLocations orgLocations);
 		
