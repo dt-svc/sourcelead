@@ -58,6 +58,8 @@ public class RequirementSubmissionHistoryDTO extends SearchDTO implements Serial
 	private String joinDate;
 	private String incentivizedType;
 	
+	private String type;
+	
 	private String payOutPeriod;
 	
 	private String generateInvoice;
@@ -457,7 +459,13 @@ public class RequirementSubmissionHistoryDTO extends SearchDTO implements Serial
 	{
 		this.generateInvoice = generateInvoice;
 	}
-	
-	
+	public String getType()
+	{
+		return type;
+	}
+	public void setType(String type)
+	{
+		this.type = type;
+	}
 	
 }
