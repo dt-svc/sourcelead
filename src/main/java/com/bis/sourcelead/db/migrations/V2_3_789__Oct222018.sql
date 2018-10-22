@@ -1,0 +1,1 @@
+CALL AlterTableAddColumn ('REQUIREMENT','REOPENED_DATE','DATE NULL');

@@ -85,7 +85,7 @@ function redirectlocation(location){
 		var userId = '${SourceLeadWeb_userId}';
 		var searchValue = $("#approvedLeavesTableSearch").val();
 		searchValue = searchValue ? searchValue : "";
-		var url = sourceleadUrl+"/getEmployeeRequestedLeaves?"+tokenParamName+"="+tokenValue+"&searchValue="+searchValue+"&orgLocationId="+orgLocationId+"&userId="+userId+"&leaveStatus=APPROVED";
+		var url = sourceleadUrl+"/getEmployeeRequestedLeaves?"+tokenParamName+"="+tokenValue+"&orgLocationId="+orgLocationId+"&userId="+userId+"&leaveStatus=APPROVED&searchValue="+searchValue;
 		prepareApprovedEmployeesList(url);
 }
 </script> 

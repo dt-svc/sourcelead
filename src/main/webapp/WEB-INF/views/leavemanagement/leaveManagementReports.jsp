@@ -95,7 +95,7 @@ background-color: #fcfcfc;
 						        			<div class="clearfix modalFooter">
 						        				<div class="pull-right">
 						        						<button type="button" class="btn btn-success btnSuccess btn-sm mr" onclick="importLeaves();">Import</button>
-						        						<button type="button" class="btn btn-default btn-sm mr" onclick="resetUpload();">Reset</button>
+						        						<button type="button" class="btn btn-default btn-sm mr" title="Reset" onclick="resetUpload();">Reset</button>
 						        				</div>
 						        			</div>
 					        			</div>

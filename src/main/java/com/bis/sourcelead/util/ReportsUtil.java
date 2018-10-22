@@ -889,7 +889,7 @@ public Date[] yesterdayDates(OrgLocations orgLocations) throws Exception {
 	                	matchPattern.appendReplacement(sb, "--");
 	                }else if(matchPattern.group().equalsIgnoreCase("[Company_Location]")){
 						if (StringUtils.isNotEmpty(orgLocation.getCountry()))
-							matchPattern.appendReplacement(sb, orgLocation.getLocation());
+							matchPattern.appendReplacement(sb, orgLocation.getCountry());
 						else
 							matchPattern.appendReplacement(sb, "--");   
 	                }else if(matchPattern.group().equalsIgnoreCase("[Company_Name]")){
