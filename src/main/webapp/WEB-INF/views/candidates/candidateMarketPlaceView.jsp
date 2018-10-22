@@ -205,9 +205,9 @@
 	                 "render": function (data, type, opt, meta) {
 	                     var result = "";
 	                     if (opt.marketPrice !== null && opt.marketPrice !== '' && opt.marketPrice !== 'undefined') {
-	                    	 result = result + "<td><div id='marketPlacePriceDiv'><div id='marketPlacePriceValDiv' class='tblminwidth-125' title = '"+opt.marketPrice+" "+ opt.marketRateCurrencey+"'>" + opt.marketPrice + " "+ opt.marketRateCurrencey+"</div></div></td>";
+	                    	 result = result + "<td><div id='marketPlacePriceDiv'><div id='marketPlacePriceValDiv' class='tblminwidth-100' title = '"+opt.marketPrice+" "+ opt.marketRateCurrencey+"'>" + opt.marketPrice + " "+ opt.marketRateCurrencey+"</div></div></td>";
 	                     } else {
-	                         result = result + "<td><div class='tblminwidth-125'>---</div></td>";
+	                         result = result + "<td><div class='tblminwidth-100'>---</div></td>";
 	                     } 
 	                     return result;
 	                 }
@@ -259,7 +259,7 @@ function editMarketPriceFun(id, marketPrice, marketPriceCurrency, obj){
 	//alert(marketPrice+" "+marketPriceCurrency);
 	$(obj).closest('tr').find("div[id='marketPlacePriceValDiv']").empty();
 	var result = "";
-		result = result + '<div class="tblminwidth-75 clearfix"><div class="dropdown-inputbox"><input type="text"  onkeypress="return isNumberKey(event)" id="priceVal" value="'+marketPrice+'" placeholder="Enter" class="form-control input-sm"><select id="amountTypeEach" value="" class="form-control input-sm sel">';
+		result = result + '<div class="tblminwidth-100 clearfix"><div class="dropdown-inputbox"><input type="text"  onkeypress="return isNumberKey(event)" id="priceVal" value="'+marketPrice+'" placeholder="Enter" class="form-control input-sm"><select id="amountTypeEach" value="" class="form-control input-sm sel">';
 		result = result + ' <option '+(marketPriceCurrency == "" ? "selected" : "")+' value="">--Select--</option>';
 		result = result + ' <option '+(marketPriceCurrency == "INR" ? "selected" : "")+' value="INR">INR</option> ';
 		result = result + ' <option '+(marketPriceCurrency == "AUD" ? "selected" : "")+' value="AUD">AUD</option>';
@@ -326,7 +326,7 @@ function saveEditMarketPriceFun(id, obj){
 	});
 }
 function cancelEditMarketPriceFun(marketPrice, marketPriceCurrency, id, obj){
-	$(obj).closest('tr').find("div[id='marketPlacePriceDiv']").empty().append("<div id='marketPlacePriceValDiv' class='tbldata-dotdot-sm' title = '"+marketPrice+" "+ marketPriceCurrency+"'>" + marketPrice + " "+ marketPriceCurrency+"</div>");
+	$(obj).closest('tr').find("div[id='marketPlacePriceDiv']").empty().append("<div id='marketPlacePriceValDiv' class='tblminwidth-100' title = '"+marketPrice+" "+ marketPriceCurrency+"'>" + marketPrice + " "+ marketPriceCurrency+"</div>");
 	$(obj).closest('tr').find("div[id='marketLinkDiv']").empty().append("<a href='#' id='editMarketLink' onclick='editMarketPriceFun(\""+id+"\",\""+marketPrice+"\",\""+marketPriceCurrency+"\", this);' title='Edit'>Edit</a><a onclick = 'disableMarketPlace(\""+id+"\")'>&nbsp;Withdraw</a>")
 }
 $(".funPrice").on("click", "li", function(){
