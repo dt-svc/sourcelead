@@ -784,7 +784,7 @@ function removeValidationNameRecPop(){
 }
 </script>
 <script src="/resources/js/bootstrap-select.min.js"></script>
-<script src="https://maps.google.com/maps/api/js?libraries=places&v=3&key=AIzaSyCIbxD8-aZ7Wgp6N-JeEJKVRIHGRpNMdRE" type="text/javascript"></script>
+<script src="https://maps.google.com/maps/api/js?libraries=places&v=3&key=${googleMapsLocationApiKey}" type="text/javascript"></script>
 <script>
 function resetCredentials(type){
 	//Write by laxman start
