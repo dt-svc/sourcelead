@@ -21,7 +21,7 @@
 <link href="/resources/css/timesheet.css?staticTime=${staticTime}" rel="stylesheet">
 <link rel="stylesheet" href="/resources/css/bootstrap-select.min.css?staticTime=${staticTime}">
 <link href="/resources/css/bootstrap.min.css?staticTime=${staticTime}" rel="stylesheet" type="text/css">
-<script src="https://maps.google.com/maps/api/js?libraries=places&v=3&key=AIzaSyCIbxD8-aZ7Wgp6N-JeEJKVRIHGRpNMdRE" type="text/javascript"></script>
+<script src="https://maps.google.com/maps/api/js?libraries=places&v=3&key=${googleMapsLocationApiKey}" type="text/javascript"></script>
 
  <script type="text/javascript" src='/resources/js/slead-common.js?staticTime=${staticTime}'></script>
 

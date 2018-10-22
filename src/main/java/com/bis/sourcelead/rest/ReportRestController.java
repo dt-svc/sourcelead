@@ -1038,8 +1038,9 @@ public class ReportRestController {
 			ResponseList<UserRole> userRoleList = userService.getUsersResponseListByOrglocationId(userDTO,orgLocation,searchDates);
 			userRoleList.getData().forEach(userRole->{
 				Employees employee = employeesService.getEmployeeByUserIdAndOrgLocationsId(userRole.getUser().getId(), orgLocation.getId());
+				if(employee != null) {
 				UserDTO userDto = new UserDTO();
-				userDto.setEmployeeId(userRole.getId().toString());
+				userDto.setEmployeeId(userRole.getUser().getId().toString());
 				if(userRole.getUser().getLastName() != null) {
 					StringBuilder sb = new StringBuilder();
 					userDto.setUserName(sb.append(userRole.getUser().getFirstName()).append(" ").append(userRole.getUser().getLastName()).toString());
@@ -1068,6 +1069,7 @@ public class ReportRestController {
 				if(userRole.getDesignation() != null)
 				userDto.setDesignation(userRole.getDesignation());
 				userDtoList.add(userDto);
+				}
 			});
 			employeeResponseList.setData(userDtoList);
 			employeeResponseList.setRecordsFiltered(userDtoList.size());
@@ -1186,7 +1188,7 @@ public class ReportRestController {
 		
 		@RequestMapping(value = "/getAllApplicantJoinedListByOrgLocationsId")
 		public @ResponseBody ResponseList<ApplicantsJoinedReportDTO> getAllApplicantJoinedListByOrgLocationsId(ApplicantsJoinedReportDTO userRoleDto,@RequestParam(value="timePeriod", required=false) String timePeriod,@RequestParam(value="customStartDate", required=false) String customStartDate,@RequestParam(value="customEndDate", required=false) String customEndDate,
-				UserDTO userDTO,HttpServletRequest request) throws Exception {
+				ApplicantsJoinedReportDTO userDTO,HttpServletRequest request) throws Exception {
 				ResponseList<ApplicantsJoinedReportDTO> responseList = new ResponseList<>();
 		      OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 		      Org org = (Org) SourceLeadSessionManager.getSessionAttribute(request, "org");

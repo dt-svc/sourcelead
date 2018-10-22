@@ -2168,17 +2168,17 @@ private String[] prepareApplicantsJoinedListStringArray(ApplicantsJoinedReportDT
 		   if(lrv.getRequirementCount() != null){
 			   userArray[cellCount++] = lrv.getRequirementCount().toString();
 		   }else{
-			   userArray[cellCount++] = "--";
+			   userArray[cellCount++] = "0";
 		   }
 		   if(lrv.getOfferCount() !=null){
 			   userArray[cellCount++] = lrv.getOfferCount().toString();
 		   }else{
-			   userArray[cellCount++] = "--";
+			   userArray[cellCount++] = "0";
 		   }
 		 if(lrv.getJoinedCount() !=null){
 			 userArray[cellCount++] = lrv.getJoinedCount().toString();
 		 }else{
-			 userArray[cellCount++] = "--";
+			 userArray[cellCount++] = "0";
 		 }
 		  /* if(lrv.getLeaveTypeBillable() != null){
 			   userArray[5] = lrv.getLeaveTypeBillable();
