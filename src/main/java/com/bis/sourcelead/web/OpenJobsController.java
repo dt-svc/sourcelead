@@ -43,6 +43,9 @@ public class OpenJobsController {
 	@Autowired
 	private OrgLocationService orgLocationService;
 	
+	@Value("${GoogleMaps_Location_API_KEY}")
+	private String googleMapsLocationApiKey;
+	
 	@Autowired
 	RequirementLocationsService requirementLocationsService;
 	
@@ -88,6 +91,7 @@ public class OpenJobsController {
 		model.addObject("currencyCode", req.getCurrencyCode());
 		model.addObject("noticePeriod", req.getNoticePeriod());
 		model.addObject("visaTypes", req.getVisaType());
+		model.addObject("googleMapsLocationApiKey", googleMapsLocationApiKey);
 		
 		List<LookUpData> skillsList = lookUpDataService.getLookUpDataByCategory(Constants.SKILLS);
 		model.addObject("skillsList", skillsList);

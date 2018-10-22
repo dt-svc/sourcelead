@@ -1186,7 +1186,7 @@ public class ReportRestController {
 		
 		@RequestMapping(value = "/getAllApplicantJoinedListByOrgLocationsId")
 		public @ResponseBody ResponseList<ApplicantsJoinedReportDTO> getAllApplicantJoinedListByOrgLocationsId(ApplicantsJoinedReportDTO userRoleDto,@RequestParam(value="timePeriod", required=false) String timePeriod,@RequestParam(value="customStartDate", required=false) String customStartDate,@RequestParam(value="customEndDate", required=false) String customEndDate,
-				UserDTO userDTO,HttpServletRequest request) throws Exception {
+				ApplicantsJoinedReportDTO userDTO,HttpServletRequest request) throws Exception {
 				ResponseList<ApplicantsJoinedReportDTO> responseList = new ResponseList<>();
 		      OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 		      Org org = (Org) SourceLeadSessionManager.getSessionAttribute(request, "org");
