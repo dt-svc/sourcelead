@@ -153,7 +153,7 @@
                 </div>
             </div>
          </form:form>
-
+<div id="cnfPHPopUpDiv"></div>
 <script type="text/javascript">
         var validationSettings = {
             errorMessagePosition : 'element',
@@ -236,20 +236,42 @@ function payHeadCalculation(id, shortCode, method, formula){
 function saveAssociateSalaryInd(){
 	var annualSalary = document.getElementById("annualSal").value;
 	var annualPayheadTotal = 0.00;
-	
 	$("#phTblBody input:checked").each(function(){
 		if(document.getElementById("payheadSC["+$(this).attr('id')+"]").value == 'Earnings'){
 			annualPayheadTotal += parseFloat(document.getElementById("payHeadYearly["+$(this).attr('id')+"]").value);
 		}
 	});
-	
-	if(parseFloat(annualSalary) == parseFloat(annualPayheadTotal)){
-		//alert(true);
+	if(parseFloat(annualSalary) != parseFloat(annualPayheadTotal)){
+		payheadsNotMatchedAlert();
 	}else{
-		//alert(false);
+		cnfToSaveAssociateSalaryInd();
 	}
-	
-	
+}
+
+function payheadsNotMatchedAlert(){
+	var result = "";
+	result = result +"	<div class='project_inn_mask'></div>";
+	result = result +"	   <div id='remove_cnf_pop' class='remove_user_pop remove_user_pop_a'>";
+	result = result +"		<p>Annual Salary and Payheads are mismatched</p>";
+	result = result +"		<div>&nbsp;&nbsp;&nbsp;</div>";
+	result = result +"		<b href='javascript:void(0)'><input type='button' value='Proceed to Save' onClick='proceedToSavePH();'><input class='u_can_color' type='button'  value='Cancel' onClick='closeAlertPH();'></b>";
+	result = result +"	</div>";
+	$("#cnfPHPopUpDiv").empty();
+	$("#cnfPHPopUpDiv").append(result);
+	$("#remove_cnf_pop").slideDown(200);
+	$(".project_inn_mask").fadeIn(200);
+}
+
+function closeAlertPH(){
+	$("#remove_cnf_pop, .project_inn_mask").fadeOut();
+}
+
+function proceedToSavePH(){
+	$("#remove_cnf_pop, .project_inn_mask").fadeOut();
+	cnfToSaveAssociateSalaryInd();
+}
+
+function cnfToSaveAssociateSalaryInd(){
 	if ($('#associateSalary_form').validate(false, validationSettings)) {
 		var formData = getFormData1("associateSalary_form");
 		var status = $("#status").val();
