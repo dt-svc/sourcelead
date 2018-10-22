@@ -238,6 +238,8 @@ public class GenerateUSPayrollServiceImpl implements GenerateUSPayrollService{
 								.filter(p->p.getEmployeeDesignationType() != null && PayrollConstant.DRAFT.equalsIgnoreCase(p.getApproverStatus()) && p.getPayType().equalsIgnoreCase(generateUSPayrollDTO.getPayType()) && !PayrollConstant.C2C.equalsIgnoreCase(p.getEmployeeDesignationType()))
 								.collect(Collectors.toList());
 					}
+					paysheetFrequencyDTO.setNoOfGeneratedPayroll(draftPayroll.size());
+					paysheetFrequencyDTO.setTotalGeneratedAmount(draftPayroll.stream().map(USPayrollDTO::getNetPay).reduce(BigDecimal.ZERO, BigDecimal::add));
 					paysheetFrequencyDTO.setPayrollDTO(draftPayroll);
 				}
 		}
@@ -421,22 +423,57 @@ public class GenerateUSPayrollServiceImpl implements GenerateUSPayrollService{
 	   String isTerminated = "NO";
 	   int noOfDays = 0;
 	   try {
+		   SalaryDTO salaryDto = associateSalaryService.getSalaryByGroupId(orgLocation,candidate.getId(),freqStartDate,freqEndDate);
 		   if(PayrollConstant.N.equalsIgnoreCase(candidate.getIsAssociate())) {
-				List<SalaryDTO> terminatedEmpData = associateSalaryService.getSalaryByGroupId(orgLocation,candidate.getId(),freqStartDate,freqEndDate);
-				if(terminatedEmpData != null && terminatedEmpData.size() >0) {
-					SalaryDTO sal = terminatedEmpData.get(0);
-					noOfDays = commonUtil.getNumberOfDaysBetweenTwoDates(freqStartDate,sal.getTerminatedDate());
-				}else {
-					isTerminated = "YES";
-					
+				if(salaryDto != null) {
+					if(salaryDto.getTerminatedDate() !=null) {
+						boolean terminated = isEmployeeTerminated(salaryDto.getTerminatedDate(),freqStartDate,freqEndDate);
+						if(terminated) {
+							noOfDays = commonUtil.getNumberOfDaysBetweenTwoDates(freqStartDate,salaryDto.getTerminatedDate());
+						}else {
+							isTerminated = "YES";	
+						}
+					}
 				}
-			}   
+			} else {
+					if(salaryDto.getJoiningDate() != null) {
+					    	boolean terminated = isEmployeeTerminated(salaryDto.getJoiningDate(),freqStartDate,freqEndDate);
+					    	if(terminated) {
+								noOfDays = commonUtil.getNumberOfDaysBetweenTwoDates(salaryDto.getJoiningDate(),freqEndDate);
+					    	}else {
+					    		if(salaryDto.getJoiningDate().before(freqStartDate)) {
+					    			isTerminated = "NO";
+					    		}else{
+					    			if(salaryDto.getJoiningDate().after(freqStartDate)) {
+					    				isTerminated = "YES";
+					    			}
+					    		}
+					    	}
+					}
+			}
 		   salary.setIsTerminated(isTerminated);
 		   salary.setNoOfDays(noOfDays);
 	   }catch (Exception e) {
 		   e.printStackTrace();
 	    }
 	return salary;
+	}
+
+   
+   /**
+    * Check employee terminated or not 
+    * @param slaryDto
+    * @param freqStartDate
+    * @param freqEndDate
+    * @return boolean
+    */
+   private boolean isEmployeeTerminated(Date date, Date freqStartDate, Date freqEndDate)
+	{
+	   boolean isTerminated = false;
+	   if((date.equals(freqStartDate) ||date.after(freqStartDate)) && (date.equals(freqEndDate) || date.before(freqEndDate))) {
+		   isTerminated = true;
+		}
+		return isTerminated;
 	}
 
 private Set<AssociateTaxHistory> getAssociateTaxHistory(AssociateTaxDedContriView associateTaxView,
@@ -541,19 +578,27 @@ private Set<BankDataHistory> getBankDataHistory(AssociateTaxDedContriView associ
 				if(paySheetFreq.getFrequencyStartDate().after(assLoanAndAdv.getEffectiveDate()) || paySheetFreq.getFrequencyStartDate().equals(assLoanAndAdv.getEffectiveDate())) {
 					thisPayCheck = true;
 				}
-				if(assLoanAndAdv.getDeductStartDate() != null) {
+				/*if(assLoanAndAdv.getDeductStartDate() != null) {
 					thisPayCheck = payrollUtil.isDateBetweenEffectiveDate(assLoanAndAdv.getDeductStartDate(), assLoanAndAdv.getDeductEndDate(), paySheetFreq.getFrequencyStartDate(), paySheetFreq.getFrequencyEndDate());
-				}
-				if(thisPayCheck) {
-					AssociateLoanAndAdvances assLoan = assLoanAndAdv;
-					AssociateLoanAndAdvanceHistory assLoanAndAdvHis = associateLoanAndAdvancesHistoryService.getLoanAndAdvanceHistoryByCandidateIdAndLocationIdAndAdvanceId(assLoan.getId());
-					if(assLoanAndAdvHis == null || assLoanAndAdvHis.getSchedule() < assLoan.getNoOfSchedules()) {
-						int scheduleCount = 0;
+				}*/
+				
+				AssociateLoanAndAdvances assLoan = assLoanAndAdv;
+				int scheduleCount = 0;
+				AssociateLoanAndAdvanceHistory assLoanAndAdvHis = associateLoanAndAdvancesHistoryService.getLoanAndAdvanceHistoryByCandidateIdAndLocationIdAndAdvanceId(assLoan.getId());
+				if(assLoanAndAdvHis == null || assLoanAndAdvHis.getSchedule() < assLoan.getNoOfSchedules()) {
+					if(thisPayCheck) {
+						scheduleCount = 0;
 						if(assLoanAndAdvHis != null && assLoanAndAdvHis.getSchedule() != null) {
 							scheduleCount = assLoanAndAdvHis.getSchedule() + 1;
 						}else {
 							scheduleCount += 1;
 						}
+					}
+				}else {
+					thisPayCheck = false;
+				}
+				
+				if(thisPayCheck) {
 						
 						Date[] dedFreqDates = payrollUtil.getLoanAndAdvancesScheduleDates(paySheetFreq.getFrequencyStartDate(), assLoanAndAdv.getScheduler());
 						if("Loan".equalsIgnoreCase(assLoanAndAdv.getLoanAdvanceType())){
@@ -584,7 +629,7 @@ private Set<BankDataHistory> getBankDataHistory(AssociateTaxDedContriView associ
 						his.add(assLoanHistory);
 //						assLoanHistory = associateLoanAndAdvancesHistoryService.saveAssociateLoanAndAdvancesHistory(assLoanHistory);
 						
-					}
+//					}
  				}
 			}
 			assLoanAdvDto.setTotalAdvanceAmount(totalAdvanceAmount);

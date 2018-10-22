@@ -1191,6 +1191,9 @@ public class ClientServiceImpl implements ClientService {
 				if (StringUtils.isNotBlank(clientDTO.getLevel())) {
 					orgRelation.setResponderLevel(clientDTO.getLevel());
 				}
+				if(StringUtils.isNotBlank(clientDTO.getGenerateInvoice())){
+					orgRelation.setGenerateInvoice(clientDTO.getGenerateInvoice());
+					}
 			}
 			
 			if (StringUtils.isNotBlank(clientDTO.getPaymentTerms())) {
@@ -1345,6 +1348,9 @@ public class ClientServiceImpl implements ClientService {
 				if (StringUtils.isNotBlank(clientDTO.getLevel())) {
 					orgRelation.setResponderLevel(clientDTO.getLevel());
 				}
+				if(StringUtils.isNotBlank(clientDTO.getGenerateBill())){
+					orgRelation.setGenerateBill(clientDTO.getGenerateBill());
+					}
 			}
 			if (StringUtils.isNotBlank(clientDTO.getIsLawFirm()) && clientDTO.getIsLawFirm().equalsIgnoreCase("Y")) {
 					orgRelation.setIsLawFirm(Constants.YES);

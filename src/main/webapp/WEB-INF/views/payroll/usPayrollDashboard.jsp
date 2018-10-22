@@ -64,7 +64,7 @@ function approvePayrollDiv(){
 <div class="col-md-12 mt">
 	<div class="row">
 		<div class="col-md-3" id="groupIdDiv">
-			<select class="chosen-select" id="groupId" name="groupId" onchange="removeValidateGroup();getGroupFrequency();" data-validation="required" field-name="User Group">
+			<select class="chosen-select" id="groupId" name="groupId" onchange="removeValidateGroup();clearSubmitDiv();getGroupFrequency();" data-validation="required" field-name="User Group">
 				<option value="">User Group</option>
                     <c:forEach var="ug" items="${userGroupList}">
 					<option value="${ug.groupUUID},${ug.id}">${ug.groupName}</option>
@@ -117,6 +117,29 @@ function approvePayrollDiv(){
 <div class="clearfix">
 <!-- <div class="col-md-2"><a href="javascript:void(0)" class="btn anchorBlue">Exclude</a></div> -->
 	<div id="submitButtonDiv">
+	
+<div class="col-md-7">
+	<div class="row">
+	
+	<div class="col-md-5">
+		<div class="row">
+			<label class="col-md-7">No. of Payroll Generated  :</label>
+			<div class="col-md-5" id="totalNoPayroll"><strong>00.00</strong></div>
+		</div>
+	</div>
+	
+	<div class="col-md-7">
+			<div class="row">
+			<label class="col-md-3">Total Net Pay  :</label>
+			<div class="col-md-9" id="totalPayrollAmount"><strong>00.00</strong></div>
+		</div>
+	</div>
+	
+	</div>
+	
+</div>	
+	
+	<div class="col-md-5">
 	<ul class="pull-right mr list-unstyled list-inline">
 		<li><a href="#" class="btn btn-primary btnSuccess" id="Submit" onClick="sendPayrollForApprover();">Submit for Approve</a></li>
 		 <c:if test="${SourceLeadWeb_isPayRollApprover == 'Y'}">
@@ -124,6 +147,8 @@ function approvePayrollDiv(){
 		</c:if>
 		<li><a href="#" class="btn btn-default" onclick="window.location='/app/payrollList'">Cancel</a></li>
 	</ul>
+	</div>
+	
 	</div>
 <div class="clearfix"></div>
 </div>
@@ -569,6 +594,8 @@ function runUSPayroll(){
 				        	result += '</table>';
 				        	$("#payrollDataDiv").show();
 				        	$("#payrollDataDiv").empty();
+				        	$("#totalNoPayroll").html(data.noOfGeneratedPayroll);
+				        	$("#totalPayrollAmount").html(data.totalGeneratedAmount);
 				        	$("#payrollDataDiv").append(result);
 				        	$("#initiateLoading").removeAttr('style');
 		        	    
@@ -677,6 +704,9 @@ function clearPayrollDiv(){
 function errPayPeriod(){
 	$('#payPeriodDiv').find('p.jquery_form_error_message').remove();  
 
+}
+function clearSubmitDiv(){
+	$("#submitButtonDiv").hide();
 }
 </script>
 

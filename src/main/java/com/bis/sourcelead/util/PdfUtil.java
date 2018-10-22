@@ -8,6 +8,7 @@ import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.LinkedList;
 import java.util.Map;
 import java.util.Set;
 
@@ -21,13 +22,17 @@ import org.springframework.stereotype.Component;
 
 import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.dao.OrgLocationsDao;
+import com.bis.sourcelead.dto.ApplicantsJoinedReportDTO;
 import com.bis.sourcelead.dto.ProjectsDTO;
 import com.bis.sourcelead.dto.Response;
 import com.bis.sourcelead.dto.ResponseList;
+import com.bis.sourcelead.entity.AppliedLeaveDateView;
+import com.bis.sourcelead.entity.AssociateBalanceLeaveView;
 import com.bis.sourcelead.entity.Candidate;
 import com.bis.sourcelead.entity.CandidateEducation;
 import com.bis.sourcelead.entity.Employees;
 import com.bis.sourcelead.entity.LeaveReportView;
+import com.bis.sourcelead.entity.LeaveType;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.OrgRelations;
 import com.bis.sourcelead.entity.OrgSpoc;
@@ -45,8 +50,11 @@ import com.bis.sourcelead.entity.TimeSheetSubmissionCount;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.entity.UserRole;
 import com.bis.sourcelead.reportsDTO.LeaveBalanceReportDTO;
+import com.bis.sourcelead.service.AppliedLeaveDateService;
+import com.bis.sourcelead.service.AssociateBalanceLeaveService;
 import com.bis.sourcelead.reportsDTO.ProjectReportDTO;
 import com.bis.sourcelead.service.EmployeesService;
+import com.bis.sourcelead.service.LeaveTypeService;
 import com.bis.sourcelead.service.OrgLocationService;
 import com.bis.sourcelead.service.ProjectBudgetService;
 import com.bis.sourcelead.service.ProjectClientService;
@@ -110,6 +118,15 @@ public class PdfUtil {
 	
 	@Autowired
 	RequirementOffersService requirementOffersService;
+	
+	@Autowired
+	AppliedLeaveDateService appliedLeaveDateService;
+	
+	@Autowired
+	LeaveTypeService leaveTypeService;
+	
+	@Autowired
+	AssociateBalanceLeaveService associateBalanceLeaveService;
 	
 	private static final Logger logger = LoggerFactory.getLogger(PdfUtil.class);
 	public File createPdfTable(java.util.List<UserRole> activeList,
@@ -2010,7 +2027,194 @@ private String[] prepareDailyWiseLeaveReportStringArray(LeaveReportView lrv, Str
 
 }
 
+public File createAllApplicantJoinedListPdfTable(ResponseList<ApplicantsJoinedReportDTO> userDTOList,OrgLocations orgLocations,Date[] searchDates) throws Exception{
 
+	
+	 java.util.List<String> headerList = new LinkedList<>();
+	 headerList.add("Recruiter Name");
+	 String headers[] =null;
+	 int[] integers =null;
+ if(!userDTOList.getData().isEmpty()){
+	 for(String date :userDTOList.getData().get(0).getDatesList()) {
+		 headerList.add(date.split("<<>>").length > 1 ? date.split("<<>>")[0] : date);
+	 }
+	 headerList.add("No Of Jobs");
+	 headerList.add("Total Offer");
+	 headerList.add("Total Joiners");
+	 headerList.add("Total Leaves");
+	 
+	 headers = new String[headerList.size()];
+	 
+	 integers = new int[headers.length];
+	 
+	 int k=0;
+	 for(String header : headerList) {
+		 headers[k] = header;
+		 k++;
+	 }
+	 }
+	 
+	 
+	
+    Document document = new Document(PageSize.LETTER.rotate());
+    StringBuilder sbUser =  new StringBuilder();
+    sbUser.append("APPLICANTS_JOINED_LIST_REPORT_").append(commonUtil.dateStrFromOrgDateFormatter(orgLocations.getDateFormat(),new Date()));
+
+    StringBuilder fileSB = new StringBuilder();
+    File file = File.createTempFile(fileSB.append("Applicants_Joined_List_Report_").append(commonUtil.dateStrFromOrgDateFormatter(orgLocations.getDateFormat(),new Date())).toString(),".pdf");
+    System.out.println("***************************************"+file.getAbsolutePath());
+    file.setReadable(true);
+    
+    try {
+        // Get an instance of PdfWriter and create a Table.pdf file as an output.
+        PdfWriter.getInstance(document, new FileOutputStream(file));
+        document.open();
+
+        Font boldFont = new Font(Font.FontFamily.TIMES_ROMAN, 18, Font.BOLD);
+        BaseColor myColor = WebColors.getRGBColor("#000000");
+        boldFont.setColor(myColor);
+        StringBuilder userStyle = new StringBuilder();
+        userStyle.append(orgLocations.getOrgLocationName()).append(" ").append("Applicants_Joined_List_Report");
+      
+
+        StringBuilder orgNameSB = new StringBuilder();
+        Paragraph para = new Paragraph(orgNameSB.append("Organization : ").append(orgLocations.getOrgLocationName()).toString());
+        para.setAlignment(Element.ALIGN_CENTER);
+        document.add(para);
+      
+        // Create an instance of PdfPTable. After that we transform the header and
+        if(headers != null && headers.length != 0){
+        	 PdfPTable table = new PdfPTable(headers.length);
+             Font font = new Font(FontFamily.HELVETICA, 14, Font.BOLD, BaseColor.WHITE);
+             PdfPCell cell1 = new PdfPCell(new Phrase(userStyle.toString(),font));
+             cell1.setColspan(integers.length);
+             headerCellStyle(cell1);
+             table.setWidthPercentage(100);
+             int[] testarray = new int[integers.length];
+             for (int i = 0; i < integers.length; i++) {  
+         	    testarray[i]=5;
+         	    System.out.println("www "+testarray[i]);
+         	}
+             
+             table.setWidths(testarray);
+             table.addCell(cell1);
+             
+             for (int i = 0; i < headers.length; i++) {
+                 String header = headers[i];
+                 PdfPCell cell = new PdfPCell();
+                 cell.setGrayFill(0.9f);
+                 cell.setPhrase(new Phrase(header.toUpperCase(), new Font(FontFamily.HELVETICA, 10, Font.BOLD)));
+                 BaseColor myBorderColor = WebColors.getRGBColor("#808080");
+                 cell.setBackgroundColor(myBorderColor);
+                 table.addCell(cell);
+             }
+             table.completeRow();
+             java.util.List<String[]> lrvList = new ArrayList<>();
+             java.util.List<ApplicantsJoinedReportDTO> list = userDTOList.getData();
+             for(ApplicantsJoinedReportDTO lrv : list){
+             	lrvList.add(prepareApplicantsJoinedListStringArray(lrv,headers,searchDates,orgLocations));
+             }
+             for (String[] userArray: lrvList) {
+                 for (int i = 0; i < userArray.length; i++) {
+                     String datum = userArray[i];
+                     PdfPCell cell = new PdfPCell();
+                     cell.setPhrase(new Phrase(datum, new Font(FontFamily.HELVETICA, 10, Font.NORMAL)));
+                     table.addCell(cell);
+                 }
+                 table.completeRow();
+             }
+             document.addTitle("DayWiseLeaveReport Table");
+             table.setSpacingBefore(15f);
+             document.add(table);
+        }
+      
+       
+        logger.info("Pdf table created !!");
+    } catch (DocumentException e) {
+    	logger.error("Exception cause is : "+ExceptionUtils.getFullStackTrace(e));
+    } catch (FileNotFoundException e) {
+    	logger.error("Exception cause is : "+ExceptionUtils.getFullStackTrace(e));
+    } finally {
+        document.close();
+    }
+	return file;
+	
+}
+
+
+private String[] prepareApplicantsJoinedListStringArray(ApplicantsJoinedReportDTO lrv, String[] headers,Date[] searchDates,OrgLocations orgLocations) throws Exception {
+	String userArray[] = new String[headers.length];
+	int cellCount = 0;
+		 if(lrv.getName()!=null){
+			 userArray[cellCount++] = lrv.getName();
+		 }else{
+			 userArray[0] = "--";
+		 }
+		/*   if(searchDates !=null){
+			java.util.List<Date> duration =  CalendarUtil.getListOfDaysBetweenTwoDates(searchDates[0],searchDates[1]);
+			for(Date  holidayDate :duration) {
+				String Date= commonUtil.dateStrFromOrgDateFormatter(orgLocations.getDateFormat(),holidayDate).toString();
+			}
+			userArray[1] = "--";
+		   }else{
+			   userArray[1] = "--";
+		   }*/
+		 if(lrv.getDatesList()!=null && !lrv.getDatesList().isEmpty()){
+				for(String date : lrv.getDatesList()) {
+					userArray[cellCount++] =date.split("<<>>").length > 1 ? date.split("<<>>")[1] : date;
+				}
+//			 userArray[cellCount++] = lrv.getFromDate().toString();
+		 }else{
+			 userArray[cellCount++] = "--";
+		 }
+		   if(lrv.getRequirementCount() != null){
+			   userArray[cellCount++] = lrv.getRequirementCount().toString();
+		   }else{
+			   userArray[cellCount++] = "0";
+		   }
+		   if(lrv.getOfferCount() !=null){
+			   userArray[cellCount++] = lrv.getOfferCount().toString();
+		   }else{
+			   userArray[cellCount++] = "0";
+		   }
+		 if(lrv.getJoinedCount() !=null){
+			 userArray[cellCount++] = lrv.getJoinedCount().toString();
+		 }else{
+			 userArray[cellCount++] = "0";
+		 }
+		  /* if(lrv.getLeaveTypeBillable() != null){
+			   userArray[5] = lrv.getLeaveTypeBillable();
+		   }else{
+			   userArray[5] = "--";
+		   }*/
+		 
+		   java.util.List<LeaveType> leaveTypesList=leaveTypeService.getLeaveTypeListByLocationId(orgLocations.getId().toString());
+			 
+			java.util.List<AppliedLeaveDateView> appliedLeaves = null;
+			float appliedNoofLeaves = 0;
+			float appliedLeaveCount = 0;
+			float totalLeavesCount=0;
+		   for(LeaveType leaveType:leaveTypesList){
+			   AssociateBalanceLeaveView ablv = new AssociateBalanceLeaveView();
+				ablv.setIncludeWeekoff(leaveType.getIncludeWeekoff());
+				ablv.setIncludeHolidays(leaveType.getIncludeHolidays());
+			   appliedLeaves = appliedLeaveDateService.getAppliedLeaveDatesByLeaveTypeIdAndOrgLocationIdAndUserId(orgLocations.getId(), leaveType.getId(), lrv.getFromDate(), lrv.getToDate(), lrv.getUserId().longValue(),orgLocations.getOrg().getId());
+			if(!appliedLeaves.isEmpty()){
+				   appliedNoofLeaves = (float)associateBalanceLeaveService.getExcludeHolidayLeaveCount(appliedLeaves,orgLocations,ablv,lrv.getFromDate(),lrv.getToDate(),leaveType);
+			}
+				totalLeavesCount=totalLeavesCount+appliedNoofLeaves;
+		   }
+		   
+		   if(totalLeavesCount !=0){
+				 userArray[cellCount++] = String.valueOf(totalLeavesCount);
+			 }else{
+				 userArray[cellCount++] = "0";
+			 }
+	   
+	return userArray;
+	
+
+}
 
 
 	public File getProjectReportListOfPdf(java.util.List<ProjectReportDTO> projectReportDTO, User user, OrgLocations orgLocation, String isGlobalAccess) {
@@ -2093,82 +2297,81 @@ private String[] prepareDailyWiseLeaveReportStringArray(LeaveReportView lrv, Str
 		}
 		return null;
 	}
-private java.util.List<String[]> prepareProjectReportListStringArray(java.util.List<ProjectReportDTO> projectReportDTO, String[] headers,
-		OrgLocations orgLocation, User user, String isGlobalAccess) {
 
-    	java.util.List<String[]> arrayList = new ArrayList<>();
-    	
-     	for(ProjectReportDTO report:projectReportDTO){
-		String reportArray[] = new String[headers.length];
-			if(report.getProjectSeqNo() != null) {
+	private java.util.List<String[]> prepareProjectReportListStringArray(
+			java.util.List<ProjectReportDTO> projectReportDTO, String[] headers, OrgLocations orgLocation, User user,
+			String isGlobalAccess) {
+
+		java.util.List<String[]> arrayList = new ArrayList<>();
+
+		for (ProjectReportDTO report : projectReportDTO) {
+			String reportArray[] = new String[headers.length];
+			if (report.getProjectSeqNo() != null) {
 				reportArray[0] = report.getProjectSeqNo();
-			 }else {
+			} else {
 				reportArray[0] = "--";
 			}
-				
-			if(report.getProjectName() != null) {
+
+			if (report.getProjectName() != null) {
 				reportArray[1] = report.getProjectName();
-			 }else {
+			} else {
 				reportArray[1] = "--";
 			}
-			
-			if(report.getProjectStatus() != null) {
+
+			if (report.getProjectStatus() != null) {
 				reportArray[2] = report.getProjectStatus();
-			 }else {
+			} else {
 				reportArray[2] = "--";
 			}
-			
-			if(report.getProjectManagers()!= null) {
+
+			if (report.getProjectManagers() != null) {
 				reportArray[3] = report.getProjectManagerNames();
-			 }else {
+			} else {
 				reportArray[3] = "--";
 			}
-	
-			if(report.getProjectStartDate()!= null) {
+
+			if (report.getProjectStartDate() != null) {
 				reportArray[4] = report.getProjectStartDate();
-			 }else {
+			} else {
 				reportArray[4] = "--";
 			}
-			
-			if(report.getProjectEndDate()!= null) {
+
+			if (report.getProjectEndDate() != null) {
 				reportArray[5] = report.getProjectEndDate();
-			 }else {
+			} else {
 				reportArray[5] = "--";
 			}
-			
-			if(report.getProjectMembers()!= null) {
+
+			if (report.getProjectMembers() != null) {
 				reportArray[6] = report.getProjectMembers();
-			 }else {
+			} else {
 				reportArray[6] = "--";
 			}
-			
-			if(report.getMemberStartDate()!= null) {
+
+			if (report.getMemberStartDate() != null) {
 				reportArray[7] = report.getMemberStartDate();
-			 }else {
+			} else {
 				reportArray[7] = "--";
 			}
-			
-			if(report.getMemberEndDate()!= null) {
+
+			if (report.getMemberEndDate() != null) {
 				reportArray[8] = report.getMemberEndDate();
-			 }else {
+			} else {
 				reportArray[8] = "--";
 			}
-			
-			if(StringUtils.isNotBlank(report.getMemberStatus())) {
-				if ( Integer.parseInt(report.getMemberStatus()) == Constants.RECORD_ACTIVE) {
-			
-				reportArray[9] = "Active";
-			 }else {
-				reportArray[9] = "In-Active";
+
+			if (StringUtils.isNotBlank(report.getMemberStatus())) {
+				if (Integer.parseInt(report.getMemberStatus()) == Constants.RECORD_ACTIVE) {
+
+					reportArray[9] = "Active";
+				} else {
+					reportArray[9] = "In-Active";
+				}
+
 			}
-			
-			}
-		arrayList.add(reportArray);
+			arrayList.add(reportArray);
+		}
+		return arrayList;
 	}
-	return arrayList;
-}
-
-
-
 
 	}

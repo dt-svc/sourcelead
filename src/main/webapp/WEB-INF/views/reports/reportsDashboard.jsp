@@ -299,8 +299,8 @@
 				<li><a href="${appPath}/payrollComparison">Comparsion</a></li>
 				<li><a href="${appPath}/payrollListSummaryReport">Payroll Summary</a></li>
 				<li><a href="${appPath}/checkRegisterReport">Check Register Report</a></li>
-				<!-- <li><a href="employeePayroll.html">Employee Report</a></li>
-				<li><a href="companysnapshot.html">Employee Hours Paid</a></li>
+				<li><a href="${appPath}/associateWithholding">Associate Withholding</a></li>
+				<!-- <li><a href="companysnapshot.html">Employee Hours Paid</a></li>
 				<li><a href="companysnapshot.html">Taxable Wages Report</a></li> -->
 				<li><a href="${appPath}/deductionReport">Deduction Reports</a></li>
 				<li><a href="${appPath}/contributionReport">Contribution Reports</a></li>

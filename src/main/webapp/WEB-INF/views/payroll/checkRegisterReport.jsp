@@ -16,7 +16,9 @@ $(document).ready(function(){
       <div class="pull-left">
         <h2>Check Register Report</h2>
       </div>
-      <div class="pull-right brud-crum">Home &raquo; Payhead List &raquo; Check Register Report</div>
+      <div class="pull-right brud-crum"><a href="<c:url value='${appPath}/dashboard'/>" title="Home">Home</a>&raquo;<a
+				href="<c:url value='${appPath}/usPayrollReport'/>"> USPayroll Reports List</a>&raquo;Check Register Report
+		</div>
     </section>
     <div class="contentareaInner-styles clearfix">
     <div id="loading"></div>
@@ -254,6 +256,7 @@ function checkRegisterReports(){
 		result = result + '<th>Employee Name</th>';
 		result = result + '<th>Department</th>';
 		result = result + '<th>Amount</th>';
+		result = result + '<th>Total Amount</th>';
 		result = result + '</tr>';
 		result = result + '</thead>	';
 		result = result + "</table>";
@@ -286,6 +289,8 @@ function checkRegisterReports(){
 							}, {
 								"data" : "department"
 							}, {
+								"data" : "netPay"
+							},{
 								"data" : "netPay"
 							}],
 							"columnDefs" : [
@@ -341,7 +346,16 @@ function checkRegisterReports(){
 										"data" : "netPay",
 										"render" : function(data, type, opt,meta) {
 											var result = "";
-											result = result+ '<td><div class="tbldata-dotdot-vsm" title="">'+opt.netPay+'</div></td>';
+											result = result+ '<td><div class="tbldata-dotdot-vsm" title=""><i class="fa fa-dollar"style="color:#454545;"></i> '+opt.netPay+'</div></td>';
+											return result;
+										}
+									},
+									{
+										"targets" : colIndex++,
+										"data" : "ytdNet",
+										"render" : function(data, type, opt,meta) {
+											var result = "";
+											result = result+ '<td><div class="tbldata-dotdot-vsm" title=""><i class="fa fa-dollar"style="color:#454545;"></i> '+opt.ytdNet+'</div></td>';
 											return result;
 										}
 									}],
@@ -363,13 +377,13 @@ function checkRegisterReports(){
 		$("input[type=search]").hide();
 		$("#dataTableSearch").keyup(function(e) {
 			if (e.which === 13) {
-				checkRegisterReports()();
+				checkRegisterReports();
 			}
 		});
 		
 	}
 	function payCheckDateSearch(){
-		checkRegisterReports()();
+		checkRegisterReports();
 	}
 	
 </script>

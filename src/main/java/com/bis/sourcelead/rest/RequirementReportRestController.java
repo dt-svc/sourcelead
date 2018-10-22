@@ -1,10 +1,19 @@
 package com.bis.sourcelead.rest;
 
+import java.io.Writer;
+import java.text.DateFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.apache.commons.lang.StringUtils;
+import org.joda.time.DateTime;
+import org.joda.time.format.DateTimeFormat;
+import org.joda.time.format.DateTimeFormatter;
 import org.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -18,11 +27,14 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.bis.sourcelead.beans.ApplicantReport;
 import com.bis.sourcelead.beans.AssignedRequirementReports;
+import com.bis.sourcelead.constants.Constants;
+import com.bis.sourcelead.dto.RequirementDTO;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.Requirement;
 import com.bis.sourcelead.entity.RequirementSubmission;
 import com.bis.sourcelead.entity.Timezone;
 import com.bis.sourcelead.entity.User;
+import com.bis.sourcelead.reportsDTO.JobFilterDTO;
 import com.bis.sourcelead.service.RequirementAssignToService;
 import com.bis.sourcelead.service.RequirementLocationsService;
 import com.bis.sourcelead.service.RequirementRateSubmissionNegotiationService;
@@ -33,7 +45,12 @@ import com.bis.sourcelead.service.RequirementSubmissionService;
 import com.bis.sourcelead.service.RequirementSubmissionTemplateFieldsService;
 import com.bis.sourcelead.service.TimeZoneService;
 import com.bis.sourcelead.util.CommonUtil;
+import com.bis.sourcelead.util.ReportsUtil;
 import com.bis.sourcelead.util.SourceLeadSessionManager;
+import com.thoughtworks.xstream.XStream;
+import com.thoughtworks.xstream.io.HierarchicalStreamWriter;
+import com.thoughtworks.xstream.io.json.JsonHierarchicalStreamDriver;
+import com.thoughtworks.xstream.io.json.JsonWriter;
 /**
  * 
  * @author root
@@ -75,6 +92,9 @@ public class RequirementReportRestController {
 	 
 	 @Autowired
 	private RequirementLocationsService requirementLocationsService;
+	 
+	 @Autowired
+	 private ReportsUtil reportsUtil;
 	
 	
 	 /**
@@ -136,8 +156,38 @@ public class RequirementReportRestController {
 		}
 			return reportsList;
 	 }
-
+	
+	@RequestMapping(value = "/getJobsForPipelineReoport",method = RequestMethod.POST)
+	public String getJobsForPipelineReoport(JobFilterDTO jobFilterDTO, HttpServletRequest request, HttpServletResponse response) throws Exception
+	{
 		
+		String reportsList = null;
+		User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+		 String userRole = (String) SourceLeadSessionManager.getSessionAttribute(request, "loginUserRole");
+		OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+		List<RequirementDTO> reqList =  reportsUtil.getAllRequirementsByOrgLocationIdForJobsPipeLine(jobFilterDTO,orgLocation,user,userRole,request);
+		reportsList = toJSON(reqList);
+			return reportsList;
+	 }
+	
+	public String toJSON(Object obj){
+        XStream xstream = new XStream(new JsonHierarchicalStreamDriver() {
+            public HierarchicalStreamWriter createWriter(Writer writer) {
+                return new JsonWriter(writer, JsonWriter.DROP_ROOT_MODE);
+            }
+        });
+        return xstream.toXML(obj);
+    }
+
+	private Date getPreviousDate(DateTime zoned, DateTimeFormatter outputFormatter, DateFormat TZ_DF_TS, Timezone timezone, int numberOfDays) throws ParseException
+	{
+		DateTime yesterDayZoned = zoned.minusDays(numberOfDays);
+		String yesterDayDate = outputFormatter.print(yesterDayZoned);
+		// String startDateString =
+		// CommonUtil.convertTimeZones(timezone.getTimeZoneId(),
+		// Constants.UTC_TIMEZONE, yesterDayDate);
+		return TZ_DF_TS.parse(yesterDayDate);
+	}	
 	 
 	/**
 	 * returns applicants counts based on stage status

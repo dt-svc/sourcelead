@@ -61,7 +61,7 @@
         <div class="pull-left">
           <h4 class="text-muted">Payroll Configure</h4>
           <small class="text-muted">Configure Payroll</small>
-          <div class="clearfix mt10"> <a href="<c:url value='${appPath}/payrollApprover'/>" class="btn btn-info btn-sm mr10" title="Add">Configure</a>
+          <div class="clearfix mt10"> <a href="<c:url value='${appPath}/payrollApprover'/>" class="btn btn-info btn-sm mr10" title="Configure">Configure</a>
            </div>
         </div>
         <div class="clearfix"></div>
@@ -72,7 +72,7 @@
         <div class="pull-left">
           <h4 class="text-muted">Payroll Legacy Reports</h4>
           <small class="text-muted">Configure Payroll Reports</small>
-          <div class="clearfix mt10"> <a href="<c:url value='${appPath}/payrollImports'/>" class="btn btn-info btn-sm mr10" title="Add">Configure</a>
+          <div class="clearfix mt10"> <a href="<c:url value='${appPath}/payrollImports'/>" class="btn btn-info btn-sm mr10" title="Configure">Configure</a>
            </div>
         </div>
         <div class="clearfix"></div>
@@ -96,8 +96,8 @@
           <h4 class="text-muted">Loan & Advances</h4>
           <small class="text-muted">Manage your loan & advances</small>
           <div class="mt10">
-          	<a class="btn btn-info btn-sm mr10" href="<c:url value='${appPath}/payrollLoanAndAdvances'/>">Add</a> 
-			<a class="btn btn-primary btn-sm" href="<c:url value='${appPath}/payrollLoanAndAdvancesList'/>">View</a>
+          	<a class="btn btn-info btn-sm mr10" href="<c:url value='${appPath}/payrollLoanAndAdvances'/>" title="Add">Add</a> 
+			<a class="btn btn-primary btn-sm" href="<c:url value='${appPath}/payrollLoanAndAdvancesList'/>" title="View">View</a>
 		  </div>
         </div>
         <div class="clearfix"></div>

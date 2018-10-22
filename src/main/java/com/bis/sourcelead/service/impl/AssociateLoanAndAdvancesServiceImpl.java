@@ -279,4 +279,10 @@ public class AssociateLoanAndAdvancesServiceImpl implements AssociateLoanAndAdva
 		return associateLoanAndAdvancesDao.getEmpLoansAndAdvancesCountListByOrgLocationId(candidateId);
 	}
 
+	@Override
+	public List<AssociateLoanAndAdvances> getAssociateLoanAndAdvancesListByUserIdAndLocationId(User user,
+			OrgLocations orgLocation, String loanStatus) throws Exception {
+			return associateLoanAndAdvancesDao.getAssociateLoanAndAdvancesListByUserIdAndLocationId(user, orgLocation,loanStatus);
+	}
+
 }

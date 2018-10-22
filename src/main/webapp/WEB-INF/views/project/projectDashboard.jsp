@@ -199,6 +199,7 @@ overflow-x: auto;
 							 </div> 
 							 </c:if>
 							 
+					   <c:if test="${prjectTagsListSize > 0}">
 							 <div class="col-md-4 mb positionRelative">
 									<div class="clearfix dynamic_search filterDynamicsearch">
 										<input type="text" id="myTagsInput" onkeyup="myTagsFunction()" placeholder="Tags" title="Type in a tags">
@@ -212,7 +213,7 @@ overflow-x: auto;
 										</ul>
 									 </div> 
 							 </div> 
-						
+						</c:if>
 						
 					</div>
 					</div>

@@ -3715,7 +3715,7 @@ public void userEmailToAdmin(StringBuilder tempHTML, OrgLocations orgLocations,U
 					for(ProjectMembers projectMember : projectMemebersList) {
 						ProjectReportDTO reportDTO = getProjectReport(p);
 						//Project Members
-						reportDTO.setProjectMembers(projectMember.getProjectMemberCandidteId().getFullName());
+						reportDTO.setProjectMembers(projectMember.getProjectMemberCandidteId() != null ?projectMember.getProjectMemberCandidteId().getFullName() : "");
 						if(projectMember.getProjectAssignedDate() != null) {
 							reportDTO.setMemberStartDate(commonUtil.dateStrFromOrgDateFormatter(projectMember.getProjects().getOrgLocationsId().getDateFormat(), projectMember.getProjectAssignedDate()));
 						}
@@ -3747,14 +3747,21 @@ public void userEmailToAdmin(StringBuilder tempHTML, OrgLocations orgLocations,U
 		Set<ProjectApproverHierarchy> projectApproverHierarchyList =  p.getProjectApprovers();
 		String managerLevel1 = "", managerLevel2 = "";
 		for (ProjectApproverHierarchy pah : projectApproverHierarchyList) {
-			if (pah.getLevel() == 1 && pah.getStatus().equalsIgnoreCase("1"))
-				managerLevel1 += (managerLevel1.isEmpty() ? "" : ", ") + (pah.getApproverUserId().getFirstName() + " "
-						+ (pah.getApproverUserId().getLastName() != null ? pah.getApproverUserId().getLastName() : ""));
+			if (pah.getApproverUserId() != null) {
+				if (pah.getLevel() == 1 && pah.getStatus().equalsIgnoreCase("1"))
+					managerLevel1 += (managerLevel1.isEmpty() ? "" : ", ")
+							+ (pah.getApproverUserId().getFirstName() + " "
+									+ (pah.getApproverUserId().getLastName() != null
+											? pah.getApproverUserId().getLastName()
+											: ""));
 
-			if (pah.getLevel() == 2 && pah.getStatus().equalsIgnoreCase("1"))
-				managerLevel2 += (managerLevel2.isEmpty() ? "" : ", ") + (pah.getApproverUserId().getFirstName() + " "
-						+ (pah.getApproverUserId().getLastName() != null ? pah.getApproverUserId().getLastName() : ""));
-
+				if (pah.getLevel() == 2 && pah.getStatus().equalsIgnoreCase("1"))
+					managerLevel2 += (managerLevel2.isEmpty() ? "" : ", ")
+							+ (pah.getApproverUserId().getFirstName() + " "
+									+ (pah.getApproverUserId().getLastName() != null
+											? pah.getApproverUserId().getLastName()
+											: ""));
+			}
 		}
 		reportDTO.setProjectManagerNames(!managerLevel2.isEmpty() ? managerLevel2 : managerLevel1);
 		reportDTO.setProjectStartDate(p.getStartDateStr());

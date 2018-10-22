@@ -70,7 +70,7 @@ public class USPayPeriodDaoImpl implements USPayPeriodDao{
 	public ResponseList<USPayPeriod> getPayPeriodListByOrgLocationId(OrgLocations orgLocation, PaysheetFrequencyDTO paysheetFrequencyDTO) throws Exception
 	{
 		Session session = this.sessionFactory.getCurrentSession();
-		String qry = "from USPayPeriod up where up.orgLocation.id =:orgLocationId and up.status = '1'";
+		String qry = "from USPayPeriod up where up.orgLocation.id =:orgLocationId and up.status = '1' order by up.id desc";
 		List<USPayPeriod> periodList = null;
 		ResponseList<USPayPeriod> response = new ResponseList<>();
 		StringBuilder query1 = new StringBuilder("");

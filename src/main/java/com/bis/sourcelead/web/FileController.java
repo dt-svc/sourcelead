@@ -482,7 +482,7 @@ public class FileController {
 			outStream.close();
 
 		} catch (Exception ex) {
-
+			ex.printStackTrace();
 		}
 	}
 
