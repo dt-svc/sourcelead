@@ -1038,8 +1038,9 @@ public class ReportRestController {
 			ResponseList<UserRole> userRoleList = userService.getUsersResponseListByOrglocationId(userDTO,orgLocation,searchDates);
 			userRoleList.getData().forEach(userRole->{
 				Employees employee = employeesService.getEmployeeByUserIdAndOrgLocationsId(userRole.getUser().getId(), orgLocation.getId());
+				if(employee != null) {
 				UserDTO userDto = new UserDTO();
-				userDto.setEmployeeId(userRole.getId().toString());
+				userDto.setEmployeeId(userRole.getUser().getId().toString());
 				if(userRole.getUser().getLastName() != null) {
 					StringBuilder sb = new StringBuilder();
 					userDto.setUserName(sb.append(userRole.getUser().getFirstName()).append(" ").append(userRole.getUser().getLastName()).toString());
@@ -1068,6 +1069,7 @@ public class ReportRestController {
 				if(userRole.getDesignation() != null)
 				userDto.setDesignation(userRole.getDesignation());
 				userDtoList.add(userDto);
+				}
 			});
 			employeeResponseList.setData(userDtoList);
 			employeeResponseList.setRecordsFiltered(userDtoList.size());

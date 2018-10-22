@@ -1364,7 +1364,7 @@ private Set<BankDataHistory> getBankDataHistory(AssociateTaxDedContriView associ
 			}
 			if(payAdjustmentDTO.getPostDeduction() != null && payAdjustmentDTO.getPostDeduction().size() >0) {
 				postDedList =  payAdjustmentDTO.getPostDeduction();
-				postTaxDed = payAdjustmentDTO.getPostDeduction().stream().mapToDouble(pre->pre.getAmount().doubleValue()).sum();	
+				postTaxDed = payAdjustmentDTO.getPostDeduction().stream().filter(pre->pre.getAmount() != null).mapToDouble(pre->pre.getAmount().doubleValue()).sum();	
 			}
 			payAdjHistory.setRegularHours(String.valueOf(regHrs));
 			payAdjHistory.setOvertimeHours(String.valueOf(otHrs));
