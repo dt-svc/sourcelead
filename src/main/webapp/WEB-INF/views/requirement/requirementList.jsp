@@ -497,7 +497,7 @@ function statusvalidating(id){
 					</sec:authorize>					
 									
 					<sec:authorize access="hasAnyRole('ROLE_EXPORT_REQUIREMENTS')">
-						<li><a href="javascript:void(0)" class="overIcon" title="Actions" onclick="newActions();"></a>
+						<li><a href="javascript:void(0)" class="overIcon" title="Actions" onclick="newActions();" style="display: none;"></a>
 							<div class="newActPop">
 								<span>
 									 	<a href="javascript:void(0)" onclick="exportToPdf(2);" title="PDF">Export PDF</a>
@@ -688,6 +688,7 @@ function exportToPdf(type) {
 	} else {
 		/* alert("Export JobFair to PDF"); */
 		$(".buttons-pdf").click();
+		window.location.href = sourceleadUrl +"/pdfExportForJobfair"
 	}
 }
 </script>
@@ -721,6 +722,7 @@ function exportToExcel(type) {
 		}
 	} else {
 		/* alert("Export JobFair to Excel"); */
+		window.location.href = sourceleadUrl +"/excelExportForJobfair"
 		$(".buttons-excel").click();
 	}
 }
