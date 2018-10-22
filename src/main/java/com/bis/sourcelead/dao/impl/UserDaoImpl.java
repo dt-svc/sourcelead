@@ -2539,35 +2539,19 @@ String sortingQry ="";
 		queryString.setResultTransformer(Transformers.aliasToBean(ApplicantsJoinedReportDTO.class));
 		applicantJoinedReportList = queryString.setFirstResult(applicantsJoinedReportDTO.getStart()).setMaxResults(applicantsJoinedReportDTO.getLength()).list();
 		
-		String countQuery1=null;
+		/*String countQuery1=null;
 		countQuery1 = 
 				"SELECT" + " distinct u.ID as userId " 
 				+ " FROM USER u, REQUIREMENT_SUBMISSION reqSub, REQUIREMENT req where u.USER_CODE = reqSub.CREATED_BY and req.ORG_LOCATION_ID= "
 				+ orgLocationId + "  and reqSub.REQUIREMENT_ID = req.ID " + dateQury
 				+ query1
 				+" group by u.ID,req.ID";
-//		   countQuery1=query + query1.toString() + " " + clientSubQuery;
 		 if (!clientIdsList.isEmpty()) {
 			 countlist = session.createSQLQuery(countQuery1 + clientSubQuery).setParameterList("clientIdsList", clientIdsList).list();
 		 }else{
 			 countlist = session.createSQLQuery(countQuery1).list();
-		 }
-		
-		  /* if (!clientIdsList.isEmpty()) {
-			   countQueryString.setParameterList("clientIdsList", clientIdsList);
-			}
-		   countlist = countQueryString.list();*/
-		  filterCount = countlist.size();
-		   
-		   /*int count = 0;
-           int filteredCount = 0;
-           if (countlist != null && !countlist.isEmpty()) {
-               count = countlist.size();
-           }*/
-        /*   for(ApplicantsJoinedReportDTO res: applicantJoinedReportList){
-   			res.setRecordsTotal(count);
-   		}*/
-//           response.setRecordsTotal(count);
+		 }*/
+//		  filterCount = countlist.size();
 		if (applicantJoinedReportList != null && !applicantJoinedReportList.isEmpty()) {
 			for (ApplicantsJoinedReportDTO applicantsJoinedReportDTO2 : applicantJoinedReportList) {
 				applicantsJoinedReportDTO2.setFromDate(fromDate);
@@ -2580,7 +2564,7 @@ String sortingQry ="";
 			}
 		}
 		
-		int totalCount = 0;
+		/*int totalCount = 0;
 		if (applicantsJoinedReportDTO != null) {
 			if(countlist != null && !countlist.isEmpty()) {
 				totalCount = countlist.size();
@@ -2592,11 +2576,10 @@ String sortingQry ="";
 			responses.setRecordsFiltered(filterCount);
 		}else {
 			responses.setRecordsFiltered(totalCount);
-		}
+		}*/
 		
 		responses.setData(applicantJoinedReportList);
 		
-//		response = applicantJoinedReportList;
 		return responses;
 	}
 
