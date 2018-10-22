@@ -91,8 +91,11 @@ public class CompanyOnboardController {
 	@Autowired
 	OrgLocationIndiaBankingDetailsService orglocationIndiaBankingDetailsService;
 	
-	 @Autowired
-	 private OrgService orgService;
+	@Autowired
+	private OrgService orgService;
+	
+	@Value("${GoogleMaps_Location_API_KEY}")
+	private String googleMapsLocationApiKey;
 
 	
 		@RequestMapping(value = "/companyOnboard")
@@ -146,6 +149,7 @@ public class CompanyOnboardController {
 			model.addObject("timezoneList", timezoneList);
 			model.addObject("orgLocations", orgLocations);
 			model.setViewName("orgSettings");
+			model.addObject("googleMapsLocationApiKey", googleMapsLocationApiKey);
 			
 			model.addObject("sourceleadUrl", sourceleadUrl);
 			model.setViewName("onboard/companyOnboardLocations");
