@@ -1082,7 +1082,7 @@ function exportToPdf(){
 		orgTeams.push($(this).val());
     });
 	 var orgTeams = [];
-		$('input:checkbox[name=orgTeams]:checked').each(function() 
+		$('input:checkbox[name=teamNameById]:checked').each(function() 
 			    {
 			orgTeams.push($(this).val());
 	     });
@@ -1143,7 +1143,7 @@ function exportUserData(){
 		orgTeams.push($(this).val());
     });
 	 var orgTeams = [];
-		$('input:checkbox[name=orgTeams]:checked').each(function() 
+		$('input:checkbox[name=teamNameById]:checked').each(function() 
 			    {
 			orgTeams.push($(this).val());
 	     });
