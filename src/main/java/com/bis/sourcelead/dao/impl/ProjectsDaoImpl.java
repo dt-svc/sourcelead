@@ -7,6 +7,7 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Set;
 import java.util.regex.Matcher;
@@ -1493,56 +1494,118 @@ public HashSet<User> getAllUserTimeSheetSubmissionStatusCurrentWeek() {
 		
 	}
 
+	@SuppressWarnings("unchecked")
 	@Override
 	@Transactional
-	public List<Projects> getProjectReportList(ProjectReportDTO projectReportDTO, String clients,
-			String values, Long orgLocationId, String projects, String projectManagers) {
+	public List<Projects> getProjectReportList(ProjectReportDTO projectReportDTO, Long orgLocationId) {
 
 		try {
 			Session session = this.sessionFactory.getCurrentSession();
-			String query = "from Projects p";
-			if(projectReportDTO.getProjectClients()!=null && !projectReportDTO.getProjectClients().isEmpty()) {
-				query+= " join p.projectClients pc";
-			}
-			if(projectReportDTO.getProjectManager()!=null && !projectReportDTO.getProjectManager().isEmpty()) {
-				query+= " join p.projectApprovers pa";
+
+			// java.sql.Date sqlDate = null;
+			
+			Pattern pattern = Pattern.compile("^(\\d{0,4}(\\-|\\/{1})\\d{0,4}(\\-|\\/{1})\\d{0,4})$");
+			   Matcher matcher = pattern.matcher(projectReportDTO.getSearchValue());
+			   java.sql.Date sqlDate = null;
+			    if(matcher.matches() == true) {
+							if(projectReportDTO.getSearchValue().contains("/")||(projectReportDTO.getSearchValue().contains("-"))) {
+								String replacedValue = projectReportDTO.getSearchValue().replaceAll("/", "-");
+								    OrgLocations orgLoc = orgLocationService.getOrgLocations(orgLocationId);
+									SimpleDateFormat format = new SimpleDateFormat(orgLoc.getDateFormat());
+							        java.util.Date utilDate = format.parse(replacedValue);
+							        sqlDate = new java.sql.Date(utilDate.getTime());
+							}
+			    }
+	
+			StringBuilder query1 = new StringBuilder("");
+			if(projectReportDTO.getSearchValue() !=null && !"".equalsIgnoreCase(projectReportDTO.getSearchValue())) {
+			 query1.append(" and ps.projectSequeneNumber like '%" + projectReportDTO.getSearchValue() + "%' ")
+					.append("OR ps.projectName like '%" + projectReportDTO.getSearchValue() + "%' ")
+					.append("OR ps.id IN (select pah.projectId.id from ProjectApproverHierarchy pah where pah.approverUserId.firstName like '" + projectReportDTO.getSearchValue() + "%' OR pah.approverUserId.lastName like '%" + projectReportDTO.getSearchValue() + "' ) ")
+					.append("OR ps.id IN (select pah.projectId.id from ProjectApproverHierarchy pah where pah.approverUserId.id IN (select user.id from User user where (concat(user.firstName,user.lastName) like '%" + projectReportDTO.getSearchValue().replaceAll("[\\s]+", "").trim() + "%')))" )
+					.append("OR ps.id IN (select pm.projects.id from ProjectMembers pm where pm.projectMemberCandidteId.firstName like '" + projectReportDTO.getSearchValue() + "%' OR pm.projectMemberCandidteId.lastName like '%" + projectReportDTO.getSearchValue() + "' ) ")
+					.append("OR ps.id IN (select pm.projects.id from ProjectMembers pm where pm.projectMemberCandidteId.id IN (select can.id from Candidate can where (concat(can.firstName,can.lastName) like '%" + projectReportDTO.getSearchValue().replaceAll("[\\s]+", "").trim() + "%')))" )
+					.append("OR ps.projectMode like '%" + projectReportDTO.getSearchValue() + "%' ");
+			 
+			 
+			 
+			 
+				 if(projectReportDTO.getSearchValue().toLowerCase().equalsIgnoreCase("in-progress") || projectReportDTO.getSearchValue().toLowerCase().equalsIgnoreCase("in progress") 
+						 || projectReportDTO.getSearchValue().toLowerCase().equalsIgnoreCase("inprogress")) {
+					 query1.append("OR ps.projectStatus like '%INPROGRESS%' ");
+				 }else if(projectReportDTO.getSearchValue().toLowerCase().equalsIgnoreCase("on-hold") || projectReportDTO.getSearchValue().toLowerCase().equalsIgnoreCase("on hold") 
+						 || projectReportDTO.getSearchValue().toLowerCase().equalsIgnoreCase("onhold")) {
+					 query1.append("OR ps.projectStatus like '%ONHOLD%' ");
+				 }else if(projectReportDTO.getSearchValue().toLowerCase().equalsIgnoreCase("not started") || projectReportDTO.getSearchValue().toLowerCase().equalsIgnoreCase("notstarted")) {
+					 query1.append("OR ps.projectStatus like '%NOTSTARTED%' ");
+				 }else {
+					 query1.append("OR ps.projectStatus like '%" + Project_Status.getNameByValue(projectReportDTO.getSearchValue()) + "%' ");
+				 }
+				 if(projectReportDTO.getSearchValue().toLowerCase().equalsIgnoreCase("In-Active") ) {
+					 query1.append("OR ps.id IN(select pm.projects.id from ProjectMembers pm where pm.status ='0')");
+
+				 }else if(projectReportDTO.getSearchValue().toLowerCase().equalsIgnoreCase("Active") ) {
+					 query1.append("OR ps.id IN(select pm.projects.id from ProjectMembers pm where pm.status ='1')");
+
+				 }
+				 
+			     if(sqlDate != null) {
+			    	query1.append("OR ps.startDate like '%" + sqlDate + "%' OR ps.endDate like '%" + sqlDate + "%' ");
+			    	query1.append("OR ps.id IN(select pm.projects.id from ProjectMembers pm where pm.projectAssignedDate like '%" + sqlDate + "%' OR pm.projectEndDate like '%" + sqlDate + "%' )");
+				 }
+				
+						
 			}
 			
 			
-			query += " where p.orgLocationsId.id= :orgLocationId";
-			if(projectReportDTO.getProjectStatus() != null && !projectReportDTO.getProjectStatus().isEmpty()) {
-				query+= " and p.projectStatus=:projectStatus";
+			String clientQuery = "";
+			List<Long> clientIdsList = new LinkedList<>();
+			if (projectReportDTO.getProjectClients() != null && !projectReportDTO.getProjectClients().isEmpty()) {
+				clientIdsList = projectReportDTO.getProjectClients();
+				if (clientIdsList == null || clientIdsList.isEmpty()) {
+					clientIdsList.add(0L);
+				}
+				clientQuery = " and ((:varZero  IN (:clientIdsList)) OR (:varZero NOT IN (:clientIdsList) and pc.orgRelationId.id IN (:clientIdsList)))";
 			}
-			if(projectReportDTO.getProjectClients()!=null && !projectReportDTO.getProjectClients().isEmpty()) {
-				query+= " and pc.id in (:projectClients)";
+			
+			
+			String query = "select ps from Projects ps ";
+			if (projectReportDTO.getProjectManagers() != null && !projectReportDTO.getProjectManagers().isEmpty()) {
+				query += " join ps.projectApprovers pa";
 			}
-			if(projectReportDTO.getProjectManager()!=null && !projectReportDTO.getProjectManager().isEmpty()) {
-				query+= " and pa.level in (1,2)";
+			query += " where ps.id IN(select pc.projectId.id from ProjectClients pc where pc.orgLocationsId = :orgLocationsId "
+					+ clientQuery + " "+query1+")";
+			if (projectReportDTO.getProjectManagers() != null && !projectReportDTO.getProjectManagers().isEmpty()) {
+				query += " and pa.level in (1,2) and pa.approverUserId.id in (:projectManagers)";
 			}
-			if(projectReportDTO.getProjectIds()!=null && !projectReportDTO.getProjectIds().isEmpty()) {
-				query+= " and p.id in (:projectIds)";
+			if (projectReportDTO.getProjectStatus() != null && !projectReportDTO.getProjectStatus().isEmpty()) {
+				query +=  " and ps.projectStatus in (:projectStatus)";
+			}
+			if (projectReportDTO.getProjectIds() != null && !projectReportDTO.getProjectIds().isEmpty()) {
+				query += " and ps.id in (:projectIds)";
 			}
 			
 			Query queryObj = session.createQuery(query);
-			System.out.println(query);
-			
-			queryObj.setParameter("orgLocationId", orgLocationId);
-			
-			if(projectReportDTO.getProjectStatus() != null && !projectReportDTO.getProjectStatus().isEmpty()) {
-				queryObj.setParameter("projectStatus", projectReportDTO.getProjectStatus());
+			if (projectReportDTO.getProjectClients() != null && !projectReportDTO.getProjectClients().isEmpty()) {
+				queryObj.setLong("varZero", 0).setParameterList("clientIdsList", clientIdsList);
 			}
-			if(projectReportDTO.getProjectClients()!=null && !projectReportDTO.getProjectClients().isEmpty()) {
-				queryObj.setParameter("projectClients", projectReportDTO.getProjectClients());
+			if (projectReportDTO.getProjectManagers() != null && !projectReportDTO.getProjectManagers().isEmpty()) {
+				queryObj.setParameterList("projectManagers", projectReportDTO.getProjectManagers());
 			}
-			if(projectReportDTO.getProjectManager()!=null && !projectReportDTO.getProjectManager().isEmpty()) {
-			
+			if (projectReportDTO.getProjectStatus() != null && !projectReportDTO.getProjectStatus().isEmpty()) {
+				List<Project_Status> enumList = new LinkedList<>();
+				for(String status : projectReportDTO.getProjectStatus().split(",")) {
+					enumList.add(Project_Status.valueOf(status));
+				}
+				queryObj.setParameterList("projectStatus", enumList);
 			}
-			if(projectReportDTO.getProjectIds()!=null && !projectReportDTO.getProjectIds().isEmpty()) {
-				queryObj.setParameter("projectIds", projectReportDTO.getProjectIds());
+			if (projectReportDTO.getProjectIds() != null && !projectReportDTO.getProjectIds().isEmpty()) {
+				queryObj.setParameterList("projectIds", projectReportDTO.getProjectIds());
 			}
-			
+			queryObj.setLong("orgLocationsId", orgLocationId);
+
 			List<Projects> projectList = queryObj.list();
-			if(projectList!=null && !projectList.isEmpty()) {
+			if (projectList != null && !projectList.isEmpty()) {
 				return projectList;
 			}
 		} catch (Exception e) {

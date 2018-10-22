@@ -1,11 +1,14 @@
 package com.bis.sourcelead.reportsDTO;
 
-public class ProjectReportDTO {
+import java.io.Serializable;
+import java.util.List;
 
-	private String projectId;
+import com.bis.sourcelead.dto.SearchDTO;
+
+public class ProjectReportDTO extends SearchDTO implements Serializable{ 
+
 	private String projectName;
 	private String projectStatus;
-	private String projectManager;
 	private String projectStartDate;
 	private String projectEndDate;
 	private String projectMembers;
@@ -13,42 +16,14 @@ public class ProjectReportDTO {
 	private String memberEndDate;
 	private String memberStatus;
 	private String type;
-	private String projectClients;
-	private String projectIds;
+	private String projectClientNames;
+	private List<Long> projectIds;
+	private List<Long> projectManagers;
+	private List<Long> projectClients;
+	private String projectManagerNames;
 	private String projectSeqNo;
 	
 	
-	
-	public String getProjectSeqNo() {
-		return projectSeqNo;
-	}
-	public void setProjectSeqNo(String projectSeqNo) {
-		this.projectSeqNo = projectSeqNo;
-	}
-	public String getProjectIds() {
-		return projectIds;
-	}
-	public void setProjectIds(String projectIds) {
-		this.projectIds = projectIds;
-	}
-	public String getProjectClients() {
-		return projectClients;
-	}
-	public void setProjectClients(String projectClients) {
-		this.projectClients = projectClients;
-	}
-	public String getType() {
-		return type;
-	}
-	public void setType(String type) {
-		this.type = type;
-	}
-	public String getProjectId() {
-		return projectId;
-	}
-	public void setProjectId(String projectId) {
-		this.projectId = projectId;
-	}
 	public String getProjectName() {
 		return projectName;
 	}
@@ -60,12 +35,6 @@ public class ProjectReportDTO {
 	}
 	public void setProjectStatus(String projectStatus) {
 		this.projectStatus = projectStatus;
-	}
-	public String getProjectManager() {
-		return projectManager;
-	}
-	public void setProjectManager(String projectManager) {
-		this.projectManager = projectManager;
 	}
 	public String getProjectStartDate() {
 		return projectStartDate;
@@ -103,7 +72,49 @@ public class ProjectReportDTO {
 	public void setMemberStatus(String memberStatus) {
 		this.memberStatus = memberStatus;
 	}
-	
+	public String getType() {
+		return type;
+	}
+	public void setType(String type) {
+		this.type = type;
+	}
+	public String getProjectClientNames() {
+		return projectClientNames;
+	}
+	public void setProjectClientNames(String projectClientNames) {
+		this.projectClientNames = projectClientNames;
+	}
+	public List<Long> getProjectIds() {
+		return projectIds;
+	}
+	public void setProjectIds(List<Long> projectIds) {
+		this.projectIds = projectIds;
+	}
+	public List<Long> getProjectManagers() {
+		return projectManagers;
+	}
+	public void setProjectManagers(List<Long> projectManagers) {
+		this.projectManagers = projectManagers;
+	}
+	public List<Long> getProjectClients() {
+		return projectClients;
+	}
+	public void setProjectClients(List<Long> projectClients) {
+		this.projectClients = projectClients;
+	}
+	public String getProjectManagerNames() {
+		return projectManagerNames;
+	}
+	public void setProjectManagerNames(String projectManagerNames) {
+		this.projectManagerNames = projectManagerNames;
+	}
+	public String getProjectSeqNo() {
+		return projectSeqNo;
+	}
+	public void setProjectSeqNo(String projectSeqNo) {
+		this.projectSeqNo = projectSeqNo;
+	}
+	 
 	
 	
 }

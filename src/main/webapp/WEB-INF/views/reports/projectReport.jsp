@@ -14,23 +14,17 @@
 
      
   <div class="vendor_wrap">
-<div class="clearfix reportHead  reports-head">
-		<div class="col-md-7 mt5">
-			<div class="row mt5">
-				<div class="col-md-1">
-					<span class="refreIcon"><a href="javascript:void(0)" class="refeIcon" id ="resetFilter" title="Refresh" onclick="resetFilter();"></a></span>
-				</div>
-			
-<div class="col-md-11">
-			<select class="chosen-select" name ="projects" id = "projectsId" onchange = "projectReportDataTableList();"data-placeholder="Select Project" multiple>
+<div class="clearfix reportHead reports-head">
+
+		<span class="refreIcon pull-left"><a href="javascript:void(0)" class="pull-left refeIcon" id ="dropdownlist" title="Refresh" onclick="projectReportDataTableList(true);"></a></span>
+	<div class="col-md-5 pull-left mt5 noPad">
+			<select class="chosen-select" name ="projects" id = "projectsId" onchange = "projectReportDataTableList(false);"data-placeholder="Select Project" multiple>
 			<c:forEach var="option" items="${projectList}">
 				<option value="${option.id}">${option.projectName}</option>
 			</c:forEach>
 		  </select>
-	</div>
-				</div>
-		</div>		 
-	<div class="col-md-5">
+		</div>
+		 
 		<ul class="pull-right list-unstyled list-inline">
               
               <li><a href="javascript:void(0)" class="filtIcon" title="Filters" onclick="openPop();"></a></li>
@@ -47,35 +41,17 @@
               
               <li class="">
                 <input class="repSearchBar" placeholder="Search" id="projectReportDataTableSearch" type="text">
-                <span class="repSearchIcon" onclick="projectReportList();"></span></li>
+                <span class="repSearchIcon" onclick="projectReportDataTableList(false);"></span></li>
             </ul>
-	</div>
 	 </div>
 	 
 	 <div class="project_tabs_inn_table vendor_wrap_inn_table dataFilterNew">
     	<div id="projectFilterList" class="datatable_filter"></div>
 	</div>
 	 
-  <div class="tableStyles mt10">
+  <div class="tableStyles">
 	 <div class="require_wrap_table">
-	  <table class="table">
-		<thead>
-		  <tr>
-		   	<th>ProjectId</th>
-		   	<th>Project Name</th>
-			<th>Project Status</th>
-			<th>Project Manager</th>
-			<th>Project StartDate</th>
-			<th>Project EndDate</th>
-			<th>Team Member</th>
-			<th><br>TeamMember StartDate</th>
-			<th><br>TeamMember End Date</th>
-			<th>TeamMember Status</th>
-		  </tr>
-		</thead>
-		<tbody id="projectReportList">
-		</tbody>
-	  </table>
+	 <div id="projectReporttableList"></div>
 	</div>
   </div>
   
@@ -86,42 +62,30 @@
     <div class="addInner">
       <div class="row">
         <div class="col-md-3 mb positionRelative">
-         
           <div class="clearfix filterSearch-ul">
             <ul class="list-unstyled positionRelative filterSearch mt5" id="projectStatus">
+            
               <li class="checkBox positionRelative">
-                <input id ="projectStatus0" name="projectStatus" value="1883" type="checkbox">
-                <label>All</label>
+                <input id ="projectStatus1" name="projectStatus" value="NOTSTARTED" type="checkbox">
+                <label>Not Started</label>
               </li>
               <li class="checkBox positionRelative">
-                <input id ="projectStatus1" name="projectStatus" value="" type="checkbox">
-                <label>Draft</label>
-              </li>
-              <li class="checkBox positionRelative">
-                <inputid id="projectStatus2" name="projectStatus"  value="" type="checkbox">
-                <label>Pending</label>
+                <input id="projectStatus2" name="projectStatus"  value="INPROGRESS" type="checkbox">
+                <label>In-Progress</label>
               </li>
              <li class="checkBox positionRelative">
-                <input  id="projectStatus3" name="projectStatus"  value="" type="checkbox">
-                <label>Approval</label>
+                <input  id="projectStatus3" name="projectStatus"  value="COMPLETED" type="checkbox">
+                <label>Completed</label>
               </li>
               <li class="checkBox positionRelative">
-                <input id="projectStatus4" name="projectStatus"  value="" type="checkbox">
-                <label>Approved</label>
+                <input  id="projectStatus5" name="projectStatus"  value="ONHOLD" type="checkbox">
+                <label>On-Hold</label>
               </li>
               <li class="checkBox positionRelative">
-                <input  id="projectStatus5" name="projectStatus"  value="" type="checkbox">
-                <label>Open</label>
+                <input id="projectStatus6" name="projectStatus"  value="DROPPED" type="checkbox">
+                <label>Dropped</label>
               </li>
-              <li class="checkBox positionRelative">
-                <input id="projectStatus6" name="projectStatus"  value="" type="checkbox">
-                <label>Closed</label>
-              </li>
-              <li class="checkBox positionRelative">
-                <input id="projectStatus7" name="projectStatus"  value="" type="checkbox">
-                <label>Void</label>
-              </li>
-
+             
             </ul>
           </div>
         </div>
@@ -167,7 +131,7 @@
 <div class="clearfix"></div>
     <div class="clearfix advancedsearch-footer">
       <div class="pull-right mr">
-        <input value="Apply" id="search_requiremet" onclick="closePop();getDynamciUserList();" class="btn btn-sm btn-success" type="button">
+        <input value="Apply" id="search_requiremet" onclick="closePop();projectReportDataTableList(false);" class="btn btn-sm btn-success" type="button">
         <input value="Reset" id="clear_search" onclick="resetFilter();" class="btn btn-sm btn-primary" type="button">
       </div>
     </div>
@@ -199,13 +163,12 @@
 <script>
 	// Close Advanced Search
 	function closePop(){
-	$("div.cand-advsrch-popup").hide();
-	$(".advancedsearch-mask").hide();
-	projectReportDataTableList();
+		$("div.cand-advsrch-popup").hide();
+		$(".advancedsearch-mask").hide();
 	}
 	function openPop(){
-	$(".advancedsearch-mask").show();
-	$("div.cand-advsrch-popup").toggle();
+		$(".advancedsearch-mask").show();
+		$("div.cand-advsrch-popup").toggle();
 	}	
 </script>
 <script>
@@ -215,10 +178,11 @@ function resetFilter(){
 	$("ul#projectStatus > li input:checkbox").prop("checked",false);
 	$("ul#managersUL > li input:checkbox").prop("checked",false);
 	$("ul#clientsUL > li input:checkbox").prop("checked",false);
-
+	
 }
 
 </script>
+
 <script>
 
 function newActions(){
@@ -236,51 +200,84 @@ $(".overIcon, .newActPop").click(function(e){
 
 <script>
 $(document).ready(function(){
-	projectReportDataTableList();
+	projectReportDataTableList(true);
 });
-function projectReportDataTableList(){
+function projectReportDataTableList(refreshFlag){
 	
-	
-	var projects = $("#projectsId").val();
-	var values = [];
-	     $('input:checkbox[name=projectStatus]:checked').each(function(){
-		  values.push($(this.val()));
-	})
+	var projectIds = [];
+	var projectStatus = [];
     var clients = [];
-          $('input:checkbox[name=clientName]:checked').each(function() {
-	     clients.push($(this).val());
-    });
     var projectManagers = [];
-          $('input:checkbox[name=projectManagers]:checked').each(function(){
-	      projectManagers.push($(this).val());
-     });
-          
-     var searchValue = $("#projectReportDataTableSearch").val();
+    var searchValue = "";
+	
+    if(refreshFlag) {
+    	$("#projectsId").val("").trigger('chosen:updated');
+    	$("#projectReportDataTableSearch").val("");
+    	resetFilter();
+	} else {
+		var projectsId = $("#projectsId").val();
+		if(projectsId != null && projectsId!="" && projectsId!= "undefined"){
+			projectIds = projectsId;
+		}
+		$('input:checkbox[name=projectStatus]:checked').each(function(){
+			projectStatus.push($(this).val());
+		});
+	    $('input:checkbox[name=clientName]:checked').each(function() {
+		    clients.push($(this).val());
+	    });
+	    $('input:checkbox[name=projectManagers]:checked').each(function(){
+			projectManagers.push($(this).val());
+	    });
+	    searchValue = $("#projectReportDataTableSearch").val();
+		searchValue = searchValue ? searchValue : "";
+	}
      $.ajax({
 			type : "POST",
-			url : sourceleadUrl+"/getProjectReport?searchValue="+searchValue+"&values="+values+"&clients="+clients+"&projectManagers="+projectManagers+"&projects="+projects,
+			url : sourceleadUrl+"/getProjectReport?&projectClients="+clients+"&projectManagers="+projectManagers+"&projectIds="+projectIds+"&projectStatus="+projectStatus+"&searchValue="+searchValue,
 			success : function(result) {
 				if(result && result.response === "SUCCESS") {
+					var text = "";
 					if(result.data.length > 0) {     
+						text += "  <table class='table' id='projectReportTableId'>";
+						text += " 	<thead>";
+						text += " 	  <tr>";
+						text += " 	   	<th>ProjectId</th>";
+						text += " 	   	<th>Project Name</th>";
+						text += " 		<th>Project Status</th>";
+						text += " 		<th>Project Manager</th>";
+						text += " 		<th>Project StartDate</th>";
+						text += " 		<th>Project EndDate</th>";
+						text += " 		<th>Team Member</th>";
+						text += " 		<th><br>TeamMember StartDate</th>";
+						text += " 		<th><br>TeamMember End Date</th>";
+						text += " 		<th>TeamMember Status</th>";
+						text += " 	  </tr>";
+						text += " 	</thead>";
+						text += " 	<tbody>";
+						  
 						for(var e in result.data) {
 							var report = result.data[e];
-							var text = "<tr>";
-							
-							
+							text += "    <tr>";
 							text += "		<td><div class='tbldata-dotdot'>" + (report.projectSeqNo === null ? "--" : report.projectSeqNo ) + "</div></td>";
-		
 							text += "		<td><div class='tbldata-dotdot'>" + report.projectName + "</div></td>";
 							text += "		<td><div class='tbldata-dotdot-vsm'>" + report.projectStatus + "</div></td>";
-							text += "		<td><div class='tbldata-dotdot-100'>" + report.projectManager + "</div></td>";
-							text += "		<td><div class='tblminwidth-75'>" + report.projectStartDate + "</div></td>";
-							text += "		<td><div class='tblminwidth-75'>" + report.projectEndDate + "</div></td>";
-							text += "		<td><div class='tbldata-dotdot-100'>" + report.projectMembers + "</div></td>";
-							text += "		<td><div class='tblminwidth-75'>" + report.memberStartDate + "</div></td>";
-							text += "		<td><div class='tblminwidth-75'>" + report.memberEndDate + "</div></td>";
-							text += "		<td><div class='tbldata-dotdot-100'>" + report.memberStatus + "</div></td>";
+							text += "		<td><div class='tbldata-dotdot-100' title='" + report.projectManagerNames + "'>" + report.projectManagerNames + "</div></td>";
+							text += "		<td><div class='tblminwidth-75'>" + (report.projectStartDate !== null ? report.projectStartDate : "----") + "</div></td>";
+							text += "		<td><div class='tblminwidth-75'>" + (report.projectEndDate !== null ? report.projectEndDate : "----") + "</div></td>";
+							text += "		<td><div class='tbldata-dotdot-100'>" + (report.projectMembers !== null ? report.projectMembers : "----") + "</div></td>";
+							text += "		<td><div class='tblminwidth-75'>" +(report.memberStartDate !== null ? report.memberStartDate : "----") + "</div></td>";
+							text += "		<td><div class='tblminwidth-75'>" + (report.memberEndDate !== null ? report.memberEndDate : "----") + "</div></td>";
+							text += "		<td><div class='tbldata-dotdot-100'>" + (report.memberStatus == '1' ? "Active" : "In-Active")  + "</div></td>";
 							text += "	</tr>";
-							$("#projectReportList").append(text);
 						}
+						
+						text += " 	</tbody>";
+						text += "   </table>";
+						$("#projectReporttableList").empty();
+						$("#projectReporttableList").append(text);
+						$("#projectReportDataTableSearch").empty();
+						
+						dynamicProjectReportPagination();  
 					}
 				} else 
 					alert("Please try again....");
@@ -289,13 +286,51 @@ function projectReportDataTableList(){
 	}
 </script>
 <script>
+
+$("#projectReportDataTableSearch").keydown(function(e) {
+	   if(e.which === 13) {
+		   projectReportDataTableList(false);
+	   }
+	});
+
+</script>
+
+
+<script>
+function dynamicProjectReportPagination(){  
+    $('#projectReportTableId').DataTable( {
+    	"dom": 'Bfrtip',
+    	"responsive": true,
+    	"scrollCollapse": false,
+    	"lengthMenu": [[10, 15, 20, -1], [10, 15, 20, "All"]],
+    	"buttons": ['excel', 'pdf'],
+    	"bLengthChange": true,
+    	"bDestroy": true,
+    	"ordering": true,
+    	"oLanguage": {
+     		"sSearch": "",
+     		"sZeroRecords": "", "sEmptyTable": ""
+     	}
+    });
+     $("#pendingForApprovalTimesheetDiv").find('a.buttons-excel').prop("title", "Export to Excel");
+	$("#pendingForApprovalTimesheetDiv").find('a.buttons-pdf').prop("title", "Export to PDF"); 
+}
+</script>
+
+
+<script>
 function projectReportExport(type){
 
-	var projects = $("#projectsId").val();
-	var values = [];
+	var projectIds = [];
+	var projectsId = $("#projectsId").val();
+	if(projectsId != null && projectsId!="" && projectsId!= "undefined"){
+		projectIds = projectsId;
+	}
+	
+	var projectStatus = [];
 	     $('input:checkbox[name=projectStatus]:checked').each(function(){
-		  values.push($(this.val()));
-	})
+	    	 projectStatus.push($(this).val());
+	});
     var clients = [];
           $('input:checkbox[name=clientName]:checked').each(function() {
 	     clients.push($(this).val());
@@ -304,12 +339,11 @@ function projectReportExport(type){
           $('input:checkbox[name=projectManagers]:checked').each(function(){
 	      projectManagers.push($(this).val());
      });
-          
-          $.ajax({
-  			type : "POST",
-  			url : sourceleadUrl+"/getProjectReportExport?type="+type+"&values="+values+"&clients="+clients+"&projectManagers="+projectManagers+"&projects="+projects
-          })
-	//window.location.href = sourceleadUrl+"/getProjectReportExport?type="+type+"&values="+values+"&clients="+clients+"&projectManagers="+projectManagers+"&projects="+projects;
+     
+     var searchValue = $("#projectReportDataTableSearch").val();
+	 searchValue = searchValue ? searchValue : "";
+          window.location.href =  sourceleadUrl+"/getProjectReportExport?&projectClients="+clients+"&projectManagers="+projectManagers+"&projectIds="+projectIds+"&projectStatus="+projectStatus+"&searchValue="+searchValue+"&type="+type;
+         
 }
 
 

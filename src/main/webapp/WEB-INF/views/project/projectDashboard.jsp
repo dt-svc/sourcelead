@@ -463,6 +463,7 @@ function projectDataTableList(){
 	
 	
 	var clients = [];
+	
 	$('input:checkbox[name=clientNameById]:checked').each(function() {
 		clients.push($(this).val());
 	});

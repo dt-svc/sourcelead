@@ -107,6 +107,6 @@ public interface ProjectsDao {
 	
 	List<ProjectsDTO> getProjectListForDaywiseReports(Long orgLocationsId,Long orgId,String isGlobalManager,Long userId,String type,String userRole) throws Exception;
 
-	public List<Projects> getProjectReportList(ProjectReportDTO projectReportDTO, String clients,String values, Long id, String projects, String projectManagers);
+	public List<Projects> getProjectReportList(ProjectReportDTO projectReportDTO, Long orgLocationId);
 
 }

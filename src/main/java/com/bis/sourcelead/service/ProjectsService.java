@@ -147,11 +147,12 @@ public interface ProjectsService {
 		
 		List<ProjectsDTO> getProjectListForDaywiseReports(Long orgLocationsId,Long orgId,String isGlobalManager,Long userId,String type,String userRole) throws Exception;
 
-		public ResponseList<ProjectReportDTO> getProjectReportList(ProjectReportDTO projectReportDTO, String clients,String values, Long id, String projects, String projectManagers);
+		public ResponseList<ProjectReportDTO> getProjectReportList(ProjectReportDTO projectReportDTO,Long orgLocationId)throws Exception;
+		
 
-		public File getProjectReportListOfPdf(ProjectReportDTO projectReportDTO, User user, OrgLocations orgLocation,String isGlobalAccess);
+		//public File getProjectReportListOfExcel(ProjectReportDTO projectReportDTO, User user, OrgLocations orgLocation,String isGlobalAccess);
 
-		public File getProjectReportListOfExcel(ProjectReportDTO projectReportDTO, User user, OrgLocations orgLocation,String isGlobalAccess);
+		File getProjectReportListOfExcel(List<ProjectReportDTO> projectReportDTO, User user, OrgLocations orgLocation,String isGlobalAccess) throws Exception;
 		
 //		public String getProjectId(OrgLocations orgLocations);
 		

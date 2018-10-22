@@ -14,6 +14,7 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 import java.util.Set;
 import java.util.TimeZone;
@@ -55,6 +56,7 @@ import com.bis.sourcelead.dto.CandidateDTO;
 import com.bis.sourcelead.dto.ClientProjectDTO;
 import com.bis.sourcelead.dto.CustomFormFieldDTO;
 import com.bis.sourcelead.dto.DayWiseTimesheetReoprtsDTO;
+import com.bis.sourcelead.dto.DayWiseTimesheetReoprtsListDTO;
 import com.bis.sourcelead.dto.ExpensesApproverHierarchyDTO;
 import com.bis.sourcelead.dto.FileInfo;
 import com.bis.sourcelead.dto.ProjectsDTO;
@@ -144,6 +146,8 @@ import com.ibm.icu.math.BigDecimal;
 import com.itextpdf.text.BaseColor;
 import com.itextpdf.text.Document;
 import com.itextpdf.text.DocumentException;
+import com.itextpdf.text.Element;
+import com.itextpdf.text.ListItem;
 import com.itextpdf.text.PageSize;
 import com.itextpdf.text.Phrase;
 import com.itextpdf.text.Font.FontFamily;
@@ -3699,12 +3703,11 @@ public void userEmailToAdmin(StringBuilder tempHTML, OrgLocations orgLocations,U
 			}
 
 	@Override
-	public ResponseList<ProjectReportDTO> getProjectReportList(ProjectReportDTO projectReportDTO, String clients,
-			String values, Long id, String projects, String projectManagers) {
+	public ResponseList<ProjectReportDTO> getProjectReportList(ProjectReportDTO projectReportDTO, Long orgLocationId) {
 		ResponseList<ProjectReportDTO> responseList = new ResponseList<>();
 		List<ProjectReportDTO> projectReportDTOList = new LinkedList<>();
-		List<Projects> projectList = projectsDao.getProjectReportList(projectReportDTO, clients, values, id,
-				projects, projectManagers);
+		List<Projects> projectList = projectsDao.getProjectReportList(projectReportDTO,orgLocationId);
+		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
 		if(projectList!=null && !projectList.isEmpty()) {
 			for(Projects p : projectList) {
 				Set<ProjectMembers> projectMemebersList = p.getProjectMembers();
@@ -3713,8 +3716,13 @@ public void userEmailToAdmin(StringBuilder tempHTML, OrgLocations orgLocations,U
 						ProjectReportDTO reportDTO = getProjectReport(p);
 						//Project Members
 						reportDTO.setProjectMembers(projectMember.getProjectMemberCandidteId().getFullName());
-						reportDTO.setMemberStartDate(projectMember.getProjectAssignedDate() != null ? projectMember.getProjectAssignedDate().toString() : "----");
-						reportDTO.setMemberEndDate(projectMember.getProjectEndDate() != null ? projectMember.getProjectEndDate().toString() : "----");
+						if(projectMember.getProjectAssignedDate() != null) {
+							reportDTO.setMemberStartDate(commonUtil.dateStrFromOrgDateFormatter(projectMember.getProjects().getOrgLocationsId().getDateFormat(), projectMember.getProjectAssignedDate()));
+						}
+						if(projectMember.getProjectEndDate() != null) {
+							reportDTO.setMemberEndDate(commonUtil.dateStrFromOrgDateFormatter(projectMember.getProjects().getOrgLocationsId().getDateFormat(), projectMember.getProjectEndDate())) ;
+
+						}
 						reportDTO.setMemberStatus(projectMember.getStatus());
 						projectReportDTOList.add(reportDTO);
 					}
@@ -3748,360 +3756,143 @@ public void userEmailToAdmin(StringBuilder tempHTML, OrgLocations orgLocations,U
 						+ (pah.getApproverUserId().getLastName() != null ? pah.getApproverUserId().getLastName() : ""));
 
 		}
-		reportDTO.setProjectManager(!managerLevel2.isEmpty() ? managerLevel2 : managerLevel1);
+		reportDTO.setProjectManagerNames(!managerLevel2.isEmpty() ? managerLevel2 : managerLevel1);
 		reportDTO.setProjectStartDate(p.getStartDateStr());
 		reportDTO.setProjectEndDate(p.getEndDateStr());
 		return reportDTO;
 	}
 
-			@Override
-			public File getProjectReportListOfPdf(ProjectReportDTO projectReportDTO, User user,OrgLocations orgLocation, String isGlobalAccess) {
-				/*String[] headers = Constants.PROJECT_REPORT_EXPORT_HEADDERS;
-				Document document = new Document(PageSize.LETTER.rotate());
-				DateFormat dateFormate = new SimpleDateFormat("MM-dd-yyyy");
-				StringBuilder sb =new StringBuilder();
-				sb.append("Project Report");
-				StringBuilder fileSB = new StringBuilder();
-			
-			    DateFormat dateFormat;
-				File file = File.createTempFile(fileSB.append("Project Report").append(dateFormat.format(new Date())).toString(),".pdf");
-				file.setReadable(true);
-			   
-			    try {
-			     
-			    	PdfWriter.getInstance(document, new FileOutputStream(file));
-			    	document.open();
-			    	Font boldFont = new Font(Font.FontFamily.TIMES_ROMAN,18 Font.BOLD)
-			    	BaseColour color = WebColors.getRGBColor("#000000");
-			    	boldFont.setColor(color);
-			    	StringBuilder uerStyle = new StringBuilder();
-			    	userStyle.append(orgLocation.getOrgLocationName().append(" ").append("-Project Repot").toStr);
-			       
-			    	PdfPTable table = new PdfPTable(headers.length);
-			    	Font font = new  Font(FontFamily.HELVETICA,14,Font.BOLD,BaseVolor.WHITE);
-			    	
-			        PdfPCell cell1 = new PdfPCell(new Phrase(userStyle.toString(),font));
-			        cell1.setColspan(18);
-			        headerCellStyle(cell1);
-			        table.setWidthPercentage(100);
-		            table.setWidths(new int[]{7,7,7,7,7,7,7,7,7,7});
-		            table.addCell(cell1);
-			        for (int i = 0; i < headers.length; i++) {
-			            String header = headers[i];
-			            PdfPCell cell = new PdfPCell();
-			            cell.setGrayFill(0.9f);
-			            cell.setPhrase(new Phrase(header.toUpperCase(), new Font(FontFamily.HELVETICA, 10, Font.BOLD)));
-			            BaseColor myBorderColor = WebColors.getRGBColor("#808080");
-			            cell.setBackgroundColor(myBorderColor);
-			            table.addCell(cell);
-			        }
-			        table.completeRow();
-			        java.util.List<String[]> projectReportList = prepareProjectReportListListStringArray(projectReportDTO,headers,orgLocation,user,isGlobalAccess);
-			        if(expenseList != null && expenseList.size() >0){
-			        	for (String[] expenseArray: expenseList) {
-			        		for (int i = 0; i < expenseArray.length; i++) {
-			        			String datum = expenseArray[i];
-			        			PdfPCell cell = new PdfPCell();
-			        			cell.setPhrase(new Phrase(datum, new Font(FontFamily.HELVETICA, 10, Font.NORMAL)));
-			        			table.addCell(cell);
-			        		}
-			        		table.completeRow();
-			        	}
-			        }
-			        document.addTitle("Expenses Approval Table");
-			        table.setSpacingBefore(15f);
-			        document.add(table);
-			        logger.info("Pdf table created !!");
-			    } catch (DocumentException e) {
-			    	logger.error("Exception cause is : "+ExceptionUtils.getFullStackTrace(e));
-			    } catch (FileNotFoundException e) {
-			    	logger.error("Exception cause is : "+ExceptionUtils.getFullStackTrace(e));
-			    } finally {
-			        document.close();
-			    }
-				return file;
-			}
-				
-				// TODO Auto-generated method stub
-				return null;
-			
-			private List<String[]> prepareProjectReportListListStringArray(ProjectReportDTO projectReportDTO,String[] headers, OrgLocations orgLocation, User user, String isGlobalAccess) {
-				
-				List<String[]> arrayList = new ArrayList<>();
-				for(ProjectReportDTO projectReportList:projectReportDTO){
-					String reportArray[] = new String[headers.length];
-					StringBuffer sb = new StringBuffer();
-					reportArray[0] = sb.append(expenseId.getProjectMembers().getProjectMemberCandidteId().getFirstName()).append(" ").append(expenseId.getProjectMembers().getProjectMemberCandidteId().getLastName()).toString();
-									
-									
-									if(null != expenseId.getProjectMembers().getProjectMemberCandidteId().getEmail()){
-
-										expenseArray[1] = expenseId.getProjectMembers().getProjectMemberCandidteId().getEmail();
-									}else{
-										expenseArray[1] = "--";
-									}
-									if(null != expenseId.getProjectMembers().getProjectMemberCandidteId().getMobilePhone() && !"".equalsIgnoreCase(expenseId.getProjectMembers().getProjectMemberCandidteId().getMobilePhone())){
-
-										expenseArray[2] = expenseId.getProjectMembers().getProjectMemberCandidteId().getMobilePhone();
-									}else{
-										expenseArray[2] = "--";
-									}
-									
-								}
-								if(null != expenseId.getProjectMembers().getProjectMemberCandidteId().getDesignationType() && !"".equalsIgnoreCase(expenseId.getProjectMembers().getProjectMemberCandidteId().getDesignationType())){
-
-									expenseArray[3] = expenseId.getProjectMembers().getProjectMemberCandidteId().getDesignationType();
-								}else{
-									expenseArray[3] = "--";
-								}
-								
-							if(ex.getProjectMemberId()!= null) {
-							ProjectMembers projectMember = projectMembersService.getProjectMemberById(ex.getProjectMemberId());
-								if(projectMember.getProjectMemberCandidteId() != null && null != projectMember.getProjectMemberCandidteId().getDesignationType() && !"".equalsIgnoreCase(projectMember.getProjectMemberCandidteId().getDesignationType())){
-									String empType = projectMember.getProjectMemberCandidteId().getDesignationType();
-										if(empType.equalsIgnoreCase("C2C") || empType.equalsIgnoreCase("C2C-1099")){
-											OrgRelations orgRelation = projectMember.getProjectMemberCandidteId().getOrgRelationId();
-											if(orgRelation != null){
-												expenseArray[4] = orgRelation.getResponderLocationId().getOrgLocationName();
-											}else{
-												expenseArray[4] = "--";
-											}
-										 }
-									}else{
-										expenseArray[4] = "--";
-									}
-								}
-							//}
-							if(null != expenseId.getProjectMembers().getProjects()){
-								if(null != expenseId.getProjectMembers().getProjects().getProjectName()){
-									expenseArray[5] = expenseId.getProjectMembers().getProjects().getProjectName();
-								}
-							}else{
-								expenseArray[5] = "--";
-							}
-							
-						}
-						if(null != expenseId.getClientName()){
-
-							expenseArray[6] = expenseId.getClientName();
-						}else{
-							expenseArray[6] = "--";
-						}
-						if(null != expenseId.getPurpose()){
-
-							expenseArray[7] = expenseId.getPurpose();
-						}else{
-							expenseArray[7] = "--";
-						}
-						
-						if(null != expenseId.getStartDate()){
-							expenseId.setStartDateStr(commonUtil.dateStrFromOrgDateFormatter(orgLoc.getDateFormat(),expenseId.getStartDate()));
-							expenseArray[8] = expenseId.getStartDateStr();
-						}else{
-							expenseArray[8] = "--";
-						}
-						
-						if(null != expenseId.getEndDate()){
-							expenseId.setEndDateStr(commonUtil.dateStrFromOrgDateFormatter(orgLoc.getDateFormat(),expenseId.getEndDate()));
-							expenseArray[9] = expenseId.getEndDateStr();
-						}else{
-							expenseArray[9] = "--";
-						}
-						if(null != expenseId.getNoOfExpenses()){
-
-							expenseArray[10] = expenseId.getNoOfExpenses();
-						}else{
-							expenseArray[10] = "--";
-						}
-						if(expenseId.getTotalAmount().intValue() > 0){
-							StringBuilder str = new StringBuilder();
-							BigDecimal bd = new BigDecimal((expenseId.getTotalAmount()));
-							//bd = bd.setScale(2,BigDecimal.ROUND_HALF_UP );
-							expenseArray[11] = str.append(bd).toString();
-						}else{
-							expenseArray[11] = "--";
-						}
-						if(null != expenseId.getStatus()){
-							ExpensesApproverHierarchy  eah = getExpensesApproverHierarchyByApproverUserIdAndExpenseId(loginUser.getId(), expenseId.getId(),orgLoc.getId(),isGlobalUser);
-						    Submission_Status submissionStatus = eah.getExpenseStatus();
-							    if(submissionStatus != null) {
-							    	expenseArray[12] = submissionStatus.getValue().toUpperCase();
-							    }else {
-							    	expenseArray[12] = "Rejected";
-							    }
-						}else{
-							expenseArray[12] = "--";
-						}
-						if(null != ex.getActionPerformedBy()){
-							expenseArray[13] = ex.getActionPerformedBy();
-						}else{
-							expenseArray[13] = "--";
-						}
-					}
-					arrayList.add(expenseArray);
-				}*/
-				return null;
-
-			}
-
-			/*private void headerCellStyle(PdfPCell cell1) {
-				// TODO Auto-generated method stub
-				
-			}*/
-
-			
-
-
-
-
-			@Override
-			public File getProjectReportListOfExcel(ProjectReportDTO projectReportDTO, User user,OrgLocations orgLocation, String isGlobalAccess) {
-				/*File file = null;
-				Workbook createExcelworkbook = new XSSFWorkbook();
-				DateFormat dateFormat = new SimpleDateFormat("MM-dd-yyyy");
-				Sheet createExcelsheet = createExcelworkbook.createSheet(orgLoc.getOrgLocationName()+ "_" + dateFormat.format(new Date()));
-				Row writeRow = null;
-				TimeSheetSubmissionCount requirementSubCount=null;
-				createExcelsheet = getExcelSheetWithHeader(createExcelsheet, writeRow, createExcelworkbook,requirementSubCount);
-				int column = 0;
-				for (ProjectReportDTO expensesList : projectReportDTO) {
-					writeRow = createExcelsheet.createRow(column+1);
-					createExcelsheet = createXlsSheet(createExcelsheet, writeRow, expensesList,orgLoc,loginUser,isGlobalUser);
-					column++;
-				}
-				 try {
-					file = File.createTempFile(orgLoc.getOrgLocationName() + "_ExpensesApproval_" + dateFormat.format(new Date()),".xls");
-				} catch (Exception e1) {
-					e1.printStackTrace();
-				}
-				 file.setReadable(true);
-				FileOutputStream fos = new FileOutputStream(file);
-				try {
-					createExcelworkbook.write(fos);
-					fos.close();
-				} catch (IOException e) {
-					e.printStackTrace();
-				}
-			
-				return file;
+	@Override
+	public File getProjectReportListOfExcel(List<ProjectReportDTO> projectReportDTO, User user,
+			OrgLocations orgLocation, String isGlobalAccess) throws Exception {
+		File file = null;
+		Workbook createExcelworkbook = new XSSFWorkbook();
+		DateFormat dateFormat = new SimpleDateFormat("MM-dd-yyyy");
+		Sheet createExcelsheet = createExcelworkbook.createSheet(orgLocation.getOrgLocationName() + "_" + dateFormat.format(new Date()));
+		Row writeRow = null;
+		createExcelsheet = getExcelSheetWithHeader(createExcelsheet, writeRow, createExcelworkbook, projectReportDTO);
+		int column = 0;
+		for (ProjectReportDTO reportList : projectReportDTO) {
+			writeRow = createExcelsheet.createRow(column + 1);
+			createExcelsheet = createXlsSheet(createExcelsheet, writeRow, reportList, orgLocation, user,isGlobalAccess);
+			column++;
+		}
+		try {
+			file = File.createTempFile(orgLocation.getOrgLocationName() + "_ProjectReport_" + dateFormat.format(new Date()), ".xlsx");
+		} catch (Exception e1) {
+			e1.printStackTrace();
+		}
+		file.setReadable(true);
+		FileOutputStream fos = new FileOutputStream(file);
+		try {
+			createExcelworkbook.write(fos);
+			fos.close();
+		} catch (IOException e) {
+			e.printStackTrace();
 		}
 
-		private Sheet getExcelSheetWithHeader(Sheet createExcelsheet, Row writeRow, Workbook createExcelworkbook, TimeSheetSubmissionCount requirementSubCount) {
-			
-			CellStyle style = commonUtil.getCellStyle(createExcelworkbook);
+		return file;
+	}
 
-			String[] headers = Constants.EXPENSES_APPROVAL_lIST_HEADERS;;
-			createExcelsheet = commonUtil.setExcelHeaders(createExcelsheet, style,headers,0);
+	private Sheet getExcelSheetWithHeader(Sheet createExcelsheet, Row writeRow, Workbook createExcelworkbook,
+			List<ProjectReportDTO> projectReportDTO) {
 
-			return createExcelsheet;
-		}
+		CellStyle style = commonUtil.getCellStyle(createExcelworkbook);
+		String[] headers = Constants.PROJECT_REPORT_EXPORT_HEADDERS;
+		;
+		createExcelsheet = commonUtil.setExcelHeaders(createExcelsheet, style, headers, 0);
+		return createExcelsheet;
+	}
 
-		private Sheet createXlsSheet(Sheet createExcelsheet, Row writeRow, ExpensesApproverHierarchyDTO expensesList,OrgLocations orgLoc,User loginUser,String isGlobalUser) throws Exception {
-				if(expensesList.getExpenseId() !=null){
-					Expenses expenseId =expensesService.getExpenseById(expensesList.getExpId());
-					if(null != expenseId.getProjectMembers()){
-						if(null != expenseId.getProjectMembers().getEmployee()){
-							if(null != expenseId.getProjectMembers().getProjectMemberCandidteId()){
-								
-								if(null != expenseId.getProjectMembers().getProjectMemberCandidteId().getFirstName() && null != expenseId.getProjectMembers().getProjectMemberCandidteId().getLastName()){
-									StringBuffer sb = new StringBuffer();
-									writeRow.createCell(0).setCellValue(sb.append(expenseId.getProjectMembers().getProjectMemberCandidteId().getFirstName()).append(" ").append(expenseId.getProjectMembers().getProjectMemberCandidteId().getLastName()).toString());
-									createExcelsheet.autoSizeColumn(0);
-								}else if(null != expenseId.getProjectMembers().getProjectMemberCandidteId().getFirstName()){
-									writeRow.createCell(0).setCellValue(expenseId.getProjectMembers().getProjectMemberCandidteId().getFirstName());
-									createExcelsheet.autoSizeColumn(0);
-								}
-								
-								if(null != expenseId.getProjectMembers().getProjectMemberCandidteId().getFirstName() && null != expenseId.getProjectMembers().getProjectMemberCandidteId().getLastName()){
-									writeRow.createCell(0).setCellValue(expenseId.getProjectMembers().getProjectMemberCandidteId().getFirstName());
-									createExcelsheet.autoSizeColumn(0);
-								}
-								if(null != expenseId.getProjectMembers().getProjectMemberCandidteId().getEmail()){
-									writeRow.createCell(1).setCellValue(expenseId.getProjectMembers().getProjectMemberCandidteId().getEmail());
-									createExcelsheet.autoSizeColumn(1);
-								}
-								if(null != expenseId.getProjectMembers().getProjectMemberCandidteId().getMobilePhone()){
-									writeRow.createCell(2).setCellValue(expenseId.getProjectMembers().getProjectMemberCandidteId().getMobilePhone());
-									createExcelsheet.autoSizeColumn(2);
-								}
-							}
-							if(null != expenseId.getProjectMembers().getProjectMemberCandidteId().getDesignationType()){
-								writeRow.createCell(3).setCellValue(expenseId.getProjectMembers().getProjectMemberCandidteId().getDesignationType());
-								createExcelsheet.autoSizeColumn(3);
-							}
-							
-							if(expensesList.getProjectMemberId()!= null) {
-							ProjectMembers projectMember = projectMembersService.getProjectMemberById(expensesList.getProjectMemberId());
-								if(projectMember.getProjectMemberCandidteId() != null && null != projectMember.getProjectMemberCandidteId().getDesignationType() && !"".equalsIgnoreCase(projectMember.getProjectMemberCandidteId().getDesignationType())){
-									String empType = projectMember.getProjectMemberCandidteId().getDesignationType();
-									if(empType.equalsIgnoreCase("C2C") || empType.equalsIgnoreCase("C2C-1099")){
-										OrgRelations orgRelation = projectMember.getProjectMemberCandidteId().getOrgRelationId();
-										if(orgRelation != null){
-										 writeRow.createCell(4).setCellValue(orgRelation.getResponderLocationId().getOrgLocationName());
-										 createExcelsheet.autoSizeColumn(4);
-									 }
-									}
-								}
-							}
-						}
-						if(null != expenseId.getProjectMembers().getProjects()){
-							if(null != expenseId.getProjectMembers().getProjects().getProjectName()){
-								writeRow.createCell(5).setCellValue(expenseId.getProjectMembers().getProjects().getProjectName());
-								createExcelsheet.autoSizeColumn(5);
-							}
-						}
-					}
-					if(null != expenseId.getClientName()){
-						writeRow.createCell(6).setCellValue(expenseId.getClientName());
-						createExcelsheet.autoSizeColumn(6);
-					
-					}
-					if(null != expenseId.getPurpose()){
-						writeRow.createCell(7).setCellValue(expenseId.getPurpose());
-						createExcelsheet.autoSizeColumn(7);
-					}
-					if(null != expenseId.getStartDate()){
-						expenseId.setStartDateStr(commonUtil.dateStrFromOrgDateFormatter(orgLoc.getDateFormat(),expenseId.getStartDate()));
-						writeRow.createCell(8).setCellValue(expenseId.getStartDateStr());
-						createExcelsheet.autoSizeColumn(8);
-					}
-					if(null != expenseId.getEndDate()){
-						expenseId.setEndDateStr(commonUtil.dateStrFromOrgDateFormatter(orgLoc.getDateFormat(),expenseId.getEndDate()));
-						writeRow.createCell(9).setCellValue(expenseId.getEndDateStr());
-						createExcelsheet.autoSizeColumn(9);
-					}
-					if(null != expenseId.getNoOfExpenses()){
-						writeRow.createCell(10).setCellValue(expenseId.getNoOfExpenses());
-						createExcelsheet.autoSizeColumn(10);
-					}
-					if(expenseId.getTotalAmount().doubleValue() > 0){
-						StringBuilder str = new StringBuilder();
-						BigDecimal bd = new BigDecimal((expenseId.getTotalAmount()));
-						//bd = bd.setScale(2,BigDecimal.ROUND_HALF_UP );                
-		                writeRow.createCell(11).setCellValue(str.append(bd).toString());
-		                createExcelsheet.autoSizeColumn(11);
-					}
-					if(null != expenseId.getExpenseStatus()){
-						ExpensesApproverHierarchy  eah = getExpensesApproverHierarchyByApproverUserIdAndExpenseId(loginUser.getId(), expenseId.getId(),orgLoc.getId(),isGlobalUser);
-					    Submission_Status submissionStatus = eah.getExpenseStatus();
-					    if(eah.getReopenRejectedReason()!= null) {
-					    	writeRow.createCell(12).setCellValue(submissionStatus.getValue().toUpperCase());
-					    }else {
-					    	writeRow.createCell(12).setCellValue("Rejected");
-						createExcelsheet.autoSizeColumn(12);
-					    }
-					}
-					if(null != expensesList.getActionPerformedBy()){
-						writeRow.createCell(13).setCellValue(expensesList.getActionPerformedBy());
-						createExcelsheet.autoSizeColumn(13);
-					}
-				}*/
-			return null;
-		}
-
+	private Sheet createXlsSheet(Sheet createExcelsheet, Row writeRow, ProjectReportDTO reportList,
+			OrgLocations orgLocation, User loginUser, String isGlobalUser) throws Exception {
+			if (null != reportList.getProjectSeqNo()) {
+				writeRow.createCell(0).setCellValue(reportList.getProjectSeqNo());
+				createExcelsheet.autoSizeColumn(0);
+			} else {
+				writeRow.createCell(0).setCellValue("--");
+				createExcelsheet.autoSizeColumn(0);
 			}
 
-			
+			if (null != reportList.getProjectName()) {
+				writeRow.createCell(1).setCellValue(reportList.getProjectName());
+				createExcelsheet.autoSizeColumn(1);
+			} else {
+				writeRow.createCell(1).setCellValue("--");
+				createExcelsheet.autoSizeColumn(1);
+			}
+
+			if (null != reportList.getProjectStatus()) {
+				writeRow.createCell(2).setCellValue(reportList.getProjectStatus());
+				createExcelsheet.autoSizeColumn(2);
+			} else {
+				writeRow.createCell(2).setCellValue("--");
+				createExcelsheet.autoSizeColumn(2);
+			}
+
+			if (null != reportList.getProjectManagers()) {
+				 writeRow.createCell(3).setCellValue(reportList.getProjectManagerNames());
+				createExcelsheet.autoSizeColumn(3);
+			} else {
+				writeRow.createCell(3).setCellValue("--");
+				createExcelsheet.autoSizeColumn(3);
+			}
+
+			if (null != reportList.getProjectStartDate()) {
+				writeRow.createCell(4).setCellValue(reportList.getProjectStartDate());
+				createExcelsheet.autoSizeColumn(4);
+			} else {
+				writeRow.createCell(4).setCellValue("--");
+				createExcelsheet.autoSizeColumn(4);
+			}
+
+			if (null != reportList.getProjectEndDate()) {
+				writeRow.createCell(5).setCellValue(reportList.getProjectEndDate());
+				createExcelsheet.autoSizeColumn(5);
+			} else {
+				writeRow.createCell(5).setCellValue("--");
+				createExcelsheet.autoSizeColumn(5);
+			}
+
+			if (null != reportList.getProjectMembers()) {
+				writeRow.createCell(6).setCellValue(reportList.getProjectMembers());
+				createExcelsheet.autoSizeColumn(6);
+			} else {
+				writeRow.createCell(6).setCellValue("--");
+				createExcelsheet.autoSizeColumn(6);
+			}
+
+			if (null != reportList.getMemberStartDate()) {
+				writeRow.createCell(7).setCellValue(reportList.getMemberStartDate());
+				createExcelsheet.autoSizeColumn(7);
+			} else {
+				writeRow.createCell(7).setCellValue("--");
+				createExcelsheet.autoSizeColumn(7);
+			}
+
+			if (null != reportList.getMemberEndDate()) {
+				writeRow.createCell(8).setCellValue(reportList.getMemberEndDate());
+				createExcelsheet.autoSizeColumn(8);
+			} else {
+				writeRow.createCell(8).setCellValue("--");
+				createExcelsheet.autoSizeColumn(8);
+			}
+
+			if(StringUtils.isNotBlank(reportList.getMemberStatus())) {
+				if ( Integer.parseInt(reportList.getMemberStatus()) == Constants.RECORD_ACTIVE) {
+					writeRow.createCell(9).setCellValue("Active");
+					createExcelsheet.autoSizeColumn(9);
+				} else {
+					writeRow.createCell(9).setCellValue("In-Active");
+					createExcelsheet.autoSizeColumn(9);
+				}
+			}
+		
+		
+		return createExcelsheet;
+	}
+
+}	
 
 
 

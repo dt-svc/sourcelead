@@ -117,6 +117,7 @@ import com.bis.sourcelead.service.UserService;
 import com.bis.sourcelead.util.CommonUtil;
 import com.bis.sourcelead.util.ConversionUtil;
 import com.bis.sourcelead.util.EmailScenerioUtil;
+import com.bis.sourcelead.util.PdfUtil;
 import com.bis.sourcelead.util.SourceLeadSessionManager;
 
 /**
@@ -2534,5 +2535,27 @@ public class RequirementListRestController {
 		}
 		return response;
 	}
+	
+	
+	@RequestMapping (value = "/pdfExportForJobfair")
+	
+	public File jobFairPdfExport(HttpServletRequest request,HttpServletRequest response,JobFairDTO jobfairDto) throws Exception{
+		User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+		OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+		
+		return null;
+		
+	}
+	
+	@RequestMapping (value = "/excelExportForJobfair")
+	
+	public File jobFairExcelExport(HttpServletRequest request,HttpServletRequest response,JobFairDTO jobfairDto) throws Exception{
+		User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+		OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+		
+		return null;
+		
+	}
+	
 	
 }
