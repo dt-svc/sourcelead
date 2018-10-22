@@ -166,9 +166,9 @@
 	                 "render": function (data, type, opt, meta) {
 	                     var result = "";
 	                     if (opt.currentRate !== null && opt.currentRate !== '' && opt.currentRate !== 'undefined') {
-	                    	 result = result + "<td><div class='tbldata-dotdot-sm' title = '"+opt.currentRate+"'>" + opt.currentRate + "</div></td>";
+	                    	 result = result + "<td><div class='tblminwidth-75' title = '"+opt.currentRate+"'>" + opt.currentRate + "</div></td>";
 	                     } else {
-	                         result = result + "<td><div class='tbldata-dotdot-sm'>---</div></td>";
+	                         result = result + "<td><div class='tblminwidth-75'>---</div></td>";
 	                     } 
 	                     return result;
 	                 }
@@ -179,9 +179,9 @@
 	                 "render": function (data, type, opt, meta) {
 	                     var result = "";
 	                     if (opt.expectedRate !== null && opt.expectedRate !== '' && opt.expectedRate !== 'undefined') {
-	                    	 result = result + "<td><div class='tbldata-dotdot-sm' title = '"+opt.expectedRate+"'>" + opt.expectedRate + "</div></td>";
+	                    	 result = result + "<td><div class='tblminwidth-75' title = '"+opt.expectedRate+"'>" + opt.expectedRate + "</div></td>";
 	                     } else {
-	                         result = result + "<td><div class='tbldata-dotdot-sm'>---</div></td>";
+	                         result = result + "<td><div class='tblminwidth-75'>---</div></td>";
 	                     } 
 	                     return result;
 	                 }
@@ -192,9 +192,9 @@
 	                 "render": function (data, type, opt, meta) {
 	                     var result = "";
 	                     if (opt.profilePercentage !== null && opt.profilePercentage !== '' && opt.profilePercentage !== 'undefined') {
-	                    	 result = result + "<td><div class='tbldata-dotdot-sm' title = '"+opt.profilePercentage+"%'>" + opt.profilePercentage + "%</div></td>";
+	                    	 result = result + "<td><div class='tblminwidth-50' title = '"+opt.profilePercentage+"%'>" + opt.profilePercentage + "%</div></td>";
 	                     } else {
-	                         result = result + "<td><div class='tbldata-dotdot-sm'>---</div></td>";
+	                         result = result + "<td><div class='tblminwidth-50'>---</div></td>";
 	                     } 
 	                     return result;
 	                 }
@@ -205,9 +205,9 @@
 	                 "render": function (data, type, opt, meta) {
 	                     var result = "";
 	                     if (opt.marketPrice !== null && opt.marketPrice !== '' && opt.marketPrice !== 'undefined') {
-	                    	 result = result + "<td><div id='marketPlacePriceDiv'><div id='marketPlacePriceValDiv' class='tbldata-dotdot-sm' title = '"+opt.marketPrice+" "+ opt.marketRateCurrencey+"'>" + opt.marketPrice + " "+ opt.marketRateCurrencey+"</div></div></td>";
+	                    	 result = result + "<td><div id='marketPlacePriceDiv'><div id='marketPlacePriceValDiv' class='tblminwidth-125' title = '"+opt.marketPrice+" "+ opt.marketRateCurrencey+"'>" + opt.marketPrice + " "+ opt.marketRateCurrencey+"</div></div></td>";
 	                     } else {
-	                         result = result + "<td><div class='tbldata-dotdot-sm'>---</div></td>";
+	                         result = result + "<td><div class='tblminwidth-125'>---</div></td>";
 	                     } 
 	                     return result;
 	                 }
@@ -218,7 +218,7 @@
 	               /*   "data": "action", */
 	                 "render": function (data, type, opt, meta) {
 	                     var result = "";
-	                    	 result = result + "<td><div class='tbldata-dotdot-sm' id='marketLinkDiv' ><a id='editMarketLink' onclick='editMarketPriceFun(\""+opt.id+"\",\""+opt.marketPrice+"\",\""+opt.marketRateCurrencey+"\", this);' title='Edit'>Edit</a> <a onclick = 'disableMarketPlace("+opt.id+")'>&nbsp;Withdraw</a></div></td>";
+	                    	 result = result + "<td><div class='tblminwidth-100' id='marketLinkDiv' ><a id='editMarketLink' onclick='editMarketPriceFun(\""+opt.id+"\",\""+opt.marketPrice+"\",\""+opt.marketRateCurrencey+"\", this);' title='Edit'>Edit</a> <a onclick = 'disableMarketPlace("+opt.id+")'>&nbsp;Withdraw</a></div></td>";
 	                     return result;
 	                 }
 	             }
@@ -360,7 +360,7 @@ function disableMarketPlace(id){
 	result = result +"	   <div id='remove_marketPlace_pop' class='remove_user_pop remove_user_pop_a'>";
 	result = result +"		<textarea  id='reasonForMarketPlace' name='reasonForSpoc' data-validation='required validate_Space validate_Description validate_length length2-250' placeholder='Reason' onkeypress=';' ></textarea>";
 	result = result + ' <div id="reasonForMarketPlaceDiv"/>';
-	result = result +"		<b href='javascript:void(0)'><input id='confirm-id' type='button' value='Delete' onclick='deleteMarketPlace("+id+");'><input class='u_can_color' type='button'  value='Cancel' onClick='cancelMarketPlace();'></b>";
+	result = result +"		<b href='javascript:void(0)'><input id='confirm-id' type='button' value='Withdraw' onclick='deleteMarketPlace("+id+");'><input class='u_can_color' type='button'  value='Cancel' onClick='cancelMarketPlace();'></b>";
 	result = result +"	</div>";
 	$("#popUp").empty().append(result);
 	$("#remove_marketPlace_pop").slideDown(200);
