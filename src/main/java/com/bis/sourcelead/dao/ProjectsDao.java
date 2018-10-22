@@ -8,6 +8,7 @@ import com.bis.sourcelead.dto.ProjectsDTO;
 import com.bis.sourcelead.dto.ResponseList;
 import com.bis.sourcelead.entity.Projects;
 import com.bis.sourcelead.entity.SubmissionApproverHierarchy;
+import com.bis.sourcelead.reportsDTO.ProjectReportDTO;
 
 public interface ProjectsDao {
 
@@ -105,5 +106,7 @@ public interface ProjectsDao {
 	public List<Projects> getProjectsListByUserIdAndOrgLocationIdAndStatus(Long userId,Long orgLocationsId,Long orgId,Long candidateId,String userRole,String globalAccess) throws Exception;
 	
 	List<ProjectsDTO> getProjectListForDaywiseReports(Long orgLocationsId,Long orgId,String isGlobalManager,Long userId,String type,String userRole) throws Exception;
+
+	public List<Projects> getProjectReportList(ProjectReportDTO projectReportDTO, Long orgLocationId);
 
 }
