@@ -59,7 +59,13 @@
 	             				 document.getElementById("email").setAttribute('pass-exist','yes');
 	             				 document.getElementById("email").setAttribute('pass-exist-errorMsg', ' Invalid User Name'); 
 	             				 $("input#email").removeAttr("style");
-// 	             				 $("#loading").removeAttr("style");
+    			        	}else if(json.status == 'Inactive'){
+    			        		 $('#forgotPasswordDiv').find('span.jquery_form_error_message').remove();
+	             		         document.getElementById("email").setAttribute('class','error signin_fild');
+	             		         $("input#email").after("<span class='jquery_form_error_message'> <font color='red'>User is Inactive</font></span>");
+	             				 document.getElementById("email").setAttribute('pass-exist','yes');
+	             				 document.getElementById("email").setAttribute('pass-exist-errorMsg', 'User is Inactive'); 
+	             				 $("input#email").removeAttr("style");
     			        	}
                     		else if(json.status == 'login'){
     			        		  location.replace("/login"); 

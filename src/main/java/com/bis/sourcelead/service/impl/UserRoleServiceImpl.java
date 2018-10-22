@@ -874,5 +874,10 @@ public class UserRoleServiceImpl implements UserRoleService{
 		return userRoleDao.isUserWithMultipleOrgsAccounts(orgId,userId);
 	}
 
+	@Override
+	public List<UserRole> getLoginUserAccountsList(Long userId) throws Exception {
+		return userRoleDao.getLoginUserAccountsList(userId);
+	}
+
 
 }

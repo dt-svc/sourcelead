@@ -632,8 +632,12 @@ function calculatePreTaxDedAmount(){
 function calculatePostTaxDedAmount(){
 	var maxCount = $("#postDeductionLength").val();
 	var amount = 0;
-	for(var i=1;i<maxCount; i++){
-		amount += parseFloat($("#"+i+"amount").val());
+	for(var i=0;i<maxCount; i++){
+		var editedAmount = $("#"+i+"amount").val()
+		if(editedAmount != null && editedAmount != '' && editedAmount != 'undefined')
+			amount += parseFloat(editedAmount);
+		else
+			$("#postDeductionTotal").html("$ "+amount+""); 
 	} 
 	$("#postDeductionTotal").html("$ "+amount+""); 
 }

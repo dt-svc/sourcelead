@@ -82,7 +82,7 @@ function redirectlocation(location){
 		var userId = '${SourceLeadWeb_userId}';
 		var searchValue = $("#cancelledLeavesTableSearch").val();
 		searchValue = searchValue ? searchValue : "";
-		var url = sourceleadUrl+"/getEmployeeRequestedLeaves?"+tokenParamName+"="+tokenValue+"&searchValue="+searchValue+"&orgLocationId="+orgLocationId+"&userId="+userId+"&leaveStatus=CANCELLED";
+		var url = sourceleadUrl+"/getEmployeeRequestedLeaves?"+tokenParamName+"="+tokenValue+"&orgLocationId="+orgLocationId+"&userId="+userId+"&leaveStatus=CANCELLED&searchValue="+searchValue;
 		prepareCancelledEmployeesList(url);
 }
 </script> 
