@@ -9,7 +9,8 @@ $(document).ready(function(){
 	datePickeerTest();
 });
 </script>
-
+<div id="emptyPopup"></div>
+<input type="hidden" id="noTopLeaveTakenList" name="noTopLeaveTakenList"  value="0"/>  
 <!-- Content Area -->
   <section class="content-wraper contentWraper">
     <section class="content-header clearfix">
@@ -241,7 +242,8 @@ function gettopleavetakenReportList(){
 	var searchValue = $("#leaveReportDataTableSearch").val();
 	var topleave = "yes";
 var loginUserRole = '${SourceLeadWeb_loginUserRole}';
-	
+
+var  noTopLeaveTakenList=$("#noTopLeaveTakenList").val(0);
 	var userRole = [];
 	$('input:checkbox[name=userRole]:checked').each(function() 
     {
@@ -297,6 +299,7 @@ $("#loading").attr('style','position:absolute; width:100%; height:100%; backgrou
 								result = result + '</thead>';
 								result = result + '<tbody>';
 								for(var j=0; j < opt.users.length; j++){
+									$("#noTopLeaveTakenList").val(1);
 									var report = opt.users[j];
 									result += "<tr>";
 						        	  if(report.empName !=null && report.empName !='' && report.empName !='undefined'){
@@ -494,6 +497,7 @@ function exportToPdf(){
 	var topleave ="yes";
 	var loginUserRole = '${SourceLeadWeb_loginUserRole}';
 	var searchValue = $("#leaveReportDataTableSearch").val();
+	var  noTopLeaveTakenList=$("#noTopLeaveTakenList").val();
 	var userRole = [];
 	$('input:checkbox[name=userRole]:checked').each(function() 
     {
@@ -516,8 +520,26 @@ function exportToPdf(){
      });
 	var MonthStartDate =$("#filterStartDate").val();
 	var MonthEndDate = $("#filterEndDate").val();
-	window.location.href = sourceleadUrl + "/getExportTopReports?"+tokenParamName+"="+tokenValue+"&userRole="+userRole+"&orgDepartments="+orgDepartments+"&userleaveType="+userleaveType+"&leaveType="+leaveType+"&exportType="+exportType+"&topleave="+topleave+"&MonthStartDate="+MonthStartDate+"&MonthEndDate="+MonthEndDate+"&searchValue="+searchValue;
-	
+	if(noTopLeaveTakenList !=	 0){
+		window.location.href = sourceleadUrl + "/getExportTopReports?"+tokenParamName+"="+tokenValue+"&userRole="+userRole+"&orgDepartments="+orgDepartments+"&userleaveType="+userleaveType+"&leaveType="+leaveType+"&exportType="+exportType+"&topleave="+topleave+"&MonthStartDate="+MonthStartDate+"&MonthEndDate="+MonthEndDate+"&searchValue="+searchValue;
+	}else{
+	  	var result = "";
+			result = result +"	<div class='project_inn_mask'></div>";
+			result = result +"	   <div id='candidate_user_pop' class='remove_user_pop remove_user_pop_a'>";
+			result = result +"		<p>TopLeaveTaken List is Empty</p>";
+			result = result +"		<div>&nbsp;&nbsp;&nbsp;</div>";
+			result = result +"		<b href='javascript:void(0)'><input type='button' value='Ok' onclick='candidtaeCancel();'><input class='u_can_color' type='button'  value='Cancel' onClick='candidtaeCancel();'></b>";
+			result = result +"	</div>";
+			$("#emptyPopup").append(result);
+			$("#candidate_user_pop").slideDown(200);
+			$(".project_inn_mask").fadeIn(200);
+	}
+}
+</script>
+<script type="text/javascript">
+function candidtaeCancel(){
+	$("#emptyPopup").empty();
+	$(".project_inn_mask").fadeOut(200);
 }
 </script>
 <script>
@@ -526,7 +548,7 @@ function exportToExcel(){
 	var exportType = "excel";
 	var topleave ="yes";
 	var loginUserRole = '${SourceLeadWeb_loginUserRole}';
-    
+	var  noTopLeaveTakenList=$("#noTopLeaveTakenList").val();
 	var userRole = [];
 	$('input:checkbox[name=userRole]:checked').each(function() 
     {
@@ -549,8 +571,20 @@ function exportToExcel(){
      });
 	var MonthStartDate =$("#filterStartDate").val();
 	var MonthEndDate = $("#filterEndDate").val();
-	
-	window.location.href = sourceleadUrl + "/getExportTopReports?"+tokenParamName+"="+tokenValue+"&userRole="+userRole+"&orgDepartments="+orgDepartments+"&userleaveType="+userleaveType+"&leaveType="+leaveType+"&exportType="+exportType+"&topleave="+topleave+"&MonthStartDate="+MonthStartDate+"&MonthEndDate="+MonthEndDate+"&searchValue="+searchValue;
+	if(noTopLeaveTakenList !=	 0){
+		window.location.href = sourceleadUrl + "/getExportTopReports?"+tokenParamName+"="+tokenValue+"&userRole="+userRole+"&orgDepartments="+orgDepartments+"&userleaveType="+userleaveType+"&leaveType="+leaveType+"&exportType="+exportType+"&topleave="+topleave+"&MonthStartDate="+MonthStartDate+"&MonthEndDate="+MonthEndDate+"&searchValue="+searchValue;
+	}else{
+	  	var result = "";
+		result = result +"	<div class='project_inn_mask'></div>";
+		result = result +"	   <div id='candidate_user_pop' class='remove_user_pop remove_user_pop_a'>";
+		result = result +"		<p>TopLeaveTaken List is Empty</p>";
+		result = result +"		<div>&nbsp;&nbsp;&nbsp;</div>";
+		result = result +"		<b href='javascript:void(0)'><input type='button' value='Ok' onclick='candidtaeCancel();'><input class='u_can_color' type='button'  value='Cancel' onClick='candidtaeCancel();'></b>";
+		result = result +"	</div>";
+		$("#emptyPopup").append(result);
+		$("#candidate_user_pop").slideDown(200);
+		$(".project_inn_mask").fadeIn(200);	
+	}
 	
 }
 </script>

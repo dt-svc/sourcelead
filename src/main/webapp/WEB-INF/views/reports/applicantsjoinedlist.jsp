@@ -41,13 +41,13 @@
 	          <option value="custom">Custom</option> 
 			</select>
 		<div id="runButtonDiv" class="repSelBtn">
-			<button type="button" class="btn btn-primary btn-sm" id="applicant" onclick="requirementJoinedList();" style="display: none">Run</button>
-	        <button type="button" class="btn btn-primary btn-sm" id="recurter" onclick="filter(); getDaywiseLeaveReportList();" style="display: block">Run</button>
+			<button type="button" class="btn btn-primary btn-sm" id="customDateApplicant" onclick="getApplicantsJoinedList();" style="display: none">Run</button>
+	        <button type="button" class="btn btn-primary btn-sm" id="customDateRecurter" onclick="filter(); getAppliantJoinedListByRecruiter();" style="display: block">Run</button>
         </div> 
           
           <div class="clearfix customLeaves repCustomDate" id="customSearch">
               <div class="repCustomDateInn">
-                <input type="text" class="form-control calendar" value="" id="ReportStartDate" name="StartDate" field-name="Start Date" data-validation="required" readonly="readonly" placeholder="Saaatart Date *">
+                <input type="text" class="form-control calendar" value="" id="ReportStartDate" name="StartDate" field-name="Start Date" data-validation="required" readonly="readonly" placeholder="Start Date *">
 				  <p id="reportsStartDate"></p>
               </div>
               
@@ -56,8 +56,8 @@
 				 <p id="reportsEndDate"></p>
               </div>
               
-              <div class="repCustomDateBtn"><button type="button" id="recurter" class="btn btn-primary btn-sm" onclick="getDaywiseLeaveReportList();" style="display: block"><i class="fa fa-search"></i></button></div>
-                       <div class="repCustomDateBtn"><button type="button" id="applicant" class="btn btn-primary btn-sm" onclick="requirementJoinedList();" style="display: none"><i class="fa fa-search"></i></button></div>
+              <div class="repCustomDateBtn"><button type="button" id="recurter" class="btn btn-primary btn-sm" onclick="getAppliantJoinedListByRecruiter();" style="display: block"><i class="fa fa-search"></i></button></div>
+                       <div class="repCustomDateBtn"><button type="button" id="applicant" class="btn btn-primary btn-sm" onclick="getApplicantsJoinedList();" style="display: none"><i class="fa fa-search"></i></button></div>
           </div>
           
         </div>
@@ -67,26 +67,28 @@
 					<li><a href="javascript:void(0)" class="overIcon" title="Actions" onclick="newActions();"></a>
 						<div class="newActPop" style="display: none;">
 							<span>
-			           	   		<a href="javascript:void(0)" id="applicant" onclick="projectExport('Pdf');" title="PDF" style="display: none">Export PDF</a>
-								<a href="javascript:void(0)" id="applicant" onclick="projectExport('Excel');" title="Excel" style="display: none">Export Excel</a>  
+			           	   		<a href="javascript:void(0)" id="applicantExportPdf" onclick="projectExport('Pdf');" title="PDF" style="display: none">Export PDF</a>
+								<a href="javascript:void(0)" id="applicantExportExcel" onclick="projectExport('Excel');" title="Excel" style="display: none">Export Excel</a>  
 								
-								 		<a href="javascript:void(0)" id="recurter" onclick="exportToPdf();" title="PDF" style="display: block">Export PDF</a>
-								<a href="javascript:void(0)" id="recurter" onclick="exportUserData();" title="Excel" style="display: block">Export Excel</a>           
+								 		<a href="javascript:void(0)" id="recurterExportPdf" onclick="exportToPdf();" title="PDF" style="display: block">Export PDF</a>
+								<a href="javascript:void(0)" id="recurterExportExcel" onclick="exportUserData();" title="Excel" style="display: block">Export Excel</a>           
 							</span>
 						</div>
 					</li>
 			  <li class=""><input type="text" class="repSearchBar" placeholder="Search" id="dataTableSearch" style="display: none"><span class="repSearchIcon" onclick="filter();" style="display: none"></span></li>
-	     	 <li class=""><input type="text" class="repSearchBar" placeholder="Search" id="daywiseReportDataTableSearch"><span class="repSearchIcon" onclick="getDaywiseLeaveReportList();" style="display: block"></span></li>
+	     	 <li class=""><input type="text" class="repSearchBar" placeholder="Search" id="daywiseReportDataTableSearch"><span class="repSearchIcon" onclick="getAppliantJoinedListByRecruiter();" style="display: block"></span></li>
 	        </ul>
 	      </div>
         <div class="timesheet_head">
       
        </div>
+       <div id="emptyPopup"></div>
         <div class="clients_wrap_table datatable_filter">
         
         <div id="previousOfferDiv" style="display: none"></div>
 	           <div id="byRecruiter" style="display: block"></div>
-        
+<input type="hidden" id="noApplicantJoinedList" name="noApplicantJoinedList"  value="0"/>
+<input type="hidden" id="noRecruiterApplicantJoinedList" name="noRecruiterApplicantJoinedList"  value="0"/>        
         </div>
       </div>
       <div class="side_mask">
@@ -97,8 +99,8 @@
   
   <script>
  $(document).ready(function() {
-	 getDaywiseLeaveReportList();
-	 requirementJoinedList();
+	 getAppliantJoinedListByRecruiter();
+	 getApplicantsJoinedList();
 	 getClientList();
 	 getTeamsList();
  });
@@ -107,10 +109,11 @@
  
  
   <script>
-function getDaywiseLeaveReportList(){
+function getAppliantJoinedListByRecruiter(){
 	var sourceleadUrl ='${sourceleadUrl}';
 	 var searchValue = $("#daywiseReportDataTableSearch").val();
 	 var timePeriod = $("#reportTypeId").val();
+	 var  noRecruiterApplicantJoinedList=$("#noRecruiterApplicantJoinedList").val(0); 
 	 var flag = true;
 	 var startDate = '';
 	 var endDate = '';
@@ -198,8 +201,8 @@ function daywiseLeaveReportsListPagination(url){
 		    	  	"targets": colIndex++,
 		    	  	"data": "recruiterName",
 		    	  	"render": function(data, type, user, meta) {
+		    	  		$("#noRecruiterApplicantJoinedList").val(1);
         	  var result = '';
-			        	  $("#noReports").val("1");
 			        	  result = result + ' <td>';
 				          if(user.name !=null && user.name !='' && user.name !='undefined'){
 								 result = result +'<div class="tbldata-dotdot" title="'+user.name+'">'+user.name+'</div>';
@@ -221,7 +224,7 @@ function daywiseLeaveReportsListPagination(url){
 			        	  if(user.requirementCount !=null && user.requirementCount !='' && user.requirementCount !='undefined'){
 								 result = result + '<div class="tblminwidth-75">'+user.requirementCount+'</div>';
 				          }else{
-								result = result + ' <div class="tblminwidth-75">--</div>';
+								result = result + ' <div class="tblminwidth-75">0</div>';
 							}
 			        	  result = result + ' </td>';
 			        	 return result;
@@ -236,7 +239,7 @@ function daywiseLeaveReportsListPagination(url){
 		        	  if(user.offerCount !=null && user.offerCount !='' && user.offerCount !='undefined'){
 							 result = result + '<div class="tblminwidth-75">'+user.offerCount+'</div>';
 			          }else{
-							result = result + ' <div class="tblminwidth-75">--</div>';
+							result = result + ' <div class="tblminwidth-75">0</div>';
 						}
 		        	  result = result + ' </td>';
 		        	 return result;
@@ -251,7 +254,7 @@ function daywiseLeaveReportsListPagination(url){
 			        	  if(user.joinedCount !=null && user.joinedCount !='' && user.joinedCount !='undefined'){
 								 result = result + '<div class="tblminwidth-75">'+user.joinedCount+'</div>';
 				          }else{
-								result = result + ' <div class="tblminwidth-75">--</div>';
+								result = result + ' <div class="tblminwidth-75">0</div>';
 							}
 			        	  result = result + ' </td>';
 			        	 return result;
@@ -267,7 +270,7 @@ function daywiseLeaveReportsListPagination(url){
 		        	  if(user.incentAmount !=null && user.incentAmount !='' && user.incentAmount !='undefined'){
 							 result = result + '<div class="tbldata-dotdot-vsm" title="'+user.incentAmount+'">'+user.incentAmount+'</div>';
 			          }else{
-							result = result + ' <div class="tbldata-dotdot-vsm">--</div>';
+							result = result + ' <div class="tbldata-dotdot-vsm">0</div>';
 						}
 		        	  result = result + ' </td>';
 		        	  return result;
@@ -291,17 +294,18 @@ function daywiseLeaveReportsListPagination(url){
 
 $("#daywiseReportDataTableSearch").keydown(function(e) {
 	   if(e.which === 13) {
-		   getDaywiseLeaveReportList();
+		   getAppliantJoinedListByRecruiter();
 	   }
 	});
 </script>
  
  
  <script type="text/javascript">
-       function requirementJoinedList(){
+       function getApplicantsJoinedList(){
     	   var sourceleadUrl ='${sourceleadUrl}';
    		   var tab = '${tab}';
     	   var frequency=$("#reportTypeId").val();
+    	  var  noApplicantJoinedList=$("#noApplicantJoinedList").val(0); 
     	    var fromDate='';
     	    var toDate='';
     		var searchValue = $("#dataTableSearch").val();
@@ -340,13 +344,13 @@ $("#daywiseReportDataTableSearch").keydown(function(e) {
    				  $("#reportsEndDate").empty().append("End Date is Required") ; 
     	        }
     	        if((fromDate != '' && fromDate != 'undefined' && fromDate != null) && (toDate != '' && toDate != 'undefined' && toDate != null)){
-        	        var url = sourceleadUrl+"/applicantList?searchValue="+searchValue+"&orgLocationId="+orgLocationId+"&tabType="+tab+"&submissionStatus=JOINED&frequency="+frequency+"&fromDate="+fromDate+"&toDate="+toDate+"&employmentType="+employmentType+"&clientId="+clientNameById+"&teamId="+teamNameById+"&incentivizedType="+incentivizedType+"&searchType="+searchType;
+        	        var url = sourceleadUrl+"/applicantList?searchValue="+searchValue+"&orgLocationId="+orgLocationId+"&tabType="+tab+"&submissionStatus=JOINED&frequency="+frequency+"&fromDate="+fromDate+"&toDate="+toDate+"&employmentType="+employmentType+"&clientId="+clientNameById+"&teamId="+teamNameById+"&incentivizedType="+incentivizedType+"&searchType="+searchType+"&type=applicantReport";
         		    prepareOfferList(url);
     	        }
     	    }else{
     	    	 document.getElementById("reportsStartDate").style.display="none";
     			 document.getElementById("reportsEndDate").style.display="none";
-    	        var url = sourceleadUrl+"/applicantList?searchValue="+searchValue+"&orgLocationId="+orgLocationId+"&tabType="+tab+"&submissionStatus=JOINED&frequency="+frequency+"&fromDate="+fromDate+"&toDate="+toDate+"&employmentType="+employmentType+"&clientId="+clientNameById+"&teamId="+teamNameById+"&incentivizedType="+incentivizedType+"&searchType="+searchType;
+    	        var url = sourceleadUrl+"/applicantList?searchValue="+searchValue+"&orgLocationId="+orgLocationId+"&tabType="+tab+"&submissionStatus=JOINED&frequency="+frequency+"&fromDate="+fromDate+"&toDate="+toDate+"&employmentType="+employmentType+"&clientId="+clientNameById+"&teamId="+teamNameById+"&incentivizedType="+incentivizedType+"&searchType="+searchType+"&type=applicantReport";
     		    prepareOfferList(url);
     	    } 
  
@@ -407,7 +411,8 @@ function offerpagination(url){
 	    	  	"targets": colIndex++,
 	    	  	"data": "applicantName",
 	    	  	"render": function(data, type, opt, meta) {
-	    	  		  var result = "";
+	    	  		 $("#noApplicantJoinedList").val(1); 
+	    	  		var result = "";
 	    	  		 if(opt.candidateName !=null && opt.candidateName !='' && opt.candidateName !='undefined'){
 		    	  			result = result + ' <td>';
 							result = result + ' <div title='+opt.candidateName+' class="clearfix mt5 proj_show"><span><a href="'+sourceleadUrl+'/requirementSummary?type=applicants&requirementUUID='+opt.requirementUUID+'&candidateUUID='+opt.candidateUUID+'&submissionId='+opt.submissionId+'" >'+opt.candidateName+'<i class="fa fa-binoculars"></i></a></span></div>';
@@ -531,7 +536,7 @@ function offerpagination(url){
     $("input[type=search]").hide();
     $("#dataTableSearch").keyup(function(e) {
     	   if(e.which === 13) {
-    		   requirementJoinedList();
+    		   getApplicantsJoinedList();
     	   }
     	});
 }
@@ -646,7 +651,7 @@ function resetApplicantFilter(){
 	$("ul#myTeamsListUL > li input:checkbox").prop("checked",false);
 	$("ul#incentivizedFilter  > li input:checkbox").prop("checked",false);
 	
-	requirementJoinedList();
+	getApplicantsJoinedList();
 }
 function newActions(){
 	$(".newActPop").slideToggle(200);
@@ -776,8 +781,8 @@ $(".overIcon, .newActPop").click(function(e){
 					</div>
 					<div class="clearfix advancedsearch-footer">
 						<div class="pull-right mr">
-							<input type="button" value="Apply" id="search_requiremet" onclick="closeApplicantFilterPop();requirementJoinedList();" style="display: none" class="btn btn-sm btn-success" />
-							<input type="button" value="Apply" id="search_requiremet" onclick="closeApplicantFilterPop();getDaywiseLeaveReportList();" style="display: block" class="btn btn-sm btn-success" />
+							<input type="button" value="Apply" id="applicant_search_requiremet" onclick="closeApplicantFilterPop();getApplicantsJoinedList();" style="display: none" class="btn btn-sm btn-success mr" />
+							<input type="button" value="Apply" id="recruiter_search_requiremet" onclick="closeApplicantFilterPop();getAppliantJoinedListByRecruiter();" style="display: inline-block" class="btn btn-sm btn-success mr" />
 							<input type="button" value="Reset" id="clear_search" onclick="resetApplicantFilter();" class="btn btn-sm btn-primary" />
 						</div>
 					</div>
@@ -870,6 +875,7 @@ function projectExport(type){
 	}
 	 var sourceleadUrl ='${sourceleadUrl}';
 	 var frequency=$("#reportTypeId").val();
+	 var noApplicantJoinedList= $("#noApplicantJoinedList").val();
 	   var tab = '${tab}';
     	    var fromDate='';
     	    var toDate='';
@@ -910,15 +916,36 @@ function projectExport(type){
    				  $("#reportsEndDate").empty().append("End Date is Required") ; 
     	        }
     	        if((fromDate != '' && fromDate != 'undefined' && fromDate != null) && (toDate != '' && toDate != 'undefined' && toDate != null)){
-   	    		 window.location.href = sourceleadUrl+"/applicantsJoinedListExport?searchValue="+searchValue+"&orgLocationId="+orgLocationId+"&tabType="+tab+"&submissionStatus=JOINED&frequency="+frequency+"&fromDate="+fromDate+"&toDate="+toDate+"&employmentType="+employmentType+"&clientId="+clientNameById+"&teamId="+teamNameById+"&incentivizedType="+incentivizedType+"&searchType="+searchType+"&exportType="+exportType;
+   	    		 window.location.href = sourceleadUrl+"/applicantsJoinedListExport?searchValue="+searchValue+"&orgLocationId="+orgLocationId+"&tabType="+tab+"&submissionStatus=JOINED&frequency="+frequency+"&fromDate="+fromDate+"&toDate="+toDate+"&employmentType="+employmentType+"&clientId="+clientNameById+"&teamId="+teamNameById+"&incentivizedType="+incentivizedType+"&searchType="+searchType+"&exportType="+exportType+"&type=applicantReport";
     	        }
     	    }else{
-    	    	 document.getElementById("reportsStartDate").style.display="none";
-    			 document.getElementById("reportsEndDate").style.display="none";
-   	 		 window.location.href = sourceleadUrl+"/applicantsJoinedListExport?searchValue="+searchValue+"&orgLocationId="+orgLocationId+"&tabType="+tab+"&submissionStatus=JOINED&frequency="+frequency+"&fromDate="+fromDate+"&toDate="+toDate+"&employmentType="+employmentType+"&clientId="+clientNameById+"&teamId="+teamNameById+"&incentivizedType="+incentivizedType+"&searchType="+searchType+"&exportType="+exportType;
+      	        if(noApplicantJoinedList !=	 0){
+      	        	document.getElementById("reportsStartDate").style.display="none";
+       			 document.getElementById("reportsEndDate").style.display="none";
+      	 		 window.location.href = sourceleadUrl+"/applicantsJoinedListExport?searchValue="+searchValue+"&orgLocationId="+orgLocationId+"&tabType="+tab+"&submissionStatus=JOINED&frequency="+frequency+"&fromDate="+fromDate+"&toDate="+toDate+"&employmentType="+employmentType+"&clientId="+clientNameById+"&teamId="+teamNameById+"&incentivizedType="+incentivizedType+"&searchType="+searchType+"&exportType="+exportType+"&type=applicantReport";
+      	        }
+      	        else{
+      	        	var result = "";
+      				result = result +"	<div class='project_inn_mask'></div>";
+      				result = result +"	   <div id='candidate_user_pop' class='remove_user_pop remove_user_pop_a'>";
+      				result = result +"		<p>Applicants List is Empty</p>";
+      				result = result +"		<div>&nbsp;&nbsp;&nbsp;</div>";
+      				result = result +"		<b href='javascript:void(0)'><input type='button' value='Ok' onclick='candidtaeCancel();'><input class='u_can_color' type='button'  value='Cancel' onClick='candidtaeCancel();'></b>";
+      				result = result +"	</div>";
+      				$("#emptyPopup").append(result);
+      				$("#candidate_user_pop").slideDown(200);
+      				$(".project_inn_mask").fadeIn(200);
+      	        }
+    	    	 
     	    } 
 // 		 window.location.href = sourceleadUrl+"/applicantsJoinedListExport?searchValue="+searchValue+"&orgLocationId="+orgLocationId+"&tabType="+tab+"&submissionStatus=JOINED&frequency="+frequency+"&fromDate="+fromDate+"&toDate="+toDate+"&employmentType="+employmentType+"&clientId="+clientNameById+"&teamId="+teamNameById+"&incentivizedType="+incentivizedType+"&searchType="+searchType+"&exportType="+exportType;
 	     
+}
+</script>
+<script type="text/javascript">
+function candidtaeCancel(){
+	$("#emptyPopup").empty();
+	$(".project_inn_mask").fadeOut(200);
 }
 </script>
 <script>
@@ -977,40 +1004,55 @@ function addValidClass(){
 </script>	
 <script>
 $(function() {
-        $('#araginglistSel').change(function(){
-        	var optval = $(this).val();
-			if(optval === "byRecruiter") {
-// 				$("#previousOfferDiv").empty();
-
-				$("#dataTableSearch").hide();
-				$("#daywiseReportDataTableSearch").show();
-				$("#byRecruiter").show();
-				$("#byApplicant").hide();
-				$("#applicant").hide();
-				$("#recurter").show();
-				$("#customDatesDropdown").show();
-				$("#previousOfferDiv").hide();
-				$("#byRecruiter").show();
-			}else if(optval === "byApplicant"){
-				$("#daywiseReportDataTableSearch").hide();
-				$("#dataTableSearch").show();
-// 				$("#byRecruiter").empty();
-				$("#byRecruiter").hide();
-				$("#byApplicant").show();
-				$("#customDatesDropdown").hide();
-				$("#recurter").hide();
-				$("#applicant").show();
-				$("#previousOfferDiv").show();
-				$("#byRecruiter").hide();
-			}
-        });
+    $('#araginglistSel').change(function(){
+    	var optval = $(this).val();
+		if(optval === "byRecruiter") {
+			$("#recruiter_search_requiremet").show();
+			$("#applicant_search_requiremet").hide();
+			$("#applicantExportPdf").hide();
+			$("#applicantExportExcel").hide();
+			$("#recurterExportPdf").show();
+			$("#recurterExportExcel").show();
+			$("#dataTableSearch").hide();
+			$("#daywiseReportDataTableSearch").show();
+			$("#customDateApplicant").hide();
+			$("#customDateRecurter").show();
+			$("#byRecruiter").show();
+			$("#byApplicant").hide();
+			$("#applicant").hide();
+			$("#recurter").show();
+			$("#customDatesDropdown").show();
+			$("#previousOfferDiv").hide();
+			$("#byRecruiter").show();
+		}else if(optval === "byApplicant"){
+			$("#recruiter_search_requiremet").hide();
+			$("#applicant_search_requiremet").show();
+			$("#recurterExportPdf").hide();
+			$("#recurterExportExcel").hide();
+			$("#applicantExportPdf").show();
+			$("#applicantExportExcel").show();
+			$("#daywiseReportDataTableSearch").hide();
+			$("#dataTableSearch").show();
+//				$("#byRecruiter").empty();
+			$("#customDateRecurter").hide();
+			$("#customDateApplicant").show();
+			$("#byRecruiter").hide();
+			$("#byApplicant").show();
+			$("#customDatesDropdown").hide();
+			$("#recurter").hide();
+			$("#applicant").show();
+			$("#previousOfferDiv").show();
+			$("#byRecruiter").hide();
+		}
     });
+});
 </script> 
 <script>
 function exportToPdf(){
 	var sourceleadUrl ='${sourceleadUrl}';
 	 var searchValue = $("#daywiseReportDataTableSearch").val();
 	 var timePeriod = $("#reportTypeId").val();
+	 var  noRecruiterApplicantJoinedList=$("#noRecruiterApplicantJoinedList").val(); 
 	var exportType = "pdf";
 	 var flag = true;
 	 var startDate = '';
@@ -1048,22 +1090,21 @@ function exportToPdf(){
 		$('input:checkbox[name=clientNameById]:checked').each(function() {
 			clients.push($(this).val());
 		});
-// 	if(ReportsListEmpty > 0){
+	if(noRecruiterApplicantJoinedList != 0){
 		window.location.href = sourceleadUrl + "/exportAllApplicantJoinedList?searchValue="+searchValue+"&timePeriod="+timePeriod+"&customStartDate="+startDate+"&customEndDate="+endDate+"&orgTeams="+orgTeams+"&clients="+clients+"&exportType="+exportType;
 
-// 		window.location.href = sourceleadUrl + "/getExportDailyWiseLeaveReport?"+tokenParamName+"="+tokenValue+"&fromDate="+fromDate+"&exportType="+exportType+"&searchValue="+searchValue;
-// 	}else{
-		var result = "";
+	}else{
+	  	var result = "";
 			result = result +"	<div class='project_inn_mask'></div>";
-			result = result +"	   <div id='empty_user_pop' class='remove_user_pop remove_user_pop_a'>";
-			result = result +"		<p>DailyWise Leave Report List is Empty</p>";
+			result = result +"	   <div id='candidate_user_pop' class='remove_user_pop remove_user_pop_a'>";
+			result = result +"		<p>Applicants List is Empty</p>";
 			result = result +"		<div>&nbsp;&nbsp;&nbsp;</div>";
-			result = result +"		<b href='javascript:void(0)'><input type='button' value='Ok' onclick='cancel();'><input class='u_can_color' type='button'  value='Cancel' onClick='cancel();'></b>";
+			result = result +"		<b href='javascript:void(0)'><input type='button' value='Ok' onclick='candidtaeCancel();'><input class='u_can_color' type='button'  value='Cancel' onClick='candidtaeCancel();'></b>";
 			result = result +"	</div>";
-			$("#popUp").append(result);
-			$("#empty_user_pop").slideDown(200);
+			$("#emptyPopup").append(result);
+			$("#candidate_user_pop").slideDown(200);
 			$(".project_inn_mask").fadeIn(200);
-// 	}
+	}
 	
 }
 </script>
@@ -1072,6 +1113,7 @@ function exportUserData(){
 	var sourceleadUrl ='${sourceleadUrl}';
 	var searchValue = $("#daywiseReportDataTableSearch").val();
 	 var timePeriod = $("#reportTypeId").val();
+	 var  noRecruiterApplicantJoinedList=$("#noRecruiterApplicantJoinedList").val();
 	var exportType = "xls";
 	 var flag = true;
 	 var startDate = '';
@@ -1109,22 +1151,21 @@ function exportUserData(){
 		$('input:checkbox[name=clientNameById]:checked').each(function() {
 			clients.push($(this).val());
 		});
-// 	if(ReportsListEmpty > 0){
+	if(noRecruiterApplicantJoinedList != 0){
 		window.location.href = sourceleadUrl + "/exportAllApplicantJoinedList?searchValue="+searchValue+"&timePeriod="+timePeriod+"&customStartDate="+startDate+"&customEndDate="+endDate+"&orgTeams="+orgTeams+"&clients="+clients+"&exportType="+exportType;
 
-// 		window.location.href = sourceleadUrl + "/getExportDailyWiseLeaveReport?"+tokenParamName+"="+tokenValue+"&fromDate="+fromDate+"&exportType="+exportType+"&searchValue="+searchValue;
-// 	}else{
+	}else{
 		var result = "";
-			result = result +"	<div class='project_inn_mask'></div>";
-			result = result +"	   <div id='empty_user_pop' class='remove_user_pop remove_user_pop_a'>";
-			result = result +"		<p>DailyWise Leave Report List is Empty</p>";
-			result = result +"		<div>&nbsp;&nbsp;&nbsp;</div>";
-			result = result +"		<b href='javascript:void(0)'><input type='button' value='Ok' onclick='cancel();'><input class='u_can_color' type='button'  value='Cancel' onClick='cancel();'></b>";
-			result = result +"	</div>";
-			$("#popUp").append(result);
-			$("#empty_user_pop").slideDown(200);
-			$(".project_inn_mask").fadeIn(200);
-// 	}
+		result = result +"	<div class='project_inn_mask'></div>";
+		result = result +"	   <div id='candidate_user_pop' class='remove_user_pop remove_user_pop_a'>";
+		result = result +"		<p>Applicants List is Empty</p>";
+		result = result +"		<div>&nbsp;&nbsp;&nbsp;</div>";
+		result = result +"		<b href='javascript:void(0)'><input type='button' value='Ok' onclick='candidtaeCancel();'><input class='u_can_color' type='button'  value='Cancel' onClick='candidtaeCancel();'></b>";
+		result = result +"	</div>";
+		$("#emptyPopup").append(result);
+		$("#candidate_user_pop").slideDown(200);
+		$(".project_inn_mask").fadeIn(200);
+	}
 	
 }
 </script>
