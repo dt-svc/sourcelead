@@ -23,6 +23,15 @@
 			<span title="${requirement.jobTitle} ${!empty requirement.jobId ? ' - ' : '' } ${!empty requirement.jobId ? requirement.jobId : ''}${!empty requirement.jobType ? ' - ' : '' }${!empty requirement.jobType  ?  (json.jobType == 'Other' ? requirement.otherJobType : requirement.jobType ) : ''}">${requirement.jobTitle} ${!empty requirement.jobId ? ' - ' : '' } ${!empty requirement.jobId ? requirement.jobId : ''}${!empty requirement.jobType ? ' - ' : '' }${!empty requirement.jobType  ?  (json.jobType == 'Other' ? requirement.otherJobType : requirement.jobType ) : ''}</span><i></i>
 		</h4>
 	</a>
+	<div>
+		<select name="changeStatusId39" onchange="" id="changeStatusId39">
+			<option disabled="disabled" selected="selected">OPEN</option>
+			<option value="FILLEDCLOSED">FILLEDCLOSED</option>
+			<option value="UNFILLEDCLOSED">UNFILLEDCLOSED</option>
+			<option value="ONHOLD">ONHOLD</option>
+			<option value="CANCEL">CANCEL</option>
+		</select>
+	</div>
 	<div class="hide-row">
 		<div class="col-md-12">
 			<div class="row">

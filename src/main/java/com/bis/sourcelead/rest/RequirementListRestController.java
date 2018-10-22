@@ -942,7 +942,13 @@ public class RequirementListRestController {
 					requirement.setRequirementSubmissionStatus(changedStatus);
 					requirement.setRequirementSubmissionPreviousStatus(previousStatus);
 					requirement.setUpdatedBy(loginUser.getUserCode());
-					requirement.setUpdatedDate(commonUtil.currentDate());
+					requirement.setUpdatedDate(CommonUtil.currentDate());
+					if (changedStatus == REQUIREMENT_SUBMISSION_STATUS.OPEN
+							&& (previousStatus == REQUIREMENT_SUBMISSION_STATUS.UNFILLEDCLOSED
+									|| previousStatus == REQUIREMENT_SUBMISSION_STATUS.FILLEDCLOSED
+									|| previousStatus == REQUIREMENT_SUBMISSION_STATUS.CLOSED)) {
+						requirement.setRepoenedDate(CommonUtil.currentDate());
+					}
 					requirementService.addRequirement(requirement);
 					StringBuilder reqStatusChange = new StringBuilder();
 					SourceLeadSessionManager.setSessionAttribute(request, "reqStatusChange", reqStatusChange.append(" ").append(requirement.getJobTitle()).append(" Status changed ").append(requirement.getRequirementSubmissionPreviousStatus()).append(" to ").append(requirement.getRequirementSubmissionStatus()).append(" ").toString());
