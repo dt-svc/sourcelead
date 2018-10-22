@@ -98,6 +98,9 @@ public class CandidateOnBoardController {
 	@Autowired
 	private CandidateService candidateService;
 	
+	@Value("${GoogleMaps_Location_API_KEY}")
+	private String googleMapsLocationApiKey;
+	
 	protected static boolean isNullOrEmpty(String str) {
 		return (str == null || "".equals(str.trim()));
 	}
@@ -120,7 +123,7 @@ public class CandidateOnBoardController {
 		if(candidateOnBoarding != null){
 			model.addObject("candidateOnBoarding",candidateOnBoarding);
 		}
-		
+		model.addObject("googleMapsLocationApiKey", googleMapsLocationApiKey);
 		model.addObject("sourceleadUrl", sourceleadUrl);
 		model.setViewName("onboard/welcomeStep2");
 		return model;
@@ -138,7 +141,7 @@ public class CandidateOnBoardController {
 		 List<PaymentAccountDTO> paymentList  = orgService.getPaymentAccountListByCandidateId(candidate.getId(), false);
 		 model.addObject("paymentList", paymentList);
 		 model.addObject("paymentListSize", paymentList.size());
-		 
+		 model.addObject("googleMapsLocationApiKey", googleMapsLocationApiKey);
 		 if(StringUtils.isNotBlank(orgLocations.getCountry()) && orgLocations.getCountry().equalsIgnoreCase("India")) {
 			 model.setViewName("onboard/onboardingCandidateBankingDetails");
 		}else {
@@ -171,6 +174,7 @@ public class CandidateOnBoardController {
 				}
 				model.setViewName("onboard/onboardingCandidateTaxDetails");
 		 }
+		model.addObject("googleMapsLocationApiKey", googleMapsLocationApiKey);
 		model.addObject("userId", user.getId());
 		model.addObject("sourceleadUrl", sourceleadUrl);
 		

@@ -256,6 +256,7 @@ function checkRegisterReports(){
 		result = result + '<th>Employee Name</th>';
 		result = result + '<th>Department</th>';
 		result = result + '<th>Amount</th>';
+		result = result + '<th>Total Amount</th>';
 		result = result + '</tr>';
 		result = result + '</thead>	';
 		result = result + "</table>";
@@ -288,6 +289,8 @@ function checkRegisterReports(){
 							}, {
 								"data" : "department"
 							}, {
+								"data" : "netPay"
+							},{
 								"data" : "netPay"
 							}],
 							"columnDefs" : [
@@ -344,6 +347,15 @@ function checkRegisterReports(){
 										"render" : function(data, type, opt,meta) {
 											var result = "";
 											result = result+ '<td><div class="tbldata-dotdot-vsm" title=""><i class="fa fa-dollar"style="color:#454545;"></i> '+opt.netPay+'</div></td>';
+											return result;
+										}
+									},
+									{
+										"targets" : colIndex++,
+										"data" : "ytdNet",
+										"render" : function(data, type, opt,meta) {
+											var result = "";
+											result = result+ '<td><div class="tbldata-dotdot-vsm" title=""><i class="fa fa-dollar"style="color:#454545;"></i> '+opt.ytdNet+'</div></td>';
 											return result;
 										}
 									}],

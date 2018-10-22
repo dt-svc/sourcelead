@@ -13,11 +13,13 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.LinkedHashSet;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import java.util.stream.Collectors;
 
 import org.apache.commons.lang3.StringUtils;
 import org.hibernate.Criteria;
@@ -35,20 +37,18 @@ import org.springframework.transaction.annotation.Transactional;
 import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.dao.UserDao;
 import com.bis.sourcelead.dao.UserRoleDao;
-import com.bis.sourcelead.dto.ConnectionsDTO;
-import com.bis.sourcelead.dto.DashboardItemsDTO;
+import com.bis.sourcelead.dto.ApplicantsJoinedReportDTO;
 import com.bis.sourcelead.dto.RecruiterRrportDTO;
 import com.bis.sourcelead.dto.ResponseList;
 import com.bis.sourcelead.dto.UserDTO;
 import com.bis.sourcelead.entity.DashboardItems;
 import com.bis.sourcelead.entity.Employees;
-import com.bis.sourcelead.entity.Invoice;
 import com.bis.sourcelead.entity.Org;
 import com.bis.sourcelead.entity.OrgLocations;
-import com.bis.sourcelead.entity.RecruiterReportAssociateCountView;
 import com.bis.sourcelead.entity.RecruiterReportCandidateCountView;
 import com.bis.sourcelead.entity.RecruiterReportView;
-import com.bis.sourcelead.entity.Requirement;
+import com.bis.sourcelead.entity.RequirementIncentive;
+import com.bis.sourcelead.entity.RequirementSubmission;
 import com.bis.sourcelead.entity.Roles;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.entity.UserRole;
@@ -58,6 +58,7 @@ import com.bis.sourcelead.service.CandidateService;
 import com.bis.sourcelead.service.OrgLocationService;
 import com.bis.sourcelead.service.RequirementService;
 import com.bis.sourcelead.service.RequirementSubmissionHistoryService;
+import com.bis.sourcelead.service.RequirementSubmissionService;
 
 @Repository
 public class UserDaoImpl implements UserDao {
@@ -79,6 +80,9 @@ public class UserDaoImpl implements UserDao {
 	
 	@Autowired
 	RequirementSubmissionHistoryService requirementSubmissionHistoryService;
+	
+	@Autowired
+	RequirementSubmissionService requirementSubmissionService;
 	
 	@Value("${SourceLead.100}")
 	private String notFound;
@@ -2239,7 +2243,6 @@ public class UserDaoImpl implements UserDao {
 		}
 		return usersDTOList;
 	}
-
 	@Override
 	@Transactional(rollbackFor = Exception.class)
 	public DashboardItems getDashboardItemsByUserId(long loginUserId, long orgLocationId) {
@@ -2427,5 +2430,202 @@ public class UserDaoImpl implements UserDao {
          List<String> userCodes = session.createSQLQuery("CALL User_Hierarchy_UserCode_List(:userId)").setParameter("userId", userId).list();
         return userCodes;
     }
+
+	@Override
+	@Transactional
+	public ResponseList<ApplicantsJoinedReportDTO> getApplicantsJoinedReport(ApplicantsJoinedReportDTO applicantsJoinedReportDTO, Long orgLocationId, Date[] searchDates, List<Long> teamsList, String type, List<Long> clientIdsList) throws Exception
+	{
+		List<ApplicantsJoinedReportDTO> applicantJoinedReportList = null;
+//		List<ApplicantsJoinedReportDTO> response = new LinkedList<ApplicantsJoinedReportDTO>();
+		ResponseList<ApplicantsJoinedReportDTO> responses = new ResponseList<>();
+		
+		Session session = this.sessionFactory.getCurrentSession();
+		/*
+		 * SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd"); String
+		 * fromDate = sdf.format(searchDates[0]); String toDate =
+		 * sdf.format(searchDates[1]);
+		 */
+		Integer filterCount = 0;
+		java.sql.Timestamp fromDate1 = new java.sql.Timestamp(searchDates[0].getTime());
+		java.sql.Timestamp toDate1 = new java.sql.Timestamp(searchDates[1].getTime());
+		java.sql.Date fromDate = new java.sql.Date(fromDate1.getTime());
+		java.sql.Date toDate = new java.sql.Date(toDate1.getTime());
+		Query queryString = null;
+		String query = null;
+		String dateQury = null;
+		String teamSubQuery = "";
+		String clientSubQuery = "";
+		List<Long> countlist = null;
+        StringBuilder query1 = new StringBuilder();
+        List countQueryString;
+		dateQury = " and DATE_FORMAT(reqSub.CREATED_DATE,'%Y-%m-%d') BETWEEN  '" + fromDate
+				+ "' and '" + toDate + "'";
+		if(applicantsJoinedReportDTO.getSearchValue() != null && !applicantsJoinedReportDTO.getSearchValue().isEmpty() && applicantsJoinedReportDTO.getSearchValue() != "undefined"){
+			 query1.append(" and (CONCAT(FIRST_NAME,LAST_NAME) like '%"
+		                + applicantsJoinedReportDTO.getSearchValue()
+		                + "%' )");
+		}
+String groupSubQuery = "";
+		
+		if (applicantsJoinedReportDTO.getOrgTeams() == null &&
+				applicantsJoinedReportDTO.getOrgTeams().isEmpty()) { 
+			groupSubQuery=" group by u.ID,req.ID";
+		}
+	
+		query = "SELECT" + " u.ID as userId," + "req.ID as requirementID,"
+				+ "req.ORG_LOCATION_ID as orglocationId,"
+				+ "reqSub.CREATED_DATE as reqSubCreatedDate," + "req.ORG_RELATION_ID as clientId,"
+				+ "reqSub.CREATED_BY as createdBy, "
+				+ "(SELECT count(*) FROM REQUIREMENT_ASSIGN_TO reqAssign WHERE reqAssign.ASSIGN_USER_ID = u.ID "
+				+ dateQury + ") AS requirementCount ,"
+				+ "(SELECT  CONCAT(FIRST_NAME,LAST_NAME) AS EMPLOYEE_NAME) AS name,"
+				+ "(SELECT count(*) FROM REQUIREMENT_SUBMISSION reqSub WHERE reqSub.CREATED_BY = u.USER_CODE "
+				+ dateQury + ") AS submissionCount,"
+				+ "(SELECT count(*) FROM REQUIREMENT_SUBMISSION reqSub WHERE reqSub.SUBMISSION_STATUS = 'JOINED' and reqSub.CREATED_BY = u.USER_CODE "
+				+ dateQury + ") AS joinedCount , "
+				+ "(SELECT count(*) FROM REQUIREMENT_SUBMISSION reqSub WHERE reqSub.SUBMISSION_STATUS = 'OFFERMADE' and reqSub.CREATED_BY = u.USER_CODE "
+				+ dateQury + ") AS offerCount  "
+				+ "FROM USER u, REQUIREMENT_SUBMISSION reqSub, REQUIREMENT req where u.USER_CODE = reqSub.CREATED_BY and req.ORG_LOCATION_ID= "
+				+ orgLocationId + "  and reqSub.REQUIREMENT_ID = req.ID " + dateQury
+				+ query1
+				+groupSubQuery;
+		/*
+		 * if (applicantsJoinedReportDTO.getOrgTeams() != null &&
+		 * !applicantsJoinedReportDTO.getOrgTeams().isEmpty()) { teamSubQuery =
+		 * " and applicantsJoinedReport.deptId  IN (:teamsList)"; }
+		 */
+		/*
+		 * if (applicantsJoinedReportDTO.getClients() != null &&
+		 * !applicantsJoinedReportDTO.getClients().isEmpty()) { clientSubQuery =
+		 * " and applicantsJoinedReport.clientId  IN (:clientIdsList)";
+		 * 
+		 * }
+		 */
+		
+		if (applicantsJoinedReportDTO.getOrgTeams() != null &&
+				 !applicantsJoinedReportDTO.getOrgTeams().isEmpty()) { 
+			teamSubQuery = " and u.ID IN (SELECT tm.MEMBER_USER_ID FROM TEAM_MEMBERS tm where tm.MEMBER_USER_ID = u.ID and tm.TEAM_ID IN(:teamsList)) group by u.ID,req.ID"; 
+				 }
+		
+       
+		if (applicantsJoinedReportDTO.getClients() != null &&
+				  !applicantsJoinedReportDTO.getClients().isEmpty()) { 
+			clientSubQuery =" and req.ORG_RELATION_ID  IN (:clientIdsList)";
+				  
+				  }
+		
+		queryString = session.createSQLQuery(query + clientSubQuery + teamSubQuery);
+		/*
+		 * queryString.setLong("orgLocationId", orgLocationId);
+		 * queryString.setParameter("fromDate", fromDate);
+		 * queryString.setParameter("toDate", toDate);
+		 */
+		/*
+		 * if (!teamsList.isEmpty()) { queryString.setParameterList("teamsList",
+		 * teamsList); }
+		 */
+		
+		if (!teamsList.isEmpty()) {
+			queryString.setParameterList("teamsList",teamsList);
+			}
+		
+		if (!clientIdsList.isEmpty()) {
+			queryString.setParameterList("clientIdsList", clientIdsList);
+		}
+		queryString.setResultTransformer(Transformers.aliasToBean(ApplicantsJoinedReportDTO.class));
+		applicantJoinedReportList = queryString.setFirstResult(applicantsJoinedReportDTO.getStart()).setMaxResults(applicantsJoinedReportDTO.getLength()).list();
+		
+		String countQuery1=null;
+		countQuery1 = 
+				"SELECT" + " distinct u.ID as userId " 
+				+ " FROM USER u, REQUIREMENT_SUBMISSION reqSub, REQUIREMENT req where u.USER_CODE = reqSub.CREATED_BY and req.ORG_LOCATION_ID= "
+				+ orgLocationId + "  and reqSub.REQUIREMENT_ID = req.ID " + dateQury
+				+ query1
+				+" group by u.ID,req.ID";
+//		   countQuery1=query + query1.toString() + " " + clientSubQuery;
+		 if (!clientIdsList.isEmpty()) {
+			 countlist = session.createSQLQuery(countQuery1 + clientSubQuery).setParameterList("clientIdsList", clientIdsList).list();
+		 }else{
+			 countlist = session.createSQLQuery(countQuery1).list();
+		 }
+		
+		  /* if (!clientIdsList.isEmpty()) {
+			   countQueryString.setParameterList("clientIdsList", clientIdsList);
+			}
+		   countlist = countQueryString.list();*/
+		  filterCount = countlist.size();
+		   
+		   /*int count = 0;
+           int filteredCount = 0;
+           if (countlist != null && !countlist.isEmpty()) {
+               count = countlist.size();
+           }*/
+        /*   for(ApplicantsJoinedReportDTO res: applicantJoinedReportList){
+   			res.setRecordsTotal(count);
+   		}*/
+//           response.setRecordsTotal(count);
+		if (applicantJoinedReportList != null && !applicantJoinedReportList.isEmpty()) {
+			for (ApplicantsJoinedReportDTO applicantsJoinedReportDTO2 : applicantJoinedReportList) {
+				applicantsJoinedReportDTO2.setFromDate(fromDate);
+				applicantsJoinedReportDTO2.setToDate(toDate);
+				Set<String> datesList = new LinkedHashSet<>();
+				datesList.add(fromDate.toString());
+				applicantsJoinedReportDTO2.setDatesList(datesList);
+				applicantsJoinedReportDTO2.setMonthName(new SimpleDateFormat("MMMM").format(applicantsJoinedReportDTO2.getReqSubCreatedDate()));
+				applicantsJoinedReportDTO2.setMonthNumber(applicantsJoinedReportDTO2.getReqSubCreatedDate().getMonth());
+			}
+		}
+		
+		int totalCount = 0;
+		if (applicantsJoinedReportDTO != null) {
+			if(countlist != null && !countlist.isEmpty()) {
+				totalCount = countlist.size();
+			}
+		} 
+		responses.setRecordsTotal(totalCount);
+		
+		if(query1.toString() != null && !query1.toString().isEmpty()){
+			responses.setRecordsFiltered(filterCount);
+		}else {
+			responses.setRecordsFiltered(totalCount);
+		}
+		
+		responses.setData(applicantJoinedReportList);
+		
+//		response = applicantJoinedReportList;
+		return responses;
+	}
+
+	@Override
+	@Transactional
+	public List<Object[]> getApplicantsJoinedCountByDates(String createdBy, Date fromDate, Date toDate)
+	{
+		try {
+			
+			java.sql.Timestamp fromDate1 = new java.sql.Timestamp(fromDate.getTime());
+			java.sql.Timestamp toDate1 = new java.sql.Timestamp(toDate.getTime());
+			java.sql.Date fromDate2 = new java.sql.Date(fromDate1.getTime());
+			java.sql.Date toDate2 = new java.sql.Date(toDate1.getTime());
+			
+			Session session = this.sessionFactory.getCurrentSession();
+
+			String query = "SELECT rs.joinedDate, count(*), rs.createdDate from RequirementSubmission rs where rs.createdBy='"
+					+ createdBy + "' and rs.submissionStatus ='JOINED' and rs.joinedDate between '"
+					+ fromDate2 + "' and '" + toDate2 + "' group by rs.joinedDate";
+		 	List<Object[]> result = session.createQuery(query).list();
+		 	if(result != null) {
+		 		/*for(Object[] obj : result){
+		 			System.out.println("CreatedBY :"+ createdBy +" Date : " + obj[0] + "    Count : " + obj[1]);
+		 		}*/
+		 		return result;
+		 	}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return null;
+	}
+
+	
+
 
 }
