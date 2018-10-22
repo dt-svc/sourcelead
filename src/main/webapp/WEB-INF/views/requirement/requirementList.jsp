@@ -497,7 +497,7 @@ function statusvalidating(id){
 					</sec:authorize>					
 									
 					<sec:authorize access="hasAnyRole('ROLE_EXPORT_REQUIREMENTS')">
-						<li><a href="javascript:void(0)" class="overIcon" title="Actions" onclick="newActions();"></a>
+						<li><a href="javascript:void(0)" class="overIcon" title="Actions" onclick="newActions();" style="display: none;"></a>
 							<div class="newActPop">
 								<span>
 									 	<a href="javascript:void(0)" onclick="exportToPdf(2);" title="PDF">Export PDF</a>

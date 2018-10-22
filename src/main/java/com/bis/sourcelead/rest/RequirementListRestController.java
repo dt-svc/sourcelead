@@ -2543,25 +2543,29 @@ public class RequirementListRestController {
 	}
 	
 	
-	@RequestMapping (value = "/pdfExportForJobfair")
-	
-	public File jobFairPdfExport(HttpServletRequest request,HttpServletRequest response,JobFairDTO jobfairDto) throws Exception{
+	@RequestMapping(value = "/pdfExportForJobfair")
+	public File jobFairPdfExport(HttpServletRequest request, HttpServletRequest response, JobFairDTO jobfairDto)
+			throws Exception {
 		User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
-		OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
-		
+		if (user != null) {
+
+			OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,
+					"orgLocations");
+		}
 		return null;
-		
 	}
-	
-	@RequestMapping (value = "/excelExportForJobfair")
-	
-	public File jobFairExcelExport(HttpServletRequest request,HttpServletRequest response,JobFairDTO jobfairDto) throws Exception{
+
+	@RequestMapping(value = "/excelExportForJobfair")
+	public File jobFairExcelExport(HttpServletRequest request, HttpServletRequest response)
+			throws Exception {
 		User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
-		OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
-		
+		if (user != null) {
+
+			OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,
+					"orgLocations");
+
+		}
 		return null;
-		
 	}
-	
 	
 }
