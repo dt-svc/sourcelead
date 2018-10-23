@@ -656,6 +656,34 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 	@JsonProperty
 	private String jobFairDates;
 	
+	@Transient
+	@JsonProperty
+	private String shortlistCount;
+	 
+	@Transient
+	@JsonProperty
+	private String  interviewCount;
+	  
+	@Transient
+	@JsonProperty
+	private String submitToClientCount;
+	  
+	@Transient
+	@JsonProperty
+	private String offersCount;
+	 
+	@Transient
+	@JsonProperty
+	private String joinedCount;
+	
+	@Transient
+	@JsonProperty 
+	private String backoutCount;
+	
+	@Transient
+	@JsonProperty
+	private String rejectedCount;
+	
 	public String getJobFairDates() {
 		return jobFairDates;
 	}
@@ -2110,12 +2138,69 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 		this.process = process;
 	}
 
+
+	public String getShortlistCount() {
+		return shortlistCount;
+	}
+
+	public void setShortlistCount(String shortlistCount) {
+		this.shortlistCount = shortlistCount;
+	}
+
+	public String getInterviewCount() {
+		return interviewCount;
+	}
+
+	public void setInterviewCount(String interviewCount) {
+		this.interviewCount = interviewCount;
+	}
+
+	public String getSubmitToClientCount() {
+		return submitToClientCount;
+	}
+
+	public void setSubmitToClientCount(String submitToClientCount) {
+		this.submitToClientCount = submitToClientCount;
+	}
+
+	public String getOffersCount() {
+		return offersCount;
+	}
+
+	public void setOffersCount(String offersCount) {
+		this.offersCount = offersCount;
+	}
+
+	public String getJoinedCount() {
+		return joinedCount;
+	}
+
+	public void setJoinedCount(String joinedCount) {
+		this.joinedCount = joinedCount;
+	}
+
+	public String getBackoutCount() {
+		return backoutCount;
+	}
+
+	public void setBackoutCount(String backoutCount) {
+		this.backoutCount = backoutCount;
+	}
+
+	public String getRejectedCount() {
+		return rejectedCount;
+	}
+
+	public void setRejectedCount(String rejectedCount) {
+		this.rejectedCount = rejectedCount;
+	}
 	public Date getRepoenedDate() {
 		return repoenedDate;
 	}
 
 	public void setRepoenedDate(Date repoenedDate) {
 		this.repoenedDate = repoenedDate;
+
 	}
 	
 	

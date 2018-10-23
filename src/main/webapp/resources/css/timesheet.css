@@ -567,7 +567,7 @@ input.inline_field::-moz-placeholder { color: #333; }-->*/
     /*    Project Css    */
        
 .project_wrap {
-    background-color: #fff; padding: 0px 0px; box-shadow: 0px 2px 2px rgba(0,0,0,0.15); border-radius: 3px;
+    background-color: #fff; padding: 0px 0px; box-shadow: 0px 2px 4px rgba(0,0,0,0.1); border-radius: 3px;
     }
 .project_wrap .timesheet_head ul li {
     float:left; margin: 5px 0px 5px 5px;
@@ -712,7 +712,7 @@ input.inline_field::-moz-placeholder { color: #333; }-->*/
     color:#375d81; text-decoration:none;
     }
 .project_tabs_inn_table {
-    text-align: left;
+    text-align: left; border-bottom:1px solid #EFEFEF !important;
 }  
 .project_tabs_inn_table.project_tabs_inn_table_a {}
 .project_tabs_inn_table table {
@@ -847,7 +847,7 @@ input.inline_field::-moz-placeholder { color: #333; }-->*/
     /*    Clients Css    */
        
 .clients_wrap {
-    background-color: #fff; padding: 0px 0px; box-shadow: 0px 2px 2px rgba(0,0,0,0.15); border-radius: 3px;
+    background-color: #fff; padding: 0px 0px; box-shadow: 0px 2px 4px rgba(0,0,0,0.1); border-radius: 3px;
     }
 .clients_wrap .timesheet_head ul li {
     float:left;
@@ -1103,7 +1103,7 @@ right:0px;
 .useredit a i { padding:0px 6px 0px 0px;}      
 .user_summary_edit {
     position:absolute; width:100%; height:100%; background-color:#FFF; box-sizing:border-box; left:40px; top:0px;
-    padding:10px 10px; display:none; box-shadow:0px 0px 3px rgba(0,0,0,0.3); z-index: 1000;
+    padding:10px 10px; display:none; box-shadow:0px 0px 3px rgba(0,0,0,0.3); z-index: 100;
 }
 .user_summary_edit_cta {
     float:left; width:46%; margin:0.5% 2%; position:relative; padding-bottom:8px;
@@ -1311,7 +1311,7 @@ right:0px;
     /*    Vendors Css    */
        
 .vendor_wrap {
-    background-color: #fff; padding: 0px 0px; box-shadow: 0px 2px 2px rgba(0,0,0,0.15); border-radius: 3px;
+    background-color: #fff; padding: 0px 0px; box-shadow: 0px 2px 4px rgba(0,0,0,0.1); border-radius: 3px;
     }
 .vendor_wrap .timesheet_head ul li {
     float:left; cursor: pointer;
@@ -1463,7 +1463,7 @@ right:0px;
     }
 .require_wrap_table.recommend_table {}    
 .require_wrap_table table {
-    width:100%; font-size:14px; font-weight:400; border-bottom:1px solid #CCC; border:none;
+    width:100%; font-size:14px; font-weight:400; border-bottom:1px solid #EFEFEF !important; border:none;
     }
 .require_wrap_table table tr:nth-child(even) {background: #fff;}
 .require_wrap_table table tr:nth-child(odd) {background: #f5f5f5;}         
@@ -2877,6 +2877,7 @@ padding: 2px 10px !important;
     margin:0px 0px; padding: 0px 0px;
 }
 .reportsCount ul li {
+
 
     width:16.66666%; float: left; background-color:#fff; list-style-type: none; text-align: center; padding: 14px 0px;
 }
@@ -6192,6 +6193,7 @@ background: #f1f6ff none repeat scroll 0 0; color: #444; border-radius: 5px;
     width:100%; height: 100%; position: fixed; background-image: url(../images/mainBg.jpg); background-repeat: no-repeat;
     background-position: center; background-attachment: fixed; top: 0px; left: 0px; overflow-y: auto;
 	background-size:cover;
+
 }
 .comLogInn {
     width:1000px; margin: 10px auto; position: relative;
@@ -7091,6 +7093,7 @@ background-image:url(../images/arrow-d-g.png) !important; background-repeat:no-r
 }
 .conneWrapHeadBtn a.color {
 	border: 1px solid #3EC9A7; background-color: #3EC9A7; color: #fff;
+
 }
 .conneWrapHeadBtn a:hover {
 	background-color: #f1f1f1;
@@ -8319,7 +8322,7 @@ max-width: 100% !important;
 }
 
 .noDate, .dataTables_empty, .noDateSm {
-	background-color: #fff; box-shadow: 0px 0px 2px rgba(0,0,0,0.2);  border-radius: 2px; padding: 20px;
+	background-color: #fff;  box-shadow: 0px 2px 4px rgba(0,0,0,0.1);  border-radius: 2px; padding: 20px;
 	margin: 0px 0px 0px 0px; background-image: url(../images/norecords.png); background-position: center center;
 	background-repeat: no-repeat; min-height: 200px; height: 200px !important; background-size: 130px;
 }
@@ -8328,7 +8331,7 @@ max-width: 100% !important;
 	background-repeat: no-repeat; min-height: 150px; height: 150px !important; background-size: 130px;
 }
 .reportNewDash {
-	background-color: #fff; box-shadow: 0px 0px 2px rgba(0,0,0,0.2); border-radius: 2px; padding: 10px 6px 10px 10px; min-height: 450px;
+	background-color: #fff;  box-shadow: 0px 2px 4px rgba(0,0,0,0.1); border-radius: 2px; padding: 10px 6px 10px 10px; min-height: 450px;
 }
 .perReport {
 	width: 100px; text-align: center; display: block; height: 55px; margin: 8px auto 2px; opacity:0.9;
@@ -9589,7 +9592,7 @@ aside.asideAct {
 	position: fixed; top: 59px; left: 0px; z-index: 1000000; font-size: 15px; font-weight: 400; text-align:center;
 	color: #ffffff;right: 0px; max-width: 80%; margin: 0px auto; display: none;
 }
-.newSusMes p { position: relative; padding: 0px 0px; margin: 0px 0px; background-color: #777777; border-radius: 2px; display: inline-block; padding: 15px 50px 15px 20px; box-shadow: 0px 3px 5px rgba(0,0,0,0.1);}
+.newSusMes p { position: relative; margin: 0px 0px; background-color: #777777; border-radius: 2px; display: inline-block; padding: 15px 50px 15px 20px; box-shadow: 0px 3px 5px rgba(0,0,0,0.1);}
 .newSusMes p i { position: absolute; right: 10px; top: 10px; padding: 5px; color: #fff; cursor: pointer;}
 .newSusMes p i:hover { color: #e96d6d;}
 #composeLoading {
@@ -9600,6 +9603,7 @@ aside.asideAct {
 .mailbox-table table td {
 	text-align: left;
 }
+
 .customInvoiceItems {
     margin: 0px 0px; padding: 0px 0px; clear: both;
 }
@@ -9643,14 +9647,59 @@ aside.asideAct {
 .sortable-hidden {
 	position: relative; opacity: 0; width: 48%; height: 150px;
 }
-.sortable-hidden-show {
-	opacity: 0.3;
-}
+.sortable-hidden-show {opacity: 0.3;}
 .cusInList label {
 	display: inline-block; width: 90%; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; margin-bottom: 2px;
 }
 .textError {
 	background-color: #e36363; color:#fff; position: absolute; top: 66px; text-align: center; width: 100%; left: 0px;
 }
+
+.releViewWrap { padding: 20px 25px;}
+.releViewWrap p {margin: 0px 0px; padding: 15px 0px 5px 0px; font-size: 15px; font-weight: 400; color: #545454; line-height: 23px;}
+.releViewWrap h2 { margin: 0px 0px; padding: 0px 0px; font-size: 22px; font-weight: 400; color: #1271b6;}
+.releViewWrap h3 { padding: 15px 0px 0px 0px; margin: 0px 0px; font-size: 18px; font-weight: 400; color: #1271b6;}
+.perfDashCta {
+	border-radius: 0px !important; margin-bottom: -1px; margin-left: -1px; transition: all 0.1s ease-in-out !important; text-align: center;
+}
+.perfDashCta img { display: block; margin: 0px auto; width: 90px;}
+.perfDashCta h3 { margin: 0px 0px; padding: 0px 0px 12px 0px; font-size: 16px; font-weight: 500; color: #757575;}
+.perfDashCta span { display: block; padding: 0px 0px 10px 0px;}
+.perfDashCta a { display: inline-block; padding: 0px 5px; margin: 0px 5px; font-size: 14px; font-weight: 500; color: #339833;}
+.perfDashCta a.colB { color: #368ee0;}
+
+.perfTabs {border-bottom: 1px solid #ededed;}
+.perfTabs ul { margin: 0px 0px; padding: 0px 5px;}
+.perfTabs ul li { list-style-type: none; float: left;}
+.perfTabs ul li a { display: block; padding: 11px 18px 10px; color: #666; border-bottom: 3px solid #fff; font-weight: 400;}
+.perfTabs ul li a:hover { color: #368ee0;}
+.perfTabs ul li a.Act {border-bottom: 3px solid #368ee0; color: #368ee0;}
+
+.goalsDash { background-color: #f7f7f7; border-bottom: 1px solid #ededed; padding: 15px 15px 0px;}
+.goalChat { width: 100%; height: 200px;}
+.goalChat a { display: none !important;}
+.goalLeft { background: #fff; height: 185px; box-shadow: 0px 0px 4px rgba(0,0,0,0.07); border-radius: 3px; padding: 20px;}
+.goalLeft div { padding: 10px 0px 15px 0px; font-size: 14px; font-weight: 400; color: #666;}
+.goalLeft div span { display: inline-block; width: 45%; float: right; font-size: 24px; color: #368ee0; font-weight: 500; position: relative;
+top: -6px;}
+.newAddWidth { width: 88%;}
+.perfPopWrap { position: fixed; top: 0px; left: 0px; width: 100%; height: 100%; background: rgba(0,0,0,0.6); z-index: 10000; overflow: auto; display: none;}
+.perfPop { width: 800px; margin: 30px auto; background: #fff; border-radius: 3px; box-shadow: 0px 2px 6px rgba(0,0,0,0.3);}
+.perfCont { padding: 5px 0px 8px 0px; font-size: 14px; color: #454545; line-height: 22px;}
+.perfCont span { float: left; width: 22%; color: #545454;}
+.perfCont b { float: left; width: 77%; font-weight: 500;}
+.perfCont strong {font-size: 14px; color: #545454; font-weight: 400; padding: 8px 0px 8px 0px; display: block;}
+.perfCont p { padding: 0px 0px 10px 0px; color: #454545;}
+
+
+
+
+
+
+
+
+
+
+
 
 
