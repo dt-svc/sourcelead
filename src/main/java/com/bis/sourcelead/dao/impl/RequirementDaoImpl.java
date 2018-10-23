@@ -869,8 +869,8 @@ public class RequirementDaoImpl implements RequirementDao {
 					requirement.setOrgRelationUUID(requirement.getClientId().getUUID());
 				}
 			}
-			Integer requirementAssignToListCount = requirementAssignToDao.getRequirementAssignToListCountByRequirementId(requirement.getId());
-    		requirement.setAssignedMembersCount(requirementAssignToListCount.toString());
+			/*Integer requirementAssignToListCount = requirementAssignToDao.getRequirementAssignToListCountByRequirementId(requirement.getId());
+    		requirement.setAssignedMembersCount(requirementAssignToListCount.toString());*/
     		
     		List<RequirementLocations> locationList = requirementLocationsService.getRequirementLocationsListByRequirementId(requirement.getId());
     		StringBuilder cb = new StringBuilder();
@@ -879,6 +879,7 @@ public class RequirementDaoImpl implements RequirementDao {
     		});
     		requirement.setLocation(cb.deleteCharAt(cb.length()-1).toString());
     		RequirementSubmissionsCountDTO requirementSubmissionsCountDTO= requirementSubmissionDao.getAllPipeLineCountsByRequirementIdAndSubmissionStage(requirement.getId(),user,orgLocation,"All");
+    		requirement.setAssignedMembersCount(requirementSubmissionsCountDTO.getApplicantsCount().toString());
     		requirement.setShortlistCount(requirementSubmissionsCountDTO.getShortlistCount().toString());
     		requirement.setOffersCount(requirementSubmissionsCountDTO.getOffersCount().toString());
     		requirement.setSubmitToClientCount(requirementSubmissionsCountDTO.getSubmitToClientCount().toString());
