@@ -623,7 +623,7 @@
 function calculatePreTaxDedAmount(){
 	var maxCount = $("#preDeductionLength").val();
 	var amount = 0;
-	for(var i=0;i<maxCount; i++){
+	for(var i=1;i<maxCount; i++){
 		amount += parseFloat($("#preDeductionAmount"+i+"").val());
 	} 
 	$("#preDeductionTotal").html("$ "+amount+""); 
@@ -633,7 +633,11 @@ function calculatePostTaxDedAmount(){
 	var maxCount = $("#postDeductionLength").val();
 	var amount = 0;
 	for(var i=0;i<maxCount; i++){
-		amount += parseFloat($("#"+i+"amount").val());
+		var editedAmount = $("#"+i+"amount").val()
+		if(editedAmount != null && editedAmount != '' && editedAmount != 'undefined')
+			amount += parseFloat(editedAmount);
+		else
+			$("#postDeductionTotal").html("$ "+amount+""); 
 	} 
 	$("#postDeductionTotal").html("$ "+amount+""); 
 }
@@ -642,6 +646,7 @@ function calculateTotalCotributionsAmount(){
 	var maxCount = $("#totalContributionsLngth").val();
 	var amount = 0;
 	for(var i=0;i<maxCount; i++){
+		if($("#totalContributions"+i+"").val()  != "")
 		amount += parseFloat($("#totalContributions"+i+"").val());
 	} 
 	$("#totalGrandContributions").html("$ "+amount+""); 
@@ -650,7 +655,7 @@ function calculateTotalCotributionsAmount(){
 function calculateTotalPayItemAmount(){
 	var maxCount = $("#total1payItemsLength").val();
 	var amount = 0;
-	for(var i=0;i<maxCount; i++){
+	for(var i=1;i<maxCount; i++){
 		amount += parseFloat($("#payItemAmount"+i+"").val());
 	} 
 	$("#payItemTotalAmount").html("$ "+amount+""); 
@@ -659,7 +664,7 @@ function calculateTotalPayItemAmount(){
 function calculateTotalLoanAmount(){
 	var maxCount = $("#totalloanAdvanceLength").val();
 	var amount = 0;
-	for(var i=0;i<maxCount; i++){
+	for(var i=1;i<maxCount; i++){
 		amount += parseFloat($("#loanAmount"+i+"").val());
 	} 
 	$("#loanTotalAmount").html("$ "+amount+""); 
@@ -678,9 +683,10 @@ function editUspayslip(event){
 	var text = document.getElementById("editUspaysliptext");
 	if(text.innerHTML === "Edit") {
 		text.innerHTML = "Save";
-		for(var i = 0; i < maxPreCount; i++){
-			$("#preDeductionAmount"+i+"").attr("onblur","calculatePreTaxDedAmount();");
-		}
+			for(var i = 0; i < maxPreCount; i++){
+				$("#preDeductionAmount"+i+"").attr("onblur","calculatePreTaxDedAmount();");
+			}
+		
 		for(var i = 0; i < maxPostCount; i++){
 			$("#"+i+"amount").attr("onblur","calculatePostTaxDedAmount();");
 		}

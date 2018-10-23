@@ -35,7 +35,7 @@ public class UserRoleDTO extends SearchDTO implements Serializable  {
 	private Long orgId;
 	private BigInteger orgLocationId;
 	private String type;
-	
+	private String clients;
 	
 	public Long getId() {
 		return id;
@@ -225,6 +225,14 @@ public class UserRoleDTO extends SearchDTO implements Serializable  {
 		this.type = type;
 
 	}
-
+	public String getClients()
+	{
+		return clients;
+	}
+	public void setClients(String clients)
+	{
+		this.clients = clients;
+	}
+	
 	
 }

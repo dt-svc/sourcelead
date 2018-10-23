@@ -36,6 +36,44 @@ public class AssociateWithHoldingDTO  extends SearchDTO{
 	
 	private String residenceStateCode;
 	
+	private String dept;
+	
+	private String empType;
+	
+	private String employeeMentType;
+	
+	private String exportType;
+	
+
+	public String getEmployeeMentType()
+	{
+		return employeeMentType;
+	}
+
+	public void setEmployeeMentType(String employeeMentType)
+	{
+		this.employeeMentType = employeeMentType;
+	}
+
+	public String getDept()
+	{
+		return dept;
+	}
+
+	public String getEmpType()
+	{
+		return empType;
+	}
+
+	public void setDept(String dept)
+	{
+		this.dept = dept;
+	}
+
+	public void setEmpType(String empType)
+	{
+		this.empType = empType;
+	}
 
 	public BigInteger getCandidateId()
 	{
@@ -186,6 +224,14 @@ public class AssociateWithHoldingDTO  extends SearchDTO{
 	public void setResidenceStateCode(String residenceStateCode)
 	{
 		this.residenceStateCode = residenceStateCode;
+	}
+
+	public String getExportType() {
+		return exportType;
+	}
+
+	public void setExportType(String exportType) {
+		this.exportType = exportType;
 	}
 	
 	
