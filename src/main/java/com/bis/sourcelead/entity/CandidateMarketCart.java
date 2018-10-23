@@ -41,8 +41,6 @@ public class CandidateMarketCart implements Serializable {
 	@JoinColumn(name = "ORG_LOCATION_ID", nullable = false)
 	private OrgLocations orgLocationId;
 	
-	@Column(name = "CAN_MARKET_STATUS")
-	private String candidateMarketStatus;
 	
 	@Column(name = "STATUS")
 	private Integer status;
@@ -99,14 +97,6 @@ public class CandidateMarketCart implements Serializable {
 
 	public void setOrgLocationId(OrgLocations orgLocationId) {
 		this.orgLocationId = orgLocationId;
-	}
-
-	public String getCandidateMarketStatus() {
-		return candidateMarketStatus;
-	}
-
-	public void setCandidateMarketStatus(String candidateMarketStatus) {
-		this.candidateMarketStatus = candidateMarketStatus;
 	}
 
 	public Integer getStatus() {
