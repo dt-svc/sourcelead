@@ -200,7 +200,8 @@ function prepareRequirementData(url,sourceleadUrl){
    result = result +"  <tr>"; 
    result = result +"    <th>Action</th>"; 
    result = result +"    <th>Generated ID</th>"; 
-   result = result +"    <th>Title</th>"; 
+   result = result +"    <th>Title</th>";
+   result = result +"    <th>Process</th>";
    result = result +"    <th>Client</th>";
    result = result +"    <th>Pay Rate</th>";
    result = result +"    <th>Bill Rate</th>";
@@ -275,6 +276,7 @@ function jpagination(url,sourceleadUrl){
     	   { "data": "requirementUUID" },
     	   { "data": "generatedId"},
            { "data": "jobTitle"},
+           { "data": "process"},
            { "data": "clientName"},
            { "data": "rate"},
            { "data": "billRate"},
@@ -400,6 +402,16 @@ function jpagination(url,sourceleadUrl){
 	                return result;
             }
            },
+           {
+	            "targets": colIndex++,
+	            "data": "process",
+	            "sortable": false,
+	            "render": function ( data, type, opt, meta ) {
+	            		var result = "";
+	       		       	result = result +"<td><div class='tbldata-dotdot_140' " + (opt.process != null && opt.process != "" ? "title='" + opt.process + "'" : "") + ">" + (opt.process != null && opt.process != "" ? opt.process : "------") + "</div></td>";
+		                return result;
+	             }
+	        },
 	        {
 	            "targets": colIndex++,
 	            "data": "clientName",
@@ -630,7 +642,7 @@ function jpagination(url,sourceleadUrl){
 			         				'</sec:authorize>';
 			         			}else if(opt.requirementSubmissionStatus == "CLOSED"){
 			         				result = result +"<option disabled selected >CLOSED</option>";
-
+			         				result = result +"<option value='OPEN'>OPEN</option>";
 			         			}
 			         			else if(opt.requirementSubmissionStatus == "CANCEL"){
 			         				result = result +"<option disabled selected >"+opt.requirementSubmissionStatus+"</option>";
@@ -735,7 +747,7 @@ function jpagination(url,sourceleadUrl){
 			         				
 			         			}else if(opt.requirementSubmissionStatus == "FILLEDCLOSED"){
 			         				result = result +"<option disabled selected >"+opt.requirementSubmissionStatus+"</option>";
-			         				
+			         				result = result +"<option value='OPEN'>OPEN</option>";
 			         			}
 
 			         			result = result +" </select>";	
@@ -769,7 +781,7 @@ function jpagination(url,sourceleadUrl){
    	         }); 
    	   }
   
-   } );
+   });
    
   
    $("#requirementPagination").wrap("<div style='overflow-x: auto; overflow-y: hidden;'></div>"); 

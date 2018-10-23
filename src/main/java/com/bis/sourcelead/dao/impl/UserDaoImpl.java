@@ -2466,26 +2466,30 @@ public class UserDaoImpl implements UserDao {
 		                + "%' )");
 		}
 String groupSubQuery = "";
+
+String sortingQry ="";
 		
 		if (applicantsJoinedReportDTO.getOrgTeams() == null &&
 				applicantsJoinedReportDTO.getOrgTeams().isEmpty()) { 
-			groupSubQuery=" group by u.id,req.ID";
+			groupSubQuery=" group by u.ID,req.ID";
 		}
-	
-		query = "SELECT" + " u.id as userId," + "req.ID as requirementID,"
+		if(StringUtils.isNotBlank(applicantsJoinedReportDTO.getSortColumn())) {
+			sortingQry = " order by "+ applicantsJoinedReportDTO.getSortColumn() +" "+applicantsJoinedReportDTO.getSortOrder();
+		}
+		query = "SELECT" + " u.ID as userId," + "req.ID as requirementID,"
 				+ "req.ORG_LOCATION_ID as orglocationId,"
 				+ "reqSub.CREATED_DATE as reqSubCreatedDate," + "req.ORG_RELATION_ID as clientId,"
 				+ "reqSub.CREATED_BY as createdBy, "
-				+ "(SELECT count(*) FROM requirement_assign_to reqAssign WHERE reqAssign.ASSIGN_USER_ID = u.ID "
+				+ "(SELECT count(*) FROM REQUIREMENT_ASSIGN_TO reqAssign WHERE reqAssign.ASSIGN_USER_ID = u.ID "
 				+ dateQury + ") AS requirementCount ,"
 				+ "(SELECT  CONCAT(FIRST_NAME,LAST_NAME) AS EMPLOYEE_NAME) AS name,"
-				+ "(SELECT count(*) FROM requirement_submission reqSub WHERE reqSub.CREATED_BY = u.USER_CODE "
+				+ "(SELECT count(*) FROM REQUIREMENT_SUBMISSION reqSub WHERE reqSub.CREATED_BY = u.USER_CODE "
 				+ dateQury + ") AS submissionCount,"
-				+ "(SELECT count(*) FROM requirement_submission reqSub WHERE reqSub.SUBMISSION_STATUS = 'JOINED' and reqSub.CREATED_BY = u.USER_CODE "
+				+ "(SELECT count(*) FROM REQUIREMENT_SUBMISSION reqSub WHERE reqSub.SUBMISSION_STATUS = 'JOINED' and reqSub.CREATED_BY = u.USER_CODE "
 				+ dateQury + ") AS joinedCount , "
-				+ "(SELECT count(*) FROM requirement_submission reqSub WHERE reqSub.SUBMISSION_STATUS = 'OFFERMADE' and reqSub.CREATED_BY = u.USER_CODE "
+				+ "(SELECT count(*) FROM REQUIREMENT_SUBMISSION reqSub WHERE reqSub.SUBMISSION_STATUS = 'OFFERMADE' and reqSub.CREATED_BY = u.USER_CODE "
 				+ dateQury + ") AS offerCount  "
-				+ "FROM User u, REQUIREMENT_SUBMISSION reqSub, REQUIREMENT req where u.USER_CODE = reqSub.CREATED_BY and req.ORG_LOCATION_ID= "
+				+ "FROM USER u, REQUIREMENT_SUBMISSION reqSub, REQUIREMENT req where u.USER_CODE = reqSub.CREATED_BY and req.ORG_LOCATION_ID= "
 				+ orgLocationId + "  and reqSub.REQUIREMENT_ID = req.ID " + dateQury
 				+ query1
 				+groupSubQuery;
@@ -2504,7 +2508,7 @@ String groupSubQuery = "";
 		
 		if (applicantsJoinedReportDTO.getOrgTeams() != null &&
 				 !applicantsJoinedReportDTO.getOrgTeams().isEmpty()) { 
-			teamSubQuery = " and u.ID IN (SELECT tm.MEMBER_USER_ID FROM TEAM_MEMBERS tm where tm.MEMBER_USER_ID = u.ID and tm.TEAM_ID IN(:teamsList)) group by u.id,req.ID"; 
+			teamSubQuery = " and u.ID IN (SELECT tm.MEMBER_USER_ID FROM TEAM_MEMBERS tm where tm.MEMBER_USER_ID = u.ID and tm.TEAM_ID IN(:teamsList)) group by u.ID,req.ID"; 
 				 }
 		
        
@@ -2514,7 +2518,7 @@ String groupSubQuery = "";
 				  
 				  }
 		
-		queryString = session.createSQLQuery(query + clientSubQuery + teamSubQuery);
+		queryString = session.createSQLQuery(query + clientSubQuery + teamSubQuery + sortingQry);
 		/*
 		 * queryString.setLong("orgLocationId", orgLocationId);
 		 * queryString.setParameter("fromDate", fromDate);
@@ -2535,35 +2539,19 @@ String groupSubQuery = "";
 		queryString.setResultTransformer(Transformers.aliasToBean(ApplicantsJoinedReportDTO.class));
 		applicantJoinedReportList = queryString.setFirstResult(applicantsJoinedReportDTO.getStart()).setMaxResults(applicantsJoinedReportDTO.getLength()).list();
 		
-		String countQuery1=null;
+		/*String countQuery1=null;
 		countQuery1 = 
-				"SELECT" + " distinct u.id as userId " 
-				+ " FROM User u, REQUIREMENT_SUBMISSION reqSub, REQUIREMENT req where u.USER_CODE = reqSub.CREATED_BY and req.ORG_LOCATION_ID= "
+				"SELECT" + " distinct u.ID as userId " 
+				+ " FROM USER u, REQUIREMENT_SUBMISSION reqSub, REQUIREMENT req where u.USER_CODE = reqSub.CREATED_BY and req.ORG_LOCATION_ID= "
 				+ orgLocationId + "  and reqSub.REQUIREMENT_ID = req.ID " + dateQury
 				+ query1
-				+" group by u.id,req.ID";
-//		   countQuery1=query + query1.toString() + " " + clientSubQuery;
+				+" group by u.ID,req.ID";
 		 if (!clientIdsList.isEmpty()) {
 			 countlist = session.createSQLQuery(countQuery1 + clientSubQuery).setParameterList("clientIdsList", clientIdsList).list();
 		 }else{
 			 countlist = session.createSQLQuery(countQuery1).list();
-		 }
-		
-		  /* if (!clientIdsList.isEmpty()) {
-			   countQueryString.setParameterList("clientIdsList", clientIdsList);
-			}
-		   countlist = countQueryString.list();*/
-		  filterCount = countlist.size();
-		   
-		   /*int count = 0;
-           int filteredCount = 0;
-           if (countlist != null && !countlist.isEmpty()) {
-               count = countlist.size();
-           }*/
-        /*   for(ApplicantsJoinedReportDTO res: applicantJoinedReportList){
-   			res.setRecordsTotal(count);
-   		}*/
-//           response.setRecordsTotal(count);
+		 }*/
+//		  filterCount = countlist.size();
 		if (applicantJoinedReportList != null && !applicantJoinedReportList.isEmpty()) {
 			for (ApplicantsJoinedReportDTO applicantsJoinedReportDTO2 : applicantJoinedReportList) {
 				applicantsJoinedReportDTO2.setFromDate(fromDate);
@@ -2576,7 +2564,7 @@ String groupSubQuery = "";
 			}
 		}
 		
-		int totalCount = 0;
+		/*int totalCount = 0;
 		if (applicantsJoinedReportDTO != null) {
 			if(countlist != null && !countlist.isEmpty()) {
 				totalCount = countlist.size();
@@ -2588,11 +2576,10 @@ String groupSubQuery = "";
 			responses.setRecordsFiltered(filterCount);
 		}else {
 			responses.setRecordsFiltered(totalCount);
-		}
+		}*/
 		
 		responses.setData(applicantJoinedReportList);
 		
-//		response = applicantJoinedReportList;
 		return responses;
 	}
 
