@@ -4419,7 +4419,7 @@ public class RequirementServiceImpl implements RequirementService {
 		File file = null;
 		try {
 			Workbook createExcelworkbook = new XSSFWorkbook();
-			DateFormat dateFormat = new SimpleDateFormat("MM-dd-yyyy");
+			DateFormat dateFormat = new SimpleDateFormat(orgLocation.getDateFormat());
 			Sheet createExcelsheet = createExcelworkbook
 					.createSheet(orgLocation.getOrgLocationName() + "_" + dateFormat.format(new Date()));
 			Row writeRow = null;

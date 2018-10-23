@@ -1663,9 +1663,9 @@ public class RequirementRestController {
 				inputStream.close();
 				response.getOutputStream().close();
 				response.getOutputStream().flush();
-				/*if (file != null) {
+				if (file != null) {
 					file.delete();
-				}*/
+				}
 			}
 			return file;
 		}

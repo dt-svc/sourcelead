@@ -2385,7 +2385,8 @@ private String[] prepareApplicantsJoinedListStringArray(ApplicantsJoinedReportDT
 					.append(commonUtil.dateStrFromOrgDateFormatter(orgLocation.getDateFormat(), new Date()));
 
 			StringBuilder fileSB = new StringBuilder();
-			File file = File.createTempFile(fileSB.append("JobFairs")
+			DateFormat dateFormat = new SimpleDateFormat(orgLocation.getDateFormat());
+			File file = File.createTempFile(fileSB.append(orgLocation.getOrgLocationName() + "_JobFair_"+ dateFormat.format(new Date()))
 					.append(commonUtil.dateStrFromOrgDateFormatter(orgLocation.getDateFormat(), new Date())).toString(),
 					".pdf");
 
