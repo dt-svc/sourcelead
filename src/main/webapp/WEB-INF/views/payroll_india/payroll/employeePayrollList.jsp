@@ -10,7 +10,7 @@
 			<h2>Run Payroll</h2>
 		</div>
 		<div class="pull-right brud-crum">
-			<a href="<c:url value='${appPath}/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a>  &raquo; <a href="<c:url value='${appPath}/runIndianPayRoll'/>">Run Payroll</a> &raquo; Review Payroll
+			<a href="<c:url value='${appPath}/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a>  &raquo; <a onclick="cancelIndPayroll();">Payroll</a> &raquo; Review Payroll
 		</div>
 	</section>
 	<div class="tabsMenu clearfix">
@@ -42,14 +42,6 @@
 						<div class="col-md-2">
 							<input name="" class="form-control calendar input-sm" placeholder="Check Date" type="text" readonly="readonly" value="${freqResponse.payCheckDateStr}">
 						</div>
-						<!-- <div class="col-md-2">
-							<select class="sel selheight30">
-								<option selected>Rate</option>
-								<option>LCA Wages</option>
-								<option>Salary</option>
-								<option>Project</option>
-							</select>
-						</div> -->
 						<div class="col-md-2">
 							<select class="sel selheight30">
 								<option selected>Salary</option>
@@ -99,11 +91,11 @@
 									<td><div class="tbldata-dotdot-vsm">${empPayroll.empName}</div></td>
 
 									<td><div class="tblminwidth-50">${empPayroll.regularHours}</div>
-										<div class="tblminwidth-50 clearfix text-danger">${empPayroll.regularHrsAmt}<span class="paddingLeft">&#8377;</span>
-										</div></td>
+										<%-- <div class="tblminwidth-50 clearfix text-danger">${empPayroll.regularHrsAmt}<span class="paddingLeft">&#8377;</span>
+										</div> --%></td>
 									<td><div class="tblminwidth-50">${empPayroll.overtimeHours}</div>
-										<div class="tblminwidth-50 clearfix text-danger">${empPayroll.otHoursAmt}<span class="paddingLeft">&#8377;</span>
-										</div></td>
+										<%-- <div class="tblminwidth-50 clearfix text-danger">${empPayroll.otHoursAmt}<span class="paddingLeft">&#8377;</span>
+										</div> --%></td>
 									<td><div class="tblminwidth-50 clearfix">
 											${empPayroll.noOfLeaves}<span class="paddingLeft"></span>
 										</div></td>
@@ -138,7 +130,7 @@
 							<li id="cnfmPayrollBtn"><a class="btn btn-default ml mr">Confirm</a></li>
 						</c:if>
 					</c:if>
-					<li><a href="<c:url value='${appPath}/runIndianPayRoll?stab=payroll'/>" class="btn btn-default">Cancel</a></li>
+					<li><a  class="btn btn-default"  onclick="cancelIndPayroll();">Cancel</a></li>
 				</ul>
 				<div class="clearfix"></div>
 			</nav>
@@ -220,7 +212,7 @@ function saveNetpay(){
 	}
 	$(".editNetpay").show();
 	$(".saveNetpay").hide();
-}
+}employeePayrollList
 function confirmPayroll() {
 	$(".confirmPayroll, .comMask").fadeIn();
 }
@@ -240,12 +232,24 @@ function sentForApprove(approverStatus){
         type : "POST",
         url: sourceleadUrl+"/sentForApproveIndPayroll?approverStatus="+approverStatus+"&paySheetFrequencyUUID="+feqUUID+"&excludeEmpPayrollUUID="+excludeEmpArr,    
          success :function(result) { 
-        	 
         	 $(location).attr('href', 'runIndianPayRoll?stab=payroll');
          },
     });
 }
 </script>
+<script>
+function cancelIndPayroll(){
+	var feqUUID = $("#paySheetFrequency").val();
+	$.ajax({
+        type : "POST",
+        url: sourceleadUrl+"/removePaysheetFrequencyFromSession?paySheetFrequencyUUID="+feqUUID,    
+         success :function(result) { 
+        	 $(location).attr('href', 'runIndianPayRoll?stab=payroll');
+         },
+    });
+}
+</script>
+
 
 <script>
 $('#approveTab , #cnfmPayrollBtn').click(function(){

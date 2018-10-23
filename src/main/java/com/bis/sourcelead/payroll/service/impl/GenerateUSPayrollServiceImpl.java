@@ -238,6 +238,8 @@ public class GenerateUSPayrollServiceImpl implements GenerateUSPayrollService{
 								.filter(p->p.getEmployeeDesignationType() != null && PayrollConstant.DRAFT.equalsIgnoreCase(p.getApproverStatus()) && p.getPayType().equalsIgnoreCase(generateUSPayrollDTO.getPayType()) && !PayrollConstant.C2C.equalsIgnoreCase(p.getEmployeeDesignationType()))
 								.collect(Collectors.toList());
 					}
+					paysheetFrequencyDTO.setNoOfGeneratedPayroll(draftPayroll.size());
+					paysheetFrequencyDTO.setTotalGeneratedAmount(draftPayroll.stream().map(USPayrollDTO::getNetPay).reduce(BigDecimal.ZERO, BigDecimal::add));
 					paysheetFrequencyDTO.setPayrollDTO(draftPayroll);
 				}
 		}
@@ -1362,7 +1364,7 @@ private Set<BankDataHistory> getBankDataHistory(AssociateTaxDedContriView associ
 			}
 			if(payAdjustmentDTO.getPostDeduction() != null && payAdjustmentDTO.getPostDeduction().size() >0) {
 				postDedList =  payAdjustmentDTO.getPostDeduction();
-				postTaxDed = payAdjustmentDTO.getPostDeduction().stream().mapToDouble(pre->pre.getAmount().doubleValue()).sum();	
+				postTaxDed = payAdjustmentDTO.getPostDeduction().stream().filter(pre->pre.getAmount() != null).mapToDouble(pre->pre.getAmount().doubleValue()).sum();	
 			}
 			payAdjHistory.setRegularHours(String.valueOf(regHrs));
 			payAdjHistory.setOvertimeHours(String.valueOf(otHrs));

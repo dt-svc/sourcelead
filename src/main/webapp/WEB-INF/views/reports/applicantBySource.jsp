@@ -47,7 +47,6 @@ $(document).ready(function(){
     		<li>
         <div class="dropdown-select positionRelative repSelWrap clearfix">
           <select class="form-control repSelFiled" name="dateSelection" id="dateSelection" onchange="getCustomDates();">
-            <option value=''>Select Date</option>
             <option value='Last_7_days' selected>Last 7 days</option>
             <option value='Last_15_days'>Last 15 days</option>
             <option value='1_month'>1 month</option>

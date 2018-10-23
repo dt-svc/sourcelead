@@ -926,6 +926,9 @@ public class Constants {
 			"Emp Type", "Vendor", "Project" ,"Client", "Purpose", "Start Date", "End date", "Number of Items",
 			"Amount" , "Status"  , "Approved by"};
 	
+	public static final String[] PROJECT_REPORT_EXPORT_HEADDERS = { "ProjectId", "Project Name", "Project Status",
+		"Project Manager", "Project StartDate", "Project EndDate" ,"Team Member", "TeamMember StartDate", "TeamMember Enddate", "TeamMember Status",};
+	
 	public static final String[] ALL_MY_EXPENSES_HEADERS ={"Expense ID","purpose","Project","Client","Start Date","End Date","No of Items","Amount","Status"};
 
     public static final String BILLABLE_HOURS = "BILLABLE_HOURS";
@@ -1273,6 +1276,9 @@ public class Constants {
 	public static final String IND_PAYROLL_PROFESSIONAL_TAX = "PT";
 	
 	public static final String[] CONSTANT_PAYHEAD_SHORTCODES = { "PT", "TDS", "PF", "ESI", "L&D", "BO", "ARR", "RMB" };
+	
+	public static final String[] APPLICANTS_JOINED_LIST_REPORT_HEADERS = { "Recruiter Name", "Date", "No Of Jobs",
+			"Total Offer", "Total Joiners"};
 	
 
 }

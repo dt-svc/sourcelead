@@ -18,7 +18,9 @@ $(document).ready(function(){
       <div class="pull-left">
         <h2>Deduction</h2>
       </div>
-      <div class="pull-right brud-crum">Home &raquo; Deduction</div>
+      <div class="pull-right brud-crum"><a href="<c:url value='${appPath}/dashboard'/>" title="Home">Home</a>&raquo;<a
+				href="<c:url value='${appPath}/usPayrollReport'/>"> USPayroll Reports List</a>&raquo;Deduction
+		</div>
     </section>
     
     <div class="contentareaInner-styles clearfix">
@@ -366,7 +368,7 @@ function getDeductionReports(){
 										"sortable": false,
 										"render" : function(data, type, opt,meta) {
 											var result = "";
-											result = result+ '<td><div class="tbldata-dotdot-vsm" title="">$ '+opt.dedAmount+'</div></td>';
+											result = result+ '<td><div class="tbldata-dotdot-vsm" title=""><i class="fa fa-dollar"style="color:#454545;"></i> '+opt.dedAmount+'</div></td>';
 											return result;
 										}
 									},{
@@ -374,7 +376,7 @@ function getDeductionReports(){
 										"data" : "ytdDeductions",
 										"render" : function(data, type, opt,meta) {
 											var result = "";
-											result = result+ '<td><div class="tbldata-dotdot-vsm" title="">$ '+opt.deductionYTD+'</div></td>';
+											result = result+ '<td><div class="tbldata-dotdot-vsm" title=""><i class="fa fa-dollar"style="color:#454545;"></i> '+opt.deductionYTD+'</div></td>';
 											return result;
 										}
 									}],

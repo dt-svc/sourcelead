@@ -160,5 +160,7 @@ public interface UserRoleDao {
 	public List<UserRole> getUserListByUserIdList(List<Long> userIdList, Long orgLocationId);
 	
 	public Boolean isUserWithMultipleOrgsAccounts(Long orgId,Long userId);
+	
+	public List<UserRole> getLoginUserAccountsList(Long userId) throws Exception;
 
 }

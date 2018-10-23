@@ -1680,14 +1680,14 @@ public class InvoiceServiceImpl implements InvoiceService {
   	  				if(Constants.RECEIVABLE.equalsIgnoreCase(invoiceType)){
   	  					projectMembersList = getClientProjectAssinedMembersAutoInvoice(frequency,orgLocation,project.getId(),client.getId(),contractType,invoice);
   	  					if(orgRelation.getGenerateInvoice().equalsIgnoreCase(Constants.FINANCE_TYPE_INDIVIDUAL) && projectMembersList!=null && projectMembersList.size() >0){
-  	  					List<ProjectMembers> projectMem = null;
+  	  					List<ProjectMembers> projectMem = new ArrayList<ProjectMembers>();
   	  				    projectMem.add(projectMembersList.get(0));
   	  				    projectMembersList = projectMem;
   	  					}
   	  					}else{
   						 projectMembersList = getVendorProjectAssinedMembersAutoInvoice(frequency,orgLocation,project.getId(),client.getId(),contractType,invoice,globalUser);
   						if(orgRelation.getGenerateBill().equalsIgnoreCase(Constants.FINANCE_TYPE_INDIVIDUAL) && projectMembersList!=null && projectMembersList.size() >0){
-    	  					List<ProjectMembers> projectMem = null;
+  	  	  					List<ProjectMembers> projectMem = new ArrayList<ProjectMembers>();
     	  				    projectMem.add(projectMembersList.get(0));
     	  				    projectMembersList = projectMem;
     	  					}
@@ -4033,7 +4033,7 @@ public class InvoiceServiceImpl implements InvoiceService {
 		StringBuilder contactEmails = new StringBuilder();
 		if (creditDebitNote.getOrgRelations().getLocationId().getId().equals(orgLocationId)) {
 			creditDebitNote.setClientOrVendorName(creditDebitNote.getOrgRelations().getResponderLocationId().getOrgLocationName());
-			List<User> contactsUserList = userDao.getUsersListUsingMultipleStringIdsWithLocationId(creditDebitNote.getContactUser(),creditDebitNote.getOrgRelations().getResponderLocationId().getId());
+			List<User> contactsUserList = userDao.getUsersListUsingMultipleStringIds(creditDebitNote.getContactUser());
 			contactsUserList.forEach(contactUser->{
 				contactName.append(contactUser.getFullName()).append(" , ").toString();	
 				contactEmails.append(contactUser.getEmail()).append(" , ").toString();
@@ -4044,7 +4044,7 @@ public class InvoiceServiceImpl implements InvoiceService {
 		
 		if(creditDebitNote.getOrgRelations().getResponderLocationId().getId().equals(orgLocationId)){
 			creditDebitNote.setClientOrVendorName(creditDebitNote.getOrgRelations().getLocationId().getOrgLocationName());
-			List<User> contactsUserList = userDao.getUsersListUsingMultipleStringIdsWithLocationId(creditDebitNote.getOwnerUser(),creditDebitNote.getOrgRelations().getLocationId().getId());
+			List<User> contactsUserList = userDao.getUsersListUsingMultipleStringIds(creditDebitNote.getOwnerUser());
 			contactsUserList.forEach(contactUser->{
 				contactName.append(contactUser.getFullName()).append(" , ").toString();	
 				contactEmails.append(contactUser.getEmail()).append(" , ").toString();

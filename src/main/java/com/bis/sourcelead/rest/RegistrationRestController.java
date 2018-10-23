@@ -1086,6 +1086,9 @@ public class RegistrationRestController {
 					} catch (Exception e) {
 						logger.error(ExceptionUtils.getFullStackTrace(e));
 					}
+				}else {
+					resResponsetUtil.setStatus("Inactive");
+					return resResponsetUtil;
 				}
 				resResponsetUtil.setStatus("valid");
 				return resResponsetUtil;

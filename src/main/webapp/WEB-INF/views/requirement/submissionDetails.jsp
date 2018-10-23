@@ -1374,7 +1374,7 @@ function acceptingOffer(offerStatus,submissionId,offerId){
           		$("#"+(offerId)+"showOfferStatus").html("<font color='red' >OFFERREJECTED</font>");
           	 }
              $("#offerLoading").removeAttr('style');
-             $("#remove_user_pop, .project_inn_mask").fadeOut(200);
+             $("#remove_user_pop, .comMask").fadeOut(200);
         	 getOfferDetails(submissionId);
         	 
        },

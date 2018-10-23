@@ -1,15 +1,20 @@
 package com.bis.sourcelead.service;
 
 
+import java.io.File;
 import java.util.Collection;
 import java.util.Date;
 import java.util.LinkedHashSet;
 import java.util.List;
+import java.util.Map;
 
+import org.apache.poi.ss.usermodel.Sheet;
+import org.apache.poi.ss.usermodel.Workbook;
 import org.json.JSONObject;
 
 import com.bis.sourcelead.dto.AddUserDTO;
 import com.bis.sourcelead.dto.AddUserProfileDTO;
+import com.bis.sourcelead.dto.ApplicantsJoinedReportDTO;
 import com.bis.sourcelead.dto.CandidateDTO;
 import com.bis.sourcelead.dto.DashboardItemsDTO;
 import com.bis.sourcelead.dto.Response;
@@ -255,6 +260,15 @@ public List<User> getUsersListUsingMultipleStringIds(String id) throws Exception
 public List<Long> getUserHierarchyIdList(Long userId) throws Exception;
 
 public List<String> getUserHierarchyUserCodeList(Long userId) throws Exception;
+
+public ResponseList<ApplicantsJoinedReportDTO> getApplicantsJoinedReport(ApplicantsJoinedReportDTO applicantsJoinedReportDTO,Long OrgLocationId,Date[] searchDates,List<Long> teamsList,String type,List<Long> clientIdsList) throws Exception;
+
+public Sheet exportAllApplicantJoinedList(Sheet createExcelsheet, Workbook createExcelworkbook, ResponseList<ApplicantsJoinedReportDTO>  userDTOList,OrgLocations orgLocations) throws Exception;
+
+public File exportAllApplicantJoinedListPdf(ResponseList<ApplicantsJoinedReportDTO>  userDTOList,OrgLocations orgLocations,Date[] searchDates) throws Exception;
+
+public Map<String, Long> getApplicantsJoinedCountByDates(String createdBy, Date fromDate, Date toDate, String dateFormat);
+
 
 }	
 
