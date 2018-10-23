@@ -2752,6 +2752,7 @@ private Sheet createXlsSheet(Sheet createExcelsheet, Row writeRow,Candidate cand
 			marketPlace.setNoticePeriod(candidate.getNoticePeriod());
 			marketPlace.setNationality(candidate.getNationality());
 			marketPlace.setMaritalStatus(candidate.getMaritalStatus());
+			marketPlace.setImageUrl(candidate.getFileUrl());
 			marketPlace.setCandidateMarketStatus(Constants.ACTIVE);
 			marketPlace.setMarketPrice(dto.getMarketPrice());
 			marketPlace.setMarketRateCurrencey(dto.getMarketRateCurrencey());

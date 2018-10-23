@@ -1,0 +1,2 @@
+ALTER TABLE `sourcelead`.`candidate_market_place` 
+ADD COLUMN `IMAGE_URL` VARCHAR(255) NULL AFTER `WITHDRAW_REASON`;
