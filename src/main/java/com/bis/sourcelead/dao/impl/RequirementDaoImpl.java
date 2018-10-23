@@ -871,13 +871,15 @@ public class RequirementDaoImpl implements RequirementDao {
 			}
 			/*Integer requirementAssignToListCount = requirementAssignToDao.getRequirementAssignToListCountByRequirementId(requirement.getId());
     		requirement.setAssignedMembersCount(requirementAssignToListCount.toString());*/
-    		
+			List<String> requirementLocationsList = new ArrayList<>();
+			StringBuilder sb = new StringBuilder();
     		List<RequirementLocations> locationList = requirementLocationsService.getRequirementLocationsListByRequirementId(requirement.getId());
-    		StringBuilder cb = new StringBuilder();
     		locationList.forEach(loclist->{
-    			cb.append(loclist.getLocation()).append(",").toString();	
+    			requirementLocationsList.add(loclist.getLocation());
+    			sb.append(loclist.getLocation()).append(",").toString();
     		});
-    		requirement.setLocation(cb.deleteCharAt(cb.length()-1).toString());
+    		requirement.setLocation(sb.deleteCharAt(sb.length()-1).toString());
+    		requirement.setLocationsList(requirementLocationsList);
     		RequirementSubmissionsCountDTO requirementSubmissionsCountDTO= requirementSubmissionDao.getAllPipeLineCountsByRequirementIdAndSubmissionStage(requirement.getId(),user,orgLocation,"All");
     		requirement.setAssignedMembersCount(requirementSubmissionsCountDTO.getApplicantsCount().toString());
     		requirement.setShortlistCount(requirementSubmissionsCountDTO.getShortlistCount().toString());
