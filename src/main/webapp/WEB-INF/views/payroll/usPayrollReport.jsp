@@ -8,7 +8,7 @@
   <section class="content-wraper">
     <section class="content-header clearfix">
       <div class="pull-left">
-        <h2>Payroll US Reports</h2>
+        <h2>US Payroll Reports</h2>
       </div>
       <div class="pull-right brud-crum"><a href="<c:url value='${appPath}/dashboard'/>" title="Home">Home</a> &raquo;US Payroll Reports</div>
     </section>

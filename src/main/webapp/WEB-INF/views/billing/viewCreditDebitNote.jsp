@@ -290,7 +290,7 @@ function getViewCreditDebitNote(){
 	        	var discountTotal ='';
 	        	var discountType = '';
 	        	if(response.object.discountValue !=null && response.object.discountValue !='' && response.object.discountValue !='undefined'){
-	        		subTotal = 	response.object.discountValue;
+	        		discountValue = 	response.object.discountValue;
 	        	}else{
 	        		discountValue ='--';
 	        	}

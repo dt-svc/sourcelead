@@ -1,7 +1,12 @@
 package com.bis.sourcelead.rest;
 
+import java.io.BufferedInputStream;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.InputStream;
 import java.io.Writer;
 import java.math.BigInteger;
+import java.net.URLConnection;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -24,6 +29,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.util.FileCopyUtils;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -92,6 +98,7 @@ import com.bis.sourcelead.service.TimeZoneService;
 import com.bis.sourcelead.service.UserRoleService;
 import com.bis.sourcelead.service.UserService;
 import com.bis.sourcelead.util.CommonUtil;
+import com.bis.sourcelead.util.PdfUtil;
 import com.bis.sourcelead.util.SourceLeadRandomCodeHelper;
 import com.bis.sourcelead.util.SourceLeadSessionManager;
 import com.google.common.base.Joiner;
@@ -193,6 +200,9 @@ public class RequirementRestController {
 	 
 	 @Autowired
 	 RequirementSubmissionTemplateFieldsService requirementSubmissionTemplateFieldsService;
+	 
+	@Autowired
+	private PdfUtil pdfUtil;
 	 
 	@RequestMapping(value = "/storeFairJob", method = RequestMethod.POST)
 	public @ResponseBody Response<String> storeFairJob(JobFairDTO jobFairDTO, HttpServletRequest request)
@@ -1616,5 +1626,50 @@ public class RequirementRestController {
 		  
 
     }
+	
+	@RequestMapping(value = {"/pdfExportForJobfair", "/excelExportForJobfair"})
+	public File jobFairExcelExport(HttpServletRequest request, HttpServletResponse response, JobFairDTO jobFairDTO,
+			@RequestParam(defaultValue = "false") boolean includeInactive) throws Exception {
+		User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+		if (user != null) {
+			File file = null;
+			OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+			String[] tableColumns = { "generatedId", "name", "startDate", "endDate", "noOfJobs", "", "", "", "status", "id" };
+
+			int sortColumnIndex = 9; // by default sorting using id
+			boolean sortColumnOrder = false; // by default descending order
+			jobFairDTO.setSortColumn(tableColumns[sortColumnIndex]);
+			jobFairDTO.setSortOrder(sortColumnOrder ? "asc" : "desc");
+			jobFairDTO.setUserId(user.getId());
+			jobFairDTO.setOrgLocationId(orgLocations.getId());
+			ResponseList<JobFairDTO> responseList = requirementService.getJobFairsList(jobFairDTO, includeInactive);
+			if (responseList != null && responseList.getData() != null && !responseList.getData().isEmpty()) {
+				if (request.getRequestURI().contains("excelExportForJobfair"))
+					file = requirementService.getJobFairListOfExcel(responseList.getData(), user, orgLocations);
+				else
+					file = pdfUtil.getJobFairListOfPdf(responseList.getData(), user, orgLocations);
+			}
+			if(file != null) {
+				String mimeType = URLConnection.guessContentTypeFromName(file.getName());
+				if (mimeType == null) {
+					mimeType = "application/octet-stream";
+				}
+				response.setContentType(mimeType);
+				StringBuilder fileName = new StringBuilder();
+				response.setHeader("Content-Disposition", fileName.append("attachment; filename=\"").append(file.getName()).append("\"").toString());
+				response.setContentLength((int) file.length());
+				InputStream inputStream = new BufferedInputStream(new FileInputStream(file));
+				FileCopyUtils.copy(inputStream, response.getOutputStream());
+				inputStream.close();
+				response.getOutputStream().close();
+				response.getOutputStream().flush();
+				if (file != null) {
+					file.delete();
+				}
+			}
+			return file;
+		}
+		return null;
+	}
 	
 }

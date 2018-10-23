@@ -2482,14 +2482,16 @@ String sortingQry ="";
 				+ "reqSub.CREATED_BY as createdBy, "
 				+ "(SELECT count(*) FROM REQUIREMENT_ASSIGN_TO reqAssign WHERE reqAssign.ASSIGN_USER_ID = u.ID "
 				+ dateQury + ") AS requirementCount ,"
+				+"(SELECT count(*) FROM REQUIREMENT requirement WHERE requirement.ID = req.ID and requirement.MANAGER_USER_ID = u.ID"
+				+ dateQury + ") AS reqClientCount ,"
 				+ "(SELECT  CONCAT(FIRST_NAME,LAST_NAME) AS EMPLOYEE_NAME) AS name,"
 				+ "(SELECT count(*) FROM REQUIREMENT_SUBMISSION reqSub WHERE reqSub.CREATED_BY = u.USER_CODE "
 				+ dateQury + ") AS submissionCount,"
 				+ "(SELECT count(*) FROM REQUIREMENT_SUBMISSION reqSub WHERE reqSub.SUBMISSION_STATUS = 'JOINED' and reqSub.CREATED_BY = u.USER_CODE "
 				+ dateQury + ") AS joinedCount , "
-				+ "(SELECT count(*) FROM REQUIREMENT_SUBMISSION reqSub WHERE reqSub.SUBMISSION_STATUS = 'OFFERMADE' and reqSub.CREATED_BY = u.USER_CODE "
+				+ "(SELECT count(*) FROM REQUIREMENT_SUBMISSION reqSub WHERE (reqSub.SUBMISSION_STATUS = 'OFFERMADE' OR reqSub.PREVIOUS_SUBMISSION_STATUS='OFFERMADE') and reqSub.CREATED_BY = u.USER_CODE "
 				+ dateQury + ") AS offerCount  "
-				+ "FROM USER u, REQUIREMENT_SUBMISSION reqSub, REQUIREMENT req where u.USER_CODE = reqSub.CREATED_BY and req.ORG_LOCATION_ID= "
+				+ "FROM USER u, USER_ROLE ur, REQUIREMENT_SUBMISSION reqSub, REQUIREMENT req where ur.ORG_LOCATIONS_ID = req.ORG_LOCATION_ID and ur.USER_ID = u.ID and u.USER_CODE = reqSub.CREATED_BY and req.ORG_LOCATION_ID= "
 				+ orgLocationId + "  and reqSub.REQUIREMENT_ID = req.ID " + dateQury
 				+ query1
 				+groupSubQuery;
