@@ -242,6 +242,7 @@ public class SubmissionsRestController {
 					candidate.setEmployer(lastCompanyEmployer.getName());
 				}
 			}
+			candidate.setDateofBirthString(commonUtil.dateStrFromOrgDateFormatter(orgLocation.getDateFormat(), candidate.getDateOfBirth()));
 			response.setObject(candidate);
 			response.setResponse(Result.SUCCESS.name());
 			response.setResponseMessage(Result.SUCCESS.getValue());
