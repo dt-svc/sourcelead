@@ -199,10 +199,11 @@ function interviewpagination(url){
             	  var result = "";
             	  if(opt.requirementUUID !=null && opt.requirementUUID !='' && opt.requirementUUID !='undefined'){
             		  if(opt.jobGeneratedId != null && opt.jobGeneratedId != ''  && opt.jobGeneratedId !="undefined"){
-                		  result = result + '<td><div class="proj_show"><span title='+opt.jobTitle+'>'+opt.jobGeneratedId+' - '+opt.jobTitle+'</span></div></td>';
+                		  result = result + '<td><div class="proj_show"><span title='+opt.jobTitle+'><a href="'+sourceleadUrl+'/requirementSummary?requirementUUID='+opt.requirementUUID+'">'+opt.jobGeneratedId+' - '+opt.jobTitle+'</a></span></div></td>';
             		  }else{
-                		  result = result + '<td><div class="proj_show"><span title='+opt.jobTitle+'>'+opt.jobTitle+'</span></div></td>';
-            		  }					}else{
+                		  result = result + '<td><div class="proj_show"><span title='+opt.jobTitle+'><a href="'+sourceleadUrl+'/requirementSummary?requirementUUID='+opt.requirementUUID+'">'+opt.jobTitle+'</a></span></div></td>';
+            		  }				
+            		  }else{
 						result = result + ' <td><div>--</div></td>';
 					}
             	  return result;
