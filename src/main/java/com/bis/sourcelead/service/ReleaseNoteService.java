@@ -15,4 +15,8 @@ public interface ReleaseNoteService {
 	List<ReleaseNote>  getAllReleaseNote() throws Exception;
 	
 	String  saveReleaseNoteDTO(ReleaseNoteDTO  releaseNoteDTO, OrgLocations orgLocations) throws Exception;
+
+	Boolean validateReleaseNoteName(String releaseNoteName);
+
+	ReleaseNote validateReleaseNoteNameByReleaseUUIDAndReleaseNoteName(String releaseNoteName, String releaseUUID);
 }

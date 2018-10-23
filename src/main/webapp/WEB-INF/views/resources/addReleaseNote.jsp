@@ -14,11 +14,41 @@ $(function() {
 	$('.note-editable').css({"min-height":"200px", "max-height":"200px"});
 });
 </script>
+<script>
+function validateReleaseNoteName(releaseUUID){
+	var ReleaseNoteName = document.getElementById("releaseNoteName").value.trim();
+// 	$('#ProjectIdDiv').find('p.jquery_form_error_message').remove();
+	if (ReleaseNoteName != null && ReleaseNoteName != "") {
+		$.ajax({
+					type : "POST",
+					url : sourceleadUrl+ "/validateReleaseNoteName?ReleaseNoteName="+ReleaseNoteName+"&releaseUUID="+releaseUUID,
+					success : function(data) {
+						 if (data == true) {
+							$("input#releaseNoteName").after("<p class='jquery_form_error_message'>"+ ReleaseNoteName+ " is Already Existed</span>");
+							document.getElementById("releaseNoteName").setAttribute('record-exist', 'yes');
+							document.getElementById("releaseNoteName").setAttribute('record-exist-errorMsg',ReleaseNoteName+ ' is Already Existed');
+							$('input#releaseNoteName').removeAttr( "record-exist record-exist-errorMsg");
+							$("#save_release").attr("disabled", "disabled");
+						  }else {
+							$("#save_release").removeAttr("disabled");
+							$('input#releaseNoteName').removeAttr("record-exist record-exist-errormsg");
+						} 
+					},
+				});
+	}
+
+}
+
+
+
+</script>
+
+
 
 <section class="content-wraper">
     <section class="content-header clearfix">
       <div class="pull-left"><h2>Release Note</h2></div>
-      <div class="pull-right brud-crum">Home &raquo; Release Note</div>
+      <div class="pull-right brud-crum"><a href="<c:url value='/app/dashboard'/>"> Home </a> &raquo; <a href="<c:url value='/app/releaseNote'/>">Release Note</a></div>
     </section>
     
     <div class="project_wrap">
@@ -30,7 +60,7 @@ $(function() {
 	        <div class="form-group">
 	          <label class="col-md-3">Name<span class="text-danger paddingLeft">&nbsp;*</span></label>
 	          <div class="col-md-9">
-	            <input type="text" class="form-control" name="releaseName" placeholder="Name" value="${releaseNote.releaseName}" data-validation="required validate_length length2-100" field-name="Name">
+	            <input type="text" class="form-control" name="releaseName" placeholder="Name" id="releaseNoteName" value="${releaseNote.releaseName}" data-validation="required validate_length length2-100" field-name="Name" onblur="validateReleaseNoteName('${releaseNote.releaseUUID}');">
 	          </div>
 	        </div>
 	        <div class="form-group">
@@ -71,7 +101,7 @@ $(function() {
 	    
 	    <div class="footerstyelsNew clearfix">
 	        <div class="pull-right mr">
-	          <input value="Save" class="btn btn-primary" type="button" onclick="saveReleaseNote();">
+	          <input value="Save" id="save_release" class="btn btn-primary" type="button" onclick="saveReleaseNote();">
 	          <input value="Cancel" class="btn btn-default ml" type="button" onClick="javascript:window.location.href = '<c:url value='${appPath}/releaseNote'/>'">
 	        </div>
 	    </div>

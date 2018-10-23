@@ -19,6 +19,7 @@ import com.bis.sourcelead.annotations.Validator;
 import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.dto.ReleaseNoteDTO;
 import com.bis.sourcelead.dto.Response;
+import com.bis.sourcelead.entity.Department;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.ReleaseNote;
 import com.bis.sourcelead.entity.User;
@@ -115,4 +116,20 @@ public class ReleaseNoteRestController {
 		 
    	}
     
+ // to validate Project SequeneNumber
+ 	@RequestMapping(value = "/validateReleaseNoteName", method = RequestMethod.POST)
+ 	public @ResponseBody Boolean validateReleaseNoteName(
+ 			@RequestParam(value = "ReleaseNoteName", required = false) String releaseNoteName,@RequestParam(value = "releaseUUID", required = false) String releaseUUID) throws Exception {
+ 		ReleaseNote rn = null;
+ 		if(releaseUUID != null) {
+ 			rn = releaseNoteService.validateReleaseNoteNameByReleaseUUIDAndReleaseNoteName(releaseNoteName,releaseUUID);
+ 		}
+ 		 Boolean flag = false;
+ 		 if(rn == null) {
+ 			flag = releaseNoteService.validateReleaseNoteName(releaseNoteName);
+ 		 }
+ 		
+ 		return flag;
+ 	}
+ 	
 }

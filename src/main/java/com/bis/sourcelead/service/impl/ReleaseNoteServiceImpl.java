@@ -65,5 +65,15 @@ public class ReleaseNoteServiceImpl implements ReleaseNoteService{
 		return "success";
 	}
 
+	@Override
+	public Boolean validateReleaseNoteName(String releaseNoteName) {
+		return releaseNoteDao.validateReleaseNoteName(releaseNoteName);
+	}
+
+	@Override
+	public ReleaseNote validateReleaseNoteNameByReleaseUUIDAndReleaseNoteName(String releaseNoteName, String releaseUUID) {
+		return releaseNoteDao.validateReleaseNoteNameByReleaseUUIDAndReleaseNoteName(releaseNoteName, releaseUUID);
+	}
+
 	 
 }

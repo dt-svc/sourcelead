@@ -19,30 +19,10 @@
 				</c:if>
 				
 			 <c:if test="${empty releaseNote.releaseDescrption}">
-				<div class="blogpreviewContent"></div>
+				<div class="blogpreviewContent dataTables_empty"></div>
 			</c:if>           
 		</div>
     </div>
-
- 
- 
-  <%-- <section class="testiWrap dashboard-widget clearfix">
-		<section class="blogWrap">
-
-				<h4 class="blHd">${releaseNote.releaseName}</h4>
-                
-				<div class="clearfix"></div>
-                <c:if test="${!empty releaseNote.releaseDescrption}">
-					<div class="blogpreviewContent"> ${releaseNote.releaseDescrption}
-				</div>
-				</c:if>
-				
-			 <c:if test="${empty releaseNote.releaseDescrption}">
-				<div class="blogpreviewContent"></div>
-			</c:if>
-				
-		</section>
-	</section> --%>
 	
   
   </section>

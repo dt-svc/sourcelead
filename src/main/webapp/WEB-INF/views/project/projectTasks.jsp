@@ -1088,6 +1088,18 @@ function openFilterTaskPop(){
 				<div class="addInner">
 					<div class="row">
 						<div class="col-md-2">
+						<div class="row">
+							   <div class="col-md-12 mb">
+								  <label><strong>Tasks</strong></label>
+									 <div class="clearfix">
+										<ul class="list-unstyled" id="taskFilter">
+											<li  class="radioIput positionRelative"><input  name="tasksFilter"  checked type="radio" value="my" id="myTasks" ><label>My Tasks</label></li>
+											<li  class="radioIput positionRelative"><input  name="tasksFilter"  type="radio" value="all"><label>All Tasks</label></li>
+				                        </ul>
+									 </div>
+								 </div>
+						  </div>
+							  
 						 <div class="row">
 						   <div class="col-md-12 mb">
 							  <label><strong>Task Type</strong></label>
@@ -1105,18 +1117,6 @@ function openFilterTaskPop(){
 								 </div>
 							 </div>
 							 </div>
-							 <div class="row">
-								   <div class="col-md-12 mb">
-									  <label><strong>Tasks</strong></label>
-										 <div class="clearfix">
-											<ul class="list-unstyled" id="taskTypeFilter">
-												<li  class="radioIput positionRelative"><input  name="tasksFilter"  type="radio" value="all"><label>All Tasks</label></li>
-												<li  class="radioIput positionRelative"><input  name="tasksFilter"  checked type="radio" value="my" ><label>My Tasks</label></li>
-					                        </ul>
-										 </div>
-									 </div>
-									 </div>
-							 
 							 </div> 
 							 
 							 
@@ -1197,7 +1197,7 @@ function openFilterTaskPop(){
 									 </div> 
 							 </div> 
 							 
-							 <%-- <div class="col-md-4 mb positionRelative">
+							 <div class="col-md-4 mb positionRelative">
 									<div class="clearfix dynamic_search filterDynamicsearch">
 										<input type="text" id="myCreatedByInput" onkeyup="myCreatedByFunction()" placeholder="Created By" title="Type in a created By">
 										<span class="cursorPointer" title="Search"><i class="fa fa-search"></i></span>
@@ -1209,7 +1209,7 @@ function openFilterTaskPop(){
 											</c:forEach>
 										</ul>
 									 </div> 
-							 </div>  --%>
+							 </div>  
 							 
 							 <div class="col-md-3 mb positionRelative">
 									<div class="clearfix dynamic_search filterDynamicsearch">
@@ -1245,7 +1245,9 @@ function resetTaskFilter(){
 	$("ul#myPriorityUL > li input:checkbox").prop("checked",false);
 	$("ul#mySeverityUL > li input:checkbox").prop("checked",false);
 	$("ul#myCreatedByUL > li input:checkbox").prop("checked",false);
+	$("ul#taskFilter > li input:radio").prop("checked",false);
 	
+	document.getElementById("myTasks").checked = true;
 	document.getElementById("taskStatusId1069").checked = true;
 	document.getElementById("taskStatusId1070").checked = true;
 	projectTaskList();

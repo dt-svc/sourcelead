@@ -18,5 +18,8 @@ public interface ReleaseNoteDao {
 	
 	List<ReleaseNote>  getAllReleaseNote() throws Exception;
 	
+	Boolean validateReleaseNoteName(String releaseNoteName);
 	
+	ReleaseNote validateReleaseNoteNameByReleaseUUIDAndReleaseNoteName(String releaseNoteName, String releaseUUID);
+
 }

@@ -436,9 +436,9 @@ public class ProjectTasksDaoImpl implements ProjectTasksDao {
 			 subQueryStr = subQueryStr+"  and pt.id IN(SELECT pat.projectTaskId.id from ProjectAssignTask pat where pat.projectMemberId.id IN ("+assignedMembers+")) ";
 		 }
 		 
-		/* if(StringUtils.isNotEmpty(projectTasksDTO.getCreatedByFilter())) {
-			 subQueryStr = subQueryStr+"  and pt.createdBy IN(select pm.projectMemberCandidteId.consultantUser.userCode from ProjectMembers pm pm.id IN ("+projectTasksDTO.getCreatedByFilter()+")) ";
-		 }*/
+		 if(StringUtils.isNotEmpty(projectTasksDTO.getCreatedByFilter())) {
+			 subQueryStr = subQueryStr+"  and pt.createdBy IN(select pm.projectMemberCandidteId.consultantUser.userCode from ProjectMembers pm where pm.id IN ("+projectTasksDTO.getCreatedByFilter()+")) ";
+		 }
 		 
 		 if(StringUtils.isNotEmpty(projectTasksDTO.getPriorityFilter())) {
 			 subQueryStr = subQueryStr+" and pt.priority.id IN ("+projectTasksDTO.getPriorityFilter()+") ";
