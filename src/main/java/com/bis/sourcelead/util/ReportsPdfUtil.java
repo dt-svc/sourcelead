@@ -127,7 +127,7 @@ public class ReportsPdfUtil {
 			if(job.getPriority() != null) {
 				priority = job.getPriority();
 			}
-			location = job.getPriority();
+			location = job.getLocation();
 			
 			String applicants = job.getAssignedMembersCount();
 			
