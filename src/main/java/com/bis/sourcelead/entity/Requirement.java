@@ -343,6 +343,9 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 	@Column(name = "WALK_IN_DAYS", columnDefinition = "TEXT default NULL")
 	private String walkInDays;
 	
+	@Column(name = "REOPENED_DATE")
+	private Date repoenedDate;
+	
 	@Column(name = "PROFILE_PERCENTAGE")
 	private Integer profilePercentage;
 
@@ -2135,6 +2138,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 		this.process = process;
 	}
 
+
 	public String getShortlistCount() {
 		return shortlistCount;
 	}
@@ -2189,6 +2193,14 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 
 	public void setRejectedCount(String rejectedCount) {
 		this.rejectedCount = rejectedCount;
+
+	public Date getRepoenedDate() {
+		return repoenedDate;
+	}
+
+	public void setRepoenedDate(Date repoenedDate) {
+		this.repoenedDate = repoenedDate;
+
 	}
 	
 	

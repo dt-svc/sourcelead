@@ -140,7 +140,7 @@ public class PayrollReportServiceImpl implements PayrollReportService{
 					resDTO.setFirstName(data.getFirstName());
 					resDTO.setDepartmentId(data.getDepartmentId());
 					resDTO.setNetPay(data.getNetPay());
-					
+					resDTO.setTotalChecks(data.getTotalChecks());
 					list.add(resDTO);
 					res.setData(list);
 				} catch (Exception e) {
