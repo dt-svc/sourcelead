@@ -342,6 +342,24 @@ private static final Logger logger = LoggerFactory.getLogger(ReportsController.c
 		 model.setViewName("reports/placementReport");
 		  return model;		
 	 }
+	 
+	 @RequestMapping(value = "/jobsPerformanceReport")
+		public ModelAndView jobsPerformanceReport(HttpServletRequest request,HttpServletResponse response) throws Exception {
+		 ModelAndView model = new ModelAndView();
+		 OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+		 model.addObject("sourceleadUrl", sourceleadUrl);
+		 Collection<OrgRelations> orgClientList =orgRelationsService.getAllClientsByOrgLocationId(orgLocations.getId()); 
+			if(null != orgClientList && orgClientList.size() > 0){
+				for(OrgRelations ocl :orgClientList){
+					ocl.setOrgName(ocl.getResponderLocationId().getOrgLocationName());
+					ocl.setOrgid(ocl.getResponderLocationId().getOrg().getId());
+				 }
+			    model.addObject("orgClientList", orgClientList);
+			}
+		 model.setViewName("reports/jobsPerformanceReport");
+		  return model;		
+	 }
+	 
 	 @RequestMapping(value = "/applicantsjoinedlist")
 		public ModelAndView applicantsjoinedlist(HttpServletRequest request,HttpServletResponse response) throws Exception {
 		 
