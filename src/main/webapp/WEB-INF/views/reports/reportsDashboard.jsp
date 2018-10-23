@@ -76,6 +76,8 @@
 				<li><a href="${appPath}/requirementStagesListForReports">Job(s) Stage</a></li>
 				</sec:authorize>
 				
+				<li><a href="${appPath}/jobsPerformanceReport">Jobs Report</a></li>
+				
 				</ul>
 			</div>
                  <!-- Dropdown -->
