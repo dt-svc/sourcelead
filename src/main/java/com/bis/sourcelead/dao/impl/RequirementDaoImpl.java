@@ -871,13 +871,15 @@ public class RequirementDaoImpl implements RequirementDao {
 			}
 			/*Integer requirementAssignToListCount = requirementAssignToDao.getRequirementAssignToListCountByRequirementId(requirement.getId());
     		requirement.setAssignedMembersCount(requirementAssignToListCount.toString());*/
-    		
+			List<String> requirementLocationsList = new ArrayList<>();
+			StringBuilder sb = new StringBuilder();
     		List<RequirementLocations> locationList = requirementLocationsService.getRequirementLocationsListByRequirementId(requirement.getId());
-    		StringBuilder cb = new StringBuilder();
     		locationList.forEach(loclist->{
-    			cb.append(loclist.getLocation()).append(",").toString();	
+    			requirementLocationsList.add(loclist.getLocation());
+    			sb.append(loclist.getLocation()).append(",").toString();
     		});
-    		requirement.setLocation(cb.deleteCharAt(cb.length()-1).toString());
+    		requirement.setLocation(sb.deleteCharAt(sb.length()-1).toString());
+    		requirement.setLocationsList(requirementLocationsList);
     		RequirementSubmissionsCountDTO requirementSubmissionsCountDTO= requirementSubmissionDao.getAllPipeLineCountsByRequirementIdAndSubmissionStage(requirement.getId(),user,orgLocation,"All");
     		requirement.setAssignedMembersCount(requirementSubmissionsCountDTO.getApplicantsCount().toString());
     		requirement.setShortlistCount(requirementSubmissionsCountDTO.getShortlistCount().toString());
@@ -3695,6 +3697,8 @@ public class RequirementDaoImpl implements RequirementDao {
 						queryList.add("DELETE FROM RequirementAssignTo rat WHERE rat.requirementId.id = "+req.getId()+" ");
 						
 						queryList.add("DELETE FROM JobCustomFieldData jcfd WHERE jcfd.requirement.id = "+req.getId()+" ");
+						
+						queryList.add("DELETE FROM RequirementIncentive ri WHERE ri.requirementId.id = "+req.getId()+" ");
 						
 						queryList.add("DELETE FROM Requirement r  WHERE r.id = "+req.getId()+ " ");
 						
