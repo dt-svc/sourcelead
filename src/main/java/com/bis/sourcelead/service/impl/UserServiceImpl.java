@@ -1908,6 +1908,7 @@ public class UserServiceImpl implements UserService {
 		for(ApplicantsJoinedReportDTO dto : responseList.getData()){
 			List<ApplicantsJoinedReportDTO> mainList = map.get(dto.getUserId());
 			Float totalIncentiveAmount = 0f;
+			Integer totalReqCount = 0;
 			Float percentage=0f;
 			List<ApplicantsJoinedReportDTO> searchReqList =null;
 			for(ApplicantsJoinedReportDTO sub : mainList){
@@ -1944,9 +1945,16 @@ public class UserServiceImpl implements UserService {
 						percentage=k;
 						totalIncentiveAmount=totalIncentiveAmount+percentage;
 					}
-
+					
                }
+				if(sub.getRequirementCount() != null){
+					totalReqCount=totalReqCount + sub.getRequirementCount().intValue();
+				}
+				if(sub.getReqClientCount() != null){
+					totalReqCount=totalReqCount + sub.getReqClientCount().intValue();
+				}
 				sub.setIncentAmount(totalIncentiveAmount.toString());
+				dto.setTotalRequirementCount(BigInteger.valueOf(totalReqCount));
 //               java.math.BigDecimal k1 = java.math.BigDecimal.valueOf(totalIncentiveAmount);
 			}
 			
