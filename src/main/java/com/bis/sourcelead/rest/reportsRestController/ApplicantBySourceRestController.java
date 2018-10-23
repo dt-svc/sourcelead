@@ -143,7 +143,7 @@ public class ApplicantBySourceRestController {
 				Integer crowdsourcingOfferBackoutCount = applicantBySourceCountDTO.getBackoutCount() == null ? 0 :applicantBySourceCountDTO.getBackoutCount().intValue();
 				crowdSourcingApplicantsDTO.setBackoutCount(crowdsourcingOfferBackoutCount);
 				
-				crowdSourcingApplicantsDTO.setCategory("Crowd Sourcing");
+				crowdSourcingApplicantsDTO.setCategory("Job Seeker");
 				crowdSourcingApplicantsDTO.setApplicantsCount(crowdsourcingApplicantsCount);
 				crowdSourcingApplicantsDTO.setShortlistedCount(crowdsourcingSortlistedCount);
 				crowdSourcingApplicantsDTO.setSubmitToClientCount(crowdsourcingSubmitToClientCount);
