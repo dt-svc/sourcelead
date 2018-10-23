@@ -469,7 +469,7 @@ function getGroupFrequency(){
 	    });
 	 $("#payrollDataDiv").empty();
 	 $('#payrollPayDate').val("").datepicker("update");
-	 $("#submitButtonDiv").hide();
+// 	 $("#submitButtonDiv").hide();
 }
  
  function removeValidateGroup(){
@@ -477,6 +477,8 @@ function getGroupFrequency(){
  }
  function errPayType(){
 		$('#payTypeIdDiv').find('p.jquery_form_error_message').remove(); 
+		$("#payrollDataDiv").empty();
+		$("#submitButtonDiv").hide();
 
  }
  
@@ -697,7 +699,7 @@ function msgFadein() {
 <script>
 function clearPayrollDiv(){
 // 	$("#groupId").val('');
-	$("#payrollPayDate").val('');
+// 	$("#payrollPayDate").val('');
 	$("#payrollDataDiv").empty();
 	$("#submitButtonDiv").hide();
 }
@@ -707,6 +709,8 @@ function errPayPeriod(){
 }
 function clearSubmitDiv(){
 	$("#submitButtonDiv").hide();
+	$("#payType").val('');
+	$('#payType').trigger("chosen:updated"); 
 }
 </script>
 

@@ -117,6 +117,7 @@ import com.bis.sourcelead.service.UserService;
 import com.bis.sourcelead.util.CommonUtil;
 import com.bis.sourcelead.util.ConversionUtil;
 import com.bis.sourcelead.util.EmailScenerioUtil;
+import com.bis.sourcelead.util.PdfUtil;
 import com.bis.sourcelead.util.SourceLeadSessionManager;
 
 /**
@@ -942,7 +943,13 @@ public class RequirementListRestController {
 					requirement.setRequirementSubmissionStatus(changedStatus);
 					requirement.setRequirementSubmissionPreviousStatus(previousStatus);
 					requirement.setUpdatedBy(loginUser.getUserCode());
-					requirement.setUpdatedDate(commonUtil.currentDate());
+					requirement.setUpdatedDate(CommonUtil.currentDate());
+					if (changedStatus == REQUIREMENT_SUBMISSION_STATUS.OPEN
+							&& (previousStatus == REQUIREMENT_SUBMISSION_STATUS.UNFILLEDCLOSED
+									|| previousStatus == REQUIREMENT_SUBMISSION_STATUS.FILLEDCLOSED
+									|| previousStatus == REQUIREMENT_SUBMISSION_STATUS.CLOSED)) {
+						requirement.setRepoenedDate(CommonUtil.currentDate());
+					}
 					requirementService.addRequirement(requirement);
 					StringBuilder reqStatusChange = new StringBuilder();
 					SourceLeadSessionManager.setSessionAttribute(request, "reqStatusChange", reqStatusChange.append(" ").append(requirement.getJobTitle()).append(" Status changed ").append(requirement.getRequirementSubmissionPreviousStatus()).append(" to ").append(requirement.getRequirementSubmissionStatus()).append(" ").toString());
@@ -2276,7 +2283,7 @@ public class RequirementListRestController {
 		}
         
 		requirement.setLocationsList(requirementLocationsList);
-        
+        requirement.setProcess(requirementIndex.getProcess());
       	return requirement;
  	}
     private String getReqSkills(String[] skills) {

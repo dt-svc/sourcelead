@@ -590,7 +590,7 @@ public class DayEntryReportsServiceImpl implements DayEntryReportsService{
 		String hours = "00";
 		String min = "00";
 		if (StringUtils.isNotEmpty(dayHours)) {
-			String[] parts = dayHours.split(":");
+			String[] parts = dayHours.split("\\.");
 			hours = parts[0];
 			min = parts[1];
 		}

@@ -296,7 +296,7 @@ public class PayrollPayheadDaoImpl implements PayrollPayheadDao{
 	@Transactional
 	public AssociateSalaryInd getAssociateSalaryIndByCandidateId(Long id) throws Exception {
 		Session session = this.sessionFactory.getCurrentSession();
-		String query = "from AssociateSalaryInd salary where salary.candidate.id = :id and salary.status = '1' ";  
+		String query = "from AssociateSalaryInd salary where salary.candidate.id = :id and salary.status = '1'";  
 		List<AssociateSalaryInd> associateSalaryIndList =  session.createQuery(query).setLong("id", id).list();
 		AssociateSalaryInd associateSalaryInd = null;
 		if (associateSalaryIndList != null && associateSalaryIndList.size() > 0) {

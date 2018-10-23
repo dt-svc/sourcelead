@@ -7,6 +7,7 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Calendar;
+import java.util.Collection;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -38,12 +39,16 @@ import org.xml.sax.InputSource;
 
 import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.dao.JobBoardConfigurationDAO;
+import com.bis.sourcelead.dao.OrgLocationsDao;
+import com.bis.sourcelead.dao.RequirementAssignToDao;
 import com.bis.sourcelead.dao.RequirementDao;
+import com.bis.sourcelead.dao.RequirementSubmissionDao;
 import com.bis.sourcelead.dao.UserDao;
 import com.bis.sourcelead.dao.UserRoleDao;
 import com.bis.sourcelead.dto.JobFairDTO;
 import com.bis.sourcelead.dto.RecruiterRrportDTO;
 import com.bis.sourcelead.dto.RequirementDTO;
+import com.bis.sourcelead.dto.RequirementSubmissionsCountDTO;
 import com.bis.sourcelead.dto.ResponseList;
 import com.bis.sourcelead.elk.setup.SourceleadELKBaseIndexer;
 import com.bis.sourcelead.entity.Candidate;
@@ -65,6 +70,8 @@ import com.bis.sourcelead.entity.TeamMembers;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.enums.REQUIREMENT_SUBMISSION_STATUS;
 import com.bis.sourcelead.exception.SourceLeadConstraintViolationException;
+import com.bis.sourcelead.reportsDTO.JobFilterDTO;
+import com.bis.sourcelead.service.OrgLocationService;
 import com.bis.sourcelead.service.RequirementLocationsService;
 import com.bis.sourcelead.util.CommonUtil;
 import com.bis.sourcelead.util.FileUploadUtil;
@@ -109,6 +116,12 @@ public class RequirementDaoImpl implements RequirementDao {
         
     @Autowired
     SourceleadELKBaseIndexer sourceleadELKBaseIndexer;
+    
+    @Autowired
+    private RequirementSubmissionDao requirementSubmissionDao;
+    
+    @Autowired
+    private OrgLocationsDao orgLocationsDao;
         
     @Value("${static.path}")
 	private String staticPath;
@@ -133,6 +146,9 @@ public class RequirementDaoImpl implements RequirementDao {
 	
 	@Autowired
 	private ReportsUtil reportsUtil;
+	
+	@Autowired
+	RequirementAssignToDao requirementAssignToDao;
 
 	protected boolean isNullOrEmpty(String str) {
 		return (str == null || "".equals(str.trim()));
@@ -671,10 +687,13 @@ public class RequirementDaoImpl implements RequirementDao {
 
 			String subQuery3 = "requirement.id IN ( select rah.requirementId from RequirementAssignTo rah where rah.teamId.id IN ( select rah.id from Team rah where rah.ownerUserId.id =:userId)) and requirement.requirementSubmissionStatus <> 'DRAFT' and requirement.requirementSubmissionStatus <> 'SUBMITTED'  ";
 			params.put("userId", userId);
+			
+			String subQuery4 = " requirement.primaryRecruiterUserId.id =:userId ";
+			params.put("userId", userId);
 
-			if (subQuery1 != "" || subQuery2 != "" || subQuery3 != "") {
+			if (subQuery1 != "" || subQuery2 != "" || subQuery3 != "" || subQuery4 != "") {
 				subQuery = "where requirement.orgLocationId.id =:orgLocationId and ( (" + subQuery1 + ") or ("
-						+ subQuery2 + ")  or (" + subQuery3 + ") ) ";
+						+ subQuery2 + ")  or (" + subQuery3 + ")  or (" + subQuery4 + ") ) ";
 				params.put("orgLocationId", orgLocationId);
 			}
 		} else {
@@ -709,6 +728,186 @@ public class RequirementDaoImpl implements RequirementDao {
 
 		}
 		return query.list();
+
+	}
+	
+	@SuppressWarnings("unchecked")
+	@Override
+	@Transactional(rollbackFor = { Exception.class })
+	public ResponseList<Requirement> getAssignedJobsPerformanceList(Long orgLocationId, String userType, Long userId, String userCode,Date startDateUTC,Date endDateUTC,JobFilterDTO jobFilterDTO) throws Exception {
+
+		Session session = this.sessionFactory.getCurrentSession();
+		User user = userDao.getUserById(userId);
+		OrgLocations orgLocation = orgLocationsDao.getOrgLocations(orgLocationId);
+
+		Map<String, Object> params = new HashMap<String, Object>();
+		List<Requirement> reqList = null;
+		List<Long> countlist = null;
+		ResponseList<Requirement> response = new ResponseList<>();
+
+		/* String subQueryRole = ""; */
+		String from = "from Requirement requirement left join fetch requirement.parentRequirement ";
+		String subQuery = "";
+		String countQuery = "from Requirement requirement";
+		String countQuerySub ="";
+		String jobTypeVal ="";
+		String clientVal ="";
+		//List<Long> data = new ArrayList<Long>;
+		StringBuilder query1 = new StringBuilder("");
+		if(StringUtils.isNotBlank(jobFilterDTO.getJobType())){
+			if(jobFilterDTO.getJobType().equalsIgnoreCase("internal")){
+				jobTypeVal = " requirement.isClientJob = 'N'";	
+			}
+			else if(jobFilterDTO.getJobType().equalsIgnoreCase("client")){
+				jobTypeVal = " requirement.isClientJob = 'Y' and requirement.clientId IS NOT NULL";	
+			}else{
+				jobTypeVal = " (requirement.isClientJob = 'N') or (requirement.isClientJob = 'Y')";	
+			}
+			
+		}
+		if(StringUtils.isNotBlank(jobFilterDTO.getClientIds())){
+			
+			clientVal = "requirement.clientId IN("+jobFilterDTO.getClientIds()+")";	
+		}
+		if (!StringUtils.equalsIgnoreCase(userType, "ADMIN")) {
+
+			String subQuery1 = "requirement.id IN ( select rah.requirementId from RequirementAssignTo rah where rah.assignUserId.id =:userId and rah.status <> '0')   and ( requirement.requirementSubmissionStatus = 'APPROVED' or requirement.requirementSubmissionStatus = 'NEW' or requirement.requirementSubmissionStatus = 'OPEN' )  and  requirement.requirementSubmissionStatus <> 'DRAFT'  ";
+			params.put("userId", userId);
+
+			String subQuery2 = "requirement.managerUserId.id = :managerUserId and ( requirement.requirementSubmissionStatus = 'APPROVED' or requirement.requirementSubmissionStatus = 'NEW' or requirement.requirementSubmissionStatus = 'OPEN' )  ";
+			params.put("managerUserId", userId);
+
+			String subQuery3 = "requirement.id IN ( select rah.requirementId from RequirementAssignTo rah where rah.teamId.id IN ( select rah.id from Team rah where rah.ownerUserId.id =:userId)) and requirement.requirementSubmissionStatus <> 'DRAFT' and requirement.requirementSubmissionStatus <> 'SUBMITTED'  ";
+			params.put("userId", userId);
+
+			if (subQuery1 != "" || subQuery2 != "" || subQuery3 != "" || jobTypeVal !="") {
+				if(clientVal != ""){
+				subQuery = "where requirement.orgLocationId.id =:orgLocationId and ("+ jobTypeVal +") and ( (" + subQuery1 + ") or ("+ clientVal +") or ("
+						+ subQuery2 + ")  or (" + subQuery3 + ") and requirement.createdDate BETWEEN :startDateUTC and :endDateUTC) ";
+				}else{
+					subQuery = "where requirement.orgLocationId.id =:orgLocationId and ("+ jobTypeVal +") and ( (" + subQuery1 + ") or ("
+							+ subQuery2 + ")  or (" + subQuery3 + ") and requirement.createdDate BETWEEN :startDateUTC and :endDateUTC) ";	
+				}
+				params.put("orgLocationId", orgLocationId);
+				params.put("startDateUTC", startDateUTC);
+				params.put("endDateUTC", endDateUTC);
+				
+				if(clientVal != ""){
+				countQuerySub = "where requirement.orgLocationId.id =:orgLocationId and ("+ jobTypeVal +") and ( (" + subQuery1 + ") or ("+ clientVal +") or ("
+						+ subQuery2 + ")  or (" + subQuery3 + ") and requirement.createdDate BETWEEN :startDateUTC and :endDateUTC) ";
+				}else{
+					countQuerySub = "where requirement.orgLocationId.id =:orgLocationId and ("+ jobTypeVal +") and ( (" + subQuery1 + ") or ("
+							+ subQuery2 + ")  or (" + subQuery3 + ") and requirement.createdDate BETWEEN :startDateUTC and :endDateUTC) ";
+				}
+				params.put("orgLocationId", orgLocationId);
+				params.put("startDateUTC", startDateUTC);
+				params.put("endDateUTC", endDateUTC);
+			}
+			
+		} else {
+			
+			String subQuery1 = "requirement.id IN ( select rah.requirementId from RequirementAssignTo rah where  ( requirement.requirementSubmissionStatus = 'APPROVED' or requirement.requirementSubmissionStatus = 'NEW' or requirement.requirementSubmissionStatus = 'OPEN' )  and  requirement.requirementSubmissionStatus <> 'DRAFT' and rah.status <> '0') ";
+
+			String subQuery2 = " ( requirement.requirementSubmissionStatus = 'APPROVED' or requirement.requirementSubmissionStatus = 'NEW' or requirement.requirementSubmissionStatus = 'OPEN' )  ";
+			params.put("managerUserId", userId);
+
+			if (subQuery1 != "" || subQuery2 != "" || jobTypeVal !="") {
+				if(clientVal != ""){
+				subQuery = "where requirement.orgLocationId.id =:orgLocationId and ("+ jobTypeVal +") and ( (" + subQuery1 + ") and ("+ clientVal +") or ("
+						+ subQuery2 + ") and requirement.createdDate BETWEEN :startDateUTC and :endDateUTC) ";
+				}else{
+					subQuery = "where requirement.orgLocationId.id =:orgLocationId and ("+ jobTypeVal +") and ( (" + subQuery1 + ") or ("
+							+ subQuery2 + ") and requirement.createdDate BETWEEN :startDateUTC and :endDateUTC) ";	
+				}
+				params.put("orgLocationId", orgLocationId);
+				params.put("startDateUTC", startDateUTC);
+				params.put("endDateUTC", endDateUTC);
+				
+				if(clientVal != ""){
+				countQuerySub = "where requirement.orgLocationId.id =:orgLocationId and ("+ jobTypeVal +") and ( (" + subQuery1 + ") and ("+ clientVal +") or ("
+						+ subQuery2 + ") and requirement.createdDate BETWEEN :startDateUTC and :endDateUTC) ";
+				}else{
+				countQuerySub = "where requirement.orgLocationId.id =:orgLocationId and ("+ jobTypeVal +") and ( (" + subQuery1 + ") or ("
+							+ subQuery2 + ") and requirement.createdDate BETWEEN :startDateUTC and :endDateUTC) ";
+						
+				}
+				params.put("orgLocationId", orgLocationId);
+				params.put("startDateUTC", startDateUTC);
+				params.put("endDateUTC", endDateUTC);
+				
+			}
+		}
+		if (jobFilterDTO.getSearchValue() != null && !"".equalsIgnoreCase(jobFilterDTO.getSearchValue())) {
+			query1.append(" and (requirement.jobTitle like '%" + jobFilterDTO.getSearchValue() + "%' ")
+					.append("OR requirement.jobId like '%" + jobFilterDTO.getSearchValue() + "%' ")
+					.append("OR requirement.priority like '%" + jobFilterDTO.getSearchValue() + "%' ")
+					.append("OR requirement.generatedId like '%" + jobFilterDTO.getSearchValue() + "%' )");
+
+		}
+		int count = 0;
+		String whereCondition = subQuery+query1;
+		Query query = session.createQuery(from + " " + whereCondition + " ORDER BY requirement.id DESC");
+		for (String str : query.getNamedParameters()) {
+		if (str.equalsIgnoreCase("orgLocationId") || str.equalsIgnoreCase("")) {
+			query.setLong(str, (long) params.get(str));
+		}else{
+			query.setParameter(str, params.get(str));
+		}
+	}
+		
+		reqList = query.setFirstResult(jobFilterDTO.getStart()).setMaxResults(jobFilterDTO.getLength()).list();
+		
+		for(Requirement requirement : reqList){
+			 
+			if(requirement.getClientId() != null){
+				if(requirement.getClientId().getResponderType().equalsIgnoreCase("Client")){
+					requirement.setClientName(requirement.getClientId().getResponderLocationId().getOrgLocationName());
+					requirement.setOrgRelationUUID(requirement.getClientId().getUUID());
+				}
+				if(requirement.getClientId().getResponderType().equalsIgnoreCase("Vendor")){
+					requirement.setClientName(requirement.getClientId().getLocationId().getOrgLocationName());
+					requirement.setOrgRelationUUID(requirement.getClientId().getUUID());
+				}
+			}
+			/*Integer requirementAssignToListCount = requirementAssignToDao.getRequirementAssignToListCountByRequirementId(requirement.getId());
+    		requirement.setAssignedMembersCount(requirementAssignToListCount.toString());*/
+    		
+    		List<RequirementLocations> locationList = requirementLocationsService.getRequirementLocationsListByRequirementId(requirement.getId());
+    		StringBuilder cb = new StringBuilder();
+    		locationList.forEach(loclist->{
+    			cb.append(loclist.getLocation()).append(",").toString();	
+    		});
+    		requirement.setLocation(cb.deleteCharAt(cb.length()-1).toString());
+    		RequirementSubmissionsCountDTO requirementSubmissionsCountDTO= requirementSubmissionDao.getAllPipeLineCountsByRequirementIdAndSubmissionStage(requirement.getId(),user,orgLocation,"All");
+    		requirement.setAssignedMembersCount(requirementSubmissionsCountDTO.getApplicantsCount().toString());
+    		requirement.setShortlistCount(requirementSubmissionsCountDTO.getShortlistCount().toString());
+    		requirement.setOffersCount(requirementSubmissionsCountDTO.getOffersCount().toString());
+    		requirement.setSubmitToClientCount(requirementSubmissionsCountDTO.getSubmitToClientCount().toString());
+    		requirement.setJoinedCount(requirementSubmissionsCountDTO.getJoinedCount().toString());
+    		requirement.setBackoutCount(requirementSubmissionsCountDTO.getBackoutCount().toString());
+    		requirement.setInterviewCount(requirementSubmissionsCountDTO.getInterviewCount().toString());
+    		requirement.setRejectedCount(requirementSubmissionsCountDTO.getRejectedCount().toString());
+    		
+		}
+		
+		
+		Query countQueryFinal = session.createQuery("select count(*) " + countQuery + " " +countQuerySub +query1);
+		for (String str : countQueryFinal.getNamedParameters()) {
+			if (str.equalsIgnoreCase("orgLocationId") || str.equalsIgnoreCase("")) {
+				countQueryFinal.setLong(str, (long) params.get(str));
+			}else {
+				countQueryFinal.setParameter(str, params.get(str));
+			}
+		}
+		countlist=countQueryFinal.list();
+		if (countlist != null && !countlist.isEmpty()) {
+			count = countlist.iterator().next().intValue();
+		}
+		response.setRecordsTotal(count);
+		response.setRecordsFiltered(count);
+		
+		response.setData(reqList);
+		return response;
 
 	}
 	
