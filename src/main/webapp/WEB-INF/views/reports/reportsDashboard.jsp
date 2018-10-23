@@ -498,6 +498,7 @@
             </div>
             
             
+            <c:if test="${SourceLeadWeb_loginCountryName == 'United States'}">
             	<div class="newRepListCta">
                 <h2><a href="javascript:void(0)">US Payroll Reports</a></h2>
 	                <ul class="repSearchList">
@@ -534,6 +535,7 @@
 	                </ul>
                 <div class="noDate noDateSm" style="display: none;"></div>
             </div>
+            </c:if>
             
             <div class="clearfix mt mb"></div>
             
