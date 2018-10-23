@@ -2193,7 +2193,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 
 	public void setRejectedCount(String rejectedCount) {
 		this.rejectedCount = rejectedCount;
-
+	}
 	public Date getRepoenedDate() {
 		return repoenedDate;
 	}
