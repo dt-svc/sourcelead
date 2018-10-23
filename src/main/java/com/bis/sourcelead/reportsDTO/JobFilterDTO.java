@@ -35,6 +35,8 @@ public class JobFilterDTO extends SearchDTO {
 	
 	private String  jobType;
 	
+	private String exportType;
+	
 	private List<Map<String, String>> order;
 
 
@@ -156,6 +158,14 @@ public class JobFilterDTO extends SearchDTO {
 
 	public void setJobType(String jobType) {
 		this.jobType = jobType;
+	}
+
+	public String getExportType() {
+		return exportType;
+	}
+
+	public void setExportType(String exportType) {
+		this.exportType = exportType;
 	}
 	
 	

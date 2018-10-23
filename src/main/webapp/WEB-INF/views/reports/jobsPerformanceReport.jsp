@@ -14,20 +14,18 @@
     <div class="timesheet_out">
       <div class="clients_wrap">
 	      <div class="positionRelative reportHead clearfix">
-	      
-	      
-	      
 	      <span class="pull-left refreIcon" id="advanceSearchDiv">
 <!-- 	      		<a href="javascript:void(0)" class="refeIcon" id="resetVendor" title="Refresh" onclick="resetApplicantFilter();"></a> -->
 	      </span>
+	      <!--  <a href="javascript:void(0)" onclick="columPop();" title="Column Chooser" class="columIcon"></a>   -->
 	      <ul class="pull-right list-unstyled list-inline">
 					<li id="vendorFiletPopup"><a href="javascript:void(0)" class="filtIcon" title="Filters" onclick="openFilterPop();"></a></li>
 					
 					<li><a href="javascript:void(0)" class="overIcon" title="Actions" onclick="newActions();"></a>
 						<div class="newActPop" style="display: none;">
 							<span>
-			           	   		<a href="javascript:void(0)" onclick="projectExport('Pdf');" title="PDF">Export PDF</a>
-								<a href="javascript:void(0)" onclick="projectExport('Excel');" title="Excel">Export Excel</a>            
+			           	   		<a href="javascript:void(0)" onclick="jobsExport('Pdf');" title="PDF">Export PDF</a>
+								<a href="javascript:void(0)" onclick="jobsExport('Excel');" title="Excel">Export Excel</a>            
 							</span>
 						</div>
 					</li>
@@ -48,7 +46,87 @@
         <div class="proj_close"></div>
       </div>
     </div>
+    
+    <div class="colPop">
+	<div class="colPopMid coldropdown-parent">
+	<div class="clearfix">
+		<div class="row">
+				<div class="col-md-10 mb10 mt5 col-md-offset-2">
+				<span class="checkbox-new  pull-left mr">
+					<input id="columnsPickerUnCheckAll" class="radio-custom" name="columnsPicker" onclick="checkAllColumns(this);"  type="radio">
+					<label for="columnsPickerUnCheckAll" class="radio-custom-label">Uncheck All</label>
+				</span>
+				<span class="checkbox-new pull-left">
+					<input id="columnsPickerCheckAll" class="radio-custom" name="columnsPicker" onclick="checkAllColumns(this);"  type="radio" checked="">
+					<label for="columnsPickerCheckAll" class="radio-custom-label" >Check All</label>
+				</span>
+			</div>
+		</div>
+	<div class="clearfix"></div>
+		<div class="coldropdown-inner">
+		<ul>
+			<li>
+				<span class="checkbox-new clearfix">
+					<input id="a" class="checkbox-custom toggle-vis" name="paidComponent" data-column="0" type="checkbox" checked="">
+					<label for="a" class="checkbox-custom-label" >Job Id</label>
+				</span>
+			</li>
+			<li>
+				<span class="checkbox-new clearfix">
+					<input id="c" class="checkbox-custom toggle-vis" name="paidComponent" data-column="2" type="checkbox" checked="">
+					<label for="c" class="checkbox-custom-label" >Job Title</label>
+				</span>
+			</li>
+			<li>
+				<span class="checkbox-new clearfix">
+					<input id="d" class="checkbox-custom toggle-vis" name="paidComponent" data-column="3" type="checkbox" checked="">
+					<label for="d" class="checkbox-custom-label" >Client</label>
+				</span>
+			</li>
+			<li>
+				<span class="checkbox-new clearfix">
+					<input id="f" class="checkbox-custom toggle-vis" name="paidComponent" data-column="5" type="checkbox" checked="">
+					<label for="f" class="checkbox-custom-label" >Location</label>
+				</span>
+			</li>
+			<li>
+				<span class="checkbox-new clearfix">
+					<input id="g" class="checkbox-custom toggle-vis" name="paidComponent" data-column="6" type="checkbox" checked="">
+					<label for="g" class="checkbox-custom-label" >Priority</label>
+				</span>
+			</li>
+			<li>
+				<span class="checkbox-new clearfix">
+					<input id="h" class="checkbox-custom toggle-vis" name="paidComponent" data-column="7" type="checkbox" checked="">
+					<label for="h" class="checkbox-custom-label" >Applicants</label>
+				</span>
+			</li>
+			<li>
+				<span class="checkbox-new clearfix">
+					<input id="j" class="checkbox-custom toggle-vis" name="paidComponent" data-column="9"  type="checkbox" checked="">
+					<label for="j" class="checkbox-custom-label" >LCA Start Date</label>
+				</span>
+			</li>
+			<li>
+				<span class="checkbox-new clearfix">
+					<input id="k" class="checkbox-custom toggle-vis" name="paidComponent" type="checkbox"  data-column="10" checked="">
+					<label for="k" class="checkbox-custom-label" >LCA End Date</label>
+				</span>
+			</li>
+		</ul>
+		</div>
+	</div>
+	<div class="colPopFot">
+		<a href="javascript:void(0)" onclick="columHide();">Apply</a>
+		<a href="javascript:void(0)" onclick="columClose();">Cancel</a>
+	</div>
+</div>				
+</div>
   </section>
+  
+  
+  
+  
   
   <script>
  $(document).ready(function() {
@@ -56,6 +134,49 @@
  });
  
  </script>
+ <script type="text/javascript">
+ function columPop(){
+		$(".colPop").show();
+	}
+	function columClose(){
+		$(".colPop").hide();
+	}
+/* 	$("html").click(function(){
+		$(".colPop").hide();
+	});
+	 
+	$(".refreIcon, .colPop").click(function(e){
+	 	e.stopPropagation();
+	});	 */
+	function checkAllColumns(obj){
+		var id = obj.id;
+		if(id =='columnsPickerCheckAll'){
+			$('.toggle-vis:input:checkbox').prop('checked',true);
+		}
+		else if(id =='columnsPickerUnCheckAll'){
+			$('.toggle-vis:input:checkbox').prop('checked',false);
+		}
+	}
+	
+	function columHide(){
+		hideColumns=[]; // reset the array object.
+		$(".toggle-vis").each(function() {
+			columClose();// 
+		   var chkdVal= $(this).prop('checked');
+		   var column = table.column($(this).attr('data-column'));
+			  if(chkdVal == true){
+			         column.visible(true);
+			    }
+			    else{
+			      column.visible(false);
+			      hideColumns.push($(this).attr('data-column')); // used for hiding the columns when user searched the data.
+			  }
+	    });
+		$(".colPop").hide();
+	   
+	}
+	
+</script>
  
  <script type="text/javascript">
 function requirementJoinedList(){
@@ -91,8 +212,10 @@ var returnStat = true;
 	{
 		jobType=($(this).val());
 	});
+	var searchValue = $("#dataTableSearch").val();
+	searchValue = searchValue ? searchValue : "";
 	if(returnStat){
-		   	var url= sourceleadUrl+"/getJobsPerformancetListByOrgLocationIDAndUserId?${_csrf.parameterName}=${_csrf.token}&jobCreatedDateRange="+jobCreatedDateRange+"&startDateStr="+startDateStr+"&endDateStr="+endDateStr+"&clientIds="+clientIds+"&jobType="+jobType;
+		   	var url= sourceleadUrl+"/getJobsPerformancetListByOrgLocationIDAndUserId?${_csrf.parameterName}=${_csrf.token}&jobCreatedDateRange="+jobCreatedDateRange+"&startDateStr="+startDateStr+"&endDateStr="+endDateStr+"&clientIds="+clientIds+"&jobType="+jobType+"&searchValue="+searchValue;
 		   	prepareOfferList(url);
 		}
 }
@@ -205,7 +328,7 @@ function offerpagination(url){
               "data": "priority",
               "render": function ( data, type, opt, meta ) {
             	  var result = "";
-	    	  		result = result + ' <td><div><span>---</span></div></td>';
+	    	  		result = result + ' <td><div>'+opt.priority+'</div></td>';
 	    	  		return result;
               }
             },
@@ -314,7 +437,7 @@ function resetFilterPopup(){
 	$("ul#myClientUL > li input:checkbox").prop("checked",false);
 	document.getElementById("jobDateRadio").checked = true;
 	document.getElementById("jobsRadio").checked = true;
-	requirementJoinedList();
+	customJobsList();
 }
 function newActions(){
 	$(".newActPop").slideToggle(200);
@@ -530,61 +653,45 @@ function myTeamsFunction() {
 
 <!-- =============== Pdf and  Excel Export scripts writen by Laxman =================== -->
 <script>
-function projectExport(type){
+function jobsExport(type){
 	if(type == "Pdf"){
 		exportType = "pdf";
 	}else{
 		exportType = "xls";
 	}
-	 var sourceleadUrl ='${sourceleadUrl}';
-	 var frequency=$("#reportTypeId").val();
-	   var tab = '${tab}';
-    	    var fromDate='';
-    	    var toDate='';
+	var sourceleadUrl = '${sourceleadUrl}';
+	var jobCreatedDateRange = null;
+	var jobType = null;
+	var startDateStr = null;
+	var endDateStr = null;
+	var clientIds =[];
+		$('input:radio[name=jobCustomDays]:checked').each(function() {
+			jobCreatedDateRange = $(this).val();
+			if(jobCreatedDateRange == 'custom'){
+				startDateStr = $("#jobStartDate").val();
+				endDateStr = $("#jobEndDate").val();
+				$("#errStartDate").find('p.jquery_form_error_message').remove();
+				$("#errEndDate").find('p.jquery_form_error_message').remove();
+				if(startDateStr == null || startDateStr == '' || startDateStr == 'undefined'){
+					$("input#startDate") .after( "<p class='jquery_form_error_message'>Start Date is Required</span>");
+				}
+				if(endDateStr == null || endDateStr == '' || endDateStr == 'undefined'){
+					$("input#endDate") .after( "<p class='jquery_form_error_message'>End Date is Required</span>");
+				}
+			}
+		});
+		$('input:checkbox[name=clientNameById]:checked').each(function() 
+		{
+		clientIds.push($(this).val());
+		});
+		$('input:radio[name=jobsRadio]:checked').each(function() 
+		{
+			jobType=($(this).val());
+		});
 		var searchValue = $("#dataTableSearch").val();
-		var orgLocationId = '${SourceLeadWeb_orgLocationId}';
 		searchValue = searchValue ? searchValue : "";
-		var employmentType = [];
-		 $('input:checkbox[name=employmentType]:checked').each(function() 
-		 {
-			employmentType.push($(this).val());
-		 });
-		 var clientNameById = [];
-		 $('input:checkbox[name=clientNameById]:checked').each(function() 
-		 {
-			 clientNameById.push($(this).val());
-		 });
-		 var teamNameById = [];
-		 $('input:checkbox[name=teamNameById]:checked').each(function() 
-		 {
-			 teamNameById.push($(this).val());
-		 });
-		 var incentivizedType = [];
-		 $('input:checkbox[name=incentivizedType]:checked').each(function() 
-		 {
-			 incentivizedType.push($(this).val());
-		 });
-		 var searchType = $('input[name=searchType]:checked').val();
+		window.location.href = sourceleadUrl+"/getJobsPerformancetListExportByOrgLocationIDAndUserId?jobCreatedDateRange="+jobCreatedDateRange+"&startDateStr="+startDateStr+"&endDateStr="+endDateStr+"&clientIds="+clientIds+"&jobType="+jobType+"&searchValue="+searchValue+"&exportType="+exportType;
 
-		    if(frequency == "custom"){
-    	        var fromDate = $("#ReportStartDate").val();
-    	  		  var toDate = $("#ReportEndDate").val();
-    	    	if(fromDate == ''){
-    	    		  document.getElementById("reportsStartDate").style.display="block";
-    				  $("#reportsStartDate").empty().append("Start Date is Required") ; 
-    	        }
-    	        if(toDate == ''){
-    	        	 document.getElementById("reportsEndDate").style.display="block";
-   				  $("#reportsEndDate").empty().append("End Date is Required") ; 
-    	        }
-    	        if((fromDate != '' && fromDate != 'undefined' && fromDate != null) && (toDate != '' && toDate != 'undefined' && toDate != null)){
-   	    		 window.location.href = sourceleadUrl+"/applicantsJoinedListExport?searchValue="+searchValue+"&orgLocationId="+orgLocationId+"&tabType="+tab+"&submissionStatus=JOINED&frequency="+frequency+"&fromDate="+fromDate+"&toDate="+toDate+"&employmentType="+employmentType+"&clientId="+clientNameById+"&teamId="+teamNameById+"&incentivizedType="+incentivizedType+"&searchType="+searchType+"&exportType="+exportType;
-    	        }
-    	    }else{
-    	    	 document.getElementById("reportsStartDate").style.display="none";
-    			 document.getElementById("reportsEndDate").style.display="none";
-   	 		 window.location.href = sourceleadUrl+"/applicantsJoinedListExport?searchValue="+searchValue+"&orgLocationId="+orgLocationId+"&tabType="+tab+"&submissionStatus=JOINED&frequency="+frequency+"&fromDate="+fromDate+"&toDate="+toDate+"&employmentType="+employmentType+"&clientId="+clientNameById+"&teamId="+teamNameById+"&incentivizedType="+incentivizedType+"&searchType="+searchType+"&exportType="+exportType;
-    	    } 
 // 		 window.location.href = sourceleadUrl+"/applicantsJoinedListExport?searchValue="+searchValue+"&orgLocationId="+orgLocationId+"&tabType="+tab+"&submissionStatus=JOINED&frequency="+frequency+"&fromDate="+fromDate+"&toDate="+toDate+"&employmentType="+employmentType+"&clientId="+clientNameById+"&teamId="+teamNameById+"&incentivizedType="+incentivizedType+"&searchType="+searchType+"&exportType="+exportType;
 	     
 }

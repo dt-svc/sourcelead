@@ -7,6 +7,7 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Calendar;
+import java.util.Collection;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -747,6 +748,9 @@ public class RequirementDaoImpl implements RequirementDao {
 		String countQuery = "from Requirement requirement";
 		String countQuerySub ="";
 		String jobTypeVal ="";
+		String clientVal ="";
+		//List<Long> data = new ArrayList<Long>;
+		StringBuilder query1 = new StringBuilder("");
 		if(StringUtils.isNotBlank(jobFilterDTO.getJobType())){
 			if(jobFilterDTO.getJobType().equalsIgnoreCase("internal")){
 				jobTypeVal = " requirement.isClientJob = 'N'";	
@@ -757,6 +761,10 @@ public class RequirementDaoImpl implements RequirementDao {
 				jobTypeVal = " (requirement.isClientJob = 'N') or (requirement.isClientJob = 'Y')";	
 			}
 			
+		}
+		if(StringUtils.isNotBlank(jobFilterDTO.getClientIds())){
+			
+			clientVal = "requirement.clientId IN("+jobFilterDTO.getClientIds()+")";	
 		}
 		if (!StringUtils.equalsIgnoreCase(userType, "ADMIN")) {
 
@@ -770,14 +778,24 @@ public class RequirementDaoImpl implements RequirementDao {
 			params.put("userId", userId);
 
 			if (subQuery1 != "" || subQuery2 != "" || subQuery3 != "" || jobTypeVal !="") {
-				subQuery = "where requirement.orgLocationId.id =:orgLocationId and ("+ jobTypeVal +") and ( (" + subQuery1 + ") or ("
+				if(clientVal != ""){
+				subQuery = "where requirement.orgLocationId.id =:orgLocationId and ("+ jobTypeVal +") and ( (" + subQuery1 + ") or ("+ clientVal +") or ("
 						+ subQuery2 + ")  or (" + subQuery3 + ") and requirement.createdDate BETWEEN :startDateUTC and :endDateUTC) ";
+				}else{
+					subQuery = "where requirement.orgLocationId.id =:orgLocationId and ("+ jobTypeVal +") and ( (" + subQuery1 + ") or ("
+							+ subQuery2 + ")  or (" + subQuery3 + ") and requirement.createdDate BETWEEN :startDateUTC and :endDateUTC) ";	
+				}
 				params.put("orgLocationId", orgLocationId);
 				params.put("startDateUTC", startDateUTC);
 				params.put("endDateUTC", endDateUTC);
 				
-				countQuerySub = "where requirement.orgLocationId.id =:orgLocationId and ("+ jobTypeVal +") and ( (" + subQuery1 + ") or ("
+				if(clientVal != ""){
+				countQuerySub = "where requirement.orgLocationId.id =:orgLocationId and ("+ jobTypeVal +") and ( (" + subQuery1 + ") or ("+ clientVal +") or ("
 						+ subQuery2 + ")  or (" + subQuery3 + ") and requirement.createdDate BETWEEN :startDateUTC and :endDateUTC) ";
+				}else{
+					countQuerySub = "where requirement.orgLocationId.id =:orgLocationId and ("+ jobTypeVal +") and ( (" + subQuery1 + ") or ("
+							+ subQuery2 + ")  or (" + subQuery3 + ") and requirement.createdDate BETWEEN :startDateUTC and :endDateUTC) ";
+				}
 				params.put("orgLocationId", orgLocationId);
 				params.put("startDateUTC", startDateUTC);
 				params.put("endDateUTC", endDateUTC);
@@ -791,27 +809,45 @@ public class RequirementDaoImpl implements RequirementDao {
 			params.put("managerUserId", userId);
 
 			if (subQuery1 != "" || subQuery2 != "" || jobTypeVal !="") {
-				subQuery = "where requirement.orgLocationId.id =:orgLocationId and ("+ jobTypeVal +") and ( (" + subQuery1 + ") or ("
+				if(clientVal != ""){
+				subQuery = "where requirement.orgLocationId.id =:orgLocationId and ("+ jobTypeVal +") and ( (" + subQuery1 + ") and ("+ clientVal +") or ("
 						+ subQuery2 + ") and requirement.createdDate BETWEEN :startDateUTC and :endDateUTC) ";
+				}else{
+					subQuery = "where requirement.orgLocationId.id =:orgLocationId and ("+ jobTypeVal +") and ( (" + subQuery1 + ") or ("
+							+ subQuery2 + ") and requirement.createdDate BETWEEN :startDateUTC and :endDateUTC) ";	
+				}
 				params.put("orgLocationId", orgLocationId);
 				params.put("startDateUTC", startDateUTC);
 				params.put("endDateUTC", endDateUTC);
 				
-				countQuerySub = "where requirement.orgLocationId.id =:orgLocationId and ("+ jobTypeVal +") and ( (" + subQuery1 + ") or ("
+				if(clientVal != ""){
+				countQuerySub = "where requirement.orgLocationId.id =:orgLocationId and ("+ jobTypeVal +") and ( (" + subQuery1 + ") and ("+ clientVal +") or ("
 						+ subQuery2 + ") and requirement.createdDate BETWEEN :startDateUTC and :endDateUTC) ";
+				}else{
+				countQuerySub = "where requirement.orgLocationId.id =:orgLocationId and ("+ jobTypeVal +") and ( (" + subQuery1 + ") or ("
+							+ subQuery2 + ") and requirement.createdDate BETWEEN :startDateUTC and :endDateUTC) ";
+						
+				}
 				params.put("orgLocationId", orgLocationId);
 				params.put("startDateUTC", startDateUTC);
 				params.put("endDateUTC", endDateUTC);
 				
 			}
 		}
+		if (jobFilterDTO.getSearchValue() != null && !"".equalsIgnoreCase(jobFilterDTO.getSearchValue())) {
+			query1.append(" and (requirement.jobTitle like '%" + jobFilterDTO.getSearchValue() + "%' ")
+					.append("OR requirement.jobId like '%" + jobFilterDTO.getSearchValue() + "%' ")
+					.append("OR requirement.priority like '%" + jobFilterDTO.getSearchValue() + "%' ")
+					.append("OR requirement.generatedId like '%" + jobFilterDTO.getSearchValue() + "%' )");
+
+		}
 		int count = 0;
-		String whereCondition = subQuery;
+		String whereCondition = subQuery+query1;
 		Query query = session.createQuery(from + " " + whereCondition + " ORDER BY requirement.id DESC");
 		for (String str : query.getNamedParameters()) {
 		if (str.equalsIgnoreCase("orgLocationId") || str.equalsIgnoreCase("")) {
 			query.setLong(str, (long) params.get(str));
-		} else {
+		}else{
 			query.setParameter(str, params.get(str));
 		}
 	}
@@ -845,11 +881,11 @@ public class RequirementDaoImpl implements RequirementDao {
 		}
 		
 		
-		Query countQueryFinal = session.createQuery("select count(*) " + countQuery + " " +countQuerySub);
+		Query countQueryFinal = session.createQuery("select count(*) " + countQuery + " " +countQuerySub +query1);
 		for (String str : countQueryFinal.getNamedParameters()) {
 			if (str.equalsIgnoreCase("orgLocationId") || str.equalsIgnoreCase("")) {
 				countQueryFinal.setLong(str, (long) params.get(str));
-			} else {
+			}else {
 				countQueryFinal.setParameter(str, params.get(str));
 			}
 		}
