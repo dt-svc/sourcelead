@@ -68,7 +68,7 @@ border:none; background: none; font-size:14px; font-weight:600; box-shadow: none
             <div class="form-group">
               <label class="col-md-3">Bill Id<span class="text-danger">&nbsp;*</span></label>
               <div class="col-md-9" id="invoiceIdDiv" onkeyup="validateBillId();">
-                <input class="form-control" id="invoiceId" name="invoiceId" placeholder="Bill Id" type="text" data-validation="required" field-name="Bill Id">
+                <input class="form-control" id="invoiceId" name="invoiceId" placeholder="Bill Id" type="text" data-validation="required validate_Alphanumeric validate_length length2-100" field-name="Bill Id">
               </div>
             </div>
             <div class="form-group">

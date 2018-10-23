@@ -320,7 +320,7 @@ function offerpagination(url){
             "data": "location",
             "render": function ( data, type, opt, meta ) {
             	var result = "";
-            		 result = result + '<td><div><span>---</span></div></td>';
+            		 result = result + '<td><div>'+opt.location+'</div></td>';
    				return result;
             }
           } ,{
