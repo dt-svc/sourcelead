@@ -497,7 +497,7 @@ function statusvalidating(id){
 					</sec:authorize>					
 									
 					<sec:authorize access="hasAnyRole('ROLE_EXPORT_REQUIREMENTS')">
-						<li><a href="javascript:void(0)" class="overIcon" title="Actions" onclick="newActions();" style="display: none;"></a>
+						<li><a href="javascript:void(0)" class="overIcon" title="Actions" onclick="newActions();"></a>
 							<div class="newActPop">
 								<span>
 									 	<a href="javascript:void(0)" onclick="exportToPdf(2);" title="PDF">Export PDF</a>
@@ -659,9 +659,9 @@ function changeStatus(requirementId, requirementStatus){
 </script>
 <script>
 function exportToPdf(type) {
+	var sourceleadUrl ='${sourceleadUrl}';
 	if(type === 1) {
 		var req = $("#noReq").val();
-	 	var sourceleadUrl ='${sourceleadUrl}';
 	 	var requirementEmptyMessage = $("#requirementEmptyListMessage").val();
 	  	var status = [];
 		$('input:checkbox[name=requirementStatus]:checked').each(function() {
@@ -688,16 +688,16 @@ function exportToPdf(type) {
 	} else {
 		/* alert("Export JobFair to PDF"); */
 		$(".buttons-pdf").click();
-		window.location.href = sourceleadUrl +"/pdfExportForJobfair"
+		window.location.href = sourceleadUrl +"/pdfExportForJobfair";
 	}
 }
 </script>
 <script>
 function exportToExcel(type) {
+	var sourceleadUrl ='${sourceleadUrl}';
 	if(type === 1) {
 		var req = $("#noReq").val();
 		var requirementEmptyMessage = $("#requirementEmptyListMessage").val();
-		var sourceleadUrl ='${sourceleadUrl}';
 	  	var status = [];
 		$('input:checkbox[name=requirementStatus]:checked').each(function() {
 			status.push($(this).val());
