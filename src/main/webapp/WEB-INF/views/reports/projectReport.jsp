@@ -1,5 +1,4 @@
- 
- <jsp:include page="../masterHeader.jsp" />
+<jsp:include page="../masterHeader.jsp" />
 <jsp:include page="../masterSideNav.jsp" />
 <%@taglib uri="http://www.springframework.org/tags/form" prefix="form"%>
 <%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
@@ -136,8 +135,9 @@
       </div>
     </div>
   </div>
-
-
+</div>
+</section>
+<div class="loading" style="display:none; position:fixed; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url('/resources/images/loading.gif'); background-position:center; background-repeat:no-repeat; background-size:75px;"></div>
 <script type="text/javascript">
 	var config = {
 	'.chosen-select'           : {},
@@ -203,7 +203,7 @@ $(document).ready(function(){
 	projectReportDataTableList(true);
 });
 function projectReportDataTableList(refreshFlag){
-	
+	$(".loading").show();
 	var projectIds = [];
 	var projectStatus = [];
     var clients = [];
@@ -281,6 +281,7 @@ function projectReportDataTableList(refreshFlag){
 					}
 				} else 
 					alert("Please try again....");
+				$(".loading").hide();
 			}
 		})
 	}
@@ -348,6 +349,3 @@ function projectReportExport(type){
 
 
 </script>
-	
-</body>
-</html>
