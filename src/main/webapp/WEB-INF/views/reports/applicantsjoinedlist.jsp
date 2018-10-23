@@ -7,7 +7,10 @@
   <!-- Header Area -->
   <section class="content-wraper">
     <section class="content-header clearfix">
-       <div class="pull-right brud-crum"><a href="<c:url value='${appPath}/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a> &raquo; <a href="<c:url value='${appPath}/reportsDashboard'/>">Reports Dashboard</a> &raquo; <a href="<c:url value='${appPath}/performanceReportList'/>">Performance Reports</a> &raquo; Applicants Joined Report  </div>
+    	<div class="pull-left">
+				<h2>Applicants Joined Report</h2>
+		</div>
+        <div class="pull-right brud-crum"><a href="<c:url value='${appPath}/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a> &raquo; <a href="<c:url value='${appPath}/reportsDashboard'/>">Reports Dashboard</a> &raquo; <a href="<c:url value='${appPath}/performanceReportList'/>">Performance Reports</a> &raquo; Applicants Joined Report  </div>
     </section>
        
     <!-- Project -->
@@ -221,8 +224,8 @@ function daywiseLeaveReportsListPagination(url){
 			        "render": function ( data, type, user, meta ) {
 			        	  var result = '';
 			        	  result = result + ' <td>';
-			        	  if(user.requirementCount !=null && user.requirementCount !='' && user.requirementCount !='undefined'){
-								 result = result + '<div class="tblminwidth-75">'+user.requirementCount+'</div>';
+			        	  if(user.totalRequirementCount !=null && user.totalRequirementCount !='' && user.totalRequirementCount !='undefined'){
+								 result = result + '<div class="tblminwidth-75">'+user.totalRequirementCount+'</div>';
 				          }else{
 								result = result + ' <div class="tblminwidth-75">0</div>';
 							}
@@ -1082,7 +1085,7 @@ function exportToPdf(){
 		orgTeams.push($(this).val());
     });
 	 var orgTeams = [];
-		$('input:checkbox[name=orgTeams]:checked').each(function() 
+		$('input:checkbox[name=teamNameById]:checked').each(function() 
 			    {
 			orgTeams.push($(this).val());
 	     });
@@ -1143,7 +1146,7 @@ function exportUserData(){
 		orgTeams.push($(this).val());
     });
 	 var orgTeams = [];
-		$('input:checkbox[name=orgTeams]:checked').each(function() 
+		$('input:checkbox[name=teamNameById]:checked').each(function() 
 			    {
 			orgTeams.push($(this).val());
 	     });
