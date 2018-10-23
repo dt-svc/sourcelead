@@ -2466,12 +2466,16 @@ public class UserDaoImpl implements UserDao {
 		                + "%' )");
 		}
 String groupSubQuery = "";
+
+String sortingQry ="";
 		
 		if (applicantsJoinedReportDTO.getOrgTeams() == null &&
 				applicantsJoinedReportDTO.getOrgTeams().isEmpty()) { 
 			groupSubQuery=" group by u.ID,req.ID";
 		}
-	
+		if(StringUtils.isNotBlank(applicantsJoinedReportDTO.getSortColumn())) {
+			sortingQry = " order by "+ applicantsJoinedReportDTO.getSortColumn() +" "+applicantsJoinedReportDTO.getSortOrder();
+		}
 		query = "SELECT" + " u.ID as userId," + "req.ID as requirementID,"
 				+ "req.ORG_LOCATION_ID as orglocationId,"
 				+ "reqSub.CREATED_DATE as reqSubCreatedDate," + "req.ORG_RELATION_ID as clientId,"
@@ -2483,7 +2487,7 @@ String groupSubQuery = "";
 				+ dateQury + ") AS submissionCount,"
 				+ "(SELECT count(*) FROM REQUIREMENT_SUBMISSION reqSub WHERE reqSub.SUBMISSION_STATUS = 'JOINED' and reqSub.CREATED_BY = u.USER_CODE "
 				+ dateQury + ") AS joinedCount , "
-				+ "(SELECT count(*) FROM REQUIREMENT_SUBMISSION reqSub WHERE reqSub.SUBMISSION_STATUS = 'OFFERMADE' and reqSub.CREATED_BY = u.USER_CODE "
+				+ "(SELECT count(*) FROM REQUIREMENT_SUBMISSION reqSub WHERE (reqSub.SUBMISSION_STATUS = 'OFFERMADE' OR reqSub.PREVIOUS_SUBMISSION_STATUS='OFFERMADE') and reqSub.CREATED_BY = u.USER_CODE "
 				+ dateQury + ") AS offerCount  "
 				+ "FROM USER u, REQUIREMENT_SUBMISSION reqSub, REQUIREMENT req where u.USER_CODE = reqSub.CREATED_BY and req.ORG_LOCATION_ID= "
 				+ orgLocationId + "  and reqSub.REQUIREMENT_ID = req.ID " + dateQury
@@ -2514,7 +2518,7 @@ String groupSubQuery = "";
 				  
 				  }
 		
-		queryString = session.createSQLQuery(query + clientSubQuery + teamSubQuery);
+		queryString = session.createSQLQuery(query + clientSubQuery + teamSubQuery + sortingQry);
 		/*
 		 * queryString.setLong("orgLocationId", orgLocationId);
 		 * queryString.setParameter("fromDate", fromDate);
@@ -2535,35 +2539,19 @@ String groupSubQuery = "";
 		queryString.setResultTransformer(Transformers.aliasToBean(ApplicantsJoinedReportDTO.class));
 		applicantJoinedReportList = queryString.setFirstResult(applicantsJoinedReportDTO.getStart()).setMaxResults(applicantsJoinedReportDTO.getLength()).list();
 		
-		String countQuery1=null;
+		/*String countQuery1=null;
 		countQuery1 = 
 				"SELECT" + " distinct u.ID as userId " 
 				+ " FROM USER u, REQUIREMENT_SUBMISSION reqSub, REQUIREMENT req where u.USER_CODE = reqSub.CREATED_BY and req.ORG_LOCATION_ID= "
 				+ orgLocationId + "  and reqSub.REQUIREMENT_ID = req.ID " + dateQury
 				+ query1
 				+" group by u.ID,req.ID";
-//		   countQuery1=query + query1.toString() + " " + clientSubQuery;
 		 if (!clientIdsList.isEmpty()) {
 			 countlist = session.createSQLQuery(countQuery1 + clientSubQuery).setParameterList("clientIdsList", clientIdsList).list();
 		 }else{
 			 countlist = session.createSQLQuery(countQuery1).list();
-		 }
-		
-		  /* if (!clientIdsList.isEmpty()) {
-			   countQueryString.setParameterList("clientIdsList", clientIdsList);
-			}
-		   countlist = countQueryString.list();*/
-		  filterCount = countlist.size();
-		   
-		   /*int count = 0;
-           int filteredCount = 0;
-           if (countlist != null && !countlist.isEmpty()) {
-               count = countlist.size();
-           }*/
-        /*   for(ApplicantsJoinedReportDTO res: applicantJoinedReportList){
-   			res.setRecordsTotal(count);
-   		}*/
-//           response.setRecordsTotal(count);
+		 }*/
+//		  filterCount = countlist.size();
 		if (applicantJoinedReportList != null && !applicantJoinedReportList.isEmpty()) {
 			for (ApplicantsJoinedReportDTO applicantsJoinedReportDTO2 : applicantJoinedReportList) {
 				applicantsJoinedReportDTO2.setFromDate(fromDate);
@@ -2576,7 +2564,7 @@ String groupSubQuery = "";
 			}
 		}
 		
-		int totalCount = 0;
+		/*int totalCount = 0;
 		if (applicantsJoinedReportDTO != null) {
 			if(countlist != null && !countlist.isEmpty()) {
 				totalCount = countlist.size();
@@ -2588,11 +2576,10 @@ String groupSubQuery = "";
 			responses.setRecordsFiltered(filterCount);
 		}else {
 			responses.setRecordsFiltered(totalCount);
-		}
+		}*/
 		
 		responses.setData(applicantJoinedReportList);
 		
-//		response = applicantJoinedReportList;
 		return responses;
 	}
 

@@ -4033,7 +4033,7 @@ public class InvoiceServiceImpl implements InvoiceService {
 		StringBuilder contactEmails = new StringBuilder();
 		if (creditDebitNote.getOrgRelations().getLocationId().getId().equals(orgLocationId)) {
 			creditDebitNote.setClientOrVendorName(creditDebitNote.getOrgRelations().getResponderLocationId().getOrgLocationName());
-			List<User> contactsUserList = userDao.getUsersListUsingMultipleStringIdsWithLocationId(creditDebitNote.getContactUser(),creditDebitNote.getOrgRelations().getResponderLocationId().getId());
+			List<User> contactsUserList = userDao.getUsersListUsingMultipleStringIds(creditDebitNote.getContactUser());
 			contactsUserList.forEach(contactUser->{
 				contactName.append(contactUser.getFullName()).append(" , ").toString();	
 				contactEmails.append(contactUser.getEmail()).append(" , ").toString();
@@ -4044,7 +4044,7 @@ public class InvoiceServiceImpl implements InvoiceService {
 		
 		if(creditDebitNote.getOrgRelations().getResponderLocationId().getId().equals(orgLocationId)){
 			creditDebitNote.setClientOrVendorName(creditDebitNote.getOrgRelations().getLocationId().getOrgLocationName());
-			List<User> contactsUserList = userDao.getUsersListUsingMultipleStringIdsWithLocationId(creditDebitNote.getOwnerUser(),creditDebitNote.getOrgRelations().getLocationId().getId());
+			List<User> contactsUserList = userDao.getUsersListUsingMultipleStringIds(creditDebitNote.getOwnerUser());
 			contactsUserList.forEach(contactUser->{
 				contactName.append(contactUser.getFullName()).append(" , ").toString();	
 				contactEmails.append(contactUser.getEmail()).append(" , ").toString();
