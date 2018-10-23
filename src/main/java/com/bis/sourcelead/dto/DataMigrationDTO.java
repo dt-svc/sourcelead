@@ -358,6 +358,8 @@ private String beneficiaryFirstName;
     
     private String lastName;
     
+    private String middleName;
+    
     private String email;
     
     private String mobilePhone;
@@ -2482,6 +2484,14 @@ private String beneficiaryFirstName;
 
 	public void setSessionId(String sessionId) {
 		this.sessionId = sessionId;
+	}
+
+	public String getMiddleName() {
+		return middleName;
+	}
+
+	public void setMiddleName(String middleName) {
+		this.middleName = middleName;
 	}
    
 }
