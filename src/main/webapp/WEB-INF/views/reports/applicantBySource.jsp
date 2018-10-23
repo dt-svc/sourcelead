@@ -28,7 +28,7 @@ $(document).ready(function(){
     
     <div class="vendor_wrap clearfix">
     
-<div class="reportHead clearfix">
+<div class="reportHead clearfix zIndex">
 	<div class="listGridWrap reqListBtn">
           <a title="Graphical View"  id="graphicView" class="btn btn-default rAct"><i class="fa fa-pie-chart"></i></a>
           <a title="List View" id="listView" class="btn btn-default" ><i class="fa fa-list"></i></a>
