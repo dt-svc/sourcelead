@@ -96,6 +96,7 @@ import com.bis.sourcelead.enums.HIERARCHY_TYPE;
 import com.bis.sourcelead.enums.REQUIREMENT_APPROVER_HIERARCHY_STATUS;
 import com.bis.sourcelead.enums.REQUIREMENT_SUBMISSION_STATUS;
 import com.bis.sourcelead.enums.Result;
+import com.bis.sourcelead.reportsDTO.JobFilterDTO;
 import com.bis.sourcelead.service.CandidateResumesService;
 import com.bis.sourcelead.service.CandidateService;
 import com.bis.sourcelead.service.EmailScenarioService;
@@ -4490,6 +4491,12 @@ public class RequirementServiceImpl implements RequirementService {
 		createExcelsheet.autoSizeColumn(8);
 
 		return createExcelsheet;
+	}
+	
+	@Override
+	public ResponseList<Requirement> getAssignedJobsPerformanceList(Long orgLocationId, String userType, Long userId,
+			String userCode,Date startDateUTC,Date endDateUTC,JobFilterDTO jobFilterDTO) throws Exception {
+		return requirementDao.getAssignedJobsPerformanceList(orgLocationId,userType,userId,userCode,startDateUTC,endDateUTC,jobFilterDTO);
 	}
 	
 }
