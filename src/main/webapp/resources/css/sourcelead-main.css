@@ -94,7 +94,7 @@ html, body {
 height: 100%;
 }
 .wraper {
-    min-height: 100%; height: auto !important; height: 100%; margin: 0 auto -15px; position: relative;
+    min-height: 100%; height: auto !important; height: 100%; margin: 0 auto;
 }
 .wrapper::before, .wrapper::after {
 	content: " "; display: table;
@@ -643,7 +643,7 @@ line-height: 35px; border-bottom: 1px solid #325475; transition: all 0.5s ease-i
 /*sidebar menu styles ends */
 /* content Area Styels */
 .content-wraper {
-background: #f2f2f2; margin-left: 60px; padding: 0 20px 65px; padding-top: 54px;
+background: #f2f2f2; margin-left: 60px; padding: 0 20px 20px; padding-top: 54px;
 -moz-transition: all ease-in-out 0s; -ms-transition: all ease-in-out 0s; -webkit-transition: all ease-in-out 0s;
 transition: all ease-in-out 0s;
 }
@@ -806,8 +806,8 @@ position: absolute; top: 40%; width: 100%;
 
 /* Footer Styles */
 .footer-area {
-background: #fff; clear: both; padding: 10px 0px; margin-left: 55px; transition: all ease-in-out 0.2s; box-shadow: 0px 0px 2px rgba(0,0,0,0.1);
-bottom: 0; height: 45px; right: 0; position: absolute; width: 100%; line-height: 25px; text-align: center;
+background: #fff; clear: both; padding: 0px 0px; margin-left: 55px; transition: all ease-in-out 0.2s; box-shadow: 0px 0px 2px rgba(0,0,0,0.1);
+height: 45px; width: 100%; line-height: 44px; text-align: center;
 }
 .footer-area.footer-area-active {
  margin-left: 192px;
@@ -1662,8 +1662,7 @@ max-height: 22px; height: auto; width: auto;
 background: #cd2027 !important;
 }
 .toggle-button .switch {
-position: relative;
-top: -2px;
+position: relative; top: -2px;
 }
 .release-jobs-tbl table tr th {
 text-align:center;
