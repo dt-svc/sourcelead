@@ -1197,7 +1197,7 @@ function openFilterTaskPop(){
 									 </div> 
 							 </div> 
 							 
-							 <div class="col-md-4 mb positionRelative">
+							 <%-- <div class="col-md-4 mb positionRelative">
 									<div class="clearfix dynamic_search filterDynamicsearch">
 										<input type="text" id="myCreatedByInput" onkeyup="myCreatedByFunction()" placeholder="Created By" title="Type in a created By">
 										<span class="cursorPointer" title="Search"><i class="fa fa-search"></i></span>
@@ -1209,7 +1209,7 @@ function openFilterTaskPop(){
 											</c:forEach>
 										</ul>
 									 </div> 
-							 </div> 
+							 </div>  --%>
 							 
 							 <div class="col-md-3 mb positionRelative">
 									<div class="clearfix dynamic_search filterDynamicsearch">
@@ -1388,9 +1388,33 @@ function projectTaskExport(type){
 		teams.push($(this).val());
 	});
 	
+	var priorityFilter = [];
+	$('input:checkbox[name=priorityFilter]:checked').each(function() 
+    {
+		priorityFilter.push($(this).val());
+	});
+	
+	var severityFilter = [];
+	$('input:checkbox[name=severityFilter]:checked').each(function() 
+    {
+		severityFilter.push($(this).val());
+	});
+	
+	var createdByFilter = [];
+	$('input:checkbox[name=createdByFilter]:checked').each(function() 
+    {
+		createdByFilter.push($(this).val());
+	});
+	
+	var tasksFilter = [];
+	$('input:radio[name=tasksFilter]:checked').each(function() 
+    {
+		tasksFilter.push($(this).val());
+	});
+	
 	var searchValue = $("#taskDataTableSearch").val();
 	 searchValue = searchValue ? searchValue : "";
-	 window.location.href = sourceleadUrl + "/getExportTasks?searchValue="+searchValue+"&projectId="+projectId+"&projectTaskStatus="+projectTaskStatus+"&projectTaskType="+projectTaskType+"&assignedMembers="+assignedMembers+"&teams="+teams+"&exportType="+exportType;
+	 window.location.href = sourceleadUrl + "/getExportTasks?searchValue="+searchValue+"&projectId="+projectId+"&projectTaskStatus="+projectTaskStatus+"&projectTaskType="+projectTaskType+"&assignedMembers="+assignedMembers+"&teams="+teams+"&exportType="+exportType+"&tasksFilter="+tasksFilter+"&createdByFilter="+createdByFilter+"&severityFilter="+severityFilter+"&priorityFilter="+priorityFilter;
 
 	
 }

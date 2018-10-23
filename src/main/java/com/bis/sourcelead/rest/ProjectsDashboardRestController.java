@@ -1556,11 +1556,12 @@ public @ResponseBody String saveProjectNamePermissions(ProjectsDocumentFolderDTO
 public void getExportUsersData(ProjectTasksDTO projectTasksDTO,HttpServletRequest request, HttpServletResponse response) throws Exception {
 			 OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 		 	 String userRole = (String) SourceLeadSessionManager.getSessionAttribute(request, "loginUserRole");
-
+		 	 User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
 		 	 Workbook createExcelworkbook =  new XSSFWorkbook();
 			 StringBuilder excelSB = new StringBuilder();
 	 		 Sheet createExcelsheet = createExcelworkbook.createSheet(excelSB.append("project_Tasks ").append(commonUtil.dateStrFromOrgDateFormatter(orgLocations.getDateFormat(),new Date())).toString());
-			 
+	 		 projectTasksDTO.setUserCode(user.getUserCode());
+	 		
 	 		 ResponseList<ProjectTasks>  taskList = tasksService.getAllProjectTasksByProjectIdAndTaskTypeAndTaskStatus(projectTasksDTO,Long.parseLong(projectTasksDTO.getProjectId()),projectTasksDTO.getProjectTaskType(),projectTasksDTO.getProjectTaskStatus(),userRole,projectTasksDTO.getAssignedMembers());
 	 		 File file = null;
 	 		 if(!"pdf".equalsIgnoreCase(projectTasksDTO.getExportType())){
