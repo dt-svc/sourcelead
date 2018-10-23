@@ -224,8 +224,8 @@ function daywiseLeaveReportsListPagination(url){
 			        "render": function ( data, type, user, meta ) {
 			        	  var result = '';
 			        	  result = result + ' <td>';
-			        	  if(user.requirementCount !=null && user.requirementCount !='' && user.requirementCount !='undefined'){
-								 result = result + '<div class="tblminwidth-75">'+user.requirementCount+'</div>';
+			        	  if(user.totalRequirementCount !=null && user.totalRequirementCount !='' && user.totalRequirementCount !='undefined'){
+								 result = result + '<div class="tblminwidth-75">'+user.totalRequirementCount+'</div>';
 				          }else{
 								result = result + ' <div class="tblminwidth-75">0</div>';
 							}

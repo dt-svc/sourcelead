@@ -2542,30 +2542,4 @@ public class RequirementListRestController {
 		return response;
 	}
 	
-	
-	@RequestMapping(value = "/pdfExportForJobfair")
-	public File jobFairPdfExport(HttpServletRequest request, HttpServletRequest response, JobFairDTO jobfairDto)
-			throws Exception {
-		User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
-		if (user != null) {
-
-			OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,
-					"orgLocations");
-		}
-		return null;
-	}
-
-	@RequestMapping(value = "/excelExportForJobfair")
-	public File jobFairExcelExport(HttpServletRequest request, HttpServletRequest response)
-			throws Exception {
-		User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
-		if (user != null) {
-
-			OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,
-					"orgLocations");
-
-		}
-		return null;
-	}
-	
 }
