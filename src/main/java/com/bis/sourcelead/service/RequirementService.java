@@ -248,4 +248,5 @@ public interface RequirementService {
 	
 	public void deleteRequirementIncentiveByRequirementIdOrIds(long requirementId, String ids) throws Exception;
 
+	public File getJobFairListOfExcel(List<JobFairDTO> jobFairDTOList, User user, OrgLocations orgLocation);
 }

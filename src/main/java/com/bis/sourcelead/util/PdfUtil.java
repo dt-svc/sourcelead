@@ -23,6 +23,7 @@ import org.springframework.stereotype.Component;
 import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.dao.OrgLocationsDao;
 import com.bis.sourcelead.dto.ApplicantsJoinedReportDTO;
+import com.bis.sourcelead.dto.JobFairDTO;
 import com.bis.sourcelead.dto.ProjectsDTO;
 import com.bis.sourcelead.dto.Response;
 import com.bis.sourcelead.dto.ResponseList;
@@ -2374,4 +2375,122 @@ private String[] prepareApplicantsJoinedListStringArray(ApplicantsJoinedReportDT
 		return arrayList;
 	}
 
+	public File getJobFairListOfPdf(java.util.List<JobFairDTO> jobFairDTO, User user, OrgLocations orgLocation) {
+		try {
+			String[] headers = Constants.JOBFAIR_EXPORT_HEADERS;
+			Document document = new Document(PageSize.LETTER.rotate());
+
+			StringBuilder sbUser = new StringBuilder();
+			sbUser.append("Project Report")
+					.append(commonUtil.dateStrFromOrgDateFormatter(orgLocation.getDateFormat(), new Date()));
+
+			StringBuilder fileSB = new StringBuilder();
+			File file = File.createTempFile(fileSB.append("JobFairs")
+					.append(commonUtil.dateStrFromOrgDateFormatter(orgLocation.getDateFormat(), new Date())).toString(),
+					".pdf");
+
+			file.setReadable(true);
+
+			try {
+				// Get an instance of PdfWriter and create a Table.pdf file as an output.
+				PdfWriter.getInstance(document, new FileOutputStream(file));
+				document.open();
+
+				Font boldFont = new Font(Font.FontFamily.TIMES_ROMAN, 18, Font.BOLD);
+				BaseColor myColor = WebColors.getRGBColor("#000000");
+				boldFont.setColor(myColor);
+				StringBuilder userStyle = new StringBuilder();
+				userStyle.append(orgLocation.getOrgLocationName()).append(" ").append("- JobFair");
+
+				// Create an instance of PdfPTable. After that we transform the header and
+				PdfPTable table = new PdfPTable(headers.length);
+				Font font = new Font(FontFamily.HELVETICA, 14, Font.BOLD, BaseColor.WHITE);
+				PdfPCell cell1 = new PdfPCell(new Phrase(userStyle.toString(), font));
+				cell1.setColspan(18);
+				headerCellStyle(cell1);
+				table.setWidthPercentage(100);
+				table.setWidths(new int[] {3, 2, 2, 2, 2, 2, 2, 3, 2});
+				table.addCell(cell1);
+				for (int i = 0; i < headers.length; i++) {
+					String header = headers[i];
+					PdfPCell cell = new PdfPCell();
+					cell.setGrayFill(0.9f);
+					cell.setPhrase(new Phrase(header.toUpperCase(), new Font(FontFamily.HELVETICA, 10, Font.BOLD)));
+					BaseColor myBorderColor = WebColors.getRGBColor("#808080");
+					cell.setBackgroundColor(myBorderColor);
+					table.addCell(cell);
+				}
+				table.completeRow();
+				java.util.List<String[]> reportList = prepareJobFairListStringArray(jobFairDTO, headers, orgLocation,
+						user);
+				if (reportList != null && reportList.size() > 0) {
+					for (String[] reportArray : reportList) {
+						for (int i = 0; i < reportArray.length; i++) {
+							String datum = reportArray[i];
+							PdfPCell cell = new PdfPCell();
+							cell.setPhrase(new Phrase(datum, new Font(FontFamily.HELVETICA, 10, Font.NORMAL)));
+							table.addCell(cell);
+						}
+						table.completeRow();
+					}
+				}
+				document.addTitle("Project Report Table");
+				table.setSpacingBefore(15f);
+				document.add(table);
+				logger.info("Pdf table of JobFair created !!");
+			} catch (DocumentException e) {
+				logger.error("Exception cause is : " + ExceptionUtils.getFullStackTrace(e));
+			} catch (FileNotFoundException e) {
+				logger.error("Exception cause is : " + ExceptionUtils.getFullStackTrace(e));
+			} finally {
+				document.close();
+			}
+			return file;
+		} catch (IOException e1) {
+			e1.printStackTrace();
+		}
+		return null;
 	}
+	
+	private java.util.List<String[]> prepareJobFairListStringArray(java.util.List<JobFairDTO> jobFairDTOList,
+			String[] headers, OrgLocations orgLocation, User user) {
+
+		java.util.List<String[]> arrayList = new ArrayList<>();
+
+		for (JobFairDTO jobFairDTO : jobFairDTOList) {
+			String reportArray[] = new String[headers.length];
+			reportArray[0] = jobFairDTO.getGeneratedId() != null && !jobFairDTO.getGeneratedId().isEmpty()
+					? jobFairDTO.getGeneratedId()
+					: "----";
+
+			reportArray[1] = jobFairDTO.getName() != null && !jobFairDTO.getName().isEmpty() ? jobFairDTO.getName()
+					: "----";
+
+			reportArray[2] = jobFairDTO.getStartDate() != null && !jobFairDTO.getStartDate().isEmpty()
+					? jobFairDTO.getStartDate()
+					: "----";
+
+			reportArray[3] = jobFairDTO.getEndDate() != null && !jobFairDTO.getEndDate().isEmpty()
+					? jobFairDTO.getEndDate()
+					: "----";
+
+			reportArray[4] = jobFairDTO.getJobFairRequirementList() != null
+					&& !jobFairDTO.getJobFairRequirementList().isEmpty()
+							? jobFairDTO.getJobFairRequirementList().size() + ""
+							: "0";
+
+			reportArray[5] = jobFairDTO.getApplicantCount() + "";
+
+			reportArray[6] = jobFairDTO.getOfferedCount() + "";
+
+			reportArray[7] = jobFairDTO.getVenue() != null && !jobFairDTO.getVenue().isEmpty() ? jobFairDTO.getVenue()
+					: "----";
+
+			reportArray[8] = jobFairDTO.getStatus() == 1 ? "OPEN" : "CLOSE";
+
+			arrayList.add(reportArray);
+		}
+		return arrayList;
+	}
+
+}

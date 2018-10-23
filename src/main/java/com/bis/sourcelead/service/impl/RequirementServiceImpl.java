@@ -4412,6 +4412,84 @@ public class RequirementServiceImpl implements RequirementService {
 	public void deleteRequirementIncentiveByRequirementIdOrIds(long requirementId, String ids) throws Exception {
 		 requirementDao.deleteRequirementIncentiveByRequirementIdOrIds(requirementId, ids);
 	}
+	
+	@Override
+	public File getJobFairListOfExcel(List<JobFairDTO> jobFairDTOList, User user, OrgLocations orgLocation) {
+		File file = null;
+		try {
+			Workbook createExcelworkbook = new XSSFWorkbook();
+			DateFormat dateFormat = new SimpleDateFormat("MM-dd-yyyy");
+			Sheet createExcelsheet = createExcelworkbook
+					.createSheet(orgLocation.getOrgLocationName() + "_" + dateFormat.format(new Date()));
+			Row writeRow = null;
+			createExcelsheet = getExcelSheetWithHeader(createExcelsheet, writeRow, createExcelworkbook);
+			int column = 0;
+			for (JobFairDTO reportList : jobFairDTOList) {
+				writeRow = createExcelsheet.createRow(column + 1);
+				createExcelsheet = createXlsSheet(createExcelsheet, writeRow, reportList, orgLocation, user);
+				column++;
+			}
+			file = File.createTempFile(orgLocation.getOrgLocationName() + "_JobFair_" + dateFormat.format(new Date()), ".xlsx");
+			file.setReadable(true);
+			FileOutputStream fos = new FileOutputStream(file);
+			createExcelworkbook.write(fos);
+			fos.close();
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return file;
+	}
 
+	private Sheet getExcelSheetWithHeader(Sheet createExcelsheet, Row writeRow, Workbook createExcelworkbook) {
+		CellStyle style = commonUtil.getCellStyle(createExcelworkbook);
+		String[] headers = Constants.JOBFAIR_EXPORT_HEADERS;
+		createExcelsheet = commonUtil.setExcelHeaders(createExcelsheet, style, headers, 0);
+		return createExcelsheet;
+	}
+
+	private Sheet createXlsSheet(Sheet createExcelsheet, Row writeRow, JobFairDTO jobFairDTO, OrgLocations orgLocation,
+			User loginUser) throws Exception {
+
+		writeRow.createCell(0).setCellValue(jobFairDTO.getGeneratedId() != null && !jobFairDTO.getGeneratedId().isEmpty()
+						? jobFairDTO.getGeneratedId()
+						: "----");
+		createExcelsheet.autoSizeColumn(0);
+
+		writeRow.createCell(1).setCellValue(jobFairDTO.getName() != null && !jobFairDTO.getName().isEmpty() 
+						? jobFairDTO.getName() 
+						: "----");
+		createExcelsheet.autoSizeColumn(1);
+
+		writeRow.createCell(2).setCellValue(jobFairDTO.getStartDate() != null && !jobFairDTO.getStartDate().isEmpty()
+						? jobFairDTO.getStartDate()
+						: "----");
+		createExcelsheet.autoSizeColumn(2);
+
+		writeRow.createCell(3).setCellValue(jobFairDTO.getEndDate() != null && !jobFairDTO.getEndDate().isEmpty() 
+						? jobFairDTO.getEndDate()
+						: "----");
+		createExcelsheet.autoSizeColumn(3);
+
+		writeRow.createCell(4).setCellValue(jobFairDTO.getJobFairRequirementList() != null && !jobFairDTO.getJobFairRequirementList().isEmpty()
+						? jobFairDTO.getJobFairRequirementList().size()
+						: 0);
+		createExcelsheet.autoSizeColumn(4);
+
+		writeRow.createCell(5).setCellValue(jobFairDTO.getApplicantCount());
+		createExcelsheet.autoSizeColumn(5);
+
+		writeRow.createCell(6).setCellValue(jobFairDTO.getOfferedCount());
+		createExcelsheet.autoSizeColumn(6);
+
+		writeRow.createCell(7).setCellValue(jobFairDTO.getVenue() != null && !jobFairDTO.getVenue().isEmpty() 
+						? jobFairDTO.getVenue()
+						: "----");
+		createExcelsheet.autoSizeColumn(7);
+
+		writeRow.createCell(8).setCellValue(jobFairDTO.getStatus() == 1 ? "OPEN" : "CLOSE");
+		createExcelsheet.autoSizeColumn(8);
+
+		return createExcelsheet;
+	}
 	
 }
