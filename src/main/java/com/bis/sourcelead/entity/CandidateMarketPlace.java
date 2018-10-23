@@ -150,6 +150,10 @@ public class CandidateMarketPlace implements Serializable {
 	
 	@Column(name = "WITHDRAW_REASON")
 	private String withdrawReason;
+	
+	@Column(name = "IMAGE_URL")
+	private String imageUrl;
+	
 
 	public Long getId() {
 		return id;
@@ -443,6 +447,13 @@ public class CandidateMarketPlace implements Serializable {
 	public void setWithdrawReason(String withdrawReason) {
 		this.withdrawReason = withdrawReason;
 	}
-	
 
+	public String getImageUrl() {
+		return imageUrl;
+	}
+
+	public void setImageUrl(String imageUrl) {
+		this.imageUrl = imageUrl;
+	}
+	
 }
