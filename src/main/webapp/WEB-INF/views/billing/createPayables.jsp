@@ -976,7 +976,7 @@ function cancelDelDoc(){
  		}
 	}
   </script>
-
+<div id="allowOneAssociatePopUp"></div>
 <script>
 function allowOneAssociate(){ 
 	var result = "";
