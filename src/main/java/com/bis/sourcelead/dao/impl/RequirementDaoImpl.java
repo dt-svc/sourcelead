@@ -883,9 +883,11 @@ public class RequirementDaoImpl implements RequirementDao {
     		List<RequirementLocations> locationList = requirementLocationsService.getRequirementLocationsListByRequirementId(requirement.getId());
     		locationList.forEach(loclist->{
     			requirementLocationsList.add(loclist.getLocation());
-    			sb.append(loclist.getLocation()).append(",").toString();
+    			if(sb.length() > 0) 
+    				sb.append(",");
+    			sb.append(loclist.getLocation()).toString();
     		});
-    		requirement.setLocation(sb.deleteCharAt(sb.length()-1).toString());
+    		requirement.setLocation(sb.toString());
     		requirement.setLocationsList(requirementLocationsList);
     		RequirementSubmissionsCountDTO requirementSubmissionsCountDTO= requirementSubmissionDao.getAllPipeLineCountsByRequirementIdAndSubmissionStage(requirement.getId(),user,orgLocation,"All");
     		requirement.setAssignedMembersCount(requirementSubmissionsCountDTO.getApplicantsCount().toString());
