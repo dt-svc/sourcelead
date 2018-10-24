@@ -22,6 +22,7 @@ import com.itextpdf.text.Font;
 import net.sf.dynamicreports.jasper.builder.export.JasperPdfExporterBuilder;
 import net.sf.dynamicreports.jasper.builder.export.JasperXlsExporterBuilder;
 import net.sf.dynamicreports.jasper.constant.JasperProperty;
+import net.sf.dynamicreports.report.builder.column.TextColumnBuilder;
 import net.sf.dynamicreports.report.constant.HorizontalAlignment;
 import net.sf.dynamicreports.report.datasource.DRDataSource;
 import net.sf.dynamicreports.report.exception.DRException;
@@ -80,6 +81,13 @@ public class ReportsPdfUtil {
 		    StringBuilder fileSB = new StringBuilder();
 			file = File.createTempFile(fileSB.append("jobs_").append(commonUtil.dateStrFromOrgDateFormatter(orgLocation.getDateFormat(),new Date())).toString(),".pdf");
 			file.setReadable(true);
+			
+			TextColumnBuilder<String> locationColumn = col.column("Location", "location", type.stringType())
+					.setFixedWidth(100)
+					.setStretchWithOverflow(true)
+					.addProperty(JasperProperty.PRINT_KEEP_FULL_TEXT, "true");
+			
+			
 			JasperPdfExporterBuilder pdfExporter = export.pdfExporter(file);
 			report().setTemplate(Templates.reportTemplate)
 					.title(cmp.text(orgLocation.getOrgLocationName()).setStyle(Templates.bold18CenteredStyle).setHorizontalAlignment(HorizontalAlignment.CENTER))
@@ -88,7 +96,7 @@ public class ReportsPdfUtil {
 							col.column("Job title", "jobTitle", type.stringType()),
 							col.column("Client", "client", type.stringType()),
 							col.column("Priority", "priority", type.stringType()),
-							col.column("Location", "location", type.stringType()),
+							locationColumn,
 							col.column("Applicants", "applicants", type.stringType()),
 							col.column("Shortlisted", "shortlisted", type.stringType()),
 							col.column("Interview", "interview", type.stringType()),
