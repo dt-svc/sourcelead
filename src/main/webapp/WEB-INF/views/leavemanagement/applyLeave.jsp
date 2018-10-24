@@ -469,7 +469,7 @@ window.onload = function() {
 			$("#toDate").datepicker("option", "minDate", dt);
 			removeStartValid();
 			checkFromDate();
-			calcaulateDuraton();
+			calculateDuration();
 // 			validateDate();
 			getLeaveDetails(finalDateFormatEndDate);
 			}
@@ -501,7 +501,7 @@ function removeEndValid(){
 	$('#toDateDiv').find('p.jquery_form_error_message').remove();
 }
 
-function calcaulateDuraton(){
+function calculateDuration(){
 	var fromDate = $("#fromDate").val();
 	var toDate = $("#toDate").val();
 	if(toDate == ""){
@@ -1032,7 +1032,7 @@ function getLeaveDetails(finalDateFormatEndDate){
 		    }
 		});
 	}
-	calcaulateDuraton();
+	calculateDuration();
 	setTimeout(function(){ validateDate(); checkToDate();}, 800);
 		
 	
@@ -1285,7 +1285,7 @@ $("#toDateHalfTime").timepicker({
 	 'step': 15
 }).on('changeTime', function() {
     $("#fromDateHalfTime").timepicker('option', 'maxTime', $(this).val());
-    calcaulateDuraton();
+    calculateDuration();
     validateDate();
 }); 
 
@@ -1303,7 +1303,7 @@ $("#toDateToHalfTime").timepicker({
 	 'step': 15
 }).on('changeTime', function() {
     $("#toDateFromHalfTime").timepicker('option', 'maxTime', $(this).val());
-    calcaulateDuraton();
+    calculateDuration();
     validateDate();
 }); 
 

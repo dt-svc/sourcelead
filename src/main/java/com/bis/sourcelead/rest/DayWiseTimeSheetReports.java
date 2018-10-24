@@ -76,9 +76,9 @@ public List<ProjectMembers> getProjectMembersBasedOnProjectId(DayWiseTimesheetRe
 	User loginUser = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
 	dayWiseTimesheetReoprtsDto.setLocationsId(orgLocations.getId());
 	dayWiseTimesheetReoprtsDto.setLoginUserId(loginUser.getId());
-	if(dayWiseTimesheetReoprtsDto.getStartDate()!= null && StringUtils.isNotEmpty(dayWiseTimesheetReoprtsDto.getStartDate()) && dayWiseTimesheetReoprtsDto.getEndDate()!= null && StringUtils.isNotEmpty(dayWiseTimesheetReoprtsDto.getEndDate())) {
+	//if(dayWiseTimesheetReoprtsDto.getStartDate()!= null && StringUtils.isNotEmpty(dayWiseTimesheetReoprtsDto.getStartDate()) && dayWiseTimesheetReoprtsDto.getEndDate()!= null && StringUtils.isNotEmpty(dayWiseTimesheetReoprtsDto.getEndDate())) {
 		 projectMemberList = projectMemberService.getAllProjectMembersBasedOnProjectIdStartDateEndDateAndEmploymentType(dayWiseTimesheetReoprtsDto);
-	}
+	//}
 	return projectMemberList;
 }
 
