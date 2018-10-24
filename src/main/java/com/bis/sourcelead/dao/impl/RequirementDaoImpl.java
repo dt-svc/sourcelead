@@ -782,7 +782,7 @@ public class RequirementDaoImpl implements RequirementDao {
 
 			if (subQuery1 != "" || subQuery2 != "" || subQuery3 != "" || jobTypeVal !="") {
 				if(clientVal != ""){
-				subQuery = "where requirement.orgLocationId.id =:orgLocationId and ("+ jobTypeVal +") and ( (" + subQuery1 + ") or ("+ clientVal +") or ("
+				subQuery = "where requirement.orgLocationId.id =:orgLocationId and ("+ clientVal +") and ("+ jobTypeVal +") and ( (" + subQuery1 + ")  or ("
 						+ subQuery2 + ")  or (" + subQuery3 + ") and requirement.createdDate BETWEEN :startDateUTC and :endDateUTC) ";
 				}else{
 					subQuery = "where requirement.orgLocationId.id =:orgLocationId and ("+ jobTypeVal +") and ( (" + subQuery1 + ") or ("
@@ -793,7 +793,7 @@ public class RequirementDaoImpl implements RequirementDao {
 				params.put("endDateUTC", endDateUTC);
 				
 				if(clientVal != ""){
-				countQuerySub = "where requirement.orgLocationId.id =:orgLocationId and ("+ jobTypeVal +") and ( (" + subQuery1 + ") or ("+ clientVal +") or ("
+				countQuerySub = "where requirement.orgLocationId.id =:orgLocationId and ("+ clientVal +") and ("+ jobTypeVal +") and ( (" + subQuery1 + ")  or ("
 						+ subQuery2 + ")  or (" + subQuery3 + ") and requirement.createdDate BETWEEN :startDateUTC and :endDateUTC) ";
 				}else{
 					countQuerySub = "where requirement.orgLocationId.id =:orgLocationId and ("+ jobTypeVal +") and ( (" + subQuery1 + ") or ("
@@ -813,7 +813,7 @@ public class RequirementDaoImpl implements RequirementDao {
 
 			if (subQuery1 != "" || subQuery2 != "" || jobTypeVal !="") {
 				if(clientVal != ""){
-				subQuery = "where requirement.orgLocationId.id =:orgLocationId and ("+ jobTypeVal +") and ( (" + subQuery1 + ") and ("+ clientVal +") or ("
+				subQuery = "where requirement.orgLocationId.id =:orgLocationId and ("+ clientVal +") and ("+ jobTypeVal +") and ( (" + subQuery1 + ")  or ("
 						+ subQuery2 + ") and requirement.createdDate BETWEEN :startDateUTC and :endDateUTC) ";
 				}else{
 					subQuery = "where requirement.orgLocationId.id =:orgLocationId and ("+ jobTypeVal +") and ( (" + subQuery1 + ") or ("
@@ -824,7 +824,7 @@ public class RequirementDaoImpl implements RequirementDao {
 				params.put("endDateUTC", endDateUTC);
 				
 				if(clientVal != ""){
-				countQuerySub = "where requirement.orgLocationId.id =:orgLocationId and ("+ jobTypeVal +") and ( (" + subQuery1 + ") and ("+ clientVal +") or ("
+				countQuerySub = "where requirement.orgLocationId.id =:orgLocationId and ("+ clientVal +") and ("+ jobTypeVal +") and ( (" + subQuery1 + ")  or ("
 						+ subQuery2 + ") and requirement.createdDate BETWEEN :startDateUTC and :endDateUTC) ";
 				}else{
 				countQuerySub = "where requirement.orgLocationId.id =:orgLocationId and ("+ jobTypeVal +") and ( (" + subQuery1 + ") or ("
@@ -871,13 +871,15 @@ public class RequirementDaoImpl implements RequirementDao {
 			}
 			/*Integer requirementAssignToListCount = requirementAssignToDao.getRequirementAssignToListCountByRequirementId(requirement.getId());
     		requirement.setAssignedMembersCount(requirementAssignToListCount.toString());*/
-    		
+			List<String> requirementLocationsList = new ArrayList<>();
+			StringBuilder sb = new StringBuilder();
     		List<RequirementLocations> locationList = requirementLocationsService.getRequirementLocationsListByRequirementId(requirement.getId());
-    		StringBuilder cb = new StringBuilder();
     		locationList.forEach(loclist->{
-    			cb.append(loclist.getLocation()).append(",").toString();	
+    			requirementLocationsList.add(loclist.getLocation());
+    			sb.append(loclist.getLocation()).append(",").toString();
     		});
-    		requirement.setLocation(cb.deleteCharAt(cb.length()-1).toString());
+    		requirement.setLocation(sb.deleteCharAt(sb.length()-1).toString());
+    		requirement.setLocationsList(requirementLocationsList);
     		RequirementSubmissionsCountDTO requirementSubmissionsCountDTO= requirementSubmissionDao.getAllPipeLineCountsByRequirementIdAndSubmissionStage(requirement.getId(),user,orgLocation,"All");
     		requirement.setAssignedMembersCount(requirementSubmissionsCountDTO.getApplicantsCount().toString());
     		requirement.setShortlistCount(requirementSubmissionsCountDTO.getShortlistCount().toString());
@@ -3695,6 +3697,8 @@ public class RequirementDaoImpl implements RequirementDao {
 						queryList.add("DELETE FROM RequirementAssignTo rat WHERE rat.requirementId.id = "+req.getId()+" ");
 						
 						queryList.add("DELETE FROM JobCustomFieldData jcfd WHERE jcfd.requirement.id = "+req.getId()+" ");
+						
+						queryList.add("DELETE FROM RequirementIncentive ri WHERE ri.requirementId.id = "+req.getId()+" ");
 						
 						queryList.add("DELETE FROM Requirement r  WHERE r.id = "+req.getId()+ " ");
 						

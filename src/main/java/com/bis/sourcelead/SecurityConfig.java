@@ -123,6 +123,7 @@ public class SecurityConfig  {
     			.antMatchers("/getGuestUserRequirmentOrgSubmissionTemplate/**").permitAll()
     			.antMatchers("/saveGuestAddApplicant/**").permitAll()
     			.antMatchers("/addBlogSubscription/**").permitAll()
+    			.antMatchers("/downloadReleaseNote/**").permitAll()
     			.antMatchers("/validateBlogSubscriptionEmail/**").permitAll()
     			.antMatchers("/app/getRequirementSubmissionsCount/**").permitAll()
     			.antMatchers("/parseResume/**").permitAll()

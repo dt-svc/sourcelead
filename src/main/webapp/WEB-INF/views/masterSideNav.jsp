@@ -231,6 +231,7 @@
                               <ul class="collapses" style="display: none">
                                   <li class="${sessionData.nav == 'Blogs' ? 'treview-active' : ''}"><a href="<c:url value='${appPath}/blogs'/>" title="Blog"><i class="fa fa-chevron-right"></i> Blog</a></li>
                                   <li class="${sessionData.nav == 'UserManuals' ? 'treview-active' : ''}"><a href="<c:url value='${appPath}/userManuals'/>" title="User Manuals"><i class="fa fa-chevron-right"></i> User Manuals</a></li>
+                                  <li class=""><a href="<c:url value='${appPath}/releaseNote'/>" title="Realease Note"><i class="fa fa-chevron-right"></i> Release Note</a></li>
                               </ul>
                            </c:if>
                               
@@ -238,8 +239,11 @@
                            <ul class="collapses" style="display: none">
                                <li class="${sessionData.nav == 'Blogs' ? 'treview-active' : ''}"><a href="<c:url value='${appPath}/blogs'/>" title="Blog"><i class="fa fa-chevron-right"></i> Blog</a></li>
                                <li class="${sessionData.nav == 'UserManuals' ? 'treview-active' : ''}"><a href="<c:url value='${appPath}/userManuals'/>" title="User Manuals"><i class="fa fa-chevron-right"></i> User Manuals</a></li>
+                               <li class=""><a href="<c:url value='${appPath}/releaseNote'/>" title="Realease Note"><i class="fa fa-chevron-right"></i> Release Note</a></li>
+                               
                            </ul>
                            </c:if>
+                           
                               
 						  </li>
 	                 </c:if>
