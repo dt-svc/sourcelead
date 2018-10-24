@@ -557,18 +557,23 @@ String loginUserRole = (String) SourceLeadSessionManager.getSessionAttribute(req
 		if ("yes".equalsIgnoreCase(topleave)) {
 			for(LeaveBalanceReportDTO ltDto : users) {
 				float total =0;
-				for(LeaveBalanceReportDTO lt : leaveTypeList) {
-			float Leavestaken = leaveService.getTakenLeavesByOrgLocationIdAndUserId(lt.getId().longValue(),ltDto.getUserId().longValue(),orgLocation.getId());
-			StringBuilder sb = new StringBuilder();
-			sb.append(lt.getName()).append("-").append(String.valueOf(ltDto.getUserId().longValue()));
-			map.put(sb.toString(), Leavestaken);
-			total = total +Leavestaken;
-			}for(LeaveBalanceReportDTO d:departmentList) {
-
-				String Departments = leaveService.getDepartmentTypeNamesByOrgLocationIdAndUserId(ltDto.getUserId().longValue(),orgLocation.getId());
-				depart.put(ltDto.getUserId().longValue(),Departments );
-			}
-			}}else {
+				List<LeaveType> leaveTypes = leaveTypeService.getLeaveTypeListByLocationId(String.valueOf(orgLocation.getId()));
+				for(LeaveType lt : leaveTypes) {
+				lt.setActionType("CUSTOM");
+				lt.setFromDate(MonthStartDate);
+				lt.setToDate(MonthEndDate);
+				float Leavestaken = leaveManagementUtil.getTotalAppliedLeaveCount(orgLocation, lt, ltDto.getUserId().longValue());
+				StringBuilder sb = new StringBuilder();
+				sb.append(lt.getName()).append("-").append(String.valueOf(ltDto.getUserId().longValue()));
+				map.put(sb.toString(), Leavestaken);
+				total = total +Leavestaken;
+				}
+//				for(LeaveBalanceReportDTO d:departmentList) {
+					String Departments = leaveService.getDepartmentTypeNamesByOrgLocationIdAndUserId(ltDto.getUserId().longValue(),orgLocation.getId());
+					depart.put(ltDto.getUserId().longValue(),Departments );
+//				}
+				}
+		}else {
 		for(LeaveBalanceReportDTO ltDto : users) {
 			for(LeaveBalanceReportDTO lt : leaveTypeList) {
 				float leaveTypeBalance = associateBalanceLeaveService.getTotalLeavesCountByUserIdAndLeaveTypeId(lt.getId().longValue(),ltDto.getUserId().longValue(),orgLocation.getId(),orgLocation.getOrg().getId());
@@ -576,11 +581,11 @@ String loginUserRole = (String) SourceLeadSessionManager.getSessionAttribute(req
 				sb.append(lt.getName()).append("-").append(String.valueOf(ltDto.getUserId().longValue()));
 				map.put(sb.toString(), leaveTypeBalance);
 			}
-			for(LeaveBalanceReportDTO d:departmentList) {
+//			for(LeaveBalanceReportDTO d:departmentList) {
 
 				String Departments = leaveService.getDepartmentTypeNamesByOrgLocationIdAndUserId(ltDto.getUserId().longValue(),orgLocation.getId());
 				depart.put(ltDto.getUserId().longValue(),Departments );
-			}
+//			}
 		}
 			}
 		
