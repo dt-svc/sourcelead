@@ -305,6 +305,7 @@ function offerpagination(url){
 	      {
 	    	  "targets": colIndex++,
               "data": "client",
+              "sortable": false,
               "render": function ( data, type, opt, meta ) {
             	  var result = "";
             	  if(opt.clientName !=null && opt.clientName !="" && opt.clientName !='undefined'){
@@ -318,9 +319,30 @@ function offerpagination(url){
 	          },{
             "targets": colIndex++,
             "data": "location",
+            "sortable": false,
             "render": function ( data, type, opt, meta ) {
             	var result = "";
-            		 result = result + '<td><div><span>---</span></div></td>';
+            	   result = result +'<td>';
+  		        	result = result +'<div class="positionRelative">';
+	   		         for(var k=0; k<1; k++){
+	   		        	result = result + '<p class="tbldata-dotdot-me pull-left">'+opt.locationsList[k]+'</p>';
+	   		         }
+  		    	
+	   		        result = result +'<div class="show_Empdetails showjoblist">';
+  		        	result = result +'<i class="fa fa-ellipsis-v"></i>';
+
+  		        	result = result +'<div class="emailvalues emailvaluesNew">';
+  		        	
+						for(var k=0; k<opt.locationsList.length; k++){
+							result = result +'<p><i class="fa fa-map-marker"></i>'+opt.locationsList[k]+'</p>';
+		   		        	
+  		    	 	}
+  		        	result = result +'</div>';
+  		        	result = result +'</div>';
+  
+
+		        	result = result +'</div>';
+		        	result = result +'</td>';
    				return result;
             }
           } ,{
@@ -335,6 +357,7 @@ function offerpagination(url){
           {
                 "targets": colIndex++,
                 "data": "applicants",
+                "sortable": false,
                 "render": function ( data, type, opt, meta ) {
                 		var result = "";
                 		
@@ -344,6 +367,7 @@ function offerpagination(url){
           } ,{
                       "targets": colIndex++,
                       "data": "shortlisted",
+                      "sortable": false,
                       "render": function ( data, type, opt, meta ) {
                     	  var result = "";
       	    	  			result = result + ' <td><div><span>'+opt.shortlistCount+'</span></div></td>';
@@ -352,6 +376,7 @@ function offerpagination(url){
                },{
                      "targets": colIndex++,
                      "data": "interview",
+                     "sortable": false,
                      "render": function ( data, type, opt, meta ) {
                    	  var result = "";
      	    	  		result = result + ' <td><div><span>'+opt.interviewCount+'</span></div></td>';
@@ -360,6 +385,7 @@ function offerpagination(url){
                    } ,{
                        "targets": colIndex++,
                        "data": "offered",
+                       "sortable": false,
                        "render": function ( data, type, opt, meta ) {
                      	  var result = "";
        	    	  			result = result + ' <td><div><span>'+opt.offersCount+'</span></div></td>';
@@ -368,6 +394,7 @@ function offerpagination(url){
                 },{
                     "targets": colIndex++,
                     "data": "submitToClient",
+                    "sortable": false,
                     "render": function ( data, type, opt, meta ) {
                   	  var result = "";
     	    	  			result = result + ' <td><div><span>'+opt.submitToClientCount+'</span></div></td>';
@@ -376,6 +403,7 @@ function offerpagination(url){
              },{
                  "targets": colIndex++,
                  "data": "backOut",
+                 "sortable": false,
                  "render": function ( data, type, opt, meta ) {
                	  var result = "";
  	    	  			result = result + ' <td><div><span>'+opt.backoutCount+'</span></div></td>';
@@ -384,6 +412,7 @@ function offerpagination(url){
           },{
                  "targets": colIndex++,
                  "data": "joined",
+                 "sortable": false,
                  "render": function ( data, type, opt, meta ) {
                	  var result = "";
  	    	  			result = result + ' <td><div><span>'+opt.joinedCount+'</span></div></td>';
@@ -392,6 +421,7 @@ function offerpagination(url){
           },{
               "targets": colIndex++,
               "data": "rejected",
+              "sortable": false,
               "render": function ( data, type, opt, meta ) {
             	  var result = "";
 	    	  			result = result + ' <td><div><span>'+opt.rejectedCount+'</span></div></td>';

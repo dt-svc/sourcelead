@@ -70,7 +70,7 @@ var uploadflag= true;
 								</div>
 								<div class="btn-group">
 									<input type="reset" class="btn btn-danger" value="Reset"
-										onClick="javascript:window.location.href = '<c:url value='${appPath}/uploadProjectTasks?projectUUID=${projectUUID}&projectClientUUID=${projectClientUUID}'/>'">
+										onClick="javascript:window.location.href = '<c:url value='${appPath}/usersList'/>'">
 								</div>
 							</div>
 						</div>

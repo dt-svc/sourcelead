@@ -363,38 +363,49 @@ public class UserServiceImpl implements UserService {
 	    }*/	
 	    
 	    
-       //For saving the User Role 
-	   userRole = userRoleService.getUserDetailsByEmailAndLocationId(addUserDTO.getEmail(),orgLocations.getId());
-	   if(userRole == null){
-		   userRole = getUserRoleDetails(addUserDTO,user,loginuser.getUserCode(),orgLocations.getId());
-		   
-		   if(StringUtils.isNotBlank(addUserDTO.getDesignation())){
-				 userRole.setDesignation(addUserDTO.getDesignation());
-		    }
-		   
-		   if(null == user.getId()){
-				userRole.setIsPrimary(1);
-				 if(sourceType.equalsIgnoreCase("PROJECTS")){
-					 userRole.setUserType("Employee");
-				 }
-		  }else{
-			  UserRole primaryUserRole = userRoleService.getLoginUserPrimaryRole(user.getId());
-			  if(primaryUserRole == null){
-				  userRole.setIsPrimary(1);
-			  }else{
-				  userRole.setIsPrimary(0);
-			  }
-			}
-	   }else {
-		   userRole.setPhoneNumber(addUserDTO.getPhoneNumber());
-			if(StringUtils.isNotBlank(addUserDTO.getExtensionNumber())) {
-				userRole.setExtensionNumber(addUserDTO.getExtensionNumber());
-			}
-			
-		 if(StringUtils.isNotBlank(addUserDTO.getDesignation())){
-				 userRole.setDesignation(addUserDTO.getDesignation());
-		    }
-	   }
+	    //For saving the User Role 
+	    if(StringUtils.isNotBlank(candidateDTO.getAssociateId())){
+	    	 userRole = getUserRoleEditDetails(addUserDTO,user,loginuser.getUserCode(),orgLocations.getId());
+	    }else {
+	    	
+    	   userRole = userRoleService.getUserDetailsByEmailAndLocationId(addUserDTO.getEmail(),orgLocations.getId());
+	   	   if(userRole == null){
+	   		   userRole = getUserRoleDetails(addUserDTO,user,loginuser.getUserCode(),orgLocations.getId());
+	   		   
+	   		   if(StringUtils.isNotBlank(addUserDTO.getDesignation())){
+	   				 userRole.setDesignation(addUserDTO.getDesignation());
+	   		    }
+	   		   
+	   		   if(null == user.getId()){
+	   				userRole.setIsPrimary(1);
+	   				 if(sourceType.equalsIgnoreCase("PROJECTS")){
+	   					 userRole.setUserType("Employee");
+	   				 }
+	   		  }else{
+	   			  UserRole primaryUserRole = userRoleService.getLoginUserPrimaryRole(user.getId());
+	   			  if(primaryUserRole == null){
+	   				  userRole.setIsPrimary(1);
+	   			  }else{
+	   				  userRole.setIsPrimary(0);
+	   			  }
+	   			}
+	   	   }else {
+	   		   userRole.setPhoneNumber(addUserDTO.getPhoneNumber());
+	   			if(StringUtils.isNotBlank(addUserDTO.getExtensionNumber())) {
+	   				userRole.setExtensionNumber(addUserDTO.getExtensionNumber());
+	   			}
+	   			
+	   		 if(StringUtils.isNotBlank(addUserDTO.getDesignation())){
+	   				 userRole.setDesignation(addUserDTO.getDesignation());
+	   		    }
+	   	   }
+	    }
+	   
+	 
+	   
+	   
+	   
+	   
 		HashSet<UserRole> userRoleList = new HashSet<UserRole>();
 		if(StringUtils.isNotBlank(addUserDTO.getIsGlobalAccess())) {
 			userRole.setIsGlobal(Constants.YES);
@@ -765,12 +776,86 @@ public class UserServiceImpl implements UserService {
 		
 		try {
 
-			/*if(StringUtils.isNotBlank(addUserDTO.getRoleTypeId())){
-				roles = rolesService.getRolesById(Long.parseLong(addUserDTO.getRoleTypeId()));
+			if(StringUtils.isNotBlank(addUserDTO.getRoleTypeId())){
+			roles = rolesService.getRolesById(Long.parseLong(addUserDTO.getRoleTypeId()));
+			}else if(StringUtils.isNotBlank(addUserDTO.getRoleType())){
+			roles = rolesService.getRolesById(Long.parseLong(addUserDTO.getRoleType()));
+			userRole.setUserType(roles.getDisplayName()); 
+			}
+			else{
+			roles = rolesService.getRolesByRoleNameAndOrgLocationId(Constants.ROLE_MANAGER,orgLocations.getId());
+			}
+
+
+		} catch (Exception e) {
+			logger.error(ExceptionUtils.getFullStackTrace(e));
+		}
+		userRole.setPhoneNumber(addUserDTO.getPhoneNumber());
+		if(StringUtils.isNotBlank(addUserDTO.getExtensionNumber())) {
+			userRole.setExtensionNumber(addUserDTO.getExtensionNumber());
+		}
+		
+		userRole.setRoles(roles);
+		userRole.setUserType(roles.getDisplayName());
+		userRole.setCreatedDate(commonUtil.currentDate());
+		userRole.setCreatedBy(userCode);
+		userRole.setUpdatedDate(commonUtil.currentDate());
+		userRole.setUpdatedBy(userCode);
+		return userRole;
+	}
+	
+	
+	
+	private UserRole getUserRoleEditDetails(AddUserDTO addUserDTO,User user,String userCode, Long orgLocationsId) throws Exception {
+		UserRole userRole = userRoleService.getUserRoleByUserIdAndLocationId(user.getId(), orgLocationsId);
+		userRole.setUser(user);
+		
+		OrgLocations orgLocations = new OrgLocations();
+		orgLocations.setId(orgLocationsId);
+		userRole.setOrgLocations(orgLocations);
+		
+		if(StringUtils.isNotBlank(addUserDTO.getReportingManager())){
+			User reportingManager = new User();
+			reportingManager.setId(Long.parseLong(addUserDTO.getReportingManager()));
+			userRole.setReportingManager(reportingManager);
+		}else {
+			userRole.setReportingManager(user);
+		}
+		
+		if(StringUtils.isNotBlank(addUserDTO.getResourceManager())){
+			User resourceManager = new User();
+			resourceManager.setId(Long.parseLong(addUserDTO.getResourceManager()));
+			userRole.setResourceManager(resourceManager);
+		}
+		
+		if(StringUtils.isNotBlank(addUserDTO.getShiftId())) {
+			Shift shift = new Shift();
+			shift.setId(Long.parseLong(addUserDTO.getShiftId()));
+			userRole.setShift(shift);
+		}
+		
+	    if(StringUtils.isNotBlank(addUserDTO.getIsMailSent()) && ("Y".equals(addUserDTO.getIsMailSent()))){
+	    	userRole.setIsMailSent(Status.Y);
 			}else{
-				roles = rolesService.getRolesByRoleNameAndOrgLocationId(Constants.ROLE_MANAGER,orgLocations.getId());
-			}*/
+				userRole.setIsMailSent(Status.N);
+			}
+		   
+		userRole.setUserState(Status.NOT_LOGGEDIN);
+		
+		Roles roles = null;
+		
+		if(StringUtils.isNotBlank(addUserDTO.getRoleType())){
+			try {
+				roles = rolesService.getRolesById(Long.parseLong(addUserDTO.getRoleType()));
+				userRole.setUserType(roles.getDisplayName());
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
 			
+		}
+		
+		try {
+
 			if(StringUtils.isNotBlank(addUserDTO.getRoleTypeId())){
 			roles = rolesService.getRolesById(Long.parseLong(addUserDTO.getRoleTypeId()));
 			}else if(StringUtils.isNotBlank(addUserDTO.getRoleType())){
@@ -1908,6 +1993,7 @@ public class UserServiceImpl implements UserService {
 		for(ApplicantsJoinedReportDTO dto : responseList.getData()){
 			List<ApplicantsJoinedReportDTO> mainList = map.get(dto.getUserId());
 			Float totalIncentiveAmount = 0f;
+			Integer totalReqCount = 0;
 			Float percentage=0f;
 			List<ApplicantsJoinedReportDTO> searchReqList =null;
 			for(ApplicantsJoinedReportDTO sub : mainList){
@@ -1944,9 +2030,16 @@ public class UserServiceImpl implements UserService {
 						percentage=k;
 						totalIncentiveAmount=totalIncentiveAmount+percentage;
 					}
-
+					
                }
+				if(sub.getRequirementCount() != null){
+					totalReqCount=totalReqCount + sub.getRequirementCount().intValue();
+				}
+				if(sub.getReqClientCount() != null){
+					totalReqCount=totalReqCount + sub.getReqClientCount().intValue();
+				}
 				sub.setIncentAmount(totalIncentiveAmount.toString());
+				dto.setTotalRequirementCount(BigInteger.valueOf(totalReqCount));
 //               java.math.BigDecimal k1 = java.math.BigDecimal.valueOf(totalIncentiveAmount);
 			}
 			

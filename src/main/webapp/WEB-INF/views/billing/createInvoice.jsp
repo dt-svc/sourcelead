@@ -115,7 +115,7 @@ function errRemoveClientContact(){
 							<div class="col-md-9" id="invoiceIdDiv">
 								<input type="text" class="form-control" id="invoiceId" onkeyup="validateInvoiceId();"
 									name="invoiceId" value="" placeholder="Invoice Id"
-									data-validation="required" field-name="Invoice Id">
+									data-validation="required validate_Alphanumeric validate_length length2-100" field-name="Invoice Id">
 							</div>
 						</div>
 						<div class="form-group">

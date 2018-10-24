@@ -76,6 +76,8 @@
 				<li><a href="${appPath}/requirementStagesListForReports">Job(s) Stage</a></li>
 				</sec:authorize>
 				
+				<li><a href="${appPath}/jobsPerformanceReport">Jobs Report</a></li>
+				
 				</ul>
 			</div>
                  <!-- Dropdown -->
@@ -498,6 +500,7 @@
             </div>
             
             
+            <c:if test="${SourceLeadWeb_loginCountryName == 'United States'}">
             	<div class="newRepListCta">
                 <h2><a href="javascript:void(0)">US Payroll Reports</a></h2>
 	                <ul class="repSearchList">
@@ -534,6 +537,7 @@
 	                </ul>
                 <div class="noDate noDateSm" style="display: none;"></div>
             </div>
+            </c:if>
             
             <div class="clearfix mt mb"></div>
             
