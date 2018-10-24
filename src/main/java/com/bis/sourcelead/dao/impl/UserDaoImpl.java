@@ -2184,11 +2184,15 @@ public class UserDaoImpl implements UserDao {
 				//Map<Long,List<Long>> requirementMap = new HashMap<Long,List<Long>>();
 				Set<BigInteger> jobIds = new HashSet<>();
 				Set<BigInteger> primaryUserjobIds = new HashSet<>();
+				Set<BigInteger> approverUserjobIds = new HashSet<>();
 				for(RecruiterRrportDTO reportDTO: recruiterReportAssociateList1){
 					UserDTO userDTO = associatesListMap.get(reportDTO.getManagerUserId());
 					if(userDTO != null){
 						jobIds.add(reportDTO.getRequirementId());
 						BigDecimal bd = new BigDecimal(jobIds.size());
+						if(userDTO.getUserRequirementsCount() != null) {
+							bd = bd.add(userDTO.getUserRequirementsCount());
+						}
 						userDTO.setUserRequirementsCount(bd);
 					}
 					
@@ -2196,6 +2200,19 @@ public class UserDaoImpl implements UserDao {
 					if(userDTO != null){
 						primaryUserjobIds.add(reportDTO.getRequirementId());
 						BigDecimal bd = new BigDecimal(primaryUserjobIds.size());
+						if(userDTO.getUserRequirementsCount() != null) {
+							bd = bd.add(userDTO.getUserRequirementsCount());
+						}
+						userDTO.setUserRequirementsCount(bd);
+					}
+					
+					userDTO = associatesListMap.get(reportDTO.getApproverUserId());
+					if(userDTO != null){
+						approverUserjobIds.add(reportDTO.getRequirementId());
+						BigDecimal bd = new BigDecimal(approverUserjobIds.size());
+						if(userDTO.getUserRequirementsCount() != null) {
+							bd = bd.add(userDTO.getUserRequirementsCount());
+						}
 						userDTO.setUserRequirementsCount(bd);
 					}
 					
