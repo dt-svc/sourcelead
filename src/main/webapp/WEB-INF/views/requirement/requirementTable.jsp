@@ -415,6 +415,7 @@ function jpagination(url,sourceleadUrl){
 	        {
 	            "targets": colIndex++,
 	            "data": "clientName",
+	            "sortable": false,
 	            "render": function ( data, type, opt, meta ) {
 	            		var result = "";
            		   if(opt.clientName != null && opt.clientName != '' && opt.clientName != 'undefined'){
@@ -510,6 +511,7 @@ function jpagination(url,sourceleadUrl){
         	{
 	            "targets": colIndex++,
 	            "data": "country",
+	            "sortable": false,
 	            "render": function ( data, type, opt, meta ) {
 	            		var result = "";
 	            		
@@ -581,6 +583,7 @@ function jpagination(url,sourceleadUrl){
 			 {
 			         "targets": colIndex++,
 			         "data": "createdDate",
+			         "sortable": false,
 			         "render": function (data, type, opt, meta ) {
 		         		   var result = "";
 		         		   if(opt.postedOnStr!=null && opt.postedOnStr !='' && opt.postedOnStr !='undefined'){
