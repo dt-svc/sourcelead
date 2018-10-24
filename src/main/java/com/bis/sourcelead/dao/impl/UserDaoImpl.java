@@ -2474,7 +2474,7 @@ public class UserDaoImpl implements UserDao {
 		List<Long> countlist = null;
         StringBuilder query1 = new StringBuilder();
         List countQueryString;
-		dateQury = " and DATE_FORMAT(reqSub.CREATED_DATE,'%Y-%m-%d') BETWEEN  '" + fromDate
+		dateQury = " and DATE_FORMAT(reqSub.UPDATED_DATE,'%Y-%m-%d') BETWEEN  '" + fromDate
 				+ "' and '" + toDate + "'";
 		if(applicantsJoinedReportDTO.getSearchValue() != null && !applicantsJoinedReportDTO.getSearchValue().isEmpty() && applicantsJoinedReportDTO.getSearchValue() != "undefined"){
 			 query1.append(" and (CONCAT(FIRST_NAME,LAST_NAME) like '%"
@@ -2497,9 +2497,9 @@ String sortingQry ="";
 				+ "reqSub.CREATED_DATE as reqSubCreatedDate," + "req.ORG_RELATION_ID as clientId,"
 				+ "reqSub.CREATED_BY as createdBy, "
 				+ "(SELECT count(*) FROM REQUIREMENT_ASSIGN_TO reqAssign WHERE reqAssign.ASSIGN_USER_ID = u.ID "
-				+ dateQury + ") AS requirementCount ,"
-				+"(SELECT count(*) FROM REQUIREMENT requirement WHERE requirement.ID = req.ID and requirement.MANAGER_USER_ID = u.ID"
-				+ dateQury + ") AS reqClientCount ,"
+				+ " and DATE_FORMAT(reqAssign.CREATED_DATE,'%Y-%m-%d') BETWEEN  '" + fromDate+ "' and '" + toDate + "' ) AS requirementCount ,"
+				+"(SELECT count(*) FROM REQUIREMENT requirement WHERE requirement.ID = req.ID and (requirement.MANAGER_USER_ID = u.ID OR requirement.PRIMARY_RECRUITER_USER_ID = u.ID)"
+				+ " and DATE_FORMAT(requirement.CREATED_DATE,'%Y-%m-%d') BETWEEN  '" + fromDate+ "' and '" + toDate + "' ) AS reqClientCount ,"
 				+ "(SELECT  CONCAT(FIRST_NAME,LAST_NAME) AS EMPLOYEE_NAME) AS name,"
 				+ "(SELECT count(*) FROM REQUIREMENT_SUBMISSION reqSub WHERE reqSub.CREATED_BY = u.USER_CODE "
 				+ dateQury + ") AS submissionCount,"
