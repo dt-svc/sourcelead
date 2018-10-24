@@ -143,7 +143,7 @@
 		</div>
 	</a>
 	</sec:authorize>
-	<%-- <a href="${appPath}/requirementOffersList?&tab=previous&orgLocationId=${orgLocationId}">		
+	 <%-- <a href="${appPath}/requirementOffersList?&tab=previous&orgLocationId=${orgLocationId}">		
 	<div class="repDashCta">
 		<span><i class="fa fa-id-badge"></i></span>
 		<div class="repDashCtaWrap">
