@@ -790,10 +790,10 @@ public class RequirementDaoImpl implements RequirementDao {
 			if (subQuery1 != "" || subQuery2 != "" || subQuery3 != "" || jobTypeVal !="") {
 				if(clientVal != ""){
 				subQuery = "where requirement.orgLocationId.id =:orgLocationId and ("+ clientVal +") and ("+ jobTypeVal +") and ( (" + subQuery1 + ")  or ("
-						+ subQuery2 + ")  or (" + subQuery3 + ") and requirement.createdDate BETWEEN :startDateUTC and :endDateUTC) ";
+						+ subQuery2 + ")  or (" + subQuery3 + ") ) and requirement.createdDate BETWEEN :startDateUTC and :endDateUTC";
 				}else{
 					subQuery = "where requirement.orgLocationId.id =:orgLocationId and ("+ jobTypeVal +") and ( (" + subQuery1 + ") or ("
-							+ subQuery2 + ")  or (" + subQuery3 + ") and requirement.createdDate BETWEEN :startDateUTC and :endDateUTC) ";	
+							+ subQuery2 + ")  or (" + subQuery3 + ") ) and requirement.createdDate BETWEEN :startDateUTC and :endDateUTC";	
 				}
 				params.put("orgLocationId", orgLocationId);
 				params.put("startDateUTC", startDateUTC);
@@ -801,10 +801,10 @@ public class RequirementDaoImpl implements RequirementDao {
 				
 				if(clientVal != ""){
 				countQuerySub = "where requirement.orgLocationId.id =:orgLocationId and ("+ clientVal +") and ("+ jobTypeVal +") and ( (" + subQuery1 + ")  or ("
-						+ subQuery2 + ")  or (" + subQuery3 + ") and requirement.createdDate BETWEEN :startDateUTC and :endDateUTC) ";
+						+ subQuery2 + ")  or (" + subQuery3 + ") ) and requirement.createdDate BETWEEN :startDateUTC and :endDateUTC";
 				}else{
 					countQuerySub = "where requirement.orgLocationId.id =:orgLocationId and ("+ jobTypeVal +") and ( (" + subQuery1 + ") or ("
-							+ subQuery2 + ")  or (" + subQuery3 + ") and requirement.createdDate BETWEEN :startDateUTC and :endDateUTC) ";
+							+ subQuery2 + ")  or (" + subQuery3 + ") ) and requirement.createdDate BETWEEN :startDateUTC and :endDateUTC ";
 				}
 				params.put("orgLocationId", orgLocationId);
 				params.put("startDateUTC", startDateUTC);
@@ -821,10 +821,10 @@ public class RequirementDaoImpl implements RequirementDao {
 			if (subQuery1 != "" || subQuery2 != "" || jobTypeVal !="") {
 				if(clientVal != ""){
 				subQuery = "where requirement.orgLocationId.id =:orgLocationId and ("+ clientVal +") and ("+ jobTypeVal +") and ( (" + subQuery1 + ")  or ("
-						+ subQuery2 + ") and requirement.createdDate BETWEEN :startDateUTC and :endDateUTC) ";
+						+ subQuery2 + ")) and requirement.createdDate BETWEEN :startDateUTC and :endDateUTC";
 				}else{
 					subQuery = "where requirement.orgLocationId.id =:orgLocationId and ("+ jobTypeVal +") and ( (" + subQuery1 + ") or ("
-							+ subQuery2 + ") and requirement.createdDate BETWEEN :startDateUTC and :endDateUTC) ";	
+							+ subQuery2 + ")) and requirement.createdDate BETWEEN :startDateUTC and :endDateUTC";	
 				}
 				params.put("orgLocationId", orgLocationId);
 				params.put("startDateUTC", startDateUTC);
@@ -832,10 +832,10 @@ public class RequirementDaoImpl implements RequirementDao {
 				
 				if(clientVal != ""){
 				countQuerySub = "where requirement.orgLocationId.id =:orgLocationId and ("+ clientVal +") and ("+ jobTypeVal +") and ( (" + subQuery1 + ")  or ("
-						+ subQuery2 + ") and requirement.createdDate BETWEEN :startDateUTC and :endDateUTC) ";
+						+ subQuery2 + ")) and requirement.createdDate BETWEEN :startDateUTC and :endDateUTC";
 				}else{
 				countQuerySub = "where requirement.orgLocationId.id =:orgLocationId and ("+ jobTypeVal +") and ( (" + subQuery1 + ") or ("
-							+ subQuery2 + ") and requirement.createdDate BETWEEN :startDateUTC and :endDateUTC) ";
+							+ subQuery2 + ") ) and requirement.createdDate BETWEEN :startDateUTC and :endDateUTC";
 						
 				}
 				params.put("orgLocationId", orgLocationId);
