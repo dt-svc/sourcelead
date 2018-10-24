@@ -198,6 +198,7 @@ function prepareRequirementData(url,sourceleadUrl){
 	 result = result +"<table id='requirementPagination' class='display' cellspacing='0' width='100%' >"; 
    result = result +"<thead>"; 
    result = result +"  <tr>"; 
+   result = result +"    <th>requirementId</th>";
    result = result +"    <th>Action</th>"; 
    result = result +"    <th>Generated ID</th>"; 
    result = result +"    <th>Title</th>";
@@ -273,6 +274,7 @@ function jpagination(url,sourceleadUrl){
            pages: 1
        }),
        "columns": [
+    	   { "data": "requirementId" },
     	   { "data": "requirementUUID" },
     	   { "data": "generatedId"},
            { "data": "jobTitle"},
@@ -289,8 +291,22 @@ function jpagination(url,sourceleadUrl){
           
        ],
 	       "columnDefs": [ 
-	    	   
 	    	   {
+	   	   	  	"targets": colIndex++,
+	   		  	"data": "requirementId",
+	   		  	"sortable": true,
+	   		  	"render": function(data, type, opt, meta) {
+	   		  		 var result = "";
+	   		  		 result = result +"<td>";
+	   		  	  	 if(opt.id != '' && opt.id != null){
+	   		  		   	 result = result +"<div class='tbldata-dotdot_50 tblminwidth-75' title='"+opt.id+"'>"+opt.id+"</span></div>";
+	   		  	    	}else{
+	   		  	  		 result = result +"<div>-----</div>";
+	   		  	  	 }
+	   		  		 result = result +"</td>";
+	   	             return  result;
+	   		  	}
+	   	        },{
 		         "targets": colIndex++,
 		         "sortable": false,
 		         "data": "requirementUUID",
@@ -760,7 +776,7 @@ function jpagination(url,sourceleadUrl){
            ],
 	    	"scrollCollapse": false,
 	    	"lengthMenu": [[10, 15, 20], [10, 15, 20]],
-	    	"aaSorting": [[1,'desc']],
+	    	"aaSorting": [[0,'desc']],
 	    	"bLengthChange": true,
 	    	"bDestroy": true,
 	    	"ordering": true,
@@ -786,7 +802,7 @@ function jpagination(url,sourceleadUrl){
   
    $("#requirementPagination").wrap("<div style='overflow-x: auto; overflow-y: hidden;'></div>"); 
    $("input[type=search]").hide();
-  
+   $('#requirementPagination').DataTable().column(0).visible(false);
    $("#dataTableSearch").keyup(function(e) {
    	   if(e.which === 13) {
    		 requirementList('list',sourceleadUrl);
@@ -974,7 +990,7 @@ function jpaginationForJobFairs(url){
            ],
 	    	"scrollCollapse": false,
 	    	"lengthMenu": [[10, 15, 20], [10, 15, 20]],
-	    	"aaSorting": [[0,'desc']],
+	    	"aaSorting": [[6,'desc']],
 	    	"bLengthChange": true,
 	    	"bDestroy": true,
 	    	"ordering": true,
