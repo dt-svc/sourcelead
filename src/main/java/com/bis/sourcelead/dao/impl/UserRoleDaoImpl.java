@@ -1133,7 +1133,7 @@ public class UserRoleDaoImpl implements UserRoleDao {
 		       .append("OR userRole.user.email like '%" + userDTO.getSearchValue().replace("'", "") + "%' ")
 			   .append("OR userRole.user.mobilePhone like '%" + userDTO.getSearchValue().replace("'", "") + "%' ")
 			   .append("OR userRole.roles.displayName like '%" + userDTO.getSearchValue().replace("'", "") + "%' ")
-			   .append("OR userRole.user.id IN(Select emp.user.id from Employees emp where emp.userEmploymentType like '%" + userDTO.getSearchValue().replace("'", "") + "%') ) ");
+			   .append("OR userRole.user.id IN(Select emp.user.id from Employees emp where emp.userEmploymentType like '%" + userDTO.getSearchValue().replace("'", "") + "%' and emp.orgLocations.id = :locationId)) ");
 					
 		}
 		//usertList shorting order
