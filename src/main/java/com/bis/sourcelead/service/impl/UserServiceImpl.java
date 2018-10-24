@@ -2033,7 +2033,7 @@ public class UserServiceImpl implements UserService {
 					
                }
 				if(sub.getRequirementCount() != null){
-					totalReqCount=totalReqCount + sub.getRequirementCount().intValue();
+					totalReqCount=sub.getRequirementCount().intValue();
 				}
 				if(sub.getReqClientCount() != null){
 					totalReqCount=totalReqCount + sub.getReqClientCount().intValue();
