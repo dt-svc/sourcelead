@@ -9181,10 +9181,13 @@ margin: 5px 0; font-size: 16px; color: #606060;
 	border-bottom: 1px solid #ededed; padding: 10px 0;
 }
 .prfileImg {
-	width: 150px; height: 150px; background-color:#fff; padding-right: 0;
+	width: 100px; height: 100px; background-color:#fff; padding-right: 0;
 }
-.prfileImg img, .profilesummarywidgetImg img {
-	max-height: 100%; border-radius:0px;
+.prfileImg img, .profilesummarywidgetImg img, .grid-prfileImg img {
+	max-height: 100%; border-radius:0px; margin: 0 auto;
+}
+.grid-prfileImg {
+	width: 350px; height: auto; background-color:#fff; padding-right: 0;
 }
 .profilesummarywidgetImg {
 	width: 150px; height: 150px; border: 3px solid #fff;
@@ -9212,10 +9215,10 @@ ul.candidateInfo li .rateProfile {
 	width: 90%;
 }
 .profileDetails-header {
-	border-bottom: 1px solid #f5f5f5;	
+	border-bottom: 1px solid #f5f5f5; background-color: #fff; padding: 5px 0;
 }
 ul.profileSkills li {
-	color: #333; background-color: #ededed; border: 1px solid #ededed; border-radius: 2px; padding:2px 10px; margin-right: 15px; cursor: pointer; margin-bottom: 10px;
+	color: #333; background-color: #ededed; border: 1px solid #ededed; border-radius: 2px; padding:2px 5px; margin-left: 5px; cursor: pointer; margin-bottom: 10px;
 }
 ul.profileSkills li:hover {
 	border: 1px solid #ededed; background-color: #fff;
@@ -9233,15 +9236,18 @@ ul.profileSkills li:last-of-type {
 	height: 32px; line-height: 23px;
 }
 .anchorHighlight {
-color:#0277BD; -webkit-transition: all .2s ease-in-out; -moz-transition: all .2s ease-in-out; transition: all .2s ease-in-out;
+color:#0277BD; -webkit-transition: all .2s ease-in-out; -moz-transition: all .2s ease-in-out; transition: all .2s ease-in-out; border: 1px solid #9FDBFF; border-radius: 3px; padding: 3px 10px;
 }
 .anchorHighlight:before {
 padding-right: 10px; position: relative; display:inline-block; right: 0px; width:18px;
 content: '\f087'; font-family: fontawesome;
 -webkit-transition: all .2s ease-in-out; -moz-transition: all .2s ease-in-out; transition: all .2s ease-in-out;
 }
-.anchorHighlight:hover:before, .anchorHighlight:hover {
-content: '\f00c'; color: #f60;
+.anchorHighlight:hover:before, .anchorHighlight:hover, .anchorHighlight.anchorHighlightActive {
+content: '\f00c'; color: #f60; border-color: #f60;
+}
+.anchorHighlight.anchorHighlightActive:before {
+content: '\f00c'; color: #f60; border-color: #f60;
 }
 .currentCompnay {
 	background-image: url(../images/accept.svg); background-repeat: no-repeat; width: 45px; height: 45px;
@@ -9252,7 +9258,7 @@ content: '\f00c'; color: #f60;
 	background-position: top; background-size: 100%; display: inline-block;
 }
 .jobSucces_list a {
-	position: absolute; right:0px; top:0px; color: #f60;
+	position: relative; right:0px; top:0px; color: #f60;
 }
 .richtext-inner > div {
 	width: 100% !important;
@@ -9281,6 +9287,18 @@ ul.listStyles li.activeList:before {
 }
 ul.listStyles li.activeList a {
 	color: #368ee0;
+}
+a.removeSelected {
+	position: absolute; right: 15px; top: 0px; color: #fff;
+	width: 25px; height: 25px; text-align: center; display: block; background: #ff7979; line-height: 25px; z-index: 99;
+}
+a.removeSelected:hover {
+	background: #eb4d4b;
+}
+.profileDetails-headerFixed {
+	position: fixed; width: 92.5%; background-color: #f5f5f5; z-index: 9999; top: 55px;
+	box-shadow: 0px 2px 2px 0px #ddd; border-bottom: 1px solid #fff;
+	
 }
 @media (max-width: 320px) {
 .uasrch-selectpicker {
