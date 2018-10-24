@@ -142,16 +142,14 @@ var loaded = false;
 							
 						<sec:authorize access="hasRole('ROLE_RESOURCE_REQUEST_APPROVER')">
 							   <%-- <jsp:include page="resourceRequest.jsp"></jsp:include>  --%>
-							<c:if test='${itemName eq "Associate Requests" && itemChecked == true}'>
+							<c:if test='${itemName eq "Project Requests" && itemChecked == true}'>
 							   <div class="col-md-12"> <jsp:include page="projectResourceRequest.jsp"></jsp:include> </div> 
-							</c:if>
-							<c:if test='${itemName eq "New Resource Requests" && itemChecked == true}'>
 							    <jsp:include page="projectNewResourceRequest.jsp"></jsp:include>  
 							</c:if>
 						</sec:authorize>
 							
 						<sec:authorize access="hasRole('ROLE_BUDGET_APPROVER')">
-							<c:if test='${itemName eq "Budget Requests" && itemChecked == true}'>
+							<c:if test='${itemName eq "Project Requests" && itemChecked == true}'>
 						    	<jsp:include page="budgetRequest.jsp"></jsp:include>
 							</c:if>
 						</sec:authorize>
