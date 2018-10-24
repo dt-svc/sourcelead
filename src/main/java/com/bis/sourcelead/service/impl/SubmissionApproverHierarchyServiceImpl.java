@@ -301,8 +301,8 @@ public class SubmissionApproverHierarchyServiceImpl implements SubmissionApprove
 	}
 
 	@Override
-	public Boolean isReopenButtonVisible(Date frequencyStartDate,Date frequencyEndDate,Long projectId,Long masterCandidateId,Long locationId){
-		return submissionApproverHierarchyDao.isReopenButtonVisible(frequencyStartDate, frequencyEndDate, projectId, masterCandidateId,locationId);
+	public Boolean isReopenButtonVisible(Date frequencyStartDate,Date frequencyEndDate,Long projectId,Long masterCandidateId,Long locationId,Long orgId,String isGlobalAccess){
+		return submissionApproverHierarchyDao.isReopenButtonVisible(frequencyStartDate, frequencyEndDate, projectId, masterCandidateId,locationId,orgId,isGlobalAccess);
 	}
 
 	@Override

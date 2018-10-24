@@ -1052,15 +1052,35 @@ function cancelDelDoc(){
  		
 	}
   </script>
-
-
+<div id="allowOneAssociatePopUp"></div>
 <script>
+function allowOneAssociate(){ 
+	var result = "";
+	$("#allowOneAssociatePopUp").empty();
+	result = result +"	<div class='project_inn_mask'></div>"; 
+	result = result +"	   <div id='remove_user_pop' class='remove_user_pop remove_user_pop_a'>";
+	result = result +"<div class='modal-body'><p>Allow only One Associate</p></div>";
+	result = result + ' <div id="allowOneAssociateDiv"/>';
+	result = result +'		<b href="javascript:void(0)"><input class="u_can_color width100percnt" type="button"  value="Ok" onClick="cancelPopup();"></b>';
+	result = result +"	</div>";
+	$("#allowOneAssociatePopUp").append(result);
+	$("#remove_user_pop").slideDown(200);
+	$(".project_inn_mask").fadeIn(200);
+}
+
+function cancelPopup(){
+	$("#allowOneAssociatePopUp").empty();
+	 $(".project_inn_mask").fadeOut(200);
+}
+</script>
+<script>
+
   function getAllAssociates(){
 	  var maxTsRowNum = parseInt($("input[name = 'maxTsRowNum']").val());
 	  var orgRelationId = $("#clientOrgRelationId").val();
 	  var invoiceCreateType = $("#clientOrgRelationId").find(':selected').attr("data-Invoice");
 	  if(invoiceCreateType == "Individual"){
-		  alert("Allow only One Associate");
+		  allowOneAssociate();
 	  }
 	  var selectedAssociates = '';
 	  if(maxTsRowNum > 0){

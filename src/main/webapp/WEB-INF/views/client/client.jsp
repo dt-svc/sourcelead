@@ -58,7 +58,7 @@ margin-top: -50px;
            <h3>Client Details</h3>
             <div class="form-group" ><label class="col-md-3" for="Project Id">Client Name<span class="text-danger">&nbsp;*</span></label>
 				<div class="col-md-9" id="clientNameDiv">
-					<input type="text" class="form-control" id="orgName" name="orgName" value="${orgName}" onclick="getOrgName();" onblur="getOrgDetails(); validateOrgName();" field-name="Client Name" data-validation="required validate_length length2-250" value="">
+					<input type="text" class="form-control" id="orgName" name="orgName" value="${orgName}" onclick="getOrgName();" onblur="getOrgDetails(); validateOrgName();" field-name="Client Name" data-validation="required validate_length length2-100" value="">
 					<input type="hidden" id="orgLocationId" />
 					<span class="hidden">Enter Client Name</span>
 				</div>
