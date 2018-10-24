@@ -1163,7 +1163,7 @@ $(document).ready(function () {
 						    		 </c:forEach>
 					    		 </c:if>
 					    		 <c:if test="${empty clientContactList}">
-					    		 	<option value="${requirement.spocId.id}" >${requirement.spocId.spocName} (${requirement.spocId.ownerName})</option>
+					    		 	<option value="${requirement.spocId.id}" >${requirement.spocName}</option>
 					    		 </c:if>
                     		</select>
 						 </c:when>
