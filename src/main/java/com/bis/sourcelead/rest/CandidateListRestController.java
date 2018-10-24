@@ -219,7 +219,7 @@ public class CandidateListRestController {
 		 * names should match the ELK Candidate index field names.
 		 */
 		String[] tableColumns = { "", "isAssociate", "generatedId.keyword", "firstName.keyword", "primarySkill.keyword",
-				"designationType.keyword", "email.keyword", "mobilePhone.keyword","country.keyword", "updatedDate", "createdBy.keyword" };
+				"designationType.keyword", "email.keyword", "mobilePhone.keyword","country.keyword", "updatedDate","profilePercentage","noOfJobs", "createdBy.keyword" };
 
 		int sortColumnIndex = 9; // by default sorting using updated date
 		boolean sortColumnOrder = false; // by default descending order

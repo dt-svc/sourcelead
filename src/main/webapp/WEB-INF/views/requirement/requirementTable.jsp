@@ -415,6 +415,7 @@ function jpagination(url,sourceleadUrl){
 	        {
 	            "targets": colIndex++,
 	            "data": "clientName",
+	            "sortable": false,
 	            "render": function ( data, type, opt, meta ) {
 	            		var result = "";
            		   if(opt.clientName != null && opt.clientName != '' && opt.clientName != 'undefined'){
@@ -510,6 +511,7 @@ function jpagination(url,sourceleadUrl){
         	{
 	            "targets": colIndex++,
 	            "data": "country",
+	            "sortable": false,
 	            "render": function ( data, type, opt, meta ) {
 	            		var result = "";
 	            		
@@ -581,6 +583,7 @@ function jpagination(url,sourceleadUrl){
 			 {
 			         "targets": colIndex++,
 			         "data": "createdDate",
+			         "sortable": false,
 			         "render": function (data, type, opt, meta ) {
 		         		   var result = "";
 		         		   if(opt.postedOnStr!=null && opt.postedOnStr !='' && opt.postedOnStr !='undefined'){
@@ -760,7 +763,7 @@ function jpagination(url,sourceleadUrl){
            ],
 	    	"scrollCollapse": false,
 	    	"lengthMenu": [[10, 15, 20], [10, 15, 20]],
-	    	"aaSorting": [[10,'desc']],
+	    	"aaSorting": [[1,'desc']],
 	    	"bLengthChange": true,
 	    	"bDestroy": true,
 	    	"ordering": true,
@@ -974,7 +977,7 @@ function jpaginationForJobFairs(url){
            ],
 	    	"scrollCollapse": false,
 	    	"lengthMenu": [[10, 15, 20], [10, 15, 20]],
-	    	"aaSorting": [[9,'desc']],
+	    	"aaSorting": [[0,'desc']],
 	    	"bLengthChange": true,
 	    	"bDestroy": true,
 	    	"ordering": true,

@@ -1190,61 +1190,6 @@ $('body').on('blur', '#assetService_form', function() {
 
 </script>
 
-<script type="text/javascript">
-function deleteAsset(assetUUID){
-	var result = "";
-	result = result +"	<div class='project_inn_mask'></div>";
-	result = result +"	   <div id='remove_user_pop' class='remove_user_pop remove_user_pop_a'>";
-	result = result +"		<p>Are you sure delete Asset?</p>";
-	result = result +"		<div>&nbsp;&nbsp;&nbsp;</div>";
-	result = result +"		<b href='javascript:void(0)'><input type='button' value='Ok' onclick='removeAssetManagement(\""+assetUUID+"\");'><input class='u_can_color' type='button'  value='Cancel' onClick='cancel();'></b>";
-	result = result +"	</div>";
-	$("#popUp").append(result);
-	$("#remove_user_pop").slideDown(200);
-	$(".project_inn_mask").fadeIn(200);
-}
-</script>
-
-<script type="text/javascript">
-function cancel(){
-	$("#popUp").empty();
-	$(".project_inn_mask").fadeOut(200);
-}
-</script>
-
-<div id="popUp"></div>
-
-<script>
-function removeAssetManagement(assetUUID){
-	 $("#popUp").empty();
-	 $(".project_inn_mask").fadeOut(200);
-	
-	 $("#asset"+assetUUID).empty();
-	 $("#asset"+assetUUID).html("<td colspan='7'  id='loading"+assetUUID+"'></td>");
-	 $("#loading"+assetUUID).attr('style',' height:40px; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/linear-loader.gif"); background-position:center; background-repeat:no-repeat;');
-	
-	 $.ajax({
-	   	type: "POST",
-	    url: sourceleadUrl+"/removeAssetManagement?"+tokenParamName+"="+tokenValue+"&assetUUID="+assetUUID,	    	   
-	    success: function(result) {
-  			if (result && result.response === "INVALID_DATA") {
-			    showError(result.responseMessage);
-			} else if (result.response === "AWKWARD") {
-			    location.href = "/errorPage";
-			} else if (result.response === "SUCCESS") {
-				location.replace(sourceleadUrl + "/assetManagement");
-				/*  var table = $('#assetManagementList').DataTable();
-	  		     table.row("#asset"+assetId).remove().draw( false );  */
-			} else if (result.indexOf('Sign In') !== -1) {
-				location.replace(sourceleadUrl);
-			} else {
-			    showError("Operation failed, please try again");
-			}
-	    }
-   });
-}
-</script>
-
 <script>
  function assetSideBar(assetId){ 
 		    $(".clients_side_wrap").addClass("clients_side_wrap_active");
@@ -1253,7 +1198,6 @@ function removeAssetManagement(assetUUID){
 // 			assetDetails(assetId);
  }
 </script> 
-  
   
    <script>
   function assetCategory(){
@@ -1758,3 +1702,56 @@ document.getElementById("assigned").addEventListener("click", function(){
 <%-- <jsp:include page="assetManagementDetails.jsp" />
 <jsp:include page="assetManagementSummary.jsp" /> --%>
 <jsp:include page="../masterFooter.jsp" />
+
+<div id="popUp"></div>
+<script type="text/javascript">
+function deleteAsset(assetUUID){
+	var result = "";
+	result = result +"	<div class='project_inn_mask'></div>";
+	result = result +"	   <div id='remove_user_pop' class='remove_user_pop remove_user_pop_a'>";
+	result = result +"		<p>Are you sure delete Asset?</p>";
+	result = result +"		<div>&nbsp;&nbsp;&nbsp;</div>";
+	result = result +"		<b href='javascript:void(0)'><input type='button' value='Ok' onclick='removeAssetManagement(\""+assetUUID+"\");'><input class='u_can_color' type='button'  value='Cancel' onClick='cancel();'></b>";
+	result = result +"	</div>";
+	$("#popUp").append(result);
+	$("#remove_user_pop").slideDown(200);
+	$(".project_inn_mask").fadeIn(200);
+}
+</script>
+
+<script type="text/javascript">
+function cancel(){
+	$("#popUp").empty();
+	$(".project_inn_mask").fadeOut(200);
+}
+</script>
+<script>
+function removeAssetManagement(assetUUID){
+	 $("#popUp").empty();
+	 $(".project_inn_mask").fadeOut(200);
+	
+	 $("#asset"+assetUUID).empty();
+	 $("#asset"+assetUUID).html("<td colspan='7'  id='loading"+assetUUID+"'></td>");
+	 $("#loading"+assetUUID).attr('style',' height:40px; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/linear-loader.gif"); background-position:center; background-repeat:no-repeat;');
+	
+	 $.ajax({
+	   	type: "POST",
+	    url: sourceleadUrl+"/removeAssetManagement?"+tokenParamName+"="+tokenValue+"&assetUUID="+assetUUID,	    	   
+	    success: function(result) {
+  			if (result && result.response === "INVALID_DATA") {
+			    showError(result.responseMessage);
+			} else if (result.response === "AWKWARD") {
+			    location.href = "/errorPage";
+			} else if (result.response === "SUCCESS") {
+				location.replace(sourceleadUrl + "/assetManagement");
+				/*  var table = $('#assetManagementList').DataTable();
+	  		     table.row("#asset"+assetId).remove().draw( false );  */
+			} else if (result.indexOf('Sign In') !== -1) {
+				location.replace(sourceleadUrl);
+			} else {
+			    showError("Operation failed, please try again");
+			}
+	    }
+   });
+}
+</script>

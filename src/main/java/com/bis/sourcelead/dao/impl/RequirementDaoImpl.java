@@ -753,6 +753,13 @@ public class RequirementDaoImpl implements RequirementDao {
 		String jobTypeVal ="";
 		String clientVal ="";
 		//List<Long> data = new ArrayList<Long>;
+		
+		//List sorting order
+				String sortingQry = "";
+				if(StringUtils.isNotBlank(jobFilterDTO.getSortColumn())) {
+				sortingQry = " order by requirement."+ jobFilterDTO.getSortColumn() +" "+jobFilterDTO.getSortOrder();
+				}
+				
 		StringBuilder query1 = new StringBuilder("");
 		if(StringUtils.isNotBlank(jobFilterDTO.getJobType())){
 			if(jobFilterDTO.getJobType().equalsIgnoreCase("internal")){
@@ -846,7 +853,7 @@ public class RequirementDaoImpl implements RequirementDao {
 		}
 		int count = 0;
 		String whereCondition = subQuery+query1;
-		Query query = session.createQuery(from + " " + whereCondition + " ORDER BY requirement.id DESC");
+		Query query = session.createQuery(from + " " + whereCondition + sortingQry);
 		for (String str : query.getNamedParameters()) {
 		if (str.equalsIgnoreCase("orgLocationId") || str.equalsIgnoreCase("")) {
 			query.setLong(str, (long) params.get(str));
@@ -876,9 +883,11 @@ public class RequirementDaoImpl implements RequirementDao {
     		List<RequirementLocations> locationList = requirementLocationsService.getRequirementLocationsListByRequirementId(requirement.getId());
     		locationList.forEach(loclist->{
     			requirementLocationsList.add(loclist.getLocation());
-    			sb.append(loclist.getLocation()).append(",").toString();
+    			if(sb.length() > 0) 
+    				sb.append(",");
+    			sb.append(loclist.getLocation()).toString();
     		});
-    		requirement.setLocation(sb.deleteCharAt(sb.length()-1).toString());
+    		requirement.setLocation(sb.toString());
     		requirement.setLocationsList(requirementLocationsList);
     		RequirementSubmissionsCountDTO requirementSubmissionsCountDTO= requirementSubmissionDao.getAllPipeLineCountsByRequirementIdAndSubmissionStage(requirement.getId(),user,orgLocation,"All");
     		requirement.setAssignedMembersCount(requirementSubmissionsCountDTO.getApplicantsCount().toString());
