@@ -1636,10 +1636,10 @@ public class DashboardRestController {
 					
 					if(rsh.getSubmissionId().getRequirement().getPayOutPeriod() != null &&  rsh.getSubmissionId().getJoinedDate()  != null){
 						int result = Integer.parseInt(rsh.getSubmissionId().getRequirement().getPayOutPeriod());
-						Date generatedInvoiceDate=CalendarUtil.addDays(rsh.getSubmissionId().getJoinedDate(), result);
+						Date generatedInvoiceDate=CalendarUtil.addDaysForGenerateInvoice(rsh.getSubmissionId().getJoinedDate(), result);
 						DateTime dtOrg = new DateTime(generatedInvoiceDate);
-						DateTime generatedInvoiceDatePlusOne = dtOrg.plusDays(1);
-						rshDTO.setGenerateInvoice(commonUtil.dateStrFromOrgDateFormatter(loginOrgLocations.getDateFormat(),generatedInvoiceDatePlusOne.toDate()));
+//						DateTime generatedInvoiceDatePlusOne = dtOrg.plusDays(1);
+						rshDTO.setGenerateInvoice(commonUtil.dateStrFromOrgDateFormatter(loginOrgLocations.getDateFormat(),dtOrg.toDate()));
 					}
 					
 					if(rsh.getSubmissionId().getRequirement().getParentRequirement() != null){
