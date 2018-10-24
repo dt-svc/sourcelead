@@ -22,6 +22,7 @@ public class RecruiterRrportDTO extends SearchDTO implements Serializable {
     private BigInteger managerUserId;
     private String assignedUserStatus;
     private BigInteger primaryUserId;
+    private BigInteger approverUserId;
     
 	public BigInteger getRequirementId() {
 		return requirementId;
@@ -70,6 +71,12 @@ public class RecruiterRrportDTO extends SearchDTO implements Serializable {
 	}
 	public void setPrimaryUserId(BigInteger primaryUserId) {
 		this.primaryUserId = primaryUserId;
+	}
+	public BigInteger getApproverUserId() {
+		return approverUserId;
+	}
+	public void setApproverUserId(BigInteger approverUserId) {
+		this.approverUserId = approverUserId;
 	}
 	
 }

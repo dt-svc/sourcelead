@@ -462,8 +462,8 @@ function getRequestedAproveSummary(leaveUUID,orgLocationId,totalBalLeaves){
              result = result +'<div class="col-md-12 mb">';
              result = result +'<label class="col-md-2 control-label"><b>Balance leaves:</b></label>';
              result = result +'<div class="col-md-8">';
-             if(totalBalLeaves != null && totalBalLeaves !='' && totalBalLeaves !='undefined'){
-				 result = result +'<span>'+totalBalLeaves+'</span>';
+             if(data.totalBalLeaves != null && data.totalBalLeaves !='' && data.totalBalLeaves !='undefined'){
+				 result = result +'<span>'+data.totalBalLeaves+'</span>';
 			 }else{
 	            	result = result +' <span>--</span>';
 	            }
