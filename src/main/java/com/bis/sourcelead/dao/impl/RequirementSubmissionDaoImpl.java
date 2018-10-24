@@ -406,7 +406,7 @@ public class RequirementSubmissionDaoImpl implements RequirementSubmissionDao{
 		 String submissionStages = "";
 		 
 		 if(submissionStatus.equalsIgnoreCase("SUBMISSION")){
-			 submissionStages = "and rs.submissionStatus = 'SUBMISSION' ";
+			 submissionStages = "and (rs.submissionStatus = 'SUBMISSION' OR rs.submissionStatus = 'SELECTED_ON_INTERVIEW' OR rs.submissionStatus = 'INTERVIEW' ) and (rs.id NOT IN(SELECT sh.submissionId.id FROM RequirementSubmissionHistory sh WHERE sh.toStage = 'SHORTLIST' and sh.submissionId.orgLocations.id = :orgLocationsId and sh.submissionId.requirement.id = :requirementId )) ";
 		 }
 		 
 		 else if(submissionStatus.equalsIgnoreCase("SHORTLIST")){
