@@ -163,7 +163,7 @@ function approvedEmployeesPagination(url){
 	          },{
             "targets": colIndex++,
             "data": "duration",
-            "sorting":false,
+            "sortable":false,
             "render": function ( data, type, opt, meta ) {
             	 var result = "";
             	 result = result + '   <div title="'+opt.duration+'" class="tbldata-dotdot-100">'+opt.duration+'</div>';
@@ -172,6 +172,7 @@ function approvedEmployeesPagination(url){
           }, {
               "targets": colIndex++,
               "data": "noOfDays",
+              "sortable":false,
               "render": function ( data, type, opt, meta ) {
             	   var result = "";
             	   result = result + '     <div class="tblminwidth-75">'+opt.appliedNoOfDays+'</div>';		 
@@ -208,6 +209,7 @@ function approvedEmployeesPagination(url){
 	    	  },{
 	    	  	"targets": colIndex++,
 	    	  	"data": "updatedDate",
+	    	  	"sortable":false,
 	    	  	"render": function(data, type, opt, meta) {
 	    	  		 var result = "";
 	    	  		result = result + ' <div class="tblminwidth-75">'+opt.updatedDate+'</div>';	
@@ -216,7 +218,7 @@ function approvedEmployeesPagination(url){
 	    	  }, {
                   "targets": colIndex++,
                   "data": "action",
-                  "sorting":false,
+                  "sortable":false,
                   "render": function ( data, type, opt, meta ) {
                 	   var result = "";
                 	   '<sec:authorize access="hasAnyRole(\'ROLE_CANCEL_LEAVE\')">';

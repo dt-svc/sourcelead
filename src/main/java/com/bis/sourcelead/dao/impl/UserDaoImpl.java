@@ -2184,11 +2184,15 @@ public class UserDaoImpl implements UserDao {
 				//Map<Long,List<Long>> requirementMap = new HashMap<Long,List<Long>>();
 				Set<BigInteger> jobIds = new HashSet<>();
 				Set<BigInteger> primaryUserjobIds = new HashSet<>();
+				Set<BigInteger> approverUserjobIds = new HashSet<>();
 				for(RecruiterRrportDTO reportDTO: recruiterReportAssociateList1){
 					UserDTO userDTO = associatesListMap.get(reportDTO.getManagerUserId());
 					if(userDTO != null){
 						jobIds.add(reportDTO.getRequirementId());
 						BigDecimal bd = new BigDecimal(jobIds.size());
+						if(userDTO.getUserRequirementsCount() != null) {
+							bd = bd.add(userDTO.getUserRequirementsCount());
+						}
 						userDTO.setUserRequirementsCount(bd);
 					}
 					
@@ -2196,6 +2200,19 @@ public class UserDaoImpl implements UserDao {
 					if(userDTO != null){
 						primaryUserjobIds.add(reportDTO.getRequirementId());
 						BigDecimal bd = new BigDecimal(primaryUserjobIds.size());
+						if(userDTO.getUserRequirementsCount() != null) {
+							bd = bd.add(userDTO.getUserRequirementsCount());
+						}
+						userDTO.setUserRequirementsCount(bd);
+					}
+					
+					userDTO = associatesListMap.get(reportDTO.getApproverUserId());
+					if(userDTO != null){
+						approverUserjobIds.add(reportDTO.getRequirementId());
+						BigDecimal bd = new BigDecimal(approverUserjobIds.size());
+						if(userDTO.getUserRequirementsCount() != null) {
+							bd = bd.add(userDTO.getUserRequirementsCount());
+						}
 						userDTO.setUserRequirementsCount(bd);
 					}
 					
@@ -2339,8 +2356,7 @@ public class UserDaoImpl implements UserDao {
 		
 		
 		if(searchValue !=null && !"".equalsIgnoreCase(searchValue)) {
-			subQuery8.append("and (u.FIRST_NAME like '%" + searchValue + "%' ")
-					.append("OR u.LAST_NAME like '%" + searchValue + "%' ")
+			subQuery8.append("and (CONCAT (u.FIRST_NAME,' ',IFNULL(u.LAST_NAME,'')) like '%" + searchValue + "%' ")
 					.append("OR concat(u.FIRST_NAME,u.LAST_NAME) like '%" + searchValue + "%' ")
 					.append("OR concat(u.FIRST_NAME,u.LAST_NAME) like '%" + searchValue + "%' ")
 			.append("OR e.EMPLOYMENT_TYPE like '%" + searchValue + "%' ) ");
@@ -2350,7 +2366,7 @@ public class UserDaoImpl implements UserDao {
 					
 		
 	
-		String query ="select distinct CONCAT (u.FIRST_NAME,' ',IFNULL(u.LAST_NAME,'')) AS empName ,e.EMPLOYMENT_TYPE AS empType,u.ID AS userId,ur.USER_TYPE AS role from USER u,USER_ROLE ur,EMPLOYEE e,USER_LEAVE ul where u.ID=ur.USER_ID and u.ID=e.USER_ID and  u.ID = ul.USER_ID and ur.ORG_LOCATIONS_ID=e.ORG_LOCATIONS_ID and ur.ORG_LOCATIONS_ID =:orgLocationId "+subQuery8.toString()+subQuery4+subQuery3+subQuery5+subQuery6+subQuery7;
+		String query ="select distinct CONCAT (u.FIRST_NAME,' ',IFNULL(u.LAST_NAME,'')) AS empName ,e.EMPLOYMENT_TYPE AS empType,u.ID AS userId,ur.USER_TYPE AS role from USER u,USER_ROLE ur,EMPLOYEE e, USER_LEAVE ul where u.ID=ur.USER_ID and u.ID = ul.USER_ID and u.ID=e.USER_ID and ur.ORG_LOCATIONS_ID=e.ORG_LOCATIONS_ID and ur.USER_STATE = 'ACTIVE' and ur.ORG_LOCATIONS_ID =:orgLocationId "+subQuery8.toString()+subQuery4+subQuery3+subQuery5+subQuery6+subQuery7;
 		//Query queryString = (Query) session.createSQLQuery(query).setLong("orgLocationId",orgLocationId).setResultTransformer(Transformers.aliasToBean(LeaveBalanceReportDTO.class)).list();
 		Query queryString = session.createSQLQuery(query);
 		queryString.setParameter("orgLocationId", orgLocationId);

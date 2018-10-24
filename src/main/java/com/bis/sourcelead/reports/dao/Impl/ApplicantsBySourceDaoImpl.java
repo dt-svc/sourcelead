@@ -378,7 +378,7 @@ public class ApplicantsBySourceDaoImpl implements ApplicantsBySourceDao{
 				 resultQuery.append(" REQUIREMENT_SUBMISSION RS ");
 				 resultQuery.append(" WHERE  ");
 				 resultQuery.append(" RH.REQUIREMENT_SUBMISSION_ID = RS.ID ");
-				 resultQuery.append(" AND RS.VENDOR_CANDIDATE_ID IS NULL ");
+				 resultQuery.append(" AND RS.VENDOR_CANDIDATE_ID IS NULL AND RS.SOURCE_SUBMISSION_ID IS NULL");
 				 resultQuery.append(" AND RS.REQUIREMENT_ID IN(:jobIds)"); 
 				
 				if(searchDates != null) {

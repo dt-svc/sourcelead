@@ -15,9 +15,117 @@
       <div class="clients_wrap">
 	      <div class="positionRelative reportHead clearfix">
 	      <span class="pull-left refreIcon" id="advanceSearchDiv">
-<!-- 	      		<a href="javascript:void(0)" class="refeIcon" id="resetVendor" title="Refresh" onclick="resetApplicantFilter();"></a> -->
+	      		<a href="javascript:void(0)" class="refeIcon" id="resetVendor" title="Refresh" onclick="refreshList();"></a> 
 	      </span>
-	      <!--  <a href="javascript:void(0)" onclick="columPop();" title="Column Chooser" class="columIcon"></a>   -->
+	       <a href="javascript:void(0)" id="columPop" title="Column Chooser" class="columIcon mt10"></a>
+	       <div class="colPop">
+	<div class="colPopMid coldropdown-parent">
+	<div class="clearfix">
+		<div class="row">
+				<div class="col-md-10 mb10 mt5 col-md-offset-2">
+				<span class="checkbox-new  pull-left mr">
+					<input id="columnsPickerUnCheckAll" class="radio-custom" name="columnsPicker" onclick="checkAllColumns(this);"  type="radio">
+					<label for="columnsPickerUnCheckAll" class="radio-custom-label">Uncheck All</label>
+				</span>
+				<span class="checkbox-new pull-left">
+					<input id="columnsPickerCheckAll" class="radio-custom" name="columnsPicker" onclick="checkAllColumns(this);"  type="radio" checked="">
+					<label for="columnsPickerCheckAll" class="radio-custom-label" >Check All</label>
+				</span>
+			</div>
+		</div>
+	<div class="clearfix"></div>
+		<div class="coldropdown-inner">
+		<ul>
+			<li>
+				<span class="checkbox-new clearfix">
+					<input id="a" class="checkbox-custom toggle-vis" name="paidComponent" data-column="0" type="checkbox" checked="">
+					<label for="a" class="checkbox-custom-label" >Job Id</label>
+				</span>
+			</li>
+			<li>
+				<span class="checkbox-new clearfix">
+					<input id="b" class="checkbox-custom toggle-vis" name="paidComponent" data-column="1" type="checkbox" checked="">
+					<label for="b" class="checkbox-custom-label" >Job Title</label>
+				</span>
+			</li>
+			<li>
+				<span class="checkbox-new clearfix">
+					<input id="c" class="checkbox-custom toggle-vis" name="paidComponent" data-column="2" type="checkbox" checked="">
+					<label for="c" class="checkbox-custom-label" >Client</label>
+				</span>
+			</li>
+			<li>
+				<span class="checkbox-new clearfix">
+					<input id="d" class="checkbox-custom toggle-vis" name="paidComponent" data-column="3" type="checkbox" checked="">
+					<label for="d" class="checkbox-custom-label" >Location</label>
+				</span>
+			</li>
+			<li>
+				<span class="checkbox-new clearfix">
+					<input id="e" class="checkbox-custom toggle-vis" name="paidComponent" data-column="4" type="checkbox" checked="">
+					<label for="e" class="checkbox-custom-label" >Priority</label>
+				</span>
+			</li>
+			<li>
+				<span class="checkbox-new clearfix">
+					<input id="f" class="checkbox-custom toggle-vis" name="paidComponent" data-column="5" type="checkbox" checked="">
+					<label for="f" class="checkbox-custom-label" >Applicants</label>
+				</span>
+			</li>
+			<li>
+				<span class="checkbox-new clearfix">
+					<input id="g" class="checkbox-custom toggle-vis" name="paidComponent" data-column="6"  type="checkbox" checked="">
+					<label for="g" class="checkbox-custom-label" >Shortlisted</label>
+				</span>
+			</li>
+			<li>
+				<span class="checkbox-new clearfix">
+					<input id="h" class="checkbox-custom toggle-vis" name="paidComponent" type="checkbox"  data-column="7" checked="">
+					<label for="h" class="checkbox-custom-label" >Interview</label>
+				</span>
+			</li>
+			<li>
+				<span class="checkbox-new clearfix">
+					<input id="i" class="checkbox-custom toggle-vis" name="paidComponent" type="checkbox"  data-column="8" checked="">
+					<label for="i" class="checkbox-custom-label" >Offered</label>
+				</span>
+			</li>
+			<li>
+				<span class="checkbox-new clearfix">
+					<input id="j" class="checkbox-custom toggle-vis" name="paidComponent" type="checkbox"  data-column="9" checked="">
+					<label for="j" class="checkbox-custom-label" >SubmitToClient</label>
+				</span>
+			</li>
+			<li>
+				<span class="checkbox-new clearfix">
+					<input id="k" class="checkbox-custom toggle-vis" name="paidComponent" type="checkbox"  data-column="10" checked="">
+					<label for="k" class="checkbox-custom-label" >Backout</label>
+				</span>
+			</li>
+			<li>
+				<span class="checkbox-new clearfix">
+					<input id="l" class="checkbox-custom toggle-vis" name="paidComponent" type="checkbox"  data-column="11" checked="">
+					<label for="l" class="checkbox-custom-label" >Joined</label>
+				</span>
+			</li>
+			<li>
+				<span class="checkbox-new clearfix">
+					<input id="m" class="checkbox-custom toggle-vis" name="paidComponent" type="checkbox"  data-column="12" checked="">
+					<label for="m" class="checkbox-custom-label" >Rejected</label>
+				</span>
+			</li>
+		</ul>
+		</div>
+	</div>
+	<div class="colPopFot">
+		<a href="javascript:void(0)" onclick="columHide();">Apply</a>
+		<a href="javascript:void(0)" onclick="columClose();">Cancel</a>
+	</div>
+</div>				
+</div>
+	       
+	       
+	       
 	      <ul class="pull-right list-unstyled list-inline">
 					<li id="vendorFiletPopup"><a href="javascript:void(0)" class="filtIcon" title="Filters" onclick="openFilterPop();"></a></li>
 					
@@ -47,81 +155,7 @@
       </div>
     </div>
     
-    <div class="colPop">
-	<div class="colPopMid coldropdown-parent">
-	<div class="clearfix">
-		<div class="row">
-				<div class="col-md-10 mb10 mt5 col-md-offset-2">
-				<span class="checkbox-new  pull-left mr">
-					<input id="columnsPickerUnCheckAll" class="radio-custom" name="columnsPicker" onclick="checkAllColumns(this);"  type="radio">
-					<label for="columnsPickerUnCheckAll" class="radio-custom-label">Uncheck All</label>
-				</span>
-				<span class="checkbox-new pull-left">
-					<input id="columnsPickerCheckAll" class="radio-custom" name="columnsPicker" onclick="checkAllColumns(this);"  type="radio" checked="">
-					<label for="columnsPickerCheckAll" class="radio-custom-label" >Check All</label>
-				</span>
-			</div>
-		</div>
-	<div class="clearfix"></div>
-		<div class="coldropdown-inner">
-		<ul>
-			<li>
-				<span class="checkbox-new clearfix">
-					<input id="a" class="checkbox-custom toggle-vis" name="paidComponent" data-column="0" type="checkbox" checked="">
-					<label for="a" class="checkbox-custom-label" >Job Id</label>
-				</span>
-			</li>
-			<li>
-				<span class="checkbox-new clearfix">
-					<input id="c" class="checkbox-custom toggle-vis" name="paidComponent" data-column="2" type="checkbox" checked="">
-					<label for="c" class="checkbox-custom-label" >Job Title</label>
-				</span>
-			</li>
-			<li>
-				<span class="checkbox-new clearfix">
-					<input id="d" class="checkbox-custom toggle-vis" name="paidComponent" data-column="3" type="checkbox" checked="">
-					<label for="d" class="checkbox-custom-label" >Client</label>
-				</span>
-			</li>
-			<li>
-				<span class="checkbox-new clearfix">
-					<input id="f" class="checkbox-custom toggle-vis" name="paidComponent" data-column="5" type="checkbox" checked="">
-					<label for="f" class="checkbox-custom-label" >Location</label>
-				</span>
-			</li>
-			<li>
-				<span class="checkbox-new clearfix">
-					<input id="g" class="checkbox-custom toggle-vis" name="paidComponent" data-column="6" type="checkbox" checked="">
-					<label for="g" class="checkbox-custom-label" >Priority</label>
-				</span>
-			</li>
-			<li>
-				<span class="checkbox-new clearfix">
-					<input id="h" class="checkbox-custom toggle-vis" name="paidComponent" data-column="7" type="checkbox" checked="">
-					<label for="h" class="checkbox-custom-label" >Applicants</label>
-				</span>
-			</li>
-			<li>
-				<span class="checkbox-new clearfix">
-					<input id="j" class="checkbox-custom toggle-vis" name="paidComponent" data-column="9"  type="checkbox" checked="">
-					<label for="j" class="checkbox-custom-label" >LCA Start Date</label>
-				</span>
-			</li>
-			<li>
-				<span class="checkbox-new clearfix">
-					<input id="k" class="checkbox-custom toggle-vis" name="paidComponent" type="checkbox"  data-column="10" checked="">
-					<label for="k" class="checkbox-custom-label" >LCA End Date</label>
-				</span>
-			</li>
-		</ul>
-		</div>
-	</div>
-	<div class="colPopFot">
-		<a href="javascript:void(0)" onclick="columHide();">Apply</a>
-		<a href="javascript:void(0)" onclick="columClose();">Cancel</a>
-	</div>
-</div>				
-</div>
+    
   </section>
   
   
@@ -129,25 +163,36 @@
   
   
   <script>
+  var hideColumns = [];
+  var table = "";
  $(document).ready(function() {
 	 requirementJoinedList();
+	 $('label.toggle-vis').on('click', function (e) {
+         e.preventDefault();
+         // Get the column API object
+         var column = table.column($(this).attr('data-column'));
+         $(this).toggleClass("active");
+         // Toggle the visibility
+         column.visible(!column.visible());
+     });
  });
  
  </script>
  <script type="text/javascript">
- function columPop(){
-		$(".colPop").show();
-	}
+ 
+ $("#columPop").click(function() {
+	 $(".colPop").show();
+ })
+ $("html").click(function(){
+		$(".colPop").hide();
+	});
+	$("#columPop, .colPop").click(function(e){
+	 	e.stopPropagation();
+	});
 	function columClose(){
 		$(".colPop").hide();
 	}
-/* 	$("html").click(function(){
-		$(".colPop").hide();
-	});
-	 
-	$(".refreIcon, .colPop").click(function(e){
-	 	e.stopPropagation();
-	});	 */
+
 	function checkAllColumns(obj){
 		var id = obj.id;
 		if(id =='columnsPickerCheckAll'){
@@ -175,7 +220,9 @@
 		$(".colPop").hide();
 	   
 	}
-	
+	function refreshList(){
+		location.reload();
+	}	
 </script>
  
  <script type="text/javascript">
@@ -243,8 +290,6 @@ function prepareOfferList(url){
 		result = result + '<th>Rejected</th>';
 		result = result + '</tr>';
         result = result +'</thead>';
-        result = result +'<tbody>'; 
-        result = result +' </tbody>';
         result = result +'</table>';
         $("#previousOfferDiv").empty();
         $("#previousOfferDiv").append(result);
@@ -255,7 +300,7 @@ function prepareOfferList(url){
 <script>
 function offerpagination(url){
 	var colIndex = 0;
-    $('#jobsPerformanceId').DataTable( { 
+	table = $('#jobsPerformanceId').DataTable( { 
     		"processing": true,
         "serverSide": true,
         "searching": false,
@@ -305,6 +350,7 @@ function offerpagination(url){
 	      {
 	    	  "targets": colIndex++,
               "data": "client",
+              "sortable": false,
               "render": function ( data, type, opt, meta ) {
             	  var result = "";
             	  if(opt.clientName !=null && opt.clientName !="" && opt.clientName !='undefined'){
@@ -318,9 +364,30 @@ function offerpagination(url){
 	          },{
             "targets": colIndex++,
             "data": "location",
+            "sortable": false,
             "render": function ( data, type, opt, meta ) {
             	var result = "";
-            		 result = result + '<td><div>'+opt.location+'</div></td>';
+            	   result = result +'<td>';
+  		        	result = result +'<div class="positionRelative">';
+	   		         for(var k=0; k<1; k++){
+	   		        	result = result + '<p class="tbldata-dotdot-me pull-left">'+opt.locationsList[k]+'</p>';
+	   		         }
+  		    	
+	   		        result = result +'<div class="show_Empdetails showjoblist">';
+  		        	result = result +'<i class="fa fa-ellipsis-v"></i>';
+
+  		        	result = result +'<div class="emailvalues emailvaluesNew">';
+  		        	
+						for(var k=0; k<opt.locationsList.length; k++){
+							result = result +'<p><i class="fa fa-map-marker"></i>'+opt.locationsList[k]+'</p>';
+		   		        	
+  		    	 	}
+  		        	result = result +'</div>';
+  		        	result = result +'</div>';
+  
+
+		        	result = result +'</div>';
+		        	result = result +'</td>';
    				return result;
             }
           } ,{
@@ -335,6 +402,7 @@ function offerpagination(url){
           {
                 "targets": colIndex++,
                 "data": "applicants",
+                "sortable": false,
                 "render": function ( data, type, opt, meta ) {
                 		var result = "";
                 		
@@ -344,6 +412,7 @@ function offerpagination(url){
           } ,{
                       "targets": colIndex++,
                       "data": "shortlisted",
+                      "sortable": false,
                       "render": function ( data, type, opt, meta ) {
                     	  var result = "";
       	    	  			result = result + ' <td><div><span>'+opt.shortlistCount+'</span></div></td>';
@@ -352,6 +421,7 @@ function offerpagination(url){
                },{
                      "targets": colIndex++,
                      "data": "interview",
+                     "sortable": false,
                      "render": function ( data, type, opt, meta ) {
                    	  var result = "";
      	    	  		result = result + ' <td><div><span>'+opt.interviewCount+'</span></div></td>';
@@ -360,6 +430,7 @@ function offerpagination(url){
                    } ,{
                        "targets": colIndex++,
                        "data": "offered",
+                       "sortable": false,
                        "render": function ( data, type, opt, meta ) {
                      	  var result = "";
        	    	  			result = result + ' <td><div><span>'+opt.offersCount+'</span></div></td>';
@@ -368,6 +439,7 @@ function offerpagination(url){
                 },{
                     "targets": colIndex++,
                     "data": "submitToClient",
+                    "sortable": false,
                     "render": function ( data, type, opt, meta ) {
                   	  var result = "";
     	    	  			result = result + ' <td><div><span>'+opt.submitToClientCount+'</span></div></td>';
@@ -376,6 +448,7 @@ function offerpagination(url){
              },{
                  "targets": colIndex++,
                  "data": "backOut",
+                 "sortable": false,
                  "render": function ( data, type, opt, meta ) {
                	  var result = "";
  	    	  			result = result + ' <td><div><span>'+opt.backoutCount+'</span></div></td>';
@@ -384,6 +457,7 @@ function offerpagination(url){
           },{
                  "targets": colIndex++,
                  "data": "joined",
+                 "sortable": false,
                  "render": function ( data, type, opt, meta ) {
                	  var result = "";
  	    	  			result = result + ' <td><div><span>'+opt.joinedCount+'</span></div></td>';
@@ -392,6 +466,7 @@ function offerpagination(url){
           },{
               "targets": colIndex++,
               "data": "rejected",
+              "sortable": false,
               "render": function ( data, type, opt, meta ) {
             	  var result = "";
 	    	  			result = result + ' <td><div><span>'+opt.rejectedCount+'</span></div></td>';
@@ -416,6 +491,9 @@ function offerpagination(url){
     $("#dataTableSearch").keyup(function(e) {
     	   if(e.which === 13) {
     		   requirementJoinedList();
+    		   for (var i=0; i<hideColumns.length; i++) {
+          		 table.column(hideColumns[i]).visible(false); // hide the columns after filters also.
+          		}
     	   }
     	});
 }
