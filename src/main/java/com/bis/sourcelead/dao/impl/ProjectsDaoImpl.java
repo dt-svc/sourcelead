@@ -589,14 +589,14 @@ public class ProjectsDaoImpl implements ProjectsDao{
 		
 		StringBuilder query1 = new StringBuilder("");
 		if(projectsDTO.getSearchValue() !=null && !"".equalsIgnoreCase(projectsDTO.getSearchValue())) {
-		 query1.append(" ps.projectSequeneNumber like '%" + projectsDTO.getSearchValue() + "%' ")
-				.append("OR ps.projectName like '%" + projectsDTO.getSearchValue() + "%' ")
-				.append("OR ps.invoiceFrequency like '%" + projectsDTO.getSearchValue() + "%' ")
-				.append("OR ps.id IN (select pah.projectId.id from ProjectApproverHierarchy pah where pah.approverUserId.firstName like '" + projectsDTO.getSearchValue() + "%' OR pah.approverUserId.lastName like '%" + projectsDTO.getSearchValue() + "' ) ")
-				.append("OR ps.id IN (select pah.projectId.id from ProjectApproverHierarchy pah where pah.approverUserId.id IN (select user.id from User user where (concat(user.firstName,user.lastName) like '%" + projectsDTO.getSearchValue().replaceAll("[\\s]+", "").trim() + "%')))" )
-				.append("OR ps.id IN (select pex.projectId.id from ExpenseProjectApproverHierarchy pex where pex.approverUserId.firstName like '" + projectsDTO.getSearchValue() + "%' OR pex.approverUserId.lastName like '%" + projectsDTO.getSearchValue() + "' ) ")
-				.append("OR ps.id IN (select pex.projectId.id from ExpenseProjectApproverHierarchy pex where pex.approverUserId.id IN (select user.id from User user where (concat(user.firstName,user.lastName) like '%" + projectsDTO.getSearchValue().replaceAll("[\\s]+", "").trim() + "%')))" )
-				.append("OR ps.projectMode like '%" + projectsDTO.getSearchValue() + "%' ");
+		 query1.append(" ps.projectSequeneNumber like '%" + projectsDTO.getSearchValue().replace("'", "") + "%' ")
+				.append("OR ps.projectName like '%" + projectsDTO.getSearchValue().replace("'", "") + "%' ")
+				.append("OR ps.invoiceFrequency like '%" + projectsDTO.getSearchValue().replace("'", "") + "%' ")
+				.append("OR ps.id IN (select pah.projectId.id from ProjectApproverHierarchy pah where pah.approverUserId.firstName like '" + projectsDTO.getSearchValue().replace("'", "") + "%' OR pah.approverUserId.lastName like '%" + projectsDTO.getSearchValue().replace("'", "") + "' ) ")
+				.append("OR ps.id IN (select pah.projectId.id from ProjectApproverHierarchy pah where pah.approverUserId.id IN (select user.id from User user where (concat(user.firstName,user.lastName) like '%" + projectsDTO.getSearchValue().replace("'", "").replaceAll("[\\s]+", "").trim() + "%')))" )
+				.append("OR ps.id IN (select pex.projectId.id from ExpenseProjectApproverHierarchy pex where pex.approverUserId.firstName like '" + projectsDTO.getSearchValue().replace("'", "") + "%' OR pex.approverUserId.lastName like '%" + projectsDTO.getSearchValue().replace("'", "") + "' ) ")
+				.append("OR ps.id IN (select pex.projectId.id from ExpenseProjectApproverHierarchy pex where pex.approverUserId.id IN (select user.id from User user where (concat(user.firstName,user.lastName) like '%" + projectsDTO.getSearchValue().replace("'", "").replaceAll("[\\s]+", "").trim() + "%')))" )
+				.append("OR ps.projectMode like '%" + projectsDTO.getSearchValue().replace("'", "") + "%' ");
 		 
 			 if(projectsDTO.getSearchValue().toLowerCase().equalsIgnoreCase("in-progress") || projectsDTO.getSearchValue().toLowerCase().equalsIgnoreCase("in progress") 
 					 || projectsDTO.getSearchValue().toLowerCase().equalsIgnoreCase("inprogress")) {
@@ -1573,7 +1573,7 @@ public HashSet<User> getAllUserTimeSheetSubmissionStatusCurrentWeek() {
 			if (projectReportDTO.getProjectManagers() != null && !projectReportDTO.getProjectManagers().isEmpty()) {
 				query += " join ps.projectApprovers pa";
 			}
-			query += " where ps.id IN(select pc.projectId.id from ProjectClients pc where pc.orgLocationsId = :orgLocationsId "
+			query += " where ps.orgLocationsId.id = :orgLocationsId and ps.id IN(select pc.projectId.id from ProjectClients pc where pc.orgLocationsId = :orgLocationsId "
 					+ clientQuery + " "+query1+")";
 			if (projectReportDTO.getProjectManagers() != null && !projectReportDTO.getProjectManagers().isEmpty()) {
 				query += " and pa.level in (1,2) and pa.approverUserId.id in (:projectManagers)";

@@ -208,6 +208,8 @@ public class CandidateIndex implements Serializable {
 	
 	private Integer submittedJobsCount;
 	
+	private Integer candidateProfilePercentage;
+	
 	
 	public String getSearchType() {
 		return searchType;
@@ -1038,6 +1040,14 @@ public class CandidateIndex implements Serializable {
 
 	public void setSubmittedJobsCount(Integer submittedJobsCount) {
 		this.submittedJobsCount = submittedJobsCount;
+	}
+
+	public Integer getCandidateProfilePercentage() {
+		return candidateProfilePercentage;
+	}
+
+	public void setCandidateProfilePercentage(Integer candidateProfilePercentage) {
+		this.candidateProfilePercentage = candidateProfilePercentage;
 	}
 
 	

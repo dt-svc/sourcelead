@@ -31,6 +31,8 @@ public class ApplicantsJoinedReportDTO extends SearchDTO implements Serializable
 	
 	private BigInteger requirementCount;
 	
+	private BigInteger reqClientCount;
+	
 	private BigInteger submissionCount;
 
 	private BigInteger joinedCount;
@@ -74,6 +76,8 @@ public class ApplicantsJoinedReportDTO extends SearchDTO implements Serializable
 	private int recordsTotal;
 	
 	private int recordsFiltered;
+	
+	private BigInteger totalRequirementCount;
 	
 	public String getMonthName()
 	{
@@ -378,6 +382,27 @@ public class ApplicantsJoinedReportDTO extends SearchDTO implements Serializable
 	{
 		this.recordsFiltered = recordsFiltered;
 	}
+
+	public BigInteger getReqClientCount()
+	{
+		return reqClientCount;
+	}
+
+	public void setReqClientCount(BigInteger reqClientCount)
+	{
+		this.reqClientCount = reqClientCount;
+	}
+
+	public BigInteger getTotalRequirementCount()
+	{
+		return totalRequirementCount;
+	}
+
+	public void setTotalRequirementCount(BigInteger totalRequirementCount)
+	{
+		this.totalRequirementCount = totalRequirementCount;
+	}
+	
 	
 	
 }

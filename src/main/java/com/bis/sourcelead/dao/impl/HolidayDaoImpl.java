@@ -231,7 +231,7 @@ public class HolidayDaoImpl  implements HolidayDAO{
 			excludeIds.add(0l);
 		}
 		Session session = this.sessionFactory.getCurrentSession();
-		String query = "from Holiday hday where (hday.fromDate >= :fromDate and hday.fromDate <= :endDate) and hday.id NOT IN(:excludeIds) and hday.orgLocations.id = :orgLocationId and hday.status != '0'";
+		String query = "from Holiday hday where ((:fromDate between  hday.fromDate and hday.toDate) or (:endDate  between  hday.fromDate and hday.toDate)) and hday.id NOT IN(:excludeIds) and hday.orgLocations.id = :orgLocationId and hday.status != '0'";
 		List<Holiday> holiday = session.createQuery(query).setParameterList("excludeIds",excludeIds).setParameter("fromDate", fromDate).setParameter("endDate", endDate).setLong("orgLocationId", orgLocationId).list();
 		if (holiday.size() > 0) {
 			return holiday;

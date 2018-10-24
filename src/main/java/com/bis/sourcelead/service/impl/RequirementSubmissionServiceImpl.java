@@ -5683,9 +5683,9 @@ private void createXlsSheet(Sheet createExcelsheet,Row writeRow,int column,Strin
 	}
 
 	@Override
-	public List<ApplicantsJoinedReportDTO> getRequirementIncentiveByRequirementIdAndLocation(Long requirementId, String usercode, Long orgLocationId) throws Exception
+	public List<ApplicantsJoinedReportDTO> getRequirementIncentiveByRequirementIdAndLocation(Long requirementId, String usercode, Long orgLocationId, Date[] searchDates) throws Exception
 	{
-		return requirementSubmissionDao.getRequirementIncentiveByRequirementIdAndLocation(requirementId,usercode,orgLocationId);
+		return requirementSubmissionDao.getRequirementIncentiveByRequirementIdAndLocation(requirementId,usercode,orgLocationId,searchDates);
 
 	}
 

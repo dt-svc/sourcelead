@@ -628,7 +628,7 @@ public class RequirementReportRestController {
 				
 				File file = null;
 			    if(jobFilterDTO.getExportType().equalsIgnoreCase("pdf")) {
-			    	 file=  reportsPdfUtil.jobsPerformanceExcelExport(requirementList,loginOrgLocation);
+			    	 file=  reportsPdfUtil.jobsPerformancePdfExport(requirementList,loginOrgLocation);
 			    }else {
 			    	 file=  reportsPdfUtil.jobsPerformanceExcelExport(requirementList,loginOrgLocation);
 			    }

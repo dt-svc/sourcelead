@@ -1020,12 +1020,10 @@ function empChecksListPagination(){
  <script type="text/javascript">
 function getWagesTaxSummaryByEmpId(){
 	    var empId = $("#empId").val();
-		var sourceleadUrl ='${sourceleadUrl}';
 		var searchValue = $("#dataTableSearch").val();
 		var orgLocationId = '${SourceLeadWeb_orgLocationId}';
 		searchValue = searchValue ? searchValue : "";
 		var url = sourceleadUrl+"/getWagesTaxSummaryByEmpId?empId="+empId+"&orgLocationId="+orgLocationId+"&searchValue="+searchValue;
-		/* url += "&"+$($('#payroll_list_form')[0]).serialize(); */
 	    prepareWagesAndTaxList(url);
 }
 </script> 
@@ -1073,7 +1071,6 @@ function prepareWagesAndTaxList(url){
       result = result +" </tbody>";
       result = result +"</table>";
       $("#tab-1").append(result);
-  	/* $("#loading").removeAttr("style"); */
       wagesTaxpagination(url); 
 }
 </script>
