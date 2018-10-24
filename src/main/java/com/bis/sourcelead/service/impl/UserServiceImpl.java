@@ -1998,7 +1998,7 @@ public class UserServiceImpl implements UserService {
 			List<ApplicantsJoinedReportDTO> searchReqList =null;
 			for(ApplicantsJoinedReportDTO sub : mainList){
 				// query to get total amount 
-				List<ApplicantsJoinedReportDTO> applicantsJoinedReportDTOList=requirementSubmissionService.getRequirementIncentiveByRequirementIdAndLocation(sub.getRequirementID().longValue(),sub.getCreatedBy(),sub.getOrglocationId().longValue());
+				List<ApplicantsJoinedReportDTO> applicantsJoinedReportDTOList=requirementSubmissionService.getRequirementIncentiveByRequirementIdAndLocation(sub.getRequirementID().longValue(),sub.getCreatedBy(),sub.getOrglocationId().longValue(),searchDates);
 					searchReqList = applicantsJoinedReportDTOList;
 					Long reqId = 0l;
 				for(ApplicantsJoinedReportDTO applicantJoinedReportDTO:searchReqList){
