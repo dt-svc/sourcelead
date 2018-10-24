@@ -1160,9 +1160,9 @@ $(document).ready(function () {
 				         				<c:if test="${report.id  == requirement.spocId.id}">
 				         					<option value="${report.id}" ${report.id  == requirement.spocId.id ? 'selected' : ''} >${report.spocName} (${report.ownerName})</option>
 				         				</c:if>
-				         				<c:if test="${report.id  != requirement.spocId.id}">
+				         				<%-- <c:if test="${report.id  != requirement.spocId.id}">
 							    		 	<option value="${requirement.spocId.id}" >${requirement.spocName}</option>
-							    		 </c:if>
+							    		 </c:if> --%>
 						    		 </c:forEach>
 					    		 </c:if>
 					    		 <c:if test="${empty clientContactList}">
