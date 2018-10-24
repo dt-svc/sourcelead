@@ -279,7 +279,7 @@
               <div class="clearfix">
                 <h4 class="pull-left">Task List</h4>
                 <div class="pull-right">
-                  <button type="button" class="btn btn-primary btn-sm" data-toggle="modal" data-target="#addTask" onclick="getAssignToUsersList();"><i class="fa fa-plus paddingRight"></i>Add Task</button>
+                  <button type="button" class="btn btn-primary btn-sm" data-toggle="modal" data-target="#addTask" onclick="getAssignToUsersList();flushOffboardTask();"><i class="fa fa-plus paddingRight"></i>Add Task</button>
                   <!-- Modal -->
                   <div id="addTask" class="modal fade add_Task" role="dialog">
                     <div class="modal-dialog modal-lg">
