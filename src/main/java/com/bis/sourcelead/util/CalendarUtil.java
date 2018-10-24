@@ -27,6 +27,8 @@ import com.bis.sourcelead.constants.Constants;
 
 
 public  class CalendarUtil {	
+	
+	
 	public static double getCombinedHours(double hours1,double hours2){
 		double cthHours = hours1;
 		double cthHoursValue = (int) cthHours;
@@ -545,13 +547,21 @@ public  class CalendarUtil {
 			DateFormat  sdf = new SimpleDateFormat(dateFormart);
 			String nowStr = sdf.format(calendar.getTime());
 			Date nowDate = sdf.parse(nowStr);
+			SimpleDateFormat sf = new SimpleDateFormat("E");
+			
 			cal.setTime(nowDate);
-			if(day_offset == 8){
-				cal.add(Calendar.DATE, 7);
-				cal.set(Calendar.DAY_OF_WEEK, Calendar.SUNDAY);
-			}
-			else{
+			if(StringUtils.isNotEmpty(sf.format(nowDate)) && sf.format(nowDate).equalsIgnoreCase("SUN") && day_offset == 2) {
+				cal.add(Calendar.DATE, -7);
 				cal.set(Calendar.DAY_OF_WEEK, day_offset);
+			}
+			else {
+				if(day_offset == 8){
+					cal.add(Calendar.DATE, 7);
+					cal.set(Calendar.DAY_OF_WEEK, Calendar.SUNDAY);
+				}
+				else{
+					cal.set(Calendar.DAY_OF_WEEK, day_offset);
+				}
 			}
 			return cal;
 		} catch (Exception e) {

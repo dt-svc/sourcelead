@@ -852,6 +852,15 @@ public class TimesheetRestController {
 	
 	private EmployeeTimesheetEntryDetailsDTO getProjectMembersList(List<ProjectMembers> projectMembersList,HttpServletRequest request,EmployeeTimesheetEntryDetailsDTO etd,Candidate candidate,String currentTimeFrequency,String currentTimeSubFrequency,OrgLocations orgLocations,User loginUser) throws Exception {
 		ArrayList<ProjectMembersDTO> pmDTOList = new ArrayList<>();
+		
+		
+		
+		String[] currentFrequency = currentTimeFrequency.split("To");
+		String currentFrequencyStartDate = currentFrequency[0].trim();
+		Date actualTimeStartDate = commonUtil.orgLocationDateFormat(orgLocations.getDateFormat(),
+				currentFrequencyStartDate.replaceAll("/", "-"));
+		
+		
 		String[] currentSubFrequency = currentTimeSubFrequency.split("To");
 		String currentSubFrequencyStartDate = currentSubFrequency[0].trim();
 		String currentSubFrequencyEndDate = currentSubFrequency[1].trim();
@@ -866,8 +875,12 @@ public class TimesheetRestController {
 		if(projectMembersList != null && !projectMembersList.isEmpty()) {
 			if (projectMembersList != null && !projectMembersList.isEmpty()) {
 				for (ProjectMembers pm : projectMembersList) {
-					if(StringUtils.isEmpty(pm.getProjects().getInvoiceFrequency()) || (StringUtils.isNotEmpty(pm.getProjects().getInvoiceFrequency()) && !pm.getProjects().getInvoiceFrequency().equalsIgnoreCase(etd.getInvoiceFrequency())))
+					if(StringUtils.isEmpty(pm.getProjects().getInvoiceFrequency())  
+							|| (StringUtils.isNotEmpty(pm.getProjects().getInvoiceFrequency()) && !pm.getProjects().getInvoiceFrequency().equalsIgnoreCase(etd.getInvoiceFrequency()))
+							|| (StringUtils.isNotEmpty(etd.getInvoiceFrequency()) && etd.getInvoiceFrequency().equalsIgnoreCase("Bi-Weekly") && (CalendarUtil.getNumberOfDays(pm.getProjects().getWeekStartDate(), actualTimeStartDate) %14 != 0)))
 						continue;
+					
+					
 					HashSet<Date> pmhDateList = projectMembersHistoryService
 							.getAllProjectMemberHistoryDatesByProjectMemberIdAndWeekStartDateEndDate(
 									pm.getId(), actualStartDate, actualEndDate);
