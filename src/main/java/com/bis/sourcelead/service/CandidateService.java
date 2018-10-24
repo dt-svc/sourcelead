@@ -230,4 +230,6 @@ public interface CandidateService {
 	Long getCandidateIdByEmailAndOrgLocationId(String email,Long orgLocationId) throws Exception;
 	
 	List<String> getCandidateEmailsByOrgLocationId(Long orgLocationId) throws Exception;
+	
+	Integer getCandidateProfilePercentageByCandidateId(Long id) throws Exception;
 }
