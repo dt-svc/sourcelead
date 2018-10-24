@@ -969,6 +969,7 @@ public class RequirementController {
 		    List<RequirementIncentive> requirementIncentiveList = requirementService.getRequirementIncentiveListByRequirementId(requirement.getId());
 			model.addObject("requirementIncentiveList", requirementIncentiveList);
 			model.addObject("requirementIncentiveListSize", requirementIncentiveList.size());
+			model.addObject("requirementProfilePercentage",requirement.getProfilePercentage());
 		}else{
 			model.setViewName("registration/persmissionDenied");
 		}

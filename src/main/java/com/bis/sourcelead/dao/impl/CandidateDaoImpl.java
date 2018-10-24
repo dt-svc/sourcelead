@@ -2124,5 +2124,27 @@ public class CandidateDaoImpl implements CandidateDao {
 		return emailsList;
 	}
 
+	@Override
+	@Transactional
+	public Integer getCandidateProfilePercentageByCandidateId(Long id) throws Exception {
+		
+		Integer profilePercentage = 0;
+		Session session = this.sessionFactory.getCurrentSession();
+		String query = null;
+		query ="SELECT "
+				+" CAND.PROFILE_PERCENTAGE "
+				+" FROM CANDIDATE CAND "
+				+" WHERE "
+				+" CAND.ID = :id";
+		Query queryObj = session.createSQLQuery(query);
+		queryObj.setLong("id", id);	
+		Integer percentageId = (Integer) queryObj.uniqueResult();
+		if(percentageId != null) {
+			profilePercentage = percentageId;
+		}
+		
+		return profilePercentage;
+	}
+
 }
 
