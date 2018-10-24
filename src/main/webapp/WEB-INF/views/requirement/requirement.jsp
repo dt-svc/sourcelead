@@ -199,13 +199,13 @@ $(document).ready(function () {
 <section class="content-wraper">
   <section class="content-header clearfix">
      <div class="pull-left">
-     <c:if test="${empty requirementId}"><h2>Add Job</h2></c:if>
+      <c:if test="${empty requirementId}"><h2>Add Job</h2></c:if>
       <c:if test="${!empty requirementId}"><h2>Update Job</h2></c:if>
     </div>
     <div class="success_pop" id="selector2" style="display: none;">
  			<i class="fa fa-check-circle"></i><span id="msgJobDiv"></span>
        </div>
-    <div class="pull-right brud-crum"><a href="<c:url value='${appPath}/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home </a>&raquo;<a href="<c:url value='${appPath}/jobs'/>"> Jobs List  </a>&raquo; Add Job </div>
+    <div class="pull-right brud-crum"><a href="<c:url value='${appPath}/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home </a>&raquo;<a href="<c:url value='${appPath}/jobs'/>"> Jobs List  </a>&raquo; <c:if test="${empty requirementId}">Add Job</c:if> <c:if test="${!empty requirementId}">Update Job</c:if> </div>
   	
   </section>
   <div class="content-area content-new clearfix">
@@ -1155,12 +1155,19 @@ $(document).ready(function () {
                   <c:choose> 
 			 			 <c:when test="${val == 'Y'}">
 			   				<select class="chosen-select form-control" name="selectContact" data-validation-optional="true" field-name = "Client Contact" id="selectContact">
-								  <c:forEach var="report" items="${clientContactList}">
-			         		<%-- <option value="${report.id}" ${report.id  == requirement.spocId.id ? 'selected' : ''} >${report.spocId.SpocUser.firstName}&nbsp;${report.spocId.SpocUser.lastName}</option> --%>
-			         				<c:if test="${report.id  == requirement.spocId.id}">
-			         					<option value="${report.id}" ${report.id  == requirement.spocId.id ? 'selected' : ''} >${report.spocName} (${report.ownerName})</option>
-			         				</c:if>
-					    		 </c:forEach>
+					    		 <c:if test="${!empty clientContactList}">
+					    		 	<c:forEach var="report" items="${clientContactList}">
+				         				<c:if test="${report.id  == requirement.spocId.id}">
+				         					<option value="${report.id}" ${report.id  == requirement.spocId.id ? 'selected' : ''} >${report.spocName} (${report.ownerName})</option>
+				         				</c:if>
+				         				<%-- <c:if test="${report.id  != requirement.spocId.id}">
+							    		 	<option value="${requirement.spocId.id}" >${requirement.spocName}</option>
+							    		 </c:if> --%>
+						    		 </c:forEach>
+					    		 </c:if>
+					    		 <c:if test="${empty clientContactList}">
+					    		 	<option value="${requirement.spocId.id}" >${requirement.spocName}</option>
+					    		 </c:if>
                     		</select>
 						 </c:when>
 					<c:otherwise>

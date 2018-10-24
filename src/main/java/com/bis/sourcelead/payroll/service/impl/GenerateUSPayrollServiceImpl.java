@@ -238,6 +238,8 @@ public class GenerateUSPayrollServiceImpl implements GenerateUSPayrollService{
 								.filter(p->p.getEmployeeDesignationType() != null && PayrollConstant.DRAFT.equalsIgnoreCase(p.getApproverStatus()) && p.getPayType().equalsIgnoreCase(generateUSPayrollDTO.getPayType()) && !PayrollConstant.C2C.equalsIgnoreCase(p.getEmployeeDesignationType()))
 								.collect(Collectors.toList());
 					}
+					paysheetFrequencyDTO.setNoOfGeneratedPayroll(draftPayroll.size());
+					paysheetFrequencyDTO.setTotalGeneratedAmount(draftPayroll.stream().map(USPayrollDTO::getNetPay).reduce(BigDecimal.ZERO, BigDecimal::add));
 					paysheetFrequencyDTO.setPayrollDTO(draftPayroll);
 				}
 		}
@@ -1358,11 +1360,11 @@ private Set<BankDataHistory> getBankDataHistory(AssociateTaxDedContriView associ
 			List<ContributionDTO> postContribution = null;
 			if(payAdjustmentDTO.getPreDeduction() != null && payAdjustmentDTO.getPreDeduction().size() >0) {
 				preDedList = payAdjustmentDTO.getPreDeduction();
-				preTaxDed = payAdjustmentDTO.getPreDeduction().stream().mapToDouble(pre->pre.getAmount().doubleValue()).sum();
+				preTaxDed = payAdjustmentDTO.getPreDeduction().stream().filter(pre->pre.getAmount() != null).mapToDouble(pre->pre.getAmount().doubleValue()).sum();
 			}
 			if(payAdjustmentDTO.getPostDeduction() != null && payAdjustmentDTO.getPostDeduction().size() >0) {
 				postDedList =  payAdjustmentDTO.getPostDeduction();
-				postTaxDed = payAdjustmentDTO.getPostDeduction().stream().mapToDouble(pre->pre.getAmount().doubleValue()).sum();	
+				postTaxDed = payAdjustmentDTO.getPostDeduction().stream().filter(pre->pre.getAmount() != null).mapToDouble(pre->pre.getAmount().doubleValue()).sum();	
 			}
 			payAdjHistory.setRegularHours(String.valueOf(regHrs));
 			payAdjHistory.setOvertimeHours(String.valueOf(otHrs));
@@ -1377,8 +1379,8 @@ private Set<BankDataHistory> getBankDataHistory(AssociateTaxDedContriView associ
 			if(payAdjustmentDTO.getContribution() != null && payAdjustmentDTO.getContribution().size()>0) {
 				preContribution = payAdjustmentDTO.getContribution().stream().filter(con->"pretax".equalsIgnoreCase(con.getTaxType())).collect(Collectors.toList());
 				postContribution = payAdjustmentDTO.getContribution().stream().filter(con->"posttax".equalsIgnoreCase(con.getTaxType())).collect(Collectors.toList());;
-				preTaxContriSum = payAdjustmentDTO.getContribution().stream().filter(con->"pretax".equalsIgnoreCase(con.getTaxType())).mapToDouble(con->con.getContributionAmount().doubleValue()).sum();
-				postTaxContriSum= payAdjustmentDTO.getContribution().stream().filter(con->"posttax".equalsIgnoreCase(con.getTaxType())).mapToDouble(con->con.getContributionAmount().doubleValue()).sum();
+				preTaxContriSum = payAdjustmentDTO.getContribution().stream().filter(con-> con.getContributionAmount() != null && "pretax".equalsIgnoreCase(con.getTaxType())).mapToDouble(con->con.getContributionAmount().doubleValue()).sum();
+				postTaxContriSum= payAdjustmentDTO.getContribution().stream().filter(con-> con.getContributionAmount() != null &&"posttax".equalsIgnoreCase(con.getTaxType())).mapToDouble(con->con.getContributionAmount().doubleValue()).sum();
 			}
 			
 			
@@ -1410,8 +1412,8 @@ private Set<BankDataHistory> getBankDataHistory(AssociateTaxDedContriView associ
 			BigDecimal totPay = totalPay.subtract(BigDecimal.valueOf(postTaxDed)).add(BigDecimal.valueOf(postTaxContriSum));
 			double payItemSum = 0;
 			// PayItems 
-			if(payAdjustmentDTO.getPayItem() != null) {
-		       payItemSum = payAdjustmentDTO.getPayItem().stream().filter(payItem->payItem.getPayItemCheck()== null).mapToDouble(p->Double.parseDouble(p.getPayItemAmount())).sum();
+			if(payAdjustmentDTO.getPayItem() != null && payAdjustmentDTO.getPayItem().size()>0) {
+		       payItemSum = payAdjustmentDTO.getPayItem().stream().filter(payItem->payItem.getPayItemCheck()== null && payItem.getPayItemAmount() != null).mapToDouble(p->Double.parseDouble(p.getPayItemAmount())).sum();
 			   Set<PayitemHistory> payItemHis = getUpdatedPayItemData(payroll,payAdjustmentDTO.getPayItem());
 			   payroll.setPayitemHistory(payItemHis);
 			}

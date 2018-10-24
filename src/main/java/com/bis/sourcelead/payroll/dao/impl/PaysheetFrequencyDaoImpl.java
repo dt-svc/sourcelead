@@ -116,8 +116,8 @@ private static final Logger logger = LoggerFactory.getLogger(AssociateTaxDaoImpl
 		try {
 			String[] dts = dates.split(" ");
 			
-			Date startDate = new SimpleDateFormat("yyyy-MM-dd").parse(dts[0]);
-			Date endDate = new SimpleDateFormat("yyyy-MM-dd").parse(dts[1]);
+			Date startDate = commonUtil.orgLocationDateFormat(orgLocation.getDateFormat(), dts[0]);
+			Date endDate = commonUtil.orgLocationDateFormat(orgLocation.getDateFormat(), dts[1]);
 			
 			Session session = this.sessionFactory.getCurrentSession();
 			List<PaysheetFrequency> frequencyList = session.createQuery("from PaysheetFrequency paysheet where paysheet.userGroup.id=:groupId and paysheet.orgLocation.id=:orgLocationId and paysheet.frequencyStartDate = :startDate and paysheet.frequencyEndDate = :endDate")

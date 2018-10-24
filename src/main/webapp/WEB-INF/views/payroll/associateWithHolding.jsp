@@ -7,6 +7,7 @@
 <script>
 $(document).ready(function(){
 	associateWithHolding();
+	populateDepartment();
 });
 </script>
 
@@ -30,7 +31,10 @@ $(document).ready(function(){
     <li><a href="javascript:void(0)" class="filtIcon" title="Filters" onclick="openPop();"></a></li>
     <li><a href="javascript:void(0)" class="overIcon" title="Actions" onclick="newActions();"></a>
       <div class="newActPop" style="">
-       <span><a href="javascript:void(0)" onclick="exportToPdf();" title="PDF">Export PDF</a> <a href="javascript:void(0)" onclick="exportUserData();" title="Excel">Export Excel</a> </span> </div>
+       <span><a href="javascript:void(0)" onclick="exportToPdf();" title="PDF">Export PDF</a> 
+       		<a href="javascript:void(0)" onclick="exportToExcel();" title="Excel">Export Excel</a>
+        </span> 
+      </div>
     </li>
     <li><input type='text' placeholder='Search' class='repSearchBar' id='dataTableSearch'/>
 		<span class='repSearchIcon' onClick='associateWithHoldingSearch();'></span></li>
@@ -413,6 +417,27 @@ function openPop(){
 		/* } */
 	}
 </script>
+
+<script>
+function populateDepartment(){
+	$.ajax({
+    	type: "GET",
+        url: sourceleadUrl+"/findAllDepartments?"+tokenParamName+"="+tokenValue                 , 
+        success: function(json) {
+        	 var result = "";
+        	 for(var i = 0;i<json.length;i++){
+        		 var opt = json[i];
+        		 result = result + '<li class="checkBox positionRelative">';
+	        	 result = result + '<input name="deptName" value='+opt.id+' type="checkbox">';
+	        	 result = result + '<label>'+opt.departmentName+'</label>';
+	        	 result = result + '</li>';	 
+        	 }
+        	 $("#department").empty();
+        	 $("#department").append(result);
+        },
+    });
+}
+</script>
   
   
   
@@ -472,6 +497,64 @@ function resetFilter(){
 function refreshPage(){
     window.location.reload();
 } 
+</script>
+
+<script>
+function exportToPdf(){
+	var dept = [];
+	var empType = [];
+	 
+         $('input:checkbox[name=deptName]:checked').each(function() 
+          {
+    	  dept.push($(this).val());
+          });
+    
+    
+        $('input:checkbox[name=empType]:checked').each(function() 
+    	    {
+    	       empType.push($(this).val());
+    	    });
+    
+   
+        var searchValue = $("#dataTableSearch").val();
+		searchValue = searchValue ? searchValue : "";
+
+    	window.location.href = sourceleadUrl+"/exportAssociateWithholding?searchValue="+searchValue+"&dept="+dept+"&empType="+empType+"&exportType=pdf";
+}
+</script>
+
+<script>
+function exportToExcel(){
+	var dept = [];
+	var empType = [];
+	 
+         $('input:checkbox[name=deptName]:checked').each(function() 
+          {
+    	  dept.push($(this).val());
+          });
+    
+    
+        $('input:checkbox[name=empType]:checked').each(function() 
+    	    {
+    	       empType.push($(this).val());
+    	    });
+    
+   
+        var searchValue = $("#dataTableSearch").val();
+		searchValue = searchValue ? searchValue : "";
+
+    	window.location.href = sourceleadUrl+"/exportAssociateWithholding?searchValue="+searchValue+"&dept="+dept+"&empType="+empType+"&exportType=xls";
+}
+</script>
+
+
+<script> 
+function resetFilter(){
+	$("ul#department > li input:checkbox").prop("checked",false);
+	$("ul#employeeTypeUL > li input:checkbox").prop("checked",false);
+	$("#dataTableSearch").val('');
+	associateWithHolding();
+}
 </script>
 
 

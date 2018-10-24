@@ -10,6 +10,7 @@
 		  <li><a href="/about-us.html">About Us</a></li>
 		  <li><a href="/help.html">Help</a></li>
 		  <li><a href="/blog/all.html" id="blogID">Blog</a></li>
+		  <li><a href="/blog/allReleaseNote.html" id="releaseNoteID">Release Note</a></li>
 		  <li><a href="/contact.html">Contact</a></li>
 	</ul>
   	</div>
@@ -257,7 +258,7 @@ $(document).ready(function(){
 </script>
 
 	<script src="/resources/js/jquery-ui.js"></script>
-    <script src="https://maps.google.com/maps/api/js?libraries=places&v=3&key=AIzaSyCIbxD8-aZ7Wgp6N-JeEJKVRIHGRpNMdRE" type="text/javascript"></script>
+    <script src="https://maps.google.com/maps/api/js?libraries=places&v=3&key=${googleMapsLocationApiKey}" type="text/javascript"></script>
 	<script src="/resources/js/formvalidator.js"></script>
 	<script src="/resources/js/jquery.timepicker.js"></script>
 <script>

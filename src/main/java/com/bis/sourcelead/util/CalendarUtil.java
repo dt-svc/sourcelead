@@ -9,6 +9,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.GregorianCalendar;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
@@ -27,6 +28,8 @@ import com.bis.sourcelead.constants.Constants;
 
 
 public  class CalendarUtil {	
+	
+	
 	public static double getCombinedHours(double hours1,double hours2){
 		double cthHours = hours1;
 		double cthHoursValue = (int) cthHours;
@@ -545,13 +548,21 @@ public  class CalendarUtil {
 			DateFormat  sdf = new SimpleDateFormat(dateFormart);
 			String nowStr = sdf.format(calendar.getTime());
 			Date nowDate = sdf.parse(nowStr);
+			SimpleDateFormat sf = new SimpleDateFormat("E");
+			
 			cal.setTime(nowDate);
-			if(day_offset == 8){
-				cal.add(Calendar.DATE, 7);
-				cal.set(Calendar.DAY_OF_WEEK, Calendar.SUNDAY);
-			}
-			else{
+			if(StringUtils.isNotEmpty(sf.format(nowDate)) && sf.format(nowDate).equalsIgnoreCase("SUN") && day_offset == 2) {
+				cal.add(Calendar.DATE, -7);
 				cal.set(Calendar.DAY_OF_WEEK, day_offset);
+			}
+			else {
+				if(day_offset == 8){
+					cal.add(Calendar.DATE, 7);
+					cal.set(Calendar.DAY_OF_WEEK, Calendar.SUNDAY);
+				}
+				else{
+					cal.set(Calendar.DAY_OF_WEEK, day_offset);
+				}
 			}
 			return cal;
 		} catch (Exception e) {
@@ -1199,6 +1210,18 @@ public  class CalendarUtil {
 	 }
 	 return count;
  }
+	public static Date addDaysForGenerateInvoice(Date date, int days)
+	{
+		try {
+			Calendar cal = Calendar.getInstance();
+			cal.setTime(date);
+			cal.add(Calendar.DATE, days);
+			return cal.getTime();
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return null;
+	}
  
 }
 

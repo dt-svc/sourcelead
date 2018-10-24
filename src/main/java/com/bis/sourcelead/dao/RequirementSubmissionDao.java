@@ -3,21 +3,19 @@ package com.bis.sourcelead.dao;
 import java.util.Date;
 import java.util.List;
 
-import com.bis.sourcelead.dto.EmployerPayrollCostDTO;
+import com.bis.sourcelead.dto.ApplicantsJoinedReportDTO;
 import com.bis.sourcelead.dto.RequirementSubmissionHistoryDTO;
 import com.bis.sourcelead.dto.RequirementSubmissionsCountDTO;
 import com.bis.sourcelead.dto.RequirementSubmissionsDTO;
-import com.bis.sourcelead.dto.Response;
 import com.bis.sourcelead.dto.ResponseList;
-import com.bis.sourcelead.entity.Candidate;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.Requirement;
+import com.bis.sourcelead.entity.RequirementIncentive;
 import com.bis.sourcelead.entity.RequirementRateSubmissionNegotiation;
 import com.bis.sourcelead.entity.RequirementSubmission;
 import com.bis.sourcelead.entity.RequirementSubmissionHistory;
 import com.bis.sourcelead.entity.RequirementSubmissionsView;
 import com.bis.sourcelead.entity.User;
-import com.bis.sourcelead.payroll.entity.EmployerPayrollCost;
 
 /**
  * 
@@ -220,7 +218,7 @@ public interface RequirementSubmissionDao {
 	
 	RequirementSubmission getRequirementVendorOrCrowdsourcingSubmissionByRequirementIdAndCandidateId(Long requirementId,Long candidateId) throws Exception;
 
-	ResponseList<RequirementSubmissionHistory> getRequirementSubmissionsListWithDTOByOrgLocationsIdAndSubmissionStatus(RequirementSubmissionHistoryDTO requirementSubmissionHistoryDTO, Long orgLocationsId, String submissionStatus, String dateRange, String userType, User user, Date startUTCDate, Date endUTCDate) throws Exception;
+	ResponseList<RequirementSubmissionHistory> getRequirementSubmissionsListWithDTOByOrgLocationsIdAndSubmissionStatus(RequirementSubmissionHistoryDTO requirementSubmissionHistoryDTO, Long orgLocationsId, String submissionStatus, String dateRange, String userType, User user, Date startUTCDate, Date endUTCDate,OrgLocations orgLocations) throws Exception;
 	
 	boolean getRequirementSubmissionByCandidateIdAndJobId(Long candidateId,Long requirementId) throws Exception;
 	
@@ -229,5 +227,12 @@ public interface RequirementSubmissionDao {
 	Integer getRequirementSubmissionCountByCandiateIdAndOrgLocationId(Long candidateId,Long orgLocationId) throws Exception;
 	
 	List<RequirementSubmissionsDTO> getCandidateSubmittedRequirementsListByCandidateId(Long candidateId,Long orgLocationId,String dateFormat) throws Exception;
+	
+	public Integer getRequirementCountBySubmissionStatusJoinedandAssignedUsercode(Long requirementId, String userCode,Date[] searchDates) throws Exception;
+
+	RequirementIncentive getRequirementIncentiveByRequirementId(Long requirementId) throws Exception;
+	
+	List<ApplicantsJoinedReportDTO> getRequirementIncentiveByRequirementIdAndLocation(Long requirementId,String usercode,Long orgLocationId, Date[] searchDates) throws Exception;
+
 
 }

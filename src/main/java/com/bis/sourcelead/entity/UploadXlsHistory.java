@@ -74,7 +74,8 @@ public class UploadXlsHistory implements Serializable{
     @Column(name = "CREATED_DATE")
 	private Date createdDate;
     
-    
+    @Column(name = "END_DATE")
+  	private Date endDate;
     
 
 	public Long getId() {
@@ -211,6 +212,14 @@ public class UploadXlsHistory implements Serializable{
 
 	public void setFileContentType(String fileContentType) {
 		this.fileContentType = fileContentType;
+	}
+
+	public Date getEndDate() {
+		return endDate;
+	}
+
+	public void setEndDate(Date endDate) {
+		this.endDate = endDate;
 	}
     
     
