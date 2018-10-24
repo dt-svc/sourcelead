@@ -1155,12 +1155,16 @@ $(document).ready(function () {
                   <c:choose> 
 			 			 <c:when test="${val == 'Y'}">
 			   				<select class="chosen-select form-control" name="selectContact" data-validation-optional="true" field-name = "Client Contact" id="selectContact">
-								  <c:forEach var="report" items="${clientContactList}">
-			         		<%-- <option value="${report.id}" ${report.id  == requirement.spocId.id ? 'selected' : ''} >${report.spocId.SpocUser.firstName}&nbsp;${report.spocId.SpocUser.lastName}</option> --%>
-			         				<c:if test="${report.id  == requirement.spocId.id}">
-			         					<option value="${report.id}" ${report.id  == requirement.spocId.id ? 'selected' : ''} >${report.spocName} (${report.ownerName})</option>
-			         				</c:if>
-					    		 </c:forEach>
+					    		 <c:if test="${!empty clientContactList}">
+					    		 	<c:forEach var="report" items="${clientContactList}">
+				         				<c:if test="${report.id  == requirement.spocId.id}">
+				         					<option value="${report.id}" ${report.id  == requirement.spocId.id ? 'selected' : ''} >${report.spocName} (${report.ownerName})</option>
+				         				</c:if>
+						    		 </c:forEach>
+					    		 </c:if>
+					    		 <c:if test="${empty clientContactList}">
+					    		 	<option value="${requirement.spocId.id}" >${requirement.spocId.spocName} (${requirement.spocId.ownerName})</option>
+					    		 </c:if>
                     		</select>
 						 </c:when>
 					<c:otherwise>
