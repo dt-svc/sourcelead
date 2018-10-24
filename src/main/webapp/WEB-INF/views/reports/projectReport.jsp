@@ -8,7 +8,12 @@
       <div class="pull-left">
         <h2>Project Report</h2>
       </div>
-      <div class="pull-right brud-crum">Home &raquo; Project Report</div>
+         <div class="pull-right brud-crum">
+         	<a href="<c:url value='${appPath}/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a> &raquo; 
+         	<a href="<c:url value='${appPath}/reportsDashboard'/>"> Reports Dashboard</a> &raquo; 
+         	<a href="<c:url value='${appPath}/hrReportsList'/>"> HR Reports </a> &raquo;
+         	Project Report
+		</div>
     </section>
 
      
