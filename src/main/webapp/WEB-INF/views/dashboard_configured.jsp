@@ -83,7 +83,7 @@ var loaded = false;
 		   	</c:if>
 		
 			<div class="pull-left">
-		    	<h2>Dashboard configured<a href="javascript:void(0)" onclick="$('#configureDashboard').show();$('.advancedsearch-mask').fadeIn();"><i class="fa fa-cog ml"></i></a></h2>
+		    	<h2>Dashboard<a href="javascript:void(0)" onclick="$('#configureDashboard').show();$('.advancedsearch-mask').fadeIn();"><i class="fa fa-cog ml"></i></a></h2>
 		  	</div>
 		</section>
 		
