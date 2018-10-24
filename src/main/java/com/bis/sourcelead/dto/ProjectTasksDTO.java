@@ -89,6 +89,8 @@ public class ProjectTasksDTO extends SearchDTO implements Serializable{
 	
 	private String userCode;
 	
+	private Long candidateId;
+	
 	public Long getId() {
 		return id;
 	}
@@ -329,6 +331,12 @@ public class ProjectTasksDTO extends SearchDTO implements Serializable{
 	}
 	public void setUserCode(String userCode) {
 		this.userCode = userCode;
+	}
+	public Long getCandidateId() {
+		return candidateId;
+	}
+	public void setCandidateId(Long candidateId) {
+		this.candidateId = candidateId;
 	}
 }
 

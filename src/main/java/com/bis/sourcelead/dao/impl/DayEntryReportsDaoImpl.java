@@ -140,7 +140,7 @@ public class DayEntryReportsDaoImpl implements DayEntryReportsDao {
                 + " LEFT JOIN CANDIDATE CAN ON CAN.ID =  PM.CANDIDATE_ID "
                 + " LEFT JOIN EMPLOYEE EMP ON EMP.ID =  PM.EMPLOYEE_ID "
                 + " LEFT JOIN DEPARTMENT DEPART ON DEPART.ID =  EMP.DEPARTMENT_ID "
-                + " INNER JOIN PROJECT_CLIENTS PC ON PC.PROJECT_ID =  PROJ.ID AND PC.ORG_LOCATIONS_ID = '"+orgloc.getId()+"' "
+                + " LEFT JOIN PROJECT_CLIENTS PC ON PC.PROJECT_ID =  PROJ.ID AND PC.ORG_LOCATIONS_ID = '"+orgloc.getId()+"' "
                 + " LEFT JOIN ORG_LOCATIONS ORGLOC ON ORGLOC.ID =  PC.ORG_LOCATIONS_ID "
                 + " LEFT JOIN ORG_LOCATIONS CANLOC ON CANLOC.ID =  CAN.WORK_LOCATION "
 				+ " WHERE "+subQuery+" AND SAH.SUBMISSION_ID =  TS.ID  " 
