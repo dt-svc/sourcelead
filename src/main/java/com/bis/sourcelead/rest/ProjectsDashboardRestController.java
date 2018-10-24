@@ -750,7 +750,8 @@ public class ProjectsDashboardRestController {
 			 ResponseList<ProjectTasks> response =  new  ResponseList<ProjectTasks>();
 			 try {
 				 String userRole = (String) SourceLeadSessionManager.getSessionAttribute(request, "loginUserRole");
-				 User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user"); 
+				 User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+				 Long candidateId = (Long) SourceLeadSessionManager.getSessionAttribute(request, "candidateId");
 				 if(userRole != null) {
 					 String[] tableColumns = {"id","taskName", "taskType", "priority", "assignedTo","status"};
 					    int sortColumnIndex = 1; //by default sorting using updated date
@@ -759,6 +760,7 @@ public class ProjectsDashboardRestController {
 							sortColumnIndex = Integer.parseInt(projectTasksDTO.getOrder().get(0).get("column"));
 							sortColumnOrder = projectTasksDTO.getOrder().get(0).get("dir");
 						}
+						projectTasksDTO.setCandidateId(candidateId);
 						projectTasksDTO.setUserCode(user.getUserCode());
 						projectTasksDTO.setSortColumn(tableColumns[sortColumnIndex]);
 						projectTasksDTO.setSortOrder(sortColumnOrder);

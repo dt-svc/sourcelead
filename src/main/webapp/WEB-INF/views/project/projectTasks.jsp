@@ -1147,6 +1147,7 @@ function openFilterTaskPop(){
 									</div>
 									 <div class="clearfix filterSearch-ul">
 										<ul class="list-unstyled positionRelative filterSearch mt5" id="myAssignedUL">
+<!-- 									        <li class="checkBox positionRelative clearfix" ><input   name="assignedtaskId" value ="unAssigned"  type="checkbox" class="pull-left"><label title="Un-Assigned"  class="tbldata-dotdot-me pull-left mt5">Un Assigned</label></li> -->
 										<c:forEach var="assignedMembers" items="${projectAssignMemberList}">  
 										    <li class="checkBox positionRelative clearfix" ><input   name="assignedtaskId" value ="${assignedMembers.id}"  type="checkbox" class="pull-left"><label for="assignedtaskId${assignedMembers.id}" title="${assignedMembers.candidateName}"  class="tbldata-dotdot-me pull-left mt5">${assignedMembers.candidateName}</label></li>
 										</c:forEach>
