@@ -40,6 +40,7 @@ import com.bis.sourcelead.dto.ResponseList;
 import com.bis.sourcelead.entity.Candidate;
 import com.bis.sourcelead.entity.CandidateIdendities;
 import com.bis.sourcelead.entity.CandidateImportLog;
+import com.bis.sourcelead.entity.CandidateMarketCart;
 import com.bis.sourcelead.entity.CandidateMarketPlace;
 import com.bis.sourcelead.entity.CandidateResumes;
 import com.bis.sourcelead.entity.LcaListView;
@@ -2267,21 +2268,17 @@ public class CandidateDaoImpl implements CandidateDao {
 
 	@Override
 	@Transactional(rollbackFor = { Exception.class })
-	public CandidateMarketPlace fetchMarketPlace(Long candidateId, Long orgLocationId) throws Exception {
+	public CandidateMarketPlace getCandidateMarketPlaceDetailsByIdAndOrgLocationId(Long id, Long orgLocationId) throws Exception {
 		Session session = this.sessionFactory.getCurrentSession();
-		String query = "from CandidateMarketPlace marketplace where marketplace.id =:candidateId and marketplace.orgLocationId = :orgLocationId";
-		List candidateList = session.createQuery(query).setLong("candidateId", candidateId)
-				.setLong("orgLocationId", orgLocationId).list();
-		CandidateMarketPlace candidate = null;
-		if (candidateList != null && !candidateList.isEmpty()) {
-			candidate = (CandidateMarketPlace) candidateList.iterator().next();
-		}
-		return candidate;
+		String query = "from CandidateMarketPlace marketplace where marketplace.id =:id and marketplace.orgLocationId = :orgLocationId";
+		CandidateMarketPlace marketPlaceCandidate = (CandidateMarketPlace)session.createQuery(query).setLong("id", id)
+																				.setLong("orgLocationId", orgLocationId).uniqueResult();
+		return marketPlaceCandidate;
 	}
 
 	@Override
 	@Transactional(rollbackFor = { Exception.class })
-	public void withdrawMarketplace(CandidateMarketPlace marketplace) throws Exception {
+	public void withdrawCandidateFromMarketplace(CandidateMarketPlace marketplace) throws Exception {
 		try {
 			Session session = this.sessionFactory.getCurrentSession();
 			session.saveOrUpdate(marketplace);
@@ -2289,4 +2286,27 @@ public class CandidateDaoImpl implements CandidateDao {
 			e.printStackTrace();
 		}
 	}
+	
+
+	@Override
+	@Transactional(rollbackFor = { Exception.class })
+	public CandidateMarketPlace getCandidateMarketPlaceDetailsById(Long id) throws Exception {
+		Session session = this.sessionFactory.getCurrentSession();
+		String query = "from CandidateMarketPlace marketplace where marketplace.id =:id";
+		CandidateMarketPlace marketPlaceCandidate = (CandidateMarketPlace) session.createQuery(query).setLong("id", id).uniqueResult();
+		return marketPlaceCandidate;
+	}
+
+	@Override
+	@Transactional(rollbackFor = { Exception.class })
+	public void addCandidateToMarketCart(CandidateMarketCart marketcart) throws Exception {
+		try {
+			Session session = this.sessionFactory.getCurrentSession();
+			session.save(marketcart);
+		}catch(Exception e){
+			e.printStackTrace();
+		}
+		}
+
+	
 }

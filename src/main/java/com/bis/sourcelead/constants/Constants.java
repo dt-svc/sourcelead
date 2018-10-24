@@ -237,6 +237,7 @@ public class Constants {
 	public static final int CANDIDATE_ALL = 2;
 	public static final int CANDIDATE_ACTIVE = 1;
 	public static final int CANDIDATE_IN_ACTIVE = 0;
+	public static final String STATUS_WITHDRAWN = "WITHDRAWN";
 	/** Candidate Skill constants **/
 	public static final int CANDIDATE_SKILL_ACTIVE = 1;
 	public static final int CANDIDATE_SKILL_IN_ACTIVE = 0;

@@ -65,6 +65,7 @@ import com.bis.sourcelead.entity.CandidateEducation;
 import com.bis.sourcelead.entity.CandidateEmployers;
 import com.bis.sourcelead.entity.CandidateHistory;
 import com.bis.sourcelead.entity.CandidateImportLog;
+import com.bis.sourcelead.entity.CandidateMarketCart;
 import com.bis.sourcelead.entity.CandidateMarketPlace;
 import com.bis.sourcelead.entity.CandidateResumes;
 import com.bis.sourcelead.entity.CandidateTimelineActivity;
@@ -2784,16 +2785,41 @@ private Sheet createXlsSheet(Sheet createExcelsheet, Row writeRow,Candidate cand
 	}
 	
 	@Override
-	public void withdrawMarketplace(CandidateMarketPlace marketplace, String withdrawReason) throws Exception {
-		marketplace.setCandidateMarketStatus(Constants.LEAVE_WITHDRAW);
+	public CandidateMarketPlace getCandidateMarketPlaceDetailsByIdAndOrgLocationId(Long id, Long orgLocationId) throws Exception{
+		return candidateDao.getCandidateMarketPlaceDetailsByIdAndOrgLocationId(id, orgLocationId);
+	}
+	
+	@Override
+	public void withdrawCandidateFromMarketplace(CandidateMarketPlace marketplace, String withdrawReason) throws Exception {
+		marketplace.setCandidateMarketStatus(Constants.STATUS_WITHDRAWN);
 		marketplace.setWithdrawReason(withdrawReason);
-		 candidateDao.withdrawMarketplace( marketplace);
+		 candidateDao.withdrawCandidateFromMarketplace(marketplace);
 		
 	}
 
 	@Override
-	public CandidateMarketPlace fetchMarketPlace(Long candidateId, Long orgLocationId) throws Exception{
-		return candidateDao.fetchMarketPlace(candidateId, orgLocationId);
+	public CandidateMarketPlace getCandidateMarketPlaceDetailsById(Long id) throws Exception {
+		// TODO Auto-generated method stub
+		return candidateDao.getCandidateMarketPlaceDetailsById(id);
+	}
+
+	@Override
+	public void addCandidateToMarketCart(User user, CandidateMarketPlace marketplace, Long orgLocationId) throws Exception {
+		// TODO Auto-generated method stub
+		CandidateMarketCart newMarketCart = new CandidateMarketCart();
+		newMarketCart.setId(marketplace.getId());
+		newMarketCart.setCandidateId(marketplace.getCandidateId());
+		newMarketCart.setMasterCandidateId(marketplace.getMasterCandidateId());
+		newMarketCart.setCandidateUUID(marketplace.getCandidateUUID());
+		OrgLocations orgLocation = new OrgLocations();
+		orgLocation.setId(orgLocationId);
+		newMarketCart.setOrgLocationId(orgLocation);
+		newMarketCart.setStatus(marketplace.getStatus());
+		newMarketCart.setCreatedDate(new Date());
+		newMarketCart.setCreatedBy(user);
+		newMarketCart.setUpdatedDate(new Date());
+		newMarketCart.setUpdatedBy(user);
+		candidateDao.addCandidateToMarketCart(newMarketCart);
 	}
 
 }

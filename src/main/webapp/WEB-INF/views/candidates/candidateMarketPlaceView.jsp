@@ -218,7 +218,7 @@
 	               /*   "data": "action", */
 	                 "render": function (data, type, opt, meta) {
 	                     var result = "";
-	                    	 result = result + "<td><div class='tblminwidth-100' id='marketLinkDiv' ><a id='editMarketLink' onclick='editMarketPriceFun(\""+opt.id+"\",\""+opt.marketPrice+"\",\""+opt.marketRateCurrencey+"\", this);' title='Edit'>Edit</a> <a onclick = 'disableMarketPlace("+opt.id+")'>&nbsp;Withdraw</a></div></td>";
+	                    	 result = result + "<td><div class='tblminwidth-100' id='marketLinkDiv' ><a id='editMarketLink' onclick='editMarketPriceFun(\""+opt.id+"\",\""+opt.marketPrice+"\",\""+opt.marketRateCurrencey+"\", this);' title='Edit'>Edit</a> <a onclick = 'withdrawCandidateFromMarketPlace(\""+opt.id+"\")'>&nbsp;Withdraw</a></div></td>";
 	                     return result;
 	                 }
 	             }
@@ -327,7 +327,7 @@ function saveEditMarketPriceFun(id, obj){
 }
 function cancelEditMarketPriceFun(marketPrice, marketPriceCurrency, id, obj){
 	$(obj).closest('tr').find("div[id='marketPlacePriceDiv']").empty().append("<div id='marketPlacePriceValDiv' class='tblminwidth-100' title = '"+marketPrice+" "+ marketPriceCurrency+"'>" + marketPrice + " "+ marketPriceCurrency+"</div>");
-	$(obj).closest('tr').find("div[id='marketLinkDiv']").empty().append("<a href='#' id='editMarketLink' onclick='editMarketPriceFun(\""+id+"\",\""+marketPrice+"\",\""+marketPriceCurrency+"\", this);' title='Edit'>Edit</a><a onclick = 'disableMarketPlace(\""+id+"\")'>&nbsp;Withdraw</a>")
+	$(obj).closest('tr').find("div[id='marketLinkDiv']").empty().append("<a href='#' id='editMarketLink' onclick='editMarketPriceFun(\""+id+"\",\""+marketPrice+"\",\""+marketPriceCurrency+"\", this);' title='Edit'>Edit</a><a onclick = 'withdrawCandidateFromMarketPlace(\""+id+"\")'>&nbsp;Withdraw</a>")//
 }
 $(".funPrice").on("click", "li", function(){
 	var x = $(this).text();
@@ -353,25 +353,25 @@ function cancelMarketPlace(){
 	$("#reasonForMarketPlaceDiv").find("p.jquery_form_error_message").remove();
 	$("#reasonForMarketPlaceDiv").empty(); 
 }
-function disableMarketPlace(id){ 
+function withdrawCandidateFromMarketPlace(id){ 
 	$(".project_inn_mask").remove();
 	var result = "";
 	result = result +"	<div class='project_inn_mask'></div>";
-	result = result +"	   <div id='remove_marketPlace_pop' class='remove_user_pop remove_user_pop_a'>";
-	result = result +"		<textarea  id='reasonForMarketPlace' name='reasonForSpoc' data-validation='required validate_Space validate_Description validate_length length2-250' placeholder='Reason' onkeypress=';' ></textarea>";
+	result = result +"	<div id='remove_marketPlace_pop' class='remove_user_pop remove_user_pop_a'>";
+	result = result +"	<textarea  id='reasonForMarketPlace' name='reasonForSpoc' data-validation='required validate_Space validate_Description validate_length length2-250' placeholder='Reason' onkeypress=';' ></textarea>";
 	result = result + ' <div id="reasonForMarketPlaceDiv"/>';
-	result = result +"		<b href='javascript:void(0)'><input id='confirm-id' type='button' value='Withdraw' onclick='deleteMarketPlace("+id+");'><input class='u_can_color' type='button'  value='Cancel' onClick='cancelMarketPlace();'></b>";
+	result = result +"	<b href='javascript:void(0)'><input id='confirm-id' type='button' value='Withdraw' onclick='withdrawCandidate("+id+");'><input class='u_can_color' type='button'  value='Cancel' onClick='cancelMarketPlace();'></b>";
 	result = result +"	</div>";
 	$("#popUp").empty().append(result);
 	$("#remove_marketPlace_pop").slideDown(200);
 	$(".project_inn_mask").fadeIn(200);
 }
-function deleteMarketPlace (id) {
+function withdrawCandidate(id) {
     var reason = $("#reasonForMarketPlace").val();
     if(reason.match(/^[^\s-](.*)*$/) != null && reason !="" && reason.length <= 250){
     $("#reasonForMarketPlaceDiv").empty();
    $.ajax({
-        url: sourceleadUrl + "/withdrawMarketplace?candidateId="+id+"&withdrawReason="+reason,
+        url: sourceleadUrl + "/withdrawCandidateFromMarketPlace?id="+id+"&withdrawReason="+reason,
         type: "GET",
         data: id,
         success: function (result) {

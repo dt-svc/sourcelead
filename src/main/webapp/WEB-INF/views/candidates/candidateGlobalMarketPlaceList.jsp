@@ -201,7 +201,7 @@
 	               /*   "data": "action", */
 	                 "render": function (data, type, opt, meta) {
 	                     var result = "";
-	                    	 result = result + "<td><div class='tbldata-dotdot-sm' title = 'Add To Marketplace'><a href='' >Add</a></div></td>";
+	                    	 result = result + "<td><div class='tbldata-dotdot-sm' title = 'Add To Marketplace'><a onclick='addCandidateToMarketCart(\""+opt.id+"\")'>Add</a></div></td>";
 	                     return result;
 	                 }
 	             }
@@ -238,6 +238,19 @@
 	$(".selectPrice").text(price);
 	
 }*/
+
+function addCandidateToMarketCart(id) {
+   $.ajax({
+        url: sourceleadUrl + "/addCandidateToMarketCart?id="+id,
+        type: "GET",
+        data: id,
+        success: function (response) {
+        	if(response=="success"){
+          	getDynamicGlobalMarketCandidateList();
+        	}
+        	}
+    });
+}
 $(".funPrice").on("click", "li", function(){
 	var x = $(this).text();
 	$(this).parents(".selectPriceli").find(".selectPrice").text(x);
