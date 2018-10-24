@@ -29,6 +29,50 @@ $(document).ready(function(){
 		document.getElementById("addAsset_form").reset();
 	});
 </script>
+
+<script type="text/javascript">
+	function columPop(){
+		alert("hjjjj")
+		$(".colPop").show();
+	}
+	function columClose(){
+		$(".colPop").hide();
+	}
+	$("html").click(function(){
+		$(".colPop").hide();
+	});
+	$(".refreIcon, .colPop").click(function(e){
+	 	e.stopPropagation();
+	});	
+		
+	function columHide(){
+		columClose();
+		$(".toggle-vis").each(function() {
+		   var chkdVal= $(this).prop('checked');
+		   var column = table.column($(this).attr('data-column'));
+			  if(chkdVal == true){
+			         column.visible(true);
+			    }
+			    else{
+			      column.visible(false);
+			  }
+	    });
+		
+	}
+	function checkAllColumns(obj){
+		var id = obj.id;
+		if(id =='columnsPickerCheckAll'){
+			$('.toggle-vis:input:checkbox').prop('checked',true);
+		}
+		else if(id =='columnsPickerUnCheckAll'){
+			$('.toggle-vis:input:checkbox').prop('checked',false);
+		}
+	}
+	
+	
+	
+</script>
+
 <section class="content-wraper">
 <section class="content-header clearfix">
   <div class="pull-left"><h2>Asset Management</h2></div>
@@ -43,9 +87,89 @@ $(document).ready(function(){
 </div>
 <div class="timesheet_out">
   
+  
+	 <div class="colPop">
+		<div class="colPopMid coldropdown-parent">
+		<div class="clearfix">
+			<div class="row">
+					<div class="col-md-10 mb10 mt5 col-md-offset-2">
+					<span class="checkbox-new  pull-left mr">
+						<input id="columnsPickerUnCheckAll" class="radio-custom" name="columnsPicker" onclick="checkAllColumns(this);"  type="radio">
+						<label for="columnsPickerUnCheckAll" class="radio-custom-label">Uncheck All</label>
+					</span>
+					<span class="checkbox-new pull-left">
+						<input id="columnsPickerCheckAll" class="radio-custom" name="columnsPicker" onclick="checkAllColumns(this);"  type="radio" checked="">
+						<label for="columnsPickerCheckAll" class="radio-custom-label" >Check All</label>
+					</span>
+				</div>
+			</div>
+		  <div class="clearfix"></div>
+			
+			<div class="coldropdown-inner">
+				<ul>
+					<li>
+						<span class="checkbox-new clearfix">
+							<input id="a" class="checkbox-custom toggle-vis" name="paidComponent" data-column="0" type="checkbox" checked="">
+							<label for="a" class="checkbox-custom-label" >Status</label>
+						</span>
+					</li>
+					<li>
+						<span class="checkbox-new clearfix">
+							<input id="c" class="checkbox-custom toggle-vis" name="paidComponent" data-column="2" type="checkbox" checked="">
+							<label for="c" class="checkbox-custom-label" >Country</label>
+						</span>
+					</li>
+					<li>
+						<span class="checkbox-new clearfix">
+							<input id="d" class="checkbox-custom toggle-vis" name="paidComponent" data-column="3" type="checkbox" checked="">
+							<label for="d" class="checkbox-custom-label" >Type</label>
+						</span>
+					</li>
+					<li>
+						<span class="checkbox-new clearfix">
+							<input id="f" class="checkbox-custom toggle-vis" name="paidComponent" data-column="5" type="checkbox" checked="">
+							<label for="f" class="checkbox-custom-label" >Email</label>
+						</span>
+					</li>
+					<li>
+						<span class="checkbox-new clearfix">
+							<input id="g" class="checkbox-custom toggle-vis" name="paidComponent" data-column="6" type="checkbox" checked="">
+							<label for="g" class="checkbox-custom-label" >Phone</label>
+						</span>
+					</li>
+					<li>
+						<span class="checkbox-new clearfix">
+							<input id="h" class="checkbox-custom toggle-vis" name="paidComponent" data-column="7" type="checkbox" checked="">
+							<label for="h" class="checkbox-custom-label" >On Date</label>
+						</span>
+					</li>
+					<li>
+						<span class="checkbox-new clearfix">
+							<input id="j" class="checkbox-custom toggle-vis" name="paidComponent" data-column="8"  type="checkbox" checked="">
+							<label for="j" class="checkbox-custom-label" >LCA Start Date</label>
+						</span>
+					</li>
+					<li>
+						<span class="checkbox-new clearfix">
+							<input id="k" class="checkbox-custom toggle-vis" name="paidComponent" type="checkbox"  data-column="9" checked="">
+							<label for="k" class="checkbox-custom-label" >LCA End Date</label>
+						</span>
+					</li>
+				</ul>
+				</div>
+			</div>
+			<div class="colPopFot">
+				<a href="javascript:void(0)" onclick="columHide();">Apply</a>
+				<a href="javascript:void(0)" onclick="columClose();">Cancel</a>
+			</div>
+		</div>				
+	</div>  
+			
  <div class="positionRelative reportHead clearfix">
       <span class="pull-left refreIcon" id="advanceSearchDiv">
       		<a href="javascript:void(0)" class="refeIcon" id="asset_reset" title="Refresh" onclick="resetAssetFilter();" style="display: block"></a>
+<!--       		<a href="javascript:void(0)" onclick="columPop();" title="Column Chooser" class="columIcon"></a> -->
+      		
       		<a href="javascript:void(0)" class="refeIcon" id="assign_reset" title="Refresh" onclick="resetAssignAssetFilter();" style="display: none"></a>
       </span>
       

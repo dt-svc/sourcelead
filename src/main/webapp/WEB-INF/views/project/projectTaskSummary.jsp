@@ -129,9 +129,8 @@ var sourceleadUrl = '${sourceleadUrl}';
           <div class="col-md-9">
 	          
 	          <div class="bg-success taskheaader-inlineedit mb10 clearfix">
-	          
+	          <form id="updateTaskName_form" name="updateTaskName_form" method="post">
 	          <div class="col-md-11 paddingRight paddingLeft edit-field edit-inputfield">
-		          
 		          <div class="showTaskname" id="taskedit-parent" onclick="editFun();">
 		          <c:if test="${not fn:contains(projectTask.generatedId, 'null') && !empty projectTask.generatedId}">
 		             <span class="taskgeneratedid text-muted paddingRight bg-green" title="Task Generated ID">${projectTask.generatedId}</span>
@@ -152,7 +151,7 @@ var sourceleadUrl = '${sourceleadUrl}';
 	          <div class="col-md-1 paddingLeft text-center" id="saveIcon" style="display:none;">
 	          	<i class="fa fa-save fa-2x" onclick="inlineditTaskName();"></i>
 	          </div>
-	          
+	          </form>
 	          </div>
 	          
 	          <div class="cearfix">
@@ -601,9 +600,11 @@ function inlineditTaskName(){
 		$(".inputError").show();
 	}else{
 		if(taskName.match(/^[^\s-](.*)*$/) !== null){
+			 var formData = getFormData("updateTaskName_form");
 			$.ajax({
 			   	type: "POST",
-			    url: sourceleadUrl+"/ProjectTasks/updateTaskName?${_csrf.parameterName}=${_csrf.token}&taskName="+taskName+"&taskId="+projectTaskId+"&userId="+userId, 	   
+			   	data: formData,
+			    url: sourceleadUrl+"/ProjectTasks/updateTaskName?${_csrf.parameterName}=${_csrf.token}&taskId="+projectTaskId+"&userId="+userId, 	   
 			    success: function(data) {
 			    	$(".showTaskname").show();
 			    	$(".editTaskname").hide();
@@ -2072,7 +2073,7 @@ function addComment(){
 	result = result + ' <input type="hidden" name="tabType" value="comment">';
 	result  = result + ' <div class="row clearfix">';
 	result  = result + '   <div class="col-md-12 mb10">';
-	result  = result + '     <textarea class="form-control" rows="1" id="taskComment" name="taskComment" placeholder="Comment here ..." data-validation="required validate_Space  validate_length length2-500" field-name="Task Comment" ></textarea>';
+	result  = result + '     <textarea class="form-control" rows="1" id="taskComment" name="taskComment" placeholder="Comment here ..." data-validation="required validate_length length2-500" field-name="Task Comment" ></textarea>';
 	result  = result + '   </div>';
 	result  = result + '</div>';
 	result  = result + ' <div class="modalFooter mt5">';

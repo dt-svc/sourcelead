@@ -28,7 +28,7 @@
               
               <li><a href="javascript:void(0)" class="filtIcon" title="Filters" onclick="openPop();"></a></li>
               
-              <li><a href="javascript:void(0)" class="overIcon" title="Actions" onclick="newActions();"></a>
+              <li><a href="javascript:void(0)" class="overIcon" id="exportOptions" title="Actions" onclick="newActions();"></a>
 					<div class="newActPop">
 						<span>
 		           	   		<a href="javascript:void(0)" onclick="projectReportExport('Pdf');" title="PDF">Export PDF</a>
@@ -276,10 +276,12 @@ function projectReportDataTableList(refreshFlag){
 						
 						$("#projectReporttableList").append(text);
 						$("#projectReportDataTableSearch").empty();
-						
+						$("#exportOptions").show();
 						dynamicProjectReportPagination();  
-					} else 
+					} else {
 						$("#projectReporttableList").append("<div class='dataTables_empty'></div>");
+						$("#exportOptions").hide();						
+					}
 				} else 
 					alert("Please try again....");
 				$(".loading").hide();

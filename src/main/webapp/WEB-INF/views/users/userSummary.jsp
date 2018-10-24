@@ -1849,7 +1849,7 @@ $("#editRoleDetailsList").empty();
 					result = result + ' <select name="workLocation" field-name="Work Location" data-validation="required">';
 					
 					if(json.locationList != null){
-						result = result + ' <option> -- Select Location -- </option>';
+						result = result + ' <option value=""> -- Select Location -- </option>';
 						for(var i = 0; i < json.locationList.length ; i++){
 							var report = json.locationList[i];
 							if(json.workLocationId == report.id){

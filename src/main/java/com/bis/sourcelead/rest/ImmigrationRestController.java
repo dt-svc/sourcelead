@@ -879,15 +879,10 @@ public class ImmigrationRestController {
 
 				fileIdNameMap.put(historyObj.getId(), historyObj.getUpldedFileName());
 			}
-			 System.out.println("Doc id ===========" + docs.getId());
 			docs.setDocsHistoryList(jsonArray.put(fileIdNameMap));
 			logger.debug("jsonArray to String  ===========" + jsonArray.toString());
 			
 	   Candidate candidate = candidateService.getCandidateByCandidateId(candidateId);
-		   System.out.println("docs.getDocumentType()................."+docs.getDocumentType().getId());
-		   System.out.println("docs.getDocCategory()................."+docs.getDocCategory());
-		   System.out.println("docs.getDocumentType().getName()................."+docs.getDocumentType().getName());
-		   
 		if(docs.getDocCategory().equalsIgnoreCase("Document Type")){
 			if(candidate.getConsultantUser().getId().equals(user.getId())) {
 			model.addObject("beneficiaryDocs", docs.getDocCategory());
