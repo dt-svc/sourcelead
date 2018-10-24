@@ -778,22 +778,22 @@ public class RequirementDaoImpl implements RequirementDao {
 		}
 		if (!StringUtils.equalsIgnoreCase(userType, "ADMIN")) {
 
-			String subQuery1 = "requirement.id IN ( select rah.requirementId from RequirementAssignTo rah where rah.assignUserId.id =:userId and rah.status <> '0')   and ( requirement.requirementSubmissionStatus = 'APPROVED' or requirement.requirementSubmissionStatus = 'NEW' or requirement.requirementSubmissionStatus = 'OPEN' )  and  requirement.requirementSubmissionStatus <> 'DRAFT'  ";
+			String subQuery1 = "requirement.id IN ( select rah.requirementId from RequirementAssignTo rah where rah.assignUserId.id =:userId and rah.status <> '0' and rah.createdDate BETWEEN :startDateUTC and :endDateUTC)   and ( requirement.requirementSubmissionStatus = 'APPROVED' or requirement.requirementSubmissionStatus = 'NEW' or requirement.requirementSubmissionStatus = 'OPEN' )  and  requirement.requirementSubmissionStatus <> 'DRAFT'  ";
 			params.put("userId", userId);
 
 			String subQuery2 = "requirement.managerUserId.id = :managerUserId and ( requirement.requirementSubmissionStatus = 'APPROVED' or requirement.requirementSubmissionStatus = 'NEW' or requirement.requirementSubmissionStatus = 'OPEN' )  ";
 			params.put("managerUserId", userId);
 
-			String subQuery3 = "requirement.id IN ( select rah.requirementId from RequirementAssignTo rah where rah.teamId.id IN ( select rah.id from Team rah where rah.ownerUserId.id =:userId)) and requirement.requirementSubmissionStatus <> 'DRAFT' and requirement.requirementSubmissionStatus <> 'SUBMITTED'  ";
+			String subQuery3 = "requirement.id IN ( select rah.requirementId from RequirementAssignTo rah where rah.teamId.id IN ( select rah.id from Team rah where rah.ownerUserId.id =:userId) and rah.createdDate BETWEEN :startDateUTC and :endDateUTC) and requirement.requirementSubmissionStatus <> 'DRAFT' and requirement.requirementSubmissionStatus <> 'SUBMITTED'  ";
 			params.put("userId", userId);
 
 			if (subQuery1 != "" || subQuery2 != "" || subQuery3 != "" || jobTypeVal !="") {
 				if(clientVal != ""){
 				subQuery = "where requirement.orgLocationId.id =:orgLocationId and ("+ clientVal +") and ("+ jobTypeVal +") and ( (" + subQuery1 + ")  or ("
-						+ subQuery2 + ")  or (" + subQuery3 + ") and requirement.createdDate BETWEEN :startDateUTC and :endDateUTC) ";
+						+ subQuery2 + ")  or (" + subQuery3 + ") ) and requirement.createdDate BETWEEN :startDateUTC and :endDateUTC";
 				}else{
 					subQuery = "where requirement.orgLocationId.id =:orgLocationId and ("+ jobTypeVal +") and ( (" + subQuery1 + ") or ("
-							+ subQuery2 + ")  or (" + subQuery3 + ") and requirement.createdDate BETWEEN :startDateUTC and :endDateUTC) ";	
+							+ subQuery2 + ")  or (" + subQuery3 + ") ) and requirement.createdDate BETWEEN :startDateUTC and :endDateUTC";	
 				}
 				params.put("orgLocationId", orgLocationId);
 				params.put("startDateUTC", startDateUTC);
@@ -801,10 +801,10 @@ public class RequirementDaoImpl implements RequirementDao {
 				
 				if(clientVal != ""){
 				countQuerySub = "where requirement.orgLocationId.id =:orgLocationId and ("+ clientVal +") and ("+ jobTypeVal +") and ( (" + subQuery1 + ")  or ("
-						+ subQuery2 + ")  or (" + subQuery3 + ") and requirement.createdDate BETWEEN :startDateUTC and :endDateUTC) ";
+						+ subQuery2 + ")  or (" + subQuery3 + ") ) and requirement.createdDate BETWEEN :startDateUTC and :endDateUTC";
 				}else{
 					countQuerySub = "where requirement.orgLocationId.id =:orgLocationId and ("+ jobTypeVal +") and ( (" + subQuery1 + ") or ("
-							+ subQuery2 + ")  or (" + subQuery3 + ") and requirement.createdDate BETWEEN :startDateUTC and :endDateUTC) ";
+							+ subQuery2 + ")  or (" + subQuery3 + ") ) and requirement.createdDate BETWEEN :startDateUTC and :endDateUTC ";
 				}
 				params.put("orgLocationId", orgLocationId);
 				params.put("startDateUTC", startDateUTC);
@@ -813,7 +813,7 @@ public class RequirementDaoImpl implements RequirementDao {
 			
 		} else {
 			
-			String subQuery1 = "requirement.id IN ( select rah.requirementId from RequirementAssignTo rah where  ( requirement.requirementSubmissionStatus = 'APPROVED' or requirement.requirementSubmissionStatus = 'NEW' or requirement.requirementSubmissionStatus = 'OPEN' )  and  requirement.requirementSubmissionStatus <> 'DRAFT' and rah.status <> '0') ";
+			String subQuery1 = "requirement.id IN ( select rah.requirementId from RequirementAssignTo rah where  ( requirement.requirementSubmissionStatus = 'APPROVED' or requirement.requirementSubmissionStatus = 'NEW' or requirement.requirementSubmissionStatus = 'OPEN' )  and  requirement.requirementSubmissionStatus <> 'DRAFT' and rah.status <> '0' and rah.createdDate BETWEEN :startDateUTC and :endDateUTC) ";
 
 			String subQuery2 = " ( requirement.requirementSubmissionStatus = 'APPROVED' or requirement.requirementSubmissionStatus = 'NEW' or requirement.requirementSubmissionStatus = 'OPEN' )  ";
 			params.put("managerUserId", userId);
@@ -821,10 +821,10 @@ public class RequirementDaoImpl implements RequirementDao {
 			if (subQuery1 != "" || subQuery2 != "" || jobTypeVal !="") {
 				if(clientVal != ""){
 				subQuery = "where requirement.orgLocationId.id =:orgLocationId and ("+ clientVal +") and ("+ jobTypeVal +") and ( (" + subQuery1 + ")  or ("
-						+ subQuery2 + ") and requirement.createdDate BETWEEN :startDateUTC and :endDateUTC) ";
+						+ subQuery2 + ") ) and requirement.createdDate BETWEEN :startDateUTC and :endDateUTC";
 				}else{
 					subQuery = "where requirement.orgLocationId.id =:orgLocationId and ("+ jobTypeVal +") and ( (" + subQuery1 + ") or ("
-							+ subQuery2 + ") and requirement.createdDate BETWEEN :startDateUTC and :endDateUTC) ";	
+							+ subQuery2 + ") ) and requirement.createdDate BETWEEN :startDateUTC and :endDateUTC";	
 				}
 				params.put("orgLocationId", orgLocationId);
 				params.put("startDateUTC", startDateUTC);
@@ -832,10 +832,10 @@ public class RequirementDaoImpl implements RequirementDao {
 				
 				if(clientVal != ""){
 				countQuerySub = "where requirement.orgLocationId.id =:orgLocationId and ("+ clientVal +") and ("+ jobTypeVal +") and ( (" + subQuery1 + ")  or ("
-						+ subQuery2 + ") and requirement.createdDate BETWEEN :startDateUTC and :endDateUTC) ";
+						+ subQuery2 + ") ) and requirement.createdDate BETWEEN :startDateUTC and :endDateUTC";
 				}else{
 				countQuerySub = "where requirement.orgLocationId.id =:orgLocationId and ("+ jobTypeVal +") and ( (" + subQuery1 + ") or ("
-							+ subQuery2 + ") and requirement.createdDate BETWEEN :startDateUTC and :endDateUTC) ";
+							+ subQuery2 + ") ) and requirement.createdDate BETWEEN :startDateUTC and :endDateUTC";
 						
 				}
 				params.put("orgLocationId", orgLocationId);
