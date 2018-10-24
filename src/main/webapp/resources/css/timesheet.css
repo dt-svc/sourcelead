@@ -9171,7 +9171,7 @@ background: url("../images/sort2.png"); background-repeat: no-repeat; background
 .AttaCta:hover .AttaCtaAct {
     opacity: 1; visibility: visible;
 }
-.AttaCtaAct p {width: 100%; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;}
+
 
 
 
