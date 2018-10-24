@@ -3352,7 +3352,7 @@ public class TimesheetRestController {
 								frequencyEndDate, projectId, masterCandidateId);
 			} else {
 				isReopenButtonVisible = submissionApproverHierarchyService.isReopenButtonVisible(frequencyStartDate,
-						frequencyEndDate, projectId, masterCandidateId, orgLocations.getId());
+						frequencyEndDate, projectId, masterCandidateId, orgLocations.getId(),orgLocations.getOrg().getId(),isGlobalAccess);
 				sah = submissionApproverHierarchyService
 						.getSubmissionApproverHierarchyByMasterCandidateIdStartDateAndEndDateForApproverLogin(
 								loginUser.getId(), projectId, masterCandidateId, orgLocations.getId(),
@@ -3360,7 +3360,7 @@ public class TimesheetRestController {
 			}
 			Submission_Status submissionStatus = sah.getSubmissionStatus();
 			Boolean isSuperUser = commonUtil.isSuperAdminForProjectMemberToReopenTimesheets(pm.getId(), loginUser,
-					orgLocations);
+					orgLocations,isGlobalAccess);
 			String submissionStatusStr = submissionStatus.getValue();
 			SubmissionApproverHierarchy isSah = submissionApproverHierarchyService
 					.isThereAnyApproverChangesStatusForProjectAndMasterCandidateId(projectId, masterCandidateId,
@@ -6354,8 +6354,9 @@ public class TimesheetRestController {
 		try {
 			User loginUser = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
 			OrgLocations orgLoc = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+			String isGlobalAccess = (String) SourceLeadSessionManager.getSessionAttribute(request, "isGlobalAccess");
 			String isSuperUser = Constants.NO;
-			if (commonUtil.isSuperAdminForProjectMemberToReopenTimesheets(projectMemberId, loginUser, orgLoc)) {
+			if (commonUtil.isSuperAdminForProjectMemberToReopenTimesheets(projectMemberId, loginUser, orgLoc,isGlobalAccess)) {
 				isSuperUser = Constants.YES;
 			}
 

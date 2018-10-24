@@ -484,13 +484,13 @@ function getStateTaxes(){
 	     		
 	     		result = result +'<td width="500px">';
 	     		result = result +'<div class="">';
-	     		result = result +'<input type="text" class="form-control input-sm" placeholder="State Unemployment Tax" data-validation-optional="true" data-validation="validate_space validate_length length9-9" maxlength="9" field-name="State Unemployment Tax" name="stateTaxesList[0].stateUnemploymentTax" id="0stateUnemploymentTax">';
+	     		result = result +'<input type="text" class="form-control input-sm" placeholder="State Unemployment Tax" data-validation="required validate_space validate_length length9-9" maxlength="9" field-name="State Unemployment Tax" name="stateTaxesList[0].stateUnemploymentTax" id="0stateUnemploymentTax">';
 	     		result = result +'</div>';
 	     		result = result +'</td>';
 	     		
 	     		result = result +'<td width="500px">';
 	     		result = result +'<div class="">';
-	     		result = result +'<input type="text" class="form-control input-sm" placeholder="Sate Tax Account Number" data-validation-optional="true" data-validation="validate_space validate_length length9-9" maxlength="9" field-name="Sate Tax Account Number" name="stateTaxesList[0].stateTaxAccountNumber" id="0stateTaxAccountNumber">';
+	     		result = result +'<input type="text" class="form-control input-sm" placeholder="Sate Tax Account Number"  data-validation="required validate_space validate_length length9-9" maxlength="9" field-name="Sate Tax Account Number" name="stateTaxesList[0].stateTaxAccountNumber" id="0stateTaxAccountNumber">';
 	     		result = result +'</div>';
 	     		result = result +'</td>';
 	     		
