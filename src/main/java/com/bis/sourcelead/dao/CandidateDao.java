@@ -176,4 +176,6 @@ public interface CandidateDao {
 	public void withdrawMarketplace( CandidateMarketPlace marketplace)throws Exception;
 	
 	public CandidateMarketPlace fetchMarketPlace(Long candidateId, Long orgLocationId)throws Exception;
+
+	public List<CandidateMarketPlace> getGlobalMarketplaceCandListGridCard(String searchValue);
 }

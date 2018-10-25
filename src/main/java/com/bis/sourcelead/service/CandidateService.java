@@ -251,4 +251,6 @@ public interface CandidateService {
 
 	public CandidateMarketPlace fetchMarketPlace(Long candidateId, Long orgLocationId)throws Exception;
 
+	public List<CandidateMarketPlaceDTO> getGlobalMarketplaceCandListGridCard(String searchValue);
+
 }

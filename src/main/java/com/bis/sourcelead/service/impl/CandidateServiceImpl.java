@@ -2796,4 +2796,19 @@ private Sheet createXlsSheet(Sheet createExcelsheet, Row writeRow,Candidate cand
 		return candidateDao.fetchMarketPlace(candidateId, orgLocationId);
 	}
 
+	@Override
+	public List<CandidateMarketPlaceDTO> getGlobalMarketplaceCandListGridCard(String searchValue) {
+		List<CandidateMarketPlace> candidateMarketPlaces = null;
+		List<CandidateMarketPlaceDTO> marketPlaceDTOs = new ArrayList<>();
+		candidateMarketPlaces = candidateDao.getGlobalMarketplaceCandListGridCard(searchValue);
+		if(candidateMarketPlaces != null){
+			for(CandidateMarketPlace marketPlace : candidateMarketPlaces){
+				CandidateMarketPlaceDTO marketPlaceDTO = new CandidateMarketPlaceDTO();
+				BeanUtils.copyProperties(marketPlace, marketPlaceDTO);
+				marketPlaceDTOs.add(marketPlaceDTO);
+			}
+		}
+		return marketPlaceDTOs;
+	} 
+
 }

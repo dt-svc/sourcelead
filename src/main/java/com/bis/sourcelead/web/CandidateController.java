@@ -166,6 +166,17 @@ public class CandidateController {
 				+ candidateMarketPlaceDTOList.getRecordsTotal());
 		return candidateMarketPlaceDTOList;
 	}
+	
+	//@PreAuthorize("hasAnyRole('ROLE_CREATE_CANDIDATE','ROLE_CROWDSOURCING_CANDIDATES')")
+	@RequestMapping(value = "/getGlobalMarketplaceListGridCard")
+	public @ResponseBody List<CandidateMarketPlaceDTO> getGlobalMarketplaceCandListGridCard(HttpServletRequest request) {
+		List<CandidateMarketPlaceDTO> candidateMarketPlaceDTOs = null;
+		candidateMarketPlaceDTOs = candidateService.getGlobalMarketplaceCandListGridCard(null);
+		return candidateMarketPlaceDTOs;
+	}
+	
+	
+	
 	@PreAuthorize("hasAnyRole('ROLE_CREATE_CANDIDATE','ROLE_CROWDSOURCING_CANDIDATES')")
 	@RequestMapping(value = "/getOrgMarketplaceList")
 	public @ResponseBody ResponseList<CandidateMarketPlaceDTO> getOrgMarketplaceCandList(

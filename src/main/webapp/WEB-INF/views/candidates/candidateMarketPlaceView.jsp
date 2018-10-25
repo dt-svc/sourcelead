@@ -33,17 +33,8 @@
 </div>
     <!-- Content Area -->
       <div class="tablelist-wrap">
-        <div class="timesheet_head minHeight40">
-          <div class="pull-left headerItems">
-			  <ul>
-				  <li><a title="Card Model"  href="javascript:void(0)"  onClick="cardModel();"><i class="fa fa-th text-muted"></i></a></li>
-				  <li><a title="List Model" href="javascript:void(0)" onClick="listModel();"><i class="fa fa-th-list text-muted"></i></a></li>
-			  </ul>
-          </div>
-        </div>
          <div class="immigrationWrap noPad clearfix mt5">
 		<div class="immigraInnWrap">
-		
 		<!-- Filter Global market place-->
 		<div class="positionRelative reportHead clearfix">
      	 <ul class="pull-right list-unstyled list-inline">

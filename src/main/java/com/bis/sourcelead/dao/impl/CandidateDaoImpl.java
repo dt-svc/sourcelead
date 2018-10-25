@@ -2289,4 +2289,23 @@ public class CandidateDaoImpl implements CandidateDao {
 			e.printStackTrace();
 		}
 	}
+
+	@Override
+	@Transactional(rollbackFor = { Exception.class })
+	public List<CandidateMarketPlace> getGlobalMarketplaceCandListGridCard(String searchValue) {
+		Session session = this.sessionFactory.getCurrentSession();
+		StringBuilder query1 = new StringBuilder("");
+		List<CandidateMarketPlace> queryList = null;
+		if (searchValue != null && !"".equalsIgnoreCase(searchValue)) {
+			query1.append(" and ((marketplace.fullName like '%" + searchValue + "%' )");
+			query1.append(" or (marketplace.location like '%" + searchValue + "%' )");
+			query1.append(" or (marketplace.skillsName like '%" + searchValue + "%' )");
+			query1.append(" or (marketplace.currentRate like '%" + searchValue + "%' )");
+			query1.append(" or (marketplace.expectedRate like '%" + searchValue + "%' )");
+			query1.append(" or (marketplace.profilePercentage like '%" + searchValue + "%' ))");
+		}
+		String listQuery = "from CandidateMarketPlace marketplace  where  marketplace.status = 1 and marketplace.candidateMarketStatus = :candidateMarketStatus ";
+		queryList = session.createQuery(listQuery+query1).setParameter("candidateMarketStatus", Constants.ACTIVE).list();
+		return queryList;
+	}
 }
