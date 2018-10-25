@@ -21,7 +21,7 @@ function Xlsupload(){
 	        	   var result = "";
 	        	   result = result + '     <div class="clearfix"></div>';
 		           result = result + '   </div>';
-		           result = result + '   <div class="project_tabs_inn_table project_tabs_inn_table_a mt40 tableData">';
+		           result = result + '   <div class="">';
 		           result = result + '     <table class="display" cellspacing="0" width="100%">';
 		           result = result + '       <thead>';
 		           result = result + '         <tr>';
@@ -83,6 +83,7 @@ function Xlsupload(){
 			    			
 			    			$("#uploadXlsHistoryDiv").empty();
 			    			$("#uploadXlsHistoryDiv").append(result);
+			    			$("#uploadXlsHistoryDivTitle").removeAttr('hidden');
 			    			
 			    			if(progressRow != ''){
 			    				  $(".browseProgress").show();
