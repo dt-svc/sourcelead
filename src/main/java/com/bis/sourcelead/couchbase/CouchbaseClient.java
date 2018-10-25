@@ -24,10 +24,10 @@ public class CouchbaseClient {
 	Cluster cluster;
 	Bucket bucket;
 	
-	private static final CouchbaseEnvironment ENV = DefaultCouchbaseEnvironment.builder().connectTimeout(8000).keepAliveInterval(3600 * 1000).build();
+	private static final CouchbaseEnvironment ENV = DefaultCouchbaseEnvironment.builder().socketConnectTimeout(336699).connectTimeout(36678).keepAliveInterval(3600 * 30000).build();
 	public CouchbaseClient(List<String> urls, String couchBucket, String password) {
 		
-		cluster = CouchbaseCluster.create(urls);
+		cluster = CouchbaseCluster.create(ENV, urls);
 		bucket = cluster.openBucket(couchBucket, password);
 		
 	}
