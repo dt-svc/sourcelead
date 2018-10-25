@@ -247,9 +247,14 @@ public interface CandidateService {
 
 	public void updateMarketPlacePrice(Long id, String priceVal, String priceValType);
 	
-	public void withdrawMarketplace(CandidateMarketPlace marketplace, String withdrawReason)throws Exception;
+	public CandidateMarketPlace getCandidateMarketPlaceDetailsByIdAndOrgLocationId(Long id, Long orgLocationId)throws Exception;
+	
+	public void withdrawCandidateFromMarketplace(CandidateMarketPlace marketplace, String withdrawReason)throws Exception;
 
-	public CandidateMarketPlace fetchMarketPlace(Long candidateId, Long orgLocationId)throws Exception;
+	public CandidateMarketPlace getCandidateMarketPlaceDetailsById(Long id)throws Exception;
+	
+	public void addCandidateToMarketCart(User user, CandidateMarketPlace marketplace, Long orgLocationId)throws Exception;
+	
 
 	public List<CandidateMarketPlaceDTO> getGlobalMarketplaceCandListGridCard(String searchValue);
 

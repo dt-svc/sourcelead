@@ -12,6 +12,7 @@ import com.bis.sourcelead.dto.ResponseList;
 import com.bis.sourcelead.entity.Candidate;
 import com.bis.sourcelead.entity.CandidateIdendities;
 import com.bis.sourcelead.entity.CandidateImportLog;
+import com.bis.sourcelead.entity.CandidateMarketCart;
 import com.bis.sourcelead.entity.CandidateMarketPlace;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.RecruiterReportCandidateCountView;
@@ -173,9 +174,13 @@ public interface CandidateDao {
 
 	public void updateMarketPlacePrice(CandidateMarketPlace marketPlace);
 	
-	public void withdrawMarketplace( CandidateMarketPlace marketplace)throws Exception;
+	public CandidateMarketPlace getCandidateMarketPlaceDetailsByIdAndOrgLocationId(Long id, Long orgLocationId)throws Exception;
 	
-	public CandidateMarketPlace fetchMarketPlace(Long candidateId, Long orgLocationId)throws Exception;
+	public void withdrawCandidateFromMarketplace(CandidateMarketPlace marketplace)throws Exception;
+	
+	public CandidateMarketPlace getCandidateMarketPlaceDetailsById(Long id)throws Exception;
+	
+	public void addCandidateToMarketCart(CandidateMarketCart marketcart)throws Exception;
 
 	public List<CandidateMarketPlace> getGlobalMarketplaceCandListGridCard(String searchValue);
 }

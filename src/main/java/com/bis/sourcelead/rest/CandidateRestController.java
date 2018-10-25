@@ -1100,15 +1100,30 @@ public class CandidateRestController {
 		return "success";
 	}
 
-	@RequestMapping(value = "/app/withdrawMarketplace")
-	public void withdrawMarketplace(@RequestParam(value = "candidateId", required = true) Long candidateId,
+	@RequestMapping(value = "/app/withdrawCandidateFromMarketPlace")
+	public void withdrawCandidateFromMarketPlace(@RequestParam(value = "id", required = true) Long id,
 			@RequestParam(value = "withdrawReason", required = true) String withdrawReason, HttpServletRequest request)
 			throws Exception {
 		OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
-		CandidateMarketPlace marketplace = candidateService.fetchMarketPlace(candidateId, orgLocation.getId());
-		if (null != marketplace && null != marketplace.getCandidateId()) {
-			candidateService.withdrawMarketplace(marketplace, withdrawReason);
+		CandidateMarketPlace marketplace = candidateService.getCandidateMarketPlaceDetailsByIdAndOrgLocationId(id, orgLocation.getId());
+		if (null != marketplace) {
+			candidateService.withdrawCandidateFromMarketplace(marketplace, withdrawReason);
 		}
 	}	
 
+	
+	@RequestMapping(value = "/app/addCandidateToMarketCart")
+	public String addCandidateToMarketCart(@RequestParam(value = "id", required = true) Long id, HttpServletRequest request)throws Exception{
+		User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+		OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+		CandidateMarketPlace marketplace = candidateService.getCandidateMarketPlaceDetailsById(id);
+		if (null != marketplace) {
+			candidateService.addCandidateToMarketCart(user, marketplace, orgLocation.getId());
+		}	
+		return "success";
+		
+	}
+	
+	
+	
 }

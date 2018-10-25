@@ -1210,7 +1210,7 @@ function predefineProfileImage(imageId){
 	               /*   "data": "action", */
 	                 "render": function (data, type, opt, meta) {
 	                     var result = "";
-	                    	 result = result + "<td><div class='tbldata-dotdot-sm' title = 'Add To Marketplace'><a href='' >Add</a></div></td>";
+	                    	 result = result + "<td><div class='tbldata-dotdot-sm' title = 'Add To Marketplace'><a onclick='addCandidateToMarketCart(\""+opt.id+"\")'>Add</a></div></td>";
 	                     return result;
 	                 }
 	             }
@@ -1242,6 +1242,33 @@ function predefineProfileImage(imageId){
 	
 </script> -->
 <script type="text/javascript">
+
+function addCandidateToMarketCart(id) {
+   $.ajax({
+        url: sourceleadUrl + "/addCandidateToMarketCart?id="+id,
+        type: "GET",
+        data: id,
+        success: function (response) {
+        	if(response=="success"){
+          	getDynamicGlobalMarketCandidateList();
+        	}
+        	}
+    });
+}
+$(".funPrice").on("click", "li", function(){
+	var x = $(this).text();
+	$(this).parents(".selectPriceli").find(".selectPrice").text(x);
+});
+			  
+function listModel() {
+	$("#tableDesign").show();
+	$("#cardDesign").hide();
+}
+function cardModel() {
+	$("#tableDesign").hide();
+	$("#cardDesign").show();
+}
+
 function goToOrgMarketPlaceList(){
 	location.href = "${appPath}/OrgMarketplace";
 }
