@@ -172,7 +172,6 @@ function recommendationpagination(url,requirementId, requirementSubmissionStatus
 	    	  	"render": function(data, type, report, meta) {
 	    	  		 var result = "";
 	    	  		 var flag = false;
-	    	  	
 	        			 
    	        		 for(var e in compareCandidates) {
 	   	     	    	   if(!e || !compareCandidates[e] || compareCandidates[e] === "")
@@ -404,9 +403,12 @@ function recommendationpagination(url,requirementId, requirementSubmissionStatus
 					    	  	"sortable": false,
 					    	  	"render": function(data, type, report, meta) {
 					    	  		 var result = "";
+					    	  		 var profilePercentage = '${requirementProfilePercentage}';
 					    	  		 if(report.isCandidateSubmitted == 'N'){
 					    	  			if(requirementSubmissionStatus != 'SUBMITTED' && requirementSubmissionStatus != 'CLOSED' && requirementSubmissionStatus != 'REJECTED' &&  requirementSubmissionStatus != 'CANCEL' && requirementSubmissionStatus != 'DRAFT' && requirementSubmissionStatus != 'ONHOLD' && requirementSubmissionStatus != 'FILLEDCLOSED'  && requirementSubmissionStatus != 'UNFILLEDCLOSED'){
-					    	  				result = result +'<td class="tblminwidth-100"><div id="recommendedCandidate'+report.candidateId+'" class="pull-left"><a href="javascript:void(0)" title="Add"   onclick="submitRecomendedApplicant('+requirementId+','+report.candidateId+');" class="add-applicant fa fa-user-plus"></a></div>';
+					    	  				 if(report.candidateProfilePercentage >= profilePercentage){
+					    	  					result = result +'<td class="tblminwidth-100"><div id="recommendedCandidate'+report.candidateId+'" class="pull-left"><a href="javascript:void(0)" title="Add"   onclick="submitRecomendedApplicant('+requirementId+','+report.candidateId+');" class="add-applicant fa fa-user-plus"></a></div>';
+					    	  				 }
 					    			    	result = result +'<div class="pull-left ml5"><a href="javascript:void(0)" title="Share" onclick="shareRecomendedApplicant('+requirementId+','+report.candidateId+');" class="add-applicant fa fa-share-alt"></a></div>';
 					    			    	result = result +'</td>';
 					    	  			}

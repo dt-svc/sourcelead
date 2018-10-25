@@ -148,12 +148,13 @@ function getAppliantJoinedListByRecruiter(){
 		$('input:checkbox[name=clientNameById]:checked').each(function() {
 			clients.push($(this).val());
 		});
-// 	 if(flag){
+	 if(flag){
 		 searchValue = searchValue ? searchValue : "";
 		 var url = sourceleadUrl+"/getAllApplicantJoinedListByOrgLocationsId?searchValue="+searchValue+"&timePeriod="+timePeriod+"&customStartDate="+startDate+"&customEndDate="+endDate+"&orgTeams="+orgTeams+"&clients="+clients;
 // 		 usersListPagination(url,sourceleadUrl);
-// 	 }
-	prepareAllDaywiseLeaveReportList(url);
+			prepareAllDaywiseLeaveReportList(url);
+
+	 }
 }
 </script>	
  <script>

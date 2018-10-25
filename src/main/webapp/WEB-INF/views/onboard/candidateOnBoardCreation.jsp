@@ -83,7 +83,7 @@
                 <div class="form-group" id="onboardCandidatesDiv">
                   <label class="col-md-3 control-label">Select Candidate <span class="text-danger">* </span><i class='fa fa-info-circle' title='Select the candidate who is being onboarded'></i></label>
                   <div class="col-md-6">
-                    <select class="chosen-select" id="onboardCandiate" name="onboardCandiate" data-validation="required" onchange="shiftList();addCandidateDetailsForOnboarding();validOnboardCandiate();getCandidateDetails();getOfferDetails();" field-name="Candidate">
+                    <select class="chosen-select" id="onboardCandiate" name="onboardCandiate" data-validation="required" onchange="addCandidateDetailsForOnboarding();validOnboardCandiate();getCandidateDetails();getOfferDetails();shiftList();" field-name="Candidate">
                     </select>
                   </div>
                 </div>
@@ -181,7 +181,7 @@
               <div class="clearfix">
                 <h4 class="pull-left">Task List</h4>
                 <div class="pull-right">
-                  <button type="button" class="btn btn-primary btn-sm" data-toggle="modal" data-target="#addTask" onclick="getAssignToUsersList();"><i class="fa fa-plus paddingRight"></i>Add Task</button>
+                  <button type="button" class="btn btn-primary btn-sm" data-toggle="modal" data-target="#addTask" onclick="getAssignToUsersList();flushOnboardTask();"><i class="fa fa-plus paddingRight"></i>Add Task</button>
                   <!-- Modal -->
                   <div id="addTask" class="modal fade add_Task" role="dialog">
                     <div class="modal-dialog modal-lg">
@@ -2897,7 +2897,7 @@ function shiftList(shiftId){
 	        	for (var i=0; i<json.length; i++)
 				{
 	        		var opt = json[i];
-	        		if(shiftId == opt.id){
+	        		if(shiftId != null && shiftId != '' && shiftId != 'undefined' && shiftId == opt.id){
 		       			output = output + "<option value='"+opt.id+"' selected >"+opt.shiftName+"</option>";
 	        		}else{
 		       			output = output + "<option value='"+opt.id+"'>"+opt.shiftName+"</option>";
