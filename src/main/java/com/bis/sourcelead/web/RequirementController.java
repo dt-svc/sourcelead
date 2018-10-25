@@ -317,7 +317,7 @@ public class RequirementController {
 					
 				}
 			}
-			
+			if(requirement.getSpocId() !=null) {
 			if (requirement.getSpocId().getClientUser().getFirstName() != null
 					&& requirement.getSpocId().getClientUser().getFirstName() != ""
 					&& requirement.getSpocId().getClientUser().getLastName() != null
@@ -327,6 +327,7 @@ public class RequirementController {
 			}
 			else {
 				requirement.setSpocName(requirement.getSpocId().getClientUser().getFirstName());
+			}
 			}
 			
 			model.addObject("requirementAssignedIds",requirementAssignedIds);
