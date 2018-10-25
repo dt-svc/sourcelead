@@ -317,17 +317,14 @@ public class RequirementController {
 					
 				}
 			}
-			if(requirement.getSpocId() !=null) {
-			if (requirement.getSpocId().getClientUser().getFirstName() != null
-					&& requirement.getSpocId().getClientUser().getFirstName() != ""
-					&& requirement.getSpocId().getClientUser().getLastName() != null
-					&& requirement.getSpocId().getClientUser().getLastName() != "") {
-				StringBuilder spocSB = new StringBuilder();
-				requirement.setSpocName(spocSB.append(requirement.getSpocId().getClientUser().getFirstName()).append(" ").append(requirement.getSpocId().getClientUser().getLastName()).toString());
+			
+			if (requirement.getSpocId().getClientLocationId().getId() == orgLocations.getId()) {
+				requirement.setSpocName(requirement.getSpocId().getVendorUser().getFullName());
+				requirement.setSpocOwnerName(requirement.getSpocId().getClientUser().getFullName());
 			}
 			else {
-				requirement.setSpocName(requirement.getSpocId().getClientUser().getFirstName());
-			}
+				requirement.setSpocName(requirement.getSpocId().getClientUser().getFullName());
+				requirement.setSpocOwnerName(requirement.getSpocId().getVendorUser().getFullName());
 			}
 			
 			model.addObject("requirementAssignedIds",requirementAssignedIds);
