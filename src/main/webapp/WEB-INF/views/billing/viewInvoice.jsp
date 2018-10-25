@@ -595,7 +595,7 @@ function getViewInvoice(){
 	    		{  
 	        		var report = json.data[i];
 	        		$("#invoiceIdDiv").text(report.invoiceId)
-	        		$("#billIdDiv").val(report.invoiceId)
+	        		$("#billIdDiv").text(report.invoiceId)
 	        		if(report.dueDateStr != null && report.dueDateStr != '' && report.dueDateStr !='undefined'){
 	        			dueDateStr = report.dueDateStr;
 	        		}else{

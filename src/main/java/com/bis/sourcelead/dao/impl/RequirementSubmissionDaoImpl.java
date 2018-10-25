@@ -406,7 +406,7 @@ public class RequirementSubmissionDaoImpl implements RequirementSubmissionDao{
 		 String submissionStages = "";
 		 
 		 if(submissionStatus.equalsIgnoreCase("SUBMISSION")){
-			 submissionStages = "and rs.submissionStatus = 'SUBMISSION' ";
+			 submissionStages = "and (rs.submissionStatus = 'SUBMISSION' OR rs.submissionStatus = 'SELECTED_ON_INTERVIEW' OR rs.submissionStatus = 'INTERVIEW' ) and (rs.id NOT IN(SELECT sh.submissionId.id FROM RequirementSubmissionHistory sh WHERE sh.toStage = 'SHORTLIST' and sh.submissionId.orgLocations.id = :orgLocationsId and sh.submissionId.requirement.id = :requirementId )) ";
 		 }
 		 
 		 else if(submissionStatus.equalsIgnoreCase("SHORTLIST")){
@@ -3583,19 +3583,25 @@ public class RequirementSubmissionDaoImpl implements RequirementSubmissionDao{
 				}
 				@Override
 				@Transactional
-				public List<ApplicantsJoinedReportDTO> getRequirementIncentiveByRequirementIdAndLocation(Long requirementId,String usercode, Long orgLocationId) throws Exception
+				public List<ApplicantsJoinedReportDTO> getRequirementIncentiveByRequirementIdAndLocation(Long requirementId,String usercode, Long orgLocationId, Date[] searchDates) throws Exception
 				{
 					Session session = this.sessionFactory.getCurrentSession();
 					 Query queryString = null;
 					 List<ApplicantsJoinedReportDTO> applicantJoinedReportList = null;
+					 java.sql.Timestamp fromDate1 = new java.sql.Timestamp(searchDates[0].getTime());
+						java.sql.Timestamp toDate1 = new java.sql.Timestamp(searchDates[1].getTime());
+						java.sql.Date fromDate = new java.sql.Date(fromDate1.getTime());
+						java.sql.Date toDate = new java.sql.Date(toDate1.getTime());
 		String query = " SELECT reqInst.REQUIREMENT_ID as requirementID,"
 				+ " reqSub.ID as reqSubId," + " reqInst.JOINERS_AMOUNT_TYPE as incentAmountType,"
 				+ "reqInst.JOINERS as incentJoiners," + " reqSub.ORG_LOCATION_ID as orglocationId,"
 				+ "reqInst.JOINERS_AMOUNT as incentAmount," + "reqSub.FINALIZED_RATE finalRate,"
 				+ "reqOff.AMOUNT as OfferAmount," + " reqSub.CREATED_BY createdBy"
 				+ " from REQUIREMENT_SUBMISSION reqSub, REQUIREMENT_INCENTIVE reqInst, REQUIREMENT_OFFERS reqOff "
-				+ "where reqSub.REQUIREMENT_ID=reqInst.REQUIREMENT_ID and reqOff.SUBMISSION_ID = reqSub.ID and reqSub.ORG_LOCATION_ID='"
+				+ "where reqSub.REQUIREMENT_ID=reqInst.REQUIREMENT_ID and reqSub.SUBMISSION_STATUS = 'JOINED' and reqOff.SUBMISSION_ID = reqSub.ID and reqSub.ORG_LOCATION_ID='"
 				+ orgLocationId + "' and reqSub.CREATED_BY='" + usercode
+				+"' and DATE_FORMAT(reqSub.UPDATED_DATE,'%Y-%m-%d') BETWEEN  '" + fromDate
+				+ "' and '" + toDate + ""
 				+ "' group by reqSub.REQUIREMENT_ID ";
 				     queryString =  session.createSQLQuery(query.toString());
 					ApplicantsJoinedReportDTO applicantsJoinedReportDTO = null;

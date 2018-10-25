@@ -108,8 +108,8 @@ right: 15px;
 			  <div id='bankdetailsListLoading'></div>
 			       <div class="row clearfix"> 
 			       <div class="col-md-5">
-			        <h2 class="pull-left">Organization Banking Details</h2>
-			        	<a href="javascripit:void(0)" onclick="showIndiaPaymentAccountPopup();"  class="pull-left ml mt2"><i class="fa fa-plus paddingRight"></i>Add</a>
+			        <h2 class="pull-left">Organization Banking Details </h2>
+			        	<a  onclick="showIndiaPaymentAccountPopup();"  class="pull-left ml mt2"><i class="fa fa-plus paddingRight"></i>Add</a>
 			        </div>
 					</div>
 					<jsp:include page="locationIndiaBankingDetails.jsp" />
