@@ -28,6 +28,7 @@ import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 
 import javax.mail.internet.InternetAddress;
+import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 
 import org.apache.commons.lang.StringUtils;
@@ -2731,6 +2732,19 @@ public String getOrglocationDateFormatHHMMSS(String dateFormat, Date date)
 		}
 		// System.out.println(" before file return list size ");
 		return fileInfoList;
+	}
+	
+	public String getClientSessionUserId(HttpServletRequest request) {
+		String clientSessionId = null;
+		Cookie[] cookies = request.getCookies();
+		  for(Cookie mycookie : cookies) {
+		  if(mycookie.getName().equalsIgnoreCase("SLSessionId")) {
+			  clientSessionId = mycookie.getValue();
+			  break;
+	        }
+		  }	
+	 String userId =  SourceLeadSessionManager.getClientSessionJsonString(request,"sessionUserId",clientSessionId);
+	 return userId;
 	}
 }
 

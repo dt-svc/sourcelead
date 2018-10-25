@@ -10,6 +10,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
@@ -36,6 +37,7 @@ import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.dto.DashboardItemsDTO;
 import com.bis.sourcelead.dto.OrgLocationsSessionDTO;
 import com.bis.sourcelead.dto.OrgSessionDTO;
+import com.bis.sourcelead.dto.SLSessionDTO;
 import com.bis.sourcelead.dto.UserSessionDTO;
 import com.bis.sourcelead.entity.Candidate;
 import com.bis.sourcelead.entity.CandidateOffBoarding;
@@ -202,6 +204,7 @@ public class LoginSessionController {
 			   @RequestParam(value = "loginOrgLocatonId", required = false) Long loginOrgLocatonId) throws Exception {
 		
 		
+		SLSessionDTO sessionDTO = new SLSessionDTO();
 		ModelAndView model = new ModelAndView();
 		if(authentication == null) {
 			model.setViewName("login");
@@ -211,6 +214,7 @@ public class LoginSessionController {
 		SourceLeadSessionManager.setSessionAttribute(request, "sessionId", request.getSession().getId());
 		
 		SourceLeadSessionManager.setJsonStringSessionAttribute(request, "sessionId", request.getSession().getId());
+		sessionDTO.setSessionId(request.getSession().getId());
 		
 		User user = userService.findByUserName(authentication.getName());
 		UserRole userRole = null;
@@ -234,7 +238,7 @@ public class LoginSessionController {
 				orgLocations = userRole.getOrgLocations();
 			}
 		
-		
+	    SourceLeadSessionManager.setJsonStringSessionAttribute(request, "sessionUserId", String.valueOf(user.getId()));	
 		Collection<Tabs> tabsList = null;
 		Integer associatesTabsCount = 0; 
 		Integer billingTabsCount = 0;
@@ -311,6 +315,7 @@ public class LoginSessionController {
 			
 			ModelMapper modelMapper = new ModelMapper();
 			OrgLocationsSessionDTO orgLocDTO = modelMapper.map(orgLocations, OrgLocationsSessionDTO.class);
+			sessionDTO.setOrgLocations(orgLocDTO);
 			ObjectMapper mapperObj = new ObjectMapper();
 			String orgLocationJsonStr = mapperObj.writeValueAsString(orgLocDTO);
 			SourceLeadSessionManager.setJsonStringSessionAttribute(request, "orgLocations", orgLocationJsonStr);
@@ -349,7 +354,7 @@ public class LoginSessionController {
 			 */
 			
 			SourceLeadSessionManager.setJsonStringSessionAttribute(request, "candidateId", candidate.getId().toString());
-			
+			sessionDTO.setCandidateId(candidate.getId().toString());
 			SourceLeadSessionManager.setSessionAttribute(request, "loginUserFirstName", user.getFirstName());
 			SourceLeadSessionManager.setSessionAttribute(request, "loginUserLastName", user.getLastName());
 			SourceLeadSessionManager.setSessionAttribute(request, "loginUserEmail", user.getEmail());
@@ -393,7 +398,7 @@ public class LoginSessionController {
 
 			String userName = (String) authentication.getPrincipal();
 			SecurityContextHolder.getContext().setAuthentication(new UsernamePasswordAuthenticationToken(userName,null, buildUserAuthority(actionsList)));
-			setLoginSession(request, authentication,user,userRole);
+			setLoginSession(request, authentication,user,userRole,sessionDTO);
 			
 
 			List<Long> accountUserList = new ArrayList<>();
@@ -441,6 +446,7 @@ public class LoginSessionController {
 			 * IsGlobalAssess in couch
 			 */
 			SourceLeadSessionManager.setJsonStringSessionAttribute(request, "isGlobalAccess", userRole.getIsGlobal());
+			sessionDTO.setIsGlobalAccess(userRole.getIsGlobal());
 			SourceLeadSessionManager.setSessionAttribute(request, "designation", userRole.getDesignation());
 			
 			
@@ -530,8 +536,8 @@ public class LoginSessionController {
 			SecurityContextHolder.getContext().setAuthentication(new UsernamePasswordAuthenticationToken(userName,null, buildUserAuthority(actionsList)));
 			
 			
-			setSessionUserAttributes(user,request,sourceleadUrl);
-			setSessionOrgAttributes(userRole.getOrgId(),userRole.getOrgLocations(),request);
+			setSessionUserAttributes(user,request,sourceleadUrl,sessionDTO);
+			setSessionOrgAttributes(userRole.getOrgId(),userRole.getOrgLocations(),request,sessionDTO);
 			tabsList = tabsService.getCrowdSourcingTabsListByRoleId(userRole.getRoles().getId());
 			
 			SourceLeadSessionManager.setSessionAttribute(request, "tabsList", tabsList);
@@ -543,6 +549,7 @@ public class LoginSessionController {
 			 */
 			
 			SourceLeadSessionManager.setJsonStringSessionAttribute(request, "loginUserRole", userRole.getRoles().getRoleName());
+			sessionDTO.setLoginUserRole(userRole.getRoles().getRoleName());
 			
 			SourceLeadSessionManager.setSessionAttribute(request, "userRoleId", userRole.getId());
 			SourceLeadSessionManager.setSessionAttribute(request, "loginUserRoleId", userRole.getRoles().getId());
@@ -669,6 +676,7 @@ public class LoginSessionController {
 			SourceLeadSessionManager.setSessionAttribute(request, "candidate", candidate);
 			SourceLeadSessionManager.setSessionAttribute(request, "candidateId", candidate.getId());
 			SourceLeadSessionManager.setJsonStringSessionAttribute(request, "candidateId", candidate.getId().toString());
+			sessionDTO.setCandidateId(candidate.getId().toString());
 			
 			model.addObject("sourceleadUrl", sourceleadUrl);
 			
@@ -676,6 +684,16 @@ public class LoginSessionController {
 			
 			
 		}
+		
+		String sessionJsonStr = null;
+		try {
+			ObjectMapper sessionObj = new ObjectMapper();
+			sessionJsonStr = sessionObj.writeValueAsString(sessionDTO);
+		} catch (JsonProcessingException e) {
+			e.printStackTrace();
+		}
+		SourceLeadSessionManager.setUserJsonStringSessionAttribute(request, "userSession", sessionJsonStr,user.getId());
+		
 		boolean dashboardConfigured = false;
 		DashboardItemsDTO dashboardItems = userService.getDashboardItemsByUserId(user.getId(), orgLocations.getId());
 		if (dashboardItems != null && dashboardItems.getItemsObjectList().size() > 0) {
@@ -697,19 +715,19 @@ public class LoginSessionController {
 	
 	
 	
-	private void setLoginSession(HttpServletRequest request,Authentication authentication,User user,UserRole userRole) throws Exception{
+	private void setLoginSession(HttpServletRequest request,Authentication authentication,User user,UserRole userRole,SLSessionDTO sessionDTO) throws Exception{
 		
       commonUtil.highLightMenu(Constants.Dashboard, request);
 		
 		
-		setSessionUserAttributes(user,request,sourceleadUrl);
+		setSessionUserAttributes(user,request,sourceleadUrl,sessionDTO);
 		OrgLocations orgLocations = null;
 		try {
 			orgLocations = userRole.getOrgLocations();
 			setSessionOrgLocationAttributes(orgLocations,request);
 			//setSessionOrgLocationAttributesDateFormat(orgLocations);
 			Org org = orgLocations.getOrg();
-			setSessionOrgAttributes(org,orgLocations,request);
+			setSessionOrgAttributes(org,orgLocations,request,sessionDTO);
 			
 			User orgPrimaryUser = org.getUser();
 			User orgLocationPrimaryUser = orgLocations.getUser();
@@ -729,7 +747,7 @@ public class LoginSessionController {
 			 */
 			
 			SourceLeadSessionManager.setJsonStringSessionAttribute(request, "loginUserRole", userRole.getRoles().getRoleName());
-			
+			sessionDTO.setLoginUserRole(userRole.getRoles().getRoleName());
 			
 			SourceLeadSessionManager.setSessionAttribute(request, "loginUserRoleId", userRole.getRoles().getId());
 
@@ -862,7 +880,7 @@ public class LoginSessionController {
 	}
 
 
-	private void setSessionUserAttributes(User user, HttpServletRequest request,String sourceleadUrl) throws Exception
+	private void setSessionUserAttributes(User user, HttpServletRequest request,String sourceleadUrl,SLSessionDTO sessionDTO) throws Exception
 	{
 		
 		SourceLeadSessionManager.setSessionAttribute(request, "sourceleadUrl", sourceleadUrl);
@@ -878,7 +896,7 @@ public class LoginSessionController {
 			e.printStackTrace();
 		}
 		SourceLeadSessionManager.setJsonStringSessionAttribute(request, "user", userJsonStr);
-		
+		sessionDTO.setUser(userDTO);
 		
 		SourceLeadSessionManager.setSessionAttribute(request, "userType", user.getUserType());
 		SourceLeadSessionManager.setSessionAttribute(request, "userCode", user.getUserCode());
@@ -924,12 +942,13 @@ public class LoginSessionController {
 		DATEFORMAT = new SimpleDateFormat(orgLocations.getDateFormat());	
 	}*/
 	
-	private void setSessionOrgAttributes(Org org,OrgLocations orgLocations, HttpServletRequest request)
+	private void setSessionOrgAttributes(Org org,OrgLocations orgLocations, HttpServletRequest request,SLSessionDTO sessionDTO)
 	{
 		SourceLeadSessionManager.setSessionAttribute(request, "org", org);
 
 		ModelMapper modelMapper = new ModelMapper();
 		OrgSessionDTO orgDTO = modelMapper.map(org, OrgSessionDTO.class);
+		sessionDTO.setOrg(orgDTO);
 		String orgJsonStr = null;
 		try {
 			ObjectMapper mapperObj = new ObjectMapper();

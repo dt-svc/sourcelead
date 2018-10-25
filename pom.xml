@@ -696,6 +696,29 @@
 		   <artifactId>ehcache</artifactId>
 		   <version>1.5.0</version>
 		</dependency>
+		
+		<!-- https://mvnrepository.com/artifact/com.couchbase.client/core-io -->
+		<!-- <dependency>
+		    <groupId>com.couchbase.client</groupId>
+		    <artifactId>core-io</artifactId>
+		    <version>1.3.0</version>
+		</dependency> -->
+		
+		<!-- https://mvnrepository.com/artifact/com.couchbase.client/java-client -->
+		 <dependency>
+		    <groupId>com.couchbase.client</groupId>
+		    <artifactId>java-client</artifactId>
+		    <version>2.3.3</version> 
+		</dependency> 
+		
+		<!-- https://mvnrepository.com/artifact/io.reactivex/rxjava -->
+		<!-- <dependency>
+		    <groupId>io.reactivex</groupId>
+		    <artifactId>rxjava</artifactId>
+		    <version>1.1.5</version>
+		</dependency> -->
+		
+		
 
     </dependencies>
 

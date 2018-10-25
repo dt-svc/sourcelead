@@ -6,6 +6,7 @@ import java.net.UnknownHostException;
 import java.util.Date;
 
 import javax.servlet.ServletException;
+import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
@@ -13,7 +14,6 @@ import org.apache.commons.lang.RandomStringUtils;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
@@ -118,6 +118,9 @@ public class SourceleadAuthenticationSuccessHandler implements AuthenticationSuc
 		 			e.printStackTrace();
 		 		} 
 		 	    finally{
+		 	    	Cookie sessionCookie = new Cookie("SLSessionId",request.getSession().getId());
+		 	    	sessionCookie.setMaxAge(30 * 60);
+		 	    	response.addCookie(sessionCookie);
 		 	    	if(null != UUID && !"".equalsIgnoreCase(UUID) && null != spocUUID && !"".equalsIgnoreCase(spocUUID)){
 		 	    		response.sendRedirect("/app/dashboard?invitation=true");
 		 	    	}else{
@@ -130,7 +133,6 @@ public class SourceleadAuthenticationSuccessHandler implements AuthenticationSuc
 		 	    		else{
 		 	    			response.sendRedirect("/app/dashboard");
 		 	    		}
-		 	    		
 		 	    	}
 		 	    }
 		      }

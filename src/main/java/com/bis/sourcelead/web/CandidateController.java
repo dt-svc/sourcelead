@@ -8,6 +8,7 @@ import java.util.List;
 import java.util.Set;
 
 import javax.servlet.ServletOutputStream;
+import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
@@ -119,6 +120,9 @@ public class CandidateController {
 	@Autowired
 	RequirementSubmissionService requirementSubmissionService;
 	
+	@Value("${isCouchbaseEnabled}")
+	private String isCouchbaseEnabled;
+	
 	/**
 	 * Handles to display candidate jsp
 	 * @return ModelAndView
@@ -202,10 +206,22 @@ public class CandidateController {
 			@RequestParam(value="candidateUUID", required=false)String  candidateUUID) throws Exception {
 		
 		logger.debug("--------candidatesList------");
+		String userRole =null;
+		String userId = commonUtil.getClientSessionUserId(request);
 		
-		JSONObject orgLocJsonObject = SourceLeadSessionManager.getSessionJsonObject(request,  "orgLocations");
-		JSONObject userLocJsonObject = SourceLeadSessionManager.getSessionJsonObject(request,  "user");
-	    String userRole =  SourceLeadSessionManager.getSessionJsonString(request, "loginUserRole");
+		JSONObject orgLocJsonObject = SourceLeadSessionManager.getSessionJsonObject(request,  "orgLocations","userSession",userId);
+		JSONObject userLocJsonObject = SourceLeadSessionManager.getSessionJsonObject(request,  "user","userSession",userId);
+	    
+	    OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+		Org org = (Org)SourceLeadSessionManager.getSessionAttribute(request, "org");
+		User user = (User)SourceLeadSessionManager.getSessionAttribute(request, "user");
+		
+		if(isCouchbaseEnabled.equalsIgnoreCase("true")) {
+			  userRole =  SourceLeadSessionManager.getSessionJsonString(request, "loginUserRole","userSession",userId);
+		}else {
+			userRole = (String) SourceLeadSessionManager.getSessionAttribute(request, "loginUserRole");
+		}
+		
 	    Long candidateCount = 0L;
 		 
 		ModelAndView model = new ModelAndView();
@@ -230,7 +246,12 @@ public class CandidateController {
 		
 		
 		 if(!isNullOrEmpty(userRole) && userRole.equalsIgnoreCase("ROLE_CROWDSOURCING_RECRUITER")){
-			 candidateCount = candidateService.getCandidatesCountByCandidateTypeOrgLocationIDAndUserId(Long.valueOf(orgLocJsonObject.get("id").toString()), Long.valueOf(userLocJsonObject.get("id").toString()), "Candidate");
+			 if(isCouchbaseEnabled.equalsIgnoreCase("true")) {
+				 candidateCount = candidateService.getCandidatesCountByCandidateTypeOrgLocationIDAndUserId(Long.valueOf(orgLocJsonObject.get("id").toString()), Long.valueOf(userLocJsonObject.get("id").toString()), "Candidate");
+			 }else {
+				 candidateCount = candidateService.getCandidatesCountByCandidateTypeOrgLocationIDAndUserId(orgLocations.getId(), user.getId(), "Candidate");
+			 }
+			
 		 }else{
 			 candidateCount = candidateService.getCandidatesCountByCandidateTypeOrgLocationID(Long.valueOf(userLocJsonObject.get("id").toString()),Long.valueOf(orgLocJsonObject.get("id").toString()), "Candidate");
 		 }

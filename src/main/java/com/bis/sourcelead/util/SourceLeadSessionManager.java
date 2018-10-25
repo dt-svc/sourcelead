@@ -38,6 +38,23 @@ public class SourceLeadSessionManager {
 		c.deleteSessionDocumentsFromBucket(sessionId);
 	}
 	
+	public static void setUserJsonStringSessionAttribute(HttpServletRequest request, String attribute, String jsonString,Long userId) {
+		String id = request.getSession().getId();
+		String jsonKey = "" + id + "_SourceLeadWeb_" + attribute+"_"+userId;
+		try {
+			if (id != null && attribute != null) {
+					if (jsonString != null) {
+						c.set(id + "_" + attribute+"_"+userId, jsonKey, jsonString);
+					} else
+						System.out.println("Json String is NuLL : " + attribute);
+			} else
+				System.out.println("Id is NuLL : " + id);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
+	
+	
 	public static void setJsonStringSessionAttribute(HttpServletRequest request, String attribute, String jsonString) {
 		String id = request.getSession().getId();
 		String jsonKey = "" + id + "_SourceLeadWeb_" + attribute;
@@ -54,7 +71,7 @@ public class SourceLeadSessionManager {
 		}
 	}
 	
-	
+	//need to remove
 	public static JSONObject getSessionJsonObject(HttpServletRequest request, String attribute) {
 		
 		JSONObject jsonObjVal = null;
@@ -80,6 +97,68 @@ public class SourceLeadSessionManager {
 	}
 	
 	
+	
+public static JSONObject getSessionJsonObject(HttpServletRequest request, String attribute,String userSessionAttribute,String userId) {
+		
+		JSONObject jsonObjVal = null;
+		String id = request.getSession().getId();
+		Object sv = null;
+		sv = c.get(id  + "_" + userSessionAttribute+"_"+userId);
+		if(sv != null) {
+		  
+		  JSONParser parser = new JSONParser(); 
+		  try {
+			  JSONObject jsonObject = (JSONObject) parser.parse(sv.toString());
+			  for(Iterator iterator = jsonObject.keySet().iterator(); iterator.hasNext();) {
+				    String key = (String) iterator.next();
+				     Object jsonValue = jsonObject.get(key);
+				     jsonObjVal = (JSONObject) parser.parse(jsonValue.toString());
+				     
+				     JSONObject attributeJsonObject = (JSONObject) parser.parse(jsonObjVal.toString());
+				     for(Iterator itr = attributeJsonObject.keySet().iterator(); itr.hasNext();) {
+				    	    String entitykey = (String) itr.next();
+				    	    if(entitykey.equalsIgnoreCase(attribute)) {
+				    	    	 Object attributeValue = attributeJsonObject.get(entitykey);
+							     jsonObjVal = (JSONObject) parser.parse(attributeValue.toString());
+							     break;
+				    	    }
+				     }
+				}
+			  
+		} catch (ParseException e) {
+			e.printStackTrace();
+		}
+	  }
+		return jsonObjVal;
+	}
+	
+	
+	
+  public static String getClientSessionJsonString(HttpServletRequest request, String attribute,String sessionId) {
+		
+		String strValue = null;
+		Object sv = null;
+		sv = c.get(sessionId  + "_" + attribute);
+		if(sv != null) {
+			
+			 JSONParser parser = new JSONParser(); 
+			  try {
+				  JSONObject jsonObject = (JSONObject) parser.parse(sv.toString());
+				  for(Iterator iterator = jsonObject.keySet().iterator(); iterator.hasNext();) {
+					    String key = (String) iterator.next();
+					     Object jsonValue = jsonObject.get(key);
+					     strValue = jsonValue.toString();
+					}
+				  
+			} catch (ParseException e) {
+				e.printStackTrace();
+			}
+						
+		}
+		return strValue;
+	}
+	
+	//need to remove
 	public static String getSessionJsonString(HttpServletRequest request, String attribute) {
 		
 		String strValue = null;
@@ -104,6 +183,43 @@ public class SourceLeadSessionManager {
 		}
 		return strValue;
 	}
+	
+public static String getSessionJsonString(HttpServletRequest request, String attribute,String userSessionAttribute,String userId) {
+		
+	    String strValue = null;
+		JSONObject jsonObjVal = null;
+		String id = request.getSession().getId();
+		Object sv = null;
+		sv = c.get(id  + "_" + userSessionAttribute+"_"+userId);
+		if(sv != null) {
+		  
+		  JSONParser parser = new JSONParser(); 
+		  try {
+			  JSONObject jsonObject = (JSONObject) parser.parse(sv.toString());
+			  for(Iterator iterator = jsonObject.keySet().iterator(); iterator.hasNext();) {
+				    String key = (String) iterator.next();
+				     Object jsonValue = jsonObject.get(key);
+				     jsonObjVal = (JSONObject) parser.parse(jsonValue.toString());
+				     
+				     JSONObject attributeJsonObject = (JSONObject) parser.parse(jsonObjVal.toString());
+				     for(Iterator itr = attributeJsonObject.keySet().iterator(); itr.hasNext();) {
+				    	    String entitykey = (String) itr.next();
+				    	    if(entitykey.equalsIgnoreCase(attribute)) {
+				    	    	    jsonValue = attributeJsonObject.get(entitykey);
+								    strValue = jsonValue.toString();
+								    break;
+				    	    }
+				    	  
+				     }
+				}
+			  
+		} catch (ParseException e) {
+			e.printStackTrace();
+		}
+	  }
+		return strValue;
+	}
+	
 	
 	public static Object getSessionAttributeProxy(HttpServletRequest request, String attribute) {
 		return request.getSession().getAttribute("SourceLeadWeb_"+attribute);
