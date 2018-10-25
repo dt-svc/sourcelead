@@ -317,6 +317,18 @@ public class RequirementController {
 					
 				}
 			}
+			
+			if (requirement.getSpocId().getClientUser().getFirstName() != null
+					&& requirement.getSpocId().getClientUser().getFirstName() != ""
+					&& requirement.getSpocId().getClientUser().getLastName() != null
+					&& requirement.getSpocId().getClientUser().getLastName() != "") {
+				StringBuilder spocSB = new StringBuilder();
+				requirement.setSpocName(spocSB.append(requirement.getSpocId().getClientUser().getFirstName()).append(" ").append(requirement.getSpocId().getClientUser().getLastName()).toString());
+			}
+			else {
+				requirement.setSpocName(requirement.getSpocId().getClientUser().getFirstName());
+			}
+			
 			model.addObject("requirementAssignedIds",requirementAssignedIds);
 			model.addObject("requirement",requirement);
 			model.addObject("requirementId",requirement.getId());
@@ -969,6 +981,7 @@ public class RequirementController {
 		    List<RequirementIncentive> requirementIncentiveList = requirementService.getRequirementIncentiveListByRequirementId(requirement.getId());
 			model.addObject("requirementIncentiveList", requirementIncentiveList);
 			model.addObject("requirementIncentiveListSize", requirementIncentiveList.size());
+			model.addObject("requirementProfilePercentage",requirement.getProfilePercentage());
 		}else{
 			model.setViewName("registration/persmissionDenied");
 		}

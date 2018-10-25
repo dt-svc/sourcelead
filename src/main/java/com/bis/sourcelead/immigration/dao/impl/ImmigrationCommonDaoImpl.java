@@ -864,8 +864,8 @@ public class ImmigrationCommonDaoImpl implements ImmigrationCommonDao {
 		Query hqlQuery1 = null;
 		Query hqlQuery = null;
 		if (filterVal.size() != 0) {
-			resultCountQuery = listQueryCount + query1 + query2+sortingQry;
-			resultQuery = listQuery + query1 + query2;
+			resultCountQuery = listQueryCount + query1 + query2;
+			resultQuery = listQuery + query1 + query2+sortingQry;
 			hqlQuery = session.createQuery(resultQuery);
 			hqlQuery1 = session.createQuery(resultCountQuery);
 			if (filterVal.get("type") != null) {
@@ -897,8 +897,8 @@ public class ImmigrationCommonDaoImpl implements ImmigrationCommonDao {
 			hqlQuery = hqlQuery.setLong("orgLocationId", orgLocations.getId());
 			hqlQuery1 = hqlQuery1.setLong("orgLocationId", orgLocations.getId());
 		} else {
-			resultQuery = listQuery + query1;
-			resultCountQuery = listQueryCount + query1+ sortingQry;
+			resultQuery = listQuery + query1+ sortingQry;
+			resultCountQuery = listQueryCount + query1;
 			hqlQuery = session.createQuery(resultQuery).setLong("orgLocationId", orgLocations.getId());
 			hqlQuery1 = session.createQuery(resultCountQuery).setLong("orgLocationId", orgLocations.getId());
 		}

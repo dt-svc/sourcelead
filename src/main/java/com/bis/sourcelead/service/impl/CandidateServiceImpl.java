@@ -2646,4 +2646,9 @@ private Sheet createXlsSheet(Sheet createExcelsheet, Row writeRow,Candidate cand
 		return candidateDao.getCandidateIdByEmailAndOrgLocationId(email, orgLocationId);
 	}
 
+	@Override
+	public Integer getCandidateProfilePercentageByCandidateId(Long id) throws Exception {
+		return candidateDao.getCandidateProfilePercentageByCandidateId(id);
+	}
+
 }
