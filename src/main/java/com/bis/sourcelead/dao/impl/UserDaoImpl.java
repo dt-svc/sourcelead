@@ -2184,11 +2184,15 @@ public class UserDaoImpl implements UserDao {
 				//Map<Long,List<Long>> requirementMap = new HashMap<Long,List<Long>>();
 				Set<BigInteger> jobIds = new HashSet<>();
 				Set<BigInteger> primaryUserjobIds = new HashSet<>();
+				Set<BigInteger> approverUserjobIds = new HashSet<>();
 				for(RecruiterRrportDTO reportDTO: recruiterReportAssociateList1){
 					UserDTO userDTO = associatesListMap.get(reportDTO.getManagerUserId());
 					if(userDTO != null){
 						jobIds.add(reportDTO.getRequirementId());
 						BigDecimal bd = new BigDecimal(jobIds.size());
+						if(userDTO.getUserRequirementsCount() != null) {
+							bd = bd.add(userDTO.getUserRequirementsCount());
+						}
 						userDTO.setUserRequirementsCount(bd);
 					}
 					
@@ -2196,6 +2200,19 @@ public class UserDaoImpl implements UserDao {
 					if(userDTO != null){
 						primaryUserjobIds.add(reportDTO.getRequirementId());
 						BigDecimal bd = new BigDecimal(primaryUserjobIds.size());
+						if(userDTO.getUserRequirementsCount() != null) {
+							bd = bd.add(userDTO.getUserRequirementsCount());
+						}
+						userDTO.setUserRequirementsCount(bd);
+					}
+					
+					userDTO = associatesListMap.get(reportDTO.getApproverUserId());
+					if(userDTO != null){
+						approverUserjobIds.add(reportDTO.getRequirementId());
+						BigDecimal bd = new BigDecimal(approverUserjobIds.size());
+						if(userDTO.getUserRequirementsCount() != null) {
+							bd = bd.add(userDTO.getUserRequirementsCount());
+						}
 						userDTO.setUserRequirementsCount(bd);
 					}
 					
@@ -2339,8 +2356,7 @@ public class UserDaoImpl implements UserDao {
 		
 		
 		if(searchValue !=null && !"".equalsIgnoreCase(searchValue)) {
-			subQuery8.append("and (u.FIRST_NAME like '%" + searchValue + "%' ")
-					.append("OR u.LAST_NAME like '%" + searchValue + "%' ")
+			subQuery8.append("and (CONCAT (u.FIRST_NAME,' ',IFNULL(u.LAST_NAME,'')) like '%" + searchValue + "%' ")
 					.append("OR concat(u.FIRST_NAME,u.LAST_NAME) like '%" + searchValue + "%' ")
 					.append("OR concat(u.FIRST_NAME,u.LAST_NAME) like '%" + searchValue + "%' ")
 			.append("OR e.EMPLOYMENT_TYPE like '%" + searchValue + "%' ) ");
@@ -2350,7 +2366,7 @@ public class UserDaoImpl implements UserDao {
 					
 		
 	
-		String query ="select distinct CONCAT (u.FIRST_NAME,' ',IFNULL(u.LAST_NAME,'')) AS empName ,e.EMPLOYMENT_TYPE AS empType,u.ID AS userId,ur.USER_TYPE AS role from USER u,USER_ROLE ur,EMPLOYEE e,USER_LEAVE ul where u.ID=ur.USER_ID and u.ID=e.USER_ID and  u.ID = ul.USER_ID and ur.ORG_LOCATIONS_ID=e.ORG_LOCATIONS_ID and ur.ORG_LOCATIONS_ID =:orgLocationId "+subQuery8.toString()+subQuery4+subQuery3+subQuery5+subQuery6+subQuery7;
+		String query ="select distinct CONCAT (u.FIRST_NAME,' ',IFNULL(u.LAST_NAME,'')) AS empName ,e.EMPLOYMENT_TYPE AS empType,u.ID AS userId,ur.USER_TYPE AS role from USER u,USER_ROLE ur,EMPLOYEE e, USER_LEAVE ul where u.ID=ur.USER_ID and u.ID = ul.USER_ID and u.ID=e.USER_ID and ur.ORG_LOCATIONS_ID=e.ORG_LOCATIONS_ID and ur.USER_STATE = 'ACTIVE' and ur.ORG_LOCATIONS_ID =:orgLocationId "+subQuery8.toString()+subQuery4+subQuery3+subQuery5+subQuery6+subQuery7;
 		//Query queryString = (Query) session.createSQLQuery(query).setLong("orgLocationId",orgLocationId).setResultTransformer(Transformers.aliasToBean(LeaveBalanceReportDTO.class)).list();
 		Query queryString = session.createSQLQuery(query);
 		queryString.setParameter("orgLocationId", orgLocationId);
@@ -2458,7 +2474,7 @@ public class UserDaoImpl implements UserDao {
 		List<Long> countlist = null;
         StringBuilder query1 = new StringBuilder();
         List countQueryString;
-		dateQury = " and DATE_FORMAT(reqSub.CREATED_DATE,'%Y-%m-%d') BETWEEN  '" + fromDate
+		dateQury = " and DATE_FORMAT(reqSub.UPDATED_DATE,'%Y-%m-%d') BETWEEN  '" + fromDate
 				+ "' and '" + toDate + "'";
 		if(applicantsJoinedReportDTO.getSearchValue() != null && !applicantsJoinedReportDTO.getSearchValue().isEmpty() && applicantsJoinedReportDTO.getSearchValue() != "undefined"){
 			 query1.append(" and (CONCAT(FIRST_NAME,LAST_NAME) like '%"
@@ -2481,15 +2497,17 @@ String sortingQry ="";
 				+ "reqSub.CREATED_DATE as reqSubCreatedDate," + "req.ORG_RELATION_ID as clientId,"
 				+ "reqSub.CREATED_BY as createdBy, "
 				+ "(SELECT count(*) FROM REQUIREMENT_ASSIGN_TO reqAssign WHERE reqAssign.ASSIGN_USER_ID = u.ID "
-				+ dateQury + ") AS requirementCount ,"
+				+ " and DATE_FORMAT(reqAssign.CREATED_DATE,'%Y-%m-%d') BETWEEN  '" + fromDate+ "' and '" + toDate + "' ) AS requirementCount ,"
+				+"(SELECT count(*) FROM REQUIREMENT requirement WHERE requirement.ID = req.ID and (requirement.MANAGER_USER_ID = u.ID OR requirement.PRIMARY_RECRUITER_USER_ID = u.ID)"
+				+ " and DATE_FORMAT(requirement.CREATED_DATE,'%Y-%m-%d') BETWEEN  '" + fromDate+ "' and '" + toDate + "' ) AS reqClientCount ,"
 				+ "(SELECT  CONCAT(FIRST_NAME,LAST_NAME) AS EMPLOYEE_NAME) AS name,"
 				+ "(SELECT count(*) FROM REQUIREMENT_SUBMISSION reqSub WHERE reqSub.CREATED_BY = u.USER_CODE "
 				+ dateQury + ") AS submissionCount,"
-				+ "(SELECT count(*) FROM REQUIREMENT_SUBMISSION reqSub WHERE reqSub.SUBMISSION_STATUS = 'JOINED' and reqSub.CREATED_BY = u.USER_CODE "
+				+ "(SELECT count(*) FROM REQUIREMENT_SUBMISSION reqSub WHERE (reqSub.SUBMISSION_STATUS = 'JOINED' OR reqSub.PREVIOUS_SUBMISSION_STATUS='JOINED') and reqSub.CREATED_BY = u.USER_CODE "
 				+ dateQury + ") AS joinedCount , "
-				+ "(SELECT count(*) FROM REQUIREMENT_SUBMISSION reqSub WHERE reqSub.SUBMISSION_STATUS = 'OFFERMADE' and reqSub.CREATED_BY = u.USER_CODE "
+				+ "(SELECT count(*) FROM REQUIREMENT_SUBMISSION reqSub WHERE (reqSub.SUBMISSION_STATUS = 'OFFERMADE' OR  reqSub.SUBMISSION_STATUS='OFFERACCEPTED' OR reqSub.PREVIOUS_SUBMISSION_STATUS='OFFERMADE' OR reqSub.PREVIOUS_SUBMISSION_STATUS='OFFERACCEPTED') and reqSub.CREATED_BY = u.USER_CODE "
 				+ dateQury + ") AS offerCount  "
-				+ "FROM USER u, REQUIREMENT_SUBMISSION reqSub, REQUIREMENT req where u.USER_CODE = reqSub.CREATED_BY and req.ORG_LOCATION_ID= "
+				+ "FROM USER u, USER_ROLE ur, REQUIREMENT_SUBMISSION reqSub, REQUIREMENT req where ur.ORG_LOCATIONS_ID = req.ORG_LOCATION_ID and ur.USER_ID = u.ID and u.USER_CODE = reqSub.CREATED_BY and req.ORG_LOCATION_ID= "
 				+ orgLocationId + "  and reqSub.REQUIREMENT_ID = req.ID " + dateQury
 				+ query1
 				+groupSubQuery;

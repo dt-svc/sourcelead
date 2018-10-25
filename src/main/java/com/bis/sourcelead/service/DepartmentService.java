@@ -2,8 +2,6 @@ package com.bis.sourcelead.service;
 
 import java.util.List;
 
-import org.json.JSONObject;
-
 import com.bis.sourcelead.dto.DepartmentDTO;
 import com.bis.sourcelead.entity.Department;
 

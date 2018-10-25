@@ -9,7 +9,6 @@
 <script>
 $( document ).ready(function() {
     getProjectListBasedOnStartAndEndDate();
-    getAllUserListBasedOnOrgLocationId();
     datePickeerTest();
 });
 </script>
@@ -27,9 +26,9 @@ $( document ).ready(function() {
     </section>
     <form id="timesheetExportForm" name="timesheetExportForm">
     <div class="contentareaInner-styles clearfix" >
+       <input type="hidden" id="allProjectIds"/>
       <div class="clearfix form-horizontal minHeight_225 minHeightcol5">
         <div class="row min">
-           
             <div class="col-md-5">
               <label class="clearfix">Type of Project</label>
               <div class="clearfix">
@@ -224,7 +223,6 @@ function resetValues(){
 
 <script>
 function getProjectListBasedOnStartAndEndDate(){
-	var allProjectId = [];
 	var typeOfProject = 'All';
 	var startDate = $('#fromDate').val();
 	var endDate = $('#toDate').val();
@@ -237,19 +235,23 @@ function getProjectListBasedOnStartAndEndDate(){
             type: "POST",
             success: function (json) {
             	var output = "";
+            	var allProjectId  = [];
             	for (var i=0; i<json.length; i++)
 				{
-		        		var opt = json[i];
+            		    var opt = json[i];
+            		    allProjectId[i]=opt.projId;
 		        		output = output + "<option value='" +opt.projId+ "' name='all'>"+opt.projectName+"</option>";
 		        		
 				}
-            	
-            	
+            	$("#allProjectIds").val('');
+            	$("#allProjectIds").val(allProjectId);
+            	getProjectMemberFromProjectId();
             	$("#projectList").empty();
                 $("#projectList").append(output);
                 $('#projectList').trigger("chosen:updated");
             }
         });
+		
 	}
 </script>
 
@@ -261,8 +263,8 @@ function getSelectedProjectDetailsList(){
 <script>
 function getProjectMemberFromProjectId(){
 	var projectIds  = $('#projectList').val();
-	if(projectIds == null || projectIds =='' || projectIds=='undefined'){
-		projectIds = '';
+    if(projectIds == null || projectIds =='' || projectIds=='undefined'){
+		projectIds = $("#allProjectIds").val();
 	}
 	var startDate = $('#fromDate').val();
 	var endDate = $('#toDate').val();
@@ -271,7 +273,6 @@ function getProjectMemberFromProjectId(){
 		designationType = '';
 	}
 	var projectType = $('#projectType').val();
-	
 	$.ajax({
         url: sourceleadUrl + "/getProjectMembersBasedOnProjectId?&projectIds="+projectIds+"&startDate="+startDate+"&endDate="+endDate+"&employmentType="+designationType+"&typeOfProject="+projectType,
         type: "POST",

@@ -57,6 +57,7 @@ public class Templates {
 	public static final ReportTemplateBuilder reportTemplate;
 	public static final CurrencyType currencyType;
 	public static final ComponentBuilder<?, ?> dynamicReportsComponent;
+	public static final ComponentBuilder<?, ?> dynamicReportsSourceleadComponent;
 	public static final ComponentBuilder<?, ?> footerComponent;
 
 	static {
@@ -113,12 +114,16 @@ public class Templates {
 //		HyperLinkBuilder link = hyperLink("http://www.dynamicreports.org");
 		dynamicReportsComponent =
 		  cmp.horizontalList(
-		  	cmp.image(Templates.class.getResource("images/bisLogo.png")).setFixedDimension(60, 60),
+		  	cmp.image(Templates.class.getResource("../resources/images/SourceLead-logo.png")).setFixedDimension(60, 60),
 		  	cmp.verticalList(
 		  		cmp.text("Business Intelli Solutions India Pvt.Ltd (17-18)").setStyle(bold12CenteredStyle).setHorizontalAlignment(HorizontalAlignment.LEFT),
 		  		cmp.text("Plot 8 & 9, Jubilee Enclave, 2nd Floor, Vertext Corporate, Opp. Hitex. Madhapur, ").setStyle(rootStyle).setHorizontalAlignment(HorizontalAlignment.LEFT),
 		  		cmp.text("Hyderabad - 500081, Ph. : 040-67007676").setStyle(rootStyle).setHorizontalAlignment(HorizontalAlignment.LEFT)/*
 		  		cmp.text("http://www.dynamicreports.org").setStyle(italicStyle).setHyperLink(link)*/)).setFixedWidth(500);
+		
+		dynamicReportsSourceleadComponent =
+				  cmp.horizontalList(
+				  	cmp.image(Templates.class.getResource("../resources/images/SourceLead-logo.png")).setFixedDimension(60, 60)).setFixedWidth(500);
 
 		footerComponent = cmp.pageXofY() .setStyle(stl.style(boldCenteredStyle).setTopBorder(stl.penThin()));
 	}

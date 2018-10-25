@@ -76,9 +76,9 @@ public List<ProjectMembers> getProjectMembersBasedOnProjectId(DayWiseTimesheetRe
 	User loginUser = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
 	dayWiseTimesheetReoprtsDto.setLocationsId(orgLocations.getId());
 	dayWiseTimesheetReoprtsDto.setLoginUserId(loginUser.getId());
-	if(dayWiseTimesheetReoprtsDto.getStartDate()!= null && StringUtils.isNotEmpty(dayWiseTimesheetReoprtsDto.getStartDate()) && dayWiseTimesheetReoprtsDto.getEndDate()!= null && StringUtils.isNotEmpty(dayWiseTimesheetReoprtsDto.getEndDate())) {
+	//if(dayWiseTimesheetReoprtsDto.getStartDate()!= null && StringUtils.isNotEmpty(dayWiseTimesheetReoprtsDto.getStartDate()) && dayWiseTimesheetReoprtsDto.getEndDate()!= null && StringUtils.isNotEmpty(dayWiseTimesheetReoprtsDto.getEndDate())) {
 		 projectMemberList = projectMemberService.getAllProjectMembersBasedOnProjectIdStartDateEndDateAndEmploymentType(dayWiseTimesheetReoprtsDto);
-	}
+	//}
 	return projectMemberList;
 }
 
@@ -118,6 +118,7 @@ public void exportDaywiseTimesheetReport(DayWiseTimesheetReoprtsDTO dayWiseTimes
 public List<ProjectMembers> getAllUserListBasedOnOrgLocationId(HttpServletRequest request) throws Exception {
 	OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,"orgLocations");
 	List<ProjectMembers> projectMemberList = projectMemberService.getAllProjectsByOrgLocationId(orgLocations.getId());
+	projectMemberList.forEach(pm -> pm.setUserId(String.valueOf(pm.getProjectMemberCandidteId().getConsultantUser().getId())));
 	return projectMemberList;
 }
 

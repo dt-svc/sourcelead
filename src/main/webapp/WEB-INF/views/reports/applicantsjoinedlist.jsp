@@ -148,12 +148,13 @@ function getAppliantJoinedListByRecruiter(){
 		$('input:checkbox[name=clientNameById]:checked').each(function() {
 			clients.push($(this).val());
 		});
-// 	 if(flag){
+	 if(flag){
 		 searchValue = searchValue ? searchValue : "";
 		 var url = sourceleadUrl+"/getAllApplicantJoinedListByOrgLocationsId?searchValue="+searchValue+"&timePeriod="+timePeriod+"&customStartDate="+startDate+"&customEndDate="+endDate+"&orgTeams="+orgTeams+"&clients="+clients;
 // 		 usersListPagination(url,sourceleadUrl);
-// 	 }
-	prepareAllDaywiseLeaveReportList(url);
+			prepareAllDaywiseLeaveReportList(url);
+
+	 }
 }
 </script>	
  <script>
@@ -224,8 +225,8 @@ function daywiseLeaveReportsListPagination(url){
 			        "render": function ( data, type, user, meta ) {
 			        	  var result = '';
 			        	  result = result + ' <td>';
-			        	  if(user.requirementCount !=null && user.requirementCount !='' && user.requirementCount !='undefined'){
-								 result = result + '<div class="tblminwidth-75">'+user.requirementCount+'</div>';
+			        	  if(user.totalRequirementCount !=null && user.totalRequirementCount !='' && user.totalRequirementCount !='undefined'){
+								 result = result + '<div class="tblminwidth-75">'+user.totalRequirementCount+'</div>';
 				          }else{
 								result = result + ' <div class="tblminwidth-75">0</div>';
 							}
