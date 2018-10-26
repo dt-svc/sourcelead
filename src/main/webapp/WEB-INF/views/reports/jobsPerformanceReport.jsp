@@ -405,8 +405,11 @@ function offerpagination(url){
                 "sortable": false,
                 "render": function ( data, type, opt, meta ) {
                 		var result = "";
-                		
-						result = result + ' <td><div><span onClick="loadJobAllApplicants('+opt.id+')">'+opt.assignedMembersCount+'</span></div></td>';
+                		if(opt.assignedMembersCount >0){
+						result = result + ' <td><div><a onClick="loadJobAllApplicants('+opt.id+')">'+opt.assignedMembersCount+'</a></div></td>';
+                		}else{
+    					result = result + ' <td><div><span>'+opt.assignedMembersCount+'</span></div></td>';
+                		}
     	              return result;
                 }
           } ,{
@@ -415,8 +418,12 @@ function offerpagination(url){
                       "sortable": false,
                       "render": function ( data, type, opt, meta ) {
                     	  var result = "";
-      	    	  			result = result + ' <td><div><span onClick="loadJobShortlistCandidates('+opt.id+');">'+opt.shortlistCount+'</span></div></td>';
-      	    	  		return result;
+                    	  if(opt.shortlistCount >0){
+      	    	  			result = result + ' <td><div><a onClick="loadJobShortlistCandidates('+opt.id+');">'+opt.shortlistCount+'</a></div></td>';
+                    	  }else{
+          					result = result + ' <td><div><span>'+opt.shortlistCount+'</span></div></td>';
+                    	  }
+      	    	  			return result;
                       }
                },{
                      "targets": colIndex++,
@@ -424,7 +431,11 @@ function offerpagination(url){
                      "sortable": false,
                      "render": function ( data, type, opt, meta ) {
                    	  var result = "";
-     	    	  		result = result + ' <td><div><span onClick="loadJobInterviewCandidates('+opt.id+')">'+opt.interviewCount+'</span></div></td>';
+                   	  if(opt.interviewCount>0){
+     	    	  		result = result + ' <td><div><a onClick="loadJobInterviewCandidates('+opt.id+')">'+opt.interviewCount+'</a></div></td>';
+                   	  }else{
+                   		result = result + ' <td><div><span>'+opt.interviewCount+'</span></div></td>';  
+                   	  }
      	    	  		return result;
                      }
                    } ,{
@@ -433,8 +444,12 @@ function offerpagination(url){
                        "sortable": false,
                        "render": function ( data, type, opt, meta ) {
                      	  var result = "";
-       	    	  			result = result + ' <td><div><span onClick="loadJobOfferedCandidates('+opt.id+')">'+opt.offersCount+'</span></div></td>';
-       	    	  		return result;
+                     	 if(opt.offersCount>0){
+       	    	  			result = result + ' <td><div><a onClick="loadJobOfferedCandidates('+opt.id+')">'+opt.offersCount+'</a></div></td>';
+                     	 }else{
+                     		result = result + ' <td><div><span>'+opt.offersCount+'</span></div></td>';  	 
+                     	 }
+       	    	  			return result;
                        }
                 },{
                     "targets": colIndex++,
@@ -442,7 +457,11 @@ function offerpagination(url){
                     "sortable": false,
                     "render": function ( data, type, opt, meta ) {
                   	  var result = "";
-    	    	  			result = result + ' <td><div><span onClick="loadJobSubmitToClientCandidates('+opt.id+')">'+opt.submitToClientCount+'</span></div></td>';
+                  	if(opt.submitToClientCount>0){
+    	    	  			result = result + ' <td><div><a onClick="loadJobSubmitToClientCandidates('+opt.id+')">'+opt.submitToClientCount+'</a></div></td>';
+                  	}else{
+                 		result = result + ' <td><div><span>'+opt.submitToClientCount+'</span></div></td>';  	 
+                  	}
     	    	  		return result;
                     }
              },{
@@ -451,7 +470,11 @@ function offerpagination(url){
                  "sortable": false,
                  "render": function ( data, type, opt, meta ) {
                	  var result = "";
- 	    	  			result = result + ' <td><div><span onClick="loadJobBackOutCandidates('+opt.id+')">'+opt.backoutCount+'</span></div></td>';
+               	if(opt.backoutCount>0){
+ 	    	  			result = result + ' <td><div><a onClick="loadJobBackOutCandidates('+opt.id+')">'+opt.backoutCount+'</a></div></td>';
+               	}else{
+             		result = result + ' <td><div><span>'+opt.backoutCount+'</span></div></td>';  	 
+               	}
  	    	  		return result;
                  }
           },{
@@ -460,7 +483,11 @@ function offerpagination(url){
                  "sortable": false,
                  "render": function ( data, type, opt, meta ) {
                	  var result = "";
- 	    	  			result = result + ' <td><div><span onClick="loadJobJoinedCandidates('+opt.id+')">'+opt.joinedCount+'</span></div></td>';
+               	  if(opt.joinedCount>0){
+ 	    	  			result = result + ' <td><div><a onClick="loadJobJoinedCandidates('+opt.id+')">'+opt.joinedCount+'</a></div></td>';
+               	  }else{
+               		result = result + ' <td><div><span>'+opt.joinedCount+'</span></div></td>';  	 
+               	  }
  	    	  		return result;
                  }
           },{
@@ -469,8 +496,12 @@ function offerpagination(url){
               "sortable": false,
               "render": function ( data, type, opt, meta ) {
             	  var result = "";
-	    	  			result = result + ' <td><div><span onClick="loadJobRejectedCandidates('+opt.id+')">'+opt.rejectedCount+'</span></div></td>';
-	    	  		return result;
+            	  if(opt.rejectedCount>0){
+	    	  			result = result + ' <td><div><a onClick="loadJobRejectedCandidates('+opt.id+')">'+opt.rejectedCount+'</a></div></td>';
+            	  }else{
+                 		result = result + ' <td><div><span>'+opt.rejectedCount+'</span></div></td>';  	 
+            	  }
+	    	  			return result;
               }
        }],
 	    	"scrollCollapse": false,
