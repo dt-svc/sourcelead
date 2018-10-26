@@ -129,6 +129,7 @@
 				success : function(data) {
 			    	$('#dataFieldsDiv').append(data);
 			    	var importStatus = $('#importStatus').val();
+			    	$('#errorDownloadDiv').empty();
 			    	if(importStatus == "success"){
 			    		$('#selector11').removeClass('bg-red').addClass('success_pop');
           				$("#msgDiv").html("Data imported successfully");
