@@ -118,9 +118,6 @@ public class SourceleadAuthenticationSuccessHandler implements AuthenticationSuc
 		 			e.printStackTrace();
 		 		} 
 		 	    finally{
-		 	    	Cookie sessionCookie = new Cookie("SLSessionId",request.getSession().getId());
-		 	    	sessionCookie.setMaxAge(30 * 60);
-		 	    	response.addCookie(sessionCookie);
 		 	    	if(null != UUID && !"".equalsIgnoreCase(UUID) && null != spocUUID && !"".equalsIgnoreCase(spocUUID)){
 		 	    		response.sendRedirect("/app/dashboard?invitation=true");
 		 	    	}else{

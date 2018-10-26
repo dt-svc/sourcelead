@@ -2738,7 +2738,7 @@ public String getOrglocationDateFormatHHMMSS(String dateFormat, Date date)
 		String clientSessionId = null;
 		Cookie[] cookies = request.getCookies();
 		  for(Cookie mycookie : cookies) {
-		  if(mycookie.getName().equalsIgnoreCase("SLSessionId")) {
+		  if(mycookie.getName().equalsIgnoreCase("JSESSIONID")) {
 			  clientSessionId = mycookie.getValue();
 			  break;
 	        }
