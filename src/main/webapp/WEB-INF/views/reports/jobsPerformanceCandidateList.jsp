@@ -16,13 +16,13 @@
       <div class="clients_wrap">
 	      <div class="positionRelative reportHead clearfix">
 	      <span class="pull-left refreIcon" id="advanceSearchDiv">
-	      		<a href="javascript:void(0)" class="refeIcon" id="resetVendor" title="Refresh" onclick="resetApplicantFilter();"></a>
+	      		<a href="javascript:void(0)" class="refeIcon" id="refresh" title="Refresh" onclick="refreshList();"></a>
 	      </span>
 	      <ul class="pull-right list-unstyled list-inline">
 	      	  <li>
 	      	  <%-- <jsp:include page="JobCountFilter.jsp"></jsp:include> --%>
 	      	  </li>
-			  <li class=""><input type="text" class="repSearchBar" placeholder="Search" id="dataTableSearch"><span class="repSearchIcon" onclick="filter();"></span></li>
+			  <li class=""><input type="text" class="repSearchBar" placeholder="Search" id="dataTableSearch"><span class="repSearchIcon" onclick="candidateAssignedJobList();"></span></li>
 	        </ul>
 	      </div>
         <div class="timesheet_head">
@@ -30,7 +30,7 @@
        </div>
         <div class="clients_wrap_table datatable_filter">
         
-        <div id="previousInterviewDiv"></div>
+        <div id="allStagesApplicantsDiv"></div>
         
         </div>
       </div>
@@ -59,11 +59,30 @@
 		 candidateAssignedJobJoinedList(); 
 	 }else if(statusType == "Rejected"){
 		 candidateAssignedJobRejectedList(); 
+	 }else{
+		 candidateAssignedJobAllList(); 
 	 }
  });
  
  </script>
  
+ <script type="text/javascript">
+       function candidateAssignedJobAllList(){
+    	   var sourceleadUrl ='${sourceleadUrl}';
+   		   var tab = '${tab}';
+    	   var frequency = $('input[name=customDates]:checked').val(); 
+    	    var fromDate = $("#custFromDate").val();
+    	    var toDate = $("#custToDate").val();
+    	    var requirementId = '${requirementId}';
+    		var searchValue = $("#dataTableSearch").val();
+    		var orgLocationId = '${SourceLeadWeb_orgLocationId}';
+    		searchValue = searchValue ? searchValue : "";
+    	      
+    	       var url = sourceleadUrl+"/applicantListForJob?searchValue="+searchValue+"&orgLocationId="+orgLocationId+"&requirementId="+requirementId+"&submissionStatus=All+&tabType="+tab;
+    	       preparecandidateAssignedList(url);
+		
+}
+</script>
  
  <script type="text/javascript">
        function candidateAssignedJobInterviewList(){
@@ -78,7 +97,7 @@
     		searchValue = searchValue ? searchValue : "";
     	     
     	        var url = sourceleadUrl+"/applicantListForJob?searchValue="+searchValue+"&orgLocationId="+orgLocationId+"&requirementId="+requirementId+"&submissionStatus=INTERVIEW&tabType="+tab;
-    		    prepareInterviewList(url);
+    		    preparecandidateAssignedList(url);
 		 
 }
 </script> 
@@ -97,7 +116,7 @@
     		searchValue = searchValue ? searchValue : "";
     	     
     	        var url = sourceleadUrl+"/applicantListForJob?searchValue="+searchValue+"&orgLocationId="+orgLocationId+"&requirementId="+requirementId+"&submissionStatus=SHORTLIST&tabType="+tab;
-    		    prepareInterviewList(url);
+    	        preparecandidateAssignedList(url);
 		 
 }
 </script> 
@@ -115,7 +134,7 @@
     		searchValue = searchValue ? searchValue : "";
     	     
     	        var url = sourceleadUrl+"/applicantListForJob?searchValue="+searchValue+"&orgLocationId="+orgLocationId+"&requirementId="+requirementId+"&submissionStatus=OFFERMADE&tabType="+tab;
-    		    prepareInterviewList(url);
+    	        preparecandidateAssignedList(url);
 		 
 }
 </script> 
@@ -133,7 +152,7 @@
     		searchValue = searchValue ? searchValue : "";
     	     
     	        var url = sourceleadUrl+"/applicantListForJob?searchValue="+searchValue+"&orgLocationId="+orgLocationId+"&requirementId="+requirementId+"&submissionStatus=SUBMIT_TO_CLIENT&tabType="+tab;
-    		    prepareInterviewList(url);
+    	        preparecandidateAssignedList(url);
 		 
 }
 </script>
@@ -151,7 +170,7 @@
     		searchValue = searchValue ? searchValue : "";
     	     
     	        var url = sourceleadUrl+"/applicantListForJob?searchValue="+searchValue+"&orgLocationId="+orgLocationId+"&requirementId="+requirementId+"&submissionStatus=BACKOUT&tabType="+tab;
-    		    prepareInterviewList(url);
+    	        preparecandidateAssignedList(url);
 		 
 }
 </script>
@@ -169,7 +188,7 @@
     		searchValue = searchValue ? searchValue : "";
     	     
     	        var url = sourceleadUrl+"/applicantListForJob?searchValue="+searchValue+"&orgLocationId="+orgLocationId+"&requirementId="+requirementId+"&submissionStatus=JOINED&tabType="+tab;
-    		    prepareInterviewList(url);
+    	        preparecandidateAssignedList(url);
 		 
 }
 </script>
@@ -187,16 +206,16 @@
     		searchValue = searchValue ? searchValue : "";
     	     
     	        var url = sourceleadUrl+"/applicantListForJob?searchValue="+searchValue+"&orgLocationId="+orgLocationId+"&requirementId="+requirementId+"&submissionStatus=REJECTED&tabType="+tab;
-    		    prepareInterviewList(url);
+    	        preparecandidateAssignedList(url);
 		 
 }
 </script>
 
 <script>
-function prepareInterviewList(url){
+function preparecandidateAssignedList(url){
         var result = "";
-        $("#previousInterviewDiv").empty();
-        result = result +'<table id="interviewpagination" class="display" cellspacing="0" width="100%" >'; 
+        $("#allStagesApplicantsDiv").empty();
+        result = result +'<table id="allApplicantsPagination" class="display" cellspacing="0" width="100%" >'; 
         result = result +'<thead>'; 
         result = result + '<tr>';
 		result = result + '<th>Applicant name</th>';
@@ -210,17 +229,17 @@ function prepareInterviewList(url){
         result = result +'<tbody>'; 
         result = result +' </tbody>';
         result = result +'</table>';
-        $("#previousInterviewDiv").empty();
-        $("#previousInterviewDiv").append(result);
-         interviewpagination(url);
+        $("#allStagesApplicantsDiv").empty();
+        $("#allStagesApplicantsDiv").append(result);
+        preparecandidateAssignedPagination(url);
 }
 </script>
 
 
 <script>
-function interviewpagination(url){
+function preparecandidateAssignedPagination(url){
 	var colIndex = 0;
-    $('#interviewpagination').DataTable( { 
+    $('#allApplicantsPagination').DataTable( { 
     		"processing": true,
         "serverSide": true,
         "searching": false,
@@ -331,11 +350,11 @@ function interviewpagination(url){
 	     		 "sProcessing": "<img src='/resources/images/loading.gif' style='width: 75px; height: 75px;'/>"
 	     }
     } );
-    $("#interviewpagination").wrap("<div style='overflow-x: auto; overflow-y: hidden;'></div>"); 
+    $("#allApplicantsPagination").wrap("<div style='overflow-x: auto; overflow-y: hidden;'></div>"); 
     $("input[type=search]").hide();
     $("#dataTableSearch").keyup(function(e) {
     	   if(e.which === 13) {
-    		   requirementInterviewList();
+    		candidateAssignedJobList();
     	   }
     	});
 }
@@ -343,11 +362,31 @@ function interviewpagination(url){
 </script>
   
 <script>
-function viewInterviewListResumes(resumeUUID,title){
-	if(resumeUUID != null && resumeUUID != ""){
-		window.open(sourceleadUrl+'/viewInterviewListResumes/'+title+'?resumeUUID='+resumeUUID,title,"height=600,width=600");
-	}  
+function refreshList(){
+	location.reload();
 }
+
+function candidateAssignedJobList(){
+	var statusType = '${statusType}';
+		   if(statusType == "Interview"){
+			 candidateAssignedJobInterviewList();
+		 }else if(statusType == "Shortlisted"){
+			 candidateAssignedJobShortlistList(); 
+		 }else if(statusType == "Offered"){
+			 candidateAssignedJobOfferedList(); 
+		 }else if(statusType == "SubmitToClient"){
+			 candidateAssignedJobSubmitTOClientList(); 
+		 }else if(statusType == "BackOut"){
+			 candidateAssignedJobBackOutList(); 
+		 }else if(statusType == "Joined"){
+			 candidateAssignedJobJoinedList(); 
+		 }else if(statusType == "Rejected"){
+			 candidateAssignedJobRejectedList(); 
+		 }else{
+			 candidateAssignedJobAllList(); 
+		 }
+	   }
+
 </script>
   
 <jsp:include page="../masterFooter.jsp" />

@@ -2890,9 +2890,6 @@ public class RequirementSubmissionDaoImpl implements RequirementSubmissionDao{
 				      .append("OR (concat(rsh.candidate.firstName,rsh.candidate.lastName) like '%" + requirementSubmissionHistoryDTO.getSearchValue().trim() + "%')" )
 				      .append("OR rsh.candidate.email like '%" + requirementSubmissionHistoryDTO.getSearchValue() + "%' ")
 			          .append("OR rsh.candidate.mobilePhone like '%" + requirementSubmissionHistoryDTO.getSearchValue() + "%' ")
-			          .append("OR rsh.createdUser like '%" + requirementSubmissionHistoryDTO.getSearchValue() + "%' ")
-			          .append("OR rsh.candidateScore like '%" + requirementSubmissionHistoryDTO.getSearchValue() + "%' ")
-			          .append("OR rsh.submissionStatus like '%" + requirementSubmissionHistoryDTO.getSearchValue() + "%' ")
 			          .append("OR rsh.requirement.jobTitle like '%" + requirementSubmissionHistoryDTO.getSearchValue() + "%' ")
 				      .append("OR rsh.submissionStatus like '%" + requirementSubmissionHistoryDTO.getSearchValue() + "%' ")
 				      .append("OR rsh.createdUser like '%" + requirementSubmissionHistoryDTO.getSearchValue() + "%') ");
@@ -2920,13 +2917,13 @@ public class RequirementSubmissionDaoImpl implements RequirementSubmissionDao{
 		    		
 		    		
 		    		//login user as a approver for this requirement  or  assigned to.
-		    		subQuery2 = " or (rsh.requirement.id IN (select rah.requirement from RequirementApproverHierarchy rah where rah.approverUserId.id =:approverUserId )  or (rsh.submissionId.requirement.id IN ( select rah.requirementId from RequirementAssignTo rah where rah.teamId.id IN ( select rah.id from Team rah where rah.ownerUserId.id =:userId)) ) or (rsh.submissionId.requirement.id IN ( select rah.requirementId from RequirementAssignTo rah where rah.assignUserId.id =:userId) and rsh.submissionId.createdBy =:usercode))";
+		    		subQuery2 = " or (rsh.requirement.id IN (select rah.requirementId from RequirementApproverHierarchy rah where rah.approverUserId.id =:approverUserId )  or (rsh.requirement.id IN ( select rah.requirementId from RequirementAssignTo rah where rah.teamId.id IN ( select rah.id from Team rah where rah.ownerUserId.id =:userId)) ) or (rsh.requirement.id IN ( select rah.requirementId from RequirementAssignTo rah where rah.assignUserId.id =:userId) and rsh.createdBy =:usercode))";
 		    		params.put("approverUserId",user.getId());
 		    		params.put("userId",user.getId());
 		    		params.put("usercode",user.getUserCode());
 		    		
 		    		//login user as a  manager for this job.
-		    		subQuery3 = " or (rsh.requirement.id IN ( select requirement.id from Requirement requirement where  requirement.managerUserId.id = :managerUserId ) ) ";
+		    		subQuery3 = " or (rsh.requirement.id IN ( select req.id from Requirement req where  req.managerUserId.id = :managerUserId ) ) ";
 		    		params.put("managerUserId",user.getId());
 		    		
 		    		subQuery4 = " or (rsh.requirement.releaseJobToAllUsers = 'Y' and  rsh.createdBy =:usercode)";
@@ -2939,13 +2936,13 @@ public class RequirementSubmissionDaoImpl implements RequirementSubmissionDao{
 	    		
 	    		
 	    		if(teamIdsList != null) {
-	    			teamSubQuery = " and (rsh.requirement.id IN (select ateam.requirementId.id from RequirementAssignTo ateam where ateam.requirementId.id = rsh.submissionId.requirement.id and ateam.teamId.id IN (:teamIdsList)))";
+	    			teamSubQuery = " and (rsh.requirement.id IN (select ateam.requirementId.id from RequirementAssignTo ateam where ateam.requirementId.id = rsh.requirement.id and ateam.teamId.id IN (:teamIdsList)))";
 					params.put("teamIdsList",teamIdsList);
 	    		}
 				
 	    		String subQuery = "";
 	    		if(subQuery1 != "" || subQuery2 != "" || subQuery3 != "" ){
-	    			subQuery = "where rsh.orgLocations.id = :orgLocationsId and rsh.requirement.id =:requirementId"+submissionStages+" "+teamSubQuery+" and rsh.submissionId.status = 1 and ( ("+subQuery1+" "+subQuery2+" "+subQuery3+" "+subQuery4+" ) "+subQuery5+") ";
+	    			subQuery = "where rsh.orgLocations.id = :orgLocationsId and rsh.requirement.id =:requirementId"+submissionStages+" "+teamSubQuery+" and rsh.status = 1 and ( ("+subQuery1+" "+subQuery2+" "+subQuery3+" "+subQuery4+" ) "+subQuery5+") ";
 	    			params.put("orgLocationsId",orgLocations.getId());
 	    			params.put("requirementId",requirementId);
 	    		}
