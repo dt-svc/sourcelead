@@ -135,6 +135,9 @@ public class CandidateOnBoardRestController {
 	
 	@Autowired
 	AssociatePfEsiService associatePfEsiService;
+	
+	@Value("${isCouchbaseEnabled}")
+	private String isCouchbaseEnabled;
 
 	protected static boolean isNullOrEmpty(String str) {
 		return (str == null || "".equals(str.trim()));
@@ -1931,16 +1934,29 @@ public class CandidateOnBoardRestController {
 		Response<String> response = new Response<>();
 		try {
 			String resultJson;
+			OrgLocations loginOrgLocation = null;
+			org.json.simple.JSONObject orgLocJsonObject = null;
+			List<RequirementSubmissionsView> submissionList = null;
+			if(isCouchbaseEnabled.equalsIgnoreCase("true")) {
+				 String userId = commonUtil.getClientSessionUserId(request);
+				 orgLocJsonObject = SourceLeadSessionManager.getSessionJsonObject(request,  "orgLocations","userSession",userId);
+				 submissionList = requirementSubmissionService.getOfferAcceptedCandidatesListByOrgLocationId(Long.valueOf(orgLocJsonObject.get("id").toString()));
+			}else {
+				 loginOrgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+				 submissionList = requirementSubmissionService.getOfferAcceptedCandidatesListByOrgLocationId(loginOrgLocation.getId());
+			}
 			
-			//OrgLocations loginOrgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
-			org.json.simple.JSONObject orgLocJsonObject = SourceLeadSessionManager.getSessionJsonObject(request,  "orgLocations");
-			List<RequirementSubmissionsView> submissionList = requirementSubmissionService.getOfferAcceptedCandidatesListByOrgLocationId(Long.valueOf(orgLocJsonObject.get("id").toString()));
 			List<RequirementSubmissionsView> requirementSubmissionList = new ArrayList<RequirementSubmissionsView>();
 			
 			if (null != submissionList && submissionList.size() > 0) {
 				for (RequirementSubmissionsView submission : submissionList) {
 					Date date1=new SimpleDateFormat("dd MM yyyy").parse(submission.getOfferJoinDate());  
-					submission.setOfferJoinDate(commonUtil.dateStrFromOrgDateFormatter(orgLocJsonObject.get("dateFormat").toString(), date1));
+					if(isCouchbaseEnabled.equalsIgnoreCase("true")) {
+						submission.setOfferJoinDate(commonUtil.dateStrFromOrgDateFormatter(orgLocJsonObject.get("dateFormat").toString(), date1));
+					}else {
+						submission.setOfferJoinDate(commonUtil.dateStrFromOrgDateFormatter(loginOrgLocation.getDateFormat(), date1));
+					}
+					
 					requirementSubmissionList.add(submission);
 					CandidateOnBoarding candidateOnBoarding = candidateOnBoardingService.getCandidateOnBoardingByCandidateIdAndOfferId(submission.getCandidateId(), submission.getOfferId());
 					if (null != candidateOnBoarding) {

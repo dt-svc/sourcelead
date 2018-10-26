@@ -208,18 +208,19 @@ public class CandidateController {
 		logger.debug("--------candidatesList------");
 		String userRole =null;
 		String userId = commonUtil.getClientSessionUserId(request);
-		
-		JSONObject orgLocJsonObject = SourceLeadSessionManager.getSessionJsonObject(request,  "orgLocations","userSession",userId);
-		JSONObject userLocJsonObject = SourceLeadSessionManager.getSessionJsonObject(request,  "user","userSession",userId);
-	    
-	    OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
-		Org org = (Org)SourceLeadSessionManager.getSessionAttribute(request, "org");
-		User user = (User)SourceLeadSessionManager.getSessionAttribute(request, "user");
+		JSONObject orgLocJsonObject = null;
+		JSONObject userLocJsonObject = null;
+		OrgLocations orgLocations = null;
+		User user = null;
 		
 		if(isCouchbaseEnabled.equalsIgnoreCase("true")) {
-			  userRole =  SourceLeadSessionManager.getSessionJsonString(request, "loginUserRole","userSession",userId);
+			 userRole =  SourceLeadSessionManager.getSessionJsonString(request, "loginUserRole","userSession",userId);
+			 orgLocJsonObject = SourceLeadSessionManager.getSessionJsonObject(request,  "orgLocations","userSession",userId);
+			 userLocJsonObject = SourceLeadSessionManager.getSessionJsonObject(request,  "user","userSession",userId);
 		}else {
-			userRole = (String) SourceLeadSessionManager.getSessionAttribute(request, "loginUserRole");
+			 userRole = (String) SourceLeadSessionManager.getSessionAttribute(request, "loginUserRole");
+			 orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+			 user = (User)SourceLeadSessionManager.getSessionAttribute(request, "user");
 		}
 		
 	    Long candidateCount = 0L;
@@ -277,9 +278,6 @@ public class CandidateController {
 		List<User> requirementApproverList = userService.getTabAccessOwnersByOrgLocationIdAndTabId(Long.valueOf(orgLocJsonObject.get("id").toString()),Long.valueOf(Constants.TAB_CANDIATE));
 		model.addObject("requirementApproverList", requirementApproverList);
 				
-		
-	/*	List<Candidate>   candidatesList = candidateService.getCandidatesListByOrgLocationID(orgLocations.getId(),org.getId(),Constants.CANDIDATE_ACTIVE,"");
-		model.addObject("candidatesList", candidatesList);*/
 		
 		List<LookUpData> skillsList = lookUpDataService.getLookUpDataByCategory(Constants.SKILLS);
 		model.addObject("skillsList", skillsList);

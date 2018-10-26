@@ -213,7 +213,6 @@ public class LoginSessionController {
 		SourceLeadSessionManager.setSessionAttribute(request, "googleMapsLocationApiKey", googleMapsLocationApiKey);
 		SourceLeadSessionManager.setSessionAttribute(request, "sessionId", request.getSession().getId());
 		
-		SourceLeadSessionManager.setJsonStringSessionAttribute(request, "sessionId", request.getSession().getId());
 		sessionDTO.setSessionId(request.getSession().getId());
 		
 		User user = userService.findByUserName(authentication.getName());
@@ -316,9 +315,6 @@ public class LoginSessionController {
 			ModelMapper modelMapper = new ModelMapper();
 			OrgLocationsSessionDTO orgLocDTO = modelMapper.map(orgLocations, OrgLocationsSessionDTO.class);
 			sessionDTO.setOrgLocations(orgLocDTO);
-			ObjectMapper mapperObj = new ObjectMapper();
-			String orgLocationJsonStr = mapperObj.writeValueAsString(orgLocDTO);
-			SourceLeadSessionManager.setJsonStringSessionAttribute(request, "orgLocations", orgLocationJsonStr);
 			
 			List<String> weekOffDaysList = new ArrayList<>();
 			if(orgLocations.getWeekOffDays() != null && !orgLocations.getWeekOffDays().isEmpty()) {
@@ -353,7 +349,6 @@ public class LoginSessionController {
 			 * This is for couch
 			 */
 			
-			SourceLeadSessionManager.setJsonStringSessionAttribute(request, "candidateId", candidate.getId().toString());
 			sessionDTO.setCandidateId(candidate.getId().toString());
 			SourceLeadSessionManager.setSessionAttribute(request, "loginUserFirstName", user.getFirstName());
 			SourceLeadSessionManager.setSessionAttribute(request, "loginUserLastName", user.getLastName());
@@ -445,7 +440,6 @@ public class LoginSessionController {
 			/**
 			 * IsGlobalAssess in couch
 			 */
-			SourceLeadSessionManager.setJsonStringSessionAttribute(request, "isGlobalAccess", userRole.getIsGlobal());
 			sessionDTO.setIsGlobalAccess(userRole.getIsGlobal());
 			SourceLeadSessionManager.setSessionAttribute(request, "designation", userRole.getDesignation());
 			
@@ -548,7 +542,6 @@ public class LoginSessionController {
 			 * This is for couch
 			 */
 			
-			SourceLeadSessionManager.setJsonStringSessionAttribute(request, "loginUserRole", userRole.getRoles().getRoleName());
 			sessionDTO.setLoginUserRole(userRole.getRoles().getRoleName());
 			
 			SourceLeadSessionManager.setSessionAttribute(request, "userRoleId", userRole.getId());
@@ -746,7 +739,6 @@ public class LoginSessionController {
 			 * This is for couch
 			 */
 			
-			SourceLeadSessionManager.setJsonStringSessionAttribute(request, "loginUserRole", userRole.getRoles().getRoleName());
 			sessionDTO.setLoginUserRole(userRole.getRoles().getRoleName());
 			
 			SourceLeadSessionManager.setSessionAttribute(request, "loginUserRoleId", userRole.getRoles().getId());
@@ -888,14 +880,6 @@ public class LoginSessionController {
 		
 		ModelMapper modelMapper = new ModelMapper();
 		UserSessionDTO userDTO = modelMapper.map(user, UserSessionDTO.class);
-		String userJsonStr = null;
-		try {
-			ObjectMapper mapperObj = new ObjectMapper();
-			userJsonStr = mapperObj.writeValueAsString(userDTO);
-		} catch (JsonProcessingException e) {
-			e.printStackTrace();
-		}
-		SourceLeadSessionManager.setJsonStringSessionAttribute(request, "user", userJsonStr);
 		sessionDTO.setUser(userDTO);
 		
 		SourceLeadSessionManager.setSessionAttribute(request, "userType", user.getUserType());
@@ -949,14 +933,6 @@ public class LoginSessionController {
 		ModelMapper modelMapper = new ModelMapper();
 		OrgSessionDTO orgDTO = modelMapper.map(org, OrgSessionDTO.class);
 		sessionDTO.setOrg(orgDTO);
-		String orgJsonStr = null;
-		try {
-			ObjectMapper mapperObj = new ObjectMapper();
-			orgJsonStr = mapperObj.writeValueAsString(orgDTO);
-		} catch (JsonProcessingException e) {
-			e.printStackTrace();
-		}
-		SourceLeadSessionManager.setJsonStringSessionAttribute(request, "org", orgJsonStr);
 		
 		SourceLeadSessionManager.setSessionAttribute(request, "orgCode", org.getOrgCode());
 		SourceLeadSessionManager.setSessionAttribute(request, "website", orgLocations.getWebsite());

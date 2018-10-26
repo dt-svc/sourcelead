@@ -194,6 +194,9 @@ public class RequirementRestController {
 	 @Autowired
 	 RequirementSubmissionTemplateFieldsService requirementSubmissionTemplateFieldsService;
 	 
+	 @Value("${isCouchbaseEnabled}")
+	 private String isCouchbaseEnabled;
+	 
 	@RequestMapping(value = "/storeFairJob", method = RequestMethod.POST)
 	public @ResponseBody Response<String> storeFairJob(JobFairDTO jobFairDTO, HttpServletRequest request)
 			throws Exception {
@@ -245,17 +248,28 @@ public class RequirementRestController {
 	public ResponseList<String> getJobFairDatesForCalendar(HttpServletRequest request){
 		ResponseList<String> responseList = new ResponseList<>();
 		try {
-			//User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
-			org.json.simple.JSONObject userJsonObject = SourceLeadSessionManager.getSessionJsonObject(request,  "user");
-			if(userJsonObject !=null) {
-				//OrgLocations loginOrgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
-				org.json.simple.JSONObject orgLocJsonObject = SourceLeadSessionManager.getSessionJsonObject(request,  "orgLocations");
-				/*Timezone timezone = null;
-				if(loginOrgLocations.getTimezone() != null){
-					timezone = timeZoneService.getTimezone(loginOrgLocations.getTimezone().getId());
-				}*/
+			User user = null;
+			OrgLocations loginOrgLocations = null;
+			org.json.simple.JSONObject userJsonObject = null;
+			org.json.simple.JSONObject orgLocJsonObject = null;
+			
+			if(isCouchbaseEnabled.equalsIgnoreCase("true")) {
+				 String userId = commonUtil.getClientSessionUserId(request);
+				  orgLocJsonObject = SourceLeadSessionManager.getSessionJsonObject(request,  "orgLocations","userSession",userId);
+				  userJsonObject = SourceLeadSessionManager.getSessionJsonObject(request,  "user","userSession",userId);
+			}else {
+				 user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+				 loginOrgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+			}
+			
+			if(userJsonObject != null || user != null) {
 				
-				responseList.setData(requirementService.getJobFairDatesForCalendar(Long.valueOf(userJsonObject.get("id").toString()), Long.valueOf(orgLocJsonObject.get("id").toString()), orgLocJsonObject.get("dateFormat").toString()));
+				if(isCouchbaseEnabled.equalsIgnoreCase("true")) {
+					responseList.setData(requirementService.getJobFairDatesForCalendar(Long.valueOf(userJsonObject.get("id").toString()), Long.valueOf(orgLocJsonObject.get("id").toString()), orgLocJsonObject.get("dateFormat").toString()));
+				}else {
+					responseList.setData(requirementService.getJobFairDatesForCalendar(user.getId(), loginOrgLocations.getId(), loginOrgLocations.getDateFormat()));
+				}
+				
 				responseList.setResponse(Result.SUCCESS.name());
 				responseList.setResponseMessage(Result.SUCCESS.getValue());
 			} else {
@@ -274,19 +288,40 @@ public class RequirementRestController {
 	public ResponseList<Requirement> getJobFairRequirements(HttpServletRequest request, @RequestParam(defaultValue="") String date) {
 		ResponseList<Requirement> responseList = new ResponseList<>();
 		try {
-			/*User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
-			OrgLocations loginOrgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");*/
+			User user = null;
+			OrgLocations loginOrgLocations = null;
+			org.json.simple.JSONObject userJsonObject = null;
+			org.json.simple.JSONObject orgLocJsonObject = null;
 			
-			org.json.simple.JSONObject userJsonObject = SourceLeadSessionManager.getSessionJsonObject(request,  "user");
-			org.json.simple.JSONObject orgLocJsonObject = SourceLeadSessionManager.getSessionJsonObject(request,  "orgLocations");
-			if (userJsonObject != null) {
-				Date startTime =  commonUtil.orgLocationDateFormat(orgLocJsonObject.get("dateFormat").toString(), date);
+			if(isCouchbaseEnabled.equalsIgnoreCase("true")) {
+				String userId = commonUtil.getClientSessionUserId(request);
+				userJsonObject = SourceLeadSessionManager.getSessionJsonObject(request,  "user","userSession",userId);
+				orgLocJsonObject = SourceLeadSessionManager.getSessionJsonObject(request,  "orgLocations","userSession",userId);
+			}else {
+				user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+				loginOrgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+			}
+			
+			
+			if (userJsonObject != null || user != null) {
+				Date startTime = null;
+				if(isCouchbaseEnabled.equalsIgnoreCase("true")) {
+					startTime =  commonUtil.orgLocationDateFormat(orgLocJsonObject.get("dateFormat").toString(), date);
+				}else {
+					startTime =  commonUtil.orgLocationDateFormat(loginOrgLocations.getDateFormat(), date);
+				}
+				
 				DateFormat week_Day = new SimpleDateFormat ("EEEE");
 				String dayOfweek = week_Day.format(startTime);
 				SimpleDateFormat formatter = new SimpleDateFormat("MMM dd yyyy");
 				String selectedDate  = formatter.format(startTime);
 				
-				responseList.setData(requirementService.getJobFairRequirementsByDate(Long.valueOf(userJsonObject.get("id").toString()), Long.valueOf(orgLocJsonObject.get("id").toString()), orgLocJsonObject.get("dateFormat").toString(), date));
+				if(isCouchbaseEnabled.equalsIgnoreCase("true")) {
+					responseList.setData(requirementService.getJobFairRequirementsByDate(Long.valueOf(userJsonObject.get("id").toString()), Long.valueOf(orgLocJsonObject.get("id").toString()), orgLocJsonObject.get("dateFormat").toString(), date));
+				}else {
+					responseList.setData(requirementService.getJobFairRequirementsByDate(user.getId(), loginOrgLocations.getId(),loginOrgLocations.getDateFormat(), date));
+				}
+				
 				responseList.setResponse(Result.SUCCESS.name());
 				responseList.setResponseMessage(dayOfweek + "<>" + selectedDate);
 			} else {

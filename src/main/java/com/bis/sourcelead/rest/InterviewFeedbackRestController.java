@@ -77,6 +77,9 @@ public class InterviewFeedbackRestController {
 	
 	@Autowired
 	 private OrgLocationService orgLocationService;
+	
+	@Value("${isCouchbaseEnabled}")
+	private String isCouchbaseEnabled;
   
 	
 	/**
@@ -255,14 +258,31 @@ public class InterviewFeedbackRestController {
     @RequestMapping(value = "/getInterviewFeedbackTemplatesList", method = RequestMethod.POST)
  	@ResponseBody ResponseList<SubmissionTemplate> getInterviewFeedbackTemplatesList(HttpServletRequest request) throws Exception {
     	ResponseList<SubmissionTemplate> response = new ResponseList<>();
-    	//User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
-    	org.json.simple.JSONObject userJsonObject = SourceLeadSessionManager.getSessionJsonObject(request,  "user");
-    	if(userJsonObject != null) {
+    	User user = null;
+    	OrgLocations orgLocations = null;
+    	org.json.simple.JSONObject userJsonObject = null;
+    	org.json.simple.JSONObject orgLocJsonObject = null;
+    	List<SubmissionTemplate> submissiontTemplateList  = null;
+    	
+    	if(isCouchbaseEnabled.equalsIgnoreCase("true")) {
+   		    String userId = commonUtil.getClientSessionUserId(request);
+   		    userJsonObject = SourceLeadSessionManager.getSessionJsonObject(request,  "user","userSession",userId);
+   		    orgLocJsonObject = SourceLeadSessionManager.getSessionJsonObject(request,  "orgLocations","userSession",userId);
+    	}else {
+    		 user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+    		 orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,"orgLocations");
+    	}
+    	
+    	
+    	if(userJsonObject != null || user != null) {
     		try {
-     			//OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,"orgLocations");
-    			org.json.simple.JSONObject orgLocJsonObject = SourceLeadSessionManager.getSessionJsonObject(request,  "orgLocations");
     			
-     	 		List<SubmissionTemplate> submissiontTemplateList  = submissionTemplateService.getInterviewFeedbackTemplatesByOrgLocationId(Long.valueOf(orgLocJsonObject.get("id").toString()));
+    			if(isCouchbaseEnabled.equalsIgnoreCase("true")) {
+    				submissiontTemplateList  = submissionTemplateService.getInterviewFeedbackTemplatesByOrgLocationId(Long.valueOf(orgLocJsonObject.get("id").toString()));
+    			}else {
+    				submissiontTemplateList  = submissionTemplateService.getInterviewFeedbackTemplatesByOrgLocationId(orgLocations.getId());
+    			}
+     	 		
      	 		response.setData(submissiontTemplateList);
      	 		response.setResponse(Result.SUCCESS.name());
     			response.setResponseMessage(Result.SUCCESS.getValue());
@@ -306,15 +326,29 @@ public class InterviewFeedbackRestController {
     @RequestMapping(value = "/getInterviewrsFeedbackList" , method = RequestMethod.GET)
 	   public List<RequirementInterviewerDTO> getInterviewrsFeedbackList(@RequestParam(value="interviewId", required=false) Long interviewId,
 			  @RequestParam(value="submissionId", required=false) Long submissionId, HttpServletRequest request) throws Exception {
-						List<RequirementInterviewerDTO> interviewers = requirementInterviewerService.getInterviwersListByInterviewIdFromDTO(interviewId);
-						org.json.simple.JSONObject orgLocJsonObject = SourceLeadSessionManager.getSessionJsonObject(request,  "orgLocations");
-						for(RequirementInterviewerDTO interviewer: interviewers){
-							InterviewFeedbackTemplate feedbackTemplate = interviewFeedbackTemplateService.getInterviewFeedbackTemplateById(interviewer.getId()) ;
-							if(feedbackTemplate != null){
-								interviewer.setFeedbackDate(commonUtil.dateStrFromOrgDateFormatter(orgLocJsonObject.get("dateFormat").toString(),feedbackTemplate.getCreatedDate()));
-								interviewer.setFeedbackStatus(feedbackTemplate.getStatus());
-							}
-						}
+    	org.json.simple.JSONObject orgLocJsonObject = null;
+    	OrgLocations orgLocations = null;
+    	
+    	if(isCouchbaseEnabled.equalsIgnoreCase("true")) {
+   		    String userId = commonUtil.getClientSessionUserId(request);
+   		     orgLocJsonObject = SourceLeadSessionManager.getSessionJsonObject(request,  "orgLocations","userSession",userId);
+    	}else {
+    		 orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+    	}
+       List<RequirementInterviewerDTO> interviewers = requirementInterviewerService.getInterviwersListByInterviewIdFromDTO(interviewId);
+		
+		for(RequirementInterviewerDTO interviewer: interviewers){
+			InterviewFeedbackTemplate feedbackTemplate = interviewFeedbackTemplateService.getInterviewFeedbackTemplateById(interviewer.getId()) ;
+			if(feedbackTemplate != null){
+				if(isCouchbaseEnabled.equalsIgnoreCase("true")) {
+					interviewer.setFeedbackDate(commonUtil.dateStrFromOrgDateFormatter(orgLocJsonObject.get("dateFormat").toString(),feedbackTemplate.getCreatedDate()));
+				}else {
+					interviewer.setFeedbackDate(commonUtil.dateStrFromOrgDateFormatter(orgLocations.getDateFormat(),feedbackTemplate.getCreatedDate()));
+				}
+				
+				interviewer.setFeedbackStatus(feedbackTemplate.getStatus());
+			}
+		}
 			 return interviewers;
 	   }
     

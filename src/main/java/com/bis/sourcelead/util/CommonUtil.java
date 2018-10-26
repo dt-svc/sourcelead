@@ -2743,7 +2743,7 @@ public String getOrglocationDateFormatHHMMSS(String dateFormat, Date date)
 			  break;
 	        }
 		  }	
-	 String userId =  SourceLeadSessionManager.getClientSessionJsonString(request,"sessionUserId",clientSessionId);
+	 String userId =  SourceLeadSessionManager.getClientUserIdSessionJsonString(request,"sessionUserId",clientSessionId);
 	 return userId;
 	}
 }

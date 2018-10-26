@@ -71,7 +71,7 @@ public class SourceLeadSessionManager {
 		}
 	}
 	
-	//need to remove
+	/*//need to remove
 	public static JSONObject getSessionJsonObject(HttpServletRequest request, String attribute) {
 		
 		JSONObject jsonObjVal = null;
@@ -94,7 +94,7 @@ public class SourceLeadSessionManager {
 		}
 	  }
 		return jsonObjVal;
-	}
+	}*/
 	
 	
 	
@@ -134,7 +134,7 @@ public static JSONObject getSessionJsonObject(HttpServletRequest request, String
 	
 	
 	
-  public static String getClientSessionJsonString(HttpServletRequest request, String attribute,String sessionId) {
+  public static String getClientUserIdSessionJsonString(HttpServletRequest request, String attribute,String sessionId) {
 		
 		String strValue = null;
 		Object sv = null;
@@ -158,7 +158,7 @@ public static JSONObject getSessionJsonObject(HttpServletRequest request, String
 		return strValue;
 	}
 	
-	//need to remove
+/*	//need to remove
 	public static String getSessionJsonString(HttpServletRequest request, String attribute) {
 		
 		String strValue = null;
@@ -182,7 +182,7 @@ public static JSONObject getSessionJsonObject(HttpServletRequest request, String
 						
 		}
 		return strValue;
-	}
+	}*/
 	
 public static String getSessionJsonString(HttpServletRequest request, String attribute,String userSessionAttribute,String userId) {
 		

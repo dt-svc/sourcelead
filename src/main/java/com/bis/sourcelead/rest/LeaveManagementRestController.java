@@ -231,6 +231,9 @@ public class LeaveManagementRestController {
 	@Autowired
 	ConversionUtil conversionUtil;
 	
+	@Value("${isCouchbaseEnabled}")
+	private String isCouchbaseEnabled;
+	
 
 	/**
 	 * returns Pending leaves jsp
@@ -2440,21 +2443,54 @@ public class LeaveManagementRestController {
 	@ResponseBody
 	public LeaveDTO totalCountsForEmployeeLeaves(HttpServletRequest request) throws Exception {
 		
-		String loginUserRole = SourceLeadSessionManager.getSessionJsonString(request, "loginUserRole");
-		org.json.simple.JSONObject orgLocJsonObject = SourceLeadSessionManager.getSessionJsonObject(request,  "orgLocations");
-		org.json.simple.JSONObject userJsonObject = SourceLeadSessionManager.getSessionJsonObject(request,  "user");
-		org.json.simple.JSONObject orgJsonObject = SourceLeadSessionManager.getSessionJsonObject(request,  "org");
-		return leaveService.getAllEmployeesLeavesCounts(Long.valueOf(orgLocJsonObject.get("id").toString()), Long.valueOf(userJsonObject.get("id").toString()), loginUserRole,Long.valueOf(orgJsonObject.get("id").toString()));
+		String loginUserRole = null;
+		org.json.simple.JSONObject orgLocJsonObject = null;
+		org.json.simple.JSONObject userJsonObject = null;
+		org.json.simple.JSONObject orgJsonObject = null;
+		OrgLocations orgLocations = null;
+		Org org = null;
+		User user = null;
+		
+		
+		if(isCouchbaseEnabled.equalsIgnoreCase("true")) {
+   		 String userId = commonUtil.getClientSessionUserId(request);
+   		 loginUserRole = SourceLeadSessionManager.getSessionJsonString(request, "loginUserRole","userSession",userId);
+		 orgLocJsonObject = SourceLeadSessionManager.getSessionJsonObject(request,  "orgLocations","userSession",userId);
+		 userJsonObject = SourceLeadSessionManager.getSessionJsonObject(request,  "user","userSession",userId);
+		 orgJsonObject = SourceLeadSessionManager.getSessionJsonObject(request,  "org","userSession",userId);
+		 return leaveService.getAllEmployeesLeavesCounts(Long.valueOf(orgLocJsonObject.get("id").toString()), Long.valueOf(userJsonObject.get("id").toString()), loginUserRole,Long.valueOf(orgJsonObject.get("id").toString()));
+		}else {
+			 loginUserRole = (String) SourceLeadSessionManager.getSessionAttribute(request, "loginUserRole");
+			 orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+			 user = (User)SourceLeadSessionManager.getSessionAttribute(request, "user");
+			 org = (Org)SourceLeadSessionManager.getSessionAttribute(request, "org");
+			 return leaveService.getAllEmployeesLeavesCounts(orgLocations.getId(), user.getId(), loginUserRole,org.getId());
+		}
+		
+		
 	}
 
 	@RequestMapping(value = { "/totalCountsForSelfLeaves","/rest/totalCountsForSelfLeaves" }, method = RequestMethod.GET)
 	@ResponseBody
 	public LeaveDTO totalCountsForSelfLeaves(HttpServletRequest request) throws Exception {
 		
-		org.json.simple.JSONObject orgLocJsonObject = SourceLeadSessionManager.getSessionJsonObject(request,  "orgLocations");
-		org.json.simple.JSONObject userJsonObject = SourceLeadSessionManager.getSessionJsonObject(request,  "user");
+		org.json.simple.JSONObject orgLocJsonObject = null;
+		org.json.simple.JSONObject userJsonObject = null;
+		OrgLocations orgLocations = null;
+		User user = null;
 		
-		return leaveService.getAllSelfLeavesCounts(Long.valueOf(orgLocJsonObject.get("id").toString()), Long.valueOf(userJsonObject.get("id").toString()));
+		if(isCouchbaseEnabled.equalsIgnoreCase("true")) {
+			 String userId = commonUtil.getClientSessionUserId(request);
+			 orgLocJsonObject = SourceLeadSessionManager.getSessionJsonObject(request,  "orgLocations","userSession",userId);
+			 userJsonObject = SourceLeadSessionManager.getSessionJsonObject(request,  "user","userSession",userId);
+			 return leaveService.getAllSelfLeavesCounts(Long.valueOf(orgLocJsonObject.get("id").toString()), Long.valueOf(userJsonObject.get("id").toString()));
+		}else {
+			 orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+			 user = (User)SourceLeadSessionManager.getSessionAttribute(request, "user");
+			 return leaveService.getAllSelfLeavesCounts(orgLocations.getId(), user.getId());
+		}
+		
+		
 
 	}
 
