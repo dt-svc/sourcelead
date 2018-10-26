@@ -242,11 +242,11 @@ var returnStat = true;
 			$("#errStartDate").find('p.jquery_form_error_message').remove();
 			$("#errEndDate").find('p.jquery_form_error_message').remove();
 			if(startDateStr == null || startDateStr == '' || startDateStr == 'undefined'){
-				$("input#startDate") .after( "<p class='jquery_form_error_message'>Start Date is Required</span>");
+				$("input#jobStartDate") .after( "<p class='jquery_form_error_message'>Start Date is Required</span>");
 				returnStat =  false;
 			}
 			if(endDateStr == null || endDateStr == '' || endDateStr == 'undefined'){
-				$("input#endDate") .after( "<p class='jquery_form_error_message'>End Date is Required</span>");
+				$("input#jobEndDate") .after( "<p class='jquery_form_error_message'>End Date is Required</span>");
 				returnStat =  false;
 			}
 		}
@@ -406,7 +406,7 @@ function offerpagination(url){
                 "render": function ( data, type, opt, meta ) {
                 		var result = "";
                 		
-						result = result + ' <td><div><span>'+opt.assignedMembersCount+'</span></div></td>';
+						result = result + ' <td><div><span onClick="loadJobAllApplicants('+opt.id+')">'+opt.assignedMembersCount+'</span></div></td>';
     	              return result;
                 }
           } ,{
@@ -415,7 +415,7 @@ function offerpagination(url){
                       "sortable": false,
                       "render": function ( data, type, opt, meta ) {
                     	  var result = "";
-      	    	  			result = result + ' <td><div><span>'+opt.shortlistCount+'</span></div></td>';
+      	    	  			result = result + ' <td><div><span onClick="loadJobShortlistCandidates('+opt.id+');">'+opt.shortlistCount+'</span></div></td>';
       	    	  		return result;
                       }
                },{
@@ -424,7 +424,7 @@ function offerpagination(url){
                      "sortable": false,
                      "render": function ( data, type, opt, meta ) {
                    	  var result = "";
-     	    	  		result = result + ' <td><div><span>'+opt.interviewCount+'</span></div></td>';
+     	    	  		result = result + ' <td><div><span onClick="loadJobInterviewCandidates('+opt.id+')">'+opt.interviewCount+'</span></div></td>';
      	    	  		return result;
                      }
                    } ,{
@@ -433,7 +433,7 @@ function offerpagination(url){
                        "sortable": false,
                        "render": function ( data, type, opt, meta ) {
                      	  var result = "";
-       	    	  			result = result + ' <td><div><span>'+opt.offersCount+'</span></div></td>';
+       	    	  			result = result + ' <td><div><span onClick="loadJobOfferedCandidates('+opt.id+')">'+opt.offersCount+'</span></div></td>';
        	    	  		return result;
                        }
                 },{
@@ -442,7 +442,7 @@ function offerpagination(url){
                     "sortable": false,
                     "render": function ( data, type, opt, meta ) {
                   	  var result = "";
-    	    	  			result = result + ' <td><div><span>'+opt.submitToClientCount+'</span></div></td>';
+    	    	  			result = result + ' <td><div><span onClick="loadJobSubmitToClientCandidates('+opt.id+')">'+opt.submitToClientCount+'</span></div></td>';
     	    	  		return result;
                     }
              },{
@@ -451,7 +451,7 @@ function offerpagination(url){
                  "sortable": false,
                  "render": function ( data, type, opt, meta ) {
                	  var result = "";
- 	    	  			result = result + ' <td><div><span>'+opt.backoutCount+'</span></div></td>';
+ 	    	  			result = result + ' <td><div><span onClick="loadJobBackOutCandidates('+opt.id+')">'+opt.backoutCount+'</span></div></td>';
  	    	  		return result;
                  }
           },{
@@ -460,7 +460,7 @@ function offerpagination(url){
                  "sortable": false,
                  "render": function ( data, type, opt, meta ) {
                	  var result = "";
- 	    	  			result = result + ' <td><div><span>'+opt.joinedCount+'</span></div></td>';
+ 	    	  			result = result + ' <td><div><span onClick="loadJobJoinedCandidates('+opt.id+')">'+opt.joinedCount+'</span></div></td>';
  	    	  		return result;
                  }
           },{
@@ -469,7 +469,7 @@ function offerpagination(url){
               "sortable": false,
               "render": function ( data, type, opt, meta ) {
             	  var result = "";
-	    	  			result = result + ' <td><div><span>'+opt.rejectedCount+'</span></div></td>';
+	    	  			result = result + ' <td><div><span onClick="loadJobRejectedCandidates('+opt.id+')">'+opt.rejectedCount+'</span></div></td>';
 	    	  		return result;
               }
        }],
@@ -499,7 +499,59 @@ function offerpagination(url){
 }
 
 </script>
-  
+
+   <script type="text/javascript">
+   function loadJobAllApplicants(requirementId){
+		var tab = $("#dateActiveTab").val();
+		var sourceleadUrl = '${sourceleadUrl}';
+		var orgLocId = '${SourceLeadWeb_orgLocationId}';
+		window.location.href = sourceleadUrl + "/jobPerformanceAllApplicantsList?&tab="+tab+"&orgLocationId="+orgLocId+"&requirementId="+requirementId;
+	}
+ function loadJobInterviewCandidates(requirementId){
+		var tab = $("#dateActiveTab").val();
+		var sourceleadUrl = '${sourceleadUrl}';
+		var orgLocId = '${SourceLeadWeb_orgLocationId}';
+		window.location.href = sourceleadUrl + "/jobPerformanceCandidatesByStatus?&tab="+tab+"&orgLocationId="+orgLocId+"&statusType=Interview&requirementId="+requirementId;
+	}
+ function loadJobShortlistCandidates(requirementId){
+		var tab = $("#dateActiveTab").val();
+		var sourceleadUrl = '${sourceleadUrl}';
+		var orgLocId = '${SourceLeadWeb_orgLocationId}';
+		window.location.href = sourceleadUrl + "/jobPerformanceCandidatesByStatus?&tab="+tab+"&orgLocationId="+orgLocId+"&statusType=Shortlisted&requirementId="+requirementId;
+	}
+ function loadJobOfferedCandidates(requirementId){
+		var tab = $("#dateActiveTab").val();
+		var sourceleadUrl = '${sourceleadUrl}';
+		var orgLocId = '${SourceLeadWeb_orgLocationId}';
+		window.location.href = sourceleadUrl + "/jobPerformanceCandidatesByStatus?&tab="+tab+"&orgLocationId="+orgLocId+"&statusType=Offered&requirementId="+requirementId;
+	}
+ 
+ function loadJobSubmitToClientCandidates(requirementId){
+		var tab = $("#dateActiveTab").val();
+		var sourceleadUrl = '${sourceleadUrl}';
+		var orgLocId = '${SourceLeadWeb_orgLocationId}';
+		window.location.href = sourceleadUrl + "/jobPerformanceCandidatesByStatus?&tab="+tab+"&orgLocationId="+orgLocId+"&statusType=SubmitToClient&requirementId="+requirementId;
+	}
+function loadJobBackOutCandidates(requirementId){
+		var tab = $("#dateActiveTab").val();
+		var sourceleadUrl = '${sourceleadUrl}';
+		var orgLocId = '${SourceLeadWeb_orgLocationId}';
+		window.location.href = sourceleadUrl + "/jobPerformanceCandidatesByStatus?&tab="+tab+"&orgLocationId="+orgLocId+"&statusType=BackOut&requirementId="+requirementId;
+	}
+function loadJobJoinedCandidates(requirementId){
+		var tab = $("#dateActiveTab").val();
+		var sourceleadUrl = '${sourceleadUrl}';
+		var orgLocId = '${SourceLeadWeb_orgLocationId}';
+		window.location.href = sourceleadUrl + "/jobPerformanceCandidatesByStatus?&tab="+tab+"&orgLocationId="+orgLocId+"&statusType=Joined&requirementId="+requirementId;
+	}
+	
+function loadJobRejectedCandidates(requirementId){
+	var tab = $("#dateActiveTab").val();
+	var sourceleadUrl = '${sourceleadUrl}';
+	var orgLocId = '${SourceLeadWeb_orgLocationId}';
+	window.location.href = sourceleadUrl + "/jobPerformanceCandidatesByStatus?&tab="+tab+"&orgLocationId="+orgLocId+"&statusType=Rejected&requirementId="+requirementId;
+}
+</script>
  
    <!-- ========================== Filter popup Written By Laxman ===============================  -->
 <script>
@@ -751,10 +803,10 @@ function jobsExport(type){
 				$("#errStartDate").find('p.jquery_form_error_message').remove();
 				$("#errEndDate").find('p.jquery_form_error_message').remove();
 				if(startDateStr == null || startDateStr == '' || startDateStr == 'undefined'){
-					$("input#startDate") .after( "<p class='jquery_form_error_message'>Start Date is Required</span>");
+					$("input#jobStartDate") .after( "<p class='jquery_form_error_message'>Start Date is Required</span>");
 				}
 				if(endDateStr == null || endDateStr == '' || endDateStr == 'undefined'){
-					$("input#endDate") .after( "<p class='jquery_form_error_message'>End Date is Required</span>");
+					$("input#jobEndDate") .after( "<p class='jquery_form_error_message'>End Date is Required</span>");
 				}
 			}
 		});
