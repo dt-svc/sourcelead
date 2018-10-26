@@ -2890,9 +2890,6 @@ public class RequirementSubmissionDaoImpl implements RequirementSubmissionDao{
 				      .append("OR (concat(rsh.candidate.firstName,rsh.candidate.lastName) like '%" + requirementSubmissionHistoryDTO.getSearchValue().trim() + "%')" )
 				      .append("OR rsh.candidate.email like '%" + requirementSubmissionHistoryDTO.getSearchValue() + "%' ")
 			          .append("OR rsh.candidate.mobilePhone like '%" + requirementSubmissionHistoryDTO.getSearchValue() + "%' ")
-			          .append("OR rsh.createdUser like '%" + requirementSubmissionHistoryDTO.getSearchValue() + "%' ")
-			          .append("OR rsh.candidateScore like '%" + requirementSubmissionHistoryDTO.getSearchValue() + "%' ")
-			          .append("OR rsh.submissionStatus like '%" + requirementSubmissionHistoryDTO.getSearchValue() + "%' ")
 			          .append("OR rsh.requirement.jobTitle like '%" + requirementSubmissionHistoryDTO.getSearchValue() + "%' ")
 				      .append("OR rsh.submissionStatus like '%" + requirementSubmissionHistoryDTO.getSearchValue() + "%' ")
 				      .append("OR rsh.createdUser like '%" + requirementSubmissionHistoryDTO.getSearchValue() + "%') ");
