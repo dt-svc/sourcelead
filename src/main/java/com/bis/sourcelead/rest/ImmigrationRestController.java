@@ -2478,7 +2478,7 @@ public class ImmigrationRestController {
 
 	}
 	
-	@PreAuthorize("hasRole('ROLE_VIEW_EDIT_LCA')")
+	@PreAuthorize("hasRole('ROLE_RE_ACTIVE_LCA')")
 	@RequestMapping(value = { "/reActivateLca" })
 	public String reActivateLca(
 			@RequestParam(value = "lcaUuid", required = false) String lcaUuid,
