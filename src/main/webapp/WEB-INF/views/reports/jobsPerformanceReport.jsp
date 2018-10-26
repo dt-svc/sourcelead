@@ -536,7 +536,7 @@ function offerpagination(url){
 		var tab = $("#dateActiveTab").val();
 		var sourceleadUrl = '${sourceleadUrl}';
 		var orgLocId = '${SourceLeadWeb_orgLocationId}';
-		window.location.href = sourceleadUrl + "/jobPerformanceAllApplicantsList?&tab="+tab+"&orgLocationId="+orgLocId+"&requirementId="+requirementId;
+		window.location.href = sourceleadUrl + "/jobPerformanceCandidatesByStatus?&tab="+tab+"&orgLocationId="+orgLocId+"&statusType=All&requirementId="+requirementId;
 	}
  function loadJobInterviewCandidates(requirementId){
 		var tab = $("#dateActiveTab").val();
