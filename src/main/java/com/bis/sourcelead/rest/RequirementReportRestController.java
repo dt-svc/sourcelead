@@ -525,6 +525,9 @@ public class RequirementReportRestController {
 							String customEndTimeStr = TZ_DF_CED.format(endTime);
 							startDateUTC = TZ_DF_TS.parse(customStartTimeStr);
 							endDateUTC = TZ_DF_TS.parse(customEndTimeStr);
+							endDateUTC.setHours(23);
+							endDateUTC.setMinutes(59);
+							endDateUTC.setSeconds(59);
 						}
 						else {
 							startDateUTC = getPreviousDate(zoned, outputFormatter, TZ_DF_TS, timezone, 30);
@@ -611,6 +614,9 @@ public class RequirementReportRestController {
 							String customEndTimeStr = TZ_DF_CED.format(endTime);
 							startDateUTC = TZ_DF_TS.parse(customStartTimeStr);
 							endDateUTC = TZ_DF_TS.parse(customEndTimeStr);
+							endDateUTC.setHours(23);
+							endDateUTC.setMinutes(59);
+							endDateUTC.setSeconds(59);
 						}
 						else {
 							startDateUTC = getPreviousDate(zoned, outputFormatter, TZ_DF_TS, timezone, 30);
