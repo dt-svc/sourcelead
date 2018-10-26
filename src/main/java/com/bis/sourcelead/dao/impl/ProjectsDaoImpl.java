@@ -1573,7 +1573,9 @@ public HashSet<User> getAllUserTimeSheetSubmissionStatusCurrentWeek() {
 			if (projectReportDTO.getProjectManagers() != null && !projectReportDTO.getProjectManagers().isEmpty()) {
 				query += " join ps.projectApprovers pa";
 			}
-			query += " where ps.orgLocationsId.id = :orgLocationsId and ps.id IN(select pc.projectId.id from ProjectClients pc where pc.orgLocationsId = :orgLocationsId "
+			/*query += " where ps.orgLocationsId.id = :orgLocationsId and ps.id IN(select pc.projectId.id from ProjectClients pc where pc.orgLocationsId = :orgLocationsId "
+					+ clientQuery + " "+query1+")";*/
+			query += " where ps.id IN(select pc.projectId.id from ProjectClients pc where pc.orgLocationsId = :orgLocationsId "
 					+ clientQuery + " "+query1+")";
 			if (projectReportDTO.getProjectManagers() != null && !projectReportDTO.getProjectManagers().isEmpty()) {
 				query += " and pa.level in (1,2) and pa.approverUserId.id in (:projectManagers)";

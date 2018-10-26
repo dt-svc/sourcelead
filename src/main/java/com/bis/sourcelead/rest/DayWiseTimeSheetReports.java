@@ -118,6 +118,7 @@ public void exportDaywiseTimesheetReport(DayWiseTimesheetReoprtsDTO dayWiseTimes
 public List<ProjectMembers> getAllUserListBasedOnOrgLocationId(HttpServletRequest request) throws Exception {
 	OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,"orgLocations");
 	List<ProjectMembers> projectMemberList = projectMemberService.getAllProjectsByOrgLocationId(orgLocations.getId());
+	projectMemberList.forEach(pm -> pm.setUserId(String.valueOf(pm.getProjectMemberCandidteId().getConsultantUser().getId())));
 	return projectMemberList;
 }
 
