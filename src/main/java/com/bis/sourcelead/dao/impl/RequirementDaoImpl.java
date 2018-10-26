@@ -3142,7 +3142,7 @@ public class RequirementDaoImpl implements RequirementDao {
 			 query1.append("and (jobFair.name like '%" + jobFairDTO.getSearchValue() + "%' ")
 				   .append("OR jobFair.venue like '%" + jobFairDTO.getSearchValue() + "%' )");
 			}
-			query1.append(" order by " + jobFairDTO.getSortColumn() + " " + jobFairDTO.getSortOrder());
+			query1.append(" order by " + (jobFairDTO.getSortColumn() != null && !jobFairDTO.getSortColumn().isEmpty() ? jobFairDTO.getSortColumn() : "id") + " " + (jobFairDTO.getSortOrder() != null && !jobFairDTO.getSortOrder().isEmpty() ? jobFairDTO.getSortOrder() : "desc"));
 			
 			String query = "from JobFair jobFair where jobFair.user.id=:userId and jobFair.orgLocations.id=:orgLocationId and jobFair.status in " + (includeInactive ? "(0, 1)" : "(1)");
 			Query queryObj = session.createQuery(query + " " + query1);
