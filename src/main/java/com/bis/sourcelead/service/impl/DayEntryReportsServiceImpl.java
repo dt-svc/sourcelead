@@ -198,7 +198,14 @@ public class DayEntryReportsServiceImpl implements DayEntryReportsService{
 					style.setDataFormat(HSSFDataFormat.getBuiltinFormat("0.00"));
 					writeRow.createCell(8).setCellStyle(style);
 					if(StringUtils.isNotEmpty(dayEntries.getBillableHrs())) {
-						writeRow.createCell(8).setCellValue(Float.parseFloat(dayEntries.getBillableHrs()));
+						String[] hours = dayEntries.getBillableHrs().split(":");
+						if(hours != null && hours.length > 1) {
+							String billableHrs = hours[0]+"."+Math.round((Integer.parseInt(hours[1])*5)/3);
+							writeRow.createCell(8).setCellValue(Float.parseFloat(billableHrs));
+						}else {
+							writeRow.createCell(8).setCellValue(Float.parseFloat("0"));
+						}
+						
 					}else {
 						writeRow.createCell(8).setCellValue(Float.parseFloat("0"));
 					}
@@ -209,7 +216,14 @@ public class DayEntryReportsServiceImpl implements DayEntryReportsService{
 					style.setDataFormat(HSSFDataFormat.getBuiltinFormat("0.00"));
 					writeRow.createCell(9).setCellStyle(style);
 					if(StringUtils.isNotEmpty(dayEntries.getNonBillableHrs())) {
-						writeRow.createCell(9).setCellValue(Float.parseFloat(dayEntries.getNonBillableHrs()));
+						String[] hours = dayEntries.getNonBillableHrs().split(":");
+						if(hours != null && hours.length > 1) {
+							String nonbillableHrs = hours[0]+"."+Math.round((Integer.parseInt(hours[1])*5)/3);
+							writeRow.createCell(9).setCellValue(Float.parseFloat(nonbillableHrs));
+						}else {
+							writeRow.createCell(9).setCellValue(Float.parseFloat("0"));
+						}
+						
 					}else {
 						writeRow.createCell(9).setCellValue(Float.parseFloat("0"));
 					}
