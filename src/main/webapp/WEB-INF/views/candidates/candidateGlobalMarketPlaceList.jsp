@@ -961,6 +961,12 @@ function getGloblaMarketPlaceCandidates(divType){
 					var result = "";
 					if(divType=="listModel"){
 						for(var i=0;i<object.length;i++){
+							var profilePercentage = "";
+							if(object[i].profilePercentage == null){
+								profilePercentage = 0;
+							}else{
+								profilePercentage =object[i].profilePercentage;
+							}
 							result = result + '<div class="mt"></div>';
 							result = result + '<div class="media profileDetails-Widget positionRelative">';
 							result = result + '	<a class="removeSelected mt" title="Remove Selected"><i class="fa fa-trash-o"></i></a>';
@@ -972,35 +978,48 @@ function getGloblaMarketPlaceCandidates(divType){
 							result = result + ' <h4 class="media-heading mb10"><a href="profileSummary.html">'+object[i].fullName+'</a></h4>';
 							result = result + ' <h5 class="text-muted mb5">'+object[i].designation+'</h5>';
 							result = result + ' <div class="clearfix"></div>';
-							result = result + ' <ul class="list-unstyled list-inline mt10">';
-							result = result + '   <li class="mr"><span class="paddingRight">$</span>550<small class="text-muted paddingLeft">/ hr</small></li>';
-							result = result + '  <li class="mr"><span class="paddingRight">$</span>9k+<small class="text-muted paddingLeft">earned</small></li>';
-							result = result + '  <li class="mr"><span class="paddingRight"><i class="fa fa-map-marker"></i></span>'+object[i].location+'</li>';
+							result = result + '  <ul class="list-unstyled list-inline mt10">';
+							result = result + '    <li class="mr mb5 text-info" title="Current Rate"><span class="paddingRight">'+object[i].currentRateCurrency+'</span>'+object[i].currentRate+'<small class="paddingLeft">/'+object[i].currentRateType+' (Current)</small></li>';
+							result = result + '    <li class="mr mb5 textDanger" title="Expected Rate"><span class="paddingRight">'+object[i].expectedRateCurrencey+'</span>'+object[i].expectedRate+'<small class="paddingLeft">/'+object[i].expectedRateType+' (Expected)</small></li>';
+							result = result + '   <li class="mr mb5" title="Experience"><span class="paddingRight"><i class="fa fa-briefcase text-muted" aria-hidden="true"></i></span>'+(object[i].experienceYears == null ? "0" : object[i].experienceYears )+'.'+(object[i].experienceMonths == null ? "0" : object[i].experienceMonths )+'<small class="text-muted paddingLeft">(Yrs)</small></li>';
+							result = result + '   <li class="mr mb5" title="Location"><span class="paddingRight"><i class="fa fa-map-marker text-muted"></i></span>'+object[i].location+'</li>';
 							result = result + ' </ul>';
 							result = result + '<div class="clearfix"></div>';
-							result = result + ' <ul class="list-unstyled list-inline profileSkills mt5 mb0">';
-							result = result + '   <li>React.Js</li>';
-							result = result + ' <li>Redux for JavaScript</li>';
-							result = result + '  <li>Node.Js</li>';
-							result = result + '  <li>GraphQL</li>';
-							result = result + '  <li> <span class="text-success">more</span> </li>';
-							result = result + ' </ul>';
+							if(object[i].skillsName != null){
+								var skills = object[i].skillsName.split(',');
+								result = result + '<ul class="list-unstyled list-inline profileSkills mt10 mb0">';
+								var count = 0;
+								for(var entry of skills) {
+									result = result + '<li>'+entry+'</li>';
+									if(count == 6){
+										result = result + '<li> <span class="text-success" title="'+object[i].skillsName+'">more</span> </li>';
+										break;
+									}
+									count++;
+								}
+								result = result + ' </ul>';
+							}
 							result = result + '<div class="clearfix"></div>';
-							result = result + '<h5 class="text-muted small">Profile Updated:</h5>';
-							result = result + '<div class="progress mb0">';
-							result = result + '	<div class="progress-bar progress-bar-success" role="progressbar" aria-valuenow="40" aria-valuemin="0" aria-valuemax="100" style="width:'+object[i].profilePercentage+'%">';
-							result = result + object[i].profilePercentage+'%';
+							result = result + '<div class="clearfix fontSmall">';
+							result = result + '	<h5 class="text-muted mb5 mt5">Description:</h5>';
+							result = result + '	<p>Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industrys standard dummy text ever since the 1500s...</p>';
 							result = result + '</div>';
 							result = result + '</div>';
-							result = result + ' </div>';
-							result = result + ' <div class="col-md-3 text-center">';
-							result = result + '					  <div class="clearfix mt25 textBold text-center">';
-							result = result + '		<label class="text-muted mr">Rate</label>';
+							result = result + '<div class="col-md-3">';
+							result = result + '<div class="clearfix mt25 textBold">';
+							result = result + '	<label class="text-muted mr">Price :</label>';
 							result = result + '	<label class="jobSucces_list clearfix"><a>'+object[i].marketRateCurrencey+' '+object[i].marketPrice+'</a></label>';
-							result = result + '  </div>';
-							result = result + '<div class="clearfix mt text-center"> <a type="button" class="anchorHighlight">Add</a> </div>';
-							result = result + '  </div>';
-							result = result + ' </div>';
+							result = result + '</div>';
+							result = result + '<div class="clearfix mt"> <a type="button" class="anchorHighlight">Add</a> </div>';
+							result = result + '<h5 class="text-muted small clearfix mt25">Profile :</h5>';
+							result = result + '<div class="progress progressProfile mb0">';
+							result = result + '<div class="progress-bar progress-bar-success" role="progressbar" aria-valuenow="40" aria-valuemin="0" aria-valuemax="100" style="width:'+profilePercentage+'%">';
+							result = result + profilePercentage+'%';
+							result = result + '</div>';
+							result = result + '</div>';
+							result = result + '</div>';
+							result = result + '</div>';
+							result = result + '</div>';
 							result = result + '</div>';
 						}
 						$("#listView").empty().append(result);
@@ -1012,13 +1031,19 @@ function getGloblaMarketPlaceCandidates(divType){
 					if(divType=="cardModel"){
 						result = result + '<div class="clearfix mt"></div>';
 						for(var i=0;i<object.length;i++){
+							var profilePercentage = "";
+							if(object[i].profilePercentage == null){
+								profilePercentage = 0;
+							}else{
+								profilePercentage =object[i].profilePercentage;
+							}
 							result = result + '  <div class="col-md-4 mb">';
 							result = result + '<div class="media profileDetails-Widget">';
 							result = result + '<div class="media-left prfileImg pull-left">';
-							result = result + '<img src="images/24.jpg" onerror="predefineProfileImage(this);" class="media-object" alt="Image">';
+							result = result + '<img src="'+object[i].imageUrl+'" onerror="predefineProfileImage(this);" class="media-object" alt="Image">';
 							result = result + '<div class="clearfix mt5 textBold text-center">';
 							result = result + '<div class="text-muted">Rate</div>';
-							result = result + '<div class="jobSucces_list clearfix mt2"><a><i class="fa fa-dollar mr5"></i>2500</a></div>';
+							result = result + '<div class="jobSucces_list clearfix mt2"><a>'+object[i].marketRateCurrencey+' '+object[i].marketPrice+'</a></div>';
 							result = result + '</div>';
 							result = result + '<div class="clearfix mb"></div>';
 							result = result + '<div class="clearfix text-center"> <a type="button" class="anchorHighlight">Add</a> </div>';
@@ -1026,32 +1051,39 @@ function getGloblaMarketPlaceCandidates(divType){
 							result = result + '<div class="media-body">';
 							result = result + '<a class="removeSelected" title="Remove Selected"><i class="fa fa-trash-o"></i></a>';
 							result = result + '<div class="col-md-12 padding_right">';
-							result = result + '<h4 class="media-heading mb0 tbldata-dotdot-me inlineBlock"><a href="profileSummary.html">Rajkumar Santoshi Alapati</a></h4>';
-							result = result + '<h5 class="text-muted mb5">Software Development Engineer</h5>';
+							result = result + '<h4 class="media-heading mb0 tbldata-dotdot-me inlineBlock"><a href="profileSummary.html">'+object[i].fullName+'</a></h4>';
+							result = result + '<h5 class="text-muted mb5">'+object[i].designation+'</h5>';
 							result = result + '<div class="clearfix"></div>';
 							result = result + '<ul class="list-unstyled list-inline mt10">';
-							result = result + '<li class="mr"><span class="paddingRight">$</span>550<small class="text-muted paddingLeft">/ hr</small></li>';
-							result = result + '<li class="mr"><span class="paddingRight">$</span>9<small class="text-muted paddingLeft">/ K+</small></li>';
-							result = result + '<li class="mr"><span class="paddingRight"><i class="fa fa-map-marker"></i></span>Dallas</li>';
+							result = result + '<li class="mb10 text-info" title="Current Rate"><span class="paddingRight">'+object[i].currentRateCurrency+'</span>'+object[i].currentRate+'<small class="paddingLeft">/'+object[i].currentRateType+' (Current)</small></li>';
+							result = result + '<li class="mr5 mb10 textDanger" title="Expected Rate"><span class="paddingRight">'+object[i].expectedRateCurrencey+'</span>'+object[i].expectedRate+'<small class="paddingLeft">/'+object[i].expectedRateType+' (Expected)</small></li>';
+							result = result + '<li class="mr mb10" title="Experience"><span class="paddingRight"><i class="fa fa-briefcase text-muted" aria-hidden="true"></i></span>'+(object[i].experienceYears == null ? "0" : object[i].experienceYears )+'.'+(object[i].experienceMonths == null ? "0" : object[i].experienceMonths )+'<small class="text-muted paddingLeft">(Yrs)</small></li>';
+							result = result + '<li class="mr mb10" title="Location"><span class="paddingRight"><i class="fa fa-map-marker text-muted"></i></span>'+object[i].location+'</li>';
 							result = result + '</ul>';
+							if(object[i].skillsName != null){
+								var skills = object[i].skillsName.split(',');
+								result = result + '<ul class="list-unstyled list-inline profileSkills mt10 mb0">';
+								var count = 0;
+								for(var entry of skills) {
+									result = result + '<li>'+entry+'</li>';
+									if(count == 4){
+										result = result + '<li> <span class="text-success" title="'+object[i].skillsName+'">more</span> </li>';
+										break;
+									}
+									count++;
+								}
+							}
 							result = result + '<div class="clearfix"></div>';
-							result = result + '<ul class="list-unstyled list-inline profileSkills mt10 mb0">';
-							result = result + '<li>React.Js</li>';
-							result = result + '<li>Redux for JavaScript</li>';
-							result = result + '<li>Node.Js</li>';
-							result = result + '<li>GraphQL</li>';
-							result = result + '<li> <span class="text-success">more</span> </li>';
-							result = result + '</ul>';
 							result = result + '<div class="clearfix"></div>';
-							result = result + '<h5 class="text-muted small">Profile Updated:</h5>';
-							result = result + '<div class="progress mb0">';
-							result = result + '<div class="progress-bar progress-bar-success" role="progressbar" aria-valuenow="40" aria-valuemin="0" aria-valuemax="100" style="width:10%">';
-							result = result + ' 10%';
+							result = result + '<h5 class="text-muted small mt5">Profile Updated:</h5>';
+							result = result + '<div class="progress mb0 progressProfile">';
+							result = result + '	<div class="progress-bar progress-bar-success" role="progressbar" aria-valuenow="40" aria-valuemin="0" aria-valuemax="100" style="width:'+profilePercentage+'%">';
+							result = result + profilePercentage+'%';
 							result = result + '</div>';
 							result = result + '</div>';
 							result = result + '</div>';
 							result = result + '</div>';
-							result = result + '</div>';
+							result = result + '</div>';				  
 							result = result + '</div>';
 						}
 						$("#cardView").empty().append(result);

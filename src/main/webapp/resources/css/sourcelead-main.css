@@ -9187,7 +9187,7 @@ margin: 5px 0; font-size: 16px; color: #606060;
 	max-height: 100%; border-radius:0px; margin: 0 auto;
 }
 .grid-prfileImg {
-	width: 350px; height: auto; background-color:#fff; padding-right: 0;
+	width: 150px; height: auto; background-color:#fff; padding-right: 0; float: left;
 }
 .profilesummarywidgetImg {
 	width: 150px; height: 150px; border: 3px solid #fff;
@@ -9257,6 +9257,15 @@ content: '\f00c'; color: #f60; border-color: #f60;
 	background-image: url(../images/resigned.svg); background-repeat: no-repeat; width: 25px; height: 25px;
 	background-position: top; background-size: 100%; display: inline-block;
 }
+.shopping-cart {
+	background-image: url(../images/shopping-cart.svg); background-repeat: no-repeat; width: 25px; height: 28px;
+	background-position: top; background-size: 100%; display: inline-block;
+}
+.dollarSvg {
+	background-image: url(../images/price-tag.svg); background-repeat: no-repeat; width: 25px; height: 28px;
+	background-position: top; background-size: 100%; display: inline-block;
+}
+
 .jobSucces_list a {
 	position: relative; right:0px; top:0px; color: #f60;
 }
@@ -9298,7 +9307,18 @@ a.removeSelected:hover {
 .profileDetails-headerFixed {
 	position: fixed; width: 92.5%; background-color: #f5f5f5; z-index: 9999; top: 55px;
 	box-shadow: 0px 2px 2px 0px #ddd; border-bottom: 1px solid #fff;
-	
+}
+.fontSmall {
+	font-size: 95%;
+}
+.progress.progressProfile {
+	border-radius: 1px; height: 18px;
+}
+.progress.progressProfile .progress-bar {
+	font-size: 11px; line-height: 18px;
+}
+.ulliBorder li:nth-last-of-type(n+3) {
+	border-right: 1px solid #ededed;
 }
 @media (max-width: 320px) {
 .uasrch-selectpicker {
