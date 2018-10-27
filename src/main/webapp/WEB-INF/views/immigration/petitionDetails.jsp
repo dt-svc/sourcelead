@@ -315,7 +315,7 @@
 					  <label class="col-md-4"><span class="pull-left">Associate (Beneficiary)</span><span
 									class="text-danger pull-left" id="man1">*</span></label>
 									<div class="col-md-8">
-									<input class="form-control" type="text" disabled="disabled" name="candidateNameEmail" id="candidateNameEmail" value="${immigrationDTO.candidateNameEmail}"/>
+									<input class="form-control" type="text" disabled="disabled" name="candidateNameEmail" id="candidateNameEmail" value="${immigrationDTO.candidateNameEmail}" />
 									<input type="hidden" id="candidateId" name="candidateId" value="${immigrationDTO.candidateId}"/>
 						
 						</div>	
@@ -329,11 +329,11 @@
 								<div class="col-md-8 chooRadius" id="errorAttorney">
 								<div class="input-group col-md-10 pull-left chooRadius errorInptgroup">
 									<input type="text" class="form-control" name="candidateNameEmail" value="${immigrationDTO.candidateNameEmail}" field-name="Associate" data-validation="required"
-										id="candidateNameEmail" placeholder="Select Beneficiary"/>
+										id="candidateNameEmail" placeholder="Select Beneficiary" disabled="disabled"/>
 									<input type="hidden" id="candidateId" name="candidateId" value="${immigrationDTO.candidateId}"/>
 								</div>
 							<span class="col-md-2 noPad clearfix">
-							<a href="<c:url value="/app/userCreation" />" target="_blank"><i class="fa fa-plus btn btn-default pull-right minHeBtn"></i></a> 
+							<a href="<c:url value="/app/userCreation" />" target="_blank" hidden="true"><i class="fa fa-plus btn btn-default pull-right minHeBtn"></i></a> 
 							</span>
 							</div>
 							</div>
@@ -341,23 +341,24 @@
 					</c:if>
 					
 					</c:if>	
-                                                                                                                                             
+		<!--for  New  Beneficiary  details -->	
+		 <c:if test="${empty immigrationDTO}">                                                                                                                                   
          <div class="form-group">
               <label class="col-md-4">First Name<span class="text-danger paddingLeft">*</span></label>
               <div class="col-md-8">
-					<input type="text" class="form-control" id="firstName" value="${immigrationDTO.firstName}" name="firstName" field-name="First Name" data-validation="required"/>
+					<input type="text" class="form-control" id="firstName" name="firstName" field-name="First Name" data-validation="required"/>
               </div>
           </div>
           <div class="form-group">
               <label class="col-md-4">Middle Name</label>
               <div class="col-md-8">
-					<input type="text" class="form-control" value="${immigrationDTO.middleName}" name="middleName" id="middleName" data-validation="required validate_Space validate_length length1-100" data-validation-optional="true">
+					<input type="text" class="form-control"  name="middleName" id="middleName" data-validation="required validate_Space validate_length length1-100" data-validation-optional="true">
               </div>
           </div> 
           <div class="form-group">
               <label class="col-md-4">Last Name<span class="text-danger paddingLeft">*</span></label>
               <div class="col-md-8">
-					<input type="text" class="form-control" name="lastName" id="lastName" value="${immigrationDTO.lastName}" field-name="Last Name" data-validation="required">
+					<input type="text" class="form-control" name="lastName" id="lastName"  field-name="Last Name" data-validation="required">
               </div>
           </div>  
          <div class="form-group">
@@ -372,21 +373,21 @@
           <div class="form-group">
               <label class="col-md-4">Email<span class="text-danger paddingLeft">*</span></label>
               <div class="col-md-8">
-					<input type="text" class="form-control" name="email" value="${immigrationDTO.email}" id="email" field-name="Email" data-validation="required validate_email">
+					<input type="text" class="form-control" name="email"  id="email" field-name="Email" data-validation="required validate_email">
               </div>
           </div>
                       	
           <div class="form-group">
               <label class="col-md-4">Mobile</label>
               <div class="col-md-8">
-					<input type="text" class="form-control" name="mobile" id="mobile" value="${immigrationDTO.mobile}" data-validation="required validate_Space validate_phone validate_length length2-100" data-validation-optional="true">
+					<input type="text" class="form-control" name="mobile" id="mobile"  data-validation="required validate_Space validate_phone validate_length length2-100" data-validation-optional="true">
               </div>
           </div>
           
            <div class="form-group">
               <label class="col-md-4">Alternative Mobile</label>
               <div class="col-md-8">
-					<input type="text" class="form-control" name="alternateMobile" id="alternateMobile" value="${immigrationDTO.alternateMobile}" data-validation="required validate_Space validate_length validate_phone length2-100" data-validation-optional="true">
+					<input type="text" class="form-control" name="alternateMobile" id="alternateMobile"  data-validation="required validate_Space validate_length validate_phone length2-100" data-validation-optional="true">
               </div>
           </div> 
             
@@ -394,7 +395,7 @@
               <label class="col-md-4">DOB<span class="text-danger paddingLeft">*</span></label>
               <div class="col-md-8">
 					<div class="input-group errorInptgroup">
-                <input type="text" class="form-control calendar" readonly='true' name="birthDate" id="birthDate" value="${immigrationDTO.birthDate}" placeholder="Date Of Birth" field-name="Date Of Birth" data-validation="required">
+                <input type="text" class="form-control calendar" readonly='true' name="birthDate" id="birthDate"  placeholder="Date Of Birth" field-name="Date Of Birth" data-validation="required">
                 <span class="input-group-addon"><i class="fa fa-times text-danger cursorPointer" onClick="clearDateValue('birthDate');"></i></span>
               </div>
               </div>
@@ -403,7 +404,7 @@
               <label class="col-md-4">Place of Birth</label>
               <div class="col-md-8">
                    <div class="positionRelative">
-          			<input class="form-control positionRelative" id="birthPlace" name="birthPlace" value="${immigrationDTO.birthPlace}" onclick="initLocationAuto('birthPlace');" type="text" field-name="Place of Birth"></input>
+          			<input class="form-control positionRelative" id="birthPlace" name="birthPlace"  onclick="initLocationAuto('birthPlace');" type="text" field-name="Place of Birth"></input>
           				<i class="fa fa-refresh btn btn-primary refresh-icon" title="Refresh" onClick="refreshGoogleApiLocation('birthPlace');"></i>
          			</div>
               </div>
@@ -413,7 +414,7 @@
               <label class="col-md-4">Nationality</label>
               <div class="col-md-8">
                   <div class="positionRelative">
-          			<input class="form-control positionRelative" id="nationality" onclick="editOrgLocationAuto('nationality');" name="nationality" value="${immigrationDTO.nationality}" placeholder="Select Country"  type="text"></input>
+          			<input class="form-control positionRelative" id="nationality" onclick="editOrgLocationAuto('nationality');" name="nationality"  placeholder="Select Country"  type="text"></input>
           				<i class="fa fa-refresh btn btn-primary refresh-icon" title="Refresh" onClick="refreshGoogleApiLocation('nationality');"></i>
          			</div>
               </div>
@@ -427,6 +428,95 @@
                   <label class="radioIput paddingLeft"><input type="radio"   ${immigrationDTO.maritalStatus == 'Separated'? 'checked': ''} value="Separated"  name="maritalStatus">Separated</label>
               </div>
             </div>  
+             </c:if>			
+          <!--for  Edit  Beneficiary  details -->
+         <c:if test="${!empty immigrationDTO}">                                                                                                                                   
+         <div class="form-group">
+              <label class="col-md-4">First Name<span class="text-danger paddingLeft">*</span></label>
+              <div class="col-md-8">
+					<input type="text" class="form-control" id="firstName" value="${immigrationDTO.firstName}" name="firstName" field-name="First Name" data-validation="required" readonly="readonly"/>
+              </div>
+          </div>
+          <div class="form-group">
+              <label class="col-md-4">Middle Name</label>
+              <div class="col-md-8">
+					<input type="text" class="form-control" value="${immigrationDTO.middleName}" name="middleName" id="middleName" data-validation="required validate_Space validate_length length1-100" data-validation-optional="true" readonly="readonly">
+              </div>
+          </div> 
+          <div class="form-group">
+              <label class="col-md-4">Last Name<span class="text-danger paddingLeft">*</span></label>
+              <div class="col-md-8">
+					<input type="text" class="form-control" name="lastName" id="lastName" value="${immigrationDTO.lastName}" field-name="Last Name" data-validation="required" readonly="readonly">
+              </div>
+          </div>  
+         <div class="form-group">
+						<label class="col-md-4">Gender</label>
+						<div class="col-md-8" id= "errorGenderMsg">
+						<label class="paddingRight"><input type="radio" ${immigrationDTO.gender == 'Male'? 'checked': '' } value="Male"  name="gender" readonly="readonly"><span class="mr5"></span>Male</label>
+						<label class="paddingLeft paddingRight"><input type="radio" ${immigrationDTO.gender == 'Female'? 'checked': '' } value="Female" name="gender" readonly="readonly"><span class="mr5"></span>Female</label>
+						<label class="paddingRight"><input type="radio" ${immigrationDTO.gender == 'Transgender'? 'checked': '' } value="Transgender" name="gender" readonly="readonly"><span class="mr5"></span>Transgender</label>
+						<!-- <input type="hidden"  id="genderValue" name="genderValue"/> --> 		
+			</div>
+			</div>
+          <div class="form-group">
+              <label class="col-md-4">Email<span class="text-danger paddingLeft">*</span></label>
+              <div class="col-md-8">
+					<input type="text" class="form-control" name="email" value="${immigrationDTO.email}" id="email" field-name="Email" data-validation="required validate_email" readonly="readonly">
+              </div>
+          </div>
+                      	
+          <div class="form-group">
+              <label class="col-md-4">Mobile</label>
+              <div class="col-md-8">
+					<input type="text" class="form-control" name="mobile" id="mobile" value="${immigrationDTO.mobile}" data-validation="required validate_Space validate_phone validate_length length2-100" data-validation-optional="true" readonly="readonly">
+              </div>
+          </div>
+          
+           <div class="form-group">
+              <label class="col-md-4">Alternative Mobile</label>
+              <div class="col-md-8">
+					<input type="text" class="form-control" name="alternateMobile" id="alternateMobile" value="${immigrationDTO.alternateMobile}" data-validation="required validate_Space validate_length validate_phone length2-100" data-validation-optional="true" readonly="readonly">
+              </div>
+          </div> 
+            
+           <div class="form-group">
+              <label class="col-md-4">DOB<span class="text-danger paddingLeft">*</span></label>
+              <div class="col-md-8">
+					<div class="input-group errorInptgroup">
+                <input type="text" class="form-control calendar" readonly='true' name="birthDate" id="birthDate" value="${immigrationDTO.birthDate}" placeholder="Date Of Birth" field-name="Date Of Birth" data-validation="required" readonly="readonly">
+                <span class="input-group-addon"><i class="fa fa-times text-danger cursorPointer" onClick="clearDateValue('birthDate');"></i></span>
+              </div>
+              </div>
+          </div> 
+           <div class="form-group">
+              <label class="col-md-4">Place of Birth</label>
+              <div class="col-md-8">
+                   <div class="positionRelative">
+          			<input class="form-control positionRelative" id="birthPlace" name="birthPlace" value="${immigrationDTO.birthPlace}" onclick="initLocationAuto('birthPlace');" type="text" field-name="Place of Birth" readonly="readonly"></input>
+          				<i class="fa fa-refresh btn btn-primary refresh-icon" title="Refresh" onClick="refreshGoogleApiLocation('birthPlace');"></i>
+         			</div>
+              </div>
+            </div>   
+          
+            <div class="form-group">
+              <label class="col-md-4">Nationality</label>
+              <div class="col-md-8">
+                  <div class="positionRelative">
+          			<input class="form-control positionRelative" id="nationality" onclick="editOrgLocationAuto('nationality');" name="nationality" value="${immigrationDTO.nationality}" placeholder="Select Country"  type="text" readonly="readonly"></input>
+          				<i class="fa fa-refresh btn btn-primary refresh-icon" title="Refresh" onClick="refreshGoogleApiLocation('nationality');"></i>
+         			</div>
+              </div>
+            </div> 
+            <div class="form-group">
+              <label class="col-md-4">Marital status</label>
+              <div class="col-md-8">
+                  <label class="radioIput paddingRight"><input type="radio" ${immigrationDTO.maritalStatus == 'Single'? 'checked': ''} value="Single" name="maritalStatus" readonly="readonly">Single</label>
+                  <label class="radioIput paddingLeft"><input type="radio"  ${immigrationDTO.maritalStatus == 'Married'? 'checked': ''} value="Married"  name="maritalStatus" readonly="readonly">Married</label>
+                  <label class="radioIput paddingLeft"><input type="radio"  ${immigrationDTO.maritalStatus == 'Divorced'? 'checked': ''} value="Divorced"  name="maritalStatus" readonly="readonly">Divorced</label>
+                  <label class="radioIput paddingLeft"><input type="radio"   ${immigrationDTO.maritalStatus == 'Separated'? 'checked': ''} value="Separated"  name="maritalStatus" readonly="readonly">Separated</label>
+              </div>
+            </div>  
+             </c:if>
              <div class="form-group">
               <label class="col-md-4">SSN</label>
               <div class="col-md-8">
