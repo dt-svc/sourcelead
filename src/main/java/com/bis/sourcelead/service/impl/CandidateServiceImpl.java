@@ -2729,6 +2729,7 @@ private Sheet createXlsSheet(Sheet createExcelsheet, Row writeRow,Candidate cand
 			Candidate candidate = candidateDao.getCandidateById(Long.parseLong(dto.getCandidateId()));
 			//BeanUtils.copyProperties(candidate, marketPlace);
 			marketPlace.setCandidateId(candidate);
+			marketPlace.setMarketplaceUUID(SourceLeadRandomCodeHelper.generateRandomUUID());
 			marketPlace.setMasterCandidateId(candidate.getMasterCandidateId());
 			marketPlace.setCandidateUUID(candidate.getCandidateUUID());
 			marketPlace.setOrgLocationId(candidate.getOrgLocationId());
@@ -2800,19 +2801,22 @@ private Sheet createXlsSheet(Sheet createExcelsheet, Row writeRow,Candidate cand
 	}
 
 	@Override
-	public CandidateMarketPlace getCandidateMarketPlaceDetailsById(Long id) throws Exception {
+	public CandidateMarketPlace getCandidateMarketPlaceDetailsByUUId(String uuid) throws Exception {
 		// TODO Auto-generated method stub
-		return candidateDao.getCandidateMarketPlaceDetailsById(id);
+		return candidateDao.getCandidateMarketPlaceDetailsByUUId(uuid);
 	}
 
 	@Override
 	public void addCandidateToMarketCart(User user, CandidateMarketPlace marketplace, Long orgLocationId) throws Exception {
 		// TODO Auto-generated method stub
 		CandidateMarketCart newMarketCart = new CandidateMarketCart();
-		newMarketCart.setId(marketplace.getId());
+		marketplace.setCandidateMarketStatus(Constants.ADDED_CART);
+		newMarketCart.setMarketplaceId(marketplace);
 		newMarketCart.setCandidateId(marketplace.getCandidateId());
 		newMarketCart.setMasterCandidateId(marketplace.getMasterCandidateId());
 		newMarketCart.setCandidateUUID(marketplace.getCandidateUUID());
+		newMarketCart.setMarketplaceUUID(marketplace.getMarketplaceUUID());
+		newMarketCart.setMarketCartUUID(SourceLeadRandomCodeHelper.generateRandomUUID());
 		OrgLocations orgLocation = new OrgLocations();
 		orgLocation.setId(orgLocationId);
 		newMarketCart.setOrgLocationId(orgLocation);
@@ -2821,6 +2825,7 @@ private Sheet createXlsSheet(Sheet createExcelsheet, Row writeRow,Candidate cand
 		newMarketCart.setCreatedBy(user);
 		newMarketCart.setUpdatedDate(new Date());
 		newMarketCart.setUpdatedBy(user);
+		candidateDao.saveMarketPlace(marketplace);
 		candidateDao.addCandidateToMarketCart(newMarketCart);
 	}
 

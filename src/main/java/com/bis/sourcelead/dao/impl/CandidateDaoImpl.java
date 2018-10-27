@@ -2072,16 +2072,16 @@ public class CandidateDaoImpl implements CandidateDao {
 			String listQueryCount = "";
 			if (StringUtils.isNotBlank(candidateMarketPlaceDTO.getOrgLocationId())) {
 				listQuery = "from CandidateMarketPlace marketplace  where  marketplace.status = 1 and marketplace.orgLocationId = "
-						+ candidateMarketPlaceDTO.getOrgLocationId() + " and marketplace.candidateMarketStatus = '"
-						+ Constants.ACTIVE + "'" + query1 + " " + sortingQry;
+						+ candidateMarketPlaceDTO.getOrgLocationId() + " and marketplace.candidateMarketStatus IN ( '"
+						+ Constants.ACTIVE + "','"+Constants.ADDED_CART+"') "+ query1 + " " + sortingQry;
 				listQueryCount = "select count(*) from CandidateMarketPlace marketplace  where  marketplace.status = 1  and marketplace.orgLocationId = "
-						+ candidateMarketPlaceDTO.getOrgLocationId() + " and marketplace.candidateMarketStatus ='"
-						+ Constants.ACTIVE + "'" + query1 + " " + sortingQry;
+						+ candidateMarketPlaceDTO.getOrgLocationId() + " and marketplace.candidateMarketStatus IN ( '"
+						+ Constants.ACTIVE + "','"+Constants.ADDED_CART+"') " +query1 + " " + sortingQry;
 			} else {
-				listQuery = "from CandidateMarketPlace marketplace  where  marketplace.status = 1 and marketplace.candidateMarketStatus = '"
-						+ Constants.ACTIVE + "'" + query1 + " " + sortingQry;
-				listQueryCount = "select count(*) from CandidateMarketPlace marketplace  where  marketplace.status = 1  and marketplace.candidateMarketStatus = '"
-						+ Constants.ACTIVE + "'" + query1 + " " + sortingQry;
+				listQuery = "from CandidateMarketPlace marketplace  where  marketplace.status = 1 and marketplace.candidateMarketStatus IN ( '"
+						+ Constants.ACTIVE + "','"+Constants.ADDED_CART+"') "+query1 + " " + sortingQry;
+				listQueryCount = "select count(*) from CandidateMarketPlace marketplace  where  marketplace.status = 1  and marketplace.candidateMarketStatus  IN ( '"
+						+ Constants.ACTIVE + "','"+Constants.ADDED_CART+"') "+ query1 + " " + sortingQry;
 			}
 			Query hqlQuery = session.createQuery(listQuery);
 			globalMarketCandList = hqlQuery.setFirstResult(candidateMarketPlaceDTO.getStart())
@@ -2301,18 +2301,19 @@ public class CandidateDaoImpl implements CandidateDao {
 			query1.append(" or (marketplace.expectedRate like '%" + searchValue + "%' )");
 			query1.append(" or (marketplace.profilePercentage like '%" + searchValue + "%' ))");
 		}
-		String listQuery = "from CandidateMarketPlace marketplace  where  marketplace.status = 1 and marketplace.candidateMarketStatus = :candidateMarketStatus ";
-		queryList = session.createQuery(listQuery+query1).setParameter("candidateMarketStatus", Constants.ACTIVE).list();
+			
+		String listQuery = "from CandidateMarketPlace marketplace  where  marketplace.status = 1 and marketplace.candidateMarketStatus IN (:candidateMarketStatus) ";
+		queryList = session.createQuery(listQuery+query1).setParameterList("candidateMarketStatus",new ArrayList<String>(Arrays.asList(Constants.ACTIVE, Constants.ADDED_CART))).list();
 		return queryList;
 	}
 	
 
 	@Override
 	@Transactional(rollbackFor = { Exception.class })
-	public CandidateMarketPlace getCandidateMarketPlaceDetailsById(Long id) throws Exception {
+	public CandidateMarketPlace getCandidateMarketPlaceDetailsByUUId(String uuid) throws Exception {
 		Session session = this.sessionFactory.getCurrentSession();
-		String query = "from CandidateMarketPlace marketplace where marketplace.id =:id";
-		CandidateMarketPlace marketPlaceCandidate = (CandidateMarketPlace) session.createQuery(query).setLong("id", id).uniqueResult();
+		String query = "from CandidateMarketPlace marketplace where marketplace.marketplaceUUID =:uuid";
+		CandidateMarketPlace marketPlaceCandidate = (CandidateMarketPlace) session.createQuery(query).setParameter("uuid", uuid).uniqueResult();
 		return marketPlaceCandidate;
 	}
 

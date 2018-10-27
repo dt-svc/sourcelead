@@ -22,7 +22,7 @@
 		         <div class="clearfix"></div>
 		     </ul>
       </div>
-    <div class="clearfix">
+    <div class="clearfix"></div>
       <div class="searchprofile-profile">
         <div class="row clearfix search-tools">
           <div class="col-md-7 col-xs-12 reports-head">
@@ -66,388 +66,21 @@
 			  <div class="scrollContent">
 			  
 			  <!-- Grid model start -->
-			  <div id="listView">
+			  <div id="listView"></div>
 			  
 			  
-				  <!-- <div class="mt"></div>
-            	<div class="media profileDetails-Widget positionRelative">
-					<a class="removeSelected mt" title="Remove Selected"><i class="fa fa-trash-o"></i></a>
-              <div class="media-left grid-prfileImg pull-left"> <img src="images/24.jpg" class="media-object" alt="Image">
-				  <div class="clearfix"></div>
-              </div>
-              <div class="media-body">
-                <div class="col-md-9">
-                  <h4 class="media-heading mb10"><a href="profileSummary.html">Rajkumar Santoshi Alapati</a></h4>
-                  <h5 class="text-muted mb5">Software Development Engineer</h5>
-                  <div class="clearfix"></div>
-                  <ul class="list-unstyled list-inline mt10">
-                    <li class="mr"><span class="paddingRight">$</span>550<small class="text-muted paddingLeft">/ hr</small></li>
-                    <li class="mr"><span class="paddingRight">$</span>9k+<small class="text-muted paddingLeft">earned</small></li>
-                    <li class="mr"><span class="paddingRight"><i class="fa fa-map-marker"></i></span>Dallas</li>
-                  </ul>
-                  <div class="clearfix"></div>
-                  <ul class="list-unstyled list-inline profileSkills mt5 mb0">
-                    <li>React.Js</li>
-                    <li>Redux for JavaScript</li>
-                    <li>Node.Js</li>
-                    <li>GraphQL</li>
-                    <li> <span class="text-success">more</span> </li>
-                  </ul>
-					<div class="clearfix"></div>
-					<h5 class="text-muted small">Profile Updated:</h5>
-					<div class="progress mb0">
-						<div class="progress-bar progress-bar-success" role="progressbar" aria-valuenow="40" aria-valuemin="0" aria-valuemax="100" style="width:10%">
-						  10%
-						</div>
-  					</div>
-					
-                </div>
-                <div class="col-md-3 text-center">
-									  <div class="clearfix mt25 textBold text-center">
-						<label class="text-muted mr">Rate</label>
-						<label class="jobSucces_list clearfix"><a><i class="fa fa-dollar mr5"></i>2500</a></label>
-				  </div>
-                <div class="clearfix mt text-center"> <a type="button" class="anchorHighlight">Add</a> </div>
-                </div>
-              </div>
-            </div> -->
+				 
             
-            <!--  <div class="mt"></div>
-            	<div class="media profileDetails-Widget positionRelative">
-					<a class="removeSelected mt" title="Remove Selected"><i class="fa fa-trash-o"></i></a>
-              <div class="media-left grid-prfileImg pull-left"> <img src="images/24.jpg" class="media-object" alt="Image">
-				  <div class="clearfix"></div>
-              </div>
-              <div class="media-body">
-                <div class="col-md-9">
-                  <h4 class="media-heading mb10"><a href="profileSummary.html">Rajkumar Santoshi Alapati</a></h4>
-                  <h5 class="text-muted mb5">Software Development Engineer</h5>
-                  <div class="clearfix"></div>
-                  <ul class="list-unstyled list-inline mt10">
-                    <li class="mr"><span class="paddingRight">$</span>550<small class="text-muted paddingLeft">/ hr</small></li>
-                    <li class="mr"><span class="paddingRight">$</span>9k+<small class="text-muted paddingLeft">earned</small></li>
-                    <li class="mr"><span class="paddingRight"><i class="fa fa-map-marker"></i></span>Dallas</li>
-                  </ul>
-                  <div class="clearfix"></div>
-                  <ul class="list-unstyled list-inline profileSkills mt5 mb0">
-                    <li>React.Js</li>
-                    <li>Redux for JavaScript</li>
-                    <li>Node.Js</li>
-                    <li>GraphQL</li>
-                    <li> <span class="text-success">more</span> </li>
-                  </ul>
-					<div class="clearfix"></div>
-					<h5 class="text-muted small">Profile Updated:</h5>
-					<div class="progress mb0">
-						<div class="progress-bar progress-bar-success" role="progressbar" aria-valuenow="40" aria-valuemin="0" aria-valuemax="100" style="width:10%">
-						  10%
-						</div>
-  					</div>
-					
-                </div>
-                <div class="col-md-3 text-center">
-									  <div class="clearfix mt25 textBold text-center">
-						<label class="text-muted mr">Rate</label>
-						<label class="jobSucces_list clearfix"><a><i class="fa fa-dollar mr5"></i>2500</a></label>
-				  </div>
-                <div class="clearfix mt text-center"> <a type="button" class="anchorHighlight">Add</a> </div>
-                </div>
-              </div>
-            </div> -->
-            
-			  </div>
-			  <!-- Grid Model end -->
 			  
-			  <div id="cardView" style="display: none;" class="clearfix row">
-				  <!-- <div class="clearfix mt"></div> -->
-				  <!-- <div class="col-md-4 mb">
-						 <div class="media profileDetails-Widget">
-              <div class="media-left prfileImg pull-left">
-				  <img src="images/24.jpg" class="media-object" alt="Image">
-				  <div class="clearfix mt5 textBold text-center">
-						<div class="text-muted">Rate</div>
-						<div class="jobSucces_list clearfix mt2"><a><i class="fa fa-dollar mr5"></i>2500</a></div>
-				  </div>
-				  <div class="clearfix mb"></div>
-				<div class="clearfix text-center"> <a type="button" class="anchorHighlight">Add</a> </div>
-				</div>
-              <div class="media-body">
-				  <a class="removeSelected" title="Remove Selected"><i class="fa fa-trash-o"></i></a>
-                <div class="col-md-12 padding_right">
-                  <h4 class="media-heading mb0 tbldata-dotdot-me inlineBlock"><a href="profileSummary.html">Rajkumar Santoshi Alapati</a></h4>
-                  <h5 class="text-muted mb5">Software Development Engineer</h5>
-                  <div class="clearfix"></div>
-                  <ul class="list-unstyled list-inline mt10">
-                    <li class="mr"><span class="paddingRight">$</span>550<small class="text-muted paddingLeft">/ hr</small></li>
-                    <li class="mr"><span class="paddingRight">$</span>9<small class="text-muted paddingLeft">/ K+</small></li>
-                    <li class="mr"><span class="paddingRight"><i class="fa fa-map-marker"></i></span>Dallas</li>
-                  </ul>
-                  <div class="clearfix"></div>
-                  <ul class="list-unstyled list-inline profileSkills mt10 mb0">
-                    <li>React.Js</li>
-                    <li>Redux for JavaScript</li>
-                    <li>Node.Js</li>
-                    <li>GraphQL</li>
-                    <li> <span class="text-success">more</span> </li>
-                  </ul>
-					<div class="clearfix"></div>
-					<h5 class="text-muted small">Profile Updated:</h5>
-					<div class="progress mb0">
-						<div class="progress-bar progress-bar-success" role="progressbar" aria-valuenow="40" aria-valuemin="0" aria-valuemax="100" style="width:10%">
-						  10%
-						</div>
-  					</div>
-                </div>
-              </div>
-            </div>				  
-				  </div><div class="col-md-4 mb">
-						 <div class="media profileDetails-Widget">
-              <div class="media-left prfileImg">
-				  <img src="images/24.jpg" class="media-object" alt="Image">
-				  <div class="clearfix mt5 textBold text-center">
-						<div class="text-muted">Rate</div>
-						<div class="jobSucces_list clearfix mt2"><a><i class="fa fa-dollar mr5"></i>2500</a></div>
-				  </div>
-				  <div class="clearfix mb"></div>
-				<div class="clearfix text-center"> <a type="button" class="anchorHighlight">Add</a> </div>
-				</div>
-              <div class="media-body">
-				  <a class="removeSelected" title="Remove Selected"><i class="fa fa-trash-o"></i></a>
-                <div class="col-md-12 padding_right">
-                  <h4 class="media-heading mb0 tbldata-dotdot-me inlineBlock"><a href="profileSummary.html">Rajkumar Santoshi Alapati</a></h4>
-                  <h5 class="text-muted mb5">Software Development Engineer</h5>
-                  <div class="clearfix"></div>
-                  <ul class="list-unstyled list-inline mt10">
-                    <li class="mr"><span class="paddingRight">$</span>550<small class="text-muted paddingLeft">/ hr</small></li>
-                    <li class="mr"><span class="paddingRight">$</span>9<small class="text-muted paddingLeft">/ K+</small></li>
-                    <li class="mr"><span class="paddingRight"><i class="fa fa-map-marker"></i></span>Dallas</li>
-                  </ul>
-                  <div class="clearfix"></div>
-                  <ul class="list-unstyled list-inline profileSkills mt10 mb0">
-                    <li>React.Js</li>
-                    <li>Redux for JavaScript</li>
-                    <li>Node.Js</li>
-                    <li>GraphQL</li>
-                    <li> <span class="text-success">more</span> </li>
-                  </ul>
-					<div class="clearfix"></div>
-					<h5 class="text-muted small">Profile Updated:</h5>
-					<div class="progress mb0">
-						<div class="progress-bar progress-bar-success" role="progressbar" aria-valuenow="40" aria-valuemin="0" aria-valuemax="100" style="width:10%">
-						  10%
-						</div>
-  					</div>
-                </div>
-              </div>
-            </div>				  
-				  </div><div class="col-md-4 mb">
-						 <div class="media profileDetails-Widget">
-              <div class="media-left prfileImg">
-				  <img src="images/24.jpg" class="media-object" alt="Image">
-				  <div class="clearfix mt5 textBold text-center">
-						<div class="text-muted">Rate</div>
-						<div class="jobSucces_list clearfix mt2"><a><i class="fa fa-dollar mr5"></i>2500</a></div>
-				  </div>
-				  <div class="clearfix mb"></div>
-				<div class="clearfix text-center"> <a type="button" class="anchorHighlight">Add</a> </div>
-				</div>
-              <div class="media-body">
-				  <a class="removeSelected" title="Remove Selected"><i class="fa fa-trash-o"></i></a>
-                <div class="col-md-12 padding_right">
-                  <h4 class="media-heading mb0 tbldata-dotdot-me inlineBlock"><a href="profileSummary.html">Rajkumar Santoshi Alapati</a></h4>
-                  <h5 class="text-muted mb5">Software Development Engineer</h5>
-                  <div class="clearfix"></div>
-                  <ul class="list-unstyled list-inline mt10">
-                    <li class="mr"><span class="paddingRight">$</span>550<small class="text-muted paddingLeft">/ hr</small></li>
-                    <li class="mr"><span class="paddingRight">$</span>9<small class="text-muted paddingLeft">/ K+</small></li>
-                    <li class="mr"><span class="paddingRight"><i class="fa fa-map-marker"></i></span>Dallas</li>
-                  </ul>
-                  <div class="clearfix"></div>
-                  <ul class="list-unstyled list-inline profileSkills mt10 mb0">
-                    <li>React.Js</li>
-                    <li>Redux for JavaScript</li>
-                    <li>Node.Js</li>
-                    <li>GraphQL</li>
-                    <li> <span class="text-success">more</span> </li>
-                  </ul>
-					<div class="clearfix"></div>
-					<h5 class="text-muted small">Profile Updated:</h5>
-					<div class="progress mb0">
-						<div class="progress-bar progress-bar-success" role="progressbar" aria-valuenow="40" aria-valuemin="0" aria-valuemax="100" style="width:10%">
-						  10%
-						</div>
-  					</div>
-                </div>
-              </div>
-            </div>				  
-				  </div><div class="col-md-4 mb">
-						 <div class="media profileDetails-Widget">
-              <div class="media-left prfileImg">
-				  <img src="images/24.jpg" class="media-object" alt="Image">
-				  <div class="clearfix mt5 textBold text-center">
-						<div class="text-muted">Rate</div>
-						<div class="jobSucces_list clearfix mt2"><a><i class="fa fa-dollar mr5"></i>2500</a></div>
-				  </div>
-				  <div class="clearfix mb"></div>
-				<div class="clearfix text-center"> <a type="button" class="anchorHighlight">Add</a> </div>
-				</div>
-              <div class="media-body">
-				  <a class="removeSelected" title="Remove Selected"><i class="fa fa-trash-o"></i></a>
-                <div class="col-md-12 padding_right">
-                  <h4 class="media-heading mb0 tbldata-dotdot-me inlineBlock"><a href="profileSummary.html">Rajkumar Santoshi Alapati</a></h4>
-                  <h5 class="text-muted mb5">Software Development Engineer</h5>
-                  <div class="clearfix"></div>
-                  <ul class="list-unstyled list-inline mt10">
-                    <li class="mr"><span class="paddingRight">$</span>550<small class="text-muted paddingLeft">/ hr</small></li>
-                    <li class="mr"><span class="paddingRight">$</span>9<small class="text-muted paddingLeft">/ K+</small></li>
-                    <li class="mr"><span class="paddingRight"><i class="fa fa-map-marker"></i></span>Dallas</li>
-                  </ul>
-                  <div class="clearfix"></div>
-                  <ul class="list-unstyled list-inline profileSkills mt10 mb0">
-                    <li>React.Js</li>
-                    <li>Redux for JavaScript</li>
-                    <li>Node.Js</li>
-                    <li>GraphQL</li>
-                    <li> <span class="text-success">more</span> </li>
-                  </ul>
-					<div class="clearfix"></div>
-					<h5 class="text-muted small">Profile Updated:</h5>
-					<div class="progress mb0">
-						<div class="progress-bar progress-bar-success" role="progressbar" aria-valuenow="40" aria-valuemin="0" aria-valuemax="100" style="width:10%">
-						  10%
-						</div>
-  					</div>
-                </div>
-              </div>
-            </div>				  
-				  </div><div class="col-md-4 mb">
-						 <div class="media profileDetails-Widget">
-              <div class="media-left prfileImg">
-				  <img src="images/24.jpg" class="media-object" alt="Image">
-				  <div class="clearfix mt5 textBold text-center">
-						<div class="text-muted">Rate</div>
-						<div class="jobSucces_list clearfix mt2"><a><i class="fa fa-dollar mr5"></i>2500</a></div>
-				  </div>
-				  <div class="clearfix mb"></div>
-				<div class="clearfix text-center"> <a type="button" class="anchorHighlight">Add</a> </div>
-				</div>
-              <div class="media-body">
-				  <a class="removeSelected" title="Remove Selected"><i class="fa fa-trash-o"></i></a>
-                <div class="col-md-12 padding_right">
-                  <h4 class="media-heading mb0 tbldata-dotdot-me inlineBlock"><a href="profileSummary.html">Rajkumar Santoshi Alapati</a></h4>
-                  <h5 class="text-muted mb5">Software Development Engineer</h5>
-                  <div class="clearfix"></div>
-                  <ul class="list-unstyled list-inline mt10">
-                    <li class="mr"><span class="paddingRight">$</span>550<small class="text-muted paddingLeft">/ hr</small></li>
-                    <li class="mr"><span class="paddingRight">$</span>9<small class="text-muted paddingLeft">/ K+</small></li>
-                    <li class="mr"><span class="paddingRight"><i class="fa fa-map-marker"></i></span>Dallas</li>
-                  </ul>
-                  <div class="clearfix"></div>
-                  <ul class="list-unstyled list-inline profileSkills mt10 mb0">
-                    <li>React.Js</li>
-                    <li>Redux for JavaScript</li>
-                    <li>Node.Js</li>
-                    <li>GraphQL</li>
-                    <li> <span class="text-success">more</span> </li>
-                  </ul>
-					<div class="clearfix"></div>
-					<h5 class="text-muted small">Profile Updated:</h5>
-					<div class="progress mb0">
-						<div class="progress-bar progress-bar-success" role="progressbar" aria-valuenow="40" aria-valuemin="0" aria-valuemax="100" style="width:10%">
-						  10%
-						</div>
-  					</div>
-                </div>
-              </div>
-            </div>				  
-				  </div><div class="col-md-4 mb">
-						 <div class="media profileDetails-Widget">
-              <div class="media-left prfileImg">
-				  <img src="images/24.jpg" class="media-object" alt="Image">
-				  <div class="clearfix mt5 textBold text-center">
-						<div class="text-muted">Rate</div>
-						<div class="jobSucces_list clearfix mt2"><a><i class="fa fa-dollar mr5"></i>2500</a></div>
-				  </div>
-				  <div class="clearfix mb"></div>
-				<div class="clearfix text-center"> <a type="button" class="anchorHighlight">Add</a> </div>
-				</div>
-              <div class="media-body">
-				  <a class="removeSelected" title="Remove Selected"><i class="fa fa-trash-o"></i></a>
-                <div class="col-md-12 padding_right">
-                  <h4 class="media-heading mb0 tbldata-dotdot-me inlineBlock"><a href="profileSummary.html">Rajkumar Santoshi Alapati</a></h4>
-                  <h5 class="text-muted mb5">Software Development Engineer</h5>
-                  <div class="clearfix"></div>
-                  <ul class="list-unstyled list-inline mt10">
-                    <li class="mr"><span class="paddingRight">$</span>550<small class="text-muted paddingLeft">/ hr</small></li>
-                    <li class="mr"><span class="paddingRight">$</span>9<small class="text-muted paddingLeft">/ K+</small></li>
-                    <li class="mr"><span class="paddingRight"><i class="fa fa-map-marker"></i></span>Dallas</li>
-                  </ul>
-                  <div class="clearfix"></div>
-                  <ul class="list-unstyled list-inline profileSkills mt10 mb0">
-                    <li>React.Js</li>
-                    <li>Redux for JavaScript</li>
-                    <li>Node.Js</li>
-                    <li>GraphQL</li>
-                    <li> <span class="text-success">more</span> </li>
-                  </ul>
-					<div class="clearfix"></div>
-					<h5 class="text-muted small">Profile Updated:</h5>
-					<div class="progress mb0">
-						<div class="progress-bar progress-bar-success" role="progressbar" aria-valuenow="40" aria-valuemin="0" aria-valuemax="100" style="width:10%">
-						  10%
-						</div>
-  					</div>
-                </div>
-              </div>
-            </div>				  
-				  </div><div class="col-md-4 mb">
-						 <div class="media profileDetails-Widget">
-              <div class="media-left prfileImg">
-				  <img src="images/24.jpg" class="media-object" alt="Image">
-				  <div class="clearfix mt5 textBold text-center">
-						<div class="text-muted">Rate</div>
-						<div class="jobSucces_list clearfix mt2"><a><i class="fa fa-dollar mr5"></i>2500</a></div>
-				  </div>
-				  <div class="clearfix mb"></div>
-				<div class="clearfix text-center"> <a type="button" class="anchorHighlight">Add</a> </div>
-				</div>
-              <div class="media-body">
-				  <a class="removeSelected" title="Remove Selected"><i class="fa fa-trash-o"></i></a>
-                <div class="col-md-12 padding_right">
-                  <h4 class="media-heading mb0 tbldata-dotdot-me inlineBlock"><a href="profileSummary.html">Rajkumar Santoshi Alapati</a></h4>
-                  <h5 class="text-muted mb5">Software Development Engineer</h5>
-                  <div class="clearfix"></div>
-                  <ul class="list-unstyled list-inline mt10">
-                    <li class="mr"><span class="paddingRight">$</span>550<small class="text-muted paddingLeft">/ hr</small></li>
-                    <li class="mr"><span class="paddingRight">$</span>9<small class="text-muted paddingLeft">/ K+</small></li>
-                    <li class="mr"><span class="paddingRight"><i class="fa fa-map-marker"></i></span>Dallas</li>
-                  </ul>
-                  <div class="clearfix"></div>
-                  <ul class="list-unstyled list-inline profileSkills mt10 mb0">
-                    <li>React.Js</li>
-                    <li>Redux for JavaScript</li>
-                    <li>Node.Js</li>
-                    <li>GraphQL</li>
-                    <li> <span class="text-success">more</span> </li>
-                  </ul>
-					<div class="clearfix"></div>
-					<h5 class="text-muted small">Profile Updated:</h5>
-					<div class="progress mb0">
-						<div class="progress-bar progress-bar-success" role="progressbar" aria-valuenow="40" aria-valuemin="0" aria-valuemax="100" style="width:10%">
-						  10%
-						</div>
-  					</div>
-                </div>
-              </div>
-            </div>				  
-				  </div>
+			  
+			  <div id="cardView" style="display: none;" class="clearfix row"></div>
+				  				  
+				 
 			  </div>
 			  </div>
 			  </div>
         </div>
-      </div>
-    </div>
-  </section>-->
+  </section>
   <div class="advancedsearch-mask"></div>
 <div class="cand-advsrch-popup advancedsearch-popup" id="profileAdSearch" style="display: none;">
   <div class="clearfix headerAdsrch">
@@ -711,7 +344,8 @@
     </div>
   </div>
 </div>
-<div class="cand-advsrch-popup advancedsearch-popup" id="filterSearch" style="display: none;">
+</div>
+<div class="cand-advsrch-popup advancedsearch-popup" id="filterSearchMarket" style="display: none;">
   <div class="clearfix headerAdsrch">
     <h5 class="col-md-8 mb0 mt5">Profile Filter Search</h5>
     <a href="javascript:void(0)" class="closePop margin-top0" onclick="closePop();"></a> </div>
@@ -944,6 +578,8 @@
     </div>
   </div>
 </div>
+
+<!-- Footer Area --> 
 <script>
   function goToCandidateList(){
 		location.href = "${appPath}/candidatesList";
@@ -959,18 +595,27 @@ function getGloblaMarketPlaceCandidates(divType){
 			success : function(object) {
 				if(object != null){
 					var result = "";
+					var marketAddStatus = "";
+					var marketDelelIcon = "";
+					var profilePercentage = "";
 					if(divType=="listModel"){
 						for(var i=0;i<object.length;i++){
-							var profilePercentage = "";
+							if(object[i].candidateMarketStatus == "Active"){
+								marketDelelIcon = "";
+								marketAddStatus = '<a type="button" onclick="addCandidateToMarketCart(\''+object[i].marketplaceUUID+'\', \'ListModel\')" class="anchorHighlight">Add</a>';
+							}else if(object[i].candidateMarketStatus == "In_Cart"){
+								marketDelelIcon = '	<a class="removeSelected mt" title="Remove Selected"><i class="fa fa-trash-o"></i></a>';
+								marketAddStatus = '<a type="button" id="addedCartListModel'+object[i].marketplaceUUID+'" class="anchorHighlight anchorHighlightActive">Added</a>';
+							}
 							if(object[i].profilePercentage == null){
 								profilePercentage = 0;
 							}else{
 								profilePercentage =object[i].profilePercentage;
 							}
 							result = result + '<div class="mt"></div>';
-							result = result + '<div class="media profileDetails-Widget positionRelative">';
-							result = result + '	<a class="removeSelected mt" title="Remove Selected"><i class="fa fa-trash-o"></i></a>';
-							result = result + '<div class="media-left grid-prfileImg pull-left"><img src="'+object[i].imageUrl+'" onerror="predefineProfileImage(this);" class="media-object" alt="Image">';
+							result = result + '<div class="media profileDetails-Widget positionRelative"><div id="deleteIconListModel'+object[i].marketplaceUUID+'">';
+							result = result + marketDelelIcon;
+							result = result + '</div><div class="media-left grid-prfileImg pull-left"><img src="'+object[i].imageUrl+'" onerror="predefineProfileImage(this);" class="media-object" alt="Image">';
 							result = result + '  <div class="clearfix"></div>';
 							result = result + '</div>';
 							result = result + '<div class="media-body">';
@@ -1002,16 +647,17 @@ function getGloblaMarketPlaceCandidates(divType){
 							result = result + '<div class="clearfix"></div>';
 							result = result + '<div class="clearfix fontSmall">';
 							result = result + '	<h5 class="text-muted mb5 mt5">Description:</h5>';
-							result = result + '	<p>Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industrys standard dummy text ever since the 1500s...</p>';
+							result = result + '	<p>'+object[i].summary+'</p>';
 							result = result + '</div>';
 							result = result + '</div>';
 							result = result + '<div class="col-md-3">';
 							result = result + '<div class="clearfix mt25 textBold">';
-							result = result + '	<label class="text-muted mr">Price :</label>';
-							result = result + '	<label class="jobSucces_list clearfix"><a>'+object[i].marketRateCurrencey+' '+object[i].marketPrice+'</a></label>';
+							result = result + '	<label class="text-muted mr">Price : <a>'+object[i].marketRateCurrencey+' '+object[i].marketPrice+'</a></label>';
+							result = result + '<div class="clearfix"></div>';
+							result = result + '	<label class="jobSucces_list clearfix mt" id="addCartListModel'+object[i].marketplaceUUID+'">'+marketAddStatus+'</label>';
 							result = result + '</div>';
-							result = result + '<div class="clearfix mt"> <a type="button" class="anchorHighlight">Add</a> </div>';
-							result = result + '<h5 class="text-muted small clearfix mt25">Profile :</h5>';
+							result = result + '<div class="clearfix mt" id="addCartListModelDiv'+object[i].marketplaceUUID+'"></div>';
+							result = result + '<h5 class="text-muted small clearfix mt">Profile :</h5>';
 							result = result + '<div class="progress progressProfile mb0">';
 							result = result + '<div class="progress-bar progress-bar-success" role="progressbar" aria-valuenow="40" aria-valuemin="0" aria-valuemax="100" style="width:'+profilePercentage+'%">';
 							result = result + profilePercentage+'%';
@@ -1031,7 +677,13 @@ function getGloblaMarketPlaceCandidates(divType){
 					if(divType=="cardModel"){
 						result = result + '<div class="clearfix mt"></div>';
 						for(var i=0;i<object.length;i++){
-							var profilePercentage = "";
+							if(object[i].candidateMarketStatus == "Active"){
+								marketDelelIcon = "";
+								marketAddStatus = '<a type="button" id="addCartCardModel'+object[i].marketplaceUUID+'" onclick="addCandidateToMarketCart(\''+object[i].marketplaceUUID+'\', \'CardModel\')" class="anchorHighlight">Add</a>';
+							}else if(object[i].candidateMarketStatus == "In_Cart"){
+								marketDelelIcon = '	<a class="removeSelected mt" title="Remove Selected"><i class="fa fa-trash-o"></i></a>';
+								marketAddStatus = '<a type="button" id="addedCartCardModel'+object[i].marketplaceUUID+'" class="anchorHighlight anchorHighlightActive">Added</a>';
+							}
 							if(object[i].profilePercentage == null){
 								profilePercentage = 0;
 							}else{
@@ -1046,11 +698,11 @@ function getGloblaMarketPlaceCandidates(divType){
 							result = result + '<div class="jobSucces_list clearfix mt2"><a>'+object[i].marketRateCurrencey+' '+object[i].marketPrice+'</a></div>';
 							result = result + '</div>';
 							result = result + '<div class="clearfix mb"></div>';
-							result = result + '<div class="clearfix text-center"> <a type="button" class="anchorHighlight">Add</a> </div>';
+							result = result + '<div class="clearfix text-center" id="addCartCardModelDiv'+object[i].marketplaceUUID+'">'+marketAddStatus+'</div>';
 							result = result + '</div>';
-							result = result + '<div class="media-body">';
-							result = result + '<a class="removeSelected" title="Remove Selected"><i class="fa fa-trash-o"></i></a>';
-							result = result + '<div class="col-md-12 padding_right">';
+							result = result + '<div class="media-body"><div id="deleteIconCardModel'+object[i].marketplaceUUID+'">';
+							result = result + marketDelelIcon;
+							result = result + '</div><div class="col-md-12 padding_right">';
 							result = result + '<h4 class="media-heading mb0 tbldata-dotdot-me inlineBlock"><a href="profileSummary.html">'+object[i].fullName+'</a></h4>';
 							result = result + '<h5 class="text-muted mb5">'+object[i].designation+'</h5>';
 							result = result + '<div class="clearfix"></div>';
@@ -1093,8 +745,6 @@ function getGloblaMarketPlaceCandidates(divType){
 						$("#listModel").find("i").removeClass("text-primary text-muted");
 					}
 				}
-				//alert("success");
-				//alert(result.length);
 			}
 		});
 }
@@ -1102,189 +752,29 @@ function predefineProfileImage(imageId){
 	$(imageId).attr('src','/resources/images/userprofileImg.jpg');
 }
 </script>
- <!--  <script type="text/javascript">
-	$(document).ready(function () {
-		getDynamicGlobalMarketCandidateList(null);
-	   
-	});
-	function getDynamicGlobalMarketCandidateList() {
-		
-	     var result = "";
-	     result = result + '<table id="dynamicGlobalMarketCandidateListTbl">';
-	     result = result + '<thead>';
-	     result = result + '<tr>';
-	     result = result + '<th>Name</th>';
-	     result = result + '<th>Location</th>';
-	     result = result + '<th>Primary Skills</th>';
-	     result = result + '<th>Current CTC</th>';
-	     result = result + '<th>Expected CTC</th>';
-	     result = result + '<th>Profile %</th>';
-	     result = result + '<th>Action</th>';
-	     result = result + '</tr>';
-	     result = result + '</thead>';
-
-	     result = result + '</table>';
-
-	     $("#dynamicGlobalMarketCandidateViewDiv").html(result);
-	     
-         var sourceleadUrl = '${sourceleadUrl}';
-	     
-	     var searchValue = $("#globalMarketSearh").val();
-	     searchValue = searchValue ? searchValue : "";
-	     
-	     var url ="";
-	     url = sourceleadUrl + "/getGlobalMarketplaceList?searchValue="+searchValue; 
-	     
-	     dynamicGlobalMarketCandidateListPagination(url);
-	 }
-	 //var count = 0;
-	 function dynamicGlobalMarketCandidateListPagination(url) {
-		 var colIndex = 0;
-	    $('#dynamicGlobalMarketCandidateListTbl').DataTable({
-	         "processing": false,
-	         "serverSide": true,
-	         "searching": false,
-	         "ajax": $.fn.dataTable.pipeline({
-	             url: url,
-	             method: 'POST',
-	             pages: 10
-	         }), 
-	         "columns": [
-	             {"data": "Name"},
-	             {"data": "Location"},
-	             {"data": "Primary Skills"},
-	             {"data": "Current CTC"},
-	             {"data": "Expected CTC"},
-	             {"data": "Action"}
-	         ],
-	         "columnDefs": [
-	             {
-	                 "targets": colIndex++,
-	                 "data": "fullName", 
-	                 "render": function (data, type, opt, meta) {
-	                     var result = "";
-	                     if (opt.fullName !== null && opt.fullName !== '' && opt.fullName !== 'undefined') {
-	                    	    result = result + "<td><div class='tbldata-dotdot-sm' title = '"+opt.fullName +"'>" + opt.fullName + "</div></td>";
-	                     } else {
-	                         result = result + "<td><div class='tbldata-dotdot-sm'>---</div></td>";
-	                     }
-	                     return result;
-	                 }
-	             },
-	             {
-	                 "targets": colIndex++,
-	                 "data": "location",
-	                 "render": function (data, type, opt, meta) {
-	                     var result = "";
-	                     if (opt.location !== null && opt.location !== '' && opt.location !== 'undefined') {
-	                    	 result = result + "<td><div class='tbldata-dotdot-sm' title = '"+opt.location+"'>" + opt.location + "</div></td>";
-	                     } else {
-	                         result = result + "<td><div class='tbldata-dotdot-sm'>---</div></td>";
-	                     }
-	                     return result; 
-	                 }
-	             },
-	      
-	             {
-	                 "targets": colIndex++,
-	                 "data": "skillsName",
-	                 "render": function (data, type, opt, meta) {
-	                     var result = "";
-	                     if (opt.skillsName !== null && opt.skillsName !== '' && opt.skillsName !== 'undefined') {
-	                    	 result = result + "<td><div class='tbldata-dotdot-sm' title = '"+opt.skillsName+"'>" + opt.skillsName + "</div></td>";
-	                     } else {
-	                         result = result + "<td><div class='tbldata-dotdot-sm'>---</div></td>";
-	                     }
-	                     return result;
-	                 }
-	             },
-	             {
-	                 "targets": colIndex++,
-	                 "data": "currentRate",
-	                 "render": function (data, type, opt, meta) {
-	                     var result = "";
-	                     if (opt.currentRate !== null && opt.currentRate !== '' && opt.currentRate !== 'undefined') {
-	                    	 result = result + "<td><div class='tbldata-dotdot-sm' title = '"+opt.currentRate+"'>" + opt.currentRate + "</div></td>";
-	                     } else {
-	                         result = result + "<td><div class='tbldata-dotdot-sm'>---</div></td>";
-	                     } 
-	                     return result;
-	                 }
-	             },
-	             {
-	                 "targets": colIndex++,
-	                 "data": "expectedRate",
-	                 "render": function (data, type, opt, meta) {
-	                     var result = "";
-	                     if (opt.expectedRate !== null && opt.expectedRate !== '' && opt.expectedRate !== 'undefined') {
-	                    	 result = result + "<td><div class='tbldata-dotdot-sm' title = '"+opt.expectedRate+"'>" + opt.expectedRate + "</div></td>";
-	                     } else {
-	                         result = result + "<td><div class='tbldata-dotdot-sm'>---</div></td>";
-	                     } 
-	                     return result;
-	                 }
-	             },
-	             {
-	                 "targets": colIndex++,
-	                 "data": "profilePercentage",
-	                 "render": function (data, type, opt, meta) {
-	                     var result = "";
-	                     if (opt.profilePercentage !== null && opt.profilePercentage !== '' && opt.profilePercentage !== 'undefined') {
-	                    	 result = result + "<td><div class='tbldata-dotdot-sm' title = '"+opt.profilePercentage+"%'>" + opt.profilePercentage + "%</div></td>";
-	                     } else {
-	                         result = result + "<td><div class='tbldata-dotdot-sm'>---</div></td>";
-	                     } 
-	                     return result;
-	                 }
-	             },
-	             {
-	                 "targets": colIndex++,
-	               /*   "data": "action", */
-	                 "render": function (data, type, opt, meta) {
-	                     var result = "";
-	                    	 result = result + "<td><div class='tbldata-dotdot-sm' title = 'Add To Marketplace'><a onclick='addCandidateToMarketCart(\""+opt.id+"\")'>Add</a></div></td>";
-	                     return result;
-	                 }
-	             }
-	         ],
-	         "scrollCollapse": false,
-	         "lengthMenu": [[10, 15, 20], [10, 15, 20]],
-	         "aaSorting": [],
-	         "bLengthChange": true,
-	         "bDestroy": true,
-	         "ordering": true,
-	         "initComplete": function (settings, json) {
-	         },
-	         "oLanguage": {
-	             "sSearch": "",
-	             "sZeroRecords": "", "sEmptyTable": "",
-	             "sProcessing": "<img src='/resources/images/loading.gif' style='width: 75px; height: 75px;'/>"
-	         }
-	     });
-	    
-	     $("#dynamicGlobalMarketCandidateListTbl").wrap("<div style='overflow-x: auto; overflow-y: hidden;'></div>");
-	      
-	     $("#globalMarketSearh").keyup(function (e) {
-	         if (e.which === 13) {
-	        	 getDynamicGlobalMarketCandidateList( $("#globalMarketSearh").val());
-	         }
-	     });
-	     
-	 }	
-	
-</script> -->
+ 
 <script type="text/javascript">
 
-function addCandidateToMarketCart(id) {
+function addCandidateToMarketCart(UUID, viewModel) {
    $.ajax({
-        url: sourceleadUrl + "/addCandidateToMarketCart?id="+id,
+        url: sourceleadUrl + "/addCandidateToMarketCart?id="+UUID,
         type: "GET",
-        data: id,
+        //data: id,
         success: function (response) {
         	if(response=="success"){
-          	getDynamicGlobalMarketCandidateList();
+        		if(viewModel=="ListModel"){
+	        		$("#addCartListModel"+UUID).hide();
+	        		$("#addCartListModelDiv"+UUID).append('<a type="button" id="addedCartListModel'+UUID+'" class="anchorHighlight anchorHighlightActive">Added</a>');
+	        		$("#deleteIconListModel"+UUID).append('<a class="removeSelected mt" title="Remove Selected"><i class="fa fa-trash-o"></i></a>');
+        		}
+        		if(viewModel=="CardModel"){
+	        		$("#addCartCardModel"+UUID).hide();
+	        		$("#addCartCardModelDiv"+UUID).append('<a type="button" id="addedCartCardModel'+UUID+'" class="anchorHighlight anchorHighlightActive">Added</a>');
+	        		$("#deleteIconCardModel"+UUID).append('<a class="removeSelected mt" title="Remove Selected"><i class="fa fa-trash-o"></i></a>');
+        		}
+        		//alert("success");
         	}
-        	}
+        }
     });
 }
 $(".funPrice").on("click", "li", function(){
@@ -1306,31 +796,6 @@ function goToOrgMarketPlaceList(){
 }
 </script>
 <script>
-	//Advanced Search
-	function closePop(){
-		$(".advancedsearch-mask, #profileAdSearch").fadeOut();
-		$(".advancedsearch-mask, #filterSearch").fadeOut();
-	}
-	function openPop(){
-	$("#profileAdSearch, .advancedsearch-mask").fadeIn();
-	}
-function filterPop() {
-	$(".advancedsearch-mask, #filterSearch").fadeIn();
-}
-/* $("#cardModel").click(function(){
-  	$("#listView").hide();
-	$("#cardView").show();
-	$(this).find("i").toggleClass("text-muted text-primary");
-	$("#listModel").find("i").toggleClass("text-primary text-muted");
-  }); */
-/* $("#listModel").click(function(){
-  	$("#listView").show();
-	$("#cardView").hide();
-	$(this).find("i").addClass("text-muted text-primary");
-	$("#cardModel").find("i").removeClass("text-primary text-muted");
-  }); */
-</script>
-<script>
 //Window scroll fixed header
 $(window).scroll(function(){
     if ($(window).scrollTop() >= 100) {
@@ -1343,4 +808,18 @@ $(window).scroll(function(){
 	
 	
 </script>
-<jsp:include page="../masterFooter.jsp" /> 	
+<jsp:include page="../masterFooter.jsp" />
+<!-- <div class="mask"></div> -->
+<script>
+//Advanced Search
+function closePop(){
+	$(".advancedsearch-mask, #profileAdSearch").fadeOut();
+	$(".advancedsearch-mask, #filterSearchMarket").fadeOut();
+}
+function openPop(){
+$("#profileAdSearch, .advancedsearch-mask").fadeIn();
+}
+function filterPop() {
+$(".advancedsearch-mask, #filterSearchMarket").fadeIn();
+}
+</script>

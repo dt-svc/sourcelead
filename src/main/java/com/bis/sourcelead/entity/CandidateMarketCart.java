@@ -33,9 +33,19 @@ public class CandidateMarketCart implements Serializable {
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "MASTER_CANDIDATE_ID", nullable = false)
 	private MasterCandidate masterCandidateId;
+	
+	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name = "MARKETPLACE_ID", nullable = false)
+	private CandidateMarketPlace marketplaceId;
 
 	@Column(name = "CANDIDATE_UUID")
 	private String candidateUUID;
+	
+	@Column(name = "UUID")
+	private String marketCartUUID;
+	
+	@Column(name = "MARKETPLACE_UUID")
+	private String marketplaceUUID;
 
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "ORG_LOCATION_ID", nullable = false)
@@ -73,6 +83,22 @@ public class CandidateMarketCart implements Serializable {
 
 	public void setCandidateId(Candidate candidateId) {
 		this.candidateId = candidateId;
+	}
+
+	public CandidateMarketPlace getMarketplaceId() {
+		return marketplaceId;
+	}
+
+	public void setMarketplaceId(CandidateMarketPlace marketplaceId) {
+		this.marketplaceId = marketplaceId;
+	}
+
+	public String getMarketplaceUUID() {
+		return marketplaceUUID;
+	}
+
+	public void setMarketplaceUUID(String marketplaceUUID) {
+		this.marketplaceUUID = marketplaceUUID;
 	}
 
 	public MasterCandidate getMasterCandidateId() {
@@ -139,5 +165,14 @@ public class CandidateMarketCart implements Serializable {
 		this.updatedBy = updatedBy;
 	}
 
+	public String getMarketCartUUID() {
+		return marketCartUUID;
+	}
+
+	public void setMarketCartUUID(String marketCartUUID) {
+		this.marketCartUUID = marketCartUUID;
+	}
+
+	
 
 }
