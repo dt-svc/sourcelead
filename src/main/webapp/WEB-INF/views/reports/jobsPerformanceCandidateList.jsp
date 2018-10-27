@@ -238,8 +238,9 @@ function preparecandidateAssignedList(url){
 
 <script>
 function preparecandidateAssignedPagination(url){
+	var table = "";
 	var colIndex = 0;
-    $('#allApplicantsPagination').DataTable( { 
+	table = $('#allApplicantsPagination').DataTable( { 
     		"processing": true,
         "serverSide": true,
         "searching": false,
