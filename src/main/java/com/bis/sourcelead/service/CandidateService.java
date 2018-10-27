@@ -251,7 +251,7 @@ public interface CandidateService {
 	
 	public void withdrawCandidateFromMarketplace(CandidateMarketPlace marketplace, String withdrawReason)throws Exception;
 
-	public CandidateMarketPlace getCandidateMarketPlaceDetailsById(Long id)throws Exception;
+	public CandidateMarketPlace getCandidateMarketPlaceDetailsByUUId(String uuid)throws Exception;
 	
 	public void addCandidateToMarketCart(User user, CandidateMarketPlace marketplace, Long orgLocationId)throws Exception;
 	

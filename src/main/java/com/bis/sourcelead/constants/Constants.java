@@ -242,6 +242,7 @@ public class Constants {
 	public static final int CANDIDATE_SKILL_ACTIVE = 1;
 	public static final int CANDIDATE_SKILL_IN_ACTIVE = 0;
 	public static final String ACTIVE = "Active";
+	public static final String ADDED_CART = "In_Cart";
 	public static final String INACTIVE = "In-Active";
 	/** projectMemberHistory constants **/
 	public static final String PROJECT_MEMBER_HISTORY_OPEN = "OPEN";

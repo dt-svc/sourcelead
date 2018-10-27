@@ -138,8 +138,13 @@ public class CandidateMarketPlace implements Serializable {
 	
 	@Column(name = "IMAGE_URL")
 	private String imageUrl;
-	
 
+	@Column(name = "UUID")
+	private String marketplaceUUID;
+	
+	@Column(name = "SUMMARY", columnDefinition = "TEXT default NULL")
+	private String summary;
+	
 	public Long getId() {
 		return id;
 	}
@@ -440,5 +445,22 @@ public class CandidateMarketPlace implements Serializable {
 	public void setImageUrl(String imageUrl) {
 		this.imageUrl = imageUrl;
 	}
+
+	public String getMarketplaceUUID() {
+		return marketplaceUUID;
+	}
+
+	public void setMarketplaceUUID(String marketplaceUUID) {
+		this.marketplaceUUID = marketplaceUUID;
+	}
+
+	public String getSummary() {
+		return summary;
+	}
+
+	public void setSummary(String summary) {
+		this.summary = summary;
+	}
+	
 	
 }

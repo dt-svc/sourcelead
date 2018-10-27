@@ -178,7 +178,7 @@ public interface CandidateDao {
 	
 	public void withdrawCandidateFromMarketplace(CandidateMarketPlace marketplace)throws Exception;
 	
-	public CandidateMarketPlace getCandidateMarketPlaceDetailsById(Long id)throws Exception;
+	public CandidateMarketPlace getCandidateMarketPlaceDetailsByUUId(String uuid)throws Exception;
 	
 	public void addCandidateToMarketCart(CandidateMarketCart marketcart)throws Exception;
 

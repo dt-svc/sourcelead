@@ -79,6 +79,12 @@ public class CandidateMarketPlaceDTO extends SearchDTO implements Serializable  
 	private String maritalStatus;
 	
 	private String imageUrl;
+	
+	private String marketplaceUUID;
+	
+	private String candidateMarketStatus;
+	
+	private String summary;
 
 	public Long getId() {
 		return id;
@@ -358,6 +364,30 @@ public class CandidateMarketPlaceDTO extends SearchDTO implements Serializable  
 
 	public void setImageUrl(String imageUrl) {
 		this.imageUrl = imageUrl;
+	}
+
+	public String getMarketplaceUUID() {
+		return marketplaceUUID;
+	}
+
+	public void setMarketplaceUUID(String marketplaceUUID) {
+		this.marketplaceUUID = marketplaceUUID;
+	}
+
+	public String getCandidateMarketStatus() {
+		return candidateMarketStatus;
+	}
+
+	public void setCandidateMarketStatus(String candidateMarketStatus) {
+		this.candidateMarketStatus = candidateMarketStatus;
+	}
+
+	public String getSummary() {
+		return summary;
+	}
+
+	public void setSummary(String summary) {
+		this.summary = summary;
 	}
 
 	

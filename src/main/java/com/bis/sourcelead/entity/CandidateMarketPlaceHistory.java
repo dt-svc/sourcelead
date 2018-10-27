@@ -31,9 +31,16 @@ public class CandidateMarketPlaceHistory implements Serializable {
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "MASTER_CANDIDATE_ID", nullable = false)
 	private MasterCandidate masterCandidateId;
+	
+	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name = "MARKETPLACE_ID", nullable = false)
+	private CandidateMarketPlace marketplaceId;
 
 	@Column(name = "CANDIDATE_UUID")
 	private String candidateUUID;
+	
+	@Column(name = "MARKETPLACE_UUID")
+	private String marketplaceUUID;
 
 	@Column(name = "NAME")
 	private String  fullName;
@@ -152,6 +159,14 @@ public class CandidateMarketPlaceHistory implements Serializable {
 	public void setMasterCandidateId(MasterCandidate masterCandidateId) {
 		this.masterCandidateId = masterCandidateId;
 	}
+	
+	public CandidateMarketPlace getMarketplaceId() {
+		return marketplaceId;
+	}
+
+	public void setMarketplaceId(CandidateMarketPlace marketplaceId) {
+		this.marketplaceId = marketplaceId;
+	}
 
 	public String getCandidateUUID() {
 		return candidateUUID;
@@ -159,6 +174,14 @@ public class CandidateMarketPlaceHistory implements Serializable {
 
 	public void setCandidateUUID(String candidateUUID) {
 		this.candidateUUID = candidateUUID;
+	}
+
+	public String getMarketplaceUUID() {
+		return marketplaceUUID;
+	}
+
+	public void setMarketplaceUUID(String marketplaceUUID) {
+		this.marketplaceUUID = marketplaceUUID;
 	}
 
 	public String getFullName() {
