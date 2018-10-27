@@ -26,6 +26,8 @@ public class TotalHoursDTO {
 	private Date startDate;
     
 	private Date endDate;
+	
+	private Date timesheetDate;
     
 	private String billableHours;
     
@@ -187,6 +189,16 @@ public class TotalHoursDTO {
 	public void setSubmissinId(BigInteger submissinId)
 	{
 		this.submissinId = submissinId;
+	}
+
+	public Date getTimesheetDate()
+	{
+		return timesheetDate;
+	}
+
+	public void setTimesheetDate(Date timesheetDate)
+	{
+		this.timesheetDate = timesheetDate;
 	}
 
 
