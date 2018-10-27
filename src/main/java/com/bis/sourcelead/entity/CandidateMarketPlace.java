@@ -462,5 +462,4 @@ public class CandidateMarketPlace implements Serializable {
 		this.summary = summary;
 	}
 	
-	
 }

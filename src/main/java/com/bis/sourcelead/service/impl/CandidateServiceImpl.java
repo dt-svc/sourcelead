@@ -2690,10 +2690,11 @@ private Sheet createXlsSheet(Sheet createExcelsheet, Row writeRow,Candidate cand
 			marketPlace.setNoticePeriod(candidate.getNoticePeriod());
 			marketPlace.setMarketPrice(null);
 			marketPlace.setMarketRateCurrencey(null);
+			marketPlace.setSummary(candidate.getSummary());
 			marketPlace.setCandidateMarketStatus(Constants.DRAFT);
 			marketPlace.setNationality(candidate.getNationality());
 			marketPlace.setMaritalStatus(candidate.getMaritalStatus());
-			marketPlace.setStatus(1);
+			marketPlace.setStatus(Constants.CANDIDATE_ACTIVE);
 			marketPlace.setCreatedDate(new Date());
 			marketPlace.setCreatedBy(user);
 			marketPlace.setUpdatedDate(new Date());
@@ -2757,6 +2758,7 @@ private Sheet createXlsSheet(Sheet createExcelsheet, Row writeRow,Candidate cand
 			marketPlace.setImageUrl(candidate.getFileUrl());
 			marketPlace.setCandidateMarketStatus(Constants.ACTIVE);
 			marketPlace.setMarketPrice(dto.getMarketPrice());
+			marketPlace.setSummary(candidate.getSummary());
 			marketPlace.setMarketRateCurrencey(dto.getMarketRateCurrencey());
 			marketPlace.setStatus(Constants.CANDIDATE_ACTIVE);
 			marketPlace.setCreatedDate(new Date());
