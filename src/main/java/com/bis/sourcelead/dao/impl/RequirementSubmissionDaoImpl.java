@@ -2829,7 +2829,7 @@ public class RequirementSubmissionDaoImpl implements RequirementSubmissionDao{
 			}else if(submissionStatus.equalsIgnoreCase("INTERVIEW")){
 				submissionStages = " and (rsh.submissionStatus = 'INTERVIEW' or rsh.submissionStatus = 'CLIENT_INTERVIEW')";
 			}else if(submissionStatus.equalsIgnoreCase("OFFERMADE")){
-				submissionStages = "and (rsh.submissionStatus = 'OFFERMADE' OR rsh.submissionStatus = 'OFFERACCEPTED' OR rsh.submissionStatus = 'OFFERREJECTED' "
+				submissionStages = " and (rsh.submissionStatus = 'OFFERMADE' OR rsh.submissionStatus = 'OFFERACCEPTED' OR rsh.submissionStatus = 'OFFERREJECTED' "
 						+ " OR rsh.submissionStatus = 'CLIENT_OFFERMADE' OR rsh.submissionStatus = 'CLIENT_OFFERACCEPTED' OR rsh.submissionStatus = 'CLIENT_OFFERREJECTED') ";
 			}else if(submissionStatus.equalsIgnoreCase("REJECTED")) {
 				submissionStages = " and rsh.submissionStatus = 'REJECTED'";
@@ -2886,7 +2886,7 @@ public class RequirementSubmissionDaoImpl implements RequirementSubmissionDao{
 						query1.append("and (rsh.candidate.mobilePhone like '%" + requirementSubmissionHistoryDTO.getSearchValue() + "%' )");
 					}
 					else{
-				query1.append("and( (rsh.candidate.firstName like '%" + requirementSubmissionHistoryDTO.getSearchValue() + "%' OR rsh.candidate.lastName like '%" + requirementSubmissionHistoryDTO.getSearchValue() + "%' )")
+				query1.append(" and( (rsh.candidate.firstName like '%" + requirementSubmissionHistoryDTO.getSearchValue() + "%' OR rsh.candidate.lastName like '%" + requirementSubmissionHistoryDTO.getSearchValue() + "%' )")
 				      .append("OR (concat(rsh.candidate.firstName,rsh.candidate.lastName) like '%" + requirementSubmissionHistoryDTO.getSearchValue().trim() + "%')" )
 				      .append("OR rsh.candidate.email like '%" + requirementSubmissionHistoryDTO.getSearchValue() + "%' ")
 			          .append("OR rsh.candidate.mobilePhone like '%" + requirementSubmissionHistoryDTO.getSearchValue() + "%' ")
@@ -2947,7 +2947,7 @@ public class RequirementSubmissionDaoImpl implements RequirementSubmissionDao{
 	    			params.put("requirementId",requirementId);
 	    		}
 	    		String whereCondition = subQuery;
-	    		Query query =  session.createQuery(from+" "+whereCondition+"  "+query1+"").setFirstResult(requirementSubmissionHistoryDTO.getStart()).setMaxResults(requirementSubmissionHistoryDTO.getLength());
+	    		Query query =  session.createQuery(from+" "+whereCondition+"  "+query1).setFirstResult(requirementSubmissionHistoryDTO.getStart()).setMaxResults(requirementSubmissionHistoryDTO.getLength());
 	    		
 	    		for (String str : query.getNamedParameters())
 	            {
@@ -2962,7 +2962,7 @@ public class RequirementSubmissionDaoImpl implements RequirementSubmissionDao{
 	    			}
 	            }
 	    		
-	    		Query countQuery = session.createQuery(fromQuryCount+" "+whereCondition+" "+query1+" ");
+	    		Query countQuery = session.createQuery(fromQuryCount+" "+whereCondition+" "+query1);
 
 	    		for (String str : countQuery.getNamedParameters())
 	            {
@@ -2987,7 +2987,7 @@ public class RequirementSubmissionDaoImpl implements RequirementSubmissionDao{
 	    		response.setRecordsTotal(totalCount);
 	    		
 	    		if(query1.toString() != null && !query1.toString().isEmpty()){
-	    			response.setRecordsFiltered(filterCount);
+	    			response.setRecordsFiltered(totalCount);
 	    		}else {
 	    			response.setRecordsFiltered(totalCount);
 	    		}
@@ -3006,13 +3006,13 @@ public class RequirementSubmissionDaoImpl implements RequirementSubmissionDao{
 	        	
 	    		String query="";
 	        	if(requirementSubmissionHistoryDTO.getType() != null &&requirementSubmissionHistoryDTO.getType().equalsIgnoreCase("applicantReport")){
-		     		query =" from RequirementSubmission rsh left join fetch rsh.candidate can left join fetch rsh.requirement req  where rsh.orgLocations = :orgLocationsId and rsh.requirement =:requirementId"+submissionStages+" "+teamSubQuery+" and rsh.status = 1  and rsh.requirement IS NOT NULL"+query1+"";
+		     		query =" from RequirementSubmission rsh left join fetch rsh.candidate can left join fetch rsh.requirement req  where rsh.orgLocations = :orgLocationsId and rsh.requirement =:requirementId"+submissionStages+" "+teamSubQuery+" and rsh.status = 1  and rsh.requirement IS NOT NULL "+query1+"";
 	        	}
 	        	else{
 		     		query =" from RequirementSubmission rsh left join fetch rsh.candidate can left join fetch rsh.requirement req  where rsh.orgLocations = :orgLocationsId and rsh.requirement =:requirementId"+submissionStages+" "+teamSubQuery+" and rsh.status = 1  and rsh.requirement IS NOT NULL "+query1+"";
 	        	}
 //	     		String query =" from RequirementSubmissionHistory rsh left join fetch rsh.submissionId.candidate can left join fetch rsh.submissionId.requirement req left join fetch rsh.submissionId rs where rsh.submissionId.orgLocations = :orgLocationsId "+submissionStages+" "+empQuery+" "+clientSubQuery+" "+teamSubQuery+" "+incentivizedQuery+" "+subQuery1+" and rsh.submissionId.status = 1  and rsh.submissionId.requirement IS NOT NULL and rsh.updatedDate >= :startDate and rsh.updatedDate <= :endDate "+query1+"";
-     			String countQuery ="select count(*) from RequirementSubmission rsh  where rsh.orgLocations = :orgLocationsId and rsh.requirement =:requirementId"+submissionStages+" "+teamSubQuery+" and rsh.status = 1  and rsh.requirement IS NOT NULL";
+     			String countQuery ="select count(*) from RequirementSubmission rsh  where rsh.orgLocations = :orgLocationsId and rsh.requirement =:requirementId"+submissionStages+" "+teamSubQuery+" and rsh.status = 1  and rsh.requirement IS NOT NULL "+query1+"";
      			params.put("orgLocationsId",orgLocations.getId());
      			params.put("requirementId",requirementId);
      			
@@ -3051,7 +3051,7 @@ public class RequirementSubmissionDaoImpl implements RequirementSubmissionDao{
 	    		response.setRecordsTotal(totalCount);
 	    		
 	    		if(query1.toString() != null && !query1.toString().isEmpty()){
-	    			response.setRecordsFiltered(filterCount);
+	    			response.setRecordsFiltered(totalCount);
 	    		}else {
 	    			response.setRecordsFiltered(totalCount);
 	    		}
