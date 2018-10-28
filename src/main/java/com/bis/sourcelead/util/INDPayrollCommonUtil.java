@@ -1,6 +1,7 @@
 package com.bis.sourcelead.util;
 
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashSet;
@@ -429,7 +430,7 @@ public void sendMailToUserFromndIanPayrolApprover(User loginUser,  OrgLocations 
 					}else if(payFrequency.equalsIgnoreCase(Constants.IND_PAYROLL_PAYFREQUENCY_MONTHLY)) {
 						tds = payHead.getMonthly();
 					}else  {
-						tds = payHead.getAnnualy().divide(getProjectInvoiceFrequency(payFrequency));
+						tds = payHead.getAnnualy().divide(getProjectInvoiceFrequency(payFrequency), 2);
 					}
 					   
 				}else if(payHead.getPayrollPayhead() != null 
@@ -440,7 +441,7 @@ public void sendMailToUserFromndIanPayrolApprover(User loginUser,  OrgLocations 
 						}else if(payFrequency.equalsIgnoreCase(Constants.IND_PAYROLL_PAYFREQUENCY_MONTHLY)) {
 							pt = payHead.getMonthly();
 						}else  {
-							pt = payHead.getAnnualy().divide(getProjectInvoiceFrequency(payFrequency));
+							pt = payHead.getAnnualy().divide(getProjectInvoiceFrequency(payFrequency), 2);
 						}
 						
 				}
@@ -454,7 +455,7 @@ public void sendMailToUserFromndIanPayrolApprover(User loginUser,  OrgLocations 
 					}else if(payFrequency.equalsIgnoreCase(Constants.IND_PAYROLL_PAYFREQUENCY_MONTHLY)) {
 						grossPay = grossPay.add(payHead.getMonthly());
 					}else  {
-						grossPay = grossPay.add(payHead.getAnnualy().divide(getProjectInvoiceFrequency(payFrequency)));
+						grossPay = grossPay.add(payHead.getAnnualy().divide(getProjectInvoiceFrequency(payFrequency), 2));
 					}
 				}
 				
@@ -466,7 +467,7 @@ public void sendMailToUserFromndIanPayrolApprover(User loginUser,  OrgLocations 
 					}else if(payFrequency.equalsIgnoreCase(Constants.IND_PAYROLL_PAYFREQUENCY_MONTHLY)) {
 						allDeductions = allDeductions.add(payHead.getMonthly());
 					}else  {
-						allDeductions = allDeductions.add(payHead.getAnnualy().divide(getProjectInvoiceFrequency(payFrequency)));
+						allDeductions = allDeductions.add(payHead.getAnnualy().divide(getProjectInvoiceFrequency(payFrequency), 2));
 					}
 				}
 				

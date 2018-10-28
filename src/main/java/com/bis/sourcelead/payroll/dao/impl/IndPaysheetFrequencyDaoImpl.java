@@ -78,7 +78,19 @@ private static final Logger logger = LoggerFactory.getLogger(AssociateTaxDaoImpl
 				}
 			}
 		}
-		Query queryObj = session.createQuery(qry + query1.toString());
+		
+		//List shorting order
+		String sortingQry = "";
+		if(StringUtils.isNotBlank(indPaysheetFrequencyDTO.getSortColumn())) {
+			if(indPaysheetFrequencyDTO.getSortColumn().equalsIgnoreCase("groupName")) {
+				sortingQry = " order by ipf.userGroup."+ indPaysheetFrequencyDTO.getSortColumn() +" "+indPaysheetFrequencyDTO.getSortOrder();
+			}else {
+				sortingQry = " order by ipf."+ indPaysheetFrequencyDTO.getSortColumn() +" "+indPaysheetFrequencyDTO.getSortOrder();
+			}
+			
+		}
+				
+		Query queryObj = session.createQuery(qry + query1.toString()+sortingQry);
 		frequencyList = queryObj.setLong("orgLocationId", orgLocation.getId()).list();
 		response.setData(frequencyList);
 		return response;
