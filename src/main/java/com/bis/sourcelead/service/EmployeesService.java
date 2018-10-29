@@ -5,7 +5,9 @@ import java.util.List;
 
 import org.springframework.stereotype.Service;
 
+import com.bis.sourcelead.dto.UserDTO;
 import com.bis.sourcelead.entity.Employees;
+import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.OrgRelations;
 
 @Service
@@ -47,4 +49,6 @@ public interface EmployeesService {
 	public Employees getEmployeByUserIdAndOrgRelationId(Long userId, Long orgRelationId)throws Exception;
 
 	public Employees getEmployeeByUserAndOrgLocationId(Long userId, Long orgLocationId);
+
+	public List<UserDTO> getEmployeesBasedOnDepartment(String departmentId, OrgLocations orgLocation);
 }

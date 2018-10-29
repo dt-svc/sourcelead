@@ -116,14 +116,16 @@ public class InterviewFeedbackTemplateDaoImpl implements InterviewFeedbackTempla
 			if(externalObjList != null && externalObjList.size() > 0) {
 				for(Object[] obj : externalObjList){
 					InterviewFeedbackTemplate ifTemplate = new InterviewFeedbackTemplate();
-					ifTemplate.setInterviewerRating(obj[0].toString());
-					ifTemplate.setInterviewerName(obj[1].toString());
+					if(obj[0] != null) {
+						ifTemplate.setInterviewerRating(obj[0].toString());
+					}
+					if(obj[1] != null) {
+						ifTemplate.setInterviewerName(obj[1].toString());
+					}
 					interviewFeedbackTemplate.add(ifTemplate);
 				}
-			
 			}
 		
-
 		return interviewFeedbackTemplate;
 	}
 	

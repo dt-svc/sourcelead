@@ -892,7 +892,7 @@ function activeEmail(id, ele){
 				 autoSelectFirstEmailFolder();
 				} else {
 					/* alert("Configured credentials were wrong,Please configure with right credentials") */
-					showEmailResponse(response.responseMessage);
+					showEmailResponse(true, response.responseMessage);
 					$("#mailLoading").removeAttr("style");
 				}
 				$("#dynamicEmailFolderLoading").hide();
@@ -1141,11 +1141,15 @@ function backToEmailList(){
 								text += "					<i class='fa " + attachClass + "' aria-hidden='true'></i>";
 							text += "				</div>";
 							text += "               <div class='AttaText'><i class='fa fa-paperclip' aria-hidden='true'></i>" + attachment.fileName + "</div>";
-							text += "               <div class='AttaCtaAct'>";
-							text += "                   <i class='fa fa-paperclip' aria-hidden='true'></i>";
-							text += "                   <p>" + attachment.fileName + "</p>";
-							text += "                   <a href='/app/downloadFile.html?file=" + (attachment.url + "/" + attachment.fileName) + "'><span class='fa fa-arrow-down' aria-hidden='true'></span></a>";
-							text += "               </div>";
+							if(attachment.attachmentNotFoundOrCorrupted) {
+								text += "<div class='textError'>File Contains error/virus</div>";								
+							} else {
+								text += "               <div class='AttaCtaAct' title='" + attachment.fileName + "'>";
+								text += "                   <i class='fa fa-paperclip' aria-hidden='true'></i>";
+								text += "                   <p>" + attachment.fileName + "</p>";
+								text += "                   <a href='/app/downloadFile.html?file=" + (attachment.path + "/" + attachment.fileName) + "'><span class='fa fa-arrow-down' aria-hidden='true'></span></a>";
+								text += "               </div>";
+							}
 							text += "           </div>";
 							
 							/* body += "<div class='col-md-10' style='width: auto;border: 1px solid #CECECE;'>";

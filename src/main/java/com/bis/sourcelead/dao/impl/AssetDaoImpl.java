@@ -501,5 +501,136 @@ public class AssetDaoImpl implements AssetDao{
 		}
 		return assetGrowthList;
 	}
+
+	@SuppressWarnings({ "unchecked" })
+	@Override
+	@Transactional
+	public ResponseList<AssetAssign> getDynamicAssignAssetFilterListByLocationId(Long orgLocationId, AssetDTO assetDTO)
+			throws Exception {
+		Session session =  this.sessionFactory.getCurrentSession();
+		List<Long> countlist = null;
+		Integer filterCount = 0;
+		ResponseList<AssetAssign> response = new ResponseList<>();
+		String[] category = null;
+		String[] status = null;
+		String subquery1 = "";
+		String subquery2 = "";
+		
+		if(assetDTO.getWorkingStatus() != null) {
+		 status = assetDTO.getWorkingStatus().split(",");
+		 if (Arrays.asList(status).contains("Working")) {
+				subquery2 = subquery2 + "assetAssign.asset.workingStatus = 'Working' OR ";
+			}
+			if (Arrays.asList(status).contains("Out Of Service")) {
+				subquery2 = subquery2 + "assetAssign.asset.workingStatus = 'Out Of Service' OR ";
+			}
+			if (Arrays.asList(status).contains("Service")) {
+				subquery2 = subquery2 + "assetAssign.asset.workingStatus = 'Service' OR ";
+			}
+		}
+		
+		
+		
+		if(assetDTO.getCategoryIds() != null){
+			category = assetDTO.getCategoryIds().split(",");
+		}
+		if (category != null && category[0] != null && category[0].length() > 0) {
+			for (String cat : category) {
+				  subquery1 = subquery1 + " assetAssign.asset.assetCategory.id = '"+cat+"' OR ";
+			}
+			if(!subquery1.equalsIgnoreCase("")){
+				subquery1 = " (" + subquery1.substring(0, subquery1.length() - 4) + ")";
+				subquery1 = " and " +subquery1;
+			}
+		}
+		
+		//usertList sorting order
+		String sortingQry = "";
+		if(StringUtils.isNotBlank(assetDTO.getSortColumn())) {
+			if(assetDTO.getSortColumn().equalsIgnoreCase("name") || assetDTO.getSortColumn().equalsIgnoreCase("slno") || assetDTO.getSortColumn().equalsIgnoreCase("assetCategory")) {
+				sortingQry = " order by assetAssign.asset."+ assetDTO.getSortColumn() +" "+assetDTO.getSortOrder();
+			}else if(assetDTO.getSortColumn().equalsIgnoreCase("firstName")) {
+				sortingQry = " order by assetAssign.userRole.user."+ assetDTO.getSortColumn() +" "+assetDTO.getSortOrder();
+			}else {
+				sortingQry = " order by assetAssign."+ assetDTO.getSortColumn() +" "+assetDTO.getSortOrder();
+			}
+				
+		}
+		
+		if(!subquery2.equalsIgnoreCase("")){
+			subquery2 = " (" + subquery2.substring(0, subquery2.length() - 4) + ")";
+			subquery2 = " and " +subquery2;
+		}
+		
+		
+		Pattern pattern = Pattern.compile("^(\\d{0,4}(\\-|\\/{1})\\d{0,4}(\\-|\\/{1})\\d{0,4})$");
+	   Matcher matcher = pattern.matcher(assetDTO.getSearchValue());
+	   java.sql.Date sqlDate = null;
+	    if(matcher.matches() == true) {
+					if(assetDTO.getSearchValue().contains("/")||(assetDTO.getSearchValue().contains("-"))) {
+						String replacedValue = assetDTO.getSearchValue().replaceAll("/", "-");
+						    OrgLocations orgLoc = orgLocationService.getOrgLocations(orgLocationId);
+							SimpleDateFormat format = new SimpleDateFormat(orgLoc.getDateFormat());
+					        java.util.Date utilDate = format.parse(replacedValue);
+					        sqlDate = new java.sql.Date(utilDate.getTime());
+					}
+	    }
+		StringBuilder query1 = new StringBuilder("");
+		if(assetDTO.getSearchValue() !=null && !"".equalsIgnoreCase(assetDTO.getSearchValue())) {
+			 query1.append("and  assetAssign.userRole.user.firstName like '%" + assetDTO.getSearchValue() + "%' ")
+				   .append("OR assetAssign.userRole.user.lastName like '%" + assetDTO.getSearchValue() + "%' ")
+				   .append("OR concat( assetAssign.userRole.user.firstName, assetAssign.userRole.user.lastName) like '%" + assetDTO.getSearchValue().replaceAll("[\\s]+", "").trim() + "%' ")
+				   .append("OR assetAssign.asset.slno like '%" + assetDTO.getSearchValue() + "%' ")
+		           .append("OR assetAssign.asset.assetCategory.categoryName like '%" + assetDTO.getSearchValue() + "%' ")
+		           .append("OR assetAssign.asset.name like '%" + assetDTO.getSearchValue() + "%' ")
+		           .append("OR assetAssign.shift.shiftName like '%" + assetDTO.getSearchValue() + "%' ");
+		    if(sqlDate != null) {
+		    	query1.append("OR assetAssign.assignedOn like '%" + sqlDate + "%' OR assetAssign.returnedOn like '%" + sqlDate + "%'");
+			 }
+					
+		}
+		
+		List<String> tagsList = new ArrayList<>();
+		if(assetDTO.getTags() != null && !assetDTO.getTags().isEmpty()) {
+			String[] tags = assetDTO.getTags().split(",");
+			for(int i=0; i<tags.length; i++){
+				tagsList.add(tags[i]);
+			}
+		}else {
+			tagsList.add("");
+		}
+		
+		String tagsQuery = " and ((:varString  IN (:tagsList)) OR (:varString NOT IN (:tagsList) and assetAssign.asset.id IN (select st.entityId from SourceleadTags st where st.tagName IN (:tagsList) and st.status ='1' ))) ";
+
+		
+		String subQuery = "";
+		if(StringUtils.isNotEmpty(assetDTO.getShiftIds())) {
+			subQuery = " and  assetAssign.shift.id IN("+assetDTO.getShiftIds()+")";
+		}
+		String query = "from AssetAssign assetAssign  where assetAssign.asset.orgLocations.id = :orgLocationId and assetAssign.status = '1' "+subQuery+subquery1+" "+subquery2+" "+query1+" "+tagsQuery+" "+sortingQry+""; 
+		List<AssetAssign> assetList = session.createQuery(query.toString()).setLong("orgLocationId", orgLocationId).setFirstResult(assetDTO.getStart()).setMaxResults(assetDTO.getLength()).setString("varString", "").setParameterList("tagsList", tagsList).list();
+		
+		String queryStrForCount = "Select count (*) from AssetAssign assetAssign   where assetAssign.asset.orgLocations.id = :orgLocationId and assetAssign.status = '1' "+subQuery+subquery1+" "+subquery2+" "+tagsQuery+" "+query1+"" ;
+		countlist = session.createQuery(queryStrForCount.toString()).setLong("orgLocationId", orgLocationId).setString("varString", "").setParameterList("tagsList", tagsList).list();
+		filterCount = countlist.iterator().next().intValue();
+		int totalCount = 0;
+		if (assetDTO != null) {
+			if(countlist != null && !countlist.isEmpty()) {
+				totalCount = countlist.iterator().next().intValue();
+			}
+		} 
+		response.setRecordsTotal(totalCount);
+		
+		if(query1.toString() != null && !query1.toString().isEmpty()){
+			response.setRecordsFiltered(filterCount);
+		}else {
+			response.setRecordsFiltered(totalCount);
+		}
+		
+		response.setData(assetList);
+		return response;
+		
+	}
+	
 	
 }

@@ -864,8 +864,8 @@ public class ImmigrationCommonDaoImpl implements ImmigrationCommonDao {
 		Query hqlQuery1 = null;
 		Query hqlQuery = null;
 		if (filterVal.size() != 0) {
-			resultCountQuery = listQueryCount + query1 + query2+sortingQry;
-			resultQuery = listQuery + query1 + query2;
+			resultCountQuery = listQueryCount + query1 + query2;
+			resultQuery = listQuery + query1 + query2+sortingQry;
 			hqlQuery = session.createQuery(resultQuery);
 			hqlQuery1 = session.createQuery(resultCountQuery);
 			if (filterVal.get("type") != null) {
@@ -897,8 +897,8 @@ public class ImmigrationCommonDaoImpl implements ImmigrationCommonDao {
 			hqlQuery = hqlQuery.setLong("orgLocationId", orgLocations.getId());
 			hqlQuery1 = hqlQuery1.setLong("orgLocationId", orgLocations.getId());
 		} else {
-			resultQuery = listQuery + query1;
-			resultCountQuery = listQueryCount + query1+ sortingQry;
+			resultQuery = listQuery + query1+ sortingQry;
+			resultCountQuery = listQueryCount + query1;
 			hqlQuery = session.createQuery(resultQuery).setLong("orgLocationId", orgLocations.getId());
 			hqlQuery1 = session.createQuery(resultCountQuery).setLong("orgLocationId", orgLocations.getId());
 		}
@@ -2156,13 +2156,25 @@ public class ImmigrationCommonDaoImpl implements ImmigrationCommonDao {
 		return lca;
 	}
 
-	@Override
+	/*@Override
 	@Transactional(rollbackFor = { Exception.class })
 	public LcaHistory getLcaHistoryDetails(Long immigrationId, String yes) {
 		Session session = this.sessionFactory.getCurrentSession();
 		String query = "from LcaHistory lh  left join fetch lh.lcaId where lh.immigrationId.id = :immigrationId and lh.isCurrent = :yes";
 		LcaHistory lh = (LcaHistory) session.createQuery(query).setLong("immigrationId", immigrationId).setString("yes", yes).uniqueResult();
 		return lh;
+	}*/
+	
+	@Override
+	@Transactional(rollbackFor = { Exception.class })
+	public List<LcaHistory> getLcaHistoryDetails(Long immigrationId, String yes) {
+		Session session = this.sessionFactory.getCurrentSession();
+		String query = "from LcaHistory lh  left join fetch lh.lcaId where lh.immigrationId.id = :immigrationId and lh.isCurrent = :yes ORDER BY lh.id DESC";
+		List<LcaHistory> lhList = session.createQuery(query).setLong("immigrationId", immigrationId).setString("yes", yes).setMaxResults(0).list();
+		if (lhList != null && lhList.size() > 0) {
+			lhList.get(0);
+		}
+		return lhList;
 	}
 
 	@Override

@@ -64,7 +64,7 @@ function approvePayrollDiv(){
 <div class="col-md-12 mt">
 	<div class="row">
 		<div class="col-md-3" id="groupIdDiv">
-			<select class="chosen-select" id="groupId" name="groupId" onchange="removeValidateGroup();getGroupFrequency();" data-validation="required" field-name="User Group">
+			<select class="chosen-select" id="groupId" name="groupId" onchange="removeValidateGroup();clearSubmitDiv();getGroupFrequency();" data-validation="required" field-name="User Group">
 				<option value="">User Group</option>
                     <c:forEach var="ug" items="${userGroupList}">
 					<option value="${ug.groupUUID},${ug.id}">${ug.groupName}</option>
@@ -117,6 +117,29 @@ function approvePayrollDiv(){
 <div class="clearfix">
 <!-- <div class="col-md-2"><a href="javascript:void(0)" class="btn anchorBlue">Exclude</a></div> -->
 	<div id="submitButtonDiv">
+	
+<div class="col-md-7">
+	<div class="row">
+	
+	<div class="col-md-5">
+		<div class="row">
+			<label class="col-md-7">No. of Payroll Generated  :</label>
+			<div class="col-md-5" id="totalNoPayroll"><strong>00.00</strong></div>
+		</div>
+	</div>
+	
+	<div class="col-md-7">
+			<div class="row">
+			<label class="col-md-3">Total Net Pay  :</label>
+			<div class="col-md-9" id="totalPayrollAmount"><strong>00.00</strong></div>
+		</div>
+	</div>
+	
+	</div>
+	
+</div>	
+	
+	<div class="col-md-5">
 	<ul class="pull-right mr list-unstyled list-inline">
 		<li><a href="#" class="btn btn-primary btnSuccess" id="Submit" onClick="sendPayrollForApprover();">Submit for Approve</a></li>
 		 <c:if test="${SourceLeadWeb_isPayRollApprover == 'Y'}">
@@ -124,6 +147,8 @@ function approvePayrollDiv(){
 		</c:if>
 		<li><a href="#" class="btn btn-default" onclick="window.location='/app/payrollList'">Cancel</a></li>
 	</ul>
+	</div>
+	
 	</div>
 <div class="clearfix"></div>
 </div>
@@ -444,7 +469,7 @@ function getGroupFrequency(){
 	    });
 	 $("#payrollDataDiv").empty();
 	 $('#payrollPayDate').val("").datepicker("update");
-	 $("#submitButtonDiv").hide();
+// 	 $("#submitButtonDiv").hide();
 }
  
  function removeValidateGroup(){
@@ -452,6 +477,8 @@ function getGroupFrequency(){
  }
  function errPayType(){
 		$('#payTypeIdDiv').find('p.jquery_form_error_message').remove(); 
+		$("#payrollDataDiv").empty();
+		$("#submitButtonDiv").hide();
 
  }
  
@@ -526,7 +553,7 @@ function runUSPayroll(){
 						        		result += '<td><div class="tblminwidth-50">--</div></td>';
 						        	}
 						        	result += '<td><div class="tbldata-dotdot-vsm">'+opt.empName+'</div></td>';
-// 						        	result += '<td><div class="tblminwidth-50">'+opt.regularHours+'</div><div class="tblminwidth-50 clearfix text-danger">$ '+opt.regularHrsTotalAmt.toFixed(2)+'</div></td>';	
+ 						        	result += '<td><div class="tblminwidth-50">'+opt.regularHours+'</div><div class="tblminwidth-50 clearfix text-danger">$ '+opt.regularHrsTotalAmt.toFixed(2)+'</div></td>';	
 						        	result += '<td><div class="tblminwidth-125 clearfix">$ '+opt.grossPay.toFixed(2)+'</div>';
 						        	result += '<td><div class="tbldata-dotdot-vsm">$ '+opt.payRate+'</div></td>';
 						        	if(opt.payType != null && opt.payType != ''){
@@ -569,6 +596,8 @@ function runUSPayroll(){
 				        	result += '</table>';
 				        	$("#payrollDataDiv").show();
 				        	$("#payrollDataDiv").empty();
+				        	$("#totalNoPayroll").html(data.noOfGeneratedPayroll);
+				        	$("#totalPayrollAmount").html(data.totalGeneratedAmount);
 				        	$("#payrollDataDiv").append(result);
 				        	$("#initiateLoading").removeAttr('style');
 		        	    
@@ -670,13 +699,18 @@ function msgFadein() {
 <script>
 function clearPayrollDiv(){
 // 	$("#groupId").val('');
-	$("#payrollPayDate").val('');
+// 	$("#payrollPayDate").val('');
 	$("#payrollDataDiv").empty();
 	$("#submitButtonDiv").hide();
 }
 function errPayPeriod(){
 	$('#payPeriodDiv').find('p.jquery_form_error_message').remove();  
 
+}
+function clearSubmitDiv(){
+	$("#submitButtonDiv").hide();
+	$("#payType").val('');
+	$('#payType').trigger("chosen:updated"); 
 }
 </script>
 

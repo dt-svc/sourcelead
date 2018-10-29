@@ -97,7 +97,7 @@
 					Browse <input style="display: none;" id="uploadBtn" multiple type="file">
 					</span>
 					</label>
-					<input class="form-control input-custom" id="letterHeadFile" placeholder="Upload logo." field-name="Logo" readonly type="text" value="${letterHead.fileName}" data-validation="required validate_Space validateimage">
+					<input class="form-control input-custom" id="letterHeadFile" placeholder="Upload logo." field-name="Logo" readonly type="text" value="${letterHead.fileName}" data-validation="required validate_Space validateImg">
 					<i class="refreshinputfile"></i>
 					</div>
 					</div>

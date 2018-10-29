@@ -43,7 +43,7 @@ public class WebAppInitializer extends AbstractAnnotationConfigDispatcherServlet
 	
 	@Override
 	protected Filter[] getServletFilters() {
-	  return new Filter[] { new HiddenHttpMethodFilter(), new GzipFilter() };
+	  return new Filter[] { new HiddenHttpMethodFilter()/*, new GzipFilter()*/ };
 	}
 	
 	

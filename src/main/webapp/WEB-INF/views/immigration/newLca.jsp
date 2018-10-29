@@ -34,18 +34,20 @@
   	<input type="hidden" id="lcaId" name="lcaId" value="${lcaDTO.lcaId}">
   	<input type="hidden" id="visaClsfId" name="visaClsfId" value="${lcaDTO.visaClsfId}">
     <div class="row clearfix mt" >
+         
          <div class="col-xs-12 col-sm-6 col-md-6 minHeight50 mb" id="errLcaNoDiv">
             <label class="col-md-4">LCA No<span class="text-danger paddingLeft">*</span></label>
             <div class="col-md-8">
                 <input type="text" name="lcaNo"  id="lcaNo" class="form-control" value="${lcaDTO.lcaNo}" placeholder="LCA Number" field-name="LCA NO"
-								data-validation="required validate_LcaNum validate_length length1-30" onkeyup="validateLcaNumber();">
+								data-validation="required validate_LcaNum validate_length length1-30" onkeyup="validateLcaNumber();" onblur="validateLcaNumber();">
           	</div>
-          </div>
+        </div>
+          
            <div class="col-xs-12 col-sm-6 col-md-6 minHeight50 mb" id="errLcaTitleDiv">
             <label class="col-md-4">LCA Title<span class="text-danger paddingLeft">*</span></label>
             <div class="col-md-8">
                 <input type="text" name="lcaTitle" id="lcaTitle" class="form-control" value="${lcaDTO.lcaTitle}" placeholder="LCA Title" field-name="LCA Title"
-								data-validation="required validate_AlphaNumber validate_length length1-250" onkeyup="validateLcaTitle();">
+								data-validation="required validate_AlphaNumber validate_length length1-250" onkeyup="validateLcaTitle();" onblur="validateLcaTitle();">
           	</div>
           </div>
            <div class="col-xs-12 col-sm-6 col-md-6 minHeight50 mb">
@@ -118,7 +120,7 @@
           	</div>
           <div class="col-md-5 padding_left">
           		<input type="text"  name="newEmploymentCount" id="newEmploymentCount" value="${lcaDTO.newEmploymentCount}" class="form-control input-sm" 
-          		onkeyup="validateNumber(this);" placeholder="Enter Count" readonly>
+          		onkeyup="validateNumber(this);"  field-name="Count" placeholder="Enter Count" readonly>
           	</div>
 
           </div>
@@ -133,7 +135,7 @@
           	</div>
           	<div class="col-md-4 padding_left">
           		<input type="text" name="concurrentEmploymentCount" value="${lcaDTO.concurrentEmploymentCount}" id="concurrentEmploymentCount" class="form-control input-sm" 
-          		onkeyup="validateNumber(this);" placeholder="Enter Count" readonly>
+          		onkeyup="validateNumber(this);" field-name="Count"  placeholder="Enter Count" readonly>
           	</div>
 
           </div>
@@ -147,7 +149,7 @@
           	</div>
           	<div class="col-md-5 padding_left">
           		<input type="text" name="extentionCount" id="extentionCount" value="${lcaDTO.extentionCount}" class="form-control input-sm" 
-          		onkeyup="validateNumber(this);" placeholder="Enter Count" readonly>
+          		onkeyup="validateNumber(this);" field-name="Count" placeholder="Enter Count" readonly>
           	</div>
 
           </div>
@@ -162,7 +164,7 @@
           	</div>
           	<div class="col-md-5 padding_left">
           		<input type="text" name="changeInEmployerCount" id="changeInEmployerCount" value="${lcaDTO.changeInEmployerCount}" class="form-control input-sm" 
-          		onkeyup="validateNumber(this);" placeholder="Enter Count" readonly>
+          		onkeyup="validateNumber(this);" field-name="Count" placeholder="Enter Count" readonly>
           	</div>
           </div>
           <div class="clearfix col-xs-12 col-sm-6 col-md-4 mb">
@@ -175,7 +177,7 @@
           	</div>
           	<div class="col-md-4 padding_left">
           		<input type="text" name="changeInPreApproEmplmtCount" id="changeEmployerPreviousCount" value="${lcaDTO.changeInPreApproEmplmtCount}" class="form-control input-sm" 
-          		onkeyup="validateNumber(this);" placeholder="Enter Count" readonly>
+          		onkeyup="validateNumber(this);" field-name="Count" placeholder="Enter Count" readonly>
           	</div>
           </div>
           <div class="clearfix col-xs-12 col-sm-6 col-md-4 mb">
@@ -188,7 +190,7 @@
           	</div>
           	<div class="col-md-5 padding_left">
           		<input type="text" name="amendmentCount" id="amendmentCount" value="${lcaDTO.amendmentCount}" class="form-control input-sm" 
-          		onkeyup="validateNumber(this);" placeholder="Enter Count" readonly>
+          		onkeyup="validateNumber(this);" field-name="Count" placeholder="Enter Count" readonly>
           	</div>
 
           </div>
@@ -314,7 +316,7 @@
 				<div class="col-xs-12 col-sm-6 col-md-6 minHeight50 mb">
 					<label class="col-md-4">Country</label>
 					<div class="col-md-8">
-					<input type="text" name="lcaPlaceOfEmploymentList[0].country" id="country" value="${lcaDTO.lcaPlaceOfEmploymentList[0].country == null ? loginCountryName  : lcaDTO.lcaPlaceOfEmploymentList[0].country}"  class="form-control" placeholder="Country" field-name="Country"
+					<input type="text" name="lcaPlaceOfEmploymentList[0].country" id="country" value="${lcaDTO.lcaPlaceOfEmploymentList[0].country == null ? ''  : lcaDTO.lcaPlaceOfEmploymentList[0].country}"  class="form-control" placeholder="Country" field-name="Country"
 								data-validation="required validate_length length2-100">
 					</div>
 				</div>
@@ -668,8 +670,12 @@
 		var ne = $("#newEmploymentCount");
 		if(ne.prop("readonly") == true) {
 			ne.prop("readonly", false);
+			//alert("A");
+			//$('#rateValidateId').find('p.jquery_form_error_message').remove();
 		}else {
 			ne.prop("readonly", true);
+			//alert("B");
+			
 		}
 		
 	});
@@ -1013,8 +1019,11 @@ $('#endDate').datepicker({
 	 if(flag == true){
 		 $("#newEmployment").val('0'); 
 		 $("#newEmploymentCount").val('');
+		 $("#newEmploymentCount").removeAttr("data-validation");
+		 $('#newEmploymentCount').find('p.jquery_form_error_message').remove();
 	 }else{
 		 $("#newEmployment").val('1'); 
+		 $("#newEmploymentCount").attr("data-validation","required");
 	 } 
  }
  function concurrentEmployment(){
@@ -1022,8 +1031,10 @@ $('#endDate').datepicker({
 	 if(flag == true){
 		 $("#concurrentEmployment").val('0'); 
 		 $("#concurrentEmploymentCount").val('');
+		 $("#concurrentEmploymentCount").removeAttr("data-validation");
 	 }else{
-		 $("#concurrentEmployment").val('1'); 
+		 $("#concurrentEmployment").val('1');
+		 $("#concurrentEmploymentCount").attr("data-validation","required");
 	 } 
  }
  function extention(){
@@ -1031,8 +1042,10 @@ $('#endDate').datepicker({
 	 if(flag == true){
 		 $("#extention").val('0'); 
 		 $("#extentionCount").val('');
+		 $("#extentionCount").removeAttr("data-validation");
 	 }else{
-		 $("#extention").val('1'); 
+		 $("#extention").val('1');
+		 $("#extentionCount").attr("data-validation","required");
 	 } 
  }
  function changEmployer(){
@@ -1040,8 +1053,11 @@ $('#endDate').datepicker({
 	 if(flag == true){
 		 $("#changeEmployer").val('0');
 		 $("#changeInEmployerCount").val('');
+		 $("#changeInEmployerCount").removeAttr("data-validation");
+		 
 	 }else{
-		 $("#changeEmployer").val('1'); 
+		 $("#changeEmployer").val('1');
+		 $("#changeInEmployerCount").attr("data-validation","required");
 	 } 
  }
  function approvedEmployment(){
@@ -1049,9 +1065,11 @@ $('#endDate').datepicker({
 	 if(flag == true){
 		 $("#changeEmployerPrevious").val('0'); 
 		 $("#changeEmployerPreviousCount").val('');
+		 $("#changeEmployerPreviousCount").removeAttr("data-validation");
 		 
 	 }else{
-		 $("#changeEmployerPrevious").val('1'); 
+		 $("#changeEmployerPrevious").val('1');
+		 $("#changeEmployerPreviousCount").attr("data-validation","required");
 	 } 
 	 
  }
@@ -1061,8 +1079,11 @@ $('#endDate').datepicker({
 	 if(flag == true){
 		 $("#amendment").val('0'); 
 		 $("#amendmentCount").val('');
+		 $("#amendmentCount").removeAttr("data-validation");
+		
 	 }else{
-		 $("#amendment").val('1'); 
+		 $("#amendment").val('1');
+		 $("#amendmentCount").attr("data-validation","required");
 	 } 
  }
  </script>

@@ -19,6 +19,7 @@ import org.springframework.transaction.annotation.Transactional;
 import com.bis.sourcelead.dao.AssociateLoanAndAdvancesDao;
 import com.bis.sourcelead.dto.ResponseList;
 import com.bis.sourcelead.entity.AssociateLoanAndAdvances;
+import com.bis.sourcelead.entity.Candidate;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.PayrollLoanAndAdvances;
 import com.bis.sourcelead.entity.User;
@@ -146,22 +147,46 @@ public class AssociateLoanAndAdvancesDaoImpl implements AssociateLoanAndAdvances
 		Map<String, Double> countMap = new HashMap<>();
 		Session session = this.sessionFactory.getCurrentSession();
 		String query = "";
-			query = "from AssociateLoanAndAdvances loansAndAd where loansAndAd.candidateId =:candidateId and loansAndAd.loanAndAdvanceStatus = 'Outstanding'";
+			query = "from AssociateLoanAndAdvances loansAndAd where loansAndAd.candidateId =:candidateId and loansAndAd.loanAndAdvanceStatus = 'Outstanding' and loansAndAd.status = '1'";
 			List<AssociateLoanAndAdvances> outstandingList = session.createQuery(query.toString()).setLong("candidateId", candidateId).list();
 			Double outscount = outstandingList.stream().mapToDouble(l->l.getAmount()).sum();
 			countMap.put("Outstanding", outscount);
 			
-			query = "from AssociateLoanAndAdvances loansAndAd where loansAndAd.candidateId =:candidateId and loansAndAd.loanAndAdvanceStatus = 'Completed'";
+			query = "from AssociateLoanAndAdvances loansAndAd where loansAndAd.candidateId =:candidateId and loansAndAd.loanAndAdvanceStatus = 'Completed' and loansAndAd.status = '1'";
 			List<AssociateLoanAndAdvances> completedList = session.createQuery(query.toString()).setLong("candidateId", candidateId).list();
 			Double Complcount = completedList.stream().mapToDouble(l->l.getAmount()).sum();
 			countMap.put("Completed", Complcount);
 			
-			query = "from AssociateLoanAndAdvances loansAndAd where loansAndAd.candidateId =:candidateId and loansAndAd.loanAndAdvanceStatus = 'Requested'";
+			query = "from AssociateLoanAndAdvances loansAndAd where loansAndAd.candidateId =:candidateId and loansAndAd.loanAndAdvanceStatus = 'Requested' and loansAndAd.status = '1'";
 			List<AssociateLoanAndAdvances> requestedList = session.createQuery(query.toString()).setLong("candidateId", candidateId).list();
 			Double reqcount = requestedList.stream().mapToDouble(l->l.getAmount()).sum();
 			countMap.put("Requested", reqcount);
 	     
 		return countMap;
+	}
+
+	@Override
+	@Transactional
+	public List<AssociateLoanAndAdvances> getAssociateLoanAndAdvancesListByUserIdAndLocationId(User user,
+			OrgLocations orgLocation, String loanStatus) throws Exception {
+		Session session = this.sessionFactory.getCurrentSession();
+		  List<AssociateLoanAndAdvances> loanAndAdvList = null;
+		  try {
+			  String subQuery = "";
+		         if(loanStatus.equalsIgnoreCase("outstanding")) {
+		        	 subQuery = " and lad.loanAndAdvanceStatus = 'Outstanding'";
+		         }else if(loanStatus.equalsIgnoreCase("Completed")) {
+		        	 subQuery = " and lad.loanAndAdvanceStatus = 'Completed'";
+		         }else if(loanStatus.equalsIgnoreCase("Requested")) {
+		        	 subQuery = " and lad.loanAndAdvanceStatus = 'Requested'";
+		         }
+				 String query = "from AssociateLoanAndAdvances lad left join fetch lad.payrollLoanAndAdvanceId left join fetch lad.approverUser left join fetch lad.candidateId left join fetch lad.candidateId.consultantUser where "
+				 		+ " lad.candidateId.consultantUser.id = :userId and lad.orgLocationId.id = :orgLocationId and lad.status = '1'  ";  
+			     loanAndAdvList = session.createQuery(query.toString()+subQuery).setLong("userId", user.getId()).setLong("orgLocationId", orgLocation.getId()).list();
+		} catch (Exception e) {
+			logger.error(ExceptionUtils.getFullStackTrace(e));
+		}
+	     return loanAndAdvList;
 	}
 
 }

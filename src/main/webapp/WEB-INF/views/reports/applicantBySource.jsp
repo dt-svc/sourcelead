@@ -26,9 +26,9 @@ $(document).ready(function(){
     </section>
     
     
-    <div class="vendor_wrap clearfix">
-    
-<div class="reportHead clearfix">
+<div class="vendor_wrap clearfix">
+<div id="reportLoading"></div>    
+<div class="reportHead clearfix zIndex">
 	<div class="listGridWrap reqListBtn">
           <a title="Graphical View"  id="graphicView" class="btn btn-default rAct"><i class="fa fa-pie-chart"></i></a>
           <a title="List View" id="listView" class="btn btn-default" ><i class="fa fa-list"></i></a>
@@ -47,7 +47,6 @@ $(document).ready(function(){
     		<li>
         <div class="dropdown-select positionRelative repSelWrap clearfix">
           <select class="form-control repSelFiled" name="dateSelection" id="dateSelection" onchange="getCustomDates();">
-            <option value=''>Select Date</option>
             <option value='Last_7_days' selected>Last 7 days</option>
             <option value='Last_15_days'>Last 15 days</option>
             <option value='1_month'>1 month</option>
@@ -58,6 +57,7 @@ $(document).ready(function(){
           </select>          
           
 		<div class="repSelBtn"><button type="button" class="btn btn-primary btn-sm" id="customize_btn" onclick="getApplicantBySourceChart();">Run</button></div> 
+		<input type="hidden" id="reportViewType" value="graphView"/>
           
                     <!-- Custom Date -->
                     
@@ -195,6 +195,8 @@ function getCustomDates(){
 		  }
 		  
 	  }
+	  
+	  $("#reportLoading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
 		
 	   if(flag){
 			$.ajax({ 
@@ -241,8 +243,10 @@ function getCustomDates(){
 				        		 
 				        		 var listView = document.getElementById("listView");
 					        	 listView.addEventListener("click", function() {
-									 getListView(response);
-					        		 document.getElementById("applicantSourceGrap").style.display="none";
+					        		   getListView(response);
+					        		   $("#reportViewType").val('');
+					        		   $("#reportViewType").val('listView');
+					        		    document.getElementById("applicantSourceGrap").style.display="none";
 								    	document.getElementById("applicantSource").style.display="block";
 								    	var element = document.getElementById("listView");
 								    	var grid = document.getElementById("graphicView");
@@ -253,8 +257,10 @@ function getCustomDates(){
 					        	 
 					        	 var graphicView = document.getElementById("graphicView");
 					        	 graphicView.addEventListener("click", function() {
-					        		 loadApplicantSourceChart(chartData);
-					        		 document.getElementById("applicantSourceGrap").style.display="block";
+					        		   loadApplicantSourceChart(chartData);
+					        		   $("#reportViewType").val('');
+					        		   $("#reportViewType").val('graphView');
+					        		   document.getElementById("applicantSourceGrap").style.display="block";
 								    	document.getElementById("applicantSource").style.display="none";
 								    	
 								    	var element = document.getElementById("listView");
@@ -262,12 +268,22 @@ function getCustomDates(){
 								    	element.classList.remove("rAct");
 								    	grid.classList.add("rAct");
 								  });
+					        	 
+					        	 var reportViewType = document.getElementById("reportViewType").value;
+					        	 if(reportViewType == 'listView'){
+					        		 getListView(response);
+					        	 }else{
+					        		 loadApplicantSourceChart(chartData);
+					        	 }
+					        	 $("#reportLoading").removeAttr("style");
+					        	 
 				 	   		}else{
 				 	   			var result = '';
 				 	   			result = result+"<div class='dataTables_empty'>"; 
 				 	   			result = result+"</div> ";
 				 	   	        $("#applicantSource").empty();
 				                $("#applicantSource").append(result);
+				                $("#reportLoading").removeAttr("style");
 				 	   		}
 			    			
 			    		}else if (response.indexOf('Sign In') !== -1) {
@@ -353,7 +369,7 @@ function getCustomDates(){
 			"titles": [],
 		   "graphs": [
 				{
-					"balloonText": "[[title]] count of<br> [[category]]:[[applicantsCount]]",
+					"balloonText": "[[title]] count of<br> [[category]]:[[applicantsCount]]<br> Percentage:[[value]] %",
 					"columnWidth": 0.3,
 					"fillAlphas": 1,
 					"fillColors": "#90CAF9",
@@ -367,7 +383,7 @@ function getCustomDates(){
 					"valueField": "column2"
 				},
 				{
-					"balloonText": "[[title]] count of<br>[[category]]:[[shortlistedCount]]",
+					"balloonText": "[[title]] count of<br>[[category]]:[[shortlistedCount]]<br> Percentage:[[value]] %",
 					"columnWidth": 0.3,
 					"fillAlphas": 1,
 					"fillColors": "#F48FB1",
@@ -380,7 +396,7 @@ function getCustomDates(){
 					"valueField": "column3"
 				},
 				{
-					"balloonText": "[[title]] count of<br>[[category]]:[[submitToClientCount]]",
+					"balloonText": "[[title]] count of<br>[[category]]:[[submitToClientCount]]<br> Percentage:[[value]] %",
 					"columnWidth": 0.3,
 					"fillAlphas": 1,
 					"fillColors": "#FF8A54",
@@ -393,7 +409,7 @@ function getCustomDates(){
 					"valueField": "column4"
 				},
 				{
-					"balloonText": "[[title]] count of<br>[[category]]:[[interviewsCount]]",
+					"balloonText": "[[title]] count of<br>[[category]]:[[interviewsCount]]<br> Percentage:[[value]] %",
 					"columnWidth": 0.3,
 					"fillAlphas": 1,
 					"fillColors": "#FFCC80",
@@ -406,7 +422,7 @@ function getCustomDates(){
 					"valueField": "column5"
 				},
 				{
-					"balloonText": "[[title]] count of<br>[[category]]:[[rejectedCount]]",
+					"balloonText": "[[title]] count of<br>[[category]]:[[rejectedCount]]<br> Percentage:[[value]] %",
 					"columnWidth": 0.3,
 					"fillAlphas": 1,
 					"fillColors": "#B39DDB",
@@ -419,7 +435,7 @@ function getCustomDates(){
 					"valueField": "column6"
 				},
 				{
-					"balloonText": "[[title]] count of<br>[[category]]:[[offeredCount]]",
+					"balloonText": "[[title]] count of<br>[[category]]:[[offeredCount]]<br> Percentage:[[value]] %",
 					"columnWidth": 0.3,
 					"fillAlphas": 1,
 					"fillColors": "#81C784",
@@ -432,7 +448,7 @@ function getCustomDates(){
 					"valueField": "column7"
 				},
 				{
-					"balloonText": "[[title]] count of<br>[[category]]:[[offerAcceptedCount]]",
+					"balloonText": "[[title]] count of<br>[[category]]:[[offerAcceptedCount]]<br> Percentage:[[value]] %",
 					"columnWidth": 0.3,
 					"fillAlphas": 1,
 					"fillColors": "#E57373",
@@ -445,7 +461,7 @@ function getCustomDates(){
 					"valueField": "column8"
 				},
 				{
-					"balloonText": "[[title]] count of<br>[[category]]:[[offerRejectedCount]]",
+					"balloonText": "[[title]] count of<br>[[category]]:[[offerRejectedCount]]<br> Percentage:[[value]] %",
 					"columnWidth": 0.3,
 					"fillAlphas": 1,
 					"fillColors": "#D84315",
@@ -458,7 +474,7 @@ function getCustomDates(){
 					"valueField": "column9"
 				},
 				{
-					"balloonText": "[[title]] count of<br>[[category]]:[[backoutCount]]",
+					"balloonText": "[[title]] count of<br>[[category]]:[[backoutCount]]<br> Percentage:[[value]] %",
 					"columnWidth": 0.3,
 					"fillAlphas": 1,
 					"fillColors": "#BCAAA4",

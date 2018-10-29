@@ -481,12 +481,12 @@ public  class TimesheetApprovalFrequencyGeneratorUtil {
 		projCal.setLenient(false);
 		projCal.setTime(projects.getStartDate());
 		OrgLocations orgLocations = orgLocationService.getOrgLocations(projects.getOrgLocationsId().getId());
-		Calendar projectStartMonday = CalendarUtil.getCurrentWeekDayByCalendar(projCal, "MON",orgLocations.getDateFormat());
+		Calendar projectStartMonday = CalendarUtil.getCurrentWeekDayByCalendarForTimesheets(projCal, "MON",orgLocations.getDateFormat());
 		
 		Calendar cal = Calendar.getInstance(TimeZone.getDefault());
 		cal.setLenient(false);
 		cal.setTime(date);
-		Calendar currentMonday = CalendarUtil.getCurrentWeekDayByCalendar(cal, "MON",orgLocations.getDateFormat());
+		Calendar currentMonday = CalendarUtil.getCurrentWeekDayByCalendarForTimesheets(cal, "MON",orgLocations.getDateFormat());
 		if(projectStartMonday.before(currentMonday)){
 			while(projectStartMonday.before(currentMonday)){
 				projectStartMonday = CalendarUtil.getDateIncrementByincrement(projectStartMonday,14);

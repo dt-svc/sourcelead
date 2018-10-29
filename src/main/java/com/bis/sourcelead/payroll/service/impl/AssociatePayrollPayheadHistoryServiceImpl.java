@@ -73,6 +73,20 @@ public class AssociatePayrollPayheadHistoryServiceImpl  implements AssociatePayr
 		return res;
 	}
 	
+	
+	@Override
+	public List<AssociatePayrollPayheadHistory> getAllUpdatedAssociatePayrollPayheadByPaySheetFrequencyUUID(String paySheetFrequencyUUID)throws Exception {
+		
+		return associatePayrollPayheadHistoryDao.getAllUpdatedAssociatePayrollPayheadByPaySheetFrequencyUUID(paySheetFrequencyUUID);
+	}
+
+	@Override
+	public List<AssociatePayrollPayheadHistory> getLatestAssociatePayrollPayheadByEmpPayrollId(Long empPayrollId)
+			throws Exception {
+		return associatePayrollPayheadHistoryDao.getLatestAssociatePayrollPayheadByEmpPayrollId(empPayrollId);
+	}
+
+	
 }
 
 	

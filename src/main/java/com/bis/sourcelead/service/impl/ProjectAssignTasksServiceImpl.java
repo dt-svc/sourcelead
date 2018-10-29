@@ -9,6 +9,7 @@ import com.bis.sourcelead.dto.ProjectTasksDTO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.dao.ProjectAssignTasksDao;
 import com.bis.sourcelead.entity.ProjectAssignTask;
 import com.bis.sourcelead.entity.ProjectMembers;
@@ -105,7 +106,12 @@ public class ProjectAssignTasksServiceImpl implements ProjectAssignTasksService{
 				 assignTasks.setProjectTaskId(projectTask);
 				 ProjectMembers pm = projectMembersService.getProjectMemberById(assignedMemeber);
 				 assignTasks.setProjectMemberId(pm);
-				 assignTasks.setStatus("1");
+				 if(pm.getProjectMemberCandidteId() != null) {
+					 if(pm.getProjectMemberCandidteId().getConsultantUser() != null) {
+						 assignTasks.setCreatedBy(pm.getProjectMemberCandidteId().getConsultantUser().getUserCode());
+					 }
+				 }
+				 assignTasks.setStatus(Constants.RECORD_ACTIVE.toString());
 				 assignTasks.setCreatedDate(commonUtil.currentDate());
 				 projectAssignTasksDao.saveProjectAssignTask(assignTasks);
 				 OrgLocations loginOrgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");

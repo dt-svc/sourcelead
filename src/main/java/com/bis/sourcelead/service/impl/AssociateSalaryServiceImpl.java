@@ -339,7 +339,7 @@ public class AssociateSalaryServiceImpl implements AssociateSalaryService{
 	}
 
 	@Override
-	public List<SalaryDTO> getSalaryByGroupId(OrgLocations orgLocation, Long candidateId,Date freqStartDate, Date freqEndDate)
+	public SalaryDTO getSalaryByGroupId(OrgLocations orgLocation, Long candidateId,Date freqStartDate, Date freqEndDate)
 	{
 		return associateSalaryDao.getSalaryByGroupId(orgLocation, candidateId,freqStartDate,freqEndDate);
 	}
@@ -348,5 +348,11 @@ public class AssociateSalaryServiceImpl implements AssociateSalaryService{
 	public List<AssociateSalaryInd> getIndAssociateSalaryListByGroupId(OrgLocations orgLocation, long groupId,
 			String payType) {
 		return associateSalaryDao.getIndAssociateSalaryListByGroupId(orgLocation,groupId,payType);
+	}
+
+	@Override
+	public List<AssociateSalaryInd> getIndAssociateSalaryListByGroupIdForInitiatePayRoll(OrgLocations orgLocation,
+			long groupId, String payType, Date fqStartDate, Date fqEndDate) {
+		return associateSalaryDao.getIndAssociateSalaryListByGroupIdForInitiatePayRoll(orgLocation, groupId, payType, fqStartDate, fqEndDate);
 	}
 }

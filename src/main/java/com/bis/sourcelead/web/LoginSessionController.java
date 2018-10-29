@@ -461,6 +461,7 @@ public class LoginSessionController {
 				model.addObject("bussinessTypesList", bussinessTypesList);
 				List<Timezone> timezoneList = timeZoneService.getAllTimeZones();
 				model.addObject("timezoneList", timezoneList);
+				model.addObject("googleMapsLocationApiKey", googleMapsLocationApiKey);
 				model.setViewName("onboard/companyOnboard");
 			}else{
 				CandidateOffBoarding candidateOffBoarding =  candidateOffBoardingService.getCandidateOffBoardingByUserIdAndLocationId(userRole.getUser().getId(), orgLocations.getId());
@@ -471,8 +472,10 @@ public class LoginSessionController {
 					if(onboardEndDte.equals(todayDate) || todayDate.after(onboardEndDte)){
 						SourceLeadSessionManager.setSessionAttribute(request, "candidateOffBoarding", candidateOffBoarding);
 						if(candidateOffBoarding.getOffboardSubmitted().equalsIgnoreCase("N")){
+							model.addObject("googleMapsLocationApiKey", googleMapsLocationApiKey);
 							model.setViewName("offboard/offboardStep1");
 						}else{
+							model.addObject("googleMapsLocationApiKey", googleMapsLocationApiKey);
 							model.setViewName("offboard/offboardUser");
 						}
 					}else{

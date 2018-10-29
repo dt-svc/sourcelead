@@ -19,6 +19,7 @@ import org.springframework.transaction.annotation.Transactional;
 import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.dao.EmployeesDao;
 import com.bis.sourcelead.entity.Employees;
+import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.Roles;
 import com.bis.sourcelead.exception.SourceLeadConstraintViolationException;
 import com.bis.sourcelead.exception.SourceLeadObjectNotFoundException;
@@ -382,6 +383,34 @@ public class EmployeesDaoImpl implements EmployeesDao{
 			e.printStackTrace();
 		}
 		return employee;
+	}
+
+	@SuppressWarnings("unchecked")
+	@Override
+	@Transactional
+	public List<Employees> getEmployeesBasedOnDepartment(String departmentId, OrgLocations orgLocation) {
+		
+		Long[] data = null;
+		if(departmentId != null && !"null".equalsIgnoreCase(departmentId)) {
+			String[] idsValues = departmentId.split(",");
+			// convert string array to long array
+			 data = new Long[idsValues.length];
+			for (int i = 0; i < idsValues.length; i++) {
+			  data[i] = Long.valueOf(idsValues[i]);
+			}
+		}
+		
+		List<Employees> employeesList = new ArrayList<>();
+		
+		Session session = this.sessionFactory.getCurrentSession();
+		Query employeesListQuery= session.createQuery("from Employees emp where emp.orgLocations.id = :orgLocationId and  emp.departmentId.id IN ( :ids )");
+		if(data != null) {
+			 employeesList = employeesListQuery.setLong("orgLocationId", orgLocation.getId()).setParameterList("ids", data).list();
+		}else {
+			return employeesList;
+		}
+		
+		return employeesList;
 	}
 
 }

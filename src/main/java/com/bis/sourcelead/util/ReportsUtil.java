@@ -44,6 +44,7 @@ import com.bis.sourcelead.entity.Timezone;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.entity.UserRole;
 import com.bis.sourcelead.reports.dao.ApplicantsBySourceDao;
+import com.bis.sourcelead.reportsDTO.JobFilterDTO;
 import com.bis.sourcelead.service.EmployeesService;
 import com.bis.sourcelead.service.TimeZoneService;
 import com.bis.sourcelead.service.UserRoleService;
@@ -179,6 +180,150 @@ public class ReportsUtil {
 		SourceLeadSessionManager.setSessionAttribute(request, "requirementIdsList", requirementIdsList);
 		return requirementDTOList;
 	}
+     
+     private String getDatesFromFilter(DateTime zoned, DateTimeFormatter outputFormatter,int numberOfDays) throws ParseException
+ 	{
+ 		DateTime yesterDayZoned = zoned.minusDays(numberOfDays);
+ 		String yesterDayDate = outputFormatter.print(yesterDayZoned);
+ 		return yesterDayDate;
+ 	}	
+     
+     public List<RequirementDTO> getAllRequirementsByOrgLocationIdForJobsPipeLine(JobFilterDTO jobFilterDTO,OrgLocations orgLocation,User user,String userRole,HttpServletRequest request){
+ 		
+ 		List<RequirementDTO> requirementDTOList = new ArrayList<>();
+ 		List<Long> requirementIdsList = new ArrayList<>();
+ 		String endDate = null;
+ 		String startDate = null;
+ 		try {
+ 			
+ 			DateTime zoned = new DateTime(commonUtil.elkDateFormatter(new Date())); //get date
+ 			DateTimeFormatter outputFormatter = DateTimeFormat.forPattern("yyyy-MM-dd");
+ 			if (!Constants.CUSTOM_REPORTS.equalsIgnoreCase(jobFilterDTO.getJobCreatedDateRange())	&& !"".equals(jobFilterDTO.getJobCreatedDateRange())) {
+ 				 endDate = outputFormatter.print(zoned);
+ 			}
+ 			if (null != jobFilterDTO.getJobCreatedDateRange() && !"".equals(jobFilterDTO.getJobCreatedDateRange())) {
+ 			if (!Constants.CUSTOM_REPORTS.equalsIgnoreCase(jobFilterDTO.getJobCreatedDateRange())) {
+ 			if (Constants.ONE_MONTH.equals(jobFilterDTO.getJobCreatedDateRange())) {
+ 				startDate = getDatesFromFilter(zoned, outputFormatter, 30);
+			}
+ 			else if(Constants.TWO_MONTHS.equals(jobFilterDTO.getJobCreatedDateRange())) {
+ 				startDate = getDatesFromFilter(zoned, outputFormatter, 60);
+			}
+ 			else if(Constants.THREE_MONTHS.equals(jobFilterDTO.getJobCreatedDateRange())) {
+ 				startDate = getDatesFromFilter(zoned, outputFormatter, 90);
+			}
+ 			else if(Constants.SIX_MONTHS.equals(jobFilterDTO.getJobCreatedDateRange())) {
+ 				startDate = getDatesFromFilter(zoned, outputFormatter, 180);
+			}
+ 			else if(Constants.ONE_YEAR.equals(jobFilterDTO.getJobCreatedDateRange())) {
+ 				startDate = getDatesFromFilter(zoned, outputFormatter, 365);
+			}
+ 			}
+ 			else {
+				if (StringUtils.isNotBlank(jobFilterDTO.getStartDateStr())
+						&& StringUtils.isNotBlank(jobFilterDTO.getEndDateStr())
+						&& !"undefined".equalsIgnoreCase(jobFilterDTO.getStartDateStr())
+						&& !"undefined".equalsIgnoreCase(jobFilterDTO.getEndDateStr())) {
+					
+					Date startDate1 = commonUtil.orgLocationDateFormat(orgLocation.getDateFormat(), jobFilterDTO.getStartDateStr());
+					Date endDate1 = commonUtil.orgLocationDateFormat(orgLocation.getDateFormat(), jobFilterDTO.getEndDateStr());
+					
+					startDate = commonUtil.elkDateFormatter(startDate1);
+					endDate = commonUtil.elkDateFormatter(endDate1);
+					
+				}
+				else {
+					startDate = getDatesFromFilter(zoned, outputFormatter, 30);
+				}
+			}
+ 			}
+ 			
+ 			
+ 			BoolQueryBuilder boolQueryBuilder = new BoolQueryBuilder();
+ 			boolQueryBuilder.must(QueryBuilders.matchQuery("orgLocationId", orgLocation.getId()));
+ 			BoolQueryBuilder filterQueryBuilder = QueryBuilders.boolQuery();
+ 			if(StringUtils.isNotBlank(jobFilterDTO.getClientIds())){
+ 				//For OrgRelation
+ 				BoolQueryBuilder jobQueryBuilder = QueryBuilders.boolQuery();
+ 				jobQueryBuilder.must(QueryBuilders.matchQuery("orgRelationId", jobFilterDTO.getClientIds()));
+ 				filterQueryBuilder.should(jobQueryBuilder);	
+ 				boolQueryBuilder.must(filterQueryBuilder);
+ 			}
+ 			
+
+ 			if(userRole != null && !("ROLE_ADMIN".equalsIgnoreCase(userRole) || "ROLE_SOURCELEAD_ADMIN".equalsIgnoreCase(userRole))){
+ 				BoolQueryBuilder assignedBoolQueryBuilder = QueryBuilders.boolQuery();
+ 				
+ 				//For Level1 Approver
+ 				BoolQueryBuilder reqLevel1ApproverUserIdQueryBuilder = QueryBuilders.boolQuery();
+ 				reqLevel1ApproverUserIdQueryBuilder.must(QueryBuilders.termQuery("reqLevel1ApproverUserId", user.getId().toString()));
+ 				reqLevel1ApproverUserIdQueryBuilder.mustNot(QueryBuilders.matchQuery("requirementStatus", "DRAFT"));
+ 				assignedBoolQueryBuilder.should(reqLevel1ApproverUserIdQueryBuilder);
+ 				
+ 				//For Requirement Manager
+ 				BoolQueryBuilder reqManagerUserIdQueryBuilder = QueryBuilders.boolQuery();
+ 				reqManagerUserIdQueryBuilder.must(QueryBuilders.termQuery("managerUserId",user.getId().toString()));
+ 				reqManagerUserIdQueryBuilder.mustNot(QueryBuilders.matchQuery("requirementStatus", "DRAFT"));
+ 				assignedBoolQueryBuilder.should(reqManagerUserIdQueryBuilder);
+ 				
+ 				//For Team Owner
+ 				BoolQueryBuilder teamOwnerQueryBuilder = QueryBuilders.boolQuery();
+ 				teamOwnerQueryBuilder.must(QueryBuilders.termQuery("teamOwnerUserId", user.getId().toString()));
+ 				teamOwnerQueryBuilder.mustNot(QueryBuilders.matchQuery("requirementStatus", "DRAFT"));
+ 				assignedBoolQueryBuilder.should(teamOwnerQueryBuilder);
+ 				
+ 				//For Team AssignedUser
+ 				BoolQueryBuilder teamAssignedUserQueryBuilder = QueryBuilders.boolQuery();
+ 				teamAssignedUserQueryBuilder.must(QueryBuilders.termQuery("teamAssignUserId", user.getId().toString()));
+ 				teamAssignedUserQueryBuilder.mustNot(QueryBuilders.matchQuery("requirementStatus", "DRAFT"));
+ 				assignedBoolQueryBuilder.should(teamAssignedUserQueryBuilder);
+ 				
+ 				
+ 				boolQueryBuilder.must(assignedBoolQueryBuilder);
+ 			}
+ 			
+ 			Integer maxResults = applicantsBySourceDao.getRequirementsCount(orgLocation.getId());
+ 			
+ 			RangeQueryBuilder qb = QueryBuilders.rangeQuery("createdDate").gte(startDate).lte(endDate);
+			boolQueryBuilder.must(qb);
+ 			
+ 			SearchHit[] searchHits = sourceleadELKBaseIndexer.searchDocumentWithMaxResults(Constants.ELK_REQUIREMENT_INDEX, Constants.ELK_REQUIREMENT_TYPE,0,maxResults,boolQueryBuilder).getHits();
+ 			if(searchHits != null && searchHits.length >0){
+ 				for (SearchHit hit : searchHits) {
+ 					String sourceAsString = hit.getSourceAsString();
+ 					ObjectMapper mapper = new ObjectMapper();
+ 					if (sourceAsString != null) {
+ 						RequirementIndex requirementIndex = mapper.readValue(sourceAsString, RequirementIndex.class);
+ 						RequirementDTO requirementDTO = new RequirementDTO();
+ 						requirementDTO.setRequirementId(String.valueOf(requirementIndex.getRequirementId()));
+ 						requirementDTO.setJobTitle(requirementIndex.getJobTitle());
+ 						requirementDTO.setGeneratedId(requirementIndex.getGeneratedId());
+ 						requirementDTOList.add(requirementDTO);
+ 					}
+ 				}
+ 				
+ 			}
+ 			
+ 			
+ 			SearchHit[] searchHits2 = sourceleadELKBaseIndexer.searchDocumentWithMaxResults(Constants.ELK_REQUIREMENT_INDEX, Constants.ELK_REQUIREMENT_TYPE,0,maxResults,boolQueryBuilder).getHits();
+ 			if(searchHits2 != null && searchHits2.length >0){
+ 				for (SearchHit hit : searchHits2) {
+ 					String sourceAsString = hit.getSourceAsString();
+ 					ObjectMapper mapper = new ObjectMapper();
+ 					if (sourceAsString != null) {
+ 						RequirementIndex requirementIndex = mapper.readValue(sourceAsString, RequirementIndex.class);
+ 						requirementIdsList.add(Long.valueOf(requirementIndex.getRequirementId()));
+ 					}
+ 				}
+ 			}
+ 			
+ 		} catch (Exception e) {
+ 			e.printStackTrace();
+ 		}
+ 		
+ 		SourceLeadSessionManager.setSessionAttribute(request, "requirementIdsList", requirementIdsList);
+ 		return requirementDTOList;
+ 	}
      
      
      
@@ -744,7 +889,7 @@ public Date[] yesterdayDates(OrgLocations orgLocations) throws Exception {
 	                	matchPattern.appendReplacement(sb, "--");
 	                }else if(matchPattern.group().equalsIgnoreCase("[Company_Location]")){
 						if (StringUtils.isNotEmpty(orgLocation.getCountry()))
-							matchPattern.appendReplacement(sb, orgLocation.getLocation());
+							matchPattern.appendReplacement(sb, orgLocation.getCountry());
 						else
 							matchPattern.appendReplacement(sb, "--");   
 	                }else if(matchPattern.group().equalsIgnoreCase("[Company_Name]")){

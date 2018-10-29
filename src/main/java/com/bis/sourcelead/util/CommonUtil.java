@@ -508,14 +508,14 @@ public class CommonUtil {
 	 * @author: Naresh Bolisetty
 	 * 
 	 */
-	public Boolean isSuperAdminForProjectMemberToReopenTimesheets(Long projectMemberId,User loginUser,OrgLocations loginLocation) throws Exception{
+	public Boolean isSuperAdminForProjectMemberToReopenTimesheets(Long projectMemberId,User loginUser,OrgLocations loginLocation,String isGlobalAccess) throws Exception{
 		ProjectMembers clientProjectMember = projectMembersService.getClientProjectMemberByProjectMemberId(projectMemberId);
 	    ProjectApproverHierarchy pah =  null;
 	    Boolean isSuperUser = false;
 	    if(null != clientProjectMember && null != clientProjectMember.getProjects() && null != clientProjectMember.getProjectClientsId())
 	    {
 	    	UserRole userRole = userRoleService.getUserRoleByUserIdAndLocationId(loginUser.getId(), loginLocation.getId());
-	    	pah =  projectApproverHierarchyService.getApproverUsersByProjectIdAndProjectClientId(clientProjectMember.getProjects().getId(), clientProjectMember.getProjectClientsId().getId());
+	    	pah =  projectApproverHierarchyService.getApproverUsersByProjectIdAndProjectClientId(clientProjectMember.getProjects().getId(), clientProjectMember.getProjectClientsId().getId(),loginLocation.getOrg().getId(),isGlobalAccess);
 		    if(     
 		    		//If the Login User As Location Admin Of Client
 		    		(null != clientProjectMember.getProjectClientsId() && null != clientProjectMember.getProjectClientsId().getOrgLocationsId() && null != clientProjectMember.getProjectClientsId().getOrgLocationsId().getUser()
