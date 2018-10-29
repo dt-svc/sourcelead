@@ -668,28 +668,6 @@ public class DataMigrationServiceImpl implements DataMigrationService {
 				}
 				
 					Candidate candidate = candidateService.saveCandidateBulkImports(candidateDTO, orgLocation, user);
-				/*	if(uploadedCandidatesList == null)
-					{
-						System.out.println("Processing Start Time>>>"+Calendar.getInstance().getTime()+candidateIndexKey);
-						uploadedCandidatesList= new ArrayList<>();
-				    }
-					if(uploadedCandidatesList.size() <= 50) {
-						uploadedCandidatesList.add(candidate);
-					}else {
-						List<Candidate> executedCandidatesList = null;
-						executedCandidatesList = new ArrayList<>();
-						executedCandidatesList.addAll(uploadedCandidatesList);
-						uploadedCandidatesList = null;
-						ExecutorService executorService  = null;
-						if(executorService == null) {
-							executorService = Executors.newSingleThreadExecutor();
-						}
-						System.out.println("Processing End Time>>>"+Calendar.getInstance().getTime()+candidateIndexKey);
-						
-						System.out.println("Thread Start Time>>>"+Calendar.getInstance().getTime()+">>> Thread"+candidateIndexKey);
-						executorService.execute(new UploadCandidateThread(executedCandidatesList,"Thread "+candidateIndexKey,orgLocation.getId()));
-						System.out.println("Thread End Time>>>"+Calendar.getInstance().getTime()+">>> Thread"+candidateIndexKey);
-					}*/
 				
 			}catch (Exception e) {
 				UploadXlsHistory history = uploadXlsHistoryService.getUploadXlsHistoryDetailsByUploadId(uploadId);

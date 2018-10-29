@@ -2734,17 +2734,32 @@ public String getOrglocationDateFormatHHMMSS(String dateFormat, Date date)
 		return fileInfoList;
 	}
 	
+	//TODO: USe a random Id generator
+	// IN THE JSP
+	// login.jsp -> Once login is done client is served dashboard.jsp
+	// <script> var sid=<%RandomUtil.randomid()%></script>
+	
+	// CLIENT js
+	// 
+	/*
+	 * $.ajax({
+    	beforeSend: function (jqXHR, settings) {
+        	jqXHR.setRequestHeader('X-UID', sid);
+    	},
+    	url: myUrl
+	}); 
+*/
 	public String getClientSessionUserId(HttpServletRequest request) {
-		String clientSessionId = null;
+/*		String clientSessionId = null;
 		Cookie[] cookies = request.getCookies();
 		  for(Cookie mycookie : cookies) {
 		  if(mycookie.getName().equalsIgnoreCase("JSESSIONID")) {
 			  clientSessionId = mycookie.getValue();
 			  break;
 	        }
-		  }	
-	 String userId =  SourceLeadSessionManager.getClientUserIdSessionJsonString(request,"sessionUserId",clientSessionId);
-	 return userId;
+		  }	*/
+		String userId =  SourceLeadSessionManager.getClientUserIdSessionJsonString(request,"sessionUserId",request.getSession().getId());
+		return userId;
 	}
 }
 
