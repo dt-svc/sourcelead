@@ -2810,7 +2810,7 @@ private Sheet createXlsSheet(Sheet createExcelsheet, Row writeRow,Candidate cand
 	public void addCandidateToMarketCart(User user, CandidateMarketPlace marketplace, Long orgLocationId) throws Exception {
 		// TODO Auto-generated method stub
 		CandidateMarketCart newMarketCart = new CandidateMarketCart();
-		marketplace.setCandidateMarketStatus(Constants.ADDED_CART);
+		//marketplace.setCandidateMarketStatus(Constants.ADDED_CART);
 		newMarketCart.setMarketplaceId(marketplace);
 		newMarketCart.setCandidateId(marketplace.getCandidateId());
 		newMarketCart.setMasterCandidateId(marketplace.getMasterCandidateId());
@@ -2825,12 +2825,12 @@ private Sheet createXlsSheet(Sheet createExcelsheet, Row writeRow,Candidate cand
 		newMarketCart.setCreatedBy(user);
 		newMarketCart.setUpdatedDate(new Date());
 		newMarketCart.setUpdatedBy(user);
-		candidateDao.saveMarketPlace(marketplace);
+		//candidateDao.saveMarketPlace(marketplace);
 		candidateDao.addCandidateToMarketCart(newMarketCart);
 	}
 
 	@Override
-	public List<CandidateMarketPlaceDTO> getGlobalMarketplaceCandListGridCard(String searchValue) {
+	public List<CandidateMarketPlaceDTO> getGlobalMarketplaceCandListGridCard(String searchValue, OrgLocations orgLocations) {
 		List<CandidateMarketPlace> candidateMarketPlaces = null;
 		List<CandidateMarketPlaceDTO> marketPlaceDTOs = new ArrayList<>();
 		candidateMarketPlaces = candidateDao.getGlobalMarketplaceCandListGridCard(searchValue);
@@ -2838,6 +2838,10 @@ private Sheet createXlsSheet(Sheet createExcelsheet, Row writeRow,Candidate cand
 			for(CandidateMarketPlace marketPlace : candidateMarketPlaces){
 				CandidateMarketPlaceDTO marketPlaceDTO = new CandidateMarketPlaceDTO();
 				BeanUtils.copyProperties(marketPlace, marketPlaceDTO);
+				int count = candidateDao.getMarketCartStatusByMarketIdOrgId(marketPlace.getId(), orgLocations.getId());
+				if(count != 0){
+					marketPlaceDTO.setMarketCartStatus(Constants.ADDED_CART);
+				}
 				marketPlaceDTOs.add(marketPlaceDTO);
 			}
 		}

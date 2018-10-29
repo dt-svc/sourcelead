@@ -600,10 +600,10 @@ function getGloblaMarketPlaceCandidates(divType){
 					var profilePercentage = "";
 					if(divType=="listModel"){
 						for(var i=0;i<object.length;i++){
-							if(object[i].candidateMarketStatus == "Active"){
+							if(object[i].marketCartStatus == null){
 								marketDelelIcon = "";
 								marketAddStatus = '<a type="button" onclick="addCandidateToMarketCart(\''+object[i].marketplaceUUID+'\', \'ListModel\')" class="anchorHighlight">Add</a>';
-							}else if(object[i].candidateMarketStatus == "In_Cart"){
+							}else if(object[i].marketCartStatus == "In_Cart"){
 								marketDelelIcon = '	<a class="removeSelected mt" title="Remove Selected"><i class="fa fa-trash-o"></i></a>';
 								marketAddStatus = '<a type="button" id="addedCartListModel'+object[i].marketplaceUUID+'" class="anchorHighlight anchorHighlightActive">Added</a>';
 							}
@@ -677,10 +677,10 @@ function getGloblaMarketPlaceCandidates(divType){
 					if(divType=="cardModel"){
 						result = result + '<div class="clearfix mt"></div>';
 						for(var i=0;i<object.length;i++){
-							if(object[i].candidateMarketStatus == "Active"){
+							if(object[i].marketCartStatus == null){
 								marketDelelIcon = "";
 								marketAddStatus = '<a type="button" id="addCartCardModel'+object[i].marketplaceUUID+'" onclick="addCandidateToMarketCart(\''+object[i].marketplaceUUID+'\', \'CardModel\')" class="anchorHighlight">Add</a>';
-							}else if(object[i].candidateMarketStatus == "In_Cart"){
+							}else if(object[i].marketCartStatus == "In_Cart"){
 								marketDelelIcon = '	<a class="removeSelected mt" title="Remove Selected"><i class="fa fa-trash-o"></i></a>';
 								marketAddStatus = '<a type="button" id="addedCartCardModel'+object[i].marketplaceUUID+'" class="anchorHighlight anchorHighlightActive">Added</a>';
 							}

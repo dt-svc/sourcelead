@@ -171,7 +171,8 @@ public class CandidateController {
 	@RequestMapping(value = "/getGlobalMarketplaceListGridCard")
 	public @ResponseBody List<CandidateMarketPlaceDTO> getGlobalMarketplaceCandListGridCard(HttpServletRequest request) {
 		List<CandidateMarketPlaceDTO> candidateMarketPlaceDTOs = null;
-		candidateMarketPlaceDTOs = candidateService.getGlobalMarketplaceCandListGridCard(null);
+		OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+		candidateMarketPlaceDTOs = candidateService.getGlobalMarketplaceCandListGridCard(null,orgLocations);
 		return candidateMarketPlaceDTOs;
 	}
 	

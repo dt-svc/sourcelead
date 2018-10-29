@@ -183,4 +183,6 @@ public interface CandidateDao {
 	public void addCandidateToMarketCart(CandidateMarketCart marketcart)throws Exception;
 
 	public List<CandidateMarketPlace> getGlobalMarketplaceCandListGridCard(String searchValue);
+
+	public int getMarketCartStatusByMarketIdOrgId(Long marketPlaceId, Long orgId);
 }
