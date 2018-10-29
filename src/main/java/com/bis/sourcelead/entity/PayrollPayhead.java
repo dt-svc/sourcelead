@@ -117,6 +117,10 @@ public class PayrollPayhead {
     @JsonProperty
     private String effectiveDateStr;
     
+    @Transient
+    @JsonProperty
+    private String isFormulaEditable;
+    
 
 	public Long getId() {
 		return id;
@@ -350,4 +354,11 @@ public class PayrollPayhead {
 		this.effectiveDateStr = effectiveDateStr;
 	}
 
+	public String getIsFormulaEditable() {
+		return isFormulaEditable;
+	}
+
+	public void setIsFormulaEditable(String isFormulaEditable) {
+		this.isFormulaEditable = isFormulaEditable;
+	}
 }

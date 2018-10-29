@@ -105,8 +105,8 @@ $(document).ready(function(){
         <!-- Top Leave Takers Custom Date --> 
       </div>
       
-       <div class="col-md-2" id = "RunDivId">
-        <button type="button" class="btn btn-primary btn-sm	mt2" id="customize_btn" onclick="refreshWithNewFreq();">Run</button>
+       <div class="col-md-1" id = "RunDivId">
+        <button type="button" class="btn btn-primary btn-sm	mt2 pull-right" id="customize_btn" onclick="refreshWithNewFreq();">Run</button>
 		</div>
 <!--       <div class="col-md-1">
         <div class="btn-group bootstrap_dropdownMenu dropdownPadding">

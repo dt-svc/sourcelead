@@ -20,8 +20,11 @@ import org.springframework.web.servlet.ModelAndView;
 import com.bis.sourcelead.constants.Constants;
 
 import com.bis.sourcelead.entity.BlogCategory;
+import com.bis.sourcelead.entity.OrgLocations;
+import com.bis.sourcelead.entity.ReleaseNote;
 import com.bis.sourcelead.entity.SourceleadBlogs;
 import com.bis.sourcelead.service.BlogCategoryService;
+import com.bis.sourcelead.service.ReleaseNoteService;
 import com.bis.sourcelead.service.SourceleadBlogService;
 
 
@@ -32,6 +35,7 @@ import com.bis.sourcelead.entity.UserManualLevelTwo;
 import com.bis.sourcelead.service.UserManualService;
 
 import com.bis.sourcelead.util.CommonUtil;
+import com.bis.sourcelead.util.SourceLeadSessionManager;
 
 @Controller
 @RequestMapping("/app")
@@ -53,6 +57,8 @@ public class ResourcesController {
 	@Autowired
 	UserManualService userManualService;
 
+	@Autowired
+	ReleaseNoteService releaseNoteService;
 	
 	
 	 @PreAuthorize("hasAnyRole('ROLE_ADD_BLOG','ROLE_PUBLISH_BLOG','ROLE_VIEW_EDIT_BLOG','ROLE_DELETE_BLOG')")
@@ -80,6 +86,17 @@ public class ResourcesController {
 	 }
 	 
 
+	 @RequestMapping(value = {"/releaseNote", "/rest/releaseNote"}, method = RequestMethod.GET)
+		public ModelAndView releaseNote(HttpServletRequest request) throws Exception {
+
+		    commonUtil.highLightMenu(Constants.UserManuals, request);
+			ModelAndView model = new ModelAndView();
+			model.setViewName("resources/releaseNote");
+			model.addObject("sourceleadUrl", sourceleadUrl);
+			return model;
+	 }
+	 
+	 
 	 @PreAuthorize("hasRole('ROLE_ADD_BLOG')")
 	 @RequestMapping(value = {"/addBlog", "/rest/addBlog"}, method = RequestMethod.GET)
 		public ModelAndView addBlog(HttpServletRequest request,@RequestParam(value="blogUUID", required=false)String blogUUID) throws Exception {
@@ -211,5 +228,79 @@ public class ResourcesController {
 			return model;
 
 	 }
+	 
+	 
+	 
+	 @RequestMapping(value = {"/addReleaseNote", "/rest/addReleaseNote"}, method = RequestMethod.GET)
+		public ModelAndView addReleaseNote(HttpServletRequest request,@RequestParam(value="releaseUUID", required=false)String releaseUUID) throws Exception {
+	    	OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 
+		    commonUtil.highLightMenu(Constants.ReleaseNote, request);
+			ModelAndView model = new ModelAndView();
+			ReleaseNote releaseNote;
+			if(null != releaseUUID && !releaseUUID.isEmpty()){
+			
+				releaseNote = releaseNoteService.getReleaseNoteByUUId(releaseUUID);
+				releaseNote.setReleaseDateStr(commonUtil.dateStrFromOrgDateFormatter(orgLocation.getDateFormat(),releaseNote.getReleaseDate()));
+				releaseNote.setPublishDateStr(commonUtil.dateStrFromOrgDateFormatter(orgLocation.getDateFormat(),releaseNote.getPublishDate()));
+		    	
+				/*DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");  
+				DateFormat dateFormatResult = new SimpleDateFormat ("MM/dd/yyyy hh:mm a");
+				
+				if(sourceleadBlog.getPublishOn() != null) {
+				String publishon = dateFormatResult.format(dateFormat.parse(sourceleadBlog.getPublishOn().toString()));
+				model.addObject("publishon", publishon);
+				}*/
+				model.addObject("releaseNote", releaseNote);
+			}
+			
+			model.setViewName("resources/addReleaseNote");
+			model.addObject("sourceleadUrl", sourceleadUrl);
+			 
+			return model;
+	 }
+
+	 @RequestMapping(value = {"/viewReleaseNote", "/rest/viewReleaseNote"}, method = RequestMethod.GET)
+	 public ModelAndView viewReleaseNote(HttpServletRequest request,@RequestParam(value="releaseUUID", required=false)String releaseUUID) throws Exception {
+	    	OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+
+		    commonUtil.highLightMenu(Constants.ReleaseNote, request);
+			ModelAndView model = new ModelAndView();
+			ReleaseNote releaseNote;
+			if(null != releaseUUID && !releaseUUID.isEmpty()){
+			
+				releaseNote = releaseNoteService.getReleaseNoteByUUId(releaseUUID);
+				releaseNote.setReleaseDateStr(commonUtil.dateStrFromOrgDateFormatter(orgLocation.getDateFormat(),releaseNote.getReleaseDate()));
+				releaseNote.setPublishDateStr(commonUtil.dateStrFromOrgDateFormatter(orgLocation.getDateFormat(),releaseNote.getPublishDate()));
+				model.addObject("releaseNote", releaseNote);
+			}
+			
+			model.setViewName("resources/viewReleaseNote");
+			model.addObject("sourceleadUrl", sourceleadUrl);
+			 
+			return model;
+	 }
+	 
+	 
+	 @RequestMapping(value = {"/allReleaseNote", "/rest/allReleaseNote"}, method = RequestMethod.GET)
+	 public ModelAndView allReleaseNote(HttpServletRequest request,@RequestParam(value="releaseUUID", required=false)String releaseUUID) throws Exception {
+	    	OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+
+		    commonUtil.highLightMenu(Constants.ReleaseNote, request);
+			ModelAndView model = new ModelAndView();
+			ReleaseNote releaseNote;
+			if(null != releaseUUID && !releaseUUID.isEmpty()){
+			
+				releaseNote = releaseNoteService.getReleaseNoteByUUId(releaseUUID);
+				releaseNote.setReleaseDateStr(commonUtil.dateStrFromOrgDateFormatter(orgLocation.getDateFormat(),releaseNote.getReleaseDate()));
+				releaseNote.setPublishDateStr(commonUtil.dateStrFromOrgDateFormatter(orgLocation.getDateFormat(),releaseNote.getPublishDate()));
+				model.addObject("releaseNote", releaseNote);
+			}
+			
+			model.setViewName("resources/allReleaseNote");
+			model.addObject("sourceleadUrl", sourceleadUrl);
+			 
+			return model;
+	 }
+	 
 }

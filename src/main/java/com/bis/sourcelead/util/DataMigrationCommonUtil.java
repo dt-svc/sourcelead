@@ -2763,7 +2763,7 @@ private void saveImportedTimeSheetRecords(Projects project,String projectTaskUUI
 			
 			//currency 
 			if(!dataMigrationDTOJsonCopy.getString("currentCurrency").equals("null") &&  !StringUtils.isEmpty(dataMigrationDTOJsonCopy.getString("currentCurrency"))) {
-				String currency = dataMigrationDTOJsonCopy.getString("currencyType").trim();
+				String currency = dataMigrationDTOJsonCopy.getString("currentCurrency").trim();
 				
 				if(Arrays.asList(Constants.RATE_CURRENCY).contains(currency)) {
 					dataMigrationDTOJsonCopy.put("currentCurrency", currency);
@@ -2788,11 +2788,11 @@ private void saveImportedTimeSheetRecords(Projects project,String projectTaskUUI
 			}
 			//RatePer
 			if(!dataMigrationDTOJsonCopy.getString("ratePer").equals("null") &&  !StringUtils.isEmpty(dataMigrationDTOJsonCopy.getString("ratePer"))) {
-				String ratePer = dataMigrationDTOJsonCopy.getString("RatePer").trim();
+				String ratePer = dataMigrationDTOJsonCopy.getString("ratePer").trim();
 				if(Arrays.asList(Constants.RATEPER_LIST).contains(ratePer)) {
 					dataMigrationDTOJsonCopy.put("ratePer", ratePer);
 				}else {
-					errorSet.put("ratePer", dataMigrationDTOJsonCopy.getString("RatePer").trim()+" Invalid RatePer Type");
+					errorSet.put("ratePer", dataMigrationDTOJsonCopy.getString("ratePer").trim()+" Invalid RatePer Type");
 				}
 				
 			}
@@ -2919,7 +2919,7 @@ private void saveImportedTimeSheetRecords(Projects project,String projectTaskUUI
 			}
 			
 			//Employee ID
-			if(!dataMigrationDTOJsonCopy.getString("employeeId").equals("null") &&  !StringUtils.isEmpty(dataMigrationDTOJsonCopy.getString("DayHours"))) {
+			if(!dataMigrationDTOJsonCopy.getString("employeeId").equals("null") &&  !StringUtils.isEmpty(dataMigrationDTOJsonCopy.getString("employeeId"))) {
 				Boolean flag = employeesService.validateEmployeeId(dataMigrationDTOJsonCopy.getString("employeeId"),orgLocation.getId());
 				if(flag == true) {
 					  errorSet.put("employeeId", ""+dataMigrationDTOJsonCopy.getString("employeeId")+"is Already Existed");

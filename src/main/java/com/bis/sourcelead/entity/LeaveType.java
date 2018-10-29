@@ -26,6 +26,10 @@ import org.hibernate.annotations.NotFoundAction;
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
+/**
+ * @author pavan
+ *
+ */
 @Entity
 @Table(name = "LEAVE_TYPE")
 public class LeaveType {
@@ -282,6 +286,12 @@ public class LeaveType {
 	
 	@Transient
 	String actionExpType;
+	
+	@Transient
+	private String fromDate;
+	
+	@Transient
+	private String toDate;
 	
 	public Long getId()
 	{
@@ -1065,5 +1075,25 @@ public class LeaveType {
 	public void setActionType(String actionType)
 	{
 		this.actionType = actionType;
+	}
+
+	public String getFromDate()
+	{
+		return fromDate;
+	}
+
+	public void setFromDate(String fromDate)
+	{
+		this.fromDate = fromDate;
+	}
+
+	public String getToDate()
+	{
+		return toDate;
+	}
+
+	public void setToDate(String toDate)
+	{
+		this.toDate = toDate;
 	}
 }

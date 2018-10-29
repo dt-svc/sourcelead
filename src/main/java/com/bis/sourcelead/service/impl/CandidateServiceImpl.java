@@ -1742,6 +1742,7 @@ private Sheet createXlsSheet(Sheet createExcelsheet, Row writeRow,Candidate cand
 							vendorCandidate = new Candidate();
 							MasterCandidate masterCandidate = new MasterCandidate();
 							masterCandidate.setId(candidate.getMasterCandidateId().getId());
+							vendorCandidate.setWorkLocation(orgLocations);
 							vendorCandidate.setMasterCandidateId(masterCandidate);
 							vendorCandidate.setParentCandidateId(candidate);
 							vendorCandidate.setConsultantUser(candidate.getConsultantUser());
@@ -2644,6 +2645,11 @@ private Sheet createXlsSheet(Sheet createExcelsheet, Row writeRow,Candidate cand
 	@Override
 	public Long getCandidateIdByEmailAndOrgLocationId(String email, Long orgLocationId) throws Exception {
 		return candidateDao.getCandidateIdByEmailAndOrgLocationId(email, orgLocationId);
+	}
+
+	@Override
+	public Integer getCandidateProfilePercentageByCandidateId(Long id) throws Exception {
+		return candidateDao.getCandidateProfilePercentageByCandidateId(id);
 	}
 
 }

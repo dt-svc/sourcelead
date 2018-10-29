@@ -411,7 +411,7 @@ public class DataMigrationCommonController {
 	            	sheet.addValidationData(getDropDownListForCell(Constants.EMPLOYMENT_TYPES, cellnum-1, "xls"));
 	            }else if(key.equalsIgnoreCase("Gender*")) {
 	            	sheet.addValidationData(getDropDownListForCell(Constants.GENDER, cellnum-1, "xls"));
-	            }else if(key.equalsIgnoreCase("Martial Status")) {
+	            }else if(key.equalsIgnoreCase("Marital Status")) {
 	            	sheet.addValidationData(getDropDownListForCell(Constants.MARITAL_STATUS, cellnum-1, "xls"));
 	            }else if(key.startsWith("Role")) {
 	            	List<String> rolesList = rolesService.getRolesListByOrgLocationId(orgLocation.getId());

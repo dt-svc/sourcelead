@@ -1448,7 +1448,9 @@ public class InvoiceServiceImpl implements InvoiceService {
 		}
 		List<User> contactUsersList = null;
 		try {
+			if(null != invoice.getContactUsers()){
 			contactUsersList = userDao.getUsersListUsingMultipleStringIds(invoice.getContactUsers());
+			}
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -3402,9 +3404,9 @@ public class InvoiceServiceImpl implements InvoiceService {
 							if (timelineHistory.getCreatedBy().getId().equals(ownerUser.getId())) {
 								statusVal = "Rejected";
 								statusBy = " by ";
-								if(ownerUser.getUserCode().equals(timelineHistory.getInvoice().getUpdatedBy())){
+								//if(ownerUser.getUserCode().equals(timelineHistory.getInvoice().getUpdatedBy())){
 									statusValue = ownerUser.getFullName();	
-								}
+								//}
 
 								
 //								statusValue = timelineHistory.getInvoice().getOwnerUserId().getFullName();
@@ -3417,9 +3419,9 @@ public class InvoiceServiceImpl implements InvoiceService {
 								statusBy = " by ";
 							 
 							for(User contactUser: contactUsersList){
-							if(contactUser.getUserCode().equals(timelineHistory.getInvoice().getUpdatedBy())){
+							//if(contactUser.getUserCode().equals(timelineHistory.getInvoice().getUpdatedBy())){
 								statusValue = contactUser.getFullName();	
-							}
+							//}
 							}
 //								statusValue = timelineHistory.getInvoice().getContactUser().getFullName();
 								timelineDTO.setReason(timelineHistory.getRejectReason());
@@ -4033,7 +4035,7 @@ public class InvoiceServiceImpl implements InvoiceService {
 		StringBuilder contactEmails = new StringBuilder();
 		if (creditDebitNote.getOrgRelations().getLocationId().getId().equals(orgLocationId)) {
 			creditDebitNote.setClientOrVendorName(creditDebitNote.getOrgRelations().getResponderLocationId().getOrgLocationName());
-			List<User> contactsUserList = userDao.getUsersListUsingMultipleStringIdsWithLocationId(creditDebitNote.getContactUser(),creditDebitNote.getOrgRelations().getResponderLocationId().getId());
+			List<User> contactsUserList = userDao.getUsersListUsingMultipleStringIds(creditDebitNote.getContactUser());
 			contactsUserList.forEach(contactUser->{
 				contactName.append(contactUser.getFullName()).append(" , ").toString();	
 				contactEmails.append(contactUser.getEmail()).append(" , ").toString();
@@ -4044,7 +4046,7 @@ public class InvoiceServiceImpl implements InvoiceService {
 		
 		if(creditDebitNote.getOrgRelations().getResponderLocationId().getId().equals(orgLocationId)){
 			creditDebitNote.setClientOrVendorName(creditDebitNote.getOrgRelations().getLocationId().getOrgLocationName());
-			List<User> contactsUserList = userDao.getUsersListUsingMultipleStringIdsWithLocationId(creditDebitNote.getOwnerUser(),creditDebitNote.getOrgRelations().getLocationId().getId());
+			List<User> contactsUserList = userDao.getUsersListUsingMultipleStringIds(creditDebitNote.getOwnerUser());
 			contactsUserList.forEach(contactUser->{
 				contactName.append(contactUser.getFullName()).append(" , ").toString();	
 				contactEmails.append(contactUser.getEmail()).append(" , ").toString();

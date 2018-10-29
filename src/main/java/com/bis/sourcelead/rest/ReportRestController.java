@@ -17,12 +17,9 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.LinkedHashSet;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import java.util.TreeMap;
-import java.util.stream.Collectors;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -35,7 +32,6 @@ import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
-import org.h2.expression.Function;
 import org.joda.time.DateTime;
 import org.joda.time.DateTimeZone;
 import org.joda.time.format.DateTimeFormat;
@@ -76,7 +72,6 @@ import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.entity.UserLoginLogoutSession;
 import com.bis.sourcelead.entity.UserRole;
 import com.bis.sourcelead.enums.Status;
-import com.bis.sourcelead.reportsDTO.AssetGrowthDTO;
 import com.bis.sourcelead.service.ActionHistoryService;
 import com.bis.sourcelead.service.CandidateService;
 import com.bis.sourcelead.service.EmployeeVerificationTemplateService;
@@ -99,7 +94,6 @@ import com.bis.sourcelead.service.TimeZoneService;
 import com.bis.sourcelead.service.UserLoginLogoutSessionService;
 import com.bis.sourcelead.service.UserRoleService;
 import com.bis.sourcelead.service.UserService;
-import com.bis.sourcelead.util.CalendarUtil;
 import com.bis.sourcelead.util.CommonUtil;
 import com.bis.sourcelead.util.ReportsUtil;
 import com.bis.sourcelead.util.SourceLeadSessionManager;
@@ -120,8 +114,6 @@ import com.thoughtworks.xstream.XStream;
 import com.thoughtworks.xstream.io.HierarchicalStreamWriter;
 import com.thoughtworks.xstream.io.json.JsonHierarchicalStreamDriver;
 import com.thoughtworks.xstream.io.json.JsonWriter;
-
-import opennlp.tools.parser.Cons;
 
 @RestController
 @RequestMapping("/app")
@@ -1046,8 +1038,9 @@ public class ReportRestController {
 			ResponseList<UserRole> userRoleList = userService.getUsersResponseListByOrglocationId(userDTO,orgLocation,searchDates);
 			userRoleList.getData().forEach(userRole->{
 				Employees employee = employeesService.getEmployeeByUserIdAndOrgLocationsId(userRole.getUser().getId(), orgLocation.getId());
+				if(employee != null) {
 				UserDTO userDto = new UserDTO();
-				userDto.setEmployeeId(userRole.getId().toString());
+				userDto.setEmployeeId(userRole.getUser().getId().toString());
 				if(userRole.getUser().getLastName() != null) {
 					StringBuilder sb = new StringBuilder();
 					userDto.setUserName(sb.append(userRole.getUser().getFirstName()).append(" ").append(userRole.getUser().getLastName()).toString());
@@ -1076,6 +1069,7 @@ public class ReportRestController {
 				if(userRole.getDesignation() != null)
 				userDto.setDesignation(userRole.getDesignation());
 				userDtoList.add(userDto);
+				}
 			});
 			employeeResponseList.setData(userDtoList);
 			employeeResponseList.setRecordsFiltered(userDtoList.size());
@@ -1194,7 +1188,7 @@ public class ReportRestController {
 		
 		@RequestMapping(value = "/getAllApplicantJoinedListByOrgLocationsId")
 		public @ResponseBody ResponseList<ApplicantsJoinedReportDTO> getAllApplicantJoinedListByOrgLocationsId(ApplicantsJoinedReportDTO userRoleDto,@RequestParam(value="timePeriod", required=false) String timePeriod,@RequestParam(value="customStartDate", required=false) String customStartDate,@RequestParam(value="customEndDate", required=false) String customEndDate,
-				UserDTO userDTO,HttpServletRequest request) throws Exception {
+				ApplicantsJoinedReportDTO userDTO,HttpServletRequest request) throws Exception {
 				ResponseList<ApplicantsJoinedReportDTO> responseList = new ResponseList<>();
 		      OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 		      Org org = (Org) SourceLeadSessionManager.getSessionAttribute(request, "org");
@@ -1242,7 +1236,7 @@ public class ReportRestController {
 				if(userRoleDto.getType() != null && !userRoleDto.getType().isEmpty()){
 					type=userRoleDto.getType();
 				}
-				String[] tableColumns = { "recruiterName", "noOfJobs", "totalOffers", "totalJoined", "incentives"};
+				String[] tableColumns = { "name", "requirementCount", "offerCount", "joinedCount", "incentives"};
 				int sortColumnIndex = 1; // by default sorting using updated date
 				String sortColumnOrder = "desc"; // by default descending order
 				if (userDTO.getOrder() != null && !userDTO.getOrder().isEmpty()) {
@@ -1264,7 +1258,7 @@ public class ReportRestController {
 		@RequestMapping(value = "/exportAllApplicantJoinedList")
 		public void exportAllApplicantJoinedList(ApplicantsJoinedReportDTO userRoleDto,@RequestParam(value="timePeriod", required=false) String timePeriod,@RequestParam(value="customStartDate", required=false) String customStartDate,@RequestParam(value="customEndDate", required=false) String customEndDate,
 				@RequestParam(value="exportType", required=false) String exportType,
-				UserDTO userDTO,HttpServletRequest request, HttpServletResponse response) throws Exception {
+				ApplicantsJoinedReportDTO userDTO,HttpServletRequest request, HttpServletResponse response) throws Exception {
 			
 		      OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 		      Org org = (Org) SourceLeadSessionManager.getSessionAttribute(request, "org");
@@ -1314,6 +1308,15 @@ public class ReportRestController {
 				if(userRoleDto.getType() != null && !userRoleDto.getType().isEmpty()){
 					type=userRoleDto.getType();
 				}
+				String[] tableColumns = { "name", "requirementCount", "offerCount", "joinedCount", "incentives"};
+				int sortColumnIndex = 1; // by default sorting using updated date
+				String sortColumnOrder = "desc"; // by default descending order
+				if (userDTO.getOrder() != null && !userDTO.getOrder().isEmpty()) {
+					sortColumnIndex = Integer.parseInt(userDTO.getOrder().get(0).get("column"));
+					sortColumnOrder = userDTO.getOrder().get(0).get("dir");
+				}
+				userDTO.setSortColumn(tableColumns[sortColumnIndex]);
+				userDTO.setSortOrder(sortColumnOrder);
 		         Sheet createExcelsheet = createExcelworkbook.createSheet(excelSB.append("applicantsjoioinedList ").append(commonUtil.dateStrFromOrgDateFormatter(orgLocations.getDateFormat(),new Date())).toString());
 //				ResponseList<UserDTO> userDTOList = userService.getRecruitersReports(user.getId(), orgLocations.getId(), org.getId(), isGlobalUser,userDTO,loginUserRole,searchDates,teamsList,type,clientIdsList);
 				ResponseList<ApplicantsJoinedReportDTO> responseList = userService.getApplicantsJoinedReport(userRoleDto,orgLocations.getId(),searchDates,teamsList,type,clientIdsList);
@@ -1357,7 +1360,7 @@ public class ReportRestController {
 		            toC.setTime(searchDates[1]);
 		            Set<String> months = new LinkedHashSet<>();
 		            while (fromC.get(Calendar.MONTH) <= toC.get(Calendar.MONTH)) {
-		                System.out.println(fromC.get(Calendar.MONTH) + " " + monthsSDF.format(fromC.getTime()));
+//		                System.out.println(fromC.get(Calendar.MONTH) + " " + monthsSDF.format(fromC.getTime()));
 		                months.add(monthsSDF.format(fromC.getTime()));
 		                fromC.roll(Calendar.MONTH, true);
 		            }
