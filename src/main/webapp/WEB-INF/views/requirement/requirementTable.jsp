@@ -139,6 +139,11 @@ function requirementList(searchType,sourceleadUrl){
 				filterProjects.push($(this).val());
 		    });
 			
+			var city = [];
+			$('input:checkbox[name=cityName]:checked').each(function() 
+		    {
+				city.push($(this).val());
+		    });
 			
 			var frm = $('#requirement_form').serializeFormJSON();
 			var con = JSON.stringify(frm);
@@ -150,7 +155,7 @@ function requirementList(searchType,sourceleadUrl){
 	  		searchValue = searchValue ? searchValue : "";
 	  		$("#requirementList").empty();
 			$("#requirementList").attr('style','position:absolute; width:100%; height:350px; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
-	  		 url = sourceleadUrl+"/searchRequirement?searchType="+searchType+"&filterStatus="+filterStatus+"&filterClients="+filterClients+"&searchValue="+searchValue+"&filterPriority="+filterPriority+"&filterJobType="+filterJobType+"&filterAssignTo="+filterAssignTo+"&filterSpecJobs="+filterSpecJobs+"&filterProjectId="+filterProjects;
+	  		 url = sourceleadUrl+"/searchRequirement?searchType="+searchType+"&filterStatus="+filterStatus+"&filterClients="+filterClients+"&searchValue="+searchValue+"&filterPriority="+filterPriority+"&filterJobType="+filterJobType+"&filterAssignTo="+filterAssignTo+"&filterSpecJobs="+filterSpecJobs+"&filterProjectId="+filterProjects+"&city="+city;
 	  		 url += "&"+$($('#requirement_form')[0]).serialize();
 			
 			

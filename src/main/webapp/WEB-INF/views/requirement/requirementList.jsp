@@ -1041,6 +1041,31 @@ function refreshGoogleApiCity(cityId){
 								</ul>
 							 </div> 
 						</div>
+						
+						
+						
+							<div class="col-md-3 mb positionRelative">
+							<div class="clearfix dynamic_search filterDynamicsearch">
+								<input type="text" id="myCityInput" onkeyup="myCityFunction()" placeholder="City" title="Type in a teams">
+								<span class="cursorPointer" title="Search"><i class="fa fa-search"></i></span>
+							</div>
+							 <div class="clearfix filterSearch-ul">
+								<ul class="list-unstyled positionRelative filterSearch mt5" id="myCitytUL">
+									<c:forEach var="city" items="${cityList}">
+									
+<%-- 									<c:if test="${team.city == loginOrgLocId}"> --%>
+									<li class="checkBox positionRelative"><input  type="checkbox" name="cityName" value ="${city}" ><label>${city}</label></li>
+<%-- 									</c:if> --%>
+									
+<%-- 									<c:if test="${team.responderLocationId.id == loginOrgLocId}"> --%>
+<%-- 									<li class="checkBox positionRelative"><input  type="checkbox" name="cityNames" value ="${city.locationId.id}" ><label>${city.locationId.id}</label></li> --%>
+<%-- 									</c:if> --%>
+									
+									</c:forEach>
+								</ul>
+							 </div> 
+						</div>
+						
 			<!-- //projectList -->
 			
 			
