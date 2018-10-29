@@ -317,6 +317,7 @@ function preventTabkey(e){
 <div class="wraper"> 
   <!-- Header Area -->
   <header class="main-header">
+  
   <span class="logo"> 
   <c:if test="${SourceLeadWeb_loginUserRole != 'ROLE_CROWDSOURCING_PROFESSIONAL' && SourceLeadWeb_loginUserRole != 'ROLE_CROWDSOURCING_RECRUITER' && SourceLeadWeb_prodSupportLoginUserRole == null}">
   <a href="dashboard/${SourceLeadWeb_orgLocationId}" title="Source Lead">
@@ -360,8 +361,11 @@ function preventTabkey(e){
  	
   </i>
     </a> </span>
+    
+    
     <nav class="header-nav navbar">
     <a class="side-menu"> <i class="fa fa-bars pull-left"></i> </a>
+    
       <c:if test="${SourceLeadWeb_loginUserRole != 'ROLE_CROWDSOURCING_PROFESSIONAL' && SourceLeadWeb_loginUserRole != 'ROLE_CROWDSOURCING_RECRUITER'}">
       <div class="search-area searchArea_mrgn">
            <form:form name ="search_form" id="search_form">
@@ -397,8 +401,6 @@ function preventTabkey(e){
 	             
 		</select>
 			</div>
-			
-			
 			
 			<div class="pull-left universalSrch">
 			<input type="text" id="searchKey" name="searchKey" class="form-control input-sm" placeholder="Search" onkeypress="handle(event);" value="${serachValue}"/>
