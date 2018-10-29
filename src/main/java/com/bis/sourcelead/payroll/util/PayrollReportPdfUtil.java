@@ -480,9 +480,9 @@ public class PayrollReportPdfUtil {
 		PdfPCell footerCell = new PdfPCell();
 		
 		Chunk glue = new Chunk(new VerticalPositionMark());
-		Paragraph p = new Paragraph("MI Softech Inc",boldFont);
+		Paragraph p = new Paragraph(orgLocation.getOrgLocationName(),boldFont);
 		p.add(new Chunk(glue));
-		p.add(String.valueOf(totalDeposit));
+		p.add(String.valueOf("$ "+totalDeposit));
 		footerCell.addElement(p);
 		
 		footerCell.setBackgroundColor(new BaseColor(220,220,220));
@@ -501,10 +501,10 @@ public class PayrollReportPdfUtil {
 		PdfPCell footerCell1 = new PdfPCell();
 		
 		Chunk glue1 = new Chunk(new VerticalPositionMark());
-		Paragraph p1 = new Paragraph("Number of Employees",boldFont);
+		/*Paragraph p1 = new Paragraph("Number of Employees",boldFont);
 		p1.add(new Chunk(glue1));
-		p1.add("9");
-		footerCell1.addElement(p1);
+		p1.add("--");
+		footerCell1.addElement(p1);*/
 		
 		Paragraph p2 = new Paragraph("Number of Direct Deposits",boldFont);
 		p2.add(new Chunk(glue1));

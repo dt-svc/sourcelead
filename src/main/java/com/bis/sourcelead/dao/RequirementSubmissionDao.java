@@ -218,8 +218,10 @@ public interface RequirementSubmissionDao {
 	
 	RequirementSubmission getRequirementVendorOrCrowdsourcingSubmissionByRequirementIdAndCandidateId(Long requirementId,Long candidateId) throws Exception;
 
-	ResponseList<RequirementSubmissionHistory> getRequirementSubmissionsListWithDTOByOrgLocationsIdAndSubmissionStatus(RequirementSubmissionHistoryDTO requirementSubmissionHistoryDTO, Long orgLocationsId, String submissionStatus, String dateRange, String userType, User user, Date startUTCDate, Date endUTCDate) throws Exception;
+	ResponseList<RequirementSubmissionHistory> getRequirementSubmissionsListWithDTOByOrgLocationsIdAndSubmissionStatus(RequirementSubmissionHistoryDTO requirementSubmissionHistoryDTO, Long orgLocationsId, String submissionStatus, String dateRange, String userType, User user, Date startUTCDate, Date endUTCDate,OrgLocations orgLocations) throws Exception;
 	
+	public ResponseList<RequirementSubmission> getRequirementSubmissionsListWithJobIdByOrgLocationsIdAndSubmissionStatus(RequirementSubmissionHistoryDTO requirementSubmissionHistoryDTO,Long requirementId, String submissionStatus, String dateRange, String userType, User user,OrgLocations orgLocations) throws Exception;
+
 	boolean getRequirementSubmissionByCandidateIdAndJobId(Long candidateId,Long requirementId) throws Exception;
 	
 	List<RequirementSubmission> getAllSubmissionsNotInTemplateFileds() throws Exception;
@@ -232,7 +234,7 @@ public interface RequirementSubmissionDao {
 
 	RequirementIncentive getRequirementIncentiveByRequirementId(Long requirementId) throws Exception;
 	
-	List<ApplicantsJoinedReportDTO> getRequirementIncentiveByRequirementIdAndLocation(Long requirementId,String usercode,Long orgLocationId) throws Exception;
+	List<ApplicantsJoinedReportDTO> getRequirementIncentiveByRequirementIdAndLocation(Long requirementId,String usercode,Long orgLocationId, Date[] searchDates) throws Exception;
 
 
 }

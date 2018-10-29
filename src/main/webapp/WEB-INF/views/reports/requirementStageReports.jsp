@@ -122,25 +122,25 @@ function prepareReportDataDiv(data){
 		    }
         result = result + '</td>';
         
-       	 result = result + '<td>';
-	       	 result = result +'<div class="positionRelative">';
-		         for(var k=0; k<1; k++){
-		        	result = result + '<p class="tbldata-dotdot-me pull-left">'+report.locationsList[k]+'</p>';
-		         }
-		        result = result +'<div class="show_Empdetails showjoblist">';
-		      	result = result +'<i class="fa fa-ellipsis-v"></i>';
-		
-		      	result = result +'<div class="emailvalues emailvaluesNew">';
-		      	
-				for(var k=0; k<report.locationsList.length; k++){
-					result = result +'<p><i class="fa fa-map-marker"></i>'+report.locationsList[k]+'</p>';
-			        	
-		  	 	}
-	      	result = result +'</div>';
-	      	result = result +'</div>';
-	  	   result = result +'</div>'; 
-  	 
-         result = result + '</td>';
+       	result = result + '<td>';
+        if(report.locationsList) {
+		    result = result + '	<div class="positionRelative">';
+		    for(var k=0; k<1; k++){
+	        	result = result + '	<p class="tbldata-dotdot-me pull-left">'+report.locationsList[k]+'</p>';
+	        }
+        	result = result +'		<div class="show_Empdetails showjoblist">';
+			result = result +'			<i class="fa fa-ellipsis-v"></i>';
+			result = result +'			<div class="emailvalues emailvaluesNew">';
+			for(var k=0; k<report.locationsList.length; k++){
+				result = result +'			<p><i class="fa fa-map-marker"></i>'+report.locationsList[k]+'</p>';
+			}
+		    result = result +'			</div>';
+		    result = result +'		</div>';
+		  	result = result +'	</div>'; 
+        } else {
+        	result = result + '<div>------</div>';
+        }
+        result = result + '</td>';
         
          result = result + '<td>';
         if(report.positions != null && report.positions != '' && report.positions !='undefined'&& report.positions != null && report.positions != ''){

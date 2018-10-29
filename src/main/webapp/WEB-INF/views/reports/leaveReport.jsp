@@ -644,7 +644,7 @@ function getAllUserListBasedOnOrgLocationId(){
         	if(obj != null && obj !='' && obj !='undefined'){
         		$.each(obj, function(i, item) {
         			if(item.candidateName != null && item.candidateName !='' && item.candidateName !='undefined'){
-        				output = output + "<option value='" +item.masterCandidateId.id+ "'>"+item.candidateName+"</option>";
+        				output = output + "<option value='" +item.userId+ "'>"+item.candidateName+"</option>";
         			}
             		
         		});

@@ -40,7 +40,7 @@ $(document).ready(function(){
       <div class="pull-right brud-crum" style="display:none" id="BillIdBr" ><a href="<c:url value='${appPath}/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a>&raquo; <a href="<c:url value='${appPath}/payablesList'/>">Payable List</a> » Bill View</div>
       
       <div class="" id="invoiceIdHidden" style="display:none">
-          <h2>Invoice Id: <span><input class="ReadTextFliA" id="invoiceIdDiv" readonly="readonly"></span></h2>
+          <h2 class="mb">Invoice Id: <span id="invoiceIdDiv"></span></h2>
 <!--      =================== Tags related html code written by Laxman Start ============================ -->
 			  <div class="newTagsWrap">
 				    <ul class="clearfix tagsWrap tagsWrapBor">
@@ -62,7 +62,7 @@ $(document).ready(function(){
       </div>
       
       <div class="" id="BillIdHidden" style="display:none">
-          <h2>Bill Id: <span><input class="ReadTextFliA" id="billIdDiv" readonly="readonly"></span></h2>
+          <h2>Bill Id: <span id="billIdDiv"></span></h2>
  <!--      =================== Tags related html code written by Laxman Start ============================ -->
           <div class="cearfix">
 			  <div class="newTagsWrap">
@@ -594,8 +594,8 @@ function getViewInvoice(){
 	        	for (var i=0; i<json.data.length; i++)
 	    		{  
 	        		var report = json.data[i];
-	        		$("#invoiceIdDiv").val(report.invoiceId)
-	        		$("#billIdDiv").val(report.invoiceId)
+	        		$("#invoiceIdDiv").text(report.invoiceId)
+	        		$("#billIdDiv").text(report.invoiceId)
 	        		if(report.dueDateStr != null && report.dueDateStr != '' && report.dueDateStr !='undefined'){
 	        			dueDateStr = report.dueDateStr;
 	        		}else{

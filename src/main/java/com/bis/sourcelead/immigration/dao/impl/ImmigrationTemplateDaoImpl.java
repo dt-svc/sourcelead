@@ -479,7 +479,7 @@ public class ImmigrationTemplateDaoImpl implements ImmigrationTemplateDao {
         Session session = this.sessionFactory.getCurrentSession();
         if (templateId != null) {
             // update ImmigrationTemplate
-        	String queryString = "UPDATE Immigration_Template SET status = case when (active_status != 1) then 2 else 1 end where id =:templateId  ";
+        	String queryString = "UPDATE IMMIGRATION_TEMPLATE SET STATUS = CASE WHEN (ACTIVE_STATUS != 1) THEN 2 ELSE 1 END WHERE ID =:templateId  ";
         	Query query = session.createSQLQuery(queryString);
             query.setLong("templateId", templateId);
             int result = query.executeUpdate();

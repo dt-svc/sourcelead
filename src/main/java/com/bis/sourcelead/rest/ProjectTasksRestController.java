@@ -540,11 +540,11 @@ public class ProjectTasksRestController {
 	 * @throws Exception
 	 */
 	@RequestMapping(value = "/updateTaskName", method = RequestMethod.POST)
-	public String updateTaskName(@RequestParam(value = "taskName", required = false) String taskName,
+	public String updateTaskName(ProjectTasksDTO projectTasksDTO,
 			@RequestParam(value = "taskId", required = false) String taskId,
 			@RequestParam(value = "userId", required = false) Long userId) throws Exception {
-		tasksService.updateTaskName(taskName, taskId, userId);
-		return taskName;
+		tasksService.updateTaskName(projectTasksDTO.getTaskName(), taskId, userId);
+		return projectTasksDTO.getTaskName();
 	}
 
 	/**
