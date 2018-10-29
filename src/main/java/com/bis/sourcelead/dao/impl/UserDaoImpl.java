@@ -2189,32 +2189,32 @@ public class UserDaoImpl implements UserDao {
 					UserDTO userDTO = associatesListMap.get(reportDTO.getManagerUserId());
 					if(userDTO != null){
 						jobIds.add(reportDTO.getRequirementId());
-						BigDecimal bd = new BigDecimal(jobIds.size());
+						/*BigDecimal bd = new BigDecimal(jobIds.size());
 						if(userDTO.getUserRequirementsCount() != null) {
 							bd = bd.add(userDTO.getUserRequirementsCount());
-						}
-						userDTO.setUserRequirementsCount(bd);
+						}*/
+						userDTO.setUserRequirementsCount(userDTO.getUserRequirementsCount().add(new BigDecimal(1)));
 					}
 					
 					userDTO = associatesListMap.get(reportDTO.getPrimaryUserId());
 					if(userDTO != null){
 						primaryUserjobIds.add(reportDTO.getRequirementId());
-						BigDecimal bd = new BigDecimal(primaryUserjobIds.size());
+						/*BigDecimal bd = new BigDecimal(primaryUserjobIds.size());
 						if(userDTO.getUserRequirementsCount() != null) {
 							bd = bd.add(userDTO.getUserRequirementsCount());
-						}
-						userDTO.setUserRequirementsCount(bd);
+						}*/
+						userDTO.setUserRequirementsCount(userDTO.getUserRequirementsCount().add(new BigDecimal(1)));
 					}
 					
-					userDTO = associatesListMap.get(reportDTO.getApproverUserId());
+					/*userDTO = associatesListMap.get(reportDTO.getApproverUserId());
 					if(userDTO != null){
 						approverUserjobIds.add(reportDTO.getRequirementId());
 						BigDecimal bd = new BigDecimal(approverUserjobIds.size());
 						if(userDTO.getUserRequirementsCount() != null) {
 							bd = bd.add(userDTO.getUserRequirementsCount());
 						}
-						userDTO.setUserRequirementsCount(bd);
-					}
+						userDTO.setUserRequirementsCount(userDTO.getUserRequirementsCount().add(new BigDecimal(1)));
+					}*/
 					
 					if(reportDTO.getAssignedUserId() != null && reportDTO.getAssignedUserStatus().equalsIgnoreCase("1")) {
 						userDTO = associatesListMap.get(reportDTO.getAssignedUserId());
@@ -2243,14 +2243,14 @@ public class UserDaoImpl implements UserDao {
 				if(recruiterReportViewList != null && !recruiterReportViewList.isEmpty()) {
 					for(RecruiterReportView recuiterReportView : recruiterReportViewList) {
 						UserDTO userDTO = userListMap.get(recuiterReportView.getUserCode());
-						userDTO.setUserApplicantsCount(recuiterReportView.getApplicantSubmissionCount());
-						userDTO.setUserShortlistedApplicantsCount(recuiterReportView.getApplicantShortlistedCount());
-						userDTO.setUserSubmittedApplicantsCount(recuiterReportView.getApplicantSubmittedClientCount());
-						userDTO.setUserOfferedApplicantsCount(recuiterReportView.getApplicantOfferMadeCount());
-						userDTO.setUserRejectedApplicantsCount(recuiterReportView.getApplicantRejectedCount());
-						userDTO.setUserInterviewedApplicantsCount(recuiterReportView.getApplicantInterviewCount());
-						userDTO.setUserApplicantsBackOutCount(recuiterReportView.getApplicantBackOutCount());
-						userDTO.setUserApplicantsJoinedCount(recuiterReportView.getApplicantJoinedCount());
+						userDTO.setUserApplicantsCount(userDTO.getUserApplicantsCount().add(recuiterReportView.getApplicantSubmissionCount()));
+						userDTO.setUserShortlistedApplicantsCount(userDTO.getUserShortlistedApplicantsCount().add(recuiterReportView.getApplicantShortlistedCount()));
+						userDTO.setUserSubmittedApplicantsCount(userDTO.getUserSubmittedApplicantsCount().add(recuiterReportView.getApplicantSubmittedClientCount()));
+						userDTO.setUserOfferedApplicantsCount(userDTO.getUserOfferedApplicantsCount().add(recuiterReportView.getApplicantOfferMadeCount()));
+						userDTO.setUserRejectedApplicantsCount(userDTO.getUserRejectedApplicantsCount().add(recuiterReportView.getApplicantRejectedCount()));
+						userDTO.setUserInterviewedApplicantsCount(userDTO.getUserInterviewedApplicantsCount().add(recuiterReportView.getApplicantInterviewCount()));
+						userDTO.setUserApplicantsBackOutCount(userDTO.getUserApplicantsBackOutCount().add(recuiterReportView.getApplicantBackOutCount()));
+						userDTO.setUserApplicantsJoinedCount(userDTO.getUserApplicantsJoinedCount().add(recuiterReportView.getApplicantJoinedCount()));
 					}
 					
 				}
