@@ -85,6 +85,8 @@ public class CandidateMarketPlaceDTO extends SearchDTO implements Serializable  
 	private String candidateMarketStatus;
 	
 	private String summary;
+	
+	private String marketCartStatus;
 
 	public Long getId() {
 		return id;
@@ -390,5 +392,12 @@ public class CandidateMarketPlaceDTO extends SearchDTO implements Serializable  
 		this.summary = summary;
 	}
 
-	
+	public String getMarketCartStatus() {
+		return marketCartStatus;
+	}
+
+	public void setMarketCartStatus(String marketCartStatus) {
+		this.marketCartStatus = marketCartStatus;
+	}
+
 }
