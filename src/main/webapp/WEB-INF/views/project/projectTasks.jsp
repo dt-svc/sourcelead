@@ -181,11 +181,33 @@ $("#exportTaskPop, #export-pop, .userExp").click(function(e) {
 			tags.push($(this).val());
 		});
 		
+		var priorityFilter = [];
+		$('input:checkbox[name=priorityFilter]:checked').each(function() 
+	    {
+			priorityFilter.push($(this).val());
+		});
 		
+		var severityFilter = [];
+		$('input:checkbox[name=severityFilter]:checked').each(function() 
+	    {
+			severityFilter.push($(this).val());
+		});
+		
+		var createdByFilter = [];
+		$('input:checkbox[name=createdByFilter]:checked').each(function() 
+	    {
+			createdByFilter.push($(this).val());
+		});
+		
+		var tasksFilter = [];
+		$('input:radio[name=tasksFilter]:checked').each(function() 
+	    {
+			tasksFilter.push($(this).val());
+		});
 		
 		var searchValue = $("#taskDataTableSearch").val();
 		 searchValue = searchValue ? searchValue : "";
-		var url = sourceleadUrl	+"/getAllProjectTasks?searchValue="+searchValue+"&projectId="+projectId+"&projectTaskStatus="+projectTaskStatus+"&projectTaskType="+projectTaskType+"&assignedMembers="+assignedMembers+"&teams="+teams+"&tags="+tags;
+		var url = sourceleadUrl	+"/getAllProjectTasks?searchValue="+searchValue+"&projectId="+projectId+"&projectTaskStatus="+projectTaskStatus+"&projectTaskType="+projectTaskType+"&assignedMembers="+assignedMembers+"&teams="+teams+"&tags="+tags+"&tasksFilter="+tasksFilter+"&createdByFilter="+createdByFilter+"&severityFilter="+severityFilter+"&priorityFilter="+priorityFilter;
 		prepareTasksList(url);
 	}
 </script>
@@ -203,6 +225,7 @@ function prepareTasksList(url){
 	result = result + '<table id="projectTaskPagination" class="display" cellspacing="0" width="100%">';
 	result = result + '<thead>';
 	result = result + '<tr">';
+	result = result +'	<th>Id</th>';
 	result = result + '<th>Task Name</th>';
 	result = result + '<th>Task Type</th>';
 	result = result + '<th>Priority</th>';
@@ -230,6 +253,7 @@ function projectTaskPaginations(url){
           pages: 10
         }),
         "columns": [
+        	{ "data": "Id" },
             { "data": "taskName" },
             { "data": "taskType"},
             { "data": "priority"},
@@ -237,7 +261,16 @@ function projectTaskPaginations(url){
             { "data": "projectTaskStatus" },
             { "data": "projectTaskActin" }
         ],
-        "columnDefs": [ {
+        "columnDefs": [{
+	    	  "targets": colIndex++,
+              "data": "taskType",
+              "sortable": false,
+              "render": function ( data, type, opt, meta ) {
+            	  var result = "";
+            	  result = result	+ '<td><div class="tbldata-dotdot_80">'+opt.id+ '</div></td>';
+	              return result;
+                }
+	          }, {
 	    	  	"targets": colIndex++,
 	    	  	"data": "taskName",
 	    	  	"render": function(data, type, opt, meta) {
@@ -316,7 +349,7 @@ function projectTaskPaginations(url){
         }],
 	    	"scrollCollapse": false,
 	    	"lengthMenu": [[10, 15, 20], [10, 15, 20]],
-// 	    	"aaSorting": [[1,'desc']],
+	    	"aaSorting": [[0,'desc']],
 	    	"bLengthChange": true,
 	    	"bDestroy": true,
 	    	"ordering": true,
@@ -328,6 +361,7 @@ function projectTaskPaginations(url){
     } );
     $("#projectTaskPagination").wrap("<div style='overflow-x: auto; overflow-y: hidden;'></div>"); 
     $("input[type=search]").hide();
+    $('#projectTaskPagination').DataTable().column(0).visible(false);
     $("#taskDataTableSearch").keyup(function(e) {
     	   if(e.which === 13) {
     		   projectTaskList();
@@ -1055,6 +1089,18 @@ function openFilterTaskPop(){
 					<div class="row">
 						<div class="col-md-2">
 						<div class="row">
+							   <div class="col-md-12 mb">
+								  <label><strong>Tasks</strong></label>
+									 <div class="clearfix">
+										<ul class="list-unstyled" id="taskFilter">
+											<li  class="radioIput positionRelative"><input  name="tasksFilter"  checked type="radio" value="my" id="myTasks" ><label>My Tasks</label></li>
+											<li  class="radioIput positionRelative"><input  name="tasksFilter"  type="radio" value="all"><label>All Tasks</label></li>
+				                        </ul>
+									 </div>
+								 </div>
+						  </div>
+							  
+						 <div class="row">
 						   <div class="col-md-12 mb">
 							  <label><strong>Task Type</strong></label>
 								 <div class="clearfix">
@@ -1072,6 +1118,7 @@ function openFilterTaskPop(){
 							 </div>
 							 </div>
 							 </div> 
+							 
 							 
 							 <div class="col-md-2">
 								<div class="row">
@@ -1093,13 +1140,14 @@ function openFilterTaskPop(){
 						        </div>
 						     </div>
 						     
-						     <div class="col-md-4 mb positionRelative">
+						     <div class="col-md-3 mb positionRelative">
 									<div class="clearfix dynamic_search filterDynamicsearch">
 										<input type="text" id="myAssignedInput" onkeyup="myAssignedFunction()" placeholder="Assigned To" title="Type in a managers">
 										<span class="cursorPointer" title="Search"><i class="fa fa-search"></i></span>
 									</div>
 									 <div class="clearfix filterSearch-ul">
 										<ul class="list-unstyled positionRelative filterSearch mt5" id="myAssignedUL">
+<!-- 									        <li class="checkBox positionRelative clearfix" ><input   name="assignedtaskId" value ="unAssigned"  type="checkbox" class="pull-left"><label title="Un-Assigned"  class="tbldata-dotdot-me pull-left mt5">Un Assigned</label></li> -->
 										<c:forEach var="assignedMembers" items="${projectAssignMemberList}">  
 										    <li class="checkBox positionRelative clearfix" ><input   name="assignedtaskId" value ="${assignedMembers.id}"  type="checkbox" class="pull-left"><label for="assignedtaskId${assignedMembers.id}" title="${assignedMembers.candidateName}"  class="tbldata-dotdot-me pull-left mt5">${assignedMembers.candidateName}</label></li>
 										</c:forEach>
@@ -1107,7 +1155,7 @@ function openFilterTaskPop(){
 									 </div> 
 							 </div> 
 							 
-							 <div class="col-md-4 mb positionRelative">
+							 <div class="col-md-3 mb positionRelative">
 									<div class="clearfix dynamic_search filterDynamicsearch">
 										<input type="text" id="myTaskTeamInput" onkeyup="myTaskTeamFunction()" placeholder="Team" title="Type in a managers">
 										<span class="cursorPointer" title="Search"><i class="fa fa-search"></i></span>
@@ -1120,6 +1168,21 @@ function openFilterTaskPop(){
 										</ul>
 									 </div> 
 							 </div> 
+							 
+							  <div class="col-md-2 mb positionRelative">
+									<div class="clearfix dynamic_search filterDynamicsearch">
+										<input type="text" id="myPriorityInput" onkeyup="myPriorityFunction()" placeholder="Priority" title="Type in a priority">
+										<span class="cursorPointer" title="Search"><i class="fa fa-search"></i></span>
+									</div>
+									 <div class="clearfix filterSearch-ul">
+										<ul class="list-unstyled positionRelative filterSearch mt5" id="myPriorityUL">
+											<c:forEach var="priority" items="${taskPriorityList}"> 
+											<li class="checkBox positionRelative clearfix"><input value="${priority.id}" name="priorityFilter"  type="checkbox" ><label>${priority.name}</label></li>
+											</c:forEach>
+										</ul>
+									 </div> 
+							 </div> 
+							 <div class="clearfix"></div>
 							 
 							 <div class="col-md-4 mb positionRelative">
 									<div class="clearfix dynamic_search filterDynamicsearch">
@@ -1135,6 +1198,33 @@ function openFilterTaskPop(){
 									 </div> 
 							 </div> 
 							 
+							 <div class="col-md-4 mb positionRelative">
+									<div class="clearfix dynamic_search filterDynamicsearch">
+										<input type="text" id="myCreatedByInput" onkeyup="myCreatedByFunction()" placeholder="Created By" title="Type in a created By">
+										<span class="cursorPointer" title="Search"><i class="fa fa-search"></i></span>
+									</div>
+									 <div class="clearfix filterSearch-ul">
+										<ul class="list-unstyled positionRelative filterSearch mt5" id="myCreatedByUL">
+											<c:forEach var="assignedMembers" items="${projectAssignMemberList}">  
+											    <li class="checkBox positionRelative clearfix" ><input   name="createdByFilter" value ="${assignedMembers.id}"  type="checkbox" class="pull-left"><label for="createdBy${assignedMembers.id}" title="${assignedMembers.candidateName}"  class="tbldata-dotdot-me pull-left mt5">${assignedMembers.candidateName}</label></li>
+											</c:forEach>
+										</ul>
+									 </div> 
+							 </div>  
+							 
+							 <div class="col-md-3 mb positionRelative">
+									<div class="clearfix dynamic_search filterDynamicsearch">
+										<input type="text" id="mySeverityInput" onkeyup="mySeverityFunction()" placeholder="Severity" title="Type in a severity">
+										<span class="cursorPointer" title="Search"><i class="fa fa-search"></i></span>
+									</div>
+									 <div class="clearfix filterSearch-ul">
+										<ul class="list-unstyled positionRelative filterSearch mt5" id="mySeverityUL">
+											<c:forEach var="severit" items="${taskSeverityList}"> 
+											<li class="checkBox positionRelative clearfix"><input value="${severit.id}" name="severityFilter"  type="checkbox" ><label>${severit.name}</label></li>
+											</c:forEach>
+										</ul>
+									 </div> 
+							 </div> 
 							 
 					</div>
 					</div>
@@ -1153,7 +1243,12 @@ function resetTaskFilter(){
 	$("ul#myAssignedUL > li input:checkbox").prop("checked",false);
 	$("ul#myTaskTeamUL > li input:checkbox").prop("checked",false);
 	$("ul#myTagsTeamUL > li input:checkbox").prop("checked",false);
+	$("ul#myPriorityUL > li input:checkbox").prop("checked",false);
+	$("ul#mySeverityUL > li input:checkbox").prop("checked",false);
+	$("ul#myCreatedByUL > li input:checkbox").prop("checked",false);
+	$("ul#taskFilter > li input:radio").prop("checked",false);
 	
+	document.getElementById("myTasks").checked = true;
 	document.getElementById("taskStatusId1069").checked = true;
 	document.getElementById("taskStatusId1070").checked = true;
 	projectTaskList();
@@ -1207,6 +1302,57 @@ function myTagsFunction() {
         }
     }
 }
+
+function myPriorityFunction() {
+    var input, filter, ul, li, a, i;
+    input = document.getElementById("myPriorityInput");
+    filter = input.value.toUpperCase();
+    ul = document.getElementById("myPriorityUL");
+    li = ul.getElementsByTagName("li");
+    for (i = 0; i < li.length; i++) {
+        a = li[i].getElementsByTagName("label")[0];
+        if (a.innerHTML.toUpperCase().indexOf(filter) > -1) {
+            li[i].style.display = "";
+        } else {
+            li[i].style.display = "none";
+
+        }
+    }
+}
+function myCreatedByFunction(){
+	 var input, filter, ul, li, a, i;
+	    input = document.getElementById("myCreatedByInput");
+	    filter = input.value.toUpperCase();
+	    ul = document.getElementById("myCreatedByUL");
+	    li = ul.getElementsByTagName("li");
+	    for (i = 0; i < li.length; i++) {
+	        a = li[i].getElementsByTagName("label")[0];
+	        if (a.innerHTML.toUpperCase().indexOf(filter) > -1) {
+	            li[i].style.display = "";
+	        } else {
+	            li[i].style.display = "none";
+
+	        }
+	    }
+}
+
+function mySeverityFunction(){
+	 var input, filter, ul, li, a, i;
+	    input = document.getElementById("mySeverityInput");
+	    filter = input.value.toUpperCase();
+	    ul = document.getElementById("mySeverityUL");
+	    li = ul.getElementsByTagName("li");
+	    for (i = 0; i < li.length; i++) {
+	        a = li[i].getElementsByTagName("label")[0];
+	        if (a.innerHTML.toUpperCase().indexOf(filter) > -1) {
+	            li[i].style.display = "";
+	        } else {
+	            li[i].style.display = "none";
+
+	        }
+	    }
+}
+
 </script>			
 
 <script>
@@ -1245,9 +1391,33 @@ function projectTaskExport(type){
 		teams.push($(this).val());
 	});
 	
+	var priorityFilter = [];
+	$('input:checkbox[name=priorityFilter]:checked').each(function() 
+    {
+		priorityFilter.push($(this).val());
+	});
+	
+	var severityFilter = [];
+	$('input:checkbox[name=severityFilter]:checked').each(function() 
+    {
+		severityFilter.push($(this).val());
+	});
+	
+	var createdByFilter = [];
+	$('input:checkbox[name=createdByFilter]:checked').each(function() 
+    {
+		createdByFilter.push($(this).val());
+	});
+	
+	var tasksFilter = [];
+	$('input:radio[name=tasksFilter]:checked').each(function() 
+    {
+		tasksFilter.push($(this).val());
+	});
+	
 	var searchValue = $("#taskDataTableSearch").val();
 	 searchValue = searchValue ? searchValue : "";
-	 window.location.href = sourceleadUrl + "/getExportTasks?searchValue="+searchValue+"&projectId="+projectId+"&projectTaskStatus="+projectTaskStatus+"&projectTaskType="+projectTaskType+"&assignedMembers="+assignedMembers+"&teams="+teams+"&exportType="+exportType;
+	 window.location.href = sourceleadUrl + "/getExportTasks?searchValue="+searchValue+"&projectId="+projectId+"&projectTaskStatus="+projectTaskStatus+"&projectTaskType="+projectTaskType+"&assignedMembers="+assignedMembers+"&teams="+teams+"&exportType="+exportType+"&tasksFilter="+tasksFilter+"&createdByFilter="+createdByFilter+"&severityFilter="+severityFilter+"&priorityFilter="+priorityFilter;
 
 	
 }

@@ -198,9 +198,11 @@ function prepareRequirementData(url,sourceleadUrl){
 	 result = result +"<table id='requirementPagination' class='display' cellspacing='0' width='100%' >"; 
    result = result +"<thead>"; 
    result = result +"  <tr>"; 
+   result = result +"    <th>requirementId</th>";
    result = result +"    <th>Action</th>"; 
    result = result +"    <th>Generated ID</th>"; 
-   result = result +"    <th>Title</th>"; 
+   result = result +"    <th>Title</th>";
+   result = result +"    <th>Process</th>";
    result = result +"    <th>Client</th>";
    result = result +"    <th>Pay Rate</th>";
    result = result +"    <th>Bill Rate</th>";
@@ -272,9 +274,11 @@ function jpagination(url,sourceleadUrl){
            pages: 1
        }),
        "columns": [
+    	   { "data": "requirementId" },
     	   { "data": "requirementUUID" },
     	   { "data": "generatedId"},
            { "data": "jobTitle"},
+           { "data": "process"},
            { "data": "clientName"},
            { "data": "rate"},
            { "data": "billRate"},
@@ -287,8 +291,22 @@ function jpagination(url,sourceleadUrl){
           
        ],
 	       "columnDefs": [ 
-	    	   
 	    	   {
+	   	   	  	"targets": colIndex++,
+	   		  	"data": "requirementId",
+	   		  	"sortable": true,
+	   		  	"render": function(data, type, opt, meta) {
+	   		  		 var result = "";
+	   		  		 result = result +"<td>";
+	   		  	  	 if(opt.id != '' && opt.id != null){
+	   		  		   	 result = result +"<div class='tbldata-dotdot_50 tblminwidth-75' title='"+opt.id+"'>"+opt.id+"</span></div>";
+	   		  	    	}else{
+	   		  	  		 result = result +"<div>-----</div>";
+	   		  	  	 }
+	   		  		 result = result +"</td>";
+	   	             return  result;
+	   		  	}
+	   	        },{
 		         "targets": colIndex++,
 		         "sortable": false,
 		         "data": "requirementUUID",
@@ -400,6 +418,16 @@ function jpagination(url,sourceleadUrl){
 	                return result;
             }
            },
+           {
+	            "targets": colIndex++,
+	            "data": "process",
+	            "sortable": false,
+	            "render": function ( data, type, opt, meta ) {
+	            		var result = "";
+	       		       	result = result +"<td><div class='tbldata-dotdot_140' " + (opt.process != null && opt.process != "" ? "title='" + opt.process + "'" : "") + ">" + (opt.process != null && opt.process != "" ? opt.process : "------") + "</div></td>";
+		                return result;
+	             }
+	        },
 	        {
 	            "targets": colIndex++,
 	            "data": "clientName",
@@ -630,7 +658,7 @@ function jpagination(url,sourceleadUrl){
 			         				'</sec:authorize>';
 			         			}else if(opt.requirementSubmissionStatus == "CLOSED"){
 			         				result = result +"<option disabled selected >CLOSED</option>";
-
+			         				result = result +"<option value='OPEN'>OPEN</option>";
 			         			}
 			         			else if(opt.requirementSubmissionStatus == "CANCEL"){
 			         				result = result +"<option disabled selected >"+opt.requirementSubmissionStatus+"</option>";
@@ -735,7 +763,7 @@ function jpagination(url,sourceleadUrl){
 			         				
 			         			}else if(opt.requirementSubmissionStatus == "FILLEDCLOSED"){
 			         				result = result +"<option disabled selected >"+opt.requirementSubmissionStatus+"</option>";
-			         				
+			         				result = result +"<option value='OPEN'>OPEN</option>";
 			         			}
 
 			         			result = result +" </select>";	
@@ -748,7 +776,7 @@ function jpagination(url,sourceleadUrl){
            ],
 	    	"scrollCollapse": false,
 	    	"lengthMenu": [[10, 15, 20], [10, 15, 20]],
-	    	"aaSorting": [[10,'desc']],
+	    	"aaSorting": [[0,'desc']],
 	    	"bLengthChange": true,
 	    	"bDestroy": true,
 	    	"ordering": true,
@@ -769,12 +797,12 @@ function jpagination(url,sourceleadUrl){
    	         }); 
    	   }
   
-   } );
+   });
    
   
    $("#requirementPagination").wrap("<div style='overflow-x: auto; overflow-y: hidden;'></div>"); 
    $("input[type=search]").hide();
-  
+   $('#requirementPagination').DataTable().column(0).visible(false);
    $("#dataTableSearch").keyup(function(e) {
    	   if(e.which === 13) {
    		 requirementList('list',sourceleadUrl);
@@ -962,7 +990,7 @@ function jpaginationForJobFairs(url){
            ],
 	    	"scrollCollapse": false,
 	    	"lengthMenu": [[10, 15, 20], [10, 15, 20]],
-	    	"aaSorting": [[9,'desc']],
+	    	"aaSorting": [[6,'desc']],
 	    	"bLengthChange": true,
 	    	"bDestroy": true,
 	    	"ordering": true,

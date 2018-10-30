@@ -518,7 +518,7 @@ public class TimesheetEmailUtil {
 	 */
 	public void sendReopenTimeSheetMail(Long projectMemberId,String reason, User loginUser, OrgLocations orgLocations, String timesheetFrequency, Float totalHours) throws Exception {
 		   ProjectMembers clientProjectMember = projectMembersDao.getClientProjectMemberByProjectMemberId(projectMemberId);
-		   ProjectApproverHierarchy pah =  projectApproverHierarchyDao.getApproverUsersByProjectIdAndProjectClientId(clientProjectMember.getProjects().getId(), clientProjectMember.getProjectClientsId().getId());
+		   ProjectApproverHierarchy pah =  projectApproverHierarchyDao.getApproverUsersByProjectIdAndProjectClientId(clientProjectMember.getProjects().getId(), clientProjectMember.getProjectClientsId().getId(),orgLocations.getOrg().getId(),"");
 			 if(null != pah && null != pah.getApproverUserId()){
 				 EmailMessage emailMessage = new EmailMessage();
 				 emailMessage.setFirstName(pah.getApproverUserId().getFirstName());

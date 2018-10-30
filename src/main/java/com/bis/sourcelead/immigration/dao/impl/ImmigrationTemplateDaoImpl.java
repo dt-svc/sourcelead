@@ -479,20 +479,11 @@ public class ImmigrationTemplateDaoImpl implements ImmigrationTemplateDao {
         Session session = this.sessionFactory.getCurrentSession();
         if (templateId != null) {
             // update ImmigrationTemplate
-            String queryString = "UPDATE ImmigrationTemplate SET status = 1 where id =:templateId";
-            Query query = session.createQuery(queryString);
+        	String queryString = "UPDATE IMMIGRATION_TEMPLATE SET STATUS = CASE WHEN (ACTIVE_STATUS != 1) THEN 2 ELSE 1 END WHERE ID =:templateId  ";
+        	Query query = session.createSQLQuery(queryString);
             query.setLong("templateId", templateId);
             int result = query.executeUpdate();
-            /*// update ImmigrationTemplateDocs
-            queryString = "UPDATE ImmigrationTemplateDocs SET status = 1  where immigrationTempId = :templateId";
-            query = session.createQuery(queryString);
-            query.setLong("templateId", templateId);
-            result = query.executeUpdate();
-            // update ImmigrationTemplateForms
-            queryString = "UPDATE ImmigrationTemplateForms SET status = 1  where immigrationTempId = :templateId";
-            query = session.createQuery(queryString);
-            query.setLong("templateId", templateId);
-            result = query.executeUpdate();*/
+            
             }
     }
 
@@ -510,7 +501,7 @@ public class ImmigrationTemplateDaoImpl implements ImmigrationTemplateDao {
     @Transactional(rollbackFor = {Exception.class})
     public int savePetitionTemplateDetailsValues(String templateId) {
         Session session = this.sessionFactory.getCurrentSession();
-        String queryString = "UPDATE ImmigrationTemplate SET status = 1 where id= :templateId";
+        String queryString = "UPDATE ImmigrationTemplate SET status = 1, active_status = 1 where id= :templateId";
         Query query = session.createQuery(queryString);
         query.setLong("templateId", Long.parseLong(templateId));
         int result = query.executeUpdate();

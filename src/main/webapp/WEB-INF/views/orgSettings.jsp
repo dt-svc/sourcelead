@@ -2702,7 +2702,7 @@ function createOrg(){
 	        	result = result +'<div class="form-group">';
 	            result = result +'<label class="col-md-3">Working Hours<span class="text-danger">&nbsp;*</span></label>';
 	            result = result +'<div class="col-md-9" id="averageLocWorkingHoursDiv">';
-	            result = result +'<input type="text" class="form-control" id="averageLocWorkingHours" name="averageWorkingHours" maxlength="2" field-name="Working Hours" data-validation="required validate_int" />';
+	            result = result +'<input type="text" class="form-control" onblur="validateWorkingHours()" id="averageLocWorkingHours" name="averageWorkingHours" maxlength="2" field-name="Working Hours" data-validation="required validate_int" />';
 	            result = result +'<span class="hidden">Working Hours</span>';
 	            result = result +'</div>';
 	            result = result +'</div>';
@@ -3523,16 +3523,16 @@ $(function() {
 	  $('#averageLocWorkingHoursDiv').on('keydown', '#averageLocWorkingHours', function(e){-1!==$.inArray(e.keyCode,[46,8,9,27,13,110,190])||/65|67|86|88/.test(e.keyCode)&&(!0===e.ctrlKey||!0===e.metaKey)||35<=e.keyCode&&40>=e.keyCode||(e.shiftKey||48>e.keyCode||57<e.keyCode)&&(96>e.keyCode||105<e.keyCode)&&e.preventDefault()});
 });
 
-$(function(){
-  $("#averageLocWorkingHours").keyup(function(event){
+function validateWorkingHours(){
       var ew = $("#averageLocWorkingHours").val();
       $('#averageLocWorkingHoursDiv').parent().find('p.jquery_form_error_message').remove(); 
       if(ew > 24){
-      	$("#averageLocWorkingHours").val('');
       	$("input#averageLocWorkingHours").parent().after("<p class='jquery_form_error_message'><span>Average Working Hours should be less then or equal to 24</span>");
+      	$("#register_button").attr("disabled","true");
+      }else{
+    	  $("#register_button").removeAttr("disabled","false");
       }
-  });
-});
+}
 
 
 </script>

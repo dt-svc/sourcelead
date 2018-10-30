@@ -1,6 +1,7 @@
 package com.bis.sourcelead.util;
 
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashSet;
@@ -29,10 +30,10 @@ import com.bis.sourcelead.entity.UserGroup;
 import com.bis.sourcelead.payroll.dto.AssociatePayrollPayheadHistoryDTO;
 import com.bis.sourcelead.payroll.dto.INDPayrollDTO;
 import com.bis.sourcelead.payroll.dto.IndPaysheetFrequencyDTO;
-import com.bis.sourcelead.payroll.entity.EmployeePayroll;
 import com.bis.sourcelead.payroll.entity.IndEmployeePayroll;
 import com.bis.sourcelead.payroll.entity.IndPaysheetFrequency;
 import com.bis.sourcelead.payroll.entity.PayrollApprover;
+import com.bis.sourcelead.payroll.service.AssociatePayrollPayheadHistoryService;
 
 /**
  * This is the commonutil for the certain common methods used throughout the application
@@ -62,6 +63,9 @@ public class INDPayrollCommonUtil {
 	
 	@Autowired
 	PayrollPayheadDao payrollPayheadDao;
+	
+	@Autowired
+	AssociatePayrollPayheadHistoryService associatePayrollPayheadHistoryService;
 	
 	@Autowired
 	CommonUtil commonUtil;
@@ -279,6 +283,10 @@ public void sendMailToUserFromndIanPayrolApprover(User loginUser,  OrgLocations 
 		List<INDPayrollDTO> payrollDTOList = new ArrayList<>();
 		if(payrollList != null && !payrollList.isEmpty()) {
 			for(IndEmployeePayroll employeePayroll :payrollList) {
+				if(employeePayroll.getStatus() == 0)
+					continue;
+					
+				
 				INDPayrollDTO payrollDTO = new INDPayrollDTO();
 				if(employeePayroll.getId() != null) {
 					payrollDTO.setId(employeePayroll.getId());
@@ -304,8 +312,18 @@ public void sendMailToUserFromndIanPayrolApprover(User loginUser,  OrgLocations 
 					payrollDTO.setEmployeeDesignationType(employeePayroll.getCandidate().getDesignationType());
 					payrollDTO.setCandidateId(employeePayroll.getCandidate().getId());
 				}
+				Set<AssociatePayrollPayheadHistory> payHeadHistorySet = null;
+				if(employeePayroll != null && employeePayroll.getId() != null) {
+					List<AssociatePayrollPayheadHistory> payHeadHistoryList = associatePayrollPayheadHistoryService.getLatestAssociatePayrollPayheadByEmpPayrollId(employeePayroll.getId());
+				   if(payHeadHistoryList != null && !payHeadHistoryList.isEmpty()) {
+					   payHeadHistorySet = new HashSet<>(payHeadHistoryList);
+				   }
 				
-				List<AssociatePayrollPayheadHistoryDTO> payHeadHistoryDTOList = getAssociatePayrollPayheadHistoryDTOListFromAssociatePayrollPayheadHistoryList(employeePayroll, employeePayroll.getAssociatePayrollPayheadHistory(), orgLocations);
+				}else {
+					payHeadHistorySet = employeePayroll.getAssociatePayrollPayheadHistory();
+				}
+						
+				List<AssociatePayrollPayheadHistoryDTO> payHeadHistoryDTOList = getAssociatePayrollPayheadHistoryDTOListFromAssociatePayrollPayheadHistoryList(employeePayroll, payHeadHistorySet, orgLocations);
 				payrollDTO.setPayHeadHistoryDTOList(payHeadHistoryDTOList);
 				payrollDTO.setRegularHours(employeePayroll.getRegularHours());
 				payrollDTO.setRegularHrsAmt(employeePayroll.getRegularHoursAmount());
@@ -370,7 +388,13 @@ public void sendMailToUserFromndIanPayrolApprover(User loginUser,  OrgLocations 
 				employeePayroll.setUpdatedDate(payrollDTO.getUpdatedDate());
 				employeePayroll.setSubmitForAproverStatus(payrollDTO.getApproverStatus());
 				employeePayroll.setStatus(indPaysheetFrequency.getStatus());
-				List<AssociatePayrollPayheadHistory> payHeadHistoryList = getAssociatePayrollPayheadHistoryListFromAssociatePayrollPayheadHistoryDTOList(employeePayroll,payrollDTO.getPayHeadHistoryDTOList(), orgLocations);
+				List<AssociatePayrollPayheadHistory> payHeadHistoryList = null;
+				if(employeePayroll != null && employeePayroll.getId() != null) {
+					 payHeadHistoryList = associatePayrollPayheadHistoryService.getLatestAssociatePayrollPayheadByEmpPayrollId(employeePayroll.getId());
+				
+				}else {
+					payHeadHistoryList =  getAssociatePayrollPayheadHistoryListFromAssociatePayrollPayheadHistoryDTOList(employeePayroll,payrollDTO.getPayHeadHistoryDTOList(), orgLocations);
+				}
 			    if(payHeadHistoryList != null && !payHeadHistoryList.isEmpty()) {
 			    	employeePayroll.setAssociatePayrollPayheadHistory(new HashSet<AssociatePayrollPayheadHistory>(payHeadHistoryList));
 			    }
@@ -406,7 +430,7 @@ public void sendMailToUserFromndIanPayrolApprover(User loginUser,  OrgLocations 
 					}else if(payFrequency.equalsIgnoreCase(Constants.IND_PAYROLL_PAYFREQUENCY_MONTHLY)) {
 						tds = payHead.getMonthly();
 					}else  {
-						tds = payHead.getAnnualy().divide(getProjectInvoiceFrequency(payFrequency));
+						tds = payHead.getAnnualy().divide(getProjectInvoiceFrequency(payFrequency), 2);
 					}
 					   
 				}else if(payHead.getPayrollPayhead() != null 
@@ -417,7 +441,7 @@ public void sendMailToUserFromndIanPayrolApprover(User loginUser,  OrgLocations 
 						}else if(payFrequency.equalsIgnoreCase(Constants.IND_PAYROLL_PAYFREQUENCY_MONTHLY)) {
 							pt = payHead.getMonthly();
 						}else  {
-							pt = payHead.getAnnualy().divide(getProjectInvoiceFrequency(payFrequency));
+							pt = payHead.getAnnualy().divide(getProjectInvoiceFrequency(payFrequency), 2);
 						}
 						
 				}
@@ -431,7 +455,7 @@ public void sendMailToUserFromndIanPayrolApprover(User loginUser,  OrgLocations 
 					}else if(payFrequency.equalsIgnoreCase(Constants.IND_PAYROLL_PAYFREQUENCY_MONTHLY)) {
 						grossPay = grossPay.add(payHead.getMonthly());
 					}else  {
-						grossPay = grossPay.add(payHead.getAnnualy().divide(getProjectInvoiceFrequency(payFrequency)));
+						grossPay = grossPay.add(payHead.getAnnualy().divide(getProjectInvoiceFrequency(payFrequency), 2));
 					}
 				}
 				
@@ -443,7 +467,7 @@ public void sendMailToUserFromndIanPayrolApprover(User loginUser,  OrgLocations 
 					}else if(payFrequency.equalsIgnoreCase(Constants.IND_PAYROLL_PAYFREQUENCY_MONTHLY)) {
 						allDeductions = allDeductions.add(payHead.getMonthly());
 					}else  {
-						allDeductions = allDeductions.add(payHead.getAnnualy().divide(getProjectInvoiceFrequency(payFrequency)));
+						allDeductions = allDeductions.add(payHead.getAnnualy().divide(getProjectInvoiceFrequency(payFrequency), 2));
 					}
 				}
 				
@@ -477,8 +501,12 @@ public void sendMailToUserFromndIanPayrolApprover(User loginUser,  OrgLocations 
 				AssociatePayrollPayheadHistoryDTO  payHeadHistoryDTO = new AssociatePayrollPayheadHistoryDTO();
 				payHeadHistoryDTO.setIndEmployeePayrollId(indEmployeePayroll.getId());
 				payHeadHistoryDTO.setIndEmpPayrollUUID(indEmployeePayroll.getIndEmpPayrollUUID());
+				payHeadHistoryDTO.setIndEmployeePayrollStatus(indEmployeePayroll.getStatus());
 				if(payHeadHistory.getPayrollPayhead() !=null) {
 					payHeadHistoryDTO.setPayrollPayhead(payHeadHistory.getPayrollPayhead().getId());
+					payHeadHistoryDTO.setPayrollPayheadType(payHeadHistory.getPayrollPayhead().getType());
+					payHeadHistoryDTO.setPayrollPayheadName(payHeadHistory.getPayrollPayhead().getName());
+					payHeadHistoryDTO.setPayrollPayheadShortCode(payHeadHistory.getPayrollPayhead().getShortCode());
 				}
 				payHeadHistoryDTO.setMonthly(payHeadHistory.getMonthly());
 				payHeadHistoryDTO.setAnnualy(payHeadHistory.getAnnualy());

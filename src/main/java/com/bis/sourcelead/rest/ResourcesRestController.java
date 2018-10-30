@@ -17,6 +17,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.bis.sourcelead.annotations.Validator;
 import com.bis.sourcelead.dao.SourceleadBlogDao;
 import com.bis.sourcelead.dto.BlogCategoryDTO;
+import com.bis.sourcelead.dto.ReleaseNoteDTO;
 import com.bis.sourcelead.dto.Response;
 import com.bis.sourcelead.dto.ResponseList;
 import com.bis.sourcelead.dto.SourceleadBlogDTO;
@@ -352,5 +353,6 @@ public class ResourcesRestController {
 	 public @ResponseBody  boolean publishBlog(@RequestParam(value = "blogId", required = false) Long blogId,HttpServletRequest request) throws Exception {
 		return sourceleadBlogService.publishBlog(blogId);
 	 }
+	
 
 }

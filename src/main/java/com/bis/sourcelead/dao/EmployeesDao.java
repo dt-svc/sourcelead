@@ -4,6 +4,7 @@ import java.util.Collection;
 import java.util.List;
 
 import com.bis.sourcelead.entity.Employees;
+import com.bis.sourcelead.entity.OrgLocations;
 
 public interface EmployeesDao {
 
@@ -43,6 +44,8 @@ public interface EmployeesDao {
 	public Employees getEmployeByUserIdAndOrgRelationId(Long userId, Long orgRelationId)throws Exception;
 
 	public Employees getEmployeeByUserAndOrgLocationId(Long userId, Long orgLocationId);
+
+	public List<Employees> getEmployeesBasedOnDepartment(String departmentId, OrgLocations orgLocation);
 
 	
 }

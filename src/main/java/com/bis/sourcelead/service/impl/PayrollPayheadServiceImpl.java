@@ -118,6 +118,9 @@ public class PayrollPayheadServiceImpl implements PayrollPayheadService{
 				}else {
 					payrollPayhead.setExperienceMonths(null);
 				}
+			}else {
+				payrollPayhead.setExperienceYears(null);
+				payrollPayhead.setExperienceMonths(null);
 			}
 		}else {
 			payrollPayhead.setApplicableFor(null);

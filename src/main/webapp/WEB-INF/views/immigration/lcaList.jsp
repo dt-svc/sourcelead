@@ -54,9 +54,9 @@
 				<li><a href="javascript:void(0)" class="overIcon" title="Actions" onclick="newActions();"></a>
 					<div class="newActPop">
 						<span>
-						<%--  <sec:authorize access="hasAnyRole(\'ROLE_IMPORT_LCA\')"> --%>
+						<sec:authorize access="hasAnyRole(\'ROLE_IMPORT_LCA\')">
 							<a href="/app/uploadLcaForm">Import LCA</a>
-						 <%--  </sec:authorize>	 --%>
+						 </sec:authorize>
 						  
 						  <sec:authorize access="hasAnyRole(\'ROLE_EXPORT_LCA\')">
 							<a href="javascript:void(0)" onclick="exportToLCAExcel();" title="Excel">Export Excel</a>
@@ -387,7 +387,7 @@
                       result = result + '<i id="delete'+opt.lcaUuid+'" onclick="deleteLcaListId(\''+opt.lcaUuid+'\');" class="glyphicon glyphicon-trash ml10" title="Delete"></i></div></td>';
                     '</sec:authorize>';
                      }else{
-                    '<sec:authorize access="hasRole(\'ROLE_VIEW_EDIT_LCA\')">'; 
+                    '<sec:authorize access="hasRole(\'ROLE_RE_ACTIVE_LCA\')">'; 
                     	 result = result + '<i id="reActive'+opt.lcaUuid+'" onclick="reActivateLca(\''+opt.lcaUuid+'\');" class="fa fa-rotate-left ml10" title="Re Active"></i></div></td>'; 
                     '</sec:authorize>';
                      }
@@ -501,28 +501,7 @@ function deleteLcaListId(lcaUuid){ // only stauts updated with reason. active 1 
   }
 </script>
 	
-<script type="text/javascript">
-function reActivateLca(candidateId){
-	var result = "";
-		var reactivate = '1';
-		$("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
-		$.post(sourceleadUrl+"/immigration/reActivateCandidateByCandidateId?"+tokenParamName+"="+tokenValue+"&loginUserId="+loginUserId+"&orgLocationId="+orgLocationId+"&candidateId="+candidateId+"&reActivate="+reactivate,{},function(result){
-			if (result && result.response === "INVALID_DATA") {
-			    $("#update_candidate").removeAttr("disabled");
-			    $("#update_candidate").removeAttr('button').val('Save');
-			    showError(result.responseMessage);
-			} else if (result.response === "AWKWARD") {
-			    location.href = "/errorPage";
-			} else if (result.response === "SUCCESS") {
-				location.replace(sourceleadUrl+"/candidatesList");
-			} else if (result.indexOf('Sign In') !== -1) {
-				location.replace(sourceleadUrl);
-			} else {
-			    showError("Operation failed, please try again");
-			}			
-		});
-}
-</script>
+
 
 <script type="text/javascript">
  function reActivateLca(lcaUuid){
