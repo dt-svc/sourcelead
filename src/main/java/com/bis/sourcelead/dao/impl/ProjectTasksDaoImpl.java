@@ -418,14 +418,19 @@ public class ProjectTasksDaoImpl implements ProjectTasksDao {
 		}
 		 //concat(userRole.user.firstName,userRole.user.lastName) like
 		 String queryStr = "";
+		 String queryStrForCount = "";
 		 if(projectTasksDTO.getTasksFilter().equalsIgnoreCase("all")) {
 			  queryStr = "from ProjectTasks pt left join fetch pt.priority priority  where pt.projectId.id = :projectId and pt.status ='1'" ;
+			  queryStrForCount = "Select count (*) from ProjectTasks pt where pt.projectId.id = :projectId and pt.status ='1' " ;
+
 		 }else {
 			 String myAssign = "pt.id IN(SELECT pat.projectTaskId.id from ProjectAssignTask pat where pat.projectMemberId.projectMemberCandidteId.id IN ("+projectTasksDTO.getCandidateId()+"))";
 			  queryStr = "from ProjectTasks pt left join fetch pt.priority priority  where pt.projectId.id = :projectId and (pt.createdBy ='"+projectTasksDTO.getUserCode()+"' OR "+myAssign+")  and pt.status ='1'" ;
+			  
+			  queryStrForCount = "Select count (*) from ProjectTasks pt where pt.projectId.id = :projectId and (pt.createdBy ='"+projectTasksDTO.getUserCode()+"' OR "+myAssign+") and pt.status ='1' " ;
+
 		 }
 		 
-		 String queryStrForCount = "Select count (*) from ProjectTasks pt where pt.projectId.id = :projectId and pt.status ='1' " ;
 		 String subQueryStr = "";
 		 if(StringUtils.isNotEmpty(taskType)) {
 			 subQueryStr = subQueryStr+" and pt.taskType.id IN ("+taskType+")";

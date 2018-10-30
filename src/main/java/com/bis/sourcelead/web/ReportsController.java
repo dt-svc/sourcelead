@@ -360,6 +360,24 @@ private static final Logger logger = LoggerFactory.getLogger(ReportsController.c
 		  return model;		
 	 }
 	 
+	 @RequestMapping(value = "/jobPerformanceCandidatesByStatus")
+		public ModelAndView jobPerformanceCandidatesByStatus(@RequestParam(value="tab", required=true) String tab,
+				@RequestParam(value="orgLocationId", required=true) String orgLocationId,
+				@RequestParam(value="requirementId", required=true) String requirementId,
+				@RequestParam(value="statusType", required=true) String statusType,
+				HttpServletRequest request) throws Exception {
+			
+			ModelAndView model = new ModelAndView();
+		
+			model.addObject("tab",tab);
+			model.addObject("reqList","interList");
+			model.addObject("requirementId",requirementId);
+			model.addObject("statusType",statusType);
+			model.addObject("sourceleadUrl", sourceleadUrl);
+			model.setViewName("reports/jobsPerformanceCandidateList");
+			return model;
+		}
+	 
 	 @RequestMapping(value = "/applicantsjoinedlist")
 		public ModelAndView applicantsjoinedlist(HttpServletRequest request,HttpServletResponse response) throws Exception {
 		 

@@ -317,6 +317,18 @@ public class RequirementController {
 					
 				}
 			}
+			
+			if(requirement.getSpocId() != null) {
+				if (requirement.getSpocId().getClientLocationId().getId() == orgLocations.getId()) {
+					requirement.setSpocName(requirement.getSpocId().getVendorUser().getFullName());
+					requirement.setSpocOwnerName(requirement.getSpocId().getClientUser().getFullName());
+				}
+				else {
+					requirement.setSpocName(requirement.getSpocId().getClientUser().getFullName());
+					requirement.setSpocOwnerName(requirement.getSpocId().getVendorUser().getFullName());
+				}
+			}
+			
 			model.addObject("requirementAssignedIds",requirementAssignedIds);
 			model.addObject("requirement",requirement);
 			model.addObject("requirementId",requirement.getId());
