@@ -513,5 +513,135 @@ public class PaymentController {
         request.getSession().removeAttribute("payment");
         return "payment/failed";
     }
+   //===================== Marketplace Payment Process Starts Here=========================
+    @RequestMapping("/init-marketplace-payment")
+    @ResponseBody
+    public String initMarketplacePayment(HttpServletRequest request, String type, @RequestParam(defaultValue = "") String subscriptionUUID) {
+        Payer payer = new Payer();
+        payer.setPaymentMethod("paypal");
 
+        Payment payment = new Payment();
+        payment.setIntent("sale");
+        payment.setPayer(payer);
+
+        RedirectUrls redirectUrls = new RedirectUrls();
+        String guid = UUID.randomUUID().toString().replaceAll("-", "");
+        redirectUrls.setCancelUrl(sourceleadUrl + "/marketplace-payment-failed.html");
+        redirectUrls.setReturnUrl(sourceleadUrl + "/marketplace-process-payment.html?guid=" + guid);
+        payment.setRedirectUrls(redirectUrls);
+
+        APIContext apiContext = new APIContext(clientId, clientSecret, paymentMode);
+        request.getSession().setAttribute("apiContext", apiContext);
+        try {
+            Payment createdPayment = payment.create(apiContext);
+            request.getSession().setAttribute(guid, createdPayment.getId());
+            request.getSession().setAttribute("type", type);
+
+            System.out.println("Created payment with id = " + createdPayment.getId() + " and status = " + createdPayment.getState());
+            Iterator<Links> links = createdPayment.getLinks().iterator();
+            while (links.hasNext()) {
+                Links link = links.next();
+                if (link.getRel().equalsIgnoreCase("approval_url")) {
+                    return link.getHref();
+                }
+            }
+        } catch (PayPalRESTException e) {
+            return "redirect:/app/marketplace-payment-failed.html";
+        }
+        return null;
+    }
+    @RequestMapping(value = "/marketplace-process-payment.html")
+    public String processMarketplacePayment(HttpServletRequest req, HttpServletResponse resp, String guid) {
+        if (req.getParameter("PayerID") != null) {
+            Payment payment = new Payment();
+            if (req.getParameter("guid") != null) {
+                payment.setId(req.getSession().getAttribute(req.getParameter("guid")).toString());
+            }
+            int model = (Integer) req.getSession().getAttribute("model");
+            String type = (String) req.getSession().getAttribute("type");
+            payment.setTransactions(getTransactions(guid, type, model));
+
+            PaymentExecution paymentExecution = new PaymentExecution();
+            paymentExecution.setPayerId(req.getParameter("PayerID"));
+            APIContext apiContext = (APIContext) req.getSession().getAttribute("apiContext");
+            try {
+                req.getSession().setAttribute("payId", payment.getId());
+                Payment createdPayment = payment.execute(apiContext, paymentExecution);
+                if (createdPayment != null && createdPayment.getState().equalsIgnoreCase("approved")) {
+
+                    User loginUser = (User) SourceLeadSessionManager.getSessionAttribute(req, "user");
+                    Org org = (Org) SourceLeadSessionManager.getSessionAttribute(req, "org");
+                    OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(req, "orgLocations");
+
+                    req.getSession().setAttribute("createdPayment", createdPayment);
+                    OrgLicensePaymentTransactionHistory paymentHistory = getTransactionPaymentHistory(createdPayment, req);
+                    try {
+                        orgLicensePaymentTransactionHistoryService.saveOrgLicensePaymentTransactionHistory(paymentHistory);
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+
+                    req.getSession().setAttribute("orderId", paymentHistory.getOrderId());
+                    req.getSession().setAttribute("transactionId", paymentHistory.getTransactionId());
+                    req.getSession().setAttribute("amount", paymentHistory.getInvoiceAmount());
+                    Transaction transactions = createdPayment.getTransactions().iterator().next();
+                    Item item = transactions.getItemList().getItems().iterator().next();
+
+                    try {
+                        commonUtil.paymentAcknowledgementMail(paymentHistory, loginUser, org, orgLocations);
+                        if(orgLocations.getUser() != null) {
+                      		  User locationPrimaryUser = userService.getUserById(orgLocations.getUser().getId());
+                      		  paymentHistory.setTransactionUser(locationPrimaryUser.getFullName());
+                      		  paymentHistory.setTransactionUserEmail(locationPrimaryUser.getEmail());
+                        	  commonUtil.paymentAcknowledgementMail(paymentHistory, loginUser, org, orgLocations);
+                        }
+                        
+                        if(org.getUser() != null) {
+                        	  User orgPrimaryUser = userService.getUserById(org.getUser().getId());
+                     		  paymentHistory.setTransactionUser(orgPrimaryUser.getFullName());
+                     		  paymentHistory.setTransactionUserEmail(orgPrimaryUser.getEmail());
+                       	      commonUtil.paymentAcknowledgementMail(paymentHistory, loginUser, org, orgLocations);
+                        }
+
+                        if (environment.equalsIgnoreCase("prod")) {
+                            commonUtil.paymentAcknowledgementDetailsMail(paymentHistory, loginUser, org, orgLocations);
+                        }
+
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+
+                    return "redirect:/app/marketplace-payment-success.html";
+                } else {
+                    return "redirect:/app/marketplace-payment-failed.html";
+                }
+            } catch (PayPalRESTException e) {
+                return "redirect:/marketplace-payment-failed.html";
+            }
+        }
+        return null;
+    }
+    @RequestMapping(value = {"/marketplace-payment-success.html", "/marketplace-payment-failed.html"})
+    public String paymentMarketPlaceResponse(HttpServletRequest request, ModelMap map) {
+
+        boolean success = request.getRequestURI().contains("success");
+        Payment payment = (Payment) request.getSession().getAttribute("createdPayment");
+        if (payment != null && success == true && payment.getState().equalsIgnoreCase("approved")) {
+            User loginUser = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+            Org org = (Org) SourceLeadSessionManager.getSessionAttribute(request, "org");
+
+            String subscriptionUUID = (String) request.getSession().getAttribute("subscriptionUUID");
+            if (subscriptionUUID != null && !subscriptionUUID.isEmpty()) {
+                try {
+                    // need to copy the candidate to buyer/target organization location.
+                    System.out.println("org value is "+org.getId());
+
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
+        }
+        return success ? "payment/marketPlacePaymentSuccess" : "payment/marketPlace-failed";
+    }
+  //===================== Marketplace Payment Process ENDS Here=========================
 }
