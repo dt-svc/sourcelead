@@ -123,5 +123,5 @@ public interface OrgSpocDao {
 	
 	Integer getNumberOfContactCount(Long orgRelationId,Long userId,List<Long> userIds,Long orgLocationId,String responderType) throws Exception;
 
-	
+	OrgSpoc getSpocByVendorUserIdAndOrgRelationId(Long orgRelationId,Long vendorUserId)throws Exception;
 }
