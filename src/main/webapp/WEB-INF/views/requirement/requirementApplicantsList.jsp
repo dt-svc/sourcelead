@@ -57,8 +57,7 @@
 <script>
  $(document).ready(function() {
 	 requirementApplicantList(true);
-	 /* getLogInUserByOwnerClientList();
-	 getClientList(); */
+	 /* getClientList(); */
 // 	 getTeamsList();
  });
  
@@ -113,6 +112,8 @@
     		 
     		 var searchType = $('input[name=searchType]:checked').val();
     		 
+    		 var applicants = $('input[name=applicants]:checked').val();
+    		 
     	    if(frequency == "Custom"){
     	        if(fromDate == ''){
     	        	$("#invoiceFilterId").show();
@@ -138,7 +139,7 @@
     	    }else{
     	        $('#custFromDateDiv').find('p.jquery_form_error_message').remove();
     	        $('#custToDateDiv').find('p.jquery_form_error_message').remove();
-    	        var url = sourceleadUrl+"/applicantList?searchValue="+searchValue+"&orgLocationId="+orgLocationId+"&tabType="+tab+"&submissionStatus=SUBMISSION&frequency="+frequency+"&fromDate="+fromDate+"&toDate="+toDate+"&employmentType="+employmentType+"&clientId="+clientNameById+"&teamId="+teamNameById+"&incentivizedType="+incentivizedType+"&searchType="+searchType;
+    	        var url = sourceleadUrl+"/applicantList?searchValue="+searchValue+"&orgLocationId="+orgLocationId+"&tabType="+tab+"&submissionStatus=SUBMISSION&frequency="+frequency+"&fromDate="+fromDate+"&toDate="+toDate+"&employmentType="+employmentType+"&clientId="+clientNameById+"&teamId="+teamNameById+"&incentivizedType="+incentivizedType+"&searchType="+searchType+"&applicants="+applicants;
     		    prepareApplicantList(url);
     	    } 
 		
@@ -601,6 +602,16 @@ $(".overIcon, .newActPop").click(function(e){
 										</c:forEach>
 									</ul>
 								</div>
+								
+								  <div class="col-md-12 mb">
+								<label><strong>Applicants</strong></label>
+								 <div class="clearfix">
+									<ul class="list-unstyled" id="searchTypeFilter">
+										<li class="radioIput positionRelative" ><input  type="radio" name="applicants" value ="ALLApplicants" checked ><label for="No">ALL Applicants</label></li>
+									     <li class="radioIput positionRelative" ><input  type="radio" name="applicants"  value ="MYApplicants" ><label for="Yes">MY Applicants</label></li>
+				                    </ul>
+								 </div>
+						   </div>
 							 
 						   </div>
 							
@@ -637,25 +648,7 @@ $(".overIcon, .newActPop").click(function(e){
 		}
 	});
 }
-function getLogInUserByOwnerClientList(){
-	var sourceleadUrl = '${sourceleadUrl}';
-	$.ajax({
-		type : "POST",
-		url : sourceleadUrl+ "/getLogInUserByOwnerClientList?${_csrf.parameterName}=${_csrf.token}",
-		success : function(data) {
-			var result = "";
-			  for (var i=0; i<data.length; i++)
-				{
-					var report = data[i];
-					result = result + '<li class="checkBox positionRelative">';
-					result = result + '<input  type="checkbox" name="myClientNameById" value ='+report.orgRelId+'><label>'+report.clientName+'</label>';
-					result = result + '</li>';
-				}
-			  $("#myOwnerClinetListUL").empty();
-			  $("#myOwnerClinetListUL").append(result);
-		}
-	});
-} */
+
 function myClientFunction() {
     var input, filter, ul, li, a, i;
     input = document.getElementById("myClientInput");

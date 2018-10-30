@@ -2733,7 +2733,7 @@ public class RequirementSubmissionDaoImpl implements RequirementSubmissionDao{
 	    		}
 	        	
 	        	String subQuery1 = "";
-	    		if(requirementSubmissionHistoryDTO.getSearchType().equalsIgnoreCase("MY")) {
+	    		if(requirementSubmissionHistoryDTO.getSearchType().equalsIgnoreCase("MY") || (requirementSubmissionHistoryDTO.getApplicants() != null && requirementSubmissionHistoryDTO.getApplicants().equalsIgnoreCase("MYApplicants"))) {
 	    			subQuery1 = " and (rsh.submissionId.createdBy =:userCode)";
 	    			params.put("userCode",user.getUserCode());
 	    		}
