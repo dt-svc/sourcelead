@@ -2818,6 +2818,8 @@ private Sheet createXlsSheet(Sheet createExcelsheet, Row writeRow,Candidate cand
 		orgLocation.setId(orgLocationId);
 		newMarketCart.setSourceOrgLocationId(marketplace.getOrgLocationId());
 		newMarketCart.setTargetOrgLocationId(orgLocation);
+		newMarketCart.setAmount(Double.valueOf(marketplace.getMarketPrice()));
+		newMarketCart.setCurrency(marketplace.getMarketRateCurrencey());
 		newMarketCart.setStatus(marketplace.getStatus());
 		newMarketCart.setCreatedDate(new Date());
 		newMarketCart.setCreatedBy(user);

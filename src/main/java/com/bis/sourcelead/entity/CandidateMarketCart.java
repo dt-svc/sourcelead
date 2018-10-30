@@ -60,6 +60,12 @@ public class CandidateMarketCart implements Serializable {
 	@JoinColumn(name = "TARGET_ORG_LOCATION_ID", nullable = false)
 	private OrgLocations targetOrgLocationId;
 	
+	@Column(name = "CURRENCY")
+	private String currency;
+	
+	@Column(name = "AMOUNT")
+	private Double amount ;
+	
 	@Column(name = "CART_STATUS")
 	private String cartStatus;
 	
@@ -206,6 +212,22 @@ public class CandidateMarketCart implements Serializable {
 
 	public void setCartStatus(String cartStatus) {
 		this.cartStatus = cartStatus;
+	}
+
+	public String getCurrency() {
+		return currency;
+	}
+
+	public void setCurrency(String currency) {
+		this.currency = currency;
+	}
+
+	public Double getAmount() {
+		return amount;
+	}
+
+	public void setAmount(Double amount) {
+		this.amount = amount;
 	}
 
 	
