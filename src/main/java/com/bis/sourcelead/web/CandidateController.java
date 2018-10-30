@@ -206,14 +206,14 @@ public class CandidateController {
 			@RequestParam(value="candidateUUID", required=false)String  candidateUUID) throws Exception {
 		
 		logger.debug("--------candidatesList------");
-		String userRole =null;
-		String userId = commonUtil.getClientSessionUserId(request);
+		String userRole = null;
 		JSONObject orgLocJsonObject = null;
 		JSONObject userLocJsonObject = null;
 		OrgLocations orgLocations = null;
 		User user = null;
 		
 		if(isCouchbaseEnabled.equalsIgnoreCase("true")) {
+			 String userId = commonUtil.getClientSessionUserId(request);
 			 userRole =  SourceLeadSessionManager.getSessionJsonString(request, "loginUserRole","userSession",userId);
 			 orgLocJsonObject = SourceLeadSessionManager.getSessionJsonObject(request,  "orgLocations","userSession",userId);
 			 userLocJsonObject = SourceLeadSessionManager.getSessionJsonObject(request,  "user","userSession",userId);
@@ -254,7 +254,12 @@ public class CandidateController {
 			 }
 			
 		 }else{
-			 candidateCount = candidateService.getCandidatesCountByCandidateTypeOrgLocationID(Long.valueOf(userLocJsonObject.get("id").toString()),Long.valueOf(orgLocJsonObject.get("id").toString()), "Candidate");
+			 if(isCouchbaseEnabled.equalsIgnoreCase("true")) {
+				 candidateCount = candidateService.getCandidatesCountByCandidateTypeOrgLocationID(Long.valueOf(userLocJsonObject.get("id").toString()),Long.valueOf(orgLocJsonObject.get("id").toString()), "Candidate");
+			 }else {
+				 candidateCount = candidateService.getCandidatesCountByCandidateTypeOrgLocationID(user.getId(),orgLocations.getId(),"Candidate");
+			 }
+			
 		 }
 	  
 	   model.addObject("candidateCount", candidateCount);
@@ -262,20 +267,41 @@ public class CandidateController {
 		List<Countries> countryList = countriesService.getAllCountries();
 		model.addObject("countryList", countryList);
 		
-		if(null != orgLocJsonObject.get("country") && StringUtils.isNotEmpty(orgLocJsonObject.get("country").toString())){
-		
-			Countries countries = countriesService.getCountriesByCountryName(orgLocJsonObject.get("country").toString());
-			if(null != countries){
-			   model.addObject("loginCountryName", countries.getName());
-			   model.addObject("currency", countries.getCurrency());
-			   
+		if(isCouchbaseEnabled.equalsIgnoreCase("true")) {
+			if(null != orgLocJsonObject.get("country") && StringUtils.isNotEmpty(orgLocJsonObject.get("country").toString())){
+				
+				Countries countries = countriesService.getCountriesByCountryName(orgLocJsonObject.get("country").toString());
+				if(null != countries){
+				   model.addObject("loginCountryName", countries.getName());
+				   model.addObject("currency", countries.getCurrency());
+				   
+				}
+		        List<States> statesList = statesService.getAllStatesByCountry(countries.getName());
+		        model.addObject("statesList", statesList);
 			}
-	        List<States> statesList = statesService.getAllStatesByCountry(countries.getName());
-	        model.addObject("statesList", statesList);
+		}else {
+			
+			if(orgLocations.getCountry() != null && StringUtils.isNotEmpty(orgLocations.getCountry())){
+				
+				Countries countries = countriesService.getCountriesByCountryName(orgLocations.getCountry());
+				if(null != countries){
+				   model.addObject("loginCountryName", countries.getName());
+				   model.addObject("currency", countries.getCurrency());
+				   
+				}
+		        List<States> statesList = statesService.getAllStatesByCountry(countries.getName());
+		        model.addObject("statesList", statesList);
+			}
 		}
 		
+		
 		//approver list
-		List<User> requirementApproverList = userService.getTabAccessOwnersByOrgLocationIdAndTabId(Long.valueOf(orgLocJsonObject.get("id").toString()),Long.valueOf(Constants.TAB_CANDIATE));
+		List<User> requirementApproverList = null;
+		if(isCouchbaseEnabled.equalsIgnoreCase("true")) {
+			requirementApproverList = userService.getTabAccessOwnersByOrgLocationIdAndTabId(Long.valueOf(orgLocJsonObject.get("id").toString()),Long.valueOf(Constants.TAB_CANDIATE));
+		}else {
+			requirementApproverList = userService.getTabAccessOwnersByOrgLocationIdAndTabId(orgLocations.getId(),Long.valueOf(Constants.TAB_CANDIATE));
+		}
 		model.addObject("requirementApproverList", requirementApproverList);
 				
 		
@@ -285,8 +311,14 @@ public class CandidateController {
 		List<LookUpData> visaList = lookUpDataService.getLookUpDataByCategory(Constants.VISA);
 		model.addObject("visaList", visaList);
 		
+		Set<String> tagsList = null;
 		
-		Set<String> tagsList = sourceleadTagsService.getSourceleadTagsByOrgLocationId(Long.valueOf(orgLocJsonObject.get("id").toString()));
+		 if(isCouchbaseEnabled.equalsIgnoreCase("true")) {
+			 tagsList = sourceleadTagsService.getSourceleadTagsByOrgLocationId(Long.valueOf(orgLocJsonObject.get("id").toString()));
+		 }else {
+			 tagsList = sourceleadTagsService.getSourceleadTagsByOrgLocationId(orgLocations.getId());
+		 }
+		
 		SourceLeadSessionManager.setSessionAttribute(request, "tagsList", tagsList);
 		
 		List<LookUpData> educationsList = lookUpDataService.getLookUpDataByCategory(Constants.EDUCATIONS);
@@ -295,11 +327,22 @@ public class CandidateController {
 		List<LookUpData> documentsList = lookUpDataService.getLookUpDataByCategory(Constants.DOCUMENT_TYPE);
 		model.addObject("documentsList", documentsList);
 		
-		List<OrgRelationDTO> orgClientList = orgRelationsService.getAllClientsListOrgLocationId(Long.valueOf(orgLocJsonObject.get("id").toString()));
+		List<OrgRelationDTO> orgClientList = null;
+		 if(isCouchbaseEnabled.equalsIgnoreCase("true")) {
+			 orgClientList = orgRelationsService.getAllClientsListOrgLocationId(Long.valueOf(orgLocJsonObject.get("id").toString()));
+		 }else {
+			 orgClientList = orgRelationsService.getAllClientsListOrgLocationId(orgLocations.getId());
+		 }
 	    model.addObject("clientsList", orgClientList);
 	    
-	    model.addObject("SourceLeadWeb_userId", userLocJsonObject.get("id").toString());
-	    model.addObject("SourceLeadWeb_locationCode", orgLocJsonObject.get("locationCode").toString());
+	    if(isCouchbaseEnabled.equalsIgnoreCase("true")) {
+	    	 model.addObject("SourceLeadWeb_userId", userLocJsonObject.get("id").toString());
+	 	     model.addObject("SourceLeadWeb_locationCode", orgLocJsonObject.get("locationCode").toString());
+	    }else {
+	    	 model.addObject("SourceLeadWeb_userId", user.getId());
+	 	    model.addObject("SourceLeadWeb_locationCode", orgLocations.getLocationCode());
+	    }
+	   
 	    
 		  
 		SessionMaintainanceData sessionData = (SessionMaintainanceData)request.getSession().getAttribute("sessionData");

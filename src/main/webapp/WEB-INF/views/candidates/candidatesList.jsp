@@ -1406,16 +1406,8 @@ function cancel(candidateId){
           		<div id="addmorepop" class="approved_pop"></div>
           </li> -->
           
-          <li>
-				<a class="action newAdBtn mr5" onclick="getActions();" href="javascript:void(0)">+ Candidate <i class="fa fa-caret-down"></i></a>
-				<div class="action-pop">
-					<span> 
-						<a href="<c:url value='${appPath}/candidate'/>">Parse Resume</a>
-                        <a href="<c:url value='${appPath}/addCandidate'/>">Add Manual</a>
-                        <a href="<c:url value='${appPath}/bulk-resume-import.html'/>">Bulk Resume Parsing</a>
-                        <a href="uploadCandidateForm">Import XLS</a>
-					</span>
-				</div>
+             <li>
+				<a class="action newAdBtn mr5" onclick="getActions();" href="uploadCandidateForm">Import</a>
 			</li>
           
           

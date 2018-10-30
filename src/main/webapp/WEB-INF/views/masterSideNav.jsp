@@ -133,12 +133,6 @@
 	                 </c:if>
 	                 
 	                 
-	                 <c:if test="${userTabs.tabName == 'On & Off Boarding'}">
-	                  <li class="${sessionData.nav == 'OnAndOffboard' ? 'navActive' : ''}"><a href="<c:url value='${appPath}/candidateOnBoardingList'/>" title="On / Off Boarding"><span class="navIcons onoffIcon"></span><b>On / Off Board</b></a></li>
-	                 </c:if>
-	                 
-	                 
-	                 
 	                 <c:if test="${userTabs.tabName == 'Contracts'}">
 	                   <li class="${sessionData.nav == 'Contract' ? 'navActive' : ''}"><a href="<c:url value='${appPath}/contractListbyStatus'/>" title="Contracts"><span class="navIcons contIcon"></span><b>Contracts</b></a></li>
 	                </c:if> 
