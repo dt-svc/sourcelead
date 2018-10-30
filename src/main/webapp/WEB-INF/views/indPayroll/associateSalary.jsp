@@ -147,7 +147,9 @@
                   <div class="col-md-6">
                    <div class="pull-right" id="saveAssociateBtnDiv">
                     <input value="Save" class="btn btn-success btnSuccess" type="button" onclick="saveAssociateSalaryInd();">
-                    <input value="Cancel" class="btn btn-default ml10" type="button" id="cancelAssociateSalaryIndBtn">
+                    <c:if test="${status == 'NEW' || status == 'NODATA'}">
+						<input value="Cancel" class="btn btn-default ml10" type="button" id="cancelAssociateSalaryIndBtn">                    
+                    </c:if>
                     </div>
                   </div>
                 </div>
@@ -234,17 +236,19 @@ function payHeadCalculation(id, shortCode, method, formula){
 
 <script>
 function saveAssociateSalaryInd(){
-	var annualSalary = document.getElementById("annualSal").value;
-	var annualPayheadTotal = 0.00;
-	$("#phTblBody input:checked").each(function(){
-		if(document.getElementById("payheadSC["+$(this).attr('id')+"]").value == 'Earnings'){
-			annualPayheadTotal += parseFloat(document.getElementById("payHeadYearly["+$(this).attr('id')+"]").value);
+	if ($('#associateSalary_form').validate(false, validationSettings)) {
+		var annualSalary = document.getElementById("annualSal").value;
+		var annualPayheadTotal = 0.00;
+		$("#phTblBody input:checked").each(function(){
+			if(document.getElementById("payheadSC["+$(this).attr('id')+"]").value == 'Earnings'){
+				annualPayheadTotal += parseFloat(document.getElementById("payHeadYearly["+$(this).attr('id')+"]").value);
+			}
+		});
+		if(parseFloat(annualSalary) != parseFloat(annualPayheadTotal)){
+			payheadsNotMatchedAlert();
+		}else{
+			cnfToSaveAssociateSalaryInd();
 		}
-	});
-	if(parseFloat(annualSalary) != parseFloat(annualPayheadTotal)){
-		payheadsNotMatchedAlert();
-	}else{
-		cnfToSaveAssociateSalaryInd();
 	}
 }
 
@@ -282,7 +286,7 @@ function cnfToSaveAssociateSalaryInd(){
 		     contentType:false, 
 			 url : sourceleadUrl+"/saveAssociateSalaryInd?"+tokenParamName+"="+tokenValue,
 			 success : function(result) {
-			  		if(status == 'NEW'){
+			  		if(status == "NEW" || status == "NODATA"){
 			  			location.replace(sourceleadUrl+"/usersList");
 			  		}else{
 			  			$('#editAssociateBtn').css('display','block');
@@ -313,7 +317,17 @@ $('#editAssociateBtn').click(function() {
 
 <script>
 $('#cancelAssociateSalaryIndBtn').click(function() {
-	location.replace(sourceleadUrl+"/usersList");
+	var status = $("#status").val();
+	if(status == "NEW" || status == "NODATA"){
+		location.replace(sourceleadUrl+"/usersList");
+	}/* else{
+		var userId = $("#userId").val();
+		$("#tab-30").empty();  
+	    $("#tab-19").empty();
+	    $("#tab-17").empty();
+	    $("#candidateSideDiv").empty();
+		userDetails(userId);
+	} */
 });
 </script>
 

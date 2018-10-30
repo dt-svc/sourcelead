@@ -553,7 +553,7 @@ function runUSPayroll(){
 						        		result += '<td><div class="tblminwidth-50">--</div></td>';
 						        	}
 						        	result += '<td><div class="tbldata-dotdot-vsm">'+opt.empName+'</div></td>';
-// 						        	result += '<td><div class="tblminwidth-50">'+opt.regularHours+'</div><div class="tblminwidth-50 clearfix text-danger">$ '+opt.regularHrsTotalAmt.toFixed(2)+'</div></td>';	
+ 						        	result += '<td><div class="tblminwidth-50">'+opt.regularHours+'</div><div class="tblminwidth-50 clearfix text-danger">$ '+opt.regularHrsTotalAmt.toFixed(2)+'</div></td>';	
 						        	result += '<td><div class="tblminwidth-125 clearfix">$ '+opt.grossPay.toFixed(2)+'</div>';
 						        	result += '<td><div class="tbldata-dotdot-vsm">$ '+opt.payRate+'</div></td>';
 						        	if(opt.payType != null && opt.payType != ''){
