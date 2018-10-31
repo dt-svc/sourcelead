@@ -31,40 +31,11 @@
 <div class="positionRelative reportHead clearfix">
       <ul class="pull-right list-unstyled list-inline">
         <sec:authorize access="hasRole('ROLE_ADD_LCA')">
-			<li><a href="${appPath}/immigration/loadNewLCA" class="newAdBtn mr5">+ New </a></li>
-		</sec:authorize>	
-			<li>
-			    <select id="daysFilter" onchange="getDynamicLCAList()" style="padding: 3px 5px;">
-                   
-                    <option value="All" selected >All</option>
-                    <option value="7">Expires In 7 Days</option>
-                    <option value="15">Expires In 15 Days</option>
-                    <option value="30">Expires In 30 Days</option>
-                    <option value="60">Expires In 60 Days</option>
-                    <option value="90">Expires In 90 Days</option>
-                    <option value="120">Expires In 120 Days</option>
-                    <option value="180">Expires In 180 Days</option>
-                    <option value="360">Expires In 360 Days</option>
-                    
-                </select>
-			</li>
-			
-			<li><a href="javascript:void(0)" class="filtIcon" title="Filters" onclick="openFilterPop();"></a></li>
-				
-				<li><a href="javascript:void(0)" class="overIcon" title="Actions" onclick="newActions();"></a>
-					<div class="newActPop">
-						<span>
-						<sec:authorize access="hasAnyRole(\'ROLE_IMPORT_LCA\')">
-							<a href="/app/uploadLcaForm">Import LCA</a>
-						 </sec:authorize>
-						  
-						  <sec:authorize access="hasAnyRole(\'ROLE_EXPORT_LCA\')">
-							<a href="javascript:void(0)" onclick="exportToLCAExcel();" title="Excel">Export Excel</a>
-						  </sec:authorize>	
-						</span>
-					</div>
+			   <li>
+					<a class="action newAdBtn mr5" href="${appPath}/uploadLcaForm">Import</a>
 				</li>
-		    
+		</sec:authorize>	
+	    <li><a href="javascript:void(0)" class="filtIcon" title="Filters" onclick="openFilterPop();"></a></li>
 		   <span><input class="immigraTabSerach" id ="lcaSearch" placeholder="Search" type="text"></span>
         </ul>
       </div>

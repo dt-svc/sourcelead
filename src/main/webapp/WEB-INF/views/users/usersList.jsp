@@ -336,18 +336,6 @@ function getUsersSearchResult(searchValue){
 			<sec:authorize access="hasAnyRole('ROLE_VIEW_ASSOCIATE_ADDITIONAL_DETAILS')"> 
 				<li><a href="javascript:void(0)" class="filtIcon" title="Filters" onclick="openPop();"></a></li>
 			</sec:authorize>
-				
-				<li><a href="javascript:void(0)" class="overIcon" title="Actions" onclick="newActions();"></a>
-					<div class="newActPop">
-						<span>
-	
-						<sec:authorize access="hasAnyRole('ROLE_EXPORT_ASSOCIATE')"> 
-							<a href="javascript:void(0)" onclick="exportToPdf();" title="PDF">Export PDF</a>
-							<a href="javascript:void(0)" onclick="exportUserData();" title="Excel">Export Excel</a>
-						</sec:authorize>
-						</span>
-					</div>
-				</li>
 		    
 		  <li class=""><input type="text" class="repSearchBar" placeholder='Search' id='dynamicUserDataTableSearch'/><span class="repSearchIcon" onClick="getDynamciUserList();"></span></li>
         </ul>
@@ -882,13 +870,7 @@ function getUserSummary(userId){
 			       	    	result = result +"</div>";
 			       	    	result = result +"<div class='col-xs-8 col-sm-8'>";
 			       	    	
-			       	     '<sec:authorize access="hasAnyRole(\'ROLE_VIEW_ASSOCIATE\',\'ROLE_VIEW_EDIT_ASSOCIATE\',\'ROLE_VIEW_DELETE_ASSOCIATE\')">' 
-			       	         	result = result +"<h4><a href='<c:url value='/app/userSummary/"+userRole.userId+"'/>''> <span title='"+userRole.firstName+" "+lastName+"'> "+userRole.firstName+" "+lastName+" </span> </a> </h4>";
-			       	    	'</sec:authorize>';
-			       	    	
-			       	     '<sec:authorize access="!hasAnyRole(\'ROLE_VIEW_ASSOCIATE\',\'ROLE_VIEW_EDIT_ASSOCIATE\',\'ROLE_VIEW_DELETE_ASSOCIATE\')">' 
-		       	         	   result = result +"<h4><a href='#'> "+userRole.firstName+" " " "+lastName+"</a> </h4>";
-		       	    	    '</sec:authorize>';
+			       	    	result = result +"<h4><a href='#'> <span title='"+userRole.firstName+" "+lastName+"'> "+userRole.firstName+" "+lastName+" </span> </a> </h4>";
 			       	    	
 			       	    	result = result +"<p><label><i class='fa fa-envelope-o' aria-hidden='true'></i>&nbsp;<span title='"+userRole.email+"'> "+userRole.email+"</span></lable></p>";
 			       	    	result = result +"<p><label><i class='fa fa-phone'  aria-hidden='true'></i>&nbsp;<span title='"+mobilePhone+"'> "+mobilePhone+"</span> </label></p>";
@@ -1196,7 +1178,6 @@ function prepareDynamicUserList(url){
 		result = result + '<th>Role</th>';
 		result = result + '<th>Manager</th>';
 		result = result + '<th>Employment Type</th>';
-		result = result + '<th>Status</th>';
 		result = result + '</tr>';
 		result = result + '</thead>';
 		result = result + '</table>';
@@ -1226,8 +1207,7 @@ function dynamicUserListPagination(url){
             { "data": "mobilePhone"},
             { "data": "displayName"},
             { "data": "manager"},
-            { "data": "userEmploymentType"},
-            { "data": "status"}
+            { "data": "userEmploymentType"}
         ],
 		 "columnDefs": [ {
 		    	  	"targets": colIndex++,
@@ -1281,7 +1261,7 @@ function dynamicUserListPagination(url){
 		          "data": "displayName",
 		          "render": function ( data, type, userRole, meta ) {
 		        	  var result = "";
-		        	  result = result + ' <td><div class="tbldata-dotdot-100" title = "'+userRole.userRoleName+'">'+userRole.userRoleName+'</div></td>';
+		        	  result = result + ' <td><div class="tbldata-dotdot" title = "'+userRole.userRoleName+'">'+userRole.userRoleName+'</div></td>';
 		        	  return result;
 		          }
 		        }, {
@@ -1291,9 +1271,9 @@ function dynamicUserListPagination(url){
 		            "render": function ( data, type, userRole, meta ) {
 		            	var result = "";
 		            	if(userRole.reportingManagerName !=null && userRole.reportingManagerName !='' && userRole.reportingManagerName !='undefined'){
-							result = result + ' <td><div class="tbldata-dotdot-sm" title = "'+userRole.reportingManagerName+'">'+userRole.reportingManagerName+'</div></td>';
+							result = result + ' <td><div class="tbldata-dotdot" title = "'+userRole.reportingManagerName+'">'+userRole.reportingManagerName+'</div></td>';
 						}else{
-							result = result + ' <td><div class="tbldata-dotdot-sm">--</div></td>';
+							result = result + ' <td><div class="tbldata-dotdot">--</div></td>';
 						}
 			              return result;
 		            }
@@ -1311,39 +1291,7 @@ function dynamicUserListPagination(url){
 						}
 			              return result;
 		          }
-		    },
-		    {
-		        "targets": colIndex++,
-		        "data": "status",
-		        "sortable": false,
-		        "render": function ( data, type, userRole, meta ) {
-		        	var result = "";
-		            if(userRole.isMailSent != null && userRole.isMailSent != "" && userRole.isMailSent == 'N'){
-		            	'<sec:authorize access="hasRole(\'ROLE_VIEW_ASSOCIATE_ADDITIONAL_DETAILS\')">'  
-		            	result = result +"<td><p class='tblminwidth-50'><label id='user"+userRole.userId+"' class='label label-info'><b class='fa fa-envelope' aria-hidden='true'></b><a class='color_white' href='javascript:void(0)' onClick='resendInvitation("+userRole.userId+");'>&nbsp;&nbsp;Invite</a></label></p></td>";
-		            	'</sec:authorize>';
-	 			    	
-	 			    	'<sec:authorize access="!hasRole(\'ROLE_VIEW_ASSOCIATE_ADDITIONAL_DETAILS\')">'  
-	 			    			result = result +"<td><p class='tblminwidth-50'>---</p></td>";
-	 			    	'</sec:authorize>';    
-		            
-		            }else if((userRole.isMailSent != null && userRole.isMailSent != "" && userRole.isMailSent == 'Y') &&
-		 			    		(userRole.userState != null && userRole.userState != "" && userRole.userState == 'NOT_LOGGEDIN') ){
-		 			    	'<sec:authorize access="hasRole(\'ROLE_VIEW_ASSOCIATE_ADDITIONAL_DETAILS\')">'  
-		 			    		result = result +"<td><p class='tblminwidth-50'><label id='user"+userRole.userId+"' class='label label-info'><b class='fa fa-envelope' aria-hidden='true'></b><a class='color_white' href='javascript:void(0)' onClick='resendInvitation("+userRole.userId+");'>&nbsp;&nbsp;Resend</a></label></p></td>";
-		 			    	'</sec:authorize>';
-		 			    	
-		 			    	'<sec:authorize access="!hasRole(\'ROLE_VIEW_ASSOCIATE_ADDITIONAL_DETAILS\')">'  
-		 			    			result = result +"<td><p class='tblminwidth-50'>---</p></td>";
-		 			    	'</sec:authorize>';
-		 			    }else if(userRole.userState != null && userRole.userState != "" && userRole.userState == 'ACTIVE'){
-		 			    	result = result +"<td><p class='tblminwidth-50'><label class='label label-success'><b class='fa fa-check'></b>&nbsp;&nbsp;Active</label></p></td>";
-		 			    }else if(userRole.userState != null && userRole.userState != "" && userRole.userState == 'INACTIVE'){
-		 			    	result = result +"<td><p class='tblminwidth-50'><label class='label label-danger'><b class='fa fa-ban'></b>&nbsp;&nbsp;In-active</label></p></td>";
-		 			    } 
-		              return result;
-		        }
-		  }],
+		    }],
 		    "scrollCollapse": false,
 	    	"lengthMenu": [[10, 15, 20], [10, 15, 20]],
 	    	"aaSorting": [[1,'desc']],

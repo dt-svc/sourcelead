@@ -82,7 +82,7 @@ overflow-x: auto;
       
       <ul class="pull-right list-unstyled list-inline">
       
-      	  <li><sec:authorize access="hasAnyRole('ROLE_CREATE_PROJECT')">
+      	  <%-- <li><sec:authorize access="hasAnyRole('ROLE_CREATE_PROJECT')">
 			<a class="action newAdBtn mr5" onclick="getActions();" href="javascript:void(0)">+ Add <i class="fa fa-caret-down"></i></a>
 			<div class="action-pop">
 				<span> 
@@ -92,11 +92,11 @@ overflow-x: auto;
 				</span>
 			</div>
 			</sec:authorize>
-			</li>
+			</li> --%>
 			
 				<li id="vendorFiletPopup"><a href="javascript:void(0)" class="filtIcon" title="Filters" onclick="openFilterPop();"></a></li>
 				
-				<li><a href="javascript:void(0)" class="overIcon" title="Actions" onclick="newActions();"></a>
+				<%-- <li><a href="javascript:void(0)" class="overIcon" title="Actions" onclick="newActions();"></a>
 					<div class="newActPop">
 						<span>
 	                	<sec:authorize access="hasRole('ROLE_EXPORT_VENDORS')"> 
@@ -105,7 +105,7 @@ overflow-x: auto;
 			          	</sec:authorize>
 						</span>
 					</div>
-				</li>
+				</li> --%>
 		  <li class=""><input type="text" class="repSearchBar" placeholder='Search' id='projectsDataTableSearch'/><span class="repSearchIcon" onClick="filter();"></span></li>
         </ul>
       </div>		

@@ -226,24 +226,13 @@
       </span>
       
       <ul class="pull-right list-unstyled list-inline">
-      <%--  <a href="${appPath}/immigration/viewLCAList" class="btn btn-success btnSuccess anchorWhite btn-sm"><i class="paddingRight"></i> LCA List</a> --%>
-      		<sec:authorize access="hasAnyRole('ROLE_ADD_PETITION','ROLE_EDIT_VIEW_PETITION','ROLE_DELETE_PETITION')">
-            <li><a href="${appPath}/immigration/loadNewPetition" class="action newAdBtn mr5">+ New </a></li>
-			</sec:authorize>
+      		
+				<sec:authorize access="hasAnyRole('ROLE_ADD_PETITION','ROLE_EDIT_VIEW_PETITION','ROLE_DELETE_PETITION')">
+				 <li>
+					<a class="action newAdBtn mr5" href="${appPath}/uploadImmigrationForm">Import</a>
+				</li>
 				<li id="vendorFiletPopup"><a href="javascript:void(0)" class="filtIcon" title="Filters" onclick="filterPop();"></a></li>
 				
-				<sec:authorize access="hasAnyRole('ROLE_ADD_PETITION','ROLE_EDIT_VIEW_PETITION','ROLE_DELETE_PETITION')">
-				<li><a href="javascript:void(0)" class="overIcon" title="Actions" onclick="newActions();"></a>
-					<div class="newActPop">
-						<span>
-	                 		<a href="/app/uploadImmigrationForm">Import</a>
-							<a href="javascript:void(0)" onclick="exportToExcel();" title="Excel">Export Excel</a>
-						</span>
-						<!-- <span>
-	                 		<a href="/app/uploadLcaForm">Import LCA</a>
-						</span> -->
-					</div>
-				</li>
 		    	</sec:authorize>
 		  <li class=""><input type="text" class="repSearchBar" placeholder='Search' id='immiListSerach'/><span class="repSearchIcon" onClick=""></span></li>
         </ul>
