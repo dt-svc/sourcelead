@@ -1284,4 +1284,6 @@ public class Constants {
 			"Total Offer", "Total Joiners"};
 	
 
+	public static final String CONTRIBUTION = "contribution";
+	public static final String DEDUCTION = "deduction";
 }
