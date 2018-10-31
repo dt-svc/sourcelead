@@ -220,6 +220,8 @@ public interface RequirementSubmissionDao {
 
 	ResponseList<RequirementSubmissionHistory> getRequirementSubmissionsListWithDTOByOrgLocationsIdAndSubmissionStatus(RequirementSubmissionHistoryDTO requirementSubmissionHistoryDTO, Long orgLocationsId, String submissionStatus, String dateRange, String userType, User user, Date startUTCDate, Date endUTCDate,OrgLocations orgLocations) throws Exception;
 	
+	public ResponseList<RequirementSubmission> getRequirementSubmissionsListWithJobIdByOrgLocationsIdAndSubmissionStatus(RequirementSubmissionHistoryDTO requirementSubmissionHistoryDTO,Long requirementId, String submissionStatus, String dateRange, String userType, User user,OrgLocations orgLocations) throws Exception;
+
 	boolean getRequirementSubmissionByCandidateIdAndJobId(Long candidateId,Long requirementId) throws Exception;
 	
 	List<RequirementSubmission> getAllSubmissionsNotInTemplateFileds() throws Exception;
