@@ -2652,4 +2652,9 @@ private Sheet createXlsSheet(Sheet createExcelsheet, Row writeRow,Candidate cand
 		return candidateDao.getCandidateProfilePercentageByCandidateId(id);
 	}
 
+	@Override
+	public ResponseList<Candidate> getAllCandidatesByCreatedByUserCode(CandidateDTO candidateDTO,Long orgLocationId,String userCode,Date[] searchDates) {
+		return candidateDao.getAllCandidatesByCreatedByUserCode(candidateDTO,orgLocationId,userCode,searchDates);
+	}
+
 }

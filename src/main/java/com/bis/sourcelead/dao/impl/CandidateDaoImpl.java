@@ -31,6 +31,7 @@ import com.bis.sourcelead.dao.ProjectsDao;
 import com.bis.sourcelead.dao.UserRoleDao;
 import com.bis.sourcelead.dto.CandidateDTO;
 import com.bis.sourcelead.dto.ImmigrationCandidateDTO;
+import com.bis.sourcelead.dto.RequirementDTO;
 import com.bis.sourcelead.dto.ResponseList;
 import com.bis.sourcelead.entity.Candidate;
 import com.bis.sourcelead.entity.CandidateIdendities;
@@ -436,6 +437,39 @@ public class CandidateDaoImpl implements CandidateDao {
 		Session session = this.sessionFactory.getCurrentSession();
 		String query = "from Candidate cnadidate  where cnadidate.orgLocationId.id =:orgLocationId ORDER BY cnadidate.id DESC";  
         return  session.createQuery(query).setLong("orgLocationId", orgLocationId).list();
+	}
+	
+	@Override
+	@Transactional(rollbackFor = { Exception.class })
+	public ResponseList<Candidate> getAllCandidatesByCreatedByUserCode(CandidateDTO candidateDTO,Long orgLocationId,String userCode,Date[] searchDates) {
+		Session session = this.sessionFactory.getCurrentSession();
+		
+		List<Candidate> candidateList = null;
+		ResponseList<Candidate> response = new ResponseList<>();
+		Query queryObj = null;
+		List<Long> countlist = null;
+		String query = "from Candidate cnadidate  where cnadidate.orgLocationId.id =:orgLocationId and cnadidate.createdBy =:userCode  and (date(cnadidate.createdDate) BETWEEN :fromDate AND :toDate) ORDER BY cnadidate.id DESC";  
+		queryObj = session.createQuery(query);
+		
+		queryObj.setFirstResult(candidateDTO.getStart());
+		queryObj.setMaxResults(candidateDTO.getLength());
+
+		candidateList = queryObj.setLong("orgLocationId", orgLocationId).setString("userCode", userCode).setParameter("fromDate", searchDates[0]).setParameter("toDate", searchDates[1]).list();
+		
+		countlist = session.createQuery("select count(*) " + query).setLong("orgLocationId", orgLocationId).setString("userCode", userCode).setParameter("fromDate", searchDates[0]).setParameter("toDate", searchDates[1]).list();
+		
+		int totalCount = 0;
+		if (candidateDTO != null) {
+			if (countlist != null && !countlist.isEmpty()) {
+				totalCount = countlist.iterator().next().intValue();
+			}
+		}
+		response.setRecordsTotal(totalCount);
+		response.setRecordsFiltered(totalCount);
+		
+		response.setData(candidateList);
+		
+		return  response;
 	}
 
 	@Override

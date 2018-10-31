@@ -50,6 +50,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.dao.UserRoleDao;
 import com.bis.sourcelead.dto.ApplicantsJoinedReportDTO;
+import com.bis.sourcelead.dto.CandidateDTO;
 import com.bis.sourcelead.dto.RequirementDTO;
 import com.bis.sourcelead.dto.RequirementSubmissionsCountDTO;
 import com.bis.sourcelead.dto.ResponseList;
@@ -57,6 +58,7 @@ import com.bis.sourcelead.dto.UserDTO;
 import com.bis.sourcelead.dto.UserRoleDTO;
 import com.bis.sourcelead.dto.UsersUsageReportDTO;
 import com.bis.sourcelead.elk.index.helper.ClientVendorContactsIndexHelper;
+import com.bis.sourcelead.entity.Candidate;
 import com.bis.sourcelead.entity.EmployeeVerificationTemplate;
 import com.bis.sourcelead.entity.Employees;
 import com.bis.sourcelead.entity.LetterHead;
@@ -340,6 +342,67 @@ public class ReportRestController {
 			}
 			
 			return requirementDTOList;
+		}
+	
+	
+	@RequestMapping(value = "/getAllCandidateListForRecruiterReports")
+	public @ResponseBody ResponseList<Candidate> getAllCandidateListForRecruiterReports(CandidateDTO candidateDTO, 
+			@RequestParam(value="userCode", required=false) String userCode, 
+			@RequestParam(value="timePeriod", required=false) String timePeriod,
+			@RequestParam(value="customStartDate", required=false) String customStartDate,
+			@RequestParam(value="customEndDate", required=false) String customEndDate,
+			HttpServletRequest request) throws Exception {
+
+	      OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+			
+			Date[] searchDates = null;
+			
+				if(!"custom".equalsIgnoreCase(timePeriod)){
+					searchDates = reportsUtil.getJobFilterDate(timePeriod,orgLocations);
+					if(timePeriod.equalsIgnoreCase(Constants.REPORT_FILTER_TODAY)) {
+						Date newDate = DateUtils.addHours(searchDates[0], 24);
+						searchDates[1] = newDate;
+					}
+				}else if("custom".equalsIgnoreCase(timePeriod) && !"".equalsIgnoreCase(customStartDate)&& !"".equalsIgnoreCase(customEndDate)){
+		    	    
+		    	    DateFormat TZ_DF_CSD = new SimpleDateFormat ("yyyy-MM-dd 00:00:00");
+					DateFormat TZ_DF_CED = new SimpleDateFormat ("yyyy-MM-dd 23:59:59");
+					DateFormat TZ_DF_TS = new SimpleDateFormat ("yyyy-MM-dd HH:mm:ss");
+					
+					Date startTime =  commonUtil.orgLocationDateFormat(orgLocations.getDateFormat(),customStartDate);
+					Date endTime =  commonUtil.orgLocationDateFormat(orgLocations.getDateFormat(),customEndDate);
+					String customStartTimeStr = TZ_DF_CSD.format(startTime);  
+					String customEndTimeStr = TZ_DF_CED.format(endTime);  
+					Date startDateUTC = TZ_DF_TS.parse(customStartTimeStr);
+					Date endDateUTC = TZ_DF_TS.parse(customEndTimeStr);
+		    	   
+		    	    searchDates = new Date[2];
+		    	    searchDates[0] = startDateUTC;
+		    	    searchDates[1] = endDateUTC;
+				}
+				/*List<Long> teamsList = new ArrayList<>();
+				if(candidateDTO.getOrgTeams() != null && !candidateDTO.getOrgTeams().isEmpty()) {
+					String[] orgTeams = candidateDTO.getOrgTeams().split(",");
+					for(int i=0; i < orgTeams.length; i++) {
+						teamsList.add(Long.parseLong(orgTeams[i]));
+					}
+				}*/
+			
+			String[] tableColumns = { "candidateName", "email", "phoneNumber", "empType", "location", "rate", "experience", "noOfJobs", "createdOn"};
+			int sortColumnIndex = 1; // by default sorting using updated date
+			String sortColumnOrder = "desc"; // by default descending order
+			if (candidateDTO.getOrder() != null && !candidateDTO.getOrder().isEmpty()) {
+				sortColumnIndex = Integer.parseInt(candidateDTO.getOrder().get(0).get("column"));
+				sortColumnOrder = candidateDTO.getOrder().get(0).get("dir");
+			}
+			candidateDTO.setSortColumn(tableColumns[sortColumnIndex]);
+			candidateDTO.setSortOrder(sortColumnOrder);
+			candidateDTO.setOrgLocationId(orgLocations.getId());
+			
+			ResponseList<Candidate> list = candidateService.getAllCandidatesByCreatedByUserCode(candidateDTO,orgLocations.getId(),userCode,searchDates);
+	
+			
+			return list;
 		}
 
 	
