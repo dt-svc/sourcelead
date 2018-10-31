@@ -35,6 +35,10 @@ padding-left:0;
 .pdRight{
 padding-right:0;
 }
+
+.col-md-3 {
+    width: 25% !important;
+}
 </style>
 
  <style type="text/css">
@@ -89,95 +93,94 @@ function logoutForConfigure() {
 	     </c:if>
 	    
 	      <div class="pull-left">
-	        <h2>Dashboard<a  onclick="$('#configureDashboard').show();$('.advancedsearch-mask').fadeIn();"><i class="fa fa-cog ml"></i></a></h2>
+	        <h2>Dashboard</h2>
 	      </div>
 	    </section>
 	    
 	    
-	    <div class="clearfix row">
-	    	
-	      <sec:authorize access="hasAnyRole('ROLE_FILL_MY_TIMESHEETS','ROLE_EXPORT_MY_TIMESHEETS','ROLE_MODIFY_MY_TIMESHEETS','ROLE_FILL_MEMBER_TIMESHEETS','ROLE_VIEW_MEMBER_TIMESHEETS','ROLE_EXPORT_MEMBER_TIMESHEETS')"> 
-			 <c:if test = "${SourceLeadWeb_timesheet == 'Y'}">       
-			   <jsp:include page="dashboardTimesheets.jsp"></jsp:include>  
-			 </c:if> 
-	      </sec:authorize>
-	      <c:forEach var="userTabs" items="${SourceLeadWeb_tabsList}">
-	      	<c:if test="${userTabs.tabName == 'Jobs'}">
-				 <sec:authorize access="hasAnyRole('ROLE_VIEW_REQUIREMENT')">
-					<c:if test = "${SourceLeadWeb_ats == 'Y' || SourceLeadWeb_vms == 'Y'}">
-						<jsp:include page="dashboardRequirement.jsp"></jsp:include> 
-					</c:if>
-			     </sec:authorize>
-		     </c:if>
-		   </c:forEach>
-			 <sec:authorize access="hasAnyRole('ROLE_ADD_MY_EXPENSES','ROLE_VIEW_EDIT_MY_EXPENSES','ROLE_EXPORT_MY_EXPENSES','ROLE_ADD_EMPLOYEE_EXPENSES','ROLE_VIEW_EDIT_EMPLOYEE_EXPENSES','ROLE_EXPORT_EMPLOYEE_EXPENSES')">   
-				     <jsp:include page="expensesDashboardCounts.jsp"></jsp:include>
-			 </sec:authorize>  	
-			
-			<sec:authorize access="hasAnyRole('ROLE_APPLY_LEAVE','ROLE_APPLY_BEHALF_LEAVE','ROLE_APPROVE_LEAVE')">
-				<jsp:include page="leaveManagement.jsp"></jsp:include>
-			</sec:authorize>
-			 
-		 
-	    	<c:if test = "${SourceLeadWeb_ats == 'Y' || SourceLeadWeb_vms == 'Y'}">
-	    		<c:forEach var="userTabs" items="${SourceLeadWeb_tabsList}">
-	    		<c:if test="${userTabs.tabName == 'Jobs'}">
-	    			<sec:authorize access="hasAnyRole('ROLE_VIEW_REQUIREMENT')">
-					<div class="col-md-12"><jsp:include page="dashboardAssignedRequirements.jsp"></jsp:include> </div>
-					</sec:authorize>
-				</c:if>	
-				</c:forEach>
-					<sec:authorize access="hasAnyRole('ROLE_CREATE_ON_BOARD_USER','ROLE_VIEW_EDIT_ON_BOARD_USER')">
-					<div class="col-md-12"><jsp:include page="onboardingCandidatesList.jsp"></jsp:include></div> 
-					</sec:authorize>
-					
-					<sec:authorize access="hasRole('ROLE_RESOURCE_REQUEST_APPROVER')">
-					   <%-- <jsp:include page="resourceRequest.jsp"></jsp:include>  --%>
-					    <div class="col-md-12"><jsp:include page="projectResourceRequest.jsp"></jsp:include></div>  
-					    <jsp:include page="projectNewResourceRequest.jsp"></jsp:include>  
-					 </sec:authorize>
-					
-					<sec:authorize access="hasRole('ROLE_BUDGET_APPROVER')">
-					   <jsp:include page="budgetRequest.jsp"></jsp:include>
-					</sec:authorize>
-					
-			    
-			    <c:forEach var="userTabs" items="${SourceLeadWeb_tabsList}">
-			    	<c:if test="${userTabs.tabName == 'Jobs'}">
-				    	 <sec:authorize access="hasAnyRole('ROLE_VIEW_REQUIREMENT')">
-				   	 	 <jsp:include page="dashboardRequirementApprovals.jsp"></jsp:include>
-				   	 	 </sec:authorize>
-			   	 	 </c:if>	
-			   	 </c:forEach>
-		    </c:if>
-		     	<c:forEach var="userTabs" items="${SourceLeadWeb_tabsList}">
-			     	<c:if test="${userTabs.tabName == 'Jobs'}">
-			     		<sec:authorize access="hasAnyRole('ROLE_VIEW_REQUIREMENT')">
-			     		<jsp:include page="dashboardApplicants.jsp"></jsp:include>
-			     		</sec:authorize>
-			     	</c:if>
-		     	</c:forEach>
-		     
-		     <div class="clearfix"></div>
-	     
-<%--        <sec:authorize access="!hasAnyRole('ROLE_FILL_MY_TIMESHEETS','ROLE_EXPORT_MY_TIMESHEETS','ROLE_MODIFY_MY_TIMESHEETS','ROLE_FILL_MEMBER_TIMESHEETS','ROLE_VIEW_MEMBER_TIMESHEETS','ROLE_EXPORT_MEMBER_TIMESHEETS','ROLE_VIEW_REQUIREMENT','ROLE_VIEW_INTERVIEW')">
-			<div class='dashNewWrap mb'> 
-				<div class='blank-pages col-md-12'>
-			        <p><i class='fa fa-5x fa-bar-chart'></i></p>
-		        	<p>No Records Found</p>
-				 </div>
-			</div>
-		</sec:authorize>  --%>
-	    
-	    <div class="clearfix"> 
-	     	<div class="col-md-12"><jsp:include page="dashboardEvents.jsp"></jsp:include></div>   
-	   </div>  	
-	     	<sec:authorize access="hasAnyRole('ROLE_VIEW_CONTRACT')">
-				<div class="col-md-12"><jsp:include page="dashboardContracts.jsp"></jsp:include> </div>
-			</sec:authorize>
-
-		<jsp:include page="dashboard_configure_popup.jsp"></jsp:include>
-		</div>
+		
+		
+		 <div class="clearfix row">
+      		<div class="col-md-12">
+				<div class="dashboard-widget clearfix">
+				    <div class="row">
+					    <div class="col-md-3 paddingRight">
+					    	<h4>Bulk Imports</h4>
+					    </div>
+				  	</div>
+			    	<div class="col-sm-6 col-md-3">
+			            <div class="content_widget jobs-graphview buttonView">
+			              <span class="label label-warning">Associates</span>
+			            <span class="navIcons assIconImport"></span>
+			            	  <a href="${appPath}/uploadForm"><span class="count text-primary">Import</span></a>
+			              
+		               </div>
+			        </div>
+			        
+			        <div class="col-sm-6 col-md-3">
+			            <div class="content_widget jobs-graphview buttonView">
+			              <span class="label label-success">Jobs</span>
+			            <span class="navIcons jobIconImport"></span>
+			            	  <a href="${appPath}/uploadJobs"><span class="count text-primary">Import</span></a>
+			              
+		               </div>
+			        </div>
+			        
+			        <div class="col-sm-6 col-md-3">
+			            <div class="content_widget jobs-graphview buttonView">
+			              <span class="label label-info">Candidates</span>
+			            <span class="navIcons canIconImport"></span>
+			            	  <a href="${appPath}/uploadCandidateForm"><span class="count text-primary">Import</span></a>
+			              
+		               </div>
+			        </div>
+			        
+			        <div class="col-sm-6 col-md-3">
+			            <div class="content_widget jobs-graphview buttonView">
+			              <span class="label label-danger">Projects</span>
+			            <span class="navIcons projIconImport"></span>
+			            	  <a href="${appPath}/projectDashboard"><span class="count text-primary">Import</span></a>
+			              
+		               </div>
+			        </div>
+			        
+			        
+			        
+			   </div>
+			   <div class="dashboard-widget clearfix"> 
+			   
+			   		<div class="col-sm-6 col-md-3">
+			            <div class="content_widget jobs-graphview buttonView">
+			              <span class="label label-warning">Assets</span>
+			            <span class="navIcons asstIconImport"></span>
+			            	  <a href="${appPath}/uploadassetManagement"><span class="count text-primary">Import</span></a>
+			              
+		               </div>
+			        </div>
+			            
+			        <div class="col-sm-6 col-md-3">
+			            <div class="content_widget jobs-graphview buttonView">
+			              <span class="label label-success">LCA</span>
+			            <span class="navIcons immIconImport"></span>
+			            	  <a href="${appPath}/uploadLcaForm"><span class="count text-primary">Import</span></a>
+			              
+		               </div>
+			        </div>
+			        
+			        <div class="col-sm-6 col-md-3">
+			            <div class="content_widget jobs-graphview buttonView">
+			              <span class="label label-info">Petition</span>
+			            <span class="navIcons immIconImport"></span>
+			            	  <a href="${appPath}/uploadImmigrationForm"><span class="count text-primary">Import</span></a>
+			              
+		               </div>
+			        </div>
+			        
+		      </div>
+      </div>
+      <div class="clearfix"></div>
+      </div>
+      
 </section>
 
 <jsp:include page="masterFooter.jsp" />

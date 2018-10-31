@@ -33,9 +33,6 @@
           
           <c:set var="timesheetTabExist" scope="session" value="N"/>
           <c:forEach var="userTabs" items="${SourceLeadWeb_tabsList}">
-                    <c:if test="${userTabs.tabName == 'Clients'}">
-                 	  <li class="${sessionData.nav == 'Clients' ? 'navActive' : ''}"><a href="<c:url value='${appPath}/clientDashboard'/>" title="Clients"><span class="navIcons cliIcon"></span><b>Clients</b></a></li>
-                    </c:if>
 	                <c:if test="${userTabs.tabName == 'Jobs'}"> 
 	                <c:if test="${SourceLeadWeb_loginUserRole != 'ROLE_CROWDSOURCING_PROFESSIONAL' && SourceLeadWeb_loginUserRole != 'ROLE_CROWDSOURCING_RECRUITER'}"> 
 	                   <li class="${sessionData.nav == 'Requirement' ? 'navActive' : ''}"><a href="<c:url value='${appPath}/jobs'/>" title="JobsTest"><span class="navIcons jobIcon"></span><b>Jobs</b></a></li>
@@ -57,10 +54,6 @@
 	                 </c:if>
 	                </c:if> 
 	                
-                
-	                <c:if test="${userTabs.tabName == 'Vendors'}">
-	                   <li class="${sessionData.nav == 'Vendors' ? 'navActive' : ''}"><a href="<c:url value='${appPath}/vendorsList'/>" title="Vendors"><span class="navIcons venIcon"></span><b>Vendors</b></a></li>
-	                </c:if> 
 	                 
 	                 <c:if test="${userTabs.tabName == 'Associates'}">
 	                 <li class="${sessionData.nav == 'Users' ? 'navActive' : ''}"><a href="<c:url value='${appPath}/usersList'/>" title="Associates"><span class="navIcons assIcon"></span><b>Associates</b></a></li>
@@ -68,42 +61,6 @@
 	                 
 	                 <c:if test="${userTabs.tabName == 'Projects'}">
 	                	  <li class="${sessionData.nav == 'Projects' ? 'navActive' : ''}"><a href="<c:url value='${appPath}/projectDashboard'/>" title="Projects"><span class="navIcons projIcon"></span><b>Projects</b></a></li>
-	                 </c:if>
-	                 
-	                 <c:if test="${timesheetTabExist == 'N' && (userTabs.tabName == 'My Timesheets' || userTabs.tabName == 'Timesheet Approval')}">
-	                 <sec:authorize access="hasAnyRole('ROLE_FILL_MEMBER_TIMESHEETS','ROLE_VIEW_MEMBER_TIMESHEETS','ROLE_EXPORT_MEMBER_TIMESHEETS') && hasAnyRole('ROLE_FILL_MY_TIMESHEETS','ROLE_EXPORT_MY_TIMESHEETS','ROLE_MODIFY_MY_TIMESHEETS')"> 
-				           <li class="${sessionData.nav == 'TimeSheet' || sessionData.nav == 'TimeSheetApproval' ? 'navActive' : ''}">
-							 							  
-							  <a href="#" class="timesheetLi" title="Timesheets"><span class="navIcons timIcon"></span><b>Timesheets</b>
-							  <i class="fa fa-fw fa-caret-down"></i>
-							  </a>
-							 
-							  <c:if test="${sessionData.nav == 'TimeSheet' || sessionData.nav == 'TimeSheetApproval'}">
-							   <c:set var ="timesheetTabExist" scope="session" value="Y"/> 
-							  <ul class="collapses" style="display: none">
-							  	    <li class="${sessionData.nav == 'TimeSheet' ? 'treview-active' : ''}"><a href="<c:url value='${appPath}/timesheet'/>" title="My TimeSheets"><i class="fa fa-chevron-right"></i> Self</a></li>
-									<li class="${sessionData.nav == 'TimeSheetApproval' ? 'treview-active' : ''}"><a href="<c:url value='${appPath}/timesheetApproval'/>" title="TimeSheet Approval"><i class="fa fa-chevron-right"></i> Employees</a></li>
-							  </ul>
-							  </c:if>
-							  <c:if test="${sessionData.nav != 'TimeSheet' || sessionData.nav != 'TimeSheetApproval'}">
-							  <c:set var ="timesheetTabExist" scope="session" value="Y"/>
-							  <ul class="collapses" style="display: none">
-							  		<li class="${sessionData.nav == 'TimeSheet' ? 'treview-active' : ''}"><a href="<c:url value='${appPath}/timesheet'/>" title="My TimeSheets"><i class="fa fa-chevron-right"></i> Self</a></li>
-									<li class="${sessionData.nav == 'TimeSheetApproval' ? 'treview-active' : ''}"><a href="<c:url value='${appPath}/timesheetApproval'/>" title="TimeSheet Approval"><i class="fa fa-chevron-right"></i> Employees</a></li> 
-							  </ul>
-							  </c:if>
-						  </li>
-					  </sec:authorize>
-	                 </c:if>
-	                 <c:if test="${userTabs.tabName == 'My Timesheets'}">
-	                 <sec:authorize access="hasAnyRole('ROLE_FILL_MY_TIMESHEETS','ROLE_EXPORT_MY_TIMESHEETS','ROLE_MODIFY_MY_TIMESHEETS') && !hasAnyRole('ROLE_FILL_MEMBER_TIMESHEETS','ROLE_VIEW_MEMBER_TIMESHEETS','ROLE_EXPORT_MEMBER_TIMESHEETS')">
-	                       <li class="${sessionData.nav == 'TimeSheet' ? 'navActive' : ''}"><a href="<c:url value='${appPath}/timesheet'/>"><span class="navIcons timIcon"></span><b>TimeSheets</b></a></li>
-	                 </sec:authorize>
-	                 </c:if>
-	                 <c:if test="${userTabs.tabName == 'Timesheet Approval'}">
-	                 <sec:authorize access="!hasAnyRole('ROLE_FILL_MY_TIMESHEETS','ROLE_EXPORT_MY_TIMESHEETS','ROLE_MODIFY_MY_TIMESHEETS') && hasAnyRole('ROLE_FILL_MEMBER_TIMESHEETS','ROLE_VIEW_MEMBER_TIMESHEETS','ROLE_EXPORT_MEMBER_TIMESHEETS')">
-	                       <li class="${sessionData.nav == 'TimeSheetApproval' ? 'navActive' : ''}"><a href="<c:url value='${appPath}/timesheetApproval'/>"><span class="navIcons timIcon"></span><b>TimeSheets</b></a></li>
-	                 </sec:authorize>
 	                 </c:if>
 	                 
 	                 <c:if test="${userTabs.tabName == 'Asset Management'}">

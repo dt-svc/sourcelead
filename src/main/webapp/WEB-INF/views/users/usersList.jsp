@@ -328,7 +328,7 @@ function getUsersSearchResult(searchValue){
 	                    
                 <sec:authorize access="hasRole('ROLE_USER_BULK_IMPORTS')"> 
 		                    <li>
-								<a class="action newAdBtn mr5" onclick="getActions();" href="${appPath}/uploadForm">Import</a>
+								<a class="action newAdBtn mr5" href="${appPath}/uploadForm">Import</a>
 								
 							</li>
 				</sec:authorize>

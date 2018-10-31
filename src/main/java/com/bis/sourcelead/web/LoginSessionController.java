@@ -189,6 +189,9 @@ public class LoginSessionController {
 	@Autowired
 	ConfigurePayrollApproverService configurePayrollApproverService;
 	
+	@Value("${isCouchbaseEnabled}")
+	private String isCouchbaseEnabled;
+	
 	
 	protected static boolean isNullOrEmpty(String str) {
 		return (str == null || "".equals(str.trim()));
@@ -688,7 +691,11 @@ public class LoginSessionController {
 		} catch (JsonProcessingException e) {
 			e.printStackTrace();
 		}
-		SourceLeadSessionManager.setUserJsonStringSessionAttribute(request, "userSession", sessionJsonStr,user.getId());
+		
+		if(isCouchbaseEnabled.equalsIgnoreCase("true")) {
+			SourceLeadSessionManager.setUserJsonStringSessionAttribute(request, "userSession", sessionJsonStr,user.getId());
+		}
+		
 		
 		boolean dashboardConfigured = false;
 		DashboardItemsDTO dashboardItems = userService.getDashboardItemsByUserId(user.getId(), orgLocations.getId());

@@ -7857,6 +7857,36 @@ aside.asideAct {
 .navIcons.blogIcon { background: url("../images/blog.svg"); background-size: 38px; background-position: -2px -2px;}
 .navIcons.usermanuIcon { background: url("../images/usermanu.svg"); background-size: 38px; background-position: -2px -2px;}
 
+.navIcons.assIconImport {
+	background: url("../images/associates.svg"); background-size: 80px; opacity: 0.7;
+    background-position: center top; width: 60px !important; height: 60px !important;
+	}
+	
+.navIcons.jobIconImport {
+	background: url("../images/jobs.svg"); background-size: 80px; opacity: 0.7;
+    background-position: center top; width: 60px !important; height: 60px !important;
+	}
+	
+.navIcons.canIconImport {
+	background: url("../images/candidates.svg"); background-size: 80px; opacity: 0.7;
+    background-position: center top; width: 60px !important; height: 60px !important;
+	}
+	
+.navIcons.projIconImport {
+	background: url("../images/project.svg"); background-size: 80px; opacity: 0.7;
+    background-position: center top; width: 60px !important; height: 60px !important;
+	}
+	
+.navIcons.asstIconImport {
+	background: url("../images/asset.svg"); background-size: 80px; opacity: 0.7;
+    background-position: center top; width: 60px !important; height: 60px !important;
+	}
+	
+.navIcons.immIconImport {
+	background: url("../images/immi.svg"); background-size: 80px; opacity: 0.7;
+    background-position: center top; width: 60px !important; height: 60px !important;
+	}
+
 .newMenu ul li {
 	border-bottom: 1px solid #f1f1f1; position: relative; font-size: 14px; font-weight: 500;
 	border-left: 4px solid #f1f1f1;

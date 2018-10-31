@@ -1407,7 +1407,7 @@ function cancel(candidateId){
           </li> -->
           
              <li>
-				<a class="action newAdBtn mr5" onclick="getActions();" href="uploadCandidateForm">Import</a>
+				<a class="action newAdBtn mr5"  href="<c:url value='${appPath}/uploadCandidateForm'/>">Import</a>
 			</li>
           
           
