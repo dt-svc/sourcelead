@@ -3,12 +3,18 @@ package com.bis.sourcelead.dto;
 import java.io.Serializable;
 import java.util.List;
 
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
+
+import com.bis.sourcelead.enums.ApplicantSubmissionStatus;
+
 @SuppressWarnings("serial")
 public class RequirementSubmissionHistoryDTO extends SearchDTO implements Serializable{
 
 	private String candidateName;
 	private String jobTitle;
 	private String requirementUUID;
+	private String requirementId;
 	private String orgLocationName;
 	private String email;
 	private String mobilePhone;
@@ -57,6 +63,8 @@ public class RequirementSubmissionHistoryDTO extends SearchDTO implements Serial
 	private String rejectedReason;
 	private String joinDate;
 	private String incentivizedType;
+	@Enumerated(EnumType.STRING)
+	private ApplicantSubmissionStatus finalsSubmissionStatus;
 	
 	private String type;
 	
@@ -466,6 +474,18 @@ public class RequirementSubmissionHistoryDTO extends SearchDTO implements Serial
 	public void setType(String type)
 	{
 		this.type = type;
+	}
+	public String getRequirementId() {
+		return requirementId;
+	}
+	public void setRequirementId(String requirementId) {
+		this.requirementId = requirementId;
+	}
+	public ApplicantSubmissionStatus getFinalsSubmissionStatus() {
+		return finalsSubmissionStatus;
+	}
+	public void setFinalsSubmissionStatus(ApplicantSubmissionStatus finalsSubmissionStatus) {
+		this.finalsSubmissionStatus = finalsSubmissionStatus;
 	}
 	
 }

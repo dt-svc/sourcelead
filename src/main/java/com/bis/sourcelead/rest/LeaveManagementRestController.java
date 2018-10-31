@@ -2127,7 +2127,7 @@ public class LeaveManagementRestController {
 						}
 						balLeaves = totalLeavesperYear - (appliedLeaveCount - leave.getExtraLeavesTaken());
 					}else if(Constants.YES.equalsIgnoreCase(leave.getLeaveType().getLeavesCarryforward())){
-						balLeaves = totalLeavesperYear - (nuberOfLeavestaken.get("numberOfLeavsTaken") - nuberOfLeavestaken.get("numberOfExtraLeaves"));
+						balLeaves = totalLeavesperYear - (appliedLeaveCount - leave.getExtraLeavesTaken());
 					}
 			 }else{
 				 if ("Monthly".equalsIgnoreCase(leave.getLeaveType().getPeriod()) && Constants.NO.equalsIgnoreCase(leave.getLeaveType().getLeavesCarryforward())) {

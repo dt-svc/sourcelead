@@ -22,7 +22,7 @@
       <div class="pull-left">
         <h2>Loan & Advances</h2>
       </div>
-      <div class="pull-right brud-crum">Home &raquo; <a href="<c:url value='${appPath}/payrollConfiguration'/>">Payroll Configure</a>  &raquo; Loan & Advances</div>
+      <div class="pull-right brud-crum"><a href="<c:url value='${appPath}/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a> &raquo; <a href="<c:url value='${appPath}/payrollConfiguration'/>">Payroll Configure</a>  &raquo; Loan & Advances</div>
     </section>
     
     <div class="content-area content-new clearfix">
