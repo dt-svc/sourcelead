@@ -47,4 +47,15 @@ public class PayrollScheduleDaoImpl implements PayrollScheduleDao {
 		
 	}
 
+	@SuppressWarnings("unchecked")
+	@Override
+	@Transactional(rollbackFor = { Exception.class })
+	public List<UsPayrollSchedule> findAllPayrollScheduleList(Long orgLocationId)
+	{
+		Session session = this.sessionFactory.getCurrentSession();
+		String query = "from UsPayrollSchedule usPay where usPay.orgLocation.id =:orgLocationId and usPay.status = 1";
+		return session.createQuery(query).setLong("orgLocationId", orgLocationId).list();
+		
+	}
+
 }
