@@ -77,7 +77,7 @@ $(document).ready(function(){
 	 
 });
 </script>
-		
+		<div id="loadingSummary"></div>
 		<div id="projectSideDiv"></div>
 		<div id="baningDetailsDiv"></div> 
 		<div id="candidateSideDiv" class="project_tabs clearfix"></div> 
@@ -215,7 +215,7 @@ $(document).ready(function(){
 		 var waitingTimeSheetsCount = '${waitingTimeSheetsCount}';
 	 }
 	
-	 
+	 $("#loadingSummary").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
 	 $.ajax({
 	    	type: "POST",
 	        url: sourceleadUrl+"/getUserDetailsById?"+tokenParamName+"="+tokenValue+"&userId="+userId, 
@@ -759,6 +759,7 @@ $(document).ready(function(){
 				$("#tab-18").empty(); 
 				 $("#tab-29").empty();
 				 $("#tab-25").empty();
+				 $("#loadingSummary").removeAttr('style');
 			    $("#tab-18").append(result);  
 			    
 			    var config = {

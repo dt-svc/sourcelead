@@ -418,6 +418,9 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 
 	@Transient
 	private String spocName;
+	
+	@Transient
+	private String spocOwnerName;
 
 	@Transient
 	private String spocEmail;
@@ -1136,6 +1139,14 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 
 	public void setSpocName(String spocName) {
 		this.spocName = spocName;
+	}
+
+	public String getSpocOwnerName() {
+		return spocOwnerName;
+	}
+
+	public void setSpocOwnerName(String spocOwnerName) {
+		this.spocOwnerName = spocOwnerName;
 	}
 
 	public String getSpocEmail() {
