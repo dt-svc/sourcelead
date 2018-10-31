@@ -77,13 +77,9 @@
     			employmentType.push($(this).val());
 			 });
     		 var clientNameById = [];
-    		 if(onloadFlag) {
-    			 $('[name=myClientNameById]').each(function() {
-    				 clientNameById.push($(this).val());
-    			});   			 
-    		 } else {
+    	
     			 if($("#allClients").is(":checked")) {
-    				$('input:checkbox[name=clientNameById]:checked').each(function() {
+    				 $('input:checkbox[name=clientNameById]:checked').each(function() {
     			    	clientNameById.push($(this).val());
     				}); 
     			 } else {
@@ -97,7 +93,7 @@
  	     				});
     				 }
     			 }
-    		 }
+    		 
     		 var teamNameById = [];
     		 $('input:checkbox[name=teamNameById]:checked').each(function() 
 			 {
@@ -559,12 +555,12 @@ $(".overIcon, .newActPop").click(function(e){
 									<ul class="list-unstyled positionRelative filterSearch mt5" id="myTeamsListUL">
 									<c:forEach items="${teamsList}" var="team">
 											<li class="checkBox positionRelative">
-											<c:if test="${team.ownerUserId.id != null && loginUserId == team.ownerUserId.id}">
+										<%-- 	<c:if test="${team.ownerUserId.id != null && loginUserId == team.ownerUserId.id}">
 												<input type="checkbox" name="teamNameById" checked value ="${team.id}"><label>${team.name}</label>
-												</c:if>
-												<c:if test="${team.ownerUserId.id != null && loginUserId != team.ownerUserId.id}">
+												</c:if> --%>
+<%-- 												<c:if test="${team.ownerUserId.id != null && loginUserId != team.ownerUserId.id}"> --%>
 												<input type="checkbox" name="teamNameById" value ="${team.id}"><label>${team.name}</label>
-												</c:if>
+<%-- 												</c:if> --%>
 											</li>
 										</c:forEach>
 			                        </ul>
@@ -581,20 +577,20 @@ $(".overIcon, .newActPop").click(function(e){
 								<label><strong>Select Client type</strong></label>
 								 <div class="clearfix">
 									<ul class="list-unstyled" id="clientTypeFilter">
-									     <li class="radioIput positionRelative" ><input  type="radio" name="searchType" value ="myClients" onchange="showMyClients();" id="myClients" checked="checked"><label for="myClients">My Clients</label></li>
-										 <li class="radioIput positionRelative" ><input  type="radio" name="searchType" value ="allClients" onchange="showAllClients();" id="allClients"><label for="allClients">All Clients</label></li>
+									     <li class="radioIput positionRelative" ><input  type="radio" name="searchType" value ="myClients" onchange="showMyClients();" id="myClients"><label for="myClients">My Clients</label></li>
+										 <li class="radioIput positionRelative" ><input  type="radio" name="searchType" value ="allClients" onchange="showAllClients();" id="allClients" checked="checked"><label for="allClients">All Clients</label></li>
 				                    </ul>
 								 </div>
 						   		
 						   		<div class="clearfix filterSearch-ul">
-									<ul class="list-unstyled positionRelative filterSearch mt5" id="myClinetListUL" style="display: none;">
+									<ul class="list-unstyled positionRelative filterSearch mt5" id="myClinetListUL">
 										<c:forEach items="${allClients}" var="c">
 											<li class="checkBox positionRelative">
 												<input type="checkbox" name="clientNameById" value ="${c.orgRelId}"><label>${c.clientName}</label>
 											</li>
 										</c:forEach>
 									</ul>
-									<ul class="list-unstyled positionRelative filterSearch mt5" id="myOwnerClinetListUL">
+									<ul class="list-unstyled positionRelative filterSearch mt5" id="myOwnerClinetListUL"  style="display: none;">
 										<c:forEach items="${myClients}" var="c">
 											<li class="checkBox positionRelative">
 												<input type="checkbox" name="myClientNameById" value ="${c.orgRelId}"><label>${c.clientName}</label>
@@ -708,7 +704,34 @@ function clientFunction() {
 		}
 	});
 } */
+function myClientFunction() {
+	var input, filter, ul, li, a, i;
+    input = document.getElementById("myClientInput");
+    filter = input.value.toUpperCase();
+    ul = document.getElementById("myClinetListUL");
+    li = ul.getElementsByTagName("li");
+    for (i = 0; i < li.length; i++) {
+        a = li[i].getElementsByTagName("label")[0];
+        if (a.innerHTML.toUpperCase().indexOf(filter) > -1) {
+            li[i].style.display = "";
+        } else {
+            li[i].style.display = "none";
 
+        }
+    }
+    
+    ul = document.getElementById("myOwnerClinetListUL");
+    li = ul.getElementsByTagName("li");
+    for (i = 0; i < li.length; i++) {
+        a = li[i].getElementsByTagName("label")[0];
+        if (a.innerHTML.toUpperCase().indexOf(filter) > -1) {
+            li[i].style.display = "";
+        } else {
+            li[i].style.display = "none";
+
+        }
+    }
+}
 function myTeamsFunction() {
     var input, filter, ul, li, a, i;
     input = document.getElementById("myTeamsInput");
@@ -759,11 +782,25 @@ function projectExport(type){
 		 {
 			employmentType.push($(this).val());
 		 });
+		 
+		 
 		 var clientNameById = [];
-		 $('input:checkbox[name=clientNameById]:checked').each(function() 
-		 {
-			 clientNameById.push($(this).val());
-		 });
+			 if($("#allClients").is(":checked")) {
+				$('input:checkbox[name=clientNameById]:checked').each(function() {
+			    	clientNameById.push($(this).val());
+				}); 
+			 } else {
+				 if($('input:checkbox[name=myClientNameById]:checked').length > 0) {
+    				$('input:checkbox[name=myClientNameById]:checked').each(function() {
+     			    	clientNameById.push($(this).val());
+     				}); 
+				 } else {
+					 $('input:checkbox[name=myClientNameById]').each(function() {
+	     			    	clientNameById.push($(this).val());
+	     				});
+				 }
+			 }
+		
 		 var teamNameById = [];
 		 $('input:checkbox[name=teamNameById]:checked').each(function() 
 		 {
