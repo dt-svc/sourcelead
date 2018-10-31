@@ -41,7 +41,7 @@
           <div class="clearfix"></div>
             <div class="tbldata-dotdot-100 mt">
 		   		        	
-		   		        	   <a href="#" onclick="initPayment()">Pay</a>
+		   		        	   <a href="#" onclick="initMarketplacePayment()">Pay</a>
 		   		        	
 		   		        	
 		   		        	</div>
@@ -830,11 +830,16 @@ $(".advancedsearch-mask, #filterSearchMarket").fadeIn();
 }
 </script>
 <script type="text/javascript">
-    function initPayment(a) {
-        $.post("/app/init-marketplace-payment", {type: 'marketplace', model: a}, function (data) {
-            if (data) {
-                location.href = data;
-            }
-        });
+    function initMarketplacePayment() {
+         $.ajax({
+	      type: "POST",
+    	   url: "/app/init-marketplace-payment?cartId=1234",
+      	success: function(data) {
+      		 if (data) {
+	                location.href = data;
+	            }
+	        	
+	        },  
+  		 }); 
     }
 </script>

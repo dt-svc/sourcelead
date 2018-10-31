@@ -351,7 +351,9 @@ public class PaymentController {
         } else if (type.equalsIgnoreCase("upgrade")) {
             item.setName("Licence Upgrade");
         }
-
+        else if (type.equalsIgnoreCase("markeplace")) {
+            item.setName("markeplace");
+        }
         item.setQuantity("1").setCurrency("USD").setPrice(f.format(amt));
         items.add(item);
         itemList.setItems(items);
@@ -516,8 +518,9 @@ public class PaymentController {
    //===================== Marketplace Payment Process Starts Here=========================
     @RequestMapping("/init-marketplace-payment")
     @ResponseBody
-    public String initMarketplacePayment(HttpServletRequest request, String type, @RequestParam(defaultValue = "") String subscriptionUUID) {
-        Payer payer = new Payer();
+    public String initMarketplacePayment(HttpServletRequest request, @RequestParam(defaultValue = "") String cartId) {
+        System.out.println("cartId is "+cartId);
+    	Payer payer = new Payer();
         payer.setPaymentMethod("paypal");
 
         Payment payment = new Payment();
@@ -532,11 +535,13 @@ public class PaymentController {
 
         APIContext apiContext = new APIContext(clientId, clientSecret, paymentMode);
         request.getSession().setAttribute("apiContext", apiContext);
+       
+        System.out.println("Code is updated :::::::::::::::>");
+        // here need to update amount for the marketplace transaction.
+        payment.setTransactions(getTransactions(guid, "markeplace",3000.00));
         try {
             Payment createdPayment = payment.create(apiContext);
             request.getSession().setAttribute(guid, createdPayment.getId());
-            request.getSession().setAttribute("type", type);
-
             System.out.println("Created payment with id = " + createdPayment.getId() + " and status = " + createdPayment.getState());
             Iterator<Links> links = createdPayment.getLinks().iterator();
             while (links.hasNext()) {
@@ -557,9 +562,8 @@ public class PaymentController {
             if (req.getParameter("guid") != null) {
                 payment.setId(req.getSession().getAttribute(req.getParameter("guid")).toString());
             }
-            int model = (Integer) req.getSession().getAttribute("model");
-            String type = (String) req.getSession().getAttribute("type");
-            payment.setTransactions(getTransactions(guid, type, model));
+            	// need to update the actual amount for the transaction for the marketplace.
+            payment.setTransactions(getTransactions(guid, "marketplace", 3000.00));
 
             PaymentExecution paymentExecution = new PaymentExecution();
             paymentExecution.setPayerId(req.getParameter("PayerID"));
@@ -630,8 +634,8 @@ public class PaymentController {
             User loginUser = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
             Org org = (Org) SourceLeadSessionManager.getSessionAttribute(request, "org");
 
-            String subscriptionUUID = (String) request.getSession().getAttribute("subscriptionUUID");
-            if (subscriptionUUID != null && !subscriptionUUID.isEmpty()) {
+          //  String subscriptionUUID = (String) request.getSession().getAttribute("subscriptionUUID");
+            if (org != null) {
                 try {
                     // need to copy the candidate to buyer/target organization location.
                     System.out.println("org value is "+org.getId());
@@ -641,7 +645,8 @@ public class PaymentController {
                 }
             }
         }
-        return success ? "payment/marketPlacePaymentSuccess" : "payment/marketPlace-failed";
+        return success ? "payment/marketplacePaymentSuccess" : "payment/failed";
+        
     }
   //===================== Marketplace Payment Process ENDS Here=========================
 }
