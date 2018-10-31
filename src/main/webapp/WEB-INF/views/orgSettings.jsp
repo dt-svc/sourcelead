@@ -929,7 +929,6 @@ function cancelOrgImg(){
             			
         			</div>
    			 <jsp:include page="federalAndStateTaxes.jsp" />
-   			 <jsp:include page="locationInformationDetails.jsp" />
      		 <%-- <c:if test="${SourceLeadWeb_orgLocations.country != 'India'}">
      		 <jsp:include page="orglocationBankingDetails.jsp" />
      		 </c:if>

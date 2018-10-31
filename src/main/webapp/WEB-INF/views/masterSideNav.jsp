@@ -106,107 +106,6 @@
 	                 </sec:authorize>
 	                 </c:if>
 	                 
-	                 <c:if test="${userTabs.tabName == 'Finance' }">
-				           <li class="${sessionData.nav == 'Finance' || sessionData.nav == 'AssetManagement' ? 'navActive' : ''}">
-							 							  
-							  <a href="#" class="backofficeLi" title="Back Office">
-								<span class="navIcons backofIcon"></span><b>Back Office</b><i class="fa fa-fw fa-caret-down"></i>
-							  </a>
-							  
-							   <c:if test="${sessionData.nav == 'Finance' || sessionData.nav == 'AssetManagement'}">
-                              <ul class="collapses" style="display: none">
-                                  <li class="${sessionData.nav == 'Finance' ? 'treview-active' : ''}"><a href="<c:url value='${appPath}/finance'/>" title="Finance"><i class="fa fa-chevron-right"></i> Finance</a></li>
-                                    <li class="${sessionData.nav == 'AssetManagement' ? 'treview-active' : ''}"><a href="<c:url value='${appPath}/assetManagement'/>" title="Asset Management"><i class="fa fa-chevron-right"></i> Asset Management</a></li>
-                                    <li><a href="<c:url value='${appPath}/quickBookInvoice'/>" title="QuickBook Invoice"><i class="fa fa-chevron-right"></i> QuickBook Customers</a></li>
-                              </ul>
-                              </c:if>
-                              <c:if test="${sessionData.nav != 'Finance' || sessionData.nav != 'AssetManagement'}">
-                              <ul class="collapses" style="display: none">
-                                  <li class="${sessionData.nav == 'BackOffice' ? 'treview-active' : ''}"><a href="<c:url value='${appPath}/finance'/>" title="Finance"><i class="fa fa-chevron-right"></i> Finance</a></li>
-                                    <li class="${sessionData.nav == 'AssetManagement' ? 'treview-active' : ''}"><a href="<c:url value='${appPath}/assetManagement'/>" title="Asset Management"><i class="fa fa-chevron-right"></i> Asset Management</a></li>
-                                      <li><a href="<c:url value='${appPath}/quickBookInvoice'/>" title="QuickBook Invoice"><i class="fa fa-chevron-right"></i> QuickBook Customers</a></li>
-                              
-                              </ul>
-                              </c:if>
-                              
-						  </li>
-	                 </c:if>
-	                 
-	                 
-	                 <c:if test="${userTabs.tabName == 'Contracts'}">
-	                   <li class="${sessionData.nav == 'Contract' ? 'navActive' : ''}"><a href="<c:url value='${appPath}/contractListbyStatus'/>" title="Contracts"><span class="navIcons contIcon"></span><b>Contracts</b></a></li>
-	                </c:if> 
-	                
-	                <c:if test="${SourceLeadWeb_billingTabsCount == 2 && userTabs.tabName == 'Receivable'}">
-	                   <li class="${sessionData.nav == 'Receivable' || sessionData.nav == 'Payables' ? 'navActive' : ''}">
-														  
-							  <a href="#" class="billingLi" title="Finance">
-								<span class="navIcons finIcon"></span><b>Finance</b> <i class="fa fa-fw fa-caret-down"></i>
-							  </a>
-							  
-						   
-						   <c:if test="${sessionData.nav == 'Receivable' || sessionData.nav == 'Payables'}">
-                              <ul class="collapses" style="display: none">
-                                  <li class="${sessionData.nav == 'Receivable' ? 'treview-active' : ''}"><a href="<c:url value='${appPath}/invoiceList'/>" title="Invoices"><i class="fa fa-chevron-right"></i> Invoices</a></li>
-                                  <li class="${sessionData.nav == 'Payables' ? 'treview-active' : ''}"><a href="<c:url value='${appPath}/payablesList'/>" title="Bills"><i class="fa fa-chevron-right"></i> Bills</a></li>
-                              </ul>
-                           </c:if>
-                              
-                           <c:if test="${sessionData.nav != 'Receivable' || sessionData.nav != 'Payables'}">
-                           <ul class="collapses" style="display: none">
-                               <li class="${sessionData.nav == 'Receivable' ? 'treview-active' : ''}"><a href="<c:url value='${appPath}/invoiceList'/>" title="Invoices"><i class="fa fa-chevron-right"></i> Invoices</a></li>
-                               <li class="${sessionData.nav == 'Payables' ? 'treview-active' : ''}"><a href="<c:url value='${appPath}/payablesList'/>" title="Bills"><i class="fa fa-chevron-right"></i> Bills</a></li>
-                           </ul>
-                           </c:if>
-                              
-						  </li>
-	                 </c:if>
-	                 
-	                 
-	                  <c:if test="${SourceLeadWeb_billingTabsCount < 2 && userTabs.tabName == 'Receivable'}">
-	                   <li class="${sessionData.nav == 'Receivable' ? 'navActive' : ''}"><a href="<c:url value='${appPath}/invoiceList'/>" title="Invoices"><span class="navIcons invoIcon"></span><b>Invoices</b></a></li>
-	                 </c:if>
-	                 
-	                 <c:if test="${SourceLeadWeb_billingTabsCount < 2 && userTabs.tabName == 'Payables'}">
-	                 <li class="${sessionData.nav == 'Payables' ? 'navActive' : ''}"><a href="<c:url value='${appPath}/payablesList'/>" title="Bills"><span class="navIcons billIcon"></span><b>Bills</b></a></li>
-	                 </c:if>
-	                 
-	                 
-	                 
-	                 
-	                 <c:if test="${SourceLeadWeb_expensesTabCount == 2 && userTabs.tabName == 'My Expenses'}">
-	                   <li class="${sessionData.nav == 'My Expenses' || sessionData.nav == 'Expenses Approval' ? 'navActive' : ''}">
-														  
-							  <a href="#" class="expencesLi" title="Expenses">
-								<span class="navIcons expIcon"></span><b>Expenses</b> <i class="fa fa-fw fa-caret-down"></i>
-							  </a>
-							  
-						   
-						   <c:if test="${sessionData.nav == 'My Expenses' || sessionData.nav == 'Expenses Approval'}">
-                              <ul class="collapses" style="display: none">
-                                  <li class="${sessionData.nav == 'My Expenses' ? 'treview-active' : ''}"><a href="<c:url value='${appPath}/expenses'/>" title="My Expenses"><i class="fa fa-chevron-right"></i> Self</a></li>
-                                  <li class="${sessionData.nav == 'Expenses Approval' ? 'treview-active' : ''}"><a href="<c:url value='${appPath}/expensesApprovalList'/>" title="Expenses Approval"><i class="fa fa-chevron-right"></i> Employees</a></li>
-                              </ul>
-                           </c:if>
-                              
-                           <c:if test="${sessionData.nav != 'My Expenses' || sessionData.nav != 'Expenses Approval'}">
-                           <ul class="collapses" style="display: none">
-                               <li class="${sessionData.nav == 'My Expenses' ? 'treview-active' : ''}"><a href="<c:url value='${appPath}/expenses'/>" title="My Expenses"><i class="fa fa-chevron-right"></i> Self</a></li>
-                               <li class="${sessionData.nav == 'Expenses Approval' ? 'treview-active' : ''}"><a href="<c:url value='${appPath}/expensesApprovalList'/>" title="Expenses Approval"><i class="fa fa-chevron-right"></i> Employees</a></li>
-                           </ul>
-                           </c:if>
-                              
-						  </li>
-	                 </c:if>
-	                 
-	                 <c:if test="${SourceLeadWeb_expensesTabCount < 2 && userTabs.tabName == 'My Expenses'}">
-	                   <li class="${sessionData.nav == 'My Expenses' ? 'navActive' : ''}"><a href="<c:url value='${appPath}/expenses'/>" title="My Expenses"><span class="navIcons expIcon"></span><b>Expenses</b></a></li>
-	                 </c:if>
-	                 
-	                 <c:if test="${SourceLeadWeb_expensesTabCount < 2 && userTabs.tabName == 'Expenses Approval'}">
-	                 <li class="${sessionData.nav == 'Expenses Approval' ? 'navActive' : ''}"><a href="<c:url value='${appPath}/expensesApprovalList'/>" title="Expenses Approval"><span class="navIcons expIcon"></span><b>Expenses Approval</b></a></li>
-	                 </c:if>
-	                 
 	                 <c:if test="${userTabs.tabName == 'Asset Management'}">
 	                   <li class="${sessionData.nav == 'AssetManagement' ? 'navActive' : ''}"><a href="<c:url value='${appPath}/assetManagement'/>" title="Asset Management"><span class="navIcons asstIcon"></span><b>Asset Management</b></a></li>
 	                </c:if> 
@@ -253,73 +152,6 @@
 	                 </c:if>
 	                      
 	                 </c:if>
-	                
-	                
-	                <c:if test="${userTabs.tabName == 'Campaigns'}">
-                         <li class="${sessionData.nav == 'Campaigns' || sessionData.nav == 'CampaignSender' || sessionData.nav == 'CampaignRecipient' ? 'navActive' : ''}"><a href="<c:url value='${appPath}/campaigns/hotcampaigns'/>" title="Campaigns"><span class="navIcons campIcon"></span><b>Campaigns</b></a></li>				  
-			         </c:if>
-
-					<c:if test="${SourceLeadWeb_paryrollTabCount == 2 && userTabs.tabName == 'Run Payroll'}">
-						<li class="${sessionData.nav == 'Run Payroll' || sessionData.nav == 'My Payroll' ? 'navActive' : ''}">
-						
-						<a href="#" class="payrollli" title="Pay Roll">
-						<span class="navIcons payIcon"></span><b>Pay Roll</b> <i class="fa fa-fw fa-caret-down"></i>
-						</a>
-						
-						
-						<c:if test="${sessionData.nav == 'Payroll' || sessionData.nav == 'My Payroll'}">
-							<ul class="collapses" style="display: none">
-							 <c:if test="${SourceLeadWeb_orgLocations.country == 'United States'}">
-								<li class="${sessionData.nav == 'Payroll' ? 'treview-active' : ''}"><a href="<c:url value='${appPath}/payrollList'/>" title="Run Payroll"><i class="fa fa-chevron-right"></i> Run Payroll</a></li>
-								<li><a href="<c:url value='${appPath}/userPay'/>" title="Legacy Payroll">Legacy Payroll</a></li>
-								<li><a href="<c:url value='${appPath}/myPayroll'/>" title="My Payroll">My Payroll</a></li>
-							</c:if>
-							
-							<c:if test="${SourceLeadWeb_orgLocations.country == 'India'}">
-								<li class="${sessionData.nav == 'MyPayroll' ? 'treview-active' : ''}"><a href="<c:url value='${appPath}/myPayrollInd'/>" title="My Pays"><i class="fa fa-chevron-right"></i> My Pays</a></li>
-								<li class="${sessionData.nav == 'RunPayroll' ? 'treview-active' : ''}"><a href="<c:url value='${appPath}/runIndianPayRoll'/>" title="Payroll"><i class="fa fa-chevron-right"></i> Payroll</a></li>
-							</c:if>
-							</ul>
-						</c:if>
-						
-						<c:if test="${sessionData.nav != 'Payroll' || sessionData.nav != 'My Payroll'}">
-							<ul class="collapses" style="display: none">
-							<c:if test="${SourceLeadWeb_orgLocations.country == 'United States'}">
-								<li class="${sessionData.nav == 'Payroll' ? 'treview-active' : ''}"><a href="<c:url value='${appPath}/payrollList'/>" title="Run Payroll"><i class="fa fa-chevron-right"></i> Run Payroll</a></li>
-								<li><a href="<c:url value='${appPath}/userPay'/>" title="Legacy Payroll"><i class="fa fa-chevron-right"></i> Legacy Payroll</a></li>
-								<li><a href="<c:url value='${appPath}/myPayroll'/>" title="My Payroll"><i class="fa fa-chevron-right"></i> My Payroll</a></li>
-							</c:if>
-							
-							<c:if test="${SourceLeadWeb_orgLocations.country == 'India'}">
-								<li class="${sessionData.nav == 'MyPayroll' ? 'treview-active' : ''}"><a href="<c:url value='${appPath}/myPayrollInd'/>" title="My Pays"><i class="fa fa-chevron-right"></i>My Payroll</a></li>
-								<li class="${sessionData.nav == 'RunPayroll' ? 'treview-active' : ''}"><a href="<c:url value='${appPath}/runIndianPayRoll'/>" title="Payroll"><i class="fa fa-chevron-right"></i>Run Payroll</a></li>
-							</c:if>
-							</ul>
-						</c:if>
-						
-						</li>
-					</c:if>
-					
-					<c:if test="${SourceLeadWeb_paryrollTabCount < 2 && userTabs.tabName == 'Run Payroll'}">
-							<c:if test="${SourceLeadWeb_orgLocations.country == 'United States'}">
-								<li class="${sessionData.nav == 'Payroll' ? 'navActive' : ''}"><a href="<c:url value='${appPath}/payrollList'/>" title="Run Payroll"><span class="navIcons payIcon"></span><b>Run Payroll</b></a></li>
-							</c:if>
-							
-							<c:if test="${SourceLeadWeb_orgLocations.country == 'India'}">
-								<li class="${sessionData.nav == 'RunPayroll' ? 'navActive' : ''}"><a href="<c:url value='${appPath}/runIndianPayRoll'/>" title="Payroll"><span class="navIcons payIcon"></span><b>Run Payroll</b></a></li>
-							</c:if>
-					</c:if>
-					
-					<c:if test="${SourceLeadWeb_paryrollTabCount < 2 && userTabs.tabName == 'My Payroll'}">
-							<c:if test="${SourceLeadWeb_orgLocations.country == 'United States'}">
-								<li class="${sessionData.nav == 'My Payroll' ? 'navActive' : ''}"><a href="<c:url value='${appPath}/userPay'/>" title="Leagacy Payroll"><span class="navIcons payIcon"></span><b>Legacy Payroll</b></a></li>
-								<li class="${sessionData.nav == 'My Payroll' ? 'navActive' : ''}"><a href="<c:url value='${appPath}/myPayroll'/>" title="My Payroll"><span class="navIcons payIcon"></span><b>My Payroll</b></a></li>
-							</c:if>
-							
-							<c:if test="${SourceLeadWeb_orgLocations.country == 'India'}">
-								<li class="${sessionData.nav == 'MyPayroll' ? 'navActive' : ''}"><a href="<c:url value='${appPath}/myPayrollInd'/>" title="My Pays"><span class="navIcons payIcon"></span><b>My Payroll</b></a></li>
-							</c:if>
-					</c:if>
 
 					<c:if test="${userTabs.tabName == 'Immigrations'}">
 					 <sec:authorize access="hasAnyRole('ROLE_ADD_PETITION','ROLE_EDIT_VIEW_PETITION','ROLE_DELETE_PETITION','ROLE_VIEW_MY_PETITION')"> 
@@ -340,9 +172,6 @@
 								</li>
 								</sec:authorize>
 						</c:if>
-				    <c:if test="${userTabs.tabName == 'Leave Management'}">
-		             <li class="${sessionData.nav == 'Leave Management' ? 'navActive' : ''}"><a href="<c:url value='${appPath}/leaveManagementReports'/>" title="Leave Management"><span class="navIcons leaveIcon"></span><b>Leave Management</b></a></li>
-		          	</c:if>	
           </c:forEach>
 	         
           	  <c:if test="${SourceLeadWeb_loginUserRole == 'ROLE_SOURCELEAD_ADMIN'}">
