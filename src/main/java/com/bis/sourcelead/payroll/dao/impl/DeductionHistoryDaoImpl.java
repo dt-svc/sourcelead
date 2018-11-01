@@ -1,6 +1,6 @@
 package com.bis.sourcelead.payroll.dao.impl;
 
-import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import org.hibernate.Query;
@@ -13,9 +13,16 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.bis.sourcelead.constants.Constants;
+import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.payroll.dao.DeductionHistoryDao;
 import com.bis.sourcelead.payroll.dto.ContributionHistoryDTO;
 import com.bis.sourcelead.payroll.dto.DeductionHistoryDTO;
+import com.bis.sourcelead.payroll.dto.PayrollReportDTO;
+import com.bis.sourcelead.payroll.entity.DeductionHistory;
+import com.bis.sourcelead.util.CommonUtil;
+
+import io.netty.util.Constant;
 
 @Repository
 public class DeductionHistoryDaoImpl implements DeductionHistoryDao{
@@ -24,6 +31,9 @@ private static final Logger logger = LoggerFactory.getLogger(DeductionHistoryDao
 	
 	@Autowired
 	private SessionFactory sessionFactory;
+	
+	@Autowired
+	private CommonUtil commonUtil;
 	
 	@SuppressWarnings("unchecked")
 	@Override
@@ -94,5 +104,52 @@ private static final Logger logger = LoggerFactory.getLogger(DeductionHistoryDao
 			e.printStackTrace();
 		}
 		return his;
+	}
+
+	@SuppressWarnings("unchecked")
+	@Override
+	@Transactional
+	public List<DeductionHistory> getDedudctionDataBasedOnPayrollCheckDate(OrgLocations orgLocation,
+			PayrollReportDTO payrollReportDTO) {
+		
+		String subQuery = "";
+		StringBuilder query1 = new StringBuilder("");
+		if(Constants.DEDUCTION.equalsIgnoreCase(payrollReportDTO.getType())) {
+			subQuery = " and dedHis.deductionId.deductionTypeId.orgLocationId.id = :orgLocationId";
+			if(payrollReportDTO.getSearchValue() !=null && !"".equalsIgnoreCase(payrollReportDTO.getSearchValue())) {
+				query1.append(" and dedHis.deductionId.deductionTypeId.payrollDeductionType like '%" + payrollReportDTO.getSearchValue() + "%' ");
+			}
+		}else {
+			subQuery = " and dedHis.contributionId.contributionTypeId.deductionTypeId.orgLocationId.id = :orgLocationId";
+			if(payrollReportDTO.getSearchValue() !=null && !"".equalsIgnoreCase(payrollReportDTO.getSearchValue())) {
+				query1.append(" and dedHis.contributionId.contributionTypeId.deductionTypeId.payrollDeductionType like '%" + payrollReportDTO.getSearchValue() + "%' ");
+			}
+		}
+		
+		List<DeductionHistory> list = null;
+		try {
+			Date fDate = commonUtil.orgLocationDateFormat(orgLocation.getDateFormat(), payrollReportDTO.getFromDate());
+			Date tDate = commonUtil.orgLocationDateFormat(orgLocation.getDateFormat(), payrollReportDTO.getToDate());
+			java.sql.Date startDate = new java.sql.Date(fDate.getTime());
+			java.sql.Date endDate = new java.sql.Date(tDate.getTime());
+			
+			Session session = this.sessionFactory.getCurrentSession();
+			String qry = "from DeductionHistory dedHis where dedHis.payroll.payCheckDate >= :startDate and dedHis.payroll.payCheckDate <= :endDate and dedHis.payroll.submitForAproverStatus = 'APPROVED'"+subQuery;   			
+//			list = session.createQuery(qry).setParameter("startDate", startDate).setParameter("endDate", endDate).setParameter("orgLocationId", orgLocation.getId()).list();
+			
+			Query queryObj = session.createQuery(qry + query1.toString());
+			queryObj.setFirstResult(payrollReportDTO.getStart());
+			queryObj.setMaxResults(payrollReportDTO.getLength());
+			queryObj.setLong("orgLocationId", orgLocation.getId())
+			.setParameter("startDate", startDate)
+			.setParameter("endDate", endDate).list();
+			
+			list = queryObj.list();
+			
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		
+		return list;
 	}
 }

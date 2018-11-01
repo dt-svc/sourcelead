@@ -210,9 +210,9 @@ function invoiceDetailsPagination(url){
                       "data": "payRate",
                       "render": function ( data, type, opt, meta ) {
                       	var result = "";
-                      	var rateTotal = opt.payRate;
-                      	var twoPlacedFloat = parseFloat(rateTotal).toFixed(2);
-                      	if(opt.payRate !=null && opt.payRate !='' && opt.payRate !='undefined'){
+                      	if(opt.payRate !=null && opt.payRate !='' && opt.payRate !='undefined' && !isNaN(opt.payRate)){
+                      		var rateTotal = opt.payRate;
+                          	var twoPlacedFloat = parseFloat(rateTotal).toFixed(2);
   							result = result + '<td><div class="tblminwidth-75">$ '+twoPlacedFloat+'</div></td>';
   						}else{
   							result = result + ' <td><div class="tblminwidth-75">0.00</div></td>';

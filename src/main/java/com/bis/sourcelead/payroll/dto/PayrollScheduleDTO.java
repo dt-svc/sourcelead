@@ -1,51 +1,120 @@
 package com.bis.sourcelead.payroll.dto;
 
-import com.bis.sourcelead.dto.SearchDTO;
+import com.bis.sourcelead.annotations.Required;
 
-public class PayrollScheduleDTO extends SearchDTO {
+public class PayrollScheduleDTO {
+	
+	private long id;
 	
 	private String orgLocationId;
-	private String payScheduleDate;
-	private String payScheduleType;
-	private String selectedDate;
-	private String dateFrequency;
+	
+	@Required(desc = "Pay Frequency")
+	private String payFrequency;
+	
+	@Required(desc = "Pay PeriodStartDate")
+	private String payPeriodStartDate;
+	
+	@Required(desc = "Pay CheckDate")
+	private String payCheckDate;
+	
+	@Required(desc = "Run PayrollDate")
+	private String runPayDate;
+	
+	private String nextPayMonth;
+	
+	private String notifyMember;
+	
 	private int status;
 	
 	public String getOrgLocationId() {
 		return orgLocationId;
 	}
+	
 	public void setOrgLocationId(String orgLocationId) {
 		this.orgLocationId = orgLocationId;
 	}
-	public String getPayScheduleDate() {
-		return payScheduleDate;
+
+	public String getPayFrequency()
+	{
+		return payFrequency;
 	}
-	public void setPayScheduleDate(String payScheduleDate) {
-		this.payScheduleDate = payScheduleDate;
+
+	public String getPayPeriodStartDate()
+	{
+		return payPeriodStartDate;
 	}
-	public String getPayScheduleType() {
-		return payScheduleType;
+
+	public String getPayCheckDate()
+	{
+		return payCheckDate;
 	}
-	public void setPayScheduleType(String payScheduleType) {
-		this.payScheduleType = payScheduleType;
+
+
+	public String getNextPayMonth()
+	{
+		return nextPayMonth;
 	}
-	public int getStatus() {
+
+	public int getStatus()
+	{
 		return status;
 	}
-	public void setStatus(int status) {
+
+	public void setPayFrequency(String payFrequency)
+	{
+		this.payFrequency = payFrequency;
+	}
+
+	public void setPayPeriodStartDate(String payPeriodStartDate)
+	{
+		this.payPeriodStartDate = payPeriodStartDate;
+	}
+
+	public void setPayCheckDate(String payCheckDate)
+	{
+		this.payCheckDate = payCheckDate;
+	}
+
+
+	public void setNextPayMonth(String nextPayMonth)
+	{
+		this.nextPayMonth = nextPayMonth;
+	}
+
+	public void setStatus(int status)
+	{
 		this.status = status;
 	}
-	public String getSelectedDate() {
-		return selectedDate;
+
+	public String getNotifyMember()
+	{
+		return notifyMember;
 	}
-	public void setSelectedDate(String selectedDate) {
-		this.selectedDate = selectedDate;
+
+	public void setNotifyMember(String notifyMember)
+	{
+		this.notifyMember = notifyMember;
 	}
-	public String getDateFrequency() {
-		return dateFrequency;
+
+	public long getId()
+	{
+		return id;
 	}
-	public void setDateFrequency(String dateFrequency) {
-		this.dateFrequency = dateFrequency;
+
+	public void setId(long id)
+	{
+		this.id = id;
 	}
+
+	public String getRunPayDate()
+	{
+		return runPayDate;
+	}
+
+	public void setRunPayDate(String runPayDate)
+	{
+		this.runPayDate = runPayDate;
+	}
+	
 	
 }

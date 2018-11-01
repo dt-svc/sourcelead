@@ -40,6 +40,26 @@
 		highlight('initiatePayrollLi');
 	});
 </script> 
+
+<script>
+function employeePayrollList(uuid){
+	var sourceleadUrl ='${SourceLeadWeb_sourceleadUrl}';
+    /* $("#loadTime").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:60% center; background-repeat:no-repeat; background-size:75px;');
+	   $.ajax({
+	          type : "POST",
+	      	  url: sourceleadUrl+"/employeePayrollList",		
+		      success :function(data) {
+		    	  $("#runPayRollTabsContent").empty();
+		  		  $("#runPayRollTabsContent").append(data);
+		    	  $("#loadTime").removeAttr('style');
+		      }
+	    }); */
+	   
+	   
+	   $(location).attr('href', 'employeePayrollList?paySheetFrequencyUUID='+uuid+'');
+}
+</script>
+
  <script>
 	function initiatePayrollDiv(){ 
 	               var sourceleadUrl ='${SourceLeadWeb_sourceleadUrl}';
@@ -288,25 +308,6 @@ function highlight(id) {
 	$("#tabs-menu>ul>li.active").removeClass("active");
     $("#"+id).addClass("active");
 } 
-</script>
-
-<script>
-function employeePayrollList(uuid){
-	var sourceleadUrl ='${SourceLeadWeb_sourceleadUrl}';
-    /* $("#loadTime").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:60% center; background-repeat:no-repeat; background-size:75px;');
-	   $.ajax({
-	          type : "POST",
-	      	  url: sourceleadUrl+"/employeePayrollList",		
-		      success :function(data) {
-		    	  $("#runPayRollTabsContent").empty();
-		  		  $("#runPayRollTabsContent").append(data);
-		    	  $("#loadTime").removeAttr('style');
-		      }
-	    }); */
-	   
-	   
-	   $(location).attr('href', 'employeePayrollList?paySheetFrequencyUUID='+uuid+'');
-}
 </script>
 
 
