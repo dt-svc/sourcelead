@@ -54,7 +54,6 @@
 					<label class="clearfix">Type<span class="text-danger">&nbsp;*</span></label>
 					<div class="clearfix dropdown-select">
 						<select class="form-control chosen-select" id="type" name="type" field-name="Type" data-validation="required">
-							<option value="">--Select Type--</option>
 							<option value="Earnings" ${payrollPayhead.type  == 'Earnings'  ? 'selected' :''}>Earnings</option>
 							<option value="Deductions" ${payrollPayhead.type  == 'Deductions'  ? 'selected' :''}>Deductions</option>
 						</select>
@@ -149,7 +148,7 @@
 					</div>
 				</div>
 				
-				<div class="col-md-5" id="divExperience" style="display: none;">
+				<div class="col-md-5" id="divExperience" ${payrollPayhead.applicableFor  == 'Experienced'  ? '' : 'style="display: none;"'}>
 		            <label class="clearfix">Experience<span class="text-danger">&nbsp;*</span></label>
 		            <div class="clearfix">
 	              		<div class="row exp-drop">
@@ -178,7 +177,7 @@
 					<div class="clearfix">
 						<div class="checkbox-new pull-left">
 							<input id="pc" class="checkbox-custom" name="paidComponent"
-								type="checkbox" ${payrollPayhead.paidComponent  == 'Y' ? "checked" : ''} value="Y"> <label for="pc"
+								type="checkbox" ${payrollPayhead != null ? payrollPayhead.paidComponent  == 'Y' ? "checked" : '' : "checked"} value="Y"> <label for="pc"
 								class="checkbox-custom-label"><span class="ml10">Paid
 									Component</span></label>
 						</div>
@@ -244,7 +243,7 @@
 				<div class="minHeight50 mb" id="paytypeNameDiv">
 					<label class="clearfix">Name<span class="text-danger">&nbsp;*</span></label>
 					<div class="clearfix">
-						<input type="text" class="form-control" id="paytypeName" name="name" field-name="Name"  data-validation="required validate_Space validate_length length1-100">
+						<input type="text" class="form-control" id="paytypeName" name="name" field-name="Name"  data-validation="required validate_Space validate_Alphanumeric validate_length length1-100">
 					</div>
 				</div>
 				<div class="minHeight50 mt">
@@ -548,6 +547,7 @@ function findPayheadByNameOrShortCode(name, shortCode, listType){
 
 <script>
 function experienceDiv(){
+	var uuid = "${payrollPayhead.uuid}";
 	var all = $('#all:checked').val()?true:false;
 	var experienced = $('#experienced:checked').val()?true:false;
 	if(experienced){
@@ -563,10 +563,12 @@ function experienceDiv(){
         $('#experienceMonths').removeAttr('data-validation');
         $('#experienceMonths').attr("data-validation-optional", "true");
         
-		$("#experienceYears").val('default');
-		$("#experienceYears").selectpicker("refresh");
-		$("#experienceMonths").val('default');
-		$("#experienceMonths").selectpicker("refresh");
+        if(uuid == null || uuid == ""){
+        	$("#experienceYears").val('default');
+    		$("#experienceYears").selectpicker("refresh");
+    		$("#experienceMonths").val('default');
+    		$("#experienceMonths").selectpicker("refresh");
+        }
 	}else{
 		$('#divExperience').hide();
 		$('#experienceYears').removeAttr('data-validation');
@@ -574,10 +576,12 @@ function experienceDiv(){
         $('#experienceMonths').removeAttr('data-validation');
         $('#experienceMonths').attr("data-validation-optional", "true");
 		
-		$("#experienceYears").val('default');
-		$("#experienceYears").selectpicker("refresh");
-		$("#experienceMonths").val('default');
-		$("#experienceMonths").selectpicker("refresh");
+        if(uuid == null || uuid == ""){
+        	$("#experienceYears").val('default');
+    		$("#experienceYears").selectpicker("refresh");
+    		$("#experienceMonths").val('default');
+    		$("#experienceMonths").selectpicker("refresh");
+        }
 	}
 }
 

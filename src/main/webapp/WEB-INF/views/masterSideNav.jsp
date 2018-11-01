@@ -38,7 +38,7 @@
                     </c:if>
 	                <c:if test="${userTabs.tabName == 'Jobs'}"> 
 	                <c:if test="${SourceLeadWeb_loginUserRole != 'ROLE_CROWDSOURCING_PROFESSIONAL' && SourceLeadWeb_loginUserRole != 'ROLE_CROWDSOURCING_RECRUITER'}"> 
-	                   <li class="${sessionData.nav == 'Requirement' ? 'navActive' : ''}"><a href="<c:url value='${appPath}/jobs'/>" title="JobsTest"><span class="navIcons jobIcon"></span><b>Jobs</b></a></li>
+	                   <li class="${sessionData.nav == 'Requirement' ? 'navActive' : ''}"><a href="<c:url value='${appPath}/jobs'/>" title="Jobs"><span class="navIcons jobIcon"></span><b>Jobs</b></a></li>
 	                </c:if> 
 	                
 	                <c:if test="${SourceLeadWeb_loginUserRole == 'ROLE_CROWDSOURCING_PROFESSIONAL' || SourceLeadWeb_loginUserRole == 'ROLE_CROWDSOURCING_RECRUITER' }">
@@ -277,8 +277,8 @@
 							<ul class="collapses" style="display: none">
 							 <c:if test="${SourceLeadWeb_orgLocations.country == 'United States'}">
 								<li class="${sessionData.nav == 'Payroll' ? 'treview-active' : ''}"><a href="<c:url value='${appPath}/payrollList'/>" title="Run Payroll"><i class="fa fa-chevron-right"></i> Run Payroll</a></li>
-								<li><a href="<c:url value='${appPath}/userPay'/>" title="Legacy Payroll">Legacy Payroll</a></li>
-								<li><a href="<c:url value='${appPath}/myPayroll'/>" title="My Payroll">My Payroll</a></li>
+								<li><a href="<c:url value='${appPath}/userPay'/>" title="Legacy Payroll"><i class="fa fa-chevron-right"></i>Legacy Payroll</a></li>
+								<li><a href="<c:url value='${appPath}/myPayroll'/>" title="My Payroll"><i class="fa fa-chevron-right"></i>My Payroll</a></li>
 							</c:if>
 							
 							<c:if test="${SourceLeadWeb_orgLocations.country == 'India'}">

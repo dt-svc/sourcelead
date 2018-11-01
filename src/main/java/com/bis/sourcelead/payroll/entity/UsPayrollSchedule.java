@@ -1,7 +1,9 @@
 package com.bis.sourcelead.payroll.entity;
 
 import java.util.Date;
+import java.util.Set;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -9,6 +11,7 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
 import com.bis.sourcelead.entity.OrgLocations;
@@ -27,11 +30,20 @@ public class UsPayrollSchedule {
 	@JoinColumn(name = "ORG_LOCATION_ID", nullable = false)
 	private OrgLocations orgLocation;
 	
-	@Column(name = "PAY_SCHEDULE_DATE")
-	private Date payScheduleDate;
+	@Column(name = "PAY_FREQUENCY")
+	private String payFrequency;
 	
-	@Column(name = "PAY_SCHEDULE_TYPE")
-	private String payScheduleType;
+	@Column(name = "PAY_PERIOD_START_DATE")
+	private Date payPeriodStartDate;
+	
+	@Column(name = "PAY_CHECK_DATE")
+	private Date payCheckDate;
+	
+	@Column(name = "RUN_PAYROLL_DATE")
+	private Date runPayrollDate;
+	
+	@Column(name = "NEXT_PAY_MONTH")
+	private String nextPayMonth;
 	
 	@Column(name = "STATUS")
 	private Integer status;
@@ -47,6 +59,9 @@ public class UsPayrollSchedule {
 	
 	@Column(name = "UPDATED_BY")
 	private Long updatedBy;
+	
+	@OneToMany(cascade = CascadeType.ALL, mappedBy = "payrollScheduleId")
+	private Set<USPayScheduleNotifyMember> payScheduleNotifyMember;
 	
 
 	public Long getId() {
@@ -65,20 +80,55 @@ public class UsPayrollSchedule {
 		this.orgLocation = orgLocation;
 	}
 
-	public Date getPayScheduleDate() {
-		return payScheduleDate;
+
+	public String getPayFrequency()
+	{
+		return payFrequency;
 	}
 
-	public void setPayScheduleDate(Date payScheduleDate) {
-		this.payScheduleDate = payScheduleDate;
+	public Date getPayPeriodStartDate()
+	{
+		return payPeriodStartDate;
 	}
 
-	public String getPayScheduleType() {
-		return payScheduleType;
+	public Date getPayCheckDate()
+	{
+		return payCheckDate;
 	}
 
-	public void setPayScheduleType(String payScheduleType) {
-		this.payScheduleType = payScheduleType;
+	public Date getRunPayrollDate()
+	{
+		return runPayrollDate;
+	}
+
+	public String getNextPayMonth()
+	{
+		return nextPayMonth;
+	}
+
+	public void setPayFrequency(String payFrequency)
+	{
+		this.payFrequency = payFrequency;
+	}
+
+	public void setPayPeriodStartDate(Date payPeriodStartDate)
+	{
+		this.payPeriodStartDate = payPeriodStartDate;
+	}
+
+	public void setPayCheckDate(Date payCheckDate)
+	{
+		this.payCheckDate = payCheckDate;
+	}
+
+	public void setRunPayrollDate(Date runPayrollDate)
+	{
+		this.runPayrollDate = runPayrollDate;
+	}
+
+	public void setNextPayMonth(String nextPayMonth)
+	{
+		this.nextPayMonth = nextPayMonth;
 	}
 
 	public Integer getStatus() {
@@ -121,8 +171,15 @@ public class UsPayrollSchedule {
 		this.updatedBy = updatedBy;
 	}
 
-	public static long getSerialversionuid() {
-		return serialVersionUID;
+
+	public Set<USPayScheduleNotifyMember> getPayScheduleNotifyMember()
+	{
+		return payScheduleNotifyMember;
+	}
+
+	public void setPayScheduleNotifyMember(Set<USPayScheduleNotifyMember> payScheduleNotifyMember)
+	{
+		this.payScheduleNotifyMember = payScheduleNotifyMember;
 	}
 
 	

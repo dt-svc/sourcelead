@@ -12,4 +12,6 @@ public interface PayrollScheduleDao {
 
 	UsPayrollSchedule getWeeklyFrequenciesBySelectedDate(String dateFrequency, OrgLocations orgLocations);
 
+	List<UsPayrollSchedule> findAllPayrollScheduleList(Long orgLocationId);
+
 }
