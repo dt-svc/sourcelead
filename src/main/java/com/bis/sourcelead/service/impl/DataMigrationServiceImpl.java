@@ -229,7 +229,7 @@ public class DataMigrationServiceImpl implements DataMigrationService {
 		String finalImportStatus = null;
 		String jsonString = null;
 		String ac = StringUtils.removeEnd(staticPath, "/slead-static");
-		
+		List<JSONObject> dataMigrationDTOJsonList = new ArrayList<JSONObject>();
 		Workbook workbook = null;
 		DataFormatter objDefaultFormat = new DataFormatter();
 		FormulaEvaluator objFormulaEvaluator;
@@ -253,8 +253,9 @@ public class DataMigrationServiceImpl implements DataMigrationService {
 		int colCount = 0;
 		Boolean isEmptyExcel = true;
 		List<String> candidateEmailsList = null;
-		logger.info("Upload Start Time>>>"+Calendar.getInstance().getTime());
 		int ent = 0;
+		int batchcount = 0;
+		logger.info("Validation Start Time>>>"+Calendar.getInstance().getTime());
 		while (rowIterator.hasNext()) {
 			logger.info("PROCESSING ENTRY "+ ++ent + "  --  " + System.currentTimeMillis());
 			Row nextRow = rowIterator.next();
@@ -277,6 +278,7 @@ public class DataMigrationServiceImpl implements DataMigrationService {
 				HashMap<String, String> errorSet = new HashMap<String, String>();
 				Gson gson = new Gson();
 				String gsonOutput = gson.toJson(dataMigrationDTO);
+				
 				JSONObject dataMigrationDTOJson = null;
 				DataMigrationDTO dataMigrationDTOCopy = new DataMigrationDTO();
 				Iterator<?> keys = null;
@@ -439,26 +441,7 @@ public class DataMigrationServiceImpl implements DataMigrationService {
 
 				}
 
-				logger.info("WRITING STATUS ENTRY "+ ent + "  --  " + System.currentTimeMillis());
-				if (errorSet.isEmpty()) {
-					long m0 =  System.currentTimeMillis();
-					mapToEntities(dataMigrationDTOJsonCopy, user, orgLocation, dataMigrationDTO.getUploadType(),jsonString,dataMigrationDTO.getUploadid());
-					long m1 =  System.currentTimeMillis();
-					importStatus = "success";
-					FileOutputStream outputStream = new FileOutputStream(
-							new File(ac + dataMigrationDTO.getExportFilePath()));
-					workbook.write(outputStream);
-					long m2 = System.currentTimeMillis();
-					history = saveUploadXlsHistory(rowCount, fileName[5], dataMigrationDTO.getExportFilePath(), dataMigrationDTO, user, orgLocation);
-					if(history != null) {
-						history.setSuccessCount(history.getSuccessCount()+1);
-					}
-					long m3 = System.currentTimeMillis();
-					history.setFileUrl(dataMigrationDTO.getExportFilePath());
-					uploadXlsHistoryService.storeUploadXlsHistory(history);
-					long m4 = System.currentTimeMillis();
-					logger.info("METRICS FOR ENTRY "+ ent + "  --  " + (m1-m0) + " - " + (m2-m1) + " - " + (m3-m2) + " - " + (m4-m3));
-				} else {
+				if (!errorSet.isEmpty()) {
 					int errorCount = 0;
 					StringBuilder errorSB = new StringBuilder();
 					for (Map.Entry<String, String> error : errorSet.entrySet()) {
@@ -486,28 +469,51 @@ public class DataMigrationServiceImpl implements DataMigrationService {
 					history.setUploadStatus("Failed");
 					history.setFileUrl(dataMigrationDTO.getExportFilePath());
 					uploadXlsHistoryService.storeUploadXlsHistory(history);
+				}else {
+					dataMigrationDTOJsonList.add(dataMigrationDTOJsonCopy);
 				}
 			}
-			
 		}
-		logger.debug("Upload End Time>>>"+Calendar.getInstance().getTime());
+		logger.info("Validation End Time>>>"+Calendar.getInstance().getTime());	
+		List<Candidate> candidatesList = new ArrayList<>();
+		logger.info("WRITING STATUS ENTRY "+ ent + "  --  " + System.currentTimeMillis());
+		if (dataMigrationDTOJsonList != null && !dataMigrationDTOJsonList.isEmpty()) {
+			int successCount = dataMigrationDTOJsonList.size();
+			for(JSONObject dataMigrationDTOJsonCopy : dataMigrationDTOJsonList) {
+			long m0 =  System.currentTimeMillis();
+			Object obj = mapToEntities(dataMigrationDTOJsonCopy, user, orgLocation, dataMigrationDTO.getUploadType(),jsonString,dataMigrationDTO.getUploadid());
+			if(obj != null && obj instanceof Candidate) {
+				Candidate candidate = (Candidate)obj;
+				candidatesList.add(candidate);
+				if((candidatesList != null && !candidatesList.isEmpty() && candidatesList.size() == 50) || 
+						(candidatesList != null && !candidatesList.isEmpty() && successCount < 50)) {
+					logger.info("BACTH ENTRY "+ batchcount++ + "  --  " + System.currentTimeMillis());
+					candidateService.saveBulkCandidates(candidatesList);
+					successCount = successCount-50;
+					candidatesList.clear();
+					logger.info("BACTH EXIT "+ batchcount + "  --  " + System.currentTimeMillis());
+				}
+			}
+			long m1 =  System.currentTimeMillis();
+			importStatus = "success";
+			long m2 = System.currentTimeMillis();
+			history = saveUploadXlsHistory(rowCount, fileName[5], dataMigrationDTO.getExportFilePath(), dataMigrationDTO, user, orgLocation);
+			if(history != null) {
+				history.setSuccessCount(history.getSuccessCount()+1);
+			}
+			long m3 = System.currentTimeMillis();
+			history.setFileUrl(dataMigrationDTO.getExportFilePath());
+			uploadXlsHistoryService.storeUploadXlsHistory(history);
+			long m4 = System.currentTimeMillis();
+			logger.info("METRICS FOR ENTRY "+ ent + "  --  " + (m1-m0) + " - " + (m2-m1) + " - " + (m3-m2) + " - " + (m4-m3));
+			}
+		}
+		
+		logger.debug("WRITING STATUS EXIT>>>"+Calendar.getInstance().getTime());
 		
 		history.setUploadProcessingStatus("Completed");
 		history.setEndDate(new Date());
 		uploadXlsHistoryService.storeUploadXlsHistory(history);
-		
-		
-	/*	if(dataMigrationDTO.getUploadType().equalsIgnoreCase("candidatesUpload")) {
-			ExecutorService executorService  = null;
-			if(executorService == null) {
-				executorService = Executors.newSingleThreadExecutor();
-			}
-			
-			executorService.execute(new UploadCandidateThread(uploadedCandidatesList,"Thread "+candidateIndexKey,orgLocation.getId()));
-			uploadedCandidatesList = null;
-			candidateIndexKey = 0;
-		}*/
-		
 		
 		workbook.close();
 		if (isEmptyExcel) {
@@ -584,9 +590,10 @@ public class DataMigrationServiceImpl implements DataMigrationService {
     }
 
 	@SuppressWarnings("unused")
-	private void mapToEntities(JSONObject dataMigrationDTOJsonCopy, User user, OrgLocations orgLocation,
+	private Object mapToEntities(JSONObject dataMigrationDTOJsonCopy, User user, OrgLocations orgLocation,
 			String uploadType,String jsonString,String uploadId) throws Exception {
 		Gson gson = new Gson();
+		Object object = null;
 		switch (uploadType) {
 		case "jobUpload":
 			try {
@@ -683,7 +690,8 @@ public class DataMigrationServiceImpl implements DataMigrationService {
 					candidateDTO.setCountry(orgLocation.getCountry());
 				}
 				
-					Candidate candidate = candidateService.saveCandidateBulkImports(candidateDTO, orgLocation, user);
+				Candidate candidate = candidateService.saveCandidateBulkImports(candidateDTO, orgLocation, user);
+				object = candidate;
 				
 			}catch (Exception e) {
 				UploadXlsHistory history = uploadXlsHistoryService.getUploadXlsHistoryDetailsByUploadId(uploadId);
@@ -1234,6 +1242,8 @@ public class DataMigrationServiceImpl implements DataMigrationService {
 
 			break;
 		}
+		
+		return object;
 	}
 	
 	private String[] getExperienceYearsAndMonths(String experience) {
@@ -1264,36 +1274,6 @@ public class DataMigrationServiceImpl implements DataMigrationService {
 		return formFieldsList;
 	}
 	
-	
-	class UploadCandidateThread implements Runnable{
-
-		List<Candidate> uploadCandidateList = new ArrayList<>();
-		String threadName = null;
-		Long orgLocationId = null;
-		
-		public UploadCandidateThread() {
-			
-		}
-
-		public UploadCandidateThread(List<Candidate> candidateList,String threadName,Long orgLocationId) {
-			uploadCandidateList.addAll(candidateList);
-			this.threadName = threadName;
-			this.orgLocationId = orgLocationId;
-		}
-		
-		@Override
-		public void run() {
-			logger.debug("Thread Start Time>>>>"+Calendar.getInstance().getTime()+">>> Theread "+threadName);
-			try {
-				candidateService.saveBulkCandidates(uploadCandidateList,orgLocationId);
-			} catch (Exception e) {
-				e.printStackTrace();
-			}
-			logger.debug("Thread End Time>>>>"+Calendar.getInstance().getTime()+">>> Theread "+threadName);
-		}
-
-		
-	}
 }
 
 

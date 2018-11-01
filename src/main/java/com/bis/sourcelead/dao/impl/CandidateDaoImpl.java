@@ -2094,14 +2094,11 @@ public class CandidateDaoImpl implements CandidateDao {
 
 	@Override
 	@Transactional
-	public void saveBulkCandidates(List<Candidate> candidatesList,Long orgLocationId) throws Exception {
+	public void saveBulkCandidates(List<Candidate> candidatesList) throws Exception {
 		Session session = sessionFactory.getCurrentSession();
 		for (Candidate candidate : candidatesList) {
-			Long candidateId = getCandidateIdByEmailAndOrgLocationId(candidate.getEmail().trim(),orgLocationId);
-			if(candidateId == null) {
-				    session.save(candidate);
-				    candidateService.saveOrUpdateCandidateElkDocument(candidate);
-			}
+			 session.save(candidate);
+			 candidateService.saveOrUpdateCandidateElkDocument(candidate);
 		    
 		}
 	}
