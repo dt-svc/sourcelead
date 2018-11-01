@@ -29,6 +29,7 @@ import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.payroll.dto.AssociateReportDTO;
 import com.bis.sourcelead.payroll.dto.AssociateWithHoldingDTO;
 import com.bis.sourcelead.payroll.dto.CheckRegisterReportDTO;
+import com.bis.sourcelead.payroll.dto.DeductionSummaryDTO;
 import com.bis.sourcelead.payroll.dto.PayrollReportDTO;
 import com.bis.sourcelead.payroll.dto.PdfHeaderDTO;
 import com.bis.sourcelead.payroll.dto.YTDPayrollDTO;
@@ -1525,6 +1526,93 @@ public class PayrollReportPdfUtil {
 							col.column("State Filling Status", "stateStatus", type.stringType()),
 							col.column("State Allowances", "stateAllowances", type.stringType()))
 					.setDataSource(createAssociateWithholdingPdfDataSource(res)).toXls(xlsExporter);
+		} catch (DRException e) {
+			e.printStackTrace();
+		}
+	return file;
+	}
+
+	public File getDeductionSummaryReportPdf(List<DeductionSummaryDTO> data, OrgLocations orgLocation) throws Exception {
+		File file = null;
+		try {
+		    StringBuilder fileSB = new StringBuilder();
+			file = File.createTempFile(fileSB.append("deduction_contributionSummary").append(commonUtil.dateStrFromOrgDateFormatter(orgLocation.getDateFormat(),new Date())).toString(),".pdf");
+			file.setReadable(true);
+			JasperPdfExporterBuilder pdfExporter = export.pdfExporter(file);
+			report().setTemplate(Templates.reportTemplate)
+					.title(cmp.text(orgLocation.getOrgLocationName()).setStyle(Templates.bold18CenteredStyle).setHorizontalAlignment(HorizontalAlignment.CENTER))
+					.columns(
+							col.column("Type", "type", type.stringType()),
+							col.column("No of Employees", "noOfEmployees", type.integerType()),
+							col.column("Current", "current", type.bigDecimalType()),
+							col.column("QTD", "qtd", type.bigDecimalType()),
+							col.column("YTD", "ytd", type.bigDecimalType()))
+					.pageFooter(Templates.footerComponent)
+					.setDataSource(createDeductionSummaryPdfDataSource(data)).toPdf(pdfExporter);
+			} catch (DRException e) {
+				e.printStackTrace();
+			}
+		return file;
+	}
+
+	private DRDataSource createDeductionSummaryPdfDataSource(List<DeductionSummaryDTO> data) {
+		DRDataSource dataSource = new DRDataSource("type","noOfEmployees", "current", "qtd", "ytd");
+		for(DeductionSummaryDTO ded :data) {
+			String  type= "--";
+			int noOfEmployees = 0;
+			BigDecimal current = BigDecimal.ZERO;
+			BigDecimal qtd = BigDecimal.ZERO;
+			BigDecimal ytd = BigDecimal.ZERO;
+
+			if(ded.getDeductionType() != null) {
+				type = ded.getDeductionType();
+			}
+			
+				noOfEmployees = ded.getCandidateCount();
+				
+			if(ded.getCurrentAmt() != null) {
+				current = ded.getCurrentAmt();
+			}
+			
+			if(ded.getQtd() != null) {
+				qtd = ded.getQtd();
+			}
+			
+			if(ded.getYtd() != null) {
+				ytd = ded.getYtd();
+			}
+			
+
+			
+
+			dataSource.add(type,noOfEmployees,current,qtd,ytd);
+		}
+		return dataSource;
+	}
+
+	public File getDeductionSummaryReportXls(List<DeductionSummaryDTO> data, OrgLocations orgLocation) throws Exception {
+		File file = null;
+		try {
+		    StringBuilder fileSB = new StringBuilder();
+			file = File.createTempFile(fileSB.append("deduction_contributionSummary").append(commonUtil.dateStrFromOrgDateFormatter(orgLocation.getDateFormat(),new Date())).toString(),".xls");
+			file.setReadable(true);
+			JasperXlsExporterBuilder xlsExporter = export.xlsExporter(file) .setDetectCellType(true)
+                    .setIgnorePageMargins(true)
+                    .setWhitePageBackground(false)
+                    .setRemoveEmptySpaceBetweenColumns(true);
+
+			report().setTemplate(Templates.reportTemplate)
+					.setColumnTitleStyle(Templates.columnTitleStyle)
+					.addProperty(JasperProperty.EXPORT_XLS_FREEZE_ROW, "1")
+					.ignorePageWidth()
+					.ignorePagination()
+					.columns(
+							col.column("Type", "type", type.stringType()),
+							col.column("No of Employees", "noOfEmployees", type.integerType()),
+							col.column("Current", "current", type.bigDecimalType()),
+							col.column("QTD", "qtd", type.bigDecimalType()),
+							col.column("YTD", "ytd", type.bigDecimalType()))
+					.setDataSource(createDeductionSummaryPdfDataSource(data)).toXls(xlsExporter);
 		} catch (DRException e) {
 			e.printStackTrace();
 		}
