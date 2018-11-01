@@ -258,4 +258,6 @@ public interface CandidateService {
 
 	public List<CandidateMarketPlaceDTO> getGlobalMarketplaceCandListGridCard(String searchValue, OrgLocations orgLocations);
 
+	public void deleteCandidateMarketCartByMarketUUID(String candidatgeMarketUUID);
+
 }

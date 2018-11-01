@@ -185,4 +185,6 @@ public interface CandidateDao {
 	public List<CandidateMarketPlace> getGlobalMarketplaceCandListGridCard(String searchValue);
 
 	public int getMarketCartStatusByMarketIdOrgId(Long marketPlaceId, Long orgId);
+
+	public void deleteCandidateMarketCartByMarketUUID(String candidatgeMarketUUID);
 }

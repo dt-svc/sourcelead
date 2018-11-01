@@ -1125,5 +1125,13 @@ public class CandidateRestController {
 	}
 	
 	
+	@RequestMapping(value = "/app/deleteCandidateMarketCart")
+	public String deleteCandidateMarketCart(@RequestParam(value = "marketUUID", required = true) String candidatgeMarketUUID, HttpServletRequest request)throws Exception{
+		User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+		OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+		candidateService.deleteCandidateMarketCartByMarketUUID(candidatgeMarketUUID);
+		return "success";
+		
+	}
 	
 }

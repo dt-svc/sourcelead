@@ -2336,4 +2336,12 @@ public class CandidateDaoImpl implements CandidateDao {
 		int count = ((Long) session.createQuery(query).setParameter("orgId", orgId).setParameter("marketplaceId", marketPlaceId).uniqueResult()).intValue();
 		return count;
 	}
+
+	@Override
+	@Transactional(rollbackFor = { Exception.class })
+	public void deleteCandidateMarketCartByMarketUUID(String candidatgeMarketUUID) {
+		Session session = this.sessionFactory.getCurrentSession();
+		String query = "delete from CandidateMarketCart marketplaceCart where marketplaceCart.marketplaceUUID = :marketUUID";
+		session.createQuery(query).setParameter("marketUUID", candidatgeMarketUUID).executeUpdate();
+	}
 }

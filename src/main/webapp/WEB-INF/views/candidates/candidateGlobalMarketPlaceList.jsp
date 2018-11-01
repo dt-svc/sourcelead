@@ -604,7 +604,7 @@ function getGloblaMarketPlaceCandidates(divType){
 								marketDelelIcon = "";
 								marketAddStatus = '<a type="button" onclick="addCandidateToMarketCart(\''+object[i].marketplaceUUID+'\', \'ListModel\')" class="anchorHighlight">Add</a>';
 							}else if(object[i].marketCartStatus == "In_Cart"){
-								marketDelelIcon = '	<a class="removeSelected mt" title="Remove Selected"><i class="fa fa-trash-o"></i></a>';
+								marketDelelIcon = '	<a class="removeSelected mt" title="Remove Selected" onclick="deleteCandidateMarketCart(\''+object[i].marketplaceUUID+'\')"><i class="fa fa-trash-o"></i></a>';
 								marketAddStatus = '<a type="button" id="addedCartListModel'+object[i].marketplaceUUID+'" class="anchorHighlight anchorHighlightActive">Added</a>';
 							}
 							if(object[i].profilePercentage == null){
@@ -681,7 +681,7 @@ function getGloblaMarketPlaceCandidates(divType){
 								marketDelelIcon = "";
 								marketAddStatus = '<a type="button" id="addCartCardModel'+object[i].marketplaceUUID+'" onclick="addCandidateToMarketCart(\''+object[i].marketplaceUUID+'\', \'CardModel\')" class="anchorHighlight">Add</a>';
 							}else if(object[i].marketCartStatus == "In_Cart"){
-								marketDelelIcon = '	<a class="removeSelected mt" title="Remove Selected"><i class="fa fa-trash-o"></i></a>';
+								marketDelelIcon = '	<a class="removeSelected mt" title="Remove Selected" onclick="deleteCandidateMarketCart(\''+object[i].marketplaceUUID+'\')"><i class="fa fa-trash-o"></i></a>';
 								marketAddStatus = '<a type="button" id="addedCartCardModel'+object[i].marketplaceUUID+'" class="anchorHighlight anchorHighlightActive">Added</a>';
 							}
 							if(object[i].profilePercentage == null){
@@ -751,6 +751,19 @@ function getGloblaMarketPlaceCandidates(divType){
 function predefineProfileImage(imageId){
 	$(imageId).attr('src','/resources/images/userprofileImg.jpg');
 }
+
+function deleteCandidateMarketCart(candidateMarketUUID){
+	alert(candidateMarketUUID);
+	$.ajax({
+		type : "GET",
+		url : sourceleadUrl + "/deleteCandidateMarketCart?marketUUID="+candidateMarketUUID,
+		success : function(object) {
+			$("#deleteIconListModel"+candidateMarketUUID).empty();
+			$("#addCartCardModelDiv"+candidateMarketUUID).empty().append('<a type="button" id="addCartCardModel'+candidateMarketUUID+'" onclick="addCandidateToMarketCart(\''+candidateMarketUUID+'\', \'ListModel\')" class="anchorHighlight">Add</a>');
+			//alert(object);
+		}
+	}); 
+}
 </script>
  
 <script type="text/javascript">
@@ -765,12 +778,12 @@ function addCandidateToMarketCart(UUID, viewModel) {
         		if(viewModel=="ListModel"){
 	        		$("#addCartListModel"+UUID).hide();
 	        		$("#addCartListModelDiv"+UUID).append('<a type="button" id="addedCartListModel'+UUID+'" class="anchorHighlight anchorHighlightActive">Added</a>');
-	        		$("#deleteIconListModel"+UUID).append('<a class="removeSelected mt" title="Remove Selected"><i class="fa fa-trash-o"></i></a>');
+	        		$("#deleteIconListModel"+UUID).append('<a class="removeSelected mt" title="Remove Selected" onclick="deleteCandidateMarketCart(\''+UUID+'\')"><i class="fa fa-trash-o"></i></a>');
         		}
         		if(viewModel=="CardModel"){
 	        		$("#addCartCardModel"+UUID).hide();
 	        		$("#addCartCardModelDiv"+UUID).append('<a type="button" id="addedCartCardModel'+UUID+'" class="anchorHighlight anchorHighlightActive">Added</a>');
-	        		$("#deleteIconCardModel"+UUID).append('<a class="removeSelected mt" title="Remove Selected"><i class="fa fa-trash-o"></i></a>');
+	        		$("#deleteIconCardModel"+UUID).append('<a class="removeSelected mt" title="Remove Selected" onclick="deleteCandidateMarketCart(\''+UUID+'\')"><i class="fa fa-trash-o"></i></a>');
         		}
         		//alert("success");
         	}

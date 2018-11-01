@@ -2846,6 +2846,12 @@ private Sheet createXlsSheet(Sheet createExcelsheet, Row writeRow,Candidate cand
 			}
 		}
 		return marketPlaceDTOs;
+	}
+
+	@Override
+	public void deleteCandidateMarketCartByMarketUUID(String candidatgeMarketUUID) {
+		candidateDao.deleteCandidateMarketCartByMarketUUID(candidatgeMarketUUID);
+		
 	} 
 
 }
