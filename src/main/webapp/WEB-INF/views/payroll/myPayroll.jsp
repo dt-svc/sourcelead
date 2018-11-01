@@ -299,7 +299,7 @@ function loansAdvances(){
                		</div>
                		</div>
                		<div class="col-md-3 mb">
-               			<h5>Pay Times</h5>
+               			<h5>Pay Items</h5>
                			<div class="clearfix tableStyles">
                				<table class="table-bordered table">
                					<thead>
@@ -326,7 +326,7 @@ function loansAdvances(){
                		</div>
                		</div>
                		<div class="col-md-3 mb">
-               			<h5>Advances</h5>
+               			<h5>Loan and Advances</h5>
                			<div class="clearfix tableStyles">
                				<table class="table-bordered table">
                					<thead>
@@ -524,6 +524,7 @@ function getMyPayrollList(){
 	         
 	         //Loan and Advance
 	         var loan = "";
+	         if(result.loanAdvance != null && result.loanAdvance != '' && result.loanAdvance != 'undefined'){
 	         for (var i=0; i< result.loanAdvance.length; i++){
 	             var ln = result.loanAdvance[i];
 	        	 loan = loan + '<tr>';
@@ -535,6 +536,7 @@ function getMyPayrollList(){
 	         loan = loan + '<td><strong>Total</strong></td>';
 	         loan = loan + '<td>$ '+result.loanAmountTotal+'</td>';
 	         loan = loan + '</tr>';
+	         }
 	         $("#loanAdvDiv").empty();
 	         $("#loanAdvDiv").append(loan);
 	         
@@ -603,7 +605,7 @@ function getMyPayrollList(){
 	 	        result = result +'<td>';
 	 	        result = result +'<div class="tblminwidth-30">';
 	 	        result = result +'<a href="#" class="anchorBlack" title="View"><i class="fa fa-eye" onclick="payAdjustment(\''+json.payrollUUID+'\',\'APPROVED\');"></i></a>';
-	 	        result = result +'<a download href="'+json.paySlipFileURL+'" class="anchorBlack ml5" title="Download"><i class="fa fa-download" onclick="payDownload();"></i></a>';
+	 	        result = result +'<a download href="'+json.paySlipFileURL+'" class="anchorBlack ml5" title="Download"><i class="fa fa-download"></i></a>';
 	 	        result = result +'</div>';
 	 	        result = result +'</td>';
 	 	        result = result +'</tr>';
@@ -645,20 +647,6 @@ function mayPayrollPagination(){
     $('.dataTables_filter input').attr("placeholder", "Search");
 }
 </script>
-<script >
-function payDownload(){
-	$.ajax({
-		type: "GET",
-        url: sourceleadUrl+"/getMyPayrollDownload?"+tokenParamName+"="+tokenValue                 , 
-        success: function(response) {
-        	if (response.response === "AWKWARD") {
-				location.href = "/errorPage";
-			} else if (response.response === "SUCCESS") {
-				alert("success");
-			}
-        }
-	});
-}
-</script>
+
 <jsp:include page="./viewPayRollSummary.jsp" /> 
 <jsp:include page="../masterFooter.jsp" />

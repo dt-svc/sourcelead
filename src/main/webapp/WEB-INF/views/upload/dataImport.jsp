@@ -129,6 +129,7 @@
 				success : function(data) {
 			    	$('#dataFieldsDiv').append(data);
 			    	var importStatus = $('#importStatus').val();
+			    	$('#errorDownloadDiv').empty();
 			    	if(importStatus == "success"){
 			    		$('#selector11').removeClass('bg-red').addClass('success_pop');
           				$("#msgDiv").html("Data imported successfully");
@@ -342,9 +343,14 @@ function getUploadProgressBar(){
 	        		    result = result + '<td><div class="tbldata-dotdot-100">'+report.failureCount+'</div></td>';
 	        		    result = result + '<td><div class="tbldata-dotdot-me">'+report.date+'&nbsp;&nbsp;'+report.time+'</div></td>';
 	        		   
-	        		    if(report.fileUrl != null && report.fileUrl != '' && report.fileUrl != 'undefined'){
+	        		  
 		        		    if(report.uploadProcessingStatus == 'Completed'){
-		        		    	result = result+'<td><div class="tbldata-dotdot-50 1538051356458tblicons_4"> <a download class="glyphicon glyphicon-download-alt" target="_blank" href=\"'+report.fileUrl+'\" download title="Download"></a>';
+		        		    	  if(report.fileUrl != null && report.fileUrl != '' && report.fileUrl != 'undefined'){
+		        		    		  result = result+'<td><div class="tbldata-dotdot-50 1538051356458tblicons_4"> <a download class="glyphicon glyphicon-download-alt" target="_blank" href=\"'+report.fileUrl+'\" download title="Download"></a>';
+		        		    	  }else{
+		 	        		    	 result = result + '<td><div class="tbldata-dotdot_100"><span class="text-danger">Uploaded Empty file</span></div></td>';
+		  	        		       }
+		        		    	
 		        		    }else{
 		        		    
 		        		    	  result = result + '<td>';
@@ -357,9 +363,7 @@ function getUploadProgressBar(){
 		                          result = result + '</td>';
 	                        
 		        		    } 
-	        		    }else{
-	        		    	 result = result + '<td><div class="tbldata-dotdot_100"><span class="text-danger">Uploaded Empty file</span></div></td>';
-	        		    }
+	        		    
 	        		 
 		    		}
 			           result = result + '       </tbody>';

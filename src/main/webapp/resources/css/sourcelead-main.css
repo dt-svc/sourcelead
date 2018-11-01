@@ -101,15 +101,13 @@ height: 100%;
 }
 .main-header {
 background-size: 15%; min-height: 52px; box-shadow: 0px 1px 2px rgba(0,0,0,0.1);
-background-position: 30px; background-color: #368ee0; z-index: 9999; position: fixed; max-height: 55px; width: 100%; 
+background-position: 30px; background-color: #fff; z-index: 9999; position: fixed; max-height: 55px; width: 100%; 
 }
 .main-header span.logo {
     background: #fff; padding: 0 15px; line-height: 54px; width: 190px; box-sizing: border-box; height: 55px; float: left;
-    text-align: center;
+    text-align: left;
 }
-.main-header span.logo img {
-	/*width:100%; width: 200px;*/ width: auto; max-height: 36px; display: block; margin: 8px auto;
-}
+.main-header span.logo img { width: auto; max-height: 44px; display: block; margin: 8px auto 0px;}
 .main-header span.logo .text-logo {
 font-size: 18px; font-weight: bold; text-align: center; line-height: 54px; overflow: hidden; text-overflow: ellipsis; width: 160px; 
 white-space: nowrap; vertical-align: middle; font-style: normal; color: #375d81;
@@ -194,7 +192,7 @@ float: left; padding: 0 15px; /*transition: all 0.5s ease-in-out 0s;*/ line-heig
     float: left; margin-top: 10px;
 }
 .search-area .btn {
-    height: 32px; border-radius: 3px 0 0 3px; width: 140px !important;
+    height: 34px; width: 141px !important; border-radius: 15px 0px 0px 15px; border: 1px solid #e4e4e4; background-color: #f2f2f2;
 }
 search-area .btn-default{
     color: #fff; background-color: #337ab7; border-color: #2e6da4;
@@ -203,14 +201,16 @@ search-area .btn-default:hover {
     color: #fff; background-color: #286090; border-color: #204d74;
 }
 .search-area .form-control {
-background:rgba(55,93,129, 0.7); margin: 0; color:#fff !important; box-shadow: none; padding-left: 15px; padding-right: 30px;
-height: 32px; border-radius: 0 3px 3px 0; width: 275px; border: 1px solid rgba(55,93,129, 0.3) !important; border-left:none;
+background:#fff; margin: 0; color:#333 !important; box-shadow: none; padding-left: 15px; padding-right: 30px;
+height: 34px; border-radius: 0 15px 15px 0; width: 275px; border:1px solid #e4e4e4 !important; border-left:none;
 }
 .search-area .form-control::-moz-placeholder {
 color: #bdbdbd; opacity: 1;
 }
 .search-area .srcbutton {
-position: absolute; top: 0px; color:#fff; right: 0; padding-right: 10px; height: 34px; background: transparent; border: 0;
+position: absolute; top: 0px; color:#a7a7a7; right: 5px; height: 32px; background: transparent; border: 0; width: 30px;
+display: block; background-image:url(../images/search.svg); background-position:center; background-repeat:no-repeat; background-size:31px;
+
 }
 .main-header .header-nav .custom-navbar ul > li > a > .label {
 font-size: 9px; line-height: 0.9; padding: 2px 3px; position: absolute; right: 7px; text-align: center; top: 9px;
@@ -2169,7 +2169,7 @@ a.collpase-div .fa-angle-down:hover{
 	background-color:#DCDBDA; color:#333;
 }
 .addTask {
-	position:fixed; right: 0px; top: 90px; z-index: 1000;
+	position:fixed; right: 0px; top: 90px; z-index: 100000;
 }
 .addTask .icon-addTask{
 	background:-webkit-linear-gradient(#2bddb8,#17aa8c); background:-o-linear-gradient(#2bddb8,#17aa8c);

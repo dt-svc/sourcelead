@@ -410,7 +410,7 @@ function empChecksListPagination(){
 
 
 
-<script>
+<!-- <script>
 function getWagesTaxSummaryByEmpId(){
 	 var empId = $("#empId").val();
 	 var orgLocationId = '${SourceLeadWeb_orgLocationId}';
@@ -534,7 +534,7 @@ function wagesAndTaxEmpTablePagination(){
     $("#WagesAndTaxEmpTable").wrap("<div class='overflow_Auto width100percnt'></div>");
     $('.dataTables_filter input').attr("placeholder", "Search");
 }
-</script>
+</script> -->
 
 <script>
 function getAccontDeductions(){

@@ -41,14 +41,30 @@
 						<tr>
 						  <th>Name</th>
 						  <th>Type</th>   
-						  <th>Status</th>         
-						  <th>Amount</th>     
-						  <th>Scheduler</th>     
-						  <th>No Of Schedules</th> 
-						  <th>Effective Date</th>
-						  <th>Deduct Amount</th>         
-						  <th>Approver</th>         
-						  <th>Action</th>                  
+						  <th>Total Amount</th>
+						  <c:if test="${loanStatus == 'Outstanding'}">
+							  <th>Paid Amount</th>
+			                  <th>Due Amount</th>
+		                  </c:if>
+		                  <c:if test="${loanStatus == 'Requested'}">
+		                  	<th>Requested To</th>
+		                  	<th>Requested On</th>
+		                  </c:if>
+		                  <c:if test="${loanStatus == 'Outstanding' || loanStatus == 'Completed'}">
+		                  	<th>No. of Schedules</th>
+		                  </c:if>
+		                  <c:if test="${loanStatus == 'Outstanding'}">
+		                  	<th>Next Schedule</th>
+		                  </c:if>
+		                  <c:if test="${loanStatus == 'Completed'}">
+		                  	<th>Last Paid On</th>
+		                  </c:if>
+						  <c:if test="${loanStatus == 'Outstanding' || loanStatus == 'Completed'}">
+		                  	<th>Action</th>
+		                  </c:if>
+		                  <c:if test="${loanStatus == 'Requested'}">
+		                  	<th>Status</th>
+		                  </c:if>        
 						</tr>
 					</thead>
 					
@@ -58,16 +74,30 @@
 							 <tr>
 							   <td><div class="tblminwidth-50" title="${loanAdv.payrollLoanAndAdvanceId.name}">${loanAdv.payrollLoanAndAdvanceId.name}</div></td>
 							   <td><div class="tblminwidth-50" title="${loanAdv.loanAdvanceType}">${loanAdv.loanAdvanceType}</div></td>
-							   <td><div class="tblminwidth-50" title="${loanAdv.loanAndAdvanceStatus}">${loanAdv.loanAndAdvanceStatus}</div></td>
-							   <td><div class="tblminwidth-50" title="${loanAdv.amount}">${SourceLeadWeb_orgLocations.country == 'United States' ? '$' : ''}   ${loanAdv.amount}</div></td>
-							   <td><div class="tblminwidth-50" title="${loanAdv.scheduler}">${loanAdv.scheduler}</div></td>
-							   <td><div class="tblminwidth-30" title="${loanAdv.noOfSchedules}">${loanAdv.noOfSchedules}</div></td>
-							   <td><div class="tblminwidth-50" title="${loanAdv.effectiveDateStr}">${loanAdv.effectiveDateStr}</div></td>
-							   <td><div class="tblminwidth-50" title="${loanAdv.deductAmount}">${loanAdv.deductAmount}</div></td>
-							   <td><div class="tblminwidth-50" title="${loanAdv.approverName}">${loanAdv.approverName}</div></td>
-							   <td><div class="tblminwidth-50"><a href="javascript:void(0)" onclick="editLoanAndAdvance('${loanAdv.id}')">Edit</a>
-							     |&nbsp;<a href="javascript:void(0)" onclick="deleteLoanAndAdvance('${loanAdv.id}')">Delete</a>
-							   </div></td>
+							   <td><div class="tblminwidth-50" title="${loanAdv.amount}"><span class="paddingLeft">&#8377; ${loanAdv.amount}</span></div></td>
+							   <c:if test="${loanStatus == 'Outstanding'}">
+								   <td><div class="tblminwidth-50" title="">--</div></td>
+								   <td><div class="tblminwidth-30" title="">--</div></td>
+							   </c:if>
+							   <c:if test="${loanStatus == 'Requested'}">
+			                  		<td><div class="tblminwidth-50" title="">--</div></td>
+			                  		<td><div class="tblminwidth-50" title="">--</div></td>
+			                   </c:if>
+			                   <c:if test="${loanStatus == 'Outstanding' || loanStatus == 'Completed'}">
+			                  		<td><div class="tblminwidth-50" title="${loanAdv.noOfSchedules}">${loanAdv.noOfSchedules}</div></td>
+			                   </c:if>
+							   <c:if test="${loanStatus == 'Outstanding'}">
+			                  		<td><div class="tblminwidth-50" title="">--</div></td>
+			                   </c:if>
+			                   <c:if test="${loanStatus == 'Completed'}">
+			                  		<td><div class="tblminwidth-50" title="">--</div></td>
+			                   </c:if>
+							   <c:if test="${loanStatus == 'Outstanding' || loanStatus == 'Completed'}">
+			                  		<td><div class="tblminwidth-50"><a href="javascript:void(0)" class="anchorBlack"><i class="fa fa-eye"></i></a></div></td>
+			                   </c:if>
+			                   <c:if test="${loanStatus == 'Requested'}">
+			                  		<td><div class="tblminwidth-30 text-center text-danger">Pending</div></td>
+			                   </c:if> 
 							 </tr>
 						 </c:forEach>
 						</c:if>

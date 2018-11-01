@@ -222,6 +222,17 @@ public class PayrollRestController {
 	public ResponseList<IndPaysheetFrequencyDTO> getPaySheetFrequencyList(IndPaysheetFrequencyDTO indpaysheetFrequencyDTO, @RequestParam(value = "paySheetFrequencyUUID", required = false) String searchValue, HttpServletRequest request, HttpServletResponse response) throws Exception
 	{
 		OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+		
+		String[] tableColumns = {"payRunId", "groupName", "frequencyStartDate", "payCheckDate", "type", "total", "approverStatus"};
+	    int sortColumnIndex = 3; //by default sorting using Pay date
+		String sortColumnOrder = "desc"; //by default descending order
+		if(indpaysheetFrequencyDTO.getOrder() != null && !indpaysheetFrequencyDTO.getOrder().isEmpty()) {
+			sortColumnIndex = Integer.parseInt(indpaysheetFrequencyDTO.getOrder().get(0).get("column"));
+			sortColumnOrder = indpaysheetFrequencyDTO.getOrder().get(0).get("dir");
+		}
+		indpaysheetFrequencyDTO.setSortColumn(tableColumns[sortColumnIndex]);
+		indpaysheetFrequencyDTO.setSortOrder(sortColumnOrder);
+		
 		return indPayrollService.getPayPeriodListByOrgLocationId(orgLocation, indpaysheetFrequencyDTO);
 	}
 	

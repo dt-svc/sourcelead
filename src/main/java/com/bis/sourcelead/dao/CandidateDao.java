@@ -187,4 +187,7 @@ public interface CandidateDao {
 	public int getMarketCartStatusByMarketIdOrgId(Long marketPlaceId, Long orgId);
 
 	public void deleteCandidateMarketCartByMarketUUID(String candidatgeMarketUUID);
+	
+	Integer getCandidateProfilePercentageByCandidateId(Long id) throws Exception;
+
 }

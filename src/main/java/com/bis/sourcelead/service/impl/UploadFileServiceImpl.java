@@ -760,6 +760,7 @@ private String getCellValueAsString(Cell cell, String fileName) {
 				candidate.setCandidateType(Constants.CANDIDATE);
 				candidate.setFirstName(user.getFirstName());
 				candidate.setLastName(user.getLastName());
+				candidate.setMiddelName(userImport.getMiddleName());
 				candidate.setCountry(orgLocations.getCountry());
 				candidate.setIsAssociate(Constants.YES);
 				candidate.setEmail(user.getEmail());
@@ -773,6 +774,9 @@ private String getCellValueAsString(Cell cell, String fileName) {
 				candidate.setMobilePhone(user.getMobilePhone());
 				candidate.setGeneratedId(candidateService.getCandidateId(orgLocations));
 				candidate.setProfilePercentage(Constants.MIN_PROFILE_PERCENETAGE);
+				candidate.setMaritalStatus(userImport.getMaritalStatus());
+				
+				
 		    }else{
 		    	candidate.setConsultantUser(user);
 				candidate.setMasterCandidateId(masterCandidate);
@@ -1958,6 +1962,13 @@ private String getCellValueAsString(Cell cell, String fileName) {
 		employee.setDailyHours(userImport.getDayHours());
 		employee.setOrgLocations(orgLocations);
 		employee.setUserEmploymentType(userImport.getDesignationType());
+		if(StringUtils.isNotBlank(userImport.getDateofJoin())){
+			try {
+				employee.setHireDate(commonUtil.orgLocationDateFormat(orgLocations.getDateFormat(), userImport.getDateofJoin()));
+				} catch (Exception e) {
+				  e.printStackTrace();
+				}
+		}
 		
 		if(StringUtils.isNotBlank(userImport.getDepartment())) {
 			Department department = departmentService.getDepartmentByOrgLocationIdAndDepartmentName(orgLocations.getId(), userImport.getDepartment());
@@ -2022,7 +2033,9 @@ private String getCellValueAsString(Cell cell, String fileName) {
 			User user  = new User();
 			user.setFirstName(userImport.getFirstName());
 			user.setLastName(userImport.getLastName());
+			user.setMiddelName(userImport.getMiddleName());
 			user.setEmail(userImport.getEmail());
+			user.setMaritalStatus(userImport.getMaritalStatus());
 			user.setGender(userImport.getGenderValue());
 			user.setMobilePhone(userImport.getPhoneNumber());
 			user.setExtensionNumber(userImport.getExtensionNumber());

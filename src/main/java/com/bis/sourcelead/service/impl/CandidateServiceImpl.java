@@ -1748,6 +1748,7 @@ private Sheet createXlsSheet(Sheet createExcelsheet, Row writeRow,Candidate cand
 							vendorCandidate = new Candidate();
 							MasterCandidate masterCandidate = new MasterCandidate();
 							masterCandidate.setId(candidate.getMasterCandidateId().getId());
+							vendorCandidate.setWorkLocation(orgLocations);
 							vendorCandidate.setMasterCandidateId(masterCandidate);
 							vendorCandidate.setParentCandidateId(candidate);
 							vendorCandidate.setConsultantUser(candidate.getConsultantUser());
@@ -2853,5 +2854,9 @@ private Sheet createXlsSheet(Sheet createExcelsheet, Row writeRow,Candidate cand
 		candidateDao.deleteCandidateMarketCartByMarketUUID(candidatgeMarketUUID);
 		
 	} 
+
+	public Integer getCandidateProfilePercentageByCandidateId(Long id) throws Exception {
+		return candidateDao.getCandidateProfilePercentageByCandidateId(id);
+	}
 
 }

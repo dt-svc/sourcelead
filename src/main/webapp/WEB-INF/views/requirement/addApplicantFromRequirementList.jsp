@@ -1053,6 +1053,12 @@ function getCandidateDetails(){
 			        	 }else{
 			        		 $("#submissionZipCode").val('');
 			        	 }
+			        	 
+			        	 if(json['dateofBirthString'] != null && json['dateofBirthString'] != "" && json['dateofBirthString'] != 'undefined'){
+			        		 $("#DOB").val(json['dateofBirthString']);
+			        	 }else{
+			        		 $("#DOB").val('');
+			        	 }
 			        
 			        	 if(json['noticePeriod'] != null && json['noticePeriod'] != "" && json['noticePeriod'] != 'undefined'){
 			        		 $("select[name=NoticePeriod]").val(json['noticePeriod']);

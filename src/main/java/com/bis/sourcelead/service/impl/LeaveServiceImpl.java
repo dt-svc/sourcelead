@@ -656,8 +656,8 @@ public class LeaveServiceImpl implements LeaveService{
 				float totalLeaveCount = leaveManagementUtil.getTotalAppliedLeaveCount(orgLocations, leave.getLeaveType(),leave.getUser().getId());
 				
 				float balLeaves = 0;
-				if(totalLeaveCount >0) {
-					  balLeaves = totalLeaves - totalLeaveCount;
+				if(appliedLeavesCount >0) {
+					  balLeaves = totalLeaves - appliedLeavesCount;
 				}else {
 					  balLeaves = totalLeaves;	
 				}
@@ -1088,7 +1088,7 @@ public class LeaveServiceImpl implements LeaveService{
 				leaveDto.setToDateToHalfTime(leave.getToDateToHalfTime());
 			}
 			
-			leaveDto.setCreatedDate(ConversionUtil.getDateAsString(leave.getCreatedDate()));
+			leaveDto.setCreatedDate(commonUtil.dateStrFromOrgDateFormatter(orgLocations.getDateFormat(), leave.getCreatedDate()));
 			
 			if(StringUtils.isNotBlank(leave.getRejectedReason())){
 				leaveDto.setRejectedReason(leave.getRejectedReason());
@@ -1099,7 +1099,7 @@ public class LeaveServiceImpl implements LeaveService{
 			}
 			
 			if(leave.getUpdatedDate() != null)
-			leaveDto.setUpdatedDate(ConversionUtil.getDateAsString(leave.getUpdatedDate()));
+			leaveDto.setUpdatedDate(commonUtil.dateStrFromOrgDateFormatter(orgLocations.getDateFormat(), leave.getUpdatedDate()));
 			leaveDto.setLeaveUUID(leave.getLeaveUUID());
 			if(leave.getApprovedBy() != null){
 				StringBuilder sb = new StringBuilder();

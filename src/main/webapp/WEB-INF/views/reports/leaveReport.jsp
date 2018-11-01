@@ -17,7 +17,7 @@ $( document ).ready(function() {
     
 });
 </script>
-<input type="hidden" id="noReports" name="noReports"/>
+<input type="hidden" id="noReports" name="noReports"	 value="0"/>
     <div id="loadingId"></div>
 	<div id="dayEntryformData">
 	<section class="content-wraper contentWraper">
@@ -201,7 +201,7 @@ function exportToPdf(){
 	if($("#associateList").val() != null){
 		associateListId = $("#associateList").val();
 		}
-	if(ReportsListEmpty > 0){
+	if(ReportsListEmpty != 0){
 		window.location.href = sourceleadUrl + "/getExportLeaveReport?"+tokenParamName+"="+tokenValue+"&startDate="+startDate+"&endDate="+endDate+"&exportType="+exportType+"&searchValue="+searchValue+"&type="+type+"&status="+status+"&leaveTypeIds="+leaveTypeIds+"&departmentIds="+departmentIds+"&reportRolesId="+reportRolesId+"&employmentType="+employmentType+"&associateListId="+associateListId;
 	}else{
 		var result = "";
@@ -338,7 +338,6 @@ function prepareAllLeaveReportList(url){
 		result = result	+ '</div>';
 		$("#leaveReportsList").empty();
 		$("#leaveReportsList").append(result);
-		$("#noReports").val(result.length);
 		leaveReportsListPagination(url);
 }
 </script>
@@ -377,7 +376,8 @@ function leaveReportsListPagination(url){
 	    	  	"targets": colIndex++,
 	    	  	"data": "id",
 	    	  	"render": function(data, type, user, meta) {
-	    	  	  var result = '';
+	    	  		$("#noReports").val(1);
+	    	  		var result = '';
 	        	  result = result + ' <td>';
 		          if(user.eid !=null && user.eid !='' && user.eid !='undefined'){
 						 result = result +'<div class="tblminwidth-75" title="'+user.eid+'">'+user.eid+'</div>';
@@ -634,6 +634,7 @@ function resetValues(){
 
 <script>
 function getAllUserListBasedOnOrgLocationId(){
+	var ReportsListEmpty = $("#noReports").val(0);
 	$.ajax({
         url: sourceleadUrl + "/getAllUserListBasedOnOrgLocationId",
         type: "POST",
@@ -643,7 +644,7 @@ function getAllUserListBasedOnOrgLocationId(){
         	if(obj != null && obj !='' && obj !='undefined'){
         		$.each(obj, function(i, item) {
         			if(item.candidateName != null && item.candidateName !='' && item.candidateName !='undefined'){
-        				output = output + "<option value='" +item.masterCandidateId.id+ "'>"+item.candidateName+"</option>";
+        				output = output + "<option value='" +item.userId+ "'>"+item.candidateName+"</option>";
         			}
             		
         		});
