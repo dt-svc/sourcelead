@@ -685,11 +685,13 @@ function myTeamsFunction() {
     }
 }
 function showAllClients() {
+	$("ul#myOwnerClinetListUL > li input:checkbox").prop("checked",false);
 	$("#myClinetListUL").show();
 	$("#myOwnerClinetListUL").hide();
 }
 
 function showMyClients() {
+	$("ul#myClinetListUL > li input:checkbox").prop("checked",false);
 	$("#myClinetListUL").hide();
 	$("#myOwnerClinetListUL").show();
 }

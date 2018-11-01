@@ -577,8 +577,8 @@ $(".overIcon, .newActPop").click(function(e){
 								<label><strong>Select Client type</strong></label>
 								 <div class="clearfix">
 									<ul class="list-unstyled" id="clientTypeFilter">
-									     <li class="radioIput positionRelative" ><input  type="radio" name="searchType" value ="myClients" onchange="showMyClients();" id="myClients"><label for="myClients">My Clients</label></li>
-										 <li class="radioIput positionRelative" ><input  type="radio" name="searchType" value ="allClients" onchange="showAllClients();" id="allClients" checked="checked"><label for="allClients">All Clients</label></li>
+									     <li class="radioIput positionRelative" ><input  type="radio" name="clients" value ="myClients" onchange="showMyClients();" id="myClients"><label for="myClients">My Clients</label></li>
+										 <li class="radioIput positionRelative" ><input  type="radio" name="clients" value ="allClients" onchange="showAllClients();" id="allClients" checked="checked"><label for="allClients">All Clients</label></li>
 				                    </ul>
 								 </div>
 						   		
@@ -750,11 +750,13 @@ function myTeamsFunction() {
 }
 
 function showAllClients() {
+	$("ul#myOwnerClinetListUL > li input:checkbox").prop("checked",false);
 	$("#myClinetListUL").show();
 	$("#myOwnerClinetListUL").hide();
 }
 
 function showMyClients() {
+	$("ul#myClinetListUL > li input:checkbox").prop("checked",false);
 	$("#myClinetListUL").hide();
 	$("#myOwnerClinetListUL").show();
 }
