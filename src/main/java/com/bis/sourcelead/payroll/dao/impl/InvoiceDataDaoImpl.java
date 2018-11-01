@@ -197,7 +197,7 @@ public class InvoiceDataDaoImpl implements InvoiceDataDao{
 //			String query = "from WageTaxSummary wts  left join fetch wts.orgLocationId where wts.orgLocationId.id =:orgLocationId and (wts.status IS NULL or wts.status <> '0')";
 			String countQuery = "from InvoiceData iData  where iData.orgLocationId.id =:orgLocationId and iData.sku = :empId  and (iData.status IS NULL or iData.status <> '0')";
 			
-			if(invoiceDetailsDTO.getSearchValue().contains("/") || invoiceDetailsDTO.getSearchValue().contains("-")){
+			if(StringUtils.isNoneBlank(invoiceDetailsDTO.getSearchValue()) && (invoiceDetailsDTO.getSearchValue().contains("/") || invoiceDetailsDTO.getSearchValue().contains("-"))){
 				String convertedDate=invoiceDetailsDTO.getSearchValue();
 				if(invoiceDetailsDTO.getSearchValue().contains("/")){
 					convertedDate = invoiceDetailsDTO.getSearchValue().replaceAll("/", "-");

@@ -810,4 +810,35 @@ public class USPayrollReportRestController {
 		}
 	}
 	
+	/**
+	 * @author pavan jampana
+	 * this method is is used to return Contract Employee Payreport Jsp page 
+	 * @param request
+	 * @param response
+	 * @return
+	 * @throws Exception
+	 */
+	@RequestMapping(value = "/contractEmployeePayreport")
+	public ModelAndView contractEmployeePayreport(HttpServletRequest request, HttpServletResponse response) throws Exception
+	{
+		ModelAndView model = new ModelAndView();
+		model.setViewName("payroll/contractEmployeePayreport");
+		return model;
+	}
+	
+	
+	/**
+	 * @author pavan jampana
+	 * this method is is used to return Contract Employee Payreport Jsp page 
+	 * @param request
+	 * @param response
+	 * @return
+	 * @throws Exception
+	 */
+	@RequestMapping(value = { "/getContractEmployeeReportList","/rest/getContractEmployeeReportList" }, method = RequestMethod.GET)
+	public ResponseList<PayrollReportDTO> getContractEmployeeReportList(PayrollReportDTO payrollReportDTO,HttpServletRequest request, HttpServletResponse response) throws Exception
+	{
+		OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+		return paysheetFrequencyService.getContractEmployeeReportList(payrollReportDTO,orgLocation);
+	}
 }
