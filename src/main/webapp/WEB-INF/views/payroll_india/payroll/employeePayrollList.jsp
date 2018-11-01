@@ -212,7 +212,49 @@ function saveNetpay(){
 	}
 	$(".editNetpay").show();
 	$(".saveNetpay").hide();
-}employeePayrollList
+	
+	saveAdjustedPayheads();
+}
+
+function saveAdjustedPayheads(){
+	if ($('#associatePayheadAdjust_form').validate(false, validationSettings)) {
+		var formData = getFormData1("associatePayheadAdjust_form");
+		$.ajax({
+			 type : "POST",
+			 data: formData,
+		     processData: false,
+		     contentType:false, 
+			 url : sourceleadUrl+"/saveAssociatePayheadAdjustInd?"+tokenParamName+"="+tokenValue,
+			 success : function(result) {
+			  		
+			 }
+		});
+	}
+}
+
+function calculateGrossSalary(){
+	var grossTotal = 0.00;
+	$('.earningPayheadTbady #earningPayheadAmount').each(function() {
+		grossTotal += parseFloat($(this).val());
+	});
+	$('#earningPayheadAmountTotal').html(grossTotal.toFixed(2));
+	$('#totalGrossPay').html($('#earningPayheadAmountTotal').html());
+	$("input[name='grossPay']").val($('#totalGrossPay').html());
+	$('#totalNetPay').html((parseFloat($('#earningPayheadAmountTotal').html()) - parseFloat($('#deductionPayheadAmountTotal').html())).toFixed(2));
+	$("input[name='netPay']").val($('#totalNetPay').html());
+}
+
+function calculateNetSalary(){
+	var netTotal = 0.00;
+	$('.deductionPayheadTbady #deductionPayheadAmount').each(function() {
+		netTotal += parseFloat($(this).val());
+	});
+	$('#deductionPayheadAmountTotal').html(netTotal.toFixed(2));
+	$('#totalNetPay').html((parseFloat($('#earningPayheadAmountTotal').html()) - parseFloat($('#deductionPayheadAmountTotal').html())).toFixed(2));
+	$("input[name='grossPay']").val($('#totalGrossPay').html());
+	$("input[name='netPay']").val($('#totalNetPay').html());
+}
+
 function confirmPayroll() {
 	$(".confirmPayroll, .comMask").fadeIn();
 }
