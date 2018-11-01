@@ -17,8 +17,10 @@
 			</h2>
 		</div>
 		<div class="success_pop" id="selector1" style="display: none;"><i class="fa fa-check-circle"></i><span id="msgDiv"></span></div>
+		
 		<div class="pull-right brud-crum">
-			<a href="<c:url value='${appPath}/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home </a> &raquo; Payroll
+			<a href="<c:url value='${appPath}/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a>&raquo; <a
+				href="<c:url value='${appPath}/payrollConfiguration'/>"> Payroll Configuration</a>&raquo; Payroll
 		</div>
 	</section>
 	

@@ -249,7 +249,7 @@ function associateWithHolding(){
 										"render" : function(data, type, opt,meta) {
 											var result = "";
 											if(opt.workLocation != null && opt.workLocation != ''){
-												result = result+ '<td><div class="tbldata-dotdot-vsm" title="">'+opt.workLocation+'</div></td>'; 
+												result = result+ '<td><div class="tbldata-dotdot-vsm" title="'+opt.workLocation+'">'+opt.workLocation+'</div></td>'; 
 											}else{
 												result = result+ '<td><div class="tbldata-dotdot-vsm" title="">--</div></td>'; 
 											}
@@ -262,7 +262,7 @@ function associateWithHolding(){
 										"render" : function(data, type, opt,meta) {
 											var result = "";
 											if(opt.federalFillingStatus != null && opt.federalFillingStatus != ''){
-											result = result+ '<td><div class="tbldata-dotdot-vsm" title="">'+opt.federalFillingStatus+'</div></td>'; 
+											result = result+ '<td><div class="tbldata-dotdot-vsm" title="'+opt.federalFillingStatus+'">'+opt.federalFillingStatus+'</div></td>'; 
 											}else{
 												result = result+ '<td><div class="tbldata-dotdot-vsm" title="">--</div></td>';
 											}
@@ -301,7 +301,7 @@ function associateWithHolding(){
 										"render" : function(data, type, opt,meta) {
 											var result = "";
 											if(opt.stateFillingStatus != null && opt.stateFillingStatus != ''){
-												result = result+ '<td><div class="tbldata-dotdot-vsm" title="">'+opt.stateFillingStatus+'</div></td>'; 
+												result = result+ '<td><div class="tbldata-dotdot-vsm" title="'+opt.stateFillingStatus+'">'+opt.stateFillingStatus+'</div></td>'; 
 											}else{
 												result = result+ '<td><div class="tbldata-dotdot-vsm" title="">--</div></td>'; 
 											}
