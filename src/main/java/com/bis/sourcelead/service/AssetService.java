@@ -1,5 +1,7 @@
 package com.bis.sourcelead.service;
 
+import java.io.File;
+import java.io.FileNotFoundException;
 import java.util.Date;
 import java.util.List;
 
@@ -15,6 +17,7 @@ import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.Requirement;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.reportsDTO.AssetGrowthDTO;
+import com.bis.sourcelead.reportsDTO.AssetsReportDTO;
 
 public interface AssetService {
 
@@ -82,5 +85,12 @@ public interface AssetService {
 	public AssetServices saveAssetServiceDetails(AssetServiceDTO assetServiceDTO,OrgLocations orgLocations) throws Exception;
 	
 	List<AssetGrowthDTO> getAssetGrowthListByOrgloationIdAndAssetGrowthDTO(Long orgLocationId,AssetGrowthDTO assetGrowthDTO,Date[] searchDates)throws Exception;
+
+	List<Asset> getAllAssetByOrgId(Long orgLocationId) throws Exception;
+
+	ResponseList<AssetsReportDTO> getAssetReportList(AssetsReportDTO assetsReportDTO, Long id)throws Exception;
+
+	File getAssetsReportListOfExcel(List<AssetsReportDTO> data, User user, OrgLocations orgLocation,String isGlobalAccess) throws FileNotFoundException;
+
 
 }
