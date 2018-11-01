@@ -55,6 +55,9 @@ public class JobFair implements Serializable {
 
 	@Column(name = "POSTED_FROM")
 	private String postedFrom;
+	
+	@Column(name = "SELECTED_CLIENT")
+	private String selectedClient;
 
 	@Column(name = "VENUE")
 	private String venue;
@@ -279,6 +282,14 @@ public class JobFair implements Serializable {
 
 	public void setUpdatedDate(Date updatedDate) {
 		this.updatedDate = updatedDate;
+	}
+
+	public String getSelectedClient() {
+		return selectedClient;
+	}
+
+	public void setSelectedClient(String selectedClient) {
+		this.selectedClient = selectedClient;
 	}
 
 }
