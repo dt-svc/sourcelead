@@ -771,4 +771,43 @@ public class USPayrollReportRestController {
 			file.delete();
 		}
 	}
+	
+	
+	/**
+	 * associate withholding report export
+	 * @param payrollReportDTO
+	 * @param request
+	 * @param response
+	 * @throws Exception
+	 */
+	@RequestMapping(value = { "/exportAssociateWithholding","/rest/exportAssociateWithholding" }, method = RequestMethod.GET)
+	public void exportAssociateWithholding(AssociateWithHoldingDTO associateWithHoldingDTO,HttpServletRequest request, HttpServletResponse response) throws Exception
+	{
+		OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+		ResponseList<AssociateWithHoldingDTO> res = payrollReportService.getAssociateWithHoldingReports(orgLocation,associateWithHoldingDTO);
+		File file = null;
+	    if(associateWithHoldingDTO.getExportType().equalsIgnoreCase("pdf")) {
+	    	 file=  payrollReportPdfUtil.associateWithholdingPdfExport(res,orgLocation);
+	    }else {
+	    	 file=  payrollReportPdfUtil.associateWithholdingExcelExport(res,orgLocation);
+	    }
+	    
+		String mimeType = URLConnection.guessContentTypeFromName(file.getName());
+		if (mimeType == null) {
+			mimeType = "application/octet-stream";
+		}
+		response.setContentType(mimeType);
+		StringBuilder fileNameSB = new StringBuilder();
+		response.setHeader("Content-Disposition", fileNameSB.append("attachment; filename=\"").append(file.getName()).append("\"").toString());
+		response.setContentLength((int) file.length());
+		InputStream inputStream = new BufferedInputStream(new FileInputStream(file));
+		FileCopyUtils.copy(inputStream, response.getOutputStream());
+		inputStream.close();
+		response.getOutputStream().close();
+		response.getOutputStream().flush();	
+		if(file!= null){
+			file.delete();
+		}
+	}
+	
 }

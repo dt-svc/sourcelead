@@ -77,6 +77,11 @@ private String phoneNumber;
 
 private String department;
 
+private String middleName;
+
+private String maritalStatus;
+
+
 public String getReason() {
 	return reason;
 }
@@ -317,5 +322,21 @@ public String getDepartment() {
 
 public void setDepartment(String department) {
 	this.department = department;
+}
+
+public String getMiddleName() {
+	return middleName;
+}
+
+public void setMiddleName(String middleName) {
+	this.middleName = middleName;
+}
+
+public String getMaritalStatus() {
+	return maritalStatus;
+}
+
+public void setMaritalStatus(String maritalStatus) {
+	this.maritalStatus = maritalStatus;
 }
 }

@@ -670,7 +670,7 @@ public class EmployeePayrollRestController {
 	@RequestMapping(value = { "/getWagesTaxSummaryByEmpId", "/rest/getWagesTaxSummaryByEmpId"}, method = RequestMethod.POST)
 	public ResponseList<WageTaxSummary> getWagesTaxSummaryByEmpId(WagesTaxSummaryDTO wagesTaxSummaryDTO,HttpServletRequest request,HttpServletResponse response) throws Exception {
 		OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
-		ResponseList<WageTaxSummary>  wagesAndTaxList = null;
+		ResponseList<WageTaxSummary>  wagesAndTaxList = new ResponseList<>();
 		if(StringUtils.isNotBlank(wagesTaxSummaryDTO.getEmpId())){
 //			 wagesAndTaxList = wageTaxSummaryService.getWagesAndTaxListByEmployeeId(orgLocation,Long.parseLong(wagesTaxSummaryDTO.getEmpId()));
 			String[] tableColumns = {"fromDate", "toDate", "employeeId", "employeeName", "ssnNumber", "checkDate","checkNo","gross","fwt","ssec","med","swt","sdiSui","local","deds","net","batchNumber"};

@@ -15,7 +15,15 @@
     </section>
     
 <div class="reportNewDash">
-    
+    <a href="${appPath}/projectReport">
+	<div class="repDashCta">
+		<span><i class="fa fa-bar-chart"></i></span>
+		<div class="repDashCtaWrap">
+		<h2>Project Report</h2><b>View</b>
+		</div>
+	</div>
+	</a>
+	
     <sec:authorize access="hasRole('ROLE_DAYWISE_TIMESHEET_REPORT')">
     <a href="${appPath}/daywiseTimeSheetReports">
 	<div class="repDashCta">

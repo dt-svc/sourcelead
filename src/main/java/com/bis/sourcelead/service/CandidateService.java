@@ -258,4 +258,7 @@ public interface CandidateService {
 
 	public List<CandidateMarketPlaceDTO> getGlobalMarketplaceCandListGridCard(String searchValue, OrgLocations orgLocations);
 
+	
+	Integer getCandidateProfilePercentageByCandidateId(Long id) throws Exception;
+
 }

@@ -2234,6 +2234,7 @@ public class CandidateDaoImpl implements CandidateDao {
 
 	@Override
 	@Transactional
+
 	public List<Long> getAddedMarketplaceCandidates(List<Long> candidateIdsVal) {
 		Session session = this.sessionFactory.getCurrentSession();
 		String query = "select marketplace.candidateId.id from CandidateMarketPlace marketplace where marketplace.candidateId.id IN ( :candidateIds ) and marketplace.candidateMarketStatus = :marketplaceStatus and marketplace.status = :status";
@@ -2258,6 +2259,27 @@ public class CandidateDaoImpl implements CandidateDao {
 		Session session = this.sessionFactory.getCurrentSession();
 		session.update(marketPlace);
 	}
+
+	public Integer getCandidateProfilePercentageByCandidateId(Long id) throws Exception {
+		
+		Integer profilePercentage = 0;
+		Session session = this.sessionFactory.getCurrentSession();
+		String query = null;
+		query ="SELECT "
+				+" CAND.PROFILE_PERCENTAGE "
+				+" FROM CANDIDATE CAND "
+				+" WHERE "
+				+" CAND.ID = :id";
+		Query queryObj = session.createSQLQuery(query);
+		queryObj.setLong("id", id);	
+		Integer percentageId = (Integer) queryObj.uniqueResult();
+		if(percentageId != null) {
+			profilePercentage = percentageId;
+		}
+		
+		return profilePercentage;
+	}
+
 
 	@Override
 	@Transactional

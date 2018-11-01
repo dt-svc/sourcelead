@@ -65,6 +65,7 @@ $(document).ready(function(){
 
 <script>
 function getDaywiseLeaveReportList(){
+	var  noReports=$("#noReports").val(0); 
 	var userRole = [];
 	$('input:checkbox[name=userRole]:checked').each(function() 
     {
@@ -93,7 +94,7 @@ function getDaywiseLeaveReportList(){
 	var fromDate = $("#fromDate").val();
 	var searchValue = $("#daywiseReportDataTableSearch").val();
 	searchValue = searchValue ? searchValue : "";
-	var url = sourceleadUrl+"/getDaywiseLeaveReportList?"+tokenParamName+"="+tokenValue+"&searchValue="+searchValue+"&fromDate="+fromDate+"&userRole="+userRole+"&orgDepartments="+orgDepartments+"&employmentType="+employmentType+"&leaveTypeNames="+leaveTypeNames+"&leaveTypeBillable="+leaveTypeBillable;
+	var url = sourceleadUrl+"/getDaywiseLeaveReportList?"+tokenParamName+"="+tokenValue+"&searchValue="+searchValue+"&fromDate="+fromDate+"&userRole="+userRole+"&orgDepartments="+orgDepartments+"&employmentType="+employmentType+"&leaveTypeName="+leaveTypeNames+"&leaveTypeBillable="+leaveTypeBillable;
 	prepareAllDaywiseLeaveReportList(url);
 }
 </script>	
@@ -123,7 +124,6 @@ function prepareAllDaywiseLeaveReportList(url){
 		result = result	+ '</div>';
 		$("#daywiseLeaveReportsList").empty();
 		$("#daywiseLeaveReportsList").append(result);
-		$("#noReports").val(result.length);
 		daywiseLeaveReportsListPagination(url);
 }
 </script>
@@ -662,8 +662,7 @@ function exportUserData(){
 		    {
 		leaveTypeBillable.push($(this).val());
      });
-	if(ReportsListEmpty > 0){
-// 		window.location.href = sourceleadUrl + "/getExportDailyWiseLeaveReport?"+tokenParamName+"="+tokenValue+"&fromDate="+fromDate+"&exportType="+exportType+"&searchValue="+searchValue;
+	if(ReportsListEmpty != 0){
 		window.location.href = sourceleadUrl + "/getExportDailyWiseLeaveReport?"+tokenParamName+"="+tokenValue+"&searchValue="+searchValue+"&exportType="+exportType+"&fromDate="+fromDate+"&userRole="+userRole+"&orgDepartments="+orgDepartments+"&employmentType="+employmentType+"&leaveTypeNames="+leaveTypeNames+"&leaveTypeBillable="+leaveTypeBillable;
 
 	}else{
@@ -716,7 +715,7 @@ function exportToPdf(){
 		    {
 		leaveTypeBillable.push($(this).val());
      });
-	if(ReportsListEmpty > 0){
+	if(ReportsListEmpty != 0){
 		window.location.href = sourceleadUrl + "/getExportDailyWiseLeaveReport?"+tokenParamName+"="+tokenValue+"&searchValue="+searchValue+"&exportType="+exportType+"&fromDate="+fromDate+"&userRole="+userRole+"&orgDepartments="+orgDepartments+"&employmentType="+employmentType+"&leaveTypeNames="+leaveTypeNames+"&leaveTypeBillable="+leaveTypeBillable;
 
 // 		window.location.href = sourceleadUrl + "/getExportDailyWiseLeaveReport?"+tokenParamName+"="+tokenValue+"&fromDate="+fromDate+"&exportType="+exportType+"&searchValue="+searchValue;

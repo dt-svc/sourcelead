@@ -376,7 +376,7 @@
 			            postDed = postDed + '<th>Description</th>';
 			            postDed = postDed + '<th>Amount</th>';
 			            postDed = postDed + ' </tr>';
-			            if(json.postDed != null && json.postDed.length){
+			            if(json.postDed != null && json.postDed.length > 0){ 
 			            	  for (var i=0; i< json.postDed.length; i++){
 					            	var ded = json.postDed[i];
 				        			postDed = postDed + '<tr>';
@@ -419,7 +419,7 @@
 	                        preDed = preDed + '<th>Description</th>';
 	                        preDed = preDed + '<th>Amount</th>';
 	                        preDed = preDed + ' </tr>';
-	                        if(json.preDed != null && json.preDed.length){
+	                        if(json.preDed != null && json.preDed.length > 0){
 				            for (var i=0; i< json.preDed.length; i++){
 				            	var preded = json.preDed[i];
 				            	preDed = preDed + '<tr>';
@@ -623,8 +623,16 @@
 function calculatePreTaxDedAmount(){
 	var maxCount = $("#preDeductionLength").val();
 	var amount = 0;
-	for(var i=1;i<maxCount; i++){
-		amount += parseFloat($("#preDeductionAmount"+i+"").val());
+	for(var i=0;i<maxCount; i++){
+ 		var preEditAmount = $("#preDeductionAmount"+i+"").val();
+		if(preEditAmount != null && preEditAmount != '' && preEditAmount != 'undefined')
+			{
+			amount += parseFloat(preEditAmount);
+			}
+		else
+			{
+			$("#preDeductionTotal").html("$ "+amount+""); 
+			}
 	} 
 	$("#preDeductionTotal").html("$ "+amount+""); 
 }
@@ -632,8 +640,12 @@ function calculatePreTaxDedAmount(){
 function calculatePostTaxDedAmount(){
 	var maxCount = $("#postDeductionLength").val();
 	var amount = 0;
-	for(var i=1;i<maxCount; i++){
-		amount += parseFloat($("#"+i+"amount").val());
+	for(var i=0;i<maxCount; i++){
+		var editedAmount = $("#"+i+"amount").val()
+		if(editedAmount != null && editedAmount != '' && editedAmount != 'undefined')
+			amount += parseFloat(editedAmount);
+		else
+			$("#postDeductionTotal").html("$ "+amount+""); 
 	} 
 	$("#postDeductionTotal").html("$ "+amount+""); 
 }
@@ -642,8 +654,11 @@ function calculateTotalCotributionsAmount(){
 	var maxCount = $("#totalContributionsLngth").val();
 	var amount = 0;
 	for(var i=0;i<maxCount; i++){
-		if($("#totalContributions"+i+"").val()  != "")
-		amount += parseFloat($("#totalContributions"+i+"").val());
+		var contriAmount = $("#totalContributions"+i+"").val();
+		if(contriAmount != null && contriAmount != '' && contriAmount != 'undefined')
+			amount += parseFloat(contriAmount);
+		else
+			$("#totalGrandContributions").html("$ "+amount+""); 
 	} 
 	$("#totalGrandContributions").html("$ "+amount+""); 
 }
@@ -651,20 +666,24 @@ function calculateTotalCotributionsAmount(){
 function calculateTotalPayItemAmount(){
 	var maxCount = $("#total1payItemsLength").val();
 	var amount = 0;
-	for(var i=1;i<maxCount; i++){
-		amount += parseFloat($("#payItemAmount"+i+"").val());
+	for(var i=0;i<maxCount; i++){
+		var pItemAmount = $("#payItemAmount"+i+"").val();
+		if(pItemAmount != null && pItemAmount != '' && pItemAmount != 'undefined')
+			amount += parseFloat(pItemAmount);
+		else
+			$("#payItemTotalAmount").html("$ "+amount+""); 
 	} 
 	$("#payItemTotalAmount").html("$ "+amount+""); 
 }
 
-function calculateTotalLoanAmount(){
+/* function calculateTotalLoanAmount(){
 	var maxCount = $("#totalloanAdvanceLength").val();
 	var amount = 0;
 	for(var i=1;i<maxCount; i++){
 		amount += parseFloat($("#loanAmount"+i+"").val());
 	} 
 	$("#loanTotalAmount").html("$ "+amount+""); 
-}
+} */
 </script>
 <script>
 $(function(){

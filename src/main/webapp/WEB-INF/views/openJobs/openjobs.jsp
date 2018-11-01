@@ -174,7 +174,7 @@ $(document).scroll(function(e){
     var scrollAmount = $(window).scrollTop();
     var documentHeight = $(document).height();
     var searchType = $("#searchType").val();
-    offset = $("#orgOffset").val();
+//     offset = $("#orgOffset").val();
     // calculate the percentage the user has scrolled down the page
     if($(window).scrollTop() == $(document).height() - $(window).height()) {
     	var avilableCount = $("#openJobsOffset").val();
@@ -1239,21 +1239,22 @@ function getOpenJobsELKList(orgLocationId,type){
 	  $.ajax({ 
 	   	type: "GET",
 	   	url: url,
-	    success: function(data) {
-	    	var json = JSON.parse(data);
-	    	if(data != null && data !='undefined' && data !=null &&  data != [] && json.length >0){
+	    success: function(json) {
+// 	    	var json = JSON.parse(data);
+			var data = json.data;
+	    	if(data != null && data !='undefined' && data !=null &&  data != [] && data.length >0){
 				var newOffset = parseInt(offset) + 10;
-				if(json.length< 10){
+				if(data.length< 10){
 					$('#loadMoreDiv').empty();
 					$('#loadMoreDiv').append('<div class="loadWrap"> No More Records..</div>');
-	 			}else if(json.length != null && json.length >= 10 && json.length > offset){
+	 			}else if(data.length != null && data.length >= 10 && data.length > offset){
 	 				$('#loadMoreDiv').empty();
 	 				$('#loadMoreDiv').append('<div class="loadWrap"><i class="fa fa-spinner fa-spin"></i> More Records..</div>');
 	 			}else{
 	 				$('#loadMoreDiv').empty();
 	 				$('#loadMoreDiv').append('<div class="loadWrap">No More Records..</div>');
 	 			}
-	    		prepareOpenJobsElkList(data,offset);
+	    		prepareOpenJobsElkList(json,offset);
 	    		$("#loadinggif").removeAttr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
 	    	}else{
 	    		
@@ -1270,17 +1271,17 @@ function getOpenJobsELKList(orgLocationId,type){
  }
 </script>
 <script>
-function prepareOpenJobsElkList(data,offset){
+function prepareOpenJobsElkList(response,offset){
 	$("#openJobsRequirementsList").show();
 	$("#openJobsRequirementsSummary").hide();
 	var sourceleadUrl ='${sourceleadUrl}';
 	if(sourceleadUrl.indexOf("/app")!=-1){
 		sourceleadUrl = sourceleadUrl.split("/app")[0];
 	}
-    var json = JSON.parse(data);
+    var json = response.data;
   	 var experience ="";
   	 var location = "";
-    if(data != null && data !='undefined' && data !=null &&  data != [] && json.length >0){ 	
+    if(response != null && response !='undefined' && response !=null && json.length >0){ 	
   	  if(json.length > 0)
   		{
   		var result = "";
@@ -1334,7 +1335,7 @@ function prepareOpenJobsElkList(data,offset){
 				result = result +'<input type="hidden" id="maxJobCount" value="'+json.length+'"/>';
 				result = result +'<input type="hidden" id="searchType" value="mainsearch"/>';
 // 				result = result +'	<h3 style="color:#368ee0;" onclick="getOpenJobsRequirementSummary(\''+requirements.requirementUUID+'\');">'+requirements.jobTitle+'</h3>';
-				result = result +'	<a target="_blank" href="'+sourceleadUrl+'/job/'+requirements.url+'-'+requirements.requirementId+'"><h3 style="color:#368ee0;">	'+requirements.jobTitle+'</h3></a>';
+				result = result +'	<a target="_blank" href="'+sourceleadUrl+'/job/'+requirements.url+'-'+requirements.requirementId+'"><h3 style="color:#368ee0;">	'+requirements.jobTitle+'  '+requirements.requirementUUID+'</h3></a>';
 				description =  description+'Job Title:'+requirements.jobTitle+";";
 				
 				
@@ -1596,9 +1597,9 @@ function getOpenJobsRequirementSummary(requirementsUUID){
 		 type: "POST",
 		 url: sourceleadUrl + "/ws/openRequirementsSummary?${_csrf.parameterName}=${_csrf.token}&requirementsUUID="+requirementsUUID,
 		    success: function(data) {
-	    	if(data != null && data !='undefined' && data !=null &&  data != [] ){ 	
+	    	if(data != null && data !='undefined' && data !=null){ 	
 	    		
-	    	  var json = JSON.parse(data);
+	    	  var json = data.object;
 	    	 
 		      var result = "";
 

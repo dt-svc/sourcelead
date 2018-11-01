@@ -185,4 +185,8 @@ public interface CandidateDao {
 	public List<CandidateMarketPlace> getGlobalMarketplaceCandListGridCard(String searchValue);
 
 	public int getMarketCartStatusByMarketIdOrgId(Long marketPlaceId, Long orgId);
+
+	
+	Integer getCandidateProfilePercentageByCandidateId(Long id) throws Exception;
+
 }

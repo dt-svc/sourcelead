@@ -1196,7 +1196,7 @@ public class LeaveDaoImpl implements LeaveDao{
                     && !dayWiseLeaveReportDTO.getEmploymentType().isEmpty()) {
                 employmentTypeSubQuery = " and leaveReport.employmentType  IN (:employmentTypeList)";
             }
-            if (dayWiseLeaveReportDTO.getLeaveTypeName() != null) {
+            if (dayWiseLeaveReportDTO.getLeaveTypeName() != null && !dayWiseLeaveReportDTO.getLeaveTypeName().isEmpty()) {
                 leaveTypeSubQuery = " and leaveReport.leaveTypeId  IN (:leaveTypeNamesList)";
             }
             if (dayWiseLeaveReportDTO.getLeaveTypeBillable() != null
