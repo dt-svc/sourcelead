@@ -213,7 +213,7 @@ public interface CandidateService {
 	 
 	 public CandidateDTO getCandidateDTOByCandidateId(Long candidateId) throws Exception;
 	 
-	 ResponseList<Candidate> getAllCandidatesByCreatedByUserCode(CandidateDTO candidateDTO,Long orgLocationId,String userCode,Date[] searchDates);
+	 ResponseList<Candidate> getAllCandidatesByCreatedByUserCode(CandidateDTO candidateDTO,OrgLocations orgLocations,String userCode,Date[] searchDates);
 	 
 	 public List<CandidateDTO> getCandidateListForAddApplicant(OrgLocations orgLcoations,Long requirementId,String skills,String candidateDetails,Integer profilePercentage) throws Exception;
 	 

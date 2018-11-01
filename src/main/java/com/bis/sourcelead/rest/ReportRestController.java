@@ -52,6 +52,7 @@ import com.bis.sourcelead.dao.UserRoleDao;
 import com.bis.sourcelead.dto.ApplicantsJoinedReportDTO;
 import com.bis.sourcelead.dto.CandidateDTO;
 import com.bis.sourcelead.dto.RequirementDTO;
+import com.bis.sourcelead.dto.RequirementSubmissionHistoryDTO;
 import com.bis.sourcelead.dto.RequirementSubmissionsCountDTO;
 import com.bis.sourcelead.dto.ResponseList;
 import com.bis.sourcelead.dto.UserDTO;
@@ -388,7 +389,7 @@ public class ReportRestController {
 					}
 				}*/
 			
-			String[] tableColumns = { "candidateName", "email", "phoneNumber", "empType", "location", "rate", "experience", "noOfJobs", "createdOn"};
+			String[] tableColumns = { "candidateName", "email", "phoneNumber", "empType", "location", "rate", "experience", "noOfJobs","resume", "createdOn"};
 			int sortColumnIndex = 1; // by default sorting using updated date
 			String sortColumnOrder = "desc"; // by default descending order
 			if (candidateDTO.getOrder() != null && !candidateDTO.getOrder().isEmpty()) {
@@ -399,8 +400,58 @@ public class ReportRestController {
 			candidateDTO.setSortOrder(sortColumnOrder);
 			candidateDTO.setOrgLocationId(orgLocations.getId());
 			
-			ResponseList<Candidate> list = candidateService.getAllCandidatesByCreatedByUserCode(candidateDTO,orgLocations.getId(),userCode,searchDates);
+			ResponseList<Candidate> list = candidateService.getAllCandidatesByCreatedByUserCode(candidateDTO,orgLocations,userCode,searchDates);
+			
+			return list;
+		}
 	
+	@RequestMapping(value = "/getAllSubmissionApplicantsForRecruiterReports")
+	public @ResponseBody ResponseList<RequirementSubmissionHistory> getAllSubmissionApplicantsForRecruiterReports(RequirementSubmissionHistoryDTO sumissionHistoryDTO, 
+			@RequestParam(value="userCode", required=false) String userCode, 
+			@RequestParam(value="timePeriod", required=false) String timePeriod,
+			@RequestParam(value="customStartDate", required=false) String customStartDate,
+			@RequestParam(value="customEndDate", required=false) String customEndDate,
+			HttpServletRequest request) throws Exception {
+
+	      OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+			
+			Date[] searchDates = null;
+			
+				if(!"custom".equalsIgnoreCase(timePeriod)){
+					searchDates = reportsUtil.getJobFilterDate(timePeriod,orgLocations);
+					if(timePeriod.equalsIgnoreCase(Constants.REPORT_FILTER_TODAY)) {
+						Date newDate = DateUtils.addHours(searchDates[0], 24);
+						searchDates[1] = newDate;
+					}
+				}else if("custom".equalsIgnoreCase(timePeriod) && !"".equalsIgnoreCase(customStartDate)&& !"".equalsIgnoreCase(customEndDate)){
+		    	    
+		    	    DateFormat TZ_DF_CSD = new SimpleDateFormat ("yyyy-MM-dd 00:00:00");
+					DateFormat TZ_DF_CED = new SimpleDateFormat ("yyyy-MM-dd 23:59:59");
+					DateFormat TZ_DF_TS = new SimpleDateFormat ("yyyy-MM-dd HH:mm:ss");
+					
+					Date startTime =  commonUtil.orgLocationDateFormat(orgLocations.getDateFormat(),customStartDate);
+					Date endTime =  commonUtil.orgLocationDateFormat(orgLocations.getDateFormat(),customEndDate);
+					String customStartTimeStr = TZ_DF_CSD.format(startTime);  
+					String customEndTimeStr = TZ_DF_CED.format(endTime);  
+					Date startDateUTC = TZ_DF_TS.parse(customStartTimeStr);
+					Date endDateUTC = TZ_DF_TS.parse(customEndTimeStr);
+		    	   
+		    	    searchDates = new Date[2];
+		    	    searchDates[0] = startDateUTC;
+		    	    searchDates[1] = endDateUTC;
+				}
+			
+			String[] tableColumns = { "candidateName", "email", "jobTitle", "orgName", "stage"};
+			int sortColumnIndex = 1; // by default sorting using updated date
+			String sortColumnOrder = "desc"; // by default descending order
+			if (sumissionHistoryDTO.getOrder() != null && !sumissionHistoryDTO.getOrder().isEmpty()) {
+				sortColumnIndex = Integer.parseInt(sumissionHistoryDTO.getOrder().get(0).get("column"));
+				sortColumnOrder = sumissionHistoryDTO.getOrder().get(0).get("dir");
+			}
+			sumissionHistoryDTO.setSortColumn(tableColumns[sortColumnIndex]);
+			sumissionHistoryDTO.setSortOrder(sortColumnOrder);
+			
+			ResponseList<RequirementSubmissionHistory> list = requirementSubmissionHistoryService.getAllSubmissionHistoryApplicantsByOwner(sumissionHistoryDTO,userCode,sumissionHistoryDTO.getToStage(),searchDates);
 			
 			return list;
 		}

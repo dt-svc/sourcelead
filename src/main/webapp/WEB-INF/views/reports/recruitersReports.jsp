@@ -361,7 +361,7 @@ function usersListPagination(url,sourceleadUrl){
               "render": function ( data, type, opt, meta ) {
             	  var result = "";
             	  if(opt.userRequirementsCount !=null && opt.userRequirementsCount !='' && opt.userRequirementsCount !='undefined'){
-            		  result = result +"<td> <a onclick='getRecruiterJobs(\""+opt.userCode+"\")'><div class='small'><span title='"+opt.userRequirementsCount+"'>"+opt.userRequirementsCount+"</span></div> </a> </td>";
+            		  result = result +"<td><div class='small'> <a onclick='getRecruiterJobs(\""+opt.userCode+"\")'><span title='"+opt.userRequirementsCount+"'>"+opt.userRequirementsCount+"</span> </a></div> </td>";
             	  }else{
          	    	 result = result +"<td><div class='small'> <span>0</span></div></td>"; 
           	      }
@@ -377,7 +377,7 @@ function usersListPagination(url,sourceleadUrl){
 	              "render": function ( data, type, opt, meta ) {
 	            	  var result = "";
 	            	  if(opt.userCandidatesCount !=null && opt.userCandidatesCount !='' && opt.userCandidatesCount !='undefined'){
-	            		  result = result +"<td><a onClick='getRecruiterCandidates(\""+opt.userCode+"\")'><div class='small'> <span title='"+opt.userCandidatesCount+"'>"+opt.userCandidatesCount+"</span></div></a></td>";
+	            		  result = result +"<td><div class='small'><a onClick='getRecruiterCandidates(\""+opt.userCode+"\")'><span title='"+opt.userCandidatesCount+"'>"+opt.userCandidatesCount+"</span></a></div></td>";
 	            	  }else{
 	          	    	 result = result +"<td><div class='small'> <span>0</span></div></td>"; 
 	          	      }
@@ -390,7 +390,7 @@ function usersListPagination(url,sourceleadUrl){
 	              "render": function ( data, type, opt, meta ) {
 	            	    var result = "";
 	            	    if(opt.userApplicantsCount !=null && opt.userApplicantsCount !='' && opt.userApplicantsCount !='undefined'){
-	            	    	 result = result +"<td><div class='small'> <span title='"+opt.userApplicantsCount+"'>"+opt.userApplicantsCount+"</span></div></td>";
+	            	    	 result = result +"<td><div class='small'><a onClick='getRecruiterApplicantsList(\""+opt.userCode+"\")'> <span title='"+opt.userApplicantsCount+"'>"+opt.userApplicantsCount+"</span></a></div></td>";
 	            	    }else{
 	            	    	 result = result +"<td><div class='small'> <span>0</span></div></td>"; 
 	            	    }
@@ -608,6 +608,51 @@ function getRecruiterCandidates(userCode){
        		$('#reportsResultDiv').empty();
        		$('#reportsResultDiv').append(result);
        		associateCandidateList();
+        }
+   	});
+}
+</script>
+
+
+<script>
+function getRecruiterApplicantsList(userCode){
+	var searchValue = $("#usersDataTableSearch").val();
+	 var timePeriod = $('#reportTypeId').val();
+	 var flag = true;
+	 var startDate = '';
+	 var endDate = '';
+	 var toStage = '';
+	 if(timePeriod == 'custom'){
+		  startDate = $("#ReportStartDate").val();
+		  endDate = $("#ReportEndDate").val();
+		  if(startDate == null || startDate == '' || endDate == null || endDate == ''){
+			  if(startDate == null || startDate == ''){
+				  document.getElementById("reportsStartDate").style.display="block";
+				  $("#reportsStartDate").empty().append("Start Date is Required") ; 
+			  }
+			  
+			  if(endDate == null || endDate == ''){
+				  document.getElementById("reportsEndDate").style.display="block";
+				  $("#reportsEndDate").empty().append("End Date is Required") ; 
+			  }
+			  flag = false;
+		  }
+	 }else{
+		 document.getElementById("reportsStartDate").style.display="none";
+		 document.getElementById("reportsEndDate").style.display="none";
+	 }
+	 var orgTeams = [];
+		$('input:checkbox[name=orgTeams]:checked').each(function() 
+			    {
+			orgTeams.push($(this).val());
+	     });
+	$.ajax({
+        type : "POST",
+   	 	url: sourceleadUrl+"/recruiterApplicantsReportList?"+tokenParamName+"="+tokenValue+"&userCode="+userCode+"&searchValue="+searchValue+"&toStage=SUBMISSION&timePeriod="+timePeriod+"&customStartDate="+startDate+"&customEndDate="+endDate+"&orgTeams="+orgTeams,
+       	success :function(result) {
+       		$('#reportsResultDiv').empty();
+       		$('#reportsResultDiv').append(result);
+       		applicantsAllStageList();
         }
    	});
 }

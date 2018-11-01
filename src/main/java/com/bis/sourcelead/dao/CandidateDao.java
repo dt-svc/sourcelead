@@ -39,7 +39,7 @@ public interface CandidateDao {
 	
 	public List<Candidate> getAllCandidatesByLocation(Long orgLocationId);
 	
-	public ResponseList<Candidate> getAllCandidatesByCreatedByUserCode(CandidateDTO candidateDTO,Long orgLocationId,String userCode,Date[] searchDates);
+	public ResponseList<Candidate> getAllCandidatesByCreatedByUserCode(CandidateDTO candidateDTO,OrgLocations orgLocations,String userCode,Date[] searchDates);
 	
 	public List<Candidate> getAllActiveCandidatesByLocation(Long orgLocationId);
 	

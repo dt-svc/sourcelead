@@ -1,12 +1,12 @@
 package com.bis.sourcelead.dao.impl;
 
 import java.text.ParseException;
-import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.exception.ExceptionUtils;
+import org.hibernate.Query;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.slf4j.Logger;
@@ -17,6 +17,9 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.dao.RequirementSubmissionHistoryDao;
+import com.bis.sourcelead.dto.RequirementSubmissionHistoryDTO;
+import com.bis.sourcelead.dto.ResponseList;
+import com.bis.sourcelead.entity.Candidate;
 import com.bis.sourcelead.entity.RecruiterReportView;
 import com.bis.sourcelead.entity.RequirementSubmissionHistory;
 import com.bis.sourcelead.entity.User;
@@ -222,6 +225,82 @@ public class RequirementSubmissionHistoryDaoImpl implements RequirementSubmissio
 		
 		return  recuiterReportViewList;
 		
+	}
+
+	@Override
+	@Transactional
+	public ResponseList<RequirementSubmissionHistory> getAllSubmissionHistoryApplicantsByOwner(RequirementSubmissionHistoryDTO sumissionHistoryDTO,	String userCode, String stage,Date[] searchDates) throws Exception {
+		Session session = this.sessionFactory.getCurrentSession();
+		List<RequirementSubmissionHistory> submissionHistoryList = null;
+		ResponseList<RequirementSubmissionHistory> response = new ResponseList<>();
+		Query queryObj = null;
+		List<Long> countlist = null;
+		String stageQuery = null;
+		if(stage.equals("SUBMISSION")){
+			stageQuery = " rsh.toStage ='SUBMISSION'";	
+		}else if(stage.equalsIgnoreCase("SHORTLIST")){
+			stageQuery = " rsh.toStage = 'SHORTLIST'";
+		}else if(stage.equalsIgnoreCase("SUBMIT_TO_CLIENT")){
+			stageQuery = " rsh.toStage = 'SUBMIT_TO_CLIENT'";
+		}else if(stage.equalsIgnoreCase("INTERVIEW")){
+			stageQuery = " (rsh.toStage = 'INTERVIEW' or rsh.toStage = 'CLIENT_INTERVIEW')";
+		}else if(stage.equalsIgnoreCase("OFFERMADE")){
+			stageQuery = " (rsh.toStage = 'OFFERMADE' OR rsh.toStage = 'OFFERACCEPTED' OR rsh.toStage = 'OFFERREJECTED' "
+					+ " OR rsh.toStage = 'CLIENT_OFFERMADE' OR rsh.toStage = 'CLIENT_OFFERACCEPTED' OR rsh.toStage = 'CLIENT_OFFERREJECTED') ";
+		}else if(stage.equalsIgnoreCase("REJECTED")) {
+			stageQuery = " rsh.toStage = 'REJECTED'";
+		}else if(stage.equalsIgnoreCase("JOINED")) {
+			stageQuery = " rsh.toStage = 'JOINED'";
+		}else if(stage.equalsIgnoreCase("BACKOUT")) {
+			stageQuery = " rsh.toStage = 'BACKOUT'";
+		}
+		
+		String query = "from RequirementSubmissionHistory rsh left join fetch rsh.submissionId.candidate can left join fetch rsh.submissionId.requirement req left join fetch rsh.submissionId rs where rsh.createdBy =:userCode and "+stageQuery+" and (date(rsh.createdDate) BETWEEN :fromDate AND :toDate)";  
+		queryObj = session.createQuery(query);
+		
+		String countQuery = "from RequirementSubmissionHistory rsh where rsh.createdBy =:userCode and "+stageQuery+" and (date(rsh.createdDate) BETWEEN :fromDate AND :toDate)";
+		
+		queryObj.setFirstResult(sumissionHistoryDTO.getStart());
+		queryObj.setMaxResults(sumissionHistoryDTO.getLength());
+
+		submissionHistoryList = queryObj.setParameter("userCode", userCode).setParameter("fromDate", searchDates[0]).setParameter("toDate", searchDates[1]).list();
+		
+		countlist = session.createQuery("select count(*) "+ countQuery).setParameter("userCode", userCode).setParameter("fromDate", searchDates[0]).setParameter("toDate", searchDates[1]).list();
+		
+		int totalCount = 0;
+		if (sumissionHistoryDTO != null) {
+			if (countlist != null && !countlist.isEmpty()) {
+				totalCount = countlist.iterator().next().intValue();
+			}
+		}
+		submissionHistoryList.forEach(history->{
+			history.setEmail(history.getSubmissionId().getCandidate().getEmail());
+			history.setCandidateName(history.getSubmissionId().getCandidate().getFirstName());
+			history.setJobTitle(history.getSubmissionId().getRequirement().getJobTitle());
+			
+			if(history.getSubmissionId().getRequirement().getClientId() != null) {
+				if (history.getSubmissionId().getRequirement().getClientId().getResponderType().equalsIgnoreCase("Client")) {
+					if (history.getSubmissionId().getRequirement().getClientId().getResponderLocationId() != null) {
+						history.setOrgLocationName(history.getSubmissionId().getRequirement().getClientId().getResponderLocationId().getOrgLocationName());
+					}
+				}
+				if (history.getSubmissionId().getRequirement().getClientId().getResponderType().equalsIgnoreCase("Vendor")) {
+					if (history.getSubmissionId().getRequirement().getClientId().getLocationId() != null) {
+						history.setOrgLocationName(history.getSubmissionId().getRequirement().getClientId().getLocationId().getOrgLocationName());
+					}
+				}
+			}
+			
+			
+		});
+		
+		
+		response.setRecordsTotal(totalCount);
+		response.setRecordsFiltered(totalCount);
+		
+		response.setData(submissionHistoryList);
+		
+		return response;
 	}
 
 }

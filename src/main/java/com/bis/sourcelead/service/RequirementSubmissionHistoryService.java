@@ -4,6 +4,8 @@ import java.text.ParseException;
 import java.util.Date;
 import java.util.List;
 
+import com.bis.sourcelead.dto.RequirementSubmissionHistoryDTO;
+import com.bis.sourcelead.dto.ResponseList;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.RecruiterReportView;
 import com.bis.sourcelead.entity.RequirementSubmission;
@@ -36,6 +38,8 @@ public interface RequirementSubmissionHistoryService {
 
 	List<RequirementSubmissionHistory> getRequirementHistoryByLocationIdAndSubId(Long orgLocationID, Long submissionId);
 	
+	ResponseList<RequirementSubmissionHistory> getAllSubmissionHistoryApplicantsByOwner(RequirementSubmissionHistoryDTO sumissionHistoryDTO,String userCode,String stage,Date[] searchDates)throws Exception;
+
 	RequirementSubmissionHistory addRequirementHistory(RequirementSubmissionHistory requirementSubmissionHistory)throws Exception;
 	
 	RecruiterReportView getSubmissionCountsByStageAndCreatedUserAndOrglocationId(Long orgLocationId, User user, String submissionStage ,String startDateUTC, String endDateUTC,String isGlobalUser,Long orgId) throws Exception ;

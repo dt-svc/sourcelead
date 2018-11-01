@@ -441,7 +441,7 @@ public class CandidateDaoImpl implements CandidateDao {
 	
 	@Override
 	@Transactional(rollbackFor = { Exception.class })
-	public ResponseList<Candidate> getAllCandidatesByCreatedByUserCode(CandidateDTO candidateDTO,Long orgLocationId,String userCode,Date[] searchDates) {
+	public ResponseList<Candidate> getAllCandidatesByCreatedByUserCode(CandidateDTO candidateDTO,OrgLocations orgLocations,String userCode,Date[] searchDates) {
 		Session session = this.sessionFactory.getCurrentSession();
 		
 		List<Candidate> candidateList = null;
@@ -454,9 +454,9 @@ public class CandidateDaoImpl implements CandidateDao {
 		queryObj.setFirstResult(candidateDTO.getStart());
 		queryObj.setMaxResults(candidateDTO.getLength());
 
-		candidateList = queryObj.setLong("orgLocationId", orgLocationId).setString("userCode", userCode).setParameter("fromDate", searchDates[0]).setParameter("toDate", searchDates[1]).list();
+		candidateList = queryObj.setLong("orgLocationId", orgLocations.getId()).setString("userCode", userCode).setParameter("fromDate", searchDates[0]).setParameter("toDate", searchDates[1]).list();
 		
-		countlist = session.createQuery("select count(*) " + query).setLong("orgLocationId", orgLocationId).setString("userCode", userCode).setParameter("fromDate", searchDates[0]).setParameter("toDate", searchDates[1]).list();
+		countlist = session.createQuery("select count(*) " + query).setLong("orgLocationId", orgLocations.getId()).setString("userCode", userCode).setParameter("fromDate", searchDates[0]).setParameter("toDate", searchDates[1]).list();
 		
 		int totalCount = 0;
 		if (candidateDTO != null) {
@@ -466,6 +466,18 @@ public class CandidateDaoImpl implements CandidateDao {
 		}
 		response.setRecordsTotal(totalCount);
 		response.setRecordsFiltered(totalCount);
+		for(Candidate c: candidateList){
+			try {
+				CandidateResumes canResume = candidateResumesDao.getCandidateResumeByCandidateId(c.getId());
+				c.setCandidateResume(canResume.getFileURL());
+				c.setCreatedDateStr(commonUtil.dateStrFromOrgDateFormatter(orgLocations.getDateFormat(), c.getCreatedDate()));
+				//c.setCreatedDateStr(createdDateStr);
+			} catch (Exception e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		}
+		
 		
 		response.setData(candidateList);
 		

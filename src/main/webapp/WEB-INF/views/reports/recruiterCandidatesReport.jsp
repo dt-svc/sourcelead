@@ -249,6 +249,7 @@ function custDatesJobs(){
         result = result +"<th><div class='small'>Rate</div></th>"; 
         result = result +"<th><div class='small'>Experience</div></th>"; 
         result = result +"<th><div class='small'>No of Jobs</div></th>"; 
+        result = result +"<th><div class='small'>Resume</div></th>"; 
         result = result +"<th><div class='small'>Created On</div></th>"; 
 		result = result + '</tr>';
 		result = result + '</thead>	';
@@ -327,6 +328,7 @@ function associateCandidateListPagination(url,sourceleadUrl){
             { "data": "rate" },
             { "data": "experience" },
             { "data": "noOfJobs"},
+            { "data": "resume"},
             { "data": "cretedOn"}
         ],
         "columnDefs": [ {
@@ -436,13 +438,23 @@ function associateCandidateListPagination(url,sourceleadUrl){
 	            	    
 	            	    return result;
 	              }
+		     },{
+		    	  "targets": colIndex++,
+	              "data": "resume",
+	              "render": function ( data, type, opt, meta ) {
+	            	    var result = "";
+	            	    
+	            	    	result = result +"<td><div class='tbldata-dotdot-me'> <a download class='glyphicon glyphicon-download-alt'  href=\'"+opt.candidateResume+"\' download title='Download'></a></div></td>"; 
+	            	    
+	            	    return result;
+	              }
 		     }, {
 		    	  "targets": colIndex++,
 	              "data": "createdOn",
 	              "render": function ( data, type, opt, meta ) {
 	            	    var result = "";
 	            	   
-	            	    	result = result +"<td><div class='small'> <span>----</span></div></td>"; 
+	            	    	result = result +"<td><div class='tbldata-dotdot-me' title='"+opt.createdDateStr+"'>"+opt.createdDateStr+"</div></td>"; 
 	            	   
 	            	    return result;
 	              }

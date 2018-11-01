@@ -2653,8 +2653,8 @@ private Sheet createXlsSheet(Sheet createExcelsheet, Row writeRow,Candidate cand
 	}
 
 	@Override
-	public ResponseList<Candidate> getAllCandidatesByCreatedByUserCode(CandidateDTO candidateDTO,Long orgLocationId,String userCode,Date[] searchDates) {
-		return candidateDao.getAllCandidatesByCreatedByUserCode(candidateDTO,orgLocationId,userCode,searchDates);
+	public ResponseList<Candidate> getAllCandidatesByCreatedByUserCode(CandidateDTO candidateDTO,OrgLocations orgLocations,String userCode,Date[] searchDates) {
+		return candidateDao.getAllCandidatesByCreatedByUserCode(candidateDTO,orgLocations,userCode,searchDates);
 	}
 
 }

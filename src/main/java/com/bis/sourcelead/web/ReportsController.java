@@ -179,6 +179,45 @@ private static final Logger logger = LoggerFactory.getLogger(ReportsController.c
 		 return model;
     }
 	
+	@RequestMapping(value = "/recruiterApplicantsReportList")
+	public ModelAndView recruiterApplicantsReportList(@RequestParam(value="userCode", required=false)String userCode, 
+			@RequestParam(value="searchValue", required=false)String searchValue,
+			@RequestParam(value="timePeriod", required=false)String timePeriod,
+			@RequestParam(value="customStartDate", required=false)String customStartDate,
+			@RequestParam(value="customEndDate", required=false)String customEndDate,
+			@RequestParam(value="toStage", required=false)String toStage,
+			@RequestParam(value="orgTeams", required=false)String orgTeams,
+			HttpServletRequest request, HttpServletResponse response) throws Exception {
+		 OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+		 User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+		 Long loginUserRoleId = (Long) SourceLeadSessionManager.getSessionAttribute(request, "loginUserRoleId");
+		 
+		 
+		 User associateUser = userService.getUserByUserCode(userCode);
+		 
+		 
+		 boolean candidateTabAccess = tabsService.getTabAccessByRoleIdAndTabId(loginUserRoleId, orgLocations.getId(), Long.valueOf(Constants.TAB_CANDIATE));
+		 ModelAndView model = new ModelAndView();
+		 List<User> userList = userService.getAllUsersByOrgLocationCode(orgLocations.getId());
+		 List<Team> teamsList = teamService.getUserAssignedTeamListByOrgLocationId(associateUser.getId(), orgLocations.getId());
+		 model.addObject("teamsList", teamsList);
+		 model.addObject("userList", userList);
+		 model.addObject("associateUser", associateUser);
+		 model.addObject("userCode", userCode);
+		 model.addObject("toStage", toStage);
+		 
+		 model.addObject("searchValue", searchValue);
+		 model.addObject("timePeriod", timePeriod);
+		 model.addObject("customStartDate", customStartDate);
+		 model.addObject("customEndDate", customEndDate);
+		 model.addObject("orgTeams", orgTeams);
+		 
+		 model.addObject("candidateTabAccess", candidateTabAccess);
+		 model.addObject("sourceleadUrl", sourceleadUrl);
+		 model.setViewName("reports/recruiterAllstageApplicantsReport");
+		 return model;
+    }
+	
 	
 	@RequestMapping(value = "/reportsDashboard")
 	public ModelAndView reportsDashboard(HttpServletRequest request) throws Exception
