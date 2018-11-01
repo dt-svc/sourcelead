@@ -1,6 +1,12 @@
 <script type="text/javascript">
 function hrDeductionsList(){
 	    $("#addPayrollDiv").hide();
+	    $("#employeeCostSearch").hide();
+		$("#wageTaxSearch").hide();
+		$("#accountDedSearch").hide();
+		$("#hrDedSearch").show();
+		$("#checksSearch").hide();
+		$("#invoiceDataSearch").hide();
 		var sourceleadUrl ='${sourceleadUrl}';
 		var searchValue = $("#hrDataTableSearch").val();
 		var orgLocationId = '${SourceLeadWeb_orgLocationId}';
@@ -30,11 +36,11 @@ function prepareHrDeductionsList(url){
 	$('#payrollCycle').val('').trigger("chosen:updated");
  	 var result = "";
 
- 	 	result = result +" <div class='reportHead'>";
+ 	 /* 	result = result +" <div class='reportHead'>";
 		result = result + " <ul class='pull-right'>";
 		result = result + " <li><input type='text' placeholder='Search' class='repSearchBar' id='hrDataTableSearch'/><span class='repSearchIcon' onClick='hrDataTableSearch();'></span></li>";
 		result = result + "</ul>";
-		result = result + "</div>"; 	 	
+		result = result + "</div>"; 	 */ 	
 	 	
 	 	
  	  	result = result +"<table id='hrDeductionsPagination' class='display' cellspacing='0' width='100%' >"; 

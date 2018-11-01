@@ -68,7 +68,7 @@ public class InvoiceDataDaoImpl implements InvoiceDataDao{
 			qry = " order by ind."+ invoiceDetailsDTO.getSortColumn() +" "+invoiceDetailsDTO.getSortOrder();
 		}
 		
-		String query = "from InvoiceData ind  left join fetch ind.orgLocationId where ind.orgLocationId.id =:orgLocationId and (ind.status IS NULL or ind.status <> '0')";
+		String query = "from InvoiceData ind where ind.orgLocationId.id =:orgLocationId and (ind.status IS NULL or ind.status <> '0')";
 		String countQuery = "from InvoiceData ind  where ind.orgLocationId.id =:orgLocationId and (ind.status IS NULL or ind.status <> '0')";
 		
 		if(invoiceDetailsDTO.getSearchValue().contains("/") || invoiceDetailsDTO.getSearchValue().contains("-")){
@@ -96,7 +96,7 @@ public class InvoiceDataDaoImpl implements InvoiceDataDao{
 		}else{
 		StringBuilder query1 = new StringBuilder("");
 			if(invoiceDetailsDTO.getSearchValue() !=null && !"".equalsIgnoreCase(invoiceDetailsDTO.getSearchValue())) {
-			query1.append(" (and ind.sku like '%" + invoiceDetailsDTO.getSearchValue() + "%' ")
+			query1.append(" and (ind.sku like '%" + invoiceDetailsDTO.getSearchValue() + "%' ")
 					.append("OR ind.productService like '%" + invoiceDetailsDTO.getSearchValue() + "%' ")
 					.append("OR ind.empName like '%" + invoiceDetailsDTO.getSearchValue() + "%' ")
 					.append("OR ind.number like '%" + invoiceDetailsDTO.getSearchValue() + "%' ")
