@@ -192,18 +192,6 @@
 						result  = result + '<div class="success_pop" id="selector2" style="display: none;">';
 					    result  = result + '<i class="fa fa-check-circle"></i><span id="docMsgDiv2"></span>';
 					    result  = result + '</div>';
-						if((json.orgLocationId == '${SourceLeadWeb_orgLocations.id}') || ('${SourceLeadWeb_isGlobalAccess}' == 'Y') || (json.sharedProjectCreatedOrgLocId == '${SourceLeadWeb_orgLocations.id}') ){
-							if(json.projectApprover == 'Y' || '${SourceLeadWeb_loginUserRole}' == 'ROLE_ADMIN'){
-								result = result +'<sec:authorize access="hasAnyRole(\'ROLE_VIEW_EDIT_PROJECT\')">'; 
-								result = result	+ '<a id="edit-user" href="javascript:editProjectDetails('+ projectId+ ')"><i class="glyphicon glyphicon-pencil"></i>Edit</a>';
-			   		    		result = result +'</sec:authorize>';
-							}
-							
-						}else{
-							result = result +'<sec:authorize access="hasAnyRole(\'ROLE_VIEW_EDIT_PROJECT\')">'; 
-							result = result	+ '<a id="edit-user" href="javascript:editClientProjectDetails('+ projectId+ ')"><i class="glyphicon glyphicon-pencil"></i>Edit</a>';
-		   		    		result = result +'</sec:authorize>';
-						}
 						
 	   		    		result = result + '</div>';
 	   		    		

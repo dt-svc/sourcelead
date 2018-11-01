@@ -221,6 +221,7 @@ public class DataMigrationServiceImpl implements DataMigrationService {
 	@Override
 	public String validateImportedFormData(DataMigrationDTO dataMigrationDTO, HttpServletRequest request)
 			throws Exception {
+		logger.info("STARTING VALIDATION" + System.currentTimeMillis());
 		User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
 		OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 		String isGlobalAccess = (String) SourceLeadSessionManager.getSessionAttribute(request, "isGlobalAccess");
@@ -240,18 +241,22 @@ public class DataMigrationServiceImpl implements DataMigrationService {
 			workbook = new XSSFWorkbook(pkg);
 			objFormulaEvaluator = new XSSFFormulaEvaluator((XSSFWorkbook) workbook);
 		}
+		logger.info("PARSING DONE WE HAVE TH WORKBOOK" + System.currentTimeMillis());
 		Sheet firstSheet = workbook.getSheetAt(0);
 		Integer rowCount = firstSheet.getLastRowNum();
 		String[] fileName = dataMigrationDTO.getExportFilePath().split("/");
 		UploadXlsHistory history = null;
 		history = saveUploadXlsHistory(rowCount, fileName[5], null, dataMigrationDTO, user, orgLocation);
 		uploadXlsHistoryService.storeUploadXlsHistory(history);
+		logger.info("UPLOAD HISTORY SAVED" + System.currentTimeMillis());
 		Iterator<Row> rowIterator = firstSheet.iterator();
 		int colCount = 0;
 		Boolean isEmptyExcel = true;
 		List<String> candidateEmailsList = null;
-		logger.debug("Upload Start Time>>>"+Calendar.getInstance().getTime());
+		logger.info("Upload Start Time>>>"+Calendar.getInstance().getTime());
+		int ent = 0;
 		while (rowIterator.hasNext()) {
+			logger.info("PROCESSING ENTRY "+ ++ent + "  --  " + System.currentTimeMillis());
 			Row nextRow = rowIterator.next();
 			if (nextRow.getRowNum() + 1 == Integer.parseInt(dataMigrationDTO.getHeaderPosition())) {
 				Iterator<Cell> cellIterator = nextRow.cellIterator();
@@ -305,12 +310,13 @@ public class DataMigrationServiceImpl implements DataMigrationService {
 					dataMigrationDTOJsonCopy.put("projectUUID", dataMigrationDTO.getProjectUUID());
 					dataMigrationDTOJsonCopy.put("projectClientUUID", dataMigrationDTO.getProjectClientUUID());
 				}
-
+				//Columns in a row
 				while (keys.hasNext()) {
 					String k = (String) keys.next();
 					if (StringUtils.isNotEmpty(k) && !k.equalsIgnoreCase("days")) {
 						Iterator<Cell> cellIterator = nextRow.cellIterator();
 						StringBuffer assertBuffer = new StringBuffer();
+						
 						while (cellIterator.hasNext()) {
 							Cell cell = cellIterator.next();
 							if (dataMigrationDTOJson.has((String) k) && dataMigrationDTOJson.get((String) k) != null) {
@@ -383,6 +389,7 @@ public class DataMigrationServiceImpl implements DataMigrationService {
 					}
 				}
 				
+				logger.info("VALIDATING ENTRY "+ ent + "  --  " + System.currentTimeMillis());
 				switch (dataMigrationDTO.getUploadType()) {
 				case "jobUpload":
 					dataMigrationCommonUtil.dataValidationForJobs(errorSet, dataMigrationDTOJsonCopy, user,
@@ -432,18 +439,25 @@ public class DataMigrationServiceImpl implements DataMigrationService {
 
 				}
 
+				logger.info("WRITING STATUS ENTRY "+ ent + "  --  " + System.currentTimeMillis());
 				if (errorSet.isEmpty()) {
+					long m0 =  System.currentTimeMillis();
 					mapToEntities(dataMigrationDTOJsonCopy, user, orgLocation, dataMigrationDTO.getUploadType(),jsonString,dataMigrationDTO.getUploadid());
+					long m1 =  System.currentTimeMillis();
 					importStatus = "success";
 					FileOutputStream outputStream = new FileOutputStream(
 							new File(ac + dataMigrationDTO.getExportFilePath()));
 					workbook.write(outputStream);
+					long m2 = System.currentTimeMillis();
 					history = saveUploadXlsHistory(rowCount, fileName[5], dataMigrationDTO.getExportFilePath(), dataMigrationDTO, user, orgLocation);
 					if(history != null) {
 						history.setSuccessCount(history.getSuccessCount()+1);
 					}
+					long m3 = System.currentTimeMillis();
 					history.setFileUrl(dataMigrationDTO.getExportFilePath());
 					uploadXlsHistoryService.storeUploadXlsHistory(history);
+					long m4 = System.currentTimeMillis();
+					logger.info("METRICS FOR ENTRY "+ ent + "  --  " + (m1-m0) + " - " + (m2-m1) + " - " + (m3-m2) + " - " + (m4-m3));
 				} else {
 					int errorCount = 0;
 					StringBuilder errorSB = new StringBuilder();

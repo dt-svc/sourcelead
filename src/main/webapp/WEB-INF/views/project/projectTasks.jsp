@@ -67,31 +67,9 @@ function projectTask(projectId, status) {
 	result = result + '<div class="timesheet_head clearfix timesheet_headul-custom timeHd_minHeight">';
 	result = result + '<input type="hidden" value='+projectId+' id="projectId">';
 	result = result + '<input type="hidden" value='+status+' id="projectStatus">';
-	result = result	+ '<ul>';
+		result = result	+ '<ul>';
 	 
-	result = result +'<li title="Import"><a href="<c:url value="${appPath}/uploadProjectTasks?projectUUID='+projectUUID+'&projectClientUUID='+projectClientUUID+'"/>"><i class="glyphicon glyphicon-import expIcon"></i>&nbsp;</a></li>';
-
-	
-	result = result +'<li class="dropdown">';
-	result = result +' <a title="Export" id="export-pop" class="dropdown-toggle" data-toggle="dropdown"><i class="glyphicon glyphicon-export expIcon"></i>&nbsp;</a>';	
-	result = result +'<div class="dropdown-menu bootstrap_dropdownMenu">';
-	result = result +'<ul class="ul_padding">';
-	result = result +'<li onclick="projectTaskExport(\'Pdf\');"><i class="fa fa-file-pdf-o text-danger paddingRight"></i>PDF</li>';
-	result = result +'<li onclick="projectTaskExport(\'Excel\');"><i class="fa fa-file-excel-o text-success paddingRight"></i>Excel</li>';
-	result = result +'</ul>';
-	result = result +'</div>';
-	result = result +'</li> ';
-	 
-	if (status != 'COMPLETED' && status != '' && status != 'undefined' && status != null) {
-		result = result +'<li>';
-		result = result	+ '<span class="padding_right">';
-		'<sec:authorize access="hasAnyRole(\'ROLE_CREATE_PROJECT_TASKS\')">';  
-		result = result	+ '<span onclick="addtask();" class="cursorPointer padding_right mr5"><i class="glyphicon glyphicon-plus paddingRight"></i>Add Task</span>';
-   		'</sec:authorize>'; 
-		result = result	+ '</span>';
-		result = result +'</li>';
-	}
-		
+	    result = result +'<li><a class="action newAdBtn mr5" href="<c:url value="${appPath}/uploadProjectTasks?projectUUID='+projectUUID+'&projectClientUUID='+projectClientUUID+'"/>">Import</a></li>';
 		result = result	+ '</ul>';
 		result = result	+ '<div class="pull-left cand-advsrch advsrch_chosen">';
 		result = result	+ '     <button type="button" class="btn btn-primary dropdown-toggle btn-sm mr" onclick="resetTaskFilter();" title="Refresh">';

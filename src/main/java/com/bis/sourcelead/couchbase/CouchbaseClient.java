@@ -36,7 +36,7 @@ public class CouchbaseClient {
 	public void deleteSessionDocumentsFromBucket(String key) {
 		
 		bucket.bucketManager().createN1qlPrimaryIndex(true, false);
-		N1qlQueryResult result = bucket.query(N1qlQuery.simple("SELECT meta().id FROM `test`"));
+		N1qlQueryResult result = bucket.query(N1qlQuery.simple("SELECT meta().id FROM `SessionStore`"));
 		if(result != null) {
 			for (N1qlQueryRow row : result) {
 				  try {
