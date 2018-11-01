@@ -2272,151 +2272,151 @@ function employeeHrDeductionsListTablePagination(){
 
 <script>
 function finalBalance(){
-	 var empId = $("#empId").val();
-	 var orgLocationId = '${SourceLeadWeb_orgLocationId}';
-	var sourceleadUrl ='${sourceleadUrl}';
-			  $.ajax({
-			    	type: "GET",
-			    	url: sourceleadUrl+"/getfinalBalanceByEmpId?empId="+empId+"&orgLocationId="+orgLocationId,
-			        success: function(data) {
-			        	var result = "";
-			        	     result = result + ' <div class="clearfix col-md-10 col-md-offset-1">';
-			        	result = result + '  <div class="payrollinvoice-generate">';
-			        	result = result + '   <h4 class="clearfix text-center">Balance Sheet</h4>';
-			        	result = result + '  <div class="payrollinvoice-header">';
-			        	result = result + '<table style="width:100%" class="table-responsive table-bordered table-BLsheet mb">';
-			        	result = result + '<tr>';
-			        	result = result + '<th rowspan="2" class="bg-info">Income</th>';
-			        	result = result + '<th class="bg-orange">Billed</th>';
-			        	result = result + '<th class="bgGReen">Paid</th>';
-			        	result = result + '<th class="bg-red">Due</th>';
-			        	result = result + '</tr>';
-			        	result = result + '<tr>';
-			        	result = result + '<td class="bg-success">$ '+data.billed+'</td>';
-			        	result = result + '<td class="bg-success">$ '+data.income+'</td>';
-			        	result = result + '<td class="bg-success">$ '+data.due+'</td>';
-			        	result = result + '</tr>';
-			        	result = result + '</table>';
-			        	result = result + '  </div>';
-			        	
-			        	
-			        	
-			                result = result + '<div class="table-payroll">';
-			                result = result + '<table style="width:100%" class="table">';
-			                result = result + '<thead>';
-			                
-			                result = result + '<tr>';
-			                result = result + '<th class="timesheetHead">&nbsp;</th>';
-			                result = result + '<th class="timesheetHead" colspan="2" style="padding-left:70px; font-weight:700">Admin View</th>';
-			                result = result + '<th class="timesheetHead" colspan="2" style="padding-left:70px; font-weight:700">Employee View</th>';
-			                result = result + '</tr>';
-			                
-			                result = result + '<tr>';
-			                result = result + '<th>Name</th>';
-			                result = result + '<th class="text-center">Gross</th>';
-			                result = result + '<th class="text-center">Net</th>';
-			                result = result + '<th class="text-center">Gross</th>';
-			                result = result + '<th class="text-center">Net</th>';
-			                result = result + '</tr>';
-			                result = result + '	</thead>';
-			                result = result + '<tbody>';
-			                result = result + ' <tr>';
-			                result = result + '  <th colspan="5">Payroll</th>';
-			                result = result + ' </tr>';
-			                result = result + '<tr> ';
-			                result = result + '    <th><span class="ml">Direct Deposit</span></th>';
-			                result = result + '  <td>$ '+data.directDepositGross+'</td>';
-			                result = result + '  <td>$ '+data.directDepositNet+'</td>';
-			                result = result + '  <td>$ '+data.directDepositGross+'</td>';
-			                result = result + '  <td>$ '+data.directDepositNet+'</td>';
-			                result = result + '</tr>';
-			                result = result + '<tr>';
-			                result = result + '   <th><span class="ml">Processed with Check Option</span></th>';
-			                result = result + '  <td>$ '+data.processedWithCheckOptionGross+'</td>';
-			                result = result + '   <td>$ '+data.processedWithCheckOptionNet+'</td>';
-			                result = result + '  <td>$ '+data.processedWithCheckOptionGross+'</td>';
-			                result = result + '   <td>$ '+data.processedWithCheckOptionNet+'</td>';
-			                result = result + ' </tr>';
-			                result = result + '   <tr>';
-			                result = result + '    <th><span class="ml">Actual Checks Deposited</span></th>';
-			                result = result + '  <td>$ '+data.actualChecksDepositedNet+'</td>';
-			                result = result + ' <td>$ 0.00</td>';
-			                result = result + '  <td>$ '+data.actualChecksDepositedNet+'</td>';
-			                result = result + ' <td>$ 0.00</td>';
-			                result = result + '</tr>';
-			                result = result + '<tr>';
-			                result = result + ' <th>Manual Advance</th>';
-			                result = result + ' <td>$ '+data.manualAdvance+'</td>';
-			                result = result + ' <td>$ 0.00</td>';
-			                result = result + ' <td>$ '+data.manualAdvance+'</td>';
-			                result = result + ' <td>$ 0.00</td>';
-			                result = result + ' </tr> ';
-			                result = result + ' <tr>';
-			                result = result + '  <th>General Expenses</th>';
-			                result = result + ' <td>$ '+data.generalExpenses+'</td>';
-			                result = result + '  <td>$ 0.00</td>';
-			                result = result + ' <td>$ '+data.generalExpenses+'</td>';
-			                result = result + '  <td>$ 0.00</td>';
-			                result = result + ' </tr>';
-			                result = result + '<tr>';
-			                result = result + ' <th>Vendor Payment</th>';
-			                result = result + '  <td>$ '+data.vendorPayment+'</td> ';
-			                result = result + '  <td>$ 0.00</td>';
-			                result = result + '  <td>$ '+data.vendorPayment+'</td> ';
-			                result = result + '  <td>$ 0.00</td>';
-			                result = result + '  </tr>';
-			                result = result + '  <tr>';
-			                result = result + '   <th>Healthcare/Insurance</th>';
-			                result = result + '   <td>$ '+data.healthcareInsurance+'</td>';
-			                result = result + '   <td>$ 0.00</td>';
-			                result = result + '   <td>$ '+data.healthcareInsurance+'</td>';
-			                result = result + '   <td>$ 0.00</td>';
-			                result = result + '</tr>';
-			                result = result + '  <tr>';
-			                result = result + '   <th>Immigration</th>';
-			                result = result + '   <td>$ '+data.immigration+'</td>';
-			                result = result + '   <td>$ 0.00</td>';
-			                result = result + '   <td>$ '+data.immigration+'</td>';
-			                result = result + '   <td>$ 0.00</td>';
-			                result = result + '</tr>';
-			                result = result + '  <tr>';
-			                result = result + '   <th>Direct Deposit Advance</th>';
-			                result = result + '   <td>$ '+data.directDepositAdvanceNegetive+'</td>';
-			                result = result + '   <td>$ 0.00</td>';
-			                result = result + '   <td>$ '+data.directDepositAdvanceNegetive+'</td>';
-			                result = result + '   <td>$ 0.00</td>';
-			                result = result + '</tr>';
-			                result = result + '  <tr>';
-			                result = result + '   <th>Direct Deposit Deduction</th>';
-			                result = result + '   <td>$ '+data.directDepositDeductionPositive+'</td>';
-			                result = result + '   <td>$ 0.00</td>';
-			                result = result + '   <td>$ '+data.directDepositDeductionPositive+'</td>';
-			                result = result + '   <td>$ 0.00</td>';
-			                result = result + '</tr>';
-			                result = result + ' </tbody>';
-			                result = result + ' <tfoot>';
-			                result = result + '<tr>';
-			                result = result + ' <th>Balance</th>';
-			                result = result + ' <td colspan="2">$ '+data.balance+'</td>';
-			                result = result + ' <td colspan="2">$ '+data.empBalance+'</td>';
-			                result = result + '</tr>';
-			                result = result + ' </tfoot>';
-			                result = result + '</table>';
-			                result = result + '  </div>';
-			                result = result + ' </div>';
-			                result = result + '</div>';
-			        	
-						$("#tab-1").empty();
-						$("#tab-2").empty();
-						$("#tab-3").empty();
-						$("#tab-4").empty();
-						$("#tab-5").empty();
-						$("#tab-6").empty();
-						$("#tab-6").append(result);
-						$("#loading").removeAttr("style");
-			        },
-			        
-			    });
+		var empId = $("#empId").val();
+		var orgLocationId = '${SourceLeadWeb_orgLocationId}';
+		var sourceleadUrl ='${sourceleadUrl}';
+		$.ajax({
+		type: "GET",
+		url: sourceleadUrl+"/getfinalBalanceByEmpId?empId="+empId+"&orgLocationId="+orgLocationId,
+		success: function(data) {
+		var result = "";
+		result = result + ' <div class="clearfix col-md-10 col-md-offset-1">';
+		result = result + ' <div class="payrollinvoice-generate">';
+		result = result + ' <h4 class="clearfix text-center">Balance Sheet</h4>';
+		result = result + ' <div class="payrollinvoice-header">';
+		result = result + '<table style="width:100%" class="table-responsive table-bordered table-BLsheet mb">';
+		result = result + '<tr>';
+		result = result + '<th rowspan="2" class="bg-info">Income</th>';
+		result = result + '<th class="bg-orange">Billed</th>';
+		result = result + '<th class="bgGReen">Paid</th>';
+		result = result + '<th class="bg-red">Due</th>';
+		result = result + '</tr>';
+		result = result + '<tr>';
+		result = result + '<td class="bg-success">$ '+data.billed+'</td>';
+		result = result + '<td class="bg-success">$ '+data.income+'</td>';
+		result = result + '<td class="bg-success">$ '+data.due+'</td>';
+		result = result + '</tr>';
+		result = result + '</table>';
+		result = result + ' </div>';
+		
+		
+		
+		result = result + '<div class="table-payroll">';
+		result = result + '<table style="width:100%" class="table">';
+		result = result + '<thead>';
+		
+		result = result + '<tr>';
+		result = result + '<th class="timesheetHead">&nbsp;</th>';
+		result = result + '<th class="timesheetHead" colspan="2" style="padding-left:70px; font-weight:700">Admin View</th>';
+		result = result + '<th class="timesheetHead" colspan="2" style="padding-left:70px; font-weight:700">Employee View</th>';
+		result = result + '</tr>';
+		
+		result = result + '<tr>';
+		result = result + '<th>Name</th>';
+		result = result + '<th class="text-center">Gross</th>';
+		result = result + '<th class="text-center">Net</th>';
+		result = result + '<th class="text-center">Gross</th>';
+		result = result + '<th class="text-center">Net</th>';
+		result = result + '</tr>';
+		result = result + '	</thead>';
+		result = result + '<tbody>';
+		result = result + ' <tr>';
+		result = result + ' <th colspan="5">Payroll</th>';
+		result = result + ' </tr>';
+		result = result + '<tr> ';
+		result = result + ' <th><span class="ml">Direct Deposit</span></th>';
+		result = result + ' <td>$ '+data.directDepositGross+'</td>';
+		result = result + ' <td>$ '+data.directDepositNet+'</td>';
+		result = result + ' <td>$ '+data.directDepositGross+'</td>';
+		result = result + ' <td>$ '+data.directDepositNet+'</td>';
+		result = result + '</tr>';
+		result = result + '<tr>';
+		result = result + ' <th><span class="ml">Processed with Check Option</span></th>';
+		result = result + ' <td>$ '+data.processedWithCheckOptionGross+'</td>';
+		result = result + ' <td>$ '+data.processedWithCheckOptionNet+'</td>';
+		result = result + ' <td>$ '+data.processedWithCheckOptionGross+'</td>';
+		result = result + ' <td>$ '+data.processedWithCheckOptionNet+'</td>';
+		result = result + ' </tr>';
+		result = result + ' <tr>';
+		result = result + ' <th><span class="ml">Actual Checks Deposited</span></th>';
+		result = result + ' <td>$ '+data.actualChecksDepositedNet+'</td>';
+		result = result + ' <td>$ 0.00</td>';
+		result = result + ' <td>$ '+data.actualChecksDepositedNet+'</td>';
+		result = result + ' <td>$ 0.00</td>';
+		result = result + '</tr>';
+		result = result + '<tr>';
+		result = result + ' <th>Manual Advance</th>';
+		result = result + ' <td>$ '+data.manualAdvance+'</td>';
+		result = result + ' <td>$ 0.00</td>';
+		result = result + ' <td>$ '+data.manualAdvance+'</td>';
+		result = result + ' <td>$ 0.00</td>';
+		result = result + ' </tr> ';
+		result = result + ' <tr>';
+		result = result + ' <th>General Expenses</th>';
+		result = result + ' <td>$ '+data.generalExpenses+'</td>';
+		result = result + ' <td>$ 0.00</td>';
+		result = result + ' <td>$ '+data.generalExpenses+'</td>';
+		result = result + ' <td>$ 0.00</td>';
+		result = result + ' </tr>';
+		result = result + '<tr>';
+		result = result + ' <th>Vendor Payment</th>';
+		result = result + ' <td>$ '+data.vendorPayment+'</td> ';
+		result = result + ' <td>$ 0.00</td>';
+		result = result + ' <td>$ '+data.vendorPayment+'</td> ';
+		result = result + ' <td>$ 0.00</td>';
+		result = result + ' </tr>';
+		result = result + ' <tr>';
+		result = result + ' <th>Healthcare/Insurance</th>';
+		result = result + ' <td>$ '+data.healthcareInsurance+'</td>';
+		result = result + ' <td>$ 0.00</td>';
+		result = result + ' <td>$ '+data.healthcareInsurance+'</td>';
+		result = result + ' <td>$ 0.00</td>';
+		result = result + '</tr>';
+		result = result + ' <tr>';
+		result = result + ' <th>Immigration</th>';
+		result = result + ' <td>$ '+data.immigration+'</td>';
+		result = result + ' <td>$ 0.00</td>';
+		result = result + ' <td>$ '+data.immigration+'</td>';
+		result = result + ' <td>$ 0.00</td>';
+		result = result + '</tr>';
+		result = result + ' <tr>';
+		result = result + ' <th>Direct Deposit Advance</th>';
+		result = result + ' <td>$ '+data.directDepositAdvanceNegetive+'</td>';
+		result = result + ' <td>$ 0.00</td>';
+		result = result + ' <td>$ '+data.directDepositAdvanceNegetive+'</td>';
+		result = result + ' <td>$ 0.00</td>';
+		result = result + '</tr>';
+		result = result + ' <tr>';
+		result = result + ' <th>Direct Deposit Deduction</th>';
+		result = result + ' <td>$ '+data.directDepositDeductionPositive+'</td>';
+		result = result + ' <td>$ 0.00</td>';
+		result = result + ' <td>$ '+data.directDepositDeductionPositive+'</td>';
+		result = result + ' <td>$ 0.00</td>';
+		result = result + '</tr>';
+		result = result + ' </tbody>';
+		result = result + ' <tfoot>';
+		result = result + '<tr>';
+		result = result + ' <th>Balance</th>';
+		result = result + ' <td colspan="2">$ '+data.balance+'</td>';
+		result = result + ' <td colspan="2">$ '+data.empBalance+'</td>';
+		result = result + '</tr>';
+		result = result + ' </tfoot>';
+		result = result + '</table>';
+		result = result + ' </div>';
+		result = result + ' </div>';
+		result = result + '</div>';
+		
+		$("#tab-1").empty();
+		$("#tab-2").empty();
+		$("#tab-3").empty();
+		$("#tab-4").empty();
+		$("#tab-5").empty();
+		$("#tab-6").empty();
+		$("#tab-6").append(result);
+		$("#loading").removeAttr("style");
+		},
+		
+		});
 }
 </script>
 
