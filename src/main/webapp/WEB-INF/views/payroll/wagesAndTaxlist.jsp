@@ -3,6 +3,12 @@
 <script type="text/javascript">
 function wagesAndTaxList(){
 	    $("#addPayrollDiv").hide();
+	    $("#employeeCostSearch").hide();
+		$("#wageTaxSearch").show();
+		$("#accountDedSearch").hide();
+		$("#hrDedSearch").hide();
+		$("#checksSearch").hide();
+		$("#invoiceDataSearch").hide();
 		var sourceleadUrl ='${sourceleadUrl}';
 		var searchValue = $("#dataTableSearch").val();
 		var orgLocationId = '${SourceLeadWeb_orgLocationId}';
@@ -31,11 +37,11 @@ function prepareWagesAndTaxList(url){
 	$('#payrollCycle').val('').trigger("chosen:updated");
  	 var result = "";
  	 
- 		result = result +" <div class='reportHead'>";
+ 		/*  result = result +" <div class='reportHead'>";
 		result = result + " <ul class='pull-right'>";
 		result = result + " <li><input type='text' placeholder='Search' class='repSearchBar' id='dataTableSearch'/><span class='repSearchIcon' onClick='dataTableSearch()'></span></li>";
 		result = result + "</ul>";
-		result = result + "</div>";  		
+		result = result + "</div>";    */		
  		
  	  	result = result +"<table id='wageTaxPagination' class='display' cellspacing='0' width='100%' >"; 
       	result = result +"<thead>"; 
