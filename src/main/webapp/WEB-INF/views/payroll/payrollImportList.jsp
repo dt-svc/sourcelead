@@ -105,6 +105,44 @@
 		<div
 			class="project_tabs_inn_table vendor_wrap_inn_table dataFilterNew">
 			<div id="loading"></div>
+		<div class='reportHead' id="employeeCostSearch">
+		  <ul class='pull-right'>
+		  <li><input type='text' placeholder='Search' class='repSearchBar' id='employeeDataTableSearch'/>
+		  <span class='repSearchIcon' onClick='employeeDataSearch();'></span></li>
+		  </ul>
+		</div>
+		  <div class='reportHead' id="wageTaxSearch">
+		 <ul class='pull-right'>
+		 <li><input type='text' placeholder='Search' class='repSearchBar' id='dataTableSearch'/><span class='repSearchIcon' 
+		 onClick='dataTableSearch()'></span></li>
+		</ul>
+		</div>
+		<div class='reportHead' id="accountDedSearch">
+		<ul class='pull-right'>
+		<li><input type='text' placeholder='Search' class='repSearchBar' id='accountDataTableSearch'/><span class='repSearchIcon' 
+		onClick='accountDataTableSearch();'></span></li>
+		</ul>
+		</div>
+		 <div class='reportHead' id="hrDedSearch">
+		 <ul class='pull-right'>
+		<li><input type='text' placeholder='Search' class='repSearchBar' id='hrDataTableSearch'/><span class='repSearchIcon' 
+		onClick='hrDataTableSearch();'></span></li>
+		</ul>
+		</div>
+		<div class='reportHead' id="checksSearch">
+	    <ul class='pull-right'>
+		<li><input type='text' placeholder='Search' class='repSearchBar' id='checksDataTableSearch'/><span class='repSearchIcon' 
+		onClick='checksDataTableSearch();'></span></li>
+		</ul>
+		</div>
+		
+		<div class='reportHead' id="invoiceDataSearch">
+		<ul class='pull-right'>
+		<li><input type='text' placeholder='Search' class='repSearchBar' id='invoiceDataTableSearch'/>
+		<span class='repSearchIcon' onClick='invoiceDataTableSearch();'></span></li>
+		</ul>
+		</div>
+		
 			<div id="employerCostDiv" class="datatable_filter"></div>
 			<div id="wagesAndTaxListDiv" class="datatable_filter"></div>
 			<div id="accountDeductionsListDiv" class="datatable_filter"></div>
@@ -507,6 +545,13 @@
 
 <script>
 	function loadEmployeePayrollCost() {
+		//$("#employeeCostSearch").show();
+		$("#wageTaxSearch").hide();
+		$("#accountDedSearch").hide();
+		$("#hrDedSearch").hide();
+		$("#checksSearch").hide();
+		$("#invoiceDataSearch").hide();
+		
 		var sourceleadUrl = '${sourceleadUrl}';
 		var searchValue = $("#employeeDataTableSearch").val();
 		var orgLocationId = '${SourceLeadWeb_orgLocationId}';
@@ -536,11 +581,11 @@
 		$("#payrollCycleDiv").find('p.jquery_form_error_message').remove();
 		$('#payrollCycle').val('').trigger("chosen:updated");
 		var result = "";
- 		result = result +" <div class='reportHead'>";
+ 		/* result = result +" <div class='reportHead'>";
 		result = result + " <ul class='pull-right'>";
 		result = result + " <li><input type='text' placeholder='Search' class='repSearchBar' id='employeeDataTableSearch'/><span class='repSearchIcon' onClick='employeeDataSearch();'></span></li>";
 		result = result + "</ul>";
-		result = result + "</div>"; 
+		result = result + "</div>";  */
 		result = result + '<table id="employeePayrollTable" class="display" cellspacing="0" width="100%" >';
 		result = result + '<thead>';
 		result = result + '<tr>';

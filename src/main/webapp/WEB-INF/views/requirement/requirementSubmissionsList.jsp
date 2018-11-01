@@ -50,9 +50,9 @@
   
  <script>
  $(document).ready(function() { 
-	 requirementSubmissionList();
-	 getClientList();
-	 getTeamsList();
+	 requirementSubmissionList(true);
+// 	 getClientList();
+// 	 getTeamsList();
  });
  
  </script>
@@ -60,7 +60,7 @@
  
  </script>
 <script type="text/javascript">
-       function requirementSubmissionList(){
+       function requirementSubmissionList(onloadFlag){
     	   var sourceleadUrl ='${sourceleadUrl}';
    		   var tab = '${tab}';
     	   var frequency = $('input[name=customDates]:checked').val(); 
@@ -75,10 +75,22 @@
     			employmentType.push($(this).val());
 			 });
     		 var clientNameById = [];
-    		 $('input:checkbox[name=clientNameById]:checked').each(function() 
-			 {
-    			 clientNameById.push($(this).val());
-			 });
+    	
+    			 if($("#allClients").is(":checked")) {
+    				$('input:checkbox[name=clientNameById]:checked').each(function() {
+    			    	clientNameById.push($(this).val());
+    				}); 
+    			 } else {
+    				 if($('input:checkbox[name=myClientNameById]:checked').length > 0) {
+	    				$('input:checkbox[name=myClientNameById]:checked').each(function() {
+	     			    	clientNameById.push($(this).val());
+	     				}); 
+    				 } else {
+    					 $('input:checkbox[name=myClientNameById]').each(function() {
+ 	     			    	clientNameById.push($(this).val());
+ 	     				});
+    				 }
+    			 }
     		 var teamNameById = [];
     		 $('input:checkbox[name=teamNameById]:checked').each(function() 
 			 {
@@ -90,6 +102,7 @@
     			 incentivizedType.push($(this).val());
 			 });
     		 var searchType = $('input[name=searchType]:checked').val();
+    		 var applicants = $('input[name=applicants]:checked').val();
     	    if(frequency == "Custom"){
     	        if(fromDate == ''){
     	        	$("#invoiceFilterId").show();
@@ -109,13 +122,13 @@
     	        	$('#custFromDateDiv').find('p.jquery_form_error_message').remove();
     	            $('#custToDateDiv').find('p.jquery_form_error_message').remove();
     	            $("#custom-selects").hide();
-    	            var url = sourceleadUrl+"/applicantList?searchValue="+searchValue+"&orgLocationId="+orgLocationId+"&tabType="+tab+"&submissionStatus=SUBMIT_TO_CLIENT&frequency="+frequency+"&fromDate="+fromDate+"&toDate="+toDate+"&employmentType="+employmentType+"&clientId="+clientNameById+"&teamId="+teamNameById+"&incentivizedType="+incentivizedType+"&searchType="+searchType;
+    	            var url = sourceleadUrl+"/applicantList?searchValue="+searchValue+"&orgLocationId="+orgLocationId+"&tabType="+tab+"&submissionStatus=SUBMIT_TO_CLIENT&frequency="+frequency+"&fromDate="+fromDate+"&toDate="+toDate+"&employmentType="+employmentType+"&clientId="+clientNameById+"&teamId="+teamNameById+"&incentivizedType="+incentivizedType+"&searchType="+searchType+"&applicants="+applicants;
         			prepareSubmissionList(url);
     	        }
     	    }else{
     	        $('#custFromDateDiv').find('p.jquery_form_error_message').remove();
     	        $('#custToDateDiv').find('p.jquery_form_error_message').remove();
-    	        var url = sourceleadUrl+"/applicantList?searchValue="+searchValue+"&orgLocationId="+orgLocationId+"&tabType="+tab+"&submissionStatus=SUBMIT_TO_CLIENT&frequency="+frequency+"&fromDate="+fromDate+"&toDate="+toDate+"&employmentType="+employmentType+"&clientId="+clientNameById+"&teamId="+teamNameById+"&incentivizedType="+incentivizedType+"&searchType="+searchType;
+    	        var url = sourceleadUrl+"/applicantList?searchValue="+searchValue+"&orgLocationId="+orgLocationId+"&tabType="+tab+"&submissionStatus=SUBMIT_TO_CLIENT&frequency="+frequency+"&fromDate="+fromDate+"&toDate="+toDate+"&employmentType="+employmentType+"&clientId="+clientNameById+"&teamId="+teamNameById+"&incentivizedType="+incentivizedType+"&searchType="+searchType+"&applicants="+applicants;
     			prepareSubmissionList(url);
  
     	    } 
@@ -460,7 +473,7 @@ $(".overIcon, .newActPop").click(function(e){
 					<div class="row">
 					  <div class="col-md-3">
 						<div class="row">
-						 <div class="col-md-12 mb">
+						   <div class="col-md-12 mb">
 								<label><strong>Search for</strong></label>
 								 <div class="clearfix">
 									<ul class="list-unstyled" id="searchTypeFilter">
@@ -469,7 +482,6 @@ $(".overIcon, .newActPop").click(function(e){
 				                    </ul>
 								 </div>
 						   </div>
-							
 						    <div class="col-md-12 mb">
 								<label><strong>Duration</strong></label>
 								 <div class="clearfix">
@@ -495,6 +507,7 @@ $(".overIcon, .newActPop").click(function(e){
 			                        </ul>
 							      </div>
 						     </div> 
+						     
 						  </div>
 						  <div class="clearfix pull-left" id="custom-selects" style="display: none; width: 346px;" >
 							<div class="pull-left">
@@ -525,24 +538,35 @@ $(".overIcon, .newActPop").click(function(e){
 							      </div>
 						     </div>
 						     <div class="col-md-12 mb">
-									<label><strong>Incentivized</strong></label>
-									 <div class="clearfix">
-										<ul class="list-unstyled" id="incentivizedFilter">
-										     <li class="checkBox positionRelative" ><input  type="checkbox" name="incentivizedType"  value ="Y" ><label for="Yes">Yes</label></li>
-											 <li class="checkBox positionRelative" ><input  type="checkbox" name="incentivizedType" value ="N" ><label for="No">No</label></li>
-					                    </ul>
-									 </div>
-							   </div> 
+								<label><strong>Incentivized</strong></label>
+								 <div class="clearfix">
+									<ul class="list-unstyled" id="incentivizedFilter">
+									     <li class="checkBox positionRelative" ><input  type="checkbox" name="incentivizedType"  value ="Y" ><label for="Yes">Yes</label></li>
+										 <li class="checkBox positionRelative" ><input  type="checkbox" name="incentivizedType" value ="N" ><label for="No">No</label></li>
+				                    </ul>
+								 </div>
+						   	</div>
 						  </div>
 						</div>
 	                 
+						
 						<div class="col-md-3 positionRelative mb">
 							<div class="clearfix dynamic_search filterDynamicsearch">
-																<input type="text" id="myTeamsInput" onkeyup="myTeamsFunction()" placeholder="Teams" title="Search teams">
+								<input type="text" id="myTeamsInput" onkeyup="myTeamsFunction()" placeholder="Teams" title="Search teams">
 								<span class="cursorPointer" title="Search"><i class="fa fa-search"></i></span>
 							</div>
 							 <div class="clearfix filterSearch-ul">
 									<ul class="list-unstyled positionRelative filterSearch mt5" id="myTeamsListUL">
+									<c:forEach items="${teamsList}" var="team">
+											<li class="checkBox positionRelative">
+											<%-- <c:if test="${team.ownerUserId.id != null && loginUserId == team.ownerUserId.id}">
+												<input type="checkbox" name="teamNameById" checked value ="${team.id}"><label>${team.name}</label>
+												</c:if> --%>
+<%-- 												<c:if test="${team.ownerUserId.id != null && loginUserId != team.ownerUserId.id}"> --%>
+												<input type="checkbox" name="teamNameById" value ="${team.id}"><label>${team.name}</label>
+<%-- 												</c:if> --%>
+											</li>
+										</c:forEach>
 			                        </ul>
 							 </div> 
 						</div>
@@ -552,14 +576,48 @@ $(".overIcon, .newActPop").click(function(e){
 								<input type="text" id="myClientInput" onkeyup="myClientFunction()" placeholder="Clients" title="Type in a client">
 								<span class="cursorPointer" title="Search"><i class="fa fa-search"></i></span>
 							</div>
-							 <div class="clearfix filterSearch-ul">
-								<ul class="list-unstyled positionRelative filterSearch mt5" id="myClinetListUL">
-								</ul>
-							 </div> 
+							
+							<div class="col-md-12 mb">
+								<label><strong>Select Client type</strong></label>
+								 <div class="clearfix">
+									<ul class="list-unstyled" id="clientTypeFilter">
+									     <li class="radioIput positionRelative" ><input  type="radio" name="searchType" value ="myClients" onchange="showMyClients();" id="myClients"><label for="myClients">My Clients</label></li>
+										 <li class="radioIput positionRelative" ><input  type="radio" name="searchType" value ="allClients" onchange="showAllClients();" id="allClients" checked="checked"><label for="allClients">All Clients</label></li>
+				                    </ul>
+								 </div>
+						   		
+						   		<div class="clearfix filterSearch-ul">
+									<ul class="list-unstyled positionRelative filterSearch mt5" id="myClinetListUL">
+										<c:forEach items="${allClients}" var="c">
+											<li class="checkBox positionRelative">
+												<input type="checkbox" name="clientNameById" value ="${c.orgRelId}"><label>${c.clientName}</label>
+											</li>
+										</c:forEach>
+									</ul>
+									<ul class="list-unstyled positionRelative filterSearch mt5" id="myOwnerClinetListUL" style="display: none;">
+										<c:forEach items="${myClients}" var="c">
+											<li class="checkBox positionRelative">
+												<input type="checkbox" name="myClientNameById" value ="${c.orgRelId}"><label>${c.clientName}</label>
+											</li>
+										</c:forEach>
+									</ul>
+								</div>
+								
+								  <div class="col-md-12 mb">
+								<label><strong>Applicants</strong></label>
+								 <div class="clearfix">
+									<ul class="list-unstyled" id="searchTypeFilter">
+										<li class="radioIput positionRelative" ><input  type="radio" name="applicants" value ="ALLApplicants" checked ><label for="No">ALL Applicants</label></li>
+									     <li class="radioIput positionRelative" ><input  type="radio" name="applicants"  value ="MYApplicants" ><label for="Yes">MY Applicants</label></li>
+				                    </ul>
+								 </div>
+						   </div>
+							 
+						   </div>
+							
+							  
 						</div>
 					  </div>
-					  
-					  
 					  
 					</div>
 					<div class="clearfix advancedsearch-footer">
@@ -571,7 +629,7 @@ $(".overIcon, .newActPop").click(function(e){
 				</div>
 
 <script>
-function getClientList(){
+/* function getClientList(){
 	var sourceleadUrl = '${sourceleadUrl}';
 	$.ajax({
 		type : "POST",
@@ -590,7 +648,7 @@ function getClientList(){
 
 		}
 	});
-}
+} */
 function myClientFunction() {
     var input, filter, ul, li, a, i;
     input = document.getElementById("myClientInput");
@@ -606,10 +664,21 @@ function myClientFunction() {
 
         }
     }
+    ul = document.getElementById("myOwnerClinetListUL");
+    li = ul.getElementsByTagName("li");
+    for (i = 0; i < li.length; i++) {
+        a = li[i].getElementsByTagName("label")[0];
+        if (a.innerHTML.toUpperCase().indexOf(filter) > -1) {
+            li[i].style.display = "";
+        } else {
+            li[i].style.display = "none";
+
+        }
+    }
 }
 
 
-function getTeamsList(){
+/* function getTeamsList(){
 	var sourceleadUrl = '${sourceleadUrl}';
 	$.ajax({
 		type : "POST",
@@ -627,7 +696,7 @@ function getTeamsList(){
 			  $("#myTeamsListUL").append(result);
 		}
 	});
-}
+} */
 
 function myTeamsFunction() {
     var input, filter, ul, li, a, i;
@@ -644,6 +713,17 @@ function myTeamsFunction() {
 
         }
     }
+}
+function showAllClients() {
+	$("ul#myOwnerClinetListUL > li input:checkbox").prop("checked",false);
+	$("#myClinetListUL").show();
+	$("#myOwnerClinetListUL").hide();
+}
+
+function showMyClients() {
+	$("ul#myClinetListUL > li input:checkbox").prop("checked",false);
+	$("#myClinetListUL").hide();
+	$("#myOwnerClinetListUL").show();
 }
 </script>
 
@@ -670,10 +750,21 @@ function projectExport(type){
 			employmentType.push($(this).val());
 		 });
 		 var clientNameById = [];
-		 $('input:checkbox[name=clientNameById]:checked').each(function() 
-		 {
-			 clientNameById.push($(this).val());
-		 });
+		 if($("#allClients").is(":checked")) {
+			$('input:checkbox[name=clientNameById]:checked').each(function() {
+		    	clientNameById.push($(this).val());
+			}); 
+		 } else {
+			 if($('input:checkbox[name=myClientNameById]:checked').length > 0) {
+				$('input:checkbox[name=myClientNameById]:checked').each(function() {
+ 			    	clientNameById.push($(this).val());
+ 				}); 
+			 } else {
+				 $('input:checkbox[name=myClientNameById]').each(function() {
+     			    	clientNameById.push($(this).val());
+     				});
+			 }
+		 }
 		 var teamNameById = [];
 		 $('input:checkbox[name=teamNameById]:checked').each(function() 
 		 {

@@ -744,5 +744,13 @@ public class OrgSpocServiceImpl implements OrgSpocService{
 		return orgSpocDao.getSpocByOrgRelationIdForNewVendor(orgRelationId);
 	}
 
+
+	@Override
+	public OrgSpoc getSpocByVendorUserIdAndOrgRelationId(Long orgRelationId, Long vendorUserId) throws Exception
+	{
+		return orgSpocDao.getSpocByVendorUserIdAndOrgRelationId(orgRelationId, vendorUserId);
+
+	}
+
 	
 }
