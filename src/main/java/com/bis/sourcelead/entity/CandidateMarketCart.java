@@ -30,9 +30,6 @@ public class CandidateMarketCart implements Serializable {
 	@JoinColumn(name = "CANDIDATE_ID", nullable = false)
 	private Candidate candidateId;
 
-	@ManyToOne(fetch = FetchType.LAZY)
-	@JoinColumn(name = "MASTER_CANDIDATE_ID", nullable = false)
-	private MasterCandidate masterCandidateId;
 	
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "MARKETPLACE_ID", nullable = false)
@@ -48,9 +45,29 @@ public class CandidateMarketCart implements Serializable {
 	private String marketplaceUUID;
 
 	@ManyToOne(fetch = FetchType.LAZY)
-	@JoinColumn(name = "ORG_LOCATION_ID", nullable = false)
-	private OrgLocations orgLocationId;
+	@JoinColumn(name = "SOURCE_ORG_ID", nullable = false)
+	private Org sourceOrgId;
 	
+	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name = "TARGET_ORG_ID", nullable = false)
+	private Org targetOrgId;
+	
+	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name = "SOURCE_ORG_LOCATION_ID", nullable = false)
+	private OrgLocations sourceOrgLocationId;
+	
+	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name = "TARGET_ORG_LOCATION_ID", nullable = false)
+	private OrgLocations targetOrgLocationId;
+	
+	@Column(name = "CURRENCY")
+	private String currency;
+	
+	@Column(name = "AMOUNT")
+	private Double amount ;
+	
+	@Column(name = "CART_STATUS")
+	private String cartStatus;
 	
 	@Column(name = "STATUS")
 	private Integer status;
@@ -93,22 +110,6 @@ public class CandidateMarketCart implements Serializable {
 		this.marketplaceId = marketplaceId;
 	}
 
-	public String getMarketplaceUUID() {
-		return marketplaceUUID;
-	}
-
-	public void setMarketplaceUUID(String marketplaceUUID) {
-		this.marketplaceUUID = marketplaceUUID;
-	}
-
-	public MasterCandidate getMasterCandidateId() {
-		return masterCandidateId;
-	}
-
-	public void setMasterCandidateId(MasterCandidate masterCandidateId) {
-		this.masterCandidateId = masterCandidateId;
-	}
-
 	public String getCandidateUUID() {
 		return candidateUUID;
 	}
@@ -117,12 +118,52 @@ public class CandidateMarketCart implements Serializable {
 		this.candidateUUID = candidateUUID;
 	}
 
-	public OrgLocations getOrgLocationId() {
-		return orgLocationId;
+	public String getMarketCartUUID() {
+		return marketCartUUID;
 	}
 
-	public void setOrgLocationId(OrgLocations orgLocationId) {
-		this.orgLocationId = orgLocationId;
+	public void setMarketCartUUID(String marketCartUUID) {
+		this.marketCartUUID = marketCartUUID;
+	}
+
+	public String getMarketplaceUUID() {
+		return marketplaceUUID;
+	}
+
+	public void setMarketplaceUUID(String marketplaceUUID) {
+		this.marketplaceUUID = marketplaceUUID;
+	}
+
+	public Org getSourceOrgId() {
+		return sourceOrgId;
+	}
+
+	public void setSourceOrgId(Org sourceOrgId) {
+		this.sourceOrgId = sourceOrgId;
+	}
+
+	public Org getTargetOrgId() {
+		return targetOrgId;
+	}
+
+	public void setTargetOrgId(Org targetOrgId) {
+		this.targetOrgId = targetOrgId;
+	}
+
+	public OrgLocations getSourceOrgLocationId() {
+		return sourceOrgLocationId;
+	}
+
+	public void setSourceOrgLocationId(OrgLocations sourceOrgLocationId) {
+		this.sourceOrgLocationId = sourceOrgLocationId;
+	}
+
+	public OrgLocations getTargetOrgLocationId() {
+		return targetOrgLocationId;
+	}
+
+	public void setTargetOrgLocationId(OrgLocations targetOrgLocationId) {
+		this.targetOrgLocationId = targetOrgLocationId;
 	}
 
 	public Integer getStatus() {
@@ -165,14 +206,29 @@ public class CandidateMarketCart implements Serializable {
 		this.updatedBy = updatedBy;
 	}
 
-	public String getMarketCartUUID() {
-		return marketCartUUID;
+	public String getCartStatus() {
+		return cartStatus;
 	}
 
-	public void setMarketCartUUID(String marketCartUUID) {
-		this.marketCartUUID = marketCartUUID;
+	public void setCartStatus(String cartStatus) {
+		this.cartStatus = cartStatus;
+	}
+
+	public String getCurrency() {
+		return currency;
+	}
+
+	public void setCurrency(String currency) {
+		this.currency = currency;
+	}
+
+	public Double getAmount() {
+		return amount;
+	}
+
+	public void setAmount(Double amount) {
+		this.amount = amount;
 	}
 
 	
-
 }

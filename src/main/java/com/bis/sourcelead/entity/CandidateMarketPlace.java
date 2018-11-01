@@ -29,15 +29,9 @@ public class CandidateMarketPlace implements Serializable {
 	private Candidate candidateId;
 
 	@ManyToOne(fetch = FetchType.LAZY)
-	@JoinColumn(name = "MASTER_CANDIDATE_ID", nullable = false)
-	private MasterCandidate masterCandidateId;
-
-
-	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "ORG_LOCATION_ID", nullable = false)
 	private OrgLocations orgLocationId;
-
- 
+	
 	@Column(name = "NAME")
 	private String  fullName;
 
@@ -159,22 +153,6 @@ public class CandidateMarketPlace implements Serializable {
 
 	public void setCandidateId(Candidate candidateId) {
 		this.candidateId = candidateId;
-	}
-
-	public MasterCandidate getMasterCandidateId() {
-		return masterCandidateId;
-	}
-
-	public void setMasterCandidateId(MasterCandidate masterCandidateId) {
-		this.masterCandidateId = masterCandidateId;
-	}
-
-	public OrgLocations getOrgLocationId() {
-		return orgLocationId;
-	}
-
-	public void setOrgLocationId(OrgLocations orgLocationId) {
-		this.orgLocationId = orgLocationId;
 	}
 
 
@@ -461,5 +439,16 @@ public class CandidateMarketPlace implements Serializable {
 	public void setSummary(String summary) {
 		this.summary = summary;
 	}
+
+	public OrgLocations getOrgLocationId() {
+		return orgLocationId;
+	}
+
+	public void setOrgLocationId(OrgLocations orgLocationId) {
+		this.orgLocationId = orgLocationId;
+	}
+
+
+	
 	
 }

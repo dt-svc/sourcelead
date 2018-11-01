@@ -39,6 +39,12 @@
           </div>
           <div class="col-md-1 col-xs-12 padding_left"> <a class="btn btn-primary btn-block width50px pull-right"><i class="fa fa-search"></i></a> </div>
           <div class="clearfix"></div>
+            <div class="tbldata-dotdot-100 mt">
+		   		        	
+		   		        	   <a href="#" onclick="initMarketplacePayment()">Pay</a>
+		   		        	
+		   		        	
+		   		        	</div>
           <div class="col-md-12 mt10"> <a href="#" class="pull-right small advancedSearch" title="Advanced Search" onClick=" openPop()">Advanced Search</a> </div>
         </div>
       </div>
@@ -835,4 +841,18 @@ $("#profileAdSearch, .advancedsearch-mask").fadeIn();
 function filterPop() {
 $(".advancedsearch-mask, #filterSearchMarket").fadeIn();
 }
+</script>
+<script type="text/javascript">
+    function initMarketplacePayment() {
+         $.ajax({
+	      type: "POST",
+    	   url: "/app/init-marketplace-payment?cartId=1234",
+      	success: function(data) {
+      		 if (data) {
+	                location.href = data;
+	            }
+	        	
+	        },  
+  		 }); 
+    }
 </script>

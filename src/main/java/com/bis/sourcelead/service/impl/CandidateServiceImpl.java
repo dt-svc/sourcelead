@@ -2665,7 +2665,6 @@ private Sheet createXlsSheet(Sheet createExcelsheet, Row writeRow,Candidate cand
 			CandidateMarketPlace marketPlace = new CandidateMarketPlace();
 			//BeanUtils.copyProperties(candidate, marketPlace);
 			marketPlace.setCandidateId(candidate);
-			marketPlace.setMasterCandidateId(candidate.getMasterCandidateId());
 			marketPlace.setCandidateUUID(candidate.getCandidateUUID());
 			marketPlace.setOrgLocationId(candidate.getOrgLocationId());
 			marketPlace.setFullName(candidate.getFullName());
@@ -2730,7 +2729,6 @@ private Sheet createXlsSheet(Sheet createExcelsheet, Row writeRow,Candidate cand
 			//BeanUtils.copyProperties(candidate, marketPlace);
 			marketPlace.setCandidateId(candidate);
 			marketPlace.setMarketplaceUUID(SourceLeadRandomCodeHelper.generateRandomUUID());
-			marketPlace.setMasterCandidateId(candidate.getMasterCandidateId());
 			marketPlace.setCandidateUUID(candidate.getCandidateUUID());
 			marketPlace.setOrgLocationId(candidate.getOrgLocationId());
 			marketPlace.setFullName(candidate.getFullName());
@@ -2813,13 +2811,15 @@ private Sheet createXlsSheet(Sheet createExcelsheet, Row writeRow,Candidate cand
 		//marketplace.setCandidateMarketStatus(Constants.ADDED_CART);
 		newMarketCart.setMarketplaceId(marketplace);
 		newMarketCart.setCandidateId(marketplace.getCandidateId());
-		newMarketCart.setMasterCandidateId(marketplace.getMasterCandidateId());
 		newMarketCart.setCandidateUUID(marketplace.getCandidateUUID());
 		newMarketCart.setMarketplaceUUID(marketplace.getMarketplaceUUID());
 		newMarketCart.setMarketCartUUID(SourceLeadRandomCodeHelper.generateRandomUUID());
 		OrgLocations orgLocation = new OrgLocations();
 		orgLocation.setId(orgLocationId);
-		newMarketCart.setOrgLocationId(orgLocation);
+		newMarketCart.setSourceOrgLocationId(marketplace.getOrgLocationId());
+		newMarketCart.setTargetOrgLocationId(orgLocation);
+		newMarketCart.setAmount(Double.valueOf(marketplace.getMarketPrice()));
+		newMarketCart.setCurrency(marketplace.getMarketRateCurrencey());
 		newMarketCart.setStatus(marketplace.getStatus());
 		newMarketCart.setCreatedDate(new Date());
 		newMarketCart.setCreatedBy(user);
