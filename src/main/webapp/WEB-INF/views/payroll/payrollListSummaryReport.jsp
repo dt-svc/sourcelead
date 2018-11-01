@@ -310,6 +310,7 @@ $(document).ready(function(){
 									{
 										"targets" : colIndex++,
 										"data" : "netpay",
+										"sortable": false,
 										"render" : function(data, type, opt,meta) {
 											var result = "";
 											result = result+ '<td><div class="tblminwidth-75"><i class="fa fa-dollar"style="color:#454545;"></i> '+ opt.netPay + '</div></td>';
