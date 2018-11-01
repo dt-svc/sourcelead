@@ -235,9 +235,8 @@ public class InvoiceDataDaoImpl implements InvoiceDataDao{
 			if (invoiceDetailsDTO != null && invoiceDetailsDTO.getLength() > 0) {
 				queryObj.setFirstResult(invoiceDetailsDTO.getStart());
 				queryObj.setMaxResults(invoiceDetailsDTO.getLength());
-				queryObj.setLong("orgLocationId", orgLocations.getId())
-				.setLong("empId", Long.parseLong(invoiceDetailsDTO.getEmpId()));
 			}
+			queryObj.setLong("orgLocationId", orgLocations.getId()).setLong("empId", Long.parseLong(invoiceDetailsDTO.getEmpId()));
 			invoiceDataList = queryObj.list();
 			int count = 0;
 			int filteredCount = 0;

@@ -327,7 +327,7 @@ public class WageTaxSummaryDaoImpl implements WageTaxSummaryDao {
 //			String query = "from WageTaxSummary wts  left join fetch wts.orgLocationId where wts.orgLocationId.id =:orgLocationId and (wts.status IS NULL or wts.status <> '0')";
 			String countQuery = "from WageTaxSummary wts  where wts.orgLocationId.id =:orgLocationId and wts.employeeId = :empId  and (wts.status IS NULL or wts.status <> '0')";
 			
-			if(wagesTaxSummaryDTO.getSearchValue().contains("/") || wagesTaxSummaryDTO.getSearchValue().contains("-")){
+			if(StringUtils.isNotBlank(wagesTaxSummaryDTO.getSearchValue()) && (wagesTaxSummaryDTO.getSearchValue().contains("/") || wagesTaxSummaryDTO.getSearchValue().contains("-"))){
 				String convertedDate=wagesTaxSummaryDTO.getSearchValue();
 				if(wagesTaxSummaryDTO.getSearchValue().contains("/")){
 					convertedDate = wagesTaxSummaryDTO.getSearchValue().replaceAll("/", "-");
@@ -363,9 +363,10 @@ public class WageTaxSummaryDaoImpl implements WageTaxSummaryDao {
 			if (wagesTaxSummaryDTO != null && wagesTaxSummaryDTO.getLength() > 0) {
 				queryObj.setFirstResult(wagesTaxSummaryDTO.getStart());
 				queryObj.setMaxResults(wagesTaxSummaryDTO.getLength());
-				queryObj.setLong("orgLocationId", orgLocation.getId())
-				.setLong("empId", Long.parseLong(wagesTaxSummaryDTO.getEmpId()));
+				
 			}
+			queryObj.setLong("orgLocationId", orgLocation.getId())
+			.setLong("empId", Long.parseLong(wagesTaxSummaryDTO.getEmpId()));
 			wagesAndTaxlist = queryObj.list();
 			int count = 0;
 			int filteredCount = 0;
