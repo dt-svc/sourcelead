@@ -14,6 +14,7 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -550,39 +551,48 @@ String loginUserRole = (String) SourceLeadSessionManager.getSessionAttribute(req
 		Map<String,List<LeaveBalanceReportDTO>>resultMap = leaveService.getLeaveNamesByOrgLocationId(orgLocation.getId(),userleaveTypeList,leaveTypesList,topleave);
 				
 		List<LeaveBalanceReportDTO> leaveTypeList = resultMap.get("LEAVETYPES");
+		
 		List<LeaveBalanceReportDTO> departmentList = resultMap.get("DEPARMENTS");
 		Map<String,Float> map = new HashMap<>();
 		Map<Long,String> depart = new HashMap<>();
 		int viki;
 		if ("yes".equalsIgnoreCase(topleave)) {
+			leaveTypeNames = leaveTypeList.stream().map(LeaveBalanceReportDTO::getName).collect(Collectors.toList());
 			for(LeaveBalanceReportDTO ltDto : users) {
 				float total =0;
+				List<LeaveType> leaveTypes = leaveTypeService.getLeaveTypeListByLocationId(String.valueOf(orgLocation.getId()));
+				for(LeaveType lt : leaveTypes) {
+					if(leaveTypeNames != null && leaveTypeNames.contains(lt.getName())) {
+						lt.setActionType("CUSTOM");
+						lt.setFromDate(MonthStartDate);
+						lt.setToDate(MonthEndDate);
+						float Leavestaken = leaveManagementUtil.getTotalAppliedLeaveCount(orgLocation, lt, ltDto.getUserId().longValue());
+						StringBuilder sb = new StringBuilder();
+						sb.append(lt.getName()).append("-").append(String.valueOf(ltDto.getUserId().longValue()));
+						map.put(sb.toString(), Leavestaken);
+						total = total +Leavestaken;
+					}
+				}
+//				for(LeaveBalanceReportDTO d:departmentList) {
+					String Departments = leaveService.getDepartmentTypeNamesByOrgLocationIdAndUserId(ltDto.getUserId().longValue(),orgLocation.getId());
+					depart.put(ltDto.getUserId().longValue(),Departments );
+//				}
+				}
+		}else {
+			for(LeaveBalanceReportDTO ltDto : users) {
 				for(LeaveBalanceReportDTO lt : leaveTypeList) {
-			float Leavestaken = leaveService.getTakenLeavesByOrgLocationIdAndUserId(lt.getId().longValue(),ltDto.getUserId().longValue(),orgLocation.getId());
-			StringBuilder sb = new StringBuilder();
-			sb.append(lt.getName()).append("-").append(String.valueOf(ltDto.getUserId().longValue()));
-			map.put(sb.toString(), Leavestaken);
-			total = total +Leavestaken;
-			}for(LeaveBalanceReportDTO d:departmentList) {
-
-				String Departments = leaveService.getDepartmentTypeNamesByOrgLocationIdAndUserId(ltDto.getUserId().longValue(),orgLocation.getId());
-				depart.put(ltDto.getUserId().longValue(),Departments );
-			}
-			}}else {
-		for(LeaveBalanceReportDTO ltDto : users) {
-			for(LeaveBalanceReportDTO lt : leaveTypeList) {
-				float leaveTypeBalance = associateBalanceLeaveService.getTotalLeavesCountByUserIdAndLeaveTypeId(lt.getId().longValue(),ltDto.getUserId().longValue(),orgLocation.getId(),orgLocation.getOrg().getId());
-				StringBuilder sb = new StringBuilder();
-				sb.append(lt.getName()).append("-").append(String.valueOf(ltDto.getUserId().longValue()));
-				map.put(sb.toString(), leaveTypeBalance);
-			}
-			for(LeaveBalanceReportDTO d:departmentList) {
-
-				String Departments = leaveService.getDepartmentTypeNamesByOrgLocationIdAndUserId(ltDto.getUserId().longValue(),orgLocation.getId());
-				depart.put(ltDto.getUserId().longValue(),Departments );
+					float leaveTypeBalance = associateBalanceLeaveService.getTotalLeavesCountByUserIdAndLeaveTypeId(lt.getId().longValue(),ltDto.getUserId().longValue(),orgLocation.getId(),orgLocation.getOrg().getId());
+					StringBuilder sb = new StringBuilder();
+					sb.append(lt.getName()).append("-").append(String.valueOf(ltDto.getUserId().longValue()));
+					map.put(sb.toString(), leaveTypeBalance);
+				}
+	//			for(LeaveBalanceReportDTO d:departmentList) {
+	
+					String Departments = leaveService.getDepartmentTypeNamesByOrgLocationIdAndUserId(ltDto.getUserId().longValue(),orgLocation.getId());
+					depart.put(ltDto.getUserId().longValue(),Departments );
+	//			}
 			}
 		}
-			}
 		
 	
 		leaveBalanceReportDto.setLeaveTypeNames(leaveTypeNames);

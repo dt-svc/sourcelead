@@ -852,6 +852,15 @@ public class TimesheetRestController {
 	
 	private EmployeeTimesheetEntryDetailsDTO getProjectMembersList(List<ProjectMembers> projectMembersList,HttpServletRequest request,EmployeeTimesheetEntryDetailsDTO etd,Candidate candidate,String currentTimeFrequency,String currentTimeSubFrequency,OrgLocations orgLocations,User loginUser) throws Exception {
 		ArrayList<ProjectMembersDTO> pmDTOList = new ArrayList<>();
+		
+		
+		
+		String[] currentFrequency = currentTimeFrequency.split("To");
+		String currentFrequencyStartDate = currentFrequency[0].trim();
+		Date actualTimeStartDate = commonUtil.orgLocationDateFormat(orgLocations.getDateFormat(),
+				currentFrequencyStartDate.replaceAll("/", "-"));
+		
+		
 		String[] currentSubFrequency = currentTimeSubFrequency.split("To");
 		String currentSubFrequencyStartDate = currentSubFrequency[0].trim();
 		String currentSubFrequencyEndDate = currentSubFrequency[1].trim();
@@ -866,8 +875,12 @@ public class TimesheetRestController {
 		if(projectMembersList != null && !projectMembersList.isEmpty()) {
 			if (projectMembersList != null && !projectMembersList.isEmpty()) {
 				for (ProjectMembers pm : projectMembersList) {
-					if(StringUtils.isEmpty(pm.getProjects().getInvoiceFrequency()) || (StringUtils.isNotEmpty(pm.getProjects().getInvoiceFrequency()) && !pm.getProjects().getInvoiceFrequency().equalsIgnoreCase(etd.getInvoiceFrequency())))
+					if(StringUtils.isEmpty(pm.getProjects().getInvoiceFrequency())  
+							|| (StringUtils.isNotEmpty(pm.getProjects().getInvoiceFrequency()) && !pm.getProjects().getInvoiceFrequency().equalsIgnoreCase(etd.getInvoiceFrequency()))
+							|| (StringUtils.isNotEmpty(etd.getInvoiceFrequency()) && etd.getInvoiceFrequency().equalsIgnoreCase("Bi-Weekly") && (CalendarUtil.getNumberOfDays(pm.getProjects().getWeekStartDate(), actualTimeStartDate) %14 != 0)))
 						continue;
+					
+					
 					HashSet<Date> pmhDateList = projectMembersHistoryService
 							.getAllProjectMemberHistoryDatesByProjectMemberIdAndWeekStartDateEndDate(
 									pm.getId(), actualStartDate, actualEndDate);
@@ -3352,7 +3365,7 @@ public class TimesheetRestController {
 								frequencyEndDate, projectId, masterCandidateId);
 			} else {
 				isReopenButtonVisible = submissionApproverHierarchyService.isReopenButtonVisible(frequencyStartDate,
-						frequencyEndDate, projectId, masterCandidateId, orgLocations.getId());
+						frequencyEndDate, projectId, masterCandidateId, orgLocations.getId(),orgLocations.getOrg().getId(),isGlobalAccess);
 				sah = submissionApproverHierarchyService
 						.getSubmissionApproverHierarchyByMasterCandidateIdStartDateAndEndDateForApproverLogin(
 								loginUser.getId(), projectId, masterCandidateId, orgLocations.getId(),
@@ -3360,7 +3373,7 @@ public class TimesheetRestController {
 			}
 			Submission_Status submissionStatus = sah.getSubmissionStatus();
 			Boolean isSuperUser = commonUtil.isSuperAdminForProjectMemberToReopenTimesheets(pm.getId(), loginUser,
-					orgLocations);
+					orgLocations,isGlobalAccess);
 			String submissionStatusStr = submissionStatus.getValue();
 			SubmissionApproverHierarchy isSah = submissionApproverHierarchyService
 					.isThereAnyApproverChangesStatusForProjectAndMasterCandidateId(projectId, masterCandidateId,
@@ -6354,8 +6367,9 @@ public class TimesheetRestController {
 		try {
 			User loginUser = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
 			OrgLocations orgLoc = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+			String isGlobalAccess = (String) SourceLeadSessionManager.getSessionAttribute(request, "isGlobalAccess");
 			String isSuperUser = Constants.NO;
-			if (commonUtil.isSuperAdminForProjectMemberToReopenTimesheets(projectMemberId, loginUser, orgLoc)) {
+			if (commonUtil.isSuperAdminForProjectMemberToReopenTimesheets(projectMemberId, loginUser, orgLoc,isGlobalAccess)) {
 				isSuperUser = Constants.YES;
 			}
 

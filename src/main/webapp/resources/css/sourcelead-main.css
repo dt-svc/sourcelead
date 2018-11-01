@@ -94,22 +94,20 @@ html, body {
 height: 100%;
 }
 .wraper {
-    min-height: 100%; height: auto !important; height: 100%; margin: 0 auto -15px;
+    min-height: 100%; height: auto !important; height: 100%; margin: 0 auto;
 }
 .wrapper::before, .wrapper::after {
 	content: " "; display: table;
 }
 .main-header {
 background-size: 15%; min-height: 52px; box-shadow: 0px 1px 2px rgba(0,0,0,0.1);
-background-position: 30px; background-color: #368ee0; z-index: 9999; position: fixed; max-height: 55px; width: 100%; 
+background-position: 30px; background-color: #fff; z-index: 9999; position: fixed; max-height: 55px; width: 100%; 
 }
 .main-header span.logo {
     background: #fff; padding: 0 15px; line-height: 54px; width: 190px; box-sizing: border-box; height: 55px; float: left;
-    text-align: center;
+    text-align: left;
 }
-.main-header span.logo img {
-	/*width:100%; width: 200px;*/ width: auto; max-height: 36px; display: block; margin: 8px auto;
-}
+.main-header span.logo img { width: auto; max-height: 44px; display: block; margin: 8px auto 0px;}
 .main-header span.logo .text-logo {
 font-size: 18px; font-weight: bold; text-align: center; line-height: 54px; overflow: hidden; text-overflow: ellipsis; width: 160px; 
 white-space: nowrap; vertical-align: middle; font-style: normal; color: #375d81;
@@ -194,7 +192,7 @@ float: left; padding: 0 15px; /*transition: all 0.5s ease-in-out 0s;*/ line-heig
     float: left; margin-top: 10px;
 }
 .search-area .btn {
-    height: 32px; border-radius: 3px 0 0 3px; width: 140px !important;
+    height: 34px; width: 141px !important; border-radius: 15px 0px 0px 15px; border: 1px solid #e4e4e4; background-color: #f2f2f2;
 }
 search-area .btn-default{
     color: #fff; background-color: #337ab7; border-color: #2e6da4;
@@ -203,14 +201,16 @@ search-area .btn-default:hover {
     color: #fff; background-color: #286090; border-color: #204d74;
 }
 .search-area .form-control {
-background:rgba(55,93,129, 0.7); margin: 0; color:#fff !important; box-shadow: none; padding-left: 15px; padding-right: 30px;
-height: 32px; border-radius: 0 3px 3px 0; width: 275px; border: 1px solid rgba(55,93,129, 0.3) !important; border-left:none;
+background:#fff; margin: 0; color:#333 !important; box-shadow: none; padding-left: 15px; padding-right: 30px;
+height: 34px; border-radius: 0 15px 15px 0; width: 275px; border:1px solid #e4e4e4 !important; border-left:none;
 }
 .search-area .form-control::-moz-placeholder {
 color: #bdbdbd; opacity: 1;
 }
 .search-area .srcbutton {
-position: absolute; top: 0px; color:#fff; right: 0; padding-right: 10px; height: 34px; background: transparent; border: 0;
+position: absolute; top: 0px; color:#a7a7a7; right: 5px; height: 32px; background: transparent; border: 0; width: 30px;
+display: block; background-image:url(../images/search.svg); background-position:center; background-repeat:no-repeat; background-size:31px;
+
 }
 .main-header .header-nav .custom-navbar ul > li > a > .label {
 font-size: 9px; line-height: 0.9; padding: 2px 3px; position: absolute; right: 7px; text-align: center; top: 9px;
@@ -643,7 +643,7 @@ line-height: 35px; border-bottom: 1px solid #325475; transition: all 0.5s ease-i
 /*sidebar menu styles ends */
 /* content Area Styels */
 .content-wraper {
-background: #f2f2f2; margin-left: 60px; padding: 0 20px 30px; padding-top: 53px;
+background: #f2f2f2; margin-left: 60px; padding: 0 20px 20px; padding-top: 54px;
 -moz-transition: all ease-in-out 0s; -ms-transition: all ease-in-out 0s; -webkit-transition: all ease-in-out 0s;
 transition: all ease-in-out 0s;
 }
@@ -806,8 +806,8 @@ position: absolute; top: 40%; width: 100%;
 
 /* Footer Styles */
 .footer-area {
-background: #fff; clear: both; padding: 10px 25px; margin-left: 55px; transition: all ease-in-out 0.2s;
-bottom: 0; height: 45px; right: 0; position: relative; width: 100%; line-height: 25px; text-align: center;
+background: #fff; clear: both; padding: 0px 0px; margin-left: 55px; transition: all ease-in-out 0.2s; box-shadow: 0px 0px 2px rgba(0,0,0,0.1);
+height: 45px; width: auto; line-height: 44px; text-align: center;
 }
 .footer-area.footer-area-active {
  margin-left: 192px;
@@ -1662,8 +1662,7 @@ max-height: 22px; height: auto; width: auto;
 background: #cd2027 !important;
 }
 .toggle-button .switch {
-position: relative;
-top: -2px;
+position: relative; top: -2px;
 }
 .release-jobs-tbl table tr th {
 text-align:center;
@@ -2170,7 +2169,7 @@ a.collpase-div .fa-angle-down:hover{
 	background-color:#DCDBDA; color:#333;
 }
 .addTask {
-	position:fixed; right: 0px; top: 90px; z-index: 1000;
+	position:fixed; right: 0px; top: 90px; z-index: 100000;
 }
 .addTask .icon-addTask{
 	background:-webkit-linear-gradient(#2bddb8,#17aa8c); background:-o-linear-gradient(#2bddb8,#17aa8c);
@@ -4960,6 +4959,9 @@ color: #2E7D32 !important;
 .textWarning {
 color: #FB8C00 !important;
 }
+.textYellow {
+	color: #FFD300 !important;
+}
 .emp_onboarddocs a {
 	color:#505050; transition: all 0.3s; -moz-transition: all 0.3s; -webkit-transition: all 0.3s; -o-transition: all 0.3s;
 }
@@ -5115,7 +5117,7 @@ div.inputCustom {
     z-index:99 !important; border-radius: 4px;
 }
 .menuWidget ul.menupop::before {
-    content:""; right: 100%; top: 2%; border: solid transparent; content: " ";
+    content:""; right: 100%; top: 2%; border: solid transparent;
     height: 0; width: 0; position: absolute; pointer-events: none; border-color: rgba(194, 225, 245, 0);
     border-right-color: #337ab7; border-width: 10px; margin-top: 0px;
 }
@@ -9179,10 +9181,13 @@ margin: 5px 0; font-size: 16px; color: #606060;
 	border-bottom: 1px solid #ededed; padding: 10px 0;
 }
 .prfileImg {
-	width: 150px; height: 150px; background-color:#fff; padding-right: 0;
+	width: 100px; height: 100px; background-color:#fff; padding-right: 0;
 }
-.prfileImg img, .profilesummarywidgetImg img {
-	max-height: 100%; border-radius:0px;
+.prfileImg img, .profilesummarywidgetImg img, .grid-prfileImg img {
+	max-height: 100%; border-radius:0px; margin: 0 auto;
+}
+.grid-prfileImg {
+	width: 150px; height: auto; background-color:#fff; padding-right: 0; float: left;
 }
 .profilesummarywidgetImg {
 	width: 150px; height: 150px; border: 3px solid #fff;
@@ -9210,10 +9215,10 @@ ul.candidateInfo li .rateProfile {
 	width: 90%;
 }
 .profileDetails-header {
-	border-bottom: 1px solid #f5f5f5;	
+	border-bottom: 1px solid #f5f5f5; background-color: #fff; padding: 5px 0;
 }
 ul.profileSkills li {
-	color: #333; background-color: #ededed; border: 1px solid #ededed; border-radius: 2px; padding:2px 10px; margin-right: 15px; cursor: pointer; margin-bottom: 10px;
+	color: #333; background-color: #ededed; border: 1px solid #ededed; border-radius: 2px; padding:2px 5px; margin-left: 5px; cursor: pointer; margin-bottom: 10px;
 }
 ul.profileSkills li:hover {
 	border: 1px solid #ededed; background-color: #fff;
@@ -9231,15 +9236,18 @@ ul.profileSkills li:last-of-type {
 	height: 32px; line-height: 23px;
 }
 .anchorHighlight {
-color:#0277BD; -webkit-transition: all .2s ease-in-out; -moz-transition: all .2s ease-in-out; transition: all .2s ease-in-out;
+color:#0277BD; -webkit-transition: all .2s ease-in-out; -moz-transition: all .2s ease-in-out; transition: all .2s ease-in-out; border: 1px solid #9FDBFF; border-radius: 3px; padding: 3px 10px;
 }
 .anchorHighlight:before {
-content:""; padding-right: 10px; position: relative; display:inline-block; right: 0px; width:18px;
+padding-right: 10px; position: relative; display:inline-block; right: 0px; width:18px;
 content: '\f087'; font-family: fontawesome;
 -webkit-transition: all .2s ease-in-out; -moz-transition: all .2s ease-in-out; transition: all .2s ease-in-out;
 }
-.anchorHighlight:hover:before, .anchorHighlight:hover {
-content: '\f00c'; color: #f60;
+.anchorHighlight:hover:before, .anchorHighlight:hover, .anchorHighlight.anchorHighlightActive {
+content: '\f00c'; color: #f60; border-color: #f60;
+}
+.anchorHighlight.anchorHighlightActive:before {
+content: '\f00c'; color: #f60; border-color: #f60;
 }
 .currentCompnay {
 	background-image: url(../images/accept.svg); background-repeat: no-repeat; width: 45px; height: 45px;
@@ -9249,8 +9257,17 @@ content: '\f00c'; color: #f60;
 	background-image: url(../images/resigned.svg); background-repeat: no-repeat; width: 25px; height: 25px;
 	background-position: top; background-size: 100%; display: inline-block;
 }
+.shopping-cart {
+	background-image: url(../images/shopping-cart.svg); background-repeat: no-repeat; width: 25px; height: 28px;
+	background-position: top; background-size: 100%; display: inline-block;
+}
+.dollarSvg {
+	background-image: url(../images/price-tag.svg); background-repeat: no-repeat; width: 25px; height: 28px;
+	background-position: top; background-size: 100%; display: inline-block;
+}
+
 .jobSucces_list a {
-	position: absolute; right:0px; top:0px; color: #f60;
+	position: relative; right:0px; top:0px; color: #f60;
 }
 .richtext-inner > div {
 	width: 100% !important;
@@ -9260,6 +9277,48 @@ content: '\f00c'; color: #f60;
 }
 .reports-head .chosen-container-multi .chosen-choices li.search-choice {
 	height: auto;
+}
+ul.listStyles {
+	margin-top: 47px; position: relative; right: -1px; z-index: 9;
+}
+ul.listStyles li a {
+	color: #909090;
+}
+ul.listStyles li {
+	padding:10px 15px; border-bottom: 1px solid #fff; position: relative;
+}
+ul.listStyles li.activeList {
+	border: 1px solid #d4d4d1; background-color: #fff; border-right: 1px solid #fff;	
+}
+ul.listStyles li.activeList:before {
+	position: absolute; left:-1px; content: ""; width: 5px; height: 100%; top: 0;
+	background: #368ee0;
+}
+ul.listStyles li.activeList a {
+	color: #368ee0;
+}
+a.removeSelected {
+	position: absolute; right: 15px; top: 0px; color: #fff;
+	width: 25px; height: 25px; text-align: center; display: block; background: #ff7979; line-height: 25px; z-index: 99;
+}
+a.removeSelected:hover {
+	background: #eb4d4b;
+}
+.profileDetails-headerFixed {
+	position: fixed; width: 92.5%; background-color: #f5f5f5; z-index: 9999; top: 55px;
+	box-shadow: 0px 2px 2px 0px #ddd; border-bottom: 1px solid #fff;
+}
+.fontSmall {
+	font-size: 95%;
+}
+.progress.progressProfile {
+	border-radius: 1px; height: 18px;
+}
+.progress.progressProfile .progress-bar {
+	font-size: 11px; line-height: 18px;
+}
+.ulliBorder li:nth-last-of-type(n+3) {
+	border-right: 1px solid #ededed;
 }
 @media (max-width: 320px) {
 .uasrch-selectpicker {

@@ -21,7 +21,7 @@ function Xlsupload(){
 	        	   var result = "";
 	        	   result = result + '     <div class="clearfix"></div>';
 		           result = result + '   </div>';
-		           result = result + '   <div class="project_tabs_inn_table project_tabs_inn_table_a mt40 tableData">';
+		           result = result + '   <div class="">';
 		           result = result + '     <table class="display" cellspacing="0" width="100%">';
 		           result = result + '       <thead>';
 		           result = result + '         <tr>';
@@ -54,9 +54,12 @@ function Xlsupload(){
 		        		    result = result + '<td><div class="tbldata-dotdot-100">'+report.failureCount+'</div></td>';
 		        		    result = result + '<td><div class="tbldata-dotdot-me">'+report.date+'&nbsp;&nbsp;'+report.time+'</div></td>';
 		        		    
-		        		    if(report.fileUrl != null && report.fileUrl != '' && report.fileUrl != 'undefined'){
 		        		    	 if(report.uploadProcessingStatus == 'Completed'){
-				        		    	result = result+'<td><div class="tbldata-dotdot-50 1538051356458tblicons_4"> <a download class="glyphicon glyphicon-download-alt" target="_blank" href=\"'+report.fileUrl+'\" download title="Download"></a>';
+		        		    		 if(report.fileUrl != null && report.fileUrl != '' && report.fileUrl != 'undefined'){
+			        		    		  result = result+'<td><div class="tbldata-dotdot-50 1538051356458tblicons_4"> <a download class="glyphicon glyphicon-download-alt" target="_blank" href=\"'+report.fileUrl+'\" download title="Download"></a>';
+			        		    	  }else{
+			 	        		    	 result = result + '<td><div class="tbldata-dotdot_100"><span class="text-danger">Uploaded Empty file</span></div></td>';
+			  	        		       }
 				        		    }else{
 				        		    
 				        		    	  result = result + '<td>';
@@ -69,9 +72,7 @@ function Xlsupload(){
 				                          result = result + '</td>';
 			                        
 				        		    } 
-		        		    }else{
-		        		    	 result = result + '<td><div class="tbldata-dotdot_100"><span class="text-danger">Uploaded Empty file</span></div></td>';
-		        		    }
+		        		   
 		        		   
 		        		 
 			    		}
@@ -82,6 +83,7 @@ function Xlsupload(){
 			    			
 			    			$("#uploadXlsHistoryDiv").empty();
 			    			$("#uploadXlsHistoryDiv").append(result);
+			    			$("#uploadXlsHistoryDivTitle").removeAttr('hidden');
 			    			
 			    			if(progressRow != ''){
 			    				  $(".browseProgress").show();

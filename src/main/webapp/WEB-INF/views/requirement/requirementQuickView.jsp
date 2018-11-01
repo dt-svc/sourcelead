@@ -858,7 +858,8 @@ function changeStatus(requirementId, requirementStatus){
 		                	$(".success_pop span").html("Changed Requirement status to " + status);
 		                	 setTimeout(function(){
 				                	$(".success_pop").hide();
-		                	 }, 2000);
+				                	location.reload();
+		                	 }, 1500);
 		                } else if (result.indexOf('Sign In') !== -1) {
 							location.replace(sourceleadUrl);
 						} else {
@@ -881,7 +882,8 @@ function changeStatus(requirementId, requirementStatus){
 		                	$(".success_pop span").html("Changed Requirement status to " + status);
 		                	 setTimeout(function(){
 				                	$(".success_pop").hide();
-		                	 }, 2000);
+				                	location.reload();
+		                	 }, 1500);
 		                } else if (result.indexOf('Sign In') !== -1) {
 							location.replace(sourceleadUrl);
 						} else {

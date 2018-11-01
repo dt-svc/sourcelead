@@ -29,6 +29,50 @@ $(document).ready(function(){
 		document.getElementById("addAsset_form").reset();
 	});
 </script>
+
+<script type="text/javascript">
+	function columPop(){
+		alert("hjjjj")
+		$(".colPop").show();
+	}
+	function columClose(){
+		$(".colPop").hide();
+	}
+	$("html").click(function(){
+		$(".colPop").hide();
+	});
+	$(".refreIcon, .colPop").click(function(e){
+	 	e.stopPropagation();
+	});	
+		
+	function columHide(){
+		columClose();
+		$(".toggle-vis").each(function() {
+		   var chkdVal= $(this).prop('checked');
+		   var column = table.column($(this).attr('data-column'));
+			  if(chkdVal == true){
+			         column.visible(true);
+			    }
+			    else{
+			      column.visible(false);
+			  }
+	    });
+		
+	}
+	function checkAllColumns(obj){
+		var id = obj.id;
+		if(id =='columnsPickerCheckAll'){
+			$('.toggle-vis:input:checkbox').prop('checked',true);
+		}
+		else if(id =='columnsPickerUnCheckAll'){
+			$('.toggle-vis:input:checkbox').prop('checked',false);
+		}
+	}
+	
+	
+	
+</script>
+
 <section class="content-wraper">
 <section class="content-header clearfix">
   <div class="pull-left"><h2>Asset Management</h2></div>
@@ -43,9 +87,89 @@ $(document).ready(function(){
 </div>
 <div class="timesheet_out">
   
+  
+	 <div class="colPop">
+		<div class="colPopMid coldropdown-parent">
+		<div class="clearfix">
+			<div class="row">
+					<div class="col-md-10 mb10 mt5 col-md-offset-2">
+					<span class="checkbox-new  pull-left mr">
+						<input id="columnsPickerUnCheckAll" class="radio-custom" name="columnsPicker" onclick="checkAllColumns(this);"  type="radio">
+						<label for="columnsPickerUnCheckAll" class="radio-custom-label">Uncheck All</label>
+					</span>
+					<span class="checkbox-new pull-left">
+						<input id="columnsPickerCheckAll" class="radio-custom" name="columnsPicker" onclick="checkAllColumns(this);"  type="radio" checked="">
+						<label for="columnsPickerCheckAll" class="radio-custom-label" >Check All</label>
+					</span>
+				</div>
+			</div>
+		  <div class="clearfix"></div>
+			
+			<div class="coldropdown-inner">
+				<ul>
+					<li>
+						<span class="checkbox-new clearfix">
+							<input id="a" class="checkbox-custom toggle-vis" name="paidComponent" data-column="0" type="checkbox" checked="">
+							<label for="a" class="checkbox-custom-label" >Status</label>
+						</span>
+					</li>
+					<li>
+						<span class="checkbox-new clearfix">
+							<input id="c" class="checkbox-custom toggle-vis" name="paidComponent" data-column="2" type="checkbox" checked="">
+							<label for="c" class="checkbox-custom-label" >Country</label>
+						</span>
+					</li>
+					<li>
+						<span class="checkbox-new clearfix">
+							<input id="d" class="checkbox-custom toggle-vis" name="paidComponent" data-column="3" type="checkbox" checked="">
+							<label for="d" class="checkbox-custom-label" >Type</label>
+						</span>
+					</li>
+					<li>
+						<span class="checkbox-new clearfix">
+							<input id="f" class="checkbox-custom toggle-vis" name="paidComponent" data-column="5" type="checkbox" checked="">
+							<label for="f" class="checkbox-custom-label" >Email</label>
+						</span>
+					</li>
+					<li>
+						<span class="checkbox-new clearfix">
+							<input id="g" class="checkbox-custom toggle-vis" name="paidComponent" data-column="6" type="checkbox" checked="">
+							<label for="g" class="checkbox-custom-label" >Phone</label>
+						</span>
+					</li>
+					<li>
+						<span class="checkbox-new clearfix">
+							<input id="h" class="checkbox-custom toggle-vis" name="paidComponent" data-column="7" type="checkbox" checked="">
+							<label for="h" class="checkbox-custom-label" >On Date</label>
+						</span>
+					</li>
+					<li>
+						<span class="checkbox-new clearfix">
+							<input id="j" class="checkbox-custom toggle-vis" name="paidComponent" data-column="8"  type="checkbox" checked="">
+							<label for="j" class="checkbox-custom-label" >LCA Start Date</label>
+						</span>
+					</li>
+					<li>
+						<span class="checkbox-new clearfix">
+							<input id="k" class="checkbox-custom toggle-vis" name="paidComponent" type="checkbox"  data-column="9" checked="">
+							<label for="k" class="checkbox-custom-label" >LCA End Date</label>
+						</span>
+					</li>
+				</ul>
+				</div>
+			</div>
+			<div class="colPopFot">
+				<a href="javascript:void(0)" onclick="columHide();">Apply</a>
+				<a href="javascript:void(0)" onclick="columClose();">Cancel</a>
+			</div>
+		</div>				
+	</div>  
+			
  <div class="positionRelative reportHead clearfix">
       <span class="pull-left refreIcon" id="advanceSearchDiv">
       		<a href="javascript:void(0)" class="refeIcon" id="asset_reset" title="Refresh" onclick="resetAssetFilter();" style="display: block"></a>
+<!--       		<a href="javascript:void(0)" onclick="columPop();" title="Column Chooser" class="columIcon"></a> -->
+      		
       		<a href="javascript:void(0)" class="refeIcon" id="assign_reset" title="Refresh" onclick="resetAssignAssetFilter();" style="display: none"></a>
       </span>
       
@@ -1066,61 +1190,6 @@ $('body').on('blur', '#assetService_form', function() {
 
 </script>
 
-<script type="text/javascript">
-function deleteAsset(assetUUID){
-	var result = "";
-	result = result +"	<div class='project_inn_mask'></div>";
-	result = result +"	   <div id='remove_user_pop' class='remove_user_pop remove_user_pop_a'>";
-	result = result +"		<p>Are you sure delete Asset?</p>";
-	result = result +"		<div>&nbsp;&nbsp;&nbsp;</div>";
-	result = result +"		<b href='javascript:void(0)'><input type='button' value='Ok' onclick='removeAssetManagement(\""+assetUUID+"\");'><input class='u_can_color' type='button'  value='Cancel' onClick='cancel();'></b>";
-	result = result +"	</div>";
-	$("#popUp").append(result);
-	$("#remove_user_pop").slideDown(200);
-	$(".project_inn_mask").fadeIn(200);
-}
-</script>
-
-<script type="text/javascript">
-function cancel(){
-	$("#popUp").empty();
-	$(".project_inn_mask").fadeOut(200);
-}
-</script>
-
-<div id="popUp"></div>
-
-<script>
-function removeAssetManagement(assetUUID){
-	 $("#popUp").empty();
-	 $(".project_inn_mask").fadeOut(200);
-	
-	 $("#asset"+assetUUID).empty();
-	 $("#asset"+assetUUID).html("<td colspan='7'  id='loading"+assetUUID+"'></td>");
-	 $("#loading"+assetUUID).attr('style',' height:40px; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/linear-loader.gif"); background-position:center; background-repeat:no-repeat;');
-	
-	 $.ajax({
-	   	type: "POST",
-	    url: sourceleadUrl+"/removeAssetManagement?"+tokenParamName+"="+tokenValue+"&assetUUID="+assetUUID,	    	   
-	    success: function(result) {
-  			if (result && result.response === "INVALID_DATA") {
-			    showError(result.responseMessage);
-			} else if (result.response === "AWKWARD") {
-			    location.href = "/errorPage";
-			} else if (result.response === "SUCCESS") {
-				location.replace(sourceleadUrl + "/assetManagement");
-				/*  var table = $('#assetManagementList').DataTable();
-	  		     table.row("#asset"+assetId).remove().draw( false );  */
-			} else if (result.indexOf('Sign In') !== -1) {
-				location.replace(sourceleadUrl);
-			} else {
-			    showError("Operation failed, please try again");
-			}
-	    }
-   });
-}
-</script>
-
 <script>
  function assetSideBar(assetId){ 
 		    $(".clients_side_wrap").addClass("clients_side_wrap_active");
@@ -1129,7 +1198,6 @@ function removeAssetManagement(assetUUID){
 // 			assetDetails(assetId);
  }
 </script> 
-  
   
    <script>
   function assetCategory(){
@@ -1634,3 +1702,56 @@ document.getElementById("assigned").addEventListener("click", function(){
 <%-- <jsp:include page="assetManagementDetails.jsp" />
 <jsp:include page="assetManagementSummary.jsp" /> --%>
 <jsp:include page="../masterFooter.jsp" />
+
+<div id="popUp"></div>
+<script type="text/javascript">
+function deleteAsset(assetUUID){
+	var result = "";
+	result = result +"	<div class='project_inn_mask'></div>";
+	result = result +"	   <div id='remove_user_pop' class='remove_user_pop remove_user_pop_a'>";
+	result = result +"		<p>Are you sure delete Asset?</p>";
+	result = result +"		<div>&nbsp;&nbsp;&nbsp;</div>";
+	result = result +"		<b href='javascript:void(0)'><input type='button' value='Ok' onclick='removeAssetManagement(\""+assetUUID+"\");'><input class='u_can_color' type='button'  value='Cancel' onClick='cancel();'></b>";
+	result = result +"	</div>";
+	$("#popUp").append(result);
+	$("#remove_user_pop").slideDown(200);
+	$(".project_inn_mask").fadeIn(200);
+}
+</script>
+
+<script type="text/javascript">
+function cancel(){
+	$("#popUp").empty();
+	$(".project_inn_mask").fadeOut(200);
+}
+</script>
+<script>
+function removeAssetManagement(assetUUID){
+	 $("#popUp").empty();
+	 $(".project_inn_mask").fadeOut(200);
+	
+	 $("#asset"+assetUUID).empty();
+	 $("#asset"+assetUUID).html("<td colspan='7'  id='loading"+assetUUID+"'></td>");
+	 $("#loading"+assetUUID).attr('style',' height:40px; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/linear-loader.gif"); background-position:center; background-repeat:no-repeat;');
+	
+	 $.ajax({
+	   	type: "POST",
+	    url: sourceleadUrl+"/removeAssetManagement?"+tokenParamName+"="+tokenValue+"&assetUUID="+assetUUID,	    	   
+	    success: function(result) {
+  			if (result && result.response === "INVALID_DATA") {
+			    showError(result.responseMessage);
+			} else if (result.response === "AWKWARD") {
+			    location.href = "/errorPage";
+			} else if (result.response === "SUCCESS") {
+				location.replace(sourceleadUrl + "/assetManagement");
+				/*  var table = $('#assetManagementList').DataTable();
+	  		     table.row("#asset"+assetId).remove().draw( false );  */
+			} else if (result.indexOf('Sign In') !== -1) {
+				location.replace(sourceleadUrl);
+			} else {
+			    showError("Operation failed, please try again");
+			}
+	    }
+   });
+}
+</script>

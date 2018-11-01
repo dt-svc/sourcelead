@@ -310,7 +310,7 @@ public interface RequirementSubmissionService {
 	
 	RequirementIncentive getRequirementIncentiveByRequirementId(Long requirementId) throws Exception;
 	
-	List<ApplicantsJoinedReportDTO> getRequirementIncentiveByRequirementIdAndLocation(Long requirementId,String userCode,Long orgLocationId) throws Exception;
+	List<ApplicantsJoinedReportDTO> getRequirementIncentiveByRequirementIdAndLocation(Long requirementId,String userCode,Long orgLocationId, Date[] searchDates) throws Exception;
 
 
 }

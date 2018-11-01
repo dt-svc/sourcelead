@@ -1,5 +1,4 @@
- 
- <jsp:include page="../masterHeader.jsp" />
+<jsp:include page="../masterHeader.jsp" />
 <jsp:include page="../masterSideNav.jsp" />
 <%@taglib uri="http://www.springframework.org/tags/form" prefix="form"%>
 <%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
@@ -9,7 +8,12 @@
       <div class="pull-left">
         <h2>Project Report</h2>
       </div>
-      <div class="pull-right brud-crum">Home &raquo; Project Report</div>
+         <div class="pull-right brud-crum">
+         	<a href="<c:url value='${appPath}/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a> &raquo; 
+         	<a href="<c:url value='${appPath}/reportsDashboard'/>"> Reports Dashboard</a> &raquo; 
+         	<a href="<c:url value='${appPath}/hrReportsList'/>"> HR Reports </a> &raquo;
+         	Project Report
+		</div>
     </section>
 
      
@@ -29,7 +33,7 @@
               
               <li><a href="javascript:void(0)" class="filtIcon" title="Filters" onclick="openPop();"></a></li>
               
-              <li><a href="javascript:void(0)" class="overIcon" title="Actions" onclick="newActions();"></a>
+              <li><a href="javascript:void(0)" class="overIcon" id="exportOptions" title="Actions" onclick="newActions();"></a>
 					<div class="newActPop">
 						<span>
 		           	   		<a href="javascript:void(0)" onclick="projectReportExport('Pdf');" title="PDF">Export PDF</a>
@@ -94,12 +98,12 @@
         
         <c:if test="${clientListSize > 0}">
 							 <div class="col-md-4 mb positionRelative">
-									<div class="clearfix dynamic_search filterDynamicsearch">
+									<div class="clearfix dynamic_search">
 										<input type="text" id="myClientsInput" onkeyup="myClientsFunction()" placeholder="Clients" title="Type in a clients">
 										<span class="cursorPointer" title="Search"><i class="fa fa-search"></i></span>
 									</div>
 									 <div class="clearfix filterSearch-ul">
-										<ul class="list-unstyled positionRelative filterSearch mt5" id="clientsUL">
+										<ul class="list-unstyled positionRelative filterSearch mt5" id="myClinetsListUL">
 										    <c:forEach var="report" items="${add_client}">
 											     <li class="checkBox positionRelative"><input  type="checkbox" name="clientName" value ="${report.orgRelId}" ><label>${report.clientName}</label></li>
 											</c:forEach>
@@ -110,12 +114,12 @@
 							 
 							 <c:if test="${projectManagersListSize > 0}">
 							 <div class="col-md-4 mb positionRelative">
-									<div class="clearfix dynamic_search filterDynamicsearch">
+									<div class="clearfix dynamic_search">
 										<input type="text" id="myManagersInput" onkeyup="myManagersFunction()" placeholder="Managers" title="Type in a managers">
 										<span class="cursorPointer" title="Search"><i class="fa fa-search"></i></span>
 									</div>
 									 <div class="clearfix filterSearch-ul">
-										<ul class="list-unstyled positionRelative filterSearch mt5" id="managersUL">
+										<ul class="list-unstyled positionRelative filterSearch mt5" id="myManagersListUL">
 											<c:forEach var="manager" items="${projectManagersList}">
 											<li class="checkBox positionRelative"><input  type="checkbox" name="projectManagers" value ="${manager.id}" ><label>${manager.fullName}</label></li>
 											</c:forEach>
@@ -136,8 +140,9 @@
       </div>
     </div>
   </div>
-
-
+</div>
+</section>
+<div class="loading" style="display:none; position:fixed; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url('/resources/images/loading.gif'); background-position:center; background-repeat:no-repeat; background-size:75px;"></div>
 <script type="text/javascript">
 	var config = {
 	'.chosen-select'           : {},
@@ -203,13 +208,13 @@ $(document).ready(function(){
 	projectReportDataTableList(true);
 });
 function projectReportDataTableList(refreshFlag){
-	
+	$(".loading").show();
 	var projectIds = [];
 	var projectStatus = [];
     var clients = [];
     var projectManagers = [];
     var searchValue = "";
-	
+    $("#projectReporttableList").empty();
     if(refreshFlag) {
     	$("#projectsId").val("").trigger('chosen:updated');
     	$("#projectReportDataTableSearch").val("");
@@ -237,7 +242,7 @@ function projectReportDataTableList(refreshFlag){
 			success : function(result) {
 				if(result && result.response === "SUCCESS") {
 					var text = "";
-					if(result.data.length > 0) {     
+					if(result.data.length > 0) {   
 						text += "  <table class='table' id='projectReportTableId'>";
 						text += " 	<thead>";
 						text += " 	  <tr>";
@@ -273,28 +278,63 @@ function projectReportDataTableList(refreshFlag){
 						
 						text += " 	</tbody>";
 						text += "   </table>";
-						$("#projectReporttableList").empty();
+						
 						$("#projectReporttableList").append(text);
 						$("#projectReportDataTableSearch").empty();
-						
+						$("#exportOptions").show();
 						dynamicProjectReportPagination();  
+					} else {
+						$("#projectReporttableList").append("<div class='dataTables_empty'></div>");
+						$("#exportOptions").hide();						
 					}
 				} else 
 					alert("Please try again....");
+				$(".loading").hide();
 			}
 		})
 	}
 </script>
 <script>
-
-$("#projectReportDataTableSearch").keydown(function(e) {
+	$("#projectReportDataTableSearch").keydown(function(e) {
 	   if(e.which === 13) {
 		   projectReportDataTableList(false);
 	   }
 	});
+	
+	function myClientsFunction() {
+	    var input, filter, ul, li, a, i;
+	    input = document.getElementById("myClientsInput");
+	    filter = input.value.toUpperCase();
+	    ul = document.getElementById("myClinetsListUL");
+	    li = ul.getElementsByTagName("li");
+	    for (i = 0; i < li.length; i++) {
+	        a = li[i].getElementsByTagName("label")[0];
+	        if (a.innerHTML.toUpperCase().indexOf(filter) > -1) {
+	            li[i].style.display = "";
+	        } else {
+	            li[i].style.display = "none";
 
+	        }
+	    }
+	}
+	
+	function myManagersFunction() {
+	    var input, filter, ul, li, a, i;
+	    input = document.getElementById("myManagersInput");
+	    filter = input.value.toUpperCase();
+	    ul = document.getElementById("myManagersListUL");
+	    li = ul.getElementsByTagName("li");
+	    for (i = 0; i < li.length; i++) {
+	        a = li[i].getElementsByTagName("label")[0];
+	        if (a.innerHTML.toUpperCase().indexOf(filter) > -1) {
+	            li[i].style.display = "";
+	        } else {
+	            li[i].style.display = "none";
+
+	        }
+	    }
+	}
 </script>
-
 
 <script>
 function dynamicProjectReportPagination(){  
@@ -318,36 +358,29 @@ function dynamicProjectReportPagination(){
 </script>
 
 
-<script>
-function projectReportExport(type){
-
-	var projectIds = [];
-	var projectsId = $("#projectsId").val();
-	if(projectsId != null && projectsId!="" && projectsId!= "undefined"){
-		projectIds = projectsId;
+<script type="text/javascript">
+	function projectReportExport(type) {
+		var projectIds = [];
+		var projectsId = $("#projectsId").val();
+		if(projectsId != null && projectsId!="" && projectsId!= "undefined"){
+			projectIds = projectsId;
+		}
+		
+		var projectStatus = [];
+		     $('input:checkbox[name=projectStatus]:checked').each(function(){
+		    	 projectStatus.push($(this).val());
+		});
+	    var clients = [];
+	          $('input:checkbox[name=clientName]:checked').each(function() {
+		     clients.push($(this).val());
+	    });
+	    var projectManagers = [];
+	          $('input:checkbox[name=projectManagers]:checked').each(function(){
+		      projectManagers.push($(this).val());
+	     });
+	     
+	     var searchValue = $("#projectReportDataTableSearch").val();
+		 searchValue = searchValue ? searchValue : "";
+	          window.location.href =  sourceleadUrl+"/getProjectReportExport?&projectClients="+clients+"&projectManagers="+projectManagers+"&projectIds="+projectIds+"&projectStatus="+projectStatus+"&searchValue="+searchValue+"&type="+type;
 	}
-	
-	var projectStatus = [];
-	     $('input:checkbox[name=projectStatus]:checked').each(function(){
-	    	 projectStatus.push($(this).val());
-	});
-    var clients = [];
-          $('input:checkbox[name=clientName]:checked').each(function() {
-	     clients.push($(this).val());
-    });
-    var projectManagers = [];
-          $('input:checkbox[name=projectManagers]:checked').each(function(){
-	      projectManagers.push($(this).val());
-     });
-     
-     var searchValue = $("#projectReportDataTableSearch").val();
-	 searchValue = searchValue ? searchValue : "";
-          window.location.href =  sourceleadUrl+"/getProjectReportExport?&projectClients="+clients+"&projectManagers="+projectManagers+"&projectIds="+projectIds+"&projectStatus="+projectStatus+"&searchValue="+searchValue+"&type="+type;
-         
-}
-
-
 </script>
-	
-</body>
-</html>

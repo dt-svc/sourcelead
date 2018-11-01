@@ -1712,8 +1712,7 @@ public class RequirementListRestController {
 				/*
 				 * This array is used to enable the sorting feature in data tables. And, these names should match the ELK Candidate index field names.
 				 */
-				String[] tableColumns = {"", "generatedId.keyword","jobTitle.keyword", "client.keyword","","", "jobType.keyword", "country.keyword", "", "manager.keyword", "createdDate", ""};
-				
+				String[] tableColumns = {"requirementId","", "generatedId.keyword","jobTitle.keyword","process", "client.keyword","rate","billRate", "jobType.keyword", "country.keyword", "totalApplicants", "manager.keyword", "createdDate", ""};
 				int sortColumnIndex = 10; //by default sorting using updated date
 				boolean sortColumnOrder = false; //by default descending order
 				if(search.getOrder() != null && !search.getOrder().isEmpty()) {
@@ -2104,7 +2103,7 @@ public class RequirementListRestController {
 				 resp.setRecordsFiltered(Long.valueOf(searchResponse.getHits().getTotalHits()).intValue());
 				 SearchResponse searchResponseForCount = sourceleadELKBaseIndexer
 						.searchDocumentWithMaxResults(Constants.ELK_REQUIREMENT_INDEX, Constants.ELK_REQUIREMENT_TYPE,
-								0, 10, "createdDate", SortOrder.DESC, boolQueryBuilderForCount);
+								search.getStart(), search.getLength(), tableColumns[sortColumnIndex], sortColumnOrder ? SortOrder.ASC : SortOrder.DESC, boolQueryBuilderForCount);
 				
 				 resp.setRecordsTotal(searchResponseForCount == null ? resp.getRecordsFiltered() : Long.valueOf(searchResponseForCount.getHits().getTotalHits()).intValue());
 			     resp.setData(reqList);
@@ -2540,32 +2539,6 @@ public class RequirementListRestController {
 			logger.error(ExceptionUtils.getFullStackTrace(e));
 		}
 		return response;
-	}
-	
-	
-	@RequestMapping(value = "/pdfExportForJobfair")
-	public File jobFairPdfExport(HttpServletRequest request, HttpServletRequest response, JobFairDTO jobfairDto)
-			throws Exception {
-		User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
-		if (user != null) {
-
-			OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,
-					"orgLocations");
-		}
-		return null;
-	}
-
-	@RequestMapping(value = "/excelExportForJobfair")
-	public File jobFairExcelExport(HttpServletRequest request, HttpServletRequest response)
-			throws Exception {
-		User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
-		if (user != null) {
-
-			OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,
-					"orgLocations");
-
-		}
-		return null;
 	}
 	
 }
