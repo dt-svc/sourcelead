@@ -434,6 +434,8 @@ public class EmployerPayrollCostServiceImpl implements EmployerPayrollCostServic
 			 responseList.setData(balanceList);
 			 responseList.setRecordsTotal(wageTaxSummaryList.getRecordsFiltered());
 			 responseList.setRecordsFiltered(wageTaxSummaryList.getRecordsTotal());
+		  }else {
+			  responseList.setData(new ArrayList<PayrollBalance>());
 		  }
 		  
 		  
