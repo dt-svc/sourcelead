@@ -49,7 +49,7 @@
 						</div>
 						
 						<div class="col-md-4">
-								<a class="pull-right" onClick="bulkAdjustment();" title="Payhead Bulk Adjustment"><i class="fa fa-object-group paddingRight"></i>Bulk</a>
+								<a class="pull-right" onClick="bulkAdjustment('${freqResponse.paySheetFrequencyUUID}');" title="Payhead Bulk Adjustment"><i class="fa fa-object-group paddingRight"></i>Bulk</a>
 						</div>
 						<!-- <div class="col-md-2">
 							<a class="btn btn-success btnSuccess btn-sm anchorWhite"

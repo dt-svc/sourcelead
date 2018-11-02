@@ -1,5 +1,8 @@
 package com.bis.sourcelead.rest;
 
+import java.text.DateFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.Comparator;
 import java.util.Date;
 import java.util.HashSet;
@@ -187,9 +190,20 @@ public class PayrollRestController {
 	    if(sessionObj != null) {
 	    	IndPaysheetFrequencyDTO indPaysheetFrequencyDTO = (IndPaysheetFrequencyDTO) sessionObj;
 	    	List<INDPayrollDTO> payrollDTOList = indPaysheetFrequencyDTO.getIndPayrollDTO().stream().filter(employeePayrollDTO ->employeePayrollDTO.getIndEmpPayrollUUID().equalsIgnoreCase(associatePayrollPayheadHistoryDTO.getIndEmpPayrollUUID())).collect(Collectors.toList());
+	    	DateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 	    	if(payrollDTOList != null && !payrollDTOList.isEmpty()) {
 	    	    indPayrollDTO = payrollDTOList.iterator().next();
-	    		associatePayrollPayheadDTOList = indPayrollDTO.getPayHeadHistoryDTOList();
+	    	    List<AssociatePayrollPayheadHistoryDTO> dupAssociatePayrollPayheadDTOList = indPayrollDTO.getPayHeadHistoryDTOList();
+	    		associatePayrollPayheadDTOList = indPayrollDTO.getPayHeadHistoryDTOList().stream().filter(ml -> (dupAssociatePayrollPayheadDTOList.stream().filter(sl -> {
+					try {
+						return sl.getPayrollPayhead().equals(ml.getPayrollPayhead()) && df.parse(sl.getUpdatedDate()).after(df.parse(ml.getUpdatedDate()));
+					} catch (ParseException e) {
+						e.printStackTrace();
+					}
+					return false;
+				}).count())<1).collect(Collectors.toList());
+	    		
+	    		
 	    	}
 	   	}else {
 	   		Response<IndEmployeePayroll> indEmployeePayrollResponse = indPaysheetFrequencyService.getIndEmployeePayrollByEmpPayrollUUID(associatePayrollPayheadHistoryDTO.getIndEmpPayrollUUID());
@@ -240,7 +254,6 @@ public class PayrollRestController {
 				    	if(payrollDTOList != null && !payrollDTOList.isEmpty()) {
 				    	    indPayrollDTO = payrollDTOList.iterator().next();
 				    		associatePayrollPayheadDTOList = iNDPayrollCommonUtil.associatePayrollPayheadAdjustIndSessionList(indPayrollDTO.getPayHeadHistoryDTOList(), indPayrollDTO, indEmployeePayrollDTO, loginUser, orgLocation);
-				    		//associatePayrollPayheadDTOList.sort(Comparator.comparing(o -> o.getCreatedDate()));
 				    		indPayrollDTO.setPayHeadHistoryDTOList(associatePayrollPayheadDTOList);
 				    		indPayrollDTO.setGrossPay(indEmployeePayrollDTO.getGrossPay());
 				    		indPayrollDTO.setNetPay(indEmployeePayrollDTO.getNetPay());
@@ -278,12 +291,19 @@ public class PayrollRestController {
 	
 	@SuppressWarnings("unused")
 	@RequestMapping(value = { "/bulkPayAdjustmentsForFrequencyInd","/rest/bulkPayAdjustmentsForFrequencyInd" })
-	public ModelAndView bulkPayAdjustmentsForFrequencyInd(IndEmployeePayrollDTO indEmployeePayrollDTO, HttpServletRequest request) throws Exception
+	public ModelAndView bulkPayAdjustmentsForFrequencyInd(IndPaysheetFrequencyDTO indPaysheetFrequencyDTO, HttpServletRequest request) throws Exception
 	{
 		ModelAndView modelAndView = new ModelAndView();
 		OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 	 	User loginUser = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
 	 	try {
+	 		
+	 		
+	 		
+	 		
+	 		
+	 		
+	 		
 			commonUtil.highLightMenu(Constants.RUNPAYROLL, request);
 			modelAndView.addObject("activeTaxTab", "runPayrollInd");
 			modelAndView.setViewName("payroll_india/payroll/bulkPayAdjustmentsInd");
