@@ -137,6 +137,7 @@ function wagesTaxpagination(url){
 	          },{
             "targets": colIndex++,
             "data": "employeeId",
+            "sortable": false,
             "render": function ( data, type, opt, meta ) {
             	return  '<td><div class="tblminwidth-75">'+opt.employeeId+'</div></td>';
             }
@@ -162,6 +163,7 @@ function wagesTaxpagination(url){
           },{
 	    	  	"targets": colIndex++,
 	    	  	"data": "checkDate",
+	    	  	"sortable": false,
 	    	  	"render": function(data, type, opt, meta) {
 	    	  		var result = "";
 	    	  		if(opt.checkDateStr !=null && opt.checkDateStr !='' && opt.checkDateStr !='undefined'){
@@ -253,6 +255,7 @@ function wagesTaxpagination(url){
                                 }, {
                   "targets": colIndex++,
                   "data": "batchNumber",
+                  "sortable": false,
                   "className": "tblminwidth-75",
                   "render": function ( data, type, opt, meta ) {
                   		var result = "";
@@ -267,6 +270,7 @@ function wagesTaxpagination(url){
 				{
 					"targets" : colIndex++,
 					"data" : "action",
+					"sortable": false,
 					"render" : function(data, type, opt, meta) {
 						var result = "";
 						result = result + '<td><div><i class="glyphicon glyphicon-trash" onclick="deletePayrollEntity(\''+opt.uuid+'\',\'WageTaxSummary\')"></i></div></td>';
@@ -287,12 +291,12 @@ function wagesTaxpagination(url){
     } );
     $("#wageTaxPagination").wrap("<div style='overflow-x: auto; overflow-y: hidden;'></div>"); 
     $("input[type=search]").hide();
-    $("#dataTableSearch").keyup(function(e) {
-    	   if(e.which === 13) {
-    		   wagesAndTaxList();
-    	   }
-    	});
 }
+$("#dataTableSearch").keyup(function(e) {
+	   if(e.which === 13) {
+		   wagesAndTaxList();
+	   }
+	});
 function dataTableSearch(){
 	wagesAndTaxList();
 }

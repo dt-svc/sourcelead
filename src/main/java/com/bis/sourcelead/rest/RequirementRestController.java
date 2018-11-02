@@ -15,6 +15,7 @@ import java.util.Date;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Objects;
+import java.util.Set;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -264,13 +265,20 @@ public class RequirementRestController {
 			User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
 			if(user !=null) {
 				OrgLocations loginOrgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
-				
-				/*Timezone timezone = null;
-				if(loginOrgLocations.getTimezone() != null){
-					timezone = timeZoneService.getTimezone(loginOrgLocations.getTimezone().getId());
-				}*/
-				
-				responseList.setData(requirementService.getJobFairDatesForCalendar(user.getId(), loginOrgLocations.getId(), loginOrgLocations.getDateFormat()));
+				boolean adminFlag = false;
+				Set<UserRole> userRoleSet = user.getUserRole();
+				if (userRoleSet != null && !userRoleSet.isEmpty()) {
+					for (UserRole userRole : userRoleSet) {
+						if ((loginOrgLocations.getId().compareTo(userRole.getOrgLocations().getId()) == 0) && (user.getId().compareTo(userRole.getUser().getId()) == 0) && !userRole.getUser().getUserRole().isEmpty()) {
+							for (UserRole uRole : userRole.getUser().getUserRole()) {
+								if (uRole.getRoles().getRoleName().equalsIgnoreCase(Constants.ROLE_ADMIN)) {
+									adminFlag = true;
+								}
+							}
+						}
+					}
+				}
+				responseList.setData(requirementService.getJobFairDatesForCalendar(user.getId(), loginOrgLocations.getId(), loginOrgLocations.getDateFormat(), adminFlag));
 				responseList.setResponse(Result.SUCCESS.name());
 				responseList.setResponseMessage(Result.SUCCESS.getValue());
 			} else {
@@ -298,7 +306,21 @@ public class RequirementRestController {
 				SimpleDateFormat formatter = new SimpleDateFormat("MMM dd yyyy");
 				String selectedDate  = formatter.format(startTime);
 				
-				responseList.setData(requirementService.getJobFairRequirementsByDate(user.getId(), loginOrgLocations.getId(), loginOrgLocations.getDateFormat(), date));
+				boolean adminFlag = false;
+				Set<UserRole> userRoleSet = user.getUserRole();
+				if (userRoleSet != null && !userRoleSet.isEmpty()) {
+					for (UserRole userRole : userRoleSet) {
+						if ((loginOrgLocations.getId().compareTo(userRole.getOrgLocations().getId()) == 0) && (user.getId().compareTo(userRole.getUser().getId()) == 0) && !userRole.getUser().getUserRole().isEmpty()) {
+							for (UserRole uRole : userRole.getUser().getUserRole()) {
+								if (uRole.getRoles().getRoleName().equalsIgnoreCase(Constants.ROLE_ADMIN)) {
+									adminFlag = true;
+								}
+							}
+						}
+					}
+				}
+				
+				responseList.setData(requirementService.getJobFairRequirementsByDate(user.getId(), loginOrgLocations.getId(), loginOrgLocations.getDateFormat(), date, adminFlag));
 				responseList.setResponse(Result.SUCCESS.name());
 				responseList.setResponseMessage(dayOfweek + "<>" + selectedDate);
 			} else {

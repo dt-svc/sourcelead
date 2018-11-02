@@ -140,7 +140,7 @@ public class EmployeePayrollRestController {
 			if(Constants.EMPLOYEE_PAYROLL.equalsIgnoreCase(payrollType)){
 				 isInserted = employerPayrollCostService.saveEmployerPayrollCost(multipartFile,orgLocation,user,jsonObj);
 			}else if(Constants.WAGE_TAX_SUMMARY.equalsIgnoreCase(payrollType)){
-				isInserted = wageTaxSummaryService.saveWagesTaxSummaryBulk(multipartFile,orgLocation,user);
+				isInserted = wageTaxSummaryService.saveWagesTaxSummaryBulk(multipartFile,orgLocation,user,jsonObj);
 //				isInserted = wageTaxSummaryService.saveWagesTaxSummary(multipartFile,orgLocation,user,jsonObj);
 			}else if(Constants.ACCOUNT_DEDUCTIONS.equalsIgnoreCase(payrollType)){
 				 isInserted = accountDeductionsService.saveAccountDeductions(multipartFile,orgLocation,user,jsonObj);
@@ -687,6 +687,8 @@ public class EmployeePayrollRestController {
 			ResponseList<WageTaxSummary> wagesAndTaxList = wageTaxSummaryService.getWagesAndTaxByEmpId(orgLocation,wagesTaxSummaryDTO);
 			  List<WageTaxSummary> data = getSortWageTaxList(wagesAndTaxList.getData(),orgLocation);
 			  responseList.setData(data);
+			  responseList.setRecordsFiltered(wagesAndTaxList.getRecordsFiltered());
+			  responseList.setRecordsTotal(wagesAndTaxList.getRecordsTotal());
 		}else {
 			responseList.setData(new ArrayList<WageTaxSummary>());
 		}
