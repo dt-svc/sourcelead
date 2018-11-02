@@ -544,6 +544,8 @@ function wagesAndTaxEmpTablePagination(){
 
 <script type="text/javascript">
 function getWagesTaxSummaryByEmpId(){
+		$("#wtsli").siblings().removeClass("active");
+	 	$("#wtsli").addClass("active");
 	    var empId = $("#empId").val();
 		var searchValue = $("#dataTableSearch").val();
 		var orgLocationId = '${SourceLeadWeb_orgLocationId}';
