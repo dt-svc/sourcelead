@@ -1,6 +1,8 @@
 package com.bis.sourcelead.dao.impl;
 
 import java.math.BigInteger;
+import java.sql.CallableStatement;
+import java.sql.SQLException;
 import java.text.MessageFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -9,6 +11,7 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.exception.ExceptionUtils;
@@ -16,6 +19,7 @@ import org.hibernate.Query;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.Transaction;
+import org.hibernate.jdbc.Work;
 import org.hibernate.transform.Transformers;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -36,6 +40,7 @@ import com.bis.sourcelead.entity.Candidate;
 import com.bis.sourcelead.entity.CandidateIdendities;
 import com.bis.sourcelead.entity.CandidateImportLog;
 import com.bis.sourcelead.entity.CandidateResumes;
+import com.bis.sourcelead.entity.Connections;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.RecruiterReportCandidateCountView;
 import com.bis.sourcelead.entity.SubmissionCandidateListView;
@@ -2095,11 +2100,111 @@ public class CandidateDaoImpl implements CandidateDao {
 	@Override
 	@Transactional
 	public void saveBulkCandidates(List<Candidate> candidatesList) throws Exception {
-		Session session = sessionFactory.getCurrentSession();
+		/*Session session = sessionFactory.getCurrentSession();
 		for (Candidate candidate : candidatesList) {
 			 session.save(candidate);
 			 candidateService.saveOrUpdateCandidateElkDocument(candidate);
 		    
+		}*/
+		
+		try {
+			Session session = this.sessionFactory.getCurrentSession();
+			session.doWork(new Work() {
+				@Override
+				public void execute(java.sql.Connection connection) throws SQLException {
+					boolean initialAutocommitSetting = connection.getAutoCommit();
+					connection.setAutoCommit(false);
+					try {
+						int batchcount = 0;
+					for (Candidate candidate : candidatesList) {
+						logger.info("BACTH Candiate ENTRY "+ batchcount++ + "  --  " + System.currentTimeMillis());
+						CallableStatement stmt = connection.prepareCall("{call saveBulkCandidates(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)}");
+						stmt.setLong(1, candidate.getMasterCandidateId().getId());
+						stmt.setString(2, (candidate.getParentCandidateId() != null ? candidate.getParentCandidateId().getId().toString()  : null));
+						stmt.setLong(3, candidate.getOrgLocationId().getId());
+						stmt.setString(4, candidate.getCandidateType());
+						stmt.setString(5, candidate.getFirstName());
+						stmt.setString(6, candidate.getLastName());
+						stmt.setString(7, candidate.getEmail());
+						stmt.setString(8, candidate.getMobilePhone());
+						stmt.setString(9, candidate.getCountry());
+						stmt.setString(10, candidate.getState());
+						stmt.setString(11, candidate.getCity());
+						stmt.setString(12, candidate.getLocation());
+						stmt.setString(13, candidate.getZipCode());
+						stmt.setString(14, candidate.getExperienceYears());
+						stmt.setString(15, candidate.getExperienceMonths());
+						stmt.setString(16, candidate.getNoticePeriod());
+						stmt.setString(17, candidate.getDesignation());
+						stmt.setString(18, candidate.getDesignationType());
+						stmt.setString(19, candidate.getExpectedRate());
+						stmt.setString(20, candidate.getRateType());
+						stmt.setString(21, candidate.getExpectedRateCurrencey());
+						stmt.setLong(22, candidate.getStatus());
+						stmt.setString(23, candidate.getGeneratedId());
+						stmt.setDate(24, new java.sql.Date(candidate.getCreatedDate().getTime()));
+						stmt.setString(25, candidate.getCreatedBy());
+						stmt.setDate(26, new java.sql.Date(candidate.getUpdatedDate().getTime()));
+						stmt.setString(27, candidate.getUpdatedBy());
+						stmt.setString(28, candidate.getSkills());
+						stmt.setString(29, candidate.getPrimarySkill());
+						stmt.setString(30,(candidate.getOrgRelationId() != null ? candidate.getOrgRelationId().getId().toString()  : null));
+						stmt.setString(31, (candidate.getSpocId() != null ? candidate.getSpocId().getId().toString()  : null));
+						stmt.setString(32, candidate.getCandidateUUID());
+						stmt.setLong(33, candidate.getProfilePercentage());
+						stmt.addBatch();
+						stmt.executeBatch();
+						
+						String query ="SELECT "
+								+" CAND.ID "
+								+" FROM CANDIDATE CAND "
+								+" WHERE "
+								+" CAND.ORG_LOCATION_ID = :orgLocationId AND CAND.EMAIL = :emailId";
+						Query queryObj = session.createSQLQuery(query);
+						queryObj.setLong("orgLocationId", candidate.getOrgLocationId().getId());	
+						queryObj.setString("emailId", candidate.getEmail());	
+						Long candidateId = null;
+						BigInteger id = (BigInteger) queryObj.uniqueResult();
+						if(id != null) {
+							candidateId = id.longValue();
+						}
+						candidate.setId(candidateId);
+						
+						Set<CandidateResumes> candiateResumesList = candidate.getCandidateResumes();
+						if(candiateResumesList != null && !candiateResumesList.isEmpty()) {
+							CallableStatement stmt1 = connection.prepareCall("{call saveCandiateResume(?,?,?,?,?,?,?,?,?,?,?,?,?)}");
+							for(CandidateResumes resumes : candiateResumesList) {
+								stmt1.setLong(1, resumes.getOrgLocationId().getId());
+								stmt1.setLong(2, candidateId);
+								stmt1.setString(3, resumes.getTitle());
+								stmt1.setString(4, resumes.getFileContentType());
+								stmt1.setString(5, resumes.getFileName());
+								stmt1.setString(6, resumes.getFileURL());
+								stmt1.setString(7, resumes.getResumeStatus());
+								stmt1.setString(8, resumes.getResumeUUID());
+								stmt1.setLong(9, resumes.getStatus());
+								stmt1.setDate(10, new java.sql.Date(resumes.getCreatedDate().getTime()));
+								stmt1.setString(11, resumes.getCreatedBy());
+								stmt1.setDate(12, new java.sql.Date(resumes.getUpdatedDate().getTime()));
+								stmt1.setString(13, resumes.getUpdatedBy());
+								stmt1.addBatch();
+								stmt1.executeBatch();
+							}
+						}
+						 candidateService.saveOrUpdateCandidateElkDocument(candidate);	
+					}
+					
+					connection.commit();
+					connection.setAutoCommit(initialAutocommitSetting);
+					logger.info("BACTH Candiate EXIT "+ batchcount + "  --  " + System.currentTimeMillis());
+					
+				}catch (Exception e) {
+					e.printStackTrace();
+				}
+				}
+			});
+		} catch (Exception e) {
+			e.printStackTrace();
 		}
 	}
 

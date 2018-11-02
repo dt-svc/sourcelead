@@ -476,7 +476,7 @@ public class DataMigrationServiceImpl implements DataMigrationService {
 		}
 		logger.info("Validation End Time>>>"+Calendar.getInstance().getTime());	
 		List<Candidate> candidatesList = new ArrayList<>();
-		logger.info("WRITING STATUS ENTRY "+ ent + "  --  " + System.currentTimeMillis());
+		
 		if (dataMigrationDTOJsonList != null && !dataMigrationDTOJsonList.isEmpty()) {
 			int successCount = dataMigrationDTOJsonList.size();
 			for(JSONObject dataMigrationDTOJsonCopy : dataMigrationDTOJsonList) {
