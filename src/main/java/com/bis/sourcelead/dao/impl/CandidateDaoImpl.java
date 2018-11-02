@@ -2311,7 +2311,7 @@ public class CandidateDaoImpl implements CandidateDao {
 
 	@Override
 	@Transactional(rollbackFor = { Exception.class })
-	public List<CandidateMarketPlace> getGlobalMarketplaceCandListGridCard(String searchValue) {
+	public List<CandidateMarketPlace> getGlobalMarketplaceCandListGridCard(Long orgId, String searchValue) {
 		Session session = this.sessionFactory.getCurrentSession();
 		StringBuilder query1 = new StringBuilder("");
 		List<CandidateMarketPlace> queryList = null;
@@ -2324,8 +2324,8 @@ public class CandidateDaoImpl implements CandidateDao {
 			query1.append(" or (marketplace.profilePercentage like '%" + searchValue + "%' ))");
 		}
 			
-		String listQuery = "from CandidateMarketPlace marketplace  where  marketplace.status = 1 and marketplace.candidateMarketStatus IN (:candidateMarketStatus) ";
-		queryList = session.createQuery(listQuery+query1).setParameterList("candidateMarketStatus",new ArrayList<String>(Arrays.asList(Constants.ACTIVE))).list();
+		String listQuery = "from CandidateMarketPlace marketplace  where  marketplace.status = 1 and marketplace.candidateMarketStatus IN (:candidateMarketStatus) and marketplace.orgLocationId.id <> :currentOrgLocId)";
+		queryList = session.createQuery(listQuery+query1).setParameterList("candidateMarketStatus",new ArrayList<String>(Arrays.asList(Constants.ACTIVE))).setParameter("currentOrgLocId", orgId).list();
 		return queryList;
 	}
 	
@@ -2357,5 +2357,13 @@ public class CandidateDaoImpl implements CandidateDao {
 		String query = "select count(marketplaceCart) from CandidateMarketCart marketplaceCart where marketplaceCart.sourceOrgLocationId.id = :orgId and marketplaceCart.marketplaceId.id = :marketplaceId";
 		int count = ((Long) session.createQuery(query).setParameter("orgId", orgId).setParameter("marketplaceId", marketPlaceId).uniqueResult()).intValue();
 		return count;
+	}
+
+	@Override
+	@Transactional(rollbackFor = { Exception.class })
+	public void deleteCandidateMarketCartByMarketUUID(String candidatgeMarketUUID) {
+		Session session = this.sessionFactory.getCurrentSession();
+		String query = "delete from CandidateMarketCart marketplaceCart where marketplaceCart.marketplaceUUID = :marketUUID";
+		session.createQuery(query).setParameter("marketUUID", candidatgeMarketUUID).executeUpdate();
 	}
 }
