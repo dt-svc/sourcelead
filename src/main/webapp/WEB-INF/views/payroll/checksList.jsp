@@ -1,6 +1,12 @@
 <script>
 function bisChecksList(){
 	$("#addPayrollDiv").hide();
+	$("#employeeCostSearch").hide();
+	$("#wageTaxSearch").hide();
+	$("#accountDedSearch").hide();
+	$("#hrDedSearch").hide();
+	$("#checksSearch").show();
+	$("#invoiceDataSearch").hide();
 	var sourceleadUrl ='${sourceleadUrl}';
 	var searchValue = $("#checksDataTableSearch").val();
 	var orgLocationId = '${SourceLeadWeb_orgLocationId}';
@@ -32,7 +38,7 @@ function prepareBisChecksList(url){
 		result = result +" <div class='reportHead'>";
 		result = result + " <ul class='pull-right'>";
 		result = result + " <li><a href='/app/addChecks' class='newAdBtn' id='generateReportId' title='Generate Report'>+ Payment</a></li>";		
-		result = result + " <li><input type='text' placeholder='Search' class='repSearchBar' id='checksDataTableSearch'/><span class='repSearchIcon' onClick='checksDataTableSearch();'></span></li>";
+		/* result = result + " <li><input type='text' placeholder='Search' class='repSearchBar' id='checksDataTableSearch'/><span class='repSearchIcon' onClick='checksDataTableSearch();'></span></li>"; */
 		result = result + "</ul>";
 		result = result + "</div>";  	
  	

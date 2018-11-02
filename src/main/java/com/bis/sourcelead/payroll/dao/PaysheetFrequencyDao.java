@@ -4,6 +4,7 @@ import java.util.List;
 
 import com.bis.sourcelead.dto.ResponseList;
 import com.bis.sourcelead.entity.Candidate;
+import com.bis.sourcelead.entity.InvoicePayment;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.payroll.dto.PayrollComparisonDTO;
 import com.bis.sourcelead.payroll.dto.PayPeriodDTO;
@@ -33,5 +34,7 @@ public interface PaysheetFrequencyDao {
 	List<EmployeePayroll> getPayrollTaxesYTD(EmployeePayroll payroll, OrgLocations orgLocation);
 
 	List<EmployeePayroll> getEmployeePayrollListByPayCheckDate(PayrollReportDTO payrollReportDTO, OrgLocations orgLocation);
+
+	List<InvoicePayment> getContractEmployeeReportList(PayrollReportDTO payrollReportDTO);
 			
 }

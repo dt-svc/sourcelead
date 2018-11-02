@@ -263,7 +263,7 @@ public class AccountDeductionsDaoImpl implements AccountDeductionsDao{
 //			String query = "from WageTaxSummary wts  left join fetch wts.orgLocationId where wts.orgLocationId.id =:orgLocationId and (wts.status IS NULL or wts.status <> '0')";
 			String countQuery = "from AccountDeductions ad  where ad.orgLocationId.id =:orgLocationId and ad.employeeId = :empId  and (ad.status IS NULL or ad.status <> '0')";
 			
-			if(accountDeductionsDTO.getSearchValue().contains("/") || accountDeductionsDTO.getSearchValue().contains("-")){
+			if(StringUtils.isNotBlank(accountDeductionsDTO.getSearchValue()) && accountDeductionsDTO.getSearchValue().contains("/") || accountDeductionsDTO.getSearchValue().contains("-")){
 				String convertedDate=accountDeductionsDTO.getSearchValue();
 				if(accountDeductionsDTO.getSearchValue().contains("/")){
 					convertedDate = accountDeductionsDTO.getSearchValue().replaceAll("/", "-");
@@ -297,9 +297,9 @@ public class AccountDeductionsDaoImpl implements AccountDeductionsDao{
 			if (accountDeductionsDTO != null && accountDeductionsDTO.getLength() > 0) {
 				queryObj.setFirstResult(accountDeductionsDTO.getStart());
 				queryObj.setMaxResults(accountDeductionsDTO.getLength());
-				queryObj.setLong("orgLocationId", orgLocation.getId())
-				.setLong("empId", Long.parseLong(accountDeductionsDTO.getEmployeeId()));
 			}
+			queryObj.setLong("orgLocationId", orgLocation.getId())
+			.setLong("empId", Long.parseLong(accountDeductionsDTO.getEmployeeId()));
 			accountDeductionsList = queryObj.list();
 			int count = 0;
 			int filteredCount = 0;

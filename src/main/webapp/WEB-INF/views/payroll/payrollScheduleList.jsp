@@ -19,6 +19,12 @@ $(document).ready(function(){
 	font-weight:bold !important;
 	font-size: 12pt;
 }
+
+/* .Hil a { */
+/* 	background-color : #DC143C !important; */
+/* 	font-weight:bold !important; */
+/* 	font-size: 12pt; */
+/* } */
 </style>
 
 <!-- Content Area -->
@@ -142,10 +148,32 @@ $(document).ready(function(){
   
 <script>
 
+/* var j=0; */
 	var SelectedDates = {};
-	SelectedDates[new Date('10/30/2018')] = new Date('10/30/2018');
-	SelectedDates[new Date('11/11/2018')] = new Date('11/11/2018');
-	SelectedDates[new Date('11/19/2018')] = new Date('11/19/2018');
+	 SelectedDates[new Date('10/10/2018')] = new Date('10/10/2018'); 
+	 SelectedDates[new Date('10/11/2018')] = new Date('10/11/2018');
+	 SelectedDates[new Date('10/12/2018')] = new Date('10/12/2018');
+	 SelectedDates[new Date('10/13/2018')] = new Date('10/13/2018');
+	 SelectedDates[new Date('10/14/2018')] = new Date('10/14/2018');
+	 SelectedDates[new Date('10/15/2018')] = new Date('10/15/2018');
+	 SelectedDates[new Date('10/16/2018')] = new Date('10/16/2018');
+	 
+	 SelectedDates[new Date('10/17/2018')] = new Date('10/17/2018'); 
+	 SelectedDates[new Date('10/18/2018')] = new Date('10/18/2018');
+	 SelectedDates[new Date('10/19/2018')] = new Date('10/19/2018');
+	 SelectedDates[new Date('10/20/2018')] = new Date('10/20/2018');
+	 SelectedDates[new Date('10/21/2018')] = new Date('10/21/2018');
+	 SelectedDates[new Date('10/22/2018')] = new Date('10/22/2018');
+	 SelectedDates[new Date('10/23/2018')] = new Date('10/23/2018');
+	 
+	 SelectedDates[new Date('10/24/2018')] = new Date('10/24/2018'); 
+	 SelectedDates[new Date('10/25/2018')] = new Date('10/25/2018');
+	 SelectedDates[new Date('10/26/2018')] = new Date('10/26/2018');
+	 SelectedDates[new Date('10/27/2018')] = new Date('10/27/2018');
+	 SelectedDates[new Date('10/28/2018')] = new Date('10/28/2018');
+	 SelectedDates[new Date('10/29/2018')] = new Date('10/29/2018');
+	 SelectedDates[new Date('10/30/2018')] = new Date('10/30/2018');
+	 
 function calendarPop(payFrequency,payPeriodStartDate){
 	 alert("Hi");
 	  $.ajax({
@@ -158,26 +186,37 @@ function calendarPop(payFrequency,payPeriodStartDate){
 	 
 
 	$(".mask, #modalTasktype").fadeIn();
+	openDate();
 }
-$(".popClose").click(function() {
-	$(".mask, #modalTasktype").fadeOut();
-});
-  $(function() {
-    $("#eventCalendar").datepicker({
-    	   changeMonth: true,
-	       changeYear: true,
-		    beforeShowDay: function(date) {
-		  	  var hlText = SelectedDates[date];
-		        return (hlText)?[true, "Highlighted", '']: [true, '', ''];
-		  	}
-      /* changeMonth: true, changeYear: true */
-      
-      
-    });
-  });
-	$('#next, #prev').on('click', function(e) {
-    $('.ui-datepicker-'+e.target.id).trigger("click");
-});
+function openDate(){
+	$(".popClose").click(function() {
+		$(".mask, #modalTasktype").fadeOut();
+	});
+	  /* $(function() { */
+	    $("#eventCalendar").datepicker({
+	    	   changeMonth: true,
+		       changeYear: true,
+			    beforeShowDay: function(date) {
+			  	  var hlText = SelectedDates[date];
+			  	 /*  j++;
+			  	  if(j<=6){
+			  		 alert(j) */
+			  		return (hlText)?[true, "Highlighted", '']: [true, '', ''];  
+			  	  /* }else{
+			  		return (hlText)?[true, "Hil", '']: [true, '', '']; 
+			  	  } */
+			  		
+			        
+			  	}
+	      /* changeMonth: true, changeYear: true */
+	      
+	      
+	    });
+	  /* }); */
+		$('#next, #prev').on('click', function(e) {
+	    $('.ui-datepicker-'+e.target.id).trigger("click");
+	});
+}
 </script>
 <jsp:include page="../masterFooter.jsp" />
 
