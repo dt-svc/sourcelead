@@ -443,9 +443,11 @@ function associateCandidateListPagination(url,sourceleadUrl){
 	              "data": "resume",
 	              "render": function ( data, type, opt, meta ) {
 	            	    var result = "";
-	            	    
-	            	    	result = result +"<td><div class='tbldata-dotdot-me'> <a download class='glyphicon glyphicon-download-alt'  href=\'"+opt.candidateResume+"\' download title='Download'></a></div></td>"; 
-	            	    
+	            	    if(opt.candidateResume != null && opt.candidateResume !='' && opt.candidateResume !='undefined'){
+	            	    result = result +"<td><div class='tbldata-dotdot-me'> <a download class='glyphicon glyphicon-download-alt'  href=\'"+opt.candidateResume+"\' download title='Download'></a></div></td>"; 
+	            	    }else{
+	            	    result = result +"<td><div class='tbldata-dotdot'> <span>---</span></div></td>"; 	
+	            	    }
 	            	    return result;
 	              }
 		     }, {

@@ -469,7 +469,9 @@ public class CandidateDaoImpl implements CandidateDao {
 		for(Candidate c: candidateList){
 			try {
 				CandidateResumes canResume = candidateResumesDao.getCandidateResumeByCandidateId(c.getId());
+				if(canResume !=null){
 				c.setCandidateResume(canResume.getFileURL());
+				}
 				c.setCreatedDateStr(commonUtil.dateStrFromOrgDateFormatter(orgLocations.getDateFormat(), c.getCreatedDate()));
 				//c.setCreatedDateStr(createdDateStr);
 			} catch (Exception e) {
