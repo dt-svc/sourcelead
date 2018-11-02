@@ -6,6 +6,7 @@ import java.io.FileInputStream;
 import java.io.InputStream;
 import java.net.URL;
 import java.net.URLConnection;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Collections;
 import java.util.Comparator;
@@ -139,7 +140,7 @@ public class EmployeePayrollRestController {
 			if(Constants.EMPLOYEE_PAYROLL.equalsIgnoreCase(payrollType)){
 				 isInserted = employerPayrollCostService.saveEmployerPayrollCost(multipartFile,orgLocation,user,jsonObj);
 			}else if(Constants.WAGE_TAX_SUMMARY.equalsIgnoreCase(payrollType)){
-				isInserted = wageTaxSummaryService.saveWagesTaxSummaryBulk(multipartFile,orgLocation,user);
+				isInserted = wageTaxSummaryService.saveWagesTaxSummaryBulk(multipartFile,orgLocation,user,jsonObj);
 //				isInserted = wageTaxSummaryService.saveWagesTaxSummary(multipartFile,orgLocation,user,jsonObj);
 			}else if(Constants.ACCOUNT_DEDUCTIONS.equalsIgnoreCase(payrollType)){
 				 isInserted = accountDeductionsService.saveAccountDeductions(multipartFile,orgLocation,user,jsonObj);
@@ -556,7 +557,7 @@ public class EmployeePayrollRestController {
 		 OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 		 
 		 String[] tableColumns = {"sku", "productService", "empName", "number", "memoDescription", "date","lastmodified","dueDate","rate","payRate","qty","amount","arPaid","oldNew"};
-	     int sortColumnIndex = 5; //by default sorting using updated date
+	     int sortColumnIndex = 1; //by default sorting using updated date
 		String sortColumnOrder = "asc"; //by default descending order
 		if(invoiceDetailsDTO.getOrder() != null && !invoiceDetailsDTO.getOrder().isEmpty()) {
 			sortColumnIndex = Integer.parseInt(invoiceDetailsDTO.getOrder().get(0).get("column"));
@@ -581,7 +582,7 @@ public class EmployeePayrollRestController {
 	@RequestMapping(value = { "/getInvoiceDetailsByEmpId","/rest/getInvoiceDetailsByEmpId"}, method = RequestMethod.GET)
 	public ResponseList<InvoiceData> getInvoiceDetailsByEmpId(InvoiceDetailsDTO invoiceDetailsDTO,HttpServletRequest request,HttpServletResponse response) throws Exception {
 		OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
-		ResponseList<InvoiceData> invoiceDataList = null;
+		ResponseList<InvoiceData> invoiceDataList = new ResponseList<>();
 		if(StringUtils.isNotBlank(invoiceDetailsDTO.getEmpId())){
 			String[] tableColumns = {"sku", "productService", "empName", "number", "memoDescription", "dateStr","lastModifiedStr","dueDateStr","rate","qty","amount","arPaid","oldNew"};
 		     int sortColumnIndex = 1; //by default sorting using updated date
@@ -597,12 +598,12 @@ public class EmployeePayrollRestController {
 			 List<InvoiceData> data = getSortInvoiceDataList(invoiceDataList.getData(),orgLocation);
 			 invoiceDataList.setData(data);
 		}else{
-			return invoiceDataList;
+			invoiceDataList.setData(new ArrayList<InvoiceData>());
 		}
 		if(invoiceDataList !=null && invoiceDataList.getData().size() >0){
 			return invoiceDataList;
 		}
-		return null;
+		return invoiceDataList;
 	}
 	
 	
@@ -650,7 +651,8 @@ public class EmployeePayrollRestController {
 			checksList =userPayrollService.getChecksListByEmployeeId(orgLocation,checksDTO);
 //			List<Checks> data = getSortChecksList(checksList.getData(),orgLocation);
 		}else{
-			return checksList;
+//			return checksList;
+			checksList.setData(new ArrayList<Checks>());
 		}
 		if(checksList !=null && checksList.getData().size() >0){
 			return checksList;
@@ -670,7 +672,7 @@ public class EmployeePayrollRestController {
 	@RequestMapping(value = { "/getWagesTaxSummaryByEmpId", "/rest/getWagesTaxSummaryByEmpId"}, method = RequestMethod.POST)
 	public ResponseList<WageTaxSummary> getWagesTaxSummaryByEmpId(WagesTaxSummaryDTO wagesTaxSummaryDTO,HttpServletRequest request,HttpServletResponse response) throws Exception {
 		OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
-		ResponseList<WageTaxSummary>  wagesAndTaxList = new ResponseList<>();
+		ResponseList<WageTaxSummary> responseList = new ResponseList<>();
 		if(StringUtils.isNotBlank(wagesTaxSummaryDTO.getEmpId())){
 //			 wagesAndTaxList = wageTaxSummaryService.getWagesAndTaxListByEmployeeId(orgLocation,Long.parseLong(wagesTaxSummaryDTO.getEmpId()));
 			String[] tableColumns = {"fromDate", "toDate", "employeeId", "employeeName", "ssnNumber", "checkDate","checkNo","gross","fwt","ssec","med","swt","sdiSui","local","deds","net","batchNumber"};
@@ -682,11 +684,13 @@ public class EmployeePayrollRestController {
 			}
 			wagesTaxSummaryDTO.setSortColumn(tableColumns[sortColumnIndex]);
 			wagesTaxSummaryDTO.setSortOrder(sortColumnOrder);
-			  wagesAndTaxList = wageTaxSummaryService.getWagesAndTaxByEmpId(orgLocation,wagesTaxSummaryDTO);
+			ResponseList<WageTaxSummary> wagesAndTaxList = wageTaxSummaryService.getWagesAndTaxByEmpId(orgLocation,wagesTaxSummaryDTO);
 			  List<WageTaxSummary> data = getSortWageTaxList(wagesAndTaxList.getData(),orgLocation);
-			  wagesAndTaxList.setData(data);
+			  responseList.setData(data);
+		}else {
+			responseList.setData(new ArrayList<WageTaxSummary>());
 		}
-		return wagesAndTaxList;
+		return responseList;
 	}
 	
 	/**
@@ -716,7 +720,8 @@ public class EmployeePayrollRestController {
 //			List<WageTaxSummary> data = getSortWageTaxList(accountDeductionsList.getData(),orgLocation);
 //			accountDeductionsList.setData(data);
 		} else {
-			return accountDeductionsList;
+//			return accountDeductionsList;
+			accountDeductionsList.setData(new ArrayList<AccountDeductions>());
 		}
 
 		if (accountDeductionsList != null && accountDeductionsList.getData().size() > 0) {
@@ -737,7 +742,7 @@ public class EmployeePayrollRestController {
 	@RequestMapping(value = { "/getHRDeductionsByEmployeeId", "/rest/getHRDeductionsByEmployeeId" }, method = RequestMethod.GET)
 	public ResponseList<HrDeductions> getHRDeductionsByEmployeeId(HrDeductionsDTO hrDeductionsDTO,HttpServletRequest request,HttpServletResponse response) throws Exception {
 		OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
-		ResponseList<HrDeductions> hrDeductionsList = null;
+		ResponseList<HrDeductions> hrDeductionsList = new ResponseList<>();
 		if (StringUtils.isNotBlank(hrDeductionsDTO.getEmployeeId())) {
 			String[] tableColumns = {"employeeId", "employeeName", "fromDateStr", "toDateStr", "dedAmount", "batchNumber","requestSubDate","requestApprovedDate","repaidStatus"};
 		     int sortColumnIndex = 1; //by default sorting using updated date
@@ -751,13 +756,14 @@ public class EmployeePayrollRestController {
 			
 			hrDeductionsList = hrDeductionsService.getHrDeductionsByEmployeeId(orgLocation, hrDeductionsDTO);
 		} else {
-			return hrDeductionsList;
+//			return hrDeductionsList;
+			hrDeductionsList.setData(new ArrayList<HrDeductions>());
 		}
 
 		if (hrDeductionsList != null && hrDeductionsList.getData().size() > 0) {
 			return hrDeductionsList;
 		}
-		return null;
+		return hrDeductionsList;
 	}
 	
 	

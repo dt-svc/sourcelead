@@ -4124,6 +4124,7 @@ public class RequirementServiceImpl implements RequirementService {
 				jobFair.setStartDate(commonUtil.orgLocationDateFormat(orgLocations.getDateFormat(), jobFairDTO.getStartDate()));
 				jobFair.setEndDate(commonUtil.orgLocationDateFormat(orgLocations.getDateFormat(), jobFairDTO.getEndDate()));
 				jobFair.setPostedFrom(jobFairDTO.getPostedFrom());
+				jobFair.setSelectedClient(jobFairDTO.getSelectedClient());
 				jobFair.setDateFormat(orgLocations.getDateFormat());
 				List<JobFairRequirements> jobFairRequirementList = new LinkedList<>();
 				JSONArray jsonArray = new JSONArray(jobFairDTO.getRequirementJSONData());
@@ -4240,6 +4241,7 @@ public class RequirementServiceImpl implements RequirementService {
 				jobFairDTO.setEndDateStr(dateFormat.format(jobFair.getEndDate()));
 			}
 			jobFairDTO.setPostedFrom(jobFair.getPostedFrom());
+			jobFairDTO.setSelectedClient(jobFair.getSelectedClient());
 			jobFairDTO.setVenue(jobFair.getVenue());
 			jobFairDTO.setNotifyTo(jobFair.getNotifyTo());
 			jobFairDTO.setStatus(jobFair.getStatus());
@@ -4273,9 +4275,15 @@ public class RequirementServiceImpl implements RequirementService {
 	}
 
 	@Override
-	public boolean changeJobFairStatus(Long jobFairId, int status) {
+	public boolean changeJobFairStatus(Long jobFairId, int status, User user, OrgLocations orgLocation) {
 		try {
-			return requirementDao.changeJobFairStatus(jobFairId, status);
+			JobFair jobFair = requirementDao.getJobFair(jobFairId);
+			jobFair.setStatus(status);
+			jobFair.setUpdatedBy(user);
+			jobFair.setUpdatedDate(commonUtil.orgLocationCommonDate(new Date(), orgLocation));
+//			return requirementDao.changeJobFairStatus(jobFairId, status);
+			long result = requirementDao.saveJobFair(jobFair);
+			return result > 0; 
 		} catch (Exception e) {
 			e.printStackTrace();
 		}

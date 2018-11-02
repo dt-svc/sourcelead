@@ -136,6 +136,32 @@
             </div>
           </div>
           
+          <div class="col-md-3">
+            <div class="pull-left mr10"> <i class="fa fa-calendar fa-2x text-muted"></i> </div>
+            <div class="pull-left">
+              <h4 class="text-muted">Contract Employee Payroll Report</h4>
+              <small class="text-muted">Contract Employee Payroll Report</small>
+              <div class="clearfix mt10"><a href="${appPath}/contractEmployeePayreport" class="btn btn-primary btn-sm" title="View">View</a> </div>
+              </div>
+          </div>
+          
+           <div class="col-md-3">
+            <div class="pull-left mr10"> <i class="fa fa-calendar fa-2x text-muted"></i> </div>
+            <div class="pull-left">
+              <h4 class="text-muted">Deduction Summary</h4>
+              <small class="text-muted">Deduction Summary Report</small>
+              <div class="clearfix mt10"><a href="${appPath}/usDeductionSummaryReport" class="btn btn-primary btn-sm" title="View">View</a> </div>
+            </div>
+          </div>
+          
+           <div class="col-md-3">
+            <div class="pull-left mr10"> <i class="fa fa-calendar fa-2x text-muted"></i> </div>
+            <div class="pull-left">
+              <h4 class="text-muted">Contribution Summary</h4>
+              <small class="text-muted">Contribution Summary Report</small>
+            </div>
+          </div>
+          
         </div>
       </div>
       <!-- Content Area Ends--> 

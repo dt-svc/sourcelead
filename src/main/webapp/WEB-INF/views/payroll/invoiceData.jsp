@@ -2,6 +2,12 @@
 <script type="text/javascript">
 function getInvoiceDetails(){
 	    $("#addPayrollDiv").hide();
+	    $("#employeeCostSearch").hide();
+		$("#wageTaxSearch").hide();
+		$("#accountDedSearch").hide();
+		$("#hrDedSearch").hide();
+		$("#checksSearch").hide();
+		$("#invoiceDataSearch").show();
 		var sourceleadUrl ='${sourceleadUrl}';
 		var searchValue = $("#invoiceDataTableSearch").val();
 		var orgLocationId = '${SourceLeadWeb_orgLocationId}';
@@ -29,11 +35,11 @@ function prepareInvoiceDetailsList(url){
 	$('#payrollCycle').val('').trigger("chosen:updated");
  	 var result = "";
 	 	
- 		result = result +" <div class='reportHead'>";
+ 		/* result = result +" <div class='reportHead'>";
 		result = result + " <ul class='pull-right'>";
 		result = result + " <li><input type='text' placeholder='Search' class='repSearchBar' id='invoiceDataTableSearch'/><span class='repSearchIcon' onClick='invoiceDataTableSearch();'></span></li>";
 		result = result + "</ul>";
-		result = result + "</div>"; 	 	
+		result = result + "</div>"; 	 */ 	
 	 	
 	 	result = result +"<table id='invoiceDetailsPagination' class='display' cellspacing='0' width='100%' >"; 
  	    result = result + '<thead>';
@@ -95,6 +101,7 @@ function invoiceDetailsPagination(url){
         "columnDefs": [ {
 	    	  	"targets": colIndex++,
 	    	  	"data": "sku",
+	    	  	"sortable": false,
 	    	  	"render": function(data, type, opt, meta) {
 	    	  		  var result = "";
 		    	  		if(opt.sku !=null && opt.sku !='' && opt.sku !='undefined'){
@@ -132,6 +139,7 @@ function invoiceDetailsPagination(url){
           }, {
               "targets": colIndex++,
               "data": "number",
+              "sortable": false,
               "render": function ( data, type, opt, meta ) {
             	var result = "";
             	var numberTotal = opt.number
@@ -146,6 +154,7 @@ function invoiceDetailsPagination(url){
             }, {
                 "targets": colIndex++,
                 "data": "memoDescription",
+                "sortable": false,
                 "render": function ( data, type, opt, meta ) {
                 		var result = "";
 	                		if(opt.memoDescription !=null && opt.memoDescription !='' && opt.memoDescription !='undefined'){
@@ -158,6 +167,7 @@ function invoiceDetailsPagination(url){
           },{
 	    	  	"targets": colIndex++,
 	    	  	"data": "date",
+	    	  	"sortable": false,
 	    	  	"render": function(data, type, opt, meta) {
 	    	  		var result = "";
 		    	  		if(opt.dateStr !=null && opt.dateStr !='' && opt.dateStr !='undefined'){
@@ -170,6 +180,7 @@ function invoiceDetailsPagination(url){
 	    	  },{
 	    	  	"targets": colIndex++,
 	    	  	"data": "lastmodified",
+	    	  	"sortable": false,
 	    	  	"render": function(data, type, opt, meta) {
 	    	  		var result = "";
 	    	  		if(opt.lastModifiedStr !=null && opt.lastModifiedStr !='' && opt.lastModifiedStr !='undefined'){
@@ -182,6 +193,7 @@ function invoiceDetailsPagination(url){
 	    	  }, {
                   "targets": colIndex++,
                   "data": "dueDate",
+                  "sortable": false,
                   "render": function ( data, type, opt, meta ) {
                 	  var result = "";
                 	  if(opt.dueDateStr !=null && opt.dueDateStr !='' && opt.dueDateStr !='undefined'){
@@ -194,6 +206,7 @@ function invoiceDetailsPagination(url){
                 },{
                     "targets": colIndex++,
                     "data": "rate",
+                    "sortable": false,
                     "render": function ( data, type, opt, meta ) {
                     	var result = "";
                     	var rateTotal = opt.rate;
@@ -208,11 +221,12 @@ function invoiceDetailsPagination(url){
                   },{
                       "targets": colIndex++,
                       "data": "payRate",
+                      "sortable": false,
                       "render": function ( data, type, opt, meta ) {
                       	var result = "";
-                      	var rateTotal = opt.payRate;
-                      	var twoPlacedFloat = parseFloat(rateTotal).toFixed(2);
-                      	if(opt.payRate !=null && opt.payRate !='' && opt.payRate !='undefined'){
+                      	if(opt.payRate !=null && opt.payRate !='' && opt.payRate !='undefined' && !isNaN(opt.payRate)){
+                      		var rateTotal = opt.payRate;
+                          	var twoPlacedFloat = parseFloat(rateTotal).toFixed(2);
   							result = result + '<td><div class="tblminwidth-75">$ '+twoPlacedFloat+'</div></td>';
   						}else{
   							result = result + ' <td><div class="tblminwidth-75">0.00</div></td>';
@@ -222,6 +236,7 @@ function invoiceDetailsPagination(url){
                     },{
                       "targets": colIndex++,
                       "data": "qty",
+                      "sortable": false,
                       "render": function ( data, type, opt, meta ) {
                     	  var result = "";
                     	  var qtytotal = opt.qty;
@@ -236,6 +251,7 @@ function invoiceDetailsPagination(url){
                     },{
                         "targets": colIndex++,
                         "data": "amount",
+                        "sortable": false,
                         "render": function ( data, type, opt, meta ) {
                         	var result = "";
                         	var amountTotal = opt.amount;
@@ -250,6 +266,7 @@ function invoiceDetailsPagination(url){
                       },{
                           "targets": colIndex++,
                           "data": "arPaid",
+                          "sortable": false,
                           "render": function ( data, type, opt, meta ) {
                         	  var result = "";
                         	  if(opt.arPaid !=null && opt.arPaid !='' && opt.arPaid !='undefined'){
@@ -262,6 +279,7 @@ function invoiceDetailsPagination(url){
                         },{
                             "targets": colIndex++,
                             "data": "oldNew",
+                            "sortable": false,
                             "render": function ( data, type, opt, meta ) {
                             	var result = "";
                             	if(opt.oldNew !=null && opt.oldNew !='' && opt.oldNew !='undefined'){
@@ -275,6 +293,7 @@ function invoiceDetailsPagination(url){
 						{
 							"targets" : colIndex++,
 							"data" : "action",
+							"sortable": false,
 							"render" : function(data, type, opt, meta) {
 								var result = "";
 								result = result + '<td><div><i class="glyphicon glyphicon-trash" onclick="deletePayrollEntity(\''+opt.uuid+'\',\'InvoiceData\')"></i></div></td>';
@@ -283,7 +302,7 @@ function invoiceDetailsPagination(url){
 						} ],
 	    	"scrollCollapse": false,
 	    	"lengthMenu": [[10, 15, 20], [10, 15, 20]],
-	    	"aaSorting": [[4,'desc']],
+	    	"aaSorting": [[2,'desc']],
 	    	"bLengthChange": true,
 	    	"bDestroy": true,
 	    	"ordering": true,
