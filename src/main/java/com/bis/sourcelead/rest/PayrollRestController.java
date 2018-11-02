@@ -276,6 +276,25 @@ public class PayrollRestController {
 	}
 	
 	
+	@SuppressWarnings("unused")
+	@RequestMapping(value = { "/bulkPayAdjustmentsForFrequencyInd","/rest/bulkPayAdjustmentsForFrequencyInd" })
+	public ModelAndView bulkPayAdjustmentsForFrequencyInd(IndEmployeePayrollDTO indEmployeePayrollDTO, HttpServletRequest request) throws Exception
+	{
+		ModelAndView modelAndView = new ModelAndView();
+		OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+	 	User loginUser = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+	 	try {
+			commonUtil.highLightMenu(Constants.RUNPAYROLL, request);
+			modelAndView.addObject("activeTaxTab", "runPayrollInd");
+			modelAndView.setViewName("payroll_india/payroll/bulkPayAdjustmentsInd");
+		} catch (Exception e) {
+			e.printStackTrace();
+			logger.error(e.getMessage());
+		}
+		return modelAndView;
+	}
+	
+	
 	@RequestMapping(value = { "/getPaySheetFrequencyDataInd", "/rest/getPaySheetFrequencyDataInd" })
 	@ResponseBody
 	public ResponseList<IndPaysheetFrequencyDTO> getPaySheetFrequencyList(IndPaysheetFrequencyDTO indpaysheetFrequencyDTO, @RequestParam(value = "paySheetFrequencyUUID", required = false) String searchValue, HttpServletRequest request, HttpServletResponse response) throws Exception
