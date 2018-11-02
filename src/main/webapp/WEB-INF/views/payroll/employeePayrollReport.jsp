@@ -231,7 +231,7 @@ function redirect() {
 			  var sourceleadUrl ='${sourceleadUrl}';
 					  $.ajax({
 					    	type: "GET",
-					        url: sourceleadUrl+"/getChecksListByEmployeeId?empId="+empId+"&orgLocationId="+orgLocationId,
+					        url: sourceleadUrl+"/getChecksListByEmployeeId?employeeId="+empId+"&orgLocationId="+orgLocationId,
 					        success: function(data) {
 							 var result = "";				        	
 							result = result + '<table id="empchecksListTable" class="display" cellspacing="0" width="100%" >';
@@ -838,8 +838,9 @@ function getAccontDeductions(){
 		  var sourceleadUrl ='${sourceleadUrl}';
 				  $.ajax({
 				    	type: "GET",
-				    	url: sourceleadUrl+"/getAccontDeductionsByEmpId?empId="+empId+"&orgLocationId="+orgLocationId,
-				        success: function(data) {
+				    	url: sourceleadUrl+"/getAccontDeductionsByEmpId?employeeId="+empId+"&orgLocationId="+orgLocationId,
+				        success: function(json) {
+				        var data = json.data;
 						var result = "";				        	
 						result = result + '<table id="accontDeductionsEmpTable" class="display" cellspacing="0" width="100%" >';
 						result = result + '<thead>';
@@ -956,7 +957,7 @@ function accountDeductionsEmpTablePagination(){
     $('#accontDeductionsEmpTable').DataTable( { 
     	"scrollCollapse": false,
     	"lengthMenu": [[10, 15, 20, -1], [10, 15, 20, "All"]],
-    	"bLengthChange": false,
+    	"bLengthChange": true,
     	"bDestroy": true,
     	"ordering": true,
     	"oLanguage": {
@@ -1061,8 +1062,9 @@ function getHRDeductions(){
 		  var sourceleadUrl ='${sourceleadUrl}';
 				  $.ajax({
 				    	type: "GET",
-				    	url: sourceleadUrl+"/getHRDeductionsByEmployeeId?empId="+empId+"&orgLocationId="+orgLocationId,
-				        success: function(data) {
+				    	url: sourceleadUrl+"/getHRDeductionsByEmployeeId?employeeId="+empId+"&orgLocationId="+orgLocationId,
+				        success: function(json) {
+				        var data = json.data;
 						var result = "";				        	
 						result = result + '<table id="hrDeductionsEmpTable" class="display" cellspacing="0" width="100%" >';
 						result = result + '<thead>';
@@ -1172,7 +1174,7 @@ function hrDeductionsEmpTablePagination(){
     $('#hrDeductionsEmpTable').DataTable( { 
     	"scrollCollapse": false,
     	"lengthMenu": [[10, 15, 20, -1], [10, 15, 20, "All"]],
-    	"bLengthChange": false,
+    	"bLengthChange": true,
     	"bDestroy": true,
     	"ordering": true,
     	"oLanguage": {
