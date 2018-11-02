@@ -557,7 +557,7 @@ public class EmployeePayrollRestController {
 		 OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 		 
 		 String[] tableColumns = {"sku", "productService", "empName", "number", "memoDescription", "date","lastmodified","dueDate","rate","payRate","qty","amount","arPaid","oldNew"};
-	     int sortColumnIndex = 5; //by default sorting using updated date
+	     int sortColumnIndex = 1; //by default sorting using updated date
 		String sortColumnOrder = "asc"; //by default descending order
 		if(invoiceDetailsDTO.getOrder() != null && !invoiceDetailsDTO.getOrder().isEmpty()) {
 			sortColumnIndex = Integer.parseInt(invoiceDetailsDTO.getOrder().get(0).get("column"));
