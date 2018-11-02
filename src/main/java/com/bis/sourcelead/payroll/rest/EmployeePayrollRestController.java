@@ -687,6 +687,8 @@ public class EmployeePayrollRestController {
 			ResponseList<WageTaxSummary> wagesAndTaxList = wageTaxSummaryService.getWagesAndTaxByEmpId(orgLocation,wagesTaxSummaryDTO);
 			  List<WageTaxSummary> data = getSortWageTaxList(wagesAndTaxList.getData(),orgLocation);
 			  responseList.setData(data);
+			  responseList.setRecordsFiltered(wagesAndTaxList.getRecordsFiltered());
+			  responseList.setRecordsTotal(wagesAndTaxList.getRecordsTotal());
 		}else {
 			responseList.setData(new ArrayList<WageTaxSummary>());
 		}
