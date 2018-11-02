@@ -347,7 +347,7 @@ public class WageTaxSummaryServiceImpl implements WageTaxSummaryService{
 	}
 
 	@Override
-	public Integer saveWagesTaxSummaryBulk(MultipartFile multipartFile, OrgLocations orgLocation, User user) throws Exception {
+	public Integer saveWagesTaxSummaryBulk(MultipartFile multipartFile, OrgLocations orgLocation, User user,JSONObject jsonObject) throws Exception {
 
 
 		String fileName = multipartFile.getOriginalFilename();
@@ -473,6 +473,23 @@ public class WageTaxSummaryServiceImpl implements WageTaxSummaryService{
 									net = Float.parseFloat(getCellValueAsString(row.getCell(12), fileName));
 									wageTaxSummary.setNet(net);
 								}
+								
+								if (jsonObject.has("fromDate")) {
+									if (jsonObject.getString("fromDate") != null
+											&& !"".equalsIgnoreCase(jsonObject.getString("fromDate"))) {
+										wageTaxSummary.setFromDate(
+												conversionUtil.getDateFromString(jsonObject.getString("fromDate")));
+									}
+
+								}
+								if (jsonObject.has("toDate")) {
+									if (jsonObject.getString("toDate") != null
+											&& !"".equalsIgnoreCase(jsonObject.getString("toDate"))) {
+										wageTaxSummary
+												.setToDate(conversionUtil.getDateFromString(jsonObject.getString("toDate")));
+									}
+								}
+								
 								wageTaxSummary.setUuid(SourceLeadRandomCodeHelper.generateRandomUUID());
 								wageTaxSummary.setEmployeeName(employeeName);
 								wageTaxSummary.setEmployeeId(employeeId);
