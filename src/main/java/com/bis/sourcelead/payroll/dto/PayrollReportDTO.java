@@ -165,6 +165,16 @@ public class PayrollReportDTO extends SearchDTO{
 	private String payrollDepartment;
 	
 	private String exportType;
+	
+	private String assAmount;
+	
+	private String totalVendorAmount;
+	
+	private String vendorName;
+	
+	private String invoiceId;
+	
+	private String invPaidAmount;
 
 	public String getEmpId()
 	{
@@ -924,6 +934,56 @@ public class PayrollReportDTO extends SearchDTO{
 
 	public void setExportType(String exportType) {
 		this.exportType = exportType;
+	}
+
+	public String getAssAmount()
+	{
+		return assAmount;
+	}
+
+	public void setAssAmount(String assAmount)
+	{
+		this.assAmount = assAmount;
+	}
+
+	public String getTotalVendorAmount()
+	{
+		return totalVendorAmount;
+	}
+
+	public void setTotalVendorAmount(String totalVendorAmount)
+	{
+		this.totalVendorAmount = totalVendorAmount;
+	}
+
+	public String getVendorName()
+	{
+		return vendorName;
+	}
+
+	public void setVendorName(String vendorName)
+	{
+		this.vendorName = vendorName;
+	}
+
+	public String getInvoiceId()
+	{
+		return invoiceId;
+	}
+
+	public void setInvoiceId(String invoiceId)
+	{
+		this.invoiceId = invoiceId;
+	}
+
+	public String getInvPaidAmount()
+	{
+		return invPaidAmount;
+	}
+
+	public void setInvPaidAmount(String invPaidAmount)
+	{
+		this.invPaidAmount = invPaidAmount;
 	}
 
 }

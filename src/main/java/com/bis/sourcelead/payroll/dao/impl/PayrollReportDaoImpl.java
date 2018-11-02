@@ -616,7 +616,7 @@ public class PayrollReportDaoImpl implements PayrollReportDao{
 					if (assWithHoldingDTO.getSearchValue() != null && !"".equalsIgnoreCase(assWithHoldingDTO.getSearchValue())) {
 						count = assoWithHoldingList.size();
 					}else {
-						count = (int) countlist.iterator().next().intValue();
+						count = assoWithHoldingList.size();;
 					}
 					
 				}
@@ -626,7 +626,7 @@ public class PayrollReportDaoImpl implements PayrollReportDao{
 				if (assWithHoldingDTO != null) {
 					if(countlist != null && !countlist.isEmpty()) {
 						totalCount = countlist.size();
-					}
+					}]
 				} 
 				
 				if(searchQuery.toString() != null && !searchQuery.toString().isEmpty()){
@@ -644,7 +644,7 @@ public class PayrollReportDaoImpl implements PayrollReportDao{
 						if (assWithHoldingDTO.getSearchValue() != null && !"".equalsIgnoreCase(assWithHoldingDTO.getSearchValue())) {
 							filteredCount = assoWithHoldingList.size();
 						}else {
-							filteredCount = filteredCountlist.iterator().next().intValue();
+							filteredCount = assoWithHoldingList.size();
 						}
 						
 					}

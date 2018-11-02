@@ -86,6 +86,7 @@ import com.bis.sourcelead.entity.SubmissionRequirementListView;
 import com.bis.sourcelead.entity.TimeSheetSubmissionCount;
 import com.bis.sourcelead.entity.Timezone;
 import com.bis.sourcelead.entity.User;
+import com.bis.sourcelead.entity.UserRole;
 import com.bis.sourcelead.enums.ApplicantSubmissionDisplayStatus;
 import com.bis.sourcelead.enums.ApplicantSubmissionStatus;
 import com.bis.sourcelead.enums.REQUIREMENT_SUBMISSION_STATUS;
@@ -1651,6 +1652,21 @@ public class RequirementListRestController {
 				
 				jobFairDTO.setUserId(user.getId());
 				jobFairDTO.setOrgLocationId(orgLocation.getId());
+				
+				Set<UserRole> userRoleSet = user.getUserRole();
+				if (userRoleSet != null && !userRoleSet.isEmpty()) {
+					for (UserRole userRole : userRoleSet) {
+						if (orgLocation.getId() == userRole.getOrgLocations().getId() && user.getId() == userRole.getUser().getId() && !userRole.getUser().getUserRole().isEmpty()) {
+							for (UserRole uRole : userRole.getUser().getUserRole()) {
+								if (uRole.getRoles().getRoleName().equalsIgnoreCase(Constants.ROLE_ADMIN)) {
+//									System.out.println("IS USER ADMIN");
+									jobFairDTO.setAdminUser(true);
+								}
+							}
+						}
+					}
+				}
+				
 				response = requirementService.getJobFairsList(jobFairDTO, includeInactive);
 				response.setResponse(Result.SUCCESS.name());
 				response.setResponseMessage(Result.SUCCESS.getValue());

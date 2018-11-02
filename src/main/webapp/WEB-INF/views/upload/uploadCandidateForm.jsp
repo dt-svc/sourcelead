@@ -65,7 +65,7 @@ var uploadflag= true;
 					
 						<div class="col-xs-5 col-md-5">
 							<a href="<c:url value='${appPath}/downloadCreateCandidateTemplate'/>"
-								class="btn btn-success btn-block" title="Download Job Template"> <i class="fa fa-download"></i>&nbsp;&nbsp; Candidate Template
+								class="btn btn-success btn-block" title="Download Candidate Template"> <i class="fa fa-download"></i>&nbsp;&nbsp; Candidate Template
 							</a>
 						</div>
 						<div class="col-xs-4 col-md-4">
