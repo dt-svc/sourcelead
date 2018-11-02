@@ -401,10 +401,10 @@ function usersListPagination(url,sourceleadUrl){
 		    	  "targets": colIndex++,
 	              "data": "shortlisted",
 	              "sortable": false,
-	              "render": function ( data, type, opt, meta ) {
+	              "render": function ( data, type, opt, meta ) {  
 	            	    var result = "";
 	            	    if(opt.userShortlistedApplicantsCount !=null && opt.userShortlistedApplicantsCount !='' && opt.userShortlistedApplicantsCount !='undefined'){
-	            	    	result = result +"<td><div class='small'> <span title='"+opt.userShortlistedApplicantsCount+"'>"+opt.userShortlistedApplicantsCount+"</span></div></td>";
+	            	    	result = result +"<td><div class='small'><a onClick='getRecruiterApplicantShortlistsList(\""+opt.userCode+"\")'>  <span title='"+opt.userShortlistedApplicantsCount+"'>"+opt.userShortlistedApplicantsCount+"</span></a></div></td>";
 	            	    }else{
 	            	    	result = result +"<td><div class='small'> <span>0</span></div></td>"; 
 	            	    }
@@ -649,6 +649,49 @@ function getRecruiterApplicantsList(userCode){
 	$.ajax({
         type : "POST",
    	 	url: sourceleadUrl+"/recruiterApplicantsReportList?"+tokenParamName+"="+tokenValue+"&userCode="+userCode+"&searchValue="+searchValue+"&toStage=SUBMISSION&timePeriod="+timePeriod+"&customStartDate="+startDate+"&customEndDate="+endDate+"&orgTeams="+orgTeams,
+       	success :function(result) {
+       		$('#reportsResultDiv').empty();
+       		$('#reportsResultDiv').append(result);
+       		applicantsAllStageList();
+        }
+   	});
+}
+
+
+function getRecruiterApplicantShortlistsList(userCode){
+	var searchValue = $("#usersDataTableSearch").val();
+	 var timePeriod = $('#reportTypeId').val();
+	 var flag = true;
+	 var startDate = '';
+	 var endDate = '';
+	 var toStage = '';
+	 if(timePeriod == 'custom'){
+		  startDate = $("#ReportStartDate").val();
+		  endDate = $("#ReportEndDate").val();
+		  if(startDate == null || startDate == '' || endDate == null || endDate == ''){
+			  if(startDate == null || startDate == ''){
+				  document.getElementById("reportsStartDate").style.display="block";
+				  $("#reportsStartDate").empty().append("Start Date is Required") ; 
+			  }
+			  
+			  if(endDate == null || endDate == ''){
+				  document.getElementById("reportsEndDate").style.display="block";
+				  $("#reportsEndDate").empty().append("End Date is Required") ; 
+			  }
+			  flag = false;
+		  }
+	 }else{
+		 document.getElementById("reportsStartDate").style.display="none";
+		 document.getElementById("reportsEndDate").style.display="none";
+	 }
+	 var orgTeams = [];
+		$('input:checkbox[name=orgTeams]:checked').each(function() 
+			    {
+			orgTeams.push($(this).val());
+	     });
+	$.ajax({
+        type : "POST",
+   	 	url: sourceleadUrl+"/recruiterApplicantsReportList?"+tokenParamName+"="+tokenValue+"&userCode="+userCode+"&searchValue="+searchValue+"&toStage=SHORTLIST&timePeriod="+timePeriod+"&customStartDate="+startDate+"&customEndDate="+endDate+"&orgTeams="+orgTeams,
        	success :function(result) {
        		$('#reportsResultDiv').empty();
        		$('#reportsResultDiv').append(result);

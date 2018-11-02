@@ -432,6 +432,7 @@ private static final Logger logger = LoggerFactory.getLogger(ReportsController.c
 				 }
 			    model.addObject("orgClientList", orgClientList);
 			}
+			model.addObject("loginOrgLocId", orgLocations.getId());
 		 model.setViewName("reports/jobsPerformanceReport");
 		  return model;		
 	 }
