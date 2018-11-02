@@ -291,7 +291,7 @@ public class UserPayrollDaoImpl implements UserPayrollDao{
 //			String query = "from WageTaxSummary wts  left join fetch wts.orgLocationId where wts.orgLocationId.id =:orgLocationId and (wts.status IS NULL or wts.status <> '0')";
 			String countQuery = "from Checks checks  where checks.orgLocationId.id =:orgLocationId and checks.empId = :empId  and (checks.status IS NULL or checks.status <> '0')";
 			
-			if(checksDTO.getSearchValue().contains("/") || checksDTO.getSearchValue().contains("-")){
+			if(StringUtils.isNotBlank(checksDTO.getSearchValue()) && (checksDTO.getSearchValue().contains("/") || checksDTO.getSearchValue().contains("-"))){
 				String convertedDate=checksDTO.getSearchValue();
 				if(checksDTO.getSearchValue().contains("/")){
 					convertedDate = checksDTO.getSearchValue().replaceAll("/", "-");
@@ -329,9 +329,9 @@ public class UserPayrollDaoImpl implements UserPayrollDao{
 			if (checksDTO != null && checksDTO.getLength() > 0) {
 				queryObj.setFirstResult(checksDTO.getStart());
 				queryObj.setMaxResults(checksDTO.getLength());
-				queryObj.setLong("orgLocationId", orgLocations.getId())
-				.setLong("empId", Long.parseLong(checksDTO.getEmpId()));
 			}
+			queryObj.setLong("orgLocationId", orgLocations.getId())
+			.setLong("empId", Long.parseLong(checksDTO.getEmpId()));
 			checkslList = queryObj.list();
 			int count = 0;
 			int filteredCount = 0;

@@ -53,7 +53,7 @@
 						</div>
 					</div>
 					<div class="col-md-5">
-						<label class="clearfix">Budget / Cost</label>
+						<label class="clearfix">Budget / Cost<span class="text-danger">&nbsp;*</span></label>
 						<div class="clearfix">
 							<input type="text" class="form-control" id="budget" value="${jobFair != null ? jobFair.budget : 0}" name="budget" placeholder="Expected cost of JobFair" field-name="Budget" data-validation="required validate_length length1-8">
 						</div>
@@ -75,17 +75,17 @@
 					
 					<div class="col-md-5 noPad mt">
 						<div class="col-md-6">
-							<label class="clearfix">Posted On<span class="text-danger">&nbsp;*</span></label>
+							<label class="clearfix">Posted On ${jobFair.postedFrom}<span class="text-danger">&nbsp;*</span></label>
 							<div class="clearfix dropdown-select">
 								<select class="form-control" id="requirementsTimeRange" field-name="Posted From" data-validation="required"
 									onchange="getRequirements();" ${jobFair.id == 0 ? "disabled='disabled'" : ""}>
-									<option value="today" ${jobFair.postedFrom == 'today' ? "selected='selected'" : ""}>Today</option>
-									<option value="yesterday" ${jobFair.postedFrom == 'yesterday' ? "selected='selected'" : ""}>Yesterday</option>
-									<option value="week" ${jobFair == null || jobFair.postedFrom == 'week' ? "selected='selected'" : ""}>1 week</option>
-									<option value="twoweeks" ${jobFair.postedFrom == 'twoweeks' ? "selected='selected'" : ""}>2 weeks</option>
-									<option value="month" ${jobFair.postedFrom == 'month' ? "selected='selected'" : ""}>1 month</option>
-									<option value="twomonths" ${jobFair.postedFrom == 'twomonths' ? "selected='selected'" : ""}>2 months</option>
-									<option value="all" ${jobFair.postedFrom == 'all' ? "selected='selected'" : ""}>All</option>
+									<option value="today" ${jobFair.postedFrom eq 'today' ? "selected='selected'" : ""}>Today</option>
+									<option value="yesterday" ${jobFair.postedFrom eq 'yesterday' ? "selected='selected'" : ""}>Yesterday</option>
+									<option value="week" ${jobFair == null || jobFair.postedFrom eq 'week' ? "selected='selected'" : ""}>1 week</option>
+									<option value="twoweeks" ${jobFair.postedFrom eq 'twoweeks' ? "selected='selected'" : ""}>2 weeks</option>
+									<option value="month" ${jobFair.postedFrom eq 'month' ? "selected='selected'" : ""}>1 month</option>
+									<option value="twomonths" ${jobFair.postedFrom eq 'twomonths' ? "selected='selected'" : ""}>2 months</option>
+									<option value="all" ${jobFair.postedFrom eq 'all' ? "selected='selected'":""}>All</option>
 								</select>
 							</div>
 						</div>
@@ -96,15 +96,43 @@
 									<div class="col-md-12">
 										<select multiple class="chosen-select form-control" name="clientList" field-name="Client" 
 											id="clientList" ${jobFair.id == 0 ? "disabled='disabled'" : ""}>
-												<c:forEach var="team" items="${add_clientList}">
-													<c:if test="${team.locationId.id == loginOrgLocId}">
-														<option value='${team.responderLocationId.org.orgName}'>${team.responderLocationId.org.orgName}</option>
-													</c:if>
-													
-													<c:if test="${team.responderLocationId.id == loginOrgLocId}">
-														<option value='${team.locationId.org.orgName}'>${team.locationId.org.orgName}</option>
-													</c:if>
-												</c:forEach>
+												<c:choose>
+													<c:when test="${jobFair.selectedClient != null && jobFair.selectedClient != ''}">
+														<c:forEach var="team" items="${add_clientList}">
+															<c:if test="${team.locationId.id == loginOrgLocId}">
+																<c:set var="selected" value="false"></c:set>
+																<c:forEach items="${jobFair.selectedClient.split(',')}" var="clientName">
+																	<c:if test="${clientName eq team.responderLocationId.org.orgName}">
+																		<c:set var="selected" value="true"></c:set>
+																	</c:if>
+																</c:forEach>
+																<option value='${team.responderLocationId.org.orgName}' ${selected?"selected='selected'":""}>${team.responderLocationId.org.orgName}</option>
+															</c:if>
+															
+															<c:if test="${team.responderLocationId.id == loginOrgLocId}">
+																<c:set var="selected" value="false"></c:set>
+																<c:forEach items="${jobFair.selectedClient.split(',')}" var="clientName">
+																	<c:if test="${clientName eq team.locationId.org.orgName}">
+																		<c:set var="selected" value="true"></c:set>
+																	</c:if>
+																</c:forEach>
+																<option value='${team.locationId.org.orgName}' ${selected?"selected='selected'":""}>${team.locationId.org.orgName}</option>
+															</c:if>
+														</c:forEach>
+													</c:when>
+													<c:otherwise>
+														<c:forEach var="team" items="${add_clientList}">
+															<c:if test="${team.locationId.id == loginOrgLocId}">
+																
+																<option value='${team.responderLocationId.org.orgName}'>${team.responderLocationId.org.orgName}</option>
+															</c:if>
+															
+															<c:if test="${team.responderLocationId.id == loginOrgLocId}">
+																<option value='${team.locationId.org.orgName}'>${team.locationId.org.orgName}</option>
+															</c:if>
+														</c:forEach>
+													</c:otherwise>
+												</c:choose>
 										</select>
 									</div>
 								</div>
@@ -178,10 +206,8 @@
 		<div class="clearfix footerstyelsNew">
 			<div class="col-lg-12">
 				<div class="pull-right">
-					<input value="Save" class="btn btn-success btnSuccess"
-						type="button" onclick="addJobFair();"> <input
-						value="Cancel" class="btn btn-default ml10" type="button"
-						onclick="history.back();">
+					<input value="Save" class="btn btn-success btnSuccess" type="button" onclick="addJobFair();">
+					<input value="Cancel" class="btn btn-default ml10" type="button" onclick="redirectToJobFairsList();">
 				</div>
 			</div>
 		</div>
@@ -194,7 +220,7 @@
 	var dateFormat = '';
 	$(document).ready(function() {
 		$("#clientList").trigger('chosen:update');
-		$('#clientList').find('option:first-child').prop('selected', false).end().trigger('chosen:updated');
+		/* $('#clientList').find('option:first-child').prop('selected', false).end().trigger('chosen:updated'); */
 		
 		$("#requirementsList").trigger('chosen:update');
 		/* $('#requirementsList').find('option:first-child').prop('selected', false).end().trigger('chosen:updated'); */
@@ -418,10 +444,7 @@
 			types : [ 'geocode' ],
 		});
 
-		google.maps.event.addListener(autocomplete, 'place_changed',
-				function() {
-					place = autocomplete.getPlace();
-				});
+		google.maps.event.addListener(autocomplete, 'place_changed', function() { place = autocomplete.getPlace(); });
 	}
 
 	function refreshLocation() {
@@ -469,6 +492,12 @@
 						fairDates : fairDates
 					});
 				});
+				var selectedClients = "";
+				var clients = $("#clientList").val();
+				for(var e in clients) {
+					/* clients.push({name : selectedClients[e]}); */
+					selectedClients += (selectedClients !== "" ? "," : "") + clients[e];
+				}
 				var data = {
 						id: id,
 						name : $("#fairName").val(),
@@ -478,11 +507,11 @@
 						startDate : $("#startDate").val(),
 						endDate : $("#endDate").val(),
 						postedFrom : $("#requirementsTimeRange").val(),
+						selectedClient : selectedClients,
 						notifyTo : $("#notifyTo").val(),
 						requirementJSONData : JSON.stringify(requirements)
 				};
-				$.post(sourceleadUrl + "/storeFairJob?" + tokenParamName + "="
-						+ tokenValue + "", data, function(result) {
+				$.post(sourceleadUrl + "/storeFairJob?" + tokenParamName + "=" + tokenValue + "", data, function(result) {
 					if (result.response === "SESSION_TIMEDOUT") {
 						location.replace(sourceleadUrl);
 					} else if (result.response === "AWKWARD") {
@@ -493,7 +522,7 @@
 						$(".success_pop span").html("JobFair " + (id > 0 ? "updated":"created") + " successfully...");
 						$(".success_pop").show();
 						setTimeout(function() {
-							location.href = sourceleadUrl + "/jobs?viewTab=jobFair";
+							redirectToJobFairsList();
 				 		}, 500);
 					} else if (result.indexOf('Sign In') !== -1) {
 						location.replace(sourceleadUrl);
@@ -510,5 +539,9 @@
 
 	function clearJobFairForm() {
 
+	}
+	
+	function redirectToJobFairsList() {
+		location.href = sourceleadUrl + "/jobs?viewTab=jobFair";
 	}
 </script>
