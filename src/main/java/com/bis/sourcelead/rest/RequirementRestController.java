@@ -238,8 +238,9 @@ public class RequirementRestController {
 		Response<Boolean> response = new Response<>();
 		try {
 			User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+			OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 			if (user != null) {
-				boolean result = requirementService.changeJobFairStatus(jobFairId, status);
+				boolean result = requirementService.changeJobFairStatus(jobFairId, status, user, orgLocation);
 				response.setObject(result);
 				response.setResponse(result ? Result.SUCCESS.name() : Result.FAILED.name());
 				response.setResponseMessage(result ? Result.SUCCESS.getValue() : Result.FAILED.getValue());
