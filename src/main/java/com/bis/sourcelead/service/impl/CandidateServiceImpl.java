@@ -2834,12 +2834,12 @@ private Sheet createXlsSheet(Sheet createExcelsheet, Row writeRow,Candidate cand
 	public List<CandidateMarketPlaceDTO> getGlobalMarketplaceCandListGridCard(String searchValue, OrgLocations orgLocations) {
 		List<CandidateMarketPlace> candidateMarketPlaces = null;
 		List<CandidateMarketPlaceDTO> marketPlaceDTOs = new ArrayList<>();
-		candidateMarketPlaces = candidateDao.getGlobalMarketplaceCandListGridCard(searchValue);
+		candidateMarketPlaces = candidateDao.getGlobalMarketplaceCandListGridCard(orgLocations.getId(), searchValue);
 		if(candidateMarketPlaces != null){
 			for(CandidateMarketPlace marketPlace : candidateMarketPlaces){
 				CandidateMarketPlaceDTO marketPlaceDTO = new CandidateMarketPlaceDTO();
 				BeanUtils.copyProperties(marketPlace, marketPlaceDTO);
-				int count = candidateDao.getMarketCartStatusByMarketIdOrgId(marketPlace.getId(), orgLocations.getId());
+				int count = candidateDao.getMarketCartStatusByMarketIdOrgId(marketPlace.getId(), marketPlace.getOrgLocationId().getId());
 				if(count != 0){
 					marketPlaceDTO.setMarketCartStatus(Constants.ADDED_CART);
 				}

@@ -2311,7 +2311,7 @@ public class CandidateDaoImpl implements CandidateDao {
 
 	@Override
 	@Transactional(rollbackFor = { Exception.class })
-	public List<CandidateMarketPlace> getGlobalMarketplaceCandListGridCard(String searchValue) {
+	public List<CandidateMarketPlace> getGlobalMarketplaceCandListGridCard(Long orgId, String searchValue) {
 		Session session = this.sessionFactory.getCurrentSession();
 		StringBuilder query1 = new StringBuilder("");
 		List<CandidateMarketPlace> queryList = null;
@@ -2324,8 +2324,8 @@ public class CandidateDaoImpl implements CandidateDao {
 			query1.append(" or (marketplace.profilePercentage like '%" + searchValue + "%' ))");
 		}
 			
-		String listQuery = "from CandidateMarketPlace marketplace  where  marketplace.status = 1 and marketplace.candidateMarketStatus IN (:candidateMarketStatus) ";
-		queryList = session.createQuery(listQuery+query1).setParameterList("candidateMarketStatus",new ArrayList<String>(Arrays.asList(Constants.ACTIVE))).list();
+		String listQuery = "from CandidateMarketPlace marketplace  where  marketplace.status = 1 and marketplace.candidateMarketStatus IN (:candidateMarketStatus) and marketplace.orgLocationId.id <> :currentOrgLocId)";
+		queryList = session.createQuery(listQuery+query1).setParameterList("candidateMarketStatus",new ArrayList<String>(Arrays.asList(Constants.ACTIVE))).setParameter("currentOrgLocId", orgId).list();
 		return queryList;
 	}
 	
