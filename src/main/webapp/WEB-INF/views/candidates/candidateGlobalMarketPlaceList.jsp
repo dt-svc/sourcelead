@@ -620,14 +620,14 @@ function getGloblaMarketPlaceCandidates(divType){
 							result = result + '</div>';
 							result = result + '<div class="media-body">';
 							result = result + '<div class="col-md-9">';
-							result = result + ' <h4 class="media-heading mb10"><a href="profileSummary.html">'+object[i].fullName+'</a></h4>';
-							result = result + ' <h5 class="text-muted mb5">'+object[i].designation+'</h5>';
+							result = result + ' <h4 class="media-heading mb10"><a href="profileSummary.html">'+(object[i].fullName == null ? "---" : object[i].fullName)+'</a></h4>';
+							result = result + ' <h5 class="text-muted mb5">'+(object[i].designation == null ? "---" : object[i].designation)+'</h5>';
 							result = result + ' <div class="clearfix"></div>';
 							result = result + '  <ul class="list-unstyled list-inline mt10">';
-							result = result + '    <li class="mr mb5 text-info" title="Current Rate"><span class="paddingRight">'+object[i].currentRateCurrency+'</span>'+object[i].currentRate+'<small class="paddingLeft">/'+object[i].currentRateType+' (Current)</small></li>';
-							result = result + '    <li class="mr mb5 textDanger" title="Expected Rate"><span class="paddingRight">'+object[i].expectedRateCurrencey+'</span>'+object[i].expectedRate+'<small class="paddingLeft">/'+object[i].expectedRateType+' (Expected)</small></li>';
-							result = result + '   <li class="mr mb5" title="Experience"><span class="paddingRight"><i class="fa fa-briefcase text-muted" aria-hidden="true"></i></span>'+(object[i].experienceYears == null ? "0" : object[i].experienceYears )+'.'+(object[i].experienceMonths == null ? "0" : object[i].experienceMonths )+'<small class="text-muted paddingLeft">(Yrs)</small></li>';
-							result = result + '   <li class="mr mb5" title="Location"><span class="paddingRight"><i class="fa fa-map-marker text-muted"></i></span>'+object[i].location+'</li>';
+							result = result + '    <li class="mr mb5 text-info" title="Current Rate"><span class="paddingRight">'+(object[i].currentRateCurrency == null ? "---" : object[i].currentRateCurrency)+'</span>'+(object[i].currentRate == null ? "---" : object[i].currentRate)+'<small class="paddingLeft">/'+(object[i].currentRateType == null ? "---" : object[i].currentRateType)+' (Current)</small></li>';
+							result = result + '    <li class="mr mb5 textDanger" title="Expected Rate"><span class="paddingRight">'+(object[i].expectedRateCurrencey == null ? "---" : object[i].expectedRateCurrencey)+'</span>'+(object[i].expectedRate == null ? "---" : object[i].expectedRate)+'<small class="paddingLeft">/'+(object[i].expectedRateType == null ? "---" : object[i].expectedRateType)+' (Expected)</small></li>';
+							result = result + '   <li class="mr mb5" title="Experience"><span class="paddingRight"><i class="fa fa-briefcase text-muted" aria-hidden="true"></i></span>'+(object[i].experienceYears == null ? "---" : object[i].experienceYears )+'.'+(object[i].experienceMonths == null ? "---" : object[i].experienceMonths )+'<small class="text-muted paddingLeft">(Yrs)</small></li>';
+							result = result + '   <li class="mr mb5" title="Location"><span class="paddingRight"><i class="fa fa-map-marker text-muted"></i></span>'+(object[i].location == null ? "---" : object[i].location)+'</li>';
 							result = result + ' </ul>';
 							result = result + '<div class="clearfix"></div>';
 							if(object[i].skillsName != null){
@@ -647,12 +647,12 @@ function getGloblaMarketPlaceCandidates(divType){
 							result = result + '<div class="clearfix"></div>';
 							result = result + '<div class="clearfix fontSmall">';
 							result = result + '	<h5 class="text-muted mb5 mt5">Description:</h5>';
-							result = result + '	<p>'+object[i].summary+'</p>';
+							result = result + '	<p>'+(object[i].summary == null ? "---" : object[i].summary)+'</p>';
 							result = result + '</div>';
 							result = result + '</div>';
 							result = result + '<div class="col-md-3">';
 							result = result + '<div class="clearfix mt25 textBold">';
-							result = result + '	<label class="text-muted mr">Price : <a>'+object[i].marketRateCurrencey+' '+object[i].marketPrice+'</a></label>';
+							result = result + '	<label class="text-muted mr">Price : <a>'+(object[i].marketRateCurrencey == null ? "---" : object[i].marketRateCurrencey)+' '+(object[i].marketPrice == null ? "---" : object[i].marketPrice)+'</a></label>';
 							result = result + '<div class="clearfix"></div>';
 							result = result + '	<label class="jobSucces_list clearfix mt" id="addCartListModel'+object[i].marketplaceUUID+'">'+marketAddStatus+'</label>';
 							result = result + '</div>';
@@ -681,7 +681,7 @@ function getGloblaMarketPlaceCandidates(divType){
 								marketDelelIcon = "";
 								marketAddStatus = '<a type="button" id="addCartCardModel'+object[i].marketplaceUUID+'" onclick="addCandidateToMarketCart(\''+object[i].marketplaceUUID+'\', \'CardModel\')" class="anchorHighlight">Add</a>';
 							}else if(object[i].marketCartStatus == "In_Cart"){
-								marketDelelIcon = '	<a class="removeSelected mt" title="Remove Selected" onclick="deleteCandidateMarketCart(\''+object[i].marketplaceUUID+'\', \'ListModel\')"><i class="fa fa-trash-o"></i></a>';
+								marketDelelIcon = '	<a class="removeSelected mt" title="Remove Selected" onclick="deleteCandidateMarketCart(\''+object[i].marketplaceUUID+'\', \'CardModel\')"><i class="fa fa-trash-o"></i></a>';
 								marketAddStatus = '<a type="button" id="addedCartCardModel'+object[i].marketplaceUUID+'" class="anchorHighlight anchorHighlightActive">Added</a>';
 							}
 							if(object[i].profilePercentage == null){
@@ -695,7 +695,7 @@ function getGloblaMarketPlaceCandidates(divType){
 							result = result + '<img src="'+object[i].imageUrl+'" onerror="predefineProfileImage(this);" class="media-object" alt="Image">';
 							result = result + '<div class="clearfix mt5 textBold text-center">';
 							result = result + '<div class="text-muted">Rate</div>';
-							result = result + '<div class="jobSucces_list clearfix mt2"><a>'+object[i].marketRateCurrencey+' '+object[i].marketPrice+'</a></div>';
+							result = result + '<div class="jobSucces_list clearfix mt2"><a>'+(object[i].marketRateCurrencey == null ? "---" : object[i].marketRateCurrencey)+' '+(object[i].marketPrice == null ? "---" : object[i].marketPrice)+'</a></div>';
 							result = result + '</div>';
 							result = result + '<div class="clearfix mb"></div>';
 							result = result + '<div class="clearfix text-center" id="addCartCardModelDiv'+object[i].marketplaceUUID+'">'+marketAddStatus+'</div>';
@@ -703,14 +703,14 @@ function getGloblaMarketPlaceCandidates(divType){
 							result = result + '<div class="media-body"><div id="deleteIconCardModel'+object[i].marketplaceUUID+'">';
 							result = result + marketDelelIcon;
 							result = result + '</div><div class="col-md-12 padding_right">';
-							result = result + '<h4 class="media-heading mb0 tbldata-dotdot-me inlineBlock"><a href="profileSummary.html">'+object[i].fullName+'</a></h4>';
+							result = result + '<h4 class="media-heading mb0 tbldata-dotdot-me inlineBlock"><a href="profileSummary.html">'+(object[i].fullName == null ? "---" : object[i].fullName)+'</a></h4>';
 							result = result + '<h5 class="text-muted mb5">'+object[i].designation+'</h5>';
 							result = result + '<div class="clearfix"></div>';
 							result = result + '<ul class="list-unstyled list-inline mt10">';
-							result = result + '<li class="mb10 text-info" title="Current Rate"><span class="paddingRight">'+object[i].currentRateCurrency+'</span>'+object[i].currentRate+'<small class="paddingLeft">/'+object[i].currentRateType+' (Current)</small></li>';
-							result = result + '<li class="mr5 mb10 textDanger" title="Expected Rate"><span class="paddingRight">'+object[i].expectedRateCurrencey+'</span>'+object[i].expectedRate+'<small class="paddingLeft">/'+object[i].expectedRateType+' (Expected)</small></li>';
-							result = result + '<li class="mr mb10" title="Experience"><span class="paddingRight"><i class="fa fa-briefcase text-muted" aria-hidden="true"></i></span>'+(object[i].experienceYears == null ? "0" : object[i].experienceYears )+'.'+(object[i].experienceMonths == null ? "0" : object[i].experienceMonths )+'<small class="text-muted paddingLeft">(Yrs)</small></li>';
-							result = result + '<li class="mr mb10" title="Location"><span class="paddingRight"><i class="fa fa-map-marker text-muted"></i></span>'+object[i].location+'</li>';
+							result = result + '<li class="mb10 text-info" title="Current Rate"><span class="paddingRight">'+(object[i].currentRateCurrency == null ? "---" : object[i].currentRateCurrency)+'</span>'+(object[i].currentRate == null ? "---" : object[i].currentRate)+'<small class="paddingLeft">/'+(object[i].currentRateType == null ? "---" : object[i].currentRateType)+' (Current)</small></li>';
+							result = result + '<li class="mr5 mb10 textDanger" title="Expected Rate"><span class="paddingRight">'+(object[i].expectedRateCurrencey == null ? "---" : object[i].expectedRateCurrencey)+'</span>'+(object[i].expectedRate == null ? "---" : object[i].expectedRate)+'<small class="paddingLeft">/'+(object[i].expectedRateType == null ? "---" : object[i].expectedRateType)+' (Expected)</small></li>';
+							result = result + '<li class="mr mb10" title="Experience"><span class="paddingRight"><i class="fa fa-briefcase text-muted" aria-hidden="true"></i></span>'+(object[i].experienceYears == null ? "---" : object[i].experienceYears )+'.'+(object[i].experienceMonths == null ? "---" : object[i].experienceMonths )+'<small class="text-muted paddingLeft">(Yrs)</small></li>';
+							result = result + '<li class="mr mb10" title="Location"><span class="paddingRight"><i class="fa fa-map-marker text-muted"></i></span>'+(object[i].location == null ? "---" : object[i].location)+'</li>';
 							result = result + '</ul>';
 							if(object[i].skillsName != null){
 								var skills = object[i].skillsName.split(',');
@@ -753,22 +753,20 @@ function predefineProfileImage(imageId, viewModel){
 }
 
 function deleteCandidateMarketCart(candidateMarketUUID, viewModel){
-	//alert(candidateMarketUUID);
 	$.ajax({
 		type : "GET",
 		url : sourceleadUrl + "/deleteCandidateMarketCart?marketUUID="+candidateMarketUUID,
 		success : function(object) {
 			if(viewModel == "ListModel"){
 				$("#deleteIconListModel"+candidateMarketUUID).empty();
-				//$("#addCartListModel"+candidateMarketUUID).show();
+				$("#addCartListModel"+candidateMarketUUID).empty()
 				$("#addCartListModelDiv"+candidateMarketUUID).empty().append('<a type="button" id="addCartListModel'+candidateMarketUUID+'" onclick="addCandidateToMarketCart(\''+candidateMarketUUID+'\', \'ListModel\')" class="anchorHighlight">Add</a>');
 			}
 			if(viewModel == "CardModel"){
 				$("#deleteIconCardModel"+candidateMarketUUID).empty();
-				//$("#addCartListModel"+candidateMarketUUID).show();
+				$("#addCartCardModel"+candidateMarketUUID).empty()
 				$("#addCartCardModelDiv"+candidateMarketUUID).empty().append('<a type="button" id="addCartCardModel'+candidateMarketUUID+'" onclick="addCandidateToMarketCart(\''+candidateMarketUUID+'\', \'CardModel\')" class="anchorHighlight">Add</a>');
 			}
-			//alert(object);
 		}
 	}); 
 }
@@ -780,7 +778,6 @@ function addCandidateToMarketCart(UUID, viewModel) {
    $.ajax({
         url: sourceleadUrl + "/addCandidateToMarketCart?id="+UUID,
         type: "GET",
-        //data: id,
         success: function (response) {
         	if(response=="success"){
         		if(viewModel=="ListModel"){
@@ -793,7 +790,6 @@ function addCandidateToMarketCart(UUID, viewModel) {
 	        		$("#addCartCardModelDiv"+UUID).empty().append('<a type="button" id="addedCartCardModel'+UUID+'" class="anchorHighlight anchorHighlightActive">Added</a>');
 	        		$("#deleteIconCardModel"+UUID).empty().append('<a class="removeSelected mt" title="Remove Selected" onclick="deleteCandidateMarketCart(\''+UUID+'\',\''+viewModel+'\')"><i class="fa fa-trash-o"></i></a>');
         		}
-        		//alert("success");
         	}
         }
     });
