@@ -545,7 +545,7 @@
 
 <script>
 	function loadEmployeePayrollCost() {
-		//$("#employeeCostSearch").show();
+		$("#employeeCostSearch").show();
 		$("#wageTaxSearch").hide();
 		$("#accountDedSearch").hide();
 		$("#hrDedSearch").hide();
@@ -662,6 +662,7 @@
 									{
 										"targets" : colIndex++,
 										"data" : "fromDate",
+										"sortable": false,
 										"render" : function(data, type, opt,
 												meta) {
 											var result = "";
@@ -675,6 +676,7 @@
 									{
 										"targets" : colIndex++,
 										"data" : "toDate",
+										"sortable": false,
 										"render" : function(data, type, opt,
 												meta) {
 											var result = "";
@@ -689,6 +691,7 @@
 									{
 										"targets" : colIndex++,
 										"data" : "employeeId",
+										"sortable" : false,
 										"render" : function(data, type, opt,
 												meta) {
 											var result = "";
@@ -715,6 +718,7 @@
 									{
 										"targets" : colIndex++,
 										"data" : "ssn",
+										"sortable" : false,
 										"render" : function(data, type, opt,
 												meta) {
 											var result = "";
@@ -735,6 +739,7 @@
 									{
 										"targets" : colIndex++,
 										"data" : "totalHrs",
+										"sortable" : false,
 										"render" : function(data, type, opt,
 												meta) {
 											var result = "";
@@ -755,6 +760,7 @@
 									{
 										"targets" : colIndex++,
 										"data" : "grossWages",
+										"sortable" : false,
 										"render" : function(data, type, opt,
 												meta) {
 											var result = "";
@@ -768,6 +774,7 @@
 									{
 										"targets" : colIndex++,
 										"data" : "fica",
+										"sortable" : false,
 										"render" : function(data, type, opt,
 												meta) {
 											var result = "";
@@ -780,6 +787,7 @@
 									{
 										"targets" : colIndex++,
 										"data" : "futa",
+										"sortable" : false,
 										"render" : function(data, type, opt,
 												meta) {
 											var result = "";
@@ -792,6 +800,7 @@
 									{
 										"targets" : colIndex++,
 										"data" : "sui",
+										"sortable" : false,
 										"render" : function(data, type, opt,
 												meta) {
 											var result = "";
@@ -804,6 +813,7 @@
 									{
 										"targets" : colIndex++,
 										"data" : "erLocals",
+										"sortable" : false,
 										"render" : function(data, type, opt,
 												meta) {
 											var result = "";
@@ -817,6 +827,7 @@
 									{
 										"targets" : colIndex++,
 										"data" : "wcCost",
+										"sortable" : false,
 										"render" : function(data, type, opt,
 												meta) {
 											var result = "";
@@ -830,6 +841,7 @@
 									{
 										"targets" : colIndex++,
 										"data" : "adminFee",
+										"sortable" : false,
 										"render" : function(data, type, opt,
 												meta) {
 											var result = "";
@@ -843,6 +855,7 @@
 									{
 										"targets" : colIndex++,
 										"data" : "totalErCost",
+										"sortable" : false,
 										"render" : function(data, type, opt,
 												meta) {
 											var result = "";
@@ -856,6 +869,7 @@
 									{
 										"targets" : colIndex++,
 										"data" : "action",
+										"sortable" : false,
 										"render" : function(data, type, opt, meta) {
 											var result = "";
 											result = result + '<td><div><i class="glyphicon glyphicon-trash" onclick="deletePayrollEntity(\''+opt.uuid+'\',\'EmployeePayrollCost\')"></i></div></td>';
