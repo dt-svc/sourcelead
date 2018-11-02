@@ -227,7 +227,7 @@ public interface RequirementService {
     
     public JobFairDTO getJobFairByUUID(String uuid);
     
-    public boolean changeJobFairStatus(Long jobFairId, int status);
+    public boolean changeJobFairStatus(Long jobFairId, int status, User user, OrgLocations orgLocation);
 
 	public List<JobFair> getJobFairsListByRequirementId(Long requirementId);
 

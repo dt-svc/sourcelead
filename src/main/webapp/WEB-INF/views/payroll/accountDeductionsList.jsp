@@ -93,6 +93,7 @@ function accountDeductionsPagination(url){
         "columnDefs": [ {
 	    	  	"targets": colIndex++,
 	    	  	"data": "employeeId",
+	    	  	"sortable": false,
 	    	  	"render": function(data, type, opt, meta) {
 	    	  		  var result = "";
 			    	  if(opt.employeeId !=null && opt.employeeId !='' && opt.employeeId !='undefined'){
@@ -118,6 +119,7 @@ function accountDeductionsPagination(url){
 	          },{
             "targets": colIndex++,
             "data": "fromDate",
+            "sortable": false,
             "render": function ( data, type, opt, meta ) {
             	var result = "";
             	if(opt.fromDateStr !=null && opt.fromDateStr !='' && opt.fromDateStr !='undefined'){
@@ -130,6 +132,7 @@ function accountDeductionsPagination(url){
           }, {
               "targets": colIndex++,
               "data": "toDate",
+              "sortable": false,
               "render": function ( data, type, opt, meta ) {
             	  var result = "";
             	  if(opt.toDateStr !=null && opt.toDateStr !='' && opt.toDateStr !='undefined'){
@@ -142,6 +145,7 @@ function accountDeductionsPagination(url){
             }, {
                 "targets": colIndex++,
                 "data": "dedAmount",
+                "sortable": false,
                 "render": function ( data, type, opt, meta ) {
                 		var result = "";
                 		 if(opt.dedAmount !=null && opt.dedAmount !='' && opt.dedAmount !='undefined'){
@@ -172,6 +176,7 @@ function accountDeductionsPagination(url){
 	    	  },{
 	    	  	"targets": colIndex++,
 	    	  	"data": "requestSubDate",
+	    	  	"sortable": false,
 	    	  	"render": function(data, type, opt, meta) {
 	    	  		var result = "";
 	    	  		if(opt.requestSubDate !=null && opt.requestSubDate !='' && opt.requestSubDate !='undefined'){
@@ -184,6 +189,7 @@ function accountDeductionsPagination(url){
 	    	  }, {
                   "targets": colIndex++,
                   "data": "requestApprovedDate",
+                  "sortable": false,
                   "render": function ( data, type, opt, meta ) {
                 	  var result = "";
                 	  if(opt.requestApprovedDate !=null && opt.requestApprovedDate !='' && opt.requestApprovedDate !='undefined'){
@@ -196,6 +202,7 @@ function accountDeductionsPagination(url){
                 },{
                     "targets": colIndex++,
                     "data": "repaidStatus",
+                    "sortable": false,
                     "render": function ( data, type, opt, meta ) {
                     	var result = "";
                     	if(opt.repaidStatus !=null && opt.repaidStatus !='' && opt.repaidStatus !='undefined'){
@@ -209,6 +216,7 @@ function accountDeductionsPagination(url){
   				{
   					"targets" : colIndex++,
   					"data" : "action",
+  					"sortable": false,
   					"render" : function(data, type, opt, meta) {
   						var result = "";
   						result = result + '<td><div><i class="glyphicon glyphicon-trash" onclick="deletePayrollEntity(\''+opt.uuid+'\',\'AccountDeductions\')"></i></div></td>';
@@ -217,7 +225,7 @@ function accountDeductionsPagination(url){
   				} ], 
 	    	"scrollCollapse": false,
 	    	"lengthMenu": [[10, 15, 20], [10, 15, 20]],
-	    	"aaSorting": [[0,'desc']],
+	    	"aaSorting": [[1,'desc']],
 	    	"bLengthChange": true,
 	    	"bDestroy": true,
 	    	"ordering": true,
