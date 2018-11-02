@@ -364,9 +364,9 @@ public class UserServiceImpl implements UserService {
 	    
 	    
 	    //For saving the User Role 
-	    if(StringUtils.isNotBlank(candidateDTO.getAssociateId())){
+	    if(StringUtils.isNotBlank(candidateDTO.getAssociateId()) && user != null && user.getId() != null){
 	    	 userRole = getUserRoleEditDetails(addUserDTO,user,loginuser.getUserCode(),orgLocations.getId());
-	    }else {
+	    } else {
 	    	
     	   userRole = userRoleService.getUserDetailsByEmailAndLocationId(addUserDTO.getEmail(),orgLocations.getId());
 	   	   if(userRole == null){

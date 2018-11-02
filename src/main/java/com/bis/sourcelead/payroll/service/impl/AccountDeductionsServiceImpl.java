@@ -422,8 +422,9 @@ public class AccountDeductionsServiceImpl implements AccountDeductionsService{
 			 if(invoiceDataList !=null && invoiceDataList.size() >0){
 				 if("Employee".equalsIgnoreCase(loginUserRole)){
 					 payRateIncome = invoiceDataList.stream().filter(i->i.getPayRate() !=null && "Paid".equalsIgnoreCase(i.getArPaid())).mapToDouble(i->Double.parseDouble(i.getPayRate())*Double.parseDouble(i.getQty())).sum();
-				 }else{
+				 }else if("Admin".equalsIgnoreCase(loginUserRole)){
 					 billRateIncome = invoiceDataList.stream().filter(i->(i.getAmount() !=null && "Paid".equalsIgnoreCase(i.getArPaid()))).mapToDouble(i-> Double.parseDouble(i.getAmount())).sum();
+					 payRateIncome = invoiceDataList.stream().filter(i->i.getPayRate() !=null && "Paid".equalsIgnoreCase(i.getArPaid())).mapToDouble(i->Double.parseDouble(i.getPayRate())*Double.parseDouble(i.getQty())).sum();
 				 }
 				 due = invoiceDataList.stream().filter(i->(i.getAmount() !=null && "Unpaid".equalsIgnoreCase(i.getArPaid()))).mapToDouble(i-> Double.parseDouble(i.getAmount())).sum();
 			 }
@@ -470,8 +471,9 @@ public class AccountDeductionsServiceImpl implements AccountDeductionsService{
 		}
 		 if("Employee".equalsIgnoreCase(loginUserRole)){
 			 payrollBalance.setIncome(df.format(payRateIncome));
-		 }else{
+		 }else if("Admin".equalsIgnoreCase(loginUserRole)){
 			 payrollBalance.setIncome(df.format(billRateIncome));
+			 payrollBalance.setEmpIncome(df.format(payRateIncome));
 		 }
 		payrollBalance.setDirectDepositGross(df.format(directDepositGross));
 		payrollBalance.setDirectDepositNet(df.format(directDepositNet));
@@ -489,21 +491,30 @@ public class AccountDeductionsServiceImpl implements AccountDeductionsService{
 		double deductionTotal = directDepositGross + actualChecksDepositedNet + manualAdvance + generalExpenses + vendorPayment + healthcareInsurance + immigration + directDepositAdvanceNegetive;
 		//
 		double total =0;
+		double empTotal =0;
 		 if("Employee".equalsIgnoreCase(loginUserRole)){
 			 total = payRateIncome + directDepositDeductionPositive;
 		 }else{
 			 total = billRateIncome + directDepositDeductionPositive;
+			 empTotal = payRateIncome + directDepositDeductionPositive;
 		 }
 		double balance = total - deductionTotal;
+		double empBalance = empTotal - deductionTotal;
 		//
 		double billed = 0;
+		double empBilled = 0;
 		if("Employee".equalsIgnoreCase(loginUserRole)){
 			billed = payRateIncome + due;
-		}else{
+		}else if("Admin".equalsIgnoreCase(loginUserRole)){
 			billed = billRateIncome + due;
+			empBilled = payRateIncome + due;
 		}
 		payrollBalance.setBalance(String.valueOf(Math.round(balance * 100D) / 100D));
 		payrollBalance.setBilled(String.valueOf(Math.round(billed * 100D) / 100D));
+		
+		payrollBalance.setEmpBalance(String.valueOf(Math.round(empBalance * 100D) / 100D));
+		payrollBalance.setEmpBilled(String.valueOf(Math.round(empBilled * 100D) / 100D));
+		
 		return payrollBalance;
 	}
 

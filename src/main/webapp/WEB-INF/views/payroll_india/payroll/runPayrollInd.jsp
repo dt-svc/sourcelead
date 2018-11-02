@@ -40,6 +40,26 @@
 		highlight('initiatePayrollLi');
 	});
 </script> 
+
+<script>
+function employeePayrollList(uuid){
+	var sourceleadUrl ='${SourceLeadWeb_sourceleadUrl}';
+    /* $("#loadTime").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:60% center; background-repeat:no-repeat; background-size:75px;');
+	   $.ajax({
+	          type : "POST",
+	      	  url: sourceleadUrl+"/employeePayrollList",		
+		      success :function(data) {
+		    	  $("#runPayRollTabsContent").empty();
+		  		  $("#runPayRollTabsContent").append(data);
+		    	  $("#loadTime").removeAttr('style');
+		      }
+	    }); */
+	   
+	   
+	   $(location).attr('href', 'employeePayrollList?paySheetFrequencyUUID='+uuid+'');
+}
+</script>
+
  <script>
 	function initiatePayrollDiv(){ 
 	               var sourceleadUrl ='${SourceLeadWeb_sourceleadUrl}';
@@ -110,26 +130,27 @@ function payrollDiv(){
 							}),
 							
 							"columns" : [ {
-								"data" : "Pay run id"
+								"data" : "payRunId"
 							}, {
-								"data" : "Group Name"
+								"data" : "groupName"
 							}, {
-								"data" : "Pay Period"
+								"data" : "frequencyStartDate"
 							}, {
-								"data" : "Pay Date"
+								"data" : "payCheckDate"
 							},{
-								"data" : "Type"
+								"data" : "type"
 							},{
 								"data" : "total"
 							}, {
-								"data" : "status"
+								"data" : "approverStatus"
 							}],
 							
 							
 							 "columnDefs" : [
 									{
 										"targets" : colIndex++,
-										"data" : "Pay run id",
+										"data" : "payRunId",
+										"sortable": true,
 										"render" : function(data, type, opt,meta) {
 											var result = "";
 											if(opt.payRunId != null && opt.payRunId != '' && opt.payRunId !='undefined'){
@@ -142,7 +163,8 @@ function payrollDiv(){
 										}
 									},{
 										"targets" : colIndex++,
-										"data" : "Group Name",
+										"data" : "groupName",
+										"sortable": true,
 										"render" : function(data, type, opt,meta) {
 											var result = "";
 											if(opt.groupName != null && opt.groupName != '' && opt.groupName !='undefined'){
@@ -154,7 +176,8 @@ function payrollDiv(){
 										}
 									},{
 										"targets" : colIndex++,
-										"data" : "Pay Period",
+										"data" : "frequencyStartDate",
+										"sortable": true,
 										"render" : function(data, type, opt,meta) {
 											var result = "";
 											if(opt.payPeriod != null && opt.payPeriod != '' && opt.payPeriod !='undefined'){
@@ -167,7 +190,8 @@ function payrollDiv(){
 									},
 									{
 										"targets" : colIndex++,
-										"data" : "Pay Date",
+										"data" : "payCheckDate",
+										"sortable": true,
 										"render" : function(data, type, opt,meta) {
 											var result = "";
 											if(opt.payDate != null && opt.payDate != '' && opt.payDate !='undefined'){
@@ -181,7 +205,8 @@ function payrollDiv(){
 									},
 									{
 										"targets" : colIndex++,
-										"data" : "Type",
+										"data" : "type",
+										"sortable": false,
 										"render" : function(data, type, opt,meta) {
 											var result = "";
 											if(opt.payPeriod != null && opt.payPeriod != '' && opt.payPeriod !='undefined'){
@@ -194,7 +219,8 @@ function payrollDiv(){
 									},
 									{
 										"targets" : colIndex++,
-										"data" : "Total",
+										"data" : "total",
+										"sortable": false,
 										"render" : function(data, type, opt,meta) {
 											var result = "";
 											if(opt.total != null && opt.total != '' && opt.total !='undefined'){
@@ -207,7 +233,8 @@ function payrollDiv(){
 										
 									},{
 										"targets" : colIndex++,
-										"data" : "Status",
+										"data" : "approverStatus",
+										"sortable": true,
 										"render" : function(data, type, opt,meta) {
 											var result = "";
 											if(opt.approverStatus != null && opt.approverStatus != '' && opt.approverStatus !='undefined'){
@@ -281,25 +308,6 @@ function highlight(id) {
 	$("#tabs-menu>ul>li.active").removeClass("active");
     $("#"+id).addClass("active");
 } 
-</script>
-
-<script>
-function employeePayrollList(uuid){
-	var sourceleadUrl ='${SourceLeadWeb_sourceleadUrl}';
-    /* $("#loadTime").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:60% center; background-repeat:no-repeat; background-size:75px;');
-	   $.ajax({
-	          type : "POST",
-	      	  url: sourceleadUrl+"/employeePayrollList",		
-		      success :function(data) {
-		    	  $("#runPayRollTabsContent").empty();
-		  		  $("#runPayRollTabsContent").append(data);
-		    	  $("#loadTime").removeAttr('style');
-		      }
-	    }); */
-	   
-	   
-	   $(location).attr('href', 'employeePayrollList?paySheetFrequencyUUID='+uuid+'');
-}
 </script>
 
 

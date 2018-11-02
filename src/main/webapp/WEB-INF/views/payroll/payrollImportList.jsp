@@ -17,8 +17,10 @@
 			</h2>
 		</div>
 		<div class="success_pop" id="selector1" style="display: none;"><i class="fa fa-check-circle"></i><span id="msgDiv"></span></div>
+		
 		<div class="pull-right brud-crum">
-			<a href="<c:url value='${appPath}/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home </a> &raquo; Payroll
+			<a href="<c:url value='${appPath}/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a>&raquo; <a
+				href="<c:url value='${appPath}/payrollConfiguration'/>"> Payroll Configuration</a>&raquo; Payroll
 		</div>
 	</section>
 	
@@ -103,6 +105,44 @@
 		<div
 			class="project_tabs_inn_table vendor_wrap_inn_table dataFilterNew">
 			<div id="loading"></div>
+		<div class='reportHead' id="employeeCostSearch">
+		  <ul class='pull-right'>
+		  <li><input type='text' placeholder='Search' class='repSearchBar' id='employeeDataTableSearch'/>
+		  <span class='repSearchIcon' onClick='employeeDataSearch();'></span></li>
+		  </ul>
+		</div>
+		  <div class='reportHead' id="wageTaxSearch">
+		 <ul class='pull-right'>
+		 <li><input type='text' placeholder='Search' class='repSearchBar' id='dataTableSearch'/><span class='repSearchIcon' 
+		 onClick='dataTableSearch()'></span></li>
+		</ul>
+		</div>
+		<div class='reportHead' id="accountDedSearch">
+		<ul class='pull-right'>
+		<li><input type='text' placeholder='Search' class='repSearchBar' id='accountDataTableSearch'/><span class='repSearchIcon' 
+		onClick='accountDataTableSearch();'></span></li>
+		</ul>
+		</div>
+		 <div class='reportHead' id="hrDedSearch">
+		 <ul class='pull-right'>
+		<li><input type='text' placeholder='Search' class='repSearchBar' id='hrDataTableSearch'/><span class='repSearchIcon' 
+		onClick='hrDataTableSearch();'></span></li>
+		</ul>
+		</div>
+		<div class='reportHead' id="checksSearch">
+	    <ul class='pull-right'>
+		<li><input type='text' placeholder='Search' class='repSearchBar' id='checksDataTableSearch'/><span class='repSearchIcon' 
+		onClick='checksDataTableSearch();'></span></li>
+		</ul>
+		</div>
+		
+		<div class='reportHead' id="invoiceDataSearch">
+		<ul class='pull-right'>
+		<li><input type='text' placeholder='Search' class='repSearchBar' id='invoiceDataTableSearch'/>
+		<span class='repSearchIcon' onClick='invoiceDataTableSearch();'></span></li>
+		</ul>
+		</div>
+		
 			<div id="employerCostDiv" class="datatable_filter"></div>
 			<div id="wagesAndTaxListDiv" class="datatable_filter"></div>
 			<div id="accountDeductionsListDiv" class="datatable_filter"></div>
@@ -505,6 +545,13 @@
 
 <script>
 	function loadEmployeePayrollCost() {
+		$("#employeeCostSearch").show();
+		$("#wageTaxSearch").hide();
+		$("#accountDedSearch").hide();
+		$("#hrDedSearch").hide();
+		$("#checksSearch").hide();
+		$("#invoiceDataSearch").hide();
+		
 		var sourceleadUrl = '${sourceleadUrl}';
 		var searchValue = $("#employeeDataTableSearch").val();
 		var orgLocationId = '${SourceLeadWeb_orgLocationId}';
@@ -534,11 +581,11 @@
 		$("#payrollCycleDiv").find('p.jquery_form_error_message').remove();
 		$('#payrollCycle').val('').trigger("chosen:updated");
 		var result = "";
- 		result = result +" <div class='reportHead'>";
+ 		/* result = result +" <div class='reportHead'>";
 		result = result + " <ul class='pull-right'>";
 		result = result + " <li><input type='text' placeholder='Search' class='repSearchBar' id='employeeDataTableSearch'/><span class='repSearchIcon' onClick='employeeDataSearch();'></span></li>";
 		result = result + "</ul>";
-		result = result + "</div>"; 
+		result = result + "</div>";  */
 		result = result + '<table id="employeePayrollTable" class="display" cellspacing="0" width="100%" >';
 		result = result + '<thead>';
 		result = result + '<tr>';
@@ -615,6 +662,7 @@
 									{
 										"targets" : colIndex++,
 										"data" : "fromDate",
+										"sortable": false,
 										"render" : function(data, type, opt,
 												meta) {
 											var result = "";
@@ -628,6 +676,7 @@
 									{
 										"targets" : colIndex++,
 										"data" : "toDate",
+										"sortable": false,
 										"render" : function(data, type, opt,
 												meta) {
 											var result = "";
@@ -642,6 +691,7 @@
 									{
 										"targets" : colIndex++,
 										"data" : "employeeId",
+										"sortable" : false,
 										"render" : function(data, type, opt,
 												meta) {
 											var result = "";
@@ -668,6 +718,7 @@
 									{
 										"targets" : colIndex++,
 										"data" : "ssn",
+										"sortable" : false,
 										"render" : function(data, type, opt,
 												meta) {
 											var result = "";
@@ -688,6 +739,7 @@
 									{
 										"targets" : colIndex++,
 										"data" : "totalHrs",
+										"sortable" : false,
 										"render" : function(data, type, opt,
 												meta) {
 											var result = "";
@@ -708,6 +760,7 @@
 									{
 										"targets" : colIndex++,
 										"data" : "grossWages",
+										"sortable" : false,
 										"render" : function(data, type, opt,
 												meta) {
 											var result = "";
@@ -721,6 +774,7 @@
 									{
 										"targets" : colIndex++,
 										"data" : "fica",
+										"sortable" : false,
 										"render" : function(data, type, opt,
 												meta) {
 											var result = "";
@@ -733,6 +787,7 @@
 									{
 										"targets" : colIndex++,
 										"data" : "futa",
+										"sortable" : false,
 										"render" : function(data, type, opt,
 												meta) {
 											var result = "";
@@ -745,6 +800,7 @@
 									{
 										"targets" : colIndex++,
 										"data" : "sui",
+										"sortable" : false,
 										"render" : function(data, type, opt,
 												meta) {
 											var result = "";
@@ -757,6 +813,7 @@
 									{
 										"targets" : colIndex++,
 										"data" : "erLocals",
+										"sortable" : false,
 										"render" : function(data, type, opt,
 												meta) {
 											var result = "";
@@ -770,6 +827,7 @@
 									{
 										"targets" : colIndex++,
 										"data" : "wcCost",
+										"sortable" : false,
 										"render" : function(data, type, opt,
 												meta) {
 											var result = "";
@@ -783,6 +841,7 @@
 									{
 										"targets" : colIndex++,
 										"data" : "adminFee",
+										"sortable" : false,
 										"render" : function(data, type, opt,
 												meta) {
 											var result = "";
@@ -796,6 +855,7 @@
 									{
 										"targets" : colIndex++,
 										"data" : "totalErCost",
+										"sortable" : false,
 										"render" : function(data, type, opt,
 												meta) {
 											var result = "";
@@ -809,6 +869,7 @@
 									{
 										"targets" : colIndex++,
 										"data" : "action",
+										"sortable" : false,
 										"render" : function(data, type, opt, meta) {
 											var result = "";
 											result = result + '<td><div><i class="glyphicon glyphicon-trash" onclick="deletePayrollEntity(\''+opt.uuid+'\',\'EmployeePayrollCost\')"></i></div></td>';
@@ -831,13 +892,14 @@
 		$("#employeePayrollTable").wrap(
 				"<div style='overflow-x: auto; overflow-y: hidden;'></div>");
 		$("input[type=search]").hide();
-		$("#employeeDataTableSearch").keyup(function(e) {
-			if (e.which === 13) {
-				loadEmployeePayrollCost();
-			}
-		});
-		
 	}
+	
+	$("#employeeDataTableSearch").keyup(function(e) {
+		if (e.which === 13) {
+			loadEmployeePayrollCost();
+		}
+	});
+	
 	function employeeDataSearch(){
 		loadEmployeePayrollCost();
 	}
