@@ -322,12 +322,12 @@ function checksPagination(url){
     } );
     $("#checksListTable").wrap("<div style='overflow-x: auto; overflow-y: hidden;'></div>"); 
     $("input[type=search]").hide();
-    $("#checksDataTableSearch").keyup(function(e) {
-    	   if(e.which === 13) {
-    		   bisChecksList();
-    	   }
-    	});
 }
+$("#checksDataTableSearch").keyup(function(e) {
+	   if(e.which === 13) {
+		   bisChecksList();
+	   }
+	});
 function checksDataTableSearch(){
 	bisChecksList();
 }

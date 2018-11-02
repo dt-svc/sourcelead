@@ -878,13 +878,14 @@
 		$("#employeePayrollTable").wrap(
 				"<div style='overflow-x: auto; overflow-y: hidden;'></div>");
 		$("input[type=search]").hide();
-		$("#employeeDataTableSearch").keyup(function(e) {
-			if (e.which === 13) {
-				loadEmployeePayrollCost();
-			}
-		});
-		
 	}
+	
+	$("#employeeDataTableSearch").keyup(function(e) {
+		if (e.which === 13) {
+			loadEmployeePayrollCost();
+		}
+	});
+	
 	function employeeDataSearch(){
 		loadEmployeePayrollCost();
 	}

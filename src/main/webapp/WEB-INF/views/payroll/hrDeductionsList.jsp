@@ -230,12 +230,13 @@ function hrDeductionsPagination(url){
     } );
     $("#hrDeductionsPagination").wrap("<div style='overflow-x: auto; overflow-y: hidden;'></div>"); 
     $("input[type=search]").hide();
-    $("#hrDataTableSearch").keyup(function(e) {
-    	   if(e.which === 13) {
-    		   hrDeductionsList();
-    	   }
-    	});
+   
 }
+$("#hrDataTableSearch").keyup(function(e) {
+	   if(e.which === 13) {
+		   hrDeductionsList();
+	   }
+	});
 function hrDataTableSearch(){
 	hrDeductionsList();
 }

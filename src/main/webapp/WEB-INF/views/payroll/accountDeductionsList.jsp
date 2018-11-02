@@ -229,12 +229,13 @@ function accountDeductionsPagination(url){
     } );
     $("#accountDeductionsPagination").wrap("<div style='overflow-x: auto; overflow-y: hidden;'></div>"); 
     $("input[type=search]").hide();
-    $("#accountDataTableSearch").keyup(function(e) {
-    	   if(e.which === 13) {
-    	   accountDeductionsList();
-    	   }
-    	});
 }
+
+$("#accountDataTableSearch").keyup(function(e) {
+	   if(e.which === 13) {
+	   accountDeductionsList();
+	   }
+	});
 function accountDataTableSearch(){
 	accountDeductionsList();
 }

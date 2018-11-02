@@ -301,12 +301,13 @@ function invoiceDetailsPagination(url){
     } );
     $("#invoiceDetailsPagination").wrap("<div style='overflow-x: auto; overflow-y: hidden;'></div>"); 
     $("input[type=search]").hide();
-    $("#invoiceDataTableSearch").keyup(function(e) {
-    	   if(e.which === 13) {
-    		 getInvoiceDetails();
-    	   }
-    	});
 }
+
+$("#invoiceDataTableSearch").keyup(function(e) {
+	   if(e.which === 13) {
+		 getInvoiceDetails();
+	   }
+	});
 function invoiceDataTableSearch(){
 	getInvoiceDetails();
 }
