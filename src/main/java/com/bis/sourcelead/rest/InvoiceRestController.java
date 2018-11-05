@@ -368,7 +368,7 @@ creditDebitNoteDTO.setSortColumn(tableColumns[sortColumnIndex]);
 creditDebitNoteDTO.setSortOrder(sortColumnOrder);
 
 Timezone timezone = timeZoneService.getTimezone(orgLocations.getTimezone().getId());
-DateTime zoned = new DateTime();
+DateTime zoned = new DateTime(commonUtil.orgLocationCommonDate(new Date(), orgLocations)); //get date and time based on orglocation
 DateTimeFormatter outputFormatter = DateTimeFormat.forPattern("yyyy-MM-dd HH:mm:ss");
 DateTimeFormatter outputFormatter1 = DateTimeFormat.forPattern("yyyy-MM-dd HH:mm:ss");
 DateFormat TZ_DF_TS = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
@@ -399,6 +399,26 @@ if (null != creditDebitNoteDTO.getDayWiseType() && !"".equals(creditDebitNoteDTO
 		}
 		else if (Constants.ONE_YEAR.equals(creditDebitNoteDTO.getDayWiseType())) {
 			startDateUTC = getPreviousDate(zoned, outputFormatter, TZ_DF_TS, timezone, 365);
+		}
+	}else {
+		if (StringUtils.isNotBlank(creditDebitNoteDTO.getStartDate())
+				&& StringUtils.isNotBlank(creditDebitNoteDTO.getEndDate())
+				&& !"undefined".equalsIgnoreCase(creditDebitNoteDTO.getStartDate())
+				&& !"undefined".equalsIgnoreCase(creditDebitNoteDTO.getEndDate())) {
+			/*DateFormat TZ_DF_CSD = new SimpleDateFormat("yyyy-MM-dd");
+			DateFormat TZ_DF_CED = new SimpleDateFormat("yyyy-MM-dd");*/
+			Date startTime = commonUtil.orgLocationDateFormat(orgLocations.getDateFormat(), creditDebitNoteDTO.getStartDate());
+			Date endTime = commonUtil.orgLocationDateFormat(orgLocations.getDateFormat(), creditDebitNoteDTO.getEndDate());
+			DateTime zoned1 = new DateTime(commonUtil.orgLocationCommonDate(startTime, orgLocations)); //get date and time based on orglocation
+			DateTime zoned2 = new DateTime(commonUtil.orgLocationCommonDate(endTime, orgLocations)); //get date and time based on orglocation
+			
+			String customStartTimeStr = outputFormatter.print(zoned1);
+			String customEndTimeStr = outputFormatter1.print(zoned2);
+			startDateUTC = TZ_DF_TS.parse(customStartTimeStr);
+			endDateUTC = TZ_DF_TS.parse(customEndTimeStr);
+		}
+		else {
+			startDateUTC = getPreviousDate(zoned, outputFormatter, TZ_DF_TS, timezone, 30);
 		}
 	}
 	
@@ -948,9 +968,9 @@ return responseList;
 							for(String ownerUserId : ownerUsers){
 								User ownerUser = userService.getUserById(Long.parseLong(ownerUserId.trim()));
 								if(ownerUser.getLastName() != null){
-									ownerUserName = ownerUserName.append(ownerUser.getFirstName()).append(" ").append(ownerUser.getLastName()).append(", ");
+									ownerUserName = ownerUserName.append(ownerUser.getFirstName()).append(" ").append(ownerUser.getLastName()).append("- ").append(ownerUser.getEmail()).append(", ").append("\n");
 								}else{
-									ownerUserName = ownerUserName.append(ownerUser.getFirstName()).append(", ");
+									ownerUserName = ownerUserName.append(ownerUser.getFirstName()).append("- ").append(ownerUser.getEmail()).append(", ").append("\n");
 								}
 								if(ownerUser.getEmail() != null){
 									ownerUserEmail = ownerUserEmail.append(ownerUser.getEmail()).append(", ");
@@ -1114,10 +1134,11 @@ return responseList;
 	@RequestMapping(value = "/getProjectFrequency", method = RequestMethod.GET)
 	public @ResponseBody ResponseList<String> getProjectFrequency(@RequestParam(value = "projectId", required = false) Long projectId, HttpServletRequest request) throws Exception
 	{
+		OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 		ResponseList<String> responseList = new ResponseList<>();
 		Projects projects = projectsService.getProjectById(projectId);
 		List<String> frequencyDates = new ArrayList<>();
-		Map<String, String> map = timesheetFrequencyGeneratorUtil.getTimesheetFrequencyListFromProjectInvoiceFrequency(projects);
+		Map<String, String> map = timesheetFrequencyGeneratorUtil.getTimesheetFrequencyListFromProjectInvoiceFrequency(projects,orgLocation);
 		for (Map.Entry<String, String> entry : map.entrySet()) {
 			StringBuffer sb = new StringBuffer();
 			sb.append(entry.getKey().replaceAll("/", "-")).append("/").append(entry.getValue().replaceAll("/", "-"));
@@ -1134,6 +1155,7 @@ return responseList;
 		ResponseList<ProjectMembers> responseList = new ResponseList<>();
 //		String resultJson = "";
 		OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+		OrgRelations orgRelations = orgRelationsService.getOrRelationsById(orgRelationId);
 		String frequencyArray[] = frequency.split("/");
 		String startDateStr = frequencyArray[0];
 		String endDateStr = frequencyArray[1];
@@ -1210,8 +1232,15 @@ return responseList;
 				}
 			}
 			if (projectMembersList.size() > 0) {
+				if(orgRelations.getGenerateInvoice() !=null && orgRelations.getGenerateInvoice().equalsIgnoreCase(Constants.FINANCE_TYPE_INDIVIDUAL)){
+					List<ProjectMembers> projectMembersList1 = new ArrayList<>();
+					projectMembersList1.add(projectMembersList.get(0));
+					responseList.setData(projectMembersList1);	
+				}else{
+					responseList.setData(projectMembersList);	
+				}
 //				resultJson = commonUtil.toJSON(projectMembersList);
-				responseList.setData(projectMembersList);
+				
 			}
 		}
 		return responseList;
@@ -1238,6 +1267,7 @@ return responseList;
 //		String resultJson = "";
 		OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 		String isGlobalAccess = (String) SourceLeadSessionManager.getSessionAttribute(request, "isGlobalAccess");
+		OrgRelations orgRelations = orgRelationsService.getOrRelationsById(orgRelationId);
 		String frequencyArray[] = frequency.split("/");
 		String startDateStr = frequencyArray[0];
 		String endDateStr = frequencyArray[1];
@@ -1318,7 +1348,15 @@ return responseList;
 		}
 		if (filteredMembersList.size() > 0) {
 //			resultJson = commonUtil.toJSON(filteredMembersList);
-			responseList.setData(filteredMembersList);
+			
+			if(orgRelations.getGenerateBill() !=null && orgRelations.getGenerateBill().equalsIgnoreCase(Constants.FINANCE_TYPE_INDIVIDUAL)){
+				List<ProjectMembers> projectMembersList1 = new ArrayList<>();
+				projectMembersList1.add(filteredMembersList.get(0));
+				responseList.setData(projectMembersList1);	
+			}else{
+				responseList.setData(filteredMembersList);	
+			}
+			
 		}
 		// }
 		return responseList;
@@ -2484,6 +2522,18 @@ return responseList;
 		boolean isDeleted = invoiceService.deleteCreditDebitNote(creditDebitUUID, noteType, user,orglocations);
 		
 		return isDeleted;
+	}
+	
+	@RequestMapping(value = "/reactiveCreditDebitNote", method = RequestMethod.POST)
+	@ResponseBody
+	public boolean reactiveCreditDebitNote(@RequestParam(value = "creditDebitUUID", required = false) String creditDebitUUID, 
+			@RequestParam(value = "noteType", required = false) String noteType, HttpServletRequest request) throws Exception
+	{
+		User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+		OrgLocations orglocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+		boolean reactive = invoiceService.reactiveCreditDebitNote(creditDebitUUID, noteType, user,orglocations);
+		
+		return reactive;
 	}
 	
 	@RequestMapping(value = "/deleteLineItemEditModeId", method = RequestMethod.POST)

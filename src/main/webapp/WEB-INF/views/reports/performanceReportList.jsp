@@ -15,6 +15,18 @@
     </section>
     
 <div class="reportNewDash">
+
+ 	<sec:authorize access="hasRole('ROLE_RECRUITERS_REPORT')">
+		<a href='${appPath}/applicantsjoinedlist'>
+			<div class="repDashCta">
+				<span><i class="fa fa-bar-chart"></i></span>
+				<div class="repDashCtaWrap">
+					<h2>Applicants Joined Report</h2><b>View</b>
+				</div>
+			</div>
+		</a>
+	</sec:authorize>
+	
     <sec:authorize access="hasRole('ROLE_RECRUITERS_REPORT')">
 	<a href='${appPath}/recruitersReports'>
 		<div class="repDashCta">
@@ -134,14 +146,14 @@
 	</a>
 	</sec:authorize>
 	
-	<a href="${appPath}/requirementOffersList?&tab=previous&orgLocationId=${orgLocationId}">		
+	 <a href="${appPath}/jobsPerformanceReport">		
 	<div class="repDashCta">
 		<span><i class="fa fa-id-badge"></i></span>
 		<div class="repDashCtaWrap">
-		<h2>Placement Report</h2><b>View</b>
+		<h2>Jobs Report</h2><b>View</b>
 		</div>
 	</div>
-	</a>	
+	</a>
 				
 	<div class="clearfix"></div>	
 </div>

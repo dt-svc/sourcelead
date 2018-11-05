@@ -804,7 +804,6 @@ function getCandidateSelectionType(){
 			        	
 			        	if(json.length == 1){
 			        		var opt = json[0];
-			        		output = output + "<option value=''>-- Select Resume --</option>"; 
 			        		if(opt.title != null && opt.title != 'undefined' && opt.title != ""){
 			        			output = output + "<option value='" +opt.id+ "'>"+opt.title+"</option>";
 			            	}else{
@@ -1038,6 +1037,12 @@ function getCandidateDetails(){
 			        		 getSubmissionCandidateCities(json['city']);
 			        	 }else{
 			        		 $("select[name=city]").val('');
+			        	 }
+			        	 
+			        	 if(json['dateofBirthString'] != null && json['dateofBirthString'] != "" && json['dateofBirthString'] != 'undefined'){
+			        		 $("#DOB").val(json['dateofBirthString']);
+			        	 }else{
+			        		 $("#DOB").val('');
 			        	 }
 			        
 			        	 if(json['noticePeriod'] != null && json['noticePeriod'] != "" && json['noticePeriod'] != 'undefined'){

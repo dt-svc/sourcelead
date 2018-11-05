@@ -104,6 +104,7 @@ gtag('config', 'UA-115098165-1');
 			<ul id="featureshome" class="collapse list-unstyled dropdownmenu-custom">
 				<li><a class="helpbtn" href="/help.html">Help Manuals</a></li>
 				<li><a href="/blog/all.html" id="blogID">Blog</a></li>
+				<li><a href="/blog/allReleaseNote.html" id="releaseNoteID">Release Note</a></li>
 			</ul>
 	</li>
 

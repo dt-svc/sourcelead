@@ -19,13 +19,14 @@
 }
 </style>
 
-<div class="mb col-md-12 clearfix"> 
-      <div class=" dashboard-widget col-md-12 hdrPosition minHeight_225">
-        <h4 class="clearfix">
-        Candidates for Onboarding
-        &nbsp;&nbsp;
-        </h4>
-        <div class="clearfix require_wrap_table dashboard-data filter_position"> 
+<div class="mb clearfix col-md-12 noPad"> 
+      <div class=" dashNewWrap hdrPosition minHeight_225 mb10">
+      
+        	<div class="dashNewWrapHead noBor clearfix">
+				<h4 class="pull-left">Candidates for Onboarding</h4>
+        	</div>
+        
+        <div class="clearfix project_tabs_inn_table dashboard-data newDashPad dataSeaNew"> 
                  <div id="onboardingLoading"></div>
         		 <div id="onboardingCandidatesList"></div>
         		 <div id="rejectedReasonDiv"></div>

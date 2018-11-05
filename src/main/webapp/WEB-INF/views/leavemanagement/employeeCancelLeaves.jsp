@@ -82,7 +82,7 @@ function redirectlocation(location){
 		var userId = '${SourceLeadWeb_userId}';
 		var searchValue = $("#cancelledLeavesTableSearch").val();
 		searchValue = searchValue ? searchValue : "";
-		var url = sourceleadUrl+"/getEmployeeRequestedLeaves?"+tokenParamName+"="+tokenValue+"&searchValue="+searchValue+"&orgLocationId="+orgLocationId+"&userId="+userId+"&leaveStatus=CANCELLED";
+		var url = sourceleadUrl+"/getEmployeeRequestedLeaves?"+tokenParamName+"="+tokenValue+"&orgLocationId="+orgLocationId+"&userId="+userId+"&leaveStatus=CANCELLED&searchValue="+searchValue;
 		prepareCancelledEmployeesList(url);
 }
 </script> 
@@ -140,6 +140,7 @@ function redirectlocation(location){
 	        "columnDefs": [ {
 		    	  	"targets": colIndex++,
 		    	  	"data": "empName",
+// 		    	  	"sortable":false,
 		    	  	"render": function(data, type, opt, meta) {
 		    	  		  var result = "";
 		    	  		result = result + ' <div class="proj_show divmax-width">';
@@ -150,6 +151,7 @@ function redirectlocation(location){
 		      },{
 		    	  "targets": colIndex++,
 	              "data": "leaveType",
+// 	              "sortable":false,
 	              "render": function ( data, type, opt, meta ) {
 	            	   var result = "";
 	            	   result = result + '   <div title="'+opt.leaveType+'" class="tblminwidth-75">'+opt.leaveType+'</div>';
@@ -159,6 +161,7 @@ function redirectlocation(location){
 		          },{
 	            "targets": colIndex++,
 	            "data": "duration",
+	            "sortable":false,
 	            "render": function ( data, type, opt, meta ) {
 	            	 var result = "";
 	            	 result = result + '   <div title="'+opt.duration+'" class="tbldata-dotdot-100">'+opt.duration+'</div>';
@@ -167,6 +170,7 @@ function redirectlocation(location){
 	          }, {
 	              "targets": colIndex++,
 	              "data": "noOfDays",
+	              "sortable":false,
 	              "render": function ( data, type, opt, meta ) {
 	            	   var result = "";
 	            	    result = result + '     <div class="tblminwidth-75">'+opt.appliedNoOfDays+'</div>';		 
@@ -191,6 +195,7 @@ function redirectlocation(location){
 	          }, */{
 		    	  	"targets": colIndex++,
 		    	  	"data": "approvedBy",
+// 		    	  	"sortable":false,
 		    	  	"render": function(data, type, opt, meta) {
 		    	  		var result = "";
 		    	  		if(opt.approvedBy != null && opt.approvedBy !='' && opt.approvedBy !='undefined'){
@@ -203,6 +208,7 @@ function redirectlocation(location){
 		    	  },{
 		    	  	"targets": colIndex++,
 		    	  	"data": "cancelledBy",
+// 		    	  	"sortable":false,
 		    	  	"render": function(data, type, opt, meta) {
 		    	  		var result = "";
 		    	  		 result = result + ' <div title="'+opt.cancelledBy+'" class="tblminwidth-75">'+opt.cancelledBy+'</div>';	
@@ -211,6 +217,7 @@ function redirectlocation(location){
 		    	  },{
 			    	  	"targets": colIndex++,
 			    	  	"data": "cancelReason",
+			    	  	"sortable":false,
 			    	  	"render": function(data, type, opt, meta) {
 			    	  		var result = "";
 			    	  		 result = result + ' <div title="'+opt.cancelReason+'" class="tblminwidth-75">'+opt.cancelReason+'</div>';	
@@ -218,8 +225,9 @@ function redirectlocation(location){
 			    	  	}
 		    	  }], 
 	                "scrollCollapse": false,
-	            	"lengthMenu": [[10, 15, 20, -1], [10, 15, 20, "All"]],
+	            	"lengthMenu": [[10, 15, 20], [10, 15, 20]],
 	            	"bLengthChange": true,
+	            	"aaSorting": [[1,'desc']],
 	            	"bDestroy": true,
 	            	"ordering": true,
 	            	"oLanguage": {

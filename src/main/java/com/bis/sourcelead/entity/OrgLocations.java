@@ -243,6 +243,9 @@ public class OrgLocations implements Serializable{
 	
 	@Column(name = "IS_TIMESHEET_AVG_HOURS_REQUIRED")
     private String isTimesheetAvgHoursRequired;
+	
+	@Column(name = "PROFILE_PERCENTAGE")
+	private Integer profilePercentage;
     
     @Transient
     private String orgName;
@@ -1032,13 +1035,13 @@ public class OrgLocations implements Serializable{
 			return registeredLocation;
 		else{
 			if(StringUtils.isNotEmpty(country) && StringUtils.isEmpty(state) && StringUtils.isEmpty(city)){
-				registeredLocation = country;
+				registeredLocation = orgLocationName+"-"+country;
 			}else if(StringUtils.isNotEmpty(country) && StringUtils.isNotEmpty(state) && StringUtils.isEmpty(city)){
-				registeredLocation = country +" "+state;
+				registeredLocation = orgLocationName+"-"+country +" "+state;
 			}else if(StringUtils.isNotEmpty(country) && StringUtils.isEmpty(state) && StringUtils.isNotEmpty(city)){
-				registeredLocation = country +" "+city;
+				registeredLocation = orgLocationName+"-"+country +" "+city;
 			}else if(StringUtils.isNotEmpty(country) && StringUtils.isNotEmpty(state) && StringUtils.isNotEmpty(city)){
-				registeredLocation = country+" "+state+" "+city;
+				registeredLocation = orgLocationName+"-"+country+" "+state+" "+city;
 			}
 			return registeredLocation;
 		}
@@ -1049,4 +1052,13 @@ public class OrgLocations implements Serializable{
 		this.registeredLocation = registeredLocation;
 	}
 
+	public Integer getProfilePercentage() {
+		return profilePercentage;
+	}
+
+	public void setProfilePercentage(Integer profilePercentage) {
+		this.profilePercentage = profilePercentage;
+	}
+
+	
 }

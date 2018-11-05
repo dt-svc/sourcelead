@@ -15,6 +15,7 @@ import org.apache.commons.lang.exception.ExceptionUtils;
 import org.hibernate.Query;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
+import org.hibernate.Transaction;
 import org.hibernate.transform.Transformers;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -41,6 +42,7 @@ import com.bis.sourcelead.entity.SubmissionCandidateListView;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.entity.UserRole;
 import com.bis.sourcelead.exception.SourceLeadConstraintViolationException;
+import com.bis.sourcelead.service.CandidateService;
 import com.bis.sourcelead.util.CommonUtil;
 import com.bis.sourcelead.util.ReportsUtil;
 
@@ -69,6 +71,9 @@ public class CandidateDaoImpl implements CandidateDao {
 	
 	@Autowired
 	private CommonUtil commonUtil;
+	
+	@Autowired
+	CandidateService candidateService;
 	
 	@Value("${SourceLead.100}")
 	private String notFound;
@@ -1075,7 +1080,7 @@ public class CandidateDaoImpl implements CandidateDao {
 		Session session = this.sessionFactory.getCurrentSession();
 		Candidate candidate = null;
 		try {
-			String query = "from Candidate candidate  where candidate.orgLocationId.id =:orgLocationId and candidate.consultantUser.id= :consultantUserId";
+			String query = "from Candidate candidate left join fetch candidate.orgRelationId where candidate.orgLocationId.id =:orgLocationId and candidate.consultantUser.id= :consultantUserId";
 	        List<Candidate>  candidateList = session.createQuery(query).setLong("orgLocationId", orgLocationId).setLong("consultantUserId", consultantUserId).list();
 			if(null != candidateList && candidateList.size() >0){
 				candidate = candidateList.get(0);
@@ -1873,6 +1878,7 @@ public class CandidateDaoImpl implements CandidateDao {
 					 		 "WHERE  CAND.ORG_LOCATION_ID = OL.ID  AND CAND.STATUS = '1' " + 
 					 		 "AND CAND.ORG_LOCATION_ID = :orgLocationId " + 
 					 		 "AND CAND.ID NOT IN (SELECT SUB.CANDIDATE_ID FROM REQUIREMENT_SUBMISSION SUB WHERE SUB.REQUIREMENT_ID = :requirementId) "+
+					 		 "AND CAND.PROFILE_PERCENTAGE >= (SELECT REQ.PROFILE_PERCENTAGE FROM REQUIREMENT REQ WHERE REQ.ID = :requirementId) "+
 					 		 "GROUP BY CAND.ID,  " + 
 					 		 "DATE_FORMAT(CAND.CREATED_DATE ,\"%Y-%m-%d\"))Q1 "+querySeachStr+advSeachStr+sortingQry;
 				
@@ -1927,13 +1933,15 @@ public class CandidateDaoImpl implements CandidateDao {
 				+" CAND.ID AS candId, "
 				+" CAND.FIRST_NAME AS firstName, "
 				+" CAND.LAST_NAME AS lastName, "
+				+" CONCAT (CAND.FIRST_NAME,' ',IFNULL(CAND.LAST_NAME,'')) AS candidateName," 
 				+" CAND.MOBILE_PHONE AS phoneNumber, "
 				+" CAND.EMAIL AS email, "
 				+" CAND.LOCATION AS location, "
 				+" CAND.COUNTRY AS country, "
 				+" CAND.STATE AS state, "
 				+" CAND.CITY AS city, "
-				+" CAND.NOTICE_PERIOD AS noticePeriod "
+				+" CAND.NOTICE_PERIOD AS noticePeriod, "
+				+" CAND.PROFILE_PERCENTAGE AS profilePercentage "
 				+" FROM CANDIDATE CAND "
 				+" WHERE "
 				+" CAND.ID = :candidateId ";
@@ -1953,7 +1961,7 @@ public class CandidateDaoImpl implements CandidateDao {
 	@Override
 	@Transactional
 	public List<CandidateDTO> getCandidateListForAddApplicant(OrgLocations orgLcoations,
-			Long requirementId,String skills,String candidateDetails) throws Exception {
+			Long requirementId,String skills,String candidateDetails,Integer profilePercentage) throws Exception {
 		
 		List<CandidateDTO> candidateDTOList = null;
 		Session session = this.sessionFactory.getCurrentSession();
@@ -1975,8 +1983,23 @@ public class CandidateDaoImpl implements CandidateDao {
 			
 		if(StringUtils.isNotBlank(skills)) {
 			String requirementSkills [] = skills.split(",");
-			String requirementSkillsStr = "'" + StringUtils.join(requirementSkills,"','") + "'";
-			subQuery = " AND CAND.SKILLS_NAME IN ("+requirementSkillsStr+")";
+			//String requirementSkillsStr = "'" + StringUtils.join(requirementSkills,"','") + "'";
+			//subQuery = " AND CAND.SKILLS_NAME IN ("+requirementSkillsStr+")";
+			
+			int i = 0;
+			int j = requirementSkills.length;
+			for(String rSkill : requirementSkills) {
+				i++;
+				if(i == 1) {
+					subQuery = subQuery + " AND (";
+				}else {
+					subQuery = subQuery + " OR ";
+				}
+				subQuery = subQuery + " CAND.SKILLS_NAME LIKE '%"+rSkill+"%' ";
+				if(i == j) {
+					subQuery = subQuery + " )";
+				}
+			}
 		}
 		
 		String	query ="SELECT "
@@ -1986,6 +2009,7 @@ public class CandidateDaoImpl implements CandidateDao {
 				+" FROM CANDIDATE CAND "
 				+" WHERE CAND.STATUS = '1' " 
 		 		+" AND CAND.ORG_LOCATION_ID = :orgLocationId " 
+		 		+" AND CAND.PROFILE_PERCENTAGE >= :profilePercentage "
 				+subQuery
 		 		+ " AND CAND.ID NOT IN (SELECT SUB.CANDIDATE_ID FROM REQUIREMENT_SUBMISSION SUB WHERE SUB.REQUIREMENT_ID = :requirementId) "
 				+ " ORDER BY CAND.ID DESC "; 
@@ -1993,6 +2017,7 @@ public class CandidateDaoImpl implements CandidateDao {
             Query queryObj = session.createSQLQuery(query);
 			queryObj.setLong("orgLocationId", orgLcoations.getId());
 			queryObj.setLong("requirementId", requirementId);
+			queryObj.setInteger("profilePercentage", profilePercentage);
 			queryObj.setMaxResults(5000);
 			queryObj.setResultTransformer(Transformers.aliasToBean(CandidateDTO.class));
 			candidateDTOList = queryObj.list();
@@ -2031,6 +2056,94 @@ public class CandidateDaoImpl implements CandidateDao {
 			queryObj.setResultTransformer(Transformers.aliasToBean(CandidateDTO.class));
 			candidateDTOList = queryObj.list();
 			return candidateDTOList;
+	}
+
+	@Override
+	@Transactional
+	public List<Candidate> getAllCandidatesList() throws Exception {
+
+		Session session = this.sessionFactory.getCurrentSession();
+		String query = "from Candidate candidates  ";
+		List<Candidate> candidatesList = session.createQuery(query).list();
+		return candidatesList;
+	
+	}
+
+	@Override
+	@Transactional
+	public Long getCandidateIdByEmailAndOrgLocationId(String email, Long orgLocationId) throws Exception {
+		
+		Long candidateId = null;
+		Session session = this.sessionFactory.getCurrentSession();
+		String query = null;
+		query ="SELECT "
+				+" CAND.ID "
+				+" FROM CANDIDATE CAND "
+				+" WHERE "
+				+" CAND.EMAIL = :email AND CAND.ORG_LOCATION_ID = :orgLocationId";
+		Query queryObj = session.createSQLQuery(query);
+		queryObj.setString("email", email);	
+		queryObj.setLong("orgLocationId", orgLocationId);	
+		BigInteger id = (BigInteger) queryObj.uniqueResult();
+		if(id != null) {
+			candidateId = id.longValue();
+		}
+		
+		return candidateId;
+	}
+
+	@Override
+	@Transactional
+	public void saveBulkCandidates(List<Candidate> candidatesList,Long orgLocationId) throws Exception {
+		Session session = sessionFactory.getCurrentSession();
+		for (Candidate candidate : candidatesList) {
+			Long candidateId = getCandidateIdByEmailAndOrgLocationId(candidate.getEmail().trim(),orgLocationId);
+			if(candidateId == null) {
+				    session.save(candidate);
+				    candidateService.saveOrUpdateCandidateElkDocument(candidate);
+			}
+		    
+		}
+	}
+
+	@Override
+	@Transactional
+	public List<String> getCandidateEmailsByOrgLocationId(Long orgLocationId) throws Exception {
+		
+		Session session = this.sessionFactory.getCurrentSession();
+		String query = null;
+		query ="SELECT "
+				+" CAND.EMAIL "
+				+" FROM CANDIDATE CAND "
+				+" WHERE "
+				+" CAND.ORG_LOCATION_ID = :orgLocationId";
+		Query queryObj = session.createSQLQuery(query);
+		queryObj.setLong("orgLocationId", orgLocationId);	
+		List<String> emailsList = (List<String>)queryObj.list();
+		
+		return emailsList;
+	}
+
+	@Override
+	@Transactional
+	public Integer getCandidateProfilePercentageByCandidateId(Long id) throws Exception {
+		
+		Integer profilePercentage = 0;
+		Session session = this.sessionFactory.getCurrentSession();
+		String query = null;
+		query ="SELECT "
+				+" CAND.PROFILE_PERCENTAGE "
+				+" FROM CANDIDATE CAND "
+				+" WHERE "
+				+" CAND.ID = :id";
+		Query queryObj = session.createSQLQuery(query);
+		queryObj.setLong("id", id);	
+		Integer percentageId = (Integer) queryObj.uniqueResult();
+		if(percentageId != null) {
+			profilePercentage = percentageId;
+		}
+		
+		return profilePercentage;
 	}
 
 }

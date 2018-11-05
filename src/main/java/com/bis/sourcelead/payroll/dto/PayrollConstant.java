@@ -28,6 +28,7 @@ public class PayrollConstant {
 	public static final String NEW_MEXICO = "New Mexico";
 	public static final String YES = "YES";
 	public static final String NO = "NO";
+	public static final String NEW = "NEW";
 	public static final String DRAFT = "DRAFT";
 	public static final String PAYROLL = "PAYROLL";
 	public static final String SENT = "SENT";
@@ -68,6 +69,9 @@ public class PayrollConstant {
 	public static final String LOAN_HALF_YEARLY = "Half Yearly";
 	public static final String LOAN_ANNUALLY = "ANNUALLY";
 	public static final String C2C = "C2C";
+	
+	public static final String Y = "Y";
+	public static final String N = "N";
   
 
 

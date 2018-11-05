@@ -47,7 +47,7 @@ background-color: #fcfcfc;
 
 <input type="hidden" id="leaveEmptyMessage" name="leaveEmptyMessage" />
 <div id="popUp"></div>
-
+<div id="loading"></div>
  <!-- Content Area -->
   <section class="content-wraper">
     <section class="content-header clearfix">
@@ -87,7 +87,7 @@ background-color: #fcfcfc;
 						        					
 						        					<div class="col-md-12">
 						        					<div class="uploadTempalte" id="validation">
-						        					<input type="file" class="margin-top0" id="leaveInputFileId" name="file" data-validation="required validate_importFile" field-name="File">
+						        					<input type="file" class="margin-top0" id="leaveInputFileId" name="file" data-validation="required validate_xls_importFile" field-name="File">
 						        					</div>
 						        					</div>
 						        				</div>
@@ -95,7 +95,7 @@ background-color: #fcfcfc;
 						        			<div class="clearfix modalFooter">
 						        				<div class="pull-right">
 						        						<button type="button" class="btn btn-success btnSuccess btn-sm mr" onclick="importLeaves();">Import</button>
-						        						<button type="button" class="btn btn-default btn-sm mr" onclick="resetUpload();">Reset</button>
+						        						<button type="button" class="btn btn-default btn-sm mr" title="Reset" onclick="resetUpload();">Reset</button>
 						        				</div>
 						        			</div>
 					        			</div>
@@ -353,21 +353,21 @@ background-color: #fcfcfc;
                       </div>
                 </div>
                 <div class="clearfix"></div>
-                <div class="row">
+               <!--  <div class="row">
                   <div class="col-md-6">
                  
                  <div class="clearfix mt5">
                    <h4 class="heading col-md-4">Top leave Takers</h4>
                     <div class="timesheet_head clearfix col-md-8">
                     <ul class="list-unstyled noPad pull-left">
-                    	<!-- <li title="Export" class="mrPOP" id="mypop"><i class="glyphicon glyphicon-export"></i>
+                    	<li title="Export" class="mrPOP" id="mypop"><i class="glyphicon glyphicon-export"></i>
 					        	<div id="exportPop" class="ExpPop">
 					              <ul>
 					                <li onclick="leavePdfExport();"><i class="fa fa-file-pdf-o"></i>&nbsp;&nbsp;PDF</li>
 					                <li onclick="leaveExcelExport();"><i class="fa fa-file-excel-o text-primary"></i>&nbsp;&nbsp;Excel</li>
 					              </ul>
 					            </div>
-					          </li>   -->
+					          </li>  
                     </ul>
                           <div class="dropdown-select">
                             <div class="form-inline pull-right">
@@ -404,9 +404,9 @@ background-color: #fcfcfc;
   <div id="customDateDivId"></div>
   </div>
   
-<!-- Top Leave Takers Custom Date -->
+Top Leave Takers Custom Date
     
-<!-- Top Leave Takers Custom Date -->    
+Top Leave Takers Custom Date    
                         </div>
                         </div>
                  </div>
@@ -452,7 +452,7 @@ background-color: #fcfcfc;
     </div>
     <button type="submit" class="btn btn-primary btn-sm" id="showLeaveReport" onClick="showLeaveReport()">Custom</button>
   </div>
-<!-- Top Leave Takers Custom Date -->
+Top Leave Takers Custom Date
     <div class="clearfix pull-lefet col-md-6 paddingRight showLeaveReport" style="display: none;">
     <div class="pull-left">
     <div class="pull-left mr5" style="width: 140px">
@@ -464,14 +464,14 @@ background-color: #fcfcfc;
     <button type="button" class="btn btn-primary btn-sm" onclick="getLeaveTakersBarChat();"><i class="fa fa-search"></i></button>
     </div>
     </div>
-<!-- Top Leave Takers Custom Date -->    
+Top Leave Takers Custom Date    
                         </div>
                         </div>
                  </div>
                       <div id="empLeavereport" class="amchartAnchor-Hide mt5" style="width: 100%; height: 250px;"></div>
                   <div id="empLeavereportEmptyDiv" class="dataTables_empty noRecBor" style="display:none"></div>
                     </div>
-                    </div>
+                    </div> -->
               
               </div>
           </div>
@@ -1546,7 +1546,7 @@ if ($('#upload_leave_excel_form').validate(false, validationSettings)){
 	var jsonData = encodeURIComponent(con);
 	var form = $('#upload_leave_excel_form')[0];
 	var formData = new FormData(form); 
-	
+	$("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
 	 $.ajax({
 		   	type: "POST",
 		   	data: formData,
@@ -1557,6 +1557,7 @@ if ($('#upload_leave_excel_form').validate(false, validationSettings)){
     	    dataType : 'json',
 		    url : sourceleadUrl+"/uploadLeaveType?"+tokenParamName+"="+tokenValue+"", 	   
  		    success : function(json) {
+ 		    		$("#loading").removeAttr("style");
  		    	    if(json.updateCount != null && json.updateCount != '')
  		    	    $("#msgDiv").removeAttr("style");
  		 			$("#msgDiv").css({ display: "block" });

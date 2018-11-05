@@ -26,6 +26,7 @@ import org.springframework.web.servlet.ModelAndView;
 
 import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.dto.OrgRelationDTO;
+import com.bis.sourcelead.dto.RequirementSubmissionsDTO;
 import com.bis.sourcelead.dto.SourceleadSectionDTO;
 import com.bis.sourcelead.entity.Candidate;
 import com.bis.sourcelead.entity.CandidateDocuments;
@@ -46,6 +47,7 @@ import com.bis.sourcelead.service.CountriesService;
 import com.bis.sourcelead.service.LookUpDataService;
 import com.bis.sourcelead.service.OrgRelationsService;
 import com.bis.sourcelead.service.OrglocationStateTaxService;
+import com.bis.sourcelead.service.RequirementSubmissionService;
 import com.bis.sourcelead.service.RolesService;
 import com.bis.sourcelead.service.SourceleadActionsService;
 import com.bis.sourcelead.service.SourceleadFormSectionsService;
@@ -110,6 +112,9 @@ public class CandidateController {
 	
 	@Autowired
 	SourceleadTagsService sourceleadTagsService;
+	
+	@Autowired
+	RequirementSubmissionService requirementSubmissionService;
 	
 	/**
 	 * Handles to display candidate jsp
@@ -247,7 +252,7 @@ public class CandidateController {
 		}
 		
 		//approver list
-		List<User> requirementApproverList = userService.getTabAccessOwnersByOrgLocationIdAndTabId(orgLocations.getId(),Long.valueOf(Constants.TAB_REQUIREMENT));
+		List<User> requirementApproverList = userService.getTabAccessOwnersByOrgLocationIdAndTabId(orgLocations.getId(),Long.valueOf(Constants.TAB_CANDIATE));
 		model.addObject("requirementApproverList", requirementApproverList);
 				
 		
@@ -585,6 +590,38 @@ public class CandidateController {
 	 	          sos.close();
 
 	 } 
+	 
+	 
+	 @RequestMapping(value = "/getCandidateSubmittedJobsList", method = RequestMethod.GET)
+		public ModelAndView getCandidateSubmittedJobsList(@RequestParam(value = "candidateId", required = true) Long candidateId,HttpServletRequest request) throws Exception {
+			ModelAndView model = new ModelAndView();
+			List<RequirementSubmissionsDTO> responseList = null;
+			OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+			try {
+				responseList = requirementSubmissionService.getCandidateSubmittedRequirementsListByCandidateId(candidateId, orgLocations.getId(),orgLocations.getDateFormat());
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+			
+			String locationList = orgLocations.getDateFormat();	
+			String orglocationDateFormat = null;
+			if(locationList.equalsIgnoreCase("yyyy-MM-dd")){
+				  orglocationDateFormat = "YYYY-MM-DD";
+			}if(locationList.equalsIgnoreCase("dd-MM-yyyy")){
+				orglocationDateFormat = "DD-MM-YYYY"; 
+			}if(locationList.equalsIgnoreCase("MM-dd-yyyy")){
+				orglocationDateFormat = "MM-DD-YYYY"; 
+			}if(locationList.equalsIgnoreCase("yyyy-dd-MM")){
+				orglocationDateFormat = "YYYY-DD-MM"; 
+			}
+			
+			 model.addObject("jobsList", responseList);
+			 model.addObject("jobsListSize", responseList.size());
+			 model.addObject("orglocationDateFormat", orglocationDateFormat);
+			 model.setViewName("candidates/candidateSubmittedJobsList");
+			 model.addObject("sourceleadUrl", sourceleadUrl);
+			 return model;
+		}
 	 
 	 
 	 

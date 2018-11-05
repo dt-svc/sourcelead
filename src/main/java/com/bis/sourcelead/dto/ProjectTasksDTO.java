@@ -79,6 +79,18 @@ public class ProjectTasksDTO extends SearchDTO implements Serializable{
 	
 	private String tags;
 	
+	private String priorityFilter;
+	
+	private String severityFilter;
+	
+	private String createdByFilter;
+	
+	private String tasksFilter;
+	
+	private String userCode;
+	
+	private Long candidateId;
+	
 	public Long getId() {
 		return id;
 	}
@@ -289,6 +301,42 @@ public class ProjectTasksDTO extends SearchDTO implements Serializable{
 	}
 	public void setTags(String tags) {
 		this.tags = tags;
+	}
+	public String getPriorityFilter() {
+		return priorityFilter;
+	}
+	public String getSeverityFilter() {
+		return severityFilter;
+	}
+	public String getCreatedByFilter() {
+		return createdByFilter;
+	}
+	public String getTasksFilter() {
+		return tasksFilter;
+	}
+	public void setPriorityFilter(String priorityFilter) {
+		this.priorityFilter = priorityFilter;
+	}
+	public void setSeverityFilter(String severityFilter) {
+		this.severityFilter = severityFilter;
+	}
+	public void setCreatedByFilter(String createdByFilter) {
+		this.createdByFilter = createdByFilter;
+	}
+	public void setTasksFilter(String tasksFilter) {
+		this.tasksFilter = tasksFilter;
+	}
+	public String getUserCode() {
+		return userCode;
+	}
+	public void setUserCode(String userCode) {
+		this.userCode = userCode;
+	}
+	public Long getCandidateId() {
+		return candidateId;
+	}
+	public void setCandidateId(Long candidateId) {
+		this.candidateId = candidateId;
 	}
 }
 

@@ -1,4 +1,4 @@
-<jsp:include page="../newMasterHeader.jsp" />
+<jsp:include page="../masterHeader.jsp" />
 <jsp:include page="../masterSideNav.jsp" />
 
 <%@taglib uri="http://www.springframework.org/tags/form" prefix="form"%>
@@ -659,9 +659,9 @@ function changeStatus(requirementId, requirementStatus){
 </script>
 <script>
 function exportToPdf(type) {
+	var sourceleadUrl ='${sourceleadUrl}';
 	if(type === 1) {
 		var req = $("#noReq").val();
-	 	var sourceleadUrl ='${sourceleadUrl}';
 	 	var requirementEmptyMessage = $("#requirementEmptyListMessage").val();
 	  	var status = [];
 		$('input:checkbox[name=requirementStatus]:checked').each(function() {
@@ -688,15 +688,16 @@ function exportToPdf(type) {
 	} else {
 		/* alert("Export JobFair to PDF"); */
 		$(".buttons-pdf").click();
+		window.location.href = sourceleadUrl +"/pdfExportForJobfair";
 	}
 }
 </script>
 <script>
 function exportToExcel(type) {
+	var sourceleadUrl ='${sourceleadUrl}';
 	if(type === 1) {
 		var req = $("#noReq").val();
 		var requirementEmptyMessage = $("#requirementEmptyListMessage").val();
-		var sourceleadUrl ='${sourceleadUrl}';
 	  	var status = [];
 		$('input:checkbox[name=requirementStatus]:checked').each(function() {
 			status.push($(this).val());
@@ -721,6 +722,7 @@ function exportToExcel(type) {
 		}
 	} else {
 		/* alert("Export JobFair to Excel"); */
+		window.location.href = sourceleadUrl +"/excelExportForJobfair"
 		$(".buttons-excel").click();
 	}
 }

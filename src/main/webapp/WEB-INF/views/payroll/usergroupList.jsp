@@ -65,37 +65,7 @@ $(document).ready(function(){
     <!--  Popups -->
     <div id="addUserGroupFormDiv"> </div>
 
-<script>
-function validateGroupId(){
-	var groupId = $("#groupId").val();
-	$.get(sourceleadUrl+"/validateUserGroupIdOrGroupName?"+tokenParamName+"="+tokenValue+"&groupId="+groupId,  function(result) {
-			 if (result.response === "AWKWARD") {
-                    location.href = "/errorPage";
-                } else if (result.response === "SUCCESS") {
-                	$('#groupIdDiv').find('p.jquery_form_error_message').remove();
-                }  else {
-					$('#groupIdDiv').find('p.jquery_form_error_message').remove();
-      			  	$("#groupId").after("<p class='jquery_form_error_message'>"+groupId+" already exists..!!</span>");
-                }
-			
-		});
-}
 
-function validateGroupName(){
-	var groupName = $("#groupName").val();
-	$.get(sourceleadUrl+"/validateUserGroupIdOrGroupName?"+tokenParamName+"="+tokenValue+"&groupName="+groupName,  function(result) {
-			 if (result.response === "AWKWARD") {
-                    location.href = "/errorPage";
-                } else if (result.response === "SUCCESS") {
-                	$('#groupNameDiv').find('p.jquery_form_error_message').remove();
-                }  else {
-					$('#groupNameDiv').find('p.jquery_form_error_message').remove();
-      			  	$("#groupName").after("<p class='jquery_form_error_message'>"+groupName+" already exists..!!</span>");
-                }
-			
-		});
-}
-</script>
 
 <script type="text/javascript">
 var config = {

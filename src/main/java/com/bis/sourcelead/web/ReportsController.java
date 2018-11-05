@@ -342,4 +342,74 @@ private static final Logger logger = LoggerFactory.getLogger(ReportsController.c
 		 model.setViewName("reports/placementReport");
 		  return model;		
 	 }
+	 
+	 @RequestMapping(value = "/jobsPerformanceReport")
+		public ModelAndView jobsPerformanceReport(HttpServletRequest request,HttpServletResponse response) throws Exception {
+		 ModelAndView model = new ModelAndView();
+		 OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+		 model.addObject("sourceleadUrl", sourceleadUrl);
+		 Collection<OrgRelations> orgClientList =orgRelationsService.getAllClientsByOrgLocationId(orgLocations.getId()); 
+			if(null != orgClientList && orgClientList.size() > 0){
+				for(OrgRelations ocl :orgClientList){
+					ocl.setOrgName(ocl.getResponderLocationId().getOrgLocationName());
+					ocl.setOrgid(ocl.getResponderLocationId().getOrg().getId());
+				 }
+			    model.addObject("orgClientList", orgClientList);
+			}
+		 model.setViewName("reports/jobsPerformanceReport");
+		  return model;		
+	 }
+	 
+	 @RequestMapping(value = "/jobPerformanceCandidatesByStatus")
+		public ModelAndView jobPerformanceCandidatesByStatus(@RequestParam(value="tab", required=true) String tab,
+				@RequestParam(value="orgLocationId", required=true) String orgLocationId,
+				@RequestParam(value="requirementId", required=true) String requirementId,
+				@RequestParam(value="statusType", required=true) String statusType,
+				HttpServletRequest request) throws Exception {
+			
+			ModelAndView model = new ModelAndView();
+		
+			model.addObject("tab",tab);
+			model.addObject("reqList","interList");
+			model.addObject("requirementId",requirementId);
+			model.addObject("statusType",statusType);
+			model.addObject("sourceleadUrl", sourceleadUrl);
+			model.setViewName("reports/jobsPerformanceCandidateList");
+			return model;
+		}
+	 
+	 @RequestMapping(value = "/applicantsjoinedlist")
+		public ModelAndView applicantsjoinedlist(HttpServletRequest request,HttpServletResponse response) throws Exception {
+		 
+		 OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+		 User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+		 Long loginUserRoleId = (Long) SourceLeadSessionManager.getSessionAttribute(request, "loginUserRoleId");
+		 String loginUserRole = (String) SourceLeadSessionManager.getSessionAttribute(request, "loginUserRole");
+		 boolean requirementTabAccess = tabsService.getTabAccessByRoleIdAndTabId(loginUserRoleId, orgLocations.getId(), Long.valueOf(Constants.TAB_REQUIREMENT));
+		
+		 
+		 
+		 ModelAndView model = new ModelAndView();
+		 List<User> userList = userService.getAllUsersByOrgLocationCode(orgLocations.getId());	
+		 List<Team> teamsList = null;
+		 if(loginUserRole.equalsIgnoreCase("ROLE_LEAD_RECRUITER")) {
+			teamsList = teamService.getTeamListByTeamOwnerAndStatus(user.getId(),orgLocations.getId()); 
+		 }
+		 else{
+			 teamsList = teamService.getTeamListByOrgLocationID(orgLocations.getId()); 
+		 }
+			Collection<OrgRelations> orgClientList =orgRelationsService.getAllClientsByOrgLocationId(orgLocations.getId()); 
+			for(OrgRelations ocl :orgClientList){
+				ocl.setOrgName(ocl.getResponderLocationId().getOrgLocationName());
+				ocl.setOrgid(ocl.getResponderLocationId().getOrg().getId());
+			 }
+		    model.addObject("add_clientList", orgClientList);
+	     model.addObject("teamsList", teamsList);
+		 model.addObject("userList", userList);
+		 model.addObject("requirementTabAccess", requirementTabAccess);
+		 model.addObject("sourceleadUrl", sourceleadUrl);
+		 model.setViewName("reports/applicantsjoinedlist");
+		 return model;
+			
+	    }
 }

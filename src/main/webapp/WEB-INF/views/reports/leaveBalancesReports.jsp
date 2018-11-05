@@ -8,7 +8,8 @@ $(document).ready(function(){
 	getBalanceLeaveReportList();
 });
 </script>
-
+<div id="emptyPopup"></div>
+<input type="hidden" id="noLeaveBalanceList" name="noLeaveBalanceList"  value="0"/>  
 <!-- Content Area -->
   <section class="content-wraper contentWraper">
     <section class="content-header clearfix">
@@ -168,6 +169,7 @@ $(document).ready(function(){
 function getBalanceLeaveReportList(){
 	var fromDate = $("#fromDate").val();
 	var searchValue = $("#leaveReportDataTableSearch").val();
+	var  noLeaveBalanceList=$("#noLeaveBalanceList").val(0); 
 	searchValue = searchValue ? searchValue : "";
 	//var url = sourceleadUrl+"/getDaywiseLeaveReportList?"+tokenParamName+"="+tokenValue+"&fromDate="+fromDate;
 	var url = sourceleadUrl+"/getLeaveBalanceReportList?"+tokenParamName+"="+tokenValue+"&searchValue="+searchValue;
@@ -183,6 +185,7 @@ function getBalanceLeaveReportList(){
 var MonthStartDate ="";
 var MonthEndDate ="";
 var loginUserRole = '${SourceLeadWeb_loginUserRole}';
+var  noLeaveBalanceList=$("#noLeaveBalanceList").val(0); 
 	
 	var userRole = [];
 	$('input:checkbox[name=userRole]:checked').each(function() 
@@ -237,11 +240,27 @@ $("#loading").attr('style','position:absolute; width:100%; height:100%; backgrou
 								result = result + '<tbody>';
 								
 								for(j=0; j < opt.users.length; j++){
+									$("#noLeaveBalanceList").val(1);
 									var report = opt.users[j];
 									result += "<tr>";
-									
-									result += "<td> "+report.empName+" </td>";
-									result += "<td> "+report.empType+" </td>";
+						        	  if(report.empName !=null && report.empName !='' && report.empName !='undefined'){
+											result += "<td> "+report.empName+" </td>";
+ 
+						        	  }
+						        	  else{
+											result += "<td>--</td>";
+
+						        	  }
+						        	  
+						        	  if(report.empType !=null && report.empType !='' && report.empType !='undefined'){
+						        		  result += "<td> "+report.empType+" </td>";
+
+						        	  }
+						        	  else{
+											result += "<td>--</td>";
+
+						        	  }
+
 									var lo=0;
 									for (i = 0; i < opt.leaveTypeNames.length; i++) {
 										for(var k in opt.map){
@@ -294,7 +313,7 @@ $("#loading").attr('style','position:absolute; width:100%; height:100%; backgrou
 			"searching": false, 
 		    "paging": true,
 			"scrollCollapse" : false,
-			"lengthMenu" : [ [ 10, 15, 20, -1 ], [ 10, 15, 20, "All" ] ],
+			"lengthMenu" : [ [ 10, 15, 20, -1 ], [ 10, 15, 20] ],
 			"bLengthChange" : true,
 			"bDestroy" : true,
 			"ordering" : true,
@@ -347,6 +366,7 @@ function viewCompleteTemplate(temp){
 </script>
 <script>
 function exportToPdf(){
+	var  noLeaveBalanceList=$("#noLeaveBalanceList").val(); 
 	var exportType = "pdf";
 	var loginUserRole = '${SourceLeadWeb_loginUserRole}';
     
@@ -371,12 +391,31 @@ function exportToPdf(){
 		leaveType.push($(this).val());
      });
 	var searchValue = $("#leaveReportDataTableSearch").val();
-	window.location.href = sourceleadUrl + "/getExportReports?"+tokenParamName+"="+tokenValue+"&userRole="+userRole+"&orgDepartments="+orgDepartments+"&userleaveType="+userleaveType+"&leaveType="+leaveType+"&exportType="+exportType+"&searchValue="+searchValue;
-	
+	if(noLeaveBalanceList != 0){
+		window.location.href = sourceleadUrl + "/getExportReports?"+tokenParamName+"="+tokenValue+"&userRole="+userRole+"&orgDepartments="+orgDepartments+"&userleaveType="+userleaveType+"&leaveType="+leaveType+"&exportType="+exportType+"&searchValue="+searchValue;
+	}else{
+		var result = "";
+			result = result +"	<div class='project_inn_mask'></div>";
+			result = result +"	   <div id='candidate_user_pop' class='remove_user_pop remove_user_pop_a'>";
+			result = result +"		<p>LeaveBalances List is Empty</p>";
+			result = result +"		<div>&nbsp;&nbsp;&nbsp;</div>";
+			result = result +"		<b href='javascript:void(0)'><input type='button' value='Ok' onclick='candidtaeCancel();'><input class='u_can_color' type='button'  value='Cancel' onClick='candidtaeCancel();'></b>";
+			result = result +"	</div>";
+			$("#emptyPopup").append(result);
+			$("#candidate_user_pop").slideDown(200);
+			$(".project_inn_mask").fadeIn(200);
+	}
+}
+</script>
+<script type="text/javascript">
+function candidtaeCancel(){
+	$("#emptyPopup").empty();
+	$(".project_inn_mask").fadeOut(200);
 }
 </script>
 <script>
 function exportToExcel(){
+	var  noLeaveBalanceList=$("#noLeaveBalanceList").val();
 	var exportType = "excel";
 	var loginUserRole = '${SourceLeadWeb_loginUserRole}';
     
@@ -401,8 +440,20 @@ function exportToExcel(){
 		leaveType.push($(this).val());
      });
 	var searchValue = $("#leaveReportDataTableSearch").val();
-	window.location.href = sourceleadUrl + "/getExportReports?"+tokenParamName+"="+tokenValue+"&userRole="+userRole+"&orgDepartments="+orgDepartments+"&userleaveType="+userleaveType+"&leaveType="+leaveType+"&exportType="+exportType+"&searchValue="+searchValue;
-	
+	if(noLeaveBalanceList != 0){
+		window.location.href = sourceleadUrl + "/getExportReports?"+tokenParamName+"="+tokenValue+"&userRole="+userRole+"&orgDepartments="+orgDepartments+"&userleaveType="+userleaveType+"&leaveType="+leaveType+"&exportType="+exportType+"&searchValue="+searchValue;
+	}else{
+		var result = "";
+		result = result +"	<div class='project_inn_mask'></div>";
+		result = result +"	   <div id='candidate_user_pop' class='remove_user_pop remove_user_pop_a'>";
+		result = result +"		<p>LeaveBalances List is Empty</p>";
+		result = result +"		<div>&nbsp;&nbsp;&nbsp;</div>";
+		result = result +"		<b href='javascript:void(0)'><input type='button' value='Ok' onclick='candidtaeCancel();'><input class='u_can_color' type='button'  value='Cancel' onClick='candidtaeCancel();'></b>";
+		result = result +"	</div>";
+		$("#emptyPopup").append(result);
+		$("#candidate_user_pop").slideDown(200);
+		$(".project_inn_mask").fadeIn(200);
+	}
 }
 </script>
 <script>

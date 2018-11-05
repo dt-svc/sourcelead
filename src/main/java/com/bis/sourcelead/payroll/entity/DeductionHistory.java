@@ -11,6 +11,7 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
+import javax.persistence.Transient;
 
 @Entity
 @Table(name = "US_EMP_DEDUCTION_HIS")
@@ -83,6 +84,12 @@ public class DeductionHistory {
 	
 	@Column(name = "UPDATED_BY")
 	private Long updatedBy;
+	
+	@Transient
+	private String deductionType;
+	
+	@Transient
+	private String contributionType;
 
 	public static long getSerialversionuid()
 	{
@@ -307,6 +314,23 @@ public class DeductionHistory {
 		}
 		
 	}
+
+	public String getDeductionType() {
+		return deductionType;
+	}
+
+	public void setDeductionType(String deductionType) {
+		this.deductionType = deductionType;
+	}
+
+	public String getContributionType() {
+		return contributionType;
+	}
+
+	public void setContributionType(String contributionType) {
+		this.contributionType = contributionType;
+	}
+	
 	
 	
 }

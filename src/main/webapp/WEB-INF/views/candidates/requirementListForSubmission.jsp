@@ -132,6 +132,7 @@ $(document).ready(function() {
 					
 			</div>
 
+<script type="text/javascript" src="/resources/js/submissionFailedCandidatesList.js"></script>
 
 <script>
 function clearJobAdvSearch(){
@@ -215,6 +216,7 @@ function submitCandidatesToJob(){
 		result = result +'  <th>&nbsp;</th>';
 		result = result +'	<th>Generated Id</th>';
 		result = result +'	<th>Title</th>';
+		result = result +'	<th>Profile (%)</th>';
 		result = result +'	<th>Client</th>';
 		result = result +'  <th>Posted On<br>(<small class="custom-small">YYYY-MM-DD</small>)</th>';
 	  	result = result +'  <th>Location</th>';
@@ -328,6 +330,7 @@ function requirementListPagination(url,sourceleadUrl){
             { "data": "action" },
             { "data": "generatedId"},
             { "data": "jobTitle"},
+            { "data": "profilePercentage"},
             { "data": "clientName"},
             { "data": "createdDate" },
             { "data": "location"}
@@ -369,6 +372,15 @@ function requirementListPagination(url,sourceleadUrl){
 	              }
 		     },{
 		    	  "targets": colIndex++,
+	              "data": "profilePercentage",
+	              "sortable": true,
+	              "render": function ( data, type, opt, meta ) {
+	            	  var result = "";
+	            	  result = result +"<td><div class='tbldata-dotdot_50'><span  title='"+opt.profilePercentage+"'>"+opt.profilePercentage+"</span></div></td>";
+	            	  return result;
+	              }
+		     },{
+		    	  "targets": colIndex++,
 	              "data": "client",
 	              "sortable": true,
 	              "render": function ( data, type, opt, meta ) {
@@ -404,7 +416,7 @@ function requirementListPagination(url,sourceleadUrl){
 	    	"scrollCollapse": false,
 	    	"lengthMenu": [[10, 15, 20], [10, 15, 20]],
 	    	"bLengthChange": true,
-	    	"aaSorting": [[4,'desc']],
+	    	"aaSorting": [[5,'desc']],
 	    	"bDestroy": true,
 	    	"ordering": true,
 	    	"oLanguage": {
@@ -474,8 +486,19 @@ function submitCandidtesToJob(){
 			       			$(".clients_side_wrap").removeClass("clients_side_wrap_active");
 			       			$(".side_mask").fadeOut(200);
 			       			$("body").css('overflow-y', 'auto');
-			       			$("#candMsgDiv").html(candidateIds.length+" Candidate(s) Submitted Successfully...");
 			       			msgFadein();
+			       			var submittedlength = '';
+			       			if(data.responseObject.length > 0){
+			       				 submittedlength = candidateIds.length - data.responseObject.length;
+			       				failedCandidates.getFailuredCandidates(data.responseObject);
+			       			}else{
+			       				 submittedlength = candidateIds.length;
+			       			}
+			       			
+			       			if(submittedlength > 0){
+			       				$("#candMsgDiv").html(submittedlength+" Candidate(s) Submitted Successfully...");
+			       			}
+			       			
 				    	}else if (data.indexOf('Sign In') !== -1) {
 				    		location.replace(sourceleadUrl);
 				    	} else {
@@ -501,8 +524,8 @@ function submitCandidtesToJob(){
 	 }
 	 
 }
-</script>
 
+</script>
 
 
 <script type="text/javascript">

@@ -5,7 +5,7 @@
 <%@ taglib uri="http://java.sun.com/jsp/jstl/functions" prefix="fn"%>
 <%@taglib prefix="sec"
 	uri="http://www.springframework.org/security/tags"%>
-
+	
 <style type="text/css">
 .center-div {
 	width: 300px;
@@ -17,8 +17,26 @@
 	border: none;
 	background: transparent
 }
+
 </style>
 
+
+<script type="text/javascript">
+var uploadflag= true;
+		window.onload = function () {
+			var refreshId = setInterval(function(){
+				var dateFormat ='${SourceLeadWeb_orgLocations.dateFormat}';	
+				if(uploadflag == true){
+					xlsupload.getUploadInprogressProgressBar("Candidates",dateFormat);
+				  }else{
+					     clearInterval(refreshId);
+						 $(".browseProgress").hide();
+						 $("#upload_button").removeAttr("disabled");
+						 xlsupload.getUploadInprogressProgressBar("Candidates",dateFormat);
+				  }
+			},1000);
+		 };
+</script>
 
 <section class="content-wraper">
 	<section class="content-header clearfix">
@@ -47,7 +65,7 @@
 					
 						<div class="col-xs-5 col-md-5">
 							<a href="<c:url value='${appPath}/downloadCreateCandidateTemplate'/>"
-								class="btn btn-success btn-block" title="Download Job Template"> <i class="fa fa-download"></i>&nbsp;&nbsp; Candidate Template
+								class="btn btn-success btn-block" title="Download Candidate Template"> <i class="fa fa-download"></i>&nbsp;&nbsp; Candidate Template
 							</a>
 						</div>
 						<div class="col-xs-4 col-md-4">
@@ -71,7 +89,7 @@
 						<div class="clearfix"></div>
 						<div class="file-upload clearfix text-center">
 							<div class="col-md-12" id="uploadDocDiv">
-								<label class="bg-default"> <i aria-hidden="true"
+								<label class="bg-default" id="attach_file_btn"> <i aria-hidden="true"
 									class="fa fa-paperclip" title="Attach file"></i> <br /> <input
 									type="file" name="file" field-name="File Upload"
 									style="display: none;" id="uploadBtn"
@@ -122,19 +140,26 @@
 	               </div>
 	                </div>
 	         </div>
-	         
+          
 			</div>
+            
 		</div>
 		</form:form>
 	</div>
 	<div id="dataFieldsDiv" style="display: none"></div>
 	<input type="hidden" id="inviteEmail" name="inviteEmail" value="N"/>
+	
+	<div class="project_tabs_inn_table project_tabs_inn_table_a datatable_filter dataSeaTop">
+		<h5 class="mt25" id="uploadXlsHistoryDivTitle" hidden>Recent Uploads History</h5>
+	    	<table id="uploadXlsHistoryDiv" class="display" cellspacing="0" width="100%"></table>
+	    	<input type="hidden"  id="uploadedPercentage" value="0">
+		</div>	  
 </section>
 
 <div class="success_pop" id="selector11" style="display: none;">
     <i class="fa fa-check-circle"></i><span id="msgDiv"></span>
 </div>
-
+<script type="text/javascript" src="/resources/js/xlsupload.js"></script>
 
 <script>
 function checkInviteEmail(){

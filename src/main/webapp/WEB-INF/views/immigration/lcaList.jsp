@@ -6,26 +6,21 @@
 <jsp:include page="../masterHeader.jsp" />
 <jsp:include page="../masterSideNav.jsp" /> 
 
-
-<!-- Tabs -->
-
-
-<!-- END Tabs -->
-
-
 <title>Insert title here</title>
     <section class="content-wraper">
    
     <section class="content-header clearfix">
       <div class="pull-left"><h2>LCA</h2></div>
-      <div class="pull-right brud-crum"><a href="<c:url value='${appPath}/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a> &raquo; <a href="/app/immigration/viewImmigrationList">Immigration List</a> &raquo; LCA List</div>
+      <div class="pull-right brud-crum"><a href="<c:url value='${appPath}/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a> &raquo; <a href="/app/immigration/viewImmigrationList">Petition List</a> &raquo; LCA List</div>
 	<div class="clearfix"></div>
     </section>
     
      <div class="project_side_wrap_inn_tabs clearfix">
 	    <ul class="project-tabs-menu">
-		    <li><a href="${appPath}/immigration/viewImmigrationList" >Immigration List</a></li>
+		   
 		    <li class="current"><a href="${appPath}/immigration/viewLCAList" >LCA List</a></li>
+		    
+		     <li><a href="${appPath}/immigration/viewImmigrationList" >Petition List</a></li>
 	    </ul>
     </div>
         
@@ -35,8 +30,9 @@
 		<!-- Filter For Lca -->
 <div class="positionRelative reportHead clearfix">
       <ul class="pull-right list-unstyled list-inline">
-      
+        <sec:authorize access="hasRole('ROLE_ADD_LCA')">
 			<li><a href="${appPath}/immigration/loadNewLCA" class="newAdBtn mr5">+ New </a></li>
+		</sec:authorize>	
 			<li>
 			    <select id="daysFilter" onchange="getDynamicLCAList()" style="padding: 3px 5px;">
                    
@@ -58,9 +54,13 @@
 				<li><a href="javascript:void(0)" class="overIcon" title="Actions" onclick="newActions();"></a>
 					<div class="newActPop">
 						<span>
+						<sec:authorize access="hasAnyRole(\'ROLE_IMPORT_LCA\')">
 							<a href="/app/uploadLcaForm">Import LCA</a>
-							<!-- <a href="javascript:void(0)" onclick=";" title="PDF">Export PDF</a> -->
+						 </sec:authorize>
+						  
+						  <sec:authorize access="hasAnyRole(\'ROLE_EXPORT_LCA\')">
 							<a href="javascript:void(0)" onclick="exportToLCAExcel();" title="Excel">Export Excel</a>
+						  </sec:authorize>	
 						</span>
 					</div>
 				</li>
@@ -105,7 +105,7 @@
 									 <div class="clearfix filterSearch-ul">
 											<ul class="list-unstyled positionRelative filterSearch mt5" id="myLcaStatus">
 												<li class="checkBox positionRelative"><input  type="checkbox" name="lcaStatus" value ="Initiated" ><label>Initiated</label></li>
-												<li class="checkBox positionRelative"><input  type="checkbox" name="lcaStatus" value ="In Process" ><label>In Process</label></li>
+												<li class="checkBox positionRelative"><input  type="checkbox" name="lcaStatus" value ="In progress" ><label>In progress</label></li>
 												<li class="checkBox positionRelative"><input  type="checkbox" name="lcaStatus" value ="Certified" ><label>Certified</label></li>
 												<li class="checkBox positionRelative"><input  type="checkbox" name="lcaStatus" value ="Denied" ><label>Denied</label></li>
 												<li class="checkBox positionRelative"><input  type="checkbox" name="lcaStatus" value ="Withdrawn" ><label>Withdrawn</label></li>
@@ -171,10 +171,6 @@
  
   <!-- data table code starts below -->
  <script type="text/javascript">
- 
- var hideColumns = [];
- var table = "";
- 
  $(document).ready(function () {
      $("#statusFilter a").on('click', function (e) {
          getDynamicLCAList();
@@ -256,7 +252,9 @@
                  "render": function (data, type, opt, meta) {
                      var result = "";
                      if (opt.lcaNo !== null && opt.lcaNo !== '' && opt.lcaNo !== 'undefined') {
-                    	 result = result + "<td><div class='tbldata-dotdot-sm' title = '"+opt.lcaNo +"'><a href=/app/immigration/viewLca?lcaUuid="+opt.lcaUuid+">"+opt.lcaNo+"</a></div></td>";
+                    	 '<sec:authorize access="hasRole(\'ROLE_VIEW_LCA\')">'; 
+                    	    result = result + "<td><div class='tbldata-dotdot-sm' title = '"+opt.lcaNo +"'><a href=/app/immigration/viewLca?lcaUuid="+opt.lcaUuid+">"+opt.lcaNo+"</a></div></td>";
+                    	 '</sec:authorize>';
                      } else {
                          result = result + "<td><div class='tbldata-dotdot-sm'>---</div></td>";
                      }
@@ -381,11 +379,17 @@
                  "data": "typeStandard",
                  "render": function (data, type, opt, meta) {
                      var result = "";
+                     '<sec:authorize access="hasRole(\'ROLE_VIEW_EDIT_LCA\')">'; 
                      result = result + '<td><div><a href=/app/immigration/editLcaDetails?lcaUuid='+opt.lcaUuid+'><i id="edit' + opt.lcaUuid + '" class="glyphicon glyphicon-edit" title="Edit"></i></a>';
+                     '</sec:authorize>';
                      if(opt.status  ==  1){
-                     result = result + '<i id="delete'+opt.lcaUuid+'" onclick="deleteLcaListId(\''+opt.lcaUuid+'\');" class="glyphicon glyphicon-trash ml10" title="Delete"></i></div></td>';
+                    '<sec:authorize access="hasRole(\'ROLE_VIEW_DELETE_LCA\')">'; 
+                      result = result + '<i id="delete'+opt.lcaUuid+'" onclick="deleteLcaListId(\''+opt.lcaUuid+'\');" class="glyphicon glyphicon-trash ml10" title="Delete"></i></div></td>';
+                    '</sec:authorize>';
                      }else{
+                    '<sec:authorize access="hasRole(\'ROLE_RE_ACTIVE_LCA\')">'; 
                     	 result = result + '<i id="reActive'+opt.lcaUuid+'" onclick="reActivateLca(\''+opt.lcaUuid+'\');" class="fa fa-rotate-left ml10" title="Re Active"></i></div></td>'; 
+                    '</sec:authorize>';
                      }
                      return result;
                  }
@@ -411,9 +415,7 @@
      $("#lcaSearch").keyup(function (e) {
          if (e.which === 13) {
         	 getDynamicLCAList( $("#myLcaStatus").val(),"");
-             for (var i=0; i<hideColumns.length; i++) {
-        		 table.column(hideColumns[i]).visible(false); // hide the columns after filters also.
-        		}
+            
          }
      });
      
@@ -427,34 +429,6 @@
 		getDynamicLCAList(null);
 	   
 	});
-		
-	function columHide(){
-		hideColumns=[]; // reset the array object.
-		$(".toggle-vis").each(function() {
-			columClose();// 
-		   var chkdVal= $(this).prop('checked');
-		   var column = table.column($(this).attr('data-column'));
-			  if(chkdVal == true){
-			         column.visible(true);
-			    }
-			    else{
-			      column.visible(false);
-			      hideColumns.push($(this).attr('data-column')); // used for hiding the columns when user searched the data.
-			  }
-	    });
-		$(".colPop").hide();
-	   
-	}
-	function checkAllColumns(obj){
-		var id = obj.id;
-		if(id =='columnsPickerCheckAll'){
-			$('.toggle-vis:input:checkbox').prop('checked',true);
-		}
-		else if(id =='columnsPickerUnCheckAll'){
-			$('.toggle-vis:input:checkbox').prop('checked',false);
-		}
-	}
-	
 </script>
 
 <script type="text/javascript">
@@ -527,28 +501,7 @@ function deleteLcaListId(lcaUuid){ // only stauts updated with reason. active 1 
   }
 </script>
 	
-<script type="text/javascript">
-function reActivateLca(candidateId){
-	var result = "";
-		var reactivate = '1';
-		$("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
-		$.post(sourceleadUrl+"/immigration/reActivateCandidateByCandidateId?"+tokenParamName+"="+tokenValue+"&loginUserId="+loginUserId+"&orgLocationId="+orgLocationId+"&candidateId="+candidateId+"&reActivate="+reactivate,{},function(result){
-			if (result && result.response === "INVALID_DATA") {
-			    $("#update_candidate").removeAttr("disabled");
-			    $("#update_candidate").removeAttr('button').val('Save');
-			    showError(result.responseMessage);
-			} else if (result.response === "AWKWARD") {
-			    location.href = "/errorPage";
-			} else if (result.response === "SUCCESS") {
-				location.replace(sourceleadUrl+"/candidatesList");
-			} else if (result.indexOf('Sign In') !== -1) {
-				location.replace(sourceleadUrl);
-			} else {
-			    showError("Operation failed, please try again");
-			}			
-		});
-}
-</script>
+
 
 <script type="text/javascript">
  function reActivateLca(lcaUuid){

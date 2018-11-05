@@ -86,6 +86,7 @@ import com.bis.sourcelead.entity.SubmissionRequirementListView;
 import com.bis.sourcelead.entity.TimeSheetSubmissionCount;
 import com.bis.sourcelead.entity.Timezone;
 import com.bis.sourcelead.entity.User;
+import com.bis.sourcelead.entity.UserRole;
 import com.bis.sourcelead.enums.ApplicantSubmissionDisplayStatus;
 import com.bis.sourcelead.enums.ApplicantSubmissionStatus;
 import com.bis.sourcelead.enums.REQUIREMENT_SUBMISSION_STATUS;
@@ -117,6 +118,7 @@ import com.bis.sourcelead.service.UserService;
 import com.bis.sourcelead.util.CommonUtil;
 import com.bis.sourcelead.util.ConversionUtil;
 import com.bis.sourcelead.util.EmailScenerioUtil;
+import com.bis.sourcelead.util.PdfUtil;
 import com.bis.sourcelead.util.SourceLeadSessionManager;
 
 /**
@@ -942,7 +944,13 @@ public class RequirementListRestController {
 					requirement.setRequirementSubmissionStatus(changedStatus);
 					requirement.setRequirementSubmissionPreviousStatus(previousStatus);
 					requirement.setUpdatedBy(loginUser.getUserCode());
-					requirement.setUpdatedDate(commonUtil.currentDate());
+					requirement.setUpdatedDate(CommonUtil.currentDate());
+					if (changedStatus == REQUIREMENT_SUBMISSION_STATUS.OPEN
+							&& (previousStatus == REQUIREMENT_SUBMISSION_STATUS.UNFILLEDCLOSED
+									|| previousStatus == REQUIREMENT_SUBMISSION_STATUS.FILLEDCLOSED
+									|| previousStatus == REQUIREMENT_SUBMISSION_STATUS.CLOSED)) {
+						requirement.setRepoenedDate(CommonUtil.currentDate());
+					}
 					requirementService.addRequirement(requirement);
 					StringBuilder reqStatusChange = new StringBuilder();
 					SourceLeadSessionManager.setSessionAttribute(request, "reqStatusChange", reqStatusChange.append(" ").append(requirement.getJobTitle()).append(" Status changed ").append(requirement.getRequirementSubmissionPreviousStatus()).append(" to ").append(requirement.getRequirementSubmissionStatus()).append(" ").toString());
@@ -1552,9 +1560,6 @@ public class RequirementListRestController {
 						candidateList.add(candidate);
 						requirementSubmission.setScore(requirementSubmission.getCandidateScore());
 				}
-				// file =
-				// requirementPipelineExportService.getExportRequirementFile(requirementStatusList,loginOrgLocation.getOrgLocationName(),exportType,requirementId,submissionType,
-				// requirementSubmissionCounts);
 			}
 			file = requirementPipelineExportService.getExportRequirementFile(requirementStatusList, loginOrgLocation, exportType, requirementId, submissionType, requirementSubmissionCounts);
 			String mimeType = URLConnection.guessContentTypeFromName(file.getName());
@@ -1627,6 +1632,7 @@ public class RequirementListRestController {
 		ResponseList<JobFairDTO> response = new ResponseList<>();
 		try {
 			User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+			String roleName = (String) SourceLeadSessionManager.getSessionAttribute(request, "displayName");
 			OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 			if (user != null) {
 				String[] tableColumns = {"generatedId" ,"name", "startDate", "endDate", "noOfJobs", "", "", "", "status", "id"};
@@ -1644,6 +1650,11 @@ public class RequirementListRestController {
 				
 				jobFairDTO.setUserId(user.getId());
 				jobFairDTO.setOrgLocationId(orgLocation.getId());
+				
+				if("Admin".equalsIgnoreCase(roleName)) {
+					jobFairDTO.setAdminUser(true);
+				}
+				
 				response = requirementService.getJobFairsList(jobFairDTO, includeInactive);
 				response.setResponse(Result.SUCCESS.name());
 				response.setResponseMessage(Result.SUCCESS.getValue());
@@ -1705,8 +1716,7 @@ public class RequirementListRestController {
 				/*
 				 * This array is used to enable the sorting feature in data tables. And, these names should match the ELK Candidate index field names.
 				 */
-				String[] tableColumns = {"", "generatedId.keyword","jobTitle.keyword", "client.keyword","","", "jobType.keyword", "country.keyword", "", "manager.keyword", "createdDate", ""};
-				
+				String[] tableColumns = {"requirementId","", "generatedId.keyword","jobTitle.keyword","process", "client.keyword","rate","billRate", "jobType.keyword", "country.keyword", "totalApplicants", "manager.keyword", "createdDate", ""};
 				int sortColumnIndex = 10; //by default sorting using updated date
 				boolean sortColumnOrder = false; //by default descending order
 				if(search.getOrder() != null && !search.getOrder().isEmpty()) {
@@ -2097,7 +2107,7 @@ public class RequirementListRestController {
 				 resp.setRecordsFiltered(Long.valueOf(searchResponse.getHits().getTotalHits()).intValue());
 				 SearchResponse searchResponseForCount = sourceleadELKBaseIndexer
 						.searchDocumentWithMaxResults(Constants.ELK_REQUIREMENT_INDEX, Constants.ELK_REQUIREMENT_TYPE,
-								0, 10, "createdDate", SortOrder.DESC, boolQueryBuilderForCount);
+								search.getStart(), search.getLength(), tableColumns[sortColumnIndex], sortColumnOrder ? SortOrder.ASC : SortOrder.DESC, boolQueryBuilderForCount);
 				
 				 resp.setRecordsTotal(searchResponseForCount == null ? resp.getRecordsFiltered() : Long.valueOf(searchResponseForCount.getHits().getTotalHits()).intValue());
 			     resp.setData(reqList);
@@ -2276,7 +2286,7 @@ public class RequirementListRestController {
 		}
         
 		requirement.setLocationsList(requirementLocationsList);
-        
+        requirement.setProcess(requirementIndex.getProcess());
       	return requirement;
  	}
     private String getReqSkills(String[] skills) {
@@ -2466,7 +2476,7 @@ public class RequirementListRestController {
 	      User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
 	    
 			
-			String[] tableColumns = { "action","generatedId", "jobTitle", "clientName", "createdDate", "location"};
+			String[] tableColumns = { "action","generatedId", "jobTitle", "profilePercentage", "clientName", "createdDate", "location"};
 			int sortColumnIndex = 1; // by default sorting using updated date
 			String sortColumnOrder = "desc"; // by default descending order
 			if (requirementDTO.getOrder() != null && !requirementDTO.getOrder().isEmpty()) {

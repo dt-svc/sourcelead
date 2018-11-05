@@ -1,6 +1,6 @@
  <%@taglib uri="http://www.springframework.org/tags/form" prefix="form"%>
  <%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
- <%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %>
+ <%@taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %>
  <%@taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
  <%@taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
 
@@ -23,6 +23,7 @@
 			<span title="${requirement.jobTitle} ${!empty requirement.jobId ? ' - ' : '' } ${!empty requirement.jobId ? requirement.jobId : ''}${!empty requirement.jobType ? ' - ' : '' }${!empty requirement.jobType  ?  (json.jobType == 'Other' ? requirement.otherJobType : requirement.jobType ) : ''}">${requirement.jobTitle} ${!empty requirement.jobId ? ' - ' : '' } ${!empty requirement.jobId ? requirement.jobId : ''}${!empty requirement.jobType ? ' - ' : '' }${!empty requirement.jobType  ?  (json.jobType == 'Other' ? requirement.otherJobType : requirement.jobType ) : ''}</span><i></i>
 		</h4>
 	</a>
+	
 	<div class="hide-row">
 		<div class="col-md-12">
 			<div class="row">
@@ -137,9 +138,135 @@
 		       <div class="clearfix"> 
 		           <div class="pull-right mt10"> 
 
+
+						<c:if test="${requirement.requirementSubmissionStatus != ''}">
+							<div class="pull-left mr">
+								<select class="sel" name="changeStatusId${requirement.id}" onchange="changeStatus(${requirement.id});" id="changeStatusId${requirement.id}">
+									<option disabled="disabled" selected="selected">${requirement.requirementSubmissionStatus}</option>
+									
+									<c:if test="${requirement.requirementSubmissionStatus == 'DRAFT'}">
+										<sec:authorize access="hasAnyRole(\'ROLE_ONHOLD_REQUIREMENT\')">
+											<option value='ONHOLD'>ONHOLD</option>
+										</sec:authorize>
+										<sec:authorize access="hasAnyRole(\'ROLE_CANCEL_REQUIREMENT\')">
+											<option value='CANCEL'>CANCEL</option>
+										</sec:authorize>
+									</c:if>
+									
+									<c:if test="${requirement.requirementSubmissionStatus == 'CLOSED'}">
+										<option value='OPEN'>OPEN</option>
+									</c:if>
+									
+									<c:if test="${requirement.requirementSubmissionStatus == 'CANCEL'}">
+										
+									</c:if>
+									
+									<c:if test="${requirement.requirementSubmissionStatus == 'OPEN'}">
+										<sec:authorize access="hasAnyRole(\'ROLE_CLOSE_FILLED_REQUIREMENT\')">
+											<option value='FILLEDCLOSED'>FILLEDCLOSED</option>
+										</sec:authorize>
+										<sec:authorize access="hasAnyRole(\'ROLE_CLOSE_UN_FILLED_REQUIREMENT\')">
+											<option value='UNFILLEDCLOSED'>UNFILLEDCLOSED</option>
+										</sec:authorize>
+										<sec:authorize access="hasAnyRole(\'ROLE_ONHOLD_REQUIREMENT\')">
+											<option value='ONHOLD'>ONHOLD</option>
+										</sec:authorize>
+										<sec:authorize access="hasAnyRole(\'ROLE_CANCEL_REQUIREMENT\')">
+											<option value='CANCEL'>CANCEL</option>
+										</sec:authorize>
+									</c:if>
+									
+									<c:if test="${requirement.requirementSubmissionStatus == 'NEW'}">
+										<option value='OPEN'>OPEN</option>
+										<sec:authorize access="hasAnyRole(\'ROLE_ONHOLD_REQUIREMENT\')">
+											<option value='ONHOLD'>ONHOLD</option>
+										</sec:authorize>
+										<sec:authorize access="hasAnyRole(\'ROLE_CLOSE_FILLED_REQUIREMENT\')">
+											<option value='FILLEDCLOSED'>FILLEDCLOSED</option>
+										</sec:authorize>
+										<sec:authorize access="hasAnyRole(\'ROLE_CLOSE_UN_FILLED_REQUIREMENT\')">
+											<option value='UNFILLEDCLOSED'>UNFILLEDCLOSED</option>
+										</sec:authorize>
+										<sec:authorize access="hasAnyRole(\'ROLE_CANCEL_REQUIREMENT\')">
+											<option value='CANCEL'>CANCEL</option>
+										</sec:authorize>
+									</c:if>
+									
+									<c:if test="${requirement.requirementSubmissionStatus == 'APPROVED'}">
+										
+									</c:if>
+									
+									<c:if test="${requirement.requirementSubmissionStatus == 'REJECTED'}">
+										
+									</c:if>
+									
+									<c:if test="${requirement.requirementSubmissionStatus == 'SUBMITTED'}">
+										<sec:authorize access="hasAnyRole(\'ROLE_ONHOLD_REQUIREMENT\')">
+											<option value='ONHOLD'>ONHOLD</option>
+										</sec:authorize>
+										<sec:authorize access="hasAnyRole(\'ROLE_CANCEL_REQUIREMENT\')">
+											<option value='CANCEL'>CANCEL</option>
+										</sec:authorize>
+									</c:if>
+									
+									<c:if test="${requirement.requirementSubmissionStatus == 'ONHOLD'}">
+										<c:if test="${requirement.requirementSubmissionPreviousStatus == 'OPEN'
+										 || requirement.requirementSubmissionPreviousStatus == null 
+										 || requirement.requirementSubmissionPreviousStatus == ''}">
+											<option value='OPEN'>OPEN</option>
+											<sec:authorize access="hasAnyRole(\'ROLE_CLOSE_FILLED_REQUIREMENT\')">
+												<option value='FILLEDCLOSED'>FILLEDCLOSED</option>
+											</sec:authorize>
+											<sec:authorize access="hasAnyRole(\'ROLE_CLOSE_UN_FILLED_REQUIREMENT\')">
+												<option value='UNFILLEDCLOSED'>UNFILLEDCLOSED</option>
+											</sec:authorize>
+											<sec:authorize access="hasAnyRole(\'ROLE_CANCEL_REQUIREMENT\')">
+												<option value='CANCEL'>CANCEL</option>
+											</sec:authorize>
+										</c:if>
+										<c:if test="${requirement.requirementSubmissionPreviousStatus == 'DRAFT'}">
+											<option value='DRAFT'>DRAFT</option>
+											<sec:authorize access="hasAnyRole(\'ROLE_CANCEL_REQUIREMENT\')">
+												<option value='CANCEL'>CANCEL</option>
+											</sec:authorize>
+										</c:if>
+										<c:if test="${requirement.requirementSubmissionPreviousStatus == 'SUBMITTED'}">
+											<option value='SUBMITTED'>SUBMITTED</option>
+											<sec:authorize access="hasAnyRole(\'ROLE_CANCEL_REQUIREMENT\')">
+												<option value='CANCEL'>CANCEL</option>
+											</sec:authorize>
+										</c:if>
+										<c:if test="${requirement.requirementSubmissionPreviousStatus == 'NEW'}">
+											<option value='OPEN'>OPEN</option>
+											<sec:authorize access="hasAnyRole(\'ROLE_ONHOLD_REQUIREMENT\')">
+												<option value='ONHOLD'>ONHOLD</option>
+											</sec:authorize>
+											<sec:authorize access="hasAnyRole(\'ROLE_CLOSE_FILLED_REQUIREMENT\')">
+												<option value='FILLEDCLOSED'>FILLEDCLOSED</option>
+											</sec:authorize>
+											<sec:authorize access="hasAnyRole(\'ROLE_CLOSE_UN_FILLED_REQUIREMENT\')">
+												<option value='UNFILLEDCLOSED'>UNFILLEDCLOSED</option>
+											</sec:authorize>
+											<sec:authorize access="hasAnyRole(\'ROLE_CANCEL_REQUIREMENT\')">
+												<option value='CANCEL'>CANCEL</option>
+											</sec:authorize>
+										</c:if>
+									</c:if>
+									<c:if test="${requirement.requirementSubmissionStatus == 'UNFILLEDCLOSED'}">
+										<option value='OPEN'>OPEN</option>
+									</c:if>
+									<c:if test="${requirement.requirementSubmissionStatus == 'FILLEDCLOSED'}">
+										<option value='OPEN'>OPEN</option>
+									</c:if>
+								</select>
+							</div>
+						</c:if>
+						
+
+
 			            <c:if test="${ (requirement.requirementSubmissionStatus =='NEW'  || requirement.requirementSubmissionStatus =='DRAFT' || requirement.requirementSubmissionStatus =='SUBMITTED'  || requirement.requirementSubmissionStatus  == 'APPROVED'  || requirement.requirementSubmissionStatus =='REJECTED'  ||  requirement.requirementSubmissionStatus  == 'OPEN' ||  requirement.requirementSubmissionStatus  == 'ONHOLD' ) && (isAdmin == 'true' || requirement.isLoginUserAsApprover  == 'true' || isManager  == 'true' || requirement.isLoginUserAsInitiator == 'true') }">
 			            	<sec:authorize access="hasAnyRole(\'ROLE_VIEW_EDIT_REQUIREMENT\')">  
-			            		  <a href="<c:url value="${appPath}/requirement?requirementUUID=${requirementUUID}"/>"><button  class="btn btn-primary btn-sm" type="button">Edit</button></a> 
+			            		  <a href="<c:url value="${appPath}/requirement?requirementUUID=${requirementUUID}"/>"><button  class="btn btn-primary" type="button">Edit</button></a> 
 			            	</sec:authorize>
 			            </c:if>
 			            <c:if test="${(isAdmin == 'true' && requirement.requirementSubmissionStatus  != 'DRAFT' && requirement.requirementSubmissionStatus != 'ONHOLD' && requirement.requirementSubmissionStatus != 'CLOSED'  && requirement.requirementSubmissionStatus != 'CANCEL' &&  requirement.requirementSubmissionStatus != 'APPROVED' &&  requirement.requirementSubmissionStatus != 'REJECTED'  &&  requirement.requirementSubmissionStatus != 'OPEN' && requirement.requirementSubmissionStatus  !='NEW' && requirement.requirementSubmissionStatus  != 'UNFILLEDCLOSED' && requirement.requirementSubmissionStatus  != 'FILLEDCLOSED' )  || (isPrimaryRecruiter != 'true' && isManager != 'true' && !empty requirement.requirementApproverHierarchyStatus && requirement.requirementSubmissionStatus  !='DRAFT' && requirement.requirementSubmissionStatus != 'ONHOLD'  && requirement.requirementSubmissionStatus != 'CANCEL' &&  requirement.requirementApproverHierarchyStatus !='APPROVED' &&  requirement.requirementApproverHierarchyStatus != 'REJECTED'  &&  requirement.requirementApproverHierarchyStatus != 'OPEN')}">
@@ -173,6 +300,10 @@
 			            <div class="clearfix"></div>
 			            <h2 class="RPadT"> Job Details:</h2> 
 			            <div class="require_one">
+			                <div class="require_wrap_details_cta"> <b>Profile %:</b><span>${requirement.profilePercentage} %</span>
+				            	<div class="clearfix"></div> 
+				            </div> 
+				            
 				            <div class="require_wrap_details_cta"> <b>No. of positions:</b><span>${!empty requirement.positions ? requirement.positions : ' -- '}</span>
 				            	<div class="clearfix"></div> 
 				            </div> 
@@ -273,7 +404,9 @@
 				              <div class="require_wrap_details_cta"> <b>Experience Level:</b><span>${!empty requirement.experienceLevel.name ? requirement.experienceLevel.name : ' -- '}</span>
 				            	<div class="clearfix"></div> 
 				            </div>
-				            
+				             <div class="require_wrap_details_cta"> <b>Process:</b><span>${!empty requirement.process ? requirement.process : ' -- '}</span>
+				            	<div class="clearfix"></div> 
+				            </div>
 				            <c:if test="${!empty sourceleadSectionList}">
 						            <c:forEach var="section" items="${sourceleadSectionList}" varStatus="sectionOrder">
 						               <c:if test="${sectionOrder.index == 0}">
@@ -661,6 +794,7 @@ function importApplicantsToJob(requirementId){
 		    	    $(".import_submission_side_wrap").addClass("import_submission_side_wrap_active");
 		    	    $(".side_mask").fadeIn(200);
 		    	    $("body").css('overflow-y', 'hidden');
+		    	    getSubmissionsUploadedHistory();
 				},
 			});
 }
@@ -704,4 +838,59 @@ $(function(){
 		 $(".assignedGrid1").show();
 	});
 });
+</script>
+<script type="text/javascript">
+function changeStatus(requirementId, requirementStatus){
+	var status = document.getElementById('changeStatusId' + requirementId).value;
+	 var userId ='${SourceLeadWeb_userId}';
+     if(status == "DRAFT"){
+        	 $.ajax({
+             type : "POST",
+        	 url: sourceleadUrl+"/saveChangedStatusFromDraft?"+tokenParamName+"="+tokenValue+"&requirementId="+requirementId+"&status="+status+"&userId="+userId,
+	        	 success :function(result) {
+	        		 	if (result.response === "SESSION_TIMEDOUT") {
+			  				location.replace(sourceleadUrl);
+		                } else if (result.response === "AWKWARD") {
+		                    location.href = "/errorPage";
+		                } else if (result.response === "SUCCESS") {
+		                	$("#changeStatusId" +requirementId).val(status);
+		                	$(".success_pop").show();
+		                	$(".success_pop span").html("Changed Requirement status to " + status);
+		                	 setTimeout(function(){
+				                	$(".success_pop").hide();
+				                	location.reload();
+		                	 }, 1500);
+		                } else if (result.indexOf('Sign In') !== -1) {
+							location.replace(sourceleadUrl);
+						} else {
+		                    showError("Operation failed, please try again");
+		                }
+	         	}
+        	});
+         }else{
+        	 $.ajax({
+             type : "POST",
+        	 url: sourceleadUrl+"/saveChangedStatus?"+tokenParamName+"="+tokenValue+"&requirementId="+requirementId+"&status="+status,
+	        	 success :function(result) {
+	        		 if (result.response === "SESSION_TIMEDOUT") {
+			  				location.replace(sourceleadUrl);
+		                } else if (result.response === "AWKWARD") {
+		                    location.href = "/errorPage";
+		                } else if (result.response === "SUCCESS") {
+		                	$("#changeStatusId" +requirementId).val(status);
+		                	$(".success_pop").show();
+		                	$(".success_pop span").html("Changed Requirement status to " + status);
+		                	 setTimeout(function(){
+				                	$(".success_pop").hide();
+				                	location.reload();
+		                	 }, 1500);
+		                } else if (result.indexOf('Sign In') !== -1) {
+							location.replace(sourceleadUrl);
+						} else {
+		                    showError("Operation failed, please try again");
+		                }
+	         	}
+        	});
+         }
+	}
 </script>

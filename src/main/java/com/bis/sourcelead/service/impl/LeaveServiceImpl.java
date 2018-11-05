@@ -18,6 +18,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 import javax.mail.internet.InternetAddress;
 
@@ -290,7 +291,10 @@ public class LeaveServiceImpl implements LeaveService{
 			leave.setFileName(fileinfo.getFileName());
 			leave.setFileContentType(fileinfo.getContentType());
 			leave.setFileUrl(fileinfo.getFileURL());
-			FileUploadUtil.moveFile(leaveDTO.getStaticPath(), fileinfo, "leaveDocuments");
+			try {
+				FileUploadUtil.moveFile(leaveDTO.getStaticPath(), fileinfo, "leaveDocuments");
+			} catch (Exception e) {
+			}
 		}
 		
 		UserRole urole = userRoleService.getUserRoleByUserIdAndLocationId(leave.getUser().getId(), orgLocations.getId());
@@ -298,6 +302,7 @@ public class LeaveServiceImpl implements LeaveService{
 			if("Grade".equalsIgnoreCase(leaveType.getAutoApproveType())){
 				if(urole.getGradeId() != null){
 					if(leaveType.getAutoApproveTypeListNames().contains(urole.getGradeId().getGradeName())){
+						leave.setApproverHierarchyList(getApproverList(leaveDTO,leave,user));
 						leave.setStatus(Constants.LEAVE_APPROVED);
 					}else{
 						leave.setApproverHierarchyList(getApproverList(leaveDTO,leave,user));
@@ -309,12 +314,18 @@ public class LeaveServiceImpl implements LeaveService{
 				}
 			}else if("Role".equalsIgnoreCase(leaveType.getAutoApproveType())){
 				if(leaveType.getAutoApproveTypeListNames().contains(urole.getRoles().getRoleName())){
+					leave.setApproverHierarchyList(getApproverList(leaveDTO,leave,user));
 					leave.setStatus(Constants.LEAVE_APPROVED);
 				}else{
-					leave.setApproverHierarchyList(getApproverList(leaveDTO,leave,user));
-					leave.setStatus(Constants.LEAVE_PENDING);
+					if(!leaveDTO.getIsSuperUser()){
+						leave.setApproverHierarchyList(getApproverList(leaveDTO,leave,user));
+						leave.setStatus(Constants.LEAVE_PENDING);
+					}else {
+						leave.setStatus(Constants.LEAVE_APPROVED);
+					}
 				}
 			}else {
+				leave.setApproverHierarchyList(getApproverList(leaveDTO,leave,user));
 				leave.setStatus(Constants.LEAVE_APPROVED);
 			}
 		}else if(leaveDTO.getIsSuperUser()){
@@ -713,7 +724,7 @@ public class LeaveServiceImpl implements LeaveService{
 					}
 				}
 				}
-				leaveDto.setUpdatedDate(ConversionUtil.getDateAsString(leave.getUpdatedDate()));
+				leaveDto.setUpdatedDate(commonUtil.dateStrFromOrgDateFormatter(orgLocations.getDateFormat(), leave.getUpdatedDate()));
 				leavelistr.add(leaveDto);
 			}
 		}
@@ -1077,7 +1088,7 @@ public class LeaveServiceImpl implements LeaveService{
 				leaveDto.setToDateToHalfTime(leave.getToDateToHalfTime());
 			}
 			
-			leaveDto.setCreatedDate(ConversionUtil.getDateAsString(leave.getCreatedDate()));
+			leaveDto.setCreatedDate(commonUtil.dateStrFromOrgDateFormatter(orgLocations.getDateFormat(), leave.getCreatedDate()));
 			
 			if(StringUtils.isNotBlank(leave.getRejectedReason())){
 				leaveDto.setRejectedReason(leave.getRejectedReason());
@@ -1088,7 +1099,7 @@ public class LeaveServiceImpl implements LeaveService{
 			}
 			
 			if(leave.getUpdatedDate() != null)
-			leaveDto.setUpdatedDate(ConversionUtil.getDateAsString(leave.getUpdatedDate()));
+			leaveDto.setUpdatedDate(commonUtil.dateStrFromOrgDateFormatter(orgLocations.getDateFormat(), leave.getUpdatedDate()));
 			leaveDto.setLeaveUUID(leave.getLeaveUUID());
 			if(leave.getApprovedBy() != null){
 				StringBuilder sb = new StringBuilder();
@@ -1148,6 +1159,7 @@ public class LeaveServiceImpl implements LeaveService{
 			currentWeekEndDate = CalendarUtil.getCurrentWeekDayByCalendar(cal, "SAT", orgLocations.getDateFormat()).getTime();
 		}else{
 			leaveDates = commonUtil.orgLocationDateFormat(orgLocations.getDateFormat(),leaveDate);
+			cal.setTime(leaveDates);
 		}
 		List<LeaveApproveHierarchy> leaveApproveHierarchiesList = leaveDao.getEmployeeRequestedLeavesBylocationIdAndDuration(orgLocations.getId(), userId, status, currentWeekStarDate, currentWeekEndDate,department,leaveDates);
 			currentWeekStarDate = CalendarUtil.getPreviousWeekDayByCalendar(cal, "SUN", orgLocations.getDateFormat()).getTime();
@@ -1305,6 +1317,17 @@ public class LeaveServiceImpl implements LeaveService{
 		int cancelledCounts = 0;
 		LeaveDTO leaveDto = new LeaveDTO();
 		List<LeaveApproveHierarchy> leavesList = leaveDao.getAllEmployeesLeavesCounts(orgLocationId,userId,loginUserRole,orgId);
+		
+		List<LeaveApproveHierarchy> pendingleavesList = leavesList.stream().filter(l -> Constants.PENDING.equalsIgnoreCase(l.getLeaveid().getStatus())).collect(Collectors.toList());
+		requestedCounts = pendingleavesList.size();
+		List<LeaveApproveHierarchy> appleavesList = leavesList.stream().filter(l -> Constants.APPROVED.equalsIgnoreCase(l.getLeaveid().getStatus())).collect(Collectors.toList());
+		approvedCounts = appleavesList.size();
+		List<LeaveApproveHierarchy> rejleavesList = leavesList.stream().filter(l -> Constants.REJECTED.equalsIgnoreCase(l.getLeaveid().getStatus())).collect(Collectors.toList());
+		rejectedCounts = rejleavesList.size();
+		List<LeaveApproveHierarchy> canceledleavesList = leavesList.stream().filter(l -> Constants.LEAVE_CANCELLED.equalsIgnoreCase(l.getLeaveid().getStatus())).collect(Collectors.toList());
+		cancelledCounts = canceledleavesList.size();
+		
+	/*	
 		for (LeaveApproveHierarchy lah : leavesList) {
 			if(Constants.PENDING.equalsIgnoreCase(lah.getLeaveid().getStatus())) {
 				requestedCounts = requestedCounts + 1;
@@ -1318,7 +1341,7 @@ public class LeaveServiceImpl implements LeaveService{
 			if(Constants.LEAVE_CANCELLED.equalsIgnoreCase(lah.getLeaveid().getStatus())) {
 				cancelledCounts = cancelledCounts + 1;
 			}
-		}
+		}*/
 		leaveDto.setEmployeeRequestedCounts(String.valueOf(requestedCounts));
 		leaveDto.setEmployeeApprovedCounts(String.valueOf(approvedCounts));
 		leaveDto.setEmployeeRejectedCounts(String.valueOf(rejectedCounts));

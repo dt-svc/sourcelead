@@ -139,4 +139,8 @@ public interface ProjectMembersDao {
 	public List<ProjectMembers> getAssignedProjectMembersGroupListByProjectClientId(List<Long> projectClientsId) throws Exception;
 	
 	boolean isProjectMembersExisted(Long projectId,Long masterCandidateId,Long projectClientId) throws Exception;
+	
+	public List<ProjectMembers> getAllActiveProjectsByUserIdAndOrgLocationId(Long userId,Long orgLocationId) throws Exception;
+	
+	List<ProjectMembers> getProjectMembersListByCandidateIdAndProjectClientId(Long candidateId,List<Long> projectClientsId) throws Exception;
 }

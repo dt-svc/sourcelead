@@ -65,6 +65,7 @@ $(document).ready(function(){
         success: function(data) {
         	if(data !== ""){
         		$("#maintenanceStatus").append(data.mainMessage);
+        		 $(".marQ").css({ display: "block" });
         	}
         }
 	}); 
@@ -74,7 +75,7 @@ $(document).ready(function(){
  
  <div id="slideit" class="bgImg" style="background-image: url(/resources/images/login-psd.jpg)"></div>
  <div class="marQ">
-        <marquee behavior="scroll" direction="left" id="">
+        <marquee behavior="scroll" direction="left">
         <p id="maintenanceStatus"></p>
         </marquee>
     </div>

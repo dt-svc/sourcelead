@@ -49,6 +49,7 @@
                  <input type="hidden" id="postDeductionLength" name="postDeductionLength" value="">
                  <input type="hidden" id="totalContributionsLngth" name="totalContributionsLngth" value="">
                  <input type="hidden" id="total1payItemsLength" name="total1payItemsLength" value="">
+                 <input type="hidden" id="totalloanAdvanceLength" name="totalloanAdvanceLength" value="">
                  <input type="hidden" id="assSalType" name="assSalType" value="">
                  <input type="hidden" id="assSalary" name="assSalary" value="">
               
@@ -118,16 +119,22 @@
                     </td>
                 </tr>
                 <tr>
-                  <td colspan="2">
+                  <td colspan="2" id="payItemCol">
                   <div id="payItemDiv"></div>
+                    </td>
+                </tr>
+                
+                  <tr>
+                  <td colspan="2" id="loanAdvanceCol">
+                  <div id="loanAdvancesDiv"></div>
                     </td>
                 </tr>
                  
                  <tr>
-                  <td>
+                  <td id="postDedCol">
                   <div id="postdedDiv"></div>
                     </td>
-                  <td>
+                  <td id="preDedCol">
                   <div id="prededDiv"></div>
                     </td>
                 </tr>
@@ -178,7 +185,7 @@
                       </tfoot>
                     </table>
                     </td>
-                  <td>
+                  <td id="contributionCol">
                   <div id="employerPaidBenefitDiv"></div>
                     </td>
                 </tr>
@@ -369,7 +376,7 @@
 			            postDed = postDed + '<th>Description</th>';
 			            postDed = postDed + '<th>Amount</th>';
 			            postDed = postDed + ' </tr>';
-			            if(json.postDed != null && json.postDed.length){
+			            if(json.postDed != null && json.postDed.length > 0){ 
 			            	  for (var i=0; i< json.postDed.length; i++){
 					            	var ded = json.postDed[i];
 				        			postDed = postDed + '<tr>';
@@ -392,9 +399,12 @@
 		                      postDed = postDed + '</tr>';
 		                      postDed = postDed + '</tfoot>';
 		                      postDed = postDed + '</table>';
+		                      $("#postDedCol").show(); 
 		                      $("#postdedDiv").empty(); 
 		                      $("#postdedDiv").append(postDed);
 			            	  
+			            }else{
+			            	$("#postDedCol").hide(); 
 			            }
 	                     
 	                        var preDed = "";
@@ -409,7 +419,7 @@
 	                        preDed = preDed + '<th>Description</th>';
 	                        preDed = preDed + '<th>Amount</th>';
 	                        preDed = preDed + ' </tr>';
-	                        if(json.preDed != null && json.preDed.length){
+	                        if(json.preDed != null && json.preDed.length > 0){
 				            for (var i=0; i< json.preDed.length; i++){
 				            	var preded = json.preDed[i];
 				            	preDed = preDed + '<tr>';
@@ -431,8 +441,11 @@
 				            preDed = preDed + '</tr>';
 				            preDed = preDed + '</tfoot>';
 				            preDed = preDed + '</table>';
+				              $("#preDedCol").show();
 		                      $("#prededDiv").empty();
 		                      $("#prededDiv").append(preDed);
+	                        }else{
+	                        	 $("#preDedCol").hide();
 	                        }
 		                      
 		                      
@@ -472,8 +485,11 @@
 		                        output = output + '  </tr>';
 		                        output = output + '  </tfoot>';
 		                        output = output + '  </table>';
+		                        $("#contributionCol").show();
 		                        $("#employerPaidBenefitDiv").empty();
 		                        $("#employerPaidBenefitDiv").append(output);
+		                  }else{
+		                	  $("#contributionCol").hide();
 		                  }
 	                        
 	                        
@@ -502,10 +518,11 @@
 						            	var pi = json.payItem[i];
 						            	payItem = payItem +' <tr>';
 						            	payItem = payItem +' <td>'+pi.payItemName+'</td>';	
+						            	payItem = payItem + '<td>';
 						            	payItem = payItem +'<input type="hidden" value='+pi.id+' id="id" name="payItem['+i+'].payItemId"/>';
 						            	payItem = payItem +'<input type="hidden" value='+pi.payItemName+' id="prePayItemName" name="payItem['+i+'].prePayItemName"/>';
 						            	payItem = payItem +'<input type="hidden" value='+pi.payItemAmt+' id="prePayItemAmt" name="payItem['+i+'].prePayItemAmt"/>';
-						            	payItem = payItem +' <td><i class="fa fa-dollar paddingRight"></i><input type="text" class="formControl" id="payItemAmount'+i+'" name="payItem['+i+'].payItemAmount" readOnly value='+pi.payItemAmt+'></td>';
+						            	payItem = payItem +' <i class="fa fa-dollar paddingRight"></i><input type="text" class="formControl" id="payItemAmount'+i+'" name="payItem['+i+'].amount" readOnly value='+pi.payItemAmt+'></td>';
 						            	payItem = payItem +' <td>';
 						            	payItem = payItem +' <div class="checkbox-new ml mr pull-left">';
 						            	if(pi.isBlocked == 'YES' && pi.isBlocked != null){
@@ -522,7 +539,7 @@
 						            	}
 						            	
 						            	payItem = payItem +' </div>';
-						            	payItem = payItem +' </tdgetPreDeductionAmount>';
+						            	payItem = payItem +' </td>';
 						            	payItem = payItem +' </tr>';
 				                  }
 			                	  $("#total1payItemsLength").val(json.payItem.length);
@@ -537,9 +554,54 @@
 		                          payItem = payItem +' </tr>';
 		                          payItem = payItem +' </tfoot>';
 		                          payItem = payItem +' </table>';
+		                          $("#payItemCol").show();
 		                          $("#payItemDiv").empty();
 		                          $("#payItemDiv").append(payItem)
 		                          $(".tablePayslip").find(".fa-dollar, .fa-clock-o").next(".formControl").css({"width":"94.5%"});
+			                  }else{
+			                	  $("#payItemCol").hide();
+			                  }
+	                        
+	                        
+	                        // Loan And Advances
+	                        var loanAdvance = "";
+	                        
+	                        loanAdvance = loanAdvance +'<table width="100%" class="table table-bordered">';
+	                        loanAdvance = loanAdvance +'<thead>';
+	                        loanAdvance = loanAdvance +' <tr>';
+	                        loanAdvance = loanAdvance +'<th colspan="4">Loan & Advances</th>';
+	                        loanAdvance = loanAdvance +'</tr>';
+	                        loanAdvance = loanAdvance +'  </thead>';
+	                        loanAdvance = loanAdvance +' <tbody>';
+	                        loanAdvance = loanAdvance +' <tr>';
+	                        loanAdvance = loanAdvance +'  <th>Loan Name</th>';
+	                        loanAdvance = loanAdvance +'  <th>Amount</th>';
+	                        loanAdvance = loanAdvance +'</tr>';
+	                        if(json.loanAdvance != null && json.loanAdvance.length > 0){
+			                	  for (var i=0; i< json.loanAdvance.length; i++){
+						            	var pi = json.loanAdvance[i];
+						            	loanAdvance = loanAdvance +' <tr>';
+						            	loanAdvance = loanAdvance +' <td>'+pi.loanAndAdvName+'</td>';	
+						            	loanAdvance = loanAdvance +' <td><i class="fa fa-dollar paddingRight"></i><input type="text" id="loanAmount'+i+'" name="loanAdvance['+i+'].loanAmount" readOnly value='+pi.loanAmount+'></td>';
+						            	loanAdvance = loanAdvance +' </tr>';
+				                  }
+			                	  $("#totalloanAdvanceLength").val(json.loanAdvance.length);
+			                	  
+			                	  
+			                	  loanAdvance = loanAdvance +'</tbody>';
+		                          loanAdvance = loanAdvance +'<tfoot>';
+		                          loanAdvance = loanAdvance +' <tr>';
+		                          loanAdvance = loanAdvance +'  <th>Total</th>';
+		                          loanAdvance = loanAdvance +'<td><span id="loanTotalAmount">$ '+json.loanAmountTotal+'</span></td>';
+		                          loanAdvance = loanAdvance +' </tr>';
+		                          loanAdvance = loanAdvance +' </tfoot>';
+		                          loanAdvance = loanAdvance +' </table>';
+		                          $("#loanAdvanceCol").show();
+		                          $("#loanAdvancesDiv").empty();
+		                          $("#loanAdvancesDiv").append(loanAdvance)
+		                          $(".tablePayslip").find(".fa-dollar, .fa-clock-o").next(".formControl").css({"width":"94.5%"});
+			                  }else{
+			                	  $("#loanAdvanceCol").hide();
 			                  }
 	                          
 		        },
@@ -563,7 +625,15 @@ function calculatePreTaxDedAmount(){
 	var maxCount = $("#preDeductionLength").val();
 	var amount = 0;
 	for(var i=0;i<maxCount; i++){
-		amount += parseFloat($("#preDeductionAmount"+i+"").val());
+ 		var preEditAmount = $("#preDeductionAmount"+i+"").val();
+		if(preEditAmount != null && preEditAmount != '' && preEditAmount != 'undefined')
+			{
+			amount += parseFloat(preEditAmount);
+			}
+		else
+			{
+			$("#preDeductionTotal").html("$ "+amount+""); 
+			}
 	} 
 	$("#preDeductionTotal").html("$ "+amount+""); 
 }
@@ -572,7 +642,11 @@ function calculatePostTaxDedAmount(){
 	var maxCount = $("#postDeductionLength").val();
 	var amount = 0;
 	for(var i=0;i<maxCount; i++){
-		amount += parseFloat($("#"+i+"amount").val());
+		var editedAmount = $("#"+i+"amount").val()
+		if(editedAmount != null && editedAmount != '' && editedAmount != 'undefined')
+			amount += parseFloat(editedAmount);
+		else
+			$("#postDeductionTotal").html("$ "+amount+""); 
 	} 
 	$("#postDeductionTotal").html("$ "+amount+""); 
 }
@@ -581,7 +655,11 @@ function calculateTotalCotributionsAmount(){
 	var maxCount = $("#totalContributionsLngth").val();
 	var amount = 0;
 	for(var i=0;i<maxCount; i++){
-		amount += parseFloat($("#totalContributions"+i+"").val());
+		var contriAmount = $("#totalContributions"+i+"").val();
+		if(contriAmount != null && contriAmount != '' && contriAmount != 'undefined')
+			amount += parseFloat(contriAmount);
+		else
+			$("#totalGrandContributions").html("$ "+amount+""); 
 	} 
 	$("#totalGrandContributions").html("$ "+amount+""); 
 }
@@ -590,10 +668,23 @@ function calculateTotalPayItemAmount(){
 	var maxCount = $("#total1payItemsLength").val();
 	var amount = 0;
 	for(var i=0;i<maxCount; i++){
-		amount += parseFloat($("#payItemAmount"+i+"").val());
+		var pItemAmount = $("#payItemAmount"+i+"").val();
+		if(pItemAmount != null && pItemAmount != '' && pItemAmount != 'undefined')
+			amount += parseFloat(pItemAmount);
+		else
+			$("#payItemTotalAmount").html("$ "+amount+""); 
 	} 
 	$("#payItemTotalAmount").html("$ "+amount+""); 
 }
+
+/* function calculateTotalLoanAmount(){
+	var maxCount = $("#totalloanAdvanceLength").val();
+	var amount = 0;
+	for(var i=1;i<maxCount; i++){
+		amount += parseFloat($("#loanAmount"+i+"").val());
+	} 
+	$("#loanTotalAmount").html("$ "+amount+""); 
+} */
 </script>
 <script>
 $(function(){
@@ -604,12 +695,14 @@ function editUspayslip(event){
 	var maxPostCount = $("#postDeductionLength").val();
 	var maxContriCount = $("#totalContributionsLngth").val();
 	var maxPayItemCount = $("#total1payItemsLength").val();
+// 	var maxLoanAdvanceCount = $("#totalloanAdvanceLength").val();
 	var text = document.getElementById("editUspaysliptext");
 	if(text.innerHTML === "Edit") {
 		text.innerHTML = "Save";
-		for(var i = 0; i < maxPreCount; i++){
-			$("#preDeductionAmount"+i+"").attr("onblur","calculatePreTaxDedAmount();");
-		}
+			for(var i = 0; i < maxPreCount; i++){
+				$("#preDeductionAmount"+i+"").attr("onblur","calculatePreTaxDedAmount();");
+			}
+		
 		for(var i = 0; i < maxPostCount; i++){
 			$("#"+i+"amount").attr("onblur","calculatePostTaxDedAmount();");
 		}
@@ -619,6 +712,9 @@ function editUspayslip(event){
 		for(var i = 0; i < maxPayItemCount; i++){
 			$("#payItemAmount"+i+"").attr("onblur","calculateTotalPayItemAmount();");
 		}
+	/* 	for(var i = 0; i < maxLoanAdvanceCount; i++){
+			$("#loanAmount"+i+"").attr("onblur","calculateTotalLoanAmount();");
+		} */
 	}else {
 		text.innerHTML = "Edit";
 		for(var i = 0; i < maxPreCount; i++){
@@ -633,6 +729,9 @@ function editUspayslip(event){
 		for(var i = 0; i < maxPayItemCount; i++){
 			$("#payItemAmount"+i+"").removeAttr("onblur");
 		}
+		/* for(var i = 0; i < maxLoanAdvanceCount; i++){
+			$("#loanAmount"+i+"").removeAttr("onblur");
+		} */
 		savePayrollAdjustment();
 	}
 	

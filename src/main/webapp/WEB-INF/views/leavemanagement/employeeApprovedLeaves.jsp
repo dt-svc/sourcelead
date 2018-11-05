@@ -85,7 +85,7 @@ function redirectlocation(location){
 		var userId = '${SourceLeadWeb_userId}';
 		var searchValue = $("#approvedLeavesTableSearch").val();
 		searchValue = searchValue ? searchValue : "";
-		var url = sourceleadUrl+"/getEmployeeRequestedLeaves?"+tokenParamName+"="+tokenValue+"&searchValue="+searchValue+"&orgLocationId="+orgLocationId+"&userId="+userId+"&leaveStatus=APPROVED";
+		var url = sourceleadUrl+"/getEmployeeRequestedLeaves?"+tokenParamName+"="+tokenValue+"&orgLocationId="+orgLocationId+"&userId="+userId+"&leaveStatus=APPROVED&searchValue="+searchValue;
 		prepareApprovedEmployeesList(url);
 }
 </script> 
@@ -163,6 +163,7 @@ function approvedEmployeesPagination(url){
 	          },{
             "targets": colIndex++,
             "data": "duration",
+            "sortable":false,
             "render": function ( data, type, opt, meta ) {
             	 var result = "";
             	 result = result + '   <div title="'+opt.duration+'" class="tbldata-dotdot-100">'+opt.duration+'</div>';
@@ -171,6 +172,7 @@ function approvedEmployeesPagination(url){
           }, {
               "targets": colIndex++,
               "data": "noOfDays",
+              "sortable":false,
               "render": function ( data, type, opt, meta ) {
             	   var result = "";
             	   result = result + '     <div class="tblminwidth-75">'+opt.appliedNoOfDays+'</div>';		 
@@ -200,13 +202,14 @@ function approvedEmployeesPagination(url){
 	    	  		 if(opt.approvedBy != null && opt.approvedBy != 'undefined' && opt.approvedBy != ''){
 	    	  			result = result + '     <div title="'+opt.approvedBy+'" class="tblminwidth-75">'+opt.approvedBy+'</div>';
 	    	  		 }else{
-	    	  			result = result + '     <div class="tblminwidth-75">System Approved</div>';
+	    	  			result = result + '     <div class="tblminwidth-75">Auto Approved</div>';
 	    	  		 }
   	                return result; 
 	    	  	}
 	    	  },{
 	    	  	"targets": colIndex++,
 	    	  	"data": "updatedDate",
+	    	  	"sortable":false,
 	    	  	"render": function(data, type, opt, meta) {
 	    	  		 var result = "";
 	    	  		result = result + ' <div class="tblminwidth-75">'+opt.updatedDate+'</div>';	
@@ -215,6 +218,7 @@ function approvedEmployeesPagination(url){
 	    	  }, {
                   "targets": colIndex++,
                   "data": "action",
+                  "sortable":false,
                   "render": function ( data, type, opt, meta ) {
                 	   var result = "";
                 	   '<sec:authorize access="hasAnyRole(\'ROLE_CANCEL_LEAVE\')">';
@@ -228,7 +232,8 @@ function approvedEmployeesPagination(url){
                   }
                 }],
                 "scrollCollapse": false,
-            	"lengthMenu": [[10, 15, 20, -1], [10, 15, 20, "All"]],
+            	"lengthMenu": [[10, 15, 20], [10, 15, 20]],
+            	"aaSorting" : [ [5, 'desc' ] ],
             	"bLengthChange": true,
             	"bDestroy": true,
             	"ordering": true,

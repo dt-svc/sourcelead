@@ -15,7 +15,7 @@
 					<select class="chosen-select form-control" name="${headersNamesMap[rows.count]}" field-name="${headersFieldNamesMap[rows.count]}" >
 						<option value="">- - - Select - - -</option>
 						<c:forEach var="map" items="${dataWithCellId}">
-							<option value="${map.key}">${map.value}(column-${map.key})</option>
+							<option value="${map.key}" ${columnHeader == map.value.replace("*", "") ? 'selected' : ''}>${map.value}(column-${map.key})</option>
 						</c:forEach>
 					</select>
 				</div>
@@ -30,7 +30,7 @@
 					<select class="chosen-select form-control"name="${headersNamesMap[rows.count]}" field-name="${headersFieldNamesMap[rows.count]}" data-validation="required">
 						<option value="">- - - Select - - -</option>
 						<c:forEach var="map" items="${dataWithCellId}">
-							<option value="${map.key}">${map.value}(column-${map.key})</option>
+							<option value="${map.key}" ${columnHeader == map.value.replace("*", "") ? 'selected' : ''}>${map.value}(column-${map.key})</option>
 						</c:forEach>
 					</select>
 				</div>

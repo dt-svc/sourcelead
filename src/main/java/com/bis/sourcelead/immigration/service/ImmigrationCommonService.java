@@ -40,7 +40,7 @@ import com.bis.sourcelead.entity.User;
  */
 public interface ImmigrationCommonService {
 	
-	List<ImmigrationTemplate> getImmigrationTemplateList(OrgLocations orgLocations);
+	List<ImmigrationTemplate> getImmigrationTemplateList(OrgLocations orgLocations, Long status);
 
 	Immigration savePetitionDetails(ImmigrationDTO immigrationDTO, User user, OrgLocations orgLocations, String[] ids) throws Exception;
 
@@ -191,5 +191,13 @@ public interface ImmigrationCommonService {
     List<LcaDetailsDTO> getEmployeeByLcaId(Long lcaId ,OrgLocations orgLocations)throws Exception;
    
     LcaHistory  getLcaHistoryByStatus(Long immigrationId,Long candidateId, String isCurrent);  
+    
+    LcaHistory saveLcaHistory(LcaHistory lcaHistory);
+    
+    int updateLcaHistoryStatusByLcaNumber(Long lhId,Long immigrationId,Long candidateId);
+    
+    int deleteLcaHistoryDetailsByImmigrationId(Long immigrationId);
+    
+    List<String> getAllExpiredCandidatesFromLcaHistoryByLcaId(Long lcaId);
  //   void deleteLcaPlaceOfEmpmntDetails(Long remaininglpoeIds[]);
 }

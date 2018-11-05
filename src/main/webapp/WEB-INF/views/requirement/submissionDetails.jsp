@@ -1374,7 +1374,7 @@ function acceptingOffer(offerStatus,submissionId,offerId){
           		$("#"+(offerId)+"showOfferStatus").html("<font color='red' >OFFERREJECTED</font>");
           	 }
              $("#offerLoading").removeAttr('style');
-             $("#remove_user_pop, .project_inn_mask").fadeOut(200);
+             $("#remove_user_pop, .comMask").fadeOut(200);
         	 getOfferDetails(submissionId);
         	 
        },
@@ -1979,7 +1979,7 @@ function interviewFeedback(interviewId,templateId,id,submissionId) {
 </script>
 <script type="text/javascript">
 function viewfeedback(requirementInterviewerId,templateId,feedbackStatus){
-		var sourceleadUrl ='${sourceleadUrl}';
+	var sourceleadUrl ='${sourceleadUrl}';
 		if(feedbackStatus == "Y"){
 			$('.shownofeedback').hide();
 			$('.showfeedback').show();
@@ -2032,7 +2032,7 @@ function viewfeedback(requirementInterviewerId,templateId,feedbackStatus){
 			$(".bg_mask").fadeIn(200);
 			$.ajax({
 		    	type: "GET",
-		    	url: sourceleadUrl+"/getPublicInterviewFeedbackTemplate?templateId="+templateId+"&requirementInterviewid="+requirementInterviewerId, 
+		    	url: sourceleadUrl+"/ws/getPublicInterviewFeedbackTemplate?templateId="+templateId+"&requirementInterviewid="+requirementInterviewerId, 
 		        success: function(data) {
 		        	var json = JSON.parse(data);
 			        	if(json.comment != null && json.comment != '' && json.comment != 'undefined'){

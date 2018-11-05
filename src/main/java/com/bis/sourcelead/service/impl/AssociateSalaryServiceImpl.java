@@ -23,17 +23,17 @@ import com.bis.sourcelead.dto.AssociateSalaryDTO;
 import com.bis.sourcelead.dto.CandidateDTO;
 import com.bis.sourcelead.dto.Response;
 import com.bis.sourcelead.dto.ResponseList;
-import com.bis.sourcelead.dto.UserGroupDTO;
+import com.bis.sourcelead.dto.SalaryDTO;
 import com.bis.sourcelead.entity.AssociatePayItem;
 import com.bis.sourcelead.entity.AssociateSalary;
 import com.bis.sourcelead.entity.AssociateSalaryHistory;
+import com.bis.sourcelead.entity.AssociateSalaryInd;
 import com.bis.sourcelead.entity.Candidate;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.entity.UserGroup;
 import com.bis.sourcelead.enums.Result;
 import com.bis.sourcelead.service.AssociateSalaryService;
-import com.bis.sourcelead.service.UserGroupService;
 import com.bis.sourcelead.service.UserService;
 import com.bis.sourcelead.util.CommonUtil;
 import com.bis.sourcelead.util.SourceLeadRandomCodeHelper;
@@ -321,8 +321,7 @@ public class AssociateSalaryServiceImpl implements AssociateSalaryService{
 	{
 		return associateSalaryDao.findAssociatePayItemByPayrollId(payrollId);
 	}
-
-	@Override
+	
 	public AssociateSalary getAssociateSalaryByCandidateIdAndOrgLocationId(Long candidateId, Long locationId)
 	{
 		return associateSalaryDao.getAssociateSalaryByCandidateIdAndOrgLocationId(candidateId, locationId);
@@ -331,5 +330,29 @@ public class AssociateSalaryServiceImpl implements AssociateSalaryService{
 	@Override
 	public ResponseList<AssociateSalary> getAssociateSalaryListByLocationIdAndGroupId(OrgLocations orgLocation, Long groupId,CandidateDTO dto) {
 		return associateSalaryDao.getAssociateSalaryListByLocationIdAndGroupId(orgLocation, groupId,dto);
+	}
+
+	@Override
+	public List<AssociateSalaryInd> getIndAssociateSalaryListByGroupId(OrgLocations orgLocation, long groupId) {
+		List<AssociateSalaryInd> list = associateSalaryDao.getIndAssociateSalaryListByGroupId(orgLocation, groupId);
+		return list;
+	}
+
+	@Override
+	public SalaryDTO getSalaryByGroupId(OrgLocations orgLocation, Long candidateId,Date freqStartDate, Date freqEndDate)
+	{
+		return associateSalaryDao.getSalaryByGroupId(orgLocation, candidateId,freqStartDate,freqEndDate);
+	}
+	
+	@Override
+	public List<AssociateSalaryInd> getIndAssociateSalaryListByGroupId(OrgLocations orgLocation, long groupId,
+			String payType) {
+		return associateSalaryDao.getIndAssociateSalaryListByGroupId(orgLocation,groupId,payType);
+	}
+
+	@Override
+	public List<AssociateSalaryInd> getIndAssociateSalaryListByGroupIdForInitiatePayRoll(OrgLocations orgLocation,
+			long groupId, String payType, Date fqStartDate, Date fqEndDate) {
+		return associateSalaryDao.getIndAssociateSalaryListByGroupIdForInitiatePayRoll(orgLocation, groupId, payType, fqStartDate, fqEndDate);
 	}
 }

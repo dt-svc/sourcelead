@@ -19,7 +19,7 @@
   <section class="content-header clearfix">
       <div class="pull-left positionRelative"><h2>Add LCA</h2>
     </div>
-    <div class="pull-right brud-crum"><a href="<c:url value='${appPath}/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a> &raquo; &raquo; <a href="/app/immigration/viewImmigrationList">Immigration List</a>&raquo;  <a href="/app/immigration/viewLCAList">LCA List</a>&raquo; Add LCA</div>
+    <div class="pull-right brud-crum"><a href="<c:url value='${appPath}/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a> &raquo; &raquo; <a href="/app/immigration/viewImmigrationList">Petition List</a>&raquo;  <a href="/app/immigration/viewLCAList">LCA List</a>&raquo; Add LCA</div>
   </section>
   <div class="content-area content-new clearfix">
   
@@ -32,22 +32,22 @@
 			</c:if>
 			
   	<input type="hidden" id="lcaId" name="lcaId" value="${lcaDTO.lcaId}">
-	<%-- <input type="hidden" id="plsofEmpmtId" name="i -->d">--%>
-  	
-  	<%-- <input type="hidden" name="lcaDocumentList[0].docId" value="${lcaDTO.lcaDocumentList[0].docId}"> --%>
+  	<input type="hidden" id="visaClsfId" name="visaClsfId" value="${lcaDTO.visaClsfId}">
     <div class="row clearfix mt" >
+         
          <div class="col-xs-12 col-sm-6 col-md-6 minHeight50 mb" id="errLcaNoDiv">
             <label class="col-md-4">LCA No<span class="text-danger paddingLeft">*</span></label>
             <div class="col-md-8">
-                <input type="text" name="lcaNo"  id="lcaNo" class="form-control" value="${lcaDTO.lcaNo}" placeholder="I-XXX-XXXXX-XXXXXX" field-name="LCA NO"
-								data-validation="requiredx" onkeyup="validateLcaNumber();">
+                <input type="text" name="lcaNo"  id="lcaNo" class="form-control" value="${lcaDTO.lcaNo}" placeholder="LCA Number" field-name="LCA NO"
+								data-validation="required validate_LcaNum validate_length length1-30" onkeyup="validateLcaNumber();" onblur="validateLcaNumber();">
           	</div>
-          </div>
+        </div>
+          
            <div class="col-xs-12 col-sm-6 col-md-6 minHeight50 mb" id="errLcaTitleDiv">
             <label class="col-md-4">LCA Title<span class="text-danger paddingLeft">*</span></label>
             <div class="col-md-8">
                 <input type="text" name="lcaTitle" id="lcaTitle" class="form-control" value="${lcaDTO.lcaTitle}" placeholder="LCA Title" field-name="LCA Title"
-								data-validation="required validate_AlphaNumber validate_length length1-250" onkeyup="validateLcaTitle();">
+								data-validation="required validate_AlphaNumber validate_length length1-250" onkeyup="validateLcaTitle();" onblur="validateLcaTitle();">
           	</div>
           </div>
            <div class="col-xs-12 col-sm-6 col-md-6 minHeight50 mb">
@@ -56,7 +56,7 @@
                <select class="form-control sel" name="lcaStatus" id="lcaStatus" field-name="LCA Status" data-validation="required">
                 <option value=""> --Select--</option>
                 <option ${lcaDTO.lcaStatus == 'Initiated' ? 'selected': ''} value='Initiated'>Initiated</option>
-                <option ${lcaDTO.lcaStatus == 'In-progress' ? 'selected': ''} value='In-progress'>In-progress</option>
+                <option ${lcaDTO.lcaStatus == 'In progress' ? 'selected': ''} value='In progress'>In progress</option>
                 <option ${lcaDTO.lcaStatus == 'Certified' ? 'selected': ''} value='Certified'>Certified</option>
                 <option ${lcaDTO.lcaStatus == 'Denied' ? 'selected': ''}  value='Denied'>Denied</option>
                 <option ${lcaDTO.lcaStatus == 'Withdrawn' ? 'selected': ''} value='Withdrawn'>Withdrawn</option>
@@ -100,7 +100,7 @@
           <div class="col-xs-12 col-sm-6 col-md-6 minHeight50 mb">
             <label class="col-md-4 paddingRight">No.of Positions<span class="text-danger paddingLeft">*</span></label>
             <div class="col-md-8">
-				<input type="text" name="noOfPositions" id="noOfPositions" value="${lcaDTO.noOfPositions}" class="form-control" placeholder="No Of Positions" field-name="No.of Positions" data-validation="required validate_int validate_length length1-3">
+				<input type="text" name="noOfPositions" id="noOfPositions" value="${lcaDTO.noOfPositions}" class="form-control" placeholder="No Of Positions" field-name="No.of Positions" data-validation="required validate_intFromOne validate_length length1-3">
           	</div>
           </div>
           
@@ -113,14 +113,14 @@
           <div class="clearfix col-xs-12 col-sm-6 col-md-4 mb">
           	<div class="col-md-7">
           		<div class="pull-left">
-					<input id="newEmployment" class="checkbox-custom fmcheckbox" name="newEmployment" value="0" type="checkbox" ${lcaDTO.newEmployment == '1' ? 'checked' : '' }>
+					<input id="newEmployment" class="checkbox-custom fmcheckbox" name="newEmployment" value="${lcaDTO.newEmployment}" type="checkbox" ${lcaDTO.newEmployment == 1 ? 'checked' : '' }>
 					<label for="newEmployment" class="checkbox-custom-label fmcheckbox-lable" onclick="newEmployment();"></label>
 					<span class="ml5 mt2 pull-left">New Employment</span>
 				</div>
           	</div>
           <div class="col-md-5 padding_left">
           		<input type="text"  name="newEmploymentCount" id="newEmploymentCount" value="${lcaDTO.newEmploymentCount}" class="form-control input-sm" 
-          		onkeyup="validateNumber(this);" placeholder="Enter Count" readonly>
+          		onkeyup="validateNumber(this);"  field-name="Count" placeholder="Enter Count" readonly>
           	</div>
 
           </div>
@@ -128,28 +128,28 @@
           <div class="clearfix col-xs-12 col-sm-6 col-md-4 mb">
           	<div class="col-md-8">
           		<div class="pull-left">
-					<input id="concurrentEmployment" class="checkbox-custom fmcheckbox" name="concurrentEmployment" value="0" type="checkbox" ${lcaDTO.concurrentEmployment == '1' ? 'checked' : '' }>
+					<input id="concurrentEmployment" class="checkbox-custom fmcheckbox" name="concurrentEmployment" value="${lcaDTO.concurrentEmployment}" type="checkbox" ${lcaDTO.concurrentEmployment == 1 ? 'checked' : '' }>
 					<label for="concurrentEmployment" class="checkbox-custom-label fmcheckbox-lable" onclick="concurrentEmployment()"></label>
 					<span class="ml5 mt2 pull-left">Concurrent Employment</span>
 				</div>
           	</div>
           	<div class="col-md-4 padding_left">
           		<input type="text" name="concurrentEmploymentCount" value="${lcaDTO.concurrentEmploymentCount}" id="concurrentEmploymentCount" class="form-control input-sm" 
-          		onkeyup="validateNumber(this);" placeholder="Enter Count" readonly>
+          		onkeyup="validateNumber(this);" field-name="Count"  placeholder="Enter Count" readonly>
           	</div>
 
           </div>
           <div class="clearfix col-xs-12 col-sm-6 col-md-4 mb">
           	<div class="col-md-7">
           		<div class="pull-left">
-					<input id="extention" class="checkbox-custom fmcheckbox" name="extention"  value="0" type="checkbox" ${lcaDTO.extention == '1' ? 'checked' : '' }>
+					<input id="extention" class="checkbox-custom fmcheckbox" name="extention"  value="${lcaDTO.extention}" type="checkbox" ${lcaDTO.extention == 1 ? 'checked' : '' }>
 					<label for="extention" class="checkbox-custom-label fmcheckbox-lable" onclick="extention();"></label>
 					<span class="ml5 mt2 pull-left">Extension</span>
 				</div>
           	</div>
           	<div class="col-md-5 padding_left">
           		<input type="text" name="extentionCount" id="extentionCount" value="${lcaDTO.extentionCount}" class="form-control input-sm" 
-          		onkeyup="validateNumber(this);" placeholder="Enter Count" readonly>
+          		onkeyup="validateNumber(this);" field-name="Count" placeholder="Enter Count" readonly>
           	</div>
 
           </div>
@@ -157,40 +157,40 @@
           <div class="clearfix col-xs-12 col-sm-6 col-md-4 mb">
           	<div class="col-md-7">
           		<div class="pull-left">
-					<input id="changeEmployer" class="checkbox-custom fmcheckbox" name="changeInEmployer" value="0" type="checkbox" ${lcaDTO.changeInEmployer == '1' ? 'checked' : '' }>
+					<input id="changeEmployer" class="checkbox-custom fmcheckbox" name="changeInEmployer" value="${lcaDTO.changeInEmployer}" type="checkbox" ${lcaDTO.changeInEmployer == 1 ? 'checked' : '' }>
 					<label for="changeEmployer" class="checkbox-custom-label fmcheckbox-lable" onclick="changEmployer()"></label>
 					<span class="ml5 mt2 pull-left">Change in Employer</span>
 				</div>
           	</div>
           	<div class="col-md-5 padding_left">
           		<input type="text" name="changeInEmployerCount" id="changeInEmployerCount" value="${lcaDTO.changeInEmployerCount}" class="form-control input-sm" 
-          		onkeyup="validateNumber(this);" placeholder="Enter Count" readonly>
+          		onkeyup="validateNumber(this);" field-name="Count" placeholder="Enter Count" readonly>
           	</div>
           </div>
           <div class="clearfix col-xs-12 col-sm-6 col-md-4 mb">
           	<div class="col-md-8">
           		<div class="pull-left">
-					<input id="changeEmployerPrevious" class="checkbox-custom fmcheckbox" name="changeInPreApproEmployment" value="0" type="checkbox" ${lcaDTO.changeInPreApproEmployment == '1' ? 'checked' : '' }>
+					<input id="changeEmployerPrevious" class="checkbox-custom fmcheckbox" name="changeInPreApproEmployment" value="${lcaDTO.changeInPreApproEmployment}" type="checkbox" ${lcaDTO.changeInPreApproEmployment == 1 ? 'checked' : '' }>
 					<label for="changeEmployerPrevious" class="checkbox-custom-label fmcheckbox-lable" onclick="approvedEmployment();"></label>
 					<span class="ml5 pull-left">Change in Previous<br> Approved Employment</span>
 				</div>
           	</div>
           	<div class="col-md-4 padding_left">
           		<input type="text" name="changeInPreApproEmplmtCount" id="changeEmployerPreviousCount" value="${lcaDTO.changeInPreApproEmplmtCount}" class="form-control input-sm" 
-          		onkeyup="validateNumber(this);" placeholder="Enter Count" readonly>
+          		onkeyup="validateNumber(this);" field-name="Count" placeholder="Enter Count" readonly>
           	</div>
           </div>
           <div class="clearfix col-xs-12 col-sm-6 col-md-4 mb">
           	<div class="col-md-7">
           		<div class="pull-left">
-					<input id="amendment" class="checkbox-custom fmcheckbox" name="amendment" value="${lcaDTO.amendment}" type="checkbox" ${lcaDTO.amendment == '1' ? 'checked' : '' }>
+					<input id="amendment" class="checkbox-custom fmcheckbox" name="amendment" value="${lcaDTO.amendment}" type="checkbox" ${lcaDTO.amendment == 1 ? 'checked' : '' }>
 					<label for="amendment" class="checkbox-custom-label fmcheckbox-lable" onclick="amendment()"></label>
 					<span class="ml5 mt2 pull-left">Amendment</span>
 				</div>
           	</div>
           	<div class="col-md-5 padding_left">
           		<input type="text" name="amendmentCount" id="amendmentCount" value="${lcaDTO.amendmentCount}" class="form-control input-sm" 
-          		onkeyup="validateNumber(this);" placeholder="Enter Count" readonly>
+          		onkeyup="validateNumber(this);" field-name="Count" placeholder="Enter Count" readonly>
           	</div>
 
           </div>
@@ -316,7 +316,7 @@
 				<div class="col-xs-12 col-sm-6 col-md-6 minHeight50 mb">
 					<label class="col-md-4">Country</label>
 					<div class="col-md-8">
-					<input type="text" name="lcaPlaceOfEmploymentList[0].country" id="country" value="${lcaDTO.lcaPlaceOfEmploymentList[0].country == null ? loginCountryName  : lcaDTO.lcaPlaceOfEmploymentList[0].country}"  class="form-control" placeholder="Country" field-name="Country"
+					<input type="text" name="lcaPlaceOfEmploymentList[0].country" id="country" value="${lcaDTO.lcaPlaceOfEmploymentList[0].country == null ? ''  : lcaDTO.lcaPlaceOfEmploymentList[0].country}"  class="form-control" placeholder="Country" field-name="Country"
 								data-validation="required validate_length length2-100">
 					</div>
 				</div>
@@ -522,7 +522,7 @@
         	<div class="col-md-4 mb">
         		<label class="col-md-12">Comment</label>
         		<div class="col-md-12">
-					<textarea class="form-control" name="lcaDocumentList[0].description"  id="description" placeholder="Comment" rows="2">${lcaDTO.lcaDocumentList[0].description}</textarea>
+					<textarea class="form-control" name="lcaDocumentList[0].description" data-validation="validate_Space validate_length length1-500" data-validation-optional="true"  id="description" placeholder="Comment" rows="2">${lcaDTO.lcaDocumentList[0].description}</textarea>
         		</div>
         	</div>
         	
@@ -571,7 +571,7 @@
         	<div class="col-md-4 mb">
         		<label class="col-md-12">Comment</label>
         		<div class="col-md-12">
-					<textarea class="form-control" name="lcaDocumentList[${rows.count-1}].description"  id="description${rows.count-1}" placeholder="Comment" rows="2">${lcaDTO.lcaDocumentList[rows.count-1].description}</textarea>
+					<textarea class="form-control" name="lcaDocumentList[${rows.count-1}].description"  id="description${rows.count-1}" placeholder="Comment" rows="2" data-validation="validate_Space validate_length length1-500" data-validation-optional="true">${lcaDTO.lcaDocumentList[rows.count-1].description}</textarea>
         		</div>
         	</div>
         	
@@ -670,8 +670,12 @@
 		var ne = $("#newEmploymentCount");
 		if(ne.prop("readonly") == true) {
 			ne.prop("readonly", false);
+			//alert("A");
+			//$('#rateValidateId').find('p.jquery_form_error_message').remove();
 		}else {
 			ne.prop("readonly", true);
+			//alert("B");
+			
 		}
 		
 	});
@@ -933,7 +937,7 @@ $('#endDate').datepicker({
 	   prepareAttachmentdiv =prepareAttachmentdiv+ " <div class='col-md-4 mb pr0'>";
 	   prepareAttachmentdiv =prepareAttachmentdiv+ " <label class='col-md-12'>Comment</label>";
 	   prepareAttachmentdiv =prepareAttachmentdiv+ " <div class='col-md-12'>";
-	   prepareAttachmentdiv =prepareAttachmentdiv+ " <textarea class='form-control' name='lcaDocumentList["+rowId+"].description' id='description"+rowId+"' value='"+(typeof attachmentVal[3]==="undefined"?"":attachmentVal[3])+"' placeholder='Comment' rows='2'>";
+	   prepareAttachmentdiv =prepareAttachmentdiv+ " <textarea class='form-control' name='lcaDocumentList["+rowId+"].description' id='description"+rowId+"' value='"+(typeof attachmentVal[3]==="undefined"?"":attachmentVal[3])+"' placeholder='Comment' rows='2' data-validation='validate_Space validate_length length1-500' data-validation-optional='true'>";
 	   prepareAttachmentdiv =prepareAttachmentdiv+ "</textarea>";
 	   prepareAttachmentdiv =prepareAttachmentdiv+ " </div>";
 	   prepareAttachmentdiv =prepareAttachmentdiv+ " </div>";
@@ -1015,8 +1019,11 @@ $('#endDate').datepicker({
 	 if(flag == true){
 		 $("#newEmployment").val('0'); 
 		 $("#newEmploymentCount").val('');
+		 $("#newEmploymentCount").removeAttr("data-validation");
+		 $('#newEmploymentCount').find('p.jquery_form_error_message').remove();
 	 }else{
 		 $("#newEmployment").val('1'); 
+		 $("#newEmploymentCount").attr("data-validation","required");
 	 } 
  }
  function concurrentEmployment(){
@@ -1024,8 +1031,10 @@ $('#endDate').datepicker({
 	 if(flag == true){
 		 $("#concurrentEmployment").val('0'); 
 		 $("#concurrentEmploymentCount").val('');
+		 $("#concurrentEmploymentCount").removeAttr("data-validation");
 	 }else{
-		 $("#concurrentEmployment").val('1'); 
+		 $("#concurrentEmployment").val('1');
+		 $("#concurrentEmploymentCount").attr("data-validation","required");
 	 } 
  }
  function extention(){
@@ -1033,8 +1042,10 @@ $('#endDate').datepicker({
 	 if(flag == true){
 		 $("#extention").val('0'); 
 		 $("#extentionCount").val('');
+		 $("#extentionCount").removeAttr("data-validation");
 	 }else{
-		 $("#extention").val('1'); 
+		 $("#extention").val('1');
+		 $("#extentionCount").attr("data-validation","required");
 	 } 
  }
  function changEmployer(){
@@ -1042,8 +1053,11 @@ $('#endDate').datepicker({
 	 if(flag == true){
 		 $("#changeEmployer").val('0');
 		 $("#changeInEmployerCount").val('');
+		 $("#changeInEmployerCount").removeAttr("data-validation");
+		 
 	 }else{
-		 $("#changeEmployer").val('1'); 
+		 $("#changeEmployer").val('1');
+		 $("#changeInEmployerCount").attr("data-validation","required");
 	 } 
  }
  function approvedEmployment(){
@@ -1051,9 +1065,11 @@ $('#endDate').datepicker({
 	 if(flag == true){
 		 $("#changeEmployerPrevious").val('0'); 
 		 $("#changeEmployerPreviousCount").val('');
+		 $("#changeEmployerPreviousCount").removeAttr("data-validation");
 		 
 	 }else{
-		 $("#changeEmployerPrevious").val('1'); 
+		 $("#changeEmployerPrevious").val('1');
+		 $("#changeEmployerPreviousCount").attr("data-validation","required");
 	 } 
 	 
  }
@@ -1063,8 +1079,11 @@ $('#endDate').datepicker({
 	 if(flag == true){
 		 $("#amendment").val('0'); 
 		 $("#amendmentCount").val('');
+		 $("#amendmentCount").removeAttr("data-validation");
+		
 	 }else{
-		 $("#amendment").val('1'); 
+		 $("#amendment").val('1');
+		 $("#amendmentCount").attr("data-validation","required");
 	 } 
  }
  </script>
@@ -1234,14 +1253,14 @@ function validateLcaTitle() {
 	   object.value = object.value.replace(/[^0-9\.]/g,'');
 	}
    
-   $('#lcaNo').mask('I-999-99999-999999', {
+  /*  $('#lcaNo').mask('I-999-99999-999999', {
 	    translation: {
 	        '#': {
 	            pattern: "/I{1}[0-9]{14}/", optional: true
 	        }
 	    },
 	   placeholder:""
-	}); 
+	});  */
  </script>
  
 <script>

@@ -60,6 +60,7 @@ import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.dao.MasterCandidateDao;
 import com.bis.sourcelead.entity.AssociateGrades;
 import com.bis.sourcelead.entity.Candidate;
+import com.bis.sourcelead.entity.Department;
 import com.bis.sourcelead.entity.Employees;
 import com.bis.sourcelead.entity.MasterCandidate;
 import com.bis.sourcelead.entity.Org;
@@ -75,6 +76,7 @@ import com.bis.sourcelead.enums.Status;
 import com.bis.sourcelead.service.AssociateBalanceLeaveService;
 import com.bis.sourcelead.service.AssociateGradesService;
 import com.bis.sourcelead.service.CandidateService;
+import com.bis.sourcelead.service.DepartmentService;
 import com.bis.sourcelead.service.EmployeesService;
 import com.bis.sourcelead.service.OrgLocationService;
 import com.bis.sourcelead.service.OrgRelationsService;
@@ -143,6 +145,9 @@ public class UploadFileServiceImpl implements UploadFileService {
 	
 	@Autowired
 	AssociateBalanceLeaveService associateBalanceLeaveService;
+	
+	@Autowired
+	DepartmentService departmentService;
 	
 	protected boolean isNullOrEmpty(String str) {
 		return (str == null || "".equals(str.trim()));
@@ -755,17 +760,22 @@ private String getCellValueAsString(Cell cell, String fileName) {
 				candidate.setCandidateType(Constants.CANDIDATE);
 				candidate.setFirstName(user.getFirstName());
 				candidate.setLastName(user.getLastName());
+				candidate.setMiddelName(userImport.getMiddleName());
 				candidate.setCountry(orgLocations.getCountry());
 				candidate.setIsAssociate(Constants.YES);
 				candidate.setEmail(user.getEmail());
 				candidate.setDesignationType(userImport.getEmploymentType());
 				candidate.setStatus(Constants.RECORD_ACTIVE);
+				candidate.setWorkLocation(orgLocations);
 				candidate.setCreatedBy(user.getUserCode());
 				candidate.setCandidateUUID(SourceLeadRandomCodeHelper.generateRandomUUID());
 				candidate.setCreatedDate(commonUtil.currentDate());
 				candidate.setUpdatedDate(commonUtil.currentDate());
 				candidate.setMobilePhone(user.getMobilePhone());
 				candidate.setGeneratedId(candidateService.getCandidateId(orgLocations));
+				candidate.setProfilePercentage(Constants.MIN_PROFILE_PERCENETAGE);
+				candidate.setMaritalStatus(userImport.getMaritalStatus());
+				
 				
 		    }else{
 		    	candidate.setConsultantUser(user);
@@ -790,6 +800,7 @@ private String getCellValueAsString(Cell cell, String fileName) {
 		    		 vendorCandidate.setCountry(vendorOrgLocations.getCountry());
 		    		 vendorCandidate.setIsAssociate(Constants.YES);
 		    		 vendorCandidate.setEmail(user.getEmail());
+		    		 vendorCandidate.setWorkLocation(vendorOrgLocations);
 		    		 vendorCandidate.setStatus(Constants.RECORD_ACTIVE);
 		    		 vendorCandidate.setCandidateUUID(SourceLeadRandomCodeHelper.generateRandomUUID());
 		    		 vendorCandidate.setCreatedDate(commonUtil.currentDate());
@@ -1950,8 +1961,21 @@ private String getCellValueAsString(Cell cell, String fileName) {
 		employee.setRatePer(userImport.getRatePer());
 		employee.setDailyHours(userImport.getDayHours());
 		employee.setOrgLocations(orgLocations);
-		
 		employee.setUserEmploymentType(userImport.getDesignationType());
+		if(StringUtils.isNotBlank(userImport.getDateofJoin())){
+			try {
+				employee.setHireDate(commonUtil.orgLocationDateFormat(orgLocations.getDateFormat(), userImport.getDateofJoin()));
+				} catch (Exception e) {
+				  e.printStackTrace();
+				}
+		}
+		
+		if(StringUtils.isNotBlank(userImport.getDepartment())) {
+			Department department = departmentService.getDepartmentByOrgLocationIdAndDepartmentName(orgLocations.getId(), userImport.getDepartment());
+			if(department != null) {
+				employee.setDepartmentId(department);
+			}
+		}
 		
 		if("C2C".equalsIgnoreCase(userImport.getEmploymentType())) {
 			Map<String,Long> vendors = getVendorAndVendorContacts(userImport.getEmploymentType(), userImport.getVendor(), userImport.getVendorContact(), orgLocations.getId());
@@ -2009,7 +2033,9 @@ private String getCellValueAsString(Cell cell, String fileName) {
 			User user  = new User();
 			user.setFirstName(userImport.getFirstName());
 			user.setLastName(userImport.getLastName());
+			user.setMiddelName(userImport.getMiddleName());
 			user.setEmail(userImport.getEmail());
+			user.setMaritalStatus(userImport.getMaritalStatus());
 			user.setGender(userImport.getGenderValue());
 			user.setMobilePhone(userImport.getPhoneNumber());
 			user.setExtensionNumber(userImport.getExtensionNumber());

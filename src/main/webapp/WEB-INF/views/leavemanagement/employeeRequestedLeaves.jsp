@@ -89,7 +89,7 @@ function redirectlocation(location){
 		var userId = '${SourceLeadWeb_userId}';
 		var searchValue = $("#requestedEmployeesTableSearch").val();
 		searchValue = searchValue ? searchValue : "";
-		var url = sourceleadUrl+"/getEmployeeRequestedLeaves?"+tokenParamName+"="+tokenValue+"&searchValue="+searchValue+"&orgLocationId="+orgLocationId+"&userId="+userId+"&leaveStatus=PENDING";
+		var url = sourceleadUrl+"/getEmployeeRequestedLeaves?"+tokenParamName+"="+tokenValue+"&orgLocationId="+orgLocationId+"&userId="+userId+"&leaveStatus=PENDING&searchValue="+searchValue;
 		prepareRequestedEmployeesList(url);
 }
 </script> 
@@ -147,6 +147,7 @@ function requestedEmployeesPagination(url){
         "columnDefs": [ {
 	    	  	"targets": colIndex++,
 	    	  	"data": "empName",
+// 	    	  	"sortable":false,
 	    	  	"render": function(data, type, opt, meta) {
 	    	  		 var result = "";
 		    	  		if(opt.empType !=null && opt.empType != '' && opt.empType !='undefined'){
@@ -163,6 +164,7 @@ function requestedEmployeesPagination(url){
 	      },{
 	    	  "targets": colIndex++,
               "data": "leaveType",
+//               "sortable":false,
               "render": function ( data, type, opt, meta ) {
             	   var result = "";
             	  result = result + '   <div title="'+opt.leaveType+'" class="tblminwidth-75">'+opt.leaveType+'</div>';
@@ -172,6 +174,7 @@ function requestedEmployeesPagination(url){
 	          },{
             "targets": colIndex++,
             "data": "duration",
+            "sortable":false,
             "render": function ( data, type, opt, meta ) {
             	 var result = "";
             	result = result + '   <div title="'+opt.duration+'" class="">'+opt.duration+'</div>';
@@ -180,6 +183,7 @@ function requestedEmployeesPagination(url){
           }, {
               "targets": colIndex++,
               "data": "noOfDays",
+              "sortable":false,
               "render": function ( data, type, opt, meta ) {
             	   var result = "";
             	      result = result + '     <div class="tblminwidth-75">'+opt.appliedNoOfDays+' day(s)</div>';	 
@@ -204,6 +208,7 @@ function requestedEmployeesPagination(url){
           }, */{
 	    	  	"targets": colIndex++,
 	    	  	"data": "thisMonthLeaves",
+	    	  	"sortable":false,
 	    	  	"render": function(data, type, opt, meta) {
 	    	  		 var result = "";
 	    	  		result = result + '     <div class="tblminwidth-75">'+opt.thisMonthLeavesTaken+'</div>';
@@ -212,6 +217,7 @@ function requestedEmployeesPagination(url){
 	    	  },{
 	    	  	"targets": colIndex++,
 	    	  	"data": "balanceleaves",
+	    	  	"sortable":false,
 	    	  	"render": function(data, type, opt, meta) {
 	    	  		 var result = "";
 	    	  		result = result + ' <div class="tblminwidth-75">'+opt.totalBalLeaves+'</div>';
@@ -220,6 +226,7 @@ function requestedEmployeesPagination(url){
 	    	  }, {
                   "targets": colIndex++,
                   "data": "action",
+                  "sortable":false,
                   "render": function ( data, type, opt, meta ) {
                 	   var result = "";
                 	  if(opt.status == 'APPROVED'){
@@ -455,8 +462,8 @@ function getRequestedAproveSummary(leaveUUID,orgLocationId,totalBalLeaves){
              result = result +'<div class="col-md-12 mb">';
              result = result +'<label class="col-md-2 control-label"><b>Balance leaves:</b></label>';
              result = result +'<div class="col-md-8">';
-             if(totalBalLeaves != null && totalBalLeaves !='' && totalBalLeaves !='undefined'){
-				 result = result +'<span>'+totalBalLeaves+'</span>';
+             if(data.totalBalLeaves != null && data.totalBalLeaves !='' && data.totalBalLeaves !='undefined'){
+				 result = result +'<span>'+data.totalBalLeaves+'</span>';
 			 }else{
 	            	result = result +' <span>--</span>';
 	            }

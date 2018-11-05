@@ -82,6 +82,7 @@ import com.bis.sourcelead.entity.ImmigrationCandidateForms;
 import com.bis.sourcelead.entity.ImmigrationDashboardView;
 import com.bis.sourcelead.entity.ImmigrationTemplate;
 import com.bis.sourcelead.entity.Lca;
+import com.bis.sourcelead.entity.LcaHistory;
 import com.bis.sourcelead.entity.LookUpData;
 import com.bis.sourcelead.entity.Org;
 import com.bis.sourcelead.entity.OrgLocations;
@@ -214,18 +215,20 @@ public class ImmigrationRestController {
 		model.addObject("sourceleadUrl", sourceleadUrl);
 		if (forward.equalsIgnoreCase("petitionDetails")) {
 			model.setViewName("/immigration/petitionDetails");
+			OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,
+					"orgLocations");
 			if (!StringUtils.isEmpty(immigrationUUID)) {
-				OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,
-						"orgLocations");
 				Long immigrationId = immigrationCommonService.getImmigrationIdByUUID(immigrationUUID);
 				ImmigrationDTO immigrationDTO = immigrationCommonService.editImmigrationDetails(immigrationId,
 						orgLocations);
 				model.addObject("immigrationDTO", immigrationDTO);
+				List<ImmigrationTemplate> templateList = immigrationCommonService.getImmigrationTemplateList(orgLocations,null);
+				model.addObject("templateList", templateList);
+			}else {
+				List<ImmigrationTemplate> templateList = immigrationCommonService.getImmigrationTemplateList(orgLocations, 1L);
+				model.addObject("templateList", templateList);
 			}
-			OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,
-					"orgLocations");
-			List<ImmigrationTemplate> templateList = immigrationCommonService.getImmigrationTemplateList(orgLocations);
-			model.addObject("templateList", templateList);
+			
 		} else if (forward.equalsIgnoreCase("two")) {
 			model.setViewName("/immigration/newPetitionPage2");
 		} else if (forward.equalsIgnoreCase("three")) {
@@ -876,14 +879,33 @@ public class ImmigrationRestController {
 
 				fileIdNameMap.put(historyObj.getId(), historyObj.getUpldedFileName());
 			}
-			logger.debug("Doc id ===========" + docs.getId());
 			docs.setDocsHistoryList(jsonArray.put(fileIdNameMap));
 			logger.debug("jsonArray to String  ===========" + jsonArray.toString());
+			
+	   Candidate candidate = candidateService.getCandidateByCandidateId(candidateId);
+		if(docs.getDocCategory().equalsIgnoreCase("Document Type")){
+			if(candidate.getConsultantUser().getId().equals(user.getId())) {
+			model.addObject("beneficiaryDocs", docs.getDocCategory());
+			}
+		}else {
+			model.addObject("beneficiaryDocs", docs.getDocCategory());
+			if(docs.getDocCategory().equalsIgnoreCase("PetitionerCategory")){
+				model.addObject("petitionerDocs", docs.getDocCategory());
+			}
+			
+		if(docs.getDocCategory().equalsIgnoreCase("AttorneyCategory")){
+				model.addObject("attorneyDocs", docs.getDocCategory());
+			}
+			
 		}
+			
+		}
+		
 		model.setViewName("/immigration/documentDetailsTab");
 		List<LookUpData> documentsList = lookUpDataService.getLookUpDataByCategory(Constants.DOCUMENT_TYPE);
 		model.addObject("documentsList", documentsList);
 		model.addObject("immigrationCanDocList", immigrationCanDocList);
+		
 		return model;
 	}
 
@@ -1339,42 +1361,42 @@ public class ImmigrationRestController {
 	@RequestMapping(value = { "/saveLCADetails" }, method = RequestMethod.POST)
 	public Response<String> saveLCADetails(ImmigrationLcaDTO immLcaDTO,
 			HttpServletRequest request, @RequestParam(value = "candidateId", required = false) String candidateId,
-			@RequestParam(value = "immigrationId", required = false) String immigrationId) {
+			@RequestParam(value = "immigrationId", required = false) String immigrationId,
+			@RequestParam(value = "lcaId", required = false) String lcaId) {
+		
 		Response<String> response = new Response<>();
 		User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
-		OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,
-				"orgLocations");
+		OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,"orgLocations");
 		Candidate candidate = null;
 		Immigration immigration = null;
+		Lca lca = null;
+		
 		try {
 			if (user != null && Validator.validate(immLcaDTO)) {
 				candidate = candidateService.getCandidateByCandidateId(Long.parseLong(candidateId));
 				immigration = immigrationCommonService.getImmigrationById(Long.parseLong(immigrationId));
-				LcaDTO  lcaDTO = new LcaDTO();
+				lca=immigrationCommonService.getLcaByLcaId(Long.parseLong(lcaId));
 				
-				lcaDTO.setLcaNo(immLcaDTO.getLcaNo());
+				LcaHistory lh= new LcaHistory();
 				
-				lcaDTO.setStartDate(immLcaDTO.getStartDate());
-				lcaDTO.setEndDate(immLcaDTO.getEndDate());
+				lh.setLcaId(lca);
+				lh.setCandidate(candidate);
+				lh.setImmigrationId(immigration);
+				lh.setIsCurrent(Constants.YES);
+				lh.setStatus(Constants.RECORD_ACTIVE);
+				lh.setCreatedBy(user);
+				lh.setUpdatedBy(user);
+				Date currentDate = commonUtil.orgLocationCommonDate(new Date(), orgLocations);
+				lh.setUpdatedDate(currentDate);
+				lh.setCreatedDate(currentDate);
 				
+				LcaHistory lcaHistory= immigrationCommonService.saveLcaHistory(lh);
+				immigrationCommonService.updateLcaHistoryStatusByLcaNumber(lcaHistory.getId(), lh.getImmigrationId().getId(), lh.getCandidate().getId());
 				
-				lcaDTO.setPrevailingWage(immLcaDTO.getPrevailingWage());
-				lcaDTO.setPrivilingWageRateType(immLcaDTO.getPrivilingWageRateType());
-				lcaDTO.setPrivilingWageCurrency(immLcaDTO.getPrivilingWageCurrency());
-				
-				LcaPlaceOfEmploymentDTO lcaPlaceOfEmploymentDTO = new LcaPlaceOfEmploymentDTO();
-				lcaPlaceOfEmploymentDTO.setLocation(immLcaDTO.getLocation());
-				List<LcaPlaceOfEmploymentDTO> emplList = new ArrayList<LcaPlaceOfEmploymentDTO>();
-				emplList.add(lcaPlaceOfEmploymentDTO);
-				lcaDTO.setLcaPlaceOfEmploymentList(emplList);
-				
-				lcaDTO.setStatus("Active");
-				
-				immigrationCommonService.saveLcaDetails(lcaDTO, user, orgLocations);
 				response.setResponse(Result.SUCCESS.name());
 				response.setResponseMessage(Result.SUCCESS.getValue());
 				StringBuilder actionDesc = new StringBuilder();
-				if (StringUtils.isNotBlank(lcaDTO.getLcaId())) {
+				 if (lcaHistory.getId() !=null ) {
 					actionDesc.append("LCA Details Updated").toString();
 				} else {
 					actionDesc.append("New LCA Details Added").toString();
@@ -1685,14 +1707,6 @@ public class ImmigrationRestController {
 		logger.debug(" inisde getLcaDetails controller test -->");
 		if(immigrationId != null) {
 			 List<LcaDTO> lcaList = immigrationCommonService.getLcaHistoryDetailsInfo(Long.parseLong(immigrationId));
-			 /*   for(LcaDTO lh: lcaList) {
-			    	
-			    	if(lh.getLcaId() != null ) {
-			    	lh.setLcaId(lh.getLcaId());
-			    	}
-			    	model.addObject("currlcaId",lh.getId());
-			    }
-				*/
 			    model.addObject("lcaList", lcaList);
 		}
 		model.setViewName("/immigration/lcaDetailsTab");
@@ -2336,7 +2350,7 @@ public class ImmigrationRestController {
 	/*
 	 * LCA Code Starts Here
 	 */
-     
+	@PreAuthorize("hasRole('ROLE_ADD_LCA')")
 	@RequestMapping(value = { "/loadNewLCA" })
 	public ModelAndView loadNewLCA(HttpServletRequest request) throws Exception {
 		ModelAndView model = new ModelAndView();
@@ -2353,6 +2367,7 @@ public class ImmigrationRestController {
 		return model;
 	}
 	
+	@PreAuthorize("hasAnyRole('ROLE_ADD_LCA','ROLE_VIEW_LCA','ROLE_VIEW_EDIT_LCA','ROLE_VIEW_DELETE_LCA','ROLE_IMPORT_LCA','ROLE_EXPORT_LCA')")
 	@RequestMapping(value = { "/viewLCAList" })
 	public ModelAndView loadLCAList(HttpServletRequest request) {
 		
@@ -2431,6 +2446,7 @@ public class ImmigrationRestController {
 		return response;
 	}
 	
+	@PreAuthorize("hasRole('ROLE_VIEW_EDIT_LCA')")
 	@RequestMapping(value = { "/editLcaDetails" })
 	public ModelAndView editLcaDetails(
 			@RequestParam(value = "lcaUuid", required = false) String lcaUuid,
@@ -2451,6 +2467,7 @@ public class ImmigrationRestController {
 		return model;
 	}
 	
+	@PreAuthorize("hasRole('ROLE_VIEW_DELETE_LCA')")
 	@RequestMapping(value = { "/deleteLcaDetailsById" })
 	public String deleteLcaDetailsById(
 			@RequestParam(value = "lcaUuid", required = false) String lcaUuid,
@@ -2461,6 +2478,7 @@ public class ImmigrationRestController {
 
 	}
 	
+	@PreAuthorize("hasRole('ROLE_RE_ACTIVE_LCA')")
 	@RequestMapping(value = { "/reActivateLca" })
 	public String reActivateLca(
 			@RequestParam(value = "lcaUuid", required = false) String lcaUuid,
@@ -2499,7 +2517,7 @@ public class ImmigrationRestController {
 		return immigrationCommonService.getOesSocCodeById(id, socType);
 	}
 	
-	
+	@PreAuthorize("hasRole('ROLE_VIEW_LCA')")
 	@RequestMapping(value = { "/viewLca" })
 	public ModelAndView viewLCA(HttpServletRequest request,
 			@RequestParam(value = "lcaUuid", required = false) String lcaUuid,
@@ -2528,6 +2546,7 @@ public class ImmigrationRestController {
 		return model;
 	}
 	
+	@PreAuthorize("hasRole('ROLE_EXPORT_LCA')")
 	@RequestMapping(value = { "/getLcaListExport" })
 	public void getLCAListExport(@RequestParam(value = "exportType", required = false) String exportType,
 			HttpServletRequest request, HttpServletResponse response) throws Exception {

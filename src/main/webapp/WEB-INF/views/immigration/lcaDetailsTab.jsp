@@ -2,7 +2,7 @@
 <%@ taglib uri="http://java.sun.com/jsp/jstl/functions" prefix="fn"%>
 
  <div class="immigraTabsHead">
-	<!-- <a href="javascript:void(0)" id="addLca"><i class="glyphicon glyphicon-plus"></i> Add LCA</a> -->
+	<a href="javascript:void(0)" id="assignLca"><i class="glyphicon glyphicon-plus"></i> Assign LCA</a>
 </div>
 		
 	  	<div class="immigraTable overflow_Auto">
@@ -16,6 +16,9 @@
 				<th>Valid From</th>
 				<th>Valid To</th>
 				<th>LCA Status</th>
+				<th title="Total Positions">#Positions</th>
+				<th title="Assigned Positions">#Employment</th>
+				<th title="Available Positions">#Available</th>
 				<th>Status</th>
 			  </tr>
 			  <c:forEach var="lcadetails" items="${lcaList}" varStatus="rows">
@@ -27,6 +30,17 @@
 				<td><div class="tbldata-dotdot-sm" title = "${lcadetails.startDate}"></div>${lcadetails.startDate}</td>
 				<td><div class="tbldata-dotdot-sm" title = "${lcadetails.endDate}"></div>${lcadetails.endDate}</td>
 				<td><div class="tbldata-dotdot-sm" title = "${lcadetails.lcaStatus}"></div>${lcadetails.lcaStatus}</td>
+				
+				<td><div class="tbldata-dotdot-sm" title = "${lcadetails.noOfPositions}"></div>${lcadetails.noOfPositions}</td>
+				<c:if test="${!empty lcadetails.newEmploymentCount}">
+				<td><div class="tbldata-dotdot-sm" title = "${lcadetails.newEmploymentCount}"></div>${lcadetails.newEmploymentCount}</td>
+				</c:if>
+				<c:if test="${empty lcadetails.newEmploymentCount}">
+				<td><div class="tbldata-dotdot-sm" title = "0"></div>0</td>
+				</c:if>
+				
+				<td><div class="tbldata-dotdot-sm"></div><c:out value="${lcadetails.noOfPositions-lcadetails.newEmploymentCount}" /></td>
+				
 				<c:if test="${lcadetails.status == '1'}">
 				 <td><div class="tbldata-dotdot-sm" title = "${lcadetails.status}"></div>Active</td>
 				</c:if>
@@ -56,7 +70,7 @@
 		<!--hidden id for edit -->
 		<input type="hidden" name="lcaId" id="currlcaId" value="${immigrationDTO.lcaId}">
 		<div class="popupHead">
-			<h2>Add LCA</h2><a href="javascript:void(0)" class="fa fa-close popCan" onclick="closeLcapopup();"></a>
+			<h2>Assign LCA</h2><a href="javascript:void(0)" class="fa fa-close popCan" onclick="closeLcapopup();"></a>
 		</div>
 		
 		<div class="popupMid clearfix">
@@ -65,7 +79,7 @@
           <div class="col-sm-12 noPad mt clearfix">
 				<label class="col-md-4 padding_left">LCA No</label>
               	<div class="col-md-8 padding_right">
-              		<input type="text" name="lcaNo"  id="lcaNumberAuto" class="form-control"  placeholder="I-XXX-XXXXX-XXXXXX" field-name="LCA NO" data-validation="required" >
+              		<input type="text" name="lcaNo"  id="lcaNumberAuto" class="form-control"  placeholder="LCA Number" field-name="LCA NO" data-validation="required" >
 				</div>
 			</div>				          
           <div class="col-sm-12 noPad mt clearfix">
@@ -88,8 +102,8 @@
         <div class="col-sm-12 noPad mt clearfix">
 				<label class="col-md-4 padding_left">Location<span class="text-danger">&nbsp;*</span></label>  
               	<div class="col-md-8 padding_right">
-              		<input type="text" name= "location" id= "locationlca" field-name= "location" placeholder="Location" onclick="initLocationAuto('location','country','state','city','zipcode','','','','streetAddress');" data-validation="required validate_Space validate_length length2-100" class="form-control" /> 
-              		   <i class="fa fa-refresh btn btn-primary refresh-icon" title="Refresh" onClick="refreshGoogleApiLocation('locationlca','country','state','city','zipcode','streetAddress');"></i>         		
+              		<input type="text" name= "location" id= "locationlca" field-name= "location" placeholder="Location" onclick="initLocationAuto('location','country','state','city','zipcode','','','','streetAddress');" data-validation="required validate_Space validate_length length2-100" class="form-control" disabled="disabled"/> 
+              		   <i class="fa fa-refresh btn btn-primary refresh-icon" title="Refresh" onClick="refreshGoogleApiLocation('locationlca','country','state','city','zipcode','streetAddress');" ></i>         		
 				</div>
 			</div>	
 			
@@ -99,7 +113,7 @@
             <div class="col-md-8 padding_right">
             <div class="input-group er ratetype">
                 <div class="input-group-btn">
-                   <select class="form-control tblminwidth-75 sel" id="privilingWageCurrency" name="privilingWageCurrency" data-style="btn-primary">
+                   <select class="form-control tblminwidth-75 sel" id="privilingWageCurrency" name="privilingWageCurrency" data-style="btn-primary" >
 						<option value="INR" ${privilingWageCurrency == 'INR' ? 'selected' : ''}>INR</option>
 						<option value="AUD" ${privilingWageCurrency == 'AUD' ? 'selected' : ''}>AUD</option>
 						<option value="USD" ${privilingWageCurrency == 'USD' ? 'selected' : ''}>USD</option>
@@ -110,9 +124,9 @@
                 </div>
                 <input type="text" name="prevailingWage" id="prevailingWage" value="${lcaDTO.prevailingWage}" class="form-control" value="" field-name="Prevailing Wage"
 								data-validation="required validate_Space validate_float validate_length length1-8" 
-							    placeholder="Wage Or Rate">
+							    placeholder="Wage Or Rate" >
                 <div class="input-group-btn ratetype">
-                 <select class="form-control tblminwidth-75 sel" id="privilingWageRateType" name="privilingWageRateType" field-name="Rate Per" data-style="btn-primary">
+                 <select class="form-control tblminwidth-75 sel" id="privilingWageRateType" name="privilingWageRateType" field-name="Rate Per" data-style="btn-primary" >
 						 <option  value="">Rate Per</option>
 						<option ${lcaDTO.privilingWageRateType == 'Hourly' ? 'selected' : ''} value="Hourly">Hourly</option>
 						<option ${lcaDTO.privilingWageRateType == 'Weekly' ? 'selected' : ''} value="Weekly">Weekly</option>
@@ -143,8 +157,8 @@
             <input value="Save" id= "lcaSave_Button" class="" type="button" onclick ="immigration.saveLcaFromImmigration();">
             <input value="Cancel" class="popCan" type="button" onclick="closeLcapopup();">
           </div>		
+	</div>
 	</div><!-- popup code end -->
-	
 	</form>
 	<script type="text/javascript">
 	
@@ -164,7 +178,7 @@
 
 		});
 			
-	      $("#addLca").click(function(){
+	      $("#assignLca").click(function(){
 				$(".popMask").fadeIn(200);
 				$("#popLcaView").fadeIn(100);
 			});
@@ -278,6 +292,7 @@ var finalDateFormatOrg = getOrgDateFormat(locationDate);
 			        	
 			        	if(data.lcaLocation != null && typeof data.lcaLocation != 'undefined' && data.lcaLocation !=''){
 			    			 $("#locationlca").val(data.lcaLocation);
+			    			 $("#locationlca" ).prop( "disabled", true);
 			    		}
 			    		
 			    		// setting the startDate,endDate for current Lca.
@@ -295,13 +310,16 @@ var finalDateFormatOrg = getOrgDateFormat(locationDate);
 			    		
 			    		if(data.privilingWageCurrency != null && typeof data.privilingWageCurrency != 'undefined' && data.privilingWageCurrency !=''){
 			    			 $("#privilingWageCurrency").val(data.privilingWageCurrency);
+			    			 $("#privilingWageCurrency" ).prop( "disabled", true);
 			    		}
 			    		if(data.prevailingWage != null && typeof data.prevailingWage != 'undefined' && data.prevailingWage !=''){
 			    			 $("#prevailingWage").val(data.prevailingWage);
+			    			 $("#prevailingWage" ).prop( "disabled", true);
 			    		}
 			    		
 			    		if(data.privilingWageRateType != null && typeof data.privilingWageRateType != 'undefined' && data.privilingWageRateType !=''){
 			    			 $("#privilingWageRateType").val(data.privilingWageRateType);
+			    			 $("#privilingWageRateType" ).prop( "disabled", true);
 			    		}
 			    		
 			        }
@@ -332,4 +350,3 @@ var finalDateFormatOrg = getOrgDateFormat(locationDate);
 	}
  
 </script> 
-

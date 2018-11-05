@@ -272,27 +272,47 @@ public class EmployeePayrollTax {
 
 	public BigDecimal getSUI()
 	{
-		return SUI;
+		if(SUI != null) {
+			return SUI;	
+		}else {
+			return BigDecimal.ZERO;
+		}
 	}
 
 	public BigDecimal getSDI()
 	{
-		return SDI;
+		if(SDI != null) {
+			return SDI;
+		}else {
+			return BigDecimal.ZERO;
+		}
 	}
 
 	public BigDecimal getFLI()
 	{
-		return FLI;
+		if(FLI != null) {
+			return FLI;
+		}else {
+			return BigDecimal.ZERO;
+		}
 	}
 
 	public BigDecimal getHCSF()
 	{
-		return HCSF;
+		if(HCSF != null) {
+			return HCSF;
+		}else {
+			return BigDecimal.ZERO;
+		}
 	}
 
 	public BigDecimal getWC()
 	{
-		return WC;
+		if(WC != null) {
+			return WC;
+		}else {
+			return BigDecimal.ZERO;
+		}
 	}
 
 	public void setSUI(BigDecimal sUI)

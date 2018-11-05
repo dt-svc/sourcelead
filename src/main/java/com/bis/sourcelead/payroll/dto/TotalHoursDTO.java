@@ -8,6 +8,8 @@ public class TotalHoursDTO {
 	private BigInteger candidateID;
     
 	private BigInteger projectMemId;
+	
+	private BigInteger projectId;
     
 	private double payRate;
     
@@ -24,6 +26,8 @@ public class TotalHoursDTO {
 	private Date startDate;
     
 	private Date endDate;
+	
+	private Date timesheetDate;
     
 	private String billableHours;
     
@@ -32,8 +36,18 @@ public class TotalHoursDTO {
 	private String estimatedHours;
     
 	private String nonBillableHours;
-
 	
+	
+	public BigInteger getProjectId()
+	{
+		return projectId;
+	}
+
+	public void setProjectId(BigInteger projectId)
+	{
+		this.projectId = projectId;
+	}
+
 	public double getPayRate()
 	{
 		return payRate;
@@ -175,6 +189,16 @@ public class TotalHoursDTO {
 	public void setSubmissinId(BigInteger submissinId)
 	{
 		this.submissinId = submissinId;
+	}
+
+	public Date getTimesheetDate()
+	{
+		return timesheetDate;
+	}
+
+	public void setTimesheetDate(Date timesheetDate)
+	{
+		this.timesheetDate = timesheetDate;
 	}
 
 

@@ -18,6 +18,9 @@ public class AssociateTaxDedContriView {
 	@Column(name = "CANDIDATE_ID")
 	private Long candidateId;
 	
+	@Column(name = "ASSOCIATE_TAX_ID")
+	private Long associateTaxId;
+	
 	@Column (name = "FEDERAL_TAX_FILLIING_STATUS")
 	private String federalTaxFilliingStatus;
 	
@@ -45,6 +48,9 @@ public class AssociateTaxDedContriView {
 	@Column (name = "RESIDENCE_TAX_ADDITIONNAL_WITH_HOLDING")
 	private String residenceTaxAdditionnalWithHolding;
 	
+	@Column (name = "SUPPLEMENT_TYPE")
+	private String supplementType;
+	
 	@Column (name = "FEDERAL_EXEMPT")
 	private Boolean federalExempt;
 	
@@ -57,12 +63,20 @@ public class AssociateTaxDedContriView {
 	@Column (name = "FUTA_EXEMPT")
 	private Boolean futaExempt;
 	
+	@Column (name = "SUTA_EXEMPT")
+	private Boolean sutaExempt;
+	
 	@Column (name = "LOCAL_TAX")
 	private String localTax;
 	
 	@Column (name = "LOCAL_TAX_STATE")
 	private String localTaxState;
 	
+	@Column (name="ASSOCIATE_BANK_ID")
+	private Long associateBankId;
+	
+	@Column (name="ROUTING_NUMBER")
+	private String routingNumber;
 	
 	@Column (name = "ACCOUNT_NUMBER")
 	private String accountNumber;
@@ -96,7 +110,6 @@ public class AssociateTaxDedContriView {
 	
 	@Column (name="PAY_FREQUENCY")
 	private String payFrequency;
-	
 	
 
 	public String getFederalTaxFilliingStatus()
@@ -369,5 +382,44 @@ public class AssociateTaxDedContriView {
 		this.candidateId = candidateId;
 	}
 
+	public Long getAssociateBankId() {
+		return associateBankId;
+	}
+
+	public void setAssociateBankId(Long associateBankId) {
+		this.associateBankId = associateBankId;
+	}
+
+	public String getRoutingNumber() {
+		return routingNumber;
+	}
+
+	public void setRoutingNumber(String routingNumber) {
+		this.routingNumber = routingNumber;
+	}
+
+	public Long getAssociateTaxId() {
+		return associateTaxId;
+	}
+
+	public void setAssociateTaxId(Long associateTaxId) {
+		this.associateTaxId = associateTaxId;
+	}
+
+	public Boolean getSutaExempt() {
+		return sutaExempt;
+	}
+
+	public void setSutaExempt(Boolean sutaExempt) {
+		this.sutaExempt = sutaExempt;
+	}
+
+	public String getSupplementType() {
+		return supplementType;
+	}
+
+	public void setSupplementType(String supplementType) {
+		this.supplementType = supplementType;
+	}
 	
 }

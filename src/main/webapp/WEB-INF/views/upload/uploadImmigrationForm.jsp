@@ -19,18 +19,35 @@
 }
 </style>
 
+<script type="text/javascript">
+var uploadflag= true;
+		window.onload = function () {
+			var refreshId = setInterval(function(){
+				var dateFormat ='${SourceLeadWeb_orgLocations.dateFormat}';
+				if(uploadflag == true){
+					xlsupload.getUploadInprogressProgressBar("Immigration",dateFormat);
+				  }else{
+					     clearInterval(refreshId);
+						 $(".browseProgress").hide();
+						 $("#upload_button").removeAttr("disabled");
+						 xlsupload.getUploadInprogressProgressBar("Immigration",dateFormat);
+				  }
+			},1000);
+		 };
+</script>
+
 
 <section class="content-wraper">
 	<section class="content-header clearfix">
 		<div class="pull-left">
-			<h2>Import Immigration</h2>
+			<h2>Import Petition</h2>
 		</div>
 		<div class="remove_pop" id="selector" style="display: none;">
 			<i class="fa fa-check-circle"></i><span id="msgDiv"></span>
 		</div>
 		<div class="pull-right brud-crum">
-			<a href="<c:url value='${appPath}/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a>&raquo; <a href="${appPath}/immigration/viewImmigrationList">Immigration List</a>
-			&raquo; Import Immigration
+			<a href="<c:url value='${appPath}/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a>&raquo; <a href="${appPath}/immigration/viewImmigrationList">Petition List</a>
+			&raquo; Import Petition
 		</div>
 	</section>
 	<div id="loading"></div>
@@ -47,7 +64,7 @@
 					
 						<div class="col-xs-5 col-md-5">
 							<a href="<c:url value='${appPath}/downloadImmigrationTemplate'/>"
-								class="btn btn-success btn-block" title="Download Job Template"> <i class="fa fa-download"></i>&nbsp;&nbsp; Immigration Template
+								class="btn btn-success btn-block" title="Download Petition Template"> <i class="fa fa-download"></i>&nbsp;&nbsp; Petition Template
 							</a>
 						</div>
 						<div class="col-xs-4 col-md-4">
@@ -120,13 +137,18 @@
 		</form:form>
 	</div>
 	<div id="dataFieldsDiv" style="display: none"></div>
-	
+	<div class="project_tabs_inn_table project_tabs_inn_table_a datatable_filter dataSeaTop">
+		<h5 class="mt25" id="uploadXlsHistoryDivTitle" hidden>Recent Uploads History</h5>
+	    	<table id="uploadXlsHistoryDiv" class="display" cellspacing="0" width="100%"></table>
+	    	<input type="hidden"  id="uploadedPercentage" value="0">
+		</div>
 </section>
 
 <div class="success_pop" id="selector11" style="display: none;">
     <i class="fa fa-check-circle"></i><span id="msgDiv"></span>
 </div>
 
+<script type="text/javascript" src="/resources/js/xlsupload.js"></script>
 
 <script type="text/javascript">
 document.getElementById("uploadBtn").onchange = function () {

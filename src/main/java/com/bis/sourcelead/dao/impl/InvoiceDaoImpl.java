@@ -383,7 +383,7 @@ public class InvoiceDaoImpl implements InvoiceDao {
 		
 		StringBuilder query1 = new StringBuilder("");
 		if (StringUtils.isNotBlank(creditDebitNoteDTO.getSearchValue())) {
-			if (creditDebitNoteDTO.getSearchValue().contains("/") || creditDebitNoteDTO.getSearchValue().contains("-")) {
+			if ((creditDebitNoteDTO.getSearchValue().contains("/") || creditDebitNoteDTO.getSearchValue().contains("-")) && (creditDebitNoteDTO.getSearchValue().matches("^[0-9 \\-]+$"))) {
 				String convertedDate = creditDebitNoteDTO.getSearchValue();
 				if (creditDebitNoteDTO.getSearchValue().contains("/")) {
 					convertedDate = creditDebitNoteDTO.getSearchValue().replaceAll("/", "-");
@@ -414,19 +414,19 @@ public class InvoiceDaoImpl implements InvoiceDao {
 		if (creditDebitNoteDTO != null && creditDebitNoteDTO.getLength() > 0) {
 			queryObj.setFirstResult(creditDebitNoteDTO.getStart());
 			queryObj.setMaxResults(creditDebitNoteDTO.getLength());
-		}
-		notesList = queryObj.setLong("orgLocationId", orgLocations.getId()).setParameter("startDateUTC", startDateUTC).setParameter("endDateUTC", endDateUTC).list();
+		}                                                                  //set Date used for to set the time as 00:00:00 for the start date comparison.
+		notesList = queryObj.setLong("orgLocationId", orgLocations.getId()).setDate("startDateUTC", startDateUTC).setParameter("endDateUTC", endDateUTC).list();
 		int count = 0;
 		int filteredCount = 0;
-
-		List<Long> countlist = session.createQuery("select count(*) " + countQuery)	.setLong("orgLocationId", orgLocations.getId()).setParameter("startDateUTC", startDateUTC).setParameter("endDateUTC", endDateUTC).list();
+																														//set Date used for to set the time as 00:00:00 for the start date comparison.
+		List<Long> countlist = session.createQuery("select count(*) " + countQuery)	.setLong("orgLocationId", orgLocations.getId()).setDate("startDateUTC", startDateUTC).setParameter("endDateUTC", endDateUTC).list();
 
 		if (countlist != null && !countlist.isEmpty()) {
 			count = countlist.iterator().next().intValue();
 		}
 		response.setRecordsTotal(count);
-		if (creditDebitNoteDTO != null) {
-			List<Long> filteredCountlist = session.createQuery("select count(*) " + countQuery+query1).setLong("orgLocationId", orgLocations.getId()).setParameter("startDateUTC", startDateUTC).setParameter("endDateUTC", endDateUTC).list();
+		if (creditDebitNoteDTO != null) {																											//set Date used for to set the time as 00:00:00 for the start date comparison.
+			List<Long> filteredCountlist = session.createQuery("select count(*) " + countQuery+query1).setLong("orgLocationId", orgLocations.getId()).setDate("startDateUTC", startDateUTC).setParameter("endDateUTC", endDateUTC).list();
 			if (filteredCountlist != null && !filteredCountlist.isEmpty()) {
 				filteredCount = filteredCountlist.iterator().next().intValue();
 			}
@@ -599,7 +599,7 @@ public class InvoiceDaoImpl implements InvoiceDao {
 		}
 
 		Session session = this.sessionFactory.getCurrentSession();
-		String query = "from Invoice invoice  where invoice.orgRelationID.id = :orgRelationId and invoice.orgLocation.id = :orgLocationId and invoice.linkInvoiceReferenceId IS NULL and invoice.status = '1' and invoice.invoiceStatus <> 'Linked' and invoice.invoiceStatus <> 'DRAFT'"
+		String query = "from Invoice invoice  where invoice.orgRelationID.id = :orgRelationId and invoice.orgLocation.id = :orgLocationId and invoice.linkInvoiceReferenceId IS NULL and invoice.status = '1' and invoice.invoiceStatus <> 'Linked' and invoice.invoiceStatus <> 'DRAFT' and invoice.invoiceStatus <> 'Rejected'"
 				+ subQuery + "";
 		List<Invoice> clientInvoiceList = session.createQuery(query.toString()).setLong("orgLocationId", orgLocationId)
 				.setLong("orgRelationId", orgRelationId).list();

@@ -186,7 +186,7 @@ function cancelOrgImg(){
         <li><a data-toggle="tab" id="documentsClick" href="#orglocationDocuments">Documents</a></li>
         <li><a data-toggle="tab" href="#orglocationSignatory" onclick="getAllSignatory();">Signatory</a></li>
         <li><a data-toggle="tab" href="#emailSign" onclick="loadSignature();">Email Signature</a></li>
-        <li><a data-toggle="tab" href="#configCoolingOff" onclick="configCoolingOff();">Configure</a></li>
+        <li><a data-toggle="tab" href="#configCoolingOff" onclick="configCoolingOff(); getProfilePercentage();">Configure</a></li>
         <li><a data-toggle="tab" href="#emailNotifications">Email Configuration</a></li> 
        
         <!-- <li><a data-toggle="tab" href="#emailNotifications">Email Configuration</a></li> -->
@@ -377,7 +377,7 @@ function cancelOrgImg(){
 						<div class="clearfix mb">
 							<label class="labText">Week Off Days</label>
 							<div class="clearfix">
-							 <select multiple class="chosen-select form-control" id="weekOffDays" name="weekOffDays" data-validation-optional="true" field-name="Week Off Days">
+							 <select multiple class="chosen-select form-control" id="weekOffDays" name="weekOffDays" data-validation="required" field-name="Week Off Days">
 								 <option  value='Sun' ${fn:contains(SourceLeadWeb_weekOffDaysList, 'Sun') ? 'selected' : ''}>Sunday</option>
 								 <option  value='Mon' ${fn:contains(SourceLeadWeb_weekOffDaysList, 'Mon') ? 'selected' : ''}>Monday</option>
 								 <option  value='Tue' ${fn:contains(SourceLeadWeb_weekOffDaysList, 'Tue') ? 'selected' : ''}>Tuesday</option>
@@ -554,6 +554,33 @@ function cancelOrgImg(){
                             </div>
                 			<div id="coolingOffPeriodDiv"></div>            
             			</div>
+            			
+            			
+            			 <div class="tab-content panel-body">
+                            <div class="clearfix mb">
+                                <div class="pull-left">
+                                    <h4 id="profilePercentageHeading">Profile Percentage</h4>
+                                    <div class="success_pop" id="profilePercentageSelector"  style="display: none;">
+		       								  <i class="fa fa-check-circle"></i><span id="successMsgDiv"></span>
+									</div>
+                                    <div id="profilePercentageLoading"></div>
+                                </div>
+                            </div>
+                			<form id="profilePercentage_form"  name="profilePercentage_form" method="post">
+                			<div class="form-group">
+                			<label class="col-md-3">Profile Percentage&nbsp;&nbsp;<i class="fa fa-info-circle" title="A Profile Percentage is for an applicant is eligible for job submission or not."></i></label>  
+                			<div class="col-md-4"><input type="text" name="profilePercentage" value="${orgLocations.profilePercentage}" id="profilePercentage" onblur="validateProfilePercentage()" class="form-control input-sm" data-validation="required validate_space validate_int" field-name="Profile Percentage">
+                			<div class="row mxrateerror" id="profilePercentageValidateId">
+                				  <input type="hidden" name="profilePercentageValidation" id="profilePercentageValidation">
+             			    </div>
+             			    </div>
+                			</div> 
+                			<div class="pull-right">
+								<input type="submit" value="Save" id="profilePercentage_button" class="btn btn-primary mr">
+								<input type="button" value="Cancel" class="btn btn-default" onClick="cancelBtn();">
+							</div> 
+                			</form>       
+            			</div> 
             			
             			
                         <div class="tab-content panel-body">
@@ -1068,6 +1095,80 @@ function cancelOrgImg(){
 $("#faxId").keyup(function () {
     this.value = this.value.replace(/ /g, "-");
 });
+</script>
+
+<script>
+function validateProfilePercentage(){
+	var profilePercentage = $('#profilePercentage').val();
+	
+	 if(profilePercentage > 100 || profilePercentage < 0){
+		 if(profilePercentage < 0){
+			    $('#profilePercentageValidateId').find('p.jquery_form_error_message').remove(); 
+				$('input#profilePercentageValidation').attr('class','error signin_fild');
+				$("input#profilePercentageValidation").after("<p class='jquery_form_error_message'>Profile percentage should not in negitive</p>");
+				$('input#profilePercentageValidation').attr('record-exist','yes');
+				$('input#profilePercentageValidation').attr('record-exist-errorMsg','Profile percentage should not in negitive'); 
+		 }else{
+			 $('#profilePercentageValidateId').find('p.jquery_form_error_message').remove(); 
+				$('input#profilePercentageValidation').attr('class','error signin_fild');
+				$("input#profilePercentageValidation").after("<p class='jquery_form_error_message'>Profile percentage should not more than 100</p>");
+				$('input#profilePercentageValidation').attr('record-exist','yes');
+				$('input#profilePercentageValidation').attr('record-exist-errorMsg','Profile percentage should not more than 100'); 
+		 }
+	 }else{
+		 
+	     $('#profilePercentageValidateId').find('p.jquery_form_error_message').remove(); 
+    	 $('input#profilePercentageValidation').removeAttr( "class record-exist record-exist-errormsg");
+		 $('#profilePercentageValidateId').find('p.jquery_form_error_message').remove();
+	 }
+}
+
+
+var validationSettings = {
+        errorMessagePosition : 'element',
+       borderColorOnError : '',
+		scrollToTopOnError : true,
+		dateFormat : 'yyyy/mm/dd' 
+   };  
+         $('body').on('submit', '#profilePercentage_form', function(e){
+        	  if ($(this).validate(false, validationSettings)){
+        		e.preventDefault();
+        		var formData = getFormData("profilePercentage_form");
+         		var sourceleadUrl ='${sourceleadUrl}';
+         		var profilePercentage = document.getElementById("profilePercentage").value;
+         		 	
+         		 $.ajax({
+       				type : "POST",
+       				url : sourceleadUrl+"/saveProfilePercentage?${_csrf.parameterName}=${_csrf.token}&profilePercentage="+profilePercentage,
+       				success : function(result) {
+       					
+       					if (result && result.response === "INVALID_DATA") {
+                            showError(result.responseMessage);
+                        }else if (result.response === "AWKWARD") {
+    		        	    location.href = "/errorPage";
+    		        	} else if (result.response === "SUCCESS") {
+    		        		$('#successMsgDiv').html("Profile Percentage Updated Successfully");
+    		        		 $("#profilePercentageSelector").fadeIn(200);
+    		        		  $('#profilePercentageSelector').delay(2000).fadeOut('slow');
+    		        	} else if (result.indexOf('Sign In') !== -1) {
+    		        		location.replace(sourceleadUrl);
+    		        	} else {
+    		        	    showError("Operation failed, please try again");
+    		        	}
+       				},
+       			});    
+                
+            	    return true;
+            }
+            else{
+            	return false;	
+               }
+            });
+            
+         $('body').on('blur', '#profilePercentage_form', function() {
+     		$("#profilePercentage_form").showHelpOnFocus();
+     		$("#profilePercentage_form").validateOnBlur(false, validationSettings);
+     	});
 </script>
 
 <script>
@@ -2601,7 +2702,7 @@ function createOrg(){
 	        	result = result +'<div class="form-group">';
 	            result = result +'<label class="col-md-3">Working Hours<span class="text-danger">&nbsp;*</span></label>';
 	            result = result +'<div class="col-md-9" id="averageLocWorkingHoursDiv">';
-	            result = result +'<input type="text" class="form-control" id="averageLocWorkingHours" name="averageWorkingHours" maxlength="2" field-name="Working Hours" data-validation="required validate_int" />';
+	            result = result +'<input type="text" class="form-control" onblur="validateWorkingHours()" id="averageLocWorkingHours" name="averageWorkingHours" maxlength="2" field-name="Working Hours" data-validation="required validate_int" />';
 	            result = result +'<span class="hidden">Working Hours</span>';
 	            result = result +'</div>';
 	            result = result +'</div>';
@@ -3422,16 +3523,16 @@ $(function() {
 	  $('#averageLocWorkingHoursDiv').on('keydown', '#averageLocWorkingHours', function(e){-1!==$.inArray(e.keyCode,[46,8,9,27,13,110,190])||/65|67|86|88/.test(e.keyCode)&&(!0===e.ctrlKey||!0===e.metaKey)||35<=e.keyCode&&40>=e.keyCode||(e.shiftKey||48>e.keyCode||57<e.keyCode)&&(96>e.keyCode||105<e.keyCode)&&e.preventDefault()});
 });
 
-$(function(){
-  $("#averageLocWorkingHours").keyup(function(event){
+function validateWorkingHours(){
       var ew = $("#averageLocWorkingHours").val();
       $('#averageLocWorkingHoursDiv').parent().find('p.jquery_form_error_message').remove(); 
       if(ew > 24){
-      	$("#averageLocWorkingHours").val('');
       	$("input#averageLocWorkingHours").parent().after("<p class='jquery_form_error_message'><span>Average Working Hours should be less then or equal to 24</span>");
+      	$("#register_button").attr("disabled","true");
+      }else{
+    	  $("#register_button").removeAttr("disabled","false");
       }
-  });
-});
+}
 
 
 </script>

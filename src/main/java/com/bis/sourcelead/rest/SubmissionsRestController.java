@@ -242,6 +242,7 @@ public class SubmissionsRestController {
 					candidate.setEmployer(lastCompanyEmployer.getName());
 				}
 			}
+			candidate.setDateofBirthString(commonUtil.dateStrFromOrgDateFormatter(orgLocation.getDateFormat(), candidate.getDateOfBirth()));
 			response.setObject(candidate);
 			response.setResponse(Result.SUCCESS.name());
 			response.setResponseMessage(Result.SUCCESS.getValue());
@@ -1310,6 +1311,44 @@ public class SubmissionsRestController {
 	}
 	
 	
+	@RequestMapping(value = "/app/saveShortlistStatusForApplicant")
+	public @ResponseBody Response<String> saveShortlistStatusForApplicant(@RequestParam(value = "submissionId", required = false) Long submissionId, HttpServletRequest request)
+			throws Exception {
+		Response<String> response = new Response<>();
+		User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+		if(user != null) {
+			try {
+				RequirementSubmission requirementSubmission = requirementSubmissionService.getRequirementSubmissionById(submissionId);
+
+				// to update submission history
+				RequirementSubmissionHistory requirementSubmissionHistory = new RequirementSubmissionHistory();
+				requirementSubmissionHistory.setFromStage(requirementSubmission.getSubmissionStatus().toString());
+				requirementSubmissionHistory.setToStage(ApplicantSubmissionStatus.SHORTLIST.toString());
+
+				// to update Submission status
+				requirementSubmission.setPreviousSubmissionStatus(requirementSubmission.getSubmissionStatus());
+				requirementSubmission.setSubmissionStatus(ApplicantSubmissionStatus.SHORTLIST);
+				requirementSubmission.setUpdatedBy(user.getUserCode());
+				StringBuilder sb = new StringBuilder();
+				requirementSubmission.setUpdatedUser(sb.append(user.getFirstName()).append(" ").append(user.getLastName()).toString());
+				requirementSubmission.setUpdatedDate(new Date());
+				
+				requirementSubmissionService.storeRequirementSubmission(requirementSubmission);
+				requirementSubmissionHistoryService.updateRequirementHistory(requirementSubmission, user,requirementSubmissionHistory);
+				
+				response.setResponse(Result.SUCCESS.name());
+				response.setResponseMessage(Result.SUCCESS.getValue());
+			}catch(Exception e) {
+				response.setResponse(Result.AWKWARD.name());
+				response.setResponseMessage(Result.AWKWARD.getValue());
+			}
+		}else {
+			response.setResponse(Result.SESSION_TIMEDOUT.name());
+			response.setResponseMessage(Result.SESSION_TIMEDOUT.getValue());
+		}
+		return response;
+	}
+	
 	
 	@RequestMapping(value = "/app/getRequirementOfferSubmissionById")
 	public @ResponseBody Response<RequirementOffers> getRequirementOfferSubmissionById(@RequestParam(value = "submissionId", required = false) Long submissionId, HttpServletRequest request)
@@ -1327,6 +1366,81 @@ public class SubmissionsRestController {
 				}else {
 					response.setObject(null);
 				}
+				response.setResponse(Result.SUCCESS.name());
+				response.setResponseMessage(Result.SUCCESS.getValue());
+			}catch(Exception e) {
+				response.setResponse(Result.AWKWARD.name());
+				response.setResponseMessage(Result.AWKWARD.getValue());
+			}
+		}else {
+			response.setResponse(Result.SESSION_TIMEDOUT.name());
+			response.setResponseMessage(Result.SESSION_TIMEDOUT.getValue());
+		}
+		return response;
+	}
+	
+	
+	@RequestMapping(value = "/app/saveOnHoldStatusForApplicant")
+	public @ResponseBody Response<String> saveOnHoldStatusForApplicant(@RequestParam(value = "submissionId", required = false) Long submissionId, @RequestParam(value = "status", required = false) String status,HttpServletRequest request)
+			throws Exception {
+		Response<String> response = new Response<>();
+		User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+		if(user != null) {
+			try {
+				RequirementSubmission requirementSubmission = requirementSubmissionService.getRequirementSubmissionById(submissionId);
+
+				// to update submission history
+				RequirementSubmissionHistory requirementSubmissionHistory = new RequirementSubmissionHistory();
+				requirementSubmissionHistory.setFromStage(requirementSubmission.getSubmissionStatus().toString());
+		if(status.equalsIgnoreCase("Status")){
+					
+			requirementSubmissionHistory.setToStage(ApplicantSubmissionStatus.SUBMISSION.toString());
+
+				}
+		else if(status.equalsIgnoreCase("On Hold")){
+			requirementSubmissionHistory.setToStage(ApplicantSubmissionStatus.ONHOLD.toString());
+		}
+		else if(status.equalsIgnoreCase("Interview")){
+			requirementSubmissionHistory.setToStage(ApplicantSubmissionStatus.INTERVIEW.toString());
+		}
+		else if(status.equalsIgnoreCase("Selected on Interview")){
+			requirementSubmissionHistory.setToStage(ApplicantSubmissionStatus.SELECTED_ON_INTERVIEW.toString());
+		}
+		else if(status.equalsIgnoreCase("Offer Made")){
+			requirementSubmissionHistory.setToStage(ApplicantSubmissionStatus.OFFERMADE.toString());
+		}
+		else if(status.equalsIgnoreCase("NoResponse")){
+			requirementSubmissionHistory.setToStage(ApplicantSubmissionStatus.NORESPONSE.toString());
+		}
+
+				// to update Submission status
+				requirementSubmission.setPreviousSubmissionStatus(requirementSubmission.getSubmissionStatus());
+				if(status.equalsIgnoreCase("Status")){
+					requirementSubmission.setSubmissionStatus(ApplicantSubmissionStatus.SUBMISSION);
+				}
+				else if(status.equalsIgnoreCase("On Hold")){
+					requirementSubmission.setSubmissionStatus(ApplicantSubmissionStatus.ONHOLD);
+				}
+				else if(status.equalsIgnoreCase("Interview")){
+					requirementSubmission.setSubmissionStatus(ApplicantSubmissionStatus.INTERVIEW);
+				}
+				else if(status.equalsIgnoreCase("Selected on Interview")){
+					requirementSubmission.setSubmissionStatus(ApplicantSubmissionStatus.SELECTED_ON_INTERVIEW);
+				}
+				else if(status.equalsIgnoreCase("Offer Made")){
+					requirementSubmission.setSubmissionStatus(ApplicantSubmissionStatus.OFFERMADE);
+				}
+				else if(status.equalsIgnoreCase("NoResponse")){
+					requirementSubmission.setSubmissionStatus(ApplicantSubmissionStatus.NORESPONSE);
+				}
+				requirementSubmission.setUpdatedBy(user.getUserCode());
+				StringBuilder sb = new StringBuilder();
+				requirementSubmission.setUpdatedUser(sb.append(user.getFirstName()).append(" ").append(user.getLastName()).toString());
+				requirementSubmission.setUpdatedDate(new Date());
+				
+				requirementSubmissionService.storeRequirementSubmission(requirementSubmission);
+				requirementSubmissionHistoryService.updateRequirementHistory(requirementSubmission, user,requirementSubmissionHistory);
+				
 				response.setResponse(Result.SUCCESS.name());
 				response.setResponseMessage(Result.SUCCESS.getValue());
 			}catch(Exception e) {

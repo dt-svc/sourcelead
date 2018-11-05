@@ -68,7 +68,7 @@ function loansAdvances(){
                   	<div class="col-md-3">
                   		<div class="row">
                   			<label class="col-md-5"><strong>No. of Hours:</strong></label>
-                  			<span class="col-md-7"><strong>200 Hrs</strong></span>
+                  			<span class="col-md-7" id="totalHors"><strong>0.0</strong></span>
                   		</div>
                   	</div>
                   </div>
@@ -299,7 +299,7 @@ function loansAdvances(){
                		</div>
                		</div>
                		<div class="col-md-3 mb">
-               			<h5>Pay Times</h5>
+               			<h5>Pay Items</h5>
                			<div class="clearfix tableStyles">
                				<table class="table-bordered table">
                					<thead>
@@ -326,7 +326,7 @@ function loansAdvances(){
                		</div>
                		</div>
                		<div class="col-md-3 mb">
-               			<h5>Advances</h5>
+               			<h5>Loan and Advances</h5>
                			<div class="clearfix tableStyles">
                				<table class="table-bordered table">
                					<thead>
@@ -335,8 +335,8 @@ function loansAdvances(){
                						<th>Amount</th>
                						</tr>
                					</thead>
-               					<tbody>
-               						<tr>
+               					<tbody id="loanAdvDiv">
+               						<!-- <tr>
                							<td>401(R)</td>
                							<td>999$</td>
                						</tr>
@@ -347,7 +347,7 @@ function loansAdvances(){
                						<tr>
                							<td><strong>Total</strong></td>
                							<td>999$</td>
-               						</tr>
+               						</tr> -->
                					</tbody>
                				</table>
                		</div>
@@ -413,6 +413,7 @@ function getMyPayrollList(){
 	var postDedTotal = 0;
 	var contrTotal = 0;
 	var payItemTotal = 0;
+	var loanAmountTotal = 0;
 	var hrsTotalAmount = 0;
 	$.ajax({
 	    	type: "GET",
@@ -453,6 +454,7 @@ function getMyPayrollList(){
 		     $("#overTimeHours").text(result.hours.otHours);
 		     $("#regularAmount").text(result.hours.regularTimeAmount);
 		     $("#overTimeHoursAmount").text(result.hours.overTimeAmount);
+		     $("#totalHors").text(result.hours.totalHours+" Hrs");
 	        
 	        // Pre Deductions
 	        var preDed = "";
@@ -519,6 +521,25 @@ function getMyPayrollList(){
 	         $("#payItemDIV").empty();
 	         $("#payItemDIV").append(payItem);
 	         
+	         
+	         //Loan and Advance
+	         var loan = "";
+	         if(result.loanAdvance != null && result.loanAdvance != '' && result.loanAdvance != 'undefined'){
+	         for (var i=0; i< result.loanAdvance.length; i++){
+	             var ln = result.loanAdvance[i];
+	        	 loan = loan + '<tr>';
+	        	 loan = loan + '<td>'+ln.loanAndAdvName+'</td>';
+	        	 loan = loan + '<td>$ '+ln.loanAmount+'</td>';
+	        	 loan = loan + '</tr>';
+	         }
+	         loan = loan + '<tr>';
+	         loan = loan + '<td><strong>Total</strong></td>';
+	         loan = loan + '<td>$ '+result.loanAmountTotal+'</td>';
+	         loan = loan + '</tr>';
+	         }
+	         $("#loanAdvDiv").empty();
+	         $("#loanAdvDiv").append(loan);
+	         
 	        
 	        var result = "";
 	        result = result +'<table id="myPayrollTableDiv" class="display" cellspacing="0" width="100%" >';
@@ -584,13 +605,13 @@ function getMyPayrollList(){
 	 	        result = result +'<td>';
 	 	        result = result +'<div class="tblminwidth-30">';
 	 	        result = result +'<a href="#" class="anchorBlack" title="View"><i class="fa fa-eye" onclick="payAdjustment(\''+json.payrollUUID+'\',\'APPROVED\');"></i></a>';
-	 	        result = result +'<a download href="'+json.paySlipFileURL+'" class="anchorBlack ml5" title="Download"><i class="fa fa-download" onclick="payDownload();"></i></a>';
+	 	        result = result +'<a download href="'+json.paySlipFileURL+'" class="anchorBlack ml5" title="Download"><i class="fa fa-download"></i></a>';
 	 	        result = result +'</div>';
 	 	        result = result +'</td>';
 	 	        result = result +'</tr>';
 	 	        
 	        	}
-	        	$("#totalNet").text('$ '+totalNetPay);
+	        	$("#totalNet").text('$ '+totalNetPay.toFixed(2));
 	        }
 	       
 	        result = result +'</tbody>';
@@ -626,20 +647,6 @@ function mayPayrollPagination(){
     $('.dataTables_filter input').attr("placeholder", "Search");
 }
 </script>
-<script >
-function payDownload(){
-	$.ajax({
-		type: "GET",
-        url: sourceleadUrl+"/getMyPayrollDownload?"+tokenParamName+"="+tokenValue                 , 
-        success: function(response) {
-        	if (response.response === "AWKWARD") {
-				location.href = "/errorPage";
-			} else if (response.response === "SUCCESS") {
-				alert("success");
-			}
-        }
-	});
-}
-</script>
+
 <jsp:include page="./viewPayRollSummary.jsp" /> 
 <jsp:include page="../masterFooter.jsp" />
